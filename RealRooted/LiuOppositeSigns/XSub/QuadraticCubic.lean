@@ -1,7 +1,15 @@
 module
 
-public import RealRooted.LiuOppositeSigns.XSub.LinearQuadratic
-public import RealRooted.LiuOppositeSigns.XSub.SplittingTools
+import RealRooted.LiuOppositeSigns.XSub.LinearQuadratic
+import RealRooted.LiuOppositeSigns.XSub.SplittingTools
+import RealRooted.LiuOppositeSigns.PositiveSplitPair
+public import RealRooted.LiuOppositeSigns.PositiveSplitRootCount
+import RealRooted.SameDegreeCubicRootCount
+import RealRooted.SameDegreeQuadraticRootCount
+import RealRooted.QuadraticRoot
+import RealRooted.MaWang.StrictSigns.Assembly
+import RealRooted.MaWang.StrictSigns.RootSigns
+import RealRooted.WagnerRightSum.Sign
 
 /-!
 # Liu quadratic/cubic x-subtraction leaf

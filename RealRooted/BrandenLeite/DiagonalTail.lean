@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.BrandenLeite.ConstantDiagonal
+import RealRooted.BrandenLeite.ConstantDiagonal
 public import RealRooted.BrandenLeite.SourceBorderKernel
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.DiagonalTail
 

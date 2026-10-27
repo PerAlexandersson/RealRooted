@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.BoundarySpecializationGeneral
+import RealRooted.BoundarySpecializationGeneral
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
+public import RealRooted.MultivariateStability
 
 /-!
 # Real boundary specialization

@@ -1,6 +1,10 @@
 module
 
-public import RealRooted.NarayanaTransformation.Recurrences.Identities
+import RealRooted.NarayanaTransformation.Recurrences.Identities
+import RealRooted.NarayanaTransformation.Rectangular.Preservation
+public import RealRooted.NarayanaTransformation.Coefficients
+import RealRooted.LiuWangRecursion
+import RealRooted.QuadraticRoot
 
 /-!
 # Generalized Narayana recurrence interlacing

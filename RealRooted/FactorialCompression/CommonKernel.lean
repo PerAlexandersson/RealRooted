@@ -1,8 +1,9 @@
 module
 
-public import RealRooted.DerivativeRecurrence.QuadraticLagStrict
-public import RealRooted.EulerOperator
+import RealRooted.DerivativeRecurrence.QuadraticLagStrict
+import RealRooted.EulerOperator
 public import RealRooted.FactorialCompression.Basic
+public import RealRooted.SimpleRoots
 
 /-!
 # The common factorial-compression kernel: recurrences and strict interlacing

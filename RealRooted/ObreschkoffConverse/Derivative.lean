@@ -1,7 +1,12 @@
 module
 
-public import RealRooted.ObreschkoffConverse.Converse
-public import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.ObreschkoffConverse.Converse
+import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.Derivative.FamilyClosure
+import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Derivative preservation of interlacing

@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.PolynomialValueEulerNumerator.Product.PF
+import RealRooted.PolynomialValueEulerNumerator.Product.PF
+public import RealRooted.PolynomialValueEulerNumerator
+public import RealRooted.PFPolynomial
 
 /-!
 # Brenti's theorem on Euler numerators

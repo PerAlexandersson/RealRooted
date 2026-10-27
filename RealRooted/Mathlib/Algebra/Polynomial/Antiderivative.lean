@@ -8,7 +8,7 @@ module
 public import Mathlib.Algebra.Polynomial.Derivative
 public import Mathlib.Algebra.Polynomial.Eval.Defs
 public import Mathlib.Algebra.Algebra.Rat
-public import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.LinearCombination
 
 /-!
 # Antiderivatives and definite integrals of polynomials

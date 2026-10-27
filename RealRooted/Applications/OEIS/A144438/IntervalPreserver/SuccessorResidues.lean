@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ResidueDerivative
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ResidueDerivative
+import RealRooted.Interlacing.ResidueCriterion
 
 /-!
 # Residues at an A144438 insertion successor

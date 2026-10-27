@@ -7,14 +7,19 @@ low-degree cases.
 module
 
 public import RealRooted.AffineFamily
-public import RealRooted.CommonInterleaver.IntervalLemmas
+import RealRooted.CommonInterleaver.IntervalLemmas
 public import RealRooted.AllCombo
-public import RealRooted.CommonInterleaverSeq
+import RealRooted.CommonInterleaverSeq
 public import RealRooted.PosCombo
-public import RealRooted.RootCountJump
-public import RealRooted.RootOrderBridge
+import RealRooted.RootCountJump
+import RealRooted.RootOrderBridge
 public import RealRooted.SameDegreeCubicRootCount
-public import RealRooted.SameDegreeQuadraticRootCount
+import RealRooted.SameDegreeQuadraticRootCount
+import RealRooted.AffineFamily.RootCrossing
+public import RealRooted.CommonInterleaver.RootSlots.Basic
+public import RealRooted.CommonInterleaver.RootDesc
+public import RealRooted.ObreschkoffContinuity
+import RealRooted.Mathlib.Algebra.Polynomial.Splits
 
 public section
 

@@ -3,9 +3,13 @@ module
 public import RealRooted.Apolarity
 public import RealRooted.DegreeDropReversal
 public import RealRooted.Hadamard.Product
-public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
-public import RealRooted.Mathlib.Algebra.Ring.Parity
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+import RealRooted.Mathlib.Algebra.Ring.Parity
 public import RealRooted.PFPolynomial
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.Algebra.Polynomial.Reverse
+import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
+import RealRooted.Mathlib.Data.Nat.Choose.Cast
 
 @[expose] public section
 

@@ -1,7 +1,11 @@
 module
 
-public import RealRooted.ParkingFunctions.Descents.Basic
+import RealRooted.ParkingFunctions.Descents.Basic
 public import Mathlib.Data.Fin.Rev
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
+public import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
+import Mathlib.Data.Sym.Sym2.Init
+public import Mathlib.Basic.Real.Basic
 
 /-!
 # Literal all-word descent polynomials

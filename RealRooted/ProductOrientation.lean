@@ -2,6 +2,8 @@ module
 
 public import RealRooted.ObreschkoffConverse
 public import RealRooted.WagnerRightSum
+import RealRooted.ObreschkoffConverse.Converse
+public import RealRooted.AllCombo
 
 /-!
 # Selecting a same-degree interlacing orientation by an endpoint product

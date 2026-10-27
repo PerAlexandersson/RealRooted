@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.LiebSokalPointwise
+import RealRooted.LiebSokalPointwise
+public import RealRooted.Multiaffine
+public import RealRooted.MultivariateStability
 
 /-!
 # The stability-preserving operator in the monotone-column proof

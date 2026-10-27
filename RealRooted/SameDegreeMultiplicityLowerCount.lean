@@ -3,7 +3,7 @@ module
 public import Mathlib.Algebra.Polynomial.Taylor
 public import Mathlib.Algebra.Polynomial.Splits
 public import Mathlib.Algebra.Polynomial.Roots
-public import Mathlib.Analysis.Polynomial.CauchyBound
+import Mathlib.Analysis.Polynomial.CauchyBound
 public import Mathlib.Topology.Algebra.Polynomial
 public import Mathlib.Algebra.Ring.GeomSum
 public import Mathlib.Tactic

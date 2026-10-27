@@ -1,7 +1,8 @@
 module
 
 public import Mathlib.Tactic
-public import RealRooted.LiebSokalOperator.Linearity
+import RealRooted.LiebSokalOperator.Linearity
+public import RealRooted.LiebSokalOperator
 
 /-!
 # Elementary symmetric differential operators

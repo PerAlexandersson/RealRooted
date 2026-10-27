@@ -2,7 +2,11 @@ module
 
 public import RealRooted.Basic
 public import RealRooted.GeneralizedSnakePosets.SquarecaseModel
-public import RealRooted.Mathlib.Algebra.Polynomial.Roots
+import RealRooted.Mathlib.Algebra.Polynomial.Roots
+public import RealRooted.GeneralizedSnakePosets.SnakeWord
+import RealRooted.FolkloreLemma
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Braun--Jal generalized snake poset predicates

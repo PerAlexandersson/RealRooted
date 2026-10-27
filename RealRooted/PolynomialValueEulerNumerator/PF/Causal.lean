@@ -1,7 +1,10 @@
 module
 
-public import RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure.ZeroPrefix
+import RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure.ZeroPrefix
 public import RealRooted.PolynomialValueEulerNumerator.PF
+public import RealRooted.PolynomialValueEulerNumerator
+import RealRooted.Mathlib.Analysis.Polynomial.Asymptotics
+public import RealRooted.PFPolynomial
 
 /-!
 # PF canonical Euler numerators from polynomial-value sequences

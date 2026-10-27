@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.BorceaBranden.FiniteSymbolContraction
-public import RealRooted.BorceaBranden.FiniteSymbolReconstructionCore
+import RealRooted.BorceaBranden.FiniteSymbolReconstructionCore
+public import RealRooted.MultivariateStability
 
 /-!
 # Reconstruction for the finite-symbol argument

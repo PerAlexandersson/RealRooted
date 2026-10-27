@@ -1,8 +1,9 @@
 module
 
 public import RealRooted.AissenSchoenbergWhitneyBase
-public import RealRooted.Mathlib.RingTheory.PowerSeries.CausalFwdDiff
+import RealRooted.Mathlib.RingTheory.PowerSeries.CausalFwdDiff
 public import Mathlib.RingTheory.PowerSeries.WellKnown
+public import RealRooted.Mathlib.Algebra.Group.ForwardDiff
 
 /-!
 # Euler numerators of polynomial-value sequences

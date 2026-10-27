@@ -5,9 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Plucker
-public import RealRooted.Mathlib.Order.Fin.Tuple
-public import RealRooted.Mathlib.Data.Fin.Basic
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Plucker
+import RealRooted.Mathlib.Order.Fin.Tuple
+import RealRooted.Mathlib.Data.Fin.Basic
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 
 /-!
 # Strict consecutive-column minors

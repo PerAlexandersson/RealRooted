@@ -7,7 +7,7 @@ module
 
 public import Mathlib.Combinatorics.SimpleGraph.Finite
 public import Mathlib.Data.Finset.Sym
-public import Mathlib.Algebra.Polynomial.Monic
+import Mathlib.Algebra.Polynomial.Monic
 public import Mathlib.Algebra.Polynomial.BigOperators
 public import Mathlib.Basic.Real.Basic
 

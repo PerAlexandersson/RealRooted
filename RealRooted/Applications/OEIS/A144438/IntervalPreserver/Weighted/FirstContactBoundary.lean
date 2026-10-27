@@ -1,6 +1,9 @@
 module
 
-public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactMinimal
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactMinimal
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactTopology
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ContactCalculus
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactAlgebra
 
 /-!
 # Boundary calculus at a weighted first contact

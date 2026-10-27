@@ -1,6 +1,9 @@
 module
 
-public import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Wagner-X affine and common-factor transport

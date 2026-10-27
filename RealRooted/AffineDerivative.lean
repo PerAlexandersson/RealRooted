@@ -24,12 +24,17 @@ Let `g = C c * f + (1 - X) * f'` and `d = natDegree f`.
 module
 
 public import RealRooted.Basic
-public import RealRooted.Linear
+import RealRooted.Linear
 public import RealRooted.Derivative
 public import RealRooted.Wagner
-public import RealRooted.Mathlib.Algebra.Polynomial.Reverse
-public import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
+import RealRooted.Mathlib.Algebra.Polynomial.Reverse
+import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 public import Mathlib.Tactic
+import RealRooted.WagnerX.AffineFactors
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 @[expose] public section
 

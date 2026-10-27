@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.LiebSokalPointwise
+import RealRooted.LiebSokalPointwise
+public import RealRooted.LiebSokalOperator
+public import RealRooted.MultivariateStability
 
 /-!
 # The multiaffine Lieb--Sokal theorem

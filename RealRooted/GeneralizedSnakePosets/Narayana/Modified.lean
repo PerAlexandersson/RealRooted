@@ -4,6 +4,11 @@ public import RealRooted.CombinatorialExamples.Narayana
 public import RealRooted.GeneralizedSnakePosets.Statements
 public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Auxiliary
 public import RealRooted.NarayanaTransformation
+import RealRooted.NarayanaTransformation.Recurrences.Interlacing
+import RealRooted.NarayanaTransformation.Recurrences.Identities
+import RealRooted.NarayanaTransformation.Rectangular.Preservation
+import RealRooted.NarayanaTransformation.Rectangular.Narayana
+import RealRooted.Linear
 
 /-!
 # Modified Narayana inputs for generalized snake posets

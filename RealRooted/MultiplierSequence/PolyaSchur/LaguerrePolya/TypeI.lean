@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.MultiplierSequence.PolyaSchur.Growth
+import RealRooted.MultiplierSequence.PolyaSchur.Growth
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
 
 /-!
 # Type-I Laguerre--Pólya limits

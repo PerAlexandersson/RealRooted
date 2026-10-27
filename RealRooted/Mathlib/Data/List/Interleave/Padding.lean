@@ -6,7 +6,7 @@ Authors: Yaël Dillies
 module
 
 public import RealRooted.Mathlib.Data.List.Interleave
-public import Mathlib.Data.List.Chain
+import Mathlib.Data.List.Chain
 
 /-!
 # End padding for interleaving lists

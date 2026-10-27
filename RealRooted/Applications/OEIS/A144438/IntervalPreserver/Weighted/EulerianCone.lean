@@ -4,7 +4,8 @@ public import RealRooted.SymmetricDecomposition.EulerianTransform
 public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Basic
 public import RealRooted.BernsteinCone.Preserver
 public import RealRooted.SequenceClosure
-public import RealRooted.Hadamard.Grace
+import RealRooted.Hadamard.Grace
+import RealRooted.BernsteinCone
 
 /-!
 # The zero-weight deco transform on the magic cone

@@ -1,9 +1,12 @@
 module
 
-public import RealRooted.GammaTransform.Derivative
+import RealRooted.GammaTransform.Derivative
 public import RealRooted.CombinatorialExamples.Narayana
-public import RealRooted.GammaTransform.Preservation
-public import RealRooted.NarayanaTransformation.Endpoints
+import RealRooted.GammaTransform.Preservation
+import RealRooted.NarayanaTransformation.Endpoints
+import RealRooted.NarayanaTransformation.Recurrences.Identities
+import RealRooted.NarayanaTransformation.Rectangular.Preservation
+public import RealRooted.NarayanaTransformation.Coefficients
 
 /-!
 # OEIS A394446

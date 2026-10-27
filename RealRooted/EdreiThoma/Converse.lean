@@ -1,11 +1,12 @@
 module
 
-public import RealRooted.EdreiThoma.Continuation
+import RealRooted.EdreiThoma.Continuation
 public import RealRooted.EdreiThoma.Easy
-public import RealRooted.EdreiThoma.FinalStep
-public import RealRooted.EdreiThoma.OddPart
-public import RealRooted.EdreiThoma.Reduction
+import RealRooted.EdreiThoma.FinalStep
+import RealRooted.EdreiThoma.OddPart
+import RealRooted.EdreiThoma.Reduction
 public import RealRooted.Mathlib.Analysis.Complex.EdreiUniqueness
+import RealRooted.EdreiThoma.PFSeries
 
 /-!
 # The Edrei--Thoma converse

@@ -3,9 +3,12 @@ module
 public import RealRooted.Multiaffine
 public import RealRooted.MultivariateStability
 public import RealRooted.LiebSokalOperator
-public import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
-public import RealRooted.Mathlib.Analysis.Complex.OpenMapping
-public import Mathlib.Analysis.Complex.Polynomial.GaussLucas
+import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
+import RealRooted.Mathlib.Analysis.Complex.OpenMapping
+import Mathlib.Analysis.Complex.Polynomial.GaussLucas
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Algebra.MvPolynomial.CommRing
+public import Mathlib.LinearAlgebra.Complex.Module
 
 /-!
 # Pointwise input for the Lieb--Sokal theorem

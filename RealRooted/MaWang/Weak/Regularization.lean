@@ -1,6 +1,11 @@
 module
 
-public import RealRooted.MaWang.Strong
+import RealRooted.MaWang.Strong
+import RealRooted.RootContinuity
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
+import Mathlib.Analysis.Normed.Field.Approximation
+import Mathlib.Analysis.Complex.Polynomial.Basic
 
 public section
 

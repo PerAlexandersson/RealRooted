@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.EulerBidiagonal.DepRows
-public import RealRooted.Interlacing.Euclid
+import RealRooted.Interlacing.Euclid
+import RealRooted.Linear
 
 /-!
 # The general Euler step with a zero parameter

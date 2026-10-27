@@ -5,10 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import Mathlib.LinearAlgebra.Basis.VectorSpace
-public import Mathlib.LinearAlgebra.Matrix.ToLin
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+import Mathlib.LinearAlgebra.Basis.VectorSpace
+import Mathlib.LinearAlgebra.Matrix.ToLin
 public import Mathlib.Order.Hom.PowersetCard
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 
 /-!
 # Cauchy-Binet determinant expansions

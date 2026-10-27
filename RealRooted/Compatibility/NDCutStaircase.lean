@@ -1,7 +1,9 @@
 module
 
 public import RealRooted.Compatibility.NDCutInvariant
-public import RealRooted.RowThresholdOne
+import RealRooted.RowThresholdOne
+public import RealRooted.ThresholdMatrix.Basic
+public import RealRooted.StaircaseSum
 
 /-!
 # Staircase representation of structural N/D cut outputs

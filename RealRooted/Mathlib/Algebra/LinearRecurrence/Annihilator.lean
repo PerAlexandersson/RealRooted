@@ -7,7 +7,7 @@ module
 
 public import Mathlib.Algebra.LinearRecurrence
 public import Mathlib.Algebra.Polynomial.Module.AEval
-public import Mathlib.RingTheory.Polynomial.Basic
+import Mathlib.RingTheory.Polynomial.Basic
 
 /-!
 # Annihilators for linear recurrences

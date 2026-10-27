@@ -1,7 +1,10 @@
 module
 
-public import RealRooted.Jacobi
+import RealRooted.Jacobi
 public import RealRooted.ParkingFunctions.ToricContribution.TriangleInvariant
+import RealRooted.ParkingFunctions.ToricContribution.IntervalInsertion
+public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi
+import RealRooted.Derivative.Algebra
 
 /-!
 # Differential algebra for the toric-contribution triangle

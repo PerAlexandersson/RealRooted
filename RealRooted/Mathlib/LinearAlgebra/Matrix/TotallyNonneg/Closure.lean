@@ -5,9 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Topology.Algebra.Ring.Real
+import Mathlib.Topology.Algebra.Ring.Real
 public import Mathlib.Topology.Instances.Matrix
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+public import Mathlib.LinearAlgebra.Matrix.Determinant.TotallyNonneg
+public import Mathlib.Topology.MetricSpace.Pseudo.Defs
 
 /-!
 # Closure of total nonnegativity under limits

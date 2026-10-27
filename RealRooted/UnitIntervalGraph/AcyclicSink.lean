@@ -2,8 +2,8 @@ module
 
 public import RealRooted.Graph.AcyclicOrientation
 public import RealRooted.Graph.ChordalAcyclicSink
-public import RealRooted.Graph.IndependencePolynomial.ClawFree
-public import RealRooted.Linear
+import RealRooted.Graph.IndependencePolynomial.ClawFree
+import RealRooted.Linear
 public import Mathlib.Data.Finset.Sort
 
 /-!

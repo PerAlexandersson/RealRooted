@@ -1,9 +1,10 @@
 module
 
 public import RealRooted.Applications.EulerianCompendium.Definitions
-public import RealRooted.CombinatorialExamples.PeakValues.Canonical
-public import RealRooted.CombinatorialExamples.PeakValues.Sharpness
+import RealRooted.CombinatorialExamples.PeakValues.Canonical
+import RealRooted.CombinatorialExamples.PeakValues.Sharpness
 public import RealRooted.Mathlib.Combinatorics.Enumerative.EulerianPeak
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 
 /-!
 # Peak counts in the Eulerian compendium

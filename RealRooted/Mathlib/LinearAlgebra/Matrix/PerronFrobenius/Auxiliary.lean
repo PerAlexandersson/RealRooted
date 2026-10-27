@@ -6,9 +6,10 @@ Authors: Matteo Cipollina
 module
 
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Spectrum
-public import Mathlib.Algebra.Order.Ring.Star
+import Mathlib.Algebra.Order.Ring.Star
 public import Mathlib.Analysis.Convex.StdSimplex
 public import Mathlib.Algebra.Order.Star.Int
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Simplex
 
 /-!
 # Auxiliary lemmas for Perron-Frobenius theory

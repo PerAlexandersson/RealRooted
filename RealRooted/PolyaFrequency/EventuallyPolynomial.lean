@@ -1,9 +1,10 @@
 module
 
 public import RealRooted.AissenSchoenbergWhitneyBase
-public import RealRooted.Mathlib.Analysis.Polynomial.Asymptotics
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.ColumnDifference
-public import RealRooted.Mathlib.Topology.Instances.Matrix.Determinant
+import RealRooted.Mathlib.Analysis.Polynomial.Asymptotics
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.ColumnDifference
+import RealRooted.Mathlib.Topology.Instances.Matrix.Determinant
+public import RealRooted.Mathlib.Algebra.Group.ForwardDiff
 
 /-!
 # Eventually polynomial Pólya-frequency sequences

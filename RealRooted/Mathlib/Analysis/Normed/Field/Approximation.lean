@@ -5,11 +5,13 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Analysis.Normed.Field.Approximation
-public import Mathlib.Analysis.Complex.Polynomial.Basic
-public import Mathlib.Analysis.Polynomial.CauchyBound
+import Mathlib.Analysis.Normed.Field.Approximation
+import Mathlib.Analysis.Complex.Polynomial.Basic
+import Mathlib.Analysis.Polynomial.CauchyBound
 public import Mathlib.Topology.Connected.Clopen
 public import Mathlib.Topology.MetricSpace.Thickening
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # One-sided continuity of polynomial roots

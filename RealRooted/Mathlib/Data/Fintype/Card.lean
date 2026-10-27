@@ -6,8 +6,8 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Data.Fintype.Card
-public import Mathlib.Data.Fintype.Prod
-public import Mathlib.Data.Fintype.Sigma
+import Mathlib.Data.Fintype.Prod
+import Mathlib.Data.Fintype.Sigma
 
 /-!
 # Finite cardinality from unique hits under equivalences

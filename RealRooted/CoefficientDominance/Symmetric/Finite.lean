@@ -1,8 +1,8 @@
 module
 
-public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
-public import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.FieldSimp
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.Ring
 

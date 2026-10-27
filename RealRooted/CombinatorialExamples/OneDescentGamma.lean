@@ -2,12 +2,16 @@ module
 
 public import RealRooted.Basic
 public import RealRooted.CombinatorialExamples.Common
-public import RealRooted.Linear
+import RealRooted.Linear
 public import RealRooted.MaWang
 public import RealRooted.Wagner
 public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 public import Mathlib.Data.Nat.Choose.Basic
 public import Mathlib.Tactic
+import RealRooted.WagnerX.AffineFactors
+public import RealRooted.Basic.ProperPosition
+import RealRooted.Basic.PolynomialFacts
+import RealRooted.Mathlib.Data.Nat.Choose.Cast
 
 /-!
 # One-Descent Gamma Family

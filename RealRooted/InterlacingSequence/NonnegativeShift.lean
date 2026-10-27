@@ -1,7 +1,9 @@
 module
 
 public import RealRooted.InterlacingSequenceBasic
-public import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
+import RealRooted.Basic.PolynomialFacts
 
 /-!
 # Simultaneous nonnegative translation of finite interlacing sequences

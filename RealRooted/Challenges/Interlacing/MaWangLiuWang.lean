@@ -3,9 +3,11 @@ module
 public import RealRooted.LiuWang.SequenceCore
 public import RealRooted.LiuWang.FiniteFamily
 public import RealRooted.MaWang.CriticalSign
-public import RealRooted.MaWang.DerivativeStep
+import RealRooted.MaWang.DerivativeStep
 public import RealRooted.MaWang.DerivativeSequence
-public import RealRooted.MaWang.StrictStep
+import RealRooted.MaWang.StrictStep
+public import RealRooted.SimpleRoots
+public import RealRooted.Basic.Coefficients
 
 /-!
 # The Liu–Wang and Ma–Wang interlacing criteria

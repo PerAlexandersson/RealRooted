@@ -1,12 +1,18 @@
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
+import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Gaussian
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Closure
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Closure
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum
 public import RealRooted.MatrixInterlacing.TotallyNonnegative
-public import RealRooted.OscillatoryInterlacing
-public import RealRooted.TotallyNonnegInterlacing
+import RealRooted.OscillatoryInterlacing
+import RealRooted.TotallyNonnegInterlacing
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Compound
+import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularRankDeficient
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Totally nonnegative matrices challenge entry point

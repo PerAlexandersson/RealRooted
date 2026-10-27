@@ -1,9 +1,17 @@
 module
 
 public import RealRooted.CommonInterleaverSeq
-public import RealRooted.MaWang.DerivativeStep
-public import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.ProperPositionAndParameters
+import RealRooted.MaWang.DerivativeStep
+import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.ProperPositionAndParameters
 public import RealRooted.SuccDegreeLeftEndpoint
+public import RealRooted.ParkingFunctions.ToricContribution.FiniteOffsets
+import RealRooted.ParkingFunctions.ToricContribution.TriangleAlgebra
+import RealRooted.Jacobi.ParameterInterlacing
+import RealRooted.Jacobi.Markoff
+import RealRooted.Jacobi
+import RealRooted.Bezoutian.WronskianConverse
+import RealRooted.Bezoutian.RootEvaluation
+import RealRooted.Linear
 
 /-!
 # Exceptional-offset Jacobi-node interlacing

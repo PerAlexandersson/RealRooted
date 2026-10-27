@@ -1,8 +1,10 @@
 module
 
 public import RealRooted.BrandenLeite.TilingFactors
-public import RealRooted.BrandenLeite.TwoKernel
-public import RealRooted.FiniteFreeRootCount
+import RealRooted.BrandenLeite.TwoKernel
+import RealRooted.FiniteFreeRootCount
+import RealRooted.BrandenLeite.CompositionRow
+public import RealRooted.BrandenLeite.TwoKernelAlgebra
 
 /-!
 # Stationary rational rod-tiling rows

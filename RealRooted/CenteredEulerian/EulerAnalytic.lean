@@ -6,12 +6,13 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.CenteredEulerian.SeriesBasic
-public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Cotangent
-public import Mathlib.Analysis.PSeries
-public import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Cotangent
+import Mathlib.Analysis.PSeries
+import Mathlib.Analysis.Real.Pi.Bounds
 public import Mathlib.Tactic.FieldSimp
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.Positivity
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 
 /-!
 # Partial fractions for `sec + tan`

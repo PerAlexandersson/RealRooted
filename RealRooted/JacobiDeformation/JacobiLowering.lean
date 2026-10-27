@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.JacobiDeformation.JacobiOperator
+import RealRooted.JacobiDeformation.JacobiOperator
+public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi
 
 /-!
 # Same-parameter lowering for monic shifted Jacobi polynomials

@@ -1,8 +1,10 @@
 module
 
 public import RealRooted.CoefficientDominance.Symmetric.Finite
-public import Mathlib.Algebra.Order.Field.Basic
+import Mathlib.Algebra.Order.Field.Basic
 public import Mathlib.Order.Interval.Finset.Nat
+import Mathlib.Data.Rat.Cast.Order
+import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 
 /-!
 # Tail contributions to elementary symmetric functions

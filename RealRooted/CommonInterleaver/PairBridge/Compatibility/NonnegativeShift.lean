@@ -1,6 +1,15 @@
 module
 
-public import RealRooted.CommonInterleaver.PairBridge.Compatibility
+import RealRooted.CommonInterleaver.PairBridge.Compatibility
+import RealRooted.CommonInterleaver.PairBridge.Reduction.CommonInterleaver
+import RealRooted.CommonInterleaver.SuccDegreeLowDegree
+import RealRooted.Compatibility.Basic
+public import RealRooted.Compatibility.Pair
+public import RealRooted.ObreschkoffContinuity
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
+public import RealRooted.Basic.ProperPosition
+import RealRooted.Basic.PolynomialFacts
 
 /-!
 # Chudnovsky--Seymour for two polynomials

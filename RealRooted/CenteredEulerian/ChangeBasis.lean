@@ -7,6 +7,7 @@ module
 
 public import RealRooted.CenteredEulerian.HBound
 public import RealRooted.CenteredEulerian.RootCriterion
+public import RealRooted.CenteredEulerian.Coefficients
 
 /-!
 # The exact change-of-basis formula (B.6)

@@ -1,7 +1,9 @@
 module
 
-public import Mathlib.Analysis.Polynomial.Basic
-public import RealRooted.Mathlib.Algebra.Polynomial.RuleOfSigns
+import Mathlib.Analysis.Polynomial.Basic
+import RealRooted.Mathlib.Algebra.Polynomial.RuleOfSigns
+public import Mathlib.Algebra.Polynomial.RuleOfSigns
+public import Mathlib.Basic.Real.Basic
 
 /-!
 # Descartes' rule of signs

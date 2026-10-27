@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.Tactic.SideGoals
+import Mathlib
 
 /-!
 # `rr_side` examples

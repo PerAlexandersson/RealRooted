@@ -1,9 +1,11 @@
 module
 
-public import RealRooted.CombinatorialExamples.BigDescents321.Criterion
+import RealRooted.CombinatorialExamples.BigDescents321.Criterion
 public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Mathlib.Analysis.Calculus.Deriv.Polynomial
 public import Mathlib.Analysis.Calculus.Deriv.Inv
+public import RealRooted.CombinatorialExamples.BigDescents321.Reference
+public import RealRooted.CombinatorialExamples.BigDescents321.GeneratingFunction
 
 /-!
 # From the Gegenbauer side back to `A_n` and `M_(n-2)`

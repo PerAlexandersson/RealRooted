@@ -5,7 +5,7 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.GroupTheory.Perm.Fin
+import Mathlib.GroupTheory.Perm.Fin
 public import Mathlib.LinearAlgebra.Matrix.Permanent
 
 /-!

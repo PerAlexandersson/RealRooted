@@ -2,9 +2,18 @@ module
 
 public import RealRooted.HermiteBiehler
 public import RealRooted.LiebSokalPointwise
-public import RealRooted.PosCombo
+import RealRooted.PosCombo
 public import RealRooted.SamePhaseStability.Nonnegative
 public import RealRooted.WagnerX
+import RealRooted.HermiteBiehler.Converse
+import RealRooted.HermiteBiehler.ConverseLowDegree
+public import RealRooted.HermiteBiehler.Basic
+public import RealRooted.SamePhaseStability
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
+public import RealRooted.Multiaffine
+import RealRooted.ObreschkoffConverse.Derivative
+import RealRooted.Linear
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Weighted common-phase interleaving

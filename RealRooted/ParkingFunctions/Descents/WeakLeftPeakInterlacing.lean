@@ -1,6 +1,11 @@
 module
 
-public import RealRooted.ParkingFunctions.Descents.WeakLeftPeakNDCutPreservation
+import RealRooted.ParkingFunctions.Descents.WeakLeftPeakNDCutPreservation
+import RealRooted.ParkingFunctions.Descents.WeakLeftPeakOrderedCut
+public import RealRooted.ParkingFunctions.Descents.WeakLeftPeakFactorization
+import RealRooted.Compatibility.NDCutStateClosure
+public import RealRooted.Compatibility.NDCutInvariant
+import RealRooted.Compatibility.CutTransformClosure
 
 /-!
 # Weak-left-peak interlacing and parking-function real-rootedness

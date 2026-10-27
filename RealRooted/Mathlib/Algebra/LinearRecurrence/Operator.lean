@@ -6,8 +6,8 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Algebra.Polynomial.Derivative
-public import Mathlib.Algebra.Polynomial.Monic
-public import Mathlib.Tactic.LinearCombination
+import Mathlib.Algebra.Polynomial.Monic
+import Mathlib.Tactic.LinearCombination
 public import Mathlib.Tactic.Ring
 public import RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator
 

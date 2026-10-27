@@ -1,7 +1,11 @@
 module
 
 public import RealRooted.Compatibility.LeanderTransform
-public import RealRooted.Compatibility.Three
+import RealRooted.Compatibility.Three
+import RealRooted.ChudnovskySeymour.Core
+public import RealRooted.Compatibility.Pair
+public import RealRooted.WeightedSum
+import RealRooted.Linear
 
 @[expose] public section
 

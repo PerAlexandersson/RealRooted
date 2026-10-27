@@ -4,8 +4,10 @@ public import RealRooted.Mathlib.Combinatorics.Enumerative.SimionSchmidt
 public import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
 public import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
 public import RealRooted.Mathlib.Combinatorics.Enumerative.DyckStatistics
-public import RealRooted.NarayanaTransformation.Recurrences.Interlacing
-public import RealRooted.NarayanaTransformation.Endpoints
+import RealRooted.NarayanaTransformation.Recurrences.Interlacing
+import RealRooted.NarayanaTransformation.Endpoints
+import RealRooted.NarayanaTransformation.Recurrences.Identities
+public import RealRooted.NarayanaTransformation.Coefficients
 
 /-!
 # Descents of `132`-avoiding permutations

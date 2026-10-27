@@ -3,7 +3,9 @@ module
 public import Mathlib.Data.Fin.Rev
 public import Mathlib.LinearAlgebra.Matrix.Permanent
 public import RealRooted.Multiaffine
-public import RealRooted.MultivariateStability.Diagonal
+import RealRooted.MultivariateStability.Diagonal
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Diagonal
+public import RealRooted.MultivariateStability
 
 /-!
 # Permanent polynomials and monotone matrix conventions

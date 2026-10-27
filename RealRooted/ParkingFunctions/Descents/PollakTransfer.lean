@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.Mathlib.Algebra.BigOperators.Finset.Unique
+import RealRooted.Mathlib.Algebra.BigOperators.Finset.Unique
 public import RealRooted.ParkingFunctions.Descents.Pollak
 public import RealRooted.ParkingFunctions.Descents.WordContent
 

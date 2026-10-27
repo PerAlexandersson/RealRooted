@@ -3,6 +3,9 @@ module
 public import RealRooted.SymmetricDecomposition
 public import RealRooted.CombinatorialExamples.DerangementStatistic
 public import RealRooted.SymmetricDecomposition.DerangementTransform
+import RealRooted.SymmetricDecomposition.Theorem26
+public import RealRooted.SymmetricDecomposition.FPolynomial
+public import RealRooted.SymmetricDecomposition.Definitions
 
 public section
 

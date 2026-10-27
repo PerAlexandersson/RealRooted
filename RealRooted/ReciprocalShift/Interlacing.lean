@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.ReciprocalShift.Roots
+import RealRooted.ReciprocalShift.Roots
+public import RealRooted.PFPolynomial
 
 /-!
 # Ordered root lists for reciprocal shifts

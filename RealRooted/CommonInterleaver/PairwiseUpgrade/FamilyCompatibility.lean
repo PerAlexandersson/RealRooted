@@ -7,6 +7,8 @@ and compatibility of all nonnegative weighted sums.
 module
 
 public import RealRooted.CommonInterleaver.PairwiseUpgrade
+public import RealRooted.Compatibility.Basic
+public import RealRooted.CommonInterleaver.RootDesc
 
 public section
 

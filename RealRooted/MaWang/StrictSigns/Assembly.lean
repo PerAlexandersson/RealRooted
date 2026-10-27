@@ -1,6 +1,10 @@
 module
 
-public import RealRooted.MaWang.StrictSigns.RootSigns
+import RealRooted.MaWang.StrictSigns.RootSigns
+import RealRooted.WagnerRightSum.Sign
+import RealRooted.Derivative.Interlacing
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 public section
 

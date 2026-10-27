@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.BrandenLeite.ShiftedTiling
+import RealRooted.AffineFamily
 
 /-!
 # Binomial shifted tiling rows

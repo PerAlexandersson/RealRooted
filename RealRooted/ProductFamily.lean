@@ -7,6 +7,11 @@ families (Brändén Theorem 7.8.3).
 module
 
 public import RealRooted.CommonInterleaverSeq
+import RealRooted.CommonInterleaver.FamilyUpgrade
+public import RealRooted.CommonInterleaver.RootDesc
+public import RealRooted.InterlacingSequenceBasic
+import RealRooted.WagnerX.AffineFactors
+import RealRooted.WagnerX.NonnegativeRoots
 
 @[expose] public section
 

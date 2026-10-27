@@ -6,6 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.Mathlib.Combinatorics.Enumerative.PatternCount
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Excedance
 
 /-!
 # Occurrences of the pattern 21 are inversions

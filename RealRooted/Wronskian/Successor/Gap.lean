@@ -1,6 +1,8 @@
 module
 
 public import RealRooted.Bezoutian.WronskianConverse
+import RealRooted.Bezoutian.RootEvaluation
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Successor-degree Wronskian root gaps

@@ -1,8 +1,16 @@
 module
 
-public import RealRooted.BorceaBranden.Applications.EulerFiniteSymbol
+import RealRooted.BorceaBranden.Applications.EulerFiniteSymbol
 public import RealRooted.EulerianMixedCompatibility.Insertion
 public import RealRooted.EulerOperator
+import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing
+public import RealRooted.BorceaBranden.UnivariateFiniteSymbol
+public import RealRooted.MultivariateStability
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+public import RealRooted.CommonInterleaver.RootDesc
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
 
 /-!
 # Oriented Euler completion

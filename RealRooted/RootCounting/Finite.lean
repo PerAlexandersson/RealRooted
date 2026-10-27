@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.Mathlib.Algebra.Polynomial.Roots
-public import RealRooted.Mathlib.Data.Multiset.Card
+import RealRooted.Mathlib.Data.Multiset.Card
 public import Mathlib.Basic.Real.Basic
 
 /-!

@@ -1,9 +1,11 @@
 module
 
-public import RealRooted.Basic.Coefficients.Multivariate
-public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary.Homogeneous
-public import RealRooted.Mathlib.Data.Nat.Choose.Nanjundiah
+import RealRooted.Basic.Coefficients.Multivariate
+import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary.Homogeneous
+import RealRooted.Mathlib.Data.Nat.Choose.Nanjundiah
 public import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Dehomogenized BFJ output

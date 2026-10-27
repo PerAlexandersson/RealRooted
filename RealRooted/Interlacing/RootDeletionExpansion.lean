@@ -1,6 +1,10 @@
 module
 
 public import RealRooted.Interlacing.ResidueCriterion
+import RealRooted.Interlacing.OuterDifference
+import RealRooted.Interlacing.Residue
+import RealRooted.Derivative.Algebra
+public import RealRooted.Basic.ProperPosition
 
 public section
 

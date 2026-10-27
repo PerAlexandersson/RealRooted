@@ -1,6 +1,12 @@
 module
 
 public import RealRooted.MaWang
+import RealRooted.MaWang.Weak.Successor
+import RealRooted.MaWang.Weak.Regularization
+import RealRooted.MaWang.Strong
+import RealRooted.WagnerRightSum.Sign
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 @[expose] public section
 

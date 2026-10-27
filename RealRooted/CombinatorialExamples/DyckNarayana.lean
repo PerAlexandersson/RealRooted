@@ -2,7 +2,10 @@ module
 
 public import RealRooted.Mathlib.Combinatorics.Enumerative.DyckStatistics
 public import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
-public import RealRooted.NarayanaTransformation.Endpoints
+import RealRooted.NarayanaTransformation.Endpoints
+import RealRooted.NarayanaTransformation.Recurrences.Identities
+public import RealRooted.NarayanaTransformation.Coefficients
+import RealRooted.Linear
 
 @[expose] public section
 

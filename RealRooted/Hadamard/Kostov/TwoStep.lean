@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.Hadamard.Kostov.Roots
+import RealRooted.Hadamard.Kostov.Roots
+public import RealRooted.Hadamard.Kostov.Interlacing
+public import RealRooted.Hadamard.Kostov.Eigen
 
 public section
 

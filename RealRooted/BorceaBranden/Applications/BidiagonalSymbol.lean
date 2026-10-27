@@ -1,8 +1,9 @@
 module
 
 public import RealRooted.BorceaBranden.Applications.ComplexUnivariateSymbol
-public import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
+import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
 public import RealRooted.MultiplierSequence.Bidiagonal
+public import RealRooted.MultivariateStability
 
 /-!
 # Algebraic symbols of bidiagonal polynomial operators

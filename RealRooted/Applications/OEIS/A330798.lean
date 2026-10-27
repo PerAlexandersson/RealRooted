@@ -1,8 +1,11 @@
 module
 
-public import RealRooted.DerivativeRecurrence.MultiLagCancel
-public import RealRooted.Recurrence.RowModel
-public import RealRooted.Recurrence.Uniqueness
+import RealRooted.DerivativeRecurrence.MultiLagCancel
+import RealRooted.Recurrence.RowModel
+import RealRooted.Recurrence.Uniqueness
+import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Algebra.Polynomial.Derivative
 
 /-!
 # Periodic top-coefficient rows

@@ -1,8 +1,10 @@
 module
 
 public import RealRooted.Interlacing.PencilPreserver
-public import RealRooted.IteratedDerivativeShift
-public import RealRooted.PFPolynomial.Closure
+import RealRooted.IteratedDerivativeShift
+import RealRooted.PFPolynomial.Closure
+public import RealRooted.PFPolynomial
+import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Strict-to-weak closure for Pólya-frequency preservers

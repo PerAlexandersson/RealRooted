@@ -1,7 +1,10 @@
 module
 
 public import RealRooted.GeneralizedSnakePosets.MatrixInduction
-public import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
+import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
+public import RealRooted.GeneralizedSnakePosets.Narayana.Modified
+public import RealRooted.GeneralizedSnakePosets.Statements
+import RealRooted.Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Modified-Narayana root-sum orientation

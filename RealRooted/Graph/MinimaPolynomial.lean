@@ -1,7 +1,9 @@
 module
 
 public import RealRooted.Graph.FiniteDegree
-public import RealRooted.HeilmannLieb
+import RealRooted.HeilmannLieb
+public import RealRooted.Graph.MatchingPolynomial
+public import RealRooted.Graph.IndependencePolynomial.Recurrence
 
 /-!
 # The weighted-matching model for minima polynomials

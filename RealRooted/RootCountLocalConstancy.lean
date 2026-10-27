@@ -1,11 +1,12 @@
 module
 
 public import RealRooted.Mathlib.Algebra.Polynomial.Splits
-public import RealRooted.RootMultiplicityMatching
+import RealRooted.RootMultiplicityMatching
 public import Mathlib.Topology.Defs.Filter
 public import Mathlib.Topology.Connected.TotallyDisconnected
 public import Mathlib.Topology.Order.IntermediateValue
 public import Mathlib.Topology.Instances.Real.Lemmas
+import RealRooted.RootCountFinite
 
 /-!
 # Local Constancy of Root Counts

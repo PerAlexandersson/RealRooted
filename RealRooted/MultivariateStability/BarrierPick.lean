@@ -1,6 +1,8 @@
 module
 
 public import RealRooted.MultivariateStability.Barrier
+import RealRooted.HermiteBiehler.Basic
+import RealRooted.LiebSokalPointwise
 
 /-!
 # The cross-coordinate barrier ratio is a Pick-type function

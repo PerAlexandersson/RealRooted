@@ -1,7 +1,7 @@
 module
 
 public import Mathlib.Algebra.Polynomial.Splits
-public import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
+import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
 
 /-!
 # The logarithmic derivative of `p'` at a simple root

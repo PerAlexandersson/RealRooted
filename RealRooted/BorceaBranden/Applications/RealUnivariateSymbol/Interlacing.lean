@@ -2,7 +2,15 @@ module
 
 public import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
 public import RealRooted.HermiteBiehler
-public import RealRooted.OperatorPreservesInterlacing
+import RealRooted.OperatorPreservesInterlacing
+import RealRooted.HermiteBiehler.Converse
+import RealRooted.HermiteBiehler.ConverseLowDegree
+import RealRooted.HermiteBiehler.Forward
+import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
+import RealRooted.ObreschkoffConverse.Derivative
+import RealRooted.ObreschkoffConverse.Forward
+public import RealRooted.AllCombo
+import RealRooted.Linear
 
 /-!
 # Interlacing consequences of real finite symbols

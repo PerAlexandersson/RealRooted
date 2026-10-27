@@ -6,6 +6,9 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.CenteredEulerian.PhiBound
+public import RealRooted.CenteredEulerian.RootCriterion
+import RealRooted.CenteredEulerian.HBound
+import RealRooted.CenteredEulerian.ArcsinBound
 
 /-!
 # The weighted column bound (B.1)

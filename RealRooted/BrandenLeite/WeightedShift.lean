@@ -3,8 +3,9 @@ module
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.LinearAlgebra.Matrix.Transvection
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.StrictLower
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+public import Mathlib.LinearAlgebra.Matrix.Determinant.TotallyNonneg
 
 /-!
 # Finite weighted lower shifts

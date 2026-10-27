@@ -1,10 +1,12 @@
 module
 
-public import Mathlib.Algebra.Order.Field.Basic
+import Mathlib.Algebra.Order.Field.Basic
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.NormNum
 public import Mathlib.Tactic.Ring
-public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Algebra.Polynomial.Derivative
+import Mathlib.Algebra.Polynomial.Degree.Lemmas
 
 /-!
 # Degree of quadratic-coefficient derivative recurrences

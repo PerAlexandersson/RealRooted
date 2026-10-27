@@ -1,8 +1,14 @@
 module
 
 public import RealRooted.CriticalValueContinuation
-public import RealRooted.OperatorInterlacingUpgrade.RootOrder
-public import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.OperatorInterlacingUpgrade.RootOrder
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
+import RealRooted.GarloffWagner.KreinExpansion
+public import RealRooted.PFPolynomial
+public import RealRooted.RootPolynomial
+import RealRooted.MaWang.Weak.DerivativeSign
+import RealRooted.Linear
 
 /-!
 # Implicit root motion under a linear operator

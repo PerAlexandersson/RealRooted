@@ -1,11 +1,13 @@
 module
 
 public import RealRooted.Basic
-public import RealRooted.AissenSchoenbergWhitney
-public import RealRooted.NewtonAux
+import RealRooted.AissenSchoenbergWhitney
+import RealRooted.NewtonAux
 public import Mathlib.Order.Preorder.Finite
 public import Mathlib.RingTheory.Polynomial.Vieta
-public import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
+import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
+public import RealRooted.AissenSchoenbergWhitneyBase
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Coefficient shape consequences of real-rootedness

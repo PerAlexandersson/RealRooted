@@ -1,9 +1,15 @@
 module
 
-public import RealRooted.LiebSokalPointwise
-public import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
+import RealRooted.LiebSokalPointwise
+import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
 public import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
+public import RealRooted.MultivariateStability
+import Mathlib.RingTheory.MvPolynomial.EulerIdentity
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Mathlib.Algebra.MvPolynomial.Monad
+import Mathlib.Combinatorics.Matroid.Init
 
 /-!
 # Stability of homogeneous multivariate polynomials

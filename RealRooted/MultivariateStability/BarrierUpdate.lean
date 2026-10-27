@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.MultivariateStability.BarrierCross
+import RealRooted.MultivariateStability.BarrierCross
+import RealRooted.MultivariateStability.PickRatio
+public import RealRooted.MultivariateStability.Barrier
 
 /-!
 # The MSS barrier update lemma

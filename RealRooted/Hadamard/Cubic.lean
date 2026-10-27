@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.Hadamard.Newton
+public import RealRooted.Hadamard.Basic
 
 public section
 

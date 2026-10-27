@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.Mathlib.Data.List.OfFn
-public import Mathlib.Data.List.GetD
+import Mathlib.Data.List.GetD
 public import Mathlib.Data.List.Sort
 
 /-!

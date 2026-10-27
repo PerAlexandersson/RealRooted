@@ -5,9 +5,9 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
-public import Mathlib.MeasureTheory.Integral.Pi
+import Mathlib.MeasureTheory.Integral.Pi
 public import Mathlib.Topology.Algebra.Module.FiniteDimension
 
 /-!

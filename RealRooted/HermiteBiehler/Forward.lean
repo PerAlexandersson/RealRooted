@@ -1,9 +1,11 @@
 module
 
 public import RealRooted.HermiteBiehler.Basic
-public import RealRooted.HermiteBiehler.LogDerivative
-public import RealRooted.Interlacing.Multiplicity
-public import RealRooted.Interlacing.Residue
+import RealRooted.HermiteBiehler.LogDerivative
+import RealRooted.Interlacing.Multiplicity
+import RealRooted.Interlacing.Residue
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Forward Hermite--Biehler theorem

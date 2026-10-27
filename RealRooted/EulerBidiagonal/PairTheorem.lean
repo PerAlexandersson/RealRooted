@@ -1,9 +1,13 @@
 module
 
-public import RealRooted.EulerBidiagonal.PairStep
-public import RealRooted.Interlacing.RootDeletionExpansion
-public import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
-public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+import RealRooted.EulerBidiagonal.PairStep
+import RealRooted.Interlacing.RootDeletionExpansion
+import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+import RealRooted.EulerBidiagonal.Location
+public import RealRooted.EulerBidiagonal.General
+import RealRooted.Interlacing.RootCountSigns
+import RealRooted.Interlacing.Residue
 
 /-!
 # Theorem C′ (positive regime): `T` preserves strict interlacing

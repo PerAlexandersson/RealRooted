@@ -1,7 +1,10 @@
 module
 
 public import RealRooted.LiuOppositeSigns.PositiveSplitPair
-public import RealRooted.QuadraticRoot
+import RealRooted.QuadraticRoot
+public import RealRooted.LiuOppositeSigns.PositiveSplitRootCount
+import RealRooted.Linear
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Liu same-degree and right-successor x-subtraction base cases

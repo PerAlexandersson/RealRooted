@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.RootCounting.Threshold.LogConcavity
-public import RealRooted.RootCounting.Threshold.Signs
+import RealRooted.RootCounting.Threshold.LogConcavity
+import RealRooted.RootCounting.Threshold.Signs
+import RealRooted.Basic.Coefficients
 
 /-!
 # Geometrically separated roots from coefficient dominance

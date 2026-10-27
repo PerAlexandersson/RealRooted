@@ -1,8 +1,17 @@
 module
 
 public import RealRooted.Derivative
-public import RealRooted.PosCombo
+import RealRooted.PosCombo
 public import RealRooted.WagnerX
+import RealRooted.AissenSchoenbergWhitney
+import RealRooted.DegreeDropReversal
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
+import RealRooted.Derivative.Algebra
+import RealRooted.Linear
+public import RealRooted.AissenSchoenbergWhitneyBase
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 @[expose] public section
 

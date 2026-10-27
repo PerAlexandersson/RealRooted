@@ -3,6 +3,10 @@ module
 public import RealRooted.AllCombo
 public import RealRooted.AffineDerivative
 public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.WagnerRightSum.Sign
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
+import RealRooted.Basic.PolynomialFacts
 
 /-!
 # Obreschkoff converse degree gaps

@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.Derivative.ShiftRootMatching
+import RealRooted.Derivative.ShiftRootMatching
 public import RealRooted.LiuOppositeSigns.NoCommonRoots
+import RealRooted.RootMultiplicityMatching
+public import RealRooted.IteratedDerivativeShift
 
 /-!
 # Derivative-shift regularization for Liu pairs

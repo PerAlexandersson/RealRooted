@@ -2,7 +2,7 @@ module
 
 public import RealRooted.HosterStump.Refined
 public import RealRooted.Basic.ProperPosition
-public import RealRooted.Linear
+import RealRooted.Linear
 
 /-!
 # Interlacing diagrams of Hoster--Stump

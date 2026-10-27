@@ -1,8 +1,11 @@
 module
 
-public import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
-public import RealRooted.RootAmplitude.Polynomial
-public import RealRooted.RootVieta
+import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
+import RealRooted.RootAmplitude.Polynomial
+import RealRooted.RootVieta
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Algebra.Polynomial.Splits
+import Mathlib.Tactic.FieldSimp
 
 /-!
 # Amplitude at a smallest negative root

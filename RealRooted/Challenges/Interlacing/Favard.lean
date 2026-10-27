@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.Favard
+import RealRooted.Favard
 public import RealRooted.Favard.Orthogonality
+public import RealRooted.Favard.Recurrence
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Favard challenge entry point

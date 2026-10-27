@@ -3,10 +3,11 @@ module
 public import RealRooted.BinaryRunTransformation.Deformation
 public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
 public import RealRooted.BorceaBranden.FiniteSymbolContraction
-public import RealRooted.BorceaBranden.FiniteSymbolReconstructionCore
-public import RealRooted.BoundarySpecializationRight
-public import RealRooted.ElementaryDifferential
-public import RealRooted.LiebSokalPointwise
+import RealRooted.BorceaBranden.FiniteSymbolReconstructionCore
+import RealRooted.BoundarySpecializationRight
+import RealRooted.ElementaryDifferential
+import RealRooted.LiebSokalPointwise
+import RealRooted.BorceaBranden.FiniteSymbolReconstruction
 
 /-!
 # Normalized diagonal contraction

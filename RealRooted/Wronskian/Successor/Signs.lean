@@ -1,6 +1,8 @@
 module
 
 public import RealRooted.Wronskian.Successor.Gap
+import RealRooted.Bezoutian.RootEvaluation
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Successor-degree Wronskian signs

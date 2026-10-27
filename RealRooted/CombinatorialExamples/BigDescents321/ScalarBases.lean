@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.CombinatorialExamples.BigDescents321.TopCoefficients
+public import RealRooted.CombinatorialExamples.BigDescents321.BottomMoments
 
 /-!
 # Exact values of the scalar sequence for `25 ≤ n ≤ 70`

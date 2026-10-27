@@ -1,6 +1,9 @@
 module
 
 public import RealRooted.LiuOppositeSigns.RootCountBranches.NoCommonCrossing.Witnesses
+public import RealRooted.LiuOppositeSigns
+public import RealRooted.Compatibility.Pair
+public import RealRooted.SimpleRoots
 
 /-!
 # No-common-root crossing analysis for Liu's opposite-sign theorem

@@ -1,7 +1,9 @@
 module
 
 public import RealRooted.Applications.OEIS.A144438.ExactLayer
-public import RealRooted.MultivariateStability.PolyaFrequency
+import RealRooted.MultivariateStability.PolyaFrequency
+public import RealRooted.SamePhaseStability
+public import RealRooted.PFPolynomial
 
 /-!
 # Pólya-frequency restrictions of exact A144438 layers

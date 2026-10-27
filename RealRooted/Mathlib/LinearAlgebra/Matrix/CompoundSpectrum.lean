@@ -6,9 +6,10 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Compound
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.Triangularize
-public import Mathlib.Data.Fin.Tuple.Sort
-public import Mathlib.LinearAlgebra.Matrix.Permutation
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Triangularize
+import Mathlib.Data.Fin.Tuple.Sort
+import Mathlib.LinearAlgebra.Matrix.Permutation
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
 
 /-!
 # The spectrum of a compound matrix

@@ -2,6 +2,7 @@ module
 
 public import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
 public import RealRooted.NarayanaTransformation
+public import RealRooted.NarayanaTransformation.Coefficients
 
 /-!
 # Ordered subset-pair Narayana counts

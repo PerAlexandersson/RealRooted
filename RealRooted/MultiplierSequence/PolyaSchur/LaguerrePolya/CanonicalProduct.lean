@@ -2,9 +2,9 @@ module
 
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
-public import RealRooted.RootContinuity
+import RealRooted.RootContinuity
 public import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
-public import Mathlib.Analysis.Normed.Module.MultipliableUniformlyOn
+import Mathlib.Analysis.Normed.Module.MultipliableUniformlyOn
 
 /-!
 # Products in the Laguerre–Pólya class

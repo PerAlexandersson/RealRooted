@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.Interlacing.Reversal
+import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 
 public section
 

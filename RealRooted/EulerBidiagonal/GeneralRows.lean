@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.EulerBidiagonal.PairTheorem
+import RealRooted.EulerBidiagonal.PairTheorem
+import RealRooted.EulerBidiagonal.PairStep
+public import RealRooted.EulerBidiagonal.General
 
 /-!
 # Rows of the general Euler recurrence

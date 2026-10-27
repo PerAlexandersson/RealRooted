@@ -1,11 +1,11 @@
 module
 
 public import RealRooted.EulerOperator
-public import RealRooted.EulerOperator.Polar.ProperPosition
+import RealRooted.EulerOperator.Polar.ProperPosition
 public import RealRooted.OperatorPreservesInterlacing
 public import RealRooted.PFPolynomial.PreserverClosure
 public import RealRooted.EulerBidiagonal.Preservation
-public import RealRooted.ReciprocalShift.ProperPosition
+import RealRooted.ReciprocalShift.ProperPosition
 public import RealRooted.Transforms.ReverseHermite.Preservation
 
 public section

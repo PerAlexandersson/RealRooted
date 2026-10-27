@@ -1,6 +1,8 @@
 module
 
 public import RealRooted.WagnerRightSum
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Negative-root consequences of interlacing

@@ -1,6 +1,9 @@
 module
 
-public import RealRooted.LiuWang.CombinedFlux
+import RealRooted.LiuWang.CombinedFlux
+import RealRooted.MaWang.Weak.DerivativeSign
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # The finite-family Liu--Wang criterion

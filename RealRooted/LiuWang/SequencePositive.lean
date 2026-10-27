@@ -1,6 +1,11 @@
 module
 
-public import RealRooted.LiuWang.SequenceCore
+import RealRooted.LiuWang.SequenceCore
+import RealRooted.RootBounds
+import RealRooted.SignEvaluation
+import RealRooted.SequenceClosure
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Positive-lag Liu--Wang sequence theorems

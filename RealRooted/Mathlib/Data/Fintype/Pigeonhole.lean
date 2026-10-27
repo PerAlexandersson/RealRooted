@@ -5,9 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Basic.Finite.Prod
-public import Mathlib.Data.Fintype.Pigeonhole
+import Mathlib.Basic.Finite.Prod
+import Mathlib.Data.Fintype.Pigeonhole
 public import Mathlib.Tactic.Ring
+public import Mathlib.Basic.Finite.Defs
+public import Aesop.BuiltinRules
 
 /-!
 # Lassos for ultimately periodic paths

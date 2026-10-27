@@ -2,8 +2,8 @@ module
 
 public import RealRooted.AissenSchoenbergWhitneyBase
 public import RealRooted.ToeplitzFin
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 public import RealRooted.NatCauchyConvolution
 public import Mathlib.Algebra.BigOperators.Intervals
 public import Mathlib.RingTheory.PowerSeries.Basic

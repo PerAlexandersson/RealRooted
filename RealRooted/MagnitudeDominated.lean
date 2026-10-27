@@ -2,6 +2,9 @@ module
 
 public import RealRooted.GeneralizedLiuWang
 public import RealRooted.MaWang
+import RealRooted.MaWang.Strong
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Magnitude-dominated lag certificates

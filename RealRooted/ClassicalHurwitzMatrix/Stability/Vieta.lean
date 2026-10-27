@@ -1,6 +1,8 @@
 module
 
 public import RealRooted.ClassicalHurwitzMatrix.Stability
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.Complex.Polynomial.Basic
 
 /-!
 # Vieta consequences of strict Hurwitz stability

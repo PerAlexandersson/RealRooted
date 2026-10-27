@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.MultivariateStability.Rayleigh
+import RealRooted.MultivariateStability.Rayleigh
+public import RealRooted.Multiaffine
+public import RealRooted.MultivariateStability
 
 /-!
 # Strongly Rayleigh measures are negatively correlated

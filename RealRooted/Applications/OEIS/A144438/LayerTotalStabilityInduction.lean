@@ -1,6 +1,10 @@
 module
 
 public import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionDataRecurrence
+import RealRooted.Applications.OEIS.A144438.LayerTotalAffineStability
+public import RealRooted.Applications.OEIS.A144438.LayerTotalDiscriminantReduction
+import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
+import RealRooted.Applications.OEIS.A144438.LayerTotalStability
 
 /-!
 # Stability induction for the Deco layer recurrence

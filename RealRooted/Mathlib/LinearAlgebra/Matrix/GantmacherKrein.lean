@@ -5,10 +5,16 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Analysis.Complex.Polynomial.Basic
-public import Mathlib.LinearAlgebra.Eigenspace.Zero
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.CompoundSpectrum
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Nonneg
+import Mathlib.Analysis.Complex.Polynomial.Basic
+import Mathlib.LinearAlgebra.Eigenspace.Zero
+import RealRooted.Mathlib.LinearAlgebra.Matrix.CompoundSpectrum
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Nonneg
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Dominance
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Irreducible
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CollatzWielandt
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Compound
 
 /-!
 # Gantmacher-Krein for matrices with primitive compounds

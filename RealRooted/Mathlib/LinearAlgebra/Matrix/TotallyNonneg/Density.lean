@@ -6,6 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.CornerPerturbation
 
 /-!
 # Nonsingular approximation of totally nonnegative matrices

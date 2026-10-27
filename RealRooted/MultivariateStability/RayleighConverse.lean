@@ -1,7 +1,10 @@
 module
 
-public import RealRooted.MultivariateStability.Rayleigh
-public import RealRooted.MultivariateStability.RayleighPencil
+import RealRooted.MultivariateStability.Rayleigh
+import RealRooted.MultivariateStability.RayleighPencil
+import RealRooted.Multiaffine.AffineLineRestriction
+public import RealRooted.Multiaffine.Rayleigh
+public import RealRooted.MultivariateStability
 
 /-!
 # The multiaffine Rayleigh converse

@@ -1,8 +1,12 @@
 module
 
-public import RealRooted.Applications.OEIS.A144438.TotalBridge
+import RealRooted.Applications.OEIS.A144438.TotalBridge
 public import RealRooted.Multiaffine
-public import RealRooted.MultivariateStability.AffineEulerCore
+import RealRooted.MultivariateStability.AffineEulerCore
+import RealRooted.Applications.OEIS.A144438.HistoryRecurrence
+public import RealRooted.Applications.OEIS.A144438.FiberPartition
+public import RealRooted.Applications.OEIS.A144438.BottomTotal
+public import RealRooted.HomogeneousStability
 
 /-!
 # Multiaffine structure of the Deco layer total

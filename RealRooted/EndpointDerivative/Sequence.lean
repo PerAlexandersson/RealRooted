@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.EndpointDerivative.Basic
+import RealRooted.EndpointDerivative.Basic
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 public section
 

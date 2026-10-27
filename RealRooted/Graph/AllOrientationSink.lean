@@ -2,7 +2,8 @@ module
 
 public import RealRooted.Graph.AcyclicOrientation
 public import RealRooted.Graph.FiniteDegree
-public import RealRooted.Graph.IndependencePolynomial.ClawFree
+import RealRooted.Graph.IndependencePolynomial.ClawFree
+public import RealRooted.Graph.IndependencePolynomial.Recurrence
 
 /-!
 # All-orientation sink-polynomial model

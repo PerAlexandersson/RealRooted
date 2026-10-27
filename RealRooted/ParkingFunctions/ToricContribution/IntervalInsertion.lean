@@ -2,6 +2,13 @@ module
 
 public import RealRooted.MaWang
 public import RealRooted.ParkingFunctions.ToricContribution.Definitions
+import RealRooted.MaWang.DerivativeCore
+import RealRooted.MaWang.StrictSigns.RootSigns
+import RealRooted.Derivative.Algebra
+import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
+import RealRooted.Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Root insertion on the unit interval

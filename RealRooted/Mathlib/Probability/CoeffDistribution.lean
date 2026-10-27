@@ -5,11 +5,12 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.MeasureTheory.Measure.LevyConvergence
+import Mathlib.MeasureTheory.Measure.LevyConvergence
 public import Mathlib.Probability.Distributions.Gaussian.Real
 public import Mathlib.Algebra.Polynomial.Splits
 public import Mathlib.Analysis.SpecialFunctions.Complex.Circle
-public import Mathlib.Analysis.PSeries
+import Mathlib.Analysis.PSeries
+public import Mathlib.MeasureTheory.Measure.ProbabilityMeasure
 
 /-!
 # Harper's central limit theorem for real-rooted polynomials

@@ -1,10 +1,20 @@
 module
 
-public import RealRooted.Bezoutian.LowDegree
+import RealRooted.Bezoutian.LowDegree
 public import RealRooted.Derivative
-public import RealRooted.Jacobi
-public import RealRooted.Jacobi.Markoff
-public import RealRooted.Linear
+import RealRooted.Jacobi
+import RealRooted.Jacobi.Markoff
+import RealRooted.Linear
+import RealRooted.Favard
+import RealRooted.Bezoutian.RootEvaluation
+public import RealRooted.Bezoutian.StrictInterleaving
+public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi
+import RealRooted.MaWang.Strong
+import RealRooted.MaWang.StrictSigns.Assembly
+import RealRooted.MaWang.StrictSigns.RootSigns
+import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
 
 /-!
 # Parameter interlacing for shifted Jacobi polynomials

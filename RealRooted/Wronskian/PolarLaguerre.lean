@@ -5,7 +5,8 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Wronskian.Algebra
+import RealRooted.Wronskian.Algebra
+public import RealRooted.EulerOperator
 
 /-!
 # Degree-weighted and polar Laguerre inequalities

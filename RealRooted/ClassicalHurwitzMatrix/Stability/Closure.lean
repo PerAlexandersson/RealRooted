@@ -1,8 +1,11 @@
 module
 
-public import RealRooted.ClassicalHurwitzMatrix.Stability.Criterion
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Closure
-public import RealRooted.Mathlib.Topology.Algebra.Polynomial
+import RealRooted.ClassicalHurwitzMatrix.Stability.Criterion
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Closure
+import RealRooted.Mathlib.Topology.Algebra.Polynomial
+public import RealRooted.ClassicalHurwitzMatrix.Stability
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz
+import RealRooted.Linear
 
 public section
 

@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.Derivative.FamilyClosure
+import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
 
 /-!
 # Split sequences obtained from a differentiated `X`-multiple

@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.AffineProperPosition
-public import RealRooted.CommonInterleaver.SuccDegreeLowDegree
+import RealRooted.AffineProperPosition
+import RealRooted.CommonInterleaver.SuccDegreeLowDegree
+public import RealRooted.Compatibility.Pair
+import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Compatibility of affine polynomials

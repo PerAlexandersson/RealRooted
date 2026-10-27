@@ -1,9 +1,14 @@
 module
 
-public import RealRooted.ClassicalHurwitzMatrix.Routh.ReverseTotallyNonnegative
-public import RealRooted.ClassicalHurwitzMatrix.Stability.Converse
-public import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.WeakReverse
-public import RealRooted.ClassicalHurwitzMatrix.Stability.Terminal
+import RealRooted.ClassicalHurwitzMatrix.Routh.ReverseTotallyNonnegative
+import RealRooted.ClassicalHurwitzMatrix.Stability.Converse
+import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.WeakReverse
+import RealRooted.ClassicalHurwitzMatrix.Stability.Terminal
+import RealRooted.ClassicalHurwitzMatrix.Stability.Closure
+import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
+import RealRooted.ClassicalHurwitzMatrix.Stability.Extraction
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz
+public import RealRooted.HermiteBiehler.Basic
 
 /-!
 # Converse weak Hurwitz criterion

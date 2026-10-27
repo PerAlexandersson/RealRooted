@@ -1,9 +1,10 @@
 module
 
-public import RealRooted.Applications.EulerianCompendium.EvenTop
-public import RealRooted.AffineDerivative
-public import RealRooted.MaWang.StrictStep
+import RealRooted.Applications.EulerianCompendium.EvenTop
+import RealRooted.AffineDerivative
+import RealRooted.MaWang.StrictStep
 public import RealRooted.SimpleRoots
+public import RealRooted.Applications.EulerianCompendium.Definitions
 
 /-!
 # Negative roots and strict interlacing for even-top descents

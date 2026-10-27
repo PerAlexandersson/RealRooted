@@ -1,11 +1,12 @@
 module
 
 public import RealRooted.AffineFamily
-public import RealRooted.Mathlib.Algebra.Polynomial.Splits
-public import RealRooted.PosCombo
+import RealRooted.Mathlib.Algebra.Polynomial.Splits
+import RealRooted.PosCombo
 public import RealRooted.ProductFamily
 public import RealRooted.SymmetricDecomposition.FPolynomial
 public import RealRooted.WagnerX
+public import RealRooted.ObreschkoffContinuity
 
 /-!
 # Interlacing transport for the `f`-polynomial transform

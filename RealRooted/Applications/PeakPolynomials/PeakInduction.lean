@@ -1,8 +1,10 @@
 module
 
-public import RealRooted.ShiftLemma
-public import RealRooted.PosCombo
-public import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.ShiftLemma
+import RealRooted.PosCombo
+import RealRooted.WagnerX.NonnegativeRoots
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Peak polynomial induction framework

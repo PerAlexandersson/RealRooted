@@ -1,8 +1,14 @@
 module
 
-public import RealRooted.DerivativeRecurrence.QuadraticDegree
+import RealRooted.DerivativeRecurrence.QuadraticDegree
 public import RealRooted.MaWang
-public import RealRooted.SignEvaluation
+import RealRooted.SignEvaluation
+import RealRooted.MaWang.Weak.Endpoint
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
+import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Interlacing for quadratic-coefficient derivative recurrences

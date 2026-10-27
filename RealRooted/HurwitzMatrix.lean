@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.PolyaFrequencyConvolution
+import RealRooted.PolyaFrequencyConvolution
 public import RealRooted.VeroneseSection
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 
 @[expose] public section
 

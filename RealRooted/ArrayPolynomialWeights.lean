@@ -3,8 +3,8 @@ module
 public import Mathlib.Algebra.BigOperators.Ring.Finset
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.Data.Nat.Factorial.Basic
-public import Mathlib.Data.Nat.Choose.Sum
-public import Mathlib.Tactic.FieldSimp
+import Mathlib.Data.Nat.Choose.Sum
+import Mathlib.Tactic.FieldSimp
 public import Mathlib.Tactic.Positivity
 public import Mathlib.Tactic.Ring
 

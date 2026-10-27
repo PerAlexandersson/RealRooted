@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.ProductSequence.Core
+import RealRooted.ProductSequence.Core
+import RealRooted.ProductSequence.Factors
 
 /-!
 # Specialized product-factor recurrence families

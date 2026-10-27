@@ -5,9 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariationTopology
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
+import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
+import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariationTopology
+import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegular
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
 
 /-!
 # Variation bounds for sign-consistent matrices

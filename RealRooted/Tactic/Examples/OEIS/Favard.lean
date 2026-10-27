@@ -1,4 +1,5 @@
 import RealRooted.Tactic.Favard.RowSign
+import Mathlib
 
 /-!
 # OEIS Favard router regression examples

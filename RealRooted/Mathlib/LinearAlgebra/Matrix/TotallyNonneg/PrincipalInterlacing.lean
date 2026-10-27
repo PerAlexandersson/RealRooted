@@ -5,7 +5,7 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core
+import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core
 
 /-!
 # Hermitian models for nonsingular totally nonnegative matrices

@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterFamily
-public import RealRooted.CriticalValueContinuation
+import RealRooted.CriticalValueContinuation
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactAlgebra
 
 /-!
 # Calculus for a weighted A144438 contact

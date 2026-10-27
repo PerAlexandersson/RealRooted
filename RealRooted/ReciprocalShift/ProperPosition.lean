@@ -1,8 +1,10 @@
 module
 
-public import RealRooted.Mathlib.Data.List.Interleave.Padding
-public import RealRooted.Mathlib.Data.List.Sort.Endpoint
-public import RealRooted.ReciprocalShift.Interlacing.Inversion
+import RealRooted.Mathlib.Data.List.Interleave.Padding
+import RealRooted.Mathlib.Data.List.Sort.Endpoint
+import RealRooted.ReciprocalShift.Interlacing.Inversion
+import RealRooted.ReciprocalShift.Interlacing
+public import RealRooted.PFPolynomial
 
 /-!
 # Interlacing under reciprocal shifts

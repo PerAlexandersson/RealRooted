@@ -5,8 +5,10 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.CombinatorialExamples.ZigzagEulerian.WordSeries
-public import RealRooted.CombinatorialExamples.ZigzagEulerian.Standardization
+import RealRooted.CombinatorialExamples.ZigzagEulerian.WordSeries
+import RealRooted.CombinatorialExamples.ZigzagEulerian.Standardization
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.Identification
+public import RealRooted.CenteredEulerian.Basis
 
 /-!
 # Identifying the finite centered polynomial with its generating series

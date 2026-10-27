@@ -1,8 +1,9 @@
 module
 
-public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.SecondOrder
-public import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
-public import RealRooted.Wronskian.Algebra
+import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.SecondOrder
+import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
+import RealRooted.Wronskian.Algebra
+import RealRooted.Basic.PolynomialFacts
 
 /-!
 # Root exclusion from a second-order polynomial ODE

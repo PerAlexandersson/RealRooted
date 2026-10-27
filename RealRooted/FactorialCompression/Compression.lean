@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.FactorialCompression.CommonKernel
-public import RealRooted.Hadamard.SchurSzegoStrict
+import RealRooted.FactorialCompression.CommonKernel
+import RealRooted.Hadamard.SchurSzegoStrict
+public import RealRooted.FactorialCompression.Basic
+public import RealRooted.Hadamard.Basic
 
 /-!
 # Factorial compression as a Schur--Szegő composition

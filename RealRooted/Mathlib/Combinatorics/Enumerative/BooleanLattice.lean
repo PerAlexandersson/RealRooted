@@ -5,8 +5,10 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Algebra.Module.BigOperators
-public import Mathlib.Data.Nat.Choose.Sum
+import Mathlib.Algebra.Module.BigOperators
+import Mathlib.Data.Nat.Choose.Sum
+public import Mathlib.Data.Finset.Powerset
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 
 /-!
 # Möbius inversion on a finite Boolean lattice

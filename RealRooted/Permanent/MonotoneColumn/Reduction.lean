@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.Permanent.Ferrers
-public import RealRooted.Permanent.Stability.Cone
+import RealRooted.Permanent.Stability.Cone
+public import RealRooted.BorceaBranden.MultivariateHKO
 
 /-!
 # Reduction from zero-one columns to arbitrary decreasing columns

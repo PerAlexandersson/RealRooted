@@ -9,7 +9,7 @@ public import Mathlib.Combinatorics.Enumerative.DyckWord
 public import Mathlib.Data.Nat.Choose.Basic
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
-public import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
+import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
 
 /-!
 # The Narayana distribution of Dyck-word peaks

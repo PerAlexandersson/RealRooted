@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import RealRooted.Mathlib.Algebra.Polynomial.Splits
+import RealRooted.Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # OEIS A155112

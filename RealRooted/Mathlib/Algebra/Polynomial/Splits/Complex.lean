@@ -6,7 +6,8 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Algebra.Polynomial.Splits
-public import Mathlib.Analysis.Complex.Polynomial.Basic
+import Mathlib.Analysis.Complex.Polynomial.Basic
+public import Mathlib.Basic.Complex.Basic
 
 /-!
 # Splitting of real polynomials via complex roots

@@ -3,6 +3,9 @@ module
 public import RealRooted.Applications.OEIS.HigherOrderDegreeModels
 public import RealRooted.SymmetricDecomposition.FPolynomial
 public import RealRooted.Transforms.BrandenE.EvenBinomial
+import RealRooted.Recurrence.Uniqueness
+import RealRooted.Recurrence.RowModel
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
 # OEIS A262226

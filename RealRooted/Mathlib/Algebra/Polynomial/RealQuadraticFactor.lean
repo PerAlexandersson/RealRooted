@@ -5,7 +5,7 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Analysis.Polynomial.Factorization
+import Mathlib.Analysis.Polynomial.Factorization
 public import Mathlib.Tactic
 
 /-!

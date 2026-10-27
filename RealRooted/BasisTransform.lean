@@ -2,6 +2,7 @@ module
 
 public import RealRooted.Basic
 public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Coefficientwise positivity for polynomial basis transforms

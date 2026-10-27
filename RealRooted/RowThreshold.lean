@@ -7,6 +7,10 @@ linear-form structure appearing in Branden's Corollary 8.7.
 module
 
 public import RealRooted.MatrixInterlacing
+import RealRooted.MatrixInterlacing.Preservation
+public import RealRooted.MatrixInterlacing.Action
+public import RealRooted.AffineFamily.Basic
+public import RealRooted.InterlacingSequenceBasic
 
 @[expose] public section
 

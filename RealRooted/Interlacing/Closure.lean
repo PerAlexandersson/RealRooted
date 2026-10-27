@@ -2,6 +2,9 @@ module
 
 public import RealRooted.ObreschkoffConverse
 public import RealRooted.RootContinuity
+import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.ObreschkoffConverse.Converse
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Interlacing closure under coefficientwise limits

@@ -1,6 +1,9 @@
 module
 
 public import RealRooted.EulerOperator.Polar.MultiplierSequence
+import RealRooted.Hadamard.Grace
+public import RealRooted.EulerOperator
+public import RealRooted.MultiplierSequence
 
 /-!
 # Real-parameter polar Euler operators

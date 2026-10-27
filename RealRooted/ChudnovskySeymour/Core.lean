@@ -3,6 +3,14 @@ module
 public import RealRooted.CommonInterleaverTwo
 public import RealRooted.InterlacingSequenceBasic
 public import RealRooted.SameDegreeCountFromAnalytic
+import RealRooted.CommonInterleaver.PairwiseUpgrade.FourWay.Equivalences
+public import RealRooted.CommonInterleaver.PairwiseUpgrade.FourWay
+import RealRooted.CommonInterleaver.PairBridge.Compatibility.NonnegativeShift
+import RealRooted.Compatibility.InterleaverBridge
+import RealRooted.CommonInterleaver.SuccDegreeLowDegree
+public import RealRooted.PFPolynomial
+import RealRooted.CommonInterleaverSeq
+import RealRooted.CommonInterleaver.FamilyUpgrade
 
 public section
 

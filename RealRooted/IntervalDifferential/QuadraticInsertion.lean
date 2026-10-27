@@ -5,9 +5,10 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.IntervalDifferential.RootSums
-public import RealRooted.IntervalDifferential.LinearInsertion
+import RealRooted.IntervalDifferential.RootSums
+import RealRooted.IntervalDifferential.LinearInsertion
 public import Mathlib.Tactic
+public import RealRooted.IntervalDifferential.Certificates
 
 /-!
 # Root signs for conjugate-pair insertion

@@ -1,10 +1,12 @@
 module
 
-public import RealRooted.Favard
+import RealRooted.Favard
 public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Bernstein
-public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Roots
+import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Roots
 public import RealRooted.Transforms.BrandenE.Inverse
 public import RealRooted.Transforms.BrandenE.WeightedSum
+import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Algebra
+public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic
 
 /-!
 # The Delannoy family and Brändén's E transform

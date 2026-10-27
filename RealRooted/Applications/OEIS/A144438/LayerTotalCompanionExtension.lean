@@ -1,6 +1,10 @@
 module
 
 public import RealRooted.Applications.OEIS.A144438.LayerTotalWronskianRecurrence
+import RealRooted.Multiaffine.AffineCoordinateCriterion
+import RealRooted.Applications.OEIS.A144438.LayerTotalStructure
+import RealRooted.Multiaffine.AffineLineRestriction
+import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 
 /-!
 # Affine extensions underlying the Deco two-rank companion

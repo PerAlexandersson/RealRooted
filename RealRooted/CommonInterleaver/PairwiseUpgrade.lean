@@ -8,6 +8,8 @@ packaging lives in `PairwiseUpgrade.FamilyCompatibility`.
 module
 
 public import RealRooted.CommonInterleaver.PairBridge
+public import RealRooted.Compatibility.Basic
+public import RealRooted.CommonInterleaver.RootDesc
 
 public section
 

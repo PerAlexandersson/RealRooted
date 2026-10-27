@@ -2,6 +2,11 @@ module
 
 public import RealRooted.PosCombo
 public import RealRooted.Wagner
+import RealRooted.Wagner.LeftSum
+import RealRooted.WagnerRightSum
+import RealRooted.WagnerX.NonnegativeRoots
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Nonpositive-root forms of Wagner's lemma

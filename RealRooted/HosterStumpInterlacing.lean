@@ -1,7 +1,10 @@
 module
 
 public import RealRooted.InterlacingSequenceBasic
-public import RealRooted.QuadraticRoot
+import RealRooted.QuadraticRoot
+import RealRooted.WagnerX.AffineFactors
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
 
 @[expose] public section
 

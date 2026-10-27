@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.CauchyInterlacing.Polynomial
+import RealRooted.CauchyInterlacing.Polynomial
 public import RealRooted.CauchyInterlacing.RankOne
+public import RealRooted.CauchyInterlacing
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Cauchy interlacing challenge entry point

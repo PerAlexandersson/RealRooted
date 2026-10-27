@@ -3,6 +3,8 @@ module
 public import RealRooted.BrandenLeite.ChainPolynomial.Algebra
 public import RealRooted.BrandenLeite.KernelRow
 public import RealRooted.BrandenLeite.SourceBorder
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.StrictLower
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
 # Kernel rows of finite source borders

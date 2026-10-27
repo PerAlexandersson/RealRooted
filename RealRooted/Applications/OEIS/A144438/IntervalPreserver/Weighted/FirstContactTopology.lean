@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactCompact
-public import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
+import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterContinuity
 
 /-!
 # Local topology for the weighted first-contact argument

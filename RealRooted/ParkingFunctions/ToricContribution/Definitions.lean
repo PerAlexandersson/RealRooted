@@ -3,7 +3,7 @@ module
 public import Mathlib.RingTheory.Polynomial.Pochhammer
 public import RealRooted.Derivative
 public import RealRooted.EulerOperator.Darboux.Basic
-public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
 # Algebra for the A390883 toric-contribution family

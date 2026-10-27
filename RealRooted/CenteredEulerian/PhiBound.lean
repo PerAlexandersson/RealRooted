@@ -6,6 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.CenteredEulerian.ChangeBasis
+public import RealRooted.CenteredEulerian.Majorants
 
 /-!
 # Rational majorants for `φ_{jk}` (B.8)–(B.9)

@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterInduction
-public import RealRooted.CommonInterleaver.RightPencil
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ParameterInduction
+import RealRooted.CommonInterleaver.RightPencil
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Basic
 
 /-!
 # Weighted interval-preservation theorem

@@ -5,9 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Basic.AffineInterlacing
-public import RealRooted.Jacobi
+import RealRooted.Basic.AffineInterlacing
+import RealRooted.Jacobi
 public import RealRooted.Legendre.Basic
+public import RealRooted.SimpleRoots
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Roots of shifted Legendre polynomials

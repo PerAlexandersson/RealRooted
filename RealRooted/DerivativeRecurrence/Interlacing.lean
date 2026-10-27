@@ -1,9 +1,15 @@
 module
 
 public import RealRooted.Derivative
-public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
-public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
-public import RealRooted.ThreeTermRecurrence.Interlacing
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+import RealRooted.ThreeTermRecurrence.Interlacing
+import RealRooted.MaWang.Weak.Endpoint
+import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Interlacing for first-order derivative recurrences

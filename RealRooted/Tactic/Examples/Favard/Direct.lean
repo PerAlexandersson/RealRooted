@@ -1,4 +1,5 @@
 import RealRooted.Tactic.Favard
+import Mathlib
 
 /-!
 # `rr_favard` examples: direct

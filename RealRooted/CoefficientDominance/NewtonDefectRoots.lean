@@ -2,8 +2,10 @@ module
 
 public import RealRooted.CoefficientDominance.Symmetric
 public import Mathlib.Analysis.Asymptotics.AsymptoticEquivalent
-public import Mathlib.Analysis.SpecialFunctions.Pow.Real
+import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Mathlib.Data.Finset.Sort
+import RealRooted.CoefficientDominance.Symmetric.Polynomial
+public import RealRooted.CoefficientDominance.Symmetric.Finite
 
 /-!
 # Local Newton defects and individual positive root parameters

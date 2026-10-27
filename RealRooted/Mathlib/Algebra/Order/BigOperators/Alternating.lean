@@ -5,9 +5,12 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.Ring
+import Mathlib.Data.Rat.Cast.Order
+public import Mathlib.Algebra.Order.Ring.Defs
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 
 /-!
 # Finite alternating-sum bounds

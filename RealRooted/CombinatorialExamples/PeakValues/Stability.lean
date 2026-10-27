@@ -1,7 +1,11 @@
 module
 
-public import RealRooted.CombinatorialExamples.PeakValues.TranslatedRecurrence
-public import RealRooted.HomogeneousStability
+import RealRooted.CombinatorialExamples.PeakValues.TranslatedRecurrence
+import RealRooted.HomogeneousStability
+public import RealRooted.CombinatorialExamples.PeakValues.Insertion
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
+public import RealRooted.MultivariateStability
 
 /-!
 # Stability of the peak-value polynomial

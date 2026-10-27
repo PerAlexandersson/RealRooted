@@ -1,6 +1,9 @@
 module
 
 public import RealRooted.CombinatorialExamples.PathPowerClique
+import RealRooted.Mathlib.Algebra.Polynomial.Reverse
+import RealRooted.WagnerX.AffineFactors
+import RealRooted.Linear
 
 /-!
 # OEIS rows from reflected path-power subsequences

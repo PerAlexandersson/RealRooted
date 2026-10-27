@@ -1,7 +1,11 @@
 module
 
-public import RealRooted.Applications.OEIS.A144696.Endpoints
-public import RealRooted.BernsteinCone.Preserver
+import RealRooted.Applications.OEIS.A144696.Endpoints
+import RealRooted.BernsteinCone.Preserver
+public import RealRooted.Applications.OEIS.A144696.Basic
+import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.BernsteinBasisTransform
+public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Bernstein
+public import RealRooted.PFPolynomial
 
 /-!
 # The A144696 interval-root preserver

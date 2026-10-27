@@ -6,7 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Algebra.MvPolynomial.PDeriv
-public import Mathlib.Algebra.MvPolynomial.CommRing
+import Mathlib.Algebra.MvPolynomial.CommRing
 public import Mathlib.Algebra.Polynomial.Derivative
 public import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
 

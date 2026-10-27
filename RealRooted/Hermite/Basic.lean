@@ -5,13 +5,14 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.RingTheory.Polynomial.Hermite
+import RealRooted.Mathlib.RingTheory.Polynomial.Hermite
 
 public import Mathlib.Algebra.Polynomial.AlgebraMap
 public import Mathlib.Basic.Real.Basic
 
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.NormNum
+public import Mathlib.RingTheory.Polynomial.Hermite.Basic
 
 /-!
 # Probabilists' Hermite polynomials over the reals

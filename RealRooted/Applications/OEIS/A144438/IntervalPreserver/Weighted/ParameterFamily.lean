@@ -1,6 +1,11 @@
 module
 
 public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.FirstContactAlgebra
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Endpoints
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Degree
+import RealRooted.MaWang.StrictStep
+import RealRooted.Interlacing.NegativeRoots
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Basic
 
 /-!
 # Unequal input-root parameters for the weighted A144438 transform

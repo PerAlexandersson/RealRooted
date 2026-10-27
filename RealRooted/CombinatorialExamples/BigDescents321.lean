@@ -2,10 +2,10 @@ module
 
 public import RealRooted.CombinatorialExamples.BigDescents321.SignConversion
 public import RealRooted.CombinatorialExamples.BigDescents321.SmallCases.Certificates
-public import RealRooted.MaWang.Strong
-public import RealRooted.Derivative.Interlacing
-public import RealRooted.Derivative.Algebra
-public import RealRooted.Bezoutian.Successor
+import RealRooted.MaWang.Strong
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
+import RealRooted.Bezoutian.Successor
 
 /-!
 # 321-avoiding permutations by big descents: bulk interlacing

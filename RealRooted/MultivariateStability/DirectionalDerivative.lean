@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.LiebSokalPointwise
-public import RealRooted.MultivariateStability.Specialization
+import RealRooted.LiebSokalPointwise
+import RealRooted.MultivariateStability.Specialization
+public import RealRooted.Multiaffine
+public import RealRooted.MultivariateStability
 
 /-!
 # Directional derivatives of stable polynomials

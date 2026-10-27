@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.IteratedDerivativeShift
+import RealRooted.Mathlib.Algebra.Polynomial.Roots
 
 /-!
 # Finite sequences of derivative shifts

@@ -1,10 +1,15 @@
 module
 
 public import RealRooted.FiniteFreeMultiplicative
-public import RealRooted.Hadamard.Grace
-public import RealRooted.LiuOppositeSigns.JensenRootCount
-public import RealRooted.OperatorPreservesInterlacing
+import RealRooted.Hadamard.Grace
+import RealRooted.LiuOppositeSigns.JensenRootCount
+import RealRooted.OperatorPreservesInterlacing
 public import RealRooted.RootPolynomial
+import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.DegreeDropReversal
+import RealRooted.WagnerX.AffineFactors
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
 
 /-!
 # Root-count contraction for finite free multiplication

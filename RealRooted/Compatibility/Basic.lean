@@ -4,6 +4,15 @@ public import RealRooted.AffineFamily
 public import RealRooted.Compatibility.Pair
 public import RealRooted.DegreeDropReversal
 public import RealRooted.WeightedSum
+import RealRooted.AffineFamily.Boundary
+import RealRooted.ObreschkoffConverse.DegreeGap
+public import RealRooted.IteratedDerivativeShift
+import RealRooted.PosCombo
+public import RealRooted.ObreschkoffContinuity
+import RealRooted.Mathlib.Algebra.Polynomial.Reverse
+import RealRooted.Derivative.FamilyClosure
+import RealRooted.Derivative.Algebra
+import RealRooted.Linear
 
 /-!
 # Compatibility predicates for real-rooted polynomials

@@ -1,11 +1,13 @@
 module
 
 public import RealRooted.MultivariateStability.MorrisDFlow
-public import RealRooted.Mathlib.Analysis.Normed.Operator.TriangularExp
+import RealRooted.Mathlib.Analysis.Normed.Operator.TriangularExp
 public import Mathlib.Data.Finset.Sort
 public import Mathlib.Order.Extension.Linear
 public import Mathlib.LinearAlgebra.Basis.Basic
-public import RealRooted.Polarization
+import RealRooted.Polarization
+import RealRooted.Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
+import RealRooted.MultivariateStability.CoeffLimit
 
 /-!
 # The Liu--Zhang stable eigenfunction flow

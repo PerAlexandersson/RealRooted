@@ -5,8 +5,9 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.CenteredEulerian.ArcsinBound
+import RealRooted.CenteredEulerian.ArcsinBound
 public import RealRooted.CenteredEulerian.Majorants
+public import RealRooted.CenteredEulerian.Coefficients
 
 /-!
 # The coefficient sum of `h = (s/f)²`: `∑_{n ≥ 1} |h_n| ≤ 1 - 1/a`

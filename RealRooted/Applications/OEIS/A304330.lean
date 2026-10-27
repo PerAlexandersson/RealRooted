@@ -1,9 +1,13 @@
 module
 
-public import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
-public import RealRooted.Interlacing.WindowInduction
-public import RealRooted.Recurrence.RowModel
-public import RealRooted.Recurrence.Uniqueness
+import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
+import RealRooted.Interlacing.WindowInduction
+import RealRooted.Recurrence.RowModel
+import RealRooted.Recurrence.Uniqueness
+public import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
+public import RealRooted.EulerOperator
+import RealRooted.WagnerX.ListInterlacing
+import RealRooted.Linear
 
 /-!
 # The A304330 model

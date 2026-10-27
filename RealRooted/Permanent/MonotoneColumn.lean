@@ -1,8 +1,9 @@
 module
 
 public import RealRooted.Permanent.MonotoneColumn.Reduction
-public import RealRooted.Permanent.Stability.Ferrers
-public import RealRooted.Permanent.Stability.Fractional
+import RealRooted.Permanent.Stability.Ferrers
+import RealRooted.Permanent.Stability.Fractional
+import RealRooted.MultivariateStability.Specialization
 
 /-!
 # The monotone column permanent theorem

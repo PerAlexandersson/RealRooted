@@ -1,8 +1,10 @@
 module
 
-public import RealRooted.MultivariateStability.SamePhase
+import RealRooted.MultivariateStability.SamePhase
 public import RealRooted.PFPolynomial
-public import RealRooted.SamePhaseStability.Nonnegative
+import RealRooted.SamePhaseStability.Nonnegative
+public import RealRooted.SamePhaseStability
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
 
 /-!
 # Pólya-frequency restrictions of multivariate stable polynomials

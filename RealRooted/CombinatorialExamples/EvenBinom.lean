@@ -1,7 +1,10 @@
 module
 
 public import RealRooted.CombinatorialExamples.BigDescentsOddBinom
-public import RealRooted.ThreeTermRecurrence.HalfGrowth
+import RealRooted.ThreeTermRecurrence.HalfGrowth
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Linear
+import RealRooted.Mathlib.Data.Nat.Choose.Cast
 
 /-!
 # Even binomial polynomials

@@ -1,6 +1,8 @@
 module
 
 public import RealRooted.BrandenLeite.WeightedShift
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
 
 /-!
 # Position-dependent optional-rise matrices

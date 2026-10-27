@@ -5,12 +5,12 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Order.Star.Real
 public import Mathlib.Analysis.LocallyConvex.Separation
-public import Mathlib.Analysis.Matrix.Spectrum
+import Mathlib.Analysis.Matrix.Spectrum
 public import Mathlib.Analysis.Normed.Module.FiniteDimension
 public import Mathlib.LinearAlgebra.Matrix.PosDef
-public import Mathlib.Topology.MetricSpace.Sequences
+import Mathlib.Topology.MetricSpace.Sequences
 public import Mathlib.Topology.Order.Compact
 
 /-!

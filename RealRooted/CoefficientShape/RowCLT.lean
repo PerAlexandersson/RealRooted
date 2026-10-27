@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.ThreeTermRecurrence.CoeffMoments
+import RealRooted.ThreeTermRecurrence.CoeffMoments
+public import RealRooted.ThreeTermRecurrence.Moments
+public import RealRooted.Mathlib.Probability.CoeffDistribution
 
 /-!
 # Row CLTs from coefficient moments

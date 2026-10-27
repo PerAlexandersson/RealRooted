@@ -1,6 +1,9 @@
 module
 
 public import RealRooted.ProductFamily
+import RealRooted.PosCombo
+public import RealRooted.InterlacingSequenceBasic
+import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Staircase-weighted sums

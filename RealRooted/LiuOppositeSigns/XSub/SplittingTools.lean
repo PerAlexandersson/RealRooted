@@ -2,7 +2,9 @@ module
 
 public import RealRooted.Basic
 public import RealRooted.MaWang
-public import RealRooted.RootCountJump
+import RealRooted.RootCountJump
+import RealRooted.MaWang.StrictSigns.RootSigns
+import RealRooted.Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Liu x-subtraction splitting tools

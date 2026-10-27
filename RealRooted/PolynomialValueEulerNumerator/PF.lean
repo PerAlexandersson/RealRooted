@@ -2,7 +2,7 @@ module
 
 public import RealRooted.PFPolynomial
 public import RealRooted.PolynomialValueEulerNumerator
-public import RealRooted.PolyaFrequencyConvolution.Basic
+import RealRooted.PolyaFrequencyConvolution.Basic
 public import RealRooted.PolyaFrequencyConvolution.InverseOneSubPow
 
 /-!

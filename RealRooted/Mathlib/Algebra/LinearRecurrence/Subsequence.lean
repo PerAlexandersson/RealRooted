@@ -5,9 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator
-public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
+import RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator
+import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
 public import Mathlib.LinearAlgebra.Matrix.Notation
+public import Mathlib.Algebra.LinearRecurrence
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
 
 /-!
 # Linear recurrences for arithmetic subsequences

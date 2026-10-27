@@ -1,6 +1,9 @@
 module
 
-public import RealRooted.Interlacing.WindowInduction
+import RealRooted.Interlacing.WindowInduction
+import RealRooted.WagnerX.NonnegativeRoots
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Variable-delay interlacing recurrences

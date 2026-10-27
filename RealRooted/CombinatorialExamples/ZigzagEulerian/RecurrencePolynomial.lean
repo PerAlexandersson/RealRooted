@@ -6,8 +6,8 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.CombinatorialExamples.ZigzagEulerian.Recurrence
-public import RealRooted.CombinatorialExamples.ZigzagEulerian.Standardization
-public import RealRooted.CombinatorialExamples.ZigzagEulerian.RealRooted
+import RealRooted.CombinatorialExamples.ZigzagEulerian.Standardization
+import RealRooted.CombinatorialExamples.ZigzagEulerian.RealRooted
 
 /-!
 # Zig-zag Eulerian polynomials defined by recurrences

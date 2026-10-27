@@ -1,6 +1,9 @@
 module
 
 public import RealRooted.Compatibility.NDCutStaircase
+import RealRooted.Compatibility.CutTransformClosure
+import RealRooted.RowThresholdOne
+import RealRooted.CommonInterleaver.SuccDegreeLowDegree
 
 /-!
 # Marker-one closure for structural N/D cut outputs

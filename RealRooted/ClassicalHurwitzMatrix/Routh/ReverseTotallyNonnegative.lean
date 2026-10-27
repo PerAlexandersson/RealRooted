@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.ClassicalHurwitzMatrix.Routh
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core
+import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core
 
 /-!
 # Reverse total nonnegativity for the Routh reduction

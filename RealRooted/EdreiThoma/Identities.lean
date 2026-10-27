@@ -1,7 +1,9 @@
 module
 
 public import RealRooted.EdreiThoma.PFSeries
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.DesnanotJacobi
+import RealRooted.Mathlib.LinearAlgebra.Matrix.DesnanotJacobi
+import RealRooted.Mathlib.LinearAlgebra.Matrix.JacobiComplementaryMinor
+public import RealRooted.AissenSchoenbergWhitneyBase
 
 /-!
 # Edrei's determinant identities and monotone Padé limits

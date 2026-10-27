@@ -1,8 +1,11 @@
 module
 
 public import RealRooted.Favard.Recurrence
-public import RealRooted.Mathlib.Algebra.Polynomial.Basic
+import RealRooted.Mathlib.Algebra.Polynomial.Basic
 public import RealRooted.MaWang
+import RealRooted.MaWang.Weak.Endpoint
+import RealRooted.Linear
+public import RealRooted.Basic.ProperPosition
 
 public section
 

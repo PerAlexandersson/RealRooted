@@ -1,4 +1,5 @@
 import RealRooted.Tactic.Favard.RowSign
+import Mathlib
 
 /-!
 # OEIS test-bed Favard examples

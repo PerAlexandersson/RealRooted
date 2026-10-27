@@ -2,10 +2,13 @@ module
 
 public import Mathlib
 public import RealRooted.AffineFamily
-public import RealRooted.Linear
-public import RealRooted.SequenceClosure
+import RealRooted.Linear
+import RealRooted.SequenceClosure
 public import RealRooted.WagnerX
 public import RealRooted.ThreeTermRecurrence.Interlacing
+import RealRooted.PosCombo
+import RealRooted.WagnerX.AffineFactors
+import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Linear-power families

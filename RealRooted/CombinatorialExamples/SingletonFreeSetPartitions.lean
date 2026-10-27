@@ -4,6 +4,20 @@ public import RealRooted.CombinatorialExamples.Common
 public import RealRooted.Tactic.WagnerX
 import RealRooted.Tactic.RowInterlacing
 public import Mathlib.Tactic
+import RealRooted.DerivativeRecurrence.Nonnegative
+import RealRooted.Tactic.Row.ThresholdOrbit
+import RealRooted.DerivativeRecurrence.LagWeak
+import RealRooted.Tactic.InterlacesExplicit
+import RealRooted.Tactic.Recurrence.Degree
+import RealRooted.Interlacing.Euclid
+import RealRooted.DerivativeRecurrence.Interlacing
+import RealRooted.ThreeTermRecurrence.Interlacing
+import RealRooted.Tactic.WagnerX.Frontend
+import RealRooted.WagnerRightSum
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Singleton-Free Set-Partition Polynomials

@@ -2,6 +2,9 @@ module
 
 public import RealRooted.ParkingFunctions.Descents.Basic
 public import RealRooted.ThresholdMatrix
+public import RealRooted.ThresholdMatrix.HaglundZhang
+public import RealRooted.StaircaseSum
+import RealRooted.ProductFamily
 
 /-!
 # All-word descent polynomials

@@ -5,7 +5,9 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.RingTheory.MvPolynomial.EulerIdentity
+import Mathlib.RingTheory.MvPolynomial.EulerIdentity
+public import Mathlib.Algebra.MvPolynomial.PDeriv
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 
 /-!
 # The multivariate Euler operator

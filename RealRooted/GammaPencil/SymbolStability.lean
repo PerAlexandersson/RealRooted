@@ -5,10 +5,12 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
+import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
 public import RealRooted.GammaPencil.Symbol
-public import RealRooted.HermiteBiehler.Converse
-public import RealRooted.LinearPowerFamily
+import RealRooted.HermiteBiehler.Converse
+import RealRooted.LinearPowerFamily
+public import RealRooted.MultivariateStability
+import RealRooted.Linear
 
 /-!
 # Stability of the gamma-pencil finite symbol

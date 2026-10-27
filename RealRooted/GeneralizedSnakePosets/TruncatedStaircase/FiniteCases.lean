@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowFormulas
+import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowFormulas
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.BottomRow
 
 /-!
 # Explicit finite truncated-staircase cases

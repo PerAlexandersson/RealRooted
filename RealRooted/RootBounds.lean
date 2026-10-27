@@ -3,6 +3,10 @@ module
 public import RealRooted.SignEvaluation
 public import RealRooted.Derivative
 public import RealRooted.WagnerX
+import RealRooted.Derivative.FamilyClosure
+import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Root bounds from coefficient positivity

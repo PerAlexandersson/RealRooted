@@ -3,6 +3,9 @@ module
 public import RealRooted.BalancedRunTransformation
 public import RealRooted.BinaryRunTransformation.PointingPencil
 public import RealRooted.ClassicalHurwitzMatrix.Stability.HermiteBiehler
+import RealRooted.Mathlib.Data.Nat.Choose.Nanjundiah
+import RealRooted.RootContinuity
+import RealRooted.Mathlib.Data.Nat.Choose.Cast
 
 /-!
 # Stability preservation for the balanced run transformation

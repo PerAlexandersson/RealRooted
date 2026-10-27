@@ -3,6 +3,7 @@ module
 public import RealRooted.Mathlib.Combinatorics.Enumerative.Excedance
 public import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
 public import RealRooted.SymmetricDecomposition.DerangementTransform
+import RealRooted.Mathlib.Algebra.Polynomial.Basic
 
 @[expose] public section
 

@@ -1,7 +1,10 @@
 module
 
-public import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
+import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
 public import RealRooted.MultivariateStability.Rayleigh
+public import RealRooted.Applications.OEIS.A144438.BottomTotal
+import RealRooted.PartialSymmetrization
+import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 
 /-!
 # Rank-three stability of the Deco layer total

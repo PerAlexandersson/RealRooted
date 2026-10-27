@@ -1,11 +1,22 @@
 module
 
-public import RealRooted.DerivativeRecurrence.RootWindow
-public import RealRooted.Interlacing.OuterDifference
-public import RealRooted.MaWang.StrictStep
-public import RealRooted.Recurrence.RowModel
-public import RealRooted.Recurrence.Uniqueness
+import RealRooted.DerivativeRecurrence.RootWindow
+import RealRooted.Interlacing.OuterDifference
+import RealRooted.MaWang.StrictStep
+import RealRooted.Recurrence.RowModel
+import RealRooted.Recurrence.Uniqueness
 import RealRooted.Tactic.RowInterlacing
+import RealRooted.DerivativeRecurrence.Nonnegative
+import RealRooted.Tactic.Row.ThresholdOrbit
+import RealRooted.Tactic.Recurrence.Degree
+import RealRooted.Interlacing.Euclid
+import RealRooted.ThreeTermRecurrence.Interlacing
+public import RealRooted.SimpleRoots
+import RealRooted.MaWang.Strong
+import RealRooted.WagnerRightSum.Sign
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Harmonic-factor derivative rows

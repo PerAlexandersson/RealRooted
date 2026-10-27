@@ -8,7 +8,7 @@ module
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
 public import Mathlib.Algebra.Polynomial.Expand
-public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
 
 /-!
 # The trace of the square of a matrix

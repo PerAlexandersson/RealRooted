@@ -1,8 +1,11 @@
 module
 
 public import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionCoreRecurrence
-public import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
-public import RealRooted.Multiaffine.AffineLineRestriction
+import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
+import RealRooted.Multiaffine.AffineLineRestriction
+import RealRooted.Multiaffine.AffineCoordinateCriterion
+import RealRooted.MultivariateStability.AffineEulerCore
+import RealRooted.Mathlib.Algebra.MvPolynomial.Eval
 
 /-!
 # Fresh-coordinate quadratic for the Deco companion core rows

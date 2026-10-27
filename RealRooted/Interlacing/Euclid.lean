@@ -1,9 +1,12 @@
 module
 
-public import RealRooted.MaWang.Weak.Endpoint
+import RealRooted.MaWang.Weak.Endpoint
 public import RealRooted.ThreeTermRecurrence.Interlacing
-public import RealRooted.ThreeTermRecurrence.Degree
+import RealRooted.ThreeTermRecurrence.Degree
 public import RealRooted.WagnerX.AffineFactors
+import RealRooted.WagnerX.ListInterlacing
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Interlacing certificates for explicit polynomials

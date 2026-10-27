@@ -1,7 +1,12 @@
 module
 
-public import RealRooted.FiniteFreeRootCount
+import RealRooted.FiniteFreeRootCount
 public import RealRooted.CoefficientShape
+import RealRooted.LiuOppositeSigns.JensenRootCount
+public import RealRooted.Compatibility.Pair
+import RealRooted.Hadamard.Grace
+public import RealRooted.Hadamard.Basic
+import RealRooted.DegreeDropReversal
 
 /-!
 # Positive Jensen-pencil contraction

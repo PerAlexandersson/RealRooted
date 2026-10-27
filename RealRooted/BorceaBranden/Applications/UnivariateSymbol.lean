@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
-public import RealRooted.BorceaBranden.FiniteSymbolBasis
+import RealRooted.BorceaBranden.FiniteSymbolBasis
 public import RealRooted.BorceaBranden.UnivariateFiniteSymbol
 
 /-!

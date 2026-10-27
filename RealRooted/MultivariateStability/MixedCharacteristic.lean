@@ -1,10 +1,12 @@
 module
 
 public import RealRooted.DeterminantalStability
-public import RealRooted.LiebSokalBoundary
+import RealRooted.LiebSokalBoundary
 public import RealRooted.HomogeneousStability
 public import RealRooted.AffineLineRestriction
-public import RealRooted.MultivariateStability.SamePhase
+import RealRooted.MultivariateStability.SamePhase
+public import RealRooted.SamePhaseStability
+public import RealRooted.LiebSokalPointwise
 
 @[expose] public section
 

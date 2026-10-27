@@ -1,9 +1,10 @@
 module
 
-public import RealRooted.PFPolynomial.PreserverClosure
+import RealRooted.PFPolynomial.PreserverClosure
 public import RealRooted.EulerBidiagonal
-public import RealRooted.EulerBidiagonal.PairStep
+import RealRooted.EulerBidiagonal.PairStep
 public import RealRooted.MultiplierSequence.Bidiagonal
+public import RealRooted.EulerBidiagonal.General
 
 /-!
 # Degree-local Pólya-frequency preservers for Euler bidiagonal operators

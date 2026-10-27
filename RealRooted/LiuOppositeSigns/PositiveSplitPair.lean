@@ -3,6 +3,15 @@ module
 public import RealRooted.LiuOppositeSigns.PositiveSplitRootCount
 public import RealRooted.SameDegreeCubicRootCount
 public import RealRooted.SameDegreeCountFromAnalytic
+import RealRooted.CommonInterleaver.RightPencil
+import RealRooted.CommonInterleaver.RootCountCombinatorics
+import RealRooted.CommonInterleaver.SuccDegreeEndpoint
+import RealRooted.CommonInterleaver.SameDegreeRootCount
+import RealRooted.RootCountJump
+import RealRooted.Compatibility.Basic
+public import RealRooted.Compatibility.Pair
+import RealRooted.CommonInterleaverSeq
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Liu positive-split root-count pairs

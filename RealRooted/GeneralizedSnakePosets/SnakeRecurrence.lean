@@ -1,8 +1,12 @@
 module
 
 public import RealRooted.GeneralizedSnakePosets.SnakeBand
-public import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacing
-public import RealRooted.GeneralizedSnakePosets.SnakeConstant
+import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacing
+import RealRooted.GeneralizedSnakePosets.SnakeConstant
+import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
+import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
+public import RealRooted.GeneralizedSnakePosets.Narayana.Modified
+public import RealRooted.GeneralizedSnakePosets.Statements
 
 /-!
 # The snake recurrence for the concrete snake board

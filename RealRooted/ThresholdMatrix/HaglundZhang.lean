@@ -1,6 +1,15 @@
 module
 
 public import RealRooted.ThresholdMatrix.Basic
+import RealRooted.PFPolynomial
+import RealRooted.AffineProperPosition
+import RealRooted.AffineFamily
+import RealRooted.PosCombo
+import RealRooted.QuadraticRoot
+import RealRooted.MaWang.Weak.Successor
+import RealRooted.WagnerX.AffineFactors
+import RealRooted.Linear
+import RealRooted.Basic.PolynomialFacts
 
 /-!
 # Haglund--Zhang threshold matrices

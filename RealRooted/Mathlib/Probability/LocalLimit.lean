@@ -5,9 +5,10 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Analysis.Real.Pi.Bounds
-public import Mathlib.Probability.CDF
+import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.Probability.CDF
 public import RealRooted.Mathlib.Probability.CoeffDistribution
+import Mathlib.MeasureTheory.Measure.Portmanteau
 
 /-!
 # Bender's local limit theorem for polynomial coefficients

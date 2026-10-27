@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.ClassicalHurwitzMatrix.Stability
+public import RealRooted.HermiteBiehler.OddEven
 
 /-!
 # Canonical odd/even extraction

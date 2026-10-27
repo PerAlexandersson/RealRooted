@@ -1,7 +1,11 @@
 module
 
-public import RealRooted.RootContinuity
+import RealRooted.RootContinuity
 public import Mathlib.Topology.Connected.Clopen
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+public import Mathlib.FieldTheory.Separable
+public import Mathlib.Topology.Connected.Basic
+public import Mathlib.Topology.MetricSpace.Pseudo.Defs
 
 /-!
 # Real-rootedness along squarefree paths

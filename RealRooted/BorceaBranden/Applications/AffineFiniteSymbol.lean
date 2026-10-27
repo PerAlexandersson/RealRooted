@@ -1,6 +1,10 @@
 module
 
 public import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
+import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing
+public import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
+public import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
+import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
 
 /-!
 # Compatibility facade for affine finite-symbol consequences

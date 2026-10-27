@@ -1,6 +1,10 @@
 module
 
-public import RealRooted.LiuOppositeSigns.XSub.SameDegree
+import RealRooted.LiuOppositeSigns.XSub.SameDegree
+import RealRooted.LiuOppositeSigns.PositiveSplitPair
+public import RealRooted.LiuOppositeSigns.PositiveSplitRootCount
+import RealRooted.SameDegreeQuadraticRootCount
+import RealRooted.QuadraticRoot
 
 /-!
 # Liu linear/quadratic x-subtraction leaf

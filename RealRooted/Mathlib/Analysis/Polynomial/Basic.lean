@@ -6,7 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Analysis.Polynomial.Basic
-public import Mathlib.Topology.Algebra.Polynomial
+import Mathlib.Topology.Algebra.Polynomial
 
 /-!
 # Nonnegativity of real polynomials by continuity

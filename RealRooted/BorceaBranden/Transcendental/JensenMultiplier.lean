@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate
-public import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
+import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
+public import RealRooted.MultivariateStability
 
 /-!
 # Multivariate Jensen multipliers

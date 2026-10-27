@@ -2,6 +2,7 @@ module
 
 public import RealRooted.BrandenVecchi.ChowSupersymmetric
 public import RealRooted.BrandenVecchi.SmirnovSubstitutionSeries
+import RealRooted.Mathlib.RingTheory.PowerSeries.Regular
 
 /-!
 # Finite supersymmetric Chow polynomials as signed-word enumerators

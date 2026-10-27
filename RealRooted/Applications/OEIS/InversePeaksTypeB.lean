@@ -1,9 +1,11 @@
 module
 
 public import RealRooted.Applications.OEIS.InversePeaks
-public import RealRooted.DerivativeRecurrence.QuadraticSeed
-public import RealRooted.GammaPencil.Intertwining
-public import RealRooted.GammaTransform.RootMap
+import RealRooted.DerivativeRecurrence.QuadraticSeed
+import RealRooted.GammaPencil.Intertwining
+import RealRooted.GammaTransform.RootMap
+import RealRooted.DerivativeRecurrence.QuadraticLagStrict
+public import RealRooted.GammaTransform.Basic
 
 /-!
 # Denominator-free type-B lift of the inverse-peak recurrence

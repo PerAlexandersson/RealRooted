@@ -1,6 +1,10 @@
 module
 
-public import RealRooted.Applications.EulerianCompendium.Results
+import RealRooted.Applications.EulerianCompendium.Results
+public import RealRooted.Applications.EulerianCompendium.TernaryWords
+public import RealRooted.Applications.EulerianCompendium.CyclicWords
+import RealRooted.CombinatorialExamples.ZigzagEulerian.RealRooted
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.Definitions
 
 /-!
 # Eulerian compendium: paper theorems and the zig-zag theorem

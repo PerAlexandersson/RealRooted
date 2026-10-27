@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.ThreeTermRecurrence.Interlacing
+import RealRooted.ThreeTermRecurrence.Interlacing
 public import RealRooted.ThreeTermRecurrence.Degree
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Rows two apart of a half-growth three-term recurrence

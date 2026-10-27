@@ -1,16 +1,18 @@
 module
 
-public import RealRooted.Mathlib.RingTheory.Polynomial.Chebyshev.Bounds
+import RealRooted.Mathlib.RingTheory.Polynomial.Chebyshev.Bounds
 public import RealRooted.Favard.Recurrence
-public import Mathlib.Algebra.BigOperators.Field
-public import Mathlib.Tactic.FieldSimp
+import Mathlib.Algebra.BigOperators.Field
+import Mathlib.Tactic.FieldSimp
 public import Mathlib.Tactic.GCongr
 public import Mathlib.Tactic.LinearCombination
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.Positivity
 public import Mathlib.Tactic.Ring
-public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
+import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
 public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.List
+public import Mathlib.RingTheory.Polynomial.Chebyshev
+import Mathlib.Algebra.Order.Field.Basic
 
 /-!
 # The weighted-path envelope for symmetric Favard families

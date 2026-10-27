@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.Multiaffine
-public import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
+import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
+import Mathlib.Algebra.MvPolynomial.CommRing
 
 /-!
 # The multivariate differential action

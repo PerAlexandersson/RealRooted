@@ -1,8 +1,13 @@
 module
 
-public import RealRooted.ClassicalHurwitzMatrix.Stability.ClosedLimit
-public import RealRooted.ClassicalHurwitzMatrix.Stability.Closure
-public import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.Reverse
+import RealRooted.ClassicalHurwitzMatrix.Stability.ClosedLimit
+import RealRooted.ClassicalHurwitzMatrix.Stability.Closure
+import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.Reverse
+import RealRooted.ClassicalHurwitzMatrix.Stability.Criterion
+public import RealRooted.ClassicalHurwitzMatrix.Routh
+import RealRooted.ClassicalHurwitzMatrix.Stability.Extraction
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
 
 /-!
 # Weak reverse stability across a nonterminal Routh step

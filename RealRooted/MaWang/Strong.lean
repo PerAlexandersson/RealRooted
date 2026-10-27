@@ -1,6 +1,14 @@
 module
 
 public import RealRooted.MaWang.StrictSigns
+import RealRooted.MaWang.StrictSigns.Assembly
+import RealRooted.MaWang.StrictSigns.RootSigns
+import RealRooted.RootContinuity
+import RealRooted.WagnerRightSum.Sign
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 public section
 

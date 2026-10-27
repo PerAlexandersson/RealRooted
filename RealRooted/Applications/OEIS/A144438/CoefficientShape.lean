@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.Applications.OEIS.A144438.PolyaFrequency
-public import RealRooted.PFPolynomial.CoefficientShape
+import RealRooted.Applications.OEIS.A144438.PolyaFrequency
+import RealRooted.PFPolynomial.CoefficientShape
+public import RealRooted.Applications.OEIS.A144438.Weighted
+public import RealRooted.CoefficientShape
 
 /-!
 # Coefficient shape of the A144438 recurrence family

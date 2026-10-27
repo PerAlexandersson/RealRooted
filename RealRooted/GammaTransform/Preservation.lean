@@ -1,6 +1,10 @@
 module
 
-public import RealRooted.GammaTransform.RootMap
+import RealRooted.GammaTransform.RootMap
+public import RealRooted.GammaTransform.Basic
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
+import RealRooted.Basic.PolynomialFacts
 
 /-!
 # Gamma-transform preservation

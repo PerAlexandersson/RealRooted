@@ -1,9 +1,13 @@
 module
 
 public import RealRooted.BrandenVecchi.ChowResolutionInterlacing
-public import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Interlacing
 public import RealRooted.GeneralizedEulerian
 public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+import RealRooted.Mathlib.Algebra.BigOperators.Group.List
+public import RealRooted.BrandenVecchi.ChowRowTransform
+public import RealRooted.PFPolynomial
+import RealRooted.PosCombo
 
 /-!
 # The Eulerian transformation on the magic basis

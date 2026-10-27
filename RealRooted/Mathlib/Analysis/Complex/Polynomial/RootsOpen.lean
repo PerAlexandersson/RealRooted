@@ -6,11 +6,13 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Algebra.Polynomial.Eval.Degree
-public import Mathlib.Analysis.Complex.Polynomial.Basic
+import Mathlib.Analysis.Complex.Polynomial.Basic
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.RingTheory.Polynomial.Vieta
 
 import Mathlib.Tactic
+public import Mathlib.Analysis.Complex.Norm
+public import Mathlib.Algebra.Polynomial.Roots
 
 /-!
 # Openness of strict upper-half-plane root location

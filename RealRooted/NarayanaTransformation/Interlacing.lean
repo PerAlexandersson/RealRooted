@@ -1,7 +1,12 @@
 module
 
-public import RealRooted.NarayanaTransformation.Endpoints
-public import RealRooted.OperatorInterlacingUpgrade.RootOrder
+import RealRooted.NarayanaTransformation.Endpoints
+import RealRooted.OperatorInterlacingUpgrade.RootOrder
+import RealRooted.NarayanaTransformation.Recurrences.Interlacing
+import RealRooted.NarayanaTransformation.Recurrences.Identities
+import RealRooted.NarayanaTransformation.Rectangular.Preservation
+public import RealRooted.NarayanaTransformation.Coefficients
+import RealRooted.Linear
 
 /-!
 # The Narayana transform preserves oriented interlacing

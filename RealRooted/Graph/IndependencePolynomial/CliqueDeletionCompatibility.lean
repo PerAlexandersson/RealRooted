@@ -2,6 +2,10 @@ module
 
 public import RealRooted.Compatibility.Three
 public import RealRooted.Graph.IndependencePolynomial.CliqueDeletion
+import RealRooted.ChudnovskySeymour.Core
+public import RealRooted.Compatibility.Basic
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
 
 /-!
 # Clique-deletion compatibility for independence polynomials

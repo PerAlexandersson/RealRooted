@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.GeneralizedSnakePosets.Narayana.JacobiTransport
+import RealRooted.MaWang.Weak.Successor
 
 /-!
 # Certificate-free Turan API for modified Narayana polynomials

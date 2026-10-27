@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.EulerOperator.Polar
-public import RealRooted.RootContinuity
+import RealRooted.EulerOperator.Polar
+import RealRooted.RootContinuity
+public import RealRooted.EulerOperator
+import RealRooted.Linear
 
 /-!
 # Scale-two polar operator

@@ -1,8 +1,10 @@
 module
 
-public import RealRooted.BinaryRunTransformation.Continuation
-public import RealRooted.BinaryRunTransformation.Sturm
-public import RealRooted.OperatorInterlacingUpgrade
+import RealRooted.BinaryRunTransformation.Continuation
+import RealRooted.BinaryRunTransformation.Sturm
+import RealRooted.OperatorInterlacingUpgrade
+public import RealRooted.BinaryRunTransformation.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Interlacing preservation for the binary-run transformation

@@ -3,6 +3,9 @@ module
 public import RealRooted.FolkloreLemma
 public import RealRooted.SymmetricDecomposition.Definitions
 public import RealRooted.Basic.ProperPosition
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
 
 /-!
 # The `f`-polynomial transform

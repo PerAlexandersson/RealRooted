@@ -1,12 +1,14 @@
 module
 
 public import RealRooted.Basic
-public import RealRooted.Linear
+import RealRooted.Linear
 public import Mathlib.Analysis.Polynomial.Basic
 public import Mathlib.Algebra.Polynomial.Degree.Operations
 public import Mathlib.Algebra.Polynomial.Eval.Degree
 public import Mathlib.Algebra.Order.BigOperators.Group.Finset
 public import Mathlib.Topology.Algebra.Polynomial
+public import RealRooted.Basic.ProperPosition
+import RealRooted.Basic.PolynomialFacts
 
 /-!
 # Wagner-X list interlacing

@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.Applications.OEIS.A144438.LayerTotal
-public import RealRooted.MultivariateStability.LinearForm
+import RealRooted.MultivariateStability.LinearForm
+public import RealRooted.LiebSokalPointwise
 
 /-!
 # Initial stability certificates for the Deco layer total

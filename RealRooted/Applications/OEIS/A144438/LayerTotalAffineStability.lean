@@ -1,8 +1,12 @@
 module
 
-public import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
+import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
 public import RealRooted.Applications.OEIS.A144438.LayerTotalDiscriminantReduction
 public import RealRooted.MultivariateStability.AffineEulerCore
+import RealRooted.Applications.OEIS.A144438.LayerTotalStability
+import RealRooted.Applications.OEIS.A144438.LayerTotalStructure
+import RealRooted.MultivariateStability.Rayleigh
+import RealRooted.MultivariateStability.Specialization
 
 /-!
 # Stability consequences for the affine Deco recurrence

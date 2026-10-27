@@ -2,8 +2,9 @@ module
 
 public import RealRooted.NarayanaTransformation.Interlacing
 public import RealRooted.OperatorInterlacingUpgrade.ImplicitRoot
-public import RealRooted.OperatorInterlacingUpgrade.RootOrder
+import RealRooted.OperatorInterlacingUpgrade.RootOrder
 public import RealRooted.OperatorInterlacingUpgrade.StablePencil
+public import RealRooted.PFPolynomial
 
 /-!
 # Monomial-chain operator challenge entry point

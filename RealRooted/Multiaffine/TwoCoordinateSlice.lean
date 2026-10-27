@@ -1,9 +1,9 @@
 module
 
 public import RealRooted.Multiaffine.Rayleigh
-public import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
+import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
-public import Mathlib.Algebra.MvPolynomial.Funext
+import Mathlib.Algebra.MvPolynomial.Funext
 public import Mathlib.Algebra.MvPolynomial.Monad
 
 /-!

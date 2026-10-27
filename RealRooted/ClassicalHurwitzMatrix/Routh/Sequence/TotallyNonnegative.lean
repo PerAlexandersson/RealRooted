@@ -1,8 +1,11 @@
 module
 
 public import RealRooted.ClassicalHurwitzMatrix.Routh.Sequence
-public import RealRooted.ClassicalHurwitzMatrix.Routh.TotallyNonnegative
-public import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
+import RealRooted.ClassicalHurwitzMatrix.Routh.TotallyNonnegative
+import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+public import Mathlib.LinearAlgebra.Matrix.Determinant.TotallyNonneg
 
 /-!
 # Total nonnegativity from a finite Routh sequence

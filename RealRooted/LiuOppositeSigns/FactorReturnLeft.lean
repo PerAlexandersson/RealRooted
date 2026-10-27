@@ -2,8 +2,13 @@ module
 
 public import RealRooted.LiuOppositeSigns.DeletionBranches
 public import RealRooted.LiuOppositeSigns.XSub.QuadraticCubic
-public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RightSuccessor
-public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SameDegree
+import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RightSuccessor
+import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SameDegree
+public import RealRooted.LiuOppositeSigns
+import RealRooted.LiuOppositeSigns.PositiveSplitPair
+public import RealRooted.Compatibility.Pair
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
 
 /-!
 # Liu left factor return: same- and successor-degree cases

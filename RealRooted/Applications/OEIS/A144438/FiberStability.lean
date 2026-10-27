@@ -2,8 +2,11 @@ module
 
 public import RealRooted.Applications.OEIS.A144438.EligibleSupport
 public import RealRooted.BooleanSwapOrbit
-public import RealRooted.MultivariateStability.PolyaFrequency
-public import RealRooted.MultivariateStability.Rayleigh
+import RealRooted.MultivariateStability.PolyaFrequency
+import RealRooted.MultivariateStability.Rayleigh
+public import RealRooted.SamePhaseStability
+public import RealRooted.Multiaffine.Rayleigh
+public import RealRooted.PFPolynomial
 
 /-!
 # Stable normalized decoration fibers

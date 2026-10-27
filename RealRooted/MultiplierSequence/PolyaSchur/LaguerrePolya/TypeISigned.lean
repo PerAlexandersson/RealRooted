@@ -1,7 +1,10 @@
 module
 
-public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIReverse
-public import RealRooted.MultiplierSequence.Sign
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIReverse
+import RealRooted.MultiplierSequence.Sign
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
+import RealRooted.MultiplierSequence.PolyaSchur.Growth
+import RealRooted.MultiplierSequence.PolyaSchur
 
 /-!
 # Signed Type-I Pólya--Schur classification

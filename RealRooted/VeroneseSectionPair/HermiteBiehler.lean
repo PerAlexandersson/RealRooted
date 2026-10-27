@@ -1,6 +1,9 @@
 module
 
-public import RealRooted.VeroneseSectionPair
+import RealRooted.VeroneseSectionPair
+public import RealRooted.VeroneseSection
+import RealRooted.HermiteBiehler.Hurwitz
+import RealRooted.HermiteBiehler.Forward
 
 /-!
 # Hermite--Biehler certificates from normalized Veronese residues

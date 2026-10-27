@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.MultiplierSequence.PolyaSchur
+import RealRooted.MultiplierSequence.PolyaSchur
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
 
 /-!

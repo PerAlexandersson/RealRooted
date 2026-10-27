@@ -2,9 +2,11 @@ module
 
 public import RealRooted.JacobiDeformation.Basic
 public import RealRooted.EulerOperator
-public import RealRooted.EulerOperator.Polar.RealParameter
-public import RealRooted.EulerOperator.Polar.Pencil
+import RealRooted.EulerOperator.Polar.RealParameter
+import RealRooted.EulerOperator.Polar.Pencil
 public import RealRooted.SimpleRoots
+public import RealRooted.PFPolynomial
+import RealRooted.PosCombo
 
 /-!
 # The unit parameter shift of the Jacobi deformation

@@ -2,6 +2,10 @@ module
 
 public import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatrixTree
 public import RealRooted.DeterminantalStability
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 
 /-!
 # Spanning-tree polynomials are real stable

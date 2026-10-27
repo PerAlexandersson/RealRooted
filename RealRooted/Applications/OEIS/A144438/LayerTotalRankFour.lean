@@ -1,8 +1,14 @@
 module
 
-public import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionDataRecurrence
-public import RealRooted.Applications.OEIS.A144438.LayerTotalRankThree
-public import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
+import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionDataRecurrence
+import RealRooted.Applications.OEIS.A144438.LayerTotalRankThree
+import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
+public import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionCoreQuadratic
+import RealRooted.Applications.OEIS.A144438.LayerTotalAffineStability
+public import RealRooted.Applications.OEIS.A144438.LayerTotalDiscriminantReduction
+import RealRooted.Applications.OEIS.A144438.LayerTotalStructure
+import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
+import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 
 /-!
 # Rank-four stability of the Deco layer total

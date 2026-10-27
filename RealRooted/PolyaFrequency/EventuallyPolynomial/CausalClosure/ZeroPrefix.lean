@@ -1,7 +1,11 @@
 module
 
-public import RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure
-public import RealRooted.AissenSchoenbergWhitney
+import RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure
+import RealRooted.AissenSchoenbergWhitney
+import RealRooted.PolyaFrequency.EventuallyPolynomial
+import RealRooted.Mathlib.Analysis.Polynomial.Asymptotics
+public import RealRooted.Mathlib.Algebra.Group.ForwardDiff
+public import RealRooted.AissenSchoenbergWhitneyBase
 
 /-!
 # Causal forward differences after a finite zero prefix

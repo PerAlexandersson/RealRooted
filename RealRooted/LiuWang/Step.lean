@@ -1,8 +1,9 @@
 module
 
 public import RealRooted.GeneralizedLiuWang
-public import RealRooted.RootBounds
-public import RealRooted.SignEvaluation
+import RealRooted.RootBounds
+import RealRooted.SignEvaluation
+import RealRooted.MaWang.Strong
 
 /-!
 # Liu--Wang single-step theorem backend

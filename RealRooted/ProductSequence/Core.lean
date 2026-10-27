@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.ProductSequence.Factors
-public import RealRooted.SequenceClosure
+import RealRooted.ProductSequence.Factors
+import RealRooted.SequenceClosure
+import RealRooted.Linear
 
 /-!
 # Generic product-sequence recurrence shells

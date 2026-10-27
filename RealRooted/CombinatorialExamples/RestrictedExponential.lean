@@ -5,7 +5,7 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 public import Mathlib.Data.Nat.Factorial.Basic
 public import Mathlib.Basic.Real.Basic
 
@@ -13,6 +13,8 @@ import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.Push
+import Mathlib.Data.Rat.Cast.Order
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 
 /-!
 # Restricted-exponential recurrence

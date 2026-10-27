@@ -2,6 +2,8 @@ module
 
 public import RealRooted.DegreeDropReversal
 public import RealRooted.EulerOperator
+import RealRooted.Mathlib.Algebra.Polynomial.Reverse
+import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
 
 /-!
 # Polar theta and split polynomials

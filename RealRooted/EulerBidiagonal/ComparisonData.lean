@@ -2,6 +2,10 @@ module
 
 public import RealRooted.EulerBidiagonal.General
 public import RealRooted.Interlacing.RootCountSigns
+import RealRooted.RootCounting.SignChanges
+import RealRooted.Interlacing.Residue
+import RealRooted.MaWang.StrictSigns.Assembly
+import RealRooted.MaWang.StrictSigns.RootSigns
 
 /-!
 # Comparison roots of the general Euler step

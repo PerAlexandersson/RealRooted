@@ -3,7 +3,7 @@ module
 public import RealRooted.Mathlib.RingTheory.PowerSeries.Sqrt
 public import Mathlib.Algebra.Polynomial.Eval.Defs
 public import Mathlib.Tactic.IrreducibleDef
-public import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.LinearCombination
 public import Mathlib.Tactic.Positivity
 
 /-!

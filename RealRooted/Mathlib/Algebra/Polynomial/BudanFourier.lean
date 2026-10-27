@@ -6,10 +6,14 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Algebra.Polynomial.RuleOfSigns
-public import Mathlib.Analysis.Calculus.Deriv.MeanValue
-public import Mathlib.Analysis.Calculus.Deriv.Polynomial
-public import Mathlib.Topology.Algebra.Polynomial
-public import RealRooted.Mathlib.Algebra.Polynomial.Roots
+import Mathlib.Analysis.Calculus.Deriv.MeanValue
+import Mathlib.Analysis.Calculus.Deriv.Polynomial
+import Mathlib.Topology.Algebra.Polynomial
+import RealRooted.Mathlib.Algebra.Polynomial.Roots
+public import Mathlib.Data.List.SignVariations
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Algebra.Polynomial.Roots
 
 /-!
 # The Budan–Fourier theorem

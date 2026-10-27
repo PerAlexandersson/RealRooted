@@ -5,12 +5,18 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularRankDeficient
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.CornerPerturbation
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
+import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularRankDeficient
+import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
+import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.CornerPerturbation
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Nonneg
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Dominance
+import RealRooted.Mathlib.LinearAlgebra.Matrix.CompoundSpectrum
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Compound
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Gaussian
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.CauchyBinet
 
 /-!
 # Spectrum of totally nonnegative matrices

@@ -1,11 +1,14 @@
 module
 
 public import RealRooted.BorceaBranden.BoundarySpecialization
-public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
-public import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
-public import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
-public import Mathlib.Topology.Algebra.MvPolynomial
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
+import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
+import Mathlib.Topology.Algebra.MvPolynomial
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Algebra.MvPolynomial.Funext
+import Mathlib.Analysis.Complex.Polynomial.Basic
 
 /-!
 # General boundary specialization

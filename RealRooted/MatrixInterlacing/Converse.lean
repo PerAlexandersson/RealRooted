@@ -1,7 +1,11 @@
 module
 
-public import RealRooted.MatrixInterlacing.Preservation
-public import RealRooted.MatrixInterlacing.SparseTests
+import RealRooted.MatrixInterlacing.Preservation
+import RealRooted.MatrixInterlacing.SparseTests
+public import RealRooted.MatrixInterlacing.Action
+import RealRooted.AffineFamily
+public import RealRooted.AffineFamily.Basic
+public import RealRooted.InterlacingSequenceBasic
 
 @[expose] public section
 

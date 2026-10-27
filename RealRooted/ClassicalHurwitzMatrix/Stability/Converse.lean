@@ -1,7 +1,13 @@
 module
 
-public import RealRooted.ClassicalHurwitzMatrix.Stability.Criterion
-public import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.Reverse
+import RealRooted.ClassicalHurwitzMatrix.Stability.Criterion
+import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.Reverse
+import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.Sequence
+import RealRooted.ClassicalHurwitzMatrix.Routh.Determinant
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz.Determinant
+public import RealRooted.ClassicalHurwitzMatrix.Routh
+import RealRooted.ClassicalHurwitzMatrix.Stability.Extraction
+public import RealRooted.ClassicalHurwitzMatrix.Stability
 
 /-!
 # Converse strict Hurwitz criterion

@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.Permanent.Ferrers
-public import RealRooted.Permanent.Stability.Operator
+import RealRooted.Permanent.Stability.Operator
 
 /-!
 # Stability of the Ferrers recurrence

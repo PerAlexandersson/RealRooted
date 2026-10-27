@@ -3,6 +3,7 @@ module
 public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Energy
 public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Endpoints
 public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ScalarBounds
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Basic
 
 /-! # Scaled residue energy for the weighted diagonal family -/
 

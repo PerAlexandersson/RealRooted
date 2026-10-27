@@ -1,6 +1,10 @@
 module
 
 public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.MagicCone
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Degree
+import RealRooted.MaWang.StrictSigns.Assembly
+import RealRooted.WagnerRightSum
+import RealRooted.Linear
 
 /-!
 # The endpoint relation of the weighted magic cone

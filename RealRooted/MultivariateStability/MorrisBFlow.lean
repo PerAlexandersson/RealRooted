@@ -1,8 +1,11 @@
 module
 
 public import RealRooted.MultivariateStability.MorrisOperator
-public import RealRooted.BorceaBranden.Applications.ComplexDiagonalRootLocation
+import RealRooted.BorceaBranden.Applications.ComplexDiagonalRootLocation
 public import Mathlib.RingTheory.MvPolynomial.Symmetric.Eval
+public import RealRooted.MultiplierSequence.QuadraticExponential
+import RealRooted.Polarization
+public import RealRooted.MultivariateStability
 
 /-!
 # The flow of the Liu--Zhang Morris `B` operator

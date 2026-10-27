@@ -1,7 +1,10 @@
 module
 
-public import RealRooted.EulerBidiagonal.GeneralRows
-public import RealRooted.Recurrence.RowModel
+import RealRooted.EulerBidiagonal.GeneralRows
+import RealRooted.Recurrence.RowModel
+import RealRooted.WagnerX.ListInterlacing
+import RealRooted.Linear
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # The A304334 Euler-bidiagonal model

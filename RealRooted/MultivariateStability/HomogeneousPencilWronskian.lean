@@ -1,9 +1,11 @@
 module
 
 public import RealRooted.HermiteBiehler.StablePencil
-public import RealRooted.Multiaffine.AffineLineRestriction
-public import RealRooted.SamePhaseInterlacing
-public import RealRooted.Wronskian.WeakForward
+import RealRooted.Multiaffine.AffineLineRestriction
+import RealRooted.SamePhaseInterlacing
+import RealRooted.Wronskian.WeakForward
+public import RealRooted.Multiaffine.CoordinateWronskian
+public import RealRooted.AffineLineRestriction
 
 /-!
 # Wronskian orientation for homogeneous stable pencils

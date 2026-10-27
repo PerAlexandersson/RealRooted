@@ -1,6 +1,9 @@
 module
 
-public import RealRooted.LiuWang.FiniteFamily
+import RealRooted.LiuWang.FiniteFamily
+import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Derivative--lag recurrences with common roots

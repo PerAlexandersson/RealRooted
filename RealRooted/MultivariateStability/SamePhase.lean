@@ -1,9 +1,31 @@
 module
 
-public import Mathlib.Topology.Algebra.MvPolynomial
+import Mathlib.Topology.Algebra.MvPolynomial
 public import RealRooted.AffineLineRestriction
-public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
 public import RealRooted.SamePhaseStability
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Mathlib.Tactic.ReduceModChar
+import Mathlib.Tactic.NormNum.RealSqrt
+import Mathlib.Tactic.NormNum.Prime
+import Mathlib.Tactic.NormNum.Parity
+import Mathlib.Tactic.NormNum.Ordinal
+import Mathlib.Tactic.NormNum.NatSqrt
+import Mathlib.Tactic.NormNum.NatLog
+import Mathlib.Tactic.NormNum.NatFib
+import Mathlib.Tactic.NormNum.ModEq
+import Mathlib.Tactic.NormNum.LegendreSymbol
+import Mathlib.Tactic.NormNum.IsSquare
+import Mathlib.Tactic.NormNum.IsCoprime
+import Mathlib.Tactic.NormNum.Irrational
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Rational
+import Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses
+import Mathlib.Tactic.Inclusion.Extension.Core.Core
+import Mathlib.Tactic.Echelon.Zsqrtd
+import Mathlib.Tactic.ENatToNat
+import Mathlib.Tactic.Basify
 
 /-!
 # Real stability implies same-phase stability

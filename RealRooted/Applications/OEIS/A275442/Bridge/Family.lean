@@ -1,6 +1,8 @@
 module
 
 public import RealRooted.Applications.OEIS.A275442.Bridge.Scalar
+import RealRooted.Applications.OEIS.A275442.Bridge.Certificates
+public import RealRooted.Applications.OEIS.A275442.Bridge.Core
 
 /-!
 # The structural theorem applied to the family `p`

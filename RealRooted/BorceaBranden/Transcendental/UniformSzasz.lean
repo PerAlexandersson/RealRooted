@@ -1,8 +1,9 @@
 module
 
-public import RealRooted.BorceaBranden.Transcendental.JensenMultiplier
-public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
-public import RealRooted.BoundarySpecializationGeneral
+import RealRooted.BorceaBranden.Transcendental.JensenMultiplier
+import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
+import RealRooted.BoundarySpecializationGeneral
+public import RealRooted.MultivariateStability
 
 @[expose] public section
 

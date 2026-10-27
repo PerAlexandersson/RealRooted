@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.EulerianCone
-public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Preserver
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Preserver
+public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.Basic
 
 public section
 

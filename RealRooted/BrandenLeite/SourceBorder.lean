@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.SourceBorder
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 
 /-!
 # The finite Brändén--Leite source border

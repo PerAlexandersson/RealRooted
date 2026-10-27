@@ -1,8 +1,8 @@
 module
 
 public import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Families
-public import RealRooted.WagnerRightSum
-public import RealRooted.Wagner.LeftSum
+import RealRooted.WagnerRightSum
+import RealRooted.Wagner.LeftSum
 
 /-!
 # Real-rootedness of Jacobi–Stirling descent polynomials

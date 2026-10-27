@@ -1,8 +1,13 @@
 module
 
-public import RealRooted.BernsteinCone
-public import RealRooted.ChudnovskySeymour.Core
-public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.BernsteinBasisTransform
+import RealRooted.BernsteinCone
+import RealRooted.ChudnovskySeymour.Core
+import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.BernsteinBasisTransform
+public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Bernstein
+public import RealRooted.Compatibility.Basic
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+public import RealRooted.PFPolynomial
+public import RealRooted.InterlacingSequenceBasic
 
 /-!
 # Bernstein-image criteria for basis-transform preservers

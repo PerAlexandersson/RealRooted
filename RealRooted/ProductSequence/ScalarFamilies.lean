@@ -1,6 +1,10 @@
 module
 
-public import RealRooted.ProductSequence.Lifts
+import RealRooted.ProductSequence.Lifts
+import RealRooted.ProductSequence.Core
+import RealRooted.ProductSequence.Factors
+import RealRooted.SequenceClosure
+import RealRooted.Linear
 
 /-!
 # Alternating scalar/product recurrence families

@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.FolkloreLemma
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Finite non-nesting rook boards

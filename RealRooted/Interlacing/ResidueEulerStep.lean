@@ -1,10 +1,13 @@
 module
 
-public import RealRooted.Interlacing.NegativeRoots
+import RealRooted.Interlacing.NegativeRoots
 public import RealRooted.Interlacing.OuterDifference
 public import RealRooted.Interlacing.ResidueCriterion
-public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
-public import RealRooted.MaWang.StrictStep
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.MaWang.StrictStep
+import RealRooted.MaWang.Weak.DerivativeSign
+import RealRooted.WagnerRightSum.Sign
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Residue-controlled Euler steps

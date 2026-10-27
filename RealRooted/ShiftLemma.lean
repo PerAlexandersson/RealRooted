@@ -12,10 +12,15 @@ real-rootedness projects can use the same `(X - 1)` shift step.
 module
 
 public import RealRooted.Basic
-public import RealRooted.Linear
+import RealRooted.Linear
 public import RealRooted.Wagner
 public import RealRooted.MaWang
 public import RealRooted.ConvexCombination
+import RealRooted.PosCombo
+import RealRooted.MaWang.Weak.Endpoint
+import RealRooted.WagnerX.NonnegativeRoots
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 public section
 

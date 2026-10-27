@@ -1,9 +1,11 @@
 module
 
-public import Mathlib.Algebra.Polynomial.BigOperators
+import Mathlib.Algebra.Polynomial.BigOperators
 public import Mathlib.Algebra.Polynomial.Degree.Lemmas
-public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.StrictLower
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.LinearAlgebra.Matrix.StrictLower
+public import Mathlib.Data.Matrix.Mul
+public import Mathlib.Algebra.Polynomial.Degree.Defs
 
 /-!
 # Finite kernel-row polynomials

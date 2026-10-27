@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.Applications.OEIS.A275442.Bridge.Family
+import RealRooted.Applications.OEIS.A275442.Bridge.Family
+public import RealRooted.Applications.OEIS.A275442.Bridge.Core
 
 /-!
 # Unconditional signs for the A275442 bridge

@@ -1,6 +1,9 @@
 module
 
 public import RealRooted.MultiplierSequence.PolyaSchur
+import RealRooted.MultiplierSequence.Infinite
+import RealRooted.Hadamard.Grace
+public import RealRooted.MultiplierSequence
 
 /-!
 # Finite multiplier sequences with alternating signs

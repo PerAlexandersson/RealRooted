@@ -1,9 +1,13 @@
 module
 
 public import RealRooted.Bezoutian
-public import RealRooted.Interlacing.Multiplicity
-public import RealRooted.Wronskian.Forward
-public import RealRooted.Wronskian.Successor.Interlacing
+import RealRooted.Interlacing.Multiplicity
+import RealRooted.Wronskian.Forward
+import RealRooted.Wronskian.Successor.Interlacing
+import RealRooted.Bezoutian.ComplexRoots
+import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
+import RealRooted.Bezoutian.RootEvaluation
+public import RealRooted.Bezoutian.MatrixBasics
 
 /-!
 # Successor-degree Bézout criterion

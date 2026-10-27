@@ -1,6 +1,9 @@
 module
 
 public import RealRooted.WagnerRightSum.Sign
+import RealRooted.WagnerX.AffineFactors
+import RealRooted.WagnerX.ListInterlacing
+import RealRooted.Linear
 
 /-!
 # Wagner (1): Common-right addition theorems

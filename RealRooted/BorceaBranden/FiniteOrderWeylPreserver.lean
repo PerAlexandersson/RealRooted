@@ -1,10 +1,12 @@
 module
 
-public import RealRooted.MultivariateStability.Substitution
+import RealRooted.MultivariateStability.Substitution
 public import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
 public import RealRooted.LiebSokalOperator
 public import RealRooted.MultivariateStability.Inversion
 public import Mathlib.Algebra.MvPolynomial.Monad
+import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
+import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
 
 /-!
 # Finite-order Weyl-symbol preservers

@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.HermiteBiehler.Converse
+import RealRooted.HermiteBiehler.Converse
+public import RealRooted.HermiteBiehler.Basic
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Stable univariate pencils

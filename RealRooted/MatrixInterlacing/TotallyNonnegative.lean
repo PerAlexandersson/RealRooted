@@ -1,9 +1,13 @@
 module
 
-public import RealRooted.AffineProperPosition
-public import RealRooted.InterlacingSequence.NonnegativeShift
+import RealRooted.AffineProperPosition
+import RealRooted.InterlacingSequence.NonnegativeShift
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
-public import RealRooted.MatrixInterlacing.Preservation
+import RealRooted.MatrixInterlacing.Preservation
+public import RealRooted.MatrixInterlacing.Action
+public import RealRooted.AffineFamily.Basic
+public import RealRooted.InterlacingSequenceBasic
+import RealRooted.Linear
 
 /-!
 # Totally nonnegative constant matrices preserve interlacing sequences

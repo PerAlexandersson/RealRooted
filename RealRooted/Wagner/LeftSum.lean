@@ -1,6 +1,11 @@
 module
 
-public import RealRooted.WagnerRightSum
+import RealRooted.WagnerRightSum
+import RealRooted.WagnerX.AffineFactors
+import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
+import RealRooted.Basic.PolynomialFacts
 
 /-!
 # Wagner (2): Common-left addition theorems

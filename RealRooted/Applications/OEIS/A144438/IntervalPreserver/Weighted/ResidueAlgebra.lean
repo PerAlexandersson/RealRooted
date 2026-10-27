@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ResidueAlgebra
+import RealRooted.Applications.OEIS.A144438.IntervalPreserver.ResidueAlgebra
 public import RealRooted.Applications.OEIS.A144438.IntervalPreserver.Weighted.ResidueSums
 
 /-! # Finite residue algebra for the weighted Schur complement -/

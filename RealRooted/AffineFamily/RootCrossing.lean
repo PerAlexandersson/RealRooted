@@ -10,7 +10,7 @@ public import RealRooted.ProductFamily
 public import RealRooted.AffineDerivative
 public import RealRooted.AffineFamily.Basic
 public import RealRooted.AffineFamily.PositiveFamily
-public import RealRooted.AffineFamily.Boundary
+import RealRooted.AffineFamily.Boundary
 public import RealRooted.PosCombo
 public import RealRooted.SuccDegreeLeftEndpoint
 public import RealRooted.ObreschkoffConverse
@@ -19,6 +19,11 @@ public import Mathlib.Analysis.Calculus.Deriv.Inv
 public import Mathlib.Analysis.Calculus.Deriv.Mul
 public import Mathlib.Algebra.QuadraticDiscriminant
 public import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
+import RealRooted.IteratedDerivativeShift
+public import RealRooted.SimpleRoots
+public import RealRooted.ObreschkoffContinuity
+import RealRooted.Derivative.RootCounting
+import RealRooted.Derivative.Algebra
 
 public section
 

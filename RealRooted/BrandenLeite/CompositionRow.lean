@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 public import Mathlib.RingTheory.PowerSeries.Basic
 
 /-!

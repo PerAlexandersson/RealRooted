@@ -5,8 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Data.Nat.Choose.Vandermonde
+import Mathlib.Data.Nat.Choose.Vandermonde
 public import Mathlib.Tactic.Ring
+public import Mathlib.Order.Interval.Finset.Nat
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
+public import Mathlib.Algebra.Ring.Defs
 
 /-!
 # Nanjundiah's identity

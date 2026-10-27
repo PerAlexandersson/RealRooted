@@ -1,8 +1,13 @@
 module
 
 public import RealRooted.EulerBidiagonal
-public import RealRooted.Interlacing.RootCountSigns
-public import RealRooted.RootCounting.SignChanges
+import RealRooted.Interlacing.RootCountSigns
+import RealRooted.RootCounting.SignChanges
+import RealRooted.Wronskian.Algebra
+import RealRooted.Interlacing.Residue
+import RealRooted.MaWang.StrictSigns.Assembly
+import RealRooted.MaWang.StrictSigns.RootSigns
+import RealRooted.Linear
 
 /-!
 # The general Euler step `κ(θ + a)(θ + b) + X(u + vθ)`

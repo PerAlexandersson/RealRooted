@@ -2,7 +2,9 @@ module
 
 public import Mathlib.Analysis.Complex.Polynomial.Basic
 public import RealRooted.Bezoutian.RootEvaluation
-public import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
+import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
+public import RealRooted.Bezoutian.MatrixBasics
+import RealRooted.Linear
 
 /-!
 # Complex-root exclusion from a positive Bezout matrix

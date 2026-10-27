@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.HosterStump.Permutation
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
 
 /-!
 # Graded simplicial posets and their flag vectors

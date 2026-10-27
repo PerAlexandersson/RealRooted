@@ -1,8 +1,14 @@
 module
 
-public import RealRooted.AffineDerivative
+import RealRooted.AffineDerivative
 public import RealRooted.EulerOperator.OrderNumerator.Basic
-public import RealRooted.EulerOperator.Polar.Pencil
+import RealRooted.EulerOperator.Polar.Pencil
+public import RealRooted.PFPolynomial
+import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.WagnerRightSum
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
 
 /-!
 # Pólya-frequency preservation for the order-numerator step

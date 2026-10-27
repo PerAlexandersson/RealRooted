@@ -1,8 +1,13 @@
 module
 
-public import RealRooted.OperatorMatrix.Composition
+import RealRooted.OperatorMatrix.Composition
 public import RealRooted.OperatorMatrix.OneThetaX
-public import RealRooted.ObreschkoffConverse.Derivative
+import RealRooted.ObreschkoffConverse.Derivative
+import RealRooted.OperatorMatrix.Directed
+import RealRooted.Interlacing.OuterDifference
+import RealRooted.WagnerX.AffineFactors
+import RealRooted.WagnerX.ListInterlacing
+import RealRooted.Linear
 
 /-!
 # The Euler-derivative lag operator matrices

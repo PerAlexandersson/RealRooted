@@ -1,11 +1,14 @@
 module
 
 public import Mathlib.Analysis.Convex.PathConnected
-public import RealRooted.BorceaBranden.Applications.HomogenizeStable
-public import RealRooted.HomogeneousComponentStability
+import RealRooted.BorceaBranden.Applications.HomogenizeStable
+import RealRooted.HomogeneousComponentStability
 public import RealRooted.HomogeneousStability
-public import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
+import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
 public import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
+public import RealRooted.AffineLineRestriction
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Homogeneous
+import RealRooted.RootContinuity
 
 /-!
 # Hyperbolicity and multivariate real stability

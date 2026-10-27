@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.Mathlib.Data.Nat.Factorial.Strict
+import RealRooted.Mathlib.Data.Nat.Factorial.Strict
 public import Mathlib.Tactic
 
 /-!

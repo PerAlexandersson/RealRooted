@@ -5,10 +5,13 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.GammaPencil.Invariants
-public import RealRooted.GammaPencil.Preserver
-public import RealRooted.Interlacing.NegativeRoots
-public import RealRooted.ProductOrientation
+import RealRooted.GammaPencil.Invariants
+import RealRooted.GammaPencil.Preserver
+import RealRooted.Interlacing.NegativeRoots
+import RealRooted.ProductOrientation
+public import RealRooted.GammaPencil.Basic
+import RealRooted.ObreschkoffConverse.Converse
+import RealRooted.ObreschkoffConverse.DegreeGap
 
 /-!
 # The all-rank gamma-pencil theorem

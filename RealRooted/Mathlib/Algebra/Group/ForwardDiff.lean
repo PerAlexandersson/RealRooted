@@ -6,7 +6,8 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Algebra.Group.ForwardDiff
-public import Mathlib.Analysis.Polynomial.Basic
+import Mathlib.Analysis.Polynomial.Basic
+public import Mathlib.Basic.Real.Basic
 
 /-!
 # Forward differences

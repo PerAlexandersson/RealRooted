@@ -1,8 +1,10 @@
 module
 
-public import RealRooted.Basic.Coefficients.Multivariate
-public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PolyaFrequency
-public import RealRooted.BorceaBranden.Applications.HomogenizeStable
+import RealRooted.Basic.Coefficients.Multivariate
+import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PolyaFrequency
+import RealRooted.BorceaBranden.Applications.HomogenizeStable
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput
+public import RealRooted.PFPolynomial
 
 /-!
 # PF certificates for BFJ outputs of homogenized polynomials

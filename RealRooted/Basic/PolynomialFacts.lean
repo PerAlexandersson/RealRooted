@@ -9,7 +9,7 @@ public import Mathlib.Analysis.SpecificLimits.Basic
 public import Mathlib.Data.List.Sort
 public import Mathlib.Basic.Real.Basic
 public import RealRooted.Mathlib.Data.Nat.Cast.Basic
-public import RealRooted.Mathlib.Data.Nat.Choose.Cast
+import RealRooted.Mathlib.Data.Nat.Choose.Cast
 public import RealRooted.Mathlib.Data.List.Interleave
 
 public section

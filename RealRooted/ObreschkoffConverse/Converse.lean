@@ -1,6 +1,12 @@
 module
 
-public import RealRooted.ObreschkoffConverse.Regularization
+import RealRooted.ObreschkoffConverse.Regularization
+public import RealRooted.AllCombo
+import RealRooted.MaWang.Strong
+import RealRooted.MaWang.StrictSigns.Assembly
+import RealRooted.WagnerRightSum.Sign
+import RealRooted.WagnerX.AffineFactors
+import RealRooted.Linear
 
 /-!
 # Obreschkoff converse endgame

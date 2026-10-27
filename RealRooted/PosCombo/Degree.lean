@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.Linear
+import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Degrees of positive polynomial combinations

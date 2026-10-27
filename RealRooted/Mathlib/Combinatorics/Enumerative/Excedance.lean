@@ -5,9 +5,12 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Combinatorics.Derangements.Finite
+import Mathlib.Combinatorics.Derangements.Finite
 public import Mathlib.Data.Fintype.Prod
 public import Mathlib.Data.List.FinRange
+public import Mathlib.Algebra.Group.End
+public import Mathlib.Data.Finset.Prod
+public import Mathlib.Data.Fintype.Basic
 
 /-!
 # Excedances and inversions of finite permutations

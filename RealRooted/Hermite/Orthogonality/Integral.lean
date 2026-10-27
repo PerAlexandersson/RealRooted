@@ -5,14 +5,20 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Hermite.Orthogonality
-public import RealRooted.Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
+import RealRooted.Hermite.Orthogonality
+import RealRooted.Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 
 import Mathlib.RingTheory.Polynomial.Hermite.Gaussian
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 import Mathlib.Algebra.Polynomial.Eval.SMul
 import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Ring
+public import RealRooted.Hermite.Favard
+public import RealRooted.Favard.Orthogonality
+import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
+public import Mathlib.MeasureTheory.Measure.Haar.OfBasis
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
+public import Mathlib.Analysis.Calculus.Deriv.Basic
 
 /-!
 # Gaussian integral orthogonality for probabilists' Hermite polynomials

@@ -1,8 +1,9 @@
 module
 
-public import RealRooted.Wronskian.OdeRootExclusion
-public import RealRooted.MaWang.DerivativeStep
-public import RealRooted.Recurrence.RowModel
+import RealRooted.Wronskian.OdeRootExclusion
+import RealRooted.MaWang.DerivativeStep
+import RealRooted.Recurrence.RowModel
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # The row polynomials of OEIS A286785

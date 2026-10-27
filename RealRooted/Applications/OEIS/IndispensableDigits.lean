@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.MatrixInterlacing.DigitStep
-public import RealRooted.Recurrence.RowModel
+import RealRooted.MatrixInterlacing.DigitStep
+import RealRooted.Recurrence.RowModel
+import RealRooted.ThresholdMatrix.HaglundZhang
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Indispensable-digit polynomial models

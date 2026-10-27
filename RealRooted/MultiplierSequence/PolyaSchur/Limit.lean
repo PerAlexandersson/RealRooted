@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
-public import RealRooted.MultiplierSequence.PolyaSchur
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
+import RealRooted.MultiplierSequence.PolyaSchur
+public import RealRooted.MultiplierSequence.Infinite
 
 /-!
 # Pointwise limits of PF multiplier sequences

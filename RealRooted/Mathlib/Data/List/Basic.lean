@@ -6,7 +6,8 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Data.List.Basic
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 
 /-!
 # Additional basic list lemmas

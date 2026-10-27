@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.Basic
-public import RealRooted.RootCounting.Finite
+import RealRooted.RootCounting.Finite
 public import RealRooted.SortedRoots
 
 /-!

@@ -1,9 +1,12 @@
 module
 
-public import RealRooted.Applications.OEIS.A144696.FactorialWeight
+import RealRooted.Applications.OEIS.A144696.FactorialWeight
 public import RealRooted.Interlacing.ResidueCriterion
-public import RealRooted.MaWang.StrictStep
-public import RealRooted.Wagner.NonpositiveRoots
+import RealRooted.MaWang.StrictStep
+import RealRooted.Wagner.NonpositiveRoots
+public import RealRooted.Applications.OEIS.A144696.Basic
+import RealRooted.MaWang.StrictSigns.Assembly
+import RealRooted.Linear
 
 /-!
 # Strict interlacing for the A144696 Bernstein-image triangle

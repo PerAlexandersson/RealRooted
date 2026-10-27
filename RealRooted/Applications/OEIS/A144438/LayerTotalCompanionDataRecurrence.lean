@@ -1,11 +1,16 @@
 module
 
-public import RealRooted.Applications.OEIS.A144438.LayerTotalAffineStability
+import RealRooted.Applications.OEIS.A144438.LayerTotalAffineStability
 public import RealRooted.Applications.OEIS.A144438.LayerTotalCompanionCoreQuadratic
-public import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
-public import RealRooted.MultivariateStability.AffineEulerCore
+import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
+import RealRooted.MultivariateStability.AffineEulerCore
 public import RealRooted.MultivariateStability.AllCombo
-public import RealRooted.MultivariateStability.RayleighPencil
+import RealRooted.MultivariateStability.RayleighPencil
+public import RealRooted.Applications.OEIS.A144438.LayerTotalDiscriminantReduction
+import RealRooted.Applications.OEIS.A144438.LayerTotalStabilityReduction
+import RealRooted.Applications.OEIS.A144438.LayerTotalStability
+import RealRooted.Applications.OEIS.A144438.LayerTotalStructure
+import RealRooted.MultivariateStability.Specialization
 
 /-!
 # Exact successor reduction for the Deco companion data

@@ -1,7 +1,10 @@
 module
 
-public import RealRooted.CoefficientDominance.Sequence
-public import RealRooted.Mathlib.Algebra.Polynomial.Dominance
+import RealRooted.CoefficientDominance.Sequence
+import RealRooted.Mathlib.Algebra.Polynomial.Dominance
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Algebra.Polynomial.Eval.Defs
+public import Mathlib.Algebra.Polynomial.Degree.Defs
 
 /-!
 # Coefficient dominance from log-concavity

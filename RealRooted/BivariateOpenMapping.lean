@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.Mathlib.Analysis.Complex.OpenMapping
-public import RealRooted.PartialSymmetrization
+import RealRooted.PartialSymmetrization
 
 /-!
 # Open mapping for bivariate multiaffine quotients

@@ -1,6 +1,10 @@
 module
 
-public import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.NodeInterlacing
+import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.NodeInterlacing
+public import RealRooted.ParkingFunctions.ToricContribution.Definitions
+import RealRooted.CommonInterleaver.FamilyUpgrade
+public import RealRooted.CommonInterleaver.RootDesc
+public import RealRooted.InterlacingSequenceBasic
 
 /-!
 # Common interlacer for the A390883 toric-contribution family

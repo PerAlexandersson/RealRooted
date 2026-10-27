@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.Analysis.FactorialTail
+import RealRooted.Analysis.FactorialTail
 public import RealRooted.Applications.OEIS.A144696.Basic
 
 /-!

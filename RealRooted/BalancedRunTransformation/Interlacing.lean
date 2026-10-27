@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.BalancedRunTransformation.Preservation
-public import RealRooted.OperatorInterlacingUpgrade
+import RealRooted.BalancedRunTransformation.Preservation
+import RealRooted.OperatorInterlacingUpgrade
+public import RealRooted.BalancedRunTransformation
 
 /-!
 # Interlacing preservation for the balanced run transformation

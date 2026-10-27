@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.PolyaFrequencyConvolution
+import RealRooted.PolyaFrequencyConvolution
+public import RealRooted.AissenSchoenbergWhitneyBase
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 
 /-!
 # Geometric scaling of Pólya-frequency sequences

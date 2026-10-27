@@ -3,6 +3,7 @@ module
 public import RealRooted.AissenSchoenbergWhitneyBase
 public import Mathlib.LinearAlgebra.Matrix.Block
 public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 
 /-!
 # The Toeplitz matrix in Karlin's finite-order sector theorem

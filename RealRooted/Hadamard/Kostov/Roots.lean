@@ -1,9 +1,10 @@
 module
 
 public import RealRooted.Hadamard.Kostov.Eigen
-public import RealRooted.Hadamard.Kostov.Interlacing
-public import RealRooted.Bezoutian.WronskianConverse
-public import RealRooted.Wronskian.Successor.Interlacing
+import RealRooted.Hadamard.Kostov.Interlacing
+import RealRooted.Bezoutian.WronskianConverse
+import RealRooted.Wronskian.Successor.Interlacing
+public import RealRooted.Hadamard.Kostov.RootReal
 
 public section
 

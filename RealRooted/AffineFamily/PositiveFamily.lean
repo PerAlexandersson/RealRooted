@@ -2,6 +2,7 @@ module
 
 public import RealRooted.AffineFamily.Basic
 public import RealRooted.ObreschkoffContinuity
+import RealRooted.Linear
 
 /-!
 # Affine family: positive-family packaging

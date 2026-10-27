@@ -5,8 +5,9 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.CenteredEulerian.Parity
+import RealRooted.CenteredEulerian.Parity
 public import RealRooted.CenteredEulerian.EulerFormula
+public import RealRooted.CenteredEulerian.FormalArcsin
 
 /-!
 # The basis `p_n` and the matrix of multiplication by `c²`

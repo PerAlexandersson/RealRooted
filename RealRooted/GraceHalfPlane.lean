@@ -1,8 +1,11 @@
 module
 
 public import RealRooted.Apolarity
-public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
-public import Mathlib.Analysis.Complex.Convex
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+import Mathlib.Analysis.Complex.Convex
+import RealRooted.Mathlib.Data.Nat.Cast.Basic
+import Mathlib.Analysis.Complex.Polynomial.Basic
+public import Mathlib.Analysis.Convex.Basic
 
 @[expose] public section
 

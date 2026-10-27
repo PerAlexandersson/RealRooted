@@ -1,6 +1,9 @@
 module
 
-public import RealRooted.BorceaBranden.RealFiniteHomotopy
+import RealRooted.BorceaBranden.RealFiniteHomotopy
+import RealRooted.BorceaBranden.RealFiniteNecessity
+public import RealRooted.BorceaBranden.RealFiniteClassification
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 
 @[expose] public section
 

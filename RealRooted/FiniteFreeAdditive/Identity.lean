@@ -1,10 +1,11 @@
 module
 
 public import RealRooted.FiniteFreeAdditive
-public import RealRooted.ElementaryDifferential
-public import RealRooted.LiebSokalOperator.Linearity
+import RealRooted.ElementaryDifferential
+import RealRooted.LiebSokalOperator.Linearity
 public import RealRooted.Multiaffine.Reciprocal
 public import RealRooted.Polarization
+public import RealRooted.LiebSokalOperator
 
 /-!
 # Finite-free additive convolution differential identity

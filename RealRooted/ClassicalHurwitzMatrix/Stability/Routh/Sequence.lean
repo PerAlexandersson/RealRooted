@@ -1,9 +1,14 @@
 module
 
 public import RealRooted.ClassicalHurwitzMatrix.Routh.Sequence
-public import RealRooted.ClassicalHurwitzMatrix.Routh.TotallyNonnegative
-public import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.ProperPosition
-public import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
+import RealRooted.ClassicalHurwitzMatrix.Routh.TotallyNonnegative
+import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.ProperPosition
+import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
+import RealRooted.ClassicalHurwitzMatrix.Stability.Routh
+import RealRooted.ClassicalHurwitzMatrix.Stability.Parity
+import RealRooted.ClassicalHurwitzMatrix.Routh.Determinant
+public import RealRooted.ClassicalHurwitzMatrix.Routh
+public import RealRooted.ClassicalHurwitzMatrix.Stability
 
 /-!
 # Stable Routh sequences and leading Hurwitz determinants

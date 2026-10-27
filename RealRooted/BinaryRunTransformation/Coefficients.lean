@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.BasisTransform
-public import RealRooted.Mathlib.Data.Nat.Choose.Nanjundiah
+import RealRooted.BasisTransform
+import RealRooted.Mathlib.Data.Nat.Choose.Nanjundiah
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Binary-run transformation: coefficient algebra

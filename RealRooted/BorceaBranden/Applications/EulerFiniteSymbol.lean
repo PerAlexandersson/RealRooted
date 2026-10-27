@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
+import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
+public import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
 
 @[expose] public section
 

@@ -3,6 +3,8 @@ module
 public import RealRooted.AffineLineRestriction
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Homogeneous
+import RealRooted.RootContinuity
 
 /-!
 # Stability of the top homogeneous component

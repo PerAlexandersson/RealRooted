@@ -1,9 +1,11 @@
 module
 
-public import Mathlib.Algebra.Polynomial.BigOperators
+import Mathlib.Algebra.Polynomial.BigOperators
 public import Mathlib.Algebra.Polynomial.Eval.Coeff
 public import Mathlib.Data.Nat.Fib.Basic
 public import Mathlib.Tactic.IrreducibleDef
+public import Mathlib.Algebra.Polynomial.Eval.Defs
+public import Mathlib.Algebra.Polynomial.Degree.Defs
 
 /-!
 # Big descents of 321-avoiding permutations: the polynomial families

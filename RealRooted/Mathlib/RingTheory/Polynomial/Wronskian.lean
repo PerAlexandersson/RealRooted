@@ -5,7 +5,7 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Algebra.Polynomial.FieldDivision
+import Mathlib.Algebra.Polynomial.FieldDivision
 public import Mathlib.RingTheory.Polynomial.Wronskian
 public import Mathlib.RingTheory.PrincipalIdealDomain
 public import Mathlib.Tactic.Ring

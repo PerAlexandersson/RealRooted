@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.BrandenLeite.Network
-public import RealRooted.BrandenLeite.ResolvableTotallyNonneg
+import RealRooted.BrandenLeite.ResolvableTotallyNonneg
 
 /-!
 # Total nonnegativity of triangular-network path matrices

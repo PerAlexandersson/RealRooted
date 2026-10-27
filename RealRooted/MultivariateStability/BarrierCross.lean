@@ -1,8 +1,9 @@
 module
 
-public import Mathlib.Analysis.Convex.Deriv
-public import RealRooted.MultivariateStability.BarrierPick
-public import RealRooted.MultivariateStability.PickRatio
+import Mathlib.Analysis.Convex.Deriv
+import RealRooted.MultivariateStability.BarrierPick
+import RealRooted.MultivariateStability.PickRatio
+public import RealRooted.MultivariateStability.Barrier
 
 /-!
 # The MSS barrier along a coordinate line

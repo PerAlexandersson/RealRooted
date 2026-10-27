@@ -1,19 +1,32 @@
 module
 
-public import RealRooted.HermiteBiehler.OrientedPencil
-public import RealRooted.CriticalValueContinuation
-public import RealRooted.DegreeDropReversal
-public import RealRooted.Interlacing.Residue
+import RealRooted.HermiteBiehler.OrientedPencil
+import RealRooted.CriticalValueContinuation
+import RealRooted.DegreeDropReversal
+import RealRooted.Interlacing.Residue
 public import RealRooted.IteratedDerivativeShift
-public import RealRooted.LiuOppositeSigns.JensenRootCount
-public import RealRooted.Mathlib.Data.List.Zip
-public import RealRooted.PFPolynomial.Closure
-public import RealRooted.RootCountLocalConstancy
-public import RealRooted.RootCounting.CrossingExhaustion
+import RealRooted.LiuOppositeSigns.JensenRootCount
+import RealRooted.Mathlib.Data.List.Zip
+import RealRooted.PFPolynomial.Closure
+import RealRooted.RootCountLocalConstancy
+import RealRooted.RootCounting.CrossingExhaustion
 public import RealRooted.RootCounting.Descartes
-public import RealRooted.SameDegreeMultiplicityLowerCount
-public import RealRooted.Wronskian.WeakForward
-public import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
+import RealRooted.SameDegreeMultiplicityLowerCount
+import RealRooted.Wronskian.WeakForward
+import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
+import RealRooted.Mathlib.Algebra.Polynomial.RuleOfSigns
+import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
+import RealRooted.HermiteBiehler.Converse
+import RealRooted.HermiteBiehler.ConverseLowDegree
+import RealRooted.HermiteBiehler.Forward
+public import RealRooted.HermiteBiehler.Basic
+import RealRooted.ObreschkoffConverse.Derivative
+import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.ObreschkoffConverse.Converse
+public import RealRooted.AllCombo
+import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
+import RealRooted.Linear
+import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
 
 /-!
 # Quadratic interlacing closure

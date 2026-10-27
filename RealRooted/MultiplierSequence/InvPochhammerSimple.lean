@@ -1,7 +1,12 @@
 module
 
-public import RealRooted.Hadamard.SchurSzegoSimple
-public import RealRooted.MultiplierSequence.InvPochhammer
+import RealRooted.Hadamard.SchurSzegoSimple
+import RealRooted.MultiplierSequence.InvPochhammer
+import RealRooted.MultiplierSequence.PolyaSchur
+import RealRooted.Laguerre.Roots
+public import RealRooted.MultiplierSequence
+public import RealRooted.SimpleRoots
+import RealRooted.Mathlib.Algebra.Polynomial.Roots
 
 /-!
 # Simple roots under reciprocal-Pochhammer transforms

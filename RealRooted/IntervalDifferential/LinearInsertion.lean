@@ -5,13 +5,21 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.IntervalDifferential.Degree
+import RealRooted.IntervalDifferential.Degree
 public import RealRooted.IntervalDifferential.Certificates
-public import RealRooted.Mathlib.Algebra.Polynomial.IntervalSignChanges
+import RealRooted.Mathlib.Algebra.Polynomial.IntervalSignChanges
 public import Mathlib.Data.Finset.Sort
 public import Mathlib.Algebra.Polynomial.FieldDivision
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.Ring
+import Mathlib.Data.Sym.Sym2.Init
+import Mathlib.Order.Fin.Tuple
+import Mathlib.Topology.MetricSpace.Bounded
+import Mathlib.Data.EReal.Operations
+import Mathlib.Topology.Algebra.InfiniteSum.Order
+import Mathlib.Analysis.Normed.Field.Basic
+meta import Lean.Meta.Tactic.NormCast
+public import Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Linear insertion into the centered differential operator

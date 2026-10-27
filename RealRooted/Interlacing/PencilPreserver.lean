@@ -1,9 +1,14 @@
 module
 
-public import RealRooted.OperatorPreservesInterlacing
-public import RealRooted.Interlacing.NegativeRoots
-public import RealRooted.LiuOppositeSigns.RootDeletion
+import RealRooted.OperatorPreservesInterlacing
+import RealRooted.Interlacing.NegativeRoots
+import RealRooted.LiuOppositeSigns.RootDeletion
 public import RealRooted.SimpleRoots
+import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.ObreschkoffConverse.Converse
+import RealRooted.Linear
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Linear maps preserving interlacing of negative-rooted pairs

@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.AffineFamily.PF
-public import RealRooted.ChudnovskySeymour.PF
+import RealRooted.AffineFamily.PF
+import RealRooted.ChudnovskySeymour.PF
+public import RealRooted.PFPolynomial
 
 /-!
 # Local-to-global preservation for operator matrices

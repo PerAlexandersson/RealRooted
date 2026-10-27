@@ -1,6 +1,8 @@
 module
 
 public import RealRooted.GeneralizedLiuWang
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
 
 /-!
 # Liu--Wang derivative-lag recursions

@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.CoefficientShape.Hoggar
+import RealRooted.CoefficientShape.Hoggar
 public import Mathlib.Data.Nat.Factorial.Basic
+public import RealRooted.CoefficientShape
 
 /-!
 # Liggett's theorem

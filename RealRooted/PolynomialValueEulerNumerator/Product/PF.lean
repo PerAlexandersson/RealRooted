@@ -1,7 +1,10 @@
 module
 
-public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PFHomogenize
-public import RealRooted.PolynomialValueEulerNumerator.Product
+import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PFHomogenize
+import RealRooted.PolynomialValueEulerNumerator.Product
+import RealRooted.PolynomialValueEulerNumerator.PF
+public import RealRooted.PolynomialValueEulerNumerator
+public import RealRooted.PFPolynomial
 
 /-!
 # PF closure for products of polynomial-value Euler numerators

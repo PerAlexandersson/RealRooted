@@ -2,7 +2,7 @@ module
 
 public import RealRooted.Mathlib.RingTheory.PowerSeries.Sqrt
 public import RealRooted.Mathlib.RingTheory.PowerSeries.MapDerivation
-public import RealRooted.Mathlib.RingTheory.PowerSeries.NestedConstants
+import RealRooted.Mathlib.RingTheory.PowerSeries.NestedConstants
 public import RealRooted.Mathlib.Algebra.Polynomial.Antiderivative
 public import Mathlib.Algebra.Polynomial.Derivation
 

@@ -1,9 +1,9 @@
 module
 
 public import RealRooted.BrandenVecchi.SupersymmetricCoefficients
-public import RealRooted.Mathlib.Analysis.SpecialFunctions.Choose
-public import RealRooted.PFPolynomial.Closure
-public import Mathlib.Analysis.SpecialFunctions.Log.Summable
+import RealRooted.Mathlib.Analysis.SpecialFunctions.Choose
+import RealRooted.PFPolynomial.Closure
+import Mathlib.Analysis.SpecialFunctions.Log.Summable
 public import Mathlib.RingTheory.PowerSeries.Exp
 public import Mathlib.RingTheory.PowerSeries.PiTopology
 

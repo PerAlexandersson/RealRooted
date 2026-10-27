@@ -6,8 +6,9 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
-public import RealRooted.Mathlib.Analysis.Normed.Ring.Power
+import RealRooted.Mathlib.Analysis.Normed.Ring.Power
 public import Mathlib.Tactic.Linarith
+public import Mathlib.Analysis.Normed.Ring.Basic
 
 /-!
 # Norm bounds for quadratic recurrence solutions

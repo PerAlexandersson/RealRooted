@@ -3,7 +3,12 @@ module
 public import RealRooted.AllCombo
 public import RealRooted.GraceHalfPlane
 public import RealRooted.Hadamard.Cubic
-public import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
+import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
+public import RealRooted.Hadamard.Basic
+import RealRooted.DegreeDropReversal
+import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
+import RealRooted.Linear
+import RealRooted.Mathlib.Data.Nat.Choose.Cast
 
 public section
 

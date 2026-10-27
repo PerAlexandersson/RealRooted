@@ -1,8 +1,9 @@
 module
 
-public import RealRooted.FiniteFreeAdditive.Identity
-public import RealRooted.HermiteBiehler.Basic
-public import RealRooted.LiebSokal
+import RealRooted.FiniteFreeAdditive.Identity
+import RealRooted.HermiteBiehler.Basic
+import RealRooted.LiebSokal
+public import RealRooted.FiniteFreeAdditive
 
 /-!
 # Finite-free additive convolution preservation

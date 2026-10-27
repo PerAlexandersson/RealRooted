@@ -1,9 +1,10 @@
 module
 
-public import RealRooted.Recurrence.Uniqueness
-public import RealRooted.Recurrence.RowModel
+import RealRooted.Recurrence.Uniqueness
+import RealRooted.Recurrence.RowModel
 public import RealRooted.CombinatorialExamples.BigDescentsOddBinom
 public import RealRooted.GeneralizedEulerian
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
 # Degree models for higher-order derivative recurrences

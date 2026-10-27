@@ -2,6 +2,8 @@ module
 
 public import RealRooted.Multiaffine
 public import RealRooted.MultivariateStability
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Algebra.MvPolynomial.Funext
 
 /-!
 # Multiaffine reciprocal transforms

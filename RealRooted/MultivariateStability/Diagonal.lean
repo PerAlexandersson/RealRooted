@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Diagonal
-public import RealRooted.MultivariateStability.SamePhase
+import RealRooted.MultivariateStability.SamePhase
+public import RealRooted.SamePhaseStability
 
 /-!
 # Real stability and diagonal restriction

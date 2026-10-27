@@ -1,8 +1,10 @@
 module
 
-public import RealRooted.HeilmannLieb
+import RealRooted.HeilmannLieb
 public import RealRooted.RankTwoMatching.Transform
 public import RealRooted.Graph.MatchingVertexInterlacing
+public import RealRooted.Graph.MatchingPolynomial
+import RealRooted.Graph.IndependencePolynomial.ClawFree
 
 /-!
 # Heilmann–Lieb challenge entry point

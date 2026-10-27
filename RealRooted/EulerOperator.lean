@@ -3,8 +3,10 @@ module
 public import RealRooted.Derivative
 public import RealRooted.PFPolynomial
 public import RealRooted.ObreschkoffConverse
-public import RealRooted.OrderedRoots
-public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.OrderedRoots
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.ObreschkoffConverse.Derivative
+import RealRooted.WagnerX.ListInterlacing
 
 @[expose] public section
 

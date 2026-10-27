@@ -1,11 +1,11 @@
 module
 
 public import RealRooted.Basic
-public import RealRooted.Linear
-public import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
-public import RealRooted.RootCountFinite
-public import Mathlib.Analysis.Complex.Polynomial.Basic
-public import Mathlib.Analysis.Normed.Field.Approximation
+import RealRooted.Linear
+import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
+import RealRooted.RootCountFinite
+import Mathlib.Analysis.Complex.Polynomial.Basic
+import Mathlib.Analysis.Normed.Field.Approximation
 public import Mathlib.Topology.Order.IntermediateValue
 public import Mathlib.Topology.Algebra.Polynomial
 

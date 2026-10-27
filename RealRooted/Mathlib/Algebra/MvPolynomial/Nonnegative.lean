@@ -8,7 +8,7 @@ module
 public import Mathlib.Algebra.MvPolynomial.PDeriv
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.RingTheory.MvPolynomial.Homogeneous
-public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
+import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
 
 /-!
 # Multivariate polynomials with nonnegative coefficients

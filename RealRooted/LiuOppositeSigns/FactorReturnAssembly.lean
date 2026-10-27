@@ -1,8 +1,11 @@
 module
 
-public import RealRooted.LiuOppositeSigns.FactorReturnLeft
-public import RealRooted.LiuOppositeSigns.FactorReturnTwoDegree
+import RealRooted.LiuOppositeSigns.FactorReturnLeft
+import RealRooted.LiuOppositeSigns.FactorReturnTwoDegree
 public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount
+import RealRooted.LiuOppositeSigns.DeletionBranches
+public import RealRooted.LiuOppositeSigns
+public import RealRooted.Compatibility.Pair
 
 /-!
 # Liu reverse direction by factor return

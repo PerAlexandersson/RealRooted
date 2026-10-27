@@ -2,6 +2,8 @@ module
 
 public import RealRooted.LiuOppositeSigns.PositiveSplitRootCount
 public import RealRooted.WagnerX
+import RealRooted.LiuOppositeSigns.RootDeletion
+import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Nonnegative coefficients for Liu root deletion

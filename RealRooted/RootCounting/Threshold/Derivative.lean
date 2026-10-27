@@ -1,7 +1,11 @@
 module
 
-public import RealRooted.RootAmplitude.Polynomial
-public import RealRooted.RootCounting.Threshold.Sorted
+import RealRooted.RootAmplitude.Polynomial
+import RealRooted.RootCounting.Threshold.Sorted
+public import RealRooted.SortedRoots
+import Mathlib.Data.Sym.Sym2.Init
+public import Mathlib.Algebra.Polynomial.Splits
+import Mathlib.Tactic.FieldSimp
 
 /-!
 # Derivative signs at ordered negative roots

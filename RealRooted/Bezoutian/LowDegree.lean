@@ -1,6 +1,11 @@
 module
 
-public import RealRooted.Bezoutian.WronskianConverse
+import RealRooted.Bezoutian.WronskianConverse
+import RealRooted.Bezoutian.ComplexRoots
+import RealRooted.Bezoutian.RootEvaluation
+public import RealRooted.Bezoutian.MatrixBasics
+import RealRooted.Linear
+import RealRooted.Basic.PolynomialFacts
 
 /-!
 # Low-degree Bezoutian characterization

@@ -6,7 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.CombinatorialExamples.ZigzagEulerian.Definitions
-public import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
+import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
 public import Mathlib.Algebra.Polynomial.Splits
 public import Mathlib.Tactic.FieldSimp
 public import Mathlib.Tactic.Linarith

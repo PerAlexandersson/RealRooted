@@ -1,6 +1,9 @@
 module
 
-public import RealRooted.EulerBidiagonal.GeneralRows
+import RealRooted.EulerBidiagonal.GeneralRows
+import RealRooted.EulerBidiagonal.PairTheorem
+import RealRooted.EulerBidiagonal.PairStep
+public import RealRooted.EulerBidiagonal.General
 
 /-!
 # Rows with an index-dependent multiplier

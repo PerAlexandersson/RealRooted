@@ -1,8 +1,10 @@
 module
 
 public import RealRooted.MultiplierSequence.JensenHypergeometric
-public import RealRooted.Recurrence.RowModel
-public import RealRooted.Recurrence.Uniqueness
+import RealRooted.Recurrence.RowModel
+import RealRooted.Recurrence.Uniqueness
+public import RealRooted.MultiplierSequence.TwoSidedJensen
+import RealRooted.Mathlib.Data.Nat.Choose.Cast
 
 /-!
 # The A155495 coefficient model

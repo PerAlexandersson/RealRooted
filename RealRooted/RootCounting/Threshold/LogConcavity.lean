@@ -1,7 +1,11 @@
 module
 
-public import RealRooted.CoefficientDominance.LogConcavity
-public import RealRooted.RootCounting.Threshold.Basic
+import RealRooted.CoefficientDominance.LogConcavity
+import RealRooted.RootCounting.Threshold.Basic
+import Mathlib.Data.Sym.Sym2.Init
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Algebra.Polynomial.Eval.Defs
+public import Mathlib.Algebra.Polynomial.Degree.Defs
 
 /-!
 # Signed evaluation from log-concave coefficient dominance

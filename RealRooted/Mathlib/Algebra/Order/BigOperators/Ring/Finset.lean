@@ -6,8 +6,10 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-public import Mathlib.Analysis.Real.Sqrt
+import Mathlib.Analysis.Real.Sqrt
 public import Mathlib.Tactic.Ring
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 
 /-!
 # Inequalities for finite sums in an ordered ring

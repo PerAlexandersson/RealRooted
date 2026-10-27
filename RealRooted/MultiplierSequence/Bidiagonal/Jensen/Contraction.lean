@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.JensenPencilContraction
+import RealRooted.JensenPencilContraction
 public import RealRooted.MultiplierSequence.Bidiagonal.Jensen
+import RealRooted.Hadamard.Grace
 
 /-!
 # Jensen-pencil contraction for bidiagonal operators

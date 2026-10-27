@@ -1,10 +1,18 @@
 module
 
-public import RealRooted.BinaryRunTransformation.CrossLength
+import RealRooted.BinaryRunTransformation.CrossLength
 public import Mathlib.Algebra.Polynomial.Eval.Degree
 public import RealRooted.MultiplierSequence.Infinite
-public import RealRooted.MultiplierSequence.InvPochhammer
-public import RealRooted.Transforms.ReverseHermite.Preservation
+import RealRooted.MultiplierSequence.InvPochhammer
+import RealRooted.Transforms.ReverseHermite.Preservation
+public import RealRooted.Transforms.ReverseHermite.Basic
+import RealRooted.BinaryRunTransformation.Interlacing
+import RealRooted.BinaryRunTransformation.Sturm
+public import RealRooted.BinaryRunTransformation.Coefficients
+import RealRooted.EulerOperator.Pencil
+public import RealRooted.EulerOperator
+import RealRooted.PosCombo
+import RealRooted.Linear
 
 /-!
 # Multiplier-weighted Motzkin polynomials

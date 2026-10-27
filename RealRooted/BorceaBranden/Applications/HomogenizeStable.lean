@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
+import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
 public import RealRooted.MultivariateStability
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.Algebra.Polynomial.Homogenize
 
 /-!
 # Stable homogenization of real-rooted polynomials

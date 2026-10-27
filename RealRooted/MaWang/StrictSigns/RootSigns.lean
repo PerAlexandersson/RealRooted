@@ -1,6 +1,10 @@
 module
 
 public import RealRooted.MaWang.CountBounds
+import RealRooted.WagnerRightSum.Sign
+import RealRooted.WagnerX.ListInterlacing
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.RootLists
 
 public section
 

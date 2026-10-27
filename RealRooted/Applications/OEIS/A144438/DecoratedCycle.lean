@@ -1,7 +1,9 @@
 module
 
 public import RealRooted.Applications.OEIS.A144438
-public import RealRooted.DerivativeRecurrence.QuadraticLagStrict
+import RealRooted.DerivativeRecurrence.QuadraticLagStrict
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.Linear
 
 /-!
 # Decorated cycle-q Eulerian recurrence

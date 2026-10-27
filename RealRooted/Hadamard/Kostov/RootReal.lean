@@ -3,6 +3,8 @@ module
 public import RealRooted.Hadamard.Kostov.Eigen
 public import RealRooted.Bezoutian.WronskianConverse
 public import RealRooted.Wronskian.Successor.Interlacing
+import RealRooted.Hadamard.Kostov.Tangent
+public import RealRooted.Hadamard.Kostov.BernsteinRoots
 
 @[expose] public section
 

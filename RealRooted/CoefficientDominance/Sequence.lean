@@ -1,11 +1,13 @@
 module
 
-public import Mathlib.Algebra.Order.BigOperators.Group.Finset
+import Mathlib.Algebra.Order.BigOperators.Group.Finset
 public import Mathlib.Algebra.Order.Field.Basic
-public import Mathlib.Algebra.Ring.GeomSum
+import Mathlib.Algebra.Ring.GeomSum
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.Ring
+import Mathlib.Data.Rat.Cast.Order
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 
 /-!
 # Geometric decay of log-concave sequences

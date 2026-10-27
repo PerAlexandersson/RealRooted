@@ -1,6 +1,9 @@
 module
 
-public import RealRooted.CommonInterleaver.Finite
+import RealRooted.CommonInterleaver.Finite
+import RealRooted.CommonInterleaver.RootSlots
+public import RealRooted.CommonInterleaver.RootSlots.Basic
+public import RealRooted.CommonInterleaver.RootDesc
 
 /-!
 # Common interleavers: sequence construction

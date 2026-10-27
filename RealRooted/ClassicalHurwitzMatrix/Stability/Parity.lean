@@ -1,8 +1,10 @@
 module
 
-public import RealRooted.ClassicalHurwitzMatrix.Stability.HermiteBiehler
+import RealRooted.ClassicalHurwitzMatrix.Stability.HermiteBiehler
 public import RealRooted.ClassicalHurwitzMatrix.Routh
-public import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.WagnerX.NonnegativeRoots
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Rotation
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Coefficient consequences for Hurwitz parity parts

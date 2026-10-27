@@ -5,10 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Analysis.Complex.CauchyIntegral
+import Mathlib.Analysis.Complex.CauchyIntegral
 public import Mathlib.Analysis.Calculus.LogDeriv
 public import Mathlib.Analysis.Calculus.FDeriv.Analytic
 public import Mathlib.Analysis.Analytic.Constructions
+public import Mathlib.MeasureTheory.Integral.CircleIntegral
 
 /-!
 # The argument principle on circles

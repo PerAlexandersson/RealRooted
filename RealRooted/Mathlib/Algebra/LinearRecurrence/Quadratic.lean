@@ -6,7 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Algebra.LinearRecurrence
-public import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.LinearCombination
 public import Mathlib.Tactic.Ring
 
 /-!

@@ -2,6 +2,7 @@ module
 
 public import RealRooted.InterlacingSequenceBasic
 public import RealRooted.Tactic.Finish
+import Mathlib
 
 /-!
 # Finish tactic examples

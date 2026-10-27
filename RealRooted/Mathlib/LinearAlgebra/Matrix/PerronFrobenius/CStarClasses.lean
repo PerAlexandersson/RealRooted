@@ -6,9 +6,9 @@ Authors: Matteo Cipollina
 module
 
 public import Mathlib.Algebra.BigOperators.Field
-public import Mathlib.Algebra.EuclideanDomain.Basic
-public import Mathlib.Algebra.EuclideanDomain.Field
-public import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Algebra.EuclideanDomain.Basic
+import Mathlib.Algebra.EuclideanDomain.Field
+import Mathlib.Analysis.CStarAlgebra.Classes
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
 
 /-!

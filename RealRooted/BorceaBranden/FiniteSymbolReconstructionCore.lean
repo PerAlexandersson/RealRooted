@@ -1,8 +1,10 @@
 module
 
-public import RealRooted.BorceaBranden.FiniteSymbolBasis
-public import RealRooted.BorceaBranden.FiniteSymbolCoefficient
+import RealRooted.BorceaBranden.FiniteSymbolBasis
+import RealRooted.BorceaBranden.FiniteSymbolCoefficient
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
+public import RealRooted.LiebSokalOperator
+public import RealRooted.MultivariateStability
 
 /-!
 # Reconstruction coefficients for the finite-symbol argument

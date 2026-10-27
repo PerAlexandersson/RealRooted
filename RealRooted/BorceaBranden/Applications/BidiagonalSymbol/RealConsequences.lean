@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
-public import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing
+import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing
 
 /-!
 # Real consequences of stable affine bidiagonal symbols

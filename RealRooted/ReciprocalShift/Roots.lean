@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.Mathlib.Algebra.Polynomial.Reverse
+import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 public import RealRooted.PFPolynomial
 
 /-!

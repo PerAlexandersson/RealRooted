@@ -6,7 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.EulerOperator.Shift
-public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.SecondOrder
+import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.SecondOrder
 public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.DifferentialOperator
 
 import Mathlib.Tactic

@@ -1,9 +1,10 @@
 module
 
-public import RealRooted.Applications.OEIS.A367177
+import RealRooted.Applications.OEIS.A367177
 public import RealRooted.MultiplierSequence.JensenHypergeometric
-public import RealRooted.Recurrence.RowModel
-public import RealRooted.Recurrence.Uniqueness
+import RealRooted.Recurrence.RowModel
+import RealRooted.Recurrence.Uniqueness
+import RealRooted.EulerOperator
 
 /-!
 # The A318397 double-Narayana model
