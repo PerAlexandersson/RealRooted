@@ -230,6 +230,42 @@ private def derivLagStrictPlausible (d : DerivLagRec) (hints : RowHints) : MetaM
     | some false => pure ()
   return false
 
+/-- Whether exact samples leave open the nonnegative-coefficient induction through
+`RealRooted.derivLag_hasNonnegCoeffs_of_mult` after dropping `s` rows.  The check tests its
+degree bound, constant coefficient of `V`, coefficient-multiplier inequality, nonnegative
+coefficients of `W`, and its two base-row hypotheses.  Unavailable exact data never vetoes
+the route. -/
+private def nonnegLagSamples? (d : DerivLagRec) (s : Nat) : MetaM (Option Bool) := do
+  let S := d.k - 2 + s
+  let some rows ← derivLagRows d (S + 9) | return none
+  let (some p₀, some p₁) := (rows[S]?, rows[S + 1]?) | return none
+  unless p₀.coeffs.all (0 ≤ ·) && p₁.coeffs.all (0 ≤ ·) do return some false
+  let D₀ := p₀.natDegree
+  for n in [0:9] do
+    let (some u, some v, some w) :=
+      (← evalCoeffAt? d.u (n + s), ← evalCoeffAt? d.v (n + s),
+        ← evalCoeffAt? d.w (n + s)) | return none
+    let bound := D₀ + n + 1
+    let some row := rows[S + n]? | return none
+    unless row.natDegree ≤ D₀ + n && 0 ≤ v.coeff 0 && w.coeffs.all (0 ≤ ·) do
+      return some false
+    let maxCoeff := max v.coeffs.size u.coeffs.size
+    for i in [0:maxCoeff] do
+      for j in [0:bound + 1] do
+        unless 0 ≤ v.coeff (i + 1) * (j : Rat) + u.coeff i do return some false
+  return some true
+
+/-- Whether some permitted shift survives either the translated strict route or the exact
+necessary hypotheses of `RealRooted.derivLag_hasNonnegCoeffs_of_mult`. -/
+private def derivLagNonnegPlausible (d : DerivLagRec) (hints : RowHints)
+    (allowTranslated : Bool) : MetaM Bool := do
+  for s in (hints.drop.map ([·])).getD [0, 1, 2] do
+    if allowTranslated && (← translatedLagRoot? d s).isSome then return true
+    match ← nonnegLagSamples? d s with
+    | none | some true => return true
+    | some false => pure ()
+  return false
+
 /-- Recover `r` syntactically when the lag contains the factor `X - C r`. -/
 private def affineLagRootExpr? (w : Expr) : Option Expr := do
   let sub ← w.find? fun e =>
@@ -636,7 +672,8 @@ private def degreeLaws (hints : RowHints) : List (Option Nat) :=
 
 /-- The derivative-lag Liu–Wang argument for the goal `(P t).Splits` (`splits := true`) or
 `Interlaces (P t) (P (t + 1))`.  Returns the hints of the successful attempt. -/
-def derivLagCore (wantSplits wantStrict : Bool) (hints : RowHints) : TacticM RowHints :=
+def derivLagCore (wantSplits wantStrict : Bool) (hints : RowHints)
+    (log? : Option RowAttemptLog := none) : TacticM RowHints :=
     withMainContext do
   let tgt ← instantiateMVars (← getMainTarget)
   if let .forallE n _ _ _ := tgt then evalTactic (← `(tactic| intro $(mkIdent n):ident))
@@ -650,8 +687,14 @@ def derivLagCore (wantSplits wantStrict : Bool) (hints : RowHints) : TacticM Row
     | .error e => throwError "rr_row_deriv_lag: the recurrence of {P} is not of the \
         derivative-lag form: {e}"
   if wantStrict && !(← derivLagStrictPlausible d hints) then
+    rowVeto `halfGrowth m!"the exact lag-sign samples reject every permitted row shift" log?
     throwError "rr_row_deriv_lag: exact samples rule out the nonpositive lag-multiplier \
       conditions for every permitted row shift"
+  unless ← derivLagNonnegPlausible d hints wantStrict do
+    rowVeto `halfGrowth
+      m!"the exact nonnegative-coefficient hypotheses fail for every permitted row shift" log?
+    throwError "rr_row_deriv_lag: exact samples rule out the nonnegative-coefficient \
+      induction for every permitted row shift"
   let mut failures : Array (MessageData × MessageData) := #[]
   let mut degreeFailures : Array (MessageData × MessageData) := #[]
   for s in (hints.drop.map ([·])).getD [0, 1, 2] do
