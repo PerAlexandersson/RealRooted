@@ -1,12 +1,13 @@
 module
 
-public import RealRooted.Tactic.Favard.RowSign
+public import RealRooted.Favard.Affine
 
 /-!
-# Favard tactic
+# Favard import shim
 
-Compatibility umbrella for the shared syntax and direct, scalar-denominator,
-and row-sign Favard macro-rule frontends.
+This compatibility module re-exports the theorem API formerly accompanied by
+specialized Favard tactics.
 -/
 
 public section
+

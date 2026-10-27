@@ -1,2 +1,0 @@
-import RealRooted.Tactic.Examples.MaWang.NonposAffineSequences.Nonpositive
-import RealRooted.Tactic.Examples.MaWang.NonposAffineSequences.Affine

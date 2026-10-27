@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.Tactic.WagnerX
+public import RealRooted.Tactic.RowInterlacing
 
 /-!
 # Wagner `X`-shift tactic examples
@@ -17,15 +18,6 @@ noncomputable section
 
 namespace RealRooted
 namespace Tactic
-
-example {c : ℝ} (hc : 0 < c) : 0 < c := by rr_wagner_pos
-
-example {n : Nat} : 0 < (n : ℝ) + 1 := by rr_wagner_pos
-
-example {n : Nat} (hn : 0 < n) : 0 < (n : ℝ) := by rr_wagner_pos
-
-example : 0 < (2 : ℝ) :=
-  rr_wagner_pos_term
 
 example {f g : ℝ[X]}
     (hfg : StrictInterl f g)
@@ -44,7 +36,6 @@ example {f g : ℝ[X]}
     StrictInterl g (X * f) := by
   rr_strict_interl_mul_X
 
-/-- Narayana/singleton-free-set-partition style common `X` factor. -/
 example {f g : ℝ[X]} (hfg : StrictInterl f g) :
     StrictInterl (X * f) (X * g) := by
   rr_strict_interl_mul_X_both using proper := hfg
@@ -52,61 +43,6 @@ example {f g : ℝ[X]} (hfg : StrictInterl f g) :
 example {f g : ℝ[X]} (hfg : StrictInterl f g) :
     StrictInterl (X * f) (X * g) := by
   rr_strict_interl_mul_X_both
-
-example {f g : ℝ[X]} {c : ℝ}
-    (hfg : StrictInterl f g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hc : c ≠ 0) :
-    StrictInterl g ((C c * X) * f) := by
-  rr_strict_interl_C_mul_X using
-    proper := hfg,
-    left_nonneg := hfnn,
-    right_nonneg := hgnn,
-    coeff_ne := hc
-
-example {f g : ℝ[X]} {c : ℝ}
-    (hfg : StrictInterl f g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hc : c ≠ 0) :
-    StrictInterl g ((C c * X) * f) := by
-  rr_strict_interl_C_mul_X using coeff_ne := hc
-
-example {f g : ℝ[X]} {c : ℝ}
-    (hfg : StrictInterl f g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hc : 0 < c) :
-    StrictInterl g ((C c * X) * f) := by
-  rr_strict_interl_C_mul_X using
-    proper := hfg,
-    left_nonneg := hfnn,
-    right_nonneg := hgnn,
-    coeff_pos := hc
-
-example {f g : ℝ[X]} {c : ℝ}
-    (hfg : StrictInterl f g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hc : 0 < c) :
-    StrictInterl g ((C c * X) * f) := by
-  rr_strict_interl_C_mul_X using coeff_pos := hc
-
-/-- Derivative-lag bridge: a split row gives `X * P'_n ≪ X * P_n`. -/
-example {f : ℝ[X]}
-    (hf : f.Splits)
-    (hdeg : 2 ≤ f.natDegree) :
-    StrictInterl (X * f.derivative) (X * f) := by
-  rr_strict_interl_X_derivative_X_self using
-    splits := hf,
-    degree_two := hdeg
-
-example {f : ℝ[X]}
-    (hf : f.Splits)
-    (hdeg : 2 ≤ f.natDegree) :
-    StrictInterl (X * f.derivative) (X * f) := by
-  rr_strict_interl_X_derivative_X_self
 
 namespace WagnerXInferenceSmoke
 
@@ -122,112 +58,6 @@ namespace WagnerXInferenceSmoke
 example : StrictInterl (1 : ℝ[X]) (X * 1) := by rr_strict_interl_mul_X
 
 end WagnerXInferenceSmoke
-
-/-- Plateau sequence bridge: from the adjacent `StrictInterl` invariant on
-`P_n,P_{n+1}`, the Wagner `X`-shift gives the positive-lag target
-`P_{n+1} ≪ X P_n` without requiring a differ-by-one `Interlaces` certificate. -/
-example {P : Nat → ℝ[X]} {n : Nat}
-    (hprev : StrictInterl (P n) (P (n + 1)))
-    (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k)) :
-    StrictInterl (P (n + 1)) (X * P n) := by
-  rr_strict_interl_mul_X using
-    proper := hprev,
-    left_nonneg := hnonneg n,
-    right_nonneg := hnonneg (n + 1)
-
-example {P : Nat → ℝ[X]} {n : Nat}
-    (hprev : StrictInterl (P n) (P (n + 1)))
-    (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k)) :
-    StrictInterl (P (n + 1)) (X * P n) := by
-  rr_strict_interl_mul_X
-
-/-- OEIS-style scalar positive-lag bridge for recurrences with
-`c_n t P_{n-2}`. -/
-example {P : Nat → ℝ[X]} {c : Nat → ℝ} {n : Nat}
-    (hprev : StrictInterl (P n) (P (n + 1)))
-    (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
-    (hc : 0 < c n) :
-    StrictInterl (P (n + 1)) ((C (c n) * X) * P n) := by
-  rr_strict_interl_C_mul_X using
-    proper := hprev,
-    left_nonneg := hnonneg n,
-    right_nonneg := hnonneg (n + 1),
-    coeff_pos := hc
-
-/-! The fixed affine-lag frontends perform the translation internally, while
-retaining the plateau-safe Wagner-X degree and `StrictInterl` backends. -/
-
-/-!
-### Wagner derivative-gap-lag step
-
-These examples cover the active range of recurrences of the form
-`P_{n+2} = X * (c_n P'_{n+1} + a_n P_n)`, together with the scalar-left
-variant `d_n P_{n+2} = X * (c_n P'_{n+1} + a_n P_n)`.
--/
-
-/-- Single active Wagner derivative-gap-lag step. -/
-example {f g : ℝ[X]} {a c : ℝ}
-    (hfg : StrictInterl f g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hdeg : 2 ≤ g.natDegree)
-    (ha : 0 < a)
-    (hc : 0 < c) :
-    StrictInterl g (X * (C c * g.derivative + C a * f)) := by
-  rr_strict_interl_wagner_derivative_gap_lag using
-    proper := hfg,
-    left_nonneg := hfnn,
-    right_nonneg := hgnn,
-    degree_two := hdeg,
-    lag_coeff_pos := ha,
-    derivative_coeff_pos := hc
-
-/-- The same step can infer all certificates once the displayed target fixes
-the two polynomials and both scalar coefficients. -/
-example {f g : ℝ[X]} {a c : ℝ}
-    (hfg : StrictInterl f g)
-    (hfnn : HasNonnegCoeffs f)
-    (hgnn : HasNonnegCoeffs g)
-    (hdeg : 2 ≤ g.natDegree)
-    (ha : 0 < a)
-    (hc : 0 < c) :
-    StrictInterl g (X * (C c * g.derivative + C a * f)) := by
-  rr_strict_interl_wagner_derivative_gap_lag
-
-/-- Indexed local families supply the active step without pointwise aliases. -/
-example {P : Nat → ℝ[X]} {a c : Nat → ℝ} {n : Nat}
-    (hprev : StrictInterl (P n) (P (n + 1)))
-    (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
-    (hdeg : ∀ k : Nat, 2 ≤ (P (k + 1)).natDegree)
-    (ha : ∀ k : Nat, 0 < a k)
-    (hc : ∀ k : Nat, 0 < c k) :
-    StrictInterl (P (n + 1))
-      (X * (C (c n) * (P (n + 1)).derivative + C (a n) * P n)) := by
-  rr_strict_interl_wagner_derivative_gap_lag
-
-/-- Shifted families may instantiate offset certificate families and mix
-indexed with arithmetic scalar bounds. -/
-example {P : Nat → ℝ[X]} {a : Nat → ℝ} {n : Nat}
-    (hchain : ∀ k : Nat, StrictInterl (P k) (P (k + 1)))
-    (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
-    (hdeg : ∀ k : Nat, 2 ≤ (P (k + 1)).natDegree)
-    (ha : ∀ k : Nat, 0 < a k) :
-    StrictInterl (P (n + 4))
-      (X * (C ((n : ℝ) + 4) * (P (n + 4)).derivative +
-        C (a (n + 3)) * P (n + 3))) := by
-  rr_strict_interl_wagner_derivative_gap_lag
-
-/-- A recurrence rewrite exposes the rigid target consumed by the bare step. -/
-example {P : Nat → ℝ[X]} {n : Nat}
-    (hprev : StrictInterl (P n) (P (n + 1)))
-    (hnonneg : ∀ k : Nat, HasNonnegCoeffs (P k))
-    (hdeg : ∀ k : Nat, 2 ≤ (P (k + 1)).natDegree)
-    (hrec : ∀ k : Nat,
-      P (k + 2) = X * (C (1 : ℝ) * (P (k + 1)).derivative +
-        C ((k : ℝ) + 1) * P k)) :
-    StrictInterl (P (n + 1)) (P (n + 2)) := by
-  rw [hrec n]
-  rr_strict_interl_wagner_derivative_gap_lag
 
 /-- `A358623`, active offset: the recurrence
 `P_{n+5}=t(P'_{n+4}+(n+4)P_{n+3})` preserves the shifted adjacent
@@ -255,7 +85,7 @@ theorem a358623_activeOffset_strictInterl {P : Nat → ℝ[X]}
     simpa [Q, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using hrec n
   have hQstrictInterl : ∀ n : Nat, StrictInterl (Q n) (Q (n + 1)) := by
     exact RealRooted.strictInterl_wagner_derivative_gap_lag_sequence
-      hQbase hQnonneg hQdeg rr_wagner_pos_seq rr_wagner_pos_seq hQrec
+      hQbase hQnonneg hQdeg (fun _ => by positivity) (fun _ => by positivity) hQrec
   intro n
   simpa [Q] using hQstrictInterl n
 
@@ -284,7 +114,7 @@ theorem a358623_activeOffset_realRooted {P : Nat → ℝ[X]}
     simpa [Q, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using hrec n
   have hQrr : ∀ n : Nat, Q n ≠ 0 ∧ (Q n).Splits := by
     exact RealRooted.isRealRooted_of_strictInterl_wagner_derivative_gap_lag_sequence
-      hQbase hQnonneg hQdeg rr_wagner_pos_seq rr_wagner_pos_seq hQrec
+      hQbase hQnonneg hQdeg (fun _ => by positivity) (fun _ => by positivity) hQrec
   intro n
   simpa [Q] using hQrr n
 
@@ -367,16 +197,14 @@ lemma a358623Shifted_degree_two_succ (n : Nat) :
 active family. -/
 theorem a358623Shifted_strictInterl :
     ∀ n : Nat, StrictInterl (a358623Shifted n) (a358623Shifted (n + 1)) := by
-  exact RealRooted.strictInterl_wagner_derivative_gap_lag_sequence
-    a358623Shifted_base a358623Shifted_nonneg a358623Shifted_degree_two_succ
-    rr_wagner_pos_seq rr_wagner_pos_seq a358623Shifted_succ_succ
+  intro n
+  rr_row_strictInterl
 
 /-- Real-rootedness of the shifted recurrence-defined `A358623` active family. -/
 theorem a358623Shifted_realRooted :
     ∀ n : Nat, a358623Shifted n ≠ 0 ∧ (a358623Shifted n).Splits := by
-  exact RealRooted.isRealRooted_of_strictInterl_wagner_derivative_gap_lag_sequence
-    a358623Shifted_base a358623Shifted_nonneg a358623Shifted_degree_two_succ
-    rr_wagner_pos_seq rr_wagner_pos_seq a358623Shifted_succ_succ
+  intro n
+  exact ⟨by rr_row_ne_zero, by rr_row_splits⟩
 
 /-!
 ### `X^2 * P'` cross-row derivative-lag obstruction
@@ -413,3 +241,4 @@ namespace Tactic
 
 end Tactic
 end RealRooted
+

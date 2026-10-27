@@ -1,11 +1,8 @@
 import RealRooted.Tactic.Examples.OEIS.A304334
-import RealRooted.Tactic.Examples.OEIS.ClassicalFamilies
-import RealRooted.Tactic.Examples.OEIS.Favard
 import RealRooted.Tactic.Examples.OEIS.IndispensableDigits
-import RealRooted.Tactic.Examples.OEIS.ScalarCoeff
 
 /-!
-# OEIS router regression facade
+# OEIS tactic regression facade
 
-Compatibility facade for the compartmentalized OEIS tactic regression families.
+Compatibility facade for the remaining OEIS tactic regression families.
 -/

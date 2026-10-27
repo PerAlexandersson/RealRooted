@@ -840,10 +840,7 @@ private def rowNonnegCore (log : RowAttemptLog) : TacticM Unit := withMainContex
   let hrec ← r.hrecTerm 0
   let D₀? ← if r.shape.isLag then pure none else findRowDegree P r.shift r.params
   let mut mains : Array (Name × Option Nat × TSyntax `tactic) := #[]
-  if r.shape.isLag then
-    mains := mains.push (`threeTerm, none, ← `(tactic|
-      refine RealRooted.threeTerm_hasNonnegCoeffs (P := $Q) $hrec ?_ ?_ ?_ ?_ $t))
-  else
+  unless r.shape.isLag do
     -- a second-order recurrence needs a first-order one in the context, such as the
     -- `hrec₁` that `rr_row_interlaces` derives from an eigen-ODE
     let mut recs : Array Term := #[]
@@ -861,8 +858,6 @@ private def rowNonnegCore (log : RowAttemptLog) : TacticM Unit := withMainContex
       mains := mains.push (`secondOrder, none, ← `(tactic|
         refine RealRooted.derivRec₂_hasNonnegCoeffs (P := $Q) $hrec ?_ ?_ ?_ ?_ $t))
     for h in recs do
-      mains := mains.push (`derivative, none, ← `(tactic|
-        refine RealRooted.derivativeRecurrence_hasNonnegCoeffs (P := $Q) $h ?_ ?_ ?_ $t))
       if let some D₀ := D₀? then
         for d in [1, 0, 2] do
           mains := mains.push (`derivativeMult, some d, ← `(tactic|
@@ -1313,15 +1308,6 @@ private def rowSplitsCoreDirect (log : RowAttemptLog) (hints : RowHints) :
         refine (?_ : RealRooted.Interlaces ($P $e') ($P ($e' + 1))).2.1.2))
     let (_, h) ← rowInterlacesCore { hints with via := none, drop := some k } (some log)
     return { h with via := some `nextRow, drop := some k }
-  let viaRight (k : Nat) := do
-    let some _ ← splitRows t (k + below + 1) (smallRow P)
-      | throwError "rr_row_splits: not a variable"
-    withMainContext do
-    let (t', c') ← rowIndexParts r.P
-    let e' ← indexTerm t' (c' - 1)
-    evalTactic (← `(tactic| refine (?_ : RealRooted.Interlaces ($P $e') ($P ($e' + 1))).1.2))
-    let (_, h) ← rowInterlacesCore { hints with via := none, drop := some k } (some log)
-    return { h with via := some `prevRow, drop := some k }
   -- half growth: rows two apart interlace (`RealRooted.threeTermHalf_ne_zero_and_splits`)
   let viaHalf (k : Nat) := do
     unless r.shape == .lag do throwError "rr_row_splits: not a three-term recurrence"
@@ -1378,21 +1364,6 @@ private def rowSplitsCoreDirect (log : RowAttemptLog) (hints : RowHints) :
       · $coeffs:tactic
       · $coeffs:tactic))
     evalTactic (← `(tactic| first | $plain:tactic | $proportional:tactic))
-    unless (← getGoals).isEmpty do throwError "rr_row_splits: goals remain"
-  -- `P (n + k) = q n * P (n + k - 1)` read as a product of `m ↦ P (m + k - 1)`
-  let viaLagLeft := do
-    unless r.shape == .lagLeft do throwError "rr_row_splits: not a shifted product"
-    let (_, t) ← alignRow r.P (r.shift + 1) (smallRowSplits P)
-    let q ← certTerm r.coeffs[0]!
-    let n := mkIdent `n
-    evalTactic (← `(tactic|
-      refine RealRooted.productSequence_splits (P := $(← r.seq 1)) (q := $q)
-        (fun $n:ident => ($(mkIdent r.eqn) $n).trans (by beta_reduce; ring)) ?_ ?_ $t))
-    let [hq, h0] ← getGoals | throwError "rr_row_splits: unexpected side goals"
-    setGoals [h0]
-    explicitRowSplits P
-    setGoals [hq]
-    evalTactic (← factorSplitsTac)
     unless (← getGoals).isEmpty do throwError "rr_row_splits: goals remain"
   -- first-order derivative recurrences whose degree grows by zero or one at each step, with
   -- the degree law `c + (n + e) / 2` and nonnegative coefficients
@@ -1501,15 +1472,11 @@ private def rowSplitsCoreDirect (log : RowAttemptLog) (hints : RowHints) :
   let mut probeConfirmed := false
   for (routeName, k, what, tac) in [
       (`twoStep, 0, "a two-step product", route `twoStep viaTwoStep),
-      (`shiftedProduct, 0, "a shifted product", route `shiftedProduct viaLagLeft),
       (`subseq, 0, "residue subsequences", route `subseq viaSubseq),
       (`nextRow, 0, "the interlacing of P t and P (t + 1)", viaLeft 0),
-      (`prevRow, 0, "the interlacing of P (t - 1) and P t", viaRight 0),
       (`halfGrowth, 0, "the half-growth interlacing of P t and P (t + 2)", half 0),
       (`nextRow, 1, "the interlacing of P (t + 1) and P (t + 2), after splitting off a row",
         viaLeft 1),
-      (`prevRow, 1, "the interlacing of P (t - 1) and P t, after splitting off a row",
-        viaRight 1),
       (`halfGrowth, 1, "half growth after splitting off a row", half 1),
       (`halfGrowth, 2, "half growth after splitting off two rows", half 2),
       (`degreePattern, 0, "degrees growing by zero or one, with nonnegative coefficients",
@@ -1520,14 +1487,9 @@ private def rowSplitsCoreDirect (log : RowAttemptLog) (hints : RowHints) :
     unless use routeName do
       rowSkip routeName m!"not selected by the via hint" (some log)
       continue
-    -- `nextRow` and `prevRow` ask for the same interlacing statement.  In automatic mode the
-    -- former comes first, so the latter can never be the first probe-confirmed shape.
-    if hints.via.isNone && routeName == `prevRow then
-      rowSkip routeName m!"the automatic nextRow route has the same goal" (some log)
-      continue
     -- `drop` counts the rows split off by the interlacing and half-growth routes
     if hints.drop.isSome && hints.drop != some k &&
-        (routeName == `nextRow || routeName == `prevRow || routeName == `halfGrowth) then
+        (routeName == `nextRow || routeName == `halfGrowth) then
       rowSkip routeName m!"the drop hint selects a different offset" (some log)
       continue
     let shapeRoute := routeName == `nextRow || routeName == `halfGrowth

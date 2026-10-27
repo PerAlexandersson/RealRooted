@@ -25,6 +25,14 @@ elab_rules : tactic
         (options.set `rr.row.explain true).set `rr.row.explain.heartbeats false) do
         Lean.Elab.Tactic.evalTactic tactic
 
+/-- Run a tactic with selected row routes disabled. -/
+syntax (name := rrRowDisableGuard) "rr_row_disable " str " in " tactic : tactic
+
+elab_rules : tactic
+  | `(tactic| rr_row_disable $routes:str in $tactic:tactic) =>
+      withOptions (fun options => options.set `rr.row.disable routes.getString) do
+        Lean.Elab.Tactic.evalTactic tactic
+
 /-- Product rows used by the explain-mode success examples. -/
 def productRows : ℕ → ℝ[X]
   | 0 => 1
@@ -137,6 +145,17 @@ cone           ok       -
 #guard_msgs in
 example (n : ℕ) : HasNonnegCoeffs (productRows n) := by
   rr_row_explain_guard rr_row_nonneg_coeffs
+
+/--
+info: rr.row explain:
+route          outcome  reason
+variableDelay  skipped  disabled by rr.row.disable
+cone           ok       -
+-/
+#guard_msgs in
+example (n : ℕ) : HasNonnegCoeffs (productRows n) := by
+  rr_row_disable "variableDelay" in
+    rr_row_explain_guard rr_row_nonneg_coeffs
 
 /--
 info: rr.row explain:

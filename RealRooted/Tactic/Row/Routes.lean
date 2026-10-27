@@ -197,29 +197,7 @@ def rowRouteTable : List RowRouteInfo := [
         `RealRooted.twoStepProduct_natDegree
       ]
   },
-  { name := `shiftedProduct
-    frontEnds := [
-      "rr_row_splits"
-    ]
-    conclusion := "(P n).Splits"
-    theorems :=
-      [
-        `RealRooted.productSequence_splits
-      ]
-  },
   { name := `nextRow
-    frontEnds := [
-      "rr_row_splits"
-    ]
-    conclusion := "(P n).Splits"
-    theorems :=
-      [
-        `RealRooted.productSequence_interlaces,
-        `RealRooted.derivativeRecurrence_interlaces_of_eval_nonpos,
-        `RealRooted.threeTerm_interlaces_of_eval_nonpos
-      ]
-  },
-  { name := `prevRow
     frontEnds := [
       "rr_row_splits"
     ]
@@ -481,16 +459,6 @@ def rowRouteTable : List RowRouteInfo := [
         `RealRooted.LinRec.natDegree_eq_and_leadingCoeff_eq_of_coeff
       ]
   },
-  { name := `threeTerm
-    frontEnds := [
-      "rr_row_nonneg_coeffs"
-    ]
-    conclusion := "HasNonnegCoeffs (P n)"
-    theorems :=
-      [
-        `RealRooted.threeTerm_hasNonnegCoeffs
-      ]
-  },
   { name := `secondOrder
     frontEnds := [
       "rr_row_nonneg_coeffs"
@@ -499,16 +467,6 @@ def rowRouteTable : List RowRouteInfo := [
     theorems :=
       [
         `RealRooted.derivRec₂_hasNonnegCoeffs
-      ]
-  },
-  { name := `derivative
-    frontEnds := [
-      "rr_row_nonneg_coeffs"
-    ]
-    conclusion := "HasNonnegCoeffs (P n)"
-    theorems :=
-      [
-        `RealRooted.derivativeRecurrence_hasNonnegCoeffs
       ]
   },
   { name := `derivativeMult
@@ -600,9 +558,7 @@ def rowRoutesOf (frontEnd : String) : List Name :=
       `linearFactors,
       `splitFactors,
       `twoStep,
-      `shiftedProduct,
       `nextRow,
-      `prevRow,
       `degreePattern,
       `reversed,
       `fTransform
