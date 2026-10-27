@@ -595,6 +595,58 @@ end RealRooted
 
 namespace RealRooted
 
+/-- Chebyshev-data rows have the expected degree when the `A W (n+1)` term strictly
+dominates the `B W n` term in degree. This supplies nonvanishing for applications of
+Sokal, *Combinatorics, Probability and Computing* 13 (2004), Theorem 1.5(b). -/
+theorem chebyshev_two_step_natDegree_of_degree_lt {A B : ℝ[X]} {W : ℕ → ℝ[X]}
+    (hA : A.natDegree ≠ 0) (hB : B.natDegree < 2 * A.natDegree)
+    (h0 : W 0 = 1) (h1 : W 1 = A)
+    (hrec : ∀ n, W (n + 2) = A * W (n + 1) + B * W n) (n : ℕ) :
+    (W n).natDegree = A.natDegree * n := by
+  have hAne : A ≠ 0 := by
+    intro hzero
+    apply hA
+    simp [hzero]
+  induction n using Nat.twoStepInduction with
+  | zero => simp [h0]
+  | one => simp [h1]
+  | more n hn hn1 =>
+      have hApos : 0 < A.natDegree := Nat.pos_of_ne_zero hA
+      have hW1 : W (n + 1) ≠ 0 := by
+        intro hzero
+        rw [hzero, natDegree_zero] at hn1
+        have hpos : 0 < A.natDegree * (n + 1) := Nat.mul_pos hApos (by lia)
+        lia
+      have hleft : (A * W (n + 1)).natDegree = A.natDegree * (n + 2) := by
+        rw [natDegree_mul hAne hW1, hn1]
+        ring
+      have hright : (B * W n).natDegree < A.natDegree * (n + 2) := by
+        calc
+          (B * W n).natDegree ≤ B.natDegree + (W n).natDegree := natDegree_mul_le
+          _ = B.natDegree + A.natDegree * n := by rw [hn]
+          _ < 2 * A.natDegree + A.natDegree * n := Nat.add_lt_add_right hB _
+          _ = A.natDegree * (n + 2) := by ring
+      have hright' : (B * W n).natDegree < (A * W (n + 1)).natDegree := by
+        rwa [hleft]
+      rw [hrec, natDegree_add_eq_left_of_natDegree_lt hright', hleft]
+
+/-- Under strict degree dominance, every Chebyshev-data row is nonzero (hence in
+particular the rows are eventually nonzero). This is the nonvanishing input for Sokal,
+*Combinatorics, Probability and Computing* 13 (2004), Theorem 1.5(b). -/
+theorem chebyshev_two_step_ne_zero_of_degree_lt {A B : ℝ[X]} {W : ℕ → ℝ[X]}
+    (hA : A.natDegree ≠ 0) (hB : B.natDegree < 2 * A.natDegree)
+    (h0 : W 0 = 1) (h1 : W 1 = A)
+    (hrec : ∀ n, W (n + 2) = A * W (n + 1) + B * W n) (n : ℕ) :
+    W n ≠ 0 := by
+  rcases n with _ | n
+  · simp [h0]
+  · intro hzero
+    have hdeg := chebyshev_two_step_natDegree_of_degree_lt hA hB h0 h1 hrec (n + 1)
+    rw [hzero, natDegree_zero] at hdeg
+    have hpos : 0 < A.natDegree * (n + 1) :=
+      Nat.mul_pos (Nat.pos_of_ne_zero hA) (by lia)
+    lia
+
 /-- A nonreal liminf limit of zeros forces every sufficiently late nonzero real polynomial
 to fail to split over `ℝ`. This is the real-rootedness obstruction supplied by Sokal,
 *Combinatorics, Probability and Computing* 13 (2004), Theorem 1.5(b). -/
@@ -619,5 +671,116 @@ theorem eventually_not_splits_of_nonreal_limit {W : ℕ → ℝ[X]} {z₀ : ℂ}
     hsplit.mem_range_of_isRoot hn (i := Complex.ofRealHom) hroot
   obtain ⟨x, rfl⟩ := hrange
   exact hzim (by simp)
+
+/-- **Order-two BKW criterion.** Suppose the Chebyshev-data rows
+`W₀ = 1`, `W₁ = A`, `W (n+2) = A W (n+1) + B W n` satisfy strict degree dominance.
+If a nonreal point has nonzero `B`, the parameter `A²/(-4B)` lies in `(0,1)`, and that
+parameter is not locally constant, then every sufficiently late row fails to split over
+`ℝ`. This is Sokal, *Combinatorics, Probability and Computing* 13 (2004), Theorem 1.5(b). -/
+theorem eventually_not_splits_chebyshev_two_step_of_ratio
+    {A B : ℝ[X]} {W : ℕ → ℝ[X]} {z₀ : ℂ} {q₀ : ℝ}
+    (hAdeg : A.natDegree ≠ 0) (hBdeg : B.natDegree < 2 * A.natDegree)
+    (h0 : W 0 = 1) (h1 : W 1 = A)
+    (hrec : ∀ n, W (n + 2) = A * W (n + 1) + B * W n)
+    (hz₀ : z₀.im ≠ 0) (hB0 : aeval z₀ B ≠ 0)
+    (hqpos : 0 < q₀) (hqlt : q₀ < 1)
+    (hq0 : aeval z₀ A ^ 2 / (-4 * aeval z₀ B) = (q₀ : ℂ))
+    (hnconst : ¬∀ᶠ z in 𝓝 z₀,
+      aeval z A ^ 2 / (-4 * aeval z B) =
+        aeval z₀ A ^ 2 / (-4 * aeval z₀ B)) :
+    ∀ᶠ n in atTop, ¬(W n).Splits := by
+  let Ac : ℂ → ℂ := fun z => aeval z A
+  let Bc : ℂ → ℂ := fun z => aeval z B
+  let F : ℕ → ℂ → ℂ := fun n z => aeval z (W n)
+  have hF0 : F 0 = fun _ => 1 := by
+    funext z
+    simp [F, h0]
+  have hF1 : F 1 = Ac := by
+    funext z
+    simp [F, Ac, h1]
+  have hFrec (n : ℕ) (z : ℂ) :
+      F (n + 2) z = Ac z * F (n + 1) z + Bc z * F n z := by
+    simp [F, Ac, Bc, hrec]
+  have hAc : AnalyticAt ℂ Ac z₀ := by
+    dsimp [Ac]
+    exact analyticAt_id.aeval_polynomial A
+  have hBc : AnalyticAt ℂ Bc z₀ := by
+    dsimp [Bc]
+    exact analyticAt_id.aeval_polynomial B
+  have hlim : Complex.IsLimitOfZeros F z₀ :=
+    isLimitOfZeros_chebyshev_two_step hF0 hF1 hFrec hAc hBc hB0
+      hqpos hqlt hq0 hnconst
+  apply eventually_not_splits_of_nonreal_limit hz₀
+    (Eventually.of_forall (chebyshev_two_step_ne_zero_of_degree_lt
+      hAdeg hBdeg h0 h1 hrec))
+  have hhom : Complex.ofRealHom = algebraMap ℝ ℂ := by
+    ext x
+    rfl
+  rw [hhom]
+  simpa only [F, aeval_def, eval₂_eq_eval_map] using hlim
+
+/-- **Fibonacci/Pell-type BKW obstruction.** If `p ≠ 0` and `s > 0`, then the
+Chebyshev-data recurrence `W₀ = 1`, `W₁ = pX`,
+`W (n+2) = pX W (n+1) + s W n` eventually fails to split over `ℝ`.
+This is a direct corollary of Sokal, *Combinatorics, Probability and Computing*
+13 (2004), Theorem 1.5(b). -/
+theorem eventually_not_splits_of_mul_X_const_two_step {p s : ℝ} (hp : p ≠ 0)
+    (hs : 0 < s) {W : ℕ → ℝ[X]} (h0 : W 0 = 1) (h1 : W 1 = C p * X)
+    (hrec : ∀ n, W (n + 2) = (C p * X) * W (n + 1) + C s * W n) :
+    ∀ᶠ n in atTop, ¬(W n).Splits := by
+  let z₀ : ℂ := (Real.sqrt s / p : ℝ) * Complex.I
+  have hz₀ : z₀.im ≠ 0 := by
+    dsimp [z₀]
+    simp only [Complex.mul_im, Complex.ofReal_re, Complex.I_im, mul_one,
+      Complex.ofReal_im, Complex.I_re, zero_mul, add_zero]
+    exact div_ne_zero (Real.sqrt_ne_zero'.mpr hs) hp
+  have hB0 : aeval z₀ (C s : ℝ[X]) ≠ 0 := by
+    simp [hs.ne']
+  have hq0 : aeval z₀ (C p * X : ℝ[X]) ^ 2 /
+      (-4 * aeval z₀ (C s : ℝ[X])) = ((1 / 4 : ℝ) : ℂ) := by
+    simp only [map_mul, aeval_C, aeval_X]
+    have hs0 : (s : ℂ) ≠ 0 := by exact_mod_cast hs.ne'
+    have hp0 : (p : ℂ) ≠ 0 := by exact_mod_cast hp
+    have hsqrt : ((Real.sqrt s : ℝ) : ℂ) ^ 2 = (s : ℂ) := by
+      exact_mod_cast Real.sq_sqrt hs.le
+    have hquot : (((Real.sqrt s / p : ℝ) : ℂ) ^ 2) =
+        (s : ℂ) / (p : ℂ) ^ 2 := by
+      push_cast
+      rw [div_pow, hsqrt]
+    dsimp [z₀]
+    field_simp [hp0, hs0]
+    rw [hquot, Complex.I_sq]
+    field_simp [hp0]
+    norm_num
+  have hnconst : ¬∀ᶠ z in 𝓝 z₀,
+      aeval z (C p * X : ℝ[X]) ^ 2 / (-4 * aeval z (C s : ℝ[X])) =
+        aeval z₀ (C p * X : ℝ[X]) ^ 2 / (-4 * aeval z₀ (C s : ℝ[X])) := by
+    intro hconst
+    let P : ℂ → ℂ := fun z => ((p : ℂ) * z) ^ 2 + s
+    have hP : AnalyticOnNhd ℂ P Set.univ := by
+      intro z _
+      dsimp [P]
+      fun_prop
+    have hzero : P =ᶠ[𝓝 z₀] 0 := by
+      filter_upwards [hconst] with z hz
+      rw [hq0] at hz
+      simp only [map_mul, aeval_C, aeval_X] at hz
+      have hs0 : (s : ℂ) ≠ 0 := by exact_mod_cast hs.ne'
+      change P z = 0
+      dsimp [P]
+      field_simp [hs0] at hz
+      norm_num at hz
+      linear_combination -hz
+    have hglobal := hP.eqOn_zero_of_preconnected_of_eventuallyEq_zero
+      isPreconnected_univ (Set.mem_univ z₀) hzero
+    have hs0 := hglobal (Set.mem_univ (0 : ℂ))
+    have hsC : (s : ℂ) = 0 := by
+      simpa only [P, mul_zero, pow_two, zero_mul, zero_add, Pi.zero_apply] using hs0
+    exact hs.ne' (by exact_mod_cast hsC)
+  apply eventually_not_splits_chebyshev_two_step_of_ratio
+    (A := C p * X) (B := C s) (z₀ := z₀) (q₀ := 1 / 4)
+    (by rw [natDegree_C_mul_X p hp]; norm_num)
+    (by rw [natDegree_C_mul_X p hp]; simp)
+    h0 h1 hrec hz₀ hB0 (by norm_num) (by norm_num) hq0 hnconst
 
 end RealRooted
