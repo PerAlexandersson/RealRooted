@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.MaWang.DerivativeStep
+public import RealRooted.MultiplierSequence.CoefficientRatio
 public import RealRooted.Recurrence.RowModel
 public import RealRooted.Recurrence.Uniqueness
 public import RealRooted.Wronskian.OdeRootExclusion
@@ -8,10 +9,10 @@ public import RealRooted.Wronskian.OdeRootExclusion
 /-!
 # The row polynomials of OEIS A110608
 
-We derive the hypergeometric differential equation, use the
-Laguerre-discriminant root-exclusion theorem to obtain the sharp moving root
-bound, and apply the strict Ma--Wang derivative step to the corrected
-first-order recurrence.
+The coefficient ratio proves real-rootedness directly. We then use the
+hypergeometric differential equation and Laguerre-discriminant root exclusion
+to obtain the sharp moving root bound, and apply the strict Ma--Wang
+derivative step to prove consecutive-row interlacing.
 -/
 
 @[expose] public section
@@ -130,6 +131,20 @@ theorem coefficient_ratio (N k : ℕ) (hk : k ≤ N) :
     subst k
     rw [coefficient_eq_zero N (N + 1) (by lia)]
     simp
+
+/-- The hypergeometric coefficient ratio certifies each model row as PF. -/
+theorem polynomial_isPF (N : ℕ) : IsPFPolynomial (polynomial N) := by
+  apply isPFPolynomial_of_pochhammer_coeff_ratio
+    (a := (N : ℝ) + 1) (b := 1) (d := N) (by positivity) (by norm_num)
+    (polynomial_natDegree N).le
+  · simpa only [coeff_polynomial] using coefficient_pos N 0 (Nat.zero_le N)
+  · intro k hk
+    simp only [coeff_polynomial]
+    convert coefficient_ratio N k hk.le using 1 <;> ring
+
+/-- Every A110608 model row splits over the reals. -/
+theorem polynomial_splits (N : ℕ) : (polynomial N).Splits :=
+  (polynomial_isPF N).eq_zero_or_splits.elim (fun h => h ▸ (by simp)) id
 
 /-- The second-order differential equation satisfied by every model row. -/
 theorem polynomial_ode (N : ℕ) :
@@ -512,12 +527,6 @@ theorem polynomial_strictInterl_succ_of_splits (N : ℕ) (hs : (polynomial N).Sp
     (by rw [← hrec, polynomial_natDegree, polynomial_natDegree])
     (by rw [← hrec]; exact polynomial_leadingCoeff_pos (N + 1))
     (polynomial_leadingCoeff_pos N) hv
-
-/-- Every A110608 model row splits over the reals. -/
-theorem polynomial_splits : ∀ N : ℕ, (polynomial N).Splits
-  | 0 => Splits.of_natDegree_eq_zero (polynomial_natDegree 0)
-  | N + 1 =>
-      (polynomial_strictInterl_succ_of_splits N (polynomial_splits N)).2.1.2
 
 /-- Consecutive A110608 model rows strictly interlace. -/
 theorem polynomial_strictInterl_succ (N : ℕ) :

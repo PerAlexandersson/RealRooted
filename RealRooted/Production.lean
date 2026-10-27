@@ -1962,6 +1962,7 @@ import RealRooted.Tactic.Row.Routes
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative.Prod
 import RealRooted.Mathlib.Data.Fintype.Pigeonhole
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PosSemidefPencil
+import RealRooted.MultiplierSequence.CoefficientRatio
 
 /-!
 # RealRooted production umbrella
