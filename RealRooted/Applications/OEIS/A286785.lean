@@ -2,6 +2,7 @@ module
 
 public import RealRooted.Wronskian.OdeRootExclusion
 public import RealRooted.MaWang.DerivativeStep
+public import RealRooted.MultiplierSequence.CoefficientRatio
 public import RealRooted.Recurrence.RowModel
 
 /-!
@@ -12,8 +13,8 @@ criterion to place every root below `-1/8`. We then prove the first-order
 transition coefficientwise and apply the strict Ma--Wang derivative step.
 
 The row formula is recorded in [OEIS A286785](https://oeis.org/A286785).
-Real-rootedness remains an explicit hypothesis here; the downstream OEIS
-development supplies it through a Pólya-frequency certificate.
+The hypergeometric coefficient ratio proves real-rootedness directly; the
+ODE and derivative transition supply the stronger root bound and interlacing.
 -/
 
 @[expose] public section
@@ -108,6 +109,20 @@ theorem rowCoeff_ratio (d k : ℕ) (hk : k ≤ d) :
   linear_combination
     ((2 * (k + m) + 4).choose m : ℝ) * (k + m + k + 4) * hleft' -
       ((k + m).choose k : ℝ) * m * hright'
+
+/-- The hypergeometric coefficient ratio certifies each row as PF. -/
+theorem rowPoly_isPF (d : ℕ) : IsPFPolynomial (rowPoly d) := by
+  apply isPFPolynomial_of_pochhammer_coeff_ratio
+    (a := (d : ℝ) + 4) (b := 2) (d := d) (by positivity) (by norm_num)
+    (rowPoly_natDegree d).le
+  · simpa only [coeff_rowPoly] using rowCoeff_pos d 0 (Nat.zero_le d)
+  · intro k hk
+    simp only [coeff_rowPoly]
+    convert rowCoeff_ratio d k hk.le using 1 <;> ring
+
+/-- Every A286785 row splits over the reals. -/
+theorem rowPoly_splits (d : ℕ) : (rowPoly d).Splits :=
+  (rowPoly_isPF d).eq_zero_or_splits.elim (fun h => h ▸ (by simp)) id
 
 /-- The second-order ODE satisfied by every row. -/
 theorem rowPoly_ode (d : ℕ) :
@@ -476,12 +491,6 @@ theorem rowPoly_strictInterl_succ_of_splits (d : ℕ) (hs : (rowPoly d).Splits) 
     (rowPoly_leadingCoeff_pos d) hv
   rw [← hrec] at hstrict
   exact hstrict
-
-/-- Every A286785 row splits over the reals. -/
-theorem rowPoly_splits (d : ℕ) : (rowPoly d).Splits := by
-  induction d with
-  | zero => exact Splits.of_natDegree_eq_zero (rowPoly_natDegree 0)
-  | succ d ih => exact (rowPoly_strictInterl_succ_of_splits d ih).2.1.2
 
 /-- Every real root of an A286785 row lies strictly below `-1/8`. -/
 theorem isRoot_lt_neg_one_eighth (d : ℕ) {r : ℝ}
