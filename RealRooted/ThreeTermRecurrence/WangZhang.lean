@@ -1,6 +1,7 @@
 module
 
 public import Mathlib
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
 public import RealRooted.ThreeTermRecurrence.OrderTwoLimitZeros
 
 /-!
@@ -342,27 +343,6 @@ private lemma Wseq_splits_of_lt {a b c d : ℝ} (ha : 0 < a) (hb : 0 < b) (hc : 
   · exact splits_of_card_roots_ge (m := n - 1) (by rw [Wseq_natDegree ha.ne']; lia)
       (Wseq_card_roots ha hb hc hd hK n h)
 
-private lemma prod_lower (z : ℂ) (s : Multiset ℝ) :
-    |z.im| ^ Multiset.card s ≤ ‖(s.map (fun x => aeval z (X - C x))).prod‖ := by
-  induction s using Multiset.induction_on with
-  | empty => simp
-  | cons x s ih =>
-    rw [Multiset.map_cons, Multiset.prod_cons, Multiset.card_cons, pow_succ, norm_mul, mul_comm]
-    gcongr
-    simp only [map_sub, aeval_X, aeval_C]
-    have := Complex.abs_im_le_norm (z - algebraMap ℝ ℂ x)
-    simpa using this
-
-private lemma splits_lower_bound (p : ℝ[X]) (hp : p.Splits) (z : ℂ) :
-    ‖p.leadingCoeff‖ * |z.im| ^ p.natDegree ≤ ‖aeval z p‖ := by
-  have h := hp.eq_prod_roots
-  have hc := hp.natDegree_eq_card_roots
-  conv_rhs => rw [h]
-  rw [hc, map_mul, map_multiset_prod, Multiset.map_map, norm_mul, aeval_C]
-  gcongr
-  · simp
-  · exact prod_lower z _
-
 private lemma Wseq_continuous (a c d : ℝ) (z : ℂ) :
     ∀ n, Continuous (fun b => aeval z (Wseq a b c d n)) := by
   have key : ∀ n, Continuous (fun b => aeval z (Wseq a b c d n)) ∧
@@ -379,52 +359,33 @@ private lemma Wseq_continuous (a c d : ℝ) (z : ℂ) :
       fun_prop
   exact fun n => (key n).1
 
-private lemma splits_of_no_nonreal_root (p : ℝ[X]) (h : ∀ z : ℂ, aeval z p = 0 → z.im = 0) :
-    p.Splits := by
-  obtain ⟨q, hq, hcard, hq0⟩ := exists_prod_multiset_X_sub_C_mul p
-  by_cases hp : p = 0
-  · simp [hp]
-  have hqne : q ≠ 0 := by rintro rfl; simp at hq; exact hp hq.symm
-  rcases Nat.eq_zero_or_pos q.natDegree with h0 | h0
-  · rw [splits_iff_card_roots]; lia
-  exfalso
-  obtain ⟨z, hz⟩ := Complex.exists_root (f := q.map (algebraMap ℝ ℂ))
-    (by rw [degree_map]; exact natDegree_pos_iff_degree_pos.mp h0)
-  have hzq : aeval z q = 0 := by rwa [aeval_def, eval₂_eq_eval_map]
-  have hzp : aeval z p = 0 := by rw [← hq, map_mul, hzq, mul_zero]
-  have him := h z hzp
-  have hz' : z = ((z.re : ℝ) : ℂ) := Complex.ext (by simp) (by simp [him])
-  rw [hz'] at hzq
-  have h1 : (algebraMap ℝ ℂ) (q.eval z.re) = 0 := by
-    rw [← aeval_algebraMap_apply_eq_algebraMap_eval]; exact hzq
-  have h2 : q.eval z.re = 0 := by simpa using h1
-  have hmem : z.re ∈ q.roots := (mem_roots hqne).mpr h2
-  rw [hq0] at hmem
-  simp at hmem
-
 private lemma Wseq_splits {a b c d : ℝ} (ha : 0 < a) (hb : 0 < b) (hc : 0 < c) (hd : 0 < d)
     (habcd : a * d ≤ b * c) (n : ℕ) : (Wseq a b c d n).Splits := by
-  apply splits_of_no_nonreal_root
-  intro z hz
-  by_contra him
-  have hL : 0 < a ^ (n - 1) * |z.im| ^ n := by
-    have : 0 < |z.im| := abs_pos.mpr him
-    positivity
-  have hbound : ∀ b' : ℝ, b' ∈ Set.Ioi b →
-      a ^ (n - 1) * |z.im| ^ n ≤ ‖aeval z (Wseq a b' c d n)‖ := by
-    intro b' hb'
-    have hb'' : b < b' := hb'
-    have hs := Wseq_splits_of_lt ha (hb.trans hb'') hc hd (by nlinarith) n
-    have := splits_lower_bound _ hs z
-    rwa [Wseq_leadingCoeff ha.ne', Wseq_natDegree ha.ne', Real.norm_eq_abs,
-      abs_of_pos (pow_pos ha _)] at this
-  have hcont := (Wseq_continuous a c d z n).norm
-  have htend : Filter.Tendsto (fun b' => ‖aeval z (Wseq a b' c d n)‖) (nhdsWithin b (Set.Ioi b))
-      (nhds ‖aeval z (Wseq a b c d n)‖) :=
-    (hcont.tendsto b).mono_left nhdsWithin_le_nhds
-  have := ge_of_tendsto htend (eventually_nhdsWithin_of_forall hbound)
-  rw [hz, norm_zero] at this
-  linarith
+  let b' : ℕ → ℝ := fun k => b + 1 / (k + 1)
+  let p : ℕ → ℝ[X] := fun k => Wseq a (b' k) c d n
+  have hb'tend : Filter.Tendsto b' Filter.atTop (nhds b) := by
+    simpa [b'] using tendsto_const_nhds.add
+      (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
+  have hhom : Complex.ofRealHom = algebraMap ℝ ℂ := by
+    ext x
+    rfl
+  have hlimit := Polynomial.eq_zero_or_splits_of_tendsto_eval_of_natDegree_le
+    (p := p) (p₀ := Wseq a b c d n) (N := n)
+    (fun k => (Wseq_deg a (b' k) c d n).1)
+    (fun k => Or.inr (Wseq_splits_of_lt ha (by dsimp [b']; positivity) hc hd (by
+      have hk : 0 < (1 : ℝ) / (k + 1) := by positivity
+      dsimp [b']
+      nlinarith [mul_pos hk hc]) n))
+    (fun z => by
+      rw [hhom]
+      have ht := (Wseq_continuous a c d z n).continuousAt.tendsto.comp hb'tend
+      simpa only [p, Function.comp_def, aeval_def, eval₂_eq_eval_map] using ht)
+  rcases hlimit with hzero | hsplits
+  · exfalso
+    have hlead := Wseq_leadingCoeff ha.ne' b c d n
+    rw [hzero, leadingCoeff_zero] at hlead
+    exact (pow_ne_zero _ ha.ne') hlead.symm
+  · exact hsplits
 
 /-- Wang–Zhang, arXiv:1712.06105, Theorem 2.1 (sufficiency; RealRooted issue #2067).
 For `a, b, c, d > 0` with `a d ≤ b c`, every row of `W₀ = 1`, `W₁ = X`,
