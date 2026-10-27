@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.RootAmplitude.Convex
-public import Mathlib.Analysis.Complex.ExponentialBounds
+import Mathlib.Analysis.Complex.ExponentialBounds
 public import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
 /-!

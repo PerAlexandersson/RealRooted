@@ -182,6 +182,8 @@ theorem-shape suggestions, or proof repairs:
   exposure convention: `public section` for theorem-only files, `@[expose] public section` (or
   per-definition `@[expose]`) only where importers unfold definitions; prefer API lemmas to
   exposing bodies.  `scripts/check_module_system.py` checks the header.
+- Import privately by default: `public import` only what public statements or exposed
+  definitions mention (README, module system).  Macro quotations count as public uses.
 - Before changing files touched by open PRs, inspect the PR diffs to avoid
   conflicting with the intended API direction.
 - Prefer focused Lake builds for touched Lean modules when a local build owner

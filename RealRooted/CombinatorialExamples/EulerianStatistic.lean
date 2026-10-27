@@ -1,8 +1,9 @@
 module
 
-public import RealRooted.Mathlib.Combinatorics.Enumerative.EulerianPeak
+import RealRooted.Mathlib.Combinatorics.Enumerative.EulerianPeak
 public import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
 public import RealRooted.GeneralizedEulerian
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
 
 public section
 

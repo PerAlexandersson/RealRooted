@@ -2,6 +2,8 @@ module
 
 public import RealRooted.BorceaBranden.RealFiniteSymbolSufficiency
 public import Mathlib.Topology.Order.IntermediateValue
+public import RealRooted.BorceaBranden.RealHKOConverse
+public import RealRooted.BorceaBranden.FiniteSymbolClassification
 
 @[expose] public section
 

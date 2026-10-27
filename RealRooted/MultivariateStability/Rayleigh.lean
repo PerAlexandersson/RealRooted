@@ -1,8 +1,9 @@
 module
 
 public import RealRooted.Multiaffine.TwoCoordinateSlice
-public import RealRooted.MultivariateStability.Specialization
-public import RealRooted.PartialSymmetrization
+import RealRooted.MultivariateStability.Specialization
+import RealRooted.PartialSymmetrization
+public import RealRooted.MultivariateStability
 
 /-!
 # Rayleigh consequences of multivariate stability

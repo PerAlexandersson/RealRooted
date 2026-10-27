@@ -2,9 +2,11 @@ module
 
 public import RealRooted.Mathlib.RingTheory.MvPolynomial.BooleanSwapOrbit
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
-public import RealRooted.MultivariateStability.LinearForm
+import RealRooted.MultivariateStability.LinearForm
 public import Mathlib.Data.Finset.BooleanAlgebra
 public import Mathlib.Data.Finset.Powerset
+public import RealRooted.MultivariateStability
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 
 /-!
 # Stable Boolean variable-choice orbits

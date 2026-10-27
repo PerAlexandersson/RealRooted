@@ -5,10 +5,19 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.IntervalDifferential.FactorShapes
-public import RealRooted.IntervalDifferential.QuarticBounds
-public import RealRooted.IntervalDifferential.LinearInsertion
-public import RealRooted.IntervalDifferential.QuadraticInsertion
+import RealRooted.IntervalDifferential.FactorShapes
+import RealRooted.IntervalDifferential.QuarticBounds
+import RealRooted.IntervalDifferential.LinearInsertion
+import RealRooted.IntervalDifferential.QuadraticInsertion
+import RealRooted.IntervalDifferential.ParityQuarticFactor
+import RealRooted.Mathlib.Algebra.Polynomial.RealQuadraticFactor
+import RealRooted.IntervalDifferential.Degree
+import RealRooted.IntervalDifferential.CubicDisk
+public import RealRooted.IntervalDifferential.Basic
+import Mathlib.Analysis.Polynomial.Factorization
+import Mathlib.Tactic
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Universal transfer for the centered zigzag operator

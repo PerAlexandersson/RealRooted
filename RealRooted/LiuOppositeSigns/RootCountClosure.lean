@@ -1,11 +1,15 @@
 module
 
-public import RealRooted.CommonInterleaver.SameDegreeRootCount
-public import RealRooted.CommonInterleaver.RootCountCombinatorics
+import RealRooted.CommonInterleaver.SameDegreeRootCount
+import RealRooted.CommonInterleaver.RootCountCombinatorics
 public import RealRooted.LiuOppositeSigns
-public import RealRooted.LiuOppositeSigns.RootCountRelStability
+import RealRooted.LiuOppositeSigns.RootCountRelStability
 public import RealRooted.LiuOppositeSigns.NoCommonRoots
-public import RealRooted.RootMatchingSort
+import RealRooted.RootMatchingSort
+import RealRooted.LiuOppositeSigns.RootDeletion
+import RealRooted.RootCountJump
+import RealRooted.CommonInterleaver.IntervalLemmas
+public import RealRooted.CommonInterleaver.RootDesc
 
 /-!
 # Closure of Liu root-count compatibility

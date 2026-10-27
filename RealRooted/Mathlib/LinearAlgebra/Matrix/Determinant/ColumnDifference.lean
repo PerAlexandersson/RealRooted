@@ -7,7 +7,7 @@ module
 
 public import Mathlib.Data.Fin.Rev
 public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 
 /-!
 # Determinant-preserving adjacent column differences

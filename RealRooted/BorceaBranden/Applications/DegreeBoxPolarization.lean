@@ -1,9 +1,11 @@
 module
 
 public import RealRooted.BorceaBranden.FiniteSymbolBasis
-public import RealRooted.BorceaBranden.FiniteSymbolDegree
-public import RealRooted.BorceaBranden.FiniteSymbolPreserver
+import RealRooted.BorceaBranden.FiniteSymbolDegree
+import RealRooted.BorceaBranden.FiniteSymbolPreserver
 public import RealRooted.Polarization
+import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
+import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
 
 /-!
 # Source polarization for degree-box operators

@@ -1,7 +1,11 @@
 module
 
-public import RealRooted.Compatibility.CutTransformClosure
-public import RealRooted.Compatibility.Three
+import RealRooted.Compatibility.CutTransformClosure
+import RealRooted.Compatibility.Three
+public import RealRooted.Compatibility.CutTransform
+import RealRooted.PFPolynomial
+import RealRooted.PosCombo
+public import RealRooted.InterlacingSequenceBasic
 
 /-!
 # Successor state order for ordered P/Q cut families

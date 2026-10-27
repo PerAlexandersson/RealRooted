@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.VeroneseMatrix
+import RealRooted.VeroneseMatrix
+public import RealRooted.VeroneseSection
 
 /-!
 # Strict interlacing between normalized Veronese sections

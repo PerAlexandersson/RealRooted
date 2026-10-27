@@ -5,8 +5,8 @@ public import RealRooted.CombinatorialExamples.DyckNarayana
 public import RealRooted.MaoWangMatrixProduct
 public import RealRooted.NarayanaInterpolation
 public import RealRooted.NarayanaTransformation.Endpoints
-public import RealRooted.NarayanaTransformation.Falling
-public import RealRooted.NarayanaTransformation.Rising
+import RealRooted.NarayanaTransformation.Falling
+import RealRooted.NarayanaTransformation.Rising
 
 /-!
 # Narayana polynomial challenge entry point

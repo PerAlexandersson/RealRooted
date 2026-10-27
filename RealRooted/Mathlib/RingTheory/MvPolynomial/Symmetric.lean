@@ -5,7 +5,7 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Logic.Equiv.Fintype
+import Mathlib.Logic.Equiv.Fintype
 public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 import Mathlib.Tactic.Ring
 

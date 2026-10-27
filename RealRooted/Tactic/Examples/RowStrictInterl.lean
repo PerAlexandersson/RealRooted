@@ -1,6 +1,5 @@
 module
 
-public import RealRooted.Applications.OEIS.A056939
 public import RealRooted.Applications.OEIS.A359363
 public import RealRooted.CombinatorialExamples.Motzkin
 public import RealRooted.CombinatorialExamples.Simsun
@@ -47,11 +46,6 @@ example (n : ℕ) : StrictInterl (simsun n) (simsun (n + 1)) := by
   rr_row_strictInterl
 
 /-! ## General interlacing fallback -/
-
-example (n : ℕ) :
-    StrictInterl (Applications.OEIS.A056939.polynomial n)
-      (Applications.OEIS.A056939.polynomial (n + 1)) := by
-  rr_row_strictInterl
 
 example (n : ℕ) :
     StrictInterl (Applications.OEIS.A359363.polynomial n)

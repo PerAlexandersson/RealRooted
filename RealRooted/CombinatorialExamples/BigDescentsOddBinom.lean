@@ -7,6 +7,8 @@ public import Mathlib.Analysis.Complex.Trigonometric
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 public import Mathlib.Analysis.SpecialFunctions.Complex.Arctan
 public import Mathlib.Order.Interval.Finset.Nat
+import RealRooted.Mathlib.Data.Nat.Choose.Cast
+import RealRooted.Mathlib.Data.Nat.Cast.Basic
 
 @[expose] public section
 

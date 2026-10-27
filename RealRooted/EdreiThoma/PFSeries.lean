@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.AissenSchoenbergWhitneyBase
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.JacobiComplementaryMinor
+import RealRooted.Mathlib.LinearAlgebra.Matrix.JacobiComplementaryMinor
 
 @[expose] public section
 

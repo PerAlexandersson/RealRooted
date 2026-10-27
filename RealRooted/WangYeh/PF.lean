@@ -1,8 +1,8 @@
 module
 
-public import RealRooted.EulerOperator.Pencil
+import RealRooted.EulerOperator.Pencil
 public import RealRooted.MultiplierSequence.Bidiagonal
-public import RealRooted.WangYeh.Affine
+import RealRooted.WangYeh.Affine
 
 /-!
 # The Wang--Yeh coefficient-bidiagonal PF criterion

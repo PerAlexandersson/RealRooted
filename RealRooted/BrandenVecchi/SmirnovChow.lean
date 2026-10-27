@@ -2,6 +2,7 @@ module
 
 public import RealRooted.BrandenVecchi.ChowToeplitz
 public import RealRooted.ParkingFunctions.Descents.Basic
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
 
 /-!
 # Weighted Smirnov words and Toeplitz Chow polynomials

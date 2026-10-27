@@ -3,10 +3,14 @@ module
 public import RealRooted.BrandenLeite.ChainPolynomial.Algebra
 public import RealRooted.BrandenLeite.ChainPolynomial.Resolution
 public import RealRooted.Interlacing.ConeBounds
-public import RealRooted.RowThresholdOne
-public import RealRooted.SymmetricDecomposition.Theorem26
-public import RealRooted.Mathlib.Algebra.BigOperators.Group.List
-public import RealRooted.Mathlib.Algebra.Polynomial.BigOperators
+import RealRooted.RowThresholdOne
+import RealRooted.SymmetricDecomposition.Theorem26
+import RealRooted.Mathlib.Algebra.BigOperators.Group.List
+import RealRooted.Mathlib.Algebra.Polynomial.BigOperators
+public import RealRooted.SymmetricDecomposition.FPolynomial
+import RealRooted.PosCombo
+public import RealRooted.InterlacingSequenceBasic
+import RealRooted.Linear
 
 /-!
 # Chain polynomials of a resolvable matrix

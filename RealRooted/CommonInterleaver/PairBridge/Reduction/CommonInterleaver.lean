@@ -1,8 +1,13 @@
 module
 
-public import RealRooted.CommonInterleaver.PairBridge.Reduction.CommonRoot
-public import RealRooted.CommonInterleaver.PairBridge.SuccDegree.SlotData
-public import RealRooted.SameDegreeCountFromAnalytic
+import RealRooted.CommonInterleaver.PairBridge.Reduction.CommonRoot
+import RealRooted.CommonInterleaver.PairBridge.SuccDegree.SlotData
+import RealRooted.SameDegreeCountFromAnalytic
+import RealRooted.AffineFamily
+public import RealRooted.ObreschkoffContinuity
+import RealRooted.WagnerX.AffineFactors
+import RealRooted.Linear
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Pair bridge reduction: common interleavers

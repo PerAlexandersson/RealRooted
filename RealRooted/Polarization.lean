@@ -1,13 +1,16 @@
 module
 
-public import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
-public import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
+import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
+import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
 public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
 public import Mathlib.RingTheory.Polynomial.Vieta
-public import RealRooted.GraceHalfPlane
+import RealRooted.GraceHalfPlane
 public import RealRooted.PartialSymmetrization
 public import RealRooted.MultivariateStability
+public import RealRooted.Multiaffine
+public import RealRooted.Apolarity
+import RealRooted.Mathlib.Data.Nat.Choose.Cast
 
 /-!
 # Polarization and upper-half-plane stability

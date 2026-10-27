@@ -1,10 +1,15 @@
 module
 
-public import Mathlib.Algebra.Order.Star.Real
-public import Mathlib.Analysis.Matrix.PosDef
-public import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
 public import RealRooted.Bezoutian.StrictInterleaving
 public import RealRooted.Mathlib.Algebra.Polynomial.Bezoutian
+import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
+public import Mathlib.LinearAlgebra.Matrix.PosDef
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.Algebra.QuadraticDiscriminant
 
 /-!
 # Elementary real Bezout matrices

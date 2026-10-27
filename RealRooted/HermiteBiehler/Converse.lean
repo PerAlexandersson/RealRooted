@@ -1,6 +1,13 @@
 module
 
 public import RealRooted.HermiteBiehler.Converse.Wronskian
+import RealRooted.HermiteBiehler.ConverseLowDegree
+import RealRooted.HermiteBiehler.Forward
+import RealRooted.Interlacing.Residue
+import RealRooted.Interlacing.Multiplicity
+import RealRooted.ObreschkoffConverse.Derivative
+import RealRooted.Linear
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 
 /-!
 # Converse Hermite--Biehler theorem

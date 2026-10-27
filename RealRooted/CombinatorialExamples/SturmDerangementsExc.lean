@@ -3,12 +3,18 @@ module
 public import RealRooted.Basic
 public import RealRooted.Derivative
 public import RealRooted.Wagner
-public import RealRooted.AffineDerivative
+import RealRooted.AffineDerivative
 public import Mathlib.Analysis.Calculus.Deriv.Polynomial
-public import RealRooted.Mathlib.Algebra.Polynomial.Reverse
+import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 import RealRooted.Tactic.Finish
 public import Mathlib.Tactic
-public import RealRooted.Mathlib.Algebra.Polynomial.Basic
+import RealRooted.Mathlib.Algebra.Polynomial.Basic
+import RealRooted.SequenceClosure
+import RealRooted.WagnerRightSum
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Derivative.Algebra
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Derangement Excedance Polynomials

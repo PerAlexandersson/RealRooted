@@ -2,6 +2,9 @@ module
 
 public import RealRooted.BrandenLeite.WhitneyReduction
 public import RealRooted.BrandenVecchi.ChowResolutionInterlacing
+import RealRooted.ReciprocalShift.ProperPosition
+import RealRooted.BrandenVecchi.ChowInterlacing
+import RealRooted.PosCombo
 
 /-!
 # Chow polynomials of totally nonnegative matrices

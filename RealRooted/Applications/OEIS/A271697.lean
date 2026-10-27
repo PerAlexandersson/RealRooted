@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.LiuWang.FiniteFamily
-public import RealRooted.WagnerX.AffineFactors
+import RealRooted.LiuWang.FiniteFamily
+import RealRooted.WagnerX.AffineFactors
+import RealRooted.Linear
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # A derivative--lag OEIS row

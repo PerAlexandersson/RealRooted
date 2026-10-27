@@ -1,9 +1,20 @@
 module
 
 public import RealRooted.Derivative.SimpleRoots
-public import RealRooted.EulerOperator.Pencil
-public import RealRooted.Interlacing.OuterDifference
+import RealRooted.EulerOperator.Pencil
+import RealRooted.Interlacing.OuterDifference
 public import RealRooted.QuadraticInterlacingClosure
+public import RealRooted.EulerOperator
+import RealRooted.Interlacing.Residue
+import RealRooted.SimpleRoots
+import RealRooted.PosCombo
+import RealRooted.MaWang.Strong
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Derivative.FamilyClosure
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
+import RealRooted.Linear
+import RealRooted.Basic.PolynomialFacts
 
 /-!
 # Directed differential comparisons for PF polynomials

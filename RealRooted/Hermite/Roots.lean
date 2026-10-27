@@ -5,11 +5,13 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Favard
-public import RealRooted.Hermite.Favard
+import RealRooted.Favard
+import RealRooted.Hermite.Favard
 public import RealRooted.SimpleRoots
 
 public import Mathlib.Tactic.Positivity
+public import RealRooted.Hermite.Basic
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Roots of probabilists' Hermite polynomials

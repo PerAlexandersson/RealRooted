@@ -5,7 +5,9 @@ Authors: Per Alexandersson
 -/
 module
 
+import Mathlib.Analysis.Real.Pi.Bounds
 public import RealRooted.CenteredEulerian.ChangeBasis
+public import RealRooted.CenteredEulerian.Majorants
 
 /-!
 # Rational majorants for `φ_{jk}` (B.8)–(B.9)

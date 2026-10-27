@@ -2,8 +2,9 @@ module
 
 public import RealRooted.Derivative.FamilyClosure
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
-public import Mathlib.Analysis.Analytic.Order
-public import Mathlib.Analysis.Complex.LocallyUniformLimit
+import Mathlib.Analysis.Analytic.Order
+import Mathlib.Analysis.Complex.LocallyUniformLimit
+import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
 
 /-!
 # Holomorphic Laguerre--Pólya limits

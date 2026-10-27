@@ -1,10 +1,15 @@
 module
 
-public import Mathlib.Algebra.MvPolynomial.PDeriv
-public import Mathlib.Algebra.Order.Star.Int
-public import Mathlib.LinearAlgebra.Lagrange
+import Mathlib.Algebra.MvPolynomial.PDeriv
+import Mathlib.Algebra.Order.Star.Int
+import Mathlib.LinearAlgebra.Lagrange
 public import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
 public import RealRooted.CombinatorialExamples.BorosMoll.Basic
+import Mathlib.Algebra.Ring.IsFormallyReal
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Algebra.Order.Ring.Star
+import Mathlib.Tactic.IntervalCases
+import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 
 /-!
 # Boros–Moll log-concavity transform: estimates for large `n`

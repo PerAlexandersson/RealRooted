@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary
+import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
 
 /-!
 # Scalar and homogeneous structure of the BFJ auxiliary product

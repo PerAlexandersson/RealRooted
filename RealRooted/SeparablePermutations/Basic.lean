@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.DerivativeRecurrence.QuadraticLagStrict
-public import RealRooted.Linear
+import RealRooted.DerivativeRecurrence.QuadraticLagStrict
+import RealRooted.Linear
+public import RealRooted.SimpleRoots
+public import RealRooted.Basic.Coefficients
 
 /-!
 # The auxiliary polynomials for separable permutations

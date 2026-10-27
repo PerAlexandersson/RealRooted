@@ -1,12 +1,22 @@
 module
 
 public import RealRooted.MaWang
-public import RealRooted.MaWang.StrictSigns.Assembly
+import RealRooted.MaWang.StrictSigns.Assembly
 public import RealRooted.ObreschkoffConverse
 public import RealRooted.PosCombo
 public import RealRooted.Interlacing.Multiplicity
-public import RealRooted.Interlacing.Residue
+import RealRooted.Interlacing.Residue
 public import RealRooted.WagnerRightSum.Sign
+import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.MaWang.Weak.DerivativeSign
+import RealRooted.MaWang.Weak.Successor
+import RealRooted.WagnerX.AffineFactors
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
+import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
+import RealRooted.Basic.PolynomialFacts
 
 /-!
 # Outer differences in an ordered interlacing triple

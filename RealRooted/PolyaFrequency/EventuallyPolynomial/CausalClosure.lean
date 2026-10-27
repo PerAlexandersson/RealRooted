@@ -1,8 +1,10 @@
 module
 
-public import RealRooted.PolyaFrequency.EventuallyPolynomial
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Closure
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation
+import RealRooted.PolyaFrequency.EventuallyPolynomial
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Closure
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation
+public import RealRooted.Mathlib.Algebra.Group.ForwardDiff
+public import RealRooted.AissenSchoenbergWhitneyBase
 
 /-!
 # Causal forward differences with a positive initial value

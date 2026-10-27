@@ -3,7 +3,11 @@ module
 public import RealRooted.AffineFamily
 public import RealRooted.ProductFamily
 public import RealRooted.GarloffWagner
-public import RealRooted.PosCombo
+import RealRooted.PosCombo
+import RealRooted.PFPolynomial
+import RealRooted.WagnerX.NonnegativeRoots
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 public section
 

@@ -1,9 +1,10 @@
 module
 
-public import RealRooted.BrandenVecchi.ChowResolutionInterlacing
+import RealRooted.BrandenVecchi.ChowResolutionInterlacing
 public import RealRooted.CombinatorialExamples.SturmDerangementsExc
 public import RealRooted.GeneralizedEulerian
 public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+public import RealRooted.BrandenVecchi.ChowResolution
 
 /-!
 # The deranged transform on the magic basis

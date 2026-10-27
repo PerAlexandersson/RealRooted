@@ -1,7 +1,10 @@
 module
 
 public import RealRooted.BorceaBranden.Transcendental.RealTheoremFiveOne
-public import RealRooted.BorceaBranden.Transcendental.ComplexClassification
+import RealRooted.BorceaBranden.Transcendental.ComplexClassification
+public import RealRooted.BorceaBranden.RealFiniteSymbolSufficiency
+public import RealRooted.BorceaBranden.RealFiniteNecessity
+public import RealRooted.BorceaBranden.Transcendental.LambdaBar
 
 @[expose] public section
 

@@ -1,8 +1,11 @@
 module
 
-public import RealRooted.Mathlib.Data.Fintype.Card
-public import RealRooted.ParkingFunctions.Descents.PollakTransfer
+import RealRooted.Mathlib.Data.Fintype.Card
+import RealRooted.ParkingFunctions.Descents.PollakTransfer
 public import RealRooted.ParkingFunctions.Descents.Tieless
+public import RealRooted.ParkingFunctions.Descents.Pollak
+public import RealRooted.ParkingFunctions.Descents.WordContent
+public import RealRooted.BrandenVecchi.SmirnovChow
 
 /-!
 # Content orbits for parking and Smirnov words

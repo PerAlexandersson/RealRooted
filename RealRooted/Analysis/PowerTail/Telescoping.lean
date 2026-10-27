@@ -1,6 +1,11 @@
 module
 
-public import RealRooted.Analysis.PowerTail.Bernoulli
+import RealRooted.Analysis.PowerTail.Bernoulli
+import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
+import Mathlib.Algebra.Order.Algebra
+public import Mathlib.Algebra.Field.Defs
+public import Mathlib.Algebra.Order.Ring.Defs
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 
 /-!
 # Finite telescoping bounds for reciprocal-power tails

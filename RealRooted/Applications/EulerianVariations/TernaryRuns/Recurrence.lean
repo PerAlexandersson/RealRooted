@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.Basic.Coefficients
-public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 public import Mathlib.Tactic
 
 /-!

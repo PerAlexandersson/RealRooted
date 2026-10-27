@@ -2,8 +2,13 @@ module
 
 public import RealRooted.MultivariateStability
 public import RealRooted.Mathlib.RingTheory.MvPolynomial.Homogeneous
-public import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
-public import RealRooted.RootContinuity
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
+import RealRooted.RootContinuity
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
+import Mathlib.Analysis.RCLike.Lemmas
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+public import Mathlib.Analysis.Complex.Basic
 
 /-!
 # Affine-line restrictions of multivariate stable polynomials

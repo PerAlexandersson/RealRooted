@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.LiuOppositeSigns.RootCount
+import RealRooted.RootCountJump
 
 /-!
 # Root deletion for Liu root-count arguments

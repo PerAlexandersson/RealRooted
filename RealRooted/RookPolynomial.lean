@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.HeilmannLieb
-public import Mathlib.Combinatorics.SimpleGraph.Bipartite
+import RealRooted.HeilmannLieb
+import Mathlib.Combinatorics.SimpleGraph.Bipartite
+public import RealRooted.Graph.MatchingPolynomial
+public import RealRooted.PFPolynomial
 
 /-!
 # Weighted rook polynomials

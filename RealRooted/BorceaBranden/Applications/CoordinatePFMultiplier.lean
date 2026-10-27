@@ -1,8 +1,12 @@
 module
 
-public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
-public import RealRooted.BorceaBranden.Applications.HomogenizeStable
-public import RealRooted.MultiplierSequence.PolyaSchur.Factorial
+import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
+import RealRooted.BorceaBranden.Applications.HomogenizeStable
+import RealRooted.MultiplierSequence.PolyaSchur.Factorial
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
+import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
+public import RealRooted.MultiplierSequence.Infinite
+public import RealRooted.MultivariateStability
 
 /-!
 # Coordinate PF multipliers

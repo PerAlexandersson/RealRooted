@@ -1,11 +1,13 @@
 module
 
 public import RealRooted.Apolarity
-public import RealRooted.BorceaBranden.Applications.PolarizationIff
+import RealRooted.BorceaBranden.Applications.PolarizationIff
 public import RealRooted.GraceHalfPlane
 public import RealRooted.GraceWalshSzego
-public import RealRooted.LiebSokal
+import RealRooted.LiebSokal
 public import RealRooted.Polarization
+public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
+public import RealRooted.LiebSokalOperator
 
 /-!
 # Grace apolarity challenge entry point

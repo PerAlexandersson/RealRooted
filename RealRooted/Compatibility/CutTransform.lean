@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.Compatibility.Basic
+import RealRooted.Compatibility.Basic
+public import RealRooted.Compatibility.Pair
 
 /-!
 # The finite P/Q cut transform

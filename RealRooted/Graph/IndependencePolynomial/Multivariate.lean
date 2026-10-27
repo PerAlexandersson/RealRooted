@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.Graph.IndependencePolynomial.ClawFree
+import RealRooted.Graph.IndependencePolynomial.ClawFree
 public import RealRooted.SamePhaseStability
+public import RealRooted.Graph.IndependencePolynomial.Basic
+public import RealRooted.Graph.ClawFree
 
 /-!
 # Multivariate independence polynomials

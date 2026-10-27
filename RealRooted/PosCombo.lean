@@ -4,8 +4,15 @@ public import RealRooted.WeightedSum
 public import RealRooted.MaWang
 public import RealRooted.ObreschkoffContinuity
 public import RealRooted.PosCombo.Degree
-public import RealRooted.AissenSchoenbergWhitney
+import RealRooted.AissenSchoenbergWhitney
 public import RealRooted.DegreeDropReversal
+import RealRooted.MaWang.StrictSigns.Assembly
+import RealRooted.Mathlib.Algebra.Polynomial.Reverse
+import RealRooted.WagnerRightSum
+import RealRooted.WagnerX.AffineFactors
+import RealRooted.Linear
+public import RealRooted.AissenSchoenbergWhitneyBase
+import RealRooted.Basic.PolynomialFacts
 
 /-!
 # Positive-combination real-rootedness

@@ -4,6 +4,7 @@ public import Mathlib.Tactic.Abel
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.Ring
 public import RealRooted.RecurrenceSpace.Filtered
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Operator
 
 /-!
 # Universal source-and-lift defect identity

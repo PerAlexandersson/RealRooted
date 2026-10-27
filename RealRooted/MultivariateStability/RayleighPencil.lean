@@ -1,10 +1,11 @@
 module
 
-public import RealRooted.HermiteBiehler.OrientedPencil
+import RealRooted.HermiteBiehler.OrientedPencil
 public import RealRooted.Multiaffine.AffineCoordinateExtension
-public import RealRooted.Multiaffine.AffineLineRestriction
-public import RealRooted.MultivariateStability.AllComboAffineLine
-public import RealRooted.MultivariateStability.Rayleigh
+import RealRooted.Multiaffine.AffineLineRestriction
+import RealRooted.MultivariateStability.AllComboAffineLine
+import RealRooted.MultivariateStability.Rayleigh
+public import RealRooted.MultivariateStability.AllCombo
 
 /-!
 # Rayleigh coordinate pencils

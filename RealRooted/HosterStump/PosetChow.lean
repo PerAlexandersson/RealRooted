@@ -1,9 +1,11 @@
 module
 
-public import RealRooted.HosterStump.FlagF
-public import RealRooted.HosterStump.HVector
-public import RealRooted.HosterStump.DesMobius
-public import RealRooted.HosterStump.DescentLe
+import RealRooted.HosterStump.FlagF
+import RealRooted.HosterStump.HVector
+import RealRooted.HosterStump.DesMobius
+import RealRooted.HosterStump.DescentLe
+public import RealRooted.HosterStump.Chow
+public import RealRooted.HosterStump.PosetBasic
 
 /-!
 # Chow polynomials of graded simplicial posets

@@ -1,10 +1,17 @@
 module
 
 public import RealRooted.Basic
-public import RealRooted.Linear
+import RealRooted.Linear
 public import RealRooted.Derivative
 public import RealRooted.Wagner
 public import RealRooted.ObreschkoffConverse
+import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.ObreschkoffConverse.Converse
+import RealRooted.ObreschkoffConverse.DegreeGap
+import RealRooted.PosCombo
+import RealRooted.WagnerX.NonnegativeRoots
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 public section
 

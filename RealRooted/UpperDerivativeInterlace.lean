@@ -2,9 +2,12 @@ module
 
 public import RealRooted.AllCombo
 public import RealRooted.Derivative
-public import RealRooted.MagnitudeDominated
+import RealRooted.MagnitudeDominated
 public import RealRooted.ObreschkoffConverse
 public import RealRooted.WagnerRightSum
+import RealRooted.ObreschkoffConverse.Converse
+import RealRooted.WagnerRightSum.Sign
+import RealRooted.Derivative.Interlacing
 
 /-!
 # Upper-derivative and magnitude reducers

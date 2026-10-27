@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Stability
+import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Stability
 public import RealRooted.PFPolynomial
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput
 
 /-!
 # PF certificates for the BFJ output

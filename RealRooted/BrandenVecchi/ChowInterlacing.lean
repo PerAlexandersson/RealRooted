@@ -1,7 +1,13 @@
 module
 
-public import RealRooted.BrandenVecchi.ChowInterlacingQuotient
-public import RealRooted.CommonInterleaver.RootDesc
+import RealRooted.BrandenVecchi.ChowInterlacingQuotient
+import RealRooted.CommonInterleaver.RootDesc
+public import RealRooted.BrandenVecchi.ReflectionInterlacing
+public import RealRooted.Mathlib.Algebra.Polynomial.Chow
+import RealRooted.PFPolynomial
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
+import Mathlib.Data.List.GetD
 
 /-!
 # The four-term Chow reflection-interlacing extension

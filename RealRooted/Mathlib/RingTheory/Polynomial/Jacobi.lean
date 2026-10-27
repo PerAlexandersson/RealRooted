@@ -8,7 +8,7 @@ module
 public import Mathlib.RingTheory.Binomial
 public import Mathlib.Tactic
 public import Mathlib.Topology.Algebra.Polynomial
-public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.DifferentialOperator
 
 /-!

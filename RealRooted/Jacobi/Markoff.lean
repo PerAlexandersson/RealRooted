@@ -1,14 +1,16 @@
 module
 
 public import RealRooted.JacobiOrthogonality
-public import RealRooted.Jacobi
-public import RealRooted.Bezoutian.WronskianConverse
-public import RealRooted.Mathlib.Analysis.SpecialFunctions.Integrals.RpowLog
-public import Mathlib.Analysis.Calculus.ContDiff.Polynomial
+import RealRooted.Jacobi
+import RealRooted.Bezoutian.WronskianConverse
+import RealRooted.Mathlib.Analysis.SpecialFunctions.Integrals.RpowLog
+import Mathlib.Analysis.Calculus.ContDiff.Polynomial
 public import Mathlib.Analysis.Calculus.Deriv.MeanValue
 public import Mathlib.Analysis.Calculus.ImplicitContDiff
-public import Mathlib.Data.List.GetD
-public import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
+import Mathlib.Data.List.GetD
+import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
+import RealRooted.Bezoutian.RootEvaluation
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 
 /-!
 # Markoff monotonicity for shifted Jacobi roots

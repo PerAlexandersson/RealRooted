@@ -1,11 +1,14 @@
 module
 
-public import RealRooted.HermiteBiehler.OrientedPencil
-public import RealRooted.Recurrence.RowModel
-public import RealRooted.Recurrence.Uniqueness
+import RealRooted.HermiteBiehler.OrientedPencil
+import RealRooted.Recurrence.RowModel
+import RealRooted.Recurrence.Uniqueness
 public import RealRooted.SymmetricDecomposition.EulerianTransform
 public import RealRooted.ThresholdMatrix.HaglundZhang
 public import RealRooted.Wronskian.Converse
+import RealRooted.Wronskian.WeakForward
+import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.Linear
 
 /-!
 # OEIS A046802

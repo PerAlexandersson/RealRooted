@@ -1,5 +1,4 @@
 import RealRooted.Applications.OEIS.A151775
-import RealRooted.Applications.OEIS.A330798
 import RealRooted.Applications.OEIS.ReflectedEulerRows
 import RealRooted.Interlacing.ReversalCommonFactor
 import RealRooted.Tactic.RowInterlacing
@@ -7,8 +6,7 @@ import RealRooted.Tactic.RowInterlacing
 /-!
 # Shortlist row-model routes
 
-Regression examples for the A151775 transfer, the reflected Euler-bidiagonal families, and
-the normalized A330798 sequence identification.
+Regression examples for the A151775 transfer and the reflected Euler-bidiagonal families.
 -/
 
 open Polynomial RealRooted
@@ -49,23 +47,6 @@ private def row191935 : ℕ → ℝ[X]
 
 example (n : ℕ) : Interlaces (row191935 n) (row191935 (n + 1)) := by
   rr_row_interlaces
-
-private def row330798 : ℕ → ℝ[X]
-  | 0 => 1
-  | 1 => 2 + 2 * X
-  | n + 2 => RowParityDegree.A330798Next n (row330798 (n + 1)) (row330798 n)
-
-example (n : ℕ) : row330798 n = RowParityDegree.A330798 n := by
-  apply RowParityDegree.sequence_eq_A330798_of_recurrence
-  · rfl
-  · rfl
-  · intro m
-    rw [row330798]
-
-example (n : ℕ) : (row330798 n).natDegree = n := by
-  rw [RowParityDegree.sequence_eq_A330798_of_recurrence
-    (P := row330798) (by rfl) (by rfl) (fun m => by rw [row330798])]
-  exact RowParityDegree.A330798_natDegree n
 
 example {g f : ℝ[X]} (h : Interlaces g f)
     (hf : ∀ t ∈ f.roots, t < 0) (hg : ∀ t ∈ g.roots, t < 0) :

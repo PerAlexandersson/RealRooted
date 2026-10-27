@@ -3,8 +3,10 @@ module
 public import Mathlib.Tactic.FieldSimp
 public import Mathlib.Tactic.FinCases
 public import Mathlib.Tactic.Ring
-public import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
+import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
 public import RealRooted.MultivariateStability
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 
 /-!
 # Homogeneous harmonic substitution

@@ -1,8 +1,12 @@
 module
 
-public import RealRooted.BorceaBranden.Applications.PoissonStarGeneral
-public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
-public import RealRooted.MaWang.CriticalSign
+import RealRooted.BorceaBranden.Applications.PoissonStarGeneral
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+import RealRooted.MaWang.CriticalSign
+public import RealRooted.BorceaBranden.Applications.UnivariatePoissonStar
+import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.ObreschkoffConverse.Converse
+import RealRooted.Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Directed proper-position transport for the univariate Poisson product

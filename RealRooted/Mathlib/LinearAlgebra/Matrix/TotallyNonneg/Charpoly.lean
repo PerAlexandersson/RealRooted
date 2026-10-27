@@ -6,8 +6,10 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Basic.Real.Basic
-public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
+import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+public import Mathlib.LinearAlgebra.Matrix.Determinant.TotallyNonneg
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
 
 /-!
 # Real eigenvalues of totally nonnegative matrices are nonnegative

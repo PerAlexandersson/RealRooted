@@ -1,7 +1,13 @@
 module
 
 public import RealRooted.ChudnovskySeymour.Core
-public import RealRooted.LiuOppositeSigns.PositiveSplitPair
+import RealRooted.LiuOppositeSigns.PositiveSplitPair
+public import RealRooted.LiuOppositeSigns.RootCount
+import RealRooted.CommonInterleaver.PairBridge.Compatibility.NonnegativeShift
+import RealRooted.CommonInterleaver.RootCountCombinatorics
+public import RealRooted.Compatibility.Pair
+public import RealRooted.PFPolynomial
+import RealRooted.Linear
 
 /-!
 # Root-count bridges for Jensen pencils

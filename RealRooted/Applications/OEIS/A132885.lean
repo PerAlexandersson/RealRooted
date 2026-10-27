@@ -1,7 +1,11 @@
 module
 
-public import RealRooted.JacobiDeformation.Parity
-public import RealRooted.JacobiDeformation.Strict
+import RealRooted.JacobiDeformation.Parity
+import RealRooted.JacobiDeformation.Strict
+public import RealRooted.Mathlib.Combinatorics.Enumerative.CentralTrinomial
+public import RealRooted.JacobiDeformation.Basic
+public import RealRooted.PFPolynomial
+public import RealRooted.SimpleRoots
 
 /-!
 # OEIS A132885

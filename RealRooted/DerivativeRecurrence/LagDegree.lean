@@ -1,7 +1,10 @@
 module
 
-public import Mathlib.Tactic.ComputeDegree
-public import RealRooted.ThreeTermRecurrence.Degree
+import Mathlib.Tactic.ComputeDegree
+import RealRooted.ThreeTermRecurrence.Degree
+import RealRooted.DerivativeRecurrence.Degree
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Algebra.Polynomial.Derivative
 
 /-!
 # Degrees of derivative-lag recurrences

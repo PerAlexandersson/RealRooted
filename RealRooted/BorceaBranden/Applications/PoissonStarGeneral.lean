@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.BorceaBranden.Applications.UnivariatePoissonStar
-public import RealRooted.BorceaBranden.FiniteOrderWeylPreserver
+import RealRooted.BorceaBranden.FiniteOrderWeylPreserver
 public import Mathlib.Algebra.Polynomial.HasseDeriv
 public import Mathlib.Algebra.Polynomial.Taylor
 

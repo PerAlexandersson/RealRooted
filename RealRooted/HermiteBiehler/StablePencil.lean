@@ -1,6 +1,9 @@
 module
 
-public import RealRooted.HermiteBiehler.Converse
+public import Mathlib.RingTheory.Polynomial.Wronskian
+import RealRooted.HermiteBiehler.Converse
+public import RealRooted.HermiteBiehler.Basic
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Stable univariate pencils

@@ -5,9 +5,10 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities
+import Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities
 
 import Mathlib.Data.Multiset.Fintype
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 
 /-!
 # Evaluated Newton identities

@@ -5,7 +5,13 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Dominance
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Dominance
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CollatzWielandt
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
+public import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Algebra.Order.Ring.Star
+import Mathlib.Tactic
+import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 
 /-!
 # Perron-Frobenius for general nonnegative matrices

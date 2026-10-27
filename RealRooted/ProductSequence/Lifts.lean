@@ -1,6 +1,9 @@
 module
 
 public import RealRooted.ProductSequence.Core
+import RealRooted.ProductSequence.Factors
+import RealRooted.SequenceClosure
+import RealRooted.Linear
 
 /-!
 # Row-wise product lifts

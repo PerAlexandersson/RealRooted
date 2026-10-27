@@ -1,7 +1,11 @@
 module
 
-public import RealRooted.Linear
-public import RealRooted.SequenceClosure
+import RealRooted.Linear
+import RealRooted.SequenceClosure
+import Mathlib.Tactic
+import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Product factor certificates

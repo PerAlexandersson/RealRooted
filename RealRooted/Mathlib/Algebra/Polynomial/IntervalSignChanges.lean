@@ -5,11 +5,12 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Topology.Algebra.Polynomial
+import Mathlib.Topology.Algebra.Polynomial
 public import Mathlib.Topology.Order.IntermediateValue
 public import Mathlib.Algebra.Polynomial.Roots
 public import Mathlib.Algebra.Polynomial.Splits
 public import Mathlib.Tactic.Linarith
+public import Mathlib.Basic.Real.Basic
 
 /-!
 # Polynomial roots from finite strict sign changes

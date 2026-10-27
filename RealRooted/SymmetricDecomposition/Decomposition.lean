@@ -1,6 +1,10 @@
 module
 
 public import RealRooted.SymmetricDecomposition.FPolynomialInterlacing
+public import RealRooted.SymmetricDecomposition.FPolynomial
+public import RealRooted.SymmetricDecomposition.Definitions
+public import RealRooted.WagnerX.ListInterlacing
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 
 /-!
 # `I_d` and `R_d` symmetric decompositions

@@ -1,7 +1,12 @@
 module
 
-public import RealRooted.MaWang.DerivativeSequence
-public import RealRooted.ScalarNormalization
+import RealRooted.MaWang.DerivativeSequence
+import RealRooted.ScalarNormalization
+import RealRooted.LiuWangRecursion
+import RealRooted.SignEvaluation
+import RealRooted.SequenceClosure
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Ma--Wang scalar-denominator and factor variants

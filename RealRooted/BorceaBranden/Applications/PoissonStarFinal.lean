@@ -1,10 +1,14 @@
 module
 
-public import RealRooted.BorceaBranden.Applications.PoissonStarClose
-public import RealRooted.BorceaBranden.Applications.PoissonStarTransport
+import RealRooted.BorceaBranden.Applications.PoissonStarClose
+import RealRooted.BorceaBranden.Applications.PoissonStarTransport
 public import RealRooted.BorceaBranden.Applications.PoissonStarFallingFactorial
-public import RealRooted.BoundarySpecializationGeneral
+import RealRooted.BoundarySpecializationGeneral
 public import RealRooted.HermiteBiehler.StablePencil
+public import RealRooted.BorceaBranden.Applications.UnivariatePoissonStar
+import RealRooted.HermiteBiehler.Converse
+import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.Derivative.Interlacing
 
 /-!
 # Final stability and algebraic characterizations for the univariate Poisson product

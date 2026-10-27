@@ -2,7 +2,7 @@ module
 
 public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
 public import Mathlib.Algebra.MvPolynomial.PDeriv
-public import Mathlib.Algebra.MvPolynomial.CommRing
+import Mathlib.Algebra.MvPolynomial.CommRing
 public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 
 /-!

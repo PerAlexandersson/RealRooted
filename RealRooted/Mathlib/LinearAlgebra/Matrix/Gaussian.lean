@@ -5,12 +5,17 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.Analysis.SpecialFunctions.ExpIntegral
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Integral
+import RealRooted.Mathlib.Analysis.SpecialFunctions.ExpIntegral
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Integral
 public import Mathlib.Tactic.Positivity
 public import Mathlib.Tactic.Ring
 public import Mathlib.Topology.Instances.Matrix
-public import RealRooted.Mathlib.LinearAlgebra.Vandermonde
+import RealRooted.Mathlib.LinearAlgebra.Vandermonde
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
+import Mathlib.Analysis.SpecialFunctions.ExpDeriv
+public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
+public import Mathlib.LinearAlgebra.Vandermonde
 
 /-!
 # Karlin's finite Gaussian matrices

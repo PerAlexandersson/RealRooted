@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.LiuOppositeSigns.PositiveSplitPair
+import RealRooted.LiuOppositeSigns.PositiveSplitPair
 public import RealRooted.LiuOppositeSigns.RootCountBranches.Interfaces
+public import RealRooted.LiuOppositeSigns
+public import RealRooted.Compatibility.Pair
 
 /-!
 # Liu deletion-branch transport

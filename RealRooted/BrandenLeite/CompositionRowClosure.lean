@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.BrandenLeite.ToeplitzComposition
-public import RealRooted.Mathlib.RingTheory.PowerSeries.PiTopology
+import RealRooted.Mathlib.RingTheory.PowerSeries.PiTopology
 
 /-!
 # Degree bounds and limits of composition rows

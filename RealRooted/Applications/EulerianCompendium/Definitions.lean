@@ -4,6 +4,7 @@ public import RealRooted.Applications.EulerianVariations.CyclicPathDescents
 public import RealRooted.Applications.EulerianVariations.TernaryRuns
 public import RealRooted.CombinatorialExamples.SuperEulerian
 public import RealRooted.CombinatorialExamples.PeakValues.WeightedInterleaving
+public import RealRooted.Applications.EulerianVariations.TernaryRuns.Recurrence
 
 /-!
 # Fixed definitions for the Eulerian compendium

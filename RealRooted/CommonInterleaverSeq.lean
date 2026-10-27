@@ -1,6 +1,11 @@
 module
 
 public import RealRooted.CommonInterleaver.FamilyUpgrade
+import RealRooted.CommonInterleaver.DescPolynomial
+import RealRooted.CommonInterleaver.RootSlots
+public import RealRooted.CommonInterleaver.RootSlots.Basic
+public import RealRooted.CommonInterleaver.RootDesc
+public import RealRooted.InterlacingSequenceBasic
 
 /-!
 # Common interleavers and Chudnovsky--Seymour theorem

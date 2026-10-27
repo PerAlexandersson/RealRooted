@@ -5,8 +5,12 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
-public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
+import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Mathlib.Combinatorics.Matroid.Init
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Limits of real-rooted polynomials

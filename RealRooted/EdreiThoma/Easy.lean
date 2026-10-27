@@ -1,6 +1,10 @@
 module
 
 public import RealRooted.BrandenVecchi.SupersymmetricLimits
+import RealRooted.PolyaFrequencyConvolution.GeometricScaling
+import RealRooted.PolyaFrequencyConvolution.Basic
+import RealRooted.PFPolynomial.Closure
+import RealRooted.AissenSchoenbergWhitney
 
 /-!
 # Edrei--Thoma, the easy direction

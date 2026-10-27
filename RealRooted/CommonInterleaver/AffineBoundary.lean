@@ -10,6 +10,11 @@ module
 public import RealRooted.AffineFamily
 public import RealRooted.AllCombo
 public import RealRooted.PosCombo
+import RealRooted.WagnerRightSum
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 public section
 

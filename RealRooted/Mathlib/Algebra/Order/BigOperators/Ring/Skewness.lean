@@ -5,14 +5,17 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Algebra.BigOperators.Fin
+import Mathlib.Algebra.BigOperators.Fin
 public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-public import Mathlib.Analysis.Real.Sqrt
+import Mathlib.Analysis.Real.Sqrt
 
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.Ring
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Data.Finset.Card
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 
 /-! # A sharp bound on skewness
 

@@ -1,8 +1,8 @@
 module
 
 public import RealRooted.IteratedDerivativeShift
-public import RealRooted.RootMultiplicityMatching
-public import RealRooted.SameDegreeMultiplicityLowerCount
+import RealRooted.RootMultiplicityMatching
+import RealRooted.SameDegreeMultiplicityLowerCount
 
 /-!
 # Root matching for derivative shifts

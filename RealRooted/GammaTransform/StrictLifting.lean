@@ -1,9 +1,11 @@
 module
 
-public import RealRooted.GammaTransform.ProperPosition
+import RealRooted.GammaTransform.ProperPosition
 public import RealRooted.SimpleRoots
-public import RealRooted.WagnerRightSum.Sign
-public import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.WagnerRightSum.Sign
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.GammaTransform.RootMap
+public import RealRooted.GammaTransform.Basic
 
 /-!
 # Strict adjacent-degree gamma lifting

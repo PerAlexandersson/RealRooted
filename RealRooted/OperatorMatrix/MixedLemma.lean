@@ -1,7 +1,13 @@
 module
 
-public import RealRooted.OperatorMatrix.Directed
-public import RealRooted.RootPolynomial
+import RealRooted.OperatorMatrix.Directed
+import RealRooted.RootPolynomial
+import RealRooted.PFPolynomial.Closure
+public import RealRooted.PFPolynomial
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
+import RealRooted.Basic.PolynomialFacts
 
 /-!
 # The mixed differential lemma

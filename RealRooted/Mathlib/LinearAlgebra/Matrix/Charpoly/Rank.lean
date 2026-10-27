@@ -5,9 +5,12 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.LinearAlgebra.Eigenspace.Zero
+import Mathlib.LinearAlgebra.Eigenspace.Zero
 public import Mathlib.LinearAlgebra.Charpoly.ToMatrix
 public import Mathlib.LinearAlgebra.Matrix.Rank
+public import Mathlib.LinearAlgebra.Eigenspace.Basic
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
+public import Mathlib.Algebra.Polynomial.Div
 
 /-!
 # Matrix rank and zero roots of the characteristic polynomial

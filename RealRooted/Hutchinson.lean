@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.Kurtz
-public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Closure
+import RealRooted.Kurtz
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Closure
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
 
 /-!
 # Hutchinson's theorem

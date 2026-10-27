@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.ClassicalHurwitzMatrix
+public import RealRooted.HermiteBiehler.Basic
 
 /-!
 # Strict Hurwitz stability

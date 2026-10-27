@@ -1,8 +1,9 @@
 module
 
-public import RealRooted.Favard
+import RealRooted.Favard
 public import RealRooted.Jacobi.Favard
 public import RealRooted.SimpleRoots
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Real-rootedness of shifted Jacobi polynomials

@@ -6,7 +6,11 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.IntervalDifferential.CubicDisk
-public import RealRooted.IntervalDifferential.QuarticSeeds
+import RealRooted.IntervalDifferential.QuarticSeeds
+public import RealRooted.IntervalDifferential.Basic
+import Mathlib.Analysis.Complex.Polynomial.Basic
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Coefficient and evaluation bounds from the quartic disk

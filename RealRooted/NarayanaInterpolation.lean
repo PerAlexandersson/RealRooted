@@ -1,9 +1,12 @@
 module
 
 public import RealRooted.GammaTransform.Basic
-public import RealRooted.Hadamard.Grace
-public import RealRooted.MultiplierSequence.InvPochhammer
-public import RealRooted.NarayanaTransformation.Coefficients
+import RealRooted.Hadamard.Grace
+import RealRooted.MultiplierSequence.InvPochhammer
+import RealRooted.NarayanaTransformation.Coefficients
+import RealRooted.MultiplierSequence.PolyaSchur
+public import RealRooted.PFPolynomial
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
 # Continuous Narayana interpolation

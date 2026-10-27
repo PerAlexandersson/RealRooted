@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.ThresholdMatrix.Basic
+import RealRooted.AffineProperPosition
 
 /-!
 # Gustafsson--Solus threshold recursion

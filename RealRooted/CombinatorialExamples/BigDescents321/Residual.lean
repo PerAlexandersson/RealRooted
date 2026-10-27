@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.CombinatorialExamples.BigDescents321.Neighbor
-public import RealRooted.CombinatorialExamples.BigDescents321.BottomMoments
+import RealRooted.CombinatorialExamples.BigDescents321.Neighbor
+import RealRooted.CombinatorialExamples.BigDescents321.BottomMoments
+public import RealRooted.CombinatorialExamples.BigDescents321.Coordinates
 
 /-!
 # The residual polynomial `R_n`

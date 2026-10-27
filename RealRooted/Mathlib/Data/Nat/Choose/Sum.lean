@@ -5,7 +5,7 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Algebra.BigOperators.NatAntidiagonal
+import Mathlib.Algebra.BigOperators.NatAntidiagonal
 public import Mathlib.Data.Nat.Choose.Sum
 
 /-!

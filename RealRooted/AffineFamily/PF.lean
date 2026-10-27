@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.AffineFamily
+import RealRooted.AffineFamily
 public import RealRooted.PFPolynomial
 
 /-!

@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.Linear
+import RealRooted.Linear
+public import RealRooted.Basic.ProperPosition
+import RealRooted.Mathlib.Data.List.Interleave
 
 /-!
 # Affine transformations of legacy interlacing

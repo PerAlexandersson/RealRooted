@@ -1,7 +1,14 @@
 module
 
-public import RealRooted.Hermite.Poulain
-public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
+public import Mathlib.Algebra.Module.LinearMap.End
+public import Mathlib.Algebra.Polynomial.AlgebraMap
+public import Mathlib.Algebra.Polynomial.Basic
+public import Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Algebra.Polynomial.Splits
+public import Mathlib.Basic.Real.Basic
+import RealRooted.Hermite.Poulain
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
 
 /-!
 # The Bessel differential transform

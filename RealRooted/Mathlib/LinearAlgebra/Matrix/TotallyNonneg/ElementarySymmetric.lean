@@ -7,7 +7,7 @@ module
 
 public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 
 /-!
 # Elementary-symmetric lower-triangular matrices

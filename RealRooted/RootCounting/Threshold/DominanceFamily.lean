@@ -1,7 +1,12 @@
 module
 
-public import RealRooted.RootCounting.Threshold.LogConcavity
-public import RealRooted.RootCounting.Threshold.Signs
+public import Mathlib.Algebra.Polynomial.Basic
+public import Mathlib.Algebra.Polynomial.Degree.Defs
+public import Mathlib.Algebra.Polynomial.Eval.Defs
+public import Mathlib.Basic.Real.Basic
+import RealRooted.RootCounting.Threshold.LogConcavity
+import RealRooted.RootCounting.Threshold.Signs
+import RealRooted.Basic.Coefficients
 
 /-!
 # Geometrically separated roots from coefficient dominance

@@ -1,10 +1,11 @@
 module
 
 public import RealRooted.Basic
-public import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
+import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
 public import RealRooted.MultivariateStability
 public import Mathlib.Algebra.MvPolynomial.Equiv
 public import Mathlib.Basic.Complex.Basic
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Foundational Hermite--Biehler definitions

@@ -14,10 +14,8 @@ import RealRooted.Tactic.Examples.J1Chebyshev
 import RealRooted.Tactic.Examples.LinRecCancellation
 import RealRooted.Tactic.Examples.Lookup
 import RealRooted.Tactic.Examples.OEIS
-import RealRooted.Tactic.Examples.OEIS.A219836
 import RealRooted.Tactic.Examples.OEIS.A259454
 import RealRooted.Tactic.Examples.OEIS.A304334
-import RealRooted.Tactic.Examples.OEIS.A318107
 import RealRooted.Tactic.Examples.OEIS.DegreeTwoGamma
 import RealRooted.Tactic.Examples.OEIS.DegreeTwoSplits
 import RealRooted.Tactic.Examples.OEIS.DerivativeLagCommonRoot
@@ -32,7 +30,6 @@ import RealRooted.Tactic.Examples.ParametricRows
 import RealRooted.Tactic.Examples.Product
 import RealRooted.Tactic.Examples.Product.Interlacing
 import RealRooted.Tactic.Examples.RecurrenceODE
-import RealRooted.Tactic.Examples.RegistryDownstream
 import RealRooted.Tactic.Examples.RowCancelRho
 import RealRooted.Tactic.Examples.RowCubicParent
 import RealRooted.Tactic.Examples.RowData
@@ -48,7 +45,6 @@ import RealRooted.Tactic.Examples.RowModelA080721
 import RealRooted.Tactic.Examples.RowModelFamilies
 import RealRooted.Tactic.Examples.RowModelJensenFamilies
 import RealRooted.Tactic.Examples.RowModelNextFamilies
-import RealRooted.Tactic.Examples.RowModelRecentRegistrations
 import RealRooted.Tactic.Examples.RowModelRegistryBudget
 import RealRooted.Tactic.Examples.RowNonnegative
 import RealRooted.Tactic.Examples.RowParityFactorization

@@ -1,7 +1,13 @@
 module
 
-public import Mathlib.Analysis.Polynomial.Basic
+import Mathlib.Analysis.Polynomial.Basic
 public import RealRooted.Bezoutian.ComplexRoots
+import RealRooted.Bezoutian.RootEvaluation
+public import RealRooted.Bezoutian.MatrixBasics
+import Mathlib.Data.Fin.Tuple.Sort
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Mathlib.Tactic
 
 /-!
 # Wronskian positivity and strict interlacing

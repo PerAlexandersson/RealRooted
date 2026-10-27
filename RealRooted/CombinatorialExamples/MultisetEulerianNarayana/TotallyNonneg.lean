@@ -3,7 +3,8 @@ module
 public import RealRooted.CombinatorialExamples.MultisetEulerianNarayana
 public import Mathlib.Basic.Real.Basic
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 
 /-!
 # Finite bidiagonal factors for multiset Eulerian--Narayana transitions

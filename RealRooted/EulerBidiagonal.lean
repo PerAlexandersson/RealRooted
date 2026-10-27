@@ -1,16 +1,22 @@
 module
 
-public import RealRooted.DerivativeRecurrence.Interlacing
-public import RealRooted.Interlacing.Residue
-public import RealRooted.MaWang.Strong
-public import RealRooted.MaWang.Weak.Endpoint
-public import RealRooted.EulerOperator.Darboux.NegativeRoots
-public import RealRooted.Wronskian.Algebra
-public import RealRooted.WagnerX.NonnegativeRoots
-public import RealRooted.Wronskian.Forward
-public import RealRooted.ObreschkoffConverse.Regularization
+import RealRooted.DerivativeRecurrence.Interlacing
+import RealRooted.Interlacing.Residue
+import RealRooted.MaWang.Strong
+import RealRooted.MaWang.Weak.Endpoint
+import RealRooted.EulerOperator.Darboux.NegativeRoots
+import RealRooted.Wronskian.Algebra
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Wronskian.Forward
+import RealRooted.ObreschkoffConverse.Regularization
 public import RealRooted.Interlacing.PencilPreserver
-public import RealRooted.QuadraticRoot
+import RealRooted.QuadraticRoot
+public import RealRooted.EulerOperator
+import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.PosCombo
+import RealRooted.Derivative.Algebra
+import RealRooted.Linear
 
 @[expose] public section
 

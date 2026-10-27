@@ -6,12 +6,13 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Algebra.Polynomial.RuleOfSigns
-public import Mathlib.Data.List.ChainOfFn
+import Mathlib.Data.List.ChainOfFn
 public import Mathlib.Data.List.NodupEquivFin
 public import Mathlib.Tactic
-public import RealRooted.Mathlib.Data.List.Destutter
-public import RealRooted.Mathlib.Data.List.Basic
-public import RealRooted.Mathlib.Data.List.OfFn
+import RealRooted.Mathlib.Data.List.Destutter
+import RealRooted.Mathlib.Data.List.Basic
+import RealRooted.Mathlib.Data.List.OfFn
+import RealRooted.Mathlib.Data.Fin.Basic
 
 /-!
 # Sign variations of finite vectors

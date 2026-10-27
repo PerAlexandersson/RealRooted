@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.ClassicalHurwitzMatrix
+import RealRooted.ClassicalHurwitzMatrix
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz
+public import RealRooted.HermiteBiehler.OddEven
 
 /-!
 # The algebraic Routh reduction

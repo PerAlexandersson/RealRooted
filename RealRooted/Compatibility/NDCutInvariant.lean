@@ -1,7 +1,10 @@
 module
 
-public import RealRooted.AffineProperPosition
+import RealRooted.AffineProperPosition
 public import RealRooted.Compatibility.CutTransformClosure
+public import RealRooted.Compatibility.CutTransform
+public import RealRooted.InterlacingSequenceBasic
+import RealRooted.Linear
 
 /-!
 # Structural N/D invariant for finite cut transforms

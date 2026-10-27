@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.RootAmplitude.Convex
-public import Mathlib.Analysis.SpecialFunctions.Log.Basic
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
+public import Mathlib.Analysis.Complex.Exponential
 
 /-!
 # Minimum root-amplitude bounds

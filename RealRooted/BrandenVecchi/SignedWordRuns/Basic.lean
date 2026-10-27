@@ -2,8 +2,13 @@ module
 
 public import RealRooted.BrandenVecchi.SignedWords
 public import RealRooted.Mathlib.Data.List.SplitBy
-public import Mathlib.Data.List.ChainOfFn
+import Mathlib.Data.List.ChainOfFn
 public import Mathlib.Data.List.OfFn
+import Mathlib.Data.List.SplitBy
+import Mathlib.Data.Sym.Sym2.Init
+import Mathlib.Algebra.Order.Field.Basic
+public import Mathlib.Algebra.Group.End
+import Mathlib.Algebra.Order.AbsoluteValue.Basic
 
 /-!
 # Run decompositions of finite signed words

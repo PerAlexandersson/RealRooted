@@ -1,19 +1,22 @@
 module
 
 public import RealRooted.CombinatorialExamples.Eulerian
-public import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Interlacing
 public import RealRooted.EulerOperator
 public import RealRooted.EulerOperator.Darboux.NegativeRoots
-public import RealRooted.EulerOperator.Pencil
-public import RealRooted.EulerOperator.Polar.Pencil
-public import RealRooted.GammaTransform.Preservation
-public import RealRooted.Hadamard.Consequences
-public import RealRooted.Interlacing.OuterDifference
+import RealRooted.EulerOperator.Pencil
+import RealRooted.EulerOperator.Polar.Pencil
+import RealRooted.GammaTransform.Preservation
+import RealRooted.Hadamard.Consequences
+import RealRooted.Interlacing.OuterDifference
 public import RealRooted.OrderedRoots
-public import RealRooted.ReciprocalShift.ProperPosition
+import RealRooted.ReciprocalShift.ProperPosition
 public import RealRooted.SimpleRoots
-public import RealRooted.SymmetricDecomposition.Decomposition
-public import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.SymmetricDecomposition.Decomposition
+import RealRooted.WagnerX.NonnegativeRoots
+public import RealRooted.GammaTransform.Basic
+import RealRooted.GarloffWagner.Theorem12
+import RealRooted.Linear
 
 /-!
 # Super-Eulerian (powered Eulerian) polynomials

@@ -1,8 +1,13 @@
 module
 
-public import RealRooted.Mathlib.Algebra.Polynomial.Eval.Degree
-public import RealRooted.RootCounting.SignChanges
-public import RealRooted.RootCounting.Threshold.Basic
+import RealRooted.Mathlib.Algebra.Polynomial.Eval.Degree
+import RealRooted.RootCounting.SignChanges
+import RealRooted.RootCounting.Threshold.Basic
+import RealRooted.MaWang.StrictSigns.RootSigns
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Mathlib.Tactic
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Signed evaluations from coefficient dominance

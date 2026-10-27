@@ -131,10 +131,8 @@ curated list. Some representative checked theorems:
   (`Challenges.Eulerian`), generalized snake posets
   (`snakeInterlacing_generalizedSnakeRookModel`), peak-value enumerators
   (`peakValuePolynomial_mvRealStable`), the A16634x gamma pencil
-  (`gammaU_strictInterl_gammaV`), the Jacobi deformation and OEIS A132885
-  (`JacobiDeformation.polynomial_strict_package`), and the weighted deco
-  Eulerian transform
-  (`Challenges.DecoEulerian.weightedDecoTransform_splits_hasSimpleRoots_roots_neg`).
+  (`gammaU_strictInterl_gammaV`), and the Jacobi deformation and OEIS A132885
+  (`JacobiDeformation.polynomial_strict_package`).
 
 Open problems and proof tasks are tracked in
 [GitHub issues](https://github.com/PerAlexandersson/RealRooted/issues), not in
@@ -202,6 +200,12 @@ Source files use the Lean module system, following Mathlib's conventions:
 - A `private` declaration is invisible to other files, including tactic expansions there.
   Elaborators, `initialize` and simp-set registrations go in a `public meta section`, and tactic
   modules are imported with plain `import`, so their syntax does not leak into importers.
+- Use `public import` only for modules whose declarations appear in the file's public
+  statements or exposed definitions; a module needed only inside proofs is a plain `import`.
+  Plain imports are not re-exported, so changing the interface of a proof-only dependency does
+  not rebuild this file's importers (#2086).  `lake shake` lists imports that can be downgraded
+  or dropped.  Shake cannot see names inside syntax quotations: a tactic module whose macro
+  expands to a theorem must `public import` the module that declares it.
 - A module can only import modules.  Files that cannot be modules yet are listed in
   `scripts/non_module_files.txt` (#2016), and that list may only shrink.
 

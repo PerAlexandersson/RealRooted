@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.Hadamard.FiniteReflection
-public import RealRooted.MultiplierSequence.PolyaSchur.Factorial
+import RealRooted.Hadamard.FiniteReflection
+import RealRooted.MultiplierSequence.PolyaSchur.Factorial
+import RealRooted.MultiplierSequence.PolyaSchur
+public import RealRooted.GarloffWagner.Algebra
 
 /-!
 # Schur's factorial product theorem

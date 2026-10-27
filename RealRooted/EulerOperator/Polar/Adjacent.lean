@@ -6,7 +6,12 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.EulerOperator.Polar.ProperPosition
-public import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.WagnerX.NonnegativeRoots
+public import RealRooted.EulerOperator
+import RealRooted.ObreschkoffConverse.Derivative
+import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.ObreschkoffConverse.Converse
+import RealRooted.DegreeDropReversal
 
 /-!
 # Adjacent polar Euler operators

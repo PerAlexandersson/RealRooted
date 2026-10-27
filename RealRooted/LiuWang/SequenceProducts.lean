@@ -1,6 +1,13 @@
 module
 
 public import RealRooted.LiuWang.SequenceIntervals
+import RealRooted.LiuWang.SequencePositive
+import RealRooted.LiuWang.SequenceCore
+import RealRooted.RootBounds
+import RealRooted.SignEvaluation
+import RealRooted.SequenceClosure
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Product-lag Liu--Wang sequence theorems

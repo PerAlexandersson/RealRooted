@@ -3,6 +3,7 @@ module
 public import RealRooted.InterlacingSequenceBasic
 public import RealRooted.WeightedSum
 public import RealRooted.PosCombo
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Common interleavers: descending roots

@@ -1,7 +1,10 @@
 module
 
 public import RealRooted.EulerianCompletion
-public import RealRooted.EulerOperator.Polar.Pencil
+import RealRooted.EulerOperator.Polar.Pencil
+import RealRooted.WagnerRightSum
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
 
 /-!
 # Interlacing for the lowering Euler step

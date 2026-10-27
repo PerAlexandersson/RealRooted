@@ -1,7 +1,11 @@
 module
 
 public import RealRooted.BrandenVecchi.SignedWordRuns.Statistics
-public import Mathlib.RingTheory.PowerSeries.WellKnown
+import Mathlib.RingTheory.PowerSeries.WellKnown
+public import Mathlib.RingTheory.PowerSeries.Basic
+import Mathlib.Tactic.NormNum.GCD
+import Mathlib.Algebra.Order.Field.Basic
+import Mathlib.Algebra.Order.AbsoluteValue.Basic
 
 /-!
 # Finite fibers of signed-word run compression

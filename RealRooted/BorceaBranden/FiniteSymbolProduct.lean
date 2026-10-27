@@ -1,7 +1,9 @@
 module
 
 public import RealRooted.BorceaBranden.FiniteSymbolContraction
-public import RealRooted.BorceaBranden.FiniteSymbolReciprocal
+import RealRooted.BorceaBranden.FiniteSymbolReciprocal
+public import RealRooted.Multiaffine.ReciprocalRight
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 
 /-!
 # The three-block product in the finite-symbol argument

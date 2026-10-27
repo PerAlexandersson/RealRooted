@@ -1,9 +1,10 @@
 module
 
-public import RealRooted.BrandenVecchi.ChowContinuity
+import RealRooted.BrandenVecchi.ChowContinuity
 public import RealRooted.BrandenVecchi.ChowSupersymmetric
 public import RealRooted.BrandenVecchi.SupersymmetricLimits
-public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
+import RealRooted.PFPolynomial.Closure
 
 /-!
 # Chow polynomials of infinite Pólya-frequency symbols

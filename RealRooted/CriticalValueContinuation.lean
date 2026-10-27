@@ -1,15 +1,18 @@
 module
 
-public import RealRooted.PFPolynomial.Closure
-public import RealRooted.RootCountFinite
-public import RealRooted.RootCounting.Finite
-public import RealRooted.RootMultiplicityMatching
+import RealRooted.PFPolynomial.Closure
+import RealRooted.RootCountFinite
+import RealRooted.RootCounting.Finite
+import RealRooted.RootMultiplicityMatching
 public import RealRooted.SimpleRoots
-public import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
+import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
 public import Mathlib.Analysis.Calculus.Deriv.MeanValue
 public import Mathlib.Analysis.Calculus.Deriv.Polynomial
 public import Mathlib.Analysis.Calculus.ImplicitContDiff
-public import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
+import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
+public import RealRooted.PFPolynomial
+import RealRooted.Derivative.Interlacing
+import RealRooted.Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Continuation of simple polynomial roots

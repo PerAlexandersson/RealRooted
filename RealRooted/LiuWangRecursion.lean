@@ -1,5 +1,7 @@
 module
 
+import RealRooted.Derivative.Algebra
+import RealRooted.Derivative.Interlacing
 public import RealRooted.LiuWang.FiniteFamily
 
 /-!

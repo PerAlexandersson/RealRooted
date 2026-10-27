@@ -7,7 +7,8 @@ module
 
 public import Mathlib.LinearAlgebra.Matrix.Adjugate
 public import Mathlib.Logic.Equiv.Fin.Basic
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
 
 /-!
 # Recursive cofactor expansion for matrix paths

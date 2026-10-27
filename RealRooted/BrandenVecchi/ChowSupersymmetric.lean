@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.BrandenVecchi.ChowTotallyNonneg
+import RealRooted.BrandenVecchi.ChowTotallyNonneg
 public import RealRooted.BrandenVecchi.SupersymmetricCoefficients
+public import RealRooted.BrandenVecchi.Chow
 
 /-!
 # Chow polynomials of finite supersymmetric products

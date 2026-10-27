@@ -5,7 +5,10 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneUpdate
+import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneUpdate
+public import Mathlib.LinearAlgebra.Matrix.Trace
+public import Mathlib.LinearAlgebra.Matrix.Adjugate
+public import Mathlib.Algebra.Polynomial.Derivative
 
 /-!
 # Expectations of rank-one determinant updates

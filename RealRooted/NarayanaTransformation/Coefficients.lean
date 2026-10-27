@@ -1,7 +1,13 @@
 module
 
 public import RealRooted.NarayanaTransformation.Rising
-public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+public import RealRooted.NarayanaTransformation.RootGeometry
+public import RealRooted.RectangularConvolution
+public import RealRooted.GammaTransform.Basic
+import RealRooted.BasisTransform
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+import RealRooted.Mathlib.Data.Nat.Choose.Cast
 
 /-!
 # Generalized Narayana coefficient and transform data.

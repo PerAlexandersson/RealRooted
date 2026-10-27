@@ -3,6 +3,7 @@ module
 public import RealRooted.BalancedRunTransformation
 public import RealRooted.BinaryRunTransformation.Coefficients
 public import RealRooted.EulerOperator
+import RealRooted.Mathlib.Data.Nat.Choose.Cast
 
 /-!
 # Kernel identities between the binary-run and balanced run transforms

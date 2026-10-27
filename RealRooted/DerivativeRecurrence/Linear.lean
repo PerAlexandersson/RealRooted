@@ -1,6 +1,11 @@
 module
 
 public import RealRooted.MaWang
+import RealRooted.MaWang.Weak.Endpoint
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
+import RealRooted.Linear
+public import RealRooted.Basic.ProperPosition
 
 public section
 

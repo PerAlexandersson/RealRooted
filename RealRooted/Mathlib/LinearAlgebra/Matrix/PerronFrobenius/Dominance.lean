@@ -6,8 +6,12 @@ Authors: Matteo Cipollina
 module
 
 public import Mathlib.Analysis.Normed.Algebra.Spectrum
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Irreducible
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CStarClasses
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Irreducible
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CStarClasses
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Primitive
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CollatzWielandt
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
 
 /-!
 # Dominance of the Perron root

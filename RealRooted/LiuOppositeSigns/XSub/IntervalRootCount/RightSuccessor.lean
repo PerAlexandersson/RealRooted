@@ -1,6 +1,12 @@
 module
 
-public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SplitEndpoints
+import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SplitEndpoints
+import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.UpperTail
+import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.GapCounts
+import RealRooted.LiuOppositeSigns.XSub.QuadraticCubic
+import RealRooted.LiuOppositeSigns.XSub.SameDegree
+public import RealRooted.LiuOppositeSigns.NoCommonRoots
+public import RealRooted.LiuOppositeSigns.PositiveSplitRootCount
 
 /-!
 # Liu x-subtraction right-successor degree endpoint.

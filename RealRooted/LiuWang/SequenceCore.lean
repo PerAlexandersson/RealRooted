@@ -1,9 +1,12 @@
 module
 
-public import RealRooted.LiuWang.General
-public import RealRooted.LiuWang.Step
-public import RealRooted.ScalarNormalization
-public import RealRooted.SequenceClosure
+import RealRooted.LiuWang.General
+import RealRooted.LiuWang.Step
+import RealRooted.ScalarNormalization
+import RealRooted.SequenceClosure
+import RealRooted.SignEvaluation
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Liu--Wang sequence core

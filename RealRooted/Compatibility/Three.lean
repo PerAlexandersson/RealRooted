@@ -1,6 +1,10 @@
 module
 
-public import RealRooted.ChudnovskySeymour.Core
+import RealRooted.ChudnovskySeymour.Core
+public import RealRooted.Compatibility.Pair
+import RealRooted.AffineFamily
+import RealRooted.ProductFamily
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Three-polynomial compatibility assembly

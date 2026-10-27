@@ -1,8 +1,9 @@
 module
 
-public import RealRooted.Mathlib.Analysis.Complex.LocallyUniformLimit
+import RealRooted.Mathlib.Analysis.Complex.LocallyUniformLimit
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
-public import RealRooted.Wronskian.Algebra
+import RealRooted.Wronskian.Algebra
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
 
 /-!
 # Laguerre's inequality for Laguerre--Pólya functions

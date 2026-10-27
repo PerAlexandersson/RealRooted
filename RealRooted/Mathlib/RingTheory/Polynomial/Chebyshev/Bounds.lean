@@ -6,7 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.RingTheory.Polynomial.Chebyshev
-public import Mathlib.Algebra.Order.Field.Basic
+import Mathlib.Algebra.Order.Field.Basic
 public import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Tactic.LinearCombination
 import Mathlib.Tactic.Linarith

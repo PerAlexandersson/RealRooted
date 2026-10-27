@@ -1,9 +1,12 @@
 module
 
-public import RealRooted.Mathlib.Analysis.Complex.EntireExponentialType
-public import Mathlib.Analysis.Real.Pi.Bounds
-public import Mathlib.Analysis.SpecialFunctions.Log.Summable
-public import Mathlib.Topology.Algebra.InfiniteSum.Field
+import RealRooted.Mathlib.Analysis.Complex.EntireExponentialType
+import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.Analysis.SpecialFunctions.Log.Summable
+import Mathlib.Topology.Algebra.InfiniteSum.Field
+public import Mathlib.Analysis.Calculus.FDeriv.Defs
+public import Mathlib.Analysis.Complex.Exponential
+public import Mathlib.Analysis.Complex.Basic
 
 /-!
 # Edrei's final affine-exponent lemma

@@ -9,7 +9,7 @@ public import Mathlib.Algebra.QuadraticDiscriminant
 public import Mathlib.Tactic.Ring
 public import Mathlib.Order.Filter.AtTopBot.Group
 public import Mathlib.Order.Filter.Defs
-public import Mathlib.Order.Filter.AtTopBot.Field
+import Mathlib.Order.Filter.AtTopBot.Field
 
 /-!
 # Ordered quadratic inequalities

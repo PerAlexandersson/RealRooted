@@ -1,9 +1,13 @@
 module
 
-public import RealRooted.Interlacing.Residue
+import RealRooted.Interlacing.Residue
 public import RealRooted.Interlacing.OuterDifference
 public import RealRooted.MaWang.StrictSigns
 public import RealRooted.SimpleRoots
+import RealRooted.MaWang.Weak.DerivativeSign
+import RealRooted.MaWang.StrictSigns.Assembly
+import RealRooted.WagnerRightSum.Sign
+import RealRooted.Derivative.Algebra
 
 /-!
 # A positive-point residue criterion for strict interlacing

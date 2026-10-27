@@ -1,7 +1,12 @@
 module
 
-public import RealRooted.SameDegreeDerivative
-public import RealRooted.MaWang.DerivativeStep
+import RealRooted.SameDegreeDerivative
+import RealRooted.MaWang.DerivativeStep
+import RealRooted.Derivative.Algebra
+import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
+import RealRooted.Basic.PolynomialFacts
 
 public section
 

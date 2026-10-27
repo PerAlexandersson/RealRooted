@@ -3,7 +3,10 @@ module
 public import RealRooted.BorceaBranden.Applications.QuadraticExponentialMultiplier
 public import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
 public import RealRooted.HermiteBiehler.Basic
-public import RealRooted.Mathlib.Analysis.Complex.Polynomial.RootsOpen
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.RootsOpen
+import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
+public import RealRooted.MultiplierSequence.QuadraticExponential
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
 
 /-!
 # Complex diagonal multipliers and upper-half-plane roots

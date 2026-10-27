@@ -6,8 +6,8 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Strict
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Strict
+import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
 public import RealRooted.Mathlib.Topology.Instances.Matrix.Determinant
 
 /-!

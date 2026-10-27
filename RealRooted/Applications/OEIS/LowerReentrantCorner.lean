@@ -1,6 +1,9 @@
 module
 
-public import RealRooted.DerivativeRecurrence.AffineLagStrict
+import RealRooted.DerivativeRecurrence.AffineLagStrict
+public import RealRooted.SimpleRoots
+import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Lower-reentrant-corner recurrence

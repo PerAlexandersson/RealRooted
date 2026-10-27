@@ -1,9 +1,16 @@
 module
 
-public import RealRooted.CommonInterleaver.RightPencil
-public import RealRooted.CommonInterleaver.SameDegreeRootCount
-public import RealRooted.PositiveParameterLocalLowerCount
-public import RealRooted.RootCountLocalConstancy
+import RealRooted.CommonInterleaver.RightPencil
+import RealRooted.CommonInterleaver.SameDegreeRootCount
+import RealRooted.PositiveParameterLocalLowerCount
+import RealRooted.RootCountLocalConstancy
+import RealRooted.SameDegreeMultiplicityLowerCount
+import RealRooted.RootMultiplicityMatching
+import RealRooted.AffineFamily.RootCrossing
+public import RealRooted.SimpleRoots
+import RealRooted.PosCombo.Degree
+public import RealRooted.ObreschkoffContinuity
+import RealRooted.RootCountFinite
 
 /-!
 # Same-Degree Count Equality from Analytic Inputs

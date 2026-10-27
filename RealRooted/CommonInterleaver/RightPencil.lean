@@ -6,14 +6,20 @@ extracted from `RealRooted.CommonInterleaverTwo`.
 -/
 module
 
-public import RealRooted.Compatibility.Basic
+import RealRooted.Compatibility.Basic
 public import RealRooted.CommonInterleaver.RootCountCombinatorics
-public import RealRooted.CommonInterleaver.SameDegreeRootCount
+import RealRooted.CommonInterleaver.SameDegreeRootCount
 public import RealRooted.Derivative
 public import RealRooted.RootContinuity
-public import RealRooted.RootCountJump
+import RealRooted.RootCountJump
 public import RealRooted.RootOrderBridge
 public import RealRooted.WagnerX
+public import RealRooted.Compatibility.Pair
+import RealRooted.AffineFamily.RootCrossing
+import RealRooted.AffineFamily.Boundary
+public import RealRooted.SimpleRoots
+public import RealRooted.ObreschkoffContinuity
+import RealRooted.Linear
 
 public section
 

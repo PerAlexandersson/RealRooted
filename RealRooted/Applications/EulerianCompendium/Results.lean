@@ -1,13 +1,17 @@
 module
 
-public import RealRooted.CombinatorialExamples.ZigzagEulerian.RealRooted
+import RealRooted.CombinatorialExamples.ZigzagEulerian.RealRooted
 public import RealRooted.CombinatorialExamples.ZigzagEulerian.Identification
-public import RealRooted.Applications.EulerianCompendium.Peaks
+import RealRooted.Applications.EulerianCompendium.Peaks
 public import RealRooted.Applications.EulerianCompendium.CyclicWords
-public import RealRooted.Applications.EulerianCompendium.EvenTopRoots
-public import RealRooted.Applications.EulerianCompendium.DerangementReciprocal
-public import RealRooted.Applications.EulerianCompendium.DeletionRoots
+import RealRooted.Applications.EulerianCompendium.EvenTopRoots
+import RealRooted.Applications.EulerianCompendium.DerangementReciprocal
+import RealRooted.Applications.EulerianCompendium.DeletionRoots
 public import RealRooted.Applications.EulerianCompendium.TernaryWords
+import RealRooted.Applications.EulerianCompendium.Derangements
+public import RealRooted.Applications.EulerianCompendium.DeletionFamily
+import RealRooted.CombinatorialExamples.PeakValues.Stability
+import RealRooted.Applications.EulerianVariations.TernaryRuns
 
 /-!
 # Eulerian enumeration root theorems

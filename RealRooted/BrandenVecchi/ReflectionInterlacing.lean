@@ -2,7 +2,8 @@ module
 
 public import RealRooted.InterlacingSequenceBasic
 public import RealRooted.Mathlib.Algebra.Polynomial.Reverse
-public import RealRooted.PFPolynomial
+import RealRooted.PFPolynomial
+import RealRooted.PosCombo
 
 /-!
 # Reflection-interlacing sequences

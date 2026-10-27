@@ -5,7 +5,8 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.CenteredEulerian.ChangeBasis
+import RealRooted.CenteredEulerian.ChangeBasis
+public import RealRooted.CenteredEulerian.Basis
 
 /-!
 # The centered generating function and its Riccati equation

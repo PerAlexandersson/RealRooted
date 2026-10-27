@@ -1,7 +1,13 @@
 module
 
 public import RealRooted.MaWang
-public import RealRooted.SignEvaluation
+import RealRooted.SignEvaluation
+import RealRooted.MaWang.Weak.Endpoint
+import RealRooted.MaWang.Weak.DerivativeSign
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Ma--Wang derivative steps

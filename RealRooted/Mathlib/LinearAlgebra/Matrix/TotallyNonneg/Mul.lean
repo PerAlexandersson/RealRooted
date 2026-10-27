@@ -5,7 +5,7 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.CauchyBinet
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.CauchyBinet
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 
 /-!

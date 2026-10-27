@@ -1,6 +1,6 @@
 module
 
-public import Mathlib.Algebra.MvPolynomial.Monad
+import Mathlib.Algebra.MvPolynomial.Monad
 public import RealRooted.MultivariateStability
 
 /-!

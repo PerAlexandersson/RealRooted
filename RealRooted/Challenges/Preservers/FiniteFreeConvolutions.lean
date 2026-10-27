@@ -1,12 +1,14 @@
 module
 
-public import RealRooted.FiniteFreeAdditive.HalfIntegerPreservation
+import RealRooted.FiniteFreeAdditive.HalfIntegerPreservation
 public import RealRooted.FiniteFreeAdditive.Preservation
 public import RealRooted.FiniteFreeMultiplicative
 public import RealRooted.FiniteFreeRootCount
 public import RealRooted.Hadamard.Grace
-public import RealRooted.NarayanaTransformation.Rectangular.Preservation
+import RealRooted.NarayanaTransformation.Rectangular.Preservation
 public import RealRooted.WagnerX.NonnegativeRoots
+public import RealRooted.FiniteFreeAdditive.HalfIntegerConvolution
+public import RealRooted.NarayanaTransformation.RootGeometry
 
 /-!
 # Finite free convolutions challenge entry point

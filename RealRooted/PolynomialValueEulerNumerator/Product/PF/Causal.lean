@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.PolynomialValueEulerNumerator.PF.Causal
-public import RealRooted.PolynomialValueEulerNumerator.Product.PF
+import RealRooted.PolynomialValueEulerNumerator.PF.Causal
+import RealRooted.PolynomialValueEulerNumerator.Product.PF
+public import RealRooted.AissenSchoenbergWhitneyBase
 
 /-!
 # Product closure from polynomial-value PF hypotheses

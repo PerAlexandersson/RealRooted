@@ -1,5 +1,7 @@
 module
 
+public import Mathlib.Analysis.Complex.Basic
+import Mathlib.Tactic.FieldSimp
 public import RealRooted.BorceaBranden.RealHKOConverse
 public import RealRooted.BorceaBranden.RealFiniteClassification
 

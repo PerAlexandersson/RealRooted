@@ -2,6 +2,10 @@ module
 
 public import RealRooted.Derivative
 public import RealRooted.WagnerX
+import RealRooted.WagnerX.ListInterlacing
+import RealRooted.Derivative.Interlacing
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Wagner `X`-multiplication interlacing bridges

@@ -2,8 +2,10 @@ module
 
 public import RealRooted.Basic.AffineInterlacing
 public import RealRooted.Basic.Coefficients
-public import RealRooted.DegreeDropReversal
+import RealRooted.DegreeDropReversal
 public import RealRooted.Mathlib.Algebra.Polynomial.Reverse
+public import RealRooted.Basic.ProperPosition
+import RealRooted.Mathlib.Data.List.Interleave
 
 /-!
 # Interlacing of reversed rows

@@ -2,12 +2,16 @@ module
 
 public import RealRooted.Basic
 public import RealRooted.CombinatorialExamples.Common
-public import RealRooted.Linear
+import RealRooted.Linear
 public import RealRooted.MaWang
 public import RealRooted.Wagner
 public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 public import Mathlib.Data.Nat.Choose.Basic
 public import Mathlib.Tactic
+import RealRooted.WagnerX.AffineFactors
+public import RealRooted.Basic.ProperPosition
+import RealRooted.Basic.PolynomialFacts
+import RealRooted.Mathlib.Data.Nat.Choose.Cast
 
 /-!
 # One-Descent Gamma Family
@@ -64,7 +68,7 @@ lemma oneDescentGamma_linearShift_nonneg (m j : Nat) :
     0 ≤ (((m - j : Nat) : ℝ) / ((j + 1 : Nat) : ℝ)) := by
   positivity
 
-lemma isRealRooted_X_pow :
+private lemma isRealRooted_X_pow :
     ∀ n : Nat, (((X : ℝ[X]) ^ n) ≠ 0 ∧ ((X : ℝ[X]) ^ n).Splits) := by
   simp
 

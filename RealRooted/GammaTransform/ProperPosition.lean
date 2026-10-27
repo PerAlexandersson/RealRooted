@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.GammaTransform.RootLists
-public import RealRooted.GammaTransform.Preservation
+import RealRooted.GammaTransform.RootLists
+import RealRooted.GammaTransform.Preservation
+public import RealRooted.GammaTransform.Basic
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Gamma-transform interlacing

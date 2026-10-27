@@ -1,9 +1,12 @@
 module
 
-public import RealRooted.Applications.EulerianCompendium.DeletionRoots
-public import RealRooted.Applications.EulerianCompendium.Derangements
+import RealRooted.Applications.EulerianCompendium.DeletionRoots
+import RealRooted.Applications.EulerianCompendium.Derangements
 public import RealRooted.Applications.EulerianCompendium.DerangementRecurrence
 public import RealRooted.DegreeDropReversal
+public import RealRooted.Applications.EulerianCompendium.DeletionFamily
+public import RealRooted.Applications.EulerianCompendium.Definitions
+import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 
 /-!
 # Reciprocal derangement polynomials

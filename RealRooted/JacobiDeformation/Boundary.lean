@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.JacobiDeformation.Basic
-public import RealRooted.Linear
+import RealRooted.Linear
 public import RealRooted.SimpleRoots
 
 /-!

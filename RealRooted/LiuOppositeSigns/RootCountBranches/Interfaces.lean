@@ -2,6 +2,10 @@ module
 
 public import RealRooted.LiuOppositeSigns.RootCountBranches.CommonRootDeletion
 public import RealRooted.LiuOppositeSigns.RootCountBranches.NoCommonCrossing
+public import RealRooted.LiuOppositeSigns
+import RealRooted.LiuOppositeSigns.RootDeletion
+import RealRooted.CommonInterleaver.SuccDegreeLowDegree
+public import RealRooted.Compatibility.Pair
 
 /-!
 # The published forward direction of Liu Theorem 2.1 is false

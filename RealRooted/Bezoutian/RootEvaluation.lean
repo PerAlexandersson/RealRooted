@@ -1,10 +1,14 @@
 module
 
-public import Mathlib.Analysis.Calculus.Deriv.Polynomial
-public import Mathlib.LinearAlgebra.Lagrange
+import Mathlib.Analysis.Calculus.Deriv.Polynomial
+import Mathlib.LinearAlgebra.Lagrange
 public import RealRooted.Bezoutian.MatrixBasics
-public import Mathlib.Analysis.Calculus.Deriv.Add
-public import Mathlib.Analysis.Calculus.Deriv.Mul
+import Mathlib.Analysis.Calculus.Deriv.Add
+import Mathlib.Analysis.Calculus.Deriv.Mul
+import Mathlib.Algebra.Order.Star.Real
+import Mathlib.Topology.Algebra.Module.ModuleTopology
+public import Mathlib.LinearAlgebra.Vandermonde
+import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 
 /-!
 # Bezout-matrix root evaluation

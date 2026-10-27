@@ -5,10 +5,13 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Analysis.Complex.LocallyUniformLimit
+import Mathlib.Analysis.Complex.LocallyUniformLimit
 public import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
-public import Mathlib.Analysis.Calculus.Deriv.Polynomial
+import Mathlib.Analysis.Calculus.Deriv.Polynomial
 public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
+public import Mathlib.Analysis.InnerProductSpace.Basic
+public import Mathlib.Algebra.Polynomial.Derivative
 
 /-!
 # Coefficients of locally uniform limits of polynomials

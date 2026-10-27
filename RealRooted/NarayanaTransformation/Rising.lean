@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.NarayanaTransformation.Falling
+public import RealRooted.NarayanaTransformation.Basis
 
 /-!
 # Rising-factorial transform preservation.

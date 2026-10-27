@@ -6,7 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.Jacobi.Orthogonality
-public import RealRooted.Mathlib.Analysis.SpecialFunctions.Gamma.Beta
+import RealRooted.Mathlib.Analysis.SpecialFunctions.Gamma.Beta
 
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Positivity

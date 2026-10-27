@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.AffineFamily
+import RealRooted.AffineFamily
 public import RealRooted.MatrixInterlacing.Action
+public import RealRooted.InterlacingSequenceBasic
 
 @[expose] public section
 

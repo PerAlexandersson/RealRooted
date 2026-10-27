@@ -5,8 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.IntervalDifferential.Seeds
-public import Mathlib.Analysis.Complex.Polynomial.Basic
+import RealRooted.IntervalDifferential.Seeds
+import Mathlib.Analysis.Complex.Polynomial.Basic
+public import RealRooted.IntervalDifferential.Basic
+public import Mathlib.Analysis.Complex.Basic
+public import Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # The cubic disk hypothesis implies the seed coefficient bound

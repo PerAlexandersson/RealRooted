@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.WagnerRightSum
+import RealRooted.WagnerRightSum
 public import RealRooted.WagnerX
+public import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
 
 /-!
 # Affine family: basic conditions and combinations

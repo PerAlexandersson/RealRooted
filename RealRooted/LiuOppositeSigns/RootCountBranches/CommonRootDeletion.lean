@@ -3,6 +3,7 @@ module
 public import RealRooted.CommonInterleaver.RightPencil
 public import RealRooted.LiuOppositeSigns
 public import RealRooted.LiuOppositeSigns.NoCommonRoots
+public import RealRooted.Compatibility.Pair
 
 /-!
 # Common-root deletion for Liu's opposite-sign theorem

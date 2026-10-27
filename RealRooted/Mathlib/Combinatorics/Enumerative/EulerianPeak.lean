@@ -6,8 +6,8 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Data.Fintype.Perm
-public import Mathlib.Data.List.Permutation
-public import Mathlib.Data.List.GetD
+import Mathlib.Data.List.Permutation
+import Mathlib.Data.List.GetD
 public import Mathlib.Algebra.BigOperators.Group.List.Basic
 public import Mathlib.Tactic.Ring
 public import Mathlib.Tactic.Linarith

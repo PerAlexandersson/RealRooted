@@ -1,11 +1,13 @@
 module
 
-public import Mathlib.Data.Fin.Tuple.Sort
-public import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivProd
-public import RealRooted.Mathlib.Algebra.MvPolynomial.SpecializeList
+import Mathlib.Data.Fin.Tuple.Sort
+import Mathlib.GroupTheory.Perm.Option
+import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivProd
+import RealRooted.Mathlib.Algebra.MvPolynomial.SpecializeList
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Permanent
 public import RealRooted.Permanent.Basic
 public import RealRooted.Multiaffine
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
 
 /-!
 # Ferrers matrices and their permanent polynomial

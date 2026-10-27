@@ -1,8 +1,12 @@
 module
 
 public import RealRooted.CombinatorialExamples.CentralFactorial
-public import RealRooted.Interlacing.Reversal
-public import RealRooted.Recurrence.RowModel
+import RealRooted.Interlacing.Reversal
+import RealRooted.Recurrence.RowModel
+import RealRooted.EulerBidiagonal
+import RealRooted.DegreeDropReversal
+import RealRooted.WagnerX.NonnegativeRoots
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Reflected Euler-bidiagonal rows

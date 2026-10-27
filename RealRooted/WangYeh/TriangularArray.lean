@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.WangYeh.PF
+import RealRooted.WangYeh.PF
+public import RealRooted.PFPolynomial
 
 /-!
 # Wang--Yeh bilinear triangular recurrences

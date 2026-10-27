@@ -2,6 +2,14 @@ module
 
 public import RealRooted.BasisTransform
 public import RealRooted.NarayanaTransformation.RootGeometry
+public import RealRooted.Touchard
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+public import RealRooted.PFPolynomial
+import RealRooted.MaWang.Weak.Endpoint
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
+import RealRooted.Linear
 
 /-!
 # Narayana transformation basis algebra.

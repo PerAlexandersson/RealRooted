@@ -1,7 +1,10 @@
 module
 
 public import Mathlib.Tactic.ComputeDegree
-public import RealRooted.LiuWang.SequenceProducts
+import RealRooted.LiuWang.SequenceProducts
+import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Positive one-plus-X recurrence sequences

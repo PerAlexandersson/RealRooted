@@ -1,8 +1,10 @@
 module
 
-public import RealRooted.Compatibility.Affine
+import RealRooted.Compatibility.Affine
 public import RealRooted.Compatibility.NDCutInvariant
 public import RealRooted.ParkingFunctions.Descents.WeakLeftPeakCutTransform
+public import RealRooted.ParkingFunctions.Descents.WeakLeftPeakFactorization
+import RealRooted.AffineFamily
 
 /-!
 # The ordered weak-left-peak P/Q base family

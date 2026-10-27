@@ -8,6 +8,9 @@ public import RealRooted.CommonInterleaver.RootSelection
 public import RealRooted.CommonInterleaver.RootSelectionTree
 public import RealRooted.Compatibility.InterleaverBridge
 public import RealRooted.Compatibility.Leander
+import RealRooted.CommonInterleaver.PairBridge.Compatibility.NonnegativeShift
+public import RealRooted.Compatibility.Pair
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Common interleaver challenge entry point

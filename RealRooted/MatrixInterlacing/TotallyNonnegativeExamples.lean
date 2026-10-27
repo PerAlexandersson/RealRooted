@@ -2,6 +2,8 @@ module
 
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
 public import RealRooted.MatrixInterlacing.TotallyNonnegative
+import RealRooted.AffineFamily
+import RealRooted.Linear
 
 /-!
 # Examples for totally nonnegative interlacing-sequence mixing

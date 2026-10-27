@@ -1,8 +1,15 @@
 module
 
-public import RealRooted.RootAmplitude.Polynomial
-public import RealRooted.RootAmplitude.Separation.Euler
-public import RealRooted.RootAmplitude.Separation.Roots
+import RealRooted.RootAmplitude.Polynomial
+import RealRooted.RootAmplitude.Separation.Euler
+import RealRooted.RootAmplitude.Separation.Roots
+public import RealRooted.SortedRoots
+public import RealRooted.RootAmplitude.Separation.Finite
+import Mathlib.MeasureTheory.Covering.Besicovitch
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Data.Nat.Choose.Multinomial
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+public import Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Polynomial root amplitudes from multiplicative separation

@@ -1,7 +1,10 @@
 module
 
-public import RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse
+import RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse
 public import RealRooted.ClassicalHurwitzMatrix.Stability.WeakConverse
+import RealRooted.ClassicalHurwitzMatrix.Stability.Closure
+public import RealRooted.VeroneseSection
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz
 
 /-!
 # The two-row Lace matrix of a Hurwitz-stable polynomial

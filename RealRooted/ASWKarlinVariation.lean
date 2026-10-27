@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.ASWKarlinMatrix
-public import RealRooted.ASWKarlinSineBounds
+import RealRooted.ASWKarlinSineBounds
 public import RealRooted.ASWKarlinThreshold
 public import RealRooted.ASWKarlinVectors
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.KernelSignVariation

@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.DegreeDropReversal
+import RealRooted.DegreeDropReversal
 public import RealRooted.GarloffWagner
+import RealRooted.GarloffWagner.Theorem12
+public import RealRooted.GarloffWagner.Algebra
 
 @[expose] public section
 

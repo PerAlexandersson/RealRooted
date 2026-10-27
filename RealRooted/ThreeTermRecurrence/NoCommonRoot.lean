@@ -1,6 +1,11 @@
 module
 
-public import RealRooted.LiuWangRecursion
+import RealRooted.LiuWangRecursion
+import RealRooted.WagnerRightSum.Sign
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # No common roots of consecutive recurrence rows

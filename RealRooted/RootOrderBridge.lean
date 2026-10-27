@@ -1,7 +1,7 @@
 module
 
 public import Mathlib
-public import RealRooted.RootCountFinite
+import RealRooted.RootCountFinite
 
 /-!
 # Root-order bridge

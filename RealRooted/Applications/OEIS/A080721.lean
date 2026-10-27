@@ -1,9 +1,14 @@
 module
 
-public import RealRooted.Legendre.Roots
-public import RealRooted.MaWang.Weak.Endpoint
-public import RealRooted.Recurrence.RowModel
-public import RealRooted.Recurrence.Uniqueness
+import RealRooted.Legendre.Roots
+import RealRooted.MaWang.Weak.Endpoint
+import RealRooted.Recurrence.RowModel
+import RealRooted.Recurrence.Uniqueness
+public import RealRooted.Legendre.Basic
+import RealRooted.Mathlib.RingTheory.Polynomial.ShiftedLegendre
+import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # The row polynomials of OEIS A080721

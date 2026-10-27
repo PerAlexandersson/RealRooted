@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction
+import RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction
+public import RealRooted.MultiplierSequence.Bidiagonal.Jensen
 
 /-!
 # Cubic residual certificates for bidiagonal Jensen pencils

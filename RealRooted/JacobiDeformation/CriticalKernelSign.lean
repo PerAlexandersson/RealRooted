@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.JacobiDeformation.QuasiNodes
+import RealRooted.JacobiDeformation.QuasiNodes
 public import RealRooted.JacobiDeformation.SpectralKernel
+import RealRooted.Favard
 
 /-!
 # Kernel signs at the critical coordinates

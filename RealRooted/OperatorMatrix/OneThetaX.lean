@@ -1,8 +1,12 @@
 module
 
-public import RealRooted.OperatorMatrix.MixedLemma
+import RealRooted.OperatorMatrix.MixedLemma
 public import RealRooted.OperatorMatrix.LocalToGlobal
-public import RealRooted.QuadraticRoot
+import RealRooted.QuadraticRoot
+import RealRooted.OperatorMatrix.Directed
+public import RealRooted.EulerOperator
+import RealRooted.WagnerX.ListInterlacing
+import RealRooted.Linear
 
 /-!
 # Two-by-two operator matrices over `{1, θ, X}`

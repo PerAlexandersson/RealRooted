@@ -5,9 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.CombinatorialExamples.ZigzagEulerian.WordRecurrence
-public import RealRooted.CenteredEulerian.Riccati
+import RealRooted.CombinatorialExamples.ZigzagEulerian.WordRecurrence
+import RealRooted.CenteredEulerian.Riccati
 public import Mathlib.Tactic
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.GeneratingSeries
+public import RealRooted.CenteredEulerian.Basis
 
 /-!
 # Odd evaluations of the centered zig-zag polynomials

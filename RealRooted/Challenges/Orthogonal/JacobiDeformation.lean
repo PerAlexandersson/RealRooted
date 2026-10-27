@@ -3,6 +3,9 @@ module
 public import RealRooted.JacobiDeformation
 public import RealRooted.Applications.OEIS.A132885
 public import RealRooted.SpectralProduct
+import RealRooted.JacobiDeformation.Strict
+public import RealRooted.JacobiDeformation.Basic
+public import RealRooted.SimpleRoots
 
 /-!
 # Jacobi deformation challenge entry point

@@ -1,12 +1,15 @@
 module
 
-public import RealRooted.Jacobi.Orthogonality.Integral
+import RealRooted.Jacobi.Orthogonality.Integral
 public import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 public import RealRooted.ParkingFunctions.ToricContribution.FiniteOffsets
-public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-public import RealRooted.Mathlib.Algebra.Ring.Parity
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.Algebra.Ring.Parity
 public import Mathlib.Analysis.SpecificLimits.Basic
 public import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
+import RealRooted.ParkingFunctions.ToricContribution.DiagonalCollapse
+public import RealRooted.ParkingFunctions.ToricContribution.Definitions
+public import RealRooted.Jacobi.Orthogonality
 
 /-!
 # Exceptional-offset base polynomials and moment identities

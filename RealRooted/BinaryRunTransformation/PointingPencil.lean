@@ -1,9 +1,11 @@
 module
 
 public import RealRooted.BinaryRunTransformation.Contraction
-public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
-public import RealRooted.BorceaBranden.Applications.HomogenizeStable
+import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
+import RealRooted.BorceaBranden.Applications.HomogenizeStable
 public import RealRooted.PFPolynomial
+public import RealRooted.BinaryRunTransformation.Deformation
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 
 /-!
 # The binary-run pointing pencil

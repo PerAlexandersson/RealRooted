@@ -1,9 +1,12 @@
 module
 
-public import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Interlacing
 public import RealRooted.LiuWang.FiniteFamily
-public import RealRooted.SimpleRoots
+import RealRooted.SimpleRoots
 public import RealRooted.WagnerRightSum
+import RealRooted.MaWang.Strong
+import RealRooted.WagnerRightSum.Sign
+import RealRooted.Derivative.Algebra
 
 /-!
 # Strict interlacing for quadratic derivative recurrences with a lag

@@ -2,6 +2,7 @@ module
 
 public import RealRooted.DerivativeRecurrence.SecondDerivativeDegree
 public import RealRooted.EulerOperator.Polar.Pencil
+public import RealRooted.EulerOperator
 
 /-!
 # Euler factorization for second-derivative recurrences

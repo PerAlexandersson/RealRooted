@@ -7,6 +7,7 @@ module
 
 public import RealRooted.IntervalDifferential.ParityQuarticFactor
 public import Mathlib.Tactic
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
 
 /-!
 # Real factor shapes and inheritance of a complex root disk

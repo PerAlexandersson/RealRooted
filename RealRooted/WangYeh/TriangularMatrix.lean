@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.LowerTriangularMatrix
-public import RealRooted.WangYeh.TriangularArray
+import RealRooted.WangYeh.TriangularArray
 
 /-!
 # Wang--Yeh lower-triangular matrix rows

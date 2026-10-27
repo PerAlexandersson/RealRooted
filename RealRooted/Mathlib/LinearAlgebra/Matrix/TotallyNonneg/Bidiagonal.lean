@@ -5,8 +5,9 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 public import Mathlib.LinearAlgebra.Matrix.Block
+public import Mathlib.LinearAlgebra.Matrix.Determinant.TotallyNonneg
 
 /-!
 # Variable lower-bidiagonal totally nonnegative matrices

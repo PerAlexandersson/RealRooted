@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.RankTwoMatching.Basic
+public import RealRooted.Graph.MatchingPolynomial
 
 @[expose] public section
 

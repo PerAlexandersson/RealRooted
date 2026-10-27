@@ -1,13 +1,15 @@
 module
 
 public import RealRooted.RootAmplitude.Finite
-public import Mathlib.Algebra.BigOperators.Intervals
+import Mathlib.Algebra.BigOperators.Intervals
 public import Mathlib.Algebra.BigOperators.Field
-public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 public import Mathlib.Order.Interval.Finset.Nat
-public import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.FieldSimp
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.Ring
+import Mathlib.Algebra.Order.Field.Basic
+import Mathlib.Data.Rat.Cast.Order
 
 /-!
 # Finite multiplicative separation

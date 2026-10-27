@@ -1,11 +1,13 @@
 module
 
-public import RealRooted.AffineDerivative
+import RealRooted.AffineDerivative
 public import RealRooted.AffineFamily
 public import RealRooted.FolkloreLemma
 public import RealRooted.HlavacekSolus.Shelling
 public import RealRooted.Interlacing.ConeBounds
 public import RealRooted.ShiftLemma
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Interlacing closure challenge entry point

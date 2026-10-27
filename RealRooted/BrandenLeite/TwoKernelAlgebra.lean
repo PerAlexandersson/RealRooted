@@ -4,6 +4,7 @@ public import RealRooted.BrandenLeite.KernelRow
 public import RealRooted.ToeplitzFin
 public import Mathlib.Algebra.BigOperators.Intervals
 public import Mathlib.RingTheory.PowerSeries.Inverse
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
 # Finite Toeplitz algebra for two-kernel rows

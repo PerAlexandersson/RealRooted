@@ -1,10 +1,12 @@
 module
 
-public import RealRooted.DifferentialBlocks
-public import RealRooted.ElementaryDifferential
+import RealRooted.DifferentialBlocks
+import RealRooted.ElementaryDifferential
 public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
 public import RealRooted.RectangularConvolution
 public import RealRooted.RectangularPolarizationComplement
+import RealRooted.LiebSokalOperator.Linearity
+public import RealRooted.LiebSokalOperator
 
 /-!
 # Rectangular convolution differential identity

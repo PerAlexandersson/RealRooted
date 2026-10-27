@@ -6,7 +6,8 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.ArrayPolynomialSchur
-public import RealRooted.NarayanaTransformation.Endpoints
+import RealRooted.NarayanaTransformation.Endpoints
+public import RealRooted.NarayanaTransformation.Coefficients
 
 public section
 

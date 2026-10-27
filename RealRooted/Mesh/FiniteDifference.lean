@@ -1,5 +1,7 @@
 module
 
+import RealRooted.HermiteBiehler.Converse.RootGeometry
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
 public import RealRooted.Mesh.Basic
 public import RealRooted.RootPolynomial
 public import RealRooted.CommonInterleaver.RootDesc

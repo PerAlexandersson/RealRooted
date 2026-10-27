@@ -1,7 +1,12 @@
 module
 
-public import RealRooted.BrandenLeite.KernelClosure
+import RealRooted.BrandenLeite.KernelClosure
 public import RealRooted.BrandenLeite.OptionalRiseMatrix
+public import RealRooted.BrandenLeite.KernelRow
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
+public import RealRooted.PFPolynomial
+public import Mathlib.Topology.Instances.Matrix
 
 /-!
 # Positive-diagonal regularization of marked lower shifts

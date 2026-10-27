@@ -1,7 +1,9 @@
 module
 
 public import RealRooted.Hadamard.GarloffWagner
-public import RealRooted.HurwitzMatrix
+import RealRooted.HurwitzMatrix
+public import RealRooted.VeroneseSection
+public import RealRooted.Hadamard.Product
 
 public section
 

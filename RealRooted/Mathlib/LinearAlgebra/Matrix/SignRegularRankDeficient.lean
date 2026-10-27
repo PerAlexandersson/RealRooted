@@ -7,7 +7,13 @@ module
 
 public import Mathlib.LinearAlgebra.LinearIndependent.Lemmas
 public import Mathlib.LinearAlgebra.Matrix.Rank
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularVariation
+import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularVariation
+import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
+import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariationTopology
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegular
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.CauchyBinet
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 
 /-!
 # Rank-deficient sign-consistent matrices

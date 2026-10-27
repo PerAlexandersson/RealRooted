@@ -7,9 +7,9 @@ module
 
 public import Mathlib.Algebra.MvPolynomial.Degrees
 public import Mathlib.LinearAlgebra.Finsupp.LinearCombination
-public import Mathlib.RingTheory.MvPolynomial.Symmetric.FundamentalTheorem
-public import RealRooted.Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
-public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.Homogeneous
+import Mathlib.RingTheory.MvPolynomial.Symmetric.FundamentalTheorem
+import RealRooted.Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.Homogeneous
 public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.Monomial
 
 /-!

@@ -1,11 +1,15 @@
 module
 
 public import RealRooted.MultivariateStability
-public import Mathlib.Analysis.Complex.Polynomial.GaussLucas
+import Mathlib.Analysis.Complex.Polynomial.GaussLucas
 public import Mathlib.RingTheory.MvPolynomial.WeightedHomogeneous
-public import Mathlib.Analysis.Complex.AbsMax
+import Mathlib.Analysis.Complex.AbsMax
 public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 public import Mathlib.Combinatorics.Matroid.IndepAxioms
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Algebra.MvPolynomial.Funext
+import Mathlib.Algebra.MvPolynomial.CommRing
+public import Mathlib.Analysis.Complex.Basic
 
 /-!
 # Supports of real stable polynomials are jump systems

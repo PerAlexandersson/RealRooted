@@ -2,6 +2,8 @@ module
 
 public import RealRooted.BorceaBranden.Transcendental.TranscendentalSymbol
 public import RealRooted.BorceaBranden.Transcendental.JensenMultiplier
+import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
 
 @[expose] public section
 

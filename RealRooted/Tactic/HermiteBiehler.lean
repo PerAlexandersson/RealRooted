@@ -1,6 +1,8 @@
 module
 
 public import RealRooted.HermiteBiehler
+public import RealRooted.HermiteBiehler.Converse.RootGeometry
+public import RealRooted.HermiteBiehler.Forward
 
 /-!
 # Hermite--Biehler tactic frontends

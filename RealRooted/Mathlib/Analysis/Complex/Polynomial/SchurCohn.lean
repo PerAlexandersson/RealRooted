@@ -5,8 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Analysis.Complex.Polynomial.Basic
+import Mathlib.Analysis.Complex.Polynomial.Basic
 public import Mathlib.Algebra.Polynomial.Reverse
+public import Mathlib.Analysis.Complex.Norm
+public import Mathlib.Analysis.Normed.Ring.Basic
+public import Mathlib.Algebra.Polynomial.Roots
 
 /-!
 # The Schur–Cohn stability criterion

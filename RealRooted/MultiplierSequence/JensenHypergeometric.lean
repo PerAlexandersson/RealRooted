@@ -1,10 +1,15 @@
 module
 
 public import RealRooted.MultiplierSequence.TwoSidedJensen
-public import RealRooted.MultiplierSequence.InvPochhammer
-public import RealRooted.NarayanaTransformation.Interlacing
-public import RealRooted.ReciprocalShift.ProperPosition
-public import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.MultiplierSequence.InvPochhammer
+import RealRooted.NarayanaTransformation.Interlacing
+import RealRooted.ReciprocalShift.ProperPosition
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.LinearPowerFamily
+import RealRooted.MultiplierSequence.PolyaSchur
+public import RealRooted.MultiplierSequence.Infinite
+import RealRooted.NarayanaTransformation.Endpoints
+public import RealRooted.NarayanaTransformation.Coefficients
 
 /-!
 # Strict interlacing for hypergeometric Jensen models
@@ -69,7 +74,7 @@ theorem evenFactorialJensenWeight_eq (k : ℕ) :
   field_simp
   nlinarith
 
-/-- The double Narayana transform used by A318397 and A367177. -/
+/-- The double Narayana transform used by A318397. -/
 def doubleNarayanaPolynomial (n : ℕ) : ℝ[X] :=
   narayanaTransform 0 (narayanaPolynomial 0 n)
 

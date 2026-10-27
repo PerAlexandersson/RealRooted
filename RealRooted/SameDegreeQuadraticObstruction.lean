@@ -2,6 +2,8 @@ module
 
 public import Mathlib
 public import RealRooted.PosCombo
+import RealRooted.QuadraticRoot
+public import RealRooted.ObreschkoffContinuity
 
 /-!
 # Degree-two same-degree obstruction

@@ -2,9 +2,10 @@ module
 
 public import RealRooted.BrandenVecchi.SmirnovChow
 public import RealRooted.BrandenVecchi.OrdinaryWordSeries
-public import RealRooted.ParkingFunctions.Descents.ExactDescent
+import RealRooted.ParkingFunctions.Descents.ExactDescent
 public import RealRooted.ParkingFunctions.Descents.WordContent
 public import Mathlib.Algebra.MvPolynomial.Rename
+public import RealRooted.ParkingFunctions.Descents.Basic
 
 /-!
 # Fixed-content symmetry for word descents

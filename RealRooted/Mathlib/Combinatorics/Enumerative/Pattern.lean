@@ -7,9 +7,9 @@ module
 
 public import Mathlib.Data.Fintype.Perm
 public import Mathlib.Data.List.Permutation
-public import Mathlib.Data.List.Sublists
+import Mathlib.Data.List.Sublists
 public import Mathlib.Data.List.NodupEquivFin
-public import Mathlib.Data.Fin.VecNotation
+import Mathlib.Data.Fin.VecNotation
 public import Mathlib.Order.Fin.Basic
 public import Mathlib.Order.Monotone.Basic
 public import Mathlib.Tactic.Linarith

@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.ParkingFunctions.Descents.ExactDescentTransfer
+import RealRooted.ParkingFunctions.Descents.ExactDescentTransfer
+public import RealRooted.ParkingFunctions.Descents.Basic
 
 /-!
 # Weak left peaks

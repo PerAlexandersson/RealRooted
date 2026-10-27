@@ -5,8 +5,10 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing
-public import RealRooted.GammaPencil.SymbolStability
+import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing
+import RealRooted.GammaPencil.SymbolStability
+public import RealRooted.BorceaBranden.UnivariateFiniteSymbol
+public import RealRooted.GammaPencil.Basic
 
 /-!
 # The gamma operator preserves real-rootedness in its degree box

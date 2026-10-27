@@ -2,6 +2,7 @@ module
 
 public import RealRooted.Jacobi.Orthogonality
 public import RealRooted.JacobiDeformation.Basic
+public import RealRooted.JacobiDeformation.Pochhammer
 
 /-!
 # Normalized shifted-Jacobi moments

@@ -2,6 +2,7 @@ module
 
 public import RealRooted.BrandenVecchi.ChowToeplitz
 public import RealRooted.PFPolynomial.Closure
+public import RealRooted.BrandenVecchi.Chow
 
 /-!
 # Fixed-rank locality and continuity of Chow polynomials

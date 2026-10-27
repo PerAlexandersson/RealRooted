@@ -2,6 +2,7 @@ module
 
 public import RealRooted.EulerOperator.Shift
 public import RealRooted.Hadamard.Product
+import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
 
 /-!
 # Infinite multiplier sequences

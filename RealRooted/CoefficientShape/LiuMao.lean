@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.CoefficientShape.LiuMao.PathKernel
-public import RealRooted.PolynomialValueEulerNumerator.PF
+import RealRooted.PolynomialValueEulerNumerator.PF
+public import RealRooted.PolynomialValueEulerNumerator
 
 /-!
 # The coefficient formula for Euler numerators of products

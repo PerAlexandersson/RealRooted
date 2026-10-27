@@ -5,7 +5,7 @@ Authors: Per Alexandersson, √2, Yaël Dillies
 -/
 module
 
-public import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
+import Mathlib.Algebra.Order.BigOperators.GroupWithZero.Finset
 public import Mathlib.Data.Fin.Rev
 public import Mathlib.LinearAlgebra.Matrix.Determinant.TotallyNonneg
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic

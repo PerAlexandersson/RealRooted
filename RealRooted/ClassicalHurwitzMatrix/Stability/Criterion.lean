@@ -1,8 +1,11 @@
 module
 
-public import RealRooted.ClassicalHurwitzMatrix.Stability.Extraction
-public import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.Sequence
-public import RealRooted.ClassicalHurwitzMatrix.Stability.Vieta
+import RealRooted.ClassicalHurwitzMatrix.Stability.Extraction
+import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.Sequence
+import RealRooted.ClassicalHurwitzMatrix.Stability.Vieta
+import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
+public import RealRooted.ClassicalHurwitzMatrix.Stability
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz
 
 /-!
 # The strict classical Hurwitz criterion

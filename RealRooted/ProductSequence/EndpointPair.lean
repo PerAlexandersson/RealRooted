@@ -1,7 +1,12 @@
 module
 
-public import RealRooted.PosCombo
-public import RealRooted.ProductSequence.Lifts
+import RealRooted.PosCombo
+import RealRooted.ProductSequence.Lifts
+import RealRooted.ProductSequence.Factors
+import RealRooted.SequenceClosure
+import RealRooted.WagnerX.NonnegativeRoots
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Endpoint-pair product sequences

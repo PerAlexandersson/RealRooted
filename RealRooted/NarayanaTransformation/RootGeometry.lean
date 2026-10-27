@@ -11,9 +11,10 @@ public import RealRooted.QuadraticRoot
 public import RealRooted.RectangularConvolution
 public import RealRooted.RectangularConvolutionIdentity
 public import RealRooted.Touchard
-public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
-public import RealRooted.Mathlib.Algebra.Ring.Parity
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+import RealRooted.Mathlib.Algebra.Ring.Parity
+public import RealRooted.MultivariateStability
 
 /-!
 # The Narayana Transformation

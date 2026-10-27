@@ -1,8 +1,16 @@
 module
 
-public import RealRooted.Bezoutian.WronskianConverse
-public import RealRooted.Mathlib.Analysis.Polynomial.Basic
-public import RealRooted.Wronskian.WeakForward
+import RealRooted.Bezoutian.WronskianConverse
+import RealRooted.Mathlib.Analysis.Polynomial.Basic
+import RealRooted.Wronskian.WeakForward
+import RealRooted.Wronskian.Forward
+import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
+import RealRooted.Interlacing.Residue
+import RealRooted.Interlacing.Multiplicity
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
+public import Mathlib.RingTheory.Polynomial.Wronskian
 
 /-!
 # The weak Wronskian converse

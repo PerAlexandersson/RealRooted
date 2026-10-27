@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.SymmetricDecomposition.Theorem26
+import RealRooted.SymmetricDecomposition.Theorem26
+import RealRooted.SymmetricDecomposition.FPolynomialInterlacing
+public import RealRooted.SymmetricDecomposition.FPolynomial
 
 /-!
 # Interlacing of `f`-transforms of half-growth sequences

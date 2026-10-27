@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.LiebSokalPointwise
+import RealRooted.LiebSokalPointwise
 public import RealRooted.MultivariateStability
+public import RealRooted.Multiaffine
 
 /-!
 # Boundary specialization for finite variable blocks

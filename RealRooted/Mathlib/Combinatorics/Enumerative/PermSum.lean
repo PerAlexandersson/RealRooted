@@ -8,6 +8,9 @@ module
 public import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
 public import Mathlib.Data.Fintype.Perm
 public import Mathlib.Tactic.Linarith
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Pattern
+public import Mathlib.Data.Fin.VecNotation
+import Mathlib.Data.Rat.Cast.Order
 
 /-!
 # Direct and skew sums of permutations

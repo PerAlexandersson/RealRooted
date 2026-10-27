@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.IteratedDerivativeShift
+import RealRooted.IteratedDerivativeShift
 public import RealRooted.PosCombo
 
 /-!

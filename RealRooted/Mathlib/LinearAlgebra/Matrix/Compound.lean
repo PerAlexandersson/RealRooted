@@ -5,10 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Combinatorics.Colex
+import Mathlib.Combinatorics.Colex
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.CauchyBinet
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.CauchyBinet
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+public import Mathlib.Order.Hom.PowersetCard
 
 /-!
 # Compound matrices

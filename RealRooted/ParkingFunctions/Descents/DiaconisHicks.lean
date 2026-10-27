@@ -2,8 +2,8 @@ module
 
 public import RealRooted.ParkingFunctions.Descents.Pollak
 public import RealRooted.ParkingFunctions.Descents.ChainSort
-public import RealRooted.Mathlib.Data.List.OfFn
-public import RealRooted.Mathlib.Data.Fintype.Card
+import RealRooted.Mathlib.Data.List.OfFn
+import RealRooted.Mathlib.Data.Fintype.Card
 public import Mathlib.Data.List.Sort
 
 /-!

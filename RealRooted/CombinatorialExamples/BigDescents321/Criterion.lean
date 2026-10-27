@@ -1,7 +1,10 @@
 module
 
-public import RealRooted.CombinatorialExamples.BigDescents321.SigmaSign
+import Mathlib.Algebra.BigOperators.Field
+import RealRooted.CombinatorialExamples.BigDescents321.SigmaSign
 public import RealRooted.CombinatorialExamples.BigDescents321.Backward
+import RealRooted.CombinatorialExamples.BigDescents321.ScalarBounds
+public import RealRooted.CombinatorialExamples.BigDescents321.Functionals
 
 /-!
 # Positivity of `F_n` at the zeros of `G_(n-2)`

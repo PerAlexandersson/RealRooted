@@ -2,7 +2,10 @@ module
 
 public import RealRooted.ParkingFunctions.Descents.CompositionBlocks
 public import RealRooted.ParkingFunctions.Descents.DescentChains
-public import Mathlib.Data.List.ChainOfFn
+import Mathlib.Data.List.ChainOfFn
+import RealRooted.Mathlib.Data.List.SplitBy
+import Mathlib.Data.List.SplitBy
+import Mathlib.Tactic.NormNum.GCD
 
 /-!
 # Descent-containment content enumerators

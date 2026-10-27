@@ -5,7 +5,8 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Border
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Border
+public import Mathlib.LinearAlgebra.Matrix.Determinant.TotallyNonneg
 
 /-!
 # Positive diagonal tails of finite totally nonnegative matrices

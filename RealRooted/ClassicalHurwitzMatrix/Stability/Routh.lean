@@ -1,11 +1,21 @@
 module
 
-public import RealRooted.ClassicalHurwitzMatrix.Stability.Parity
-public import RealRooted.DegreeDropDivXPrec
-public import RealRooted.Interlacing.NegativeRoots
+import RealRooted.ClassicalHurwitzMatrix.Stability.Parity
+import RealRooted.DegreeDropDivXPrec
+import RealRooted.Interlacing.NegativeRoots
 public import RealRooted.SimpleRoots
-public import RealRooted.Wronskian.Forward
-public import RealRooted.Wronskian.Successor.Interlacing
+import RealRooted.Wronskian.Forward
+import RealRooted.Wronskian.Successor.Interlacing
+public import RealRooted.ClassicalHurwitzMatrix.Routh
+import RealRooted.ClassicalHurwitzMatrix.Stability.HermiteBiehler
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Rotation
+import RealRooted.HermiteBiehler.Converse.Wronskian
+import RealRooted.Bezoutian.WronskianConverse
+import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.ObreschkoffConverse.Converse
+public import RealRooted.AllCombo
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
 
 /-!
 # Algebraic data for stable Routh reduction

@@ -7,8 +7,10 @@ module
 
 public import Mathlib.Data.Matrix.Mul
 public import Mathlib.LinearAlgebra.Matrix.Irreducible.Defs
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.QuiverPath
-public import Mathlib.Combinatorics.Quiver.Path.Decomposition
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.QuiverPath
+import Mathlib.Combinatorics.Quiver.Path.Decomposition
+import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
+public import Mathlib.Basic.Real.Basic
 
 /-!
 # Perron-Frobenius support lemmas

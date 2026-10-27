@@ -1,8 +1,13 @@
 module
 
-public import RealRooted.JensenPencilPositiveContraction
-public import RealRooted.Mathlib.Topology.Algebra.Polynomial
+import RealRooted.JensenPencilPositiveContraction
+import RealRooted.Mathlib.Topology.Algebra.Polynomial
 public import RealRooted.RootContinuity
+import RealRooted.LiuOppositeSigns.JensenRootCount
+public import RealRooted.LiuOppositeSigns.RootCount
+public import RealRooted.Compatibility.Pair
+import RealRooted.Hadamard.Grace
+public import RealRooted.Hadamard.Basic
 
 /-!
 # Jensen-pencil contraction

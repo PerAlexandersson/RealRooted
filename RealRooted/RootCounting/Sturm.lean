@@ -1,13 +1,19 @@
 module
 
 public import RealRooted.Mathlib.Algebra.Polynomial.Sturm
-public import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariationTopology
-public import RealRooted.RootCountJump
+import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
+import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariationTopology
+import RealRooted.RootCountJump
 public import RealRooted.SimpleRoots
 public import Mathlib.FieldTheory.Perfect
 public import Mathlib.RingTheory.Polynomial.Radical
-public import Mathlib.Topology.LocallyConstant.Basic
+import Mathlib.Topology.LocallyConstant.Basic
+import RealRooted.RootCountFinite
+import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+public import Mathlib.Data.List.SignVariations
+public import Mathlib.RingTheory.Radical.Basic
+public import Mathlib.Analysis.Normed.Ring.Basic
 
 /-!
 # Sturm root counting

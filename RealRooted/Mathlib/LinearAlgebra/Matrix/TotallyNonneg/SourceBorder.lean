@@ -5,9 +5,10 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Border
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Border
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 
 /-!
 # A standard-basis source border for totally nonnegative matrices

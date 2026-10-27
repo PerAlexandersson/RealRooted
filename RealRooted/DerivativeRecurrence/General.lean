@@ -3,7 +3,7 @@ module
 public import Mathlib.Algebra.Polynomial.Degree.Lemmas
 public import Mathlib.Tactic.IntervalCases
 public import RealRooted.Basic.Coefficients
-public import RealRooted.DerivativeRecurrence.Degree
+import RealRooted.DerivativeRecurrence.Degree
 
 /-!
 # Degrees of general linear recurrences

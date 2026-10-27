@@ -7,7 +7,7 @@ module
 
 public import RealRooted.IntervalDifferential.Certificates
 public import Mathlib.Algebra.Polynomial.Splits
-public import Mathlib.Algebra.Order.Chebyshev
+import Mathlib.Algebra.Order.Chebyshev
 
 /-!
 # Root-sum inequalities for the centered zigzag transfer

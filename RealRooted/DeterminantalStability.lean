@@ -1,8 +1,11 @@
 module
 
-public import Mathlib.Analysis.Matrix.Order
+import Mathlib.Analysis.Matrix.Order
 public import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
 public import RealRooted.MultivariateStability
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+public import Mathlib.LinearAlgebra.Matrix.PosDef
+public import Mathlib.Analysis.Complex.Order
 
 @[expose] public section
 

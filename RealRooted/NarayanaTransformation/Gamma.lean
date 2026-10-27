@@ -1,6 +1,8 @@
 module
 
 public import RealRooted.NarayanaTransformation.Recurrences
+import RealRooted.NarayanaTransformation.Recurrences.Identities
+public import RealRooted.NarayanaTransformation.Coefficients
 
 /-!
 # Binomial-square Narayana gamma recurrences.

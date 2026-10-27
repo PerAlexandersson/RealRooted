@@ -1,7 +1,9 @@
 module
 
 public import RealRooted.BrandenVecchi.SignedWords
-public import Mathlib.Algebra.BigOperators.Fin
+import Mathlib.Algebra.BigOperators.Fin
+import RealRooted.ParkingFunctions.Descents.Basic
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
 
 /-!
 # Weighted finite signed-word enumerators

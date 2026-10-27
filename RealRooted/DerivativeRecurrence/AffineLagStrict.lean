@@ -1,9 +1,14 @@
 module
 
-public import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Interlacing
 public import RealRooted.MaWang
-public import RealRooted.SimpleRoots
+import RealRooted.SimpleRoots
 public import RealRooted.WagnerRightSum
+import RealRooted.MaWang.Strong
+import RealRooted.WagnerRightSum.Sign
+import RealRooted.Derivative.Algebra
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Strict interlacing for affine-lag recurrences

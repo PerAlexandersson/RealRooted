@@ -1,17 +1,20 @@
 module
 
-public import RealRooted.GarloffWagner.Hadamard
+import RealRooted.GarloffWagner.Hadamard
 public import RealRooted.GarloffWagner.Theorem12
 public import RealRooted.Hadamard
-public import RealRooted.Hadamard.FiniteReflection
+import RealRooted.Hadamard.FiniteReflection
 public import RealRooted.Hadamard.KostovMap
 public import RealRooted.Hadamard.SchurSzegoMultiplicity
 public import RealRooted.Hadamard.SchurSzegoSimple
 public import RealRooted.Hadamard.SchurSzegoSigns
 public import RealRooted.CoefficientShape.LiuMao
-public import RealRooted.MultiplierSequence.PolyaSchur.Schur
-public import RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal
+import RealRooted.MultiplierSequence.PolyaSchur.Schur
+import RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal
 public import RealRooted.PolynomialValueEulerNumerator.Product.Brenti
+import RealRooted.Hadamard.Grace
+public import RealRooted.Hadamard.Basic
+public import RealRooted.GarloffWagner.Algebra
 
 /-!
 # Hadamard challenge entry point

@@ -1,6 +1,13 @@
 module
 
 public import RealRooted.LiuWang.SequencePositive
+import RealRooted.LiuWang.SequenceCore
+import RealRooted.ScalarNormalization
+import RealRooted.RootBounds
+import RealRooted.SignEvaluation
+import RealRooted.SequenceClosure
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Interval-controlled Liu--Wang sequence theorems

@@ -1,9 +1,10 @@
 module
 
-public import RealRooted.AissenSchoenbergWhitney
-public import RealRooted.BrandenLeite.CompositionRowClosure
-public import RealRooted.BrandenLeite.Regularization
-public import RealRooted.PFPolynomial.Closure
+import RealRooted.AissenSchoenbergWhitney
+import RealRooted.BrandenLeite.CompositionRowClosure
+import RealRooted.BrandenLeite.Regularization
+import RealRooted.PFPolynomial.Closure
+public import RealRooted.BrandenLeite.ToeplitzComposition
 
 /-!
 # Zero-constant PF composition rows

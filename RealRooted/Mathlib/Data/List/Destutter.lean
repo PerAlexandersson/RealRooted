@@ -5,7 +5,8 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Data.List.Destutter
+import Mathlib.Data.List.Destutter
+public import Mathlib.Data.List.Defs
 
 /-!
 # Additional lemmas about list destuttering

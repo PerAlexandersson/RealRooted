@@ -1,7 +1,11 @@
 module
 
 public import RealRooted.HosterStump.Diagram
-public import RealRooted.HosterStump.Sequence
+import RealRooted.HosterStump.Sequence
+import RealRooted.PFPolynomial
+import RealRooted.PosCombo
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
 
 /-!
 # Hoster--Stump, Section 3.1: the induction for Theorem 3.3

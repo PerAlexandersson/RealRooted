@@ -1,10 +1,12 @@
 module
 
-public import RealRooted.EulerBidiagonal.GeneralRows
+import RealRooted.EulerBidiagonal.GeneralRows
 public import RealRooted.GarloffWagner
-public import RealRooted.Interlacing.Reversal
-public import RealRooted.Recurrence.RowModel
-public import RealRooted.Recurrence.Uniqueness
+import RealRooted.Interlacing.Reversal
+import RealRooted.Recurrence.RowModel
+import RealRooted.Recurrence.Uniqueness
+import RealRooted.GarloffWagner.Theorem12
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # The row polynomials of OEIS A394813

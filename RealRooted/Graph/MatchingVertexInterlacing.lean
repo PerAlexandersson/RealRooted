@@ -1,9 +1,10 @@
 module
 
 public import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatchingPolyOn
-public import RealRooted.GarloffWagner.KreinExpansion
-public import RealRooted.LiuWang.General
+import RealRooted.GarloffWagner.KreinExpansion
+import RealRooted.LiuWang.General
 public import RealRooted.WeightedSum
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Vertex-deletion interlacing for matching polynomials

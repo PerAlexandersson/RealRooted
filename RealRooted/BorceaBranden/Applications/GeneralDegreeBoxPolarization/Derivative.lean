@@ -1,8 +1,8 @@
 module
 
 public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
-public import RealRooted.LiebSokalPointwise
-public import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
+import RealRooted.LiebSokalPointwise
+import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
 
 /-!
 # Partial derivatives through general degree-box polarization

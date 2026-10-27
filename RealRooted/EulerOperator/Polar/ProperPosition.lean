@@ -1,7 +1,9 @@
 module
 
 public import RealRooted.EulerOperator.Polar
-public import RealRooted.ReciprocalShift.ProperPosition
+import RealRooted.ReciprocalShift.ProperPosition
+public import RealRooted.EulerOperator
+import RealRooted.ObreschkoffConverse.Derivative
 
 /-!
 # Interlacing for the polar-theta operator

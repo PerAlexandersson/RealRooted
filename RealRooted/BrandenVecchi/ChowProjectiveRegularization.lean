@@ -1,9 +1,11 @@
 module
 
 public import RealRooted.BrandenLeite.Regularization
-public import RealRooted.BrandenVecchi.ChowContinuity
-public import RealRooted.BrandenVecchi.ChowGeometricScaling
-public import RealRooted.BrandenVecchi.ChowTotallyNonneg
+import RealRooted.BrandenVecchi.ChowContinuity
+import RealRooted.BrandenVecchi.ChowGeometricScaling
+import RealRooted.BrandenVecchi.ChowTotallyNonneg
+public import RealRooted.PolyaFrequencyConvolution.GeometricScaling
+public import RealRooted.BrandenVecchi.Chow
 
 /-!
 # Projective regularization of zero-prefix Chow symbols

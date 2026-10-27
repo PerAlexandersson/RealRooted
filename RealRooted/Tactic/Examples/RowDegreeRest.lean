@@ -195,17 +195,6 @@ def A110205 : ℕ → ℝ[X]
 theorem A110205_natDegree (n : ℕ) : (A110205 n).natDegree = n := by
   rr_row_natDegree
 
-/-- The downstream A262226 recurrence, used to regress the degree-model fallback. -/
-def A262226 : ℕ → ℝ[X]
-  | 0 => 1
-  | 1 => 1
-  | n + 2 =>
-      RealRooted.Applications.OEIS.HigherOrderDegreeModels.A262226.nextRow n
-        (A262226 (n + 1)) (A262226 n)
-
-/-- The exact A262226 degree law, certified by the default row-degree tactic. -/
-theorem A262226_natDegree (n : ℕ) : (A262226 n).natDegree = 2 * (n / 2) := by
-  rr_row_natDegree
 
 /-- The downstream A367873 recurrence, used to regress the degree-model fallback. -/
 def A367873 : ℕ → ℝ[X]

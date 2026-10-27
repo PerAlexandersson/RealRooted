@@ -5,9 +5,9 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.DerivativeRecurrence.GeneralizedLaguerreInterlacing
-public import RealRooted.Favard
-public import RealRooted.Laguerre.Favard
+import RealRooted.DerivativeRecurrence.GeneralizedLaguerreInterlacing
+import RealRooted.Favard
+import RealRooted.Laguerre.Favard
 public import RealRooted.SimpleRoots
 
 public import Mathlib.Tactic.Algebra.Basic
@@ -15,6 +15,10 @@ public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.NormNum
 public import Mathlib.Tactic.Positivity
 public import Mathlib.Tactic.Ring
+import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Differential
+public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Basic
+import RealRooted.DerivativeRecurrence.QuadraticInterlacing
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Roots of generalized Laguerre polynomials

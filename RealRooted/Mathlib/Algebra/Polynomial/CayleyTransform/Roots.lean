@@ -5,11 +5,18 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Algebra
-public import RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure
+import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Algebra
+import RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure
 public import Mathlib.Tactic.ComputeDegree
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.Ring
+public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Arctan
+import Mathlib.MeasureTheory.Covering.Besicovitch
+import Mathlib.Analysis.SpecialFunctions.Bernstein
+import Mathlib.Algebra.Order.Ring.Star
+public import Mathlib.Analysis.Complex.Norm
+public import Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Root geometry of the finite-degree Cayley transform

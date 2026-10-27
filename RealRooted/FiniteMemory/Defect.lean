@@ -2,7 +2,7 @@ module
 
 public import Mathlib.RingTheory.PowerSeries.Inverse
 public import Mathlib.Algebra.Polynomial.Degree.TrailingDegree
-public import Mathlib.Computability.DFA
+import Mathlib.Computability.DFA
 public import Mathlib.Data.Nat.ModEq
 public import Mathlib.NumberTheory.FrobeniusNumber
 public import RealRooted.Basic.Coefficients

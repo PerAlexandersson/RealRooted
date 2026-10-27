@@ -3,7 +3,9 @@ module
 public import RealRooted.RowThreshold
 public import RealRooted.AffineProperPosition
 public import RealRooted.PFPolynomial
-public import RealRooted.StaircaseSum
+import RealRooted.StaircaseSum
+import RealRooted.MatrixInterlacing.Preservation
+import RealRooted.PosCombo
 
 /-!
 # Generic threshold matrices

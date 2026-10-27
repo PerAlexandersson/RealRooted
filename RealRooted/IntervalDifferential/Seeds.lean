@@ -5,10 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.IntervalDifferential.Certificates
+import RealRooted.IntervalDifferential.Certificates
 public import Mathlib.Algebra.Polynomial.Splits
 public import Mathlib.Analysis.Real.Sqrt
 public import Mathlib.Tactic
+public import RealRooted.IntervalDifferential.Basic
 
 /-!
 # Interval roots of the cubic seed

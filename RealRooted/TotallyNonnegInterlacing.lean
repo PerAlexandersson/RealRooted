@@ -1,9 +1,12 @@
 module
 
-public import RealRooted.CauchyInterlacing.Polynomial
-public import RealRooted.MatrixInterlacing.Closure
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Density
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.PrincipalInterlacing
+import RealRooted.CauchyInterlacing.Polynomial
+import RealRooted.MatrixInterlacing.Closure
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Density
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.PrincipalInterlacing
+import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core
+public import RealRooted.Basic.ProperPosition
+public import Mathlib.LinearAlgebra.Matrix.Determinant.TotallyNonneg
 
 /-!
 # Weak principal interlacing for totally nonnegative matrices

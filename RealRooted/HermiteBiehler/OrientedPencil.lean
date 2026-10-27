@@ -1,9 +1,11 @@
 module
 
 public import RealRooted.HermiteBiehler.StablePencil
-public import RealRooted.Mathlib.Analysis.Polynomial.Asymptotics
-public import RealRooted.ObreschkoffConverse.DegreeGap
-public import RealRooted.Wronskian.Algebra
+import RealRooted.Mathlib.Analysis.Polynomial.Asymptotics
+import RealRooted.ObreschkoffConverse.DegreeGap
+import RealRooted.Wronskian.Algebra
+import RealRooted.ObreschkoffConverse.Converse
+public import RealRooted.AllCombo
 
 /-!
 # Oriented stable pencils

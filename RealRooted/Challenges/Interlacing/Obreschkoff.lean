@@ -2,7 +2,9 @@ module
 
 public import RealRooted.HermiteBiehler.StablePencil
 public import RealRooted.ObreschkoffConverse.DegreeGap
-public import RealRooted.OperatorPreservesInterlacing
+import RealRooted.OperatorPreservesInterlacing
+import RealRooted.ObreschkoffConverse.Forward
+public import RealRooted.AllCombo
 
 /-!
 # Obreschkoff challenge entry point

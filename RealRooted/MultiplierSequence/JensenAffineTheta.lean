@@ -1,12 +1,17 @@
 module
 
-public import RealRooted.FiniteFreeRootCount
-public import RealRooted.EulerOperator
-public import RealRooted.Interlacing.ReversalCommonFactor
-public import RealRooted.LinearPowerFamily
-public import RealRooted.MultiplierSequence.InvPochhammer
+import RealRooted.FiniteFreeRootCount
+import RealRooted.EulerOperator
+import RealRooted.Interlacing.ReversalCommonFactor
+import RealRooted.LinearPowerFamily
+import RealRooted.MultiplierSequence.InvPochhammer
 public import RealRooted.MultiplierSequence.Infinite
-public import RealRooted.MultiplierSequence.ProperPosition
+import RealRooted.MultiplierSequence.ProperPosition
+import RealRooted.Interlacing.Reversal
+import RealRooted.Interlacing.Euclid
+import RealRooted.MultiplierSequence.PolyaSchur
+public import RealRooted.MultiplierSequence
+import RealRooted.Linear
 
 @[expose] public section
 

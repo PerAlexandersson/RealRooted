@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.Basic.Coefficients
-public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 public import Mathlib.Data.Nat.Factorial.Basic
 
 /-!

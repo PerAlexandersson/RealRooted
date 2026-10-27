@@ -1,7 +1,10 @@
 module
 
 public import RealRooted.AffineFamily.Basic
-public import RealRooted.Wagner.LeftSum
+import RealRooted.Wagner.LeftSum
+import RealRooted.WagnerX.NonnegativeRoots
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Lag recurrences with a feedback term

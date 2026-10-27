@@ -1,7 +1,10 @@
 module
 
 public import RealRooted.BrandenVecchi.SmirnovRecurrence
-public import RealRooted.BrandenVecchi.SmirnovSpecialization
+import RealRooted.BrandenVecchi.SmirnovSpecialization
+public import RealRooted.BrandenVecchi.ChowSupersymmetric
+import RealRooted.MatrixInterlacing.Preservation
+import RealRooted.ProductFamily
 
 /-!
 # Interlacing of literal Smirnov descent polynomials

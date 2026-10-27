@@ -1,8 +1,11 @@
 module
 
-public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Product
-public import RealRooted.Mathlib.Algebra.Polynomial.Eval.ShiftedChoose
-public import RealRooted.PolynomialValueEulerNumerator.PF
+import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Product
+import RealRooted.Mathlib.Algebra.Polynomial.Eval.ShiftedChoose
+import RealRooted.PolynomialValueEulerNumerator.PF
+public import RealRooted.PolynomialValueEulerNumerator
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput
+public import Mathlib.Algebra.Polynomial.Homogenize
 
 /-!
 # Products of polynomial-value Euler numerators

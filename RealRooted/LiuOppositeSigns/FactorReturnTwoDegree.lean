@@ -1,7 +1,9 @@
 module
 
 public import RealRooted.LiuOppositeSigns.DeletionBranches
-public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.LeftSuccessor
+import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.LeftSuccessor
+public import RealRooted.LiuOppositeSigns
+import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Liu left factor return: two-degree case

@@ -1,10 +1,12 @@
 module
 
-public import RealRooted.MultivariateStability.Specialization
+import Mathlib.Algebra.MvPolynomial.Funext
+import RealRooted.MultivariateStability.Specialization
 public import RealRooted.Multiaffine.TwoCoordinateSlice
 public import RealRooted.LiebSokalPointwise
 public import RealRooted.AffineLineRestriction
-public import RealRooted.HermiteBiehler.Basic
+import RealRooted.HermiteBiehler.Basic
+import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
 
 /-!
 # Barrier functions of real stable polynomials

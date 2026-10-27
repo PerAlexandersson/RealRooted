@@ -10,15 +10,22 @@ module
 public import RealRooted.ProductFamily
 public import RealRooted.AffineDerivative
 public import RealRooted.AffineFamily.Basic
-public import RealRooted.AffineFamily.PositiveFamily
-public import RealRooted.PosCombo
-public import RealRooted.SuccDegreeLeftEndpoint
+import RealRooted.AffineFamily.PositiveFamily
+import RealRooted.PosCombo
+import RealRooted.SuccDegreeLeftEndpoint
 public import RealRooted.ObreschkoffConverse
 public import RealRooted.FolkloreLemma
 public import Mathlib.Analysis.Calculus.Deriv.Inv
 public import Mathlib.Analysis.Calculus.Deriv.Mul
 public import Mathlib.Algebra.QuadraticDiscriminant
 public import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
+import RealRooted.ObreschkoffConverse.DegreeGap
+public import RealRooted.ObreschkoffContinuity
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Derivative.FamilyClosure
+import RealRooted.Linear
+public import RealRooted.Basic.ProperPosition
+import RealRooted.Basic.PolynomialFacts
 
 public section
 

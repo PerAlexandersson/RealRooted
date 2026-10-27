@@ -1,7 +1,10 @@
 module
 
-public import RealRooted.ChudnovskySeymour.Core
+import RealRooted.ChudnovskySeymour.Core
 public import RealRooted.Compatibility.CutTransform
+public import RealRooted.Compatibility.Basic
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
 
 /-!
 # Sound generic closure for the finite P/Q cut transform

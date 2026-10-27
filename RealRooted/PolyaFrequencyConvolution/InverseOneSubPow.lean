@@ -1,8 +1,10 @@
 module
 
-public import RealRooted.PolyaFrequencyConvolution
-public import RealRooted.PolyaFrequencyConvolution.Basic
+import RealRooted.PolyaFrequencyConvolution
+import RealRooted.PolyaFrequencyConvolution.Basic
 public import Mathlib.RingTheory.PowerSeries.WellKnown
+public import RealRooted.NatCauchyConvolution
+public import RealRooted.AissenSchoenbergWhitneyBase
 
 /-!
 # Pólya-frequency coefficients of inverse powers of `1 - X`

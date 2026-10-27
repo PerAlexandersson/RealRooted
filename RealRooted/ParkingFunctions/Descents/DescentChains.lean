@@ -3,7 +3,9 @@ module
 public import RealRooted.ParkingFunctions.Descents.Basic
 public import RealRooted.ParkingFunctions.Descents.ChainSort
 public import Mathlib.Data.List.FinRange
-public import RealRooted.Mathlib.Data.List.SplitBy
+import RealRooted.Mathlib.Data.List.SplitBy
+import Mathlib.Data.List.SplitBy
+import Mathlib.Data.Sym.Sym2.Init
 
 /-!
 # Chains associated to a descent subset

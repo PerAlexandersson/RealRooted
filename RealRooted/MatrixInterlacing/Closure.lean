@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.Interlacing.Closure
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
+import RealRooted.Interlacing.Closure
+import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Matrix characteristic-polynomial interlacing closure

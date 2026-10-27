@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.CompleteHomogeneous
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.CompleteHomogeneous
 public import RealRooted.CombinatorialExamples.JacobiStirling.Weight
+public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 
 /-!
 # Jacobi--Stirling numbers of the second kind

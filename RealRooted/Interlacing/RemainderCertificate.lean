@@ -1,8 +1,11 @@
 module
 
 public import RealRooted.Basic.ProperPosition
-public import RealRooted.Interlacing.Euclid
-public import RealRooted.Mathlib.Algebra.Polynomial.Splits
+import RealRooted.Interlacing.Euclid
+import RealRooted.Mathlib.Algebra.Polynomial.Splits
+import Mathlib.Analysis.Polynomial.Basic
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Mathlib.Tactic
 
 /-!
 # Interlacing from a division remainder

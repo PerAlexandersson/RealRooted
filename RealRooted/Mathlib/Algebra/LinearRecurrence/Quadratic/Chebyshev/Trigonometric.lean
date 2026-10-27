@@ -5,8 +5,10 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev
-public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Basic
+import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Basic
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
+public import Mathlib.Analysis.Complex.Trigonometric
 
 /-!
 # Trigonometric form of normalized quadratic recurrences

@@ -1,6 +1,9 @@
 module
 
 public import RealRooted.RankTwoMatching
+import RealRooted.RankTwoMatching.Endpoint
+import RealRooted.HeilmannLieb
+public import RealRooted.PFPolynomial
 
 @[expose] public section
 

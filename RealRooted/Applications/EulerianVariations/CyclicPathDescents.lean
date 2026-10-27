@@ -1,8 +1,11 @@
 module
 
-public import RealRooted.NarayanaTransformation.Endpoints
-public import RealRooted.NarayanaTransformation.SimpleRoots
-public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.NarayanaTransformation.Endpoints
+import RealRooted.NarayanaTransformation.SimpleRoots
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.NarayanaTransformation.Recurrences.Identities
+public import RealRooted.NarayanaTransformation.Coefficients
+public import RealRooted.SimpleRoots
 
 /-!
 # Cyclic descents of northeast lattice paths

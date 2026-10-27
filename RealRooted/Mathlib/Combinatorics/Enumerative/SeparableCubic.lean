@@ -6,8 +6,10 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.Mathlib.Combinatorics.Enumerative.Separable
-public import Mathlib.RingTheory.PowerSeries.Basic
-public import Mathlib.Tactic.LinearCombination
+import Mathlib.RingTheory.PowerSeries.Basic
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.NormNum.GCD
+import Mathlib.Tactic.IntervalCases
 
 /-!
 # The cubic recurrence for separable permutations

@@ -8,7 +8,7 @@ module
 public import LGV.Quiver.Path
 public import Mathlib.Combinatorics.Quiver.Path.Vertices
 public import RealRooted.LGV.ChipNetwork.Basic
-public import RealRooted.Mathlib.Data.Fin.Basic
+import RealRooted.Mathlib.Data.Fin.Basic
 
 /-!
 # Paths in finite lower-bidiagonal chip networks

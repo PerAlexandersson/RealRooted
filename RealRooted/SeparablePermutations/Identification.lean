@@ -1,10 +1,11 @@
 module
 
 public import RealRooted.Mathlib.Combinatorics.Enumerative.SeparableCubic
-public import RealRooted.SeparablePermutations.Cubic
-public import RealRooted.SeparablePermutations.GammaCubic
+import RealRooted.SeparablePermutations.Cubic
+import RealRooted.SeparablePermutations.GammaCubic
 public import RealRooted.SeparablePermutations.Enumerator
-public import RealRooted.SeparablePermutations.Interlacing
+import RealRooted.SeparablePermutations.Interlacing
+public import RealRooted.SeparablePermutations.Gamma
 
 public section
 

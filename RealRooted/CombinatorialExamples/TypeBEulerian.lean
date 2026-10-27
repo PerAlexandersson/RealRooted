@@ -5,6 +5,15 @@ public import RealRooted.DerivativeRecurrence.QuadraticInterlacing
 public import RealRooted.GeneralizedEulerian
 public import Mathlib.Tactic
 import RealRooted.Tactic.RowInterlacing
+import RealRooted.Tactic.Row.ThresholdOrbit
+import RealRooted.Tactic.Recurrence.Cancel
+import RealRooted.Tactic.Recurrence.Degree
+import RealRooted.DerivativeRecurrence.General
+import RealRooted.DerivativeRecurrence.Interlacing
+import RealRooted.ThreeTermRecurrence.Interlacing
+import RealRooted.Derivative.Interlacing
+import RealRooted.Linear
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Type B Eulerian Polynomials

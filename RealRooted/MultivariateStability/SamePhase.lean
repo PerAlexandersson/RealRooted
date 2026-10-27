@@ -1,9 +1,13 @@
 module
 
-public import Mathlib.Topology.Algebra.MvPolynomial
+import Mathlib.Topology.Algebra.MvPolynomial
 public import RealRooted.AffineLineRestriction
-public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
 public import RealRooted.SamePhaseStability
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Mathlib.Tactic
 
 /-!
 # Real stability implies same-phase stability

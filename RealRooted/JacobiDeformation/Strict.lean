@@ -1,11 +1,14 @@
 module
 
-public import RealRooted.MaWang.CriticalSign
+import RealRooted.MaWang.CriticalSign
 public import RealRooted.PFPolynomial
-public import RealRooted.JacobiDeformation.BaseProduct
-public import RealRooted.JacobiDeformation.Boundary
-public import RealRooted.JacobiDeformation.CriticalCases
-public import RealRooted.JacobiDeformation.Shift
+import RealRooted.JacobiDeformation.BaseProduct
+import RealRooted.JacobiDeformation.Boundary
+import RealRooted.JacobiDeformation.CriticalCases
+import RealRooted.JacobiDeformation.Shift
+public import RealRooted.JacobiDeformation.Basic
+public import RealRooted.SimpleRoots
+import RealRooted.Derivative.Algebra
 
 /-!
 # The strict Jacobi deformation theorem

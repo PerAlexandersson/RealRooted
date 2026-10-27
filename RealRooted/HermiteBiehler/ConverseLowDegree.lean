@@ -1,11 +1,13 @@
 module
 
-public import RealRooted.CommonInterleaver.SuccDegreeLowDegree
-public import RealRooted.HermiteBiehler.Forward
-public import RealRooted.Mathlib.Algebra.Polynomial.Degree.SmallDegree
+import RealRooted.CommonInterleaver.SuccDegreeLowDegree
+import RealRooted.HermiteBiehler.Forward
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.SmallDegree
 public import RealRooted.MaWang
-public import RealRooted.QuadraticRoot
-public import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
+import RealRooted.QuadraticRoot
+import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
+public import RealRooted.HermiteBiehler.Basic
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Low-degree converse Hermite--Biehler theorem

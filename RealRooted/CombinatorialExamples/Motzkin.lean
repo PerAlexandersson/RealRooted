@@ -1,9 +1,17 @@
 module
 
 public import RealRooted.CombinatorialExamples.Common
-public import RealRooted.Mathlib.Algebra.Polynomial.Basic
+import RealRooted.Mathlib.Algebra.Polynomial.Basic
 import RealRooted.Tactic.Recurrence.RowSide
 public import Mathlib.Tactic
+import RealRooted.ThreeTermRecurrence.Degree
+import RealRooted.WagnerRightSum
+import RealRooted.WagnerX.AffineFactors
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
+import RealRooted.Basic.PolynomialFacts
 
 /-!
 # Shifted Motzkin Polynomials

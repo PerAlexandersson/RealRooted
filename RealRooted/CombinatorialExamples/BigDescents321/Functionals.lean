@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.CombinatorialExamples.BigDescents321.Residual
-public import Mathlib.Algebra.BigOperators.Field
+import Mathlib.Algebra.BigOperators.Field
 
 /-!
 # Linear functionals on Gegenbauer coordinates

@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.Hadamard.Grace
+import RealRooted.Hadamard.Grace
 public import RealRooted.MultiplierSequence.Infinite
 
 /-!

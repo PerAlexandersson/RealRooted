@@ -1,6 +1,8 @@
 module
 
 public import RealRooted.WagnerX.ListInterlacing
+import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Wagner-X nonnegative coefficients and roots

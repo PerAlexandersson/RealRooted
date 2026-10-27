@@ -1,6 +1,14 @@
 module
 
 public import RealRooted.MaWang
+import RealRooted.MaWang.StrictSigns.Assembly
+import RealRooted.MaWang.StrictSigns.RootSigns
+import RealRooted.WagnerRightSum.Sign
+import Mathlib.Analysis.Polynomial.Basic
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+public import RealRooted.Basic.Coefficients
+import Mathlib.Tactic
+public import Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Sign-based root assembly tactics

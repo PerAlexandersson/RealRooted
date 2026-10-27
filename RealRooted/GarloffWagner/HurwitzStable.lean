@@ -1,8 +1,12 @@
 module
 
-public import RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse
-public import RealRooted.GarloffWagner.Hadamard
-public import RealRooted.Hadamard.GarloffWagner
+import RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse
+import RealRooted.GarloffWagner.Hadamard
+import RealRooted.Hadamard.GarloffWagner
+import RealRooted.HermiteBiehler.Hurwitz
+public import RealRooted.HermiteBiehler.OddEven
+import RealRooted.GarloffWagner.Theorem12
+public import RealRooted.Hadamard.Product
 
 /-!
 # Hadamard products of Hurwitz-stable polynomials

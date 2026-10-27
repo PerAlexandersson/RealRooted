@@ -1,6 +1,9 @@
 module
 
 public import RealRooted.Hadamard.Hurwitz
+import RealRooted.GarloffWagner.Hadamard
+import RealRooted.GarloffWagner.Theorem12
+public import RealRooted.Hadamard.Product
 
 public section
 

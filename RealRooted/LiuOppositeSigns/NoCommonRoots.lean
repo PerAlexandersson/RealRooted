@@ -1,6 +1,11 @@
 module
 
-public import RealRooted.LiuOppositeSigns.XSub.SplittingTools
+import RealRooted.LiuOppositeSigns.XSub.SplittingTools
+import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Mathlib.Tactic
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # No-common-root API for Liu's opposite-sign theorem

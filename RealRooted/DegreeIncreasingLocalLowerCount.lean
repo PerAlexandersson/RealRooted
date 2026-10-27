@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.SameDegreeMultiplicityLowerCount
+import RealRooted.SameDegreeMultiplicityLowerCount
 public import RealRooted.RootSumBounds
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 
 /-!
 # Issue #42: degree-increasing per-root multiplicity lower counts

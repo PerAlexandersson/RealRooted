@@ -1,8 +1,9 @@
 module
 
 public import RealRooted.EulerOperator.Darboux.Basic
-public import RealRooted.MaWang.DerivativeStep
+import RealRooted.MaWang.DerivativeStep
 public import RealRooted.SimpleRoots
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Darboux operators on polynomials with simple negative roots

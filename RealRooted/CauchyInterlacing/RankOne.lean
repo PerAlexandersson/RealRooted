@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.CauchyInterlacing.Polynomial
+import RealRooted.CauchyInterlacing.Polynomial
+public import RealRooted.CauchyInterlacing
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Weyl interlacing for rank-one perturbations

@@ -3,7 +3,14 @@ module
 public import RealRooted.AllCombo
 public import RealRooted.AffineDerivative
 public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
-public import RealRooted.ObreschkoffConverse.Converse
+import RealRooted.ObreschkoffConverse.Converse
+import RealRooted.ObreschkoffConverse.Regularization
+import RealRooted.PosCombo
+import RealRooted.MaWang.Weak.Endpoint
+import RealRooted.MaWang.StrictSigns.Assembly
+import RealRooted.WagnerX.ListInterlacing
+import RealRooted.Linear
+import RealRooted.Basic.PolynomialFacts
 
 /-!
 # Obreschkoff forward direction

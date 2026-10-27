@@ -3,6 +3,10 @@ module
 public import RealRooted.MaWang
 public import RealRooted.Interlacing.Multiplicity
 public import RealRooted.SimpleRoots
+import RealRooted.MaWang.Strong
+import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Algebra
+public import RealRooted.Basic.Coefficients
 
 /-!
 # Strict Ma--Wang steps

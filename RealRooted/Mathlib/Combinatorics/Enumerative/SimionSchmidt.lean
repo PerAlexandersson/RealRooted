@@ -5,15 +5,18 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.Combinatorics.Enumerative.InverseStatistics
+import RealRooted.Mathlib.Combinatorics.Enumerative.InverseStatistics
 public import Mathlib.Combinatorics.Enumerative.Catalan.Basic
 public import Mathlib.Data.Finset.Max
-public import Mathlib.Data.Finset.Sort
+import Mathlib.Data.Finset.Sort
 public import Mathlib.Order.Interval.Finset.Nat
-public import Mathlib.Tactic.FinCases
+import Mathlib.Tactic.FinCases
 public import Mathlib.Tactic.Ring
-public import Mathlib.Algebra.BigOperators.Fin
+import Mathlib.Algebra.BigOperators.Fin
 public import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Pattern
+import Mathlib.Data.List.Permutation
+public import Mathlib.Data.Fin.VecNotation
 
 /-!
 # Simion--Schmidt symmetries

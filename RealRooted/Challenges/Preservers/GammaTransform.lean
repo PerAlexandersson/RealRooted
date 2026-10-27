@@ -1,8 +1,11 @@
 module
 
-public import RealRooted.GammaPencil.Theorem
-public import RealRooted.GammaTransform.Preservation
-public import RealRooted.GammaTransform.ProperPosition
+import RealRooted.GammaPencil.Theorem
+import RealRooted.GammaTransform.Preservation
+import RealRooted.GammaTransform.ProperPosition
+import RealRooted.GammaPencil.Preserver
+public import RealRooted.GammaPencil.Basic
+public import RealRooted.GammaTransform.Basic
 
 /-!
 # Gamma transform challenge entry point

@@ -1,9 +1,14 @@
 module
 
-public import RealRooted.Bezoutian.WronskianConverse
-public import RealRooted.Jacobi
+import RealRooted.Bezoutian.WronskianConverse
+import RealRooted.Jacobi
 public import RealRooted.JacobiDeformation.Quadrature
 public import RealRooted.ObreschkoffConverse
+import RealRooted.Favard
+import RealRooted.Bezoutian.RootEvaluation
+import RealRooted.ObreschkoffConverse.Forward
+import RealRooted.ObreschkoffConverse.Converse
+public import RealRooted.SimpleRoots
 
 /-!
 # Nodes of quasi-Jacobi polynomials

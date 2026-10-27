@@ -2,6 +2,9 @@ module
 
 public import RealRooted.BorceaBranden.RealFiniteNecessity
 public import RealRooted.BorceaBranden.FiniteSymbolClassification
+public import RealRooted.BorceaBranden.RealFiniteClassification
+import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 
 @[expose] public section
 

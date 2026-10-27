@@ -1,8 +1,11 @@
 module
 
-public import RealRooted.Derivative.Interlacing
-public import RealRooted.NarayanaTransformation.Endpoints
+import RealRooted.Derivative.Interlacing
+import RealRooted.NarayanaTransformation.Endpoints
 public import RealRooted.SimpleRoots
+import RealRooted.NarayanaTransformation.Recurrences.Interlacing
+import RealRooted.NarayanaTransformation.Recurrences.Identities
+public import RealRooted.NarayanaTransformation.Coefficients
 
 /-!
 # Simple roots of generalized Narayana polynomials

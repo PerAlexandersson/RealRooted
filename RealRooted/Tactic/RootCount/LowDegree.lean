@@ -4,6 +4,7 @@ public import RealRooted.CommonInterleaver.SuccDegreeLowDegree
 public import RealRooted.SameDegreeCountFromAnalytic
 public import RealRooted.SameDegreeCubicSecondRootFromAnalytic
 public import RealRooted.Tactic.RootCount.SequenceCore
+public import RealRooted.CommonInterleaver.SameDegreeRootCount
 
 /-!
 # Low-degree root-count endpoints

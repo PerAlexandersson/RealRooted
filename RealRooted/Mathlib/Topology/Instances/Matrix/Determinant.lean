@@ -6,7 +6,10 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Topology.Instances.Matrix
-public import Mathlib.Topology.Algebra.Ring.Real
+import Mathlib.Topology.Algebra.Ring.Real
+public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+public import Mathlib.Topology.Algebra.Ring.Basic
+public import Mathlib.Topology.MetricSpace.Pseudo.Defs
 
 /-!
 # Determinants of convergent finite matrices

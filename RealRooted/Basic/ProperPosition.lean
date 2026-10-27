@@ -4,7 +4,7 @@ public import Mathlib.Algebra.Polynomial.Roots
 public import Mathlib.Algebra.Polynomial.Div
 public import Mathlib.Algebra.Polynomial.Degree.Lemmas
 public import Mathlib.Algebra.Polynomial.Splits
-public import RealRooted.Mathlib.Algebra.Polynomial.Splits
+import RealRooted.Mathlib.Algebra.Polynomial.Splits
 public import Mathlib.Analysis.SpecificLimits.Basic
 public import Mathlib.Data.List.Sort
 public import Mathlib.Basic.Real.Basic

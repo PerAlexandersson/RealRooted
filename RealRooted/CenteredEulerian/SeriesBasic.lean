@@ -5,11 +5,13 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Series
 public import Mathlib.RingTheory.PowerSeries.WellKnown
-public import Mathlib.RingTheory.PowerSeries.Inverse
+import Mathlib.RingTheory.PowerSeries.Inverse
 public import Mathlib.Tactic.NormNum
 public import Mathlib.Tactic.Ring
+public import Mathlib.RingTheory.MvPowerSeries.Inverse
+public import Mathlib.Analysis.Complex.Trigonometric
 
 /-!
 # Basic formal power series: sine, cosine, secant, and `sec + tan`

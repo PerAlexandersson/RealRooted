@@ -1,8 +1,8 @@
 module
 
-public import RealRooted.Mathlib.Data.List.Basic
+import RealRooted.Mathlib.Data.List.Basic
 public import Mathlib.Algebra.Polynomial.Roots
-public import Mathlib.Data.List.GetD
+import Mathlib.Data.List.GetD
 public import Mathlib.Data.Multiset.Sort
 public import Mathlib.Basic.Real.Basic
 

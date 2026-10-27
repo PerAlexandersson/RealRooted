@@ -1,8 +1,9 @@
 module
 
 public import RealRooted.BorceaBranden.Applications.ComplexUnivariateSymbol
-public import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
+import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
 public import RealRooted.HermiteBiehler.Basic
+import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
 
 /-!
 # Real univariate finite-symbol sufficiency

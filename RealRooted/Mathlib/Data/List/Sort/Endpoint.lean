@@ -5,7 +5,7 @@ Authors: Yaël Dillies
 -/
 module
 
-public import Mathlib.Data.List.Sort
+import Mathlib.Data.List.Sort
 public import Mathlib.Data.Multiset.Basic
 
 /-!

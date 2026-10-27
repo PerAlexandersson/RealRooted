@@ -1,9 +1,10 @@
 module
 
-public import RealRooted.DegreeDropReversal
+import RealRooted.DegreeDropReversal
 public import RealRooted.Hadamard.Basic
-public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
-public import RealRooted.Mathlib.Algebra.Ring.Parity
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+import RealRooted.Mathlib.Algebra.Ring.Parity
+import RealRooted.Mathlib.Data.Nat.Choose.Cast
 
 /-!
 # Finite-free multiplicative convolution

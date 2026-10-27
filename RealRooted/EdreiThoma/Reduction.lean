@@ -1,8 +1,10 @@
 module
 
 public import RealRooted.EdreiThoma.Identities
-public import RealRooted.EdreiThoma.Easy
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.CauchyBinet
+import RealRooted.EdreiThoma.Easy
+import RealRooted.Mathlib.LinearAlgebra.Matrix.CauchyBinet
+import RealRooted.PolyaFrequencyConvolution.Basic
+public import RealRooted.NatCauchyConvolution
 
 @[expose] public section
 

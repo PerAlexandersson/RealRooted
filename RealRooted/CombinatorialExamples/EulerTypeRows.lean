@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.EulerBidiagonal
+import RealRooted.Linear
 
 @[expose] public section
 

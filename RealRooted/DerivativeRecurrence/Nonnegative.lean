@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.DerivativeRecurrence.General
-public import RealRooted.Derivative.Algebra
+import RealRooted.Derivative.Algebra
 
 /-!
 # Nonnegative coefficients for general linear recurrences

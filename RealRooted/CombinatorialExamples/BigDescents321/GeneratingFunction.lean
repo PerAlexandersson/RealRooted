@@ -2,7 +2,7 @@ module
 
 public import RealRooted.CombinatorialExamples.BigDescents321.Basic
 public import RealRooted.CombinatorialExamples.BigDescents321.Gegenbauer
-public import RealRooted.Mathlib.RingTheory.PowerSeries.NestedConstants
+import RealRooted.Mathlib.RingTheory.PowerSeries.NestedConstants
 public import Mathlib.Algebra.BigOperators.NatAntidiagonal
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.Tactic.FieldSimp

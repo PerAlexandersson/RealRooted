@@ -2,15 +2,18 @@ module
 
 public import RealRooted.Mathlib.RingTheory.MvPolynomial.DividedDifference
 public import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
-public import Mathlib.Data.List.GetD
-public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.Homogeneous
-public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.ElementaryMonomial
-public import RealRooted.Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
+import Mathlib.Data.List.GetD
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.Homogeneous
+import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.ElementaryMonomial
+import RealRooted.Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
 public import RealRooted.Mathlib.LinearAlgebra.TriangularBasis
 public import RealRooted.Multiaffine
-public import Mathlib.Algebra.BigOperators.Module
+import Mathlib.Algebra.BigOperators.Module
 public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
-public import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.LinearCombination
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Partition.Dominance
+import Mathlib.RingTheory.MvPolynomial.EulerIdentity
+public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 
 /-!
 # The Morris differential operator on symmetric polynomials

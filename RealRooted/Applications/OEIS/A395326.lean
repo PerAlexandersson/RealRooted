@@ -1,9 +1,15 @@
 module
 
-public import RealRooted.CombinatorialExamples.Touchard
-public import RealRooted.Recurrence.RowModel
-public import RealRooted.Recurrence.Uniqueness
+import RealRooted.CombinatorialExamples.Touchard
+import RealRooted.Recurrence.RowModel
+import RealRooted.Recurrence.Uniqueness
 public import RealRooted.Transforms.ReverseHermite
+import RealRooted.Transforms.ReverseHermite.Derivative
+import RealRooted.Transforms.ReverseHermite.Preservation
+public import RealRooted.Transforms.ReverseHermite.Basic
+public import RealRooted.Touchard
+import RealRooted.Linear
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # The row polynomials of OEIS A395326

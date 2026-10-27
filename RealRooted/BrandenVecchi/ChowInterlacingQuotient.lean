@@ -1,9 +1,13 @@
 module
 
-public import RealRooted.BrandenVecchi.ChowInterlacingSign
+import RealRooted.BrandenVecchi.ChowInterlacingSign
 public import RealRooted.BrandenVecchi.ReflectionInterlacing
-public import RealRooted.Interlacing.OuterDifference
+import RealRooted.Interlacing.OuterDifference
 public import RealRooted.PosCombo
+public import RealRooted.Mathlib.Algebra.Polynomial.Chow
+import RealRooted.WagnerX.AffineFactors
+import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.Linear
 
 /-!
 # The Chow quotient in a reflection-interlacing pair

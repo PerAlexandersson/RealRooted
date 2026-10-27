@@ -1,7 +1,13 @@
 module
 
 public import RealRooted.BrandenVecchi.Chow
-public import RealRooted.ProductOrientation
+import RealRooted.ProductOrientation
+public import RealRooted.Mathlib.Algebra.Polynomial.Chow
+import RealRooted.DegreeDropReversal
+import RealRooted.WagnerX.ListInterlacing
+import RealRooted.Linear
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Leading-sign certificates for the Chow operator

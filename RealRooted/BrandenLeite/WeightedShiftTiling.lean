@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.BrandenLeite.MarkedShift
-public import RealRooted.FiniteFreeRootCount
+import RealRooted.FiniteFreeRootCount
+import RealRooted.BrandenLeite.SourceBorderKernel
 
 /-!
 # Nonstationary weighted-shift tiling rows

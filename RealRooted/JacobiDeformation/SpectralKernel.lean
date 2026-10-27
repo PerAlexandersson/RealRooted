@@ -1,8 +1,10 @@
 module
 
-public import RealRooted.JacobiDeformation.CollocationPositivity
-public import RealRooted.JacobiDeformation.KernelSign
-public import RealRooted.JacobiDeformation.NewtonIdentity
+import RealRooted.JacobiDeformation.CollocationPositivity
+import RealRooted.JacobiDeformation.KernelSign
+import RealRooted.JacobiDeformation.NewtonIdentity
+public import RealRooted.SpectralProduct
+public import RealRooted.JacobiDeformation.Collocation
 
 /-!
 # The spectral kernel of the quasi-Jacobi collocation matrix

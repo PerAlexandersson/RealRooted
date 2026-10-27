@@ -5,9 +5,10 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Algebra.Polynomial.Coeff
+import Mathlib.Algebra.Polynomial.Coeff
 
 import Mathlib.Tactic.Linarith
+public import Mathlib.Algebra.Polynomial.Basic
 
 /-!
 # Coefficients of descending degree-box sums

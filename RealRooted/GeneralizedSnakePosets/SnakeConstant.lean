@@ -2,6 +2,8 @@ module
 
 public import RealRooted.GeneralizedSnakePosets.SnakeBoard
 public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
+import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
+public import RealRooted.GeneralizedSnakePosets.Narayana.Modified
 
 /-!
 # Constant snake words

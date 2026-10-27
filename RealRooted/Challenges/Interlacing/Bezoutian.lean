@@ -1,7 +1,11 @@
 module
 
 public import RealRooted.Bezoutian
-public import RealRooted.Bezoutian.Successor
+import RealRooted.Bezoutian.Successor
+import RealRooted.Bezoutian.LowDegree
+import RealRooted.Bezoutian.ComplexRoots
+import RealRooted.Bezoutian.RootEvaluation
+public import RealRooted.Bezoutian.MatrixBasics
 
 /-!
 # Bézout matrices and interlacing

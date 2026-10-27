@@ -1,14 +1,21 @@
 module
 
-public import RealRooted.BinaryRunTransformation.Anchor
-public import RealRooted.BinaryRunTransformation.PointingPencil
-public import RealRooted.CriticalValueContinuation
-public import RealRooted.Interlacing.NegativeRoots
-public import RealRooted.IteratedDerivativeShift
-public import RealRooted.Hadamard.Newton
-public import RealRooted.Mathlib.Topology.Algebra.Polynomial
+import RealRooted.BinaryRunTransformation.Anchor
+import RealRooted.BinaryRunTransformation.PointingPencil
+import RealRooted.CriticalValueContinuation
+import RealRooted.Interlacing.NegativeRoots
+import RealRooted.IteratedDerivativeShift
+import RealRooted.Hadamard.Newton
+import RealRooted.Mathlib.Topology.Algebra.Polynomial
 public import RealRooted.QuadraticRoot
 public import Mathlib.Topology.Order.ProjIcc
+public import RealRooted.BinaryRunTransformation.Deformation
+import RealRooted.PFPolynomial.Closure
+import RealRooted.Hadamard.Grace
+public import RealRooted.PFPolynomial
+import RealRooted.DegreeDropReversal
+import RealRooted.Derivative.Interlacing
+import RealRooted.Linear
 
 /-!
 # Continuation for the binary-run deformation

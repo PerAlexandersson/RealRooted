@@ -2,6 +2,7 @@ module
 
 public import Mathlib.Tactic.Linarith
 public import RealRooted.RecurrenceSpace.Operators
+import Mathlib.Algebra.Polynomial.Monic
 
 /-!
 # Finite certificates for filtered recurrence operators

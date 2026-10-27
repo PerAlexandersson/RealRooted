@@ -1,7 +1,8 @@
 module
 
-public import RealRooted.ChudnovskySeymour.Core
+import RealRooted.ChudnovskySeymour.Core
 public import RealRooted.PFPolynomial
+public import RealRooted.Compatibility.Basic
 
 /-!
 # Chudnovsky--Seymour for PF families with zero members

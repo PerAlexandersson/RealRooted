@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.CommonInterleaver.RootSlots.Basic
+public import RealRooted.CommonInterleaver.RootDesc
 
 /-!
 # Common interleavers: root-slot transport

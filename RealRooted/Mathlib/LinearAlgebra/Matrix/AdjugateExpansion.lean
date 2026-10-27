@@ -8,7 +8,7 @@ module
 public import Mathlib.Algebra.Polynomial.AlgebraMap
 public import Mathlib.LinearAlgebra.Matrix.Adjugate
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
-public import Mathlib.Tactic.NoncommRing
+import Mathlib.Tactic.NoncommRing
 
 /-!
 # A finite spectral expansion of the characteristic adjugate

@@ -1,8 +1,12 @@
 module
 
-public import RealRooted.RootCountFinite
+import RealRooted.RootCountFinite
 public import Mathlib.Algebra.BigOperators.Ring.Finset
-public import Mathlib.Algebra.Order.BigOperators.Group.Finset
+import Mathlib.Algebra.Order.BigOperators.Group.Finset
+public import Mathlib.Basic.Real.Basic
+import Mathlib.Data.Rat.Cast.Order
+import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
+public import Mathlib.Data.Finset.Dedup
 
 /-!
 # Multiplicity-Preserving Root Matching

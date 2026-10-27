@@ -3,6 +3,9 @@ module
 public import RealRooted.Derivative
 public import RealRooted.PosCombo
 public import RealRooted.WagnerX
+public import RealRooted.ObreschkoffContinuity
+import RealRooted.Derivative.FamilyClosure
+import RealRooted.Derivative.Interlacing
 
 /-!
 # Same-degree positive-combination derivative lemmas

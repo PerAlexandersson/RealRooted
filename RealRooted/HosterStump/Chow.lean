@@ -1,11 +1,15 @@
 module
 
-public import RealRooted.HosterStump.Step
+import RealRooted.HosterStump.Step
 public import RealRooted.HosterStump.Permutation
-public import RealRooted.GammaTransform.ProperPosition
-public import RealRooted.PosCombo
-public import RealRooted.PFPolynomial
-public import RealRooted.ThresholdMatrix.Basic
+import RealRooted.GammaTransform.ProperPosition
+import RealRooted.PosCombo
+import RealRooted.PFPolynomial
+import RealRooted.ThresholdMatrix.Basic
+import RealRooted.GammaTransform.Preservation
+public import RealRooted.GammaTransform.Basic
+import RealRooted.Linear
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Hoster--Stump: Chow, dual Chow and augmented Chow polynomials (Theorems 1.1 and 1.2)

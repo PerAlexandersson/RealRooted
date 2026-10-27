@@ -2,6 +2,7 @@ module
 
 public import RealRooted.Graph.ClawFree
 public import RealRooted.Graph.IndependencePolynomial.Basic
+import RealRooted.Basic.PolynomialFacts
 
 /-!
 # Independence-polynomial recurrences

@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.CommonInterleaver.RootSlots
+import RealRooted.CommonInterleaver.RootSlots
+public import RealRooted.CommonInterleaver.RootSlots.Basic
+public import RealRooted.CommonInterleaver.RootDesc
 
 /-!
 # Common interleavers: finite families

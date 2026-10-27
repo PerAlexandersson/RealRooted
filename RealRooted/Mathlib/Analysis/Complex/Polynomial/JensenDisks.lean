@@ -5,7 +5,7 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Analysis.Complex.Polynomial.Basic
+import Mathlib.Analysis.Complex.Polynomial.Basic
 public import Mathlib.Analysis.Complex.Polynomial.GaussLucas
 
 /-!

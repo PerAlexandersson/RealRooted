@@ -1,7 +1,10 @@
 module
 
-public import RealRooted.RootCountLocalConstancy
-public import RealRooted.SameDegreeMultiplicityLowerCount
+import RealRooted.RootCountLocalConstancy
+import RealRooted.SameDegreeMultiplicityLowerCount
+import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Positive-parameter per-root local lower counts

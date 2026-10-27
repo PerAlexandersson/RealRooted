@@ -1,8 +1,12 @@
 module
 
-public import RealRooted.Mathlib.Algebra.MvPolynomial.Eval
+import RealRooted.Mathlib.Algebra.MvPolynomial.Eval
 public import RealRooted.Multiaffine.AffineCoordinateExtension
 public import RealRooted.Multiaffine.AffineLineRestriction
+import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
+import Mathlib.Algebra.MvPolynomial.Funext
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Mathlib.Tactic
 
 /-!
 # Exact Rayleigh criterion for affine coordinate extensions

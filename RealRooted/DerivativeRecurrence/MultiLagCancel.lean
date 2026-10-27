@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.DerivativeRecurrence.General
+import RealRooted.DerivativeRecurrence.Degree
 
 /-!
 # Multi-lag cancellation degree laws

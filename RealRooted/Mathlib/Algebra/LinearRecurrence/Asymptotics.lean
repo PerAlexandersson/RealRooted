@@ -6,11 +6,11 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Analysis.Asymptotics.Lemmas
-public import Mathlib.Analysis.SpecificLimits.Normed
+import Mathlib.Analysis.SpecificLimits.Normed
 public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
 public import Mathlib.Algebra.Polynomial.Derivative
 public import Mathlib.Basic.Real.Basic
-public import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.LinearCombination
 public import Mathlib.Tactic.Ring
 
 /-!

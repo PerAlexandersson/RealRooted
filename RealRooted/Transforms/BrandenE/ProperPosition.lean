@@ -1,10 +1,16 @@
 module
 
-public import RealRooted.CommonInterleaver.RootDesc
-public import RealRooted.DegreeDropDivXPrec
-public import RealRooted.MaWang.DerivativeStep
+import RealRooted.CommonInterleaver.RootDesc
+import RealRooted.DegreeDropDivXPrec
+import RealRooted.MaWang.DerivativeStep
 public import RealRooted.PFPolynomial
 public import RealRooted.Transforms.BrandenE.BasisImage
+import RealRooted.SignEvaluation
+import RealRooted.DegreeDropReversal
+public import RealRooted.InterlacingSequenceBasic
+import RealRooted.WagnerRightSum
+import RealRooted.WagnerX.AffineFactors
+import RealRooted.Linear
 
 /-!
 # Interlacing for Brändén binomial-basis images

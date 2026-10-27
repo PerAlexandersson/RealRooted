@@ -1,12 +1,13 @@
 module
 
-public import Mathlib.Analysis.Calculus.Deriv.Polynomial
+import Mathlib.Analysis.Calculus.Deriv.Polynomial
 public import Mathlib.Analysis.Complex.Basic
-public import Mathlib.Analysis.Convex.Deriv
+import Mathlib.Analysis.Convex.Deriv
 public import Mathlib.Analysis.Real.Sqrt
 public import Mathlib.FieldTheory.Separable
-public import Mathlib.Topology.Algebra.Polynomial
+import Mathlib.Topology.Algebra.Polynomial
 public import Mathlib.Topology.Order.IntermediateValue
+public import Mathlib.Analysis.Convex.Function
 
 /-!
 # The reciprocal quartic of the 132 big-descent problem

@@ -1,7 +1,9 @@
 module
 
 public import RealRooted.EulerOperator
-public import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
+import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
+import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
+public import Mathlib.RingTheory.Polynomial.Wronskian
 
 /-!
 # Wronskian algebra and Laguerre inequalities

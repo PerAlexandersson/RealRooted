@@ -5,7 +5,7 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.CauchyBinet
+import RealRooted.Mathlib.LinearAlgebra.Matrix.CauchyBinet
 public import Mathlib.Combinatorics.SimpleGraph.LapMatrix
 public import Mathlib.Combinatorics.SimpleGraph.Acyclic
 

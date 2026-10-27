@@ -2,7 +2,7 @@ module
 
 public import Mathlib.Algebra.Polynomial.Derivative
 public import Mathlib.Algebra.Polynomial.Reverse
-public import Mathlib.Analysis.Calculus.LocalExtr.Polynomial
+import Mathlib.Analysis.Calculus.LocalExtr.Polynomial
 public import Mathlib.RingTheory.Polynomial.Vieta
 public import Mathlib.Tactic
 

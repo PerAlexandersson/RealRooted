@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.GammaTransform.ProperPosition
+import RealRooted.GammaTransform.ProperPosition
+public import RealRooted.GammaTransform.Basic
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Two-step gamma-transform interlacing

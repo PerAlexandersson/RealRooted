@@ -1,8 +1,9 @@
 module
 
-public import RealRooted.RootAmplitude.Density
-public import Mathlib.Analysis.Real.Pi.Bounds
+import RealRooted.RootAmplitude.Density
+import Mathlib.Analysis.Real.Pi.Bounds
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+public import RealRooted.RootAmplitude.Convex
 
 /-!
 # Cotangent model for logarithmic root gaps

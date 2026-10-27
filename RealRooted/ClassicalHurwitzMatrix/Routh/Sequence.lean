@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.ClassicalHurwitzMatrix.Routh.Determinant
+import RealRooted.ClassicalHurwitzMatrix.Routh.Determinant
+public import RealRooted.ClassicalHurwitzMatrix.Routh
 
 /-!
 # Iterated algebraic Routh reduction

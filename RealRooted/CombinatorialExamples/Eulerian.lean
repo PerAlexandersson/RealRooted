@@ -1,14 +1,24 @@
 module
 
-public import RealRooted.AffineDerivative
+import RealRooted.AffineDerivative
 public import RealRooted.Basic
 public import RealRooted.Derivative
-public import RealRooted.Mathlib.Algebra.Polynomial.Basic
+import RealRooted.Mathlib.Algebra.Polynomial.Basic
 public import RealRooted.Tactic.WagnerX
 public import RealRooted.Wagner
 public import Mathlib.Analysis.Calculus.Deriv.Polynomial
 public import Mathlib.Tactic
 import RealRooted.Tactic.RowInterlacing
+import RealRooted.Tactic.Row.ThresholdOrbit
+import RealRooted.Tactic.Recurrence.Cancel
+import RealRooted.Tactic.Recurrence.Degree
+import RealRooted.DerivativeRecurrence.General
+import RealRooted.DerivativeRecurrence.Interlacing
+import RealRooted.ThreeTermRecurrence.Interlacing
+import RealRooted.Tactic.WagnerX.Frontend
+import RealRooted.Derivative.Algebra
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 /-!
 # Eulerian Tilde Polynomials

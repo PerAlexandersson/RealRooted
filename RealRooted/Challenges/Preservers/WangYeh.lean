@@ -1,6 +1,10 @@
 module
 
-public import RealRooted.WangYeh.TriangularMatrix
+import RealRooted.WangYeh.TriangularMatrix
+import RealRooted.WangYeh.TriangularArray
+import RealRooted.WangYeh.PF
+import RealRooted.WangYeh.Affine
+public import RealRooted.MultiplierSequence.Bidiagonal
 
 /-!
 # The Wang–Yeh affine criterion

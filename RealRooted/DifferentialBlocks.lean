@@ -2,6 +2,7 @@ module
 
 public import RealRooted.LiebSokalOperator
 public import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
+import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
 
 /-!
 # Differential operators on disjoint variable blocks

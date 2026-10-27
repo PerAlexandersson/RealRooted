@@ -6,7 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Data.List.Forall2
-public import Mathlib.Data.Multiset.Basic
+import Mathlib.Data.Multiset.Basic
 public import Mathlib.Data.Multiset.Sort
 public import Mathlib.Data.Multiset.ZeroCons
 

@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.BorceaBranden.FiniteSymbolPreserver
+import RealRooted.BorceaBranden.FiniteSymbolPreserver
 public import RealRooted.BorceaBranden.FiniteSymbolClassification
 
 /-!

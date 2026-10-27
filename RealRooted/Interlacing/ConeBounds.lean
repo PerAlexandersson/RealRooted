@@ -1,7 +1,9 @@
 module
 
 public import RealRooted.GarloffWagner
-public import RealRooted.PosCombo
+import RealRooted.PosCombo
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.ProperPosition
 
 public section
 

@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.ClassicalHurwitzMatrix.Stability
-public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
+public import RealRooted.HermiteBiehler.Basic
 
 /-!
 # Closed limits of Hurwitz-stable polynomials

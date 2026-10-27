@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.Hadamard.Kostov.RootReal
+import RealRooted.Hadamard.Kostov.RootReal
+public import RealRooted.Hadamard.Kostov.Bernstein
 
 @[expose] public section
 
