@@ -2709,7 +2709,7 @@
       "modules": [
         "Mathlib.LinearAlgebra.Matrix.PosDef"
       ],
-      "note": "Exact test for positive semidefinite pencils C + t D, t > 0 (issue #1984). Proof found by Aristotle.",
+      "note": "Positive semidefinite linear and quadratic pencil criteria (issues #1984 and #1991). Proofs found by Aristotle.",
       "speculative": true
     },
     {
@@ -2739,6 +2739,16 @@
         "Mathlib.Combinatorics.SimpleGraph.Acyclic"
       ],
       "note": "Positive diagonal scaling along forests (issue #1901). Proof found by Aristotle.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Order/BigOperators/Ring/Finset.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Order.BigOperators.Ring.Finset"
+      ],
+      "note": "Speculative target module; cubic power-sum inequality (issue #1920), proof found by Aristotle.",
       "speculative": true
     }
   ]
