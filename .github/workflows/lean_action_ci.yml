@@ -125,6 +125,11 @@ jobs:
         run: lake exe lint-style --github
       - name: Environment linters (lake exe runLinter)
         run: env LEAN_ABORT_ON_PANIC=1 lake exe runLinter RealRooted
+      # Imports needed only inside proofs must be plain `import`s (#2086); accepted
+      # exceptions (e.g. modules named in tactic macro quotations) are in
+      # scripts/private_imports_baseline.txt.
+      - name: Check private imports (lake shake)
+        run: python3 scripts/check_private_imports.py
       - name: Check Mathlib shim registry
         run: |
           PYTHONDONTWRITEBYTECODE=1 python3 scripts/test_check_mathlib_shims.py
