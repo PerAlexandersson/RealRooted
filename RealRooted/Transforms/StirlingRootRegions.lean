@@ -1,8 +1,8 @@
 module
 
 public import RealRooted.BorceaBranden.Applications.PoissonStarFallingFactorial
-public import RealRooted.BorceaBranden.Applications.PoissonStarGeneral
-public import RealRooted.CubicDiscriminant
+import RealRooted.BorceaBranden.Applications.PoissonStarGeneral
+import RealRooted.CubicDiscriminant
 public import RealRooted.NarayanaTransformation.Basis
 
 import RealRooted.QuadraticRoot
