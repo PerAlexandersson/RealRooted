@@ -257,24 +257,8 @@ lemma IsInterlacingSeq0Nonneg.filter_ne_zero_of_realRooted
     (hfs : IsInterlacingSeq0Nonneg fs)
     (hreal : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits)) :
     IsInterlacingSeqNonneg (fs.filter (· ≠ 0)) := by
-  rcases hfs with ⟨hint0, hnonneg⟩
-  have hpair0 : fs.Pairwise Interl := isInterlacingSeq0_iff_pairwise.mp hint0
-  refine ⟨?_, ?_⟩
-  · simp_all
-  · rw [isInterlacingSeq_iff_pairwise]
-    have hpair_filter0 : (fs.filter (· ≠ 0)).Pairwise Interl := hpair0.filter _
-    refine List.pairwise_iff_get.2 ?_
-    intro i j hij
-    have hfg0 := List.pairwise_iff_get.1 hpair_filter0 i j hij
-    have hfi_mem : (fs.filter (· ≠ 0)).get i ∈ fs.filter (· ≠ 0) :=
-      List.get_mem _ _
-    have hgj_mem : (fs.filter (· ≠ 0)).get j ∈ fs.filter (· ≠ 0) :=
-      List.get_mem _ _
-    have hfi_ne : (fs.filter (· ≠ 0)).get i ≠ 0 :=
-      of_decide_eq_true (List.mem_filter.mp hfi_mem).2
-    have hgj_ne : (fs.filter (· ≠ 0)).get j ≠ 0 :=
-      of_decide_eq_true (List.mem_filter.mp hgj_mem).2
-    exact hfg0.toStrictInterl_of_ne hfi_ne hgj_ne
+  apply hfs.sublist_of_realRooted_of_ne (List.filter_sublist) hreal
+  exact fun _ hf ↦ of_decide_eq_true (List.mem_filter.mp hf).2
 
 /-! ## Zero-aware sequences with elementwise real-rootedness -/
 

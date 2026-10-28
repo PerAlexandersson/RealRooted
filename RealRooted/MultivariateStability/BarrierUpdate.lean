@@ -57,27 +57,16 @@ private theorem barrier_le_of_nonneg {m : ℕ} {p : MvPolynomial (Fin m) ℝ}
         have habove_s := aboveRoots_add_nonneg habove hs_nonneg
         have hstep := barrierLine_le_of_nonneg hstable habove_s i a (hw a)
         have hs_sum : (∑ k ∈ s, w k • Function.update (0 : Fin m → ℝ) k 1) =
-            (fun i => ∑ k ∈ s, w k • Function.update (0 : Fin m → ℝ) k 1 i) := by
+            fun i => ∑ k ∈ s, w k • Function.update (0 : Fin m → ℝ) k 1 i := by
           funext k
           simp only [Finset.sum_apply, Pi.smul_apply]
-        have hstep' : barrier i p ((z + (∑ k ∈ s, w k •
-            Function.update (0 : Fin m → ℝ) k 1)) +
-            w a • Function.update (0 : Fin m → ℝ) a 1) ≤
-              barrier i p (z + (∑ k ∈ s, w k •
-              Function.update (0 : Fin m → ℝ) k 1)) := by
-          rw [hs_sum]
-          exact hstep
-        rw [Finset.sum_insert ha]
-        simpa only [Finset.sum_apply, Pi.add_apply, add_assoc, add_comm, add_left_comm] using
-          hstep'.trans ih
+        rw [hs_sum] at ih
+        rw [Finset.sum_insert ha, hs_sum]
+        simpa only [Finset.sum_apply, Pi.smul_apply, Pi.add_apply, add_assoc, add_comm,
+          add_left_comm] using hstep.trans ih
   have hsum : (∑ k : Fin m, w k • Function.update (0 : Fin m → ℝ) k 1) = w := by
     funext k
-    simp only [Finset.sum_apply]
-    rw [Finset.sum_eq_single k]
-    · simp
-    · intro b hb hbk
-      simp [Function.update, Ne.symm hbk]
-    · simp
+    simp [Finset.sum_apply, Function.update_apply]
   simpa only [hsum] using haux Finset.univ
 
 private theorem eval_derivative_coordinateRestriction_at {m : ℕ}
@@ -118,10 +107,7 @@ private theorem eval_derivative_coordinateRestriction_at {m : ℕ}
   rw [hder, eval_realAffineLineRestriction]
   apply congrArg (fun f : Fin m → ℝ => MvPolynomial.eval f (MvPolynomial.pderiv i p))
   funext j
-  by_cases hji : j = i
-  · subst j
-    simp
-  · simp [hji]
+  by_cases hji : j = i <;> simp_all
 
 private theorem barrierLine_ratio {m : ℕ} (i j : Fin m)
     (p : MvPolynomial (Fin m) ℝ) (z : Fin m → ℝ) :
@@ -131,19 +117,9 @@ private theorem barrierLine_ratio {m : ℕ} (i j : Fin m)
   funext t
   unfold barrierLine barrier
   rw [eval_coordinateRestriction, eval_coordinateRestriction]
-  congr 1
-  · apply congrArg (fun f : Fin m → ℝ => MvPolynomial.eval f (MvPolynomial.pderiv i p))
-    funext k
-    by_cases hkj : k = j
-    · subst k
-      simp
-    · simp [hkj]
-  · apply congrArg (fun f : Fin m → ℝ => MvPolynomial.eval f p)
-    funext k
-    by_cases hkj : k = j
-    · subst k
-      simp
-    · simp [hkj]
+  congr 1 <;>
+    apply congrArg (fun f : Fin m → ℝ => MvPolynomial.eval f _) <;> funext k <;>
+    by_cases hkj : k = j <;> simp_all
 
 /-- The MSS update point lies above the roots after one derivative subtraction. -/
 theorem aboveRoots_sub_pderiv_of_barrier_le {m : ℕ}
@@ -160,9 +136,7 @@ theorem aboveRoots_sub_pderiv_of_barrier_le {m : ℕ}
     calc
       barrier j p w ≤ barrier j p z := hle
       _ ≤ 1 - 1 / δ := hbarrier
-      _ < 1 := by
-        have : 0 < 1 / δ := one_div_pos.mpr hδ
-        linarith
+      _ < 1 := by nlinarith [one_div_pos.mpr hδ]
   let q := coordinateRestriction w j p
   have hqpos : ∀ t, 0 ≤ t → 0 < q.eval t := by
     intro t ht
@@ -171,10 +145,8 @@ theorem aboveRoots_sub_pderiv_of_barrier_le {m : ℕ}
     exact coordinateRestriction_roots_lt_zero_of_aboveRoots j hw
   have hqsplit : q.Splits := by
     rcases hstable.orZero.coordinateRestriction_zero_or_splits w j with hzero | hsplits
-    · have hzero_pos := hqpos 0 (by positivity)
-      have hzero' : q = 0 := by simpa [q] using hzero
-      rw [hzero'] at hzero_pos
-      simp at hzero_pos
+    · have := hqpos 0 (by positivity)
+      simp_all [q]
     · exact hsplits
   have hqbarrier : univariateBarrier q 0 < 1 := by
     rw [← barrier_eq_coordinateRestriction w j p]
@@ -194,10 +166,7 @@ theorem aboveRoots_sub_pderiv_of_barrier_le {m : ℕ}
     apply congrArg (fun f : Fin m → ℝ =>
       MvPolynomial.eval f (p - MvPolynomial.pderiv j p))
     funext k
-    by_cases hkj : k = j
-    · subst k
-      simp [w, Function.update, add_comm]
-    · simp [w, hkj]
+    by_cases hkj : k = j <;> simp_all [w, Function.update, add_comm]
   have hpoint : z + δ • Function.update (0 : Fin m → ℝ) j 1 + v =
       w + δ • Function.update (0 : Fin m → ℝ) j 1 := by
     funext k
@@ -219,12 +188,8 @@ theorem barrier_sub_pderiv_le_of_barrier_le {m : ℕ}
   let G := coordinateRestriction z j (MvPolynomial.pderiv i p)
   have hpoint : Function.update z j (z j + δ) = y := by
     funext k
-    by_cases hkj : k = j
-    · subst k
-      simp [y]
-    · simp [y, hkj]
+    by_cases hkj : k = j <;> simp_all [y]
   have hFpos : 0 < F.eval δ := by
-    dsimp [F]
     exact coordinateRestriction_eval_pos_of_aboveRoots j habove δ hδ.le
   have hFne : F.eval δ ≠ 0 := hFpos.ne'
   have hline : barrierLine i j p z = fun t => G.eval t / F.eval t := by
@@ -251,8 +216,7 @@ theorem barrier_sub_pderiv_le_of_barrier_le {m : ℕ}
     rw [eval_derivative_coordinateRestriction_at, hpoint]
   have hqabove := aboveRoots_sub_pderiv_of_barrier_le hstable habove hδ hbarrier
   have hqpos : 0 < MvPolynomial.eval y (p - MvPolynomial.pderiv j p) := by
-    have := hqabove (0 : Fin m → ℝ) (fun _ => le_rfl)
-    simpa [y] using this
+    simpa [y] using hqabove (0 : Fin m → ℝ) (fun _ => le_rfl)
   have hp_pos : 0 < MvPolynomial.eval y p := by
     exact habove (δ • Function.update (0 : Fin m → ℝ) j 1) (fun k => by
       by_cases hkj : k = j
@@ -280,24 +244,18 @@ theorem barrier_sub_pderiv_le_of_barrier_le {m : ℕ}
     have hanti' : AntitoneOn (barrierLine i j p z) (Set.Ioi 0) := by
       intro a ha b hb hab
       exact hanti (Set.mem_Ici.mpr ha.le) (Set.mem_Ici.mpr hb.le) hab
-    have hacc : AccPt δ (Filter.principal (Set.Ioi 0)) := by
-      exact isOpen_Ioi.preperfect δ hδ
     have hratio' : HasDerivWithinAt (barrierLine i j p z)
         (deriv (barrierLine i j p z) δ) (Set.Ioi 0) δ := by
       rw [hratio.deriv]
       exact hratio.hasDerivWithinAt
-    exact hratio'.nonpos_of_antitoneOn hacc hanti'
+    exact hratio'.nonpos_of_antitoneOn (isOpen_Ioi.preperfect δ hδ) hanti'
   have hconv := barrierLine_convexOn_of_aboveRoots hstable habove i j
   have hslope := hconv.slope_le_deriv (Set.mem_Ici.mpr le_rfl)
     (Set.mem_Ici.mpr hδ.le) hδ hratio.differentiableAt
   have hsecant : δ * (-deriv (barrierLine i j p z) δ) ≤
       barrier i p z - barrier i p y := by
-    have hzero : barrierLine i j p z 0 = barrier i p z := by
-      simp [barrierLine]
-    have hdelta : barrierLine i j p z δ = barrier i p y := by
-      rfl
     rw [slope_def_field] at hslope
-    rw [hzero, hdelta] at hslope
+    simp only [barrierLine, zero_smul, add_zero] at hslope
     simp only [sub_zero] at hslope
     field_simp [ne_of_gt hδ] at hslope
     nlinarith
@@ -306,8 +264,7 @@ theorem barrier_sub_pderiv_le_of_barrier_le {m : ℕ}
     change barrier j p y ≤ 1 - 1 / δ
     simpa [y] using hshift.trans hbarrier
   have hden : 0 < 1 - barrier j p y := by
-    have hone : 0 < 1 / δ := one_div_pos.mpr hδ
-    linarith
+    nlinarith [one_div_pos.mpr hδ]
   have hden_lower : 1 / δ ≤ 1 - barrier j p y := by
     linarith
   have hquot : -deriv (barrierLine i j p z) δ / (1 - barrier j p y) ≤

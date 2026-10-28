@@ -93,11 +93,7 @@ private theorem affineIndex_sub {k : ℕ} (c₁ c₀ : K[X]) (n : ℕ)
     (i : Fin k) :
     affineIndex c₁ c₀ (n + k) - affineIndex c₁ c₀ (n + i) =
       (k - i : ℕ) * c₁ := by
-  have hi : (i : ℕ) + (k - i) = k := Nat.add_sub_of_le i.isLt.le
-  have hi' : (k : K[X]) = (i : ℕ) + (k - i : ℕ) := by
-    rw [← Nat.cast_add, hi]
-  simp only [affineIndex, Nat.cast_add]
-  rw [hi']
+  simp only [affineIndex, Nat.cast_add, Nat.cast_sub i.isLt.le]
   ring
 
 private theorem correction_summand_identity {k : ℕ} (a : Fin k → K[X])
@@ -107,12 +103,9 @@ private theorem correction_summand_identity {k : ℕ} (a : Fin k → K[X])
         B * ((a i).derivative * P (n + i) + a i * (P (n + i)).derivative) +
         correctionSummand a d₁ A₁ B P n i =
       -a i * liftDefect d₁ d₀ A₁ A₀ B P (n + i) := by
-  have hd := affineIndex_sub d₁ d₀ n i
-  have hA := affineIndex_sub A₁ A₀ n i
-  have hd' := sub_eq_iff_eq_add.mp hd
-  have hA' := sub_eq_iff_eq_add.mp hA
   simp only [liftDefect, correctionSummand]
-  rw [hd', hA']
+  rw [sub_eq_iff_eq_add.mp (affineIndex_sub d₁ d₀ n i),
+    sub_eq_iff_eq_add.mp (affineIndex_sub A₁ A₀ n i)]
   ring
 
 /-- The universal source-and-lift defect identity, valid for every polynomial sequence: the
@@ -226,14 +219,13 @@ theorem liftDefect_eq_zero_from_of_lagDefect_eq_zero_from {k : ℕ}
           sub_zero, zero_add] at hid hc
         rw [hc] at hid
         change E (n + k) - ∑ i, a i * E (n + i) = 0 at hid
-        have hrec : E (n + k) = ∑ i, a i * E (n + i) := by
-          exact sub_eq_zero.mp hid
+        have hrec : E (n + k) = ∑ i, a i * E (n + i) := sub_eq_zero.mp hid
         change E m = 0
         rw [← hnk, hrec]
         apply sum_eq_zero
         intro i _
-        have hi : E (n + i) = 0 := ih (n + i) (by have := i.isLt; lia) (by lia)
-        rw [hi, mul_zero]
+        change a i * liftDefect d₁ d₀ A₁ A₀ B P (n + i) = 0
+        rw [ih (n + i) (by have := i.isLt; lia) (by lia), mul_zero]
 
 /-- Conversely, a differential lift, one zero source-defect seed, and nonvanishing affine
 leaders imply the pure-lag recurrence when the same factor certificate holds. -/
@@ -311,8 +303,7 @@ theorem lagDefect_eq_zero_from_of_liftDefect_eq_zero_from {k : ℕ}
     ∀ n, n₀ ≤ n → lagDefect a P n = 0 := by
   apply lagDefect_eq_zero_from_of_liftDefect_eq_zero_from_of_exceptional a
     d₁ d₀ A₁ A₀ B gamma P n₀ hlift hfactor hseed
-  intro n hn hzero
-  exact absurd hzero (hleader n hn)
+  exact fun n hn hzero ↦ absurd hzero (hleader n hn)
 
 /-- A zero lift defect with a nonzero scalar leader is the derivative recurrence in
 the coefficient order used by the root-window theorems. -/

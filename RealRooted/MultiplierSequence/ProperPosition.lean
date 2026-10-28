@@ -88,52 +88,32 @@ theorem IsFiniteMultiplierSequence.strictInterl_diagonalOperator
   have hgd : (diagonalOperator gamma g).natDegree = g.natDegree :=
     natDegree_diagonalOperator_eq_of_natDegree_eq rfl hg0 hgamma_g
   have hTf0 : diagonalOperator gamma f ≠ 0 := by
-    intro hzero
-    have hcoeff : gamma f.natDegree * f.coeff f.natDegree = 0 := by
-      simpa [coeff_diagonalOperator] using
-        congrArg (fun p : ℝ[X] => p.coeff f.natDegree) hzero
-    have hgamma_zero : gamma f.natDegree = 0 :=
-      (mul_eq_zero.mp hcoeff).resolve_right (by
-        rw [coeff_natDegree]
-        exact Polynomial.leadingCoeff_ne_zero.mpr hf0)
-    exact hgamma_f hgamma_zero
+    apply Polynomial.leadingCoeff_ne_zero.mp
+    rw [Polynomial.leadingCoeff, hfd, coeff_diagonalOperator, coeff_natDegree]
+    exact mul_ne_zero hgamma_f (Polynomial.leadingCoeff_ne_zero.mpr hf0)
   have hTg0 : diagonalOperator gamma g ≠ 0 := by
-    intro hzero
-    have hcoeff : gamma g.natDegree * g.coeff g.natDegree = 0 := by
-      simpa [coeff_diagonalOperator] using
-        congrArg (fun p : ℝ[X] => p.coeff g.natDegree) hzero
-    have hgamma_zero : gamma g.natDegree = 0 :=
-      (mul_eq_zero.mp hcoeff).resolve_right (by
-        rw [coeff_natDegree]
-        exact Polynomial.leadingCoeff_ne_zero.mpr hg0)
-    exact hgamma_g hgamma_zero
-  have hTf_splits : (diagonalOperator gamma f).Splits := by
-    rcases hgamma hfdeg hfs with hzero | hsplit
-    · exact (hTf0 hzero).elim
-    · exact hsplit
-  have hTg_splits : (diagonalOperator gamma g).Splits := by
-    rcases hgamma hgdeg hgs with hzero | hsplit
-    · exact (hTg0 hzero).elim
-    · exact hsplit
+    apply Polynomial.leadingCoeff_ne_zero.mp
+    rw [Polynomial.leadingCoeff, hgd, coeff_diagonalOperator, coeff_natDegree]
+    exact mul_ne_zero hgamma_g (Polynomial.leadingCoeff_ne_zero.mpr hg0)
+  have hTf_splits : (diagonalOperator gamma f).Splits :=
+    (hgamma hfdeg hfs).resolve_left hTf0
+  have hTg_splits : (diagonalOperator gamma g).Splits :=
+    (hgamma hgdeg hgs).resolve_left hTg0
   have hall : AllComboRealRooted (diagonalOperator gamma f)
       (diagonalOperator gamma g) := by
     intro a b
-    have hdegree : (C a * f + C b * g).natDegree ≤ N := by
-      exact (Polynomial.natDegree_add_le _ _).trans <|
+    have hdegree : (C a * f + C b * g).natDegree ≤ N :=
+      (Polynomial.natDegree_add_le _ _).trans <|
         max_le ((Polynomial.natDegree_C_mul_le a f).trans hfdeg)
-          ((Polynomial.natDegree_C_mul_le b g).trans hgdeg)
+        ((Polynomial.natDegree_C_mul_le b g).trans hgdeg)
     have hcomb := allComboRealRooted_of_strictInterl hfg a b
     have hmap : diagonalOperator gamma (C a * f + C b * g) =
         C a * diagonalOperator gamma f + C b * diagonalOperator gamma g := by
       rw [diagonalOperator_add, diagonalOperator_C_mul,
         diagonalOperator_C_mul]
     rcases hgamma hdegree hcomb with hzero | hsplit_out
-    · have houtzero : C a * diagonalOperator gamma f +
-          C b * diagonalOperator gamma g = 0 := by
-        rw [← hmap, hzero]
-      simp [houtzero]
-    · rw [← hmap]
-      exact hsplit_out
+    · simp [← hmap, hzero]
+    · simpa only [← hmap] using hsplit_out
   rcases hfg.natDegree_eq_or_eq_succ with hsame | hsucc
   · have hdeg_out : (diagonalOperator gamma f).natDegree =
         (diagonalOperator gamma g).natDegree := by rw [hfd, hgd, hsame]
@@ -234,28 +214,20 @@ theorem eulerShift_zero_strictInterl_of_nonzero
     {f g : ℝ[X]} (hf : eulerShift 0 f ≠ 0) (hg : eulerShift 0 g ≠ 0)
     (hfg : StrictInterl f g) : StrictInterl (eulerShift 0 f) (eulerShift 0 g) := by
   have hmap_f : diagonalOperator (fun k => (k : ℝ)) f = eulerShift 0 f := by
-    have heq : (fun k : ℕ => (k : ℝ) + 0) = (fun k : ℕ => (k : ℝ)) := by
-      funext k
-      simp
-    rw [← heq]
-    exact diagonalOperator_natCast_add_eq_eulerShift 0 f
+    simpa only [add_zero] using diagonalOperator_natCast_add_eq_eulerShift 0 f
   have hmap_g : diagonalOperator (fun k => (k : ℝ)) g = eulerShift 0 g := by
-    have heq : (fun k : ℕ => (k : ℝ) + 0) = (fun k : ℕ => (k : ℝ)) := by
-      funext k
-      simp
-    rw [← heq]
-    exact diagonalOperator_natCast_add_eq_eulerShift 0 g
+    simpa only [add_zero] using diagonalOperator_natCast_add_eq_eulerShift 0 g
   have hfdeg : 0 < f.natDegree := by
-    by_contra hnot
-    have hdeg : f.natDegree = 0 := Nat.eq_zero_of_not_pos hnot
+    apply Nat.pos_of_ne_zero
+    intro hdeg
     apply hf
     rw [← hmap_f]
     rw [← eulerOperator_eq_diagonalOperator_natCast,
       Polynomial.derivative_eq_zero.mpr hdeg]
     simp
   have hgdeg : 0 < g.natDegree := by
-    by_contra hnot
-    have hdeg : g.natDegree = 0 := Nat.eq_zero_of_not_pos hnot
+    apply Nat.pos_of_ne_zero
+    intro hdeg
     apply hg
     rw [← hmap_g]
     rw [← eulerOperator_eq_diagonalOperator_natCast,
@@ -292,23 +264,15 @@ theorem alternating_sign_linear_not_strictInterl :
     ¬ StrictInterl
       (diagonalOperator (fun k => (-1 : ℝ) ^ k) (X + C 2))
       (diagonalOperator (fun k => (-1 : ℝ) ^ k) (X + C 1)) := by
-  have hleft : diagonalOperator (fun k => (-1 : ℝ) ^ k) (X + C 2) =
-      -X + C 2 := by
+  have hdiag (c : ℝ) : diagonalOperator (fun k => (-1 : ℝ) ^ k) (X + C c) =
+      -X + C c := by
     calc
-      _ = ((X + C 2 : ℝ[X]).comp (-X)) := by
+      _ = ((X + C c : ℝ[X]).comp (-X)) := by
         simpa only [mul_one, diagonalOperator_one_sequence] using
-          diagonalOperator_alternating (fun _ => (1 : ℝ)) (X + C 2)
-      _ = -X + C 2 := by
+          diagonalOperator_alternating (fun _ => (1 : ℝ)) (X + C c)
+      _ = -X + C c := by
         rw [Polynomial.add_comp, Polynomial.X_comp, Polynomial.C_comp]
-  have hright : diagonalOperator (fun k => (-1 : ℝ) ^ k) (X + C 1) =
-      -X + C 1 := by
-    calc
-      _ = ((X + C 1 : ℝ[X]).comp (-X)) := by
-        simpa only [mul_one, diagonalOperator_one_sequence] using
-          diagonalOperator_alternating (fun _ => (1 : ℝ)) (X + C 1)
-      _ = -X + C 1 := by
-        rw [Polynomial.add_comp, Polynomial.X_comp, Polynomial.C_comp]
-  rw [hleft, hright]
+  rw [hdiag, hdiag]
   intro h
   have hsum := h.roots_sum_le_of_sameDegree (by simp)
   have hleft := h.1.2.sum_roots_eq_neg_nextCoeff_div_leadingCoeff

@@ -87,12 +87,10 @@ protected theorem IsTotallyNonneg.prependFirstBasisColumn
       · by_cases hr0 : rows 0 = 0
         · have hcols_tail_ne : ∀ j : Fin q, cols j.succ ≠ 0 := by
             intro j hj
-            have hlt := hcols (by simp : (0 : Fin (q + 1)) < j.succ)
-            simp [hc0, hj] at hlt
+            simpa [hc0, hj] using hcols (by simp : (0 : Fin (q + 1)) < j.succ)
           have hrows_tail_ne : ∀ i : Fin q, rows i.succ ≠ 0 := by
             intro i hi
-            have hlt := hrows (by simp : (0 : Fin (q + 1)) < i.succ)
-            simp [hr0, hi] at hlt
+            simpa [hr0, hi] using hrows (by simp : (0 : Fin (q + 1)) < i.succ)
           let rows' : Fin q → Fin (N + 1) := fun i => rows i.succ
           let cols' : Fin q → Fin (N + 1) := fun j =>
             (cols j.succ).pred (hcols_tail_ne j)
@@ -104,20 +102,11 @@ protected theorem IsTotallyNonneg.prependFirstBasisColumn
             exact Fin.pred_lt_pred_iff.mpr
               (hcols (Fin.succ_lt_succ_iff.mpr hij))
           let M := (prependFirstBasisColumn H).submatrix rows cols
-          have hcolM : ∀ i : Fin q, M i.succ 0 = 0 := by
-            intro i
+          have hcolM : ∀ i : Fin q, M i.succ 0 = 0 := fun i => by
             simp [M, hc0, hrows_tail_ne i]
           have hfactor : M.det = M 0 0 * (M.submatrix Fin.succ Fin.succ).det := by
             rw [det_succ_column_zero, Fin.sum_univ_succ]
-            have htail : ∑ i : Fin q,
-                (-1 : R) ^ ((i.succ : Fin (q + 1)) : ℕ) * M i.succ 0 *
-                  (M.submatrix i.succ.succAbove Fin.succ).det = 0 := by
-              apply Finset.sum_eq_zero
-              intro i _
-              rw [hcolM i]
-              simp
-            rw [htail]
-            simp
+            simp [hcolM]
           have htail : M.submatrix Fin.succ Fin.succ =
               H.submatrix rows' cols' := by
             ext i j
@@ -131,19 +120,14 @@ protected theorem IsTotallyNonneg.prependFirstBasisColumn
           simpa [M, hr0, hc0] using hH hrows' hcols'
         · have hrows_ne_zero : ∀ i : Fin (q + 1), rows i ≠ 0 := by
             intro i hi
-            apply hr0
-            apply Fin.le_zero_iff.mp
-            simpa [hi] using hrows.monotone (Fin.zero_le i)
+            exact hr0 (Fin.le_zero_iff.mp (by simpa [hi] using hrows.monotone (Fin.zero_le i)))
           have hminor_col : ∀ i : Fin (q + 1),
-              ((prependFirstBasisColumn H).submatrix rows cols) i 0 = 0 := by
-            intro i
+              ((prependFirstBasisColumn H).submatrix rows cols) i 0 = 0 := fun i => by
             simp [hc0, hrows_ne_zero i]
           rw [det_eq_zero_of_column_eq_zero (0 : Fin (q + 1)) hminor_col]
       · have hcols_ne_zero : ∀ j : Fin (q + 1), cols j ≠ 0 := by
           intro j hj
-          apply hc0
-          apply Fin.le_zero_iff.mp
-          simpa [hj] using hcols.monotone (Fin.zero_le j)
+          exact hc0 (Fin.le_zero_iff.mp (by simpa [hj] using hcols.monotone (Fin.zero_le j)))
         let cols' : Fin (q + 1) → Fin (N + 1) := fun j =>
           (cols j).pred (hcols_ne_zero j)
         have hcols' : StrictMono cols' := by
@@ -266,12 +250,10 @@ protected theorem IsTotallyNonneg.sourceStep
       · by_cases hr0 : rows 0 = 0
         · have hrows_tail_ne : ∀ i : Fin q, rows i.succ ≠ 0 := by
             intro i hi
-            have hlt := hrows (by simp : (0 : Fin (q + 1)) < i.succ)
-            simp [hr0, hi] at hlt
+            simpa [hr0, hi] using hrows (by simp : (0 : Fin (q + 1)) < i.succ)
           have hcols_tail_ne : ∀ j : Fin q, cols j.succ ≠ 0 := by
             intro j hj
-            have hlt := hcols (by simp : (0 : Fin (q + 1)) < j.succ)
-            simp [hc0, hj] at hlt
+            simpa [hc0, hj] using hcols (by simp : (0 : Fin (q + 1)) < j.succ)
           let rows' : Fin q → Fin (N + 1) := fun i =>
             (rows i.succ).pred (hrows_tail_ne i)
           let cols' : Fin q → Fin (N + 1) := fun j =>
@@ -301,9 +283,7 @@ protected theorem IsTotallyNonneg.sourceStep
             (sourceStep δ H) rows' cols' hrow hδ (htrail ▸ hH) hrows' hcols'
         · have hrows_ne_zero : ∀ i : Fin (q + 1), rows i ≠ 0 := by
             intro i hi
-            apply hr0
-            apply Fin.le_zero_iff.mp
-            simpa [hi] using hrows.monotone (Fin.zero_le i)
+            exact hr0 (Fin.le_zero_iff.mp (by simpa [hi] using hrows.monotone (Fin.zero_le i)))
           let rows' : Fin (q + 1) → Fin (N + 1) := fun i =>
             (rows i).pred (hrows_ne_zero i)
           have hrows' : StrictMono rows' := by
@@ -321,9 +301,7 @@ protected theorem IsTotallyNonneg.sourceStep
           exact hH.prependFirstBasisColumn hrows' hcols
       · have hcols_ne_zero : ∀ j : Fin (q + 1), cols j ≠ 0 := by
           intro j hj
-          apply hc0
-          apply Fin.le_zero_iff.mp
-          simpa [hj] using hcols.monotone (Fin.zero_le j)
+          exact hc0 (Fin.le_zero_iff.mp (by simpa [hj] using hcols.monotone (Fin.zero_le j)))
         let cols' : Fin (q + 1) → Fin (N + 1) := fun j =>
           (cols j).pred (hcols_ne_zero j)
         have hcols' : StrictMono cols' := by

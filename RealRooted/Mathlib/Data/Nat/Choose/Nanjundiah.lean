@@ -39,16 +39,8 @@ theorem weighted_vandermonde
           Nat.choose A j * Nat.choose B (n - j) * Nat.choose j r := by
       symm
       apply Finset.sum_subset
-      · intro j hj
-        rw [Finset.mem_range]
-        exact Nat.lt_succ_of_le (Finset.mem_Icc.mp hj).2
-      · intro j hj hnot
-        have hjn : j ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hj)
-        have hjr : j < r := by
-          by_contra h
-          exact hnot (Finset.mem_Icc.mpr ⟨Nat.le_of_not_gt h, hjn⟩)
-        rw [Nat.choose_eq_zero_of_lt hjr]
-        simp
+      · grind
+      · grind
     _ = Nat.choose A r *
         ∑ j ∈ Finset.Icc r n,
           Nat.choose (A - r) (j - r) * Nat.choose B (n - j) := by
@@ -68,12 +60,9 @@ theorem weighted_vandermonde
         simp only [Finset.mem_Icc, Finset.mem_Ico]
         lia
       rw [hIcc, Finset.sum_Ico_eq_sum_range]
-      have hlen : n + 1 - r = n - r + 1 := by lia
-      rw [hlen]
+      rw [show n + 1 - r = n - r + 1 by lia]
       apply Finset.sum_congr rfl
       intro s hs
-      have hsle : s ≤ n - r :=
-        Nat.le_of_lt_succ (Finset.mem_range.mp hs)
       congr 2
       · exact Nat.add_sub_cancel_left r s
       · lia
@@ -118,22 +107,13 @@ private theorem nanjundiah_aux
             Nat.choose A j * Nat.choose B (n - j) * Nat.choose j r) := by
       symm
       apply Finset.sum_subset
-      · intro r hr
-        have hrn : r ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hr)
-        rw [Finset.mem_range]
-        lia
+      · grind
       · intro r hrBig hrSmall
-        have hnr : n < r := by
-          have := Finset.mem_range.mp hrBig
-          simp only [Finset.mem_range] at hrSmall
-          lia
         have hzero : (∑ j ∈ Finset.range (n + 1),
             Nat.choose A j * Nat.choose B (n - j) * Nat.choose j r) = 0 := by
           apply Finset.sum_eq_zero
           intro j hj
-          have hjn : j ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hj)
-          rw [Nat.choose_eq_zero_of_lt (lt_of_le_of_lt hjn hnr)]
-          simp
+          rw [Nat.choose_eq_zero_of_lt (by grind : j < r), mul_zero]
         rw [hzero, mul_zero]
     _ = ∑ r ∈ Finset.range (n + 1),
         Nat.choose x (m + n - r) *
@@ -176,11 +156,10 @@ private theorem nanjundiah_aux
       congr 1
       have hv := Nat.add_choose_eq A (x - m) n
       rw [Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk] at hv
-      have hsum : (∑ r ∈ Finset.range (n + 1),
+      rw [show (∑ r ∈ Finset.range (n + 1),
           Nat.choose A r * Nat.choose (x - m) (n - r)) =
-          Nat.choose (A + (x - m)) n := by
-        simpa [Nat.succ_eq_add_one] using hv.symm
-      rw [hsum]
+          Nat.choose (A + (x - m)) n by
+        simpa [Nat.succ_eq_add_one] using hv.symm]
       congr 1
       lia
 
@@ -201,46 +180,28 @@ theorem sum_range_shifted_choose_reindex
     have hjb : j ≤ b := Nat.le_of_lt_succ (Finset.mem_range.mp hj)
     have hjB : j ≤ b - l + k := by
       by_contra h
-      have hz := Nat.choose_eq_zero_of_lt (Nat.lt_of_not_ge h)
       apply hne
-      rw [hz]
-      simp
+      simp [Nat.choose_eq_zero_of_lt (Nat.lt_of_not_ge h)]
     have hbjA : b - j ≤ a - k + l := by
       by_contra h
-      have hz := Nat.choose_eq_zero_of_lt (Nat.lt_of_not_ge h)
       apply hne
-      rw [hz]
-      simp
-    apply Finset.mem_Icc.mpr
-    constructor
-    · apply max_le
-      · lia
-      · lia
-    · apply le_min
-      · lia
-      · lia
-  · intro j₁ hj₁ hn₁ j₂ hj₂ hn₂ heq
-    have h₁ : j₁ ≤ b := Nat.le_of_lt_succ (Finset.mem_range.mp hj₁)
-    have h₂ : j₂ ≤ b := Nat.le_of_lt_succ (Finset.mem_range.mp hj₂)
-    lia
+      simp [Nat.choose_eq_zero_of_lt (Nat.lt_of_not_ge h)]
+    simp only [Finset.mem_Icc, max_le_iff, le_min_iff]
+    constructor <;> constructor <;> lia
+  · grind
   · intro i hi hne
-    have hki : k ≤ i := le_trans (le_max_left k l) (Finset.mem_Icc.mp hi).1
-    have hli : l ≤ i := le_trans (le_max_right k l) (Finset.mem_Icc.mp hi).1
-    have hia : i ≤ a + l := le_trans (Finset.mem_Icc.mp hi).2 (min_le_left _ _)
-    have hib : i ≤ b + k := le_trans (Finset.mem_Icc.mp hi).2 (min_le_right _ _)
+    simp only [Finset.mem_Icc, max_le_iff, le_min_iff] at hi
     let j := b + k - i
     have hjb : j ≤ b := by dsimp [j]; lia
     have hjB : j ≤ b - l + k := by dsimp [j]; lia
-    have hbjA : b - j ≤ a - k + l := by dsimp [j]; lia
     have hmap : b + k - j = i := by dsimp [j]; lia
     have hterm :
         (Nat.choose (b - l + k) j : R) *
               (Nat.choose (a - k + l) (b - j) : R) * F (b + k - j) =
           (Nat.choose (a - k + l) (i - k) : R) *
             (Nat.choose (b - l + k) (i - l) : R) * F i := by
-      have h1 : i - k = b - j := by dsimp [j]; lia
-      have h2 : i - l = b - l + k - j := by dsimp [j]; lia
-      rw [h1, h2, hmap, Nat.choose_symm hjB]
+      rw [show i - k = b - j by dsimp [j]; lia,
+        show i - l = b - l + k - j by dsimp [j]; lia, hmap, Nat.choose_symm hjB]
       ring
     refine ⟨j, Finset.mem_range.mpr (Nat.lt_succ_of_le hjb), ?_, hmap⟩
     intro hz
@@ -251,19 +212,10 @@ theorem sum_range_shifted_choose_reindex
     have hjb : j ≤ b := Nat.le_of_lt_succ (Finset.mem_range.mp hj)
     have hjB : j ≤ b - l + k := by
       by_contra h
-      have hz := Nat.choose_eq_zero_of_lt (Nat.lt_of_not_ge h)
       apply hne
-      rw [hz]
-      simp
-    have hbjA : b - j ≤ a - k + l := by
-      by_contra h
-      have hz := Nat.choose_eq_zero_of_lt (Nat.lt_of_not_ge h)
-      apply hne
-      rw [hz]
-      simp
-    have h1 : b + k - j - k = b - j := by lia
-    have h2 : b + k - j - l = b - l + k - j := by lia
-    rw [h1, h2, Nat.choose_symm hjB]
+      simp [Nat.choose_eq_zero_of_lt (Nat.lt_of_not_ge h)]
+    rw [show b + k - j - k = b - j by lia,
+      show b + k - j - l = b - l + k - j by lia, Nat.choose_symm hjB]
     ring
 
 private theorem reindex_shifted_choose_sum
