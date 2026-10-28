@@ -188,24 +188,6 @@ private theorem middle_natDegree (n : ℕ) : (affineThetaMiddle n).natDegree = n
         (leadingCoeff_ne_zero.mpr (source_interlaces_succ n).2.1.1)
     exact mul_ne_zero (rightWeight_pos _).ne' hcoeff
 
-private theorem ascPochhammer_eval_two (k : ℕ) :
-    (ascPochhammer ℝ k).eval 2 = ((k + 1).factorial : ℝ) := by
-  induction k with
-  | zero => norm_num
-  | succ k ih =>
-      rw [ascPochhammer_succ_eval, ih, Nat.factorial_succ (k + 1)]
-      push_cast
-      ring_nf
-
-private theorem two_mul_ascPochhammer_eval_three (k : ℕ) :
-    2 * (ascPochhammer ℝ k).eval 3 = ((k + 2).factorial : ℝ) := by
-  induction k with
-  | zero => norm_num
-  | succ k ih =>
-      rw [ascPochhammer_succ_eval, Nat.factorial_succ (k + 2)]
-      push_cast
-      nlinarith
-
 /-- Coefficients of the affine-theta Jensen model before factorial simplification. -/
 theorem coeff_affineThetaJensenPolynomial_of_le (n k : ℕ) (hk : k ≤ n) :
     (affineThetaJensenPolynomial n).coeff k =
