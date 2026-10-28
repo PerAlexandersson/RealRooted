@@ -28,16 +28,8 @@ lemma interl_C_C (a b : ℝ) : Interl (C a : ℝ[X]) (C b : ℝ[X]) := by
   by_cases hb : b = 0
   · right
     simp_all
-  right
-  right
-  have hCa : (C a : ℝ[X]) ≠ 0 := C_ne_zero.mpr ha
-  have hCb : (C b : ℝ[X]) ≠ 0 := C_ne_zero.mpr hb
-  have hrr_a : ((C a : ℝ[X]) ≠ 0 ∧ (C a : ℝ[X]).Splits) :=
-    isRealRooted_of_deg_zero hCa (by simp)
-  have hrr_b : ((C b : ℝ[X]) ≠ 0 ∧ (C b : ℝ[X]).Splits) :=
-    isRealRooted_of_deg_zero hCb (by simp)
-  refine ⟨hrr_a, hrr_b, [], [], by simp, by simp, by simp, by simp, ?_⟩
-  exact Or.inr ⟨by lia, by simp [ListAlternates]⟩
+  simpa using (StrictInterl.C_mul_right
+    (StrictInterl.C_mul_left (StrictInterl.refl one_ne_zero (by simp)) ha) hb).toInterl
 
 /-- Factoring out `X` after adding it to an affine multiple of `X`. -/
 lemma affine_mul_X_add_X_eq (s t : ℝ) :
@@ -71,26 +63,11 @@ lemma strictInterl_affine_linear_affine_linear_of_cross
     {u v U V : ℝ} (hu : 0 < u) (hU : 0 < U)
     (hcross : u * V ≤ U * v) :
     StrictInterl (C u * X + C v) (C U * X + C V) := by
-  have hroot : -(u⁻¹ * v) ≤ -(U⁻¹ * V) :=
-    affineLinear_root_le_of_cross hu hU hcross
-  have hp_nat : (C u * X + C v : ℝ[X]).natDegree = 1 := by grind
-  have hq_nat : (C U * X + C V : ℝ[X]).natDegree = 1 := by grind
-  have hp_rr : ((C u * X + C v : ℝ[X]) ≠ 0 ∧ (C u * X + C v : ℝ[X]).Splits) :=
-    isRealRooted_affine_factor (s := u) (t := v) hu
-  have hq_rr : ((C U * X + C V : ℝ[X]) ≠ 0 ∧ (C U * X + C V : ℝ[X]).Splits) :=
-    isRealRooted_affine_factor (s := U) (t := V) hU
-  have hp_deg : (C u * X + C v : ℝ[X]).degree = 1 := by
-    rw [degree_eq_natDegree hp_rr.1, hp_nat]
-    lia
-  have hq_deg : (C U * X + C V : ℝ[X]).degree = 1 := by
-    rw [degree_eq_natDegree hq_rr.1, hq_nat]
-    lia
-  refine ⟨hp_rr, hq_rr, [-(u⁻¹ * v)], [-(U⁻¹ * V)], by simp, by simp, ?_, ?_, ?_⟩
-  · simpa [hp_deg] using
-      (Polynomial.roots_degree_eq_one (p := (C u * X + C v : ℝ[X])) hp_deg).symm
-  · simpa [hq_deg] using
-      (Polynomial.roots_degree_eq_one (p := (C U * X + C V : ℝ[X])) hq_deg).symm
-  · exact Or.inr ⟨by simp, by simpa [ListAlternates, ListInterlaces] using hroot⟩
+  have hratio : U⁻¹ * V ≤ u⁻¹ * v := by
+    simpa only [neg_le_neg_iff] using affineLinear_root_le_of_cross hu hU hcross
+  have h := StrictInterl.X_add_C_iff.mpr hratio
+  convert (h.C_mul_left hu.ne').C_mul_right hU.ne' using 1 <;>
+    rw [mul_add, ← C_mul] <;> congr 1 <;> field_simp
 
 /-- Zero-aware form of
 `strictInterl_affine_linear_affine_linear_of_cross`. -/
@@ -105,26 +82,10 @@ lemma interl_C_affine_linear {c u v : ℝ} (hu : 0 < u) :
   by_cases hc : c = 0
   · left
     simp [hc]
-  right
-  right
-  have hC : (C c : ℝ[X]) ≠ 0 := C_ne_zero.mpr hc
-  have hlin_rr : ((C u * X + C v : ℝ[X]) ≠ 0 ∧ (C u * X + C v : ℝ[X]).Splits) :=
-    isRealRooted_affine_factor (s := u) (t := v) hu
-  have hlin_nat : (C u * X + C v : ℝ[X]).natDegree = 1 := by grind
-  have hlin_deg : (C u * X + C v : ℝ[X]).degree = 1 := by
-    rw [degree_eq_natDegree hlin_rr.1, hlin_nat]
-    lia
-  have hC_rr : ((C c : ℝ[X]) ≠ 0 ∧ (C c : ℝ[X]).Splits) :=
-    isRealRooted_of_deg_zero hC (by simp)
-  refine ⟨hC_rr, hlin_rr, [], [-(u⁻¹ * v)], by simp, by simp, ?_, ?_, ?_⟩
-  · simp
-  · simpa [hlin_deg] using
-      (Polynomial.roots_degree_eq_one (p := (C u * X + C v : ℝ[X])) hlin_deg).symm
-  · exact Or.inl ⟨by simp, by simp [ListInterlaces]⟩
+  exact (interlaces_C_linear hc (by grind)).toStrictInterl.toInterl
 
 lemma interl_congr {p q p' q' : ℝ[X]} (hp : p = p') (hq : q = q')
-    (h : Interl p' q') : Interl p q := by
-  lia
+    (h : Interl p' q') : Interl p q := by simpa only [hp, hq] using h
 
 lemma affine_mul_C_add_C (s t b d : ℝ) :
     ((C s * X + C t) * C b + C d : ℝ[X]) =

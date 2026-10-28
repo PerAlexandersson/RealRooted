@@ -147,7 +147,8 @@ counterpart of `A(n, j) = sum_i (-1)^i C(n+1, i) (j+1-i)^n`. -/
 theorem coeff_generalizedEulerian_one_eq_sum (k j : ℕ) :
     (generalizedEulerian 1 k).coeff j =
       ∑ i ∈ Finset.range (j + 2),
-        (i : ℝ) ^ (k + 1) * ((-1 : ℝ) ^ (j + 1 - i) * (((k + 2).choose (j + 1 - i) : ℝ))) := by
+        (i : ℝ) ^ (k + 1) *
+          ((-1 : ℝ) ^ (j + 1 - i) * (((k + 2).choose (j + 1 - i) : ℝ))) := by
   have h := congrArg (PowerSeries.coeff (j + 1)) (eulerianPowerSumSeries_mul_one_sub_X_pow k)
   rw [PowerSeries.coeff_mul, PowerSeries.coeff_succ_X_mul,
     Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk, Polynomial.coeff_coe] at h
@@ -189,10 +190,9 @@ theorem summable_eulerianPowerSum_terms (k : ℕ) {q : ℂ} (hq : ‖q‖ < 1) :
 
 private theorem hasDerivAt_term (k m : ℕ) (q : ℂ) :
     HasDerivAt (fun z : ℂ => (m : ℂ) ^ k * z ^ m) ((m : ℂ) ^ (k + 1) * q ^ (m - 1)) q := by
-  have h := (hasDerivAt_pow m q).const_mul ((m : ℂ) ^ k)
-  have hval : (m : ℂ) ^ k * ((m : ℂ) * q ^ (m - 1)) = (m : ℂ) ^ (k + 1) * q ^ (m - 1) := by
-    rw [pow_succ]; ring
-  rwa [hval] at h
+  convert (hasDerivAt_pow m q).const_mul ((m : ℂ) ^ k) using 1
+  rw [pow_succ]
+  ring
 
 private theorem summable_bound (k : ℕ) {r : ℝ} (hr0 : 0 < r) (hr : r < 1) :
     Summable (fun m : ℕ => (m : ℝ) ^ (k + 1) * r ^ (m - 1)) := by
@@ -219,31 +219,24 @@ theorem hasDerivAt_eulerianPowerSum (k : ℕ) {r : ℝ} (hr0 : 0 < r) (hr : r < 
   · intro m y hy
     have hy' : ‖y‖ < r := by simpa [Complex.dist_eq] using hy
     rw [norm_mul, norm_pow, norm_pow, Complex.norm_natCast]
-    have h1 : ‖y‖ ^ (m - 1) ≤ r ^ (m - 1) := pow_le_pow_left₀ (norm_nonneg y) (le_of_lt hy') _
-    have h2 : (0 : ℝ) ≤ (m : ℝ) ^ (k + 1) := by positivity
-    exact mul_le_mul_of_nonneg_left h1 h2
-  · refine summable_of_ne_finset_zero (s := {0}) ?_
-    intro m hm
-    simp only [Finset.mem_singleton] at hm
-    simp [zero_pow hm]
+    exact mul_le_mul_of_nonneg_left
+      (pow_le_pow_left₀ (norm_nonneg y) (le_of_lt hy') _) (by positivity)
+  · exact summable_of_ne_finset_zero (s := {0}) fun m hm => by
+      simp [zero_pow (by simpa using hm)]
 
 private theorem one_sub_ne_zero {q : ℂ} (hq : ‖q‖ < 1) : (1 : ℂ) - q ≠ 0 := by
-  intro h
-  have hq1 : q = 1 := by linear_combination -h
-  rw [hq1] at hq
-  simp at hq
+  exact sub_ne_zero.mpr fun h => by
+    rw [← h] at hq
+    simp at hq
 
 private theorem q_mul_tsum (k : ℕ) (q : ℂ) :
     q * (∑' m : ℕ, (m : ℂ) ^ (k + 1) * q ^ (m - 1)) = eulerianPowerSum (k + 1) q := by
   rw [eulerianPowerSum, ← tsum_mul_left]
-  refine tsum_congr ?_
-  intro m
-  match m with
-  | 0 => simp
-  | (i + 1) =>
-      simp only [Nat.add_sub_cancel]
-      rw [pow_succ]
-      ring
+  refine tsum_congr fun m => ?_
+  rcases m with _ | i
+  · simp
+  · simp only [Nat.add_sub_cancel, pow_succ]
+    ring
 
 /-- **The Eulerian generating function.**
 `(sum' m, m^(k+1) q^m) (1 - q)^(k+2) = q E_k(q)` for complex `‖q‖ < 1`. -/
@@ -269,9 +262,8 @@ theorem eulerianPowerSum_mul_one_sub_pow (k : ℕ) : ∀ {q : ℂ}, ‖q‖ < 1 
       have hr0 : (0 : ℝ) < r := lt_of_le_of_lt (norm_nonneg q) hqr
       have hqmem : q ∈ Metric.ball (0 : ℂ) r := by simpa [Complex.dist_eq] using hqr
       have hGH : Set.EqOn (fun z : ℂ => eulerianPowerSum (j + 1) z * (1 - z) ^ (j + 2))
-          (fun z : ℂ => z * (complexEulerian j).eval z) (Metric.ball (0 : ℂ) r) := by
-        intro z hz
-        exact ih (lt_trans (by simpa [Complex.dist_eq] using hz) hr1)
+          (fun z : ℂ => z * (complexEulerian j).eval z) (Metric.ball (0 : ℂ) r) :=
+        fun _ hz => ih (lt_trans (by simpa [Complex.dist_eq] using hz) hr1)
       have hpow : HasDerivAt (fun z : ℂ => (1 - z) ^ (j + 2))
           (((j : ℂ) + 2) * (1 - q) ^ (j + 1) * (0 - 1)) q := by
         have hb : HasDerivAt (fun z : ℂ => 1 - z) (0 - 1) q :=

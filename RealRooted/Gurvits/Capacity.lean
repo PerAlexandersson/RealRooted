@@ -61,7 +61,8 @@ theorem capacity_le {p : MvPolynomial σ ℝ} (hp : ∀ m, 0 ≤ p.coeff m) {x :
   ciInf_le (bddBelow_range_div_prod hp) ⟨x, hx⟩
 
 /-- `capacity_le` in multiplicative form. -/
-theorem capacity_mul_prod_le {p : MvPolynomial σ ℝ} (hp : ∀ m, 0 ≤ p.coeff m) {x : σ → ℝ}
+theorem capacity_mul_prod_le {p : MvPolynomial σ ℝ} (hp : ∀ m, 0 ≤ p.coeff m)
+    {x : σ → ℝ}
     (hx : ∀ i, 0 < x i) : capacity p * ∏ i, x i ≤ eval x p :=
   (le_div_iff₀ (Finset.prod_pos fun i _ => hx i)).1 (capacity_le hp hx)
 
@@ -159,8 +160,8 @@ theorem eval_prodLin (A : Matrix σ σ ℝ) (x : σ → ℝ) :
     eval x (prodLin A) = ∏ i, ∑ j, A i j * x j := by
   simp [prodLin]
 
-/-- For a nonnegative matrix with row and column sums one, `∏ j, x j ≤ ∏ i, ∑ j, A i j * x j`
-for all `x > 0` (weighted AM–GM row by row). -/
+/-- For a nonnegative matrix with row and column sums one,
+`∏ j, x j ≤ ∏ i, ∑ j, A i j * x j` for all `x > 0` (weighted AM–GM row by row). -/
 theorem prod_le_eval_prodLin {A : Matrix σ σ ℝ} (hnn : ∀ i j, 0 ≤ A i j)
     (hrow : ∀ i, ∑ j, A i j = 1) (hcol : ∀ j, ∑ i, A i j = 1) {x : σ → ℝ}
     (hx : ∀ i, 0 < x i) : ∏ j, x j ≤ eval x (prodLin A) := by
@@ -209,15 +210,8 @@ theorem finSuccEquiv_pderiv_zero (p : MvPolynomial (Fin (n + 1)) R) :
   | add p q hp hq => simp [hp, hq]
   | mul_X p i hp =>
     induction i using Fin.cases with
-    | zero =>
-      simp only [Derivation.leibniz, pderiv_X_self, smul_eq_mul, map_add, map_mul, hp,
-        finSuccEquiv_X_zero, Polynomial.derivative_mul, Polynomial.derivative_X, map_one]
-      ring
-    | succ k =>
-      simp only [Derivation.leibniz, pderiv_X_of_ne (Fin.succ_ne_zero k), smul_eq_mul,
-        map_add, map_mul, hp, finSuccEquiv_X_succ, Polynomial.derivative_mul,
-        Polynomial.derivative_C, map_zero, mul_zero, add_zero]
-      ring
+    | zero => simp [hp, finSuccEquiv_X_zero, Polynomial.derivative_mul]; ring
+    | succ k => simp [hp, finSuccEquiv_X_succ, Polynomial.derivative_mul]; ring
 
 /-- Setting the variable `0` to zero is evaluation at `0` after `finSuccEquiv`. -/
 theorem aeval_cons_zero_X (q : MvPolynomial (Fin (n + 1)) R) :
@@ -248,9 +242,7 @@ theorem coeff_allOnes_step (p : MvPolynomial (Fin (n + 1)) R) :
   rw [step_eq_coeff_one, finSuccEquiv_coeff_coeff]
   congr 1
   ext j
-  induction j using Fin.cases with
-  | zero => simp
-  | succ k => simp
+  induction j using Fin.cases <;> simp
 
 /-- Apply `step` `n` times and take the resulting constant. -/
 noncomputable def coeffIter : (n : ℕ) → MvPolynomial (Fin n) R → R

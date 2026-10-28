@@ -72,10 +72,10 @@ lemma alpha_self (n : ℕ) : alpha n n = 1 := by
 lemma beta_self (j : ℕ) : beta j j = 1 := by
   rw [beta, sinS_eq_X_mul, mul_pow, mul_left_comm, coeff_X_pow_mul', ite_eq_left le_rfl,
     Nat.sub_self, coeff_zero_eq_constantCoeff_apply, map_mul, map_pow, constantCoeff_sT]
-  have : constantCoeff secS = 1 := by
-    have := congrArg constantCoeff cosS_mul_secS
-    rw [map_mul, constantCoeff_cosS, one_mul, map_one] at this; exact this
-  rw [this]; simp
+  have hsec : constantCoeff secS = 1 := by
+    simpa only [map_mul, constantCoeff_cosS, one_mul, map_one] using
+      congrArg constantCoeff cosS_mul_secS
+  simp [hsec]
 
 lemma alpha_parity {n k : ℕ} (h : ¬ (Even n ↔ Even k)) : alpha n k = 0 :=
   coeff_even_mul_odd_pow_eq_zero isEvenPS_qS isOddPS_fS h
@@ -132,10 +132,7 @@ lemma alpha_beta_dual2 (n j : ℕ) :
     · intro k hk; simp at hk; rw [alpha_eq_zero_of_lt (by lia), mul_zero]
     · intro k _; ring
   rw [this, hjn]
-  simp only [Fin.mk.injEq]
-  by_cases h : n = j
-  · subst h; simp
-  · rw [ite_eq_right (Ne.symm h), ite_eq_right h]
+  grind
 
 /-- `e_k = β_{0k} + β_{1k}`. -/
 lemma eulerCoeff_eq_beta (k : ℕ) : eulerCoeff k = beta 0 k + beta 1 k := by
@@ -151,12 +148,10 @@ lemma coeff_polynomial (n m : ℕ) : (polynomial n).coeff m = eulerCoeff m * alp
   rw [polynomial, Polynomial.finsetSum_coeff]
   simp only [Polynomial.coeff_C_mul_X_pow]
   by_cases hm : m < n + 1
-  · rw [Finset.sum_eq_single m]
-    · simp
-    · intro b _ hb; rw [ite_eq_right (Ne.symm hb)]
-    · intro h; exact absurd (Finset.mem_range.mpr hm) h
+  · rw [Finset.sum_eq_single m] <;> grind
   · rw [Finset.sum_eq_zero, alpha_eq_zero_of_lt (by lia), mul_zero]
-    intro b hb; simp at hb; rw [ite_eq_right (by lia)]
+    intro b hb
+    grind
 
 lemma eval_polynomial (n : ℕ) (c : ℝ) :
     (polynomial n).eval c = ∑ k ∈ Finset.range (n + 1), eulerCoeff k * alpha n k * c ^ k := by
@@ -183,9 +178,8 @@ theorem polynomial_comp_neg_X (n : ℕ) :
     Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro k _
-  have h := alpha_neg_one_pow n k
   rw [neg_pow]
-  linear_combination (eulerCoeff k * r ^ k) * h
+  linear_combination (eulerCoeff k * r ^ k) * alpha_neg_one_pow n k
 
 lemma polynomial_eval_one {n : ℕ} (hn : 2 ≤ n) : (polynomial n).eval 1 = 0 := by
   rw [eval_polynomial]
@@ -256,9 +250,7 @@ theorem X_sq_mul_polynomial (n : ℕ) :
   · have : ∀ k ∈ Finset.range (n + 1), (if m = k + 2 then eulerCoeff k * alpha n k else 0) =
         if m - 2 = k then eulerCoeff k * alpha n k else 0 := by
       intro k _
-      by_cases hk : m = k + 2
-      · rw [ite_eq_left hk, ite_eq_left (by lia)]
-      · rw [ite_eq_right hk, ite_eq_right (by lia)]
+      grind
     rw [Finset.sum_congr rfl this, Finset.sum_ite_eq]
     split_ifs with h'
     · rfl
@@ -297,7 +289,7 @@ theorem X_sq_mul_polynomial' (i : ℕ) :
   rw [X_sq_mul_polynomial, show i + 2 + 3 = (i + 3) + 2 by ring, Finset.sum_range_succ',
     Finset.sum_range_succ']
   obtain ⟨h0, h1⟩ := mMat_zero_one (n := i + 2) (by lia)
-  simp only [h0, h1, map_zero, zero_mul, add_zero, rMat]
+  simp [h0, h1, rMat]
 
 lemma rMat_parity {i j : ℕ} (h : ¬ (Even i ↔ Even j)) : rMat i j = 0 := by
   rw [rMat, mMat]

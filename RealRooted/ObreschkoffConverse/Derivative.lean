@@ -43,15 +43,13 @@ theorem derivative_interl_of_strictInterl_succDegree {f g : ℝ[X]}
   have hall : AllComboRealRooted f.derivative g.derivative :=
     (allComboRealRooted_of_strictInterl hfg).derivative
   have hfdeg : f.natDegree ≠ 0 := Polynomial.derivative_ne_zero.mp hfrr.1
-  have hgdeg : g.natDegree ≠ 0 := Polynomial.derivative_ne_zero.mp hgrr.1
   have hfgdeg' : f.derivative.natDegree + 1 = g.derivative.natDegree := by
     rw [f.natDegree_derivative, g.natDegree_derivative]
     lia
-  have hdeg' : f.derivative.natDegree + 1 = g.derivative.natDegree ∨
-      f.derivative.natDegree = g.derivative.natDegree := Or.inl hfgdeg'
   exact
     (StrictInterl.forward_of_orientation_of_succDegree hfgdeg'.symm
-      (strictInterl_of_allComboRealRooted hfrr.1 hfrr.2 hgrr.1 hgrr.2 hall hdeg')).toInterl
+      (strictInterl_of_allComboRealRooted hfrr.1 hfrr.2 hgrr.1 hgrr.2 hall
+        (Or.inl hfgdeg'))).toInterl
 
 /-- In the same-degree case, existing Obreschkoff machinery gives the
 derivative pair in an interlacing relation up to orientation.  The remaining standard
@@ -67,8 +65,6 @@ theorem derivative_interl_or_reverse_of_strictInterl_sameDegree {f g : ℝ[X]}
   · simp_all
   have hall : AllComboRealRooted f.derivative g.derivative :=
     (allComboRealRooted_of_strictInterl hfg).derivative
-  have hfdeg : f.natDegree ≠ 0 := Polynomial.derivative_ne_zero.mp hfrr.1
-  have hgdeg : g.natDegree ≠ 0 := Polynomial.derivative_ne_zero.mp hgrr.1
   have hdeg' : f.derivative.natDegree = g.derivative.natDegree := by simp_all
   rcases strictInterl_of_allComboRealRooted hfrr.1 hfrr.2 hgrr.1 hgrr.2 hall
     (Or.inr hdeg') with hstrictInterl | hrev
@@ -91,15 +87,9 @@ theorem derivative_roots_sum_le_of_strictInterl_sameDegree_monic {f g : ℝ[X]}
   have hg_next_der :
       g.derivative.nextCoeff = (f.natDegree - 1 : ℝ) * g.nextCoeff := by
     simpa [hdeg] using Polynomial.nextCoeff_derivative_of_two_le_natDegree g hg_two
-  have hfactor_nonneg : 0 ≤ (f.natDegree - 1 : ℝ) := by
-    have hcast : (1 : ℝ) ≤ (f.natDegree : ℝ) := by
-      simpa using
-        (Nat.cast_le.mpr (by lia : 1 ≤ f.natDegree) :
-          ((1 : Nat) : ℝ) ≤ (f.natDegree : ℝ))
-    linarith
   have hnext_der : g.derivative.nextCoeff ≤ f.derivative.nextCoeff := by
     rw [hf_next_der, hg_next_der]
-    exact mul_le_mul_of_nonneg_left hnext hfactor_nonneg
+    exact mul_le_mul_of_nonneg_left hnext (sub_nonneg.mpr (by exact_mod_cast (by lia)))
   have hf_lc_der : f.derivative.leadingCoeff = (f.natDegree : ℝ) := by
     simp [hf_monic.leadingCoeff]
   have hg_lc_der : g.derivative.leadingCoeff = (f.natDegree : ℝ) := by
@@ -175,13 +165,9 @@ theorem derivative_interl_of_strictInterl_sameDegree_posLeading {f g : ℝ[X]}
   let f₀ : ℝ[X] := C f.leadingCoeff⁻¹ * f
   let g₀ : ℝ[X] := C g.leadingCoeff⁻¹ * g
   have hf₀_monic : f₀.Monic := by
-    unfold f₀
-    apply monic_C_mul_of_mul_leadingCoeff_eq_one
-    simp_all
+    exact monic_C_mul_of_mul_leadingCoeff_eq_one (by simp [hf_lc_ne])
   have hg₀_monic : g₀.Monic := by
-    unfold g₀
-    apply monic_C_mul_of_mul_leadingCoeff_eq_one
-    simp_all
+    exact monic_C_mul_of_mul_leadingCoeff_eq_one (by simp [hg_lc_ne])
   have hfg₀ : StrictInterl f₀ g₀ :=
     StrictInterl.C_mul_right (StrictInterl.C_mul_left hfg (inv_ne_zero hf_lc_ne))
       (inv_ne_zero hg_lc_ne)
@@ -191,26 +177,14 @@ theorem derivative_interl_of_strictInterl_sameDegree_posLeading {f g : ℝ[X]}
   have htwo₀ : 2 ≤ f₀.natDegree := by
     simpa [f₀, natDegree_C_mul (inv_ne_zero hf_lc_ne)] using htwo
   have hscaled : Interl f₀.derivative g₀.derivative :=
-    derivative_interl_of_strictInterl_sameDegree_monic hf₀_monic hg₀_monic hfg₀ hdeg₀ htwo₀
+    derivative_interl_of_strictInterl_sameDegree_monic
+      hf₀_monic hg₀_monic hfg₀ hdeg₀ htwo₀
   have hscaled' :
       Interl (C f.leadingCoeff⁻¹ * f.derivative)
         (C g.leadingCoeff⁻¹ * g.derivative) := by
     simpa [f₀, g₀, derivative_C_mul] using hscaled
-  have hback :
-      Interl (C f.leadingCoeff * (C f.leadingCoeff⁻¹ * f.derivative))
-        (C g.leadingCoeff * (C g.leadingCoeff⁻¹ * g.derivative)) :=
+  simpa [← mul_assoc, ← C_mul, hf_lc_ne, hg_lc_ne] using
     interl_C_mul_left_right hf_lc_ne hg_lc_ne hscaled'
-  have hf_inv :
-      C f.leadingCoeff * (C f.leadingCoeff⁻¹ * f.derivative) =
-        f.derivative := by
-    rw [← mul_assoc, ← C_mul]
-    simp [hf_lc_ne]
-  have hg_inv :
-      C g.leadingCoeff * (C g.leadingCoeff⁻¹ * g.derivative) =
-        g.derivative := by
-    rw [← mul_assoc, ← C_mul]
-    simp [hg_lc_ne]
-  simp_all
 
 /-- Degree-at-least-two same-degree branch, obtained from the
 positive-leading-coefficient form by scaling both polynomials by signs. -/
@@ -248,14 +222,12 @@ theorem derivative_interl_of_strictInterl_sameDegree_two_le {f g : ℝ[X]}
     simpa [f₀, g₀, natDegree_C_mul hsf_ne, natDegree_C_mul hsg_ne] using hdeg
   have htwo₀ : 2 ≤ f₀.natDegree := by simpa [f₀, natDegree_C_mul hsf_ne] using htwo
   have hscaled : Interl f₀.derivative g₀.derivative :=
-    derivative_interl_of_strictInterl_sameDegree_posLeading hf₀_pos hg₀_pos hfg₀ hdeg₀ htwo₀
+    derivative_interl_of_strictInterl_sameDegree_posLeading
+      hf₀_pos hg₀_pos hfg₀ hdeg₀ htwo₀
   have hscaled' : Interl (C sf * f.derivative) (C sg * g.derivative) := by
     simpa [f₀, g₀, derivative_C_mul] using hscaled
-  have hback :
-      Interl (C sf⁻¹ * (C sf * f.derivative))
-        (C sg⁻¹ * (C sg * g.derivative)) :=
+  simpa [← mul_assoc, ← C_mul, hsf_ne, hsg_ne] using
     interl_C_mul_left_right (inv_ne_zero hsf_ne) (inv_ne_zero hsg_ne) hscaled'
-  grind
 
 /-- Same-degree branch of differentiation preserving weak interlacing.
 Degrees zero and one are elementary because the derivatives are zero or nonzero
@@ -266,28 +238,21 @@ theorem derivative_interl_of_strictInterl_sameDegree {f g : ℝ[X]}
   by_cases hlarge_deg : 2 ≤ f.natDegree
   · exact derivative_interl_of_strictInterl_sameDegree_two_le hfg hdeg hlarge_deg
   · by_cases hfdeg0 : f.natDegree = 0
-    · have hfder : f.derivative = 0 :=
-        Polynomial.derivative_eq_zero.mpr hfdeg0
+    · have hfder : f.derivative = 0 := Polynomial.derivative_eq_zero.mpr hfdeg0
       have hgdeg0 : g.natDegree = 0 := by lia
-      have hgder : g.derivative = 0 :=
-        Polynomial.derivative_eq_zero.mpr hgdeg0
+      have hgder : g.derivative = 0 := Polynomial.derivative_eq_zero.mpr hgdeg0
       rw [hfder, hgder]
       exact interl_zero_zero
     · have hfdeg1 : f.natDegree = 1 := by lia
       have hgdeg1 : g.natDegree = 1 := by lia
-      have hfder_ne : f.derivative ≠ 0 :=
-        Polynomial.derivative_ne_zero.mpr (by lia)
-      have hgder_ne : g.derivative ≠ 0 :=
-        Polynomial.derivative_ne_zero.mpr (by lia)
+      have hfder_ne : f.derivative ≠ 0 := Polynomial.derivative_ne_zero.mpr (by lia)
+      have hgder_ne : g.derivative ≠ 0 := Polynomial.derivative_ne_zero.mpr (by lia)
       have hfder_deg0 : f.derivative.natDegree = 0 := by simp_all
       have hgder_deg0 : g.derivative.natDegree = 0 := by simp_all
-      have hfder_rr : (f.derivative ≠ 0 ∧ f.derivative.Splits) :=
-        isRealRooted_of_deg_zero hfder_ne hfder_deg0
-      have hgder_rr : (g.derivative ≠ 0 ∧ g.derivative.Splits) :=
-        isRealRooted_of_deg_zero hgder_ne hgder_deg0
       exact
-        (StrictInterl.of_degree_zero_degree_zero hfder_rr.1 hfder_rr.2 hgder_rr.1 hgder_rr.2
-          hfder_deg0 hgder_deg0).toInterl
+        (StrictInterl.of_degree_zero_degree_zero hfder_ne
+          (isRealRooted_of_deg_zero hfder_ne hfder_deg0).2 hgder_ne
+          (isRealRooted_of_deg_zero hgder_ne hgder_deg0).2 hfder_deg0 hgder_deg0).toInterl
 
 /-- Differentiation preserves zero-aware weak interlacing (Rolle--Obreschkoff).
 The same-degree branch is `derivative_interl_of_strictInterl_sameDegree`; the
@@ -316,25 +281,20 @@ theorem derivative_strictInterl_of_strictInterl_sameDegree
     {f g : ℝ[X]} (h : StrictInterl f g)
     (hdeg : f.natDegree = g.natDegree) (hpos : 1 ≤ f.natDegree) :
     StrictInterl f.derivative g.derivative := by
-  have hfder_ne : f.derivative ≠ 0 :=
-    Polynomial.derivative_ne_zero.mpr (by lia)
-  have hgder_ne : g.derivative ≠ 0 :=
-    Polynomial.derivative_ne_zero.mpr (by lia)
   exact
-    (derivative_interl_of_strictInterl_sameDegree h hdeg).toStrictInterl_of_ne hfder_ne hgder_ne
+    (derivative_interl_of_strictInterl_sameDegree h hdeg).toStrictInterl_of_ne
+      (Polynomial.derivative_ne_zero.mpr (by lia))
+      (Polynomial.derivative_ne_zero.mpr (by lia))
 
 /-- Strict `StrictInterl` output in the succ-degree case. -/
 theorem derivative_strictInterl_of_strictInterl_succDegree
     {f g : ℝ[X]} (h : StrictInterl f g)
     (hdeg : f.natDegree + 1 = g.natDegree) (hpos : 1 ≤ f.natDegree) :
     StrictInterl f.derivative g.derivative := by
-  have hfder_ne : f.derivative ≠ 0 :=
-    Polynomial.derivative_ne_zero.mpr (by lia)
-  have hgder_ne : g.derivative ≠ 0 :=
-    Polynomial.derivative_ne_zero.mpr (by lia)
   exact
     (derivative_interl_of_strictInterl_succDegree h hdeg).toStrictInterl_of_ne
-      hfder_ne hgder_ne
+      (Polynomial.derivative_ne_zero.mpr (by lia))
+      (Polynomial.derivative_ne_zero.mpr (by lia))
 
 /-- Differentiation preserves proper position when the left polynomial is
 nonconstant. -/
