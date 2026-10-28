@@ -39,8 +39,6 @@ theorem splits_of_eq_zero_or_splits {p : ℝ[X]} (h : p = 0 ∨ p.Splits) :
 
 /-- Term form of `rr_lookup`: elaborates to `by rr_lookup`. -/
 syntax (name := rr_lookup_term) "rr_lookup_term" : term
-/-- Term form of `rr_realrooted`: elaborates to `by rr_realrooted`. -/
-syntax (name := rr_realrooted_term) "rr_realrooted_term" : term
 /-- Term proving an `Interlaces` fact from a strict interlacing found by `rr_lookup` together with a
 degree equation found by `rr_lookup`, in either orientation. -/
 syntax (name := rr_lookup_interlaces_term) "rr_lookup_interlaces_term" : term
@@ -88,12 +86,6 @@ syntax (name := rr_exact_realrooted_sequence_or_projection)
   "rr_exact_realrooted_sequence_or_projection" term :
   tactic
 
-/-- Applies `rr_exact_realrooted_sequence_or_projection` to the term `h`, whose side goals are
-created by `refine` and closed by the tactic after `with`. -/
-syntax (name := rr_exact_realrooted_refine_then)
-  "rr_exact_realrooted_refine_then " term " with " tactic :
-  tactic
-
 /-- Closes the goal by `exact` of a real-rooted pair sequence certificate `h`, or of one of its
 projections: the pair at a row, the left or right sequence, their nonvanishing, splitting or
 zero-or-splitting facts, or the real-rootedness of the product of the two members. -/
@@ -105,18 +97,6 @@ syntax (name := rr_exact_realrooted_pair_sequence_or_projection)
 reducible instances. It fails if no term applies. -/
 syntax (name := rr_first_exact)
   "rr_first_exact" term,* :
-  tactic
-
-/-- Closes the goal by `exact` of the first term or, failing that, by `simpa using` the second
-term. -/
-syntax (name := rr_first_exact_or_simpa)
-  "rr_first_exact_or_simpa" term ", " term :
-  tactic
-
-/-- Tries `rr_exact_realrooted_sequence_or_projection` on each of the comma-separated certificates
-in turn, also after binding the certificate with `have`. -/
-syntax (name := rr_first_realrooted_sequence_or_projection)
-  "rr_first_realrooted_sequence_or_projection" term,* :
   tactic
 
 /-- Closes `p ≠ 0` from the certificate `h`: a real-rooted, pair, `Interlaces` or `StrictInterl`
@@ -312,8 +292,6 @@ elab "rr_named_interlaces" : tactic => do
 macro_rules
   | `(rr_lookup_term) =>
       `(by rr_lookup)
-  | `(rr_realrooted_term) =>
-      `(by rr_realrooted)
   | `(rr_lookup_interlaces_term) =>
       `(by
         with_reducible_and_instances
@@ -415,11 +393,6 @@ macro_rules
           (RealRooted.splits_of_isRealRooted_sequence $h _),
           RealRooted.eq_zero_or_splits_of_isRealRooted_sequence $h,
           (RealRooted.eq_zero_or_splits_of_isRealRooted_sequence $h _))
-  | `(tactic| rr_exact_realrooted_refine_then $h:term with $tac:tactic) =>
-      `(tactic|
-        rr_exact_realrooted_sequence_or_projection
-          (by
-            rr_refine_then $h with $tac))
   | `(tactic| rr_exact_realrooted_pair_sequence_or_projection $h:term) =>
       `(tactic|
         rr_first_exact
@@ -450,19 +423,6 @@ macro_rules
         with_reducible_and_instances
           solve
             $[ | apply $hs]*)
-  | `(tactic| rr_first_exact_or_simpa $hdirect:term, $hnormalized:term) =>
-      `(tactic|
-        with_reducible_and_instances
-          first
-            | exact $hdirect
-            | simpa using $hnormalized)
-  | `(tactic| rr_first_realrooted_sequence_or_projection $[$hs:term],*) =>
-      `(tactic|
-        with_reducible_and_instances
-          first
-            $[ | (have hcertificate := $hs
-                  rr_exact_realrooted_sequence_or_projection hcertificate)]*
-            $[ | rr_exact_realrooted_sequence_or_projection $hs]*)
   | `(tactic| rr_nonzero using $h:term) =>
       `(tactic|
         rr_first_exact

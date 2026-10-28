@@ -116,7 +116,8 @@ example (P : ℕ → ℚ[X])
       liftDefect 1 4 (-4) (4 + 2 * X) (X * (X + 16)) P n = 0) :
     ∀ n, 3 ≤ n →
       liftDefect 1 4 (-4) (4 + 2 * X) (X * (X + 16)) P n = 0 := by
-  rr_replay_lift_from (3) (hsource) (X) (a049325_defectCorrection) (hseed)
+  exact liftDefect_eq_zero_from_of_lagDefect_eq_zero_from (n₀ := 3) (gamma := X)
+    (hsource := hsource) (hfactor := a049325_defectCorrection) (hseed := hseed)
 
 /-- Converse replay uses the affine-leader nonvanishing side condition. -/
 example (P : ℕ → ℚ[X])
@@ -136,8 +137,9 @@ example (P : ℕ → ℚ[X])
       affineIndex (1 : ℚ[X]) (4 : ℚ[X]) (n + 4) = 0 →
       lagDefect a049325Coeffs P (n + 1) = 0) :
     ∀ n, 2 ≤ n → lagDefect a049325Coeffs P n = 0 := by
-  rr_replay_source_from (2) (hlift) (X) (a049325_defectCorrection)
-    (hseed) (hexception)
+  exact lagDefect_eq_zero_from_of_liftDefect_eq_zero_from_of_exceptional (n₀ := 2) (gamma := X)
+    (hlift := hlift) (hfactor := a049325_defectCorrection) (hseed := hseed)
+    (hexception := hexception)
 
 /-- A changed factor is rejected by certificate replay. -/
 example (P : ℕ → ℚ[X])

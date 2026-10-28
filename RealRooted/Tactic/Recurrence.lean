@@ -63,18 +63,6 @@ macro_rules
              (hseed := $hseeds)) n
            rr_replay_factor))
 
-/-- Replay a short factor certificate on a tail beginning at an exceptional index. -/
-syntax (name := rrReplayLiftFrom) "rr_replay_lift_from" "(" term ")" "(" term ")"
-  "(" term ")" "(" term ")" "(" term ")" : tactic
-
-macro_rules
-  | `(tactic|
-      rr_replay_lift_from ($origin:term) ($hsource:term) ($factor:term)
-        ($hfactor:term) ($hseeds:term)) =>
-      `(tactic| exact RealRooted.liftDefect_eq_zero_from_of_lagDefect_eq_zero_from
-        (n₀ := $origin) (gamma := $factor) (hsource := $hsource) (hfactor := $hfactor)
-        (hseed := $hseeds))
-
 /-- Replay the converse short certificate when every affine leader is nonzero. -/
 syntax (name := rrReplaySource) "rr_replay_source" "(" term ")" "(" term ")"
   "(" term ")" "(" term ")" : tactic
@@ -92,19 +80,6 @@ macro_rules
              (gamma := $factor) (hlift := $hlift) (hfactor := ?_)
              (hseed := $hseed) (hleader := $hleader)) n
            rr_replay_factor))
-
-/-- Replay the converse certificate on a tail, using extra source seeds at singular leaders. -/
-syntax (name := rrReplaySourceFrom) "rr_replay_source_from" "(" term ")" "(" term ")"
-  "(" term ")" "(" term ")" "(" term ")" "(" term ")" : tactic
-
-macro_rules
-  | `(tactic|
-      rr_replay_source_from ($origin:term) ($hlift:term) ($factor:term)
-        ($hfactor:term) ($hseed:term) ($hexceptions:term)) =>
-      `(tactic| exact
-        RealRooted.lagDefect_eq_zero_from_of_liftDefect_eq_zero_from_of_exceptional
-          (n₀ := $origin) (gamma := $factor) (hlift := $hlift) (hfactor := $hfactor)
-          (hseed := $hseed) (hexception := $hexceptions))
 
 /-- Convert a checked lift to the `A * P' + B * P` convention of the
 derivative-recurrence and root-window theorems. -/

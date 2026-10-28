@@ -138,21 +138,6 @@ example :
     ((X * (X + C 2) : ℝ[X]).coeff 2) = 1 := by
   rr_coeff
 
-example : HasNonnegCoeffs (0 : ℝ[X]) := by rr_nonneg_coeffs_zero
-
-example : HasNonnegCoeffs (1 : ℝ[X]) := by rr_nonneg_coeffs_one
-
-example {a : ℝ} (ha : 0 ≤ a) : HasNonnegCoeffs (C a) := by
-  rr_nonneg_coeffs_C using scalar_nonneg := ha
-
-example : HasNonnegCoeffs (X : ℝ[X]) := by rr_nonneg_coeffs_X
-
-example {a : ℝ} (ha : 0 ≤ a) : HasNonnegCoeffs (X + C a : ℝ[X]) := by
-  rr_nonneg_coeffs_X_add_C using scalar_nonneg := ha
-
-example {r : ℝ} (hr : r ≤ 0) : HasNonnegCoeffs (X - C r : ℝ[X]) := by
-  rr_nonneg_coeffs_X_sub_C using root_nonpos := hr
-
 example {a : ℝ} {p : ℝ[X]} (ha : 0 ≤ a) (hp : HasNonnegCoeffs p) :
     HasNonnegCoeffs (C a * p) := by
   rr_nonneg_coeffs_C_mul using scalar_nonneg := ha, poly_nonneg := hp
@@ -185,10 +170,6 @@ example {p q : ℝ[X]} (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q) :
     HasNonnegCoeffs (q * p) := by
   rr_nonneg_coeffs_mul using left := hp, right := hq
 
-example {p : ℝ[X]} (hp : HasNonnegCoeffs p) (n : Nat) :
-    HasNonnegCoeffs (p ^ n) := by
-  rr_nonneg_coeffs_pow using poly_nonneg := hp, exponent := n
-
 example {a : ℝ} (ha : 0 ≤ a) :
     HasNonnegCoeffs (C a * (X + C 1) ^ 2 : ℝ[X]) := by
   rr_nonneg_coeffs
@@ -207,8 +188,6 @@ example (d : Nat) :
       (1 + C (3 * (d : ℝ) + 2) * X + C (((d : ℝ) + 1) ^ 2) * X ^ 2 :
         ℝ[X]) := by
   rr_nonneg_coeffs
-
-example : HasPosLeadingCoeff (1 : ℝ[X]) := by rr_pos_lc_one
 
 example : HasPosLeadingCoeff (1 : ℝ[X]) := by rr_pos_lc
 

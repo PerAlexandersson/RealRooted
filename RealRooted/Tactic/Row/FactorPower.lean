@@ -129,7 +129,7 @@ private def ratFitTerm (fit : RatFit) (N : Term) : TacticM Term := do
 private def ratPolynomialTerm (fits : Array RatFit) (N : Term) : TacticM Term := do
   let mut sum : Option Term := none
   for j in [0:fits.size] do
-    let some fit := fits[j]? | throwError "rr_row_factor_power_splits: missing coefficient"
+    let some fit := fits[j]? | throwError "rr_row (factorPower): missing coefficient"
     let c ← `(Polynomial.C $(← ratFitTerm fit N))
     let term ← match j with
       | 0 => pure c
@@ -146,10 +146,10 @@ def factorPowerSplits : TacticM Unit := do
   discard introIfForall
   withMainContext do
   let tgt ← instantiateMVars (← getMainTarget)
-  let some Pn ← findPolySeqConst? tgt | throwError "rr_row_factor_power_splits: no sequence"
-  let some L ← linRec? Pn | throwError "rr_row_factor_power_splits: no linear recurrence"
+  let some Pn ← findPolySeqConst? tgt | throwError "rr_row (factorPower): no sequence"
+  let some L ← linRec? Pn | throwError "rr_row (factorPower): no linear recurrence"
   let some data ← factorPowerProbe? L
-    | throwError "rr_row_factor_power_splits: no fixed-factor quotient recurrence"
+    | throwError "rr_row (factorPower): no fixed-factor quotient recurrence"
   let P := mkIdent Pn
   let (_, targetIndex) ← alignRow Pn data.drop (smallRowSplits P)
   let q ← qpolyTerm data.factor
@@ -193,13 +193,5 @@ def factorPowerSplits : TacticM Unit := do
     refine (hq.pow _).mul ?_
     refine (?_ : RealRooted.Interlaces ($Q $targetIndex) ($Q ($targetIndex + 1))).2.1.2)))
   discard <| rowInterlacesCore {}
-
-/-- Proves that every row splits for a two-lag recurrence whose multipliers contain `q` and `q ^
-2` for one fixed linear `q`, by deflating `q` and applying the row interlacing core to the
-quotient rows. -/
-syntax (name := rrRowFactorPowerSplits) "rr_row_factor_power_splits" : tactic
-
-elab_rules : tactic
-  | `(tactic| rr_row_factor_power_splits) => withMainContext factorPowerSplits
 
 end RealRooted.Tactic
