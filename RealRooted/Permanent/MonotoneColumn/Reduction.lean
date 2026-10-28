@@ -115,18 +115,13 @@ theorem columnBase_add {n : ℕ} (A : Matrix (Fin n) (Fin n) ℝ)
     (j : Fin n) (u v : Fin n → ℝ) :
     columnBase A j (u + v) = columnBase A j u + columnBase A j v := by
   classical
-  have hCadd :
-      (fun i => (MvPolynomial.C ((u + v) i) : MvPolynomial (Fin n) ℝ)) =
-        (fun i => (MvPolynomial.C (u i) : MvPolynomial (Fin n) ℝ)) +
-          fun i => (MvPolynomial.C (v i) : MvPolynomial (Fin n) ℝ) := by
-    funext i
-    simp
   unfold columnBase
-  rw [hCadd]
-  exact Matrix.permanent_updateCol_add
-      (fun i k => MvPolynomial.X k + MvPolynomial.C (A i k)) j
-      (fun i => MvPolynomial.C (u i))
-      (fun i => MvPolynomial.C (v i))
+  convert Matrix.permanent_updateCol_add
+    (fun i k => MvPolynomial.X k + MvPolynomial.C (A i k)) j
+    (fun i => MvPolynomial.C (u i)) (fun i => MvPolynomial.C (v i)) using 1
+  congr 2
+  funext i
+  simp
 
 /-- A scalar on a vector becomes the corresponding constant
 polynomial scalar on its column base. -/
@@ -134,17 +129,13 @@ theorem columnBase_smul {n : ℕ} (A : Matrix (Fin n) (Fin n) ℝ)
     (j : Fin n) (a : ℝ) (v : Fin n → ℝ) :
     columnBase A j (a • v) = MvPolynomial.C a * columnBase A j v := by
   classical
-  have hCsmul :
-      (fun i => (MvPolynomial.C ((a • v) i) : MvPolynomial (Fin n) ℝ)) =
-        (MvPolynomial.C a : MvPolynomial (Fin n) ℝ) •
-          fun i => (MvPolynomial.C (v i) : MvPolynomial (Fin n) ℝ) := by
-    funext i
-    simp
   unfold columnBase
-  rw [hCsmul]
-  exact Matrix.permanent_updateCol_smul
-      (fun i k => MvPolynomial.X k + MvPolynomial.C (A i k)) j
-      (MvPolynomial.C a) (fun i => MvPolynomial.C (v i))
+  convert Matrix.permanent_updateCol_smul
+    (fun i k => MvPolynomial.X k + MvPolynomial.C (A i k)) j
+    (MvPolynomial.C a) (fun i => MvPolynomial.C (v i)) using 1
+  congr 2
+  funext i
+  simp
 
 /-- The zero replacement vector has zero column base. -/
 @[simp] theorem columnBase_zero {n : ℕ} (A : Matrix (Fin n) (Fin n) ℝ)
@@ -158,57 +149,48 @@ variables to their corresponding old coordinate. -/
 def isolateColumnVariable {n : ℕ} (j : Fin n) : Fin n → Option (Fin n) :=
   fun k => if k = j then none else some k
 
+private theorem rename_isolateColumnVariable_permanent_updateCol {n : ℕ}
+    (A : Matrix (Fin n) (Fin n) ℝ) (j : Fin n)
+    (w : Fin n → MvPolynomial (Fin n) ℝ)
+    (hw : ∀ i, MvPolynomial.rename (isolateColumnVariable j) (w i) =
+      MvPolynomial.rename some (w i)) :
+    MvPolynomial.rename (isolateColumnVariable j)
+        (Matrix.permanent (Matrix.updateCol
+          (fun i k => MvPolynomial.X k + MvPolynomial.C (A i k)) j w)) =
+      MvPolynomial.rename some
+        (Matrix.permanent (Matrix.updateCol
+          (fun i k => MvPolynomial.X k + MvPolynomial.C (A i k)) j w)) := by
+  classical
+  let M : Matrix (Fin n) (Fin n) (MvPolynomial (Fin n) ℝ) :=
+    fun i k => MvPolynomial.X k + MvPolynomial.C (A i k)
+  change MvPolynomial.rename (isolateColumnVariable j) (Matrix.permanent (M.updateCol j w)) =
+    MvPolynomial.rename some (Matrix.permanent (M.updateCol j w))
+  rw [rename_permanent, rename_permanent]
+  apply congrArg Matrix.permanent
+  funext i k
+  by_cases hkj : k = j
+  · subst k
+    simpa only [Matrix.updateCol_self] using hw i
+  · simp only [Matrix.updateCol_ne hkj]
+    dsimp only [M]
+    simp [hkj, isolateColumnVariable]
+
 /-- The column base does not contain the selected variable, so isolating
 that variable has the same effect as the ordinary `some` renaming. -/
 theorem rename_isolateColumnVariable_columnBase {n : ℕ}
     (A : Matrix (Fin n) (Fin n) ℝ) (j : Fin n) (v : Fin n → ℝ) :
     MvPolynomial.rename (isolateColumnVariable j) (columnBase A j v) =
       MvPolynomial.rename some (columnBase A j v) := by
-  classical
-  let M : Matrix (Fin n) (Fin n) (MvPolynomial (Fin n) ℝ) :=
-    fun i k => MvPolynomial.X k + MvPolynomial.C (A i k)
-  change MvPolynomial.rename (isolateColumnVariable j)
-      (Matrix.permanent (M.updateCol j fun i => MvPolynomial.C (v i))) =
-    MvPolynomial.rename some
-      (Matrix.permanent (M.updateCol j fun i => MvPolynomial.C (v i)))
-  unfold Matrix.permanent
-  simp only [map_sum]
-  apply Finset.sum_congr rfl
-  intro σ hσ
-  simp only [map_prod]
-  apply Finset.prod_congr rfl
-  intro k hk
-  by_cases hkj : k = j
-  · subst k
-    simp
-  · simp only [Matrix.updateCol_ne hkj]
-    dsimp only [M]
-    simp [hkj, isolateColumnVariable]
+  apply rename_isolateColumnVariable_permanent_updateCol
+  simp
 
 /-- The column direction does not contain the selected variable. -/
 theorem rename_isolateColumnVariable_columnDirection {n : ℕ}
     (A : Matrix (Fin n) (Fin n) ℝ) (j : Fin n) :
     MvPolynomial.rename (isolateColumnVariable j) (columnDirection A j) =
       MvPolynomial.rename some (columnDirection A j) := by
-  classical
-  let M : Matrix (Fin n) (Fin n) (MvPolynomial (Fin n) ℝ) :=
-    fun i k => MvPolynomial.X k + MvPolynomial.C (A i k)
-  change MvPolynomial.rename (isolateColumnVariable j)
-      (Matrix.permanent (M.updateCol j fun _ => 1)) =
-    MvPolynomial.rename some (Matrix.permanent (M.updateCol j fun _ => 1))
-  unfold Matrix.permanent
-  simp only [map_sum]
-  apply Finset.sum_congr rfl
-  intro σ hσ
-  simp only [map_prod]
-  apply Finset.prod_congr rfl
-  intro k hk
-  by_cases hkj : k = j
-  · subst k
-    simp
-  · simp only [Matrix.updateCol_ne hkj]
-    dsimp only [M]
-    simp [hkj, isolateColumnVariable]
+  apply rename_isolateColumnVariable_permanent_updateCol
+  simp
 
 /-- Isolating the selected column variable turns its permanent into the
 fresh-variable affine pencil used by `MvStablePencil`. -/
@@ -243,12 +225,7 @@ theorem columnDirection_stable_of_zero_column_stable {n : ℕ}
   have hpencil :=
     mvStablePencil_columnDirection_columnBase_of_stable A j 0 hzero
   rcases MvStablePencil.left hpencil with hdirection | hdirection
-  · exfalso
-    apply (show MvRealStable
-      (MvPolynomial.rename some (columnBase A j 0) +
-        MvPolynomial.X none *
-          MvPolynomial.rename some (columnDirection A j)) from hpencil).ne_zero
-    simp [hdirection]
+  · exact (hpencil.ne_zero (by simp [hdirection])).elim
   · exact hdirection
 
 /-- Adding a real constant to every entry of a prescribed column translates
@@ -301,16 +278,7 @@ theorem columnPermanent_updateCol_stable_of_zeroOne_decreasing {m : ℕ}
         MvRealStable (columnPermanent (A.updateCol j q))) :
     MvRealStable (columnPermanent (A.updateCol j v)) := by
   let F := columnDirection A j
-  have hzeroValues : ∀ i, (0 : Fin (m + 1) → ℝ) i = 0 ∨
-      (0 : Fin (m + 1) → ℝ) i = 1 := by
-    intro i
-    left
-    rfl
-  have hzeroDecreasing :
-      IsWeaklyDecreasingVector (0 : Fin (m + 1) → ℝ) := by
-    intro i k hik
-    rfl
-  have hzero := hstable 0 hzeroValues hzeroDecreasing
+  have hzero := hstable 0 (fun _ ↦ Or.inl rfl) (fun _ _ _ ↦ le_rfl)
   have hF : MvRealStable F :=
     columnDirection_stable_of_zero_column_stable A j hzero
   have hzeroPencil : MvStablePencil F (columnBase A j 0) :=

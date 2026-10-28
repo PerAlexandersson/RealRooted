@@ -33,39 +33,31 @@ def shiftDown (S : Finset ℕ) : Finset ℕ := (S.filter (· ≠ 0)).image (· -
 /-- Membership in `shiftDown S`. -/
 @[simp]
 lemma mem_shiftDown {S : Finset ℕ} {i : ℕ} : i ∈ shiftDown S ↔ i + 1 ∈ S := by
-  unfold shiftDown
+  simp only [shiftDown, Finset.mem_image, Finset.mem_filter]
   constructor
-  · intro h
-    obtain ⟨j, hj, rfl⟩ := Finset.mem_image.mp h
-    have hj' := Finset.mem_filter.mp hj
-    have : j - 1 + 1 = j := by lia
-    simp_all
-  · intro h
-    exact Finset.mem_image.mpr ⟨i + 1, Finset.mem_filter.mpr ⟨h, by lia⟩, by lia⟩
+  · rintro ⟨j, ⟨hj, hj0⟩, rfl⟩
+    simpa [Nat.sub_add_cancel (Nat.pos_of_ne_zero hj0)] using hj
+  · exact fun hi ↦ ⟨i + 1, ⟨hi, by lia⟩, by lia⟩
 
 /-- Erasing `0` does not change `shiftDown`. -/
 @[simp]
 lemma shiftDown_erase_zero (T : Finset ℕ) : shiftDown (T.erase 0) = shiftDown T := by
-  ext i
-  simp
+  exact Finset.ext fun _ ↦ by simp
 
 /-- `shiftDown` of the singleton `{0}` is empty. -/
 @[simp]
 lemma shiftDown_singleton_zero : shiftDown {0} = ∅ := by
-  ext i
-  simp
+  exact Finset.ext fun _ ↦ by simp
 
 /-- `shiftDown` of the empty set is empty. -/
 @[simp]
 lemma shiftDown_empty : shiftDown ∅ = ∅ := by
-  ext i
-  simp
+  exact Finset.ext fun _ ↦ by simp
 
 /-- `shiftDown` of an initial segment. -/
 @[simp]
 lemma shiftDown_range (m : ℕ) : shiftDown (Finset.range (m + 1)) = Finset.range m := by
-  ext i
-  simp
+  exact Finset.ext fun _ ↦ by simp
 
 /-- `shiftDown` commutes with erasing a positive position. -/
 lemma shiftDown_erase_succ (S : Finset ℕ) (s : ℕ) :
@@ -86,8 +78,7 @@ noncomputable def refined : ℕ → ℕ → Finset ℕ → Finset ℕ → ℝ[X]
 
 /-- The base case `n = 0` of `refined`. -/
 lemma refined_zero (k : ℕ) (S T : Finset ℕ) :
-    refined 0 k S T = if k = 0 ∧ S = ∅ then 1 else 0 := by
-  rw [refined]
+    refined 0 k S T = if k = 0 ∧ S = ∅ then 1 else 0 := rfl
 
 /-- The two-summand unfolding of `refined` at level `n + 1`. -/
 lemma refined_succ (n k : ℕ) (S T : Finset ℕ) :
@@ -95,8 +86,7 @@ lemma refined_succ (n k : ℕ) (S T : Finset ℕ) :
       (if 0 ∈ T then
         X * ∑ j ∈ Finset.range k, refined n j (shiftDown S) ((shiftDown T).erase 0) else 0) +
       (if 0 ∈ S then 0 else
-        ∑ j ∈ Finset.Ico k (n + 1), refined n j (shiftDown S) (shiftDown T)) := by
-  rw [refined]
+        ∑ j ∈ Finset.Ico k (n + 1), refined n j (shiftDown S) (shiftDown T)) := rfl
 
 /-- Regression check (`n = 2`, paper `T = [1, 2]`): `p^{∅ ⊆ {0,1}}_{2,1} = 2 x`. -/
 example : refined 2 1 ∅ {0, 1} = C 2 * X := by
@@ -235,13 +225,8 @@ theorem refined_eq_zero_of_not_subset {n : ℕ} (k : ℕ) {S T : Finset ℕ} (h 
           rintro rfl
           exact hiT hT0
         have hsub : ¬shiftDown S ⊆ (shiftDown T).erase 0 := by
-          intro hsub
-          have := hsub (mem_shiftDown.mpr (show (i - 1) + 1 ∈ S by
-            rwa [Nat.sub_add_cancel (Nat.pos_of_ne_zero hi0)]))
-          have h2 := Finset.mem_erase.mp this
-          have := mem_shiftDown.mp h2.2
-          rw [Nat.sub_add_cancel (Nat.pos_of_ne_zero hi0)] at this
-          exact hiT this
+          rw [Finset.not_subset]
+          refine ⟨i - 1, ?_, ?_⟩ <;> simp only [Finset.mem_erase, mem_shiftDown] <;> grind
         simp [h0, hT0, ih _ hsub]
       · simp [h0, hT0]
     · have hi0 : i ≠ 0 := by
@@ -249,10 +234,8 @@ theorem refined_eq_zero_of_not_subset {n : ℕ} (k : ℕ) {S T : Finset ℕ} (h 
         exact h0 hiS
       have hi1 : (i - 1) + 1 = i := Nat.sub_add_cancel (Nat.pos_of_ne_zero hi0)
       have hsub : ¬shiftDown S ⊆ shiftDown T := by
-        intro hsub
-        have := mem_shiftDown.mp (hsub (mem_shiftDown.mpr (by rwa [hi1])))
-        rw [hi1] at this
-        exact hiT this
+        rw [Finset.not_subset]
+        exact ⟨i - 1, mem_shiftDown.mpr (by rwa [hi1]), by simpa [hi1] using hiT⟩
       have hsub' : ¬shiftDown S ⊆ (shiftDown T).erase 0 := fun hs =>
         hsub (hs.trans (Finset.erase_subset _ _))
       simp [h0, ih _ hsub, ih _ hsub']
@@ -283,19 +266,13 @@ theorem refined_erase {n k : ℕ} {S : Finset ℕ} (T : Finset ℕ) {s : ℕ} (h
     · have hS0 : (0 : ℕ) ∈ S := hs
       simp [refined_succ, hS0]
     · have hs' : s ∈ shiftDown S := mem_shiftDown.mpr hs
-      have h1 : ∑ j ∈ Finset.range k,
-            refined n j ((shiftDown S).erase s) ((shiftDown T).erase 0) =
-          ∑ j ∈ Finset.range k, refined n j (shiftDown S) ((shiftDown T).erase 0) +
-          ∑ j ∈ Finset.range k, refined n j ((shiftDown S).erase s)
-            (((shiftDown T).erase 0).erase s) := by
+      have hsum (U V : Finset ℕ) : ∑ j ∈ U, refined n j ((shiftDown S).erase s) V =
+          ∑ j ∈ U, refined n j (shiftDown S) V +
+            ∑ j ∈ U, refined n j ((shiftDown S).erase s) (V.erase s) := by
         rw [← Finset.sum_add_distrib]
         exact Finset.sum_congr rfl fun j _ => ih _ hs'
-      have h2 : ∑ j ∈ Finset.Ico k (n + 1), refined n j ((shiftDown S).erase s) (shiftDown T) =
-          ∑ j ∈ Finset.Ico k (n + 1), refined n j (shiftDown S) (shiftDown T) +
-          ∑ j ∈ Finset.Ico k (n + 1), refined n j ((shiftDown S).erase s)
-            ((shiftDown T).erase s) := by
-        rw [← Finset.sum_add_distrib]
-        exact Finset.sum_congr rfl fun j _ => ih _ hs'
+      have h1 := hsum (Finset.range k) ((shiftDown T).erase 0)
+      have h2 := hsum (Finset.Ico k (n + 1)) (shiftDown T)
       have hSm : (0 ∈ S.erase (s + 1)) ↔ 0 ∈ S := by simp
       have hTm : (0 ∈ T.erase (s + 1)) ↔ 0 ∈ T := by simp
       have hc : ((shiftDown T).erase s).erase 0 = ((shiftDown T).erase 0).erase s :=
