@@ -127,10 +127,6 @@ lemma scaledLinearFamily_pairwiseCompatible_iff_familyCompatible :
     PairwiseCompatible scaledLinearFamily ↔ FamilyCompatible scaledLinearFamily :=
   ⟨fun _ => scaledLinearFamily_familyCompatible, fun _ => scaledLinearFamily_pairwiseCompatible⟩
 
-private lemma xAddOne_natDegree :
-    (X + 1 : ℝ[X]).natDegree = 1 := by
-  simp
-
 private lemma xAddTwo_natDegree :
     (X + 2 : ℝ[X]).natDegree = 1 := by
   change ((X + C (2 : ℝ) : ℝ[X]).natDegree = 1)
@@ -139,13 +135,11 @@ private lemma xAddTwo_natDegree :
 private lemma xAddTwo_isRealRooted : ((X + 2 : ℝ[X]) ≠ 0 ∧ (X + 2 : ℝ[X]).Splits) :=
   isRealRooted_of_degree_one xAddTwo_natDegree
 
-private lemma xAddTwo_hasNonnegCoeffs : HasNonnegCoeffs (X + 2 : ℝ[X]) := by
-  change HasNonnegCoeffs (X + C (2 : ℝ) : ℝ[X])
-  exact hasNonnegCoeffs_X_add_C (by norm_num)
+private lemma xAddTwo_hasNonnegCoeffs : HasNonnegCoeffs (X + 2 : ℝ[X]) :=
+  hasNonnegCoeffs_X_add_C (by norm_num)
 
-private lemma xAddTwo_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 2 : ℝ[X]) := by
-  change HasPosLeadingCoeff (X + C (2 : ℝ) : ℝ[X])
-  exact hasPosLeadingCoeff_X_add_C (2 : ℝ)
+private lemma xAddTwo_hasPosLeadingCoeff : HasPosLeadingCoeff (X + 2 : ℝ[X]) :=
+  hasPosLeadingCoeff_X_add_C (2 : ℝ)
 
 private lemma xAddOne_roots :
     (X + 1 : ℝ[X]).roots = {(-1 : ℝ)} := by
@@ -166,7 +160,6 @@ private lemma xAddThree_isRealRooted : ((X + 3 : ℝ[X]) ≠ 0 ∧ (X + 3 : ℝ[
   simpa [sub_eq_add_neg, add_comm] using isRealRooted_X_sub_C (-3 : ℝ)
 
 private lemma xAddThree_hasNonnegCoeffs : HasNonnegCoeffs (X + 3 : ℝ[X]) := by
-  change HasNonnegCoeffs (X + C (3 : ℝ) : ℝ[X])
   exact hasNonnegCoeffs_X_add_C (by norm_num)
 
 private lemma xAddThree_roots :
@@ -248,11 +241,6 @@ private lemma xAddOne_xSq_add_fiveX_add_six_not_strictInterl :
       (by simp [xSq_add_fiveX_add_six_natDegree]) (-2)).2
   rw [xAddOne_roots, xSq_add_fiveX_add_six_roots] at hcount
   norm_num [Multiset.filter_add, Multiset.filter_singleton] at hcount
-
-private lemma xAddOne_xAddTwo_linear_combo_eq {lam : ℝ} :
-    (C lam * (X + 1) + (X + 2) : ℝ[X]) = X * C (lam + 1) + C (lam + 2) := by
-  simp only [map_add, map_one, map_ofNat]
-  ring
 
 /-- The linear pair used in the counterexamples still satisfies the true
 all-combinations conclusion for a simpler reason: every combination remains
@@ -363,24 +351,20 @@ private def orientCexF : ℝ[X] := (X - C (1 : ℝ)) * (X - C (-1 : ℝ))
 private def orientCexG : ℝ[X] := (X - C (2 : ℝ)) * (X - C (-2 : ℝ))
 
 private lemma orientCexF_natDegree : orientCexF.natDegree = 2 := by
-  unfold orientCexF
-  rw [natDegree_mul (X_sub_C_ne_zero _) (X_sub_C_ne_zero _),
+  rw [orientCexF, natDegree_mul (X_sub_C_ne_zero _) (X_sub_C_ne_zero _),
     natDegree_X_sub_C, natDegree_X_sub_C]
 
 private lemma orientCexG_natDegree : orientCexG.natDegree = 2 := by
-  unfold orientCexG
-  rw [natDegree_mul (X_sub_C_ne_zero _) (X_sub_C_ne_zero _),
+  rw [orientCexG, natDegree_mul (X_sub_C_ne_zero _) (X_sub_C_ne_zero _),
     natDegree_X_sub_C, natDegree_X_sub_C]
 
 private lemma orientCexF_roots : orientCexF.roots = {1, -1} := by
-  unfold orientCexF
-  rw [roots_mul (mul_ne_zero (X_sub_C_ne_zero _) (X_sub_C_ne_zero _)),
+  rw [orientCexF, roots_mul (mul_ne_zero (X_sub_C_ne_zero _) (X_sub_C_ne_zero _)),
     roots_X_sub_C, roots_X_sub_C]
   simp
 
 private lemma orientCexG_roots : orientCexG.roots = {2, -2} := by
-  unfold orientCexG
-  rw [roots_mul (mul_ne_zero (X_sub_C_ne_zero _) (X_sub_C_ne_zero _)),
+  rw [orientCexG, roots_mul (mul_ne_zero (X_sub_C_ne_zero _) (X_sub_C_ne_zero _)),
     roots_X_sub_C, roots_X_sub_C]
   simp
 

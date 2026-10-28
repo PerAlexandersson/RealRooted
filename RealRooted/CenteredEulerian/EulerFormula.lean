@@ -43,8 +43,7 @@ lemma powerSeries_coeff_eq_zero (d : ℕ → ℝ) (r : ℝ) (hr : 0 < r)
   -- shifted summability
   have hs' : Summable (fun k => |d (k + 1 + m)| * r ^ (k + 1)) := by
     have := (summable_nat_add_iff (1 + m)).mpr hs
-    have h2 := this.mul_left ((r ^ m)⁻¹)
-    convert h2 using 1
+    convert this.mul_left ((r ^ m)⁻¹) using 1
     funext k
     rw [show k + (1 + m) = k + 1 + m by ring, pow_add r (k + 1) m]
     field_simp
@@ -65,17 +64,16 @@ lemma powerSeries_coeff_eq_zero (d : ℕ → ℝ) (r : ℝ) (hr : 0 < r)
     rw [← hasSum_nat_add_iff' 1] at h2
     simp only [Finset.range_one, Finset.sum_singleton, pow_zero, mul_one, zero_add,
       zero_sub] at h2
-    have h3 : |d m| = |∑' k, d (k + 1 + m) * z ^ (k + 1)| := by
-      rw [h2.tsum_eq, abs_neg]
-    rw [h3]
+    rw [show |d m| = |∑' k, d (k + 1 + m) * z ^ (k + 1)| by
+      rw [h2.tsum_eq, abs_neg]]
     have hsz : Summable (fun k => |d (k + 1 + m)| * z ^ (k + 1)) := by
       refine Summable.of_nonneg_of_le (fun k => by positivity) (fun k => ?_) hs'
       exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hz.le hzr _) (abs_nonneg _)
     calc |∑' k, d (k + 1 + m) * z ^ (k + 1)|
         ≤ ∑' k, |d (k + 1 + m) * z ^ (k + 1)| := by
-          have := norm_tsum_le_tsum_norm (f := fun k => d (k + 1 + m) * z ^ (k + 1))
+          simpa using norm_tsum_le_tsum_norm
+            (f := fun k => d (k + 1 + m) * z ^ (k + 1))
             (by simpa [abs_mul, abs_pow, abs_of_pos hz] using hsz)
-          simpa using this
       _ = ∑' k, |d (k + 1 + m)| * z ^ (k + 1) := by
           congr 1; funext k; rw [abs_mul, abs_pow, abs_of_pos hz]
       _ ≤ ∑' k, (z / r) * (|d (k + 1 + m)| * r ^ (k + 1)) := by
@@ -111,16 +109,14 @@ lemma hasSum_coeff_one_add_sinS (z : ℝ) :
     have := hasSum_ite_eq 0 (1 : ℝ)
     convert this using 1
     funext n
-    rw [coeff_one]
-    split_ifs <;> simp_all
+    rw [coeff_one]; split_ifs <;> simp_all
   convert h1.add (hasSum_coeff_sinS z) using 1
   funext n; rw [map_add, add_mul]
 
 lemma abs_coeff_one_add_sinS_le (n : ℕ) : |coeff n (1 + sinS)| ≤ 2 / (n.factorial : ℝ) := by
   rw [map_add, coeff_one]
   have h := abs_coeff_sinS_le n
-  have hf : (1 : ℝ) ≤ n.factorial := by
-    exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Nat.factorial_ne_zero n)
+  have hf : (1 : ℝ) ≤ n.factorial := by exact_mod_cast Nat.factorial_pos n
   split_ifs with hn
   · subst hn
     rw [coeff_sinS]; simp
@@ -130,8 +126,7 @@ lemma abs_coeff_one_add_sinS_le (n : ℕ) : |coeff n (1 + sinS)| ≤ 2 / (n.fact
 
 lemma summable_inv_factorial_mul_pow (r : ℝ) :
     Summable (fun n : ℕ => 2 / (n.factorial : ℝ) * |r| ^ n) := by
-  have := (Real.summable_pow_div_factorial |r|).mul_left 2
-  convert this using 1
+  convert (Real.summable_pow_div_factorial |r|).mul_left 2 using 1
   funext n; ring
 
 /-- The formal coefficients of `sec + tan` agree with the analytic ones. -/
@@ -157,8 +152,7 @@ theorem eulerCoeff_eq_eulerG (k : ℕ) : eulerCoeff k = eulerG k := by
     have hterm : ∀ n, ∑ kl ∈ Finset.antidiagonal n, eulerG kl.1 * z ^ kl.1 *
         (coeff kl.2 cosS * z ^ kl.2) = ser n * z ^ n := by
       intro n
-      rw [hser, Finset.sum_mul]
-      apply Finset.sum_congr rfl
+      rw [hser, Finset.sum_mul]; apply Finset.sum_congr rfl
       intro kl hkl
       rw [Finset.mem_antidiagonal] at hkl
       rw [← hkl, pow_add]; ring
@@ -196,11 +190,8 @@ theorem eulerCoeff_eq_eulerG (k : ℕ) : eulerCoeff k = eulerG k := by
     linarith
   have hcos : cosS ≠ 0 := by
     intro h0
-    have := constantCoeff_cosS
-    rw [h0, map_zero] at this
-    exact zero_ne_one this
-  have := mul_right_cancel₀ hcos hmul
-  rw [eulerCoeff, ← this, coeff_mk]
+    simpa [h0] using constantCoeff_cosS
+  rw [eulerCoeff, ← mul_right_cancel₀ hcos hmul, coeff_mk]
 
 /-! ### The alternating and absolute sums `T_s`, `S_s` over odd `m ≥ 3` -/
 
@@ -221,8 +212,8 @@ lemma sSeq_nonneg (s t : ℕ) : 0 ≤ sSeq s t := by rw [sSeq]; positivity
 
 lemma summable_sSeq {s : ℕ} (hs : 2 ≤ s) : Summable (sSeq s) := by
   have h1 : Summable (fun n : ℕ => (1 / ((n : ℝ) + 1) ^ 2)) := by
-    have := (summable_nat_add_iff 1).mpr (Real.summable_one_div_nat_pow.mpr (one_lt_two))
-    simpa using this
+    simpa using (summable_nat_add_iff 1).mpr
+      (Real.summable_one_div_nat_pow.mpr one_lt_two)
   refine Summable.of_nonneg_of_le (sSeq_nonneg s) (fun t => ?_) h1
   rw [sSeq]
   have h0 : 1 / (2 * (t : ℝ) + 3) ≤ 1 := by
@@ -242,9 +233,9 @@ lemma summable_tSeq {s : ℕ} (hs : 2 ≤ s) : Summable (tSeq s) :=
 lemma Ssum_nonneg (s : ℕ) : 0 ≤ Ssum s := tsum_nonneg (sSeq_nonneg s)
 
 lemma abs_Tsum_le {s : ℕ} (hs : 2 ≤ s) : |Tsum s| ≤ Ssum s := by
-  have := norm_tsum_le_tsum_norm (f := tSeq s) (by
-    simpa [Real.norm_eq_abs, abs_tSeq] using summable_sSeq hs)
-  simpa [Tsum, Ssum, Real.norm_eq_abs, abs_tSeq] using this
+  simpa [Tsum, Ssum, Real.norm_eq_abs, abs_tSeq] using
+    norm_tsum_le_tsum_norm (f := tSeq s) (by
+      simpa [Real.norm_eq_abs, abs_tSeq] using summable_sSeq hs)
 
 lemma Ssum_three_le : Ssum 3 ≤ 29 / 540 := by
   apply Real.tsum_le_of_sum_range_le (sSeq_nonneg 3)
@@ -270,17 +261,16 @@ lemma Ssum_three_le : Ssum 3 ≤ 29 / 540 := by
   intro N
   rcases N with _ | N
   · norm_num
-  · have := key N
-    have : (0 : ℝ) ≤ 1 / 4 * (1 / ((2 * (N : ℝ) + 3) * (2 * N + 5))) := by positivity
-    linarith
+  · nlinarith [key N,
+      show (0 : ℝ) ≤ 1 / 4 * (1 / ((2 * (N : ℝ) + 3) * (2 * N + 5))) by
+        positivity]
 
 lemma sSeq_shift_le (k t : ℕ) : sSeq (k + 3) t ≤ (1 / 3) ^ k * sSeq 3 t := by
   rw [sSeq, sSeq, pow_add]
   have h0 : 1 / (2 * (t : ℝ) + 3) ≤ 1 / 3 := by
     apply one_div_le_one_div_of_le (by norm_num); linarith [(Nat.cast_nonneg t : (0 : ℝ) ≤ t)]
   have := pow_le_pow_left₀ (by positivity) h0 k
-  have h3 : (0 : ℝ) ≤ (1 / (2 * (t : ℝ) + 3)) ^ 3 := by positivity
-  exact mul_le_mul_of_nonneg_right this h3
+  exact mul_le_mul_of_nonneg_right this (by positivity)
 
 lemma Ssum_shift_le (k : ℕ) : Ssum (k + 3) ≤ (1 / 3) ^ k * Ssum 3 := by
   rw [Ssum, Ssum, ← tsum_mul_left]
@@ -289,11 +279,9 @@ lemma Ssum_shift_le (k : ℕ) : Ssum (k + 3) ≤ (1 / 3) ^ k * Ssum 3 := by
 
 lemma Ssum_le_of_three_le {s : ℕ} (hs : 3 ≤ s) : Ssum s ≤ 29 / 540 := by
   obtain ⟨k, rfl⟩ : ∃ k, s = k + 3 := ⟨s - 3, by lia⟩
-  have h1 := Ssum_shift_le k
-  have h2 : (1 / 3 : ℝ) ^ k ≤ 1 := pow_le_one₀ (by norm_num) (by norm_num)
-  have := Ssum_three_le
-  have := Ssum_nonneg 3
-  nlinarith
+  nlinarith [Ssum_shift_le k,
+    pow_le_one₀ (n := k) (by norm_num : 0 ≤ (1 : ℝ) / 3) (by norm_num),
+    Ssum_three_le, Ssum_nonneg 3]
 
 lemma abs_Tsum_sub_le {s : ℕ} (hs : 2 ≤ s) :
     |Tsum s - Tsum (s + 2)| ≤ Ssum s - Ssum (s + 2) := by
@@ -392,16 +380,14 @@ lemma eulerCoeff_three : eulerCoeff 3 = 1 / 3 := by
 /-! ### Positivity and the ratio estimate -/
 
 lemma one_add_Tsum_pos {s : ℕ} (hs : 3 ≤ s) : 0 < 1 + Tsum s := by
-  have h1 := abs_Tsum_le (s := s) (by lia)
-  have h2 := Ssum_le_of_three_le hs
-  have := neg_abs_le (Tsum s)
-  linarith
+  linarith [abs_Tsum_le (s := s) (by lia), Ssum_le_of_three_le hs,
+    neg_abs_le (Tsum s)]
 
 theorem eulerCoeff_pos (k : ℕ) : 0 < eulerCoeff k := by
   rcases Nat.lt_or_ge k 2 with hk | hk
   · interval_cases k
-    · rw [eulerCoeff_zero]; norm_num
-    · rw [eulerCoeff_one]; norm_num
+    · norm_num [eulerCoeff_zero]
+    · norm_num [eulerCoeff_one]
   · rw [eulerCoeff_formula (by lia)]
     have := one_add_Tsum_pos (s := k + 1) (by lia)
     have := Real.pi_pos
@@ -410,11 +396,9 @@ theorem eulerCoeff_pos (k : ℕ) : 0 < eulerCoeff k := by
 theorem eulerCoeff_le {k : ℕ} (hk : 1 ≤ k) :
     eulerCoeff k ≤ 2 * (2 / π) ^ (k + 1) * (1 + Ssum (k + 1)) := by
   rw [eulerCoeff_formula hk]
-  have h1 := abs_Tsum_le (s := k + 1) (by lia)
-  have h2 := le_abs_self (Tsum (k + 1))
   have := Real.pi_pos
   have hp : 0 ≤ 2 * (2 / π) ^ (k + 1) := by positivity
-  nlinarith
+  nlinarith [abs_Tsum_le (s := k + 1) (by lia), le_abs_self (Tsum (k + 1))]
 
 /-- The Euler ratios `b_k = (k+1)(k+2) E_k / E_{k+2} = e_k / e_{k+2}`. -/
 noncomputable def eulerRatio (k : ℕ) : ℝ := eulerCoeff k / eulerCoeff (k + 2)

@@ -46,10 +46,7 @@ def loweringEulerStep (M : ℕ) (p : ℝ[X]) : ℝ[X] :=
     simp [loweringEulerStep]
     ring]
   cases k with
-  | zero =>
-      rw [coeff_sub, coeff_add, coeff_C_mul, coeff_X_mul_zero,
-        coeff_derivative]
-      norm_num
+  | zero => simp [coeff_derivative]
   | succ k =>
       rw [coeff_sub, coeff_add, coeff_C_mul, coeff_X_mul,
         coeff_derivative, coeff_derivative]
@@ -60,10 +57,9 @@ theorem loweringEulerStep_nonneg
     {M : ℕ} {p : ℝ[X]} (hp : HasNonnegCoeffs p)
     (hpdeg : p.natDegree ≤ M) :
     HasNonnegCoeffs (loweringEulerStep M p) := by
-  have hshape : loweringEulerStep M p = polarTheta M p + p.derivative := by
+  rw [show loweringEulerStep M p = polarTheta M p + p.derivative by
     simp [loweringEulerStep, polarTheta, theta]
-    ring
-  rw [hshape]
+    ring]
   exact (hp.polarTheta hpdeg).add hp.derivative
 
 /-- At the tight degree boundary, the lowering Euler step drops the ambient
@@ -75,9 +71,8 @@ theorem natDegree_loweringEulerStep_le_pred {M : ℕ} {p : ℝ[X]}
   intro k hk
   rw [coeff_loweringEulerStep]
   have hkM : M ≤ k := by lia
-  have hnext : p.coeff (k + 1) = 0 :=
-    coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hpdeg (by lia))
-  rw [hnext, mul_zero, add_zero]
+  rw [show p.coeff (k + 1) = 0 from
+    coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hpdeg (by lia)), mul_zero, add_zero]
   rcases hkM.eq_or_lt with rfl | hklt
   · simp
   · rw [coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hpdeg hklt), mul_zero]
@@ -91,21 +86,16 @@ theorem reflect_loweringEulerStep_of_reflect {M : ℕ} {p : ℝ[X]}
   rw [coeff_reflect]
   by_cases hi : i ≤ M - 1
   · rw [revAt_le hi, coeff_loweringEulerStep, coeff_loweringEulerStep]
-    have hleft : p.coeff (M - 1 - i) = p.coeff (i + 1) := by
-      have h := congrArg (fun q : ℝ[X] ↦ q.coeff (i + 1)) hsym
-      rw [coeff_reflect, revAt_le (by lia : i + 1 ≤ M)] at h
-      convert h using 1
-      lia
-    have hright : p.coeff (M - 1 - i + 1) = p.coeff i := by
-      have h := congrArg (fun q : ℝ[X] ↦ q.coeff i) hsym
-      rw [coeff_reflect, revAt_le (by lia : i ≤ M)] at h
-      have hindex : M - 1 - i + 1 = M - i := by lia
-      rw [hindex]
-      exact h
-    have hcast : ((M - 1 - i : ℕ) : ℝ) = (M : ℝ) - 1 - i := by
-      rw [Nat.cast_sub hi, Nat.cast_sub hM]
-      norm_num
-    rw [hleft, hright, hcast]
+    have hcoeff (j : ℕ) (hj : j ≤ M) : p.coeff (M - j) = p.coeff j := by
+      have h := congrArg (fun q : ℝ[X] ↦ q.coeff j) hsym
+      simpa [coeff_reflect, revAt_le hj] using h
+    rw [show M - 1 - i = M - (i + 1) by lia, hcoeff (i + 1) (by lia),
+      show M - (i + 1) + 1 = M - i by lia, hcoeff i (by lia)]
+    have hcast : ((M - (i + 1) : ℕ) : ℝ) = (M : ℝ) - 1 - i := by
+      rw [Nat.cast_sub (by lia : i + 1 ≤ M)]
+      push_cast
+      ring
+    rw [hcast]
     ring
   · rw [revAt_eq_self_of_lt (by lia)]
 
@@ -368,13 +358,10 @@ theorem eulerInsertionStep_derivative_strictInterl_zeroStep
     StrictInterl (eulerInsertionStep 1 (M - 2) p.derivative)
       (eulerInsertionStep 0 (M - 1) p) := by
   have hp_ne : p ≠ 0 := by
-    intro hz
-    rw [hz] at hpdeg
+    rintro rfl
     simp at hpdeg
     lia
-  have htheta : IsPFPolynomial (theta p) := by
-    unfold theta
-    exact hp.derivative.X_mul
+  have htheta : IsPFPolynomial (theta p) := hp.derivative.X_mul
   have htheta_deg : (theta p).natDegree = D := by
     unfold theta
     rw [natDegree_mul X_ne_zero
@@ -421,13 +408,12 @@ theorem crossedEulerCompletion_commonLeftInterleaver
     · rw [natDegree_one, hpdeg]
       lia
   have hp_ne : p ≠ 0 := by
-    intro hz
-    rw [hz] at hpdeg
+    rintro rfl
     simp at hpdeg
     lia
   have hp1_ne : p + 1 ≠ 0 := by
-    intro hz
-    rw [hz] at hp1deg
+    intro h
+    rw [h] at hp1deg
     simp at hp1deg
     lia
   have hp_splits : p.Splits := hp.eq_zero_or_splits.resolve_left hp_ne
@@ -437,9 +423,8 @@ theorem crossedEulerCompletion_commonLeftInterleaver
     (derivative_interlaces_of_natDegree_ne_zero hp_splits
       (by rw [hpdeg]; lia)).toStrictInterl
   have hder_p1 : StrictInterl p.derivative (p + 1) := by
-    have h := (derivative_interlaces_of_natDegree_ne_zero hp1_splits
+    simpa using (derivative_interlaces_of_natDegree_ne_zero hp1_splits
       (by rw [hp1deg]; lia)).toStrictInterl
-    simpa using h
   have hderdeg : p.derivative.natDegree ≤ M - 2 := by
     rw [p.natDegree_derivative, hpdeg]
     lia
@@ -462,10 +447,6 @@ theorem crossedEulerCompletion_commonLeftInterleaver
   refine ⟨eulerInsertionStep 1 (M - 2) p.derivative, ?_⟩
   intro q hq
   simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
-  rcases hq with rfl | rfl | rfl | rfl
-  · exact hT_p
-  · exact hT_p1
-  · exact hU_p
-  · exact hU_p1
+  rcases hq with rfl | rfl | rfl | rfl <;> assumption
 
 end RealRooted

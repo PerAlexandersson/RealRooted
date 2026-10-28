@@ -173,10 +173,7 @@ theorem MvRealStableOrZero.coordinateRestriction_zero_or_splits
         (fun k => z k + Function.update (0 : Fin m → ℝ) i 1 k * t) =
           Function.update z i (z i + t) := by
       funext k
-      by_cases hki : k = i
-      · subst k
-        simp
-      · simp [hki]
+      by_cases hki : k = i <;> simp [hki]
     rw [hzt]
     simpa using h.symm
   · right
@@ -187,10 +184,7 @@ theorem MvRealStableOrZero.coordinateRestriction_zero_or_splits
       if k = i then (z i : ℂ) + t else Complex.I
     have hu : ∀ k, 0 < (u k).im := by
       intro k
-      by_cases hki : k = i
-      · subst k
-        simpa [u] using ht
-      · simp [u, hki]
+      by_cases hki : k = i <;> simp [u, hki, ht]
     change ((realAffineLineRestriction z
       (Function.update (0 : Fin m → ℝ) i 1) p).map (algebraMap ℝ ℂ)).eval t ≠ 0
     rw [eval_complexify_realAffineLineRestriction]
@@ -198,10 +192,7 @@ theorem MvRealStableOrZero.coordinateRestriction_zero_or_splits
         (fun k => (z k : ℂ) + (Function.update (0 : Fin m → ℝ) i 1 k : ℂ) * t) =
           (fun k => (z k : ℂ) + Function.update (0 : Fin m → ℂ) i 1 k * t) := by
       funext k
-      by_cases hki : k = i
-      · subst k
-        simp
-      · simp [hki]
+      by_cases hki : k = i <;> simp [hki]
     rw [hassign]
     rw [← hsource]
     exact hstable u hu
@@ -246,10 +237,7 @@ private theorem realAffineLineRestriction_derivative_coordinate
   rw [coordinateRestriction, eval_realAffineLineRestriction]
   apply congrArg (fun f : Fin m → ℝ => MvPolynomial.eval f p)
   funext j
-  by_cases hji : j = i
-  · subst j
-    simp
-  · simp [hji]
+  by_cases hji : j = i <;> simp [hji]
 
 /-- The derivative of a coordinate restriction evaluates the corresponding partial derivative. -/
 theorem eval_derivative_coordinateRestriction {m : ℕ} (z : Fin m → ℝ) (i : Fin m)
@@ -260,10 +248,7 @@ theorem eval_derivative_coordinateRestriction {m : ℕ} (z : Fin m → ℝ) (i :
   rw [eval_realAffineLineRestriction]
   apply congrArg (fun f : Fin m → ℝ => MvPolynomial.eval f (MvPolynomial.pderiv i p))
   funext j
-  by_cases hji : j = i
-  · subst j
-    simp
-  · simp [hji]
+  by_cases hji : j = i <;> simp [hji]
 
 /-- The multivariate barrier equals the univariate barrier of the coordinate restriction. -/
 theorem barrier_eq_coordinateRestriction {m : ℕ} (z : Fin m → ℝ) (i : Fin m)
@@ -282,16 +267,10 @@ theorem coordinateRestriction_eval_pos_of_aboveRoots {m : ℕ}
   let v : Fin m → ℝ := Function.update 0 i t
   have hv : ∀ j, 0 ≤ v j := by
     intro j
-    by_cases hji : j = i
-    · subst j
-      simpa [v] using ht
-    · simp [v, hji]
+    by_cases hji : j = i <;> simp [v, hji, ht]
   have harg : z + v = Function.update z i (z i + t) := by
     funext j
-    by_cases hji : j = i
-    · subst j
-      simp [v]
-    · simp [v, hji]
+    by_cases hji : j = i <;> simp [v, hji]
   rw [eval_coordinateRestriction]
   rw [← harg]
   exact hp v hv
@@ -349,10 +328,7 @@ theorem barrier_eq_coordinateRestriction_at {m : ℕ} (z : Fin m → ℝ) (i : F
     apply congrArg
       (fun f : Fin m → ℝ => MvPolynomial.eval f (MvPolynomial.pderiv i p))
     funext j
-    by_cases hji : j = i
-    · subst j
-      simp
-    · simp [hji]
+    by_cases hji : j = i <;> simp [hji]
   unfold barrier univariateBarrier
   rw [hder, eval_coordinateRestriction]
 
@@ -389,10 +365,7 @@ def twoCoordinateRestriction {m : ℕ} (c : Fin m → ℝ) (i j : Fin m)
   by_cases hki : k = i
   · subst k
     simp [hij]
-  · by_cases hkj : k = j
-    · subst k
-      simp
-    · simp [hki, hkj]
+  · by_cases hkj : k = j <;> simp [hki, hkj]
 
 /-- Fixing all coordinates except two preserves weak real stability. -/
 theorem MvRealStableOrZero.twoCoordinateRestriction
@@ -420,11 +393,9 @@ theorem MvRealStableOrZero.twoCoordinateRestriction
     have hu : ∀ k, 0 < (u k).im := by
       intro k
       by_cases hki : k = i
-      · subst k
-        simpa [u] using hw 0
+      · simpa [u, hki] using hw 0
       · by_cases hkj : k = j
-        · subst k
-          simpa [u, hki] using hw 1
+        · simpa [u, hki, hkj, Ne.symm hij] using hw 1
         · simp [u, hki, hkj]
     have hne := hq u hu
     apply hne
@@ -462,10 +433,7 @@ theorem MvRealStableOrZero.twoCoordinateRestriction
       by_cases hki : k = i
       · subst k
         simp [hij]
-      · by_cases hkj : k = j
-        · subst k
-          simp
-        · simp [hki, hkj]
+      · by_cases hkj : k = j <;> simp [hki, hkj]
     rw [hsource, ← hslice]
     exact hzero
 

@@ -254,121 +254,22 @@ private theorem isRealStableLimit_of_forall_eq_zero
         (realSeriesCoeff P e : ℂ) * ∏ i, x i ^ e i) atTop
     simpa only [hreal, Complex.ofReal_zero, zero_mul, tsum_zero] using hconv
 
-/-- Borcea--Brändén, arXiv:0809.0401, Theorem 5.1, reverse real
-implication: real stable-or-zero falling-factorial truncations produce a
-locally uniform limit of real stable polynomials. -/
-theorem isRealStableLimit_of_forall_realGlue_stableOrZero
-    (P : (σ →₀ ℕ) → MvPolynomial τ ℝ)
-    (h : ∀ β : σ →₀ ℕ,
-      MvRealStableOrZero (realGlue P (fun α => fall α β) β)) :
+private theorem isRealStableLimit_of_cofinal_realGlue
+    (P : (σ →₀ ℕ) → MvPolynomial τ ℝ) (b : ℕ → ℕ) (hb : Tendsto b atTop atTop)
+    (h : ∀ m, MvRealStableOrZero
+      (realGlue P (fun α => fall α (constExp σ (b m + 1))) (constExp σ (b m + 1)))) :
     IsRealStableLimit P := by
   classical
   by_cases hzero : ∀ α, P α = 0
   · exact isRealStableLimit_of_forall_eq_zero P hzero
   · obtain ⟨α₀, hα₀⟩ := not_forall.mp hzero
-    have hexists : ∃ γ₀, (P α₀).coeff γ₀ ≠ 0 := by
+    obtain ⟨γ₀, hγ₀⟩ : ∃ γ₀, (P α₀).coeff γ₀ ≠ 0 := by
       by_contra hall
       apply hα₀
       ext γ
       rw [AddMonoidAlgebra.coeff_zero]
       exact not_ne_iff.mp (not_exists.mp hall γ)
-    obtain ⟨γ₀, hγ₀⟩ := hexists
-    let e₀ : τ ⊕ σ →₀ ℕ :=
-      Finsupp.sumFinsuppEquivProdFinsupp.symm (γ₀, α₀)
-    let f : ℕ → MvPolynomial (τ ⊕ σ) ℝ := fun m =>
-      realGlue P (fun α => MvPolynomial.jensen α (constExp σ (m + 1)))
-        (constExp σ (m + 1))
-    let fc : ℕ → MvPolynomial (τ ⊕ σ) ℂ := fun m => complexifyMv (f m)
-    let κ : ℕ → (τ ⊕ σ →₀ ℕ) → ℝ := fun m e =>
-      MvPolynomial.jensen (Finsupp.sumFinsuppEquivProdFinsupp e).2
-        (constExp σ (m + 1))
-    have hcoef : ∀ m e,
-        (fc m).coeff e = (κ m e : ℂ) * (realSeriesCoeff P e : ℂ) := by
-      intro m e
-      rw [show fc m = glue (complexifyFamily P)
-        (fun α => MvPolynomial.jensen α (constExp σ (m + 1)))
-        (constExp σ (m + 1)) by simp [fc, f, complexifyMv_realGlue], coeff_glue]
-      rw [seriesCoeff_complexifyFamily]
-      split_ifs with hle
-      · rfl
-      · have hkzero : κ m e = 0 := real_jensen_eq_zero_of_not_le hle
-        rw [hkzero, Complex.ofReal_zero, zero_mul]
-    have hκt : ∀ e, Tendsto (fun m => κ m e) atTop (𝓝 1) := fun e =>
-      real_tendsto_jensen_constExp _
-    have hst : ∀ m, MvRealStableOrZero (f m) := by
-      intro m
-      rw [mvRealStableOrZero_iff_complexifyMv]
-      rw [show complexifyMv (f m) = glue (complexifyFamily P)
-        (fun α => MvPolynomial.jensen α (constExp σ (m + 1)))
-        (constExp σ (m + 1)) by simp [f, complexifyMv_realGlue]]
-      apply stableOrZero_realGlue_jensen
-      intro β
-      rw [← complexifyMv_realGlue, ← mvRealStableOrZero_iff_complexifyMv]
-      exact h β
-    have hcst : ∀ m, MvUpperHalfPlaneStable (fc m) ∨ fc m = 0 := by
-      intro m
-      rcases hst m with hz | hs
-      · exact Or.inr (by simp [fc, hz, complexifyMv])
-      · exact Or.inl hs
-    obtain ⟨B, C, m₀, hB⟩ :=
-      exists_norm_eval_le_exp_sq (fun e => (realSeriesCoeff P e : ℂ)) κ fc
-        hcoef hκt hcst
-    have he₀ : realSeriesCoeff P e₀ ≠ 0 := by
-      simpa [e₀, realSeriesCoeff] using hγ₀
-    have hev : ∀ᶠ m in atTop, κ m e₀ ∈ Set.Ioo (1 / 2 : ℝ) 2 :=
-      (hκt e₀).eventually (Ioo_mem_nhds (by norm_num) (by norm_num))
-    obtain ⟨m₁, hm₁⟩ := eventually_atTop.mp hev
-    let M := max m₀ m₁
-    obtain ⟨hsum, hconv⟩ :=
-      MvPolynomial.tendstoLocallyUniformly_of_bounded_of_coeff_tendsto
-        (fun k => fc (k + M)) (fun e => (realSeriesCoeff P e : ℂ))
-        (fun r hr => ⟨B * Real.exp (C * r ^ 2), fun k z hz =>
-          hB (k + M) (le_trans (le_max_left _ _) (Nat.le_add_left _ _))
-            r hr.le z hz⟩)
-        (fun e => by
-          simp only [hcoef]
-          have ht := (hκt e).comp (tendsto_add_atTop_nat M)
-          have ht' := (Complex.continuous_ofReal.tendsto 1).comp ht
-          simpa [Function.comp] using ht'.mul_const (realSeriesCoeff P e : ℂ))
-    refine ⟨fun k => f (k + M), ?_, hsum, ?_⟩
-    · intro k
-      rcases hst (k + M) with hz | hs
-      · exfalso
-        have hc : (fc (k + M)).coeff e₀ ≠ 0 := by
-          rw [hcoef]
-          exact mul_ne_zero
-            (Complex.ofReal_ne_zero.mpr (ne_of_gt (lt_trans (by norm_num)
-              (hm₁ (k + M) (by
-                exact le_trans (le_max_right _ _) (Nat.le_add_left _ _))).1)))
-            (Complex.ofReal_ne_zero.mpr he₀)
-        apply hc
-        simp [fc, hz, complexifyMv]
-      · exact hs
-    · exact hconv
-
-/-- Cofinal-subsequence form of Borcea--Brändén, arXiv:0809.0401,
-Theorem 5.1 (real reverse implication). -/
-theorem isRealStableLimit_of_cofinal_constExp_realGlue_stableOrZero
-    (P : (σ →₀ ℕ) → MvPolynomial τ ℝ) (b : ℕ → ℕ)
-    (hb : Tendsto b atTop atTop)
-    (h : ∀ m,
-      MvRealStableOrZero
-        (realGlue P (fun α => fall α (constExp σ (b m + 1)))
-          (constExp σ (b m + 1)))) :
-    IsRealStableLimit P := by
-  classical
-  by_cases hzero : ∀ α, P α = 0
-  · exact isRealStableLimit_of_forall_eq_zero P hzero
-  · obtain ⟨α₀, hα₀⟩ := not_forall.mp hzero
-    have hexists : ∃ γ₀, (P α₀).coeff γ₀ ≠ 0 := by
-      by_contra hall
-      apply hα₀
-      ext γ
-      rw [AddMonoidAlgebra.coeff_zero]
-      exact not_ne_iff.mp (not_exists.mp hall γ)
-    obtain ⟨γ₀, hγ₀⟩ := hexists
-    let e₀ : τ ⊕ σ →₀ ℕ :=
-      Finsupp.sumFinsuppEquivProdFinsupp.symm (γ₀, α₀)
+    let e₀ : τ ⊕ σ →₀ ℕ := Finsupp.sumFinsuppEquivProdFinsupp.symm (γ₀, α₀)
     let f : ℕ → MvPolynomial (τ ⊕ σ) ℝ := fun m =>
       realGlue P (fun α => MvPolynomial.jensen α (constExp σ (b m + 1)))
         (constExp σ (b m + 1))
@@ -385,8 +286,8 @@ theorem isRealStableLimit_of_cofinal_constExp_realGlue_stableOrZero
       rw [seriesCoeff_complexifyFamily]
       split_ifs with hle
       · rfl
-      · have hkzero : κ m e = 0 := real_jensen_eq_zero_of_not_le hle
-        rw [hkzero, Complex.ofReal_zero, zero_mul]
+      · rw [show κ m e = 0 from real_jensen_eq_zero_of_not_le hle, Complex.ofReal_zero,
+          zero_mul]
     have hκt : ∀ e, Tendsto (fun m => κ m e) atTop (𝓝 1) := by
       intro e
       have ht := (real_tendsto_jensen_constExp
@@ -444,21 +345,40 @@ theorem isRealStableLimit_of_cofinal_constExp_realGlue_stableOrZero
           have ht := (hκt e).comp (tendsto_add_atTop_nat M)
           have ht' := (Complex.continuous_ofReal.tendsto 1).comp ht
           simpa [Function.comp] using ht'.mul_const (realSeriesCoeff P e : ℂ))
-    refine ⟨fun k => f (k + M), ?_, hsum, ?_⟩
-    · intro k
-      rcases hst (k + M) with hz | hs
-      · exfalso
-        have hc : (fc (k + M)).coeff e₀ ≠ 0 := by
-          rw [hcoef]
-          exact mul_ne_zero
-            (Complex.ofReal_ne_zero.mpr (ne_of_gt (lt_trans (by norm_num)
-              (hm₁ (k + M) (by
-                exact le_trans (le_max_right _ _) (Nat.le_add_left _ _))).1)))
-            (Complex.ofReal_ne_zero.mpr he₀)
-        apply hc
-        simp [fc, hz, complexifyMv]
-      · exact hs
-    · exact hconv
+    refine ⟨fun k => f (k + M), ?_, hsum, hconv⟩
+    intro k
+    rcases hst (k + M) with hz | hs
+    · exfalso
+      have hc : (fc (k + M)).coeff e₀ ≠ 0 := by
+        rw [hcoef]
+        exact mul_ne_zero
+          (Complex.ofReal_ne_zero.mpr (ne_of_gt (lt_trans (by norm_num)
+            (hm₁ (k + M) (le_trans (le_max_right _ _) (Nat.le_add_left _ _))).1)))
+          (Complex.ofReal_ne_zero.mpr he₀)
+      exact hc (by simp [fc, hz, complexifyMv])
+    · exact hs
+
+/-- Borcea--Brändén, arXiv:0809.0401, Theorem 5.1, reverse real
+implication: real stable-or-zero falling-factorial truncations produce a
+locally uniform limit of real stable polynomials. -/
+theorem isRealStableLimit_of_forall_realGlue_stableOrZero
+    (P : (σ →₀ ℕ) → MvPolynomial τ ℝ)
+    (h : ∀ β : σ →₀ ℕ,
+      MvRealStableOrZero (realGlue P (fun α => fall α β) β)) :
+    IsRealStableLimit P := by
+  exact isRealStableLimit_of_cofinal_realGlue P id tendsto_id fun _ => h _
+
+/-- Cofinal-subsequence form of Borcea--Brändén, arXiv:0809.0401,
+Theorem 5.1 (real reverse implication). -/
+theorem isRealStableLimit_of_cofinal_constExp_realGlue_stableOrZero
+    (P : (σ →₀ ℕ) → MvPolynomial τ ℝ) (b : ℕ → ℕ)
+    (hb : Tendsto b atTop atTop)
+    (h : ∀ m,
+      MvRealStableOrZero
+        (realGlue P (fun α => fall α (constExp σ (b m + 1)))
+          (constExp σ (b m + 1)))) :
+    IsRealStableLimit P := by
+  exact isRealStableLimit_of_cofinal_realGlue P b hb h
 
 /-- **Borcea--Brändén, arXiv:0809.0401, Theorem 5.1 (real case).**
 A real formal series is a locally uniform limit of real stable polynomials if
