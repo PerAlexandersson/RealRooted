@@ -68,12 +68,10 @@ lemma ic_props (m : ℕ) : 0 ≤ ic m ∧ ic (m + 2) ≤ ic m :=
   rec_seq_props ic ic_rec (by rw [ic_zero]; norm_num) (by rw [ic_one]) m
 
 lemma ic_le_one (m : ℕ) : ic m ≤ 1 := by
-  induction m using Nat.strong_induction_on with
-  | _ m ih =>
-  rcases m with _ | _ | m
-  · rw [ic_zero]
-  · rw [ic_one]; norm_num
-  · exact (ic_props m).2.trans (ih m (by lia))
+  induction m using Nat.twoStepInduction with
+  | zero => rw [ic_zero]
+  | one => rw [ic_one]; norm_num
+  | more m ih _ => exact (ic_props m).2.trans ih
 
 /-! ### `f = arcsin` -/
 
@@ -135,12 +133,10 @@ lemma uc_props (m : ℕ) : 0 ≤ uc m ∧ uc (m + 2) ≤ uc m :=
   rec_seq_props uc uc_rec (by rw [uc_zero]) (by rw [uc_one]; norm_num) m
 
 lemma uc_le_one (m : ℕ) : uc m ≤ 1 := by
-  induction m using Nat.strong_induction_on with
-  | _ m ih =>
-  rcases m with _ | _ | m
-  · rw [uc_zero]; norm_num
-  · rw [uc_one]
-  · exact (uc_props m).2.trans (ih m (by lia))
+  induction m using Nat.twoStepInduction with
+  | zero => rw [uc_zero]; norm_num
+  | one => rw [uc_one]
+  | more m ih _ => exact (uc_props m).2.trans ih
 
 lemma uc_two : uc 2 = 0 := by rw [uc_rec, uc_zero, mul_zero]
 lemma uc_three : uc 3 = 2 / 3 := by rw [uc_rec, uc_one]; norm_num
@@ -306,12 +302,9 @@ lemma nonneg_of_ratio (A e r : ℕ → ℝ) (hA0 : A 0 = 1) (hpos : ∀ n, 0 < A
     have h2 : A (n + 1 + 1) =
         r (n + 1) * ∑ j ∈ Finset.range (n + 1), e (j + 1) * A (n - j) := by
       rw [hrat, hprod n]
-    have h3 : ∀ j ∈ Finset.range (n + 1), e (j + 1) * A (n + 1 - j) =
-        e (j + 1) * (r (n - j) * A (n - j)) := by
-      intro j hj
-      simp at hj
-      rw [show n + 1 - j = (n - j) + 1 by lia, hrat]
-    rw [Finset.sum_congr rfl h3] at h1
+    rw [Finset.sum_congr rfl (fun j hj => by
+      simp only [Finset.mem_range] at hj
+      rw [show n + 1 - j = (n - j) + 1 by lia, hrat])] at h1
     have he : e (n + 1 + 1) = ∑ j ∈ Finset.range (n + 1),
         e (j + 1) * A (n - j) * (r (n + 1) - r (n - j)) := by
       rw [Finset.mul_sum] at h2
@@ -323,14 +316,10 @@ lemma nonneg_of_ratio (A e r : ℕ → ℝ) (hA0 : A 0 = 1) (hpos : ∀ n, 0 < A
       rw [this]
       linarith
     rw [he]
-    apply Finset.sum_nonneg
-    intro j hj
-    simp at hj
-    have := ih j (by lia)
-    have := hpos (n - j)
-    have : r (n - j) ≤ r (n + 1) := hmono (by lia)
-    have : 0 ≤ r (n + 1) - r (n - j) := by linarith
-    positivity
+    exact Finset.sum_nonneg fun j hj => by
+      simp only [Finset.mem_range] at hj
+      exact mul_nonneg (mul_nonneg (ih j (by lia)) (hpos (n - j)).le)
+        (sub_nonneg.mpr (hmono (by lia)))
 
 /-- `e_n = -h_{2n}`. -/
 noncomputable def eh (n : ℕ) : ℝ := -coeff (2 * n) hS

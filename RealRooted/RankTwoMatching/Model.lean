@@ -87,12 +87,7 @@ theorem disjointSubsetWeight_eq_diagonal_coeff
           Polynomial.C (1 + Polynomial.C (a i) * Polynomial.X) := by
     simp [normalizedFactor, embedReal, embedRealHom, leftVariable, rightVariable]
     ring
-  rw [show (∏ i, normalizedFactor (a i) (b i)) =
-      ∏ i, (Polynomial.C (Polynomial.C (b i)) * Polynomial.X +
-        Polynomial.C (1 + Polynomial.C (a i) * Polynomial.X)) by
-      apply Finset.prod_congr rfl
-      intro i _hi
-      exact hfactor i]
+  rw [Finset.prod_congr rfl fun i _ => hfactor i]
   rw [Fintype.prod_add]
   simp only [Polynomial.finsetSum_coeff]
   have houter (B : Finset I) :
@@ -157,11 +152,7 @@ private theorem diagonal_coeff_rawFactor_prod_eq_subset_sum
   have hfactor (i : I) : rawFactor (g i) = embedReal (g i) * B + A := by
     simp [rawFactor, A, B]
     ring
-  rw [show (∏ i, rawFactor (g i)) =
-      ∏ i, (embedReal (g i) * B + A) by
-      apply Finset.prod_congr rfl
-      intro i _hi
-      exact hfactor i]
+  rw [Finset.prod_congr rfl fun i _ => hfactor i]
   rw [Fintype.prod_add]
   simp only [Finset.sum_mul, Polynomial.finsetSum_coeff]
   apply Finset.sum_congr rfl
@@ -315,13 +306,13 @@ theorem exists_nonneg_factors_fin
   · intro j
     rcases h : e.symm j with i | i
     · simp only [a, h, alphaSum]
-      exact div_nonneg (le_of_lt (hg i)) (by linarith [hg i])
-    · simp [a, h, alphaSum]
+      exact div_nonneg (hg i).le (by linarith [hg i])
+    · simp only [a, h, alphaSum, le_refl]
   · intro j
     rcases h : e.symm j with i | i
     · simp only [b, h, betaSum]
       exact div_nonneg zero_le_one (by linarith [hg i])
-    · simp [b, h, betaSum]
+    · simp only [b, h, betaSum, zero_le_one]
   · have hprod :
         (∏ q : I ⊕ Fin (M - Fintype.card I),
             normalizedFactor (alphaSum g q) (betaSum g q)) =
@@ -339,7 +330,7 @@ theorem exists_nonneg_factors_fin
     congr 1
     rw [← Finset.prod_mul_distrib]
     apply Finset.prod_congr rfl
-    intro i hi
+    intro i _
     exact scalar_mul_normalizedFactor (g i) (hg i)
 
 /-- Version whose normalization scalar is read from the original univariate
@@ -361,7 +352,7 @@ theorem exists_nonneg_factors_fin_of_prod
   have hp_eval : p.eval 1 = ∏ i, (1 + g i) := by
     rw [hp, Polynomial.eval_prod]
     apply Finset.prod_congr rfl
-    intro i hi
+    intro i _
     simp
   rw [hp_eval]
   change
@@ -394,8 +385,7 @@ theorem exists_factors_of_isPFPolynomial
   have hcard : Fintype.card s ≤ M := by simpa [hscard] using hdegree
   have hp_factor' :
       p = ∏ i : s, (1 + Polynomial.C (i : ℝ) * Polynomial.X) := by
-    rw [hp_factor]
-    exact multiset_prod_map_eq_fintype_prod s _
+    exact hp_factor.trans (multiset_prod_map_eq_fintype_prod s _)
   obtain ⟨a, b, ha, hb, hab⟩ :=
     exists_nonneg_factors_fin_of_prod
       (p := p) (fun i : s ↦ (i : ℝ)) hg hcard hp_factor'
@@ -426,16 +416,12 @@ theorem exists_nonneg_disjointSubsetWeight_eq_coeff_sum
   have hcard : Fintype.card s ≤ M := by simpa [Multiset.card_coe, hscard] using hdegree
   have hp_factor' :
       p = ∏ i : s, (1 + Polynomial.C (i : ℝ) * Polynomial.X) := by
-    rw [hp_factor]
-    exact multiset_prod_map_eq_fintype_prod s _
+    exact hp_factor.trans (multiset_prod_map_eq_fintype_prod s _)
   have hcoeff :=
     diagonal_coeff_rawFactor_prod_eq_coeff_sum
       (p := p) (M := M) (fun i : s ↦ (i : ℝ))
       hcard hp_factor' k
-  have hraw :
-      (s.map rawFactor).prod = ∏ i : s, rawFactor (i : ℝ) :=
-    multiset_prod_map_eq_fintype_prod s _
-  rw [hraw] at hab
+  rw [multiset_prod_map_eq_fintype_prod s] at hab
   have hdiag :=
     congrArg (fun q : Bivariate ↦ (q.coeff k).coeff k) hab
   have hleft :

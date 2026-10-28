@@ -47,8 +47,7 @@ theorem specializeAt_none_one_eq_rename_some_dehomogenize
   | C r => simp [dehomogenize]
   | add p q hp hq => simp [hp, hq]
   | mul_X p i hp =>
-      rw [specializeAt_mul, map_mul, hp]
-      cases i <;> simp [specializeAt, dehomogenize]
+      cases i <;> simp_all [specializeAt, dehomogenize]
 
 /-- Setting the distinguished variable to one preserves coefficientwise
 nonnegativity. -/
@@ -99,10 +98,8 @@ theorem eval_ordinaryHomogenization_zero {σ R : Type*} [CommSemiring R]
   rw [eval_ordinaryHomogenization, Finset.sum_eq_single d]
   · simp
   · intro k hk hkd
-    have hk_le : k ≤ d := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
-    have hsub : d - k ≠ 0 :=
-      Nat.sub_ne_zero_iff_lt.mpr (lt_of_le_of_ne hk_le hkd)
-    simp [hsub]
+    simp [Nat.sub_ne_zero_iff_lt.mpr
+      (lt_of_le_of_ne (Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)) hkd)]
   · simp
 
 @[simp] theorem eval_dehomogenize {σ R : Type*} [CommSemiring R]
@@ -128,8 +125,7 @@ theorem dehomogenize_eq_optionEquivLeft_eval_one
   | C r => simp [dehomogenize]
   | add p q hp hq => simpa using congrArg₂ (· + ·) hp hq
   | mul_X p i hp =>
-      rw [map_mul, map_mul, hp]
-      cases i <;> simp [dehomogenize]
+      cases i <;> simp_all [dehomogenize]
 
 /-- Dehomogenization commutes with a rename that preserves the distinguished
 variable. -/
@@ -142,8 +138,7 @@ theorem dehomogenize_rename_option_map
   | C r => simp [dehomogenize]
   | add p q hp hq => simp [hp, hq]
   | mul_X p i hp =>
-      rw [map_mul, map_mul, hp]
-      cases i <;> simp [dehomogenize]
+      cases i <;> simp_all [dehomogenize]
 
 /-- Dehomogenizing after embedding every source variable as an ordinary
 variable recovers the source polynomial. -/
@@ -173,12 +168,9 @@ theorem IsHomogeneous.optionEquivLeft_coeff_eq_C_coeff_zero_dehomogenize
       _ ≤ p.totalDegree := degreeOf_le_totalDegree p none
       _ ≤ d := hp.totalDegree_le
   have hconst : q.coeff d = C ((q.coeff d).coeff 0) := by
-    rw [← totalDegree_eq_zero_iff_eq_C]
-    rw [totalDegree_zero_iff_isHomogeneous]
-    apply coeff_isHomogeneous_of_optionEquivLeft_symm
-      (n := d) (i := d) (j := 0)
-    · simpa [q] using hp
-    · lia
+    rw [← totalDegree_eq_zero_iff_eq_C, totalDegree_zero_iff_isHomogeneous]
+    exact coeff_isHomogeneous_of_optionEquivLeft_symm
+      (n := d) (i := d) (j := 0) (by simpa [q] using hp) (by lia)
   rw [show optionEquivLeft R σ p = q by rfl, hconst]
   congr 1
   rw [dehomogenize_eq_optionEquivLeft_eval_one]
@@ -223,10 +215,7 @@ theorem dehomogenize_pderiv_some {σ R : Type*} [CommSemiring R]
       cases j with
       | none => simp [hp]
       | some j =>
-          by_cases hij : i = j
-          · subst j
-            simp [hp]
-          · simp [hp, hij]
+          by_cases hij : i = j <;> simp_all
 
 /-- Ordinary homogenization is homogeneous of the requested total degree. -/
 theorem ordinaryHomogenization_isHomogeneous

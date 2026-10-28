@@ -129,29 +129,8 @@ theorem sourceNegation_monomial_one {σ : Type*} [Fintype σ]
 theorem MvRealStable.sourceNegation {σ : Type*}
     {P : MvPolynomial σ ℝ} (hP : MvRealStable P) :
     MvRealStable (sourceNegation P) := by
-  intro z hz
-  change MvPolynomial.eval z
-    (complexifyMv (RealRooted.BorceaBranden.negVariablesHom P)) ≠ 0
-  rw [complexifyMv_negVariablesHom, eval_negVariablesHom]
-  let w : σ → ℂ := fun i => -starRingEnd ℂ (z i)
-  have hw : ∀ i, 0 < (w i).im := by
-    intro i
-    simp only [w, Complex.neg_im, Complex.conj_im, neg_neg]
-    exact hz i
-  have hne := hP w hw
-  have hconj : starRingEnd ℂ
-      (MvPolynomial.eval w (complexifyMv P)) ≠ 0 := by
-    intro hzero
-    apply hne
-    have h := congrArg (starRingEnd ℂ) hzero
-    simpa using h
-  have heval := eval_complexifyMv_conj P (fun i => -z i)
-  have hpoint : (fun i => starRingEnd ℂ (-z i)) = w := by
-    funext i
-    simp [w]
-  rw [hpoint] at heval
-  rw [heval]
-  exact hconj
+  change MvRealStable (RealRooted.BorceaBranden.negVariablesHom P)
+  exact MvRealStable.negVariablesHom hP
 
 /-- Simultaneous source negation as a real linear map. -/
 def sourceNegationLinear {σ : Type*} :
@@ -236,25 +215,8 @@ private theorem negVariablesHom_basisDegreeOfLE
     negVariablesHom (MvPolynomial.basisDegreeOfLE (R := ℝ) κ m).1 =
       monomialSign m.1 •
         (MvPolynomial.basisDegreeOfLE (R := ℝ) κ m).1 := by
-  rw [MvPolynomial.coe_basisDegreeOfLE, MvPolynomial.monomial_eq,
-    Finsupp.prod_pow]
-  rw [map_mul, map_one, one_mul, map_prod]
-  simp only [map_pow, negVariablesHom_X]
-  have hpow (i : σ) :
-      (-MvPolynomial.X i : MvPolynomial σ ℝ) ^ m.1 i =
-        ((-1 : ℝ) ^ m.1 i) • MvPolynomial.X i ^ m.1 i := by
-    rw [neg_pow, MvPolynomial.smul_eq_C_mul]
-    have hone : (-1 : MvPolynomial σ ℝ) = MvPolynomial.C (-1 : ℝ) := by
-      simp
-    rw [hone, map_pow]
-  simp_rw [hpow]
-  unfold monomialSign
-  rw [show (∏ i, ((-1 : ℝ) ^ m.1 i • MvPolynomial.X i ^ m.1 i)) =
-      MvPolynomial.C (∏ i, (-1 : ℝ) ^ m.1 i) *
-        ∏ i, MvPolynomial.X i ^ m.1 i by
-    simp only [MvPolynomial.smul_eq_C_mul, ← map_prod,
-      Finset.prod_mul_distrib]]
-  simp only [map_one, one_mul, MvPolynomial.smul_eq_C_mul]
+  rw [MvPolynomial.coe_basisDegreeOfLE]
+  simpa only [sourceNegation, monomialSign] using sourceNegation_monomial_one m.1
 
 /-- The normalized reflection is a global sign times simultaneous variable
 negation. -/
@@ -382,28 +344,23 @@ theorem sourceReflectionDegreeBox_involutive
     intro m
     simp only [R, LinearMap.comp_apply, sourceReflectionDegreeBox_basis,
       map_smul, smul_smul, LinearMap.id_apply]
+    have sign_sq (e : σ → ℕ) :
+        (∏ i, (-1 : ℝ) ^ e i) * ∏ i, (-1 : ℝ) ^ e i = 1 := by
+      rw [← Finset.prod_mul_distrib]
+      apply Finset.prod_eq_one
+      intro i _
+      rw [← pow_add, ← two_mul, pow_mul]
+      norm_num
     have hglobal : globalBoxSign κ * globalBoxSign κ = 1 := by
-      unfold globalBoxSign
-      rw [← Finset.prod_mul_distrib]
-      apply Finset.prod_eq_one
-      intro i _hi
-      rw [← pow_add, ← two_mul, pow_mul]
-      norm_num
+      simpa only [globalBoxSign] using sign_sq κ
     have hmono : monomialSign m.1 * monomialSign m.1 = 1 := by
-      unfold monomialSign
-      rw [← Finset.prod_mul_distrib]
-      apply Finset.prod_eq_one
-      intro i _hi
-      rw [← pow_add, ← two_mul, pow_mul]
-      norm_num
+      simpa only [monomialSign] using sign_sq fun i => m.1 i
     rw [show (globalBoxSign κ * monomialSign m.1) *
         (globalBoxSign κ * monomialSign m.1) = 1 by
-      calc
-        (globalBoxSign κ * monomialSign m.1) *
-            (globalBoxSign κ * monomialSign m.1) =
-          (globalBoxSign κ * globalBoxSign κ) *
-            (monomialSign m.1 * monomialSign m.1) := by ring
-        _ = 1 := by rw [hglobal, hmono, one_mul]]
+      rw [show (globalBoxSign κ * monomialSign m.1) *
+          (globalBoxSign κ * monomialSign m.1) =
+        (globalBoxSign κ * globalBoxSign κ) *
+          (monomialSign m.1 * monomialSign m.1) by ring, hglobal, hmono, one_mul]]
     exact one_smul ℝ _
   exact LinearMap.congr_fun hR p
 

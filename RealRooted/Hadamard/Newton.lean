@@ -49,17 +49,7 @@ theorem two_natDegree_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits
   rw [idxm1, idxp1] at hnewton
   have hi0 : p.natDegree - 0 = p.natDegree := Nat.sub_zero _
   rw [hi0] at hc0
-  have hcast_m : ((p.natDegree - 1 : ℕ) : ℝ) = (p.natDegree : ℝ) - 1 := by
-    rw [Nat.cast_sub h1d]
-    norm_num
-  have hself : p.natDegree - (p.natDegree - 1) = 1 := Nat.sub_sub_self h1d
-  have hcast_nm : ((p.natDegree - (p.natDegree - 1) : ℕ) : ℝ) = 1 := by
-    rw [hself]
-    norm_num
-  have hcast_nm1 : ((p.natDegree - (p.natDegree - 1) + 1 : ℕ) : ℝ) = 2 := by
-    rw [hself]
-    norm_num
-  rw [hcast_m, hcast_nm, hcast_nm1] at hnewton
+  norm_num [Nat.cast_sub h1d, Nat.sub_sub_self h1d] at hnewton
   rw [hc0, hc1, hc2]
   linarith [mul_le_mul_of_nonneg_left hnewton (sq_nonneg p.leadingCoeff),
     sq_nonneg p.leadingCoeff]
@@ -136,16 +126,7 @@ theorem newton_three_coeff_one_coeff_three_of_splits
   have idxp1 : p.natDegree - 2 + 1 = p.natDegree - 1 := by lia
   rw [idxm1, idxp1] at hnewton
   have hnm2 : p.natDegree - (p.natDegree - 2) = 2 := by lia
-  have hcast_m : ((p.natDegree - 2 : ℕ) : ℝ) = (p.natDegree : ℝ) - 2 := by
-    rw [Nat.cast_sub h2d]
-    norm_num
-  have hcast_nm : ((p.natDegree - (p.natDegree - 2) : ℕ) : ℝ) = 2 := by
-    rw [hnm2]
-    norm_num
-  have hcast_nm1 : ((p.natDegree - (p.natDegree - 2) + 1 : ℕ) : ℝ) = 3 := by
-    rw [hnm2]
-    norm_num
-  rw [hcast_m, hcast_nm, hcast_nm1] at hnewton
+  norm_num [Nat.cast_sub h2d, hnm2] at hnewton
   rw [hc1, hc2, hc3]
   linarith [mul_le_mul_of_nonneg_left hnewton (sq_nonneg p.leadingCoeff),
     sq_nonneg p.leadingCoeff]
@@ -231,11 +212,7 @@ theorem normalized_coeff_logConcave_of_splits_natDegree_le
       have key2 : (p.coeff 1 / N) ^ 2 = p.coeff 1 ^ 2 / N ^ 2 := by rw [div_pow]
       rw [key1, key2, div_le_div_iff₀ (mul_pos hNpos hN1pos) (pow_pos hNpos 2)]
       linarith [mul_le_mul_of_nonneg_right hpd hNpos.le, hpd]
-    · have hlt : n < 2 := h2
-      have hc2 : (n.choose 2 : ℝ) = 0 := by
-        rw [Nat.choose_eq_zero_of_lt hlt]
-        norm_num
-      rw [hc2, div_zero, mul_zero]
+    · rw [Nat.choose_eq_zero_of_lt h2, Nat.cast_zero, div_zero, mul_zero]
       positivity
   · rcases le_or_gt 3 n with h3 | h3
     · have hpd :=
@@ -264,11 +241,7 @@ theorem normalized_coeff_logConcave_of_splits_natDegree_le
       rw [key1, key2, div_le_div_iff₀ hden1 hden2]
       linarith [mul_le_mul_of_nonneg_right hpd
         (show (0 : ℝ) ≤ 2 * N ^ 2 * (N - 1) by positivity), hpd]
-    · have hlt : n < 3 := h3
-      have hc3 : (n.choose 3 : ℝ) = 0 := by
-        rw [Nat.choose_eq_zero_of_lt hlt]
-        norm_num
-      rw [hc3, div_zero, mul_zero]
+    · rw [Nat.choose_eq_zero_of_lt h3, Nat.cast_zero, div_zero, mul_zero]
       positivity
 
 /-- First adjacent normalized log-concavity inequality for a splitting
@@ -421,9 +394,8 @@ theorem finiteSchurSzegoComposition_of_pf_factor_natDegree_le_two
   have hn : 2 ≤ n := hqdeg ▸ natDegree_schurSzegoComp_le n f p
   have hdisc : 0 ≤ (schurSzegoComp n f p).coeff 1 ^ 2 -
       4 * (schurSzegoComp n f p).coeff 2 * (schurSzegoComp n f p).coeff 0 := by
-    have := four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_schurSzegoComp_of_pf
-      hn hf hfdeg hpdeg hsplit
-    linarith [this]
+    linarith [four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_schurSzegoComp_of_pf
+      hn hf hfdeg hpdeg hsplit]
   exact Or.inr (splits_of_natDegree_eq_two_of_discrim_nonneg hqdeg (by
     simpa [discrim] using hdisc))
 end RealRooted
