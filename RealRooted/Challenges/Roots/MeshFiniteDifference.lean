@@ -8,6 +8,7 @@ import RealRooted.Mesh.DiscreteMultiplierSequenceLaguerrePolya
 import RealRooted.Mesh.DiscreteMultiplierSequencePolyaSchur
 import RealRooted.Mesh.Limit
 import RealRooted.Mesh.FallingFactorial
+import RealRooted.Mesh.FiniteDifferenceHyperbolicity
 
 /-!
 # Mesh and finite differences
@@ -105,6 +106,10 @@ label = "ρ^i with 0 < ρ < 1 is not a discrete multiplier sequence"
 name = "RealRooted.isDiscreteMultiplierSequence_of_isLaguerrePolyaTypeI"
 module = "RealRooted.Mesh.DiscreteMultiplierSequenceLaguerrePolya"
 label = "φ(0), φ(1), … is a discrete multiplier sequence for φ in the Laguerre–Pólya class"
+[[theorems]]
+name = "RealRooted.PolyFiniteDifferenceOp.preserves_iff"
+module = "RealRooted.Mesh.FiniteDifferenceHyperbolicity"
+label = "Lemma 8: ∑ q_j(x) p(x − j) preserves real-rootedness iff at most one q_j is nonzero"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -136,6 +141,14 @@ Aristotle (Harmonic).
 nonnegative zeros, then
 $$a\,p(x) + b\,x\,\bigl(p(x) - p(x - 1)\bigr)$$
 lies in $\mathrm{Mesh}_{\geq 1}$ and has only nonnegative zeros.
+
+**Lemma 8.** Let $q_0, \dots, q_k$ be real polynomials. The operator
+$$p(x) \longmapsto \sum_{j} q_j(x)\, p(x - j)$$
+maps real-rooted polynomials to real-rooted polynomials (or zero) if and only if at most one
+$q_j$ is not identically zero, and that $q_j$ is real-rooted. The paper deduces this from the
+Borcea–Brändén classification; the formal proof applies the operator to $x^m$ and uses the
+Beraha–Kahane–Weiss limit-of-zeros theorem: two nonzero extreme shifts produce nonreal limits of
+zeros.
 
 A sequence $(a_i)$ is a *discrete multiplier sequence* if the linear operator with
 $[x]_i \mapsto a_i [x]_i$ on the falling factorials $[x]_i = x(x-1)\cdots(x-i+1)$ maps every
@@ -169,7 +182,7 @@ $a_m \leq a_{m+1}$.
 
 Brändén, Krasikov, and Shapiro, *Elements of Pólya–Schur theory in the finite difference
 setting*, Proc. Amer. Math. Soc. 144 (2016), Theorems 1, 2, 3, and 5, Lemmas 10 and 11,
-Corollaries 2 and 3, Propositions 6, 7 and 12, and Remark 2. Theorem 1 is due to Riesz.
+Lemma 8, Corollaries 2 and 3, Propositions 6, 7 and 12, and Remark 2. Theorem 1 is due to Riesz.
 <!-- /realrooted-catalog-content -->
 
 The definitions and theorems live in `RealRooted.Mesh.Basic`, `RealRooted.Mesh.Derivative`,
