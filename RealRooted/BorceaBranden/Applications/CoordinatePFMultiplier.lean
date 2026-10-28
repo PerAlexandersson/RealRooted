@@ -122,6 +122,132 @@ def coordinateDiagonalSymbol {σ : Type*} [Fintype σ] (d : ℕ) (gamma : ℕ �
       (_root_.MvPolynomial.X (Sum.inl i) +
         _root_.MvPolynomial.X (Sum.inr i)) ^ κ i
 
+/- The factor contributed by one coordinate to the coordinate-diagonal symbol. -/
+private def coordinateSymbolFactor {σ : Type*} [DecidableEq σ]
+    (gamma : ℕ → ℝ) (q : σ)
+    (κ : σ → ℕ) (i : σ) (k : Fin (κ i + 1)) :
+    _root_.MvPolynomial (σ ⊕ σ) ℂ :=
+  _root_.MvPolynomial.C ((κ i).choose (k : ℕ) : ℂ) *
+    _root_.MvPolynomial.X (Sum.inl i) ^ (k : ℕ) *
+      _root_.MvPolynomial.X (Sum.inr i) ^ (κ i - k) *
+        if i = q then _root_.MvPolynomial.C (gamma (k : ℕ) : ℂ) else 1
+
+/- The degree-box sum is the dependent product of its coordinate factors. -/
+private theorem coordinateDiagonalDegreeBox_sum_eq_pi_factor
+    {σ : Type*} [Fintype σ] [DecidableEq σ]
+    (gamma : ℕ → ℝ) (q : σ) (κ : σ → ℕ) :
+    (∑ m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i},
+      _root_.MvPolynomial.C (_root_.MvPolynomial.boxChoose κ m.1 : ℂ) *
+        _root_.MvPolynomial.rename (Sum.inl : σ → σ ⊕ σ)
+          (_root_.MvPolynomial.monomial m.1 ((gamma (m.1 q) : ℂ))) *
+        _root_.MvPolynomial.rightComplementMonomial κ m.1) =
+      ∑ x : (∀ i, Fin (κ i + 1)), ∏ i, coordinateSymbolFactor gamma q κ i (x i) := by
+  classical
+  apply Fintype.sum_equiv (MvPolynomial.degreeOfLEIndexEquiv κ)
+  intro m
+  simp only [MvPolynomial.boxChoose, Nat.cast_prod, map_prod, map_natCast,
+    MvPolynomial.monomial_eq, Finsupp.prod_pow, map_mul, MvPolynomial.algHom_C,
+    MvPolynomial.algebraMap_eq, map_pow, MvPolynomial.rename_X,
+    MvPolynomial.rightComplementMonomial, mul_ite, mul_one,
+    MvPolynomial.degreeOfLEIndexEquiv, Equiv.coe_fn_mk, coordinateSymbolFactor]
+  have hif (i : σ) :
+      (if i = q then
+          ((κ i).choose (m.1 i) : _root_.MvPolynomial (σ ⊕ σ) ℂ) *
+            _root_.MvPolynomial.X (Sum.inl i) ^ m.1 i *
+              _root_.MvPolynomial.X (Sum.inr i) ^ (κ i - m.1 i) *
+            _root_.MvPolynomial.C (gamma (m.1 i) : ℂ)
+        else
+          ((κ i).choose (m.1 i) : _root_.MvPolynomial (σ ⊕ σ) ℂ) *
+            _root_.MvPolynomial.X (Sum.inl i) ^ m.1 i *
+            _root_.MvPolynomial.X (Sum.inr i) ^ (κ i - m.1 i)) =
+      (((κ i).choose (m.1 i) : _root_.MvPolynomial (σ ⊕ σ) ℂ) *
+          _root_.MvPolynomial.X (Sum.inl i) ^ m.1 i *
+        _root_.MvPolynomial.X (Sum.inr i) ^ (κ i - m.1 i)) *
+        (if i = q then _root_.MvPolynomial.C (gamma (m.1 i) : ℂ) else 1) := by
+    by_cases hi : i = q <;> simp [hi]
+  rw [show
+      (∏ i,
+        if i = q then
+            ((κ i).choose (m.1 i) : _root_.MvPolynomial (σ ⊕ σ) ℂ) *
+                _root_.MvPolynomial.X (Sum.inl i) ^ m.1 i *
+              _root_.MvPolynomial.X (Sum.inr i) ^ (κ i - m.1 i) *
+                _root_.MvPolynomial.C (gamma (m.1 i) : ℂ)
+          else
+            ((κ i).choose (m.1 i) : _root_.MvPolynomial (σ ⊕ σ) ℂ) *
+                _root_.MvPolynomial.X (Sum.inl i) ^ m.1 i *
+              _root_.MvPolynomial.X (Sum.inr i) ^ (κ i - m.1 i)) =
+        ∏ i,
+          (((κ i).choose (m.1 i) : _root_.MvPolynomial (σ ⊕ σ) ℂ) *
+              _root_.MvPolynomial.X (Sum.inl i) ^ m.1 i *
+            _root_.MvPolynomial.X (Sum.inr i) ^ (κ i - m.1 i)) *
+            (if i = q then _root_.MvPolynomial.C (gamma (m.1 i) : ℂ) else 1) by
+      apply Finset.prod_congr rfl
+      intro i _hi
+      exact hif i]
+  rw [Finset.prod_mul_distrib]
+  have hgamma :
+      (∏ i, if i = q then _root_.MvPolynomial.C (gamma (m.1 i) : ℂ)
+        else (1 : _root_.MvPolynomial (σ ⊕ σ) ℂ)) =
+        _root_.MvPolynomial.C (gamma (m.1 q) : ℂ) := by
+    rw [Finset.prod_eq_single q]
+    · simp
+    · intro i hi hiq
+      simp [hiq]
+    · simp
+  rw [hgamma]
+  simp_rw [Finset.prod_mul_distrib]
+  ring
+
+/- The distinguished coordinate factor is the padded Jensen symbol. -/
+private theorem sum_coordinateSymbolFactor_eq_coordinateJensenSymbol
+    {σ : Type*} [DecidableEq σ]
+    (d : ℕ) (gamma : ℕ → ℝ) (q : σ) (κ : σ → ℕ)
+    (hκ : κ q = d) :
+    (∑ k : Fin (κ q + 1), coordinateSymbolFactor gamma q κ q k) =
+      coordinateJensenSymbol d gamma q := by
+  classical
+  rw [coordinateJensenSymbol, ← hκ]
+  apply Finset.sum_congr rfl
+  intro k _hk
+  simp [coordinateSymbolFactor]
+  ring
+
+/- A spectator coordinate factor is its binomial-power factor. -/
+private theorem sum_coordinateSymbolFactor_eq_add_pow
+    {σ : Type*} [DecidableEq σ] (gamma : ℕ → ℝ) (q : σ) (κ : σ → ℕ)
+    (i : σ) (hi : i ≠ q) :
+    (∑ k : Fin (κ i + 1), coordinateSymbolFactor gamma q κ i k) =
+      (_root_.MvPolynomial.X (Sum.inl i) +
+        _root_.MvPolynomial.X (Sum.inr i)) ^ κ i := by
+  classical
+  have hfactor :
+      (_root_.MvPolynomial.X (Sum.inl i) +
+          _root_.MvPolynomial.X (Sum.inr i)) ^ κ i =
+        ∑ k : Fin (κ i + 1),
+          _root_.MvPolynomial.X (Sum.inl i) ^ (k : ℕ) *
+            _root_.MvPolynomial.X (Sum.inr i) ^ (κ i - k) *
+              _root_.MvPolynomial.C ((κ i).choose k : ℂ) := by
+    rw [add_pow]
+    rw [Fin.sum_univ_eq_sum_range
+      (fun k : ℕ =>
+        _root_.MvPolynomial.X (Sum.inl i) ^ k *
+          _root_.MvPolynomial.X (Sum.inr i) ^ (κ i - k) *
+            _root_.MvPolynomial.C ((κ i).choose k : ℂ)) (κ i + 1)]
+    simp
+  simp only [map_natCast, mul_one, hi, ↓reduceIte,
+    coordinateSymbolFactor]
+  rw [hfactor]
+  apply Finset.sum_congr rfl
+  intro k _hk
+  have hchoose :
+      ((κ i).choose (k : ℕ) : _root_.MvPolynomial (σ ⊕ σ) ℂ) =
+        _root_.MvPolynomial.C ((κ i).choose (k : ℕ) : ℂ) :=
+    (map_natCast
+      (_root_.MvPolynomial.C : ℂ →+* _root_.MvPolynomial (σ ⊕ σ) ℂ)
+      ((κ i).choose (k : ℕ))).symm
+  rw [hchoose]
+  ring
+
 /-- The finite symbol factors into the homogeneous Jensen symbol and the
 spectator-coordinate factors. -/
 theorem algebraicSymbol_coordinateDiagonalOperatorDegreeBox
@@ -132,12 +258,7 @@ theorem algebraicSymbol_coordinateDiagonalOperatorDegreeBox
       coordinateDiagonalSymbol d gamma q κ := by
   classical
   rw [algebraicSymbol_coordinateDiagonalOperatorDegreeBox_eq_sum]
-  let g : (i : σ) → Fin (κ i + 1) → _root_.MvPolynomial (σ ⊕ σ) ℂ :=
-    fun i k =>
-      _root_.MvPolynomial.C ((κ i).choose (k : ℕ) : ℂ) *
-        _root_.MvPolynomial.X (Sum.inl i) ^ (k : ℕ) *
-          _root_.MvPolynomial.X (Sum.inr i) ^ (κ i - k) *
-            if i = q then _root_.MvPolynomial.C (gamma (k : ℕ) : ℂ) else 1
+  let g := coordinateSymbolFactor gamma q κ
   calc
     (∑ m : {m : σ →₀ ℕ // ∀ i, m i ≤ κ i},
         _root_.MvPolynomial.C (_root_.MvPolynomial.boxChoose κ m.1 : ℂ) *
@@ -145,102 +266,20 @@ theorem algebraicSymbol_coordinateDiagonalOperatorDegreeBox
             (_root_.MvPolynomial.monomial m.1 ((gamma (m.1 q) : ℂ))) *
           _root_.MvPolynomial.rightComplementMonomial κ m.1) =
         ∑ x : (∀ i, Fin (κ i + 1)), ∏ i, g i (x i) := by
-      apply Fintype.sum_equiv (MvPolynomial.degreeOfLEIndexEquiv κ)
-      intro m
-      simp only [MvPolynomial.boxChoose, Nat.cast_prod, map_prod, map_natCast,
-        MvPolynomial.monomial_eq, Finsupp.prod_pow, map_mul, MvPolynomial.algHom_C,
-        MvPolynomial.algebraMap_eq, map_pow, MvPolynomial.rename_X,
-        MvPolynomial.rightComplementMonomial, mul_ite, mul_one,
-        MvPolynomial.degreeOfLEIndexEquiv, Equiv.coe_fn_mk, g]
-      have hif (i : σ) :
-          (if i = q then
-              ((κ i).choose (m.1 i) : _root_.MvPolynomial (σ ⊕ σ) ℂ) *
-                _root_.MvPolynomial.X (Sum.inl i) ^ m.1 i *
-                  _root_.MvPolynomial.X (Sum.inr i) ^ (κ i - m.1 i) *
-                _root_.MvPolynomial.C (gamma (m.1 i) : ℂ)
-            else
-              ((κ i).choose (m.1 i) : _root_.MvPolynomial (σ ⊕ σ) ℂ) *
-                _root_.MvPolynomial.X (Sum.inl i) ^ m.1 i *
-                _root_.MvPolynomial.X (Sum.inr i) ^ (κ i - m.1 i)) =
-          (((κ i).choose (m.1 i) : _root_.MvPolynomial (σ ⊕ σ) ℂ) *
-              _root_.MvPolynomial.X (Sum.inl i) ^ m.1 i *
-              _root_.MvPolynomial.X (Sum.inr i) ^ (κ i - m.1 i)) *
-            (if i = q then _root_.MvPolynomial.C (gamma (m.1 i) : ℂ) else 1) := by
-        by_cases hi : i = q <;> simp [hi]
-      rw [show
-          (∏ i,
-            if i = q then
-                ((κ i).choose (m.1 i) : _root_.MvPolynomial (σ ⊕ σ) ℂ) *
-                    _root_.MvPolynomial.X (Sum.inl i) ^ m.1 i *
-                  _root_.MvPolynomial.X (Sum.inr i) ^ (κ i - m.1 i) *
-                    _root_.MvPolynomial.C (gamma (m.1 i) : ℂ)
-              else
-                ((κ i).choose (m.1 i) : _root_.MvPolynomial (σ ⊕ σ) ℂ) *
-                    _root_.MvPolynomial.X (Sum.inl i) ^ m.1 i *
-                  _root_.MvPolynomial.X (Sum.inr i) ^ (κ i - m.1 i)) =
-            ∏ i,
-              (((κ i).choose (m.1 i) : _root_.MvPolynomial (σ ⊕ σ) ℂ) *
-                  _root_.MvPolynomial.X (Sum.inl i) ^ m.1 i *
-                _root_.MvPolynomial.X (Sum.inr i) ^ (κ i - m.1 i)) *
-                (if i = q then _root_.MvPolynomial.C (gamma (m.1 i) : ℂ) else 1) by
-          apply Finset.prod_congr rfl
-          intro i _hi
-          exact hif i]
-      rw [Finset.prod_mul_distrib]
-      have hgamma :
-          (∏ i, if i = q then
-              _root_.MvPolynomial.C (gamma (m.1 i) : ℂ)
-            else (1 : _root_.MvPolynomial (σ ⊕ σ) ℂ)) =
-            _root_.MvPolynomial.C (gamma (m.1 q) : ℂ) := by
-        rw [Finset.prod_eq_single q]
-        · simp
-        · intro i hi hiq
-          simp [hiq]
-        · simp
-      rw [hgamma]
-      simp_rw [Finset.prod_mul_distrib]
-      ring
+      simpa only [g] using coordinateDiagonalDegreeBox_sum_eq_pi_factor gamma q κ
     _ = ∏ i, ∑ k : Fin (κ i + 1), g i k := by
       rw [Fintype.prod_sum]
     _ = coordinateDiagonalSymbol d gamma q κ := by
       have hq :
           (∑ k : Fin (κ q + 1), g q k) = coordinateJensenSymbol d gamma q := by
-        rw [coordinateJensenSymbol]
-        rw [← hκ]
-        apply Finset.sum_congr rfl
-        intro k _hk
-        simp [g]
-        ring
+        simpa only [g] using
+          sum_coordinateSymbolFactor_eq_coordinateJensenSymbol d gamma q κ hκ
       have hspect (i : σ) (hi : i ≠ q) :
           (∑ k : Fin (κ i + 1), g i k) =
             (_root_.MvPolynomial.X (Sum.inl i) +
               _root_.MvPolynomial.X (Sum.inr i)) ^ κ i := by
-        have hfactor :
-            (_root_.MvPolynomial.X (Sum.inl i) +
-                _root_.MvPolynomial.X (Sum.inr i)) ^ κ i =
-              ∑ k : Fin (κ i + 1),
-                _root_.MvPolynomial.X (Sum.inl i) ^ (k : ℕ) *
-                  _root_.MvPolynomial.X (Sum.inr i) ^ (κ i - k) *
-                    _root_.MvPolynomial.C ((κ i).choose k : ℂ) := by
-          rw [add_pow]
-          rw [Fin.sum_univ_eq_sum_range
-            (fun k : ℕ =>
-              _root_.MvPolynomial.X (Sum.inl i) ^ k *
-                _root_.MvPolynomial.X (Sum.inr i) ^ (κ i - k) *
-                  _root_.MvPolynomial.C ((κ i).choose k : ℂ)) (κ i + 1)]
-          simp
-        simp only [map_natCast, mul_ite, mul_one, hi, ↓reduceIte, g]
-        rw [hfactor]
-        apply Finset.sum_congr rfl
-        intro k _hk
-        have hchoose :
-            ((κ i).choose (k : ℕ) : _root_.MvPolynomial (σ ⊕ σ) ℂ) =
-              _root_.MvPolynomial.C ((κ i).choose (k : ℕ) : ℂ) :=
-          (map_natCast
-            (_root_.MvPolynomial.C : ℂ →+* _root_.MvPolynomial (σ ⊕ σ) ℂ)
-            ((κ i).choose (k : ℕ))).symm
-        rw [hchoose]
-        ring
+        simpa only [g] using
+          sum_coordinateSymbolFactor_eq_add_pow gamma q κ i hi
       rw [coordinateDiagonalSymbol]
       rw [← Finset.prod_erase_mul Finset.univ
         (fun i => ∑ k : Fin (κ i + 1), g i k) (Finset.mem_univ q)]

@@ -60,6 +60,74 @@ theorem exists_mulVec_eq_smul [IsAlgClosed K] {m : Type*} [Fintype m]
   rw [sub_mulVec, Algebra.algebraMap_eq_smul_one, smul_mulVec, one_mulVec] at hv
   exact (sub_eq_zero.mp hv).symm
 
+/-- Conjugating an eigenvector into a coordinate column clears its off-diagonal entries. -/
+private theorem exists_unitsConj_zero_column [IsAlgClosed K] {m : Type*} [Fintype m]
+    [DecidableEq m] [Nonempty m] (A : Matrix m m K) :
+    ∃ (i₀ : m) (P : (Matrix m m K)ˣ) (M : Matrix m m K),
+      M = (P⁻¹).val * A * P.val ∧ ∀ i, i ≠ i₀ → M i i₀ = 0 := by
+  obtain ⟨μ, v, hv0, hAv⟩ := exists_mulVec_eq_smul A
+  obtain ⟨i₀, hvi₀⟩ := Function.ne_iff.1 hv0
+  set P₀ : Matrix m m K := (1 : Matrix m m K).updateCol i₀ v with hP₀def
+  have hdet : P₀.det = v i₀ := by
+    have h1 : cramer (1 : Matrix m m K) v i₀ = v i₀ := by rw [cramer_one]; rfl
+    rw [cramer_apply] at h1
+    exact h1
+  have hPunit : IsUnit P₀ :=
+    (isUnit_iff_isUnit_det _).2 (by rw [hdet]; exact hvi₀.isUnit)
+  obtain ⟨P, hP⟩ := hPunit
+  set M : Matrix m m K := (P⁻¹).val * A * P.val with hMdef
+  have h1 : P.val *ᵥ Pi.single i₀ 1 = v := by
+    rw [hP, mulVec_single_one]
+    ext i
+    simp [hP₀def]
+  have h2 : (P⁻¹).val *ᵥ v = Pi.single i₀ 1 := by
+    rw [← h1, mulVec_mulVec, Units.inv_mul, one_mulVec]
+  have hcol : M *ᵥ Pi.single i₀ 1 = μ • Pi.single i₀ 1 := by
+    rw [hMdef, ← mulVec_mulVec, ← mulVec_mulVec, h1, hAv, mulVec_smul, h2]
+  refine ⟨i₀, P, M, hMdef, fun i hi => ?_⟩
+  have h := congrFun hcol i
+  rw [mulVec_single_one] at h
+  simpa [Pi.single_apply, hi] using h
+
+/-- A triangular conjugation on the lower summand extends across a singleton summand. -/
+private theorem exists_unitsConj_blockTriangular_sum {ι κ : Type*} [Fintype ι]
+    [DecidableEq ι] [Subsingleton ι] [Fintype κ] [DecidableEq κ]
+    (N : Matrix (ι ⊕ κ) (ι ⊕ κ) K) (hN21 : N.toBlocks₂₁ = 0)
+    (Q : (Matrix κ κ K)ˣ) (b : κ → ℕ) (hbinj : Function.Injective b)
+    (hbtri : ((Q⁻¹).val * N.toBlocks₂₂ * Q.val).BlockTriangular b) :
+    ∃ (E : (Matrix (ι ⊕ κ) (ι ⊕ κ) K)ˣ) (c : ι ⊕ κ → ℕ),
+      Function.Injective c ∧ ((E⁻¹).val * N * E.val).BlockTriangular c := by
+  set Et : Matrix (ι ⊕ κ) (ι ⊕ κ) K := fromBlocks 1 0 0 Q.val with hEtdef
+  set Et' : Matrix (ι ⊕ κ) (ι ⊕ κ) K := fromBlocks 1 0 0 (Q⁻¹).val with hEt'def
+  have hEE' : Et * Et' = 1 := by
+    rw [hEtdef, hEt'def, fromBlocks_multiply]
+    simp [← fromBlocks_one]
+  have hE'E : Et' * Et = 1 := by
+    rw [hEtdef, hEt'def, fromBlocks_multiply]
+    simp [← fromBlocks_one]
+  have hG : Et' * N * Et =
+      fromBlocks N.toBlocks₁₁ (N.toBlocks₁₂ * Q.val) 0
+        ((Q⁻¹).val * N.toBlocks₂₂ * Q.val) := by
+    conv_lhs => rw [← fromBlocks_toBlocks N, hN21]
+    rw [hEtdef, hEt'def, fromBlocks_multiply, fromBlocks_multiply]
+    simp [Matrix.mul_assoc]
+  set c : ι ⊕ κ → ℕ := Sum.elim (fun _ => 0) (fun s => b s + 1) with hcdef
+  have hGtri : (Et' * N * Et).BlockTriangular c := by
+    rw [hG]
+    rintro (i | i) (j | j) hij
+    · exact absurd hij (lt_irrefl 0)
+    · exact absurd hij (Nat.not_lt_zero _)
+    · simp [fromBlocks]
+    · have hb : b j < b i := by simpa [hcdef] using hij
+      simpa [fromBlocks] using hbtri hb
+  have hcinj : Function.Injective c := by
+    rintro (i | i) (j | j) hij
+    · exact congrArg Sum.inl (Subsingleton.elim i j)
+    · exact absurd hij.symm (by simp [hcdef])
+    · exact absurd hij (by simp [hcdef])
+    · exact congrArg Sum.inr (hbinj (by simpa [hcdef] using hij))
+  exact ⟨⟨Et, Et', hEE', hE'E⟩, c, hcinj, hGtri⟩
+
 /-- The induction behind `exists_unitsConj_blockTriangular`, phrased over the
 cardinality of the index type. -/
 private theorem exists_unitsConj_blockTriangular_aux [IsAlgClosed K] :
@@ -76,33 +144,8 @@ private theorem exists_unitsConj_blockTriangular_aux [IsAlgClosed K] :
   | succ n ih =>
     intro m _ _ hcard A
     have : Nonempty m := Fintype.card_pos_iff.1 (by lia)
-    -- an eigenvector, and a coordinate where it does not vanish
-    obtain ⟨μ, v, hv0, hAv⟩ := exists_mulVec_eq_smul A
-    obtain ⟨i₀, hvi₀⟩ := Function.ne_iff.1 hv0
     -- conjugate by an invertible matrix whose `i₀`-th column is the eigenvector
-    set P₀ : Matrix m m K := (1 : Matrix m m K).updateCol i₀ v with hP₀def
-    have hdet : P₀.det = v i₀ := by
-      have h1 : cramer (1 : Matrix m m K) v i₀ = v i₀ := by rw [cramer_one]; rfl
-      rw [cramer_apply] at h1
-      exact h1
-    have hPunit : IsUnit P₀ :=
-      (isUnit_iff_isUnit_det _).2 (by rw [hdet]; exact hvi₀.isUnit)
-    obtain ⟨P₁, hP₁⟩ := hPunit
-    set M : Matrix m m K := (P₁⁻¹).val * A * P₁.val with hMdef
-    -- the `i₀`-th column of the conjugated matrix vanishes off the diagonal
-    have h1 : P₁.val *ᵥ Pi.single i₀ 1 = v := by
-      rw [hP₁, mulVec_single_one]
-      ext i
-      simp [hP₀def]
-    have h2 : (P₁⁻¹).val *ᵥ v = Pi.single i₀ 1 := by
-      rw [← h1, mulVec_mulVec, Units.inv_mul, one_mulVec]
-    have hcol : M *ᵥ Pi.single i₀ 1 = μ • Pi.single i₀ 1 := by
-      rw [hMdef, ← mulVec_mulVec, ← mulVec_mulVec, h1, hAv, mulVec_smul, h2]
-    have hMcol : ∀ i : m, i ≠ i₀ → M i i₀ = 0 := by
-      intro i hi
-      have h := congrFun hcol i
-      rw [mulVec_single_one] at h
-      simpa [Pi.single_apply, hi] using h
+    obtain ⟨i₀, P₁, M, hMdef, hMcol⟩ := exists_unitsConj_zero_column A
     -- pass to `{a // a = i₀} ⊕ {a // ¬a = i₀}` coordinates
     set e : {a : m // a = i₀} ⊕ {a : m // ¬a = i₀} ≃ m :=
       Equiv.sumCompl (fun a => a = i₀) with hedef
@@ -124,66 +167,32 @@ private theorem exists_unitsConj_blockTriangular_aux [IsAlgClosed K] :
       lia
     obtain ⟨Q, b', hb'inj, hb'tri⟩ := ih hcardS Nm.toBlocks₂₂
     -- the block conjugator, extended by the identity on the distinguished index
-    set Et : Matrix ({a : m // a = i₀} ⊕ {a : m // ¬a = i₀})
-        ({a : m // a = i₀} ⊕ {a : m // ¬a = i₀}) K :=
-      fromBlocks 1 0 0 Q.val with hEtdef
-    set Et' : Matrix ({a : m // a = i₀} ⊕ {a : m // ¬a = i₀})
-        ({a : m // a = i₀} ⊕ {a : m // ¬a = i₀}) K :=
-      fromBlocks 1 0 0 (Q⁻¹).val with hEt'def
-    have hEE' : Et * Et' = 1 := by
-      rw [hEtdef, hEt'def, fromBlocks_multiply]
-      simp [← fromBlocks_one]
-    have hE'E : Et' * Et = 1 := by
-      rw [hEtdef, hEt'def, fromBlocks_multiply]
-      simp [← fromBlocks_one]
+    obtain ⟨Et, c, hcinj, hGtri⟩ :=
+      exists_unitsConj_blockTriangular_sum Nm hN21 Q b' hb'inj hb'tri
     set E₁ : (Matrix m m K)ˣ :=
-      ⟨Et.submatrix e.symm e.symm, Et'.submatrix e.symm e.symm,
-        by rw [submatrix_mul_equiv Et Et' _ e.symm _, hEE', submatrix_one_equiv],
-        by rw [submatrix_mul_equiv Et' Et _ e.symm _, hE'E, submatrix_one_equiv]⟩ with hE₁def
-    -- the conjugated matrix in block coordinates
-    have hG : Et' * Nm * Et =
-        fromBlocks Nm.toBlocks₁₁ (Nm.toBlocks₁₂ * Q.val) 0
-          ((Q⁻¹).val * Nm.toBlocks₂₂ * Q.val) := by
-      conv_lhs => rw [← fromBlocks_toBlocks Nm, hN21]
-      rw [hEtdef, hEt'def, fromBlocks_multiply, fromBlocks_multiply]
-      simp [Matrix.mul_assoc]
-    set c : ({a : m // a = i₀} ⊕ {a : m // ¬a = i₀}) → ℕ :=
-      Sum.elim (fun _ => 0) (fun s => b' s + 1) with hcdef
-    have hGtri : (Et' * Nm * Et).BlockTriangular c := by
-      rw [hG]
-      rintro (i | i) (j | j) hij
-      · exact absurd hij (lt_irrefl 0)
-      · exact absurd hij (Nat.not_lt_zero _)
-      · simp [fromBlocks]
-      · have hb : b' j < b' i := by
-          simpa [hcdef] using hij
-        simpa [fromBlocks] using hb'tri hb
-    have hcinj : Function.Injective c := by
-      rintro (i | i) (j | j) hij
-      · exact congrArg Sum.inl (Subsingleton.elim i j)
-      · exact absurd hij.symm (by simp [hcdef])
-      · exact absurd hij (by simp [hcdef])
-      · exact congrArg Sum.inr (hb'inj (by simpa [hcdef] using hij))
+      ⟨Et.val.submatrix e.symm e.symm, (Et⁻¹).val.submatrix e.symm e.symm,
+        by rw [submatrix_mul_equiv, Units.mul_inv, submatrix_one_equiv],
+        by rw [submatrix_mul_equiv, Units.inv_mul, submatrix_one_equiv]⟩
     -- assemble
     refine ⟨P₁ * E₁, c ∘ e.symm, hcinj.comp e.symm.injective, ?_⟩
     have hMN : M = Nm.submatrix e.symm e.symm := by
       rw [hNdef, submatrix_submatrix]
       simp
     have hexp : ((P₁ * E₁)⁻¹).val * A * (P₁ * E₁).val
-        = (Et' * Nm * Et).submatrix e.symm e.symm := by
-      rw [show (P₁ * E₁)⁻¹ = E₁⁻¹ * P₁⁻¹ from _root_.mul_inv_rev _ _, Units.val_mul,
-        Units.val_mul]
-      have hinv : (E₁⁻¹).val = Et'.submatrix e.symm e.symm := rfl
-      have hval : E₁.val = Et.submatrix e.symm e.symm := rfl
+        = ((Et⁻¹).val * Nm * Et.val).submatrix e.symm e.symm := by
+      rw [show (P₁ * E₁)⁻¹ = E₁⁻¹ * P₁⁻¹ from _root_.mul_inv_rev _ _,
+        Units.val_mul, Units.val_mul]
+      have hinv : (E₁⁻¹).val = (Et⁻¹).val.submatrix e.symm e.symm := rfl
+      have hval : E₁.val = Et.val.submatrix e.symm e.symm := rfl
       calc (E₁⁻¹).val * (P₁⁻¹).val * A * (P₁.val * E₁.val)
           = (E₁⁻¹).val * ((P₁⁻¹).val * A * P₁.val) * E₁.val := by
             simp only [Matrix.mul_assoc]
         _ = (E₁⁻¹).val * M * E₁.val := by rw [hMdef]
-        _ = Et'.submatrix e.symm e.symm * Nm.submatrix e.symm e.symm *
-              Et.submatrix e.symm e.symm := by rw [hinv, hval, hMN]
-        _ = (Et' * Nm * Et).submatrix e.symm e.symm := by
-            rw [submatrix_mul_equiv Et' Nm _ e.symm _,
-              submatrix_mul_equiv (Et' * Nm) Et _ e.symm _]
+        _ = (Et⁻¹).val.submatrix e.symm e.symm * Nm.submatrix e.symm e.symm *
+              Et.val.submatrix e.symm e.symm := by rw [hinv, hval, hMN]
+        _ = ((Et⁻¹).val * Nm * Et.val).submatrix e.symm e.symm := by
+            rw [submatrix_mul_equiv (Et⁻¹).val Nm _ e.symm _,
+              submatrix_mul_equiv ((Et⁻¹).val * Nm) Et.val _ e.symm _]
     rw [hexp]
     exact fun i j hij => hGtri hij
 

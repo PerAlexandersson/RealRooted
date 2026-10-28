@@ -186,6 +186,194 @@ private lemma sort_roots_gammaTransform_eq_reciprocalCenterRoots
     ((Multiset.sort_eq _ _).trans
       (coe_reciprocalCenterRoots_eq_roots hγdeg hγ hneg).symm)
 
+/-- Transformed interlacing restricts to the corresponding preferred-root shape. -/
+private lemma preferredRoots_shape_of_strictInterl_gammaTransform
+    {d : ℕ} {γ δ : ℝ[X]}
+    (hγdeg : γ.natDegree ≤ d / 2) (hδdeg : δ.natDegree ≤ (d + 1) / 2)
+    (hγ : γ ≠ 0) (hδ : δ ≠ 0)
+    (hγneg : ∀ x ∈ γ.roots, x < 0) (hδneg : ∀ x ∈ δ.roots, x < 0)
+    (hTγneg : ∀ x ∈ (gammaTransform d γ).roots, x < 0)
+    (hTδneg : ∀ x ∈ (gammaTransform (d + 1) δ).roots, x < 0)
+    (hTstrictInterl : StrictInterl (gammaTransform d γ) (gammaTransform (d + 1) δ)) :
+    (γ ≠ 0 ∧ γ.Splits) ∧ (δ ≠ 0 ∧ δ.Splits) ∧
+      (((preferredRoots d γ).length + 1 = (preferredRoots (d + 1) δ).length ∧
+          ListInterlaces (preferredRoots d γ) (preferredRoots (d + 1) δ)) ∨
+        ((preferredRoots d γ).length = (preferredRoots (d + 1) δ).length ∧
+          ListAlternates (preferredRoots d γ) (preferredRoots (d + 1) δ))) := by
+  let ss := preferredRoots d γ
+  let rs := preferredRoots (d + 1) δ
+  have hγrr :=
+    isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_of_natDegree_le
+      hγdeg hTstrictInterl.1.1 hTstrictInterl.1.2
+      (fun x hx ↦ (hTγneg x hx).le)
+  have hδrr :=
+    isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_of_natDegree_le
+      hδdeg hTstrictInterl.2.1.1 hTstrictInterl.2.1.2
+      (fun x hx ↦ (hTδneg x hx).le)
+  have hsslen : ss.length = γ.natDegree :=
+    length_preferredRoots hγdeg hγ hγrr.1.2 hγneg
+  have hrslen : rs.length = δ.natDegree :=
+    length_preferredRoots hδdeg hδ hδrr.1.2 hδneg
+  have hmult := hTstrictInterl.rootMultiplicity_bounds (-1)
+  rw [rootMultiplicity_neg_one_gammaTransform hγdeg hγ,
+    rootMultiplicity_neg_one_gammaTransform hδdeg hδ] at hmult
+  have hdegcases : γ.natDegree = δ.natDegree ∨
+      γ.natDegree + 1 = δ.natDegree := by
+    have hγmul : γ.natDegree * 2 ≤ d := Nat.mul_le_of_le_div 2 _ _ hγdeg
+    have hδmul : δ.natDegree * 2 ≤ d + 1 := Nat.mul_le_of_le_div 2 _ _ hδdeg
+    lia
+  have hsorted := hTstrictInterl.sorted_roots_shape
+  rw [sort_roots_gammaTransform_eq_reciprocalCenterRoots hγdeg hγ hTγneg,
+    sort_roots_gammaTransform_eq_reciprocalCenterRoots hδdeg hδ hTδneg] at hsorted
+  have hfull :
+      ListInterlaces (reciprocalCenterRoots (d - 2 * γ.natDegree) ss)
+        (reciprocalCenterRoots (d + 1 - 2 * δ.natDegree) rs) := by
+    rcases hsorted with hsorted | hsorted
+    · exact hsorted.2
+    · exfalso
+      simp [reciprocalCenterRoots] at hsorted
+      lia
+  refine ⟨hγrr.1, hδrr.1, ?_⟩
+  rcases hdegcases with hsame | hsucc
+  · right
+    have hlen : ss.length = rs.length := by lia
+    refine ⟨hlen, ?_⟩
+    have hcenter : d + 1 - 2 * δ.natDegree = (d - 2 * γ.natDegree) + 1 := by lia
+    rw [hcenter] at hfull
+    exact (listInterlaces_reciprocalCenterRoots_same_iff
+      (d - 2 * γ.natDegree) (fun _ hx ↦ mem_preferredRoots hx)
+      (fun _ hx ↦ mem_preferredRoots hx) hlen).1 hfull
+  · left
+    have hlen : ss.length + 1 = rs.length := by lia
+    refine ⟨hlen, ?_⟩
+    have hcenter : d - 2 * γ.natDegree = (d + 1 - 2 * δ.natDegree) + 1 := by lia
+    rw [hcenter] at hfull
+    exact (listInterlaces_reciprocalCenterRoots_succ_iff
+      (d + 1 - 2 * δ.natDegree) (fun _ hx ↦ mem_preferredRoots hx)
+      (fun _ hx ↦ mem_preferredRoots hx) hlen).1 hfull
+
+/-- A preferred-root shape assembles the original gamma polynomials' interlacing. -/
+private lemma strictInterl_of_preferredRoots_shape {d : ℕ} {γ δ : ℝ[X]}
+    (hγdeg : γ.natDegree ≤ d / 2) (hδdeg : δ.natDegree ≤ (d + 1) / 2)
+    (hγrr : γ ≠ 0 ∧ γ.Splits) (hδrr : δ ≠ 0 ∧ δ.Splits)
+    (hγneg : ∀ x ∈ γ.roots, x < 0) (hδneg : ∀ x ∈ δ.roots, x < 0)
+    (hpreferred :
+      (((preferredRoots d γ).length + 1 = (preferredRoots (d + 1) δ).length ∧
+          ListInterlaces (preferredRoots d γ) (preferredRoots (d + 1) δ)) ∨
+        ((preferredRoots d γ).length = (preferredRoots (d + 1) δ).length ∧
+          ListAlternates (preferredRoots d γ) (preferredRoots (d + 1) δ)))) :
+    StrictInterl γ δ := by
+  let ss := preferredRoots d γ
+  let rs := preferredRoots (d + 1) δ
+  refine ⟨hγrr, hδrr, ss.map gammaRootMap, rs.map gammaRootMap,
+    map_gammaRootMap_preferredRoots_pairwise d γ,
+    map_gammaRootMap_preferredRoots_pairwise (d + 1) δ,
+    coe_map_gammaRootMap_preferredRoots hγdeg hγrr.1 hγneg,
+    coe_map_gammaRootMap_preferredRoots hδdeg hδrr.1 hδneg, ?_⟩
+  rcases hpreferred with ⟨hlen, hint⟩ | ⟨hlen, halt⟩
+  · left
+    refine ⟨by simpa using hlen, ?_⟩
+    apply (listInterlaces_iff_interleaves_of_length (by simpa using hlen)).2
+    apply (interleaves_map_gammaRootMap_iff
+      (fun _ hx ↦ mem_preferredRoots hx) (fun _ hx ↦ mem_preferredRoots hx)).2
+    exact (listInterlaces_iff_interleaves_of_length hlen).1 hint
+  · right
+    refine ⟨by simpa using hlen, ?_⟩
+    apply (listAlternates_iff_interleaves_of_length (by simpa using hlen)).2
+    apply (interleaves_map_gammaRootMap_iff
+      (fun _ hx ↦ mem_preferredRoots hx) (fun _ hx ↦ mem_preferredRoots hx)).2
+    exact (listAlternates_iff_interleaves_of_length hlen).1 halt
+
+/-- Original interlacing transports to the preferred roots of both transforms. -/
+private lemma preferredRoots_shape_of_strictInterl {d : ℕ} {γ δ : ℝ[X]}
+    (hγdeg : γ.natDegree ≤ d / 2) (hδdeg : δ.natDegree ≤ (d + 1) / 2)
+    (hγ : γ ≠ 0) (hδ : δ ≠ 0)
+    (hγneg : ∀ x ∈ γ.roots, x < 0) (hδneg : ∀ x ∈ δ.roots, x < 0)
+    (hstrictInterl : StrictInterl γ δ) :
+    (((preferredRoots d γ).length + 1 = (preferredRoots (d + 1) δ).length ∧
+        ListInterlaces (preferredRoots d γ) (preferredRoots (d + 1) δ)) ∨
+      ((preferredRoots d γ).length = (preferredRoots (d + 1) δ).length ∧
+        ListAlternates (preferredRoots d γ) (preferredRoots (d + 1) δ))) := by
+  let ss := preferredRoots d γ
+  let rs := preferredRoots (d + 1) δ
+  have hsorted := hstrictInterl.sorted_roots_shape
+  rw [sort_roots_eq_map_gammaRootMap_preferredRoots hγdeg hγ hγneg,
+    sort_roots_eq_map_gammaRootMap_preferredRoots hδdeg hδ hδneg] at hsorted
+  rcases hsorted with ⟨hlen, hint⟩ | ⟨hlen, halt⟩
+  · left
+    have hlen' : ss.length + 1 = rs.length := by simpa using hlen
+    refine ⟨hlen', ?_⟩
+    apply (listInterlaces_iff_interleaves_of_length hlen').2
+    apply (interleaves_map_gammaRootMap_iff
+      (fun _ hx ↦ mem_preferredRoots hx) (fun _ hx ↦ mem_preferredRoots hx)).1
+    exact (listInterlaces_iff_interleaves_of_length hlen).1 hint
+  · right
+    have hlen' : ss.length = rs.length := by simpa using hlen
+    refine ⟨hlen', ?_⟩
+    apply (listAlternates_iff_interleaves_of_length hlen').2
+    apply (interleaves_map_gammaRootMap_iff
+      (fun _ hx ↦ mem_preferredRoots hx) (fun _ hx ↦ mem_preferredRoots hx)).1
+    exact (listAlternates_iff_interleaves_of_length hlen).1 halt
+
+/-- A preferred-root shape expands to interlacing of adjacent gamma transforms. -/
+private lemma strictInterl_gammaTransform_of_preferredRoots_shape
+    {d : ℕ} {γ δ : ℝ[X]}
+    (hγdeg : γ.natDegree ≤ d / 2) (hδdeg : δ.natDegree ≤ (d + 1) / 2)
+    (hγ : γ ≠ 0) (hδ : δ ≠ 0)
+    (hTγrr : gammaTransform d γ ≠ 0 ∧ (gammaTransform d γ).Splits)
+    (hTδrr : gammaTransform (d + 1) δ ≠ 0 ∧ (gammaTransform (d + 1) δ).Splits)
+    (hTγneg : ∀ x ∈ (gammaTransform d γ).roots, x < 0)
+    (hTδneg : ∀ x ∈ (gammaTransform (d + 1) δ).roots, x < 0)
+    (hsslen : (preferredRoots d γ).length = γ.natDegree)
+    (hrslen : (preferredRoots (d + 1) δ).length = δ.natDegree)
+    (hpreferred :
+      (((preferredRoots d γ).length + 1 = (preferredRoots (d + 1) δ).length ∧
+          ListInterlaces (preferredRoots d γ) (preferredRoots (d + 1) δ)) ∨
+        ((preferredRoots d γ).length = (preferredRoots (d + 1) δ).length ∧
+          ListAlternates (preferredRoots d γ) (preferredRoots (d + 1) δ)))) :
+    StrictInterl (gammaTransform d γ) (gammaTransform (d + 1) δ) := by
+  let ss := preferredRoots d γ
+  let rs := preferredRoots (d + 1) δ
+  rcases hpreferred with ⟨hlen, hint⟩ | ⟨hlen, halt⟩
+  · have hcenter : d - 2 * γ.natDegree =
+        (d + 1 - 2 * δ.natDegree) + 1 := by
+      rw [← hsslen, ← hrslen]
+      have hγmul : γ.natDegree * 2 ≤ d := Nat.mul_le_of_le_div 2 _ _ hγdeg
+      lia
+    have hfull := (listInterlaces_reciprocalCenterRoots_succ_iff
+      (d + 1 - 2 * δ.natDegree) (fun _ hx ↦ mem_preferredRoots hx)
+      (fun _ hx ↦ mem_preferredRoots hx) hlen).2 hint
+    rw [← hcenter] at hfull
+    have hfull_len :
+        (reciprocalCenterRoots (d - 2 * γ.natDegree) ss).length + 1 =
+          (reciprocalCenterRoots (d + 1 - 2 * δ.natDegree) rs).length := by
+      simp [reciprocalCenterRoots]
+      lia
+    have hi := (listInterlaces_iff_interleaves_of_length hfull_len).1 hfull
+    exact ⟨hTγrr, hTδrr, _, _, hi.pairwise_left, hi.pairwise_right,
+      coe_reciprocalCenterRoots_eq_roots hγdeg hγ hTγneg,
+      coe_reciprocalCenterRoots_eq_roots hδdeg hδ hTδneg,
+      Or.inl ⟨hfull_len, hfull⟩⟩
+  · have hcenter : d + 1 - 2 * δ.natDegree =
+        (d - 2 * γ.natDegree) + 1 := by
+      rw [← hsslen, ← hrslen]
+      have hδmul : δ.natDegree * 2 ≤ d + 1 := Nat.mul_le_of_le_div 2 _ _ hδdeg
+      lia
+    have hfull := (listInterlaces_reciprocalCenterRoots_same_iff
+      (d - 2 * γ.natDegree) (fun _ hx ↦ mem_preferredRoots hx)
+      (fun _ hx ↦ mem_preferredRoots hx) hlen).2 halt
+    rw [← hcenter] at hfull
+    have hfull_len :
+        (reciprocalCenterRoots (d - 2 * γ.natDegree) ss).length + 1 =
+          (reciprocalCenterRoots (d + 1 - 2 * δ.natDegree) rs).length := by
+      simp [reciprocalCenterRoots]
+      lia
+    have hi := (listInterlaces_iff_interleaves_of_length hfull_len).1 hfull
+    exact ⟨hTγrr, hTδrr, _, _, hi.pairwise_left, hi.pairwise_right,
+      coe_reciprocalCenterRoots_eq_roots hγdeg hγ hTγneg,
+      coe_reciprocalCenterRoots_eq_roots hδdeg hδ hTδneg,
+      Or.inl ⟨hfull_len, hfull⟩⟩
+
 /-- Hoster--Stump, Proposition 2.5: interlacing is equivalent before and
 after applying adjacent-degree gamma transforms. -/
 theorem strictInterl_gammaTransform_succ_iff
@@ -206,8 +394,8 @@ theorem strictInterl_gammaTransform_succ_iff
     intro hzero
     apply hδ0
     simp [hzero]
-  have hγmul : γ.natDegree * 2 ≤ d := Nat.mul_le_of_le_div 2 _ _ hγdeg
-  have hδmul : δ.natDegree * 2 ≤ d + 1 := Nat.mul_le_of_le_div 2 _ _ hδdeg
+  have hγneg := roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hγnn hγ0
+  have hδneg := roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hδnn hδ0
   have hTγnn : HasNonnegCoeffs (gammaTransform d γ) :=
     hasNonnegCoeffs_gammaTransform hγnn
   have hTδnn : HasNonnegCoeffs (gammaTransform (d + 1) δ) :=
@@ -218,164 +406,27 @@ theorem strictInterl_gammaTransform_succ_iff
     simpa [coeff_zero_gammaTransform] using hδ0
   have hTγneg := roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hTγnn hTγ0
   have hTδneg := roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hTδnn hTδ0
-  let ss := preferredRoots d γ
-  let rs := preferredRoots (d + 1) δ
-  have hss : ∀ x ∈ ss, x ∈ Set.Ioo (-1 : ℝ) 0 := fun _ hx => mem_preferredRoots hx
-  have hrs : ∀ x ∈ rs, x ∈ Set.Ioo (-1 : ℝ) 0 := fun _ hx => mem_preferredRoots hx
   constructor
   · intro hTstrictInterl
-    have hγrr :=
-      isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_of_natDegree_le
-        hγdeg hTstrictInterl.1.1 hTstrictInterl.1.2
-        (roots_nonpos_of_hasNonnegCoeffs hTγnn)
-    have hδrr :=
-      isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_of_natDegree_le
-        hδdeg hTstrictInterl.2.1.1 hTstrictInterl.2.1.2
-        (roots_nonpos_of_hasNonnegCoeffs hTδnn)
-    have hsslen : ss.length = γ.natDegree :=
-      length_preferredRoots hγdeg hγ hγrr.1.2
-        (roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hγnn hγ0)
-    have hrslen : rs.length = δ.natDegree :=
-      length_preferredRoots hδdeg hδ hδrr.1.2
-        (roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hδnn hδ0)
-    have hmult := hTstrictInterl.rootMultiplicity_bounds (-1)
-    rw [rootMultiplicity_neg_one_gammaTransform hγdeg hγ,
-      rootMultiplicity_neg_one_gammaTransform hδdeg hδ] at hmult
-    have hdegcases : γ.natDegree = δ.natDegree ∨
-        γ.natDegree + 1 = δ.natDegree := by
-      lia
-    have hsorted := hTstrictInterl.sorted_roots_shape
-    rw [sort_roots_gammaTransform_eq_reciprocalCenterRoots hγdeg hγ hTγneg,
-      sort_roots_gammaTransform_eq_reciprocalCenterRoots hδdeg hδ hTδneg] at hsorted
-    have hfull :
-        ListInterlaces
-          (reciprocalCenterRoots (d - 2 * γ.natDegree) ss)
-          (reciprocalCenterRoots (d + 1 - 2 * δ.natDegree) rs) := by
-      rcases hsorted with hsorted | hsorted
-      · exact hsorted.2
-      · exfalso
-        simp [reciprocalCenterRoots] at hsorted
-        lia
-    have hpreferred :
-        ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
-          (ss.length = rs.length ∧ ListAlternates ss rs)) := by
-      rcases hdegcases with hsame | hsucc
-      · right
-        have hlen : ss.length = rs.length := by lia
-        refine ⟨hlen, ?_⟩
-        have hcenter : d + 1 - 2 * δ.natDegree =
-            (d - 2 * γ.natDegree) + 1 := by
-          lia
-        rw [hcenter] at hfull
-        exact (listInterlaces_reciprocalCenterRoots_same_iff
-          (d - 2 * γ.natDegree) hss hrs hlen).1 hfull
-      · left
-        have hlen : ss.length + 1 = rs.length := by lia
-        refine ⟨hlen, ?_⟩
-        have hcenter : d - 2 * γ.natDegree =
-            (d + 1 - 2 * δ.natDegree) + 1 := by
-          lia
-        rw [hcenter] at hfull
-        exact (listInterlaces_reciprocalCenterRoots_succ_iff
-          (d + 1 - 2 * δ.natDegree) hss hrs hlen).1 hfull
-    have hγneg := roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hγnn hγ0
-    have hδneg := roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hδnn hδ0
-    refine ⟨hγrr.1, hδrr.1, ss.map gammaRootMap, rs.map gammaRootMap,
-      ?_, ?_, coe_map_gammaRootMap_preferredRoots hγdeg hγ hγneg,
-      coe_map_gammaRootMap_preferredRoots hδdeg hδ hδneg, ?_⟩
-    · exact map_gammaRootMap_preferredRoots_pairwise d γ
-    · exact map_gammaRootMap_preferredRoots_pairwise (d + 1) δ
-    · rcases hpreferred with ⟨hlen, hint⟩ | ⟨hlen, halt⟩
-      · left
-        refine ⟨by simpa using hlen, ?_⟩
-        apply (listInterlaces_iff_interleaves_of_length (by simpa using hlen)).2
-        apply (interleaves_map_gammaRootMap_iff hss hrs).2
-        exact (listInterlaces_iff_interleaves_of_length hlen).1 hint
-      · right
-        refine ⟨by simpa using hlen, ?_⟩
-        apply (listAlternates_iff_interleaves_of_length (by simpa using hlen)).2
-        apply (interleaves_map_gammaRootMap_iff hrs hss).2
-        exact (listAlternates_iff_interleaves_of_length hlen).1 halt
+    obtain ⟨hγrr, hδrr, hpreferred⟩ :=
+      preferredRoots_shape_of_strictInterl_gammaTransform hγdeg hδdeg hγ hδ
+        hγneg hδneg hTγneg hTδneg hTstrictInterl
+    exact strictInterl_of_preferredRoots_shape hγdeg hδdeg hγrr hδrr
+      hγneg hδneg hpreferred
   · intro hstrictInterl
-    have hγneg := roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hγnn hγ0
-    have hδneg := roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hδnn hδ0
-    have hsslen : ss.length = γ.natDegree :=
+    have hpreferred :=
+      preferredRoots_shape_of_strictInterl hγdeg hδdeg hγ hδ hγneg hδneg hstrictInterl
+    have hsslen :=
       length_preferredRoots hγdeg hγ hstrictInterl.1.2 hγneg
-    have hrslen : rs.length = δ.natDegree :=
+    have hrslen :=
       length_preferredRoots hδdeg hδ hstrictInterl.2.1.2 hδneg
-    have hsorted := hstrictInterl.sorted_roots_shape
-    rw [sort_roots_eq_map_gammaRootMap_preferredRoots hγdeg hγ hγneg,
-      sort_roots_eq_map_gammaRootMap_preferredRoots hδdeg hδ hδneg] at hsorted
-    have hpreferred :
-        ((ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
-          (ss.length = rs.length ∧ ListAlternates ss rs)) := by
-      rcases hsorted with ⟨hlen, hint⟩ | ⟨hlen, halt⟩
-      · left
-        have hlen' : ss.length + 1 = rs.length := by simpa using hlen
-        refine ⟨hlen', ?_⟩
-        apply (listInterlaces_iff_interleaves_of_length hlen').2
-        apply (interleaves_map_gammaRootMap_iff hss hrs).1
-        exact (listInterlaces_iff_interleaves_of_length hlen).1 hint
-      · right
-        have hlen' : ss.length = rs.length := by simpa using hlen
-        refine ⟨hlen', ?_⟩
-        apply (listAlternates_iff_interleaves_of_length hlen').2
-        apply (interleaves_map_gammaRootMap_iff hrs hss).1
-        exact (listAlternates_iff_interleaves_of_length hlen).1 halt
     have hTγrr :=
       isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
         hγdeg hγ hstrictInterl.1.2 hγnn
     have hTδrr :=
       isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
         hδdeg hδ hstrictInterl.2.1.2 hδnn
-    rcases hpreferred with ⟨hlen, hint⟩ | ⟨hlen, halt⟩
-    · have hcenter : d - 2 * γ.natDegree =
-          (d + 1 - 2 * δ.natDegree) + 1 := by
-        rw [hsslen, hrslen] at hlen
-        lia
-      have hfull :
-          ListInterlaces
-            (reciprocalCenterRoots (d - 2 * γ.natDegree) ss)
-            (reciprocalCenterRoots (d + 1 - 2 * δ.natDegree) rs) := by
-        rw [hcenter]
-        exact (listInterlaces_reciprocalCenterRoots_succ_iff
-          (d + 1 - 2 * δ.natDegree) hss hrs hlen).2 hint
-      have hfull_len :
-          (reciprocalCenterRoots (d - 2 * γ.natDegree) ss).length + 1 =
-            (reciprocalCenterRoots (d + 1 - 2 * δ.natDegree) rs).length := by
-        simp [reciprocalCenterRoots, hsslen, hrslen]
-        lia
-      have hi := (listInterlaces_iff_interleaves_of_length hfull_len).1 hfull
-      refine ⟨hTγrr, hTδrr,
-        reciprocalCenterRoots (d - 2 * γ.natDegree) ss,
-        reciprocalCenterRoots (d + 1 - 2 * δ.natDegree) rs,
-        hi.pairwise_left, hi.pairwise_right,
-        coe_reciprocalCenterRoots_eq_roots hγdeg hγ hTγneg,
-        coe_reciprocalCenterRoots_eq_roots hδdeg hδ hTδneg,
-        Or.inl ⟨hfull_len, hfull⟩⟩
-    · have hcenter : d + 1 - 2 * δ.natDegree =
-          (d - 2 * γ.natDegree) + 1 := by
-        rw [hsslen, hrslen] at hlen
-        lia
-      have hfull :
-          ListInterlaces
-            (reciprocalCenterRoots (d - 2 * γ.natDegree) ss)
-            (reciprocalCenterRoots (d + 1 - 2 * δ.natDegree) rs) := by
-        rw [hcenter]
-        exact (listInterlaces_reciprocalCenterRoots_same_iff
-          (d - 2 * γ.natDegree) hss hrs hlen).2 halt
-      have hfull_len :
-          (reciprocalCenterRoots (d - 2 * γ.natDegree) ss).length + 1 =
-            (reciprocalCenterRoots (d + 1 - 2 * δ.natDegree) rs).length := by
-        simp [reciprocalCenterRoots, hsslen, hrslen]
-        lia
-      have hi := (listInterlaces_iff_interleaves_of_length hfull_len).1 hfull
-      refine ⟨hTγrr, hTδrr,
-        reciprocalCenterRoots (d - 2 * γ.natDegree) ss,
-        reciprocalCenterRoots (d + 1 - 2 * δ.natDegree) rs,
-        hi.pairwise_left, hi.pairwise_right,
-        coe_reciprocalCenterRoots_eq_roots hγdeg hγ hTγneg,
-        coe_reciprocalCenterRoots_eq_roots hδdeg hδ hTδneg,
-        Or.inl ⟨hfull_len, hfull⟩⟩
+    exact strictInterl_gammaTransform_of_preferredRoots_shape hγdeg hδdeg hγ hδ
+      hTγrr hTδrr hTγneg hTδneg hsslen hrslen hpreferred
 
 end RealRooted

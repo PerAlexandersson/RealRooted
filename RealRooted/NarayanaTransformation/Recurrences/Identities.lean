@@ -181,6 +181,165 @@ theorem narayanaPolynomial_deriv_lag_rec (m n : ℕ) :
     push_cast
     ring
 
+/- The common factorial scale used in the pure recurrence. -/
+private def narayanaPureRecScale (m n k : ℕ) : ℝ :=
+  (Nat.factorial n : ℝ) * Nat.factorial (n + m) * Nat.factorial m /
+    ((Nat.factorial (n + 2 - k) : ℝ) * Nat.factorial (n + 2 + m - k) *
+      Nat.factorial k * Nat.factorial (m + k))
+
+/- The `(n + 2, k)` coefficient in terms of the common recurrence scale. -/
+private theorem narayanaTransformCoeff_add_two_eq_scale
+    (m n k : ℕ) (hkn : k ≤ n) :
+    (narayanaTransformCoeff m (n + 2) k : ℝ) =
+      ((n : ℝ) + 2) * (n + 1) * (n + 2 + m) * (n + 1 + m) *
+        narayanaPureRecScale m n k := by
+  rw [narayanaTransformCoeff_eq_factorial m (n + 2) k (by lia)]
+  have h₁ := factorial_succ_succ_cast n
+  have h₂ : ((n + 2 + m).factorial : ℝ) =
+      (n + 2 + m) * (n + 1 + m) * (n + m).factorial := by
+    rw [show n + 2 + m = n + m + 2 by ring, factorial_succ_succ_cast]
+    push_cast
+    ring
+  dsimp only [narayanaPureRecScale]
+  field_simp [factorial_cast_ne_zero]
+  rw [h₁, h₂]
+  ring
+
+/- The `(n + 1, k)` coefficient in terms of the common recurrence scale. -/
+private theorem narayanaTransformCoeff_add_one_eq_scale
+    (m n k : ℕ) (hkn : k ≤ n) :
+    (narayanaTransformCoeff m (n + 1) k : ℝ) =
+      ((n : ℝ) + 1) * (n + 1 + m) * (n + 2 - k) *
+        (n + 2 + m - k) * narayanaPureRecScale m n k := by
+  rw [narayanaTransformCoeff_eq_factorial m (n + 1) k (by lia)]
+  have h₁ := factorial_succ_cast n
+  have h₂ : ((n + 1 + m).factorial : ℝ) =
+      (n + 1 + m) * (n + m).factorial := by
+    rw [show n + 1 + m = n + m + 1 by ring, factorial_succ_cast (n + m)]
+    push_cast
+    ring
+  have h₃ : ((n + 2 - k).factorial : ℝ) =
+      ((n : ℝ) + 2 - k) * (n + 1 - k).factorial := by
+    rw [show n + 2 - k = (n + 1 - k) + 1 by lia,
+      factorial_succ_cast (n + 1 - k), Nat.cast_sub (by lia : k ≤ n + 1)]
+    push_cast
+    ring
+  have h₄ : ((n + 2 + m - k).factorial : ℝ) =
+      ((n : ℝ) + 2 + m - k) * (n + 1 + m - k).factorial := by
+    rw [show n + 2 + m - k = (n + 1 + m - k) + 1 by lia,
+      factorial_succ_cast (n + 1 + m - k),
+      Nat.cast_sub (by lia : k ≤ n + 1 + m)]
+    push_cast
+    ring
+  dsimp only [narayanaPureRecScale]
+  field_simp [factorial_cast_ne_zero]
+  rw [h₁, h₂, h₃, h₄]
+  ring
+
+/- The `(n + 1, k - 1)` coefficient in terms of the common recurrence scale. -/
+private theorem narayanaTransformCoeff_add_one_pred_eq_scale
+    (m n k : ℕ) (hk : 2 ≤ k) (hkn : k ≤ n) :
+    (narayanaTransformCoeff m (n + 1) (k - 1) : ℝ) =
+      ((n : ℝ) + 1) * (n + 1 + m) * (k : ℝ) * (m + k) *
+        narayanaPureRecScale m n k := by
+  rw [narayanaTransformCoeff_eq_factorial m (n + 1) (k - 1) (by lia)]
+  have h₁ := factorial_succ_cast n
+  have h₂ : ((n + 1 + m).factorial : ℝ) =
+      (n + 1 + m) * (n + m).factorial := by
+    rw [show n + 1 + m = n + m + 1 by ring, factorial_succ_cast (n + m)]
+    push_cast
+    ring
+  have h₃ := factorial_cast_pred (by lia : k ≠ 0)
+  have h₄ := factorial_cast_pred (by lia : m + k ≠ 0)
+  dsimp only [narayanaPureRecScale]
+  have h₅ : n + 1 - (k - 1) = n + 2 - k := by lia
+  have h₆ : n + 1 + m - (k - 1) = n + 2 + m - k := by lia
+  have h₇ : m + k - 1 = m + (k - 1) := by lia
+  field_simp [factorial_cast_ne_zero]
+  rw [h₅, h₆, h₁, h₂, h₃, h₄, h₇]
+  push_cast
+  ring
+
+/- The `(n, k)` coefficient in terms of the common recurrence scale. -/
+private theorem narayanaTransformCoeff_eq_scale
+    (m n k : ℕ) (hkn : k ≤ n) :
+    (narayanaTransformCoeff m n k : ℝ) =
+      ((n : ℝ) + 2 - k) * (n + 1 - k) * (n + 2 + m - k) *
+        (n + 1 + m - k) * narayanaPureRecScale m n k := by
+  rw [narayanaTransformCoeff_eq_factorial m n k hkn]
+  have h₁ : ((n + 2 - k).factorial : ℝ) =
+      ((n : ℝ) + 2 - k) * ((n : ℝ) + 1 - k) * (n - k).factorial := by
+    rw [show n + 2 - k = (n - k) + 2 by lia,
+      factorial_succ_succ_cast (n - k), Nat.cast_sub hkn]
+    ring
+  have h₂ : ((n + 2 + m - k).factorial : ℝ) =
+      ((n : ℝ) + 2 + m - k) * ((n : ℝ) + 1 + m - k) *
+        (n + m - k).factorial := by
+    rw [show n + 2 + m - k = (n + m - k) + 2 by lia,
+      factorial_succ_succ_cast (n + m - k),
+      Nat.cast_sub (by lia : k ≤ n + m), Nat.cast_add]
+    ring
+  dsimp only [narayanaPureRecScale]
+  field_simp [factorial_cast_ne_zero]
+  rw [h₁, h₂]
+  ring
+
+/- The `(n, k - 1)` coefficient in terms of the common recurrence scale. -/
+private theorem narayanaTransformCoeff_pred_eq_scale
+    (m n k : ℕ) (hk : 2 ≤ k) (hkn : k ≤ n) :
+    (narayanaTransformCoeff m n (k - 1) : ℝ) =
+      ((n : ℝ) + 2 - k) * (n + 2 + m - k) * (k : ℝ) * (m + k) *
+        narayanaPureRecScale m n k := by
+  rw [narayanaTransformCoeff_eq_factorial m n (k - 1) (by lia)]
+  have h₁ : ((n + 2 - k).factorial : ℝ) =
+      ((n : ℝ) + 2 - k) * (n + 1 - k).factorial := by
+    rw [show n + 2 - k = (n + 1 - k) + 1 by lia,
+      factorial_succ_cast (n + 1 - k), Nat.cast_sub (by lia : k ≤ n + 1)]
+    push_cast
+    ring
+  have h₂ : ((n + 2 + m - k).factorial : ℝ) =
+      ((n : ℝ) + 2 + m - k) * (n + 1 + m - k).factorial := by
+    rw [show n + 2 + m - k = (n + 1 + m - k) + 1 by lia,
+      factorial_succ_cast (n + 1 + m - k),
+      Nat.cast_sub (by lia : k ≤ n + 1 + m)]
+    push_cast
+    ring
+  have h₃ := factorial_cast_pred (by lia : k ≠ 0)
+  have h₄ := factorial_cast_pred (by lia : m + k ≠ 0)
+  dsimp only [narayanaPureRecScale]
+  have h₅ : n - (k - 1) = n + 1 - k := by lia
+  have h₆ : n + m - (k - 1) = n + 1 + m - k := by lia
+  have h₇ : m + k - 1 = m + (k - 1) := by lia
+  field_simp [factorial_cast_ne_zero]
+  rw [h₅, h₆, h₁, h₂, h₃, h₄, h₇]
+  push_cast
+  ring
+
+/- The `(n, k - 2)` coefficient in terms of the common recurrence scale. -/
+private theorem narayanaTransformCoeff_pred_pred_eq_scale
+    (m n k : ℕ) (hk : 2 ≤ k) (hkn : k ≤ n) :
+    (narayanaTransformCoeff m n (k - 2) : ℝ) =
+      (k : ℝ) * (k - 1) * (m + k) * (m + k - 1) *
+        narayanaPureRecScale m n k := by
+  rw [narayanaTransformCoeff_eq_factorial m n (k - 2) (by lia)]
+  have h₁ : (k.factorial : ℝ) = k * (k - 1) * (k - 2).factorial := by
+    conv_lhs => rw [show k = (k - 2) + 2 by lia]
+    rw [factorial_succ_succ_cast, Nat.cast_sub hk]
+    ring
+  have h₂ : ((m + k).factorial : ℝ) =
+      (m + k) * (m + k - 1) * (m + (k - 2)).factorial := by
+    conv_lhs => rw [show m + k = m + (k - 2) + 2 by lia]
+    rw [factorial_succ_succ_cast]
+    push_cast
+    rw [Nat.cast_sub hk]
+    ring
+  dsimp only [narayanaPureRecScale]
+  have h₃ : n - (k - 2) = n + 2 - k := by lia
+  have h₄ : n + m - (k - 2) = n + 2 + m - k := by lia
+  field_simp [factorial_cast_ne_zero]
+  rw [h₃, h₄, h₁, h₂]
+  ring
+
 lemma narayanaTransformCoeff_pure_rec (m n k : ℕ) (hk : 2 ≤ k) (hkn : k ≤ n) :
     ((n : ℝ) + 2 * m + 2) * narayanaTransformCoeff m (n + 2) k =
       ((2 * n : ℝ) + 2 * m + 3) *
@@ -190,124 +349,28 @@ lemma narayanaTransformCoeff_pure_rec (m n k : ℕ) (hk : 2 ≤ k) (hkn : k ≤ 
           (narayanaTransformCoeff m n k -
             2 * narayanaTransformCoeff m n (k - 1) +
             narayanaTransformCoeff m n (k - 2)) := by
-  let G : ℝ := (Nat.factorial n : ℝ) * Nat.factorial (n + m) * Nat.factorial m /
-    ((Nat.factorial (n + 2 - k) : ℝ) * Nat.factorial (n + 2 + m - k) * Nat.factorial k *
-      Nat.factorial (m + k))
+  let G := narayanaPureRecScale m n k
   have hG₁ : (narayanaTransformCoeff m (n + 2) k : ℝ) =
       ((n : ℝ) + 2) * (n + 1) * (n + 2 + m) * (n + 1 + m) * G := by
-    rw [narayanaTransformCoeff_eq_factorial m (n + 2) k (by lia)]
-    have h₁ := factorial_succ_succ_cast n
-    have h₂ : ((n + 2 + m).factorial : ℝ) = (n + 2 + m) * (n + 1 + m) * (n + m).factorial := by
-      rw [show n + 2 + m = n + m + 2 by ring, factorial_succ_succ_cast]
-      push_cast
-      ring
-    dsimp only [G]
-    field_simp [factorial_cast_ne_zero]
-    rw [h₁, h₂]
-    ring
+    simpa only [G] using narayanaTransformCoeff_add_two_eq_scale m n k hkn
   have hG₂ : (narayanaTransformCoeff m (n + 1) k : ℝ) =
       ((n : ℝ) + 1) * (n + 1 + m) * (n + 2 - k) * (n + 2 + m - k) * G := by
-    rw [narayanaTransformCoeff_eq_factorial m (n + 1) k (by lia)]
-    have h₁ := factorial_succ_cast n
-    have h₂ : ((n + 1 + m).factorial : ℝ) = (n + 1 + m) * (n + m).factorial := by
-      rw [show n + 1 + m = n + m + 1 by ring, factorial_succ_cast (n + m)]
-      push_cast
-      ring
-    have h₃ : ((n + 2 - k).factorial : ℝ) = ((n : ℝ) + 2 - k) * (n + 1 - k).factorial := by
-      rw [show n + 2 - k = (n + 1 - k) + 1 by lia, factorial_succ_cast (n + 1 - k),
-        Nat.cast_sub (by lia : k ≤ n + 1)]
-      push_cast
-      ring
-    have h₄ : ((n + 2 + m - k).factorial : ℝ) =
-      ((n : ℝ) + 2 + m - k) * (n + 1 + m - k).factorial := by
-      rw [show n + 2 + m - k = (n + 1 + m - k) + 1 by lia, factorial_succ_cast (n + 1 + m - k),
-        Nat.cast_sub (by lia : k ≤ n + 1 + m)]
-      push_cast
-      ring
-    dsimp only [G]
-    field_simp [factorial_cast_ne_zero]
-    rw [h₁, h₂, h₃, h₄]
-    ring
+    simpa only [G] using narayanaTransformCoeff_add_one_eq_scale m n k hkn
   have hG₃ : (narayanaTransformCoeff m (n + 1) (k - 1) : ℝ) =
       ((n : ℝ) + 1) * (n + 1 + m) * (k : ℝ) * (m + k) * G := by
-    rw [narayanaTransformCoeff_eq_factorial m (n + 1) (k - 1) (by lia)]
-    have h₁ := factorial_succ_cast n
-    have h₂ : ((n + 1 + m).factorial : ℝ) = (n + 1 + m) * (n + m).factorial := by
-      rw [show n + 1 + m = n + m + 1 by ring, factorial_succ_cast (n + m)]
-      push_cast
-      ring
-    have h₃ := factorial_cast_pred (by lia : k ≠ 0)
-    have h₄ := factorial_cast_pred (by lia : m + k ≠ 0)
-    dsimp only [G]
-    have h₅ : n + 1 - (k - 1) = n + 2 - k := by lia
-    have h₆ : n + 1 + m - (k - 1) = n + 2 + m - k := by lia
-    have h₇ : m + k - 1 = m + (k - 1) := by lia
-    field_simp [factorial_cast_ne_zero]
-    rw [h₅, h₆, h₁, h₂, h₃, h₄, h₇]
-    push_cast
-    ring
+    simpa only [G] using
+      narayanaTransformCoeff_add_one_pred_eq_scale m n k hk hkn
   have hG₄ : (narayanaTransformCoeff m n k : ℝ) =
-      ((n : ℝ) + 2 - k) * (n + 1 - k) * (n + 2 + m - k) * (n + 1 + m - k) * G := by
-    rw [narayanaTransformCoeff_eq_factorial m n k hkn]
-    have h₁ : ((n + 2 - k).factorial : ℝ) =
-      ((n : ℝ) + 2 - k) * ((n : ℝ) + 1 - k) * (n - k).factorial := by
-      rw [show n + 2 - k = (n - k) + 2 by lia, factorial_succ_succ_cast (n - k), Nat.cast_sub hkn]
-      ring
-    have h₂ : ((n + 2 + m - k).factorial : ℝ) =
-      ((n : ℝ) + 2 + m - k) * ((n : ℝ) + 1 + m - k) * (n + m - k).factorial := by
-      rw [show n + 2 + m - k = (n + m - k) + 2 by lia, factorial_succ_succ_cast (n + m - k),
-        Nat.cast_sub (by lia : k ≤ n + m), Nat.cast_add]
-      ring
-    dsimp only [G]
-    field_simp [factorial_cast_ne_zero]
-    rw [h₁, h₂]
-    ring
+      ((n : ℝ) + 2 - k) * (n + 1 - k) * (n + 2 + m - k) *
+        (n + 1 + m - k) * G := by
+    simpa only [G] using narayanaTransformCoeff_eq_scale m n k hkn
   have hG₅ : (narayanaTransformCoeff m n (k - 1) : ℝ) =
       ((n : ℝ) + 2 - k) * (n + 2 + m - k) * (k : ℝ) * (m + k) * G := by
-    rw [narayanaTransformCoeff_eq_factorial m n (k - 1) (by lia)]
-    have h₁ : ((n + 2 - k).factorial : ℝ) =
-      ((n : ℝ) + 2 - k) * (n + 1 - k).factorial := by
-      rw [show n + 2 - k = (n + 1 - k) + 1 by lia, factorial_succ_cast (n + 1 - k),
-        Nat.cast_sub (by lia : k ≤ n + 1)]
-      push_cast
-      ring
-    have h₂ : ((n + 2 + m - k).factorial : ℝ) =
-      ((n : ℝ) + 2 + m - k) * (n + 1 + m - k).factorial := by
-      rw [show n + 2 + m - k = (n + 1 + m - k) + 1 by lia, factorial_succ_cast (n + 1 + m - k),
-        Nat.cast_sub (by lia : k ≤ n + 1 + m)]
-      push_cast
-      ring
-    have h₃ := factorial_cast_pred (by lia : k ≠ 0)
-    have h₄ := factorial_cast_pred (by lia : m + k ≠ 0)
-    dsimp only [G]
-    have h₅ : n - (k - 1) = n + 1 - k := by lia
-    have h₆ : n + m - (k - 1) = n + 1 + m - k := by lia
-    have h₇ : m + k - 1 = m + (k - 1) := by lia
-    field_simp [factorial_cast_ne_zero]
-    rw [h₅, h₆, h₁, h₂, h₃, h₄, h₇]
-    push_cast
-    ring
+    simpa only [G] using narayanaTransformCoeff_pred_eq_scale m n k hk hkn
   have hG₆ : (narayanaTransformCoeff m n (k - 2) : ℝ) =
       (k : ℝ) * (k - 1) * (m + k) * (m + k - 1) * G := by
-    rw [narayanaTransformCoeff_eq_factorial m n (k - 2) (by lia)]
-    have h₁ : (k.factorial : ℝ) = k * (k - 1) * (k - 2).factorial := by
-      conv_lhs => rw [show k = (k - 2) + 2 by lia]
-      rw [factorial_succ_succ_cast]
-      rw [Nat.cast_sub hk]
-      ring
-    have h₂ : ((m + k).factorial : ℝ) =
-      (m + k) * (m + k - 1) * (m + (k - 2)).factorial := by
-      conv_lhs => rw [show m + k = m + (k - 2) + 2 by lia]
-      rw [factorial_succ_succ_cast]
-      push_cast
-      rw [Nat.cast_sub hk]
-      ring
-    dsimp only [G]
-    have h₃ : n - (k - 2) = n + 2 - k := by lia
-    have h₄ : n + m - (k - 2) = n + 2 + m - k := by lia
-    field_simp [factorial_cast_ne_zero]
-    rw [h₃, h₄, h₁, h₂]
-    ring
+    simpa only [G] using
+      narayanaTransformCoeff_pred_pred_eq_scale m n k hk hkn
   rw [hG₁, hG₂, hG₃, hG₄, hG₅, hG₆]
   ring
 
