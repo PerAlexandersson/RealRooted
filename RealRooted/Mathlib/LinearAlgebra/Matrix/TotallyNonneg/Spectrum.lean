@@ -146,72 +146,8 @@ private theorem rankPrefix_product_eq_perronRoot
         (X - C (∏ k, μ (powersetEnum s k)))) :
     ∏ i ∈ rankPrefix n q, μ i =
       ((CollatzWielandt.perronRoot (compound q A) : ℝ) : ℂ) := by
-  let B : Matrix (Set.powersetCard (Fin n) q)
-      (Set.powersetCard (Fin n) q) ℝ := compound q A
-  have hBnonneg : ∀ s t, 0 ≤ B s t := hprim.nonneg
-  let sTop : Set.powersetCard (Fin n) q :=
-    ⟨rankPrefix n q, Set.powersetCard.mem_iff.mpr (rankPrefix_card hqn)⟩
-  let _ : Nonempty (Set.powersetCard (Fin n) q) := ⟨sTop⟩
-  have hperron_nonneg : 0 ≤ CollatzWielandt.perronRoot B :=
-    CollatzWielandt.perronRoot_nonneg hBnonneg
-  obtain ⟨v, -, hvne, hveig⟩ := exists_nonneg_mulVec_eq_perronRoot_smul hBnonneg
-  have hroot : B.charpoly.IsRoot (CollatzWielandt.perronRoot B) :=
-    mem_spectrum_iff_isRoot_charpoly.mp (mem_spectrum_of_eigenvalue hvne hveig)
-  have hrootC : (B.charpoly.map (algebraMap ℝ ℂ)).eval
-      ((CollatzWielandt.perronRoot B : ℝ) : ℂ) = 0 := by
-    have heval : (B.charpoly.map (algebraMap ℝ ℂ)).eval
-        ((algebraMap ℝ ℂ) (CollatzWielandt.perronRoot B)) =
-        (algebraMap ℝ ℂ) (B.charpoly.eval (CollatzWielandt.perronRoot B)) := by
-      rw [Polynomial.eval_map, Polynomial.eval₂_at_apply]
-    simpa [hroot.eq_zero] using heval
-  obtain ⟨s₀, hs₀⟩ : ∃ s : Set.powersetCard (Fin n) q,
-      ∏ k, μ (powersetEnum s k) =
-        ((CollatzWielandt.perronRoot B : ℝ) : ℂ) := by
-    rw [show B = compound q A by rfl, hcomp, Polynomial.eval_prod,
-      Finset.prod_eq_zero_iff] at hrootC
-    obtain ⟨s, -, hs⟩ := hrootC
-    refine ⟨s, ?_⟩
-    have h := hs
-    simp only [Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C,
-      sub_eq_zero] at h
-    simpa only [B] using h.symm
-  have hdom : ∀ s : Set.powersetCard (Fin n) q,
-      (∏ k, μ (powersetEnum s k)) ≠
-          ((CollatzWielandt.perronRoot B : ℝ) : ℂ) →
-        ‖∏ k, μ (powersetEnum s k)‖ < CollatzWielandt.perronRoot B := by
-    intro s hne
-    have heig : (∏ k, μ (powersetEnum s k)) ∈
-        spectrum ℂ (B.map (algebraMap ℝ ℂ)) := by
-      rw [mem_spectrum_iff_isRoot_charpoly, charpoly_map, IsRoot.def,
-        show B = compound q A by rfl, hcomp, Polynomial.eval_prod]
-      exact Finset.prod_eq_zero (Finset.mem_univ s)
-        (by simp only [Polynomial.eval_sub, Polynomial.eval_X,
-          Polynomial.eval_C, sub_self])
-    exact spectral_dominance_of_primitive' hprim hBnonneg _ heig hne
-  have htopProd : ∏ k, μ (powersetEnum sTop k) =
-      ∏ i ∈ rankPrefix n q, μ i := prod_powersetEnum sTop μ
-  have htopEnum : ∏ i ∈ rankPrefix n q, μ i =
-      ∏ k : Fin q, μ (Fin.castLE hqn k) := by
-    rw [rankPrefix_eq_image hqn]
-    exact Finset.prod_image fun x _ y _ h => Fin.castLE_injective hqn h
-  have hmax : ∀ s : Set.powersetCard (Fin n) q,
-      ‖∏ k, μ (powersetEnum s k)‖ ≤ ‖∏ i ∈ rankPrefix n q, μ i‖ := by
-    intro s
-    rw [htopEnum, norm_prod, norm_prod]
-    apply Finset.prod_le_prod₀ (fun k _ => norm_nonneg _)
-    intro k _
-    exact hanti _ _ (Fin.le_def.mpr
-      (Fin.le_val_of_strictMono (strictMono_powersetEnum s) k))
-  by_contra hne
-  have hlt : ‖∏ i ∈ rankPrefix n q, μ i‖ < CollatzWielandt.perronRoot B := by
-    have h := hdom sTop (by rw [htopProd]; exact hne)
-    rwa [htopProd] at h
-  have hge : CollatzWielandt.perronRoot B ≤ ‖∏ i ∈ rankPrefix n q, μ i‖ := by
-    have h := hmax s₀
-    rw [hs₀, Complex.norm_real, Real.norm_eq_abs,
-      abs_of_nonneg hperron_nonneg] at h
-    exact h
-  exact (not_le_of_gt hlt) hge
+  rw [rankPrefix_eq_image hqn, Finset.prod_image fun x _ y _ h => Fin.castLE_injective hqn h]
+  exact prod_castLE_eq_perronRoot_of_isPrimitive_compound hqn hprim hanti hcomp
 
 /-- Consecutive Perron-root ratios give the positive head and zero tail parameters. -/
 private theorem exists_rank_spectral_parameters
@@ -322,34 +258,7 @@ theorem exists_charpoly_eq_prod_nonneg_of_rank_eq_of_compounds_primitive
   have hrn : r ≤ n := by
     rw [← hrank]
     exact A.rank_le_width
-  obtain ⟨ν, hνchar, hνcomp⟩ :=
-    exists_charpoly_compound_eq_prod (A.map (algebraMap ℝ ℂ))
-  let σ : Equiv.Perm (Fin n) := Tuple.sort fun i => ‖ν i‖
-  let τ : Equiv.Perm (Fin n) := Fin.revPerm.trans σ
-  let μC : Fin n → ℂ := ν ∘ τ
-  have hanti : ∀ i j : Fin n, i ≤ j → ‖μC j‖ ≤ ‖μC i‖ := by
-    intro i j hij
-    have hmono := Tuple.monotone_sort fun i => ‖ν i‖
-    have hrev : j.rev ≤ i.rev := Fin.rev_le_rev.mpr hij
-    simpa [μC, τ, Function.comp_def] using hmono hrev
-  have hchar :
-      (A.map (algebraMap ℝ ℂ)).charpoly = ∏ i, (X - C (μC i)) := by
-    rw [hνchar]
-    exact (Equiv.prod_comp τ fun i => (X : ℂ[X]) - C (ν i)).symm
-  have hcomp : ∀ q, (compound q A).charpoly.map (algebraMap ℝ ℂ) =
-      ∏ s : Set.powersetCard (Fin n) q,
-        (X - C (∏ k, μC (powersetEnum s k))) := by
-    intro q
-    calc
-      (compound q A).charpoly.map (algebraMap ℝ ℂ) =
-          ((compound q A).map (algebraMap ℝ ℂ)).charpoly :=
-        (charpoly_map (compound q A) (algebraMap ℝ ℂ)).symm
-      _ = (compound q (A.map (algebraMap ℝ ℂ))).charpoly := by
-        rw [compound_map]
-      _ = ∏ s : Set.powersetCard (Fin n) q,
-          (X - C (∏ k, μC (powersetEnum s k))) := by
-        rw [hνcomp q]
-        exact (prod_powersetCard_comp_perm τ ν).symm
+  obtain ⟨μC, hanti, hchar, hcomp⟩ := exists_norm_antitone_charpoly_compound_eq_prod A
   have hkey : ∀ q, 1 ≤ q → ∀ hqr : q ≤ r,
       ∏ i ∈ rankPrefix n q, μC i =
         ((CollatzWielandt.perronRoot (compound q A) : ℝ) : ℂ) :=
