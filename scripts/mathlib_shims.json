@@ -785,6 +785,16 @@
     },
     {
       "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LimitsOfZeros.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LimitsOfZeros"
+      ],
+      "note": "Speculative target module (Beraha–Kahane–Weiss reverse direction, #2071); no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
         "RealRooted/Mathlib/Analysis/Complex/OpenMapping.lean"
       ],
       "modules": [
