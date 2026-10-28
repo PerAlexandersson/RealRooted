@@ -144,19 +144,13 @@ private theorem oneThetaBoardOf_injective {m n : ℕ} :
       | some q =>
           rcases q with ⟨b, d⟩
           have heval := congrFun (congrFun hpq b) d
-          have hcond : b.1 < b.1 + 1 ∧ d.1 ≤ d.1 :=
-            ⟨Nat.lt_succ_self b.1, le_rfl⟩
-          simp only [oneThetaBoardOf, hcond] at heval
-          contradiction
+          simp [oneThetaBoardOf] at heval
   | some p =>
       rcases p with ⟨a, c⟩
       cases q with
       | none =>
           have heval := congrFun (congrFun hpq a) c
-          have hcond : a.1 < a.1 + 1 ∧ c.1 ≤ c.1 :=
-            ⟨Nat.lt_succ_self a.1, le_rfl⟩
-          simp only [oneThetaBoardOf, hcond] at heval
-          contradiction
+          simp [oneThetaBoardOf] at heval
       | some q =>
           rcases q with ⟨b, d⟩
           have hab : a = b := by
@@ -168,38 +162,24 @@ private theorem oneThetaBoardOf_injective {m n : ℕ} :
               have hba' : ¬ b.1 < a.1 + 1 := by
                 simp only [not_lt]
                 lia
-              have hbj : b.1 < b.1 + 1 := Nat.lt_succ_self b.1
-              have hdj : d.1 ≤ j.1 := le_max_right c d
-              simp only [oneThetaBoardOf, hba', false_and, ite_false, hbj, hdj, and_self,
-                ite_true] at heval
-              contradiction
+              simp [oneThetaBoardOf, hba', j] at heval
             · let j : Fin n := max c d
               have heval := congrFun (congrFun hpq a) j
               have hab' : ¬ a.1 < b.1 + 1 := by
                 simp only [not_lt]
                 lia
-              have haj : a.1 < a.1 + 1 := Nat.lt_succ_self a.1
-              have hcj : c.1 ≤ j.1 := le_max_left c d
-              simp only [oneThetaBoardOf, haj, hcj, and_self, ite_true, hab', false_and,
-                ite_false] at heval
-              contradiction
+              simp [oneThetaBoardOf, hab', j] at heval
           subst b
           have hcd : c = d := by
             apply Fin.ext
             by_contra hne
             rcases lt_or_gt_of_ne hne with hcd | hdc
             · have heval := congrFun (congrFun hpq a) c
-              have hac : a.1 < a.1 + 1 := Nat.lt_succ_self a.1
               have hdc' : ¬ d.1 ≤ c.1 := Nat.not_le.mpr hcd
-              simp only [oneThetaBoardOf, hac, le_refl, and_self, ite_true, hdc', and_false,
-                ite_false] at heval
-              contradiction
+              simp [oneThetaBoardOf, hdc'] at heval
             · have heval := congrFun (congrFun hpq a) d
-              have had : a.1 < a.1 + 1 := Nat.lt_succ_self a.1
               have hcd' : ¬ c.1 ≤ d.1 := Nat.not_le.mpr hdc
-              simp only [oneThetaBoardOf, had, hcd', and_false, ite_false, le_refl, and_self,
-                ite_true] at heval
-              contradiction
+              simp [oneThetaBoardOf, hcd'] at heval
           subst d
           rfl
 
@@ -233,26 +213,15 @@ theorem mem_oneThetaRectangleBoards_iff {m n : ℕ} (L : Fin m → Fin n → Let
       | none =>
           refine ⟨0, Nat.zero_le m, 0, Nat.zero_le n, ?_⟩
           intro i j
-          constructor
-          · intro h
-            exact Letter.noConfusion h
-          · intro h
-            exact False.elim (Nat.not_lt_zero i.1 h.1)
+          simp [oneThetaBoardOf]
       | some p =>
           rcases p with ⟨a, c⟩
           refine ⟨a.1 + 1, a.2, c.1, c.2.le, ?_⟩
           intro i j
           by_cases h : i.1 < a.1 + 1 ∧ c.1 ≤ j.1
-          · constructor
-            · intro
-              exact h
-            · intro
-              exact ite_eq_left h
-          · constructor
-            · intro hone
-              exact False.elim (Letter.noConfusion ((ite_eq_right h).symm.trans hone))
-            · intro hregion
-              exact False.elim (h hregion)
+          · exact ⟨fun _ => h, fun _ => ite_eq_left h⟩
+          · exact ⟨fun hone => False.elim (Letter.noConfusion
+              ((ite_eq_right h).symm.trans hone)), fun hregion => False.elim (h hregion)⟩
   · rintro ⟨halpha, hpres⟩
     obtain ⟨r, hr, c, hc, hrect⟩ :=
       (preservesOrderedPF_one_theta_iff_upperRightRectangle L hm hn halpha).mp hpres
@@ -331,17 +300,11 @@ private theorem thetaXBoardOf_injective {m n : ℕ} (hm : 2 ≤ m) (hn : 2 ≤ n
           · let i0 : Fin m := ⟨0, by lia⟩
             let j : Fin n := ⟨c.1, by have := d.2; lia⟩
             have heval := congrFun (congrFun hpq i0) j
-            have hcj : ¬ j.1 < c.1 := by simp only [j, lt_self_iff_false, not_false_eq_true]
-            have hdj : j.1 < d.1 := by simpa only [j] using hcd
-            simp only [thetaXBoardOf, hcj, ite_false, hdj, ite_true] at heval
-            contradiction
+            simp [thetaXBoardOf, j, hcd] at heval
           · let i0 : Fin m := ⟨0, by lia⟩
             let j : Fin n := ⟨d.1, by have := c.2; lia⟩
             have heval := congrFun (congrFun hpq i0) j
-            have hcj : j.1 < c.1 := by simpa only [j] using hdc
-            have hdj : ¬ j.1 < d.1 := by simp only [j, lt_self_iff_false, not_false_eq_true]
-            simp only [thetaXBoardOf, hcj, ite_true, hdj, ite_false] at heval
-            contradiction
+            simp [thetaXBoardOf, j, hdc] at heval
       | inr s =>
           exact False.elim (thetaX_rowCut_ne_internalColumnCut hm hn c s hpq)
   | inr s =>
@@ -356,17 +319,13 @@ private theorem thetaXBoardOf_injective {m n : ℕ} (hm : 2 ≤ m) (hn : 2 ≤ n
           · let i : Fin m := ⟨s.1 + 1, by have := s.2; lia⟩
             let j0 : Fin n := ⟨0, by lia⟩
             have heval := congrFun (congrFun hpq i) j0
-            have hsi : s.1 + 1 ≤ i.1 := by simp only [i, le_refl]
             have hti : ¬ t.1 + 1 ≤ i.1 := by simp only [i]; lia
-            simp only [thetaXBoardOf, hsi, ite_true, hti, ite_false] at heval
-            contradiction
+            simp [thetaXBoardOf, i, hti] at heval
           · let i : Fin m := ⟨t.1 + 1, by have := t.2; lia⟩
             let j0 : Fin n := ⟨0, by lia⟩
             have heval := congrFun (congrFun hpq i) j0
             have hsi : ¬ s.1 + 1 ≤ i.1 := by simp only [i]; lia
-            have hti : t.1 + 1 ≤ i.1 := by simp only [i, le_refl]
-            simp only [thetaXBoardOf, hsi, ite_false, hti, ite_true] at heval
-            contradiction
+            simp [thetaXBoardOf, i, hsi] at heval
 
 /-- For `m, n ≥ 2`, the canonical row-cut-or-column-cut parametrization contains exactly
 `m + n` distinct boards. -/

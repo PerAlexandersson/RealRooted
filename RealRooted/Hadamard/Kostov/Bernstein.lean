@@ -69,10 +69,9 @@ lemma sum_desc_bb (n j : ℕ) :
   push Not at hj
   have hsplit : n + 1 = j + (n - j + 1) := by lia
   rw [hsplit, Finset.sum_range_add]
-  have h1 : ∑ x ∈ Finset.range j, C ((x.descFactorial j : ℝ) * n.choose x) * bb n x = 0 := by
-    refine Finset.sum_eq_zero fun k hk => ?_
-    rw [Finset.mem_range] at hk
-    rw [Nat.descFactorial_eq_zero_iff_lt.mpr hk]
+  have h1 : ∑ x ∈ Finset.range j, C ((x.descFactorial j : ℝ) * n.choose x) * bb n x = 0 :=
+    Finset.sum_eq_zero fun k hk => by
+    rw [Nat.descFactorial_eq_zero_iff_lt.mpr (Finset.mem_range.mp hk)]
     simp
   rw [h1, zero_add]
   have h2 : ∀ i ∈ Finset.range (n - j + 1),
@@ -95,12 +94,12 @@ lemma sum_desc_bb (n j : ℕ) :
   rw [Finset.sum_congr rfl h2, ← Finset.mul_sum]
   have h3 : ∑ i ∈ Finset.range (n - j + 1), X ^ i * (1 - X) ^ (n - j - i) *
       C ((n - j).choose i : ℝ) = (1 : ℝ[X]) := by
-    have h4 : ∑ i ∈ Finset.range (n - j + 1), X ^ i * (1 - X) ^ (n - j - i) *
-        C ((n - j).choose i : ℝ) = (X + (1 - X)) ^ (n - j) := by
+    rw [show ∑ i ∈ Finset.range (n - j + 1), X ^ i * (1 - X) ^ (n - j - i) *
+        C ((n - j).choose i : ℝ) = (X + (1 - X)) ^ (n - j) by
       rw [add_pow]
       refine Finset.sum_congr rfl fun i _ => ?_
-      rw [map_natCast C]
-    rw [h4, add_sub_cancel, one_pow]
+      rw [map_natCast C]]
+    rw [add_sub_cancel, one_pow]
   rw [h3, mul_one]
 
 /-- The diagonal entries `μ_m = n(n-1)⋯(n-m+1)/n^m` of the Bernstein operator. -/
@@ -227,8 +226,7 @@ lemma mu_inj (n d m : ℕ) (hd : d ≤ n) (hm : 2 ≤ m) (hmn : m ≤ n) (h : mu
     d = m := by
   have h1 := mu_lt_one n m hm hmn
   rcases Nat.lt_or_ge d 2 with hd2 | hd2
-  · exfalso
-    interval_cases d
+  · interval_cases d
     · rw [mu_zero] at h; linarith
     · rw [mu_one n (by lia)] at h; linarith
   rcases lt_trichotomy d m with h2 | h2 | h2
@@ -299,9 +297,8 @@ lemma bernOp_surj (n : ℕ) (hn : n ≠ 0) (μ : ℝ) :
     set c : ℝ := S.coeff m with hc
     set S' : ℝ[X] := S - (c / μ') • P with hS'
     have hS'd : S'.degree < m := by
-      rw [degree_lt_iff_coeff_zero]
+      rw [degree_lt_iff_coeff_zero] at hS ⊢
       intro k hk
-      rw [degree_lt_iff_coeff_zero] at hS
       rcases eq_or_lt_of_le hk with rfl | hk'
       · rw [hS', coeff_sub, coeff_smul, hP, coeff_sub, hPc, coeff_smul]
         simp only [coeff_X_pow_self, mul_one, smul_eq_mul]
@@ -346,12 +343,11 @@ lemma exists_eigPoly (n m : ℕ) (hm : 2 ≤ m) (hmn : m ≤ n) :
   obtain ⟨R, hRd, hR⟩ := bernOp_surj n hn (mu n m) m hmu S hSd
   refine ⟨X ^ m + R, monic_X_pow_add hRd, ?_, ?_⟩
   · rw [natDegree_add_eq_left_of_degree_lt (by rwa [degree_X_pow]), natDegree_X_pow]
-  · have : bernOp n (X ^ m + R) - mu n m • (X ^ m + R) = 0 := by
-      rw [map_add]
-      calc bernOp n (X ^ m) + bernOp n R - mu n m • (X ^ m + R)
-          = (bernOp n (X ^ m) - mu n m • X ^ m) + (bernOp n R - mu n m • R) := by module
-        _ = 0 := by rw [hR, hS]; module
-    exact sub_eq_zero.mp this
+  · apply sub_eq_zero.mp
+    rw [map_add]
+    calc bernOp n (X ^ m) + bernOp n R - mu n m • (X ^ m + R)
+        = (bernOp n (X ^ m) - mu n m • X ^ m) + (bernOp n R - mu n m • R) := by module
+      _ = 0 := by rw [hR, hS]; module
 
 /-- The canonical monic eigenpolynomial of degree `m` (junk value `0` outside `2 ≤ m ≤ n`). -/
 def eigPoly (n m : ℕ) : ℝ[X] :=
@@ -369,19 +365,15 @@ lemma eigen_eval_zero (n : ℕ) (G : ℝ[X]) (μ : ℝ) (hμ : μ ≠ 1)
     G.eval 0 = 0 := by
   have := bernOp_eval_zero n G
   rw [hG, eval_smul, smul_eq_mul] at this
-  have h2 : (μ - 1) * G.eval 0 = 0 := by linarith
-  rcases mul_eq_zero.mp h2 with h | h
-  · exact absurd (sub_eq_zero.mp h) hμ
-  · exact h
+  exact (mul_eq_zero.mp (by nlinarith : (μ - 1) * G.eval 0 = 0)).resolve_left
+    (sub_ne_zero.mpr hμ)
 
 lemma eigen_eval_one (n : ℕ) (hn : n ≠ 0) (G : ℝ[X]) (μ : ℝ) (hμ : μ ≠ 1)
     (hG : bernOp n G = μ • G) : G.eval 1 = 0 := by
   have := bernOp_eval_one n hn G
   rw [hG, eval_smul, smul_eq_mul] at this
-  have h2 : (μ - 1) * G.eval 1 = 0 := by linarith
-  rcases mul_eq_zero.mp h2 with h | h
-  · exact absurd (sub_eq_zero.mp h) hμ
-  · exact h
+  exact (mul_eq_zero.mp (by nlinarith : (μ - 1) * G.eval 1 = 0)).resolve_left
+    (sub_ne_zero.mpr hμ)
 
 /-- The degree of an eigenvector determines its eigenvalue. -/
 lemma mu_natDegree_of_eigen (n : ℕ) (hn : n ≠ 0) (G : ℝ[X]) (μ : ℝ) (hG0 : G ≠ 0)

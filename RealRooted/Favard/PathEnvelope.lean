@@ -76,9 +76,7 @@ omit [LinearOrder K] [IsStrictOrderedRing K] in
 
 theorem chebShift_add_two (k : ℕ) (x : K) :
     chebShift (k + 2) x = x * chebShift (k + 1) x - chebShift k x / 4 := by
-  cases k with
-  | zero => simp
-  | succ k => simp only [chebShift_succ]; exact chebHat_add_two k x
+  cases k <;> simp [chebHat_add_two]
 
 omit [LinearOrder K] [IsStrictOrderedRing K] in
 theorem chebHat_eval_one (n : ℕ) : chebHat n (1 : K) = (n + 1) / 2 ^ n := by
@@ -135,7 +133,8 @@ variable {η : ℕ → K} {x : K} {d : ℕ → K}
 `chebShift` to cover the term `i = n - 1`. -/
 theorem eq_chebHat_add_sum (h0 : d 0 = 1) (h1 : d 1 = x)
     (hrec : ∀ n, d (n + 2) = x * d (n + 1) - η (n + 1) * d n) (n : ℕ) :
-    d n = chebHat n x + ∑ i ∈ range n, (1 / 4 - η (i + 1)) * chebShift (n - 1 - i) x * d i := by
+    d n = chebHat n x +
+      ∑ i ∈ range n, (1 / 4 - η (i + 1)) * chebShift (n - 1 - i) x * d i := by
   induction n using Nat.twoStepInduction with
   | zero => simp [h0]
   | one => simp [h1]
@@ -189,7 +188,8 @@ theorem envConst_eq_sum (η : ℕ → K) (m : ℕ) :
     rw [envConst, prod_range_succ, ← envConst, sum_range_succ, Nat.add_sub_cancel,
       Nat.sub_self, pow_zero, mul_one]
     have hs : ∑ j ∈ range m, (1 / 4 - η (2 * j + 1)) * (1 / 4) ^ (m - j) * envConst η j =
-        (∑ j ∈ range m, (1 / 4 - η (2 * j + 1)) * (1 / 4) ^ (m - 1 - j) * envConst η j) / 4 := by
+        (∑ j ∈ range m,
+          (1 / 4 - η (2 * j + 1)) * (1 / 4) ^ (m - 1 - j) * envConst η j) / 4 := by
       rw [sum_div]
       refine sum_congr rfl fun j hj ↦ ?_
       rw [show m - j = m - 1 - j + 1 by have := mem_range.mp hj; lia, pow_succ]
@@ -243,9 +243,9 @@ private theorem envelope_aux (hη1 : ∀ e, η (e + 1) ≤ 1 / 4)
   | _ N ih =>
   have dec := fun x ↦ eq_chebHat_add_sum (h0 x) (h1 x) (hrec x) N
   have hδ : ∀ e, 0 ≤ 1 / 4 - η (e + 1) := fun e ↦ by linarith [hη1 e]
-  -- consequences of the induction hypothesis
   have hpos : ∀ i < N, 0 ≤ d 1 i := fun i hi ↦ (ih i hi).1
-  have hodd : ∀ j, 2 * j + 1 < N → ∀ x : K, |x| ≤ 1 → |d x (2 * j + 1)| ≤ d 1 (2 * j + 1) * |x| :=
+  have hodd : ∀ j, 2 * j + 1 < N → ∀ x : K, |x| ≤ 1 →
+      |d x (2 * j + 1)| ≤ d 1 (2 * j + 1) * |x| :=
     fun j hj ↦ (ih _ hj).2.1 j rfl
   have heven : ∀ j, 2 * j < N → envConst η j ≤ d 1 (2 * j) ∧ ∀ x : K, |x| ≤ 1 →
       |d x (2 * j)| ≤ envConst η j * (1 - x ^ 2) + d 1 (2 * j) * x ^ 2 :=
@@ -255,17 +255,13 @@ private theorem envelope_aux (hη1 : ∀ e, η (e + 1) ≤ 1 / 4)
     have hx2 : x ^ 2 ≤ 1 := by nlinarith [abs_nonneg x, sq_abs x]
     rcases Nat.even_or_odd' i with ⟨j, rfl | rfl⟩
     · obtain ⟨hB, hb⟩ := heven j hi
-      have := hb x hx
-      nlinarith [sq_nonneg x]
-    · have := hodd j hi x hx
-      nlinarith [hpos _ hi, abs_nonneg x]
+      nlinarith [hb x hx, sq_nonneg x]
+    · nlinarith [hodd j hi x hx, hpos _ hi, abs_nonneg x]
   refine ⟨?_, ?_, ?_⟩
-  · -- nonnegativity at `1`
-    rw [dec 1]
+  · rw [dec 1]
     exact add_nonneg (chebHat_one_pos N).le (sum_nonneg fun i hi ↦
       mul_nonneg (mul_nonneg (hδ i) (chebShift_one_nonneg _)) (hpos i (mem_range.mp hi)))
-  · -- odd indices
-    rintro m rfl x hx
+  · rintro m rfl x hx
     have e2 : ∀ j < m, 2 * m + 1 - 1 - 2 * j = 2 * (m - j) := fun j hj ↦ by lia
     have e3 : ∀ j < m, 2 * m + 1 - 1 - (2 * j + 1) = 2 * (m - 1 - j) + 1 := fun j hj ↦ by lia
     have hsplit : ∀ z : K, ∑ i ∈ range (2 * m + 1),
@@ -319,13 +315,13 @@ private theorem envelope_aux (hη1 : ∀ e, η (e + 1) ≤ 1 / 4)
           rw [add_mul, sum_mul]
           congr 1
           exact sum_congr rfl fun j _ ↦ by ring
-  · -- even indices
-    rintro m rfl
+  · rintro m rfl
     have e2 : ∀ j < m, 2 * m - 1 - 2 * j = 2 * (m - 1 - j) + 1 := fun j hj ↦ by lia
     have e3 : ∀ j < m, 2 * m - 1 - (2 * j + 1) = 2 * (m - 1 - j) := fun j hj ↦ by lia
     have hsplit : ∀ z : K, ∑ i ∈ range (2 * m),
         (1 / 4 - η (i + 1)) * chebShift (2 * m - 1 - i) z * d z i =
-        ∑ j ∈ range m, ((1 / 4 - η (2 * j + 1)) * chebShift (2 * (m - 1 - j) + 1) z * d z (2 * j) +
+        ∑ j ∈ range m,
+          ((1 / 4 - η (2 * j + 1)) * chebShift (2 * (m - 1 - j) + 1) z * d z (2 * j) +
           (1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j)) z * d z (2 * j + 1)) := by
       intro z
       rw [sum_range_two_mul]
@@ -427,7 +423,8 @@ namespace RealRooted.SatisfiesFavardRecurrence
 
 open RealRooted.PathEnvelope
 
-variable {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K] {P : ℕ → K[X]} {η : ℕ → K}
+variable {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K]
+  {P : ℕ → K[X]} {η : ℕ → K}
 
 /-- For a Favard family with zero diagonal and `η_e ≤ 1/4`, the even members satisfy the
 envelope `|P_(2m)(x)| ≤ B_m (1 - x²) + P_(2m)(1) x²` on `[-1, 1]`, with

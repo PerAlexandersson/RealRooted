@@ -198,21 +198,14 @@ private theorem coeff_coeff_sumAlgEquiv
       have hsum : d₁.sumElim d₂ = a.sumElim b ↔ d₁ = a ∧ d₂ = b := by
         constructor
         · intro h
-          constructor
-          · ext i
-            exact DFunLike.congr_fun h (Sum.inl i)
-          · ext i
-            exact DFunLike.congr_fun h (Sum.inr i)
+          exact ⟨Finsupp.ext fun i => DFunLike.congr_fun h (Sum.inl i),
+            Finsupp.ext fun i => DFunLike.congr_fun h (Sum.inr i)⟩
         · rintro ⟨rfl, rfl⟩
           rfl
       by_cases hda : d₁ = a
-      · have hright : a.sumElim d₂ = a.sumElim b ↔ d₂ = b := by
-          constructor
-          · intro h
-            ext i
-            exact DFunLike.congr_fun h (Sum.inr i)
-          · rintro rfl
-            rfl
+      · have hright : a.sumElim d₂ = a.sumElim b ↔ d₂ = b :=
+          ⟨fun h => Finsupp.ext fun i => DFunLike.congr_fun h (Sum.inr i),
+            fun h => congrArg (Finsupp.sumElim a) h⟩
         simp [MvPolynomial.coeff_monomial, hda, hright]
       · simp [MvPolynomial.coeff_monomial, hsum, hda]
 
@@ -232,10 +225,7 @@ theorem coeff_coeffPoly (α : σ →₀ ℕ) (p : MvPolynomial (τ ⊕ σ) ℂ)
   rw [coeff_coeff_sumAlgEquiv]
   have hmap :
       (γ.sumElim α).mapDomain (Equiv.sumComm τ σ) = α.sumElim γ := by
-    ext i
-    rcases i with i | i
-    · simp
-    · simp
+    ext (i | i) <;> simp
   rw [← hmap, MvPolynomial.coeff_rename_mapDomain
     (Equiv.sumComm τ σ) (Equiv.sumComm τ σ).injective]
 
@@ -269,12 +259,7 @@ theorem eval_rightSlice (z : τ → ℂ) (w : σ → ℂ)
         (MvPolynomial.rename (Equiv.sumComm τ σ)).toRingHom)) p) =
       MvPolynomial.eval (Sum.elim z w) p
   congr 1
-  ext i
-  case hC => simp
-  case hX =>
-    rcases i with i | i
-    · simp [Equiv.sumComm_apply]
-    · simp [Equiv.sumComm_apply]
+  ext (i | i) <;> simp [Equiv.sumComm_apply]
 
 private theorem exists_eval_bound_of_tendstoLocallyUniformly_tsum
     (p : ℕ → MvPolynomial τ ℂ) (c : (τ →₀ ℕ) → ℂ)
@@ -314,9 +299,8 @@ private theorem exists_eval_bound_of_tendstoLocallyUniformly_tsum
     exact pow_le_pow_left₀ (norm_nonneg _) (hx i) _
   have hlimit :
       ‖∑' e : τ →₀ ℕ, c e * ∏ i, x i ^ e i‖ ≤ M := by
-    have hnorm := norm_tsum_le_tsum_norm (hsum x)
-    have hle := Summable.tsum_le_tsum hmono (hsum x) hu
-    exact hnorm.trans hle
+    exact (norm_tsum_le_tsum_norm (hsum x)).trans
+      (Summable.tsum_le_tsum hmono (hsum x) hu)
   by_cases hk : N ≤ k
   · have hclose := hN k hk x hxD
     rw [dist_eq_norm] at hclose
@@ -338,8 +322,8 @@ private theorem exists_eval_bound_of_tendstoLocallyUniformly_tsum
         exact hadd
       _ ≤ M + 1 := add_le_add hlimit hclose.le
       _ ≤ A + M + 1 := by
-        have hA : 0 ≤ A := Finset.sum_nonneg fun j _ =>
-          Finset.sum_nonneg fun e _ => mul_nonneg (norm_nonneg _) (pow_nonneg hr.le _)
+        have hA : 0 ≤ A := Finset.sum_nonneg fun _ _ =>
+          Finset.sum_nonneg fun _ _ => mul_nonneg (norm_nonneg _) (pow_nonneg hr.le _)
         linarith
   · have hkN : k ∈ Finset.range N := Finset.mem_range.mpr (by lia)
     rw [MvPolynomial.eval_eq']
@@ -364,9 +348,7 @@ private theorem exists_eval_bound_of_tendstoLocallyUniformly_tsum
             mul_nonneg (norm_nonneg ((p j).coeff e))
               (pow_nonneg hr.le (∑ i, e i))) hkN
       _ ≤ A + M + 1 := by
-        have hM : 0 ≤ M := by
-          dsimp only [M, u]
-          exact tsum_nonneg fun e => norm_nonneg _
+        have hM : 0 ≤ M := by exact tsum_nonneg fun _ => norm_nonneg _
         linarith
 
 /-- If split polynomials converge locally uniformly to the explicit series
@@ -396,10 +378,7 @@ theorem tendstoLocallyUniformly_eval_coeffPoly
         (𝓝 ((P α).coeff γ)) := by
     intro γ
     have hc : c (γ.sumElim α) = (P α).coeff γ := by
-      change
-        (P (Finsupp.sumFinsuppEquivProdFinsupp (γ.sumElim α)).2).coeff
-          (Finsupp.sumFinsuppEquivProdFinsupp (γ.sumElim α)).1 = _
-      rw [show γ.sumElim α =
+      simp only [c, show γ.sumElim α =
         Finsupp.sumFinsuppEquivProdFinsupp.symm (γ, α) from rfl,
         Equiv.apply_symm_apply]
     rw [← hc]

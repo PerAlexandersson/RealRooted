@@ -213,90 +213,23 @@ theorem sum_range_choose_mul_fallingFactorial_mul_fallingFactorial (u v : ℝ) (
     ∑ i ∈ Finset.range (j + 1),
         (j.choose i : ℝ) * fallingFactorial u i * fallingFactorial v (j - i)
       = fallingFactorial (u + v) j := by
-  induction j with
-  | zero => simp
-  | succ j ih =>
-    have ez : ∑ i ∈ Finset.range (j + 1), (j.choose (i + 1) : ℝ) * fallingFactorial u (i + 1)
-          * fallingFactorial v (j - i)
-        = ∑ i ∈ Finset.range j, (j.choose (i + 1) : ℝ) * fallingFactorial u (i + 1)
-          * fallingFactorial v (j - i) := by
-      rw [Finset.sum_range_succ]
-      simp
-    have e1 : ∑ i ∈ Finset.range (j + 1 + 1), ((j + 1).choose i : ℝ) * fallingFactorial u i
-          * fallingFactorial v (j + 1 - i)
-        = (∑ i ∈ Finset.range (j + 1),
-            ((j + 1).choose (i + 1) : ℝ) * fallingFactorial u (i + 1)
-            * fallingFactorial v (j - i)) + fallingFactorial v (j + 1) := by
-      rw [Finset.sum_range_succ' (fun i => ((j + 1).choose i : ℝ) * fallingFactorial u i
-        * fallingFactorial v (j + 1 - i)) (j + 1)]
-      simp
-    have e2 : ∑ i ∈ Finset.range (j + 1), (j.choose i : ℝ) * fallingFactorial u i *
-        fallingFactorial v (j + 1 - i)
-        = (∑ i ∈ Finset.range (j + 1), (j.choose (i + 1) : ℝ) * fallingFactorial u (i + 1)
-            * fallingFactorial v (j - i)) + fallingFactorial v (j + 1) := by
-      rw [ez, Finset.sum_range_succ' (fun i => (j.choose i : ℝ) * fallingFactorial u i
-        * fallingFactorial v (j + 1 - i)) j]
-      simp
-    have e3 : ∑ i ∈ Finset.range (j + 1),
-        ((j + 1).choose (i + 1) : ℝ) * fallingFactorial u (i + 1)
-          * fallingFactorial v (j - i)
-        = (∑ i ∈ Finset.range (j + 1), (j.choose (i + 1) : ℝ) * fallingFactorial u (i + 1)
-            * fallingFactorial v (j - i))
-          + ∑ i ∈ Finset.range (j + 1), (j.choose i : ℝ) * fallingFactorial u (i + 1)
-            * fallingFactorial v (j - i) := by
-      rw [← Finset.sum_add_distrib]
-      refine Finset.sum_congr rfl ?_
-      intro i _
-      have hc : ((j + 1).choose (i + 1) : ℝ) = (j.choose i : ℝ) + (j.choose (i + 1) : ℝ) := by
-        push_cast [Nat.choose_succ_succ j i]
-        ring
-      rw [hc]
-      ring
-    have key : ∑ i ∈ Finset.range (j + 1 + 1), ((j + 1).choose i : ℝ) * fallingFactorial u i
-          * fallingFactorial v (j + 1 - i)
-        = (∑ i ∈ Finset.range (j + 1), (j.choose i : ℝ) * fallingFactorial u i *
-            fallingFactorial v (j + 1 - i))
-          + ∑ i ∈ Finset.range (j + 1), (j.choose i : ℝ) * fallingFactorial u (i + 1)
-            * fallingFactorial v (j - i) := by
-      rw [e1, e3, e2]
-      ring
-    rw [key]
-    have hA : ∑ i ∈ Finset.range (j + 1), (j.choose i : ℝ) * fallingFactorial u i *
-        fallingFactorial v (j + 1 - i)
-        = ∑ i ∈ Finset.range (j + 1),
-          ((j.choose i : ℝ) * fallingFactorial u i * fallingFactorial v (j - i)) *
-            (v - ((j : ℝ) - (i : ℝ))) := by
-      refine Finset.sum_congr rfl ?_
-      intro i hi
-      rw [Finset.mem_range] at hi
-      have hij : i ≤ j := Nat.lt_succ_iff.mp hi
-      have h1 : j + 1 - i = (j - i) + 1 := by lia
-      have h2 : ((j - i : ℕ) : ℝ) = (j : ℝ) - (i : ℝ) := by
-        push_cast [Nat.cast_sub hij]; ring
-      rw [h1, fallingFactorial_succ, h2]
-      ring
-    have hB : ∑ i ∈ Finset.range (j + 1), (j.choose i : ℝ) * fallingFactorial u (i + 1) *
-        fallingFactorial v (j - i)
-        = ∑ i ∈ Finset.range (j + 1),
-          ((j.choose i : ℝ) * fallingFactorial u i * fallingFactorial v (j - i)) * (u -
-              (i : ℝ)) := by
-      refine Finset.sum_congr rfl ?_
-      intro i _
-      rw [fallingFactorial_succ]
-      ring
-    have hsum : ∑ i ∈ Finset.range (j + 1),
-        (((j.choose i : ℝ) * fallingFactorial u i * fallingFactorial v (j - i)) *
-            (v - ((j : ℝ) - (i : ℝ)))
-          + ((j.choose i : ℝ) * fallingFactorial u i * fallingFactorial v (j - i)) *
-            (u - (i : ℝ)))
-        = (∑ i ∈ Finset.range (j + 1), (j.choose i : ℝ) * fallingFactorial u i *
-            fallingFactorial v (j - i))
-            * (u + v - (j : ℝ)) := by
-      rw [Finset.sum_mul]
-      refine Finset.sum_congr rfl ?_
-      intro i _
-      ring
-    rw [hA, hB, ← Finset.sum_add_distrib, hsum, ih, fallingFactorial_succ]
+  have htarget : fallingFactorial (u + v) j =
+      (-1 : ℝ) ^ j * risingFactorial (-(u + v)) j := by
+    simpa only [neg_neg] using (neg_one_pow_mul_risingFactorial (-(u + v)) j).symm
+  rw [htarget, show -(u + v) = -u + -v by ring,
+    risingFactorial_add_eq_sum_range, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun i hi => ?_
+  have hij : i ≤ j := by simpa only [Finset.mem_range, Nat.lt_succ_iff] using hi
+  have hu : fallingFactorial u i = (-1 : ℝ) ^ i * risingFactorial (-u) i := by
+    simpa only [neg_neg] using (neg_one_pow_mul_risingFactorial (-u) i).symm
+  have hv : fallingFactorial v (j - i) =
+      (-1 : ℝ) ^ (j - i) * risingFactorial (-v) (j - i) := by
+    simpa only [neg_neg] using (neg_one_pow_mul_risingFactorial (-v) (j - i)).symm
+  rw [hu, hv]
+  have hpow : (-1 : ℝ) ^ i * (-1) ^ (j - i) = (-1) ^ j := by
+    rw [← pow_add, Nat.add_sub_of_le hij]
+  linear_combination
+    (j.choose i : ℝ) * risingFactorial (-u) i * risingFactorial (-v) (j - i) * hpow
 
 /-- The general terminating Chu–Vandermonde sum, with denominators cleared:
 `∑_{i=0}^{j} (-1)^i C(j,i) risingFactorial a i * risingFactorial (b+i) (j-i) =

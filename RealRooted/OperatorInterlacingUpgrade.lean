@@ -110,28 +110,11 @@ theorem preservesPFShiftInterlacingOnDegree_of_monomials
               hpdeg0] at hbound
             simpa using hbound
           have hbase := hmono m hmD
-          have hscaled :
-              StrictInterl (C c * T (X ^ m))
-                (C c * T (X ^ (m + 1))) :=
-            StrictInterl.C_mul_right
-              (StrictInterl.C_mul_left hbase hcpos.ne') hcpos.ne'
-          have hleft : T (X ^ m * p) = C c * T (X ^ m) := by
-            calc
-              T (X ^ m * p) = T (C c * X ^ m) := by rw [hpC, mul_comm]
-              _ = T (c • X ^ m) := by rw [Polynomial.smul_eq_C_mul]
-              _ = c • T (X ^ m) := T.map_smul c (X ^ m)
-              _ = C c * T (X ^ m) := by rw [Polynomial.smul_eq_C_mul]
-          have hright :
-              T (X ^ (m + 1) * p) = C c * T (X ^ (m + 1)) := by
-            calc
-              T (X ^ (m + 1) * p) = T (C c * X ^ (m + 1)) := by
-                rw [hpC, mul_comm]
-              _ = T (c • X ^ (m + 1)) := by
-                rw [Polynomial.smul_eq_C_mul]
-              _ = c • T (X ^ (m + 1)) := T.map_smul c (X ^ (m + 1))
-              _ = C c * T (X ^ (m + 1)) := by
-                rw [Polynomial.smul_eq_C_mul]
-          rwa [hleft, hright]
+          have hmap (j : ℕ) : T (X ^ j * p) = C c * T (X ^ j) := by
+            rw [hpC, mul_comm, ← Polynomial.smul_eq_C_mul, T.map_smul,
+              Polynomial.smul_eq_C_mul]
+          simpa only [hmap] using StrictInterl.C_mul_right
+            (StrictInterl.C_mul_left hbase hcpos.ne') hcpos.ne'
         · have hpdeg_pos : 0 < p.natDegree := by
             rw [hpdeg]
             exact Nat.pos_of_ne_zero hn0
@@ -152,17 +135,13 @@ theorem preservesPFShiftInterlacingOnDegree_of_monomials
               hpdeg_succ] at hbound
             simp only [mul_one] at hbound
             lia
-          have hbound_m : (X ^ (m + 1) * q).natDegree ≤ D := by
+          have hbound_q (j : ℕ) (hj : j + q.natDegree ≤ D) :
+              (X ^ j * q).natDegree ≤ D := by
             rw [natDegree_mul (pow_ne_zero _ X_ne_zero) hq0,
               natDegree_pow, natDegree_X]
-            simp only [mul_one]
-            lia
-          have hbound_succ :
-              (X ^ ((m + 1) + 1) * q).natDegree ≤ D := by
-            rw [natDegree_mul (pow_ne_zero _ X_ne_zero) hq0,
-              natDegree_pow, natDegree_X]
-            simp only [mul_one]
-            lia
+            simpa only [mul_one] using hj
+          have hbound_m := hbound_q (m + 1) (by lia)
+          have hbound_succ := hbound_q ((m + 1) + 1) (by lia)
           have hqn : q.natDegree < n := by
             rw [← hpdeg]
             exact hqdeg
@@ -352,14 +331,8 @@ theorem preservesPFLinearFactorInterlacingOnDegree_of_shift
     PreservesPFLinearFactorInterlacingOnDegree T D := by
   intro q a hq hq0 ha hdeg
   have hXqdeg : (X * q).natDegree ≤ D := by
-    have hleft : (X * q).natDegree = q.natDegree + 1 := by
-      rw [natDegree_mul X_ne_zero hq0, natDegree_X]
-      lia
-    have hright : ((X + C a) * q).natDegree = q.natDegree + 1 := by
-      rw [natDegree_mul (X_add_C_ne_zero a) hq0, natDegree_X_add_C]
-      lia
-    rw [hleft, ← hright]
-    exact hdeg
+    simpa only [natDegree_mul X_ne_zero hq0, natDegree_X,
+      natDegree_mul (X_add_C_ne_zero a) hq0, natDegree_X_add_C] using hdeg
   have hstep : StrictInterl (T q) (T (X * q)) := by
     simpa using hTshift (q := q) (m := 0) hq hq0 (by simpa using hXqdeg)
   have hqnn : HasNonnegCoeffs (T q) := hTnn hq.hasNonnegCoeffs
@@ -385,10 +358,8 @@ theorem preservesPFLinearFactorInterlacingOnDegree_of_shift
       · exact hXqpos
       · exact hqpos
     · exact ⟨((1 : ℝ), T (X * q)), by simp, zero_lt_one⟩
-  have hinput : (X + C a) * q = X * q + a • q := by
-    simp only [smul_eq_C_mul]
-    ring
-  rw [hinput, T.map_add, T.map_smul]
+  rw [show (X + C a) * q = X * q + a • q by simp only [smul_eq_C_mul]; ring,
+    T.map_add, T.map_smul]
   simpa [weightedSum_cons, smul_eq_C_mul] using hsum
 
 /-- Linear-factor form of the oriented interlacing upgrade.

@@ -58,25 +58,22 @@ private lemma apply_pairInput {m n : ℕ}
   classical
   simp only [apply, pairInput]
   calc
-    (∑ q, M i q (if q = j then f else if q = l then g else 0)) =
-        ∑ q, if q = j then M i q f else if q = l then M i q g else 0 := by
-      apply Finset.sum_congr rfl
-      intro q _
-      split
-      · rfl
-      · split
+    _ = ∑ q, if q = j then M i q f else if q = l then M i q g else 0 :=
+      Finset.sum_congr rfl fun q _ => by
+        split
         · rfl
-        · exact (M i q).map_zero
-    _ = M i j f + M i l g := by
-      have hsplit : ∀ q : Fin n,
-          (if q = j then M i q f else if q = l then M i q g else 0) =
-            (if q = j then M i q f else 0) + (if q = l then M i q g else 0) := by
-        intro q
-        by_cases hqj : q = j
-        · simp [hqj, hjl]
-        · simp [hqj]
-      rw [Finset.sum_congr rfl (fun q _ => hsplit q), Finset.sum_add_distrib]
-      simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+        · split
+          · rfl
+          · exact (M i q).map_zero
+    _ = _ := by
+      rw [show (∑ q, if q = j then M i q f else if q = l then M i q g else 0) =
+          (∑ q, if q = j then M i q f else 0) +
+            ∑ q, if q = l then M i q g else 0 by
+        rw [← Finset.sum_add_distrib]
+        apply Finset.sum_congr rfl
+        intro q _
+        by_cases hqj : q = j <;> simp [hqj, hjl]]
+      simp
 
 private lemma apply_singleInput {m n : ℕ}
     (M : Fin m → Fin n → ℝ[X] →ₗ[ℝ] ℝ[X])
@@ -85,16 +82,12 @@ private lemma apply_singleInput {m n : ℕ}
   classical
   simp only [apply, singleInput]
   calc
-    (∑ q, M i q (if q = j then f else 0)) =
-        ∑ q, if q = j then M i q f else 0 := by
-      apply Finset.sum_congr rfl
-      intro q _
-      split
-      · rfl
-      · exact (M i q).map_zero
-    _ = M i j f := by
-      rw [Finset.sum_ite_eq']
-      simp
+    _ = ∑ q, if q = j then M i q f else 0 :=
+      Finset.sum_congr rfl fun q _ => by
+        split
+        · rfl
+        · exact (M i q).map_zero
+    _ = _ := by simp
 
 private lemma pairInput_isOrderedPF {n : ℕ} {j l : Fin n} (hjl : j < l)
     {f g : ℝ[X]} (hf : IsPFPolynomial f) (hg : IsPFPolynomial g) (hfg : Interl f g) :
@@ -341,14 +334,8 @@ theorem preservesOrderedPF_one_one_iff
     PreservesOrderedPF M ↔ ∀ p, IsPFPolynomial p → IsPFPolynomial (M 0 0 p) := by
   constructor
   · intro hpres p hp
-    let f : Fin 1 → ℝ[X] := fun _ => p
-    have hf : IsOrderedPF f := by
-      constructor
-      · intro
-        exact hp
-      · intro i k hik
-        exact False.elim ((ne_of_lt hik) (Subsingleton.elim i k))
-    simpa [apply, f] using (hpres f hf).1 0
+    have hout := hpres (singleInput 0 p) (singleInput_isOrderedPF 0 hp)
+    simpa [apply_singleInput M 0 p 0] using hout.1 0
   · intro hentry f hf
     constructor
     · intro i
@@ -407,23 +394,11 @@ theorem preservesOrderedPF_one_column_iff {m : ℕ}
   · intro hpres
     constructor
     · intro i p hp
-      let f : Fin 1 → ℝ[X] := fun _ => p
-      have hf : IsOrderedPF f := by
-        constructor
-        · intro
-          exact hp
-        · intro j l hjl
-          exact False.elim ((ne_of_lt hjl) (Subsingleton.elim j l))
-      simpa [apply, f] using (hpres f hf).1 i
+      have hout := hpres (singleInput 0 p) (singleInput_isOrderedPF 0 hp)
+      simpa [apply_singleInput M 0 p i] using hout.1 i
     · intro i k hik p hp
-      let f : Fin 1 → ℝ[X] := fun _ => p
-      have hf : IsOrderedPF f := by
-        constructor
-        · intro
-          exact hp
-        · intro j l hjl
-          exact False.elim ((ne_of_lt hjl) (Subsingleton.elim j l))
-      simpa [apply, f] using (hpres f hf).2 i k hik
+      have hout := hpres (singleInput 0 p) (singleInput_isOrderedPF 0 hp)
+      simpa [apply_singleInput M 0 p] using hout.2 i k hik
   · rintro ⟨hentry, hcompare⟩ f hf
     have hf0 : IsPFPolynomial (f 0) := hf.1 0
     constructor
