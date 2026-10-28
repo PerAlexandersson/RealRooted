@@ -9,7 +9,7 @@ open Polynomial
 
 noncomputable section
 
-namespace RealRooted.Graph.RankTwoInternal
+namespace RealRooted.Graph.RankTwo
 
 open scoped BigOperators
 
@@ -512,4 +512,4 @@ theorem disjointSelectionWeight_eq_disjointSubsetWeight
     · simp [hB]
   · simp [hA]
 
-end RealRooted.Graph.RankTwoInternal
+end RealRooted.Graph.RankTwo

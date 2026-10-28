@@ -23,7 +23,7 @@ open scoped BigOperators
 
 namespace RealRooted
 
-open ProductSequenceInternal
+open ProductSequence
 
 /-- Sequence shell for first-order product recurrences with a supplied factor certificate. -/
 theorem isRealRooted_of_product_factor_sequence

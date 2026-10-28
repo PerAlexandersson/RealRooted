@@ -448,7 +448,7 @@ private theorem splits_step_X_sub_C_mul_of_simpleNegRooted {a b c : ℝ} {d : �
     exact hno_UF r ⟨hU_root, hr.1⟩
   have hFG_simple := hFG.hasSimpleRoots_of_no_common_root hno_FG
   have hWne : ∀ t : ℝ,
-      (ObreschkoffConverseInternal.wronskianPoly
+      (ObreschkoffConverse.wronskianPoly
         (step a b q) (step a b (X * q))).eval t ≠ 0 := by
     intro t hz
     have hw := wronskian_pos_of_strictInterl_succ hG_pos hF_pos
@@ -456,12 +456,12 @@ private theorem splits_step_X_sub_C_mul_of_simpleNegRooted {a b c : ℝ} {d : �
       hFG_simple.2.roots_nodup hFG_simple.1.roots_nodup (by
         intro r hGr hFr
         exact hno_FG r ⟨hFr, hGr⟩) t
-    simp only [ObreschkoffConverseInternal.wronskianPoly, eval_sub, eval_mul] at hz
+    simp only [ObreschkoffConverse.wronskianPoly, eval_sub, eval_mul] at hz
     nlinarith
   have hall := allComboRealRooted_of_strictInterl hFG
   intro ρ
   have hcombo :=
-    ObreschkoffConverseInternal.combo_eq_zero_or_realRooted_simple_of_wronskian_eval_ne_zero
+    ObreschkoffConverse.combo_eq_zero_or_realRooted_simple_of_wronskian_eval_ne_zero
       hall hWne (-ρ) 1
   have htarget_ne : step a b ((X - C ρ) * q) ≠ 0 := by
     intro hz

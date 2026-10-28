@@ -12,7 +12,7 @@ open Polynomial Filter
 
 noncomputable section
 
-namespace RealRooted.MaWangInternal
+namespace RealRooted.MaWang
 
 /-- Sign-normalization for a product of linear factors: multiplying by
 `(-1) ^ countP (s < ·)` flips exactly the negative factors and makes the product
@@ -270,11 +270,11 @@ lemma exists_isRoot_between_of_eval_mul_neg {p : ℝ[X]} {a b : ℝ}
   have hcb' : c ≠ b := fun h => by simp_all
   grind
 
-end RealRooted.MaWangInternal
+end RealRooted.MaWang
 
 namespace RealRooted
 
-export MaWangInternal
+export MaWang
   (listInterlaces_prod_mul_prod_nonpos_of_consecutive
     eval_mul_eval_nonpos_of_interlacing_consecutive
     exists_isRoot_between_of_eval_mul_neg)

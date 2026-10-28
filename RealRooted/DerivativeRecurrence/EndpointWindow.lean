@@ -31,11 +31,7 @@ theorem roots_lt_iff_eval_pos_of_interlaces (hinter : Interlaces f F)
     (hFpos : 0 < F.leadingCoeff) (hfU : ∀ t ∈ f.roots, t < U) :
     (∀ t ∈ F.roots, t < U) ↔ 0 < F.eval U := by
   constructor
-  · intro hFU
-    rw [Polynomial.Splits.eval_eq_prod_roots hinter.1.2 U]
-    refine mul_pos hFpos (Multiset.prod_pos fun y hy => ?_)
-    obtain ⟨t, ht, rfl⟩ := Multiset.mem_map.mp hy
-    exact sub_pos.mpr (hFU t ht)
+  · exact eval_pos_of_all_roots_lt hinter.1.1 hinter.1.2 hFpos
   · intro hFU
     have hinter' := interlaces_comp_X_add_C hinter U
     have hFpos' : 0 < (F.comp (X + C U)).leadingCoeff :=
@@ -181,54 +177,26 @@ theorem roots_ge_iff_neg_one_pow_mul_eval_nonneg_of_interlaces (hinter : Interla
       let qF := F.comp (-X + C L)
       have hinter' : Interlaces qf qF := by
         simpa [qf, qF, sub_eq_add_neg] using interlaces_comp_neg_X_sub_C hinter (-L)
-      have hqFpos : 0 < (C ((-1 : ℝ) ^ F.natDegree) * qF).leadingCoeff := by
-        have hlin : (-X + C L : ℝ[X]).leadingCoeff = -1 := by
-          rw [show -X + C L = -(X + C (-L)) by
-            simp only [map_neg]
-            ring]
-          simp only [leadingCoeff_neg, leadingCoeff_X_add_C]
-        rw [leadingCoeff_mul, leadingCoeff_C, leadingCoeff_comp (by simp), hlin]
-        have hpow : (-1 : ℝ) ^ F.natDegree * (-1) ^ F.natDegree = 1 := by
-          rw [← mul_pow]
-          norm_num
-        have hcalc : (-1 : ℝ) ^ F.natDegree *
-            (F.leadingCoeff * (-1 : ℝ) ^ F.natDegree) = F.leadingCoeff := by
-          calc
-            _ = F.leadingCoeff * ((-1 : ℝ) ^ F.natDegree * (-1 : ℝ) ^ F.natDegree) := by ring
-            _ = F.leadingCoeff := by rw [hpow, mul_one]
-        rw [hcalc]
-        exact hFpos
-      have hscaled : Interlaces (C ((-1 : ℝ) ^ f.natDegree) * qf)
-          (C ((-1 : ℝ) ^ F.natDegree) * qF) := by
-        exact (hinter'.toStrictInterl.C_mul_left
-          (pow_ne_zero f.natDegree (by norm_num : (-1 : ℝ) ≠ 0))).C_mul_right
-          (pow_ne_zero F.natDegree (by norm_num : (-1 : ℝ) ≠ 0)) |>.toInterlaces
-          (by
-            rw [natDegree_mul (C_ne_zero.mpr (pow_ne_zero f.natDegree (by norm_num)))
-              hinter'.2.1.1,
-              natDegree_mul (C_ne_zero.mpr (pow_ne_zero F.natDegree (by norm_num)))
-                hinter'.1.1]
-            simpa [qf, qF, natDegree_comp] using hinter.2.2.1)
-      have hqfneg : ∀ r, (C ((-1 : ℝ) ^ f.natDegree) * qf).IsRoot r → r < 0 := by
+      have hqfneg : ∀ r, qf.IsRoot r → r < 0 := by
         intro r hr
         have hr' : f.IsRoot (L - r) := by
-          simpa [qf, Polynomial.IsRoot.def, Polynomial.eval_comp, eval_mul, eval_C,
-            sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using hr
+          simpa [qf, Polynomial.IsRoot.def, Polynomial.eval_comp, sub_eq_add_neg,
+            add_comm, add_left_comm, add_assoc] using hr
         have hrmem : L - r ∈ f.roots := (mem_roots hinter.2.1.1).mpr hr'
         have := hfL (L - r) hrmem
         linarith
-      have hqFzero : (C ((-1 : ℝ) ^ F.natDegree) * qF).IsRoot 0 := by
-        simpa [qF, Polynomial.IsRoot.def, eval_mul, eval_C, Polynomial.eval_comp] using hzero.symm
-      have hqFnonpos := roots_nonpos_of_interlaces_of_zero_root_of_roots_neg hscaled
+      have hqFzero : qF.IsRoot 0 := by
+        have : F.eval L = 0 := by
+          exact (mul_eq_zero.mp hzero.symm).resolve_left (pow_ne_zero _ (by norm_num))
+        simpa [qF, Polynomial.IsRoot.def, Polynomial.eval_comp] using this
+      have hqFnonpos := roots_nonpos_of_interlaces_of_zero_root_of_roots_neg hinter'
         hqFzero hqfneg
       intro t ht
       have htF : F.IsRoot t := (mem_roots hinter.1.1).mp ht
       have ht' : qF.IsRoot (L - t) := by
         simpa [qF, Polynomial.IsRoot.def, Polynomial.eval_comp, sub_eq_add_neg,
           add_comm, add_left_comm, add_assoc] using htF
-      have := hqFnonpos (L - t) ((by
-        simpa [qF, Polynomial.IsRoot.def, eval_mul, eval_C] using ht') :
-          (C ((-1 : ℝ) ^ F.natDegree) * qF).IsRoot (L - t))
+      have := hqFnonpos (L - t) ht'
       linarith
     · intro t ht
       exact ((roots_gt_iff_neg_one_pow_mul_eval_pos_of_interlaces hinter hFpos hfL).mpr hFL)
@@ -275,14 +243,6 @@ end Sequence
 end RealRooted
 
 namespace RealRooted
-private theorem eval_pos_at_upper_of_roots_lt {p : ℝ[X]} {U : ℝ}
-    (hs : p.Splits) (hpos : 0 < p.leadingCoeff)
-    (h : ∀ t ∈ p.roots, t < U) : 0 < p.eval U := by
-  rw [Polynomial.Splits.eval_eq_prod_roots hs U]
-  refine mul_pos hpos (Multiset.prod_pos fun y hy => ?_)
-  obtain ⟨t, ht, rfl⟩ := Multiset.mem_map.mp hy
-  linarith [h t ht]
-
 private theorem neg_one_pow_mul_eval_pos_at_lower_of_roots_gt
     {p : ℝ[X]} {L : ℝ} (hs : p.Splits) (hpos : 0 < p.leadingCoeff)
     (h : ∀ t ∈ p.roots, L < t) :
@@ -331,7 +291,7 @@ theorem derivativeRecurrence_interlaces_of_endpoint_evaluations
     have hsignL : 0 < (-1 : ℝ) ^ (P n).natDegree * (P n).eval (L n) :=
       neg_one_pow_mul_eval_pos_at_lower_of_roots_gt hs (hpos n) holdL
     have hsignU : 0 < (P n).eval (U n) :=
-      eval_pos_at_upper_of_roots_lt hs (hpos n) holdU
+      eval_pos_of_all_roots_lt (leadingCoeff_ne_zero.mp (hpos n).ne') hs (hpos n) holdU
     have hsignL' : 0 < (-1 : ℝ) ^ (D₀ + n) * (P n).eval (L n) := by
       simpa only [hdeg n] using hsignL
     have hnextL : 0 < (-1 : ℝ) ^ (P (n + 1)).natDegree *
@@ -361,8 +321,8 @@ theorem derivativeRecurrence_interlaces_of_endpoint_evaluations
         hnextU t ht
     exact ⟨lt_of_le_of_lt (hLmono n) hrootL,
       lt_of_lt_of_le hrootU (hUmono n)⟩
-  · exact h0
-  · exact hW0
-  · exact h01
+  · assumption
+  · assumption
+  · assumption
 
 end RealRooted

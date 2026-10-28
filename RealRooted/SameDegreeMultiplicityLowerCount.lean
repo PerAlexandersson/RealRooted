@@ -327,7 +327,8 @@ private lemma abs_root_lt_of_coeff_le {p : ℝ[X]} {C0 M : ℝ} (hC0 : 0 < C0)
   have hroot : p.IsRoot r := (mem_roots'.mp hr).2
   have hlt := hroot.norm_lt_cauchyBound hp0
   have hcb : |r| < (p.cauchyBound : ℝ) := by
-    have h2 : ((‖r‖₊ : ℝ≥0) : ℝ) < ((p.cauchyBound : ℝ≥0) : ℝ) := by exact_mod_cast hlt
+    have h2 : ((‖r‖₊ : ℝ≥0) : ℝ) < ((p.cauchyBound : ℝ≥0) : ℝ) := by
+      exact_mod_cast hlt
     simpa [Real.norm_eq_abs] using h2
   set s : ℝ≥0 := Finset.sup (Finset.range p.natDegree) (fun i => ‖p.coeff i‖₊) with hs
   have hsM : (s : ℝ) ≤ M := by
@@ -351,6 +352,191 @@ private lemma abs_root_lt_of_coeff_le {p : ℝ[X]} {C0 M : ℝ} (hC0 : 0 < C0)
       div_le_div₀ hM0 hsM hC0 hden
     linarith
   linarith
+
+/-- Coefficientwise closeness to a bounded-degree polynomial gives a uniform bound. -/
+private lemma abs_coeff_le_sum_add_one_of_natDegree_le
+    {p p0 : ℝ[X]} {n : ℕ} (hp : p.natDegree ≤ n)
+    (hclose : ∀ k ∈ Finset.range (n + 1), |p.coeff k - p0.coeff k| < 1) :
+    ∀ i, |p.coeff i| ≤ ∑ k ∈ Finset.range (n + 1), (|p0.coeff k| + 1) := by
+  intro i
+  by_cases hi : i ≤ n
+  · have hterm : |p0.coeff i| + 1 ≤
+        ∑ k ∈ Finset.range (n + 1), (|p0.coeff k| + 1) :=
+      Finset.single_le_sum (f := fun k => |p0.coeff k| + 1)
+        (fun k _ => by positivity) (Finset.mem_range.mpr (by lia))
+    have htri : |p.coeff i| ≤ |p.coeff i - p0.coeff i| + |p0.coeff i| := by
+      calc
+        |p.coeff i| = |(p.coeff i - p0.coeff i) + p0.coeff i| := by ring_nf
+        _ ≤ |p.coeff i - p0.coeff i| + |p0.coeff i| := abs_add_le _ _
+    linarith [hclose i (Finset.mem_range.mpr (by lia))]
+  · rw [coeff_eq_zero_of_natDegree_lt (by lia), abs_zero]
+    exact Finset.sum_nonneg fun k _ => by positivity
+
+/-- An affine polynomial has a uniform coefficient bound when its parameter is bounded. -/
+private lemma abs_coeff_add_C_mul_le_sum_of_abs_le
+    {f g : ℝ[X]} {ν K : ℝ} {N : ℕ} (hf : f.natDegree ≤ N)
+    (hg : g.natDegree ≤ N) (hν : |ν| ≤ K) (hK : 0 ≤ K) :
+    ∀ i, |(f + C ν * g).coeff i| ≤
+      ∑ k ∈ Finset.range (N + 1), (|f.coeff k| + K * |g.coeff k|) := by
+  intro i
+  have hcoeff : (f + C ν * g).coeff i = f.coeff i + ν * g.coeff i := by simp
+  by_cases hi : i ≤ N
+  · have hterm : |f.coeff i| + K * |g.coeff i| ≤
+        ∑ k ∈ Finset.range (N + 1), (|f.coeff k| + K * |g.coeff k|) :=
+      Finset.single_le_sum (f := fun k => |f.coeff k| + K * |g.coeff k|)
+        (fun k _ => by positivity) (Finset.mem_range.mpr (by lia))
+    rw [hcoeff]
+    calc
+      |f.coeff i + ν * g.coeff i| ≤ |f.coeff i| + |ν * g.coeff i| :=
+        abs_add_le _ _
+      _ = |f.coeff i| + |ν| * |g.coeff i| := by rw [abs_mul]
+      _ ≤ |f.coeff i| + K * |g.coeff i| := by gcongr
+      _ ≤ _ := hterm
+  · rw [hcoeff, coeff_eq_zero_of_natDegree_lt (by lia),
+      coeff_eq_zero_of_natDegree_lt (by lia)]
+    simp only [zero_add, mul_zero, abs_zero]
+    exact Finset.sum_nonneg fun k _ => by positivity
+
+/-- A bound by `D / (G + 1)` leaves strict room after multiplication by at most `G`. -/
+private lemma mul_lt_of_lt_div_add_one {x y D G : ℝ}
+    (hD : 0 < D) (hG : 0 ≤ G) (hx : x < D / (G + 1))
+    (hx0 : 0 ≤ x) (hy : y ≤ G) : x * y < D := by
+  have hfrac : D / (G + 1) * G < D := by
+    have hlt : G / (G + 1) < 1 := by rw [div_lt_one (by positivity)]; linarith
+    calc
+      D / (G + 1) * G = D * (G / (G + 1)) := by ring
+      _ < D * 1 := mul_lt_mul_of_pos_left hlt hD
+      _ = D := mul_one D
+  calc
+    x * y ≤ x * G := mul_le_mul_of_nonneg_left hy hx0
+    _ ≤ D / (G + 1) * G := mul_le_mul_of_nonneg_right hx.le hG
+    _ < D := hfrac
+
+/-- Separate root bounds for two polynomials bound the distance between their roots. -/
+private lemma abs_sub_lt_add_root_bounds
+    {p p0 : ℝ[X]} {C M C0 M0 : ℝ} (hC : 0 < C) (hC0 : 0 < C0)
+    (hlc : C ≤ |p.leadingCoeff|) (hlc0 : C0 ≤ |p0.leadingCoeff|)
+    (hp : ∀ i, |p.coeff i| ≤ M) (hp0 : ∀ i, |p0.coeff i| ≤ M0)
+    {q a : ℝ} (hq : q ∈ p.roots) (ha : a ∈ p0.roots) :
+    |q - a| < (M / C + 1) + (M0 / C0 + 1) := by
+  have hqbound := abs_root_lt_of_coeff_le hC hlc hp hq
+  have habound := abs_root_lt_of_coeff_le hC0 hlc0 hp0 ha
+  have htri : |q - a| ≤ |q| + |a| := by
+    simpa [sub_eq_add_neg, abs_neg] using abs_add_le q (-a)
+  linarith
+
+/-- Scaling by a controlled leading coefficient preserves a strict Taylor bound. -/
+private lemma abs_inv_mul_lt_of_abs_lt_mul {c c0 x δ : ℝ}
+    (hc0 : 0 < c0) (hc : c0 ≤ |c|) (hx : |x| < δ * c0) :
+    |c⁻¹ * x| < δ := by
+  have hinv : |c⁻¹| ≤ 1 / c0 := by
+    rw [abs_inv, one_div]
+    exact inv_anti₀ hc0 hc
+  rw [abs_mul]
+  calc
+    |c⁻¹| * |x| ≤ (1 / c0) * |x| :=
+      mul_le_mul_of_nonneg_right hinv (abs_nonneg _)
+    _ < (1 / c0) * (δ * c0) :=
+      mul_lt_mul_of_pos_left hx (one_div_pos.mpr hc0)
+    _ = δ := by field_simp
+
+/-- A scaled Taylor bound transfers the core near-zero count back to the original roots. -/
+private lemma root_count_le_card_filter_near_of_scaled_taylor_coeff_lt
+    {p p0 : ℝ[X]} {n : ℕ} {a ρ δ B c : ℝ}
+    (hp_split : p.Splits) (hp_degree : p.natDegree = n)
+    (hp0_split : p0.Splits) (hp0_degree : p0.natDegree = n)
+    (hc : c = p.coeff n) (hcne : c ≠ 0)
+    (hroot : ∀ q ∈ p.roots, |q - a| ≤ B)
+    (hlow : ∀ j, j < p0.roots.count a → |c⁻¹ * (taylor a p).coeff j| < δ)
+    (hδ : ∀ m, m ≤ n → ∀ R : ℝ[X], R.Monic → R.Splits → R.natDegree = n →
+      (∀ r ∈ R.roots, |r| ≤ B) → (∀ j, j < m → |R.coeff j| < δ) →
+        m ≤ (R.roots.filter (fun r => |r| < ρ)).card) :
+    p0.roots.count a ≤ (p.roots.filter (fun q => |q - a| < ρ)).card := by
+  have hp_lc : p.leadingCoeff = c := by rw [hc, leadingCoeff, hp_degree]
+  set ptil := C c⁻¹ * p with hptil
+  have hptil_monic : ptil.Monic := by
+    rw [Monic.def, hptil, leadingCoeff_mul, leadingCoeff_C, hp_lc]
+    exact inv_mul_cancel₀ hcne
+  have hptil_degree : ptil.natDegree = n := by
+    rw [hptil, natDegree_C_mul (inv_ne_zero hcne), hp_degree]
+  have hptil_roots : ptil.roots = p.roots := by
+    rw [hptil]
+    exact roots_C_mul p (inv_ne_zero hcne)
+  set R := taylor a ptil with hR
+  have hR_monic : R.Monic := by
+    rw [hR, taylor_apply]
+    exact hptil_monic.comp (monic_X_add_C a) (by simp)
+  have hR_degree : R.natDegree = n := by rw [hR, natDegree_taylor, hptil_degree]
+  have hR_roots : R.roots = p.roots.map (fun r => r - a) := by
+    rw [hR, roots_taylor, hptil_roots]
+  have hR_splits : R.Splits := by
+    rw [splits_iff_card_roots, hR_roots, Multiset.card_map, hR_degree,
+      ← hp_degree, hp_split.natDegree_eq_card_roots]
+  have hR_bound : ∀ r ∈ R.roots, |r| ≤ B := by
+    intro r hr
+    rw [hR_roots, Multiset.mem_map] at hr
+    obtain ⟨q, hq, rfl⟩ := hr
+    exact hroot q hq
+  have hR_low : ∀ j, j < p0.roots.count a → |R.coeff j| < δ := by
+    intro j hj
+    have hcoeff : R.coeff j = c⁻¹ * (taylor a p).coeff j := by
+      rw [hR, hptil, taylor_apply, taylor_apply, mul_comp, C_comp, coeff_C_mul]
+    rw [hcoeff]
+    exact hlow j hj
+  have hm : p0.roots.count a ≤ n := by
+    rw [← hp0_degree]
+    exact (Multiset.count_le_card a p0.roots).trans_eq
+      hp0_split.natDegree_eq_card_roots.symm
+  have hcount := hδ (p0.roots.count a) hm R hR_monic hR_splits hR_degree
+    hR_bound hR_low
+  rw [hR, card_filter_roots_near_eq_taylor a ρ ptil, hptil_roots] at hcount
+  exact hcount
+
+/-- Nearby leading and Taylor coefficients preserve each base-root multiplicity locally. -/
+private lemma root_count_le_card_filter_near_of_coeff_and_taylor_near
+    {p p0 : ℝ[X]} {n : ℕ} {a ρ δ B c0 M M0 : ℝ}
+    (hp_degree : p.natDegree ≤ n) (hp_split : p.Splits)
+    (hp0_degree : p0.natDegree = n) (hp0_split : p0.Splits)
+    (hc0 : 0 < c0) (hc0_eq : c0 = |p0.leadingCoeff| / 2)
+    (hp_coeff : ∀ i, |p.coeff i| ≤ M) (hp0_coeff : ∀ i, |p0.coeff i| ≤ M0)
+    (hlead : |p.coeff n - p0.coeff n| < c0)
+    (htaylor : ∀ j, j < p0.roots.count a →
+      |(taylor a p).coeff j - (taylor a p0).coeff j| < δ * c0)
+    (ha : a ∈ p0.roots)
+    (hB : B = (M / c0 + 1) + (M0 / |p0.leadingCoeff| + 1))
+    (hδ : ∀ m, m ≤ n → ∀ R : ℝ[X], R.Monic → R.Splits → R.natDegree = n →
+      (∀ r ∈ R.roots, |r| ≤ B) → (∀ j, j < m → |R.coeff j| < δ) →
+        m ≤ (R.roots.filter (fun r => |r| < ρ)).card) :
+    p0.roots.count a ≤ (p.roots.filter (fun q => |q - a| < ρ)).card := by
+  have hp0_lcpos : 0 < |p0.leadingCoeff| := by nlinarith
+  have hp0_cn : p0.coeff n = p0.leadingCoeff := by rw [leadingCoeff, hp0_degree]
+  have hclower : c0 ≤ |p.coeff n| := by
+    have htri := abs_add_le (p0.leadingCoeff - p.coeff n) (p.coeff n)
+    have hclose : |p.coeff n - p0.leadingCoeff| < c0 := by simpa [hp0_cn] using hlead
+    rw [sub_add_cancel, abs_sub_comm] at htri
+    rw [hc0_eq]
+    linarith
+  have hcne : p.coeff n ≠ 0 := fun h => by rw [h, abs_zero] at hclower; linarith
+  have hp_degree_eq : p.natDegree = n :=
+    le_antisymm hp_degree (le_natDegree_of_ne_zero hcne)
+  have hp_lc : p.leadingCoeff = p.coeff n := by rw [leadingCoeff, hp_degree_eq]
+  have hroot : ∀ q ∈ p.roots, |q - a| ≤ B := by
+    intro q hq
+    have hdist := abs_sub_lt_add_root_bounds hc0 hp0_lcpos
+      (show c0 ≤ |p.leadingCoeff| by rwa [hp_lc])
+      (show |p0.leadingCoeff| ≤ |p0.leadingCoeff| by rfl) hp_coeff hp0_coeff hq ha
+    rw [hB]
+    exact hdist.le
+  set c := p.coeff n with hc
+  have hlow : ∀ j, j < p0.roots.count a →
+      |c⁻¹ * (taylor a p).coeff j| < δ := by
+    intro j hj
+    have hp0z : (taylor a p0).coeff j = 0 := coeff_taylor_eq_zero_of_lt_count hj
+    have hclose : |(taylor a p).coeff j| < δ * c0 := by
+      simpa [hp0z] using htaylor j hj
+    exact abs_inv_mul_lt_of_abs_lt_mul hc0 (by simpa [hc] using hclower) hclose
+  exact root_count_le_card_filter_near_of_scaled_taylor_coeff_lt hp_split hp_degree_eq
+    hp0_split hp0_degree hc hcne hroot hlow hδ
 
 /-! ### Family reduction -/
 
@@ -434,119 +620,50 @@ theorem eventually_forall_root_count_le_card_filter_near_of_continuous_coeff
   filter_upwards [hcoeff_near, hlc_near, htaylor_near] with u hucoeff hulc hutaylor
   intro husplit a ha
   set pnu := p u with hpnudef
-  have hpnu_coeff : ∀ i, |pnu.coeff i| ≤ Cfg := by
-    intro i
-    by_cases hi : i ≤ n
-    · have hterm : |p0.coeff i| + 1 ≤ Cfg :=
-        Finset.single_le_sum (f := fun k => |p0.coeff k| + 1)
-          (fun k _ => by positivity) (Finset.mem_range.mpr (by lia))
-      have htri : |pnu.coeff i| ≤
-          |pnu.coeff i - p0.coeff i| + |p0.coeff i| := by
-        calc
-          |pnu.coeff i| = |(pnu.coeff i - p0.coeff i) + p0.coeff i| := by ring_nf
-          _ ≤ |pnu.coeff i - p0.coeff i| + |p0.coeff i| := abs_add_le _ _
-      have hclose : |pnu.coeff i - p0.coeff i| < 1 := by
-        simpa [hpnudef] using hucoeff i (Finset.mem_range.mpr (by lia))
-      linarith
-    · rw [coeff_eq_zero_of_natDegree_lt (by
-        exact lt_of_not_ge fun h => hi (h.trans (hdegree u)))]
-      simpa using hCfg0
-  have hp0_cn : p0.coeff n = lc0 := by rw [hlc0def, leadingCoeff, hp0deg]
-  have hclower : c0 ≤ |pnu.coeff n| := by
-    have htri := abs_add_le (lc0 - pnu.coeff n) (pnu.coeff n)
-    have hclose : |pnu.coeff n - lc0| < c0 := by
-      simpa [hp0_cn] using hulc
-    rw [sub_add_cancel, abs_sub_comm] at htri
-    rw [hc0def]
-    linarith
-  have hcne : pnu.coeff n ≠ 0 := fun h => by
-    rw [h, abs_zero] at hclower
-    linarith
-  have hpnu_deg : pnu.natDegree = n := by
-    apply le_antisymm (hdegree u)
-    exact le_natDegree_of_ne_zero hcne
-  have hpnu_lc : pnu.leadingCoeff = pnu.coeff n := by rw [leadingCoeff, hpnu_deg]
-  set c := pnu.coeff n with hcdef
-  have hcinv : c⁻¹ ≠ 0 := inv_ne_zero hcne
-  set ptil := C c⁻¹ * pnu with hptildef
-  have hptil_monic : ptil.Monic := by
-    have hl : ptil.leadingCoeff = c⁻¹ * pnu.leadingCoeff := by
-      rw [hptildef, leadingCoeff_mul, leadingCoeff_C]
-    rw [Monic.def, hl, hpnu_lc]
-    exact inv_mul_cancel₀ hcne
-  have hptil_deg : ptil.natDegree = n := by
-    rw [hptildef, natDegree_C_mul hcinv, hpnu_deg]
-  have hptil_roots : ptil.roots = pnu.roots := by
-    rw [hptildef]
-    exact roots_C_mul pnu hcinv
-  set R := taylor a ptil with hRdef
-  have hR_monic : R.Monic := by
-    rw [hRdef, taylor_apply]
-    exact hptil_monic.comp (monic_X_add_C a) (by simp)
-  have hR_deg : R.natDegree = n := by rw [hRdef, natDegree_taylor, hptil_deg]
-  have hR_roots : R.roots = pnu.roots.map (fun r => r - a) := by
-    rw [hRdef, roots_taylor, hptil_roots]
-  have hpnu_card : pnu.roots.card = n := by
-    rw [← hpnu_deg]
-    exact (husplit.natDegree_eq_card_roots).symm
-  have hR_splits : R.Splits := by
-    apply splits_iff_card_roots.mpr
-    rw [hR_roots, Multiset.card_map, hR_deg, hpnu_card]
-  have hR_bound : ∀ r ∈ R.roots, |r| ≤ B := by
-    intro r hr
-    rw [hR_roots, Multiset.mem_map] at hr
-    obtain ⟨q, hq, rfl⟩ := hr
-    have hqbound : |q| < Cfg / c0 + 1 := by
-      refine abs_root_lt_of_coeff_le hc0 ?_ hpnu_coeff hq
-      rw [hpnu_lc]
-      exact hclower
-    have habound : |a| < A := by
-      have haroot : a ∈ p0.roots := by simpa using ha
-      refine abs_root_lt_of_coeff_le hlc0pos ?_ hp0_coeff haroot
-      rw [hlc0def]
-    have htri : |q - a| ≤ |q| + |a| := by
-      have := abs_add_le q (-a)
-      simpa [sub_eq_add_neg, abs_neg] using this
-    rw [hBdef]
-    linarith
-  have hR_low : ∀ j, j < p0.roots.count a → |R.coeff j| < δ := by
-    intro j hj
-    have hRj : R.coeff j = c⁻¹ * (taylor a pnu).coeff j := by
-      rw [hRdef, hptildef]
-      have ht : taylor a (C c⁻¹ * pnu) = C c⁻¹ * taylor a pnu := by
-        rw [taylor_apply, taylor_apply, mul_comp, C_comp]
-      rw [ht, coeff_C_mul]
-    have hp0z : (taylor a p0).coeff j = 0 :=
-      coeff_taylor_eq_zero_of_lt_count hj
+  have hpnu_coeff : ∀ i, |pnu.coeff i| ≤ Cfg :=
+    abs_coeff_le_sum_add_one_of_natDegree_le (hdegree u) fun k hk => by
+      simpa [hpnudef] using hucoeff k hk
+  apply root_count_le_card_filter_near_of_coeff_and_taylor_near (hdegree u) husplit
+    hp0deg hp0_split hc0 (by rw [hc0def, hlc0def]) hpnu_coeff hp0_coeff
+    (by simpa [hpnudef] using hulc) _ (by simpa using ha) _ hδ
+  · intro j hj
     have hjn : j < n := lt_of_lt_of_le hj (by
       rw [← hp0deg]
-      exact le_trans (Multiset.count_le_card a p0.roots)
-        (le_of_eq (hp0_split.natDegree_eq_card_roots).symm))
-    have hclose : |(taylor a pnu).coeff j| < δ * c0 := by
-      have := hutaylor a ha j (Finset.mem_range.mpr hjn)
-      simpa [hpnudef, hp0z] using this
-    have hcabs : c0 ≤ |c| := by rw [hcdef]; exact hclower
-    have hcinv_le : |c⁻¹| ≤ 1 / c0 := by
-      rw [abs_inv, one_div]
-      exact inv_anti₀ hc0 hcabs
-    rw [hRj, abs_mul]
-    calc
-      |c⁻¹| * |(taylor a pnu).coeff j| ≤
-          (1 / c0) * |(taylor a pnu).coeff j| :=
-        mul_le_mul_of_nonneg_right hcinv_le (abs_nonneg _)
-      _ < (1 / c0) * (δ * c0) :=
-        mul_lt_mul_of_pos_left hclose (one_div_pos.mpr hc0)
-      _ = δ := by field_simp
-  have hmn : p0.roots.count a ≤ n := by
-    rw [← hp0deg]
-    exact le_trans (Multiset.count_le_card a p0.roots)
-      (le_of_eq (hp0_split.natDegree_eq_card_roots).symm)
-  have hcount := hδ (p0.roots.count a) hmn R hR_monic hR_splits hR_deg hR_bound hR_low
-  have htransfer : (R.roots.filter (fun r => |r| < ρ)).card =
-      (pnu.roots.filter (fun q => |q - a| < ρ)).card := by
-    rw [hRdef, card_filter_roots_near_eq_taylor a ρ ptil, hptil_roots]
-  rw [← htransfer]
-  exact hcount
+      exact (Multiset.count_le_card a p0.roots).trans_eq
+        hp0_split.natDegree_eq_card_roots.symm)
+    simpa [hpnudef] using hutaylor a ha j (Finset.mem_range.mpr hjn)
+  · rw [hBdef, hAdef, hlc0def]
+
+/-- A small affine parameter change uniformly controls the relevant Taylor coefficients. -/
+private lemma abs_coeff_taylor_add_C_mul_sub_lt_of_parameter_near
+    {f g : ℝ[X]} {μ0 ν D G : ℝ} {n : ℕ} {a : ℝ}
+    (hp0_split : (f + C μ0 * g).Splits)
+    (hp0_degree : (f + C μ0 * g).natDegree = n)
+    (hD : 0 < D) (hG0 : 0 ≤ G) (hν : |ν - μ0| < D / (G + 1))
+    (hG : G = ∑ a ∈ (f + C μ0 * g).roots.toFinset,
+      ∑ j ∈ Finset.range n, |(taylor a g).coeff j|)
+    (ha : a ∈ (f + C μ0 * g).roots.toFinset) :
+    ∀ j, j < (f + C μ0 * g).roots.count a →
+      |(taylor a (f + C ν * g)).coeff j -
+        (taylor a (f + C μ0 * g)).coeff j| < D := by
+  intro j hj
+  have hdiff : (taylor a (f + C ν * g)).coeff j -
+      (taylor a (f + C μ0 * g)).coeff j =
+        (ν - μ0) * (taylor a g).coeff j := by
+    rw [coeff_taylor_add_C_mul, coeff_taylor_add_C_mul]
+    ring
+  have hjn : j < n := lt_of_lt_of_le hj (by
+    rw [← hp0_degree]
+    exact (Multiset.count_le_card a _).trans_eq hp0_split.natDegree_eq_card_roots.symm)
+  have hTbound : |(taylor a g).coeff j| ≤ G := by
+    rw [hG]
+    refine (Finset.single_le_sum (f := fun j => |(taylor a g).coeff j|)
+      (fun j _ => abs_nonneg _) (Finset.mem_range.mpr hjn)).trans ?_
+    exact Finset.single_le_sum
+      (f := fun a => ∑ j ∈ Finset.range n, |(taylor a g).coeff j|)
+      (fun a _ => Finset.sum_nonneg fun j _ => abs_nonneg _) ha
+  rw [hdiff, abs_mul]
+  exact mul_lt_of_lt_div_add_one hD hG0 hν (abs_nonneg _) hTbound
 
 /-- **Per-root multiplicity lower counts for a same-degree family.**
 
@@ -618,136 +735,34 @@ theorem exists_eps_forall_root_count_le_card_filter_near
   set pnu := f + C ν * g with hpnudef
   have hpnu_deg : pnu.natDegree = n := hνdeg
   have hpnu_coeff : ∀ i, |pnu.coeff i| ≤ Cfg := by
-    intro i
-    have hcoeff : pnu.coeff i = f.coeff i + ν * g.coeff i := by
-      simp [hpnudef, coeff_add, coeff_C_mul]
-    by_cases hi : i ≤ N
-    · have hterm : |f.coeff i| + (|μ0|+1) * |g.coeff i| ≤ Cfg :=
-        Finset.single_le_sum (f := fun k => |f.coeff k| + (|μ0|+1)*|g.coeff k|)
-          (fun k _ => by positivity) (Finset.mem_range.mpr (by lia))
-      rw [hcoeff]
-      calc |f.coeff i + ν * g.coeff i| ≤ |f.coeff i| + |ν * g.coeff i| := abs_add_le _ _
-        _ = |f.coeff i| + |ν| * |g.coeff i| := by rw [abs_mul]
-        _ ≤ |f.coeff i| + (|μ0|+1) * |g.coeff i| := by
-            have := mul_le_mul_of_nonneg_right hνabs (abs_nonneg (g.coeff i)); linarith
-        _ ≤ Cfg := hterm
-    · have hfN : f.natDegree ≤ N := by rw [hNdef]; exact le_max_left _ _
-      have hgN : g.natDegree ≤ N := by rw [hNdef]; exact le_max_right _ _
-      have hfi : f.coeff i = 0 := coeff_eq_zero_of_natDegree_lt (by lia)
-      have hgi : g.coeff i = 0 := coeff_eq_zero_of_natDegree_lt (by lia)
-      rw [hcoeff, hfi, hgi]; simpa using hCfg0
-  have hpnu_lc : pnu.leadingCoeff = pnu.coeff n := by rw [leadingCoeff, hpnu_deg]
+    apply abs_coeff_add_C_mul_le_sum_of_abs_le
+      (show f.natDegree ≤ N by rw [hNdef]; exact le_max_left _ _)
+      (show g.natDegree ≤ N by rw [hNdef]; exact le_max_right _ _) hνabs (by positivity)
   have hp0_cn : p0.coeff n = lc0 := by rw [hlc0def, leadingCoeff, hndef]
   have hpnu_cn : pnu.coeff n = lc0 + (ν - μ0) * g.coeff n := by
-    have e1 : pnu.coeff n = f.coeff n + ν * g.coeff n := by simp [hpnudef, coeff_add, coeff_C_mul]
-    have e2 : p0.coeff n = f.coeff n + μ0 * g.coeff n := by simp [hp0def, coeff_add, coeff_C_mul]
+    have e1 : pnu.coeff n = f.coeff n + ν * g.coeff n := by simp [hpnudef]
+    have e2 : p0.coeff n = f.coeff n + μ0 * g.coeff n := by simp [hp0def]
     have hlc0e : lc0 = f.coeff n + μ0 * g.coeff n := by rw [← hp0_cn, e2]
     rw [e1, hlc0e]; ring
-  have hgabs : |ν - μ0| * |g.coeff n| ≤ c0 := by
+  have hνlead : |ν - μ0| < c0 / (|g.coeff n| + 1) := by
     have hεle : ε ≤ |lc0| / (2*(|g.coeff n|+1)) := le_trans (min_le_left _ _) (min_le_right _ _)
-    have h1 : |ν - μ0| ≤ |lc0| / (2*(|g.coeff n|+1)) := le_of_lt (lt_of_lt_of_le hν hεle)
-    have hgn0 : 0 ≤ |g.coeff n| := abs_nonneg _
-    calc |ν - μ0| * |g.coeff n| ≤ (|lc0|/(2*(|g.coeff n|+1))) * |g.coeff n| :=
-          mul_le_mul_of_nonneg_right h1 (abs_nonneg _)
-      _ ≤ c0 := by
-          rw [hc0def, div_mul_eq_mul_div, div_le_div_iff₀ (by positivity) (by norm_num)]
-          nlinarith [hlc0pos.le, hgn0]
-  have hclower : c0 ≤ |pnu.coeff n| := by
-    rw [hpnu_cn]
-    have h3 : |lc0| - |ν - μ0| * |g.coeff n| ≤ |lc0 + (ν - μ0) * g.coeff n| := by
-      have h := abs_add_le (lc0 + (ν - μ0) * g.coeff n) (-((ν - μ0) * g.coeff n))
-      simp only [add_neg_cancel_right, abs_neg, abs_mul] at h
-      linarith
-    have hc0eq : c0 = |lc0| / 2 := hc0def
-    linarith [hgabs, h3]
-  have hcne : pnu.coeff n ≠ 0 := fun h => by rw [h, abs_zero] at hclower; linarith
-  set c := pnu.coeff n with hcdef
-  have hcinv : c⁻¹ ≠ 0 := inv_ne_zero hcne
-  set ptil := C c⁻¹ * pnu with hptildef
-  have hptil_monic : ptil.Monic := by
-    have hl : ptil.leadingCoeff = c⁻¹ * pnu.leadingCoeff := by
-      rw [hptildef, leadingCoeff_mul, leadingCoeff_C]
-    rw [Monic.def, hl, hpnu_lc]; exact inv_mul_cancel₀ hcne
-  have hptil_deg : ptil.natDegree = n := by rw [hptildef, natDegree_C_mul hcinv, hpnu_deg]
-  have hptil_roots : ptil.roots = pnu.roots := by rw [hptildef]; exact roots_C_mul pnu hcinv
-  set R := taylor a ptil with hRdef
-  have hR_monic : R.Monic := by
-    rw [hRdef, taylor_apply]; exact hptil_monic.comp (monic_X_add_C a) (by simp)
-  have hR_deg : R.natDegree = n := by rw [hRdef, natDegree_taylor, hptil_deg]
-  have hR_roots : R.roots = pnu.roots.map (fun r => r - a) := by
-    rw [hRdef, roots_taylor, hptil_roots]
-  have hpnu_card : pnu.roots.card = n := by
-    rw [← hpnu_deg]; exact (hνsplit.natDegree_eq_card_roots).symm
-  have hR_splits : R.Splits := by
-    apply splits_iff_card_roots.mpr
-    rw [hR_roots, Multiset.card_map, hR_deg, hpnu_card]
-  have hR_bound : ∀ r ∈ R.roots, |r| ≤ B := by
-    intro r hr
-    rw [hR_roots, Multiset.mem_map] at hr
-    obtain ⟨q, hq, rfl⟩ := hr
-    have hqbound : |q| < Cfg / c0 + 1 := by
-      refine abs_root_lt_of_coeff_le hc0 ?_ hpnu_coeff hq
-      rw [hpnu_lc]; exact hclower
-    have habound : |a| < A := by
-      have haroot : a ∈ p0.roots := by simpa using ha
-      refine abs_root_lt_of_coeff_le hlc0pos ?_ hp0_coeff haroot
-      rw [hlc0def]
-    have htri : |q - a| ≤ |q| + |a| := by
-      have := abs_add_le q (-a); simpa [sub_eq_add_neg, abs_neg] using this
-    rw [hBdef]; linarith
-  have hR_low : ∀ j, j < p0.roots.count a → |R.coeff j| < δ := by
-    intro j hj
-    have hRj : R.coeff j = c⁻¹ * (taylor a pnu).coeff j := by
-      rw [hRdef, hptildef]
-      have ht : taylor a (C c⁻¹ * pnu) = C c⁻¹ * taylor a pnu := by
-        rw [taylor_apply, taylor_apply, mul_comp, C_comp]
-      rw [ht, coeff_C_mul]
-    have hp0z : (taylor a p0).coeff j = 0 := coeff_taylor_eq_zero_of_lt_count hj
-    have hpnucoeff : (taylor a pnu).coeff j = (ν - μ0) * (taylor a g).coeff j := by
-      have e_pnu := coeff_taylor_add_C_mul a ν f g j
-      have e_p0 := coeff_taylor_add_C_mul a μ0 f g j
-      rw [← hp0def, hp0z] at e_p0
-      rw [hpnudef, e_pnu]
-      linear_combination -e_p0
-    have hjn : j < n := lt_of_lt_of_le hj (by
-      rw [hndef]; exact le_trans (Multiset.count_le_card a p0.roots)
-        (le_of_eq (hp0_split.natDegree_eq_card_roots).symm))
-    have hTbound : |(taylor a g).coeff j| ≤ G := by
-      rw [hGdef]
-      refine le_trans (Finset.single_le_sum (f := fun j => |(taylor a g).coeff j|)
-        (fun j _ => abs_nonneg _) (Finset.mem_range.mpr hjn)) ?_
-      exact Finset.single_le_sum
-        (f := fun a => ∑ j ∈ Finset.range n, |(taylor a g).coeff j|)
-        (fun a _ => Finset.sum_nonneg (fun j _ => abs_nonneg _)) ha
-    have hcabs : c0 ≤ |c| := by rw [hcdef]; exact hclower
-    have hcinv_le : |c⁻¹| ≤ 1/c0 := by rw [abs_inv, one_div]; exact inv_anti₀ hc0 hcabs
-    have hνle : |ν - μ0| ≤ ε := le_of_lt hν
-    have hεδ : ε ≤ δ * c0 / (G+1) := min_le_right _ _
-    rw [hRj, hpnucoeff, abs_mul, abs_mul]
-    clear_value c ε c0 G
-    have hstep1 :
-        |c⁻¹| * (|ν - μ0| * |(taylor a g).coeff j|) ≤ (1/c0) * (ε * G) := by
-      gcongr
-    have h2 : (δ * c0 / (G+1)) * G / c0 = δ * (G/(G+1)) := by field_simp
-    have h3 : δ * (G/(G+1)) < δ := by
-      have hlt1 : G/(G+1) < 1 := by rw [div_lt_one (by positivity)]; linarith
-      calc δ * (G/(G+1)) < δ * 1 := mul_lt_mul_of_pos_left hlt1 hδ0
-        _ = δ := mul_one δ
-    have key : (1/c0) * (ε * G) < δ := by
-      calc (1/c0)*(ε*G) = (ε*G)/c0 := by ring
-        _ ≤ ((δ*c0/(G+1))*G)/c0 := by gcongr
-        _ = δ*(G/(G+1)) := h2
-        _ < δ := h3
-    exact lt_of_le_of_lt hstep1 key
-  have hmn : p0.roots.count a ≤ n := by
-    rw [hndef]
-    exact le_trans (Multiset.count_le_card a p0.roots)
-      (le_of_eq (hp0_split.natDegree_eq_card_roots).symm)
-  have hcount := hδ (p0.roots.count a) hmn R hR_monic hR_splits hR_deg hR_bound hR_low
-  have htransfer : (R.roots.filter (fun r => |r| < ρ)).card
-      = (pnu.roots.filter (fun q => |q - a| < ρ)).card := by
-    rw [hRdef, card_filter_roots_near_eq_taylor a ρ ptil, hptil_roots]
-  rw [← htransfer]; exact hcount
+    have hlt := hν.trans_le hεle
+    rw [hc0def]
+    convert hlt using 1
+    field_simp
+  have hlead : |pnu.coeff n - p0.coeff n| < c0 := by
+    rw [hpnu_cn, hp0_cn, add_sub_cancel_left, abs_mul]
+    exact mul_lt_of_lt_div_add_one hc0 (abs_nonneg _) hνlead
+      (abs_nonneg _) le_rfl
+  have htaylor : ∀ j, j < p0.roots.count a →
+      |(taylor a pnu).coeff j - (taylor a p0).coeff j| < δ * c0 := by
+    simpa [hp0def, hpnudef] using
+      abs_coeff_taylor_add_C_mul_sub_lt_of_parameter_near hp0_split hndef.symm
+        (mul_pos hδ0 hc0) hG0 (hν.trans_le (min_le_right _ _)) hGdef ha
+  apply root_count_le_card_filter_near_of_coeff_and_taylor_near hpnu_deg.le hνsplit
+    hndef.symm hp0_split hc0 (by rw [hc0def, hlc0def]) hpnu_coeff hp0_coeff
+    hlead htaylor (by simpa using ha) _ hδ
+  rw [hBdef, hAdef, hlc0def]
 
 end
 

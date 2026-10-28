@@ -110,7 +110,7 @@ negative-leading branch: strict sign changes still force real-rootedness, but
 the extra root now comes from the left endpoint rather than the right. This is
 exactly the helper needed for the opposite-sign, non-cancel branch in the
 forward same-degree Obreschkoff theorem. -/
-theorem ObreschkoffConverseInternal.isRealRooted_of_interlaces_eval_mul_neg_same_any_lc
+theorem ObreschkoffConverse.isRealRooted_of_interlaces_eval_mul_neg_same_any_lc
     {f g F : ℝ[X]}
     (hgf : Interlaces g f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -402,10 +402,10 @@ theorem strictInterl_of_allComboRealRooted {f g : ℝ[X]}
         exact ⟨isRealRooted_of_deg_zero hcomb (by simp),
           hasSimpleRoots_of_natDegree_le_one hcomb (by simp)⟩
     · have hmax_pos : 0 < max f.natDegree g.natDegree := Nat.pos_of_ne_zero hmax0
-      have hW_ne : ∀ x : ℝ, (ObreschkoffConverseInternal.wronskianPoly f g).eval x ≠ 0 := by
+      have hW_ne : ∀ x : ℝ, (ObreschkoffConverse.wronskianPoly f g).eval x ≠ 0 := by
         intro x hw
         obtain ⟨p, q, hp_def, hq_case, hpq_all, hpq_no, hp_root, hp_der_root, hq_eval_ne⟩ :=
-          ObreschkoffConverseInternal.exists_special_pair_of_wronskian_zero hall hno hw
+          ObreschkoffConverse.exists_special_pair_of_wronskian_zero hall hno hw
         have hq0 : q ≠ 0 := by lia
         have hq_rr : (q ≠ 0 ∧ q.Splits) := by lia
         have hp0 : p ≠ 0 := by
@@ -417,7 +417,7 @@ theorem strictInterl_of_allComboRealRooted {f g : ℝ[X]}
             · simp_all
             · by_cases hf_deg_pos : 0 < f.natDegree
               · exact
-                  ObreschkoffConverseInternal.no_nontrivial_linear_relation_of_no_common_root
+                  ObreschkoffConverse.no_nontrivial_linear_relation_of_no_common_root
                     hf.1 hf.2 hno hf_deg_pos hgx_ne (neg_ne_zero.mpr hfx0) hlin
               · have hfdeg0 : f.natDegree = 0 := Nat.eq_zero_of_not_pos hf_deg_pos
                 rcases hdeg with hsucc | hsame
@@ -458,17 +458,17 @@ theorem strictInterl_of_allComboRealRooted {f g : ℝ[X]}
             AllComboRealRooted (iterateTDeriv η k p) (iterateTDeriv η k q) :=
           hpq_all.iterateTDeriv hη_pos k
         exact
-          ObreschkoffConverseInternal.false_of_allComboRealRooted_of_double_root_and_eval_ne
+          ObreschkoffConverse.false_of_allComboRealRooted_of_double_root_and_eval_ne
             hpq_all_k hpk_mult hqk_eval_ne
       exact
-        ObreschkoffConverseInternal.combo_eq_zero_or_realRooted_simple_of_wronskian_eval_ne_zero
+        ObreschkoffConverse.combo_eq_zero_or_realRooted_simple_of_wronskian_eval_ne_zero
           hall hW_ne
   rcases hdeg with hsucc | hsame
   · exact Or.inl <| StrictInterl.forward_of_orientation_of_succDegree hsucc.symm <|
-      ObreschkoffConverseInternal.strictInterl_of_eq_zero_or_simple_combo_of_no_common
+      ObreschkoffConverse.strictInterl_of_eq_zero_or_simple_combo_of_no_common
         hf.1 hf.2 hg.1 hg.2 hcombo_original (Or.inl hsucc) hno
   · exact
-      ObreschkoffConverseInternal.strictInterl_of_eq_zero_or_simple_combo_of_no_common
+      ObreschkoffConverse.strictInterl_of_eq_zero_or_simple_combo_of_no_common
         hf.1 hf.2 hg.1 hg.2 hcombo_original (Or.inr hsame) hno
 
 end

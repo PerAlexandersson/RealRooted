@@ -1,37 +1,7 @@
 module
 
 import RealRooted.Mathlib.Analysis.Complex.BorelGrowth
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Analysis.Normed.Module.MultipliableUniformlyOn
-import Mathlib.Analysis.LocallyConvex.AbsConvexOpen
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.Complex.ValueDistribution.FirstMainTheorem
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.Complex.ExponentialBounds
-import Mathlib.Analysis.Complex.LocallyUniformLimit
 public import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Analysis.Convex.Contractible
-import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Algebra.Order.Ring.Star
-import Mathlib.Topology.Sheaves.Init
 public import Mathlib.Analysis.Calculus.FDeriv.Defs
 public import Mathlib.Analysis.Complex.Exponential
 

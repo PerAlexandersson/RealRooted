@@ -7,27 +7,6 @@ public meta import RealRooted.DerivativeRecurrence.Interlacing
 public import RealRooted.Tactic.Recurrence.LinRec
 public import RealRooted.Tactic.Recurrence.RowSide
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Topology.Sheaves.Init
-import Mathlib.Tactic
 public import Mathlib.Algebra.Polynomial.Derivative
 import Lean.Elab.Tactic.RCases
 

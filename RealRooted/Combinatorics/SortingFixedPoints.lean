@@ -46,9 +46,8 @@ theorem key_lt_iff (u : Fin n → Fin N) (a b : Fin n) :
   simp [key, Prod.Lex.toLex_lt_toLex]
 
 theorem key_injective (u : Fin n → Fin N) : Function.Injective (key u) := by
-  intro a b h
-  simp only [key, EmbeddingLike.apply_eq_iff_eq, Prod.mk.injEq] at h
-  exact h.2
+  intro a b
+  simp [key]
 
 theorem rank_lt_of_key_lt (u : Fin n → Fin N) {a b : Fin n} (h : key u a < key u b) :
     rank u a < rank u b := by
@@ -73,9 +72,8 @@ theorem rank_lt_rank_iff (u : Fin n → Fin N) (a b : Fin n) :
 theorem rank_injective (u : Fin n → Fin N) : Function.Injective (rank u) := by
   intro a b h
   by_contra hne
-  rcases lt_or_gt_of_ne ((key_injective u).ne hne) with h' | h'
-  · exact absurd h (rank_lt_of_key_lt u h').ne
-  · exact absurd h (rank_lt_of_key_lt u h').ne'
+  rcases lt_or_gt_of_ne ((key_injective u).ne hne) with h' | h' <;>
+    have := rank_lt_of_key_lt u h' <;> lia
 
 /-- Effect of deleting one position on the ranks of the other positions. -/
 theorem rank_removeNth (u : Fin (n + 1) → Fin N) (p : Fin (n + 1)) (i : Fin n) :
@@ -99,21 +97,14 @@ theorem isFixed_removeNth (u : Fin (n + 1) → Fin N) (p : Fin (n + 1)) (hp : Is
     rw [← rank_lt_rank_iff, hp]
   have hne : rank u (p.succAbove i) ≠ p.val := by
     intro hc
-    rw [← hp] at hc
-    exact Fin.succAbove_ne p i (rank_injective u hc)
+    exact Fin.succAbove_ne p i (rank_injective u (hc.trans hp.symm))
   have hval : (p.succAbove i).val = if i.val < p.val then i.val else i.val + 1 := by
     split_ifs with hip
     · rw [Fin.succAbove_of_castSucc_lt p i (by simpa [Fin.lt_def] using hip)]; simp
     · rw [Fin.succAbove_of_le_castSucc p i (by simp [Fin.le_def]; lia)]; simp
   unfold IsFixed
   rw [hval]
-  by_cases hk : key u p < key u (p.succAbove i)
-  · rw [ite_eq_left hk] at h
-    have := hiff.1 hk
-    split_ifs with hip <;> lia
-  · rw [ite_eq_right hk] at h
-    have := mt hiff.2 hk
-    split_ifs with hip <;> lia
+  by_cases hk : key u p < key u (p.succAbove i) <;> simp_all <;> lia
 
 /-- Number of letters of `u'` smaller than `a`. -/
 def cntLt (u' : Fin n → Fin N) (a : Fin N) : ℕ := (univ.filter (fun j => u' j < a)).card
@@ -166,7 +157,8 @@ theorem cntEq_mono (u' : Fin n → Fin N) (a : Fin N) {y z : ℕ} (h : y ≤ z) 
   card_le_card (fun j hj => by
     simp only [mem_filter, mem_univ, true_and] at hj ⊢; exact ⟨by lia, hj.2⟩)
 
-theorem cntLt_add_cntEq_le (u' : Fin n → Fin N) (a : Fin N) : cntLt u' a + cntEq u' a n ≤ n := by
+theorem cntLt_add_cntEq_le (u' : Fin n → Fin N) (a : Fin N) :
+    cntLt u' a + cntEq u' a n ≤ n := by
   unfold cntLt cntEq
   rw [← card_union_of_disjoint]
   · calc _ ≤ (univ : Finset (Fin n)).card := card_le_card (subset_univ _)
@@ -195,9 +187,7 @@ theorem exists_insPos (u' : Fin n → Fin N) (a : Fin N) :
       have h3 := cntEq_mono u' a (show y0 - 1 ≤ y0 by lia)
       have h4 : ¬ cntLt u' a ≤ y0 - 1 - cntEq u' a (y0 - 1) := fun h => hmin ⟨by lia, h⟩
       lia
-  refine ⟨⟨y0, by lia⟩, ?_⟩
-  rw [isFixed_insertNth_iff]
-  exact heq
+  exact ⟨⟨y0, by lia⟩, (isFixed_insertNth_iff u' a ⟨y0, by lia⟩).2 heq⟩
 
 /-- If inserting `a` at `q < p` and at `p` both create fixed positions, the letter at `q`
 is `a`. -/
@@ -231,7 +221,8 @@ theorem eq_of_two_insPos (u' : Fin n → Fin N) (a : Fin N) (q p : ℕ) (hqp : q
   lia
 
 /-- The first fixed position carrying the letter `a`. -/
-noncomputable def firstFix (u : Fin (n + 1) → Fin N) (a : Fin N) (h : a ∈ bad u) : Fin (n + 1) :=
+noncomputable def firstFix
+    (u : Fin (n + 1) → Fin N) (a : Fin N) (h : a ∈ bad u) : Fin (n + 1) :=
   (univ.filter (fun x => IsFixed u x ∧ u x = a)).min' (by
     simp only [bad, mem_image, mem_filter, mem_univ, true_and] at h
     obtain ⟨x, hx, hxa⟩ := h

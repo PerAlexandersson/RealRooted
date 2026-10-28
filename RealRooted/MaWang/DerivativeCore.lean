@@ -13,7 +13,7 @@ open Polynomial Filter
 
 noncomputable section
 
-namespace RealRooted.MaWangInternal
+namespace RealRooted.MaWang
 
 /-- Derivative specialization of the Liu--Wang mixed theorem in the degree `+1`
 case. The hypothesis is the strict root-sign condition naturally obtained from
@@ -30,5 +30,12 @@ theorem strictInterl_of_step_succ {f u v : ℝ[X]} (hf : f.Splits)
     (hf_pos.derivative (by lia)) hF_pos hdeg ?_
   intro r hr
   simpa only [eval_mul_derivative_eq_of_isRoot hr] using hroot_sign r hr
+
+end RealRooted.MaWang
+
+namespace RealRooted.MaWangInternal
+
+@[deprecated (since := "2026-10-28")] alias strictInterl_of_step_succ :=
+  RealRooted.MaWang.strictInterl_of_step_succ
 
 end RealRooted.MaWangInternal

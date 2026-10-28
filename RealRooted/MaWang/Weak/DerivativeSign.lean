@@ -90,7 +90,7 @@ theorem strictInterl_of_interlaces_eval_mul_nonpos {f g F : ℝ[X]}
     (hsign : ∀ r, f.IsRoot r → F.eval r * g.eval r ≤ 0) :
     StrictInterl f F := by
   have hF_rr : F ≠ 0 ∧ F.Splits := by
-    refine MaWangInternal.isRealRooted_of_interlaces_sub_C_mul_of_forall_pos hgf hF_pos hdeg_lo
+    refine MaWang.isRealRooted_of_interlaces_sub_C_mul_of_forall_pos hgf hF_pos hdeg_lo
       fun {δ} hδ ↦ ?_
     have hG_pos : HasPosLeadingCoeff (F - C δ * g) :=
       hasPosLeadingCoeff_sub_C_mul_of_interlaces_degree_lower_bound hgf hdeg_lo hF_pos δ

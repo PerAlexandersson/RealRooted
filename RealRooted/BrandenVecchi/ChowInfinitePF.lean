@@ -151,28 +151,6 @@ theorem natDegree_aissenSchoenbergWhitneyEdreiChowDerangement_le
     (aissenSchoenbergWhitneyEdreiChowDerangement gamma alpha beta n).natDegree ≤ n :=
   natDegree_chowDerangement_le _ n
 
-private theorem eq_zero_or_splits_of_coeff_tendsto_of_natDegree_le
-    {p : ℕ → ℝ[X]} {p₀ : ℝ[X]} {N : ℕ}
-    (hdeg : ∀ k, (p k).natDegree ≤ N) (hdeg₀ : p₀.natDegree ≤ N)
-    (hsplit : ∀ k, p k = 0 ∨ (p k).Splits)
-    (hcoeff : ∀ i, Tendsto (fun k => (p k).coeff i) atTop
-      (𝓝 (p₀.coeff i))) :
-    p₀ = 0 ∨ p₀.Splits := by
-  apply Polynomial.eq_zero_or_splits_of_tendsto_eval_of_natDegree_le
-      hdeg hsplit
-  intro z
-  apply Polynomial.tendsto_eval_of_coeff_tendsto_of_natDegree_le
-      (p := fun k => (p k).map Complex.ofRealHom)
-      (p₀ := p₀.map Complex.ofRealHom)
-  · intro k
-    simpa only [natDegree_map_eq_of_injective Complex.ofRealHom.injective]
-      using hdeg k
-  · simpa only [natDegree_map_eq_of_injective Complex.ofRealHom.injective]
-      using hdeg₀
-  · intro i
-    simpa [coeff_map, Complex.ofRealHom_eq_coe, Function.comp_def] using
-      (Complex.continuous_ofReal.tendsto _).comp (hcoeff i)
-
 private theorem truncationChow_isPFPolynomial
     {gamma : ℝ} {alpha beta : ℕ → ℝ} (hgamma : 0 ≤ gamma)
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)
@@ -241,18 +219,9 @@ theorem aissenSchoenbergWhitneyEdreiChow_eq_zero_or_splits
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)
     (hsum : Summable fun i => alpha i + beta i) (n : ℕ) :
     aissenSchoenbergWhitneyEdreiChow gamma alpha beta n = 0 ∨
-      (aissenSchoenbergWhitneyEdreiChow gamma alpha beta n).Splits := by
-  apply eq_zero_or_splits_of_coeff_tendsto_of_natDegree_le
-      (p := fun N => aswEdreiTruncationChow gamma alpha beta N n)
-      (N := n)
-  · exact fun N => natDegree_aswEdreiTruncationChow_le
-      gamma alpha beta N n
-  · exact natDegree_aissenSchoenbergWhitneyEdreiChow_le gamma alpha beta n
-  · intro N
-    exact finiteSupersymmetricChow_eq_zero_or_splits
-      (truncationNumerator_nonneg hgamma halpha N)
-      (truncationDenominator_nonneg hbeta N) n
-  · exact tendsto_coeff_aswEdreiTruncationChow halpha hbeta hsum n
+      (aissenSchoenbergWhitneyEdreiChow gamma alpha beta n).Splits :=
+  (aissenSchoenbergWhitneyEdreiChow_isPFPolynomial
+    hgamma halpha hbeta hsum n).eq_zero_or_splits
 
 /-- Infinite-symbol Chow-derangement polynomials have nonnegative
 coefficients. -/
@@ -271,20 +240,9 @@ theorem aissenSchoenbergWhitneyEdreiChowDerangement_eq_zero_or_splits
     (halpha : ∀ i, 0 ≤ alpha i) (hbeta : ∀ i, 0 ≤ beta i)
     (hsum : Summable fun i => alpha i + beta i) (n : ℕ) :
     aissenSchoenbergWhitneyEdreiChowDerangement gamma alpha beta n = 0 ∨
-      (aissenSchoenbergWhitneyEdreiChowDerangement gamma alpha beta n).Splits := by
-  apply eq_zero_or_splits_of_coeff_tendsto_of_natDegree_le
-      (p := fun N =>
-        aswEdreiTruncationChowDerangement gamma alpha beta N n)
-      (N := n)
-  · exact fun N => natDegree_aswEdreiTruncationChowDerangement_le
-      gamma alpha beta N n
-  · exact natDegree_aissenSchoenbergWhitneyEdreiChowDerangement_le gamma alpha beta n
-  · intro N
-    exact finiteSupersymmetricChowDerangement_eq_zero_or_splits
-      (truncationNumerator_nonneg hgamma halpha N)
-      (truncationDenominator_nonneg hbeta N) n
-  · exact tendsto_coeff_aswEdreiTruncationChowDerangement
-      halpha hbeta hsum n
+      (aissenSchoenbergWhitneyEdreiChowDerangement gamma alpha beta n).Splits :=
+  (aissenSchoenbergWhitneyEdreiChowDerangement_isPFPolynomial
+    hgamma halpha hbeta hsum n).eq_zero_or_splits
 
 /-- In a fixed infinite-symbol row, the Chow polynomial precedes the
 Chow-derangement endpoint, including all zero cases. -/

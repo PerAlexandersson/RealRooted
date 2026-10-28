@@ -172,7 +172,7 @@ theorem exists_comparison_root_lt_roots_of_pos
         ring
       _ < 0 := mul_neg_of_neg_of_pos h2κ hprod
   obtain ⟨e, he1, he2, heroot⟩ :=
-    MaWangInternal.exists_isRoot_between_of_eval_mul_neg (p := generalComparison κ a b v q)
+    MaWang.exists_isRoot_between_of_eval_mul_neg (p := generalComparison κ a b v q)
       hR hmul
   refine ⟨e, heroot, ?_⟩
   intro r hr
