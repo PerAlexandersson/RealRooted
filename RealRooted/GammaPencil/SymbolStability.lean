@@ -84,15 +84,11 @@ private theorem gammaSymbol_residual_stable
 /-- In the even case the first residual factor is a positive multiple of `X`. -/
 theorem gammaSymbolP_even (m : ℕ) :
     gammaSymbolP (2 * m) m = C ((m : ℝ) + 1) * X := by
-  have hzero :
-      (2 : ℝ) * ((2 * m : ℕ) : ℝ) - 4 * (m : ℝ) = 0 := by
-    push_cast
-    ring
   change X * (C ((m : ℝ) + 1) +
     C ((2 : ℝ) * ((2 * m : ℕ) : ℝ) - 4 * (m : ℝ)) * X) = _
-  rw [hzero]
+  push_cast
+  ring_nf
   simp
-  ring
 
 /-- The even first factor has root zero. -/
 theorem gammaSymbolP_even_isRoot (m : ℕ) :
@@ -105,25 +101,13 @@ theorem gammaSymbolQ_even (m : ℕ) (hm : 0 < m) :
     gammaSymbolQ (2 * m) =
       C (4 * (m : ℝ)) * (X + C (1 / (4 * (m : ℝ)))) := by
   have hmR : 0 < (m : ℝ) := by exact_mod_cast hm
-  have hfour : (4 : ℝ) * (m : ℝ) ≠ 0 := by positivity
-  have hcoeff : (2 : ℝ) * ((2 * m : ℕ) : ℝ) = 4 * (m : ℝ) := by
-    push_cast
-    ring
-  have hone :
-      C (4 * (m : ℝ)) * C (1 / (4 * (m : ℝ))) = (1 : ℝ[X]) := by
-    have hCinv (a : ℝ) (ha : a ≠ 0) :
-        C a * C (1 / a) = (1 : ℝ[X]) := by
-      rw [← C_mul]
-      simp [ha]
-    exact hCinv (4 * (m : ℝ)) hfour
   change 1 + C ((2 : ℝ) * ((2 * m : ℕ) : ℝ)) * X = _
-  rw [hcoeff]
-  calc
-    1 + C (4 * (m : ℝ)) * X = C (4 * (m : ℝ)) * X + 1 := by ring
-    _ = C (4 * (m : ℝ)) * (X + C (1 / (4 * (m : ℝ)))) := by
-      rw [mul_add]
-      congr 1
-      exact hone.symm
+  push_cast
+  rw [mul_add, ← C_mul]
+  field_simp
+  ring_nf
+  simp
+  ring
 
 /-- The even second factor has the displayed strictly negative root. -/
 theorem gammaSymbolQ_even_isRoot (m : ℕ) (hm : 0 < m) :
@@ -154,22 +138,16 @@ explicitly by its positive scalar factorization. -/
 theorem gammaSymbolP_odd (m : ℕ) :
     gammaSymbolP (2 * m + 1) m =
       C (2 : ℝ) * ((X - C (-(m + 1 : ℝ) / 2)) * X) := by
-  have hcoeff :
-      (2 : ℝ) * ((2 * m + 1 : ℕ) : ℝ) - 4 * (m : ℝ) = 2 := by
-    push_cast
-    ring
   have hroot :
-      C (2 : ℝ) * C (-(m + 1 : ℝ) / 2) = -C ((m : ℝ) + 1) := by
+      C (2 : ℝ) * C (-1 / 2 + (m : ℝ) * (-1 / 2)) = -C (1 + (m : ℝ)) := by
     rw [← C_mul, ← C_neg]
     congr 1
     ring
-  have hrootX :
-      C (2 : ℝ) * (C (-(m + 1 : ℝ) / 2) * X) =
-        -C ((m : ℝ) + 1) * X := by
-    rw [← mul_assoc, hroot]
   change X * (C ((m : ℝ) + 1) +
     C ((2 : ℝ) * ((2 * m + 1 : ℕ) : ℝ) - 4 * (m : ℝ)) * X) = _
-  rw [hcoeff, sub_mul, mul_sub, hrootX]
+  push_cast
+  ring_nf
+  rw [mul_assoc, hroot]
   ring
 
 /-- The odd first factor has the left root displayed by its factorization. -/
@@ -194,11 +172,9 @@ theorem gammaSymbolQ_odd (m : ℕ) :
     ring
   change 1 + C ((2 : ℝ) * ((2 * m + 1 : ℕ) : ℝ)) * X = _
   rw [hcoeff]
-  calc
-    1 + C (4 * (m : ℝ) + 2) * X = C (4 * (m : ℝ) + 2) * X + 1 := by ring
-    _ = C (4 * (m : ℝ) + 2) * (X + C (1 / (4 * (m : ℝ) + 2))) := by
-      rw [mul_add, ← C_mul]
-      simp [hden]
+  rw [mul_add, ← C_mul]
+  simp [hden]
+  ring
 
 /-- The odd factors have the exact directed root order. -/
 theorem gammaSymbol_odd_root_order (m : ℕ) (hm : 0 < m) :

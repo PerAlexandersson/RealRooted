@@ -63,9 +63,7 @@ theorem matrix_one {R : Type*} [Semiring R] :
 theorem matrix_apply_eq_zero_of_lt {R : Type*} [Zero R]
     (c : Chip R N) {i j : Fin (N + 1)} (hij : i < j) :
     c.matrix i j = 0 := by
-  have hne : i ≠ j := ne_of_lt hij
-  have hsub : i.val ≠ j.val + 1 := by lia
-  simp [matrix, hne, hsub]
+  simp [matrix, ne_of_lt hij, show i.val ≠ j.val + 1 by lia]
 
 end Chip
 
@@ -97,8 +95,7 @@ theorem wordMatrix_apply_eq_zero_of_lt {R : Type*} [Semiring R]
   induction word generalizing i j with
   | nil => simp [hij.ne]
   | cons c word ih =>
-      rw [show wordMatrix (c :: word) = c.matrix * wordMatrix word by
-        simp [wordMatrix]]
+      rw [show wordMatrix (c :: word) = c.matrix * wordMatrix word by simp [wordMatrix]]
       rw [Matrix.mul_apply]
       apply Finset.sum_eq_zero
       intro k _
@@ -154,12 +151,10 @@ theorem intervalProduct_word_eq_wordMatrix_take_drop
   induction n with
   | zero => simp
   | succ n ih =>
-      have hprev : a + n ≤ word.length := by lia
-      have hindex : n < (word.drop a).length := by
-        simp only [List.length_drop]
-        lia
-      rw [intervalProduct_succ, ih hprev,
-        ← List.take_concat_get' (word.drop a) n hindex,
+      rw [intervalProduct_succ, ih (by lia),
+        ← List.take_concat_get' (word.drop a) n (by
+          simp only [List.length_drop]
+          lia),
         wordMatrix_append]
       congr 1
       rw [wordMatrix_singleton]
@@ -200,8 +195,7 @@ theorem repeatWord_add {R : Type*} (word : List (Chip R N)) (m n : ℕ) :
   induction m with
   | zero => simp
   | succ m ih =>
-      rw [Nat.succ_add, repeatWord_succ, ih, repeatWord_succ,
-        List.append_assoc]
+      rw [Nat.succ_add, repeatWord_succ, ih, repeatWord_succ, List.append_assoc]
 
 @[simp]
 theorem length_repeatWord {R : Type*} (word : List (Chip R N)) (n : ℕ) :
@@ -224,15 +218,12 @@ theorem drop_repeatWord_append {R : Type*}
     (word tail : List (Chip R N)) {r total : ℕ} (hr : r ≤ total) :
     (repeatWord word total ++ tail).drop ((total - r) * word.length) =
       repeatWord word r ++ tail := by
-  have htotal : total = (total - r) + r := by lia
   have hrepeated :
       repeatWord word total =
         repeatWord word (total - r) ++ repeatWord word r := by
-    calc
-      repeatWord word total = repeatWord word ((total - r) + r) :=
-        congrArg (repeatWord word) htotal
-      _ = repeatWord word (total - r) ++ repeatWord word r :=
-        repeatWord_add word (total - r) r
+    rw [← repeatWord_add]
+    congr
+    lia
   rw [hrepeated, List.append_assoc, ← length_repeatWord]
   simp
 
@@ -243,19 +234,16 @@ theorem take_repeatWord_append_left
     (repeatWord (G ++ K) r ++ G).take
         (q * (G.length + K.length) + G.length) =
       repeatWord (G ++ K) q ++ G := by
-  have hr : r = q + (r - q) := by lia
   have hprefix : repeatWord (G ++ K) q ++ G <+:
       repeatWord (G ++ K) r ++ G := by
-    rw [hr, repeatWord_add, List.append_assoc]
+    rw [show r = q + (r - q) by lia, repeatWord_add, List.append_assoc]
     cases r - q with
     | zero => simp
     | succ t =>
         refine ⟨K ++ repeatWord (G ++ K) t ++ G, ?_⟩
         simp [repeatWord, List.append_assoc]
   have htake := List.prefix_iff_eq_take.mp hprefix
-  rw [htake]
-  congr 1
-  simp [Nat.mul_add]
+  simpa [Nat.mul_add] using htake.symm
 
 /-- The finite strip containing `total` repeated `(G,K)` blocks and one final
 `G` block. -/
@@ -292,8 +280,7 @@ theorem repeatedStrip_slice {R : Type*}
         ((total - r) * (G.length + K.length))).take
           ((r - c) * (G.length + K.length) + G.length) =
       repeatWord (G ++ K) (r - c) ++ G := by
-  have hlen : (G ++ K).length = G.length + K.length := by simp
-  rw [repeatedStrip, ← hlen, drop_repeatWord_append (G ++ K) G hr]
+  rw [repeatedStrip, ← List.length_append, drop_repeatWord_append (G ++ K) G hr]
   simpa using take_repeatWord_append_left G K (Nat.sub_le r c)
 
 /-- Matrix form of the repeated-strip slice. -/

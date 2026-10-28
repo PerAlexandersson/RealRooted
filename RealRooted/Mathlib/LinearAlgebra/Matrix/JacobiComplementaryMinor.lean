@@ -51,18 +51,18 @@ private lemma swap_strictMono_comp {u : Finset (Fin N)} {x y : Fin N} (hxy : y.v
     (hu : ¬ (x ∈ u ∧ y ∈ u)) {m : ℕ} {f : Fin m → Fin N} (hf : StrictMono f)
     (hfu : ∀ i, f i ∈ u) : StrictMono (fun i => Equiv.swap x y (f i)) := by
   intro i j hij
-  have h1 := hf hij
+  have := hf hij
   have hi := hfu i
   have hj := hfu j
   simp only [Equiv.swap_apply_def]
-  rw [Fin.lt_def] at h1
+  rw [Fin.lt_def] at this
   split_ifs with a b c d e f g h <;> simp only [Fin.lt_def] <;>
     simp_all [Fin.ext_iff] <;> lia
 
 private lemma sortEquiv_move {s : Finset (Fin N)} {k : ℕ} (h : s.card = k) {x y : Fin N}
     (hxy : y.val = x.val + 1) (hx : x ∈ s) (hy : y ∉ s) (h' : (insert y (s.erase x)).card = k) :
     sortEquiv (insert y (s.erase x)) h' = (sortEquiv s h).trans (Equiv.swap x y) := by
-  have hne : x ≠ y := by intro e; subst e; exact hy hx
+  have hne : x ≠ y := by rintro rfl; exact hy hx
   ext (i | i) : 1
   · simp only [sortEquiv, finSumEquivOfFinset_inl, Equiv.trans_apply]
     have := Finset.orderEmbOfFin_unique h'
@@ -114,11 +114,8 @@ private lemma exists_down_move {s : Finset (Fin N)} {k : ℕ} (h : s.card = k) (
     have hsub : s ⊆ Finset.Iio x := by
       intro z hz
       have := hc hz
-      rw [Finset.mem_Iio]
-      rcases lt_trichotomy z x with h1 | h1 | h1
-      · exact h1
-      · subst h1; exact absurd hz hxs
-      · exact absurd h1 this
+      simp only [Finset.mem_Iio]
+      grind
     have := Finset.card_le_card hsub
     rw [Fin.card_Iio, h] at this
     lia
@@ -126,10 +123,13 @@ private lemma exists_down_move {s : Finset (Fin N)} {k : ℕ} (h : s.card = k) (
   have hymem := (s.filter (fun z => x < z)).min'_mem hT
   rw [← hy, Finset.mem_filter] at hymem
   refine ⟨y, hymem.1, ?_, ?_⟩
-  · have := hymem.2; rw [Fin.lt_def] at this; lia
+  · rw [Fin.lt_def] at hymem; lia
   · intro z hz hzs
     have hxz : x ≤ z := by
-      have := hymem.2; rw [Fin.lt_def] at this; rw [Fin.le_def]; lia
+      have := hymem.2
+      rw [Fin.lt_def] at this
+      rw [Fin.le_def]
+      lia
     rcases hxz.lt_or_eq with h1 | h1
     · have := (s.filter (fun z => x < z)).min'_le z (Finset.mem_filter.2 ⟨hzs, h1⟩)
       rw [← hy, Fin.le_def] at this; lia
@@ -153,8 +153,7 @@ private lemma sign_sortEquiv_init {k : ℕ} (hk : k ≤ N) :
   set s' := insert x (s.erase y) with hs'
   have hcard : s'.card = k := by
     rw [hs', Finset.card_insert_of_notMem (by simp [hxs]), Finset.card_erase_of_mem hys, h]
-    have : 0 < k := by rw [← h]; exact Finset.card_pos.2 ⟨y, hys⟩
-    lia
+    lia [show 0 < k by rw [← h]; exact Finset.card_pos.2 ⟨y, hys⟩]
   have hback : insert y (s'.erase x) = s := by
     rw [hs', Finset.erase_insert (by simp [hxs])]
     exact Finset.insert_erase hys
@@ -165,8 +164,8 @@ private lemma sign_sortEquiv_init {k : ℕ} (hk : k ≤ N) :
     rw [hs', Finset.sum_insert (by simp [hxs]), ← Finset.add_sum_erase s _ hys]
     lia
   have := ih (∑ z ∈ s', (z : ℕ)) (by lia) s' rfl hcard
-  rw [hmove, ← Equiv.trans_assoc, Perm.sign_trans, Perm.sign_swap hne, ← hn, hsum, pow_succ]
-  rw [← this]
+  rw [hmove, ← Equiv.trans_assoc, Perm.sign_trans, Perm.sign_swap hne, ← hn, hsum, pow_succ,
+    ← this]
   simp only [mul_neg, mul_one, neg_mul, neg_neg]
   rw [one_mul]
 
@@ -210,9 +209,9 @@ lemma jacobi_minor (A B : Matrix (Fin N) (Fin N) ℝ) (hAB : A * B = 1) {s t : F
   have hP : Ap * Bp = 1 := by
     rw [hAp, hBp, Matrix.submatrix_mul_equiv, hAB, Matrix.submatrix_one_equiv]
   have hAb : Ap = Matrix.fromBlocks Ap.toBlocks₁₁ Ap.toBlocks₁₂ Ap.toBlocks₂₁ Ap.toBlocks₂₂ :=
-    (Matrix.fromBlocks_toBlocks Ap).symm
+    Matrix.fromBlocks_toBlocks Ap |>.symm
   have hBb : Bp = Matrix.fromBlocks Bp.toBlocks₁₁ Bp.toBlocks₁₂ Bp.toBlocks₂₁ Bp.toBlocks₂₂ :=
-    (Matrix.fromBlocks_toBlocks Bp).symm
+    Matrix.fromBlocks_toBlocks Bp |>.symm
   have hP' := hP
   rw [hAb, hBb, Matrix.fromBlocks_multiply, ← Matrix.fromBlocks_one, Matrix.fromBlocks_inj] at hP'
   obtain ⟨e11, -, e21, -⟩ := hP'
@@ -267,13 +266,11 @@ private lemma tn_inverse_aux (A B : Matrix (Fin N) (Fin N) ℝ) (hAB : A * B = 1
   rw [hdet, mul_one, hrs, hct] at hJ
   have e1 : (Matrix.of fun i j => (-1 : ℝ) ^ (r i : ℕ) * ((-1 : ℝ) ^ (c j : ℕ) * B (r i) (c j))).det
       = (∏ i, (-1 : ℝ) ^ (r i : ℕ)) * ((∏ j, (-1 : ℝ) ^ (c j : ℕ)) * (B.submatrix r c).det) := by
-    have hmatrix :
-        Matrix.of (fun i j => (-1 : ℝ) ^ (r i : ℕ) *
-          ((-1 : ℝ) ^ (c j : ℕ) * B (r i) (c j))) =
-          Matrix.of (fun i j => (fun i => (-1 : ℝ) ^ (r i : ℕ)) i *
-            (Matrix.of fun i j => (fun j => (-1 : ℝ) ^ (c j : ℕ)) j *
-              (B.submatrix r c) i j) i j) := rfl
-    rw [hmatrix, Matrix.det_mul_column, Matrix.det_mul_row]
+    rw [show Matrix.of (fun i j => (-1 : ℝ) ^ (r i : ℕ) *
+        ((-1 : ℝ) ^ (c j : ℕ) * B (r i) (c j))) =
+      Matrix.of (fun i j => (fun i => (-1 : ℝ) ^ (r i : ℕ)) i *
+        (Matrix.of fun i j => (fun j => (-1 : ℝ) ^ (c j : ℕ)) j *
+          (B.submatrix r c) i j) i j) from rfl, Matrix.det_mul_column, Matrix.det_mul_row]
   have p1 : (∏ i, (-1 : ℝ) ^ (r i : ℕ)) = (-1) ^ (∑ z ∈ Finset.univ.image r, (z : ℕ)) := by
     rw [Finset.prod_pow_eq_pow_sum, Finset.sum_image (fun x _ y _ h => hr.injective h)]
   have p2 : (∏ j, (-1 : ℝ) ^ (c j : ℕ)) = (-1) ^ (∑ z ∈ Finset.univ.image c, (z : ℕ)) := by
