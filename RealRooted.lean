@@ -1478,6 +1478,7 @@ import RealRooted.Tactic.WagnerX.PositiveLag
 import RealRooted.Tactic.WagnerX.Syntax
 import RealRooted.Tactic.WagnerX.TranslatedLag
 import RealRooted.Tactic.WeightedSum
+import RealRooted.TetradiagonalFactorization
 import RealRooted.ThreeTermRecurrence.Degree
 import RealRooted.ThreeTermRecurrence.HalfGrowth
 import RealRooted.ThreeTermRecurrence.Interlacing
@@ -1508,6 +1509,7 @@ import RealRooted.Transforms.ReverseHermite.Preservation
 import RealRooted.UnitIntervalGraph.AcyclicSink
 import RealRooted.UpperDerivativeInterlace
 import RealRooted.VeroneseMatrix
+import RealRooted.VeroneseRecognition
 import RealRooted.VeroneseSection
 import RealRooted.VeroneseSectionPair
 import RealRooted.VeroneseSectionPair.HermiteBiehler
