@@ -334,134 +334,164 @@ private lemma card_prod_insert_erase_eq_of_eq
     exact hb (h ▸ this)
   exact ⟨hcard, hprod, hne⟩
 
-/-- **Gantmacher-Krein for matrices with primitive compounds.**  If every
-compound of `A` is primitive, the characteristic polynomial of `A` splits over
-`ℝ` with positive roots in strictly decreasing order. -/
-theorem exists_charpoly_eq_prod_strictAnti_of_forall_compound_primitive
-    {A : Matrix (Fin n) (Fin n) ℝ}
-    (hprim : ∀ q, 1 ≤ q → q ≤ n → (compound q A).IsPrimitive) :
-    ∃ μ : Fin n → ℝ, StrictAnti μ ∧ (∀ i, 0 < μ i) ∧
-      A.charpoly = ∏ i, (X - C (μ i)) := by
-  classical
-  -- the complex eigenvalue enumeration, sorted by descending modulus
+/-- The complex eigenvalues can be ordered by decreasing norm, compatibly with all compounds. -/
+private theorem exists_sorted_complex_eigenvalues
+    (A : Matrix (Fin n) (Fin n) ℝ) :
+    ∃ μ : Fin n → ℂ,
+      (∀ i j, i ≤ j → ‖μ j‖ ≤ ‖μ i‖) ∧
+      (A.map (algebraMap ℝ ℂ)).charpoly = ∏ i, (X - C (μ i)) ∧
+      ∀ q, (compound q A).charpoly.map (algebraMap ℝ ℂ) =
+        ∏ s : Set.powersetCard (Fin n) q,
+          ((X : ℂ[X]) - C (∏ k, μ (powersetEnum s k))) := by
   obtain ⟨ν, hν_char, hν_comp⟩ :=
     exists_charpoly_compound_eq_prod (A.map (algebraMap ℝ ℂ))
   set σ : Equiv.Perm (Fin n) := Tuple.sort (fun i => ‖ν i‖) with hσ
   set τ : Equiv.Perm (Fin n) := Fin.revPerm.trans σ with hτ
-  set μc : Fin n → ℂ := ν ∘ τ with hμc
-  have hanti : ∀ i j : Fin n, i ≤ j → ‖μc j‖ ≤ ‖μc i‖ := by
+  set μ : Fin n → ℂ := ν ∘ τ with hμ
+  have hanti : ∀ i j : Fin n, i ≤ j → ‖μ j‖ ≤ ‖μ i‖ := by
     intro i j hij
     have hm := Tuple.monotone_sort (fun i => ‖ν i‖)
     have hrev : j.rev ≤ i.rev := Fin.rev_le_rev.mpr hij
-    simpa [hμc, hτ, Function.comp] using hm hrev
-  have hchar : (A.map (algebraMap ℝ ℂ)).charpoly = ∏ i, (X - C (μc i)) := by
+    simpa [hμ, hτ, Function.comp] using hm hrev
+  have hchar : (A.map (algebraMap ℝ ℂ)).charpoly = ∏ i, (X - C (μ i)) := by
     rw [hν_char]
     exact (Equiv.prod_comp τ fun i => (X : ℂ[X]) - C (ν i)).symm
-  have hcomp : ∀ q, ((compound q A).charpoly.map (algebraMap ℝ ℂ))
-      = ∏ s : Set.powersetCard (Fin n) q,
-          ((X : ℂ[X]) - C (∏ k, μc (powersetEnum s k))) := by
-    intro q
-    calc (compound q A).charpoly.map (algebraMap ℝ ℂ)
-        = ((compound q A).map (algebraMap ℝ ℂ)).charpoly :=
-          (charpoly_map (compound q A) (algebraMap ℝ ℂ)).symm
-      _ = (compound q (A.map (algebraMap ℝ ℂ))).charpoly := by
-          rw [compound_map]
-      _ = ∏ s : Set.powersetCard (Fin n) q,
-            ((X : ℂ[X]) - C (∏ k, μc (powersetEnum s k))) := by
-          rw [hν_comp q]
-          exact (prod_powersetCard_comp_perm τ ν).symm
-  -- the key identity: the top product equals the Perron root of the compound
-  have hkey : ∀ q, 1 ≤ q → ∀ hq : q ≤ n,
-      ∏ i ∈ topFinset n q, μc i = ((perronRoot (compound q A) : ℝ) : ℂ) := by
-    intro q hq1 hqn
-    set B : Matrix (Set.powersetCard (Fin n) q) (Set.powersetCard (Fin n) q) ℝ :=
-      compound q A with hB
-    have hBprim := hprim q hq1 hqn
-    have hBnn : ∀ s t, 0 ≤ B s t := hBprim.nonneg
-    have _ : Nonempty (Set.powersetCard (Fin n) q) :=
-      ⟨⟨topFinset n q, Set.powersetCard.mem_iff.mpr (topFinset_card hqn)⟩⟩
-    have hρ_nonneg : 0 ≤ perronRoot B := perronRoot_nonneg hBnn
-    -- the Perron root is a complex root of the factored charpoly
-    obtain ⟨v, hv_nn, hv_ne, hv_eig⟩ := exists_nonneg_mulVec_eq_perronRoot_smul hBnn
-    have hroot : B.charpoly.IsRoot (perronRoot B) :=
-      mem_spectrum_iff_isRoot_charpoly.mp (mem_spectrum_of_eigenvalue hv_ne hv_eig)
-    have hrootC : (B.charpoly.map (algebraMap ℝ ℂ)).eval ((perronRoot B : ℝ) : ℂ) = 0 := by
-      have h1 : (B.charpoly.map (algebraMap ℝ ℂ)).eval ((algebraMap ℝ ℂ) (perronRoot B))
-          = (algebraMap ℝ ℂ) (B.charpoly.eval (perronRoot B)) := by
-        rw [Polynomial.eval_map, Polynomial.eval₂_at_apply]
-      simpa [hroot.eq_zero] using h1
-    -- hence some selection product equals the Perron root
-    obtain ⟨s₀, hs₀⟩ : ∃ s : Set.powersetCard (Fin n) q,
-        ∏ k, μc (powersetEnum s k) = ((perronRoot B : ℝ) : ℂ) := by
-      rw [hcomp q, Polynomial.eval_prod, Finset.prod_eq_zero_iff] at hrootC
-      obtain ⟨s, -, hs⟩ := hrootC
-      refine ⟨s, ?_⟩
-      have := hs
-      simp only [Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C, sub_eq_zero] at this
-      exact this.symm
-    -- every selection product is an eigenvalue, and dominance is strict
-    have hdom : ∀ s : Set.powersetCard (Fin n) q,
-        (∏ k, μc (powersetEnum s k)) ≠ ((perronRoot B : ℝ) : ℂ) →
-        ‖∏ k, μc (powersetEnum s k)‖ < perronRoot B := by
-      intro s hne
-      have heig : (∏ k, μc (powersetEnum s k))
-          ∈ spectrum ℂ (B.map (algebraMap ℝ ℂ)) := by
-        rw [mem_spectrum_iff_isRoot_charpoly, charpoly_map, IsRoot.def, hcomp q,
-          Polynomial.eval_prod]
-        exact Finset.prod_eq_zero (Finset.mem_univ s)
-          (by simp only [Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C, sub_self])
-      exact spectral_dominance_of_primitive' hBprim hBnn _ heig hne
-    -- the top selection dominates every selection in modulus
-    set sTop : Set.powersetCard (Fin n) q :=
-      ⟨topFinset n q, Set.powersetCard.mem_iff.mpr (topFinset_card hqn)⟩ with hsTop
-    have htop_prod : ∏ k, μc (powersetEnum sTop k) = ∏ i ∈ topFinset n q, μc i :=
-      prod_powersetEnum sTop μc
-    have htop_norm : ∏ i ∈ topFinset n q, μc i = ∏ k : Fin q, μc (Fin.castLE hqn k) := by
-      rw [topFinset_eq_image hqn]
-      exact Finset.prod_image fun x _ y _ h => Fin.castLE_injective hqn h
-    have hmax : ∀ s : Set.powersetCard (Fin n) q,
-        ‖∏ k, μc (powersetEnum s k)‖ ≤ ‖∏ i ∈ topFinset n q, μc i‖ := by
-      intro s
-      rw [htop_norm, norm_prod, norm_prod]
-      apply Finset.prod_le_prod₀ (fun k _ => norm_nonneg _)
-      intro k _
-      apply hanti
-      have h1 := Fin.le_val_of_strictMono (strictMono_powersetEnum s) k
-      exact Fin.le_def.mpr (by simpa using h1)
-    -- if the top product were not the Perron root, its modulus would be both
-    -- strictly below and at least the Perron root
-    by_contra hne
-    have hlt : ‖∏ i ∈ topFinset n q, μc i‖ < perronRoot B := by
-      have h := hdom sTop (by rw [htop_prod]; exact hne)
-      rwa [htop_prod] at h
-    have hge : perronRoot B ≤ ‖∏ i ∈ topFinset n q, μc i‖ := by
-      have h := hmax s₀
-      rw [hs₀] at h
-      have hnorm : ‖((perronRoot B : ℝ) : ℂ)‖ = perronRoot B := by
-        rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hρ_nonneg]
-      rwa [hnorm] at h
-    exact absurd hge (not_le.mpr hlt)
-  -- the chain of Perron roots and the real eigenvalues
-  set R : ℕ → ℝ := fun q => if q = 0 then 1 else perronRoot (compound q A) with hR
+  refine ⟨μ, hanti, hchar, fun q => ?_⟩
+  calc
+    (compound q A).charpoly.map (algebraMap ℝ ℂ) =
+        ((compound q A).map (algebraMap ℝ ℂ)).charpoly :=
+      (charpoly_map (compound q A) (algebraMap ℝ ℂ)).symm
+    _ = (compound q (A.map (algebraMap ℝ ℂ))).charpoly := by rw [compound_map]
+    _ = ∏ s : Set.powersetCard (Fin n) q,
+          ((X : ℂ[X]) - C (∏ k, μ (powersetEnum s k))) := by
+      rw [hν_comp q]
+      exact (prod_powersetCard_comp_perm τ ν).symm
+
+/-- A primitive compound has a selection product equal to its Perron root, which dominates all
+other selection products. -/
+private theorem exists_selection_eq_perronRoot_and_dominance
+    {A : Matrix (Fin n) (Fin n) ℝ}
+    (hprim : ∀ q, 1 ≤ q → q ≤ n → (compound q A).IsPrimitive)
+    (μ : Fin n → ℂ)
+    (hcomp : ∀ q, (compound q A).charpoly.map (algebraMap ℝ ℂ) =
+      ∏ s : Set.powersetCard (Fin n) q,
+        ((X : ℂ[X]) - C (∏ k, μ (powersetEnum s k))))
+    {q : ℕ} (hq1 : 1 ≤ q) (hqn : q ≤ n) :
+    ∃ s₀ : Set.powersetCard (Fin n) q,
+      (∏ k, μ (powersetEnum s₀ k)) =
+        ((perronRoot (compound q A) : ℝ) : ℂ) ∧
+      ∀ s : Set.powersetCard (Fin n) q,
+        (∏ k, μ (powersetEnum s k)) ≠
+          ((perronRoot (compound q A) : ℝ) : ℂ) →
+        ‖∏ k, μ (powersetEnum s k)‖ < perronRoot (compound q A) := by
+  let B := compound q A
+  have hBprim := hprim q hq1 hqn
+  have hBnn : ∀ s t, 0 ≤ B s t := hBprim.nonneg
+  let _ : Nonempty (Set.powersetCard (Fin n) q) :=
+    ⟨⟨topFinset n q, Set.powersetCard.mem_iff.mpr (topFinset_card hqn)⟩⟩
+  obtain ⟨v, -, hv_ne, hv_eig⟩ := exists_nonneg_mulVec_eq_perronRoot_smul hBnn
+  have hroot : B.charpoly.IsRoot (perronRoot B) :=
+    mem_spectrum_iff_isRoot_charpoly.mp (mem_spectrum_of_eigenvalue hv_ne hv_eig)
+  have hrootC : (B.charpoly.map (algebraMap ℝ ℂ)).eval
+      ((perronRoot B : ℝ) : ℂ) = 0 := by
+    have hmap : (B.charpoly.map (algebraMap ℝ ℂ)).eval
+        ((algebraMap ℝ ℂ) (perronRoot B)) =
+        (algebraMap ℝ ℂ) (B.charpoly.eval (perronRoot B)) := by
+      rw [Polynomial.eval_map, Polynomial.eval₂_at_apply]
+    simpa [hroot.eq_zero] using hmap
+  obtain ⟨s₀, hs₀⟩ : ∃ s : Set.powersetCard (Fin n) q,
+      ∏ k, μ (powersetEnum s k) = ((perronRoot B : ℝ) : ℂ) := by
+    rw [show B = compound q A by rfl, hcomp q, Polynomial.eval_prod,
+      Finset.prod_eq_zero_iff] at hrootC
+    obtain ⟨s, -, hs⟩ := hrootC
+    refine ⟨s, ?_⟩
+    have h := hs
+    simp only [Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C,
+      sub_eq_zero] at h
+    simpa only [B] using h.symm
+  refine ⟨s₀, by simpa only [B] using hs₀, fun s hne => ?_⟩
+  have heig : (∏ k, μ (powersetEnum s k)) ∈
+      spectrum ℂ (B.map (algebraMap ℝ ℂ)) := by
+    rw [mem_spectrum_iff_isRoot_charpoly, charpoly_map, IsRoot.def,
+      show B = compound q A by rfl, hcomp q, Polynomial.eval_prod]
+    exact Finset.prod_eq_zero (Finset.mem_univ s)
+      (by simp only [Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C, sub_self])
+  apply spectral_dominance_of_primitive' hBprim hBnn _ heig
+  simpa only [B] using hne
+
+/-- The product over any selection is bounded by the product over the first indices. -/
+private theorem norm_selection_le_norm_top
+    {μ : Fin n → ℂ} (hanti : ∀ i j, i ≤ j → ‖μ j‖ ≤ ‖μ i‖)
+    {q : ℕ} (hqn : q ≤ n) (s : Set.powersetCard (Fin n) q) :
+    ‖∏ k, μ (powersetEnum s k)‖ ≤ ‖∏ i ∈ topFinset n q, μ i‖ := by
+  have htop : ∏ i ∈ topFinset n q, μ i = ∏ k : Fin q, μ (Fin.castLE hqn k) := by
+    rw [topFinset_eq_image hqn]
+    exact Finset.prod_image fun x _ y _ h => Fin.castLE_injective hqn h
+  rw [htop, norm_prod, norm_prod]
+  apply Finset.prod_le_prod₀ (fun k _ => norm_nonneg _)
+  intro k _
+  apply hanti
+  exact Fin.le_def.mpr (by
+    simpa using Fin.le_val_of_strictMono (strictMono_powersetEnum s) k)
+
+/-- The product over the first `q` ordered eigenvalues is the Perron root of the compound. -/
+private theorem top_product_eq_perronRoot
+    {A : Matrix (Fin n) (Fin n) ℝ}
+    (hprim : ∀ q, 1 ≤ q → q ≤ n → (compound q A).IsPrimitive)
+    (μ : Fin n → ℂ) (hanti : ∀ i j, i ≤ j → ‖μ j‖ ≤ ‖μ i‖)
+    (hcomp : ∀ q, (compound q A).charpoly.map (algebraMap ℝ ℂ) =
+      ∏ s : Set.powersetCard (Fin n) q,
+        ((X : ℂ[X]) - C (∏ k, μ (powersetEnum s k))))
+    {q : ℕ} (hq1 : 1 ≤ q) (hqn : q ≤ n) :
+    ∏ i ∈ topFinset n q, μ i = ((perronRoot (compound q A) : ℝ) : ℂ) := by
+  obtain ⟨s₀, hs₀, hdom⟩ :=
+    exists_selection_eq_perronRoot_and_dominance hprim μ hcomp hq1 hqn
+  let sTop : Set.powersetCard (Fin n) q :=
+    ⟨topFinset n q, Set.powersetCard.mem_iff.mpr (topFinset_card hqn)⟩
+  have htop : ∏ k, μ (powersetEnum sTop k) = ∏ i ∈ topFinset n q, μ i :=
+    prod_powersetEnum sTop μ
+  by_contra hne
+  have hlt : ‖∏ i ∈ topFinset n q, μ i‖ < perronRoot (compound q A) := by
+    have h := hdom sTop (by rw [htop]; exact hne)
+    rwa [htop] at h
+  have hge : perronRoot (compound q A) ≤ ‖∏ i ∈ topFinset n q, μ i‖ := by
+    have h := norm_selection_le_norm_top hanti hqn s₀
+    rw [hs₀] at h
+    have hnonneg : 0 ≤ perronRoot (compound q A) :=
+      perronRoot_nonneg (hprim q hq1 hqn).nonneg
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hnonneg] at h
+    exact h
+  exact absurd hge (not_le.mpr hlt)
+
+/-- Ratios of consecutive Perron roots give positive, antitone real eigenvalues. -/
+private theorem exists_positive_antitone_real_eigenvalues
+    {A : Matrix (Fin n) (Fin n) ℝ}
+    (hprim : ∀ q, 1 ≤ q → q ≤ n → (compound q A).IsPrimitive)
+    (μ : Fin n → ℂ) (hanti : ∀ i j, i ≤ j → ‖μ j‖ ≤ ‖μ i‖)
+    (hkey : ∀ q, 1 ≤ q → ∀ _hq : q ≤ n,
+      ∏ i ∈ topFinset n q, μ i = ((perronRoot (compound q A) : ℝ) : ℂ)) :
+    ∃ μr : Fin n → ℝ, (∀ i, 0 < μr i) ∧
+      (∀ i, μ i = ((μr i : ℝ) : ℂ)) ∧ Antitone μr := by
+  let R : ℕ → ℝ := fun q => if q = 0 then 1 else perronRoot (compound q A)
   have hRpos : ∀ q, q ≤ n → 0 < R q := by
     intro q hqn
     rcases Nat.eq_zero_or_pos q with rfl | hq1
-    · simp [hR]
-    · have _ : Nonempty (Set.powersetCard (Fin n) q) :=
+    · simp [R]
+    · let _ : Nonempty (Set.powersetCard (Fin n) q) :=
         ⟨⟨topFinset n q, Set.powersetCard.mem_iff.mpr (topFinset_card hqn)⟩⟩
-      have hBprim := hprim q hq1 hqn
-      simp only [hR, ite_eq_right hq1.ne']
-      exact perronRoot_pos_of_irreducible hBprim.isIrreducible hBprim.nonneg
-  have hprodR : ∀ q, q ≤ n → ∏ i ∈ topFinset n q, μc i = ((R q : ℝ) : ℂ) := by
+      simp only [R, ite_eq_right hq1.ne']
+      exact perronRoot_pos_of_irreducible
+        (hprim q hq1 hqn).isIrreducible (hprim q hq1 hqn).nonneg
+  have hprodR : ∀ q, q ≤ n → ∏ i ∈ topFinset n q, μ i = ((R q : ℝ) : ℂ) := by
     intro q hqn
     rcases Nat.eq_zero_or_pos q with rfl | hq1
-    · simp [topFinset_zero, hR]
+    · simp [topFinset_zero, R]
     · rw [hkey q hq1 hqn]
-      simp [hR, ite_eq_right hq1.ne']
+      simp only [R, ite_eq_right hq1.ne']
   set μr : Fin n → ℝ := fun i => R ((i : ℕ) + 1) / R (i : ℕ) with hμr
   have hμr_pos : ∀ i, 0 < μr i := fun i =>
     div_pos (hRpos _ (Nat.succ_le_of_lt i.isLt)) (hRpos _ (le_of_lt i.isLt))
-  have hμc_real : ∀ i : Fin n, μc i = ((μr i : ℝ) : ℂ) := by
+  have hreal : ∀ i : Fin n, μ i = ((μr i : ℝ) : ℂ) := by
     intro i
     obtain ⟨hins, hnot⟩ := topFinset_succ i.isLt
     have h1 := hprodR ((i : ℕ) + 1) (Nat.succ_le_of_lt i.isLt)
@@ -469,36 +499,41 @@ theorem exists_charpoly_eq_prod_strictAnti_of_forall_compound_primitive
     rw [hins, Finset.prod_insert hnot, h2] at h1
     have hR_ne : ((R (i : ℕ) : ℝ) : ℂ) ≠ 0 :=
       Complex.ofReal_ne_zero.mpr (hRpos _ (le_of_lt i.isLt)).ne'
-    have hii : (⟨(i : ℕ), i.isLt⟩ : Fin n) = i := rfl
-    rw [hii] at h1
+    rw [show (⟨(i : ℕ), i.isLt⟩ : Fin n) = i by rfl] at h1
     rw [hμr]
     push_cast
     exact (eq_div_iff hR_ne).mpr h1
-  have hμr_anti : Antitone μr := by
-    intro i j hij
-    have hj : ‖μc j‖ = μr j := by
-      rw [hμc_real j, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (hμr_pos j)]
-    have hi : ‖μc i‖ = μr i := by
-      rw [hμc_real i, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (hμr_pos i)]
-    simpa [hj, hi] using hanti i j hij
-  -- Equal values at two indices would give two distinct selections with the
-  -- Perron root as their product in one compound.  Its characteristic
-  -- polynomial would therefore contain that root at least twice.
-  have hμr_ne_of_lt : ∀ {i j : Fin n}, i < j → μr i ≠ μr j := by
+  refine ⟨μr, hμr_pos, hreal, fun i j hij => ?_⟩
+  have hj : ‖μ j‖ = μr j := by
+    rw [hreal j, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (hμr_pos j)]
+  have hi : ‖μ i‖ = μr i := by
+    rw [hreal i, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (hμr_pos i)]
+  simpa only [hj, hi] using hanti i j hij
+
+/-- Simplicity of every compound Perron root makes the ordered real eigenvalues injective. -/
+private theorem injective_real_eigenvalues_of_simple_perron
+    {A : Matrix (Fin n) (Fin n) ℝ}
+    (hprim : ∀ q, 1 ≤ q → q ≤ n → (compound q A).IsPrimitive)
+    (μ : Fin n → ℂ) (μr : Fin n → ℝ)
+    (hreal : ∀ i, μ i = ((μr i : ℝ) : ℂ))
+    (hkey : ∀ q, 1 ≤ q → ∀ _hq : q ≤ n,
+      ∏ i ∈ topFinset n q, μ i = ((perronRoot (compound q A) : ℝ) : ℂ))
+    (hcomp : ∀ q, (compound q A).charpoly.map (algebraMap ℝ ℂ) =
+      ∏ s : Set.powersetCard (Fin n) q,
+        ((X : ℂ[X]) - C (∏ k, μ (powersetEnum s k)))) :
+    Function.Injective μr := by
+  have hne_of_lt : ∀ {i j : Fin n}, i < j → μr i ≠ μr j := by
     intro i j hij hμij
     let q := (i : ℕ) + 1
-    have hq1 : 1 ≤ q := by simp [q]
-    have hqn : q ≤ n := by
-      dsimp [q]
-      exact Nat.succ_le_of_lt i.isLt
-    have hi_top : i ∈ topFinset n q := by simp [topFinset, q]
+    have hq1 : 1 ≤ q := by simp only [q, le_add_iff_nonneg_left, zero_le]
+    have hqn : q ≤ n := Nat.succ_le_of_lt i.isLt
+    have hi_top : i ∈ topFinset n q := by simp only [topFinset, Finset.mem_filter,
+      Finset.mem_univ, true_and, q, Nat.lt_add_one]
     have hj_not : j ∉ topFinset n q := by
-      simp only [topFinset, Finset.mem_filter, Finset.mem_univ, true_and]
-      dsimp [q]
+      simp only [topFinset, Finset.mem_filter, Finset.mem_univ, true_and, q]
       exact Nat.not_lt.mpr (Nat.succ_le_of_lt hij)
-    have hμcij : μc i = μc j := by
-      rw [hμc_real i, hμc_real j, hμij]
-    have hswap := card_prod_insert_erase_eq_of_eq μc hi_top hj_not hμcij
+    have hμijC : μ i = μ j := by rw [hreal i, hreal j, hμij]
+    have hswap := card_prod_insert_erase_eq_of_eq μ hi_top hj_not hμijC
     let sTop : Set.powersetCard (Fin n) q :=
       ⟨topFinset n q, Set.powersetCard.mem_iff.mpr (topFinset_card hqn)⟩
     let sAlt : Set.powersetCard (Fin n) q :=
@@ -508,7 +543,7 @@ theorem exists_charpoly_eq_prod_strictAnti_of_forall_compound_primitive
       intro h
       exact hswap.2.2 ((congrArg Subtype.val h).symm)
     let g : Set.powersetCard (Fin n) q → ℂ :=
-      fun s => ∏ k, μc (powersetEnum s k)
+      fun s => ∏ k, μ (powersetEnum s k)
     have hg_eq : g sTop = g sAlt := by
       dsimp only [g]
       rw [prod_powersetEnum, prod_powersetEnum]
@@ -517,39 +552,52 @@ theorem exists_charpoly_eq_prod_strictAnti_of_forall_compound_primitive
       dsimp only [g]
       rw [prod_powersetEnum]
       exact hkey q hq1 hqn
-    have hroots :
-        ((compound q A).charpoly.map (algebraMap ℝ ℂ)).roots =
-          Finset.univ.val.map g := by
+    have hroots : ((compound q A).charpoly.map (algebraMap ℝ ℂ)).roots =
+        Finset.univ.val.map g := by
       rw [hcomp q, Finset.prod]
-      rw [show (fun s => (X : ℂ[X]) - C (∏ k, μc (powersetEnum s k))) =
+      rw [show (fun s => (X : ℂ[X]) - C (∏ k, μ (powersetEnum s k))) =
           (fun y => (X : ℂ[X]) - C y) ∘ g by rfl]
       rw [← Multiset.map_map]
       exact Polynomial.roots_multiset_prod_X_sub_C _
-    have htwo :
-        2 ≤ ((compound q A).charpoly.map (algebraMap ℝ ℂ)).roots.count
-          (((perronRoot (compound q A) : ℝ) : ℂ)) := by
+    have htwo : 2 ≤ ((compound q A).charpoly.map (algebraMap ℝ ℂ)).roots.count
+        (((perronRoot (compound q A) : ℝ) : ℂ)) := by
       rw [hroots, ← hg_top]
       exact two_le_count_map_univ_of_eq g hs_ne hg_eq
     let _ : Nonempty (Set.powersetCard (Fin n) q) := ⟨sTop⟩
     have hsimpleC :
         ((compound q A).charpoly.map (algebraMap ℝ ℂ)).rootMultiplicity
           (((perronRoot (compound q A) : ℝ) : ℂ)) = 1 := by
-      calc
-        ((compound q A).charpoly.map (algebraMap ℝ ℂ)).rootMultiplicity
-              (((perronRoot (compound q A) : ℝ) : ℂ)) =
-            (compound q A).charpoly.rootMultiplicity (perronRoot (compound q A)) :=
-          (Polynomial.eq_rootMultiplicity_map
-            (p := (compound q A).charpoly) (f := algebraMap ℝ ℂ)
-            (algebraMap ℝ ℂ).injective (perronRoot (compound q A))).symm
-        _ = 1 := perronRoot_rootMultiplicity_eq_one_of_primitive (hprim q hq1 hqn)
+      change ((compound q A).charpoly.map (algebraMap ℝ ℂ)).rootMultiplicity
+        ((algebraMap ℝ ℂ) (perronRoot (compound q A))) = 1
+      rw [← Polynomial.eq_rootMultiplicity_map (p := (compound q A).charpoly)
+        (f := algebraMap ℝ ℂ) (algebraMap ℝ ℂ).injective
+          (perronRoot (compound q A))]
+      exact perronRoot_rootMultiplicity_eq_one_of_primitive (hprim q hq1 hqn)
     rw [Polynomial.count_roots, hsimpleC] at htwo
     lia
-  have hμr_inj : Function.Injective μr := by
-    intro i j hμij
-    by_contra hij
-    rcases lt_or_gt_of_ne hij with hij | hji
-    · exact hμr_ne_of_lt hij hμij
-    · exact hμr_ne_of_lt hji hμij.symm
+  intro i j hμij
+  by_contra hij
+  rcases lt_or_gt_of_ne hij with hij | hji
+  · exact hne_of_lt hij hμij
+  · exact hne_of_lt hji hμij.symm
+
+/-- **Gantmacher-Krein for matrices with primitive compounds.**  If every
+compound of `A` is primitive, the characteristic polynomial of `A` splits over
+`ℝ` with positive roots in strictly decreasing order. -/
+theorem exists_charpoly_eq_prod_strictAnti_of_forall_compound_primitive
+    {A : Matrix (Fin n) (Fin n) ℝ}
+    (hprim : ∀ q, 1 ≤ q → q ≤ n → (compound q A).IsPrimitive) :
+    ∃ μ : Fin n → ℝ, StrictAnti μ ∧ (∀ i, 0 < μ i) ∧
+      A.charpoly = ∏ i, (X - C (μ i)) := by
+  classical
+  obtain ⟨μc, hanti, hchar, hcomp⟩ := exists_sorted_complex_eigenvalues A
+  have hkey : ∀ q, 1 ≤ q → ∀ hq : q ≤ n,
+      ∏ i ∈ topFinset n q, μc i = ((perronRoot (compound q A) : ℝ) : ℂ) :=
+    fun _ hq1 hqn => top_product_eq_perronRoot hprim μc hanti hcomp hq1 hqn
+  obtain ⟨μr, hμr_pos, hμc_real, hμr_anti⟩ :=
+    exists_positive_antitone_real_eigenvalues hprim μc hanti hkey
+  have hμr_inj :=
+    injective_real_eigenvalues_of_simple_perron hprim μc μr hμc_real hkey hcomp
   have hμr_strict : StrictAnti μr := hμr_anti.strictAnti_of_injective hμr_inj
   -- transport the complex factorization back to `ℝ`
   have hmapped : A.charpoly.map (algebraMap ℝ ℂ)

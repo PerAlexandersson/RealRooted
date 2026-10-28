@@ -583,6 +583,166 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_eq_zero
             (houtpf q hq) hqdeg
         exact ⟨hp_ne, (hpf.ne_zero_and_splits hp_ne).2⟩
 
+/-- Reflection and reversal preserve the strict ordering of a bounded PF row. -/
+private theorem reflectedReverse_pairwise {n : ℕ} {out : List ℝ[X]}
+    (hdirect : out.Pairwise StrictInterl)
+    (hout_pf : ∀ p ∈ out, IsPFPolynomial p)
+    (hout_deg : ∀ p ∈ out, p.natDegree ≤ n + 1) :
+    ((out.map fun p => p.reflect (n + 1)).reverse).Pairwise StrictInterl := by
+  have hrev := (isInterlacingSeq_iff_pairwise.mpr hdirect).reverse
+  have hrev' := hrev.imp_of_mem (by
+    intro p q hp hq hpq
+    have hp_mem : p ∈ out := by simpa using hp
+    have hq_mem : q ∈ out := by simpa using hq
+    exact reciprocalShift_reverses_strictInterl
+      (hout_pf q hq_mem) (hout_pf p hp_mem)
+      (hout_deg q hq_mem) (hout_deg p hp_mem) hpq)
+  have hmap := hrev'.map (fun p : ℝ[X] => p.reflect (n + 1)) (by
+    intro p q hpq
+    exact hpq)
+  simpa [List.map_reverse] using hmap
+
+/-- The first transformed term precedes its reflection, while the last is reflection-fixed. -/
+private theorem chowRowTransform_endpoint_data {n : ℕ} {fs : List ℝ[X]}
+    (hsumdeg : fs.sum.natDegree ≤ n)
+    (hout_ne : ∀ p ∈ chowRowTransform n fs, p ≠ 0)
+    (hout_nn : ∀ p ∈ chowRowTransform n fs, HasNonnegCoeffs p)
+    (hout_pf : ∀ p ∈ chowRowTransform n fs, IsPFPolynomial p) :
+    let out := chowRowTransform n fs
+    StrictInterl (out.get ⟨0, by simp [out, chowRowTransform]⟩)
+        ((out.get ⟨0, by simp [out, chowRowTransform]⟩).reflect (n + 1)) ∧
+      (out.get ⟨out.length - 1, by simp [out, chowRowTransform]⟩).reflect (n + 1) =
+        out.get ⟨out.length - 1, by simp [out, chowRowTransform]⟩ := by
+  let out := chowRowTransform n fs
+  have hout_len : out.length = fs.length + 1 := by simp [out]
+  have hqdeg : (X * chowS n fs.sum + fs.sum).natDegree ≤ n := by
+    have halt : X * chowS n fs.sum + fs.sum =
+        chowS n fs.sum + (fs.sum).reflect n := by
+      calc
+        X * chowS n fs.sum + fs.sum =
+            chowS n fs.sum + ((X - 1) * chowS n fs.sum + fs.sum) := by ring
+        _ = chowS n fs.sum + (fs.sum).reflect n := by
+          rw [X_sub_one_mul_chowS n fs.sum hsumdeg]
+          ring
+    rw [halt]
+    exact (natDegree_add_le _ _).trans
+      (max_le (natDegree_chowS_le n fs.sum hsumdeg)
+        ((natDegree_reflect_le (N := n) (p := fs.sum)).trans
+          (max_le le_rfl hsumdeg)))
+  have hfirst_reflect : (X * chowS n fs.sum + fs.sum).reflect (n + 1) =
+      X * (X * chowS n fs.sum + fs.sum) := by
+    rw [Polynomial.reflect_succ _ hqdeg,
+      reflect_X_mul_chowS_add_self hsumdeg]
+    ring
+  have hfirst : out.get ⟨0, by simp [hout_len]⟩ =
+      X * chowS n fs.sum + fs.sum := by
+    simpa [out] using getElem_chowRowTransform
+      (n := n) (fs := fs) (k := 0) (by simp)
+  have hfirst_endpoint : StrictInterl (out.get ⟨0, by simp [hout_len]⟩)
+      ((out.get ⟨0, by simp [hout_len]⟩).reflect (n + 1)) := by
+    have href : (out.get ⟨0, by simp [hout_len]⟩).reflect (n + 1) =
+        X * out.get ⟨0, by simp [hout_len]⟩ := by
+      rw [hfirst, hfirst_reflect]
+    rw [href]
+    exact strictInterl_self_X_mul_of_nonneg
+      (hout_ne _ (List.get_mem _ _))
+      ((hout_pf _ (List.get_mem _ _)).ne_zero_and_splits
+        (hout_ne _ (List.get_mem _ _))).2
+      (hout_nn _ (List.get_mem _ _))
+  have hSdeg : (chowS n fs.sum).natDegree ≤ n := natDegree_chowS_le n fs.sum hsumdeg
+  have hlast : out.get ⟨out.length - 1, by lia⟩ = X * chowS n fs.sum := by
+    have ilast : (⟨out.length - 1, by lia⟩ : Fin out.length) =
+        ⟨fs.length, by simp [hout_len]⟩ := by
+      ext
+      simp [hout_len]
+    rw [ilast]
+    simpa [out] using getElem_chowRowTransform
+      (n := n) (fs := fs) (k := fs.length) (by simp)
+  refine ⟨hfirst_endpoint, ?_⟩
+  rw [hlast, show n + 1 = 1 + n by lia,
+    reflect_mul X (chowS n fs.sum) natDegree_X_le hSdeg,
+    reflect_chowS n fs.sum hsumdeg]
+  simp
+
+/-- Every member of a strict row interlaces every member of its reversed reflected row. -/
+private theorem interl_get_reflectedReverse {n : ℕ} {out : List ℝ[X]}
+    (hout_pos : 0 < out.length) (hdirect : out.Pairwise StrictInterl)
+    (hrefs : ((out.map fun p => p.reflect (n + 1)).reverse).Pairwise StrictInterl)
+    (hout_self : ∀ p ∈ out, StrictInterl p p)
+    (hout_ne : ∀ p ∈ out, p ≠ 0) (hout_pf : ∀ p ∈ out, IsPFPolynomial p)
+    (hout_deg : ∀ p ∈ out, p.natDegree ≤ n + 1)
+    (hfirst : StrictInterl (out.get ⟨0, hout_pos⟩)
+      ((out.get ⟨0, hout_pos⟩).reflect (n + 1)))
+    (hlast : (out.get ⟨out.length - 1, by lia⟩).reflect (n + 1) =
+      out.get ⟨out.length - 1, by lia⟩)
+    (i : Fin out.length)
+    (j : Fin ((out.map fun p => p.reflect (n + 1)).reverse).length) :
+    Interl (out.get i) ((out.map fun p => p.reflect (n + 1)).reverse.get j) := by
+  let refs := (out.map fun p => p.reflect (n + 1)).reverse
+  have hrefs_len : refs.length = out.length := by simp [refs]
+  have hdir_le : ∀ (a b : Fin out.length), a ≤ b → StrictInterl (out.get a) (out.get b) := by
+    intro a b hab
+    rcases hab.eq_or_lt with rfl | hab
+    · exact hout_self _ (List.get_mem _ _)
+    · exact hdirect.rel_get_of_lt hab
+  have href_le : ∀ (a b : Fin refs.length), a ≤ b →
+      StrictInterl (refs.get a) (refs.get b) := by
+    intro a b hab
+    rcases hab.eq_or_lt with rfl | hab
+    · have ha_out : refs.get a ∈ out.map (fun r => r.reflect (n + 1)) := by
+        simpa [refs] using List.get_mem refs a
+      rcases List.mem_map.mp ha_out with ⟨r, hr, hr_eq⟩
+      rw [← hr_eq]
+      have hpf := reciprocalShift_preserves_pf (hout_pf r hr) (hout_deg r hr)
+      exact StrictInterl.refl
+        (fun hz => (hout_ne r hr) (reflect_eq_zero_iff.mp hz))
+        (hpf.ne_zero_and_splits
+          (fun hz => (hout_ne r hr) (reflect_eq_zero_iff.mp hz))).2
+    · exact hrefs.rel_get_of_lt hab
+  have hbridge : StrictInterl (out.get ⟨out.length - 1, by lia⟩)
+      ((out.get ⟨out.length - 1, by lia⟩).reflect (n + 1)) := by
+    rw [hlast]
+    exact hout_self _ (List.get_mem _ _)
+  let F : ℕ → ℝ[X] := fun t =>
+    if t = 0 then out.get ⟨0, hout_pos⟩
+    else if t = 1 then out.get i
+    else if t = 2 then out.get ⟨out.length - 1, by lia⟩
+    else if t = 3 then refs.get ⟨0, by simp [refs, hout_pos]⟩
+    else if t = 4 then refs.get j
+    else refs.get ⟨refs.length - 1, by simp [refs, hout_pos]⟩
+  have hchain := strictInterl_chain_of_consecutive_of_endpoint F 0 5 (by
+    intro t _ ht
+    interval_cases t
+    · simpa [F] using hdir_le ⟨0, hout_pos⟩ i (Fin.mk_le_mk.mpr (Nat.zero_le _))
+    · simpa [F] using hdir_le i ⟨out.length - 1, by lia⟩ (Fin.mk_le_mk.mpr (by lia))
+    · have hrefzero : refs.get ⟨0, by simp [refs, hout_pos]⟩ =
+          (out.get ⟨out.length - 1, by lia⟩).reflect (n + 1) := by
+        change ((out.map fun p => p.reflect (n + 1)).reverse)[0] =
+          (out[out.length - 1]).reflect (n + 1)
+        rw [List.getElem_reverse]
+        simp
+      change StrictInterl (F 2) (F 3)
+      rw [show F 2 = out.get ⟨out.length - 1, by lia⟩ by simp [F],
+        show F 3 = refs.get ⟨0, by simp [refs, hout_pos]⟩ by simp [F], hrefzero]
+      exact hbridge
+    · simpa [F] using href_le ⟨0, by simp [refs, hout_pos]⟩ j
+        (Fin.mk_le_mk.mpr (Nat.zero_le _))
+    · simpa [F] using href_le j ⟨refs.length - 1, by simp [refs, hout_pos]⟩
+        (Fin.mk_le_mk.mpr (by lia))) (by
+      have hreflast : refs.get ⟨refs.length - 1, by simp [refs, hout_pos]⟩ =
+          (out.get ⟨0, hout_pos⟩).reflect (n + 1) := by
+        change ((out.map fun p => p.reflect (n + 1)).reverse)[refs.length - 1] =
+          (out[0]).reflect (n + 1)
+        rw [List.getElem_reverse]
+        simp [hrefs_len]
+      change StrictInterl (F 0) (F 5)
+      rw [show F 0 = out.get ⟨0, hout_pos⟩ by simp [F],
+        show F 5 = refs.get ⟨refs.length - 1, by simp [refs, hout_pos]⟩ by simp [F],
+        hreflast]
+      exact hfirst)
+  have hpq := hchain 1 4 (by simp) (by simp) (by simp)
+  simpa [F, refs] using hpq.toInterl
+
 /-- The nonvanishing-total-quotient branch of Branden--Vecchi, Theorem 4.13. -/
 theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_ne_zero
     {n : ℕ} {fs : List ℝ[X]} (h : IsReflectionInterlacingSeq n fs)
@@ -628,80 +788,11 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_ne_zero
     StrictInterl.refl (hout_ne p hp)
       ((hout_pf p hp).ne_zero_and_splits (hout_ne p hp)).2
   have hrefs : refs.Pairwise StrictInterl := by
-    have hrev := (isInterlacingSeq_iff_pairwise.mpr hdirect).reverse
-    have hrev' := hrev.imp_of_mem (by
-      intro p q hp hq hpq
-      have hp_mem : p ∈ out := by simpa using hp
-      have hq_mem : q ∈ out := by simpa using hq
-      exact reciprocalShift_reverses_strictInterl
-        (hout_pf q hq_mem) (hout_pf p hp_mem)
-        (hout_deg q hq_mem) (hout_deg p hp_mem) hpq)
-    have hmap := hrev'.map (fun p => p.reflect (n + 1)) (by
-      intro p q hpq
-      exact hpq)
-    simpa [refs, List.map_reverse] using hmap
-  have hrefs_len : refs.length = out.length := by simp [refs]
-  have hrefs_pos : 0 < refs.length := by rw [hrefs_len, hout_len]; lia
-  have hqdeg : (X * chowS n fs.sum + fs.sum).natDegree ≤ n := by
-    have halt : X * chowS n fs.sum + fs.sum =
-        chowS n fs.sum + (fs.sum).reflect n := by
-      calc
-        X * chowS n fs.sum + fs.sum =
-            chowS n fs.sum + ((X - 1) * chowS n fs.sum + fs.sum) := by ring
-        _ = chowS n fs.sum + (fs.sum).reflect n := by
-          rw [X_sub_one_mul_chowS n fs.sum hsumdeg]
-          ring
-    rw [halt]
-    exact (natDegree_add_le _ _).trans
-      (max_le (natDegree_chowS_le n fs.sum hsumdeg)
-        ((natDegree_reflect_le (N := n) (p := fs.sum)).trans
-          (max_le le_rfl hsumdeg)))
-  have hfirst_reflect :
-      (X * chowS n fs.sum + fs.sum).reflect (n + 1) =
-        X * (X * chowS n fs.sum + fs.sum) := by
-    rw [Polynomial.reflect_succ _ hqdeg,
-      reflect_X_mul_chowS_add_self hsumdeg]
-    ring
-  have hfirst_endpoint :
-      StrictInterl (out.get ⟨0, by simp [hout_len]⟩)
-        ((out.get ⟨0, by simp [hout_len]⟩).reflect (n + 1)) := by
-    have hfirst : out.get ⟨0, by simp [hout_len]⟩ =
-        X * chowS n fs.sum + fs.sum := by
-      simpa [out] using getElem_chowRowTransform
-        (n := n) (fs := fs) (k := 0) (by simp)
-    have href :
-        (out.get ⟨0, by simp [hout_len]⟩).reflect (n + 1) =
-          X * out.get ⟨0, by simp [hout_len]⟩ := by
-      rw [hfirst, hfirst_reflect]
-    rw [href]
-    exact strictInterl_self_X_mul_of_nonneg
-      (hout_ne _ (List.get_mem _ _))
-      ((hout_pf _ (List.get_mem _ _)).ne_zero_and_splits
-        (hout_ne _ (List.get_mem _ _))).2
-      (hout_nn _ (List.get_mem _ _))
-  have hSdeg : (chowS n fs.sum).natDegree ≤ n :=
-    natDegree_chowS_le n fs.sum hsumdeg
-  have hlast_fixed :
-      (out.get ⟨out.length - 1, by lia⟩).reflect (n + 1) =
-        out.get ⟨out.length - 1, by lia⟩ := by
-    have hlast : out.get ⟨out.length - 1, by lia⟩ =
-        X * chowS n fs.sum := by
-      have ilast : (⟨out.length - 1, by lia⟩ : Fin out.length) =
-          ⟨fs.length, by simp [hout_len]⟩ := by
-        ext
-        simp [hout_len]
-      rw [ilast]
-      simpa [out] using getElem_chowRowTransform
-        (n := n) (fs := fs) (k := fs.length) (by simp)
-    rw [hlast, show n + 1 = 1 + n by lia,
-      reflect_mul X (chowS n fs.sum) natDegree_X_le hSdeg,
-      reflect_chowS n fs.sum hsumdeg]
-    simp
-  have hbridge : StrictInterl
-      (out.get ⟨out.length - 1, by lia⟩)
-      ((out.get ⟨out.length - 1, by lia⟩).reflect (n + 1)) := by
-    rw [hlast_fixed]
-    exact hout_self _ (List.get_mem _ _)
+    simpa [refs] using reflectedReverse_pairwise hdirect hout_pf hout_deg
+  obtain ⟨hfirst_endpoint, hlast_fixed⟩ :=
+    chowRowTransform_endpoint_data hsumdeg
+      (by simpa [out] using hout_ne) (by simpa [out] using hout_nn)
+      (by simpa [out] using hout_pf)
   refine ⟨hout_deg, ?_⟩
   refine ⟨⟨?_, ?_⟩, ?_⟩
   · rw [isInterlacingSeq0_iff_pairwise, reflectionClosure,
@@ -711,73 +802,10 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_ne_zero
     rcases List.get_of_mem hp with ⟨i, rfl⟩
     have hqrefs : q ∈ refs := by simpa [refs] using hq
     rcases List.get_of_mem hqrefs with ⟨j, hj⟩
-    have hdir_le :
-        ∀ (a b : Fin out.length), a ≤ b → StrictInterl (out.get a) (out.get b) := by
-      intro a b hab
-      rcases hab.eq_or_lt with rfl | hab
-      · exact hout_self _ (List.get_mem _ _)
-      · exact hdirect.rel_get_of_lt hab
-    have href_le : ∀ (a b : Fin refs.length), a ≤ b →
-        StrictInterl (refs.get a) (refs.get b) := by
-      intro a b hab
-      rcases hab.eq_or_lt with rfl | hab
-      · have ha_mem : refs.get a ∈ refs := List.get_mem _ _
-        have ha_out : refs.get a ∈ out.map (fun r => r.reflect (n + 1)) := by
-          simpa [refs] using ha_mem
-        rcases List.mem_map.mp ha_out with ⟨r, hr, hr_eq⟩
-        rw [← hr_eq]
-        have hpf := reciprocalShift_preserves_pf (hout_pf r hr) (hout_deg r hr)
-        exact StrictInterl.refl
-          (fun hz => (hout_ne r hr) (reflect_eq_zero_iff.mp hz))
-          (hpf.ne_zero_and_splits
-            (fun hz => (hout_ne r hr) (reflect_eq_zero_iff.mp hz))).2
-      · exact hrefs.rel_get_of_lt hab
-    let F : ℕ → ℝ[X] := fun t =>
-      if t = 0 then out.get ⟨0, by simp [hout_len]⟩
-      else if t = 1 then out.get i
-      else if t = 2 then out.get ⟨out.length - 1, by lia⟩
-      else if t = 3 then refs.get ⟨0, by simp [refs, hout_len]⟩
-      else if t = 4 then refs.get j
-      else refs.get ⟨refs.length - 1, by simp [refs, hout_len]⟩
-    have hchain := strictInterl_chain_of_consecutive_of_endpoint F 0 5 (by
-      intro t _ ht
-      interval_cases t
-      · simpa [F] using hdir_le ⟨0, by simp [hout_len]⟩ i
-          (Fin.mk_le_mk.mpr (Nat.zero_le _))
-      · simpa [F] using hdir_le i ⟨out.length - 1, by lia⟩ (by
-          exact Fin.mk_le_mk.mpr (by lia))
-      · have hrefzero : refs.get ⟨0, by simp [refs, hout_len]⟩ =
-            (out.get ⟨out.length - 1, by lia⟩).reflect (n + 1) := by
-          change refs[0] = (out[out.length - 1]).reflect (n + 1)
-          change ((out.map fun p => p.reflect (n + 1)).reverse)[0] =
-            (out[out.length - 1]).reflect (n + 1)
-          rw [List.getElem_reverse]
-          simp
-        change StrictInterl (F 2) (F 3)
-        rw [show F 2 = out.get ⟨out.length - 1, by lia⟩ by simp [F],
-          show F 3 = refs.get ⟨0, by simp [refs, hout_len]⟩ by simp [F],
-          hrefzero]
-        exact hbridge
-      · simpa [F] using href_le ⟨0, by simp [refs, hout_len]⟩ j
-          (Fin.mk_le_mk.mpr (Nat.zero_le _))
-      · simpa [F] using href_le j
-          ⟨refs.length - 1, by lia⟩ (by exact Fin.mk_le_mk.mpr (by lia))) (by
-        have hreflast : refs.get ⟨refs.length - 1, by simp [refs, hout_len]⟩ =
-            (out.get ⟨0, by simp [hout_len]⟩).reflect (n + 1) := by
-          change refs[refs.length - 1] = (out[0]).reflect (n + 1)
-          change ((out.map fun p => p.reflect (n + 1)).reverse)[refs.length - 1] =
-            (out[0]).reflect (n + 1)
-          rw [List.getElem_reverse]
-          simp [hrefs_len]
-        change StrictInterl (F 0) (F 5)
-        rw [show F 0 = out.get ⟨0, by simp [hout_len]⟩ by simp [F],
-          show F 5 = refs.get ⟨refs.length - 1, by lia⟩ by simp [F],
-          hreflast]
-        exact hfirst_endpoint)
-    have hpq := hchain 1 4 (by simp) (by simp) (by simp)
-    rw [show F 1 = out.get i by simp [F], show F 4 = refs.get j by simp [F]] at hpq
     rw [← hj]
-    exact hpq.toInterl
+    simpa [refs] using interl_get_reflectedReverse (n := n) (out := out)
+      (by rw [hout_len]; lia) hdirect (by simpa [refs] using hrefs) hout_self
+      hout_ne hout_pf hout_deg hfirst_endpoint hlast_fixed i j
   · intro p hp
     rcases List.mem_append.mp hp with hp | hp
     · exact hout_nn p hp

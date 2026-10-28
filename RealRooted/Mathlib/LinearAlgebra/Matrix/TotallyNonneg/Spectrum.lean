@@ -136,6 +136,177 @@ theorem compound_eq_zero_of_rank_lt
   rw [hrank] at hle
   exact (not_le_of_gt hq) hle
 
+/-- The leading product of norm-ordered eigenvalues is the compound's Perron root. -/
+private theorem rankPrefix_product_eq_perronRoot
+    {A : Matrix (Fin n) (Fin n) ℝ} {μ : Fin n → ℂ} {q : ℕ}
+    (hqn : q ≤ n) (hprim : (compound q A).IsPrimitive)
+    (hanti : ∀ i j : Fin n, i ≤ j → ‖μ j‖ ≤ ‖μ i‖)
+    (hcomp : (compound q A).charpoly.map (algebraMap ℝ ℂ) =
+      ∏ s : Set.powersetCard (Fin n) q,
+        (X - C (∏ k, μ (powersetEnum s k)))) :
+    ∏ i ∈ rankPrefix n q, μ i =
+      ((CollatzWielandt.perronRoot (compound q A) : ℝ) : ℂ) := by
+  let B : Matrix (Set.powersetCard (Fin n) q)
+      (Set.powersetCard (Fin n) q) ℝ := compound q A
+  have hBnonneg : ∀ s t, 0 ≤ B s t := hprim.nonneg
+  let sTop : Set.powersetCard (Fin n) q :=
+    ⟨rankPrefix n q, Set.powersetCard.mem_iff.mpr (rankPrefix_card hqn)⟩
+  let _ : Nonempty (Set.powersetCard (Fin n) q) := ⟨sTop⟩
+  have hperron_nonneg : 0 ≤ CollatzWielandt.perronRoot B :=
+    CollatzWielandt.perronRoot_nonneg hBnonneg
+  obtain ⟨v, -, hvne, hveig⟩ := exists_nonneg_mulVec_eq_perronRoot_smul hBnonneg
+  have hroot : B.charpoly.IsRoot (CollatzWielandt.perronRoot B) :=
+    mem_spectrum_iff_isRoot_charpoly.mp (mem_spectrum_of_eigenvalue hvne hveig)
+  have hrootC : (B.charpoly.map (algebraMap ℝ ℂ)).eval
+      ((CollatzWielandt.perronRoot B : ℝ) : ℂ) = 0 := by
+    have heval : (B.charpoly.map (algebraMap ℝ ℂ)).eval
+        ((algebraMap ℝ ℂ) (CollatzWielandt.perronRoot B)) =
+        (algebraMap ℝ ℂ) (B.charpoly.eval (CollatzWielandt.perronRoot B)) := by
+      rw [Polynomial.eval_map, Polynomial.eval₂_at_apply]
+    simpa [hroot.eq_zero] using heval
+  obtain ⟨s₀, hs₀⟩ : ∃ s : Set.powersetCard (Fin n) q,
+      ∏ k, μ (powersetEnum s k) =
+        ((CollatzWielandt.perronRoot B : ℝ) : ℂ) := by
+    rw [show B = compound q A by rfl, hcomp, Polynomial.eval_prod,
+      Finset.prod_eq_zero_iff] at hrootC
+    obtain ⟨s, -, hs⟩ := hrootC
+    refine ⟨s, ?_⟩
+    have h := hs
+    simp only [Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C,
+      sub_eq_zero] at h
+    simpa only [B] using h.symm
+  have hdom : ∀ s : Set.powersetCard (Fin n) q,
+      (∏ k, μ (powersetEnum s k)) ≠
+          ((CollatzWielandt.perronRoot B : ℝ) : ℂ) →
+        ‖∏ k, μ (powersetEnum s k)‖ < CollatzWielandt.perronRoot B := by
+    intro s hne
+    have heig : (∏ k, μ (powersetEnum s k)) ∈
+        spectrum ℂ (B.map (algebraMap ℝ ℂ)) := by
+      rw [mem_spectrum_iff_isRoot_charpoly, charpoly_map, IsRoot.def,
+        show B = compound q A by rfl, hcomp, Polynomial.eval_prod]
+      exact Finset.prod_eq_zero (Finset.mem_univ s)
+        (by simp only [Polynomial.eval_sub, Polynomial.eval_X,
+          Polynomial.eval_C, sub_self])
+    exact spectral_dominance_of_primitive' hprim hBnonneg _ heig hne
+  have htopProd : ∏ k, μ (powersetEnum sTop k) =
+      ∏ i ∈ rankPrefix n q, μ i := prod_powersetEnum sTop μ
+  have htopEnum : ∏ i ∈ rankPrefix n q, μ i =
+      ∏ k : Fin q, μ (Fin.castLE hqn k) := by
+    rw [rankPrefix_eq_image hqn]
+    exact Finset.prod_image fun x _ y _ h => Fin.castLE_injective hqn h
+  have hmax : ∀ s : Set.powersetCard (Fin n) q,
+      ‖∏ k, μ (powersetEnum s k)‖ ≤ ‖∏ i ∈ rankPrefix n q, μ i‖ := by
+    intro s
+    rw [htopEnum, norm_prod, norm_prod]
+    apply Finset.prod_le_prod₀ (fun k _ => norm_nonneg _)
+    intro k _
+    exact hanti _ _ (Fin.le_def.mpr
+      (Fin.le_val_of_strictMono (strictMono_powersetEnum s) k))
+  by_contra hne
+  have hlt : ‖∏ i ∈ rankPrefix n q, μ i‖ < CollatzWielandt.perronRoot B := by
+    have h := hdom sTop (by rw [htopProd]; exact hne)
+    rwa [htopProd] at h
+  have hge : CollatzWielandt.perronRoot B ≤ ‖∏ i ∈ rankPrefix n q, μ i‖ := by
+    have h := hmax s₀
+    rw [hs₀, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg hperron_nonneg] at h
+    exact h
+  exact (not_le_of_gt hlt) hge
+
+/-- Consecutive Perron-root ratios give the positive head and zero tail parameters. -/
+private theorem exists_rank_spectral_parameters
+    {A : Matrix (Fin n) (Fin n) ℝ} {r : ℕ} (hrn : r ≤ n)
+    (hprim : ∀ q, 1 ≤ q → q ≤ r → (compound q A).IsPrimitive)
+    (μC : Fin n → ℂ)
+    (hkey : ∀ q, 1 ≤ q → ∀ _hqr : q ≤ r,
+      ∏ i ∈ rankPrefix n q, μC i =
+        ((CollatzWielandt.perronRoot (compound q A) : ℝ) : ℂ)) :
+    ∃ R : ℕ → ℝ, ∃ μ : Fin n → ℝ,
+      (∀ q, q ≤ r → 0 < R q) ∧
+      (∀ q, q ≤ r → ∏ i ∈ rankPrefix n q, μC i = ((R q : ℝ) : ℂ)) ∧
+      (∀ i : Fin n, (i : ℕ) < r → 0 < μ i) ∧
+      (∀ i : Fin n, r ≤ (i : ℕ) → μ i = 0) ∧
+      ∀ i : Fin n, (i : ℕ) < r → μC i = (μ i : ℂ) := by
+  let R : ℕ → ℝ := fun q =>
+    if q = 0 then 1 else CollatzWielandt.perronRoot (compound q A)
+  have hRpos : ∀ q, q ≤ r → 0 < R q := by
+    intro q hqr
+    rcases Nat.eq_zero_or_pos q with rfl | hq1
+    · simp [R]
+    · have hqn : q ≤ n := hqr.trans hrn
+      let _ : Nonempty (Set.powersetCard (Fin n) q) :=
+        ⟨⟨rankPrefix n q, Set.powersetCard.mem_iff.mpr (rankPrefix_card hqn)⟩⟩
+      simp only [R, ite_eq_right hq1.ne']
+      exact perronRoot_pos_of_irreducible
+        (hprim q hq1 hqr).isIrreducible (hprim q hq1 hqr).nonneg
+  have hprodR : ∀ q, q ≤ r →
+      ∏ i ∈ rankPrefix n q, μC i = ((R q : ℝ) : ℂ) := by
+    intro q hqr
+    rcases Nat.eq_zero_or_pos q with rfl | hq1
+    · simp [rankPrefix_zero, R]
+    · rw [hkey q hq1 hqr]
+      simp only [R, ite_eq_right hq1.ne']
+  let μ : Fin n → ℝ := fun i =>
+    if hi : (i : ℕ) < r then R ((i : ℕ) + 1) / R (i : ℕ) else 0
+  have hμpos : ∀ i : Fin n, (i : ℕ) < r → 0 < μ i := by
+    intro i hi
+    simp only [μ, dite_eq_left hi]
+    exact div_pos (hRpos _ hi) (hRpos _ hi.le)
+  have hμzero : ∀ i : Fin n, r ≤ (i : ℕ) → μ i = 0 := by
+    intro i hi
+    simp only [μ, dite_eq_right (Nat.not_lt.mpr hi)]
+  refine ⟨R, μ, hRpos, hprodR, hμpos, hμzero, fun i hi => ?_⟩
+  obtain ⟨hinsert, hnot⟩ := rankPrefix_succ (hi.trans_le hrn)
+  have hnext := hprodR ((i : ℕ) + 1) hi
+  have hprev := hprodR (i : ℕ) hi.le
+  rw [hinsert, Finset.prod_insert hnot, hprev] at hnext
+  simp only [μ, dite_eq_left hi]
+  push_cast
+  exact (eq_div_iff (Complex.ofReal_ne_zero.mpr (hRpos _ hi.le).ne')).mpr hnext
+
+/-- Every norm-ordered eigenvalue beyond the matrix rank is zero. -/
+private theorem ordered_eigenvalue_eq_zero_of_rank_le
+    {A : Matrix (Fin n) (Fin n) ℝ} {r : ℕ} (hrank : A.rank = r)
+    (hrn : r ≤ n) (μC : Fin n → ℂ)
+    (hcomp : ∀ q, (compound q A).charpoly.map (algebraMap ℝ ℂ) =
+      ∏ s : Set.powersetCard (Fin n) q,
+        (X - C (∏ k, μC (powersetEnum s k))))
+    (R : ℕ → ℝ) (hRpos : ∀ q, q ≤ r → 0 < R q)
+    (hprodR : ∀ q, q ≤ r →
+      ∏ i ∈ rankPrefix n q, μC i = ((R q : ℝ) : ℂ))
+    (i : Fin n) (hi : r ≤ (i : ℕ)) : μC i = 0 := by
+  by_cases hrn' : r = n
+  · subst n
+    exact absurd (hi.trans_lt i.isLt) (Nat.lt_irrefl r)
+  · have hrlt : r < n := lt_of_le_of_ne hrn hrn'
+    let support : Finset (Fin n) := insert i (rankPrefix n r)
+    have hiNot : i ∉ rankPrefix n r := by simp [rankPrefix, Nat.not_lt.mpr hi]
+    have hcard : support.card = r + 1 := by
+      simp [support, hiNot, rankPrefix_card hrn]
+    let s : Set.powersetCard (Fin n) (r + 1) :=
+      ⟨support, Set.powersetCard.mem_iff.mpr hcard⟩
+    have hcompound : compound (r + 1) A = 0 := by
+      apply compound_eq_zero_of_rank_lt A
+      rw [hrank]
+      exact Nat.lt_succ_self r
+    have hroot : ((compound (r + 1) A).charpoly.map (algebraMap ℝ ℂ)).IsRoot
+        (∏ k, μC (powersetEnum s k)) := by
+      rw [IsRoot.def, hcomp (r + 1), Polynomial.eval_prod]
+      exact Finset.prod_eq_zero (Finset.mem_univ s)
+        (by simp only [Polynomial.eval_sub, Polynomial.eval_X,
+          Polynomial.eval_C, sub_self])
+    have hproductZero : ∏ k, μC (powersetEnum s k) = 0 := by
+      rw [hcompound, Matrix.charpoly_zero, Polynomial.map_pow, Polynomial.map_X,
+        Polynomial.IsRoot.def, Polynomial.eval_pow, Polynomial.eval_X] at hroot
+      have hcardPos : 0 < Fintype.card (Set.powersetCard (Fin n) (r + 1)) :=
+        Fintype.card_pos_iff.mpr ⟨s⟩
+      exact (pow_eq_zero_iff hcardPos.ne').mp hroot
+    rw [prod_powersetEnum s μC] at hproductZero
+    change ∏ j ∈ support, μC j = 0 at hproductZero
+    rw [Finset.prod_insert hiNot, hprodR r le_rfl] at hproductZero
+    exact (mul_eq_zero.mp hproductZero).resolve_right
+      (Complex.ofReal_ne_zero.mpr (hRpos r le_rfl).ne')
+
 /-- Rank-sensitive Gantmacher--Krein factorization.  If the compounds through
 the rank are primitive, all eigenvalues can be enumerated in `ℝ_{≥0}`; the
 first `r` are positive and the remainder vanish. -/
@@ -181,163 +352,14 @@ theorem exists_charpoly_eq_prod_nonneg_of_rank_eq_of_compounds_primitive
         exact (prod_powersetCard_comp_perm τ ν).symm
   have hkey : ∀ q, 1 ≤ q → ∀ hqr : q ≤ r,
       ∏ i ∈ rankPrefix n q, μC i =
-        ((CollatzWielandt.perronRoot (compound q A) : ℝ) : ℂ) := by
-    intro q hq1 hqr
-    have hqn : q ≤ n := hqr.trans hrn
-    let B : Matrix (Set.powersetCard (Fin n) q)
-        (Set.powersetCard (Fin n) q) ℝ := compound q A
-    have hBprim := hprim q hq1 hqr
-    have hBnonneg : ∀ s t, 0 ≤ B s t := hBprim.nonneg
-    let sTop : Set.powersetCard (Fin n) q :=
-      ⟨rankPrefix n q,
-        Set.powersetCard.mem_iff.mpr (rankPrefix_card hqn)⟩
-    let _ : Nonempty (Set.powersetCard (Fin n) q) := ⟨sTop⟩
-    have hperron_nonneg : 0 ≤ CollatzWielandt.perronRoot B :=
-      CollatzWielandt.perronRoot_nonneg hBnonneg
-    obtain ⟨v, -, hvne, hveig⟩ :=
-      exists_nonneg_mulVec_eq_perronRoot_smul hBnonneg
-    have hroot : B.charpoly.IsRoot (CollatzWielandt.perronRoot B) :=
-      mem_spectrum_iff_isRoot_charpoly.mp
-        (mem_spectrum_of_eigenvalue hvne hveig)
-    have hrootC :
-        (B.charpoly.map (algebraMap ℝ ℂ)).eval
-          ((CollatzWielandt.perronRoot B : ℝ) : ℂ) = 0 := by
-      have heval :
-          (B.charpoly.map (algebraMap ℝ ℂ)).eval
-              ((algebraMap ℝ ℂ) (CollatzWielandt.perronRoot B)) =
-            (algebraMap ℝ ℂ)
-              (B.charpoly.eval (CollatzWielandt.perronRoot B)) := by
-        rw [Polynomial.eval_map, Polynomial.eval₂_at_apply]
-      simpa [hroot.eq_zero] using heval
-    obtain ⟨s₀, hs₀⟩ : ∃ s : Set.powersetCard (Fin n) q,
-        ∏ k, μC (powersetEnum s k) =
-          ((CollatzWielandt.perronRoot B : ℝ) : ℂ) := by
-      rw [hcomp q, Polynomial.eval_prod, Finset.prod_eq_zero_iff] at hrootC
-      obtain ⟨s, -, hs⟩ := hrootC
-      refine ⟨s, ?_⟩
-      have h := hs
-      simp only [Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C,
-        sub_eq_zero] at h
-      exact h.symm
-    have hdom : ∀ s : Set.powersetCard (Fin n) q,
-        (∏ k, μC (powersetEnum s k)) ≠
-            ((CollatzWielandt.perronRoot B : ℝ) : ℂ) →
-          ‖∏ k, μC (powersetEnum s k)‖ <
-            CollatzWielandt.perronRoot B := by
-      intro s hne
-      have heig : (∏ k, μC (powersetEnum s k)) ∈
-          spectrum ℂ (B.map (algebraMap ℝ ℂ)) := by
-        rw [mem_spectrum_iff_isRoot_charpoly, charpoly_map, IsRoot.def,
-          hcomp q, Polynomial.eval_prod]
-        exact Finset.prod_eq_zero (Finset.mem_univ s)
-          (by simp only [Polynomial.eval_sub, Polynomial.eval_X,
-            Polynomial.eval_C, sub_self])
-      exact spectral_dominance_of_primitive'
-        hBprim hBnonneg _ heig hne
-    have htopProd : ∏ k, μC (powersetEnum sTop k) =
-        ∏ i ∈ rankPrefix n q, μC i :=
-      prod_powersetEnum sTop μC
-    have htopEnum : ∏ i ∈ rankPrefix n q, μC i =
-        ∏ k : Fin q, μC (Fin.castLE hqn k) := by
-      rw [rankPrefix_eq_image hqn]
-      exact Finset.prod_image fun x _ y _ h => Fin.castLE_injective hqn h
-    have hmax : ∀ s : Set.powersetCard (Fin n) q,
-        ‖∏ k, μC (powersetEnum s k)‖ ≤
-          ‖∏ i ∈ rankPrefix n q, μC i‖ := by
-      intro s
-      rw [htopEnum, norm_prod, norm_prod]
-      apply Finset.prod_le_prod₀ (fun k _ => norm_nonneg _)
-      intro k _
-      apply hanti
-      exact Fin.le_def.mpr
-        (Fin.le_val_of_strictMono (strictMono_powersetEnum s) k)
-    by_contra hne
-    have hlt : ‖∏ i ∈ rankPrefix n q, μC i‖ <
-        CollatzWielandt.perronRoot B := by
-      have h := hdom sTop (by rw [htopProd]; exact hne)
-      rwa [htopProd] at h
-    have hge : CollatzWielandt.perronRoot B ≤
-        ‖∏ i ∈ rankPrefix n q, μC i‖ := by
-      have h := hmax s₀
-      rw [hs₀, Complex.norm_real, Real.norm_eq_abs,
-        abs_of_nonneg hperron_nonneg] at h
-      exact h
-    exact (not_le_of_gt hlt) hge
-  let R : ℕ → ℝ := fun q =>
-    if q = 0 then 1 else CollatzWielandt.perronRoot (compound q A)
-  have hRpos : ∀ q, q ≤ r → 0 < R q := by
-    intro q hqr
-    rcases Nat.eq_zero_or_pos q with rfl | hq1
-    · simp [R]
-    · have hqn : q ≤ n := hqr.trans hrn
-      let _ : Nonempty (Set.powersetCard (Fin n) q) :=
-        ⟨⟨rankPrefix n q,
-          Set.powersetCard.mem_iff.mpr (rankPrefix_card hqn)⟩⟩
-      simp only [R, ite_eq_right hq1.ne']
-      exact perronRoot_pos_of_irreducible
-        (hprim q hq1 hqr).isIrreducible (hprim q hq1 hqr).nonneg
-  have hprodR : ∀ q, q ≤ r →
-      ∏ i ∈ rankPrefix n q, μC i = ((R q : ℝ) : ℂ) := by
-    intro q hqr
-    rcases Nat.eq_zero_or_pos q with rfl | hq1
-    · simp [rankPrefix_zero, R]
-    · rw [hkey q hq1 hqr]
-      simp [R, ite_eq_right hq1.ne']
-  let μ : Fin n → ℝ := fun i =>
-    if hi : (i : ℕ) < r then R ((i : ℕ) + 1) / R (i : ℕ) else 0
-  have hμpos : ∀ i : Fin n, (i : ℕ) < r → 0 < μ i := by
-    intro i hi
-    simp only [μ, dite_eq_left hi]
-    exact div_pos (hRpos _ hi) (hRpos _ hi.le)
-  have hμzero : ∀ i : Fin n, r ≤ (i : ℕ) → μ i = 0 := by
-    intro i hi
-    simp only [μ, dite_eq_right (Nat.not_lt.mpr hi)]
-  have hμChead : ∀ i : Fin n, (i : ℕ) < r → μC i = (μ i : ℂ) := by
-    intro i hi
-    obtain ⟨hinsert, hnot⟩ := rankPrefix_succ (hi.trans_le hrn)
-    have hnext := hprodR ((i : ℕ) + 1) hi
-    have hprev := hprodR (i : ℕ) hi.le
-    rw [hinsert, Finset.prod_insert hnot, hprev] at hnext
-    simp only [μ, dite_eq_left hi]
-    push_cast
-    exact (eq_div_iff (Complex.ofReal_ne_zero.mpr (hRpos _ hi.le).ne')).mpr hnext
+        ((CollatzWielandt.perronRoot (compound q A) : ℝ) : ℂ) :=
+    fun q _ hqr => rankPrefix_product_eq_perronRoot
+      (hqr.trans hrn) (hprim q (by assumption) hqr) hanti (hcomp q)
+  obtain ⟨R, μ, hRpos, hprodR, hμpos, hμzero, hμChead⟩ :=
+    exists_rank_spectral_parameters hrn hprim μC hkey
   have hμCtail : ∀ i : Fin n, r ≤ (i : ℕ) → μC i = 0 := by
-    intro i hi
-    by_cases hrn' : r = n
-    · subst n
-      exact absurd (hi.trans_lt i.isLt) (Nat.lt_irrefl r)
-    · have hrlt : r < n := lt_of_le_of_ne hrn hrn'
-      let support : Finset (Fin n) := insert i (rankPrefix n r)
-      have hiNot : i ∉ rankPrefix n r := by simp [rankPrefix, Nat.not_lt.mpr hi]
-      have hcard : support.card = r + 1 := by
-        simp [support, hiNot, rankPrefix_card hrn]
-      let s : Set.powersetCard (Fin n) (r + 1) :=
-        ⟨support, Set.powersetCard.mem_iff.mpr hcard⟩
-      have hcompound : compound (r + 1) A = 0 := by
-        apply compound_eq_zero_of_rank_lt A
-        rw [hrank]
-        exact Nat.lt_succ_self r
-      have hroot :
-          ((compound (r + 1) A).charpoly.map (algebraMap ℝ ℂ)).IsRoot
-            (∏ k, μC (powersetEnum s k)) := by
-        rw [IsRoot.def, hcomp (r + 1), Polynomial.eval_prod]
-        exact Finset.prod_eq_zero (Finset.mem_univ s)
-          (by simp only [Polynomial.eval_sub, Polynomial.eval_X,
-            Polynomial.eval_C, sub_self])
-      have hproductZero : ∏ k, μC (powersetEnum s k) = 0 := by
-        rw [hcompound, Matrix.charpoly_zero, Polynomial.map_pow,
-          Polynomial.map_X, Polynomial.IsRoot.def,
-          Polynomial.eval_pow, Polynomial.eval_X] at hroot
-        have hcardPos : 0 < Fintype.card
-            (Set.powersetCard (Fin n) (r + 1)) :=
-          Fintype.card_pos_iff.mpr ⟨s⟩
-        exact (pow_eq_zero_iff hcardPos.ne').mp hroot
-      rw [prod_powersetEnum s μC] at hproductZero
-      change ∏ j ∈ support, μC j = 0 at hproductZero
-      rw [Finset.prod_insert hiNot, hprodR r le_rfl] at hproductZero
-      have hRne : ((R r : ℝ) : ℂ) ≠ 0 :=
-        Complex.ofReal_ne_zero.mpr (hRpos r le_rfl).ne'
-      exact (mul_eq_zero.mp hproductZero).resolve_right hRne
+    exact ordered_eigenvalue_eq_zero_of_rank_le
+      hrank hrn μC hcomp R hRpos hprodR
   have hμC : ∀ i, μC i = (μ i : ℂ) := by
     intro i
     by_cases hi : (i : ℕ) < r
