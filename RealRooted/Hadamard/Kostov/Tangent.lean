@@ -340,26 +340,26 @@ theorem exists_first_eigenvector (n : ℕ) (hn : 2 ≤ n) :
     rw [e0.2, zero_add, mu_one n (by lia), hG, map_sub, bernOp_one n (by lia),
       bernOp_X n (by lia), one_smul]
 
-/-- Auxiliary construction of the reduced eigenpolynomials. -/
-theorem exists_reduced_eigenpolynomial (n j : ℕ) (hj : j + 3 ≤ n) :
-    ∃ Q : ℝ[X], Q.Monic ∧ Q.natDegree = j ∧ Q.eval 0 ≠ 0 ∧
-      Q.reverse = C ((-1 : ℝ) ^ j) * Q ∧ (Odd j → Q.eval 1 = 0) ∧
-      ∃ v : Fin (n - 1) → ℝ, v ≠ 0 ∧
-        monicPolynomial n v - monicPolynomial n 0 = X * (X + 1) ^ (n - j - 2) * Q ∧
-        linearPart n v = eigenvalue n (j + 1) • v := by
+/-! ## Reduced eigenpolynomials -/
+
+/-- Removing the forced roots at zero and one leaves a normalized reflected factor. -/
+private theorem exists_eigPoly_reduced_factor (n j : ℕ) (hj : j + 3 ≤ n) :
+    ∃ H : ℝ[X], eigPoly n (j + 2) = X * (X - C 1) * H ∧ H.Monic ∧
+      H.natDegree = j ∧ H.eval 1 ≠ 0 ∧
+      H.comp (1 - X) = C ((-1 : ℝ) ^ j) * H := by
   have hn : 2 ≤ n := by lia
-  obtain ⟨hmon, hdeg, heig⟩ := eigPoly_spec n (j + 2) (by lia) (by lia)
+  obtain ⟨hmon, hdeg, -⟩ := eigPoly_spec n (j + 2) (by lia) (by lia)
   have hG0 := eigPoly_eval_zero n (j + 2) (by lia) (by lia)
   have hG1 := eigPoly_eval_one n (j + 2) (by lia) (by lia)
   have hGc1 := eigPoly_coeff_one_ne_zero n (j + 2) (by lia) (by lia)
   have hrefl := eigPoly_reflect n (j + 2) (by lia) (by lia)
-  set G := eigPoly n (j + 2) with hG
-  -- factor `G = X (X - 1) H`
-  obtain ⟨G₁, hG₁⟩ : X ∣ G := X_dvd_iff.mpr (by rw [coeff_zero_eq_eval_zero, hG0])
+  obtain ⟨G₁, hG₁⟩ : X ∣ eigPoly n (j + 2) :=
+    X_dvd_iff.mpr (by rw [coeff_zero_eq_eval_zero, hG0])
   have hG₁1 : G₁.IsRoot 1 := by
     simpa [hG₁] using hG1
   obtain ⟨H, hH⟩ := dvd_iff_isRoot.mpr hG₁1
-  have hGH : G = X * (X - C 1) * H := by rw [hG₁, hH, mul_assoc]
+  have hGH : eigPoly n (j + 2) = X * (X - C 1) * H := by
+    rw [hG₁, hH, mul_assoc]
   have hXX : (X * (X - C 1) : ℝ[X]).Monic := monic_X.mul (monic_X_sub_C 1)
   have hXXd : (X * (X - C 1) : ℝ[X]).natDegree = 2 := by
     rw [monic_X.natDegree_mul (monic_X_sub_C 1), natDegree_X, natDegree_X_sub_C]
@@ -386,7 +386,15 @@ theorem exists_reduced_eigenpolynomial (n j : ℕ) (hj : j + 3 ≤ n) :
     have := congrArg (eval 0) hHrefl
     simp only [eval_comp, eval_sub, eval_one, eval_X, sub_zero, eval_mul, eval_C] at this
     rw [this]; exact mul_ne_zero (pow_ne_zero _ (by norm_num)) hH0
-  -- the polynomial `Q`
+  exact ⟨H, hGH, hHmon, hHdeg, hH1, hHrefl⟩
+
+/-- Normalizing `Phi j H` turns reflection about one half into coefficient reversal. -/
+private theorem exists_normalized_Phi (j : ℕ) (H : ℝ[X]) (hHdeg : H.natDegree = j)
+    (hH1 : H.eval 1 ≠ 0)
+    (hHrefl : H.comp (1 - X) = C ((-1 : ℝ) ^ j) * H) :
+    ∃ Q : ℝ[X], Q = C (H.eval 1)⁻¹ * Phi j H ∧ Q.Monic ∧ Q.natDegree = j ∧
+      Q.eval 0 ≠ 0 ∧ Q.reverse = C ((-1 : ℝ) ^ j) * Q ∧
+      (Odd j → Q.eval 1 = 0) := by
   set Q₀ := Phi j H with hQ₀
   have hQ₀d : Q₀.natDegree = j := natDegree_eq_of_le_of_coeff_ne_zero (Phi_natDegree_le j H)
     (by rw [Phi_coeff_top j H hHdeg.le]; exact hH1)
@@ -429,8 +437,21 @@ theorem exists_reduced_eigenpolynomial (n j : ℕ) (hj : j + 3 ≤ n) :
     rw [reverse, hQd, eval_reflect_eq Q j hQd.le 1 one_ne_zero, one_pow, one_mul, div_one,
       eval_mul, eval_C, hodd.neg_one_pow] at this
     linarith
+  exact ⟨Q, by simp [hQ₀, hQ], hQmon, hQd, hQ0, hQrev, hQ1⟩
+
+/-- Auxiliary construction of the reduced eigenpolynomials. -/
+theorem exists_reduced_eigenpolynomial (n j : ℕ) (hj : j + 3 ≤ n) :
+    ∃ Q : ℝ[X], Q.Monic ∧ Q.natDegree = j ∧ Q.eval 0 ≠ 0 ∧
+      Q.reverse = C ((-1 : ℝ) ^ j) * Q ∧ (Odd j → Q.eval 1 = 0) ∧
+      ∃ v : Fin (n - 1) → ℝ, v ≠ 0 ∧
+        monicPolynomial n v - monicPolynomial n 0 = X * (X + 1) ^ (n - j - 2) * Q ∧
+        linearPart n v = eigenvalue n (j + 1) • v := by
+  have hn : 2 ≤ n := by lia
+  obtain ⟨H, hGH, -, hHdeg, hH1, hHrefl⟩ :=
+    exists_eigPoly_reduced_factor n j hj
+  obtain ⟨Q, hQ, hQmon, hQd, hQ0, hQrev, hQ1⟩ :=
+    exists_normalized_Phi j H hHdeg hH1 hHrefl
   refine ⟨Q, hQmon, hQd, hQ0, hQrev, hQ1, ?_⟩
-  -- the eigenvector
   have hX1 : (X + 1 : ℝ[X]) = X - C (-1) := by simp
   set T := X * (X + 1) ^ (n - j - 2) * Q with hT
   have hTd : T.natDegree ≤ n - 1 := by
@@ -447,7 +468,7 @@ theorem exists_reduced_eigenpolynomial (n j : ℕ) (hj : j + 3 ≤ n) :
   · rintro rfl
     rw [Tv_zero] at hv
     exact hTne hv.symm
-  · have hGv : Gv n v = (-(H.eval 1)⁻¹) • G := by
+  · have hGv : Gv n v = (-(H.eval 1)⁻¹) • eigPoly n (j + 2) := by
       rw [Gv_eq_Psi n hn, hv]
       refine eq_of_eval_eq_off _ _ {1} fun y hy => ?_
       have hy' : y ≠ 1 := by simpa using hy
@@ -467,6 +488,7 @@ theorem exists_reduced_eigenpolynomial (n j : ℕ) (hj : j + 3 ≤ n) :
       field_simp
       ring
     have e := eigenvalue_spec n (j + 1) (by lia)
+    have heig := (eigPoly_spec n (j + 2) (by lia) (by lia)).2.2
     apply linearPart_eigen_of_bern n hn v _ e.1
     rw [e.2, hGv, map_smul, heig, smul_comm]
 
