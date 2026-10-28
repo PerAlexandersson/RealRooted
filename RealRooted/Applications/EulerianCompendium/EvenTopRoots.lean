@@ -122,6 +122,29 @@ private theorem evenTop_odd_successor (n : ℕ) (hn : 2 ≤ n)
     exact RealRooted.natDegree_affineDeriv (evenTopDescentPolynomial_ne_zero n)
       hdegree hc
 
+/-- The even-rank quadratic recurrence raises degree when its top coefficient does not cancel. -/
+private lemma natDegree_evenTop_quadratic_step {f g : ℝ[X]} (n : ℕ) (hf : f ≠ 0)
+    (hlt : f.natDegree < n)
+    (hrec : g = (1 + C (n : ℝ) * X) * f + (X * (1 - X)) * f.derivative) :
+    g.natDegree = f.natDegree + 1 := by
+  have htop :
+      ((-1 : ℝ) * (f.natDegree : ℝ) + n) * f.leadingCoeff ≠ 0 := by
+    apply mul_ne_zero
+    · rw [neg_one_mul, neg_add_eq_sub]
+      exact sub_ne_zero.mpr (by exact_mod_cast (Nat.ne_of_gt hlt))
+    · exact leadingCoeff_ne_zero.mpr hf
+  have hstep :=
+    Polynomial.natDegree_and_leadingCoeff_quadratic_derivative_add_linear_mul_add
+      f 0 1 (-1) 1 (n : ℝ) (by simp) htop
+  have hform : g =
+      (C 1 * X + C (-1) * X ^ 2) * f.derivative +
+        (C 1 + C (n : ℝ) * X) * f + 0 := by
+    rw [hrec]
+    simp only [C_1, C_neg, one_mul, neg_mul, add_zero]
+    ring
+  rw [hform]
+  exact hstep.1
+
 private theorem evenTop_even_successor (n : ℕ) (_hn : 2 ≤ n)
     (hgood : evenTopGood n) (hdegree : 1 ≤ (evenTopDescentPolynomial n).natDegree)
     (hodd : n % 2 = 1) :
@@ -140,103 +163,9 @@ private theorem evenTop_even_successor (n : ℕ) (_hn : 2 ≤ n)
     simpa [add_comm, mul_comm, mul_left_comm, mul_assoc] using hrec
   -- The recurrence raises the degree by one: its coefficient at degree d+1
   -- is (n-d) times the positive leading coefficient of f.
-  have hdegree' : g.natDegree = f.natDegree + 1 := by
-    let d := f.natDegree
-    have hlt : d < n := by
-      exact evenTop_degree_lt_index n (by lia)
-    have hdpos : 1 ≤ d := hdegree
-    have hdsucc : d - 1 + 1 = d := Nat.sub_add_cancel hdpos
-    have hcoeff_above : f.coeff (d + 1) = 0 :=
-      coeff_eq_zero_of_natDegree_lt (by dsimp [d]; lia)
-    have hder_coeff_d : f.derivative.coeff d = 0 :=
-      coeff_eq_zero_of_natDegree_lt (by rw [natDegree_derivative]; lia)
-    have hder_coeff_prev : f.derivative.coeff (d - 1) =
-        (d : ℝ) * f.leadingCoeff := by
-      rw [coeff_derivative, hdsucc]
-      rw [show ((d - 1 : ℕ) : ℝ) + 1 = (d : ℝ) by
-        rw [Nat.cast_sub (by lia : 1 ≤ d)]
-        ring]
-      rw [show f.coeff d = f.leadingCoeff by rfl]
-      ring
-    have hfactor_coeff : ((1 - X) * f.derivative).coeff d =
-        -(d : ℝ) * f.leadingCoeff := by
-      rw [show (1 - X : ℝ[X]) * f.derivative =
-        f.derivative - X * f.derivative by ring, coeff_sub, hder_coeff_d]
-      have hx : (X * f.derivative).coeff d = f.derivative.coeff (d - 1) := by
-        rw [show d = d - 1 + 1 by lia, coeff_X_mul]
-        rw [show d - 1 + 1 - 1 = d - 1 by lia]
-      rw [hx, hder_coeff_prev]
-      ring
-    have hfirst_coeff : (X * ((1 - X) * f.derivative)).coeff (d + 1) =
-        -(d : ℝ) * f.leadingCoeff := by
-      have hx : (X * ((1 - X) * f.derivative)).coeff (d + 1) =
-          ((1 - X) * f.derivative).coeff d := by
-        rw [show d + 1 = Nat.succ d by lia, coeff_X_mul]
-      rw [hx, hfactor_coeff]
-    have hsecond_coeff : ((1 + C (n : ℝ) * X) * f).coeff (d + 1) =
-        (n : ℝ) * f.leadingCoeff := by
-      rw [show (1 + C (n : ℝ) * X) * f = f + C (n : ℝ) * (X * f) by ring,
-        coeff_add, hcoeff_above, zero_add, coeff_C_mul]
-      have hx : (X * f).coeff (d + 1) = f.coeff d := by
-        rw [show d + 1 = Nat.succ d by lia, coeff_X_mul]
-      rw [hx]
-      rw [show f.coeff d = f.leadingCoeff by rfl]
-    have hrec'' : g = X * ((1 - X) * f.derivative) +
-        (1 + C (n : ℝ) * X) * f := by
-      rw [hrec']
-      ring
-    have hcoeff : g.coeff (d + 1) = ((n : ℝ) - d) * f.leadingCoeff := by
-      rw [hrec'', coeff_add, hfirst_coeff, hsecond_coeff]
-      ring
-    have hcoeffne : g.coeff (d + 1) ≠ 0 := by
-      rw [hcoeff]
-      exact mul_ne_zero
-        (sub_ne_zero.mpr (by exact_mod_cast (Ne.symm (Nat.ne_of_lt hlt))))
-        (leadingCoeff_ne_zero.mpr (evenTopDescentPolynomial_ne_zero n))
-    have hu_degree : (1 + C (n : ℝ) * X).natDegree ≤ 1 := by
-      calc
-        (1 + C (n : ℝ) * X).natDegree ≤
-            max (1 : ℝ[X]).natDegree (C (n : ℝ) * X).natDegree :=
-          natDegree_add_le _ _
-        _ ≤ max 0 1 := max_le (by norm_num) (by
-          exact (natDegree_C_mul_le (n : ℝ) X).trans (by norm_num))
-        _ = 1 := by norm_num
-    have hsub_degree : (1 - X : ℝ[X]).natDegree ≤ 1 := by
-      calc
-        (1 - X : ℝ[X]).natDegree ≤
-            max (1 : ℝ[X]).natDegree X.natDegree := natDegree_sub_le _ _
-        _ ≤ 1 := by simp
-    have hv_degree : (X * (1 - X : ℝ[X])).natDegree ≤ 2 := by
-      calc
-        (X * (1 - X : ℝ[X])).natDegree ≤
-            X.natDegree + (1 - X : ℝ[X]).natDegree :=
-          natDegree_mul_le
-        _ ≤ 1 + 1 := Nat.add_le_add (by simp) hsub_degree
-        _ = 2 := by norm_num
-    have hder_degree : f.derivative.natDegree ≤ d - 1 := by
-      rw [natDegree_derivative]
-    have hle : g.natDegree ≤ d + 1 := by
-      rw [hrec']
-      calc
-        ((1 + C (n : ℝ) * X) * f +
-          X * (1 - X : ℝ[X]) * f.derivative).natDegree
-            ≤ max ((1 + C (n : ℝ) * X) * f).natDegree
-                (X * (1 - X : ℝ[X]) * f.derivative).natDegree := natDegree_add_le _ _
-        _ ≤ d + 1 := by
-          apply max_le
-          · calc
-              ((1 + C (n : ℝ) * X) * f).natDegree
-                  ≤ (1 + C (n : ℝ) * X).natDegree + f.natDegree :=
-                natDegree_mul_le
-              _ ≤ 1 + d := Nat.add_le_add hu_degree le_rfl
-              _ = d + 1 := by lia
-          · calc
-              (X * (1 - X : ℝ[X]) * f.derivative).natDegree
-                  ≤ (X * (1 - X : ℝ[X])).natDegree + f.derivative.natDegree :=
-                natDegree_mul_le
-              _ ≤ 2 + (d - 1) := Nat.add_le_add hv_degree hder_degree
-              _ ≤ d + 1 := by lia
-    exact Polynomial.natDegree_eq_of_le_of_coeff_ne_zero hle hcoeffne
+  have hdegree' : g.natDegree = f.natDegree + 1 :=
+    natDegree_evenTop_quadratic_step n (evenTopDescentPolynomial_ne_zero n)
+      (evenTop_degree_lt_index n (by lia)) hrec'
   have hu : RealRooted.HasPosLeadingCoeff g := evenTopDescentPolynomial_pos_leadingCoeff (n + 1)
   have hvneg : ∀ r : ℝ, f.IsRoot r →
       (X * (1 - X : ℝ[X])).eval r < 0 := by

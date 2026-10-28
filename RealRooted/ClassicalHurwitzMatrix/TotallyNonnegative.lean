@@ -83,9 +83,7 @@ classical Hurwitz matrix. -/
 protected theorem IsTotallyNonneg.hurwitz_tail_of_zero {c : ℕ → R}
     (h : (hurwitz c).IsTotallyNonneg) (h0 : c 0 = 0) :
     (hurwitz fun n ↦ c (n + 1)).IsTotallyNonneg := by
-  have hsucc : StrictMono (fun n : ℕ ↦ n + 1) := by
-    intro i j hij
-    lia
+  have hsucc : StrictMono (fun n : ℕ ↦ n + 1) := fun _ _ h ↦ by lia
   rw [hurwitz_tail_of_zero h0]
   exact h.submatrix hsucc hsucc
 
@@ -149,9 +147,7 @@ coefficient subsequence Pólya-frequency. -/
 theorem IsTotallyNonneg.hurwitz_even_isPolyaFreqSeq
     {c : ℕ → ℝ} (h : (hurwitz c).IsTotallyNonneg) :
     RealRooted.IsPolyaFreqSeq (fun n => c (2 * n)) := by
-  have hrows : StrictMono (fun i : ℕ => 2 * i) := by
-    intro i j hij
-    lia
+  have hrows : StrictMono (fun i : ℕ => 2 * i) := fun _ _ h ↦ by lia
   have hsub := h.submatrix hrows strictMono_id
   rw [hurwitz_even_submatrix_eq_toeplitz_transpose] at hsub
   simpa [RealRooted.IsPolyaFreqSeq] using hsub.toRect.transpose.toSquare
@@ -175,12 +171,8 @@ coefficient subsequence Pólya-frequency. -/
 theorem IsTotallyNonneg.hurwitz_odd_isPolyaFreqSeq
     {c : ℕ → ℝ} (h : (hurwitz c).IsTotallyNonneg) :
     RealRooted.IsPolyaFreqSeq (fun n => c (2 * n + 1)) := by
-  have hrows : StrictMono (fun i : ℕ => 2 * i + 1) := by
-    intro i j hij
-    lia
-  have hcols : StrictMono (fun j : ℕ => j + 1) := by
-    intro i j hij
-    lia
+  have hrows : StrictMono (fun i : ℕ => 2 * i + 1) := fun _ _ h ↦ by lia
+  have hcols : StrictMono (fun j : ℕ => j + 1) := fun _ _ h ↦ by lia
   have hsub := h.submatrix hrows hcols
   rw [hurwitz_odd_submatrix_eq_toeplitz_transpose] at hsub
   simpa [RealRooted.IsPolyaFreqSeq] using hsub.toRect.transpose.toSquare
@@ -213,9 +205,7 @@ theorem hurwitz_C_isTotallyNonneg (a : ℝ) (ha : 0 ≤ a) :
     (hurwitz (C a).coeff).IsTotallyNonneg := by
   have hscaled : (a • (1 : Matrix ℕ ℕ ℝ)).IsTotallyNonneg :=
     IsTotallyNonneg.smul IsTotallyNonneg.one ha
-  have hdouble : StrictMono (fun j : ℕ ↦ 2 * j) := by
-    intro i j hij
-    lia
+  have hdouble : StrictMono (fun j : ℕ ↦ 2 * j) := fun _ _ h ↦ by lia
   have hsub := hscaled.submatrix strictMono_id hdouble
   convert hsub using 1
   ext i j
@@ -262,17 +252,14 @@ theorem IsTotallyNonneg.hurwitz_routhReducedOddPart_coeff_nonneg
   have hzero : (oddEvenPolynomial odd even).coeff 0 = even.coeff 0 := by
     simpa using coeff_oddEvenPolynomial_even odd even 0
   rw [hzero] at hminor
-  have hdet :
-      0 ≤ odd.coeff 0 * even.coeff (n + 1) -
-        odd.coeff (n + 1) * even.coeff 0 := by
-    simpa [Matrix.det_fin_two, Matrix.hurwitz,
-      coeff_oddEvenPolynomial_even, coeff_oddEvenPolynomial_odd] using hminor
   rw [coeff_routhReducedOddPart, routhCoefficient]
   rw [show even.coeff (n + 1) - even.coeff 0 / odd.coeff 0 * odd.coeff (n + 1) =
       (odd.coeff 0 * even.coeff (n + 1) -
         odd.coeff (n + 1) * even.coeff 0) / odd.coeff 0 by
     field_simp]
-  exact div_nonneg hdet hodd.le
+  apply div_nonneg ?_ hodd.le
+  simpa [Matrix.det_fin_two, Matrix.hurwitz,
+    coeff_oddEvenPolynomial_even, coeff_oddEvenPolynomial_odd] using hminor
 
 /-- Under the same positive-pivot hypothesis, the canonical Routh-reduced
 polynomial has nonnegative coefficients. -/

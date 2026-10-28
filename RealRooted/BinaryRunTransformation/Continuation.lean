@@ -177,6 +177,201 @@ theorem shiftedBinaryRunDeformation_sqCriticalValue_deriv_nonneg
   rw [show 2 * C * (A / t) = 2 * ((A * C) / t) by field_simp]
   positivity
 
+/-- The base deformation is nonzero and split, with simple roots and negative critical points. -/
+private theorem shiftedBinaryRunDeformation_base_root_data
+    {n : ℕ} (hn : 4 ≤ n) {p : ℝ[X]} (hp : IsPFPolynomial p)
+    (hp0 : p ≠ 0) (hdegree : p.natDegree ≤ n) {t δ : ℝ}
+    (ht : 0 < t) (hδ : 0 < δ)
+    (hQdegree :
+      (shiftedBinaryRunDeformation n p t).natDegree = (n + 1) / 2)
+    (hQpf : IsPFPolynomial (shiftedBinaryRunDeformation n p t))
+    (hmargin : ∀ x,
+      (shiftedBinaryRunDeformation n p t).derivative.IsRoot x →
+        δ ≤ (shiftedBinaryRunDeformation n p t).eval x ^ 2) :
+    shiftedBinaryRunDeformation n p t ≠ 0 ∧
+      (shiftedBinaryRunDeformation n p t).Splits ∧
+      HasSimpleRoots (shiftedBinaryRunDeformation n p t) ∧
+      ∀ x, (shiftedBinaryRunDeformation n p t).derivative.IsRoot x → x < 0 := by
+  let Q := shiftedBinaryRunDeformation n p t
+  have hQ0 : Q ≠ 0 := by
+    intro hzero
+    have hzeroDegree : Q.natDegree = 0 := by
+      simp only [hzero, Polynomial.natDegree_zero]
+    rw [hQdegree] at hzeroDegree
+    lia
+  have hQsplit : Q.Splits := (hQpf.ne_zero_and_splits hQ0).2
+  have hQcoeff0 : Q.coeff 0 ≠ 0 := by
+    dsimp only [Q]
+    rw [coeff_zero_shiftedBinaryRunDeformation hdegree]
+    exact (eval_pos_of_hasNonnegCoeffs hp.hasNonnegCoeffs hp0 ht).ne'
+  have hQrootsNeg : ∀ x, Q.IsRoot x → x < 0 := by
+    intro x hx
+    apply lt_of_le_of_ne
+      (hQpf.roots_nonpos x ((Polynomial.mem_roots hQ0).mpr hx))
+    intro hxzero
+    subst x
+    exact hQcoeff0 <| by
+      simpa [Polynomial.IsRoot.def,
+        Polynomial.coeff_zero_eq_eval_zero] using hx
+  have hcriticalNeg : ∀ x, Q.derivative.IsRoot x → x < 0 :=
+    roots_neg_of_interlaces_of_right_roots_neg
+      (derivative_interlaces_of_natDegree_ne_zero hQsplit <| by
+        rw [hQdegree]
+        lia)
+      hQrootsNeg
+  exact ⟨hQ0, hQsplit, hasSimpleRoots_of_criticalValueMargin hQ0 hδ hmargin,
+    hcriticalNeg⟩
+
+/-- Nearby critical branches exhaust all critical points and have nondecreasing squared values. -/
+private theorem eventually_shiftedBinaryRunDeformation_critical_branches_nondecreasing
+    {n : ℕ} (hn : 4 ≤ n) {p : ℝ[X]} (hp : IsPFPolynomial p)
+    (hp0 : p ≠ 0) (hdegree : p.natDegree ≤ n) {t δ : ℝ}
+    (ht : 0 < t) (hδ : 0 < δ) {D : ℕ} (hDpos : 0 < D)
+    (hQdegreeEvent : ∀ᶠ u in 𝓝 t,
+      (shiftedBinaryRunDeformation n p u).natDegree = D)
+    (hQlocal : ∀ᶠ u in 𝓝 t,
+      (shiftedBinaryRunDeformation n p u).Splits ∧
+        HasSimpleRoots (shiftedBinaryRunDeformation n p u))
+    {ι : Type} [Finite ι] (ξ : ι → ℝ → ℝ)
+    (hξlocal : ∀ᶠ u in 𝓝 t,
+      (shiftedBinaryRunDeformation n p u).derivative.Splits ∧
+        HasSimpleRoots (shiftedBinaryRunDeformation n p u).derivative ∧
+        (∀ i, ContDiffAt ℝ 1 (ξ i) u) ∧
+        ∀ x, (shiftedBinaryRunDeformation n p u).derivative.IsRoot x ↔
+          ∃ i, ξ i u = x)
+    (hcriticalNeg : ∀ x,
+      (shiftedBinaryRunDeformation n p t).derivative.IsRoot x → x < 0)
+    (hmargin : ∀ x,
+      (shiftedBinaryRunDeformation n p t).derivative.IsRoot x →
+        δ ≤ (shiftedBinaryRunDeformation n p t).eval x ^ 2) :
+    ∀ᶠ u in 𝓝 t,
+      (∀ x, (shiftedBinaryRunDeformation n p u).derivative.IsRoot x →
+        ∃ i, ξ i u = x) ∧
+      ∀ i, ∃ v,
+        HasDerivAt
+          (fun s => (shiftedBinaryRunDeformation n p s).eval (ξ i s) ^ 2) v u ∧
+          0 ≤ v := by
+  have hξlocal_t := hξlocal.self_of_nhds
+  have hξroot_t (i) :
+      (shiftedBinaryRunDeformation n p t).derivative.IsRoot (ξ i t) :=
+    (hξlocal_t.2.2.2 (ξ i t)).2 ⟨i, rfl⟩
+  have hξneg : ∀ᶠ u in 𝓝 t, ∀ i, ξ i u < 0 := by
+    rw [Filter.eventually_all]
+    intro i
+    apply (hξlocal_t.2.2.1 i).continuousAt.eventually_lt continuousAt_const
+    exact hcriticalNeg (ξ i t) (hξroot_t i)
+  have hξvalue0 (i) :
+      (shiftedBinaryRunDeformation n p t).eval (ξ i t) ≠ 0 := by
+    intro hzero
+    have h := hmargin (ξ i t) (hξroot_t i)
+    rw [hzero] at h
+    norm_num at h
+    linarith
+  have hξvalue : ∀ᶠ u in 𝓝 t, ∀ i,
+      (shiftedBinaryRunDeformation n p u).eval (ξ i u) ≠ 0 := by
+    rw [Filter.eventually_all]
+    intro i
+    have hcont : ContinuousAt
+        (fun u => (shiftedBinaryRunDeformation n p u).eval (ξ i u)) t :=
+      (contDiff_shiftedBinaryRunDeformation_eval_prod
+        hdegree).continuous.continuousAt.comp
+          (continuousAt_id.prodMk (hξlocal_t.2.2.1 i).continuousAt)
+    exact hcont.eventually_ne (hξvalue0 i)
+  have hpos : ∀ᶠ u in 𝓝 t, 0 < u :=
+    continuousAt_const.eventually_lt continuousAt_id ht
+  filter_upwards [hξlocal, hQdegreeEvent, hQlocal, hξneg, hξvalue, hpos]
+    with u hRu hQdegreeu hQu hξnegu hξvalueu hupos
+  constructor
+  · intro x hx
+    exact (hRu.2.2.2 x).1 hx
+  · intro i
+    have hcritical :
+        (shiftedBinaryRunDeformation n p u).derivative.eval (ξ i u) = 0 :=
+      (hRu.2.2.2 (ξ i u)).2 ⟨i, rfl⟩
+    have hξderiv : HasDerivAt (ξ i) (deriv (ξ i) u) u :=
+      (hRu.2.2.1 i).differentiableAt (by norm_num) |>.hasDerivAt
+    let v := 2 * (shiftedBinaryRunDeformation n p u).eval (ξ i u) *
+      ((shiftedBinaryRunPointing n p u).eval (ξ i u) / u)
+    refine ⟨v, ?_, ?_⟩
+    · exact hasDerivAt_sq_shiftedBinaryRunDeformation_criticalValue
+        hdegree hupos.ne' hξderiv rfl hcritical
+    · exact shiftedBinaryRunDeformation_sqCriticalValue_deriv_nonneg
+        hn hp hp0 hdegree hupos (hξnegu i) hcritical hQu.1
+        (by rw [hQdegreeu]; exact hDpos) (hξvalueu i)
+
+/-- Nearby deformations remain split and simple while retaining the critical-value margin. -/
+private theorem eventually_shiftedBinaryRunDeformation_root_margin_package
+    {n : ℕ} (hn : 4 ≤ n) {p : ℝ[X]} (hp : IsPFPolynomial p)
+    (hp0 : p ≠ 0) (hdegree : p.natDegree ≤ n) {t δ : ℝ}
+    (ht : 0 < t) (hδ : 0 < δ)
+    (hQdegree :
+      (shiftedBinaryRunDeformation n p t).natDegree = (n + 1) / 2)
+    (hQpf : IsPFPolynomial (shiftedBinaryRunDeformation n p t))
+    (hmargin : ∀ x,
+      (shiftedBinaryRunDeformation n p t).derivative.IsRoot x →
+        δ ≤ (shiftedBinaryRunDeformation n p t).eval x ^ 2) :
+    ∀ᶠ u in 𝓝[>] t,
+      (shiftedBinaryRunDeformation n p u).Splits ∧
+        HasSimpleRoots (shiftedBinaryRunDeformation n p u) ∧
+        ∀ x, (shiftedBinaryRunDeformation n p u).derivative.IsRoot x →
+          δ ≤ (shiftedBinaryRunDeformation n p u).eval x ^ 2 := by
+  let D := (n + 1) / 2
+  let Q : ℝ → ℝ[X] := fun u => shiftedBinaryRunDeformation n p u
+  let R : ℝ → ℝ[X] := fun u => (Q u).derivative
+  have hDpos : 0 < D := by dsimp [D]; lia
+  obtain ⟨hQ0, hQsplit, hQsimple, hcriticalNeg⟩ :=
+    shiftedBinaryRunDeformation_base_root_data
+      hn hp hp0 hdegree ht hδ hQdegree hQpf hmargin
+  have hQdegreeEvent : ∀ᶠ u in 𝓝 t, (Q u).natDegree = D := by
+    apply Polynomial.eventually_natDegree_eq_of_le_of_continuous_coeff
+      Q hQdegree hQ0
+    · intro u
+      exact natDegree_shiftedBinaryRunDeformation_le hdegree u
+    · intro k
+      exact (contDiff_coeff_shiftedBinaryRunDeformation hdegree k).continuous
+  obtain ⟨_, _, hζlocal⟩ :=
+    exists_eventually_polynomial_root_branches Q hDpos.ne'
+      hQdegreeEvent hQsplit hQsimple fun x _ =>
+        by simpa only [Q] using
+          (contDiff_shiftedBinaryRunDeformation_eval_prod
+            hdegree).contDiffAt.of_le (by norm_num)
+  have hQlocal : ∀ᶠ u in 𝓝 t, (Q u).Splits ∧ HasSimpleRoots (Q u) :=
+    hζlocal.mono fun _ hu => ⟨hu.1, hu.2.1⟩
+  have hRdegreeEvent : ∀ᶠ u in 𝓝 t, (R u).natDegree = D - 1 := by
+    filter_upwards [hQdegreeEvent] with u hu
+    change (Q u).derivative.natDegree = D - 1
+    rw [Polynomial.natDegree_derivative, hu]
+  have hR0 : R t ≠ 0 :=
+    Polynomial.derivative_ne_zero.mpr <| by
+      rw [hQdegree]
+      exact hDpos.ne'
+  have hRsplit : (R t).Splits := (hQpf.derivative.ne_zero_and_splits hR0).2
+  have hRsimple : HasSimpleRoots (R t) :=
+    hQsimple.derivative_of_splits hQsplit <| by
+      rw [hQdegree]
+      exact hDpos.ne'
+  have hDsub : D - 1 ≠ 0 := by dsimp [D]; lia
+  obtain ⟨ξ, _, hξlocal⟩ :=
+    exists_eventually_polynomial_root_branches R hDsub
+      hRdegreeEvent hRsplit hRsimple fun x _ =>
+        by simpa only [R, Q] using
+          (contDiff_derivative_shiftedBinaryRunDeformation_eval_prod
+            hdegree).contDiffAt.of_le (by norm_num)
+  have hbranches :=
+    eventually_shiftedBinaryRunDeformation_critical_branches_nondecreasing
+      hn hp hp0 hdegree ht hδ hDpos
+      (by simpa only [Q] using hQdegreeEvent)
+      (by simpa only [Q] using hQlocal) ξ (by simpa only [R, Q] using hξlocal)
+      hcriticalNeg hmargin
+  have hmarginRight :=
+    criticalValueMargin_eventually_right_of_branches Q ξ
+      (fun i => hmargin (ξ i t) <| by
+        exact (hξlocal.self_of_nhds.2.2.2 (ξ i t)).2 ⟨i, rfl⟩)
+      (by simpa only [Q] using hbranches)
+  filter_upwards [hmarginRight, hQlocal.filter_mono inf_le_left]
+    with u humargin hQu
+  exact ⟨hQu.1, hQu.2, humargin⟩
+
 /-- At a positive parameter where the shifted deformation has maximal degree,
 is PF, and has a positive critical-value margin, the same PF and margin
 conditions persist in a right neighborhood. -/
@@ -194,132 +389,14 @@ theorem shiftedBinaryRunDeformation_pf_criticalValueMargin_eventually_right
       IsPFPolynomial (shiftedBinaryRunDeformation n p u) ∧
         ∀ x, (shiftedBinaryRunDeformation n p u).derivative.IsRoot x →
           δ ≤ (shiftedBinaryRunDeformation n p u).eval x ^ 2 := by
-  let D := (n + 1) / 2
-  let Q : ℝ → ℝ[X] := fun u => shiftedBinaryRunDeformation n p u
-  let R : ℝ → ℝ[X] := fun u => (Q u).derivative
-  have hDpos : 0 < D := by dsimp [D]; lia
-  have hQ0 : Q t ≠ 0 := by
-    intro hzero
-    have hzeroDegree : (Q t).natDegree = 0 := by simp [hzero]
-    rw [hQdegree] at hzeroDegree
-    lia
-  have hQsplit : (Q t).Splits :=
-    (hQpf.ne_zero_and_splits hQ0).2
-  have hQcoeff0 : (Q t).coeff 0 ≠ 0 := by
-    change (shiftedBinaryRunDeformation n p t).coeff 0 ≠ 0
-    rw [coeff_zero_shiftedBinaryRunDeformation hdegree]
-    exact (eval_pos_of_hasNonnegCoeffs hp.hasNonnegCoeffs hp0 ht).ne'
-  have hQrootsNeg : ∀ x, (Q t).IsRoot x → x < 0 := by
-    intro x hx
-    apply lt_of_le_of_ne
-      (hQpf.roots_nonpos x ((Polynomial.mem_roots hQ0).mpr hx))
-    intro hxzero
-    subst x
-    exact hQcoeff0 <| by
-      simpa [Polynomial.IsRoot.def,
-        Polynomial.coeff_zero_eq_eval_zero] using hx
-  have hcriticalNeg : ∀ x, (Q t).derivative.IsRoot x → x < 0 := by
-    exact roots_neg_of_interlaces_of_right_roots_neg
-      (derivative_interlaces_of_natDegree_ne_zero hQsplit <| by
-        rw [hQdegree]
-        lia)
-      hQrootsNeg
-  have hQsimple : HasSimpleRoots (Q t) :=
-    hasSimpleRoots_of_criticalValueMargin hQ0 hδ hmargin
-  have hQdegreeEvent : ∀ᶠ u in 𝓝 t, (Q u).natDegree = D := by
-    apply Polynomial.eventually_natDegree_eq_of_le_of_continuous_coeff
-      Q hQdegree hQ0
-    · intro u
-      exact natDegree_shiftedBinaryRunDeformation_le hdegree u
-    · intro k
-      exact (contDiff_coeff_shiftedBinaryRunDeformation hdegree k).continuous
-  obtain ⟨ζ, hζbase, hζlocal⟩ :=
-    exists_eventually_polynomial_root_branches Q hDpos.ne'
-      hQdegreeEvent hQsplit hQsimple fun x _ =>
-        by simpa only [Q] using
-          (contDiff_shiftedBinaryRunDeformation_eval_prod
-            hdegree).contDiffAt.of_le (by norm_num)
-  have hRdegreeEvent : ∀ᶠ u in 𝓝 t, (R u).natDegree = D - 1 := by
-    filter_upwards [hQdegreeEvent] with u hu
-    change (Q u).derivative.natDegree = D - 1
-    rw [Polynomial.natDegree_derivative, hu]
-  have hR0 : R t ≠ 0 :=
-    Polynomial.derivative_ne_zero.mpr <| by
-      rw [hQdegree]
-      exact hDpos.ne'
-  have hRsplit : (R t).Splits :=
-    (hQpf.derivative.ne_zero_and_splits hR0).2
-  have hRsimple : HasSimpleRoots (R t) :=
-    hQsimple.derivative_of_splits hQsplit <| by
-      rw [hQdegree]
-      exact hDpos.ne'
-  have hDsub : D - 1 ≠ 0 := by dsimp [D]; lia
-  obtain ⟨ξ, hξbase, hξlocal⟩ :=
-    exists_eventually_polynomial_root_branches R hDsub
-      hRdegreeEvent hRsplit hRsimple fun x _ =>
-        by simpa only [R, Q] using
-          (contDiff_derivative_shiftedBinaryRunDeformation_eval_prod
-            hdegree).contDiffAt.of_le (by norm_num)
-  have hξlocal_t := hξlocal.self_of_nhds
-  have hξroot_t (i) : R t |>.IsRoot (ξ i t) :=
-    (hξlocal_t.2.2.2 (ξ i t)).2 ⟨i, rfl⟩
-  have hξneg : ∀ᶠ u in 𝓝 t, ∀ i, ξ i u < 0 := by
-    rw [Filter.eventually_all]
-    intro i
-    apply (hξlocal_t.2.2.1 i).continuousAt.eventually_lt continuousAt_const
-    exact hcriticalNeg (ξ i t) (hξroot_t i)
-  have hξvalue0 (i) : (Q t).eval (ξ i t) ≠ 0 := by
-    intro hzero
-    have h := hmargin (ξ i t) (hξroot_t i)
-    rw [hzero] at h
-    norm_num at h
-    linarith
-  have hξvalue : ∀ᶠ u in 𝓝 t, ∀ i, (Q u).eval (ξ i u) ≠ 0 := by
-    rw [Filter.eventually_all]
-    intro i
-    have hcont : ContinuousAt (fun u => (Q u).eval (ξ i u)) t :=
-      (contDiff_shiftedBinaryRunDeformation_eval_prod
-        hdegree).continuous.continuousAt.comp
-          (continuousAt_id.prodMk (hξlocal_t.2.2.1 i).continuousAt)
-    exact hcont.eventually_ne (hξvalue0 i)
-  have hpos : ∀ᶠ u in 𝓝 t, 0 < u :=
-    continuousAt_const.eventually_lt continuousAt_id ht
-  have hlocal : ∀ᶠ u in 𝓝 t,
-      (∀ x, (Q u).derivative.IsRoot x → ∃ i, ξ i u = x) ∧
-        ∀ i, ∃ v,
-          HasDerivAt (fun s => (Q s).eval (ξ i s) ^ 2) v u ∧
-            0 ≤ v := by
-    filter_upwards [hζlocal, hξlocal, hQdegreeEvent, hξneg,
-      hξvalue, hpos] with u hQu hRu hQdegreeu hξnegu hξvalueu hupos
-    constructor
-    · intro x hx
-      exact (hRu.2.2.2 x).1 hx
-    · intro i
-      have hcritical : (Q u).derivative.eval (ξ i u) = 0 :=
-        (hRu.2.2.2 (ξ i u)).2 ⟨i, rfl⟩
-      have hξderiv : HasDerivAt (ξ i) (deriv (ξ i) u) u :=
-        (hRu.2.2.1 i).differentiableAt (by norm_num) |>.hasDerivAt
-      let v := 2 * (Q u).eval (ξ i u) *
-        ((shiftedBinaryRunPointing n p u).eval (ξ i u) / u)
-      refine ⟨v, ?_, ?_⟩
-      · exact hasDerivAt_sq_shiftedBinaryRunDeformation_criticalValue
-          hdegree hupos.ne' hξderiv rfl hcritical
-      · exact shiftedBinaryRunDeformation_sqCriticalValue_deriv_nonneg
-          hn hp hp0 hdegree hupos (hξnegu i) hcritical hQu.1
-          (by rw [hQdegreeu]; exact hDpos) (hξvalueu i)
-  have hbase : ∀ i, δ ≤ (Q t).eval (ξ i t) ^ 2 :=
-    fun i => hmargin (ξ i t) (hξroot_t i)
-  have hmarginRight :=
-    criticalValueMargin_eventually_right_of_branches Q ξ hbase hlocal
-  have hQright : ∀ᶠ u in 𝓝[>] t,
-      (Q u).Splits ∧ HasSimpleRoots (Q u) :=
-    hζlocal.filter_mono inf_le_left |>.mono fun _ hu => ⟨hu.1, hu.2.1⟩
-  filter_upwards [hmarginRight, hQright,
+  have hlocal := eventually_shiftedBinaryRunDeformation_root_margin_package
+    hn hp hp0 hdegree ht hδ hQdegree hQpf hmargin
+  filter_upwards [hlocal,
     (self_mem_nhdsWithin : ∀ᶠ u : ℝ in 𝓝[>] t, u ∈ Set.Ioi t)]
-    with u humargin hQu hut
+    with u hQu hut
   refine ⟨IsPFPolynomial.of_realRooted_nonneg
     (hp.hasNonnegCoeffs.shiftedBinaryRunDeformation hdegree <| by
-      exact ht.le.trans (le_of_lt hut)) hQu.1, humargin⟩
+      exact ht.le.trans (le_of_lt hut)) hQu.1, hQu.2.2⟩
 
 /-- A positive critical-value margin propagates across a compact positive
 parameter interval.  The closedness step uses a clamped family so that the

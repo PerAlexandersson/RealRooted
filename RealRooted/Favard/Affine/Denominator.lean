@@ -139,8 +139,7 @@ theorem favardInterlacing_affine_param_coeff_den_split_rev
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) :=
   favardInterlacing_affine_param_coeff_den_split hs hβ hP0 hP1 hden <| by
     intro n
-    have hcomm : β (n + 1) * d n = d n * β (n + 1) := by ring
-    simpa [hcomm] using hraw n
+    simpa only [mul_comm (β (n + 1)) (d n)] using hraw n
 
 /-- Real-rootedness consequence of reversed-coefficient distributed
 scalar-denominator affine Favard. -/
@@ -195,22 +194,10 @@ theorem interlaces_of_favard_affine_param_coeff_den_raw
     ∀ n : Nat, Interlaces (P n) (P (n + 1)) :=
   interlaces_of_favard_affine_param_coeff hs hβ hP0 hP1 <| by
     intro n
-    have hnorm :
-        P (n + 2) =
-          C (d n)⁻¹ *
-            ((C (araw n) * X + C (braw n)) * P (n + 1) + C (craw n) * P n) :=
-      eq_C_inv_mul_of_C_mul_eq (hden n) (hraw n)
-    calc
-      P (n + 2) =
-          C (d n)⁻¹ *
-            ((C (araw n) * X + C (braw n)) * P (n + 1) + C (craw n) * P n) :=
-        hnorm
-      _ =
-          (C (s (n + 1)) * X - C (α (n + 1))) * P (n + 1) -
-            C (β (n + 1)) * P n := by
-        rw [← hs_coeff n, ← hα_coeff n, ← hβ_coeff n]
-        simp [C_mul, C_neg, sub_eq_add_neg]
-        ring_nf
+    rw [← hs_coeff n, ← hα_coeff n, ← hβ_coeff n]
+    rw [eq_C_inv_mul_of_C_mul_eq (hden n) (hraw n)]
+    simp [C_mul, C_neg, sub_eq_add_neg]
+    ring
 
 /-- Positive-slope parameterized affine Favard wrapper with a scalar left
 denominator and raw affine numerator coefficients.

@@ -53,6 +53,112 @@ private theorem reverseHermiteTransform_interl_of_weightedSum_right
   · grind
   · grind
 
+/-- PF preservation at one degree follows from the lower-degree simultaneous hypotheses. -/
+private lemma reverseHermiteTransform_isPF_of_lower_degree
+    {n : ℕ} {p : ℝ[X]} (hp : IsPFPolynomial p) (hpdeg : p.natDegree = n)
+    (hPF_lt : ∀ {q : ℝ[X]}, IsPFPolynomial q → q.natDegree < n →
+      IsPFPolynomial (reverseHermiteTransform q))
+    (hInterl_lt : ∀ {f g : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g →
+      Interl f g → g.natDegree < n →
+        Interl (reverseHermiteTransform f) (reverseHermiteTransform g)) :
+    IsPFPolynomial (reverseHermiteTransform p) := by
+  by_cases hp0 : p = 0
+  · simp_all
+  by_cases hpdeg0 : p.natDegree = 0
+  · have hpC := Polynomial.eq_C_of_natDegree_eq_zero hpdeg0
+    rw [hpC] at hp ⊢
+    simpa [reverseHermiteTransform, reverseHermiteBasis] using hp
+  rcases hp.exists_X_sub_C_factor_of_pos_natDegree (Nat.pos_of_ne_zero hpdeg0) with
+    ⟨u, q, hu, hfactor, hq, hqdeg⟩
+  have hqT : IsPFPolynomial (reverseHermiteTransform q) := hPF_lt hq (by lia)
+  have hqder : IsPFPolynomial q.derivative := hq.derivative
+  have hqderT : IsPFPolynomial (reverseHermiteTransform q.derivative) := by
+    apply hPF_lt hqder
+    have := natDegree_derivative_le q
+    lia
+  have hinterl :
+      Interl (reverseHermiteTransform q.derivative) (reverseHermiteTransform q) :=
+    hInterl_lt hqder hq hq.derivative_interl_self (by lia)
+  rw [hfactor, show X - C u = X + C (-u) by grind,
+    reverseHermiteTransform_mul_X_add_C]
+  simpa [linearFactorStep] using
+    linearFactorStep_isPF (r := -u) (by linarith) hinterl hqderT hqT
+
+/-- Interlacing preservation at one degree follows from PF and lower-degree hypotheses. -/
+private lemma reverseHermiteTransform_interl_of_lower_degree
+    {n : ℕ} {f g : ℝ[X]} (hf : IsPFPolynomial f) (hg : IsPFPolynomial g)
+    (hfg : Interl f g) (hgdeg : g.natDegree = n)
+    (hPF : ∀ {p : ℝ[X]}, IsPFPolynomial p → p.natDegree = n →
+      IsPFPolynomial (reverseHermiteTransform p))
+    (hPF_lt : ∀ {p : ℝ[X]}, IsPFPolynomial p → p.natDegree < n →
+      IsPFPolynomial (reverseHermiteTransform p))
+    (hInterl_lt : ∀ {f g : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g →
+      Interl f g → g.natDegree < n →
+        Interl (reverseHermiteTransform f) (reverseHermiteTransform g)) :
+    Interl (reverseHermiteTransform f) (reverseHermiteTransform g) := by
+  classical
+  rcases hfg with hf0 | hg0 | hstrict
+  · rw [hf0, reverseHermiteTransform_zero]
+    exact interl_zero_left _
+  · rw [hg0, reverseHermiteTransform_zero]
+    exact interl_zero_right _
+  by_cases hgdeg0 : g.natDegree = 0
+  · have hfdeg0 : f.natDegree = 0 := by
+      have := hstrict.natDegree_le
+      lia
+    have hfC := Polynomial.eq_C_of_natDegree_eq_zero hfdeg0
+    have hgC := Polynomial.eq_C_of_natDegree_eq_zero hgdeg0
+    rw [hfC, hgC] at hstrict ⊢
+    simpa [reverseHermiteTransform, reverseHermiteBasis] using hstrict.toInterl
+  have hfpos : HasPosLeadingCoeff f :=
+    hf.hasNonnegCoeffs.pos_leadingCoeff hstrict.1.1
+  have hgpos : HasPosLeadingCoeff g :=
+    hg.hasNonnegCoeffs.pos_leadingCoeff hstrict.2.1.1
+  rcases hstrict.exists_kreinSummandExpansion hfpos hgpos with
+    ⟨l, hfexp, hnonneg, hsummand, _⟩
+  apply reverseHermiteTransform_interl_of_weightedSum_right hfexp hnonneg
+  · intro ap hap
+    have hs := hsummand ap hap
+    rcases hs with hself | ⟨u, hfactor⟩
+    · simpa [hself] using (hPF hg hgdeg).interl_self
+    · have hq : IsPFPolynomial ap.2 := hg.of_X_sub_C_mul_factor hfactor
+      have hq0 : ap.2 ≠ 0 := by
+        intro hzero
+        simp_all
+      have hqdeg : ap.2.natDegree < g.natDegree := by
+        rw [hfactor, natDegree_mul (X_sub_C_ne_zero u) hq0, natDegree_X_sub_C]
+        lia
+      have hqder : IsPFPolynomial ap.2.derivative := hq.derivative
+      have hqT : IsPFPolynomial (reverseHermiteTransform ap.2) := hPF_lt hq (by lia)
+      have hqderT : IsPFPolynomial (reverseHermiteTransform ap.2.derivative) := by
+        apply hPF_lt hqder
+        have := natDegree_derivative_le ap.2
+        lia
+      have hder :
+          Interl (reverseHermiteTransform ap.2.derivative)
+            (reverseHermiteTransform ap.2) :=
+        hInterl_lt hqder hq hq.derivative_interl_self (by lia)
+      rw [hfactor, show X - C u = X + C (-u) by grind,
+        reverseHermiteTransform_mul_X_add_C]
+      simpa [linearFactorStep] using
+        interl_linearFactorStep (r := -u) (by
+          have huRoot : g.IsRoot u := by simp_all
+          exact neg_nonneg.mpr
+            (hg.roots_nonpos u ((mem_roots hstrict.2.1.1).mpr huRoot)))
+          hder hqderT hqT
+  · intro ap hap
+    have hs := hsummand ap hap
+    have hp := hs.isPFPolynomial hg
+    rcases hs with hself | ⟨u, hfactor⟩
+    · simpa [hself] using (hPF hg hgdeg).hasNonnegCoeffs
+    · have hp0 : ap.2 ≠ 0 := by
+        intro hzero
+        simp_all
+      have hpdeg : ap.2.natDegree < g.natDegree := by
+        rw [hfactor, natDegree_mul (X_sub_C_ne_zero u) hp0, natDegree_X_sub_C]
+        lia
+      exact (hPF_lt hp (by lia)).hasNonnegCoeffs
+
 private theorem reverseHermiteTransform_preserves_pf_and_interl :
     (∀ {p : ℝ[X]}, IsPFPolynomial p →
       IsPFPolynomial (reverseHermiteTransform p)) ∧
@@ -72,119 +178,32 @@ private theorem reverseHermiteTransform_preserves_pf_and_interl :
     intro n
     induction n using Nat.strong_induction_on with
     | h n ih =>
+        have hPF_lt :
+            ∀ {p : ℝ[X]}, IsPFPolynomial p → p.natDegree < n →
+              IsPFPolynomial (reverseHermiteTransform p) := by
+          intro p hp hdeg
+          exact (ih p.natDegree hdeg).1 hp rfl
+        have hInterl_lt :
+            ∀ {f g : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g →
+              Interl f g → g.natDegree < n →
+                Interl (reverseHermiteTransform f)
+                  (reverseHermiteTransform g) := by
+          intro f g hf hg hfg hdeg
+          exact (ih g.natDegree hdeg).2 hf hg hfg rfl
         have hPF :
             ∀ {p : ℝ[X]}, IsPFPolynomial p → p.natDegree = n →
               IsPFPolynomial (reverseHermiteTransform p) := by
           intro p hp hpdeg
-          by_cases hp0 : p = 0
-          · simp_all
-          by_cases hpdeg0 : p.natDegree = 0
-          · have hpC := Polynomial.eq_C_of_natDegree_eq_zero hpdeg0
-            rw [hpC] at hp ⊢
-            simpa [reverseHermiteTransform, reverseHermiteBasis] using hp
-          rcases hp.exists_X_sub_C_factor_of_pos_natDegree
-              (Nat.pos_of_ne_zero hpdeg0) with
-            ⟨u, q, hu, hfactor, hq, hqdeg⟩
-          have hq0 : q ≠ 0 := by simp_all
-          have hqT : IsPFPolynomial (reverseHermiteTransform q) := by
-            grind
-          have hqder : IsPFPolynomial q.derivative := hq.derivative
-          have hqderT :
-              IsPFPolynomial (reverseHermiteTransform q.derivative) :=
-            (ih q.derivative.natDegree (by
-              rw [← hpdeg]
-              have := natDegree_derivative_le q
-              lia)).1 hqder rfl
-          have hinterl :
-              Interl (reverseHermiteTransform q.derivative)
-                (reverseHermiteTransform q) :=
-            (ih q.natDegree (by lia)).2 hqder hq
-              hq.derivative_interl_self rfl
-          rw [hfactor, show X - C u = X + C (-u) by
-            grind,
-            reverseHermiteTransform_mul_X_add_C]
-          simpa [linearFactorStep] using
-            linearFactorStep_isPF (r := -u) (by linarith)
-              hinterl hqderT hqT
+          exact reverseHermiteTransform_isPF_of_lower_degree
+            hp hpdeg hPF_lt hInterl_lt
         have hInterl :
             ∀ {f g : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial g →
               Interl f g → g.natDegree = n →
               Interl (reverseHermiteTransform f)
                 (reverseHermiteTransform g) := by
           intro f g hf hg hfg hgdeg
-          rcases hfg with hf0 | hg0 | hstrict
-          · rw [hf0, reverseHermiteTransform_zero]
-            exact interl_zero_left _
-          · rw [hg0, reverseHermiteTransform_zero]
-            exact interl_zero_right _
-          by_cases hgdeg0 : g.natDegree = 0
-          · have hfdeg0 : f.natDegree = 0 := by
-              have := hstrict.natDegree_le
-              lia
-            have hfC := Polynomial.eq_C_of_natDegree_eq_zero hfdeg0
-            have hgC := Polynomial.eq_C_of_natDegree_eq_zero hgdeg0
-            rw [hfC, hgC] at hstrict ⊢
-            simpa [reverseHermiteTransform, reverseHermiteBasis] using
-              hstrict.toInterl
-          have hfpos : HasPosLeadingCoeff f :=
-            hf.hasNonnegCoeffs.pos_leadingCoeff hstrict.1.1
-          have hgpos : HasPosLeadingCoeff g :=
-            hg.hasNonnegCoeffs.pos_leadingCoeff hstrict.2.1.1
-          rcases hstrict.exists_kreinSummandExpansion hfpos hgpos with
-            ⟨l, hfexp, hnonneg, hsummand, _⟩
-          apply reverseHermiteTransform_interl_of_weightedSum_right
-            hfexp hnonneg
-          · intro ap hap
-            have hs := hsummand ap hap
-            rcases hs with hself | ⟨u, hfactor⟩
-            · simpa [hself] using
-                (hPF hg hgdeg).interl_self
-            · have hq : IsPFPolynomial ap.2 :=
-                hg.of_X_sub_C_mul_factor hfactor
-              have hq0 : ap.2 ≠ 0 := by
-                intro hzero
-                simp_all
-              have hqdeg : ap.2.natDegree < g.natDegree := by
-                rw [hfactor, natDegree_mul (X_sub_C_ne_zero u) hq0,
-                  natDegree_X_sub_C]
-                lia
-              have hqder : IsPFPolynomial ap.2.derivative := hq.derivative
-              have hqT : IsPFPolynomial
-                  (reverseHermiteTransform ap.2) :=
-                (ih ap.2.natDegree (by lia)).1 hq rfl
-              have hqderT : IsPFPolynomial
-                  (reverseHermiteTransform ap.2.derivative) :=
-                (ih ap.2.derivative.natDegree (by
-                  have := natDegree_derivative_le ap.2
-                  lia)).1 hqder rfl
-              have hder :
-                  Interl (reverseHermiteTransform ap.2.derivative)
-                    (reverseHermiteTransform ap.2) :=
-                (ih ap.2.natDegree (by lia)).2 hqder hq
-                  hq.derivative_interl_self rfl
-              rw [hfactor, show X - C u = X + C (-u) by
-                grind,
-                reverseHermiteTransform_mul_X_add_C]
-              simpa [linearFactorStep] using
-                interl_linearFactorStep (r := -u) (by
-                  have huRoot : g.IsRoot u := by simp_all
-                  exact neg_nonneg.mpr
-                    (hg.roots_nonpos u
-                      ((mem_roots hstrict.2.1.1).mpr huRoot)))
-                  hder hqderT hqT
-          · intro ap hap
-            have hs := hsummand ap hap
-            have hp := hs.isPFPolynomial hg
-            rcases hs with hself | ⟨u, hfactor⟩
-            · simpa [hself] using (hPF hg hgdeg).hasNonnegCoeffs
-            · have hp0 : ap.2 ≠ 0 := by
-                intro hzero
-                simp_all
-              have hpdeg : ap.2.natDegree < g.natDegree := by
-                rw [hfactor, natDegree_mul (X_sub_C_ne_zero u) hp0,
-                  natDegree_X_sub_C]
-                lia
-              exact ((ih ap.2.natDegree (by lia)).1 hp rfl).hasNonnegCoeffs
+          exact reverseHermiteTransform_interl_of_lower_degree
+            hf hg hfg hgdeg hPF hPF_lt hInterl_lt
         exact ⟨hPF, hInterl⟩
   constructor
   · intro p hp

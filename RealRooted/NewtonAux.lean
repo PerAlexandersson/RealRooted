@@ -130,8 +130,6 @@ lemma newton_poly {g : ℝ[X]} (hg : Multiset.card g.roots = g.natDegree)
     g.coeff (j - 1) * g.coeff (j + 1) *
         ((j + 1 : ℝ) * ((g.natDegree - j + 1 : ℕ) : ℝ)) ≤
       g.coeff j ^ 2 * ((j : ℝ) * ((g.natDegree - j : ℕ) : ℝ)) := by
-  revert j
-  intro j hj0 hj
   by_contra h_neg
   have h_pos : 0 < g.coeff (j - 1) * g.coeff (j + 1) :=
     not_le.mp fun h =>
@@ -141,17 +139,16 @@ lemma newton_poly {g : ℝ[X]} (hg : Multiset.card g.roots = g.natDegree)
   set q1 := derivative^[j - 1] g
   set q2 := q1.reverse
   set q := derivative^[g.natDegree - j - 1] q2
+  have hq1_coeff0 : q1.coeff 0 ≠ 0 := by
+    dsimp only [q1]
+    rw [Polynomial.coeff_iterate_derivative, zero_add, nsmul_eq_mul,
+      Nat.descFactorial_self, mul_ne_zero_iff]
+    refine ⟨Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero _), ?_⟩
+    exact mul_ne_zero_iff.mp (ne_of_gt h_pos) |>.1
   have hq_deg : q.natDegree = 2 := by
     have hq_deg : q2.natDegree = g.natDegree - (j - 1) := by
       have hq1_deg : q1.natDegree = g.natDegree - (j - 1) := by
-        have := iterate_derivative_rr hg (j - 1)
-        aesop
-      have hq1_coeff0 : q1.coeff 0 ≠ 0 := by
-        dsimp only [q1]
-        rw [Polynomial.coeff_iterate_derivative, zero_add, nsmul_eq_mul,
-          Nat.descFactorial_self, mul_ne_zero_iff]
-        refine ⟨Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero _), ?_⟩
-        exact mul_ne_zero_iff.mp (ne_of_gt h_pos) |>.1
+        simpa only [q1] using (iterate_derivative_rr hg (j - 1)).2
       have hq2_deg : q2.natDegree = q1.natDegree := by
         rw [Polynomial.reverse_natDegree]
         rw [Polynomial.natTrailingDegree_eq_zero.mpr]
@@ -164,11 +161,7 @@ lemma newton_poly {g : ℝ[X]} (hg : Multiset.card g.roots = g.natDegree)
     · lia
     · apply reverse_rr
       · convert iterate_derivative_rr hg (j - 1) |>.1 using 1
-      · dsimp only [q1]
-        rw [Polynomial.coeff_iterate_derivative, zero_add, nsmul_eq_mul,
-          Nat.descFactorial_self, mul_ne_zero_iff]
-        refine ⟨Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero _), ?_⟩
-        exact mul_ne_zero_iff.mp (ne_of_gt h_pos) |>.1
+      · exact hq1_coeff0
   have hq_coeff0 :
       q.coeff 0 =
         ((g.natDegree - j - 1).descFactorial (g.natDegree - j - 1)) *
@@ -184,8 +177,7 @@ lemma newton_poly {g : ℝ[X]} (hg : Multiset.card g.roots = g.natDegree)
       rw [show q1.natDegree = g.natDegree - (j - 1) from ?_, ← revAtFun_eq, revAtFun]
       · rw [ite_eq_left (by lia)]
         rw [show g.natDegree - (j - 1) - (g.natDegree - j - 1) = 2 by lia]
-      · have := iterate_derivative_rr hg (j - 1)
-        aesop
+      · simpa only [q1] using (iterate_derivative_rr hg (j - 1)).2
     have hq_coeff0 :
         q1.coeff 2 = ((j + 1).descFactorial (j - 1)) * g.coeff (j + 1) := by
       rw [Polynomial.coeff_iterate_derivative]
@@ -207,8 +199,7 @@ lemma newton_poly {g : ℝ[X]} (hg : Multiset.card g.roots = g.natDegree)
         simp [← revAtFun_eq, revAtFun]
         ring_nf
         grind
-    · have := iterate_derivative_rr hg (j - 1)
-      aesop
+    · simpa only [q1] using (iterate_derivative_rr hg (j - 1)).2
   have hq_coeff2 :
       q.coeff 2 =
         ((g.natDegree - j - 1 + 2).descFactorial (g.natDegree - j - 1)) *
@@ -220,16 +211,8 @@ lemma newton_poly {g : ℝ[X]} (hg : Multiset.card g.roots = g.natDegree)
       rw [Polynomial.coeff_iterate_derivative]
       norm_num [add_comm, add_left_comm, add_assoc]
     have hq_coeff2' : q2.coeff (g.natDegree - j - 1 + 2) = q1.coeff 0 := by
-      have hq_coeff2_1 :
-          q2.coeff (g.natDegree - j - 1 + 2) =
-            q1.coeff (q1.natDegree - (g.natDegree - j - 1 + 2)) := by
-        convert Polynomial.coeff_reverse _ _ using 2
-        rw [Polynomial.revAt_le]
-        rw [iterate_derivative_rr hg (j - 1) |>.2]
-        lia
       have hq_coeff2_2 : q1.natDegree = g.natDegree - (j - 1) := by
-        have := iterate_derivative_rr hg (j - 1)
-        aesop
+        simpa only [q1] using (iterate_derivative_rr hg (j - 1)).2
       change q1.reverse.coeff (g.natDegree - j - 1 + 2) = q1.coeff 0
       rw [Polynomial.coeff_reverse, hq_coeff2_2,
         Polynomial.revAt_le

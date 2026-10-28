@@ -379,6 +379,69 @@ private theorem natDegree_sub_upper_bound_of_triple
   exact (natDegree_sub_le h f).trans
     (max_le hh_le (hf_le.trans (Nat.le_succ _)))
 
+/-- A repeated middle root can be removed from the whole interlacing triple. -/
+private theorem strictInterl_sub_of_triple_of_repeated_root
+    {n : ℕ} {f g h : ℝ[X]}
+    (ih : ∀ m < n, ∀ {f g h : ℝ[X]}, g.natDegree = m →
+      StrictInterl f g → StrictInterl g h → StrictInterl f h →
+      HasPosLeadingCoeff f → HasPosLeadingCoeff g → HasPosLeadingCoeff h →
+      HasPosLeadingCoeff (h - f) → StrictInterl g (h - f))
+    (hgdeg : g.natDegree = n)
+    (hfg : StrictInterl f g) (hgh : StrictInterl g h) (hfh : StrictInterl f h)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hh_pos : HasPosLeadingCoeff h) (hsub_pos : HasPosLeadingCoeff (h - f))
+    (hdup : ¬g.roots.Nodup) : StrictInterl g (h - f) := by
+  classical
+  rw [Multiset.nodup_iff_count_le_one] at hdup
+  push Not at hdup
+  obtain ⟨r, hcount⟩ := hdup
+  let qf : ℝ[X] := f /ₘ (X - C r)
+  let qg : ℝ[X] := g /ₘ (X - C r)
+  let qh : ℝ[X] := h /ₘ (X - C r)
+  have hg_mult : 2 ≤ g.rootMultiplicity r := by
+    rw [← count_roots]
+    exact hcount
+  have hrg' : g.IsRoot r :=
+    (rootMultiplicity_pos hfg.2.1.1).mp (by lia)
+  have hf_mult : 1 ≤ f.rootMultiplicity r := by
+    have := (hfg.rootMultiplicity_bounds r).2
+    lia
+  have hrf' : f.IsRoot r :=
+    (rootMultiplicity_pos hfg.1.1).mp (by lia)
+  have hh_mult : 1 ≤ h.rootMultiplicity r := by
+    have := (hgh.rootMultiplicity_bounds r).1
+    lia
+  have hrh' : h.IsRoot r :=
+    (rootMultiplicity_pos hgh.2.1.1).mp (by lia)
+  have hffactor : f = (X - C r) * qf :=
+    (mul_divByMonic_eq_iff_isRoot.mpr hrf').symm
+  have hgfactor : g = (X - C r) * qg :=
+    (mul_divByMonic_eq_iff_isRoot.mpr hrg').symm
+  have hhfactor : h = (X - C r) * qh :=
+    (mul_divByMonic_eq_iff_isRoot.mpr hrh').symm
+  have hqfg := hfg.cofactor_of_common_root hrg' hrf'
+  have hqgh := hgh.cofactor_of_common_root hrh' hrg'
+  have hqfh := hfh.cofactor_of_common_root hrh' hrf'
+  have hqf_pos := hf_pos.divByMonic_X_sub_C hrf'
+  have hqg_pos := hg_pos.divByMonic_X_sub_C hrg'
+  have hqh_pos := hh_pos.divByMonic_X_sub_C hrh'
+  have hsub_factor : h - f = (X - C r) * (qh - qf) := by
+    rw [hffactor, hhfactor]
+    ring
+  have hqsub_pos : HasPosLeadingCoeff (qh - qf) := by
+    apply hasPosLeadingCoeff_of_X_sub_C_mul
+    simpa [hsub_factor] using hsub_pos
+  have hqg_deg : qg.natDegree + 1 = g.natDegree := by
+    rw [hgfactor, natDegree_mul (X_sub_C_ne_zero r) hqg_pos.ne_zero,
+      natDegree_X_sub_C]
+    lia
+  have hqstrictInterl : StrictInterl qg (qh - qf) :=
+    ih qg.natDegree (by lia) rfl hqfg hqgh hqfh
+      hqf_pos hqg_pos hqh_pos hqsub_pos
+  have hmul := hqstrictInterl.mul_common_factor
+    (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
+  simpa [hgfactor, hsub_factor] using hmul
+
 /-- **Signed outer-difference cone.**  Let `f`, `g`, and `h` be an ordered
 positive-leading interlacing triple.  If the outer difference has positive
 leading coefficient, then the middle polynomial precedes that difference.
@@ -402,54 +465,8 @@ theorem StrictInterl.sub_of_triple_of_posLeadingCoeff
     g.natDegree ?_ rfl hfg hgh hfh hf_pos hg_pos hh_pos hsub_pos
   intro n ih f g h hgdeg hfg hgh hfh hf_pos hg_pos hh_pos hsub_pos
   by_cases hdup : ¬g.roots.Nodup
-  · rw [Multiset.nodup_iff_count_le_one] at hdup
-    push Not at hdup
-    obtain ⟨r, hcount⟩ := hdup
-    let qf : ℝ[X] := f /ₘ (X - C r)
-    let qg : ℝ[X] := g /ₘ (X - C r)
-    let qh : ℝ[X] := h /ₘ (X - C r)
-    have hg_mult : 2 ≤ g.rootMultiplicity r := by
-      rw [← count_roots]
-      exact hcount
-    have hrg' : g.IsRoot r :=
-      (rootMultiplicity_pos hfg.2.1.1).mp (by lia)
-    have hf_mult : 1 ≤ f.rootMultiplicity r := by
-      have := (hfg.rootMultiplicity_bounds r).2
-      lia
-    have hrf' : f.IsRoot r :=
-      (rootMultiplicity_pos hfg.1.1).mp (by lia)
-    have hh_mult : 1 ≤ h.rootMultiplicity r := by
-      have := (hgh.rootMultiplicity_bounds r).1
-      lia
-    have hrh' : h.IsRoot r := (rootMultiplicity_pos hgh.2.1.1).mp (by lia)
-    have hffactor : f = (X - C r) * qf :=
-      (mul_divByMonic_eq_iff_isRoot.mpr hrf').symm
-    have hgfactor : g = (X - C r) * qg :=
-      (mul_divByMonic_eq_iff_isRoot.mpr hrg').symm
-    have hhfactor : h = (X - C r) * qh :=
-      (mul_divByMonic_eq_iff_isRoot.mpr hrh').symm
-    have hqfg : StrictInterl qf qg := hfg.cofactor_of_common_root hrg' hrf'
-    have hqgh : StrictInterl qg qh := hgh.cofactor_of_common_root hrh' hrg'
-    have hqfh : StrictInterl qf qh := hfh.cofactor_of_common_root hrh' hrf'
-    have hqf_pos : HasPosLeadingCoeff qf := hf_pos.divByMonic_X_sub_C hrf'
-    have hqg_pos : HasPosLeadingCoeff qg := hg_pos.divByMonic_X_sub_C hrg'
-    have hqh_pos : HasPosLeadingCoeff qh := hh_pos.divByMonic_X_sub_C hrh'
-    have hsub_factor : h - f = (X - C r) * (qh - qf) := by
-      rw [hffactor, hhfactor]
-      ring
-    have hqsub_pos : HasPosLeadingCoeff (qh - qf) := by
-      apply hasPosLeadingCoeff_of_X_sub_C_mul
-      simpa [hsub_factor] using hsub_pos
-    have hqg_deg : qg.natDegree + 1 = g.natDegree := by
-      rw [hgfactor, natDegree_mul (X_sub_C_ne_zero r) hqg_pos.ne_zero,
-        natDegree_X_sub_C]
-      lia
-    have hqstrictInterl : StrictInterl qg (qh - qf) :=
-      ih qg.natDegree (by lia) rfl hqfg hqgh hqfh
-        hqf_pos hqg_pos hqh_pos hqsub_pos
-    have hmul := hqstrictInterl.mul_common_factor
-      (isRealRooted_X_sub_C r).1 (isRealRooted_X_sub_C r).2
-    simpa [hgfactor, hsub_factor] using hmul
+  · exact strictInterl_sub_of_triple_of_repeated_root ih hgdeg hfg hgh hfh
+      hf_pos hg_pos hh_pos hsub_pos hdup
   · have hg_nodup : g.roots.Nodup := not_not.mp hdup
     have hsub_splits : (h - f).Splits := by
       have hall := allComboRealRooted_of_strictInterl hfh
@@ -460,35 +477,8 @@ theorem StrictInterl.sub_of_triple_of_posLeadingCoeff
     have hdeg_hi : (h - f).natDegree ≤ g.natDegree + 1 :=
       natDegree_sub_upper_bound_of_triple hfg hgh
     by_cases hgzero : g.natDegree = 0
-    · have hsub_cases : (h - f).natDegree = 0 ∨ (h - f).natDegree = 1 := by lia
-      rcases hsub_cases with hsub_zero | hsub_one
-      · have hgC : g = C (g.coeff 0) := eq_C_of_natDegree_eq_zero hgzero
-        have hdC : h - f = C ((h - f).coeff 0) :=
-          eq_C_of_natDegree_eq_zero hsub_zero
-        have hbase : StrictInterl (1 : ℝ[X]) (1 : ℝ[X]) := StrictInterl.refl (by simp) (by simp)
-        have hgcoeff : g.coeff 0 ≠ 0 := by
-          intro hc
-          apply hg_pos.ne_zero
-          rw [hgC, hc]
-          simp
-        have hdcoeff : (h - f).coeff 0 ≠ 0 := by
-          intro hc
-          apply hsub_pos.ne_zero
-          rw [hdC, hc]
-          simp
-        rw [hgC, hdC]
-        simpa only [mul_one] using
-          StrictInterl.C_mul_right (StrictInterl.C_mul_left hbase hgcoeff) hdcoeff
-      · have hbase : StrictInterl (1 : ℝ[X]) (h - f) :=
-          (interlaces_one_linear hsub_one).toStrictInterl
-        have hgC : g = C (g.coeff 0) := eq_C_of_natDegree_eq_zero hgzero
-        have hgcoeff : g.coeff 0 ≠ 0 := by
-          intro hc
-          apply hg_pos.ne_zero
-          rw [hgC, hc]
-          simp
-        rw [hgC]
-        simpa only [mul_one] using StrictInterl.C_mul_left hbase hgcoeff
+    · exact StrictInterl.of_natDegree_eq_zero_left hg_pos.ne_zero hgzero
+        hsub_pos.ne_zero (by lia)
     · have hgdeg_pos : 0 < g.natDegree := Nat.pos_of_ne_zero hgzero
       have hgder_pos : HasPosLeadingCoeff g.derivative :=
         hg_pos.derivative hgzero

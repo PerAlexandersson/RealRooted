@@ -130,43 +130,34 @@ private theorem elementarySymmetricStep_mul_apply
   simp only [elementarySymmetricStep, lowerBidiagonalFin_apply, ite_mul,
     one_mul, zero_mul]
   calc
-    (∑ x, if i = x then A x j
-        else if i.val = x.val + 1 then
-          if r ≤ x.val then w r * A x j else 0
-        else 0) =
-        ∑ x, ((if i = x then A x j else 0) +
-          if i.val = x.val + 1 then
-            if r ≤ x.val then w r * A x j else 0
-          else 0) := by
+    (∑ x, if i = x then A x j else if i.val = x.val + 1 then
+      if r ≤ x.val then w r * A x j else 0 else 0) =
+        ∑ x, ((if i = x then A x j else 0) + if i.val = x.val + 1 then
+          if r ≤ x.val then w r * A x j else 0 else 0) := by
       apply Finset.sum_congr rfl
-      intro x hx
+      intro x _
       by_cases hix : i = x <;> simp [hix]
-    _ = A i j + ∑ x,
-        if i.val = x.val + 1 then
-          if r ≤ x.val then w r * A x j else 0
-        else 0 := by simp [Finset.sum_add_distrib]
-    _ = A i j + if r < i.val then
-        w r * A ⟨i.val - 1, by lia⟩ j
-      else 0 := by
+    _ = A i j + (∑ x, if i.val = x.val + 1 then
+        if r ≤ x.val then w r * A x j else 0 else 0) := by
+      simp [Finset.sum_add_distrib]
+    _ = A i j + if r < i.val then w r * A ⟨i.val - 1, by lia⟩ j else 0 := by
       congr 1
       by_cases hri : r < i.val
       · rw [ite_eq_left hri]
         let p : Fin (N + 1) := ⟨i.val - 1, by lia⟩
-        have hip : i.val = p.val + 1 := by simp [p]; lia
         rw [Finset.sum_eq_single p]
-        · rw [ite_eq_left hip, ite_eq_left (by simp [p]; lia)]
-        · intro b hb hbp
+        · simp [p]
+          lia
+        · intro b _ hbp
           by_cases hib : i.val = b.val + 1
-          · have hval : b.val = p.val := by simp [p] at hib ⊢; lia
-            exact (hbp (Fin.ext hval)).elim
+          · exact (hbp (Fin.ext (by simp [p] at hib ⊢; lia))).elim
           · simp [hib]
         · simp
       · rw [ite_eq_right hri]
         apply Finset.sum_eq_zero
-        intro x hx
+        intro x _
         by_cases hix : i.val = x.val + 1
-        · have hrx : ¬r ≤ x.val := by lia
-          simp [hix, hrx]
+        · simp [hix, show ¬r ≤ x.val by lia]
         · simp [hix]
 
 /-- After `r` factors, row `i` contains elementary symmetric functions in the
@@ -211,18 +202,10 @@ theorem elementarySymmetricStepProduct_apply
                 (fun h => hij (Fin.ext h.symm))
             have hjp : j.val ≤ p.val := by simp [p]; lia
             rw [ih (by lia), ite_eq_left hjp]
-            have hmin : min r i.val = r := min_eq_left (Nat.le_of_lt hri)
-            have hmin' : min r p.val = r := by
-              rw [min_eq_left]
-              simp [p]
-              lia
-            have hminSucc : min (r + 1) i.val = r + 1 :=
-              min_eq_left (by lia)
-            rw [hmin, hmin', hminSucc]
-            have hdegree : i.val - j.val = (p.val - j.val) + 1 := by
-              simp [p]
-              lia
-            rw [hdegree, elementarySymmetricPrefix_succ]
+            rw [min_eq_left (by lia), min_eq_left (by simp [p]; lia),
+              min_eq_left (by lia),
+              show i.val - j.val = (p.val - j.val) + 1 by simp [p]; lia,
+              elementarySymmetricPrefix_succ]
         · rw [ite_eq_right hri]
           have hir : i.val ≤ r := by lia
           rw [min_eq_right hir, min_eq_right (by lia : i.val ≤ r + 1)]
@@ -258,16 +241,13 @@ theorem elementarySymmetricStep_isTotallyNonneg
   apply isTotallyNonneg_lowerBidiagonalFin
   · simp
   · intro j
-    by_cases hrj : r ≤ j
-    · simp [hrj, hw r]
-    · simp [hrj]
+    exact ite_nonneg (hw r) le_rfl
 
 theorem elementarySymmetricStepProduct_isTotallyNonneg
     {w : ℕ → R} (hw : ∀ i, 0 ≤ w i) (N r : ℕ) :
     (elementarySymmetricStepProduct w N r).IsTotallyNonneg := by
   induction r with
-  | zero =>
-      simp [elementarySymmetricStepProduct, Matrix.IsTotallyNonneg.one]
+  | zero => simp [elementarySymmetricStepProduct, Matrix.IsTotallyNonneg.one]
   | succ r ih =>
       rw [elementarySymmetricStepProduct]
       exact (elementarySymmetricStep_isTotallyNonneg hw N r).mul ih

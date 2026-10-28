@@ -26,6 +26,118 @@ noncomputable section
 
 namespace RealRooted.LiuWang
 
+/-- A non-simple real-root multiset contains a root of multiplicity at least two. -/
+private lemma exists_root_of_one_lt_rootMultiplicity {f : ℝ[X]} (hf0 : f ≠ 0)
+    (hnodup : ¬ f.roots.Nodup) : ∃ r, f.IsRoot r ∧ 1 < f.rootMultiplicity r := by
+  have hnot_count : ¬ ∀ r, f.roots.count r ≤ 1 := by
+    intro hcount
+    exact hnodup (Multiset.nodup_iff_count_le_one.mpr hcount)
+  obtain ⟨r, hcount⟩ := not_forall.mp hnot_count
+  have hmult : 1 < f.rootMultiplicity r := by
+    rw [← count_roots]
+    lia
+  exact ⟨r, (rootMultiplicity_pos hf0).mp (by lia), hmult⟩
+
+/-- Removing a common linear factor transports the sum factorization and degree bounds. -/
+private lemma cofactor_sum_factor_and_degrees
+    {iota : Type*} {f a d qf qF : ℝ[X]} {s : Finset iota}
+    {b g qg : iota → ℝ[X]} {r : ℝ}
+    (hd : d = X - C r) (hd_ne : d ≠ 0) (hqf_ne : qf ≠ 0)
+    (hdf : d * qf = f) (hqg_factor : ∀ i ∈ s, d * qg i = g i)
+    (hqF : qF = a * qf + ∑ i ∈ s, b i * qg i)
+    (hF_pos : HasPosLeadingCoeff (a * f + ∑ i ∈ s, b i * g i))
+    (hdeg_lo : f.natDegree ≤ (a * f + ∑ i ∈ s, b i * g i).natDegree)
+    (hdeg_hi : (a * f + ∑ i ∈ s, b i * g i).natDegree ≤ f.natDegree + 1) :
+    d * (∑ i ∈ s, b i * qg i) = ∑ i ∈ s, b i * g i ∧
+      d * qF = a * f + ∑ i ∈ s, b i * g i ∧
+      HasPosLeadingCoeff qF ∧ qf.natDegree ≤ qF.natDegree ∧
+      qF.natDegree ≤ qf.natDegree + 1 := by
+  have hsum_factor : d * (∑ i ∈ s, b i * qg i) = ∑ i ∈ s, b i * g i := by
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro i hi
+    rw [← hqg_factor i hi]
+    ring
+  have hF_factor : d * qF = a * f + ∑ i ∈ s, b i * g i := by
+    calc
+      d * qF = a * (d * qf) + d * (∑ i ∈ s, b i * qg i) := by
+        rw [hqF]
+        ring
+      _ = a * f + ∑ i ∈ s, b i * g i := by rw [hdf, hsum_factor]
+  have hqF_pos : HasPosLeadingCoeff qF := by
+    rw [← hF_factor] at hF_pos
+    simpa [HasPosLeadingCoeff, hd, leadingCoeff_mul] using hF_pos
+  have hqF_ne : qF ≠ 0 := hqF_pos.ne_zero
+  have hqF_deg : (d * qF).natDegree = qF.natDegree + 1 := by
+    rw [natDegree_mul hd_ne hqF_ne]
+    simp [hd, Nat.add_comm]
+  have hqf_deg : (d * qf).natDegree = qf.natDegree + 1 := by
+    rw [natDegree_mul hd_ne hqf_ne]
+    simp [hd, Nat.add_comm]
+  refine ⟨hsum_factor, hF_factor, hqF_pos, ?_, ?_⟩
+  · have h : (d * qf).natDegree ≤ (d * qF).natDegree := by
+      rw [hdf, hF_factor]
+      exact hdeg_lo
+    rw [hqf_deg, hqF_deg] at h
+    lia
+  · have h : (d * qF).natDegree ≤ (d * qf).natDegree + 1 := by
+      rw [hdf, hF_factor]
+      exact hdeg_hi
+    rw [hqF_deg, hqf_deg] at h
+    lia
+
+/-- Combined root flux descends after removing a common repeated-root factor. -/
+private lemma cofactor_combined_flux
+    {iota : Type*} {f d qf : ℝ[X]} {s : Finset iota}
+    {b g qg : iota → ℝ[X]} {r : ℝ}
+    (hd : d = X - C r) (hdf : d * qf = f)
+    (hsum_factor : d * (∑ i ∈ s, b i * qg i) = ∑ i ∈ s, b i * g i)
+    (hqf_pos : HasPosLeadingCoeff qf)
+    (hqg_inter : ∀ i ∈ s, StrictInterl (qg i) qf)
+    (hqg_pos : ∀ i ∈ s, HasPosLeadingCoeff (qg i))
+    (hflux : ∀ t, f.IsRoot t →
+      (∑ i ∈ s, b i * g i).eval t * f.derivative.eval t ≤ 0)
+    (hrepeated : ∀ i ∈ s, ∀ t, f.IsRoot t → 1 < f.rootMultiplicity t →
+      (b i).eval t ≤ 0)
+    (hrf : f.IsRoot r) (hmult : 1 < f.rootMultiplicity r) :
+    ∀ t, qf.IsRoot t →
+      (∑ i ∈ s, b i * qg i).eval t * qf.derivative.eval t ≤ 0 := by
+  intro t ht
+  by_cases htr : t = r
+  · subst t
+    rw [eval_finsetSum, Finset.sum_mul]
+    refine Finset.sum_nonpos fun i hi ↦ ?_
+    rw [eval_mul, mul_assoc]
+    exact mul_nonpos_of_nonpos_of_nonneg (hrepeated i hi r hrf hmult)
+      ((hqg_inter i hi).eval_mul_eval_derivative_nonneg (hqg_pos i hi) hqf_pos ht)
+  · have htf : f.IsRoot t := by
+      rw [← hdf, Polynomial.IsRoot.def, eval_mul, ht.eq_zero, mul_zero]
+    have hder_eval : f.derivative.eval t = d.eval t * qf.derivative.eval t := by
+      rw [← hdf, derivative_mul, eval_add, eval_mul, eval_mul, ht.eq_zero]
+      ring
+    have hdt_pos : 0 < (d.eval t) ^ 2 := by
+      simp only [hd, eval_sub, eval_X, eval_C]
+      exact sq_pos_of_ne_zero (sub_ne_zero.mpr htr)
+    have horig := hflux t htf
+    rw [← hsum_factor, eval_mul, hder_eval] at horig
+    ring_nf at horig
+    nlinarith
+
+/-- Repeated-root coefficient signs descend after removing one linear factor. -/
+private lemma cofactor_repeated_signs
+    {iota : Type*} {f d qf : ℝ[X]} {s : Finset iota} {b : iota → ℝ[X]}
+    (hd_ne : d ≠ 0) (hqf_ne : qf ≠ 0) (hdf : d * qf = f)
+    (hrepeated : ∀ i ∈ s, ∀ t, f.IsRoot t → 1 < f.rootMultiplicity t →
+      (b i).eval t ≤ 0) :
+    ∀ i ∈ s, ∀ t, qf.IsRoot t → 1 < qf.rootMultiplicity t →
+      (b i).eval t ≤ 0 := by
+  intro i hi t ht htmult
+  apply hrepeated i hi t
+  · rw [← hdf, Polynomial.IsRoot.def, eval_mul, ht.eq_zero, mul_zero]
+  · have hprod_ne : d * qf ≠ 0 := mul_ne_zero hd_ne hqf_ne
+    rw [← hdf, rootMultiplicity_mul hprod_ne]
+    lia
+
 /-- A finite-family interlacing step from combined root flux at simple roots,
 with coefficientwise signs only at repeated roots. -/
 theorem strictInterl_mul_add_sum_mul_of_combined_flux_of_pos
@@ -50,15 +162,8 @@ theorem strictInterl_mul_add_sum_mul_of_combined_flux_of_pos
         hdeg_hi fun r hr ↦ ?_
       rw [eval_add, eval_mul, hr.eq_zero, mul_zero, zero_add]
       exact hflux r hr
-    · have hnot_count : ¬ ∀ r, f.roots.count r ≤ 1 := by
-        intro hcount
-        exact hnodup (Multiset.nodup_iff_count_le_one.mpr hcount)
-      obtain ⟨r, hcount⟩ := not_forall.mp hnot_count
-      have hmult : 1 < f.rootMultiplicity r := by
-        rw [← count_roots]
-        lia
-      have hrf : f.IsRoot r :=
-        (rootMultiplicity_pos hf_pos.ne_zero).mp (by lia)
+    · obtain ⟨r, hrf, hmult⟩ :=
+        exists_root_of_one_lt_rootMultiplicity hf_pos.ne_zero hnodup
       let d : ℝ[X] := X - C r
       let qf : ℝ[X] := f /ₘ d
       let qg : ι → ℝ[X] := fun i ↦ g i /ₘ d
@@ -97,76 +202,21 @@ theorem strictInterl_mul_add_sum_mul_of_combined_flux_of_pos
           rw [hqg_factor i hi]
           exact hg_pos i hi
         exact hasPosLeadingCoeff_of_X_sub_C_mul (r := r) (by simpa [d] using hprod)
-      have hsum_factor : d * (∑ i ∈ s, b i * qg i) = ∑ i ∈ s, b i * g i := by
-        rw [Finset.mul_sum]
-        apply Finset.sum_congr rfl
-        intro i hi
-        rw [← hqg_factor i hi]
-        ring
-      have hF_factor : d * qF = a * f + ∑ i ∈ s, b i * g i := by
-        calc
-          d * qF = a * (d * qf) + d * (∑ i ∈ s, b i * qg i) := by
-            simp only [qF, mul_add]
-            congr 1
-            ring
-          _ = a * f + ∑ i ∈ s, b i * g i := by rw [hdf, hsum_factor]
-      have hqF_pos : HasPosLeadingCoeff qF := by
-        rw [← hF_factor] at hF_pos
-        simpa [HasPosLeadingCoeff, d, leadingCoeff_mul] using hF_pos
-      have hqF_ne : qF ≠ 0 := hqF_pos.ne_zero
-      have hqF_deg : (d * qF).natDegree = qF.natDegree + 1 := by
-        rw [natDegree_mul hd_ne hqF_ne]
-        simp [d, Nat.add_comm]
-      have hqf_deg : (d * qf).natDegree = qf.natDegree + 1 := by
-        rw [natDegree_mul hd_ne hqf_ne]
-        simp [d, Nat.add_comm]
-      have hqdeg_lo : qf.natDegree ≤ qF.natDegree := by
-        have h : (d * qf).natDegree ≤ (d * qF).natDegree := by
-          rw [hdf, hF_factor]
-          exact hdeg_lo
-        rw [hqf_deg, hqF_deg] at h
-        lia
-      have hqdeg_hi : qF.natDegree ≤ qf.natDegree + 1 := by
-        have h : (d * qF).natDegree ≤ (d * qf).natDegree + 1 := by
-          rw [hdf, hF_factor]
-          exact hdeg_hi
-        rw [hqF_deg, hqf_deg] at h
-        lia
+      obtain ⟨hsum_factor, hF_factor, hqF_pos, hqdeg_lo, hqdeg_hi⟩ :=
+        cofactor_sum_factor_and_degrees (r := r) (hd := rfl) hd_ne hqf_ne hdf
+          hqg_factor rfl hF_pos hdeg_lo hdeg_hi
       have hqflux : ∀ t, qf.IsRoot t →
-          (∑ i ∈ s, b i * qg i).eval t * qf.derivative.eval t ≤ 0 := by
-        intro t ht
-        by_cases htr : t = r
-        · subst t
-          rw [eval_finsetSum, Finset.sum_mul]
-          refine Finset.sum_nonpos fun i hi ↦ ?_
-          rw [eval_mul, mul_assoc]
-          exact mul_nonpos_of_nonpos_of_nonneg (hrepeated i hi r hrf hmult)
-            ((hqg_inter i hi).eval_mul_eval_derivative_nonneg
-              (hqg_pos i hi) hqf_pos ht)
-        · have htf : f.IsRoot t := by
-            rw [← hdf, Polynomial.IsRoot.def, eval_mul, ht.eq_zero, mul_zero]
-          have hder_eval : f.derivative.eval t =
-              d.eval t * qf.derivative.eval t := by
-            rw [← hdf, derivative_mul, eval_add, eval_mul, eval_mul, ht.eq_zero]
-            ring
-          have hdt_pos : 0 < (d.eval t) ^ 2 := by
-            simp only [d, eval_sub, eval_X, eval_C]
-            exact sq_pos_of_ne_zero (sub_ne_zero.mpr htr)
-          have horig := hflux t htf
-          rw [← hsum_factor, eval_mul, hder_eval] at horig
-          ring_nf at horig
-          nlinarith
+          (∑ i ∈ s, b i * qg i).eval t * qf.derivative.eval t ≤ 0 :=
+        cofactor_combined_flux (r := r) (hd := rfl) hdf hsum_factor
+          hqf_pos hqg_inter hqg_pos hflux hrepeated hrf hmult
       have hqrepeated : ∀ i ∈ s, ∀ t, qf.IsRoot t →
-          1 < qf.rootMultiplicity t → (b i).eval t ≤ 0 := by
-        intro i hi t ht htmult
-        apply hrepeated i hi t
-        · rw [← hdf, Polynomial.IsRoot.def, eval_mul, ht.eq_zero, mul_zero]
-        · have hprod_ne : d * qf ≠ 0 := mul_ne_zero hd_ne hqf_ne
-          rw [← hdf, rootMultiplicity_mul hprod_ne]
-          lia
+          1 < qf.rootMultiplicity t → (b i).eval t ≤ 0 :=
+        cofactor_repeated_signs hd_ne hqf_ne hdf hrepeated
       have hqf_lt : qf.natDegree < f.natDegree := by
-        have hdegf : f.natDegree = qf.natDegree + 1 := by
-          rw [← hdf, hqf_deg]
+        have hqf_deg : (d * qf).natDegree = qf.natDegree + 1 := by
+          rw [natDegree_mul hd_ne hqf_ne]
+          simp [d, Nat.add_comm]
+        have hdegf : f.natDegree = qf.natDegree + 1 := by rw [← hdf, hqf_deg]
         lia
       have hq : StrictInterl qf qF :=
         ih qf.natDegree hqf_lt hqf_pos hqf_splits hqg_inter hqg_pos hqflux

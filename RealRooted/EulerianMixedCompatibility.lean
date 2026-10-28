@@ -390,6 +390,85 @@ private theorem mixedEulerStep_nonneg_degree_leading
     rw [Polynomial.leadingCoeff, hPdeg, hcoeff]
   exact ⟨hP_nonneg, hPdeg, hlead, by rw [HasPosLeadingCoeff, hlead]; exact htop⟩
 
+/-- At a root of the mixed input, its interlacing residue stays left of the Euler pole. -/
+private theorem mixedEulerStep_root_residue_bound
+    {lam : ℝ} {f g h : ℝ[X]}
+    (hlam : 0 < lam) (hdef : h = f + C lam * g)
+    (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
+    (hh : HasNonnegCoeffs h)
+    (hh_pos : HasPosLeadingCoeff h) (hg_pos : HasPosLeadingCoeff g)
+    (hgh : StrictInterl g h)
+    (hh_simple : HasSimpleRoots h) (hg_simple : HasSimpleRoots g)
+    (hh_deg : h.natDegree = f.natDegree)
+    (hdeg : g.natDegree + 1 = f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬g.IsRoot r)
+    (hno_hg : ∀ r, h.IsRoot r → ¬g.IsRoot r)
+    (hfboundary : 0 < f.coeff 0 ∨ 2 ≤ f.natDegree)
+    {r : ℝ} (hroot : h.IsRoot r) :
+    r < 0 ∧ r + lam * (g.eval r / h.derivative.eval r) < 0 := by
+  let residue : ℝ := g.eval r / h.derivative.eval r
+  change r < 0 ∧ r + lam * residue < 0
+  have hrmem : r ∈ h.roots := (mem_roots hh_simple.ne_zero).mpr hroot
+  have hr_nonpos := roots_nonpos_of_hasNonnegCoeffs hh r hrmem
+  have hhzero : 0 < h.eval 0 := by
+    have hfeval : 0 ≤ f.eval 0 := by
+      simpa [coeff_zero_eq_eval_zero] using hf 0
+    have hgeval : 0 ≤ g.eval 0 := by
+      simpa [coeff_zero_eq_eval_zero] using hg 0
+    have hsum_ne : f.eval 0 + lam * g.eval 0 ≠ 0 := by
+      intro hsum
+      have hf0 : f.eval 0 = 0 := by nlinarith
+      have hg0 : g.eval 0 = 0 := by nlinarith
+      exact hno 0 (by simpa [Polynomial.IsRoot.def] using hf0)
+        (by simpa [Polynomial.IsRoot.def] using hg0)
+    rw [hdef]
+    simp only [eval_add, eval_mul, eval_C]
+    exact lt_of_le_of_ne (add_nonneg hfeval (mul_nonneg hlam.le hgeval))
+      (Ne.symm hsum_ne)
+  have hr_neg : r < 0 := by
+    have hr_ne : r ≠ 0 := by
+      intro hr0
+      apply hhzero.ne'
+      simpa only [hr0] using Polynomial.IsRoot.def.mp hroot
+    exact lt_of_le_of_ne hr_nonpos hr_ne
+  have hres_nonneg : 0 ≤ residue := by
+    exact residue_nonneg hgh hh_pos hg_pos hh_simple.roots_nodup
+      hg_simple.roots_nodup r hrmem (fun hrg =>
+        hno_hg r hroot (isRoot_of_mem_roots hrg))
+  have hno_roots : ∀ s ∈ h.roots, s ∉ g.roots := fun s hs hsg =>
+    hno_hg s (isRoot_of_mem_roots hs) (isRoot_of_mem_roots hsg)
+  have hf_eval_zero : 0 ≤ f.eval 0 := by
+    simpa [coeff_zero_eq_eval_zero] using hf 0
+  have hg_eval_zero : 0 ≤ g.eval 0 := by
+    simpa [coeff_zero_eq_eval_zero] using hg 0
+  have hh_eval_zero : h.eval 0 = f.eval 0 + lam * g.eval 0 := by
+    rw [hdef]
+    simp
+  have hhdeg_pos : 1 ≤ h.natDegree := by
+    rw [hh_deg, ← hdeg]
+    exact Nat.succ_le_succ (Nat.zero_le _)
+  refine ⟨hr_neg, ?_⟩
+  rcases hfboundary with hfzero | hfdeg2
+  · have hratio := residue_div_sub_le_eval_ratio hgh hh hh_pos hg_pos
+      hh_simple.roots_nodup hg_simple.roots_nodup hno_roots
+      hhdeg_pos hrmem (le_refl 0) hhzero
+    have hcross : residue * h.eval 0 ≤ g.eval 0 * (-r) := by
+      have hnegpos : 0 < -r := by linarith
+      exact (div_le_div_iff₀ hnegpos hhzero).mp
+        (by simpa [residue] using hratio)
+    have hf_eval_pos : 0 < f.eval 0 := by
+      simpa [coeff_zero_eq_eval_zero] using hfzero
+    nlinarith
+  · have hratio := residue_div_neg_lt_eval_ratio_of_natDegree_ge_two
+      hgh hh hh_pos hg_pos hh_simple.roots_nodup hg_simple.roots_nodup
+      hno_roots (by rw [hh_deg]; exact hfdeg2) (by rw [hh_deg]; lia)
+      hrmem hhzero
+    have hcross : residue * h.eval 0 < g.eval 0 * (-r) := by
+      have hnegpos : 0 < -r := by linarith
+      exact (div_lt_div_iff₀ hnegpos hhzero).mp
+        (by simpa only [residue] using hratio)
+    nlinarith
+
 /-- Strict core of the mixed adjacent Euler lemma.  The right input has one
 more degree, the two inputs have no common root, and its constant coefficient
 is positive. -/
@@ -410,12 +489,9 @@ private theorem mixedEulerStep_strictInterl_of_no_common_of_nontrivial_boundary
   let P : ℝ[X] := eulerInsertionStep 0 (n + 1) f +
     C lam * eulerInsertionStep 1 n g
   have hh : HasNonnegCoeffs h := by
-    intro k
-    dsimp [h]
-    simp only [coeff_add, coeff_C_mul]
-    exact add_nonneg (hf k) (mul_nonneg hlam.le (hg k))
-  have hrr := StrictInterl.isRealRooted_pos_combo
-    hgf hg_pos hf_pos hlam zero_lt_one
+    dsimp only [h]
+    exact hf.add (hasNonnegCoeffs_C_mul hlam.le hg)
+  have hrr := hgf.isRealRooted_pos_combo hg_pos hf_pos hlam zero_lt_one
   have hh_ne : h ≠ 0 := by simpa [h, add_comm] using hrr.1
   have hh_pos : HasPosLeadingCoeff h := hh.pos_leadingCoeff hh_ne
   have hh_splits : h.Splits := by simpa [h, add_comm] using hrr.2
@@ -443,18 +519,10 @@ private theorem mixedEulerStep_strictInterl_of_no_common_of_nontrivial_boundary
       change f.eval r = 0
       simpa [hgr] using hhr
     · exact hgr
-  have hf_nodup : f.roots.Nodup := by
-    by_contra hdup
-    obtain ⟨r, hrf, hrg⟩ := exists_common_root_of_not_nodup hgf hdup
-    exact hno r (isRoot_of_mem_roots hrf) (isRoot_of_mem_roots hrg)
-  have hg_nodup : g.roots.Nodup := by
-    by_contra hdup
-    obtain ⟨r, hrf, hrg⟩ := exists_common_root_of_not_nodup_g hgf hdup
-    exact hno r (isRoot_of_mem_roots hrf) (isRoot_of_mem_roots hrg)
-  have hh_nodup : h.roots.Nodup := by
-    by_contra hdup
-    obtain ⟨r, hrh, hrg⟩ := exists_common_root_of_not_nodup hgh hdup
-    exact hno_hg r (isRoot_of_mem_roots hrh) (isRoot_of_mem_roots hrg)
+  have hg_simple : HasSimpleRoots g :=
+    (hgf.hasSimpleRoots_of_no_common_root fun r hr => hno r hr.2 hr.1).1
+  have hh_simple : HasSimpleRoots h :=
+    (hgh.hasSimpleRoots_of_no_common_root fun r hr => hno_hg r hr.2 hr.1).2
   have hhdeg_pos : 1 ≤ h.natDegree := by
     rw [hh_deg, ← hdeg]
     exact Nat.succ_le_succ (Nat.zero_le _)
@@ -469,69 +537,12 @@ private theorem mixedEulerStep_strictInterl_of_no_common_of_nontrivial_boundary
     hh_pos.derivative (by lia)
   have hroot_sign : ∀ r, h.IsRoot r → P.eval r * h.derivative.eval r < 0 := by
     intro r hroot
-    have hrmem : r ∈ h.roots := (mem_roots hh_ne).mpr hroot
-    have hr_nonpos := roots_nonpos_of_hasNonnegCoeffs hh r hrmem
-    have hhzero : 0 < h.eval 0 := by
-      have hfeval : 0 ≤ f.eval 0 := by
-        simpa [coeff_zero_eq_eval_zero] using hf 0
-      have hgeval : 0 ≤ g.eval 0 := by
-        simpa [coeff_zero_eq_eval_zero] using hg 0
-      have hsum_ne : f.eval 0 + lam * g.eval 0 ≠ 0 := by
-        intro hsum
-        have hf0 : f.eval 0 = 0 := by nlinarith
-        have hg0 : g.eval 0 = 0 := by nlinarith
-        exact hno 0 (by simpa [Polynomial.IsRoot.def] using hf0)
-          (by simpa [Polynomial.IsRoot.def] using hg0)
-      dsimp [h]
-      simp only [eval_add, eval_mul, eval_C]
-      exact lt_of_le_of_ne (add_nonneg hfeval (mul_nonneg hlam.le hgeval))
-        (Ne.symm hsum_ne)
-    have hr_neg : r < 0 := by
-      have hr_ne : r ≠ 0 := by
-        intro hr0
-        have := Polynomial.IsRoot.def.mp hroot
-        rw [hr0] at this
-        exact hhzero.ne' this
-      exact lt_of_le_of_ne hr_nonpos hr_ne
     let residue : ℝ := g.eval r / h.derivative.eval r
-    have hres_nonneg : 0 ≤ residue := by
-      exact residue_nonneg hgh hh_pos hg_pos hh_nodup hg_nodup r hrmem
-        (by
-          intro hrg
-          exact hno_hg r hroot (isRoot_of_mem_roots hrg))
-    have hno_roots : ∀ s ∈ h.roots, s ∉ g.roots := fun s hs => by
-      intro hsg
-      exact hno_hg s (isRoot_of_mem_roots hs) (isRoot_of_mem_roots hsg)
-    have hf_eval_zero : 0 ≤ f.eval 0 := by
-      simpa [coeff_zero_eq_eval_zero] using hf 0
-    have hg_eval_zero : 0 ≤ g.eval 0 := by
-      simpa [coeff_zero_eq_eval_zero] using hg 0
-    have hh_eval_zero : h.eval 0 = f.eval 0 + lam * g.eval 0 := by
-      simp [h]
-    have hbound : r + lam * residue < 0 := by
-      rcases hfboundary with hfzero | hfdeg2
-      · have hratio := residue_div_sub_le_eval_ratio hgh hh hh_pos hg_pos
-          hh_nodup hg_nodup hno_roots hhdeg_pos hrmem (le_refl 0) hhzero
-        have hcross : residue * h.eval 0 ≤ g.eval 0 * (-r) := by
-          have hnegpos : 0 < -r := by linarith
-          exact (div_le_div_iff₀ hnegpos hhzero).mp
-            (by simpa [residue] using hratio)
-        have hf_eval_pos : 0 < f.eval 0 := by
-          simpa [coeff_zero_eq_eval_zero] using hfzero
-        nlinarith
-      · have hratio :=
-          residue_div_neg_lt_eval_ratio_of_natDegree_ge_two
-            hgh hh hh_pos hg_pos hh_nodup hg_nodup hno_roots
-            (by rw [hh_deg]; exact hfdeg2) (by rw [hh_deg]; lia)
-            hrmem hhzero
-        have hcross : residue * h.eval 0 < g.eval 0 * (-r) := by
-          have hnegpos : 0 < -r := by linarith
-          exact (div_lt_div_iff₀ hnegpos hhzero).mp
-            (by simpa [residue] using hratio)
-        nlinarith
-    have hder_ne : h.derivative.eval r ≠ 0 := by
-      exact eval_derivative_ne_zero_of_rootMultiplicity_eq_one hroot <|
-        by simpa [count_roots] using Multiset.count_eq_one_of_mem hh_nodup hrmem
+    obtain ⟨hr_neg, hbound⟩ := mixedEulerStep_root_residue_bound
+        hlam (by rfl) hf hg hh hh_pos hg_pos hgh hh_simple hg_simple
+          hh_deg hdeg hno hno_hg hfboundary hroot
+    have hder_ne : h.derivative.eval r ≠ 0 :=
+      hh_simple.eval_derivative_ne_zero hroot
     have hgres : g.eval r = residue * h.derivative.eval r := by
       dsimp [residue]
       field_simp

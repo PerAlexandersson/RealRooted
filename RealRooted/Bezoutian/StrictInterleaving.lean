@@ -114,18 +114,13 @@ protected lemma List.Interleaves.ofFn_succ {n : ℕ}
     (h_lt₁ : ∀ (i : Fin n) (j : Fin (n + 1)), i.val + 1 = j.val → s i < t j)
     (h_lt₂ : ∀ (i : Fin (n + 1)) (j : Fin n), i.val < j.val + 1 → t i < s j) :
     List.Interleaves (· > ·) (List.ofFn s).reverse (List.ofFn t).reverse := by
-  have h_len_st : (List.ofFn s).length + 1 = (List.ofFn t).length := by simp
-  apply RealRooted.interleaves_reverse_of_interlaced_left h_len_st
+  apply RealRooted.interleaves_reverse_of_interlaced_left (by simp)
   · intro i j hij
-    have hi : i.val < n := by simpa using i.isLt
-    have hj : j.val < n + 1 := by simpa using j.isLt
     rw [List.getElem_ofFn, List.getElem_ofFn]
-    exact h_lt₁ ⟨i.val, hi⟩ ⟨j.val, hj⟩ hij
+    exact h_lt₁ ⟨i, by simpa using i.isLt⟩ ⟨j, by simpa using j.isLt⟩ hij
   · intro i j hij
-    have hi : i.val < n + 1 := by simpa using i.isLt
-    have hj : j.val < n := by simpa using j.isLt
     rw [List.getElem_ofFn, List.getElem_ofFn]
-    exact h_lt₂ ⟨i.val, hi⟩ ⟨j.val, hj⟩ hij
+    exact h_lt₂ ⟨i, by simpa using i.isLt⟩ ⟨j, by simpa using j.isLt⟩ hij
 
 protected lemma interlaced_of_interleaves_reverse_left {ss rs : List ℝ}
     (h : ss.length + 1 = rs.length)
@@ -223,11 +218,9 @@ private lemma interleaves_lt_of_le_of_forall_ne :
   | _, _, .nil_nil, _ => .nil_nil
   | _, _, .nil_singleton a, _ => .nil_singleton a
   | _, _, .cons_symm hab h, hne => by
-      apply List.Interleaves.cons_symm
-      · exact lt_of_le_of_ne hab (hne _ (by simp) _ (by simp)).symm
-      · apply interleaves_lt_of_le_of_forall_ne h
-        intro a ha b hb
-        exact (hne b hb a (by simp [ha])).symm
+      refine .cons_symm (lt_of_le_of_ne hab (hne _ (by simp) _ (by simp)).symm)
+        (interleaves_lt_of_le_of_forall_ne h ?_)
+      exact fun a ha b hb => (hne b hb a (by simp [ha])).symm
 
 /-- Strict same-degree interlacing, stated on canonical sorted root lists.
 
@@ -279,9 +272,9 @@ lemma StrictInterlSameDegree.C_mul_C_mul {p q : ℝ[X]} (h : StrictInterlSameDeg
     {u v : ℝ} (hu : u ≠ 0) (hv : v ≠ 0) :
     StrictInterlSameDegree (C u * p) (C v * q) := by
   obtain ⟨hp, hq, hdeg, halt⟩ := h
-  refine ⟨isRealRooted_C_mul hp.1 hp.2 hu, isRealRooted_C_mul hq.1 hq.2 hv, ?_, ?_⟩
-  · exact (natDegree_C_mul hu).trans (hdeg.trans (natDegree_C_mul hv).symm)
-  · simp_all
+  refine ⟨isRealRooted_C_mul hp.1 hp.2 hu, isRealRooted_C_mul hq.1 hq.2 hv,
+    (natDegree_C_mul hu).trans (hdeg.trans (natDegree_C_mul hv).symm), ?_⟩
+  simp_all
 
 lemma StrictInterlSameDegree.C_mul_C_mul_iff {p q : ℝ[X]} {u v : ℝ}
     (hu : u ≠ 0) (hv : v ≠ 0) :

@@ -746,6 +746,202 @@ private theorem morrisDownsetCoords_elementary {N q : ℕ}
   simp [morrisDownsetCoordsToDegree, morrisDownsetToDegree,
     morrisElementaryPoint, morrisElementaryDownset, LinearMap.comp_apply]
 
+/-- The normalized Morris flow has a top eigenvector attracting every vector
+with top coordinate one. -/
+private theorem exists_morrisDownset_top_eigenvector_tendsto {N q : ℕ}
+    (lambda : N.Partition) (hlambda : lambda.parts.card ≤ q)
+    (hadj : ∀ i, i + 1 < q →
+      lambda.part i - lambda.part (i + 1) ≤ 1) :
+    let b := morrisDownsetFinBasis lambda hlambda
+    let e := b.equivFun
+    let Tlin := e.conj (morrisDOnDownset q lambda)
+    let T := LinearMap.toContinuousLinearMap Tlin
+    let b' := b.map e
+    ∃ y,
+      T y = (morrisEigenvalue q lambda : ℝ) • y ∧
+      b'.repr y (Fin.last _) = 1 ∧
+      ∀ z, b'.repr z (Fin.last _) = 1 →
+        Tendsto (fun t : ℝ =>
+          Real.exp (-t * morrisEigenvalue q lambda) •
+            NormedSpace.exp (t • T) z) atTop (𝓝 y) := by
+  let b := morrisDownsetFinBasis lambda hlambda
+  let e := b.equivFun
+  let b' := b.map e
+  let Tlin := e.conj (morrisDOnDownset q lambda)
+  let T := LinearMap.toContinuousLinearMap Tlin
+  let c : Fin (Fintype.card (MorrisDownsetIndex q lambda) - 1 + 1) → ℝ :=
+    fun i => morrisEigenvalue q (morrisDownsetFinEquiv lambda hlambda i).1
+  change ∃ y, T y = (morrisEigenvalue q lambda : ℝ) • y ∧
+    b'.repr y (Fin.last _) = 1 ∧ ∀ z, b'.repr z (Fin.last _) = 1 →
+      Tendsto (fun t : ℝ => Real.exp (-t * morrisEigenvalue q lambda) •
+        NormedSpace.exp (t • T) z) atTop (𝓝 y)
+  have htri := morrisDOnDownset_isTriangular_fin lambda hlambda
+  have htri' : Tlin.IsTriangularOn b' c :=
+    LinearMap.IsTriangularOn.conj_equiv b e (morrisDOnDownset q lambda) c htri
+  have hupper : (LinearMap.toMatrix b' b' T.toLinearMap).IsUpperTriangular := by
+    apply toMatrix_isUpperTriangular_of_isTriangularOn b' T.toLinearMap c
+    simpa [T] using htri'
+  have hdiag (i : Fin (Fintype.card (MorrisDownsetIndex q lambda) - 1 + 1)) :
+      LinearMap.toMatrix b' b' T.toLinearMap i i = c i :=
+    toMatrix_diag_eq_of_isTriangularOn b' T.toLinearMap c (by
+      simpa [T] using htri') i
+  have hgap (i : Fin (Fintype.card (MorrisDownsetIndex q lambda) - 1)) :
+      LinearMap.toMatrix b' b' T.toLinearMap i.castSucc i.castSucc <
+        LinearMap.toMatrix b' b' T.toLinearMap (Fin.last _) (Fin.last _) := by
+    rw [hdiag, hdiag]
+    have hne : morrisDownsetFinEquiv lambda hlambda i.castSucc ≠
+        (⟨lambda, le_rfl, hlambda⟩ : MorrisDownsetIndex q lambda) := by
+      intro heq
+      have heq' : i.castSucc = Fin.last _ := by
+        apply (morrisDownsetFinEquiv lambda hlambda).injective
+        simpa [finEquiv_last] using heq
+      exact (Fin.castSucc_lt_last i).ne heq'
+    have hdom : (morrisDownsetFinEquiv lambda hlambda i.castSucc).1 < lambda :=
+      lt_of_le_of_ne (morrisDownsetFinEquiv lambda hlambda i.castSucc).2.1
+        (fun heq => hne (Subtype.ext heq))
+    change (morrisEigenvalue q
+      (morrisDownsetFinEquiv lambda hlambda i.castSucc).1 : ℝ) <
+        (morrisEigenvalue q
+          (morrisDownsetFinEquiv lambda hlambda (Fin.last _)).1 : ℝ)
+    rw [finEquiv_last lambda hlambda]
+    exact_mod_cast morrisEigenvalue_lt_of_lt_of_adjacent_drop
+      (morrisDownsetFinEquiv lambda hlambda i.castSucc).2.2 hlambda hadj hdom
+  have htop : LinearMap.toMatrix b' b' T.toLinearMap (Fin.last _) (Fin.last _) =
+      (morrisEigenvalue q lambda : ℝ) := by
+    rw [hdiag]
+    change (morrisEigenvalue q
+      (morrisDownsetFinEquiv lambda hlambda (Fin.last _)).1 : ℝ) = _
+    rw [finEquiv_last lambda hlambda]
+  obtain ⟨y, hyeigen, hynorm, hlim⟩ :=
+    ContinuousLinearMap.exists_eigenvector_tendsto_of_isUpperTriangular
+      b' T hupper hgap
+  rw [htop] at hyeigen hlim
+  exact ⟨y, hyeigen, hynorm, hlim⟩
+
+/-- Coordinate convergence of the normalized Morris flow implies coefficientwise
+convergence of its polynomial realization. -/
+private theorem tendsto_coeff_normalizedMorrisDExp_of_downset_tendsto {N q : ℕ}
+    (lambda : N.Partition) (hlambda : lambda.parts.card ≤ q)
+    (y : Fin (Fintype.card (MorrisDownsetIndex q lambda) - 1 + 1) → ℝ)
+    (hlim :
+      let e := (morrisDownsetFinBasis lambda hlambda).equivFun
+      let T := LinearMap.toContinuousLinearMap
+        (e.conj (morrisDOnDownset q lambda))
+      let x := e (morrisElementaryDownset lambda hlambda)
+      Tendsto (fun t : ℝ =>
+        Real.exp (-t * morrisEigenvalue q lambda) •
+          NormedSpace.exp (t • T) x) atTop (𝓝 y)) :
+    ∀ m, Tendsto (fun t : ℝ =>
+        (normalizedMorrisDExp lambda hlambda t).coeff m) atTop
+      (𝓝 ((((morrisDownsetFinBasis lambda hlambda).equivFun.symm y :
+        MorrisDownsetSpace q lambda) : MvPolynomial (Fin q) ℝ).coeff m)) := by
+  let e := (morrisDownsetFinBasis lambda hlambda).equivFun
+  let Tlin := e.conj (morrisDOnDownset q lambda)
+  let T := LinearMap.toContinuousLinearMap Tlin
+  let Jlin := morrisDownsetCoordsToDegree lambda hlambda
+  let J := LinearMap.toContinuousLinearMap Jlin
+  let x := e (morrisElementaryDownset lambda hlambda)
+  let P := e.symm y
+  change Tendsto (fun t : ℝ =>
+    Real.exp (-t * morrisEigenvalue q lambda) •
+      NormedSpace.exp (t • T) x) atTop (𝓝 y) at hlim
+  intro m
+  have hJ (z) : J (T z) = morrisDContinuous q N (J z) := by
+    simpa [J, Jlin, T, Tlin, e] using
+      morrisDownsetCoords_intertwines lambda hlambda z
+  have hflow (t : ℝ) :
+      morrisDegreePolynomial q N
+          (J (Real.exp (-t * morrisEigenvalue q lambda) •
+            NormedSpace.exp (t • T) x)) =
+        normalizedMorrisDExp lambda hlambda t := by
+    rw [map_smul]
+    have hexp := ContinuousLinearMap.map_exp_apply_of_intertwines
+      (t • T) (t • morrisDContinuous q N) J (fun z => by
+        simp only [smul_apply, map_smul]
+        exact congrArg (t • ·) (hJ z)) x
+    rw [hexp]
+    have hseed : J x = morrisElementaryPoint lambda hlambda := by
+      simpa [J, Jlin, x, e] using
+        morrisDownsetCoords_elementary lambda hlambda
+    rw [hseed]
+    simp only [normalizedMorrisDExp, morrisDExp,
+      morrisDegreePolynomial, map_smul]
+    exact MvPolynomial.smul_eq_C_mul _ _
+  let Llin :
+      (Fin (Fintype.card (MorrisDownsetIndex q lambda) - 1 + 1) → ℝ) →ₗ[ℝ] ℝ :=
+    (MvPolynomial.lcoeff ℝ m).comp
+      ((morrisDegreeSubmodule q N).subtype.comp
+        ((morrisDegreeEquiv q N).symm.toLinearMap.comp Jlin))
+  let L := LinearMap.toContinuousLinearMap Llin
+  have hreal := (L.continuous.tendsto y).comp hlim
+  have hlimit : L y = (P : MvPolynomial (Fin q) ℝ).coeff m := by
+    change (morrisDegreePolynomial q N
+      (morrisDownsetCoordsToDegree lambda hlambda y)).coeff m = _
+    rw [morrisDownsetCoords_polynomial lambda hlambda]
+  rw [← hlimit]
+  apply hreal.congr
+  intro t
+  change (morrisDegreePolynomial q N
+    (J (Real.exp (-t * morrisEigenvalue q lambda) •
+      NormedSpace.exp (t • T) x))).coeff m =
+    (normalizedMorrisDExp lambda hlambda t).coeff m
+  exact congrArg (fun Q : MvPolynomial (Fin q) ℝ => Q.coeff m) (hflow t)
+
+/-- A normalized Morris eigenfunction equals the attracting top eigenvector. -/
+private theorem eq_morrisDownset_of_eigen_topCoeff_of_tendsto {N q : ℕ}
+    (lambda : N.Partition) (hlambda : lambda.parts.card ≤ q)
+    (y : Fin (Fintype.card (MorrisDownsetIndex q lambda) - 1 + 1) → ℝ)
+    (hlim :
+      let b := morrisDownsetFinBasis lambda hlambda
+      let e := b.equivFun
+      let T := LinearMap.toContinuousLinearMap
+        (e.conj (morrisDOnDownset q lambda))
+      let b' := b.map e
+      ∀ z, b'.repr z (Fin.last _) = 1 →
+        Tendsto (fun t : ℝ =>
+          Real.exp (-t * morrisEigenvalue q lambda) •
+            NormedSpace.exp (t • T) z) atTop (𝓝 y))
+    (Q : MorrisDownsetSpace q lambda)
+    (hQ : morrisD q (Q : MvPolynomial (Fin q) ℝ) =
+          (morrisEigenvalue q lambda : ℝ) •
+            (Q : MvPolynomial (Fin q) ℝ) ∧
+      morrisDownsetTopCoeff lambda hlambda Q = 1) :
+    Q = (morrisDownsetFinBasis lambda hlambda).equivFun.symm y := by
+  let b := morrisDownsetFinBasis lambda hlambda
+  let e := b.equivFun
+  let b' := b.map e
+  let Tlin := e.conj (morrisDOnDownset q lambda)
+  let T := LinearMap.toContinuousLinearMap Tlin
+  change ∀ z, b'.repr z (Fin.last _) = 1 →
+    Tendsto (fun t : ℝ => Real.exp (-t * morrisEigenvalue q lambda) •
+      NormedSpace.exp (t • T) z) atTop (𝓝 y) at hlim
+  have hQnorm : b'.repr (e Q) (Fin.last _) = 1 := by
+    change b'.equivFun (e Q) (Fin.last _) = 1
+    simpa [b', e, b, morrisDownsetTopCoeff] using hQ.2
+  have hQflow (t : ℝ) :
+      Real.exp (-t * morrisEigenvalue q lambda) •
+          NormedSpace.exp (t • T) (e Q) = e Q := by
+    have hQrestrict : morrisDOnDownset q lambda Q =
+        (morrisEigenvalue q lambda : ℝ) • Q := Subtype.ext hQ.1
+    have hQeigen : T (e Q) =
+        (morrisEigenvalue q lambda : ℝ) • e Q := by
+      simpa [T, Tlin, e, LinearEquiv.conj_apply,
+        LinearMap.comp_apply] using congrArg e hQrestrict
+    rw [show NormedSpace.exp (t • T) (e Q) =
+        Real.exp (t * morrisEigenvalue q lambda) • e Q by
+      apply exp_apply_of_eigenvector
+      simpa [smul_apply, smul_smul] using congrArg (t • ·) hQeigen]
+    rw [smul_smul, ← Real.exp_add]
+    ring_nf
+    simp
+  have hconst : Tendsto (fun _ : ℝ => e Q) atTop (𝓝 y) :=
+    (hlim (e Q) hQnorm).congr hQflow
+  have heq : e Q = y := tendsto_nhds_unique tendsto_const_nhds hconst
+  change Q = e.symm y
+  apply e.injective
+  rw [e.apply_symm_apply]
+  exact heq
+
 private theorem exists_unique_stable_morrisEigenfunction {N q : ℕ}
     (lambda : N.Partition) (hlambda : lambda.parts.card ≤ q)
     (hadj : ∀ i, i + 1 < q →
@@ -766,85 +962,17 @@ private theorem exists_unique_stable_morrisEigenfunction {N q : ℕ}
   let e := b.equivFun
   let b' := b.map e
   let Tlin := e.conj (morrisDOnDownset q lambda)
-  let T : (Fin (Fintype.card (MorrisDownsetIndex q lambda) - 1 + 1) → ℝ) →L[ℝ]
-      (Fin (Fintype.card (MorrisDownsetIndex q lambda) - 1 + 1) → ℝ) :=
-    LinearMap.toContinuousLinearMap Tlin
-  let c : Fin (Fintype.card (MorrisDownsetIndex q lambda) - 1 + 1) → ℝ :=
-    fun i => morrisEigenvalue q (morrisDownsetFinEquiv lambda hlambda i).1
-  have htri := morrisDOnDownset_isTriangular_fin lambda hlambda
-  have htri' : Tlin.IsTriangularOn b' c := by
-    exact LinearMap.IsTriangularOn.conj_equiv b e
-      (morrisDOnDownset q lambda) c htri
-  have hupper : (LinearMap.toMatrix b' b' T.toLinearMap).IsUpperTriangular := by
-    apply toMatrix_isUpperTriangular_of_isTriangularOn b' T.toLinearMap c
-    simpa [T] using htri'
-  have hdiag (i : Fin (Fintype.card (MorrisDownsetIndex q lambda) - 1 + 1)) :
-      LinearMap.toMatrix b' b' T.toLinearMap i i = c i :=
-    toMatrix_diag_eq_of_isTriangularOn b' T.toLinearMap c (by
-      simpa [T] using htri') i
-  have hgap (i : Fin (Fintype.card (MorrisDownsetIndex q lambda) - 1)) :
-      LinearMap.toMatrix b' b' T.toLinearMap i.castSucc i.castSucc <
-        LinearMap.toMatrix b' b' T.toLinearMap (Fin.last _) (Fin.last _) := by
-    rw [hdiag, hdiag]
-    have hne : morrisDownsetFinEquiv lambda hlambda i.castSucc ≠
-        (⟨lambda, le_rfl, hlambda⟩ : MorrisDownsetIndex q lambda) := by
-      intro heq
-      have heq' : i.castSucc = Fin.last _ := by
-        apply (morrisDownsetFinEquiv lambda hlambda).injective
-        simpa [finEquiv_last] using heq
-      exact (Fin.castSucc_lt_last i).ne heq'
-    have hdom : (morrisDownsetFinEquiv lambda hlambda i.castSucc).1 <
-        lambda := lt_of_le_of_ne
-          (morrisDownsetFinEquiv lambda hlambda i.castSucc).2.1
-          (fun heq => hne (Subtype.ext heq))
-    change (morrisEigenvalue q
-      (morrisDownsetFinEquiv lambda hlambda i.castSucc).1 : ℝ) <
-        (morrisEigenvalue q
-          (morrisDownsetFinEquiv lambda hlambda (Fin.last _)).1 : ℝ)
-    rw [finEquiv_last lambda hlambda]
-    exact_mod_cast morrisEigenvalue_lt_of_lt_of_adjacent_drop
-      (morrisDownsetFinEquiv lambda hlambda i.castSucc).2.2
-        hlambda hadj hdom
-  have htop : LinearMap.toMatrix b' b' T.toLinearMap (Fin.last _) (Fin.last _) =
-      (morrisEigenvalue q lambda : ℝ) := by
-    rw [hdiag]
-    change (morrisEigenvalue q
-      (morrisDownsetFinEquiv lambda hlambda (Fin.last _)).1 : ℝ) = _
-    rw [finEquiv_last lambda hlambda]
+  let T := LinearMap.toContinuousLinearMap Tlin
   obtain ⟨y, hyeigen, hynorm, hlim⟩ :=
-    ContinuousLinearMap.exists_eigenvector_tendsto_of_isUpperTriangular
-      b' T hupper hgap
-  rw [htop] at hyeigen hlim
+    exists_morrisDownset_top_eigenvector_tendsto lambda hlambda hadj
+  have hyeigen' : T y = (morrisEigenvalue q lambda : ℝ) • y := by
+    simpa [T, Tlin, e, b] using hyeigen
   let P := e.symm y
-  let Jlin := morrisDownsetCoordsToDegree lambda hlambda
-  let J : (Fin (Fintype.card (MorrisDownsetIndex q lambda) - 1 + 1) → ℝ) →L[ℝ]
-      MorrisDegreeCoords q N := LinearMap.toContinuousLinearMap Jlin
-  have hJ (z) : J (T z) = morrisDContinuous q N (J z) := by
-    simpa [J, Jlin, T, Tlin, e] using
-      morrisDownsetCoords_intertwines lambda hlambda z
   let x := e (morrisElementaryDownset lambda hlambda)
   have hx : b'.repr x (Fin.last _) = 1 := by
     change b'.equivFun x (Fin.last _) = 1
     simpa [b', x, e] using
       morrisElementaryDownset_last_repr lambda hlambda
-  have hflow (t : ℝ) :
-      morrisDegreePolynomial q N
-          (J (Real.exp (-t * morrisEigenvalue q lambda) •
-            NormedSpace.exp (t • T) x)) =
-        normalizedMorrisDExp lambda hlambda t := by
-    rw [map_smul]
-    have hexp := ContinuousLinearMap.map_exp_apply_of_intertwines
-      (t • T) (t • morrisDContinuous q N) J (fun z => by
-        simp only [smul_apply, map_smul]
-        exact congrArg (t • ·) (hJ z)) x
-    rw [hexp]
-    have hseed : J x = morrisElementaryPoint lambda hlambda := by
-      simpa [J, Jlin, x, e] using
-        morrisDownsetCoords_elementary lambda hlambda
-    rw [hseed]
-    simp only [normalizedMorrisDExp, morrisDExp,
-      morrisDegreePolynomial, map_smul]
-    exact MvPolynomial.smul_eq_C_mul _ _
   have hPdeg : (P : MvPolynomial (Fin q) ℝ).totalDegree ≤ N := by
     exact totalDegree_le_of_mem_morrisDegreeSubmodule
       (morrisDownset_le_degree lambda P.property)
@@ -859,36 +987,15 @@ private theorem exists_unique_stable_morrisEigenfunction {N q : ℕ}
   have hPstable : MvRealStable (P : MvPolynomial (Fin q) ℝ) := by
     apply MvRealStable.of_normalizedMorrisDExp_tendsto
       lambda hlambda hPdeg _ hPne
-    intro m
-    let Llin :
-        (Fin (Fintype.card (MorrisDownsetIndex q lambda) - 1 + 1) → ℝ) →ₗ[ℝ] ℝ :=
-      (MvPolynomial.lcoeff ℝ m).comp
-        ((morrisDegreeSubmodule q N).subtype.comp
-          ((morrisDegreeEquiv q N).symm.toLinearMap.comp Jlin))
-    let L := LinearMap.toContinuousLinearMap Llin
-    have hreal := (L.continuous.tendsto y).comp (hlim x hx)
-    have hreal' : Tendsto (fun t : ℝ =>
-        (normalizedMorrisDExp lambda hlambda t).coeff m)
-        atTop (𝓝 ((P : MvPolynomial (Fin q) ℝ).coeff m)) := by
-      have hlimit : L y = (P : MvPolynomial (Fin q) ℝ).coeff m := by
-        change (morrisDegreePolynomial q N
-          (morrisDownsetCoordsToDegree lambda hlambda y)).coeff m = _
-        rw [morrisDownsetCoords_polynomial lambda hlambda]
-      rw [← hlimit]
-      apply hreal.congr
-      intro t
-      change (morrisDegreePolynomial q N
-        (J (Real.exp (-t * morrisEigenvalue q lambda) •
-          NormedSpace.exp (t • T) x))).coeff m =
-        (normalizedMorrisDExp lambda hlambda t).coeff m
-      exact congrArg (fun Q : MvPolynomial (Fin q) ℝ => Q.coeff m) (hflow t)
-    exact hreal'.comp tendsto_natCast_atTop_atTop
+    exact fun m =>
+      (tendsto_coeff_normalizedMorrisDExp_of_downset_tendsto
+        lambda hlambda y (hlim x hx) m).comp tendsto_natCast_atTop_atTop
   refine ⟨P, ⟨?_, ?_⟩, hPstable, ?_⟩
   · have hPeigen : morrisDOnDownset q lambda P =
         (morrisEigenvalue q lambda : ℝ) • P := by
       apply e.injective
-      simpa [P, T, Tlin, LinearEquiv.conj_apply, LinearMap.comp_apply,
-        htop] using hyeigen
+      simpa [P, T, Tlin, LinearEquiv.conj_apply,
+        LinearMap.comp_apply] using hyeigen'
     exact congrArg Subtype.val hPeigen
   · have hynorm' : y (Fin.last _) = 1 := by
       change b'.equivFun y (Fin.last _) = 1 at hynorm
@@ -897,35 +1004,9 @@ private theorem exists_unique_stable_morrisEigenfunction {N q : ℕ}
     rw [e.apply_symm_apply]
     exact hynorm'
   · intro Q hQ
-    have hQnorm : b'.repr (e Q) (Fin.last _) = 1 := by
-      change b'.equivFun (e Q) (Fin.last _) = 1
-      simpa [b', e, b, morrisDownsetTopCoeff] using hQ.2
-    have hQlim := hlim (e Q) hQnorm
-    have hQflow : ∀ t : ℝ,
-        Real.exp (-t * morrisEigenvalue q lambda) •
-            NormedSpace.exp (t • T) (e Q) = e Q := by
-      intro t
-      have hQrestrict : morrisDOnDownset q lambda Q =
-          (morrisEigenvalue q lambda : ℝ) • Q := by
-        apply Subtype.ext
-        exact hQ.1
-      have hQeigen : T (e Q) =
-          (morrisEigenvalue q lambda : ℝ) • e Q := by
-        simpa [T, Tlin, e, LinearEquiv.conj_apply,
-          LinearMap.comp_apply] using congrArg e hQrestrict
-      rw [show NormedSpace.exp (t • T) (e Q) =
-          Real.exp (t * morrisEigenvalue q lambda) • e Q by
-        apply exp_apply_of_eigenvector
-        simpa [smul_apply, smul_smul] using congrArg (t • ·) hQeigen]
-      rw [smul_smul, ← Real.exp_add]
-      ring_nf
-      simp
-    have hconst : Tendsto (fun _ : ℝ => e Q) atTop (𝓝 y) :=
-      hQlim.congr hQflow
-    have heq : e Q = y := tendsto_nhds_unique
-      (tendsto_const_nhds : Tendsto (fun _ : ℝ => e Q) atTop (𝓝 (e Q)))
-      hconst
-    exact e.injective (by simpa [P] using heq)
+    simpa [P, e, b] using
+      eq_morrisDownset_of_eigen_topCoeff_of_tendsto
+        lambda hlambda y hlim Q hQ
 
 /-- Liu--Zhang Theorem 4.12, uniqueness part: under the adjacent-drop
 condition, there is a unique normalized eigenfunction of `D_q` in the

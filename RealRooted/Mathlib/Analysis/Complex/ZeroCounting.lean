@@ -47,12 +47,11 @@ private lemma jensen_count {f : ℂ → ℂ} (hf : Differentiable ℂ f) (h0 : f
     ((∑ᶠ u, divisor f (closedBall 0 r) u : ℤ) : ℝ) * Real.log 2 ≤
       Real.circleAverage (fun z => Real.log ‖f z‖) 0 (2 * r) - Real.log ‖f 0‖ := by
   have ha : AnalyticOnNhd ℂ f Set.univ := fun z _ => hf.analyticAt z
-  set R := 2 * r with hRdef
+  set R := 2 * r
   have hR : 0 < R := by positivity
-  have habs : |R| = R := abs_of_pos hR
   have hJ := MeromorphicOn.circleAverage_log_norm (c := 0) (f := f) hR.ne'
     (ha.mono (Set.subset_univ _)).meromorphicOn
-  rw [habs] at hJ
+  rw [abs_of_pos hR] at hJ
   rw [(hf.analyticAt 0).meromorphicTrailingCoeffAt_of_ne_zero h0] at hJ
   set D := divisor f (closedBall (0 : ℂ) r)
   set E := divisor f (closedBall (0 : ℂ) R)
@@ -63,7 +62,6 @@ private lemma jensen_count {f : ℂ → ℂ} (hf : Differentiable ℂ f) (h0 : f
     rw [(analyticOrderAt_eq_zero).2 (Or.inr h0)]
     simp
   have hEfin := E.finiteSupport (isCompact_closedBall 0 R)
-  have hDnn : ∀ u, 0 ≤ D u := fun u => (ha.mono (Set.subset_univ _)).divisor_nonneg u
   have hEnn : ∀ u, 0 ≤ E u := fun u => (ha.mono (Set.subset_univ _)).divisor_nonneg u
   have hDE : ∀ u, ‖u‖ ≤ r → D u = E u := fun u hu =>
     divisor_eq_of_le hf (by linarith) (by simpa using hu)
@@ -145,16 +143,16 @@ private lemma summable_rpow_of_count {ι : Type*} (x : ι → ℝ) {δ A p : ℝ
   classical
   have hA : 0 ≤ A := by simpa using hcount ∅ 1 le_rfl
   have hxpos : ∀ k, 0 < x k := fun k => hδ.trans_le (hx k)
-  set g : ι → ℕ := fun k => ⌈Real.logb 2 (x k)⌉₊ with hg
+  set g : ι → ℕ := fun k => ⌈Real.logb 2 (x k)⌉₊
   -- shell bound
   set b : ℕ → ℝ := fun j => A * 2 ^ j * (δ * (2:ℝ) ^ ((j:ℝ) - 1)) ^ (-p) with hb
   have hupper : ∀ k, x k ≤ 2 ^ g k := by
     intro k
-    have h1 : Real.logb 2 (x k) ≤ g k := Nat.le_ceil _
     calc
       x k = (2 : ℝ) ^ Real.logb 2 (x k) :=
         (Real.rpow_logb (by norm_num) (by norm_num) (hxpos k)).symm
-      _ ≤ (2:ℝ) ^ ((g k : ℕ) : ℝ) := Real.rpow_le_rpow_of_exponent_le (by norm_num) h1
+      _ ≤ (2:ℝ) ^ ((g k : ℕ) : ℝ) :=
+        Real.rpow_le_rpow_of_exponent_le (by norm_num) (Nat.le_ceil _)
       _ = 2 ^ g k := Real.rpow_natCast _ _
   have hlower : ∀ k, δ * (2:ℝ) ^ ((g k : ℝ) - 1) ≤ x k := by
     intro k
@@ -298,9 +296,7 @@ private lemma norm_lower_bound {ι : Type*} {f : ℂ → ℂ} (hf : Differentiab
   have hne : f (z k) ≠ 0 := hfe (by simpa using hk.trans_le (min_le_left _ _))
   have h1 := hz (z k)
   rw [analyticOrderAt_eq_zero.2 (Or.inr hne), eq_comm, Set.encard_eq_zero] at h1
-  have : k ∈ {j | z j = z k} := rfl
-  rw [h1] at this
-  exact this
+  simpa [h1] using (show k ∈ {j | z j = z k} from rfl)
 
 
 /-- **Convergence exponent ≤ 1.** For an enumeration `z : ι → ℂ` of the zeros of `f` above,
@@ -316,9 +312,9 @@ theorem summable_zeros_rpow {ι : Type*} {f : ℂ → ℂ} (hf : Differentiable 
   refine summable_rpow_of_count (fun k => ‖z k‖) hδ hδ1 hδz (by linarith) (A := A) ?_
   intro s r hr
   classical
-  have h1 := count_le_divisor hf h0 hz s r
-  have h2 : ((s.filter (fun k => ‖z k‖ ≤ r)).card : ℝ) ≤
-      ((∑ᶠ u, divisor f (Metric.closedBall 0 r) u : ℤ) : ℝ) := by exact_mod_cast h1
-  convert h2.trans (hA r hr)
+  have hcount : ((s.filter (fun k => ‖z k‖ ≤ r)).card : ℝ) ≤
+      ((∑ᶠ u, divisor f (Metric.closedBall 0 r) u : ℤ) : ℝ) := by
+    exact_mod_cast count_le_divisor hf h0 hz s r
+  exact hcount.trans (hA r hr)
 
 end Differentiable

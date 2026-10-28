@@ -80,10 +80,6 @@ private theorem zigzagRootProduct_laguerre (roots : List ℝ) :
       rw [hder, derivative_add, derivative_mul, hv]
       norm_num [Polynomial.C_ofNat]
       ring
-    have hmap :
-        ((zigzagRootCofactors roots).map (fun p => (v * p) ^ 2)).sum =
-          v ^ 2 * ((zigzagRootCofactors roots).map (fun p => p ^ 2)).sum := by
-      simp only [mul_pow, List.sum_map_mul_left]
     change (v * F).derivative ^ 2 - (v * F) * (v * F).derivative.derivative =
       ((zigzagRootProduct roots ::
         (zigzagRootCofactors roots).map (fun p => v * p)).map (fun p => p ^ 2)).sum
@@ -102,13 +98,10 @@ private theorem zigzagRootProduct_laguerre (roots : List ℝ) :
           ((zigzagRootCofactors roots).map (fun p => p ^ 2)).sum := by
           rw [ihF]
       _ = F ^ 2 +
-          ((zigzagRootCofactors roots).map (fun p => (v * p) ^ 2)).sum := by
-          rw [← hmap]
-      _ = F ^ 2 +
           (((zigzagRootCofactors roots).map (fun p => v * p)).map
             (fun p => p ^ 2)).sum := by
           congr 1
-          simp only [List.map_map, Function.comp_def]
+          simp only [List.map_map, Function.comp_def, mul_pow, List.sum_map_mul_left]
       _ = zigzagRootProduct roots ^ 2 +
           (((zigzagRootCofactors roots).map (fun p => v * p)).map
             (fun p => p ^ 2)).sum := by
@@ -151,9 +144,8 @@ private theorem zigzagRootJSum_eval_nonneg (roots : List ℝ)
   | nil => simp [zigzagRootJSum]
   | cons r roots ih =>
     have hr := hroots r (by simp)
-    have htail : ∀ t ∈ roots, -1 < t ∧ t < 1 := by
-      intro t ht
-      exact hroots t (List.mem_cons_of_mem r ht)
+    have htail : ∀ t ∈ roots, -1 < t ∧ t < 1 :=
+      fun t ht => hroots t (List.mem_cons_of_mem r ht)
     have hrootsum := ih htail
     simp only [zigzagRootJSum, eval_add, eval_mul, eval_C, eval_pow,
       eval_sub, eval_X]
@@ -169,9 +161,8 @@ private theorem zigzagRootJSum_eval_pos_of_eval_ne_zero (roots : List ℝ)
   | nil => contradiction
   | cons r roots =>
     have hr := hroots r (by simp)
-    have htail : ∀ t ∈ roots, -1 < t ∧ t < 1 := by
-      intro t ht
-      exact hroots t (List.mem_cons_of_mem r ht)
+    have htail : ∀ t ∈ roots, -1 < t ∧ t < 1 :=
+      fun t ht => hroots t (List.mem_cons_of_mem r ht)
     have hrootsum := zigzagRootJSum_eval_nonneg roots htail x
     have hprod : (x - r) * (zigzagRootProduct roots).eval x ≠ 0 := by
       simpa [zigzagRootProduct, eval_mul, eval_sub, eval_C, eval_X] using hx
@@ -224,28 +215,18 @@ theorem zigzagJ_eval_pos_of_splits (F : ℝ[X])
     exact ne_zero_of_natDegree_gt hdeg
   have hnonempty : roots ≠ [] := by
     intro hempty
-    change F.roots.toList = [] at hempty
-    have hcard : F.natDegree = F.roots.card := hF.natDegree_eq_card_roots
-    have hcard0 : F.roots.card = 0 := by
-      simpa [hempty] using (Multiset.length_toList F.roots).symm
-    rw [hcard0] at hcard
+    simp only [hempty, List.length_nil] at hlength
     lia
-  have hrootsList : ∀ r ∈ roots, -1 < r ∧ r < 1 := by
-    intro r hr
-    dsimp [roots] at hr
-    exact hroots r (by simpa using hr)
+  have hrootsList : ∀ r ∈ roots, -1 < r ∧ r < 1 :=
+    fun r hr => hroots r (by simpa [roots] using hr)
   have hprod : (zigzagRootProduct roots).eval x ≠ 0 := by
-    have hEval := congrArg (fun p : ℝ[X] => p.eval x) hfactor
-    simp only [eval_mul, eval_C] at hEval
     intro hzero
-    rw [hzero, mul_zero] at hEval
-    exact hx hEval
+    apply hx
+    rw [hfactor, eval_mul, eval_C, hzero, mul_zero]
   rw [← hlength, hfactor, zigzagJ_scale, zigzagJ_rootProduct_eq]
-  have hpos := zigzagRootJSum_eval_pos_of_eval_ne_zero roots
-    hrootsList x hnonempty hprod
-  have hsq : 0 < F.leadingCoeff ^ 2 := sq_pos_of_ne_zero hlc
   simp only [eval_mul, eval_C]
-  exact mul_pos hsq hpos
+  exact mul_pos (sq_pos_of_ne_zero hlc)
+    (zigzagRootJSum_eval_pos_of_eval_ne_zero roots hrootsList x hnonempty hprod)
 
 /-- `zigzagK` is nonnegative for every split real polynomial. -/
 theorem zigzagK_eval_nonneg_of_splits (F : ℝ[X]) (hF : F.Splits) (x : ℝ) :
@@ -289,25 +270,12 @@ theorem zigzagK_eval_nonneg_of_splits (F : ℝ[X]) (hF : F.Splits) (x : ℝ) :
             (values.map (fun y => y ^ 2)).sum := by
       linarith [hlag']
     simp only [zigzagK, eval_sub, eval_mul, eval_C, eval_pow]
-    rw [hder']
-    have hsecond' : (roots.length : ℝ) *
-        (zigzagRootProduct roots).eval x *
-          (zigzagRootProduct roots).derivative.derivative.eval x =
-        (roots.length : ℝ) *
-          (values.sum ^ 2 - (values.map (fun y => y ^ 2)).sum) := by
-      calc
-        _ = (roots.length : ℝ) *
-            ((zigzagRootProduct roots).eval x *
-              (zigzagRootProduct roots).derivative.derivative.eval x) := by
-                rw [mul_assoc]
-        _ = _ := by rw [hsecond, hder']
-    rw [hsecond', ← hvalues]
+    rw [hder', mul_assoc, hsecond, hder', ← hvalues]
     ring
-  have hnonneg := zigzag_list_cauchy_remainder values
   have hbase : 0 ≤
       (zigzagK roots.length (zigzagRootProduct roots)).eval x := by
     rw [hk]
-    exact hnonneg
+    exact zigzag_list_cauchy_remainder values
   simp only [eval_mul, eval_C]
   exact mul_nonneg (sq_nonneg _) hbase
 

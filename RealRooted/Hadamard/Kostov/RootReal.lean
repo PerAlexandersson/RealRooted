@@ -54,6 +54,108 @@ lemma tendsto_eval_eigen_combo (n m : ℕ) (hm : 2 ≤ m) (hmn : m ≤ n)
       ((eigPoly n d).eval y)
     simpa using this
 
+/-- Every monic preimage with the Bernstein root bound factors over the prescribed interval. -/
+private lemma bernOp_preimage_factorization
+    (n m r : ℕ) (hn : 2 ≤ n) (hm : 2 ≤ m) (hmn : m ≤ n)
+    (z : ℕ → ℝ) (hz : z = fun i : ℕ => ((i : ℝ) + 3 / 2) / n)
+    (F : ℝ[X])
+    (hF : F = X * (X - C 1) * ∏ i ∈ Finset.range (m - 2), (X - C (z i)))
+    (hFmon : F.Monic) (Fr : ℕ → ℝ[X])
+    (hBFr : ((bernOp n) ^ r) (Fr r) = (mu n m) ^ r • F)
+    (hFr0 : (Fr r).eval 0 = 0) (hFr1 : (Fr r).eval 1 = 0)
+    (hFrd : (Fr r).natDegree = m) (hFrmon : (Fr r).Monic) :
+    ∃ w : Fin (m - 2) → ℝ,
+      (∀ i, w i ∈ Set.Icc (1 / (n : ℝ)) (((n - 1 : ℕ) : ℝ) / n)) ∧
+      Fr r = X * (X - C 1) * ∏ i, (X - C (w i)) := by
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by lia)
+  have hlt1 : ((n - 1 : ℕ) : ℝ) / n < 1 := by
+    rw [div_lt_one hn0, Nat.cast_sub (by lia)]
+    simp
+  set s₀ := (Finset.range (m - 2)).image z with hs₀
+  have hzinj : Set.InjOn z (Finset.range (m - 2)) := by
+    intro i _ j _ h
+    simp only [hz] at h
+    field_simp at h
+    exact_mod_cast (show (i : ℝ) = j by linarith)
+  have hs₀c : s₀.card = m - 2 := by
+    rw [hs₀, Finset.card_image_of_injOn hzinj, Finset.card_range]
+  have hne : ((bernOp n) ^ r) (Fr r) ≠ 0 := by
+    rw [hBFr]
+    exact smul_ne_zero (pow_ne_zero _ (mu_pos n m hmn).ne') hFmon.ne_zero
+  obtain ⟨s, hs, hs'⟩ := bernOp_pow_roots_le n hn r (Fr r) hFr0 hFr1 hne s₀ (by
+    intro y hy
+    obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hy
+    rw [Finset.mem_range] at hi
+    refine ⟨?_, ?_, ?_⟩
+    · rw [hBFr, eval_smul, hF, eval_mul, eval_prod,
+        Finset.prod_eq_zero (Finset.mem_range.mpr hi) (by simp)]
+      simp
+    · simp only [hz]
+      exact div_lt_div_of_pos_right (by linarith [(Nat.cast_nonneg i : (0 : ℝ) ≤ i)]) hn0
+    · simp only [hz]
+      refine div_lt_div_of_pos_right ?_ hn0
+      have : (i : ℝ) + 3 ≤ n := by exact_mod_cast (show i + 3 ≤ n by lia)
+      rw [Nat.cast_sub (by lia)]
+      push_cast
+      linarith)
+  obtain ⟨t, hts, htc⟩ := Finset.exists_subset_card_eq (show m - 2 ≤ s.card by lia)
+  have h1t : (1 : ℝ) ∉ t := fun h => by linarith [(hs' 1 (hts h)).2.2]
+  have h0t : (0 : ℝ) ∉ insert 1 t := by
+    intro h
+    rcases Finset.mem_insert.mp h with h | h
+    · norm_num at h
+    · have := (hs' 0 (hts h)).2.1
+      have : (0 : ℝ) < 1 / n := by positivity
+      linarith
+  have hcard : (insert (0 : ℝ) (insert 1 t)).card = (Fr r).natDegree := by
+    rw [Finset.card_insert_of_notMem h0t, Finset.card_insert_of_notMem h1t, htc, hFrd]
+    lia
+  have hprod := monic_eq_prod_of_roots (Fr r) hFrmon _ (by
+    intro y hy
+    rcases Finset.mem_insert.mp hy with rfl | hy
+    · exact hFr0
+    rcases Finset.mem_insert.mp hy with rfl | hy
+    · exact hFr1
+    · exact (hs' y (hts hy)).1) hcard
+  rw [Finset.prod_insert h0t, Finset.prod_insert h1t, map_zero, sub_zero] at hprod
+  set e := t.orderIsoOfFin htc
+  refine ⟨fun i => (e i : ℝ), fun i => ?_, ?_⟩
+  · obtain ⟨-, h2, h3⟩ := hs' _ (hts (e i).2)
+    exact ⟨h2.le, h3.le⟩
+  · rw [hprod, mul_assoc]
+    congr 2
+    rw [← Finset.prod_coe_sort t]
+    exact (Fintype.prod_equiv e.toEquiv _ _ (fun _ => rfl)).symm
+
+/-- A pointwise limit of uniformly bounded factored monic polynomials has the same factorization. -/
+private lemma exists_limit_root_factorization
+    {m : ℕ} {lo hi : ℝ} (p : ℝ[X]) (Fr : ℕ → ℝ[X])
+    (happrox : ∀ r, ∃ w : Fin (m - 2) → ℝ,
+      (∀ i, w i ∈ Set.Icc lo hi) ∧
+        Fr r = X * (X - C 1) * ∏ i, (X - C (w i)))
+    (htendsto : ∀ y, Filter.Tendsto (fun r => (Fr r).eval y) Filter.atTop
+      (nhds (p.eval y))) :
+    ∃ z : Fin (m - 2) → ℝ, (∀ i, z i ∈ Set.Icc lo hi) ∧
+      p = X * (X - C 1) * ∏ i, (X - C (z i)) := by
+  choose zr hzr using happrox
+  have hK : IsCompact (Set.pi Set.univ fun _ : Fin (m - 2) => Set.Icc lo hi) :=
+    isCompact_univ_pi fun _ => isCompact_Icc
+  obtain ⟨zs, hzs, φ, hφ, hlim⟩ := hK.tendsto_subseq (x := zr)
+    (fun r => Set.mem_univ_pi.mpr (hzr r).1)
+  refine ⟨zs, fun i => Set.mem_univ_pi.mp hzs i, Polynomial.funext fun y => ?_⟩
+  have h1 : Filter.Tendsto (fun r => (Fr (φ r)).eval y) Filter.atTop (nhds (p.eval y)) :=
+    (htendsto y).comp hφ.tendsto_atTop
+  have h2 : Filter.Tendsto (fun r => (Fr (φ r)).eval y) Filter.atTop
+      (nhds ((X * (X - C 1) * ∏ i, (X - C (zs i))).eval y)) := by
+    have e : (fun r => (Fr (φ r)).eval y) =
+        fun r => (X * (X - C 1) * ∏ i, (X - C (zr (φ r) i))).eval y :=
+      funext fun r => by rw [(hzr (φ r)).2]
+    rw [e]
+    simp only [eval_mul, eval_X, eval_sub, eval_C, eval_prod]
+    refine tendsto_const_nhds.mul (tendsto_finsetProd _ fun i _ => tendsto_const_nhds.sub ?_)
+    exact ((continuous_apply i).tendsto zs).comp hlim
+  exact tendsto_nhds_unique h1 h2
+
 /-- **All zeros of `G_m` are real.**  `G_m = X (X - 1) ∏ (X - z_i)` with `m - 2` (possibly
 repeated) zeros `z_i ∈ [1/n, (n-1)/n]`.  Proved by a compactness argument from the
 variation-diminishing property. -/
@@ -62,7 +164,6 @@ lemma eigPoly_eq_prod_closed (n m : ℕ) (hm : 2 ≤ m) (hmn : m ≤ n) :
       (∀ i, z i ∈ Set.Icc (1 / (n : ℝ)) (((n - 1 : ℕ) : ℝ) / n)) ∧
       eigPoly n m = X * (X - C 1) * ∏ i, (X - C (z i)) := by
   have hn : 2 ≤ n := by lia
-  have hn0 : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by lia)
   set z : ℕ → ℝ := fun i => ((i : ℝ) + 3 / 2) / n with hz
   set F : ℝ[X] := X * (X - C 1) * ∏ i ∈ Finset.range (m - 2), (X - C (z i)) with hF
   have hFmon : F.Monic :=
@@ -120,89 +221,13 @@ lemma eigPoly_eq_prod_closed (n m : ℕ) (hm : 2 ≤ m) (hmn : m ≤ n) :
     natDegree_eq_of_le_of_coeff_ne_zero (hFrdeg r) (by rw [hFrm r]; exact one_ne_zero)
   have hFrmon : ∀ r, (Fr r).Monic := fun r => by
     rw [Monic, leadingCoeff, hFrd r, hFrm r]
-  set s₀ := (Finset.range (m - 2)).image z with hs₀
-  have hzinj : Set.InjOn z (Finset.range (m - 2)) := by
-    intro i _ j _ h
-    simp only [hz] at h
-    field_simp at h
-    exact_mod_cast (show (i : ℝ) = j by linarith)
-  have hs₀c : s₀.card = m - 2 := by
-    rw [hs₀, Finset.card_image_of_injOn hzinj, Finset.card_range]
-  have hlt1 : ((n - 1 : ℕ) : ℝ) / n < 1 := by
-    rw [div_lt_one hn0, Nat.cast_sub (by lia)]; simp
-  -- each `F_r` has all its zeros real, in `[1/n, (n-1)/n]`
   have happrox : ∀ r, ∃ w : Fin (m - 2) → ℝ,
       (∀ i, w i ∈ Set.Icc (1 / (n : ℝ)) (((n - 1 : ℕ) : ℝ) / n)) ∧
-      Fr r = X * (X - C 1) * ∏ i, (X - C (w i)) := by
-    intro r
-    have hne : ((bernOp n) ^ r) (Fr r) ≠ 0 := by
-      rw [hBFr r]
-      exact smul_ne_zero (pow_ne_zero _ (mu_pos n m hmn).ne') hFmon.ne_zero
-    obtain ⟨s, hs, hs'⟩ := bernOp_pow_roots_le n hn r (Fr r) (hFr0 r) (hFr1 r) hne s₀ (by
-      intro y hy
-      obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hy
-      rw [Finset.mem_range] at hi
-      refine ⟨?_, ?_, ?_⟩
-      · rw [hBFr r, eval_smul, hF, eval_mul, eval_prod,
-          Finset.prod_eq_zero (Finset.mem_range.mpr hi) (by simp)]
-        simp
-      · simp only [hz]
-        exact div_lt_div_of_pos_right (by linarith [(Nat.cast_nonneg i : (0 : ℝ) ≤ i)]) hn0
-      · simp only [hz]
-        refine div_lt_div_of_pos_right ?_ hn0
-        have : (i : ℝ) + 3 ≤ n := by exact_mod_cast (show i + 3 ≤ n by lia)
-        rw [Nat.cast_sub (by lia)]
-        push_cast
-        linarith)
-    obtain ⟨t, hts, htc⟩ := Finset.exists_subset_card_eq (show m - 2 ≤ s.card by lia)
-    have h1t : (1 : ℝ) ∉ t := fun h => by linarith [(hs' 1 (hts h)).2.2]
-    have h0t : (0 : ℝ) ∉ insert 1 t := by
-      intro h
-      rcases Finset.mem_insert.mp h with h | h
-      · norm_num at h
-      · have := (hs' 0 (hts h)).2.1
-        have : (0 : ℝ) < 1 / n := by positivity
-        linarith
-    have hcard : (insert (0 : ℝ) (insert 1 t)).card = (Fr r).natDegree := by
-      rw [Finset.card_insert_of_notMem h0t, Finset.card_insert_of_notMem h1t, htc, hFrd r]
-      lia
-    have hprod := monic_eq_prod_of_roots (Fr r) (hFrmon r) _ (by
-      intro y hy
-      rcases Finset.mem_insert.mp hy with rfl | hy
-      · exact hFr0 r
-      rcases Finset.mem_insert.mp hy with rfl | hy
-      · exact hFr1 r
-      · exact (hs' y (hts hy)).1) hcard
-    rw [Finset.prod_insert h0t, Finset.prod_insert h1t, map_zero, sub_zero] at hprod
-    set e := t.orderIsoOfFin htc
-    refine ⟨fun i => (e i : ℝ), fun i => ?_, ?_⟩
-    · obtain ⟨-, h2, h3⟩ := hs' _ (hts (e i).2)
-      exact ⟨h2.le, h3.le⟩
-    · rw [hprod, mul_assoc]
-      congr 2
-      rw [← Finset.prod_coe_sort t]
-      exact (Fintype.prod_equiv e.toEquiv _ _ (fun _ => rfl)).symm
-  choose zr hzr using happrox
-  have hK : IsCompact (Set.pi Set.univ
-      fun _ : Fin (m - 2) => Set.Icc (1 / (n : ℝ)) (((n - 1 : ℕ) : ℝ) / n)) :=
-    isCompact_univ_pi fun _ => isCompact_Icc
-  obtain ⟨zs, hzs, φ, hφ, hlim⟩ := hK.tendsto_subseq (x := zr)
-    (fun r => Set.mem_univ_pi.mpr (hzr r).1)
-  refine ⟨zs, fun i => Set.mem_univ_pi.mp hzs i, ?_⟩
-  refine Polynomial.funext fun y => ?_
-  have h1 : Filter.Tendsto (fun r => (Fr (φ r)).eval y) Filter.atTop
-      (nhds ((eigPoly n m).eval y)) :=
-    (tendsto_eval_eigen_combo n m hm hmn a ham1 y).comp hφ.tendsto_atTop
-  have h2 : Filter.Tendsto (fun r => (Fr (φ r)).eval y) Filter.atTop
-      (nhds ((X * (X - C 1) * ∏ i, (X - C (zs i))).eval y)) := by
-    have e : (fun r => (Fr (φ r)).eval y) =
-        fun r => (X * (X - C 1) * ∏ i, (X - C (zr (φ r) i))).eval y :=
-      funext fun r => by rw [(hzr (φ r)).2]
-    rw [e]
-    simp only [eval_mul, eval_X, eval_sub, eval_C, eval_prod]
-    refine tendsto_const_nhds.mul (tendsto_finsetProd _ fun i _ => tendsto_const_nhds.sub ?_)
-    exact ((continuous_apply i).tendsto zs).comp hlim
-  exact tendsto_nhds_unique h1 h2
+      Fr r = X * (X - C 1) * ∏ i, (X - C (w i)) := fun r =>
+    bernOp_preimage_factorization n m r hn hm hmn z hz F hF hFmon Fr
+      (hBFr r) (hFr0 r) (hFr1 r) (hFrd r) (hFrmon r)
+  exact exists_limit_root_factorization (eigPoly n m) Fr happrox fun y => by
+    simpa only [hFr] using tendsto_eval_eigen_combo n m hm hmn a ham1 y
 
 /-- Sign variations of the Bernstein coefficients of `B_n G` are bounded by zeros of `G` in
 `(0,1)`. -/

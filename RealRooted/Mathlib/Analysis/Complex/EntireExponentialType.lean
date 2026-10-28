@@ -44,6 +44,23 @@ private theorem differentiable_deriv {g : ℂ → ℂ} (hg : Differentiable ℂ 
     Differentiable ℂ (deriv g) := fun z =>
   ((hg.analyticAt z).deriv).differentiableAt
 
+private theorem exists_affine_of_deriv_deriv_eq_zero {g : ℂ → ℂ}
+    (hg : Differentiable ℂ g) (h2 : ∀ z, deriv (deriv g) z = 0) :
+    ∃ a b : ℂ, ∀ z, g z = a * z + b := by
+  let a := deriv g 0
+  have ha : ∀ z, deriv g z = a := fun z =>
+    is_const_of_deriv_eq_zero (differentiable_deriv hg) h2 z 0
+  have hk : Differentiable ℂ (fun z => g z - a * z) := hg.sub (by fun_prop)
+  have hk' : ∀ z, deriv (fun z => g z - a * z) z = 0 := fun z => by
+    have hderiv : HasDerivAt (fun z => g z - a * z) (deriv g z - a * 1) z :=
+      (hg z).hasDerivAt.sub ((hasDerivAt_id z).const_mul a)
+    rw [hderiv.deriv, ha]
+    ring
+  refine ⟨a, g 0, fun z => ?_⟩
+  have hconst := is_const_of_deriv_eq_zero hk hk' z 0
+  simp at hconst
+  linear_combination hconst
+
 private theorem norm_le_of_re_le {g : ℂ → ℂ} (hg : Differentiable ℂ g) {C : ℝ}
     (h : ∀ z, (g z).re ≤ C * (1 + ‖z‖)) {ρ : ℝ} (hρ : 0 < ρ) {z : ℂ}
     (hz : ‖z‖ ≤ ρ) :
@@ -158,7 +175,6 @@ open Complex
 /-- An entire complex function whose real part has at most linear growth is affine. -/
 theorem exists_affine_of_re_le {g : ℂ → ℂ} (hg : Differentiable ℂ g) {C : ℝ}
     (h : ∀ z, (g z).re ≤ C * (1 + ‖z‖)) : ∃ a b : ℂ, ∀ z, g z = a * z + b := by
-  have hd1 := differentiable_deriv hg
   have h2 : ∀ c, _root_.deriv (_root_.deriv g) c = 0 := by
     intro c
     have hdd : ∀ R : ℝ, 1 ≤ R → ‖_root_.deriv (_root_.deriv g) c‖ * R ^ 2 ≤
@@ -180,27 +196,13 @@ theorem exists_affine_of_re_le {g : ℂ → ℂ} (hg : Differentiable ℂ g) {C 
       nlinarith [abs_nonneg C]
     exact norm_eq_zero.mp
       (eq_zero_of_mul_sq_le (norm_nonneg _) (by positivity) (by positivity) hdd)
-  set a := _root_.deriv g 0
-  have ha : ∀ z, _root_.deriv g z = a := fun z => is_const_of_deriv_eq_zero hd1 h2 z 0
-  have hk : Differentiable ℂ (fun z => g z - a * z) := hg.sub (by fun_prop)
-  have hk' : ∀ z, _root_.deriv (fun z => g z - a * z) z = 0 := by
-    intro z
-    have hderiv : HasDerivAt (fun z => g z - a * z) (_root_.deriv g z - a * 1) z :=
-      (hg z).hasDerivAt.sub ((hasDerivAt_id z).const_mul a)
-    rw [hderiv.deriv, ha]
-    ring
-  refine ⟨a, g 0, fun z => ?_⟩
-  have hconst := is_const_of_deriv_eq_zero hk hk' z 0
-  simp at hconst
-  linear_combination hconst
+  exact exists_affine_of_deriv_deriv_eq_zero hg h2
 
 /-- An entire complex function whose real part grows at most like
 `(1 + ‖z‖) ^ (3 / 2)` is affine. -/
 theorem exists_affine_of_re_le_rpow {g : ℂ → ℂ} (hg : Differentiable ℂ g) {C : ℝ}
     (h : ∀ z, (g z).re ≤ C * (1 + ‖z‖) ^ (3 / 2 : ℝ)) :
     ∃ a b : ℂ, ∀ z, g z = a * z + b := by
-  have hd1 : Differentiable ℂ (_root_.deriv g) := fun z =>
-    ((hg.analyticAt z).deriv).differentiableAt
   have h2 : ∀ c, _root_.deriv (_root_.deriv g) c = 0 := by
     intro c
     have hdd : ∀ R : ℝ, 1 ≤ R → ‖_root_.deriv (_root_.deriv g) c‖ * R ^ 2 ≤
@@ -231,20 +233,7 @@ theorem exists_affine_of_re_le_rpow {g : ℂ → ℂ} (hg : Differentiable ℂ g
       nlinarith [mul_le_mul_of_nonneg_left hp hC]
     exact norm_eq_zero.mp
       (Complex.eq_zero_of_mul_sq_le_rpow (norm_nonneg _) (by positivity) (by positivity) hdd)
-  set a := _root_.deriv g 0
-  have ha : ∀ z, _root_.deriv g z = a := fun z =>
-    is_const_of_deriv_eq_zero hd1 h2 z 0
-  have hk : Differentiable ℂ (fun z => g z - a * z) := hg.sub (by fun_prop)
-  have hk' : ∀ z, _root_.deriv (fun z => g z - a * z) z = 0 := by
-    intro z
-    have hderiv : HasDerivAt (fun z => g z - a * z) (_root_.deriv g z - a * 1) z :=
-      (hg z).hasDerivAt.sub ((hasDerivAt_id z).const_mul a)
-    rw [hderiv.deriv, ha]
-    ring
-  refine ⟨a, g 0, fun z => ?_⟩
-  have hconst := is_const_of_deriv_eq_zero hk hk' z 0
-  simp at hconst
-  linear_combination hconst
+  exact exists_affine_of_deriv_deriv_eq_zero hg h2
 
 /-- A zero-free entire complex function has an entire logarithm. -/
 theorem exists_log_of_ne_zero {f : ℂ → ℂ} (hf : Differentiable ℂ f)

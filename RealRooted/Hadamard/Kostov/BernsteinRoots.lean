@@ -336,12 +336,84 @@ lemma bernOp_pow_eigPoly (n d : ℕ) (hd : 2 ≤ d) (hdn : d ≤ n) (r : ℕ) :
   induction r <;> simp_all [pow_succ, Module.End.mul_apply, (eigPoly_spec n d hd hdn).2.2,
     map_smul, smul_smul, mul_comm]
 
+/-- A Bernstein inverse iterate with prescribed interior roots has a bounded linear coefficient. -/
+private lemma coeff_one_lower_bound_of_bernOp_iterate
+    (n m r : ℕ) (hm : 2 ≤ m) (hmn : m ≤ n) (z : ℕ → ℝ) (F P : ℝ[X])
+    (hz : z = fun (i : ℕ) => ((i : ℝ) + 3 / 2) / n)
+    (hF : F = X * (X - C 1) * ∏ i ∈ Finset.range (m - 2), (X - C (z i)))
+    (hFmon : F.Monic)
+    (hBP : ((bernOp n) ^ r) P = (mu n m) ^ r • F)
+    (hP0 : P.eval 0 = 0) (hP1 : P.eval 1 = 0) (hPmon : P.Monic)
+    (hPdeg : P.natDegree = m) :
+    (1 / (n : ℝ)) ^ (m - 2) ≤ |P.coeff 1| := by
+  have hn : 2 ≤ n := by lia
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by lia)
+  let s₀ := (Finset.range (m - 2)).image z
+  have hzinj : Set.InjOn z (Finset.range (m - 2)) := by
+    intro i _ j _ hij
+    simp only [hz] at hij
+    field_simp at hij
+    exact_mod_cast (show (i : ℝ) = j by linarith)
+  have hs₀c : s₀.card = m - 2 := by
+    rw [show s₀ = (Finset.range (m - 2)).image z from rfl,
+      Finset.card_image_of_injOn hzinj, Finset.card_range]
+  have hne : ((bernOp n) ^ r) P ≠ 0 := by
+    rw [hBP]
+    exact smul_ne_zero (pow_ne_zero _ (mu_pos n m hmn).ne') hFmon.ne_zero
+  obtain ⟨s, hs, hs'⟩ := bernOp_pow_roots_le n hn r P hP0 hP1 hne s₀ (by
+    intro y hy
+    obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hy
+    rw [Finset.mem_range] at hi
+    refine ⟨?_, ?_, ?_⟩
+    · rw [hBP, eval_smul, hF, eval_mul, eval_prod,
+        Finset.prod_eq_zero (Finset.mem_range.mpr hi) (by simp)]
+      simp
+    · simp only [hz]
+      exact div_lt_div_of_pos_right (by linarith [(Nat.cast_nonneg i : (0 : ℝ) ≤ i)]) hn0
+    · simp only [hz]
+      refine div_lt_div_of_pos_right ?_ hn0
+      have : (i : ℝ) + 3 ≤ n := by exact_mod_cast (show i + 3 ≤ n by lia)
+      rw [Nat.cast_sub (by lia)]
+      push_cast
+      linarith)
+  refine coeff_one_bound P m hm hPmon hPdeg hP0 hP1 (1 / n)
+    (by positivity) s (by lia) fun y hy => ?_
+  obtain ⟨e1, e2, e3⟩ := hs' y hy
+  refine ⟨e1, e2, e3.trans ?_⟩
+  rw [div_lt_one hn0, Nat.cast_sub (by lia)]
+  simp
+
+/-- The linear coefficients of the normalized eigen-expansions converge to that of `G_m`. -/
+private lemma tendsto_coeff_one_eigen_combo
+    (n m : ℕ) (hm : 2 ≤ m) (hmn : m ≤ n) (a : ℕ → ℝ) (ham1 : a m = 1) :
+    Filter.Tendsto (fun r : ℕ => (∑ d ∈ Finset.Icc 2 m,
+      (a d * (mu n m / mu n d) ^ r) • eigPoly n d).coeff 1) Filter.atTop
+      (nhds ((eigPoly n m).coeff 1)) := by
+  simp_rw [finsetSum_coeff, coeff_smul, smul_eq_mul]
+  have hlim : (eigPoly n m).coeff 1 = ∑ d ∈ Finset.Icc 2 m,
+      (if d = m then a d * (eigPoly n d).coeff 1 else 0) := by
+    rw [Finset.sum_ite_eq', ite_eq_left (by simp; lia), ham1, one_mul]
+  rw [hlim]
+  refine tendsto_finsetSum _ fun d hd => ?_
+  by_cases hdm : d = m
+  · subst hdm
+    simp only [ite_true, div_self (mu_pos n d hmn).ne', one_pow, mul_one]
+    exact tendsto_const_nhds
+  · rw [ite_eq_right hdm]
+    have hd' : d < m := by simp at hd; lia
+    have hq0 : 0 ≤ mu n m / mu n d :=
+      div_nonneg (mu_pos n m hmn).le (mu_pos n d (by lia)).le
+    have hq1 : mu n m / mu n d < 1 := by
+      rw [div_lt_one (mu_pos n d (by lia))]
+      exact mu_lt_of_lt n d m (by simp at hd; lia) hd' hmn
+    have := ((tendsto_pow_atTop_nhds_zero_of_lt_one hq0 hq1).const_mul (a d)).mul_const
+      ((eigPoly n d).coeff 1)
+    simpa using this
+
 /-- **Simple root at `0`.** The eigenpolynomial `G_m` (`2 ≤ m ≤ n`) has a simple zero at `0`:
 its linear coefficient does not vanish.  (Proved by a variation-diminishing argument.) -/
 theorem eigPoly_coeff_one_ne_zero (n m : ℕ) (hm : 2 ≤ m) (hmn : m ≤ n) :
     (eigPoly n m).coeff 1 ≠ 0 := by
-  have hn : 2 ≤ n := by lia
-  have hn0 : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by lia)
   set z : ℕ → ℝ := fun i => ((i : ℝ) + 3 / 2) / n with hz
   set F : ℝ[X] := X * (X - C 1) * ∏ i ∈ Finset.range (m - 2), (X - C (z i)) with hF
   have hFmon : F.Monic :=
@@ -404,68 +476,17 @@ theorem eigPoly_coeff_one_ne_zero (n m : ℕ) (hm : 2 ≤ m) (hmn : m ≤ n) :
   have hFrd : ∀ r, (Fr r).natDegree = m := fun r =>
     natDegree_eq_of_le_of_coeff_ne_zero (hFrdeg r) (by rw [hFrm r]; exact one_ne_zero)
   have hFrmon : ∀ r, (Fr r).Monic := fun r => by simp [Monic, leadingCoeff, hFrd r, hFrm r]
-  -- the roots of `F` between the interior nodes
-  set s₀ := (Finset.range (m - 2)).image z with hs₀
-  have hzinj : Set.InjOn z (Finset.range (m - 2)) := by
-    intro i _ j _ h
-    simp only [hz] at h
-    field_simp at h
-    exact_mod_cast (show (i : ℝ) = j by linarith)
-  have hs₀c : s₀.card = m - 2 := by
-    rw [hs₀, Finset.card_image_of_injOn hzinj, Finset.card_range]
   have hbound : ∀ r, (1 / (n : ℝ)) ^ (m - 2) ≤ |(Fr r).coeff 1| := by
     intro r
-    have hne : ((bernOp n) ^ r) (Fr r) ≠ 0 := by
-      rw [hBFr r]
-      exact smul_ne_zero (pow_ne_zero _ (mu_pos n m hmn).ne') hFmon.ne_zero
-    obtain ⟨s, hs, hs'⟩ := bernOp_pow_roots_le n hn r (Fr r) (hFr0 r) (hFr1 r) hne s₀ (by
-      intro y hy
-      obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hy
-      rw [Finset.mem_range] at hi
-      refine ⟨?_, ?_, ?_⟩
-      · rw [hBFr r, eval_smul, hF, eval_mul, eval_prod,
-          Finset.prod_eq_zero (Finset.mem_range.mpr hi) (by simp)]
-        simp
-      · simp only [hz]
-        exact div_lt_div_of_pos_right (by linarith [(Nat.cast_nonneg i : (0 : ℝ) ≤ i)]) hn0
-      · simp only [hz]
-        refine div_lt_div_of_pos_right ?_ hn0
-        have : (i : ℝ) + 3 ≤ n := by exact_mod_cast (show i + 3 ≤ n by lia)
-        rw [Nat.cast_sub (by lia)]
-        push_cast
-        linarith)
-    refine coeff_one_bound (Fr r) m hm (hFrmon r) (hFrd r) (hFr0 r) (hFr1 r) (1 / n)
-      (by positivity) s (by lia) fun y hy => ?_
-    obtain ⟨e1, e2, e3⟩ := hs' y hy
-    refine ⟨e1, e2, e3.trans ?_⟩
-    rw [div_lt_one hn0, Nat.cast_sub (by lia)]
-    simp
-  -- the limit
+    exact coeff_one_lower_bound_of_bernOp_iterate n m r hm hmn z F (Fr r) hz hF hFmon
+      (hBFr r) (hFr0 r) (hFr1 r) (hFrmon r) (hFrd r)
   have hT : Filter.Tendsto (fun r => (Fr r).coeff 1) Filter.atTop
       (nhds ((eigPoly n m).coeff 1)) := by
-    simp_rw [hFrc]
-    have hlim : (eigPoly n m).coeff 1 = ∑ d ∈ Finset.Icc 2 m,
-        (if d = m then a d * (eigPoly n d).coeff 1 else 0) := by
-      rw [Finset.sum_ite_eq', ite_eq_left (by simp; lia), ham1, one_mul]
-    rw [hlim]
-    refine tendsto_finsetSum _ fun d hd => ?_
-    by_cases hdm : d = m
-    · subst hdm
-      simp only [ite_true, div_self (mu_pos n d hmn).ne', one_pow, mul_one]
-      exact tendsto_const_nhds
-    · rw [ite_eq_right hdm]
-      have hd' : d < m := by simp at hd; lia
-      have hq0 : 0 ≤ mu n m / mu n d :=
-        div_nonneg (mu_pos n m hmn).le (mu_pos n d (by lia)).le
-      have hq1 : mu n m / mu n d < 1 := by
-        rw [div_lt_one (mu_pos n d (by lia))]
-        exact mu_lt_of_lt n d m (by simp at hd; lia) hd' hmn
-      have := ((tendsto_pow_atTop_nhds_zero_of_lt_one hq0 hq1).const_mul (a d)).mul_const
-        ((eigPoly n d).coeff 1)
-      simpa using this
+    simpa [hFr] using tendsto_coeff_one_eigen_combo n m hm hmn a ham1
   have := ge_of_tendsto hT.abs (Filter.Eventually.of_forall hbound)
   intro h0
   rw [h0, abs_zero] at this
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by lia)
   have : 0 < (1 / (n : ℝ)) ^ (m - 2) := by positivity
   linarith
 

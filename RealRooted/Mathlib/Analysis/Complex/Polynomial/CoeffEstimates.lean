@@ -40,8 +40,7 @@ private lemma exp_eq_pow (k N : ℕ) :
     Complex.exp (2 * Real.pi * Complex.I * (k : ℂ) / N) =
       Complex.exp (2 * Real.pi * Complex.I / N) ^ k := by
   rw [← Complex.exp_nat_mul]
-  congr 1
-  ring
+  congr 1; ring
 
 private lemma geom_char_sum {ω r : ℂ} {N : ℕ} (hω : IsPrimitiveRoot ω N) (hr : r ≠ 0)
     {a b : ℕ} (ha : a < N) (hb : b < N) :
@@ -51,10 +50,7 @@ private lemma geom_char_sum {ω r : ℂ} {N : ℕ} (hω : IsPrimitiveRoot ω N) 
   have hω0 : ω ≠ 0 := hω.ne_zero hN
   split_ifs with hab
   · subst hab
-    have h : ∀ j : Fin N,
-        (r * ω ^ (j : ℕ)) ^ a * ((r * ω ^ (j : ℕ)) ^ a)⁻¹ = 1 := fun j =>
-      mul_inv_cancel₀ (pow_ne_zero _ (mul_ne_zero hr (pow_ne_zero _ hω0)))
-    simp [h]
+    simp [hr, hω0]
   · set u := ω ^ a * (ω ^ b)⁻¹ with hu
     have hterm : ∀ j : ℕ, (r * ω ^ j) ^ a * ((r * ω ^ j) ^ b)⁻¹ =
         r ^ a * (r ^ b)⁻¹ * u ^ j := by
@@ -85,10 +81,8 @@ private lemma char_sum {τ : Type*} [Fintype τ] [DecidableEq τ] {ω r : ℂ} {
   split_ifs with h
   · subst h
     simp
-  · obtain ⟨i, hi⟩ : ∃ i, α i ≠ m i := by
-      by_contra hc
-      push Not at hc
-      exact h (Finsupp.ext hc)
+  · obtain ⟨i, hi⟩ : ∃ i, α i ≠ m i :=
+      not_forall.mp fun hc ↦ h (Finsupp.ext hc)
     exact Finset.prod_eq_zero (Finset.mem_univ i) (by simp [hi])
 
 /-- A multivariate polynomial coefficient is its average on a product of sufficiently many
@@ -180,9 +174,8 @@ private lemma summable_half_pi {τ : Type*} [Fintype τ] :
   set N := S.sup (fun x => Finset.univ.sup x) + 1
   have hsub : S ⊆ Fintype.piFinset (fun _ : τ => Finset.range N) := by
     intro x hx
-    rw [Fintype.mem_piFinset]
+    simp only [Fintype.mem_piFinset, Finset.mem_range]
     intro i
-    rw [Finset.mem_range]
     have h1 : x i ≤ Finset.univ.sup x := Finset.le_sup (Finset.mem_univ i)
     have h2 : Finset.univ.sup x ≤ S.sup (fun x => Finset.univ.sup x) :=
       Finset.le_sup (f := fun x => Finset.univ.sup x) hx
@@ -200,9 +193,8 @@ private lemma summable_half_pi {τ : Type*} [Fintype τ] :
 
 private lemma summable_half {τ : Type*} [Fintype τ] :
     Summable fun m : τ →₀ ℕ => (1 / 2 : ℝ) ^ (∑ i, m i) := by
-  have h := (Finsupp.equivFunOnFinite (α := τ) (M := ℕ)).summable_iff.mpr
-    (summable_half_pi (τ := τ))
-  refine h.congr fun m => ?_
+  refine ((Finsupp.equivFunOnFinite (α := τ) (M := ℕ)).summable_iff.mpr
+    (summable_half_pi (τ := τ))).congr fun m => ?_
   simp [Finset.prod_pow_eq_pow_sum]
 
 private lemma norm_mono_le {τ : Type*} [Fintype τ] (z : τ → ℂ) {R : ℝ}
@@ -224,10 +216,7 @@ private lemma coeff_bound {τ : Type*} [Fintype τ] (p : ℕ → MvPolynomial τ
   have h1 : ∀ k, ‖(p k).coeff m‖ * r ^ (∑ i, m i) ≤ K := fun k =>
     norm_coeff_mul_pow_le_of_forall_norm_eval_le (p k) hr
       (fun z hz => hK k z (fun i => (hz i).le)) m
-  refine ⟨h1, ?_⟩
-  have ht : Tendsto (fun k => ‖(p k).coeff m‖ * r ^ (∑ i, m i)) atTop
-      (𝓝 (‖c m‖ * r ^ (∑ i, m i))) := ((hcoef m).norm).mul_const _
-  exact le_of_tendsto' ht h1
+  exact ⟨h1, le_of_tendsto' (((hcoef m).norm).mul_const _) h1⟩
 
 private lemma term_bound {τ : Type*} [Fintype τ] {a : ℂ} {R K : ℝ} (z : τ → ℂ)
     (hz : ∀ i, ‖z i‖ ≤ R) (m : τ →₀ ℕ)
@@ -239,8 +228,7 @@ private lemma term_bound {τ : Type*} [Fintype τ] {a : ℂ} {R K : ℝ} (z : τ
       mul_le_mul_of_nonneg_left (norm_mono_le z hz m) (norm_nonneg _)
     _ = ‖a‖ * (2 * R) ^ (∑ i, m i) * (1 / 2) ^ (∑ i, m i) := by
       rw [mul_assoc, ← mul_pow]
-      congr 2
-      ring
+      congr 2; ring
     _ ≤ K * (1 / 2) ^ (∑ i, m i) :=
       mul_le_mul_of_nonneg_right ha (by positivity)
 
@@ -258,7 +246,6 @@ theorem tendstoLocallyUniformly_of_bounded_of_coeff_tendsto {τ : Type*} [Fintyp
   have hG : ∀ z : τ → ℂ,
       Summable fun m : τ →₀ ℕ => ‖c m * ∏ i, z i ^ (m i)‖ := by
     intro z
-    have hR : 0 < ‖z‖ + 1 := by positivity
     have hz : ∀ i, ‖z i‖ ≤ ‖z‖ + 1 := fun i =>
       (norm_le_pi_norm z i).trans (by linarith)
     obtain ⟨K, hK⟩ := hbound (2 * (‖z‖ + 1)) (by positivity)
@@ -277,7 +264,6 @@ theorem tendstoLocallyUniformly_of_bounded_of_coeff_tendsto {τ : Type*} [Fintyp
   intro x
   rw [tendstoUniformlyOnFilter_iff_tendsto]
   set R := ‖x‖ + 1
-  have hR : 0 < R := by positivity
   obtain ⟨K, hK⟩ := hbound (2 * R) (by positivity)
   have hnear : ∀ᶠ z in 𝓝 x, ∀ i, ‖z i‖ ≤ R := by
     have h : ∀ᶠ z in 𝓝 x, ‖z‖ < R :=
