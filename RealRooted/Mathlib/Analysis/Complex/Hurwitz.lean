@@ -648,7 +648,10 @@ private theorem exists_ball_tendstoUniformlyOn_mul_pow_zero {a b : ℂ → ℂ} 
   exact ⟨r, hr, tendstoUniformlyOn_mul_pow_of_bounds hM hq0 hq1
     (fun z hz => (hball hz).1.le) (fun z hz => (hball hz).2.le)⟩
 
-private theorem exists_ball_tendstoUniformlyOn_sum_mul_pow_zero {κ : Type*}
+/-- A finite sum of continuous coefficients times uniformly subunit bases tends uniformly to zero
+on some ball. This is the elementary tail estimate in Sokal, *Combinatorics, Probability and
+Computing* 13 (2004), Theorem 1.5. -/
+theorem exists_ball_tendstoUniformlyOn_sum_mul_pow_zero {κ : Type*}
     (s : Finset κ) (a b : κ → ℂ → ℂ) {z₀ : ℂ}
     (ha : ∀ k ∈ s, ContinuousAt (a k) z₀)
     (hb : ∀ k ∈ s, ContinuousAt (b k) z₀)
