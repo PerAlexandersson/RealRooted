@@ -43,6 +43,35 @@ lemma listInterlaces_ofFn_succ :
       · grind
       · simp_all
 
+/-- A strictly increasing full-degree family of roots forces the root multiset to be nodup. -/
+private lemma roots_nodup_of_strictMono_isRoot {n : ℕ} {p : ℝ[X]}
+    (hp_ne : p ≠ 0) (hp_deg : p.natDegree = n) (x : Fin n → ℝ)
+    (hx_mono : StrictMono x) (hx_root : ∀ k, p.IsRoot (x k)) : p.roots.Nodup := by
+  have hx_sub : Finset.image x Finset.univ ⊆ p.roots.toFinset := by
+    rw [Finset.image_subset_iff]
+    intro k _
+    exact Multiset.mem_toFinset.mpr (mem_roots'.mpr ⟨hp_ne, hx_root k⟩)
+  have hx_card : n ≤ p.roots.toFinset.card := by
+    calc n = (Finset.image x Finset.univ).card := by
+            rw [Finset.card_image_of_injective _ hx_mono.injective, Finset.card_univ,
+              Fintype.card_fin]
+      _ ≤ p.roots.toFinset.card := Finset.card_le_card hx_sub
+  have hp_roots_card : p.roots.card = n := by
+    refine le_antisymm ?_ ?_
+    · rw [← hp_deg]
+      exact card_roots' p
+    · exact le_trans hx_card (Multiset.toFinset_card_le _)
+  have h_toFinset_n : p.roots.toFinset.card = n :=
+    le_antisymm (le_trans (Multiset.toFinset_card_le _) hp_roots_card.le) hx_card
+  have h_dedup_card : Multiset.card p.roots.dedup = Multiset.card p.roots := by
+    rw [← Multiset.toFinset_val]
+    simp only [Finset.card] at h_toFinset_n
+    lia
+  have h_dedup_eq : p.roots.dedup = p.roots :=
+    Multiset.eq_of_le_of_card_le (Multiset.dedup_le _) (le_of_eq h_dedup_card.symm)
+  rw [← h_dedup_eq]
+  simp
+
 /-- A strict Wronskian sign at every root of the higher-degree polynomial
 forces strict interlacing across a one-degree increase. -/
 theorem interlaces_of_wronskian_neg_succ_atRoots {n : ℕ}
@@ -73,46 +102,12 @@ theorem interlaces_of_wronskian_neg_succ_atRoots {n : ℕ}
     calc x a < r a.succ := hx_hi a
       _ ≤ r b.castSucc := hr_mono.monotone (by simp_all)
       _ < x b := hx_lo b
-  have hx_inj : Function.Injective x := hx_mono.injective
-  have hx_sub : Finset.image x Finset.univ ⊆ f.roots.toFinset := by
-    rw [Finset.image_subset_iff]
-    simp_all
-  have hx_card : n ≤ f.roots.toFinset.card := by
-    calc n = (Finset.image x Finset.univ).card := by
-            rw [Finset.card_image_of_injective _ hx_inj, Finset.card_univ, Fintype.card_fin]
-      _ ≤ f.roots.toFinset.card := Finset.card_le_card hx_sub
-  have hf_roots_card : f.roots.card = n := by
-    refine le_antisymm ?_ ?_
-    · rw [← hf_deg]
-      exact card_roots' f
-    · exact le_trans hx_card (Multiset.toFinset_card_le _)
-  have hf_nodup : f.roots.Nodup := by
-    have h_toFinset_n : f.roots.toFinset.card = n :=
-      le_antisymm (le_trans (Multiset.toFinset_card_le _) (by simp_all)) hx_card
-    have h_dedup_card : Multiset.card f.roots.dedup = Multiset.card f.roots := by
-      rw [← Multiset.toFinset_val]
-      simp only [Finset.card] at h_toFinset_n
-      simp_all
-    have h_dedup_eq : f.roots.dedup = f.roots :=
-      Multiset.eq_of_le_of_card_le (Multiset.dedup_le _) (le_of_eq h_dedup_card.symm)
-    rw [← h_dedup_eq]
-    simp
+  have hf_nodup := roots_nodup_of_strictMono_isRoot hf_ne hf_deg x hx_mono hx_root
   obtain ⟨s, hs_mono, hs_roots⟩ :
       ∃ s : Fin n → ℝ, StrictMono s ∧ ∀ k, f.IsRoot (s k) :=
     Polynomial.exists_strictMono_roots hf_splits hf_deg hf_nodup
-  have hs_surj : ∀ y ∈ f.roots, ∃ k, s k = y := by
-    intro y hy
-    have h_subset : Finset.image s Finset.univ ⊆ f.roots.toFinset := by
-      rw [Finset.image_subset_iff]
-      simp_all
-    have h_card : f.roots.toFinset.card ≤ (Finset.image s Finset.univ).card := by
-      rw [Finset.card_image_of_injective _ hs_mono.injective, Finset.card_univ,
-        Fintype.card_fin]
-      exact le_trans (Multiset.toFinset_card_le _) (hf_deg.symm ▸ Polynomial.card_roots' f)
-    have h_eq := Finset.eq_of_subset_of_card_le h_subset h_card
-    have hy_in : y ∈ Finset.image s Finset.univ :=
-      h_eq.symm ▸ Multiset.mem_toFinset.mpr hy
-    grind
+  have hs_surj : ∀ y ∈ f.roots, ∃ k, s k = y :=
+    exists_index_eq_of_mem_roots s hs_mono hs_roots hf_ne hf_deg.le
   have hxs_eq : ∀ k, x k = s k := by
     obtain ⟨σ, hσ⟩ : ∃ σ : Fin n → Fin n, ∀ k, s (σ k) = x k := by
       refine ⟨fun k => Classical.choose (hs_surj (x k)
@@ -136,25 +131,11 @@ theorem interlaces_of_wronskian_neg_succ_atRoots {n : ℕ}
     exact fun i j hij => hr_mono.monotone hij.le
   · rw [List.pairwise_ofFn]
     exact fun i j hij => hs_mono.monotone hij.le
-  · have hroots := Polynomial.roots_sort_eq_ofFn hg_ne hg_splits hg_deg hg_nodup r hr_mono
-      (fun y hy ↦ by
-        have h_subset : Finset.image r Finset.univ ⊆ g.roots.toFinset := by
-          rw [Finset.image_subset_iff]
-          simp_all
-        have h_card : g.roots.toFinset.card ≤ (Finset.image r Finset.univ).card := by
-          rw [Finset.card_image_of_injective _ hr_mono.injective, Finset.card_univ,
-            Fintype.card_fin]
-          exact le_trans (Multiset.toFinset_card_le _)
-            (hg_deg.symm ▸ Polynomial.card_roots' g)
-        have h_eq := Finset.eq_of_subset_of_card_le h_subset h_card
-        have hy_in : y ∈ Finset.image r Finset.univ :=
-          h_eq.symm ▸ Multiset.mem_toFinset.mpr hy
-        grind)
-    rw [← hroots]
+  · rw [List.ofFn_eq_map,
+      ← Polynomial.roots_sort_eq_of_isRoot hg_ne hg_deg r hr_roots hr_mono]
     simp
-  · have hroots := Polynomial.roots_sort_eq_ofFn hf_ne hf_splits hf_deg hf_nodup
-      s hs_mono hs_surj
-    rw [← hroots]
+  · rw [List.ofFn_eq_map,
+      ← Polynomial.roots_sort_eq_of_isRoot hf_ne hf_deg s hs_roots hs_mono]
     simp
   · exact listInterlaces_ofFn_succ s r hr_mono h_gap_s
 

@@ -382,14 +382,16 @@ private theorem absorb_log {x t C : ℝ} (hx : 1 ≤ x) (ht : 1 ≤ t) (hC : 0 �
   nlinarith [show t + 2 ≤ (1 + t) ^ 2 by nlinarith,
     show 1 ≤ (1 + t) ^ 2 by nlinarith]
 
-/-- From the "growth inequality" (the output of the Nevanlinna-type estimate) to a quadratic
-bound, via the sup-majorant and the elementary Borel lemma. -/
-theorem growth_of_GI {T : ℝ → ℝ} (hT0 : ∀ r, 0 ≤ T r)
+/-- A locally bounded growth function has a monotone supremum majorant with the same inequality. -/
+private theorem exists_borel_sup_majorant {T : ℝ → ℝ} (hT0 : ∀ r, 0 ≤ T r)
     (hbdd : ∀ R, ∃ B, ∀ r ∈ Set.Ioc 0 R, T r ≤ B) {C : ℝ} (hC : 0 ≤ C)
     (hGI : ∀ r ρ, 1 ≤ r → r < ρ →
       T r ≤ 2 * Real.log (2 + 2 * ρ / (ρ - r) ^ 2 * (4 * T ρ + C * (1 + ρ) ^ 2)) +
         C * (1 + r) ^ 2) :
-    ∃ A, ∀ r, 0 < r → T r ≤ A * (1 + r) ^ 2 := by
+    ∃ U : ℝ → ℝ, Monotone U ∧ (∀ r, 0 ≤ U r) ∧ (∀ r, 1 ≤ r → T r ≤ U r) ∧
+      ∀ r ρ, 1 ≤ r → r < ρ →
+        U r ≤ 2 * Real.log (2 + 2 * ρ / (ρ - r) ^ 2 * (4 * U ρ + C * (1 + ρ) ^ 2)) +
+          C * (1 + r) ^ 2 := by
   have hbddI : ∀ R, BddAbove (T '' Set.Icc 1 R) := by
     intro R
     obtain ⟨B, hB⟩ := hbdd R
@@ -398,42 +400,55 @@ theorem growth_of_GI {T : ℝ → ℝ} (hT0 : ∀ r, 0 ≤ T r)
   have hne : ∀ r, (T '' Set.Icc 1 (max r 1)).Nonempty :=
     fun r => ⟨T 1, 1, ⟨le_refl _, le_max_right _ _⟩, rfl⟩
   have hUmono : Monotone U := by
-    intro r r' hrr'; apply csSup_le_csSup (hbddI _) (hne r)
+    intro r r' hrr'
+    apply csSup_le_csSup (hbddI _) (hne r)
     exact Set.image_mono (Set.Icc_subset_Icc (le_refl _) (max_le_max hrr' (le_refl _)))
   have hTU : ∀ r, 1 ≤ r → T r ≤ U r := by
-    intro r hr; apply le_csSup (hbddI _)
+    intro r hr
+    apply le_csSup (hbddI _)
     exact ⟨r, ⟨hr, le_max_left _ _⟩, rfl⟩
   have hU0 : ∀ r, 0 ≤ U r := fun r =>
     le_trans (hT0 1) (le_csSup (hbddI _) ⟨1, ⟨le_refl _, le_max_right _ _⟩, rfl⟩)
-  have hUGI : ∀ r ρ, 1 ≤ r → r < ρ →
-      U r ≤ 2 * Real.log (2 + 2 * ρ / (ρ - r) ^ 2 * (4 * U ρ + C * (1 + ρ) ^ 2)) +
-        C * (1 + r) ^ 2 := by
-    intro r ρ hr hrρ; apply csSup_le (hne r)
-    rintro _ ⟨s, ⟨hs1, hs2⟩, rfl⟩
-    rw [max_eq_left hr] at hs2
-    have hsρ : s < ρ := lt_of_le_of_lt hs2 hrρ
-    refine (hGI s ρ hs1 hsρ).trans ?_
-    have hρ0 : 0 < ρ := by linarith
-    have hTρ : T ρ ≤ U ρ := hTU ρ (by linarith)
-    have hd : (ρ - r) ^ 2 ≤ (ρ - s) ^ 2 := by
-      have : 0 < ρ - r := by linarith
-      nlinarith
-    have hdr : 0 < (ρ - r) ^ 2 := pow_pos (by linarith) 2
-    have hq : 2 * ρ / (ρ - s) ^ 2 ≤ 2 * ρ / (ρ - r) ^ 2 :=
-      div_le_div_of_nonneg_left (by positivity) hdr hd
-    have hinner : 0 ≤ 4 * T ρ + C * (1 + ρ) ^ 2 := by
-      have := hT0 ρ; positivity
-    have harg1 : 0 < 2 + 2 * ρ / (ρ - s) ^ 2 * (4 * T ρ + C * (1 + ρ) ^ 2) := by
-      have := hT0 ρ; positivity
-    have harg : 2 + 2 * ρ / (ρ - s) ^ 2 * (4 * T ρ + C * (1 + ρ) ^ 2) ≤
-        2 + 2 * ρ / (ρ - r) ^ 2 * (4 * U ρ + C * (1 + ρ) ^ 2) := by
-      have : 0 ≤ 2 * ρ / (ρ - s) ^ 2 := by positivity
-      gcongr
-    have hlog := Real.log_le_log harg1 harg
-    have hsq : (1 + s) ^ 2 ≤ (1 + r) ^ 2 := by
-      have : 0 ≤ 1 + s := by linarith
-      gcongr
-    nlinarith [mul_le_mul_of_nonneg_left hsq hC]
+  refine ⟨U, hUmono, hU0, hTU, ?_⟩
+  intro r ρ hr hrρ
+  apply csSup_le (hne r)
+  rintro _ ⟨s, ⟨hs1, hs2⟩, rfl⟩
+  rw [max_eq_left hr] at hs2
+  have hsρ : s < ρ := lt_of_le_of_lt hs2 hrρ
+  refine (hGI s ρ hs1 hsρ).trans ?_
+  have hρ0 : 0 < ρ := by linarith
+  have hTρ : T ρ ≤ U ρ := hTU ρ (by linarith)
+  have hd : (ρ - r) ^ 2 ≤ (ρ - s) ^ 2 := by
+    have : 0 < ρ - r := by linarith
+    nlinarith
+  have hdr : 0 < (ρ - r) ^ 2 := pow_pos (by linarith) 2
+  have hq : 2 * ρ / (ρ - s) ^ 2 ≤ 2 * ρ / (ρ - r) ^ 2 :=
+    div_le_div_of_nonneg_left (by positivity) hdr hd
+  have hinner : 0 ≤ 4 * T ρ + C * (1 + ρ) ^ 2 := by
+    have := hT0 ρ
+    positivity
+  have harg1 : 0 < 2 + 2 * ρ / (ρ - s) ^ 2 * (4 * T ρ + C * (1 + ρ) ^ 2) := by
+    have := hT0 ρ
+    positivity
+  have harg : 2 + 2 * ρ / (ρ - s) ^ 2 * (4 * T ρ + C * (1 + ρ) ^ 2) ≤
+      2 + 2 * ρ / (ρ - r) ^ 2 * (4 * U ρ + C * (1 + ρ) ^ 2) := by
+    have : 0 ≤ 2 * ρ / (ρ - s) ^ 2 := by positivity
+    gcongr
+  have hlog := Real.log_le_log harg1 harg
+  have hsq : (1 + s) ^ 2 ≤ (1 + r) ^ 2 := by
+    have : 0 ≤ 1 + s := by linarith
+    gcongr
+  nlinarith [mul_le_mul_of_nonneg_left hsq hC]
+
+/-- From the "growth inequality" (the output of the Nevanlinna-type estimate) to a quadratic
+bound, via the sup-majorant and the elementary Borel lemma. -/
+theorem growth_of_GI {T : ℝ → ℝ} (hT0 : ∀ r, 0 ≤ T r)
+    (hbdd : ∀ R, ∃ B, ∀ r ∈ Set.Ioc 0 R, T r ≤ B) {C : ℝ} (hC : 0 ≤ C)
+    (hGI : ∀ r ρ, 1 ≤ r → r < ρ →
+      T r ≤ 2 * Real.log (2 + 2 * ρ / (ρ - r) ^ 2 * (4 * T ρ + C * (1 + ρ) ^ 2)) +
+        C * (1 + r) ^ 2) :
+    ∃ A, ∀ r, 0 < r → T r ≤ A * (1 + r) ^ 2 := by
+  obtain ⟨U, hUmono, hU0, hTU, hUGI⟩ := exists_borel_sup_majorant hT0 hbdd hC hGI
   let V : ℝ → ℝ := fun r => U r + 1
   have hVmono : Monotone V := fun a b hab => by simp only [V]; linarith [hUmono hab]
   have hV1 : ∀ r, 1 ≤ V r := fun r => by simp only [V]; linarith [hU0 r]

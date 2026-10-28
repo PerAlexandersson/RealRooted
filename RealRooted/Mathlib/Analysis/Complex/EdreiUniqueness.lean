@@ -81,6 +81,79 @@ private lemma hasSum_cnt {u : ℕ → ℝ} (g : ℝ → ℝ) (hs : Summable (fun
   simp only [this, tsum_const, nsmul_eq_mul, cnt]
   rfl
 
+/-- Equal power sums make the signed fiber-count moment sum vanish. -/
+private lemma hasSum_cnt_diff {u₁ u₂ v₁ v₂ : ℕ → ℝ}
+    (hu₁ : ∀ i, 0 ≤ u₁ i) (hu₂ : ∀ i, 0 ≤ u₂ i)
+    (hv₁ : ∀ i, 0 ≤ v₁ i) (hv₂ : ∀ i, 0 ≤ v₂ i)
+    (su₁ : Summable u₁) (su₂ : Summable u₂) (sv₁ : Summable v₁) (sv₂ : Summable v₂)
+    (e : ℕ → ℕ) (he1 : ∀ j, 1 ≤ e j)
+    (h : ∀ j, psum u₁ (e j) + psum u₂ (e j) = psum v₁ (e j) + psum v₂ (e j))
+    (j : ℕ) :
+    HasSum (fun s => (((cnt u₁ s + cnt u₂ s : ℕ) : ℝ) -
+      ((cnt v₁ s + cnt v₂ s : ℕ) : ℝ)) * s ^ (e j)) 0 := by
+  have S := ((hasSum_cnt (u := u₁) (fun s => s ^ (e j))
+    (summable_pow_of_nonneg hu₁ su₁ (he1 j))).add
+    (hasSum_cnt (u := u₂) (fun s => s ^ (e j))
+      (summable_pow_of_nonneg hu₂ su₂ (he1 j)))).sub
+    ((hasSum_cnt (u := v₁) (fun s => s ^ (e j))
+      (summable_pow_of_nonneg hv₁ sv₁ (he1 j))).add
+    (hasSum_cnt (u := v₂) (fun s => s ^ (e j))
+      (summable_pow_of_nonneg hv₂ sv₂ (he1 j))))
+  convert S using 1
+  · funext s
+    push_cast
+    ring
+  · have hj := h j
+    simp only [psum] at hj
+    linarith
+
+/-- Above a positive threshold, the support of a signed fiber-count difference is finite. -/
+private lemma finite_cnt_diff_support_above {u₁ u₂ v₁ v₂ : ℕ → ℝ}
+    (su₁ : Summable u₁) (su₂ : Summable u₂) (sv₁ : Summable v₁) (sv₂ : Summable v₂)
+    (D : ℝ → ℝ)
+    (hD : ∀ s, D s ≠ 0 ↔ cnt u₁ s + cnt u₂ s ≠ cnt v₁ s + cnt v₂ s)
+    {t : ℝ} (ht : 0 < t) : {s | t ≤ s ∧ D s ≠ 0}.Finite := by
+  have hsupp : ∀ s, D s ≠ 0 →
+      cnt u₁ s ≠ 0 ∨ cnt u₂ s ≠ 0 ∨ cnt v₁ s ≠ 0 ∨ cnt v₂ s ≠ 0 := by
+    intro s hs
+    rw [hD] at hs
+    lia
+  refine (((((finite_ge su₁ ht).image u₁).union ((finite_ge su₂ ht).image u₂)).union
+    ((finite_ge sv₁ ht).image v₁)).union ((finite_ge sv₂ ht).image v₂)).subset ?_
+  rintro s ⟨hts, hs⟩
+  rcases hsupp s hs with h1 | h1 | h1 | h1 <;> obtain ⟨i, rfl⟩ := cnt_ne_zero h1
+  · exact Or.inl (Or.inl (Or.inl ⟨i, hts, rfl⟩))
+  · exact Or.inl (Or.inl (Or.inr ⟨i, hts, rfl⟩))
+  · exact Or.inl (Or.inr ⟨i, hts, rfl⟩)
+  · exact Or.inr ⟨i, hts, rfl⟩
+
+/-- Fiber counts weighted by the absolute fiber value form a summable family. -/
+private lemma summable_cnt_mul_abs {u : ℕ → ℝ} (hu : ∀ i, 0 ≤ u i) (su : Summable u) :
+    Summable (fun s => (cnt u s : ℝ) * |s|) := by
+  convert (hasSum_cnt (u := u) (fun s => s ^ 1)
+    (summable_pow_of_nonneg (m := 1) hu su le_rfl)).summable.abs using 1
+  simp [abs_mul]
+
+/-- Every off-maximum normalized moment contribution tends to zero. -/
+private lemma tendsto_moment_remainder_zero (D : ℝ → ℝ) (t₀ : ℝ) (e : ℕ → ℕ)
+    (he : StrictMono e) (hpos : ∀ s, D s ≠ 0 → 0 ≤ s)
+    (hbig : ∀ s, t₀ < s → D s = 0) (ht₀ : 0 < t₀) (R : ℕ → ℝ → ℝ)
+    (hRdef : R = fun j s => if s = t₀ then 0 else D s * (s / t₀) ^ (e j)) :
+    ∀ s, Tendsto (fun j => R j s) atTop (𝓝 0) := by
+  intro s
+  simp only [hRdef]
+  by_cases hs : s = t₀
+  · simp [hs]
+  by_cases hDs : D s = 0
+  · simp [hs, hDs]
+  simp only [hs, ite_false]
+  have h0 := hpos s hDs
+  have hle : s ≤ t₀ := le_of_not_gt fun hst => hDs (hbig s hst)
+  have hlt : s / t₀ < 1 := (div_lt_one ht₀).mpr (lt_of_le_of_ne hle hs)
+  have hlim := (tendsto_pow_atTop_nhds_zero_of_lt_one (div_nonneg h0 ht₀.le) hlt).comp
+    he.tendsto_atTop
+  simpa using hlim.const_mul (D s)
+
 /-- Moment uniqueness. -/
 private lemma moment_unique {u₁ u₂ v₁ v₂ : ℕ → ℝ}
     (hu₁ : ∀ i, 0 ≤ u₁ i) (hu₂ : ∀ i, 0 ≤ u₂ i)
@@ -95,19 +168,9 @@ private lemma moment_unique {u₁ u₂ v₁ v₂ : ℕ → ℝ}
     ((cnt u₁ s + cnt u₂ s : ℕ) : ℝ) - ((cnt v₁ s + cnt v₂ s : ℕ) : ℝ) with hDdef
   have hD : ∀ s, D s ≠ 0 ↔ cnt u₁ s + cnt u₂ s ≠ cnt v₁ s + cnt v₂ s := by
     intro s; rw [hDdef, Ne, sub_eq_zero, Nat.cast_inj]
-  have hsumD : ∀ j, HasSum (fun s => D s * s ^ (e j)) 0 := by
-    intro j
-    have S := ((hasSum_cnt (u := u₁) (fun s => s ^ (e j))
-      (summable_pow_of_nonneg hu₁ su₁ (he1 j))).add
-      (hasSum_cnt (u := u₂) (fun s => s ^ (e j))
-        (summable_pow_of_nonneg hu₂ su₂ (he1 j)))).sub
-      ((hasSum_cnt (u := v₁) (fun s => s ^ (e j))
-        (summable_pow_of_nonneg hv₁ sv₁ (he1 j))).add
-      (hasSum_cnt (u := v₂) (fun s => s ^ (e j))
-        (summable_pow_of_nonneg hv₂ sv₂ (he1 j))))
-    convert S using 1
-    · funext s; simp only [hDdef]; push_cast; ring
-    · have hj := h j; simp only [psum] at hj; linarith
+  have hsumD : ∀ j, HasSum (fun s => D s * s ^ (e j)) 0 := fun j => by
+    simpa only [hDdef] using
+      hasSum_cnt_diff hu₁ hu₂ hv₁ hv₂ su₁ su₂ sv₁ sv₂ e he1 h j
   have hsupp : ∀ s, D s ≠ 0 →
       (cnt u₁ s ≠ 0 ∨ cnt u₂ s ≠ 0 ∨ cnt v₁ s ≠ 0 ∨ cnt v₂ s ≠ 0) := by
     intro s hs; rw [hD] at hs; lia
@@ -115,15 +178,8 @@ private lemma moment_unique {u₁ u₂ v₁ v₂ : ℕ → ℝ}
     intro s hs
     rcases hsupp s hs with h1 | h1 | h1 | h1 <;>
       obtain ⟨i, rfl⟩ := cnt_ne_zero h1 <;> grind
-  have hfin : {s | t ≤ s ∧ D s ≠ 0}.Finite := by
-    refine (((((finite_ge su₁ ht).image u₁).union ((finite_ge su₂ ht).image u₂)).union
-      ((finite_ge sv₁ ht).image v₁)).union ((finite_ge sv₂ ht).image v₂)).subset ?_
-    rintro s ⟨hts, hs⟩
-    rcases hsupp s hs with h1 | h1 | h1 | h1 <;> obtain ⟨i, rfl⟩ := cnt_ne_zero h1
-    · exact Or.inl (Or.inl (Or.inl ⟨i, hts, rfl⟩))
-    · exact Or.inl (Or.inl (Or.inr ⟨i, hts, rfl⟩))
-    · exact Or.inl (Or.inr ⟨i, hts, rfl⟩)
-    · exact Or.inr ⟨i, hts, rfl⟩
+  have hfin : {s | t ≤ s ∧ D s ≠ 0}.Finite :=
+    finite_cnt_diff_support_above su₁ su₂ sv₁ sv₂ D hD ht
   obtain ⟨t₀, ⟨htt₀, hDt₀⟩, hmax⟩ :=
     Set.exists_max_image _ id hfin ⟨t, le_rfl, (hD t).mpr hne⟩
   have hbig : ∀ s, t₀ < s → D s = 0 := by
@@ -144,31 +200,14 @@ private lemma moment_unique {u₁ u₂ v₁ v₂ : ℕ → ℝ}
       · subst hs; field_simp; ring
       · rw [div_pow]; ring
     · simp
-  have hcntsum : ∀ {u : ℕ → ℝ}, (∀ i, 0 ≤ u i) → Summable u →
-      Summable (fun s => (cnt u s : ℝ) * |s|) := by
-    intro u hu su
-    convert (hasSum_cnt (u := u) (fun s => s ^ 1)
-      (summable_pow_of_nonneg (m := 1) hu su le_rfl)).summable.abs using 1; simp [abs_mul]
   set bound : ℝ → ℝ := fun s =>
     ((cnt u₁ s : ℝ) * |s| + (cnt u₂ s : ℝ) * |s| +
       (cnt v₁ s : ℝ) * |s| + (cnt v₂ s : ℝ) * |s|) / t₀ with hbdef
   have hbsum : Summable bound :=
-    ((((hcntsum hu₁ su₁).add (hcntsum hu₂ su₂)).add (hcntsum hv₁ sv₁)).add
-      (hcntsum hv₂ sv₂)).div_const t₀
+    ((((summable_cnt_mul_abs hu₁ su₁).add (summable_cnt_mul_abs hu₂ su₂)).add
+      (summable_cnt_mul_abs hv₁ sv₁)).add (summable_cnt_mul_abs hv₂ sv₂)).div_const t₀
   have hbnn : ∀ s, 0 ≤ bound s := fun s => by simp only [hbdef]; positivity
-  have hlim : ∀ s, Tendsto (fun j => R j s) atTop (𝓝 0) := by
-    intro s; simp only [hRdef]
-    by_cases hs : s = t₀
-    · simp [hs]
-    by_cases hDs : D s = 0
-    · simp [hs, hDs]
-    simp only [hs, ite_false]
-    have h0 := hpos s hDs
-    have hle : s ≤ t₀ := le_of_not_gt fun hst => hDs (hbig s hst)
-    have hlt : s / t₀ < 1 := (div_lt_one ht₀).mpr (lt_of_le_of_ne hle hs)
-    have := (tendsto_pow_atTop_nhds_zero_of_lt_one (div_nonneg h0 ht₀.le) hlt).comp
-      he.tendsto_atTop
-    simpa using this.const_mul (D s)
+  have hlim := tendsto_moment_remainder_zero D t₀ e he hpos hbig ht₀ R hRdef
   have hdom : ∀ᶠ j in atTop, ∀ s, ‖R j s‖ ≤ bound s := by
     refine Eventually.of_forall (fun j s => ?_); simp only [hRdef]
     by_cases hs : s = t₀
