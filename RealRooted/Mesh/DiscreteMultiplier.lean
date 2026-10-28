@@ -190,18 +190,6 @@ theorem strictInterl_sub_comp_X_sub_C_one {p : ℝ[X]} {m : ℕ}
 
 /-! ### Multiplying by `X` -/
 
-private theorem listInterlaces_exists_le :
-    ∀ (ss rs : List ℝ), ListInterlaces ss rs → ∀ s ∈ ss, ∃ r ∈ rs, r ≤ s
-  | [], _, _, s, hs => by simp at hs
-  | _ :: _, [], h, _, _ => by simp [ListInterlaces] at h
-  | _ :: _, [_], h, _, _ => by simp [ListInterlaces] at h
-  | _ :: ss, r₁ :: r₂ :: rs, h, s, hs => by
-      obtain ⟨hr, _, htail⟩ := h
-      rcases List.mem_cons.mp hs with hs0 | hs'
-      · exact ⟨r₁, by simp, hs0 ▸ hr⟩
-      · obtain ⟨r, hr', hle⟩ := listInterlaces_exists_le ss (r₂ :: rs) htail s hs'
-        exact ⟨r, List.mem_cons_of_mem _ hr', hle⟩
-
 /-- If `T ≪ p` with `deg T + 1 = deg p` and `p` has nonnegative roots, then `X T ≪ p`, and
 `T` has nonnegative roots. -/
 private theorem strictInterl_X_mul_of_succDegree {T p : ℝ[X]} (h : StrictInterl T p)
@@ -215,22 +203,17 @@ private theorem strictInterl_X_mul_of_succDegree {T p : ℝ[X]} (h : StrictInter
     · exact hint
     · exfalso
       lia
-  have hnonneg : ∀ s ∈ ss, 0 ≤ s := by
-    intro s hs
-    obtain ⟨r, hr, hle⟩ := listInterlaces_exists_le ss rs hint s hs
-    have hrmem : r ∈ p.roots := by
-      rw [← hrs_eq]
-      exact Multiset.mem_coe.mpr hr
-    exact (hp r hrmem).trans hle
-  have hTnn : ∀ s ∈ T.roots, 0 ≤ s := by
-    intro s hs
-    rw [← hss_eq] at hs
-    exact hnonneg s (Multiset.mem_coe.mp hs)
   have hrsne : rs ≠ [] := by
     rintro rfl
     simp at hrslen
     lia
   obtain ⟨r₁, rs', rfl⟩ := List.exists_cons_of_ne_nil hrsne
+  have hnonneg : ∀ s ∈ ss, 0 ≤ s := fun s hs =>
+    (hp r₁ (by simp [← hrs_eq])).trans (listInterlaces_all_ge ss rs' r₁ hint s hs)
+  have hTnn : ∀ s ∈ T.roots, 0 ≤ s := by
+    intro s hs
+    rw [← hss_eq] at hs
+    exact hnonneg s (Multiset.mem_coe.mp hs)
   have hr₁ : 0 ≤ r₁ := by
     apply hp
     rw [← hrs_eq]
