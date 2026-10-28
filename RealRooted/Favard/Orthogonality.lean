@@ -138,47 +138,34 @@ private theorem diagonalForm_isAdjointPair_X
   intro i j
   simp only [LinearMap.comp_apply, LinearMap.compl₂_apply,
     LinearMap.mulLeft_apply, hrec.basis_apply]
-  cases i with
-  | zero =>
-      cases j with
-      | zero =>
-          simp [hrec.X_mul_zero, diagonalForm_apply_basis]
-      | succ j =>
-          rw [hrec.X_mul_zero, hrec.X_mul_succ j]
-          by_cases hj : j = 0
-          · subst j
-            simp [diagonalForm_apply_basis,
-              favardNormSq_succ, mul_comm]
-          · have h0j : 0 ≠ j := Ne.symm hj
-            simp [diagonalForm_apply_basis, hj, h0j]
-  | succ i =>
-      cases j with
-      | zero =>
-          rw [hrec.X_mul_succ i, hrec.X_mul_zero]
-          by_cases hi : i = 0
-          · subst i
-            simp [diagonalForm_apply_basis,
-              favardNormSq_succ, mul_comm]
-          · simp [diagonalForm_apply_basis, hi]
-      | succ j =>
-          rw [hrec.X_mul_succ i, hrec.X_mul_succ j]
-          by_cases hij : i = j
-          · subst j
-            simp [diagonalForm_apply_basis]
-          · by_cases hij1 : i + 1 = j
-            · subst j
-              have hne : i ≠ i + 1 + 1 := by lia
-              simp [diagonalForm_apply_basis,
-                favardNormSq_succ, mul_comm, hne]
-            · by_cases hji1 : j + 1 = i
-              · subst i
-                have hne : j + 1 + 1 ≠ j := by lia
-                simp [diagonalForm_apply_basis,
-                  favardNormSq_succ, mul_comm, hne]
-              · have h1 : i + 2 ≠ j + 1 := by lia
-                have h3 : i ≠ j + 1 := by lia
-                have h5 : i + 1 ≠ j := by lia
-                simp [diagonalForm_apply_basis, hij, h1, h3, h5]
+  rcases i with _ | i <;> rcases j with _ | j
+  · simp [hrec.X_mul_zero, diagonalForm_apply_basis]
+  · rw [hrec.X_mul_zero, hrec.X_mul_succ j]
+    by_cases hj : j = 0
+    · subst j
+      simp [diagonalForm_apply_basis, favardNormSq_succ, mul_comm]
+    · simp [diagonalForm_apply_basis, hj, Ne.symm hj]
+  · rw [hrec.X_mul_succ i, hrec.X_mul_zero]
+    by_cases hi : i = 0
+    · subst i
+      simp [diagonalForm_apply_basis, favardNormSq_succ, mul_comm]
+    · simp [diagonalForm_apply_basis, hi]
+  · rw [hrec.X_mul_succ i, hrec.X_mul_succ j]
+    by_cases hij : i = j
+    · subst j
+      simp [diagonalForm_apply_basis]
+    · by_cases hij1 : i + 1 = j
+      · subst j
+        have hne : i ≠ i + 1 + 1 := by lia
+        simp [diagonalForm_apply_basis, favardNormSq_succ, mul_comm, hne]
+      · by_cases hji1 : j + 1 = i
+        · subst i
+          have hne : j + 1 + 1 ≠ j := by lia
+          simp [diagonalForm_apply_basis, favardNormSq_succ, mul_comm, hne]
+        · have h1 : i + 2 ≠ j + 1 := by lia
+          have h3 : i ≠ j + 1 := by lia
+          have h5 : i + 1 ≠ j := by lia
+          simp [diagonalForm_apply_basis, hij, h1, h3, h5]
 
 /-- The pointwise self-adjointness identity for multiplication by `X`. -/
 private theorem diagonalForm_X_mul
@@ -201,13 +188,10 @@ private theorem diagonalForm_mul
         intro p q
         calc
           diagonalForm hrec (X ^ (n + 1) * p) q =
-              diagonalForm hrec (X * (X ^ n * p)) q := by
-                rw [pow_succ', mul_assoc]
-          _ = diagonalForm hrec (X ^ n * p) (X * q) :=
-            diagonalForm_X_mul hrec _ _
+              diagonalForm hrec (X * (X ^ n * p)) q := by rw [pow_succ', mul_assoc]
+          _ = diagonalForm hrec (X ^ n * p) (X * q) := diagonalForm_X_mul hrec _ _
           _ = diagonalForm hrec p (X ^ n * (X * q)) := ih _ _
-          _ = diagonalForm hrec p (X ^ (n + 1) * q) := by
-                rw [pow_succ, mul_assoc]
+          _ = diagonalForm hrec p (X ^ (n + 1) * q) := by rw [pow_succ, mul_assoc]
   induction r using Polynomial.induction_on' with
   | add r s hr hs =>
       simp only [add_mul, map_add, LinearMap.add_apply]
@@ -321,34 +305,19 @@ private theorem diagonalForm_posDef
     ← LinearMap.sum_repr_mul_repr_mul hrec.basis hrec.basis p p]
   have hrepr : hrec.basis.repr p ≠ 0 :=
     hrec.basis.repr.map_ne_zero_iff.mpr hp
+  have hterm (i j : Nat) : 0 ≤ hrec.basis.repr p i • hrec.basis.repr p j •
+      diagonalForm hrec (hrec.basis i) (hrec.basis j) := by
+    by_cases hij : i = j
+    · subst j
+      simp only [hrec.basis_apply, diagonalForm_apply_basis, ite_eq_left, smul_eq_mul]
+      rw [← mul_assoc]
+      exact mul_nonneg (mul_self_nonneg _) (favardNormSq_pos hβ i).le
+    · simp [hrec.basis_apply, diagonalForm_apply_basis, hij]
   refine Finsupp.sum_pos' ?_ ?_
-  · intro i hi
-    apply Finsupp.sum_nonneg
-    intro j hj
-    by_cases hij : i = j
-    · subst j
-      simp only [hrec.basis_apply, diagonalForm_apply_basis, ite_eq_left, smul_eq_mul]
-      rw [← mul_assoc]
-      exact mul_nonneg (mul_self_nonneg _) (favardNormSq_pos hβ i).le
-    · simp [hrec.basis_apply, diagonalForm_apply_basis, hij]
-  have hex : ∃ i, hrec.basis.repr p i ≠ 0 := by
-    by_contra h
-    apply hrepr
-    ext i
-    simp only [Finsupp.zero_apply]
-    by_contra hi
-    exact h ⟨i, hi⟩
-  obtain ⟨i, hxi⟩ := hex
-  have hi : i ∈ (hrec.basis.repr p).support :=
-    Finsupp.mem_support_iff.mpr hxi
-  refine ⟨i, hi, Finsupp.sum_pos' ?_ ⟨i, hi, ?_⟩⟩
-  · intro j hj
-    by_cases hij : i = j
-    · subst j
-      simp only [hrec.basis_apply, diagonalForm_apply_basis, ite_eq_left, smul_eq_mul]
-      rw [← mul_assoc]
-      exact mul_nonneg (mul_self_nonneg _) (favardNormSq_pos hβ i).le
-    · simp [hrec.basis_apply, diagonalForm_apply_basis, hij]
+  · exact fun i _ ↦ Finsupp.sum_nonneg fun j _ ↦ hterm i j
+  obtain ⟨i, hi⟩ := Finsupp.support_nonempty_iff.mpr hrepr
+  have hxi := Finsupp.mem_support_iff.mp hi
+  refine ⟨i, hi, Finsupp.sum_pos' (fun j _ ↦ hterm i j) ⟨i, hi, ?_⟩⟩
   · simp only [hrec.basis_apply, diagonalForm_apply_basis, ite_eq_left, smul_eq_mul]
     rw [← mul_assoc]
     exact mul_pos (mul_self_pos.mpr hxi) (favardNormSq_pos hβ i)

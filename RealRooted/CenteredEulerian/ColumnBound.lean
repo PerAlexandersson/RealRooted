@@ -33,12 +33,12 @@ lemma weighted_sum_le {y : ℕ → ℝ} (hy : ∀ i, 0 ≤ y i) (N : ℕ) :
   have h1 : ∑ i ∈ Finset.range N, columnWeight i * y i ≤
       ∑ i ∈ Finset.range (N + 2), columnWeight i * y i :=
     Finset.sum_le_sum_of_subset_of_nonneg (by simp)
-      (fun i _ _ => mul_nonneg (columnWeight_pos i).le (hy i))
+      (fun i _ _ ↦ mul_nonneg (columnWeight_pos i).le (hy i))
   have h2 : ∑ i ∈ Finset.range (N + 2), columnWeight i * y i =
       y 0 + y 1 + 2 * ∑ i ∈ Finset.range N, y (i + 2) := by
-    rw [sum_range_add_two, Finset.mul_sum]; simp [columnWeight]
-  have h3 := sum_range_add_two y N
-  linarith
+    rw [sum_range_add_two, Finset.mul_sum]
+    simp [columnWeight]
+  linarith [sum_range_add_two y N]
 
 /-! ### Sums of the three main series -/
 
@@ -51,9 +51,7 @@ lemma coeff_hS_three : coeff 3 hS = 0 := isEvenPS_hS.coeff_odd (by decide)
 
 lemma sum_abs_hS_succ_succ_le (M : ℕ) :
     ∑ i ∈ Finset.range M, |coeff (i + 2) hS| ≤ 1 - 1 / aConst := by
-  have h := sum_abs_coeff_hS_le (M + 1)
-  rw [Finset.sum_range_succ', coeff_hS_one, abs_zero, add_zero] at h
-  exact h
+  simpa [Finset.sum_range_succ', coeff_hS_one] using sum_abs_coeff_hS_le (M + 1)
 
 lemma sum_abs_qS_succ_succ_le (M : ℕ) :
     ∑ i ∈ Finset.range M, |coeff (i + 2) qS| ≤ 1 := by
@@ -65,7 +63,8 @@ lemma coeff_qS_three : coeff 3 qS = 0 := isEvenPS_qS.coeff_odd (by decide)
 
 /-- Weighted column norm of the `h`-part. -/
 lemma weighted_h_col0_le (N : ℕ) :
-    ∑ i ∈ Finset.range N, columnWeight i * |coeff (i + 2) (hS * X ^ 0)| ≤ 5 / 3 - 2 / aConst := by
+    ∑ i ∈ Finset.range N, columnWeight i * |coeff (i + 2) (hS * X ^ 0)| ≤
+      5 / 3 - 2 / aConst := by
   simp only [pow_zero, mul_one]
   refine (weighted_sum_le (fun i => abs_nonneg _) N).trans ?_
   have := sum_abs_hS_succ_succ_le (N + 2)
@@ -75,7 +74,8 @@ lemma weighted_h_col0_le (N : ℕ) :
   linarith
 
 lemma weighted_h_col1_le (N : ℕ) :
-    ∑ i ∈ Finset.range N, columnWeight i * |coeff (i + 2) (hS * X ^ 1)| ≤ 5 / 3 - 2 / aConst := by
+    ∑ i ∈ Finset.range N, columnWeight i * |coeff (i + 2) (hS * X ^ 1)| ≤
+      5 / 3 - 2 / aConst := by
   have hc : ∀ i, coeff (i + 2) (hS * X ^ 1) = coeff (i + 1) hS := fun i => by
     rw [coeff_mul_X_pow', ite_eq_left (by lia), show i + 2 - 1 = i + 1 by lia]
   simp only [hc]
@@ -94,10 +94,9 @@ lemma weighted_h_col_ge2_le (j N : ℕ) :
     rw [coeff_mul_X_pow', coeff_mul_X_pow']
     split_ifs <;> lia
   simp only [hc]
+  have ha' : 1 / aConst < 1 := (div_lt_one (by linarith)).2 ha
   have hpos : 0 ≤ columnWeight j + 2 * (1 - 1 / aConst) := by
-    have := columnWeight_pos j
-    have : 1 / aConst < 1 := by rw [div_lt_one (by linarith)]; exact ha
-    linarith
+    linarith [columnWeight_pos j]
   rcases Nat.lt_or_ge j N with hN | hN
   · obtain ⟨M, rfl⟩ : ∃ M, N = j + (M + 1) := ⟨N - j - 1, by lia⟩
     rw [Finset.sum_range_add, Finset.sum_eq_zero (fun i hi => by
@@ -174,12 +173,12 @@ noncomputable def tailR (j i : ℕ) : ℝ :=
 
 lemma abs_eulerRatio_sub_le' (k : ℕ) :
     |eulerRatio (k + 2) - aConst| ≤ aConst * Ssum 3 * (1 / 3) ^ k := by
-  have h1 := abs_eulerRatio_sub_le (k := k + 2) (by lia)
-  have h2 := Ssum_shift_le k
-  have ha : 0 ≤ aConst := by rw [aConst]; positivity
-  rw [show k + 2 + 1 = k + 3 by ring] at h1
-  calc _ ≤ aConst * Ssum (k + 3) := h1
-    _ ≤ aConst * ((1 / 3) ^ k * Ssum 3) := mul_le_mul_of_nonneg_left h2 ha
+  calc
+    _ ≤ aConst * Ssum (k + 3) := by
+      simpa only [show k + 2 + 1 = k + 3 by ring] using
+        abs_eulerRatio_sub_le (k := k + 2) (by lia)
+    _ ≤ aConst * ((1 / 3) ^ k * Ssum 3) :=
+      mul_le_mul_of_nonneg_left (Ssum_shift_le k) (by rw [aConst]; positivity)
     _ = _ := by ring
 
 lemma sum_tailR_le (j N : ℕ) :
@@ -280,10 +279,7 @@ lemma tail_const_le : 36 * aConst * Ssum 3 ≤ 4.771 := by
   nlinarith
 
 lemma tail_const_nonneg : 0 ≤ 36 * aConst * Ssum 3 := by
-  obtain ⟨h1, _⟩ := aConst_bounds
-  have := Ssum_nonneg 3
-  have : 0 ≤ aConst := by linarith
-  positivity
+  exact mul_nonneg (by rw [aConst]; positivity) (Ssum_nonneg 3)
 
 lemma wb_le : 1 + cW / π ^ 3 ≤ 1.0813 := by
   have h1 := Real.pi_gt_d4
@@ -305,7 +301,6 @@ lemma wb_ub_sub_le : (1 + cW / π ^ 3) * ((π / 6) / (1 - (π / 6) ^ 2 / 6)) - �
   have h1 := Real.pi_gt_d4
   have hw := wb_le
   have hu := ub_bounds
-  have hw0 : 0 ≤ 1 + cW / π ^ 3 := by rw [cW]; positivity
   have : (1 + cW / π ^ 3) * ((π / 6) / (1 - (π / 6) ^ 2 / 6)) ≤ 1.0813 * 0.5487 :=
     mul_le_mul hw hu.2 hu.1 (by norm_num)
   linarith
@@ -317,57 +312,50 @@ theorem columnBound : ColumnBound := by
   have hc := column_le N j
   have ha := aConst_bounds
   have hT := tail_const_le
-  have hT0 := tail_const_nonneg
   have hw := wb_le
   have hu := ub_bounds
-  have hw0 : 0 ≤ 1 + cW / π ^ 3 := by rw [cW]; positivity
-  have hpi := Real.pi_pos
   have hdiv : 2 / aConst * aConst = 2 := div_mul_cancel₀ _ (by linarith)
+  have hscale (s : ℝ) (hs : s ≤ 5 / 3 - 2 / aConst) :
+      aConst * s ≤ 5 / 3 * aConst - 2 := by
+    calc
+      _ ≤ aConst * (5 / 3 - 2 / aConst) := mul_le_mul_of_nonneg_left hs (by linarith)
+      _ = _ := by
+        rw [mul_sub, mul_comm aConst (2 / aConst), hdiv]
+        ring
   rcases j with _ | _ | j
-  · -- column 0
-    have hA := weighted_h_col0_le N
-    have hP := sum_abs_phi_tail_zero_le N
+  · have hP := sum_abs_phi_tail_zero_le N
     simp only [ite_true, show (0 : ℕ) ≠ 1 by decide, ite_false, add_zero] at hc
     rw [abs_of_neg (by linarith : 2 - aConst < 0)] at hc
-    have e1 : aConst * ∑ i ∈ Finset.range N, columnWeight i * |coeff (i + 2) (hS * X ^ 0)| ≤
-        aConst * (5 / 3 - 2 / aConst) :=
-      mul_le_mul_of_nonneg_left hA (by linarith)
-    have e2 : 36 * aConst * Ssum 3 * ∑ k ∈ Finset.range N, |phi 0 (k + 2)| * (π / 6) ^ (k + 2) ≤
-        4.771 * (cW / π ^ 3) := mul_le_mul hT hP (Finset.sum_nonneg (fun k _ => by positivity))
+    have e1 := hscale _ (weighted_h_col0_le N)
+    have e2 : 36 * aConst * Ssum 3 *
+        ∑ k ∈ Finset.range N, |phi 0 (k + 2)| * (π / 6) ^ (k + 2) ≤
+        4.771 * (cW / π ^ 3) := mul_le_mul hT hP
+          (Finset.sum_nonneg (fun k _ => by positivity))
           (by norm_num)
-    have e3 : cW / π ^ 3 ≤ 0.0813 := by linarith
-    have e4 : aConst * (5 / 3 - 2 / aConst) = 5 / 3 * aConst - 2 := by
-      rw [mul_sub, mul_comm aConst (2 / aConst), hdiv]; ring
     rw [show columnWeight 0 = 1 by simp [columnWeight]]
     linarith
-  · -- column 1
-    have hA := weighted_h_col1_le N
-    have hP := sum_abs_phi_tail_one_le N
+  · have hP := sum_abs_phi_tail_one_le N
     simp only [ite_true, show (0 + 1 : ℕ) ≠ 0 by decide, ite_false, add_zero, zero_add] at hc
     rw [abs_of_pos (by linarith : 0 < 3 - aConst)] at hc
-    have e1 : aConst * ∑ i ∈ Finset.range N, columnWeight i * |coeff (i + 2) (hS * X ^ 1)| ≤
-        aConst * (5 / 3 - 2 / aConst) :=
-      mul_le_mul_of_nonneg_left hA (by linarith)
+    have e1 := hscale _ (weighted_h_col1_le N)
     have hP' := hP.trans wb_ub_sub_le
-    have e2 : 36 * aConst * Ssum 3 * ∑ k ∈ Finset.range N, |phi 1 (k + 2)| * (π / 6) ^ (k + 2) ≤
+    have e2 : 36 * aConst * Ssum 3 *
+        ∑ k ∈ Finset.range N, |phi 1 (k + 2)| * (π / 6) ^ (k + 2) ≤
         4.771 * 0.07 := mul_le_mul hT hP' (Finset.sum_nonneg (fun k _ => by positivity))
           (by norm_num)
-    have e4 : aConst * (5 / 3 - 2 / aConst) = 5 / 3 * aConst - 2 := by
-      rw [mul_sub, mul_comm aConst (2 / aConst), hdiv]; ring
     rw [show columnWeight (0 + 1) = 1 by simp [columnWeight]]
     linarith
-  · -- columns `j + 2`
-    have hA := weighted_h_col_ge2_le j N
-    have hP := sum_abs_phi_tail_le (j + 2) N
+  · have hP := sum_abs_phi_tail_le (j + 2) N
     simp only [show j + 1 + 1 ≠ 0 by lia, show j + 1 + 1 ≠ 1 by lia, ite_false,
       add_zero] at hc
     have hom : columnWeight (j + 1 + 1) = 2 := by simp [columnWeight]
     rw [hom]
     set U := (π / 6) / (1 - (π / 6) ^ 2 / 6) with hU
     set W := 1 + cW / π ^ 3 with hW
-    have e1 : aConst * ∑ i ∈ Finset.range N, columnWeight i * |coeff (i + 2) (hS * X ^ (j + 2))| ≤
+    have e1 : aConst *
+        ∑ i ∈ Finset.range N, columnWeight i * |coeff (i + 2) (hS * X ^ (j + 2))| ≤
         aConst * (columnWeight j + 2 * (1 - 1 / aConst)) :=
-      mul_le_mul_of_nonneg_left hA (by linarith)
+      mul_le_mul_of_nonneg_left (weighted_h_col_ge2_le j N) (by linarith)
     have e5 : aConst * (columnWeight j + 2 * (1 - 1 / aConst)) =
         aConst * columnWeight j + 2 * aConst - 2 := by
       have : aConst * (1 / aConst) = 1 := by rw [mul_one_div]; exact div_self (by linarith)

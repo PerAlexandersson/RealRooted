@@ -171,14 +171,15 @@ private theorem xShiftedSplitSums_length (fs : List ℝ[X]) :
 
 private theorem xShiftedSplitSums_getD (fs : List ℝ[X]) (k : ℕ) (hk : k < fs.length + 1) :
     (xShiftedSplitSums fs).getD k 0 =
-      X * ∑ m ∈ Finset.Ico 0 k, fs.getD m 0 + ∑ m ∈ Finset.Ico k fs.length, fs.getD m 0 := by
+      X * ∑ m ∈ Finset.Ico 0 k, fs.getD m 0 +
+        ∑ m ∈ Finset.Ico k fs.length, fs.getD m 0 := by
   rw [List.getD_eq_getElem _ _ (by rw [xShiftedSplitSums_length]; exact hk),
     ← sum_drop_eq_sum_Ico, ← Finset.range_eq_Ico, ← sum_take_eq_sum_range]
   simp [xShiftedSplitSums]
 
 /-- Window lemma for four pairwise interlacing polynomials (the engine of Hoster--Stump,
-Lemma 2.3(4),(5)): `f₁ + f₂ + f₃ ≼ f₂ + f₃ + f₄`.  The relation `f₂ ≼ f₃` is needed only
-through the splitting hypothesis on `f₂ + f₃`. -/
+Lemma 2.3(4),(5)): `f₁ + f₂ + f₃ ≼ f₂ + f₃ + f₄`.  The relation `f₂ ≼ f₃` is
+needed only through the splitting hypothesis on `f₂ + f₃`. -/
 theorem Interl.window_three {f₁ f₂ f₃ f₄ : ℝ[X]}
     (h12 : Interl f₁ f₂) (h13 : Interl f₁ f₃) (h14 : Interl f₁ f₄)
     (h24 : Interl f₂ f₄) (h34 : Interl f₃ f₄)
@@ -207,23 +208,10 @@ private theorem splits_add_X_mul_of_interl {P W : ℝ[X]} (hPW : Interl P W)
     (nnP : HasNonnegCoeffs P) (nnW : HasNonnegCoeffs W)
     (sP : P ≠ 0 → P.Splits) (sW : W ≠ 0 → W.Splits) :
     W + X * P ≠ 0 → (W + X * P).Splits := by
-  intro hne
-  have hWXP : Interl W (X * P) := interl_mul_X_of_interl hPW nnP nnW
-  have hfs : IsInterlacingSeq0Nonneg [W, X * P] :=
-    ⟨isInterlacingSeq0_iff_pairwise.2 (by simpa using hWXP), by
-      intro f hf
-      simp only [List.mem_cons, List.not_mem_nil, or_false] at hf
-      rcases hf with rfl | rfl
-      · exact nnW
-      · exact nnP.X_mul⟩
-  have hreal : ∀ f ∈ [W, X * P], f ≠ 0 → (f ≠ 0 ∧ f.Splits) := by
-    intro f hf hf0
-    simp only [List.mem_cons, List.not_mem_nil, or_false] at hf
-    rcases hf with rfl | rfl
-    · exact ⟨hf0, sW hf0⟩
-    · have hP0 : P ≠ 0 := fun h => hf0 (by simp [h])
-      exact isRealRooted_X_mul hP0 (sP hP0)
-  simpa using (isRealRooted_sum_of_isInterlacingSeq0Nonneg hfs hreal (by simpa using hne)).2
+  apply splits_add_of_interl (interl_mul_X_of_interl hPW nnP nnW) nnW nnP.X_mul sW
+  intro hXP
+  have hP : P ≠ 0 := fun h ↦ hXP (by simp [h])
+  exact (isRealRooted_X_mul hP (sP hP)).2
 
 private theorem interl_X_mul_add_add_X_mul {P M W : ℝ[X]} (hPM : Interl P M)
     (hPW : Interl P W) (hMW : Interl M W) (nnP : HasNonnegCoeffs P)
@@ -387,13 +375,8 @@ theorem xShiftedSplitSums {fs : List ℝ[X]} (h : IsInterlacingSeq0NonnegRealRoo
   · intro i j hij hj
     rw [hlen] at hj
     rw [hget i (by lia), hget j (by lia)]
-    have e1 : ∑ m ∈ Finset.Ico i fs.length, fs.getD m 0 =
-        ∑ m ∈ Finset.Ico i j, fs.getD m 0 + ∑ m ∈ Finset.Ico j fs.length, fs.getD m 0 :=
-      (Finset.sum_Ico_consecutive _ hij.le (by lia)).symm
-    have e2 : ∑ m ∈ Finset.Ico 0 j, fs.getD m 0 =
-        ∑ m ∈ Finset.Ico 0 i, fs.getD m 0 + ∑ m ∈ Finset.Ico i j, fs.getD m 0 :=
-      (Finset.sum_Ico_consecutive _ (Nat.zero_le i) hij.le).symm
-    rw [e1, e2]
+    rw [← Finset.sum_Ico_consecutive _ hij.le (by lia),
+      ← Finset.sum_Ico_consecutive _ (Nat.zero_le i) hij.le]
     exact HosterStump.interl_X_mul_add_add_X_mul (interl_sum_Ico h le_rfl)
       (interl_sum_Ico h hij.le) (interl_sum_Ico h le_rfl) (nn _ _) (nn _ _) (nn _ _)
       (sp _ _) (sp _ _) (sp _ _)

@@ -35,9 +35,7 @@ theorem norm_le_of_forall_add_mul_ne_zero {p q : ℂ}
   by_contra hlt
   have hlt : ‖p‖ < ‖q‖ := not_le.mp hlt
   have hq : q ≠ 0 := by
-    rintro rfl
-    rw [norm_zero] at hlt
-    linarith [norm_nonneg p]
+    exact norm_pos_iff.mp (lt_of_le_of_lt (norm_nonneg p) hlt)
   refine h (-p / q) ?_ ?_
   · rw [norm_div, norm_neg, div_lt_one (norm_pos_iff.mpr hq)]
     exact hlt
@@ -86,14 +84,9 @@ theorem asano_contraction {α β γ δ : ℂ}
   have s2 := pow_le_pow_left₀ (norm_nonneg _) e2 2
   have s3 := pow_le_pow_left₀ (norm_nonneg _) e3 2
   have s4 := pow_le_pow_left₀ (norm_nonneg _) e4 2
-  have hb : 0 ≤ (1 - t ^ 2) * ‖β‖ ^ 2 := by
-    have : t ^ 2 ≤ 1 := by nlinarith
-    have : 0 ≤ 1 - t ^ 2 := by linarith
-    positivity
-  have hc : 0 ≤ (1 - t ^ 2) * ‖γ‖ ^ 2 := by
-    have : t ^ 2 ≤ 1 := by nlinarith
-    have : 0 ≤ 1 - t ^ 2 := by linarith
-    positivity
+  have ht2 : 0 ≤ 1 - t ^ 2 := by nlinarith
+  have hb : 0 ≤ (1 - t ^ 2) * ‖β‖ ^ 2 := mul_nonneg ht2 (sq_nonneg _)
+  have hc : 0 ≤ (1 - t ^ 2) * ‖γ‖ ^ 2 := mul_nonneg ht2 (sq_nonneg _)
   have key : t ^ 2 * ‖δ‖ ^ 2 ≤ ‖α‖ ^ 2 := by nlinarith
   intro h0
   have hαz : ‖α‖ = ‖δ‖ * ‖z‖ := by
@@ -199,13 +192,7 @@ theorem prod_ite_ite_eq {k l : ι} (hkl : k ≠ l) (z : ι → ℂ) (u₁ u₂ :
       (if i = k ∨ i = l then 1 else z i) * (if i = k then u₁ else 1) *
         (if i = l then u₂ else 1) := by
     intro i
-    by_cases hik : i = k
-    · subst hik
-      simp [hkl]
-    · by_cases hil : i = l
-      · subst hil
-        simp [hik]
-      · simp [hik, hil]
+    by_cases hik : i = k <;> by_cases hil : i = l <;> simp_all
   rw [Finset.prod_congr rfl fun i _ => this i, Finset.prod_mul_distrib,
     Finset.prod_mul_distrib, Finset.prod_ite_eq', Finset.prod_ite_eq']
 
@@ -247,10 +234,7 @@ theorem PolydiscNonvanishing.mul_crossing {w : Finset ι → ℂ} (hw : Polydisc
     exacts [h₁, h₂, hz i]
   have hyz : (fun i => if i = k then z k else if i = l then z l else z i) = z := by
     funext i
-    split_ifs with h₁ h₂
-    · rw [h₁]
-    · rw [h₂]
-    · rfl
+    split_ifs <;> simp_all
   have key := edge_contraction hc (A := A) (B := B) (C := C) (D := D)
     (fun u₁ u₂ h₁ h₂ => by rw [← (h u₁ u₂).1]; exact hw _ (hy u₁ u₂ h₁ h₂)) (hz k) (hz l)
   have e := (h (z k) (z l)).2
@@ -371,10 +355,7 @@ theorem sum_eq_prod_mul_sum_inv {a : ι → ι → ℝ} (ha : ∀ i j, a i j = a
 theorem lee_yang_exterior {a : ι → ι → ℝ} (ha : ∀ i j, a i j = a j i)
     (h1 : ∀ i j, |a i j| ≤ 1) {z : ι → ℂ} (hz : ∀ i, 1 < ‖z i‖) :
     ∑ S : Finset ι, (∏ i ∈ S, ∏ j ∈ Sᶜ, (a i j : ℂ)) * ∏ i ∈ S, z i ≠ 0 := by
-  have hz0 : ∀ i, z i ≠ 0 := fun i h => by
-    have := hz i
-    rw [h, norm_zero] at this
-    linarith
+  have hz0 : ∀ i, z i ≠ 0 := fun i => norm_pos_iff.mp (lt_trans zero_lt_one (hz i))
   rw [sum_eq_prod_mul_sum_inv ha hz0]
   refine mul_ne_zero (Finset.prod_ne_zero_iff.mpr fun i _ => hz0 i)
     (lee_yang_polydisc ha h1 fun i => ?_)

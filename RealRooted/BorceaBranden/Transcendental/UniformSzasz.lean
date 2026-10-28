@@ -132,21 +132,16 @@ private lemma uniformBound_step [Finite σ] (a : (σ →₀ ℕ) → ℂ) (i : �
     hκ
     (fun m => by
       rcases hst m with h | h
-      · rcases h.specializeZero_zero_or_general i with hzero | hstable
-        · exact Or.inr hzero
-        · exact Or.inl hstable
-      · right
-        rw [h, MvPolynomial.specializeZero_zero])
+      · exact Or.symm (h.specializeZero_zero_or_general i)
+      · right; simp [h])
   obtain ⟨B2, C2, m2, hb2⟩ := h2 (fun m α => κ m (α + Finsupp.single i 1))
     (fun m => MvPolynomial.pderiv i (f m))
     (fun m α => by rw [MvPolynomial.coeff_pderiv, hcoef]; ring)
     (fun α => hκ _)
     (fun m => by
       rcases hst m with h | h
-      · rcases h.pderiv_zero_or_of_finite i with hzero | hstable
-        · exact Or.inr hzero
-        · exact Or.inl hstable
-      · right; show MvPolynomial.pderiv i (f m) = 0; rw [h, map_zero])
+      · exact Or.symm (h.pderiv_zero_or_of_finite i)
+      · right; simp [h])
   refine ⟨max B1 0 + max B2 0, max C1 (C2 + 1), max m1 m2, fun m hm r hr z hz => ?_⟩
   have hm1 : m ≥ m1 := le_trans (le_max_left _ _) hm
   have hm2 : m ≥ m2 := le_trans (le_max_right _ _) hm
@@ -158,22 +153,19 @@ private lemma uniformBound_step [Finite σ] (a : (σ →₀ ℕ) → ℂ) (i : �
     exact Real.exp_le_exp.2 (mul_le_mul_of_nonneg_right (le_max_left _ _) hr2)
   have x2 : r * (B2 * Real.exp (C2 * r ^ 2)) ≤
       max B2 0 * Real.exp (max C1 (C2 + 1) * r ^ 2) := by
-    have h3 : r * (B2 * Real.exp (C2 * r ^ 2)) ≤ r * (max B2 0 * Real.exp (C2 * r ^ 2)) :=
-      mul_le_mul_of_nonneg_left
-        (mul_le_mul_of_nonneg_right (le_max_left _ _) (Real.exp_pos _).le) hr
-    have h4 : r * (max B2 0 * Real.exp (C2 * r ^ 2)) ≤
-        Real.exp (r ^ 2) * (max B2 0 * Real.exp (C2 * r ^ 2)) :=
-      mul_le_mul_of_nonneg_right (le_exp_sq r)
-        (mul_nonneg (le_max_right _ _) (Real.exp_pos _).le)
-    have h5 : Real.exp (r ^ 2) * (max B2 0 * Real.exp (C2 * r ^ 2)) =
-        max B2 0 * Real.exp ((C2 + 1) * r ^ 2) := by
-      rw [add_mul, one_mul, Real.exp_add]; ring
-    have h6 : max B2 0 * Real.exp ((C2 + 1) * r ^ 2) ≤
-        max B2 0 * Real.exp (max C1 (C2 + 1) * r ^ 2) :=
-      mul_le_mul_of_nonneg_left
-        (Real.exp_le_exp.2 (mul_le_mul_of_nonneg_right (le_max_right _ _) hr2))
-        (le_max_right _ _)
-    linarith
+    calc
+      _ ≤ r * (max B2 0 * Real.exp (C2 * r ^ 2)) :=
+        mul_le_mul_of_nonneg_left
+          (mul_le_mul_of_nonneg_right (le_max_left _ _) (Real.exp_pos _).le) hr
+      _ ≤ Real.exp (r ^ 2) * (max B2 0 * Real.exp (C2 * r ^ 2)) :=
+        mul_le_mul_of_nonneg_right (le_exp_sq r)
+          (mul_nonneg (le_max_right _ _) (Real.exp_pos _).le)
+      _ = max B2 0 * Real.exp ((C2 + 1) * r ^ 2) := by
+        rw [add_mul, one_mul, Real.exp_add]; ring
+      _ ≤ max B2 0 * Real.exp (max C1 (C2 + 1) * r ^ 2) :=
+        mul_le_mul_of_nonneg_left
+          (Real.exp_le_exp.2 (mul_le_mul_of_nonneg_right (le_max_right _ _) hr2))
+          (le_max_right _ _)
   rw [add_mul]
   linarith
 
@@ -203,8 +195,7 @@ private lemma uniformBound_const [Finite σ] (a : (σ →₀ ℕ) → ℂ) (ha :
   have hκ0 : (κ m 0 : ℂ) ≠ 0 := by
     have := h0.1; exact_mod_cast (show κ m 0 ≠ 0 by linarith)
   have hc0 : c ≠ 0 := by rw [hc]; exact mul_ne_zero hκ0 ha
-  have hfm : f m ≠ 0 := by
-    intro h; apply hc0; rw [hcdef, h]; simp
+  have hfm : f m ≠ 0 := fun h => hc0 (by simp [hcdef, h])
   have hstab : MvUpperHalfPlaneStable (f m) := (hst m).resolve_right hfm
   set g := MvPolynomial.C c⁻¹ * f m with hgdef
   have hgcoeff : ∀ α, g.coeff α = c⁻¹ * (f m).coeff α := fun α =>
@@ -216,14 +207,8 @@ private lemma uniformBound_const [Finite σ] (a : (σ →₀ ℕ) → ℂ) (ha :
     exact mul_ne_zero (inv_ne_zero hc0) (hstab w hw)
   have hJ : ∀ β, MvUpperHalfPlaneStable (MvPolynomial.jensenOp β g) := fun β =>
     (jensenOp_stableOrZero β hgstab).resolve_left (fun h => by
-      have hcoeff : (MvPolynomial.jensenOp β g).coeff 0 = 0 := by
-        rw [h]
-        simp
-      rw [MvPolynomial.coeff_jensenOp] at hcoeff
-      have hj : MvPolynomial.jensen 0 β = 1 := by
-        simp [MvPolynomial.jensen]
-      rw [hj, Complex.ofReal_one, one_mul, hg0] at hcoeff
-      exact one_ne_zero hcoeff)
+      have hcoeff := congrArg (fun p => p.coeff 0) h
+      simp [MvPolynomial.coeff_jensenOp, MvPolynomial.jensen, hg0] at hcoeff)
   have hsz := MvPolynomial.norm_eval_le_of_forall_jensenOp_stable g hg0 hJ hr z hz
   have hK : ∀ α, κ m α ∈ Set.Ioo (1 / 2 : ℝ) 2 → ‖g.coeff α‖ ≤ K α := by
     intro α hα

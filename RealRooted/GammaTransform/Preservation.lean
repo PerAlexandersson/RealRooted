@@ -39,24 +39,8 @@ lemma isRealRooted_gammaQuadraticFactor {r : ℝ} (hr : r ≤ 0) :
     have hpoly :
         X - C r * (X + 1) ^ 2 = C t * X ^ 2 + C (2 * t + 1) * X + C t := by
       subst t
-      ext n
-      cases n with
-      | zero =>
-          simp [Polynomial.coeff_X_add_one_pow]
-      | succ n =>
-          cases n with
-          | zero =>
-              simp [Polynomial.coeff_X_add_one_pow]
-              ring
-          | succ n =>
-              cases n with
-              | zero =>
-                  simp [Polynomial.coeff_X_add_one_pow, coeff_X, coeff_one]
-              | succ n =>
-                  have hpow0 : (((X + 1 : ℝ[X]) ^ 2).coeff (n + 3)) = 0 :=
-                    Polynomial.coeff_eq_zero_of_natDegree_lt
-                      (lt_of_le_of_lt (natDegree_X_add_one_pow_le 2) (by lia))
-                  simp [coeff_X, coeff_one, hpow0]
+      simp only [map_neg, map_add, map_mul, map_ofNat, map_one]
+      ring
     have hroots :
         (C t * X ^ 2 + C (2 * t + 1) * X + C t).roots =
           {(-(2 * t + 1) - Real.sqrt (t * 4 + 1)) / (2 * t),
@@ -120,9 +104,7 @@ theorem isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
         hasNonnegCoeffs_of_dvd_of_hasPosLeadingCoeff
           hrr.1 hnn hq_rr.1 hq_rr.2 hq_pos hq_dvd
       have hqdeg_lt : q.natDegree < n := by
-        have hmuldeg : γ.natDegree = q.natDegree + 1 := by
-          rw [hq', natDegree_mul (X_sub_C_ne_zero r) hq_ne, natDegree_X_sub_C]
-          lia
+        rw [hq', natDegree_mul (X_sub_C_ne_zero r) hq_ne, natDegree_X_sub_C] at hγdeg_eq
         lia
       have hqbound : q.natDegree ≤ (d - 2) / 2 := by lia
       have hd : d = (d - 2) + 2 := by lia
@@ -136,9 +118,8 @@ theorem isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs
 nonpositive roots. -/
 theorem hasRootsNonpos_gammaTransform_of_hasNonnegCoeffs
     {d : ℕ} {γ : ℝ[X]} (hγnn : HasNonnegCoeffs γ) :
-    HasRootsNonpos (gammaTransform d γ) := by
-  intro r hr
-  exact roots_nonpos_of_hasNonnegCoeffs (hasNonnegCoeffs_gammaTransform hγnn) r hr
+    HasRootsNonpos (gammaTransform d γ) := fun r hr =>
+  roots_nonpos_of_hasNonnegCoeffs (hasNonnegCoeffs_gammaTransform hγnn) r hr
 
 /-- If the minimal gamma transform is nonzero, split, and has only nonpositive
 roots, then its gamma polynomial has the same properties. -/
@@ -166,10 +147,8 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
       have hc : δ.coeff 0 ≠ 0 := by grind
       refine ⟨isRealRooted_of_deg_zero hδ0_main (by lia), ?_⟩
       intro r hr
-      have : False := by
-        rw [hδC] at hr
-        simp at hr
-      lia
+      rw [hδC] at hr
+      simp at hr
     · by_cases hcoeff0 : δ.coeff 0 = 0
       · have hXdvd : X ∣ δ := Polynomial.X_dvd_iff.mpr hcoeff0
         obtain ⟨ζ, hδX⟩ := hXdvd
@@ -229,12 +208,8 @@ theorem isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
         have hγ_fac : δ = (X - C y) * ε := by lia
         have hε0 : ε ≠ 0 := by simp_all
         have hεdeg_succ : n = ε.natDegree + 1 := by
-          calc
-            n = δ.natDegree := by lia
-            _ = ((X - C y) * ε).natDegree := by lia
-            _ = 1 + ε.natDegree := by
-              rw [natDegree_mul (X_sub_C_ne_zero y) hε0, natDegree_X_sub_C]
-            _ = ε.natDegree + 1 := by lia
+          rw [hγ_fac, natDegree_mul (X_sub_C_ne_zero y) hε0, natDegree_X_sub_C] at hδdeg
+          lia
         have hεdeg_lt : ε.natDegree < n := by lia
         have hq_eq :
             gammaTransform (2 * n) δ =
@@ -279,9 +254,8 @@ theorem hasRootsNonpos_of_isRealRooted_gammaTransform_minimal
     hp_ne hp_splits hp_nonpos).2
 
 lemma hasRootsNonpos_gammaQuadraticFactor {r : ℝ} (hr : r ≤ 0) :
-    HasRootsNonpos (X - C r * (X + 1) ^ 2) := by
-  intro s hs
-  exact roots_nonpos_of_hasNonnegCoeffs (hasNonnegCoeffs_gammaQuadraticFactor hr) s hs
+    HasRootsNonpos (X - C r * (X + 1) ^ 2) := fun s hs =>
+  roots_nonpos_of_hasNonnegCoeffs (hasNonnegCoeffs_gammaQuadraticFactor hr) s hs
 
 /-- Within the ambient degree bound, the gamma transform of a nonzero split
 polynomial with only nonpositive roots has the same properties. -/
@@ -332,9 +306,7 @@ theorem isRealRooted_and_hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasRoo
       have hq_nonpos : HasRootsNonpos q :=
         hasRootsNonpos_of_dvd hδ_nonpos hδ_rr.1 hq_dvd hq_ne
       have hqdeg_lt : q.natDegree < n := by
-        have hmuldeg : δ.natDegree = q.natDegree + 1 := by
-          rw [hδq, natDegree_mul (X_sub_C_ne_zero r) hq_ne, natDegree_X_sub_C]
-          lia
+        rw [hδq, natDegree_mul (X_sub_C_ne_zero r) hq_ne, natDegree_X_sub_C] at hδdeg
         lia
       have hqbound : q.natDegree ≤ (d - 2) / 2 := by lia
       have hd : d = (d - 2) + 2 := by lia
