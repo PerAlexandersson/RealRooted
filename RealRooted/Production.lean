@@ -573,13 +573,10 @@ import RealRooted.GarloffWagner.KreinExpansion
 import RealRooted.GarloffWagner.Theorem12
 import RealRooted.GeneralizedEulerian
 import RealRooted.GeneralizedEulerian.GeneratingFunction
-<<<<<<< HEAD
 import RealRooted.MaWang.EndpointMultiplicity
 import RealRooted.Mesh.FiniteDifferenceHyperbolicity
 import RealRooted.OperatorMatrix.CouplingThresholds
-=======
 import RealRooted.MatrixInterlacing.WeightedThreeState
->>>>>>> origin/main
 import RealRooted.PoweredEulerian
 import RealRooted.GeneralizedSnakePosets
 import RealRooted.GeneralizedSnakePosets.ChainPolynomial
