@@ -5,8 +5,9 @@ import Mathlib.Order.Interval.Finset.Nat
 public import Mathlib.Analysis.Complex.Basic
 public import Mathlib.Analysis.Normed.Group.Defs
 import RealRooted.BorceaBranden.Transcendental.UniformSzasz
+import RealRooted.Mathlib.Analysis.SpecialFunctions.Choose
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffEstimates
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate
 public import RealRooted.MultivariateStability
 public import Mathlib.Topology.Algebra.InfiniteSum.Defs
 public import Mathlib.Topology.UniformSpace.LocallyUniformConvergence
@@ -83,56 +84,24 @@ theorem coeff_glue (P : (σ →₀ ℕ) → MvPolynomial τ ℂ)
   split_ifs <;> simp_all [E]
 
 omit [DecidableEq σ] in
-private theorem jensen_eq_zero_of_not_le {α β : σ →₀ ℕ} (h : ¬ α ≤ β) :
-    MvPolynomial.jensen α β = 0 := by
-  rw [Finsupp.le_def] at h
-  push Not at h
-  obtain ⟨i, hi⟩ := h
-  unfold MvPolynomial.jensen
-  apply Finset.prod_eq_zero (Finset.mem_univ i)
-  rw [(Nat.descFactorial_eq_zero_iff_lt).mpr hi]
-  simp
-
-private theorem tendsto_descFactorial_div_pow (a : ℕ) :
-    Tendsto (fun n : ℕ => (n.descFactorial a : ℝ) / (n : ℝ) ^ a) atTop (𝓝 1) := by
-  induction a with
-  | zero => simp
-  | succ a ih =>
-    have h1 : Tendsto (fun n : ℕ => (((n - a : ℕ) : ℝ) / n)) atTop (𝓝 1) := by
-      have h2 : Tendsto (fun n : ℕ => (1 : ℝ) - (a : ℝ) * (1 / (n : ℝ)))
-          atTop (𝓝 1) := by
-        have := (tendsto_one_div_atTop_nhds_zero_nat).const_mul (a : ℝ)
-        simpa using (tendsto_const_nhds (x := (1:ℝ))).sub this
-      refine h2.congr' ?_
-      filter_upwards [eventually_ge_atTop (a + 1)] with n hn
-      have hn0 : (n : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by lia)
-      rw [Nat.cast_sub (by lia)]
-      field_simp
-    have := h1.mul ih
-    rw [mul_one] at this
-    refine this.congr' ?_
-    filter_upwards [eventually_ge_atTop 1] with n hn
-    rw [Nat.descFactorial_succ, Nat.cast_mul, pow_succ]
-    have hn0 : (n : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by lia)
-    field_simp
+/-- The entries of `constExp σ m` are all `m`. -/
+theorem constExp_apply (m : ℕ) (i : σ) : constExp σ m i = m := rfl
 
 omit [DecidableEq σ] in
-private theorem constExp_apply (m : ℕ) (i : σ) : constExp σ m i = m := rfl
-
-omit [DecidableEq σ] in
-private theorem tendsto_jensen_constExp (α : σ →₀ ℕ) :
+/-- The Jensen multipliers at `constExp σ (m + 1)` tend to `1`. -/
+theorem tendsto_jensen_constExp (α : σ →₀ ℕ) :
     Tendsto (fun m : ℕ => MvPolynomial.jensen α (constExp σ (m + 1)))
       atTop (𝓝 1) := by
   unfold MvPolynomial.jensen
   simp only [constExp_apply]
   have key := tendsto_finsetProd (Finset.univ : Finset σ) (fun i _ =>
-    (tendsto_descFactorial_div_pow (α i)).comp (tendsto_add_atTop_nat 1))
+    (Nat.tendsto_descFactorial_div_pow_atTop (α i)).comp (tendsto_add_atTop_nat 1))
   simpa [Function.comp] using key
 
 omit [Fintype τ] in
 /-- Evaluating the Jensen-glued polynomial equals evaluating the falling-factorial-glued one with
 the `w`-variables divided by `m + 1`. -/
-private theorem eval_glue_jensen [Finite τ]
+theorem eval_glue_jensen [Finite τ]
     (P : (σ →₀ ℕ) → MvPolynomial τ ℂ) (m : ℕ) (x : τ ⊕ σ → ℂ) :
     MvPolynomial.eval x
         (glue P (fun α => MvPolynomial.jensen α (constExp σ (m + 1)))
@@ -227,7 +196,7 @@ theorem exists_stableOrZero_tendstoLocallyUniformly_of_fallingFactorial_glue
     simp only [hf, hκ, coeff_glue]
     split_ifs with hle
     · rfl
-    · rw [jensen_eq_zero_of_not_le hle, Complex.ofReal_zero]
+    · rw [MvPolynomial.jensen_eq_zero_of_not_le hle, Complex.ofReal_zero]
   have hκt : ∀ e, Tendsto (fun m => κ m e) atTop (𝓝 1) := fun e =>
     tendsto_jensen_constExp _
   have hst : ∀ m, MvUpperHalfPlaneStable (f m) ∨ f m = 0 := fun m =>
@@ -271,7 +240,7 @@ theorem exists_stableOrZero_tendstoLocallyUniformly_of_eventually_constExp_glue
     simp only [hf, hκ, coeff_glue]
     split_ifs with hle
     · rfl
-    · rw [jensen_eq_zero_of_not_le hle, Complex.ofReal_zero]
+    · rw [MvPolynomial.jensen_eq_zero_of_not_le hle, Complex.ofReal_zero]
   have hκt : ∀ e, Tendsto (fun m => κ m e) atTop (𝓝 1) := by
     intro e
     have ht := (tendsto_jensen_constExp

@@ -157,4 +157,20 @@ theorem natDegree_le_iff_repr_descPochhammerBasis {R : Type*} [CommRing R] [IsDo
 
 end
 
+/-- `(2)_k = (k + 1)!` for the rising factorial. -/
+theorem ascPochhammer_eval_two {R : Type*} [Semiring R] (k : ℕ) :
+    (ascPochhammer R k).eval 2 = ((k + 1).factorial : R) := by
+  have h := ascPochhammer_eval_cast R k 2
+  rw [ascPochhammer_nat_eq_ascFactorial] at h
+  have := Nat.factorial_mul_ascFactorial 1 k
+  simp_all [add_comm]
+
+/-- `2 · (3)_k = (k + 2)!` for the rising factorial. -/
+theorem two_mul_ascPochhammer_eval_three {R : Type*} [Semiring R] (k : ℕ) :
+    2 * (ascPochhammer R k).eval 3 = ((k + 2).factorial : R) := by
+  have h := ascPochhammer_eval_cast R k 3
+  rw [ascPochhammer_nat_eq_ascFactorial] at h
+  have := congrArg (Nat.cast (R := R)) (Nat.factorial_mul_ascFactorial 2 k)
+  simp_all [add_comm, Nat.factorial]
+
 end Polynomial

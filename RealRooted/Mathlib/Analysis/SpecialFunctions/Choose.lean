@@ -10,9 +10,9 @@ import Mathlib.Data.Nat.Choose.Bounds
 public import Mathlib.Analysis.Normed.Group.Real
 
 /-!
-# Rescaled binomial-coefficient limit
+# Rescaled falling-factorial and binomial-coefficient limits
 
-This Mathlib-shaped lemma is the fixed-degree asymptotic used by rescaled
+These Mathlib-shaped lemmas are the fixed-degree asymptotics used by rescaled
 Jensen polynomials.
 -/
 
@@ -23,6 +23,13 @@ open Asymptotics Filter Nat Topology
 noncomputable section
 
 namespace Nat
+
+/-- For fixed `k`, `n.descFactorial k / n^k` tends to `1`. -/
+theorem tendsto_descFactorial_div_pow_atTop (k : ℕ) :
+    Tendsto (fun n : ℕ => (n.descFactorial k : ℝ) / (n : ℝ) ^ k) atTop (𝓝 1) := by
+  have hz : ∀ᶠ n : ℕ in atTop, (n : ℝ) ^ k ≠ 0 :=
+    eventually_atTop.mpr ⟨1, fun n hn => pow_ne_zero _ (by exact_mod_cast (by lia : n ≠ 0))⟩
+  exact (isEquivalent_iff_tendsto_one hz).mp (isEquivalent_descFactorial k)
 
 /-- For fixed `k`, `choose n k / n^k` tends to `1 / k!`. -/
 theorem tendsto_choose_mul_inv_pow_atTop (k : ℕ) :

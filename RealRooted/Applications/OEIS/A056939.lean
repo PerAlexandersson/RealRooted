@@ -1,6 +1,7 @@
 module
 
 import RealRooted.MultiplierSequence.TwoSidedJensen
+import RealRooted.Mathlib.RingTheory.Polynomial.Pochhammer
 import RealRooted.MultiplierSequence.InvPochhammer
 import RealRooted.Recurrence.Uniqueness
 import RealRooted.Recurrence.RowModel
@@ -440,29 +441,11 @@ private lemma polynomial_eq_schur : ∀ n : ℕ, polynomial n = schurModel n
 private def jensenWeight (k : ℕ) : ℝ :=
   2 / ((Nat.factorial (k + 1) : ℝ) * (Nat.factorial (k + 2) : ℝ))
 
-private lemma ascPochhammer_eval_two (k : ℕ) :
-    (ascPochhammer ℝ k).eval 2 = ((k + 1).factorial : ℝ) := by
-  induction k with
-  | zero => norm_num
-  | succ k ih =>
-      rw [ascPochhammer_succ_eval, ih, Nat.factorial_succ (k + 1)]
-      push_cast
-      ring
-
-private lemma two_mul_ascPochhammer_eval_three (k : ℕ) :
-    2 * (ascPochhammer ℝ k).eval 3 = ((k + 2).factorial : ℝ) := by
-  induction k with
-  | zero => norm_num
-  | succ k ih =>
-      rw [ascPochhammer_succ_eval, Nat.factorial_succ (k + 2)]
-      push_cast
-      nlinarith
-
 private lemma jensenWeight_eq (k : ℕ) :
     jensenWeight k =
       ((ascPochhammer ℝ k).eval 2)⁻¹ * ((ascPochhammer ℝ k).eval 3)⁻¹ := by
   rw [jensenWeight, ascPochhammer_eval_two]
-  have hthree := two_mul_ascPochhammer_eval_three k
+  have hthree := two_mul_ascPochhammer_eval_three (R := ℝ) k
   have hfac1 : ((k + 1).factorial : ℝ) ≠ 0 := by positivity
   have hfac2 : ((k + 2).factorial : ℝ) ≠ 0 := by positivity
   have hthreePos : 0 < (ascPochhammer ℝ k).eval 3 :=
