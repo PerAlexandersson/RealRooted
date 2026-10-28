@@ -40,16 +40,15 @@ private lemma nonneg_series_real {p : ℕ → ℝ} {F : ℂ → ℂ}
   · simpa [← Complex.ofReal_pow, Complex.re_ofReal_mul] using this.1
   · have h2 := this.2
     simp only [← Complex.ofReal_pow, ← Complex.ofReal_mul, Complex.ofReal_im] at h2
-    exact (h2.unique hasSum_zero)
+    exact h2.unique hasSum_zero
 
 private lemma nonneg_series_zero {p : ℕ → ℝ} {F : ℂ → ℂ}
     (hF : ∀ z : ℂ, HasSum (fun n => (p n : ℂ) * z ^ n) (F z)) : F 0 = p 0 := by
-  have h := hF 0
-  have h' : HasSum (fun n => (p n : ℂ) * (0:ℂ) ^ n) (p 0 : ℂ) := by
-    convert hasSum_single (f := fun n => (p n : ℂ) * (0:ℂ) ^ n) 0 ?_ using 1
-    · simp
-    · intro b hb; simp [zero_pow hb]
-  exact h.unique h'
+  apply (hF 0).unique
+  convert hasSum_single (f := fun n => (p n : ℂ) * (0 : ℂ) ^ n) 0 ?_ using 1
+  · simp
+  · intro b hb
+    simp [zero_pow hb]
 
 private lemma nonneg_series_ge {p : ℕ → ℝ} (hp : ∀ n, 0 ≤ p n) {F : ℂ → ℂ}
     (hF : ∀ z : ℂ, HasSum (fun n => (p n : ℂ) * z ^ n) (F z)) {r : ℝ} (hr : 0 ≤ r) :
@@ -57,8 +56,7 @@ private lemma nonneg_series_ge {p : ℕ → ℝ} (hp : ∀ n, 0 ≤ p n) {F : �
   have h := (nonneg_series_real hF r).1
   have : p 0 * r ^ 0 ≤ (F r).re :=
     le_hasSum h 0 (fun j _ => mul_nonneg (hp j) (pow_nonneg hr j))
-  simp at this
-  exact this.trans (Complex.re_le_norm _)
+  simpa using this.trans (Complex.re_le_norm _)
 
 private lemma nonneg_series_norm_le {p : ℕ → ℝ} (hp : ∀ n, 0 ≤ p n) {F : ℂ → ℂ}
     (hF : ∀ z : ℂ, HasSum (fun n => (p n : ℂ) * z ^ n) (F z)) (z : ℂ) :
@@ -187,10 +185,9 @@ private lemma affine_of_re_le {h : ℂ → ℂ} (hh : Differentiable ℂ h) {A B
     have h2 : A - (h 0).re ≤ |A - (h 0).re| := le_abs_self _
     have h3 : B * ‖z‖ ≤ |B| * ‖z‖ :=
       mul_le_mul_of_nonneg_right (le_abs_self _) (norm_nonneg _)
-    have h4 : 0 ≤ |A - (h 0).re| * ‖z‖ := by positivity
     change (h z - h 0).re ≤ (|A - (h 0).re| + |B|) * (1 + ‖z‖)
     rw [sub_re]
-    nlinarith [abs_nonneg B]
+    nlinarith [abs_nonneg B, mul_nonneg (abs_nonneg (A - (h 0).re)) (norm_nonneg z)]
   obtain ⟨a, b, hab⟩ :=
     hfd.exists_eq_exp_affine_of_norm_le_exp (fun _ => Complex.exp_ne_zero _) hC
   have hb : Complex.exp b = 1 := by
@@ -211,8 +208,8 @@ private lemma affine_of_re_le {h : ℂ → ℂ} (hh : Differentiable ℂ h) {A B
     intro w
     have h1 : deriv (fun w => Complex.exp (g w)) w = Complex.exp (g w) * deriv g w :=
       deriv_cexp (hgd w)
-    have h2 : (fun w => Complex.exp (g w)) = fun _ => (1:ℂ) := funext hexp
-    rw [h2, deriv_const, hexp] at h1
+    rw [show (fun w => Complex.exp (g w)) = fun _ => (1 : ℂ) from funext hexp,
+      deriv_const, hexp] at h1
     simpa using h1.symm
   have := is_const_of_deriv_eq_zero hgd hderiv z 0
   simp only [hg, sub_self, mul_zero] at this
@@ -296,10 +293,7 @@ private lemma re_le_of_series {h : ℂ → ℂ} {c : ℂ}
         _ ≤ _ := h1.trans h2
         _ = _ := by rw [Real.exp_add, Real.exp_log hKpos]
     have h5 := Real.exp_le_exp.1 h4
-    have h6 : -z.re ≤ ‖z‖ := by
-      have := Complex.abs_re_le_norm z
-      linarith [neg_abs_le z.re, neg_le_abs z.re]
-    linarith
+    linarith [Complex.abs_re_le_norm z, neg_abs_le z.re, neg_le_abs z.re]
   refine ⟨L, 4 * ‖c‖ + 5, fun z => ?_⟩
   rcases le_or_gt 0 z.re with hz | hz
   · have := hright z hz
@@ -330,8 +324,7 @@ private lemma im_eq_zero_of_affine {h : ℂ → ℂ} {a : ℂ}
       (by simpa only [Complex.ofReal_re] using hrpos.le)
     rw [tprod_ofReal_eq sα r] at this
     intro h'
-    have : (1 : ℝ) ≤ 0 := by simpa [h'] using this
-    norm_num at this
+    norm_num [h'] at this
   have h1 := him r
   rw [tprod_ofReal_eq sα r, Complex.im_mul_ofReal, Complex.exp_im, ha r] at h1
   have h2 : Real.sin ((h 0).im + a.im * r) = 0 := by
@@ -344,20 +337,14 @@ private lemma im_eq_zero_of_affine {h : ℂ → ℂ} {a : ℂ}
   rw [Real.sin_add, h0, zero_mul, zero_add] at h2
   have hcos : Real.cos (h 0).im ≠ 0 := by
     intro hc
-    have := Real.sin_sq_add_cos_sq (h 0).im
-    rw [h0, hc] at this; norm_num at this
-  have h3 : Real.sin (a.im * r) = 0 := by
-    rcases mul_eq_zero.1 h2 with h4 | h4
-    · exact absurd h4 hcos
-    · exact h4
+    nlinarith [Real.sin_sq_add_cos_sq (h 0).im]
+  have h3 : Real.sin (a.im * r) = 0 := (mul_eq_zero.1 h2).resolve_left hcos
   have hlt : |a.im * r| < 1 := by
     rw [abs_mul, abs_of_pos hrpos, hr, mul_one_div, div_lt_one (by positivity)]
     linarith
   have h4 := (Real.sin_eq_zero_iff_of_lt_of_lt (by linarith [neg_abs_le (a.im * r),
     Real.pi_gt_three]) (by linarith [le_abs_self (a.im * r), Real.pi_gt_three])).1 h3
-  rcases mul_eq_zero.1 h4 with h5 | h5
-  · exact h5
-  · exact absurd h5 hrpos.ne'
+  exact (mul_eq_zero.1 h4).resolve_right hrpos.ne'
 
 /-- Step 5: the (real) linear coefficient is nonnegative. -/
 private lemma nonneg_of_affine {h : ℂ → ℂ} {γ : ℝ}
@@ -426,8 +413,7 @@ private lemma nonneg_of_affine {h : ℂ → ℂ} {γ : ℝ}
     rw [hr]; field_simp
   have := hbound r hrpos.le
   rw [hγr, ← Real.exp_log hKpos, ← Real.exp_add] at this
-  have := Real.one_le_exp_iff.1 this
-  linarith [le_abs_self L]
+  linarith [Real.one_le_exp_iff.1 this, le_abs_self L]
 
 /-- **Final lemma of Edrei's Proposition B** (Edrei, Canad. J. Math. 5 (1953), p. 93-94; the
 odd-part hypothesis is essential: `h = z^3` is a counterexample without it).

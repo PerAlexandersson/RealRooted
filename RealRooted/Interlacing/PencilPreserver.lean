@@ -433,20 +433,13 @@ theorem strictInterl_iterate_of_negative_simple
     | zero =>
         exact ⟨hP0, hP1, hbase, hbase_cop⟩
     | succ n ih =>
-        have hnext := hT₁ ih.1
-        have hPn1 : IsNegativeSimple (P (n + 1)) := by
-          simpa [hrec n] using hnext.1
         have hdeg : (P (n + 1)).natDegree = (P n).natDegree + 1 := by
-          simpa [hrec n] using hnext.2
+          simpa [hrec n] using (hT₁ ih.1).2
         have hstep := strictInterl_map_of_negative_simple_pencil
-          ih.2.2.1 hdeg ih.2.2.2 ih.1 hPn1 hT₁ hT₂
-        have hstep' :
-            StrictInterl (P (n + 1)) (P (n + 1 + 1)) ∧
-              ∀ r, ¬ ((P (n + 1)).IsRoot r ∧ (P (n + 1 + 1)).IsRoot r) := by
-          simpa [hrec n, hrec (n + 1)] using hstep
-        have hPn2 : IsNegativeSimple (P (n + 1 + 1)) := by
-          simpa [hrec (n + 1)] using (hT₁ hPn1).1
-        exact ⟨hPn1, hPn2, hstep'.1, hstep'.2⟩
+          ih.2.2.1 hdeg ih.2.2.2 ih.1 ih.2.1 hT₁ hT₂
+        refine ⟨ih.2.1, ?_, ?_⟩
+        · simpa [hrec (n + 1)] using (hT₁ ih.2.1).1
+        · simpa [hrec n, hrec (n + 1)] using hstep
   intro n
   exact (hmain n).2.2
 

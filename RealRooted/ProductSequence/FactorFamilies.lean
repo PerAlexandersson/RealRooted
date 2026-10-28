@@ -29,8 +29,7 @@ theorem isRealRooted_of_product_affine_sequence
     (hs : ∀ n : Nat, s n ≠ 0)
     (hstep : ∀ n : Nat, P (n + 1) = (C (s n) * X + C (t n)) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_product_factor_sequence hbase
-    (isRealRooted_C_mul_X_add_C_sequence hs) hstep
+  isRealRooted_of_product_factor_sequence hbase (isRealRooted_C_mul_X_add_C_sequence hs) hstep
 
 /-- Right-factor variant of `isRealRooted_of_product_affine_sequence`. -/
 theorem isRealRooted_of_product_affine_right_sequence
@@ -119,8 +118,7 @@ theorem isRealRooted_of_product_X_add_C_sequence
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hstep : ∀ n : Nat, P (n + 1) = (X + C (t n)) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_product_factor_sequence hbase
-    (isRealRooted_X_add_C_one_sequence t) hstep
+  isRealRooted_of_product_factor_sequence hbase (isRealRooted_X_add_C_one_sequence t) hstep
 
 /-- Right-factor variant of `isRealRooted_of_product_X_add_C_sequence`. -/
 theorem isRealRooted_of_product_X_add_C_right_sequence
@@ -128,8 +126,7 @@ theorem isRealRooted_of_product_X_add_C_right_sequence
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hstep : ∀ n : Nat, P (n + 1) = P n * (X + C (t n))) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_product_factor_right_sequence hbase
-    (isRealRooted_X_add_C_one_sequence t) hstep
+  isRealRooted_of_product_factor_right_sequence hbase (isRealRooted_X_add_C_one_sequence t) hstep
 
 /-- Tail-start sequence shell for unit-slope factors `X + C t`. -/
 theorem isRealRooted_of_product_X_add_C_sequence_from
@@ -158,8 +155,7 @@ theorem isRealRooted_of_product_C_add_X_sequence
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hstep : ∀ n : Nat, P (n + 1) = (C (t n) + X) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_product_factor_sequence hbase
-    (isRealRooted_C_add_X_one_sequence t) hstep
+  isRealRooted_of_product_factor_sequence hbase (isRealRooted_C_add_X_one_sequence t) hstep
 
 /-- Right-factor variant of `isRealRooted_of_product_C_add_X_sequence`. -/
 theorem isRealRooted_of_product_C_add_X_right_sequence
@@ -167,8 +163,7 @@ theorem isRealRooted_of_product_C_add_X_right_sequence
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hstep : ∀ n : Nat, P (n + 1) = P n * (C (t n) + X)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_product_factor_right_sequence hbase
-    (isRealRooted_C_add_X_one_sequence t) hstep
+  isRealRooted_of_product_factor_right_sequence hbase (isRealRooted_C_add_X_one_sequence t) hstep
 
 /-- Tail-start sequence shell for constant-first unit-slope factors
 `C t + X`. -/
@@ -198,8 +193,7 @@ theorem isRealRooted_of_product_X_pow_sequence
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hstep : ∀ n : Nat, P (n + 1) = X ^ (m n) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_product_factor_sequence hbase
-    (isRealRooted_X_pow_sequence m) hstep
+  isRealRooted_of_product_factor_sequence hbase (isRealRooted_X_pow_sequence m) hstep
 
 /-- Right-factor variant of `isRealRooted_of_product_X_pow_sequence`. -/
 theorem isRealRooted_of_product_X_pow_right_sequence
@@ -207,8 +201,7 @@ theorem isRealRooted_of_product_X_pow_right_sequence
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hstep : ∀ n : Nat, P (n + 1) = P n * X ^ (m n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_product_factor_right_sequence hbase
-    (isRealRooted_X_pow_sequence m) hstep
+  isRealRooted_of_product_factor_right_sequence hbase (isRealRooted_X_pow_sequence m) hstep
 
 /-- Tail-start sequence shell for product recurrences with factors `X ^ m_n`. -/
 theorem isRealRooted_of_product_X_pow_sequence_from
@@ -237,8 +230,7 @@ theorem isRealRooted_of_product_C_pow_sequence
     (hc : ∀ n : Nat, c n ≠ 0)
     (hstep : ∀ n : Nat, P (n + 1) = (C (c n) : ℝ[X]) ^ (m n) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_product_factor_sequence hbase
-    (isRealRooted_C_pow_sequence hc m) hstep
+  isRealRooted_of_product_factor_sequence hbase (isRealRooted_C_pow_sequence hc m) hstep
 
 /-- Right-factor variant of `isRealRooted_of_product_C_pow_sequence`. -/
 theorem isRealRooted_of_product_C_pow_right_sequence
@@ -247,8 +239,7 @@ theorem isRealRooted_of_product_C_pow_right_sequence
     (hc : ∀ n : Nat, c n ≠ 0)
     (hstep : ∀ n : Nat, P (n + 1) = P n * (C (c n) : ℝ[X]) ^ (m n)) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_product_factor_right_sequence hbase
-    (isRealRooted_C_pow_sequence hc m) hstep
+  isRealRooted_of_product_factor_right_sequence hbase (isRealRooted_C_pow_sequence hc m) hstep
 
 /-- Tail-start sequence shell for product recurrences with nonzero
 scalar-power factors. -/
@@ -282,8 +273,7 @@ theorem isRealRooted_of_product_X_add_C_pow_sequence
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hstep : ∀ n : Nat, P (n + 1) = (X + C (t n)) ^ (m n) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_product_factor_sequence hbase
-    (isRealRooted_X_add_C_pow_sequence t m) hstep
+  isRealRooted_of_product_factor_sequence hbase (isRealRooted_X_add_C_pow_sequence t m) hstep
 
 /-- Right-factor variant of `isRealRooted_of_product_X_add_C_pow_sequence`. -/
 theorem isRealRooted_of_product_X_add_C_pow_right_sequence
@@ -324,8 +314,7 @@ theorem isRealRooted_of_product_C_add_X_pow_sequence
     (hbase : P 0 ≠ 0 ∧ (P 0).Splits)
     (hstep : ∀ n : Nat, P (n + 1) = (C (t n) + X) ^ (m n) * P n) :
     ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_product_factor_sequence hbase
-    (isRealRooted_C_add_X_pow_sequence t m) hstep
+  isRealRooted_of_product_factor_sequence hbase (isRealRooted_C_add_X_pow_sequence t m) hstep
 
 /-- Right-factor variant of `isRealRooted_of_product_C_add_X_pow_sequence`. -/
 theorem isRealRooted_of_product_C_add_X_pow_right_sequence

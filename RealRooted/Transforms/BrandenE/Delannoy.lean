@@ -40,19 +40,14 @@ private lemma brandenEPreimage_twoPascal_recurrence (n : ℕ) :
         brandenEPreimage (R := ℝ) ((1 + C 2 * X) ^ (n + 2)) by
       rw [Polynomial.smul_eq_C_mul],
     brandenE_smul, brandenE_preimage]
-  have hfirst : (C 2 * X + 1) *
-          brandenEPreimage (R := ℝ) ((1 + C 2 * X) ^ (n + 1)) =
-        (2 : ℝ) •
-            (X * brandenEPreimage (R := ℝ) ((1 + C 2 * X) ^ (n + 1))) +
-          brandenEPreimage (R := ℝ) ((1 + C 2 * X) ^ (n + 1)) := by
+  rw [show (C 2 * X + 1) * brandenEPreimage (R := ℝ) ((1 + C 2 * X) ^ (n + 1)) =
+      (2 : ℝ) • (X * brandenEPreimage (R := ℝ) ((1 + C 2 * X) ^ (n + 1))) +
+        brandenEPreimage (R := ℝ) ((1 + C 2 * X) ^ (n + 1)) by
     rw [Polynomial.smul_eq_C_mul]
-    ring
-  have hsecond : C ((n + 1 : ℕ) : ℝ) *
-          brandenEPreimage (R := ℝ) ((1 + C 2 * X) ^ n) =
-        ((n + 1 : ℕ) : ℝ) •
-          brandenEPreimage (R := ℝ) ((1 + C 2 * X) ^ n) := by
-    rw [Polynomial.smul_eq_C_mul]
-  rw [hfirst, hsecond]
+    ring,
+    show C ((n + 1 : ℕ) : ℝ) * brandenEPreimage (R := ℝ) ((1 + C 2 * X) ^ n) =
+      ((n + 1 : ℕ) : ℝ) • brandenEPreimage (R := ℝ) ((1 + C 2 * X) ^ n) by
+    rw [Polynomial.smul_eq_C_mul]]
   simp only [brandenE_add, brandenE_smul, brandenE_X_mul,
     brandenE_preimage]
   simp only [Polynomial.derivative_pow, derivative_add, derivative_one,
@@ -96,11 +91,9 @@ def delannoyFavard : ℕ → ℝ[X]
 private lemma delannoyFavard_recurrence :
     SatisfiesFavardRecurrence delannoyFavard (fun _ => 0)
       (fun n => ((n : ℝ) ^ 2) / 4) := by
-  refine ⟨rfl, ?_, ?_⟩
-  · simp [delannoyFavard]
-  · intro n
-    simp only [delannoyFavard]
-    simp
+  refine ⟨rfl, by simp [delannoyFavard], fun n => ?_⟩
+  simp only [delannoyFavard]
+  simp
 
 private lemma delannoyFavard_beta_pos (n : ℕ) :
     0 < ((((n + 1 : ℕ) : ℝ) ^ 2) / 4) := by
@@ -264,17 +257,14 @@ theorem delannoyVertical_natDegree (n : ℕ) :
     natDegree_C_mul (pow_ne_zero _ Complex.I_ne_zero),
     natDegree_map_eq_of_injective Complex.ofReal_injective,
     delannoyNormalized_natDegree]
-  have hinner :
-      (C (-Complex.I) * (X + C (1 / 2 : ℂ)) : ℂ[X]).natDegree = 1 := by
-    compute_degree!
-  simp_all
+  rw [show (C (-Complex.I) * (X + C (1 / 2 : ℂ)) : ℂ[X]).natDegree = 1 by
+    compute_degree!]
+  simp
 
 theorem delannoyVertical_ne_zero (n : ℕ) : delannoyVertical n ≠ 0 := by
   intro hzero
   have hdegree := delannoyVertical_natDegree n
-  cases n with
-  | zero => simp_all
-  | succ n => simp_all
+  cases n <;> simp_all
 
 theorem delannoyVertical_coeff_zero : ∀ n : ℕ,
     (delannoyVertical n).coeff 0 = 1 := by
@@ -286,13 +276,8 @@ theorem delannoyVertical_coeff_zero : ∀ n : ℕ,
       have h := congrArg (Polynomial.eval (0 : ℂ))
         (delannoyVertical_recurrence n)
       simp only [eval_add, eval_mul, eval_C, eval_X, eval_one] at h
-      have ih_eval : (delannoyVertical n).eval 0 = 1 := by
-        rw [← coeff_zero_eq_eval_zero]
-        exact ih
-      have ih_succ_eval : (delannoyVertical (n + 1)).eval 0 = 1 := by
-        rw [← coeff_zero_eq_eval_zero]
-        exact ih_succ
-      rw [ih_eval, ih_succ_eval] at h
+      rw [coeff_zero_eq_eval_zero] at ih ih_succ
+      rw [ih, ih_succ] at h
       rw [coeff_zero_eq_eval_zero]
       push_cast at h
       norm_num at h
@@ -309,8 +294,6 @@ theorem map_brandenDelannoy_eq_delannoyVertical : ∀ n : ℕ,
   | zero => simp
   | one => simp
   | more n ih ih_succ =>
-      have hreal := congrArg (Polynomial.map Complex.ofRealHom)
-        (brandenDelannoy_recurrence n)
       have hreal' :
           C ((n + 2 : ℕ) : ℂ) *
               (brandenDelannoy (n + 2)).map Complex.ofRealHom =
@@ -318,7 +301,8 @@ theorem map_brandenDelannoy_eq_delannoyVertical : ∀ n : ℕ,
                 (brandenDelannoy (n + 1)).map Complex.ofRealHom +
               C ((n + 1 : ℕ) : ℂ) *
                 (brandenDelannoy n).map Complex.ofRealHom := by
-        simpa using hreal
+        simpa using congrArg (Polynomial.map Complex.ofRealHom)
+          (brandenDelannoy_recurrence n)
       have hcomplex := delannoyVertical_recurrence n
       apply mul_left_cancel₀
         (show C ((n + 2 : ℕ) : ℂ) ≠ 0 by
@@ -338,21 +322,18 @@ theorem map_delannoyCayley (n : ℕ) :
 
 theorem brandenDelannoy_natDegree (n : ℕ) :
     (brandenDelannoy n).natDegree = n := by
-  have hmap := natDegree_map_eq_of_injective
-    (f := Complex.ofRealHom) Complex.ofReal_injective (brandenDelannoy n)
-  rw [map_brandenDelannoy_eq_delannoyVertical,
-    delannoyVertical_natDegree] at hmap
-  grind
+  rw [← natDegree_map_eq_of_injective
+      (f := Complex.ofRealHom) Complex.ofReal_injective (brandenDelannoy n),
+    map_brandenDelannoy_eq_delannoyVertical, delannoyVertical_natDegree]
 
 theorem delannoyCayley_natDegree (n : ℕ) :
     (delannoyCayley n).natDegree = n := by
-  have hmap := natDegree_map_eq_of_injective
-    (f := Complex.ofRealHom) Complex.ofReal_injective (delannoyCayley n)
-  rw [map_delannoyCayley,
+  rw [← natDegree_map_eq_of_injective
+      (f := Complex.ofRealHom) Complex.ofReal_injective (delannoyCayley n),
+    map_delannoyCayley,
     Polynomial.cayleyTransform_natDegree (delannoyVertical_ne_zero n)
       (delannoyVertical_splits n) (delannoyVertical_natDegree n)
-      (fun _ hr => delannoyVertical_root_re n hr)] at hmap
-  grind
+      (fun _ hr => delannoyVertical_root_re n hr)]
 
 theorem delannoyCayley_coeff_zero (n : ℕ) :
     (delannoyCayley n).coeff 0 = 1 := by

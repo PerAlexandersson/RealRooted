@@ -279,9 +279,7 @@ private lemma eval_approx (c : ℝ) (m : ℕ) (a b : ℝ) (y : ℕ → ℝ) (n :
 private lemma im_eq_zero_of_linear {r : ℝ} {z : ℂ} (h : 1 + (r : ℂ) * z = 0) : z.im = 0 := by
   have h1 : 1 + r * z.re = 0 := by simpa using congrArg Complex.re h
   have h2 : r * z.im = 0 := by simpa using congrArg Complex.im h
-  rcases mul_eq_zero.1 h2 with hr | hz
-  · simp [hr] at h1
-  · exact hz
+  rcases mul_eq_zero.1 h2 with hr | hz <;> simp_all
 
 private lemma im_eq_zero_of_quadratic {r : ℝ} (hr : 0 ≤ r) {z : ℂ}
     (h : 1 + (-(r : ℂ)) * z ^ 2 = 0) : z.im = 0 := by
@@ -292,9 +290,7 @@ private lemma im_eq_zero_of_quadratic {r : ℝ} (hr : 0 ≤ r) {z : ℂ}
   by_contra hz
   have h3 : r * z.re = 0 := by
     have : r * z.re * (2 * z.im) = 0 := by linear_combination h2
-    rcases mul_eq_zero.1 this with h | h
-    · exact h
-    · exact absurd (by linarith : z.im = 0) hz
+    rcases mul_eq_zero.1 this with h | h <;> simp_all
   have h4 : 1 + r * (z.im * z.im) = 0 := by
     linear_combination h1 + z.re * h3
   linarith [mul_nonneg hr (mul_self_nonneg z.im)]

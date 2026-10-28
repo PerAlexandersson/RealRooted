@@ -49,8 +49,7 @@ theorem coeff_polynomialValueEulerNumerator_eq_of_eval_eq {p : ℝ[X]} {c : ℕ 
   have hδ : ∀ t : ℕ, ∑ i ∈ range (p.natDegree + 1),
       (c i - (polynomialValueEulerNumerator p).coeff i) *
         ((t + p.natDegree - i).choose p.natDegree : ℝ) = 0 := by
-    intro t
-    simp_rw [sub_mul]
+    intro t; simp_rw [sub_mul]
     rw [sum_sub_distrib, ← h t, ← eval_nat_eq_sum_eulerNumerator_coeff_mul_choose p t, sub_self]
   have key : ∀ t, t ≤ p.natDegree → c t = (polynomialValueEulerNumerator p).coeff t := by
     intro t
@@ -78,8 +77,7 @@ private theorem vandermonde_range (a b n : ℕ) :
 private theorem sum_choose_mul_choose_mul_choose (A B d2 j : ℕ) (hj : j ≤ d2) :
     ∑ s ∈ range (d2 + 1), B.choose s * s.choose j * A.choose (d2 - s) =
       B.choose j * (A + B - j).choose (d2 - j) := by
-  have hsplit : d2 + 1 = j + (d2 - j + 1) := by lia
-  rw [hsplit, sum_range_add, sum_eq_zero (fun s hs => by
+  rw [show d2 + 1 = j + (d2 - j + 1) by lia, sum_range_add, sum_eq_zero (fun s hs => by
     rw [mem_range] at hs; rw [Nat.choose_eq_zero_of_lt hs]; simp), zero_add]
   have : ∀ x ∈ range (d2 - j + 1), B.choose (j + x) * (j + x).choose j *
       A.choose (d2 - (j + x)) =
@@ -144,9 +142,11 @@ private theorem choose_mul_choose_core (u d1 d2 A B : ℕ) (hAB : A + B = d1 + d
   rw [hL, hR]
 
 /-- The binomial product identity behind the kernel (Brändén–Ferroni–Jochemko, Lemma 2.3). -/
-theorem choose_mul_choose_eq_sum_kern {d₁ d₂ i j : ℕ} (hi : i ≤ d₁) (hj : j ≤ d₂) (t : ℕ) :
+theorem choose_mul_choose_eq_sum_kern {d₁ d₂ i j : ℕ}
+    (hi : i ≤ d₁) (hj : j ≤ d₂) (t : ℕ) :
     (t + d₁ - i).choose d₁ * (t + d₂ - j).choose d₂ =
-      ∑ k ∈ range (d₁ + d₂ + 1), kern d₁ d₂ i j k * (t + (d₁ + d₂) - k).choose (d₁ + d₂) := by
+      ∑ k ∈ range (d₁ + d₂ + 1), kern d₁ d₂ i j k *
+        (t + (d₁ + d₂) - k).choose (d₁ + d₂) := by
   by_cases ht : i ≤ t ∧ j ≤ t
   · obtain ⟨hit, hjt⟩ := ht
     have h1 := choose_mul_choose_core (t - i) d₁ d₂ (d₁ - i + j) (d₂ - j + i) (by lia)
@@ -168,7 +168,8 @@ theorem choose_mul_choose_eq_sum_kern {d₁ d₂ i j : ℕ} (hi : i ≤ d₁) (h
     rw [mem_range] at hs
     unfold kern
     rw [show d₂ + 1 - 1 - s = d₂ - s by lia, show d₂ - (d₂ - s) = s by lia,
-      show t + d₁ - i + (d₂ - s) = t + (d₁ + d₂) - (i + s) by lia, show i + s - i = s by lia]
+      show t + d₁ - i + (d₂ - s) = t + (d₁ + d₂) - (i + s) by lia,
+      show i + s - i = s by lia]
     split_ifs with h
     · rw [Nat.choose_symm_of_eq_add (show d₂ - j + i = (d₂ - s) + (i + s - j) by lia)]
       ring
@@ -244,22 +245,15 @@ theorem coeff_polynomialValueEulerNumerator_mul {p q : ℝ[X]} (hp : p ≠ 0) (h
         _ = _ := by
           rw [hc, mul_sum]
           exact sum_congr rfl fun x _ => by ring
-    rw [sum_congr rfl (fun i hi => sum_congr rfl (h2 i hi))]
-    rw [sum_comm]
-    simp_rw [sum_comm (s := range (q.natDegree + 1))]
-    simp_rw [sum_mul]
+    rw [sum_congr rfl (fun i hi => sum_congr rfl (h2 i hi)), sum_comm]
+    simp_rw [sum_comm (s := range (q.natDegree + 1)), sum_mul]
     exact sum_comm
   · rw [coeff_polynomialValueEulerNumerator_eq_zero_of_natDegree_lt _ hk]
     symm
     refine sum_eq_zero fun i hi => sum_eq_zero fun j hj => ?_
     rw [mem_range] at hi hj
-    have : kern p.natDegree q.natDegree i j k = 0 := by
-      unfold kern
-      split_ifs with h
-      · rw [Nat.choose_eq_zero_of_lt (n := q.natDegree - j + i) (by lia)]
-        simp
-      · rfl
-    rw [this]
+    rw [kern, ite_eq_left ⟨by lia, by lia⟩,
+      Nat.choose_eq_zero_of_lt (n := q.natDegree - j + i) (by lia)]
     simp
 
 end RealRooted.LiuMao
@@ -300,7 +294,8 @@ private theorem diag_lcniz {N : ℕ} {C : ℕ → ℕ → ℝ}
       C r₁ s₁ * C r₂ s₂ ≤ C r₁ s₂ * C r₂ s₁)
     (hrow : ∀ r, r ≤ N → ∀ s, 0 < s → s < N → C r (s - 1) * C r (s + 1) ≤ C r s ^ 2)
     (hcol : ∀ s, s ≤ N → ∀ r, 0 < r → r < N → C (r - 1) s * C (r + 1) s ≤ C r s ^ 2)
-    (hniz : ∀ i j k, i < j → j < k → k ≤ N → C i i ≠ 0 → C k k ≠ 0 → C j j ≠ 0) :
+    (hniz : ∀ i j k, i < j → j < k → k ≤ N → C i i ≠ 0 → C k k ≠ 0 →
+      C j j ≠ 0) :
     LCNIZ N (fun k => C k k) := by
   refine ⟨fun k hk => h0 k k hk hk, ?_, hniz⟩
   intro k hk0 hkN
@@ -321,10 +316,8 @@ private theorem diag_lcniz {N : ℕ} {C : ℕ → ℕ → ℝ}
     by_contra hcon
     push Not at hcon
     rw [← hc] at hcon
-    have ha : C (k - 1) (k - 1) ≠ 0 := by
-      intro h; rw [h, zero_mul] at hcon; simp at hcon
-    have he : C (k + 1) (k + 1) ≠ 0 := by
-      intro h; rw [h, mul_zero] at hcon; simp at hcon
+    have ha : C (k - 1) (k - 1) ≠ 0 := fun h => by simp [h] at hcon
+    have he : C (k + 1) (k + 1) ≠ 0 := fun h => by simp [h] at hcon
     exact hniz (k - 1) k (k + 1) (by lia) (by lia) (by lia) ha he hc.symm
   · have key : C (k - 1) (k - 1) * C (k + 1) (k + 1) * (C k k * C k k) ≤
         (C k k ^ 2) * (C k k * C k k) := by
@@ -339,8 +332,7 @@ private theorem diag_lcniz {N : ℕ} {C : ℕ → ℕ → ℝ}
     exact le_of_mul_le_mul_right key (mul_pos hc hc)
 
 private theorem lcniz_coeff_zero (d : ℕ) : LCNIZ d (0 : ℝ[X]).coeff := by
-  have : ⇑(0 : ℝ[X]).coeff = fun _ => 0 := _root_.funext coeff_zero
-  rw [this]
+  rw [show ⇑(0 : ℝ[X]).coeff = fun _ => 0 from _root_.funext coeff_zero]
   exact ⟨fun _ _ => le_rfl, fun _ _ _ => by simp, fun _ _ _ _ _ _ h _ => absurd rfl h⟩
 
 /-- Kernel form of `W(p q)`: the diagonal of the matrix `C = T_a H T_bᵀ`. -/
@@ -361,7 +353,9 @@ private theorem coeff_polynomialValueEulerNumerator_mul_eq_Cmat {p q : ℝ[X]} (
   have hkern0 : ∀ i j, (k < i ∨ k < j) → kern d1 d2 i j k = 0 := by
     intro i j h; unfold kern; rw [ite_eq_right (by lia)]
   -- restrict the left-hand side to `[0, k]²`
-  have hL : ∑ i ∈ range (d1 + 1), ∑ j ∈ range (d2 + 1), a i * b j * (kern d1 d2 i j k : ℝ) =
+  have hL :
+      ∑ i ∈ range (d1 + 1), ∑ j ∈ range (d2 + 1),
+        a i * b j * (kern d1 d2 i j k : ℝ) =
       ∑ i ∈ range (k + 1), ∑ j ∈ range (k + 1), a i * b j * (kern d1 d2 i j k : ℝ) := by
     have hin : ∀ i, ∑ j ∈ range (d2 + 1), a i * b j * (kern d1 d2 i j k : ℝ) =
         ∑ j ∈ range (k + 1), a i * b j * (kern d1 d2 i j k : ℝ) := by
@@ -371,8 +365,7 @@ private theorem coeff_polynomialValueEulerNumerator_mul_eq_Cmat {p q : ℝ[X]} (
       constructor
       · by_contra h; exact hj (by rw [hb0 j (by lia)]; simp)
       · by_contra h; exact hj (by rw [hkern0 i j (by lia)]; simp)
-    simp only [hin]
-    apply sum_range_eq_sum_range_of_support
+    simp only [hin]; apply sum_range_eq_sum_range_of_support
     intro i hi
     constructor
     · by_contra h; exact hi (sum_eq_zero fun j _ => by rw [ha0 i (by lia)]; simp)
@@ -389,8 +382,7 @@ private theorem coeff_polynomialValueEulerNumerator_mul_eq_Cmat {p q : ℝ[X]} (
       constructor
       · by_contra h; exact hj (by unfold Hk; rw [ite_eq_right (by lia)]; simp)
       · by_contra h; exact hj (by unfold toep; rw [ite_eq_right (show ¬ j ≤ k by lia)]; simp)
-    simp only [hin]
-    apply sum_range_eq_sum_range_of_support
+    simp only [hin]; apply sum_range_eq_sum_range_of_support
     intro i hi
     constructor
     · by_contra h; exact hi (sum_eq_zero fun j _ => by unfold Hk; rw [ite_eq_right (by lia)]; simp)
@@ -399,12 +391,10 @@ private theorem coeff_polynomialValueEulerNumerator_mul_eq_Cmat {p q : ℝ[X]} (
         unfold toep
         rw [ite_eq_right (show ¬ i ≤ k by lia)]
         simp)
-  rw [hL, hR, ← sum_range_reflect]
-  apply sum_congr rfl
+  rw [hL, hR, ← sum_range_reflect]; apply sum_congr rfl
   intro i hi
   rw [mem_range] at hi
-  rw [← sum_range_reflect]
-  apply sum_congr rfl
+  rw [← sum_range_reflect]; apply sum_congr rfl
   intro j hj
   rw [mem_range] at hj
   rw [show k + 1 - 1 - i = k - i by lia, show k + 1 - 1 - j = k - j by lia]
@@ -453,11 +443,10 @@ theorem coeffLCNIZ_polynomialValueEulerNumerator_mul (p q : ℝ[X])
     LCNIZ.glc hp fun k hk => coeff_polynomialValueEulerNumerator_eq_zero_of_natDegree_lt p hk
   have hb : GLC (polynomialValueEulerNumerator q).coeff :=
     LCNIZ.glc hq fun k hk => coeff_polynomialValueEulerNumerator_eq_zero_of_natDegree_lt q hk
-  have e : (polynomialValueEulerNumerator (p * q)).coeff =
-      fun k => Cmat (polynomialValueEulerNumerator p).coeff
-        (polynomialValueEulerNumerator q).coeff p.natDegree q.natDegree k k :=
-    funext (coeff_polynomialValueEulerNumerator_mul_eq_Cmat hp0 hq0)
-  rw [e]
+  rw [show (polynomialValueEulerNumerator (p * q)).coeff =
+    fun k => Cmat (polynomialValueEulerNumerator p).coeff
+      (polynomialValueEulerNumerator q).coeff p.natDegree q.natDegree k k from
+    funext (coeff_polynomialValueEulerNumerator_mul_eq_Cmat hp0 hq0)]
   exact diag_lcniz
     (fun r s _ _ => Cmat_nonneg ha hb _ _ r s)
     (fun r₁ r₂ s₁ s₂ hr hs _ _ => Cmat_rr2 ha hb _ _ hr hs)

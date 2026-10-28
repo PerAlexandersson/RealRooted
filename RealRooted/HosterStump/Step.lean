@@ -434,33 +434,17 @@ theorem IsInterlacingDiagram.of_five {n : ℕ} {T : Finset ℕ}
 theorem IsInterlacingDiagram.step {n : ℕ} {T : Finset ℕ} (hT : 0 ∈ T)
     (ih : IsInterlacingDiagram n (shiftDown T)) : IsInterlacingDiagram (n + 1) T := by
   have h := Lvl.of_diagram ih
-  refine IsInterlacingDiagram.of_five ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_ ?_
-  · intro k hk
-    rw [top_succ]
-    exact h.top_ne hk
-  · intro k hk1 _
-    rw [bot_succ hT]
-    exact h.bot_ne hk1
-  · intro k hk
-    rw [mid_succ hT]
-    exact h.mid_ne hk
-  · intro k hk
-    rw [top_succ, mid_succ hT, bot_succ hT]
-    exact ⟨h.splitsSB le_rfl, h.mid_splits hk, splits_X_mul_of_splits (h.splitsSA hk)⟩
-  · intro i j hij hj
-    rw [top_succ, top_succ]
-    exact h.top_row hij hj
-  · intro i j hij hj
-    rw [mid_succ hT, mid_succ hT]
-    exact h.mid_row hij hj
-  · intro i j hij hj
-    rw [bot_succ hT, bot_succ hT]
-    exact h.bot_row hij hj
-  · intro k _
-    rw [top_succ, bot_succ hT]
-    exact h.col k
-  · rw [top_succ, bot_succ hT]
-    exact h.diag
+  exact IsInterlacingDiagram.of_five
+    (fun _ hk => by simpa only [top_succ] using h.top_ne hk)
+    (fun _ hk _ => by simpa only [bot_succ hT] using h.bot_ne hk)
+    (fun _ hk => by simpa only [mid_succ hT] using h.mid_ne hk)
+    (fun _ hk => by simpa only [top_succ, mid_succ hT, bot_succ hT] using
+      ⟨h.splitsSB le_rfl, h.mid_splits hk, splits_X_mul_of_splits (h.splitsSA hk)⟩)
+    (fun _ _ hij hj => by simpa only [top_succ] using h.top_row hij hj)
+    (fun _ _ hij hj => by simpa only [mid_succ hT] using h.mid_row hij hj)
+    (fun _ _ hij hj => by simpa only [bot_succ hT] using h.bot_row hij hj)
+    (fun k _ => by simpa only [top_succ, bot_succ hT] using h.col k)
+    (by simpa only [top_succ, bot_succ hT] using h.diag)
 
 /-- Hoster--Stump, Theorem 3.3: for `n ≥ 2` the diagrams `D_n([1, n])` and `D_n([1, n - 1])`
 (here `range n` and `range (n - 1)`, with `0`-based positions) are interlacing diagrams. -/
