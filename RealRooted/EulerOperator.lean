@@ -56,7 +56,7 @@ def polarTheta (N : ℕ) (p : ℝ[X]) : ℝ[X] :=
 
 /-- The Euler operator is additive. -/
 theorem theta_add (p q : ℝ[X]) : theta (p + q) = theta p + theta q := by
-  simp [theta, derivative_add, mul_add]
+  simp [theta, mul_add]
 
 /-- The Euler operator commutes with scalar multiplication. -/
 theorem theta_C_mul (a : ℝ) (p : ℝ[X]) : theta (C a * p) = C a * theta p := by
@@ -65,12 +65,7 @@ theorem theta_C_mul (a : ℝ) (p : ℝ[X]) : theta (C a * p) = C a * theta p := 
 
 @[simp] theorem coeff_theta (p : ℝ[X]) (n : ℕ) :
     (theta p).coeff n = (n : ℝ) * p.coeff n := by
-  cases n with
-  | zero =>
-      simp [theta]
-  | succ n =>
-      rw [theta, coeff_X_mul, coeff_derivative]
-      grind
+  cases n <;> simp [theta, coeff_X_mul, coeff_derivative, mul_comm]
 
 @[simp] theorem coeff_thetaPlusOne (p : ℝ[X]) (n : ℕ) :
     (thetaPlusOne p).coeff n = ((n : ℝ) + 1) * p.coeff n := by
@@ -95,11 +90,7 @@ theorem natDegree_thetaPlusOne_le (p : ℝ[X]) :
 private lemma derivative_X_add_one_pow (m : ℕ) :
     ((X + 1 : ℝ[X]) ^ m).derivative =
       C (m : ℝ) * (X + 1) ^ (m - 1) := by
-  cases m with
-  | zero => simp
-  | succ m =>
-      rw [derivative_pow]
-      simp
+  cases m <;> simp [derivative_pow]
 
 /-- The Euler operator on a product of a monomial and a shifted power. -/
 theorem theta_X_pow_mul_X_add_one_pow (i m : ℕ) :
@@ -110,9 +101,7 @@ theorem theta_X_pow_mul_X_add_one_pow (i m : ℕ) :
   rw [derivative_mul, derivative_pow, derivative_X,
     derivative_X_add_one_pow]
   simp only [mul_one]
-  cases i with
-  | zero => grind
-  | succ i => grind
+  cases i <;> grind
 
 /-- The operator `theta + 1` on a product of a monomial and a shifted power. -/
 theorem thetaPlusOne_X_pow_mul_X_add_one_pow (i m : ℕ) :
@@ -125,14 +114,7 @@ theorem thetaPlusOne_X_pow_mul_X_add_one_pow (i m : ℕ) :
 
 theorem thetaPlusOne_eq_derivative_X_mul (p : ℝ[X]) :
     thetaPlusOne p = (X * p).derivative := by
-  ext n
-  rw [coeff_thetaPlusOne, coeff_derivative]
-  cases n with
-  | zero =>
-      simp
-  | succ n =>
-      simp [Nat.cast_add, Nat.cast_one]
-      ring
+  simp [thetaPlusOne, theta, derivative_mul, add_comm]
 
 @[simp] theorem iterateThetaPlusOne_zero (p : ℝ[X]) :
     iterateThetaPlusOne 0 p = p :=
@@ -200,7 +182,8 @@ theorem theta_preserves_pf {p : ℝ[X]} (hp : IsPFPolynomial p) :
 PF cone. -/
 theorem thetaPreservesRealRootedOrZero {p : ℝ[X]} (hp : IsPFPolynomial p) :
     (theta p = 0 ∨ (theta p).Splits) ∧ ∀ r ∈ (theta p).roots, r ≤ 0 :=
-  ⟨(theta_preserves_pf hp).eq_zero_or_splits, (theta_preserves_pf hp).roots_nonpos⟩
+  let h := theta_preserves_pf hp
+  ⟨h.eq_zero_or_splits, h.roots_nonpos⟩
 
 /-- `theta` preserves weak interlacing. This proposition is proved by
 `Interl.theta`. -/

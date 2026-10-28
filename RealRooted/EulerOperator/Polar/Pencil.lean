@@ -98,25 +98,19 @@ theorem strictInterl_derivative_polarTheta_boundary
         C (1 - s) * polarTheta M p]
     have hcommon : HasCommonInterleaver fs := by
       refine ⟨p, ?_⟩
-      intro q hq
-      simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hq
-      rcases hq with rfl | rfl | rfl
+      simp only [fs, List.mem_cons, List.not_mem_nil, or_false]
+      rintro q (rfl | rfl | rfl)
       · exact StrictInterl.C_mul_left (StrictInterl.refl hp0 hpsplits) (by positivity)
       · exact StrictInterl.C_mul_left
           ((derivative_interlaces_of_natDegree_ne_zero hpsplits (by lia)).toStrictInterl) ht.ne'
       · exact StrictInterl.C_mul_left hpolar_p (by linarith)
     have hpos : ∀ q ∈ fs, HasPosLeadingCoeff q := by
-      intro q hq
-      simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hq
-      rcases hq with rfl | rfl | rfl
-      · exact hasPosLeadingCoeff_C_mul (by positivity)
-          (hpnn.pos_leadingCoeff hp0)
-      · exact hasPosLeadingCoeff_C_mul ht
-          (hdernn.pos_leadingCoeff hder0)
-      · exact hasPosLeadingCoeff_C_mul (by linarith)
-          (hpolar_nn.pos_leadingCoeff hpolar0)
-    have hsum :=
-      isRealRooted_sum_of_commonInterleaver hcommon hpos (by simp [fs])
+      simp only [fs, List.mem_cons, List.not_mem_nil, or_false]
+      rintro q (rfl | rfl | rfl)
+      · exact hasPosLeadingCoeff_C_mul (by positivity) (hpnn.pos_leadingCoeff hp0)
+      · exact hasPosLeadingCoeff_C_mul ht (hdernn.pos_leadingCoeff hder0)
+      · exact hasPosLeadingCoeff_C_mul (by linarith) (hpolar_nn.pos_leadingCoeff hpolar0)
+    have hsum := isRealRooted_sum_of_commonInterleaver hcommon hpos (by simp [fs])
     have hsum_eq :
         fs.sum = (C s * X + C t) * p.derivative + polarTheta M p := by
       simp only [fs, List.sum_cons, List.sum_nil, add_zero]
@@ -126,22 +120,17 @@ theorem strictInterl_derivative_polarTheta_boundary
   · set fs : List ℝ[X] := [C (M : ℝ) * p, C t * p.derivative]
     have hcommon : HasCommonInterleaver fs := by
       refine ⟨p, ?_⟩
-      intro q hq
-      simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hq
-      rcases hq with rfl | rfl
+      simp only [fs, List.mem_cons, List.not_mem_nil, or_false]
+      rintro q (rfl | rfl)
       · exact StrictInterl.C_mul_left (StrictInterl.refl hp0 hpsplits) (by positivity)
       · exact StrictInterl.C_mul_left
           ((derivative_interlaces_of_natDegree_ne_zero hpsplits (by lia)).toStrictInterl) ht.ne'
     have hpos : ∀ q ∈ fs, HasPosLeadingCoeff q := by
-      intro q hq
-      simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hq
-      rcases hq with rfl | rfl
-      · exact hasPosLeadingCoeff_C_mul (by positivity)
-          (hpnn.pos_leadingCoeff hp0)
-      · exact hasPosLeadingCoeff_C_mul ht
-          (hdernn.pos_leadingCoeff hder0)
-    have hsum :=
-      isRealRooted_sum_of_commonInterleaver hcommon hpos (by simp [fs])
+      simp only [fs, List.mem_cons, List.not_mem_nil, or_false]
+      rintro q (rfl | rfl)
+      · exact hasPosLeadingCoeff_C_mul (by positivity) (hpnn.pos_leadingCoeff hp0)
+      · exact hasPosLeadingCoeff_C_mul ht (hdernn.pos_leadingCoeff hder0)
+    have hsum := isRealRooted_sum_of_commonInterleaver hcommon hpos (by simp [fs])
     have hsum_eq :
         fs.sum = (C (1 : ℝ) * X + C t) * p.derivative + polarTheta M p := by
       simp only [fs, List.sum_cons, List.sum_nil, add_zero]
@@ -152,24 +141,19 @@ theorem strictInterl_derivative_polarTheta_boundary
       [C (s - 1) * theta p, C t * p.derivative, C (M : ℝ) * p]
     have hcommon : HasCommonInterleaver fs := by
       refine ⟨theta p, ?_⟩
-      intro q hq
-      simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hq
-      rcases hq with rfl | rfl | rfl
+      simp only [fs, List.mem_cons, List.not_mem_nil, or_false]
+      rintro q (rfl | rfl | rfl)
       · exact StrictInterl.C_mul_left (StrictInterl.refl htheta0 htheta_splits) (by linarith)
       · exact StrictInterl.C_mul_left hder_theta ht.ne'
       · exact StrictInterl.C_mul_left hp_theta (by positivity)
     have hpos : ∀ q ∈ fs, HasPosLeadingCoeff q := by
-      intro q hq
-      simp only [fs, List.mem_cons, List.not_mem_nil, or_false] at hq
-      rcases hq with rfl | rfl | rfl
+      simp only [fs, List.mem_cons, List.not_mem_nil, or_false]
+      rintro q (rfl | rfl | rfl)
       · exact hasPosLeadingCoeff_C_mul (by linarith)
           (htheta_pf.hasNonnegCoeffs.pos_leadingCoeff htheta0)
-      · exact hasPosLeadingCoeff_C_mul ht
-          (hdernn.pos_leadingCoeff hder0)
-      · exact hasPosLeadingCoeff_C_mul (by positivity)
-          (hpnn.pos_leadingCoeff hp0)
-    have hsum :=
-      isRealRooted_sum_of_commonInterleaver hcommon hpos (by simp [fs])
+      · exact hasPosLeadingCoeff_C_mul ht (hdernn.pos_leadingCoeff hder0)
+      · exact hasPosLeadingCoeff_C_mul (by positivity) (hpnn.pos_leadingCoeff hp0)
+    have hsum := isRealRooted_sum_of_commonInterleaver hcommon hpos (by simp [fs])
     have hsum_eq :
         fs.sum = (C s * X + C t) * p.derivative + polarTheta M p := by
       simp only [fs, List.sum_cons, List.sum_nil, add_zero]
@@ -183,33 +167,8 @@ theorem strictInterl_derivative_polarTheta {M : ℕ} {p : ℝ[X]}
     (hp : IsPFPolynomial p) (hpdeg : 2 ≤ p.natDegree)
     (hpM : p.natDegree < M) (hpolar_p : StrictInterl (polarTheta M p) p) :
     StrictInterl p.derivative (polarTheta M p) := by
-  have hp0 : p ≠ 0 := by
-    intro hzero
-    simp_all
-  have hpolar0 : polarTheta M p ≠ 0 := by
-    have hfactor : ((M : ℝ) - (p.natDegree : ℝ)) ≠ 0 := by
-      have : (p.natDegree : ℝ) < M := by exact_mod_cast hpM
-      positivity
-    have htop : ((M : ℝ) + (-1 : ℝ) * (p.natDegree : ℝ)) * p.leadingCoeff ≠ 0 := by
-      rw [show (M : ℝ) + (-1 : ℝ) * (p.natDegree : ℝ) =
-        (M : ℝ) - (p.natDegree : ℝ) by ring]
-      exact mul_ne_zero hfactor (p.leadingCoeff_ne_zero.mpr hp0)
-    have hstep := Polynomial.natDegree_and_leadingCoeff_C_mul_add_affine_mul_derivative
-      p (M : ℝ) 0 (-1) htop
-    rw [show polarTheta M p =
-      C (M : ℝ) * p + (C 0 + C (-1 : ℝ) * X) * p.derivative by
-        unfold polarTheta theta
-        simp only [map_zero, map_neg, map_one]
-        ring]
-    intro hzero
-    have hlead :
-        (C (M : ℝ) * p + (C 0 + C (-1 : ℝ) * X) * p.derivative).leadingCoeff = 0 := by
-      rw [hzero]
-      simp
-    rw [hstep.2] at hlead
-    exact htop hlead
   exact strictInterl_derivative_polarTheta_boundary hp hpdeg (le_of_lt hpM)
-    hpolar0 hpolar_p
+    hpolar_p.1.1 hpolar_p
 
 /-- The same boundary comparison with zero-aware interlacing. -/
 theorem interl_derivative_polarTheta_boundary {M : ℕ} {p : ℝ[X]}

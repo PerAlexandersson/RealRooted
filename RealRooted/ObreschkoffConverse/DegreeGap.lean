@@ -74,11 +74,8 @@ lemma natDegree_iterate_derivative_eq_sub
     (derivative^[k] p).natDegree = p.natDegree - k := by
   apply le_antisymm (natDegree_iterate_derivative p k)
   apply le_natDegree_of_ne_zero
-  have hcoeff :
-      (derivative^[k] p).coeff (p.natDegree - k) ≠ 0 := by
-    rw [coeff_iterate_derivative, Nat.sub_add_cancel hk, nsmul_eq_mul, coeff_natDegree]
-    simp_all
-  lia
+  rw [coeff_iterate_derivative, Nat.sub_add_cancel hk, nsmul_eq_mul, coeff_natDegree]
+  simp_all
 
 /-- Iterated derivatives stay nonzero as long as we do not differentiate past
 the degree. -/
@@ -118,11 +115,11 @@ lemma exists_rightmost_derivative_root_with_eval_nonpos
         StrictMonoOn (fun x => p.eval x) (Set.Ici c) :=
       strictMonoOn_eval_Ici_of_derivative_roots_le hp'.1 hp'.2 hp'_pos hc_top
     obtain ⟨r, hr_root, hcr_le⟩ := exists_root_ge_of_derivative_root hp_splits hdeg hc_root
-    by_cases hcr : c = r
-    · simp_all
-    · have hcr_lt : c < r := lt_of_le_of_ne hcr_le hcr
-      have hlt_eval : p.eval c < p.eval r := hmono (by simp) (by simp_all) hcr_lt
-      have : p.eval r = 0 := by simp_all
+    rcases hcr_le.eq_or_lt with hcr | hcr
+    · subst r
+      simp_all
+    · have := hmono (by simp) (by simp_all) hcr
+      simp_all
       linarith
   grind
 
@@ -146,21 +143,17 @@ lemma exists_pos_shift_not_isRealRooted_of_isRealRooted_of_natDegree_ge_two
     (derivative_interlaces_of_natDegree_ne_zero hq.2 (by lia)).2.1
   have hmono :
       StrictMonoOn (fun x => (C t + p).eval x) (Set.Ici c) := by
-    have hder_eq : (C t + p).derivative = p.derivative := by simp
     refine strictMonoOn_eval_Ici_of_derivative_roots_le hq'_rr.1 hq'_rr.2 ?_ ?_
-    · simpa [hder_eq] using hp_pos.derivative (by lia)
+    · simpa using hp_pos.derivative (by lia)
     · simp_all
-  have hqc_pos : 0 < (C t + p).eval c := by
-    have : (C t + p).eval c = 1 := by simp [t]
-    linarith
-  obtain ⟨r, hr_root, hcr_le⟩ := exists_root_ge_of_derivative_root hq.2 hqdeg (by
-    simpa using hc_root)
-  by_cases hcr : c = r
-  · simp_all
-  · have hcr_lt : c < r := lt_of_le_of_ne hcr_le hcr
-    have hlt_eval :
-        (C t + p).eval c < (C t + p).eval r := hmono (by simp) (by simp_all) hcr_lt
-    have : (C t + p).eval r = 0 := by simp_all
+  have hqc_pos : 0 < (C t + p).eval c := by simp [t]
+  obtain ⟨r, hr_root, hcr_le⟩ :=
+    exists_root_ge_of_derivative_root hq.2 hqdeg (by simpa using hc_root)
+  rcases hcr_le.eq_or_lt with hcr | hcr
+  · subst r
+    simp_all
+  · have := hmono (by simp) (by simp_all) hcr
+    simp_all
     linarith
 
 /-- For an odd-degree positive-leading real-rooted polynomial, a sufficiently
@@ -227,9 +220,7 @@ lemma exists_pos_shift_down_not_isRealRooted_of_isRealRooted_of_natDegree_ge_thr
     unfold HasPosLeadingCoeff at hp_pos ⊢
     rw [leadingCoeff_sub_of_degree_lt (degree_lt_degree hC_deg)]
     exact hp_pos
-  have hshift_four : 4 ≤ (p - C t).natDegree := by
-    rw [hshift_deg]
-    exact hfour
+  have hshift_four : 4 ≤ (p - C t).natDegree := by simpa [hshift_deg] using hfour
   obtain ⟨c, hc_derivative, hc_nonneg⟩ :=
     exists_derivative_root_eval_nonneg_of_four_le_natDegree
       hshift.2 hshift_pos hshift_four
@@ -297,16 +288,13 @@ private theorem not_allComboRealRooted_const_left_of_natDegree_ge_two
       not_allComboRealRooted_const_left_of_natDegree_ge_two_of_pos
         hc hp_splits hp_pos hdeg
   · intro hall
-    have hneg_rr : ((-p) ≠ 0 ∧ (-p).Splits) := by simp_all
     have hneg_pos : HasPosLeadingCoeff (-p) := by
       have hne0 : p.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hp_ne
       exact hasPosLeadingCoeff_neg (by grind)
-    have hall_neg : AllComboRealRooted (C c) (-p) := by
-      simpa using
-        (hall.C_mul_right (c := (-1 : ℝ)))
     exact
       not_allComboRealRooted_const_left_of_natDegree_ge_two_of_pos
-        hc hneg_rr.2 hneg_pos (by simp_all) hall_neg
+        hc hp_splits.neg hneg_pos (by simp_all)
+        (by simpa using hall.C_mul_right (c := (-1 : ℝ)))
 
 /-- A degree gap of at least `2` is incompatible with `AllComboRealRooted`.
 
@@ -333,8 +321,6 @@ private theorem not_degree_gap_ge_two_of_allComboRealRooted
     exact iterate_derivative_ne_zero_of_le_natDegree hf0 (le_rfl : f.natDegree ≤ f.natDegree)
   have hfN_C : fN = C (fN.coeff 0) := eq_C_of_natDegree_eq_zero hfN_deg
   have hfN_coeff_ne : fN.coeff 0 ≠ 0 := by grind
-  set cf : ℝ := fN.coeff 0
-  have hfN_C' : fN = C cf := by lia
   have hgN_deg : gN.natDegree = g.natDegree - n := by
     dsimp [gN, n]
     exact natDegree_iterate_derivative_eq_sub hg0 (by lia)
@@ -342,12 +328,10 @@ private theorem not_degree_gap_ge_two_of_allComboRealRooted
   have hgN_ne : gN ≠ 0 := by
     dsimp [gN, n]
     exact iterate_derivative_ne_zero_of_le_natDegree hg0 (by lia)
-  have hgN_rr : (gN ≠ 0 ∧ gN.Splits) :=
-    ⟨hgN_ne, by simpa using hallN 0 1⟩
+  rw [hfN_C] at hallN
   exact
     not_allComboRealRooted_const_left_of_natDegree_ge_two
-      (c := cf) (p := gN) (by lia) hgN_rr.1 hgN_rr.2 hgN_deg_ge2
-      (by lia)
+      hfN_coeff_ne hgN_ne (by simpa using hallN 0 1) hgN_deg_ge2 hallN
 
 /-- Degree control for the Obreschkoff converse.
 

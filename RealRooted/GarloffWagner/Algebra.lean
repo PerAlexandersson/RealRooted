@@ -36,30 +36,25 @@ def factorialHadamardProduct (p q : ℝ[X]) : ℝ[X] :=
 
 theorem factorialHadamardProduct_comm (p q : ℝ[X]) :
     factorialHadamardProduct p q = factorialHadamardProduct q p := by
-  ext k
-  simp [mul_comm, mul_left_comm]
+  ext k; simp [mul_comm, mul_left_comm]
 
 theorem factorialHadamardProduct_assoc (p q r : ℝ[X]) :
     factorialHadamardProduct (factorialHadamardProduct p q) r =
       factorialHadamardProduct p (factorialHadamardProduct q r) := by
-  ext k
-  simp [mul_left_comm, mul_assoc]
+  ext k; simp [mul_left_comm, mul_assoc]
 
 @[simp] theorem factorialHadamardProduct_zero_left (p : ℝ[X]) :
     factorialHadamardProduct 0 p = 0 := by
-  ext k
-  simp
+  ext k; simp
 
 @[simp] theorem factorialHadamardProduct_zero_right (p : ℝ[X]) :
     factorialHadamardProduct p 0 = 0 := by
-  ext k
-  simp
+  ext k; simp
 
 theorem factorialHadamardProduct_add_left (p q r : ℝ[X]) :
     factorialHadamardProduct (p + q) r =
       factorialHadamardProduct p r + factorialHadamardProduct q r := by
-  ext k
-  simp [mul_add, add_mul]
+  ext k; simp [mul_add, add_mul]
 
 theorem factorialHadamardProduct_add_right (p q r : ℝ[X]) :
     factorialHadamardProduct p (q + r) =
@@ -69,8 +64,7 @@ theorem factorialHadamardProduct_add_right (p q r : ℝ[X]) :
 
 theorem factorialHadamardProduct_C_mul_left (a : ℝ) (p q : ℝ[X]) :
     factorialHadamardProduct (C a * p) q = C a * factorialHadamardProduct p q := by
-  ext k
-  simp [mul_comm, mul_left_comm]
+  ext k; simp [mul_comm, mul_left_comm]
 
 theorem factorialHadamardProduct_C_mul_right (a : ℝ) (p q : ℝ[X]) :
     factorialHadamardProduct p (C a * q) = C a * factorialHadamardProduct p q := by
@@ -104,8 +98,7 @@ def divFactorial (p : ℝ[X]) : ℝ[X] :=
 
 theorem divFactorial_zero :
     divFactorial (0 : ℝ[X]) = 0 := by
-  ext k
-  simp
+  ext k; simp
 
 theorem divFactorial_add (p q : ℝ[X]) :
     divFactorial (p + q) = divFactorial p + divFactorial q := by
@@ -127,15 +120,8 @@ theorem divFactorial_C_mul (a : ℝ) (p : ℝ[X]) :
 
 theorem divFactorial_eq_zero_iff (p : ℝ[X]) :
     divFactorial p = 0 ↔ p = 0 := by
-  constructor
-  · intro h
-    ext k
-    have hk := congrArg (fun q : ℝ[X] => q.coeff k) h
-    rw [coeff_divFactorial] at hk
-    have hfact : (Nat.factorial k : ℝ) ≠ 0 := by positivity
-    exact (mul_eq_zero.mp hk).resolve_left (inv_ne_zero hfact)
-  · intro h
-    rw [h, divFactorial_zero]
+  simp only [Polynomial.ext_iff, coeff_divFactorial, coeff_zero, mul_eq_zero,
+    inv_eq_zero, Nat.cast_eq_zero, Nat.factorial_ne_zero, false_or]
 
 theorem divFactorial_ne_zero_iff (p : ℝ[X]) :
     divFactorial p ≠ 0 ↔ p ≠ 0 := by
@@ -227,11 +213,9 @@ theorem antiderivative_eq_zero_iff (p : ℝ[X]) :
     antiderivative p = 0 ↔ p = 0 := by
   constructor
   · intro h
-    calc
-      p = derivative (antiderivative p) := (derivative_antiderivative p).symm
-      _ = 0 := by rw [h, derivative_zero]
-  · intro h
-    rw [h, antiderivative_zero]
+    simpa [h] using (derivative_antiderivative p).symm
+  · rintro rfl
+    exact antiderivative_zero
 
 theorem antiderivative_ne_zero_iff (p : ℝ[X]) :
     antiderivative p ≠ 0 ↔ p ≠ 0 := by
@@ -262,11 +246,7 @@ theorem leadingCoeff_antiderivative {p : ℝ[X]} (hp : p ≠ 0) :
 theorem HasPosLeadingCoeff.antiderivative {p : ℝ[X]}
     (hp : HasPosLeadingCoeff p) :
     HasPosLeadingCoeff (antiderivative p) := by
-  have hp0 : p ≠ 0 := by
-    intro h
-    rw [h, HasPosLeadingCoeff, leadingCoeff_zero] at hp
-    linarith
-  rw [HasPosLeadingCoeff, leadingCoeff_antiderivative hp0]
+  rw [HasPosLeadingCoeff, leadingCoeff_antiderivative hp.ne_zero]
   rw [HasPosLeadingCoeff] at hp
   exact mul_pos (inv_pos.mpr (by positivity)) hp
 
@@ -275,8 +255,7 @@ theorem HasNonnegCoeffs.antiderivative {p : ℝ[X]}
     HasNonnegCoeffs (antiderivative p) := by
   intro n
   cases n with
-  | zero =>
-      simp
+  | zero => simp
   | succ n =>
       rw [coeff_antiderivative_succ]
       exact mul_nonneg (by positivity) (hp n)
