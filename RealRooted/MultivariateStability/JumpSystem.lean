@@ -740,6 +740,133 @@ theorem not_stable_two_term {F : MvPolynomial (Fin n) ℝ} (hF : Stable F) (h0 :
   have hκ' : (κ : ℂ) ≠ 0 := by exact_mod_cast hκ
   push_cast; field_simp; simp
 
+/-- Choose a support exponent of minimal outside-to-inside slope, breaking ties by height. -/
+private lemma exists_minimal_support_slope {q : MvPolynomial (Fin n) ℝ} (i : Fin n)
+    (b : (Fin n →₀ ℕ) → ℕ) (hγ : ∃ γ ∈ q.support, 1 ≤ γ i) :
+    ∃ γs ∈ q.support, 1 ≤ γs i ∧ ∀ γ ∈ q.support, 1 ≤ γ i →
+      b γs * γ i ≤ b γ * γs i ∧
+        (b γs * γ i = b γ * γs i → γs i ≤ γ i) := by
+  classical
+  let Cset := q.support.filter (fun γ ↦ 1 ≤ γ i)
+  have hCne : Cset.Nonempty := by
+    obtain ⟨γ, hγq, hγi⟩ := hγ
+    exact ⟨γ, Finset.mem_filter.mpr ⟨hγq, hγi⟩⟩
+  let f : (Fin n →₀ ℕ) → ℚ := fun γ ↦ (b γ : ℚ) / γ i
+  obtain ⟨γ1, hγ1C, hγ1min⟩ := Finset.exists_min_image Cset f hCne
+  let C' := Cset.filter (fun γ ↦ f γ = f γ1)
+  have hC'ne : C'.Nonempty := ⟨γ1, Finset.mem_filter.mpr ⟨hγ1C, rfl⟩⟩
+  obtain ⟨γs, hγsC', hγsmin⟩ := Finset.exists_min_image C' (fun γ ↦ γ i) hC'ne
+  obtain ⟨hγsC, hγsf⟩ := Finset.mem_filter.mp hγsC'
+  obtain ⟨hγsq, hγsi⟩ := Finset.mem_filter.mp hγsC
+  refine ⟨γs, hγsq, hγsi, ?_⟩
+  intro γ hγq hγi
+  have hγC : γ ∈ Cset := Finset.mem_filter.mpr ⟨hγq, hγi⟩
+  have hle : f γs ≤ f γ := hγsf ▸ hγ1min γ hγC
+  have hpos : (0 : ℚ) < γ i := by exact_mod_cast hγi
+  have hposs : (0 : ℚ) < γs i := by exact_mod_cast hγsi
+  change (b γs : ℚ) / γs i ≤ (b γ : ℚ) / γ i at hle
+  rw [div_le_div_iff₀ hposs hpos] at hle
+  refine ⟨by exact_mod_cast hle, fun heq ↦ ?_⟩
+  apply hγsmin γ
+  refine Finset.mem_filter.mpr ⟨hγC, ?_⟩
+  rw [← hγsf]
+  change (b γ : ℚ) / γ i = (b γs : ℚ) / γs i
+  rw [div_eq_div_iff hpos.ne' hposs.ne']
+  exact_mod_cast heq.symm
+
+/-- A weight-zero truncated exponent is zero or has the minimizer's two degree statistics. -/
+private lemma eq_zero_or_eq_stats_of_weight_eq_zero
+    (i : Fin n) (b : (Fin n →₀ ℕ) → ℕ) {γ γs : Fin n →₀ ℕ}
+    (hγi : γ i ≤ γs i) (hγsi : 1 ≤ γs i)
+    (hle_b : ∀ j, j ≠ i → γ j ≤ b γ)
+    (hslope : 1 ≤ γ i → b γs * γ i = b γ * γs i → γs i ≤ γ i)
+    (hweight : (γs i : ℤ) * b γ - b γs * γ i = 0) :
+    γ = 0 ∨ (γ i = γs i ∧ b γ = b γs) := by
+  classical
+  rcases Nat.eq_zero_or_pos (γ i) with hzero | hpos
+  · left
+    rw [hzero] at hweight
+    have hbzero : b γ = 0 := by
+      have hmul : (γs i : ℤ) * b γ = 0 := by simpa using hweight
+      rcases mul_eq_zero.mp hmul with h | h
+      · lia
+      · exact_mod_cast h
+    ext j
+    by_cases hj : j = i
+    · subst j
+      simpa using hzero
+    · have := hle_b j hj
+      simp only [Finsupp.coe_zero, Pi.zero_apply]
+      lia
+  · right
+    have heq : b γs * γ i = b γ * γs i := by
+      have : (b γs : ℤ) * γ i = b γ * γs i := by linarith
+      exact_mod_cast this
+    have hγeq : γ i = γs i := le_antisymm hγi (hslope hpos heq)
+    refine ⟨hγeq, ?_⟩
+    rw [hγeq] at heq
+    exact (Nat.eq_of_mul_eq_mul_right hγsi heq).symm
+
+/-- An exponent of total degree below three and positive in one coordinate has a basic shape. -/
+private lemma eq_single_or_double_or_pair_of_degree_lt_three
+    (i : Fin n) {γ : Fin n →₀ ℕ} (hγi : 1 ≤ γ i)
+    (hdeg : γ i + ∑ j ∈ Finset.univ.erase i, γ j < 3) :
+    γ = Finsupp.single i 1 ∨ γ = Finsupp.single i 2 ∨
+      ∃ j, j ≠ i ∧ γ = Finsupp.single i 1 + Finsupp.single j 1 := by
+  classical
+  let b := ∑ j ∈ Finset.univ.erase i, γ j
+  have hle_b : ∀ j, j ≠ i → γ j ≤ b := fun j hj ↦
+    Finset.single_le_sum (f := fun j ↦ γ j) (fun _ _ ↦ Nat.zero_le _)
+      (Finset.mem_erase.mpr ⟨hj, Finset.mem_univ j⟩)
+  rcases Nat.lt_or_ge b 1 with hb0 | hb1
+  · have hz : ∀ j, j ≠ i → γ j = 0 := fun j hj ↦ by
+      have := hle_b j hj
+      lia
+    have hi : γ i = 1 ∨ γ i = 2 := by dsimp [b] at hb0; lia
+    have heq : γ = Finsupp.single i (γ i) := by
+      ext j
+      by_cases hj : j = i
+      · subst j
+        simp
+      · simp [Finsupp.single_eq_of_ne hj, hz j hj]
+    rcases hi with hi | hi
+    · left
+      simpa only [hi] using heq
+    · right; left
+      simpa only [hi] using heq
+  · have hi : γ i = 1 := by dsimp [b] at hb1; lia
+    have hb : b = 1 := by
+      change γ i + b < 3 at hdeg
+      lia
+    right; right
+    have hb0 : b ≠ 0 := by lia
+    have hne : ∑ j ∈ Finset.univ.erase i, γ j ≠ 0 := by simpa [b] using hb0
+    obtain ⟨j, hj, hγj⟩ := Finset.exists_ne_zero_of_sum_ne_zero hne
+    have hji : j ≠ i := Finset.ne_of_mem_erase hj
+    refine ⟨j, hji, ?_⟩
+    have hγj1 : γ j = 1 := by have := hle_b j hji; lia
+    have hothers : ∀ k, k ≠ i → k ≠ j → γ k = 0 := by
+      intro k hki hkj
+      have hsub : ({j, k} : Finset (Fin n)) ⊆ Finset.univ.erase i := by
+        intro x hx
+        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+        rcases hx with rfl | rfl
+        · exact Finset.mem_erase.mpr ⟨hji, Finset.mem_univ _⟩
+        · exact Finset.mem_erase.mpr ⟨hki, Finset.mem_univ _⟩
+      have hle := Finset.sum_le_sum_of_subset (f := fun j ↦ γ j) hsub
+      rw [Finset.sum_pair (Ne.symm hkj)] at hle
+      change γ j + γ k ≤ b at hle
+      lia
+    ext k
+    by_cases hk : k = i
+    · subst k
+      simp [Finsupp.single_eq_of_ne hji.symm, hi]
+    · by_cases hkj : k = j
+      · subst k
+        simp [Finsupp.single_eq_of_ne hk, hγj1]
+      · simp [Finsupp.single_eq_of_ne hk, Finsupp.single_eq_of_ne hkj,
+          hothers k hk hkj]
+
 theorem base_case {q : MvPolynomial (Fin n) ℝ} (hq : Stable q) (i : Fin n)
     (h0 : (0 : Fin n →₀ ℕ) ∈ q.support) (hγ : ∃ γ ∈ q.support, 1 ≤ γ i) :
     ∃ γ ∈ q.support, γ = Finsupp.single i 1 ∨ γ = Finsupp.single i 2 ∨
@@ -754,30 +881,7 @@ theorem base_case {q : MvPolynomial (Fin n) ℝ} (hq : Stable q) (i : Fin n)
     rw [hb]
     exact Finset.single_le_sum (f := fun j => γ j) (fun _ _ => Nat.zero_le _)
       (Finset.mem_erase.mpr ⟨hj, Finset.mem_univ j⟩)
-  set Cset := q.support.filter (fun γ => 1 ≤ γ i) with hCset
-  have hCne : Cset.Nonempty := by
-    obtain ⟨γ, hγ, hγi⟩ := hγ; exact ⟨γ, Finset.mem_filter.mpr ⟨hγ, hγi⟩⟩
-  obtain ⟨f, hf⟩ : ∃ f : (Fin n →₀ ℕ) → ℚ,
-      ∀ γ, f γ = (b γ : ℚ) / γ i := ⟨_, fun _ => rfl⟩
-  obtain ⟨γ1, hγ1C, hγ1min⟩ := Finset.exists_min_image Cset f hCne
-  set C' := Cset.filter (fun γ => f γ = f γ1) with hC'
-  have hC'ne : C'.Nonempty := ⟨γ1, Finset.mem_filter.mpr ⟨hγ1C, rfl⟩⟩
-  obtain ⟨γs, hγsC', hγsmin⟩ := Finset.exists_min_image C' (fun γ => γ i) hC'ne
-  obtain ⟨hγsC, hγsf⟩ := Finset.mem_filter.mp hγsC'
-  obtain ⟨hγsq, hγsi⟩ := Finset.mem_filter.mp hγsC
-  -- key inequality: slopes are at least `b γs / γs i`, with ties only for larger `γ i`
-  have hslope : ∀ γ ∈ q.support, 1 ≤ γ i → b γs * γ i ≤ b γ * γs i ∧
-      (b γs * γ i = b γ * γs i → γs i ≤ γ i) := by
-    intro γ hγ hγi; have hγC : γ ∈ Cset := Finset.mem_filter.mpr ⟨hγ, hγi⟩
-    have h1 : f γs ≤ f γ := hγsf ▸ hγ1min γ hγC
-    have hpos1 : (0 : ℚ) < γ i := by exact_mod_cast hγi
-    have hpos2 : (0 : ℚ) < γs i := by exact_mod_cast hγsi
-    rw [hf, hf, div_le_div_iff₀ hpos2 hpos1] at h1
-    refine ⟨by exact_mod_cast h1, fun heq => ?_⟩
-    have hfeq : f γ = f γ1 := by
-      rw [← hγsf, hf, hf, div_eq_div_iff hpos1.ne' hpos2.ne']
-      exact_mod_cast heq.symm
-    exact hγsmin γ (Finset.mem_filter.mpr ⟨hγC, hfeq⟩)
+  obtain ⟨γs, hγsq, hγsi, hslope⟩ := exists_minimal_support_slope i b hγ
   -- truncate in coordinate `i`
   obtain ⟨q2, hq2, hq2s⟩ := exists_trunc hq i (γs i) ⟨0, h0, Nat.zero_le _⟩
   set w : Fin n → ℤ := fun j => if j = i then -(b γs : ℤ) else (γs i : ℤ) with hw
@@ -799,31 +903,10 @@ theorem base_case {q : MvPolynomial (Fin n) ℝ} (hq : Stable q) (i : Fin n)
       linarith
   have hwzero : ∀ γ ∈ q2.support, Finsupp.weight w γ = 0 →
       γ = 0 ∨ (γ i = γs i ∧ b γ = b γs) := by
-    intro γ hγ h; obtain ⟨hγi, hγq⟩ := (hq2s γ).1 hγ
-    rw [hweight] at h
-    rcases Nat.eq_zero_or_pos (γ i) with h' | h'
-    · left
-      rw [h'] at h
-      have hbz : b γ = 0 := by
-        have : (γs i : ℤ) * b γ = 0 := by simpa using h
-        rcases mul_eq_zero.mp this with h1 | h1
-        · lia
-        · exact_mod_cast h1
-      ext j
-      by_cases hj : j = i
-      · subst hj; simpa using h'
-      · have := hle_b γ j hj
-        simp only [Finsupp.coe_zero, Pi.zero_apply]
-        lia
-    · right
-      have heq : b γs * γ i = b γ * γs i := by
-        have : (b γs : ℤ) * γ i = b γ * γs i := by linarith
-        exact_mod_cast this
-      have := (hslope γ hγq h').2 heq
-      have hγia : γ i = γs i := le_antisymm hγi this
-      refine ⟨hγia, ?_⟩
-      rw [hγia] at heq
-      exact (Nat.eq_of_mul_eq_mul_right hγsi heq).symm
+    intro γ hγ h
+    obtain ⟨hγi, hγq⟩ := (hq2s γ).1 hγ
+    exact eq_zero_or_eq_stats_of_weight_eq_zero i b hγi hγsi (hle_b γ)
+      (fun hpos ↦ (hslope γ hγq hpos).2) (by simpa [hweight] using h)
   have h0q2 : (0 : Fin n →₀ ℕ) ∈ q2.support := (hq2s 0).2 ⟨Nat.zero_le _, h0⟩
   have hγsq2 : γs ∈ q2.support := (hq2s γs).2 ⟨le_rfl, hγsq⟩
   have hwγs : Finsupp.weight w γs = 0 := by rw [hweight]; ring
@@ -836,44 +919,11 @@ theorem base_case {q : MvPolynomial (Fin n) ℝ} (hq : Stable q) (i : Fin n)
     intro h; have := hγsi; simp [h] at this
   by_contra hcon
   have hsmall : γs i + b γs ≥ 3 := by
-    by_contra hlt; push Not at hlt
+    by_contra hlt
+    push Not at hlt
     apply hcon
-    refine ⟨γs, hγsq, ?_⟩
-    rcases Nat.lt_or_ge (b γs) 1 with hb0' | hb0'
-    · have hz : ∀ j, j ≠ i → γs j = 0 := fun j hj => by have := hle_b γs j hj; lia
-      have ha : γs i = 1 ∨ γs i = 2 := by lia
-      have heq : γs = Finsupp.single i (γs i) := by
-        ext j
-        by_cases hj : j = i
-        · subst hj; simp
-        · simp [Finsupp.single_eq_of_ne hj, hz j hj]
-      rcases ha with ha | ha
-      · left; simpa only [ha] using heq
-      · right; left; simpa only [ha] using heq
-    · have ha : γs i = 1 := by lia
-      have hb1 : b γs = 1 := by lia
-      right; right
-      have hne : ∑ j ∈ Finset.univ.erase i, γs j ≠ 0 := by rw [← hb]; lia
-      obtain ⟨j, hj, hγj⟩ := Finset.exists_ne_zero_of_sum_ne_zero hne
-      have hji : j ≠ i := Finset.ne_of_mem_erase hj
-      refine ⟨j, hji, ?_⟩
-      have hγj1 : γs j = 1 := by have := hle_b γs j hji; lia
-      have hothers : ∀ k, k ≠ i → k ≠ j → γs k = 0 := by
-        intro k hki hkj; have hsub : ({j, k} : Finset (Fin n)) ⊆ Finset.univ.erase i := by
-          intro x hx; simp only [Finset.mem_insert, Finset.mem_singleton] at hx
-          rcases hx with rfl | rfl
-          · exact Finset.mem_erase.mpr ⟨hji, Finset.mem_univ _⟩
-          · exact Finset.mem_erase.mpr ⟨hki, Finset.mem_univ _⟩
-        have := Finset.sum_le_sum_of_subset (f := fun j => γs j) hsub
-        rw [Finset.sum_pair (Ne.symm hkj), ← hb] at this
-        lia
-      ext k
-      by_cases hk : k = i
-      · subst hk
-        simp [Finsupp.single_eq_of_ne hji.symm, ha]
-      · by_cases hkj : k = j
-        · subst hkj; simp [Finsupp.single_eq_of_ne hk, hγj1]
-        · simp [Finsupp.single_eq_of_ne hk, Finsupp.single_eq_of_ne hkj, hothers k hk hkj]
+    refine ⟨γs, hγsq, eq_single_or_double_or_pair_of_degree_lt_three i hγsi ?_⟩
+    rwa [hb] at hlt
   refine not_stable_two_term hFst ?_ (γs i + b γs) hsmall ?_ ⟨γs, ?_, hγsne⟩
   · rw [hcoeffF, ite_eq_left (by simp)]; exact mem_support_iff.mp h0q2
   · intro γ hγ hγ0

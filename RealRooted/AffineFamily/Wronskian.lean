@@ -169,6 +169,45 @@ private lemma eval_neg_of_eval_neg_of_no_roots {p : ℝ[X]} {a b m c : ℝ}
       (fun x hcx hxm => hno x (hc.1.trans_le hcx) (hxm.trans_lt hm.2))
     nlinarith
 
+/-- A polynomial is nonzero on a closed interval if roots are excluded at and between its ends. -/
+private lemma eval_ne_zero_on_Icc_of_not_isRoot {p : ℝ[X]} {a b : ℝ}
+    (ha : ¬ p.IsRoot a) (hb : ¬ p.IsRoot b)
+    (hinside : ∀ x, a < x → x < b → ¬ p.IsRoot x) :
+    ∀ x ∈ Set.Icc a b, p.eval x ≠ 0 := by
+  intro x hx hpx
+  have hroot : p.IsRoot x := by simpa [Polynomial.IsRoot.def] using hpx
+  have hxa : x ≠ a := fun h ↦ ha (h ▸ hroot)
+  have hxb : x ≠ b := fun h ↦ hb (h ▸ hroot)
+  exact hinside x (lt_of_le_of_ne hx.1 hxa.symm) (lt_of_le_of_ne hx.2 hxb) hroot
+
+/-- A root-free interval cannot support the positive boundary-ratio extremum. -/
+private lemma false_of_boundary_ratio_on_root_free_interval
+    {p g : ℝ[X]} {a b m : ℝ}
+    (hab : a < b) (ha : g.IsRoot a) (hb : g.IsRoot b)
+    (hm : m ∈ Set.Ioo a b) (hmid : g.eval m * p.eval m < 0)
+    (hp_ne : ∀ x ∈ Set.Icc a b, p.eval x ≠ 0)
+    (hg_ne : ∀ x, a < x → x < b → g.eval x ≠ 0)
+    (hfamily : ∀ {t : ℝ}, 0 < t → ((C t * p + g) ≠ 0 ∧ (C t * p + g).Splits))
+    (hno : ∀ r, g.IsRoot r → ¬ p.IsRoot r) : False := by
+  have hcont : ContinuousOn (fun y : ℝ ↦ -(g.eval y / p.eval y)) (Set.Icc a b) :=
+    (g.continuous.continuousOn.div p.continuous.continuousOn hp_ne).neg
+  have hend : (fun y : ℝ ↦ -(g.eval y / p.eval y)) a =
+      (fun y : ℝ ↦ -(g.eval y / p.eval y)) b := by
+    have hga : g.eval a = 0 := by simpa [Polynomial.IsRoot.def] using ha
+    have hgb : g.eval b = 0 := by simpa [Polynomial.IsRoot.def] using hb
+    simp [hga, hgb]
+  obtain ⟨c, hc, hlocal⟩ := exists_isLocalExtr_Ioo hab hcont hend
+  have hprod : g.eval c * p.eval c < 0 := by
+    have hno_mul : ∀ x, a < x → x < b → (g * p).eval x ≠ 0 := by
+      intro x hax hxb
+      simpa only [eval_mul] using
+        mul_ne_zero (hg_ne x hax hxb) (hp_ne x ⟨hax.le, hxb.le⟩)
+    simpa only [eval_mul] using
+      eval_neg_of_eval_neg_of_no_roots hm hc (by simpa only [eval_mul] using hmid) hno_mul
+  have hpc : p.eval c ≠ 0 := hp_ne c ⟨hc.1.le, hc.2.le⟩
+  exact false_of_localExtr_neg_eval_div_eval_pos_of_add_left_family_of_no_common
+    hfamily hno hlocal (pos_neg_div_of_mul_neg hpc hprod)
+
 /-- Recursive root-picker: if a polynomial `F` has a root strictly between each
 consecutive pair of a sorted real list `rs`, we can package these roots as a
 strictly sorted interlacing list. -/
@@ -226,18 +265,12 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
     ∃ u, r₁ < u ∧ u < r₂ ∧ f.IsRoot u := by
   have hg_rr : (g ≠ 0 ∧ g.Splits) :=
     AffineFamily.isRealRooted_right_of_affine_family_succDegree hf0 hg0 hfnn hgnn haff hsucc.symm
-  have hXf_pos : HasPosLeadingCoeff (X * f) :=
-    (hfnn.pos_leadingCoeff hf0).X_mul
   have hposcombo : PosComboRealRooted g (X * f) :=
     AffineFamily.posComboRealRooted_right_of_affine_family hf0 hg0 hfnn hgnn haff
   have hno_right :
       ∀ r, g.IsRoot r → ¬ (X * f).IsRoot r :=
     no_common_right_pair_of_no_common_of_not_isRoot_zero hno hg_root0
-  have hr₁_mem : r₁ ∈ g.roots := (mem_roots hg0).mpr hr₁
   have hr₂_mem : r₂ ∈ g.roots := (mem_roots hg0).mpr hr₂
-  have hr₁_neg : r₁ < 0 :=
-    roots_strictly_neg_of_nonneg_of_no_common_right_pair
-      hg_rr.1 hgnn hno_right r₁ hr₁_mem
   have hr₂_neg : r₂ < 0 :=
     roots_strictly_neg_of_nonneg_of_no_common_right_pair
       hg_rr.1 hgnn hno_right r₂ hr₂_mem
@@ -247,21 +280,8 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
     exact ⟨by linarith, by linarith⟩
   by_contra hexists
   push Not at hexists
-  have hden_nonzero_f : ∀ x ∈ Set.Icc r₁ r₂, f.eval x ≠ 0 := by
-    intro x hx hfx
-    have hroot : f.IsRoot x := by simpa [Polynomial.IsRoot.def] using hfx
-    have hx_ne1 : x ≠ r₁ := by
-      intro h
-      rw [h] at hroot
-      exact hno r₁ hr₁ hroot
-    have hx_ne2 : x ≠ r₂ := by
-      intro h
-      rw [h] at hroot
-      exact hno r₂ hr₂ hroot
-    have hx_mem := Set.mem_Icc.mp hx
-    have hx_between : r₁ < x ∧ x < r₂ :=
-      ⟨lt_of_le_of_ne hx_mem.1 hx_ne1.symm, lt_of_le_of_ne hx_mem.2 hx_ne2⟩
-    exact hexists x hx_between.1 hx_between.2 hroot
+  have hden_nonzero_f : ∀ x ∈ Set.Icc r₁ r₂, f.eval x ≠ 0 :=
+    eval_ne_zero_on_Icc_of_not_isRoot (hno r₁ hr₁) (hno r₂ hr₂) hexists
   have hg_mid_ne : g.eval m ≠ 0 := by
     intro hgm
     have hroot : g.IsRoot m := by simpa [Polynomial.IsRoot.def] using hgm
@@ -270,6 +290,10 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
     intro hfm
     have hroot : f.IsRoot m := by simpa [Polynomial.IsRoot.def] using hfm
     exact hexists m hm_mem.1 hm_mem.2 hroot
+  have hg_nonzero_between : ∀ x, r₁ < x → x < r₂ → g.eval x ≠ 0 := by
+    intro x hx₁ hx₂ hgx
+    exact hno_between_g x ((mem_roots hg0).mpr (by simpa [Polynomial.IsRoot.def]))
+      ⟨hx₁, hx₂⟩
   by_cases hmid_opp : g.eval m * f.eval m < 0
   · have hfamily_f :
         ∀ {t : ℝ}, 0 < t → ((C t * f + g) ≠ 0 ∧ (C t * f + g).Splits) := by
@@ -277,36 +301,8 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
       simpa [add_comm] using
         AffineFamily.isRealRooted_add_left_of_affine_family_of_natDegree_succ_le
           hf0 hg0 hfnn hgnn haff (by lia) ht
-    have hratio_cont :
-        ContinuousOn (fun y : ℝ => -(g.eval y / f.eval y)) (Set.Icc r₁ r₂) :=
-      (g.continuous.continuousOn.div f.continuous.continuousOn hden_nonzero_f).neg
-    have hratio_eq :
-        (fun y : ℝ => -(g.eval y / f.eval y)) r₁ =
-          (fun y : ℝ => -(g.eval y / f.eval y)) r₂ := by
-      have hg₁_eval : g.eval r₁ = 0 := by simpa [Polynomial.IsRoot.def] using hr₁
-      have hg₂_eval : g.eval r₂ = 0 := by simpa [Polynomial.IsRoot.def] using hr₂
-      simp [hg₁_eval, hg₂_eval]
-    obtain ⟨c, hc_mem, hlocal⟩ :=
-      exists_isLocalExtr_Ioo hr₁r₂ hratio_cont hratio_eq
-    have hprod_c_neg : g.eval c * f.eval c < 0 := by
-      have hno_mul : ∀ x, r₁ < x → x < r₂ → (g * f).eval x ≠ 0 := by
-        intro x hx₁ hx₂
-        have hgx_ne : g.eval x ≠ 0 := by
-          intro hgx
-          exact hno_between_g x ((mem_roots hg0).mpr (by simpa [Polynomial.IsRoot.def]))
-            ⟨hx₁, hx₂⟩
-        simpa only [eval_mul] using
-          mul_ne_zero hgx_ne (hden_nonzero_f x ⟨hx₁.le, hx₂.le⟩)
-      simpa only [eval_mul] using
-        eval_neg_of_eval_neg_of_no_roots hm_mem hc_mem
-          (by simpa only [eval_mul] using hmid_opp) hno_mul
-    have hf_c_ne : f.eval c ≠ 0 :=
-      hden_nonzero_f c (Set.mem_Icc.mpr ⟨le_of_lt hc_mem.1, le_of_lt hc_mem.2⟩)
-    have hpos_c : 0 < -(g.eval c / f.eval c) :=
-      pos_neg_div_of_mul_neg hf_c_ne hprod_c_neg
-    exact
-      false_of_localExtr_neg_eval_div_eval_pos_of_add_left_family_of_no_common
-        hfamily_f hno hlocal hpos_c
+    exact false_of_boundary_ratio_on_root_free_interval hr₁r₂ hr₁ hr₂ hm_mem hmid_opp
+      hden_nonzero_f hg_nonzero_between hfamily_f hno
   · have hmid_pos : 0 < g.eval m * f.eval m :=
       lt_of_le_of_ne (le_of_not_gt hmid_opp) (mul_ne_zero hg_mid_ne hf_mid_ne).symm
     have hm_neg : m < 0 :=
@@ -323,41 +319,13 @@ private lemma exists_f_root_between_consecutive_g_roots_of_affine_family_succDeg
       have hx_ne : x ≠ 0 := ne_of_lt hx_neg
       have hfx_ne : f.eval x ≠ 0 := hden_nonzero_f x (Set.mem_Icc.mpr hx)
       exact mul_ne_zero hx_ne hfx_ne hxf
-    have hratio_cont :
-        ContinuousOn (fun y : ℝ => -(g.eval y / (X * f).eval y)) (Set.Icc r₁ r₂) :=
-      (g.continuous.continuousOn.div (X * f).continuous.continuousOn hden_nonzero_Xf).neg
-    have hratio_eq :
-        (fun y : ℝ => -(g.eval y / (X * f).eval y)) r₁ =
-          (fun y : ℝ => -(g.eval y / (X * f).eval y)) r₂ := by
-      have hg₁_eval : g.eval r₁ = 0 := by simpa [Polynomial.IsRoot.def] using hr₁
-      have hg₂_eval : g.eval r₂ = 0 := by simpa [Polynomial.IsRoot.def] using hr₂
-      simp [hg₁_eval, hg₂_eval]
-    obtain ⟨c, hc_mem, hlocal⟩ :=
-      exists_isLocalExtr_Ioo hr₁r₂ hratio_cont hratio_eq
-    have hprod_c_neg :
-        g.eval c * (X * f).eval c < 0 := by
-      have hno_mul : ∀ x, r₁ < x → x < r₂ → (g * (X * f)).eval x ≠ 0 := by
-        intro x hx₁ hx₂
-        have hgx_ne : g.eval x ≠ 0 := by
-          intro hgx
-          exact hno_between_g x ((mem_roots hg0).mpr (by simpa [Polynomial.IsRoot.def]))
-            ⟨hx₁, hx₂⟩
-        simpa only [eval_mul] using
-          mul_ne_zero hgx_ne (hden_nonzero_Xf x ⟨hx₁.le, hx₂.le⟩)
-      simpa only [eval_mul] using
-        eval_neg_of_eval_neg_of_no_roots hm_mem hc_mem
-          (by simpa only [eval_mul] using hmid_right) hno_mul
-    have hXf_c_ne : (X * f).eval c ≠ 0 :=
-      hden_nonzero_Xf c (Set.mem_Icc.mpr ⟨le_of_lt hc_mem.1, le_of_lt hc_mem.2⟩)
-    have hpos_c : 0 < -(g.eval c / (X * f).eval c) :=
-      pos_neg_div_of_mul_neg hXf_c_ne hprod_c_neg
-    exact
-      false_of_localExtr_neg_eval_div_eval_pos_of_add_left_family_of_no_common
-        (fun ht => by
-          have h_add := PosComboRealRooted.isRealRooted_add_right hposcombo ht
-          rw [add_comm] at h_add
-          exact h_add)
-        hno_right hlocal hpos_c
+    exact false_of_boundary_ratio_on_root_free_interval hr₁r₂ hr₁ hr₂ hm_mem hmid_right
+      hden_nonzero_Xf hg_nonzero_between
+      (fun ht ↦ by
+        have h_add := PosComboRealRooted.isRealRooted_add_right hposcombo ht
+        rw [add_comm] at h_add
+        exact h_add)
+      hno_right
 
 /-- The affine family `(C s * X + C t) * f + g` being real-rooted for all `s, t > 0`
 implies `AllComboRealRooted g f` (all linear combinations `α g + β f` are

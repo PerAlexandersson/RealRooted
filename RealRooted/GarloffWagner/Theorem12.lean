@@ -402,6 +402,121 @@ private theorem factorialHadamardProduct_interl_of_kreinSummandExpansion_of_deri
       · simpa [factorialHadamardProduct_comm q p] using
           (hF q u hfactor).hasNonnegCoeffs)
 
+/-- The PF-preservation step follows from the lower-total-degree induction hypotheses. -/
+private lemma factorialHadamardProduct_isPF_of_lower_degree
+    {n : ℕ} {f p : ℝ[X]} (hf : IsPFPolynomial f) (hp : IsPFPolynomial p)
+    (hmeasure : f.natDegree + p.natDegree = n)
+    (hA_lt : ∀ {f p : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial p →
+      f.natDegree + p.natDegree < n →
+        IsPFPolynomial (factorialHadamardProduct f p))
+    (hB_lt : ∀ {f g p : ℝ[X]},
+      IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → Interl f g →
+        g.natDegree + p.natDegree < n →
+          Interl (factorialHadamardProduct f p) (factorialHadamardProduct g p)) :
+    IsPFPolynomial (factorialHadamardProduct f p) := by
+  by_cases hf0 : f = 0
+  · rw [hf0, factorialHadamardProduct_zero_left]
+    exact IsPFPolynomial.zero
+  by_cases hp0 : p = 0
+  · rw [hp0, factorialHadamardProduct_zero_right]
+    exact IsPFPolynomial.zero
+  by_cases hpdeg0 : p.natDegree = 0
+  · exact factorialHadamardProduct_pf_of_right_natDegree_eq_zero hf hp hpdeg0
+  rcases hp.exists_X_sub_C_factor_of_pos_natDegree (Nat.pos_of_ne_zero hpdeg0) with
+    ⟨u, q, hu, hfactor, hq, hqdeg⟩
+  have hF : IsPFPolynomial (factorialHadamardProduct f q) := by
+    apply hA_lt hf hq
+    rw [← hmeasure]
+    lia
+  have hfD : IsPFPolynomial (derivative f) := hf.derivative
+  have hD : IsPFPolynomial (factorialHadamardProduct (derivative f) q) := by
+    apply hA_lt hfD hq
+    have hDdeg : (derivative f).natDegree ≤ f.natDegree := by simp
+    rw [← hmeasure]
+    lia
+  have hder :
+      Interl (factorialHadamardProduct (derivative f) q)
+        (factorialHadamardProduct f q) := by
+    apply hB_lt hfD hf hq hf.derivative_interl_self
+    rw [← hmeasure]
+    lia
+  rw [hfactor]
+  exact factorialHadamardProduct_pf_right_linearFactor_of_derivative_interl
+    hu hder hF hD
+
+/-- The interlacing step follows from PF preservation and lower-degree deleted factors. -/
+private lemma factorialHadamardProduct_interl_of_lower_degree
+    {n : ℕ} {f g p : ℝ[X]} (hf : IsPFPolynomial f) (hg : IsPFPolynomial g)
+    (hp : IsPFPolynomial p) (hfg : Interl f g)
+    (hmeasure : g.natDegree + p.natDegree = n)
+    (hA : ∀ {f p : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial p →
+      f.natDegree + p.natDegree = n →
+        IsPFPolynomial (factorialHadamardProduct f p))
+    (hA_lt : ∀ {f p : ℝ[X]}, IsPFPolynomial f → IsPFPolynomial p →
+      f.natDegree + p.natDegree < n →
+        IsPFPolynomial (factorialHadamardProduct f p))
+    (hB_lt : ∀ {f g p : ℝ[X]},
+      IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p → Interl f g →
+        g.natDegree + p.natDegree < n →
+          Interl (factorialHadamardProduct f p) (factorialHadamardProduct g p)) :
+    Interl (factorialHadamardProduct f p) (factorialHadamardProduct g p) := by
+  rcases hfg with hf0 | hg0 | hstrict
+  · rw [hf0, factorialHadamardProduct_zero_left]
+    exact interl_zero_left (factorialHadamardProduct g p)
+  · rw [hg0, factorialHadamardProduct_zero_left]
+    exact interl_zero_right (factorialHadamardProduct f p)
+  by_cases hpdeg0 : p.natDegree = 0
+  · exact factorialHadamardProduct_interl_of_right_natDegree_eq_zero f g p hpdeg0
+  by_cases hgdeg0 : g.natDegree = 0
+  · have hfdeg0 : f.natDegree = 0 := by
+      have hstrict_le := hstrict.natDegree_le
+      lia
+    have hleftdeg := Nat.le_zero.mp
+      ((natDegree_factorialHadamardProduct_le_left f p).trans hfdeg0.le)
+    have hrightdeg := Nat.le_zero.mp
+      ((natDegree_factorialHadamardProduct_le_left g p).trans hgdeg0.le)
+    exact interl_of_natDegree_eq_zero hleftdeg hrightdeg
+  have hgp : IsPFPolynomial (factorialHadamardProduct g p) := hA hg hp hmeasure
+  have hfpos : HasPosLeadingCoeff f :=
+    hf.hasNonnegCoeffs.pos_leadingCoeff hstrict.1.1
+  have hgpos : HasPosLeadingCoeff g :=
+    hg.hasNonnegCoeffs.pos_leadingCoeff hstrict.2.1.1
+  rcases hstrict.exists_kreinSummandExpansion hfpos hgpos with
+    ⟨l, hfexp, hnonneg, hsummand, _hex⟩
+  have hdeleted :
+      ∀ (q : ℝ[X]) (u : ℝ), g = (X - C u) * q →
+        IsPFPolynomial q ∧ q.natDegree < g.natDegree := by
+    intro q u hfactor
+    have hq : IsPFPolynomial q := hg.of_X_sub_C_mul_factor hfactor
+    have hq0 : q ≠ 0 := by
+      intro hq0
+      rw [hfactor, hq0, mul_zero] at hstrict
+      exact hstrict.2.1.1 rfl
+    have hqdeg : q.natDegree < g.natDegree := by
+      rw [hfactor, natDegree_mul (X_sub_C_ne_zero u) hq0, natDegree_X_sub_C]
+      lia
+    exact ⟨hq, hqdeg⟩
+  exact factorialHadamardProduct_interl_of_kreinSummandExpansion_of_derivative
+    hfexp hnonneg hsummand hg hgp
+    (fun q u hfactor => by
+      obtain ⟨hq, hqdeg⟩ := hdeleted q u hfactor
+      have hpD : IsPFPolynomial (derivative p) := hp.derivative
+      apply hB_lt hpD hp hq hp.derivative_interl_self
+      rw [← hmeasure]
+      lia)
+    (fun q u hfactor => by
+      obtain ⟨hq, hqdeg⟩ := hdeleted q u hfactor
+      apply hA_lt hp hq
+      rw [← hmeasure]
+      lia)
+    (fun q u hfactor => by
+      obtain ⟨hq, hqdeg⟩ := hdeleted q u hfactor
+      have hpD : IsPFPolynomial (derivative p) := hp.derivative
+      apply hA_lt hpD hq
+      have hDdeg : (derivative p).natDegree ≤ p.natDegree := by simp
+      rw [← hmeasure]
+      lia)
+
 /-- Garloff--Wagner, Theorem 12, for the factorial Schur product.
 
 The induction is over the total degree of the two active Schur-product
@@ -449,100 +564,15 @@ private theorem isPFPolynomial_and_interl_factorialHadamardProduct :
                 f.natDegree + p.natDegree = n →
                   IsPFPolynomial (factorialHadamardProduct f p) := by
           intro f p hf hp hmeasure
-          by_cases hf0 : f = 0
-          · rw [hf0, factorialHadamardProduct_zero_left]
-            exact IsPFPolynomial.zero
-          by_cases hp0 : p = 0
-          · rw [hp0, factorialHadamardProduct_zero_right]
-            exact IsPFPolynomial.zero
-          by_cases hpdeg0 : p.natDegree = 0
-          · exact factorialHadamardProduct_pf_of_right_natDegree_eq_zero hf hp hpdeg0
-          rcases hp.exists_X_sub_C_factor_of_pos_natDegree
-              (Nat.pos_of_ne_zero hpdeg0) with
-            ⟨u, q, hu, hfactor, hq, hqdeg⟩
-          have hF : IsPFPolynomial (factorialHadamardProduct f q) := by
-            apply hA_lt hf hq
-            rw [← hmeasure]
-            lia
-          have hfD : IsPFPolynomial (derivative f) := hf.derivative
-          have hD : IsPFPolynomial (factorialHadamardProduct (derivative f) q) := by
-            apply hA_lt hfD hq
-            have hDdeg : (derivative f).natDegree ≤ f.natDegree := by simp
-            rw [← hmeasure]
-            lia
-          have hder :
-              Interl (factorialHadamardProduct (derivative f) q)
-                (factorialHadamardProduct f q) := by
-            apply hB_lt hfD hf hq hf.derivative_interl_self
-            rw [← hmeasure]
-            lia
-          rw [hfactor]
-          exact factorialHadamardProduct_pf_right_linearFactor_of_derivative_interl
-            hu hder hF hD
+          exact factorialHadamardProduct_isPF_of_lower_degree hf hp hmeasure hA_lt hB_lt
         have hB :
             ∀ {f g p : ℝ[X]},
               IsPFPolynomial f → IsPFPolynomial g → IsPFPolynomial p →
                 Interl f g → g.natDegree + p.natDegree = n →
                   Interl (factorialHadamardProduct f p) (factorialHadamardProduct g p) := by
           intro f g p hf hg hp hfg hmeasure
-          rcases hfg with hf0 | hg0 | hstrict
-          · rw [hf0, factorialHadamardProduct_zero_left]
-            exact interl_zero_left (factorialHadamardProduct g p)
-          · rw [hg0, factorialHadamardProduct_zero_left]
-            exact interl_zero_right (factorialHadamardProduct f p)
-          by_cases hpdeg0 : p.natDegree = 0
-          · exact factorialHadamardProduct_interl_of_right_natDegree_eq_zero f g p hpdeg0
-          by_cases hgdeg0 : g.natDegree = 0
-          · have hfdeg0 : f.natDegree = 0 := by
-              have hstrict_le := hstrict.natDegree_le
-              lia
-            have hleftdeg := Nat.le_zero.mp
-              ((natDegree_factorialHadamardProduct_le_left f p).trans hfdeg0.le)
-            have hrightdeg := Nat.le_zero.mp
-              ((natDegree_factorialHadamardProduct_le_left g p).trans hgdeg0.le)
-            exact interl_of_natDegree_eq_zero hleftdeg hrightdeg
-          have hgp : IsPFPolynomial (factorialHadamardProduct g p) :=
-            hA hg hp hmeasure
-          have hfpos : HasPosLeadingCoeff f :=
-            hf.hasNonnegCoeffs.pos_leadingCoeff hstrict.1.1
-          have hgpos : HasPosLeadingCoeff g :=
-            hg.hasNonnegCoeffs.pos_leadingCoeff hstrict.2.1.1
-          rcases hstrict.exists_kreinSummandExpansion hfpos hgpos with
-            ⟨l, hfexp, hnonneg, hsummand, _hex⟩
-          have hdeleted :
-              ∀ (q : ℝ[X]) (u : ℝ), g = (X - C u) * q →
-                IsPFPolynomial q ∧ q.natDegree < g.natDegree := by
-            intro q u hfactor
-            have hq : IsPFPolynomial q := hg.of_X_sub_C_mul_factor hfactor
-            have hq0 : q ≠ 0 := by
-              intro hq0
-              rw [hfactor, hq0, mul_zero] at hstrict
-              exact hstrict.2.1.1 rfl
-            have hqdeg : q.natDegree < g.natDegree := by
-              rw [hfactor, natDegree_mul (X_sub_C_ne_zero u) hq0,
-                natDegree_X_sub_C]
-              lia
-            exact ⟨hq, hqdeg⟩
-          exact factorialHadamardProduct_interl_of_kreinSummandExpansion_of_derivative
-            hfexp hnonneg hsummand hg hgp
-            (fun q u hfactor => by
-              obtain ⟨hq, hqdeg⟩ := hdeleted q u hfactor
-              have hpD : IsPFPolynomial (derivative p) := hp.derivative
-              apply hB_lt hpD hp hq hp.derivative_interl_self
-              rw [← hmeasure]
-              lia)
-            (fun q u hfactor => by
-              obtain ⟨hq, hqdeg⟩ := hdeleted q u hfactor
-              apply hA_lt hp hq
-              rw [← hmeasure]
-              lia)
-            (fun q u hfactor => by
-              obtain ⟨hq, hqdeg⟩ := hdeleted q u hfactor
-              have hpD : IsPFPolynomial (derivative p) := hp.derivative
-              apply hA_lt hpD hq
-              have hDdeg : (derivative p).natDegree ≤ p.natDegree := by simp
-              rw [← hmeasure]
-              lia)
+          exact factorialHadamardProduct_interl_of_lower_degree
+            hf hg hp hfg hmeasure hA hA_lt hB_lt
         exact ⟨hA, hB⟩
   constructor
   · intro f p hf hp
