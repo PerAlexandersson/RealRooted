@@ -87,12 +87,16 @@ private theorem monic_polarizationRootPolynomial {q : ℕ}
   exact Polynomial.monic_multiset_prod_of_monic _ _
     fun z _ => monic_X_sub_C z
 
-private theorem natDegree_scaled_complexDiagonal {q : ℕ} {t : ℝ}
+private theorem scaled_complexDiagonal_monic_and_natDegree {q : ℕ} {t : ℝ}
     (x : Fin q → ℂ) :
     (Polynomial.C (Real.exp (t * (q * (q - 1) : ℕ)) : ℂ) *
       BorceaBranden.realDiagonalOperator
         (quadraticExponentialMultiplier t)
-        (polarizationRootPolynomial x)).natDegree = q := by
+        (polarizationRootPolynomial x)).Monic ∧
+      (Polynomial.C (Real.exp (t * (q * (q - 1) : ℕ)) : ℂ) *
+        BorceaBranden.realDiagonalOperator
+          (quadraticExponentialMultiplier t)
+          (polarizationRootPolynomial x)).natDegree = q := by
   let a : ℝ := Real.exp (t * (q * (q - 1) : ℕ))
   let f := polarizationRootPolynomial x
   let g := Polynomial.C (a : ℂ) * BorceaBranden.realDiagonalOperator
@@ -115,8 +119,9 @@ private theorem natDegree_scaled_complexDiagonal {q : ℕ} {t : ℝ}
     exact (Polynomial.natDegree_C_mul_le _ _).trans
       ((BorceaBranden.natDegree_realDiagonalOperator_le _ f).trans
         (natDegree_polarizationRootPolynomial x).le)
-  have hgcoeff0 : g.coeff q ≠ 0 := by rw [hgcoeff]; exact one_ne_zero
-  exact le_antisymm hgle (le_natDegree_of_ne_zero hgcoeff0)
+  have hgdeg : g.natDegree = q :=
+    le_antisymm hgle (le_natDegree_of_ne_zero (hgcoeff.symm ▸ one_ne_zero))
+  exact ⟨monic_of_natDegree_le_of_coeff_eq_one q hgle hgcoeff, hgdeg⟩
 
 private theorem scaledDiagonal_coeff {q : ℕ} (t : ℝ)
     (x : Fin q → ℂ) (k : Fin q) :
@@ -164,26 +169,7 @@ theorem exists_morrisBRootLift {q : ℕ} {t : ℝ} (ht : 0 ≤ t)
     exact BorceaBranden.IsPFMultiplierSequence.roots_im_pos_complexDiagonal
       (isPFMultiplierSequence_quadraticExponentialMultiplier ht)
       (fun _ => Real.exp_ne_zero _) hf0 hfroots
-  have hgdeg : g.natDegree = q := natDegree_scaled_complexDiagonal x
-  have hgmonic : g.Monic := by
-    apply monic_of_natDegree_le_of_coeff_eq_one q hgdeg.le
-    have hcoeff : g.coeff q = 1 := by
-      rw [show g = Polynomial.C
-        (Real.exp (t * (q * (q - 1) : ℕ)) : ℂ) * Tf by rfl]
-      rw [Polynomial.coeff_C_mul,
-        BorceaBranden.coeff_realDiagonalOperator]
-      have hfcoeff : f.coeff q = 1 := by
-        rw [← hfmonic.leadingCoeff, leadingCoeff,
-          natDegree_polarizationRootPolynomial x]
-      rw [hfcoeff]
-      rw [quadraticExponentialMultiplier]
-      simp only [mul_one]
-      rw [← Complex.ofReal_mul]
-      norm_cast
-      rw [← Real.exp_add]
-      convert Real.exp_zero using 2
-      ring
-    exact hcoeff
+  obtain ⟨hgmonic, hgdeg⟩ := scaled_complexDiagonal_monic_and_natDegree x
   have hgcard : g.roots.card = q := by
     rw [IsAlgClosed.card_roots_eq_natDegree, hgdeg]
   obtain ⟨y, hyroots⟩ := exists_fin_map_eq_of_card_eq g.roots hgcard
@@ -191,7 +177,7 @@ theorem exists_morrisBRootLift {q : ℕ} {t : ℝ} (ht : 0 ≤ t)
   · intro i
     have hyroot : y i ∈ g.roots := by
       rw [← hyroots]
-      exact Multiset.mem_map.mpr ⟨i, by simp, rfl⟩
+      simp
     have ha0 : (a : ℂ) ≠ 0 := by simp [a]
     have : y i ∈ Tf.roots := by
       rw [← Polynomial.roots_C_mul Tf ha0]
@@ -206,25 +192,13 @@ theorem exists_morrisBRootLift {q : ℕ} {t : ℝ} (ht : 0 ≤ t)
       (fun p : ℂ[X] => p.coeff (q - ((k : ℕ) + 1))) hpoly
     rw [coeff_polarizationRootPolynomial y
       (Nat.succ_le_iff.mpr k.isLt)] at hcoeff
-    have hgcoeff : g.coeff (q - ((k : ℕ) + 1)) =
-        (morrisBScale q t k : ℂ) * (-1 : ℂ) ^ ((k : ℕ) + 1) *
-          (Finset.univ.val.map x).esymm ((k : ℕ) + 1) := by
-      exact scaledDiagonal_coeff t x k
-    rw [hgcoeff] at hcoeff
+    rw [scaledDiagonal_coeff t x k] at hcoeff
     have hsign : (-1 : ℂ) ^ ((k : ℕ) + 1) ≠ 0 :=
       pow_ne_zero _ (by norm_num)
     apply mul_left_cancel₀ hsign
-    calc
-      (-1 : ℂ) ^ ((k : ℕ) + 1) *
-          (Finset.univ.val.map y).esymm ((k : ℕ) + 1) =
-          (morrisBScale q t k : ℂ) * (-1 : ℂ) ^ ((k : ℕ) + 1) *
-            (Finset.univ.val.map x).esymm ((k : ℕ) + 1) := hcoeff
-      _ = (-1 : ℂ) ^ ((k : ℕ) + 1) *
-          ((morrisBScale q t k : ℂ) *
-            (Finset.univ.val.map x).esymm ((k : ℕ) + 1)) := by ring
-      _ = (-1 : ℂ) ^ ((k : ℕ) + 1) *
-          (morrisBScale q t k *
-            (Finset.univ.val.map x).esymm ((k : ℕ) + 1)) := rfl
+    rw [Nat.succ_eq_add_one] at hcoeff
+    rw [hcoeff]
+    ring
 
 /-- The algebra isomorphism from `MvPolynomial (Fin q) ℝ` onto the symmetric polynomials in `q`
 variables, given by the elementary symmetric polynomials. -/
@@ -326,12 +300,9 @@ theorem MvRealStable.morrisBFlow {q : ℕ} {t : ℝ} (ht : 0 ≤ t)
     (hP : MvRealStable (P : MvPolynomial (Fin q) ℝ)) :
     MvRealStable (morrisBFlow q t P : MvPolynomial (Fin q) ℝ) := by
   let G := (morrisElementaryEquiv q).symm P
-  have hinput : esymmAlgHom (Fin q) ℝ q G = P := by
-    rw [← morrisElementaryEquiv_apply]
-    exact (morrisElementaryEquiv q).apply_symm_apply P
   have hG : MvRealStable ((esymmAlgHom (Fin q) ℝ q G :
       symmetricSubalgebra (Fin q) ℝ) : MvPolynomial (Fin q) ℝ) := by
-    rw [hinput]
+    rw [← morrisElementaryEquiv_apply, (morrisElementaryEquiv q).apply_symm_apply]
     exact hP
   intro x hx
   obtain ⟨y, hy, hxy⟩ := exists_morrisBRootLift ht x hx

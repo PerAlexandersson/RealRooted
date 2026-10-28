@@ -83,18 +83,10 @@ theorem succ_mul_mul_coeff_generalizedLaguerre
       ((n.choose (k + 1) : R) * ((k : R) + 1)) *
         ((α + k + 1) *
           (ascPochhammer R (n - (k + 1))).eval
-            (α + ((k : R) + 1) + 1)) := by
-        ring
-    _ = ((n.choose k : R) * (n - k : ℕ)) *
-        ((α + k + 1) *
-          (ascPochhammer R (n - (k + 1))).eval
-            (α + ((k : R) + 1) + 1)) := by
-        rw [hchoose]
+            (α + ((k : R) + 1) + 1)) := by ring
     _ = (n - k : ℕ) * ((n.choose k : R) *
-        ((α + k + 1) *
-          (ascPochhammer R (n - (k + 1))).eval
-            (α + ((k : R) + 1) + 1))) := by
-      ring_nf
+        ((α + k + 1) * (ascPochhammer R (n - (k + 1))).eval
+          (α + ((k : R) + 1) + 1))) := by rw [hchoose]; ring
 
 /-- Coefficient form of the generalized Laguerre differential equation. -/
 theorem generalizedLaguerre_differential_coeff
@@ -240,11 +232,8 @@ theorem generalizedLaguerre_succ (n : ℕ) (α : R) :
           have hsum :
               α + ((k : R) + 1) + 1 + (n - (k + 1) : ℕ) =
                 (n : R) + α + 1 := by
-            calc
-              α + ((k : R) + 1) + 1 + (n - (k + 1) : ℕ) =
-                  α + 1 + ((n - (k + 1) : ℕ) + ((k : R) + 1)) := by ring
-              _ = α + 1 + n := by rw [hsub]
-              _ = (n : R) + α + 1 := by ring
+            rw [← hsub]
+            ring
           rw [hsum]
         have hchoose := congrArg (Nat.castRingHom R)
           (Nat.choose_succ_right_eq n k)
@@ -268,30 +257,15 @@ theorem generalizedLaguerre_succ (n : ℕ) (α : R) :
         let b : R := n.choose (k + 1)
         let e := (ascPochhammer R (n - (k + 1))).eval
           (α + ((k : R) + 1) + 1)
+        change b * ((k : R) + 1) = a * (n - k : ℕ) at hchoose
         change (a + b) * (e * ((n : R) + α + 1)) =
           a * ((α + k + 1) * e) +
             ((n : R) + α + 1 + ((k : R) + 1)) * (b * e)
+        rw [hsplit]
         calc
-          (a + b) * (e * ((n : R) + α + 1)) =
-              e * ((a + b) * ((n : R) + α + 1)) := by ring
-          _ = e * (a * (α + k + 1) +
-              (((n : R) + α + 1) + ((k : R) + 1)) * b) := by
-            congr 1
-            calc
-              (a + b) * ((n : R) + α + 1) =
-                  (a + b) * ((n - k : ℕ) + (α + k + 1)) := by rw [hsplit]
-              _ =
-                  a * (n - k : ℕ) + a * (α + k + 1) +
-                    b * ((n - k : ℕ) + (α + k + 1)) := by ring
-              _ = b * ((k : R) + 1) + a * (α + k + 1) +
-                    b * ((n - k : ℕ) + (α + k + 1)) := by rw [hchoose]
-              _ = a * (α + k + 1) +
-                    (((n - k : ℕ) + (α + k + 1)) +
-                      ((k : R) + 1)) * b := by ring
-              _ = a * (α + k + 1) +
-                    (((n : R) + α + 1) + ((k : R) + 1)) * b := by rw [hsplit]
-          _ = a * ((α + k + 1) * e) +
-              ((n : R) + α + 1 + ((k : R) + 1)) * (b * e) := by ring
+          _ = e * (a * (n - k : ℕ) + a * (α + k + 1) +
+              b * ((n - k : ℕ) + (α + k + 1))) := by ring
+          _ = _ := by rw [← hchoose]; ring
       · simp [coeff_generalizedLaguerre]
       · rw [coeff_generalizedLaguerre,
           ite_eq_right (Nat.not_le.mpr (Nat.succ_lt_succ hk)),
@@ -316,20 +290,14 @@ theorem generalizedLaguerre_second_derivative_recurrence (n : ℕ) (α : R) :
         X * (generalizedLaguerre n α).derivative =
       (C (α + 1) + X) * generalizedLaguerre n α +
         X * (generalizedLaguerre n α).derivative +
-          C (n : R) * generalizedLaguerre n α := by
-            simp only [map_add, map_one]
-            ring
-    _ = (C (α + 1) + X) * generalizedLaguerre n α +
-        X * (generalizedLaguerre n α).derivative +
-          (X * (generalizedLaguerre n α).derivative.derivative +
-            (C (α + 1) + X) *
-              (generalizedLaguerre n α).derivative) := by rw [hode]
+          C (n : R) * generalizedLaguerre n α := by simp only [map_add, map_one]; ring
     _ = (C (α + 1) + X) * generalizedLaguerre n α +
         (C (α + 1) + C 2 * X) *
           (generalizedLaguerre n α).derivative +
           X * (generalizedLaguerre n α).derivative.derivative := by
-            simp only [map_add, map_one, map_ofNat]
-            ring
+      rw [← hode]
+      simp only [map_add, map_one, map_ofNat]
+      ring
 
 /-- Differentiation lowers the index and raises the parameter. -/
 theorem derivative_generalizedLaguerre (n : ℕ) (α : R) :

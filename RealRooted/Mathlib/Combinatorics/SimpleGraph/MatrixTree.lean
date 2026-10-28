@@ -187,9 +187,7 @@ theorem det_orientedIncMatrix_submatrix_ne_zero_iff (r : V) (f : {v // v ≠ r} 
       obtain ⟨⟨j, hj⟩, -⟩ := (SimpleGraph.fromEdgeSet_adj _).mp hab
       have hcol := congrFun hv j
       rw [← hyv, vecMul_submatrix_val y (by simp [y]), Pi.zero_apply, sub_eq_zero] at hcol
-      rcases out_eq_or hj with ⟨h1, h2⟩ | ⟨h1, h2⟩
-      · rw [← h1, ← h2, hcol]
-      · rw [← h1, ← h2, hcol]
+      rcases out_eq_or hj with ⟨h1, h2⟩ | ⟨h1, h2⟩ <;> grind
     have hreach : ∀ z, Relation.ReflTransGen H.Adj r z → y z = y r := by
       intro z hz
       induction hz with
@@ -235,8 +233,7 @@ theorem sq_det_orientedIncMatrix_submatrix (r : V) (f : {v // v ≠ r} → Sym2 
   · have hne := (det_orientedIncMatrix_submatrix_ne_zero_iff r f).mpr hc
     rcases (by lia : ((orientedIncMatrix ℤ V).submatrix Subtype.val f).det = 1 ∨
       ((orientedIncMatrix ℤ V).submatrix Subtype.val f).det = -1) with h | h <;> simp [h]
-  · rw [not_ne_iff.mp (mt (det_orientedIncMatrix_submatrix_ne_zero_iff r f).mp hc)]
-    simp
+  · simp [not_ne_iff.mp (mt (det_orientedIncMatrix_submatrix_ne_zero_iff r f).mp hc)]
 
 end Sym2
 
@@ -290,7 +287,8 @@ theorem det_weightedLapMatrix_submatrix [CommRing R] (w : Sym2 V → R) (r : V) 
     have hrange : Set.range (fun i => (e S i : Sym2 V)) = S.1 := by
       ext x
       simp only [Set.mem_range, Finset.mem_coe]
-      exact ⟨fun ⟨i, hi⟩ => hi ▸ (e S i).2, fun hx => ⟨(e S).symm ⟨x, hx⟩, by simp⟩⟩
+      exact ⟨fun ⟨i, hi⟩ => hi ▸ (e S i).2,
+        fun hx => ⟨(e S).symm ⟨x, hx⟩, by simp⟩⟩
     have hcast : C.submatrix id (fun i => (e S i : Sym2 V)) = (Int.castRingHom R).mapMatrix
         ((Sym2.orientedIncMatrix ℤ V).submatrix Subtype.val (fun i => (e S i : Sym2 V))) := by
       ext i j
@@ -316,8 +314,7 @@ theorem det_weightedLapMatrix_submatrix [CommRing R] (w : Sym2 V → R) (r : V) 
   · have hprod : ∏ x ∈ S, d x = ∏ x ∈ S, w x :=
       prod_congr rfl fun x hx => by simp [d, mem_edgeFinset.mp (hS hx)]
     simp only [hprod, mem_spanningTrees, isTree_fromEdgeSet_iff G hS r]
-    by_cases hc : (fromEdgeSet (S : Set (Sym2 V))).Connected <;>
-      by_cases hcard : S.card = Fintype.card {v // v ≠ r} <;> simp [hS, hc, hcard]
+    split_ifs <;> simp_all
   · obtain ⟨x, hx, hxE⟩ := not_subset.mp hS
     have hzero : ∏ x ∈ S, d x = 0 := prod_eq_zero hx (by simp [d, mem_edgeFinset.not.mp hxE])
     simp [hzero, mem_spanningTrees, hS]
@@ -332,10 +329,8 @@ variable {V R : Type*} [Fintype V] [DecidableEq V] (G : SimpleGraph V) [Decidabl
 theorem weightedLapMatrix_one [AddCommGroupWithOne R] :
     G.weightedLapMatrix (fun _ => (1 : R)) = G.lapMatrix R := by
   ext i j
-  by_cases hij : i = j
-  · subst hij
-    simp [weightedLapMatrix, lapMatrix, degMatrix]
-  · by_cases hadj : G.Adj i j <;> simp [weightedLapMatrix, lapMatrix, degMatrix, hij, hadj]
+  simp only [weightedLapMatrix, lapMatrix, degMatrix]
+  split_ifs <;> subst_vars <;> simp_all
 
 /-- **Kirchhoff's matrix-tree theorem.** Any cofactor of the Laplacian of a finite simple graph
 counts its spanning trees. -/
