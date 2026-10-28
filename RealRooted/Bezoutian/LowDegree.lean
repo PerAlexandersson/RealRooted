@@ -69,35 +69,23 @@ lemma bezoutMatrix.const_interleaves_of_quadratic_posSemidef {a b c d : ℝ}
     by_contra hnot
     have hba : b < a := not_le.mp hnot
     have hcd : c < d := by linarith
-    have had : a < d := lt_of_le_of_lt hac hcd
-    have hbc : b < c := lt_of_lt_of_le hba hac
-    have h₁ : (a - b) * (a - d) < 0 :=
-      mul_neg_of_pos_of_neg (sub_pos.mpr hba) (sub_neg.mpr had)
-    have h₂ : 0 < (b - c) * (c - d) :=
-      mul_pos_of_neg_of_neg (sub_neg.mpr hbc) (sub_neg.mpr hcd)
-    nlinarith
+    nlinarith [mul_neg_of_pos_of_neg (sub_pos.mpr hba)
+      (sub_neg.mpr (lt_of_le_of_lt hac hcd)),
+      mul_pos_of_neg_of_neg (sub_neg.mpr (lt_of_lt_of_le hba hac)) (sub_neg.mpr hcd)]
   have hbc : b ≤ c := by
     by_contra hnot
     have hcb : c < b := not_le.mp hnot
-    have hab' : a < b := lt_of_le_of_lt hac hcb
     have hcd : c < d := lt_of_lt_of_le hcb hbd
-    have had : a < d := lt_of_le_of_lt hac hcd
-    have h₁ : 0 < (a - b) * (a - d) :=
-      mul_pos_of_neg_of_neg (sub_neg.mpr hab') (sub_neg.mpr had)
-    have h₂ : (b - c) * (c - d) < 0 :=
-      mul_neg_of_pos_of_neg (sub_pos.mpr hcb) (sub_neg.mpr hcd)
-    nlinarith
+    nlinarith [mul_pos_of_neg_of_neg (sub_neg.mpr (lt_of_le_of_lt hac hcb))
+      (sub_neg.mpr (lt_of_le_of_lt hac hcd)),
+      mul_neg_of_pos_of_neg (sub_pos.mpr hcb) (sub_neg.mpr hcd)]
   have hcd : c ≤ d := by
     by_contra hnot
     have hdc : d < c := not_le.mp hnot
     have hab' : a < b := by linarith
-    have had : a < d := lt_of_lt_of_le hab' hbd
-    have hbc' : b < c := lt_of_le_of_lt hbd hdc
-    have h₁ : 0 < (a - b) * (a - d) :=
-      mul_pos_of_neg_of_neg (sub_neg.mpr hab') (sub_neg.mpr had)
-    have h₂ : (b - c) * (c - d) < 0 :=
-      mul_neg_of_neg_of_pos (sub_neg.mpr hbc') (sub_pos.mpr hdc)
-    nlinarith
+    nlinarith [mul_pos_of_neg_of_neg (sub_neg.mpr hab')
+      (sub_neg.mpr (lt_of_lt_of_le hab' hbd)),
+      mul_neg_of_neg_of_pos (sub_neg.mpr (lt_of_le_of_lt hbd hdc)) (sub_pos.mpr hdc)]
   simp_all
 
 /-- Ordered constants give the positive-semidefinite quadratic Bezoutian. -/
@@ -138,11 +126,8 @@ lemma bezoutMatrix.quadratic_posDef_two_of_const_strictInterleaves {a b c d : �
         add_pos_of_pos_of_nonneg (sq_pos_of_ne_zero hb0)
           (mul_nonneg hba.le hcb.le)
       positivity
-    · have hleft : 0 < (b - a) * c ^ 2 :=
-        mul_pos hba (sq_pos_of_ne_zero hc0)
-      have h_nonneg : 0 ≤ (d - c) * (b ^ 2 + (b - a) * (c - b)) :=
-        mul_nonneg hdc.le (add_nonneg (sq_nonneg b) (mul_nonneg hba.le hcb.le))
-      linarith
+    · exact add_pos_of_pos_of_nonneg (mul_pos hba (sq_pos_of_ne_zero hc0))
+        (mul_nonneg hdc.le (add_nonneg (sq_nonneg b) (mul_nonneg hba.le hcb.le)))
   · have hdet_eq :
         ((a + c) * (b * d) - (b + d) * (a * c)) * (b + d - (a + c)) -
           (b * d - a * c) * (b * d - a * c) =

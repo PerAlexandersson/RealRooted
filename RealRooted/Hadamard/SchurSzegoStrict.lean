@@ -79,7 +79,8 @@ private theorem hasNonnegCoeffs_of_roots_neg {Q : ℝ[X]} (hQs : Q.Splits)
   · rw [coeff_eq_zero_of_natDegree_lt hk]
 
 /-- The coefficient of `P *ₙ Q` in degree `P.natDegree` is nonzero when `P ≠ 0`. -/
-private theorem coeff_natDegree_schurSzegoComp_ne_zero {n : ℕ} {P Q : ℝ[X]} (hP : P.natDegree ≤ n)
+private theorem coeff_natDegree_schurSzegoComp_ne_zero {n : ℕ} {P Q : ℝ[X]}
+    (hP : P.natDegree ≤ n)
     (hP0 : P ≠ 0) (hQ : Q.natDegree = n) (hQs : Q.Splits) (hQpos : HasPosLeadingCoeff Q)
     (hneg : ∀ b ∈ Q.roots, b < 0) :
     (schurSzegoComp n P Q).coeff P.natDegree ≠ 0 := by
@@ -127,18 +128,16 @@ theorem roots_schurSzegoComp_neg_of_roots_neg {n : ℕ} {P Q : ℝ[X]}
     (hQs : Q.Splits) (hQpos : HasPosLeadingCoeff Q) (hneg : ∀ b ∈ Q.roots, b < 0) :
     ∀ r ∈ (schurSzegoComp n P Q).roots, r < 0 := by
   intro r hr
-  have hnonneg : HasNonnegCoeffs (schurSzegoComp n P Q) :=
-    (hasNonnegCoeffs_of_roots_neg hPs hPpos hPneg).schurSzegoComp
-      (hasNonnegCoeffs_of_roots_neg hQs hQpos hneg)
-  refine lt_of_le_of_ne (roots_nonpos_of_hasNonnegCoeffs hnonneg r hr) fun hr0 => ?_
+  refine lt_of_le_of_ne (roots_nonpos_of_hasNonnegCoeffs
+    ((hasNonnegCoeffs_of_roots_neg hPs hPpos hPneg).schurSzegoComp
+      (hasNonnegCoeffs_of_roots_neg hQs hQpos hneg)) r hr) fun hr0 => ?_
   have hne : schurSzegoComp n P Q ≠ 0 := fun h => by simp [h] at hr
   have hroot := (mem_roots hne).mp hr
-  rw [hr0, IsRoot.def, ← coeff_zero_eq_eval_zero, coeff_schurSzegoComp, ite_eq_left (Nat.zero_le _)]
-    at hroot
-  have hP0 := coeff_pos_of_roots_neg hPs hPpos hPneg (Nat.zero_le _)
-  have hQ0 := coeff_pos_of_roots_neg hQs hQpos hneg (Nat.zero_le _)
+  rw [hr0, IsRoot.def, ← coeff_zero_eq_eval_zero, coeff_schurSzegoComp,
+    ite_eq_left (Nat.zero_le _)] at hroot
   simp only [Nat.choose_zero_right, Nat.cast_one, div_one] at hroot
-  exact (mul_pos hP0 hQ0).ne' hroot
+  exact (mul_pos (coeff_pos_of_roots_neg hPs hPpos hPneg (Nat.zero_le _))
+    (coeff_pos_of_roots_neg hQs hQpos hneg (Nat.zero_le _))).ne' hroot
 
 /-! ### Simple roots -/
 
@@ -203,11 +202,10 @@ theorem hasSimpleRoots_schurSzegoComp_of_roots_neg {n : ℕ} {P Q : ℝ[X]}
   intro r hr
   have hrh : h.eval r = 0 := hr
   by_contra hmult
-  have hmultTwo : 1 < h.rootMultiplicity r := by
-    have := (Polynomial.rootMultiplicity_pos hhne).2 hr
-    lia
   have hderRoot : h.derivative.eval r = 0 :=
-    ((Polynomial.one_lt_rootMultiplicity_iff_isRoot hhne).1 hmultTwo).2
+    ((Polynomial.one_lt_rootMultiplicity_iff_isRoot hhne).1 (by
+      have := (Polynomial.rootMultiplicity_pos hhne).2 hr
+      lia)).2
   have hplusStrict := deriv2_mul_lt_deriv_sq_at_non_root hplus
     (by rw [natDegree_add_C]; lia) (by rw [eval_add, eval_C, hrh, zero_add]; exact hc.ne')
   have hminusStrict := deriv2_mul_lt_deriv_sq_at_non_root hminus
@@ -298,24 +296,21 @@ theorem strictInterl_schurSzegoComp_of_roots_neg {n : ℕ} {f g Q : ℝ[X]} (hn 
     · exact Or.inr hsame.symm
     · exact Or.inl hsucc.symm
   have hweakOr := strictInterl_of_allComboRealRooted hane hasplit hbne hbsplit houtall hdeg
+  have roots_eq_zero {p : ℝ[X]} (hsplit : p.Splits) (hdegree : p.natDegree = 0) :
+      p.roots = 0 := by
+    exact Multiset.card_eq_zero.mp (hsplit.natDegree_eq_card_roots.symm ▸ hdegree)
   -- If `f` is constant, then `a` has no roots.
   have hno_of_f_const : f.natDegree = 0 → ∀ r, ¬ (a.IsRoot r ∧ b.IsRoot r) := by
     intro hfzero r hr
-    have haroots : a.roots = 0 := by
-      apply Multiset.card_eq_zero.mp
-      rw [Polynomial.splits_iff_card_roots.mp hasplit, hadegree, hfzero]
+    have haroots := roots_eq_zero hasplit (hadegree.trans hfzero)
     have := (mem_roots hane).mpr hr.1
     simp [haroots] at this
   by_cases hgzero : g.natDegree = 0
   · have hfzero : f.natDegree = 0 := by
       have := hfg.natDegree_le
       lia
-    have haroots : a.roots = 0 := by
-      apply Multiset.card_eq_zero.mp
-      rw [Polynomial.splits_iff_card_roots.mp hasplit, hadegree, hfzero]
-    have hbroots : b.roots = 0 := by
-      apply Multiset.card_eq_zero.mp
-      rw [Polynomial.splits_iff_card_roots.mp hbsplit, hbdegree, hgzero]
+    have haroots := roots_eq_zero hasplit (hadegree.trans hfzero)
+    have hbroots := roots_eq_zero hbsplit (hbdegree.trans hgzero)
     refine ⟨?_, fun r hr hbr => hno_of_f_const hfzero r ⟨hr, hbr⟩⟩
     rcases hweakOr with hab | hba
     · exact hab
@@ -343,17 +338,18 @@ theorem strictInterl_schurSzegoComp_of_roots_neg {n : ℕ} {f g Q : ℝ[X]} (hn 
       hinsimple hQ hQs hQpos hneg
     rw [schurSzegoComp_C_mul_add_left] at houtSimple
     have houtRoot : (C (b.derivative.eval r) * a + C (-a.derivative.eval r) * b).IsRoot r := by
-      simp only [IsRoot.def, eval_add, eval_mul, eval_C, hr.1.eq_zero, hr.2.eq_zero, mul_zero,
-        add_zero]
+      simp only [IsRoot.def, eval_add, eval_mul, eval_C, hr.1.eq_zero, hr.2.eq_zero,
+        mul_zero, add_zero]
     have hderne := houtSimple.eval_derivative_ne_zero houtRoot
     apply hderne
     simp only [derivative_add, derivative_mul, derivative_C, zero_mul, zero_add, eval_add,
       eval_mul, eval_C]
     ring
-  have hQ0 : 0 < Q.coeff 0 := coeff_pos_of_roots_neg hQs hQpos hneg (Nat.zero_le _)
-  have hQ1 : 0 < Q.coeff 1 := coeff_pos_of_roots_neg hQs hQpos hneg (by lia)
   have hscale : 0 < Q.coeff 0 * Q.coeff 1 / (n : ℝ) :=
-    div_pos (mul_pos hQ0 hQ1) (by exact_mod_cast Nat.pos_of_ne_zero hn)
+    div_pos
+      (mul_pos (coeff_pos_of_roots_neg hQs hQpos hneg (Nat.zero_le _))
+        (coeff_pos_of_roots_neg hQs hQpos hneg (by lia)))
+      (by exact_mod_cast Nat.pos_of_ne_zero hn)
   have hWout : 0 < (wronskian a b).eval 0 := by
     rw [ha, hb, wronskian_schurSzegoComp_eval_zero hn]
     exact mul_pos hscale (hW 0)

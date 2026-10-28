@@ -76,10 +76,7 @@ private theorem factorial_cast_ne_zero (m : ℕ) : (Nat.factorial m : ℝ) ≠ 0
   Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero m)
 
 @[simp] theorem cWeight_zero_index (n : ℕ) : cWeight n 0 = 1 := by
-  have h : (Nat.factorial n : ℝ) ≠ 0 := factorial_cast_ne_zero n
-  unfold cWeight
-  simp only [Nat.sub_zero, pow_zero, one_mul, Nat.factorial_zero, Nat.cast_one, mul_one]
-  exact div_self (pow_ne_zero 2 h)
+  simpa [cWeight] using div_self (pow_ne_zero 2 (factorial_cast_ne_zero n))
 
 /-- The weight at index one, `cWeight n 1 = -1 / n ^ 2`. -/
 theorem cWeight_one_index (n : ℕ) (hn : 1 ≤ n) :
@@ -213,6 +210,29 @@ theorem dNorm_recurrence_one (m : ℕ) :
     cWeight_zero_index]
   ring
 
+private theorem dNorm_recurrence_aux (m l : ℕ) (hl : l ≤ m) :
+    dNorm (m + 3) (l + 2)
+      = dNorm (m + 2) (l + 2)
+        + alphaC (m + 3) * dNorm (m + 1) (l + 1)
+        + betaC (m + 3) * dNorm m l := by
+  have key : ∀ j ∈ Finset.range (l + 1),
+      cWeight (m + 3) (j + 2) * eCube (l - j)
+        = cWeight (m + 2) (j + 2) * eCube (l - j)
+          + alphaC (m + 3) * (cWeight (m + 1) (j + 1) * eCube (l - j))
+          + betaC (m + 3) * (cWeight m j * eCube (l - j)) := by
+    intro j hj
+    have hjm : j ≤ m := by simp only [Finset.mem_range] at hj; lia
+    have hrec := cWeight_recurrence (m - j) j
+    rw [show j + (m - j) + 3 = m + 3 by lia, show j + (m - j) + 2 = m + 2 by lia,
+      show j + (m - j) + 1 = m + 1 by lia, show j + (m - j) = m by lia] at hrec
+    rw [hrec]
+    ring
+  rw [dNorm_split_two (m + 3) l, dNorm_split_two (m + 2) l,
+    dNorm_split_one (m + 1) l, dNorm_eq m l, Finset.sum_congr rfl key,
+    Finset.sum_add_distrib, Finset.sum_add_distrib, ← Finset.mul_sum,
+    ← Finset.mul_sum, cWeight_recurrence_zero m, cWeight_recurrence_one m]
+  ring
+
 /-- **The coefficient recurrence.**  Convolving `cWeight_recurrence` against
 `eCube` gives the three-term recurrence for the normalized array coefficients.
 The hypothesis `l + 2 ≤ m` is what keeps every weight index strictly below its
@@ -221,52 +241,16 @@ theorem dNorm_recurrence (m l : ℕ) (hl : l + 2 ≤ m) :
     dNorm (m + 3) (l + 2)
       = dNorm (m + 2) (l + 2)
         + alphaC (m + 3) * dNorm (m + 1) (l + 1)
-        + betaC (m + 3) * dNorm m l := by
-  have key : ∀ j ∈ Finset.range (l + 1),
-      cWeight (m + 3) (j + 2) * eCube (l - j)
-        = cWeight (m + 2) (j + 2) * eCube (l - j)
-          + alphaC (m + 3) * (cWeight (m + 1) (j + 1) * eCube (l - j))
-          + betaC (m + 3) * (cWeight m j * eCube (l - j)) := by
-    intro j hj
-    have hjm : j ≤ m := by simp only [Finset.mem_range] at hj; lia
-    have e1 : j + (m - j) + 3 = m + 3 := by lia
-    have e2 : j + (m - j) + 2 = m + 2 := by lia
-    have e3 : j + (m - j) + 1 = m + 1 := by lia
-    have e4 : j + (m - j) = m := by lia
-    have hrec := cWeight_recurrence (m - j) j
-    rw [e1, e2, e3, e4] at hrec
-    rw [hrec]; ring
-  rw [dNorm_split_two (m + 3) l, dNorm_split_two (m + 2) l, dNorm_split_one (m + 1) l,
-    dNorm_eq m l, Finset.sum_congr rfl key, Finset.sum_add_distrib, Finset.sum_add_distrib,
-    ← Finset.mul_sum, ← Finset.mul_sum, cWeight_recurrence_zero m, cWeight_recurrence_one m]
-  ring
+        + betaC (m + 3) * dNorm m l :=
+  dNorm_recurrence_aux m l (by lia)
 
 /-- The coefficient recurrence under its sharp index hypothesis. -/
 theorem dNorm_recurrence_of_le (m l : ℕ) (hl : l ≤ m) :
     dNorm (m + 3) (l + 2)
       = dNorm (m + 2) (l + 2)
         + alphaC (m + 3) * dNorm (m + 1) (l + 1)
-        + betaC (m + 3) * dNorm m l := by
-  have key : ∀ j ∈ Finset.range (l + 1),
-      cWeight (m + 3) (j + 2) * eCube (l - j)
-        = cWeight (m + 2) (j + 2) * eCube (l - j)
-          + alphaC (m + 3) * (cWeight (m + 1) (j + 1) * eCube (l - j))
-          + betaC (m + 3) * (cWeight m j * eCube (l - j)) := by
-    intro j hj
-    have hjm : j ≤ m := by simp only [Finset.mem_range] at hj; lia
-    have e1 : j + (m - j) + 3 = m + 3 := by lia
-    have e2 : j + (m - j) + 2 = m + 2 := by lia
-    have e3 : j + (m - j) + 1 = m + 1 := by lia
-    have e4 : j + (m - j) = m := by lia
-    have hrec := cWeight_recurrence (m - j) j
-    rw [e1, e2, e3, e4] at hrec
-    rw [hrec]
-    ring
-  rw [dNorm_split_two (m + 3) l, dNorm_split_two (m + 2) l,
-    dNorm_split_one (m + 1) l, dNorm_eq m l, Finset.sum_congr rfl key,
-    Finset.sum_add_distrib, Finset.sum_add_distrib, ← Finset.mul_sum,
-    ← Finset.mul_sum, cWeight_recurrence_zero m, cWeight_recurrence_one m]
-  ring
+        + betaC (m + 3) * dNorm m l :=
+  dNorm_recurrence_aux m l hl
 
 /-! ### Identification with the inclusion-exclusion count -/
 
@@ -343,8 +327,8 @@ theorem dNorm_self_eq_zero (n : ℕ) (hn : n ≠ 0) : dNorm n n = 0 := by
   have h := dNorm_mul_descFactorial_pow_three n n le_rfl
   rw [tArray_self_eq_zero n hn] at h
   have hfactorial : (Nat.descFactorial n n : ℝ) ^ 3 ≠ 0 := by
-    rw [Nat.descFactorial_self]
-    exact pow_ne_zero 3 (Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero n))
+    simpa only [Nat.descFactorial_self] using
+      pow_ne_zero 3 (Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero n))
   exact (mul_eq_zero.mp h).resolve_right hfactorial
 
 end RealRooted

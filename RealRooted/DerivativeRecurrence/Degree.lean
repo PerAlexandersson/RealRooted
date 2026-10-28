@@ -152,8 +152,7 @@ private theorem derivativeRecurrence_step
     Nat.descFactorial_one, Nat.descFactorial_zero, Nat.cast_one, mul_one] at h1 h1c h0 h0c
   rw [hrec n, show D₀ + d * (n + 1) = D₀ + d * n + d by ring]
   refine ⟨natDegree_add_le_of_degree_le h1 h0, ?_⟩
-  rw [coeff_add, h1c, h0c]
-  ring
+  rw [coeff_add, h1c, h0c]; ring
 
 /-- Rows of `P (n + 1) = A n * (P n)' + B n * P n` have degree `D₀ + d * n` when
 the top-coefficient multiplier never vanishes. -/
@@ -204,11 +203,7 @@ variable {P A B C : ℕ → ℝ[X]} {d D₀ : ℕ}
 
 private theorem descFactorial_two_cast (N : ℕ) :
     (N.descFactorial 2 : ℝ) = (N : ℝ) * ((N : ℝ) - 1) := by
-  rcases N with _ | N
-  · simp
-  · rw [Nat.succ_descFactorial_succ, Nat.descFactorial_one]
-    push_cast
-    ring
+  rcases N with _ | N <;> simp [mul_comm]
 
 private theorem derivRec₂_step
     (hrec : ∀ n, P (n + 1) =
@@ -233,8 +228,7 @@ private theorem derivRec₂_step
     Nat.descFactorial_one, Nat.descFactorial_zero, Nat.cast_one, mul_one] at h1 h1c h0 h0c
   rw [hrec n, show D₀ + d * (n + 1) = D₀ + d * n + d by ring]
   refine ⟨natDegree_add_le_of_degree_le (natDegree_add_le_of_degree_le h2 h1) h0, ?_⟩
-  rw [coeff_add, coeff_add, h2c, h1c, h0c]
-  ring
+  rw [coeff_add, coeff_add, h2c, h1c, h0c]; ring
 
 /-- Rows of `P (n + 1) = A n * (P n)'' + B n * (P n)' + C n * P n` have degree
 `D₀ + d * n` when the top-coefficient multiplier never vanishes. -/
