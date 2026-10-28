@@ -97,10 +97,8 @@ lemma weightedSum_eq_zero_of_forall_coeff_zero :
       weightedSum l = 0
   | [], _ => rfl
   | (a, p) :: l, hzero => by
-      have ha : a = 0 := hzero (a, p) (by simp)
-      have hl : ∀ ap ∈ l, ap.1 = 0 :=
-        List.forall_mem_of_forall_mem_cons hzero
-      simp [weightedSum_cons, ha, weightedSum_eq_zero_of_forall_coeff_zero l hl]
+      simp only [List.forall_mem_cons] at hzero
+      simp [hzero.1, weightedSum_eq_zero_of_forall_coeff_zero l hzero.2]
 
 private lemma forall_weight_eq_zero_of_nonneg_of_not_exists_pos
     {l : List (ℝ × ℝ[X])}
@@ -120,17 +118,14 @@ lemma hasPosLeadingCoeff_weightedSum :
   | [], _, _, hex => by simp_all
   | (a, p) :: l, hnonneg, hpos, hex => by
       have hnonneg_a : 0 ≤ a := hnonneg (a, p) (by simp)
-      have hnonneg_tail : ∀ ap ∈ l, 0 ≤ ap.1 :=
-        List.forall_mem_of_forall_mem_cons hnonneg
-      have hpos_tail : ∀ ap ∈ l, HasPosLeadingCoeff ap.2 :=
-        List.forall_mem_of_forall_mem_cons hpos
+      have hnonneg_tail := List.forall_mem_of_forall_mem_cons hnonneg
+      have hpos_tail := List.forall_mem_of_forall_mem_cons hpos
       rcases lt_or_eq_of_le hnonneg_a with ha | rfl
       · by_cases htail : ∃ ap ∈ l, 0 < ap.1
-        · have hCp_pos : HasPosLeadingCoeff (C a * p) :=
-            hasPosLeadingCoeff_C_mul ha (hpos (a, p) (by simp))
-          have htail_pos : HasPosLeadingCoeff (weightedSum l) :=
-            hasPosLeadingCoeff_weightedSum l hnonneg_tail hpos_tail htail
-          rcases lt_trichotomy (C a * p).natDegree (weightedSum l).natDegree with hlt | heq | hgt
+        · have hCp_pos := hasPosLeadingCoeff_C_mul ha (hpos (a, p) (by simp))
+          have htail_pos := hasPosLeadingCoeff_weightedSum l hnonneg_tail hpos_tail htail
+          rcases lt_trichotomy (C a * p).natDegree (weightedSum l).natDegree with
+            hlt | heq | hgt
           · simpa [weightedSum_cons] using
               hasPosLeadingCoeff_add_of_natDegree_lt_right hlt htail_pos
           · simpa [weightedSum_cons] using
@@ -159,14 +154,11 @@ lemma natDegree_weightedSum_eq_of_nonneg_of_sameDegree :
   | [], _, _, _, _, hex => by simp_all
   | (a, p) :: l, d, hnonneg, hdeg, hpos, hex => by
       have ha_nonneg : 0 ≤ a := hnonneg (a, p) (by simp)
-      have hnonneg_tail : ∀ ap ∈ l, 0 ≤ ap.1 :=
-        List.forall_mem_of_forall_mem_cons hnonneg
+      have hnonneg_tail := List.forall_mem_of_forall_mem_cons hnonneg
       have hdeg_p : p.natDegree = d := hdeg (a, p) (by simp)
-      have hdeg_tail : ∀ ap ∈ l, ap.2.natDegree = d :=
-        List.forall_mem_of_forall_mem_cons hdeg
+      have hdeg_tail := List.forall_mem_of_forall_mem_cons hdeg
       have hpos_p : HasPosLeadingCoeff p := hpos (a, p) (by simp)
-      have hpos_tail : ∀ ap ∈ l, HasPosLeadingCoeff ap.2 :=
-        List.forall_mem_of_forall_mem_cons hpos
+      have hpos_tail := List.forall_mem_of_forall_mem_cons hpos
       rcases eq_or_lt_of_le ha_nonneg with rfl | ha_pos
       · have htail : ∃ ap ∈ l, 0 < ap.1 := by simp_all
         simpa [weightedSum_cons] using
@@ -215,10 +207,7 @@ lemma nonneg {h : ℝ[X]} :
     ∀ {l : List (ℝ × ℝ[X])}, WeightedCompatibleLeft h l → ∀ ap ∈ l, 0 ≤ ap.1
   | _, @singleton _ a p ha _ _ => by
       grind
-  | _, cons_zero ha _ _ hl => fun ap hap => by
-      rcases List.mem_cons.mp hap with rfl | hap
-      · simp_all
-      · exact nonneg hl ap hap
+  | _, cons_zero ha _ _ hl
   | _, cons_pos ha _ _ hl => fun ap hap => by
       rcases List.mem_cons.mp hap with rfl | hap
       · grind
@@ -263,11 +252,10 @@ lemma toStrictInterl {h : ℝ[X]} :
   | _, cons_zero ha _ _ hl => by
       simpa [weightedSum, weightedSum_cons, ha] using toStrictInterl hl
   | _, @cons_pos _ a p l ha hstrictInterl hpos hl => by
-      have hCa_pos : HasPosLeadingCoeff (C a * p) := hasPosLeadingCoeff_C_mul ha hpos
       exact StrictInterl.add_of_left
         (StrictInterl.C_mul_right hstrictInterl ha.ne')
         (toStrictInterl hl)
-        hCa_pos (hasPosLeadingCoeff hl)
+        (hasPosLeadingCoeff_C_mul ha hpos) (hasPosLeadingCoeff hl)
 
 lemma toSumCompatibleLeft_map_one {h : ℝ[X]} :
     ∀ {l : List ℝ[X]},
@@ -315,26 +303,20 @@ theorem StrictInterl.weightedSum_right_of_nonneg :
   | [], _, _, _, _, hex => by simp_all
   | (a, p) :: l, h, hnonneg, hstrictInterl, hpos, hex => by
       have hnonneg_a : 0 ≤ a := hnonneg (a, p) (by simp)
-      have hnonneg_tail : ∀ ap ∈ l, 0 ≤ ap.1 :=
-        List.forall_mem_of_forall_mem_cons hnonneg
-      have hstrictInterl_tail : ∀ ap ∈ l, StrictInterl ap.2 h :=
-        List.forall_mem_of_forall_mem_cons hstrictInterl
-      have hpos_tail : ∀ ap ∈ l, HasPosLeadingCoeff ap.2 :=
-        List.forall_mem_of_forall_mem_cons hpos
+      have hnonneg_tail := List.forall_mem_of_forall_mem_cons hnonneg
+      have hstrictInterl_tail := List.forall_mem_of_forall_mem_cons hstrictInterl
+      have hpos_tail := List.forall_mem_of_forall_mem_cons hpos
       rcases lt_or_eq_of_le hnonneg_a with ha | rfl
       · by_cases htail : ∃ ap ∈ l, 0 < ap.1
-        · have hCp_strictInterl : StrictInterl (C a * p) h :=
-            StrictInterl.C_mul_left (hstrictInterl (a, p) (by simp)) ha.ne'
-          have hCp_pos : HasPosLeadingCoeff (C a * p) :=
-            hasPosLeadingCoeff_C_mul ha (hpos (a, p) (by simp))
-          have htail_strictInterl : StrictInterl (weightedSum l) h :=
+        · have htail_strictInterl : StrictInterl (weightedSum l) h :=
             StrictInterl.weightedSum_right_of_nonneg
               l h hnonneg_tail hstrictInterl_tail hpos_tail htail
-          have htail_pos : HasPosLeadingCoeff (weightedSum l) :=
-            hasPosLeadingCoeff_weightedSum l hnonneg_tail hpos_tail htail
           simpa [weightedSum_cons] using
             StrictInterl.add_of_right_of_posLeadingCoeff
-              hCp_strictInterl htail_strictInterl hCp_pos htail_pos
+              (StrictInterl.C_mul_left (hstrictInterl (a, p) (by simp)) ha.ne')
+              htail_strictInterl
+              (hasPosLeadingCoeff_C_mul ha (hpos (a, p) (by simp)))
+              (hasPosLeadingCoeff_weightedSum l hnonneg_tail hpos_tail htail)
         · have hzero_tail : weightedSum l = 0 :=
             weightedSum_eq_zero_of_forall_coeff_zero l
               (forall_weight_eq_zero_of_nonneg_of_not_exists_pos

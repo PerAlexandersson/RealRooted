@@ -112,6 +112,15 @@ private theorem gapPrefix_last {n : ℕ} (hn : 0 < n) (D : Finset (Fin n))
   have h := hD i hi
   exact Fin.lt_def.mpr (by lia)
 
+private theorem gapPrefix_last_eq_card_and_card_le {n : ℕ}
+    (D : Finset (Fin (n + 1))) (hD : ∀ i ∈ D, i.val + 1 < n + 1) :
+    gapPrefix D (Fin.last n) = D.card ∧ D.card ≤ n := by
+  have hidx : (Fin.last n : Fin (n + 1)) = ⟨n + 1 - 1, by lia⟩ := Fin.ext (by simp)
+  have hl : gapPrefix D (Fin.last n) = D.card := by
+    rw [hidx]
+    exact gapPrefix_last (Nat.succ_pos n) D hD
+  exact ⟨hl, by rw [← hl]; simpa using gapPrefix_le_val D (Fin.last n)⟩
+
 private theorem gapPrefix_succ {n : ℕ} (D : Finset (Fin (n + 1))) (i : Fin n) :
     gapPrefix D i.succ =
       gapPrefix D i.castSucc + if i.castSucc ∈ D then 1 else 0 := by
@@ -158,18 +167,14 @@ private theorem shiftedRank_strictMono {n k : ℕ} (D : Finset (Fin (n + 1)))
   have hmVal := Fin.le_def.mp hm
   have hcast : i.castSucc.val = i.val := rfl
   have hsucc : i.succ.val = i.val + 1 := rfl
+  unfold shiftedRank
+  simp only [Fin.val_castSucc, Fin.val_succ]
+  rw [hp]
   by_cases hi : i.castSucc ∈ D
-  · have hs := hgap i.castSucc hi i.succ rfl
-    have hsVal := Fin.lt_def.mp hs
-    unfold shiftedRank
-    simp only [Fin.val_castSucc, Fin.val_succ]
-    rw [hp]
+  · have hsVal := Fin.lt_def.mp (hgap i.castSucc hi i.succ rfl)
     simp only [hi, ↓reduceIte]
     lia
-  · unfold shiftedRank
-    simp only [Fin.val_castSucc, Fin.val_succ]
-    rw [hp]
-    simp only [hi, ↓reduceIte, add_zero]
+  · simp only [hi, ↓reduceIte, add_zero]
     lia
 
 private theorem shiftedRank_lt {n k : ℕ} (D : Finset (Fin (n + 1)))
@@ -177,19 +182,11 @@ private theorem shiftedRank_lt {n k : ℕ} (D : Finset (Fin (n + 1)))
     (v : Fin (n + 1) → Fin k) (hv : v ∈ forcedGapWords (n + 1) k D)
     (i : Fin (n + 1)) : shiftedRank D v i < k + n - D.card := by
   have hm := (shiftedRank_strictMono D v hv).monotone i.le_last
-  have hl : gapPrefix D (Fin.last n) = D.card := by
-    have hidx : (Fin.last n : Fin (n + 1)) = ⟨n + 1 - 1, by lia⟩ :=
-      Fin.ext (by simp)
-    rw [hidx]
-    exact gapPrefix_last (Nat.succ_pos n) D hD
-  have hDcard : D.card ≤ n := by
-    rw [← hl]
-    simpa using gapPrefix_le_val D (Fin.last n)
+  obtain ⟨hl, hDcard⟩ := gapPrefix_last_eq_card_and_card_le D hD
   have hvLast := (v (Fin.last n)).isLt
   unfold shiftedRank at hm ⊢
   rw [hl] at hm
   simp only [Fin.val_last] at hm
-  have hlast : (Fin.last n).val = n := rfl
   lia
 
 private def shiftedTuple {n k : ℕ} (D : Finset (Fin (n + 1)))
@@ -249,14 +246,7 @@ private theorem unshiftedRank_lt {n k : ℕ} (D : Finset (Fin (n + 1)))
     (g : Fin (n + 1) → Fin (k + n - D.card)) (hg : StrictMono g)
     (i : Fin (n + 1)) : unshiftedRank D g i < k := by
   have hm := (unshiftedRank_monotone D g hg) i.le_last
-  have hl : gapPrefix D (Fin.last n) = D.card := by
-    have hidx : (Fin.last n : Fin (n + 1)) = ⟨n + 1 - 1, by lia⟩ :=
-      Fin.ext (by simp)
-    rw [hidx]
-    exact gapPrefix_last (Nat.succ_pos n) D hD
-  have hDcard : D.card ≤ n := by
-    rw [← hl]
-    simpa using gapPrefix_le_val D (Fin.last n)
+  obtain ⟨hl, hDcard⟩ := gapPrefix_last_eq_card_and_card_le D hD
   have hgLast := (g (Fin.last n)).isLt
   have hindex := strictTuple_ge_index g hg (Fin.last n)
   unfold unshiftedRank at hm ⊢
@@ -333,9 +323,7 @@ theorem forcedGapWords_card (n k : ℕ) (D : Finset (Fin n))
       ext i
       exact Fin.elim0 i
     subst D
-    have hmono (v : Fin 0 → Fin k) : Monotone v := by
-      intro i
-      exact Fin.elim0 i
+    have hmono (v : Fin 0 → Fin k) : Monotone v := fun i => Fin.elim0 i
     simp [forcedGapWords, hmono]
   | succ n =>
     have hcard : (forcedGapWords (n + 1) k D).card =
