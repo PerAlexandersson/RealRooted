@@ -282,4 +282,254 @@ theorem polynomial_splits (m : ℕ) : (polynomial m).Splits := by
   exact Graph.supportIndepPoly_splits_of_clawFree
     intervalGraph_clawFree (Finset.range (2 * m - 3))
 
+private lemma polynomial_three : polynomial 3 = -1 - 3 * X := by
+  have h := polynomial_add_three 0
+  norm_num at h
+  rw [h]
+  ring
+
+private lemma polynomial_four : polynomial 4 = 1 + 5 * X + X ^ 2 := by
+  have h := polynomial_add_three 1
+  norm_num at h
+  rw [h, polynomial_three]
+  ring
+
+private lemma polynomial_five : polynomial 5 = -1 - 7 * X - 5 * X ^ 2 := by
+  have h := polynomial_add_three 2
+  norm_num at h
+  rw [h, polynomial_three, polynomial_four]
+  ring
+
+/-- A family with the cubic-parent even initial rows and recurrence is the even subsequence. -/
+theorem eq_even_of_recurrence
+    (P : ℕ → ℝ[X])
+    (h0 : P 0 = 1)
+    (h1 : P 1 = 1 + X)
+    (h2 : P 2 = 1 + 5 * X + X ^ 2)
+    (hrec : ∀ n, P (n + 3) =
+      (1 + 2 * X) * P (n + 2) +
+        (2 * X - X ^ 2) * P (n + 1) + X ^ 2 * P n) :
+    ∀ n, P n = polynomial (2 * n) := by
+  intro n
+  induction n using Nat.strong_induction_on with
+  | h n ih =>
+      rcases n with _ | _ | _ | n
+      · simp [h0]
+      · simp [h1]
+      · simpa [h2] using polynomial_four.symm
+      · rw [hrec, ih (n + 2) (by lia), ih (n + 1) (by lia), ih n (by lia)]
+        simpa only [show 2 * (n + 3) = 2 * n + 6 by lia,
+          show 2 * (n + 2) = 2 * n + 4 by lia,
+          show 2 * (n + 1) = 2 * n + 2 by lia] using
+            (polynomial_add_six (2 * n)).symm
+
+/-- Every family with the cubic-parent even initial rows and recurrence splits. -/
+theorem splits_of_even_recurrence
+    (P : ℕ → ℝ[X])
+    (h0 : P 0 = 1)
+    (h1 : P 1 = 1 + X)
+    (h2 : P 2 = 1 + 5 * X + X ^ 2)
+    (hrec : ∀ n, P (n + 3) =
+      (1 + 2 * X) * P (n + 2) +
+        (2 * X - X ^ 2) * P (n + 1) + X ^ 2 * P n)
+    (n : ℕ) : (P n).Splits := by
+  rw [eq_even_of_recurrence P h0 h1 h2 hrec]
+  exact polynomial_splits (2 * n)
+
+private lemma natDegree_le_of_reflected_recurrence
+    (P : ℕ → ℝ[X])
+    (h0 : P 0 = 1)
+    (h1 : P 1 = 1 + X ∨ P 1 = 3 + X)
+    (h2 : P 2 = 1 + 5 * X + X ^ 2 ∨ P 2 = 5 + 7 * X + X ^ 2)
+    (hrec : ∀ n, P (n + 3) =
+      (2 + X) * P (n + 2) + (-1 + 2 * X) * P (n + 1) + X * P n) :
+    ∀ n, (P n).natDegree ≤ n
+  | 0 => by rw [h0]; simp
+  | 1 => by rcases h1 with h1 | h1 <;> rw [h1] <;> compute_degree!
+  | 2 => by rcases h2 with h2 | h2 <;> rw [h2] <;> compute_degree!
+  | n + 3 => by
+      rw [hrec]
+      refine (natDegree_add_le _ _).trans (max_le
+        ((natDegree_add_le _ _).trans (max_le ?_ ?_)) ?_)
+      · exact natDegree_mul_le.trans (by
+          have hfactor : (2 + X : ℝ[X]).natDegree ≤ 1 := by compute_degree!
+          exact (Nat.add_le_add hfactor
+            (natDegree_le_of_reflected_recurrence P h0 h1 h2 hrec (n + 2))).trans
+              (by lia))
+      · exact natDegree_mul_le.trans (by
+          have hfactor : (-1 + 2 * X : ℝ[X]).natDegree ≤ 1 := by compute_degree!
+          exact (Nat.add_le_add hfactor
+            (natDegree_le_of_reflected_recurrence P h0 h1 h2 hrec (n + 1))).trans
+              (by lia))
+      · exact natDegree_mul_le.trans (by
+          exact (Nat.add_le_add natDegree_X_le
+            (natDegree_le_of_reflected_recurrence P h0 h1 h2 hrec n)).trans (by lia))
+
+private lemma reflect_one_two_add_X :
+    reflect 1 (2 + X : ℝ[X]) = 1 + 2 * X := by
+  rw [show (2 + X : ℝ[X]) = C 2 * X ^ 0 + C 1 * X ^ 1 by
+      norm_num [map_ofNat],
+    reflect_add, reflect_C_mul_X_pow, reflect_C_mul_X_pow]
+  simp only [revAt_le (by lia : 0 ≤ 1), revAt_le (by lia : 1 ≤ 1)]
+  norm_num [map_ofNat]
+  ring
+
+private lemma reflect_two_neg_one_add_two_X :
+    reflect 2 (-1 + 2 * X : ℝ[X]) = -1 * X ^ 2 + 2 * X := by
+  rw [show (-1 + 2 * X : ℝ[X]) = C (-1) * X ^ 0 + C 2 * X ^ 1 by
+      norm_num [map_ofNat],
+    reflect_add, reflect_C_mul_X_pow, reflect_C_mul_X_pow]
+  simp only [revAt_le (by lia : 0 ≤ 2), revAt_le (by lia : 1 ≤ 2)]
+  norm_num [map_ofNat]
+
+private lemma reflect_three_X : reflect 3 (X : ℝ[X]) = X ^ 2 := by
+  rw [show (X : ℝ[X]) = C 1 * X ^ 1 by simp, reflect_C_mul_X_pow]
+  simp
+
+private lemma reflect_recurrence
+    (P : ℕ → ℝ[X])
+    (hdeg : ∀ n, (P n).natDegree ≤ n)
+    (hrec : ∀ n, P (n + 3) =
+      (2 + X) * P (n + 2) + (-1 + 2 * X) * P (n + 1) + X * P n)
+    (n : ℕ) :
+    reflect (n + 3) (P (n + 3)) =
+      (1 + 2 * X) * reflect (n + 2) (P (n + 2)) +
+        (2 * X - X ^ 2) * reflect (n + 1) (P (n + 1)) +
+          X ^ 2 * reflect n (P n) := by
+  have h1 := reflect_mul (2 + X : ℝ[X]) (P (n + 2))
+    (F := 1) (G := n + 2) (by compute_degree!) (hdeg (n + 2))
+  have h2 := reflect_mul (-1 + 2 * X : ℝ[X]) (P (n + 1))
+    (F := 2) (G := n + 1) (by compute_degree!) (hdeg (n + 1))
+  have h3 := reflect_mul (X : ℝ[X]) (P n)
+    (F := 3) (G := n) (by simp) (hdeg n)
+  rw [hrec, reflect_add, reflect_add]
+  rw [show n + 3 = 1 + (n + 2) by lia, h1]
+  rw [show 1 + (n + 2) = 2 + (n + 1) by lia, h2]
+  rw [show 2 + (n + 1) = 3 + n by lia, h3]
+  rw [reflect_one_two_add_X, reflect_two_neg_one_add_two_X, reflect_three_X]
+  ring
+
+private lemma reflect_one_one_add_X :
+    reflect 1 (1 + X : ℝ[X]) = 1 + X := by
+  rw [show (1 + X : ℝ[X]) = C 1 * X ^ 0 + C 1 * X ^ 1 by simp,
+    reflect_add, reflect_C_mul_X_pow, reflect_C_mul_X_pow]
+  simp only [revAt_le (by lia : 0 ≤ 1), revAt_le (by lia : 1 ≤ 1)]
+  simp
+  ring
+
+private lemma reflect_two_one_add_five_X_add_X_sq :
+    reflect 2 (1 + 5 * X + X ^ 2 : ℝ[X]) = 1 + 5 * X + X ^ 2 := by
+  rw [show (1 + 5 * X + X ^ 2 : ℝ[X]) =
+      (C 1 * X ^ 0 + C 5 * X ^ 1) + C 1 * X ^ 2 by norm_num [map_ofNat],
+    reflect_add, reflect_add, reflect_C_mul_X_pow, reflect_C_mul_X_pow,
+    reflect_C_mul_X_pow]
+  simp only [revAt_le (by lia : 0 ≤ 2), revAt_le (by lia : 1 ≤ 2),
+    revAt_le (by lia : 2 ≤ 2)]
+  norm_num [map_ofNat]
+  ring
+
+private lemma reflect_one_three_add_X :
+    reflect 1 (3 + X : ℝ[X]) = 1 + 3 * X := by
+  rw [show (3 + X : ℝ[X]) = C 3 * X ^ 0 + C 1 * X ^ 1 by
+      norm_num [map_ofNat],
+    reflect_add, reflect_C_mul_X_pow, reflect_C_mul_X_pow]
+  simp only [revAt_le (by lia : 0 ≤ 1), revAt_le (by lia : 1 ≤ 1)]
+  norm_num [map_ofNat]
+  ring
+
+private lemma reflect_two_five_add_seven_X_add_X_sq :
+    reflect 2 (5 + 7 * X + X ^ 2 : ℝ[X]) = 1 + 7 * X + 5 * X ^ 2 := by
+  rw [show (5 + 7 * X + X ^ 2 : ℝ[X]) =
+      (C 5 * X ^ 0 + C 7 * X ^ 1) + C 1 * X ^ 2 by norm_num [map_ofNat],
+    reflect_add, reflect_add, reflect_C_mul_X_pow, reflect_C_mul_X_pow,
+    reflect_C_mul_X_pow]
+  simp only [revAt_le (by lia : 0 ≤ 2), revAt_le (by lia : 1 ≤ 2),
+    revAt_le (by lia : 2 ≤ 2)]
+  norm_num [map_ofNat]
+  ring
+
+/-- Reflecting a family with the even reflected cubic-parent recurrence gives the even
+cubic-parent subsequence. -/
+theorem reflect_eq_even_of_recurrence
+    (P : ℕ → ℝ[X])
+    (h0 : P 0 = 1)
+    (h1 : P 1 = 1 + X)
+    (h2 : P 2 = 1 + 5 * X + X ^ 2)
+    (hrec : ∀ n, P (n + 3) =
+      (2 + X) * P (n + 2) + (-1 + 2 * X) * P (n + 1) + X * P n) :
+    ∀ n, reflect n (P n) = polynomial (2 * n) := by
+  have hdeg := natDegree_le_of_reflected_recurrence P h0 (Or.inl h1) (Or.inl h2) hrec
+  intro n
+  induction n using Nat.strong_induction_on with
+  | h n ih =>
+      rcases n with _ | _ | _ | n
+      · simp [h0]
+      · rw [h1, reflect_one_one_add_X, polynomial_two]
+      · rw [h2, reflect_two_one_add_five_X_add_X_sq, polynomial_four]
+      · rw [reflect_recurrence P hdeg hrec,
+          ih (n + 2) (by lia), ih (n + 1) (by lia), ih n (by lia)]
+        simpa only [show 2 * (n + 3) = 2 * n + 6 by lia,
+          show 2 * (n + 2) = 2 * n + 4 by lia,
+          show 2 * (n + 1) = 2 * n + 2 by lia] using
+            (polynomial_add_six (2 * n)).symm
+
+/-- Reflecting a family with the odd reflected cubic-parent recurrence gives the
+sign-corrected odd cubic-parent subsequence. -/
+theorem reflect_eq_odd_of_recurrence
+    (P : ℕ → ℝ[X])
+    (h0 : P 0 = 1)
+    (h1 : P 1 = 3 + X)
+    (h2 : P 2 = 5 + 7 * X + X ^ 2)
+    (hrec : ∀ n, P (n + 3) =
+      (2 + X) * P (n + 2) + (-1 + 2 * X) * P (n + 1) + X * P n) :
+    ∀ n, reflect n (P n) = C (-1) * polynomial (2 * n + 1) := by
+  have hdeg := natDegree_le_of_reflected_recurrence P h0 (Or.inr h1) (Or.inr h2) hrec
+  intro n
+  induction n using Nat.strong_induction_on with
+  | h n ih =>
+      rcases n with _ | _ | _ | n
+      · simp [h0]
+      · rw [h1, polynomial_three, reflect_one_three_add_X]
+        norm_num [map_neg, map_one]
+        ring
+      · rw [h2, polynomial_five, reflect_two_five_add_seven_X_add_X_sq]
+        norm_num [map_neg, map_one]
+        ring
+      · rw [reflect_recurrence P hdeg hrec,
+          ih (n + 2) (by lia), ih (n + 1) (by lia), ih n (by lia)]
+        have h := polynomial_add_six (2 * n + 1)
+        simp only [show 2 * (n + 3) + 1 = (2 * n + 1) + 6 by lia,
+          show 2 * (n + 2) + 1 = (2 * n + 1) + 4 by lia,
+          show 2 * (n + 1) + 1 = (2 * n + 1) + 2 by lia] at *
+        rw [h]
+        ring
+
+/-- Every family with the even reflected cubic-parent recurrence splits. -/
+theorem splits_of_even_reflected_recurrence
+    (P : ℕ → ℝ[X])
+    (h0 : P 0 = 1)
+    (h1 : P 1 = 1 + X)
+    (h2 : P 2 = 1 + 5 * X + X ^ 2)
+    (hrec : ∀ n, P (n + 3) =
+      (2 + X) * P (n + 2) + (-1 + 2 * X) * P (n + 1) + X * P n)
+    (n : ℕ) : (P n).Splits := by
+  have hdeg := natDegree_le_of_reflected_recurrence P h0 (Or.inl h1) (Or.inl h2) hrec n
+  apply (Polynomial.splits_reflect_iff hdeg).1
+  rw [reflect_eq_even_of_recurrence P h0 h1 h2 hrec]
+  exact polynomial_splits (2 * n)
+
+/-- Every family with the odd reflected cubic-parent recurrence splits. -/
+theorem splits_of_odd_reflected_recurrence
+    (P : ℕ → ℝ[X])
+    (h0 : P 0 = 1)
+    (h1 : P 1 = 3 + X)
+    (h2 : P 2 = 5 + 7 * X + X ^ 2)
+    (hrec : ∀ n, P (n + 3) =
+      (2 + X) * P (n + 2) + (-1 + 2 * X) * P (n + 1) + X * P n)
+    (n : ℕ) : (P n).Splits := by
+  have hdeg := natDegree_le_of_reflected_recurrence P h0 (Or.inr h1) (Or.inr h2) hrec n
+  apply (Polynomial.splits_reflect_iff hdeg).1
+  rw [reflect_eq_odd_of_recurrence P h0 h1 h2 hrec]
+  exact (polynomial_splits (2 * n + 1)).C_mul (-1)
+
 end RealRooted.CubicParent
