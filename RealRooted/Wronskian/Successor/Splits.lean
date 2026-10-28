@@ -18,6 +18,91 @@ open Polynomial
 
 namespace RealRooted
 
+/-- Alternating signs on an ordered tuple force a root in every consecutive gap. -/
+private lemma exists_root_between_of_alternating_signs {n : ℕ} {g : ℝ[X]}
+    (s : Fin (n + 1) → ℝ) (hs_mono : StrictMono s)
+    (hsgn : ∀ k : Fin (n + 1), g.eval (s k) * (-1) ^ (n - k.val) < 0) :
+    ∀ k : Fin n, ∃ x, s k.castSucc < x ∧ x < s k.succ ∧ g.IsRoot x := by
+  intro k
+  have hlt : s k.castSucc < s k.succ := hs_mono (by simp)
+  have hsc := hsgn k.castSucc
+  have hss := hsgn k.succ
+  simp only [Fin.val_castSucc, Fin.val_succ] at hsc hss
+  rcases Nat.even_or_odd (n - k.val) with hpar | hpar
+  · have hkk : n - k.val = n - (k.val + 1) + 1 := by grind
+    rw [hpar.neg_one_pow] at hsc
+    have hpar' : Odd (n - (k.val + 1)) := by grind
+    rw [hpar'.neg_one_pow] at hss
+    obtain ⟨x, hx1, hx2, hx3⟩ :=
+      exists_root_between_of_eval_neg_pos _ _ hlt (by linarith) (by nlinarith)
+    grind
+  · have hkk : n - k.val = n - (k.val + 1) + 1 := by grind
+    rw [hpar.neg_one_pow] at hsc
+    have hpar' : Even (n - (k.val + 1)) := by grind
+    rw [hpar'.neg_one_pow] at hss
+    obtain ⟨x, hx1, hx2, hx3⟩ :=
+      exists_root_between_of_eval_pos_neg _ _ hlt (by nlinarith) (by linarith)
+    grind
+
+/-- Roots before, between, and after an ordered tuple account for the full degree. -/
+private lemma splits_of_roots_around_strictMono {n : ℕ} {g : ℝ[X]}
+    (hg_deg : g.natDegree = n + 2) (s : Fin (n + 1) → ℝ) (hs_mono : StrictMono s)
+    (hbelow : ∃ x, x < s 0 ∧ g.IsRoot x)
+    (habove : ∃ x, s (Fin.last n) < x ∧ g.IsRoot x)
+    (hinternal : ∀ k : Fin n, ∃ x, s k.castSucc < x ∧ x < s k.succ ∧ g.IsRoot x) :
+    g.Splits := by
+  obtain ⟨xb, hxb_lt, hxb_root⟩ := hbelow
+  obtain ⟨xa, hxa_gt, hxa_root⟩ := habove
+  choose xi hxi_lo hxi_hi hxi_root using hinternal
+  let gr : Fin (n + 2) → ℝ := Fin.cons xb (Fin.snoc xi xa)
+  have hgr_root : ∀ j, g.IsRoot (gr j) := by
+    intro j
+    refine Fin.cases hxb_root (fun i ↦ ?_) j
+    simp only [gr, Fin.cons_succ]
+    refine Fin.lastCases ?_ (fun k ↦ ?_) i
+    · simpa only [Fin.snoc_last] using hxa_root
+    · simpa only [Fin.snoc_castSucc] using hxi_root k
+  have hxi_mono : StrictMono xi := by
+    intro a b hab
+    have hs_le : s a.succ ≤ s b.castSucc := hs_mono.monotone (by simp_all)
+    linarith [hxi_hi a, hxi_lo b]
+  have hxi_xa : ∀ j : Fin n, xi j < xa := by
+    intro j
+    have hs_le : s j.succ ≤ s (Fin.last n) := hs_mono.monotone (by grind)
+    linarith [hxi_hi j, hxa_gt]
+  have hsnoc : StrictMono (Fin.snoc xi xa) := by
+    rw [← Fin.insertNth_last' xa xi]
+    apply (Fin.strictMono_insertNth_iff (Fin.last n) xa xi).mpr
+    refine ⟨hxi_mono, fun i _ ↦ hxi_xa i, ?_⟩
+    intro i hi
+    exact (not_le_of_gt i.castSucc_lt_last hi).elim
+  have hgr_mono : StrictMono gr := by
+    apply Fin.strictMono_cons.mpr
+    refine ⟨?_, hsnoc⟩
+    intro j
+    refine Fin.lastCases ?_ (fun k ↦ ?_) j
+    · have hs_le : s 0 ≤ s (Fin.last n) := hs_mono.monotone (by simp)
+      simpa only [Fin.snoc_last] using (hxb_lt.trans_le hs_le |>.trans hxa_gt)
+    · have hs_le : s 0 ≤ s k.castSucc := hs_mono.monotone (by simp)
+      simpa only [Fin.snoc_castSucc] using (hxb_lt.trans_le hs_le |>.trans (hxi_lo k))
+  have hg_ne : g ≠ 0 := by
+    intro hg
+    rw [hg, natDegree_zero] at hg_deg
+    lia
+  have hsub : Finset.image gr Finset.univ ⊆ g.roots.toFinset := by
+    rw [Finset.image_subset_iff]
+    simp_all
+  have hcard : n + 2 ≤ g.roots.toFinset.card := by
+    calc
+      n + 2 = (Finset.image gr Finset.univ).card := by
+        rw [Finset.card_image_of_injective _ hgr_mono.injective, Finset.card_univ,
+          Fintype.card_fin]
+      _ ≤ g.roots.toFinset.card := Finset.card_le_card hsub
+  apply Polynomial.splits_iff_card_roots.mpr
+  refine le_antisymm (card_roots' g) ?_
+  rw [hg_deg]
+  exact hcard.trans (Multiset.toFinset_card_le _)
+
 /-- A strict negative Wronskian transfers splitness from `f` to its
 positive-leading one-degree-higher companion `g`. -/
 theorem splits_of_wronskian_neg_succ {n : ℕ}
@@ -27,7 +112,6 @@ theorem splits_of_wronskian_neg_succ {n : ℕ}
     (hW : ∀ t : ℝ, f.derivative.eval t * g.eval t - f.eval t * g.derivative.eval t < 0) :
     g.Splits := by
   have hf_ne : f ≠ 0 := leadingCoeff_ne_zero.mp hf_pos.ne'
-  have hg_ne : g ≠ 0 := leadingCoeff_ne_zero.mp hg_pos.ne'
   have hf_nodup : f.roots.Nodup := by
     apply Polynomial.roots_nodup_of_splits_and_simple
     intro r hr hd
@@ -47,101 +131,8 @@ theorem splits_of_wronskian_neg_succ {n : ℕ}
   have habove : ∃ x, s (Fin.last n) < x ∧ g.IsRoot x :=
     exists_root_gt_of_posLeadingCoeff_eval_neg hg_pos hg_deg (s (Fin.last n)) hlast_sign
   have hinternal : ∀ k : Fin n,
-      ∃ x, s k.castSucc < x ∧ x < s k.succ ∧ g.IsRoot x := by
-    intro k
-    have hlt : s k.castSucc < s k.succ := hs_mono (by simp)
-    have hsc := hgsign k.castSucc
-    have hss := hgsign k.succ
-    simp only [Fin.val_castSucc, Fin.val_succ] at hsc hss
-    rcases Nat.even_or_odd (n - k.val) with hpar | hpar
-    · have hkk : (n - k.val) = (n - (k.val + 1)) + 1 := by grind
-      rw [hpar.neg_one_pow] at hsc
-      have hpar' : Odd (n - (k.val + 1)) := by grind
-      rw [hpar'.neg_one_pow] at hss
-      obtain ⟨x, hx1, hx2, hx3⟩ :=
-        exists_root_between_of_eval_neg_pos _ _ hlt (by linarith) (by nlinarith)
-      grind
-    · have hkk : (n - k.val) = (n - (k.val + 1)) + 1 := by grind
-      rw [hpar.neg_one_pow] at hsc
-      have hpar' : Even (n - (k.val + 1)) := by grind
-      rw [hpar'.neg_one_pow] at hss
-      obtain ⟨x, hx1, hx2, hx3⟩ :=
-        exists_root_between_of_eval_pos_neg _ _ hlt (by nlinarith) (by linarith)
-      grind
-  obtain ⟨xb, hxb_lt, hxb_root⟩ := hbelow
-  obtain ⟨xa, hxa_gt, hxa_root⟩ := habove
-  choose xi hxi_lo hxi_hi hxi_root using hinternal
-  set gr : Fin (n + 2) → ℝ := Fin.cons xb (Fin.snoc xi xa) with hgr_def
-  have hgr_root : ∀ j, g.IsRoot (gr j) := by
-    intro j
-    refine Fin.cases ?_ ?_ j
-    · simp_all
-    · intro i
-      simp only [hgr_def, Fin.cons_succ]
-      refine Fin.lastCases ?_ ?_ i
-      · simpa using hxa_root
-      · simp_all
-  have hxi_mono : StrictMono xi := by
-    intro a b hab
-    have h1 : xi a < s a.succ := hxi_hi a
-    have h2 : s b.castSucc < xi b := hxi_lo b
-    have h3 : s a.succ ≤ s b.castSucc := hs_mono.monotone (by simp_all)
-    linarith
-  have hxb_xi : ∀ j : Fin n, xb < xi j := by
-    intro j
-    have h1 := hxi_lo j
-    have h2 : s 0 ≤ s j.castSucc := hs_mono.monotone (by simp)
-    grind
-  have hxi_xa : ∀ j : Fin n, xi j < xa := by
-    intro j
-    have h1 := hxi_hi j
-    have h2 : s j.succ ≤ s (Fin.last n) := hs_mono.monotone (by grind)
-    grind
-  have hxb_xa : xb < xa := by
-    rcases Nat.eq_zero_or_pos n with hn | hn
-    · grind
-    · exact lt_trans (hxb_xi ⟨0, hn⟩) (hxi_xa ⟨0, hn⟩)
-  have hgr_mono : StrictMono gr := by
-    have hgr_val : ∀ j : Fin (n + 2), gr j =
-        if hj : j.val = 0 then xb
-        else if hj' : j.val = n + 1 then xa
-        else xi ⟨j.val - 1, by lia⟩ := by
-      intro j
-      simp only [hgr_def]
-      refine Fin.cases ?_ ?_ j
-      · simp
-      · intro i
-        refine Fin.lastCases ?_ ?_ i
-        · simp [Fin.snoc_last, Fin.val_last]
-        · intro k
-          rw [Fin.cons_succ, Fin.snoc_castSucc]
-          have hval : (k.castSucc.succ : Fin (n + 2)).val = k.val + 1 := rfl
-          rw [dite_eq_right (by simp), dite_eq_right (by grind)]
-          simp
-    intro a b hab
-    rw [hgr_val a, hgr_val b]
-    have hlt : a.val < b.val := hab
-    split_ifs with ha0 hbn1 hb0 hbn1' ha1 hbn2 ha2 <;> first
-      | exact hxb_xa
-      | exact hxb_xi _
-      | lia
-      | exact hxi_xa _
-      | apply hxi_mono
-        rw [Fin.lt_def]
-        simp
-        lia
-  have hinj : Function.Injective gr := hgr_mono.injective
-  have hsub : Finset.image gr Finset.univ ⊆ g.roots.toFinset := by
-    rw [Finset.image_subset_iff]
-    simp_all
-  have hcard : n + 2 ≤ g.roots.toFinset.card := by
-    calc n + 2 = (Finset.image gr Finset.univ).card := by
-              rw [Finset.card_image_of_injective _ hinj, Finset.card_univ, Fintype.card_fin]
-      _ ≤ g.roots.toFinset.card := Finset.card_le_card hsub
-  have hcard_roots : g.roots.card = g.natDegree := by
-    refine le_antisymm (card_roots' g) ?_
-    rw [hg_deg]
-    exact le_trans hcard (Multiset.toFinset_card_le _)
-  exact Polynomial.splits_iff_card_roots.mpr hcard_roots
+      ∃ x, s k.castSucc < x ∧ x < s k.succ ∧ g.IsRoot x :=
+    exists_root_between_of_alternating_signs s hs_mono hgsign
+  exact splits_of_roots_around_strictMono hg_deg s hs_mono hbelow habove hinternal
 
 end RealRooted

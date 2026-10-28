@@ -111,6 +111,126 @@ private lemma restrictedExp_lc_gen (a : ℕ → ℝ) (n : ℕ) (hpos : ∀ k, 0 
           mul_le_mul_of_nonneg_left h2 (hpos (u + 1)).le]
       exact le_of_mul_le_mul_right h3 (hpos _)
 
+/-- The reversed prefix of `a` ending at `n`, extended by zero. -/
+private def restrictedExpReverse (a : ℕ → ℝ) (n i : ℕ) : ℝ :=
+  if i ≤ n then a (n - i) else 0
+
+/-- A positive sequence has a nonnegative reversed prefix. -/
+private lemma restrictedExpReverse_nonneg (a : ℕ → ℝ) (n : ℕ)
+    (hpos : ∀ k, 0 < a k) (i : ℕ) : 0 ≤ restrictedExpReverse a n i := by
+  simp only [restrictedExpReverse]
+  split_ifs
+  · exact (hpos _).le
+  · exact le_rfl
+
+/-- Inside its support, the reversed prefix agrees with the reversed sequence. -/
+private lemma restrictedExpReverse_of_le (a : ℕ → ℝ) (n i : ℕ) (hi : i ≤ n) :
+    restrictedExpReverse a n i = a (n - i) := by
+  rw [restrictedExpReverse, ite_eq_left hi]
+
+/-- The reversed prefix vanishes immediately after its support. -/
+private lemma restrictedExpReverse_succ (a : ℕ → ℝ) (n : ℕ) :
+    restrictedExpReverse a n (n + 1) = 0 := by
+  rw [restrictedExpReverse, ite_eq_right (by lia)]
+
+/-- Earlier log-concavity inequalities make the reversed prefix log-concave. -/
+private lemma restrictedExp_reverse_lc (a : ℕ → ℝ) (n : ℕ) (hpos : ∀ k, 0 < a k)
+    (hlc : ∀ k, k + 2 ≤ n → a k * a (k + 2) ≤ a (k + 1) ^ 2) :
+    ∀ i j, i ≤ j → restrictedExpReverse a n i * restrictedExpReverse a n (j + 1) ≤
+      restrictedExpReverse a n (i + 1) * restrictedExpReverse a n j := by
+  intro i j hij
+  by_cases hj : j + 1 ≤ n
+  · rw [restrictedExpReverse_of_le a n i (by lia),
+      restrictedExpReverse_of_le a n (j + 1) hj,
+      restrictedExpReverse_of_le a n (i + 1) (by lia),
+      restrictedExpReverse_of_le a n j (by lia)]
+    have hinner := restrictedExp_lc_gen a n hpos hlc
+      (n - (j + 1)) (n - (i + 1)) (by lia) (by lia)
+    rw [show n - (i + 1) + 1 = n - i by lia,
+      show n - (j + 1) + 1 = n - j by lia] at hinner
+    linarith
+  · rw [show restrictedExpReverse a n (j + 1) = 0 by
+        rw [restrictedExpReverse, ite_eq_right hj], mul_zero]
+    exact mul_nonneg (restrictedExpReverse_nonneg a n hpos _)
+      (restrictedExpReverse_nonneg a n hpos _)
+
+/-- The recurrence one index earlier gives a shifted convolution identity. -/
+private lemma restrictedExp_shifted_sum (r a : ℕ → ℝ)
+    (hrec : ∀ n : ℕ, ((n : ℝ) + 1) * a (n + 1) =
+      ∑ l ∈ range (n + 1), r l * a (n - l)) (n : ℕ) :
+    ∑ i ∈ range n, r i * a (n - (i + 1)) = (n : ℝ) * a n := by
+  cases n with
+  | zero => simp
+  | succ m =>
+      push_cast
+      rw [hrec m]
+
+/-- The recurrence evaluates the four sums in the symmetrization inequality. -/
+private lemma restrictedExp_reverse_sums (r a : ℕ → ℝ) (n : ℕ) (hr0 : r 0 = 1)
+    (hrec : ∀ m : ℕ, ((m : ℝ) + 1) * a (m + 1) =
+      ∑ l ∈ range (m + 1), r l * a (m - l)) :
+    (∑ i ∈ range (n + 1), r i * restrictedExpReverse a n i) =
+        ((n : ℝ) + 1) * a (n + 1) ∧
+      (∑ i ∈ range (n + 1), r (i + 1) * restrictedExpReverse a n i) =
+        ((n : ℝ) + 2) * a (n + 2) - a (n + 1) ∧
+      (∑ i ∈ range (n + 1), r i * restrictedExpReverse a n (i + 1)) =
+        (n : ℝ) * a n ∧
+      (∑ i ∈ range (n + 1), r (i + 1) * restrictedExpReverse a n (i + 1)) =
+        ((n : ℝ) + 1) * a (n + 1) - a n := by
+  constructor
+  · rw [hrec n]
+    exact sum_congr rfl fun i hi => by
+      rw [restrictedExpReverse_of_le a n i (by simp only [mem_range] at hi; lia)]
+  constructor
+  · have h := hrec (n + 1)
+    rw [sum_range_succ', hr0, Nat.sub_zero] at h
+    simp only [Nat.add_sub_add_right] at h
+    have h' : ∑ i ∈ range (n + 1), r (i + 1) * restrictedExpReverse a n i =
+        ∑ i ∈ range (n + 1), r (i + 1) * a (n - i) := by
+      exact sum_congr rfl fun i hi => by
+        rw [restrictedExpReverse_of_le a n i (by simp only [mem_range] at hi; lia)]
+    rw [h']
+    have e : a (n + 1 + 1) = a (n + 2) := rfl
+    rw [e] at h
+    push_cast at h
+    linarith
+  constructor
+  · rw [sum_range_succ, restrictedExpReverse_succ, mul_zero, add_zero,
+      ← restrictedExp_shifted_sum r a hrec n]
+    exact sum_congr rfl fun i hi => by
+      rw [restrictedExpReverse_of_le a n (i + 1) (by simp only [mem_range] at hi; lia)]
+  · have h := hrec n
+    rw [sum_range_succ', hr0, Nat.sub_zero] at h
+    rw [sum_range_succ, restrictedExpReverse_succ, mul_zero, add_zero]
+    have h' : ∑ i ∈ range n, r (i + 1) * restrictedExpReverse a n (i + 1) =
+        ∑ i ∈ range n, r (i + 1) * a (n - (i + 1)) := by
+      exact sum_congr rfl fun i hi => by
+        rw [restrictedExpReverse_of_le a n (i + 1) (by simp only [mem_range] at hi; lia)]
+    rw [h']
+    linarith
+
+/-- A recurrence with a nonnegative kernel and initial term one stays positive. -/
+private lemma restrictedExp_positive (r a : ℕ → ℝ) (hr0 : r 0 = 1) (hrnn : ∀ l, 0 ≤ r l)
+    (ha0 : a 0 = 1) (hrec : ∀ n : ℕ, ((n : ℝ) + 1) * a (n + 1) =
+      ∑ l ∈ range (n + 1), r l * a (n - l)) : ∀ n, 0 < a n := by
+  intro n
+  induction n using Nat.strong_induction_on with
+  | _ n ih =>
+    cases n with
+    | zero => simpa only [ha0] using (zero_lt_one : (0 : ℝ) < 1)
+    | succ m =>
+        have h := hrec m
+        rw [sum_range_succ'] at h
+        have h1 : 0 ≤ ∑ i ∈ range m, r (i + 1) * a (m - (i + 1)) :=
+          sum_nonneg fun i _ => mul_nonneg (hrnn _) (ih _ (by lia)).le
+        have h2 : 0 < r 0 * a (m - 0) := by
+          rw [hr0, Nat.sub_zero, one_mul]
+          exact ih m (by lia)
+        have h3 : (0 : ℝ) < (m : ℝ) + 1 := by positivity
+        by_contra hc
+        push Not at hc
+        nlinarith
+
 /-- Positivity and log-concavity for a convolution recurrence with a nonnegative,
 nonincreasing, log-concave kernel whose initial term is one. -/
 private lemma restrictedExp_general (r a : ℕ → ℝ) (hr0 : r 0 = 1)
@@ -120,103 +240,25 @@ private lemma restrictedExp_general (r a : ℕ → ℝ) (hr0 : r 0 = 1)
     (hrec : ∀ n : ℕ, ((n : ℝ) + 1) * a (n + 1) =
       ∑ l ∈ range (n + 1), r l * a (n - l)) :
     (∀ n, 0 < a n) ∧ ∀ n, a n * a (n + 2) ≤ a (n + 1) ^ 2 := by
-  have hpos : ∀ n, 0 < a n := by
-    intro n
-    induction n using Nat.strong_induction_on with
-    | _ n ih =>
-      cases n with
-      | zero =>
-          rw [ha0]
-          norm_num
-      | succ m =>
-          have h := hrec m
-          rw [sum_range_succ'] at h
-          have h1 : 0 ≤ ∑ i ∈ range m, r (i + 1) * a (m - (i + 1)) :=
-            sum_nonneg fun i _ => mul_nonneg (hrnn _) (ih _ (by lia)).le
-          have h2 : 0 < r 0 * a (m - 0) := by
-            rw [hr0, Nat.sub_zero, one_mul]
-            exact ih m (by lia)
-          have h3 : (0 : ℝ) < (m : ℝ) + 1 := by positivity
-          by_contra hc
-          push Not at hc
-          nlinarith
-  have hDgen : ∀ n : ℕ, ∑ i ∈ range n, r i * a (n - (i + 1)) = (n : ℝ) * a n := by
-    intro n
-    cases n with
-    | zero => simp
-    | succ m =>
-        push_cast
-        rw [hrec m]
+  have hpos := restrictedExp_positive r a hr0 hrnn ha0 hrec
   refine ⟨hpos, ?_⟩
   intro n
   induction n using Nat.strong_induction_on with
   | _ n ih =>
-    set t : ℕ → ℝ := fun i => if i ≤ n then a (n - i) else 0 with ht_def
-    have tnn : ∀ i, 0 ≤ t i := by
-      intro i
-      simp only [ht_def]
-      split_ifs
-      · exact (hpos _).le
-      · exact le_rfl
-    have tin : ∀ i, i ≤ n → t i = a (n - i) := by
-      intro i hi
-      simp [ht_def, hi]
-    have tout : t (n + 1) = 0 := by
-      simp [ht_def]
     have hlc : ∀ k, k + 2 ≤ n → a k * a (k + 2) ≤ a (k + 1) ^ 2 :=
       fun k hk => ih k (by lia)
-    have hgen := restrictedExp_lc_gen a n hpos hlc
-    have htlc : ∀ i j, i ≤ j → t i * t (j + 1) ≤ t (i + 1) * t j := by
-      intro i j hij
-      by_cases hj : j + 1 ≤ n
-      · rw [tin i (by lia), tin (j + 1) hj, tin (i + 1) (by lia), tin j (by lia)]
-        have hinner := hgen (n - (j + 1)) (n - (i + 1)) (by lia) (by lia)
-        rw [show n - (i + 1) + 1 = n - i by lia,
-          show n - (j + 1) + 1 = n - j by lia] at hinner
-        linarith
-      · rw [show t (j + 1) = 0 by
-          simp [ht_def, hj], mul_zero]
-        exact mul_nonneg (tnn _) (tnn _)
-    have hcore := restrictedExp_core r t (n + 1) hrlc htlc
-    have hB : ∑ i ∈ range (n + 1), r i * t i = ((n : ℝ) + 1) * a (n + 1) := by
-      rw [hrec n]
-      refine sum_congr rfl fun i hi => ?_
-      rw [tin i (by simp at hi; lia)]
-    have hC : ∑ i ∈ range (n + 1), r (i + 1) * t i =
-        ((n : ℝ) + 2) * a (n + 2) - a (n + 1) := by
-      have h := hrec (n + 1)
-      rw [sum_range_succ', hr0, Nat.sub_zero] at h
-      simp only [Nat.add_sub_add_right] at h
-      have h' : ∑ i ∈ range (n + 1), r (i + 1) * t i =
-          ∑ i ∈ range (n + 1), r (i + 1) * a (n - i) := by
-        refine sum_congr rfl fun i hi => ?_
-        rw [tin i (by simp at hi; lia)]
-      rw [h']
-      have e : a (n + 1 + 1) = a (n + 2) := rfl
-      rw [e] at h
-      push_cast at h
-      linarith
-    have hD : ∑ i ∈ range (n + 1), r i * t (i + 1) = (n : ℝ) * a n := by
-      rw [sum_range_succ, tout, mul_zero, add_zero, ← hDgen n]
-      refine sum_congr rfl fun i hi => ?_
-      rw [tin (i + 1) (by simp at hi; lia)]
-    have hA : ∑ i ∈ range (n + 1), r (i + 1) * t (i + 1) =
-        ((n : ℝ) + 1) * a (n + 1) - a n := by
-      have h := hrec n
-      rw [sum_range_succ', hr0, Nat.sub_zero] at h
-      rw [sum_range_succ, tout, mul_zero, add_zero]
-      have h' : ∑ i ∈ range n, r (i + 1) * t (i + 1) =
-          ∑ i ∈ range n, r (i + 1) * a (n - (i + 1)) := by
-        refine sum_congr rfl fun i hi => ?_
-        rw [tin (i + 1) (by simp at hi; lia)]
-      rw [h']
-      linarith
+    have htlc := restrictedExp_reverse_lc a n hpos hlc
+    have hcore := restrictedExp_core r (restrictedExpReverse a n) (n + 1) hrlc htlc
+    rcases restrictedExp_reverse_sums r a n hr0 hrec with ⟨hB, hC, hD, hA⟩
     have hmono : a (n + 2) ≤ a (n + 1) := by
-      have h0 : 0 ≤ ∑ i ∈ range (n + 1), (r i - r (i + 1)) * t i :=
-        sum_nonneg fun i _ => mul_nonneg (by linarith [hranti i]) (tnn i)
-      have hsplit : ∑ i ∈ range (n + 1), (r i - r (i + 1)) * t i =
-          ∑ i ∈ range (n + 1), r i * t i -
-            ∑ i ∈ range (n + 1), r (i + 1) * t i := by
+      have h0 : 0 ≤ ∑ i ∈ range (n + 1),
+          (r i - r (i + 1)) * restrictedExpReverse a n i :=
+        sum_nonneg fun i _ => mul_nonneg (by linarith [hranti i])
+          (restrictedExpReverse_nonneg a n hpos i)
+      have hsplit : ∑ i ∈ range (n + 1),
+          (r i - r (i + 1)) * restrictedExpReverse a n i =
+          ∑ i ∈ range (n + 1), r i * restrictedExpReverse a n i -
+            ∑ i ∈ range (n + 1), r (i + 1) * restrictedExpReverse a n i := by
         rw [← sum_sub_distrib]
         refine sum_congr rfl fun i _ => by ring
       rw [hsplit, hB, hC] at h0

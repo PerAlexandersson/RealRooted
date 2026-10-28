@@ -325,6 +325,20 @@ lemma zipWith_mul_sum_reverse_reverse
   rw [← List.reverse_zipWith (f := (· * ·)) hlen]
   simp
 
+/-- Reversing both interlacing families in Brändén's product-sum theorem
+gives the product-sum in its original orientation. -/
+private lemma isRealRooted_zipWith_mul_sum_of_reverse_interlacingSeqNonneg
+    {row fs : List ℝ[X]} (hrow_ne : row ≠ [])
+    (hlen : row.length = fs.length)
+    (hrow : IsInterlacingSeqNonneg row.reverse)
+    (hfs : IsInterlacingSeqNonneg fs) :
+    (row.zipWith (· * ·) fs).sum ≠ 0 ∧
+      (row.zipWith (· * ·) fs).sum.Splits := by
+  have hrr := isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
+    (fs := row.reverse) (gs := fs) (by simpa using hrow_ne)
+    (by simp [hlen]) hrow hfs
+  simpa [zipWith_mul_sum_reverse_reverse (row := row) (fs := fs) hlen] using hrr
+
 /-- Fixed-row form of the forward matrix theorem.
 
 This is the point where Brändén's proof uses Lemma 7.8.3: from the 2×2
@@ -356,27 +370,8 @@ theorem strictInterl_zipWith_sum_pair_of_2x2
     StrictInterl ((row₁.zipWith (· * ·) fs).sum) ((row₂.zipWith (· * ·) fs).sum) := by
   let auxRow := rowPairAffineSeq row₁ row₂
   have hrows : row₁.length = row₂.length := by lia
-  /-
-  The new local affine-row helpers reduce the theorem to one concrete missing
-  statement: for every `s,t > 0`, the reversed product-sum
-
-    `((auxRow s t).zipWith (· * ·) fs).sum`
-
-  is real-rooted. Everything else is now explicit bookkeeping.
-
-  For fixed `s,t > 0`, set
-
-    h_j := ((C s * X + C t) * row₁[j]) + row₂[j].
-
-  By `h2x2`, the list `(h_j)` should be an interlacing sequence; by
-  `hasNonnegCoeffs_rowPairAffineSeq` it has nonnegative coefficients. The
-  affine combination of row sums is then exactly
-
-    `((auxRow s t).zipWith (· * ·) fs).sum`
-
-  by `rowPairAffine_combo_eq_zipWith_sum`. So the remaining gap is the local
-  Brändén 7.8.3 product-sum theorem for two interlacing sequences.
-  -/
+  -- The auxiliary affine row is interlacing, so Brändén's product-sum
+  -- theorem makes every positive affine combination of the two row sums real-rooted.
   have haux_len : ∀ {s t : ℝ}, (auxRow s t).length = n :=
     fun {s t} => by
       simpa [auxRow] using
@@ -403,26 +398,13 @@ theorem strictInterl_zipWith_sum_pair_of_2x2
         ((((auxRow s t).zipWith (· * ·) fs).sum) ≠ 0 ∧
           (((auxRow s t).zipWith (· * ·) fs).sum).Splits) := by
     intro s t hs ht
-    have haux :
-        IsInterlacingSeqNonneg ((auxRow s t).reverse) :=
-      isInterlacingSeqNonneg_reverse_rowPairAffineSeq
+    refine isRealRooted_zipWith_mul_sum_of_reverse_interlacingSeqNonneg
+      (row := auxRow s t) (fs := fs) ?_ (haux_len.trans hfs_len.symm) ?_ hfs_all
+    · intro hnil
+      have : n = 0 := by rw [← haux_len (s := s) (t := t), hnil]; simp
+      lia
+    · exact isInterlacingSeqNonneg_reverse_rowPairAffineSeq
         (n := n) hrow₁_len hrow₂_len hrow₁_nonneg hrow₂_nonneg h2x2 hs ht
-    have hrr_rev :
-        (((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum) ≠ 0 ∧
-          ((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum).Splits) :=
-      isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg
-        (fs := (auxRow s t).reverse) (gs := fs)
-        (by
-          intro hnil
-          have hnil' : auxRow s t = [] := by simpa using hnil
-          have : n = 0 := by
-            rw [← haux_len (s := s) (t := t), hnil']
-            simp
-          lia)
-        (by simp [haux_len, hfs_len])
-        haux hfs_all
-    simpa [zipWith_mul_sum_reverse_reverse (row := auxRow s t) (fs := fs)
-      (haux_len.trans hfs_len.symm)] using hrr_rev
   let F : ℝ[X] := ((row₁.zipWith (· * ·) fs).sum)
   let G : ℝ[X] := ((row₂.zipWith (· * ·) fs).sum)
   have haff :
@@ -501,10 +483,12 @@ theorem strictInterl_add_mul_pair_of_2x2 {p₁ q₁ p₂ q₂ u v : ℝ[X]}
       (h2x2 := by
         intro j₁ j₂ hj
         fin_cases j₁ <;> fin_cases j₂
-        · simpa using has2x2InterlacingProperty_sameColumn_of_strictInterl_nonneg hp hp₁nn hp₂nn
+        · simpa using
+            has2x2InterlacingProperty_sameColumn_of_strictInterl_nonneg hp hp₁nn hp₂nn
         · simpa using hoff
         · norm_num at hj
-        · simpa using has2x2InterlacingProperty_sameColumn_of_strictInterl_nonneg hq hq₁nn hq₂nn)
+        · simpa using
+            has2x2InterlacingProperty_sameColumn_of_strictInterl_nonneg hq hq₁nn hq₂nn)
       (hfs_len := by simp)
       (hfs := by
         refine ⟨?_, ?_⟩

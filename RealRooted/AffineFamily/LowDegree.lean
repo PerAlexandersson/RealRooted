@@ -186,6 +186,67 @@ protected lemma AffineFamily.natDegree_cases_of_affine_family
   rw [natDegree_mul X_ne_zero hf0, natDegree_X] at hdeg_pair_hi
   lia
 
+/-- Translating a degree-one polynomial by one of its roots leaves its linear term. -/
+private lemma comp_X_add_C_eq_C_mul_X_of_natDegree_one_of_isRoot
+    {f : ℝ[X]} {r : ℝ} (hf0 : f ≠ 0) (hf_deg1 : f.natDegree = 1)
+    (hfr : f.IsRoot r) :
+    f.comp (X + C r) = C (f.coeff 1) * X := by
+  have hf_deg_le_one : f.degree ≤ 1 := by simp [degree_eq_natDegree hf0, hf_deg1]
+  have hf_eq : f = C (f.coeff 1) * X + C (f.coeff 0) :=
+    eq_X_add_C_of_degree_le_one hf_deg_le_one
+  have hroot_rel : f.coeff 1 * r + f.coeff 0 = 0 := by
+    have hf_eval : f.eval r = 0 := by simpa [Polynomial.IsRoot.def] using hfr
+    rw [hf_eq, eval_add, eval_mul, eval_C, eval_X] at hf_eval
+    simpa using hf_eval
+  calc
+    f.comp (X + C r) = (C (f.coeff 1) * X + C (f.coeff 0)).comp (X + C r) := by
+      exact congrArg (fun p : ℝ[X] ↦ p.comp (X + C r)) hf_eq
+    _ = C (f.coeff 1) * (X + C r) + C (f.coeff 0) := by simp
+    _ = C (f.coeff 1) * X + C (f.coeff 1 * r + f.coeff 0) := by
+      simp only [map_add, map_mul]
+      ring
+    _ = C (f.coeff 1) * X := by rw [hroot_rel, C_0, add_zero]
+
+/-- The quadratic coefficient of a translated positive-leading polynomial is nonnegative. -/
+private lemma coeff_two_comp_X_add_C_nonneg_of_natDegree_one_or_two
+    {g : ℝ[X]} (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : g.natDegree = 1 ∨ g.natDegree = 2) (r : ℝ) :
+    0 ≤ (g.comp (X + C r)).coeff 2 := by
+  let g' := g.comp (X + C r)
+  have hg'_natDegree : g'.natDegree = g.natDegree := by simp [g', natDegree_comp]
+  rcases hdeg with hgdeg | hgdeg
+  · have hg'_deg1 : g'.natDegree = 1 := by lia
+    have hzero : g'.coeff 2 = 0 := coeff_eq_zero_of_natDegree_lt (by lia)
+    rw [hzero]
+  · have hg'_deg2 : g'.natDegree = 2 := by lia
+    have hg'_pos : HasPosLeadingCoeff g' := by simpa [g'] using hg_pos.comp_X_add_C r
+    have heq : g'.coeff 2 = g'.leadingCoeff := by rw [leadingCoeff, hg'_deg2]
+    rw [heq]
+    exact hg'_pos.le
+
+/-- Translating the chosen affine-family member exposes its quadratic coefficients. -/
+private lemma affine_family_comp_eq_quadratic
+    {f g : ℝ[X]} {r a A B c s t : ℝ}
+    (hf_comp : f.comp (X + C r) = C a * X)
+    (hg_comp : g.comp (X + C r) = C A * X ^ 2 + C B * X + C c)
+    (hsrt : s * r + t = 1) :
+    (((C s * X + C t) * f) + g).comp (X + C r) =
+      C (s * a + A) * X ^ 2 + C (a + B) * X + C c := by
+  calc
+    (((C s * X + C t) * f) + g).comp (X + C r) =
+        (C s * (X + C r) + C t) * (f.comp (X + C r)) + g.comp (X + C r) := by
+          simp
+    _ = (C s * X + C (s * r + t)) * (C a * X) +
+        (C A * X ^ 2 + C B * X + C c) := by
+          rw [hf_comp, hg_comp]
+          simp only [map_add, map_mul]
+          ring
+    _ = (C s * X + C 1) * (C a * X) + (C A * X ^ 2 + C B * X + C c) := by
+      rw [hsrt]
+    _ = C (s * a + A) * X ^ 2 + C (a + B) * X + C c := by
+      simp only [map_add, map_mul, C_1]
+      ring
+
 private lemma eval_nonpos_at_root_of_degree_one_of_affine_family
     {f g : ℝ[X]}
     (hf0 : f ≠ 0) (hg0 : g ≠ 0)
@@ -209,13 +270,6 @@ private lemma eval_nonpos_at_root_of_degree_one_of_affine_family
   let a : ℝ := f.coeff 1
   have ha_pos : 0 < a := by
     unfold HasPosLeadingCoeff at hf_pos; rw [leadingCoeff, hf_deg1] at hf_pos; lia
-  have hf_deg_le_one : f.degree ≤ 1 := by simp [degree_eq_natDegree hf0, hf_deg1]
-  have hf_eq : f = C a * X + C (f.coeff 0) := by
-    simpa [a] using (eq_X_add_C_of_degree_le_one (p := f) hf_deg_le_one)
-  have hroot_rel : a * r + f.coeff 0 = 0 := by
-    have hf_eval : f.eval r = 0 := by simpa [Polynomial.IsRoot.def] using hfr
-    rw [hf_eq, eval_add, eval_mul, eval_C, eval_X] at hf_eval
-    simpa [a] using hf_eval
   let g' : ℝ[X] := g.comp (X + C r)
   let A : ℝ := g'.coeff 2
   let B : ℝ := g'.coeff 1
@@ -231,23 +285,8 @@ private lemma eval_nonpos_at_root_of_degree_one_of_affine_family
   have hg'_eq : g' = C A * X ^ 2 + C B * X + C c := by
     simpa [A, B, c] using eq_quadratic_of_degree_le_two (p := g') hg'_deg_le_two
   have hA_nonneg : 0 ≤ A := by
-    rcases hdeg_cases with hgdeg | hgdeg
-    · have hg'_deg1 : g'.natDegree = 1 := by lia
-      have hA_zero : A = 0 := by
-        dsimp [A]
-        apply coeff_eq_zero_of_natDegree_lt
-        lia
-      linarith
-    · have hg'_deg2 : g'.natDegree = 2 := by lia
-      have hg'_pos : HasPosLeadingCoeff g' := by simpa [g'] using hg_pos.comp_X_add_C r
-      have hA_eq_lc : A = g'.leadingCoeff := by
-        dsimp [A]
-        symm
-        rw [leadingCoeff, hg'_deg2]
-      have hA_pos : 0 < A := by
-        rw [hA_eq_lc]
-        exact hg'_pos
-      linarith
+    simpa only [A, g'] using
+      coeff_two_comp_X_add_C_nonneg_of_natDegree_one_or_two hg_pos hdeg_cases r
   let s : ℝ := ((a + B) ^ 2 + 4 * c) / (4 * a * c)
   have hs_pos : 0 < s := by dsimp [s]; positivity
   let t : ℝ := 1 - s * r
@@ -258,32 +297,15 @@ private lemma eval_nonpos_at_root_of_degree_one_of_affine_family
   have hq_rr : (q ≠ 0 ∧ q.Splits) := by
     dsimp [q, p]; exact isRealRooted_comp_X_add_C hp_rr.1 hp_rr.2 r
   have hf_comp : f.comp (X + C r) = C a * X := by
-    calc
-      f.comp (X + C r) = (C a * X + C (f.coeff 0)).comp (X + C r) := by lia
-      _ = C a * (X + C r) + C (f.coeff 0) := by simp
-      _ = C a * X + C (a * r + f.coeff 0) := by
-            simp only [map_add, map_mul]
-            ring
-      _ = C a * X := by rw [hroot_rel, Polynomial.C_0, add_zero]
-  have hlin_comp :
-      (C s * X + C t).comp (X + C r) = C s * X + C (s * r + t) := by
-    calc
-      (C s * X + C t).comp (X + C r) = C s * (X + C r) + C t := by simp
-      _ = C s * X + C (s * r + t) := by
-            simp only [map_add, map_mul]
-            ring
+    simpa only [a] using
+      comp_X_add_C_eq_C_mul_X_of_natDegree_one_of_isRoot hf0 hf_deg1 hfr
   have hsrt : s * r + t = 1 := by dsimp [t]; ring
   have hq_eq :
       q = C (s * a + A) * X ^ 2 + C (a + B) * X + C c := by
-    calc
-      q = ((C s * X + C t).comp (X + C r)) * (f.comp (X + C r)) + g' := by
-            dsimp [q, p, g']
-            simp
-      _ = (C s * X + C (s * r + t)) * (C a * X) + g' := by rw [hlin_comp, hf_comp]
-      _ = (C s * X + C 1) * (C a * X) + (C A * X ^ 2 + C B * X + C c) := by rw [hsrt, hg'_eq]
-      _ = C (s * a + A) * X ^ 2 + C (a + B) * X + C c := by
-            simp only [map_add, map_mul, Polynomial.C_1]
-            ring
+    dsimp [q, p]
+    apply affine_family_comp_eq_quadratic hf_comp
+    · simpa only [g'] using hg'_eq
+    · exact hsrt
   have hquad_pos : 0 < s * a + A := by nlinarith [mul_pos hs_pos ha_pos]
   have hs_formula : 4 * (s * a) * c = (a + B) ^ 2 + 4 * c := by
     dsimp [s]; field_simp [ha_pos.ne', hc_pos.ne']
@@ -295,13 +317,10 @@ private lemma eval_nonpos_at_root_of_degree_one_of_affine_family
   have hq_noRoot : ∀ x : ℝ, ¬ q.IsRoot x := by
     intro x hx
     have hq_eval_zero : q.eval x = 0 := by simpa [Polynomial.IsRoot.def] using hx
-    have hquad_eval :
-        (s * a + A) * (x * x) + (a + B) * x + c = 0 := by
+    have hquad_eval : (s * a + A) * (x * x) + (a + B) * x + c = 0 := by
       rw [hq_eq] at hq_eval_zero
       simpa [eval_add, eval_mul, eval_C, eval_X, eval_pow, pow_two] using hq_eval_zero
-    have hdisc_sq :
-        discrim (s * a + A) (a + B) c = (2 * (s * a + A) * x + (a + B)) ^ 2 :=
-      discrim_eq_sq_of_quadratic_eq_zero hquad_eval
+    have hdisc_sq := discrim_eq_sq_of_quadratic_eq_zero hquad_eval
     rw [hdisc_sq] at hdiscrim_neg
     nlinarith [sq_nonneg (2 * (s * a + A) * x + (a + B))]
   have hq_deg2 : q.natDegree = 2 := by rw [hq_eq]; exact natDegree_quadratic hquad_pos.ne'

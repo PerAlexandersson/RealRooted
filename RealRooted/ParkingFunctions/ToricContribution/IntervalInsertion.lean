@@ -151,6 +151,51 @@ theorem insertionOperator_no_common_root
   exact (mul_ne_zero (mul_ne_zero (hroots r hr).1.ne' (sub_ne_zero.mpr (hroots r hr).2.ne'))
     (hsimple r hr)) hMr
 
+/-- Endpoint root-count parities trap the longer interlacing list in the open interval. -/
+private lemma list_mem_Ioo_of_interlaces_of_endpoint_parity
+    {ss rs : List ℝ} (hint : ListInterlaces ss rs)
+    (hlen : ss.length + 1 = rs.length)
+    (hss_Ioo : ∀ s ∈ ss, s ∈ Set.Ioo (0 : ℝ) 1)
+    (hodd_zero : Odd ((ss.filter ((0 : ℝ) < ·)).length +
+      (rs.filter ((0 : ℝ) < ·)).length))
+    (heven_one : Even ((ss.filter ((1 : ℝ) < ·)).length +
+      (rs.filter ((1 : ℝ) < ·)).length))
+    (hone_not_mem : (1 : ℝ) ∉ rs) :
+    ∀ r ∈ rs, r ∈ Set.Ioo (0 : ℝ) 1 := by
+  have hss_above_zero : (ss.filter ((0 : ℝ) < ·)).length = ss.length := by
+    rw [List.filter_eq_self.mpr fun s hs ↦ by simpa using (hss_Ioo s hs).1]
+  have hss_above_one : (ss.filter ((1 : ℝ) < ·)).length = 0 := by
+    rw [List.length_eq_zero_iff, List.filter_eq_nil_iff]
+    exact fun s hs ↦ by simpa using not_lt_of_ge (hss_Ioo s hs).2.le
+  have hrs_above_zero : (rs.filter ((0 : ℝ) < ·)).length = ss.length + 1 := by
+    have hlo := listInterlaces_filter_lt_le (x := (0 : ℝ)) hint hlen
+    have hhi := listInterlaces_filter_lt_le_succ (x := (0 : ℝ)) hint hlen
+    rw [hss_above_zero] at hlo hhi hodd_zero
+    grind
+  have hrs_above_one : (rs.filter ((1 : ℝ) < ·)).length = 0 := by
+    have hhi := listInterlaces_filter_lt_le_succ (x := (1 : ℝ)) hint hlen
+    rw [hss_above_one] at hhi heven_one
+    grind
+  have hrs_at_most_zero : (rs.filter (· ≤ (0 : ℝ))).length = 0 := by
+    have hpartition := filter_le_add_filter_lt_length (x := (0 : ℝ)) rs
+    rw [hrs_above_zero, hlen] at hpartition
+    lia
+  intro r hr
+  constructor
+  · by_contra hr0
+    have hrle : r ≤ 0 := not_lt.mp hr0
+    have hrfilter : r ∈ rs.filter (· ≤ (0 : ℝ)) :=
+      List.mem_filter.mpr ⟨hr, by simpa using hrle⟩
+    rw [List.length_eq_zero_iff.mp hrs_at_most_zero] at hrfilter
+    simp at hrfilter
+  · have hrle : r ≤ 1 := by
+      by_contra hr1
+      have hrfilter : r ∈ rs.filter ((1 : ℝ) < ·) :=
+        List.mem_filter.mpr ⟨hr, by simpa using lt_of_not_ge hr1⟩
+      rw [List.length_eq_zero_iff.mp hrs_above_one] at hrfilter
+      simp at hrfilter
+    exact lt_of_le_of_ne hrle fun hre ↦ hone_not_mem (hre ▸ hr)
+
 /-- Under the endpoint inequalities, the inserted outer roots also remain
 strictly inside the unit interval. -/
 theorem roots_neg_insertionOperator_mem_Ioo
@@ -224,54 +269,20 @@ theorem roots_neg_insertionOperator_mem_Ioo
         (F.roots.filter ((1 : ℝ) < ·)).card) :=
     (hfrr.2.even_card_roots_gt_add_iff_eval_pos_iff
       hFrr.2 hf_pos hF_pos hf1_not_root hF1_not_root).mpr hsign_one
-  have hss_above_zero :
-      (ss.filter ((0 : ℝ) < ·)).length = ss.length := by
-    rw [List.filter_eq_self.mpr fun s hs => by simpa using (hss_Ioo s hs).1]
-  have hss_above_one : (ss.filter ((1 : ℝ) < ·)).length = 0 := by
-    rw [List.length_eq_zero_iff, List.filter_eq_nil_iff]
-    exact fun s hs => by simpa using not_lt_of_ge (hss_Ioo s hs).2.le
-  have hodd_zero_list :
-      Odd ((ss.filter ((0 : ℝ) < ·)).length +
-        (rs.filter ((0 : ℝ) < ·)).length) := by
-    simpa [← hss_eq, ← hrs_eq] using hodd_zero
-  have heven_one_list :
-      Even ((ss.filter ((1 : ℝ) < ·)).length +
-        (rs.filter ((1 : ℝ) < ·)).length) := by
-    simpa [← hss_eq, ← hrs_eq] using heven_one
-  have hrs_above_zero :
-      (rs.filter ((0 : ℝ) < ·)).length = ss.length + 1 := by
-    have hlo := listInterlaces_filter_lt_le (x := (0 : ℝ)) hint hlen
-    have hhi := listInterlaces_filter_lt_le_succ (x := (0 : ℝ)) hint hlen
-    rw [hss_above_zero] at hlo hhi hodd_zero_list
-    grind
-  have hrs_above_one : (rs.filter ((1 : ℝ) < ·)).length = 0 := by
-    have hhi := listInterlaces_filter_lt_le_succ (x := (1 : ℝ)) hint hlen
-    rw [hss_above_one] at hhi heven_one_list
-    grind
-  have hrs_at_most_zero : (rs.filter (· ≤ (0 : ℝ))).length = 0 := by
-    have hpartition := filter_le_add_filter_lt_length (x := (0 : ℝ)) rs
-    rw [hrs_above_zero, hlen] at hpartition
-    lia
+  have hone_not_mem : (1 : ℝ) ∉ rs := by
+    intro hone
+    apply hF1_not_root
+    apply (mem_roots hFrr.1).mp
+    rw [← hrs_eq]
+    exact Multiset.mem_coe.mpr hone
   intro r hr
   have hr_rs : r ∈ rs := by
     exact Multiset.mem_coe.mp (by rw [hrs_eq]; exact hr)
-  constructor
-  · by_contra hr0
-    have hrle : r ≤ 0 := not_lt.mp hr0
-    have : r ∈ rs.filter (· ≤ (0 : ℝ)) :=
-      List.mem_filter.mpr ⟨hr_rs, by simpa using hrle⟩
-    rw [List.length_eq_zero_iff.mp hrs_at_most_zero] at this
-    simp at this
-  · have hrle : r ≤ 1 := by
-      by_contra hr1
-      have : r ∈ rs.filter ((1 : ℝ) < ·) :=
-        List.mem_filter.mpr ⟨hr_rs, by simpa using lt_of_not_ge hr1⟩
-      rw [List.length_eq_zero_iff.mp hrs_above_one] at this
-      simp at this
-    exact lt_of_le_of_ne hrle (fun hre => hF1_not_root (by
-      apply (mem_roots hFrr.1).mp
-      rw [← hrs_eq]
-      exact Multiset.mem_coe.mpr (hre ▸ hr_rs)))
+  apply list_mem_Ioo_of_interlaces_of_endpoint_parity hint hlen hss_Ioo
+  · simpa [← hss_eq, ← hrs_eq] using hodd_zero
+  · simpa [← hss_eq, ← hrs_eq] using heven_one
+  · exact hone_not_mem
+  · exact hr_rs
 
 theorem neg_insertionOperator_splits
     (a b : ℝ) {f : ℝ[X]}

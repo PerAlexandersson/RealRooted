@@ -264,6 +264,72 @@ theorem MvPolynomial.HyperbolicAt.linearPlaneRestriction_mvRealStable
   exact BorceaBranden.homogenizeBivariate_stable_of_splits_nonpos
     hq0 (he.2 u) hroots
 
+/-- A zero at a positively imaginary shift cannot have a real line parameter. -/
+private theorem shifted_eval_eq_zero_im_ne_zero
+    {σ : Type*} {P : MvPolynomial σ ℝ} {d : ℕ} {e u y : σ → ℝ}
+    (he : P.HyperbolicAt e) (hhom : P.IsHomogeneous d)
+    {α : ℝ} (hα : 0 < α) {z : ℂ}
+    (hz : MvPolynomial.eval
+      (fun i => Complex.I * (α : ℂ) * (e i : ℂ) + (y i : ℂ) +
+        (u i : ℂ) * z) (complexifyMv P) = 0) :
+    z.im ≠ 0 := by
+  intro hzim
+  let w : σ → ℝ := fun i => y i + z.re * u i
+  have hreval : (realAffineLineRestriction w e P).aeval
+      (Complex.I * (α : ℂ)) = 0 := by
+    rw [aeval_realAffineLineRestriction]
+    convert hz using 1
+    apply congrArg (fun w : σ → ℂ =>
+      MvPolynomial.eval w (complexifyMv P))
+    funext i
+    dsimp only [w]
+    apply Complex.ext <;> simp [hzim] <;> ring
+  have hy :=
+    MvPolynomial.HyperbolicAt.affineLineRestriction_splits_ne_zero he hhom w
+  have him := im_eq_zero_of_aeval_eq_zero hy.2 hy.1 hreval
+  exact hα.ne' (by simpa using him)
+
+/-- At zero real displacement, stability puts every shifted root below the real axis. -/
+private theorem shifted_affineLineRestriction_isRoot_im_neg
+    {σ : Type*} {P : MvPolynomial σ ℝ} {d : ℕ} {e u : σ → ℝ}
+    (he : P.HyperbolicAt e) (hhom : P.IsHomogeneous d)
+    (hneg : ∀ r,
+      (MvPolynomial.affineLineRestriction u e P).IsRoot r → r < 0)
+    {α : ℝ} (hα : 0 < α) {z : ℂ}
+    (hz : MvPolynomial.eval
+      (fun i => Complex.I * (α : ℂ) * (e i : ℂ) + (u i : ℂ) * z)
+      (complexifyMv P) = 0) :
+    z.im < 0 := by
+  have hne : z.im ≠ 0 := by
+    apply shifted_eval_eq_zero_im_ne_zero
+      (u := u) (y := fun _ => 0) he hhom hα
+    simpa only [Complex.ofReal_zero, add_zero] using hz
+  rcases lt_or_gt_of_ne hne with hzneg | hzpos
+  · exact hzneg
+  · have hplane : MvRealStable
+        (MvPolynomial.linearPlaneRestriction e u P) := by
+      apply MvPolynomial.HyperbolicAt.linearPlaneRestriction_mvRealStable he hhom
+      intro r hr
+      exact (hneg r ((Polynomial.mem_roots
+        (MvPolynomial.HyperbolicAt.affineLineRestriction_splits_ne_zero
+          he hhom u).2).mp hr)).le
+    have hstable : MvPolynomial.eval ![Complex.I * (α : ℂ), z]
+        (complexifyMv (MvPolynomial.linearPlaneRestriction e u P)) ≠ 0 := by
+      apply hplane
+      intro i
+      fin_cases i
+      · simpa using hα
+      · simpa using hzpos
+    exfalso
+    apply hstable
+    rw [eval_complexifyMv_linearPlaneRestriction]
+    convert hz using 1
+    apply congrArg (fun w : σ → ℂ =>
+      MvPolynomial.eval w (complexifyMv P))
+    funext i
+    dsimp only [Matrix.cons_val_zero, Matrix.cons_val_one]
+    simp [mul_comm]
+
 /-- If the affine restriction from `u` in the hyperbolic direction `e` has
 strictly negative roots, then shifting any real base point a positive
 imaginary distance in direction `e` makes every root in direction `u` lie in
@@ -323,57 +389,14 @@ theorem MvPolynomial.HyperbolicAt.complex_affineLineRestriction_isRoot_im_neg
     exact (mul_eq_zero.mp hz).resolve_left
       (inv_ne_zero (Complex.ofReal_ne_zero.mpr hu))
   have havoid (γ : ℝ) (z : ℂ) (hz : (q γ).IsRoot z) : z.im ≠ 0 := by
-    intro hzim
-    have hbaseeval := hqroot γ z hz
-    let y : σ → ℝ := fun i => γ * x i + z.re * u i
-    have hreval : (realAffineLineRestriction y e P).aeval
-        (Complex.I * (α : ℂ)) = 0 := by
-      rw [aeval_realAffineLineRestriction]
-      convert hbaseeval using 1
-      apply congrArg (fun w : σ → ℂ =>
-        MvPolynomial.eval w (complexifyMv P))
-      funext i
-      dsimp only [a, eC, uC, y]
-      apply Complex.ext
-      · simp [hzim]
-        ring
-      · simp [hzim]
-        ring
-    have hy :=
-      MvPolynomial.HyperbolicAt.affineLineRestriction_splits_ne_zero
-        he hhom y
-    have him := im_eq_zero_of_aeval_eq_zero hy.2 hy.1 hreval
-    exact hα.ne' (by simpa using him)
-  have hplane : MvRealStable
-      (MvPolynomial.linearPlaneRestriction e u P) := by
-    apply MvPolynomial.HyperbolicAt.linearPlaneRestriction_mvRealStable
-      he hhom
-    intro r hr
-    exact (hneg r ((Polynomial.mem_roots
-      (MvPolynomial.HyperbolicAt.affineLineRestriction_splits_ne_zero
-        he hhom u).2).mp hr)).le
+    apply shifted_eval_eq_zero_im_ne_zero
+      (u := u) (y := fun i => γ * x i) he hhom hα
+    simpa only [a, eC, uC, Complex.ofReal_mul] using hqroot γ z hz
   have hstart : ∀ z, (q 0).IsRoot z → z.im < 0 := by
     intro z hz
-    rcases lt_or_gt_of_ne (havoid 0 z hz) with hzneg | hzpos
-    · exact hzneg
-    · have hstable : MvPolynomial.eval
-          ![Complex.I * (α : ℂ), z]
-          (complexifyMv (MvPolynomial.linearPlaneRestriction e u P)) ≠ 0 := by
-        apply hplane
-        intro i
-        fin_cases i
-        · simpa using hα
-        · simpa using hzpos
-      exfalso
-      apply hstable
-      rw [eval_complexifyMv_linearPlaneRestriction]
-      have hbaseeval := hqroot 0 z hz
-      convert hbaseeval using 1
-      apply congrArg (fun w : σ → ℂ =>
-        MvPolynomial.eval w (complexifyMv P))
-      funext i
-      dsimp only [a, eC, uC, Matrix.cons_val_zero, Matrix.cons_val_one]
-      simp [mul_comm]
+    apply shifted_affineLineRestriction_isRoot_im_neg he hhom hneg hα
+    simpa only [a, eC, uC, Complex.ofReal_zero, zero_mul, add_zero] using
+      hqroot 0 z hz
   have htransport : ∀ z, (q 1).IsRoot z → z.im < 0 := by
     apply Polynomial.forall_isRoot_im_neg_of_isPreconnected
       (s := Set.Icc (0 : ℝ) 1) (a := 0) (b := 1)
@@ -384,12 +407,10 @@ theorem MvPolynomial.HyperbolicAt.complex_affineLineRestriction_isRoot_im_neg
     · exact hstart
   intro z hz
   apply htransport z
-  rw [Polynomial.IsRoot]
   dsimp only [q]
-  rw [Polynomial.eval_mul, Polynomial.eval_C,
-    MvPolynomial.eval_affineLineRestriction]
-  apply mul_eq_zero_of_right
+  apply Polynomial.root_mul_left_of_isRoot
   rw [Polynomial.IsRoot, MvPolynomial.eval_affineLineRestriction] at hz
+  rw [Polynomial.IsRoot, MvPolynomial.eval_affineLineRestriction]
   convert hz using 1
   apply congrArg (fun w : σ → ℂ =>
     MvPolynomial.eval w (complexifyMv P))
