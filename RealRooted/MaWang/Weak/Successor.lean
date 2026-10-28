@@ -13,7 +13,7 @@ open Polynomial Filter
 
 noncomputable section
 
-namespace RealRooted.MaWangInternal
+namespace RealRooted.MaWang
 
 private theorem strictInterl_of_interlaces_eval_mul_nonpos_of_no_common_aux
     {f g F : ℝ[X]} (hgf : Interlaces g f) (hg_pos : HasPosLeadingCoeff g)
@@ -222,11 +222,11 @@ theorem strictInterl_of_interlaces_eval_mul_nonpos_of_no_common
       strictInterl_of_interlaces_eval_mul_nonpos_succ_of_no_common
         hgf hg_pos hF_ne hF_splits hF_pos hsucc hno hroot_nonpos
 
-end RealRooted.MaWangInternal
+end RealRooted.MaWang
 
 namespace RealRooted
 
-export MaWangInternal
+export MaWang
   (strictInterl_of_interlaces_eval_mul_nonpos_same_of_no_common
     strictInterl_of_interlaces_eval_mul_nonpos_succ_of_no_common
     strictInterl_of_interlaces_eval_mul_nonpos_of_no_common)

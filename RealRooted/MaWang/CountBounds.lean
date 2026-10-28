@@ -17,7 +17,7 @@ open Polynomial Filter
 
 noncomputable section
 
-namespace RealRooted.MaWangInternal
+namespace RealRooted.MaWang
 
 /-- Greedy ordered-matching lemma for the differ-by-1 case. The hypotheses say:
 after consuming the first `pre.length` left-hand points, the remaining right-hand
@@ -305,11 +305,11 @@ theorem strictInterl_of_count_bounds_same
     hrs_eq, hts_eq,
     Or.inr ⟨hlen, listAlternates_of_count_bounds hrs_sorted hts_sorted hlen hlt hle⟩⟩
 
-end RealRooted.MaWangInternal
+end RealRooted.MaWang
 
 namespace RealRooted
 
-export MaWangInternal
+export MaWang
   (listInterlaces_of_count_bounds
     listAlternates_of_count_bounds
     strictInterl_of_count_bounds_succ

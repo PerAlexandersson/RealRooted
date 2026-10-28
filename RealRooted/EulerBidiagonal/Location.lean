@@ -141,7 +141,7 @@ theorem exists_generalStep_roots_interlacing
   have hsorted : (L :: (A ++ [0])).Pairwise (· ≤ ·) :=
     (pairwise_lt_cons_append_zero hm hAlen hApair hAneg hLA).imp le_of_lt
   obtain ⟨us, hus_len, hint, hus_roots, hus_pair⟩ :=
-    MaWangInternal.exists_roots_strictly_interlacing_of_consecutive_signs
+    MaWang.exists_roots_strictly_interlacing_of_consecutive_signs
       (F := generalStep κ a b u v q) hsorted (eval_mul_neg_of_alternating hsigns)
   have hlen : us.length = m + 1 := by simp_all
   have hnd : (↑us : Multiset ℝ).Nodup :=

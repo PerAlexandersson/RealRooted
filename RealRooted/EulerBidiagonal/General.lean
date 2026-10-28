@@ -330,7 +330,7 @@ theorem exists_inner_comparison_roots
       ListInterlaces ss rs ∧
       (∀ s ∈ ss, (generalComparison κ a b v q).IsRoot s) ∧ ss.Pairwise (· < ·) := by
   obtain ⟨ss, hlen, hint, hroots, hss_sorted⟩ :=
-    MaWangInternal.exists_roots_strictly_interlacing_of_consecutive_signs
+    MaWang.exists_roots_strictly_interlacing_of_consecutive_signs
       (F := generalComparison κ a b v q) (hrs_sorted.imp le_of_lt) (by
         intro pre r₁ r₂ rest hdecomp
         exact generalComparison_eval_mul_neg_of_adjacent_roots κ a b v q rs pre rest r₁ r₂
@@ -397,7 +397,7 @@ theorem exists_last_comparison_root
     (hneg : (generalComparison κ a b v q).eval r < 0) :
     ∃ σ, r < σ ∧ σ < 0 ∧ (generalComparison κ a b v q).IsRoot σ := by
   obtain ⟨σ, hleft, hright, hroot⟩ :=
-    MaWangInternal.exists_isRoot_between_of_eval_mul_neg
+    MaWang.exists_isRoot_between_of_eval_mul_neg
       (p := generalComparison κ a b v q) (a := r) (b := 0) (by linarith)
       (mul_neg_of_neg_of_pos hneg hzero)
   exact ⟨σ, hleft, hright, hroot⟩
@@ -636,7 +636,7 @@ theorem hasSimpleRoots_of_sign_changes_with_left_endpoint
   have hsplits := splits_of_sign_changes_with_left_endpoint
     hd hp hdegree hlc r hr hfirst hsign
   obtain ⟨us, hus_len, _, hus_roots, hus_strict⟩ :=
-    MaWangInternal.exists_roots_strictly_interlacing_of_consecutive_signs
+    MaWang.exists_roots_strictly_interlacing_of_consecutive_signs
       (F := p) (List.pairwise_ofFn.2 (fun i j hij =>
         le_of_lt (hzorder i j hij))) (by
           intro pre r₁ r₂ rest hdecomp
