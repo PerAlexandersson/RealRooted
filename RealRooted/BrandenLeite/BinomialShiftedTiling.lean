@@ -97,17 +97,12 @@ theorem binomialShiftedRecurrenceCoefficient_hasNonnegCoeffs
     apply hasNonnegCoeffs_affine_linear (by positivity)
     rcases Nat.even_or_odd j with heven | hodd
     · rw [heven.neg_one_pow]
-      have hchoose : 1 ≤ Nat.choose j 2 :=
-        Nat.one_le_iff_ne_zero.mpr
-          (Nat.choose_ne_zero_iff.mpr (by exact hj2))
-      apply mul_nonneg
-      · have hchooseR : (1 : ℝ) ≤ Nat.choose j 2 := by
-          exact_mod_cast hchoose
-        linarith
-      · positivity
+      have hchoose : (1 : ℝ) ≤ Nat.choose j 2 := by
+        exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Nat.choose_ne_zero_iff.mpr hj2)
+      positivity
     · rw [hodd.neg_one_pow]
       apply mul_nonneg
-      · have hchooseR : 0 ≤ (Nat.choose j 2 : ℝ) := by positivity
+      · have : 0 ≤ (Nat.choose j 2 : ℝ) := by positivity
         linarith
       · positivity
   · have hj1 : j = 1 := by lia
@@ -235,11 +230,9 @@ theorem binomialShiftedRodRow_three_add_three (n : ℕ) :
           (if j = 2 then
             (X + C 4) * binomialShiftedRodRow 3
               (n + 3 - (j + 1)) else 0) := by
-      by_cases h0 : j = 0
-      · simp [h0]
-      · by_cases h1 : j = 1
-        · simp [h1]
-        · by_cases h2 : j = 2 <;> simp [h1, h2]
+      by_cases hj : j ≤ 2
+      · interval_cases j <;> simp
+      · simp [show j ≠ 0 by lia, show j ≠ 1 by lia, show j ≠ 2 by lia]
     simp_rw [hsplit, Finset.sum_add_distrib]
     rw [Finset.sum_ite_eq', Finset.sum_ite_eq', Finset.sum_ite_eq']
     simp [show 0 < n + 3 by lia, show 1 < n + 3 by lia,
@@ -290,13 +283,9 @@ theorem binomialShiftedRodRow_four_add_four (n : ℕ) :
           (if j = 3 then
             (X + C 5) * binomialShiftedRodRow 4
               (n + 4 - (j + 1)) else 0) := by
-      by_cases h0 : j = 0
-      · simp [h0]
-      · by_cases h1 : j = 1
-        · simp [h1]
-        · by_cases h2 : j = 2
-          · simp [h2]
-          · by_cases h3 : j = 3 <;> simp [h0, h1, h2, h3]
+      by_cases hj : j ≤ 3
+      · interval_cases j <;> simp
+      · simp [show j ≠ 0 by lia, show j ≠ 1 by lia, show j ≠ 2 by lia, show j ≠ 3 by lia]
     simp_rw [hsplit, Finset.sum_add_distrib]
     rw [Finset.sum_ite_eq', Finset.sum_ite_eq',
       Finset.sum_ite_eq', Finset.sum_ite_eq']

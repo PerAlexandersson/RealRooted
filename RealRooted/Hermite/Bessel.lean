@@ -36,14 +36,10 @@ private theorem splits_derivative_sub {p : ℝ[X]} (hp : p.Splits) (r : ℝ) :
     (f := X + C (-r)) (g := p)
     ⟨(monic_X_add_C (-r)).ne_zero, Splits.X_add_C (-r)⟩ ⟨hp0, hp⟩
   rw [applyAsDifferentialOperator_X_add_C] at hs
-  have heq : derivative p + C (-r) * p = derivative p - C r * p := by
-    simp only [map_neg]
-    ring
   rcases hs with hs | hs
-  · rw [heq] at hs
-    rw [hs]
+  · rw [show derivative p - C r * p = 0 by simpa [sub_eq_add_neg] using hs]
     exact Splits.zero
-  · rwa [heq] at hs
+  · simpa [sub_eq_add_neg] using hs
 
 private def laguerreApproximation (M : ℕ) : ℝ[X] :=
   ∑ k ∈ range (M + 1),
@@ -66,16 +62,14 @@ private theorem laguerreApproximation_eval_pos (M : ℕ) {t : ℝ} (ht : t ≤ 0
   simp only [laguerreApproximation, eval_finsetSum, eval_mul, eval_C, eval_pow, eval_X]
   rw [Finset.sum_range_succ']
   apply add_pos_of_nonneg_of_pos
-  · apply Finset.sum_nonneg
-    intro k _
-    have heq :
+  · refine Finset.sum_nonneg fun k _ => ?_
+    rw [show
         (-1 : ℝ) ^ (k + 1) * (M.choose (k + 1) : ℝ) /
             ((k + 1).factorial : ℝ) * t ^ (k + 1) =
           (-t) ^ (k + 1) *
-            ((M.choose (k + 1) : ℝ) / ((k + 1).factorial : ℝ)) := by
+            ((M.choose (k + 1) : ℝ) / ((k + 1).factorial : ℝ)) by
       rw [neg_pow]
-      ring
-    rw [heq]
+      ring]
     have : 0 ≤ -t := by linarith
     positivity
   · simp
@@ -119,33 +113,27 @@ private theorem laguerreApproximation_eq_aeval (M : ℕ) :
 
 private theorem laguerreApproximation_splits (M : ℕ) :
     (laguerreApproximation M).Splits := by
-  have hsymbol : ((X - C (1 : ℝ)) ^ M).Splits := (Splits.X_sub_C 1).pow M
-  have hinput : (X ^ M : ℝ[X]).Splits := Splits.X_pow M
+  have hdeg : ((X - C (1 : ℝ)) ^ M).natDegree < M + 1 := by
+    rw [natDegree_pow, natDegree_X_sub_C]
+    lia
   have hpres := differential_operator_preserves_real_rooted
-    ⟨((monic_X_sub_C 1).pow M).ne_zero, hsymbol⟩ ⟨by simp, hinput⟩
+    ⟨((monic_X_sub_C 1).pow M).ne_zero, (Splits.X_sub_C 1).pow M⟩
+    ⟨by simp, Splits.X_pow M⟩
   have haeval :
       (aeval (derivative : Module.End ℝ ℝ[X]) ((X - C (1 : ℝ)) ^ M) :
         Module.End ℝ ℝ[X]) (X ^ M) =
         applyAsDifferentialOperator ((X - C 1) ^ M) (X ^ M) := by
-    rw [applyAsDifferentialOperator_eq_sum_range (N := M + 1) (by
-      rw [natDegree_pow, natDegree_X_sub_C]
-      lia)]
-    rw [aeval_eq_sum_range' (n := M + 1) (by
-      rw [natDegree_pow, natDegree_X_sub_C]
-      lia)]
+    rw [applyAsDifferentialOperator_eq_sum_range (N := M + 1) hdeg]
+    rw [aeval_eq_sum_range' (n := M + 1) hdeg]
     simp only [LinearMap.coe_sum, Finset.sum_apply, LinearMap.smul_apply,
       Module.End.pow_apply, smul_eq_C_mul]
   rw [← haeval, ← laguerreApproximation_eq_aeval] at hpres
+  have hfactorial : (M.factorial : ℝ) ≠ 0 := by positivity
   rcases hpres with hzero | hsplit
-  · have hfactorial : (M.factorial : ℝ) ≠ 0 := by positivity
-    have : laguerreApproximation M = 0 := by
-      apply (mul_left_cancel₀ (C_ne_zero.mpr hfactorial))
-      simpa using hzero
-    rw [this]
-    exact Splits.zero
+  · have hzero' := (mul_eq_zero.mp hzero).resolve_left (C_ne_zero.mpr hfactorial)
+    simpa only [hzero'] using Splits.zero (R := ℝ)
   · have h := hsplit.C_mul (1 / (M.factorial : ℝ))
     rw [← mul_assoc, ← C_mul] at h
-    have hfactorial : (M.factorial : ℝ) ≠ 0 := by positivity
     rwa [one_div_mul_cancel hfactorial, C_1, one_mul] at h
 
 private theorem laguerreApproximation_roots_nonneg (M : ℕ) :
@@ -211,10 +199,9 @@ private theorem aeval_sqDifferentialOperator_prod_splits
   | empty => simpa using hp
   | cons a s ih =>
     rw [Multiset.map_cons, Multiset.prod_cons, map_mul, Module.End.mul_apply]
-    have h := splits_sq_sub
-      (ih (fun r hr' => hr r (Multiset.mem_cons_of_mem hr'))) hc
-      (hr a (Multiset.mem_cons_self _ _))
-    simpa [sqDifferentialOperator, Module.algebraMap_end_apply] using h
+    simpa [sqDifferentialOperator, Module.algebraMap_end_apply] using
+      splits_sq_sub (ih (fun r hr' => hr r (Multiset.mem_cons_of_mem hr'))) hc
+        (hr a (Multiset.mem_cons_self _ _))
 
 /-- If `L` has only nonnegative real roots, then the Laguerre--Pólya operator
 `L(c D²)` preserves real-rootedness for `c > 0`.
@@ -307,8 +294,7 @@ theorem besselDifferentialTransform_splits {p : ℝ[X]} (hp : p.Splits) :
         refine tendsto_finsetSum _ fun k _ => ?_
         exact ((Complex.continuous_ofReal.tendsto _).comp (hconv k)).mul_const _)
       with hzero | hsplit
-  · rw [hzero]
-    exact Splits.zero
+  · simpa only [hzero] using Splits.zero (R := ℝ)
   · exact hsplit
 
 end RealRooted.HermitePoulain

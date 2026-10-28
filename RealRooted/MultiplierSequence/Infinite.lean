@@ -42,11 +42,8 @@ theorem isMultiplierSequence_iff_preserves {gamma : ℕ → ℝ} :
       ∀ {p : ℝ[X]}, p.Splits →
         diagonalOperator gamma p = 0 ∨
           (diagonalOperator gamma p).Splits := by
-  constructor
-  · intro hgamma p hp
-    exact hgamma p.natDegree le_rfl hp
-  · intro hgamma _ p _ hp
-    exact hgamma hp
+  exact ⟨fun hgamma p hp => hgamma p.natDegree le_rfl hp,
+    fun hgamma _ p _ hp => hgamma hp⟩
 
 /-- The finite-degree PF definition is equivalent to unrestricted
 preservation of the polynomial PF cone. -/
@@ -54,11 +51,8 @@ theorem isPFMultiplierSequence_iff_preserves {gamma : ℕ → ℝ} :
     IsPFMultiplierSequence gamma ↔
       ∀ {p : ℝ[X]}, IsPFPolynomial p →
         IsPFPolynomial (diagonalOperator gamma p) := by
-  constructor
-  · intro hgamma p hp
-    exact hgamma p.natDegree hp le_rfl
-  · intro hgamma _ p hp _
-    exact hgamma hp
+  exact ⟨fun hgamma p hp => hgamma p.natDegree hp le_rfl,
+    fun hgamma _ p hp _ => hgamma hp⟩
 
 theorem IsMultiplierSequence.finite {gamma : ℕ → ℝ}
     (hgamma : IsMultiplierSequence gamma) (n : ℕ) :
@@ -157,8 +151,7 @@ theorem IsFiniteMultiplierSequence.alternating {gamma : ℕ → ℝ} {n : ℕ}
   intro p hp hsplits
   rw [diagonalOperator_alternating]
   rcases hgamma hp hsplits with hzero | hsplits
-  · left
-    simp [hzero]
+  · simp [hzero]
   · exact Or.inr hsplits.comp_neg_X
 
 /-- Alternating all signs preserves the infinite multiplier-sequence
@@ -178,8 +171,7 @@ theorem IsPFMultiplierSequence.const_mul {gamma : ℕ → ℝ}
 theorem IsPFMultiplierSequence.nonneg {gamma : ℕ → ℝ}
     (hgamma : IsPFMultiplierSequence gamma) (k : ℕ) :
     0 ≤ gamma k := by
-  have hp := hgamma.finite k (isPFPolynomial_X_pow k) (by simp)
-  simpa using hp.hasNonnegCoeffs k
+  simpa using (hgamma.finite k (isPFPolynomial_X_pow k) (by simp)).hasNonnegCoeffs k
 
 /-- A nonnegative multiplier sequence preserves the polynomial PF cone. -/
 theorem IsMultiplierSequence.toPF {gamma : ℕ → ℝ}
@@ -195,10 +187,7 @@ the original diagonal operator. -/
 theorem X_mul_diagonalOperator_shift_one (gamma : ℕ → ℝ) (p : ℝ[X]) :
     X * diagonalOperator (fun k => gamma (k + 1)) p =
       diagonalOperator gamma (X * p) := by
-  ext k
-  cases k with
-  | zero => simp
-  | succ k => simp [coeff_X_mul]
+  ext (_ | k) <;> simp [coeff_X_mul]
 
 /-- Dropping the first entry of a finite multiplier sequence consumes one
 degree of its certificate. -/
@@ -216,13 +205,10 @@ theorem IsFiniteMultiplierSequence.shift_one
   rcases hgamma hXdeg (Polynomial.splits_X_mul.mpr hp_splits) with
     hzero | hsplits
   · left
-    have hXzero : X * diagonalOperator (fun k => gamma (k + 1)) p = 0 := by
-      rw [X_mul_diagonalOperator_shift_one, hzero]
-    exact (mul_eq_zero.mp hXzero).resolve_left X_ne_zero
+    exact (mul_eq_zero.mp (by rw [X_mul_diagonalOperator_shift_one, hzero])).resolve_left
+      X_ne_zero
   · right
-    apply Polynomial.splits_X_mul.mp
-    rw [X_mul_diagonalOperator_shift_one]
-    exact hsplits
+    exact Polynomial.splits_X_mul.mp (by rwa [X_mul_diagonalOperator_shift_one])
 
 theorem IsMultiplierSequence.shift_one {gamma : ℕ → ℝ}
     (hgamma : IsMultiplierSequence gamma) :
@@ -245,8 +231,7 @@ theorem isMultiplierSequence_natCast :
   rw [isMultiplierSequence_iff_preserves]
   intro p hp
   rw [← eulerOperator_eq_diagonalOperator_natCast]
-  right
-  exact Polynomial.splits_X_mul.mpr hp.derivative
+  exact Or.inr (Polynomial.splits_X_mul.mpr hp.derivative)
 
 /-- Every nonnegative integral shift `k + r` of the Euler diagonal is an
 infinite multiplier sequence. -/
@@ -285,16 +270,15 @@ theorem IsMultiplierSequence.hadamardProduct_right
     {q : ℝ[X]} (hq : IsMultiplierSequence fun k => q.coeff k)
     {p : ℝ[X]} (hp : p.Splits) :
     hadamardProduct p q = 0 ∨ (hadamardProduct p q).Splits := by
-  rw [hadamardProduct_eq_diagonalOperator]
-  exact hq.diagonalOperator_eq_zero_or_splits hp
+  simpa only [hadamardProduct_eq_diagonalOperator] using
+    hq.diagonalOperator_eq_zero_or_splits hp
 
 /-- PF version of `IsMultiplierSequence.hadamardProduct_right`. -/
 theorem IsPFMultiplierSequence.hadamardProduct_right
     {q : ℝ[X]} (hq : IsPFMultiplierSequence fun k => q.coeff k)
     {p : ℝ[X]} (hp : IsPFPolynomial p) :
     IsPFPolynomial (hadamardProduct p q) := by
-  rw [hadamardProduct_eq_diagonalOperator]
-  exact hq.diagonalOperator_isPF hp
+  simpa only [hadamardProduct_eq_diagonalOperator] using hq.diagonalOperator_isPF hp
 
 /-- Every Jensen polynomial of a nonnegative multiplier sequence is PF. -/
 theorem isPFPolynomial_jensenPolynomial_of_multiplierSequence

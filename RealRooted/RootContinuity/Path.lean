@@ -54,19 +54,14 @@ private lemma exists_separating_points (d : ℕ) (r : ℕ → ℝ)
     dsimp only
     split_ifs with hi0 hid'
     · lia
-    · have h1 : r j ≤ r (i - 1) := hle j (i - 1) (by lia) (by lia)
-      have h2 : r (i - 1) < r i := hmono (i - 1) i (by lia) hid'
-      linarith
-    · have h1 : r j ≤ r (d - 1) := hle j (d - 1) (by lia) (by lia)
-      linarith
+    · linarith [hle j (i - 1) (by lia) (by lia), hmono (i - 1) i (by lia) hid']
+    · linarith [hle j (d - 1) (by lia) (by lia)]
   · intro i j hij hjd
     dsimp only
     split_ifs with hi0 hid'
     · subst hi0
       linarith [hle 0 j (by lia) hjd]
-    · have h1 : r (i - 1) < r i := hmono (i - 1) i (by lia) hid'
-      have h2 : r i ≤ r j := hle i j hij hjd
-      linarith
+    · linarith [hmono (i - 1) i (by lia) hid', hle i j hij hjd]
     · lia
 
 /-- A monic squarefree split real polynomial of degree `d` is `∏ i < d, (X - r i)` for a
@@ -84,18 +79,14 @@ private lemma exists_strictMono_roots_enum {p : ℝ[X]} {d : ℕ}
   set L : List ℝ := p.roots.sort (· ≤ ·) with hL
   have hcoe : (L : Multiset ℝ) = p.roots := Multiset.sort_eq _ _
   have hlen : L.length = d := by rw [hL, Multiset.length_sort, hcard]
-  have hLnodup : L.Nodup := by
-    rw [← hcoe] at hnodup
-    exact Multiset.coe_nodup.mp hnodup
+  have hLnodup : L.Nodup := by simpa [← hcoe] using hnodup
   have hLsorted : L.SortedLT :=
     List.sortedLT_iff_nodup_and_sortedLE.mpr
       ⟨hLnodup, (Multiset.pairwise_sort _ _).sortedLE⟩
   refine ⟨fun i => L.getD i 0, ?_, ?_⟩
   · intro i j hij hjd
-    have hi : i < L.length := by lia
-    have hj : j < L.length := by lia
-    simp only [List.getD_eq_getElem?_getD, List.getElem?_eq_getElem hi,
-      List.getElem?_eq_getElem hj, Option.getD_some]
+    simp only [List.getD_eq_getElem?_getD, List.getElem?_eq_getElem (by lia : i < L.length),
+      List.getElem?_eq_getElem (by lia : j < L.length), Option.getD_some]
     exact hLsorted.getElem_lt_getElem_of_lt hij
   · intro z
     have hfac : (p.roots.map fun a => X - C a).prod = p :=
@@ -106,7 +97,7 @@ private lemma exists_strictMono_roots_enum {p : ℝ[X]} {d : ℕ}
       _ = (L.map fun a => z - a).prod := by
             rw [eval_list_prod, List.map_map]
             congr 1
-            exact List.map_congr_left fun a _ => by simp
+            simp
       _ = ∏ i : Fin L.length, (z - L[(i : ℕ)]) := by
             rw [← List.ofFn_getElem_eq_map, List.prod_ofFn]
       _ = ∏ i ∈ Finset.range d, (z - L.getD i 0) := by
@@ -168,14 +159,8 @@ private theorem splits_of_isPreconnected_of_monic {T : Type*} [TopologicalSpace 
         induction j, hij using Nat.le_induction with
         | base => exact le_rfl
         | succ n hin ih => exact (ih (by lia)).trans (hxlt n (by lia)).le
-      have hyinj : Function.Injective y := by
-        have hylt : ∀ i j : Fin d, (i : ℕ) < j → y i < y j := fun i j hij =>
-          ((hyIoo i).2.trans_le (hxle (i + 1) j (by lia) (by lia))).trans (hyIoo j).1
-        intro i j hij
-        by_contra hne
-        rcases lt_or_gt_of_ne (Fin.val_ne_of_ne hne) with h | h
-        · exact (hylt i j h).ne hij
-        · exact (hylt j i h).ne hij.symm
+      have hyinj : Function.Injective y := (show StrictMono y from fun i j hij =>
+        ((hyIoo i).2.trans_le (hxle (i + 1) j (by lia) (by lia))).trans (hyIoo j).1).injective
       have hPne : P u ≠ 0 := (hmonic _ u.2).ne_zero
       have hsub : Finset.univ.image y ⊆ (P u).roots.toFinset := by
         intro z hz

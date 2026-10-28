@@ -59,18 +59,9 @@ theorem bidiagonalJensenPencil_factor_of_endpoint_factors
     (lam : ℝ) :
     bidiagonalJensenPencil alpha beta d lam =
       ((X + 1 : ℝ[X]) ^ m) * (A + C lam * B) := by
-  rw [bidiagonalJensenPencil]
-  calc
-    jensenPolynomial d alpha + C lam * X * jensenPolynomial d beta =
-        ((X + 1 : ℝ[X]) ^ m) * A + C lam * X * jensenPolynomial d beta := by
-      rw [halpha]
-    _ = ((X + 1 : ℝ[X]) ^ m) * A +
-        C lam * (X * jensenPolynomial d beta) := by
-      ring
-    _ = ((X + 1 : ℝ[X]) ^ m) * A + C lam *
-        (((X + 1 : ℝ[X]) ^ m) * B) := by
-      rw [hbeta]
-    _ = ((X + 1 : ℝ[X]) ^ m) * (A + C lam * B) := by ring
+  rw [bidiagonalJensenPencil, halpha,
+    mul_assoc (C lam) X (jensenPolynomial d beta), hbeta]
+  ring
 
 /-- Build a Jensen-pencil certificate from endpoint factorizations and the
 derived residual pencil `A + C lam * B`. -/

@@ -43,16 +43,14 @@ private theorem eraseLead_comp_neg_X (p : ℝ[X]) :
 
 theorem natTrailingDegree_eraseLead_of_ne_zero {p : ℝ[X]} (h : p.eraseLead ≠ 0) :
     p.eraseLead.natTrailingDegree = p.natTrailingDegree := by
-  have hp : p ≠ 0 := by
-    rintro rfl
-    simp at h
+  have hp : p ≠ 0 := fun hp => h (by simp [hp])
   have hlt : p.eraseLead.natTrailingDegree < p.natDegree :=
     lt_natDegree_of_mem_eraseLead_support (natTrailingDegree_mem_support_of_nonzero h)
   have hle : p.natTrailingDegree ≤ p.eraseLead.natTrailingDegree := by
     apply natTrailingDegree_le_of_ne_zero
     rw [← eraseLead_coeff_of_ne _ hlt.ne]
     exact coeff_natTrailingDegree_ne_zero.mpr h
-  apply le_antisymm _ hle
+  refine le_antisymm ?_ hle
   apply natTrailingDegree_le_of_ne_zero
   rw [eraseLead_coeff_of_ne _ (hle.trans_lt hlt).ne]
   exact coeff_natTrailingDegree_ne_zero.mpr hp
@@ -173,14 +171,12 @@ theorem support_eq_of_sign_coeff {p q : ℝ[X]}
 theorem signVariations_eq_of_sign_coeff {p q : ℝ[X]}
     (h : ∀ k, SignType.sign (p.coeff k) = SignType.sign (q.coeff k)) :
     p.signVariations = q.signVariations := by
+  have hsupp := support_eq_of_sign_coeff h
   have hdeg : p.degree = q.degree := by
-    simp only [degree, support_eq_of_sign_coeff h]
+    simp only [degree, hsupp]
   have hfun : SignType.sign ∘ p.coeff = SignType.sign ∘ q.coeff := funext h
   have hzero : p = 0 ↔ q = 0 := by
-    constructor <;> intro h0 <;> ext k <;> have hk := h k <;>
-      simp only [h0, coeff_zero, sign_zero] at hk ⊢
-    · exact sign_eq_zero_iff.mp hk.symm
-    · exact sign_eq_zero_iff.mp hk
+    rw [← support_eq_empty, hsupp, support_eq_empty]
   by_cases hp : p = 0
   · simp [hp, hzero.mp hp]
   have hq : q ≠ 0 := fun hq => hp (hzero.mpr hq)
@@ -206,9 +202,7 @@ the number of sign variations. -/
 theorem signVariations_schurSzegoComp {n : ℕ} {P Q : ℝ[X]} (hP : P.natDegree ≤ n)
     (hQ : ∀ k ≤ n, 0 < Q.leadingCoeff * Q.coeff k) :
     (schurSzegoComp n P Q).signVariations = P.signVariations := by
-  have hlc : Q.leadingCoeff ≠ 0 := by
-    intro h
-    simpa [h] using hQ 0 (Nat.zero_le n)
+  have hlc : Q.leadingCoeff ≠ 0 := fun h => by simpa [h] using hQ 0 (Nat.zero_le n)
   rw [← signVariations_C_mul _ hlc]
   exact signVariations_eq_of_sign_coeff (sign_coeff_C_mul_schurSzegoComp hP hQ)
 
@@ -217,9 +211,7 @@ the coefficient support. -/
 theorem support_schurSzegoComp {n : ℕ} {P Q : ℝ[X]} (hP : P.natDegree ≤ n)
     (hQ : ∀ k ≤ n, 0 < Q.leadingCoeff * Q.coeff k) :
     (schurSzegoComp n P Q).support = P.support := by
-  have hlc : Q.leadingCoeff ≠ 0 := by
-    intro h
-    simpa [h] using hQ 0 (Nat.zero_le n)
+  have hlc : Q.leadingCoeff ≠ 0 := fun h => by simpa [h] using hQ 0 (Nat.zero_le n)
   rw [← support_eq_of_sign_coeff (sign_coeff_C_mul_schurSzegoComp hP hQ)]
   ext k
   simp [hlc]
@@ -294,11 +286,10 @@ theorem splits_schurSzegoComp_of_roots_neg {n : ℕ} {P Q : ℝ[X]} (hP : P.natD
   rw [schurSzegoComp_C_mul_left, schurSzegoComp_comm] at h
   have hS : schurSzegoComp n P Q = C c * (C c⁻¹ * schurSzegoComp n P Q) := by
     rw [← mul_assoc, ← C_mul, mul_inv_cancel₀ hc, C_1, one_mul]
+  rw [hS]
   rcases h with h | h
-  · rw [hS, h, mul_zero]
-    exact Splits.zero
-  · rw [hS]
-    exact (Splits.C _).mul h
+  · simpa only [h, mul_zero] using Splits.zero (R := ℝ)
+  · exact (Splits.C _).mul h
 
 /-- **Kostov–Shapiro**: if `P` is real-rooted of degree `n` and `Q` of degree `n` has only
 negative roots, the Schur–Szegő composition has as many positive, zero and negative roots as

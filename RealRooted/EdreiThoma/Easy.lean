@@ -64,12 +64,10 @@ sequences). -/
 protected theorem mul {F G : PowerSeries ℝ} (hF : IsPolyaFreqSeries F)
     (hG : IsPolyaFreqSeries G) : IsPolyaFreqSeries (F * G) := by
   unfold IsPolyaFreqSeries at hF hG ⊢
-  have h := IsPolyaFreqSeq.natCauchyConvolution hF hG
-  have h2 : (fun n => PowerSeries.coeff n (F * G)) =
-      natCauchyConvolution (fun k => PowerSeries.coeff k F) (fun k => PowerSeries.coeff k G) :=
-    funext (coeff_mul_eq_natCauchyConvolution F G)
-  rw [h2]
-  exact h
+  rw [show (fun n => PowerSeries.coeff n (F * G)) =
+      natCauchyConvolution (fun k => PowerSeries.coeff k F) (fun k => PowerSeries.coeff k G) from
+    funext (coeff_mul_eq_natCauchyConvolution F G)]
+  exact IsPolyaFreqSeq.natCauchyConvolution hF hG
 
 /-- Natural powers of a Pólya-frequency series are Pólya-frequency. -/
 protected theorem pow {F : PowerSeries ℝ} (hF : IsPolyaFreqSeries F) (n : ℕ) :
@@ -134,12 +132,8 @@ theorem isPolyaFreqSeries_one_add_C_mul_X {a : ℝ} (ha : 0 ≤ a) :
   unfold IsPolyaFreqSeries
   convert hscaled using 1
   funext n
-  cases n with
-  | zero => simp [geometricScale]
-  | succ n =>
-    cases n with
-    | zero => simp [geometricScale, Polynomial.coeff_one]
-    | succ n => simp [geometricScale, Polynomial.coeff_X, Polynomial.coeff_one]
+  rcases n with _ | (_ | n) <;>
+    simp [geometricScale, Polynomial.coeff_X, Polynomial.coeff_one]
 
 /-- The geometric series `1 / (1 - b X) = ∑ₖ bᵏ Xᵏ`. -/
 def geometricFactor (b : ℝ) : PowerSeries ℝ :=
@@ -155,9 +149,7 @@ theorem geometricFactor_eq_inv (b : ℝ) :
     geometricFactor b = (1 - PowerSeries.C b * PowerSeries.X)⁻¹ := by
   rw [PowerSeries.eq_inv_iff_mul_eq_one (by simp)]
   have h := supersymmetricDenominatorFactor_mul_one_sub b
-  have h2 : supersymmetricDenominatorFactor b = geometricFactor b := by
-    ext n
-    simp
+  have h2 : supersymmetricDenominatorFactor b = geometricFactor b := by ext n; simp
   rwa [h2] at h
 
 /-- The geometric series `1 / (1 - b X)` with `b ≥ 0` is a Pólya-frequency series. -/
@@ -292,8 +284,8 @@ theorem canonicalProduct_eq_C_mul_X_pow_mul_aswEdreiSymbol (c : ℝ) (m : ℕ) (
     (α β : ℕ → ℝ) :
     canonicalProduct c m γ α β =
       PowerSeries.C c * PowerSeries.X ^ m * aswEdreiSymbol γ α β := by
-  have h : (∏' i, (1 + PowerSeries.C (α i) * PowerSeries.X)) = linearFactorProduct α := rfl
-  rw [canonicalProduct, tprod_one_sub_eq, aswEdreiSymbol, h]
+  rw [canonicalProduct, tprod_one_sub_eq, aswEdreiSymbol,
+    show (∏' i, (1 + PowerSeries.C (α i) * PowerSeries.X)) = linearFactorProduct α from rfl]
   ring
 
 end RealRooted.EdreiThoma
