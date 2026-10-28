@@ -172,8 +172,8 @@ theorem eq_C_mul_prod_of_splits {q : ℝ[X]} (hs : q.Splits) (hq : ∀ n, 0 ≤ 
   have hX : ∀ r ∈ q.roots, X - C r = C (-r) * (1 + C (-r⁻¹) * X) := by
     intro r hr
     have hr0 : r ≠ 0 := (hneg r hr).ne
-    rw [mul_add, mul_one, ← mul_assoc, ← C_mul]
-    rw [show -r * -r⁻¹ = 1 by field_simp]
+    rw [mul_add, mul_one, ← mul_assoc, ← C_mul,
+      show -r * -r⁻¹ = 1 by field_simp]
     simp only [C_1, one_mul, C_neg]
     ring
   rw [Multiset.map_congr rfl hX, Multiset.prod_map_mul,
@@ -282,19 +282,13 @@ theorem gurvitsFactor_antitone : Antitone gurvitsFactor := by
     (by positivity) (e + 1)
   have h1 : (1 + ((e + 1 : ℕ) : ℝ) * ((e + 2) / (e + 1))) / ((e + 1 : ℕ) + 1)
       = ((e : ℝ) + 3) / (e + 2) := by
-    push_cast
-    field_simp
-    ring
+    push_cast; field_simp; ring
   rw [h1, one_mul] at key
   have hA : ((e + 1 + 1 : ℕ) : ℝ) / ((e + 1 + 1 : ℕ) + 1)
       = (((e : ℝ) + 3) / (e + 2))⁻¹ := by
-    rw [inv_div]
-    push_cast
-    ring
+    rw [inv_div]; push_cast; ring
   have hB : ((e + 1 : ℕ) : ℝ) / ((e + 1 : ℕ) + 1) = (((e : ℝ) + 2) / (e + 1))⁻¹ := by
-    rw [inv_div]
-    push_cast
-    ring
+    rw [inv_div]; push_cast; ring
   rw [hA, hB, inv_pow, inv_pow]
   exact inv_anti₀ (by positivity) key
 

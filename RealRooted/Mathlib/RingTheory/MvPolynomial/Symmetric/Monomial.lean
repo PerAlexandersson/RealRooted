@@ -40,12 +40,7 @@ theorem card_filter_count_eq_count_parts [Fintype σ] [DecidableEq σ]
   change s.1.count i = k ↔
     i ∈ s.1.dedup.filter (fun i => k = s.1.count i)
   rw [Multiset.mem_filter, Multiset.mem_dedup]
-  constructor
-  · intro hi
-    refine ⟨Multiset.count_pos.mp ?_, hi.symm⟩
-    rw [hi]
-    exact Nat.zero_lt_of_ne_zero hk
-  · exact fun hi => hi.2.symm
+  grind [Multiset.count_pos]
 
 /-- Two multisets of variables with the same partition shape differ by a
 permutation of the ambient finite type. -/
@@ -111,14 +106,10 @@ theorem IsSymmetric.coeff_eq_of_ofSym_eq [Finite σ] [DecidableEq σ]
     P.coeff s.1.toFinsupp = P.coeff t.1.toFinsupp := by
   obtain ⟨e, he⟩ := exists_perm_map_eq_of_ofSym_eq s t hst
   have hdomain : s.1.toFinsupp.mapDomain e = t.1.toFinsupp := by
-    rw [← he]
     ext i
-    rw [Finsupp.mapDomain_equiv_apply, Multiset.toFinsupp_apply,
+    rw [← he, Finsupp.mapDomain_equiv_apply, Multiset.toFinsupp_apply,
       Multiset.toFinsupp_apply]
-    change s.1.count (e.symm i) = (s.1.map e).count i
-    symm
-    simpa using
-      Multiset.count_map_eq_count' e s.1 e.injective (e.symm i)
+    simpa using (Multiset.count_map_eq_count' e s.1 e.injective (e.symm i)).symm
   have hc := coeff_rename_mapDomain e e.injective P s.1.toFinsupp
   rw [hP e, hdomain] at hc
   exact hc.symm
@@ -254,9 +245,7 @@ theorem ofSym_eq_of_count_eq_part {q n : ℕ}
           lambda k).symm
   have hconj : (Nat.Partition.ofSym s).conjugate =
       lambda.conjugate := by
-    apply le_antisymm <;> intro k
-    · rw [hprefix k]
-    · rw [hprefix k]
+    apply le_antisymm <;> intro k <;> rw [hprefix k]
   have := congrArg Nat.Partition.conjugate hconj
   simpa using this
 
@@ -301,27 +290,17 @@ theorem eq_sum_msymm [Fintype σ] [DecidableEq σ]
       simp]
     rw [msymmCoeff_eq_coeff hP s]
     rw [Finsupp.toMultiset_toFinsupp]
-  · have hzeroP : P.coeff d = 0 := by
+  · have coeff_eq_zero (Q : MvPolynomial σ R) (hQ : Q.IsHomogeneous n) : Q.coeff d = 0 := by
       by_contra hcoeff
       apply hd
-      have hdegree := hhom hcoeff
-      have hdegree' : d.degree = n := by
-        rw [Finsupp.degree_eq_weight_one]
-        exact hdegree
-      exact hdegree'
-    rw [hzeroP, coeff_sum]
+      change d.degree = n
+      rw [Finsupp.degree_eq_weight_one]
+      exact hQ hcoeff
+    rw [coeff_eq_zero P hhom, coeff_sum]
     symm
     apply Finset.sum_eq_zero
     intro mu _
     rw [coeff_smul]
-    have hzero : (msymm σ R mu).coeff d = 0 := by
-      by_contra hcoeff
-      apply hd
-      have hdegree := isHomogeneous_msymm (R := R) mu hcoeff
-      have hdegree' : d.degree = n := by
-        rw [Finsupp.degree_eq_weight_one]
-        exact hdegree
-      exact hdegree'
-    rw [hzero, smul_eq_mul, mul_zero]
+    rw [coeff_eq_zero _ (isHomogeneous_msymm mu), smul_eq_mul, mul_zero]
 
 end MvPolynomial

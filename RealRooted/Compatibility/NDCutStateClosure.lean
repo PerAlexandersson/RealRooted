@@ -72,40 +72,31 @@ private def cutStrictSuffixWeights {m : ℕ} (Q : Fin m → ℝ[X])
 private theorem weightedSum_cutPrefixWeights {m : ℕ}
     (P : Fin m → ℝ[X]) (j : Fin m) :
     weightedSum (cutPrefixWeights P j) = cutPrefix P j := by
-  rw [cutPrefixWeights, weightedSum_ofFn]
-  unfold cutPrefix
-  apply Fintype.sum_congr
-  intro i
-  by_cases hij : i ≤ j <;> simp [hij]
+  simp [cutPrefixWeights, weightedSum_ofFn, cutPrefix, apply_ite]
 
 private theorem weightedSum_cutStrictSuffixWeights {m : ℕ}
     (Q : Fin m → ℝ[X]) (j : Fin m) :
     weightedSum (cutStrictSuffixWeights Q j) = cutStrictSuffix Q j := by
-  rw [cutStrictSuffixWeights, weightedSum_ofFn]
-  unfold cutStrictSuffix
-  apply Fintype.sum_congr
-  intro i
-  by_cases hji : j < i <;> simp [hji]
+  simp [cutStrictSuffixWeights, weightedSum_ofFn, cutStrictSuffix, apply_ite]
+
+private theorem hasNonnegCoeffs_sum_ite {m : ℕ} {F : Fin m → ℝ[X]}
+    (hF : ∀ i, HasNonnegCoeffs (F i)) (p : Fin m → Prop) [DecidablePred p] :
+    HasNonnegCoeffs (∑ i, if p i then F i else 0) := by
+  apply hasNonnegCoeffs_finsetSum
+  intro i _
+  split
+  · exact hF i
+  · exact hasNonnegCoeffs_zero
 
 private theorem cutPrefix_nonneg {m : ℕ} {P : Fin m → ℝ[X]}
     (hP : ∀ i, HasNonnegCoeffs (P i)) (j : Fin m) :
     HasNonnegCoeffs (cutPrefix P j) := by
-  unfold cutPrefix
-  apply hasNonnegCoeffs_finsetSum
-  intro i _
-  by_cases hij : i ≤ j
-  · simpa [hij] using hP i
-  · simp [hij, hasNonnegCoeffs_zero]
+  exact hasNonnegCoeffs_sum_ite hP _
 
 private theorem cutStrictSuffix_nonneg {m : ℕ} {Q : Fin m → ℝ[X]}
     (hQ : ∀ i, HasNonnegCoeffs (Q i)) (j : Fin m) :
     HasNonnegCoeffs (cutStrictSuffix Q j) := by
-  unfold cutStrictSuffix
-  apply hasNonnegCoeffs_finsetSum
-  intro i _
-  by_cases hji : j < i
-  · simpa [hji] using hQ i
-  · simp [hji, hasNonnegCoeffs_zero]
+  exact hasNonnegCoeffs_sum_ite hQ _
 
 private theorem cutPrefix_realRooted {m : ℕ} {P Q : Fin m → ℝ[X]}
     (h : OrderedCutCompatible P Q) (j : Fin m) :
@@ -160,12 +151,7 @@ private def cutMiddle {m : ℕ} (F : Fin m → ℝ[X])
 private theorem cutMiddle_nonneg {m : ℕ} {F : Fin m → ℝ[X]}
     (hF : ∀ i, HasNonnegCoeffs (F i)) (i j : Fin m) :
     HasNonnegCoeffs (cutMiddle F i j) := by
-  unfold cutMiddle
-  apply hasNonnegCoeffs_finsetSum
-  intro k _
-  by_cases hk : i < k ∧ k ≤ j
-  · simpa [hk] using hF k
-  · simp [hk, hasNonnegCoeffs_zero]
+  exact hasNonnegCoeffs_sum_ite hF _
 
 private theorem cutPrefix_eq_add_cutMiddle {m : ℕ}
     (F : Fin m → ℝ[X]) {i j : Fin m} (hij : i ≤ j) :
@@ -175,12 +161,8 @@ private theorem cutPrefix_eq_add_cutMiddle {m : ℕ}
   apply Finset.sum_congr rfl
   intro k _
   by_cases hki : k ≤ i
-  · have hkj : k ≤ j := hki.trans hij
-    simp [hki, hkj, not_lt_of_ge hki]
-  · have hik : i < k := lt_of_not_ge hki
-    by_cases hkj : k ≤ j
-    · simp [hki, hik, hkj]
-    · simp [hki, hik, hkj]
+  · simp [hki, hki.trans hij, not_lt_of_ge hki]
+  · simp [hki, lt_of_not_ge hki]
 
 private theorem cutStrictSuffix_eq_cutMiddle_add {m : ℕ}
     (F : Fin m → ℝ[X]) {i j : Fin m} (hij : i ≤ j) :
@@ -189,13 +171,9 @@ private theorem cutStrictSuffix_eq_cutMiddle_add {m : ℕ}
   rw [← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
   intro k _
-  by_cases hik : i < k
-  · by_cases hkj : k ≤ j
-    · simp [hik, hkj, not_lt_of_ge hkj]
-    · have hjk : j < k := lt_of_not_ge hkj
-      simp [hik, hkj, hjk]
-  · have hnotjk : ¬j < k := fun hjk ↦ hik (hij.trans_lt hjk)
-    simp [hik, hnotjk]
+  by_cases hjk : j < k
+  · simp [hjk, hij.trans_lt hjk]
+  · simp [hjk, le_of_not_gt hjk]
 
 private theorem cutPrefix_interl_reverse {m : ℕ}
     {P Q : Fin m → ℝ[X]} (h : OrderedCutCompatible P Q)
@@ -217,13 +195,13 @@ private theorem cutPrefix_interl_reverse {m : ℕ}
         · simp [hk, hl, interl_zero_right]
       · simp [hk, interl_zero_left]
     · intro k _
-      by_cases hk : i < k ∧ k ≤ j
-      · simpa [hk] using h.p_nonneg k
-      · simp [hk, hasNonnegCoeffs_zero]
+      split
+      · exact h.p_nonneg k
+      · exact hasNonnegCoeffs_zero
     · intro k _
-      by_cases hk : k ≤ i
-      · simpa [hk] using h.p_nonneg k
-      · simp [hk, hasNonnegCoeffs_zero]
+      split
+      · exact h.p_nonneg k
+      · exact hasNonnegCoeffs_zero
   have hpre_rr := cutPrefix_realRooted h i
   have hself : Interl (cutPrefix P i) (cutPrefix P i) :=
     Interl.refl fun _ => hpre_rr.2
@@ -246,13 +224,13 @@ private theorem cutPrefix_interl_cutStrictSuffix {m : ℕ}
       · simp [hk, hl, interl_zero_right]
     · simp [hk, interl_zero_left]
   · intro k _
-    by_cases hk : k ≤ i
-    · simpa [hk] using h.p_nonneg k
-    · simp [hk, hasNonnegCoeffs_zero]
+    split
+    · exact h.p_nonneg k
+    · exact hasNonnegCoeffs_zero
   · intro k _
-    by_cases hk : j < k
-    · simpa [hk] using h.q_nonneg k
-    · simp [hk, hasNonnegCoeffs_zero]
+    split
+    · exact h.q_nonneg k
+    · exact hasNonnegCoeffs_zero
 
 private theorem cutStrictSuffix_interl_forward {m : ℕ}
     {P Q : Fin m → ℝ[X]} (h : OrderedCutCompatible P Q)
@@ -273,13 +251,13 @@ private theorem cutStrictSuffix_interl_forward {m : ℕ}
         · simp [hk, hl, interl_zero_right]
       · simp [hk, interl_zero_left]
     · intro k _
-      by_cases hk : i < k ∧ k ≤ j
-      · simpa [hk] using h.q_nonneg k
-      · simp [hk, hasNonnegCoeffs_zero]
+      split
+      · exact h.q_nonneg k
+      · exact hasNonnegCoeffs_zero
     · intro k _
-      by_cases hk : j < k
-      · simpa [hk] using h.q_nonneg k
-      · simp [hk, hasNonnegCoeffs_zero]
+      split
+      · exact h.q_nonneg k
+      · exact hasNonnegCoeffs_zero
   have hself : Interl (cutStrictSuffix Q j) (cutStrictSuffix Q j) :=
     Interl.refl (cutStrictSuffix_splits_of_ne h j)
   rw [cutStrictSuffix_eq_cutMiddle_add Q hij]

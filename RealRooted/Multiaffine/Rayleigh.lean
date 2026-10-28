@@ -63,8 +63,7 @@ theorem pderiv_mul_directionalPDeriv_sub
   classical
   simp only [RealRooted.directionalPDeriv, Finset.mul_sum]
   rw [← Finset.sum_sub_distrib]
-  apply Finset.sum_congr rfl
-  intro j hj
+  refine Finset.sum_congr rfl fun j _ => ?_
   rw [rayleighDifference, pderiv_comm j i]
   ring
 
@@ -112,10 +111,8 @@ theorem rayleighDifference_bivariate {R σ : Type*} [CommRing R]
   classical
   simp only [rayleighDifference, map_add, pderiv_C, pderiv_mul,
     pderiv_X_self, pderiv_X_of_ne hij, pderiv_X_of_ne (Ne.symm hij),
-    zero_mul, mul_zero, zero_add, add_zero, mul_one]
-  calc
-    _ = C b * C c - C a * C d := by ring
-    _ = C (b * c - a * d) := by simp only [map_sub, map_mul]
+    zero_mul, mul_zero, zero_add, add_zero, mul_one, map_sub, map_mul]
+  ring
 
 /-- A bivariate coefficient form in two distinct coordinates is
 multiaffine. -/
@@ -124,11 +121,11 @@ theorem isMultiaffine_bivariate {R σ : Type*} [CommRing R] [Nontrivial R]
     IsMultiaffine
       (C a + C b * X i + C c * X j + C d * X i * X j) := by
   classical
-  have hlast : IsMultiaffine (C d * X i * X j : MvPolynomial σ R) := by
-    have hprod := (IsMultiaffine.prod_X (R := R) ({i, j} : Finset σ)).C_mul d
-    simpa [hij, Ne.symm hij, mul_assoc] using hprod
-  exact (((IsMultiaffine.C a).add ((IsMultiaffine.X i).C_mul b)).add
-    ((IsMultiaffine.X j).C_mul c)).add hlast
+  refine (((IsMultiaffine.C a).add ((IsMultiaffine.X i).C_mul b)).add
+    ((IsMultiaffine.X j).C_mul c)).add ?_
+  show IsMultiaffine (C d * X i * X j : MvPolynomial σ R)
+  have hprod := (IsMultiaffine.prod_X (R := R) ({i, j} : Finset σ)).C_mul d
+  simpa [hij, Ne.symm hij, mul_assoc] using hprod
 
 /-- In a multiaffine polynomial, the same-coordinate Rayleigh difference is
 the square of the corresponding partial derivative. -/
@@ -207,13 +204,7 @@ theorem IsRayleigh.rename {σ τ : Type*} {P : MvPolynomial σ ℝ}
   classical
   have hnotMem_of_not_range {i : τ} (hi : i ∉ Set.range f) :
       i ∉ (MvPolynomial.rename f P).vars := by
-    intro hivars
-    obtain ⟨j, hj, hji⟩ := mem_vars_rename f P hivars
-    exact hi ⟨j, hji⟩
-  have hdiff_zero {i : τ}
-      (hi : i ∉ (MvPolynomial.rename f P).vars) (j : τ) :
-      rayleighDifference (MvPolynomial.rename f P) i j = 0 :=
-    rayleighDifference_eq_zero_of_notMem_vars_left _ hi j
+    exact fun hivars => hi ⟨_, (mem_vars_rename f P hivars).choose_spec.2⟩
   intro i j x
   by_cases hi : i ∈ Set.range f
   · obtain ⟨a, rfl⟩ := hi
@@ -222,9 +213,9 @@ theorem IsRayleigh.rename {σ τ : Type*} {P : MvPolynomial σ ℝ}
       rw [rayleighDifference_rename f hf, eval_rename]
       exact hP a b _
     · rw [rayleighDifference_comm,
-        hdiff_zero (hnotMem_of_not_range hj)]
+        rayleighDifference_eq_zero_of_notMem_vars_left _ (hnotMem_of_not_range hj)]
       simp
-  · rw [hdiff_zero (hnotMem_of_not_range hi)]
+  · rw [rayleighDifference_eq_zero_of_notMem_vars_left _ (hnotMem_of_not_range hi)]
     simp
 
 /-- The Rayleigh property is reflected by an injective variable renaming. -/
@@ -233,11 +224,8 @@ theorem IsRayleigh.of_rename {σ τ : Type*} {P : MvPolynomial σ ℝ}
     (hf : Function.Injective f) : IsRayleigh P := by
   classical
   intro i j x
-  let z : τ → ℝ := Function.extend f x 0
-  have hz : z ∘ f = x := Function.extend_comp hf x 0
-  have h := hP (f i) (f j) z
-  rw [rayleighDifference_rename f hf, eval_rename, hz] at h
-  exact h
+  simpa only [rayleighDifference_rename f hf, eval_rename, Function.extend_comp hf x 0] using
+    hP (f i) (f j) (Function.extend f x 0)
 
 /-- An injective variable renaming preserves and reflects the Rayleigh
 property. -/
@@ -270,8 +258,7 @@ theorem IsRayleigh.specializeAtList {σ : Type*} {P : MvPolynomial σ ℝ}
   induction l generalizing P with
   | nil => simpa using hP
   | cons i l ih =>
-      rw [MvPolynomial.specializeAtList_cons]
-      exact ih (hP.specializeAt i (c i))
+      simpa only [MvPolynomial.specializeAtList_cons] using ih (hP.specializeAt i (c i))
 
 /-- Partial differentiation preserves the Rayleigh property for multiaffine
 real polynomials. -/
@@ -283,8 +270,7 @@ theorem IsRayleigh.pderiv_of_isMultiaffine {σ : Type*}
   intro i j x
   obtain ⟨b, c, hquad⟩ :=
     hPma.exists_eval_update_rayleighDifference_quadratic i j k x
-  apply Quadratic.leadingCoeff_nonneg (b := b) (c := c)
-  intro t
+  refine Quadratic.leadingCoeff_nonneg (b := b) (c := c) fun t => ?_
   rw [← pow_two, ← hquad]
   exact hP i j (Function.update x k t)
 
@@ -313,10 +299,9 @@ theorem IsMultiaffine.isRayleigh_of_vars_subset
   by_cases hi : i ∈ P.vars
   · by_cases hj : j ∈ P.vars
     · exact hpair i (hvars hi) j (hvars hj) hij x
-    · rw [rayleighDifference, pderiv_eq_zero_of_notMem_vars hj]
+    · rw [rayleighDifference_eq_zero_of_notMem_vars_right P hj]
       simp
-  · rw [rayleighDifference, pderiv_eq_zero_of_notMem_vars hi,
-      pderiv_comm i j, pderiv_eq_zero_of_notMem_vars hi]
+  · rw [rayleighDifference_eq_zero_of_notMem_vars_left P hi]
     simp
 
 end

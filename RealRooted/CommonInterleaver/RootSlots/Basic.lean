@@ -181,27 +181,13 @@ private lemma rootSlotInterval_last_of_ne_nil {rs : List ℝ} (hrs : rs ≠ []) 
       ⟨rs.length, by lia⟩ =
       Set.Iic (rs.get ⟨rs.length - 1, by
         simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs) (by lia : 0 < 1))⟩) := by
-  have h := CommonInterleaver.RootSlots.rootSlotInterval_reverse_last (xs := rs.reverse)
-    (List.reverse_ne_nil_iff.mpr hrs)
-  have hcongr :
-      rootSlotInterval rs.reverse.reverse
-        ⟨rs.length, by simp⟩
-        =
-      rootSlotInterval rs
-        ⟨rs.length, by lia⟩ := by
-    apply rootSlotInterval_congr
-    · simp
-    · lia
-  calc
-    rootSlotInterval rs
-        ⟨rs.length, by lia⟩
-        =
-      rootSlotInterval rs.reverse.reverse
-        ⟨rs.length, by simp⟩ := hcongr.symm
-    _ = Set.Iic (rs.get ⟨rs.length - 1, by
-          simpa using
-            (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs) (by lia : 0 < 1))⟩) := by
-          simpa [List.length_reverse] using h
+  have hlast : rs.getLast hrs = rs.get ⟨rs.length - 1, by
+      simpa using Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs) (by norm_num : 0 < 1)⟩ := by
+    simp only [List.getLast_eq_getElem, List.get_eq_getElem]
+  convert CommonInterleaver.RootSlots.rootSlotInterval_reverse_last (xs := rs.reverse)
+    (List.reverse_ne_nil_iff.mpr hrs) using 1
+  · exact rootSlotInterval_congr (by simp) (by simp)
+  · simp only [CommonInterleaver.RootSlots.reverse_get_zero_eq_getLast hrs, hlast]
 
 private lemma mem_rootSlotInterval_zero_lower {rs : List ℝ} (hrs : rs ≠ []) {x : ℝ}
     (hx : x ∈ rootSlotInterval rs
@@ -294,32 +280,9 @@ protected lemma CommonInterleaver.RootSlots.le_of_mem_rootSlots_of_lt
   have hi_lt : i < rs.length := by lia
   have hx_lower : rs.get ⟨i, hi_lt⟩ ≤ x :=
     CommonInterleaver.RootSlots.rootSlot_lower_bound (rs := rs) hrs_ne hi_lt hx
-  by_cases hlast : j = rs.length
-  · have hy_last : y ≤ rs.getLast hrs_ne := by
-      have hy' : y ∈ rootSlotInterval rs
-          ⟨rs.length, by simp⟩ := by
-        simpa [hlast] using hy
-      exact mem_rootSlotInterval_last_upper (rs := rs) hrs_ne hy'
-    have hlast_idx :
-        rs.getLast hrs_ne =
-          rs.get ⟨rs.length - 1, by
-            simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs_ne)
-              (by simp : 0 < 1))⟩ :=
-      getLast_eq_get_lastIndex (rs := rs) hrs_ne
-    have htail_le_hi :
-        rs.get ⟨rs.length - 1, by
-          simpa using (Nat.sub_lt (List.length_pos_iff_ne_nil.mpr hrs_ne)
-            (by simp : 0 < 1))⟩ ≤
-          rs.get ⟨i, hi_lt⟩ := get_le_get_of_pairwise_ge hrs (Nat.le_pred_of_lt hi_lt)
-    exact le_trans (hlast_idx ▸ hy_last) (le_trans htail_le_hi hx_lower)
-  · have hj_lt : j < rs.length := by lia
-    have hj_pos : 0 < j := by lia
-    have hy_bounds :=
-      mem_rootSlotInterval_interior_bounds (rs := rs) (j := j) hj_pos hj_lt hy
-    have hy_upper : y ≤ rs.get ⟨j - 1, by lia⟩ := hy_bounds.2
-    have hmid : rs.get ⟨j - 1, by lia⟩ ≤ rs.get ⟨i, hi_lt⟩ :=
-      get_le_get_of_pairwise_ge hrs <| Fin.le_def.2 <| Nat.le_pred_of_lt hij
-    exact le_trans hy_upper (le_trans hmid hx_lower)
+  have hy_upper : y ≤ rs.get ⟨j - 1, by lia⟩ :=
+    CommonInterleaver.RootSlots.rootSlot_upper_bound hrs_ne (by lia) (by lia) hy
+  exact hy_upper.trans <| (get_le_get_of_pairwise_ge hrs (by lia)).trans hx_lower
 
 
 end
