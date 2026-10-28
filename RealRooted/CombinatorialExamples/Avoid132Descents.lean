@@ -98,7 +98,8 @@ private lemma lavoid_map_add (c : ℕ) (s : List ℕ) : lavoid (s.map (· + c)) 
     constructor <;> rintro ⟨h1, h2⟩ <;> refine ⟨?_, h2⟩ <;>
       refine h1.imp ?_ <;> intro a b h <;> lia
 
-private lemma lavoid_append_top {s t : List ℕ} {b : ℕ} (hs : ∀ x ∈ s, x < b) (ht : ∀ x ∈ t, x < b) :
+private lemma lavoid_append_top {s t : List ℕ} {b : ℕ}
+    (hs : ∀ x ∈ s, x < b) (ht : ∀ x ∈ t, x < b) :
     lavoid (s ++ b :: t) ↔ lavoid s ∧ lavoid t ∧ ∀ x ∈ s, ∀ y ∈ t, y ≤ x := by
   induction s with
   | nil =>
@@ -249,7 +250,8 @@ private lemma A_eq_card_Xs (n k : ℕ) : A n k = (Xs n k).card := by
 private def Xs' (l i : ℕ) : Finset (List ℕ) :=
   (S l).filter fun L => lavoid L ∧ ldes L + (if l = 0 then 0 else 1) = i
 
-private lemma lt_of_mem_S {n : ℕ} {L : List ℕ} (h : L ∈ S n) {x : ℕ} (hx : x ∈ L) : x < n := by
+private lemma lt_of_mem_S {n : ℕ} {L : List ℕ} (h : L ∈ S n)
+    {x : ℕ} (hx : x ∈ L) : x < n := by
   rw [mem_S] at h; simpa using h.subset hx
 
 private lemma length_of_mem_S {n : ℕ} {L : List ℕ} (h : L ∈ S n) : L.length = n := by
@@ -258,142 +260,222 @@ private lemma length_of_mem_S {n : ℕ} {L : List ℕ} (h : L ∈ S n) : L.lengt
 private lemma nodup_of_mem_S {n : ℕ} {L : List ℕ} (h : L ∈ S n) : L.Nodup := by
   rw [mem_S] at h; exact h.nodup_iff.2 List.nodup_range
 
+/-- Pairs of left and right blocks with complementary sizes and descent counts. -/
+private def decompPieces (m k : ℕ) :
+    Finset (Σ _ : (ℕ × ℕ) × (ℕ × ℕ), List ℕ × List ℕ) :=
+  ((antidiagonal m) ×ˢ (antidiagonal k)).sigma
+    (fun pq => Xs pq.1.1 pq.2.1 ×ˢ Xs' pq.1.2 pq.2.2)
+
+/-- Combine normalized left and right blocks around their common maximum. -/
+private def combineBlocks (m : ℕ)
+    (a : Σ _ : (ℕ × ℕ) × (ℕ × ℕ), List ℕ × List ℕ) : List ℕ :=
+  a.2.1.map (· + a.1.1.2) ++ m :: a.2.2
+
+/-- Combining an admissible pair of blocks gives the required avoider. -/
+private lemma combineBlocks_mem_Xs {m k : ℕ} {a}
+    (ha : a ∈ decompPieces m k) : combineBlocks m a ∈ Xs (m + 1) k := by
+  rcases a with ⟨⟨⟨j, l⟩, ⟨i, i'⟩⟩, ⟨L1, L2⟩⟩
+  simp only [decompPieces, Finset.mem_sigma, Finset.mem_product,
+    Finset.HasAntidiagonal.mem_antidiagonal, Xs, Xs', Finset.mem_filter] at ha
+  obtain ⟨⟨hjl, hii⟩, ⟨hL1, hav1, hd1⟩, ⟨hL2, hav2, hd2⟩⟩ := ha
+  have h1 : ∀ x ∈ L1, x < j := fun x hx => lt_of_mem_S hL1 hx
+  have h2 : ∀ x ∈ L2, x < l := fun x hx => lt_of_mem_S hL2 hx
+  have hmap : ∀ x ∈ L1.map (· + l), l ≤ x ∧ x < m := by
+    intro x hx
+    simp only [List.mem_map] at hx
+    obtain ⟨y, hy, rfl⟩ := hx
+    have := h1 y hy
+    lia
+  have hs : ∀ x ∈ L1.map (· + l), x < m := fun x hx => (hmap x hx).2
+  have ht : ∀ x ∈ L2, x < m := fun x hx => by
+    have := h2 x hx
+    lia
+  simp only [combineBlocks, Xs, Finset.mem_filter, mem_S]
+  refine ⟨?_, ?_, ?_⟩
+  · have hlen : (L1.map (· + l) ++ m :: L2).length = m + 1 := by
+      simp only [List.length_append, List.length_map, List.length_cons,
+        length_of_mem_S hL1, length_of_mem_S hL2]
+      lia
+    rw [← hlen]
+    apply perm_range_of_lt
+    · rw [List.nodup_append, List.nodup_cons]
+      refine ⟨(nodup_of_mem_S hL1).map (add_left_injective l),
+        ⟨fun h => lt_irrefl _ (ht m h), nodup_of_mem_S hL2⟩, ?_⟩
+      intro a ha b hb
+      have := hmap a ha
+      simp only [List.mem_cons] at hb
+      rcases hb with rfl | hb
+      · lia
+      · have := h2 b hb
+        lia
+    · rw [hlen]
+      intro x hx
+      simp only [List.mem_append, List.mem_cons] at hx
+      rcases hx with hx | rfl | hx
+      · have := hs x hx
+        lia
+      · lia
+      · have := ht x hx
+        lia
+  · rw [lavoid_append_top hs ht, lavoid_map_add]
+    refine ⟨hav1, hav2, fun x hx y hy => ?_⟩
+    have := (hmap x hx).1
+    have := h2 y hy
+    lia
+  · rw [ldes_append_cons hs, ldes_map_add, ldes_cons_top ht]
+    have : (L2 = []) ↔ l = 0 := by
+      rw [← List.length_eq_zero_iff, length_of_mem_S hL2]
+    simp only [this]
+    lia
+
+/-- The block-combination map is injective on admissible block pairs. -/
+private lemma combineBlocks_injective {m k : ℕ} {a b}
+    (ha : a ∈ decompPieces m k) (hb : b ∈ decompPieces m k)
+    (h : combineBlocks m a = combineBlocks m b) : a = b := by
+  rcases a with ⟨⟨⟨j, l⟩, ⟨i, i'⟩⟩, ⟨L1, L2⟩⟩
+  rcases b with ⟨⟨⟨j', l'⟩, ⟨i2, i2'⟩⟩, ⟨L1', L2'⟩⟩
+  simp only [decompPieces, Finset.mem_sigma, Finset.mem_product,
+    Finset.HasAntidiagonal.mem_antidiagonal, Xs, Xs', Finset.mem_filter] at ha hb
+  obtain ⟨⟨hjl, hii⟩, ⟨hL1, hav1, hd1⟩, ⟨hL2, hav2, hd2⟩⟩ := ha
+  obtain ⟨⟨hjl', hii'⟩, ⟨hL1', hav1', hd1'⟩, ⟨hL2', hav2', hd2'⟩⟩ := hb
+  simp only [combineBlocks] at h
+  have hm1 : m ∉ L1.map (· + l) := by
+    intro hm
+    simp only [List.mem_map] at hm
+    obtain ⟨y, hy, hy'⟩ := hm
+    have := lt_of_mem_S hL1 hy
+    lia
+  have hm2 : m ∉ L1'.map (· + l') := by
+    intro hm
+    simp only [List.mem_map] at hm
+    obtain ⟨y, hy, hy'⟩ := hm
+    have := lt_of_mem_S hL1' hy
+    lia
+  obtain ⟨e1, e2⟩ := append_cons_cancel hm1 hm2 h
+  subst e2
+  have hll : l = l' := by
+    rw [← length_of_mem_S hL2, ← length_of_mem_S hL2']
+  subst hll
+  have hjj : j = j' := by lia
+  subst hjj
+  have e3 : L1 = L1' := (List.map_injective_iff.2 (add_left_injective l)) e1
+  subst e3
+  have : i = i2 := by rw [← hd1, ← hd1']
+  subst this
+  have : i' = i2' := by lia
+  subst this
+  rfl
+
+/-- Every value in the right block is smaller than the block's length. -/
+private lemma right_block_lt_length {m : ℕ} {s t : List ℕ}
+    (hmem : ∀ x < m + 1, x ∈ s ++ m :: t)
+    (hst : ∀ x ∈ s, ∀ y ∈ t, y < x) (ht : ∀ x ∈ t, x < m) (hndt : t.Nodup) :
+    ∀ y ∈ t, y < t.length := by
+  intro y hy
+  have hsub : Finset.range (y + 1) ⊆ t.toFinset := by
+    intro z hz
+    rw [Finset.mem_range] at hz
+    rw [List.mem_toFinset]
+    have hzL := hmem z (by have := ht y hy; lia)
+    simp only [List.mem_append, List.mem_cons] at hzL
+    rcases hzL with hz' | rfl | hz'
+    · have := hst z hz' y hy
+      lia
+    · have := ht y hy
+      lia
+    · exact hz'
+  have := Finset.card_le_card hsub
+  rw [Finset.card_range, List.toFinset_card_of_nodup hndt] at this
+  lia
+
+/-- Every avoider splits uniquely into an admissible pair of normalized blocks. -/
+private lemma exists_decompPiece {m k : ℕ} {L : List ℕ} (hL : L ∈ Xs (m + 1) k) :
+    ∃ a, ∃ _ : a ∈ decompPieces m k, combineBlocks m a = L := by
+  simp only [Xs, Finset.mem_filter, mem_S] at hL
+  obtain ⟨hp, hav, hdes⟩ := hL
+  have hnd : L.Nodup := hp.nodup_iff.2 List.nodup_range
+  have hlt : ∀ x ∈ L, x < m + 1 := fun x hx => by simpa using hp.subset hx
+  have hmem : ∀ x < m + 1, x ∈ L := fun x hx => hp.symm.subset (by simpa using hx)
+  obtain ⟨s, t, rfl⟩ := List.append_of_mem (hmem m (by lia))
+  have hnd' := hnd
+  rw [List.nodup_append, List.nodup_cons] at hnd'
+  obtain ⟨hnds, ⟨hmt, hndt⟩, hdisj⟩ := hnd'
+  have hms : m ∉ s := fun h => hdisj m h m (by simp) rfl
+  have hs : ∀ x ∈ s, x < m := fun x hx => by
+    have := hlt x (by simp [hx])
+    have : x ≠ m := fun e => hms (e ▸ hx)
+    lia
+  have ht : ∀ x ∈ t, x < m := fun x hx => by
+    have := hlt x (by simp [hx])
+    have : x ≠ m := fun e => hmt (e ▸ hx)
+    lia
+  rw [lavoid_append_top hs ht] at hav
+  obtain ⟨havs, havt, hst⟩ := hav
+  have hst' : ∀ x ∈ s, ∀ y ∈ t, y < x := fun x hx y hy =>
+    lt_of_le_of_ne (hst x hx y hy) (fun e => hdisj x hx y (by simp [hy]) e.symm)
+  have hjl : s.length + t.length = m := by
+    have := hp.length_eq
+    rw [List.length_append, List.length_cons, List.length_range] at this
+    lia
+  have htp : t.Perm (List.range t.length) :=
+    perm_range_of_lt hndt (right_block_lt_length hmem hst' ht hndt)
+  have hsl : ∀ x ∈ s, t.length ≤ x := by
+    intro x hx
+    by_contra hlt'
+    push Not at hlt'
+    have : x ∈ t := htp.symm.subset (by simpa using hlt')
+    exact hdisj x hx x (by simp [this]) rfl
+  have hss : (s.map (· - t.length)).map (· + t.length) = s := by
+    rw [List.map_map]
+    conv_rhs => rw [← List.map_id s]
+    apply List.map_congr_left
+    intro x hx
+    simp only [Function.comp_apply, id]
+    have := hsl x hx
+    lia
+  have hnds' : (s.map (· - t.length)).Nodup := hnds.map_on (fun x hx y hy e => by
+    have := hsl x hx
+    have := hsl y hy
+    lia)
+  have hs'p : (s.map (· - t.length)).Perm (List.range s.length) := by
+    have := perm_range_of_lt hnds' (by
+      intro x hx
+      simp only [List.mem_map] at hx
+      obtain ⟨y, hy, rfl⟩ := hx
+      have := hs y hy
+      have := hsl y hy
+      simp only [List.length_map]
+      lia)
+    simpa using this
+  refine ⟨⟨((s.length, t.length), (ldes (s.map (· - t.length)),
+    ldes t + (if t.length = 0 then 0 else 1))), (s.map (· - t.length), t)⟩, ?_, ?_⟩
+  · simp only [decompPieces, Finset.mem_sigma, Finset.mem_product,
+      Finset.HasAntidiagonal.mem_antidiagonal, Xs, Xs', Finset.mem_filter, mem_S]
+    refine ⟨⟨hjl, ?_⟩, ⟨hs'p, ?_, trivial⟩, ⟨htp, havt, trivial⟩⟩
+    · have hds : ldes s = ldes (s.map (· - t.length)) := by
+        conv_lhs => rw [← hss]
+        exact ldes_map_add _ _
+      rw [← hdes, ldes_append_cons hs, hds, ldes_cons_top ht]
+      have : (t = []) ↔ t.length = 0 := List.length_eq_zero_iff.symm
+      simp only [this]
+    · rw [← lavoid_map_add t.length, hss]
+      exact havs
+  · simp only [combineBlocks]
+    rw [hss]
+
 private lemma decomp (m k : ℕ) :
     (Xs (m+1) k).card = ∑ p ∈ antidiagonal m, ∑ q ∈ antidiagonal k,
       (Xs p.1 q.1).card * (Xs' p.2 q.2).card := by
-  have hsum : ∑ p ∈ antidiagonal m, ∑ q ∈ antidiagonal k, (Xs p.1 q.1).card * (Xs' p.2 q.2).card
-      = (((antidiagonal m) ×ˢ (antidiagonal k)).sigma
-          (fun pq => Xs pq.1.1 pq.2.1 ×ˢ Xs' pq.1.2 pq.2.2)).card := by
-    rw [Finset.card_sigma, Finset.sum_product]; simp [Finset.card_product]
-  rw [hsum]; symm
-  apply Finset.card_bij (fun a _ => a.2.1.map (· + a.1.1.2) ++ m :: a.2.2)
-  · rintro ⟨⟨⟨j, l⟩, ⟨i, i'⟩⟩, ⟨L1, L2⟩⟩ ha
-    simp only [Finset.mem_sigma, Finset.mem_product, Finset.HasAntidiagonal.mem_antidiagonal,
-      Xs, Xs', Finset.mem_filter] at ha
-    obtain ⟨⟨hjl, hii⟩, ⟨hL1, hav1, hd1⟩, ⟨hL2, hav2, hd2⟩⟩ := ha
-    have h1 : ∀ x ∈ L1, x < j := fun x hx => lt_of_mem_S hL1 hx
-    have h2 : ∀ x ∈ L2, x < l := fun x hx => lt_of_mem_S hL2 hx
-    have hmap : ∀ x ∈ L1.map (· + l), l ≤ x ∧ x < m := by
-      intro x hx; simp only [List.mem_map] at hx
-      obtain ⟨y, hy, rfl⟩ := hx; have := h1 y hy; lia
-    have hs : ∀ x ∈ L1.map (· + l), x < m := fun x hx => (hmap x hx).2
-    have ht : ∀ x ∈ L2, x < m := fun x hx => by have := h2 x hx; lia
-    simp only [Xs, Finset.mem_filter, mem_S]
-    refine ⟨?_, ?_, ?_⟩
-    · have hlen : (L1.map (· + l) ++ m :: L2).length = m + 1 := by
-        simp only [List.length_append, List.length_map, List.length_cons,
-          length_of_mem_S hL1, length_of_mem_S hL2]
-        lia
-      rw [← hlen]
-      apply perm_range_of_lt
-      · rw [List.nodup_append, List.nodup_cons]
-        refine ⟨(nodup_of_mem_S hL1).map (add_left_injective l),
-          ⟨fun h => lt_irrefl _ (ht m h), nodup_of_mem_S hL2⟩, ?_⟩
-        intro a ha b hb
-        have := hmap a ha
-        simp only [List.mem_cons] at hb
-        rcases hb with rfl | hb
-        · lia
-        · have := h2 b hb; lia
-      · rw [hlen]; intro x hx; simp only [List.mem_append, List.mem_cons] at hx
-        rcases hx with hx | rfl | hx
-        · have := hs x hx; lia
-        · lia
-        · have := ht x hx; lia
-    · rw [lavoid_append_top hs ht, lavoid_map_add]
-      refine ⟨hav1, hav2, fun x hx y hy => ?_⟩
-      have := (hmap x hx).1; have := h2 y hy; lia
-    · rw [ldes_append_cons hs, ldes_map_add, ldes_cons_top ht]
-      have : (L2 = []) ↔ l = 0 := by rw [← List.length_eq_zero_iff, length_of_mem_S hL2]
-      simp only [this]; lia
-  · rintro ⟨⟨⟨j, l⟩, ⟨i, i'⟩⟩, ⟨L1, L2⟩⟩ ha ⟨⟨⟨j', l'⟩, ⟨i2, i2'⟩⟩, ⟨L1', L2'⟩⟩ ha' h
-    simp only [Finset.mem_sigma, Finset.mem_product, Finset.HasAntidiagonal.mem_antidiagonal,
-      Xs, Xs', Finset.mem_filter] at ha ha'
-    obtain ⟨⟨hjl, hii⟩, ⟨hL1, hav1, hd1⟩, ⟨hL2, hav2, hd2⟩⟩ := ha
-    obtain ⟨⟨hjl', hii'⟩, ⟨hL1', hav1', hd1'⟩, ⟨hL2', hav2', hd2'⟩⟩ := ha'
-    simp only at h
-    have hm1 : m ∉ L1.map (· + l) := by
-      intro hm; simp only [List.mem_map] at hm
-      obtain ⟨y, hy, hy'⟩ := hm; have := lt_of_mem_S hL1 hy; lia
-    have hm2 : m ∉ L1'.map (· + l') := by
-      intro hm; simp only [List.mem_map] at hm
-      obtain ⟨y, hy, hy'⟩ := hm; have := lt_of_mem_S hL1' hy; lia
-    obtain ⟨e1, e2⟩ := append_cons_cancel hm1 hm2 h
-    subst e2
-    have hll : l = l' := by rw [← length_of_mem_S hL2, ← length_of_mem_S hL2']
-    subst hll
-    have hjj : j = j' := by lia
-    subst hjj
-    have e3 : L1 = L1' := (List.map_injective_iff.2 (add_left_injective l)) e1
-    subst e3
-    have : i = i2 := by rw [← hd1, ← hd1']
-    subst this
-    have : i' = i2' := by lia
-    subst this; rfl
-  · intro L hL
-    simp only [Xs, Finset.mem_filter, mem_S] at hL
-    obtain ⟨hp, hav, hdes⟩ := hL
-    have hnd : L.Nodup := hp.nodup_iff.2 List.nodup_range
-    have hlt : ∀ x ∈ L, x < m + 1 := fun x hx => by simpa using hp.subset hx
-    have hmem : ∀ x < m + 1, x ∈ L := fun x hx => hp.symm.subset (by simpa using hx)
-    obtain ⟨s, t, rfl⟩ := List.append_of_mem (hmem m (by lia))
-    have hnd' := hnd
-    rw [List.nodup_append, List.nodup_cons] at hnd'
-    obtain ⟨hnds, ⟨hmt, hndt⟩, hdisj⟩ := hnd'
-    have hms : m ∉ s := fun h => hdisj m h m (by simp) rfl
-    have hs : ∀ x ∈ s, x < m := fun x hx => by
-      have := hlt x (by simp [hx]); have : x ≠ m := fun e => hms (e ▸ hx); lia
-    have ht : ∀ x ∈ t, x < m := fun x hx => by
-      have := hlt x (by simp [hx]); have : x ≠ m := fun e => hmt (e ▸ hx); lia
-    rw [lavoid_append_top hs ht] at hav
-    obtain ⟨havs, havt, hst⟩ := hav
-    have hst' : ∀ x ∈ s, ∀ y ∈ t, y < x := fun x hx y hy =>
-      lt_of_le_of_ne (hst x hx y hy) (fun e => hdisj x hx y (by simp [hy]) e.symm)
-    have hjl : s.length + t.length = m := by
-      have := hp.length_eq
-      rw [List.length_append, List.length_cons, List.length_range] at this
-      lia
-    have htl : ∀ y ∈ t, y < t.length := by
-      intro y hy
-      have hsub : Finset.range (y+1) ⊆ t.toFinset := by
-        intro z hz; rw [Finset.mem_range] at hz; rw [List.mem_toFinset]
-        have hzL := hmem z (by have := ht y hy; lia)
-        simp only [List.mem_append, List.mem_cons] at hzL
-        rcases hzL with hz' | rfl | hz'
-        · have := hst' z hz' y hy; lia
-        · have := ht y hy; lia
-        · exact hz'
-      have := Finset.card_le_card hsub
-      rw [Finset.card_range, List.toFinset_card_of_nodup hndt] at this; lia
-    have htp : t.Perm (List.range t.length) := perm_range_of_lt hndt htl
-    have hsl : ∀ x ∈ s, t.length ≤ x := by
-      intro x hx; by_contra hlt'; push Not at hlt'
-      have : x ∈ t := htp.symm.subset (by simpa using hlt')
-      exact hdisj x hx x (by simp [this]) rfl
-    have hss : (s.map (· - t.length)).map (· + t.length) = s := by
-      rw [List.map_map]; conv_rhs => rw [← List.map_id s]
-      apply List.map_congr_left; intro x hx; simp only [Function.comp_apply, id]
-      have := hsl x hx; lia
-    have hnds' : (s.map (· - t.length)).Nodup := hnds.map_on (fun x hx y hy e => by
-      have := hsl x hx; have := hsl y hy; lia)
-    have hs'p : (s.map (· - t.length)).Perm (List.range s.length) := by
-      have := perm_range_of_lt hnds' (by
-        intro x hx; simp only [List.mem_map] at hx; obtain ⟨y, hy, rfl⟩ := hx
-        have := hs y hy; have := hsl y hy; simp only [List.length_map]; lia)
-      simpa using this
-    refine ⟨⟨((s.length, t.length), (ldes (s.map (· - t.length)),
-      ldes t + (if t.length = 0 then 0 else 1))), (s.map (· - t.length), t)⟩, ?_, ?_⟩
-    · simp only [Finset.mem_sigma, Finset.mem_product, Finset.HasAntidiagonal.mem_antidiagonal,
-        Xs, Xs', Finset.mem_filter, mem_S]
-      refine ⟨⟨hjl, ?_⟩, ⟨hs'p, ?_, trivial⟩, ⟨htp, havt, trivial⟩⟩
-      · have hds : ldes s = ldes (s.map (· - t.length)) := by
-          conv_lhs => rw [← hss]
-          exact ldes_map_add _ _
-        rw [← hdes, ldes_append_cons hs, hds, ldes_cons_top ht]
-        have : (t = []) ↔ t.length = 0 := List.length_eq_zero_iff.symm
-        simp only [this]
-      · rw [← lavoid_map_add t.length, hss]; exact havs
-    · simp only; rw [hss]
+  have hsum : ∑ p ∈ antidiagonal m, ∑ q ∈ antidiagonal k,
+      (Xs p.1 q.1).card * (Xs' p.2 q.2).card = (decompPieces m k).card := by
+    rw [decompPieces, Finset.card_sigma, Finset.sum_product]
+    simp [Finset.card_product]
+  rw [hsum]
+  symm
+  exact Finset.card_bij (fun a _ => combineBlocks m a)
+    (fun a ha => combineBlocks_mem_Xs ha)
+    (fun a ha b hb h => combineBlocks_injective ha hb h)
+    (fun L hL => exists_decompPiece hL)
 
 /-! ### The algebraic side: Lagrange-inversion closed form -/
 
@@ -520,7 +602,8 @@ private lemma card_Xs'_succ (l i : ℕ) :
   · congr 1; apply Finset.filter_congr; intro L _; exact and_congr_right (fun _ => by lia)
 
 /-- Descent polynomial of 132-avoiding permutation lists of length `n`. -/
-private noncomputable def P (n : ℕ) : ℚ[X] := ∑ k ∈ range (n+1), C ((Xs n k).card : ℚ) * X^k
+private noncomputable def P (n : ℕ) : ℚ[X] :=
+  ∑ k ∈ range (n+1), C ((Xs n k).card : ℚ) * X^k
 
 private lemma coeff_P (n k : ℕ) : (P n).coeff k = (Xs n k).card := by
   rw [P, finsetSum_coeff]

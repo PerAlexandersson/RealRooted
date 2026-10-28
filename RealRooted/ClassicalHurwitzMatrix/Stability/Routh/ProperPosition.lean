@@ -92,17 +92,16 @@ theorem IsStrictlyHurwitzStable.wronskian_parts_pos_of_oddShape
   exact wronskian_pos_of_strictInterlSameDegree hodd heven
     (by simpa only [hdegree] using hdegreePos) hstrict t
 
-/-- In a positive-degree odd-shape Routh step, the reduced input precedes the
-old odd input and has nonnegative coefficients. -/
-theorem IsStrictlyHurwitzStable.strictInterl_routhReducedOddPart_of_oddShape
+/-- The odd-shape Routh numerator gives a nonpositive-rooted `divX` interlacer. -/
+private theorem IsStrictlyHurwitzStable.routhNumerator_divX_interlacing_data
     {odd even : ℝ[X]}
     (h : IsStrictlyHurwitzStable (oddEvenPolynomial odd even))
     (hodd : HasPosLeadingCoeff odd) (heven : HasPosLeadingCoeff even)
     (hdegree : even.natDegree = odd.natDegree)
     (hdegreePos : 0 < odd.natDegree) :
-    StrictInterl (routhReducedOddPart (routhCoefficient odd even) odd even) odd ∧
-      HasNonnegCoeffs
-        (routhReducedOddPart (routhCoefficient odd even) odd even) := by
+    let q := even - Polynomial.C (routhCoefficient odd even) * odd
+    q ≠ 0 ∧ q.Splits ∧ q.coeff 0 = 0 ∧
+      StrictInterl q.divX odd ∧ ∀ r, q.IsRoot r → r ≤ 0 := by
   obtain ⟨hoddnn, _⟩ :=
     h.hasNonnegCoeffs_parts_of_oddShape hodd heven hdegree
   obtain ⟨hodd0, _⟩ :=
@@ -117,49 +116,40 @@ theorem IsStrictlyHurwitzStable.strictInterl_routhReducedOddPart_of_oddShape
   have hqRoot : q.IsRoot 0 := by
     rw [Polynomial.IsRoot.def, ← Polynomial.coeff_zero_eq_eval_zero]
     exact hq0
-  have hredNe :
-      routhReducedOddPart (routhCoefficient odd even) odd even ≠ 0 :=
+  have hredNe : routhReducedOddPart c odd even ≠ 0 :=
     h.routhReducedOddPart_ne_zero_of_oddShape hodd heven hdegree hdegreePos
   have hqNe : q ≠ 0 := by
-    intro hq
+    intro hqzero
     apply hredNe
-    simp [routhReducedOddPart, c, q, hq]
+    simp [routhReducedOddPart, q, hqzero]
   have hall : AllComboRealRooted odd q := by
     simpa only [q] using allComboRealRooted_routhNumerator hstrictInterl c
   have hqSplits : q.Splits := hall.right_splits
   have hqDegreeLe : q.natDegree ≤ odd.natDegree := by
     dsimp only [q]
-    refine le_trans (Polynomial.natDegree_sub_le _ _) ?_
-    exact max_le hdegree.le
-      (Polynomial.natDegree_C_mul_le c odd)
+    exact (Polynomial.natDegree_sub_le _ _).trans <|
+      max_le hdegree.le (Polynomial.natDegree_C_mul_le c odd)
   have hclose := natDegree_close_of_allComboRealRooted hall hodd.ne_zero hqNe
   have hoddNeg : ∀ r, odd.IsRoot r → r < 0 := by
     intro r hr
-    have hrNonpos : r ≤ 0 :=
-      roots_nonpos_of_hasNonnegCoeffs hoddnn r
-        ((Polynomial.mem_roots hodd.ne_zero).mpr hr)
-    have hrNe : r ≠ 0 := by
-      intro hr0
-      subst r
-      change odd.eval 0 = 0 at hr
-      rw [← Polynomial.coeff_zero_eq_eval_zero] at hr
-      exact hodd0.ne' hr
-    exact lt_of_le_of_ne hrNonpos hrNe
+    have hrNonpos := roots_nonpos_of_hasNonnegCoeffs hoddnn r
+      ((Polynomial.mem_roots hodd.ne_zero).mpr hr)
+    refine lt_of_le_of_ne hrNonpos fun hr0 => ?_
+    subst r
+    change odd.eval 0 = 0 at hr
+    rw [← Polynomial.coeff_zero_eq_eval_zero] at hr
+    exact hodd0.ne' hr
   have hqDegree : q.natDegree = odd.natDegree := by
-    have hor : q.natDegree = odd.natDegree ∨
-        q.natDegree + 1 = odd.natDegree := by lia
-    rcases hor with heq | hsucc
+    rcases show q.natDegree = odd.natDegree ∨
+        q.natDegree + 1 = odd.natDegree by lia with heq | hsucc
     · exact heq
-    · have hstrictInterlOr := strictInterl_of_allComboRealRooted hqNe hqSplits
-          hodd.ne_zero hstrictInterl.1.2 (hall.comm)
-          (Or.inl hsucc)
-      have hqodd : StrictInterl q odd := by
-        rcases hstrictInterlOr with hqodd | hoddq
+    · have hqodd : StrictInterl q odd := by
+        rcases strictInterl_of_allComboRealRooted hqNe hqSplits
+            hodd.ne_zero hstrictInterl.1.2 hall.comm (Or.inl hsucc) with hqodd | hoddq
         · exact hqodd
         · rcases hoddq.natDegree_eq_or_eq_succ with hs | hs <;> lia
-      have hqNeg : ∀ r, q.IsRoot r → r < 0 :=
-        roots_neg_of_interlaces_of_right_roots_neg
-          (hqodd.toInterlaces hsucc) hoddNeg
+      have hqNeg := roots_neg_of_interlaces_of_right_roots_neg
+        (hqodd.toInterlaces hsucc) hoddNeg
       exact False.elim ((ne_of_lt (hqNeg 0 hqRoot)) rfl)
   have hstrictInterlQ : StrictInterl odd q := by
     rcases strictInterl_of_allComboRealRooted hodd.ne_zero hstrictInterl.1.2
@@ -172,61 +162,93 @@ theorem IsStrictlyHurwitzStable.strictInterl_routhReducedOddPart_of_oddShape
     roots_nonpos_of_strictInterl_sameDegree_of_zero_root_of_left_roots_neg
       hstrictInterlQ hqDegree.symm hqRoot hoddNeg
   have hredStrictInterl : StrictInterl q.divX odd :=
-    strictInterl_divX_left_of_strictInterl_sameDegree_of_roots_nonpos_coeff_zero hstrictInterlQ
+    strictInterl_divX_left_of_strictInterl_sameDegree_of_roots_nonpos_coeff_zero
+      hstrictInterlQ
       (fun r hr => hqNonpos r ((Polynomial.mem_roots hqNe).mp hr))
       hq0 hqDegree
+  exact ⟨hqNe, hqSplits, hq0, hredStrictInterl, hqNonpos⟩
+
+/-- The odd-shape Wronskian makes the reduced Routh part positive at zero. -/
+private theorem IsStrictlyHurwitzStable.coeff_zero_routhReducedOddPart_pos
+    {odd even : ℝ[X]}
+    (h : IsStrictlyHurwitzStable (oddEvenPolynomial odd even))
+    (hodd : HasPosLeadingCoeff odd) (heven : HasPosLeadingCoeff even)
+    (hdegree : even.natDegree = odd.natDegree)
+    (hdegreePos : 0 < odd.natDegree) :
+    0 < (routhReducedOddPart (routhCoefficient odd even) odd even).coeff 0 := by
+  obtain ⟨hodd0, _⟩ :=
+    h.coeff_zero_pos_parts_of_oddShape hodd heven hdegree
+  have hW := h.wronskian_parts_pos_of_oddShape
+    hodd heven hdegree hdegreePos 0
+  simp only [← Polynomial.coeff_zero_eq_eval_zero,
+    Polynomial.coeff_derivative, Nat.cast_zero, zero_add, mul_one] at hW
+  have heq := routhCoefficient_mul_coeff_zero odd even hodd0.ne'
+  rw [heq] at hW
+  have hfactor :
+      even.coeff 1 * odd.coeff 0 -
+          (routhCoefficient odd even * odd.coeff 0) * odd.coeff 1 =
+        odd.coeff 0 *
+          (even.coeff 1 - routhCoefficient odd even * odd.coeff 1) := by
+    ring
+  rw [hfactor] at hW
+  rw [coeff_routhReducedOddPart]
+  exact (mul_pos_iff_of_pos_left hodd0).mp hW
+
+/-- A split polynomial with nonpositive roots has a nonnegative `divX` after a positive value. -/
+private theorem hasNonnegCoeffs_divX_of_splits_roots_nonpos_eval_zero_pos
+    {q : ℝ[X]} (hqNe : q ≠ 0) (hqSplits : q.Splits)
+    (hq0 : q.coeff 0 = 0) (hqNonpos : ∀ r, q.IsRoot r → r ≤ 0)
+    (hdivEval : 0 < q.divX.eval 0) : HasNonnegCoeffs q.divX := by
   have hdivNe : q.divX ≠ 0 := by
-    simpa only [routhReducedOddPart, c, q] using hredNe
+    intro hzero
+    rw [hzero, Polynomial.eval_zero] at hdivEval
+    exact (lt_irrefl 0 hdivEval).elim
   have hdivSplits : q.divX.Splits :=
     (DegreeDropReversal.splits_iff_divX_splits_of_coeff_zero hq0).1 hqSplits
   have hdivRootsNonpos : ∀ r ∈ q.divX.roots, r ≤ 0 := by
     intro r hr
     apply hqNonpos r
     apply (Polynomial.mem_roots hqNe).mp
-    have hroots := roots_eq_zero_cons_divX_of_coeff_zero hqNe hq0
-    rw [hroots]
+    rw [roots_eq_zero_cons_divX_of_coeff_zero hqNe hq0]
     simp [hr]
-  have hcoeffPos : 0 < even.coeff 1 - c * odd.coeff 1 := by
-    have hW := h.wronskian_parts_pos_of_oddShape
-      hodd heven hdegree hdegreePos 0
-    simp only [← Polynomial.coeff_zero_eq_eval_zero,
-      Polynomial.coeff_derivative,
-      Nat.cast_zero, zero_add, mul_one] at hW
-    have heq := routhCoefficient_mul_coeff_zero odd even hodd0.ne'
-    rw [heq] at hW
-    have hfactor :
-        even.coeff 1 * odd.coeff 0 -
-            (routhCoefficient odd even * odd.coeff 0) * odd.coeff 1 =
-          odd.coeff 0 *
-            (even.coeff 1 - routhCoefficient odd even * odd.coeff 1) := by
-      ring
-    rw [hfactor] at hW
-    exact (mul_pos_iff_of_pos_left hodd0).mp hW
-  have hdivEval : 0 < q.divX.eval 0 := by
-    rw [← Polynomial.coeff_zero_eq_eval_zero]
-    change 0 <
-      (routhReducedOddPart (routhCoefficient odd even) odd even).coeff 0
-    simpa using hcoeffPos
   have hdivRootsNeg : ∀ r ∈ q.divX.roots, r < 0 := by
     intro r hr
-    have hrNonpos := hdivRootsNonpos r hr
-    have hrNe : r ≠ 0 := by
-      intro hr0
-      subst r
-      have hroot : q.divX.IsRoot 0 :=
-        (Polynomial.mem_roots hdivNe).mp hr
-      change q.divX.eval 0 = 0 at hroot
-      linarith
-    exact lt_of_le_of_ne hrNonpos hrNe
+    refine lt_of_le_of_ne (hdivRootsNonpos r hr) fun hr0 => ?_
+    subst r
+    have hroot : q.divX.IsRoot 0 := (Polynomial.mem_roots hdivNe).mp hr
+    change q.divX.eval 0 = 0 at hroot
+    linarith
   have hprodPos : 0 < (q.divX.roots.map (0 - ·)).prod := by
     refine Multiset.prod_pos ?_
     simp_all
   have hdivPos : HasPosLeadingCoeff q.divX := by
     rw [Polynomial.Splits.eval_eq_prod_roots hdivSplits 0] at hdivEval
     exact (mul_pos_iff_of_pos_right hprodPos).mp hdivEval
-  have hdivnn : HasNonnegCoeffs q.divX :=
-    ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hdivSplits).2
-      ⟨hdivPos, hdivRootsNonpos⟩).1
+  exact ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hdivSplits).2
+    ⟨hdivPos, hdivRootsNonpos⟩).1
+
+/-- In a positive-degree odd-shape Routh step, the reduced input precedes the
+old odd input and has nonnegative coefficients. -/
+theorem IsStrictlyHurwitzStable.strictInterl_routhReducedOddPart_of_oddShape
+    {odd even : ℝ[X]}
+    (h : IsStrictlyHurwitzStable (oddEvenPolynomial odd even))
+    (hodd : HasPosLeadingCoeff odd) (heven : HasPosLeadingCoeff even)
+    (hdegree : even.natDegree = odd.natDegree)
+    (hdegreePos : 0 < odd.natDegree) :
+    StrictInterl (routhReducedOddPart (routhCoefficient odd even) odd even) odd ∧
+      HasNonnegCoeffs
+        (routhReducedOddPart (routhCoefficient odd even) odd even) := by
+  let c := routhCoefficient odd even
+  let q := even - Polynomial.C c * odd
+  obtain ⟨hqNe, hqSplits, hq0, hredStrictInterl, hqNonpos⟩ :=
+    h.routhNumerator_divX_interlacing_data hodd heven hdegree hdegreePos
+  have hdivEval : 0 < q.divX.eval 0 := by
+    rw [← Polynomial.coeff_zero_eq_eval_zero]
+    change 0 <
+      (routhReducedOddPart (routhCoefficient odd even) odd even).coeff 0
+    exact h.coeff_zero_routhReducedOddPart_pos hodd heven hdegree hdegreePos
+  have hdivnn := hasNonnegCoeffs_divX_of_splits_roots_nonpos_eval_zero_pos
+    hqNe hqSplits hq0 hqNonpos hdivEval
   change StrictInterl q.divX odd ∧ HasNonnegCoeffs q.divX
   exact ⟨hredStrictInterl, hdivnn⟩
 

@@ -346,6 +346,92 @@ noncomputable def jPolynomialRoot
     (m ε : ℕ) (i : Fin (m - 1)) : ℝ :=
   orderedRoot (jPolynomial m ε) (m - 1) i
 
+/-- A signed diagonal is the insertion of the preceding off-diagonal entry. -/
+private lemma signedTriangleFamily_succ_eq_insertionOperator (m ε d : ℕ) :
+    signedTriangleFamily ((ε : ℝ) + 1 / 2) (jPolynomial m ε) (d + 1) (d + 1) =
+      insertionOperator ((ε : ℝ) + 1 / 2 + d) ((ε : ℝ) + 1 / 2 + d + 2)
+        (signedTriangleFamily ((ε : ℝ) + 1 / 2) (jPolynomial m ε) (d + 1) d) := by
+  dsimp only [signedTriangleFamily]
+  rw [triangleFamily_succ]
+  have hparameter :
+      (ε : ℝ) + 1 / 2 + ((d + 1 : ℕ) : ℝ) + 1 =
+        (ε : ℝ) + 1 / 2 + (d : ℝ) + 2 := by
+    push_cast
+    ring
+  rw [hparameter, insertionOperator_C_mul]
+
+/-- Opposite rescalings turn an insertion identity into a negated insertion identity. -/
+private lemma C_mul_eq_neg_insertionOperator_C_mul {H B : ℝ[X]} {a b s t : ℝ}
+    (hB : B = insertionOperator a b H) (hst : t = -s) :
+    C t * B = -insertionOperator a b (C s * H) := by
+  rw [insertionOperator_C_mul, ← hB, hst]
+  apply Polynomial.funext
+  intro x
+  simp only [eval_neg, eval_mul, eval_C]
+  ring
+
+/-- Sign-normalized interval insertion gives a strict interlacing pair. -/
+private lemma strictInterl_C_mul_insertionOperator {H B : ℝ[X]} {n : ℕ}
+    (hHData : IntervalRootData H n) (hHEval : 0 < H.eval 0) (a b : ℝ) (hb : 0 < b)
+    {s t : ℝ} (hs : s ≠ 0) (hst : t = -s) (hB : B = insertionOperator a b H) :
+    StrictInterl (C s * H) (C t * B) := by
+  rw [C_mul_eq_neg_insertionOperator_C_mul hB hst]
+  have hraw := hHData.strictInterl_neg_insertionOperator hHEval a b hb
+  have hleft := StrictInterl.C_mul_left hraw hs
+  have hboth := StrictInterl.C_mul_right hleft hs
+  rw [insertionOperator_C_mul]
+  simpa only [mul_neg] using hboth
+
+/-- Sign-normalized interval insertion has no root common to input and output. -/
+private lemma noCommonRoot_C_mul_insertionOperator {H B : ℝ[X]} {n : ℕ}
+    (hHData : IntervalRootData H n) (a b : ℝ) {s t : ℝ} (hs : s ≠ 0)
+    (hst : t = -s) (hB : B = insertionOperator a b H) :
+    ∀ r, (C t * B).IsRoot r → ¬(C s * H).IsRoot r := by
+  have hscaledData : IntervalRootData (C s * H) n := hHData.C_mul hs
+  have hoperator := C_mul_eq_neg_insertionOperator_C_mul hB hst
+  intro r hrB hrH
+  have hMroot : (insertionOperator a b (C s * H)).IsRoot r := by
+    rw [hoperator, IsRoot.def] at hrB
+    rw [IsRoot.def]
+    simpa using hrB
+  exact insertionOperator_no_common_root a b
+    (fun x hx => hscaledData.roots_mem_Ioo x
+      ((mem_roots hscaledData.ne_zero).mpr hx))
+    hscaledData.eval_derivative_ne_zero r hrH hMroot
+
+/-- A three-halves affine combination inherits strict interlacing from its two summands. -/
+private lemma strictInterl_of_threeHalves_relation {H A B : ℝ[X]} {hDegree degree : ℕ}
+    (hHData : IntervalRootData H hDegree) (hAData : IntervalRootData A degree)
+    (hBData : IntervalRootData B degree) (hDegreeSucc : hDegree + 1 = degree)
+    (hHLeading : HasPosLeadingCoeff H)
+    (hBLeading : HasPosLeadingCoeff B) (hALeading : HasPosLeadingCoeff A)
+    (hHBStrictInterl : StrictInterl H B) (hnoCommon : ∀ r, B.IsRoot r → ¬H.IsRoot r)
+    (hrelation : A = 1 * B + (-(C (3 / 2 : ℝ) * (1 - X))) * H) :
+    StrictInterl B A := by
+  have hHBInterlaces : Interlaces H B := by
+    apply hHBStrictInterl.toInterlaces
+    rw [hHData.natDegree_eq, hBData.natDegree_eq]
+    exact hDegreeSucc
+  have hcombinationLeading :
+      HasPosLeadingCoeff (1 * B + (-(C (3 / 2 : ℝ) * (1 - X))) * H) := by
+    rw [← hrelation]
+    exact hALeading
+  have hcombinationDegree :
+      (1 * B + (-(C (3 / 2 : ℝ) * (1 - X))) * H).natDegree = B.natDegree := by
+    rw [← hrelation, hAData.natDegree_eq, hBData.natDegree_eq]
+  have hcoefficientNeg :
+      ∀ r, B.IsRoot r → (-(C (3 / 2 : ℝ) * (1 - X))).eval r < 0 := by
+    intro r hr
+    have hri := hBData.roots_mem_Ioo r ((mem_roots hBLeading.ne_zero).mpr hr)
+    have hone : 0 < 1 - r := sub_pos.mpr hri.2
+    simp only [eval_neg, eval_mul, eval_C, eval_sub, eval_one, eval_X]
+    norm_num
+    linarith
+  have hstrict := strictInterl_of_interlaces_evalCoeff_neg_same
+    hHBInterlaces hHLeading hcombinationLeading hcombinationDegree
+    hnoCommon hcoefficientNeg
+  rwa [← hrelation] at hstrict
+
 /-- The next signed diagonal lies strictly before the current signed diagonal
 in strict interlacing order. This is the polynomial form of the directed gap
 comparison in the last Darboux square. -/
@@ -409,45 +495,13 @@ theorem consecutive_signedTriangleFamily_strictInterl
     simp only [eval_mul, eval_C]
     exact mul_pos heigenvalue hAEval
   have hhorizontal : B = insertionOperator a b H := by
-    dsimp only [B, H, a, b, signedTriangleFamily]
-    rw [triangleFamily_succ]
-    have hparameter :
-        (ε : ℝ) + 1 / 2 + ((d + 1 : ℕ) : ℝ) + 1 =
-          (ε : ℝ) + 1 / 2 + (d : ℝ) + 2 := by
-      push_cast
-      ring
-    rw [hparameter, insertionOperator_C_mul]
-  have hBposOperator : Bpos = -insertionOperator a b Hpos := by
-    dsimp only [Bpos, Hpos]
-    rw [insertionOperator_C_mul, ← hhorizontal, hsignRelation]
-    apply Polynomial.funext
-    intro x
-    simp only [eval_neg, eval_mul, eval_C]
-    ring
-  have hHBStrictInterl : StrictInterl Hpos Bpos := by
-    rw [hBposOperator]
-    have hraw := hHData.strictInterl_neg_insertionOperator hHEval a b (by
+    simpa only [B, H, a, b] using signedTriangleFamily_succ_eq_insertionOperator m ε d
+  have hHBStrictInterl : StrictInterl Hpos Bpos :=
+    strictInterl_C_mul_insertionOperator hHData hHEval a b (by
       dsimp only [b]
-      positivity)
-    have hleft := StrictInterl.C_mul_left hraw hsignH
-    have hboth := StrictInterl.C_mul_right hleft hsignH
-    dsimp only [Hpos]
-    rw [insertionOperator_C_mul]
-    simpa only [mul_neg] using hboth
-  have hHBInterlaces : Interlaces Hpos Bpos := by
-    apply hHBStrictInterl.toInterlaces
-    rw [hHposData.natDegree_eq, hBposData.natDegree_eq]
-    lia
-  have hnoCommon : ∀ r, Bpos.IsRoot r → ¬Hpos.IsRoot r := by
-    intro r hrB hrH
-    have hMroot : (insertionOperator a b Hpos).IsRoot r := by
-      rw [hBposOperator, IsRoot.def] at hrB
-      rw [IsRoot.def]
-      simpa using hrB
-    exact insertionOperator_no_common_root a b
-      (fun x hx => hHposData.roots_mem_Ioo x
-        ((mem_roots hHLeading.ne_zero).mpr hx))
-      hHposData.eval_derivative_ne_zero r hrH hMroot
+      positivity) hsignH hsignRelation hhorizontal
+  have hnoCommon : ∀ r, Bpos.IsRoot r → ¬Hpos.IsRoot r :=
+    noCommonRoot_C_mul_insertionOperator hHData a b hsignH hsignRelation hhorizontal
   have hcombination :
       Apos = 1 * Bpos + (-(C (3 / 2 : ℝ) * (1 - X))) * Hpos := by
     have hscaled := congrArg (C signAB * ·)
@@ -456,28 +510,9 @@ theorem consecutive_signedTriangleFamily_strictInterl
     rw [hsignRelation] at hscaled ⊢
     simp only [map_neg, map_mul] at hscaled ⊢
     linear_combination hscaled
-  have hcombinationLeading :
-      HasPosLeadingCoeff
-        (1 * Bpos + (-(C (3 / 2 : ℝ) * (1 - X))) * Hpos) := by
-    rw [← hcombination]
-    exact hALeading
-  have hcombinationDegree :
-      (1 * Bpos + (-(C (3 / 2 : ℝ) * (1 - X))) * Hpos).natDegree =
-        Bpos.natDegree := by
-    rw [← hcombination, hAposData.natDegree_eq, hBposData.natDegree_eq]
-  have hcoefficientNeg :
-      ∀ r, Bpos.IsRoot r → (-(C (3 / 2 : ℝ) * (1 - X))).eval r < 0 := by
-    intro r hr
-    have hri := hBposData.roots_mem_Ioo r
-      ((mem_roots hBLeading.ne_zero).mpr hr)
-    have hone : 0 < 1 - r := sub_pos.mpr hri.2
-    simp only [eval_neg, eval_mul, eval_C, eval_sub, eval_one, eval_X]
-    norm_num
-    linarith
-  have hstrictInterlPos := strictInterl_of_interlaces_evalCoeff_neg_same
-    hHBInterlaces hHLeading hcombinationLeading hcombinationDegree
-    hnoCommon hcoefficientNeg
-  rw [← hcombination] at hstrictInterlPos
+  have hstrictInterlPos := strictInterl_of_threeHalves_relation
+    hHposData hAposData hBposData (by lia) hHLeading hBLeading hALeading
+    hHBStrictInterl hnoCommon hcombination
   have hleft := StrictInterl.C_mul_left hstrictInterlPos (inv_ne_zero hsignAB)
   rw [← mul_assoc, ← Polynomial.C_mul, inv_mul_cancel₀ hsignAB,
     C_1, one_mul] at hleft
@@ -518,14 +553,7 @@ theorem consecutive_signedTriangleFamily_strictInterlSameDegree
   have heigenvalue : 0 < eigenvalue := by
     simpa only [eigenvalue] using diagonalEigenvalue_pos m ε d hm hd
   have hhorizontal : B = insertionOperator a b H := by
-    dsimp only [B, H, a, b, signedTriangleFamily]
-    rw [triangleFamily_succ]
-    have hparameter :
-        (ε : ℝ) + 1 / 2 + ((d + 1 : ℕ) : ℝ) + 1 =
-          (ε : ℝ) + 1 / 2 + (d : ℝ) + 2 := by
-      push_cast
-      ring
-    rw [hparameter, insertionOperator_C_mul]
+    simpa only [B, H, a, b] using signedTriangleFamily_succ_eq_insertionOperator m ε d
   apply StrictInterlSameDegree.of_strictInterl_of_no_common
     (consecutive_signedTriangleFamily_strictInterl m ε d hm hd)
   · change B.natDegree = (C eigenvalue * A).natDegree

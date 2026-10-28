@@ -648,142 +648,156 @@ theorem interl_next_U_U_of_le (hC : F.Conditions) (hι : Monotone ι) (j l : Fin
       (fun j' _ => F.hasNonnegCoeffs_W j'))
     F.hasNonnegCoeffs_W
 
+/-- The next `A` at a lower cut interlaces the next `W` at a higher cut. -/
+private lemma interl_next_A_W_of_le (hC : F.Conditions) (j l : Fin m')
+    (hjl : ι j ≤ ι l) :
+    Interl ((F.next m' ι).A j) ((F.next m' ι).W l) := by
+  let band := Finset.univ.filter (fun i : Fin m => ι j ≤ i ∧ i < ι l)
+  let bandXD : ℝ[X] := band.sum (fun i => X * F.D i)
+  let H : ℝ[X] := F.S (ι j) + band.sum F.U
+  let K : ℝ[X] := bandXD + F.T (ι l)
+  have hT_eq : F.T (ι j) = band.sum F.W + F.T (ι l) := by
+    simpa [T, band] using sum_filter_tail_eq_add (f := F.W) hjl
+  have hbandW : band.sum F.W = bandXD + band.sum F.U :=
+    F.sum_W_eq_sum_X_mul_D_add_sum_U band
+  have hA_eq : (F.next m' ι).A j = H + K := by
+    simp [next_A, H, K, hT_eq, hbandW]
+    ring
+  have hWA : (F.next m' ι).W j - (F.next m' ι).A j =
+      (X - C 1) * F.S (ι j) := by
+    simpa [next_D] using (F.next m' ι).W_sub_A j
+  have hdiff : (F.next m' ι).W l - (F.next m' ι).A j = (X - C 1) * H := by
+    have hWW := F.next_W_sub_next_W (ι := ι) j l hjl
+    have hsplit : (F.next m' ι).W l - (F.next m' ι).A j =
+        ((F.next m' ι).W l - (F.next m' ι).W j) +
+        ((F.next m' ι).W j - (F.next m' ι).A j) := by
+      ring
+    rw [hsplit, hWW, hWA, ← mul_add]
+    simp [band, H, add_comm]
+  have hW_eq : (F.next m' ι).W l =
+      (F.next m' ι).A j + (X - C 1) * H := by
+    linear_combination hdiff
+  have hbandXD_nn : HasNonnegCoeffs bandXD :=
+    hasNonnegCoeffs_finsetSum _ _ (fun i _ => (F.hasNonnegCoeffs_D i).X_mul)
+  have hbandU_nn : HasNonnegCoeffs (band.sum F.U) :=
+    hasNonnegCoeffs_finsetSum _ _ (fun i _ => F.hasNonnegCoeffs_U i)
+  have hH_nn : HasNonnegCoeffs H := (F.hasNonnegCoeffs_S (ι j)).add hbandU_nn
+  have hK_nn : HasNonnegCoeffs K := hbandXD_nn.add (F.hasNonnegCoeffs_T (ι l))
+  have hS_bandXD : Interl (F.S (ι j)) bandXD := by
+    refine Interl.finsetSum_right_of_nonneg _ F.A bandXD (fun i hi => ?_)
+      (fun i _ => F.hasNonnegCoeffs_A i)
+    refine Interl.finsetSum_left_of_nonneg (F.A i) band (fun r => X * F.D r)
+      (fun r hr => ?_) (fun r _ => (F.hasNonnegCoeffs_D r).X_mul)
+    exact hC.interl_A_X_mul_D_of_lt
+      (lt_of_lt_of_le (Finset.mem_filter.mp hi).2 (Finset.mem_filter.mp hr).2.1)
+  have hbandU_bandXD : Interl (band.sum F.U) bandXD :=
+    Interl.finsetSum_right_of_nonneg band F.U bandXD
+      (fun i _ => Interl.finsetSum_left_of_nonneg (F.U i) band (fun r => X * F.D r)
+        (fun r _ => hC.interl_U_X_mul_D i r) (fun r _ => (F.hasNonnegCoeffs_D r).X_mul))
+      (fun i _ => F.hasNonnegCoeffs_U i)
+  have hbandU_Tl : Interl (band.sum F.U) (F.T (ι l)) := by
+    refine Interl.finsetSum_right_of_nonneg band F.U (F.T (ι l)) (fun i hi => ?_)
+      (fun i _ => F.hasNonnegCoeffs_U i)
+    refine Interl.finsetSum_left_of_nonneg (F.U i) _ F.W (fun r hr => ?_)
+      (fun r _ => F.hasNonnegCoeffs_W r)
+    exact hC.interl_U_W_of_lt
+      (lt_of_lt_of_le (Finset.mem_filter.mp hi).2.2 (Finset.mem_filter.mp hr).2)
+  have hHK : Interl H K :=
+    interl_add_right
+      (interl_add_left hS_bandXD (hC.interl_next_D_U j l) hbandXD_nn
+        (F.hasNonnegCoeffs_T (ι l)))
+      (interl_add_left hbandU_bandXD hbandU_Tl hbandXD_nn
+        (F.hasNonnegCoeffs_T (ι l)))
+      (F.hasNonnegCoeffs_S (ι j)) hbandU_nn
+  have hH_interl : Interl H ((F.next m' ι).A j) :=
+    interl_left_of_eq_add hA_eq hHK hH_nn hK_nn (hC.splits_next_A j)
+  have hbound : H.eval 0 ≤ ((F.next m' ι).A j).eval 0 := by
+    have := eval_zero_nonneg ((F.next m' ι).hasNonnegCoeffs_W l)
+    rw [hW_eq] at this
+    simp [eval_add, eval_mul, eval_sub, eval_X] at this ⊢
+    linarith
+  rw [hW_eq]
+  exact interl_add_X_sub_C_one_mul hH_interl ((F.next m' ι).hasNonnegCoeffs_A j) hH_nn
+    (hC.splits_next_A j) hbound
+
+/-- The next `A` at a higher cut interlaces the next `W` at a lower cut. -/
+private lemma interl_next_A_W_of_gt (hC : F.Conditions) (j l : Fin m')
+    (hlj : ι l < ι j) :
+    Interl ((F.next m' ι).A j) ((F.next m' ι).W l) := by
+  let band := Finset.univ.filter (fun i : Fin m => ι l ≤ i ∧ i < ι j)
+  let H : ℝ[X] := F.S (ι l) + band.sum F.D
+  let K : ℝ[X] := band.sum F.U + F.T (ι j)
+  have hS_eq : F.S (ι j) = F.S (ι l) + band.sum F.A := by
+    simpa [S, band] using sum_filter_Icc_eq_add (f := F.A) (le_of_lt hlj)
+  have hA_band : band.sum F.A = band.sum F.D + band.sum F.U :=
+    F.sum_A_eq_sum_D_add_sum_U band
+  have hA_eq : (F.next m' ι).A j = H + K := by
+    simp [next_A, H, K, hS_eq, hA_band]
+    ring
+  have hAA := F.next_A_sub_next_A (ι := ι) j l (le_of_lt hlj)
+  have hWA : (F.next m' ι).W l - (F.next m' ι).A l =
+      (X - C 1) * F.S (ι l) := by
+    simpa [next_D] using (F.next m' ι).W_sub_A l
+  have hdiff : (F.next m' ι).W l - (F.next m' ι).A j = (X - C 1) * H := by
+    have hsplit : (F.next m' ι).W l - (F.next m' ι).A j =
+        ((F.next m' ι).W l - (F.next m' ι).A l) +
+        ((F.next m' ι).A l - (F.next m' ι).A j) := by
+      ring
+    rw [hsplit, hWA, hAA, ← mul_add]
+  have hW_eq : (F.next m' ι).W l =
+      (F.next m' ι).A j + (X - C 1) * H := by
+    linear_combination hdiff
+  have hbandD_nn : HasNonnegCoeffs (band.sum F.D) :=
+    hasNonnegCoeffs_finsetSum _ _ (fun i _ => F.hasNonnegCoeffs_D i)
+  have hbandU_nn : HasNonnegCoeffs (band.sum F.U) :=
+    hasNonnegCoeffs_finsetSum _ _ (fun i _ => F.hasNonnegCoeffs_U i)
+  have hH_nn : HasNonnegCoeffs H := (F.hasNonnegCoeffs_S (ι l)).add hbandD_nn
+  have hK_nn : HasNonnegCoeffs K := hbandU_nn.add (F.hasNonnegCoeffs_T (ι j))
+  have hS_bandU : Interl (F.S (ι l)) (band.sum F.U) := by
+    refine Interl.finsetSum_right_of_nonneg _ F.A (band.sum F.U) (fun i hi => ?_)
+      (fun i _ => F.hasNonnegCoeffs_A i)
+    refine Interl.finsetSum_left_of_nonneg (F.A i) band F.U (fun r hr => ?_)
+      (fun r _ => F.hasNonnegCoeffs_U r)
+    exact hC.interl_A_U_of_lt
+      (lt_of_lt_of_le (Finset.mem_filter.mp hi).2 (Finset.mem_filter.mp hr).2.1)
+  have hbandD_bandU : Interl (band.sum F.D) (band.sum F.U) :=
+    Interl.finsetSum_right_of_nonneg band F.D (band.sum F.U)
+      (fun i _ => Interl.finsetSum_left_of_nonneg (F.D i) band F.U
+        (fun r _ => hC.interl_D_U i r) (fun r _ => F.hasNonnegCoeffs_U r))
+      (fun i _ => F.hasNonnegCoeffs_D i)
+  have hbandD_Tj : Interl (band.sum F.D) (F.T (ι j)) := by
+    refine Interl.finsetSum_right_of_nonneg band F.D (F.T (ι j)) (fun i hi => ?_)
+      (fun i _ => F.hasNonnegCoeffs_D i)
+    refine Interl.finsetSum_left_of_nonneg (F.D i) _ F.W (fun r hr => ?_)
+      (fun r _ => F.hasNonnegCoeffs_W r)
+    exact hC.interl_D_W_of_lt
+      (lt_of_lt_of_le (Finset.mem_filter.mp hi).2.2 (Finset.mem_filter.mp hr).2)
+  have hHK : Interl H K :=
+    interl_add_right
+      (interl_add_left hS_bandU (hC.interl_next_D_U l j) hbandU_nn
+        (F.hasNonnegCoeffs_T (ι j)))
+      (interl_add_left hbandD_bandU hbandD_Tj hbandU_nn
+        (F.hasNonnegCoeffs_T (ι j)))
+      (F.hasNonnegCoeffs_S (ι l)) hbandD_nn
+  have hH_interl : Interl H ((F.next m' ι).A j) :=
+    interl_left_of_eq_add hA_eq hHK hH_nn hK_nn (hC.splits_next_A j)
+  have hbound : H.eval 0 ≤ ((F.next m' ι).A j).eval 0 := by
+    have := eval_zero_nonneg ((F.next m' ι).hasNonnegCoeffs_W l)
+    rw [hW_eq] at this
+    simp [eval_add, eval_mul, eval_sub, eval_X] at this ⊢
+    linarith
+  rw [hW_eq]
+  exact interl_add_X_sub_C_one_mul hH_interl ((F.next m' ι).hasNonnegCoeffs_A j) hH_nn
+    (hC.splits_next_A j) hbound
+
 /-- **(c) AW at λ+**: `A⁺_j ≪₀ W⁺_l`.
 The key step: `W⁺_l = A⁺_j + (X - 1) · H` and the shift lemma reduces the claim to
 `H ≪₀ A⁺_j`, proved separately for `ι j ≤ ι l` and `ι l < ι j`. -/
 theorem interl_next_A_W (hC : F.Conditions) (j l : Fin m') :
     Interl ((F.next m' ι).A j) ((F.next m' ι).W l) := by
-  have hDU_next : ∀ j l : Fin m', Interl (F.S (ι j)) (F.T (ι l)) :=
-    fun j l => hC.interl_next_D_U j l
   rcases le_or_gt (ι j) (ι l) with hjl | hlj
-  · let band := Finset.univ.filter (fun i : Fin m => ι j ≤ i ∧ i < ι l)
-    let bandXD : ℝ[X] := band.sum (fun i => X * F.D i)
-    let H : ℝ[X] := F.S (ι j) + band.sum F.U
-    let K : ℝ[X] := bandXD + F.T (ι l)
-    have hT_eq : F.T (ι j) = band.sum F.W + F.T (ι l) := by
-      simpa [T, band] using sum_filter_tail_eq_add (f := F.W) hjl
-    have hbandW : band.sum F.W = bandXD + band.sum F.U :=
-      F.sum_W_eq_sum_X_mul_D_add_sum_U band
-    have hA_eq : (F.next m' ι).A j = H + K := by
-      simp [next_A, H, K, hT_eq, hbandW]
-      ring
-    have hWA : (F.next m' ι).W j - (F.next m' ι).A j =
-        (X - C 1) * F.S (ι j) := by
-      simpa [next_D] using (F.next m' ι).W_sub_A j
-    have hdiff : (F.next m' ι).W l - (F.next m' ι).A j = (X - C 1) * H := by
-      have hWW := F.next_W_sub_next_W (ι := ι) j l hjl
-      have hsplit : (F.next m' ι).W l - (F.next m' ι).A j =
-          ((F.next m' ι).W l - (F.next m' ι).W j) +
-          ((F.next m' ι).W j - (F.next m' ι).A j) := by
-        ring
-      rw [hsplit, hWW, hWA, ← mul_add]
-      simp [band, H, add_comm]
-    have hW_eq : (F.next m' ι).W l =
-        (F.next m' ι).A j + (X - C 1) * H := by
-      linear_combination hdiff
-    have hbandXD_nn : HasNonnegCoeffs bandXD :=
-      hasNonnegCoeffs_finsetSum _ _ (fun i _ => (F.hasNonnegCoeffs_D i).X_mul)
-    have hbandU_nn : HasNonnegCoeffs (band.sum F.U) :=
-      hasNonnegCoeffs_finsetSum _ _ (fun i _ => F.hasNonnegCoeffs_U i)
-    have hH_nn : HasNonnegCoeffs H := (F.hasNonnegCoeffs_S (ι j)).add hbandU_nn
-    have hK_nn : HasNonnegCoeffs K := hbandXD_nn.add (F.hasNonnegCoeffs_T (ι l))
-    have hS_bandXD : Interl (F.S (ι j)) bandXD := by
-      refine Interl.finsetSum_right_of_nonneg _ F.A bandXD (fun i hi => ?_)
-        (fun i _ => F.hasNonnegCoeffs_A i)
-      refine Interl.finsetSum_left_of_nonneg (F.A i) band (fun r => X * F.D r)
-        (fun r hr => ?_) (fun r _ => (F.hasNonnegCoeffs_D r).X_mul)
-      exact hC.interl_A_X_mul_D_of_lt
-        (lt_of_lt_of_le (Finset.mem_filter.mp hi).2 (Finset.mem_filter.mp hr).2.1)
-    have hbandU_bandXD : Interl (band.sum F.U) bandXD :=
-      Interl.finsetSum_right_of_nonneg band F.U bandXD
-        (fun i _ => Interl.finsetSum_left_of_nonneg (F.U i) band (fun r => X * F.D r)
-          (fun r _ => hC.interl_U_X_mul_D i r) (fun r _ => (F.hasNonnegCoeffs_D r).X_mul))
-        (fun i _ => F.hasNonnegCoeffs_U i)
-    have hbandU_Tl : Interl (band.sum F.U) (F.T (ι l)) := by
-      refine Interl.finsetSum_right_of_nonneg band F.U (F.T (ι l)) (fun i hi => ?_)
-        (fun i _ => F.hasNonnegCoeffs_U i)
-      refine Interl.finsetSum_left_of_nonneg (F.U i) _ F.W (fun r hr => ?_)
-        (fun r _ => F.hasNonnegCoeffs_W r)
-      exact hC.interl_U_W_of_lt
-        (lt_of_lt_of_le (Finset.mem_filter.mp hi).2.2 (Finset.mem_filter.mp hr).2)
-    have hHK : Interl H K :=
-      interl_add_right
-        (interl_add_left hS_bandXD (hDU_next j l) hbandXD_nn (F.hasNonnegCoeffs_T (ι l)))
-        (interl_add_left hbandU_bandXD hbandU_Tl hbandXD_nn (F.hasNonnegCoeffs_T (ι l)))
-        (F.hasNonnegCoeffs_S (ι j)) hbandU_nn
-    have hH_interl : Interl H ((F.next m' ι).A j) :=
-      interl_left_of_eq_add hA_eq hHK hH_nn hK_nn (hC.splits_next_A j)
-    have hbound : H.eval 0 ≤ ((F.next m' ι).A j).eval 0 := by
-      have := eval_zero_nonneg ((F.next m' ι).hasNonnegCoeffs_W l)
-      rw [hW_eq] at this
-      simp [eval_add, eval_mul, eval_sub, eval_X] at this ⊢
-      linarith
-    rw [hW_eq]
-    exact interl_add_X_sub_C_one_mul hH_interl ((F.next m' ι).hasNonnegCoeffs_A j) hH_nn
-      (hC.splits_next_A j) hbound
-  · let band := Finset.univ.filter (fun i : Fin m => ι l ≤ i ∧ i < ι j)
-    let H : ℝ[X] := F.S (ι l) + band.sum F.D
-    let K : ℝ[X] := band.sum F.U + F.T (ι j)
-    have hS_eq : F.S (ι j) = F.S (ι l) + band.sum F.A := by
-      simpa [S, band] using sum_filter_Icc_eq_add (f := F.A) (le_of_lt hlj)
-    have hA_band : band.sum F.A = band.sum F.D + band.sum F.U :=
-      F.sum_A_eq_sum_D_add_sum_U band
-    have hA_eq : (F.next m' ι).A j = H + K := by
-      simp [next_A, H, K, hS_eq, hA_band]
-      ring
-    have hAA := F.next_A_sub_next_A (ι := ι) j l (le_of_lt hlj)
-    have hWA : (F.next m' ι).W l - (F.next m' ι).A l =
-        (X - C 1) * F.S (ι l) := by
-      simpa [next_D] using (F.next m' ι).W_sub_A l
-    have hdiff : (F.next m' ι).W l - (F.next m' ι).A j = (X - C 1) * H := by
-      have hsplit : (F.next m' ι).W l - (F.next m' ι).A j =
-          ((F.next m' ι).W l - (F.next m' ι).A l) +
-          ((F.next m' ι).A l - (F.next m' ι).A j) := by
-        ring
-      rw [hsplit, hWA, hAA, ← mul_add]
-    have hW_eq : (F.next m' ι).W l =
-        (F.next m' ι).A j + (X - C 1) * H := by
-      linear_combination hdiff
-    have hbandD_nn : HasNonnegCoeffs (band.sum F.D) :=
-      hasNonnegCoeffs_finsetSum _ _ (fun i _ => F.hasNonnegCoeffs_D i)
-    have hbandU_nn : HasNonnegCoeffs (band.sum F.U) :=
-      hasNonnegCoeffs_finsetSum _ _ (fun i _ => F.hasNonnegCoeffs_U i)
-    have hH_nn : HasNonnegCoeffs H := (F.hasNonnegCoeffs_S (ι l)).add hbandD_nn
-    have hK_nn : HasNonnegCoeffs K := hbandU_nn.add (F.hasNonnegCoeffs_T (ι j))
-    have hS_bandU : Interl (F.S (ι l)) (band.sum F.U) := by
-      refine Interl.finsetSum_right_of_nonneg _ F.A (band.sum F.U) (fun i hi => ?_)
-        (fun i _ => F.hasNonnegCoeffs_A i)
-      refine Interl.finsetSum_left_of_nonneg (F.A i) band F.U (fun r hr => ?_)
-        (fun r _ => F.hasNonnegCoeffs_U r)
-      exact hC.interl_A_U_of_lt
-        (lt_of_lt_of_le (Finset.mem_filter.mp hi).2 (Finset.mem_filter.mp hr).2.1)
-    have hbandD_bandU : Interl (band.sum F.D) (band.sum F.U) :=
-      Interl.finsetSum_right_of_nonneg band F.D (band.sum F.U)
-        (fun i _ => Interl.finsetSum_left_of_nonneg (F.D i) band F.U
-          (fun r _ => hC.interl_D_U i r) (fun r _ => F.hasNonnegCoeffs_U r))
-        (fun i _ => F.hasNonnegCoeffs_D i)
-    have hbandD_Tj : Interl (band.sum F.D) (F.T (ι j)) := by
-      refine Interl.finsetSum_right_of_nonneg band F.D (F.T (ι j)) (fun i hi => ?_)
-        (fun i _ => F.hasNonnegCoeffs_D i)
-      refine Interl.finsetSum_left_of_nonneg (F.D i) _ F.W (fun r hr => ?_)
-        (fun r _ => F.hasNonnegCoeffs_W r)
-      exact hC.interl_D_W_of_lt
-        (lt_of_lt_of_le (Finset.mem_filter.mp hi).2.2 (Finset.mem_filter.mp hr).2)
-    have hHK : Interl H K :=
-      interl_add_right
-        (interl_add_left hS_bandU (hDU_next l j) hbandU_nn (F.hasNonnegCoeffs_T (ι j)))
-        (interl_add_left hbandD_bandU hbandD_Tj hbandU_nn (F.hasNonnegCoeffs_T (ι j)))
-        (F.hasNonnegCoeffs_S (ι l)) hbandD_nn
-    have hH_interl : Interl H ((F.next m' ι).A j) :=
-      interl_left_of_eq_add hA_eq hHK hH_nn hK_nn (hC.splits_next_A j)
-    have hbound : H.eval 0 ≤ ((F.next m' ι).A j).eval 0 := by
-      have := eval_zero_nonneg ((F.next m' ι).hasNonnegCoeffs_W l)
-      rw [hW_eq] at this
-      simp [eval_add, eval_mul, eval_sub, eval_X] at this ⊢
-      linarith
-    rw [hW_eq]
-    exact interl_add_X_sub_C_one_mul hH_interl ((F.next m' ι).hasNonnegCoeffs_A j) hH_nn
-      (hC.splits_next_A j) hbound
+  · exact interl_next_A_W_of_le hC j l hjl
+  · exact interl_next_A_W_of_gt hC j l hlj
 
 /-- **(d) revDD at λ+**: `S_k ≪₀ S_{k'}` for `k' < k`.
 AA_rev → left cone (`A_j ≪₀ S_{k'}`) → right cone (`S_k ≪₀ S_{k'}`). -/
