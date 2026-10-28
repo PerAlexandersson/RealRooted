@@ -626,6 +626,192 @@ theorem interiorNodal_succAbove
         (by simpa using hn)
       exact (hne (by simpa using hi)).elim
 
+/-- Removing a zero coordinate does not change the filtered sign list. -/
+private theorem filter_sign_remove_nodal_zero
+    {n : ℕ} (x : Fin (n + 3) → ℝ) (k : Fin (n + 1))
+    (hk : x k.succ.castSucc = 0) :
+    let p : Fin (n + 3) := k.succ.castSucc
+    let x' : Fin (n + 2) → ℝ := fun i => x (p.succAbove i)
+    (List.ofFn (fun i => SignType.sign (x' i))).filter (· ≠ 0) =
+      (List.ofFn (fun i => SignType.sign (x i))).filter (· ≠ 0) := by
+  dsimp only
+  rw [show List.ofFn (fun i => SignType.sign (x (k.succ.castSucc.succAbove i))) =
+      (List.ofFn (fun i => SignType.sign (x i))).eraseIdx k.succ.castSucc by
+        simpa only using List.ofFn_succAbove_eq_eraseIdx
+          (fun i => SignType.sign (x i)) k.succ.castSucc]
+  have hp : (k.succ.castSucc : ℕ) <
+      (List.ofFn (fun i => SignType.sign (x i))).length := by
+    simpa only [List.length_ofFn] using k.succ.castSucc.isLt
+  exact List.filter_eraseIdx_eq_of_getElem_not hp (by
+    rw [List.getElem_ofFn hp]
+    change ¬decide (SignType.sign (x k.succ.castSucc) ≠ 0)
+    rw [hk]
+    simp)
+
+/-- Removing an interior coordinate erases the corresponding perturbed middle sign. -/
+private theorem nodalPerturbationCoreSigns_remove_eq
+    {n : ℕ} (x y : Fin (n + 3) → ℝ) (k : Fin (n + 1)) :
+    let p : Fin (n + 3) := k.succ.castSucc
+    let x' : Fin (n + 2) → ℝ := fun i => x (p.succAbove i)
+    let y' : Fin (n + 2) → ℝ := fun i => y (p.succAbove i)
+    let left := if x 0 = 0 then [] else [SignType.sign (y 0)]
+    let middle := List.ofFn
+      (fun i : Fin (n + 1) => SignType.sign (y i.succ.castSucc))
+    let right := if x (Fin.last (n + 2)) = 0 then []
+      else [SignType.sign (y (Fin.last (n + 2)))]
+    Fin.nodalPerturbationCoreSigns x' y' = left ++ middle.eraseIdx k ++ right := by
+  dsimp only
+  have hxzero : x (k.succ.castSucc.succAbove 0) = x 0 := by simp
+  have hyzero : y (k.succ.castSucc.succAbove 0) = y 0 := by simp
+  have hxlast : x (k.succ.castSucc.succAbove (Fin.last (n + 1))) =
+      x (Fin.last (n + 2)) := by simp only [Fin.succAbove_last_of_interior]
+  have hylast : y (k.succ.castSucc.succAbove (Fin.last (n + 1))) =
+      y (Fin.last (n + 2)) := by simp only [Fin.succAbove_last_of_interior]
+  have hinterior :
+      List.ofFn (fun i : Fin n =>
+        SignType.sign (y (k.succ.castSucc.succAbove i.succ.castSucc))) =
+      (List.ofFn (fun i : Fin (n + 1) =>
+        SignType.sign (y i.succ.castSucc))).eraseIdx k := by
+    simpa only [Function.comp_apply] using
+      List.ofFn_interior_succAbove_eq_eraseIdx (SignType.sign ∘ y) k
+  simp only [Fin.nodalPerturbationCoreSigns, hxzero, hyzero, hxlast, hylast,
+    hinterior]
+
+/-- An interior zero is reinserted between the two opposite neighboring middle signs. -/
+private theorem nodalInsertion_coreSigns_interior
+    {n : ℕ} (x y : Fin (n + 3) → ℝ) (k : Fin (n + 1))
+    (hkpos : 0 < (k : ℕ)) (hklt : (k : ℕ) < n)
+    (hopposite :
+      SignType.sign (y k.castSucc.castSucc) ≠ 0 ∧
+      SignType.sign (y k.succ.succ) ≠ 0 ∧
+      SignType.sign (y k.castSucc.castSucc) ≠ SignType.sign (y k.succ.succ)) :
+    List.NodalInsertion
+      ((if x 0 = 0 then [] else [SignType.sign (y 0)]) ++
+        (List.ofFn (fun i : Fin (n + 1) =>
+          SignType.sign (y i.succ.castSucc))).eraseIdx k ++
+        (if x (Fin.last (n + 2)) = 0 then []
+          else [SignType.sign (y (Fin.last (n + 2)))]))
+      ((if x 0 = 0 then [] else [SignType.sign (y 0)]) ++
+        List.ofFn (fun i : Fin (n + 1) => SignType.sign (y i.succ.castSucc)) ++
+        (if x (Fin.last (n + 2)) = 0 then []
+          else [SignType.sign (y (Fin.last (n + 2)))])) := by
+  let left := if x 0 = 0 then [] else [SignType.sign (y 0)]
+  let middle := List.ofFn
+    (fun i : Fin (n + 1) => SignType.sign (y i.succ.castSucc))
+  let right := if x (Fin.last (n + 2)) = 0 then []
+    else [SignType.sign (y (Fin.last (n + 2)))]
+  change List.NodalInsertion (left ++ middle.eraseIdx k ++ right)
+    (left ++ middle ++ right)
+  have hpred : (k : ℕ) - 1 + 1 = (k : ℕ) := by lia
+  have hrightBound : (k : ℕ) - 1 + 2 < middle.length := by
+    simp only [middle, List.length_ofFn]
+    lia
+  have hleftBound : (k : ℕ) - 1 < middle.length := by lia
+  have hleftMiddle : middle[(k : ℕ) - 1]'hleftBound =
+      SignType.sign (y k.castSucc.castSucc) := by
+    rw [List.getElem_ofFn hleftBound]
+    congr 2
+    apply Fin.ext
+    simp only [Fin.val_castSucc, Fin.val_succ]
+    lia
+  have hrightMiddle : middle[(k : ℕ) - 1 + 2]'hrightBound =
+      SignType.sign (y k.succ.succ) := by
+    rw [List.getElem_ofFn hrightBound]
+    congr 2
+    apply Fin.ext
+    simp only [Fin.val_castSucc, Fin.val_succ]
+    lia
+  have hlocal := List.NodalInsertion.eraseIdx_append_middle
+    left middle right ((k : ℕ) - 1) hrightBound
+    (by simpa only [hleftMiddle] using hopposite.1)
+    (by simpa only [hrightMiddle] using hopposite.2.1)
+    (by simpa only [hleftMiddle, hrightMiddle] using hopposite.2.2)
+  have hkMiddle : (k : ℕ) < middle.length := by
+    simpa only [middle, List.length_ofFn] using k.isLt
+  rw [hpred] at hlocal
+  rw [List.eraseIdx_append_middle left middle right (k : ℕ) hkMiddle] at hlocal
+  exact hlocal
+
+/-- A deleted nodal zero can be reinserted in the perturbed core sign list. -/
+private theorem nodalInsertion_coreSigns_remove
+    {n : ℕ} (x y : Fin (n + 3) → ℝ)
+    (hsign : ∀ i, x i ≠ 0 → SignType.sign (y i) = SignType.sign (x i))
+    (hnodal : ∀ i : Fin (n + 1), x i.succ.castSucc = 0 →
+      x i.castSucc.castSucc * x i.succ.succ < 0)
+    (k : Fin (n + 1)) (hk : x k.succ.castSucc = 0) :
+    List.NodalInsertion
+      ((if x 0 = 0 then [] else [SignType.sign (y 0)]) ++
+        (List.ofFn (fun i : Fin (n + 1) =>
+          SignType.sign (y i.succ.castSucc))).eraseIdx k ++
+        (if x (Fin.last (n + 2)) = 0 then []
+          else [SignType.sign (y (Fin.last (n + 2)))]))
+      ((if x 0 = 0 then [] else [SignType.sign (y 0)]) ++
+        List.ofFn (fun i : Fin (n + 1) => SignType.sign (y i.succ.castSucc)) ++
+        (if x (Fin.last (n + 2)) = 0 then []
+          else [SignType.sign (y (Fin.last (n + 2)))])) := by
+  let left := if x 0 = 0 then [] else [SignType.sign (y 0)]
+  let middle := List.ofFn
+    (fun i : Fin (n + 1) => SignType.sign (y i.succ.castSucc))
+  let right := if x (Fin.last (n + 2)) = 0 then []
+    else [SignType.sign (y (Fin.last (n + 2)))]
+  change List.NodalInsertion (left ++ middle.eraseIdx k ++ right)
+    (left ++ middle ++ right)
+  have hmul := hnodal k hk
+  have hxleft := left_ne_zero_of_mul (ne_of_lt hmul)
+  have hxright := right_ne_zero_of_mul (ne_of_lt hmul)
+  have hopposite :
+      SignType.sign (y k.castSucc.castSucc) ≠ 0 ∧
+      SignType.sign (y k.succ.succ) ≠ 0 ∧
+      SignType.sign (y k.castSucc.castSucc) ≠ SignType.sign (y k.succ.succ) := by
+    simpa only [hsign k.castSucc.castSucc hxleft, hsign k.succ.succ hxright] using
+      SignType.sign_ne_zero_and_ne_of_mul_neg hmul
+  by_cases hn : n = 0
+  · subst n
+    have hkzero : k = 0 := Fin.eq_zero k
+    subst k
+    have hxzero' : x (0 : Fin 3) ≠ 0 := by simpa using hxleft
+    have hxtwo : x (2 : Fin 3) ≠ 0 := by simpa using hxright
+    simpa [left, middle, right, hxzero', hxtwo] using
+      List.NodalInsertion.insert [] [] (SignType.sign (y 0))
+        (SignType.sign (y 2)) (SignType.sign (y 1))
+        hopposite.1 hopposite.2.1 hopposite.2.2
+  · have hnpos : 0 < n := Nat.pos_of_ne_zero hn
+    by_cases hkzero : (k : ℕ) = 0
+    · have hkeq : k = 0 := Fin.ext hkzero
+      subst k
+      have hxzero' : x 0 ≠ 0 := by simpa using hxleft
+      have hmiddleLength : 1 < middle.length := by simp [middle]; lia
+      simpa [left, hxzero'] using
+        List.NodalInsertion.eraseIdx_first_middle
+          (SignType.sign (y 0)) middle right hmiddleLength
+          (by simpa using hopposite.1)
+          (by simpa [middle] using hopposite.2.1)
+          (by simpa [middle] using hopposite.2.2)
+    · by_cases hklast : (k : ℕ) = n
+      · have hkeq : k = Fin.last n := Fin.ext hklast
+        subst k
+        have hxlast' : x (Fin.last (n + 2)) ≠ 0 := by simpa using hxright
+        have hpred : n - 1 + 1 = n := by lia
+        have hlen : middle.length = n - 1 + 2 := by simp only [middle, List.length_ofFn]; lia
+        have hleftBound : n - 1 < middle.length := by rw [hlen]; lia
+        have hleftMiddle : middle[n - 1]'hleftBound =
+            SignType.sign (y (Fin.last n).castSucc.castSucc) := by
+          rw [List.getElem_ofFn hleftBound]
+          congr 2
+          apply Fin.ext
+          simp only [Fin.val_castSucc, Fin.val_succ, Fin.val_last]
+          lia
+        have hrightEndpoint : SignType.sign (y (Fin.last (n + 2))) =
+            SignType.sign (y (Fin.last n).succ.succ) := by congr 2
+        simpa [right, hxlast', hpred] using
+          List.NodalInsertion.eraseIdx_last_append_singleton left middle
+            (SignType.sign (y (Fin.last (n + 2)))) (n - 1) hlen
+            (by simpa only [hleftMiddle] using hopposite.1)
+            (by simpa only [hrightEndpoint] using hopposite.2.1)
+            (by simpa only [hleftMiddle, hrightEndpoint] using hopposite.2.2)
+      · apply nodalInsertion_coreSigns_interior x y k
+          (Nat.pos_of_ne_zero hkzero) (by lia) hopposite
+
 
 /-- Remove one interior zero, apply the shorter nodal-insertion chain, and reinsert it.
 
@@ -672,41 +858,10 @@ theorem nodalInsertions_coreSigns_remove
         ((List.ofFn (SignType.sign ∘ x')).filter (· ≠ 0))
         (Fin.nodalPerturbationCoreSigns x' y') :=
     ih hsign' hnodal'
-  have hofFn :
-      List.ofFn (fun i => SignType.sign (x' i)) =
-        (List.ofFn (fun i => SignType.sign (x i))).eraseIdx p := by
-    simpa only [x', p] using
-      List.ofFn_succAbove_eq_eraseIdx
-        (fun i => SignType.sign (x i)) p
   have hsource :
       (List.ofFn (fun i => SignType.sign (x' i))).filter (· ≠ 0) =
         (List.ofFn (fun i => SignType.sign (x i))).filter (· ≠ 0) := by
-    rw [hofFn]
-    have hp : (p : ℕ) < (List.ofFn (fun i => SignType.sign (x i))).length := by
-      simpa only [List.length_ofFn] using p.isLt
-    exact List.filter_eraseIdx_eq_of_getElem_not hp (by
-      rw [List.getElem_ofFn hp]
-      change ¬decide (SignType.sign (x p) ≠ 0)
-      rw [show p = k.succ.castSucc from rfl, hk]
-      simp)
-  have hxzero : x' 0 = x 0 := by simp [x', p]
-  have hyzero : y' 0 = y 0 := by simp [y', p]
-  have hxlast :
-      x' (Fin.last (n + 1)) = x (Fin.last (n + 2)) := by
-    simp only [x', p, Fin.succAbove_last_of_interior]
-  have hylast :
-      y' (Fin.last (n + 1)) = y (Fin.last (n + 2)) := by
-    simp only [y', p, Fin.succAbove_last_of_interior]
-  have hinterior :
-      List.ofFn
-          (fun i : Fin n =>
-            SignType.sign (y' i.succ.castSucc)) =
-        (List.ofFn
-          (fun i : Fin (n + 1) =>
-            SignType.sign (y i.succ.castSucc))).eraseIdx k := by
-    simpa only [y', p, Function.comp_apply] using
-      List.ofFn_interior_succAbove_eq_eraseIdx
-        (SignType.sign ∘ y) k
+    simpa only [x', p] using filter_sign_remove_nodal_zero x k hk
   let left : List SignType :=
     if x 0 = 0 then [] else [SignType.sign (y 0)]
   let middle : List SignType :=
@@ -722,128 +877,11 @@ theorem nodalInsertions_coreSigns_remove
   have hfull : Fin.nodalPerturbationCoreSigns x y = full := rfl
   have hreduced :
       Fin.nodalPerturbationCoreSigns x' y' = reduced := by
-    simp only [Fin.nodalPerturbationCoreSigns, reduced, left, middle,
-      right, hxzero, hyzero, hxlast, hylast, hinterior]
-  have hmul :
-      x k.castSucc.castSucc * x k.succ.succ < 0 :=
-    hnodal k hk
-  have hxleft : x k.castSucc.castSucc ≠ 0 :=
-    left_ne_zero_of_mul (ne_of_lt hmul)
-  have hxright : x k.succ.succ ≠ 0 :=
-    right_ne_zero_of_mul (ne_of_lt hmul)
-  have hopposite :
-      SignType.sign (y k.castSucc.castSucc) ≠ 0 ∧
-        SignType.sign (y k.succ.succ) ≠ 0 ∧
-        SignType.sign (y k.castSucc.castSucc) ≠
-          SignType.sign (y k.succ.succ) := by
-    simpa only [hsign k.castSucc.castSucc hxleft,
-      hsign k.succ.succ hxright] using
-      SignType.sign_ne_zero_and_ne_of_mul_neg hmul
+    simpa only [x', y', p, reduced, left, middle, right] using
+      nodalPerturbationCoreSigns_remove_eq x y k
   have hstep : List.NodalInsertion reduced full := by
-    by_cases hn : n = 0
-    · subst n
-      have hkzero : k = 0 := Fin.eq_zero k
-      subst k
-      have hxzero' : x (0 : Fin 3) ≠ 0 := by simpa using hxleft
-      have hxtwo : x (2 : Fin 3) ≠ 0 := by simpa using hxright
-      simpa [full, reduced, left, middle, right, hxzero', hxtwo] using
-        List.NodalInsertion.insert [] []
-          (SignType.sign (y 0))
-          (SignType.sign (y 2))
-          (SignType.sign (y 1))
-          hopposite.1 hopposite.2.1 hopposite.2.2
-    · have hnpos : 0 < n := Nat.pos_of_ne_zero hn
-      by_cases hkzero : (k : ℕ) = 0
-      · have hkeq : k = 0 := Fin.ext hkzero
-        subst k
-        have hxzero' : x 0 ≠ 0 := by simpa using hxleft
-        have hmiddleLength : 1 < middle.length := by
-          simp [middle]
-          lia
-        simpa [full, reduced, left, hxzero'] using
-          List.NodalInsertion.eraseIdx_first_middle
-            (SignType.sign (y 0)) middle right
-            hmiddleLength
-            (by simpa using hopposite.1)
-            (by simpa [middle] using hopposite.2.1)
-            (by simpa [middle] using hopposite.2.2)
-      · by_cases hklast : (k : ℕ) = n
-        · have hkeq : k = Fin.last n := Fin.ext hklast
-          subst k
-          have hxlast' : x (Fin.last (n + 2)) ≠ 0 := by simpa using hxright
-          have hpred : n - 1 + 1 = n := by lia
-          have hlen : middle.length = n - 1 + 2 := by
-            simp [middle]
-            lia
-          have hleftBound : n - 1 < middle.length := by
-            rw [hlen]
-            lia
-          have hleftMiddle :
-              middle[n - 1]'hleftBound =
-                SignType.sign
-                  (y (Fin.last n).castSucc.castSucc) := by
-            rw [List.getElem_ofFn hleftBound]
-            congr 2
-            apply Fin.ext
-            simp only [Fin.val_castSucc, Fin.val_succ, Fin.val_last]
-            lia
-          have hrightEndpoint :
-              SignType.sign (y (Fin.last (n + 2))) =
-                SignType.sign (y (Fin.last n).succ.succ) := by
-            congr 2
-          simpa [full, reduced, right, hxlast', hpred] using
-            List.NodalInsertion.eraseIdx_last_append_singleton
-              left middle
-              (SignType.sign (y (Fin.last (n + 2))))
-              (n - 1) hlen
-              (by simpa only [hleftMiddle] using hopposite.1)
-              (by simpa only [hrightEndpoint] using hopposite.2.1)
-              (by simpa only [hleftMiddle, hrightEndpoint] using hopposite.2.2)
-        · have hkpos : 0 < (k : ℕ) := Nat.pos_of_ne_zero hkzero
-          have hklt : (k : ℕ) < n := by lia
-          have hpred :
-              (k : ℕ) - 1 + 1 = (k : ℕ) := by lia
-          have hsucc :
-              (k : ℕ) - 1 + 2 = (k : ℕ) + 1 := by lia
-          have hleftBound :
-              (k : ℕ) - 1 < middle.length := by
-            simp [middle]
-          have hrightBound :
-              (k : ℕ) - 1 + 2 < middle.length := by
-            simp [middle]
-            lia
-          have hleftMiddle :
-              middle[(k : ℕ) - 1]'hleftBound =
-                SignType.sign (y k.castSucc.castSucc) := by
-            rw [List.getElem_ofFn hleftBound]
-            congr 2
-            apply Fin.ext
-            simp only [Fin.val_castSucc, Fin.val_succ]
-            lia
-          have hrightMiddle :
-              middle[(k : ℕ) - 1 + 2]'hrightBound =
-                SignType.sign (y k.succ.succ) := by
-            rw [List.getElem_ofFn hrightBound]
-            congr 2
-            apply Fin.ext
-            simp only [Fin.val_castSucc, Fin.val_succ]
-            lia
-          have hlocal :
-              List.NodalInsertion
-                ((left ++ middle ++ right).eraseIdx
-                  (left.length + ((k : ℕ) - 1 + 1)))
-                (left ++ middle ++ right) :=
-            List.NodalInsertion.eraseIdx_append_middle
-              left middle right ((k : ℕ) - 1)
-              hrightBound
-              (by simpa only [hleftMiddle] using hopposite.1)
-              (by simpa only [hrightMiddle] using hopposite.2.1)
-              (by simpa only [hleftMiddle, hrightMiddle] using hopposite.2.2)
-          have hkMiddle : (k : ℕ) < middle.length := by simpa [middle] using k.isLt
-          rw [hpred] at hlocal
-          rw [List.eraseIdx_append_middle
-            left middle right (k : ℕ) hkMiddle] at hlocal
-          simpa [full, reduced] using hlocal
+    simpa only [reduced, full, left, middle, right] using
+      nodalInsertion_coreSigns_remove x y hsign hnodal k hk
   rw [← hreduced, ← hfull] at hstep
   have htail := hrec.tail hstep
   change Relation.ReflTransGen List.NodalInsertion

@@ -86,7 +86,158 @@ private theorem isInterlacingSeqNonneg_of_getD_chain
       List.getD_eq_getElem fs 0 j.isLt
     simpa [hgeti, hgetj] using hij'
 
+/-- Two nonnegative polynomials form an interlacing sequence when they strictly interlace. -/
+private theorem isInterlacingSeqNonneg_pair {a b : ℝ[X]}
+    (ha : HasNonnegCoeffs a) (hb : HasNonnegCoeffs b) (hab : StrictInterl a b) :
+    IsInterlacingSeqNonneg [a, b] := by
+  apply isInterlacingSeqNonneg_of_getD_chain (by simp)
+  · simp_all
+  · intro k hk
+    simp at hk
+    have : k = 0 := by lia
+    simpa [this]
+  · simpa
+
+/-- A four-term strict chain with interlacing endpoints is an interlacing sequence. -/
+private theorem isInterlacingSeqNonneg_four {a b c d : ℝ[X]}
+    (ha : HasNonnegCoeffs a) (hb : HasNonnegCoeffs b)
+    (hc : HasNonnegCoeffs c) (hd : HasNonnegCoeffs d)
+    (hab : StrictInterl a b) (hbc : StrictInterl b c) (hcd : StrictInterl c d)
+    (had : StrictInterl a d) : IsInterlacingSeqNonneg [a, b, c, d] := by
+  apply isInterlacingSeqNonneg_of_getD_chain (by simp)
+  · simp_all
+  · intro k hk
+    simp at hk
+    interval_cases k <;> simpa
+  · simpa
+
+/-- A six-term strict chain with interlacing endpoints is an interlacing sequence. -/
+private theorem isInterlacingSeqNonneg_six {a b c d e f : ℝ[X]}
+    (ha : HasNonnegCoeffs a) (hb : HasNonnegCoeffs b)
+    (hc : HasNonnegCoeffs c) (hd : HasNonnegCoeffs d)
+    (he : HasNonnegCoeffs e) (hf : HasNonnegCoeffs f)
+    (hab : StrictInterl a b) (hbc : StrictInterl b c) (hcd : StrictInterl c d)
+    (hde : StrictInterl d e) (hef : StrictInterl e f) (haf : StrictInterl a f) :
+    IsInterlacingSeqNonneg [a, b, c, d, e, f] := by
+  apply isInterlacingSeqNonneg_of_getD_chain (by simp)
+  · simp_all
+  · intro k hk
+    simp at hk
+    interval_cases k <;> simpa
+  · simpa
+
+/-- An eight-term strict chain with interlacing endpoints is an interlacing sequence. -/
+private theorem isInterlacingSeqNonneg_eight {a b c d e f g h : ℝ[X]}
+    (ha : HasNonnegCoeffs a) (hb : HasNonnegCoeffs b)
+    (hc : HasNonnegCoeffs c) (hd : HasNonnegCoeffs d)
+    (he : HasNonnegCoeffs e) (hf : HasNonnegCoeffs f)
+    (hg : HasNonnegCoeffs g) (hh : HasNonnegCoeffs h)
+    (hab : StrictInterl a b) (hbc : StrictInterl b c) (hcd : StrictInterl c d)
+    (hde : StrictInterl d e) (hef : StrictInterl e f) (hfg : StrictInterl f g)
+    (hgh : StrictInterl g h) (hah : StrictInterl a h) :
+    IsInterlacingSeqNonneg [a, b, c, d, e, f, g, h] := by
+  apply isInterlacingSeqNonneg_of_getD_chain (by simp)
+  · simp_all
+  · intro k hk
+    simp at hk
+    interval_cases k <;> simpa
+  · simpa
+
 namespace BrandenVecchi
+
+/-- Removing the zero terms from the abstract eight-term Chow chain leaves a strict chain. -/
+private theorem filter_chow_chain_isInterlacingSeqNonneg
+    {S f g q gr fr XS : ℝ[X]}
+    (hSnn : HasNonnegCoeffs S) (hfnn : HasNonnegCoeffs f)
+    (hgnn : HasNonnegCoeffs g) (hqnn : HasNonnegCoeffs q)
+    (hgrnn : HasNonnegCoeffs gr) (hfrnn : HasNonnegCoeffs fr)
+    (hXSnn : HasNonnegCoeffs XS)
+    (hSf0 : Interl S f) (hfg0 : Interl f g) (hgq0 : Interl g q)
+    (hqgr0 : Interl q gr) (hgrfr0 : Interl gr fr) (hffr0 : Interl f fr)
+    (hfrXS0 : Interl fr XS) (hSXS0 : Interl S XS) (hggr0 : Interl g gr)
+    (hfr_ne : f ≠ 0 → fr ≠ 0) (hgr_ne : g ≠ 0 → gr ≠ 0)
+    (hq_ne : g ≠ 0 → q ≠ 0) (hXS_ne : S ≠ 0 → XS ≠ 0)
+    (hf_zero : f = 0 → S = 0 ∧ fr = 0 ∧ XS = 0)
+    (hg_zero : g = 0 → q = 0 ∧ gr = 0)
+    (hXS_zero : S = 0 → XS = 0) :
+    IsInterlacingSeqNonneg ([S, f, g, q, q, gr, fr, XS].filter (· ≠ 0)) := by
+  by_cases hf : f ≠ 0
+  · have hfr := hfr_ne hf
+    by_cases hg : g ≠ 0
+    · have hgr := hgr_ne hg
+      have hq := hq_ne hg
+      have hfg := hfg0.toStrictInterl_of_ne hf hg
+      have hgq := hgq0.toStrictInterl_of_ne hg hq
+      have hqq := StrictInterl.refl hq hgq.2.1.2
+      have hqgr := hqgr0.toStrictInterl_of_ne hq hgr
+      have hgrfr := hgrfr0.toStrictInterl_of_ne hgr hfr
+      by_cases hS : S ≠ 0
+      · have hXS := hXS_ne hS
+        have hfull := isInterlacingSeqNonneg_eight hSnn hfnn hgnn hqnn hqnn
+          hgrnn hfrnn hXSnn (hSf0.toStrictInterl_of_ne hS hf) hfg hgq hqq hqgr
+          hgrfr (hfrXS0.toStrictInterl_of_ne hfr hXS)
+          (hSXS0.toStrictInterl_of_ne hS hXS)
+        simpa [hf, hg, hq, hfr, hgr, hS, hXS] using hfull
+      · have hS0 : S = 0 := not_ne_iff.mp hS
+        have hXS0 := hXS_zero hS0
+        have hmiddle := isInterlacingSeqNonneg_six hfnn hgnn hqnn hqnn hgrnn
+          hfrnn hfg hgq hqq hqgr hgrfr (hffr0.toStrictInterl_of_ne hf hfr)
+        simpa [hf, hg, hq, hfr, hgr, hS0, hXS0] using hmiddle
+    · have hg0 : g = 0 := not_ne_iff.mp hg
+      obtain ⟨hq0, hgr0⟩ := hg_zero hg0
+      by_cases hS : S ≠ 0
+      · have hXS := hXS_ne hS
+        have hends := isInterlacingSeqNonneg_four hSnn hfnn hfrnn hXSnn
+          (hSf0.toStrictInterl_of_ne hS hf) (hffr0.toStrictInterl_of_ne hf hfr)
+          (hfrXS0.toStrictInterl_of_ne hfr hXS) (hSXS0.toStrictInterl_of_ne hS hXS)
+        simpa [hf, hfr, hg0, hq0, hgr0, hS, hXS] using hends
+      · have hS0 : S = 0 := not_ne_iff.mp hS
+        have hXS0 := hXS_zero hS0
+        have hends := isInterlacingSeqNonneg_pair hfnn hfrnn
+          (hffr0.toStrictInterl_of_ne hf hfr)
+        simpa [hf, hfr, hg0, hq0, hgr0, hS0, hXS0] using hends
+  · have hf0 : f = 0 := not_ne_iff.mp hf
+    obtain ⟨hS0, hfr0, hXS0⟩ := hf_zero hf0
+    by_cases hg : g ≠ 0
+    · have hgr := hgr_ne hg
+      have hq := hq_ne hg
+      have hgq := hgq0.toStrictInterl_of_ne hg hq
+      have hqgr := hqgr0.toStrictInterl_of_ne hq hgr
+      have hmiddle := isInterlacingSeqNonneg_four hgnn hqnn hqnn hgrnn hgq
+        (StrictInterl.refl hq hgq.2.1.2) hqgr (hggr0.toStrictInterl_of_ne hg hgr)
+      simpa [hf0, hS0, hfr0, hXS0, hg, hq, hgr] using hmiddle
+    · have hg0 : g = 0 := not_ne_iff.mp hg
+      obtain ⟨hq0, hgr0⟩ := hg_zero hg0
+      simp [hf0, hS0, hfr0, hXS0, hg0, hq0, hgr0, IsInterlacingSeqNonneg,
+        IsInterlacingSeq]
+
+/-- The four original pair relations read from a two-term reflection closure. -/
+private theorem IsReflectionInterlacingSeq.extension_pair_relations
+    {n : ℕ} {f g : ℝ[X]} (h : IsReflectionInterlacingSeq n [f, g]) :
+    Interl f g ∧ Interl g (g.reflect n) ∧ Interl (g.reflect n) (f.reflect n) ∧
+      Interl f (f.reflect n) := by
+  have hseq := h.closedSequence.interlacingSeq0
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · simpa [reflectionClosure] using
+      hseq.interl
+        (i := (⟨0, by simp [reflectionClosure]⟩ : Fin (reflectionClosure n [f, g]).length))
+        (j := (⟨1, by simp [reflectionClosure]⟩ : Fin (reflectionClosure n [f, g]).length))
+        (by simp)
+  · simpa [reflectionClosure] using
+      hseq.interl
+        (i := (⟨1, by simp [reflectionClosure]⟩ : Fin (reflectionClosure n [f, g]).length))
+        (j := (⟨2, by simp [reflectionClosure]⟩ : Fin (reflectionClosure n [f, g]).length))
+        (by simp)
+  · simpa [reflectionClosure] using
+      hseq.interl
+        (i := (⟨2, by simp [reflectionClosure]⟩ : Fin (reflectionClosure n [f, g]).length))
+        (j := (⟨3, by simp [reflectionClosure]⟩ : Fin (reflectionClosure n [f, g]).length))
+        (by simp)
+  · simpa [reflectionClosure] using
+      hseq.interl
+        (i := (⟨0, by simp [reflectionClosure]⟩ : Fin (reflectionClosure n [f, g]).length))
+        (j := (⟨3, by simp [reflectionClosure]⟩ : Fin (reflectionClosure n [f, g]).length))
+        (by simp)
 
 /-- The two quotient relations supplied by a singleton reflection-interlacing
 sequence.  This is the zero-aware form of the two uses of Lemma 4.11 in the
@@ -146,6 +297,152 @@ theorem reflect_X_mul_chowS_add_self {n : ℕ} {g : ℝ[X]}
     _ = (chowS n g).reflect n + (g.reflect n).reflect n := reflect_add _ _ _
     _ = X * chowS n g + g := by rw [reflect_chowS n g hdegree, reflect_reflect]
 
+/-- The nonzero terms in the seven-edge Chow extension form a strict interlacing sequence. -/
+private theorem IsReflectionInterlacingSeq.chowSExtension_filter_ne_zero
+    {n : ℕ} {f g : ℝ[X]} (h : IsReflectionInterlacingSeq n [f, g]) :
+    IsInterlacingSeqNonneg
+      ([chowS n f, f, g, X * chowS n g + g, X * chowS n g + g,
+        g.reflect n, f.reflect n, X * chowS n f].filter (· ≠ 0)) := by
+  let S := chowS n f
+  let T := chowS n g
+  let fr := f.reflect n
+  let gr := g.reflect n
+  let q := X * T + g
+  let XS := X * S
+  have hfdegree : f.natDegree ≤ n := h.natDegree_le (by simp)
+  have hgdegree : g.natDegree ≤ n := h.natDegree_le (by simp)
+  have hfnn := h.closedSequence.nonnegCoeffs f (by simp [reflectionClosure])
+  have hgnn := h.closedSequence.nonnegCoeffs g (by simp [reflectionClosure])
+  have hfrnn : HasNonnegCoeffs fr := by simpa [fr] using hfnn.reflect n
+  have hgrnn : HasNonnegCoeffs gr := by simpa [gr] using hgnn.reflect n
+  obtain ⟨hfg0, hggr0, hgrfr0, hffr0⟩ := h.extension_pair_relations
+  have hSpack := IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_interl_self_reflect
+    (h.sublist (by simp) : IsReflectionInterlacingSeq n [f])
+  have hTpack := IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_interl_self_reflect
+    (h.sublist (by simp) : IsReflectionInterlacingSeq n [g])
+  have hSnn : HasNonnegCoeffs S := by simpa [S] using hSpack.1
+  have hTnn : HasNonnegCoeffs T := by simpa [T] using hTpack.1
+  have hSf0 : Interl S f := by simpa [S] using hSpack.2.1
+  have hSfr0 : Interl S fr := by simpa [S, fr] using hSpack.2.2
+  have hTg0 : Interl T g := by simpa [T] using hTpack.2.1
+  have hTgr0 : Interl T gr := by simpa [T, gr] using hTpack.2.2
+  have hXTnn := hTnn.X_mul
+  have hXSnn : HasNonnegCoeffs XS := by simpa [XS] using hSnn.X_mul
+  have hqnn : HasNonnegCoeffs q := by simpa [q] using hXTnn.add hgnn
+  have hq_alt : q = T + gr := by
+    have hfactor := X_sub_one_mul_chowS n g hgdegree
+    dsimp [q, T, gr]
+    rw [show X * chowS n g + g =
+      chowS n g + ((X - 1) * chowS n g + g) by ring, hfactor]
+    ring
+  have hgq0 : Interl g q := by
+    simpa [q] using interl_add_right_of_common_left_of_nonneg
+      (interl_mul_X_of_interl hTg0 hTnn hgnn) (Interl.refl fun hg ↦
+        h.closedSequence.splits (by simp [reflectionClosure]) hg) hXTnn hgnn
+  have hqgr0 : Interl q gr := by
+    rw [hq_alt]
+    exact interl_add_left_of_common_right_of_nonneg hTgr0
+      (Interl.refl fun hgr ↦ h.closedSequence.splits
+        (by simp [gr, reflectionClosure]) hgr) hTnn hgrnn
+  have hfrXS0 : Interl fr XS := by
+    simpa [XS] using interl_mul_X_of_interl hSfr0 hSnn hfrnn
+  have hSreal : S ≠ 0 → S.Splits := fun hS ↦
+    (hSf0.toStrictInterl_of_ne hS fun hf ↦ hS (by simp [S, hf, chowS])).1.2
+  have hSXS0 : Interl S XS := by
+    simpa [XS] using interl_mul_X_of_interl (Interl.refl hSreal) hSnn hSnn
+  apply filter_chow_chain_isInterlacingSeqNonneg hSnn hfnn hgnn hqnn hgrnn hfrnn
+    hXSnn hSf0 hfg0 hgq0 hqgr0 hgrfr0 hffr0 hfrXS0 hSXS0 hggr0
+  · exact fun hf hfr ↦ hf ((reflect_eq_zero_iff (N := n) (f := f)).mp
+      (by simpa [fr] using hfr))
+  · exact fun hg hgr ↦ hg ((reflect_eq_zero_iff (N := n) (f := g)).mp
+      (by simpa [gr] using hgr))
+  · exact fun hg ↦ add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero hXTnn hgnn hg
+  · simp [XS]
+  · intro hf
+    subst f
+    simp [S, fr, XS, chowS]
+  · intro hg
+    subst g
+    simp [q, T, gr, chowS]
+  · intro hS
+    simp [XS, hS]
+
+/-- Every term of the explicit Chow extension has nonnegative coefficients. -/
+private theorem IsReflectionInterlacingSeq.chowSExtension_nonnegCoeffs
+    {n : ℕ} {f g : ℝ[X]} (h : IsReflectionInterlacingSeq n [f, g]) :
+    ∀ p ∈ [chowS n f, f, g, X * chowS n g + g, X * chowS n g + g,
+      g.reflect n, f.reflect n, X * chowS n f], HasNonnegCoeffs p := by
+  have hfnn := h.closedSequence.nonnegCoeffs f (by simp [reflectionClosure])
+  have hgnn := h.closedSequence.nonnegCoeffs g (by simp [reflectionClosure])
+  have hSnn :=
+    (IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_interl_self_reflect
+      (h.sublist (by simp) : IsReflectionInterlacingSeq n [f])).1
+  have hTnn :=
+    (IsReflectionInterlacingSeq.chowS_nonnegCoeffs_and_interl_self_reflect
+      (h.sublist (by simp) : IsReflectionInterlacingSeq n [g])).1
+  intro p hp
+  simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+  rcases hp with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl
+  · exact hSnn
+  · exact hfnn
+  · exact hgnn
+  · exact hTnn.X_mul.add hgnn
+  · exact hTnn.X_mul.add hgnn
+  · exact hgnn.reflect n
+  · exact hfnn.reflect n
+  · exact hSnn.X_mul
+
+/-- Every polynomial in the four-term Chow extension has degree at most the reflection bound. -/
+private theorem IsReflectionInterlacingSeq.chowSExtension_natDegree_le
+    {n : ℕ} {f g : ℝ[X]} (h : IsReflectionInterlacingSeq n [f, g]) :
+    ∀ p ∈ [chowS n f, f, g, X * chowS n g + g], p.natDegree ≤ n := by
+  have hfdegree : f.natDegree ≤ n := h.natDegree_le (by simp)
+  have hgdegree : g.natDegree ≤ n := h.natDegree_le (by simp)
+  have hSdegree := natDegree_chowS_le n f hfdegree
+  have hTdegree := natDegree_chowS_le n g hgdegree
+  have hgrdegree : (g.reflect n).natDegree ≤ n :=
+    natDegree_reflect_le.trans (max_le le_rfl hgdegree)
+  have hfactor := X_sub_one_mul_chowS n g hgdegree
+  have hq : X * chowS n g + g = chowS n g + g.reflect n := by
+    calc
+      X * chowS n g + g =
+          chowS n g + ((X - 1) * chowS n g + g) := by ring
+      _ = chowS n g + g.reflect n := by rw [hfactor]; ring
+  intro p hp
+  simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
+  rcases hp with rfl | rfl | rfl | rfl
+  · exact hSdegree
+  · exact hfdegree
+  · exact hgdegree
+  · rw [hq]
+    exact (natDegree_add_le _ _).trans (max_le hTdegree hgrdegree)
+
+/-- The reflected Chow extension is a zero-aware nonnegative interlacing sequence. -/
+private theorem IsReflectionInterlacingSeq.chowSExtension_closedSequence
+    {n : ℕ} {f g : ℝ[X]} (h : IsReflectionInterlacingSeq n [f, g]) :
+    IsInterlacingSeq0NonnegRealRooted
+      (reflectionClosure n [chowS n f, f, g, X * chowS n g + g]) := by
+  let closed := [chowS n f, f, g, X * chowS n g + g, X * chowS n g + g,
+    g.reflect n, f.reflect n, X * chowS n f]
+  have hstrict : IsInterlacingSeqNonneg (closed.filter (· ≠ 0)) := by
+    simpa [closed] using h.chowSExtension_filter_ne_zero
+  have hnonneg : ∀ p ∈ closed, HasNonnegCoeffs p := by
+    simpa [closed] using h.chowSExtension_nonnegCoeffs
+  have hreal : ∀ p ∈ closed, p ≠ 0 → p.Splits := by
+    intro p hp hp_ne
+    exact hstrict.splits (by simp [closed, hp, hp_ne])
+  have hclosed := isInterlacingSeq0NonnegRealRooted_of_filter_ne_zero
+    hstrict hnonneg hreal
+  have hfdegree : f.natDegree ≤ n := h.natDegree_le (by simp)
+  have hgdegree : g.natDegree ≤ n := h.natDegree_le (by simp)
+  have hrefS : (chowS n f).reflect n = X * chowS n f := reflect_chowS n f hfdegree
+  have hrefq : (X * chowS n g + g).reflect n = X * chowS n g + g :=
+    reflect_X_mul_chowS_add_self hgdegree
+  have hclosure :
+      reflectionClosure n [chowS n f, f, g, X * chowS n g + g] = closed := by
+    simp [reflectionClosure, closed, hrefS, hrefq]
+  exact hclosure.symm ▸ hclosed
+
 /-- Branden--Vecchi, Lemma 4.12: adjoining the two Chow endpoints to a
 two-member reflection-interlacing sequence preserves reflection interlacing.
 The theorem is zero-aware, so either Chow quotient is allowed to vanish. -/
@@ -153,314 +450,7 @@ theorem IsReflectionInterlacingSeq.chowSExtension
     {n : ℕ} {f g : ℝ[X]} (h : IsReflectionInterlacingSeq n [f, g]) :
     IsReflectionInterlacingSeq n
       [chowS n f, f, g, X * chowS n g + g] := by
-  let S : ℝ[X] := chowS n f
-  let T : ℝ[X] := chowS n g
-  let fr : ℝ[X] := f.reflect n
-  let gr : ℝ[X] := g.reflect n
-  let q : ℝ[X] := X * T + g
-  let XS : ℝ[X] := X * S
-  have hfdegree : f.natDegree ≤ n := h.natDegree_le (by simp)
-  have hgdegree : g.natDegree ≤ n := h.natDegree_le (by simp)
-  have hSdegree : S.natDegree ≤ n := by
-    simpa [S] using natDegree_chowS_le n f hfdegree
-  have hTdegree : T.natDegree ≤ n := by
-    simpa [T] using natDegree_chowS_le n g hgdegree
-  have hfrdegree : fr.natDegree ≤ n :=
-    (by
-      simpa [fr] using (natDegree_reflect_le (N := n) (p := f)).trans
-        (max_le le_rfl hfdegree))
-  have hgrdegree : gr.natDegree ≤ n :=
-    (by
-      simpa [gr] using (natDegree_reflect_le (N := n) (p := g)).trans
-        (max_le le_rfl hgdegree))
-  have hfnn : HasNonnegCoeffs f :=
-    h.closedSequence.nonnegCoeffs f (by simp [reflectionClosure])
-  have hgnn : HasNonnegCoeffs g :=
-    h.closedSequence.nonnegCoeffs g (by simp [reflectionClosure])
-  have hfrnn : HasNonnegCoeffs fr := by simpa [fr] using hfnn.reflect n
-  have hgrnn : HasNonnegCoeffs gr := by simpa [gr] using hgnn.reflect n
-  have hfreal : f ≠ 0 → f.Splits := fun hf_ne =>
-    h.closedSequence.splits (by simp [reflectionClosure]) hf_ne
-  have hgreal : g ≠ 0 → g.Splits := fun hg_ne =>
-    h.closedSequence.splits (by simp [reflectionClosure]) hg_ne
-  have hfrreal : fr ≠ 0 → fr.Splits := fun hfr_ne =>
-    h.closedSequence.splits (by simp [fr, reflectionClosure]) hfr_ne
-  have hgrreal : gr ≠ 0 → gr.Splits := fun hgr_ne =>
-    h.closedSequence.splits (by simp [gr, reflectionClosure]) hgr_ne
-  have hfg0 : Interl f g := by
-    simpa [reflectionClosure] using
-      h.closedSequence.interlacingSeq0.interl
-        (i := (⟨0, by simp [reflectionClosure]⟩ :
-          Fin (reflectionClosure n [f, g]).length))
-        (j := (⟨1, by simp [reflectionClosure]⟩ :
-          Fin (reflectionClosure n [f, g]).length)) (by simp)
-  have hggr0 : Interl g gr := by
-    simpa [gr, reflectionClosure] using
-      h.closedSequence.interlacingSeq0.interl
-        (i := (⟨1, by simp [reflectionClosure]⟩ :
-          Fin (reflectionClosure n [f, g]).length))
-        (j := (⟨2, by simp [reflectionClosure]⟩ :
-          Fin (reflectionClosure n [f, g]).length)) (by simp)
-  have hgrfr0 : Interl gr fr := by
-    simpa [fr, gr, reflectionClosure] using
-      h.closedSequence.interlacingSeq0.interl
-        (i := (⟨2, by simp [reflectionClosure]⟩ :
-          Fin (reflectionClosure n [f, g]).length))
-        (j := (⟨3, by simp [reflectionClosure]⟩ :
-          Fin (reflectionClosure n [f, g]).length)) (by simp)
-  have hffr0 : Interl f fr := by
-    simpa [fr, reflectionClosure] using
-      h.closedSequence.interlacingSeq0.interl
-        (i := (⟨0, by simp [reflectionClosure]⟩ :
-          Fin (reflectionClosure n [f, g]).length))
-        (j := (⟨3, by simp [reflectionClosure]⟩ :
-          Fin (reflectionClosure n [f, g]).length)) (by simp)
-  have hf_single : IsReflectionInterlacingSeq n [f] :=
-    h.sublist (by simp)
-  have hg_single : IsReflectionInterlacingSeq n [g] :=
-    h.sublist (by simp)
-  have hSpack := hf_single.chowS_nonnegCoeffs_and_interl_self_reflect
-  have hTpack := hg_single.chowS_nonnegCoeffs_and_interl_self_reflect
-  have hSnn : HasNonnegCoeffs S := by simpa [S] using hSpack.1
-  have hTnn : HasNonnegCoeffs T := by simpa [T] using hTpack.1
-  have hSf0 : Interl S f := by simpa [S] using hSpack.2.1
-  have hSfr0 : Interl S fr := by simpa [S, fr] using hSpack.2.2
-  have hTg0 : Interl T g := by simpa [T] using hTpack.2.1
-  have hTgr0 : Interl T gr := by simpa [T, gr] using hTpack.2.2
-  have hXTnn : HasNonnegCoeffs (X * T) := hTnn.X_mul
-  have hXSnn : HasNonnegCoeffs XS := by simpa [XS] using hSnn.X_mul
-  have hqnn : HasNonnegCoeffs q := by
-    simpa [q] using hXTnn.add hgnn
-  have hq_alt : q = T + gr := by
-    have hfactor := X_sub_one_mul_chowS n g hgdegree
-    dsimp [q, T, gr]
-    calc
-      X * chowS n g + g =
-          chowS n g + ((X - 1) * chowS n g + g) := by ring
-      _ = chowS n g + g.reflect n := by rw [hfactor]; ring
-  have hqdegree : q.natDegree ≤ n := by
-    rw [hq_alt]
-    exact (natDegree_add_le T gr).trans (max_le hTdegree hgrdegree)
-  have hgq0 : Interl g q := by
-    have hgXT0 := interl_mul_X_of_interl hTg0 hTnn hgnn
-    have hgg0 := Interl.refl hgreal
-    simpa [q] using
-      interl_add_right_of_common_left_of_nonneg hgXT0 hgg0 hXTnn hgnn
-  have hqgr0 : Interl q gr := by
-    have hgrgr0 := Interl.refl hgrreal
-    rw [hq_alt]
-    exact interl_add_left_of_common_right_of_nonneg hTgr0 hgrgr0 hTnn hgrnn
-  have hfrXS0 : Interl fr XS := by
-    simpa [XS] using interl_mul_X_of_interl hSfr0 hSnn hfrnn
-  have hSreal : S ≠ 0 → S.Splits := by
-    intro hS_ne
-    have hf_ne : f ≠ 0 := by
-      intro hf_zero
-      subst f
-      exact hS_ne (by simp [S, chowS])
-    exact (hSf0.toStrictInterl_of_ne hS_ne hf_ne).1.2
-  have hSXS0 : Interl S XS := by
-    have hSS0 := Interl.refl hSreal
-    simpa [XS] using interl_mul_X_of_interl hSS0 hSnn hSnn
-  have hqreal : q ≠ 0 → q.Splits := by
-    intro hq_ne
-    have hg_ne : g ≠ 0 := by
-      intro hg_zero
-      subst g
-      exact hq_ne (by simp [q, T, chowS])
-    exact (hgq0.toStrictInterl_of_ne hg_ne hq_ne).2.1.2
-  have hXSreal : XS ≠ 0 → XS.Splits := by
-    intro hXS_ne
-    have hS_ne : S ≠ 0 := fun hS_zero => hXS_ne (by simp [XS, hS_zero])
-    exact (isRealRooted_X_mul hS_ne (hSreal hS_ne)).2
-  let closed : List ℝ[X] := [S, f, g, q, q, gr, fr, XS]
-  have hclosed_nonneg : ∀ p ∈ closed, HasNonnegCoeffs p := by
-    intro p hp
-    simp only [closed, List.mem_cons, List.not_mem_nil, or_false] at hp
-    rcases hp with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl
-    · exact hSnn
-    · exact hfnn
-    · exact hgnn
-    · exact hqnn
-    · exact hqnn
-    · exact hgrnn
-    · exact hfrnn
-    · exact hXSnn
-  have hclosed_real : ∀ p ∈ closed, p ≠ 0 → p.Splits := by
-    intro p hp
-    simp only [closed, List.mem_cons, List.not_mem_nil, or_false] at hp
-    rcases hp with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl
-    · exact hSreal
-    · exact hfreal
-    · exact hgreal
-    · exact hqreal
-    · exact hqreal
-    · exact hgrreal
-    · exact hfrreal
-    · exact hXSreal
-  have hstrict : IsInterlacingSeqNonneg (closed.filter (· ≠ 0)) := by
-    by_cases hf_ne : f ≠ 0
-    · have hfr_ne : fr ≠ 0 := by
-        intro hfr_zero
-        exact hf_ne ((reflect_eq_zero_iff (f := f) (N := n)).mp
-          (by simpa [fr] using hfr_zero))
-      by_cases hg_ne : g ≠ 0
-      · have hgr_ne : gr ≠ 0 := by
-          intro hgr_zero
-          exact hg_ne ((reflect_eq_zero_iff (f := g) (N := n)).mp
-            (by simpa [gr] using hgr_zero))
-        have hq_ne : q ≠ 0 :=
-          add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero hXTnn hgnn hg_ne
-        have hfg := hfg0.toStrictInterl_of_ne hf_ne hg_ne
-        have hgq := hgq0.toStrictInterl_of_ne hg_ne hq_ne
-        have hqq := StrictInterl.refl hq_ne (hqreal hq_ne)
-        have hqgr := hqgr0.toStrictInterl_of_ne hq_ne hgr_ne
-        have hgrfr := hgrfr0.toStrictInterl_of_ne hgr_ne hfr_ne
-        have hffr := hffr0.toStrictInterl_of_ne hf_ne hfr_ne
-        by_cases hS_ne : S ≠ 0
-        · have hXS_ne : XS ≠ 0 := by simp [XS, hS_ne]
-          have hSf := hSf0.toStrictInterl_of_ne hS_ne hf_ne
-          have hfrXS := hfrXS0.toStrictInterl_of_ne hfr_ne hXS_ne
-          have hSXS := hSXS0.toStrictInterl_of_ne hS_ne hXS_ne
-          have hfull : IsInterlacingSeqNonneg [S, f, g, q, q, gr, fr, XS] := by
-            apply isInterlacingSeqNonneg_of_getD_chain (by simp)
-            · intro p hp
-              exact hclosed_nonneg p (by simpa [closed] using hp)
-            · intro k hk
-              simp at hk
-              interval_cases k
-              · simpa using hSf
-              · simpa using hfg
-              · simpa using hgq
-              · simpa using hqq
-              · simpa using hqgr
-              · simpa using hgrfr
-              · simpa using hfrXS
-            · simpa using hSXS
-          simpa [closed, hf_ne, hg_ne, hq_ne, hfr_ne, hgr_ne, hS_ne, hXS_ne]
-            using hfull
-        · have hS_zero : S = 0 := not_ne_iff.mp hS_ne
-          have hXS_zero : XS = 0 := by simp [XS, hS_zero]
-          have hmiddle : IsInterlacingSeqNonneg [f, g, q, q, gr, fr] := by
-            apply isInterlacingSeqNonneg_of_getD_chain (by simp)
-            · intro p hp
-              simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
-              rcases hp with rfl | rfl | rfl | rfl | rfl | rfl
-              · exact hfnn
-              · exact hgnn
-              · exact hqnn
-              · exact hqnn
-              · exact hgrnn
-              · exact hfrnn
-            · intro k hk
-              simp at hk
-              interval_cases k
-              · simpa using hfg
-              · simpa using hgq
-              · simpa using hqq
-              · simpa using hqgr
-              · simpa using hgrfr
-            · simpa using hffr
-          simpa [closed, hf_ne, hg_ne, hq_ne, hfr_ne, hgr_ne, hS_zero,
-            hXS_zero] using hmiddle
-      · have hg_zero : g = 0 := not_ne_iff.mp hg_ne
-        have hgr_zero : gr = 0 := by simp [gr, hg_zero]
-        have hq_zero : q = 0 := by simp [q, T, hg_zero, chowS]
-        have hffr := hffr0.toStrictInterl_of_ne hf_ne hfr_ne
-        by_cases hS_ne : S ≠ 0
-        · have hXS_ne : XS ≠ 0 := by simp [XS, hS_ne]
-          have hSf := hSf0.toStrictInterl_of_ne hS_ne hf_ne
-          have hfrXS := hfrXS0.toStrictInterl_of_ne hfr_ne hXS_ne
-          have hSXS := hSXS0.toStrictInterl_of_ne hS_ne hXS_ne
-          have hends : IsInterlacingSeqNonneg [S, f, fr, XS] := by
-            apply isInterlacingSeqNonneg_of_getD_chain (by simp)
-            · intro p hp
-              simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
-              rcases hp with rfl | rfl | rfl | rfl
-              · exact hSnn
-              · exact hfnn
-              · exact hfrnn
-              · exact hXSnn
-            · intro k hk
-              simp at hk
-              interval_cases k
-              · simpa using hSf
-              · simpa using hffr
-              · simpa using hfrXS
-            · simpa using hSXS
-          simpa [closed, hf_ne, hfr_ne, hS_ne, hXS_ne, hg_zero, hgr_zero,
-            hq_zero] using hends
-        · have hS_zero : S = 0 := not_ne_iff.mp hS_ne
-          have hXS_zero : XS = 0 := by simp [XS, hS_zero]
-          have hends : IsInterlacingSeqNonneg [f, fr] := by
-            apply isInterlacingSeqNonneg_of_getD_chain (by simp)
-            · intro p hp
-              simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
-              rcases hp with rfl | rfl
-              · exact hfnn
-              · exact hfrnn
-            · intro k hk
-              simp at hk
-              have hk_zero : k = 0 := by lia
-              subst k
-              simpa using hffr
-            · simpa using hffr
-          simpa [closed, hf_ne, hfr_ne, hg_zero, hgr_zero, hq_zero, hS_zero,
-            hXS_zero] using hends
-    · have hf_zero : f = 0 := not_ne_iff.mp hf_ne
-      have hfr_zero : fr = 0 := by simp [fr, hf_zero]
-      have hS_zero : S = 0 := by simp [S, hf_zero, chowS]
-      have hXS_zero : XS = 0 := by simp [XS, hS_zero]
-      by_cases hg_ne : g ≠ 0
-      · have hgr_ne : gr ≠ 0 := by
-          intro hgr_zero
-          exact hg_ne ((reflect_eq_zero_iff (f := g) (N := n)).mp
-            (by simpa [gr] using hgr_zero))
-        have hq_ne : q ≠ 0 :=
-          add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero hXTnn hgnn hg_ne
-        have hgq := hgq0.toStrictInterl_of_ne hg_ne hq_ne
-        have hqq := StrictInterl.refl hq_ne (hqreal hq_ne)
-        have hqgr := hqgr0.toStrictInterl_of_ne hq_ne hgr_ne
-        have hggr := hggr0.toStrictInterl_of_ne hg_ne hgr_ne
-        have hmiddle : IsInterlacingSeqNonneg [g, q, q, gr] := by
-          apply isInterlacingSeqNonneg_of_getD_chain (by simp)
-          · intro p hp
-            simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
-            rcases hp with rfl | rfl | rfl | rfl
-            · exact hgnn
-            · exact hqnn
-            · exact hqnn
-            · exact hgrnn
-          · intro k hk
-            simp at hk
-            interval_cases k
-            · simpa using hgq
-            · simpa using hqq
-            · simpa using hqgr
-          · simpa using hggr
-        simpa [closed, hf_zero, hfr_zero, hS_zero, hXS_zero, hg_ne, hgr_ne,
-          hq_ne] using hmiddle
-      · have hg_zero : g = 0 := not_ne_iff.mp hg_ne
-        simp [closed, hf_zero, hg_zero, hfr_zero, hS_zero, hXS_zero, gr, q, T,
-          chowS, IsInterlacingSeqNonneg, IsInterlacingSeq]
-  have hclosed : IsInterlacingSeq0NonnegRealRooted closed :=
-    isInterlacingSeq0NonnegRealRooted_of_filter_ne_zero
-      hstrict hclosed_nonneg hclosed_real
-  refine ⟨?_, ?_⟩
-  · intro p hp
-    simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
-    rcases hp with rfl | rfl | rfl | rfl
-    · exact hSdegree
-    · exact hfdegree
-    · exact hgdegree
-    · exact hqdegree
-  · have hrefS : S.reflect n = XS := by
-      simpa [S, XS] using reflect_chowS n f hfdegree
-    have hrefq : q.reflect n = q := by
-      simpa [q, T] using reflect_X_mul_chowS_add_self hgdegree
-    have hclosure : reflectionClosure n [S, f, g, q] = closed := by
-      simp [reflectionClosure, closed, hrefS, hrefq, fr, gr]
-    simpa [S, T, q] using hclosure.symm ▸ hclosed
+  exact ⟨h.chowSExtension_natDegree_le, h.chowSExtension_closedSequence⟩
 
 end BrandenVecchi
 

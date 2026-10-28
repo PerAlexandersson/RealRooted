@@ -428,6 +428,204 @@ theorem exceptionalEulerInverse_upper_eq_rPolynomial
       realRisingFactorial (c + m) k) * hratio
   · rfl
 
+/-- There are parameters strictly between two endpoints that converge to the lower endpoint. -/
+private theorem exists_strictly_between_tendsto_lower {A γ : ℝ} (hAγ : A < γ) :
+    ∃ γn : ℕ → ℝ, (∀ n, A < γn n) ∧ (∀ n, γn n < γ) ∧
+      Filter.Tendsto γn Filter.atTop (nhds A) := by
+  let gap := (γ - A) / 2
+  let δ : ℕ → ℝ := fun n => gap * ((n + 1 : ℕ) : ℝ)⁻¹
+  let γn : ℕ → ℝ := fun n => A + δ n
+  have hδpos : ∀ n, 0 < δ n := by
+    intro n
+    dsimp only [δ, gap]
+    positivity
+  have hδle : ∀ n, δ n ≤ gap := by
+    intro n
+    dsimp only [δ]
+    apply mul_le_of_le_one_right (by dsimp only [gap]; positivity)
+    exact (inv_le_one₀ (by positivity)).2 (by norm_num)
+  have hinv : Filter.Tendsto (fun n : ℕ => (((n + 1 : ℕ) : ℝ))⁻¹)
+      Filter.atTop (nhds 0) := by
+    have heq : (fun n : ℕ => (((n + 1 : ℕ) : ℝ))⁻¹) =
+        (fun n : ℕ => ((n : ℝ)⁻¹)) ∘ fun n => n + 1 := by
+      funext n
+      simp only [Function.comp_apply, Nat.cast_add, Nat.cast_one]
+    rw [heq]
+    exact (tendsto_inv_atTop_nhds_zero_nat (𝕜 := ℝ)).comp
+      (Filter.tendsto_add_atTop_nat 1)
+  refine ⟨γn, fun n => by dsimp only [γn]; linarith [hδpos n], ?_, ?_⟩
+  · intro n
+    have hn := hδle n
+    dsimp only [γn]
+    dsimp only [gap] at hn
+    linarith
+  · have hδTendsto : Filter.Tendsto δ Filter.atTop (nhds 0) := by
+      simpa only [δ, mul_zero] using tendsto_const_nhds.mul hinv
+    simpa only [γn, add_zero] using tendsto_const_nhds.add hδTendsto
+
+/-- Exceptional Euler inverse coefficients vary continuously with the parameter. -/
+private theorem tendsto_exceptionalEulerInverse_coeff (m ε : ℕ) {A : ℝ}
+    {γn : ℕ → ℝ} (hγn : Filter.Tendsto γn Filter.atTop (nhds A))
+    (hA : 0 < A) (k : ℕ) :
+    Filter.Tendsto (fun n => (exceptionalEulerInverse m ε (γn n)).coeff k)
+      Filter.atTop (nhds ((exceptionalEulerInverse m ε A).coeff k)) := by
+  rw [show (fun n => (exceptionalEulerInverse m ε (γn n)).coeff k) =
+      fun n => if k ≤ m then exceptionalBaseCoeff m ε k * γn n / (γn n + k)
+      else 0 by
+        funext n
+        rw [coeff_exceptionalEulerInverse]]
+  rw [coeff_exceptionalEulerInverse]
+  split_ifs
+  · exact (tendsto_const_nhds.mul hγn).div
+      (hγn.add tendsto_const_nhds) (by positivity)
+  · exact tendsto_const_nhds
+
+/-- Matching the top two coefficients preserves a degree known to be `m` or `m - 1`. -/
+private theorem natDegree_eq_of_le_of_top_two_coeff_eq {P Q : ℝ[X]} {m : ℕ}
+    (hm : 0 < m) (hQ : Q ≠ 0) (hQlower : m - 1 ≤ Q.natDegree)
+    (hQupper : Q.natDegree ≤ m) (hPupper : P.natDegree ≤ m)
+    (htop : P.coeff m = Q.coeff m)
+    (hprev : P.coeff (m - 1) = Q.coeff (m - 1)) :
+    P.natDegree = Q.natDegree := by
+  have hQlead : Q.leadingCoeff ≠ 0 := Polynomial.leadingCoeff_ne_zero.mpr hQ
+  have hQdegree : Q.natDegree = m - 1 ∨ Q.natDegree = m := by lia
+  rcases hQdegree with hdrop | hfull
+  · rw [hdrop]
+    apply Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
+    · apply Polynomial.natDegree_le_iff_coeff_eq_zero.mpr
+      intro k hk
+      by_cases hkm : k = m
+      · subst k
+        rw [htop]
+        exact Polynomial.coeff_eq_zero_of_natDegree_lt (by lia)
+      · exact Polynomial.coeff_eq_zero_of_natDegree_lt (by lia)
+    · rw [hprev]
+      simpa only [Polynomial.leadingCoeff, hdrop] using hQlead
+  · rw [hfull]
+    apply Polynomial.natDegree_eq_of_le_of_coeff_ne_zero hPupper
+    rw [htop]
+    simpa only [Polynomial.leadingCoeff, hfull] using hQlead
+
+/-- Cramer's rule gives coefficientwise-convergent pencil approximants with fixed top terms. -/
+private theorem exists_cramer_approximants {L U Q : ℝ[X]} {R : ℕ → ℝ[X]}
+    {m : ℕ} {a b : ℝ}
+    (hdet : L.coeff m * U.coeff (m - 1) -
+      U.coeff m * L.coeff (m - 1) ≠ 0)
+    (hdetn : ∀ n, (R n).coeff m * U.coeff (m - 1) -
+      U.coeff m * (R n).coeff (m - 1) ≠ 0)
+    (hQ : Q = C a * L + C b * U)
+    (hR : ∀ k, Filter.Tendsto (fun n => (R n).coeff k) Filter.atTop
+      (nhds (L.coeff k))) :
+    ∃ an bn : ℕ → ℝ,
+      (∀ n, (C (an n) * R n + C (bn n) * U).coeff m = Q.coeff m) ∧
+      (∀ n, (C (an n) * R n + C (bn n) * U).coeff (m - 1) =
+        Q.coeff (m - 1)) ∧
+      ∀ k, Filter.Tendsto
+        (fun n => (C (an n) * R n + C (bn n) * U).coeff k)
+        Filter.atTop (nhds (Q.coeff k)) := by
+  let D : ℕ → ℝ := fun n =>
+    (R n).coeff m * U.coeff (m - 1) - U.coeff m * (R n).coeff (m - 1)
+  let an : ℕ → ℝ := fun n =>
+    (Q.coeff m * U.coeff (m - 1) - U.coeff m * Q.coeff (m - 1)) / D n
+  let bn : ℕ → ℝ := fun n =>
+    ((R n).coeff m * Q.coeff (m - 1) - Q.coeff m * (R n).coeff (m - 1)) / D n
+  have htop : ∀ n, (C (an n) * R n + C (bn n) * U).coeff m = Q.coeff m := by
+    intro n
+    dsimp only [an, bn]
+    simp only [coeff_add, coeff_C_mul]
+    field_simp [show D n ≠ 0 by simpa only [D] using hdetn n]
+    ring
+  have hprev : ∀ n, (C (an n) * R n + C (bn n) * U).coeff (m - 1) =
+      Q.coeff (m - 1) := by
+    intro n
+    dsimp only [an, bn]
+    simp only [coeff_add, coeff_C_mul]
+    field_simp [show D n ≠ 0 by simpa only [D] using hdetn n]
+    ring
+  have hDTendsto : Filter.Tendsto D Filter.atTop (nhds
+      (L.coeff m * U.coeff (m - 1) - U.coeff m * L.coeff (m - 1))) := by
+    dsimp only [D]
+    exact ((hR m).mul_const _).sub (tendsto_const_nhds.mul (hR (m - 1)))
+  have hanLimit :
+      (Q.coeff m * U.coeff (m - 1) - U.coeff m * Q.coeff (m - 1)) /
+        (L.coeff m * U.coeff (m - 1) - U.coeff m * L.coeff (m - 1)) = a := by
+    apply (div_eq_iff hdet).2
+    rw [hQ]
+    simp only [coeff_add, coeff_C_mul]
+    ring
+  have hbnLimit :
+      (L.coeff m * Q.coeff (m - 1) - Q.coeff m * L.coeff (m - 1)) /
+        (L.coeff m * U.coeff (m - 1) - U.coeff m * L.coeff (m - 1)) = b := by
+    apply (div_eq_iff hdet).2
+    rw [hQ]
+    simp only [coeff_add, coeff_C_mul]
+    ring
+  have hanTendsto : Filter.Tendsto an Filter.atTop (nhds a) := by
+    rw [← hanLimit]
+    exact tendsto_const_nhds.div hDTendsto hdet
+  have hbnTendsto : Filter.Tendsto bn Filter.atTop (nhds b) := by
+    rw [← hbnLimit]
+    exact ((hR m).mul_const _).sub (tendsto_const_nhds.mul (hR (m - 1))) |>.div
+      hDTendsto hdet
+  refine ⟨an, bn, htop, hprev, fun k => ?_⟩
+  simp only [coeff_add, coeff_C_mul]
+  rw [hQ]
+  simp only [coeff_add, coeff_C_mul]
+  exact (hanTendsto.mul (hR k)).add (hbnTendsto.mul_const _)
+
+/-- Scaling by the limiting leading coefficient reduces split closure to the monic case. -/
+private theorem splits_of_coeff_tendsto_of_natDegree_eq {Q : ℝ[X]}
+    {Qn : ℕ → ℝ[X]} (hQ : Q ≠ 0)
+    (hdegree : ∀ n, (Qn n).natDegree = Q.natDegree)
+    (hlead : ∀ n, (Qn n).leadingCoeff = Q.leadingCoeff)
+    (hsplits : ∀ n, (Qn n).Splits)
+    (hcoeff : ∀ k, Filter.Tendsto (fun n => (Qn n).coeff k) Filter.atTop
+      (nhds (Q.coeff k))) : Q.Splits := by
+  have hQlead : Q.leadingCoeff ≠ 0 := Polynomial.leadingCoeff_ne_zero.mpr hQ
+  let q := C Q.leadingCoeff⁻¹ * Q
+  let qn : ℕ → ℝ[X] := fun n => C Q.leadingCoeff⁻¹ * Qn n
+  have hqMonic : q.Monic := by
+    apply monic_C_mul_of_mul_leadingCoeff_eq_one
+    exact inv_mul_cancel₀ hQlead
+  have hqnMonic : ∀ n, (qn n).Monic := by
+    intro n
+    apply monic_C_mul_of_mul_leadingCoeff_eq_one
+    rw [hlead]
+    exact inv_mul_cancel₀ hQlead
+  have hqnDegree : ∀ n, (qn n).natDegree = q.natDegree := by
+    intro n
+    dsimp only [qn, q]
+    rw [Polynomial.natDegree_C_mul (inv_ne_zero hQlead),
+      Polynomial.natDegree_C_mul (inv_ne_zero hQlead), hdegree]
+  have hqSplits := splits_of_monic_of_coeff_tendsto hqMonic hqnMonic hqnDegree
+    (fun n => (hsplits n).C_mul Q.leadingCoeff⁻¹) (fun k => by
+      dsimp only [qn, q]
+      simp only [coeff_C_mul]
+      exact tendsto_const_nhds.mul (hcoeff k))
+  have hscaled := hqSplits.C_mul Q.leadingCoeff
+  rw [show C Q.leadingCoeff * q = Q by
+    dsimp only [q]
+    rw [← mul_assoc, ← C_mul, mul_inv_cancel₀ hQlead, C_1, one_mul]] at hscaled
+  exact hscaled
+
+/-- The lower endpoint and a larger parameter are positive with independent top coefficients. -/
+private theorem exceptionalEulerInverse_lower_endpoint_data
+    (m ε : ℕ) (hm : 0 < m) {γ : ℝ}
+    (hγ : (ε : ℝ) + 1 / 2 + m - 1 < γ) :
+    let A : ℝ := (ε : ℝ) + 1 / 2 + m - 1
+    let L := exceptionalEulerInverse m ε A
+    let U := exceptionalEulerInverse m ε γ
+    0 < A ∧ 0 < γ ∧
+      L.coeff m * U.coeff (m - 1) - U.coeff m * L.coeff (m - 1) ≠ 0 := by
+  dsimp only
+  have hmCast : (1 : ℝ) ≤ m := by exact_mod_cast hm
+  have hε : 0 ≤ (ε : ℝ) := by positivity
+  have hA : 0 < (ε : ℝ) + 1 / 2 + m - 1 := by linarith
+  refine ⟨hA, hA.trans hγ, ?_⟩
+  rw [sub_ne_zero]
+  exact exceptionalEulerInverse_topCoeff_det_ne_zero
+    m ε hm hA (hA.trans hγ) hγ.ne
+
 /-- The pencil between the lower distinguished parameter and any larger
 parameter is real-rooted.  Approximants preserve the top two coefficients,
 so the possible degree drop from `m` to `m - 1` is retained in the limit. -/
@@ -441,25 +639,9 @@ private theorem exceptionalEulerInverse_lower_allComboRealRooted
   let A : ℝ := (ε : ℝ) + 1 / 2 + m - 1
   let L := exceptionalEulerInverse m ε A
   let U := exceptionalEulerInverse m ε γ
-  have hmCast : (1 : ℝ) ≤ m := by exact_mod_cast hm
-  have hA : 0 < A := by
-    dsimp only [A]
-    have hε : 0 ≤ (ε : ℝ) := by positivity
-    linarith
-  have hγpos : 0 < γ := hA.trans hγ
+  obtain ⟨hA, hγpos, hdetLimit⟩ :=
+    exceptionalEulerInverse_lower_endpoint_data m ε hm hγ
   have hAγ : A ≠ γ := hγ.ne
-  have hLdegree : L.natDegree = m := by
-    dsimp only [L]
-    exact natDegree_exceptionalEulerInverse m ε hA
-  have hUdegree : U.natDegree = m := by
-    dsimp only [U]
-    exact natDegree_exceptionalEulerInverse m ε hγpos
-  have hdetLimit :
-      L.coeff m * U.coeff (m - 1) -
-          U.coeff m * L.coeff (m - 1) ≠ 0 := by
-    rw [sub_ne_zero]
-    exact exceptionalEulerInverse_topCoeff_det_ne_zero
-      m ε hm hA hγpos hAγ
   intro a b
   let Q := C a * L + C b * U
   by_cases hQ : Q = 0
@@ -481,95 +663,37 @@ private theorem exceptionalEulerInverse_lower_allComboRealRooted
           (natDegree_exceptionalEulerInverse_le m ε γ)))
   have hQdegree : Q.natDegree = m - 1 ∨ Q.natDegree = m := by
     lia
-  have hQlead : Q.leadingCoeff ≠ 0 :=
-    Polynomial.leadingCoeff_ne_zero.mpr hQ
-  let gap : ℝ := (γ - A) / 2
-  let δ : ℕ → ℝ := fun n => gap * ((n + 1 : ℕ) : ℝ)⁻¹
-  let γn : ℕ → ℝ := fun n => A + δ n
+  obtain ⟨γn, hγnLower, hγnUpper, hγnTendsto⟩ :=
+    exists_strictly_between_tendsto_lower hγ
   let R : ℕ → ℝ[X] := fun n => exceptionalEulerInverse m ε (γn n)
-  let D : ℕ → ℝ := fun n =>
-    (R n).coeff m * U.coeff (m - 1) -
-      U.coeff m * (R n).coeff (m - 1)
-  have hδpos : ∀ n, 0 < δ n := by
-    intro n
-    dsimp only [δ, gap]
-    positivity
-  have hδle : ∀ n, δ n ≤ gap := by
-    intro n
-    dsimp only [δ]
-    apply mul_le_of_le_one_right
-    · dsimp only [gap]
-      positivity
-    · apply (inv_le_one₀ (by positivity)).2
-      norm_num
-  have hγnLower : ∀ n, A < γn n := by
-    intro n
-    dsimp only [γn]
-    linarith [hδpos n]
-  have hγnUpper : ∀ n, γn n < γ := by
-    intro n
-    calc
-      γn n = A + δ n := by rfl
-      _ ≤ A + gap := by linarith [hδle n]
-      _ < γ := by
-        dsimp only [gap, A]
-        linarith
   have hγnPos : ∀ n, 0 < γn n :=
     fun n => hA.trans (hγnLower n)
-  have hD : ∀ n, D n ≠ 0 := by
+  have hdetn : ∀ n, (R n).coeff m * U.coeff (m - 1) -
+      U.coeff m * (R n).coeff (m - 1) ≠ 0 := by
     intro n
-    dsimp only [D, R]
+    dsimp only [R]
     rw [sub_ne_zero]
     exact exceptionalEulerInverse_topCoeff_det_ne_zero
       m ε hm (hγnPos n) hγpos (hγnUpper n).ne
-  let an : ℕ → ℝ := fun n =>
-    (Q.coeff m * U.coeff (m - 1) -
-      U.coeff m * Q.coeff (m - 1)) / D n
-  let bn : ℕ → ℝ := fun n =>
-    ((R n).coeff m * Q.coeff (m - 1) -
-      Q.coeff m * (R n).coeff (m - 1)) / D n
+  have hRcoeff : ∀ k, Filter.Tendsto (fun n => (R n).coeff k)
+      Filter.atTop (nhds (L.coeff k)) := by
+    intro k
+    exact tendsto_exceptionalEulerInverse_coeff m ε hγnTendsto hA k
+  obtain ⟨an, bn, hQnTop, hQnPrev, hQnCoeffTendsto⟩ :=
+    exists_cramer_approximants hdetLimit hdetn (by rfl) hRcoeff
   let Qn : ℕ → ℝ[X] := fun n => C (an n) * R n + C (bn n) * U
-  have hQnTop : ∀ n, (Qn n).coeff m = Q.coeff m := by
-    intro n
-    dsimp only [Qn, an, bn]
-    simp only [coeff_add, coeff_C_mul]
-    field_simp [hD n]
-    ring
-  have hQnPrev : ∀ n, (Qn n).coeff (m - 1) = Q.coeff (m - 1) := by
-    intro n
-    dsimp only [Qn, an, bn]
-    simp only [coeff_add, coeff_C_mul]
-    field_simp [hD n]
-    ring
   have hQnDegree : ∀ n, (Qn n).natDegree = Q.natDegree := by
     intro n
-    rcases hQdegree with hdrop | hfull
-    · rw [hdrop]
-      apply Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
-      · apply Polynomial.natDegree_le_iff_coeff_eq_zero.mpr
-        intro k hk
-        by_cases hkm : k = m
-        · subst k
-          rw [hQnTop]
-          exact Polynomial.coeff_eq_zero_of_natDegree_lt (by lia)
-        · have hmk : m < k := by lia
-          dsimp only [Qn, R, U]
-          simp only [coeff_add, coeff_C_mul,
-            coeff_exceptionalEulerInverse, ite_eq_right (not_le.mpr hmk)]
-          ring
-      · rw [hQnPrev]
-        simpa only [Polynomial.leadingCoeff, hdrop] using hQlead
-    · rw [hfull]
-      apply Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
-      · dsimp only [Qn, R, U]
-        exact (Polynomial.natDegree_add_le _ _).trans
-          (max_le
-            ((Polynomial.natDegree_C_mul_le (an n) _).trans
-              (natDegree_exceptionalEulerInverse_le m ε (γn n)))
-            ((Polynomial.natDegree_C_mul_le (bn n) _).trans
-              (natDegree_exceptionalEulerInverse_le m ε γ)))
-      · rw [hQnTop]
-        simpa only [Polynomial.leadingCoeff, hfull] using hQlead
+    apply natDegree_eq_of_le_of_top_two_coeff_eq hm hQ hQlower hQupper
+    · dsimp only [Qn, R, U]
+      exact (Polynomial.natDegree_add_le _ _).trans
+        (max_le
+          ((Polynomial.natDegree_C_mul_le (an n) _).trans
+            (natDegree_exceptionalEulerInverse_le m ε (γn n)))
+          ((Polynomial.natDegree_C_mul_le (bn n) _).trans
+            (natDegree_exceptionalEulerInverse_le m ε γ)))
+    · simpa only [Qn] using hQnTop n
+    · simpa only [Qn] using hQnPrev n
   have hQnSplits : ∀ n, (Qn n).Splits := by
     intro n
     dsimp only [Qn, R, U]
@@ -577,108 +701,17 @@ private theorem exceptionalEulerInverse_lower_allComboRealRooted
     · simpa only [A] using hγnLower n
     · simpa only [A] using hγ
     · exact hγnUpper n
-  have hδTendsto : Filter.Tendsto δ Filter.atTop (nhds 0) := by
-    have hinv : Filter.Tendsto
-        (fun n : ℕ => (((n + 1 : ℕ) : ℝ))⁻¹)
-        Filter.atTop (nhds 0) := by
-      have heq : (fun n : ℕ => (((n + 1 : ℕ) : ℝ))⁻¹) =
-          (fun n : ℕ => ((n : ℝ)⁻¹)) ∘ fun n => n + 1 := by
-        funext n
-        simp only [Function.comp_apply, Nat.cast_add, Nat.cast_one]
-      rw [heq]
-      exact (tendsto_inv_atTop_nhds_zero_nat (𝕜 := ℝ)).comp
-        (Filter.tendsto_add_atTop_nat 1)
-    simpa only [δ, mul_zero] using tendsto_const_nhds.mul hinv
-  have hγnTendsto : Filter.Tendsto γn Filter.atTop (nhds A) := by
-    simpa only [γn, add_zero] using tendsto_const_nhds.add hδTendsto
-  have hRcoeffTendsto : ∀ k,
-      Filter.Tendsto (fun n => (R n).coeff k) Filter.atTop
-        (nhds (L.coeff k)) := by
-    intro k
-    dsimp only [R, L]
-    rw [show (fun n => (exceptionalEulerInverse m ε (γn n)).coeff k) =
-        fun n => if k ≤ m then
-          exceptionalBaseCoeff m ε k * γn n / (γn n + k)
-        else 0 by
-          funext n
-          rw [coeff_exceptionalEulerInverse]]
-    rw [coeff_exceptionalEulerInverse]
-    split_ifs
-    · exact (tendsto_const_nhds.mul hγnTendsto).div
-        (hγnTendsto.add tendsto_const_nhds)
-        (by positivity)
-    · exact tendsto_const_nhds
-  have hDTendsto : Filter.Tendsto D Filter.atTop
-      (nhds (L.coeff m * U.coeff (m - 1) -
-        U.coeff m * L.coeff (m - 1))) := by
-    dsimp only [D]
-    exact ((hRcoeffTendsto m).mul_const _).sub
-      (tendsto_const_nhds.mul (hRcoeffTendsto (m - 1)))
-  have hanLimit :
-      (Q.coeff m * U.coeff (m - 1) -
-          U.coeff m * Q.coeff (m - 1)) /
-          (L.coeff m * U.coeff (m - 1) -
-            U.coeff m * L.coeff (m - 1)) = a := by
-    apply (div_eq_iff hdetLimit).2
-    dsimp only [Q]
-    simp only [coeff_add, coeff_C_mul]
-    ring
-  have hbnLimit :
-      (L.coeff m * Q.coeff (m - 1) -
-          Q.coeff m * L.coeff (m - 1)) /
-          (L.coeff m * U.coeff (m - 1) -
-            U.coeff m * L.coeff (m - 1)) = b := by
-    apply (div_eq_iff hdetLimit).2
-    dsimp only [Q]
-    simp only [coeff_add, coeff_C_mul]
-    ring
-  have hanTendsto : Filter.Tendsto an Filter.atTop (nhds a) := by
-    rw [← hanLimit]
-    dsimp only [an]
-    exact tendsto_const_nhds.div hDTendsto hdetLimit
-  have hbnTendsto : Filter.Tendsto bn Filter.atTop (nhds b) := by
-    rw [← hbnLimit]
-    dsimp only [bn]
-    exact ((hRcoeffTendsto m).mul_const _).sub
-      (tendsto_const_nhds.mul (hRcoeffTendsto (m - 1))) |>.div
-        hDTendsto hdetLimit
-  have hQnCoeffTendsto : ∀ k,
-      Filter.Tendsto (fun n => (Qn n).coeff k) Filter.atTop
-        (nhds (Q.coeff k)) := by
-    intro k
-    dsimp only [Qn, Q]
-    simp only [coeff_add, coeff_C_mul]
-    exact (hanTendsto.mul (hRcoeffTendsto k)).add
-      (hbnTendsto.mul_const _)
-  let q := C Q.leadingCoeff⁻¹ * Q
-  let qn : ℕ → ℝ[X] := fun n => C Q.leadingCoeff⁻¹ * Qn n
-  have hqMonic : q.Monic := by
-    apply monic_C_mul_of_mul_leadingCoeff_eq_one
-    exact inv_mul_cancel₀ hQlead
-  have hqnMonic : ∀ n, (qn n).Monic := by
-    intro n
-    apply monic_C_mul_of_mul_leadingCoeff_eq_one
-    rw [show (Qn n).leadingCoeff = Q.leadingCoeff by
+  have hQsplit : Q.Splits := by
+    apply splits_of_coeff_tendsto_of_natDegree_eq hQ hQnDegree
+    · intro n
       simp only [Polynomial.leadingCoeff, hQnDegree n]
       rcases hQdegree with hdrop | hfull
       · rw [hdrop, hQnPrev]
-      · rw [hfull, hQnTop]]
-    exact inv_mul_cancel₀ hQlead
-  have hqnDegree : ∀ n, (qn n).natDegree = q.natDegree := by
-    intro n
-    dsimp only [qn, q]
-    rw [Polynomial.natDegree_C_mul (inv_ne_zero hQlead),
-      Polynomial.natDegree_C_mul (inv_ne_zero hQlead), hQnDegree]
-  have hqSplits := splits_of_monic_of_coeff_tendsto hqMonic hqnMonic hqnDegree
-    (fun n => (hQnSplits n).C_mul Q.leadingCoeff⁻¹) (fun k => by
-      dsimp only [qn, q]
-      simp only [coeff_C_mul]
-      exact tendsto_const_nhds.mul (hQnCoeffTendsto k))
-  have hscaled := hqSplits.C_mul Q.leadingCoeff
-  rw [show C Q.leadingCoeff * q = Q by
-    dsimp only [q]
-    rw [← mul_assoc, ← C_mul, mul_inv_cancel₀ hQlead, C_1, one_mul]] at hscaled
-  simpa only [Q, L, U, A] using hscaled
+      · rw [hfull, hQnTop]
+    · exact hQnSplits
+    · intro k
+      simpa only [Qn] using hQnCoeffTendsto k
+  simpa only [Q, L, U, A] using hQsplit
 
 /-- The upper distinguished exceptional polynomial is in an interlacing relation
 before the lower endpoint polynomial. -/
