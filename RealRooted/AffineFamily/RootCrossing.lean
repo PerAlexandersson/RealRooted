@@ -120,6 +120,109 @@ private lemma false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
     simp_all
   grind
 
+/-- Half the minimum of two positive radii lies in both corresponding norm balls. -/
+private lemma norm_min_div_two_lt {δ₁ δ₂ : ℝ} (hδ₁ : 0 < δ₁) (hδ₂ : 0 < δ₂) :
+    0 < min δ₁ δ₂ / 2 ∧ ‖min δ₁ δ₂ / 2‖ < δ₁ ∧
+      ‖min δ₁ δ₂ / 2‖ < δ₂ := by
+  have hη : 0 < min δ₁ δ₂ / 2 := half_pos (lt_min hδ₁ hδ₂)
+  have hnorm : ‖min δ₁ δ₂ / 2‖ = min δ₁ δ₂ / 2 := by
+    rw [Real.norm_eq_abs, abs_of_pos hη]
+  rw [hnorm]
+  exact ⟨hη, by linarith [min_le_left δ₁ δ₂], by linarith [min_le_right δ₁ δ₂]⟩
+
+/-- Iterating a positive derivative shift removes all but two copies of a multiple root. -/
+private lemma rootMultiplicity_iterateTDeriv_sub_two_eq_two
+    {p : ℝ[X]} {r η : ℝ} (hη : 0 < η) (hp : p ≠ 0) (hsplit : p.Splits)
+    (hmult : 2 ≤ p.rootMultiplicity r) :
+    (iterateTDeriv η (p.rootMultiplicity r - 2) p).rootMultiplicity r = 2 := by
+  calc
+    (iterateTDeriv η (p.rootMultiplicity r - 2) p).rootMultiplicity r =
+        p.rootMultiplicity r - (p.rootMultiplicity r - 2) := by
+      exact rootMultiplicity_iterateTDeriv_eq_tsub hη hp hsplit (Nat.sub_le _ _)
+    _ = 2 := by lia
+
+/-- Every affine companion with positive constant displacement gives a right family. -/
+private lemma affine_companion_bounded_right_family
+    {f g : ℝ[X]} {r d : ℝ}
+    (haff : ∀ {s t : ℝ}, 0 < s → 0 < t →
+      ((((C s * X + C t) * f) + g) ≠ 0 ∧ (((C s * X + C t) * f) + g).Splits))
+    (hdr : 0 < d - r) :
+    ∀ {β : ℝ}, 0 < β → β ≤ 1 →
+      ((g + C β * ((X - C r + C d) * f)) ≠ 0 ∧
+        (g + C β * ((X - C r + C d) * f)).Splits) := by
+  intro β hβ _
+  have hfac : C β * (X - C r + C d) = C β * X + C (β * (d - r)) := by
+    simp only [map_sub, map_mul]
+    ring
+  have heq : g + C β * ((X - C r + C d) * f) =
+      ((C β * X + C (β * (d - r))) * f) + g := by
+    rw [← mul_assoc, hfac]
+    ring
+  rw [heq]
+  exact haff hβ (mul_pos hβ hdr)
+
+/-- A bounded right family remains such after a positive derivative shift iteration. -/
+private lemma iterateTDeriv_bounded_right_family
+    {p q : ℝ[X]} {η : ℝ} {k : ℕ} (hη : 0 < η)
+    (hfamily : ∀ {β : ℝ}, 0 < β → β ≤ 1 →
+      ((p + C β * q) ≠ 0 ∧ (p + C β * q).Splits)) :
+    ∀ {β : ℝ}, 0 < β → β ≤ 1 →
+      ((iterateTDeriv η k p + C β * iterateTDeriv η k q) ≠ 0 ∧
+        (iterateTDeriv η k p + C β * iterateTDeriv η k q).Splits) := by
+  intro β hβ hβ_le
+  have hrr := hfamily hβ hβ_le
+  have hiter :
+      ((iterateTDeriv η k (p + C β * q)) ≠ 0 ∧
+        (iterateTDeriv η k (p + C β * q)).Splits) :=
+    ⟨iterateTDeriv_ne_zero hrr.1, splits_iterateTDeriv hη hrr.2⟩
+  simpa only [iterateTDeriv_add, iterateTDeriv_C_mul] using hiter
+
+/-- Sign preservation for two opposite companions keeps their shifted values opposite. -/
+private lemma mul_neg_of_companion_signs {u v w r : ℝ} (hr : r < 0) (hw : w ≠ 0)
+    (hu : 0 < u * w) (hv : 0 < v * (r / 2 * w)) : u * v < 0 := by
+  rcases lt_or_gt_of_ne hw with hw_neg | hw_pos
+  · have hu_neg : u < 0 := by
+      rcases (mul_pos_iff.mp hu) with h | h <;> linarith
+    have hrw_pos : 0 < r / 2 * w := mul_pos_of_neg_of_neg (by linarith) hw_neg
+    have hv_pos : 0 < v := by
+      rcases (mul_pos_iff.mp hv) with h | h <;> linarith
+    exact mul_neg_of_neg_of_pos hu_neg hv_pos
+  · have hu_pos : 0 < u := by
+      rcases (mul_pos_iff.mp hu) with h | h <;> linarith
+    have hrw_neg : r / 2 * w < 0 := mul_neg_of_neg_of_pos (by linarith) hw_pos
+    have hv_neg : v < 0 := by
+      rcases (mul_pos_iff.mp hv) with h | h <;> linarith
+    exact mul_neg_of_pos_of_neg hu_pos hv_neg
+
+/-- Two opposite companions force one forbidden positive second-derivative product. -/
+private lemma false_of_opposite_bounded_right_families
+    {p q₁ q₂ : ℝ[X]} {x : ℝ}
+    (hfamily₁ : ∀ {β : ℝ}, 0 < β → β ≤ 1 →
+      ((p + C β * q₁) ≠ 0 ∧ (p + C β * q₁).Splits))
+    (hfamily₂ : ∀ {β : ℝ}, 0 < β → β ≤ 1 →
+      ((p + C β * q₂) ≠ 0 ∧ (p + C β * q₂).Splits))
+    (hp_mult : p.rootMultiplicity x = 2)
+    (hpp_ne : p.derivative.derivative.eval x ≠ 0)
+    (hopp : q₁.eval x * q₂.eval x < 0) : False := by
+  have hq₁_ne : q₁.eval x ≠ 0 := fun h => by rw [h, zero_mul] at hopp; linarith
+  have hq₂_ne : q₂.eval x ≠ 0 := fun h => by rw [h, mul_zero] at hopp; linarith
+  by_cases hprod₁ : 0 < p.derivative.derivative.eval x * q₁.eval x
+  · exact false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
+      hfamily₁ zero_lt_one hp_mult hq₁_ne hprod₁
+  · have hprod₁_neg : p.derivative.derivative.eval x * q₁.eval x < 0 :=
+      lt_of_le_of_ne (le_of_not_gt hprod₁) (mul_ne_zero hpp_ne hq₁_ne)
+    have hprod₂ : 0 < p.derivative.derivative.eval x * q₂.eval x := by
+      rcases (mul_neg_iff.mp hprod₁_neg) with ⟨hpp_pos, hq₁_neg⟩ |
+        ⟨hpp_neg, hq₁_pos⟩
+      · have hq₂_pos : 0 < q₂.eval x := by
+          rcases (mul_neg_iff.mp hopp) with h | h <;> linarith
+        exact mul_pos hpp_pos hq₂_pos
+      · have hq₂_neg : q₂.eval x < 0 := by
+          rcases (mul_neg_iff.mp hopp) with h | h <;> linarith
+        exact mul_pos_of_neg_of_neg hpp_neg hq₂_neg
+    exact false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
+      hfamily₂ zero_lt_one hp_mult hq₂_ne hprod₂
+
 /-- In the succ-degree affine branch with `g(0) ≠ 0`, the endpoint polynomial
 `g` itself has simple roots.
 
@@ -161,12 +264,8 @@ protected lemma AffineFamily.hasSimpleRoots_right_of_affine_family_succDegree_no
   let k : ℕ := m - 2
   let qPos : ℝ[X] := (X - C r + C (1 : ℝ)) * f
   let qNeg : ℝ[X] := (X - C r + C (r / 2)) * f
-  have hqPos_eval : qPos.eval r = f.eval r := by
-    dsimp [qPos]
-    simp
-  have hqNeg_eval : qNeg.eval r = (r / 2) * f.eval r := by
-    dsimp [qNeg]
-    simp
+  have hqPos_eval : qPos.eval r = f.eval r := by simp [qPos]
+  have hqNeg_eval : qNeg.eval r = (r / 2) * f.eval r := by simp [qNeg]
   have hqPos_eval_ne : qPos.eval r ≠ 0 := by lia
   have hqNeg_eval_ne : qNeg.eval r ≠ 0 := by simp_all
   obtain ⟨δPos, hδPos, hqPos_keep⟩ :=
@@ -176,135 +275,53 @@ protected lemma AffineFamily.hasSimpleRoots_right_of_affine_family_succDegree_no
     exists_delta_eval_mul_pos_iterateTDeriv_at_zero k
       (p := qNeg) (x := r) hqNeg_eval_ne
   let η : ℝ := min δPos δNeg / 2
-  have hη_pos : 0 < η := half_pos (lt_min_iff.mpr ⟨hδPos, hδNeg⟩)
-  have hη_smallPos : ‖η‖ < δPos := by
-    have hη_norm : ‖η‖ = min δPos δNeg / 2 := by
-      rw [Real.norm_eq_abs, show η = min δPos δNeg / 2 by rfl, abs_of_pos hη_pos]
-    have hmin : min δPos δNeg ≤ δPos := min_le_left _ _
-    linarith
-  have hη_smallNeg : ‖η‖ < δNeg := by
-    have hη_norm : ‖η‖ = min δPos δNeg / 2 := by
-      rw [Real.norm_eq_abs, show η = min δPos δNeg / 2 by rfl, abs_of_pos hη_pos]
-    have hmin : min δPos δNeg ≤ δNeg := min_le_right _ _
-    linarith
+  obtain ⟨hη_pos, hη_smallPos, hη_smallNeg⟩ :=
+    show 0 < η ∧ ‖η‖ < δPos ∧ ‖η‖ < δNeg by
+      simpa only [η] using norm_min_div_two_lt hδPos hδNeg
   let pη : ℝ[X] := iterateTDeriv η k g
   let qPosη : ℝ[X] := iterateTDeriv η k qPos
   let qNegη : ℝ[X] := iterateTDeriv η k qNeg
-  have hk_le : k ≤ g.rootMultiplicity r := by lia
   have hpη_mult : pη.rootMultiplicity r = 2 := by
-    calc
-      pη.rootMultiplicity r = g.rootMultiplicity r - k := by
-        dsimp [pη]
-        exact rootMultiplicity_iterateTDeriv_eq_tsub hη_pos hg_rr.1 hg_rr.2 hk_le
-      _ = 2 := by lia
+    simpa only [pη, k, m] using
+      rootMultiplicity_iterateTDeriv_sub_two_eq_two hη_pos hg_rr.1 hg_rr.2 hmult_ge2
   have hpη_ne : pη ≠ 0 := iterateTDeriv_ne_zero hg_rr.1
   have hpp_ne : pη.derivative.derivative.eval r ≠ 0 :=
     eval_derivative_derivative_ne_zero_of_rootMultiplicity_eq_two
       hpη_ne hpη_mult
   have hqPosη_keep : 0 < qPosη.eval r * qPos.eval r := hqPos_keep hη_smallPos
   have hqNegη_keep : 0 < qNegη.eval r * qNeg.eval r := hqNeg_keep hη_smallNeg
-  have hqPosη_eval_ne : qPosη.eval r ≠ 0 := by
-    intro h
-    rw [h, zero_mul] at hqPosη_keep
-    linarith
-  have hqNegη_eval_ne : qNegη.eval r ≠ 0 := by
-    intro h
-    rw [h, zero_mul] at hqNegη_keep
-    linarith
   have hqOpp : qPosη.eval r * qNegη.eval r < 0 := by
     rw [hqPos_eval] at hqPosη_keep
     rw [hqNeg_eval] at hqNegη_keep
-    rcases lt_or_gt_of_ne hf_eval_ne with hf_neg | hf_pos
-    · have hqPosη_neg : qPosη.eval r < 0 := by
-        rcases (mul_pos_iff.mp hqPosη_keep) with h | h <;> linarith
-      have hqNeg_pos : 0 < r / 2 * f.eval r :=
-        mul_pos_of_neg_of_neg (by linarith) hf_neg
-      have hqNegη_pos : 0 < qNegη.eval r := by
-        rcases (mul_pos_iff.mp hqNegη_keep) with h | h <;> linarith
-      exact mul_neg_of_neg_of_pos hqPosη_neg hqNegη_pos
-    · have hqPosη_pos : 0 < qPosη.eval r := by
-        rcases (mul_pos_iff.mp hqPosη_keep) with h | h <;> linarith
-      have hqNeg_neg : r / 2 * f.eval r < 0 :=
-        mul_neg_of_neg_of_pos (by linarith) hf_pos
-      have hqNegη_neg : qNegη.eval r < 0 := by
-        rcases (mul_pos_iff.mp hqNegη_keep) with h | h <;> linarith
-      exact mul_neg_of_pos_of_neg hqPosη_pos hqNegη_neg
+    exact mul_neg_of_companion_signs hr_neg hf_eval_ne hqPosη_keep hqNegη_keep
   have hfamilyPos :
       ∀ {β : ℝ}, 0 < β → β ≤ 1 →
         ((g + C β * qPos) ≠ 0 ∧ (g + C β * qPos).Splits) := by
-    intro β hβ _
-    have hfac : C β * (X - C r + C (1 : ℝ)) = C β * X + C (β * (1 - r)) := by
-      simp only [map_sub, map_mul, Polynomial.C_1]
-      ring
-    have hEq :
-        g + C β * qPos =
-          (((C β * X + C (β * (1 - r))) * f) + g) := by
-      dsimp [qPos]
-      rw [← mul_assoc, hfac]
-      ring
-    have hβt_pos : 0 < β * (1 - r) := by
-      have : 0 < 1 - r := by linarith
-      positivity
-    rw [hEq]
-    exact haff hβ hβt_pos
+    intro β hβ hβ_le
+    simpa only [qPos] using
+      affine_companion_bounded_right_family (r := r) (d := 1) haff (by linarith)
+        hβ hβ_le
   have hfamilyNeg :
       ∀ {β : ℝ}, 0 < β → β ≤ 1 →
         ((g + C β * qNeg) ≠ 0 ∧ (g + C β * qNeg).Splits) := by
-    intro β hβ _
-    have hfac : C β * (X - C r + C (r / 2)) = C β * X + C (β * (r / 2 - r)) := by
-      simp only [map_sub, map_mul]
-      ring
-    have hEq :
-        g + C β * qNeg =
-          (((C β * X + C (β * (r / 2 - r))) * f) + g) := by
-      dsimp [qNeg]
-      rw [← mul_assoc, hfac]
-      ring
-    have hβt_pos : 0 < β * (r / 2 - r) := by
-      have : 0 < r / 2 - r := by linarith
-      positivity
-    rw [hEq]
-    exact haff hβ hβt_pos
+    intro β hβ hβ_le
+    simpa only [qNeg] using
+      affine_companion_bounded_right_family (r := r) (d := r / 2) haff (by linarith)
+        hβ hβ_le
   have hfamilyPosη :
       ∀ {β : ℝ}, 0 < β → β ≤ 1 →
         ((pη + C β * qPosη) ≠ 0 ∧ (pη + C β * qPosη).Splits) := by
     intro β hβ hβ_le
-    have hrr : ((g + C β * qPos) ≠ 0 ∧ (g + C β * qPos).Splits) := hfamilyPos hβ hβ_le
-    have hiter :
-        ((iterateTDeriv η k (g + C β * qPos)) ≠ 0 ∧
-          (iterateTDeriv η k (g + C β * qPos)).Splits) :=
-      ⟨iterateTDeriv_ne_zero hrr.1, splits_iterateTDeriv hη_pos hrr.2⟩
-    simpa only [pη, qPosη, iterateTDeriv_add, iterateTDeriv_C_mul] using hiter
+    simpa only [pη, qPosη] using
+      iterateTDeriv_bounded_right_family hη_pos hfamilyPos hβ hβ_le
   have hfamilyNegη :
       ∀ {β : ℝ}, 0 < β → β ≤ 1 →
         ((pη + C β * qNegη) ≠ 0 ∧ (pη + C β * qNegη).Splits) := by
     intro β hβ hβ_le
-    have hrr : ((g + C β * qNeg) ≠ 0 ∧ (g + C β * qNeg).Splits) := hfamilyNeg hβ hβ_le
-    have hiter :
-        ((iterateTDeriv η k (g + C β * qNeg)) ≠ 0 ∧
-          (iterateTDeriv η k (g + C β * qNeg)).Splits) :=
-      ⟨iterateTDeriv_ne_zero hrr.1, splits_iterateTDeriv hη_pos hrr.2⟩
-    simpa only [pη, qNegη, iterateTDeriv_add, iterateTDeriv_C_mul] using hiter
-  by_cases hprodPos :
-      0 < pη.derivative.derivative.eval r * qPosη.eval r
-  · exact
-      false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
-        (p := pη) (q := qPosη) (x := r) (βmax := 1)
-        hfamilyPosη zero_lt_one hpη_mult hqPosη_eval_ne hprodPos
-  · have hprodNeg : 0 < pη.derivative.derivative.eval r * qNegη.eval r := by
-      have hprodPos_neg : pη.derivative.derivative.eval r * qPosη.eval r < 0 :=
-        lt_of_le_of_ne (le_of_not_gt hprodPos) (mul_ne_zero hpp_ne hqPosη_eval_ne)
-      rcases (mul_neg_iff.mp hprodPos_neg) with ⟨hpp_pos, hqPos_neg⟩ |
-        ⟨hpp_neg, hqPos_pos⟩
-      · have hqNeg_pos : 0 < qNegη.eval r := by
-          rcases (mul_neg_iff.mp hqOpp) with h | h <;> linarith
-        exact mul_pos hpp_pos hqNeg_pos
-      · have hqNeg_neg : qNegη.eval r < 0 := by
-          rcases (mul_neg_iff.mp hqOpp) with h | h <;> linarith
-        exact mul_pos_of_neg_of_neg hpp_neg hqNeg_neg
-    exact false_of_bounded_right_family_of_double_root_and_eval_ne_of_pos
-      (p := pη) (q := qNegη) (x := r) (βmax := 1)
-      hfamilyNegη zero_lt_one hpη_mult hqNegη_eval_ne hprodNeg
+    simpa only [pη, qNegη] using
+      iterateTDeriv_bounded_right_family hη_pos hfamilyNeg hβ hβ_le
+  exact false_of_opposite_bounded_right_families hfamilyPosη hfamilyNegη
+    hpη_mult hpp_ne hqOpp
 
 /-- Every interior positive combination of a no-common positive-combination
 family has simple roots.

@@ -110,6 +110,136 @@ private theorem eval_complexify_routhApproxSource (c : ℝ) (u : ℝ[X])
   simp only [eval_complexify_oddEvenPolynomial] at hu
   linear_combination z * hu + (c : ℂ) * hcontract
 
+/-- Translated Routh reductions give strict source approximants with fixed degree and leading
+coefficient. -/
+private theorem routhApprox_stability_degree_leadingCoeff {q : ℝ[X]} {c : ℝ}
+    (hq : IsHurwitzStable q) (hqlead : HasPosLeadingCoeff q) (hqdegree : q.natDegree ≠ 0)
+    (hc : 0 < c) :
+    let ε : ℕ → ℝ := fun k ↦ 1 / (k + 1)
+    let qe : ℕ → ℝ[X] := fun k ↦ q.comp (X + C (ε k))
+    let oe : ℕ → ℝ[X] := fun k ↦ Polynomial.contract 2 (qe k)
+    let re : ℕ → ℝ[X] := fun k ↦ Polynomial.contract 2 (qe k).divX
+    let ee : ℕ → ℝ[X] := fun k ↦ C c * oe k + X * re k
+    let pe : ℕ → ℝ[X] := fun k ↦ oddEvenPolynomial (oe k) (ee k)
+    (∀ k, IsStrictlyHurwitzStable (pe k)) ∧
+      ∀ k, (pe k).natDegree = q.natDegree + 1 ∧
+        (pe k).leadingCoeff = q.leadingCoeff := by
+  dsimp only
+  let ε : ℕ → ℝ := fun k ↦ 1 / (k + 1)
+  let qe : ℕ → ℝ[X] := fun k ↦ q.comp (X + C (ε k))
+  let oe : ℕ → ℝ[X] := fun k ↦ Polynomial.contract 2 (qe k)
+  let re : ℕ → ℝ[X] := fun k ↦ Polynomial.contract 2 (qe k).divX
+  let ee : ℕ → ℝ[X] := fun k ↦ C c * oe k + X * re k
+  let pe : ℕ → ℝ[X] := fun k ↦ oddEvenPolynomial (oe k) (ee k)
+  have hεpos (k : ℕ) : 0 < ε k := by dsimp only [ε]; positivity
+  have hqestable (k : ℕ) : IsStrictlyHurwitzStable (qe k) := by
+    exact hq.strictlyStable_comp_X_add_C (hεpos k)
+  have hqelead (k : ℕ) : HasPosLeadingCoeff (qe k) := by
+    exact hqlead.comp_X_add_C (ε k)
+  have hqedegree (k : ℕ) : (qe k).natDegree = q.natDegree := by
+    simp [qe, Polynomial.natDegree_comp]
+  have hred (k : ℕ) : routhReducedOddPart c (oe k) (ee k) = re k := by
+    unfold routhReducedOddPart
+    have hsub : ee k - C c * oe k = X * re k := by simp [ee]
+    rw [hsub]
+    ext n
+    simp [Polynomial.coeff_divX]
+  have hreduced (k : ℕ) : routhReducedPolynomial c (oe k) (ee k) = qe k := by
+    rw [routhReducedPolynomial, hred]
+    exact oddEvenPolynomial_contract_divX_contract (qe k)
+  have hee0 (k : ℕ) : (ee k).coeff 0 = c * (oe k).coeff 0 := by simp [ee]
+  have hpestable (k : ℕ) : IsStrictlyHurwitzStable (pe k) := by
+    obtain ⟨hrelead, hoelead, hshape⟩ :=
+      (hqestable k).canonicalParityData (hqelead k) (by rw [hqedegree]; exact hqdegree)
+    have hredstable :
+        IsStrictlyHurwitzStable (routhReducedPolynomial c (oe k) (ee k)) := by
+      simpa only [hreduced k] using hqestable k
+    apply hredstable.oddEvenPolynomial_of_routhReducedPolynomial hc (hee0 k)
+      hoelead (by rw [hred]; exact hrelead)
+    rw [hred]
+    exact hshape
+  refine ⟨hpestable, fun k ↦ ?_⟩
+  have hdata := routhApproxSource_degree_leadingCoeff c (hqestable k).ne_zero
+  have hqelc : (qe k).leadingCoeff = q.leadingCoeff := by
+    dsimp only [qe]
+    rw [Polynomial.leadingCoeff_comp (by simp),
+      Polynomial.leadingCoeff_X_add_C, one_pow, mul_one]
+  simpa only [pe, oe, ee, re, hqedegree k, hqelc] using hdata
+
+/-- The unshifted Routh approximant reconstructs the original source polynomial. -/
+private theorem routhApproxSource_routhReducedPolynomial (c : ℝ) (odd even : ℝ[X])
+    (h0 : even.coeff 0 = c * odd.coeff 0) :
+    oddEvenPolynomial (Polynomial.contract 2 (routhReducedPolynomial c odd even))
+        (C c * Polynomial.contract 2 (routhReducedPolynomial c odd even) +
+          X * Polynomial.contract 2 (routhReducedPolynomial c odd even).divX) =
+      oddEvenPolynomial odd even := by
+  have hodd : Polynomial.contract 2 (routhReducedPolynomial c odd even) = odd := by
+    simp [routhReducedPolynomial]
+  have hred : Polynomial.contract 2 (routhReducedPolynomial c odd even).divX =
+      routhReducedOddPart c odd even := by
+    simp [routhReducedPolynomial]
+  rw [hodd, hred, ← even_eq_C_mul_odd_add_X_mul_routhReducedOddPart c odd even h0]
+
+/-- Evaluations of normalized translated Routh sources converge to the unshifted source. -/
+private theorem tendsto_eval_routhApproxSource (q odd even : ℝ[X]) (c L : ℝ)
+    (hsource : oddEvenPolynomial (Polynomial.contract 2 q)
+        (C c * Polynomial.contract 2 q + X * Polynomial.contract 2 q.divX) =
+      oddEvenPolynomial odd even) (z : ℂ) :
+    let ε : ℕ → ℝ := fun k ↦ 1 / (k + 1)
+    let qe : ℕ → ℝ[X] := fun k ↦ q.comp (X + C (ε k))
+    let oe : ℕ → ℝ[X] := fun k ↦ Polynomial.contract 2 (qe k)
+    let re : ℕ → ℝ[X] := fun k ↦ Polynomial.contract 2 (qe k).divX
+    let ee : ℕ → ℝ[X] := fun k ↦ C c * oe k + X * re k
+    let pe : ℕ → ℝ[X] := fun k ↦ oddEvenPolynomial (oe k) (ee k)
+    Tendsto (fun k ↦ (complexify (C L⁻¹ * pe k)).eval z) atTop
+      (𝓝 ((complexify (C L⁻¹ * oddEvenPolynomial odd even)).eval z)) := by
+  dsimp only
+  let ε : ℕ → ℝ := fun k ↦ 1 / (k + 1)
+  let qe : ℕ → ℝ[X] := fun k ↦ q.comp (X + C (ε k))
+  let oe : ℕ → ℝ[X] := fun k ↦ Polynomial.contract 2 (qe k)
+  let re : ℕ → ℝ[X] := fun k ↦ Polynomial.contract 2 (qe k).divX
+  let ee : ℕ → ℝ[X] := fun k ↦ C c * oe k + X * re k
+  let pe : ℕ → ℝ[X] := fun k ↦ oddEvenPolynomial (oe k) (ee k)
+  have hεzero : Tendsto ε atTop (𝓝 0) := by
+    simpa only [ε] using tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)
+  have hεcomplex : Tendsto (fun k ↦ (ε k : ℂ)) atTop (𝓝 0) :=
+    (Complex.continuous_ofReal.tendsto 0).comp hεzero
+  have hplus : Tendsto (fun k ↦ (complexify (qe k)).eval z) atTop
+      (𝓝 ((complexify q).eval z)) := by
+    have harg : Tendsto (fun k ↦ z + (ε k : ℂ)) atTop (𝓝 (z + 0)) :=
+      tendsto_const_nhds.add hεcomplex
+    have ht := (complexify q).continuous.continuousAt.tendsto.comp harg
+    change Tendsto (fun k ↦ (complexify q).eval (z + (ε k : ℂ)))
+      atTop (𝓝 ((complexify q).eval (z + 0))) at ht
+    simpa [qe, complexify, Polynomial.map_comp, Polynomial.eval_comp] using
+      (show Tendsto (fun k ↦ (complexify q).eval (z + (ε k : ℂ))) atTop
+        (𝓝 ((complexify q).eval z)) by simpa only [add_zero] using ht)
+  have hminus : Tendsto (fun k ↦ (complexify (qe k)).eval (-z)) atTop
+      (𝓝 ((complexify q).eval (-z))) := by
+    have harg : Tendsto (fun k ↦ -z + (ε k : ℂ)) atTop (𝓝 (-z + 0)) :=
+      tendsto_const_nhds.add hεcomplex
+    have ht := (complexify q).continuous.continuousAt.tendsto.comp harg
+    change Tendsto (fun k ↦ (complexify q).eval (-z + (ε k : ℂ)))
+      atTop (𝓝 ((complexify q).eval (-z + 0))) at ht
+    simpa [qe, complexify, Polynomial.map_comp, Polynomial.eval_comp] using
+      (show Tendsto (fun k ↦ (complexify q).eval (-z + (ε k : ℂ))) atTop
+        (𝓝 ((complexify q).eval (-z))) by simpa only [add_zero] using ht)
+  have hraw : Tendsto
+      (fun k ↦ z * (complexify (qe k)).eval z +
+        (c / 2 : ℂ) * ((complexify (qe k)).eval z +
+          (complexify (qe k)).eval (-z)))
+      atTop
+      (𝓝 (z * (complexify q).eval z +
+        (c / 2 : ℂ) * ((complexify q).eval z + (complexify q).eval (-z)))) :=
+    (tendsto_const_nhds.mul hplus).add
+      (tendsto_const_nhds.mul (hplus.add hminus))
+  have hraw' : Tendsto (fun k ↦ (complexify (pe k)).eval z) atTop
+      (𝓝 ((complexify (oddEvenPolynomial odd even)).eval z)) := by
+    rw [← hsource]
+    simpa only [pe, oe, ee, re, eval_complexify_routhApproxSource c] using hraw
+  simpa only [complexify, Polynomial.map_mul, Polynomial.map_C,
+    Polynomial.eval_mul, Polynomial.eval_C] using tendsto_const_nhds.mul hraw'
+
 /-- Weak Hurwitz stability of a nonconstant Routh reduction propagates back to
 the source polynomial across a positive Routh step. -/
 theorem IsHurwitzStable.oddEvenPolynomial_of_routhReducedPolynomial_of_natDegree_ne_zero
@@ -133,72 +263,14 @@ theorem IsHurwitzStable.oddEvenPolynomial_of_routhReducedPolynomial_of_natDegree
   let re : ℕ → ℝ[X] := fun k => Polynomial.contract 2 (qe k).divX
   let ee : ℕ → ℝ[X] := fun k => C c * oe k + X * re k
   let pe : ℕ → ℝ[X] := fun k => oddEvenPolynomial (oe k) (ee k)
-  have hεpos (k : ℕ) : 0 < ε k := by
-    dsimp only [ε]
-    positivity
-  have hqestable (k : ℕ) : IsStrictlyHurwitzStable (qe k) := by
-    dsimp only [qe]
-    exact hq.strictlyStable_comp_X_add_C (hεpos k)
-  have hqelead (k : ℕ) : HasPosLeadingCoeff (qe k) := by
-    dsimp only [qe]
-    exact hqlead.comp_X_add_C (ε k)
-  have hqedegree (k : ℕ) : (qe k).natDegree = q.natDegree := by
-    simp [qe, Polynomial.natDegree_comp]
-  have hqene (k : ℕ) : qe k ≠ 0 := (hqestable k).ne_zero
-  have hred (k : ℕ) : routhReducedOddPart c (oe k) (ee k) = re k := by
-    unfold routhReducedOddPart
-    have hsub : ee k - C c * oe k = X * re k := by simp [ee]
-    rw [hsub]
-    ext n
-    simp [Polynomial.coeff_divX]
-  have hreduced (k : ℕ) :
-      routhReducedPolynomial c (oe k) (ee k) = qe k := by
-    rw [routhReducedPolynomial, hred]
-    exact oddEvenPolynomial_contract_divX_contract (qe k)
-  have hee0 (k : ℕ) : (ee k).coeff 0 = c * (oe k).coeff 0 := by
-    simp [ee]
-  have hpestable (k : ℕ) : IsStrictlyHurwitzStable (pe k) := by
-    obtain ⟨hrelead, hoelead, hshape⟩ :=
-      (hqestable k).canonicalParityData (hqelead k) (by
-        rw [hqedegree]
-        exact hqdegree')
-    have hredstable :
-        IsStrictlyHurwitzStable (routhReducedPolynomial c (oe k) (ee k)) := by
-      simpa only [hreduced k] using hqestable k
-    have hrelead' :
-        HasPosLeadingCoeff (routhReducedOddPart c (oe k) (ee k)) := by
-      rw [hred]
-      exact hrelead
-    have hshape' :
-        (oe k).natDegree =
-            (routhReducedOddPart c (oe k) (ee k)).natDegree + 1 ∨
-          (oe k).natDegree =
-            (routhReducedOddPart c (oe k) (ee k)).natDegree := by
-      rw [hred]
-      exact hshape
-    exact hredstable.oddEvenPolynomial_of_routhReducedPolynomial hc (hee0 k)
-      hoelead hrelead' hshape'
-  have hpedata (k : ℕ) :
-      (pe k).natDegree = q.natDegree + 1 ∧
-        (pe k).leadingCoeff = q.leadingCoeff := by
-    have hdata := routhApproxSource_degree_leadingCoeff c (hqene k)
-    have hqelc : (qe k).leadingCoeff = q.leadingCoeff := by
-      dsimp only [qe]
-      rw [Polynomial.leadingCoeff_comp (by simp),
-        Polynomial.leadingCoeff_X_add_C, one_pow, mul_one]
-    simpa only [pe, oe, ee, re, hqedegree k, hqelc] using hdata
+  obtain ⟨hpestable, hpedata⟩ :=
+    routhApprox_stability_degree_leadingCoeff (q := q) hq hqlead hqdegree' hc
   have hsource :
       oddEvenPolynomial (Polynomial.contract 2 q)
           (C c * Polynomial.contract 2 q +
             X * Polynomial.contract 2 q.divX) =
-        oddEvenPolynomial odd even := by
-    have hodd : Polynomial.contract 2 q = odd := by
-      simp [q, routhReducedPolynomial]
-    have hred' : Polynomial.contract 2 q.divX =
-        routhReducedOddPart c odd even := by
-      simp [q, routhReducedPolynomial]
-    rw [hodd, hred']
-    rw [← even_eq_C_mul_odd_add_X_mul_routhReducedOddPart c odd even h0]
+      oddEvenPolynomial odd even := by
+    simpa only [q] using routhApproxSource_routhReducedPolynomial c odd even h0
   let L := q.leadingCoeff
   have hLpos : 0 < L := hqlead
   let normalized : ℕ → ℝ[X] := fun k => C L⁻¹ * pe k
@@ -230,53 +302,10 @@ theorem IsHurwitzStable.oddEvenPolynomial_of_routhReducedPolynomial_of_natDegree
     simp only [Polynomial.map_mul, Polynomial.map_C, Polynomial.eval_mul,
       Polynomial.eval_C]
     exact mul_ne_zero (by simp [hLpos.ne']) hne
-  have hεzero : Tendsto ε atTop (𝓝 0) := by
-    simpa only [ε] using
-      (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
   have hPeval (z : ℂ) :
       Tendsto (fun k => (P k).eval z) atTop (𝓝 (p₀.eval z)) := by
-    have hεcomplex : Tendsto (fun k => (ε k : ℂ)) atTop (𝓝 0) :=
-      (Complex.continuous_ofReal.tendsto 0).comp hεzero
-    have hplus : Tendsto (fun k => (complexify (qe k)).eval z) atTop
-        (𝓝 ((complexify q).eval z)) := by
-      have harg : Tendsto (fun k => z + (ε k : ℂ)) atTop (𝓝 (z + 0)) :=
-        tendsto_const_nhds.add hεcomplex
-      have ht := (complexify q).continuous.continuousAt.tendsto.comp harg
-      change Tendsto (fun k => (complexify q).eval (z + (ε k : ℂ)))
-        atTop (𝓝 ((complexify q).eval (z + 0))) at ht
-      have ht' : Tendsto (fun k => (complexify q).eval (z + (ε k : ℂ)))
-          atTop (𝓝 ((complexify q).eval z)) := by
-        simpa only [add_zero] using ht
-      simpa [qe, complexify, Polynomial.map_comp, Polynomial.eval_comp] using ht'
-    have hminus : Tendsto (fun k => (complexify (qe k)).eval (-z)) atTop
-        (𝓝 ((complexify q).eval (-z))) := by
-      have harg : Tendsto (fun k => -z + (ε k : ℂ)) atTop (𝓝 (-z + 0)) :=
-        tendsto_const_nhds.add hεcomplex
-      have ht := (complexify q).continuous.continuousAt.tendsto.comp harg
-      change Tendsto (fun k => (complexify q).eval (-z + (ε k : ℂ)))
-        atTop (𝓝 ((complexify q).eval (-z + 0))) at ht
-      have ht' : Tendsto (fun k => (complexify q).eval (-z + (ε k : ℂ)))
-          atTop (𝓝 ((complexify q).eval (-z))) := by
-        simpa only [add_zero] using ht
-      simpa [qe, complexify, Polynomial.map_comp, Polynomial.eval_comp] using ht'
-    have hraw : Tendsto
-        (fun k => z * (complexify (qe k)).eval z +
-          (c / 2 : ℂ) *
-            ((complexify (qe k)).eval z + (complexify (qe k)).eval (-z)))
-        atTop
-        (𝓝 (z * (complexify q).eval z +
-          (c / 2 : ℂ) * ((complexify q).eval z +
-            (complexify q).eval (-z)))) :=
-      (tendsto_const_nhds.mul hplus).add
-        (tendsto_const_nhds.mul (hplus.add hminus))
-    have hraw' : Tendsto (fun k => (complexify (pe k)).eval z) atTop
-        (𝓝 ((complexify (oddEvenPolynomial odd even)).eval z)) := by
-      rw [← hsource]
-      simpa only [pe, oe, ee, re,
-        eval_complexify_routhApproxSource c] using hraw
-    simpa only [P, p₀, normalized, complexify, Polynomial.map_mul,
-      Polynomial.map_C, Polynomial.eval_mul, Polynomial.eval_C] using
-      (tendsto_const_nhds.mul hraw')
+    simpa only [P, p₀, normalized, ε, qe, oe, re, ee, pe] using
+      tendsto_eval_routhApproxSource q odd even c L hsource z
   refine ⟨?_, ?_⟩
   · have hqnn : HasNonnegCoeffs q := by simpa only [q] using hq.hasNonnegCoeffs
     have hoddnn := hasNonnegCoeffs_right_of_oddEvenPolynomial hqnn
