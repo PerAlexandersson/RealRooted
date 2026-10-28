@@ -1,6 +1,7 @@
 module
 
 import RealRooted.Mathlib.Analysis.Complex.Hurwitz
+import RealRooted.Mathlib.Analysis.Complex.LimitsOfZeros
 import RealRooted.ThreeTermRecurrence.OrderTwoLimitZeros
 import RealRooted.ThreeTermRecurrence.WangZhang
 
@@ -32,9 +33,19 @@ module = "RealRooted.Mathlib.Analysis.Complex.Hurwitz"
 label = "A unique dominant base with vanishing coefficient gives a limit of zeros"
 
 [[theorems]]
+name = "Complex.isLimitOfZeros_imp_dominant_or_coeff_zero"
+module = "RealRooted.Mathlib.Analysis.Complex.LimitsOfZeros"
+label = "Limits of zeros occur only at two dominant bases or a vanishing dominant coefficient"
+
+[[theorems]]
 name = "RealRooted.isLimitOfZeros_two_step_of_roots"
 module = "RealRooted.ThreeTermRecurrence.OrderTwoLimitZeros"
 label = "Limits of zeros of an order-two recurrence"
+
+[[theorems]]
+name = "RealRooted.not_isLimitOfZeros_two_step_of_roots"
+module = "RealRooted.Mathlib.Analysis.Complex.LimitsOfZeros"
+label = "Unequal characteristic roots exclude limits of zeros"
 
 [[theorems]]
 name = "RealRooted.eventually_not_splits_of_nonreal_limit"
@@ -65,6 +76,12 @@ is not constant near $z_0$. Then $z_0$ is a limit of zeros of $(f_n)$.
 $|\beta_k(z_0)| < |\beta_i(z_0)|$ for every $k \neq i$, and that $\alpha_i(z_0) = 0$ while
 $\alpha_i$ does not vanish identically near $z_0$. Then $z_0$ is a limit of zeros of
 $(f_n)$.
+
+**Theorem (reverse direction).** With $f_n$ as above and $\alpha_k, \beta_k$ continuous at
+$z_0$, suppose that $\beta_i(z_0) \neq 0$, $|\beta_k(z_0)| < |\beta_i(z_0)|$ for every
+$k \neq i$, and $\alpha_i(z_0) \neq 0$. Then some ball around $z_0$ contains no zero of $f_n$
+for all sufficiently large $n$. Hence every limit of zeros has two bases of maximal modulus, or a
+unique dominant base whose coefficient vanishes there, or only vanishing bases.
 
 **Order-two recurrences.** Let $W_{n+2} = A\,W_{n+1} + B\,W_n$ with analytic coefficients,
 and suppose that near $z_0$ the characteristic roots $u \neq v$ are analytic with
