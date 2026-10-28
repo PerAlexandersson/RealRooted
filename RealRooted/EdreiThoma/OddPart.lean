@@ -372,9 +372,205 @@ private theorem norm_wK_bound {a b p p' q q' : ℂ} {E : ℝ} (hE : 0 ≤ E)
     _ ≤ E ^ 2 * (‖-a‖ + ‖b‖ + 2) := norm_wM_bound hE hp (by simpa using hp') hq hq'
     _ = E ^ 2 * (‖a‖ + ‖b‖ + 2) := by rw [norm_neg]
 
-private theorem differentiable_deriv' {f : ℂ → ℂ} (hf : Differentiable ℂ f) :
-    Differentiable ℂ (deriv f) :=
-  differentiableOn_univ.mp ((hf.differentiableOn).deriv isOpen_univ)
+/-! We isolate the two analytic cases and the shared derivative estimates used by `key_GI`. -/
+
+/-- The derivative sum is bounded by the two positive-mean estimates on the larger circle. -/
+private lemma norm_deriv_add_le_of_posMean_F_le
+    {g F : ℂ → ℂ} (hg : Differentiable ℂ g) (hF : Differentiable ℂ F)
+    {C₁ C₂ r ρ : ℝ}
+    (hF₁ : ∀ R, 1 ≤ R → posMean F R ≤ posMean g R + C₁ * (1 + R) ^ 2)
+    (hC₂ : C₂ = 2 * C₁ + |(g 0).re| + |(F 0).re|)
+    (hrρ : r < ρ) (hρ1 : 1 ≤ ρ) :
+    ∀ z : ℂ, ‖z‖ = r →
+      ‖deriv g z‖ + ‖deriv F z‖ ≤
+        2 * ρ / (ρ - r) ^ 2 * (4 * posMean g ρ + C₂ * (1 + ρ) ^ 2) := by
+  intro z hz
+  have h1 := norm_deriv_le_posMean hg (z := z) (ρ := ρ) (by rw [hz]; exact hrρ)
+  have h2 := norm_deriv_le_posMean hF (z := z) (ρ := ρ) (by rw [hz]; exact hrρ)
+  rw [hz] at h1 h2
+  have h3 := hF₁ ρ hρ1
+  have hin :
+      (2 * posMean g ρ - (g 0).re) + (2 * posMean F ρ - (F 0).re) ≤
+        4 * posMean g ρ + C₂ * (1 + ρ) ^ 2 := by
+    have hsq : 1 ≤ (1 + ρ) ^ 2 := by nlinarith
+    have b1 := mul_le_mul_of_nonneg_left hsq (abs_nonneg (g 0).re)
+    have b2 := mul_le_mul_of_nonneg_left hsq (abs_nonneg (F 0).re)
+    have b3 := neg_le_abs (g 0).re
+    have b4 := neg_le_abs (F 0).re
+    nlinarith [hC₂]
+  have hfac : 0 ≤ 2 * ρ / (ρ - r) ^ 2 := by positivity
+  nlinarith [mul_le_mul_of_nonneg_left hin hfac]
+
+/-- The common pointwise estimates give the same circle-average bound for `wK` and `wM`. -/
+private lemma circleAverage_posLog_wK_and_wM_le
+    {g F P Q : ℂ → ℂ} (hg : Differentiable ℂ g)
+    (hF : Differentiable ℂ F) (hP : Differentiable ℂ P)
+    (hQ : Differentiable ℂ Q) {C r D : ℝ} (hC : 0 ≤ C) (hr : 0 < r) (hD : 0 ≤ D)
+    (hPb : ∀ z, ‖P z‖ ≤ Real.exp (C * (1 + ‖z‖) ^ 2))
+    (hQb : ∀ z, ‖Q z‖ ≤ Real.exp (C * (1 + ‖z‖) ^ 2))
+    (hder : ∀ z : ℂ, ‖z‖ = r → ‖deriv g z‖ + ‖deriv F z‖ ≤ D) :
+    circleAverage (fun z => log⁺ ‖wK g F P Q z‖) 0 r ≤
+        2 * C * (2 + r) ^ 2 + Real.log (D + 2) ∧
+      circleAverage (fun z => log⁺ ‖wM g F P Q z‖) 0 r ≤
+        2 * C * (2 + r) ^ 2 + Real.log (D + 2) := by
+  have hg' := hg.deriv
+  have hF' := hF.deriv
+  have hP' := hP.deriv
+  have hQ' := hQ.deriv
+  have hK : Differentiable ℂ (wK g F P Q) := by unfold wK; fun_prop
+  have hM : Differentiable ℂ (wM g F P Q) := by unfold wM; fun_prop
+  set E := Real.exp (C * (2 + r) ^ 2) with hE
+  have hE0 : 0 ≤ E := (Real.exp_pos _).le
+  have hle : Real.exp (C * (1 + r) ^ 2) ≤ E := Real.exp_le_exp.mpr
+    (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by positivity) (by linarith) 2) hC)
+  have hlogb : ∀ X : ℂ, ‖X‖ ≤ E ^ 2 * (D + 2) →
+      log⁺ ‖X‖ ≤ 2 * C * (2 + r) ^ 2 + Real.log (D + 2) := by
+    intro X hX
+    have hl0 : 0 ≤ Real.log (D + 2) := Real.log_nonneg (by linarith)
+    apply posLog_le_of_le_exp (norm_nonneg _) (by positivity)
+    rw [Real.exp_add, Real.exp_log (by linarith)]
+    have : E ^ 2 = Real.exp (2 * C * (2 + r) ^ 2) := by
+      rw [hE, sq, ← Real.exp_add]
+      ring_nf
+    rw [← this]
+    exact hX
+  constructor
+  · exact circleAverage_posLog_le hK hr fun z hz => hlogb _ <|
+      (norm_wK_bound (a := deriv g z) (b := deriv F z) (p := P (-z))
+        (p' := deriv P (-z)) (q := Q z) (q' := deriv Q z) hE0
+        ((hPb (-z)).trans (by rw [norm_neg, hz]; exact hle))
+        ((norm_deriv_le_exp hP hC hPb (-z)).trans (by rw [norm_neg, hz]))
+        ((hQb z).trans (by rw [hz]; exact hle))
+        ((norm_deriv_le_exp hQ hC hQb z).trans (by rw [hz]))).trans <| by
+          gcongr
+          exact hder z hz
+  · exact circleAverage_posLog_le hM hr fun z hz => hlogb _ <|
+      (norm_wM_bound (a := deriv g z) (b := deriv F z) (p := P z)
+        (p' := deriv P z) (q := Q z) (q' := deriv Q z) hE0
+        ((hPb z).trans (by rw [hz]; exact hle))
+        ((norm_deriv_le_exp hP hC hPb z).trans (by rw [hz]))
+        ((hQb z).trans (by rw [hz]; exact hle))
+        ((norm_deriv_le_exp hQ hC hQb z).trans (by rw [hz]))).trans <| by
+          gcongr
+          exact hder z hz
+
+/-- In the degenerate Wronskian case, the linear identity directly gives the growth inequality. -/
+private lemma key_GI_of_forall_wM_eq_zero
+    {g F P Q : ℂ → ℂ} (hg : Differentiable ℂ g)
+    (hF : Differentiable ℂ F) (hP : Differentiable ℂ P) (hQ : Differentiable ℂ Q)
+    (hP0 : P 0 = 1) (hQ0 : Q 0 = 1) {C : ℝ} (hC : 0 ≤ C)
+    (hPb : ∀ z, ‖P z‖ ≤ Real.exp (C * (1 + ‖z‖) ^ 2))
+    (hQb : ∀ z, ‖Q z‖ ≤ Real.exp (C * (1 + ‖z‖) ^ 2))
+    (heq : ∀ z, Complex.exp (g z / 2) * P z + Complex.exp (-(g z) / 2) * P (-z) =
+      2 * Complex.exp (F z) * Q z)
+    (hdeg : ∀ z, wM g F P Q z = 0) :
+    ∃ C', 0 ≤ C' ∧ ∀ r ρ, 1 ≤ r → r < ρ →
+      posMean g r ≤ 2 * Real.log (2 + 2 * ρ / (ρ - r) ^ 2 *
+        (4 * posMean g ρ + C' * (1 + ρ) ^ 2)) + C' * (1 + r) ^ 2 := by
+  obtain ⟨l, hl2, hl⟩ := degenerate_identity hg hF hP hQ hP0 hQ0 heq hdeg
+  have hK : Differentiable ℂ (fun z => l * Q z * P (-z)) := by fun_prop
+  have hM : Differentiable ℂ (fun z => (2 - l) * P z * Q z) := by fun_prop
+  obtain ⟨C₀, hC₀⟩ := posMean_le_of_exp_mul_eq (G := g) hK hM (x₀ := 0)
+    (by simp [hP0, hQ0, sub_ne_zero.mpr hl2.symm]) hl
+  let C' := log⁺ ‖l‖ + log⁺ ‖2 - l‖ + |C₀| + 4 * C
+  have hC' : 0 ≤ C' :=
+    add_nonneg (add_nonneg (add_nonneg posLog_nonneg posLog_nonneg) (abs_nonneg _))
+      (by positivity)
+  refine ⟨C', hC', fun r ρ hr hrρ => ?_⟩
+  have hr0 : 0 < r := by linarith
+  have hρ : 0 ≤ ρ := by linarith
+  have hKb : circleAverage (fun z => log⁺ ‖l * Q z * P (-z)‖) 0 r ≤
+      log⁺ ‖l‖ + 2 * C * (1 + r) ^ 2 :=
+    circleAverage_posLog_le hK hr0 fun z hz => by
+      have e1 := posLog_norm_mul_le (l * Q z) (P (-z))
+      have e2 := posLog_norm_mul_le l (Q z)
+      have p1 := posLog_norm_le_of_exp_bound hC hQb z
+      have p2 := posLog_norm_le_of_exp_bound hC hPb (-z)
+      rw [hz] at p1
+      rw [norm_neg, hz] at p2
+      linarith
+  have hMb : circleAverage (fun z => log⁺ ‖(2 - l) * P z * Q z‖) 0 r ≤
+      log⁺ ‖2 - l‖ + 2 * C * (1 + r) ^ 2 :=
+    circleAverage_posLog_le hM hr0 fun z hz => by
+      have e1 := posLog_norm_mul_le ((2 - l) * P z) (Q z)
+      have e2 := posLog_norm_mul_le (2 - l) (P z)
+      have p1 := posLog_norm_le_of_exp_bound hC hQb z
+      have p2 := posLog_norm_le_of_exp_bound hC hPb z
+      rw [hz] at p1 p2
+      linarith
+  have h := hC₀ r hr
+  have harg : 1 ≤ 2 + 2 * ρ / (ρ - r) ^ 2 *
+      (4 * posMean g ρ + C' * (1 + ρ) ^ 2) := by
+    have hpos : 0 ≤ 2 * ρ / (ρ - r) ^ 2 *
+        (4 * posMean g ρ + C' * (1 + ρ) ^ 2) := by
+      have := posMean_nonneg g ρ
+      positivity
+    linarith
+  have hlog := Real.log_nonneg harg
+  have hsq : 1 ≤ (1 + r) ^ 2 := by nlinarith
+  have a1 := mul_le_mul_of_nonneg_left hsq (posLog_nonneg (x := ‖l‖))
+  have a2 := mul_le_mul_of_nonneg_left hsq (posLog_nonneg (x := ‖2 - l‖))
+  have a3 := mul_le_mul_of_nonneg_left hsq (abs_nonneg C₀)
+  have a4 := le_abs_self C₀
+  linarith
+
+/-- In the nondegenerate Wronskian case, derivative bounds give the growth inequality. -/
+private lemma key_GI_of_wM_ne_zero
+    {g F P Q : ℂ → ℂ} (hg : Differentiable ℂ g)
+    (hF : Differentiable ℂ F) (hP : Differentiable ℂ P) (hQ : Differentiable ℂ Q)
+    {C C₁ : ℝ} (hC : 0 ≤ C) (hC₁ : 0 ≤ C₁)
+    (hPb : ∀ z, ‖P z‖ ≤ Real.exp (C * (1 + ‖z‖) ^ 2))
+    (hQb : ∀ z, ‖Q z‖ ≤ Real.exp (C * (1 + ‖z‖) ^ 2))
+    (heq : ∀ z, Complex.exp (g z / 2) * P z + Complex.exp (-(g z) / 2) * P (-z) =
+      2 * Complex.exp (F z) * Q z)
+    (hF₁ : ∀ r, 1 ≤ r → posMean F r ≤ posMean g r + C₁ * (1 + r) ^ 2)
+    {x₀ : ℂ} (hx₀ : wM g F P Q x₀ ≠ 0) :
+    ∃ C', 0 ≤ C' ∧ ∀ r ρ, 1 ≤ r → r < ρ →
+      posMean g r ≤ 2 * Real.log (2 + 2 * ρ / (ρ - r) ^ 2 *
+        (4 * posMean g ρ + C' * (1 + ρ) ^ 2)) + C' * (1 + r) ^ 2 := by
+  have hg' := hg.deriv
+  have hF' := hF.deriv
+  have hP' := hP.deriv
+  have hQ' := hQ.deriv
+  have hK : Differentiable ℂ (wK g F P Q) := by unfold wK; fun_prop
+  have hM : Differentiable ℂ (wM g F P Q) := by unfold wM; fun_prop
+  obtain ⟨C₀, hC₀⟩ := posMean_le_of_exp_mul_eq (G := g) hK hM hx₀
+    (wronskian_identity hg hF hP hQ heq)
+  let C₂ := 2 * C₁ + |(g 0).re| + |(F 0).re|
+  have hC₂0 : 0 ≤ C₂ := by positivity
+  let C' := C₂ + 16 * C + |C₀|
+  refine ⟨C', by positivity, fun r ρ hr hrρ => ?_⟩
+  have hr0 : 0 < r := by linarith
+  have hρ1 : 1 ≤ ρ := by linarith
+  let D := 2 * ρ / (ρ - r) ^ 2 * (4 * posMean g ρ + C₂ * (1 + ρ) ^ 2)
+  have hD0 : 0 ≤ D := by
+    have := posMean_nonneg g ρ
+    positivity
+  have hder : ∀ z : ℂ, ‖z‖ = r → ‖deriv g z‖ + ‖deriv F z‖ ≤ D := by
+    exact norm_deriv_add_le_of_posMean_F_le hg hF hF₁ rfl hrρ hρ1
+  obtain ⟨hKb, hMb⟩ :=
+    circleAverage_posLog_wK_and_wM_le hg hF hP hQ hC hr0 hD0 hPb hQb hder
+  have h := hC₀ r hr
+  have hDle : D + 2 ≤ 2 + 2 * ρ / (ρ - r) ^ 2 *
+      (4 * posMean g ρ + C' * (1 + ρ) ^ 2) := by
+    have : C₂ * (1 + ρ) ^ 2 ≤ C' * (1 + ρ) ^ 2 := by
+      dsimp only [C']
+      gcongr
+      have := abs_nonneg C₀
+      linarith
+    have : D ≤ 2 * ρ / (ρ - r) ^ 2 *
+        (4 * posMean g ρ + C' * (1 + ρ) ^ 2) := by
+      dsimp only [D]
+      gcongr
+    linarith
+  have hlog := Real.log_le_log (by linarith) hDle
+  have hsq : 1 ≤ (1 + r) ^ 2 := by nlinarith
+  have h2r : (2 + r) ^ 2 ≤ 4 * (1 + r) ^ 2 := by nlinarith
+  have a1 := mul_le_mul_of_nonneg_left h2r hC
+  have a3 := mul_le_mul_of_nonneg_left hsq (abs_nonneg C₀)
+  have a4 := le_abs_self C₀
+  have a5 : 0 ≤ C₂ * (1 + r) ^ 2 := by positivity
+  linarith
 
 /-- The growth inequality for `posMean g` (an elementary substitute for the second main
 private theorem in this situation). -/
@@ -390,138 +586,12 @@ private theorem key_GI {g F P Q : ℂ → ℂ} (hg : Differentiable ℂ g)
       posMean g r ≤ 2 * Real.log (2 + 2 * ρ / (ρ - r) ^ 2 *
         (4 * posMean g ρ + C' * (1 + ρ) ^ 2)) + C' * (1 + r) ^ 2 := by
   obtain ⟨C₁, hC₁, hF₁⟩ := posMean_F_le hg hP hQ hQ0 hC hPb hQb heq
-  have harg : ∀ r ρ C', 0 ≤ C' → r < ρ → 0 ≤ ρ →
-      1 ≤ 2 + 2 * ρ / (ρ - r) ^ 2 * (4 * posMean g ρ + C' * (1 + ρ) ^ 2) := by
-    intro r ρ C' hC' hrρ hρ
-    have : 0 ≤ 2 * ρ / (ρ - r) ^ 2 * (4 * posMean g ρ + C' * (1 + ρ) ^ 2) := by
-      have := posMean_nonneg g ρ; positivity
-    linarith
   by_cases hdeg : ∀ z, wM g F P Q z = 0
-  · obtain ⟨l, hl2, hl⟩ := degenerate_identity hg hF hP hQ hP0 hQ0 heq hdeg
-    have hK : Differentiable ℂ (fun z => l * Q z * P (-z)) := by fun_prop
-    have hM : Differentiable ℂ (fun z => (2 - l) * P z * Q z) := by fun_prop
-    obtain ⟨C₀, hC₀⟩ := posMean_le_of_exp_mul_eq (G := g) hK hM (x₀ := 0)
-      (by simp [hP0, hQ0, sub_ne_zero.mpr hl2.symm]) hl
-    have hC' : 0 ≤ log⁺ ‖l‖ + log⁺ ‖2 - l‖ + |C₀| + 4 * C :=
-      add_nonneg (add_nonneg (add_nonneg posLog_nonneg posLog_nonneg) (abs_nonneg _))
-        (by positivity)
-    refine ⟨log⁺ ‖l‖ + log⁺ ‖2 - l‖ + |C₀| + 4 * C, hC', fun r ρ hr hrρ => ?_⟩
-    have hr0 : 0 < r := by linarith
-    have hKb : circleAverage (fun z => log⁺ ‖l * Q z * P (-z)‖) 0 r ≤
-        log⁺ ‖l‖ + 2 * C * (1 + r) ^ 2 :=
-      circleAverage_posLog_le hK hr0 fun z hz => by
-      have e1 := posLog_norm_mul_le (l * Q z) (P (-z))
-      have e2 := posLog_norm_mul_le l (Q z)
-      have p1 := posLog_norm_le_of_exp_bound hC hQb z
-      have p2 := posLog_norm_le_of_exp_bound hC hPb (-z)
-      rw [hz] at p1; rw [norm_neg, hz] at p2
-      linarith
-    have hMb : circleAverage (fun z => log⁺ ‖(2 - l) * P z * Q z‖) 0 r ≤
-        log⁺ ‖2 - l‖ + 2 * C * (1 + r) ^ 2 :=
-      circleAverage_posLog_le hM hr0 fun z hz => by
-      have e1 := posLog_norm_mul_le ((2 - l) * P z) (Q z)
-      have e2 := posLog_norm_mul_le (2 - l) (P z)
-      have p1 := posLog_norm_le_of_exp_bound hC hQb z
-      have p2 := posLog_norm_le_of_exp_bound hC hPb z
-      rw [hz] at p1 p2
-      linarith
-    have h := hC₀ r hr
-    have hlog := Real.log_nonneg (harg r ρ (log⁺ ‖l‖ + log⁺ ‖2 - l‖ + |C₀| + 4 * C)
-      hC' hrρ (by linarith))
-    have hsq : 1 ≤ (1 + r) ^ 2 := by nlinarith
-    have a1 := mul_le_mul_of_nonneg_left hsq (posLog_nonneg (x := ‖l‖))
-    have a2 := mul_le_mul_of_nonneg_left hsq (posLog_nonneg (x := ‖2 - l‖))
-    have a3 := mul_le_mul_of_nonneg_left hsq (abs_nonneg C₀)
-    have a4 := le_abs_self C₀
-    linarith
+  · exact key_GI_of_forall_wM_eq_zero
+      hg hF hP hQ hP0 hQ0 hC hPb hQb heq hdeg
   · push Not at hdeg
     obtain ⟨x₀, hx₀⟩ := hdeg
-    have hg' := differentiable_deriv' hg
-    have hF' := differentiable_deriv' hF
-    have hP' := differentiable_deriv' hP
-    have hQ' := differentiable_deriv' hQ
-    have hK : Differentiable ℂ (wK g F P Q) := by unfold wK; fun_prop
-    have hM : Differentiable ℂ (wM g F P Q) := by unfold wM; fun_prop
-    obtain ⟨C₀, hC₀⟩ := posMean_le_of_exp_mul_eq (G := g) hK hM hx₀
-      (wronskian_identity hg hF hP hQ heq)
-    set C₂ := 2 * C₁ + |(g 0).re| + |(F 0).re| with hC₂
-    have hC₂0 : 0 ≤ C₂ := by positivity
-    refine ⟨C₂ + 16 * C + |C₀|, by positivity, fun r ρ hr hrρ => ?_⟩
-    have hr0 : 0 < r := by linarith
-    have hρ1 : 1 ≤ ρ := by linarith
-    have hfac : 0 ≤ 2 * ρ / (ρ - r) ^ 2 := by positivity
-    set D := 2 * ρ / (ρ - r) ^ 2 * (4 * posMean g ρ + C₂ * (1 + ρ) ^ 2) with hD
-    have hD0 : 0 ≤ D := by have := posMean_nonneg g ρ; positivity
-    have hder : ∀ z : ℂ, ‖z‖ = r → ‖deriv g z‖ + ‖deriv F z‖ ≤ D := by
-      intro z hz
-      have h1 := norm_deriv_le_posMean hg (z := z) (ρ := ρ) (by rw [hz]; exact hrρ)
-      have h2 := norm_deriv_le_posMean hF (z := z) (ρ := ρ) (by rw [hz]; exact hrρ)
-      rw [hz] at h1 h2
-      have h3 := hF₁ ρ hρ1
-      have hin : (2 * posMean g ρ - (g 0).re) + (2 * posMean F ρ - (F 0).re) ≤
-          4 * posMean g ρ + C₂ * (1 + ρ) ^ 2 := by
-        have hsq : 1 ≤ (1 + ρ) ^ 2 := by nlinarith
-        have b1 := mul_le_mul_of_nonneg_left hsq (abs_nonneg (g 0).re)
-        have b2 := mul_le_mul_of_nonneg_left hsq (abs_nonneg (F 0).re)
-        have b3 := neg_le_abs (g 0).re
-        have b4 := neg_le_abs (F 0).re
-        nlinarith [hC₂]
-      nlinarith [mul_le_mul_of_nonneg_left hin hfac]
-    set E := Real.exp (C * (2 + r) ^ 2) with hE
-    have hE0 : 0 ≤ E := (Real.exp_pos _).le
-    have hle : Real.exp (C * (1 + r) ^ 2) ≤ E := Real.exp_le_exp.mpr
-      (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by positivity) (by linarith) 2) hC)
-    have hlogb : ∀ X : ℂ, ‖X‖ ≤ E ^ 2 * (D + 2) →
-        log⁺ ‖X‖ ≤ 2 * C * (2 + r) ^ 2 + Real.log (D + 2) := by
-      intro X hX
-      have hl0 : 0 ≤ Real.log (D + 2) := Real.log_nonneg (by linarith)
-      apply posLog_le_of_le_exp (norm_nonneg _) (by positivity)
-      rw [Real.exp_add, Real.exp_log (by linarith)]
-      have : E ^ 2 = Real.exp (2 * C * (2 + r) ^ 2) := by
-        rw [hE, sq, ← Real.exp_add]; ring_nf
-      rw [← this]; exact hX
-    have hKb : circleAverage (fun z => log⁺ ‖wK g F P Q z‖) 0 r ≤
-        2 * C * (2 + r) ^ 2 + Real.log (D + 2) :=
-      circleAverage_posLog_le hK hr0 fun z hz => by
-      apply hlogb
-      refine (norm_wK_bound (a := deriv g z) (b := deriv F z) (p := P (-z))
-        (p' := deriv P (-z)) (q := Q z) (q' := deriv Q z) hE0
-        ((hPb (-z)).trans (by rw [norm_neg, hz]; exact hle))
-        ((norm_deriv_le_exp hP hC hPb (-z)).trans (by rw [norm_neg, hz]))
-        ((hQb z).trans (by rw [hz]; exact hle))
-        ((norm_deriv_le_exp hQ hC hQb z).trans (by rw [hz]))).trans ?_
-      gcongr
-      exact hder z hz
-    have hMb : circleAverage (fun z => log⁺ ‖wM g F P Q z‖) 0 r ≤
-        2 * C * (2 + r) ^ 2 + Real.log (D + 2) :=
-      circleAverage_posLog_le hM hr0 fun z hz => by
-      apply hlogb
-      refine (norm_wM_bound (a := deriv g z) (b := deriv F z) (p := P z)
-        (p' := deriv P z) (q := Q z) (q' := deriv Q z) hE0
-        ((hPb z).trans (by rw [hz]; exact hle))
-        ((norm_deriv_le_exp hP hC hPb z).trans (by rw [hz]))
-        ((hQb z).trans (by rw [hz]; exact hle))
-        ((norm_deriv_le_exp hQ hC hQb z).trans (by rw [hz]))).trans ?_
-      gcongr
-      exact hder z hz
-    have h := hC₀ r hr
-    -- compare `log (D + 2)` with the target logarithm
-    have hDle : D + 2 ≤ 2 + 2 * ρ / (ρ - r) ^ 2 *
-        (4 * posMean g ρ + (C₂ + 16 * C + |C₀|) * (1 + ρ) ^ 2) := by
-      have : C₂ * (1 + ρ) ^ 2 ≤ (C₂ + 16 * C + |C₀|) * (1 + ρ) ^ 2 := by
-        gcongr; have := abs_nonneg C₀; linarith
-      have : D ≤ 2 * ρ / (ρ - r) ^ 2 *
-          (4 * posMean g ρ + (C₂ + 16 * C + |C₀|) * (1 + ρ) ^ 2) := by
-        rw [hD]; gcongr
-      linarith
-    have hlog := Real.log_le_log (by linarith) hDle
-    have hsq : 1 ≤ (1 + r) ^ 2 := by nlinarith
-    have h2r : (2 + r) ^ 2 ≤ 4 * (1 + r) ^ 2 := by nlinarith
-    have a1 := mul_le_mul_of_nonneg_left h2r hC
-    have a3 := mul_le_mul_of_nonneg_left hsq (abs_nonneg C₀)
-    have a4 := le_abs_self C₀
-    have a5 : 0 ≤ C₂ * (1 + r) ^ 2 := by positivity
-    linarith
+    exact key_GI_of_wM_ne_zero hg hF hP hQ hC hC₁ hPb hQb heq hF₁ hx₀
 
 /-- **Key growth estimate.** Under the functional identity
 `e^{g/2} P(z) + e^{-g/2} P(-z) = 2 e^{F} Q(z)` with `P, Q` of order at most two

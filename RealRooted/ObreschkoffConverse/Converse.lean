@@ -99,6 +99,135 @@ private theorem isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
     have hws_len : (us ++ [uR]).length = F.natDegree := by simp_all
     exact ⟨hF_ne, hsplits hws_sub hws_len⟩
 
+/-- A degree-one interlacing has a leftmost right-hand root below every left root. -/
+private theorem exists_leftmost_root_lt_roots_of_interlaces {f g : ℝ[X]}
+    (hgf : Interlaces g f) (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hdeg_pos : 1 ≤ f.natDegree) :
+    ∃ r₀, f.IsRoot r₀ ∧ (∀ t ∈ g.roots, r₀ < t) ∧
+      ∀ r, f.IsRoot r → r₀ ≤ r := by
+  obtain ⟨hf, hg, _, rs, ss, hrs_sorted, _, hrs_eq, hss_eq, hinter⟩ := hgf
+  have hrs_len : rs.length = f.natDegree :=
+    hf.2.length_eq_natDegree_of_coe_eq_roots hrs_eq
+  have hrs_ne : rs ≠ [] := by grind
+  obtain ⟨r₀, rs', hrs_cons⟩ := List.exists_cons_of_ne_nil hrs_ne
+  have hr₀_root : f.IsRoot r₀ := by
+    apply (mem_roots hf.1).mp
+    rw [← hrs_eq, hrs_cons]
+    simp
+  have hinter_cons : ListInterlaces ss (r₀ :: rs') := by simpa [hrs_cons] using hinter
+  have hr₀_lt : ∀ t ∈ g.roots, r₀ < t := by
+    intro t ht
+    have ht_ss : t ∈ ss := by
+      apply Multiset.mem_coe.mp
+      rwa [hss_eq]
+    have hr₀_le_t := listInterlaces_all_ge ss rs' r₀ hinter_cons t ht_ss
+    refine lt_of_le_of_ne hr₀_le_t ?_
+    intro hEq
+    exact hno r₀ hr₀_root (hEq ▸ (mem_roots hg.1).mp ht)
+  refine ⟨r₀, hr₀_root, hr₀_lt, ?_⟩
+  intro r hr
+  have hr_mem : r ∈ rs := by
+    apply Multiset.mem_coe.mp
+    rw [hrs_eq]
+    exact (mem_roots hf.1).mpr hr
+  have hhead_eq : rs.head! = r₀ := by simp [hrs_cons]
+  rw [← hhead_eq]
+  exact hrs_sorted.head!_le hr_mem
+
+/-- Opposite signs against an interlacer force sign changes at consecutive roots. -/
+private theorem consecutive_eval_mul_neg_of_interlaces {f g F : ℝ[X]}
+    (hgf : Interlaces g f) (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hroot_sign : ∀ r, f.IsRoot r → F.eval r * g.eval r < 0) :
+    ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
+      f.roots.sort (· ≤ ·) = pre ++ r₁ :: r₂ :: rest →
+      F.eval r₁ * F.eval r₂ < 0 := by
+  intro pre r₁ r₂ rest hEq
+  have hr₁_root : f.IsRoot r₁ := by
+    apply (mem_roots hgf.1.1).mp
+    rw [← Multiset.sort_eq (s := f.roots) (r := (· ≤ ·)), hEq]
+    simp
+  have hr₂_root : f.IsRoot r₂ := by
+    apply (mem_roots hgf.1.1).mp
+    rw [← Multiset.sort_eq (s := f.roots) (r := (· ≤ ·)), hEq]
+    simp
+  have hFg₁ := hroot_sign r₁ hr₁_root
+  have hFg₂ := hroot_sign r₂ hr₂_root
+  have hgg :=
+    ObreschkoffConverse.eval_mul_eval_neg_of_interlaces_consecutive_of_no_common
+      hgf hno pre hEq
+  exact mul_neg_of_mul_neg_of_mul_neg hFg₁ hFg₂ hgg
+
+/-- Negative leading coefficient supplies the missing root left of an interlacing pair. -/
+private theorem exists_left_outer_root_of_neg_leadingCoeff {f g F : ℝ[X]}
+    (hgf : Interlaces g f) (hg_pos : HasPosLeadingCoeff g)
+    (hdeg : F.natDegree = f.natDegree) (hdeg_pos : 2 ≤ f.natDegree)
+    (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
+    (hroot_sign : ∀ r, f.IsRoot r → F.eval r * g.eval r < 0)
+    (hF_lc_neg : F.leadingCoeff < 0) :
+    ∃ uL, F.IsRoot uL ∧ ∀ r, f.IsRoot r → uL < r := by
+  obtain ⟨r₀, hr₀_root, hr₀_lt_g, hr₀_le⟩ :=
+    exists_leftmost_root_lt_roots_of_interlaces hgf hno (by lia)
+  have hF_ne : F ≠ 0 := by
+    intro h
+    simp [h] at hF_lc_neg
+  have hnegF_pos : HasPosLeadingCoeff (C (-1 : ℝ) * F) := by
+    simpa using (hasPosLeadingCoeff_neg hF_lc_neg : HasPosLeadingCoeff (-F))
+  have hnegF_deg : (C (-1 : ℝ) * F).natDegree = f.natDegree := by
+    rw [show C (-1 : ℝ) * F = -F by simp, natDegree_neg, hdeg]
+  have hnegF_degree_pos : 0 < (C (-1 : ℝ) * F).degree := by
+    apply natDegree_pos_iff_degree_pos.mp
+    rw [hnegF_deg]
+    lia
+  have houter_of {u : ℝ} (hu_le : u ≤ r₀)
+      (hu_root_neg : (C (-1 : ℝ) * F).IsRoot u)
+      (hnegF_eval_ne : (C (-1 : ℝ) * F).eval r₀ ≠ 0) :
+      ∃ uL, F.IsRoot uL ∧ ∀ r, f.IsRoot r → uL < r := by
+    have hu_root : F.IsRoot u := by
+      rw [Polynomial.IsRoot.def] at hu_root_neg ⊢
+      rw [eval_mul, eval_C] at hu_root_neg
+      linarith
+    have hu_lt : u < r₀ := lt_of_le_of_ne hu_le fun hEq ↦ by
+      subst hEq
+      exact hnegF_eval_ne hu_root_neg
+    exact ⟨u, hu_root, fun r hr ↦ lt_of_lt_of_le hu_lt (hr₀_le r hr)⟩
+  rcases Nat.even_or_odd f.natDegree with hf_even | hf_odd
+  · have hg_odd : Odd g.natDegree := by
+      rcases hf_even with ⟨k, hk⟩
+      use k - 1
+      have := hgf.2.2.1
+      lia
+    have hg_left_neg : g.eval r₀ < 0 :=
+      eval_neg_of_all_roots_gt_of_odd hgf.2.1.1 hg_pos hg_odd hr₀_lt_g
+    have hF_left_pos : 0 < F.eval r₀ := by
+      have := hroot_sign r₀ hr₀_root
+      nlinarith
+    have hnegF_left_neg : (C (-1 : ℝ) * F).eval r₀ < 0 := by
+      rw [eval_mul, eval_C]
+      linarith
+    have ht := tendsto_eval_atBot_atTop_of_posLeadingCoeff_even hnegF_pos
+      hnegF_degree_pos (hnegF_deg ▸ hf_even)
+    obtain ⟨uL, huL_le, huL_root⟩ :=
+      exists_isRoot_le_of_eval_neg_of_tendsto_atBot_atTop hnegF_left_neg ht
+    exact houter_of huL_le huL_root (ne_of_lt hnegF_left_neg)
+  · have hg_even : Even g.natDegree := by
+      rcases hf_odd with ⟨k, hk⟩
+      use k
+      have := hgf.2.2.1
+      lia
+    have hg_left_pos : 0 < g.eval r₀ :=
+      eval_pos_of_all_roots_gt_of_even hgf.2.1.1 hg_pos hg_even hr₀_lt_g
+    have hF_left_neg : F.eval r₀ < 0 := by
+      have := hroot_sign r₀ hr₀_root
+      nlinarith
+    have hnegF_left_pos : 0 < (C (-1 : ℝ) * F).eval r₀ := by
+      rw [eval_mul, eval_C]
+      linarith
+    have ht := tendsto_eval_atBot_atBot_of_posLeadingCoeff_odd hnegF_pos
+      hnegF_degree_pos (hnegF_deg ▸ hf_odd)
+    obtain ⟨uL, huL_le, huL_root⟩ :=
+      exists_isRoot_le_of_eval_pos_of_tendsto_atBot_atBot hnegF_left_pos ht
+    exact houter_of huL_le huL_root (ne_of_gt hnegF_left_pos)
+
 -- This private sign-change theorem is near the default heartbeat limit after
 -- dependency rebuilds; the proof term is unchanged.
 /-- Same-degree `hroot_sign` real-rootedness without assuming the target has
@@ -118,188 +247,27 @@ theorem ObreschkoffConverse.isRealRooted_of_interlaces_eval_mul_neg_same_any_lc
     (hdeg_pos : 2 ≤ f.natDegree)
     (hroot_sign : ∀ r, f.IsRoot r → F.eval r * g.eval r < 0) : (F ≠ 0 ∧ F.Splits) := by
   by_cases hF_pos : HasPosLeadingCoeff F
-  · exact (strictInterl_of_interlaces_eval_mul_neg_same hgf hg_pos hF_pos hdeg hroot_sign).2.1
-  obtain ⟨hf, hg, hgdeg, rs0, ss, hrs0_sorted, hss_sorted, hrs0_eq, hss_eq, hint0⟩ := hgf
-  let rs := f.roots.sort (· ≤ ·)
-  have hrs_eq : (↑rs : Multiset ℝ) = f.roots := Multiset.sort_eq ..
-  have hrs_sorted : rs.Pairwise (· ≤ ·) := Multiset.pairwise_sort ..
-  have hrs0_eq_rs : rs0 = rs := by
-    apply List.Perm.eq_of_pairwise' hrs0_sorted hrs_sorted
-    exact Multiset.coe_eq_coe.mp (hrs0_eq.trans hrs_eq.symm)
-  subst hrs0_eq_rs
-  have hint : ListInterlaces ss rs := by lia
-  have hgf' : Interlaces g f :=
-    ⟨hf, hg, hgdeg, rs, ss, hrs_sorted, hss_sorted, hrs_eq,
-      hss_eq, hint⟩
+  · exact
+      (strictInterl_of_interlaces_eval_mul_neg_same hgf hg_pos hF_pos hdeg hroot_sign).2.1
   have hF_natdeg_pos : 0 < F.natDegree := by lia
   have hF_ne : F ≠ 0 := by
-    intro h0
-    simp [h0] at hF_natdeg_pos
-  have hF_lc_ne : F.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hF_ne
-  have hF_lc_neg : F.leadingCoeff < 0 :=
-    lt_of_le_of_ne (not_lt.mp hF_pos) hF_lc_ne
-  have hrs_len : rs.length = f.natDegree := by
-    rw [show rs = f.roots.sort (· ≤ ·) by lia, Multiset.length_sort,
-      Polynomial.splits_iff_card_roots.mp hf.2]
-  have hrs_ne : rs ≠ [] := by
     intro h
-    rw [h] at hrs_len
-    simp only [List.length_nil] at hrs_len
-    lia
-  obtain ⟨r₀, rs', hrs_cons⟩ : ∃ r₀ rs', rs = r₀ :: rs' := by
-    cases h : rs with
-    | nil => contradiction
-    | cons r₀ rs' => exact ⟨r₀, rs', rfl⟩
-  have hint_cons : ListInterlaces ss (r₀ :: rs') := by
-    rw [← hrs_cons]
-    exact hint
-  have hhead_eq : rs.head! = r₀ := by simp [hrs_cons]
-  have hr₀_root : f.IsRoot r₀ := by
-    apply (mem_roots hf.1).mp
-    rw [← hrs_eq, hrs_cons]
-    simp
-  have hno_g_at_f : ∀ r, f.IsRoot r → ¬ g.IsRoot r := by
+    simp [h] at hF_natdeg_pos
+  have hF_lc_neg : F.leadingCoeff < 0 :=
+    lt_of_le_of_ne (not_lt.mp hF_pos) (leadingCoeff_ne_zero.mpr hF_ne)
+  have hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r := by
     intro r hr hgr
-    have hprod := hroot_sign r hr
-    rw [hgr, mul_zero] at hprod
+    have := hroot_sign r hr
+    rw [hgr, mul_zero] at this
     linarith
-  have hhead_lt_roots_g : ∀ t ∈ g.roots, r₀ < t := by
-    intro t ht
-    have ht_ss : t ∈ ss := by
-      apply Multiset.mem_coe.mp
-      rw [hss_eq]
-      exact ht
-    have hr₀_le_t : r₀ ≤ t := listInterlaces_all_ge ss rs' r₀ hint_cons t ht_ss
-    have ht_root : g.IsRoot t := (mem_roots hg.1).mp ht
-    refine lt_of_le_of_ne hr₀_le_t ?_
-    intro hEq
-    subst hEq
-    exact hno_g_at_f r₀ hr₀_root ht_root
-  have hsign :
-      ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
-        f.roots.sort (· ≤ ·) = pre ++ r₁ :: r₂ :: rest →
-        F.eval r₁ * F.eval r₂ < 0 := by
-    intro pre r₁ r₂ rest hEq
-    have hEq_rs : rs = pre ++ r₁ :: r₂ :: rest := hEq
-    have hr₁_mem : r₁ ∈ rs := by
-      rw [hEq_rs]
-      simp only [List.mem_append, List.mem_cons, true_or, or_true]
-    have hr₁_root : f.IsRoot r₁ := by
-      apply (mem_roots hf.1).mp
-      rw [← hrs_eq]
-      exact Multiset.mem_coe.mpr hr₁_mem
-    have hr₂_mem : r₂ ∈ rs := by
-      rw [hEq_rs]
-      simp only [List.mem_append, List.mem_cons, true_or, or_true]
-    have hr₂_root : f.IsRoot r₂ := by
-      apply (mem_roots hf.1).mp
-      rw [← hrs_eq]
-      exact Multiset.mem_coe.mpr hr₂_mem
-    have hFg₁ : F.eval r₁ * g.eval r₁ < 0 := hroot_sign r₁ hr₁_root
-    have hFg₂ : F.eval r₂ * g.eval r₂ < 0 := hroot_sign r₂ hr₂_root
-    have hgg : g.eval r₁ * g.eval r₂ < 0 :=
-      eval_mul_eval_neg_of_interlaces_consecutive_of_no_common hgf' hno_g_at_f pre hEq
-    exact mul_neg_of_mul_neg_of_mul_neg hFg₁ hFg₂ hgg
-  have hnegF_pos : HasPosLeadingCoeff (C (-1 : ℝ) * F) := by
-    simpa using (hasPosLeadingCoeff_neg hF_lc_neg : HasPosLeadingCoeff (-F))
-  have hnegF_deg : (C (-1 : ℝ) * F).natDegree = f.natDegree := by
-    have h_eq : C (-1 : ℝ) * F = -F := by simp only [map_neg, map_one, neg_mul, one_mul]
-    rw [h_eq, natDegree_neg, hdeg]
-  have hnegF_natdeg_pos : 0 < (C (-1 : ℝ) * F).natDegree := by
-    rw [hnegF_deg]
-    lia
-  have hnegF_deg_pos : 0 < (C (-1 : ℝ) * F).degree :=
-    natDegree_pos_iff_degree_pos.mp hnegF_natdeg_pos
-  have hleft :
-      ∃ uL, F.IsRoot uL ∧ ∀ r, f.IsRoot r → uL < r := by
-    rcases Nat.even_or_odd f.natDegree with hf_even | hf_odd
-    · have hg_odd : Odd g.natDegree := by
-        have h_even : Even (g.natDegree + 1) := by
-          rw [hgdeg]
-          exact hf_even
-        rcases h_even with ⟨k, hk⟩
-        use k - 1
-        lia
-      have hg_left_neg : g.eval r₀ < 0 :=
-        eval_neg_of_all_roots_gt_of_odd hg.1 hg_pos hg_odd hhead_lt_roots_g
-      have hF_left_pos : 0 < F.eval r₀ := by
-        have hprod := hroot_sign r₀ hr₀_root
-        nlinarith
-      have hnegF_left_neg : (C (-1 : ℝ) * F).eval r₀ < 0 := by
-        rw [eval_mul, eval_C]
-        linarith
-      have hnegF_even : Even (C (-1 : ℝ) * F).natDegree := by
-        rw [hnegF_deg]
-        exact hf_even
-      have ht :
-          Filter.Tendsto (fun x => (C (-1 : ℝ) * F).eval x) Filter.atBot Filter.atTop :=
-        tendsto_eval_atBot_atTop_of_posLeadingCoeff_even hnegF_pos hnegF_deg_pos hnegF_even
-      obtain ⟨uL, huL_le, huL_root_neg⟩ :=
-        exists_isRoot_le_of_eval_neg_of_tendsto_atBot_atTop hnegF_left_neg ht
-      have huL_root : F.IsRoot uL := by
-        rw [Polynomial.IsRoot.def] at huL_root_neg ⊢
-        rw [eval_mul, eval_C] at huL_root_neg
-        linarith
-      have huL_lt_r₀ : uL < r₀ := by
-        refine lt_of_le_of_ne huL_le ?_
-        intro hEq
-        subst hEq
-        exact ne_of_lt hnegF_left_neg huL_root_neg
-      refine ⟨uL, huL_root, ?_⟩
-      intro r hr
-      have hr_mem : r ∈ rs := by
-        have hr_roots : r ∈ f.roots := (mem_roots hf.1).mpr hr
-        rw [← hrs_eq] at hr_roots
-        exact Multiset.mem_coe.mp hr_roots
-      have hr₀_le_r : r₀ ≤ r := by
-        rw [← hhead_eq]
-        exact hrs_sorted.head!_le hr_mem
-      linarith
-    · have hg_even : Even g.natDegree := by
-        have h_odd : Odd (g.natDegree + 1) := by
-          rw [hgdeg]
-          exact hf_odd
-        rcases h_odd with ⟨k, hk⟩
-        use k
-        lia
-      have hg_left_pos : 0 < g.eval r₀ :=
-        eval_pos_of_all_roots_gt_of_even hg.1 hg_pos hg_even hhead_lt_roots_g
-      have hF_left_neg : F.eval r₀ < 0 := by
-        have hprod := hroot_sign r₀ hr₀_root
-        nlinarith
-      have hnegF_left_pos : 0 < (C (-1 : ℝ) * F).eval r₀ := by
-        rw [eval_mul, eval_C]
-        linarith
-      have hnegF_odd : Odd (C (-1 : ℝ) * F).natDegree := by
-        rw [hnegF_deg]
-        exact hf_odd
-      have ht :
-          Filter.Tendsto (fun x => (C (-1 : ℝ) * F).eval x) Filter.atBot Filter.atBot :=
-        tendsto_eval_atBot_atBot_of_posLeadingCoeff_odd hnegF_pos hnegF_deg_pos hnegF_odd
-      obtain ⟨uL, huL_le, huL_root_neg⟩ :=
-        exists_isRoot_le_of_eval_pos_of_tendsto_atBot_atBot hnegF_left_pos ht
-      have huL_root : F.IsRoot uL := by
-        rw [Polynomial.IsRoot.def] at huL_root_neg ⊢
-        rw [eval_mul, eval_C] at huL_root_neg
-        linarith
-      have huL_lt_r₀ : uL < r₀ := by
-        refine lt_of_le_of_ne huL_le ?_
-        intro hEq
-        subst hEq
-        exact ne_of_gt hnegF_left_pos huL_root_neg
-      refine ⟨uL, huL_root, ?_⟩
-      intro r hr
-      have hr_mem : r ∈ rs := by
-        have hr_roots : r ∈ f.roots := (mem_roots hf.1).mpr hr
-        rw [← hrs_eq] at hr_roots
-        exact Multiset.mem_coe.mp hr_roots
-      have hr₀_le_r : r₀ ≤ r := by
-        rw [← hhead_eq]
-        exact hrs_sorted.head!_le hr_mem
-      linarith
+  have hsign :=
+    consecutive_eval_mul_neg_of_interlaces hgf hno hroot_sign
+  have hleft :=
+    exists_left_outer_root_of_neg_leadingCoeff hgf hg_pos hdeg hdeg_pos hno
+      hroot_sign hF_lc_neg
   exact
     isRealRooted_of_consecutive_signs_of_natDegree_eq_of_outer_root
-      hf.1 hf.2 hF_ne hdeg (by lia) hsign (Or.inl hleft)
+      hgf.1.1 hgf.1.2 hF_ne hdeg (by lia) hsign (Or.inl hleft)
 
 private theorem strictInterl_of_allComboRealRooted_of_no_common
     (hstep :

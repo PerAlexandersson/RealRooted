@@ -15,6 +15,140 @@ noncomputable section
 
 namespace RealRooted.MaWang
 
+/-- A maximal right-root count with the wrong evaluation sign forces a shared root. -/
+private lemma isRoot_of_countP_gt_eq_rest_add_two
+    {f g F : ℝ[X]} {rs ts : List ℝ}
+    (hF_splits : F.Splits) (hF_pos : HasPosLeadingCoeff F)
+    (hrs_eq : (↑rs : Multiset ℝ) = f.roots)
+    (hts_eq : (↑ts : Multiset ℝ) = F.roots)
+    (hroot_nonpos : ∀ r, f.IsRoot r → F.eval r * g.eval r ≤ 0)
+    (hgsign :
+      ∀ (pre : List ℝ) {r : ℝ} {rest : List ℝ},
+        rs = pre ++ r :: rest →
+        (Even rest.length → 0 < g.eval r) ∧ (Odd rest.length → g.eval r < 0))
+    (pre : List ℝ) {r : ℝ} {rest : List ℝ}
+    (hEq : rs = pre ++ r :: rest)
+    (hcount_gt : ts.countP (r < ·) = rest.length + 2) :
+    F.IsRoot r := by
+  have hr_root : f.IsRoot r := isRoot_of_mem_sorted_roots_eq hrs_eq hEq
+  have hFg_nonpos : F.eval r * g.eval r ≤ 0 := hroot_nonpos r hr_root
+  rcases Nat.even_or_odd rest.length with heven | hodd
+  · have hF_nonpos : F.eval r ≤ 0 := by
+      have hg_pos' : 0 < g.eval r := (hgsign pre hEq).1 heven
+      nlinarith [hFg_nonpos, hg_pos']
+    exact isRoot_of_eval_nonpos_of_even_countP_gt hF_splits hF_pos hts_eq hF_nonpos
+      (by grind)
+  · have hF_nonneg : 0 ≤ F.eval r := by
+      have hg_neg' : g.eval r < 0 := (hgsign pre hEq).2 hodd
+      nlinarith [hFg_nonpos, hg_neg']
+    exact isRoot_of_eval_nonneg_of_odd_countP_gt hF_splits hF_pos hts_eq hF_nonneg
+      (by grind)
+
+/-- The first left root has at least the degree offset many right roots below it. -/
+private lemma offset_le_countP_le_of_first
+    {F : ℝ[X]} {rs ts : List ℝ} {off : ℕ}
+    (hF_ne : F ≠ 0) (hts_eq : (↑ts : Multiset ℝ) = F.roots)
+    (hoff_le : off ≤ 1) (hoff : ts.length = rs.length + off)
+    (hroot_of_count_gt :
+      ∀ (pre : List ℝ) {r : ℝ} {rest : List ℝ},
+        rs = pre ++ r :: rest →
+        ts.countP (r < ·) = rest.length + 2 →
+        F.IsRoot r) :
+    ∀ {r : ℝ} {rest : List ℝ},
+      rs = r :: rest → off ≤ ts.countP (· ≤ r) := by
+  intro r rest hEq
+  rcases Nat.le_one_iff_eq_zero_or_eq_one.mp hoff_le with rfl | rfl
+  · simp
+  have hEq' : rs = ([] : List ℝ) ++ r :: rest := by simp_all
+  by_contra hnot
+  have hcount_r : ts.countP (· ≤ r) = 0 := by lia
+  have hrs_len' : rs.length = rest.length + 1 := by simp_all
+  have hcount_gt : ts.countP (r < ·) = rest.length + 2 := by
+    have hsplit := countP_le_add_countP_gt_eq_length ts r
+    lia
+  have hr_Froot : F.IsRoot r := hroot_of_count_gt [] hEq' hcount_gt
+  have hr_mem : r ∈ ts := by
+    apply Multiset.mem_coe.mp
+    simp_all
+  grind
+
+/-- Consecutive left roots force the next strict lower bound on the right-root count. -/
+private lemma add_offset_lt_countP_le_of_consecutive
+    {F : ℝ[X]} {rs ts : List ℝ} {off : ℕ}
+    (hF_ne : F ≠ 0) (hts_eq : (↑ts : Multiset ℝ) = F.roots)
+    (hoff : ts.length = rs.length + off)
+    (hstrict :
+      ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
+        rs = pre ++ r₁ :: r₂ :: rest → r₁ < r₂)
+    (hfirst :
+      ∀ {r : ℝ} {rest : List ℝ},
+        rs = r :: rest → off ≤ ts.countP (· ≤ r))
+    (hroot_of_count_gt :
+      ∀ (pre : List ℝ) {r : ℝ} {rest : List ℝ},
+        rs = pre ++ r :: rest →
+        ts.countP (r < ·) = rest.length + 2 →
+        F.IsRoot r) :
+    ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
+      rs = pre ++ r₁ :: r₂ :: rest →
+      pre.length + off < ts.countP (· ≤ r₂) := by
+  intro pre r₁ r₂ rest hEq
+  induction pre using List.reverseRecOn generalizing r₁ r₂ rest with
+  | nil =>
+      have hEq_head : rs = r₁ :: r₂ :: rest := by simp_all
+      have hfirst_r₁ : off ≤ ts.countP (· ≤ r₁) := hfirst hEq_head
+      by_contra hnot
+      have hbad : ts.countP (· ≤ r₂) ≤ off := by simp_all
+      have hr₁_lt_r₂ : r₁ < r₂ := hstrict [] hEq
+      have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) :=
+        List.countP_mono_left <| by grind
+      have hcount_r₁ : ts.countP (· ≤ r₁) = off := by lia
+      have hcount_r₂ : ts.countP (· ≤ r₂) = off := by lia
+      have hEq_next : rs = ([r₁] : List ℝ) ++ r₂ :: rest := by simp_all
+      have hrs_len' : rs.length = rest.length + 2 := by simp_all
+      have hcount_gt : ts.countP (r₂ < ·) = rest.length + 2 := by
+        have hsplit := countP_le_add_countP_gt_eq_length ts r₂
+        lia
+      have hr₂_Froot : F.IsRoot r₂ := hroot_of_count_gt [r₁] hEq_next hcount_gt
+      have hr₂_mem : r₂ ∈ ts := by
+        apply Multiset.mem_coe.mp
+        simp_all
+      have hcount_strict : ts.countP (· ≤ r₁) < ts.countP (· ≤ r₂) := by
+        apply countP_lt_countP_of_exists
+        · grind
+        · exact hr₂_mem
+        · simp [not_le_of_gt hr₁_lt_r₂]
+        · simp
+      lia
+  | append_singleton pre x ih =>
+      have hEq_prev : rs = pre ++ x :: r₁ :: r₂ :: rest := by simp_all
+      have hprev : pre.length + off < ts.countP (· ≤ r₁) := ih hEq_prev
+      by_cases hgood : (pre ++ [x]).length + off < ts.countP (· ≤ r₂)
+      · exact hgood
+      have hlen_pre : (pre ++ [x]).length = pre.length + 1 := by simp
+      have hr₁_lt_r₂ : r₁ < r₂ := hstrict (pre ++ [x]) hEq
+      have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) :=
+        List.countP_mono_left <| by grind
+      have hbad : ts.countP (· ≤ r₂) ≤ pre.length + off + 1 := by lia
+      have hcount_r₁ : ts.countP (· ≤ r₁) = pre.length + off + 1 := by lia
+      have hcount_r₂ : ts.countP (· ≤ r₂) = pre.length + off + 1 := by lia
+      have hEq_next : rs = ((pre ++ [x]) ++ [r₁]) ++ r₂ :: rest := by simp_all
+      have hrs_len' : rs.length = pre.length + rest.length + 3 := by grind
+      have hcount_gt : ts.countP (r₂ < ·) = rest.length + 2 := by
+        have hsplit := countP_le_add_countP_gt_eq_length ts r₂
+        lia
+      have hr₂_Froot : F.IsRoot r₂ :=
+        hroot_of_count_gt ((pre ++ [x]) ++ [r₁]) hEq_next hcount_gt
+      have hr₂_mem : r₂ ∈ ts := by
+        apply Multiset.mem_coe.mp
+        simp_all
+      have hcount_strict : ts.countP (· ≤ r₁) < ts.countP (· ≤ r₂) := by
+        apply countP_lt_countP_of_exists
+        · grind
+        · exact hr₂_mem
+        · simp [not_le_of_gt hr₁_lt_r₂]
+        · simp
+      lia
+
 private theorem strictInterl_of_interlaces_eval_mul_nonpos_of_no_common_aux
     {f g F : ℝ[X]} (hgf : Interlaces g f) (hg_pos : HasPosLeadingCoeff g)
     (hF_ne : F ≠ 0) (hF_splits : F.Splits) (hF_pos : HasPosLeadingCoeff F)
@@ -58,104 +192,19 @@ private theorem strictInterl_of_interlaces_eval_mul_nonpos_of_no_common_aux
         rs = pre ++ r :: rest →
         ts.countP (· < r) ≤ pre.length + off :=
     countP_lt_of_eq_max_isRoot (rs := rs) hF_ne hts_eq hcount_le hroot_on_max
-  have hroot_of_count_gt :
-      ∀ (pre : List ℝ) {r : ℝ} {rest : List ℝ},
-        rs = pre ++ r :: rest →
-        ts.countP (r < ·) = rest.length + 2 →
-        F.IsRoot r := by
-    intro pre r rest hEq hcount_gt
-    have hr_root : f.IsRoot r := isRoot_of_mem_sorted_roots_eq hrs_eq hEq
-    have hFg_nonpos : F.eval r * g.eval r ≤ 0 := hroot_nonpos r hr_root
-    rcases Nat.even_or_odd rest.length with heven | hodd
-    · have hF_nonpos : F.eval r ≤ 0 := by
-        have hg_pos' : 0 < g.eval r := (hgsign pre hEq).1 heven
-        nlinarith [hFg_nonpos, hg_pos']
-      exact isRoot_of_eval_nonpos_of_even_countP_gt hF_splits hF_pos hts_eq hF_nonpos
-        (by grind)
-    · have hF_nonneg : 0 ≤ F.eval r := by
-        have hg_neg' : g.eval r < 0 := (hgsign pre hEq).2 hodd
-        nlinarith [hFg_nonpos, hg_neg']
-      exact isRoot_of_eval_nonneg_of_odd_countP_gt hF_splits hF_pos hts_eq hF_nonneg
-        (by grind)
+  have hroot_of_count_gt :=
+    isRoot_of_countP_gt_eq_rest_add_two hF_splits hF_pos hrs_eq hts_eq
+      hroot_nonpos hgsign
   have hfirst :
       ∀ {r : ℝ} {rest : List ℝ},
         rs = r :: rest → off ≤ ts.countP (· ≤ r) := by
-    intro r rest hEq
-    rcases Nat.le_one_iff_eq_zero_or_eq_one.mp hoff_le with rfl | rfl
-    · simp
-    have hEq' : rs = ([] : List ℝ) ++ r :: rest := by simp_all
-    by_contra hnot
-    have hcount_r : ts.countP (· ≤ r) = 0 := by lia
-    have hrs_len' : rs.length = rest.length + 1 := by simp_all
-    have hcount_gt : ts.countP (r < ·) = rest.length + 2 := by
-      have hsplit := countP_le_add_countP_gt_eq_length ts r
-      lia
-    have hr_Froot : F.IsRoot r := hroot_of_count_gt [] hEq' hcount_gt
-    have hr_mem : r ∈ ts := by
-      apply Multiset.mem_coe.mp
-      simp_all
-    grind
+    exact offset_le_countP_le_of_first hF_ne hts_eq hoff_le hoff hroot_of_count_gt
   have hle :
       ∀ (pre : List ℝ) {r₁ r₂ : ℝ} {rest : List ℝ},
         rs = pre ++ r₁ :: r₂ :: rest →
         pre.length + off < ts.countP (· ≤ r₂) := by
-    intro pre r₁ r₂ rest hEq
-    induction pre using List.reverseRecOn generalizing r₁ r₂ rest with
-    | nil =>
-        have hEq_head : rs = r₁ :: r₂ :: rest := by simp_all
-        have hfirst_r₁ : off ≤ ts.countP (· ≤ r₁) := hfirst hEq_head
-        by_contra hnot
-        have hbad : ts.countP (· ≤ r₂) ≤ off := by simp_all
-        have hr₁_lt_r₂ : r₁ < r₂ := hstrict [] hEq
-        have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) :=
-          List.countP_mono_left <| by grind
-        have hcount_r₁ : ts.countP (· ≤ r₁) = off := by lia
-        have hcount_r₂ : ts.countP (· ≤ r₂) = off := by lia
-        have hEq_next : rs = ([r₁] : List ℝ) ++ r₂ :: rest := by simp_all
-        have hrs_len' : rs.length = rest.length + 2 := by simp_all
-        have hcount_gt : ts.countP (r₂ < ·) = rest.length + 2 := by
-          have hsplit := countP_le_add_countP_gt_eq_length ts r₂
-          lia
-        have hr₂_Froot : F.IsRoot r₂ := hroot_of_count_gt [r₁] hEq_next hcount_gt
-        have hr₂_mem : r₂ ∈ ts := by
-          apply Multiset.mem_coe.mp
-          simp_all
-        have hcount_strict : ts.countP (· ≤ r₁) < ts.countP (· ≤ r₂) := by
-          apply countP_lt_countP_of_exists
-          · grind
-          · exact hr₂_mem
-          · simp [not_le_of_gt hr₁_lt_r₂]
-          · simp
-        lia
-    | append_singleton pre x ih =>
-        have hEq_prev : rs = pre ++ x :: r₁ :: r₂ :: rest := by simp_all
-        have hprev : pre.length + off < ts.countP (· ≤ r₁) := ih hEq_prev
-        by_cases hgood : (pre ++ [x]).length + off < ts.countP (· ≤ r₂)
-        · exact hgood
-        have hlen_pre : (pre ++ [x]).length = pre.length + 1 := by simp
-        have hr₁_lt_r₂ : r₁ < r₂ := hstrict (pre ++ [x]) hEq
-        have hmono : ts.countP (· ≤ r₁) ≤ ts.countP (· ≤ r₂) :=
-          List.countP_mono_left <| by grind
-        have hbad : ts.countP (· ≤ r₂) ≤ pre.length + off + 1 := by lia
-        have hcount_r₁ : ts.countP (· ≤ r₁) = pre.length + off + 1 := by lia
-        have hcount_r₂ : ts.countP (· ≤ r₂) = pre.length + off + 1 := by lia
-        have hEq_next : rs = ((pre ++ [x]) ++ [r₁]) ++ r₂ :: rest := by simp_all
-        have hrs_len' : rs.length = pre.length + rest.length + 3 := by grind
-        have hcount_gt : ts.countP (r₂ < ·) = rest.length + 2 := by
-          have hsplit := countP_le_add_countP_gt_eq_length ts r₂
-          lia
-        have hr₂_Froot : F.IsRoot r₂ :=
-          hroot_of_count_gt ((pre ++ [x]) ++ [r₁]) hEq_next hcount_gt
-        have hr₂_mem : r₂ ∈ ts := by
-          apply Multiset.mem_coe.mp
-          simp_all
-        have hcount_strict : ts.countP (· ≤ r₁) < ts.countP (· ≤ r₂) := by
-          apply countP_lt_countP_of_exists
-          · grind
-          · exact hr₂_mem
-          · simp [not_le_of_gt hr₁_lt_r₂]
-          · simp
-        lia
+    exact add_offset_lt_countP_le_of_consecutive hF_ne hts_eq hoff hstrict hfirst
+      hroot_of_count_gt
   rcases Nat.le_one_iff_eq_zero_or_eq_one.mp hoff_le with rfl | rfl
   · apply strictInterl_of_count_bounds_same hf.1 hf.2 hF_ne hF_splits hrs_sorted
       hts_sorted hrs_eq hts_eq (by simpa using hdeg)
