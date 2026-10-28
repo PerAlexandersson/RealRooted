@@ -435,29 +435,6 @@ theorem descPochhammerBasis_repr_forwardDifference (p : ℝ[X]) (j : ℕ) :
 
 /-! ### Proper position of the difference -/
 
-private theorem listInterlaces_exists_le' :
-    ∀ (ss rs : List ℝ), ListInterlaces ss rs → ∀ s ∈ ss, ∃ r ∈ rs, r ≤ s
-  | [], _, _, s, hs => by simp at hs
-  | _ :: _, [], h, _, _ => by simp [ListInterlaces] at h
-  | _ :: _, [_], h, _, _ => by simp [ListInterlaces] at h
-  | _ :: ss, r₁ :: r₂ :: rs, h, s, hs => by
-      obtain ⟨hr, _, htail⟩ := h
-      rcases List.mem_cons.mp hs with hs0 | hs'
-      · exact ⟨r₁, by simp, hs0 ▸ hr⟩
-      · obtain ⟨r, hr', hle⟩ := listInterlaces_exists_le' ss (r₂ :: rs) htail s hs'
-        exact ⟨r, List.mem_cons_of_mem _ hr', hle⟩
-
-private theorem listInterlaces_left_ge_head :
-    ∀ (ss : List ℝ) (r : ℝ) (rs : List ℝ),
-      ListInterlaces ss (r :: rs) → ∀ x ∈ ss, r ≤ x
-  | [], _, _, _, x, hx => by simp at hx
-  | _ :: _, _, [], h, _, _ => by simp [ListInterlaces] at h
-  | s :: ss, r, r₂ :: rs, h, x, hx => by
-      obtain ⟨hr, hs, htail⟩ := h
-      rcases List.mem_cons.mp hx with rfl | hx'
-      · exact hr
-      · exact hr.trans (hs.trans (listInterlaces_left_ge_head ss r₂ rs htail x hx'))
-
 private theorem pairwise_of_listInterlaces_map' :
     ∀ (ss rs : List ℝ), ListInterlaces ss rs → ListInterlaces ss (rs.map (· + 1)) →
       ss.Pairwise (fun a b : ℝ => a + 1 ≤ b)
@@ -471,7 +448,7 @@ private theorem pairwise_of_listInterlaces_map' :
       have ih := pairwise_of_listInterlaces_map' ss (r₂ :: rs) h3 (by simpa using h3')
       rw [List.pairwise_cons]
       refine ⟨fun x hx => ?_, ih⟩
-      have := listInterlaces_left_ge_head ss (r₂ + 1) (rs.map (· + 1)) h3' x hx
+      have := listInterlaces_all_ge ss (rs.map (· + 1)) (r₂ + 1) h3' x hx
       linarith
 
 /-- The difference `W` in proper position with both `p` and `p(x - 1)`, `deg W + 1 = deg p`, has
@@ -512,9 +489,12 @@ private theorem meshGE_one_of_strictInterl_of_comp {W p : ℝ[X]} (h1 : StrictIn
     rw [← list_eq_sort hss hss_eq]
     exact pairwise_of_listInterlaces_map' ss rs hint hint'
   · rw [← hss_eq] at hr
-    obtain ⟨y, hy, hyr⟩ := listInterlaces_exists_le' ss _ hint' r (Multiset.mem_coe.mp hr)
-    obtain ⟨q, hq, rfl⟩ := List.mem_map.mp hy
-    exact ⟨q, by rw [← hrs_eq]; exact Multiset.mem_coe.mpr hq, hyr⟩
+    obtain _ | ⟨q, rs₀⟩ := rs
+    · obtain _ | ⟨s, ss⟩ := ss
+      · simp at hr
+      · simp [ListInterlaces] at hint'
+    · exact ⟨q, by simp [← hrs_eq],
+        listInterlaces_all_ge ss _ _ (by simpa using hint') r (Multiset.mem_coe.mp hr)⟩
 
 /-- The forward difference `∇ p` of a polynomial of degree `m + 1` with positive leading
 coefficient, mesh at least one and nonnegative roots has degree `m`, positive leading coefficient,
