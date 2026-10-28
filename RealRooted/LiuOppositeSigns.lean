@@ -187,6 +187,104 @@ theorem of_rootCountAbove_left_sub_right_bounds_below_largest_of_nonRoot
     rw [hf_zero, hg_zero]
     norm_num
 
+/-- A root-free threshold after `c` and a least root after that threshold make
+the open interval from `c` to the least root root-free. -/
+private lemma no_roots_between_of_no_mem_Ioc_of_least_root
+    {f g : ℝ[X]} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0) {b c d : ℝ}
+    (hgap_f : ∀ z ∈ f.roots, z ≤ c ∨ b < z)
+    (hgap_g : ∀ z ∈ g.roots, z ≤ c ∨ b < z)
+    (hdleast : ∀ z : ℝ, b < z → f.IsRoot z ∨ g.IsRoot z → d ≤ z) :
+    ∀ z : ℝ, c < z → z < d → ¬ f.IsRoot z ∧ ¬ g.IsRoot z := by
+  intro z hcz hzd
+  constructor
+  · intro hfz
+    have hz_mem : z ∈ f.roots := (Polynomial.mem_roots hf_ne).mpr hfz
+    rcases hgap_f z hz_mem with hzc | hbz
+    · exact (not_lt_of_ge hzc) hcz
+    · exact (not_lt_of_ge (hdleast z hbz (Or.inl hfz))) hzd
+  · intro hgz
+    have hz_mem : z ∈ g.roots := (Polynomial.mem_roots hg_ne).mpr hgz
+    rcases hgap_g z hz_mem with hzc | hbz
+    · exact (not_lt_of_ge hzc) hcz
+    · exact (not_lt_of_ge (hdleast z hbz (Or.inr hgz))) hzd
+
+/-- If no combined root lies above the root-free threshold, the least combined
+root above `x` is the largest root of the left polynomial. -/
+private lemma least_root_eq_largest_of_no_root_above_threshold
+    {f g : ℝ[X]} (hf_ne : f ≠ 0) {x b c r : ℝ}
+    (hr : IsLargestRoot f r) (hx : x < r)
+    (hleast : ∀ z : ℝ, x < z → f.IsRoot z ∨ g.IsRoot z → c ≤ z)
+    (hgap_f : ∀ z ∈ f.roots, z ≤ c ∨ b < z)
+    (hnext : ¬ ∃ d : ℝ, b < d ∧ (f.IsRoot d ∨ g.IsRoot d)) :
+    c = r := by
+  apply le_antisymm (hleast r hx (Or.inl hr.isRoot))
+  by_contra hnot
+  have hcr : c < r := lt_of_not_ge hnot
+  by_cases hrb : r ≤ b
+  · have hr_mem : r ∈ f.roots := (Polynomial.mem_roots hf_ne).mpr hr.isRoot
+    rcases hgap_f r hr_mem with hle | hlt <;> linarith
+  · exact False.elim (hnext ⟨r, lt_of_not_ge hrb, Or.inl hr.isRoot⟩)
+
+/-- Consecutive combined roots owned by the same polynomial force an odd
+difference of the two strict-upper root counts between them. -/
+private lemma odd_rootCountAbove_sub_of_sameOwned_consecutive_roots
+    {f g : ℝ[X]} (hdisj : ∀ c : ℝ, f.IsRoot c → ¬ g.IsRoot c)
+    (hcross : CrossOwnedNotOddGaps f g) {c d b : ℝ}
+    (hcb : c < b) (hbd : b < d)
+    (hcroot : f.IsRoot c ∨ g.IsRoot c) (hdroot : f.IsRoot d ∨ g.IsRoot d)
+    (hbetween : ∀ z : ℝ, c < z → z < d → ¬ f.IsRoot z ∧ ¬ g.IsRoot z)
+    (hsame : (f.IsRoot c ∧ f.IsRoot d) ∨ (g.IsRoot c ∧ g.IsRoot d)) :
+    Odd (((f.roots.filter (b < ·)).card : ℤ) -
+      (g.roots.filter (b < ·)).card) := by
+  by_contra hnot_odd
+  have howners := hcross c d b hcb hbd hcroot hdroot hbetween hnot_odd
+  rcases hsame with ⟨hfc, hfd⟩ | ⟨hgc, hgd⟩
+  · rcases howners with ⟨_, hgd⟩ | ⟨hgc, _⟩
+    · exact hdisj d hfd hgd
+    · exact hdisj c hfc hgc
+  · rcases howners with ⟨hfc, _⟩ | ⟨_, hfd⟩
+    · exact hdisj c hfc hgc
+    · exact hdisj d hfd hgd
+
+/-- Crossing the least combined root changes the root-count difference by one,
+with sign determined by the polynomial that owns the root. -/
+private lemma rootCountAbove_sub_steps_of_least_root_no_mem_Ioc
+    {f g : ℝ[X]} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0) {x c b : ℝ}
+    (hxc : x < c) (hcb : c < b)
+    (hsimple_f : ∀ c : ℝ, f.IsRoot c → f.roots.count c = 1)
+    (hsimple_g : ∀ c : ℝ, g.IsRoot c → g.roots.count c = 1)
+    (hdisj : ∀ c : ℝ, f.IsRoot c → ¬ g.IsRoot c)
+    (hleast : ∀ z : ℝ, x < z → f.IsRoot z ∨ g.IsRoot z → c ≤ z)
+    (hgap_f : ∀ z ∈ f.roots, z ≤ c ∨ b < z)
+    (hgap_g : ∀ z ∈ g.roots, z ≤ c ∨ b < z) :
+    (f.IsRoot c →
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card =
+        ((f.roots.filter (b < ·)).card : ℤ) - (g.roots.filter (b < ·)).card + 1) ∧
+    (g.IsRoot c →
+      ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card =
+        ((f.roots.filter (b < ·)).card : ℤ) - (g.roots.filter (b < ·)).card - 1) := by
+  constructor
+  · intro hfc
+    exact card_roots_filter_gt_sub_eq_add_one_of_left_least_root_no_mem_Ioc
+      hf_ne hg_ne hxc hcb.le (hdisj c hfc) (hsimple_f c hfc)
+      hleast hgap_f hgap_g rfl
+  · intro hgc
+    exact card_roots_filter_gt_sub_eq_sub_one_of_right_least_root_no_mem_Ioc
+      hf_ne hg_ne hxc hcb.le (fun hfc => hdisj c hfc hgc)
+      (hsimple_g c hgc) hleast hgap_f hgap_g rfl
+
+/-- A combined root above a threshold below the two largest roots forces the
+threshold to lie below the left largest root. -/
+private lemma lt_left_largest_of_exists_combined_root_gt
+    {f g : ℝ[X]} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0) {b r s : ℝ}
+    (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
+    (hnext : ∃ d : ℝ, b < d ∧ (f.IsRoot d ∨ g.IsRoot d)) :
+    b < r := by
+  obtain ⟨d, hbd, hdf | hdg⟩ := hnext
+  · exact hbd.trans_le (hr.roots_le d ((Polynomial.mem_roots hf_ne).mpr hdf))
+  · exact hbd.trans_le
+      ((hs.roots_le d ((Polynomial.mem_roots hg_ne).mpr hdg)).trans hlargest)
+
 theorem owner_diff_bounds_of_crossOwned_consecutive_roots
     {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
     (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : s ≤ r)
@@ -230,52 +328,29 @@ theorem owner_diff_bounds_of_crossOwned_consecutive_roots
     dsimp [μ]
     exact card_filter_gt_lt_of_mem_Ioc (f.roots + g.roots)
       (le_of_lt hxb) hc_mem hxc (le_of_lt hcb)
-  have hstep_f : f.IsRoot c → D x = D b + 1 := by
-    intro hfc
-    simpa [D] using card_roots_filter_gt_sub_eq_add_one_of_left_least_root_no_mem_Ioc
-      hf_ne hg_ne hxc (le_of_lt hcb) (hdisj c hfc) (hsimple_f c hfc)
-      hleast hgap_f hgap_g rfl
-  have hstep_g : g.IsRoot c → D x = D b - 1 := by
-    intro hgc
-    simpa [D] using card_roots_filter_gt_sub_eq_sub_one_of_right_least_root_no_mem_Ioc
-      hf_ne hg_ne hxc (le_of_lt hcb) (fun hfc => hdisj c hfc hgc)
-      (hsimple_g c hgc) hleast hgap_f hgap_g rfl
+  obtain ⟨hstep_f, hstep_g⟩ :=
+    rootCountAbove_sub_steps_of_least_root_no_mem_Ioc
+      hf_ne hg_ne hxc hcb hsimple_f hsimple_g hdisj hleast hgap_f hgap_g
   refine ⟨c, hxc, hcroot, hleast, ?_⟩
   by_cases hnext : ∃ d : ℝ, b < d ∧ (f.IsRoot d ∨ g.IsRoot d)
-  · have hbr : b < r := by
-      obtain ⟨d₀, hbd₀, hd₀root⟩ := hnext
-      have hd₀_le_r : d₀ ≤ r := by
-        rcases hd₀root with hdf | hdg
-        · exact hr.roots_le d₀ ((Polynomial.mem_roots hf_ne).mpr hdf)
-        · exact (hs.roots_le d₀ ((Polynomial.mem_roots hg_ne).mpr hdg)).trans hlargest
-      exact hbd₀.trans_le hd₀_le_r
+  · have hbr : b < r :=
+      lt_left_largest_of_exists_combined_root_gt
+        hf_ne hg_ne hr hs hlargest hnext
     obtain ⟨d, hbd, hdroot, hdleast, howner_d⟩ := ih b hmeasure hbr hfb hgb
     have hbetween :
-        ∀ z : ℝ, c < z → z < d → ¬ f.IsRoot z ∧ ¬ g.IsRoot z := by
-      intro z hcz hzd
-      constructor
-      · intro hfz
-        have hz_mem : z ∈ f.roots := (Polynomial.mem_roots hf_ne).mpr hfz
-        rcases hgap_f z hz_mem with hzc | hbz
-        · exact (not_lt_of_ge hzc) hcz
-        · exact (not_lt_of_ge (hdleast z hbz (Or.inl hfz))) hzd
-      · intro hgz
-        have hz_mem : z ∈ g.roots := (Polynomial.mem_roots hg_ne).mpr hgz
-        rcases hgap_g z hz_mem with hzc | hbz
-        · exact (not_lt_of_ge hzc) hcz
-        · exact (not_lt_of_ge (hdleast z hbz (Or.inr hgz))) hzd
+        ∀ z : ℝ, c < z → z < d → ¬ f.IsRoot z ∧ ¬ g.IsRoot z :=
+      no_roots_between_of_no_mem_Ioc_of_least_root
+        hf_ne hg_ne hgap_f hgap_g hdleast
     rcases howner_d with ⟨hdf, hdiff_b_low, hdiff_b_high⟩ |
         ⟨hdg, hdiff_b_low, hdiff_b_high⟩
     · rcases hcroot with hfc | hgc
       · have hdiff_b_ne_two : D b ≠ 2 := by
-          intro hdiff_b_eq
-          have hnot_odd_b : ¬ Odd (D b) := by simp [hdiff_b_eq]
-          have hcross_cd :=
-            hcross c d b hcb hbd (Or.inl hfc) hdroot hbetween
-              (by simpa [D] using hnot_odd_b)
-          rcases hcross_cd with ⟨_hfc, hgd⟩ | ⟨hgc, _hfd⟩
-          · exact hdisj d hdf hgd
-          · exact hdisj c hfc hgc
+          intro heq
+          have hodd := odd_rootCountAbove_sub_of_sameOwned_consecutive_roots
+            hdisj hcross hcb hbd (Or.inl hfc) hdroot hbetween (Or.inl ⟨hfc, hdf⟩)
+          have hnot : ¬ Odd (D b) := by simp [heq]
+          apply hnot
+          simpa [D] using hodd
         have hdiff_b_lt_two : D b < 2 :=
           lt_of_le_of_ne hdiff_b_high hdiff_b_ne_two
         have hdiff := hstep_f hfc
@@ -286,14 +361,12 @@ theorem owner_diff_bounds_of_crossOwned_consecutive_roots
       · have hdiff := hstep_f hfc
         exact Or.inl ⟨hfc, by linarith, by linarith⟩
       · have hdiff_b_ne_zero : D b ≠ 0 := by
-          intro hdiff_b_eq
-          have hnot_odd_b : ¬ Odd (D b) := by simp [hdiff_b_eq]
-          have hcross_cd :=
-            hcross c d b hcb hbd (Or.inr hgc) hdroot hbetween
-              (by simpa [D] using hnot_odd_b)
-          rcases hcross_cd with ⟨hfc, _hgd⟩ | ⟨_hgc, hfd⟩
-          · exact hdisj c hfc hgc
-          · exact hdisj d hfd hdg
+          intro heq
+          have hodd := odd_rootCountAbove_sub_of_sameOwned_consecutive_roots
+            hdisj hcross hcb hbd (Or.inr hgc) hdroot hbetween (Or.inr ⟨hgc, hdg⟩)
+          have hnot : ¬ Odd (D b) := by simp [heq]
+          apply hnot
+          simpa [D] using hodd
         have hdiff_b_pos : 0 < D b :=
           lt_of_le_of_ne hdiff_b_low (Ne.symm hdiff_b_ne_zero)
         have hdiff := hstep_g hgc
@@ -304,15 +377,9 @@ theorem owner_diff_bounds_of_crossOwned_consecutive_roots
     have hdiff_b : D b = 0 := by
       simpa [D] using card_roots_filter_gt_sub_eq_zero_of_no_isRoot_or_isRoot_gt
         hf_ne hg_ne hno_above
-    have hcr : c ≤ r := hleast r hx (Or.inl hr.isRoot)
-    have hrc : r ≤ c := by
-      by_contra hnot
-      have hcr_lt : c < r := lt_of_not_ge hnot
-      by_cases hrb : r ≤ b
-      · have hr_mem : r ∈ f.roots := (Polynomial.mem_roots hf_ne).mpr hr.isRoot
-        rcases hgap_f r hr_mem with hle | hlt <;> linarith
-      · exact False.elim (hnext ⟨r, lt_of_not_ge hrb, Or.inl hr.isRoot⟩)
-    have hcr_eq : c = r := le_antisymm hcr hrc
+    have hcr_eq : c = r :=
+      least_root_eq_largest_of_no_root_above_threshold
+        hf_ne hr hx hleast hgap_f hnext
     have hfc : f.IsRoot c := by simpa [hcr_eq] using hr.isRoot
     have hdiff := hstep_f hfc
     exact Or.inl ⟨hfc, by linarith, by linarith⟩

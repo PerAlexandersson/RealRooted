@@ -26,6 +26,60 @@ namespace RealRooted
 
 noncomputable section
 
+/-- Affine restrictions converge pointwise when one base coordinate tends to
+zero, with the limiting polynomial specialized in that coordinate. -/
+private lemma tendsto_eval_affineLineRestriction_update_specializeZero
+    {alpha : Type*} [DecidableEq alpha]
+    (P : MvPolynomial alpha ℂ) (i : alpha)
+    (z v : alpha → ℂ) {δ : ℕ → ℂ}
+    (hδ : Filter.Tendsto δ Filter.atTop (nhds 0)) (t : ℂ) :
+    Filter.Tendsto
+      (fun k => (MvPolynomial.affineLineRestriction
+        (Function.update z i (δ k)) (Function.update v i 0) P).eval t)
+      Filter.atTop
+      (nhds ((MvPolynomial.affineLineRestriction z v
+        (MvPolynomial.specializeZero i P)).eval t)) := by
+  classical
+  let base : ℕ → alpha → ℂ := fun k => Function.update z i (δ k)
+  let direction : alpha → ℂ := Function.update v i 0
+  let Q := MvPolynomial.specializeZero i P
+  let A := MvPolynomial.affineLineRestriction z v Q
+  have hbase : Filter.Tendsto base Filter.atTop
+      (nhds (Function.update z i 0)) := by
+    rw [tendsto_pi_nhds]
+    intro j
+    by_cases hji : j = i
+    · subst j
+      simpa [base] using hδ
+    · simp [base, hji]
+  have hassign : Filter.Tendsto
+      (fun k j => base k j + direction j * t) Filter.atTop
+      (nhds fun j => Function.update z i 0 j + direction j * t) := by
+    rw [tendsto_pi_nhds]
+    intro j
+    exact (tendsto_pi_nhds.mp hbase j).add_const _
+  have heval := (MvPolynomial.continuous_eval P).continuousAt.tendsto.comp hassign
+  have hsource :
+      (fun k => (MvPolynomial.affineLineRestriction (base k) direction P).eval t) =
+        (fun k => MvPolynomial.eval (fun j => base k j + direction j * t) P) := by
+    funext k
+    rw [MvPolynomial.eval_affineLineRestriction]
+  have htarget : A.eval t = MvPolynomial.eval
+      (fun j => Function.update z i 0 j + direction j * t) P := by
+    dsimp [A, Q]
+    rw [MvPolynomial.eval_affineLineRestriction, MvPolynomial.eval_specializeZero]
+    apply congrArg (fun w : alpha → ℂ => MvPolynomial.eval w P)
+    funext j
+    by_cases hji : j = i
+    · subst j
+      simp [direction]
+    · simp [direction, hji]
+  change Filter.Tendsto
+    (fun k => (MvPolynomial.affineLineRestriction (base k) direction P).eval t)
+    Filter.atTop (nhds (A.eval t))
+  rw [hsource, htarget]
+  exact heval
+
 /-- Specializing one coordinate to zero preserves upper-half-plane stability
 up to the zero polynomial, with no coordinate-degree restriction. -/
 theorem MvUpperHalfPlaneStable.specializeZero_zero_or_general
@@ -102,40 +156,9 @@ theorem MvUpperHalfPlaneStable.specializeZero_zero_or_general
     simpa using ((Complex.continuous_ofReal.tendsto 0).comp hdelta).mul_const I
   have hpeval (t : ℂ) : Filter.Tendsto (fun k => (p k).eval t)
       Filter.atTop (nhds (A.eval t)) := by
-    have hbase : Filter.Tendsto base Filter.atTop
-        (nhds (Function.update z i 0)) := by
-      rw [tendsto_pi_nhds]
-      intro j
-      by_cases hji : j = i
-      · subst j
-        simpa [base] using hdeltaI
-      · simp [base, hji]
-    have hassign : Filter.Tendsto
-        (fun k j => base k j + direction j * t) Filter.atTop
-        (nhds fun j => Function.update z i 0 j + direction j * t) := by
-      rw [tendsto_pi_nhds]
-      intro j
-      exact (tendsto_pi_nhds.mp hbase j).add_const _
-    have heval := (MvPolynomial.continuous_eval P).continuousAt.tendsto.comp hassign
-    have hsource : (fun k => (p k).eval t) =
-        (fun k => MvPolynomial.eval
-          (fun j => base k j + direction j * t) P) := by
-      funext k
-      dsimp [p]
-      rw [MvPolynomial.eval_affineLineRestriction]
-    have htarget : A.eval t = MvPolynomial.eval
-        (fun j => Function.update z i 0 j + direction j * t) P := by
-      dsimp [A]
-      rw [MvPolynomial.eval_affineLineRestriction,
-        MvPolynomial.eval_specializeZero]
-      apply congrArg (fun w : alpha → ℂ => MvPolynomial.eval w P)
-      funext j
-      by_cases hji : j = i
-      · subst j
-        simp [direction]
-      · simp [direction, hji]
-    rw [hsource, htarget]
-    exact heval
+    simpa only [p, base, direction, A] using
+      tendsto_eval_affineLineRestriction_update_specializeZero
+        P i z v hdeltaI t
   have hroot : (0 : ℂ) ∈ A.roots :=
     Polynomial.mem_roots'.mpr ⟨hA, hA0⟩
   have hclosed := Polynomial.roots_mem_of_tendsto_eval_of_natDegree_le
