@@ -573,6 +573,7 @@ import RealRooted.GarloffWagner.KreinExpansion
 import RealRooted.GarloffWagner.Theorem12
 import RealRooted.GeneralizedEulerian
 import RealRooted.GeneralizedEulerian.GeneratingFunction
+import RealRooted.MatrixInterlacing.WeightedThreeState
 import RealRooted.PoweredEulerian
 import RealRooted.GeneralizedSnakePosets
 import RealRooted.GeneralizedSnakePosets.ChainPolynomial
