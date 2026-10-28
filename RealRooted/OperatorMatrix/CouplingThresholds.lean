@@ -24,9 +24,13 @@ namespace RealRooted.OperatorMatrix
 /-- The four nonnegative parameters of a diagonal first-order operator
 `a I + b theta + X (c I + e (N I - theta))`. -/
 structure CouplingDiagonal where
+  /-- The coefficient of the identity. -/
   a : ℝ
+  /-- The coefficient of `theta`. -/
   b : ℝ
+  /-- The coefficient of `X I`. -/
   c : ℝ
+  /-- The coefficient of `X (N I - theta)`. -/
   e : ℝ
 
 /-- The derivative weight `b + e t` on the negative ray `x = -t`. -/
