@@ -1,6 +1,7 @@
 module
 
 import RealRooted.EulerOperator
+import RealRooted.Mathlib.RingTheory.Polynomial.Pochhammer
 public import RealRooted.FiniteFreeRootCount
 public import RealRooted.Hadamard
 public import RealRooted.Interlacing.ReversalCommonFactor
@@ -1466,24 +1467,6 @@ private lemma A119308_eq_model (n : ℕ) :
 def polynomial (n : ℕ) : ℝ[X] :=
   affineThetaJensenPolynomial n
 
-private lemma ascPochhammer_eval_two (k : ℕ) :
-    (ascPochhammer ℝ k).eval 2 = ((k + 1).factorial : ℝ) := by
-  induction k with
-  | zero => norm_num
-  | succ k ih =>
-      rw [ascPochhammer_succ_eval, ih, Nat.factorial_succ (k + 1)]
-      push_cast
-      ring
-
-private lemma two_mul_ascPochhammer_eval_three (k : ℕ) :
-    2 * (ascPochhammer ℝ k).eval 3 = ((k + 2).factorial : ℝ) := by
-  induction k with
-  | zero => norm_num
-  | succ k ih =>
-      rw [ascPochhammer_succ_eval, Nat.factorial_succ (k + 2)]
-      push_cast
-      nlinarith
-
 private lemma polynomial_coeff_of_le (n k : ℕ) (hk : k ≤ n) :
     (polynomial n).coeff k = A119308Coeff n k := by
   rw [polynomial, coeff_affineThetaJensenPolynomial_of_le n k hk]
@@ -1495,7 +1478,7 @@ private lemma polynomial_coeff_of_le (n k : ℕ) (hk : k ≤ n) :
     simp only [Nat.cast_zero, mul_zero, zero_add]
     rw [ascPochhammer_eval_two, show (k + 1).factorial = (k + 1) * k.factorial by
       rw [Nat.factorial_succ]]
-    have hthree := two_mul_ascPochhammer_eval_three k
+    have hthree := two_mul_ascPochhammer_eval_three (R := ℝ) k
     rw [Nat.factorial_succ (k + 1), Nat.factorial_succ k] at hthree
     push_cast at hthree
     have hfac : ∀ m : ℕ, (m.factorial : ℝ) ≠ 0 := fun m => by positivity
@@ -1513,7 +1496,7 @@ private lemma polynomial_coeff_of_le (n k : ℕ) (hk : k ≤ n) :
   · rw [A119308Coeff_eq_factorial n k hklt]
     rw [affineThetaLeftWeight, affineThetaRightWeight,
       ascPochhammer_eval_two]
-    have hthree := two_mul_ascPochhammer_eval_three k
+    have hthree := two_mul_ascPochhammer_eval_three (R := ℝ) k
     rw [Nat.cast_choose ℝ (Nat.sub_le n k), Nat.sub_sub_self hk]
     have hfac : ∀ m : ℕ, (m.factorial : ℝ) ≠ 0 := fun m => by positivity
     field_simp [hfac]

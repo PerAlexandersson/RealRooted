@@ -6,31 +6,6 @@ Authors: Per Alexandersson
 module
 
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.Szasz
-import Mathlib.RingTheory.Radical.NatInt
-import Mathlib.RingTheory.WittVector.IsPoly
-import Mathlib.RingTheory.MvPolynomial.IrreducibleQuadratic
-import Mathlib.NumberTheory.SelbergSieve
-import Mathlib.RingTheory.SimpleRing.Principal
-import Mathlib.NumberTheory.LucasLehmer
-import Mathlib.NumberTheory.Height.Projectivization
-import Mathlib.NumberTheory.Height.NumberField
-import Mathlib.NumberTheory.Chebyshev
-import Mathlib.Geometry.Euclidean.Volume.Basic
-import Mathlib.Data.NNRat.Floor
-import Mathlib.Combinatorics.Enumerative.DyckWord
-import Mathlib.Combinatorics.SimpleGraph.Triangle.Removal
-import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
-import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
-import Mathlib.Analysis.CStarAlgebra.Classes
-import Mathlib.Analysis.SpecialFunctions.Bernstein
-import Mathlib.Algebra.Order.Star.Real
-import Mathlib.Algebra.Order.Interval.Basic
-import Mathlib.Algebra.Order.Floor.Semifield
-import Mathlib.Algebra.Order.Floor.Extended
-import Mathlib.Data.Nat.Choose.Multinomial
-import Mathlib.Topology.Sheaves.Init
-import Std.Tactic.BVDecide.Normalize.Prop
 public import Mathlib.Algebra.MvPolynomial.Eval
 public import Mathlib.Analysis.Complex.Exponential
 
@@ -79,6 +54,14 @@ variable {σ : Type*} [Fintype σ]
 (it is `0` when `α ≰ β`, and `1` for `β i = α i = 0`). -/
 def jensen (α β : σ →₀ ℕ) : ℝ :=
   ∏ i, ((β i).descFactorial (α i) : ℝ) / (β i : ℝ) ^ (α i)
+
+/-- The Jensen multiplier vanishes unless `α ≤ β`. -/
+theorem jensen_eq_zero_of_not_le {α β : σ →₀ ℕ} (h : ¬ α ≤ β) : jensen α β = 0 := by
+  rw [Finsupp.le_def] at h
+  push Not at h
+  obtain ⟨i, hi⟩ := h
+  exact Finset.prod_eq_zero (Finset.mem_univ i)
+    (by rw [(Nat.descFactorial_eq_zero_iff_lt).mpr hi]; simp)
 
 /-- The Jensen-multiplier operator `z^α ↦ J(α, β) z^α`. -/
 def jensenOp (β : σ →₀ ℕ) (f : MvPolynomial σ ℂ) : MvPolynomial σ ℂ :=

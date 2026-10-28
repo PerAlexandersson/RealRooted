@@ -58,12 +58,6 @@ private theorem applyMonomialDifferential_mapDomain_rename_mul
         ← applyMonomialDifferential_single_nat,
         ← applyMonomialDifferential_comp]
 
-private theorem totalDegree_mapDomain
-    {sigma tau : Type*} (f : sigma → tau) (hf : Function.Injective f)
-    (d : sigma →₀ ℕ) :
-    (d.mapDomain f).sum (fun _ n ↦ n) = d.sum (fun _ n ↦ n) :=
-  Finsupp.sum_mapDomain_index_inj hf
-
 private theorem applyNegDifferential_rename_mul
     {R sigma tau : Type*} [CommRing R] [Fintype sigma] [Fintype tau]
     (f : sigma → tau) (hf : Function.Injective f)
@@ -75,7 +69,7 @@ private theorem applyNegDifferential_rename_mul
   induction F using MvPolynomial.induction_on' with
   | monomial d c =>
       rw [MvPolynomial.rename_monomial, applyNegDifferential_monomial,
-        totalDegree_mapDomain f hf d,
+        Finsupp.sum_mapDomain_index_inj hf,
         applyMonomialDifferential_mapDomain_rename_mul f hf d G K hK,
         applyNegDifferential_monomial, map_mul, map_mul,
         MvPolynomial.rename_C]

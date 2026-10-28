@@ -8,6 +8,7 @@ public import Mathlib.Algebra.Polynomial.Derivative
 public import Mathlib.Algebra.Polynomial.Splits
 public import Mathlib.Basic.Real.Basic
 import RealRooted.Hermite.Poulain
+import RealRooted.Mathlib.Analysis.SpecialFunctions.Choose
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
 
 /-!
@@ -227,26 +228,10 @@ theorem aeval_sqDifferentialOperator_splits {L : ℝ[X]} (hL : L.Splits)
     Module.algebraMap_end_apply, smul_eq_C_mul]
   exact (aeval_sqDifferentialOperator_prod_splits _ hr hc hp).C_mul _
 
-private theorem tendsto_descFactorial_div_pow (k : ℕ) :
-    Tendsto (fun M : ℕ => (M.descFactorial k : ℝ) / (M : ℝ) ^ k)
-      atTop (nhds 1) := by
-  induction k with
-  | zero => simp
-  | succ k ih =>
-    have h1 : Tendsto (fun M : ℕ => 1 - (k : ℝ) / M) atTop (nhds 1) := by
-      simpa using (tendsto_const_div_atTop_nhds_zero_nat (k : ℝ)).const_sub 1
-    have h2 := h1.mul ih
-    rw [one_mul] at h2
-    apply h2.congr'
-    filter_upwards [eventually_gt_atTop k] with M hM
-    rw [Nat.descFactorial_succ, Nat.cast_mul, Nat.cast_sub hM.le, pow_succ]
-    have hM0 : (M : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by lia)
-    field_simp
-
 private theorem tendsto_choose_div_pow (k : ℕ) :
     Tendsto (fun M : ℕ => (M.choose k : ℝ) / (M : ℝ) ^ k)
       atTop (nhds (1 / k.factorial)) := by
-  have h := (tendsto_descFactorial_div_pow k).div_const (k.factorial : ℝ)
+  have h := (Nat.tendsto_descFactorial_div_pow_atTop k).div_const (k.factorial : ℝ)
   apply h.congr
   intro M
   rw [Nat.descFactorial_eq_factorial_mul_choose, Nat.cast_mul]
