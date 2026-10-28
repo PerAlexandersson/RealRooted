@@ -73,29 +73,28 @@ private theorem reflectionInterlacing_pair_of_relations
     · exact hpref_pf.ne_zero_and_splits hrzero
     · exact hqref_pf.ne_zero_and_splits hrzero
 
-private theorem resolvedChowWeightSum_endpoint_pairs
+/-- The resolved row and its reflection have the endpoint relations used by the weight sum. -/
+private theorem resolvedChowRow_endpoint_reflection_relations
     {A : LowerTriangularMatrix ℝ}
     (resolution : BrandenLeite.Resolution A) (n : ℕ) :
-    IsReflectionInterlacingSeq n
-        [resolvedChowDerangement resolution n 0,
-          resolvedChowWeightSum resolution n] ∧
-      IsReflectionInterlacingSeq n
-        [resolvedChowWeightSum resolution n,
-          resolvedChowDerangement resolution n n] := by
+    (∀ i, i ≤ n → ∀ j, j ≤ n →
+      Interl (resolvedChowDerangement resolution n i)
+        ((resolvedChowDerangement resolution n j).reflect n)) ∧
+    (∀ j, j ≤ n →
+      Interl ((resolvedChowDerangement resolution n j).reflect n)
+        ((resolvedChowDerangement resolution n 0).reflect n)) ∧
+    (∀ j, j ≤ n →
+      Interl ((resolvedChowDerangement resolution n n).reflect n)
+        ((resolvedChowDerangement resolution n j).reflect n)) := by
   classical
   let d : ℕ → ℝ[X] := fun j => resolvedChowDerangement resolution n j
-  let a : ℕ → ℝ := fun j => resolution.lambda n j
-  let F : ℝ[X] := resolvedChowWeightSum resolution n
-  have ha : ∀ j, j ≤ n → 0 ≤ a j :=
-    fun j hj => resolution.lambda_nonneg n j hj
   have hrow := resolvedChowRow_reflectionInterlacing resolution n
-  have hclosed := hrow.closedSequence
   have hpairwise :
       (resolvedChowRow resolution n ++
         ((resolvedChowRow resolution n).map fun p => p.reflect n).reverse).Pairwise
           Interl := by
     simpa [reflectionClosure] using
-      isInterlacingSeq0_iff_pairwise.mp hclosed.interlacingSeq0
+      isInterlacingSeq0_iff_pairwise.mp hrow.closedSequence.interlacingSeq0
   have hdirect := (List.pairwise_append.mp hpairwise).1
   have hcross := (List.pairwise_append.mp hpairwise).2.2
   have hmem : ∀ j, j ≤ n → d j ∈ resolvedChowRow resolution n :=
@@ -132,21 +131,119 @@ private theorem resolvedChowWeightSum_endpoint_pairs
     · have hjlt : j < n := Nat.lt_of_le_of_ne hj heq
       let current : Fin (resolvedChowRow resolution n).length :=
         ⟨j, by simpa using hj⟩
-      let last : Fin (resolvedChowRow resolution n).length :=
-        ⟨n, by simp⟩
+      let last : Fin (resolvedChowRow resolution n).length := ⟨n, by simp⟩
       simpa [current, last, d, resolvedChowRow] using
         hdirect.rel_get_of_lt (a := current) (b := last) hjlt
-  have hdirectReflect : ∀ i, i ≤ n → ∀ j, j ≤ n →
-      Interl (d i) ((d j).reflect n) :=
-    fun i hi j hj => hcross (d i) (hmem i hi) ((d j).reflect n) (hrefmem j hj)
-  have hreflectLeft : ∀ j, j ≤ n →
-      Interl ((d j).reflect n) ((d 0).reflect n) :=
-    fun j hj => reflect_reverses_interl_of_pf (hdpf 0 (Nat.zero_le n))
+  refine ⟨?_, ?_, ?_⟩
+  · intro i hi j hj
+    exact hcross (d i) (hmem i hi) ((d j).reflect n) (hrefmem j hj)
+  · intro j hj
+    exact reflect_reverses_interl_of_pf (hdpf 0 (Nat.zero_le n))
       (hdpf j hj) (hddeg 0 (Nat.zero_le n)) (hddeg j hj) (hleft j hj)
-  have hreflectRight : ∀ j, j ≤ n →
-      Interl ((d n).reflect n) ((d j).reflect n) :=
-    fun j hj => reflect_reverses_interl_of_pf (hdpf j hj) (hdpf n le_rfl)
+  · intro j hj
+    exact reflect_reverses_interl_of_pf (hdpf j hj) (hdpf n le_rfl)
       (hddeg j hj) (hddeg n le_rfl) (hright j hj)
+
+/-- Endpoint and self-reflection relations pass to a nonnegative weighted row sum. -/
+private theorem weightedSum_reflection_relations
+    {n : ℕ} {d : ℕ → ℝ[X]} {a : ℕ → ℝ} {F : ℝ[X]}
+    (ha : ∀ j, j ≤ n → 0 ≤ a j)
+    (hdnn : ∀ j, j ≤ n → HasNonnegCoeffs (d j))
+    (hdirectReflect : ∀ i, i ≤ n → ∀ j, j ≤ n →
+      Interl (d i) ((d j).reflect n))
+    (hreflectLeft : ∀ j, j ≤ n →
+      Interl ((d j).reflect n) ((d 0).reflect n))
+    (hreflectRight : ∀ j, j ≤ n →
+      Interl ((d n).reflect n) ((d j).reflect n))
+    (hF : F = ∑ j ∈ Finset.range (n + 1), C (a j) * d j)
+    (hreflectF : F.reflect n =
+      ∑ j ∈ Finset.range (n + 1), C (a j) * (d j).reflect n) :
+    Interl (d 0) (F.reflect n) ∧
+      Interl F ((d 0).reflect n) ∧
+      Interl (F.reflect n) ((d 0).reflect n) ∧
+      Interl F ((d n).reflect n) ∧
+      Interl (d n) (F.reflect n) ∧
+      Interl ((d n).reflect n) (F.reflect n) ∧
+      Interl F (F.reflect n) := by
+  have hle : ∀ {j}, j ∈ Finset.range (n + 1) → j ≤ n :=
+    fun {_} hj => by simpa using Finset.mem_range.mp hj
+  have hscaled : ∀ j, j ≤ n → HasNonnegCoeffs (C (a j) * d j) :=
+    fun j hj => hasNonnegCoeffs_C_mul (ha j hj) (hdnn j hj)
+  have hscaledReflect : ∀ j, j ≤ n →
+      HasNonnegCoeffs (C (a j) * (d j).reflect n) :=
+    fun j hj => hasNonnegCoeffs_C_mul (ha j hj) ((hdnn j hj).reflect n)
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · rw [hreflectF]
+    apply Interl.finsetSum_left_of_nonneg
+    · intro j hj
+      exact Interl.C_mul_right_of_nonneg
+        (hdirectReflect 0 (Nat.zero_le n) j (hle hj)) (ha j (hle hj))
+    · exact fun j hj => hscaledReflect j (hle hj)
+  · rw [hF]
+    apply Interl.finsetSum_right_of_nonneg
+    · intro j hj
+      exact Interl.C_mul_left_of_nonneg
+        (hdirectReflect j (hle hj) 0 (Nat.zero_le n)) (ha j (hle hj))
+    · exact fun j hj => hscaled j (hle hj)
+  · rw [hreflectF]
+    apply Interl.finsetSum_right_of_nonneg
+    · intro j hj
+      exact Interl.C_mul_left_of_nonneg (hreflectLeft j (hle hj)) (ha j (hle hj))
+    · exact fun j hj => hscaledReflect j (hle hj)
+  · rw [hF]
+    apply Interl.finsetSum_right_of_nonneg
+    · intro j hj
+      exact Interl.C_mul_left_of_nonneg
+        (hdirectReflect j (hle hj) n le_rfl) (ha j (hle hj))
+    · exact fun j hj => hscaled j (hle hj)
+  · rw [hreflectF]
+    apply Interl.finsetSum_left_of_nonneg
+    · intro j hj
+      exact Interl.C_mul_right_of_nonneg
+        (hdirectReflect n le_rfl j (hle hj)) (ha j (hle hj))
+    · exact fun j hj => hscaledReflect j (hle hj)
+  · rw [hreflectF]
+    apply Interl.finsetSum_left_of_nonneg
+    · intro j hj
+      exact Interl.C_mul_right_of_nonneg (hreflectRight j (hle hj)) (ha j (hle hj))
+    · exact fun j hj => hscaledReflect j (hle hj)
+  · rw [hreflectF, hF]
+    apply Interl.finsetSum_pairwise_of_nonneg
+    · intro i hi j hj
+      exact Interl.C_mul_right_of_nonneg
+        (Interl.C_mul_left_of_nonneg
+          (hdirectReflect i (hle hi) j (hle hj)) (ha i (hle hi)))
+        (ha j (hle hj))
+    · exact fun i hi => hscaled i (hle hi)
+    · exact fun j hj => hscaledReflect j (hle hj)
+
+private theorem resolvedChowWeightSum_endpoint_pairs
+    {A : LowerTriangularMatrix ℝ}
+    (resolution : BrandenLeite.Resolution A) (n : ℕ) :
+    IsReflectionInterlacingSeq n
+        [resolvedChowDerangement resolution n 0,
+          resolvedChowWeightSum resolution n] ∧
+      IsReflectionInterlacingSeq n
+        [resolvedChowWeightSum resolution n,
+          resolvedChowDerangement resolution n n] := by
+  classical
+  let d : ℕ → ℝ[X] := fun j => resolvedChowDerangement resolution n j
+  let a : ℕ → ℝ := fun j => resolution.lambda n j
+  let F : ℝ[X] := resolvedChowWeightSum resolution n
+  have ha : ∀ j, j ≤ n → 0 ≤ a j :=
+    fun j hj => resolution.lambda_nonneg n j hj
+  have hrow := resolvedChowRow_reflectionInterlacing resolution n
+  have hmem : ∀ j, j ≤ n → d j ∈ resolvedChowRow resolution n :=
+    fun j hj => List.mem_map.mpr ⟨j, by simpa using hj, rfl⟩
+  have hdnn : ∀ j, j ≤ n → HasNonnegCoeffs (d j) :=
+    fun _ hj => resolvedChowDerangement_nonnegCoeffs resolution hj
+  have hdpf : ∀ j, j ≤ n → IsPFPolynomial (d j) :=
+    fun j hj => IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits (hdnn j hj)
+      (resolvedChowDerangement_eq_zero_or_splits resolution hj)
+  have hddeg : ∀ j, j ≤ n → (d j).natDegree ≤ n :=
+    fun j hj => hrow.natDegree_le (hmem j hj)
+  obtain ⟨hdirectReflect, hreflectLeft, hreflectRight⟩ :=
+    resolvedChowRow_endpoint_reflection_relations resolution n
   have hFpf : IsPFPolynomial F := by
     simpa [F, a, resolvedChowWeightSum, resolvedChowCombination] using
       resolvedChowCombination_isPF resolution ha
@@ -162,80 +259,11 @@ private theorem resolvedChowWeightSum_endpoint_pairs
   have hFbounds : Interl (d 0) F ∧ Interl F (d n) := by
     simpa [F, a, d, resolvedChowWeightSum, resolvedChowCombination] using
       resolvedChowCombination_endpoint_interl resolution ha
-  have h0refF : Interl (d 0) (F.reflect n) := by
-    rw [hreflectF]
-    apply Interl.finsetSum_left_of_nonneg
-    · intro j hj
-      have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact Interl.C_mul_right_of_nonneg
-        (hdirectReflect 0 (Nat.zero_le n) j hjn) (ha j hjn)
-    · intro j hj
-      have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact hasNonnegCoeffs_C_mul (ha j hjn) ((hdnn j hjn).reflect n)
-  have hFref0 : Interl F ((d 0).reflect n) := by
-    dsimp only [F, resolvedChowWeightSum]
-    apply Interl.finsetSum_right_of_nonneg
-    · intro j hj
-      have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact Interl.C_mul_left_of_nonneg
-        (hdirectReflect j hjn 0 (Nat.zero_le n)) (ha j hjn)
-    · intro j hj
-      have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact hasNonnegCoeffs_C_mul (ha j hjn) (hdnn j hjn)
-  have hrefFref0 : Interl (F.reflect n) ((d 0).reflect n) := by
-    rw [hreflectF]
-    apply Interl.finsetSum_right_of_nonneg
-    · intro j hj
-      have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact Interl.C_mul_left_of_nonneg (hreflectLeft j hjn) (ha j hjn)
-    · intro j hj
-      have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact hasNonnegCoeffs_C_mul (ha j hjn) ((hdnn j hjn).reflect n)
-  have hFrefn : Interl F ((d n).reflect n) := by
-    dsimp only [F, resolvedChowWeightSum]
-    apply Interl.finsetSum_right_of_nonneg
-    · intro j hj
-      have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact Interl.C_mul_left_of_nonneg
-        (hdirectReflect j hjn n le_rfl) (ha j hjn)
-    · intro j hj
-      have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact hasNonnegCoeffs_C_mul (ha j hjn) (hdnn j hjn)
-  have hnrefF : Interl (d n) (F.reflect n) := by
-    rw [hreflectF]
-    apply Interl.finsetSum_left_of_nonneg
-    · intro j hj
-      have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact Interl.C_mul_right_of_nonneg
-        (hdirectReflect n le_rfl j hjn) (ha j hjn)
-    · intro j hj
-      have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact hasNonnegCoeffs_C_mul (ha j hjn) ((hdnn j hjn).reflect n)
-  have hrefnrefF : Interl ((d n).reflect n) (F.reflect n) := by
-    rw [hreflectF]
-    apply Interl.finsetSum_left_of_nonneg
-    · intro j hj
-      have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact Interl.C_mul_right_of_nonneg (hreflectRight j hjn) (ha j hjn)
-    · intro j hj
-      have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact hasNonnegCoeffs_C_mul (ha j hjn) ((hdnn j hjn).reflect n)
-  have hFrefF : Interl F (F.reflect n) := by
-    rw [hreflectF]
-    dsimp only [F, resolvedChowWeightSum]
-    apply Interl.finsetSum_pairwise_of_nonneg
-    · intro i hi j hj
-      have hin : i ≤ n := by simpa using Finset.mem_range.mp hi
-      have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact Interl.C_mul_right_of_nonneg
-        (Interl.C_mul_left_of_nonneg (hdirectReflect i hin j hjn) (ha i hin))
-        (ha j hjn)
-    · intro i hi
-      have hin : i ≤ n := by simpa using Finset.mem_range.mp hi
-      exact hasNonnegCoeffs_C_mul (ha i hin) (hdnn i hin)
-    · intro j hj
-      have hjn : j ≤ n := by simpa using Finset.mem_range.mp hj
-      exact hasNonnegCoeffs_C_mul (ha j hjn) ((hdnn j hjn).reflect n)
+  have hFsum : F = ∑ j ∈ Finset.range (n + 1), C (a j) * d j := by
+    rfl
+  obtain ⟨h0refF, hFref0, hrefFref0, hFrefn, hnrefF, hrefnrefF, hFrefF⟩ :=
+    weightedSum_reflection_relations ha hdnn hdirectReflect
+      hreflectLeft hreflectRight hFsum hreflectF
   constructor
   · exact reflectionInterlacing_pair_of_relations
       (hdpf 0 (Nat.zero_le n)) hFpf (hddeg 0 (Nat.zero_le n)) hFdeg
