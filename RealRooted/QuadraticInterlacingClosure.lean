@@ -1898,6 +1898,141 @@ theorem strictInterl_quadraticInterlacingTangent_pencil_of_simple_path
       hneg_recip (hneg a ha.le r hrmem) ha
       (Polynomial.isRoot_of_mem_roots hrmem)
 
+/-- A negative derivative shift gives the forward pencil all simple-path hypotheses. -/
+private theorem regularized_quadraticInterlacingPencil_forward_data
+    {F G H : ℝ[X]} (hF : HasNonnegCoeffs F) (hG : HasNonnegCoeffs G)
+    (hH : HasNonnegCoeffs H) (hFG : StrictInterl F G)
+    (hGH : StrictInterl G H)
+    (hsplits : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil F G H b).Splits)
+    (hHdeg : H.natDegree ≠ 0) {eps : ℝ} (heps : 0 < eps) :
+    let D := H.natDegree
+    let Fε := iterateTDeriv (-eps) D F
+    let Gε := iterateTDeriv (-eps) D G
+    let Hε := iterateTDeriv (-eps) D H
+    (∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil Fε Gε Hε b).natDegree = D) ∧
+    (∀ b : ℝ, 0 ≤ b → ∀ᶠ c in nhds b,
+      (quadraticInterlacingPencil Fε Gε Hε c).natDegree = D) ∧
+    (∀ b : ℝ, 0 ≤ b →
+      HasPosLeadingCoeff (quadraticInterlacingPencil Fε Gε Hε b)) ∧
+    (∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil Fε Gε Hε b).Splits) ∧
+    (∀ b : ℝ, 0 ≤ b →
+      HasSimpleRoots (quadraticInterlacingPencil Fε Gε Hε b)) ∧
+    ∀ b : ℝ, 0 ≤ b → ∀ q ∈
+      (quadraticInterlacingPencil Fε Gε Hε b).roots, q < 0 := by
+  let D := H.natDegree
+  let Fε := iterateTDeriv (-eps) D F
+  let Gε := iterateTDeriv (-eps) D G
+  let Hε := iterateTDeriv (-eps) D H
+  have hFdeg : F.natDegree ≤ D := hFG.natDegree_le.trans hGH.natDegree_le
+  have hGdeg : G.natDegree ≤ D := hGH.natDegree_le
+  have hHne : H ≠ 0 := hGH.2.1.1
+  have hQnn : ∀ b : ℝ, 0 ≤ b →
+      HasNonnegCoeffs (quadraticInterlacingPencil F G H b) :=
+    fun _ hb => hasNonnegCoeffs_quadraticInterlacingPencil hF hG hH hb
+  have hQdegree : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil F G H b).natDegree = D :=
+    fun _ hb => natDegree_quadraticInterlacingPencil_eq
+      hF hG hH hHne hFdeg hGdeg hb
+  have hQne : ∀ b : ℝ, 0 ≤ b →
+      quadraticInterlacingPencil F G H b ≠ 0 := fun b hb hzero =>
+    hHdeg (by simpa [D, hzero] using (hQdegree b hb).symm)
+  have hFεnn : HasNonnegCoeffs Fε := hF.iterateTDeriv_neg heps.le D
+  have hGεnn : HasNonnegCoeffs Gε := hG.iterateTDeriv_neg heps.le D
+  have hHεnn : HasNonnegCoeffs Hε := hH.iterateTDeriv_neg heps.le D
+  have hFεdeg : Fε.natDegree ≤ D := by simpa [Fε, D] using hFdeg
+  have hGεdeg : Gε.natDegree ≤ D := by simpa [Gε, D] using hGdeg
+  have hHεdeg : Hε.natDegree ≤ D := by simp [Hε, D]
+  have hQεdegree : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil Fε Gε Hε b).natDegree = D := fun b hb => by
+    rw [← iterateTDeriv_quadraticInterlacingPencil, natDegree_iterateTDeriv]
+    exact hQdegree b hb
+  have hQεdegreeLocal : ∀ b : ℝ, 0 ≤ b → ∀ᶠ c in nhds b,
+      (quadraticInterlacingPencil Fε Gε Hε c).natDegree = D := fun b hb =>
+    Polynomial.eventually_natDegree_eq_of_le_of_continuous_coeff
+      (fun c => quadraticInterlacingPencil Fε Gε Hε c) (hQεdegree b hb)
+      (fun hzero => hHdeg (by simpa [D, hzero] using (hQεdegree b hb).symm))
+      (natDegree_quadraticInterlacingPencil_le hFεdeg hGεdeg hHεdeg)
+      fun i => (contDiff_coeff_quadraticInterlacingPencil Fε Gε Hε i).continuous
+  have hQεnn : ∀ b : ℝ, 0 ≤ b →
+      HasNonnegCoeffs (quadraticInterlacingPencil Fε Gε Hε b) :=
+    fun _ hb => hasNonnegCoeffs_quadraticInterlacingPencil hFεnn hGεnn hHεnn hb
+  have hQεne : ∀ b : ℝ, 0 ≤ b →
+      quadraticInterlacingPencil Fε Gε Hε b ≠ 0 := fun b hb hzero =>
+    hHdeg (by simpa [D, hzero] using (hQεdegree b hb).symm)
+  refine ⟨hQεdegree, hQεdegreeLocal,
+    fun b hb => (hQεnn b hb).pos_leadingCoeff (hQεne b hb), ?_, ?_, ?_⟩
+  · intro b hb
+    rw [← iterateTDeriv_quadraticInterlacingPencil]
+    exact splits_iterateTDeriv_all (hsplits b hb) D
+  · exact fun _ hb => hasSimpleRoots_regularized_quadraticInterlacingPencil
+      heps hQne hsplits (fun c hc => (hQdegree c hc).le) hb
+  · intro b hb
+    apply roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne (hQεnn b hb)
+    have hpos := coeff_zero_iterateTDeriv_neg_pos_of_natDegree_le
+      heps (hQnn b hb) (hQne b hb) (k := D) (hQdegree b hb).le
+    rw [iterateTDeriv_quadraticInterlacingPencil] at hpos
+    exact hpos.ne'
+
+/-- A negative derivative shift gives the reciprocal pencil its root-location package. -/
+private theorem regularized_quadraticInterlacingPencil_reciprocal_data
+    {F G H : ℝ[X]} (hF : HasNonnegCoeffs F) (hG : HasNonnegCoeffs G)
+    (hH : HasNonnegCoeffs H) (hFG : StrictInterl F G)
+    (hGH : StrictInterl G H)
+    (hsplits : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil F G H b).Splits)
+    {eps : ℝ} (heps : 0 < eps) :
+    let D := H.natDegree
+    let Fε := iterateTDeriv (-eps) D F
+    let Gε := iterateTDeriv (-eps) D G
+    let Hε := iterateTDeriv (-eps) D H
+    (∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil Hε Gε Fε b).Splits) ∧
+    (∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil Hε Gε Fε b).coeff 0 ≠ 0) ∧
+    ∀ b : ℝ, 0 ≤ b → ∀ q ∈
+      (quadraticInterlacingPencil Hε Gε Fε b).roots, q < 0 := by
+  let D := H.natDegree
+  let Fε := iterateTDeriv (-eps) D F
+  let Gε := iterateTDeriv (-eps) D G
+  let Hε := iterateTDeriv (-eps) D H
+  have hFdeg : F.natDegree ≤ D := hFG.natDegree_le.trans hGH.natDegree_le
+  have hGdeg : G.natDegree ≤ D := hGH.natDegree_le
+  have hFne : F ≠ 0 := hFG.1.1
+  have hFεnn : HasNonnegCoeffs Fε := hF.iterateTDeriv_neg heps.le D
+  have hGεnn : HasNonnegCoeffs Gε := hG.iterateTDeriv_neg heps.le D
+  have hHεnn : HasNonnegCoeffs Hε := hH.iterateTDeriv_neg heps.le D
+  have hQrecipNN : ∀ b : ℝ, 0 ≤ b →
+      HasNonnegCoeffs (quadraticInterlacingPencil H G F b) :=
+    fun _ hb => hasNonnegCoeffs_quadraticInterlacingPencil hH hG hF hb
+  have hQrecipNe : ∀ b : ℝ, 0 ≤ b →
+      quadraticInterlacingPencil H G F b ≠ 0 := by
+    intro b hb
+    have hsum : C (2 * b) * G + C (b ^ 2) * H + F ≠ 0 :=
+      add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
+        ((hasNonnegCoeffs_C_mul (mul_nonneg (by norm_num) hb) hG).add
+          (hasNonnegCoeffs_C_mul (sq_nonneg b) hH)) hF hFne
+    simpa [quadraticInterlacingPencil, add_comm, add_left_comm, add_assoc] using hsum
+  have hQεsplitsRecip : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil Hε Gε Fε b).Splits := fun b hb => by
+    rw [← iterateTDeriv_quadraticInterlacingPencil]
+    exact splits_iterateTDeriv_all
+      (splits_reciprocalQuadraticInterlacingPencil hFG.1.2 hsplits b hb) D
+  have hQεcoeff0Recip : ∀ b : ℝ, 0 ≤ b →
+      (quadraticInterlacingPencil Hε Gε Fε b).coeff 0 ≠ 0 := by
+    intro b hb
+    have hpos := coeff_zero_iterateTDeriv_neg_pos_of_natDegree_le
+      heps (hQrecipNN b hb) (hQrecipNe b hb) (k := D)
+        (natDegree_quadraticInterlacingPencil_le le_rfl hGdeg hFdeg b)
+    rw [iterateTDeriv_quadraticInterlacingPencil] at hpos
+    exact hpos.ne'
+  exact ⟨hQεsplitsRecip, hQεcoeff0Recip, fun b hb =>
+    roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne
+      (hasNonnegCoeffs_quadraticInterlacingPencil hHεnn hGεnn hFεnn hb)
+      (hQεcoeff0Recip b hb)⟩
+
 /-- Quadratic tangent closure in positive degree.  A common negative
 derivative shift makes the whole pencil simple with strictly negative roots;
 the simple-path theorem applies there, and coefficientwise closure descends
@@ -1953,74 +2088,13 @@ theorem strictInterl_quadraticInterlacingTangent_pencil_of_pos_natDegree
   have hFεdeg : Fε.natDegree ≤ D := by simpa [Fε, D] using hFdeg
   have hGεdeg : Gε.natDegree ≤ D := by simpa [Gε, D] using hGdeg
   have hHεdeg : Hε.natDegree ≤ D := by simp [Hε, D]
-  have hQεdegree : ∀ b : ℝ, 0 ≤ b →
-      (quadraticInterlacingPencil Fε Gε Hε b).natDegree = D := fun b hb => by
-    rw [← iterateTDeriv_quadraticInterlacingPencil,
-      natDegree_iterateTDeriv]
-    exact hQdegree b hb
-  have hQεdegreeLocal : ∀ b : ℝ, 0 ≤ b → ∀ᶠ c in nhds b,
-      (quadraticInterlacingPencil Fε Gε Hε c).natDegree = D := fun b hb =>
-    Polynomial.eventually_natDegree_eq_of_le_of_continuous_coeff
-      (fun c => quadraticInterlacingPencil Fε Gε Hε c)
-      (hQεdegree b hb)
-      (fun hzero => hD (by simpa [hzero] using (hQεdegree b hb).symm))
-      (natDegree_quadraticInterlacingPencil_le hFεdeg hGεdeg hHεdeg)
-      fun i => (contDiff_coeff_quadraticInterlacingPencil Fε Gε Hε i).continuous
-  have hQεnn : ∀ b : ℝ, 0 ≤ b →
-      HasNonnegCoeffs (quadraticInterlacingPencil Fε Gε Hε b) :=
-    fun _ hb => hasNonnegCoeffs_quadraticInterlacingPencil hFεnn hGεnn hHεnn hb
-  have hQεne : ∀ b : ℝ, 0 ≤ b →
-      quadraticInterlacingPencil Fε Gε Hε b ≠ 0 := fun b hb hzero =>
-    hD (by simpa [hzero] using (hQεdegree b hb).symm)
-  have hQεpos : ∀ b : ℝ, 0 ≤ b →
-      HasPosLeadingCoeff (quadraticInterlacingPencil Fε Gε Hε b) :=
-    fun b hb => (hQεnn b hb).pos_leadingCoeff (hQεne b hb)
-  have hQεsplits : ∀ b : ℝ, 0 ≤ b →
-      (quadraticInterlacingPencil Fε Gε Hε b).Splits := fun b hb => by
-    rw [← iterateTDeriv_quadraticInterlacingPencil]
-    exact splits_iterateTDeriv_all (hsplits b hb) D
-  have hQεsimple : ∀ b : ℝ, 0 ≤ b →
-      HasSimpleRoots (quadraticInterlacingPencil Fε Gε Hε b) := fun _ hb =>
-    hasSimpleRoots_regularized_quadraticInterlacingPencil heps
-      hQne hsplits (fun c hc => (hQdegree c hc).le) hb
-  have hQεneg : ∀ b : ℝ, 0 ≤ b → ∀ q ∈
-      (quadraticInterlacingPencil Fε Gε Hε b).roots, q < 0 := fun b hb =>
-    roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne
-      (hQεnn b hb) (by
-        have hpos := coeff_zero_iterateTDeriv_neg_pos_of_natDegree_le
-          heps (hQnn b hb) (hQne b hb) (k := D) (hQdegree b hb).le
-        rw [iterateTDeriv_quadraticInterlacingPencil] at hpos
-        exact hpos.ne')
-  have hQεsplitsRecip : ∀ b : ℝ, 0 ≤ b →
-      (quadraticInterlacingPencil Hε Gε Fε b).Splits := fun b hb => by
-    rw [← iterateTDeriv_quadraticInterlacingPencil]
-    exact splits_iterateTDeriv_all
-      (splits_reciprocalQuadraticInterlacingPencil hFG.1.2 hsplits b hb) D
-  have hQrecipNN : ∀ b : ℝ, 0 ≤ b →
-      HasNonnegCoeffs (quadraticInterlacingPencil H G F b) :=
-    fun _ hb => hasNonnegCoeffs_quadraticInterlacingPencil hH hG hF hb
-  have hQrecipNe : ∀ b : ℝ, 0 ≤ b →
-      quadraticInterlacingPencil H G F b ≠ 0 := by
-    intro b hb
-    have hsum : C (2 * b) * G + C (b ^ 2) * H + F ≠ 0 :=
-      add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
-        ((hasNonnegCoeffs_C_mul (mul_nonneg (by norm_num) hb) hG).add
-          (hasNonnegCoeffs_C_mul (sq_nonneg b) hH)) hF hFne
-    simpa [quadraticInterlacingPencil, add_comm, add_left_comm,
-      add_assoc] using hsum
-  have hQεcoeff0Recip : ∀ b : ℝ, 0 ≤ b →
-      (quadraticInterlacingPencil Hε Gε Fε b).coeff 0 ≠ 0 := by
-    intro b hb
-    have hpos := coeff_zero_iterateTDeriv_neg_pos_of_natDegree_le
-      heps (hQrecipNN b hb) (hQrecipNe b hb) (k := D)
-        (natDegree_quadraticInterlacingPencil_le le_rfl hGdeg hFdeg b)
-    rw [iterateTDeriv_quadraticInterlacingPencil] at hpos
-    exact hpos.ne'
-  have hQεnegRecip : ∀ b : ℝ, 0 ≤ b → ∀ q ∈
-      (quadraticInterlacingPencil Hε Gε Fε b).roots, q < 0 := fun b hb =>
-    roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne
-      (hasNonnegCoeffs_quadraticInterlacingPencil hHεnn hGεnn hFεnn hb)
-      (hQεcoeff0Recip b hb)
+  obtain ⟨hQεdegree, hQεdegreeLocal, hQεpos, hQεsplits,
+      hQεsimple, hQεneg⟩ :=
+    regularized_quadraticInterlacingPencil_forward_data
+      hF hG hH hFG hGH hsplits hHdeg heps
+  obtain ⟨hQεsplitsRecip, hQεcoeff0Recip, hQεnegRecip⟩ :=
+    regularized_quadraticInterlacingPencil_reciprocal_data
+      hF hG hH hFG hGH hsplits heps
   have hAεnn : HasNonnegCoeffs (quadraticInterlacingTangent Fε Gε a) :=
     hGεnn.add (hasNonnegCoeffs_C_mul ha.le hFεnn)
   have hAεne : quadraticInterlacingTangent Fε Gε a ≠ 0 := by

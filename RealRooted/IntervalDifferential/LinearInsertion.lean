@@ -424,6 +424,160 @@ private theorem linear_eval_mul_neg_at_right {F : ℝ[X]} {n : ℕ}
   have hneg := mul_neg_of_neg_of_pos hcoefprod hFprod
   nlinarith
 
+/-- The endpoint sign hypotheses settle the constant-input case on a two-point grid. -/
+private theorem splits_nodup_interval_of_root_derivative_signs_natDegree_zero
+    {F H : ℝ[X]} (hF0 : F ≠ 0) (hFdegree : F.natDegree = 0)
+    (hdegree : H.natDegree = F.natDegree + 1)
+    (hleft : H.eval (-1) * F.eval (-1) < 0)
+    (hright : 0 < H.eval 1 * F.eval 1) :
+    H.Splits ∧ H.roots.Nodup ∧ ∀ z ∈ H.roots, -1 < z ∧ z < 1 := by
+  have hconstant : F = C (F.coeff 0) := eq_C_of_natDegree_eq_zero hFdegree
+  have hFvalue : F.eval 1 ≠ 0 := by
+    rw [hconstant] at hF0 ⊢
+    simpa only [eval_C] using (C_ne_zero.mp hF0)
+  have hfeq : F.eval (-1) = F.eval 1 := by rw [hconstant]; simp
+  have hFprod : 0 < F.eval (-1) * F.eval 1 := by
+    rw [hfeq]
+    exact mul_self_pos.mpr hFvalue
+  have hHsign : H.eval (-1) * H.eval 1 < 0 :=
+    sign_change_of_left_opposite_right_same hleft hright hFprod
+  let grid : Fin 2 → ℝ := Fin.cons (-1) (fun _ : Fin 1 => 1)
+  have hgrid : StrictMono grid := by
+    apply Fin.strictMono_cons.mpr
+    constructor
+    · intro j
+      norm_num
+    · intro i j hij
+      have heq : i = j := Subsingleton.elim i j
+      subst j
+      exact (lt_irrefl i hij).elim
+  have hsign : ∀ i : Fin 1,
+      H.eval (grid i.castSucc) * H.eval (grid i.succ) < 0 := by
+    intro i
+    have hi : i = 0 := Subsingleton.elim i 0
+    subst i
+    simpa [grid] using hHsign
+  have hHdegree : H.natDegree ≤ 1 := by rw [hdegree, hFdegree]
+  have hH0 : H ≠ 0 := by
+    intro hz
+    rw [hz, natDegree_zero, hFdegree] at hdegree
+    lia
+  obtain ⟨_, hsplit, hnodup, hbounds⟩ :=
+    splits_nodup_roots_of_strict_sign_changes hH0 hHdegree grid hgrid hsign
+  refine ⟨hsplit, hnodup, ?_⟩
+  intro z hz
+  simpa [grid] using hbounds z hz
+
+/-- Adjoining the interval endpoints to the ordered old roots gives a strictly increasing grid. -/
+private theorem strictMono_root_endpoint_grid {F : ℝ[X]}
+    (hinside : ∀ z ∈ F.roots, -1 < z ∧ z < 1) {n : ℕ}
+    (s : Finset ℝ) (hs : s = F.roots.toFinset) (hcard : s.card = n + 1) :
+    StrictMono (Fin.cons (-1) (Fin.snoc (s.orderEmbOfFin hcard) 1)) := by
+  let r := s.orderEmbOfFin hcard
+  have hrmem (i : Fin (n + 1)) : r i ∈ F.roots := by
+    apply Multiset.mem_toFinset.mp
+    rw [← hs]
+    exact Finset.orderEmbOfFin_mem s hcard i
+  have hsnoc : StrictMono (Fin.snoc r 1) := by
+    rw [← Fin.insertNth_last' 1 r]
+    apply (Fin.strictMono_insertNth_iff (Fin.last (n + 1)) 1 r).mpr
+    refine ⟨r.strictMono, ?_, ?_⟩
+    · intro i _
+      exact (hinside _ (hrmem i)).2
+    · intro i hi
+      exact (not_le_of_gt i.castSucc_lt_last hi).elim
+  apply Fin.strictMono_cons.mpr
+  constructor
+  · intro j
+    cases j using Fin.lastCases with
+    | last => norm_num
+    | cast i => simpa using (hinside _ (hrmem i)).1
+  · exact hsnoc
+
+/-- The ordered-root grid proves the insertion criterion for positive-degree inputs. -/
+private theorem splits_nodup_interval_of_root_derivative_signs_natDegree_succ
+    {F H : ℝ[X]} (hF : F.Splits) (hF0 : F ≠ 0) (hnd : F.roots.Nodup)
+    (hinside : ∀ z ∈ F.roots, -1 < z ∧ z < 1) {n : ℕ}
+    (hFdegree : F.natDegree = n + 1)
+    (hdegree : H.natDegree = F.natDegree + 1)
+    (hroot : ∀ z ∈ F.roots, H.eval z * F.derivative.eval z < 0)
+    (hleft : H.eval (-1) * F.eval (-1) < 0)
+    (hright : 0 < H.eval 1 * F.eval 1) :
+    H.Splits ∧ H.roots.Nodup ∧ ∀ z ∈ H.roots, -1 < z ∧ z < 1 := by
+  classical
+  let s : Finset ℝ := F.roots.toFinset
+  have hs : s = F.roots.toFinset := rfl
+  have hcard : s.card = n + 1 := by
+    calc
+      s.card = F.roots.card := Multiset.toFinset_card_of_nodup hnd
+      _ = F.natDegree := splits_iff_card_roots.mp hF
+      _ = n + 1 := hFdegree
+  let r := s.orderEmbOfFin hcard
+  have hrmem (i : Fin (n + 1)) : r i ∈ F.roots := by
+    apply Multiset.mem_toFinset.mp
+    rw [← hs]
+    exact Finset.orderEmbOfFin_mem s hcard i
+  let grid : Fin (n + 3) → ℝ := Fin.cons (-1) (Fin.snoc r 1)
+  have hgrid : StrictMono grid :=
+    strictMono_root_endpoint_grid hinside s hs hcard
+  let B := zigzagLinearFactor 0 F
+  have hanchorRoot (i : Fin (n + 1)) :
+      0 < H.eval (r i) * B.eval (r i) := by
+    have hfi := hroot _ (hrmem i)
+    have hq := sq_sub_one_neg_of_mem_Ioo (hinside _ (hrmem i))
+    have hp := mul_pos_of_neg_of_neg hfi hq
+    change 0 < H.eval (r i) * (zigzagLinearFactor 0 F).eval (r i)
+    rw [zigzagLinearFactor_eval_root 0 _ F ((mem_roots hF0).mp (hrmem i))]
+    nlinarith
+  have hanchorLeft : 0 < H.eval (-1) * B.eval (-1) := by
+    change 0 < H.eval (-1) * (zigzagLinearFactor 0 F).eval (-1)
+    rw [zigzagLinearFactor_eval_neg_one]
+    nlinarith [hleft]
+  have hanchorRight : 0 < H.eval 1 * B.eval 1 := by
+    change 0 < H.eval 1 * (zigzagLinearFactor 0 F).eval 1
+    rw [zigzagLinearFactor_eval_one]
+    nlinarith [hright]
+  have hanchor (j : Fin (n + 3)) : 0 < H.eval (grid j) * B.eval (grid j) := by
+    cases j using Fin.cases with
+    | zero => simpa [grid] using hanchorLeft
+    | succ j =>
+      cases j using Fin.lastCases with
+      | last => simpa [grid] using hanchorRight
+      | cast i => simpa [grid] using hanchorRoot i
+  have hBsign (i : Fin (n + 2)) :
+      B.eval (grid i.castSucc) * B.eval (grid i.succ) < 0 := by
+    cases i using Fin.lastCases with
+    | last =>
+      have hidx : (Fin.last (n + 1)).castSucc =
+          (Fin.last n).castSucc.succ := by ext; rfl
+      simpa [B, grid, hidx] using
+        linear_eval_mul_neg_at_right hF hF0 hnd hinside s hs hcard 0 (by norm_num)
+    | cast j =>
+      cases j using Fin.cases with
+      | zero =>
+        simpa [B, grid] using
+          linear_eval_mul_neg_at_left hF hF0 hnd hinside s hs hcard 0
+            (by norm_num)
+      | succ k =>
+        have hidx1 : k.succ.castSucc.castSucc =
+            k.castSucc.castSucc.succ := by ext; rfl
+        rw [hidx1]
+        simp only [grid, Fin.cons_succ, Fin.snoc_castSucc]
+        exact linear_eval_mul_neg_at_adjacent hF hF0 hnd hinside s hs hcard 0 k
+  have hsign (i : Fin (n + 2)) :
+      H.eval (grid i.castSucc) * H.eval (grid i.succ) < 0 :=
+    sign_change_of_two_same_signs (hanchor i.castSucc) (hanchor i.succ) (hBsign i)
+  have hHdegree : H.natDegree ≤ n + 2 := by rw [hdegree, hFdegree]
+  have hH0 : H ≠ 0 := by
+    intro hz
+    rw [hz, natDegree_zero, hFdegree] at hdegree
+    lia
+  obtain ⟨_, hsplit, hnodup, hbounds⟩ :=
+    splits_nodup_roots_of_strict_sign_changes hH0 hHdegree grid hgrid hsign
+  refine ⟨hsplit, hnodup, ?_⟩
+  intro z hz
+  simpa [grid] using hbounds z hz
+
 /-- The finite-grid form of Appendix C.1's linear insertion criterion. The
 output polynomial can be arbitrary: its signs at the old simple roots and
 at the two endpoints determine one new simple root in every gap. -/
@@ -435,132 +589,13 @@ theorem splits_nodup_interval_of_root_derivative_signs {F H : ℝ[X]}
     (hleft : H.eval (-1) * F.eval (-1) < 0)
     (hright : 0 < H.eval 1 * F.eval 1) :
     H.Splits ∧ H.roots.Nodup ∧ ∀ z ∈ H.roots, -1 < z ∧ z < 1 := by
-  classical
   cases hFdegree : F.natDegree with
   | zero =>
-    have hconstant : F = C (F.coeff 0) := eq_C_of_natDegree_eq_zero hFdegree
-    have hFvalue : F.eval 1 ≠ 0 := by
-      rw [hconstant] at hF0 ⊢
-      simpa only [eval_C] using (C_ne_zero.mp hF0)
-    have hfeq : F.eval (-1) = F.eval 1 := by rw [hconstant]; simp
-    have hFprod : 0 < F.eval (-1) * F.eval 1 := by
-      rw [hfeq]
-      exact mul_self_pos.mpr hFvalue
-    have hHsign : H.eval (-1) * H.eval 1 < 0 :=
-      sign_change_of_left_opposite_right_same hleft hright hFprod
-    let grid : Fin 2 → ℝ := Fin.cons (-1) (fun _ : Fin 1 => 1)
-    have hgrid : StrictMono grid := by
-      apply Fin.strictMono_cons.mpr
-      constructor
-      · intro j
-        norm_num
-      · intro i j hij
-        have heq : i = j := Subsingleton.elim i j
-        subst j
-        exact (lt_irrefl i hij).elim
-    have hsign : ∀ i : Fin 1,
-        H.eval (grid i.castSucc) * H.eval (grid i.succ) < 0 := by
-      intro i
-      have hi : i = 0 := Subsingleton.elim i 0
-      subst i
-      simpa [grid] using hHsign
-    have hHdegree : H.natDegree ≤ 1 := by rw [hdegree, hFdegree]
-    have hH0 : H ≠ 0 := by
-      intro hz
-      rw [hz, natDegree_zero, hFdegree] at hdegree
-      lia
-    obtain ⟨_, hsplit, hnodup, hbounds⟩ :=
-      splits_nodup_roots_of_strict_sign_changes hH0 hHdegree grid hgrid hsign
-    refine ⟨hsplit, hnodup, ?_⟩
-    intro z hz
-    simpa [grid] using hbounds z hz
+    exact splits_nodup_interval_of_root_derivative_signs_natDegree_zero
+      hF0 hFdegree hdegree hleft hright
   | succ n =>
-    let s : Finset ℝ := F.roots.toFinset
-    have hs : s = F.roots.toFinset := rfl
-    have hcard : s.card = n + 1 := by
-      calc
-        s.card = F.roots.card := Multiset.toFinset_card_of_nodup hnd
-        _ = F.natDegree := splits_iff_card_roots.mp hF
-        _ = n + 1 := hFdegree
-    let r := s.orderEmbOfFin hcard
-    have hrmem (i : Fin (n + 1)) : r i ∈ F.roots := by
-      apply Multiset.mem_toFinset.mp
-      rw [← hs]
-      exact Finset.orderEmbOfFin_mem s hcard i
-    let grid : Fin (n + 3) → ℝ := Fin.cons (-1) (Fin.snoc r 1)
-    have hsnoc : StrictMono (Fin.snoc r 1) := by
-      rw [← Fin.insertNth_last' 1 r]
-      apply (Fin.strictMono_insertNth_iff (Fin.last (n + 1)) 1 r).mpr
-      refine ⟨r.strictMono, ?_, ?_⟩
-      · intro i _
-        exact (hinside _ (hrmem i)).2
-      · intro i hi
-        exact (not_le_of_gt i.castSucc_lt_last hi).elim
-    have hgrid : StrictMono grid := by
-      apply Fin.strictMono_cons.mpr
-      constructor
-      · intro j
-        cases j using Fin.lastCases with
-        | last => norm_num [grid]
-        | cast i => simpa [grid] using (hinside _ (hrmem i)).1
-      · exact hsnoc
-    let B := zigzagLinearFactor 0 F
-    have hanchorRoot (i : Fin (n + 1)) :
-        0 < H.eval (r i) * B.eval (r i) := by
-      have hfi := hroot _ (hrmem i)
-      have hq := sq_sub_one_neg_of_mem_Ioo (hinside _ (hrmem i))
-      have hp := mul_pos_of_neg_of_neg hfi hq
-      change 0 < H.eval (r i) * (zigzagLinearFactor 0 F).eval (r i)
-      rw [zigzagLinearFactor_eval_root 0 _ F ((mem_roots hF0).mp (hrmem i))]
-      nlinarith
-    have hanchorLeft : 0 < H.eval (-1) * B.eval (-1) := by
-      change 0 < H.eval (-1) * (zigzagLinearFactor 0 F).eval (-1)
-      rw [zigzagLinearFactor_eval_neg_one]
-      nlinarith [hleft]
-    have hanchorRight : 0 < H.eval 1 * B.eval 1 := by
-      change 0 < H.eval 1 * (zigzagLinearFactor 0 F).eval 1
-      rw [zigzagLinearFactor_eval_one]
-      nlinarith [hright]
-    have hanchor (j : Fin (n + 3)) : 0 < H.eval (grid j) * B.eval (grid j) := by
-      cases j using Fin.cases with
-      | zero => simpa [grid] using hanchorLeft
-      | succ j =>
-        cases j using Fin.lastCases with
-        | last => simpa [grid] using hanchorRight
-        | cast i => simpa [grid] using hanchorRoot i
-    have hBsign (i : Fin (n + 2)) :
-        B.eval (grid i.castSucc) * B.eval (grid i.succ) < 0 := by
-      cases i using Fin.lastCases with
-      | last =>
-        have hidx : (Fin.last (n + 1)).castSucc =
-            (Fin.last n).castSucc.succ := by ext; rfl
-        simpa [B, grid, hidx] using
-          linear_eval_mul_neg_at_right hF hF0 hnd hinside s hs hcard 0 (by norm_num)
-      | cast j =>
-        cases j using Fin.cases with
-        | zero =>
-          simpa [B, grid] using
-            linear_eval_mul_neg_at_left hF hF0 hnd hinside s hs hcard 0
-              (by norm_num)
-        | succ k =>
-          have hidx1 : k.succ.castSucc.castSucc =
-              k.castSucc.castSucc.succ := by ext; rfl
-          rw [hidx1]
-          simp only [grid, Fin.cons_succ, Fin.snoc_castSucc]
-          exact linear_eval_mul_neg_at_adjacent hF hF0 hnd hinside s hs hcard 0 k
-    have hsign (i : Fin (n + 2)) :
-        H.eval (grid i.castSucc) * H.eval (grid i.succ) < 0 :=
-      sign_change_of_two_same_signs (hanchor i.castSucc) (hanchor i.succ) (hBsign i)
-    have hHdegree : H.natDegree ≤ n + 2 := by rw [hdegree, hFdegree]
-    have hH0 : H ≠ 0 := by
-      intro hz
-      rw [hz, natDegree_zero, hFdegree] at hdegree
-      lia
-    obtain ⟨_, hsplit, hnodup, hbounds⟩ :=
-      splits_nodup_roots_of_strict_sign_changes hH0 hHdegree grid hgrid hsign
-    refine ⟨hsplit, hnodup, ?_⟩
-    intro z hz
-    simpa [grid] using hbounds z hz
+    exact splits_nodup_interval_of_root_derivative_signs_natDegree_succ
+      hF hF0 hnd hinside hFdegree hdegree hroot hleft hright
 
 /-- A linear spectral factor raises degree exactly once. Appendix C.1. -/
 theorem zigzagLinearFactor_natDegree (a : ℝ) (F : ℝ[X]) (hF : F ≠ 0) :
