@@ -531,6 +531,84 @@ private lemma coeff1_S_zero_shift {a : ℕ → ℝ} (h0 : a 0 = 1)
     rw [h5, hrg]
     linarith
 
+/-- Property (P) makes every `γ` ratio strictly positive. -/
+private lemma gam_pos_of_A_pos {a : ℕ → ℝ} (hP : ∀ n m, 0 < A a n m) (m n : ℕ) :
+    0 < gam a m n := by
+  unfold gam
+  have := hP (n + 2) (m + 1)
+  have := hP (n + 1) m
+  have := hP (n + 1) (m + 1)
+  have := hP n m
+  positivity
+
+/-- Property (P) makes every `r` ratio strictly positive. -/
+private lemma rr_pos_of_A_pos {a : ℕ → ℝ} (hP : ∀ n m, 0 < A a n m) (m n : ℕ) :
+    0 < rr a m n := by
+  unfold rr
+  have := hP (n + 1) (m + 1)
+  have := hP (n + 1) m
+  have := hP n (m + 1)
+  have := hP n m
+  positivity
+
+/-- Identity (6) gives the coefficient drop between adjacent shifts. -/
+private lemma coeff_S_succ_shift_sub_eq {a : ℕ → ℝ} (hA : ∀ n m, A a n m ≠ 0)
+    (m n k : ℕ) :
+    (S a (m + 1) (n + 1)).coeff (k + 1) =
+      (S a m (n + 1)).coeff (k + 1) - gam a m n * (S a m n).coeff k := by
+  have h := congrArg (fun p => p.coeff (k + 1)) (S_succ_shift_sub_eq hA m n)
+  simp only [coeff_sub, coeff_neg, coeff_CXmul_succ] at h
+  linarith
+
+/-- Identity (5) gives the coefficient recurrence between adjacent sizes. -/
+private lemma coeff_S_succ_eq {a : ℕ → ℝ} (hA : ∀ n m, A a n m ≠ 0) (m n k : ℕ) :
+    (S a m (n + 1)).coeff (k + 1) =
+      (S a (m + 1) n).coeff (k + 1) + rr a m n * (S a m n).coeff k := by
+  simpa only [coeff_add, coeff_CXmul_succ] using
+    congrArg (fun p => p.coeff (k + 1)) (S_succ_eq hA m n)
+
+/-- The constant coefficient in identity (5) is unchanged. -/
+private lemma coeff_S_succ_zero_eq {a : ℕ → ℝ} (hA : ∀ n m, A a n m ≠ 0)
+    (m n : ℕ) : (S a m (n + 1)).coeff 0 = (S a (m + 1) n).coeff 0 := by
+  rw [coeff_S_zero hA, coeff_S_zero hA]
+
+/-- The telescoping coefficient drop makes each `γ` column summable. -/
+private lemma summable_gam_of_A_pos {a : ℕ → ℝ} (hpf : IsPolyaFreqSeq a)
+    (hP : ∀ n m, 0 < A a n m) (n : ℕ) : Summable fun m => gam a m n := by
+  have hA : ∀ n m, A a n m ≠ 0 := fun i j => (hP i j).ne'
+  have hg : ∀ m, gam a m n =
+      (S a m (n + 1)).coeff 1 - (S a (m + 1) (n + 1)).coeff 1 := by
+    intro m
+    rw [coeff_S_succ_shift_sub_eq hA m n 0, coeff_S_zero hA]
+    ring
+  refine summable_of_sum_range_le (c := (S a 0 (n + 1)).coeff 1)
+    (fun m => (gam_pos_of_A_pos hP m n).le) ?_
+  intro M
+  rw [Finset.sum_congr rfl (fun m _ => hg m), Finset.sum_range_sub']
+  linarith [coeff_S_nonneg hpf hP M (n + 1) 1]
+
+/-- Coefficient limits preserve identity (5) as a polynomial recurrence. -/
+private lemma Sinf_succ_eq_mul {a : ℕ → ℝ} (hA : ∀ n m, A a n m ≠ 0)
+    (Sinf : ℕ → ℝ[X]) (β : ℕ → ℝ)
+    (hT : ∀ n k, Tendsto (fun m => (S a m n).coeff k) atTop (𝓝 ((Sinf n).coeff k)))
+    (hβ : ∀ n, Tendsto (fun m => rr a m n) atTop (𝓝 (β n))) (n : ℕ) :
+    Sinf (n + 1) = (1 + C (β n) * X) * Sinf n := by
+  ext k
+  cases k with
+  | zero =>
+    rw [add_mul, one_mul, coeff_add, coeff_CXmul_zero, add_zero]
+    refine tendsto_nhds_unique (hT (n + 1) 0) ?_
+    rw [show (fun m => (S a m (n + 1)).coeff 0) =
+      fun m => (S a (m + 1) n).coeff 0 from funext fun m => coeff_S_succ_zero_eq hA m n]
+    exact (hT n 0).comp (tendsto_add_atTop_nat 1)
+  | succ k =>
+    rw [add_mul, one_mul, coeff_add, coeff_CXmul_succ]
+    refine tendsto_nhds_unique (hT (n + 1) (k + 1)) ?_
+    rw [show (fun m => (S a m (n + 1)).coeff (k + 1)) = fun m =>
+      (S a (m + 1) n).coeff (k + 1) + rr a m n * (S a m n).coeff k from
+        funext fun m => coeff_S_succ_eq hA m n k]
+    exact ((hT n (k + 1)).comp (tendsto_add_atTop_nat 1)).add ((hβ n).mul (hT n k))
+
 /-- Assertions (ii)--(v) (monotone limits and `∑ β ≤ a₁`). For a Pólya frequency sequence
 with
 `a 0 = 1` and property (P):
@@ -550,37 +628,14 @@ theorem coeff_S_antitone_and_exists_limit {a : ℕ → ℝ} (hpf : IsPolyaFreqSe
       (∀ n, Sinf (n + 1) = (1 + C (β n) * X) * Sinf n) ∧
       Summable β ∧ ∑' n, β n ≤ a 1 := by
   have hA : ∀ n m, A a n m ≠ 0 := fun n m => (hP n m).ne'
-  have gam_pos : ∀ m n, 0 < gam a m n := by
-    intro m n; unfold gam
-    have := hP (n + 2) (m + 1); have := hP (n + 1) m; have := hP (n + 1) (m + 1); have := hP n m
-    positivity
-  have rr_pos : ∀ m n, 0 < rr a m n := by
-    intro m n; unfold rr
-    have := hP (n + 1) (m + 1); have := hP (n + 1) m; have := hP n (m + 1); have := hP n m
-    positivity
-  -- coefficientwise form of identity (6)
-  have i6 : ∀ m n k, (S a (m + 1) (n + 1)).coeff (k + 1) =
-      (S a m (n + 1)).coeff (k + 1) - gam a m n * (S a m n).coeff k := by
-    intro m n k
-    have := congrArg (fun p => p.coeff (k + 1)) (S_succ_shift_sub_eq hA m n)
-    simp only [coeff_sub, coeff_neg, coeff_CXmul_succ] at this
-    linarith
-  -- coefficientwise form of identity (5)
-  have i5 : ∀ m n k, (S a m (n + 1)).coeff (k + 1) =
-      (S a (m + 1) n).coeff (k + 1) + rr a m n * (S a m n).coeff k := by
-    intro m n k
-    have := congrArg (fun p => p.coeff (k + 1)) (S_succ_eq hA m n)
-    simpa only [coeff_add, coeff_CXmul_succ] using this
-  have i5z : ∀ m n, (S a m (n + 1)).coeff 0 = (S a (m + 1) n).coeff 0 := by
-    intro m n
-    rw [coeff_S_zero hA, coeff_S_zero hA]
   have mono : ∀ n k m, (S a (m + 1) (n + 1)).coeff k ≤ (S a m (n + 1)).coeff k := by
     intro n k m
     cases k with
     | zero => rw [coeff_S_zero hA, coeff_S_zero hA]
     | succ k =>
-      rw [i6]
-      exact sub_le_self _ (mul_nonneg (gam_pos m n).le (coeff_S_nonneg hpf hP m n k))
+      rw [coeff_S_succ_shift_sub_eq hA]
+      exact sub_le_self _
+        (mul_nonneg (gam_pos_of_A_pos hP m n).le (coeff_S_nonneg hpf hP m n k))
   have anti : ∀ n k, Antitone fun m => (S a m (n + 1)).coeff k :=
     fun n k => antitone_nat_of_succ_le (mono n k)
   have conv : ∀ n k, ∃ L, Tendsto (fun m => (S a m n).coeff k) atTop (𝓝 L) := by
@@ -611,11 +666,12 @@ theorem coeff_S_antitone_and_exists_limit {a : ℕ → ℝ} (hpf : IsPolyaFreqSe
     have hrr : (fun m => rr a m n) =
         fun m => (S a m (n + 1)).coeff 1 - (S a (m + 1) n).coeff 1 := by
       funext m
-      rw [i5 m n 0, coeff_S_zero hA]
+      rw [coeff_S_succ_eq hA m n 0, coeff_S_zero hA]
       ring
     rw [hrr]
     exact (hT (n + 1) 1).sub ((hT n 1).comp (tendsto_add_atTop_nat 1))
-  have hβ0 : ∀ n, 0 ≤ β n := fun n => ge_of_tendsto' (hβ n) (fun m => (rr_pos m n).le)
+  have hβ0 : ∀ n, 0 ≤ β n := fun n =>
+    ge_of_tendsto' (hβ n) (fun m => (rr_pos_of_A_pos hP m n).le)
   have ha1 : 0 ≤ a 1 := hpf.nonneg 1
   have hpart : ∀ N, ∑ n ∈ Finset.range N, β n ≤ a 1 := by
     intro N
@@ -628,33 +684,8 @@ theorem coeff_S_antitone_and_exists_limit {a : ℕ → ℝ} (hpf : IsPolyaFreqSe
       simpa using this
   refine ⟨mono, ?_, Sinf, β, hS0, hT, hβ0, hβ, ?_, summable_of_sum_range_le hβ0 hpart,
     Real.tsum_le_of_sum_range_le hβ0 hpart⟩
-  · intro n
-    have hg : ∀ m, gam a m n = (S a m (n + 1)).coeff 1 - (S a (m + 1) (n + 1)).coeff 1 := by
-      intro m
-      rw [i6 m n 0, coeff_S_zero hA]
-      ring
-    refine summable_of_sum_range_le (c := (S a 0 (n + 1)).coeff 1) (fun m => (gam_pos m n).le) ?_
-    intro M
-    rw [Finset.sum_congr rfl (fun m _ => hg m), Finset.sum_range_sub']
-    linarith [coeff_S_nonneg hpf hP M (n + 1) 1]
-  · intro n
-    ext k
-    cases k with
-    | zero =>
-      rw [add_mul, one_mul, coeff_add, coeff_CXmul_zero, add_zero]
-      refine tendsto_nhds_unique (hT (n + 1) 0) ?_
-      have : (fun m => (S a m (n + 1)).coeff 0) = fun m => (S a (m + 1) n).coeff 0 :=
-        funext fun m => i5z m n
-      rw [this]
-      exact (hT n 0).comp (tendsto_add_atTop_nat 1)
-    | succ k =>
-      rw [add_mul, one_mul, coeff_add, coeff_CXmul_succ]
-      refine tendsto_nhds_unique (hT (n + 1) (k + 1)) ?_
-      have : (fun m => (S a m (n + 1)).coeff (k + 1)) =
-          fun m => (S a (m + 1) n).coeff (k + 1) + rr a m n * (S a m n).coeff k :=
-        funext fun m => i5 m n k
-      rw [this]
-      exact ((hT n (k + 1)).comp (tendsto_add_atTop_nat 1)).add ((hβ n).mul (hT n k))
+  · exact summable_gam_of_A_pos hpf hP
+  · exact Sinf_succ_eq_mul hA Sinf β hT hβ
 
 end RealRooted.EdreiThoma
 

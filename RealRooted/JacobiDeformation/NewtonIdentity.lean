@@ -26,6 +26,70 @@ noncomputable section
 
 namespace RealRooted.JacobiDeformation
 
+/-- A Newton summand equals its normalized Pfaff--Saalschütz summand. -/
+private lemma newton_summand_eq_pfaffSaalschutz (m j k : ℕ) (hjm : j ≤ m) (hkj : k ≤ j)
+    (s delta a b c : ℝ) (ha : a = (j : ℝ) + s - 1) (hb : b = 1 - delta)
+    (hc : c = 1 - (m : ℝ) - delta)
+    (hposR : ∀ l : ℕ, 0 < risingFactorial ((m : ℝ) + s) l)
+    (hposF : ∀ l : ℕ, l ≤ m → 0 < fallingFactorial ((m : ℝ) + delta - 1) l)
+    (hCjne : risingFactorial c j ≠ 0)
+    (hDjne : risingFactorial (c - a - b) j ≠ 0) :
+    (risingFactorial b k * fallingFactorial (j : ℝ) k * risingFactorial a k) /
+        (fallingFactorial ((m : ℝ) + delta - 1) k * risingFactorial ((m : ℝ) + s) k *
+          (k.factorial : ℝ)) =
+      ((j.choose k : ℝ) * (risingFactorial a k * risingFactorial b k *
+        risingFactorial (c + (k : ℝ)) (j - k) *
+        risingFactorial (c - a - b) (j - k))) /
+        (risingFactorial c j * risingFactorial (c - a - b) j) := by
+  have hkm : k ≤ m := le_trans hkj hjm
+  have hFne := ne_of_gt (hposF k hkm)
+  have hRne := ne_of_gt (hposR k)
+  have hfacne : (k.factorial : ℝ) ≠ 0 := by
+    exact_mod_cast Nat.factorial_ne_zero k
+  have e1 : risingFactorial c k * risingFactorial (c + (k : ℝ)) (j - k) =
+      risingFactorial c j := by
+    rw [← risingFactorial_add]
+    congr 1
+    lia
+  have e2 : risingFactorial (c - a - b) (j - k) *
+      ((-1) ^ k * risingFactorial ((m : ℝ) + s) k) =
+      risingFactorial (c - a - b) j := by
+    have harg : (c - a - b) + ((j - k : ℕ) : ℝ) =
+        1 - ((m : ℝ) + s) - (k : ℝ) := by
+      have hcast : ((j - k : ℕ) : ℝ) = (j : ℝ) - (k : ℝ) := by
+        push_cast [Nat.cast_sub hkj]
+        ring
+      rw [hc, ha, hb, hcast]
+      ring
+    have hsplit : risingFactorial (c - a - b) ((j - k) + k) =
+        risingFactorial (c - a - b) (j - k) *
+          risingFactorial ((c - a - b) + ((j - k : ℕ) : ℝ)) k :=
+      risingFactorial_add _ _ _
+    rw [harg, risingFactorial_one_sub] at hsplit
+    rw [← hsplit]
+    congr 1
+    lia
+  have e3 : risingFactorial c k =
+      (-1) ^ k * fallingFactorial ((m : ℝ) + delta - 1) k := by
+    have : c = -((m : ℝ) + delta - 1) := by rw [hc]; ring
+    rw [this, risingFactorial_neg]
+  have e4 : (j.choose k : ℝ) * (k.factorial : ℝ) = fallingFactorial (j : ℝ) k :=
+    choose_mul_factorial_eq_fallingFactorial j k
+  have e23 : risingFactorial c j * risingFactorial (c - a - b) j =
+      (fallingFactorial ((m : ℝ) + delta - 1) k * risingFactorial ((m : ℝ) + s) k) *
+        (risingFactorial (c + (k : ℝ)) (j - k) *
+          risingFactorial (c - a - b) (j - k)) := by
+    rw [← e1, ← e2, e3]
+    have hsq : ((-1 : ℝ)) ^ k * ((-1 : ℝ)) ^ k = 1 := by
+      rw [← mul_pow]
+      norm_num
+    linear_combination
+      (fallingFactorial ((m : ℝ) + delta - 1) k * risingFactorial ((m : ℝ) + s) k *
+        risingFactorial (c + (k : ℝ)) (j - k) *
+        risingFactorial (c - a - b) (j - k)) * hsq
+  rw [eq_div_iff (mul_ne_zero hCjne hDjne), e23, ← e4]
+  field_simp
+
 /-- The Pochhammer form of the Newton expansion: for `j ≤ m`, `s > 0` and
 `δ > 0`,
 
@@ -46,13 +110,8 @@ private theorem sum_newton_pochhammer_eq (m j : ℕ) (hjm : j ≤ m) (s delta : 
       = (fallingFactorial (m : ℝ) j * risingFactorial ((m : ℝ) + s - 1 + delta) j) /
           (fallingFactorial ((m : ℝ) + delta - 1) j * risingFactorial ((m : ℝ) + s) j) := by
   -- positivity of the denominators
-  have hposR : ∀ k : ℕ, 0 < risingFactorial ((m : ℝ) + s) k := by
-    intro k
-    rw [risingFactorial_eq_prod]
-    refine Finset.prod_pos fun l _ => ?_
-    have hm : (0 : ℝ) ≤ (m : ℝ) := Nat.cast_nonneg m
-    have hl : (0 : ℝ) ≤ (l : ℝ) := Nat.cast_nonneg l
-    linarith
+  have hposR : ∀ k : ℕ, 0 < risingFactorial ((m : ℝ) + s) k :=
+    fun k => risingFactorial_pos k (by positivity)
   have hposF : ∀ k : ℕ, k ≤ m → 0 < fallingFactorial ((m : ℝ) + delta - 1) k := by
     intro k hk
     rw [fallingFactorial_eq_prod]
@@ -61,8 +120,6 @@ private theorem sum_newton_pochhammer_eq (m j : ℕ) (hjm : j ≤ m) (s delta : 
     have h1 : (l : ℝ) + 1 ≤ (k : ℝ) := by exact_mod_cast hl
     have h2 : (k : ℝ) ≤ (m : ℝ) := by exact_mod_cast hk
     linarith
-  have hsq : ∀ k : ℕ, ((-1 : ℝ)) ^ k * ((-1 : ℝ)) ^ k = 1 := by
-    intro k; rw [← mul_pow]; norm_num
   -- the Pfaff–Saalschütz parameters
   set a : ℝ := (j : ℝ) + s - 1 with ha
   set b : ℝ := 1 - delta with hb
@@ -90,45 +147,9 @@ private theorem sum_newton_pochhammer_eq (m j : ℕ) (hjm : j ≤ m) (s delta : 
             risingFactorial (c - a - b) (j - k))) / (risingFactorial c j * risingFactorial (c -
                 a - b) j) := by
     intro k hk
-    simp only [Finset.mem_range, Nat.lt_succ_iff] at hk
-    have hkm : k ≤ m := le_trans hk hjm
-    have hFne : fallingFactorial ((m : ℝ) + delta - 1) k ≠ 0 := ne_of_gt (hposF k hkm)
-    have hRne : risingFactorial ((m : ℝ) + s) k ≠ 0 := ne_of_gt (hposR k)
-    have hfacne : (k.factorial : ℝ) ≠ 0 := by
-      exact_mod_cast Nat.factorial_ne_zero k
-    have e1 : risingFactorial c k * risingFactorial (c + (k : ℝ)) (j - k) =
-        risingFactorial c j := by
-      rw [← risingFactorial_add]
-      congr 1
-      lia
-    have e2 : risingFactorial (c - a - b) (j - k) * ((-1) ^ k * risingFactorial ((m : ℝ) + s) k)
-        = risingFactorial (c - a - b) j := by
-      have harg : (c - a - b) + ((j - k : ℕ) : ℝ) = 1 - ((m : ℝ) + s) - (k : ℝ) := by
-        have hcast : ((j - k : ℕ) : ℝ) = (j : ℝ) - (k : ℝ) := by
-          push_cast [Nat.cast_sub hk]; ring
-        rw [hc, ha, hb, hcast]; ring
-      have hsplit : risingFactorial (c - a - b) ((j - k) + k)
-          = risingFactorial (c - a - b) (j - k) * risingFactorial ((c - a - b) + ((j -
-              k : ℕ) : ℝ)) k :=
-        risingFactorial_add _ _ _
-      rw [harg, risingFactorial_one_sub] at hsplit
-      rw [← hsplit]
-      congr 1
-      lia
-    have e3 : risingFactorial c k = (-1) ^ k * fallingFactorial ((m : ℝ) + delta - 1) k := by
-      have : c = -((m : ℝ) + delta - 1) := by rw [hc]; ring
-      rw [this, risingFactorial_neg]
-    have e4 : (j.choose k : ℝ) * (k.factorial : ℝ) = fallingFactorial (j : ℝ) k :=
-      choose_mul_factorial_eq_fallingFactorial j k
-    have e23 : risingFactorial c j * risingFactorial (c - a - b) j
-        = (fallingFactorial ((m : ℝ) + delta - 1) k * risingFactorial ((m : ℝ) + s) k) *
-          (risingFactorial (c + (k : ℝ)) (j - k) * risingFactorial (c - a - b) (j - k)) := by
-      rw [← e1, ← e2, e3]
-      linear_combination (fallingFactorial ((m : ℝ) + delta - 1) k * risingFactorial ((m : ℝ) +
-          s) k *
-        risingFactorial (c + (k : ℝ)) (j - k) * risingFactorial (c - a - b) (j - k)) * hsq k
-    rw [eq_div_iff (mul_ne_zero hCjne hDjne), e23, ← e4]
-    field_simp
+    exact newton_summand_eq_pfaffSaalschutz m j k hjm (Nat.lt_succ_iff.mp <|
+      Finset.mem_range.mp hk) s delta
+      a b c ha hb hc hposR hposF hCjne hDjne
   have hsum : (∑ k ∈ Finset.range (j + 1), (risingFactorial b k * fallingFactorial (j : ℝ) k *
       risingFactorial a k) /
         (fallingFactorial ((m : ℝ) + delta - 1) k * risingFactorial ((m : ℝ) + s) k *
