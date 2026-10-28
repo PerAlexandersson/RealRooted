@@ -102,28 +102,11 @@ private lemma meshGE_fallPoly (i : ℕ) : (fallPoly i).MeshGE 1 := by
 private lemma mesh_pair (f : ℝ[X]) (hf : f.MeshGE 1) (r s : ℝ)
     (h : ({r, s} : Multiset ℝ) ≤ f.roots) :
     1 ≤ |r - s| := by
-  obtain ⟨-, -, h3⟩ := hf
-  set l := f.roots.sort (· ≤ ·) with hl
-  have hP : l.Pairwise (fun x y => x + 1 ≤ y) := by
-    rw [List.pairwise_iff_getElem]
-    intro i j hi hj hij
-    induction j, hij using Nat.le_induction with
-    | base =>
-      have := h3 i hj
-      rwa [List.getD_eq_getElem _ _ hi, List.getD_eq_getElem _ _ hj] at this
-    | succ j hij ih =>
-      have h1 := ih (by lia)
-      have h2 := h3 j hj
-      rw [List.getD_eq_getElem _ _ (by lia), List.getD_eq_getElem _ _ hj] at h2
-      linarith
-  have hP' : l.Pairwise (fun x y => 1 ≤ |x - y|) := hP.imp fun {x y} hxy => by
-    rw [abs_sub_comm, abs_of_nonneg (by linarith)]; linarith
-  have hl' : (l : Multiset ℝ) = f.roots := Multiset.sort_eq _ _
-  have hrs : ({r, s} : Multiset ℝ) = ((([r, s] : List ℝ)) : Multiset ℝ) := rfl
-  rw [← hl', hrs, Multiset.coe_le] at h
-  obtain ⟨l', hperm, hsub⟩ := h
-  have := (hP'.sublist hsub).perm hperm (fun hxy => by rwa [abs_sub_comm])
-  simpa using this
+  have hnodup : ({r, s} : Multiset ℝ).Nodup :=
+    Multiset.nodup_of_le h (hf.roots_nodup one_pos)
+  have hrs : r ≠ s := by simpa using hnodup
+  exact ((Polynomial.MeshGE.iff_roots_nodup_pairwise_gap one_pos).1 hf).2.2 r
+    (Multiset.subset_of_le h (by simp)) s (Multiset.subset_of_le h (by simp)) hrs
 
 private lemma natDegree_cofPoly_le (Q : ℝ[X]) (i : ℕ) :
     (cofPoly Q i).natDegree ≤ Q.natDegree := by
@@ -160,8 +143,7 @@ private lemma cofPoly_roots_loc (Q : ℝ[X]) (hT : PreservesMeshOne Q)
   have hj2 : r < j + 1 := Nat.lt_floor_add_one r
   have hkj : Q.natDegree ≤ j := Nat.le_floor hkr
   have hji : j < i := by
-    have : (j : ℝ) < i := by linarith
-    exact_mod_cast this
+    exact_mod_cast (show (j : ℝ) < i by linarith)
   have hdvd : (X - C r) * (X - C (j : ℝ)) ∣ finiteDifferenceOp 1 Q (fallPoly i) := by
     rw [finiteDifferenceOp_fallPoly Q i hi, mul_comm (∏ m ∈ Finset.Ico Q.natDegree i, _)]
     apply mul_dvd_mul
@@ -354,13 +336,12 @@ private lemma limitPoly_no_bad_root (Q : ℝ[X]) (hQ : Q ≠ 0)
       rw [aeval_cofPoly Q i hi0, aeval_cofPoly Q i hi0, map_mul, map_mul, map_pow] at hmain
       have hpos : 0 < Complex.normSq (i : ℂ) ^ k := by
         apply pow_pos; rw [Complex.normSq_pos]; exact_mod_cast hi0.ne'
-      have := hmain
       rw [show M ^ k * (Complex.normSq (i : ℂ) ^ k *
           Complex.normSq (scalCof Q (1 / (i : ℝ)) ((a : ℂ) + (c : ℂ) * Complex.I))) =
           Complex.normSq (i : ℂ) ^ k * (M ^ k *
           Complex.normSq (scalCof Q (1 / (i : ℝ)) ((a : ℂ) + (c : ℂ) * Complex.I))) by ring]
-        at this
-      exact le_of_mul_le_mul_left this hpos
+        at hmain
+      exact le_of_mul_le_mul_left hmain hpos
     have hlim := le_of_tendsto_of_tendsto
       ((Complex.continuous_normSq.tendsto _).comp
         (tendsto_scalCof Q ((a : ℂ) + (b : ℂ) * Complex.I)))
@@ -422,8 +403,7 @@ private lemma complex_root_good (Q : ℝ[X]) (hQ : Q ≠ 0)
       rw [htx]; nth_rw 1 [hxr]; push_cast; ring
     have htim : t.im = 0 := by rw [ht']; simp
     have htre : t.re = 1 - 1 / x.re := by rw [ht']; simp
-    have hneg : t.re < 0 := by
-      by_contra hh; exact hbad ⟨htim, le_of_not_gt hh⟩
+    have hneg : t.re < 0 := by grind
     rw [htre] at hneg
     have hpos : 1 < 1 / x.re := by linarith
     have hxpos : 0 < x.re := by
@@ -470,7 +450,8 @@ private lemma card_roots_of_complex_real (Q : ℝ[X])
 
 
 /-- **Discrete Hermite--Poulain theorem, necessity** (BKS 2016, Theorem 3; formalized by
-Aristotle (Harmonic)).  If the finite-difference operator `p ↦ ∑ₖ aₖ p(x - k)` with symbol `Q`
+Aristotle (Harmonic)).  If the finite-difference operator `p ↦ ∑ₖ aₖ p(x - k)` with symbol
+`Q`
 maps polynomials of mesh at least one to polynomials of mesh at least one, then all zeros of
 `Q` are real and nonnegative. -/
 theorem hasOnlyNonnegRoots_of_forall_finiteDifferenceOp_meshGE {Q : ℝ[X]}
@@ -508,11 +489,13 @@ private lemma finiteDifferenceOp_comp_C_mul_X {α : ℝ} (hα : 0 < α) (Q p : �
     simp only [finiteDifferenceOp_monomial, mul_comp, C_comp, comp_assoc, hcomp]
 
 /-- **The discrete Hermite--Poulain theorem for a general step** (BKS 2016, Theorem 3).  For
-`α > 0`, the operator `p ↦ ∑ₖ aₖ p(x - kα)` with symbol `Q` maps polynomials of mesh at least
+`α > 0`, the operator `p ↦ ∑ₖ aₖ p(x - kα)` with symbol `Q` maps polynomials of mesh at
+least
 `α` to polynomials of mesh at least `α` if and only if every zero of `Q` is real and
 nonnegative. -/
 theorem forall_finiteDifferenceOp_meshGE_iff {α : ℝ} {Q : ℝ[X]} (hα : 0 < α) :
-    (∀ p : ℝ[X], p.MeshGE α → (finiteDifferenceOp α Q p).MeshGE α) ↔ HasOnlyNonnegRoots Q := by
+    (∀ p : ℝ[X], p.MeshGE α → (finiteDifferenceOp α Q p).MeshGE α) ↔
+      HasOnlyNonnegRoots Q := by
   refine ⟨fun hT => hasOnlyNonnegRoots_of_forall_finiteDifferenceOp_meshGE fun p hp => ?_,
     fun hQ _ hp => finiteDifferenceOp_meshGE hα hQ hp le_rfl⟩
   have h1 : (p.comp (C α⁻¹ * X)).MeshGE α := by

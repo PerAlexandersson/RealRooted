@@ -15,7 +15,8 @@ the same sign.  See RealRooted issue #2070.
 
 The paper's proof shows that `W = a p + b X Δp` is in proper position with both `p(x)` and
 `p(x - 1)`, where `Δp = p(x) - p(x - 1)`.  The ordered roots then satisfy
-`w_i ≤ θ_i` and `θ_i + 1 ≤ w_{i+1}`, which is exactly the mesh bound.  The nonnegative roots of
+`w_i ≤ θ_i` and `θ_i + 1 ≤ w_{i+1}`, which is exactly the mesh bound.  The nonnegative
+roots of
 `W` follow because `p` and `X Δp` have the same sign on the negative reals.
 -/
 
@@ -92,7 +93,8 @@ private theorem roots_comp_X_sub_C_one (p : ℝ[X]) :
 
 private theorem sort_roots_comp_X_sub_C_one (p : ℝ[X]) :
     (p.comp (X - C 1)).roots.sort (· ≤ ·) = (p.roots.sort (· ≤ ·)).map (· + 1) := by
-  have hrs : (p.roots.sort (· ≤ ·)).Pairwise (· ≤ ·) := Multiset.pairwise_sort p.roots (· ≤ ·)
+  have hrs : (p.roots.sort (· ≤ ·)).Pairwise (· ≤ ·) :=
+    Multiset.pairwise_sort p.roots (· ≤ ·)
   have hmap : ((p.roots.sort (· ≤ ·)).map (· + 1)).Pairwise (· ≤ ·) := by
     rw [List.pairwise_map]
     exact hrs.imp (by intro a b hab; linarith)
@@ -127,9 +129,7 @@ private theorem sub_comp_X_sub_C_one_natDegree_coeff {p : ℝ[X]} {m : ℕ}
     simp [sub_eq_add_neg]
   rw [hq]
   have htop : (taylor (-1 : ℝ) p).coeff (m + 1) = p.coeff (m + 1) := by
-    have h := coeff_taylor_natDegree (r := (-1 : ℝ)) (f := p)
-    rw [hp] at h
-    rw [h, leadingCoeff, hp]
+    rw [← hp, coeff_taylor_natDegree, leadingCoeff]
   have hmid : (taylor (-1 : ℝ) p).coeff m = p.coeff m - ((m : ℝ) + 1) * p.leadingCoeff := by
     rw [taylor_coeff]
     have hdeg : (hasseDeriv m p).natDegree < 2 := by
@@ -137,8 +137,7 @@ private theorem sub_comp_X_sub_C_one_natDegree_coeff {p : ℝ[X]} {m : ℕ}
       lia
     rw [eval_eq_sum_range' hdeg]
     have h1 : (1 + m).choose m = m + 1 := by
-      rw [add_comm]
-      exact Nat.choose_succ_self_right m
+      simp [add_comm]
     have h2 : p.coeff (1 + m) = p.leadingCoeff := by
       rw [add_comm, leadingCoeff, hp]
     simp [Finset.sum_range_succ, hasseDeriv_coeff, h1, h2]
@@ -151,10 +150,8 @@ private theorem sub_comp_X_sub_C_one_natDegree_coeff {p : ℝ[X]} {m : ℕ}
     intro N hN
     rw [coeff_sub]
     rcases Nat.lt_or_ge (m + 1) N with h | h
-    · have h1 : p.coeff N = 0 := coeff_eq_zero_of_natDegree_lt (by lia)
-      have h2 : (taylor (-1 : ℝ) p).coeff N = 0 :=
-        coeff_eq_zero_of_natDegree_lt (by rw [natDegree_taylor]; lia)
-      rw [h1, h2, sub_zero]
+    · rw [coeff_eq_zero_of_natDegree_lt (by lia),
+        coeff_eq_zero_of_natDegree_lt (by rw [natDegree_taylor]; lia), sub_zero]
     · have hN' : N = m + 1 := by lia
       subst hN'
       rw [htop, sub_self]
@@ -278,14 +275,10 @@ private theorem strictInterl_add_C_mul_X_mul {p q T : ℝ[X]} {a b : ℝ} {n : �
   rcases ha.eq_or_lt with ha0 | ha'
   · subst ha0
     have hb' : 0 < b := hab.resolve_left (lt_irrefl 0)
-    have e : C (0 : ℝ) * p + C b * (X * T) = C b * (X * T) := by simp
-    rw [e]
-    exact hf2 b hb'
+    simpa using hf2 b hb'
   · rcases hb.eq_or_lt with hb0 | hb'
     · subst hb0
-      have e : C a * p + C (0 : ℝ) * (X * T) = C a * p := by simp
-      rw [e]
-      exact hf1 a ha'
+      simpa using hf1 a ha'
     · obtain ⟨h1p, h1q, h1d, h1pos⟩ := hf1 a ha'
       obtain ⟨h2p, h2q, h2d, h2pos⟩ := hf2 b hb'
       have hdeg : (C a * p).natDegree = (C b * (X * T)).natDegree := by rw [h1d, h2d]
@@ -379,19 +372,17 @@ private theorem discreteMultiplier_of_posLeadingCoeff {p : ℝ[X]} {m : ℕ} {a 
       HasOnlyNonnegRoots (C a * p + C b * (X * (p - p.comp (X - C 1)))) := by
   obtain ⟨hTpos, hTdeg, hTp, hTq⟩ := strictInterl_sub_comp_X_sub_C_one hpos hn hmesh
   have hp0 : p ≠ 0 := hpos.ne_zero
-  have hq0 : p.comp (X - C 1) ≠ 0 :=
-    leadingCoeff_ne_zero.mp (by
-      rw [leadingCoeff_comp_X_sub_C_one]
-      exact leadingCoeff_ne_zero.mpr hp0)
+  have hq0 : p.comp (X - C 1) ≠ 0 := by
+    rw [show X - C (1 : ℝ) = X + C (-1) by simp [sub_eq_add_neg],
+      comp_X_add_C_ne_zero_iff]
+    exact hp0
   have hpq : StrictInterl p (p.comp (X - C 1)) :=
     ((Polynomial.MeshGE.iff_interl_comp_sub one_pos).1 hmesh).toStrictInterl_of_ne hp0 hq0
   have hqnn : ∀ r ∈ (p.comp (X - C 1)).roots, 0 ≤ r := by
     intro r hr
     rw [roots_comp_X_sub_C_one] at hr
-    obtain ⟨s, hs, hsr⟩ := Multiset.mem_map.mp hr
-    have hs0 := hnn s hs
-    have hr' : r = s + 1 := hsr.symm
-    linarith
+    obtain ⟨s, hs, rfl⟩ := Multiset.mem_map.mp hr
+    linarith [hnn s hs]
   have hqdeg : (p.comp (X - C 1)).natDegree = m + 1 := by
     rw [natDegree_comp_X_sub_C_one, hn]
   obtain ⟨hXTp, hTnn⟩ := strictInterl_X_mul_of_succDegree hTp (by lia) hnn
