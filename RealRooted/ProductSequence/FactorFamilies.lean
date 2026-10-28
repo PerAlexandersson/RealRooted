@@ -20,7 +20,7 @@ open scoped BigOperators
 
 namespace RealRooted
 
-open ProductSequenceInternal
+open ProductSequence
 
 /-- Sequence shell for first-order affine-product recurrences. -/
 theorem isRealRooted_of_product_affine_sequence

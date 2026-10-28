@@ -26,15 +26,15 @@ Preferred roots lie in `(-1, 0)`; their reciprocal roots lie below `-1`, and
 the replicated center block records the multiplicity of `-1`.
 -/
 
-namespace GammaTransformInternal
+namespace GammaTransform
 
 /-- The reciprocal and central-root completion used within the gamma-transform package. -/
 noncomputable def reciprocalCenterRoots (m : ℕ) (s : List ℝ) : List ℝ :=
   (s.map fun x => x⁻¹).reverse ++ (List.replicate m (-1) ++ s)
 
-end GammaTransformInternal
+end GammaTransform
 
-open GammaTransformInternal
+open GammaTransform
 
 private lemma map_interleave (f : α → β) : ∀ l₁ l₂ : List α,
     (l₁.interleave l₂).map f = (l₁.map f).interleave (l₂.map f)
@@ -160,7 +160,7 @@ private lemma interleave_reciprocalCenterRoots_succ
 
 /-- Equal gamma degrees give one additional central root on the right transform.
 This is the first backward case in Hoster--Stump, Proposition 2.5. -/
-lemma GammaTransformInternal.listInterlaces_reciprocalCenterRoots_same_iff
+lemma GammaTransform.listInterlaces_reciprocalCenterRoots_same_iff
     {ss rs : List ℝ} (m : ℕ)
     (hss : ∀ x ∈ ss, x ∈ Set.Ioo (-1 : ℝ) 0)
     (hrs : ∀ x ∈ rs, x ∈ Set.Ioo (-1 : ℝ) 0)
@@ -200,7 +200,7 @@ lemma GammaTransformInternal.listInterlaces_reciprocalCenterRoots_same_iff
 
 /-- Successive gamma degrees remove one central root from the right transform.
 This is the second backward case in Hoster--Stump, Proposition 2.5. -/
-lemma GammaTransformInternal.listInterlaces_reciprocalCenterRoots_succ_iff
+lemma GammaTransform.listInterlaces_reciprocalCenterRoots_succ_iff
     {ss rs : List ℝ} (m : ℕ)
     (hss : ∀ x ∈ ss, x ∈ Set.Ioo (-1 : ℝ) 0)
     (hrs : ∀ x ∈ rs, x ∈ Set.Ioo (-1 : ℝ) 0)

@@ -30,17 +30,17 @@ namespace RealRooted
 section
 
 /-- The Wronskian `g * f' - f * g'` of the polynomials `f` and `g`. -/
-def ObreschkoffConverseInternal.wronskianPoly (f g : ℝ[X]) : ℝ[X] :=
+def ObreschkoffConverse.wronskianPoly (f g : ℝ[X]) : ℝ[X] :=
   g * f.derivative - f * g.derivative
 
-open ObreschkoffConverseInternal
+open ObreschkoffConverse
 
 private lemma wronskian_eval {f g : ℝ[X]} {x : ℝ} :
     (wronskianPoly f g).eval x =
       g.eval x * f.derivative.eval x - f.eval x * g.derivative.eval x := by
   simp [wronskianPoly, sub_eq_add_neg]
 
-lemma ObreschkoffConverseInternal.eval_mul_eval_neg_of_interlaces_consecutive_of_no_common
+lemma ObreschkoffConverse.eval_mul_eval_neg_of_interlaces_consecutive_of_no_common
     {f g : ℝ[X]}
     (hgf : Interlaces g f)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r) :
@@ -178,7 +178,7 @@ private lemma hasSimpleRoots_combo_of_wronskian_eval_ne_zero
       simp_all
   simp_all
 
-lemma ObreschkoffConverseInternal.combo_eq_zero_or_realRooted_simple_of_wronskian_eval_ne_zero
+lemma ObreschkoffConverse.combo_eq_zero_or_realRooted_simple_of_wronskian_eval_ne_zero
     {f g : ℝ[X]}
     (hall : AllComboRealRooted f g)
     (hW_ne : ∀ x : ℝ, (wronskianPoly f g).eval x ≠ 0) :
@@ -201,7 +201,7 @@ plane we can choose a special basis `(p, q)` such that:
 This packages the standard "differentiate the special combination at the
 Wronskian-zero point" reduction. It is the clean algebraic entry point for the
 remaining converse contradiction. -/
-lemma ObreschkoffConverseInternal.exists_special_pair_of_wronskian_zero
+lemma ObreschkoffConverse.exists_special_pair_of_wronskian_zero
     {f g : ℝ[X]}
     (hall : AllComboRealRooted f g)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
@@ -251,7 +251,7 @@ double root at `x`, and the second-derivative/product sign at `x` is positive,
 then a sufficiently small perturbation `p + β q` violates the standard
 non-root second-derivative inequality. This is the clean local contradiction
 used in the last step of the Obreschkoff converse. -/
-lemma ObreschkoffConverseInternal.false_of_allComboRealRooted_of_double_root_and_eval_ne_of_pos
+lemma ObreschkoffConverse.false_of_allComboRealRooted_of_double_root_and_eval_ne_of_pos
     {p q : ℝ[X]} {x : ℝ}
     (hall : AllComboRealRooted p q)
     (hp_mult : p.rootMultiplicity x = 2)
@@ -336,7 +336,7 @@ lemma ObreschkoffConverseInternal.false_of_allComboRealRooted_of_double_root_and
 
 /-- Local double-root obstruction without a sign assumption. We flip the
 companion polynomial if necessary so the positive-branch lemma applies. -/
-lemma ObreschkoffConverseInternal.false_of_allComboRealRooted_of_double_root_and_eval_ne
+lemma ObreschkoffConverse.false_of_allComboRealRooted_of_double_root_and_eval_ne
     {p q : ℝ[X]} {x : ℝ}
     (hall : AllComboRealRooted p q)
     (hp_mult : p.rootMultiplicity x = 2)
@@ -356,7 +356,7 @@ lemma ObreschkoffConverseInternal.false_of_allComboRealRooted_of_double_root_and
     · simp_all
     · simp_all
 
-lemma ObreschkoffConverseInternal.no_nontrivial_linear_relation_of_no_common_root
+lemma ObreschkoffConverse.no_nontrivial_linear_relation_of_no_common_root
     {f g : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits)
     (hno : ∀ r, f.IsRoot r → ¬ g.IsRoot r)
@@ -427,7 +427,7 @@ private lemma no_common_root_iterateTDeriv_of_allComboRealRooted
       rw [Polynomial.splits_iff_card_roots.mp hf'.2] at hcard
       lia
     have hf_deg_pos : 0 < f.natDegree := by simp_all
-    exact ObreschkoffConverseInternal.no_nontrivial_linear_relation_of_no_common_root
+    exact ObreschkoffConverse.no_nontrivial_linear_relation_of_no_common_root
       hf₀ hf hno hf_deg_pos hα_ne hβ_ne hlin
   · have hp_simple :=
       (hcombo α β).2 hp0
@@ -698,7 +698,7 @@ real-rooted with simple roots, the remaining proof is only bookkeeping:
 `strictInterl_of_allComboRealRooted` applies this after producing the `hcombo`
 hypothesis for the *original* pair from `AllComboRealRooted` plus the
 no-common-roots assumption. -/
-theorem ObreschkoffConverseInternal.strictInterl_of_eq_zero_or_simple_combo_of_no_common
+theorem ObreschkoffConverse.strictInterl_of_eq_zero_or_simple_combo_of_no_common
     {f g : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits) (hg_ne : g ≠ 0) (hg_splits : g.Splits)
     (hcombo :
@@ -782,7 +782,7 @@ theorem ObreschkoffConverseInternal.strictInterl_of_eq_zero_or_simple_combo_of_n
 This packages the exact simple-pair/Wronskian endgame that the main converse
 uses after regularization, leaving the remaining `ε → 0` transport as the only
 unfinished step. -/
-theorem ObreschkoffConverseInternal.strictInterlOrReverseRegularized
+theorem ObreschkoffConverse.strictInterlOrReverseRegularized
     {f g : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits)
     (hg_ne : g ≠ 0) (hg_splits : g.Splits)
@@ -825,7 +825,7 @@ theorem ObreschkoffConverseInternal.strictInterlOrReverseRegularized
 /-- In the succ-degree branch, the regularized pair has forced orientation by
 degree, so the converse endgame returns the left orientation outright. -/
 theorem
-    ObreschkoffConverseInternal.strictInterl_iterateTDeriv_of_allComboRealRooted_succ_of_no_common
+    ObreschkoffConverse.strictInterl_iterateTDeriv_of_allComboRealRooted_succ_of_no_common
     {f g : ℝ[X]}
     (hf_ne : f ≠ 0) (hf_splits : f.Splits)
     (hg_ne : g ≠ 0) (hg_splits : g.Splits)

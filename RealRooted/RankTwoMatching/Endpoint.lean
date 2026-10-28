@@ -14,7 +14,7 @@ noncomputable section
 namespace RealRooted.Graph
 
 open scoped BigOperators
-open RankTwoInternal
+open RankTwo
 
 variable {V : Type*} [Fintype V] [DecidableEq V]
 

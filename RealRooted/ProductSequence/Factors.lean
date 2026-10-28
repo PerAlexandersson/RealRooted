@@ -125,7 +125,7 @@ theorem isRealRooted_C_add_C_mul_X_pow {s t : ℝ} (hs : s ≠ 0) (n : Nat) :
   simpa [add_comm] using isRealRooted_C_mul_X_add_C_pow (s := s) (t := t) hs n
 
 
-namespace ProductSequenceInternal
+namespace ProductSequence
 
 theorem isRealRooted_X_add_C_one_sequence (t : Nat → ℝ) :
     ∀ n : Nat, (X + C (t n) : ℝ[X]) ≠ 0 ∧ (X + C (t n) : ℝ[X]).Splits :=
@@ -206,7 +206,7 @@ theorem isRealRooted_C_add_C_mul_X_pow_sequence {s t : Nat → ℝ}
   fun n => isRealRooted_C_add_C_mul_X_pow (hs n) (m n)
 
 
-end ProductSequenceInternal
+end ProductSequence
 
 /-- Powers of the root-at-zero factor are real-rooted. -/
 theorem isRealRooted_X_pow (n : Nat) :
@@ -218,7 +218,7 @@ theorem isRealRooted_C_pow {a : ℝ} (ha : a ≠ 0) (n : Nat) :
     ((C a : ℝ[X]) ^ n ≠ 0 ∧ (((C a : ℝ[X]) ^ n).Splits)) :=
   isRealRooted_pow_of_isRealRooted (isRealRooted_C ha) n
 
-namespace ProductSequenceInternal
+namespace ProductSequence
 
 theorem isRealRooted_C_pow_sequence {c : Nat → ℝ}
     (hc : ∀ n : Nat, c n ≠ 0) (m : Nat → Nat) :
@@ -230,6 +230,6 @@ theorem isRealRooted_X_pow_sequence (m : Nat → Nat) :
     ∀ n : Nat, (X : ℝ[X]) ^ (m n) ≠ 0 ∧ ((X : ℝ[X]) ^ (m n)).Splits :=
   fun n => isRealRooted_X_pow (m n)
 
-end ProductSequenceInternal
+end ProductSequence
 
 end RealRooted

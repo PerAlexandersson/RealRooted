@@ -318,10 +318,10 @@ theorem strictInterl_schurSzegoComp_of_roots_neg {n : ℕ} {f g Q : ℝ[X]} (hn 
   have hW (t : ℝ) :=
     wronskian_eval_pos_of_strictInterl hfpos hgpos hfg hno (Nat.pos_of_ne_zero hgzero) t
   have hsourceSimple :=
-    ObreschkoffConverseInternal.combo_eq_zero_or_realRooted_simple_of_wronskian_eval_ne_zero
+    ObreschkoffConverse.combo_eq_zero_or_realRooted_simple_of_wronskian_eval_ne_zero
       hall (fun t hz => by
         have hw := hW t
-        simp only [ObreschkoffConverseInternal.wronskianPoly, eval_sub, eval_mul] at hz
+        simp only [ObreschkoffConverse.wronskianPoly, eval_sub, eval_mul] at hz
         simp only [wronskian, eval_sub, eval_mul] at hw
         linarith)
   have houtno : ∀ r, ¬ (a.IsRoot r ∧ b.IsRoot r) := by
@@ -331,7 +331,7 @@ theorem strictInterl_schurSzegoComp_of_roots_neg {n : ℕ} {f g Q : ℝ[X]} (hn 
     have hα : b.derivative.eval r ≠ 0 := hbsimple.eval_derivative_ne_zero hr.2
     have hβ : -a.derivative.eval r ≠ 0 := neg_ne_zero.mpr (hasimple.eval_derivative_ne_zero hr.1)
     have hinne : C (b.derivative.eval r) * f + C (-a.derivative.eval r) * g ≠ 0 := fun hz =>
-      ObreschkoffConverseInternal.no_nontrivial_linear_relation_of_no_common_root
+      ObreschkoffConverse.no_nontrivial_linear_relation_of_no_common_root
         hfg.1.1 hfg.1.2 hno (Nat.pos_of_ne_zero hfzero) hα hβ hz
     have hinsimple := ((hsourceSimple _ _).resolve_left hinne).2
     have houtSimple := hasSimpleRoots_schurSzegoComp_of_roots_neg (hcomboDegree _ _) (hall _ _)
