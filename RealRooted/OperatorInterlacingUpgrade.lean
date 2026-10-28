@@ -71,6 +71,169 @@ def PreservesPFShiftInterlacingOnDegree
       (X ^ (m + 1) * q).natDegree ≤ D →
       StrictInterl (T (X ^ m * q)) (T (X ^ (m + 1) * q))
 
+/-- The monomial hypothesis handles a nonzero constant PF factor by positive scaling. -/
+private theorem strictInterl_monomial_mul_of_natDegree_eq_zero
+    {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {D : ℕ} {p : ℝ[X]} {m : ℕ}
+    (hmono : ∀ j : ℕ, j + 1 ≤ D →
+      StrictInterl (T (X ^ j)) (T (X ^ (j + 1))))
+    (hp : IsPFPolynomial p) (hp0 : p ≠ 0) (hpdeg : p.natDegree = 0)
+    (hbound : (X ^ (m + 1) * p).natDegree ≤ D) :
+    StrictInterl (T (X ^ m * p)) (T (X ^ (m + 1) * p)) := by
+  let c : ℝ := p.coeff 0
+  have hpC : p = C c := by
+    simpa [c] using Polynomial.eq_C_of_natDegree_eq_zero hpdeg
+  have hcpos : 0 < c := by
+    have hp_pos := hp.hasNonnegCoeffs.pos_leadingCoeff hp0
+    change 0 < p.leadingCoeff at hp_pos
+    rw [leadingCoeff, hpdeg] at hp_pos
+    exact hp_pos
+  have hmD : m + 1 ≤ D := by
+    rw [natDegree_mul (pow_ne_zero _ X_ne_zero) hp0, natDegree_pow,
+      natDegree_X, hpdeg] at hbound
+    simpa using hbound
+  have hmap (j : ℕ) : T (X ^ j * p) = C c * T (X ^ j) := by
+    rw [hpC, mul_comm, ← Polynomial.smul_eq_C_mul, T.map_smul,
+      Polynomial.smul_eq_C_mul]
+  simpa only [hmap] using StrictInterl.C_mul_right
+    (StrictInterl.C_mul_left (hmono m hmD) hcpos.ne') hcpos.ne'
+
+/-- PF preservation supplies the split quadratic family used in a factor-induction step. -/
+private theorem quadratic_monomial_family_splits
+    {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {D m : ℕ} {q : ℝ[X]}
+    (hTrr : ∀ ⦃p : ℝ[X]⦄, IsPFPolynomial p → p ≠ 0 →
+      p.natDegree ≤ D → T p ≠ 0 ∧ (T p).Splits)
+    (hq : IsPFPolynomial q) (hq0 : q ≠ 0)
+    (htotal : m + 2 + q.natDegree ≤ D) :
+    ∀ b : ℝ, 0 ≤ b →
+      (T (X ^ (m + 2) * q) + C (2 * b) * T (X ^ (m + 1) * q) +
+        C (b ^ 2) * T (X ^ m * q)).Splits := by
+  intro b hb
+  let r : ℝ[X] := X ^ m * (X + C b) ^ 2 * q
+  have hrpf : IsPFPolynomial r :=
+    ((isPFPolynomial_X_pow m).mul ((isPFPolynomial_X_add_C hb).pow 2)).mul hq
+  have hr0 : r ≠ 0 :=
+    mul_ne_zero (mul_ne_zero (pow_ne_zero _ X_ne_zero)
+      (pow_ne_zero _ (X_add_C_ne_zero b))) hq0
+  have hrdeg : r.natDegree ≤ D := by
+    dsimp [r]
+    rw [natDegree_mul
+      (mul_ne_zero (pow_ne_zero _ X_ne_zero)
+        (pow_ne_zero _ (X_add_C_ne_zero b))) hq0,
+      natDegree_mul (pow_ne_zero _ X_ne_zero)
+        (pow_ne_zero _ (X_add_C_ne_zero b)),
+      natDegree_pow, natDegree_X, natDegree_pow, natDegree_X_add_C]
+    simp only [mul_one]
+    lia
+  have hr_expand :
+      r = X ^ (m + 2) * q + C (2 * b) * (X ^ (m + 1) * q) +
+        C (b ^ 2) * (X ^ m * q) := by
+    dsimp [r]
+    rw [show X ^ (m + 2) = X ^ m * X ^ 2 by exact pow_add X m 2,
+      show X ^ (m + 1) = X ^ m * X by rw [pow_succ]]
+    simp only [map_mul, map_pow, map_ofNat]
+    ring
+  have hmap : T r =
+      T (X ^ (m + 2) * q) + C (2 * b) * T (X ^ (m + 1) * q) +
+        C (b ^ 2) * T (X ^ m * q) := by
+    rw [hr_expand, T.map_add, T.map_add]
+    rw [← Polynomial.smul_eq_C_mul, ← Polynomial.smul_eq_C_mul,
+      T.map_smul, T.map_smul, Polynomial.smul_eq_C_mul,
+      Polynomial.smul_eq_C_mul]
+  rw [← hmap]
+  exact (hTrr hrpf hr0 hrdeg).2
+
+/-- Quadratic tangent closure advances the adjacent nonnegative affine combinations. -/
+private theorem strictInterl_quadratic_affine_step
+    {F G H : ℝ[X]} {a : ℝ}
+    (hFnn : HasNonnegCoeffs F) (hGnn : HasNonnegCoeffs G)
+    (hHnn : HasNonnegCoeffs H) (hFG : StrictInterl F G)
+    (hGH : StrictInterl G H)
+    (hfamily : ∀ b : ℝ, 0 ≤ b →
+      (H + C (2 * b) * G + C (b ^ 2) * F).Splits)
+    (ha : 0 ≤ a) :
+    StrictInterl (quadraticInterlacingTangent F G a)
+      (quadraticInterlacingRight G H a) := by
+  have hAQ := strictInterl_quadraticInterlacingTangent_pencil
+    hFnn hGnn hHnn hFG hGH hfamily ha
+  have hAnn : HasNonnegCoeffs (quadraticInterlacingTangent F G a) :=
+    hGnn.add (hasNonnegCoeffs_C_mul ha hFnn)
+  have hBnn : HasNonnegCoeffs (quadraticInterlacingRight G H a) :=
+    hHnn.add (hasNonnegCoeffs_C_mul ha hGnn)
+  have hQnn : HasNonnegCoeffs (quadraticInterlacingPencil F G H a) :=
+    (hHnn.add (hasNonnegCoeffs_C_mul (mul_nonneg (by norm_num) ha) hGnn)).add
+      (hasNonnegCoeffs_C_mul (sq_nonneg a) hFnn)
+  have hB0 : quadraticInterlacingRight G H a ≠ 0 := by
+    have hsum : C a * G + H ≠ 0 :=
+      add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
+        (hasNonnegCoeffs_C_mul ha hGnn) hHnn hGH.2.1.1
+    simpa [quadraticInterlacingRight, add_comm] using hsum
+  exact strictInterl_quadraticInterlacingRight_of_tangent
+    (hAnn.pos_leadingCoeff hAQ.1.1)
+    (hBnn.pos_leadingCoeff hB0)
+    (hQnn.pos_leadingCoeff hAQ.2.1.1) hAQ
+
+/-- Removing one PF linear factor reduces the monomial-chain step to two smaller degrees. -/
+private theorem strictInterl_monomial_mul_factor_step
+    {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {D n : ℕ} {p : ℝ[X]} {m : ℕ}
+    (hTnn : ∀ ⦃s : ℝ[X]⦄, HasNonnegCoeffs s → HasNonnegCoeffs (T s))
+    (hTrr : ∀ ⦃s : ℝ[X]⦄, IsPFPolynomial s → s ≠ 0 →
+      s.natDegree ≤ D → T s ≠ 0 ∧ (T s).Splits)
+    (ih : ∀ k < n, ∀ ⦃q : ℝ[X]⦄ ⦃j : ℕ⦄,
+      IsPFPolynomial q → q ≠ 0 → q.natDegree = k →
+      (X ^ (j + 1) * q).natDegree ≤ D →
+      StrictInterl (T (X ^ j * q)) (T (X ^ (j + 1) * q)))
+    (hp : IsPFPolynomial p) (hp0 : p ≠ 0) (hpdeg : p.natDegree = n)
+    (hdeg_pos : 0 < p.natDegree)
+    (hbound : (X ^ (m + 1) * p).natDegree ≤ D) :
+    StrictInterl (T (X ^ m * p)) (T (X ^ (m + 1) * p)) := by
+  obtain ⟨u, q, hu, hfactor, hq, hqdeg⟩ :=
+    hp.exists_X_sub_C_factor_of_pos_natDegree hdeg_pos
+  have hq0 : q ≠ 0 := by
+    intro hzero
+    rw [hzero, mul_zero] at hfactor
+    exact hp0 hfactor
+  have hpdeg_succ : p.natDegree = q.natDegree + 1 := by
+    rw [hfactor, natDegree_mul (X_sub_C_ne_zero u) hq0, natDegree_X_sub_C]
+    lia
+  have htotal : m + 2 + q.natDegree ≤ D := by
+    rw [natDegree_mul (pow_ne_zero _ X_ne_zero) hp0, natDegree_pow,
+      natDegree_X, hpdeg_succ] at hbound
+    simp only [mul_one] at hbound
+    lia
+  have hbound_q (j : ℕ) (hj : j + q.natDegree ≤ D) :
+      (X ^ j * q).natDegree ≤ D := by
+    rw [natDegree_mul (pow_ne_zero _ X_ne_zero) hq0, natDegree_pow, natDegree_X]
+    simpa only [mul_one] using hj
+  have hqn : q.natDegree < n := by rw [← hpdeg]; exact hqdeg
+  have hFG := ih q.natDegree hqn hq hq0 rfl (hbound_q (m + 1) (by lia))
+  have hGH := ih q.natDegree hqn hq hq0 rfl (hbound_q (m + 2) (by lia))
+  let F : ℝ[X] := T (X ^ m * q)
+  let G : ℝ[X] := T (X ^ (m + 1) * q)
+  let H : ℝ[X] := T (X ^ (m + 2) * q)
+  have hFnn : HasNonnegCoeffs F :=
+    hTnn ((isPFPolynomial_X_pow m).mul hq).hasNonnegCoeffs
+  have hGnn : HasNonnegCoeffs G :=
+    hTnn ((isPFPolynomial_X_pow (m + 1)).mul hq).hasNonnegCoeffs
+  have hHnn : HasNonnegCoeffs H :=
+    hTnn ((isPFPolynomial_X_pow (m + 2)).mul hq).hasNonnegCoeffs
+  have hfamily : ∀ b : ℝ, 0 ≤ b →
+      (H + C (2 * b) * G + C (b ^ 2) * F).Splits := by
+    simpa only [F, G, H] using quadratic_monomial_family_splits hTrr hq hq0 htotal
+  have hstep := strictInterl_quadratic_affine_step hFnn hGnn hHnn
+    (by simpa [F, G] using hFG)
+    (by simpa only [G, H, show (m + 1) + 1 = m + 2 by lia] using hGH)
+    hfamily (neg_nonneg.mpr hu)
+  have hmap_factor (j : ℕ) :
+      T (X ^ j * p) = T (X ^ (j + 1) * q) + C (-u) * T (X ^ j * q) := by
+    have hpoly : X ^ j * p = X ^ (j + 1) * q + (-u) • (X ^ j * q) := by
+      rw [hfactor, show X ^ (j + 1) = X ^ j * X by rw [pow_succ]]
+      simp only [Polynomial.smul_eq_C_mul, map_neg]
+      ring
+    rw [hpoly, T.map_add, T.map_smul, Polynomial.smul_eq_C_mul]
+  rw [hmap_factor m, hmap_factor (m + 1)]
+  simpa only [quadraticInterlacingTangent, quadraticInterlacingRight,
+    F, G, H, show (m + 1) + 1 = m + 2 by lia] using hstep
+
 /-- The monomial chain extends through every PF factor.  Quadratic tangent
 closure advances the two adjacent affine combinations; all remaining work is
 algebraic PF factor induction. -/
@@ -93,156 +256,10 @@ theorem preservesPFShiftInterlacingOnDegree_of_monomials
     | h n ih =>
         intro p m hp hp0 hpdeg hbound
         by_cases hn0 : n = 0
-        · have hpdeg0 : p.natDegree = 0 := hpdeg.trans hn0
-          let c : ℝ := p.coeff 0
-          have hpC : p = C c := by
-            simpa [c] using Polynomial.eq_C_of_natDegree_eq_zero hpdeg0
-          have hcpos : 0 < c := by
-            have hp_pos : HasPosLeadingCoeff p :=
-              hp.hasNonnegCoeffs.pos_leadingCoeff hp0
-            change 0 < p.leadingCoeff at hp_pos
-            rw [leadingCoeff, hpdeg0] at hp_pos
-            exact hp_pos
-          have hmD : m + 1 ≤ D := by
-            have hpow0 : (X : ℝ[X]) ^ (m + 1) ≠ 0 :=
-              pow_ne_zero _ X_ne_zero
-            rw [natDegree_mul hpow0 hp0, natDegree_pow, natDegree_X,
-              hpdeg0] at hbound
-            simpa using hbound
-          have hbase := hmono m hmD
-          have hmap (j : ℕ) : T (X ^ j * p) = C c * T (X ^ j) := by
-            rw [hpC, mul_comm, ← Polynomial.smul_eq_C_mul, T.map_smul,
-              Polynomial.smul_eq_C_mul]
-          simpa only [hmap] using StrictInterl.C_mul_right
-            (StrictInterl.C_mul_left hbase hcpos.ne') hcpos.ne'
-        · have hpdeg_pos : 0 < p.natDegree := by
-            rw [hpdeg]
-            exact Nat.pos_of_ne_zero hn0
-          obtain ⟨u, q, hu, hfactor, hq, hqdeg⟩ :=
-            hp.exists_X_sub_C_factor_of_pos_natDegree hpdeg_pos
-          have hq0 : q ≠ 0 := by
-            intro hzero
-            rw [hzero, mul_zero] at hfactor
-            exact hp0 hfactor
-          have hpdeg_succ : p.natDegree = q.natDegree + 1 := by
-            rw [hfactor, natDegree_mul (X_sub_C_ne_zero u) hq0,
-              natDegree_X_sub_C]
-            lia
-          have htotal : m + 2 + q.natDegree ≤ D := by
-            have hpow0 : (X : ℝ[X]) ^ (m + 1) ≠ 0 :=
-              pow_ne_zero _ X_ne_zero
-            rw [natDegree_mul hpow0 hp0, natDegree_pow, natDegree_X,
-              hpdeg_succ] at hbound
-            simp only [mul_one] at hbound
-            lia
-          have hbound_q (j : ℕ) (hj : j + q.natDegree ≤ D) :
-              (X ^ j * q).natDegree ≤ D := by
-            rw [natDegree_mul (pow_ne_zero _ X_ne_zero) hq0,
-              natDegree_pow, natDegree_X]
-            simpa only [mul_one] using hj
-          have hbound_m := hbound_q (m + 1) (by lia)
-          have hbound_succ := hbound_q ((m + 1) + 1) (by lia)
-          have hqn : q.natDegree < n := by
-            rw [← hpdeg]
-            exact hqdeg
-          have hFG :
-              StrictInterl (T (X ^ m * q))
-                (T (X ^ (m + 1) * q)) :=
-            ih q.natDegree hqn hq hq0 rfl hbound_m
-          have hGH :
-              StrictInterl (T (X ^ (m + 1) * q))
-                (T (X ^ ((m + 1) + 1) * q)) :=
-            ih q.natDegree hqn hq hq0 rfl hbound_succ
-          let F : ℝ[X] := T (X ^ m * q)
-          let G : ℝ[X] := T (X ^ (m + 1) * q)
-          let H : ℝ[X] := T (X ^ (m + 2) * q)
-          have hFnn : HasNonnegCoeffs F :=
-            hTnn ((isPFPolynomial_X_pow m).mul hq).hasNonnegCoeffs
-          have hGnn : HasNonnegCoeffs G :=
-            hTnn ((isPFPolynomial_X_pow (m + 1)).mul hq).hasNonnegCoeffs
-          have hHnn : HasNonnegCoeffs H :=
-            hTnn ((isPFPolynomial_X_pow (m + 2)).mul hq).hasNonnegCoeffs
-          have hFG' : StrictInterl F G := by simpa [F, G] using hFG
-          have hGH' : StrictInterl G H := by
-            simpa only [G, H, show (m + 1) + 1 = m + 2 by lia] using hGH
-          have hfamily : ∀ b : ℝ, 0 ≤ b →
-              (H + C (2 * b) * G + C (b ^ 2) * F).Splits := by
-            intro b hb
-            let r : ℝ[X] := X ^ m * (X + C b) ^ 2 * q
-            have hrpf : IsPFPolynomial r :=
-              ((isPFPolynomial_X_pow m).mul
-                ((isPFPolynomial_X_add_C hb).pow 2)).mul hq
-            have hr0 : r ≠ 0 := by
-              exact mul_ne_zero
-                (mul_ne_zero (pow_ne_zero _ X_ne_zero)
-                  (pow_ne_zero _ (X_add_C_ne_zero b))) hq0
-            have hrdeg : r.natDegree ≤ D := by
-              dsimp [r]
-              rw [natDegree_mul
-                (mul_ne_zero (pow_ne_zero _ X_ne_zero)
-                  (pow_ne_zero _ (X_add_C_ne_zero b))) hq0,
-                natDegree_mul (pow_ne_zero _ X_ne_zero)
-                  (pow_ne_zero _ (X_add_C_ne_zero b)),
-                natDegree_pow, natDegree_X, natDegree_pow,
-                natDegree_X_add_C]
-              simp only [mul_one]
-              lia
-            have hr_split : (T r).Splits := (hTrr hrpf hr0 hrdeg).2
-            have hr_expand :
-                r = X ^ (m + 2) * q +
-                    C (2 * b) * (X ^ (m + 1) * q) +
-                    C (b ^ 2) * (X ^ m * q) := by
-              dsimp [r]
-              rw [show X ^ (m + 2) = X ^ m * X ^ 2 by
-                exact pow_add X m 2,
-                show X ^ (m + 1) = X ^ m * X by rw [pow_succ]]
-              simp only [map_mul, map_pow, map_ofNat]
-              ring
-            have hmap :
-                T r = H + C (2 * b) * G + C (b ^ 2) * F := by
-              rw [hr_expand, T.map_add, T.map_add]
-              rw [← Polynomial.smul_eq_C_mul, ← Polynomial.smul_eq_C_mul,
-                T.map_smul, T.map_smul, Polynomial.smul_eq_C_mul,
-                Polynomial.smul_eq_C_mul]
-            rwa [← hmap]
-          have ha : 0 ≤ -u := neg_nonneg.mpr hu
-          have hAQ := strictInterl_quadraticInterlacingTangent_pencil
-            hFnn hGnn hHnn hFG' hGH' hfamily ha
-          have hAnn : HasNonnegCoeffs
-              (quadraticInterlacingTangent F G (-u)) :=
-            hGnn.add (hasNonnegCoeffs_C_mul ha hFnn)
-          have hBnn : HasNonnegCoeffs
-              (quadraticInterlacingRight G H (-u)) :=
-            hHnn.add (hasNonnegCoeffs_C_mul ha hGnn)
-          have hQnn : HasNonnegCoeffs
-              (quadraticInterlacingPencil F G H (-u)) := by
-            exact (hHnn.add (hasNonnegCoeffs_C_mul (mul_nonneg (by norm_num) ha) hGnn)).add
-              (hasNonnegCoeffs_C_mul (sq_nonneg (-u)) hFnn)
-          have hB0 : quadraticInterlacingRight G H (-u) ≠ 0 := by
-            have hsum : C (-u) * G + H ≠ 0 :=
-              add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero
-                (hasNonnegCoeffs_C_mul ha hGnn) hHnn hGH'.2.1.1
-            simpa [quadraticInterlacingRight, add_comm] using hsum
-          have hstep : StrictInterl
-              (quadraticInterlacingTangent F G (-u))
-              (quadraticInterlacingRight G H (-u)) :=
-            strictInterl_quadraticInterlacingRight_of_tangent
-              (hAnn.pos_leadingCoeff hAQ.1.1)
-              (hBnn.pos_leadingCoeff hB0)
-              (hQnn.pos_leadingCoeff hAQ.2.1.1) hAQ
-          have hmap_factor : ∀ j : ℕ,
-              T (X ^ j * p) =
-                T (X ^ (j + 1) * q) + C (-u) * T (X ^ j * q) := by
-            intro j
-            have hpoly :
-                X ^ j * p = X ^ (j + 1) * q + (-u) • (X ^ j * q) := by
-              rw [hfactor, show X ^ (j + 1) = X ^ j * X by rw [pow_succ]]
-              simp only [Polynomial.smul_eq_C_mul, map_neg]
-              ring
-            rw [hpoly, T.map_add, T.map_smul, Polynomial.smul_eq_C_mul]
-          rw [hmap_factor m, hmap_factor (m + 1)]
-          simpa only [quadraticInterlacingTangent, quadraticInterlacingRight,
-            F, G, H, show (m + 1) + 1 = m + 2 by lia] using hstep
+        · exact strictInterl_monomial_mul_of_natDegree_eq_zero
+            hmono hp hp0 (hpdeg.trans hn0) hbound
+        · exact strictInterl_monomial_mul_factor_step hTnn hTrr ih hp hp0 hpdeg
+            (by rw [hpdeg]; exact Nat.pos_of_ne_zero hn0) hbound
   intro p m hp hp0 hbound
   exact hP p.natDegree hp hp0 rfl hbound
 
