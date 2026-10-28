@@ -148,6 +148,151 @@ private theorem C_map_finiteFreeAdditiveConvolutionCoeff
   simp only [Polynomial.coeff_map, map_mul]
   rfl
 
+/- One polarized pair evaluates to its triangular convolution summand. -/
+private theorem diagonal_applyNegDifferential_polarization_term
+    (d : ℕ) (p q : ℝ[X]) (i j : ℕ) (_hi : i ≤ d) (hj : j ≤ d) :
+    diagonalProjection d
+        (applyNegDifferential
+          (MvPolynomial.C ((-1 : ℂ) ^ (d - i) *
+            (p.map Complex.ofRealHom).coeff (d - i) / (d.choose i : ℂ)) *
+            MvPolynomial.esymm (Fin d) ℂ i)
+          (MvPolynomial.C ((q.map Complex.ofRealHom).coeff (d - j) /
+            (d.choose j : ℂ)) * MvPolynomial.esymm (Fin d) ℂ (d - j))) =
+      if i + j ≤ d then
+        Polynomial.C
+            ((-1 : ℂ) ^ d *
+              (finiteFreeAdditiveConvolutionGamma d i j : ℂ) *
+              (p.map Complex.ofRealHom).coeff (d - i) *
+              (q.map Complex.ofRealHom).coeff (d - j)) *
+          Polynomial.X ^ (d - i - j)
+      else 0 := by
+  by_cases hij : i + j ≤ d
+  · rw [ite_eq_left hij, diagonal_applyNegDifferential_term d i j hij]
+    have hgamma :
+        (finiteFreeAdditiveConvolutionGamma d i j : ℂ) =
+          ((i + j).choose j : ℂ) * (d.choose (d - i - j) : ℂ) /
+            ((d.choose i : ℂ) * (d.choose j : ℂ)) := by
+      rw [finiteFreeAdditiveConvolutionGamma_eq_choose_ratio d i j hij]
+      have hchoose : d.choose (i + j) = d.choose (d - i - j) := by
+        simpa only [Nat.sub_sub] using (Nat.choose_symm hij).symm
+      rw [hchoose]
+      simp only [Complex.ofReal_div, Complex.ofReal_mul,
+        Complex.ofReal_natCast]
+    rw [hgamma]
+    congr 1
+    ring_nf
+  · rw [ite_eq_right hij]
+    have hijd : ¬ i ≤ d - j := by
+      intro h
+      exact hij ((Nat.le_sub_iff_add_le hj).mp h)
+    rw [applyNegDifferential_C_mul_left,
+      applyNegDifferential_C_mul_right,
+      applyNegDifferential_esymm i (d - j), ite_eq_right hijd]
+    simp
+
+/- The square sum of polarized terms restricts to the convolution triangle. -/
+private theorem sum_diagonal_applyNegDifferential_polarization_eq_triangle
+    (d : ℕ) (p q : ℝ[X]) :
+    (∑ i ∈ Finset.range (d + 1),
+      ∑ j ∈ Finset.range (d + 1),
+        diagonalProjection d
+          (applyNegDifferential
+            (MvPolynomial.C ((-1 : ℂ) ^ (d - i) *
+              (p.map Complex.ofRealHom).coeff (d - i) / (d.choose i : ℂ)) *
+              MvPolynomial.esymm (Fin d) ℂ i)
+            (MvPolynomial.C ((q.map Complex.ofRealHom).coeff (d - j) /
+              (d.choose j : ℂ)) * MvPolynomial.esymm (Fin d) ℂ (d - j)))) =
+      ∑ i ∈ Finset.range (d + 1),
+        ∑ j ∈ Finset.range (d + 1 - i),
+          Polynomial.C
+              ((-1 : ℂ) ^ d *
+                (finiteFreeAdditiveConvolutionGamma d i j : ℂ) *
+                (p.map Complex.ofRealHom).coeff (d - i) *
+                (q.map Complex.ofRealHom).coeff (d - j)) *
+            Polynomial.X ^ (d - i - j) := by
+  rw [show
+    (∑ i ∈ Finset.range (d + 1),
+      ∑ j ∈ Finset.range (d + 1),
+        diagonalProjection d
+          (applyNegDifferential
+            (MvPolynomial.C ((-1 : ℂ) ^ (d - i) *
+              (p.map Complex.ofRealHom).coeff (d - i) / (d.choose i : ℂ)) *
+              MvPolynomial.esymm (Fin d) ℂ i)
+            (MvPolynomial.C ((q.map Complex.ofRealHom).coeff (d - j) /
+              (d.choose j : ℂ)) * MvPolynomial.esymm (Fin d) ℂ (d - j)))) =
+      ∑ i ∈ Finset.range (d + 1),
+        ∑ j ∈ Finset.range (d + 1),
+          if i + j ≤ d then
+            Polynomial.C
+                ((-1 : ℂ) ^ d *
+                  (finiteFreeAdditiveConvolutionGamma d i j : ℂ) *
+                  (p.map Complex.ofRealHom).coeff (d - i) *
+                  (q.map Complex.ofRealHom).coeff (d - j)) *
+              Polynomial.X ^ (d - i - j)
+          else 0 by
+    apply Finset.sum_congr rfl
+    intro i hi
+    apply Finset.sum_congr rfl
+    intro j hj
+    exact diagonal_applyNegDifferential_polarization_term d p q i j
+      (Nat.lt_succ_iff.mp (Finset.mem_range.mp hi))
+      (Nat.lt_succ_iff.mp (Finset.mem_range.mp hj))]
+  exact sum_square_eq_triangle d fun i j =>
+    Polynomial.C
+        ((-1 : ℂ) ^ d *
+          (finiteFreeAdditiveConvolutionGamma d i j : ℂ) *
+          (p.map Complex.ofRealHom).coeff (d - i) *
+          (q.map Complex.ofRealHom).coeff (d - j)) *
+      Polynomial.X ^ (d - i - j)
+
+/- One triangular row is the corresponding mapped convolution coefficient. -/
+private theorem sum_finiteFreeAdditiveGamma_row
+    (d m : ℕ) (p q : ℝ[X]) :
+    (∑ k ∈ Finset.range (m + 1),
+      Polynomial.C
+          ((-1 : ℂ) ^ d *
+            (finiteFreeAdditiveConvolutionGamma d k (m - k) : ℂ) *
+            (p.map Complex.ofRealHom).coeff (d - k) *
+            (q.map Complex.ofRealHom).coeff (d - (m - k))) *
+        Polynomial.X ^ (d - k - (m - k))) =
+      Polynomial.C ((-1 : ℂ) ^ d) *
+        (Polynomial.C
+            (Complex.ofRealHom (finiteFreeAdditiveConvolutionCoeff d p q m)) *
+          Polynomial.X ^ (d - m)) := by
+  calc
+    _ = ∑ k ∈ Finset.range (m + 1),
+          Polynomial.C ((-1 : ℂ) ^ d) *
+            (Polynomial.C
+                ((finiteFreeAdditiveConvolutionGamma d k (m - k) : ℂ) *
+                  (p.map Complex.ofRealHom).coeff (d - k) *
+                  (q.map Complex.ofRealHom).coeff (d - (m - k))) *
+              Polynomial.X ^ (d - m)) := by
+      apply Finset.sum_congr rfl
+      intro k hk
+      have hk' : k ≤ m := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
+      rw [Nat.sub_sub_sub_cancel_right hk']
+      rw [← mul_assoc, ← Polynomial.C_mul]
+      congr 1
+      ring_nf
+    _ = Polynomial.C ((-1 : ℂ) ^ d) *
+          ∑ k ∈ Finset.range (m + 1),
+            Polynomial.C
+                ((finiteFreeAdditiveConvolutionGamma d k (m - k) : ℂ) *
+                  (p.map Complex.ofRealHom).coeff (d - k) *
+                  (q.map Complex.ofRealHom).coeff (d - (m - k))) *
+              Polynomial.X ^ (d - m) := by
+      rw [Finset.mul_sum]
+    _ = Polynomial.C ((-1 : ℂ) ^ d) *
+          ((∑ k ∈ Finset.range (m + 1),
+              Polynomial.C
+                ((finiteFreeAdditiveConvolutionGamma d k (m - k) : ℂ) *
+                  (p.map Complex.ofRealHom).coeff (d - k) *
+                  (q.map Complex.ofRealHom).coeff (d - (m - k)))) *
+            Polynomial.X ^ (d - m)) := by
+      rw [Finset.sum_mul]
+    _ = _ := by
+      rw [← C_map_finiteFreeAdditiveConvolutionCoeff]
+
 /-- Signed reciprocal polarization followed by negative differential
 evaluation and diagonal projection realizes finite-free additive convolution.
 The identity is algebraic; it does not assert stability or real-rootedness. -/
@@ -165,73 +310,7 @@ theorem diagonal_applyNegDifferential_signedPolarization
   rw [applyNegDifferential_doubleSum]
   rw [map_sum]
   simp_rw [map_sum]
-  have hterm (i j : ℕ) (hi : i ≤ d) (hj : j ≤ d) :
-      diagonalProjection d
-          (applyNegDifferential
-            (MvPolynomial.C ((-1 : ℂ) ^ (d - i) *
-              (p.map Complex.ofRealHom).coeff (d - i) / (d.choose i : ℂ)) *
-              MvPolynomial.esymm (Fin d) ℂ i)
-            (MvPolynomial.C ((q.map Complex.ofRealHom).coeff (d - j) /
-              (d.choose j : ℂ)) * MvPolynomial.esymm (Fin d) ℂ (d - j))) =
-        if i + j ≤ d then
-          Polynomial.C
-              ((-1 : ℂ) ^ d *
-                (finiteFreeAdditiveConvolutionGamma d i j : ℂ) *
-                (p.map Complex.ofRealHom).coeff (d - i) *
-                (q.map Complex.ofRealHom).coeff (d - j)) *
-            Polynomial.X ^ (d - i - j)
-        else 0 := by
-    by_cases hij : i + j ≤ d
-    · rw [ite_eq_left hij]
-      rw [diagonal_applyNegDifferential_term d i j hij]
-      have hgamma :
-          (finiteFreeAdditiveConvolutionGamma d i j : ℂ) =
-            ((i + j).choose j : ℂ) * (d.choose (d - i - j) : ℂ) /
-              ((d.choose i : ℂ) * (d.choose j : ℂ)) := by
-        rw [finiteFreeAdditiveConvolutionGamma_eq_choose_ratio d i j hij]
-        have hchoose : d.choose (i + j) = d.choose (d - i - j) := by
-          simpa only [Nat.sub_sub] using (Nat.choose_symm hij).symm
-        rw [hchoose]
-        simp only [Complex.ofReal_div, Complex.ofReal_mul,
-          Complex.ofReal_natCast]
-      rw [hgamma]
-      congr 1
-      ring_nf
-    · rw [ite_eq_right hij]
-      have hijd : ¬ i ≤ d - j := by
-        intro h
-        exact hij ((Nat.le_sub_iff_add_le hj).mp h)
-      rw [applyNegDifferential_C_mul_left,
-        applyNegDifferential_C_mul_right,
-        applyNegDifferential_esymm i (d - j), ite_eq_right hijd]
-      simp
-  have hsum :
-      (∑ i ∈ Finset.range (d + 1),
-        ∑ j ∈ Finset.range (d + 1),
-          diagonalProjection d
-            (applyNegDifferential
-              (MvPolynomial.C ((-1 : ℂ) ^ (d - i) *
-                (p.map Complex.ofRealHom).coeff (d - i) / (d.choose i : ℂ)) *
-                MvPolynomial.esymm (Fin d) ℂ i)
-              (MvPolynomial.C ((q.map Complex.ofRealHom).coeff (d - j) /
-                (d.choose j : ℂ)) * MvPolynomial.esymm (Fin d) ℂ (d - j)))) =
-      ∑ i ∈ Finset.range (d + 1),
-        ∑ j ∈ Finset.range (d + 1),
-          if i + j ≤ d then
-            Polynomial.C
-                ((-1 : ℂ) ^ d *
-                  (finiteFreeAdditiveConvolutionGamma d i j : ℂ) *
-                  (p.map Complex.ofRealHom).coeff (d - i) *
-                  (q.map Complex.ofRealHom).coeff (d - j)) *
-              Polynomial.X ^ (d - i - j)
-          else 0 := by
-    apply Finset.sum_congr rfl
-    intro i hi
-    apply Finset.sum_congr rfl
-    intro j hj
-    rw [hterm i j (Nat.lt_succ_iff.mp (Finset.mem_range.mp hi))
-      (Nat.lt_succ_iff.mp (Finset.mem_range.mp hj))]
-  rw [hsum, sum_square_eq_triangle]
+  rw [sum_diagonal_applyNegDifferential_polarization_eq_triangle]
   rw [← Finset.sum_range_diag_flip]
   unfold finiteFreeAdditiveConvolution
   rw [Polynomial.map_sum]
@@ -239,48 +318,8 @@ theorem diagonal_applyNegDifferential_signedPolarization
     Polynomial.map_X]
   rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
-  intro m hm
-  have hm' : m ≤ d := Nat.lt_succ_iff.mp (Finset.mem_range.mp hm)
-  calc
-    ∑ k ∈ Finset.range (m + 1),
-        Polynomial.C
-            ((-1 : ℂ) ^ d *
-              (finiteFreeAdditiveConvolutionGamma d k (m - k) : ℂ) *
-              (p.map Complex.ofRealHom).coeff (d - k) *
-              (q.map Complex.ofRealHom).coeff (d - (m - k))) *
-          Polynomial.X ^ (d - k - (m - k)) =
-        ∑ k ∈ Finset.range (m + 1),
-          Polynomial.C ((-1 : ℂ) ^ d) *
-            (Polynomial.C
-                ((finiteFreeAdditiveConvolutionGamma d k (m - k) : ℂ) *
-                  (p.map Complex.ofRealHom).coeff (d - k) *
-                  (q.map Complex.ofRealHom).coeff (d - (m - k)) ) *
-              Polynomial.X ^ (d - m)) := by
-      apply Finset.sum_congr rfl
-      intro k hk
-      have hk' : k ≤ m := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
-      rw [Nat.sub_sub_sub_cancel_right hk']
-      rw [← mul_assoc, ← Polynomial.C_mul]
-      congr 1
-      ring_nf
-    _ = Polynomial.C ((-1 : ℂ) ^ d) *
-          ∑ k ∈ Finset.range (m + 1),
-            Polynomial.C
-                ((finiteFreeAdditiveConvolutionGamma d k (m - k) : ℂ) *
-                  (p.map Complex.ofRealHom).coeff (d - k) *
-                  (q.map Complex.ofRealHom).coeff (d - (m - k)) ) *
-              Polynomial.X ^ (d - m) := by
-      rw [Finset.mul_sum]
-    _ = Polynomial.C ((-1 : ℂ) ^ d) *
-          ((∑ k ∈ Finset.range (m + 1),
-              Polynomial.C
-                ((finiteFreeAdditiveConvolutionGamma d k (m - k) : ℂ) *
-                  (p.map Complex.ofRealHom).coeff (d - k) *
-                  (q.map Complex.ofRealHom).coeff (d - (m - k))) ) *
-            Polynomial.X ^ (d - m)) := by
-      rw [Finset.sum_mul]
-    _ = _ := by
-      rw [← C_map_finiteFreeAdditiveConvolutionCoeff]
+  intro m _hm
+  exact sum_finiteFreeAdditiveGamma_row d m p q
 
 end
 
