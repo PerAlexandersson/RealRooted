@@ -162,6 +162,19 @@ Follow the `Polynomial.natDegree_derivative` extraction pattern.
 - Use `grind`, `simp_all`, and `positivity` for routine local plumbing when they
   keep the proof shorter and stable.
 
+## Proof Cleanup Rounds
+
+- Golf rounds must leave every public declaration unchanged: compare the declaration headers
+  (name, binders, statement, attributes) before and after, file by file, before integrating.
+  `scripts/golf/lean_decl.py` splits a file into declarations for such a comparison.
+- Split proofs longer than about 80 lines into named private lemmas with docstrings, one per
+  mathematical step, even when the file grows.  Readable structure beats raw line count for long
+  arguments, and it usually elaborates faster.  Search `docs/LEMMA_INDEX.tsv` first (generate it
+  with `python3 scripts/lemma_index.py`; it is not tracked) and reuse existing lemmas.
+- `private` declarations are invisible to other modules.  When a second file needs a private
+  helper, make one copy public in the lower module (Mathlib-shaped name, docstring) instead of
+  copying it; `scripts/golf/dupbody.py` finds copies that already exist.
+
 ## External Proving Assistants
 
 When using Lean-specific external proving assistants (such as Aristotle,
@@ -187,9 +200,42 @@ theorem-shape suggestions, or proof repairs:
 - Before changing files touched by open PRs, inspect the PR diffs to avoid
   conflicting with the intended API direction.
 - Prefer focused Lake builds for touched Lean modules when a local build owner
-  is available; never contend for a shared build cache.
+  is available; never contend for a shared build cache.  See "Local Builds and Pre-PR Checks".
 - Follow README's CI-first draft-PR policy: source-checked feature-branch
   commits may precede remote compilation, but must be labeled unverified until
   the exact revision passes the full default build and applicable axiom audits.
 - Keep parallel workers on disjoint files and isolated branches. One integrator
   reviews and merges verified work; a draft checkpoint is not proof completion.
+
+## Local Builds and Pre-PR Checks
+
+- Build the touched modules together with their direct importers
+  (`git grep -l "import <Module>$" -- 'RealRooted/**.lean'`, minus the umbrellas `RealRooted`,
+  `RealRooted.Production` and `RealRooted.Tactic`).  Proof bodies are not exported, so a
+  proof-only edit does not rebuild further downstream; a changed public statement, `@[simp]`
+  attribute or exposed definition can break importers, so build those.  Building an umbrella
+  rebuilds most of the library; leave the full default build to CI unless the change is broad.
+- Run one Lake build at a time against a given build directory.
+- Single-file elaboration (`lake env lean File.lean`) is a quick check, not a substitute for Lake.
+  It skips the text linters and can fail where Lake succeeds, for example when `decide` must
+  unfold a definition built from a privately imported constant (`![...]` and `Matrix.vecCons`).
+  Treat the Lake build as authoritative.
+- Before pushing, run the cheap CI checks locally:
+  `lake exe lint-style` (whitespace, no space before `;`, unicode),
+  `python3 scripts/check_root_imports.py` (a new module must be imported by `RealRooted.lean`
+  and `RealRooted/Production.lean`), `python3 scripts/check_module_system.py`, and, when
+  catalog pages change, `python3 scripts/audit_challenge_catalog.py --check`.
+- A new file under `RealRooted/Mathlib/` needs an entry in `scripts/mathlib_shims.json`;
+  `python3 scripts/check_mathlib_shims.py --check-registry --strict` checks it.
+- A `public import` is needed exactly when a public statement mentions the imported
+  declarations; CI's private-import ratchet (`scripts/check_private_imports.py`) rejects public
+  imports that only proofs use.
+
+## Landing Several Pull Requests
+
+- A pull request merges only when every check is green on a head that contains `main`, so each
+  merge makes the other open pull requests stale and costs them another CI run.  When several
+  reviewed pull requests touch disjoint files, merge them into one integration branch, run CI
+  once on it, and merge that; GitHub then marks the constituent pull requests as merged.
+- Check that the merge actually happened before deleting branches: deleting the head branch of a
+  pull request that is still open closes it.
