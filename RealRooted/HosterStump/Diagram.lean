@@ -106,11 +106,9 @@ section BaseCases
 private lemma e2_top0 : top 2 (Finset.range 2) 0 = 1 + X := by
   simp [top, refined, Finset.sum_range_succ]
 
-private lemma e2_top1 : top 2 (Finset.range 2) 1 = X := by
-  simp [top, refined]
+private lemma e2_top1 : top 2 (Finset.range 2) 1 = X := by simp [top, refined]
 
-private lemma e2_top2 : top 2 (Finset.range 2) 2 = 0 := by
-  simp [top, refined]
+private lemma e2_top2 : top 2 (Finset.range 2) 2 = 0 := by simp [top, refined]
 
 private lemma e2_mid0 : mid 2 (Finset.range 2) 0 = 1 + X := by
   simp [mid, refined, Finset.sum_range_succ]
@@ -119,44 +117,31 @@ private lemma e2_mid1 : mid 2 (Finset.range 2) 1 = 2 * X := by
   simp [mid, refined]
   ring
 
-private lemma e2_mid2 : mid 2 (Finset.range 2) 2 = X := by
-  simp [mid, refined]
+private lemma e2_mid2 : mid 2 (Finset.range 2) 2 = X := by simp [mid, refined]
 
-private lemma e2_bot0 : bot 2 (Finset.range 2) 0 = 0 := by
-  simp [bot, refined]
+private lemma e2_bot0 : bot 2 (Finset.range 2) 0 = 0 := by simp [bot, refined]
 
-private lemma e2_bot1 : bot 2 (Finset.range 2) 1 = X := by
-  simp [bot, refined]
+private lemma e2_bot1 : bot 2 (Finset.range 2) 1 = X := by simp [bot, refined]
 
-private lemma e2_bot2 : bot 2 (Finset.range 2) 2 = X := by
-  simp [bot, refined]
+private lemma e2_bot2 : bot 2 (Finset.range 2) 2 = X := by simp [bot, refined]
 
-private lemma e1_top0 : top 2 (Finset.range 1) 0 = 1 := by
-  simp [top, refined]
+private lemma e1_top0 : top 2 (Finset.range 1) 0 = 1 := by simp [top, refined]
 
-private lemma e1_top1 : top 2 (Finset.range 1) 1 = 0 := by
-  simp [top, refined]
+private lemma e1_top1 : top 2 (Finset.range 1) 1 = 0 := by simp [top, refined]
 
-private lemma e1_top2 : top 2 (Finset.range 1) 2 = 0 := by
-  simp [top, refined]
+private lemma e1_top2 : top 2 (Finset.range 1) 2 = 0 := by simp [top, refined]
 
-private lemma e1_mid0 : mid 2 (Finset.range 1) 0 = 1 := by
-  simp [mid, refined]
+private lemma e1_mid0 : mid 2 (Finset.range 1) 0 = 1 := by simp [mid, refined]
 
-private lemma e1_mid1 : mid 2 (Finset.range 1) 1 = X := by
-  simp [mid, refined]
+private lemma e1_mid1 : mid 2 (Finset.range 1) 1 = X := by simp [mid, refined]
 
-private lemma e1_mid2 : mid 2 (Finset.range 1) 2 = X := by
-  simp [mid, refined]
+private lemma e1_mid2 : mid 2 (Finset.range 1) 2 = X := by simp [mid, refined]
 
-private lemma e1_bot0 : bot 2 (Finset.range 1) 0 = 0 := by
-  simp [bot, refined]
+private lemma e1_bot0 : bot 2 (Finset.range 1) 0 = 0 := by simp [bot, refined]
 
-private lemma e1_bot1 : bot 2 (Finset.range 1) 1 = X := by
-  simp [bot, refined]
+private lemma e1_bot1 : bot 2 (Finset.range 1) 1 = X := by simp [bot, refined]
 
-private lemma e1_bot2 : bot 2 (Finset.range 1) 2 = X := by
-  simp [bot, refined]
+private lemma e1_bot2 : bot 2 (Finset.range 1) 2 = X := by simp [bot, refined]
 
 private lemma interl_one_one : Interl (1 : ℝ[X]) 1 := Interl.refl fun _ => by simp
 
@@ -213,47 +198,30 @@ theorem isInterlacingDiagram_two_range_one : IsInterlacingDiagram 2 (Finset.rang
   top_row i j hij hj := by
     interval_cases j <;> interval_cases i <;>
       simp only [e1_top0, e1_top1, e1_top2] <;>
-      first
-        | exact interl_zero_left _
-        | exact interl_zero_right _
+      first | exact interl_zero_left _ | exact interl_zero_right _
   mid_row i j hij hj := by
     interval_cases j <;> interval_cases i <;>
       simp only [e1_mid0, e1_mid1, e1_mid2] <;>
-      first
-        | exact interl_one_X
-        | exact interl_X_X
+      first | exact interl_one_X | exact interl_X_X
   bot_row i j hij hj := by
     interval_cases j <;> interval_cases i <;>
       simp only [e1_bot0, e1_bot1, e1_bot2] <;>
-      first
-        | exact interl_zero_left _
-        | exact interl_X_X
+      first | exact interl_zero_left _ | exact interl_X_X
   top_mid i j hij hj := by
     interval_cases j <;> interval_cases i <;>
       simp only [e1_top0, e1_top1, e1_top2, e1_mid0, e1_mid1, e1_mid2] <;>
-      first
-        | exact interl_one_one
-        | exact interl_one_X
-        | exact interl_zero_left _
+      first | exact interl_one_one | exact interl_one_X | exact interl_zero_left _
   mid_bot i j hij hj := by
     interval_cases j <;> interval_cases i <;>
       simp only [e1_mid0, e1_mid1, e1_mid2, e1_bot0, e1_bot1, e1_bot2] <;>
-      first
-        | exact interl_one_X
-        | exact interl_X_X
-        | exact interl_zero_right _
+      first | exact interl_one_X | exact interl_X_X | exact interl_zero_right _
   top_bot i j hi hj := by
     interval_cases j <;> interval_cases i <;>
       simp only [e1_top0, e1_top1, e1_top2, e1_bot0, e1_bot1, e1_bot2] <;>
-      first
-        | exact interl_one_X
-        | exact interl_zero_left _
-        | exact interl_zero_right _
+      first | exact interl_one_X | exact interl_zero_left _ | exact interl_zero_right _
   mid_ne_zero k hk := by
     interval_cases k <;> simp only [e1_mid0, e1_mid1, e1_mid2] <;>
-      first
-        | exact one_ne_zero
-        | exact X_ne_zero
+      first | exact one_ne_zero | exact X_ne_zero
   splits k hk := by
     interval_cases k <;>
       simp only [e1_top0, e1_top1, e1_top2, e1_mid0, e1_mid1, e1_mid2, e1_bot0, e1_bot1,
@@ -271,9 +239,7 @@ theorem isInterlacingDiagram_two_range_two : IsInterlacingDiagram 2 (Finset.rang
   top_row i j hij hj := by
     interval_cases j <;> interval_cases i <;>
       simp only [e2_top0, e2_top1, e2_top2] <;>
-      first
-        | exact interl_one_add_X_X
-        | exact interl_zero_right _
+      first | exact interl_one_add_X_X | exact interl_zero_right _
   mid_row i j hij hj := by
     interval_cases j <;> interval_cases i <;>
       simp only [e2_mid0, e2_mid1, e2_mid2] <;>
@@ -284,9 +250,7 @@ theorem isInterlacingDiagram_two_range_two : IsInterlacingDiagram 2 (Finset.rang
   bot_row i j hij hj := by
     interval_cases j <;> interval_cases i <;>
       simp only [e2_bot0, e2_bot1, e2_bot2] <;>
-      first
-        | exact interl_zero_left _
-        | exact interl_X_X
+      first | exact interl_zero_left _ | exact interl_X_X
   top_mid i j hij hj := by
     interval_cases j <;> interval_cases i <;>
       simp only [e2_top0, e2_top1, e2_top2, e2_mid0, e2_mid1, e2_mid2] <;>
@@ -315,10 +279,7 @@ theorem isInterlacingDiagram_two_range_two : IsInterlacingDiagram 2 (Finset.rang
         | exact interl_zero_right _
   mid_ne_zero k hk := by
     interval_cases k <;> simp only [e2_mid0, e2_mid1, e2_mid2] <;>
-      first
-        | exact one_add_X_ne_zero
-        | exact two_mul_X_ne_zero
-        | exact X_ne_zero
+      first | exact one_add_X_ne_zero | exact two_mul_X_ne_zero | exact X_ne_zero
   splits k hk := by
     interval_cases k <;>
       simp only [e2_top0, e2_top1, e2_top2, e2_mid0, e2_mid1, e2_mid2, e2_bot0, e2_bot1,

@@ -32,11 +32,9 @@ theorem MvRealStable.twoCoordinateAffineSlice_zero_or
       MvRealStable (MvPolynomial.twoCoordinateAffineSlice x i j P) := by
   let l := MvPolynomial.twoCoordinateSpectators P i j
   let Q := MvPolynomial.specializeAtList x l P
-  have hQcases : Q = 0 ∨ MvRealStable Q := by
-    simpa only [Q, l] using
-      hP.specializeAtList_zero_or_general x
-        (MvPolynomial.twoCoordinateSpectators P i j)
-  rcases hQcases with hQ | hQ
+  obtain hQ | hQ : Q = 0 ∨ MvRealStable Q := by
+    simpa only [Q, l] using hP.specializeAtList_zero_or_general x
+      (MvPolynomial.twoCoordinateSpectators P i j)
   · left
     apply MvPolynomial.funext
     intro z
@@ -108,22 +106,16 @@ theorem ofReal_add_mul_ne_zero_of_im_pos
     (c d : ℝ) (z : ℂ) (hcd : c ≠ 0 ∨ d ≠ 0) (hz : 0 < z.im) :
     (c : ℂ) + (d : ℂ) * z ≠ 0 := by
   intro hzero
-  by_cases hd : d = 0
-  · have hc : c ≠ 0 := by
-      rcases hcd with hc | hdne
-      · exact hc
-      · exact (hdne hd).elim
-    have hre := congrArg Complex.re hzero
+  have him := congrArg Complex.im hzero
+  simp only [Complex.add_im, Complex.mul_im, Complex.ofReal_re,
+    Complex.ofReal_im, zero_mul, zero_add, Complex.zero_im] at him
+  have hmul : d * z.im = 0 := by linarith
+  rcases mul_eq_zero.mp hmul with hd | hz0
+  · have hre := congrArg Complex.re hzero
     simp only [hd, Complex.ofReal_zero, zero_mul, add_zero,
       Complex.ofReal_re, Complex.zero_re] at hre
-    exact hc hre
-  · have him := congrArg Complex.im hzero
-    simp only [Complex.add_im, Complex.mul_im, Complex.ofReal_re,
-      Complex.ofReal_im, zero_mul, zero_add, Complex.zero_im] at him
-    have hmul : d * z.im = 0 := by linarith
-    rcases mul_eq_zero.mp hmul with hd0 | hz0
-    · exact hd hd0
-    · exact (ne_of_gt hz) hz0
+    exact hcd.resolve_right (fun h ↦ h hd) hre
+  · exact (ne_of_gt hz) hz0
 
 /-- For a real bivariate coefficient form, the Rayleigh property is exactly
 nonnegativity of the coefficient determinant. -/

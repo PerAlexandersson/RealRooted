@@ -64,23 +64,11 @@ theorem matrix_preserves_interlacing_seq
   have hentry_head_ne (iG : Fin G.length) :
       (G.get iG).get ⟨0, by
         simp_all⟩ ≠ 0 := by
-    have hdiag :
-        Has2x2InterlacingProperty
-          ((G.get iG).get ⟨j0, by simp_all⟩)
-          ((G.get iG).get ⟨j0, by simp_all⟩)
-          ((G.get iG).get ⟨j0, by simp_all⟩)
-          ((G.get iG).get ⟨j0, by simp_all⟩) := by
-      simp_all
-    exact
-      ne_zero_of_self_2x2
-        ((G.get iG).get ⟨j0, by lia⟩)
-        hdiag
+    apply ne_zero_of_self_2x2
+    simpa only using hG_affine iG iG j0 j0 le_rfl le_rfl
   constructor
   · intro p hp
     rcases List.mem_map.mp hp with ⟨row, hrow_mem, rfl⟩
-    have hrow_nonneg_sum :
-        HasNonnegCoeffs ((row.zipWith (· * ·) fs).sum) :=
-      hasNonnegCoeffs_zipWith_mul_sum (hG_nonneg row hrow_mem) hfs_nonneg
     obtain ⟨i, rfl⟩ := List.mem_iff_get.1 hrow_mem
     let iG : Fin G.length := ⟨i, by lia⟩
     have hself :
@@ -102,16 +90,16 @@ theorem matrix_preserves_interlacing_seq
           hG_affine iG iG j₁ j₂ le_rfl hj)
         (hfs_len := hfs_len)
         (hfs := ⟨hfs_mem, hfs_int⟩)
-    exact ⟨hself.1, hrow_nonneg_sum⟩
+    exact ⟨hself.1,
+      hasNonnegCoeffs_zipWith_mul_sum (hG_nonneg _ (G.get_mem iG)) hfs_nonneg⟩
   · rw [isInterlacingSeq_iff_pairwise]
     refine List.pairwise_iff_get.2 ?_
     intro i j hij
     let iG : Fin G.length := ⟨i, by simpa [matPolyAction] using i.2⟩
     let jG : Fin G.length := ⟨j, by simpa [matPolyAction] using j.2⟩
-    have hpair :
-        StrictInterl (((G.get iG).zipWith (· * ·) fs).sum)
-          (((G.get jG).zipWith (· * ·) fs).sum) :=
-      strictInterl_zipWith_sum_pair_of_2x2
+    dsimp only [matPolyAction] at i j ⊢
+    erw [List.get_eq_getElem, List.getElem_map, List.get_eq_getElem, List.getElem_map]
+    exact strictInterl_zipWith_sum_pair_of_2x2
         (n := n)
         (hn := hn)
         (row₁ := G.get iG)
@@ -127,9 +115,6 @@ theorem matrix_preserves_interlacing_seq
           hG_affine iG jG j₁ j₂ (by grind) hj)
         (hfs_len := hfs_len)
         (hfs := ⟨hfs_mem, hfs_int⟩)
-    dsimp only [matPolyAction] at i j ⊢
-    erw [List.get_eq_getElem, List.getElem_map, List.get_eq_getElem, List.getElem_map]
-    exact hpair
 
 /-- **Weak zero-aware forward direction**: if `G` has non-negative coefficients
 and satisfies the weak affine 2×2 condition `Has2x2InterlacingProperty0`, then
@@ -159,10 +144,9 @@ theorem matrix_preserves_interlacing_seq0_of_2x2
     intro i j hij
     let iG : Fin G.length := ⟨i, by simpa [matPolyAction] using i.2⟩
     let jG : Fin G.length := ⟨j, by simpa [matPolyAction] using j.2⟩
-    have hpair :
-        Interl (((G.get iG).zipWith (· * ·) fs).sum)
-          (((G.get jG).zipWith (· * ·) fs).sum) :=
-      interl_zipWith_sum_pair_of_2x2
+    dsimp only [matPolyAction] at i j ⊢
+    erw [List.get_eq_getElem, List.getElem_map, List.get_eq_getElem, List.getElem_map]
+    exact interl_zipWith_sum_pair_of_2x2
         (n := n)
         (row₁ := G.get iG)
         (row₂ := G.get jG)
@@ -175,9 +159,6 @@ theorem matrix_preserves_interlacing_seq0_of_2x2
           hG_affine iG jG j₁ j₂ (by grind) hj)
         (hfs_len := hfs_len)
         (hfs := ⟨hfs_mem, hfs_int⟩)
-    dsimp only [matPolyAction] at i j ⊢
-    erw [List.get_eq_getElem, List.getElem_map, List.get_eq_getElem, List.getElem_map]
-    exact hpair
   · intro p hp
     rcases List.mem_map.mp hp with ⟨row, hrow_mem, rfl⟩
     exact
@@ -211,10 +192,9 @@ theorem matrix_preserves_interlacing_seq0_of_2x2_weak
       intro i j hij
       let iG : Fin G.length := ⟨i, by simpa [matPolyAction] using i.2⟩
       let jG : Fin G.length := ⟨j, by simpa [matPolyAction] using j.2⟩
-      have hpair :
-          Interl (((G.get iG).zipWith (· * ·) fs).sum)
-            (((G.get jG).zipWith (· * ·) fs).sum) :=
-        interl_zipWith_sum_pair_of_2x2_weak
+      dsimp only [matPolyAction] at i j ⊢
+      erw [List.get_eq_getElem, List.getElem_map, List.get_eq_getElem, List.getElem_map]
+      exact interl_zipWith_sum_pair_of_2x2_weak
           (n := n)
           (row₁ := G.get iG)
           (row₂ := G.get jG)
@@ -228,9 +208,6 @@ theorem matrix_preserves_interlacing_seq0_of_2x2_weak
           (hfs_len := hfs_len)
           (hfs := hfs)
           (hfs_real := hfs_real)
-      dsimp only [matPolyAction] at i j ⊢
-      erw [List.get_eq_getElem, List.getElem_map, List.get_eq_getElem, List.getElem_map]
-      exact hpair
     · intro p hp
       rcases List.mem_map.mp hp with ⟨row, hrow_mem, rfl⟩
       exact

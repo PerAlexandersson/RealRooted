@@ -71,7 +71,8 @@ variable {ℓ : ℕ → SnakeLetter} {n s : ℕ}
 lies in the staircase `i ≤ j ≤ s` or in `[s, n]²`. -/
 private theorem mem_bandCells_split (htail : ∀ g < s, ℓ g = .R) (hchange : ℓ s = .L)
     (hsn : s < n) {i j : ℕ} :
-    (i, j) ∈ bandCells n ℓ ↔ (i ≤ j ∧ j ≤ s) ∨ (s ≤ i ∧ s ≤ j ∧ (i, j) ∈ bandCells n ℓ) := by
+    (i, j) ∈ bandCells n ℓ ↔
+      (i ≤ j ∧ j ≤ s) ∨ (s ≤ i ∧ s ≤ j ∧ (i, j) ∈ bandCells n ℓ) := by
   constructor
   · intro h
     by_cases hij : s ≤ i ∧ s ≤ j
@@ -110,12 +111,7 @@ theorem chainPolynomial_bandCells_split_R {m : ℕ} (htail : ∀ g < s, ℓ g = 
   set Q : Finset (ℕ × ℕ) := (Finset.range s).image fun i => (i, s) with hQdef
   have hmemQ : ∀ {i j : ℕ}, (i, j) ∈ Q ↔ i < s ∧ j = s := by
     intro i j
-    simp only [hQdef, Finset.mem_image, Finset.mem_range, Prod.mk.injEq]
-    constructor
-    · rintro ⟨a, ha, rfl, rfl⟩
-      exact ⟨ha, rfl⟩
-    · rintro ⟨hi, rfl⟩
-      exact ⟨i, hi, rfl, rfl⟩
+    simp [hQdef, eq_comm]
   have hQD : Q ⊆ D := by
     rintro ⟨i, j⟩ h
     obtain ⟨hi, rfl⟩ := hmemQ.mp h
@@ -142,10 +138,10 @@ theorem chainPolynomial_bandCells_split_R {m : ℕ} (htail : ∀ g < s, ℓ g = 
           fun h => by lia⟩
       · exact ⟨h, fun h => by lia⟩
   have hdisjU : Disjoint (stairCells s s) U := by
-    rw [Finset.disjoint_left]
+    simp only [Finset.disjoint_left]
     rintro ⟨i, j⟩ h h'
-    rw [hU, mem_image_shift_iff] at h'
     rw [mem_stairCells] at h
+    rw [hU, mem_image_shift_iff] at h'
     lia
   have hbelowU : ∀ a ∈ stairCells s s, ∀ b ∈ U, incRel a b := by
     rintro ⟨i, j⟩ h ⟨i', j'⟩ h'
@@ -186,10 +182,10 @@ theorem chainPolynomial_bandCells_split_R {m : ℕ} (htail : ∀ g < s, ℓ g = 
         chainPolynomial incRel (bandCells m fun g => ℓ (g + (s + 1))) := by
     intro i hi
     have hdisj : Disjoint (stairCells s i) V := by
-      rw [Finset.disjoint_left]
+      simp only [Finset.disjoint_left]
       rintro ⟨a, b⟩ h h'
-      rw [hmemV] at h'
       rw [mem_stairCells] at h
+      rw [hmemV] at h'
       lia
     have hbelow : ∀ p ∈ stairCells s i, ∀ q ∈ V, incRel p q := by
       rintro ⟨a, b⟩ h ⟨a', b'⟩ h'
@@ -216,14 +212,10 @@ theorem chainPolynomial_bandCells_split {m : ℕ} {b : SnakeLetter}
   cases b with
   | R =>
       refine chainPolynomial_bandCells_split_R htail ?_
-      cases h : ℓ s
-      · rfl
-      · exact absurd h hchange
+      cases h : ℓ s <;> simp_all
   | L =>
       have hR : ℓ s = .R := by
-        cases h : ℓ s
-        · exact absurd h hchange
-        · rfl
+        cases h : ℓ s <;> simp_all
       have h := chainPolynomial_bandCells_split_R (ℓ := fun g => (ℓ g).flip) (m := m) (s := s)
         (fun g hg => SnakeLetter.flip_eq_R.mpr (htail g hg)) (SnakeLetter.flip_eq_L.mpr hR)
       simpa only [chainPolynomial_bandCells_flip] using h
@@ -289,8 +281,6 @@ theorem generalizedSnakeRookModel_natDegree_eq (w : SnakeWord) :
         have hG := auxiliaryG_natDegree_of_narayanaRecurrence
           narayanaAuxiliaryGRecurrence_modified s hs1
         have hu0 : generalizedSnakeRookModel.snakePolynomial (w.takePrefix (k + 1)) ≠ 0 :=
-          squarecaseRookModelOfFiniteSkewBoard_snakePolynomial_ne_zero _ _
-        have hv0 : generalizedSnakeRookModel.snakePolynomial (w.takePrefix k) ≠ 0 :=
           squarecaseRookModelOfFiniteSkewBoard_snakePolynomial_ne_zero _ _
         have hP0 : modifiedNarayanaPolynomial s ≠ 0 := modifiedNarayanaPolynomial_ne_zero s
         have hdeg1 : (generalizedSnakeRookModel.snakePolynomial (w.takePrefix (k + 1)) *
