@@ -50,6 +50,55 @@ theorem mul_sum_le_max_of_sq_sum_ge {v : Multiset ℝ}
     linarith
   nlinarith
 
+/-- Negative roots have positive negated reciprocals, maximized at a root of least magnitude. -/
+private lemma neg_inv_roots_pos_mem_max {p : ℝ[X]}
+    (hneg : ∀ r ∈ p.roots, r < 0) {s : ℝ} (hs : s ∈ p.roots)
+    (hmin : ∀ r ∈ p.roots, -s ≤ -r) :
+    (∀ x ∈ p.roots.map (fun r : ℝ => -r⁻¹), 0 < x) ∧
+      -s⁻¹ ∈ p.roots.map (fun r : ℝ => -r⁻¹) ∧
+      ∀ x ∈ p.roots.map (fun r : ℝ => -r⁻¹), x ≤ -s⁻¹ := by
+  have hsneg := hneg s hs
+  refine ⟨?_, Multiset.mem_map.mpr ⟨s, hs, rfl⟩, ?_⟩
+  · rintro x hx
+    obtain ⟨r, hr, rfl⟩ := Multiset.mem_map.mp hx
+    rw [neg_pos, inv_eq_one_div]
+    exact div_neg_of_pos_of_neg one_pos (hneg r hr)
+  · rintro x hx
+    obtain ⟨r, hr, rfl⟩ := Multiset.mem_map.mp hx
+    have hrneg := hneg r hr
+    have hrs : r ≤ s := by linarith [hmin r hr]
+    have hidentity : (r⁻¹ - s⁻¹) * (r * s) = s - r := by
+      field_simp [hrneg.ne, hsneg.ne]
+    rw [neg_le_neg_iff]
+    nlinarith [mul_pos_of_neg_of_neg hrneg hsneg]
+
+/-- Ratios of a least-magnitude negative root to all other roots lie in `[0, 1]`. -/
+private lemma erased_root_ratios_mem_unit_interval {p : ℝ[X]}
+    (hneg : ∀ r ∈ p.roots, r < 0) {s : ℝ} (hs : s ∈ p.roots)
+    (hmin : ∀ r ∈ p.roots, -s ≤ -r) :
+    ∀ x ∈ (p.roots.erase s).map (fun r : ℝ => s / r), 0 ≤ x ∧ x ≤ 1 := by
+  intro x hx
+  obtain ⟨r, hr, rfl⟩ := Multiset.mem_map.mp hx
+  have hrmem := Multiset.mem_of_mem_erase hr
+  have hsneg := hneg s hs
+  have hrneg := hneg r hrmem
+  refine ⟨(div_pos_of_neg_of_neg hsneg hrneg).le, ?_⟩
+  rw [div_le_one_of_neg hrneg]
+  linarith [hmin r hrmem]
+
+/-- A sum bound on values in `[0, 1]` gives the required complement-product bound. -/
+private lemma ratio_product_lower_bound {W : Multiset ℝ} {c : ℝ}
+    (hc : 1 / 2 < c) (hWsum : W.sum ≤ (1 - c) / c)
+    (hWmem : ∀ x ∈ W, 0 ≤ x ∧ x ≤ 1) :
+    (2 * c - 1) / c ≤ (W.map (fun x => 1 - x)).prod := by
+  have hproduct := Multiset.one_sub_sum_le_prod_one_sub W
+    (fun x hx => (hWmem x hx).1) (fun x hx => (hWmem x hx).2)
+  have hidentity : (2 * c - 1) / c = 1 - (1 - c) / c := by
+    field_simp [show c ≠ 0 by linarith]
+    ring
+  rw [hidentity]
+  linarith
+
 /-- A reciprocal square-sum proportion `c > 1/2` gives the sharp elementary
 lower factor `(2c - 1) / c` at a simple negative root of smallest magnitude. -/
 theorem amplitude_at_smallest_root_of_sq_ratio
@@ -66,39 +115,16 @@ theorem amplitude_at_smallest_root_of_sq_ratio
   have hcpos : 0 < c := lt_trans (by norm_num) hc
   have hzero' : p.eval 0 ≠ 0 := hzero.ne'
   have hsneg : s < 0 := hneg s hs
-  have hsne : s ≠ 0 := hsneg.ne
   set V : Multiset ℝ := p.roots.map (fun r => -r⁻¹) with hV
   set m : ℝ := -s⁻¹ with hm
-  have hmpos : 0 < m := by
-    rw [hm, neg_pos, inv_eq_one_div]
-    exact div_neg_of_pos_of_neg one_pos hsneg
-  have hVpos : ∀ x ∈ V, 0 < x := by
-    intro x hx
-    rw [hV, Multiset.mem_map] at hx
-    obtain ⟨r, hr, rfl⟩ := hx
-    rw [neg_pos, inv_eq_one_div]
-    exact div_neg_of_pos_of_neg one_pos (hneg r hr)
-  have hmV : m ∈ V := by
-    rw [hV, Multiset.mem_map]
-    exact ⟨s, hs, rfl⟩
-  have hVmax : ∀ x ∈ V, x ≤ m := by
-    intro x hx
-    rw [hV, Multiset.mem_map] at hx
-    obtain ⟨r, hr, rfl⟩ := hx
-    have hrneg : r < 0 := hneg r hr
-    have hrs : r ≤ s := by linarith [hmin r hr]
-    have hrspos : (0 : ℝ) < r * s := mul_pos_of_neg_of_neg hrneg hsneg
-    have hrne : r ≠ 0 := hrneg.ne
-    have hidentity : (r⁻¹ - s⁻¹) * (r * s) = s - r := by
-      field_simp [hrne, hsne]
-    rw [hm, neg_le_neg_iff]
-    nlinarith
+  obtain ⟨hVpos, hmV, hVmax⟩ := neg_inv_roots_pos_mem_max hneg hs hmin
+  simp only [← hV, ← hm] at hVpos hmV hVmax
   have hmax : c * V.sum ≤ m := by
     apply mul_sum_le_max_of_sq_sum_ge hVpos hmV hVmax
     simpa [hV] using hratio
   have hms : (-s) * m = 1 := by
     rw [hm]
-    field_simp
+    field_simp [hsneg.ne]
   have herase :
       V.sum = m + ((p.roots.erase s).map (fun r : ℝ => -r⁻¹)).sum := by
     rw [hV]
@@ -125,28 +151,10 @@ theorem amplitude_at_smallest_root_of_sq_ratio
     have hrewrite : (1 - c) / c = 1 / c - 1 := by field_simp
     rw [hrewrite]
     linarith [hscaled, hms]
-  have hWnonnegative : ∀ x ∈ W, 0 ≤ x := by
-    intro x hx
-    rw [hW, Multiset.mem_map] at hx
-    obtain ⟨r, hr, rfl⟩ := hx
-    exact (div_pos_of_neg_of_neg hsneg
-      (hneg r (Multiset.mem_of_mem_erase hr))).le
-  have hWleOne : ∀ x ∈ W, x ≤ 1 := by
-    intro x hx
-    rw [hW, Multiset.mem_map] at hx
-    obtain ⟨r, hr, rfl⟩ := hx
-    have hrmem := Multiset.mem_of_mem_erase hr
-    have hrneg := hneg r hrmem
-    rw [div_le_one_of_neg hrneg]
-    linarith [hmin r hrmem]
-  have hproduct := Multiset.one_sub_sum_le_prod_one_sub W hWnonnegative hWleOne
   have hlower : (2 * c - 1) / c
       ≤ (W.map (fun x => 1 - x)).prod := by
-    have hidentity : (2 * c - 1) / c = 1 - (1 - c) / c := by
-      field_simp
-      ring
-    rw [hidentity]
-    linarith
+    apply ratio_product_lower_bound hc hWbound
+    simpa only [hW] using erased_root_ratios_mem_unit_interval hneg hs hmin
   have hlowerPos : 0 < (2 * c - 1) / c :=
     div_pos (by linarith) hcpos
   have hproductNonnegative : 0 ≤ (W.map (fun x => 1 - x)).prod :=

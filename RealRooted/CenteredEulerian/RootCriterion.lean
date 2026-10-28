@@ -70,6 +70,103 @@ lemma pC_three (c : ℂ) : pC 3 c = c * (c ^ 2 - 1) / 3 := by
   simp [Polynomial.aeval_C]
   ring
 
+/-- Restricting a recurrence to the parity of its terminal index preserves it below that index. -/
+private lemma parity_restriction_relation {N : ℕ} {c : ℂ} (v v' : ℕ → ℂ)
+    (hv' : ∀ j, v' j = if (Even j ↔ Even N) then v j else 0)
+    (hvN : v N = 0)
+    (hrel : ∀ i, c ^ 2 * v i =
+      ∑ j ∈ Finset.range (i + 3), (rMat i j : ℂ) * v j) :
+    ∀ i, i < N → c ^ 2 * v' i =
+      ∑ j ∈ Finset.range N, (rMat i j : ℂ) * v' j := by
+  have hv'N : v' N = 0 := by
+    rw [hv' N]
+    simp only [iff_self, ite_true, hvN]
+  intro i hi
+  by_cases hpar : Even i ↔ Even N
+  · have hv'i : v' i = v i := by rw [hv' i]; simp only [hpar, ite_true]
+    rw [hv'i, hrel i]
+    have hterm : ∀ j, (rMat i j : ℂ) * v j = (rMat i j : ℂ) * v' j := by
+      intro j
+      by_cases hj : Even j ↔ Even N
+      · rw [hv' j]
+        simp only [hj, ite_true]
+      · rw [rMat_parity (by tauto)]
+        simp
+    simp_rw [hterm]
+    set L := N + i + 3
+    have e1 : ∑ j ∈ Finset.range (i + 3), (rMat i j : ℂ) * v' j =
+        ∑ j ∈ Finset.range L, (rMat i j : ℂ) * v' j := by
+      apply Finset.sum_subset
+      · intro j hj
+        simp at hj ⊢
+        lia
+      · intro j hj hj'
+        simp at hj hj'
+        rw [rMat_eq_zero_of_lt (by lia)]
+        simp
+    have e2 : ∑ j ∈ Finset.range N, (rMat i j : ℂ) * v' j =
+        ∑ j ∈ Finset.range L, (rMat i j : ℂ) * v' j := by
+      apply Finset.sum_subset
+      · intro j hj
+        simp at hj ⊢
+        lia
+      · intro j hj hj'
+        simp at hj hj'
+        by_cases hjN : j = N
+        · rw [hjN, hv'N, mul_zero]
+        · have hpi : i % 2 = N % 2 := by
+            rcases Nat.even_or_odd i with h1 | h1
+            · have := hpar.mp h1
+              rw [Nat.even_iff.mp h1, Nat.even_iff.mp this]
+            · have : ¬ Even N := fun h2 => (Nat.not_even_iff_odd.mpr h1) (hpar.mpr h2)
+              rw [Nat.odd_iff.mp h1, Nat.odd_iff.mp (Nat.not_even_iff_odd.mp this)]
+          have : N ≥ i + 2 := by lia
+          rw [rMat_eq_zero_of_lt (by lia)]
+          simp
+    rw [e1, e2]
+  · rw [hv' i]
+    simp only [hpar, ite_false, mul_zero]
+    symm
+    apply Finset.sum_eq_zero
+    intro j _
+    by_cases hj : Even j ↔ Even N
+    · rw [rMat_parity (by tauto)]
+      simp
+    · rw [hv' j]
+      simp only [hj, ite_false, mul_zero]
+
+/-- The parity-restricted normalized values before a terminal root are not all zero. -/
+private lemma exists_ne_zero_parity_normalized_pC {N : ℕ} {c : ℂ}
+    (hc1 : c ^ 2 - 1 ≠ 0) (hc0 : c ≠ 0) (hc : pC (N + 2) c = 0) :
+    ∃ j ∈ Finset.range N,
+      (if (Even j ↔ Even N) then pC (j + 2) c / (c ^ 2 - 1) else 0) ≠ 0 := by
+  rcases Nat.even_or_odd N with hN | hN
+  · rcases Nat.eq_zero_or_pos N with h0 | h0
+    · exfalso
+      subst h0
+      apply hc1
+      rw [pC_two] at hc
+      linear_combination 2 * hc
+    · refine ⟨0, Finset.mem_range.mpr h0, ?_⟩
+      simp only [Even.zero, hN, iff_self, ite_true]
+      rw [pC_two]
+      field_simp
+      norm_num
+  · rcases Nat.lt_or_ge N 2 with h1 | h1
+    · exfalso
+      have hN1 : N = 1 := by obtain ⟨r, hr⟩ := hN; lia
+      subst hN1
+      rw [pC_three] at hc
+      rcases mul_eq_zero.mp (by linear_combination 3 * hc : c * (c ^ 2 - 1) = 0) with h | h
+      · exact hc0 h
+      · exact hc1 h
+    · refine ⟨1, Finset.mem_range.mpr (by lia), ?_⟩
+      have hodd : ¬ Even N := Nat.not_even_iff_odd.mpr hN
+      simp only [show ¬ Even 1 by decide, hodd, iff_self, ite_true]
+      rw [pC_three]
+      field_simp
+      exact div_ne_zero hc0 (by norm_num)
+
 /-- The weighted-sum criterion: the column bound implies the root bound. -/
 theorem root_bound_of_columnBound (hcol : ColumnBound) {n : ℕ} (hn : 2 ≤ n) {c : ℂ}
     (hc : pC n c = 0) : Complex.normSq c < 13 / 3 := by
@@ -87,85 +184,16 @@ theorem root_bound_of_columnBound (hcol : ColumnBound) {n : ℕ} (hn : 2 ≤ n) 
   set v : ℕ → ℂ := fun j => pC (j + 2) c / (c ^ 2 - 1) with hv
   set v' : ℕ → ℂ := fun j => if (Even j ↔ Even N) then v j else 0 with hv'
   have hvN : v N = 0 := by rw [hv]; simp only; rw [hc, zero_div]
-  have hv'N : v' N = 0 := by rw [hv']; simp only [iff_self, ite_true]; exact hvN
-  -- the relation for `v`
   have hrel : ∀ i, c ^ 2 * v i = ∑ j ∈ Finset.range (i + 3), (rMat i j : ℂ) * v j := by
     intro i
     simp only [hv]
     rw [mul_div_assoc', pC_rel, Finset.sum_div]
     apply Finset.sum_congr rfl; intro j _; ring
-  -- extend the range
   have hrel' : ∀ i, i < N →
       c ^ 2 * v' i = ∑ j ∈ Finset.range N, (rMat i j : ℂ) * v' j := by
-    intro i hi
-    by_cases hpar : (Even i ↔ Even N)
-    · have hv'i : v' i = v i := by rw [hv']; simp only [hpar, ite_true]
-      rw [hv'i, hrel i]
-      have hterm : ∀ j, (rMat i j : ℂ) * v j = (rMat i j : ℂ) * v' j := by
-        intro j
-        by_cases hj : (Even j ↔ Even N)
-        · rw [hv']; simp only [hj, ite_true]
-        · rw [rMat_parity (by tauto)]; simp
-      simp_rw [hterm]
-      set L := N + i + 3
-      have e1 : ∑ j ∈ Finset.range (i + 3), (rMat i j : ℂ) * v' j =
-          ∑ j ∈ Finset.range L, (rMat i j : ℂ) * v' j := by
-        apply Finset.sum_subset
-        · intro j hj; simp at hj ⊢; lia
-        · intro j hj hj'; simp at hj hj'
-          rw [rMat_eq_zero_of_lt (by lia)]; simp
-      have e2 : ∑ j ∈ Finset.range N, (rMat i j : ℂ) * v' j =
-          ∑ j ∈ Finset.range L, (rMat i j : ℂ) * v' j := by
-        apply Finset.sum_subset
-        · intro j hj; simp at hj ⊢; lia
-        · intro j hj hj'; simp at hj hj'
-          by_cases hjN : j = N
-          · rw [hjN, hv'N, mul_zero]
-          · have hpi : i % 2 = N % 2 := by
-              rcases Nat.even_or_odd i with h1 | h1
-              · have := hpar.mp h1
-                rw [Nat.even_iff.mp h1, Nat.even_iff.mp this]
-              · have : ¬ Even N := fun h2 => (Nat.not_even_iff_odd.mpr h1) (hpar.mpr h2)
-                rw [Nat.odd_iff.mp h1, Nat.odd_iff.mp (Nat.not_even_iff_odd.mp this)]
-            have : N ≥ i + 2 := by lia
-            rw [rMat_eq_zero_of_lt (by lia)]; simp
-      rw [e1, e2]
-    · have hv'i : v' i = 0 := by rw [hv']; simp only [hpar, ite_false]
-      rw [hv'i, mul_zero]
-      symm
-      apply Finset.sum_eq_zero
-      intro j _
-      by_cases hj : (Even j ↔ Even N)
-      · rw [rMat_parity (by tauto)]; simp
-      · rw [hv']; simp only [hj, ite_false, mul_zero]
-  -- some `v'_j` is nonzero
+    exact parity_restriction_relation v v' (fun j => by rw [hv']) hvN hrel
   have hex : ∃ j ∈ Finset.range N, v' j ≠ 0 := by
-    rcases Nat.even_or_odd N with hN | hN
-    · rcases Nat.eq_zero_or_pos N with h0 | h0
-      · exfalso; subst h0
-        apply hc1
-        have := hc; rw [pC_two] at this
-        linear_combination 2 * this
-      · refine ⟨0, Finset.mem_range.mpr h0, ?_⟩
-        rw [hv']; simp only [Even.zero, hN, iff_self, ite_true, hv]
-        rw [pC_two]
-        field_simp
-        norm_num
-    · rcases Nat.lt_or_ge N 2 with h1 | h1
-      · exfalso
-        have hN1 : N = 1 := by obtain ⟨r, hr⟩ := hN; lia
-        subst hN1
-        have := hc; rw [pC_three] at this
-        rcases mul_eq_zero.mp (by linear_combination 3 * this : c * (c ^ 2 - 1) = 0) with h | h
-        · exact hc0 h
-        · exact hc1 h
-      · refine ⟨1, Finset.mem_range.mpr (by lia), ?_⟩
-        have hodd : ¬ Even N := Nat.not_even_iff_odd.mpr hN
-        rw [hv']
-        simp only [show ¬ Even 1 by decide, hodd, iff_self, ite_true, hv]
-        rw [pC_three]
-        field_simp
-        exact div_ne_zero hc0 (by norm_num)
+    simpa only [hv', hv] using exists_ne_zero_parity_normalized_pC hc1 hc0 hc
   have hbound := Matrix.norm_lt_of_weighted_column_sum_lt
     (fun i j : Fin N => (rMat i j : ℂ)) (fun i : Fin N => columnWeight i)
     (fun i => columnWeight_pos i) (13 / 3)
