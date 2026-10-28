@@ -51,8 +51,7 @@ theorem weightedLowerShift_apply_eq_zero_of_le
     {R : Type*} [Zero R] (b : ℕ → R) (N : ℕ)
     {i j : Fin (N + 1)} (hij : i.val ≤ j.val) :
     weightedLowerShift b N i j = 0 := by
-  rw [weightedLowerShift_apply]
-  simp [show i.val ≠ j.val + 1 by lia]
+  simp [weightedLowerShift_apply, show i.val ≠ j.val + 1 by lia]
 
 /-- Powers of a weighted lower shift have the sharp support displacement. -/
 theorem weightedLowerShift_pow_apply_eq_zero_of_lt_add
@@ -138,13 +137,10 @@ theorem weightedLowerShift_isTotallyNonneg
   have heq : weightedLowerShift b N =
       Matrix.lowerBidiagonalFin (N + 1) 0 (fun j => b (j + 1)) := by
     ext i j
-    rw [weightedLowerShift_apply, Matrix.lowerBidiagonalFin_apply]
+    simp only [weightedLowerShift_apply, Matrix.lowerBidiagonalFin_apply]
     by_cases hij : i = j
-    · subst i
-      simp
-    · by_cases hsucc : i.val = j.val + 1
-      · simp [hij, hsucc]
-      · simp [hij, hsucc]
+    · subst i; simp
+    · grind
   rw [heq]
   exact Matrix.isTotallyNonneg_lowerBidiagonalFin
     (N + 1) 0 (fun j => b (j + 1)) (by simp) (fun i => hb (i + 1))
@@ -166,29 +162,7 @@ theorem weightedLowerChip_isTotallyNonneg
     simp only [weightedLowerChip, Matrix.transvection,
       Matrix.add_apply, Matrix.one_apply, Matrix.single_apply,
       Matrix.lowerBidiagonalFin_apply]
-    by_cases hij : i = j
-    · subst i
-      have hboth : ¬(s.succ = j ∧ s.castSucc = j) := by
-        rintro ⟨h1, h2⟩
-        exact (Fin.ne_of_gt s.castSucc_lt_succ) (h1.trans h2.symm)
-      simp [hboth]
-    · by_cases hsub : i.val = j.val + 1
-      · by_cases hjs : j.val = s.val
-        · have hj : j = s.castSucc := Fin.ext hjs
-          have hi : i = s.succ := Fin.ext (by simpa [hjs] using hsub)
-          subst i
-          subst j
-          simp [Fin.ne_of_gt s.castSucc_lt_succ]
-        · have hsingle : ¬(s.succ = i ∧ s.castSucc = j) := by
-            rintro ⟨_, hs'⟩
-            exact hjs (by simpa using (congrArg Fin.val hs').symm)
-          simp [hij, hsub, hjs, hsingle]
-      · have hsingle : ¬(s.succ = i ∧ s.castSucc = j) := by
-          rintro ⟨hi, hj⟩
-          apply hsub
-          rw [← hi, ← hj]
-          simp
-        simp [hij, hsub, hsingle]
+    grind
   rw [heq]
   exact Matrix.isTotallyNonneg_lowerBidiagonalFin
     (N + 1) (fun _ => 1)
@@ -292,16 +266,16 @@ theorem weightedGreenKernel_apply_self
 /-- The finite Green kernel is a right inverse of `I - B`. -/
 theorem weightedGreenKernel_mul_one_sub
     {R : Type*} [Ring R] (b : ℕ → R) (N : ℕ) :
-    weightedGreenKernel b N * (1 - weightedLowerShift b N) = 1 := by
-  apply Matrix.finiteGeomSum_mul_one_sub_of_pow_eq_zero
-  exact weightedLowerShift_pow_card_eq_zero b N
+    weightedGreenKernel b N * (1 - weightedLowerShift b N) = 1 :=
+  Matrix.finiteGeomSum_mul_one_sub_of_pow_eq_zero (weightedLowerShift b N)
+    (weightedLowerShift_pow_card_eq_zero b N)
 
 /-- The finite Green kernel is a left inverse of `I - B`. -/
 theorem one_sub_mul_weightedGreenKernel
     {R : Type*} [Ring R] (b : ℕ → R) (N : ℕ) :
-    (1 - weightedLowerShift b N) * weightedGreenKernel b N = 1 := by
-  apply Matrix.one_sub_mul_finiteGeomSum_of_pow_eq_zero
-  exact weightedLowerShift_pow_card_eq_zero b N
+    (1 - weightedLowerShift b N) * weightedGreenKernel b N = 1 :=
+  Matrix.one_sub_mul_finiteGeomSum_of_pow_eq_zero (weightedLowerShift b N)
+    (weightedLowerShift_pow_card_eq_zero b N)
 
 /-- Consecutive Green-kernel rows satisfy the elementary weighted prefix
 recurrence. -/

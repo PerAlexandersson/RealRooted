@@ -91,28 +91,21 @@ lemma eigPoly_eq_prod_closed (n m : ℕ) (hm : 2 ≤ m) (hmn : m ≤ n) :
       smul_smul, smul_smul, div_pow]
     congr 1
     field_simp [pow_ne_zero r (hmud d hd)]
-  have hFr0 : ∀ r, (Fr r).eval 0 = 0 := by
-    intro r
+  have hFr0 : ∀ r, (Fr r).eval 0 = 0 := fun r => by
     rw [hFr, eval_finsetSum]
     refine Finset.sum_eq_zero fun d hd => ?_
-    rw [eval_smul, eigPoly_eval_zero n d (by simp at hd; lia) (by simp at hd; lia)]
-    simp
-  have hFr1 : ∀ r, (Fr r).eval 1 = 0 := by
-    intro r
+    simp [eigPoly_eval_zero n d (by simp at hd; lia) (by simp at hd; lia)]
+  have hFr1 : ∀ r, (Fr r).eval 1 = 0 := fun r => by
     rw [hFr, eval_finsetSum]
     refine Finset.sum_eq_zero fun d hd => ?_
-    rw [eval_smul, eigPoly_eval_one n d (by simp at hd; lia) (by simp at hd; lia)]
-    simp
+    simp [eigPoly_eval_one n d (by simp at hd; lia) (by simp at hd; lia)]
   have hFrc : ∀ r k, (Fr r).coeff k =
-      ∑ d ∈ Finset.Icc 2 m, a d * (mu n m / mu n d) ^ r * (eigPoly n d).coeff k := by
-    intro r k
-    simp [hFr, finsetSum_coeff, coeff_smul]
-  have hFrdeg : ∀ r, (Fr r).natDegree ≤ m := by
-    intro r
-    refine natDegree_sum_le_of_forall_le _ _ fun d hd => ?_
-    refine (natDegree_smul_le _ _).trans ?_
-    rw [(eigPoly_spec n d (by simp at hd; lia) (by simp at hd; lia)).2.1]
-    simp at hd; lia
+      ∑ d ∈ Finset.Icc 2 m, a d * (mu n m / mu n d) ^ r * (eigPoly n d).coeff k :=
+    fun r k => by simp [hFr, finsetSum_coeff, coeff_smul]
+  have hFrdeg : ∀ r, (Fr r).natDegree ≤ m := fun r =>
+    natDegree_sum_le_of_forall_le _ _ fun d hd => (natDegree_smul_le _ _).trans (by
+      rw [(eigPoly_spec n d (by simp at hd; lia) (by simp at hd; lia)).2.1]
+      simp at hd; lia)
   have hFrm : ∀ r, (Fr r).coeff m = 1 := by
     intro r
     rw [hFrc, Finset.sum_eq_single m]
@@ -219,9 +212,8 @@ lemma signVariations_coeffPoly_le (n : ℕ) (hn : 2 ≤ n) (G : ℝ[X]) (h0 : G.
       ∀ z ∈ s, G.eval z = 0 ∧ 0 < z ∧ z < 1 := by
   have hn0 : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by lia)
   set p := coeffPoly n G with hp_def
-  have hx : StrictMono (fun k : ℕ => (k : ℝ) / n) := by
-    intro a b hab
-    exact div_lt_div_of_pos_right (by exact_mod_cast hab) hn0
+  have hx : StrictMono (fun k : ℕ => (k : ℝ) / n) := fun _ _ hab =>
+    div_lt_div_of_pos_right (by exact_mod_cast hab) hn0
   obtain ⟨s', hs'1, hs'2⟩ := signVariations_le_roots (fun z => G.eval z)
     (Polynomial.continuous G) _ hx 1 p.support.card p (n - 1) rfl (by
       intro k hk
@@ -346,9 +338,8 @@ lemma eigPoly_eq_prod (n m : ℕ) (hm : 2 ≤ m) (hmn : m ≤ n) :
   have hcard := Finset.card_le_card hsub
   have himg : (Finset.univ.image z).card = (Finset.univ : Finset (Fin (m - 2))).card :=
     le_antisymm Finset.card_image_le (by simp; lia)
-  have := Finset.card_image_iff.mp himg
   intro a b hab
-  exact this (Finset.mem_coe.mpr (Finset.mem_univ a)) (Finset.mem_coe.mpr (Finset.mem_univ b)) hab
+  exact Finset.card_image_iff.mp himg (Finset.mem_univ a) (Finset.mem_univ b) hab
 
 /-- Given any factorisation `G_{j+2} = X (X - 1) ∏ (X - z_i)` with `z_i ∈ (0,1)`, the
 eigenpolynomial `Q_{n,j}` is `∏ (X - z_i / (1 - z_i))`. -/
@@ -415,10 +406,7 @@ lemma isEigenpoly_eq_prod {n j : ℕ} (hj : j + 3 ≤ n) {Q : ℝ[X]} (hQ : IsEi
   refine ⟨fun i => z i / (1 - z i), ?_, fun i => div_pos (hz01 i).1 (sub_pos.mpr (hz01 i).2),
     isEigenpoly_eq_prod_of hj hQ z hz01 hG⟩
   intro a b hab
-  have h1 := hz1 a
-  have h2 := hz1 b
-  simp only at hab
-  field_simp at hab
+  field_simp [hz1 a, hz1 b] at hab
   exact hzinj (by linarith)
 
 end Kostov

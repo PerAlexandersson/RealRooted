@@ -187,62 +187,12 @@ private lemma choose_ratio_bound (n i k : ℕ) (hn : 0 < n) (hi : i ≤ n) (hk :
           push_cast
           nlinarith
 
-private lemma power_identity (n k : ℕ) (x : ℝ) (hk : k ≤ n) :
-    ∑ i ∈ range (n + 1), (i.choose k : ℝ) / (n.choose k) *
-      ((n.choose i : ℝ) * x ^ i * (1 - x) ^ (n - i)) = x ^ k := by
-  have hnk : (n.choose k : ℝ) ≠ 0 := by exact_mod_cast (Nat.choose_pos hk).ne'
-  have h : n + 1 = k + (n - k + 1) := by lia
-  rw [h, sum_range_add]
-  have h0 : ∑ i ∈ range k, (i.choose k : ℝ) / (n.choose k) *
-      ((n.choose i : ℝ) * x ^ i * (1 - x) ^ (n - i)) = 0 := by
-    apply sum_eq_zero
-    intro i hi
-    rw [mem_range] at hi
-    rw [Nat.choose_eq_zero_of_lt hi]
-    simp
-  rw [h0, zero_add]
-  have hx : x ^ k = x ^ k * (x + (1 - x)) ^ (n - k) := by simp
-  rw [hx, add_pow, mul_sum]
-  apply sum_congr rfl
-  intro j hj
-  rw [mem_range] at hj
-  have hc : ((k + j).choose k : ℝ) * (n.choose (k + j)) =
-      n.choose k * ((n - k).choose j) := by
-    have hc' := Nat.choose_mul (n := n) (k := k + j) (s := k) (by lia)
-    rw [show k + j - k = j by lia] at hc'
-    rw [mul_comm]
-    exact_mod_cast hc'
-  have hexp : n - (k + j) = n - k - j := by lia
-  rw [hexp, pow_add]
-  field_simp
-  linear_combination (x ^ k * x ^ j * (1 - x) ^ (n - k - j)) * hc
-
 private lemma bernstein_eval_identity (p : ℝ[X]) (n : ℕ) (hn : p.natDegree ≤ n)
     (x : ℝ) :
     p.eval x = ∑ i ∈ range (n + 1), p.bernsteinCoeff n i *
       ((n.choose i : ℝ) * x ^ i * (1 - x) ^ (n - i)) := by
-  have hext : ∀ i ∈ range (n + 1), p.bernsteinCoeff n i =
-      ∑ k ∈ range (n + 1),
-        p.coeff k * ((i.choose k : ℝ) / (n.choose k)) := by
-    intro i hi
-    apply sum_subset
-    · intro k hk
-      simp only [mem_range] at hk hi ⊢
-      lia
-    · intro k _ hk
-      simp only [mem_range] at hk
-      rw [Nat.choose_eq_zero_of_lt (by lia)]
-      simp
-  rw [sum_congr rfl (fun i hi => by rw [hext i hi])]
-  simp_rw [sum_mul]
-  rw [sum_comm, eval_eq_sum_range' (by lia : p.natDegree < n + 1)]
-  apply sum_congr rfl
-  intro k hk
-  rw [mem_range] at hk
-  rw [← power_identity n k x (by lia), mul_sum]
-  apply sum_congr rfl
-  intro i _
-  ring
+  have h := congrArg (eval x) (eq_sum_bernsteinPolynomial_of_natDegree_le p n hn)
+  simpa [bernsteinPolynomial, eval_finsetSum] using h
 
 /-- Strict positivity on `[0,1]` is equivalent to strict positivity of all coefficients in some
 degree-elevated Bernstein expansion. -/
@@ -321,8 +271,8 @@ theorem pos_on_Icc_iff_exists_bernsteinCoeff_pos (p : ℝ[X]) :
       positivity
     have hsum : ∑ i ∈ range (n + 1),
         (n.choose i : ℝ) * x ^ i * (1 - x) ^ (n - i) = 1 := by
-      have := power_identity n 0 x (Nat.zero_le _)
-      simpa using this
+      have h := congrArg (eval x) (bernsteinPolynomial.sum ℝ n)
+      simpa [bernsteinPolynomial, eval_finsetSum] using h
     obtain ⟨j, hj, hjpos⟩ := exists_lt_of_sum_lt
       (s := range (n + 1)) (f := fun _ => (0 : ℝ))
       (g := fun i => (n.choose i : ℝ) * x ^ i * (1 - x) ^ (n - i))
