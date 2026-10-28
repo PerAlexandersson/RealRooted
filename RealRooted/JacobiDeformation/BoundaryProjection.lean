@@ -44,6 +44,89 @@ private theorem factorial_div_eq_fallingFactorial {m j : ℕ} (hjm : j ≤ m) :
   field_simp [Nat.factorial_ne_zero]
   linarith [hcast]
 
+/-- Terms below the falling-factorial order vanish, leaving a shifted sum. -/
+private theorem diagonal_weight_sum_shift (j n : ℕ) (b s : ℝ) :
+    ∑ k ∈ Finset.range (j + n + 1),
+        ((-1 : ℝ) ^ k * ((j + n).choose k : ℝ) * risingFactorial b k *
+          fallingFactorial (k : ℝ) j / risingFactorial s (k + j)) =
+      ∑ l ∈ Finset.range (n + 1),
+        ((-1 : ℝ) ^ (j + l) * ((j + n).choose (j + l) : ℝ) *
+          risingFactorial b (j + l) * fallingFactorial ((j + l : ℕ) : ℝ) j /
+            risingFactorial s ((j + l) + j)) := by
+  have hrw : j + n + 1 = j + (n + 1) := by lia
+  rw [hrw, Finset.sum_range_add]
+  have hzero : ∑ k ∈ Finset.range j,
+      ((-1 : ℝ) ^ k * ((j + n).choose k : ℝ) * risingFactorial b k *
+        fallingFactorial (k : ℝ) j / risingFactorial s (k + j)) = 0 := by
+    refine Finset.sum_eq_zero fun k hk => ?_
+    rw [fallingFactorial_natCast_eq_zero_of_lt (Finset.mem_range.mp hk)]
+    ring
+  rw [hzero, zero_add]
+
+/-- Each shifted summand factors into a constant part and a Vandermonde term. -/
+private theorem diagonal_weight_summand_factorization
+    (j n l : ℕ) (b s : ℝ) (hs : 0 < s) (hln : l ≤ n) :
+    (-1 : ℝ) ^ (j + l) * ((j + n).choose (j + l) : ℝ) *
+        risingFactorial b (j + l) * fallingFactorial ((j + l : ℕ) : ℝ) j /
+          risingFactorial s ((j + l) + j) =
+      ((-1 : ℝ) ^ j * ((j + n).descFactorial j : ℝ) *
+          risingFactorial b j / risingFactorial s (j + n + j)) *
+        ((-1 : ℝ) ^ l * (n.choose l : ℝ) *
+          risingFactorial (b + (j : ℝ)) l *
+          risingFactorial ((s + ((2 * j : ℕ) : ℝ)) + (l : ℝ)) (n - l)) := by
+  have h1 : fallingFactorial ((j + l : ℕ) : ℝ) j =
+      ((j + l).descFactorial j : ℝ) := fallingFactorial_natCast _ _
+  have h2 : (((j + n).choose (j + l) : ℕ) : ℝ) *
+      (((j + l).descFactorial j : ℕ) : ℝ) =
+      (((j + n).descFactorial j : ℕ) : ℝ) * ((n.choose l : ℕ) : ℝ) := by
+    have hchoose := Nat.choose_mul (n := j + n) (k := j + l) (s := j)
+      (Nat.le_add_right j l)
+    have h1' : j + n - j = n := by lia
+    have h2' : j + l - j = l := by lia
+    rw [h1', h2'] at hchoose
+    calc
+      (((j + n).choose (j + l) : ℕ) : ℝ) *
+          (((j + l).descFactorial j : ℕ) : ℝ) =
+          ((j.factorial : ℝ) * ((j + n).choose (j + l) : ℝ)) *
+            ((j + l).choose j : ℝ) := by
+            rw [Nat.descFactorial_eq_factorial_mul_choose]
+            norm_num only [Nat.cast_mul]
+            ring
+      _ = (j.factorial : ℝ) *
+          (((j + n).choose (j + l) : ℝ) * ((j + l).choose j : ℝ)) := by ring
+      _ = (j.factorial : ℝ) * ((j + n).choose j : ℝ) * (n.choose l : ℝ) := by
+            rw [show ((j + n).choose (j + l) : ℝ) * ((j + l).choose j : ℝ) =
+              ((j + n).choose j : ℝ) * (n.choose l : ℝ) by
+                exact_mod_cast hchoose]
+            ring
+      _ = (((j + n).descFactorial j : ℕ) : ℝ) * (n.choose l : ℝ) := by
+            rw [Nat.descFactorial_eq_factorial_mul_choose]
+            norm_num only [Nat.cast_mul]
+  have h3 : risingFactorial b (j + l) =
+      risingFactorial b j * risingFactorial (b + (j : ℝ)) l := by
+    simpa using risingFactorial_add b j l
+  have h4 : risingFactorial s (j + n + j) =
+      risingFactorial s ((j + l) + j) *
+        risingFactorial ((s + ((2 * j : ℕ) : ℝ)) + (l : ℝ)) (n - l) := by
+    have he : j + n + j = ((j + l) + j) + (n - l) := by lia
+    rw [he, risingFactorial_add]
+    have hcast : (((j + l) + j : ℕ) : ℝ) = ((2 * j : ℕ) : ℝ) + (l : ℝ) := by
+      push_cast
+      ring
+    rw [hcast]
+    ring_nf
+  have hden1 : risingFactorial s ((j + l) + j) ≠ 0 :=
+    (risingFactorial_pos _ hs).ne'
+  have hden2 : risingFactorial s (j + n + j) ≠ 0 :=
+    (risingFactorial_pos _ hs).ne'
+  have hpow : (-1 : ℝ) ^ (j + l) = (-1 : ℝ) ^ j * (-1 : ℝ) ^ l :=
+    pow_add _ _ _
+  rw [h1, hpow, h3, div_mul_eq_mul_div, div_eq_div_iff hden1 hden2, h4]
+  linear_combination ((-1 : ℝ) ^ j * (-1 : ℝ) ^ l * risingFactorial b j *
+    risingFactorial (b + (j : ℝ)) l *
+    risingFactorial ((s + ((2 * j : ℕ) : ℝ)) + (l : ℝ)) (n - l) *
+      risingFactorial s ((j + l) + j)) * h2
+
 private theorem diagonal_weight_factorial_identity
     (m j : ℕ) (hjm : j ≤ m) (s : ℝ) (hs : 0 < s) (delta : ℝ) :
     (-1 : ℝ) ^ m * ∑ k ∈ Finset.range (m + 1),
@@ -57,22 +140,6 @@ private theorem diagonal_weight_factorial_identity
   set b : ℝ := ((j + n : ℕ) : ℝ) + s - 1 + delta with hb
   have hsub : j + n - j = n := by lia
   rw [hsub]
-  have hsplit : ∑ k ∈ Finset.range (j + n + 1),
-      ((-1 : ℝ) ^ k * ((j + n).choose k : ℝ) * risingFactorial b k *
-          fallingFactorial (k : ℝ) j / risingFactorial s (k + j)) =
-      ∑ l ∈ Finset.range (n + 1),
-        ((-1 : ℝ) ^ (j + l) * ((j + n).choose (j + l) : ℝ) *
-            risingFactorial b (j + l) * fallingFactorial ((j + l : ℕ) : ℝ) j /
-              risingFactorial s ((j + l) + j)) := by
-    have hrw : j + n + 1 = j + (n + 1) := by lia
-    rw [hrw, Finset.sum_range_add]
-    have hzero : ∑ k ∈ Finset.range j,
-        ((-1 : ℝ) ^ k * ((j + n).choose k : ℝ) * risingFactorial b k *
-            fallingFactorial (k : ℝ) j / risingFactorial s (k + j)) = 0 := by
-      refine Finset.sum_eq_zero fun k hk => ?_
-      rw [fallingFactorial_natCast_eq_zero_of_lt (Finset.mem_range.mp hk)]
-      ring
-    rw [hzero, zero_add]
   have hterm : ∀ l ∈ Finset.range (n + 1),
       ((-1 : ℝ) ^ (j + l) * ((j + n).choose (j + l) : ℝ) *
           risingFactorial b (j + l) * fallingFactorial ((j + l : ℕ) : ℝ) j /
@@ -83,60 +150,9 @@ private theorem diagonal_weight_factorial_identity
             risingFactorial (b + (j : ℝ)) l *
             risingFactorial ((s + ((2 * j : ℕ) : ℝ)) + (l : ℝ)) (n - l)) := by
     intro l hl
-    have hln : l ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hl)
-    have h1 : fallingFactorial ((j + l : ℕ) : ℝ) j =
-        ((j + l).descFactorial j : ℝ) := fallingFactorial_natCast _ _
-    have h2 : (((j + n).choose (j + l) : ℕ) : ℝ) *
-        (((j + l).descFactorial j : ℕ) : ℝ) =
-        (((j + n).descFactorial j : ℕ) : ℝ) * ((n.choose l : ℕ) : ℝ) := by
-      have hchoose := Nat.choose_mul (n := j + n) (k := j + l) (s := j)
-        (Nat.le_add_right j l)
-      have h1' : j + n - j = n := by lia
-      have h2' : j + l - j = l := by lia
-      rw [h1', h2'] at hchoose
-      calc
-        (((j + n).choose (j + l) : ℕ) : ℝ) *
-            (((j + l).descFactorial j : ℕ) : ℝ) =
-            ((j.factorial : ℝ) * ((j + n).choose (j + l) : ℝ)) *
-              ((j + l).choose j : ℝ) := by
-              rw [Nat.descFactorial_eq_factorial_mul_choose]
-              norm_num only [Nat.cast_mul]
-              ring
-        _ = (j.factorial : ℝ) *
-            (((j + n).choose (j + l) : ℝ) * ((j + l).choose j : ℝ)) := by ring
-        _ = (j.factorial : ℝ) * ((j + n).choose j : ℝ) * (n.choose l : ℝ) := by
-              rw [show ((j + n).choose (j + l) : ℝ) * ((j + l).choose j : ℝ) =
-                ((j + n).choose j : ℝ) * (n.choose l : ℝ) by
-                  exact_mod_cast hchoose]
-              ring
-        _ = (((j + n).descFactorial j : ℕ) : ℝ) * (n.choose l : ℝ) := by
-              rw [Nat.descFactorial_eq_factorial_mul_choose]
-              norm_num only [Nat.cast_mul]
-    have h3 : risingFactorial b (j + l) =
-        risingFactorial b j * risingFactorial (b + (j : ℝ)) l := by
-      simpa using risingFactorial_add b j l
-    have h4 : risingFactorial s (j + n + j) =
-        risingFactorial s ((j + l) + j) *
-          risingFactorial ((s + ((2 * j : ℕ) : ℝ)) + (l : ℝ)) (n - l) := by
-      have he : j + n + j = ((j + l) + j) + (n - l) := by lia
-      rw [he, risingFactorial_add]
-      have hcast : (((j + l) + j : ℕ) : ℝ) = ((2 * j : ℕ) : ℝ) + (l : ℝ) := by
-        push_cast
-        ring
-      rw [hcast]
-      ring_nf
-    have hden1 : risingFactorial s ((j + l) + j) ≠ 0 :=
-      (risingFactorial_pos _ hs).ne'
-    have hden2 : risingFactorial s (j + n + j) ≠ 0 :=
-      (risingFactorial_pos _ hs).ne'
-    have hpow : (-1 : ℝ) ^ (j + l) = (-1 : ℝ) ^ j * (-1 : ℝ) ^ l :=
-      pow_add _ _ _
-    rw [h1, hpow, h3, div_mul_eq_mul_div, div_eq_div_iff hden1 hden2, h4]
-    linear_combination ((-1 : ℝ) ^ j * (-1 : ℝ) ^ l * risingFactorial b j *
-      risingFactorial (b + (j : ℝ)) l *
-      risingFactorial ((s + ((2 * j : ℕ) : ℝ)) + (l : ℝ)) (n - l) *
-        risingFactorial s ((j + l) + j)) * h2
-  rw [hsplit, Finset.sum_congr rfl hterm, ← Finset.mul_sum]
+    exact diagonal_weight_summand_factorization j n l b s hs
+      (Nat.lt_succ_iff.mp (Finset.mem_range.mp hl))
+  rw [diagonal_weight_sum_shift, Finset.sum_congr rfl hterm, ← Finset.mul_sum]
   have hV := sum_range_neg_one_pow_mul_choose_mul_risingFactorial (b + (j : ℝ))
     (s + ((2 * j : ℕ) : ℝ)) n
   rw [hV]

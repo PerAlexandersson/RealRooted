@@ -52,120 +52,116 @@ private theorem card_filter_get {α : Type*} (l : List α)
   exact (List.toFinset_card_of_nodup
     ((List.nodup_finRange l.length).filter _)).trans hfilter
 
-private theorem inversionCount_cons {α : Type*} [LinearOrder α] (a : α) (l : List α) :
-    (a :: l).inversionCount =
-      (l.filter (fun x => x < a)).length + l.inversionCount := by
-  let s : Finset (Fin (a :: l).length × Fin (a :: l).length) :=
-    (univ.product univ).filter fun p =>
-      p.1 < p.2 ∧ (a :: l).get p.2 < (a :: l).get p.1
-  have hsplit : s.card =
-      (s.filter (fun p => p.1 = 0)).card +
-        (s.filter (fun p => ¬p.1 = 0)).card := by
-    symm
-    exact Finset.card_filter_add_card_filter_not
-      (fun p : Fin (a :: l).length × Fin (a :: l).length => p.1 = 0)
-  have hzero :
-      (s.filter (fun p => p.1 = 0)).card =
-        ((univ : Finset (Fin l.length)).filter
-          (fun i => decide (l.get i < a))).card := by
-    refine Finset.card_bij' (s := s.filter (fun p => p.1 = 0))
-      (t := (univ : Finset (Fin l.length)).filter
-        (fun i => decide (l.get i < a)))
-      (fun (p : Fin (a :: l).length × Fin (a :: l).length) hp =>
-        p.2.pred ?_)
-      (fun (i : Fin l.length) hi => (0, i.succ)) ?_ ?_ ?_ ?_
-    · have hp := (Finset.mem_filter.1 hp).1
+/-- Inversions of `a :: l` starting at the head are the entries of `l` below `a`. -/
+private theorem inversionSet_cons_head_card {α : Type*} [LinearOrder α] (a : α) (l : List α) :
+    ((a :: l).inversionSet.filter (fun p => p.1 = 0)).card =
+      ((univ : Finset (Fin l.length)).filter (fun i => decide (l.get i < a))).card := by
+  refine Finset.card_bij'
+    (s := (a :: l).inversionSet.filter (fun p => p.1 = 0))
+    (t := (univ : Finset (Fin l.length)).filter (fun i => decide (l.get i < a)))
+    (fun (p : Fin (a :: l).length × Fin (a :: l).length) hp => p.2.pred ?_)
+    (fun (i : Fin l.length) hi => (0, i.succ)) ?_ ?_ ?_ ?_
+  · have hp := (Finset.mem_filter.1 hp).1
+    have hlt := (Finset.mem_filter.1 hp).2.1
+    intro hzero
+    rw [hzero] at hlt
+    simp at hlt
+  · intro p hp
+    have hp' := (Finset.mem_filter.1 hp).1
+    have hpzero := (Finset.mem_filter.1 hp).2
+    have hlt := (Finset.mem_filter.1 hp').2.2
+    have horder := (Finset.mem_filter.1 hp').2.1
+    have hne : p.2 ≠ 0 := by
+      intro hzero
+      rw [hzero] at horder
+      simp at horder
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and, decide_eq_true_eq]
+    have hlt' := hlt
+    rw [hpzero] at hlt'
+    have hget : (a :: l).get p.2 = l.get (p.2.pred hne) := by
+      exact (congrArg (a :: l).get (Fin.succ_pred p.2 hne)).symm
+    rw [hget] at hlt'
+    exact hlt'
+  · intro i hi
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and, decide_eq_true_eq] at hi
+    apply Finset.mem_filter.2
+    constructor
+    · apply Finset.mem_filter.2
+      constructor
+      · simp
+      · exact ⟨by simp, by simpa using hi⟩
+    · rfl
+  · intro p hp
+    have hpeq := (Finset.mem_filter.1 hp).2
+    have hp := (Finset.mem_filter.1 hp).1
+    have hne : p.2 ≠ 0 := by
       have hlt := (Finset.mem_filter.1 hp).2.1
       intro hzero
       rw [hzero] at hlt
       simp at hlt
-    · intro p hp
-      have hp' := (Finset.mem_filter.1 hp).1
-      have hpzero := (Finset.mem_filter.1 hp).2
-      have hlt := (Finset.mem_filter.1 hp').2.2
-      have horder := (Finset.mem_filter.1 hp').2.1
-      have hne : p.2 ≠ 0 := by
-        intro hzero
-        rw [hzero] at horder
-        simp at horder
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and, decide_eq_true_eq]
-      have hlt' := hlt
-      rw [hpzero] at hlt'
-      have hget : (a :: l).get p.2 = l.get (p.2.pred hne) := by
-        exact (congrArg (a :: l).get (Fin.succ_pred p.2 hne)).symm
-      rw [hget] at hlt'
-      exact hlt'
-    · intro i hi
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and, decide_eq_true_eq] at hi
-      apply Finset.mem_filter.2
+    apply Prod.ext
+    · exact hpeq.symm
+    · simp only [Fin.succ_pred]
+  · intro i hi
+    exact Fin.pred_succ i
+
+/-- Inversions of `a :: l` off the head are the shifted inversions of `l`. -/
+private theorem inversionSet_cons_tail_card {α : Type*} [LinearOrder α] (a : α) (l : List α) :
+    ((a :: l).inversionSet.filter (fun p => ¬p.1 = 0)).card = l.inversionSet.card := by
+  symm
+  refine Finset.card_bij (s := l.inversionSet)
+    (t := (a :: l).inversionSet.filter (fun p => ¬p.1 = 0))
+    (fun p hp => (p.1.succ, p.2.succ)) ?_ ?_ ?_
+  · intro p hp
+    apply Finset.mem_filter.2
+    constructor
+    · apply Finset.mem_filter.2
       constructor
-      · apply Finset.mem_filter.2
-        constructor
-        · simp
-        · exact ⟨by simp, by simpa using hi⟩
-      · rfl
-    · intro p hp
-      have hpeq := (Finset.mem_filter.1 hp).2
-      have hp := (Finset.mem_filter.1 hp).1
-      have hne : p.2 ≠ 0 := by
-        have hlt := (Finset.mem_filter.1 hp).2.1
-        intro hzero
-        rw [hzero] at hlt
-        simp at hlt
-      apply Prod.ext
-      · exact hpeq.symm
-      · simp only [Fin.succ_pred]
-    · intro i hi
-      exact Fin.pred_succ i
-  have hrest :
-      (s.filter (fun p => ¬p.1 = 0)).card = l.inversionSet.card := by
-    symm
-    refine Finset.card_bij (s := l.inversionSet)
-      (t := s.filter (fun p => ¬p.1 = 0))
-      (fun p hp => (p.1.succ, p.2.succ)) ?_ ?_ ?_
-    · intro p hp
-      apply Finset.mem_filter.2
-      constructor
-      · apply Finset.mem_filter.2
-        constructor
-        · simp
-        · have hp' := (Finset.mem_filter.1 hp).2
-          simpa [List.get_cons_succ] using hp'
       · simp
-    · intro p hp q hq heq
-      exact Prod.ext ((Fin.succ_injective _)
-          (congrArg Prod.fst heq)) ((Fin.succ_injective _)
-          (congrArg Prod.snd heq))
-    · intro q hq
-      have hq' := (Finset.mem_filter.1 hq).1
-      have hne₁ := (Finset.mem_filter.1 hq).2
-      have hlt := (Finset.mem_filter.1 hq').2.1
-      have hne₂ : q.2 ≠ 0 := by
-        intro hzero
-        rw [hzero] at hlt
-        simp at hlt
-      refine ⟨(q.1.pred hne₁, q.2.pred hne₂), ?_, ?_⟩
-      · apply Finset.mem_filter.2
-        constructor
-        · simp
-        · have hpair := (Finset.mem_filter.1 hq').2
-          have hlt' : q.1.pred hne₁ < q.2.pred hne₂ := by
-            apply (Fin.succ_lt_succ_iff.mp)
-            simpa only [Fin.succ_pred q.1 hne₁, Fin.succ_pred q.2 hne₂]
-              using hpair.1
-          have hv' : l.get (q.2.pred hne₂) < l.get (q.1.pred hne₁) := by
-            have hv := hpair.2
-            rw [← Fin.succ_pred q.1 hne₁, ← Fin.succ_pred q.2 hne₂] at hv
-            change l.get (q.2.pred hne₂) < l.get (q.1.pred hne₁) at hv
-            exact hv
-          exact ⟨hlt', hv'⟩
-      · apply Prod.ext <;> simp only [Fin.succ_pred]
-  change s.card = _
-  rw [hsplit, hzero, hrest]
-  have hcard := card_filter_get l (fun x => decide (x < a))
-  change ((univ : Finset (Fin l.length)).filter
-      (fun i => decide (l.get i < a))).card + l.inversionCount = _
-  rw [hcard]
+      · have hp' := (Finset.mem_filter.1 hp).2
+        simpa [List.get_cons_succ] using hp'
+    · simp
+  · intro p hp q hq heq
+    exact Prod.ext ((Fin.succ_injective _) (congrArg Prod.fst heq))
+      ((Fin.succ_injective _) (congrArg Prod.snd heq))
+  · intro q hq
+    have hq' := (Finset.mem_filter.1 hq).1
+    have hne₁ := (Finset.mem_filter.1 hq).2
+    have hlt := (Finset.mem_filter.1 hq').2.1
+    have hne₂ : q.2 ≠ 0 := by
+      intro hzero
+      rw [hzero] at hlt
+      simp at hlt
+    refine ⟨(q.1.pred hne₁, q.2.pred hne₂), ?_, ?_⟩
+    · apply Finset.mem_filter.2
+      constructor
+      · simp
+      · have hpair := (Finset.mem_filter.1 hq').2
+        have hlt' : q.1.pred hne₁ < q.2.pred hne₂ := by
+          apply Fin.succ_lt_succ_iff.mp
+          simpa only [Fin.succ_pred q.1 hne₁, Fin.succ_pred q.2 hne₂] using hpair.1
+        have hv' : l.get (q.2.pred hne₂) < l.get (q.1.pred hne₁) := by
+          have hv := hpair.2
+          rw [← Fin.succ_pred q.1 hne₁, ← Fin.succ_pred q.2 hne₂] at hv
+          change l.get (q.2.pred hne₂) < l.get (q.1.pred hne₁) at hv
+          exact hv
+        exact ⟨hlt', hv'⟩
+    · apply Prod.ext <;> simp only [Fin.succ_pred]
+
+private theorem inversionCount_cons {α : Type*} [LinearOrder α] (a : α) (l : List α) :
+    (a :: l).inversionCount =
+      (l.filter (fun x => x < a)).length + l.inversionCount := by
+  unfold inversionCount
+  calc
+    (a :: l).inversionSet.card =
+        ((a :: l).inversionSet.filter (fun p => p.1 = 0)).card +
+          ((a :: l).inversionSet.filter (fun p => ¬p.1 = 0)).card := by
+      symm
+      exact Finset.card_filter_add_card_filter_not _
+    _ = _ := by
+      rw [inversionSet_cons_head_card, inversionSet_cons_tail_card]
+      exact congrArg (fun n => n + l.inversionSet.card)
+        (card_filter_get l (fun x => decide (x < a)))
 
 end List
 
