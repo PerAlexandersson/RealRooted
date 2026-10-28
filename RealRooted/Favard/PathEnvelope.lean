@@ -231,6 +231,198 @@ section Main
 
 variable {η : ℕ → K} {d : K → ℕ → K}
 
+omit [LinearOrder K] [IsStrictOrderedRing K] in
+/-- Split the odd-index decomposition sum into its even and odd summands. -/
+private lemma odd_sum_decomposition (m : ℕ) (z : K) :
+    ∑ i ∈ range (2 * m + 1),
+        (1 / 4 - η (i + 1)) * chebShift (2 * m + 1 - 1 - i) z * d z i =
+      ∑ j ∈ range m,
+        ((1 / 4 - η (2 * j + 1)) * chebShift (2 * (m - j)) z * d z (2 * j) +
+          (1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j) + 1) z *
+            d z (2 * j + 1)) := by
+  rw [sum_range_succ, show 2 * m + 1 - 1 - 2 * m = 0 by lia, chebShift_zero, mul_zero,
+    zero_mul, add_zero, sum_range_two_mul]
+  exact sum_congr rfl fun j hj ↦ by
+    have hj' := mem_range.mp hj
+    rw [show 2 * m + 1 - 1 - 2 * j = 2 * (m - j) by lia,
+      show 2 * m + 1 - 1 - (2 * j + 1) = 2 * (m - 1 - j) + 1 by lia]
+
+omit [LinearOrder K] [IsStrictOrderedRing K] in
+/-- Split the even-index decomposition sum into its even and odd summands. -/
+private lemma even_sum_decomposition (m : ℕ) (z : K) :
+    ∑ i ∈ range (2 * m), (1 / 4 - η (i + 1)) * chebShift (2 * m - 1 - i) z * d z i =
+      ∑ j ∈ range m,
+        ((1 / 4 - η (2 * j + 1)) * chebShift (2 * (m - 1 - j) + 1) z * d z (2 * j) +
+          (1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j)) z *
+            d z (2 * j + 1)) := by
+  rw [sum_range_two_mul]
+  exact sum_congr rfl fun j hj ↦ by
+    have hj' := mem_range.mp hj
+    rw [show 2 * m - 1 - 2 * j = 2 * (m - 1 - j) + 1 by lia,
+      show 2 * m - 1 - (2 * j + 1) = 2 * (m - 1 - j) by lia]
+
+/-- The odd envelope bound follows from the earlier uniform and odd induction bounds. -/
+private lemma odd_envelope_step
+    (h0 : ∀ x, d x 0 = 1) (h1 : ∀ x, d x 1 = x)
+    (hrec : ∀ x n, d x (n + 2) = x * d x (n + 1) - η (n + 1) * d x n)
+    (m : ℕ) (hδ : ∀ e, 0 ≤ 1 / 4 - η (e + 1))
+    (hunif : ∀ i < 2 * m + 1, ∀ x : K, |x| ≤ 1 → |d x i| ≤ d 1 i)
+    (hodd : ∀ j, 2 * j + 1 < 2 * m + 1 → ∀ x : K, |x| ≤ 1 →
+      |d x (2 * j + 1)| ≤ d 1 (2 * j + 1) * |x|)
+    {x : K} (hx : |x| ≤ 1) : |d x (2 * m + 1)| ≤ d 1 (2 * m + 1) * |x| := by
+  have dec := fun z ↦ eq_chebHat_add_sum (h0 z) (h1 z) (hrec z) (2 * m + 1)
+  rw [dec x, dec 1, odd_sum_decomposition, odd_sum_decomposition]
+  have hx2 : x ^ 2 ≤ 1 := by nlinarith [abs_nonneg x, sq_abs x]
+  calc |chebHat (2 * m + 1) x + ∑ j ∈ range m,
+        ((1 / 4 - η (2 * j + 1)) * chebShift (2 * (m - j)) x * d x (2 * j) +
+          (1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j) + 1) x *
+            d x (2 * j + 1))|
+      ≤ |chebHat (2 * m + 1) x| + ∑ j ∈ range m,
+        (|(1 / 4 - η (2 * j + 1)) * chebShift (2 * (m - j)) x * d x (2 * j)| +
+          |(1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j) + 1) x *
+            d x (2 * j + 1)|) :=
+        (abs_add_le _ _).trans (add_le_add_right ((abs_sum_le_sum_abs _ _).trans
+          (sum_le_sum fun j _ ↦ abs_add_le _ _)) _)
+    _ ≤ chebHat (2 * m + 1) 1 * |x| + ∑ j ∈ range m,
+        ((1 / 4 - η (2 * j + 1)) * chebShift (2 * (m - j)) 1 * d 1 (2 * j) * |x| +
+          (1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j) + 1) 1 *
+            d 1 (2 * j + 1) * |x|) := by
+        gcongr with j hj
+        · exact abs_chebHat_odd_le m hx
+        · have hj' := mem_range.mp hj
+          rw [abs_mul, abs_mul, abs_of_nonneg (hδ _)]
+          have hw := abs_chebShift_even_le (m - j) hx
+          have hd := hunif (2 * j) (by lia) x hx
+          have hmul := mul_le_mul hw hd (abs_nonneg _)
+            (mul_nonneg (chebShift_one_nonneg _) (abs_nonneg x))
+          nlinarith [hδ (2 * j), abs_nonneg x,
+            chebShift_one_nonneg (K := K) (2 * (m - j))]
+        · have hj' := mem_range.mp hj
+          rw [abs_mul, abs_mul, abs_of_nonneg (hδ _)]
+          have hw := abs_chebShift_odd_le (m - 1 - j) hx
+          have hq : (1 / 4 : K) ^ (m - 1 - j) ≤
+              chebShift (2 * (m - 1 - j) + 1) 1 := by
+            rw [chebShift_succ]
+            exact quarter_pow_le_chebHat_even _
+          have hw' : |chebShift (2 * (m - 1 - j) + 1) x| ≤
+              chebShift (2 * (m - 1 - j) + 1) 1 := by nlinarith [sq_nonneg x]
+          have hd := hodd j (by lia) x hx
+          have hmul := mul_le_mul hw' hd (abs_nonneg _) (chebShift_one_nonneg _)
+          nlinarith [hδ (2 * j + 1)]
+    _ = (chebHat (2 * m + 1) 1 + ∑ j ∈ range m,
+        ((1 / 4 - η (2 * j + 1)) * chebShift (2 * (m - j)) 1 * d 1 (2 * j) +
+          (1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j) + 1) 1 *
+            d 1 (2 * j + 1))) * |x| := by
+        rw [add_mul, sum_mul]
+        congr 1
+        exact sum_congr rfl fun j _ ↦ by ring
+
+/-- The even value at one dominates the corresponding envelope constant. -/
+private lemma envConst_le_even_step
+    (h0 : ∀ x, d x 0 = 1) (h1 : ∀ x, d x 1 = x)
+    (hrec : ∀ x n, d x (n + 2) = x * d x (n + 1) - η (n + 1) * d x n)
+    (hη1 : ∀ e, η (e + 1) ≤ 1 / 4) (m : ℕ)
+    (hδ : ∀ e, 0 ≤ 1 / 4 - η (e + 1))
+    (hpos : ∀ i < 2 * m, 0 ≤ d 1 i)
+    (heven : ∀ j, 2 * j < 2 * m → envConst η j ≤ d 1 (2 * j)) :
+    envConst η m ≤ d 1 (2 * m) := by
+  rw [eq_chebHat_add_sum (h0 1) (h1 1) (hrec 1), even_sum_decomposition,
+    envConst_eq_sum]
+  gcongr with j hj
+  · exact quarter_pow_le_chebHat_even m
+  · have hj' := mem_range.mp hj
+    have hB := heven j (by lia)
+    have hq : (1 / 4 : K) ^ (m - 1 - j) ≤
+        chebShift (2 * (m - 1 - j) + 1) 1 := by
+      rw [chebShift_succ]
+      exact quarter_pow_le_chebHat_even _
+    have hmul := mul_le_mul hq hB
+      (envConst_nonneg hη1 j) (chebShift_one_nonneg _)
+    have hp := mul_nonneg
+      (mul_nonneg (hδ (2 * j + 1)) (chebShift_one_nonneg (K := K) (2 * (m - 1 - j))))
+      (hpos (2 * j + 1) (by lia))
+    nlinarith [hδ (2 * j)]
+
+/-- The even chord envelope follows from the earlier even and odd induction bounds. -/
+private lemma even_envelope_step
+    (h0 : ∀ x, d x 0 = 1) (h1 : ∀ x, d x 1 = x)
+    (hrec : ∀ x n, d x (n + 2) = x * d x (n + 1) - η (n + 1) * d x n)
+    (m : ℕ) (hδ : ∀ e, 0 ≤ 1 / 4 - η (e + 1))
+    (hodd : ∀ j, 2 * j + 1 < 2 * m → ∀ x : K, |x| ≤ 1 →
+      |d x (2 * j + 1)| ≤ d 1 (2 * j + 1) * |x|)
+    (heven : ∀ j, 2 * j < 2 * m → envConst η j ≤ d 1 (2 * j) ∧
+      ∀ x : K, |x| ≤ 1 →
+        |d x (2 * j)| ≤ envConst η j * (1 - x ^ 2) + d 1 (2 * j) * x ^ 2)
+    {x : K} (hx : |x| ≤ 1) :
+    |d x (2 * m)| ≤ envConst η m * (1 - x ^ 2) + d 1 (2 * m) * x ^ 2 := by
+  have hy0 : 0 ≤ x ^ 2 := sq_nonneg x
+  have hy1 : x ^ 2 ≤ 1 := by nlinarith [abs_nonneg x, sq_abs x]
+  rw [eq_chebHat_add_sum (h0 x) (h1 x) (hrec x),
+    eq_chebHat_add_sum (h0 1) (h1 1) (hrec 1), even_sum_decomposition,
+    even_sum_decomposition, envConst_eq_sum]
+  calc |chebHat (2 * m) x + ∑ j ∈ range m,
+          ((1 / 4 - η (2 * j + 1)) * chebShift (2 * (m - 1 - j) + 1) x * d x (2 * j) +
+            (1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j)) x *
+              d x (2 * j + 1))|
+      ≤ |chebHat (2 * m) x| + ∑ j ∈ range m,
+          (|(1 / 4 - η (2 * j + 1)) * chebShift (2 * (m - 1 - j) + 1) x * d x (2 * j)| +
+            |(1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j)) x *
+              d x (2 * j + 1)|) :=
+        (abs_add_le _ _).trans (add_le_add_right ((abs_sum_le_sum_abs _ _).trans
+          (sum_le_sum fun j _ ↦ abs_add_le _ _)) _)
+    _ ≤ ((1 / 4) ^ m * (1 - x ^ 2) + chebHat (2 * m) 1 * x ^ 2) + ∑ j ∈ range m,
+          ((1 / 4 - η (2 * j + 1)) *
+              ((1 / 4) ^ (m - 1 - j) * envConst η j * (1 - x ^ 2) +
+                chebShift (2 * (m - 1 - j) + 1) 1 * d 1 (2 * j) * x ^ 2) +
+            (1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j)) 1 *
+              d 1 (2 * j + 1) * x ^ 2) := by
+        gcongr with j hj
+        · exact abs_chebHat_even_le m hx
+        · have hj' := mem_range.mp hj
+          rw [mul_assoc, abs_mul, abs_of_nonneg (hδ _)]
+          obtain ⟨hB, hb⟩ := heven j (by lia)
+          exact mul_le_mul_of_nonneg_left
+            (abs_mul_le_chord (by positivity) (by
+                rw [chebShift_succ]
+                exact quarter_pow_le_chebHat_even _) hB hy0 hy1
+              (abs_chebShift_odd_le _ hx) (hb x hx)) (hδ _)
+        · have hj' := mem_range.mp hj
+          rw [abs_mul, abs_mul, abs_of_nonneg (hδ _)]
+          have hw := abs_chebShift_even_le (m - 1 - j) hx
+          have hd := hodd j (by lia) x hx
+          have hmul := mul_le_mul hw hd (abs_nonneg _)
+            (mul_nonneg (chebShift_one_nonneg _) (abs_nonneg x))
+          have hxx : |x| * |x| = x ^ 2 := by rw [← abs_mul, abs_mul_self, sq]
+          calc (1 / 4 - η (2 * j + 1 + 1)) * |chebShift (2 * (m - 1 - j)) x| *
+                |d x (2 * j + 1)|
+              = (1 / 4 - η (2 * j + 1 + 1)) *
+                  (|chebShift (2 * (m - 1 - j)) x| * |d x (2 * j + 1)|) := by ring
+            _ ≤ (1 / 4 - η (2 * j + 1 + 1)) *
+                  (chebShift (2 * (m - 1 - j)) 1 * |x| * (d 1 (2 * j + 1) * |x|)) :=
+                mul_le_mul_of_nonneg_left hmul (hδ _)
+            _ = _ := by rw [← hxx]; ring
+    _ = ((1 / 4) ^ m + ∑ j ∈ range m,
+          (1 / 4 - η (2 * j + 1)) * (1 / 4) ^ (m - 1 - j) * envConst η j) *
+          (1 - x ^ 2) +
+        (chebHat (2 * m) 1 + ∑ j ∈ range m,
+          ((1 / 4 - η (2 * j + 1)) * chebShift (2 * (m - 1 - j) + 1) 1 * d 1 (2 * j) +
+            (1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j)) 1 *
+              d 1 (2 * j + 1))) * x ^ 2 := by
+        rw [add_mul, add_mul, sum_mul, sum_mul]
+        rw [sum_congr rfl fun j _ ↦ (show
+          (1 / 4 - η (2 * j + 1)) *
+                ((1 / 4) ^ (m - 1 - j) * envConst η j * (1 - x ^ 2) +
+                  chebShift (2 * (m - 1 - j) + 1) 1 * d 1 (2 * j) * x ^ 2) +
+              (1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j)) 1 *
+                d 1 (2 * j + 1) * x ^ 2 =
+            (1 / 4 - η (2 * j + 1)) * (1 / 4) ^ (m - 1 - j) * envConst η j *
+                (1 - x ^ 2) +
+              ((1 / 4 - η (2 * j + 1)) * chebShift (2 * (m - 1 - j) + 1) 1 *
+                  d 1 (2 * j) +
+                (1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j)) 1 *
+                  d 1 (2 * j + 1)) * x ^ 2 by ring), sum_add_distrib]
+        ring
+
 /-- The joint induction behind the envelope bounds. -/
 private theorem envelope_aux (hη1 : ∀ e, η (e + 1) ≤ 1 / 4)
     (h0 : ∀ x, d x 0 = 1) (h1 : ∀ x, d x 1 = x)
@@ -262,139 +454,13 @@ private theorem envelope_aux (hη1 : ∀ e, η (e + 1) ≤ 1 / 4)
     exact add_nonneg (chebHat_one_pos N).le (sum_nonneg fun i hi ↦
       mul_nonneg (mul_nonneg (hδ i) (chebShift_one_nonneg _)) (hpos i (mem_range.mp hi)))
   · rintro m rfl x hx
-    have e2 : ∀ j < m, 2 * m + 1 - 1 - 2 * j = 2 * (m - j) := fun j hj ↦ by lia
-    have e3 : ∀ j < m, 2 * m + 1 - 1 - (2 * j + 1) = 2 * (m - 1 - j) + 1 := fun j hj ↦ by lia
-    have hsplit : ∀ z : K, ∑ i ∈ range (2 * m + 1),
-        (1 / 4 - η (i + 1)) * chebShift (2 * m + 1 - 1 - i) z * d z i =
-        ∑ j ∈ range m, ((1 / 4 - η (2 * j + 1)) * chebShift (2 * (m - j)) z * d z (2 * j) +
-          (1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j) + 1) z *
-            d z (2 * j + 1)) := by
-      intro z
-      rw [sum_range_succ, show 2 * m + 1 - 1 - 2 * m = 0 by lia, chebShift_zero, mul_zero,
-        zero_mul, add_zero, sum_range_two_mul]
-      exact sum_congr rfl fun j hj ↦ by
-        rw [e2 j (mem_range.mp hj), e3 j (mem_range.mp hj)]
-    rw [dec x, dec 1, hsplit, hsplit]
-    have hx2 : x ^ 2 ≤ 1 := by nlinarith [abs_nonneg x, sq_abs x]
-    calc |chebHat (2 * m + 1) x + ∑ j ∈ range m,
-          ((1 / 4 - η (2 * j + 1)) * chebShift (2 * (m - j)) x * d x (2 * j) +
-            (1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j) + 1) x * d x (2 * j + 1))|
-        ≤ |chebHat (2 * m + 1) x| + ∑ j ∈ range m,
-          (|(1 / 4 - η (2 * j + 1)) * chebShift (2 * (m - j)) x * d x (2 * j)| +
-            |(1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j) + 1) x *
-              d x (2 * j + 1)|) :=
-          (abs_add_le _ _).trans (add_le_add_right ((abs_sum_le_sum_abs _ _).trans
-            (sum_le_sum fun j _ ↦ abs_add_le _ _)) _)
-      _ ≤ chebHat (2 * m + 1) 1 * |x| + ∑ j ∈ range m,
-          ((1 / 4 - η (2 * j + 1)) * chebShift (2 * (m - j)) 1 * d 1 (2 * j) * |x| +
-            (1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j) + 1) 1 *
-              d 1 (2 * j + 1) * |x|) := by
-          gcongr with j hj
-          · exact abs_chebHat_odd_le m hx
-          · have hj' := mem_range.mp hj
-            rw [abs_mul, abs_mul, abs_of_nonneg (hδ _)]
-            have hw := abs_chebShift_even_le (m - j) hx
-            have hd := hunif (2 * j) (by lia) x hx
-            have := mul_le_mul hw hd (abs_nonneg _)
-              (mul_nonneg (chebShift_one_nonneg _) (abs_nonneg x))
-            nlinarith [hδ (2 * j), abs_nonneg x, chebShift_one_nonneg (K := K) (2 * (m - j))]
-          · have hj' := mem_range.mp hj
-            rw [abs_mul, abs_mul, abs_of_nonneg (hδ _)]
-            have hw := abs_chebShift_odd_le (m - 1 - j) hx
-            have hq : (1 / 4 : K) ^ (m - 1 - j) ≤ chebShift (2 * (m - 1 - j) + 1) 1 := by
-              rw [chebShift_succ]; exact quarter_pow_le_chebHat_even _
-            have hw' : |chebShift (2 * (m - 1 - j) + 1) x| ≤
-                chebShift (2 * (m - 1 - j) + 1) 1 := by nlinarith [sq_nonneg x]
-            have hd := hodd j (by lia) x hx
-            have := mul_le_mul hw' hd (abs_nonneg _) (chebShift_one_nonneg _)
-            nlinarith [hδ (2 * j + 1)]
-      _ = (chebHat (2 * m + 1) 1 + ∑ j ∈ range m,
-          ((1 / 4 - η (2 * j + 1)) * chebShift (2 * (m - j)) 1 * d 1 (2 * j) +
-            (1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j) + 1) 1 *
-              d 1 (2 * j + 1))) * |x| := by
-          rw [add_mul, sum_mul]
-          congr 1
-          exact sum_congr rfl fun j _ ↦ by ring
+    exact odd_envelope_step h0 h1 hrec m hδ hunif hodd hx
   · rintro m rfl
-    have e2 : ∀ j < m, 2 * m - 1 - 2 * j = 2 * (m - 1 - j) + 1 := fun j hj ↦ by lia
-    have e3 : ∀ j < m, 2 * m - 1 - (2 * j + 1) = 2 * (m - 1 - j) := fun j hj ↦ by lia
-    have hsplit : ∀ z : K, ∑ i ∈ range (2 * m),
-        (1 / 4 - η (i + 1)) * chebShift (2 * m - 1 - i) z * d z i =
-        ∑ j ∈ range m,
-          ((1 / 4 - η (2 * j + 1)) * chebShift (2 * (m - 1 - j) + 1) z * d z (2 * j) +
-          (1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j)) z * d z (2 * j + 1)) := by
-      intro z
-      rw [sum_range_two_mul]
-      exact sum_congr rfl fun j hj ↦ by
-        rw [e2 j (mem_range.mp hj), e3 j (mem_range.mp hj)]
-    have hq : ∀ j, (1 / 4 : K) ^ (m - 1 - j) ≤ chebShift (2 * (m - 1 - j) + 1) 1 := fun j ↦ by
-      rw [chebShift_succ]; exact quarter_pow_le_chebHat_even _
     constructor
-    · rw [dec 1, hsplit, envConst_eq_sum]
-      gcongr with j hj
-      · exact quarter_pow_le_chebHat_even m
-      · have hj' := mem_range.mp hj
-        have hB := (heven j (by lia)).1
-        have := mul_le_mul (hq j) hB (envConst_nonneg hη1 j) (chebShift_one_nonneg _)
-        have hp := mul_nonneg (mul_nonneg (hδ (2 * j + 1)) (chebShift_one_nonneg (K := K)
-          (2 * (m - 1 - j)))) (hpos (2 * j + 1) (by lia))
-        nlinarith [hδ (2 * j)]
+    · exact envConst_le_even_step h0 h1 hrec hη1 m hδ hpos fun j hj ↦
+        (heven j hj).1
     · intro x hx
-      have hy0 : 0 ≤ x ^ 2 := sq_nonneg x
-      have hy1 : x ^ 2 ≤ 1 := by nlinarith [abs_nonneg x, sq_abs x]
-      rw [dec x, dec 1, hsplit, hsplit, envConst_eq_sum]
-      calc |chebHat (2 * m) x + ∑ j ∈ range m,
-            ((1 / 4 - η (2 * j + 1)) * chebShift (2 * (m - 1 - j) + 1) x * d x (2 * j) +
-              (1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j)) x * d x (2 * j + 1))|
-          ≤ |chebHat (2 * m) x| + ∑ j ∈ range m,
-            (|(1 / 4 - η (2 * j + 1)) * chebShift (2 * (m - 1 - j) + 1) x * d x (2 * j)| +
-              |(1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j)) x *
-                d x (2 * j + 1)|) :=
-            (abs_add_le _ _).trans (add_le_add_right ((abs_sum_le_sum_abs _ _).trans
-              (sum_le_sum fun j _ ↦ abs_add_le _ _)) _)
-        _ ≤ ((1 / 4) ^ m * (1 - x ^ 2) + chebHat (2 * m) 1 * x ^ 2) + ∑ j ∈ range m,
-            ((1 / 4 - η (2 * j + 1)) * ((1 / 4) ^ (m - 1 - j) * envConst η j * (1 - x ^ 2) +
-                chebShift (2 * (m - 1 - j) + 1) 1 * d 1 (2 * j) * x ^ 2) +
-              (1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j)) 1 *
-                d 1 (2 * j + 1) * x ^ 2) := by
-            gcongr with j hj
-            · exact abs_chebHat_even_le m hx
-            · have hj' := mem_range.mp hj
-              rw [mul_assoc, abs_mul, abs_of_nonneg (hδ _)]
-              obtain ⟨hB, hb⟩ := heven j (by lia)
-              exact mul_le_mul_of_nonneg_left (abs_mul_le_chord (by positivity) (hq j) hB hy0 hy1
-                (abs_chebShift_odd_le _ hx) (hb x hx)) (hδ _)
-            · have hj' := mem_range.mp hj
-              rw [abs_mul, abs_mul, abs_of_nonneg (hδ _)]
-              have hw := abs_chebShift_even_le (m - 1 - j) hx
-              have hd := hodd j (by lia) x hx
-              have := mul_le_mul hw hd (abs_nonneg _)
-                (mul_nonneg (chebShift_one_nonneg _) (abs_nonneg x))
-              have hxx : |x| * |x| = x ^ 2 := by rw [← abs_mul, abs_mul_self, sq]
-              calc (1 / 4 - η (2 * j + 1 + 1)) * |chebShift (2 * (m - 1 - j)) x| *
-                    |d x (2 * j + 1)|
-                  = (1 / 4 - η (2 * j + 1 + 1)) *
-                      (|chebShift (2 * (m - 1 - j)) x| * |d x (2 * j + 1)|) := by ring
-                _ ≤ (1 / 4 - η (2 * j + 1 + 1)) * (chebShift (2 * (m - 1 - j)) 1 * |x| *
-                      (d 1 (2 * j + 1) * |x|)) := mul_le_mul_of_nonneg_left this (hδ _)
-                _ = _ := by rw [← hxx]; ring
-        _ = ((1 / 4) ^ m + ∑ j ∈ range m,
-              (1 / 4 - η (2 * j + 1)) * (1 / 4) ^ (m - 1 - j) * envConst η j) * (1 - x ^ 2) +
-            (chebHat (2 * m) 1 + ∑ j ∈ range m,
-              ((1 / 4 - η (2 * j + 1)) * chebShift (2 * (m - 1 - j) + 1) 1 * d 1 (2 * j) +
-                (1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j)) 1 *
-                  d 1 (2 * j + 1))) * x ^ 2 := by
-            rw [add_mul, add_mul, sum_mul, sum_mul]
-            rw [sum_congr rfl fun j _ ↦ (show
-              (1 / 4 - η (2 * j + 1)) * ((1 / 4) ^ (m - 1 - j) * envConst η j * (1 - x ^ 2) +
-                  chebShift (2 * (m - 1 - j) + 1) 1 * d 1 (2 * j) * x ^ 2) +
-                (1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j)) 1 *
-                  d 1 (2 * j + 1) * x ^ 2 =
-              (1 / 4 - η (2 * j + 1)) * (1 / 4) ^ (m - 1 - j) * envConst η j * (1 - x ^ 2) +
-                ((1 / 4 - η (2 * j + 1)) * chebShift (2 * (m - 1 - j) + 1) 1 * d 1 (2 * j) +
-                  (1 / 4 - η (2 * j + 1 + 1)) * chebShift (2 * (m - 1 - j)) 1 *
-                    d 1 (2 * j + 1)) * x ^ 2 by ring), sum_add_distrib]
-            ring
+      exact even_envelope_step h0 h1 hrec m hδ hodd heven hx
 
 variable (hη1 : ∀ e, η (e + 1) ≤ 1 / 4) (h0 : ∀ x, d x 0 = 1) (h1 : ∀ x, d x 1 = x)
   (hrec : ∀ x n, d x (n + 2) = x * d x (n + 1) - η (n + 1) * d x n)
