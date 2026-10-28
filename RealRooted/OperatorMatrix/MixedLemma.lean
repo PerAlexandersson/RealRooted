@@ -389,6 +389,123 @@ private lemma strictInterl_rootApproximations
       Or.inr ⟨?_, hinter'⟩⟩, hdisjoint⟩
     simpa only [length_separateEven, length_separateOdd] using hlen
 
+/-- Separated root approximations satisfy the coprime directed mixed lemma. -/
+private lemma rootApproximations_directed_package
+    {c d eps : ℝ} (hc : 0 < c) (hd : 0 < d) (heps : 0 < eps)
+    {ss rs : List ℝ} (hss : ∀ r ∈ ss, r ≤ 0) (hrs : ∀ r ∈ rs, r ≤ 0)
+    (hshape : (ss.length + 1 = rs.length ∧ ListInterlaces ss rs) ∨
+      (ss.length = rs.length ∧ ListAlternates ss rs)) :
+    let p := rootApproxEven c ss eps
+    let q := rootApproxOdd d rs eps
+    IsPFPolynomial p ∧ IsPFPolynomial q ∧ StrictInterl p q ∧
+      Interl (p.derivative + q.derivative) (q + X * p.derivative) := by
+  dsimp only
+  have hpair := strictInterl_rootApproximations hc.ne' hd.ne' heps hshape
+  have hpRoots :
+      (rootApproxEven c ss eps).roots = (separateEven eps ss : Multiset ℝ) :=
+    roots_C_mul_rootPolynomial hc.ne' _
+  have hqRoots :
+      (rootApproxOdd d rs eps).roots = (separateOdd eps rs : Multiset ℝ) :=
+    roots_C_mul_rootPolynomial hd.ne' _
+  have hpPF : IsPFPolynomial (rootApproxEven c ss eps) :=
+    isPFPolynomial_C_mul_rootPolynomial hc fun r hr =>
+      (separateEven_neg heps hss r (Multiset.mem_coe.mp hr)).le
+  have hqPF : IsPFPolynomial (rootApproxOdd d rs eps) :=
+    isPFPolynomial_C_mul_rootPolynomial hd fun r hr =>
+      (separateOdd_neg heps hrs r (Multiset.mem_coe.mp hr)).le
+  have hpZero : 0 < (rootApproxEven c ss eps).eval 0 :=
+    eval_zero_C_mul_rootPolynomial_pos hc fun r hr =>
+      separateEven_neg heps hss r (Multiset.mem_coe.mp hr)
+  have hqZero : 0 < (rootApproxOdd d rs eps).eval 0 :=
+    eval_zero_C_mul_rootPolynomial_pos hd fun r hr =>
+      separateOdd_neg heps hrs r (Multiset.mem_coe.mp hr)
+  have hcoprime : IsCoprime (rootApproxEven c ss eps)
+      (rootApproxOdd d rs eps) := by
+    apply isCoprime_of_no_common_real_root_of_isRealRooted
+      hpair.1.1.1 hpair.1.1.2
+    intro r hpr hqr
+    have hrp := (mem_roots hpair.1.1.1).mpr hpr
+    have hrq := (mem_roots hpair.1.2.1.1).mpr hqr
+    rw [hpRoots] at hrp
+    rw [hqRoots] at hrq
+    exact hpair.2 (Multiset.mem_coe.mp hrp) (Multiset.mem_coe.mp hrq)
+  have hinterl :=
+    interl_derivative_add_derivative_add_X_mul_derivative_of_isCoprime
+      hpPF hqPF hpair.1 hcoprime hpZero hqZero
+  exact ⟨hpPF, hqPF, hpair.1, hinterl⟩
+
+/-- Root approximations retain degree and converge coefficientwise to the original pair. -/
+private lemma rootApproximations_degree_coeff_tendsto
+    {p q : ℝ[X]} {ss rs : List ℝ} {δ : ℕ → ℝ}
+    (hp : p ≠ 0 ∧ p.Splits) (hq : q ≠ 0 ∧ q.Splits)
+    (hssRoots : (ss : Multiset ℝ) = p.roots)
+    (hrsRoots : (rs : Multiset ℝ) = q.roots)
+    (hpLeading : p.leadingCoeff ≠ 0) (hqLeading : q.leadingCoeff ≠ 0)
+    (hδ : Tendsto δ atTop (nhds 0)) :
+    let pM : ℕ → ℝ[X] := fun M => rootApproxEven p.leadingCoeff ss (δ M)
+    let qM : ℕ → ℝ[X] := fun M => rootApproxOdd q.leadingCoeff rs (δ M)
+    (∀ M, (pM M).natDegree = p.natDegree) ∧
+      (∀ M, (qM M).natDegree = q.natDegree) ∧
+      (∀ i, Tendsto (fun M => (pM M).coeff i) atTop (nhds (p.coeff i))) ∧
+      (∀ i, Tendsto (fun M => (qM M).coeff i) atTop (nhds (q.coeff i))) := by
+  dsimp only
+  have hpDegree (M : ℕ) :
+      (rootApproxEven p.leadingCoeff ss (δ M)).natDegree = p.natDegree := by
+    rw [rootApproxEven, natDegree_C_mul_rootPolynomial hpLeading]
+    change (separateEven (δ M) ss).length = p.natDegree
+    have hcard := Polynomial.splits_iff_card_roots.mp hp.2
+    rw [← hssRoots] at hcard
+    change ss.length = p.natDegree at hcard
+    exact (length_separateEven (δ M) ss).trans hcard
+  have hqDegree (M : ℕ) :
+      (rootApproxOdd q.leadingCoeff rs (δ M)).natDegree = q.natDegree := by
+    rw [rootApproxOdd, natDegree_C_mul_rootPolynomial hqLeading]
+    change (separateOdd (δ M) rs).length = q.natDegree
+    have hcard := Polynomial.splits_iff_card_roots.mp hq.2
+    rw [← hrsRoots] at hcard
+    change rs.length = q.natDegree at hcard
+    exact (length_separateOdd (δ M) rs).trans hcard
+  have hpAtZero : rootApproxEven p.leadingCoeff ss 0 = p := by
+    simp only [rootApproxEven, separateEven_zero]
+    rw [hssRoots]
+    exact C_leadingCoeff_mul_prod_multiset_X_sub_C
+      (Polynomial.splits_iff_card_roots.mp hp.2)
+  have hqAtZero : rootApproxOdd q.leadingCoeff rs 0 = q := by
+    simp only [rootApproxOdd, separateOdd_zero]
+    rw [hrsRoots]
+    exact C_leadingCoeff_mul_prod_multiset_X_sub_C
+      (Polynomial.splits_iff_card_roots.mp hq.2)
+  refine ⟨hpDegree, hqDegree, ?_, ?_⟩
+  · intro i
+    simpa only [hpAtZero, Function.comp_def] using
+      (continuous_coeff_rootApproxEven p.leadingCoeff ss i).continuousAt.tendsto.comp hδ
+  · intro i
+    simpa only [hqAtZero, Function.comp_def] using
+      (continuous_coeff_rootApproxOdd q.leadingCoeff rs i).continuousAt.tendsto.comp hδ
+
+/-- Both mixed differential outputs inherit the maximum input degree bound. -/
+private lemma mixedDerivativeOutputs_natDegree_le
+    {p q p' q' : ℝ[X]}
+    (hpdeg : p'.natDegree = p.natDegree)
+    (hqdeg : q'.natDegree = q.natDegree) :
+    (p'.derivative + q'.derivative).natDegree ≤
+        max p.natDegree q.natDegree ∧
+      (q' + X * p'.derivative).natDegree ≤
+        max p.natDegree q.natDegree := by
+  constructor
+  · apply (natDegree_add_le _ _).trans
+    apply max_le
+    · exact (natDegree_derivative_le _).trans
+        ((Nat.sub_le _ _).trans (hpdeg.le.trans (Nat.le_max_left _ _)))
+    · exact (natDegree_derivative_le _).trans
+        ((Nat.sub_le _ _).trans (hqdeg.le.trans (Nat.le_max_right _ _)))
+  · apply (natDegree_add_le _ _).trans
+    apply max_le
+    · exact hqdeg.le.trans (Nat.le_max_right _ _)
+    · simpa only [theta] using
+        (natDegree_theta_le p').trans
+          (hpdeg.le.trans (Nat.le_max_left _ _))
+
 /-- The weak directed mixed differential comparison for an interlacing PF pair. -/
 theorem interl_derivative_add_derivative_add_X_mul_derivative {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) (hpq : Interl p q) :
@@ -422,103 +539,36 @@ theorem interl_derivative_add_derivative_add_X_mul_derivative {p q : ℝ[X]}
       (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
   let pM : ℕ → ℝ[X] := fun M => rootApproxEven p.leadingCoeff ss (delta M)
   let qM : ℕ → ℝ[X] := fun M => rootApproxOdd q.leadingCoeff rs (delta M)
-  have hpair (M : ℕ) : StrictInterl (pM M) (qM M) ∧
-      (separateEven (delta M) ss).Disjoint (separateOdd (delta M) rs) :=
-    strictInterl_rootApproximations hpLeading.ne' hqLeading.ne' (hdeltaPos M) hshape
-  have hpMRoots (M : ℕ) :
-      (pM M).roots = (separateEven (delta M) ss : Multiset ℝ) :=
-    roots_C_mul_rootPolynomial hpLeading.ne' _
-  have hqMRoots (M : ℕ) :
-      (qM M).roots = (separateOdd (delta M) rs : Multiset ℝ) :=
-    roots_C_mul_rootPolynomial hqLeading.ne' _
-  have hpMPF (M : ℕ) : IsPFPolynomial (pM M) := by
-    exact isPFPolynomial_C_mul_rootPolynomial hpLeading fun r hr =>
-      (separateEven_neg (hdeltaPos M) hssNonpos r (Multiset.mem_coe.mp hr)).le
-  have hqMPF (M : ℕ) : IsPFPolynomial (qM M) := by
-    exact isPFPolynomial_C_mul_rootPolynomial hqLeading fun r hr =>
-      (separateOdd_neg (hdeltaPos M) hrsNonpos r (Multiset.mem_coe.mp hr)).le
-  have hpMZero (M : ℕ) : 0 < (pM M).eval 0 := by
-    exact eval_zero_C_mul_rootPolynomial_pos hpLeading fun r hr =>
-      separateEven_neg (hdeltaPos M) hssNonpos r (Multiset.mem_coe.mp hr)
-  have hqMZero (M : ℕ) : 0 < (qM M).eval 0 := by
-    exact eval_zero_C_mul_rootPolynomial_pos hqLeading fun r hr =>
-      separateOdd_neg (hdeltaPos M) hrsNonpos r (Multiset.mem_coe.mp hr)
-  have hcoprime (M : ℕ) : IsCoprime (pM M) (qM M) := by
-    apply isCoprime_of_no_common_real_root_of_isRealRooted
-      (hpair M).1.1.1 (hpair M).1.1.2
-    intro r hpr hqr
-    have hrp : r ∈ (pM M).roots := (mem_roots (hpair M).1.1.1).mpr hpr
-    have hrq : r ∈ (qM M).roots := (mem_roots (hpair M).1.2.1.1).mpr hqr
-    rw [hpMRoots M] at hrp
-    rw [hqMRoots M] at hrq
-    exact (hpair M).2 (Multiset.mem_coe.mp hrp) (Multiset.mem_coe.mp hrq)
+  have happrox (M : ℕ) :
+      IsPFPolynomial (pM M) ∧ IsPFPolynomial (qM M) ∧
+        StrictInterl (pM M) (qM M) ∧
+        Interl ((pM M).derivative + (qM M).derivative)
+          (qM M + X * (pM M).derivative) := by
+    simpa only [pM, qM] using rootApproximations_directed_package
+      hpLeading hqLeading (hdeltaPos M) hssNonpos hrsNonpos hshape
+  have hpMPF (M : ℕ) : IsPFPolynomial (pM M) := (happrox M).1
+  have hqMPF (M : ℕ) : IsPFPolynomial (qM M) := (happrox M).2.1
+  have hpair (M : ℕ) : StrictInterl (pM M) (qM M) := (happrox M).2.2.1
   have hinterl (M : ℕ) :
       Interl ((pM M).derivative + (qM M).derivative)
-        (qM M + X * (pM M).derivative) :=
-    interl_derivative_add_derivative_add_X_mul_derivative_of_isCoprime
-      (hpMPF M) (hqMPF M) (hpair M).1 (hcoprime M) (hpMZero M) (hqMZero M)
-  have hpMDegree (M : ℕ) : (pM M).natDegree = p.natDegree := by
-    change (rootApproxEven p.leadingCoeff ss (delta M)).natDegree = p.natDegree
-    rw [rootApproxEven, natDegree_C_mul_rootPolynomial hpLeading.ne']
-    change (separateEven (delta M) ss).length = p.natDegree
-    have hcard := Polynomial.splits_iff_card_roots.mp hpReal.2
-    rw [← hssRoots] at hcard
-    change ss.length = p.natDegree at hcard
-    exact (length_separateEven (delta M) ss).trans hcard
-  have hqMDegree (M : ℕ) : (qM M).natDegree = q.natDegree := by
-    change (rootApproxOdd q.leadingCoeff rs (delta M)).natDegree = q.natDegree
-    rw [rootApproxOdd, natDegree_C_mul_rootPolynomial hqLeading.ne']
-    change (separateOdd (delta M) rs).length = q.natDegree
-    have hcard := Polynomial.splits_iff_card_roots.mp hqReal.2
-    rw [← hrsRoots] at hcard
-    change rs.length = q.natDegree at hcard
-    exact (length_separateOdd (delta M) rs).trans hcard
-  have hpAtZero : rootApproxEven p.leadingCoeff ss 0 = p := by
-    simp only [rootApproxEven, separateEven_zero]
-    rw [hssRoots]
-    exact C_leadingCoeff_mul_prod_multiset_X_sub_C
-      (Polynomial.splits_iff_card_roots.mp hpReal.2)
-  have hqAtZero : rootApproxOdd q.leadingCoeff rs 0 = q := by
-    simp only [rootApproxOdd, separateOdd_zero]
-    rw [hrsRoots]
-    exact C_leadingCoeff_mul_prod_multiset_X_sub_C
-      (Polynomial.splits_iff_card_roots.mp hqReal.2)
-  have hpCoeff (i : ℕ) : Tendsto (fun M => (pM M).coeff i) atTop
-      (nhds (p.coeff i)) := by
-    simpa only [pM, hpAtZero, Function.comp_def] using
-      (continuous_coeff_rootApproxEven p.leadingCoeff ss i).continuousAt.tendsto.comp hdelta
-  have hqCoeff (i : ℕ) : Tendsto (fun M => (qM M).coeff i) atTop
-      (nhds (q.coeff i)) := by
-    simpa only [qM, hqAtZero, Function.comp_def] using
-      (continuous_coeff_rootApproxOdd q.leadingCoeff rs i).continuousAt.tendsto.comp hdelta
+        (qM M + X * (pM M).derivative) := (happrox M).2.2.2
+  obtain ⟨hpMDegree, hqMDegree, hpCoeff, hqCoeff⟩ := by
+    simpa only [pM, qM] using rootApproximations_degree_coeff_tendsto
+      hpReal hqReal hssRoots hrsRoots hpLeading.ne' hqLeading.ne' hdelta
   let leftM : ℕ → ℝ[X] := fun M =>
     (pM M).derivative + (qM M).derivative
   let rightM : ℕ → ℝ[X] := fun M =>
     qM M + X * (pM M).derivative
   have hleftPF (M : ℕ) : IsPFPolynomial (leftM M) :=
     isPFPolynomial_derivative_add_derivative_of_interl
-      (hpMPF M) (hqMPF M) (hpair M).1.toInterl
+      (hpMPF M) (hqMPF M) (hpair M).toInterl
   have hrightPF (M : ℕ) : IsPFPolynomial (rightM M) :=
     isPFPolynomial_add_X_mul_derivative_of_interl
-      (hpMPF M) (hqMPF M) (hpair M).1.toInterl
-  have hleftDegree (M : ℕ) :
-      (leftM M).natDegree ≤ max p.natDegree q.natDegree := by
-    apply (natDegree_add_le _ _).trans
-    apply max_le
-    · exact (natDegree_derivative_le _).trans
-        ((Nat.sub_le _ _).trans
-          ((hpMDegree M).le.trans (Nat.le_max_left _ _)))
-    · exact (natDegree_derivative_le _).trans
-        ((Nat.sub_le _ _).trans
-          ((hqMDegree M).le.trans (Nat.le_max_right _ _)))
-  have hrightDegree (M : ℕ) :
-      (rightM M).natDegree ≤ max p.natDegree q.natDegree := by
-    apply (natDegree_add_le _ _).trans
-    apply max_le
-    · exact (hqMDegree M).le.trans (Nat.le_max_right _ _)
-    · simpa only [theta] using
-        (natDegree_theta_le (pM M)).trans
-          ((hpMDegree M).le.trans (Nat.le_max_left _ _))
+      (hpMPF M) (hqMPF M) (hpair M).toInterl
+  have hdegrees (M : ℕ) :=
+    mixedDerivativeOutputs_natDegree_le (hpMDegree M) (hqMDegree M)
+  have hleftDegree (M : ℕ) := by simpa only [leftM] using (hdegrees M).1
+  have hrightDegree (M : ℕ) := by simpa only [rightM] using (hdegrees M).2
   have hleftCoeff (i : ℕ) : Tendsto (fun M => (leftM M).coeff i) atTop
       (nhds ((p.derivative + q.derivative).coeff i)) := by
     simpa only [leftM, coeff_add, coeff_derivative] using

@@ -515,6 +515,225 @@ private theorem interiorRootProduct_signedIntegral_pos
   exact (intervalIntegral.integral_pos_iff_support_of_nonneg_ae'
     hfNonneg hfInt).mpr ⟨zero_lt_one, hmeasure⟩
 
+/-- A degree below `m` satisfies both exceptional-pencil parameter bounds. -/
+private theorem exceptionalPencil_parameter_bounds
+    {m ε : ℕ} {γ₁ γ₂ : ℝ}
+    (hγ₁ : (ε : ℝ) + 1 / 2 + m - 1 < γ₁)
+    (hγ₂ : (ε : ℝ) + 1 / 2 + m - 1 < γ₂)
+    {p : ℝ[X]} (hp : p.natDegree < m) :
+    (ε : ℝ) + 1 / 2 + p.natDegree < γ₁ ∧
+      (ε : ℝ) + 1 / 2 + p.natDegree < γ₂ := by
+  have hpCast : (p.natDegree : ℝ) + 1 ≤ m := by
+    exact_mod_cast (show p.natDegree + 1 ≤ m by lia)
+  constructor <;> linarith
+
+/-- A density crossing makes the exterior integral of its linear test positive. -/
+private theorem exceptionalPencilExteriorIntegral_pos_of_zero
+    (m ε : ℕ) {γ₁ γ₂ a b κ : ℝ}
+    (hγ : γ₁ < γ₂) (hκ : 1 < κ)
+    (hcoeff :
+      a * (exceptionalEulerInverse m ε γ₁).eval 1 ≠ 0 ∨
+        b * (exceptionalEulerInverse m ε γ₂).eval 1 ≠ 0)
+    (hκzero : exceptionalPencilExteriorDensity
+      m ε γ₁ γ₂ a b κ = 0)
+    {P : ℝ[X]} (hPpos : ∀ x : ℝ, 1 < x → 0 < P.eval x)
+    (hInt : IntegrableOn
+      (fun x : ℝ => (P * (C κ - X)).eval x *
+        exceptionalPencilExteriorDensity m ε γ₁ γ₂ a b x)
+      (Ioi 1) volume) :
+    0 < (C a * exceptionalEulerInverse m ε γ₁ +
+        C b * exceptionalEulerInverse m ε γ₂).eval 1 *
+      (∫ x in Ioi (1 : ℝ),
+        (P * (C κ - X)).eval x *
+          exceptionalPencilExteriorDensity m ε γ₁ γ₂ a b x) := by
+  let f : ℝ → ℝ := fun x =>
+    (C a * exceptionalEulerInverse m ε γ₁ +
+      C b * exceptionalEulerInverse m ε γ₂).eval 1 *
+        ((P * (C κ - X)).eval x *
+          exceptionalPencilExteriorDensity m ε γ₁ γ₂ a b x)
+  have hKOne := exceptionalPencilExteriorDensity_one m ε γ₁ γ₂ a b
+  have hfNonneg : 0 ≤ᵐ[volume.restrict (Ioi 1)] f := by
+    rw [Filter.EventuallyLE,
+      MeasureTheory.ae_restrict_iff' measurableSet_Ioi]
+    filter_upwards with x hx
+    by_cases hxκ : x = κ
+    · subst x
+      simp [f, hκzero]
+    · have hcross := exceptionalPencilExteriorDensity_crossing_pos
+        m ε hγ hκ hx hxκ hcoeff hκzero
+      have hP := hPpos x hx
+      dsimp only [f]
+      simp only [eval_mul, eval_sub, eval_C, eval_X]
+      rw [← hKOne]
+      have hprod := mul_pos hP hcross
+      ring_nf at hprod ⊢
+      exact hprod.le
+  have hsubset : Ioo (1 : ℝ) κ ⊆ Function.support f ∩ Ioi 1 := by
+    intro x hx
+    have hxκ : x ≠ κ := ne_of_lt hx.2
+    have hcross := exceptionalPencilExteriorDensity_crossing_pos
+      m ε hγ hκ hx.1 hxκ hcoeff hκzero
+    have hP := hPpos x hx.1
+    refine ⟨Function.mem_support.mpr ?_, hx.1⟩
+    dsimp only [f]
+    simp only [eval_mul, eval_sub, eval_C, eval_X]
+    rw [← hKOne]
+    have hprod := mul_pos hP hcross
+    ring_nf at hprod ⊢
+    exact hprod.ne'
+  rw [← MeasureTheory.integral_const_mul]
+  apply (MeasureTheory.setIntegral_pos_iff_support_of_nonneg_ae
+    hfNonneg (hInt.const_mul _)).mpr
+  exact ((MeasureTheory.Measure.measure_Ioo_pos _).mpr hκ).trans_le
+    (MeasureTheory.measure_mono hsubset)
+
+/-- A nonvanishing exterior density has a positive signed exterior integral. -/
+private theorem exceptionalPencilExteriorIntegral_pos_of_ne_zero
+    (m ε : ℕ) {γ₁ γ₂ a b : ℝ}
+    (hOne : (C a * exceptionalEulerInverse m ε γ₁ +
+      C b * exceptionalEulerInverse m ε γ₂).eval 1 ≠ 0)
+    (hKNo : ∀ x : ℝ, 1 < x →
+      exceptionalPencilExteriorDensity m ε γ₁ γ₂ a b x ≠ 0)
+    {P : ℝ[X]} (hPpos : ∀ x : ℝ, 1 < x → 0 < P.eval x)
+    (hInt : IntegrableOn
+      (fun x : ℝ => P.eval x *
+        exceptionalPencilExteriorDensity m ε γ₁ γ₂ a b x)
+      (Ioi 1) volume) :
+    0 < (C a * exceptionalEulerInverse m ε γ₁ +
+        C b * exceptionalEulerInverse m ε γ₂).eval 1 *
+      (∫ x in Ioi (1 : ℝ), P.eval x *
+        exceptionalPencilExteriorDensity m ε γ₁ γ₂ a b x) := by
+  have hKOne := exceptionalPencilExteriorDensity_one m ε γ₁ γ₂ a b
+  have hKsame : ∀ x : ℝ, 1 < x →
+      0 < exceptionalPencilExteriorDensity m ε γ₁ γ₂ a b 1 *
+        exceptionalPencilExteriorDensity m ε γ₁ γ₂ a b x := by
+    intro x hx
+    apply mul_pos_of_forall_ne_zero_Icc hx.le
+    · intro z hz
+      exact (continuousAt_exceptionalPencilExteriorDensity
+        m ε γ₁ γ₂ a b (one_pos.trans_le hz.1).ne').continuousWithinAt
+    · intro z hzmem
+      by_cases hz : z = 1
+      · simpa only [hz, hKOne] using hOne
+      · exact hKNo z (lt_of_le_of_ne hzmem.1 (Ne.symm hz))
+  rw [← MeasureTheory.integral_const_mul]
+  apply setIntegral_pos_of_pos_Ioi (hInt.const_mul _)
+  intro x hx
+  have hP := hPpos x hx
+  have hsame := hKsame x hx
+  rw [← hKOne]
+  nlinarith
+
+/-- A density crossing contradicts the moment identity below the degree bound. -/
+private theorem exceptionalPencil_count_false_of_density_zero
+    (m ε : ℕ) {γ₁ γ₂ a b κ : ℝ}
+    (hγ₁ : (ε : ℝ) + 1 / 2 + m - 1 < γ₁)
+    (hγ₂ : (ε : ℝ) + 1 / 2 + m - 1 < γ₂)
+    (hγ : γ₁ < γ₂)
+    (hcoeff :
+      a * (exceptionalEulerInverse m ε γ₁).eval 1 ≠ 0 ∨
+        b * (exceptionalEulerInverse m ε γ₂).eval 1 ≠ 0)
+    (hQ : C a * exceptionalEulerInverse m ε γ₁ +
+      C b * exceptionalEulerInverse m ε γ₂ ≠ 0)
+    (hQOne : (C a * exceptionalEulerInverse m ε γ₁ +
+      C b * exceptionalEulerInverse m ε γ₂).eval 1 ≠ 0)
+    (hα : -1 < (ε : ℝ) - 1 / 2)
+    (hPdegSucc :
+      (interiorRootProduct
+        (C a * exceptionalEulerInverse m ε γ₁ +
+          C b * exceptionalEulerInverse m ε γ₂)).natDegree + 1 < m)
+    (hκ : 1 < κ)
+    (hκzero : exceptionalPencilExteriorDensity
+      m ε γ₁ γ₂ a b κ = 0) : False := by
+  let Q := C a * exceptionalEulerInverse m ε γ₁ +
+    C b * exceptionalEulerInverse m ε γ₂
+  let P := interiorRootProduct Q
+  let T : ℝ[X] := C κ - X
+  let test := P * T
+  have hTdeg : T.natDegree ≤ 1 := by
+    dsimp only [T]
+    simpa using natDegree_sub_le (C κ) X
+  have htestDeg : test.natDegree < m := by
+    calc
+      test.natDegree ≤ P.natDegree + T.natDegree := natDegree_mul_le
+      _ ≤ P.natDegree + 1 := Nat.add_le_add_left hTdeg _
+      _ < m := by simpa only [P, Q] using hPdegSucc
+  have hTpos : ∀ x : ℝ, 0 < x → x ≤ 1 → 0 < T.eval x := by
+    intro x hx0 hx1
+    simp only [T, eval_sub, eval_C, eval_X]
+    linarith
+  have hInterior :
+      0 < Q.eval 1 *
+        (∫ x : ℝ in 0..1,
+          (Q * test).eval x * x ^ ((ε : ℝ) - 1 / 2)) := by
+    simpa only [test, T, P, Q] using
+      interiorRootProduct_signedIntegral_pos
+        hQ hQOne hα (C κ - X) hTpos
+  have hmoment := exceptionalEulerInverse_pencil_signedMomentIdentity
+    m ε (a := a) (b := b) test hγ₁ hγ₂ htestDeg
+  have hbounds := exceptionalPencil_parameter_bounds hγ₁ hγ₂ htestDeg
+  have hExtInt := integrableOn_mul_exceptionalPencilExteriorDensity
+    m ε (a := a) (b := b) test hbounds.1 hbounds.2
+  have hPpos : ∀ x : ℝ, 1 < x → 0 < P.eval x :=
+    fun _ hx => interiorRootProduct_eval_pos_of_one_le Q hx.le
+  have hExterior :
+      0 < Q.eval 1 *
+        (∫ x in Ioi (1 : ℝ), test.eval x *
+          exceptionalPencilExteriorDensity m ε γ₁ γ₂ a b x) := by
+    simpa only [Q, test, T] using
+      exceptionalPencilExteriorIntegral_pos_of_zero
+        m ε hγ hκ hcoeff hκzero hPpos hExtInt
+  have hEq := congrArg (fun z : ℝ => Q.eval 1 * z) hmoment
+  dsimp only [Q] at hEq
+  nlinarith
+
+/-- A nonvanishing density contradicts the moment identity below the degree bound. -/
+private theorem exceptionalPencil_count_false_of_density_ne_zero
+    (m ε : ℕ) {γ₁ γ₂ a b : ℝ}
+    (hγ₁ : (ε : ℝ) + 1 / 2 + m - 1 < γ₁)
+    (hγ₂ : (ε : ℝ) + 1 / 2 + m - 1 < γ₂)
+    (hQ : C a * exceptionalEulerInverse m ε γ₁ +
+      C b * exceptionalEulerInverse m ε γ₂ ≠ 0)
+    (hQOne : (C a * exceptionalEulerInverse m ε γ₁ +
+      C b * exceptionalEulerInverse m ε γ₂).eval 1 ≠ 0)
+    (hα : -1 < (ε : ℝ) - 1 / 2)
+    (hPdeg :
+      (interiorRootProduct
+        (C a * exceptionalEulerInverse m ε γ₁ +
+          C b * exceptionalEulerInverse m ε γ₂)).natDegree < m)
+    (hKNo : ∀ x : ℝ, 1 < x →
+      exceptionalPencilExteriorDensity m ε γ₁ γ₂ a b x ≠ 0) : False := by
+  let Q := C a * exceptionalEulerInverse m ε γ₁ +
+    C b * exceptionalEulerInverse m ε γ₂
+  let P := interiorRootProduct Q
+  let test : ℝ[X] := P
+  have hInterior :
+      0 < Q.eval 1 *
+        (∫ x : ℝ in 0..1,
+          (Q * test).eval x * x ^ ((ε : ℝ) - 1 / 2)) := by
+    simpa only [test, P, Q, mul_one] using
+      interiorRootProduct_signedIntegral_pos
+        hQ hQOne hα 1 (by simp)
+  have htestDeg : test.natDegree < m := by
+    simpa only [test, P, Q] using hPdeg
+  have hmoment := exceptionalEulerInverse_pencil_signedMomentIdentity
+    m ε (a := a) (b := b) test hγ₁ hγ₂ htestDeg
+  have hbounds := exceptionalPencil_parameter_bounds hγ₁ hγ₂ htestDeg
+  have hExtInt := integrableOn_mul_exceptionalPencilExteriorDensity
+    m ε (a := a) (b := b) test hbounds.1 hbounds.2
+  have hPpos : ∀ x : ℝ, 1 < x → 0 < P.eval x :=
+    fun _ hx => interiorRootProduct_eval_pos_of_one_le Q hx.le
+  have hExterior :
+      0 < Q.eval 1 *
+        (∫ x in Ioi (1 : ℝ), test.eval x *
+          exceptionalPencilExteriorDensity m ε γ₁ γ₂ a b x) := by
+    simpa only [Q, test] using
+      exceptionalPencilExteriorIntegral_pos_of_ne_zero
+        m ε hQOne hKNo hPpos hExtInt
+  have hEq := congrArg (fun z : ℝ => Q.eval 1 * z) hmoment
+  dsimp only [Q] at hEq
+  nlinarith
+
 /-- A generic nonzero exceptional pencil member has at least `m - 1` roots,
 counted with multiplicity, in the open unit interval. -/
 theorem exceptionalEulerInverse_pencil_card_roots_Ioo_ge_sub_one
@@ -532,7 +751,6 @@ theorem exceptionalEulerInverse_pencil_card_roots_Ioo_ge_sub_one
   let Q := C a * exceptionalEulerInverse m ε γ₁ +
     C b * exceptionalEulerInverse m ε γ₂
   let P := interiorRootProduct Q
-  let K := exceptionalPencilExteriorDensity m ε γ₁ γ₂ a b
   have hQOne : Q.eval 1 ≠ 0 := by
     simpa only [Q] using hOne
   have hQ : Q ≠ 0 := fun hzero => hQOne (by simp [hzero])
@@ -544,19 +762,9 @@ theorem exceptionalEulerInverse_pencil_card_roots_Ioo_ge_sub_one
     rcases hab with ha | hb
     · exact Or.inl (mul_ne_zero ha hR₁One)
     · exact Or.inr (mul_ne_zero hb hR₂One)
-  have hKOne : K 1 = Q.eval 1 := by
-    simpa only [K, Q] using
-      exceptionalPencilExteriorDensity_one m ε γ₁ γ₂ a b
   have hα : -1 < (ε : ℝ) - 1 / 2 := by
     have hε : 0 ≤ (ε : ℝ) := by positivity
     linarith
-  have hparameterBound : ∀ {p : ℝ[X]}, p.natDegree < m →
-      (ε : ℝ) + 1 / 2 + p.natDegree < γ₁ ∧
-        (ε : ℝ) + 1 / 2 + p.natDegree < γ₂ := by
-    intro p hp
-    have hpCast : (p.natDegree : ℝ) + 1 ≤ m := by
-      exact_mod_cast (show p.natDegree + 1 ≤ m by lia)
-    constructor <;> linarith
   by_contra hcount
   have hcard :
       (Q.roots.filter fun r => 0 < r ∧ r < 1).card < m - 1 := by
@@ -569,131 +777,20 @@ theorem exceptionalEulerInverse_pencil_card_roots_Ioo_ge_sub_one
     rw [show P = interiorRootProduct Q by rfl,
       natDegree_interiorRootProduct]
     lia
-  have hPpos : ∀ x : ℝ, 1 < x → 0 < P.eval x :=
-    fun _ hx => interiorRootProduct_eval_pos_of_one_le Q hx.le
-  by_cases hzero : ∃ κ : ℝ, 1 < κ ∧ K κ = 0
+  by_cases hzero : ∃ κ : ℝ, 1 < κ ∧
+      exceptionalPencilExteriorDensity m ε γ₁ γ₂ a b κ = 0
   · obtain ⟨κ, hκ, hκzero⟩ := hzero
-    let T : ℝ[X] := C κ - X
-    let test := P * T
-    have hTdeg : T.natDegree ≤ 1 := by
-      dsimp only [T]
-      simpa using natDegree_sub_le (C κ) X
-    have htestDeg : test.natDegree < m := by
-      calc
-        test.natDegree ≤ P.natDegree + T.natDegree :=
-          natDegree_mul_le
-        _ ≤ P.natDegree + 1 := Nat.add_le_add_left hTdeg _
-        _ < m := hPdegSucc
-    have hTpos : ∀ x : ℝ, 0 < x → x ≤ 1 → 0 < T.eval x := by
-      intro x hx0 hx1
-      simp only [T, eval_sub, eval_C, eval_X]
-      linarith
-    have hInterior :
-        0 < Q.eval 1 *
-          (∫ x : ℝ in 0..1,
-            (Q * test).eval x * x ^ ((ε : ℝ) - 1 / 2)) := by
-      simpa only [test, T, P] using
-        interiorRootProduct_signedIntegral_pos
-          hQ hQOne hα (C κ - X) hTpos
-    have hmoment :=
-      exceptionalEulerInverse_pencil_signedMomentIdentity
-        m ε (a := a) (b := b) test hγ₁ hγ₂ htestDeg
-    have hbounds := hparameterBound htestDeg
-    have hExtInt :=
-      integrableOn_mul_exceptionalPencilExteriorDensity
-        m ε (a := a) (b := b) test hbounds.1 hbounds.2
-    let f : ℝ → ℝ := fun x =>
-      Q.eval 1 * (test.eval x * K x)
-    have hfNonneg : 0 ≤ᵐ[volume.restrict (Ioi 1)] f := by
-      rw [Filter.EventuallyLE,
-        MeasureTheory.ae_restrict_iff' measurableSet_Ioi]
-      filter_upwards with x hx
-      by_cases hxκ : x = κ
-      · subst x
-        simp [f, hκzero]
-      · have hcross :=
-          exceptionalPencilExteriorDensity_crossing_pos
-            m ε hγ hκ hx hxκ hcoeff hκzero
-        have hP := hPpos x hx
-        dsimp only [f, test, T]
-        simp only [eval_mul, eval_sub, eval_C, eval_X]
-        rw [← hKOne]
-        have hprod := mul_pos hP hcross
-        dsimp only [K] at hprod ⊢
-        ring_nf at hprod ⊢
-        exact hprod.le
-    have hfInt : IntegrableOn f (Ioi 1) volume :=
-      hExtInt.const_mul (Q.eval 1)
-    have hsubset : Ioo (1 : ℝ) κ ⊆
-        Function.support f ∩ Ioi 1 := by
-      intro x hx
-      have hxκ : x ≠ κ := ne_of_lt hx.2
-      have hcross :=
-        exceptionalPencilExteriorDensity_crossing_pos
-          m ε hγ hκ hx.1 hxκ hcoeff hκzero
-      have hP := hPpos x hx.1
-      refine ⟨Function.mem_support.mpr ?_, hx.1⟩
-      dsimp only [f, test, T]
-      simp only [eval_mul, eval_sub, eval_C, eval_X]
-      rw [← hKOne]
-      have hprod := mul_pos hP hcross
-      dsimp only [K] at hprod ⊢
-      ring_nf at hprod ⊢
-      exact hprod.ne'
-    have hExterior :
-        0 < Q.eval 1 *
-          (∫ x in Ioi (1 : ℝ), test.eval x * K x) := by
-      rw [← MeasureTheory.integral_const_mul]
-      apply (MeasureTheory.setIntegral_pos_iff_support_of_nonneg_ae
-        hfNonneg hfInt).mpr
-      exact ((MeasureTheory.Measure.measure_Ioo_pos _).mpr hκ).trans_le
-        (MeasureTheory.measure_mono hsubset)
-    have hEq := congrArg (fun z : ℝ => Q.eval 1 * z) hmoment
-    dsimp only [Q, K] at hEq
-    nlinarith
-  · have hKNo : ∀ x : ℝ, 1 < x → K x ≠ 0 :=
+    exact exceptionalPencil_count_false_of_density_zero
+      m ε hγ₁ hγ₂ hγ hcoeff (by simpa only [Q] using hQ)
+        (by simpa only [Q] using hQOne) hα
+        (by simpa only [P, Q] using hPdegSucc) hκ hκzero
+  · have hKNo : ∀ x : ℝ, 1 < x →
+        exceptionalPencilExteriorDensity m ε γ₁ γ₂ a b x ≠ 0 :=
       fun x hx hKx => hzero ⟨x, hx, hKx⟩
-    let test : ℝ[X] := P
-    have hInterior :
-        0 < Q.eval 1 *
-          (∫ x : ℝ in 0..1,
-            (Q * test).eval x * x ^ ((ε : ℝ) - 1 / 2)) := by
-      simpa only [test, P, mul_one] using
-        interiorRootProduct_signedIntegral_pos
-          hQ hQOne hα 1 (by simp)
-    have hmoment :=
-      exceptionalEulerInverse_pencil_signedMomentIdentity
-        m ε (a := a) (b := b) test hγ₁ hγ₂ hPdeg
-    have hbounds := hparameterBound hPdeg
-    have hExtInt :=
-      integrableOn_mul_exceptionalPencilExteriorDensity
-        m ε (a := a) (b := b) test hbounds.1 hbounds.2
-    have hKsame : ∀ x : ℝ, 1 < x → 0 < K 1 * K x := by
-      intro x hx
-      apply mul_pos_of_forall_ne_zero_Icc hx.le
-      · intro z hz
-        exact (continuousAt_exceptionalPencilExteriorDensity
-          m ε γ₁ γ₂ a b
-            (one_pos.trans_le hz.1).ne').continuousWithinAt
-      · intro z hzmem
-        by_cases hz : z = 1
-        · simpa only [hz, hKOne] using hQOne
-        · exact hKNo z (lt_of_le_of_ne hzmem.1 (Ne.symm hz))
-    have hExterior :
-        0 < Q.eval 1 *
-          (∫ x in Ioi (1 : ℝ), test.eval x * K x) := by
-      rw [← MeasureTheory.integral_const_mul]
-      apply setIntegral_pos_of_pos_Ioi
-        (hExtInt.const_mul (Q.eval 1))
-      intro x hx
-      have hP := hPpos x hx
-      have hsame := hKsame x hx
-      dsimp only [test]
-      rw [← hKOne]
-      nlinarith
-    have hEq := congrArg (fun z : ℝ => Q.eval 1 * z) hmoment
-    dsimp only [Q, K] at hEq
-    nlinarith
+    exact exceptionalPencil_count_false_of_density_ne_zero
+      m ε hγ₁ hγ₂ (by simpa only [Q] using hQ)
+        (by simpa only [Q] using hQOne) hα
+        (by simpa only [P, Q] using hPdeg) hKNo
 
 /-- A generic exceptional pencil member splits over `ℝ`.  The interior-root
 product leaves a quotient of degree at most one. -/

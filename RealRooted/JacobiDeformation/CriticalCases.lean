@@ -169,6 +169,78 @@ private theorem eval_shiftedJacobiMonic_eq_node_product
   intro i _
   simp
 
+/-- The ordinary and exceptional critical-ratio cases give the same normalized kernel sign. -/
+private lemma rawJacobiKernel_div_eval_top_pos_of_ratio
+    {m : ℕ} (hm : 2 ≤ m) {α β δ r z : ℝ}
+    (hα : -1 < α) (hβ : -1 < β) (hδ : 0 < δ) (hδ1 : δ < 1)
+    (hrz : r ≠ z)
+    (hpr : (shiftedJacobiMonic m α β).eval r ≠ 0)
+    (hpz : (shiftedJacobiMonic m α β).eval z ≠ 0)
+    (hratio :
+      (shiftedJacobiMonic (m - 1) α β).eval r /
+          (shiftedJacobiMonic m α β).eval r =
+        (shiftedJacobiMonic (m - 1) α β).eval z /
+          (shiftedJacobiMonic m α β).eval z) :
+    0 < rawJacobiKernel m δ α β r z /
+      ((shiftedJacobiMonic m α β).eval r *
+        (shiftedJacobiMonic m α β).eval z) := by
+  by_cases hratio_ne :
+      (shiftedJacobiMonic (m - 1) α β).eval r /
+        (shiftedJacobiMonic m α β).eval r ≠ 0
+  · simpa only [rawJacobiKernel] using
+      ordinaryJacobi_kernelWeight_sum_div_eval_top_pos hm hα hβ hδ hδ1
+        hpr hpz hratio hratio_ne
+  · have hprevr : (shiftedJacobiMonic (m - 1) α β).eval r = 0 := by
+      calc
+        _ = ((shiftedJacobiMonic (m - 1) α β).eval r /
+            (shiftedJacobiMonic m α β).eval r) *
+              (shiftedJacobiMonic m α β).eval r := (div_mul_cancel₀ _ hpr).symm
+        _ = 0 := by rw [not_ne_iff.mp hratio_ne, zero_mul]
+    have hprevz : (shiftedJacobiMonic (m - 1) α β).eval z = 0 := by
+      have hratio_z :
+          (shiftedJacobiMonic (m - 1) α β).eval z /
+            (shiftedJacobiMonic m α β).eval z = 0 := by
+        rw [← hratio]
+        exact not_ne_iff.mp hratio_ne
+      exact (div_eq_zero_iff.mp hratio_z).resolve_right hpz
+    have hm3 : 3 ≤ m := shiftedJacobiMonic_prev_two_roots_force_three hm hα hβ
+      (by simpa only [Polynomial.IsRoot.def] using hprevr)
+      (by simpa only [Polynomial.IsRoot.def] using hprevz) hrz
+    simpa only [rawJacobiKernel] using
+      (exceptional_prev_root_kernel_sign hm3 hα hβ hδ hδ1
+        (by simpa only [Polynomial.IsRoot.def] using hprevr)
+        (by simpa only [Polynomial.IsRoot.def] using hprevz)).2.2
+
+/-- A negative-power coordinate identity transfers a positive top-product sign to its image. -/
+private lemma mul_image_pos_of_coordinate_identity
+    {m : ℕ} {xi P top image kernel : ℝ}
+    (hxi : xi < 0) (hP : 0 < P) (himage : image ≠ 0)
+    (hcoord : xi ^ m * top = (-1 : ℝ) ^ m * P * image)
+    (hkernel : 0 < kernel * top) : 0 < kernel * image := by
+  have hsign : (-1 : ℝ) ^ m * (-1 : ℝ) ^ m = 1 := by
+    rw [← pow_add, show m + m = 2 * m by lia, pow_mul]
+    norm_num
+  have hscale : 0 < (-1 : ℝ) ^ m * xi ^ m := by
+    rw [← mul_pow]
+    exact pow_pos (by linarith) m
+  have hcoord' :
+      ((-1 : ℝ) ^ m * xi ^ m) * top = P * image := by
+    calc
+      _ = (-1 : ℝ) ^ m * (xi ^ m * top) := by ring
+      _ = (-1 : ℝ) ^ m * ((-1 : ℝ) ^ m * P * image) := by rw [hcoord]
+      _ = _ := by rw [show (-1 : ℝ) ^ m * ((-1 : ℝ) ^ m * P * image) =
+          ((-1 : ℝ) ^ m * (-1 : ℝ) ^ m) * P * image by ring, hsign, one_mul]
+  have htopImage : 0 < top * image := by
+    have hright : 0 < P * image ^ 2 := mul_pos hP (sq_pos_of_ne_zero himage)
+    have hleft : 0 < ((-1 : ℝ) ^ m * xi ^ m) * (top * image) := by
+      calc
+        _ = (((-1 : ℝ) ^ m * xi ^ m) * top) * image := by ring
+        _ = (P * image) * image := by rw [hcoord']
+        _ = P * image ^ 2 := by ring
+        _ > 0 := hright
+    exact pos_of_mul_pos_right hleft hscale.le
+  exact mul_pos_of_two_reference_products hkernel htopImage
+
 /-- At a nonroot critical point of the delta-zero image product, the
 positive-`δ` deformation has sign opposite to the second derivative. -/
 theorem polynomial_eval_mul_imageProduct_secondDerivative_neg_of_nonroot
@@ -194,49 +266,13 @@ theorem polynomial_eval_mul_imageProduct_secondDerivative_neg_of_nonroot
   have hboundary := imageProduct_critical_boundary_condition (n + 1) hα hβ
     (t := t) ht (by simpa [α, β] using hnodes)
     hprod hcomp himage hderivative
+  obtain ⟨hpr, hpz, hratio⟩ := by
+    simpa [α, β] using hboundary
   have hkernel : 0 < K r z /
       ((shiftedJacobiMonic (n + 2) α β).eval r *
         (shiftedJacobiMonic (n + 2) α β).eval z) := by
-    obtain ⟨hpr, hpz, hratio⟩ := by
-      simpa [α, β] using hboundary
-    by_cases hratio_ne :
-        (shiftedJacobiMonic (n + 1) α β).eval r /
-            (shiftedJacobiMonic (n + 2) α β).eval r ≠ 0
-    · simpa only [K, rawJacobiKernel] using
-        ordinaryJacobi_kernelWeight_sum_div_eval_top_pos hm hα hβ hδ hδ1
-          hpr hpz hratio hratio_ne
-    · have hprevr : (shiftedJacobiMonic (n + 1) α β).eval r = 0 := by
-        calc
-          _ = ((shiftedJacobiMonic (n + 1) α β).eval r /
-              (shiftedJacobiMonic (n + 2) α β).eval r) *
-                (shiftedJacobiMonic (n + 2) α β).eval r :=
-                  (div_mul_cancel₀ _ hpr).symm
-          _ = 0 := by rw [not_ne_iff.mp hratio_ne, zero_mul]
-      have hratio_z :
-          (shiftedJacobiMonic (n + 1) α β).eval z /
-              (shiftedJacobiMonic (n + 2) α β).eval z = 0 := by
-        rw [← hratio]
-        exact not_ne_iff.mp hratio_ne
-      have hprevz : (shiftedJacobiMonic (n + 1) α β).eval z = 0 := by
-        calc
-          _ = ((shiftedJacobiMonic (n + 1) α β).eval z /
-              (shiftedJacobiMonic (n + 2) α β).eval z) *
-                (shiftedJacobiMonic (n + 2) α β).eval z :=
-                  (div_mul_cancel₀ _ hpz).symm
-          _ = 0 := by rw [hratio_z, zero_mul]
-      have hm3 : 3 ≤ n + 2 :=
-        shiftedJacobiMonic_prev_two_roots_force_three hm hα hβ
-        (by simpa only [Polynomial.IsRoot.def, show n + 2 - 1 = n + 1 by lia]
-          using hprevr)
-        (by simpa only [Polynomial.IsRoot.def, show n + 2 - 1 = n + 1 by lia]
-          using hprevz) hrz.ne
-      exact (by
-        simpa only [K, rawJacobiKernel] using
-          (exceptional_prev_root_kernel_sign hm3 hα hβ hδ hδ1
-            (by simpa only [Polynomial.IsRoot.def, show n + 2 - 1 = n + 1 by lia]
-              using hprevr)
-            (by simpa only [Polynomial.IsRoot.def, show n + 2 - 1 = n + 1 by lia]
-              using hprevz)).2.2)
+    simpa only [K] using
+      rawJacobiKernel_div_eval_top_pos_of_ratio hm hα hβ hδ hδ1 hrz.ne hpr hpz hratio
   have hKtop : 0 < K r z *
       ((shiftedJacobiMonic (n + 2) α β).eval r *
         (shiftedJacobiMonic (n + 2) α β).eval z) :=
@@ -248,55 +284,14 @@ theorem polynomial_eval_mul_imageProduct_secondDerivative_neg_of_nonroot
   change (shiftedJacobiMonic (n + 2) α β).eval r = _ at hreval
   change (shiftedJacobiMonic (n + 2) α β).eval z = _ at hzeval
   rw [← hreval, ← hzeval] at hcoord
-  have hsign : (-1 : ℝ) ^ (n + 2) * (-1 : ℝ) ^ (n + 2) = 1 := by
-    rw [← pow_add, show (n + 2) + (n + 2) = 2 * (n + 2) by lia, pow_mul]
-    norm_num
   let P := Finset.univ.prod (fun i : Fin (n + 2) => t i * (1 - t i))
   have hxiNeg : xi < 0 := by
     nlinarith [sq_nonneg (Real.sqrt U + Real.sqrt V)]
-  have hscale : 0 < (-1 : ℝ) ^ (n + 2) * xi ^ (n + 2) := by
-    rw [← mul_pow]
-    exact pow_pos (by linarith) (n + 2)
   have hP : 0 < P := by
     simpa only [P] using prod_node_mul_one_sub_pos t ht
-  have hcoord' :
-      ((-1 : ℝ) ^ (n + 2) * xi ^ (n + 2)) *
-          ((shiftedJacobiMonic (n + 2) α β).eval r *
-            (shiftedJacobiMonic (n + 2) α β).eval z) =
-        P * (imageProduct U V t).eval xi := by
-    calc
-      _ = (-1 : ℝ) ^ (n + 2) *
-          (xi ^ (n + 2) * (shiftedJacobiMonic (n + 2) α β).eval r *
-            (shiftedJacobiMonic (n + 2) α β).eval z) := by ring
-      _ = (-1 : ℝ) ^ (n + 2) *
-          ((-1 : ℝ) ^ (n + 2) * P * (imageProduct U V t).eval xi) := by
-            rw [hcoord]
-      _ = _ := by rw [show (-1 : ℝ) ^ (n + 2) * ((-1 : ℝ) ^ (n + 2) * P *
-          (imageProduct U V t).eval xi) =
-            ((-1 : ℝ) ^ (n + 2) * (-1 : ℝ) ^ (n + 2)) * P *
-              (imageProduct U V t).eval xi by ring, hsign, one_mul]
-  have htopImage : 0 <
-      ((shiftedJacobiMonic (n + 2) α β).eval r *
-          (shiftedJacobiMonic (n + 2) α β).eval z) *
-        (imageProduct U V t).eval xi := by
-    have hright : 0 < P * ((imageProduct U V t).eval xi) ^ 2 :=
-      mul_pos hP (sq_pos_of_ne_zero himage)
-    have hleft : 0 < ((-1 : ℝ) ^ (n + 2) * xi ^ (n + 2)) *
-        (((shiftedJacobiMonic (n + 2) α β).eval r *
-            (shiftedJacobiMonic (n + 2) α β).eval z) *
-          (imageProduct U V t).eval xi) := by
-      calc
-        _ = (((-1 : ℝ) ^ (n + 2) * xi ^ (n + 2)) *
-              ((shiftedJacobiMonic (n + 2) α β).eval r *
-                (shiftedJacobiMonic (n + 2) α β).eval z)) *
-            (imageProduct U V t).eval xi := by ring
-        _ = (P * (imageProduct U V t).eval xi) *
-            (imageProduct U V t).eval xi := by rw [hcoord']
-        _ = P * ((imageProduct U V t).eval xi) ^ 2 := by ring
-        _ > 0 := hright
-    exact pos_of_mul_pos_right hleft hscale.le
-  have hKImage : 0 < K r z * (imageProduct U V t).eval xi :=
-    mul_pos_of_two_reference_products hKtop htopImage
+  have hKImage : 0 < K r z * (imageProduct U V t).eval xi := by
+    exact mul_image_pos_of_coordinate_identity (m := n + 2) hxiNeg hP himage
+      (by simpa only [P, mul_assoc] using hcoord) hKtop
   have himageSecond :
       (imageProduct U V t).derivative.derivative.eval xi *
         (imageProduct U V t).eval xi < 0 := by
