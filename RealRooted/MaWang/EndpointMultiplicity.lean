@@ -1,7 +1,9 @@
 module
 
 import RealRooted.DerivativeRecurrence.EndpointWindow
-public import RealRooted.MaWang.DerivativeStep
+import RealRooted.MaWang.DerivativeStep
+public import RealRooted.Basic.ProperPosition
+public import RealRooted.Basic.Coefficients
 import RealRooted.DerivativeRecurrence.Degree
 import RealRooted.Interlacing.Residue
 import RealRooted.IteratedDerivativeShift
