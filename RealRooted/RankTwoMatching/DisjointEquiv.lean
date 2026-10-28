@@ -8,7 +8,7 @@ open Polynomial
 
 noncomputable section
 
-namespace RealRooted.Graph.RankTwoInternal
+namespace RealRooted.Graph.RankTwo
 
 open scoped BigOperators
 
@@ -250,4 +250,4 @@ theorem sum_finsetEquiv_const (A B : Finset V) (f : A ≃ B) (w : ℝ) :
   rw [Finset.sum_const, Finset.card_univ, card_finsetEquiv A B f]
   simp
 
-end RealRooted.Graph.RankTwoInternal
+end RealRooted.Graph.RankTwo

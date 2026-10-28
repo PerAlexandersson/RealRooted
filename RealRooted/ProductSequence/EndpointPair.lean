@@ -22,7 +22,7 @@ open scoped BigOperators
 
 namespace RealRooted
 
-open ProductSequenceInternal
+open ProductSequence
 
 /-- Parity lift for product-form rows whose odd rows are a nonzero scalar
 times `X` times the corresponding even quotient row.

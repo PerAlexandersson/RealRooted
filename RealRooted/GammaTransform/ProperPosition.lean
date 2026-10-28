@@ -20,7 +20,7 @@ noncomputable section
 
 namespace RealRooted
 
-open GammaTransformInternal
+open GammaTransform
 
 private lemma roots_neg_of_nonnegCoeffs_of_coeff_zero_ne
     {p : ℝ[X]} (hnn : HasNonnegCoeffs p) (hzero : p.coeff 0 ≠ 0) :

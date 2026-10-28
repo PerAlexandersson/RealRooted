@@ -19,7 +19,7 @@ open scoped BigOperators
 
 namespace RealRooted
 
-open ProductSequenceInternal
+open ProductSequence
 
 /-- Lift real-rootedness from a quotient sequence through row-wise real-rooted
 left factors. -/

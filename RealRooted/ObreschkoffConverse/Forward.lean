@@ -284,7 +284,7 @@ private theorem isRealRooted_of_right_factor_combo_posβ
     have hFq₁ : F.eval r₁ * q.eval r₁ < 0 := hroot_sign r₁ hr₁_root
     have hFq₂ : F.eval r₂ * q.eval r₂ < 0 := hroot_sign r₂ hr₂_root
     have hqq : q.eval r₁ * q.eval r₂ < 0 :=
-      ObreschkoffConverseInternal.eval_mul_eval_neg_of_interlaces_consecutive_of_no_common
+      ObreschkoffConverse.eval_mul_eval_neg_of_interlaces_consecutive_of_no_common
         hqf hq_no pre hEq
     exact mul_neg_of_mul_neg_of_mul_neg hFq₁ hFq₂ hqq
   by_cases hdeg_lt : F.natDegree < f.natDegree
@@ -297,7 +297,7 @@ private theorem isRealRooted_of_right_factor_combo_posβ
       exact isRealRooted_of_degree_one hF_deg_one
     · have hdeg_two : 2 ≤ f.natDegree := by lia
       exact
-        ObreschkoffConverseInternal.isRealRooted_of_interlaces_eval_mul_neg_same_any_lc
+        ObreschkoffConverse.isRealRooted_of_interlaces_eval_mul_neg_same_any_lc
           hqf hq_pos hdeg_eq hdeg_two hroot_sign
 
 /-- Positive-leading, no-common-roots equal-degree forward Obreschkoff. This is
@@ -350,7 +350,7 @@ private theorem allComboRealRooted_of_strictInterl_sameDegree_pos_of_no_common
       · have hαpos : 0 < α := lt_of_not_ge hα_nonpos
         have hcomb_neg : C (-α) * f + C (-β) * g ≠ 0 :=
           fun hlin =>
-            ObreschkoffConverseInternal.no_nontrivial_linear_relation_of_no_common_root
+            ObreschkoffConverse.no_nontrivial_linear_relation_of_no_common_root
               hf.1 hf.2 hno (by lia) (neg_ne_zero.mpr hαpos.ne') (neg_ne_zero.mpr hβ0) hlin
         have hrr_neg :
             ((C (-α) * f + C (-β) * g) ≠ 0 ∧ (C (-α) * f + C (-β) * g).Splits) := by
@@ -371,7 +371,7 @@ private theorem allComboRealRooted_of_strictInterl_sameDegree_pos_of_no_common
           intro hlin_q
           have hlin : C α * f + C β * g = 0 := by simp_all
           exact
-            ObreschkoffConverseInternal.no_nontrivial_linear_relation_of_no_common_root
+            ObreschkoffConverse.no_nontrivial_linear_relation_of_no_common_root
               hf.1 hf.2 hno (by lia) hαneg.ne hβpos.ne' hlin
         simpa [hqg] using
           (isRealRooted_of_right_factor_combo_posβ

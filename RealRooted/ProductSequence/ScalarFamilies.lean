@@ -23,7 +23,7 @@ open scoped BigOperators
 
 namespace RealRooted
 
-open ProductSequenceInternal
+open ProductSequence
 
 /-- Sequence shell for scalar product recurrences. -/
 theorem isRealRooted_of_product_scalar_sequence
