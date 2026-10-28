@@ -287,6 +287,143 @@ private lemma sum_orderEmbOfFin (S : Finset ℝ) {k : ℕ} (h : S.card = k)
   exact Fintype.sum_equiv (S.orderIsoOfFin h).toEquiv _ _
     (fun i => by simp [Finset.coe_orderIsoOfFin_apply])
 
+/-- Subtracting a nonzero multiple of the derivative produces at least as many
+distinct roots as the original polynomial. -/
+private lemma card_roots_toFinset_sub_C_mul_derivative_ge (p q : ℝ[X])
+    (S : Finset ℝ) (hmemS : ∀ u, u ∈ S ↔ p.IsRoot u)
+    (hsimple : ∀ s, p.IsRoot s → eval s (derivative p) ≠ 0)
+    (hF : ∀ t, ¬p.IsRoot t →
+      eval t (derivative p) = eval t p * ∑ s ∈ S, 1 / (t - s))
+    (c : ℝ)
+    (hq : q = p - C c * derivative p)
+    (hqeval : ∀ u, eval u q = eval u p - c * eval u (derivative p))
+    (hc : c ≠ 0) :
+    S.card ≤ q.roots.toFinset.card := by
+  rcases Nat.eq_zero_or_eq_succ_pred S.card with h0 | hm
+  · rw [h0]
+    exact Nat.zero_le _
+  set m := S.card.pred
+  set x := S.orderEmbOfFin hm with hxdef
+  have hxroot : ∀ i, p.IsRoot (x i) :=
+    fun i => (hmemS _).mp (S.orderEmbOfFin_mem hm i)
+  have hxsurj : ∀ u, p.IsRoot u → ∃ i, x i = u := by
+    intro u hu
+    have hrange : u ∈ Set.range x := by
+      rw [hxdef, Finset.range_orderEmbOfFin]
+      exact (hmemS u).mpr hu
+    exact hrange
+  have hx : StrictMono x := (S.orderEmbOfFin hm).strictMono
+  have hgaproot : ∀ i : Fin m,
+      ∃ y, x i.castSucc < y ∧ y < x i.succ ∧ q.IsRoot y := by
+    intro i
+    rw [hq]
+    apply gap_root p c _ _ (hx Fin.castSucc_lt_succ) (hxroot _) (hxroot _)
+      (hsimple _ (hxroot _)) (hsimple _ (hxroot _)) hc
+    intro u hu1 hu2 hu
+    obtain ⟨k, rfl⟩ := hxsurj u hu
+    have h1 := hx.lt_iff_lt.mp hu1
+    have h2 := hx.lt_iff_lt.mp hu2
+    rw [Fin.castSucc_lt_iff_succ_le] at h1
+    exact absurd h2 (not_lt.mpr h1)
+  choose g hg1 hg2 hg3 using hgaproot
+  have hg : StrictMono g := by
+    intro i j hij
+    have hmono := hx.monotone (Fin.succ_le_castSucc_iff.mpr hij)
+    linarith [hg2 i, hg1 j]
+  obtain ⟨s0, hs0, hext⟩ :
+      ∃ s0, p.IsRoot s0 ∧ ∀ s' ∈ S, 0 ≤ (s0 - s') * c := by
+    rcases lt_or_gt_of_ne hc with hc' | hc'
+    · refine ⟨x 0, hxroot 0, fun s' hs' => ?_⟩
+      obtain ⟨k, rfl⟩ := hxsurj s' ((hmemS s').mp hs')
+      exact mul_nonneg_of_nonpos_of_nonpos (sub_nonpos.mpr (hx.monotone (Fin.zero_le k))) hc'.le
+    · refine ⟨x (Fin.last m), hxroot _, fun s' hs' => ?_⟩
+      obtain ⟨k, rfl⟩ := hxsurj s' ((hmemS s').mp hs')
+      exact mul_nonneg (sub_nonneg.mpr (hx.monotone (Fin.le_last k))) hc'.le
+  obtain ⟨e, he, heq⟩ := end_root p S (fun u hu => (hmemS u).mpr hu)
+    hF c hc s0 hs0 (hsimple s0 hs0) hext
+  have hene : e ∉ Finset.univ.image g := by
+    intro hmem
+    obtain ⟨i, -, rfl⟩ := Finset.mem_image.mp hmem
+    have h1 := hext _ ((hmemS _).mpr (hxroot i.castSucc))
+    have h2 := hext _ ((hmemS _).mpr (hxroot i.succ))
+    have a1 := hg1 i
+    have a2 := hg2 i
+    have b1 : 0 < (g i - x i.castSucc) * c := by nlinarith
+    have b2 : 0 < (g i - x i.succ) * c := by nlinarith
+    rcases lt_or_gt_of_ne hc <;> nlinarith
+  have hq0 : q ≠ 0 := by
+    intro h
+    have heval := hqeval (x 0)
+    rw [h, (hxroot 0).eq_zero] at heval
+    have hmul : c * eval (x 0) (derivative p) = 0 := by
+      simpa only [eval_zero, zero_sub, neg_eq_zero] using heval.symm
+    exact hsimple _ (hxroot 0) ((mul_eq_zero.mp hmul).resolve_left hc)
+  have hsub : insert e (Finset.univ.image g) ⊆ q.roots.toFinset := by
+    intro y hy
+    rw [Multiset.mem_toFinset, mem_roots hq0]
+    rcases Finset.mem_insert.mp hy with rfl | hy
+    · rw [hq]
+      exact heq
+    · obtain ⟨i, -, rfl⟩ := Finset.mem_image.mp hy
+      exact hg3 i
+  have hcard := Finset.card_le_card hsub
+  rw [Finset.card_insert_of_notMem hene,
+    Finset.card_image_of_injective _ hg.injective, Finset.card_univ,
+    Fintype.card_fin] at hcard
+  lia
+
+/-- Equal reciprocal-root sums at two roots force those roots to be separated
+by the original root gap. -/
+private lemma roots_pairwise_gap_of_reciprocal_sum (p q : ℝ[X]) (hp0 : p ≠ 0)
+    (S : Finset ℝ) (hmemS : ∀ u, u ∈ S ↔ p.IsRoot u) (δ : ℝ)
+    (hgap : ∀ r ∈ p.roots, ∀ s ∈ p.roots, r ≠ s → δ ≤ |r - s|)
+    (c : ℝ) (hc : c ≠ 0)
+    (hqF : ∀ y, q.IsRoot y → c * ∑ s ∈ S, 1 / (y - s) = 1)
+    (hq0 : ∀ y, q.IsRoot y → ¬p.IsRoot y) :
+    ∀ r ∈ q.roots, ∀ s ∈ q.roots, r ≠ s → δ ≤ |r - s| := by
+  have hmesh : ∀ y y', y < y' → q.IsRoot y → q.IsRoot y' → δ ≤ y' - y := by
+    intro y y' hyy hy hy'
+    by_contra hlt
+    push Not at hlt
+    have hFy := hqF y hy
+    have hFy' := hqF y' hy'
+    have hSne : S.card ≠ 0 := by
+      intro h0
+      simp [Finset.card_eq_zero.mp h0] at hFy
+    have heq : ∑ s ∈ S, 1 / (y - s) = ∑ s ∈ S, 1 / (y' - s) := by
+      have hzero :
+          c * (∑ s ∈ S, 1 / (y - s) - ∑ s ∈ S, 1 / (y' - s)) = 0 := by
+        rw [mul_sub]
+        linarith
+      have := (mul_eq_zero.mp hzero).resolve_left hc
+      linarith
+    set x := S.orderEmbOfFin rfl with hxdef
+    have hxroot : ∀ i, p.IsRoot (x i) :=
+      fun i => (hmemS _).mp (S.orderEmbOfFin_mem rfl i)
+    have hx : StrictMono x := (S.orderEmbOfFin rfl).strictMono
+    rw [← sum_orderEmbOfFin S rfl (fun s => 1 / (y - s)),
+      ← sum_orderEmbOfFin S rfl (fun s => 1 / (y' - s))] at heq
+    refine key x hx δ ?_ y y' hyy (by linarith) ?_ ?_ hSne heq
+    · intro i j hij
+      have hlt' := hx hij
+      have hr := hgap (x i) ((mem_roots hp0).mpr (hxroot i)) (x j)
+        ((mem_roots hp0).mpr (hxroot j)) hlt'.ne
+      rw [abs_sub_comm, abs_of_pos (by linarith)] at hr
+      linarith
+    · intro i h
+      exact hq0 y hy (h ▸ hxroot i)
+    · intro i h
+      exact hq0 y' hy' (h ▸ hxroot i)
+  intro r hr s hs hrs
+  have hqne : q ≠ 0 := ne_zero_of_mem_roots hr
+  have hr' := (mem_roots hqne).mp hr
+  have hs' := (mem_roots hqne).mp hs
+  rcases lt_or_gt_of_ne hrs with h | h
+  · rw [abs_sub_comm, abs_of_pos (by linarith)]
+    exact hmesh r s h hr' hs'
+  · rw [abs_of_pos (by linarith)]
+    exact hmesh s r h hs' hr'
+
 private theorem sub_C_mul_derivative_of_pos (p : ℝ[X]) (hp : p.Splits)
     (hnd : p.roots.Nodup) (δ : ℝ)
     (hgap : ∀ r ∈ p.roots, ∀ s ∈ p.roots, r ≠ s → δ ≤ |r - s|)
@@ -343,126 +480,16 @@ private theorem sub_C_mul_derivative_of_pos (p : ℝ[X]) (hp : p.Splits)
     exact ((natDegree_C_mul_le _ _).trans (natDegree_derivative_le p)).trans
       (Nat.sub_le _ _)
   have hcount : S.card ≤ q.roots.toFinset.card := by
-    rcases Nat.eq_zero_or_eq_succ_pred S.card with h0 | hm
-    · rw [h0]
-      exact Nat.zero_le _
-    set m := S.card.pred
-    set x := S.orderEmbOfFin hm with hxdef
-    have hxroot : ∀ i, p.IsRoot (x i) :=
-      fun i => (hmemS _).mp (S.orderEmbOfFin_mem hm i)
-    have hxsurj : ∀ u, p.IsRoot u → ∃ i, x i = u := by
-      intro u hu
-      have hrange : u ∈ Set.range x := by
-        rw [hxdef, Finset.range_orderEmbOfFin]
-        exact (hmemS u).mpr hu
-      exact hrange
-    have hx : StrictMono x := (S.orderEmbOfFin hm).strictMono
-    have hgaproot : ∀ i : Fin m,
-        ∃ y, x i.castSucc < y ∧ y < x i.succ ∧ q.IsRoot y := by
-      intro i
-      apply gap_root p c _ _ (hx Fin.castSucc_lt_succ) (hxroot _) (hxroot _)
-        (hsimple _ (hxroot _)) (hsimple _ (hxroot _)) hc
-      intro u hu1 hu2 hu
-      obtain ⟨k, rfl⟩ := hxsurj u hu
-      have h1 := hx.lt_iff_lt.mp hu1
-      have h2 := hx.lt_iff_lt.mp hu2
-      rw [Fin.castSucc_lt_iff_succ_le] at h1
-      exact absurd h2 (not_lt.mpr h1)
-    choose g hg1 hg2 hg3 using hgaproot
-    have hg : StrictMono g := by
-      intro i j hij
-      have hmono := hx.monotone (Fin.succ_le_castSucc_iff.mpr hij)
-      linarith [hg2 i, hg1 j]
-    obtain ⟨s0, hs0, hext⟩ :
-        ∃ s0, p.IsRoot s0 ∧ ∀ s' ∈ S, 0 ≤ (s0 - s') * c := by
-      rcases lt_or_gt_of_ne hc with hc' | hc'
-      · refine ⟨x 0, hxroot 0, fun s' hs' => ?_⟩
-        obtain ⟨k, rfl⟩ := hxsurj s' ((hmemS s').mp hs')
-        have hmono := hx.monotone (Fin.zero_le k)
-        exact mul_nonneg_of_nonpos_of_nonpos (by linarith) hc'.le
-      · refine ⟨x (Fin.last m), hxroot _, fun s' hs' => ?_⟩
-        obtain ⟨k, rfl⟩ := hxsurj s' ((hmemS s').mp hs')
-        have hmono := hx.monotone (Fin.le_last k)
-        exact mul_nonneg (by linarith) hc'.le
-    obtain ⟨e, he, heq⟩ := end_root p S (fun u hu => (hmemS u).mpr hu)
-      hF c hc s0 hs0 (hsimple s0 hs0) hext
-    have hene : e ∉ Finset.univ.image g := by
-      intro hmem
-      obtain ⟨i, -, rfl⟩ := Finset.mem_image.mp hmem
-      have h1 := hext _ ((hmemS _).mpr (hxroot i.castSucc))
-      have h2 := hext _ ((hmemS _).mpr (hxroot i.succ))
-      have a1 := hg1 i
-      have a2 := hg2 i
-      have b1 : 0 < (g i - x i.castSucc) * c := by nlinarith
-      have b2 : 0 < (g i - x i.succ) * c := by nlinarith
-      rcases lt_or_gt_of_ne hc <;> nlinarith
-    have hq0' : q ≠ 0 := by
-      intro h
-      have heval := hqeval (x 0)
-      rw [h, (hxroot 0).eq_zero] at heval
-      have hmul : c * eval (x 0) (derivative p) = 0 := by
-        simpa only [eval_zero, zero_sub, neg_eq_zero] using heval.symm
-      exact hsimple _ (hxroot 0) ((mul_eq_zero.mp hmul).resolve_left hc)
-    have hsub : insert e (Finset.univ.image g) ⊆ q.roots.toFinset := by
-      intro y hy
-      rw [Multiset.mem_toFinset, mem_roots hq0']
-      rcases Finset.mem_insert.mp hy with rfl | hy
-      · exact heq
-      · obtain ⟨i, -, rfl⟩ := Finset.mem_image.mp hy
-        exact hg3 i
-    have hcard := Finset.card_le_card hsub
-    rw [Finset.card_insert_of_notMem hene,
-      Finset.card_image_of_injective _ hg.injective, Finset.card_univ,
-      Fintype.card_fin] at hcard
-    lia
+    exact card_roots_toFinset_sub_C_mul_derivative_ge
+      p q S hmemS hsimple hF c hq hqeval hc
   have h1 := Multiset.toFinset_card_le q.roots
   have h2 := card_roots' q
   have hsplit : q.Splits := splits_iff_card_roots.mpr (by lia)
   have hnodup : q.roots.Nodup :=
     Multiset.toFinset_card_eq_card_iff_nodup.mp (by lia)
-  refine ⟨hsplit, hnodup, ?_⟩
-  have hmesh : ∀ y y', y < y' → q.IsRoot y → q.IsRoot y' → δ ≤ y' - y := by
-    intro y y' hyy hy hy'
-    by_contra hlt
-    push Not at hlt
-    have hFy := hqF y hy
-    have hFy' := hqF y' hy'
-    have hSne : S.card ≠ 0 := by
-      intro h0
-      simp [Finset.card_eq_zero.mp h0] at hFy
-    have heq : ∑ s ∈ S, 1 / (y - s) = ∑ s ∈ S, 1 / (y' - s) := by
-      have hzero :
-          c * (∑ s ∈ S, 1 / (y - s) - ∑ s ∈ S, 1 / (y' - s)) = 0 := by
-        rw [mul_sub]
-        linarith
-      have := (mul_eq_zero.mp hzero).resolve_left hc
-      linarith
-    set x := S.orderEmbOfFin rfl with hxdef
-    have hxroot : ∀ i, p.IsRoot (x i) :=
-      fun i => (hmemS _).mp (S.orderEmbOfFin_mem rfl i)
-    have hx : StrictMono x := (S.orderEmbOfFin rfl).strictMono
-    rw [← sum_orderEmbOfFin S rfl (fun s => 1 / (y - s)),
-      ← sum_orderEmbOfFin S rfl (fun s => 1 / (y' - s))] at heq
-    refine key x hx δ ?_ y y' hyy (by linarith) ?_ ?_ hSne heq
-    · intro i j hij
-      have hlt' := hx hij
-      have hr := hgap (x i) ((mem_roots hp0).mpr (hxroot i)) (x j)
-        ((mem_roots hp0).mpr (hxroot j)) hlt'.ne
-      rw [abs_sub_comm, abs_of_pos (by linarith)] at hr
-      linarith
-    · intro i h
-      exact hq0 y hy (h ▸ hxroot i)
-    · intro i h
-      exact hq0 y' hy' (h ▸ hxroot i)
-  intro r hr s hs hrs
-  have hqne : q ≠ 0 := ne_zero_of_mem_roots hr
-  have hr' := (mem_roots hqne).mp hr
-  have hs' := (mem_roots hqne).mp hs
-  rcases lt_or_gt_of_ne hrs with h | h
-  · rw [abs_sub_comm, abs_of_pos (by linarith)]
-    exact hmesh r s h hr' hs'
-  · rw [abs_of_pos (by linarith)]
-    exact hmesh s r h hs' hr'
+  exact ⟨hsplit, hnodup,
+    roots_pairwise_gap_of_reciprocal_sum
+      p q hp0 S hmemS δ hgap c hc hqF hq0⟩
 
 namespace MeshGE
 

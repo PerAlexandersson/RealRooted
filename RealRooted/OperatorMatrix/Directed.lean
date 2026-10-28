@@ -33,6 +33,126 @@ noncomputable section
 
 namespace RealRooted
 
+/-- Lagrange interpolation evaluates a remainder and its derivative at a critical point. -/
+private theorem lagrange_remainder_evaluations
+    {f g u : ℝ[X]} {r : ℝ}
+    (hu_lagrange : lagInterp f u = u)
+    (hfr_der : f.derivative.eval r = 0)
+    (hroot : ∀ s ∈ f.roots.toFinset, f.IsRoot s)
+    (hroot_data : ∀ s ∈ f.roots.toFinset,
+      s < 0 ∧ r - s ≠ 0 ∧ u.eval s / f.derivative.eval s =
+        g.eval s / f.derivative.eval s) :
+    u.eval r = ∑ s ∈ f.roots.toFinset,
+        (g.eval s / f.derivative.eval s) * (f.eval r / (r - s)) ∧
+      u.derivative.eval r = ∑ s ∈ f.roots.toFinset,
+        (g.eval s / f.derivative.eval s) * (-f.eval r / (r - s) ^ 2) ∧
+      u.eval 0 = ∑ s ∈ f.roots.toFinset,
+        (g.eval s / f.derivative.eval s) * (f.eval 0 / (0 - s)) := by
+  have hquot_eval (x s : ℝ) (hs : s ∈ f.roots.toFinset) (hxs : x - s ≠ 0) :
+      (f /ₘ (X - C s)).eval x = f.eval x / (x - s) := by
+    have hfactor := congrArg (Polynomial.eval x)
+      (mul_divByMonic_eq_iff_isRoot.mpr (hroot s hs))
+    simp only [eval_mul, eval_sub, eval_X, eval_C] at hfactor
+    exact (eq_div_iff hxs).mpr (by simpa [mul_comm] using hfactor)
+  have hquot_derivative_eval (s : ℝ) (hs : s ∈ f.roots.toFinset) :
+      (f /ₘ (X - C s)).derivative.eval r = -f.eval r / (r - s) ^ 2 := by
+    have hfactor := congrArg (fun p : ℝ[X] ↦ p.derivative.eval r)
+      (mul_divByMonic_eq_iff_isRoot.mpr (hroot s hs))
+    have hrs := (hroot_data s hs).2.1
+    simp only [derivative_mul, derivative_sub, derivative_X, derivative_C,
+      sub_zero, one_mul, eval_add, eval_mul, eval_sub, eval_X, eval_C] at hfactor
+    rw [hfr_der] at hfactor
+    calc
+      (f /ₘ (X - C s)).derivative.eval r =
+          -(f /ₘ (X - C s)).eval r / (r - s) := by
+        rw [eq_div_iff hrs]
+        linarith
+      _ = -(f.eval r / (r - s)) / (r - s) := by
+        rw [hquot_eval r s hs hrs]
+      _ = -f.eval r / (r - s) ^ 2 := by field_simp
+  refine ⟨?_, ?_, ?_⟩
+  · rw [← hu_lagrange]
+    simp only [lagInterp, eval_finsetSum, eval_mul, eval_C]
+    apply Finset.sum_congr rfl; intro s hs
+    rw [(hroot_data s hs).2.2, hquot_eval r s hs (hroot_data s hs).2.1]
+  · rw [← hu_lagrange]
+    simp only [lagInterp, map_sum, derivative_C_mul, eval_finsetSum, eval_mul, eval_C]
+    apply Finset.sum_congr rfl; intro s hs
+    rw [(hroot_data s hs).2.2, hquot_derivative_eval s hs]
+  · rw [← hu_lagrange]
+    simp only [lagInterp, eval_finsetSum, eval_mul, eval_C]
+    apply Finset.sum_congr rfl; intro s hs
+    rw [(hroot_data s hs).2.2]
+    rw [hquot_eval 0 s hs (by linarith [(hroot_data s hs).1])]
+
+/-- The Lagrange remainder gives the differential evaluation as a residue sum. -/
+private theorem eval_sub_X_mul_derivative_eq_residue_sum
+    {f g u : ℝ[X]} {a r : ℝ}
+    (hu : u = g - C a * f)
+    (hf_zero : 0 < f.eval 0)
+    (hfr_der : f.derivative.eval r = 0)
+    (hroot_data : ∀ s ∈ f.roots.toFinset, s < 0 ∧ r - s ≠ 0)
+    (hu_eval : u.eval r = ∑ s ∈ f.roots.toFinset,
+      (g.eval s / f.derivative.eval s) * (f.eval r / (r - s)))
+    (hu_derivative_eval : u.derivative.eval r = ∑ s ∈ f.roots.toFinset,
+      (g.eval s / f.derivative.eval s) * (-f.eval r / (r - s) ^ 2))
+    (hu_zero : u.eval 0 = ∑ s ∈ f.roots.toFinset,
+      (g.eval s / f.derivative.eval s) * (f.eval 0 / (0 - s))) :
+    g.eval r - r * g.derivative.eval r =
+      f.eval r * (g.eval 0 / f.eval 0 +
+        ∑ s ∈ f.roots.toFinset,
+          (g.eval s / f.derivative.eval s) * r ^ 2 /
+            (s * (r - s) ^ 2)) := by
+  have ha_zero :
+      a = g.eval 0 / f.eval 0 +
+        ∑ s ∈ f.roots.toFinset, (g.eval s / f.derivative.eval s) / s := by
+    have hform : g.eval 0 = a * f.eval 0 + u.eval 0 := by simp [hu]
+    calc
+      a = (a * f.eval 0) / f.eval 0 := by
+        rw [mul_div_cancel_right₀ a hf_zero.ne']
+      _ = (g.eval 0 - u.eval 0) / f.eval 0 := by rw [hform]; ring
+      _ = g.eval 0 / f.eval 0 - u.eval 0 / f.eval 0 := by rw [sub_div]
+      _ = g.eval 0 / f.eval 0 +
+          ∑ s ∈ f.roots.toFinset,
+            (g.eval s / f.derivative.eval s) / s := by
+        rw [hu_zero, Finset.sum_div, sub_eq_add_neg, ← Finset.sum_neg_distrib]
+        congr 1
+        apply Finset.sum_congr rfl; intro s hs
+        have hs_ne : s ≠ 0 := by linarith [(hroot_data s hs).1]
+        field_simp
+        ring
+  have hform_eval : g.eval r = a * f.eval r + u.eval r := by simp [hu]
+  have hform_der_eval : g.derivative.eval r =
+      a * f.derivative.eval r + u.derivative.eval r := by simp [hu]
+  rw [hform_eval, hform_der_eval, hfr_der, mul_zero, zero_add,
+    hu_eval, hu_derivative_eval, ha_zero]
+  have hsum :
+      (∑ s ∈ f.roots.toFinset,
+          (g.eval s / f.derivative.eval s) / s * f.eval r) +
+        (∑ s ∈ f.roots.toFinset,
+          (g.eval s / f.derivative.eval s) * (f.eval r / (r - s))) -
+        (∑ s ∈ f.roots.toFinset,
+          r * ((g.eval s / f.derivative.eval s) * (-f.eval r / (r - s) ^ 2))) =
+        ∑ s ∈ f.roots.toFinset,
+          f.eval r * ((g.eval s / f.derivative.eval s) * r ^ 2 /
+            (s * (r - s) ^ 2)) := by
+    calc
+      _ = ∑ s ∈ f.roots.toFinset,
+          ((g.eval s / f.derivative.eval s) / s * f.eval r +
+            (g.eval s / f.derivative.eval s) * (f.eval r / (r - s)) -
+            r * ((g.eval s / f.derivative.eval s) *
+              (-f.eval r / (r - s) ^ 2))) := by
+        rw [Finset.sum_sub_distrib, Finset.sum_add_distrib]
+      _ = _ := by
+        apply Finset.sum_congr rfl
+        intro s hs
+        have hs_ne : s ≠ 0 := by linarith [(hroot_data s hs).1]
+        have hrs := (hroot_data s hs).2
+        field_simp
+        ring
+  rw [add_mul, Finset.sum_mul, Finset.mul_sum, mul_add, Finset.mul_sum]
+  linear_combination hsum
+
 private theorem eval_sub_X_mul_derivative_mul_eval_pos
     {f g : ℝ[X]}
     (hfg : StrictInterl f g)
@@ -71,108 +191,12 @@ private theorem eval_sub_X_mul_derivative_mul_eval_pos
       subst r
       exact hr_not_root (hroot s hs)
     · simp [u, Polynomial.IsRoot.def.mp (hroot s hs)]
-  have hquot_eval (x s : ℝ) (hs : s ∈ f.roots.toFinset) (hxs : x - s ≠ 0) :
-      (f /ₘ (X - C s)).eval x = f.eval x / (x - s) := by
-    have hfactor := congrArg (Polynomial.eval x)
-      (mul_divByMonic_eq_iff_isRoot.mpr (hroot s hs))
-    simp only [eval_mul, eval_sub, eval_X, eval_C] at hfactor
-    exact (eq_div_iff hxs).mpr (by simpa [mul_comm] using hfactor)
-  have hquot_derivative_eval (s : ℝ) (hs : s ∈ f.roots.toFinset) :
-      (f /ₘ (X - C s)).derivative.eval r =
-        -f.eval r / (r - s) ^ 2 := by
-    have hfactor := congrArg (fun p : ℝ[X] ↦ p.derivative.eval r)
-      (mul_divByMonic_eq_iff_isRoot.mpr (hroot s hs))
-    have hrs := (hroot_data s hs).2.1
-    simp only [derivative_mul, derivative_sub, derivative_X, derivative_C,
-      sub_zero, one_mul, eval_add, eval_mul, eval_sub, eval_X, eval_C] at hfactor
-    rw [hfr_der] at hfactor
-    calc
-      (f /ₘ (X - C s)).derivative.eval r =
-          -(f /ₘ (X - C s)).eval r / (r - s) := by
-        rw [eq_div_iff hrs]
-        linarith
-      _ = -(f.eval r / (r - s)) / (r - s) := by
-        rw [hquot_eval r s hs (hroot_data s hs).2.1]
-      _ = -f.eval r / (r - s) ^ 2 := by field_simp
-  have hu_eval :
-      u.eval r = ∑ s ∈ f.roots.toFinset,
-        (g.eval s / f.derivative.eval s) * (f.eval r / (r - s)) := by
-    rw [← hu_lagrange]
-    simp only [lagInterp, eval_finsetSum, eval_mul, eval_C]
-    apply Finset.sum_congr rfl; intro s hs
-    rw [(hroot_data s hs).2.2, hquot_eval r s hs (hroot_data s hs).2.1]
-  have hu_derivative_eval :
-      u.derivative.eval r = ∑ s ∈ f.roots.toFinset,
-        (g.eval s / f.derivative.eval s) *
-          (-f.eval r / (r - s) ^ 2) := by
-    rw [← hu_lagrange]
-    simp only [lagInterp, map_sum, derivative_C_mul, eval_finsetSum, eval_mul, eval_C]
-    apply Finset.sum_congr rfl; intro s hs
-    rw [(hroot_data s hs).2.2, hquot_derivative_eval s hs]
-  have hu_zero :
-      u.eval 0 = ∑ s ∈ f.roots.toFinset,
-        (g.eval s / f.derivative.eval s) * (f.eval 0 / (0 - s)) := by
-    rw [← hu_lagrange]
-    simp only [lagInterp, eval_finsetSum, eval_mul, eval_C]
-    apply Finset.sum_congr rfl; intro s hs
-    rw [(hroot_data s hs).2.2]
-    have hs_ne : 0 - s ≠ 0 := by linarith [(hroot_data s hs).1]
-    rw [hquot_eval 0 s hs hs_ne]
-  have ha_zero :
-      a = g.eval 0 / f.eval 0 +
-        ∑ s ∈ f.roots.toFinset,
-          (g.eval s / f.derivative.eval s) / s := by
-    have hform : g.eval 0 = a * f.eval 0 + u.eval 0 := by simp [u]
-    calc
-      a = (a * f.eval 0) / f.eval 0 := by
-        rw [mul_div_cancel_right₀ a hf_zero.ne']
-      _ = (g.eval 0 - u.eval 0) / f.eval 0 := by rw [hform]; ring
-      _ = g.eval 0 / f.eval 0 - u.eval 0 / f.eval 0 := by rw [sub_div]
-      _ = g.eval 0 / f.eval 0 +
-          ∑ s ∈ f.roots.toFinset,
-            (g.eval s / f.derivative.eval s) / s := by
-        rw [hu_zero, Finset.sum_div, sub_eq_add_neg, ← Finset.sum_neg_distrib]
-        congr 1
-        apply Finset.sum_congr rfl; intro s hs
-        have hs_ne : s ≠ 0 := by linarith [(hroot_data s hs).1]
-        field_simp; ring
-  have hmain :
-      g.eval r - r * g.derivative.eval r =
-        f.eval r * (g.eval 0 / f.eval 0 +
-          ∑ s ∈ f.roots.toFinset,
-            (g.eval s / f.derivative.eval s) * r ^ 2 /
-              (s * (r - s) ^ 2)) := by
-    have hform_eval : g.eval r = a * f.eval r + u.eval r := by
-      simp [u]
-    have hform_der_eval : g.derivative.eval r =
-        a * f.derivative.eval r + u.derivative.eval r := by
-      simp [u]
-    rw [hform_eval, hform_der_eval, hfr_der, mul_zero, zero_add,
-      hu_eval, hu_derivative_eval, ha_zero]
-    have hsum :
-        (∑ s ∈ f.roots.toFinset,
-            (g.eval s / f.derivative.eval s) / s * f.eval r) +
-          (∑ s ∈ f.roots.toFinset,
-            (g.eval s / f.derivative.eval s) * (f.eval r / (r - s))) -
-          (∑ s ∈ f.roots.toFinset,
-            r * ((g.eval s / f.derivative.eval s) * (-f.eval r / (r - s) ^ 2))) =
-          ∑ s ∈ f.roots.toFinset,
-            f.eval r * ((g.eval s / f.derivative.eval s) * r ^ 2 /
-              (s * (r - s) ^ 2)) := by
-      calc
-        _ = ∑ s ∈ f.roots.toFinset,
-            ((g.eval s / f.derivative.eval s) / s * f.eval r +
-              (g.eval s / f.derivative.eval s) * (f.eval r / (r - s)) -
-              r * ((g.eval s / f.derivative.eval s) *
-                (-f.eval r / (r - s) ^ 2))) := by
-          rw [Finset.sum_sub_distrib, Finset.sum_add_distrib]
-        _ = _ := by
-          apply Finset.sum_congr rfl; intro s hs
-          have hs_ne : s ≠ 0 := by linarith [(hroot_data s hs).1]
-          have hrs := (hroot_data s hs).2.1
-          field_simp; ring
-    rw [add_mul, Finset.sum_mul, Finset.mul_sum, mul_add, Finset.mul_sum]
-    linear_combination hsum
+  obtain ⟨hu_eval, hu_derivative_eval, hu_zero⟩ :=
+    lagrange_remainder_evaluations hu_lagrange hfr_der hroot hroot_data
+  have hmain := eval_sub_X_mul_derivative_eq_residue_sum
+    (u := u) (a := a) (r := r) rfl hf_zero hfr_der
+    (fun s hs ↦ ⟨(hroot_data s hs).1, (hroot_data s hs).2.1⟩)
+    hu_eval hu_derivative_eval hu_zero
   have hconstant : 0 < g.eval 0 / f.eval 0 := div_pos hg_zero hf_zero
   have hterms : 0 ≤ ∑ s ∈ f.roots.toFinset,
       (g.eval s / f.derivative.eval s) * r ^ 2 /

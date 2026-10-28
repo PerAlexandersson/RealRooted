@@ -24,41 +24,28 @@ namespace RealRooted.Poisson
 
 noncomputable section
 
-/-- A nonzero fixed factor which preserves splitting on every affine input
-satisfies the root-sign admissibility condition. -/
-theorem isAdmissible_of_preservesAffineRealRooted {c : ℝ} {f : ℝ[X]}
-    (hf0 : f ≠ 0) (hpres : PreservesAffineRealRooted c f) :
-    IsAdmissible c f := by
-  have hfs : f.Splits := by
-    have hs := hpres 1 0
-    rw [show C 1 + C 0 * X = (1 : ℝ[X]) by simp, starC_one_right] at hs
-    exact hs
-  refine ⟨hf0, hfs, ?_⟩
-  intro r hr
-  have hfr : f.IsRoot r := (mem_roots hf0).mp hr
-  let m := f.rootMultiplicity r
+/-- Deleting all but one root copy gives an all-real-rooted pencil with a
+one-degree gap and the original leading coefficient. -/
+private lemma reduced_root_factors_allComboRealRooted_and_succDegree
+    {c r : ℝ} {f h : ℝ[X]} {m : ℕ}
+    (hpres : PreservesAffineRealRooted c f) (hmpos : 0 < m)
+    (hfactor : f = (X - C r) ^ m * h) (hh0 : h ≠ 0)
+    (hdegfpos : 0 < f.natDegree) :
+    let q := X - C r
+    let F := q * h
+    let G := X * (q * h + C (c * m) * h + C c * q * h.derivative)
+    AllComboRealRooted F G ∧ F ≠ 0 ∧ G ≠ 0 ∧
+      G.natDegree = F.natDegree + 1 ∧
+      F.leadingCoeff = f.leadingCoeff ∧ G.leadingCoeff = f.leadingCoeff := by
   let q : ℝ[X] := X - C r
-  obtain ⟨h, hfactor, hnotdvd⟩ :=
-    f.exists_eq_pow_rootMultiplicity_mul_and_not_dvd hf0 r
-  change f = q ^ m * h at hfactor
-  have hmpos : 0 < m := by
-    exact (rootMultiplicity_pos hf0).mpr hfr
-  have hmcast : 0 < (m : ℝ) := by positivity
-  have hm_eq : m - 1 + 1 = m := by lia
-  have hq0 : q ≠ 0 := X_sub_C_ne_zero r
-  have hh0 : h ≠ 0 := by
-    intro hh
-    apply hf0
-    rw [hfactor, hh, mul_zero]
-  have hheval : h.eval r ≠ 0 := by
-    intro heval
-    apply hnotdvd
-    rw [dvd_iff_isRoot, Polynomial.IsRoot.def]
-    exact heval
   let D : ℝ[X] := q ^ (m - 1)
   let F : ℝ[X] := q * h
-  let G : ℝ[X] :=
-    X * (q * h + C (c * m) * h + C c * q * h.derivative)
+  let G : ℝ[X] := X * (q * h + C (c * m) * h + C c * q * h.derivative)
+  change AllComboRealRooted F G ∧ F ≠ 0 ∧ G ≠ 0 ∧
+    G.natDegree = F.natDegree + 1 ∧
+    F.leadingCoeff = f.leadingCoeff ∧ G.leadingCoeff = f.leadingCoeff
+  have hm_eq : m - 1 + 1 = m := by lia
+  have hq0 : q ≠ 0 := X_sub_C_ne_zero r
   have hfDF : f = D * F := by
     rw [hfactor]
     dsimp only [D, F]
@@ -90,9 +77,6 @@ theorem isAdmissible_of_preservesAffineRealRooted {c : ℝ} {f : ℝ[X]}
         rw [← hfDF, ← hA]
       _ = C a * f + C b * X * (f + C c * f.derivative) := by ring
   have hF0 : F ≠ 0 := mul_ne_zero hq0 hh0
-  have hdegfpos : 0 < f.natDegree := by
-    have hmle := rootMultiplicity_le_natDegree f r
-    lia
   have hderlt : f.derivative.natDegree < f.natDegree :=
     natDegree_derivative_lt (by lia)
   have hcderlt : (C c * f.derivative).natDegree < f.natDegree :=
@@ -114,15 +98,9 @@ theorem isAdmissible_of_preservesAffineRealRooted {c : ℝ} {f : ℝ[X]}
   have hGdeg : f.natDegree + 1 = D.natDegree + G.natDegree := by
     rw [← hsumdeg, ← natDegree_X_mul hsum0, hA,
       natDegree_mul hD0 hG0]
-  have hsucc : G.natDegree = F.natDegree + 1 := by lia
-  have hFs : F.Splits := hall.left_splits
-  have hGs : G.Splits := hall.right_splits
-  have hinter_or : StrictInterl F G ∨ StrictInterl G F :=
-    strictInterl_of_allComboRealRooted hF0 hFs hG0 hGs hall
-      (Or.inl hsucc.symm)
-  have hinter : StrictInterl F G :=
-    StrictInterl.forward_of_orientation_of_succDegree hsucc hinter_or
-  have hDmonic : D.Monic := (monic_X_sub_C r).pow (m - 1)
+  have hDmonic : D.Monic := by
+    dsimp only [D, q]
+    exact (monic_X_sub_C r).pow (m - 1)
   have hFlc : F.leadingCoeff = f.leadingCoeff := by
     have hlc := congrArg leadingCoeff hfDF
     simpa only [leadingCoeff_mul, hDmonic.leadingCoeff, one_mul] using hlc.symm
@@ -134,7 +112,25 @@ theorem isAdmissible_of_preservesAffineRealRooted {c : ℝ} {f : ℝ[X]}
     have hlc := congrArg leadingCoeff hA
     rw [hAlc, leadingCoeff_mul, hDmonic.leadingCoeff, one_mul] at hlc
     exact hlc.symm
+  exact ⟨hall, hF0, hG0, by lia, hFlc, hGlc⟩
+
+/-- The oriented reduced-root pencil forces the fixed factor's root-sign
+product to be nonpositive. -/
+private lemma mul_nonpos_of_strictInterl_reduced_root_factors
+    {c r : ℝ} {f h : ℝ[X]} {m : ℕ} (hmpos : 0 < m)
+    (hheval : h.eval r ≠ 0)
+    (hinter : StrictInterl ((X - C r) * h)
+      (X * ((X - C r) * h + C (c * m) * h +
+        C c * (X - C r) * h.derivative)))
+    (hFlc : ((X - C r) * h).leadingCoeff = f.leadingCoeff)
+    (hGlc : (X * ((X - C r) * h + C (c * m) * h +
+      C c * (X - C r) * h.derivative)).leadingCoeff = f.leadingCoeff)
+    (hf0 : f ≠ 0) : c * r ≤ 0 := by
+  let q : ℝ[X] := X - C r
+  let F : ℝ[X] := q * h
+  let G : ℝ[X] := X * (q * h + C (c * m) * h + C c * q * h.derivative)
   let a : ℝ := f.leadingCoeff⁻¹
+  have hmcast : 0 < (m : ℝ) := by positivity
   have hflc0 : f.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hf0
   have ha0 : a ≠ 0 := inv_ne_zero hflc0
   have hscaled : StrictInterl (C a * F) (C a * G) :=
@@ -168,10 +164,55 @@ theorem isAdmissible_of_preservesAffineRealRooted {c : ℝ} {f : ℝ[X]}
   by_contra hcr
   have hcrpos : 0 < c * r := lt_of_not_ge hcr
   have hpositive : 0 < a ^ 2 * (c * r) * (m : ℝ) * (h.eval r) ^ 2 := by
-    apply mul_pos
-    · exact mul_pos (mul_pos ha_sq hcrpos) hmcast
-    · exact hh_sq
+    exact mul_pos (mul_pos (mul_pos ha_sq hcrpos) hmcast) hh_sq
   exact (not_lt_of_ge hsign') hpositive
+
+/-- A nonzero fixed factor which preserves splitting on every affine input
+satisfies the root-sign admissibility condition. -/
+theorem isAdmissible_of_preservesAffineRealRooted {c : ℝ} {f : ℝ[X]}
+    (hf0 : f ≠ 0) (hpres : PreservesAffineRealRooted c f) :
+    IsAdmissible c f := by
+  have hfs : f.Splits := by
+    have hs := hpres 1 0
+    rw [show C 1 + C 0 * X = (1 : ℝ[X]) by simp, starC_one_right] at hs
+    exact hs
+  refine ⟨hf0, hfs, ?_⟩
+  intro r hr
+  have hfr : f.IsRoot r := (mem_roots hf0).mp hr
+  let m := f.rootMultiplicity r
+  let q : ℝ[X] := X - C r
+  obtain ⟨h, hfactor, hnotdvd⟩ :=
+    f.exists_eq_pow_rootMultiplicity_mul_and_not_dvd hf0 r
+  change f = q ^ m * h at hfactor
+  have hmpos : 0 < m := by
+    exact (rootMultiplicity_pos hf0).mpr hfr
+  have hh0 : h ≠ 0 := by
+    intro hh
+    apply hf0
+    rw [hfactor, hh, mul_zero]
+  have hheval : h.eval r ≠ 0 := by
+    intro heval
+    apply hnotdvd
+    rw [dvd_iff_isRoot, Polynomial.IsRoot.def]
+    exact heval
+  let F : ℝ[X] := q * h
+  let G : ℝ[X] :=
+    X * (q * h + C (c * m) * h + C c * q * h.derivative)
+  have hdegfpos : 0 < f.natDegree := by
+    have hmle := rootMultiplicity_le_natDegree f r
+    lia
+  obtain ⟨hall, hF0, hG0, hsucc, hFlc, hGlc⟩ :=
+    reduced_root_factors_allComboRealRooted_and_succDegree
+      hpres hmpos hfactor hh0 hdegfpos
+  have hFs : F.Splits := hall.left_splits
+  have hGs : G.Splits := hall.right_splits
+  have hinter_or : StrictInterl F G ∨ StrictInterl G F :=
+    strictInterl_of_allComboRealRooted hF0 hFs hG0 hGs hall
+      (Or.inl hsucc.symm)
+  have hinter : StrictInterl F G :=
+    StrictInterl.forward_of_orientation_of_succDegree hsucc hinter_or
+  exact mul_nonpos_of_strictInterl_reduced_root_factors
+    hmpos hheval hinter hFlc hGlc hf0
 
 /-- For a nonzero fixed factor, affine real-rootedness preservation is
 equivalent to the exact root-sign admissibility condition. -/
