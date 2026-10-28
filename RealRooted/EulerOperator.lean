@@ -185,13 +185,6 @@ theorem thetaPreservesRealRootedOrZero {p : ℝ[X]} (hp : IsPFPolynomial p) :
   let h := theta_preserves_pf hp
   ⟨h.eq_zero_or_splits, h.roots_nonpos⟩
 
-/-- `theta` preserves weak interlacing. This proposition is proved by
-`Interl.theta`. -/
-def thetaPreservesInterlStatement : Prop :=
-  ∀ {p q : ℝ[X]},
-    Interl p q →
-    Interl (theta p) (theta q)
-
 /-- `theta` preserves weak interlacing, obtained
 from the derivative preservation theorem and multiplication by `X`. -/
 theorem Interl.theta {p q : ℝ[X]} (hpq : Interl p q) :
@@ -327,18 +320,6 @@ theorem polarTheta_thetaPlusOne_preserves_pf {N : ℕ} {p : ℝ[X]}
     IsPFPolynomial (polarTheta N (thetaPlusOne p)) :=
   polarTheta_preserves_pf (thetaPlusOne_preserves_pf hp)
     ((natDegree_thetaPlusOne_le p).trans hdeg)
-
-/-- Polar-theta interlacing preservation on the bounded-degree PF cone.  This
-proposition is proved by `RealRooted.polarTheta_preserves_interl` in
-`EulerOperator.Polar.ProperPosition`; the name is kept for downstream users. -/
-def polarThetaPreservesInterlStatement : Prop :=
-  ∀ {N : ℕ} {p q : ℝ[X]},
-    IsPFPolynomial p →
-    IsPFPolynomial q →
-    p.natDegree ≤ N →
-    q.natDegree ≤ N →
-    Interl p q →
-    Interl (polarTheta N p) (polarTheta N q)
 
 /-- PF preservation for the `l`-fold iterate of `theta + 1`. -/
 theorem iterateThetaPlusOne_preserves_pf
