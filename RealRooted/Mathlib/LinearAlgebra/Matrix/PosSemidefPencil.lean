@@ -53,8 +53,7 @@ private lemma psdPencil_quad_smul {ι : Type*} [Fintype ι] (A : Matrix ι ι �
 
 private lemma psdPencil_continuous_quad {ι : Type*} [Fintype ι] (A : Matrix ι ι ℝ) :
     Continuous fun x : ι → ℝ => x ⬝ᵥ (A *ᵥ x) := by
-  unfold dotProduct mulVec dotProduct
-  fun_prop
+  unfold dotProduct mulVec dotProduct; fun_prop
 
 private lemma psdPencil_backward {ι : Type*} [Fintype ι]
     (C D : Matrix ι ι ℝ) (hC : C.PosSemidef) (hD : D.IsHermitian)
@@ -63,11 +62,9 @@ private lemma psdPencil_backward {ι : Type*} [Fintype ι]
     ∃ t : ℝ, 0 < t ∧ (C + t • D).PosSemidef := by
   classical
   have hCs : Cᵀ = C := by
-    have := hC.1
-    rwa [IsHermitian, conjTranspose_eq_transpose_of_trivial] at this
+    simpa [IsHermitian, conjTranspose_eq_transpose_of_trivial] using hC.1
   have hDs : Dᵀ = D := by
-    have := hD
-    rwa [IsHermitian, conjTranspose_eq_transpose_of_trivial] at this
+    simpa [IsHermitian, conjTranspose_eq_transpose_of_trivial] using hD
   have hCnn : ∀ x : ι → ℝ, 0 ≤ x ⬝ᵥ (C *ᵥ x) := fun x => by
     simpa using hC.dotProduct_mulVec_nonneg x
   have hqC := psdPencil_continuous_quad C
@@ -130,8 +127,7 @@ private lemma psdPencil_backward {ι : Type*} [Fintype ι]
   have hAs : (C + t • D)ᵀ = C + t • D := by
     rw [transpose_add, transpose_smul, hCs, hDs]
   refine ⟨t, ht, PosSemidef.of_dotProduct_mulVec_nonneg ?_ ?_⟩
-  · rw [IsHermitian, conjTranspose_eq_transpose_of_trivial]
-    exact hAs
+  · simpa [IsHermitian, conjTranspose_eq_transpose_of_trivial] using hAs
   · intro x
     rw [star_trivial]
     have hx : x ∈ N ⊔ N' := by
@@ -200,10 +196,8 @@ private lemma spectral' {n : ℕ} (A : Matrix (Fin n) (Fin n) ℝ) (hA : A.IsHer
     ∃ Q : Matrix (Fin n) (Fin n) ℝ, ∃ d : Fin n → ℝ,
       Qᵀ * Q = 1 ∧ Q * Qᵀ = 1 ∧ A = Q * diagonal d * Qᵀ := by
   refine ⟨hA.eigenvectorUnitary, hA.eigenvalues, ?_, ?_, ?_⟩
-  · have := Unitary.coe_star_mul_self hA.eigenvectorUnitary
-    simpa [star_eq_conjTranspose] using this
-  · have := Unitary.coe_mul_star_self hA.eigenvectorUnitary
-    simpa [star_eq_conjTranspose] using this
+  · simpa [star_eq_conjTranspose] using Unitary.coe_star_mul_self hA.eigenvectorUnitary
+  · simpa [star_eq_conjTranspose] using Unitary.coe_mul_star_self hA.eigenvectorUnitary
   · conv_lhs => rw [hA.spectral_theorem]
     simp [star_eq_conjTranspose]
 
@@ -232,8 +226,7 @@ private lemma diag_nonneg_of_psd {n : ℕ} (R Q : Matrix (Fin n) (Fin n) ℝ) (d
 
 private lemma psd_quad {n : ℕ} {R : Matrix (Fin n) (Fin n) ℝ}
     (hR : R.PosSemidef) (x : Fin n → ℝ) :
-    0 ≤ x ⬝ᵥ (R *ᵥ x) := by
-  simpa using hR.dotProduct_mulVec_nonneg x
+    0 ≤ x ⬝ᵥ (R *ᵥ x) := by simpa using hR.dotProduct_mulVec_nonneg x
 
 private lemma pair_psd_nonneg {n : ℕ} (R H : Matrix (Fin n) (Fin n) ℝ) (hR : R.PosSemidef)
     (hH : H.PosSemidef) : 0 ≤ pair R H := by
@@ -413,27 +406,20 @@ private lemma K_add {n : ℕ} {p q : E n} (hp : p ∈ K n) (hq : q ∈ K n) : p 
   obtain ⟨S, Z, hZ, hM, hE⟩ := hp
   obtain ⟨S', Z', hZ', hM', hE'⟩ := hq
   refine ⟨S + S', Z + Z', hZ.add hZ', ?_, ?_⟩
-  · have : Matrix.fromBlocks (Matrix.of (p + q).1) (S + S') (S + S')ᵀ (Matrix.of (p + q).2.2) =
-        Matrix.fromBlocks (Matrix.of p.1) S Sᵀ (Matrix.of p.2.2) +
-        Matrix.fromBlocks (Matrix.of q.1) S' S'ᵀ (Matrix.of q.2.2) := by
-      ext i j; rcases i with i | i <;> rcases j with j | j <;> simp
-    rw [this]; exact hM.add hM'
-  · have h1 : Matrix.of (p + q).2.1 = Matrix.of p.2.1 + Matrix.of q.2.1 := by
-      ext i j; simp
-    rw [h1, hE, hE', transpose_add]; abel
+  · convert hM.add hM' using 1
+    ext i j; rcases i with i | i <;> rcases j with j | j <;> simp
+  · rw [show Matrix.of (p + q).2.1 = Matrix.of p.2.1 + Matrix.of q.2.1 by ext; simp,
+      hE, hE', transpose_add]
+    abel
 
 private lemma K_smul {n : ℕ} {p : E n} {c : ℝ} (hp : p ∈ K n) (hc : 0 ≤ c) :
     c • p ∈ K n := by
   obtain ⟨S, Z, hZ, hM, hE⟩ := hp
   refine ⟨c • S, c • Z, hZ.smul hc, ?_, ?_⟩
-  · have : Matrix.fromBlocks (Matrix.of (c • p).1) (c • S) (c • S)ᵀ
-        (Matrix.of (c • p).2.2) =
-        c • Matrix.fromBlocks (Matrix.of p.1) S Sᵀ (Matrix.of p.2.2) := by
-      ext i j; rcases i with i | i <;> rcases j with j | j <;> simp
-    rw [this]; exact hM.smul hc
-  · have h1 : Matrix.of (c • p).2.1 = c • Matrix.of p.2.1 := by
-      ext i j; simp
-    rw [h1, hE, transpose_smul, smul_add, smul_add]
+  · convert hM.smul hc using 1
+    ext i j; rcases i with i | i <;> rcases j with j | j <;> simp
+  · rw [show Matrix.of (c • p).2.1 = c • Matrix.of p.2.1 by ext; simp,
+      hE, transpose_smul, smul_add, smul_add]
 
 private lemma K_convex (n : ℕ) : Convex ℝ (K n) := by
   intro p hp q hq a b ha hb _
@@ -607,20 +593,16 @@ private lemma vecMulVec_psd {ι : Type*} [Finite ι] (x : ι → ℝ) :
 
 private lemma zero_mem_K (n : ℕ) : (0 : E n) ∈ K n := by
   refine ⟨0, 0, PosSemidef.zero, ?_, ?_⟩
-  · have : Matrix.fromBlocks (Matrix.of (0 : E n).1) (0 : Matrix (Fin n) (Fin n) ℝ) 0ᵀ
-        (Matrix.of (0 : E n).2.2) = 0 := by
-      ext i j; rcases i with i | i <;> rcases j with j | j <;> rfl
-    rw [this]; exact PosSemidef.zero
+  · convert PosSemidef.zero using 1
+    ext i j; rcases i with i | i <;> rcases j with j | j <;> rfl
   · ext i j; simp
 
 private lemma mem_K_Z {n : ℕ} (x : Fin n → ℝ) :
     ((0 : Fin n → Fin n → ℝ), (vecMulVec x x : Fin n → Fin n → ℝ),
       (0 : Fin n → Fin n → ℝ)) ∈ K n := by
   refine ⟨0, vecMulVec x x, vecMulVec_psd x, ?_, ?_⟩
-  · have : Matrix.fromBlocks (Matrix.of (0 : Fin n → Fin n → ℝ))
-        (0 : Matrix (Fin n) (Fin n) ℝ) 0ᵀ (Matrix.of (0 : Fin n → Fin n → ℝ)) = 0 := by
-      ext i j; rcases i with i | i <;> rcases j with j | j <;> rfl
-    rw [this]; exact PosSemidef.zero
+  · convert PosSemidef.zero using 1
+    ext i j; rcases i with i | i <;> rcases j with j | j <;> rfl
   · ext i j; erw [Matrix.of_apply]; simp
 
 /-- Auxiliary point of the certificate cone. -/
@@ -659,9 +641,7 @@ private lemma forward {n : ℕ} (H₀ H₁ H₂ : Matrix (Fin n) (Fin n) ℝ)
     simpa [add_mulVec, smul_mulVec, dotProduct_add, dotProduct_smul] using this
   let H : E n := (H₀, H₁, H₂)
   by_contra hcon
-  have hH : H ∉ K n := by
-    rintro ⟨S, Z, hZ, hM, hE⟩
-    exact hcon ⟨S, Z, hZ, hM, hE⟩
+  have hH : H ∉ K n := hcon
   obtain ⟨f, u, hfK, hfH⟩ := geometric_hahn_banach_closed_point (K_convex n) (K_closed n) hH
   have hu : 0 < u := by simpa using hfK 0 (zero_mem_K n)
   have hfK' : ∀ a ∈ K n, f a ≤ 0 := by

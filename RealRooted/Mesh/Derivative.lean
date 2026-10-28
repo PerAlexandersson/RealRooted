@@ -127,9 +127,7 @@ private lemma sign_near_simple_root (p : ℝ[X]) (s t : ℝ) (hs : p.IsRoot s)
     obtain ⟨u, hu, hu0⟩ := intermediate_value_uIcc hcont h0
     exact hrne u hu hu0
   rw [hpt, ← hrs]
-  have hsq : 0 < (t - s) ^ 2 := by
-    have hne : t - s ≠ 0 := sub_ne_zero.mpr hts
-    positivity
+  have hsq : 0 < (t - s) ^ 2 := sq_pos_of_ne_zero (sub_ne_zero.mpr hts)
   nlinarith
 
 private lemma exists_root_between_of_eval_mul_neg (f : ℝ[X]) (a b : ℝ)
@@ -167,14 +165,12 @@ private lemma gap_root (p : ℝ[X]) (c : ℝ) (s t : ℝ) (hst : s < t)
     intro u hu hus
     rw [Set.uIcc_of_ge hmt.le] at hu
     exact hno u (lt_of_lt_of_le hsm hu.1) (lt_of_le_of_ne hu.2 hus))
-  have e1 : 0 < eval m p * eval s (derivative p) := by
-    by_contra h
-    push Not at h
-    nlinarith
+  have e1 : 0 < eval m p * eval s (derivative p) :=
+    (mul_pos_iff_of_pos_left (sub_pos.mpr hsm)).mp h1
   have e2 : eval m p * eval t (derivative p) < 0 := by
-    by_contra h
-    push Not at h
-    nlinarith
+    rcases mul_pos_iff.mp h2 with h | h
+    · linarith [h.1]
+    · exact h.2
   have hprod : eval s (derivative p) * eval t (derivative p) < 0 := by
     by_contra h
     push Not at h
@@ -328,24 +324,19 @@ private theorem sub_C_mul_derivative_of_pos (p : ℝ[X]) (hp : p.Splits)
   have hq0 : ∀ y, q.IsRoot y → ¬p.IsRoot y := by
     intro y hy hpy
     apply hsimple y hpy
-    have h1 : eval y q = 0 := hy
-    have h2 : eval y p = 0 := hpy
-    rw [hqeval, h2] at h1
+    have h1 := hy.eq_zero
+    rw [hqeval, hpy.eq_zero] at h1
     have h3 : c * eval y (derivative p) = 0 := by linarith
-    rcases mul_eq_zero.mp h3 with h | h
-    · exact absurd h hc
-    · exact h
+    exact (mul_eq_zero.mp h3).resolve_left hc
   have hqF : ∀ y, q.IsRoot y → c * ∑ s ∈ S, 1 / (y - s) = 1 := by
     intro y hy
     have hpy := hq0 y hy
     have h1 : eval y q = 0 := hy
     rw [hqeval, hF y hpy] at h1
-    have hpy' : eval y p ≠ 0 := hpy
     have h2 : eval y p * (1 - c * ∑ s ∈ S, 1 / (y - s)) = 0 := by
       linarith
-    rcases mul_eq_zero.mp h2 with h | h
-    · exact absurd h hpy'
-    · linarith
+    have := (mul_eq_zero.mp h2).resolve_left hpy
+    linarith
   have hdeg : q.natDegree ≤ S.card := by
     rw [hSdef, Multiset.toFinset_card_of_nodup hnd, splits_iff_card_roots.mp hp]
     refine (natDegree_sub_le _ _).trans (max_le le_rfl ?_)
@@ -404,18 +395,14 @@ private theorem sub_C_mul_derivative_of_pos (p : ℝ[X]) (hp : p.Splits)
       have a2 := hg2 i
       have b1 : 0 < (g i - x i.castSucc) * c := by nlinarith
       have b2 : 0 < (g i - x i.succ) * c := by nlinarith
-      rcases lt_or_gt_of_ne hc with hc' | hc'
-      · nlinarith
-      · nlinarith
+      rcases lt_or_gt_of_ne hc <;> nlinarith
     have hq0' : q ≠ 0 := by
       intro h
       have heval := hqeval (x 0)
       rw [h, (hxroot 0).eq_zero] at heval
       have hmul : c * eval (x 0) (derivative p) = 0 := by
         simpa only [eval_zero, zero_sub, neg_eq_zero] using heval.symm
-      rcases mul_eq_zero.mp hmul with h' | h'
-      · exact hc h'
-      · exact hsimple _ (hxroot 0) h'
+      exact hsimple _ (hxroot 0) ((mul_eq_zero.mp hmul).resolve_left hc)
     have hsub : insert e (Finset.univ.image g) ⊆ q.roots.toFinset := by
       intro y hy
       rw [Multiset.mem_toFinset, mem_roots hq0']
@@ -442,16 +429,14 @@ private theorem sub_C_mul_derivative_of_pos (p : ℝ[X]) (hp : p.Splits)
     have hFy' := hqF y' hy'
     have hSne : S.card ≠ 0 := by
       intro h0
-      rw [Finset.card_eq_zero.mp h0] at hFy
-      simp at hFy
+      simp [Finset.card_eq_zero.mp h0] at hFy
     have heq : ∑ s ∈ S, 1 / (y - s) = ∑ s ∈ S, 1 / (y' - s) := by
       have hzero :
           c * (∑ s ∈ S, 1 / (y - s) - ∑ s ∈ S, 1 / (y' - s)) = 0 := by
         rw [mul_sub]
         linarith
-      rcases mul_eq_zero.mp hzero with h | h
-      · exact absurd h hc
-      · linarith
+      have := (mul_eq_zero.mp hzero).resolve_left hc
+      linarith
     set x := S.orderEmbOfFin rfl with hxdef
     have hxroot : ∀ i, p.IsRoot (x i) :=
       fun i => (hmemS _).mp (S.orderEmbOfFin_mem rfl i)
@@ -470,10 +455,7 @@ private theorem sub_C_mul_derivative_of_pos (p : ℝ[X]) (hp : p.Splits)
     · intro i h
       exact hq0 y' hy' (h ▸ hxroot i)
   intro r hr s hs hrs
-  have hqne : q ≠ 0 := by
-    intro h
-    rw [h, roots_zero] at hr
-    simp at hr
+  have hqne : q ≠ 0 := ne_zero_of_mem_roots hr
   have hr' := (mem_roots hqne).mp hr
   have hs' := (mem_roots hqne).mp hs
   rcases lt_or_gt_of_ne hrs with h | h

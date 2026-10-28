@@ -38,8 +38,7 @@ theorem exists_ball_analytic_square_root {D : ℂ → ℂ} {z₀ : ℂ}
     convert exp_log hD0 using 1
     ring_nf
   have hd₀ : d₀ ≠ 0 := by
-    intro heq
-    exact hD0 (by simpa [heq] using hd₀sq.symm)
+    exact fun heq => hD0 (by simpa [heq] using hd₀sq.symm)
   let d : ℂ → ℂ := fun z => d₀ * exp (log (D z / D z₀) / 2)
   refine ⟨ρ, hρ, d, ?_, ?_, ?_⟩
   · intro z hz
@@ -156,28 +155,18 @@ private theorem tendsto_chebyshev_grid (t : ℝ) (ht0 : 0 < t) :
   · intro n
     change t * ((n : ℝ) / (n + 1)) ≤
       ((⌊(n : ℝ) * t⌋₊ + 1 : ℕ) : ℝ) / ((n : ℝ) + 1)
-    have hlt := Nat.lt_floor_add_one ((n : ℝ) * t)
-    have hden : 0 < (n : ℝ) + 1 := by positivity
-    have : (n : ℝ) * t ≤ ((⌊(n : ℝ) * t⌋₊ + 1 : ℕ) : ℝ) := by
-      simpa only [Nat.cast_add, Nat.cast_one] using hlt.le
-    calc
-      t * ((n : ℝ) / (n + 1)) = ((n : ℝ) * t) / (n + 1) := by ring
-      _ ≤ ((⌊(n : ℝ) * t⌋₊ + 1 : ℕ) : ℝ) / (n + 1) :=
-        div_le_div_of_nonneg_right this hden.le
+    rw [show t * ((n : ℝ) / (n + 1)) = (n * t) / (n + 1) by ring]
+    gcongr
+    simpa only [Nat.cast_add, Nat.cast_one] using
+      (Nat.lt_floor_add_one ((n : ℝ) * t)).le
   · intro n
     change ((⌊(n : ℝ) * t⌋₊ + 1 : ℕ) : ℝ) / ((n : ℝ) + 1) ≤
       t * ((n : ℝ) / (n + 1)) + 1 / (n + 1)
-    have hn : 0 ≤ (n : ℝ) * t := by positivity
-    have hle := Nat.floor_le hn
-    have hden : 0 < (n : ℝ) + 1 := by positivity
-    have : ((⌊(n : ℝ) * t⌋₊ + 1 : ℕ) : ℝ) ≤ (n : ℝ) * t + 1 := by
-      simp only [Nat.cast_add, Nat.cast_one]
-      linarith
-    calc
-      ((⌊(n : ℝ) * t⌋₊ + 1 : ℕ) : ℝ) / (n + 1) ≤
-          ((n : ℝ) * t + 1) / (n + 1) :=
-        div_le_div_of_nonneg_right this hden.le
-      _ = t * ((n : ℝ) / (n + 1)) + 1 / (n + 1) := by ring
+    rw [show t * ((n : ℝ) / (n + 1)) + 1 / (n + 1) =
+      (n * t + 1) / (n + 1) by ring]
+    gcongr
+    simp only [Nat.cast_add, Nat.cast_one]
+    linarith [Nat.floor_le (by positivity : 0 ≤ (n : ℝ) * t)]
 
 private theorem chebyshev_grid_root (t : ℝ) (ht0 : 0 < t) (ht1 : t < 1) :
     ∀ᶠ (n : ℕ) in atTop,
@@ -386,12 +375,10 @@ theorem isLimitOfZeros_chebyshev_two_step {A B : ℂ → ℂ} {W : ℕ → ℂ �
   have hδ : 0 < δ := by dsimp [δ]; positivity
   have hδε : δ ≤ ε := by
     dsimp [δ]
-    have := min_le_left ε ρ
-    linarith
+    linarith [min_le_left ε ρ]
   have hδρ : δ ≤ ρ := by
     dsimp [δ]
-    have := min_le_right ε ρ
-    linarith
+    linarith [min_le_right ε ρ]
   have hmap : 𝓝 (q z₀) ≤ Filter.map q (𝓝 z₀) :=
     (hq.eventually_constant_or_nhds_le_map_nhds).resolve_left hnconst
   have himage : q '' ball z₀ δ ∈ 𝓝 (q z₀) := by
@@ -457,14 +444,14 @@ theorem isLimitOfZeros_two_step_of_roots {A B U V u v : ℂ → ℂ}
   have hform (n : ℕ) (z : ℂ) (hz : z ∈ ball z₀ ρ) :
       W n z = αu z * u z ^ n + αv z * v z ^ n := by
     have hrz := hroots z hz
-    have h := two_step_closed_form (fun n => W n z) (A z) (B z) (u z) (v z)
-      (fun n => hrec n z) hrz.1 hrz.2.1 hrz.2.2 n
-    simpa [αu, αv, ← h0, ← h1] using h
+    simpa [αu, αv, ← h0, ← h1] using two_step_closed_form
+      (fun n => W n z) (A z) (B z) (u z) (v z)
+        (fun n => hrec n z) hrz.1 hrz.2.1 hrz.2.2 n
   have htwo : Complex.IsLimitOfZeros
       (fun n z => αu z * u z ^ n + αv z * v z ^ n) z₀ :=
     Complex.isLimitOfZeros_two_terms hαu hαv hu hv hαu0 hαv0 hv0 heq hnconst
-  apply Complex.isLimitOfZeros_of_eventually_zero_imp hρ htwo
-  exact Eventually.of_forall fun n z hz hzero => by
+  exact Complex.isLimitOfZeros_of_eventually_zero_imp hρ htwo <|
+    Eventually.of_forall fun n z hz hzero => by
     rw [hform n z hz]
     exact hzero
 
@@ -497,22 +484,18 @@ theorem isLimitOfZeros_two_step_of_roots_closure {A B U V u v : ℂ → ℂ}
     intro h
     apply hcoeffu
     filter_upwards [h, hdenev] with z hz hzden
-    rcases div_eq_zero_iff.mp hz with hnum | hdenz
-    · exact hnum
-    · exact (hzden hdenz).elim
+    exact (div_eq_zero_iff.mp hz).resolve_right hzden
   have hαvgerm : ¬∀ᶠ z in 𝓝 z₀, αv z = 0 := by
     intro h
     apply hcoeffv
     filter_upwards [h, hdenev] with z hz hzden
-    rcases div_eq_zero_iff.mp hz with hnum | hdenz
-    · exact hnum
-    · exact (hzden hdenz).elim
+    exact (div_eq_zero_iff.mp hz).resolve_right hzden
   have hform (n : ℕ) (z : ℂ) (hz : z ∈ ball z₀ ρ) :
       W n z = αu z * u z ^ n + αv z * v z ^ n := by
     have hrz := hroots z hz
-    have h := two_step_closed_form (fun n => W n z) (A z) (B z) (u z) (v z)
-      (fun n => hrec n z) hrz.1 hrz.2.1 hrz.2.2 n
-    simpa [αu, αv, ← h0, ← h1] using h
+    simpa [αu, αv, ← h0, ← h1] using two_step_closed_form
+      (fun n => W n z) (A z) (B z) (u z) (v z)
+        (fun n => hrec n z) hrz.1 hrz.2.1 hrz.2.2 n
   let α : Bool → ℂ → ℂ := fun k => if k then αu else αv
   let β : Bool → ℂ → ℂ := fun k => if k then u else v
   have htwo : Complex.IsLimitOfZeros
@@ -535,8 +518,8 @@ theorem isLimitOfZeros_two_step_of_roots_closure {A B U V u v : ℂ → ℂ}
       (by intro k _ hki hkj; cases k <;> simp_all)
       (by simpa [β] using hnconst)
     simpa [α, β, Fintype.sum_bool, add_comm] using h
-  apply Complex.isLimitOfZeros_of_eventually_zero_imp hρ htwo
-  exact Eventually.of_forall fun n z hz hzero => by
+  exact Complex.isLimitOfZeros_of_eventually_zero_imp hρ htwo <|
+    Eventually.of_forall fun n z hz hzero => by
     rw [hform n z hz]
     exact hzero
 
@@ -692,20 +675,14 @@ theorem eventually_not_splits_chebyshev_two_step_of_ratio
   let Ac : ℂ → ℂ := fun z => aeval z A
   let Bc : ℂ → ℂ := fun z => aeval z B
   let F : ℕ → ℂ → ℂ := fun n z => aeval z (W n)
-  have hF0 : F 0 = fun _ => 1 := by
-    funext z
-    simp [F, h0]
-  have hF1 : F 1 = Ac := by
-    funext z
-    simp [F, Ac, h1]
+  have hF0 : F 0 = fun _ => 1 := by funext z; simp [F, h0]
+  have hF1 : F 1 = Ac := by funext z; simp [F, Ac, h1]
   have hFrec (n : ℕ) (z : ℂ) :
       F (n + 2) z = Ac z * F (n + 1) z + Bc z * F n z := by
     simp [F, Ac, Bc, hrec]
   have hAc : AnalyticAt ℂ Ac z₀ := by
-    dsimp [Ac]
     exact analyticAt_id.aeval_polynomial A
   have hBc : AnalyticAt ℂ Bc z₀ := by
-    dsimp [Bc]
     exact analyticAt_id.aeval_polynomial B
   have hlim : Complex.IsLimitOfZeros F z₀ :=
     isLimitOfZeros_chebyshev_two_step hF0 hF1 hFrec hAc hBc hB0
@@ -713,9 +690,7 @@ theorem eventually_not_splits_chebyshev_two_step_of_ratio
   apply eventually_not_splits_of_nonreal_limit hz₀
     (Eventually.of_forall (chebyshev_two_step_ne_zero_of_degree_lt
       hAdeg hBdeg h0 h1 hrec))
-  have hhom : Complex.ofRealHom = algebraMap ℝ ℂ := by
-    ext x
-    rfl
+  have hhom : Complex.ofRealHom = algebraMap ℝ ℂ := by ext; rfl
   rw [hhom]
   simpa only [F, aeval_def, eval₂_eq_eval_map] using hlim
 

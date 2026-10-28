@@ -87,11 +87,9 @@ theorem forall_ne_or_forall_eq_of_tendstoLocallyUniformlyOn_ball {c : ℂ} {r : 
   set ρ := min ε (r - dist z0 c) / 2 with hρdef
   have hρ : 0 < ρ := by positivity
   have hρε : ρ < ε := by
-    have hmin := min_le_left ε (r - dist z0 c)
-    linarith
+    linarith [min_le_left ε (r - dist z0 c)]
   have hρδ : ρ < r - dist z0 c := by
-    have hmin := min_le_right ε (r - dist z0 c)
-    linarith
+    linarith [min_le_right ε (r - dist z0 c)]
   have hsub : closedBall z0 ρ ⊆ ball c r := by
     intro z hz
     rw [mem_closedBall] at hz
@@ -167,11 +165,9 @@ theorem isLimitOfZeros_of_tendstoLocallyUniformlyOn_ball {z₀ : ℂ} {r : ℝ}
   set ρ := min ε r / 2 with hρdef
   have hρ : 0 < ρ := by positivity
   have hρε : ρ ≤ ε := by
-    have hmin := min_le_left ε r
-    linarith
+    linarith [min_le_left ε r]
   have hρr : ρ ≤ r := by
-    have hmin := min_le_right ε r
-    linarith
+    linarith [min_le_right ε r]
   have hconv' : TendstoLocallyUniformlyOn (fun n => F (φ n)) g atTop (ball z₀ ρ) := by
     intro u hu z hz
     obtain ⟨s, hs, H⟩ := hconv u hu z (Metric.ball_subset_ball hρr hz)
@@ -471,8 +467,7 @@ private theorem isLimitOfZeros_pow_sub_varying_of_closedBall_one
     (hKconv : TendstoLocallyUniformlyOn K k atTop (ball z₀ ρ)) :
     IsLimitOfZeros (fun n z => r z ^ n - h₀ * K n z) z₀ := by
   have hr0 : r z₀ ≠ 0 := by
-    intro heq
-    simp [heq] at hrunit
+    exact fun heq => by simp [heq] at hrunit
   obtain ⟨ρr, hρr, hRslit, hRanalytic, hRexp⟩ := exists_ball_analytic_log_ratio hr hr0
   let δ := min ρ ρr
   have hδ : 0 < δ := lt_min hρ hρr
@@ -543,8 +538,7 @@ theorem isLimitOfZeros_pow_sub_of_analyticAt {r h : ℂ → ℂ} {z₀ : ℂ}
     (hnconst : ¬∀ᶠ z in 𝓝 z₀, r z = r z₀) :
     IsLimitOfZeros (fun n z => r z ^ n - h z) z₀ := by
   have hr0 : r z₀ ≠ 0 := by
-    intro heq
-    simp [heq] at hrunit
+    exact fun heq => by simp [heq] at hrunit
   obtain ⟨ρr, hρr, hRslit, hRanalytic, hRexp⟩ := exists_ball_analytic_log_ratio hr hr0
   obtain ⟨ρh, hρh, hHslit, hHanalytic, hHexp⟩ := exists_ball_analytic_log_ratio hh hh0
   let ρ := min ρr ρh
@@ -911,37 +905,15 @@ theorem isLimitOfZeros_two_dominant_with_tail {κ : Type*}
         (∀ k ∈ s, AnalyticAt ℂ (β k) z) at hdata
       have hαiz : α i z ≠ 0 := hdata.1.1
       have hβjz : β j z ≠ 0 := hdata.1.2
-      have hfactor : α i z * β j z ^ n *
-          (r z ^ n - (h z - T n z)) =
-          α i z * β i z ^ n + α j z * β j z ^ n +
-            ∑ k ∈ s, α k z * β k z ^ n := by
-        simp only [r, h, T]
-        have hterm (k : κ) : α i z * β j z ^ n *
-            ((α k z / α i z) * (β k z / β j z) ^ n) =
-            α k z * β k z ^ n := by
-          rw [div_pow]
-          field_simp [hαiz, hβjz]
-        have hsum : α i z * β j z ^ n *
-            (∑ k ∈ s, (α k z / α i z) * (β k z / β j z) ^ n) =
-            ∑ k ∈ s, α k z * β k z ^ n := by
-          rw [Finset.mul_sum]
-          exact Finset.sum_congr rfl (fun k hk => hterm k)
-        have hmain1 : α i z * β j z ^ n * (β i z / β j z) ^ n =
-            α i z * β i z ^ n := by
-          rw [div_pow]
-          field_simp [hβjz]
-        have hmain2 : α i z * β j z ^ n * (α j z / α i z) =
-            α j z * β j z ^ n := by field_simp [hαiz]
-        calc
-          α i z * β j z ^ n *
-              ((β i z / β j z) ^ n - (-α j z / α i z -
-                ∑ k ∈ s, (α k z / α i z) * (β k z / β j z) ^ n)) =
-              α i z * β j z ^ n * (β i z / β j z) ^ n +
-                α i z * β j z ^ n * (α j z / α i z) +
-                α i z * β j z ^ n *
-                  (∑ k ∈ s, (α k z / α i z) * (β k z / β j z) ^ n) := by ring
-          _ = _ := by rw [hmain1, hmain2, hsum]
-      rw [← hfactor, hzero, mul_zero]
+      simp only [r, h, T] at hzero
+      simp only [div_pow] at hzero
+      field_simp [hαiz, hβjz] at hzero
+      have hsum : β j z ^ n * α i z *
+          (∑ k ∈ s, α k z * β k z ^ n / (β j z ^ n * α i z)) =
+          ∑ k ∈ s, α k z * β k z ^ n := by
+        rw [Finset.mul_sum]
+        exact Finset.sum_congr rfl fun k _ => by field_simp [hαiz, hβjz]
+      linear_combination hzero - hsum
   exact isLimitOfZeros_of_eventually_zero_imp hρ hzeros himp
 
 /-- Sokal's two-dominant-index zero-limit theorem for a finite analytic exponential sum,
@@ -963,28 +935,21 @@ theorem isLimitOfZeros_finset_two_dominant {κ : Type*}
   have htail : IsLimitOfZeros (fun n z =>
       α i z * β i z ^ n + α j z * β j z ^ n +
         ∑ k ∈ t, α k z * β k z ^ n) z₀ := by
-    apply isLimitOfZeros_two_dominant_with_tail t α β i j
+    exact isLimitOfZeros_two_dominant_with_tail t α β i j
       (hα i hi) (hα j hj) (hβ i hi) (hβ j hj)
-    · intro k hk
-      exact hα k (Finset.mem_of_mem_erase (Finset.mem_of_mem_erase hk))
-    · intro k hk
-      exact hβ k (Finset.mem_of_mem_erase (Finset.mem_of_mem_erase hk))
-    · exact hαi0
-    · exact hαj0
-    · exact hβj0
-    · exact heq
-    · intro k hk
-      have hkj : k ≠ j := (Finset.mem_erase.mp hk).1
-      have hki : k ≠ i := (Finset.mem_erase.mp
-        (Finset.mem_erase.mp hk).2).1
-      exact hsmall k (Finset.mem_of_mem_erase
-        (Finset.mem_of_mem_erase hk)) hki hkj
-    · exact hnconst
+      (fun k hk => hα k (Finset.mem_of_mem_erase (Finset.mem_of_mem_erase hk)))
+      (fun k hk => hβ k (Finset.mem_of_mem_erase (Finset.mem_of_mem_erase hk)))
+      hαi0 hαj0 hβj0 heq (fun k hk => by
+        have hkj : k ≠ j := (Finset.mem_erase.mp hk).1
+        have hki : k ≠ i := (Finset.mem_erase.mp
+          (Finset.mem_erase.mp hk).2).1
+        exact hsmall k (Finset.mem_of_mem_erase
+          (Finset.mem_of_mem_erase hk)) hki hkj) hnconst
   have hfun : (fun n z =>
       α i z * β i z ^ n + α j z * β j z ^ n +
         ∑ k ∈ t, α k z * β k z ^ n) =
       (fun n z => ∑ k ∈ s, α k z * β k z ^ n) := by
-    funext n z
+    ext n z
     have hsum1 := Finset.sum_erase_add s (fun k => α k z * β k z ^ n) hi
     have hsum2 := Finset.sum_erase_add (s.erase i)
       (fun k => α k z * β k z ^ n) hj'
@@ -999,13 +964,11 @@ private theorem exists_nearby_unit_complex_ne {ω : ℂ} (hω : ‖ω‖ = 1)
   let t := min (ε / 2) (Real.pi / 2)
   have ht0 : 0 < t := lt_min (half_pos hε) (half_pos Real.pi_pos)
   have htε : t < ε := by
-    have := min_le_left (ε / 2) (Real.pi / 2)
     dsimp [t]
-    linarith
+    linarith [min_le_left (ε / 2) (Real.pi / 2)]
   have htπ : t < Real.pi := by
-    have := min_le_right (ε / 2) (Real.pi / 2)
     dsimp [t]
-    linarith [Real.pi_pos]
+    linarith [Real.pi_pos, min_le_right (ε / 2) (Real.pi / 2)]
   let w : ℂ := ω * exp (I * (t : ℂ))
   refine ⟨w, ?_, ?_, ?_⟩
   · simp [w, hω, norm_exp_I_mul_ofReal]
@@ -1134,12 +1097,10 @@ theorem isLimitOfZeros_finset_two_dominant_closure {κ : Type*}
     have hδ : 0 < δ := by dsimp [δ]; positivity
     have hδε : δ ≤ ε := by
       dsimp [δ]
-      have := min_le_left ε ρ
-      linarith
+      linarith [min_le_left ε ρ]
     have hδρ : δ ≤ ρ := by
       dsimp [δ]
-      have := min_le_right ε ρ
-      linarith
+      linarith [min_le_right ε ρ]
     obtain ⟨z, hzδ, hz0, hzunit, hαiz, hαjz⟩ :=
       exists_nearby_equimodular_nonzero hr (hα i hi) (hα j hj)
         hrunit hnconst hαigerm hαjgerm hδ
@@ -1163,9 +1124,9 @@ theorem isLimitOfZeros_finset_two_dominant_closure {κ : Type*}
   change IsLimitOfZeros F z₀
   simpa only [hclosed.closure_eq, Set.mem_ofPred_eq] using hcl
 
-/-- **Unique dominant index.** If the base `β i` strictly dominates every other base at `z₀`, and
-the coefficient `α i` vanishes at `z₀` without vanishing identically near `z₀`, then `z₀` is a
-liminf limit of zeros of `∑ k ∈ s, α k z * β k z ^ n`.
+/-- **Unique dominant index.** If the base `β i` strictly dominates every other base at `z₀`,
+and the coefficient `α i` vanishes at `z₀` without vanishing identically near `z₀`, then
+`z₀` is a liminf limit of zeros of `∑ k ∈ s, α k z * β k z ^ n`.
 Sokal, *Combinatorics, Probability and Computing* 13 (2004), Theorem 1.5(a). -/
 theorem isLimitOfZeros_finset_unique_dominant {κ : Type*}
     (s : Finset κ) (α β : κ → ℂ → ℂ) (i : κ) {z₀ : ℂ} (hi : i ∈ s)

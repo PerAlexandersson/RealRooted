@@ -43,10 +43,9 @@ theorem fallingFactorialMap_monomial (n : ℕ) (a : ℝ) :
     fallingFactorialMap (monomial n a) = a • descPochhammer ℝ n := by
   have h := (Polynomial.basisMonomials ℝ).constr_basis ℝ (descPochhammer ℝ) n
   rw [Polynomial.coe_basisMonomials] at h
-  have h1 : fallingFactorialMap (monomial n 1) = descPochhammer ℝ n := h
-  calc fallingFactorialMap (monomial n a) = fallingFactorialMap (a • monomial n 1) := by
-        rw [smul_monomial, smul_eq_mul, mul_one]
-    _ = a • descPochhammer ℝ n := by rw [map_smul, h1]
+  change fallingFactorialMap (monomial n 1) = descPochhammer ℝ n at h
+  rw [show monomial n a = a • monomial n 1 by
+    rw [smul_monomial, smul_eq_mul, mul_one], map_smul, h]
 
 @[simp]
 theorem fallingFactorialMap_X_pow (n : ℕ) :
@@ -87,10 +86,8 @@ theorem _root_.Polynomial.MeshGE.pairwise_sort_roots {Q : ℝ[X]} (h : Q.MeshGE 
     simpa [rs, List.getD_eq_getElem?_getD,
       List.getElem?_eq_getElem (by lia : i < rs.length),
       List.getElem?_eq_getElem hi, Option.getD_some] using hgap
-  have htrans : Trans (fun a b : ℝ => a + 1 ≤ b)
-      (fun a b : ℝ => a + 1 ≤ b) (fun a b : ℝ => a + 1 ≤ b) :=
-    ⟨by intro a b c hab hbc; linarith⟩
-  exact @List.IsChain.pairwise ℝ _ rs htrans hchain
+  exact @List.IsChain.pairwise ℝ _ rs
+    ⟨by intro a b c hab hbc; linarith⟩ hchain
 
 private theorem meshGE_of_pairwise_sort {W : ℝ[X]} (hs : W.Splits)
     (h : (W.roots.sort (· ≤ ·)).Pairwise (fun a b : ℝ => a + 1 ≤ b)) : W.MeshGE 1 := by
@@ -122,8 +119,8 @@ private theorem pairwise_of_listInterlaces_map :
         linarith
 
 private theorem listInterlaces_cons_map_add_one :
-    ∀ (ss : List ℝ) (c : ℝ), ss.Pairwise (fun a b : ℝ => a + 1 ≤ b) → (∀ x ∈ ss, c ≤ x) →
-      ListInterlaces ss (c :: ss.map (· + 1))
+    ∀ (ss : List ℝ) (c : ℝ), ss.Pairwise (fun a b : ℝ => a + 1 ≤ b) →
+      (∀ x ∈ ss, c ≤ x) → ListInterlaces ss (c :: ss.map (· + 1))
   | [], c, _, _ => by simp [ListInterlaces]
   | s :: ss, c, hp, hc => by
       rw [List.pairwise_cons] at hp
@@ -235,7 +232,8 @@ private theorem meshGE_one_of_strictInterl_comp_succ {Q W : ℝ[X]} (h1 : Strict
 /-! ### The inductive step -/
 
 /-- The step of Brenti's lemma: for `Q` with positive leading coefficient, mesh at least one and
-nonnegative roots, and `α ≥ 0`, the polynomial `x Q(x - 1) - α Q` has degree `deg Q + 1`, positive
+nonnegative roots, and `α ≥ 0`, the polynomial `x Q(x - 1) - α Q` has degree `deg Q + 1`,
+positive
 leading coefficient, mesh at least one and nonnegative roots. -/
 private theorem step {Q : ℝ[X]} {α : ℝ} (hα : 0 ≤ α) (hQpos : HasPosLeadingCoeff Q)
     (hmesh : Q.MeshGE 1) (hnn : ∀ r ∈ Q.roots, 0 ≤ r) :
@@ -247,16 +245,15 @@ private theorem step {Q : ℝ[X]} {α : ℝ} (hα : 0 ≤ α) (hQpos : HasPosLea
   have hRlc := leadingCoeff_comp_X_sub_C_one' Q
   have hRdeg := natDegree_comp_X_sub_C_one' Q
   have hR0 : Q.comp (X - C 1) ≠ 0 := by
-    intro h
-    have : Q.leadingCoeff = 0 := by rw [← hRlc, h, leadingCoeff_zero]
-    exact hQ0 (leadingCoeff_eq_zero.mp this)
+    rw [show X - C (1 : ℝ) = X + C (-1) by simp [sub_eq_add_neg],
+      comp_X_add_C_ne_zero_iff]
+    exact hQ0
   have hRpos : HasPosLeadingCoeff (Q.comp (X - C 1)) := by
     unfold HasPosLeadingCoeff at hQpos ⊢
     rwa [hRlc]
   have hHpos : HasPosLeadingCoeff (X * Q.comp (X - C 1)) := hRpos.X_mul
   have hHdeg : (X * Q.comp (X - C 1)).natDegree = Q.natDegree + 1 := by
     rw [natDegree_X_mul hR0, hRdeg]
-  have hH0 : X * Q.comp (X - C 1) ≠ 0 := hHpos.ne_zero
   have hαQdeg : (C α * Q).natDegree < (X * Q.comp (X - C 1)).natDegree := by
     have := natDegree_C_mul_le α Q
     lia
@@ -282,7 +279,8 @@ private theorem step {Q : ℝ[X]} {α : ℝ} (hα : 0 ≤ α) (hQpos : HasPosLea
     · subst h0
       simpa using ⟨hHQ, hHR⟩
     · have hfpos : HasPosLeadingCoeff (C α * Q) := hasPosLeadingCoeff_C_mul hαpos hQpos
-      have hfh : StrictInterl (C α * Q) (X * Q.comp (X - C 1)) := hHQ.C_mul_left hαpos.ne'
+      have hfh : StrictInterl (C α * Q) (X * Q.comp (X - C 1)) :=
+        hHQ.C_mul_left hαpos.ne'
       exact ⟨StrictInterl.sub_of_triple_of_posLeadingCoeff
           ((StrictInterl.refl hQ0 hmesh.1).C_mul_left hαpos.ne') hHQ hfh hfpos hQpos hHpos hWpos,
         StrictInterl.sub_of_triple_of_posLeadingCoeff (hQR.C_mul_left hαpos.ne') hHR hfh hfpos
@@ -423,22 +421,15 @@ theorem descPochhammerBasis_repr_forwardDifference (p : ℝ[X]) (j : ℕ) :
   have h : (descPochhammerBasis ℝ).coord j ∘ₗ forwardDifference =
       ((j : ℝ) + 1) • (descPochhammerBasis ℝ).coord (j + 1) := by
     refine (descPochhammerBasis ℝ).ext fun i => ?_
-    have hL : (descPochhammerBasis ℝ).coord j (forwardDifference (descPochhammerBasis ℝ i)) =
-        (i : ℝ) * (if i - 1 = j then 1 else 0) := by
-      rw [e i, forwardDifference_descPochhammer, ← e (i - 1), map_smul, Basis.coord_apply,
-        Basis.repr_self, Finsupp.single_apply]
-      simp [smul_eq_mul]
-    have hR : (((j : ℝ) + 1) • (descPochhammerBasis ℝ).coord (j + 1))
-        (descPochhammerBasis ℝ i) = ((j : ℝ) + 1) * (if i = j + 1 then 1 else 0) := by
-      rw [LinearMap.smul_apply, Basis.coord_apply, Basis.repr_self, Finsupp.single_apply]
-      simp [smul_eq_mul]
-    rw [LinearMap.comp_apply, hL, hR]
+    rw [LinearMap.comp_apply]
+    conv_lhs =>
+      rw [e i, forwardDifference_descPochhammer, ← e (i - 1), map_smul,
+        Basis.coord_apply, Basis.repr_self, Finsupp.single_apply]
+    rw [LinearMap.smul_apply, Basis.coord_apply, Basis.repr_self, Finsupp.single_apply]
+    simp only [smul_eq_mul]
     rcases i with _ | k
     · simp
-    · by_cases hk : k = j
-      · subst hk
-        simp
-      · simp [hk]
+    · by_cases hk : k = j <;> simp_all
   have := LinearMap.congr_fun h p
   simpa using this
 
@@ -457,7 +448,8 @@ private theorem listInterlaces_exists_le' :
         exact ⟨r, List.mem_cons_of_mem _ hr', hle⟩
 
 private theorem listInterlaces_left_ge_head :
-    ∀ (ss : List ℝ) (r : ℝ) (rs : List ℝ), ListInterlaces ss (r :: rs) → ∀ x ∈ ss, r ≤ x
+    ∀ (ss : List ℝ) (r : ℝ) (rs : List ℝ),
+      ListInterlaces ss (r :: rs) → ∀ x ∈ ss, r ≤ x
   | [], _, _, _, x, hx => by simp at hx
   | _ :: _, _, [], h, _, _ => by simp [ListInterlaces] at h
   | s :: ss, r, r₂ :: rs, h, x, hx => by
@@ -576,8 +568,8 @@ where `n = deg p`. -/
 theorem neg_one_pow_mul_descPochhammerBasis_repr_nonneg {p : ℝ[X]} (hpos : HasPosLeadingCoeff p)
     (hmesh : p.MeshGE 1) (hnn : HasOnlyNonnegRoots p) {i : ℕ} (hi : i ≤ p.natDegree) :
     0 ≤ (-1 : ℝ) ^ (p.natDegree - i) * (descPochhammerBasis ℝ).repr p i := by
-  have key : ∀ n : ℕ, ∀ p : ℝ[X], p.natDegree = n → HasPosLeadingCoeff p → p.MeshGE 1 →
-      HasOnlyNonnegRoots p → ∀ i, i ≤ n →
+  have key : ∀ n : ℕ, ∀ p : ℝ[X], p.natDegree = n → HasPosLeadingCoeff p →
+      p.MeshGE 1 → HasOnlyNonnegRoots p → ∀ i, i ≤ n →
         0 ≤ (-1 : ℝ) ^ (n - i) * (descPochhammerBasis ℝ).repr p i := by
     intro n
     induction n with
@@ -638,7 +630,8 @@ theorem _root_.Polynomial.MeshGE.iterate_forwardDifference {q : ℝ[X]} (hmesh :
     (hq0 : q ≠ 0) (hnn : HasOnlyNonnegRoots q) :
     ∀ r, r ≤ q.natDegree → (⇑forwardDifference)^[r] q ≠ 0 ∧
       ((⇑forwardDifference)^[r] q).natDegree = q.natDegree - r ∧
-      ((⇑forwardDifference)^[r] q).MeshGE 1 ∧ HasOnlyNonnegRoots ((⇑forwardDifference)^[r] q) := by
+      ((⇑forwardDifference)^[r] q).MeshGE 1 ∧
+        HasOnlyNonnegRoots ((⇑forwardDifference)^[r] q) := by
   intro r
   induction r with
   | zero => intro _; exact ⟨hq0, rfl, hmesh, hnn⟩

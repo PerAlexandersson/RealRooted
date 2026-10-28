@@ -103,7 +103,8 @@ private theorem MeshClass.aeval_prod {s : Multiset ℝ} (hs : ∀ r ∈ s, r ≤
 /-- BKS 2016, Corollary 2 (operator form): if `φ ≠ 0` is real-rooted with only nonpositive roots,
 then `φ(xΔ)` preserves real-rooted polynomials with nonnegative roots and mesh at least one. -/
 theorem meshGE_one_aeval_discreteEuler {φ : ℝ[X]} (hφ : φ ≠ 0) (hs : φ.Splits)
-    (hroots : ∀ r ∈ φ.roots, r ≤ 0) {p : ℝ[X]} (hp : p.MeshGE 1) (hpnn : HasOnlyNonnegRoots p) :
+    (hroots : ∀ r ∈ φ.roots, r ≤ 0) {p : ℝ[X]} (hp : p.MeshGE 1)
+    (hpnn : HasOnlyNonnegRoots p) :
     (aeval discreteEuler φ p).MeshGE 1 ∧ HasOnlyNonnegRoots (aeval discreteEuler φ p) := by
   have hφeq : φ = C φ.leadingCoeff * (φ.roots.map fun r => X - C r).prod :=
     (C_leadingCoeff_mul_prod_multiset_X_sub_C (splits_iff_card_roots.mp hs)).symm
@@ -119,15 +120,18 @@ theorem meshGE_one_aeval_discreteEuler {φ : ℝ[X]} (hφ : φ ≠ 0) (hs : φ.S
 /-! ### Discrete multiplier sequences -/
 
 /-- A sequence `a` is a *discrete multiplier sequence* if the linear operator `T` with
-`T [x]_i = a i • [x]_i` on the falling factorials `[x]_i = descPochhammer ℝ i` preserves the class
+`T [x]_i = a i • [x]_i` on the falling factorials `[x]_i = descPochhammer ℝ i` preserves
+the class
 of polynomials with mesh at least one and only nonnegative roots.  The falling factorials span
 `ℝ[X]` (`Polynomial.descPochhammerBasis`), so such a `T` is unique
 (`Polynomial.linearMap_ext_descPochhammer`) and exists for every `a`
 (`RealRooted.exists_linearMap_descPochhammer`), so the predicate is not vacuous.  We quantify over
 all of them instead of fixing a choice. -/
 def IsDiscreteMultiplierSequence (a : ℕ → ℝ) : Prop :=
-  ∀ T : ℝ[X] →ₗ[ℝ] ℝ[X], (∀ i, T (descPochhammer ℝ i) = a i • descPochhammer ℝ i) →
-    ∀ p : ℝ[X], p.MeshGE 1 → HasOnlyNonnegRoots p → (T p).MeshGE 1 ∧ HasOnlyNonnegRoots (T p)
+  ∀ T : ℝ[X] →ₗ[ℝ] ℝ[X],
+    (∀ i, T (descPochhammer ℝ i) = a i • descPochhammer ℝ i) →
+      ∀ p : ℝ[X], p.MeshGE 1 → HasOnlyNonnegRoots p →
+        (T p).MeshGE 1 ∧ HasOnlyNonnegRoots (T p)
 
 /-- BKS 2016, Corollary 2 (polynomial case): if `φ ≠ 0` is real-rooted with only nonpositive
 roots, then `i ↦ φ(i)` is a discrete multiplier sequence. -/
@@ -147,7 +151,8 @@ theorem isDiscreteMultiplierSequence_eval {φ : ℝ[X]} (hφ : φ ≠ 0) (hs : �
 there is a linear operator `T` with `T [x]_i = a i • [x]_i`.  (This does not claim that `T`
 preserves the mesh class; that is `IsDiscreteMultiplierSequence a`.) -/
 theorem exists_linearMap_descPochhammer (a : ℕ → ℝ) :
-    ∃ T : ℝ[X] →ₗ[ℝ] ℝ[X], ∀ i, T (descPochhammer ℝ i) = a i • descPochhammer ℝ i :=
+    ∃ T : ℝ[X] →ₗ[ℝ] ℝ[X],
+      ∀ i, T (descPochhammer ℝ i) = a i • descPochhammer ℝ i :=
   Polynomial.exists_linearMap_descPochhammer fun i => a i • descPochhammer ℝ i
 
 /-! ### Monotonicity of positive multiplier sequences -/
@@ -230,10 +235,7 @@ private theorem meshClass_testRoots (m : ℕ) {t : ℝ} (ht : 0 < t) :
     · left
       linarith [testRoots_gap ht hs hr h]
   · rw [hroots, mem_testRoots] at hr
-    rcases hr with ⟨j, -, rfl⟩ | rfl | rfl
-    · exact Nat.cast_nonneg j
-    · positivity
-    · positivity
+    rcases hr with ⟨j, -, rfl⟩ | rfl | rfl <;> positivity
 
 /-- The quadratic `A (x - m)(x - m - 1) - 2 t B (x - m) + t (t + 1) C`, expanded. -/
 private def quadFactor (A B C : ℝ) (m : ℕ) (t : ℝ) : ℝ[X] :=
@@ -269,27 +271,27 @@ theorem IsDiscreteMultiplierSequence.le_succ {a : ℕ → ℝ} (ha : IsDiscreteM
     intro t ht
     have hp := meshClass_testRoots m ht
     obtain ⟨hmesh, -⟩ := ha T hT _ hp.1 hp.2
+    let Q := quadFactor (a (m + 2)) (a (m + 1)) (a m) m t
     have hTp : T ((testRoots m t).map fun r => X - C r).prod =
-        descPochhammer ℝ m * quadFactor (a (m + 2)) (a (m + 1)) (a m) m t := by
+        descPochhammer ℝ m * Q := by
       rw [testRoots_prod_eq, map_add, map_sub, map_smul, map_smul, hT, hT, hT]
       rw [descPochhammer_succ_right, descPochhammer_succ_right]
       simp only [quadFactor, smul_eq_C_mul, map_mul, map_add, map_sub, map_neg, map_natCast,
-        map_ofNat, map_one, Nat.cast_add, Nat.cast_one]
+        map_ofNat, map_one, Nat.cast_add, Nat.cast_one, Q]
       ring
     rw [hTp] at hmesh
     have hA : a (m + 2) ≠ 0 := hpos.ne'
-    have hQdeg := natDegree_quadFactor hA (a (m + 1)) (a m) m t
-    have hQne : quadFactor (a (m + 2)) (a (m + 1)) (a m) m t ≠ 0 := by
+    have hQdeg : Q.natDegree = 2 := natDegree_quadFactor hA (a (m + 1)) (a m) m t
+    have hQne : Q ≠ 0 := by
       intro h
       simp [h] at hQdeg
     have hPne := (monic_descPochhammer ℝ m).ne_zero
     have hne := mul_ne_zero hPne hQne
     have hQsplit := hmesh.1.of_dvd hne (dvd_mul_left _ _)
-    have hcard : (quadFactor (a (m + 2)) (a (m + 1)) (a m) m t).roots.card = 2 := by
+    have hcard : Q.roots.card = 2 := by
       rw [splits_iff_card_roots.mp hQsplit, hQdeg]
     obtain ⟨x, y, hxy⟩ := Multiset.card_eq_two.mp hcard
-    have hle : (quadFactor (a (m + 2)) (a (m + 1)) (a m) m t).roots ≤
-        (descPochhammer ℝ m * quadFactor (a (m + 2)) (a (m + 1)) (a m) m t).roots := by
+    have hle : Q.roots ≤ (descPochhammer ℝ m * Q).roots := by
       rw [roots_mul hne]
       exact Multiset.le_add_left _ _
     have hnodup := (hmesh.roots_nodup one_pos)
@@ -297,21 +299,19 @@ theorem IsDiscreteMultiplierSequence.le_succ {a : ℕ → ℝ} (ha : IsDiscreteM
       rw [← hxy]
       exact Multiset.nodup_of_le hle hnodup
     have hxy_ne : x ≠ y := by simpa using hxy_nodup
-    have hxmem : x ∈ (descPochhammer ℝ m *
-        quadFactor (a (m + 2)) (a (m + 1)) (a m) m t).roots :=
+    have hxmem : x ∈ (descPochhammer ℝ m * Q).roots :=
       Multiset.subset_of_le hle (by rw [hxy]; simp)
-    have hymem : y ∈ (descPochhammer ℝ m *
-        quadFactor (a (m + 2)) (a (m + 1)) (a m) m t).roots :=
+    have hymem : y ∈ (descPochhammer ℝ m * Q).roots :=
       Multiset.subset_of_le hle (by rw [hxy]; simp)
     have hgap := ((Polynomial.MeshGE.iff_roots_nodup_pairwise_gap one_pos).1 hmesh).2.2 x hxmem
       y hymem hxy_ne
-    have hxroot : (quadFactor (a (m + 2)) (a (m + 1)) (a m) m t).eval x = 0 := by
-      have : x ∈ (quadFactor (a (m + 2)) (a (m + 1)) (a m) m t).roots := by rw [hxy]; simp
+    have hxroot : Q.eval x = 0 := by
+      have : x ∈ Q.roots := by rw [hxy]; simp
       exact (mem_roots hQne).1 this
-    have hyroot : (quadFactor (a (m + 2)) (a (m + 1)) (a m) m t).eval y = 0 := by
-      have : y ∈ (quadFactor (a (m + 2)) (a (m + 1)) (a m) m t).roots := by rw [hxy]; simp
+    have hyroot : Q.eval y = 0 := by
+      have : y ∈ Q.roots := by rw [hxy]; simp
       exact (mem_roots hQne).1 this
-    rw [eval_quadFactor] at hxroot hyroot
+    simp only [Q, eval_quadFactor] at hxroot hyroot
     have hsq : 1 ≤ (x - y) ^ 2 := by
       have h1 : 1 ≤ |x - y| := by simpa using hgap
       nlinarith [sq_abs (x - y)]
@@ -356,23 +356,20 @@ theorem descPochhammerBasis_repr_apply_eq_mul_repr {a : ℕ → ℝ} {T : ℝ[X]
     (descPochhammerBasis ℝ).repr (T p) k = a k * (descPochhammerBasis ℝ).repr p k := by
   have e : ∀ i, descPochhammerBasis ℝ i = descPochhammer ℝ i := fun i =>
     descPochhammerBasis_apply i
-  have h : (descPochhammerBasis ℝ).coord k ∘ₗ T = a k • (descPochhammerBasis ℝ).coord k := by
+  have h : (descPochhammerBasis ℝ).coord k ∘ₗ T =
+      a k • (descPochhammerBasis ℝ).coord k := by
     refine (descPochhammerBasis ℝ).ext fun i => ?_
     rw [LinearMap.comp_apply, e i, hT i, ← e i, map_smul, LinearMap.smul_apply,
       Basis.coord_apply, Basis.repr_self, Finsupp.single_apply]
-    by_cases hik : i = k
-    · subst hik
-      simp
-    · simp [hik]
+    split_ifs <;> simp_all
   have := LinearMap.congr_fun h p
   simpa using this
 
 private theorem roots_descPochhammer (n : ℕ) :
     (descPochhammer ℝ n).roots = (Multiset.range n).map fun j : ℕ => (j : ℝ) := by
-  have := roots_multiset_prod_X_sub_C ((Multiset.range n).map fun j : ℕ => (j : ℝ))
-  rw [Multiset.map_map] at this
   rw [descPochhammer_eq_prod]
-  exact this
+  simpa only [Multiset.map_map, Function.comp_apply] using
+    roots_multiset_prod_X_sub_C ((Multiset.range n).map fun j : ℕ => (j : ℝ))
 
 private theorem meshGE_descPochhammer (n : ℕ) : (descPochhammer ℝ n).MeshGE 1 := by
   have hs : (descPochhammer ℝ n).Splits := by
@@ -418,8 +415,7 @@ private theorem shiftedFalling_meshClass (n : ℕ) {t : ℝ} (ht : 0 ≤ t) :
     Multiset.mem_map] at hr
   obtain ⟨j, -, rfl⟩ := hr
   simp only [Function.comp_apply, sub_neg_eq_add]
-  have : (0 : ℝ) ≤ j := Nat.cast_nonneg j
-  linarith
+  positivity
 
 private theorem shiftedFalling_natDegree (n : ℕ) (t : ℝ) :
     (shiftedFalling n t).natDegree = n := by
@@ -471,22 +467,22 @@ private theorem repr_shiftedFalling_ne_zero {t : ℝ} (ht : 0 < t) :
 
 /-- The coordinates of `[x - 1]_n` are nonzero, and alternate in sign. -/
 private theorem shiftedFalling_sign {n : ℕ} :
-    ∀ k ≤ n, 0 < (-1 : ℝ) ^ (n - k) * (descPochhammerBasis ℝ).repr (shiftedFalling n 1) k := by
+    ∀ k ≤ n,
+      0 < (-1 : ℝ) ^ (n - k) * (descPochhammerBasis ℝ).repr (shiftedFalling n 1) k := by
   obtain ⟨hpos, hmesh, hnn⟩ := shiftedFalling_meshClass n (t := 1) zero_le_one
   intro k hk
   have h := neg_one_pow_mul_descPochhammerBasis_repr_nonneg hpos hmesh hnn (i := k)
     (by rw [shiftedFalling_natDegree]; exact hk)
   rw [shiftedFalling_natDegree] at h
-  refine lt_of_le_of_ne h fun h0 => repr_shiftedFalling_ne_zero one_pos k n hk ?_
-  rcases mul_eq_zero.mp h0.symm with h | h
-  · exact absurd h (pow_ne_zero _ (by norm_num))
-  · exact h
+  exact lt_of_le_of_ne h <| Ne.symm <| mul_ne_zero (pow_ne_zero _ (by norm_num))
+    (repr_shiftedFalling_ne_zero one_pos k n hk)
 
 /-- The image of `[x - 1]_n` under a diagonal operator with `a n ≠ 0` has degree `n`, and lies in
 the mesh class when `a` is a discrete multiplier sequence. -/
 private theorem IsDiscreteMultiplierSequence.shifted {a : ℕ → ℝ}
     (ha : IsDiscreteMultiplierSequence a) {T : ℝ[X] →ₗ[ℝ] ℝ[X]}
-    (hT : ∀ i, T (descPochhammer ℝ i) = a i • descPochhammer ℝ i) {n : ℕ} (hn : a n ≠ 0) :
+    (hT : ∀ i, T (descPochhammer ℝ i) = a i • descPochhammer ℝ i)
+    {n : ℕ} (hn : a n ≠ 0) :
     T (shiftedFalling n 1) ≠ 0 ∧ (T (shiftedFalling n 1)).natDegree = n ∧
       (T (shiftedFalling n 1)).MeshGE 1 ∧ HasOnlyNonnegRoots (T (shiftedFalling n 1)) := by
   obtain ⟨-, hmesh, hnn⟩ := shiftedFalling_meshClass n (t := 1) zero_le_one
@@ -535,10 +531,7 @@ private theorem IsDiscreteMultiplierSequence.sign_le {a : ℕ → ℝ}
     have := hc k hk
     by_contra hak
     push Not at hak
-    have e : (-1 : ℝ) ^ (n - k) * (-1 * (a k * (descPochhammerBasis ℝ).repr
-        (shiftedFalling n 1) k)) = -(a k * ((-1 : ℝ) ^ (n - k) *
-        (descPochhammerBasis ℝ).repr (shiftedFalling n 1) k)) := by ring
-    rw [e] at h'
+    ring_nf at h'
     nlinarith [mul_pos hak this]
   · left
     intro k hk
@@ -548,10 +541,7 @@ private theorem IsDiscreteMultiplierSequence.sign_le {a : ℕ → ℝ}
     have := hc k hk
     by_contra hak
     push Not at hak
-    have e : (-1 : ℝ) ^ (n - k) * (a k * (descPochhammerBasis ℝ).repr
-        (shiftedFalling n 1) k) = a k * ((-1 : ℝ) ^ (n - k) *
-        (descPochhammerBasis ℝ).repr (shiftedFalling n 1) k) := by ring
-    rw [e] at h'
+    ring_nf at h'
     nlinarith [mul_pos (neg_pos.mpr hak) this]
 
 /-- BKS 2016, Corollary 3: all nonzero entries of a discrete multiplier sequence have the same
@@ -848,7 +838,8 @@ theorem isDiscreteMultiplierSequence_of_adjacent {a : ℕ → ℝ} {m : ℕ}
       ring
     rw [hform]
     obtain ⟨h1, h2⟩ := good_descPochhammer_mul (m := m) (r := (m : ℝ) - A / B) (by linarith)
-    exact ⟨(Polynomial.MeshGE.C_mul_iff _ 1 hB0).2 h1, (HasOnlyNonnegRoots.C_mul_iff hB0 _).2 h2⟩
+    exact ⟨(Polynomial.MeshGE.C_mul_iff _ 1 hB0).2 h1,
+      (HasOnlyNonnegRoots.C_mul_iff hB0 _).2 h2⟩
 
 /-- BKS 2016, Proposition 7: a sequence with at most two nonzero entries is a discrete
 multiplier sequence if and only if its nonzero entries are adjacent and have the same sign.  The

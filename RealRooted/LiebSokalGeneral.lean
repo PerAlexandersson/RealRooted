@@ -97,8 +97,7 @@ private theorem notMem_vars_mul
     {P Q : MvPolynomial sigma R} (hP : i ∉ P.vars) (hQ : i ∉ Q.vars) :
     i ∉ (P * Q).vars := by
   classical
-  intro hi
-  exact (Finset.mem_union.mp (MvPolynomial.vars_mul P Q hi)).elim hP hQ
+  exact fun hi => (Finset.mem_union.mp (MvPolynomial.vars_mul P Q hi)).elim hP hQ
 
 private theorem blockEmbedding_injective
     {sigma : Type*} (kappa : sigma → ℕ) (i : sigma) :
@@ -137,10 +136,7 @@ private theorem blockEmbedding_notMem_vars_prod
         (⟨j, y⟩ : BorceaBranden.PolarizedSource kappa)) (P j)) hx
   simp only [Finset.mem_biUnion] at hx'
   obtain ⟨j, hj, hxj⟩ := hx'
-  have hji : j ≠ i := by
-    intro h
-    subst j
-    exact hi hj
+  have hji : j ≠ i := fun h => hi (h ▸ hj)
   exact blockEmbedding_notMem_vars_rename kappa hji.symm x (P j) hxj
 
 private theorem applyNegDifferential_blockProducts
@@ -250,8 +246,8 @@ private theorem descFactorialScale_mem_degreeOfLE
   by_contra hmi
   have hzero : (kappa i).descFactorial (m i) = 0 :=
     Nat.descFactorial_eq_zero_iff_lt.mpr (Nat.lt_of_not_ge hmi)
-  have hprod : ∏ j, (kappa j).descFactorial (m j) = 0 := by
-    exact Finset.prod_eq_zero (Finset.mem_univ i) hzero
+  have hprod : ∏ j, (kappa j).descFactorial (m j) = 0 :=
+    Finset.prod_eq_zero (Finset.mem_univ i) hzero
   have hcoeff := Finsupp.mem_support_iff.mp hm
   rw [coeff_descFactorialScale, hprod, Nat.cast_zero, zero_mul] at hcoeff
   exact hcoeff rfl
@@ -298,7 +294,7 @@ private theorem coordinateDiagonalOperator_zero
     BorceaBranden.coordinateDiagonalOperator gamma i
         (0 : MvPolynomial sigma ℂ) = 0 := by
   classical
-  ext m
+  ext
   simp
 
 private theorem fold_coordinateDiagonalOperator_zero
@@ -307,10 +303,7 @@ private theorem fold_coordinateDiagonalOperator_zero
       BorceaBranden.coordinateDiagonalOperator
         (fun k ↦ ((kappa i).descFactorial k : ℝ)) i Q)
       (0 : MvPolynomial sigma ℂ) = 0 := by
-  induction l with
-  | nil => rfl
-  | cons i l ih =>
-      rw [List.foldl_cons, coordinateDiagonalOperator_zero, ih]
+  induction l <;> simp_all [coordinateDiagonalOperator_zero]
 
 private theorem fold_coordinateDiagonalOperator_zero_or_stable
     {sigma : Type*} [Finite sigma] (kappa : sigma → ℕ)
@@ -423,11 +416,9 @@ private theorem scaled_blockwisePolarization_basis
       p =
         c • MvPolynomial.basisDegreeOfLE (R := ℂ) kappa m := by
     apply Subtype.ext
-    ext n
-    by_cases hnm : n = m.1
-    · subst n
-      simp [p, c, MvPolynomial.coeff_monomial]
-    · simp [p, c, MvPolynomial.coeff_monomial, Ne.symm hnm]
+    dsimp [p]
+    rw [MvPolynomial.coe_basisDegreeOfLE, descFactorialScale_monomial]
+    rw [MvPolynomial.smul_eq_C_mul, MvPolynomial.C_mul_monomial]
   change (BorceaBranden.blockwisePolarizationDegreeBoxGeneral kappa p).1 = _
   calc
     (BorceaBranden.blockwisePolarizationDegreeBoxGeneral kappa p).1 =
@@ -456,7 +447,7 @@ private theorem blockwisePolarization_basis
       (MvPolynomial.basisDegreeOfLE (R := ℂ) kappa m)).1 =
         normalizedPolarizationFactors kappa m.1 := by
   rw [BorceaBranden.blockwisePolarizationDegreeBoxGeneral_basis]
-  exact blockwisePolarizationBasis_eq_normalizedFactors kappa m
+  apply blockwisePolarizationBasis_eq_normalizedFactors
 
 private theorem choose_differential_identity
     {d j k : ℕ} (hj : j ≤ d) (hk : k ≤ j) :
@@ -540,7 +531,7 @@ private theorem iteratedPDerivAt_monomial'
       have hsub : m - Finsupp.single i k - Finsupp.single i 1 =
           m - Finsupp.single i (k + 1) := by
         ext j
-        by_cases hji : j = i <;> simp [hji, Nat.sub_sub]
+        simp [Nat.sub_sub]
       rw [hsub]
       have hi : (m - Finsupp.single i k) i = m i - k := by simp
       rw [hi, Nat.descFactorial_succ, Nat.cast_mul]
@@ -559,7 +550,7 @@ private theorem applyNegDifferential_X_pow
   have hsub : Finsupp.single i j - Finsupp.single i k =
       Finsupp.single i (j - k) := by
     ext x
-    by_cases hxi : x = i <;> simp [hxi]
+    simp
   rw [hsub]
   simp only [Finsupp.sum_single_index, Finsupp.single_eq_same,
     mul_one]
@@ -581,9 +572,7 @@ private theorem sigmaFst_finOne_injective {sigma : Type*} :
   intro ⟨i, x⟩ ⟨j, y⟩ h
   dsimp at h
   subst j
-  have hxy : x = y := Subsingleton.elim _ _
-  subst y
-  rfl
+  exact congrArg (Sigma.mk i) (Subsingleton.elim x y)
 
 private theorem diagonal_polarized_apply_basis
     {sigma : Type*} [Fintype sigma] (kappa : sigma → ℕ)
@@ -767,12 +756,9 @@ theorem MvUpperHalfPlaneStable.liebSokal
   have hid := diagonal_polarized_apply kappa f g
   rcases descFactorialScale_zero_or_stable kappa hF with hzero | hscaled
   · left
-    have hfzero : descFactorialScaleDegreeBox kappa f = 0 := by
-      apply Subtype.ext
-      exact hzero
+    have hfzero : descFactorialScaleDegreeBox kappa f = 0 := Subtype.ext hzero
     rw [← hid, hfzero, map_zero]
-    change MvPolynomial.rename Sigma.fst
-      (applyNegDifferential 0 _) = 0
+    change MvPolynomial.rename Sigma.fst (applyNegDifferential 0 _) = 0
     rw [applyNegDifferential_zero_left, map_zero]
   · let pf := BorceaBranden.blockwisePolarizationDegreeBoxGeneral kappa
       (descFactorialScaleDegreeBox kappa f)

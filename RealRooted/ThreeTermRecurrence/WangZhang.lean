@@ -251,9 +251,8 @@ private lemma Wseq_card_roots {a b c d : ℝ} (ha : 0 < a) (hb : 0 < b) (hc : 0 
     (hK : a * d < b * c) (n : ℕ) (hn : 2 ≤ n) : n - 1 ≤ (Wseq a b c d n).roots.card := by
   have hn0 : (Wseq a b c d n) ≠ 0 := by
     intro h
-    have := Wseq_leadingCoeff ha.ne' b c d n
-    rw [h, leadingCoeff_zero] at this
-    exact (pow_ne_zero _ ha.ne') this.symm
+    exact (pow_ne_zero _ ha.ne') (by
+      simpa [h] using (Wseq_leadingCoeff ha.ne' b c d n).symm)
   have hz0 : 0 < (Wseq a b c d n).eval 0 := by
     obtain ⟨k, rfl⟩ : ∃ k, n = k + 2 := ⟨n - 2, by lia⟩
     exact (Wseq_eval_zero_pos hb hd k).1
@@ -366,9 +365,7 @@ private lemma Wseq_splits {a b c d : ℝ} (ha : 0 < a) (hb : 0 < b) (hc : 0 < c)
   have hb'tend : Filter.Tendsto b' Filter.atTop (nhds b) := by
     simpa [b'] using tendsto_const_nhds.add
       (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
-  have hhom : Complex.ofRealHom = algebraMap ℝ ℂ := by
-    ext x
-    rfl
+  have hhom : Complex.ofRealHom = algebraMap ℝ ℂ := by ext; rfl
   have hlimit := Polynomial.eq_zero_or_splits_of_tendsto_eval_of_natDegree_le
     (p := p) (p₀ := Wseq a b c d n) (N := n)
     (fun k => (Wseq_deg a (b' k) c d n).1)
@@ -381,10 +378,8 @@ private lemma Wseq_splits {a b c d : ℝ} (ha : 0 < a) (hb : 0 < b) (hc : 0 < c)
       have ht := (Wseq_continuous a c d z n).continuousAt.tendsto.comp hb'tend
       simpa only [p, Function.comp_def, aeval_def, eval₂_eq_eval_map] using ht)
   rcases hlimit with hzero | hsplits
-  · exfalso
-    have hlead := Wseq_leadingCoeff ha.ne' b c d n
-    rw [hzero, leadingCoeff_zero] at hlead
-    exact (pow_ne_zero _ ha.ne') hlead.symm
+  · exact (pow_ne_zero _ ha.ne') (by
+      simpa [hzero] using (Wseq_leadingCoeff ha.ne' b c d n).symm) |>.elim
   · exact hsplits
 
 /-- Wang–Zhang, arXiv:1712.06105, Theorem 2.1 (sufficiency; RealRooted issue #2067).
@@ -460,12 +455,10 @@ private theorem exists_nonreal_positive_ratio {q : ℂ → ℂ} {x : ℂ} {ρ : 
   have ht0 : 0 < t := by dsimp [t]; positivity
   have ht1 : t < 1 := by
     dsimp [t]
-    have := min_le_right η 1
-    linarith
+    linarith [min_le_right η 1]
   have htη : t < η := by
     dsimp [t]
-    have := min_le_left η 1
-    linarith
+    linarith [min_le_left η 1]
   have htball : (t : ℂ) ∈ ball (q x) η := by
     rw [hq0, mem_ball, dist_zero_right, Complex.norm_real, Real.norm_eq_abs]
     rw [abs_of_pos ht0]
@@ -524,8 +517,7 @@ theorem exists_not_splits_of_affine_two_step {a b c d : ℝ} (ha : 0 < a) (hb : 
     simp
     ring
   have hBx : B x ≠ 0 := by
-    intro heq
-    simp [heq] at hBxpos
+    exact fun heq => by simp [heq] at hBxpos
   have hq0 : q x = 0 := by simp [q, hAx]
   have hqnconst : ¬∀ᶠ z in 𝓝 x, q z = q x :=
     affine_ratio_not_locally_constant hA hB hAx hA0 hBx hBx
@@ -546,9 +538,7 @@ theorem exists_not_splits_of_affine_two_step {a b c d : ℝ} (ha : 0 < a) (hb : 
     have hden : (-4 : ℂ) * B z ≠ 0 := mul_ne_zero (by norm_num) hBz
     have heq : A z ^ 2 = (t : ℂ) * (-4 * B z) := (div_eq_iff hden).mp hqz
     have hzreal : z = (z.re : ℂ) := by
-      apply Complex.ext
-      · simp
-      · simpa using hzim
+      apply Complex.ext <;> simp [hzim]
     have hAim : (A z).im = 0 := by rw [hzreal]; simp [A]
     have hEq := congrArg Complex.re heq
     simp only [pow_two, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
@@ -560,8 +550,7 @@ theorem exists_not_splits_of_affine_two_step {a b c d : ℝ} (ha : 0 < a) (hb : 
     exists_nonreal_positive_ratio hρ hq hq0 hqnconst hreal
   have hBzpos : 0 < (B z₀).re := hBpos hz₀
   have hBz : B z₀ ≠ 0 := by
-    intro heq
-    simp [heq] at hBzpos
+    exact fun heq => by simp [heq] at hBzpos
   have hqnonconst : ¬∀ᶠ z in 𝓝 z₀, q z = q z₀ :=
     affine_ratio_not_locally_constant hA hB hAx hA0 hBx hBz
   let D : ℂ → ℂ := fun z => A z ^ 2 + 4 * B z
@@ -575,9 +564,9 @@ theorem exists_not_splits_of_affine_two_step {a b c d : ℝ} (ha : 0 < a) (hb : 
       dsimp [D] at heq
       linear_combination heq - hqeq
     have h1t : (1 - (t : ℂ)) ≠ 0 := by
-      intro h
-      have : t = 1 := by exact_mod_cast (sub_eq_zero.mp h).symm
-      linarith
+      exact fun h => by
+        have : t = 1 := by exact_mod_cast (sub_eq_zero.mp h).symm
+        linarith
     exact (mul_ne_zero (mul_ne_zero (by norm_num) h1t) hBz) heq'
   have hD : AnalyticAt ℂ D z₀ := by dsimp [D]; fun_prop (disch := assumption)
   obtain ⟨ρD, hρD, droot, hdanalytic, hdsq, hd0⟩ :=
@@ -621,15 +610,13 @@ theorem exists_not_splits_of_affine_two_step {a b c d : ℝ} (ha : 0 < a) (hb : 
     intro h
     apply hEgerm
     filter_upwards [h, ball_mem_nhds z₀ hη] with z hz hzball
-    rw [hfactor z hzball]
-    exact mul_eq_zero_of_right _ hz
+    rw [hfactor z hzball, hz, mul_zero]
   have hcvgerm : ¬∀ᶠ z in 𝓝 z₀, u z - z = 0 := by
     intro h
     apply hEgerm
     filter_upwards [h, ball_mem_nhds z₀ hη] with z hz hzball
     rw [hfactor z hzball]
-    have : z - u z = 0 := by linear_combination -hz
-    simp [this]
+    rw [show z - u z = 0 by linear_combination -hz, zero_mul]
   have hroots0 := hrootdata z₀ (mem_ball_self hη)
   have huv : u z₀ ≠ v z₀ := hroots0.2.2
   have hv0 : v z₀ ≠ 0 := by
@@ -686,13 +673,9 @@ theorem exists_not_splits_of_affine_two_step {a b c d : ℝ} (ha : 0 < a) (hb : 
     | more n ih0 ih1 =>
         rw [hrec]
         simp only [eval_add, eval_mul, eval_C, eval_X]
-        have hAp : 0 < a + b := by linarith
-        have hBp : 0 < c + d := by linarith
-        nlinarith [mul_pos hAp ih1, mul_pos hBp ih0]
+        nlinarith [mul_pos (add_pos ha hb) ih1, mul_pos (add_pos hc hd) ih0]
   have hnonzero : ∀ᶠ n in atTop, W n ≠ 0 :=
-    Eventually.of_forall fun n hzero => by
-      have := hpos n
-      simp [hzero] at this
+    Eventually.of_forall fun n hzero => by simpa [hzero] using hpos n
   have hlate := eventually_not_splits_of_nonreal_limit hzim hnonzero hlim
   exact hlate.exists
 

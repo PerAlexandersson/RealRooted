@@ -34,11 +34,10 @@ def meshDifference (α lam : ℝ) (p : ℝ[X]) : ℝ[X] :=
 theorem meshDifference_comp_X_add_C (α lam r : ℝ) (p : ℝ[X]) :
     (meshDifference α lam p).comp (X + C r) =
       meshDifference α lam (p.comp (X + C r)) := by
-  simp only [meshDifference, sub_comp, mul_comp, C_comp, comp_assoc]
-  congr 1
-  congr 1
-  simp only [add_comp, X_comp, C_comp]
-  ring_nf
+  simp only [meshDifference, sub_comp, mul_comp, C_comp, comp_assoc, add_comp,
+    X_comp]
+  congr 3
+  ring
 
 /-- BKS identity `T(x p) = (x - α)T(p) + α p`. -/
 theorem meshDifference_X_mul (α lam : ℝ) (p : ℝ[X]) :
@@ -128,11 +127,8 @@ private theorem IsUpperHalfPlaneStablePencil.base_direction_shear
     {f g : ℝ[X]} (h : IsUpperHalfPlaneStablePencil f g)
     {a : ℝ} (ha : 0 < a) :
     IsUpperHalfPlaneStablePencil g (g - C a * f) := by
-  have hswap : IsUpperHalfPlaneStablePencil g (-f) := h.swap_neg
-  have hscaled : IsUpperHalfPlaneStablePencil g (C a * (-f)) :=
-    hswap.positive_scale_direction ha
-  have hshear := hscaled.add_real_base_to_direction 1
-  simpa [sub_eq_add_neg, add_comm, mul_assoc] using hshear
+  simpa [sub_eq_add_neg, add_comm, mul_assoc] using
+    (h.swap_neg.positive_scale_direction ha).add_real_base_to_direction 1
 
 private theorem IsUpperHalfPlaneStablePencil.positive_scale_base
     {f g : ℝ[X]} (h : IsUpperHalfPlaneStablePencil f g)
@@ -483,24 +479,18 @@ private theorem meshGE_left_cofactor (rs : List ℝ) {α β : ℝ}
   by_cases hlast : k + 1 < rs.length
   · have hkprev : k - 1 < rs.length := by lia
     have htake : rs.take k = rs.take (k - 1) ++ [rs[k - 1]] := by
-      calc
-        rs.take k = rs.take (k - 1 + 1) := by rw [Nat.sub_add_cancel hkpos]
-        _ = rs.take (k - 1) ++ [rs[k - 1]] :=
-          (List.take_concat_get' rs (k - 1) hkprev).symm
+      simp [Nat.sub_add_cancel hkpos]
     have hlast_take : (rs.take k).getLast? = some rs[k - 1] := by
       rw [htake, List.getLast?_append]
       simp
     rw [List.getLast?_map, hlast_take] at hx
+    simp [List.head?_drop, List.getElem?_eq_getElem hlast] at hy
     have hxeq : rs[k - 1] + β = x := by simpa using hx
-    have hy' : y = rs[k + 1] := by
-      have hyrev : rs[k + 1] = y := by
-        simpa [List.head?_drop, List.getElem?_eq_getElem hlast] using hy
-      exact hyrev.symm
+    subst x
+    subst y
     have hgap1 := List.isChain_iff_getElem.mp hgap (k - 1) (by lia)
     have hgap2 := List.isChain_iff_getElem.mp hgap k hlast
-    have hprev : rs[k - 1] + β ≤ rs[k] := by
-      simpa [Nat.sub_add_cancel hkpos] using hgap1
-    rw [← hxeq, hy']
+    simp only [Nat.sub_add_cancel hkpos] at hgap1
     linarith
   · have hdrop : rs.drop (k + 1) = [] := List.drop_eq_nil_of_le (by lia)
     simp [hdrop] at hy
@@ -526,28 +516,17 @@ private theorem meshGE_right_cofactor (rs : List ℝ) {α β : ℝ}
   · have hkprev : k - 1 < (rs.drop 1).length := by simp; lia
     have htake : (rs.drop 1).take k =
         (rs.drop 1).take (k - 1) ++ [rs[k]] := by
-      have ht := (List.take_concat_get' (rs.drop 1) (k - 1) hkprev).symm
-      have hidx : (rs.drop 1)[k - 1] = rs[k] := by
-        simp [Nat.sub_add_cancel hkpos]
-      calc
-        (rs.drop 1).take k = (rs.drop 1).take (k - 1 + 1) := by
-          rw [Nat.sub_add_cancel hkpos]
-        _ = (rs.drop 1).take (k - 1) ++ [(rs.drop 1)[k - 1]] := ht
-        _ = (rs.drop 1).take (k - 1) ++ [rs[k]] := by rw [hidx]
+      simpa [Nat.sub_add_cancel hkpos] using
+        (List.take_concat_get' (rs.drop 1) (k - 1) hkprev).symm
     have hlast_take : ((rs.drop 1).take k).getLast? = some rs[k] := by
       rw [htake, List.getLast?_append]
       simp
     rw [hlast_take] at hx
+    simp [List.head?_drop, List.getElem?_eq_getElem hlast] at hy
     have hxeq : rs[k] = x := by simpa using hx
-    have hhead : ((rs.drop (k + 1)).map (· + β)).head? =
-        some (rs[k + 1] + β) := by
-      rw [List.head?_map, List.head?_drop,
-        List.getElem?_eq_getElem hlast]
-      rfl
-    rw [hhead] at hy
-    have hyeq : rs[k + 1] + β = y := by simpa using hy
+    subst x
+    subst y
     have hstep := List.isChain_iff_getElem.mp hgap k hlast
-    rw [← hxeq, ← hyeq]
     linarith
   · have hdrop : rs.drop (k + 1) = [] := List.drop_eq_nil_of_le (by lia)
     simp [hdrop] at hy
@@ -605,9 +584,7 @@ private def rootReplacementChain (rs : List ℝ) (β : ℝ) (k : ℕ) : ℝ[X] :
 private theorem rootReplacementChain_monic (rs : List ℝ) (β : ℝ) (k : ℕ) :
     (rootReplacementChain rs β k).Monic := by
   unfold rootReplacementChain
-  split_ifs
-  · exact leftRootChain_monic rs β k
-  · exact rightRootChain_monic rs β (k - rs.length)
+  split_ifs <;> exact rootPolynomial_monic _
 
 private theorem rootReplacementChain_natDegree (rs : List ℝ) (β : ℝ)
     {k : ℕ} (hk : k < 2 * rs.length) :
@@ -787,28 +764,23 @@ private theorem meshDifference_rootReplacementChain_strict_of_stable
       (meshDifference α lam (rootReplacementChain rs β i))) :
     StrictInterl (meshDifference α lam (rootReplacementChain rs β i))
       (meshDifference α lam (rootReplacementChain rs β j)) := by
-  have hdegi : (meshDifference α lam (rootReplacementChain rs β i)).natDegree =
-      rs.length := by
+  have hdeg {k : ℕ} (hk : k < 2 * rs.length) :
+      (meshDifference α lam (rootReplacementChain rs β k)).natDegree = rs.length := by
     rw [meshDifference_natDegree_of_ne_one _ _ _ hlam,
-      rootReplacementChain_natDegree rs β hi]
-  have hdegj : (meshDifference α lam (rootReplacementChain rs β j)).natDegree =
-      rs.length := by
-    rw [meshDifference_natDegree_of_ne_one _ _ _ hlam,
-      rootReplacementChain_natDegree rs β hj]
+      rootReplacementChain_natDegree rs β hk]
   have hlci := meshDifference_rootReplacementChain_leadingCoeff rs β α lam hlam i
   have hlcj := meshDifference_rootReplacementChain_leadingCoeff rs β α lam hlam j
   apply strictInterl_of_stable_same_degree_lc
-    (by rw [hdegi, hdegj]) (by rw [hdegi]; exact hn)
+    (by rw [hdeg hi, hdeg hj]) (by rw [hdeg hi]; exact hn)
     (by rw [hlci, hlcj]) (by rw [hlci]; exact sub_ne_zero.mpr (Ne.symm hlam))
     hstable
 
 private theorem meshDifference_rootReplacementChain_nonzero
     (rs : List ℝ) (β α lam : ℝ) (hlam : lam ≠ 1) (k : ℕ) :
     meshDifference α lam (rootReplacementChain rs β k) ≠ 0 := by
-  intro hzero
-  have hlc := meshDifference_rootReplacementChain_leadingCoeff rs β α lam hlam k
-  rw [hzero, leadingCoeff_zero] at hlc
-  exact (sub_ne_zero.mpr (Ne.symm hlam)) hlc.symm
+  rw [← leadingCoeff_ne_zero,
+    meshDifference_rootReplacementChain_leadingCoeff rs β α lam hlam k]
+  exact sub_ne_zero.mpr (Ne.symm hlam)
 
 private theorem meshDifference_rootReplacementChain_interl (rs : List ℝ)
     {α β lam : ℝ} (hα : 0 < α) (hαβ : α ≤ β) (hlam : 0 < lam)
@@ -1018,18 +990,13 @@ theorem meshDifference_meshGE_one {p : ℝ[X]} {α β : ℝ}
     exact hT0 (by simp [meshDifference, hz])
   let lam : ℕ → ℝ := fun k => 1 + 1 / (k + 1 : ℝ)
   have hlam_gt (k : ℕ) : 1 < lam k := by
-    dsimp [lam]
-    have hden : 0 < (k + 1 : ℝ) := by positivity
-    have hfrac : 0 < (1 : ℝ) / (k + 1 : ℝ) := div_pos one_pos hden
-    linarith
+    norm_num [lam]
+    positivity
   have hlam_pos (k : ℕ) : 0 < lam k := lt_trans zero_lt_one (hlam_gt k)
   have hlam_ne (k : ℕ) : lam k ≠ 1 := ne_of_gt (hlam_gt k)
-  have hδ : Filter.Tendsto (fun k : ℕ => (1 : ℝ) / (k + 1 : ℝ))
-      Filter.atTop (nhds 0) := tendsto_one_div_add_atTop_nhds_zero_nat
-  have hconst : Filter.Tendsto (fun _ : ℕ => (1 : ℝ))
-      Filter.atTop (nhds 1) := tendsto_const_nhds
   have hlam_lim : Filter.Tendsto lam Filter.atTop (nhds 1) := by
-    simpa [lam] using hconst.add hδ
+    simpa [lam] using (tendsto_const_nhds (x := (1 : ℝ))).add
+      (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
   let F : ℕ → ℝ[X] := fun k => meshDifference α (lam k) p
   let G : ℕ → ℝ[X] := fun k => (F k).comp (X - C β)
   have hβ : 0 < β := lt_of_lt_of_le hα hαβ
@@ -1186,16 +1153,11 @@ theorem meshDifference_hasOnlyNonnegRoots_one
   · exact Or.inl hT0
   let lam : ℕ → ℝ := fun k => 1 + 1 / (k + 1 : ℝ)
   have hlam_gt (k : ℕ) : 1 < lam k := by
-    dsimp [lam]
-    have hden : 0 < (k + 1 : ℝ) := by positivity
-    have hfrac : 0 < (1 : ℝ) / (k + 1 : ℝ) := div_pos one_pos hden
-    linarith
-  have hδ : Filter.Tendsto (fun k : ℕ => (1 : ℝ) / (k + 1 : ℝ))
-      Filter.atTop (nhds 0) := tendsto_one_div_add_atTop_nhds_zero_nat
-  have hconst : Filter.Tendsto (fun _ : ℕ => (1 : ℝ))
-      Filter.atTop (nhds 1) := tendsto_const_nhds
+    norm_num [lam]
+    positivity
   have hlam_lim : Filter.Tendsto lam Filter.atTop (nhds 1) := by
-    simpa [lam] using hconst.add hδ
+    simpa [lam] using (tendsto_const_nhds (x := (1 : ℝ))).add
+      (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
   let F : ℕ → ℝ[X] := fun k => meshDifference α (lam k) p
   have hFnn (k : ℕ) : HasOnlyNonnegRoots (F k) :=
     meshDifference_hasOnlyNonnegRoots_of_one_lt hα hαβ (hlam_gt k) hpmesh hpnn
