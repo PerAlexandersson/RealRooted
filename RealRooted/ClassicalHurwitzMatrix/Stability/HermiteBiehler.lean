@@ -26,9 +26,7 @@ namespace RealRooted
 theorem leadingCoeff_hurwitzRotatedEvenPart (p : ℝ[X]) :
     (hurwitzRotatedEvenPart p).leadingCoeff =
       p.leadingCoeff * (-1) ^ p.natDegree := by
-  rw [hurwitzRotatedEvenPart, Polynomial.leadingCoeff_comp]
-  · simp
-  · simp
+  rw [hurwitzRotatedEvenPart, Polynomial.leadingCoeff_comp] <;> simp
 
 @[simp]
 theorem leadingCoeff_hurwitzRotatedOddPart (p : ℝ[X]) :
@@ -36,9 +34,7 @@ theorem leadingCoeff_hurwitzRotatedOddPart (p : ℝ[X]) :
       -(p.leadingCoeff * (-1) ^ p.natDegree) := by
   rw [hurwitzRotatedOddPart, Polynomial.leadingCoeff_mul,
     Polynomial.leadingCoeff_neg, Polynomial.leadingCoeff_X,
-    Polynomial.leadingCoeff_comp]
-  · simp
-  · simp
+    Polynomial.leadingCoeff_comp] <;> simp
 
 /-- Composition with `-X²` preserves nonzeroness. -/
 theorem comp_neg_X_sq_ne_zero {p : ℝ[X]} (hp : p ≠ 0) :
@@ -53,16 +49,15 @@ theorem comp_neg_X_sq_ne_zero {p : ℝ[X]} (hp : p ≠ 0) :
 theorem natDegree_hurwitzRotatedEvenPart (p : ℝ[X]) :
     (hurwitzRotatedEvenPart p).natDegree = 2 * p.natDegree := by
   rw [hurwitzRotatedEvenPart, Polynomial.natDegree_comp]
-  simp
-  ring
+  simp [mul_comm]
 
 theorem natDegree_hurwitzRotatedOddPart {p : ℝ[X]} (hp : p ≠ 0) :
     (hurwitzRotatedOddPart p).natDegree = 2 * p.natDegree + 1 := by
   rw [hurwitzRotatedOddPart,
     Polynomial.natDegree_mul (by simp) (comp_neg_X_sq_ne_zero hp),
     natDegree_neg, natDegree_X, Polynomial.natDegree_comp]
-  simp
-  ring
+  simp only [natDegree_neg, natDegree_pow, natDegree_X]
+  lia
 
 /-- If `p(-X²)` splits over the reals, then `p` itself splits. -/
 theorem Polynomial.Splits.of_comp_neg_X_sq {p : ℝ[X]}
@@ -177,8 +172,8 @@ theorem hasPosLeadingCoeff_sign_mul_hurwitzRotatedEvenPart {p : ℝ[X]}
     HasPosLeadingCoeff
       (C ((-1 : ℝ) ^ p.natDegree) * hurwitzRotatedEvenPart p) := by
   have hs : ((-1 : ℝ) ^ p.natDegree) * (-1 : ℝ) ^ p.natDegree = 1 := by
-    rw [← pow_add]
-    simp [← two_mul]
+    rw [← mul_pow]
+    norm_num
   unfold HasPosLeadingCoeff at hp ⊢
   rw [Polynomial.leadingCoeff_mul, Polynomial.leadingCoeff_C,
     leadingCoeff_hurwitzRotatedEvenPart, mul_left_comm, hs, mul_one]
@@ -191,8 +186,8 @@ theorem hasPosLeadingCoeff_neg_sign_mul_hurwitzRotatedOddPart {p : ℝ[X]}
     HasPosLeadingCoeff
       (C (-((-1 : ℝ) ^ p.natDegree)) * hurwitzRotatedOddPart p) := by
   have hs : ((-1 : ℝ) ^ p.natDegree) * (-1 : ℝ) ^ p.natDegree = 1 := by
-    rw [← pow_add]
-    simp [← two_mul]
+    rw [← mul_pow]
+    norm_num
   unfold HasPosLeadingCoeff at hp ⊢
   rw [Polynomial.leadingCoeff_mul, Polynomial.leadingCoeff_C,
     leadingCoeff_hurwitzRotatedOddPart, neg_mul_neg, mul_left_comm, hs,
@@ -246,8 +241,8 @@ theorem IsStrictlyHurwitzStable.strictInterl_rotatedParts_of_evenShape
   have hs0 : s ≠ 0 := pow_ne_zero _ (by norm_num)
   have hsquare : s * s = 1 := by
     dsimp [s]
-    rw [← pow_add]
-    simp [← two_mul]
+    rw [← mul_pow]
+    norm_num
   have hsign : s = -((-1 : ℝ) ^ odd.natDegree) := by
     simp only [s, hdegree, pow_succ]
     ring
@@ -267,9 +262,7 @@ theorem IsStrictlyHurwitzStable.strictInterl_rotatedParts_of_evenShape
     exact hasPosLeadingCoeff_neg_sign_mul_hurwitzRotatedOddPart hodd
   have hdegree' : 1 ≤
       (Polynomial.C s * hurwitzRotatedEvenPart even).natDegree := by
-    rw [Polynomial.natDegree_C_mul hs0, hurwitzRotatedEvenPart,
-      Polynomial.natDegree_comp]
-    simp only [natDegree_neg, natDegree_pow, natDegree_X]
+    rw [Polynomial.natDegree_C_mul hs0, natDegree_hurwitzRotatedEvenPart]
     lia
   have hstrictInterl : StrictInterl
       (Polynomial.C s * hurwitzRotatedOddPart odd)
@@ -290,8 +283,8 @@ theorem IsStrictlyHurwitzStable.strictInterl_rotatedParts_of_oddShape
   have hs0 : s ≠ 0 := pow_ne_zero _ (by norm_num)
   have hsquare : s * s = 1 := by
     dsimp [s]
-    rw [← pow_add]
-    simp [← two_mul]
+    rw [← mul_pow]
+    norm_num
   have hswap : IsUpperHalfPlaneStable
       (hermiteBiehlerPolynomial
         (-hurwitzRotatedOddPart odd) (hurwitzRotatedEvenPart even)) := by
@@ -305,29 +298,16 @@ theorem IsStrictlyHurwitzStable.strictInterl_rotatedParts_of_oddShape
     exact hswap.C_mul (by exact_mod_cast hs0)
   have hodd' : HasPosLeadingCoeff
       (Polynomial.C s * -hurwitzRotatedOddPart odd) := by
-    unfold HasPosLeadingCoeff at hodd ⊢
-    rw [Polynomial.leadingCoeff_mul, Polynomial.leadingCoeff_C,
-      Polynomial.leadingCoeff_neg,
-      leadingCoeff_hurwitzRotatedOddPart]
-    simp only [neg_neg]
-    rw [mul_left_comm, hsquare, mul_one]
-    exact hodd
+    simpa only [s, Polynomial.C_neg, neg_mul, mul_neg] using
+      hasPosLeadingCoeff_neg_sign_mul_hurwitzRotatedOddPart hodd
   have heven' : HasPosLeadingCoeff
       (Polynomial.C s * hurwitzRotatedEvenPart even) := by
     simpa only [s, hdegree] using
       hasPosLeadingCoeff_sign_mul_hurwitzRotatedEvenPart heven
-  have hcomp_ne : odd.comp (-(X ^ 2)) ≠ 0 := by
-    apply Polynomial.leadingCoeff_ne_zero.mp
-    rw [Polynomial.leadingCoeff_comp]
-    · exact mul_ne_zero hodd.ne' (pow_ne_zero _ (by norm_num))
-    · simp
   have hdegree' : 1 ≤
       (Polynomial.C s * -hurwitzRotatedOddPart odd).natDegree := by
     rw [Polynomial.natDegree_C_mul hs0, natDegree_neg,
-      hurwitzRotatedOddPart,
-      Polynomial.natDegree_mul (by simp) hcomp_ne,
-      natDegree_neg, Polynomial.natDegree_comp]
-    simp only [natDegree_neg, natDegree_pow, natDegree_X]
+      natDegree_hurwitzRotatedOddPart hodd.ne_zero]
     lia
   have hstrictInterl : StrictInterl
       (Polynomial.C s * hurwitzRotatedEvenPart even)

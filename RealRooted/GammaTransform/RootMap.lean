@@ -170,9 +170,7 @@ lemma hasRootsNonpos_of_dvd {p q : ℝ[X]}
     (hqp : q ∣ p) (hq0 : q ≠ 0) :
     HasRootsNonpos q := by
   intro r hr
-  have hrq : q.IsRoot r := (mem_roots hq0).mp hr
-  have hrp : p.IsRoot r := hrq.dvd hqp
-  exact hp_nonpos r ((mem_roots hp0).mpr hrp)
+  exact hp_nonpos r ((mem_roots hp0).mpr ((mem_roots hq0).mp hr |>.dvd hqp))
 
 lemma HasRootsNonpos.mul {p q : ℝ[X]}
     (hp : HasRootsNonpos p) (hq : HasRootsNonpos q)
@@ -187,8 +185,7 @@ lemma HasRootsNonpos.mul {p q : ℝ[X]}
 
 lemma hasRootsNonpos_X_sub_C {r : ℝ} (hr : r ≤ 0) :
     HasRootsNonpos (X - C r) := by
-  intro s hs
-  simp_all
+  simpa [HasRootsNonpos] using hr
 
 lemma isRoot_gamma_of_isRoot_gammaTransform {d : ℕ} {γ : ℝ[X]}
     (hγdeg : γ.natDegree ≤ d / 2) {x : ℝ} (hx : x ≠ -1)
@@ -305,12 +302,9 @@ theorem rootMultiplicity_gammaTransform_of_neg
   have hdeg_eq : γ.natDegree = m + q.natDegree := by
     rw [hγq, natDegree_mul (pow_ne_zero _ (X_sub_C_ne_zero r)) hq,
       natDegree_pow, natDegree_X_sub_C, mul_one]
-  have hm : 2 * m ≤ d := by
-    have hbound : m + q.natDegree ≤ d / 2 := hdeg_eq ▸ hγdeg
-    lia
-  have hqdeg : q.natDegree ≤ (d - 2 * m) / 2 := by
-    have hbound : m + q.natDegree ≤ d / 2 := hdeg_eq ▸ hγdeg
-    lia
+  have hbound : m + q.natDegree ≤ d / 2 := hdeg_eq ▸ hγdeg
+  have hm : 2 * m ≤ d := by lia
+  have hqdeg : q.natDegree ≤ (d - 2 * m) / 2 := by lia
   have hx0 : x ≠ 0 := ne_of_lt hx
   have htransform :=
     gammaTransform_X_sub_C_pow_gammaRootMap_of_ne
@@ -318,10 +312,7 @@ theorem rootMultiplicity_gammaTransform_of_neg
   have hambient : d - 2 * m + 2 * m = d := by lia
   have hfull := htransform
   rw [hambient, ← hγq] at hfull
-  have h1x : 1 + x ≠ 0 := by
-    intro h
-    apply hx1
-    linarith
+  have h1x : 1 + x ≠ 0 := by grind
   have hr0 : r ≠ 0 := by
     dsimp [r, gammaRootMap]
     exact div_ne_zero hx0 (pow_ne_zero _ h1x)
@@ -349,12 +340,8 @@ theorem rootMultiplicity_gammaTransform_of_neg
         (sub_ne_zero.mpr hxxinv)))
       hcore_eval
   have hp : p ≠ 0 := by
-    intro hzero
-    apply hp_eval
-    simp [hzero]
-  have hp_not_root : ¬p.IsRoot x := by
-    rw [Polynomial.IsRoot.def]
-    exact hp_eval
+    exact fun hzero => hp_eval (by simp [hzero])
+  have hp_not_root : ¬p.IsRoot x := by simpa [Polynomial.IsRoot.def]
   have hfactor :
       gammaTransform d γ = p * (X - C x) ^ m := by
     rw [hfull]

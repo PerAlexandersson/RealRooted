@@ -240,34 +240,9 @@ private theorem ratio_im_sign_eq_orientation_sign
     0 < (a / b).im ↔ 0 < (a * starRingEnd ℂ b).im := by
   rw [Complex.div_im]
   simp only [Complex.mul_im, Complex.conj_re, Complex.conj_im]
-  have hnorm : 0 < Complex.normSq b := Complex.normSq_pos.mpr hb
   rw [← sub_div]
-  have heq : a.re * -b.im + a.im * b.re =
-      a.im * b.re - a.re * b.im := by ring
-  rw [heq]
-  constructor
-  · intro h
-    rw [← div_mul_cancel₀ (a.im * b.re - a.re * b.im) hnorm.ne']
-    exact mul_pos h hnorm
-  · intro h
-    exact div_pos h hnorm
-
-private theorem ratio_im_neg_iff_orientation_neg
-    {a b : ℂ} (hb : b ≠ 0) :
-    (a / b).im < 0 ↔ (a * starRingEnd ℂ b).im < 0 := by
-  rw [Complex.div_im]
-  simp only [Complex.mul_im, Complex.conj_re, Complex.conj_im]
-  have hnorm : 0 < Complex.normSq b := Complex.normSq_pos.mpr hb
-  rw [← sub_div]
-  have heq : a.re * -b.im + a.im * b.re =
-      a.im * b.re - a.re * b.im := by ring
-  rw [heq]
-  constructor
-  · intro h
-    rw [← div_mul_cancel₀ (a.im * b.re - a.re * b.im) hnorm.ne']
-    exact mul_neg_of_neg_of_pos h hnorm
-  · intro h
-    exact div_neg_of_neg_of_pos h hnorm
+  rw [show a.re * -b.im + a.im * b.re = a.im * b.re - a.re * b.im by ring]
+  exact div_pos_iff_of_pos_right (Complex.normSq_pos.mpr hb)
 
 /-- A positive orientation value selects the `G + iF` HKO orientation. -/
 theorem AllComboMvRealStableOrZero.mvProperPosition_of_orientationValue_pos
@@ -324,57 +299,9 @@ theorem AllComboMvRealStableOrZero.mvProperPosition_of_orientationValue_neg
     {z₀ : σ → ℂ} (hz₀ : ∀ i, 0 < (z₀ i).im)
     (hneg : mvPencilOrientationValue z₀ F G < 0) :
     MvProperPosition F G := by
-  have hGzero : G ≠ 0 := by
-    intro hzero
-    simp [mvPencilOrientationValue, hzero, complexifyMv] at hneg
-  have hGstable : MvRealStable G := hall.right.resolve_left hGzero
-  have hGz₀ := hGstable z₀ hz₀
-  have hratioNeg :
-      (MvPolynomial.eval z₀ (complexifyMv F) /
-        MvPolynomial.eval z₀ (complexifyMv G)).im < 0 :=
-    (ratio_im_neg_iff_orientation_neg hGz₀).2 hneg
-  have hindep : ∀ c : ℝ, F ≠ MvPolynomial.C c * G := by
-    intro c heq
-    subst F
-    have hvalue :
-        mvPencilOrientationValue z₀ (MvPolynomial.C c * G) G = 0 := by
-      simp only [mvPencilOrientationValue, complexifyMv, map_mul,
-        MvPolynomial.map_C, MvPolynomial.eval_C]
-      change ((c : ℂ) * MvPolynomial.eval z₀ (complexifyMv G) *
-        starRingEnd ℂ (MvPolynomial.eval z₀ (complexifyMv G))).im = 0
-      simp only [Complex.mul_re, Complex.mul_im, Complex.ofReal_re,
-        Complex.ofReal_im, zero_mul, add_zero, Complex.conj_re,
-        Complex.conj_im]
-      ring
-    rw [hvalue] at hneg
-    exact (lt_irrefl 0) hneg
-  intro z hz hzero
-  have hGz := hGstable z hz
-  have hratio :
-      MvPolynomial.eval z (complexifyMv F) /
-          MvPolynomial.eval z (complexifyMv G) = Complex.I := by
-    apply (div_eq_iff hGz).2
-    simp only [MvPolynomial.eval_add, MvPolynomial.eval_mul,
-      MvPolynomial.eval_C] at hzero
-    have hIF : Complex.I * MvPolynomial.eval z (complexifyMv F) =
-        -MvPolynomial.eval z (complexifyMv G) := by
-      linear_combination hzero
-    calc
-      MvPolynomial.eval z (complexifyMv F) =
-          (-Complex.I) *
-            (Complex.I * MvPolynomial.eval z (complexifyMv F)) := by
-        rw [← mul_assoc]
-        simp [Complex.I_mul_I]
-      _ = (-Complex.I) * (-MvPolynomial.eval z (complexifyMv G)) := by
-        rw [hIF]
-      _ = Complex.I * MvPolynomial.eval z (complexifyMv G) := by ring
-  have hposz : 0 <
-      (MvPolynomial.eval z (complexifyMv F) /
-        MvPolynomial.eval z (complexifyMv G)).im := by
-    rw [hratio]
-    simp
-  have hnegz :=
-    (ratio_im_has_constant_sign hall hGzero hindep hz₀ hz).2 hposz
-  exact (not_lt_of_ge hratioNeg.le) hnegz
+  apply hall.comm.mvProperPosition_of_orientationValue_pos hz₀
+  unfold mvPencilOrientationValue at hneg ⊢
+  simp only [Complex.mul_im, Complex.conj_re, Complex.conj_im] at hneg ⊢
+  linarith
 
 end RealRooted

@@ -126,10 +126,7 @@ private theorem disjoint_rectangle_right (Y : YoungDiagram) (k : ℕ) :
     Disjoint (range (Y.colLen k) ×ˢ range k)
       (Y.cells.filter fun c => k ≤ c.2) := by
   rw [Finset.disjoint_left]
-  rintro ⟨i, j⟩ hij hright
-  simp only [mem_product, mem_range] at hij
-  simp only [mem_filter] at hright
-  exact (Nat.not_lt_of_ge hright.2) hij.2
+  grind
 
 private theorem topRows_subset_rectangle_union_right
     (Y : YoungDiagram) (r k : ℕ) :
@@ -140,9 +137,7 @@ private theorem topRows_subset_rectangle_union_right
   simp only [mem_filter, YoungDiagram.mem_cells] at hij
   simp only [mem_union, mem_product, mem_range, mem_filter,
     YoungDiagram.mem_cells]
-  by_cases hj : j < k
-  · exact Or.inl ⟨hij.2, hj⟩
-  · exact Or.inr ⟨hij.1, Nat.le_of_not_gt hj⟩
+  by_cases hj : j < k <;> simp_all
 
 /-- A conjugate prefix sum counts cells in the corresponding initial columns. -/
 theorem prefixSum_conjugate_eq_card_filter_snd {n : ℕ}
@@ -291,15 +286,10 @@ theorem eq_of_forall_prefixSum_eq {n : ℕ}
       YoungDiagram.ofPartition lambda := by
     ext ⟨i, j⟩
     simp only [YoungDiagram.mem_cells, YoungDiagram.mem_iff_lt_rowLen]
-    rw [show (YoungDiagram.ofPartition mu).rowLen i = mu.part i by rfl,
-      show (YoungDiagram.ofPartition lambda).rowLen i = lambda.part i by rfl,
-      hpart i]
-  apply Nat.Partition.ext
-  have hsort : mu.parts.sort (· ≥ ·) = lambda.parts.sort (· ≥ ·) := by
-    rw [← YoungDiagram.rowLens_ofPartition_eq_sort_parts,
-      ← YoungDiagram.rowLens_ofPartition_eq_sort_parts, hdiagram]
-  simpa only [Multiset.sort_eq] using
-    congrArg (fun l : List ℕ => (l : Multiset ℕ)) hsort
+    change j < mu.part i ↔ j < lambda.part i
+    rw [hpart i]
+  apply YoungDiagram.equivPartition.symm.injective
+  exact Subtype.ext hdiagram
 
 instance {n : ℕ} : PartialOrder (n.Partition) where
   le_refl mu k := le_rfl
@@ -357,17 +347,12 @@ theorem conjugate_le_conjugate_iff {n : ℕ} {mu lambda : n.Partition} :
 /-- Conjugating both partitions reverses strict dominance. -/
 theorem conjugate_lt_conjugate_iff {n : ℕ} {mu lambda : n.Partition} :
     mu.conjugate < lambda.conjugate ↔ lambda < mu := by
+  have hinj : Function.Injective (@conjugate n) := by
+    intro a b h
+    simpa only [conjugate_conjugate] using congrArg conjugate h
   rw [lt_iff_le_and_ne, lt_iff_le_and_ne,
     conjugate_le_conjugate_iff]
-  refine and_congr_right fun _ => ?_
-  constructor
-  · intro hne h
-    subst lambda
-    exact hne rfl
-  · intro hne h
-    apply hne
-    have := congrArg Nat.Partition.conjugate h
-    simpa only [conjugate_conjugate] using this.symm
+  simp only [hinj.eq_iff, ne_eq, ne_comm]
 
 /-- The finite set of partitions dominated by `lambda`. -/
 noncomputable def dominanceDownset {n : ℕ}

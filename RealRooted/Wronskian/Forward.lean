@@ -116,8 +116,9 @@ theorem wronskian_pos_of_strictInterl_succ {p q : ℝ[X]}
     (hdisj : ∀ x : ℝ, p.IsRoot x → ¬ q.IsRoot x)
     (t : ℝ) :
     0 < p.derivative.eval t * q.eval t - p.eval t * q.derivative.eval t := by
-  obtain ⟨⟨hq_ne, hq_splits⟩, ⟨hp_ne, hp_splits⟩, ss, rs,
-    hss_sorted, hrs_sorted, hss_coe, hrs_coe, hbranch⟩ := hstrictInterl
+  obtain ⟨⟨hp_ne, hp_splits⟩, ⟨hq_ne, hq_splits⟩, _, rs, ss,
+    hrs_sorted, hss_sorted, hrs_coe, hss_coe, hinter⟩ :=
+    hstrictInterl.toInterlaces hp_deg_succ.symm
   set n := q.natDegree with hn
   have hp_deg : p.natDegree = n + 1 := hp_deg_succ
   have hss_len : ss.length = n := by
@@ -126,10 +127,6 @@ theorem wronskian_pos_of_strictInterl_succ {p q : ℝ[X]}
   have hrs_len : rs.length = n + 1 := by
     have h1 : (↑rs : Multiset ℝ).card = p.roots.card := congrArg Multiset.card hrs_coe
     rwa [Multiset.coe_card, Polynomial.splits_iff_card_roots.mp hp_splits, hp_deg] at h1
-  have hinter : ListInterlaces ss rs := by
-    rcases hbranch with ⟨_, h⟩ | ⟨hl, _⟩
-    · exact h
-    · lia
   have hlen : ss.length + 1 = rs.length := by lia
   -- sorted enumerations of the roots
   obtain ⟨s, hs_mono, hs_roots⟩ :=

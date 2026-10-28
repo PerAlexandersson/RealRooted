@@ -60,10 +60,7 @@ private lemma pderiv_zeroAt {i j : σ} (h : j ≠ i) (P : MvPolynomial σ ℝ) :
   | mul_X p k hp =>
     rw [map_mul, Derivation.leibniz, Derivation.leibniz, hp, map_add, smul_eq_mul, smul_eq_mul,
       smul_eq_mul, smul_eq_mul, map_mul, map_mul]
-    by_cases hk : k = i
-    · subst hk
-      simp [zeroAt, MvPolynomial.pderiv_X, h]
-    · simp [zeroAt, hk, MvPolynomial.pderiv_X, Pi.single_apply]
+    by_cases hk : k = i <;> simp [zeroAt, hk, MvPolynomial.pderiv_X, Pi.single_apply, h]
 
 private lemma eval_toPolyAt (i : σ) (P : MvPolynomial σ ℝ) :
     (toPolyAt i P).eval 0 = zeroAt i P := by
@@ -82,13 +79,11 @@ private lemma derivative_toPolyAt (i : σ) (P : MvPolynomial σ ℝ) :
   | mul_X p k hp =>
     rw [map_mul, Polynomial.derivative_mul, hp, Derivation.leibniz, map_add, smul_eq_mul,
       smul_eq_mul, map_mul, map_mul]
-    by_cases hk : k = i
-    · subst hk; simp [toPolyAt, MvPolynomial.pderiv_X]; ring
-    · simp [toPolyAt, hk, MvPolynomial.pderiv_X]; ring
+    by_cases hk : k = i <;> simp [toPolyAt, hk, MvPolynomial.pderiv_X] <;> ring
 
 private lemma zeroAt_oneSubPderiv {i j : σ} (h : j ≠ i) (P : MvPolynomial σ ℝ) :
-    zeroAt i (oneSubPderiv j P) = oneSubPderiv j (zeroAt i P) := by
-  simp [oneSubPderiv, map_sub, pderiv_zeroAt h]
+    zeroAt i (oneSubPderiv j P) = oneSubPderiv j (zeroAt i P) :=
+  by simp [oneSubPderiv, pderiv_zeroAt h]
 
 private lemma zeroAt_oneSubPderivList (i : σ) (l : List σ) (hi : i ∉ l)
     (P : MvPolynomial σ ℝ) :
@@ -158,7 +153,7 @@ private lemma Qmat_sub (B0 : Matrix (Fin n) (Fin n) ℝ)
     (u : Fin n → ℝ) :
     Qmat (B0 - Matrix.vecMulVec u u) B =
       Qmat B0 B - (Matrix.vecMulVec u u).map MvPolynomial.C := by
-  refine Matrix.ext fun a b => ?_
+  ext a b
   simp [Qmat]
   ring
 
@@ -306,9 +301,7 @@ private def extEquiv {m : ℕ} (ι : Fin m → Type) : (∀ i, extIdx ι i) ≃ 
     | Sum.inr j => s j
   left_inv s := by
     funext i
-    rcases i with i | i
-    · rfl
-    · rfl
+    rcases i with i | i <;> rfl
   right_inv s := rfl
 
 /-! ## Main theorem (MSS, Theorem 4.1) -/
@@ -341,8 +334,7 @@ theorem expectedCharpoly_eq_mixedCharacteristic {m n : ℕ}
     obtain ⟨j, rfl⟩ := hmem i hi
     rfl
   have hp1' : ∀ i, ∑ j, extP p i j = 1 := by
-    intro i
-    rcases i with i | i
+    rintro (i | i)
     · change ∑ _j : Unit, (1 : ℝ) = 1
       simp
     · exact hp1 i
