@@ -93,89 +93,96 @@ theorem norm_le_perronRoot_of_eigenvalue [Nonempty n] {A : Matrix n n ℝ}
     (collatzWielandtFn_le_perronRoot hA_nonneg h_nn h_ne)
 
 omit [DecidableEq n] in
+/-- Positive perturbation gives uniformly bounded Perron data in the standard simplex. -/
+private lemma exists_perturbed_perron_data [Nonempty n] {A : Matrix n n ℝ}
+    (hA_nonneg : ∀ i j, 0 ≤ A i j) (k : ℕ) :
+    ∃ (r : ℝ) (v : n → ℝ), v ∈ RealRooted.standardSimplex ℝ n ∧
+      perronRoot A ≤ r ∧ r ≤ ∑ i : n, ∑ j : n, (A i j + 1) ∧
+      ∀ i, (A *ᵥ v) i + ((k : ℝ) + 1)⁻¹ = r * v i := by
+  classical
+  set J : Matrix n n ℝ := of fun _ _ => (1 : ℝ) with hJ
+  have hAk_pos : ∀ i j, 0 < (A + ((k : ℝ) + 1)⁻¹ • J) i j := by
+    intro i j
+    have h1 : (0 : ℝ) < ((k : ℝ) + 1)⁻¹ := by positivity
+    simpa [hJ] using add_pos_of_nonneg_of_pos (hA_nonneg i j) h1
+  set Ak : Matrix n n ℝ := A + ((k : ℝ) + 1)⁻¹ • J with hAk
+  have hAk_nonneg : ∀ i j, 0 ≤ Ak i j := fun i j => (hAk_pos i j).le
+  obtain ⟨r, w, -, hw_pos, h_eig, h_perron⟩ :=
+    perron_root_eq_positive_eigenvalue (isIrreducible_of_pos hAk_pos) hAk_nonneg
+  set v : n → ℝ := (∑ i, w i)⁻¹ • w with hv
+  have hv_mem : v ∈ RealRooted.standardSimplex ℝ n := by
+    rw [hv]
+    exact CollatzWielandt.inv_sum_smul_mem_stdSimplex_of_nonneg_ne_zero
+      (fun i => (hw_pos i).le) (by
+        intro hw
+        obtain ⟨i⟩ := ‹Nonempty n›
+        simpa [hw] using hw_pos i)
+  have h_eig_v : Ak *ᵥ v = r • v := by rw [hv, mulVec_smul, h_eig, smul_comm]
+  have h_ge : perronRoot A ≤ r := by
+    rw [← h_perron]
+    exact perronRoot_le_perronRoot_of_le hA_nonneg hAk_nonneg
+      (fun i j => by
+        have h1 : (0 : ℝ) ≤ ((k : ℝ) + 1)⁻¹ := by positivity
+        simp [hAk, hJ]
+        linarith)
+  have hv_le_one : ∀ j, v j ≤ 1 := by
+    intro j
+    calc v j ≤ ∑ i, v i :=
+          Finset.single_le_sum (fun i _ => hv_mem.1 i) (Finset.mem_univ j)
+      _ = 1 := hv_mem.2
+  have h_le : r ≤ ∑ i : n, ∑ j : n, (A i j + 1) := by
+    have h_sum : r = ∑ i, (Ak *ᵥ v) i := by
+      rw [h_eig_v]
+      simp only [Pi.smul_apply, smul_eq_mul, ← Finset.mul_sum, hv_mem.2, mul_one]
+    rw [h_sum]
+    apply Finset.sum_le_sum
+    intro i _
+    simp only [mulVec, dotProduct]
+    apply Finset.sum_le_sum
+    intro j _
+    have h1 : Ak i j ≤ A i j + 1 := by
+      have h2 : ((k : ℝ) + 1)⁻¹ ≤ 1 := by
+        rw [inv_le_one_iff₀]
+        right
+        linarith [Nat.cast_nonneg (α := ℝ) k]
+      simp [hAk, hJ]
+      linarith
+    calc Ak i j * v j ≤ (A i j + 1) * v j :=
+          mul_le_mul_of_nonneg_right h1 (hv_mem.1 j)
+      _ ≤ (A i j + 1) * 1 := by
+          have := hA_nonneg i j
+          exact mul_le_mul_of_nonneg_left (hv_le_one j) (by linarith)
+      _ = A i j + 1 := mul_one _
+  refine ⟨r, v, hv_mem, h_ge, h_le, fun i => ?_⟩
+  have h1 : (Ak *ᵥ v) i = (A *ᵥ v) i + ((k : ℝ) + 1)⁻¹ := by
+    rw [hAk, add_mulVec, smul_mulVec]
+    have hJv : (J *ᵥ v) i = 1 := by
+      simp only [hJ, mulVec, dotProduct, of_apply, one_mul]
+      exact hv_mem.2
+    simp [hJv]
+  have h2 := congrFun h_eig_v i
+  simp only [Pi.smul_apply, smul_eq_mul] at h2
+  rw [← h1, h2]
+
+omit [DecidableEq n] in
 /-- **Perron-Frobenius for general nonnegative matrices.**  A nonnegative real
 matrix attains its Perron root as an eigenvalue with a nonnegative eigenvector. -/
 theorem exists_nonneg_mulVec_eq_perronRoot_smul [Nonempty n]
     {A : Matrix n n ℝ} (hA_nonneg : ∀ i j, 0 ≤ A i j) :
     ∃ v : n → ℝ, (∀ i, 0 ≤ v i) ∧ v ≠ 0 ∧ A *ᵥ v = perronRoot A • v := by
   classical
-  set J : Matrix n n ℝ := of fun _ _ => (1 : ℝ) with hJ
-  have hAk_pos : ∀ k : ℕ, ∀ i j, 0 < (A + ((k : ℝ) + 1)⁻¹ • J) i j := by
-    intro k i j
-    have h1 : (0 : ℝ) < ((k : ℝ) + 1)⁻¹ := by positivity
-    simpa [hJ] using add_pos_of_nonneg_of_pos (hA_nonneg i j) h1
   set M : ℝ := ∑ i : n, ∑ j : n, (A i j + 1) with hM
-  -- eigen-data for each perturbation, normalized to the standard simplex
   have key : ∀ k : ℕ, ∃ (r : ℝ) (v : n → ℝ), v ∈ RealRooted.standardSimplex ℝ n ∧
       perronRoot A ≤ r ∧ r ≤ M ∧
       ∀ i, (A *ᵥ v) i + ((k : ℝ) + 1)⁻¹ = r * v i := by
     intro k
-    set Ak : Matrix n n ℝ := A + ((k : ℝ) + 1)⁻¹ • J with hAk
-    have hAk_nonneg : ∀ i j, 0 ≤ Ak i j := fun i j => (hAk_pos k i j).le
-    obtain ⟨r, w, hr_pos, hw_pos, h_eig, h_perron⟩ :=
-      perron_root_eq_positive_eigenvalue (isIrreducible_of_pos (hAk_pos k)) hAk_nonneg
-    set s : ℝ := ∑ i, w i with hs
-    have hs_pos : 0 < s := Finset.sum_pos (fun i _ => hw_pos i) Finset.univ_nonempty
-    set v : n → ℝ := s⁻¹ • w with hv
-    have hv_sum : ∑ i, v i = 1 := by
-      simp only [hv, Pi.smul_apply, smul_eq_mul, ← Finset.mul_sum, ← hs]
-      exact inv_mul_cancel₀ hs_pos.ne'
-    have hv_mem : v ∈ RealRooted.standardSimplex ℝ n := by
-      refine ⟨fun i => ?_, hv_sum⟩
-      have := (hw_pos i).le
-      simp only [hv, Pi.smul_apply, smul_eq_mul]
-      positivity
-    have h_eig_v : Ak *ᵥ v = r • v := by
-      rw [hv, mulVec_smul, h_eig, smul_comm]
-    have h_ge : perronRoot A ≤ r := by
-      rw [← h_perron]
-      exact perronRoot_le_perronRoot_of_le hA_nonneg hAk_nonneg
-        (fun i j => by
-          have h1 : (0 : ℝ) ≤ ((k : ℝ) + 1)⁻¹ := by positivity
-          simp [hJ]
-          linarith)
-    have hv_le_one : ∀ j, v j ≤ 1 := by
-      intro j
-      calc v j ≤ ∑ i, v i := Finset.single_le_sum (fun i _ => hv_mem.1 i) (Finset.mem_univ j)
-        _ = 1 := hv_sum
-    have h_le_M : r ≤ M := by
-      have h_sum : r = ∑ i, (Ak *ᵥ v) i := by
-        rw [h_eig_v]
-        simp only [Pi.smul_apply, smul_eq_mul, ← Finset.mul_sum, hv_sum, mul_one]
-      rw [h_sum, hM]
-      apply Finset.sum_le_sum
-      intro i _
-      simp only [mulVec, dotProduct]
-      apply Finset.sum_le_sum
-      intro j _
-      have h1 : Ak i j ≤ A i j + 1 := by
-        have h2 : ((k : ℝ) + 1)⁻¹ ≤ 1 := by
-          rw [inv_le_one_iff₀]
-          right
-          linarith [Nat.cast_nonneg (α := ℝ) k]
-        simp [hAk, hJ]
-        linarith
-      calc Ak i j * v j ≤ (A i j + 1) * v j :=
-            mul_le_mul_of_nonneg_right h1 (hv_mem.1 j)
-        _ ≤ (A i j + 1) * 1 := by
-            have := hA_nonneg i j
-            exact mul_le_mul_of_nonneg_left (hv_le_one j) (by linarith)
-        _ = A i j + 1 := mul_one _
-    refine ⟨r, v, hv_mem, h_ge, h_le_M, fun i => ?_⟩
-    have h1 : (Ak *ᵥ v) i = (A *ᵥ v) i + ((k : ℝ) + 1)⁻¹ := by
-      rw [hAk, add_mulVec, smul_mulVec]
-      have hJv : (J *ᵥ v) i = 1 := by
-        simp only [hJ, mulVec, dotProduct, of_apply, one_mul]
-        exact hv_sum
-      simp [hJv]
-    have h2 := congrFun h_eig_v i
-    simp only [Pi.smul_apply, smul_eq_mul] at h2
-    rw [← h1, h2]
+    simpa only [hM] using exists_perturbed_perron_data hA_nonneg k
   choose r v hmem hge hle heq using key
   -- pass to a convergent subsequence by compactness
   have hcompact : IsCompact (Set.Icc (perronRoot A) M ×ˢ RealRooted.standardSimplex ℝ n) :=
     isCompact_Icc.prod (RealRooted.isCompact_standardSimplex n)
-  have hmemK : ∀ k, (r k, v k) ∈ Set.Icc (perronRoot A) M ×ˢ RealRooted.standardSimplex ℝ n :=
+  have hmemK : ∀ k,
+      (r k, v k) ∈ Set.Icc (perronRoot A) M ×ˢ RealRooted.standardSimplex ℝ n :=
     fun k => ⟨⟨hge k, hle k⟩, hmem k⟩
   obtain ⟨⟨r₀, v₀⟩, hK, φ, hφ, hconv⟩ := hcompact.tendsto_subseq hmemK
   have hr_lim : Tendsto (fun m => r (φ m)) atTop (𝓝 r₀) :=

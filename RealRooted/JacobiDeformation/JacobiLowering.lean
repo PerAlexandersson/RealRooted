@@ -38,18 +38,18 @@ private theorem jacobiDifferentialOperator_shiftedJacobiMonic
       (shiftedJacobiMonic n α β) = _ at h
   simpa only [neg_neg, neg_mul] using congrArg Neg.neg h
 
-/-- The same-parameter first-order lowering identity in positive degree.
-The successor presentation includes the degree-one case by taking `n = 0`. -/
-theorem shiftedJacobiMonic_lowering_succ (n : ℕ) {α β : ℝ}
+/-- The operator commutator gives the lowering identity before division by two. -/
+private theorem two_mul_shiftedJacobiMonic_lowering_succ (n : ℕ) {α β : ℝ}
     (hα : -1 < α) (hβ : -1 < β) :
-    (X : ℝ[X]) * (1 - X) * (shiftedJacobiMonic (n + 1) α β).derivative =
-      (-C ((n + 1 : ℕ) : ℝ) * X +
-          C (((2 * (n + 1) + (α + β + 2)) *
-            shiftedJacobiDiag (n + 1) α β - (α + 1)) / 2)) *
-          shiftedJacobiMonic (n + 1) α β +
-        C ((2 * (n + 1) + (α + β + 2) - 1) *
-          shiftedJacobiSubdiag (n + 1) α β) *
-          shiftedJacobiMonic n α β := by
+    C (2 : ℝ) *
+        ((X : ℝ[X]) * (1 - X) * (shiftedJacobiMonic (n + 1) α β).derivative) =
+      (-C (2 * ((n + 1 : ℕ) : ℝ)) * X +
+        C ((2 * (n + 1) + (α + β + 2)) *
+          shiftedJacobiDiag (n + 1) α β - (α + 1))) *
+        shiftedJacobiMonic (n + 1) α β +
+      C (2 * (2 * (n + 1) + (α + β + 2) - 1) *
+        shiftedJacobiSubdiag (n + 1) α β) *
+        shiftedJacobiMonic n α β := by
   have hrec :
       X * shiftedJacobiMonic (n + 1) α β =
         shiftedJacobiMonic (n + 2) α β +
@@ -97,20 +97,24 @@ theorem shiftedJacobiMonic_lowering_succ (n : ℕ) {α β : ℝ}
   have hcomm := jacobiDifferentialOperator_X_mul_sub_X_mul
     (α + 1) (α + β + 2) (shiftedJacobiMonic (n + 1) α β)
   rw [hLXP, hXL, hrec, hnext] at hcomm
-  have hclear :
-      C (2 : ℝ) *
-          ((X : ℝ[X]) * (1 - X) * (shiftedJacobiMonic (n + 1) α β).derivative) =
-        (-C (2 * ((n + 1 : ℕ) : ℝ)) * X +
-          C ((2 * (n + 1) + (α + β + 2)) *
-            shiftedJacobiDiag (n + 1) α β - (α + 1))) *
+  unfold eigenvalue at hcomm
+  norm_num [Nat.cast_add, Nat.cast_one, map_add, map_sub, map_mul, map_neg,
+    map_ofNat] at hcomm ⊢
+  linear_combination -hcomm
+
+/-- The same-parameter first-order lowering identity in positive degree.
+The successor presentation includes the degree-one case by taking `n = 0`. -/
+theorem shiftedJacobiMonic_lowering_succ (n : ℕ) {α β : ℝ}
+    (hα : -1 < α) (hβ : -1 < β) :
+    (X : ℝ[X]) * (1 - X) * (shiftedJacobiMonic (n + 1) α β).derivative =
+      (-C ((n + 1 : ℕ) : ℝ) * X +
+          C (((2 * (n + 1) + (α + β + 2)) *
+            shiftedJacobiDiag (n + 1) α β - (α + 1)) / 2)) *
           shiftedJacobiMonic (n + 1) α β +
-        C (2 * (2 * (n + 1) + (α + β + 2) - 1) *
+        C ((2 * (n + 1) + (α + β + 2) - 1) *
           shiftedJacobiSubdiag (n + 1) α β) *
           shiftedJacobiMonic n α β := by
-    unfold eigenvalue at hcomm
-    norm_num [Nat.cast_add, Nat.cast_one, map_add, map_sub, map_mul, map_neg,
-      map_ofNat] at hcomm ⊢
-    linear_combination -hcomm
+  have hclear := two_mul_shiftedJacobiMonic_lowering_succ n hα hβ
   let A : ℝ := ((2 * (n + 1) + (α + β + 2)) *
     shiftedJacobiDiag (n + 1) α β - (α + 1)) / 2
   let B : ℝ := (2 * (n + 1) + (α + β + 2) - 1) *

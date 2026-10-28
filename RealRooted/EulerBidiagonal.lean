@@ -345,16 +345,18 @@ theorem step_sub (a b ρ : ℝ) (p : ℝ[X]) :
   rw [(stepLinearMap a b).map_smul] at h
   simpa [stepLinearMap, smul_eq_C_mul] using h
 
-/-- Corollary B: every affine shift of the input gives a simple real-rooted step. -/
-private theorem splits_step_X_sub_C_mul_of_simpleNegRooted {a b c : ℝ} {d : ℕ} (q : ℝ[X])
-    (ha : 0 ≤ a) (hb : 0 ≤ b) (hab : 0 < a * b) (hc : c = a + b + 1)
-    (hq : SimpleNegRooted q d) (hd : 1 ≤ d) :
-    ∀ ρ : ℝ, (step a b ((X - C ρ) * q)).Splits ∧
-      HasSimpleRoots (step a b ((X - C ρ) * q)) := by
-  have hA := step_simpleNegRooted_and_strictInterl q ha hb hab hc hq hd
-  have hF_pos : HasPosLeadingCoeff (step a b q) := hA.1.pos
+/-- The `X`-shifted step is a positive weighted sum strictly above the original step. -/
+private lemma step_X_mul_eq_weightedSum_and_strictInterl
+    {a b c : ℝ} {d : ℕ} (q : ℝ[X])
+    (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : c = a + b + 1)
+    (hq : SimpleNegRooted q d)
+    (hA : SimpleNegRooted (step a b q) (d + 1) ∧
+      StrictInterl (comparison c q) (step a b q)) :
+    step a b (X * q) =
+        weightedSum [(1, X * step a b q), (2, X * comparison c q)] ∧
+      StrictInterl (step a b q) (step a b (X * q)) := by
   have hF_nonneg : HasNonnegCoeffs (step a b q) := hA.1.nonneg
-  have hF_ne : step a b q ≠ 0 := hF_pos.ne_zero
+  have hF_ne : step a b q ≠ 0 := hA.1.pos.ne_zero
   have hcpos : 0 < c := by
     rw [hc]
     nlinarith
@@ -362,19 +364,13 @@ private theorem splits_step_X_sub_C_mul_of_simpleNegRooted {a b c : ℝ} {d : �
     intro k
     rw [coeff_comparison]
     exact mul_nonneg (by positivity) (hq.nonneg k)
-  have hU_top : (c / 2 + (d : ℝ)) * q.leadingCoeff ≠ 0 := by
-    exact mul_ne_zero (ne_of_gt (by nlinarith))
-      (leadingCoeff_ne_zero.mpr hq.pos.ne_zero)
+  have hU_top : (c / 2 + (d : ℝ)) * q.leadingCoeff ≠ 0 :=
+    mul_ne_zero (ne_of_gt (by nlinarith)) (leadingCoeff_ne_zero.mpr hq.pos.ne_zero)
   have hU_data := u_natDegree_and_leadingCoeff c q d hq.natDegree_eq hU_top
   have hU_pos : HasPosLeadingCoeff (comparison c q) := by
     rw [HasPosLeadingCoeff, hU_data.2]
     exact mul_pos (by nlinarith) hq.pos
   have hU_ne : comparison c q ≠ 0 := hU_pos.ne_zero
-  have hno_UF : ∀ r : ℝ, ¬ ((comparison c q).IsRoot r ∧ (step a b q).IsRoot r) := by
-    intro s hs
-    have hqF := eval_mul_step_neg_of_comparison_isRoot q ha hb hc hq hs.1
-    rw [hs.2.eq_zero] at hqF
-    linarith
   have hXF : StrictInterl (step a b q) (X * step a b q) :=
     strictInterl_mul_X_of_strictInterl_of_nonneg
       (StrictInterl.refl hF_ne hA.1.splits) hF_nonneg hF_nonneg
@@ -410,12 +406,75 @@ private theorem splits_step_X_sub_C_mul_of_simpleNegRooted {a b c : ℝ} {d : �
   have hstepX : step a b (X * q) =
       weightedSum [(1, X * step a b q), (2, X * comparison c q)] := by
     rw [step_X_mul, hshift]
-    simp only [weightedSum_cons, weightedSum_nil, C_1, one_mul]
-    simp only [add_zero]
+    simp only [weightedSum_cons, weightedSum_nil, C_1, one_mul, add_zero]
     ring
-  have hFG : StrictInterl (step a b q) (step a b (X * q)) := by
-    rw [hstepX]
-    exact hcone
+  exact ⟨hstepX, by rw [hstepX]; exact hcone⟩
+
+/-- The original and `X`-shifted steps have no common root. -/
+private lemma no_common_root_step_step_X_mul
+    {a b c : ℝ} (q : ℝ[X])
+    (hA : 0 < (step a b q).coeff 0)
+    (hstepX : step a b (X * q) =
+      weightedSum [(1, X * step a b q), (2, X * comparison c q)])
+    (hno_UF : ∀ r : ℝ, ¬ ((comparison c q).IsRoot r ∧ (step a b q).IsRoot r)) :
+    ∀ r : ℝ, ¬ ((step a b q).IsRoot r ∧ (step a b (X * q)).IsRoot r) := by
+  intro r hr
+  have hr_ne : r ≠ 0 := by
+    intro hr0
+    subst r
+    have hroot := hr.1.eq_zero
+    have hzero_pos : 0 < (step a b q).eval 0 := by
+      simpa [coeff_zero_eq_eval_zero] using hA
+    linarith
+  have hroot_sum := hr.2.eq_zero
+  rw [hstepX] at hroot_sum
+  simp only [weightedSum_cons, weightedSum_nil] at hroot_sum
+  simp only [eval_add, eval_mul, eval_C, eval_X, C_1, one_mul, add_zero] at hroot_sum
+  rw [hr.1.eq_zero] at hroot_sum
+  have hU_root : (comparison c q).IsRoot r := by
+    have hmul : r * (comparison c q).eval r = 0 := by
+      nlinarith [hroot_sum]
+    have hzero : (comparison c q).eval r = 0 :=
+      (mul_eq_zero.mp hmul).resolve_left hr_ne
+    simpa [Polynomial.IsRoot.def] using hzero
+  exact hno_UF r ⟨hU_root, hr.1⟩
+
+/-- The top coefficient makes every affine-shifted step nonzero. -/
+private lemma step_X_sub_C_mul_ne_zero
+    {a b ρ : ℝ} {d : ℕ} (q : ℝ[X])
+    (hF_deg : (step a b q).natDegree = d + 1)
+    (hG_deg : (step a b (X * q)).natDegree = d + 2)
+    (hG_pos : HasPosLeadingCoeff (step a b (X * q))) :
+    step a b ((X - C ρ) * q) ≠ 0 := by
+  intro hz
+  have hcoeff := congrArg (fun p : ℝ[X] => p.coeff (d + 2)) hz
+  rw [step_sub] at hcoeff
+  have hFcoeff : (step a b q).coeff (d + 2) = 0 :=
+    coeff_eq_zero_of_natDegree_lt (by rw [hF_deg]; lia)
+  have hGcoeff : (step a b (X * q)).coeff (d + 2) =
+      (step a b (X * q)).leadingCoeff := by
+    rw [← hG_deg, coeff_natDegree]
+  have hcoeff' : (step a b (X * q)).coeff (d + 2) -
+      ρ * (step a b q).coeff (d + 2) = 0 := by
+    simpa using hcoeff
+  rw [hFcoeff, mul_zero, sub_zero, hGcoeff] at hcoeff'
+  exact (leadingCoeff_ne_zero.mpr hG_pos.ne_zero) hcoeff'
+
+/-- Corollary B: every affine shift of the input gives a simple real-rooted step. -/
+private theorem splits_step_X_sub_C_mul_of_simpleNegRooted {a b c : ℝ} {d : ℕ} (q : ℝ[X])
+    (ha : 0 ≤ a) (hb : 0 ≤ b) (hab : 0 < a * b) (hc : c = a + b + 1)
+    (hq : SimpleNegRooted q d) (hd : 1 ≤ d) :
+    ∀ ρ : ℝ, (step a b ((X - C ρ) * q)).Splits ∧
+      HasSimpleRoots (step a b ((X - C ρ) * q)) := by
+  have hA := step_simpleNegRooted_and_strictInterl q ha hb hab hc hq hd
+  have hF_pos : HasPosLeadingCoeff (step a b q) := hA.1.pos
+  have hno_UF : ∀ r : ℝ, ¬ ((comparison c q).IsRoot r ∧ (step a b q).IsRoot r) := by
+    intro s hs
+    have hqF := eval_mul_step_neg_of_comparison_isRoot q ha hb hc hq hs.1
+    rw [hs.2.eq_zero] at hqF
+    linarith
+  obtain ⟨hstepX, hFG⟩ :=
+    step_X_mul_eq_weightedSum_and_strictInterl q ha hb hc hq hA
   have hXq_deg : (X * q).natDegree = d + 1 := by
     rw [natDegree_mul X_ne_zero hq.pos.ne_zero, natDegree_X, hq.natDegree_eq]
     lia
@@ -424,28 +483,8 @@ private theorem splits_step_X_sub_C_mul_of_simpleNegRooted {a b c : ℝ} {d : �
   have hG_pos : HasPosLeadingCoeff (step a b (X * q)) := by
     rw [HasPosLeadingCoeff, hG_data.2]
     exact hXq_pos
-  have hno_FG : ∀ r : ℝ, ¬ ((step a b q).IsRoot r ∧
-      (step a b (X * q)).IsRoot r) := by
-    intro r hr
-    have hr_ne : r ≠ 0 := by
-      intro hr0
-      subst r
-      have hroot := hr.1.eq_zero
-      have hzero_pos : 0 < (step a b q).eval 0 := by
-        simpa [coeff_zero_eq_eval_zero] using hA.1.coeff_zero_pos
-      linarith
-    have hroot_sum := hr.2.eq_zero
-    rw [hstepX] at hroot_sum
-    simp only [weightedSum_cons, weightedSum_nil] at hroot_sum
-    simp only [eval_add, eval_mul, eval_C, eval_X, C_1, one_mul, add_zero] at hroot_sum
-    rw [hr.1.eq_zero] at hroot_sum
-    have hU_root : (comparison c q).IsRoot r := by
-      have hmul : r * (comparison c q).eval r = 0 := by
-        nlinarith [hroot_sum]
-      have hzero : (comparison c q).eval r = 0 :=
-        (mul_eq_zero.mp hmul).resolve_left hr_ne
-      simpa [Polynomial.IsRoot.def] using hzero
-    exact hno_UF r ⟨hU_root, hr.1⟩
+  have hno_FG :=
+    no_common_root_step_step_X_mul q hA.1.coeff_zero_pos hstepX hno_UF
   have hFG_simple := hFG.hasSimpleRoots_of_no_common_root hno_FG
   have hWne : ∀ t : ℝ,
       (ObreschkoffConverse.wronskianPoly
@@ -463,20 +502,8 @@ private theorem splits_step_X_sub_C_mul_of_simpleNegRooted {a b c : ℝ} {d : �
   have hcombo :=
     ObreschkoffConverse.combo_eq_zero_or_realRooted_simple_of_wronskian_eval_ne_zero
       hall hWne (-ρ) 1
-  have htarget_ne : step a b ((X - C ρ) * q) ≠ 0 := by
-    intro hz
-    have hcoeff := congrArg (fun p : ℝ[X] => p.coeff (d + 2)) hz
-    rw [step_sub] at hcoeff
-    have hFcoeff : (step a b q).coeff (d + 2) = 0 :=
-      coeff_eq_zero_of_natDegree_lt (by rw [hA.1.natDegree_eq]; lia)
-    have hGcoeff : (step a b (X * q)).coeff (d + 2) =
-        (step a b (X * q)).leadingCoeff := by
-      rw [← hG_data.1, coeff_natDegree]
-    have hcoeff' : (step a b (X * q)).coeff (d + 2) -
-        ρ * (step a b q).coeff (d + 2) = 0 := by
-      simpa using hcoeff
-    rw [hFcoeff, mul_zero, sub_zero, hGcoeff] at hcoeff'
-    exact (leadingCoeff_ne_zero.mpr hG_pos.ne_zero) hcoeff'
+  have htarget_ne :=
+    step_X_sub_C_mul_ne_zero (q := q) (ρ := ρ) hA.1.natDegree_eq hG_data.1 hG_pos
   have htarget : step a b ((X - C ρ) * q) =
       C (-ρ) * step a b q + C 1 * step a b (X * q) := by
     rw [step_sub]

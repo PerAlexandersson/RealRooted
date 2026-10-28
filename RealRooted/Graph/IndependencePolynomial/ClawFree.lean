@@ -297,6 +297,104 @@ theorem weightedSupportVertexDeletionCompatible_of_smaller
         hBaseDelU hBaseDelV
         (hPairSmall (S \ commonClosedNeighborSetOn G S u v) hCommonSmall)
 
+/-! ### Pair-deletion induction helpers -/
+
+/- A recursive simplicial clique gives compatibility with its weighted deletion term. -/
+private theorem compatible_weightedIndepPolyOn_X_mul_delete_of_simplicial
+    {V : Type u} [DecidableEq V]
+    {G : _root_.SimpleGraph V} [DecidableRel G.Adj] (hG : ClawFree G)
+    (wt : V → ℝ) {A B C : Finset V}
+    (hC : IsSimplicialCliqueOn G A C) (hAC : A \ C = B)
+    (hX : WeightedSupportSimplicialXCompatible G wt B)
+    {v : V} (hv : v ∈ C) :
+    Compatible (weightedIndepPolyOn G B wt)
+      (X * weightedIndepPolyOn G (deleteClosedNeighborSupport G A v) wt) := by
+  have hneighbor : IsSimplicialCliqueOn G B
+      (neighborOutsideCliqueOn G A C v) := by
+    simpa only [hAC] using hG.simplicialClique_neighborOutside hC hv
+  have hdelete : deleteClosedNeighborSupport G A v =
+      B \ neighborOutsideCliqueOn G A C v := by
+    simpa only [hAC] using
+      deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique
+        G (S := A) hC.2.1 hv
+  simpa only [hdelete] using hX hneighbor
+
+/- Two recursive simplicial cliques give compatible weighted deletion terms. -/
+private theorem compatible_X_mul_delete_X_mul_delete_of_simplicial
+    {V : Type u} [DecidableEq V]
+    {G : _root_.SimpleGraph V} [DecidableRel G.Adj] (hG : ClawFree G)
+    (wt : V → ℝ) {A₁ A₂ B C₁ C₂ : Finset V}
+    (hC₁ : IsSimplicialCliqueOn G A₁ C₁) (hA₁C₁ : A₁ \ C₁ = B)
+    (hC₂ : IsSimplicialCliqueOn G A₂ C₂) (hA₂C₂ : A₂ \ C₂ = B)
+    (hPair : WeightedSupportSimplicialPairCompatible G wt B)
+    {u v : V} (hu : u ∈ C₁) (hv : v ∈ C₂) :
+    Compatible
+      (X * weightedIndepPolyOn G (deleteClosedNeighborSupport G A₁ u) wt)
+      (X * weightedIndepPolyOn G (deleteClosedNeighborSupport G A₂ v) wt) := by
+  have hneighbor₁ : IsSimplicialCliqueOn G B
+      (neighborOutsideCliqueOn G A₁ C₁ u) := by
+    simpa only [hA₁C₁] using hG.simplicialClique_neighborOutside hC₁ hu
+  have hneighbor₂ : IsSimplicialCliqueOn G B
+      (neighborOutsideCliqueOn G A₂ C₂ v) := by
+    simpa only [hA₂C₂] using hG.simplicialClique_neighborOutside hC₂ hv
+  have hdelete₁ : deleteClosedNeighborSupport G A₁ u =
+      B \ neighborOutsideCliqueOn G A₁ C₁ u := by
+    simpa only [hA₁C₁] using
+      deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique
+        G (S := A₁) hC₁.2.1 hu
+  have hdelete₂ : deleteClosedNeighborSupport G A₂ v =
+      B \ neighborOutsideCliqueOn G A₂ C₂ v := by
+    simpa only [hA₂C₂] using
+      deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique
+        G (S := A₂) hC₂.2.1 hv
+  simpa only [hdelete₁, hdelete₂] using Compatible.X_mul (hPair hneighbor₁ hneighbor₂)
+
+/- The three parts of a pair-deletion family are pairwise compatible. -/
+private theorem weightedCliquePairDeletionFamily_pairwiseCompatible
+    {V : Type u} [DecidableEq V]
+    (G : _root_.SimpleGraph V) [DecidableRel G.Adj] (wt : V → ℝ)
+    (S K L : Finset V)
+    (hbase : (weightedIndepPolyOn G (S \ (K ∪ L)) wt).Splits)
+    (hbaseK : ∀ v ∈ K \ L, Compatible
+      (weightedIndepPolyOn G (S \ (K ∪ L)) wt)
+      (X * weightedIndepPolyOn G
+        (deleteClosedNeighborSupport G (S \ L) v) wt))
+    (hbaseL : ∀ v ∈ L \ K, Compatible
+      (weightedIndepPolyOn G (S \ (K ∪ L)) wt)
+      (X * weightedIndepPolyOn G
+        (deleteClosedNeighborSupport G (S \ K) v) wt))
+    (hKK : ∀ u ∈ K \ L, ∀ v ∈ K \ L, Compatible
+      (X * weightedIndepPolyOn G
+        (deleteClosedNeighborSupport G (S \ L) u) wt)
+      (X * weightedIndepPolyOn G
+        (deleteClosedNeighborSupport G (S \ L) v) wt))
+    (hLL : ∀ u ∈ L \ K, ∀ v ∈ L \ K, Compatible
+      (X * weightedIndepPolyOn G
+        (deleteClosedNeighborSupport G (S \ K) u) wt)
+      (X * weightedIndepPolyOn G
+        (deleteClosedNeighborSupport G (S \ K) v) wt))
+    (hKL : ∀ u ∈ K \ L, ∀ v ∈ L \ K, Compatible
+      (X * weightedIndepPolyOn G
+        (deleteClosedNeighborSupport G (S \ L) u) wt)
+      (X * weightedIndepPolyOn G
+        (deleteClosedNeighborSupport G (S \ K) v) wt)) :
+    PairwiseCompatible (weightedCliquePairDeletionFamily G wt S K L) := by
+  apply pairwiseCompatible_of_forall_mem
+  intro f hf g hg
+  simp only [weightedCliquePairDeletionFamily, List.mem_cons,
+    List.mem_append, List.mem_map, Finset.mem_toList] at hf hg
+  rcases hf with rfl | ⟨u, hu, rfl⟩ | ⟨u, hu, rfl⟩ <;>
+    rcases hg with rfl | ⟨v, hv, rfl⟩ | ⟨v, hv, rfl⟩
+  · exact Compatible.self_of_splits hbase
+  · exact hbaseK v hv
+  · exact hbaseL v hv
+  · exact (hbaseK u hu).comm
+  · exact hKK u hu v hv
+  · exact hKL u hu v hv
+  · exact (hbaseL u hu).comm
+  · exact (hKL v hv u hu).comm
+  · exact hLL u hu v hv
+
 /-- Weighted support-level simplicial-pair compatibility induction step. -/
 theorem weightedSupportSimplicialPairCompatible_of_smaller
     {V : Type u} [DecidableEq V]
@@ -329,34 +427,6 @@ theorem weightedSupportSimplicialPairCompatible_of_smaller
       hK.sdiff_right L
     have hL_simp : IsSimplicialCliqueOn G (S \ K) (L \ K) :=
       hL.sdiff_right K
-    have hK_neighbor_simp : ∀ v ∈ K \ L,
-        IsSimplicialCliqueOn G (S \ (K ∪ L))
-          (neighborOutsideCliqueOn G (S \ L) (K \ L) v) := by
-      intro v hv
-      simpa [hK_support] using
-        hG.simplicialClique_neighborOutside hK_simp hv
-    have hL_neighbor_simp : ∀ v ∈ L \ K,
-        IsSimplicialCliqueOn G (S \ (K ∪ L))
-          (neighborOutsideCliqueOn G (S \ K) (L \ K) v) := by
-      intro v hv
-      simpa [hL_support] using
-        hG.simplicialClique_neighborOutside hL_simp hv
-    have hK_delete_support : ∀ v ∈ K \ L,
-        deleteClosedNeighborSupport G (S \ L) v =
-          (S \ (K ∪ L)) \
-            neighborOutsideCliqueOn G (S \ L) (K \ L) v := by
-      intro v hv
-      simpa only [hK_support] using
-        deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique
-          G (S := S \ L) hK_simp.2.1 hv
-    have hL_delete_support : ∀ v ∈ L \ K,
-        deleteClosedNeighborSupport G (S \ K) v =
-          (S \ (K ∪ L)) \
-            neighborOutsideCliqueOn G (S \ K) (L \ K) v := by
-      intro v hv
-      simpa only [hL_support] using
-        deleteClosedNeighborSupport_eq_sdiff_neighborOutsideCliqueOn_of_clique
-          G (S := S \ K) hL_simp.2.1 hv
     have hKdel : ∀ v ∈ K \ L,
         (weightedIndepPolyOn G
           (deleteClosedNeighborSupport G (S \ L) v) wt).Splits := by
@@ -369,67 +439,47 @@ theorem weightedSupportSimplicialPairCompatible_of_smaller
       intro v hv
       exact hSplit (deleteClosedNeighborSupport G (S \ K) v) <|
         (deleteClosedNeighborSupport_subset G (S \ K) v).trans sdiff_subset
-    have hbase_k_x : ∀ v ∈ K \ L,
+    have hbaseK : ∀ v ∈ K \ L,
         Compatible (weightedIndepPolyOn G (S \ (K ∪ L)) wt)
           (X * weightedIndepPolyOn G
-            (deleteClosedNeighborSupport G (S \ L) v) wt) := by
-      intro v hv
-      simpa only [hK_delete_support v hv] using
-        hXSmall (S \ (K ∪ L)) hsmall (hK_neighbor_simp v hv)
-    have hbase_l_x : ∀ v ∈ L \ K,
+            (deleteClosedNeighborSupport G (S \ L) v) wt) :=
+      fun _ hv => compatible_weightedIndepPolyOn_X_mul_delete_of_simplicial
+        hG wt hK_simp hK_support (hXSmall (S \ (K ∪ L)) hsmall) hv
+    have hbaseL : ∀ v ∈ L \ K,
         Compatible (weightedIndepPolyOn G (S \ (K ∪ L)) wt)
           (X * weightedIndepPolyOn G
-            (deleteClosedNeighborSupport G (S \ K) v) wt) := by
-      intro v hv
-      simpa only [hL_delete_support v hv] using
-        hXSmall (S \ (K ∪ L)) hsmall (hL_neighbor_simp v hv)
-    have hK_pair_x : ∀ u ∈ K \ L, ∀ v ∈ K \ L,
+            (deleteClosedNeighborSupport G (S \ K) v) wt) :=
+      fun _ hv => compatible_weightedIndepPolyOn_X_mul_delete_of_simplicial
+        hG wt hL_simp hL_support (hXSmall (S \ (K ∪ L)) hsmall) hv
+    have hKK : ∀ u ∈ K \ L, ∀ v ∈ K \ L,
         Compatible
           (X * weightedIndepPolyOn G
             (deleteClosedNeighborSupport G (S \ L) u) wt)
           (X * weightedIndepPolyOn G
-            (deleteClosedNeighborSupport G (S \ L) v) wt) := by
-      intro u hu v hv
-      simpa [hK_delete_support u hu, hK_delete_support v hv] using
-        Compatible.X_mul ((hPairSmall (S \ (K ∪ L)) hsmall)
-          (hK_neighbor_simp u hu) (hK_neighbor_simp v hv))
-    have hL_pair_x : ∀ u ∈ L \ K, ∀ v ∈ L \ K,
+            (deleteClosedNeighborSupport G (S \ L) v) wt) :=
+      fun _ hu _ hv => compatible_X_mul_delete_X_mul_delete_of_simplicial
+        hG wt hK_simp hK_support hK_simp hK_support
+          (hPairSmall (S \ (K ∪ L)) hsmall) hu hv
+    have hLL : ∀ u ∈ L \ K, ∀ v ∈ L \ K,
         Compatible
           (X * weightedIndepPolyOn G
             (deleteClosedNeighborSupport G (S \ K) u) wt)
           (X * weightedIndepPolyOn G
-            (deleteClosedNeighborSupport G (S \ K) v) wt) := by
-      intro u hu v hv
-      simpa [hL_delete_support u hu, hL_delete_support v hv] using
-        Compatible.X_mul ((hPairSmall (S \ (K ∪ L)) hsmall)
-          (hL_neighbor_simp u hu) (hL_neighbor_simp v hv))
-    have hKL_pair_x : ∀ u ∈ K \ L, ∀ v ∈ L \ K,
+            (deleteClosedNeighborSupport G (S \ K) v) wt) :=
+      fun _ hu _ hv => compatible_X_mul_delete_X_mul_delete_of_simplicial
+        hG wt hL_simp hL_support hL_simp hL_support
+          (hPairSmall (S \ (K ∪ L)) hsmall) hu hv
+    have hKL : ∀ u ∈ K \ L, ∀ v ∈ L \ K,
         Compatible
           (X * weightedIndepPolyOn G
             (deleteClosedNeighborSupport G (S \ L) u) wt)
           (X * weightedIndepPolyOn G
-            (deleteClosedNeighborSupport G (S \ K) v) wt) := by
-      intro u hu v hv
-      simpa [hK_delete_support u hu, hL_delete_support v hv] using
-        Compatible.X_mul ((hPairSmall (S \ (K ∪ L)) hsmall)
-          (hK_neighbor_simp u hu) (hL_neighbor_simp v hv))
-    have hpair : PairwiseCompatible
-        (weightedCliquePairDeletionFamily G wt S K L) := by
-      apply pairwiseCompatible_of_forall_mem
-      intro f hf g hg
-      simp only [weightedCliquePairDeletionFamily, List.mem_cons,
-        List.mem_append, List.mem_map, Finset.mem_toList] at hf hg
-      rcases hf with rfl | ⟨u, hu, rfl⟩ | ⟨u, hu, rfl⟩ <;>
-        rcases hg with rfl | ⟨v, hv, rfl⟩ | ⟨v, hv, rfl⟩
-      · exact Compatible.self_of_splits hbase
-      · exact hbase_k_x v hv
-      · exact hbase_l_x v hv
-      · exact (hbase_k_x u hu).comm
-      · exact hK_pair_x u hu v hv
-      · exact hKL_pair_x u hu v hv
-      · exact (hbase_l_x u hu).comm
-      · exact (hKL_pair_x v hv u hu).comm
-      · exact hL_pair_x u hu v hv
+            (deleteClosedNeighborSupport G (S \ K) v) wt) :=
+      fun _ hu _ hv => compatible_X_mul_delete_X_mul_delete_of_simplicial
+        hG wt hK_simp hK_support hL_simp hL_support
+          (hPairSmall (S \ (K ∪ L)) hsmall) hu hv
+    have hpair := weightedCliquePairDeletionFamily_pairwiseCompatible
+      G wt S K L hbase hbaseK hbaseL hKK hLL hKL
     exact
       compatible_weightedIndepPolyOn_sdiff_pair_of_pairDeletion_pairwiseCompatible
         G wt S K L hK.2.1 hL.2.1 hK.1 hL.1 hwt hbase hKdel hLdel hpair
