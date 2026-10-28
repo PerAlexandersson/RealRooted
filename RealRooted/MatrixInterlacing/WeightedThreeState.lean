@@ -281,8 +281,11 @@ theorem weightedThreeStateMatrix_preserves
 
 /-- A state for the normalized weighted recurrence, ordered as `R, P, D`. -/
 structure WeightedThreeState where
+  /-- The auxiliary cumulative coordinate, updated by `R + b P + d D`. -/
   R : ℝ[X]
+  /-- The row polynomial of the recurrence, updated by `P + D`. -/
   P : ℝ[X]
+  /-- The difference coordinate, updated by `X R + α X P + D`. -/
   D : ℝ[X]
 
 /-- The list representation used by the matrix-interlacing API. -/
