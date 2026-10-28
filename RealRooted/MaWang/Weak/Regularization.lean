@@ -13,7 +13,7 @@ open Polynomial Filter
 
 noncomputable section
 
-namespace RealRooted.MaWangInternal
+namespace RealRooted.MaWang
 
 /-- If every positive perturbation `F - C δ * g` is real-rooted, then `F` is
 real-rooted as well. The interlacing hypothesis is only used to keep the degree
@@ -140,11 +140,11 @@ theorem isRealRooted_of_interlaces_sub_C_mul_of_forall_pos
   rw [← hF_eq]
   simp_all [-hF_eq]
 
-end RealRooted.MaWangInternal
+end RealRooted.MaWang
 
 namespace RealRooted
 
-export MaWangInternal
+export MaWang
   (isRealRooted_of_interlaces_sub_C_mul_of_forall_pos)
 
 end RealRooted

@@ -16,7 +16,7 @@ open Polynomial Filter
 
 noncomputable section
 
-namespace RealRooted.MaWangInternal
+namespace RealRooted.MaWang
 
 /-- Liu--Wang differ-by-1 form: if `g ⊳ f`, `F` has degree `deg(f)+1`, positive
 leading coefficient, and at every root `r` of `f` the value `F(r)` has the
@@ -259,11 +259,20 @@ lemma hasPosLeadingCoeff_sub_C_mul_of_interlaces_degree_lower_bound
         (natDegree_lt_of_interlaces_degree_lower_bound hgf hdeg_lo)
   simpa only [HasPosLeadingCoeff, leadingCoeff_sub_of_degree_lt hlt] using hF_pos
 
+end RealRooted.MaWang
+
+namespace RealRooted.MaWangInternal
+
+@[deprecated (since := "2026-10-28")] alias strictInterl_of_interlaces_eval_mul_neg_same :=
+  RealRooted.MaWang.strictInterl_of_interlaces_eval_mul_neg_same
+@[deprecated (since := "2026-10-28")] alias strictInterl_of_interlaces_eval_mul_neg_succ :=
+  RealRooted.MaWang.strictInterl_of_interlaces_eval_mul_neg_succ
+
 end RealRooted.MaWangInternal
 
 namespace RealRooted
 
-export MaWangInternal
+export MaWang
   (strictInterl_of_interlaces_eval_mul_neg_succ
     strictInterl_of_interlaces_eval_mul_neg_same
     strictInterl_of_interlaces_endpoint_sign_of_no_crossing

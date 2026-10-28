@@ -12,7 +12,7 @@ open Polynomial Filter
 
 noncomputable section
 
-namespace RealRooted.MaWangInternal
+namespace RealRooted.MaWang
 
 /-- Strict interval-root construction: if a polynomial has strictly opposite
 signs at each consecutive pair in a sorted real list `rs`, then it has a root
@@ -631,11 +631,20 @@ theorem strictInterl_of_strict_signs_of_endSigns_odd
   exact strictInterl_of_strict_signs_of_left_root hf_ne hf_splits hF_pos hrs_sorted hrs_eq hdeg
     hn hsign ⟨uL, huL_le, huL_root⟩ hleft_sign.ne hright_sign
 
+end RealRooted.MaWang
+
+namespace RealRooted.MaWangInternal
+
+@[deprecated (since := "2026-10-28")] alias strictInterl_of_strict_signs_of_endSigns_even :=
+  RealRooted.MaWang.strictInterl_of_strict_signs_of_endSigns_even
+@[deprecated (since := "2026-10-28")] alias strictInterl_of_strict_signs_of_endSigns_odd :=
+  RealRooted.MaWang.strictInterl_of_strict_signs_of_endSigns_odd
+
 end RealRooted.MaWangInternal
 
 namespace RealRooted
 
-export MaWangInternal
+export MaWang
   (exists_roots_strictly_interlacing_of_consecutive_signs
     interlaces_of_consecutive_signs_of_natDegree_lt
     interlaces_of_eval_mul_derivative_pos

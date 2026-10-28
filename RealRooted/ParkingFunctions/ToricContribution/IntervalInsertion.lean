@@ -127,7 +127,7 @@ theorem strictInterl_neg_insertionOperator
     simp only [u, v, insertionOperator, darbouxOperator, intervalWeight]
     ring
   rw [← hform]
-  apply MaWangInternal.strictInterl_of_step_succ hf hdeg
+  apply MaWang.strictInterl_of_step_succ hf hdeg
   · rw [hform]
     exact natDegree_neg_insertionOperator a b hf_pos.ne_zero (by lia) hb
   · rw [hform]
