@@ -76,21 +76,6 @@ syntax (name := rr_nonneg_coeffs_using_two)
 /-- Variant of `rr_nonneg_coeffs` that first adds the three given certificates as hypotheses. -/
 syntax (name := rr_nonneg_coeffs_using_three)
   "rr_nonneg_coeffs" " using " term "," term "," term : tactic
-/-- Closes `HasNonnegCoeffs 0`. -/
-syntax (name := rr_nonneg_coeffs_zero) "rr_nonneg_coeffs_zero" : tactic
-/-- Closes `HasNonnegCoeffs 1`. -/
-syntax (name := rr_nonneg_coeffs_one) "rr_nonneg_coeffs_one" : tactic
-/-- Closes `HasNonnegCoeffs (C a)` from `scalar_nonneg : 0 ≤ a`. -/
-syntax (name := rr_nonneg_coeffs_C)
-  "rr_nonneg_coeffs_C" " using " "scalar_nonneg" ":=" term : tactic
-/-- Closes `HasNonnegCoeffs X`. -/
-syntax (name := rr_nonneg_coeffs_X) "rr_nonneg_coeffs_X" : tactic
-/-- Closes `HasNonnegCoeffs (X + C a)` from `scalar_nonneg : 0 ≤ a`. -/
-syntax (name := rr_nonneg_coeffs_X_add_C)
-  "rr_nonneg_coeffs_X_add_C" " using " "scalar_nonneg" ":=" term : tactic
-/-- Closes `HasNonnegCoeffs (X - C a)` from `root_nonpos : a ≤ 0`. -/
-syntax (name := rr_nonneg_coeffs_X_sub_C)
-  "rr_nonneg_coeffs_X_sub_C" " using " "root_nonpos" ":=" term : tactic
 /-- Closes `HasNonnegCoeffs (C a * p)` from `scalar_nonneg : 0 ≤ a` and
 `poly_nonneg : HasNonnegCoeffs p`. -/
 syntax (name := rr_nonneg_coeffs_C_mul)
@@ -107,17 +92,10 @@ syntax (name := rr_nonneg_coeffs_add)
 `right : HasNonnegCoeffs q`. -/
 syntax (name := rr_nonneg_coeffs_mul)
   "rr_nonneg_coeffs_mul" " using " "left" ":=" term "," "right" ":=" term : tactic
-/-- Closes `HasNonnegCoeffs (p ^ n)` from `poly_nonneg : HasNonnegCoeffs p` and the `exponent`
-`n`. -/
-syntax (name := rr_nonneg_coeffs_pow)
-  "rr_nonneg_coeffs_pow" " using " "poly_nonneg" ":=" term "," "exponent" ":=" term :
-    tactic
 /-- Closes `HasPosLeadingCoeff p` for polynomials built from `1`, positive scalar multiples, `X`
 multiples, products, derivatives, sums with a dominant term, and polynomials with nonnegative
 coefficients. -/
 syntax (name := rr_pos_lc_auto) "rr_pos_lc" : tactic
-/-- Closes `HasPosLeadingCoeff 1`. -/
-syntax (name := rr_pos_lc_one) "rr_pos_lc_one" : tactic
 /-- Closes `HasPosLeadingCoeff p` from `nonneg : HasNonnegCoeffs p` and `nonzero : p ≠ 0`. -/
 syntax (name := rr_pos_lc_from_nonneg)
   "rr_pos_lc" " using " "nonneg" ":=" term "," "nonzero" ":=" term : tactic
@@ -150,9 +128,6 @@ syntax (name := rr_close_side) "rr_close_side" : tactic
 `nlinarith`, `rr_eval_simp` and `grind` that succeeds on a side goal, without requiring that the
 goal be closed. -/
 syntax (name := rr_side) "rr_side" : tactic
-/-- `rr_refine_then h with tac` refines the goal with the term `h` and runs `tac` on all resulting
-goals. -/
-syntax (name := rr_refine_then) "rr_refine_then " term " with " tactic : tactic
 /-- Closes the goal by `simpa` using `certificate`, after rewriting with the reversed `recurrence`
 equation. -/
 syntax (name := rr_recurrence_simpa)
@@ -168,26 +143,16 @@ syntax (name := rr_recurrence_degree)
     "degree" ":=" term :
   tactic
 
-/-- Term form of `positivity`: elaborates to `by positivity`. -/
-syntax (name := rr_positivity_term) "rr_positivity_term" : term
 /-- Term form of `rr_side_nonneg`: elaborates to `by rr_side_nonneg`. -/
 syntax (name := rr_side_nonneg_term) "rr_side_nonneg_term" : term
 /-- Term form of `rr_side_pos`: elaborates to `by rr_side_pos`. -/
 syntax (name := rr_side_pos_term) "rr_side_pos_term" : term
 /-- Term form of `rr_side_ne`: elaborates to `by rr_side_ne`. -/
 syntax (name := rr_side_ne_term) "rr_side_ne_term" : term
-/-- Term form of `rr_positivity_seq`: elaborates to `by rr_positivity_seq`. -/
-syntax (name := rr_positivity_seq_term) "rr_positivity_seq_term" : term
-/-- Term form of `rr_side_nonneg_seq`: elaborates to `by rr_side_nonneg_seq`. -/
-syntax (name := rr_side_nonneg_seq_term) "rr_side_nonneg_seq_term" : term
 /-- Term form of `rr_side_pos_seq`: elaborates to `by rr_side_pos_seq`. -/
 syntax (name := rr_side_pos_seq_term) "rr_side_pos_seq_term" : term
-/-- Term form of `rr_side_ne_seq`: elaborates to `by rr_side_ne_seq`. -/
-syntax (name := rr_side_ne_seq_term) "rr_side_ne_seq_term" : term
 
 macro_rules
-  | `(tactic| rr_refine_then $h:term with $tac:tactic) =>
-      `(tactic| refine $h <;> $tac)
   | `(tactic| rr_recurrence_simpa using recurrence := $hrec:term, certificate := $h:term) =>
       `(tactic| simpa [← $hrec] using $h)
   | `(tactic| rr_recurrence_degree using recurrence := $hrec:term, degree := $hdeg:term) =>
@@ -312,18 +277,6 @@ macro_rules
           <;> rr_coeff_finish
           <;> try rr_coeff_simp
           <;> rr_coeff_finish))
-  | `(tactic| rr_nonneg_coeffs_zero) =>
-      `(tactic| exact RealRooted.hasNonnegCoeffs_zero)
-  | `(tactic| rr_nonneg_coeffs_one) =>
-      `(tactic| exact RealRooted.hasNonnegCoeffs_one)
-  | `(tactic| rr_nonneg_coeffs_C using scalar_nonneg := $ha:term) =>
-      `(tactic| exact RealRooted.hasNonnegCoeffs_C $ha)
-  | `(tactic| rr_nonneg_coeffs_X) =>
-      `(tactic| exact RealRooted.hasNonnegCoeffs_X)
-  | `(tactic| rr_nonneg_coeffs_X_add_C using scalar_nonneg := $ha:term) =>
-      `(tactic| exact RealRooted.hasNonnegCoeffs_X_add_C $ha)
-  | `(tactic| rr_nonneg_coeffs_X_sub_C using root_nonpos := $hr:term) =>
-      `(tactic| exact RealRooted.hasNonnegCoeffs_X_sub_C $hr)
   | `(tactic|
       rr_nonneg_coeffs_C_mul using scalar_nonneg := $ha:term, poly_nonneg := $hp:term) =>
       `(tactic|
@@ -345,9 +298,6 @@ macro_rules
         first
           | exact RealRooted.HasNonnegCoeffs.mul $hp $hq
           | simpa only [mul_comm] using RealRooted.HasNonnegCoeffs.mul $hq $hp)
-  | `(tactic|
-      rr_nonneg_coeffs_pow using poly_nonneg := $hp:term, exponent := $n:term) =>
-      `(tactic| exact RealRooted.HasNonnegCoeffs.pow $hp $n)
   | `(tactic| rr_nonneg_coeffs using $h:term) =>
       `(tactic|
         have rr_nonneg_coeffs_h := ($h);
@@ -388,8 +338,6 @@ macro_rules
             | apply RealRooted.HasNonnegCoeffs.mul <;> rr_nonneg_coeffs
             | apply RealRooted.HasNonnegCoeffs.pow
               rr_nonneg_coeffs)
-  | `(tactic| rr_pos_lc_one) =>
-      `(tactic| exact RealRooted.hasPosLeadingCoeff_one)
   | `(tactic| rr_pos_lc using nonneg := $hnn:term, nonzero := $hp0:term) =>
       `(tactic| exact RealRooted.HasNonnegCoeffs.pos_leadingCoeff $hnn $hp0)
   | `(tactic| rr_pos_lc using nonzero := $hp0:term) =>
@@ -495,22 +443,14 @@ macro_rules
           | lia
           | rr_eval_simp
           | grind)
-  | `(rr_positivity_term) =>
-      `(by positivity)
   | `(rr_side_nonneg_term) =>
       `(by rr_side_nonneg)
   | `(rr_side_pos_term) =>
       `(by rr_side_pos)
   | `(rr_side_ne_term) =>
       `(by rr_side_ne)
-  | `(rr_positivity_seq_term) =>
-      `(by rr_positivity_seq)
-  | `(rr_side_nonneg_seq_term) =>
-      `(by rr_side_nonneg_seq)
   | `(rr_side_pos_seq_term) =>
       `(by rr_side_pos_seq)
-  | `(rr_side_ne_seq_term) =>
-      `(by rr_side_ne_seq)
 
 end Tactic
 end RealRooted

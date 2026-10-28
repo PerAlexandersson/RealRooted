@@ -635,19 +635,16 @@ def closedFormInterlacesGoal : TacticM Unit := do
   withMainContext do
   let tgt ← instantiateMVars (← getMainTarget)
   unless tgt.isAppOfArity ``RealRooted.Interlaces 2 do
-    throwError "rr_cf_interlaces: the goal is not `Interlaces g f`"
+    throwError "rr_row (closedForm): the goal is not `Interlaces g f`"
   let some P ← findPolySeqConst? tgt
-    | throwError "rr_cf_interlaces: no sequence `P : ℕ → ℝ[X]` in the goal"
+    | throwError "rr_row (closedForm): no sequence `P : ℕ → ℝ[X]` in the goal"
   let some L ← linRec? P
-    | throwError "rr_cf_interlaces: the recurrence is not linear"
+    | throwError "rr_row (closedForm): the recurrence is not linear"
   let result ← cfiProbe L
   match result with
   | .ok cp =>
     cfiKey cp.plan cp.degree
     cfiProof cp
-  | .error msg => throwError "rr_cf_interlaces: {msg}"
-
-/-- `rr_cf_interlaces` runs only the closed-form interlacing route. -/
-elab "rr_cf_interlaces" : tactic => closedFormInterlacesGoal
+  | .error msg => throwError "rr_row (closedForm): {msg}"
 
 end RealRooted.Tactic.CFI

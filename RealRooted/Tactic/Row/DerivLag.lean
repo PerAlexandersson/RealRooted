@@ -12,9 +12,9 @@ public import RealRooted.Tactic.Recurrence.Shape
 /-!
 # Row tactics: derivative-lag recurrences
 
-`rr_row_deriv_lag_splits`, `rr_row_deriv_lag_interlaces` and the strict row front end, by the
-Liu–Wang step for
-recurrences `P (n + 2) = U n * P (n + 1) + V n * (P (n + 1))' + W n * P n`.
+`rr_row_deriv_lag_splits`, the derivative-lag route of `rr_row_interlaces` and the strict
+row front end, by the Liu–Wang step for recurrences
+`P (n + 2) = U n * P (n + 1) + V n * (P (n + 1))' + W n * P n`.
 -/
 
 public meta section
@@ -24,7 +24,7 @@ open Lean Elab Tactic Meta Polynomial
 namespace RealRooted.Tactic
 
 /-!
-## `rr_row_deriv_lag_splits` and `rr_row_deriv_lag_interlaces`
+## `rr_row_deriv_lag_splits` and the interlacing route
 
 For a sequence defined by `P (n + k) = U n * P (n + k - 1) + V n * (P (n + k - 1))' +
 W n * P (n + k - 2)` (summands in any order, explicit rows below `k`; read by `linRec?`) the
@@ -725,16 +725,9 @@ degree `D₀ + n`, or of half growth `D₀ + (n + e) / 2` after dropping some ro
 `(degree := D₀)`, `(drop := s)` and `(half := e)` restrict the search. -/
 syntax (name := rrRowDerivLagSplits) "rr_row_deriv_lag_splits" (ppSpace rrRowHint)* : tactic
 
-/-- `rr_row_deriv_lag_interlaces` closes `Interlaces (P t) (P (t + 1))` for rows of a
-derivative-lag recurrence of growth one; see `rr_row_deriv_lag_splits`. -/
-syntax (name := rrRowDerivLagInterlaces) "rr_row_deriv_lag_interlaces" (ppSpace rrRowHint)* :
-  tactic
-
 elab_rules : tactic
   | `(tactic| rr_row_deriv_lag_splits $hs*) => withMainContext do
     discard <| derivLagCore true false (← parseRowHints hs)
-  | `(tactic| rr_row_deriv_lag_interlaces $hs*) => withMainContext do
-    discard <| derivLagCore false false (← parseRowHints hs)
 
 /-- Is the sequence of the main goal one of a derivative-lag recurrence that `rr_row_splits`
 and `rr_row_interlaces` do not read themselves? -/
