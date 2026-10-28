@@ -40,7 +40,7 @@ private lemma exp_eq_pow (k N : ℕ) :
     Complex.exp (2 * Real.pi * Complex.I * (k : ℂ) / N) =
       Complex.exp (2 * Real.pi * Complex.I / N) ^ k := by
   rw [← Complex.exp_nat_mul]
-  congr 1 ; ring
+  congr 1; ring
 
 private lemma geom_char_sum {ω r : ℂ} {N : ℕ} (hω : IsPrimitiveRoot ω N) (hr : r ≠ 0)
     {a b : ℕ} (ha : a < N) (hb : b < N) :
@@ -228,7 +228,7 @@ private lemma term_bound {τ : Type*} [Fintype τ] {a : ℂ} {R K : ℝ} (z : τ
       mul_le_mul_of_nonneg_left (norm_mono_le z hz m) (norm_nonneg _)
     _ = ‖a‖ * (2 * R) ^ (∑ i, m i) * (1 / 2) ^ (∑ i, m i) := by
       rw [mul_assoc, ← mul_pow]
-      congr 2 ; ring
+      congr 2; ring
     _ ≤ K * (1 / 2) ^ (∑ i, m i) :=
       mul_le_mul_of_nonneg_right ha (by positivity)
 
