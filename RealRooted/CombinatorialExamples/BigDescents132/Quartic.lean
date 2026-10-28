@@ -134,6 +134,110 @@ private lemma sq_bound {s a b : ℝ} (hs : 1 < s) (hab : a < b) (hb1 : 1 < b) (h
   have : 0 < b ^ 3 := by positivity
   nlinarith
 
+/-- The quartic has roots in `(0, 1)` and `(1, s)`. -/
+private lemma exists_bounded_roots {s : ℝ} (hs : 1 < s) :
+    ∃ a b : ℝ, 0 < a ∧ a < 1 ∧ 1 < b ∧ b < s ∧
+      (polynomial s).eval a = 0 ∧ (polynomial s).eval b = 0 := by
+  have hcont : Continuous fun x => (polynomial s).eval x := (polynomial s).continuous
+  have hf0 : 0 < (polynomial s).eval 0 := by rw [eval_polynomial]; nlinarith
+  have hf1 : (polynomial s).eval 1 < 0 := by rw [eval_polynomial]; nlinarith
+  have hfs : 0 < (polynomial s).eval s := by
+    rw [eval_polynomial]
+    have : 0 < s * (s - 1) := by nlinarith
+    nlinarith
+  obtain ⟨a, ⟨ha0, ha1⟩, hfa⟩ :=
+    intermediate_value_Ioo' zero_le_one hcont.continuousOn ⟨hf1, hf0⟩
+  obtain ⟨b, ⟨hb1, hbs⟩, hfb⟩ :=
+    intermediate_value_Ioo hs.le hcont.continuousOn ⟨hf1, hfs⟩
+  simp only at hfa hfb
+  exact ⟨a, b, ha0, ha1, hb1, hbs, hfa, hfb⟩
+
+/-- Strict convexity makes the two bounded roots the only real roots. -/
+private lemma eq_left_or_right_of_eval_eq_zero {s a b c : ℝ} (hs : 1 < s) (hab : a < b)
+    (hfa : (polynomial s).eval a = 0) (hfb : (polynomial s).eval b = 0)
+    (hc : (polynomial s).eval c = 0) : c = a ∨ c = b := by
+  have hconv := strictConvexOn_eval hs
+  by_contra hne
+  push Not at hne
+  rcases lt_or_gt_of_ne hne.1 with h1 | h1
+  · have := neg_between hconv h1 hab hc.le hfb.le
+    linarith
+  rcases lt_or_gt_of_ne hne.2 with h2 | h2
+  · have := neg_between hconv h1 h2 hfa.le hfb.le
+    linarith
+  · have := neg_between hconv hab h2 hfa.le hc.le
+    linarith
+
+/-- Two distinct real roots leave a quadratic cofactor with negative discriminant. -/
+private lemma exists_quadratic_factor_of_roots {s a b : ℝ} (hs : 1 < s) (hab : a < b)
+    (hfa : (polynomial s).eval a = 0) (hfb : (polynomial s).eval b = 0)
+    (hzero : ∀ c, (polynomial s).eval c = 0 → c = a ∨ c = b) :
+    ∃ p q : ℝ,
+      (∀ x, (polynomial s).eval x = (x - a) * (x - b) * (x ^ 2 + p * x + q)) ∧
+      s ^ 2 = a * b * q ∧ 0 < 4 * q - p ^ 2 := by
+  set p := a + b - 4 with hp
+  set q := 6 * s + (a + b) * (a + b - 4) - a * b with hq
+  set r1 := -4 * s ^ 2 + (a + b) * q - a * b * p with hr1
+  set r0 := s ^ 2 - a * b * q with hr0
+  have hR : ∀ x, (polynomial s).eval x =
+      (x ^ 2 - (a + b) * x + a * b) * (x ^ 2 + p * x + q) + r1 * x + r0 := by
+    intro x
+    rw [eval_polynomial, hp, hq, hr1, hr0]
+    ring
+  have hRa : r1 * a + r0 = 0 := by
+    have := hR a
+    rw [hfa] at this
+    linear_combination -this
+  have hRb : r1 * b + r0 = 0 := by
+    have := hR b
+    rw [hfb] at this
+    linear_combination -this
+  have hr1z : r1 = 0 := by
+    have : r1 * (b - a) = 0 := by linear_combination hRb - hRa
+    rcases mul_eq_zero.1 this with h | h
+    · exact h
+    · exact absurd h (by linarith)
+  have hr0z : r0 = 0 := by rw [hr1z] at hRa; linarith
+  have hW : ∀ x, (polynomial s).eval x =
+      (x - a) * (x - b) * (x ^ 2 + p * x + q) := by
+    intro x
+    rw [hR, hr1z, hr0z]
+    ring
+  have hsq : s ^ 2 = a * b * q := by linarith
+  refine ⟨p, q, hW, hsq, ?_⟩
+  by_contra hneg
+  push Not at hneg
+  set r := Real.sqrt (p ^ 2 - 4 * q) with hr
+  have hr2 : r ^ 2 = p ^ 2 - 4 * q := Real.sq_sqrt (by linarith)
+  have hq1 : ((-p + r) / 2) ^ 2 + p * ((-p + r) / 2) + q = 0 := by
+    linear_combination hr2 / 4
+  have hq2 : ((-p - r) / 2) ^ 2 + p * ((-p - r) / 2) + q = 0 := by
+    linear_combination hr2 / 4
+  have hc1 := hzero ((-p + r) / 2) (by rw [hW, hq1, mul_zero])
+  have hc2 := hzero ((-p - r) / 2) (by rw [hW, hq2, mul_zero])
+  have hsum : (-p + r) / 2 + (-p - r) / 2 = -p := by ring
+  have hprod : (-p + r) / 2 * ((-p - r) / 2) = q := by
+    linear_combination -hr2 / 4
+  have hW1 := hW 1
+  have hf1 : (polynomial s).eval 1 < 0 := by rw [eval_polynomial]; nlinarith
+  rcases hc1 with h1 | h1 <;> rcases hc2 with h2 | h2 <;> rw [h1, h2] at hsum hprod
+  · have hb' : b = 4 - 3 * a := by linarith
+    have e := hprod.trans hq
+    rw [hb'] at e
+    have : s = 2 * a - a ^ 2 := by linear_combination -e / 6
+    linarith [sq_nonneg (a - 1)]
+  · have : (polynomial s).eval 1 = ((1 - a) * (1 - b)) ^ 2 := by
+      linear_combination hW1 + (1 - a) * (1 - b) * hsum - (1 - a) * (1 - b) * hprod
+    linarith [sq_nonneg ((1 - a) * (1 - b))]
+  · have : (polynomial s).eval 1 = ((1 - a) * (1 - b)) ^ 2 := by
+      linear_combination hW1 + (1 - a) * (1 - b) * hsum - (1 - a) * (1 - b) * hprod
+    linarith [sq_nonneg ((1 - a) * (1 - b))]
+  · have ha' : a = 4 - 3 * b := by linarith
+    have e := hprod.trans hq
+    rw [ha'] at e
+    have : s = 2 * b - b ^ 2 := by linear_combination -e / 6
+    linarith [sq_nonneg (b - 1)]
+
 /-- For `s > 1`, `W_s` has exactly two real zeros `a ∈ (0,1)` and `b ∈ (1,s)`, a complex pair
 `U ± iV` with `V > 0`, and the modulus of that pair dominates strictly: `b^2 < U^2+V^2` and
 `s < U^2+V^2`.
@@ -148,82 +252,12 @@ theorem exists_root_factorization {s : ℝ} (hs : 1 < s) :
     ∃ a b U V : ℝ, 0 < a ∧ a < 1 ∧ 1 < b ∧ b < s ∧ 0 < V ∧
       polynomial s = (X - C a) * (X - C b) * ((X - C U) ^ 2 + C (V ^ 2)) ∧
       b ^ 2 < U ^ 2 + V ^ 2 ∧ s < U ^ 2 + V ^ 2 := by
-  have hconv := strictConvexOn_eval hs
-  have hcont : Continuous fun x => (polynomial s).eval x := (polynomial s).continuous
-  have hf0 : 0 < (polynomial s).eval 0 := by rw [eval_polynomial]; nlinarith
-  have hf1 : (polynomial s).eval 1 < 0 := by rw [eval_polynomial]; nlinarith
-  have hfs : 0 < (polynomial s).eval s := by
-    rw [eval_polynomial]; have : 0 < s * (s - 1) := by nlinarith
-    nlinarith
-  obtain ⟨a, ⟨ha0, ha1⟩, hfa⟩ :=
-    intermediate_value_Ioo' zero_le_one hcont.continuousOn ⟨hf1, hf0⟩
-  obtain ⟨b, ⟨hb1, hbs⟩, hfb⟩ :=
-    intermediate_value_Ioo hs.le hcont.continuousOn ⟨hf1, hfs⟩
-  simp only at hfa hfb
+  obtain ⟨a, b, ha0, ha1, hb1, hbs, hfa, hfb⟩ := exists_bounded_roots hs
   have hab : a < b := by linarith
-  -- zero set
-  have hzero : ∀ c, (polynomial s).eval c = 0 → c = a ∨ c = b := by
-    intro c hc
-    by_contra hne
-    push Not at hne
-    rcases lt_or_gt_of_ne hne.1 with h1 | h1
-    · have := neg_between hconv h1 hab hc.le hfb.le
-      linarith
-    rcases lt_or_gt_of_ne hne.2 with h2 | h2
-    · have := neg_between hconv h1 h2 hfa.le hfb.le
-      linarith
-    · have := neg_between hconv hab h2 hfa.le hc.le
-      linarith
-  set p := a + b - 4 with hp
-  set q := 6 * s + (a + b) * (a + b - 4) - a * b with hq
-  set r1 := -4 * s ^ 2 + (a + b) * q - a * b * p with hr1
-  set r0 := s ^ 2 - a * b * q with hr0
-  have hR : ∀ x, (polynomial s).eval x =
-      (x ^ 2 - (a + b) * x + a * b) * (x ^ 2 + p * x + q) + r1 * x + r0 := by
-    intro x; rw [eval_polynomial, hp, hq, hr1, hr0]; ring
-  have hRa : r1 * a + r0 = 0 := by
-    have := hR a; rw [hfa] at this; linear_combination -this
-  have hRb : r1 * b + r0 = 0 := by
-    have := hR b; rw [hfb] at this; linear_combination -this
-  have hr1z : r1 = 0 := by
-    have : r1 * (b - a) = 0 := by linear_combination hRb - hRa
-    rcases mul_eq_zero.1 this with h | h
-    · exact h
-    · exact absurd h (by linarith)
-  have hr0z : r0 = 0 := by rw [hr1z] at hRa; linarith
-  have hW : ∀ x, (polynomial s).eval x = (x - a) * (x - b) * (x ^ 2 + p * x + q) := by
-    intro x; rw [hR, hr1z, hr0z]; ring
-  have hsq : s ^ 2 = a * b * q := by linarith
-  -- negative discriminant
-  have hdisc : 0 < 4 * q - p ^ 2 := by
-    by_contra hneg
-    push Not at hneg
-    set r := Real.sqrt (p ^ 2 - 4 * q) with hr
-    have hr2 : r ^ 2 = p ^ 2 - 4 * q := Real.sq_sqrt (by linarith)
-    have hq1 : ((-p + r) / 2) ^ 2 + p * ((-p + r) / 2) + q = 0 := by linear_combination hr2 / 4
-    have hq2 : ((-p - r) / 2) ^ 2 + p * ((-p - r) / 2) + q = 0 := by linear_combination hr2 / 4
-    have hc1 := hzero ((-p + r) / 2) (by rw [hW, hq1, mul_zero])
-    have hc2 := hzero ((-p - r) / 2) (by rw [hW, hq2, mul_zero])
-    have hsum : (-p + r) / 2 + (-p - r) / 2 = -p := by ring
-    have hprod : (-p + r) / 2 * ((-p - r) / 2) = q := by linear_combination -hr2 / 4
-    have hW1 := hW 1
-    rcases hc1 with h1 | h1 <;> rcases hc2 with h2 | h2 <;> rw [h1, h2] at hsum hprod
-    · have hb' : b = 4 - 3 * a := by linarith
-      have e := hprod.trans hq
-      rw [hb'] at e
-      have : s = 2 * a - a ^ 2 := by linear_combination -e / 6
-      linarith [sq_nonneg (a - 1)]
-    · have : (polynomial s).eval 1 = ((1 - a) * (1 - b)) ^ 2 := by
-        linear_combination hW1 + (1 - a) * (1 - b) * hsum - (1 - a) * (1 - b) * hprod
-      linarith [sq_nonneg ((1 - a) * (1 - b))]
-    · have : (polynomial s).eval 1 = ((1 - a) * (1 - b)) ^ 2 := by
-        linear_combination hW1 + (1 - a) * (1 - b) * hsum - (1 - a) * (1 - b) * hprod
-      linarith [sq_nonneg ((1 - a) * (1 - b))]
-    · have ha' : a = 4 - 3 * b := by linarith
-      have e := hprod.trans hq
-      rw [ha'] at e
-      have : s = 2 * b - b ^ 2 := by linear_combination -e / 6
-      linarith [sq_nonneg (b - 1)]
+  have hzero : ∀ c, (polynomial s).eval c = 0 → c = a ∨ c = b :=
+    fun c hc => eq_left_or_right_of_eval_eq_zero hs hab hfa hfb hc
+  obtain ⟨p, q, hW, hsq, hdisc⟩ :=
+    exists_quadratic_factor_of_roots hs hab hfa hfb hzero
   set U := -p / 2 with hU
   set V := Real.sqrt (q - p ^ 2 / 4) with hVdef
   have hV2 : V ^ 2 = q - p ^ 2 / 4 := Real.sq_sqrt (by linarith)
@@ -344,7 +378,8 @@ private lemma isCoprime_X_sub_C_X_sub_C {x y : ℂ} (h : x ≠ y) : IsCoprime (X
 theorem map_eq_prod {s a b U V : ℝ}
     (h : polynomial s = (X - C a) * (X - C b) * ((X - C U) ^ 2 + C (V ^ 2))) :
     (polynomial s).map (algebraMap ℝ ℂ) =
-      (X - C (a : ℂ)) * (X - C (b : ℂ)) * (X - C (⟨U, V⟩ : ℂ)) * (X - C (⟨U, -V⟩ : ℂ)) := by
+      (X - C (a : ℂ)) * (X - C (b : ℂ)) * (X - C (⟨U, V⟩ : ℂ)) *
+        (X - C (⟨U, -V⟩ : ℂ)) := by
   rw [h]
   simp only [Polynomial.map_mul, Polynomial.map_add, Polynomial.map_sub, Polynomial.map_pow,
     map_X, map_C]

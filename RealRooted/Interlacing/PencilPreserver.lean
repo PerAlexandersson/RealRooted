@@ -86,6 +86,71 @@ private lemma negativeSimple_of_C_mul_of_negativeSimple {p : ℝ[X]} {c : ℝ}
     rw [Polynomial.roots_C_mul _ hc] at hr
     simpa using hr
 
+/-- Dividing a positive-leading simple real-rooted polynomial by its leading
+coefficient makes it negative-simple when all its roots are negative. -/
+private lemma normalize_isNegativeSimple_of_roots_neg
+    {p : ℝ[X]} (hp_ne : p ≠ 0) (hp_splits : p.Splits)
+    (hp_simple : HasSimpleRoots p) (hp_pos : HasPosLeadingCoeff p)
+    (hneg : ∀ r ∈ p.roots, r < 0) :
+    IsNegativeSimple (C p.leadingCoeff⁻¹ * p) := by
+  have hc := leadingCoeff_ne_zero.mpr hp_ne
+  have hrr := isRealRooted_C_mul hp_ne hp_splits (inv_ne_zero hc)
+  have hsimple : HasSimpleRoots (C p.leadingCoeff⁻¹ * p) := by
+    apply HasSimpleRoots.of_roots_nodup hrr.1
+    rw [Polynomial.roots_C_mul _ (inv_ne_zero hc)]
+    exact hp_simple.roots_nodup
+  have hpos : HasPosLeadingCoeff (C p.leadingCoeff⁻¹ * p) :=
+    hasPosLeadingCoeff_C_mul
+      (by simpa only [HasPosLeadingCoeff] using inv_pos.mpr hp_pos) hp_pos
+  refine ⟨hrr.1, hrr.2, hsimple, hpos, ?_⟩
+  intro r hr
+  rw [Polynomial.roots_C_mul _ (inv_ne_zero hc)] at hr
+  exact hneg r hr
+
+/-- Deleting a simple root prevents that root from remaining in the cofactor. -/
+private lemma not_isRoot_deleteRootFactor_of_hasSimpleRoots
+    {p : ℝ[X]} {r : ℝ} (hp_simple : HasSimpleRoots p) (hr : p.IsRoot r) :
+    ¬ (LiuOppositeSigns.deleteRootFactor p r).IsRoot r := by
+  intro hqr
+  rw [Polynomial.IsRoot.def] at hqr
+  have hfactor := LiuOppositeSigns.factor_deleteRootFactor_of_isRoot hr
+  have hder : p.derivative.eval r = 0 := by
+    rw [← hfactor]
+    simp [Polynomial.derivative_mul, hqr]
+  exact hp_simple.eval_derivative_ne_zero hr hder
+
+/-- Deleting one root from a positive-leading simple split polynomial preserves
+negative-simplicity when every remaining root is negative. -/
+private lemma deleteRootFactor_isNegativeSimple_of_roots_neg
+    {p : ℝ[X]} {r : ℝ} (hp_ne : p ≠ 0) (hp_splits : p.Splits)
+    (hp_simple : HasSimpleRoots p) (hp_pos : HasPosLeadingCoeff p)
+    (hr : p.IsRoot r)
+    (hneg : ∀ s ∈ (LiuOppositeSigns.deleteRootFactor p r).roots, s < 0) :
+    IsNegativeSimple (LiuOppositeSigns.deleteRootFactor p r) := by
+  let q := LiuOppositeSigns.deleteRootFactor p r
+  have hq := LiuOppositeSigns.deleteRootFactor_ne_zero_and_splits_of_isRoot
+    hp_ne hp_splits hr
+  have hfactor : (X - C r) * q = p :=
+    LiuOppositeSigns.factor_deleteRootFactor_of_isRoot hr
+  have hq_pos : HasPosLeadingCoeff q := by
+    dsimp [q]
+    rw [HasPosLeadingCoeff,
+      LiuOppositeSigns.leadingCoeff_deleteRootFactor_of_isRoot hp_ne hr]
+    simpa only [HasPosLeadingCoeff] using hp_pos
+  have hq_not_root : ¬ q.IsRoot r :=
+    not_isRoot_deleteRootFactor_of_hasSimpleRoots hp_simple hr
+  have hq_simple : HasSimpleRoots q := by
+    intro s hs
+    have hs_p : p.IsRoot s := by
+      rw [Polynomial.IsRoot.def] at hs ⊢
+      rw [← hfactor, eval_mul, hs, mul_zero]
+    have hs_ne : s ≠ r := fun hEq => hq_not_root (by simpa [hEq] using hs)
+    have hmult := hp_simple s hs_p
+    rw [← hfactor, Polynomial.rootMultiplicity_mul
+      (by simpa [hfactor] using hp_ne), Polynomial.rootMultiplicity_X_sub_C] at hmult
+    simpa [hs_ne] using hmult
+  exact ⟨hq.1, hq.2, hq_simple, hq_pos, hneg⟩
+
 private lemma negativeSimple_shape_of_strictInterl
     {f p : ℝ[X]} (hf : IsNegativeSimple f)
     (hp_ne : p ≠ 0) (hp_splits : p.Splits)
@@ -122,22 +187,12 @@ private lemma negativeSimple_shape_of_strictInterl
   have hc : c ≠ 0 := leadingCoeff_ne_zero.mpr hp_ne
   rcases hρ_neg_or_nonneg with hρ_neg | hρ_nonneg
   · refine ⟨c, C c⁻¹ * p, hc, ?_, ?_⟩
-    · have hqrr := isRealRooted_C_mul hp_ne hp_splits (inv_ne_zero hc)
-      have hqsimple : HasSimpleRoots (C c⁻¹ * p) := by
-        apply HasSimpleRoots.of_roots_nodup hqrr.1
-        rw [Polynomial.roots_C_mul _ (inv_ne_zero hc)]
-        exact hp_simple.roots_nodup
-      have hqpos : HasPosLeadingCoeff (C c⁻¹ * p) := by
-        exact hasPosLeadingCoeff_C_mul
-          (by simpa [c] using one_div_pos.mpr hp_pos) hp_pos
-      refine ⟨hqrr.1, hqrr.2, hqsimple, hqpos, ?_⟩
+    · apply normalize_isNegativeSimple_of_roots_neg
+        hp_ne hp_splits hp_simple hp_pos
       intro r hr
-      have hrp : r ∈ p.roots := by
-        rw [Polynomial.roots_C_mul _ (inv_ne_zero hc)] at hr
-        exact hr
       have hr_mem : r ∈ rs := by
-        rw [← hrs_eq] at hrp
-        exact Multiset.mem_coe.mp hrp
+        rw [← hrs_eq] at hr
+        exact Multiset.mem_coe.mp hr
       by_cases hr_last : r = ρ
       · simpa [hr_last] using hρ_neg
       · exact hrs_drop_neg r
@@ -152,31 +207,8 @@ private lemma negativeSimple_shape_of_strictInterl
       hp_ne hp_splits hρ_root
     have hfactor : (X - C ρ) * q = p :=
       LiuOppositeSigns.factor_deleteRootFactor_of_isRoot hρ_root
-    have hq_pos : HasPosLeadingCoeff q := by
-      dsimp [q]
-      rw [HasPosLeadingCoeff]
-      rw [LiuOppositeSigns.leadingCoeff_deleteRootFactor_of_isRoot hp_ne hρ_root]
-      simpa only [HasPosLeadingCoeff] using hp_pos
-    have hq_not_root : ¬ q.IsRoot ρ := by
-      intro hqρ
-      rw [Polynomial.IsRoot.def] at hqρ
-      have hder : p.derivative.eval ρ = 0 := by
-        rw [← hfactor]
-        simp [Polynomial.derivative_mul, hqρ]
-      exact hp_simple.eval_derivative_ne_zero hρ_root hder
-    have hq_simple : HasSimpleRoots q := by
-      intro s hs
-      have hs_p : p.IsRoot s := by
-        rw [Polynomial.IsRoot.def] at hs ⊢
-        rw [← hfactor, eval_mul]
-        rw [hs, mul_zero]
-      have hs_ne : s ≠ ρ := by
-        intro hEq
-        exact hq_not_root (by simpa [hEq] using hs)
-      have hmult := hp_simple s hs_p
-      rw [← hfactor, Polynomial.rootMultiplicity_mul
-        (by simpa [hfactor] using hp_ne), Polynomial.rootMultiplicity_X_sub_C] at hmult
-      simpa [hs_ne] using hmult
+    have hq_not_root : ¬ q.IsRoot ρ :=
+      not_isRoot_deleteRootFactor_of_hasSimpleRoots hp_simple hρ_root
     have hq_neg : ∀ s ∈ q.roots, s < 0 := by
       intro s hs
       have hs_q : q.IsRoot s := (mem_roots hq.1).mp hs
@@ -193,7 +225,8 @@ private lemma negativeSimple_shape_of_strictInterl
         exact Multiset.mem_coe.mp hs_mem'
       exact hrs_drop_neg s (List.mem_dropLast_of_mem_of_ne_getLast hs_mem hs_ne)
     have hqneg : IsNegativeSimple q :=
-      ⟨hq.1, hq.2, hq_simple, hq_pos, hq_neg⟩
+      deleteRootFactor_isNegativeSimple_of_roots_neg
+        hp_ne hp_splits hp_simple hp_pos hρ_root hq_neg
     refine ⟨c, C c⁻¹ * q, hc, ?_, ?_⟩
     · exact negativeSimple_of_C_mul_of_negativeSimple hqneg (inv_ne_zero hc)
         (by simpa [c] using (one_div_pos.mpr hp_pos))

@@ -198,6 +198,74 @@ private theorem deletionFirst_one_compatible_first_zeroStep (a : ℕ) :
   · right
     exact ⟨mul_ne_zero (C_ne_zero.mpr hc) hH0, hH.C_mul _⟩
 
+/-- The next first component is compatible with the zero-step image of the previous one. -/
+private theorem deletionFirst_succ_compatible_first_zeroStep (a j : ℕ)
+    (hQpf : IsPFPolynomial (deletionPolynomial a (j + 1)))
+    (hPpf : IsPFPolynomial (deletionFirst a j)) :
+    Compatible (deletionFirst a (j + 1))
+      (eulerInsertionStep 0 (a + j + 2) (deletionFirst a j)) := by
+  let Xp := deletionFirst a (j + 1)
+  let Yp := eulerInsertionStep 0 (a + j + 2) (deletionFirst a j)
+  change Compatible Xp Yp
+  by_cases hj0 : j = 0
+  · subst j
+    simpa [Xp, Yp] using deletionFirst_one_compatible_first_zeroStep a
+  · have hQinfo := deletionPolynomial_degree_nonneg a (j + 1)
+    have hPinfo := deletionFirst_degree_pos a j
+    have hXpos : HasPosLeadingCoeff Xp := (deletionFirst_degree_pos a (j + 1)).2
+    have hYpos : HasPosLeadingCoeff Yp :=
+      (eulerInsertionStep_degree_pos (c := (0 : ℝ))
+        (d := a + j + 2) (p := deletionFirst a j)
+        (by rw [hPinfo.1]; lia) hPinfo.2).2
+    have hj : 1 ≤ j := by lia
+    have hMtwo : a + j + 3 - 2 = a + j + 1 := by lia
+    have hMone : a + j + 3 - 1 = a + j + 2 := by lia
+    have hcompletion := deletionFirst_completion a j
+    rcases neg_one_pow_eq_or ℝ (j + 1) with hsign | hsign
+    · have hQeq : deletionPolynomial a (j + 1) = deletionFirst a j + 1 := by
+        rw [hsign] at hcompletion
+        simp only [map_one] at hcompletion
+        rw [hcompletion]
+        ring
+      obtain ⟨w, hw⟩ :=
+        crossedEulerCompletion_commonLeftInterleaver
+          (D := j + 1) (M := a + j + 3) (by lia) (by lia) hPpf
+          (by simpa [← hQeq] using hQpf) hPinfo.1
+      apply Compatible.of_commonLeftInterleaver
+        (h := w) (hf_pos := hXpos) (hg_pos := hYpos)
+      · apply hw Xp
+        simp only [List.mem_cons, List.mem_nil_iff, or_false]
+        right; left
+        change eulerInsertionStep 1 (a + (j + 1))
+          (deletionPolynomial a (j + 1)) =
+          eulerInsertionStep 1 (a + j + 3 - 2) (deletionFirst a j + 1)
+        rw [hMtwo, hQeq]
+        congr 1
+      · apply hw Yp
+        simp only [List.mem_cons, List.mem_nil_iff, or_false]
+        right; right; left
+        simp [Yp, hMone]
+    · have hPeq : deletionFirst a j = deletionPolynomial a (j + 1) + 1 := by
+        rw [hsign] at hcompletion
+        simpa using hcompletion
+      obtain ⟨w, hw⟩ :=
+        crossedEulerCompletion_commonLeftInterleaver
+          (D := j + 1) (M := a + j + 3) (by lia) (by lia) hQpf
+          (by simpa [← hPeq] using hPpf) hQinfo.1
+      apply Compatible.of_commonLeftInterleaver
+        (h := w) (hf_pos := hXpos) (hg_pos := hYpos)
+      · apply hw Xp
+        simp only [List.mem_cons, List.mem_nil_iff, or_false]
+        left
+        dsimp only [Xp, deletionFirst]
+        congr 1
+      · apply hw Yp
+        simp only [List.mem_cons, List.mem_nil_iff, or_false]
+        right; right; right
+        rw [← hPeq]
+        dsimp only [Yp]
+        congr 1
+
 /-- One pairwise-compatibility step for the two-part deletion recurrence. -/
 private theorem deletionComponents_next (a j : ℕ)
     (hprev : Compatible (deletionFirst a j) (deletionSecond a j))
@@ -250,59 +318,7 @@ private theorem deletionComponents_next (a j : ℕ)
       (by rw [hQinfo.1, hCinfo.1])
       (by rw [hCinfo.1]; lia)
   have hXY : Compatible Xp Yp := by
-    by_cases hj0 : j = 0
-    · subst j
-      simpa [Xp, Yp] using deletionFirst_one_compatible_first_zeroStep a
-    · have hj : 1 ≤ j := by lia
-      have hMtwo : a + j + 3 - 2 = a + j + 1 := by lia
-      have hMone : a + j + 3 - 1 = a + j + 2 := by lia
-      have hcompletion := deletionFirst_completion a j
-      rcases neg_one_pow_eq_or ℝ (j + 1) with hsign | hsign
-      · have hQeq : deletionPolynomial a (j + 1) = deletionFirst a j + 1 := by
-          rw [hsign] at hcompletion
-          simp only [map_one] at hcompletion
-          rw [hcompletion]
-          ring
-        obtain ⟨w, hw⟩ :=
-          crossedEulerCompletion_commonLeftInterleaver
-            (D := j + 1) (M := a + j + 3)
-            (by lia) (by lia) hPpf
-            (by simpa [← hQeq] using hQpf) hPinfo.1
-        apply Compatible.of_commonLeftInterleaver
-          (h := w) (hf_pos := hXpos) (hg_pos := hYpos)
-        · apply hw Xp
-          simp only [List.mem_cons, List.mem_nil_iff, or_false]
-          right; left
-          change eulerInsertionStep 1 (a + (j + 1))
-            (deletionPolynomial a (j + 1)) =
-            eulerInsertionStep 1 (a + j + 3 - 2) (deletionFirst a j + 1)
-          rw [hMtwo, hQeq]
-          congr 1
-        · apply hw Yp
-          simp only [List.mem_cons, List.mem_nil_iff, or_false]
-          right; right; left
-          simp [Yp, hMone]
-      · have hPeq : deletionFirst a j = deletionPolynomial a (j + 1) + 1 := by
-          rw [hsign] at hcompletion
-          simpa using hcompletion
-        obtain ⟨w, hw⟩ :=
-          crossedEulerCompletion_commonLeftInterleaver
-            (D := j + 1) (M := a + j + 3)
-            (by lia) (by lia) hQpf
-            (by simpa [← hPeq] using hPpf) hQinfo.1
-        apply Compatible.of_commonLeftInterleaver
-          (h := w) (hf_pos := hXpos) (hg_pos := hYpos)
-        · apply hw Xp
-          simp only [List.mem_cons, List.mem_nil_iff, or_false]
-          left
-          dsimp only [Xp, deletionFirst]
-          congr 1
-        · apply hw Yp
-          simp only [List.mem_cons, List.mem_nil_iff, or_false]
-          right; right; right
-          rw [← hPeq]
-          dsimp only [Yp]
-          congr 1
+    simpa [Xp, Yp] using deletionFirst_succ_compatible_first_zeroStep a j hQpf hPpf
   have htriple : Compatible Xp (Yp + Zp) :=
     deletionCompatible_first_sum_of_three hXrr hYrr hZrr
       hXpos hYpos hZpos hXY hXZ hYZ
