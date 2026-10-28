@@ -342,123 +342,143 @@ private lemma count_des (N : ℕ) (l : List ℕ) (hN : ∀ x ∈ l, x < N) (m : 
   simpa only [Finset.card_range, hsub] using card_filter_eq_of_eq_or_eq_succ
     (range (L + 1)) (fun j => (l.insertIdx j N).descentSet.card) d (d + 1) m hval hKc
 
+/-- The insertions preserving the peak count are the endpoints and positions by a peak. -/
+private lemma filter_peak_insertion_card_eq (N : ℕ) (l : List ℕ)
+    (hN : ∀ x ∈ l, x < N) :
+    (range (l.length + 1)).filter
+        (fun j => (l.insertIdx j N).peakSet.card = l.peakSet.card) =
+      insert 0 (insert l.length (l.peakSet ∪ l.peakSet.image Nat.succ)) := by
+  set p := l.peakSet.card with hp
+  set L := l.length with hL
+  have key := fun j (hj : j ∈ range (L + 1)) =>
+    pk_insert N l hN j (by simp at hj; lia)
+  ext j
+  simp only [Finset.mem_filter, Finset.mem_insert, Finset.mem_union,
+    Finset.mem_image, mem_peakSet_iff_isPk]
+  constructor
+  · rintro ⟨hj, hv⟩
+    have hkey := key j hj
+    simp only [Finset.mem_range] at hj
+    by_cases hj0 : j = 0
+    · exact Or.inl hj0
+    by_cases hjL : j = L
+    · exact Or.inr (Or.inl hjL)
+    right
+    right
+    by_cases hB : IsPk l j
+    · exact Or.inl hB
+    · right
+      refine ⟨j - 1, ?_, by lia⟩
+      split_ifs at hkey with h1 h2 <;> lia
+  · rintro (rfl | rfl | h | ⟨i, hi, rfl⟩)
+    · refine ⟨by simp, ?_⟩
+      have hkey := key 0 (by simp)
+      have h0 : ¬IsPk l 0 := by simp [IsPk]
+      simp only [Nat.not_lt_zero, false_and, h0, ite_false] at hkey
+      lia
+    · refine ⟨by simp, ?_⟩
+      have hkey := key L (by simp)
+      have hprev : ¬(0 < L ∧ IsPk l (L - 1)) := by grind [IsPk]
+      have hcurr : ¬IsPk l L := by grind [IsPk]
+      have hright : ¬(0 < L ∧ L < l.length) := by lia
+      simp only [hprev, hcurr, hright, ite_false] at hkey
+      lia
+    · have h' := h
+      unfold IsPk at h'
+      refine ⟨by simp; lia, ?_⟩
+      have hkey := key j (by simp; lia)
+      have hn : ¬(0 < j ∧ IsPk l (j - 1)) := by
+        rintro ⟨hj0, hj1⟩
+        have hnot := IsPk_not_succ hj1
+        rw [Nat.sub_add_cancel hj0] at hnot
+        exact hnot h
+      have hright : 0 < j ∧ j < l.length := ⟨h'.1, by lia⟩
+      simp only [hn, h] at hkey
+      simp only [hright] at hkey
+      simp only [ite_false] at hkey
+      simpa [hp] using Nat.add_right_cancel hkey
+    · have hi' := hi
+      unfold IsPk at hi'
+      refine ⟨by simp; lia, ?_⟩
+      have hkey := key (i + 1) (by simp; lia)
+      simp only [add_tsub_cancel_right] at hkey
+      have hnot := IsPk_not_succ hi
+      have hprev : 0 < i + 1 ∧ IsPk l i := ⟨by lia, hi⟩
+      have hright : 0 < i + 1 ∧ i + 1 < l.length := ⟨by lia, hi'.2.1⟩
+      simp only [hprev, hnot] at hkey
+      simp only [hright] at hkey
+      simp only [ite_false] at hkey
+      simpa [hp] using Nat.add_right_cancel hkey
+
+/-- Exactly twice the peak count plus two insertion positions preserve that count. -/
+private lemma card_filter_peak_insertion_eq (N : ℕ) (l : List ℕ)
+    (hN : ∀ x ∈ l, x < N) (hl : 1 ≤ l.length) :
+    ((range (l.length + 1)).filter
+      (fun j => (l.insertIdx j N).peakSet.card = l.peakSet.card)).card =
+        2 * l.peakSet.card + 2 := by
+  have hd : _root_.Disjoint l.peakSet (l.peakSet.image Nat.succ) := by
+    rw [Finset.disjoint_left]
+    intro a ha hb
+    simp only [Finset.mem_image] at hb
+    obtain ⟨i, hi, rfl⟩ := hb
+    rw [mem_peakSet_iff_isPk] at ha hi
+    exact IsPk_not_succ hi ha
+  rw [filter_peak_insertion_card_eq N l hN,
+    Finset.card_insert_of_notMem, Finset.card_insert_of_notMem,
+    Finset.card_union_of_disjoint hd, Finset.card_image_of_injective _
+      Nat.succ_injective]
+  · lia
+  · simp only [Finset.mem_union, Finset.mem_image, mem_peakSet_iff_isPk, not_or,
+      not_exists, not_and]
+    grind [IsPk]
+  · simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_image,
+      mem_peakSet_iff_isPk, not_or, not_exists, not_and]
+    grind [IsPk]
+
+/-- Inserting a new maximum either preserves the peak count or raises it by one. -/
+private lemma peak_insertion_card_eq_or_eq_succ (N : ℕ) (l : List ℕ)
+    (hN : ∀ x ∈ l, x < N) :
+    ∀ j ∈ range (l.length + 1),
+      (l.insertIdx j N).peakSet.card = l.peakSet.card ∨
+        (l.insertIdx j N).peakSet.card = l.peakSet.card + 1 := by
+  set p := l.peakSet.card with hp
+  set L := l.length with hL
+  intro j hj
+  have hkey := pk_insert N l hN j (by simp at hj; lia)
+  rw [← hL] at hkey
+  have e1 : (if 0 < j ∧ IsPk l (j - 1) then 1 else 0) ≤
+      (if 0 < j ∧ j < L then 1 else 0) := by
+    split_ifs with h1 h2 <;> simp_all [IsPk]
+    lia
+  have e2 : (if IsPk l j then 1 else 0) ≤
+      (if 0 < j ∧ j < L then 1 else 0) := by
+    split_ifs with h1 h2 <;> simp_all [IsPk]
+  have e3 : (if 0 < j ∧ IsPk l (j - 1) then 1 else 0) +
+      (if IsPk l j then 1 else 0) ≤ 1 := by
+    by_cases h1 : 0 < j ∧ IsPk l (j - 1)
+    · have h2 := IsPk_not_succ h1.2
+      rw [Nat.sub_add_cancel h1.1] at h2
+      simp only [h1, h2, true_and, ite_true, ite_false]
+      lia
+    · simp only [h1, ite_false]
+      split_ifs <;> lia
+  have e4 : (if 0 < j ∧ j < L then 1 else 0) ≤ 1 := by
+    split_ifs <;> lia
+  lia
+
 private lemma count_pk (N : ℕ) (l : List ℕ) (hN : ∀ x ∈ l, x < N)
     (hl : 1 ≤ l.length) (m : ℕ) :
     ((range (l.length + 1)).filter
         (fun j => (l.insertIdx j N).peakSet.card = m)).card =
       (if l.peakSet.card = m then 2 * l.peakSet.card + 2 else 0) +
       (if l.peakSet.card + 1 = m then l.length - 1 - 2 * l.peakSet.card else 0) := by
-  set p := l.peakSet.card with hp
-  set L := l.length with hL
-  have key := fun j (hj : j ∈ range (L + 1)) =>
-    pk_insert N l hN j (by simp at hj; lia)
-  have hK : (range (L + 1)).filter
-      (fun j => (l.insertIdx j N).peakSet.card = p) =
-      insert 0 (insert L (l.peakSet ∪ l.peakSet.image Nat.succ)) := by
-    ext j
-    simp only [Finset.mem_filter, Finset.mem_insert, Finset.mem_union,
-      Finset.mem_image, mem_peakSet_iff_isPk]
-    constructor
-    · rintro ⟨hj, hv⟩
-      have hkey := key j hj
-      simp only [Finset.mem_range] at hj
-      by_cases hj0 : j = 0
-      · exact Or.inl hj0
-      by_cases hjL : j = L
-      · exact Or.inr (Or.inl hjL)
-      right
-      right
-      by_cases hB : IsPk l j
-      · exact Or.inl hB
-      · right
-        refine ⟨j - 1, ?_, by lia⟩
-        split_ifs at hkey with h1 h2 <;> lia
-    · rintro (rfl | rfl | h | ⟨i, hi, rfl⟩)
-      · refine ⟨by simp, ?_⟩
-        have hkey := key 0 (by simp)
-        have h0 : ¬IsPk l 0 := by simp [IsPk]
-        simp only [Nat.not_lt_zero, false_and, h0, ite_false] at hkey
-        lia
-      · refine ⟨by simp, ?_⟩
-        have hkey := key L (by simp)
-        have hprev : ¬(0 < L ∧ IsPk l (L - 1)) := by grind [IsPk]
-        have hcurr : ¬IsPk l L := by grind [IsPk]
-        have hright : ¬(0 < L ∧ L < l.length) := by lia
-        simp only [hprev, hcurr, hright, ite_false] at hkey
-        lia
-      · have h' := h
-        unfold IsPk at h'
-        refine ⟨by simp; lia, ?_⟩
-        have hkey := key j (by simp; lia)
-        have hn : ¬(0 < j ∧ IsPk l (j - 1)) := by
-          rintro ⟨hj0, hj1⟩
-          have hnot := IsPk_not_succ hj1
-          rw [Nat.sub_add_cancel hj0] at hnot
-          exact hnot h
-        have hright : 0 < j ∧ j < l.length := ⟨h'.1, by lia⟩
-        simp only [hn, h] at hkey
-        simp only [hright] at hkey
-        simp only [ite_false] at hkey
-        simpa [hp] using Nat.add_right_cancel hkey
-      · have hi' := hi
-        unfold IsPk at hi'
-        refine ⟨by simp; lia, ?_⟩
-        have hkey := key (i + 1) (by simp; lia)
-        simp only [add_tsub_cancel_right] at hkey
-        have hnot := IsPk_not_succ hi
-        have hprev : 0 < i + 1 ∧ IsPk l i := ⟨by lia, hi⟩
-        have hright : 0 < i + 1 ∧ i + 1 < l.length := ⟨by lia, hi'.2.1⟩
-        simp only [hprev, hnot] at hkey
-        simp only [hright] at hkey
-        simp only [ite_false] at hkey
-        simpa [hp] using Nat.add_right_cancel hkey
-  have hKc : ((range (L + 1)).filter
-      (fun j => (l.insertIdx j N).peakSet.card = p)).card = 2 * p + 2 := by
-    have hd : _root_.Disjoint l.peakSet (l.peakSet.image Nat.succ) := by
-      rw [Finset.disjoint_left]
-      intro a ha hb
-      simp only [Finset.mem_image] at hb
-      obtain ⟨i, hi, rfl⟩ := hb
-      rw [mem_peakSet_iff_isPk] at ha hi
-      exact IsPk_not_succ hi ha
-    rw [hK, Finset.card_insert_of_notMem, Finset.card_insert_of_notMem,
-      Finset.card_union_of_disjoint hd, Finset.card_image_of_injective _
-        Nat.succ_injective]
-    · lia
-    · simp only [Finset.mem_union, Finset.mem_image, mem_peakSet_iff_isPk, not_or,
-        not_exists, not_and]
-      grind [IsPk]
-    · simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_image,
-        mem_peakSet_iff_isPk, not_or, not_exists, not_and]
-      grind [IsPk]
-  have hval : ∀ j ∈ range (L + 1),
-      (l.insertIdx j N).peakSet.card = p ∨
-        (l.insertIdx j N).peakSet.card = p + 1 := by
-    intro j hj
-    have hkey := key j hj
-    rw [← hL] at hkey
-    have e1 : (if 0 < j ∧ IsPk l (j - 1) then 1 else 0) ≤
-        (if 0 < j ∧ j < L then 1 else 0) := by
-      split_ifs with h1 h2 <;> simp_all [IsPk]
-      lia
-    have e2 : (if IsPk l j then 1 else 0) ≤
-        (if 0 < j ∧ j < L then 1 else 0) := by
-      split_ifs with h1 h2 <;> simp_all [IsPk]
-    have e3 : (if 0 < j ∧ IsPk l (j - 1) then 1 else 0) +
-        (if IsPk l j then 1 else 0) ≤ 1 := by
-      by_cases h1 : 0 < j ∧ IsPk l (j - 1)
-      · have h2 := IsPk_not_succ h1.2
-        rw [Nat.sub_add_cancel h1.1] at h2
-        simp only [h1, h2, true_and, ite_true, ite_false]
-        lia
-      · simp only [h1, ite_false]
-        split_ifs <;> lia
-    have e4 : (if 0 < j ∧ j < L then 1 else 0) ≤ 1 := by
-      split_ifs <;> lia
-    lia
-  have hsub : L + 1 - (2 * p + 2) = L - 1 - 2 * p := by lia
+  have hKc := card_filter_peak_insertion_eq N l hN hl
+  have hval := peak_insertion_card_eq_or_eq_succ N l hN
+  have hsub : l.length + 1 - (2 * l.peakSet.card + 2) =
+      l.length - 1 - 2 * l.peakSet.card := by lia
   simpa only [Finset.card_range, hsub] using card_filter_eq_of_eq_or_eq_succ
-    (range (L + 1)) (fun j => (l.insertIdx j N).peakSet.card) p (2 * p + 2) m hval hKc
+    (range (l.length + 1)) (fun j => (l.insertIdx j N).peakSet.card)
+      l.peakSet.card (2 * l.peakSet.card + 2) m hval hKc
 private def perms (n : ℕ) : List (List ℕ) :=
   (List.range n).reverse.permutations'
 
