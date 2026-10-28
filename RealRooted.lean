@@ -1505,6 +1505,7 @@ import RealRooted.Transforms.ReverseHermite
 import RealRooted.Transforms.ReverseHermite.Basic
 import RealRooted.Transforms.ReverseHermite.Derivative
 import RealRooted.Transforms.ReverseHermite.Preservation
+import RealRooted.Transforms.StirlingRootRegions
 import RealRooted.UnitIntervalGraph.AcyclicSink
 import RealRooted.UpperDerivativeInterlace
 import RealRooted.VeroneseMatrix
