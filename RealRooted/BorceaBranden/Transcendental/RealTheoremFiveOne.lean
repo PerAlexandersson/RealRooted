@@ -106,76 +106,6 @@ theorem realGlue_stableOrZero_of_isRealStableLimit
   exact fallingFactorial_glue_stableOrZero_of_isComplexStableLimit
     (complexifyFamily P) hP.isComplexStableLimit β
 
-omit [DecidableEq σ] in
-private theorem real_jensen_eq_zero_of_not_le {α β : σ →₀ ℕ} (h : ¬ α ≤ β) :
-    MvPolynomial.jensen α β = 0 := by
-  rw [Finsupp.le_def] at h
-  obtain ⟨i, hi⟩ := not_forall.mp h
-  unfold MvPolynomial.jensen
-  apply Finset.prod_eq_zero (Finset.mem_univ i)
-  rw [(Nat.descFactorial_eq_zero_iff_lt).mpr (Nat.lt_of_not_ge hi)]
-  simp
-
-private theorem real_tendsto_descFactorial_div_pow (a : ℕ) :
-    Tendsto (fun n : ℕ => (n.descFactorial a : ℝ) / (n : ℝ) ^ a) atTop (𝓝 1) := by
-  induction a with
-  | zero => simp
-  | succ a ih =>
-    have h1 : Tendsto (fun n : ℕ => (((n - a : ℕ) : ℝ) / n)) atTop (𝓝 1) := by
-      have h2 : Tendsto (fun n : ℕ => (1 : ℝ) - (a : ℝ) * (1 / (n : ℝ)))
-          atTop (𝓝 1) := by
-        have ht := (tendsto_one_div_atTop_nhds_zero_nat).const_mul (a : ℝ)
-        simpa using (tendsto_const_nhds (x := (1 : ℝ))).sub ht
-      refine h2.congr' ?_
-      filter_upwards [eventually_ge_atTop (a + 1)] with n hn
-      have hn0 : (n : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by lia)
-      rw [Nat.cast_sub (by lia)]
-      field_simp
-    have ht := h1.mul ih
-    rw [mul_one] at ht
-    refine ht.congr' ?_
-    filter_upwards [eventually_ge_atTop 1] with n hn
-    rw [Nat.descFactorial_succ, Nat.cast_mul, pow_succ]
-    have hn0 : (n : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by lia)
-    field_simp
-
-omit [DecidableEq σ] in
-private theorem real_constExp_apply (m : ℕ) (i : σ) : constExp σ m i = m := rfl
-
-omit [DecidableEq σ] in
-private theorem real_tendsto_jensen_constExp (α : σ →₀ ℕ) :
-    Tendsto (fun m : ℕ => MvPolynomial.jensen α (constExp σ (m + 1)))
-      atTop (𝓝 1) := by
-  unfold MvPolynomial.jensen
-  simp only [real_constExp_apply]
-  have ht := tendsto_finsetProd (Finset.univ : Finset σ) (fun i _ =>
-    (real_tendsto_descFactorial_div_pow (α i)).comp (tendsto_add_atTop_nat 1))
-  simpa [Function.comp] using ht
-
-omit [Fintype τ] in
-private theorem eval_realGlue_jensen [Finite τ]
-    (P : (σ →₀ ℕ) → MvPolynomial τ ℂ) (m : ℕ) (x : τ ⊕ σ → ℂ) :
-    MvPolynomial.eval x
-        (glue P (fun α => MvPolynomial.jensen α (constExp σ (m + 1)))
-          (constExp σ (m + 1))) =
-      MvPolynomial.eval
-        (Sum.elim (fun t => x (Sum.inl t))
-          (fun j => x (Sum.inr j) / ((m + 1 : ℕ) : ℂ)))
-        (glue P (fun α => fall α (constExp σ (m + 1)))
-          (constExp σ (m + 1))) := by
-  let := Fintype.ofFinite τ
-  unfold glue
-  simp only [map_sum, MvPolynomial.eval_monomial]
-  refine Finset.sum_congr rfl fun α _ => Finset.sum_congr rfl fun γ _ => ?_
-  rw [Finsupp.prod_fintype _ _ (by simp), Finsupp.prod_fintype _ _ (by simp),
-    Fintype.prod_sum_type, Fintype.prod_sum_type]
-  simp only [Finsupp.sumFinsuppEquivProdFinsupp_symm_inl,
-    Finsupp.sumFinsuppEquivProdFinsupp_symm_inr, Sum.elim_inl, Sum.elim_inr,
-    MvPolynomial.jensen, fall, real_constExp_apply]
-  push_cast
-  simp only [div_pow, Finset.prod_div_distrib]
-  ring
-
 omit [Fintype τ] in
 private theorem stableOrZero_realGlue_jensen [Finite τ]
     (P : (σ →₀ ℕ) → MvPolynomial τ ℂ)
@@ -189,11 +119,11 @@ private theorem stableOrZero_realGlue_jensen [Finite τ]
   · left
     apply MvPolynomial.funext
     intro x
-    rw [eval_realGlue_jensen, hz]
+    rw [eval_glue_jensen, hz]
     simp
   · right
     intro x hx
-    rw [eval_realGlue_jensen]
+    rw [eval_glue_jensen]
     apply hs
     rintro (t | j)
     · simpa using hx (Sum.inl t)
@@ -286,11 +216,11 @@ private theorem isRealStableLimit_of_cofinal_realGlue
       rw [seriesCoeff_complexifyFamily]
       split_ifs with hle
       · rfl
-      · rw [show κ m e = 0 from real_jensen_eq_zero_of_not_le hle, Complex.ofReal_zero,
+      · rw [show κ m e = 0 from MvPolynomial.jensen_eq_zero_of_not_le hle, Complex.ofReal_zero,
           zero_mul]
     have hκt : ∀ e, Tendsto (fun m => κ m e) atTop (𝓝 1) := by
       intro e
-      have ht := (real_tendsto_jensen_constExp
+      have ht := (tendsto_jensen_constExp
         (Finsupp.sumFinsuppEquivProdFinsupp e).2).comp hb
       simpa [κ, Function.comp_def] using ht
     have hst : ∀ m, MvRealStableOrZero (f m) := by
@@ -309,11 +239,11 @@ private theorem isRealStableLimit_of_cofinal_realGlue
       · left
         apply MvPolynomial.funext
         intro x
-        rw [eval_realGlue_jensen, hz]
+        rw [eval_glue_jensen, hz]
         simp
       · right
         intro x hx
-        rw [eval_realGlue_jensen]
+        rw [eval_glue_jensen]
         apply hs
         rintro (t | j)
         · simpa using hx (Sum.inl t)

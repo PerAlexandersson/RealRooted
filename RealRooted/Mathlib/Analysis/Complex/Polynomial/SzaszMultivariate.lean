@@ -80,6 +80,14 @@ variable {σ : Type*} [Fintype σ]
 def jensen (α β : σ →₀ ℕ) : ℝ :=
   ∏ i, ((β i).descFactorial (α i) : ℝ) / (β i : ℝ) ^ (α i)
 
+/-- The Jensen multiplier vanishes unless `α ≤ β`. -/
+theorem jensen_eq_zero_of_not_le {α β : σ →₀ ℕ} (h : ¬ α ≤ β) : jensen α β = 0 := by
+  rw [Finsupp.le_def] at h
+  push Not at h
+  obtain ⟨i, hi⟩ := h
+  exact Finset.prod_eq_zero (Finset.mem_univ i)
+    (by rw [(Nat.descFactorial_eq_zero_iff_lt).mpr hi]; simp)
+
 /-- The Jensen-multiplier operator `z^α ↦ J(α, β) z^α`. -/
 def jensenOp (β : σ →₀ ℕ) (f : MvPolynomial σ ℂ) : MvPolynomial σ ℂ :=
   ∑ α ∈ f.support, MvPolynomial.monomial α ((jensen α β : ℂ) * f.coeff α)
