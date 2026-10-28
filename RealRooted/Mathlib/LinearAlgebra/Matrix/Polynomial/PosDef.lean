@@ -314,25 +314,163 @@ private theorem exists_transpose_mul_mul_eq_one_of_diagDegreeSum_eq_zero {n : Ty
         simp
       · simp [hij]
 
+/-- Updating one identity column by the weighted monomial vector has determinant `C (a j)`. -/
+private theorem det_updateCol_one_weightedMonomial {n : Type*} [Fintype n] [DecidableEq n]
+    (a : n → ℝ) (d : n → ℕ) (j : n) :
+    let v : n → ℝ[X] := fun i ↦ C (a i) * X ^ (d j - d i)
+    ((1 : Matrix n n ℝ[X]).updateCol j v).det = C (a j) := by
+  let v : n → ℝ[X] := fun i ↦ C (a i) * X ^ (d j - d i)
+  have hvj : v j = C (a j) := by simp only [v, Nat.sub_self, pow_zero, mul_one]
+  have hcol : (fun k ↦ ∑ i, v i • (1 : Matrix n n ℝ[X]) k i) = v := by
+    funext k
+    simpa only [dotProduct, Matrix.one_apply, Pi.single_apply, smul_eq_mul, eq_comm] using
+      dotProduct_single_one v k
+  calc
+    ((1 : Matrix n n ℝ[X]).updateCol j v).det =
+        ((1 : Matrix n n ℝ[X]).updateCol j
+          (fun k ↦ ∑ i, v i • (1 : Matrix n n ℝ[X]) k i)).det := by rw [hcol]
+    _ = v j • (1 : Matrix n n ℝ[X]).det := det_updateCol_sum _ _ _
+    _ = C (a j) := by simp only [det_one, smul_eq_mul, mul_one, hvj]
+
+/-- Congruence by an identity matrix with one updated column changes only that diagonal entry. -/
+private theorem congr_updateCol_one_diagonal {n : Type*} [Fintype n] [DecidableEq n]
+    (G : Matrix n n ℝ[X]) (j : n) (v : n → ℝ[X]) :
+    let E : Matrix n n ℝ[X] := (1 : Matrix n n ℝ[X]).updateCol j v
+    let G' : Matrix n n ℝ[X] := Eᵀ * G * E
+    (∀ i, i ≠ j → G' i i = G i i) ∧
+      G' j j = ∑ i, ∑ k, v i * G i k * v k := by
+  dsimp only
+  have hone_right (f : n → ℝ[X]) (i : n) :
+      (∑ k, f k * (1 : Matrix n n ℝ[X]) k i) = f i := by
+    simpa only [dotProduct, Matrix.one_apply, Pi.single_apply] using
+      dotProduct_single_one f i
+  have hone_left (f : n → ℝ[X]) (i : n) :
+      (∑ k, (1 : Matrix n n ℝ[X]) k i * f k) = f i := by
+    simpa only [dotProduct, Matrix.one_apply, Pi.single_apply] using
+      single_one_dotProduct i f
+  constructor
+  · intro i hij
+    simp only [Matrix.mul_apply, transpose_apply, updateCol_apply, ite_eq_right hij]
+    rw [hone_right, hone_left]
+  · simp only [Matrix.mul_apply, transpose_apply, updateCol_apply]
+    simp only [ite_true, Finset.sum_mul, mul_assoc]
+    rw [Finset.sum_comm]
+
+/-- Every summand in the changed diagonal has degree at most twice the maximal weight. -/
+private theorem natDegree_weightedMonomial_mul_le {n : Type*}
+    (G : Matrix n n ℝ[X]) (a : n → ℝ) (d : n → ℕ) (j i k : n)
+    (hmax : ∀ i, a i ≠ 0 → d i ≤ d j)
+    (hentry : ∀ i k, (G i k).natDegree ≤ d i + d k) :
+    (C (a i) * X ^ (d j - d i) * G i k *
+      (C (a k) * X ^ (d j - d k))).natDegree ≤ 2 * d j := by
+  by_cases hai : a i = 0
+  · simp only [hai, map_zero, zero_mul, natDegree_zero, zero_le]
+  by_cases hak : a k = 0
+  · simp only [hak, map_zero, zero_mul, mul_zero, natDegree_zero, zero_le]
+  have hi := hmax i hai
+  have hk := hmax k hak
+  have hvi := (natDegree_C_mul_X_pow (d j - d i) (a i) hai).le
+  have hvk := (natDegree_C_mul_X_pow (d j - d k) (a k) hak).le
+  calc
+    (C (a i) * X ^ (d j - d i) * G i k *
+        (C (a k) * X ^ (d j - d k))).natDegree
+        ≤ (C (a i) * X ^ (d j - d i) * G i k).natDegree +
+          (C (a k) * X ^ (d j - d k)).natDegree := natDegree_mul_le
+    _ ≤ ((C (a i) * X ^ (d j - d i)).natDegree + (G i k).natDegree) +
+          (C (a k) * X ^ (d j - d k)).natDegree :=
+      Nat.add_le_add_right natDegree_mul_le _
+    _ ≤ ((d j - d i) + (d i + d k)) + (d j - d k) :=
+      Nat.add_le_add (Nat.add_le_add hvi (hentry i k)) hvk
+    _ = ((d j - d i) + d i) + ((d j - d k) + d k) := by ac_rfl
+    _ = d j + d j := by rw [Nat.sub_add_cancel hi, Nat.sub_add_cancel hk]
+    _ = 2 * d j := by rw [two_mul]
+
+/-- The top coefficient of a weighted matrix entry is its scalar kernel summand. -/
+private theorem coeff_weightedMonomial_mul {n : Type*}
+    (G : Matrix n n ℝ[X]) (L : Matrix n n ℝ) (a : n → ℝ) (d : n → ℕ)
+    (j i k : n) (hmax : ∀ i, a i ≠ 0 → d i ≤ d j)
+    (hL : ∀ i k, L i k = (G i k).coeff (d i + d k)) :
+    (C (a i) * X ^ (d j - d i) * G i k *
+      (C (a k) * X ^ (d j - d k))).coeff (2 * d j) = a i * L i k * a k := by
+  by_cases hai : a i = 0
+  · simp only [hai, map_zero, zero_mul, coeff_zero]
+  by_cases hak : a k = 0
+  · simp only [hak, map_zero, zero_mul, mul_zero, coeff_zero]
+  have hi := hmax i hai
+  have hk := hmax k hak
+  have hsum : 2 * d j = (d i + d k) + ((d j - d i) + (d j - d k)) := by lia
+  have hpoly :
+      C (a i) * X ^ (d j - d i) * G i k * (C (a k) * X ^ (d j - d k)) =
+        C (a i * a k) * G i k * X ^ ((d j - d i) + (d j - d k)) := by
+    simp only [map_mul]
+    rw [pow_add]
+    ring
+  rw [hpoly, hsum, coeff_mul_X_pow, coeff_C_mul, ← hL]
+  ring
+
+/-- A kernel vector makes the top coefficient of the changed diagonal vanish. -/
+private theorem coeff_quadratic_sum_eq_zero {n : Type*} [Fintype n]
+    (G : Matrix n n ℝ[X]) (L : Matrix n n ℝ) (v : n → ℝ[X]) (a : n → ℝ)
+    (N : ℕ) (hterm : ∀ i k, (v i * G i k * v k).coeff N = a i * L i k * a k)
+    (hkernel : ∀ i, ∑ k, L i k * a k = 0) :
+    (∑ i, ∑ k, v i * G i k * v k).coeff N = 0 := by
+  rw [finsetSum_coeff]
+  simp_rw [finsetSum_coeff, hterm]
+  calc
+    ∑ i, ∑ k, a i * L i k * a k = ∑ i, a i * (∑ k, L i k * a k) := by
+      apply Finset.sum_congr rfl
+      intro i _
+      rw [Finset.mul_sum]
+      simp only [mul_assoc]
+    _ = 0 := by simp only [hkernel, mul_zero, Finset.sum_const_zero]
+
+/-- Lowering one diagonal degree while fixing all others lowers their total degree. -/
+private theorem sum_diag_natDegree_lt {n : Type*} [Fintype n]
+    (G G' : Matrix n n ℝ[X]) (d : n → ℕ) (j : n)
+    (hdegree : ∀ i, (G i i).natDegree = 2 * d i)
+    (hsame : ∀ i, i ≠ j → G' i i = G i i)
+    (hlt : (G' j j).natDegree < 2 * d j) :
+    (∑ i, (G' i i).natDegree) < ∑ i, (G i i).natDegree := by
+  apply Finset.sum_lt_sum
+  · intro i _
+    by_cases hij : i = j
+    · subst i
+      rw [hdegree j]
+      exact hlt.le
+    · rw [hsame i hij]
+  · exact ⟨j, Finset.mem_univ j, by rw [hdegree j]; exact hlt⟩
+
+/-- Positivity bounds every entry degree by half the degrees of its two diagonal entries. -/
+private theorem posDef_eval_degree_bounds {n : Type*}
+    {G : Matrix n n ℝ[X]} (hGpos : ∀ x : ℝ, (G.map (evalRingHom x)).PosDef) :
+    let d : n → ℕ := fun i ↦ (G i i).natDegree / 2
+    (∀ i, (G i i).natDegree = 2 * d i) ∧
+      ∀ i j, (G i j).natDegree ≤ d i + d j := by
+  let d : n → ℕ := fun i ↦ (G i i).natDegree / 2
+  have hdiag_pos (i : n) (x : ℝ) : 0 < (G i i).eval x := by
+    simpa only [map_apply, coe_evalRingHom] using (hGpos x).diag_pos (i := i)
+  have hdiag_degree (i : n) : (G i i).natDegree = 2 * d i := by
+    simpa only [d] using (Nat.two_mul_div_two_of_even
+      (Polynomial.even_natDegree_of_eval_pos (hdiag_pos i))).symm
+  refine ⟨hdiag_degree, fun i j ↦ ?_⟩
+  have hle := Polynomial.two_mul_natDegree_le_of_sq_eval_le_mul_eval
+    (hdiag_pos i) (hdiag_pos j) fun x ↦ by
+      simpa only [map_apply, coe_evalRingHom] using
+        (hGpos x).apply_sq_le_mul_apply_diag i j
+  rw [hdiag_degree i, hdiag_degree j] at hle
+  lia
+
 private theorem exists_congr_diagDegreeSum_lt {n : Type*} [Fintype n] [DecidableEq n]
     {G : Matrix n n ℝ[X]} (hGdet : IsUnit G.det)
     (hGpos : ∀ x : ℝ, (G.map (evalRingHom x)).PosDef)
     (hmu : 0 < diagDegreeSum G) :
     ∃ E : Matrix n n ℝ[X], IsUnit E.det ∧
       diagDegreeSum (Eᵀ * G * E) < diagDegreeSum G := by
-  have hdiag_pos (i : n) (x : ℝ) : 0 < (G i i).eval x := by
-    simpa only [map_apply, coe_evalRingHom] using (hGpos x).diag_pos (i := i)
   let d : n → ℕ := fun i => (G i i).natDegree / 2
-  have hdiag_degree (i : n) : (G i i).natDegree = 2 * d i := by
-    simpa only [d] using (Nat.two_mul_div_two_of_even
-      (Polynomial.even_natDegree_of_eval_pos (hdiag_pos i))).symm
-  have hentry_degree (i j : n) : (G i j).natDegree ≤ d i + d j := by
-    have hle := Polynomial.two_mul_natDegree_le_of_sq_eval_le_mul_eval
-      (hdiag_pos i) (hdiag_pos j) fun x => by
-        simpa only [map_apply, coe_evalRingHom] using
-          (hGpos x).apply_sq_le_mul_apply_diag i j
-    rw [hdiag_degree i, hdiag_degree j] at hle
-    lia
+  have hbounds : (∀ i, (G i i).natDegree = 2 * d i) ∧
+      ∀ i j, (G i j).natDegree ≤ d i + d j :=
+    posDef_eval_degree_bounds hGpos
+  obtain ⟨hdiag_degree, hentry_degree⟩ := hbounds
   let D : ℕ := ∑ i, d i
   have hmu_eq : diagDegreeSum G = 2 * D := by
     simp only [diagDegreeSum, hdiag_degree, D, Finset.mul_sum]
@@ -356,59 +494,22 @@ private theorem exists_congr_diagDegreeSum_lt {n : Type*} [Fintype n] [Decidable
     exact hjmax i (by simpa only [s, Finset.mem_filter, Finset.mem_univ, true_and])
   let v : n → ℝ[X] := fun i => C (a i) * X ^ (d j - d i)
   let E : Matrix n n ℝ[X] := (1 : Matrix n n ℝ[X]).updateCol j v
-  have hvj : v j = C (a j) := by simp only [v, Nat.sub_self, pow_zero, mul_one]
   have hEdet : E.det = C (a j) := by
-    have hcol : (fun k => ∑ i, v i • (1 : Matrix n n ℝ[X]) k i) = v := by
-      funext k
-      simpa only [dotProduct, Matrix.one_apply, Pi.single_apply, smul_eq_mul, eq_comm] using
-        dotProduct_single_one v k
-    calc
-      E.det = ((1 : Matrix n n ℝ[X]).updateCol j
-          (fun k => ∑ i, v i • (1 : Matrix n n ℝ[X]) k i)).det := by rw [hcol]
-      _ = v j • (1 : Matrix n n ℝ[X]).det := det_updateCol_sum _ _ _
-      _ = C (a j) := by simp only [det_one, smul_eq_mul, mul_one, hvj]
+    simpa only [E, v] using det_updateCol_one_weightedMonomial a d j
   have hEunit : IsUnit E.det := by
     rw [hEdet]
     exact Polynomial.isUnit_C.mpr (isUnit_iff_ne_zero.mpr haj)
   refine ⟨E, hEunit, ?_⟩
   let G' : Matrix n n ℝ[X] := Eᵀ * G * E
-  have hone_right (f : n → ℝ[X]) (i : n) :
-      (∑ k, f k * (1 : Matrix n n ℝ[X]) k i) = f i := by
-    simpa only [dotProduct, Matrix.one_apply, Pi.single_apply] using
-      dotProduct_single_one f i
-  have hone_left (f : n → ℝ[X]) (i : n) :
-      (∑ k, (1 : Matrix n n ℝ[X]) k i * f k) = f i := by
-    simpa only [dotProduct, Matrix.one_apply, Pi.single_apply] using
-      single_one_dotProduct i f
+  have hdiag_data := congr_updateCol_one_diagonal G j v
   have hdiag_same (i : n) (hij : i ≠ j) : G' i i = G i i := by
-    simp only [G', E, Matrix.mul_apply, transpose_apply, updateCol_apply, ite_eq_right hij]
-    rw [hone_right, hone_left]
+    simpa only [G', E] using hdiag_data.1 i hij
   have hdiag_changed : G' j j = ∑ i, ∑ k, v i * G i k * v k := by
-    simp only [G', E, Matrix.mul_apply, transpose_apply, updateCol_apply]
-    simp only [ite_true, Finset.sum_mul, mul_assoc]
-    rw [Finset.sum_comm]
+    simpa only [G', E] using hdiag_data.2
   have hterm_degree (i k : n) :
       (v i * G i k * v k).natDegree ≤ 2 * d j := by
-    by_cases hai : a i = 0
-    · simp only [v, hai, map_zero, zero_mul, natDegree_zero, zero_le]
-    by_cases hak : a k = 0
-    · simp only [v, hak, map_zero, zero_mul, mul_zero, natDegree_zero, zero_le]
-    have hi := hmax i hai
-    have hk := hmax k hak
-    have hvi : (v i).natDegree ≤ d j - d i := by
-      simpa only [v] using (natDegree_C_mul_X_pow (d j - d i) (a i) hai).le
-    have hvk : (v k).natDegree ≤ d j - d k := by
-      simpa only [v] using (natDegree_C_mul_X_pow (d j - d k) (a k) hak).le
-    calc
-      (v i * G i k * v k).natDegree
-          ≤ (v i * G i k).natDegree + (v k).natDegree := natDegree_mul_le
-      _ ≤ ((v i).natDegree + (G i k).natDegree) + (v k).natDegree :=
-        Nat.add_le_add_right natDegree_mul_le _
-      _ ≤ ((d j - d i) + (d i + d k)) + (d j - d k) :=
-        Nat.add_le_add (Nat.add_le_add hvi (hentry_degree i k)) hvk
-      _ = ((d j - d i) + d i) + ((d j - d k) + d k) := by ac_rfl
-      _ = d j + d j := by rw [Nat.sub_add_cancel hi, Nat.sub_add_cancel hk]
-      _ = 2 * d j := by rw [two_mul]
+    simpa only [v] using
+      natDegree_weightedMonomial_mul_le G a d j i k hmax hentry_degree
   have hchanged_degree : (G' j j).natDegree ≤ 2 * d j := by
     rw [hdiag_changed]
     apply Polynomial.natDegree_sum_le_of_forall_le
@@ -418,34 +519,14 @@ private theorem exists_congr_diagDegreeSum_lt {n : Type*} [Fintype n] [Decidable
     exact hterm_degree i k
   have hterm_coeff (i k : n) :
       (v i * G i k * v k).coeff (2 * d j) = a i * L i k * a k := by
-    by_cases hai : a i = 0
-    · simp only [v, hai, map_zero, zero_mul, coeff_zero]
-    by_cases hak : a k = 0
-    · simp only [v, hak, map_zero, zero_mul, mul_zero, coeff_zero]
-    have hi := hmax i hai
-    have hk := hmax k hak
-    have hsum : 2 * d j = (d i + d k) + ((d j - d i) + (d j - d k)) := by lia
-    have hpoly : v i * G i k * v k =
-        C (a i * a k) * G i k * X ^ ((d j - d i) + (d j - d k)) := by
-      simp only [v, map_mul]
-      rw [pow_add]
-      ring
-    rw [hpoly, hsum, coeff_mul_X_pow, coeff_C_mul]
-    change (a i * a k) * L i k = a i * L i k * a k
-    ring
+    simpa only [v] using
+      coeff_weightedMonomial_mul G L a d j i k hmax (fun _ _ => rfl)
   have hkernel (i : n) : ∑ k, L i k * a k = 0 := by
     have hi := congrFun haL i
     simpa only [mulVec, dotProduct, Pi.zero_apply] using hi
   have hchanged_coeff : (G' j j).coeff (2 * d j) = 0 := by
-    rw [hdiag_changed, finsetSum_coeff]
-    simp_rw [finsetSum_coeff, hterm_coeff]
-    calc
-      ∑ i, ∑ k, a i * L i k * a k = ∑ i, a i * (∑ k, L i k * a k) := by
-        apply Finset.sum_congr rfl
-        intro i _
-        rw [Finset.mul_sum]
-        simp only [mul_assoc]
-      _ = 0 := by simp only [hkernel, mul_zero, Finset.sum_const_zero]
+    rw [hdiag_changed]
+    exact coeff_quadratic_sum_eq_zero G L v a (2 * d j) hterm_coeff hkernel
   have hG'pos : ∀ x : ℝ, (G'.map (evalRingHom x)).PosDef := by
     simpa only [G'] using eval_congr_posDef hGpos hEunit
   have hchanged_ne : G' j j ≠ 0 := by
@@ -457,14 +538,7 @@ private theorem exists_congr_diagDegreeSum_lt {n : Type*} [Fintype n] [Decidable
     apply leadingCoeff_ne_zero.mpr hchanged_ne
     rw [leadingCoeff, heq, hchanged_coeff]
   change (∑ i, (G' i i).natDegree) < ∑ i, (G i i).natDegree
-  apply Finset.sum_lt_sum
-  · intro i _
-    by_cases hij : i = j
-    · subst i
-      rw [hdiag_degree j]
-      exact hchanged_lt.le
-    · rw [hdiag_same i hij]
-  · exact ⟨j, Finset.mem_univ j, by rw [hdiag_degree j]; exact hchanged_lt⟩
+  exact sum_diag_natDegree_lt G G' d j hdiag_degree hdiag_same hchanged_lt
 
 /-- An everywhere positive-definite symmetric polynomial matrix with unit determinant is
 polynomially congruent to the identity. -/

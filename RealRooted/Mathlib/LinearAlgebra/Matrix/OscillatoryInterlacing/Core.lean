@@ -506,6 +506,205 @@ private theorem exists_pos_deleted_minor_of_det_pos {q : ℕ}
     fun j => le_antisymm (h j) (hminor j)
   rw [Matrix.det_succ_row M r] at hdet; simp [hzero] at hdet
 
+/-- Replacing the selected lower row by the adjacent pivot row preserves its order. -/
+private theorem whitney_replaced_rows_strictMono {m q : ℕ}
+    (rows : Fin (q + 1) → Fin (m + 1)) (r : Fin q) (s : Fin m)
+    (hrows : StrictMono rows) (hp : rows r.succ = s.succ)
+    (hs : ∀ i, rows i ≠ s.castSucc) :
+    StrictMono (Function.update rows r.succ s.castSucc) := by
+  apply strictMono_update_at rows r.succ s.castSucc hrows
+  · intro i hi
+    have hiu : rows i < s.succ := by simpa [hp] using hrows hi
+    have hle : rows i ≤ s.castSucc := by
+      apply Fin.le_iff_val_le_val.2
+      change (rows i).val < s.val + 1 at hiu
+      exact Nat.lt_succ_iff.mp hiu
+    exact lt_of_le_of_ne hle (hs i)
+  · intro i hi
+    exact lt_trans s.castSucc_lt_succ (by rw [← hp]; exact hrows hi)
+
+/-- Replacing the row immediately before the selected lower row preserves its order. -/
+private theorem whitney_prior_rows_strictMono {m q : ℕ}
+    (rows : Fin (q + 1) → Fin (m + 1)) (r : Fin q) (s : Fin m)
+    (hrows : StrictMono rows) (hp : rows r.succ = s.succ)
+    (hs : ∀ i, rows i ≠ s.castSucc) :
+    StrictMono (Function.update rows r.castSucc s.castSucc) := by
+  apply strictMono_update_at rows r.castSucc s.castSucc hrows
+  · intro i hi
+    have hir : rows i < rows r.castSucc := hrows hi
+    have hprior : rows r.castSucc < s.castSucc := by
+      have hlt : rows r.castSucc < s.succ := by
+        simpa [hp] using hrows r.castSucc_lt_succ
+      have hle : rows r.castSucc ≤ s.castSucc := by
+        apply Fin.le_iff_val_le_val.2
+        change (rows r.castSucc).val < s.val + 1 at hlt
+        exact Nat.lt_succ_iff.mp hlt
+      exact lt_of_le_of_ne hle (hs r.castSucc)
+    exact hir.trans hprior
+  · intro i hi
+    have hindex : r.succ ≤ i := by
+      apply Fin.le_iff_val_le_val.2
+      change r.val < i.val at hi
+      exact Nat.succ_le_iff.2 hi
+    exact lt_of_lt_of_le (by simp [hp]) (hrows.monotone hindex)
+
+/-- The bordered Plücker identity rewritten entirely in terms of ordered minors of `A`. -/
+private theorem whitney_submatrix_plucker {m n q : ℕ}
+    (A : Matrix (Fin (m + 1)) (Fin (n + 1)) ℝ)
+    (rows : Fin (q + 1) → Fin (m + 1)) (cols : Fin (q + 1) → Fin (n + 1))
+    (r : Fin q) (s : Fin m) (baseRows : Fin q → Fin (m + 1))
+    (baseCols : Fin q → Fin (n + 1)) (replaced qrows : Fin (q + 1) → Fin (m + 1))
+    (j : Fin (q + 1)) (hbaseCols : baseCols = j.removeNth cols)
+    (hM0 : 0 < (A.submatrix baseRows baseCols).det)
+    (hP : Function.update baseRows r (rows r.castSucc) = r.succ.removeNth rows)
+    (hE : Function.update baseRows r s.succ = r.castSucc.removeNth rows)
+    (hDA : r.succ.insertNth s.succ
+      (Function.update baseRows r (rows r.castSucc)) = rows)
+    (hQ : r.succ.insertNth s.succ baseRows = qrows)
+    (hDC : r.castSucc.insertNth (rows r.castSucc) baseRows = replaced) :
+    (A.submatrix baseRows baseCols).det * (A.submatrix rows cols).det =
+      (A.submatrix (r.succ.removeNth rows) baseCols).det *
+          (A.submatrix qrows cols).det +
+        (A.submatrix (r.castSucc.removeNth rows) baseCols).det *
+          (A.submatrix replaced cols).det := by
+  let M0 := A.submatrix baseRows baseCols
+  let b : Fin q → ℝ := fun i ↦ A (baseRows i) (cols j)
+  let x : Fin q → ℝ := fun a ↦ A (rows r.castSucc) (baseCols a)
+  let y : Fin q → ℝ := fun a ↦ A s.succ (baseCols a)
+  let alpha := A (rows r.castSucc) (cols j)
+  let beta := A s.succ (cols j)
+  have hsurj : Function.Surjective M0.vecMul := by
+    apply Matrix.vecMul_surjective_iff_isUnit.2
+    exact (Matrix.isUnit_iff_isUnit_det M0).2 (isUnit_iff_ne_zero.2 hM0.ne')
+  obtain ⟨u, hu⟩ := hsurj x
+  obtain ⟨v, hv⟩ := hsurj y
+  have hPdet : (M0.updateRow r x).det =
+      (A.submatrix (r.succ.removeNth rows) baseCols).det := by
+    rw [updateRow_submatrix, hP]
+  have hEdet : (M0.updateRow r y).det =
+      (A.submatrix (r.castSucc.removeNth rows) baseCols).det := by
+    rw [updateRow_submatrix, hE]
+  have hDAdet : (borderAt (M0.updateRow r x) r.succ j
+      (Function.update b r alpha) y beta).det = (A.submatrix rows cols).det := by
+    rw [updateRow_submatrix]
+    have hb : Function.update b r alpha =
+        fun i ↦ A ((Function.update baseRows r (rows r.castSucc)) i) (cols j) := by
+      ext i
+      by_cases hi : i = r <;> simp [b, alpha, Function.update, hi]
+    rw [hb, borderAt_submatrix, hDA, hbaseCols, j.insertNth_self_removeNth cols]
+  have hQdet : (borderAt M0 r.succ j b y beta).det =
+      (A.submatrix qrows cols).det := by
+    rw [borderAt_submatrix, hQ, hbaseCols, j.insertNth_self_removeNth cols]
+  have hDCdet : (borderAt M0 r.castSucc j b x alpha).det =
+      (A.submatrix replaced cols).det := by
+    rw [borderAt_submatrix, hDC, hbaseCols, j.insertNth_self_removeNth cols]
+  have hswap : (borderAt M0 r.succ j b x alpha).det =
+      -(A.submatrix replaced cols).det := by
+    rw [det_borderAt_pred_insert M0 r.succ (by simp) j b x alpha,
+      Fin.pred_succ, hDCdet]
+  have hplucker := det_borderAt_plucker M0 r r.succ j b x y u v alpha beta hu hv
+  rw [hDAdet, hPdet, hQdet, hEdet, hswap] at hplucker
+  linarith
+
+/-- Removing the changed row and restoring the pivot selector recovers the base rows. -/
+private theorem whitney_base_rows_recover {m q : ℕ}
+    (rows : Fin (q + 1) → Fin (m + 1)) (r : Fin q) (s : Fin m)
+    (hp : rows r.succ = s.succ) :
+    let replaced := Function.update rows r.succ s.castSucc
+    let baseRows := r.castSucc.removeNth replaced
+    Function.update (r.castSucc.removeNth rows) r s.castSucc = baseRows := by
+  let replaced := Function.update rows r.succ s.castSucc
+  let baseRows := r.castSucc.removeNth replaced
+  obtain ⟨_, hE, _, _, _⟩ := whitney_adjacent_selector_identities rows r
+    s.castSucc (rows r.castSucc) s.succ hp rfl
+  change Function.update baseRows r s.succ = r.castSucc.removeNth rows at hE
+  have hbase : baseRows r = s.castSucc := by
+    simp [baseRows, replaced, Fin.removeNth, Function.update]
+  rw [← hE, Function.update_idem]
+  exact Function.update_eq_self_iff.2 hbase.symm
+
+/-- The induction hypothesis gives the smaller eliminated minor identity used in Whitney's
+hard branch. -/
+private theorem whitney_smaller_minor_identity {m n q : ℕ}
+    (A : Matrix (Fin (m + 1)) (Fin (n + 1)) ℝ) (s : Fin m) (c : Fin (n + 1))
+    (rows : Fin (q + 1) → Fin (m + 1)) (baseCols : Fin q → Fin (n + 1))
+    (r : Fin q) (hrows : StrictMono rows) (hp : rows r.succ = s.succ)
+    (hpivot : A s.castSucc c ≠ 0) :
+    let replaced := Function.update rows r.succ s.castSucc
+    let baseRows := r.castSucc.removeNth replaced
+    A s.castSucc c * ((whitneyEliminateAt A s c).submatrix
+        (r.castSucc.removeNth rows) baseCols).det =
+      A s.castSucc c * (A.submatrix (r.castSucc.removeNth rows) baseCols).det -
+        A s.succ c * (A.submatrix baseRows baseCols).det := by
+  let replaced := Function.update rows r.succ s.castSucc
+  let baseRows := r.castSucc.removeNth replaced
+  rw [det_submatrix_whitneyEliminateAt A s c (r.castSucc.removeNth rows) baseCols
+    (hrows.comp (Fin.strictMono_succAbove r.castSucc)) r,
+    whitney_base_rows_recover rows r s hp]
+  · field_simp [hpivot]
+  · simp [hp, Fin.removeNth]
+
+/-- The noninitial hard minor in Whitney elimination is nonnegative. -/
+private theorem det_submatrix_whitneyEliminateAt_nonneg_of_later_row {m n q : ℕ}
+    (A : Matrix (Fin (m + 1)) (Fin (n + 1)) ℝ) (s : Fin m) (c : Fin (n + 1))
+    (hA : A.IsTotallyNonnegRect) (hpivot : 0 < A s.castSucc c)
+    (rows : Fin (q + 1) → Fin (m + 1)) (cols : Fin (q + 1) → Fin (n + 1))
+    (hrows : StrictMono rows) (hcols : StrictMono cols) (p : Fin (q + 1))
+    (hp : rows p = s.succ) (hs : ∀ i, rows i ≠ s.castSucc) (hp0 : p ≠ 0)
+    (ih : ∀ (rows : Fin q → Fin (m + 1)) (cols : Fin q → Fin (n + 1)),
+      StrictMono rows → StrictMono cols →
+        0 ≤ ((whitneyEliminateAt A s c).submatrix rows cols).det) :
+    0 ≤ ((whitneyEliminateAt A s c).submatrix rows cols).det := by
+  let r : Fin q := p.pred hp0
+  have hrp : r.succ = p := Fin.succ_pred p hp0
+  have hp' : rows r.succ = s.succ := by rw [hrp]; exact hp
+  let prior := rows r.castSucc
+  let replaced := Function.update rows r.succ s.castSucc
+  let qrows := Function.update rows r.castSucc s.castSucc
+  let baseRows := r.castSucc.removeNth replaced
+  have hreplaced : StrictMono replaced := whitney_replaced_rows_strictMono rows r s hrows hp' hs
+  have hqrows : StrictMono qrows := whitney_prior_rows_strictMono rows r s hrows hp' hs
+  have hbaseRows : StrictMono baseRows :=
+    hreplaced.comp (Fin.strictMono_succAbove r.castSucc)
+  obtain ⟨hProws, hErows, hDArows, hQrows, hDCrows⟩ :=
+    whitney_adjacent_selector_identities rows r s.castSucc prior s.succ hp' rfl
+  have hDCnonneg : 0 ≤ (A.submatrix replaced cols).det := hA hreplaced hcols
+  by_cases hDCzero : (A.submatrix replaced cols).det = 0
+  · rw [det_submatrix_whitneyEliminateAt A s c rows cols hrows p hp,
+      show Function.update rows p s.castSucc = replaced by rw [← hrp],
+      hDCzero, mul_zero, sub_zero]
+    exact hA hrows hcols
+  · have hDCpos : 0 < (A.submatrix replaced cols).det :=
+      lt_of_le_of_ne hDCnonneg (Ne.symm hDCzero)
+    let MC := A.submatrix replaced cols
+    have hdeleted : ∀ j : Fin (q + 1),
+        0 ≤ (MC.submatrix r.castSucc.succAbove j.succAbove).det := by
+      intro j
+      rw [Matrix.submatrix_submatrix]
+      exact hA (hreplaced.comp (Fin.strictMono_succAbove r.castSucc))
+        (hcols.comp (Fin.strictMono_succAbove j))
+    obtain ⟨j, hD0pos⟩ :=
+      exists_pos_deleted_minor_of_det_pos MC r.castSucc hdeleted hDCpos
+    let baseCols := j.removeNth cols
+    let M0 := A.submatrix baseRows baseCols
+    have hM0det : 0 < M0.det := by exact hD0pos
+    have hplucker := whitney_submatrix_plucker A rows cols r s baseRows baseCols
+      replaced qrows j rfl hM0det hProws hErows hDArows hQrows hDCrows
+    have hPnonneg : 0 ≤ (A.submatrix (r.succ.removeNth rows) baseCols).det :=
+      hA (hrows.comp (Fin.strictMono_succAbove r.succ))
+        (hcols.comp (Fin.strictMono_succAbove j))
+    have hQnonneg : 0 ≤ (A.submatrix qrows cols).det := hA hqrows hcols
+    have hsmall : 0 ≤ ((whitneyEliminateAt A s c).submatrix
+        (r.castSucc.removeNth rows) baseCols).det :=
+      ih _ _ (hrows.comp (Fin.strictMono_succAbove r.castSucc))
+        (hcols.comp (Fin.strictMono_succAbove j))
+    have hsmallEq :=
+      whitney_smaller_minor_identity A s c rows baseCols r hrows hp' hpivot.ne'
+    rw [det_submatrix_whitneyEliminateAt A s c rows cols hrows p hp,
+      show Function.update rows p s.castSucc = replaced by rw [← hrp]]
+    exact whitney_hard_minor_nonneg hpivot hM0det hPnonneg hQnonneg hDCnonneg
+      hsmall hplucker hsmallEq
+
 /-- Whitney elimination in a later column preserves total nonnegativity once
 all earlier entries in the pivot row and its tail have already been cleared. -/
 theorem IsTotallyNonnegRect.whitneyEliminateAt_nonneg {m n : ℕ}
@@ -537,174 +736,8 @@ theorem IsTotallyNonnegRect.whitneyEliminateAt_nonneg {m n : ℕ}
                 A s c rows cols hrows hp hcol hpivot htail hleft]
             · exact det_submatrix_whitneyEliminateAt_nonneg_of_first_row
                 A s c hA hpivot htail rows cols hrows hcols hp hcol
-          · let r : Fin q := p.pred hp0
-            have hrp : r.succ = p := Fin.succ_pred p hp0
-            have hp' : rows r.succ = s.succ := by rw [hrp]; exact hp
-            let prior := rows r.castSucc
-            let replaced := Function.update rows r.succ s.castSucc
-            let qrows := Function.update rows r.castSucc s.castSucc
-            let baseRows := r.castSucc.removeNth replaced
-            have hreplaced : StrictMono replaced := by
-              apply strictMono_update_at rows r.succ s.castSucc hrows
-              · intro i hi
-                have hiu : rows i < s.succ := by simpa [hp'] using hrows hi
-                have hle : rows i ≤ s.castSucc := by
-                  apply Fin.le_iff_val_le_val.2
-                  change (rows i).val < s.val + 1 at hiu
-                  exact Nat.lt_succ_iff.mp hiu
-                exact lt_of_le_of_ne hle (hs i)
-              · intro i hi
-                exact lt_trans s.castSucc_lt_succ (by
-                  rw [← hp']
-                  exact hrows hi)
-            have hqrows : StrictMono qrows := by
-              apply strictMono_update_at rows r.castSucc s.castSucc hrows
-              · intro i hi
-                have hir : rows i < prior := hrows hi
-                have hpriorLt : prior < s.castSucc := by
-                  have hlt : prior < s.succ := by
-                    simpa [hp'] using hrows r.castSucc_lt_succ
-                  have hle : prior ≤ s.castSucc := by
-                    apply Fin.le_iff_val_le_val.2
-                    change prior.val < s.val + 1 at hlt
-                    exact Nat.lt_succ_iff.mp hlt
-                  exact lt_of_le_of_ne hle (hs r.castSucc)
-                exact hir.trans hpriorLt
-              · intro i hi
-                have hindex : r.succ ≤ i := by
-                  apply Fin.le_iff_val_le_val.2
-                  change r.val < i.val at hi
-                  exact Nat.succ_le_iff.2 hi
-                have hmono : rows r.succ ≤ rows i := hrows.monotone hindex
-                exact lt_of_lt_of_le
-                  (by simp [hp']) hmono
-            have hbaseRows : StrictMono baseRows :=
-              hreplaced.comp (Fin.strictMono_succAbove r.castSucc)
-            obtain ⟨hProws, hErows, hDArows, hQrows, hDCrows⟩ :=
-              whitney_adjacent_selector_identities rows r
-                s.castSucc prior s.succ hp' rfl
-            have hErows' : Function.update baseRows r s.succ =
-                r.castSucc.removeNth rows := hErows
-            have hDCnonneg : 0 ≤ (A.submatrix replaced cols).det :=
-              hA hreplaced hcols
-            by_cases hDCzero : (A.submatrix replaced cols).det = 0
-            · rw [det_submatrix_whitneyEliminateAt A s c rows cols hrows p hp,
-                show Function.update rows p s.castSucc = replaced by rw [← hrp],
-                hDCzero, mul_zero, sub_zero]
-              exact hA hrows hcols
-            · have hDCpos : 0 < (A.submatrix replaced cols).det :=
-                lt_of_le_of_ne hDCnonneg (Ne.symm hDCzero)
-              let MC := A.submatrix replaced cols
-              have hdeleted : ∀ j : Fin (q + 1),
-                  0 ≤ (MC.submatrix r.castSucc.succAbove j.succAbove).det := by
-                intro j
-                rw [Matrix.submatrix_submatrix]
-                exact hA
-                  (hreplaced.comp (Fin.strictMono_succAbove r.castSucc))
-                  (hcols.comp (Fin.strictMono_succAbove j))
-              obtain ⟨j, hD0pos⟩ :=
-                exists_pos_deleted_minor_of_det_pos MC r.castSucc hdeleted hDCpos
-              let baseCols := j.removeNth cols
-              let M0 := A.submatrix baseRows baseCols
-              let b : Fin q → ℝ := fun i ↦ A (baseRows i) (cols j)
-              let x : Fin q → ℝ := fun a ↦ A prior (baseCols a)
-              let y : Fin q → ℝ := fun a ↦ A s.succ (baseCols a)
-              let alpha := A prior (cols j)
-              let beta := A s.succ (cols j)
-              have hM0det : 0 < M0.det := by
-                have hMCminor :
-                    MC.submatrix r.castSucc.succAbove j.succAbove = M0 := by
-                  rfl
-                rw [hMCminor] at hD0pos
-                exact hD0pos
-              have hsurj : Function.Surjective M0.vecMul := by
-                apply Matrix.vecMul_surjective_iff_isUnit.2
-                exact (Matrix.isUnit_iff_isUnit_det M0).2
-                  (isUnit_iff_ne_zero.2 hM0det.ne')
-              obtain ⟨u, hu⟩ := hsurj x
-              obtain ⟨v, hv⟩ := hsurj y
-              have hPdet : (M0.updateRow r x).det =
-                  (A.submatrix (r.succ.removeNth rows) baseCols).det := by
-                rw [updateRow_submatrix, hProws]
-              have hEdet : (M0.updateRow r y).det =
-                  (A.submatrix (r.castSucc.removeNth rows) baseCols).det := by
-                rw [updateRow_submatrix, hErows]
-              have hDAdet : (borderAt (M0.updateRow r x) r.succ j
-                  (Function.update b r alpha) y beta).det =
-                    (A.submatrix rows cols).det := by
-                rw [updateRow_submatrix]
-                have hbupdate : Function.update b r alpha =
-                    fun i ↦ A ((Function.update baseRows r prior) i)
-                      (cols j) := by
-                  ext i
-                  by_cases hi : i = r <;>
-                    simp [b, alpha, Function.update, hi]
-                rw [hbupdate]
-                change (borderAt
-                    (A.submatrix (Function.update baseRows r prior) baseCols)
-                    r.succ j
-                    (fun i ↦ A ((Function.update baseRows r prior) i) (cols j))
-                    (fun a ↦ A s.succ (baseCols a))
-                    (A s.succ (cols j))).det = _
-                rw [borderAt_submatrix, hDArows,
-                  j.insertNth_self_removeNth cols]
-              have hQdet : (borderAt M0 r.succ j b y beta).det =
-                  (A.submatrix qrows cols).det := by
-                rw [borderAt_submatrix, hQrows,
-                  j.insertNth_self_removeNth cols]
-              have hDCdet : (borderAt M0 r.castSucc j b x alpha).det =
-                  (A.submatrix replaced cols).det := by
-                rw [borderAt_submatrix, hDCrows,
-                  j.insertNth_self_removeNth cols]
-              have hswap : (borderAt M0 r.succ j b x alpha).det =
-                  -(A.submatrix replaced cols).det := by
-                rw [det_borderAt_pred_insert M0 r.succ (by simp) j b x alpha,
-                  Fin.pred_succ, hDCdet]
-              have hplucker0 := det_borderAt_plucker M0 r r.succ j b x y u v
-                alpha beta hu hv
-              have hplucker : M0.det * (A.submatrix rows cols).det =
-                  (A.submatrix (r.succ.removeNth rows) baseCols).det *
-                      (A.submatrix qrows cols).det +
-                    (A.submatrix (r.castSucc.removeNth rows) baseCols).det *
-                      (A.submatrix replaced cols).det := by
-                rw [hDAdet, hPdet, hQdet, hEdet, hswap] at hplucker0; linarith
-              have hPnonneg : 0 ≤
-                  (A.submatrix (r.succ.removeNth rows) baseCols).det :=
-                hA (hrows.comp (Fin.strictMono_succAbove r.succ))
-                  (hcols.comp (Fin.strictMono_succAbove j))
-              have hQnonneg : 0 ≤ (A.submatrix qrows cols).det :=
-                hA hqrows hcols
-              have hsmall : 0 ≤
-                  ((whitneyEliminateAt A s c).submatrix
-                    (r.castSucc.removeNth rows) baseCols).det :=
-                ih (hrows.comp (Fin.strictMono_succAbove r.castSucc))
-                  (hcols.comp (Fin.strictMono_succAbove j))
-              have hbaseAt : baseRows r = s.castSucc := by
-                simp [baseRows, replaced, Fin.removeNth, Function.update]
-              have hbaseRecover :
-                  Function.update (r.castSucc.removeNth rows) r s.castSucc =
-                    baseRows := by
-                rw [← hErows']
-                ext i
-                by_cases hi : i = r <;>
-                  simp [Function.update, hi, hbaseAt]
-              have hsmallEq : A s.castSucc c *
-                    ((whitneyEliminateAt A s c).submatrix
-                      (r.castSucc.removeNth rows) baseCols).det =
-                  A s.castSucc c *
-                    (A.submatrix (r.castSucc.removeNth rows) baseCols).det -
-                  A s.succ c * M0.det := by
-                rw [det_submatrix_whitneyEliminateAt A s c
-                  (r.castSucc.removeNth rows) baseCols
-                  (hrows.comp (Fin.strictMono_succAbove r.castSucc)) r,
-                  hbaseRecover]
-                · field_simp [hpivot.ne']
-                  rfl
-                · simp [hp', Fin.removeNth]
-              rw [det_submatrix_whitneyEliminateAt A s c rows cols hrows p hp,
-                show Function.update rows p s.castSucc = replaced by rw [← hrp]]
-              exact whitney_hard_minor_nonneg hpivot hM0det hPnonneg hQnonneg
-                hDCnonneg hsmall hplucker hsmallEq
+          · exact det_submatrix_whitneyEliminateAt_nonneg_of_later_row A s c hA hpivot
+              rows cols hrows hcols p hp hs hp0 ih
       · simp only [not_exists] at hu
         rw [submatrix_whitneyEliminateAt_eq_of_not_mem A s c rows cols hu]
         exact hA hrows hcols

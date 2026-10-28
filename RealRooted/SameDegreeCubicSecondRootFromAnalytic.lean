@@ -69,6 +69,194 @@ private theorem card_filter_lt_triple (a b c x : ℝ) :
   simp only [Multiset.insert_eq_cons, Multiset.filter_cons, Multiset.filter_singleton]
   split_ifs <;> simp_all [Multiset.card_cons]
 
+/-- The no-common-root count bound puts the first root below the other middle root. -/
+private lemma cubic_first_le_middle_of_no_common
+    {f g : ℝ[X]} (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hf : f.Splits) (hg : g.Splits) (hfdeg : f.natDegree = 3)
+    (hgdeg : g.natDegree = 3) (hpc : PosComboRealRooted f g)
+    {a b c p q r : ℝ} (hab : a ≤ b) (hbc : b ≤ c) (hpq : p ≤ q) (hqr : q ≤ r)
+    (hfroots : f.roots = {a, b, c}) (hgroots : g.roots = {p, q, r})
+    (hno : ∀ z, f.IsRoot z → ¬ g.IsRoot z) : a ≤ q := by
+  by_contra haq
+  have hqa : q < a := lt_of_not_ge haq
+  have har : a ≤ r := by
+    by_contra har
+    have hra : r < a := lt_of_not_ge har
+    exact not_posComboRealRooted_cubic_separated
+      hf_pos hg_pos hf hg hfdeg hgdeg hpc r a hra
+      (fun z hz ↦ by
+        rw [hgroots] at hz
+        simp only [Multiset.insert_eq_cons, Multiset.mem_cons,
+          Multiset.mem_singleton] at hz
+        grind)
+      (fun z hz ↦ by
+        rw [hfroots] at hz
+        simp only [Multiset.insert_eq_cons, Multiset.mem_cons,
+          Multiset.mem_singleton] at hz
+        grind)
+  let x : ℝ := (q + a) / 2
+  have hqx : q < x := by grind
+  have hxa : x < a := by grind
+  have hxf : ¬ f.IsRoot x := by
+    intro hx
+    have hxmem : x ∈ f.roots := (Polynomial.mem_roots hf_pos.ne_zero).mpr hx
+    rw [hfroots] at hxmem
+    simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hxmem
+    grind
+  have hxg : ¬ g.IsRoot x := by
+    intro hx
+    have hxmem : x ∈ g.roots := (Polynomial.mem_roots hg_pos.ne_zero).mpr hx
+    rw [hgroots] at hxmem
+    simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hxmem
+    grind
+  have hcount := sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
+    hf_pos hg_pos hpc (by simp [hfdeg, hgdeg]) hno x hxf hxg
+  rw [hfroots, hgroots, card_filter_lt_triple, card_filter_lt_triple] at hcount
+  grind
+
+/-- The no-common-root count bound puts the middle root below the other last root. -/
+private lemma cubic_middle_le_last_of_no_common
+    {f g : ℝ[X]} (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfdeg : f.natDegree = 3) (hgdeg : g.natDegree = 3)
+    (hpc : PosComboRealRooted f g)
+    {a b c p q r : ℝ} (hab : a ≤ b) (hbc : b ≤ c) (hpq : p ≤ q) (hqr : q ≤ r)
+    (hfroots : f.roots = {a, b, c}) (hgroots : g.roots = {p, q, r})
+    (hno : ∀ z, f.IsRoot z → ¬ g.IsRoot z) : b ≤ r := by
+  by_contra hbr
+  have hrb : r < b := lt_of_not_ge hbr
+  by_cases hra : r < a
+  · let x : ℝ := (r + a) / 2
+    have hrx : r < x := by grind
+    have hxa : x < a := by grind
+    have hxf : ¬ f.IsRoot x := by
+      intro hx
+      have hxmem : x ∈ f.roots := (Polynomial.mem_roots hf_pos.ne_zero).mpr hx
+      rw [hfroots] at hxmem
+      simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hxmem
+      grind
+    have hxg : ¬ g.IsRoot x := by
+      intro hx
+      have hxmem : x ∈ g.roots := (Polynomial.mem_roots hg_pos.ne_zero).mpr hx
+      rw [hgroots] at hxmem
+      simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hxmem
+      grind
+    have hcount := sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
+      hf_pos hg_pos hpc (by simp [hfdeg, hgdeg]) hno x hxf hxg
+    rw [hfroots, hgroots, card_filter_lt_triple, card_filter_lt_triple] at hcount
+    grind
+  · have har : a ≤ r := le_of_not_gt hra
+    let x : ℝ := (r + b) / 2
+    have hrx : r < x := by grind
+    have hxb : x < b := by grind
+    have hxf : ¬ f.IsRoot x := by
+      intro hx
+      have hxmem : x ∈ f.roots := (Polynomial.mem_roots hf_pos.ne_zero).mpr hx
+      rw [hfroots] at hxmem
+      simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hxmem
+      grind
+    have hxg : ¬ g.IsRoot x := by
+      intro hx
+      have hxmem : x ∈ g.roots := (Polynomial.mem_roots hg_pos.ne_zero).mpr hx
+      rw [hgroots] at hxmem
+      simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hxmem
+      grind
+    have hcount := sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
+      hf_pos hg_pos hpc (by simp [hfdeg, hgdeg]) hno x hxf hxg
+    rw [hfroots, hgroots, card_filter_lt_triple, card_filter_lt_triple] at hcount
+    grind
+
+/-- Deleting a common root reduces a failed first-middle bound to separated quadratics. -/
+private lemma cubic_first_le_middle_of_common
+    {f g : ℝ[X]} (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    {z a b c p q r : ℝ} (hfz : f.IsRoot z) (hgz : g.IsRoot z)
+    (hab : a ≤ b) (hbc : b ≤ c) (hpq : p ≤ q) (hqr : q ≤ r)
+    (hfroots : f.roots = {a, b, c}) (hgroots : g.roots = {p, q, r})
+    (hz_f : z = a ∨ z = b ∨ z = c) (hz_g : z = p ∨ z = q ∨ z = r)
+    (hfq_pos : HasPosLeadingCoeff (deleteRootFactor f z))
+    (hgq_pos : HasPosLeadingCoeff (deleteRootFactor g z))
+    (hfq_split : (deleteRootFactor f z).Splits)
+    (hgq_split : (deleteRootFactor g z).Splits)
+    (hfq_deg : (deleteRootFactor f z).natDegree = 2)
+    (hgq_deg : (deleteRootFactor g z).natDegree = 2)
+    (hpcq : PosComboRealRooted (deleteRootFactor f z) (deleteRootFactor g z)) :
+    a ≤ q := by
+  by_contra haq
+  have hqa : q < a := lt_of_not_ge haq
+  have hz_eq_r : z = r := by grind
+  have hgq_roots : (deleteRootFactor g z).roots = {p, q} := by
+    rw [roots_deleteRootFactor_eq_erase hg_pos.ne_zero hgz, hgroots, hz_eq_r]
+    simp [show p ≠ r by grind, show q ≠ r by grind]
+  have hfq_ge : ∀ s ∈ (deleteRootFactor f z).roots, a ≤ s := by
+    intro s hs
+    rw [roots_deleteRootFactor_eq_erase hf_pos.ne_zero hfz] at hs
+    have hs_mem := Multiset.mem_of_mem_erase hs
+    rw [hfroots] at hs_mem
+    simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hs_mem
+    rcases hs_mem with rfl | rfl | rfl
+    · exact le_rfl
+    · exact hab
+    · exact hab.trans hbc
+  have hgq_le : ∀ s ∈ (deleteRootFactor g z).roots, s ≤ q := by
+    intro s hs
+    rw [hgq_roots] at hs
+    simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hs
+    rcases hs with rfl | rfl
+    · exact hpq
+    · exact le_rfl
+  exact not_posComboRealRooted_quadratic_separated
+    hfq_pos hgq_pos hfq_deg hgq_deg hfq_split hgq_split q a hqa hgq_le hfq_ge hpcq
+
+/-- Deleting a common root reduces a failed middle-last bound to separated quadratics. -/
+private lemma cubic_middle_le_last_of_common
+    {f g : ℝ[X]} (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    {z a b c p q r : ℝ} (hfz : f.IsRoot z) (hgz : g.IsRoot z)
+    (hbc : b ≤ c) (hpq : p ≤ q) (hqr : q ≤ r)
+    (hfroots : f.roots = {a, b, c}) (hgroots : g.roots = {p, q, r})
+    (hz_f : z = a ∨ z = b ∨ z = c) (hz_g : z = p ∨ z = q ∨ z = r)
+    (hfq_pos : HasPosLeadingCoeff (deleteRootFactor f z))
+    (hgq_pos : HasPosLeadingCoeff (deleteRootFactor g z))
+    (hfq_split : (deleteRootFactor f z).Splits)
+    (hgq_split : (deleteRootFactor g z).Splits)
+    (hfq_deg : (deleteRootFactor f z).natDegree = 2)
+    (hgq_deg : (deleteRootFactor g z).natDegree = 2)
+    (hpcq : PosComboRealRooted (deleteRootFactor f z) (deleteRootFactor g z)) :
+    b ≤ r := by
+  by_contra hbr
+  have hrb : r < b := lt_of_not_ge hbr
+  have hz_le_r : z ≤ r := by
+    rcases hz_g with rfl | rfl | rfl
+    · exact hpq.trans hqr
+    · exact hqr
+    · exact le_rfl
+  have hz_eq_a : z = a := by
+    rcases hz_f with hza | hzb | hzc
+    · exact hza
+    · exact absurd (by simpa [hzb] using hz_le_r) hbr
+    · have hc_le_r : c ≤ r := by simpa [hzc] using hz_le_r
+      exact absurd (hbc.trans hc_le_r) hbr
+  have hfq_roots : (deleteRootFactor f z).roots = {b, c} := by
+    rw [roots_deleteRootFactor_eq_erase hf_pos.ne_zero hfz, hfroots, hz_eq_a]
+    simp
+  have hfq_ge : ∀ s ∈ (deleteRootFactor f z).roots, b ≤ s := by
+    intro s hs
+    rw [hfq_roots] at hs
+    simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hs
+    rcases hs with rfl | rfl
+    · exact le_rfl
+    · exact hbc
+  have hgq_le : ∀ s ∈ (deleteRootFactor g z).roots, s ≤ r := by
+    intro s hs
+    rw [roots_deleteRootFactor_eq_erase hg_pos.ne_zero hgz] at hs
+    have hs_mem := Multiset.mem_of_mem_erase hs
+    rw [hgroots] at hs_mem
+    simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hs_mem
+    rcases hs_mem with rfl | rfl | rfl
+    · exact hpq.trans hqr
+    · exact hqr
+    · exact le_rfl
+  exact not_posComboRealRooted_quadratic_separated
+    hfq_pos hgq_pos hfq_deg hgq_deg hfq_split hgq_split r b hrb hgq_le hfq_ge hpcq
+
 /-- **Cubic second-root bound.** Let `f` and `g` be split cubics with positive
 leading coefficients forming a positive-combination real-rooted pair, with
 roots `a ≤ b ≤ c` and `p ≤ q ≤ r`.  Then the smallest root of `f` lies at or
@@ -87,103 +275,11 @@ theorem cubicSecondRootBound_from_analytic {f g : ℝ[X]}
     (hfroots : f.roots = {a, b, c}) (hgroots : g.roots = {p, q, r}) :
     a ≤ q ∧ b ≤ r := by
   classical
-  have hdeg : g.natDegree = f.natDegree := by simp [hfdeg, hgdeg]
   by_cases hno : ∀ z, f.IsRoot z → ¬ g.IsRoot z
-  · constructor
-    · by_contra haq
-      have hqa : q < a := lt_of_not_ge haq
-      have har : a ≤ r := by
-        by_contra har
-        have hra : r < a := lt_of_not_ge har
-        exact not_posComboRealRooted_cubic_separated
-          hf_pos hg_pos hf hg hfdeg hgdeg hpc r a hra
-          (fun z hz ↦ by
-            rw [hgroots] at hz
-            simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hz
-            grind)
-          (fun z hz ↦ by
-            rw [hfroots] at hz
-            simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hz
-            grind)
-      let x : ℝ := (q + a) / 2
-      have hqx : q < x := by grind
-      have hxa : x < a := by grind
-      have hxr : x < r := lt_of_lt_of_le hxa har
-      have hxp : ¬ x < p := by grind
-      have hxq : ¬ x < q := by grind
-      have hxb : x < b := lt_of_lt_of_le hxa hab
-      have hxc : x < c := lt_of_lt_of_le hxb hbc
-      have hxf : ¬ f.IsRoot x := by
-        intro hx
-        have hxmem : x ∈ f.roots := (Polynomial.mem_roots hf_pos.ne_zero).mpr hx
-        rw [hfroots] at hxmem
-        simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hxmem
-        grind
-      have hxg : ¬ g.IsRoot x := by
-        intro hx
-        have hxmem : x ∈ g.roots := (Polynomial.mem_roots hg_pos.ne_zero).mpr hx
-        rw [hgroots] at hxmem
-        simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hxmem
-        grind
-      have hcount :=
-        sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
-          hf_pos hg_pos hpc hdeg hno x hxf hxg
-      rw [hfroots, hgroots, card_filter_lt_triple, card_filter_lt_triple] at hcount
-      grind
-    · by_contra hbr
-      have hrb : r < b := lt_of_not_ge hbr
-      by_cases hra : r < a
-      · let x : ℝ := (r + a) / 2
-        have hrx : r < x := by grind
-        have hxa : x < a := by grind
-        have hxp : ¬ x < p := by grind
-        have hxq : ¬ x < q := by grind
-        have hxr : ¬ x < r := by grind
-        have hxb : x < b := lt_of_lt_of_le hxa hab
-        have hxc : x < c := lt_of_lt_of_le hxb hbc
-        have hxf : ¬ f.IsRoot x := by
-          intro hx
-          have hxmem : x ∈ f.roots := (Polynomial.mem_roots hf_pos.ne_zero).mpr hx
-          rw [hfroots] at hxmem
-          simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hxmem
-          grind
-        have hxg : ¬ g.IsRoot x := by
-          intro hx
-          have hxmem : x ∈ g.roots := (Polynomial.mem_roots hg_pos.ne_zero).mpr hx
-          rw [hgroots] at hxmem
-          simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hxmem
-          grind
-        have hcount :=
-          sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
-            hf_pos hg_pos hpc hdeg hno x hxf hxg
-        rw [hfroots, hgroots, card_filter_lt_triple, card_filter_lt_triple] at hcount
-        grind
-      · have har : a ≤ r := le_of_not_gt hra
-        let x : ℝ := (r + b) / 2
-        have hrx : r < x := by grind
-        have hxb : x < b := by grind
-        have hxa : ¬ x < a := by grind
-        have hxp : ¬ x < p := by grind
-        have hxq : ¬ x < q := by grind
-        have hxr : ¬ x < r := by grind
-        have hxc : x < c := lt_of_lt_of_le hxb hbc
-        have hxf : ¬ f.IsRoot x := by
-          intro hx
-          have hxmem : x ∈ f.roots := (Polynomial.mem_roots hf_pos.ne_zero).mpr hx
-          rw [hfroots] at hxmem
-          simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hxmem
-          grind
-        have hxg : ¬ g.IsRoot x := by
-          intro hx
-          have hxmem : x ∈ g.roots := (Polynomial.mem_roots hg_pos.ne_zero).mpr hx
-          rw [hgroots] at hxmem
-          simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hxmem
-          grind
-        have hcount :=
-          sameDegree_rootCountAbove_bounds_of_posCombo_noCommon
-            hf_pos hg_pos hpc hdeg hno x hxf hxg
-        rw [hfroots, hgroots, card_filter_lt_triple, card_filter_lt_triple] at hcount
-        grind
+  · exact ⟨cubic_first_le_middle_of_no_common hf_pos hg_pos hf hg hfdeg hgdeg hpc
+      hab hbc hpq hqr hfroots hgroots hno,
+      cubic_middle_le_last_of_no_common hf_pos hg_pos hfdeg hgdeg hpc
+        hab hbc hpq hqr hfroots hgroots hno⟩
   · push Not at hno
     obtain ⟨z, hfz, hgz⟩ := hno
     have hz_f_mem : z = a ∨ z = b ∨ z = c := by
@@ -209,71 +305,12 @@ theorem cubicSecondRootBound_from_analytic {f g : ℝ[X]}
     have hpcq :
         PosComboRealRooted (deleteRootFactor f z) (deleteRootFactor g z) :=
       hpc.deleteRootFactor_commonRoot hfz hgz
-    constructor
-    · by_contra haq
-      have hqa : q < a := lt_of_not_ge haq
-      have hz_eq_r : z = r := by grind
-      have hgq_roots : (deleteRootFactor g z).roots = {p, q} := by
-        rw [roots_deleteRootFactor_eq_erase hg_pos.ne_zero hgz, hgroots, hz_eq_r]
-        simp [show p ≠ r by grind, show q ≠ r by grind]
-      have hfq_ge : ∀ s ∈ (deleteRootFactor f z).roots, a ≤ s := by
-        intro s hs
-        rw [roots_deleteRootFactor_eq_erase hf_pos.ne_zero hfz] at hs
-        have hs_mem := Multiset.mem_of_mem_erase hs
-        rw [hfroots] at hs_mem
-        simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hs_mem
-        rcases hs_mem with rfl | rfl | rfl
-        · exact le_rfl
-        · exact hab
-        · exact hab.trans hbc
-      have hgq_le : ∀ s ∈ (deleteRootFactor g z).roots, s ≤ q := by
-        intro s hs
-        rw [hgq_roots] at hs
-        simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hs
-        rcases hs with rfl | rfl
-        · exact hpq
-        · exact le_rfl
-      exact not_posComboRealRooted_quadratic_separated
-        hfq_pos hgq_pos hfq_deg hgq_deg hfq_split hgq_split q a hqa
-        hgq_le hfq_ge hpcq
-    · by_contra hbr
-      have hrb : r < b := lt_of_not_ge hbr
-      have hz_le_r : z ≤ r := by
-        rcases hz_g_mem with rfl | rfl | rfl
-        · exact hpq.trans hqr
-        · exact hqr
-        · exact le_rfl
-      have hz_eq_a : z = a := by
-        rcases hz_f_mem with hza | hzb | hzc
-        · exact hza
-        · exfalso
-          exact hbr (by simpa [hzb] using hz_le_r)
-        · exfalso
-          have hc_le_r : c ≤ r := by simpa [hzc] using hz_le_r
-          exact hbr (hbc.trans hc_le_r)
-      have hfq_roots : (deleteRootFactor f z).roots = {b, c} := by
-        rw [roots_deleteRootFactor_eq_erase hf_pos.ne_zero hfz, hfroots, hz_eq_a]
-        simp
-      have hfq_ge : ∀ s ∈ (deleteRootFactor f z).roots, b ≤ s := by
-        intro s hs
-        rw [hfq_roots] at hs
-        simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hs
-        rcases hs with rfl | rfl
-        · exact le_rfl
-        · exact hbc
-      have hgq_le : ∀ s ∈ (deleteRootFactor g z).roots, s ≤ r := by
-        intro s hs
-        rw [roots_deleteRootFactor_eq_erase hg_pos.ne_zero hgz] at hs
-        have hs_mem := Multiset.mem_of_mem_erase hs
-        rw [hgroots] at hs_mem
-        simp only [Multiset.insert_eq_cons, Multiset.mem_cons, Multiset.mem_singleton] at hs_mem
-        rcases hs_mem with rfl | rfl | rfl
-        · exact hpq.trans hqr
-        · exact hqr
-        · exact le_rfl
-      exact not_posComboRealRooted_quadratic_separated
-        hfq_pos hgq_pos hfq_deg hgq_deg hfq_split hgq_split r b hrb
-        hgq_le hfq_ge hpcq
+    exact ⟨cubic_first_le_middle_of_common hf_pos hg_pos hfz hgz hab hbc hpq hqr
+      hfroots hgroots hz_f_mem hz_g_mem hfq_pos hgq_pos hfq_split hgq_split
+      hfq_deg hgq_deg hpcq,
+      cubic_middle_le_last_of_common hf_pos hg_pos hfz hgz hbc hpq hqr
+        hfroots hgroots hz_f_mem hz_g_mem hfq_pos hgq_pos hfq_split hgq_split
+        hfq_deg hgq_deg hpcq⟩
 
 /-- Cubic same-degree root counts.
 
