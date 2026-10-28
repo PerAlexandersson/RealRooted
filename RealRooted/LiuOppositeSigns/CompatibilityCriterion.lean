@@ -49,19 +49,13 @@ theorem RootCountBranches.of_compatible_of_noCommonRoots
       zero_lt_one hρ (max f.natDegree g.natDegree)
   let f' : ℝ[X] := applyTDerivList epss f
   let g' : ℝ[X] := applyTDerivList epss g
-  have hpos : ∀ eps ∈ epss, 0 < eps :=
-    fun eps heps => (hbounds eps heps).1
-  have hf'_ne : f' ≠ 0 := by
-    simpa [f'] using
-      applyTDerivList_ne_zero (epss := epss) hsgn.left_ne_zero
-  have hg'_ne : g' ≠ 0 := by
-    simpa [g'] using
-      applyTDerivList_ne_zero (epss := epss) hsgn.right_ne_zero
+  have hpos : ∀ eps ∈ epss, 0 < eps := fun eps heps => (hbounds eps heps).1
   have hf'_split : f'.Splits := by simpa [f'] using hf.applyTDerivList hpos
   have hg'_split : g'.Splits := by simpa [g'] using hg.applyTDerivList hpos
   have hf'_deg : f'.natDegree ≠ 0 := by simpa [f'] using hf_deg
   have hg'_deg : g'.natDegree ≠ 0 := by simpa [g'] using hg_deg
-  have hsgn' : OppositeLeadingSigns f' g' := by simpa [f', g', OppositeLeadingSigns] using hsgn
+  have hsgn' : OppositeLeadingSigns f' g' := by
+    simpa [f', g', OppositeLeadingSigns] using hsgn
   have hf'_simple : HasSimpleRoots f' := by
     change HasSimpleRoots (applyTDerivList epss f)
     apply hasSimpleRoots_applyTDerivList_of_natDegree_le_length
@@ -78,8 +72,9 @@ theorem RootCountBranches.of_compatible_of_noCommonRoots
     RootCountBranches.of_compatible_of_noCommonRoots_of_hasSimpleRoots
       hf'_split hg'_split hsgn' hno' hf'_deg hg'_deg
       hf'_simple hg'_simple hcompat'
-  refine
-    ⟨f', g', hf'_ne, hg'_ne, hf'_split, hg'_split, ?_, ?_, hbranches⟩
+  refine ⟨f', g', ?_, ?_, hf'_split, hg'_split, ?_, ?_, hbranches⟩
+  · simpa [f'] using applyTDerivList_ne_zero (epss := epss) hsgn.left_ne_zero
+  · simpa [g'] using applyTDerivList_ne_zero (epss := epss) hsgn.right_ne_zero
   · simpa [f'] using hfrel
   · simpa [g'] using hgrel
 
@@ -121,10 +116,8 @@ theorem compatible_iff_rootCountBranchesReduced
   constructor
   · intro hcompat
     by_cases hno : NoCommonRoots f g
-    · exact Or.inl
-        ⟨hno,
-          RootCountBranches.of_compatible_of_noCommonRoots
-            hf hg hsgn hno hf_deg hg_deg hcompat⟩
+    · exact Or.inl ⟨hno, RootCountBranches.of_compatible_of_noCommonRoots
+        hf hg hsgn hno hf_deg hg_deg hcompat⟩
     · exact Or.inr
         (CommonRootDeletionCompatibleBranch.of_compatible_of_not_noCommonRoots
           hcompat hno)
@@ -142,10 +135,8 @@ theorem compatible_iff_rootCountBranchesWithCommon
     (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0) :
     Compatible f g ↔ RootCountBranchesWithCommon f g := by
   constructor
-  · intro hcompat
-    exact RootCountBranchesReduced.withCommon
-      ((compatible_iff_rootCountBranchesReduced
-        hf hg hsgn hf_deg hg_deg).mp hcompat)
+  · exact fun hcompat => RootCountBranchesReduced.withCommon
+      ((compatible_iff_rootCountBranchesReduced hf hg hsgn hf_deg hg_deg).mp hcompat)
   · intro hbranches
     rcases hbranches with hbranches | hcommon
     · exact RootCountBranches.compatible hf hg hsgn hbranches
@@ -183,12 +174,11 @@ lemma natDegree_le_two_of_compatible_C_left
   have hthree : 3 ≤ p.natDegree := by lia
   have shift_ne {q : ℝ[X]} (t : ℝ) (hqdeg : 3 ≤ q.natDegree) :
       q - C t ≠ 0 := by
-    have hdegree : (q - C t).natDegree = q.natDegree := by
-      apply natDegree_sub_eq_left_of_natDegree_lt
-      simp only [natDegree_C]
-      lia
     intro hzero
-    have : q.natDegree = 0 := by rw [← hdegree, hzero, natDegree_zero]
+    have hdegree := natDegree_sub_eq_left_of_natDegree_lt (p := q) (q := C t) (by
+      simp only [natDegree_C]
+      lia)
+    rw [hzero, natDegree_zero] at hdegree
     lia
   rcases hsgn.pos_neg_or_neg_pos with hpos | hneg
   · have hc_pos : 0 < c := by simpa [HasPosLeadingCoeff] using hpos.1
@@ -198,8 +188,7 @@ lemma natDegree_le_two_of_compatible_C_left
         hp.neg hpos.2 hneg_three
     have hc_ne : c ≠ 0 := ne_of_gt hc_pos
     have hq_ne : (-p) - C t ≠ 0 := shift_ne t hneg_three
-    have hcomb :=
-      hcompat (t / c) 1 (div_nonneg ht.le hc_pos.le) zero_le_one
+    have hcomb := hcompat (t / c) 1 (div_nonneg ht.le hc_pos.le) zero_le_one
     have hpoly :
         C (t / c) * C c + C 1 * p = -((-p) - C t) := by
       calc
@@ -216,8 +205,7 @@ lemma natDegree_le_two_of_compatible_C_left
         hp hneg.2 hthree
     have hc_ne : -c ≠ 0 := ne_of_gt hc_pos
     have hq_ne : p - C t ≠ 0 := shift_ne t hthree
-    have hcomb :=
-      hcompat (t / (-c)) 1 (div_nonneg ht.le hc_pos.le) zero_le_one
+    have hcomb := hcompat (t / (-c)) 1 (div_nonneg ht.le hc_pos.le) zero_le_one
     have hpoly : C (t / (-c)) * C c + C 1 * p = p - C t := by
       have hc' : c ≠ 0 := neg_ne_zero.mp hc_ne
       calc
@@ -245,8 +233,7 @@ lemma natDegree_abs_sub_le_two_of_compatible_of_left_natDegree_eq_zero
     (hcompat : Compatible f g) (hfdeg : f.natDegree = 0) :
     |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 := by
   have hle :=
-    natDegree_right_le_two_of_compatible_of_left_natDegree_eq_zero
-      hg hsgn hcompat hfdeg
+    natDegree_right_le_two_of_compatible_of_left_natDegree_eq_zero hg hsgn hcompat hfdeg
   rw [hfdeg]
   norm_num
   exact_mod_cast hle
@@ -290,29 +277,23 @@ theorem natDegree_abs_sub_le_two_of_compatible {f g : ℝ[X]}
     obtain ⟨r, hfr, hgr⟩ := exists_common_root_of_not_noCommonRoots hno
     let f' : ℝ[X] := deleteRootFactor f r
     let g' : ℝ[X] := deleteRootFactor g r
-    have hf'_splits : f'.Splits :=
-      deleteRootFactor_splits_of_isRoot hf hfr
-    have hg'_splits : g'.Splits :=
-      deleteRootFactor_splits_of_isRoot hg hgr
-    have hsgn' : OppositeLeadingSigns f' g' := by
-      simpa [f', g'] using
-        (hsgn.deleteRootFactor_left hfr).deleteRootFactor_right hgr
-    have hcompat' : Compatible f' g' :=
-      compatible_deleteRootFactor_of_common_root hcompat hfr hgr
     have hf'_degree : f'.natDegree = f.natDegree - 1 :=
       natDegree_deleteRootFactor f r
     have hg'_degree : g'.natDegree = g.natDegree - 1 :=
       natDegree_deleteRootFactor g r
-    have hf_pos : 0 < f.natDegree := Nat.pos_of_ne_zero hfdeg
-    have hg_pos : 0 < g.natDegree := Nat.pos_of_ne_zero hgdeg
     have hlt : f'.natDegree + g'.natDegree < n := by
       rw [hf'_degree, hg'_degree, ← hsum]
       lia
     have hrec :=
       ih (f'.natDegree + g'.natDegree) hlt f' g' rfl
-        hf'_splits hg'_splits hsgn' hcompat'
+        (deleteRootFactor_splits_of_isRoot hf hfr)
+        (deleteRootFactor_splits_of_isRoot hg hgr)
+        (by simpa [f', g'] using
+          (hsgn.deleteRootFactor_left hfr).deleteRootFactor_right hgr)
+        (compatible_deleteRootFactor_of_common_root hcompat hfr hgr)
     rw [hf'_degree, hg'_degree] at hrec
-    rw [Nat.cast_sub hf_pos, Nat.cast_sub hg_pos] at hrec
+    rw [Nat.cast_sub (Nat.pos_of_ne_zero hfdeg),
+      Nat.cast_sub (Nat.pos_of_ne_zero hgdeg)] at hrec
     norm_num at hrec
     simpa only [sub_sub_sub_cancel_right] using hrec
 

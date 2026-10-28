@@ -21,6 +21,10 @@ namespace RealRooted
 
 noncomputable section
 
+private lemma setOf_ne_zero_infinite : Set.Infinite {z : ℂ | z ≠ 0} :=
+  Set.infinite_of_injective_forall_mem UpperHalfPlane.coe_injective
+    fun z hzero => by simpa [hzero] using z.coe_im_pos
+
 /-- Complement every exponent inside the multiaffine cube. -/
 def complementExponent {sigma : Type*} [Fintype sigma] (d : sigma →₀ ℕ) :
     sigma →₀ ℕ :=
@@ -142,10 +146,7 @@ theorem signedMultiaffineReciprocal_esymm
     _ = MvPolynomial.C ((-1 : R) ^ k) *
           MvPolynomial.esymm (Fin N) R (N - k) := by
       rw [MvPolynomial.esymm_eq_sum_monomial, Finset.mul_sum]
-      apply Finset.sum_congr rfl
-      intro u hu
-      rw [MvPolynomial.C_mul_monomial]
-      simp
+      simp only [MvPolynomial.C_mul_monomial, mul_one]
 
 /-- The signed reciprocal transform is multiaffine. -/
 theorem isMultiaffine_signedMultiaffineReciprocal
@@ -232,12 +233,7 @@ theorem signedMultiaffineReciprocal_rename_mul_rename
         MvPolynomial.rename Sum.inr (signedMultiaffineReciprocal G) := by
   let s : Sum sigma tau → Set ℂ := fun _ => {z | z ≠ 0}
   apply MvPolynomial.funext_set s
-  · intro i
-    exact Set.infinite_of_injective_forall_mem UpperHalfPlane.coe_injective
-      fun z => fun hzero => by
-        have hz := z.coe_im_pos
-        rw [hzero] at hz
-        simp at hz
+  · exact fun _ => setOf_ne_zero_infinite
   · intro z hz
     have hz0 : ∀ i, z i ≠ 0 := fun i => hz i (Set.mem_univ i)
     have hleft0 : ∀ i, z (Sum.inl i) ≠ 0 := fun i => hz0 (Sum.inl i)
@@ -248,10 +244,8 @@ theorem signedMultiaffineReciprocal_rename_mul_rename
         (hG.rename Sum.inr_injective)
       rw [Finset.disjoint_left]
       intro v hvleft hvright
-      obtain ⟨i, hi, hiv⟩ :=
-        MvPolynomial.mem_vars_rename Sum.inl F hvleft
-      obtain ⟨j, hj, hjv⟩ :=
-        MvPolynomial.mem_vars_rename Sum.inr G hvright
+      obtain ⟨i, _, hiv⟩ := MvPolynomial.mem_vars_rename Sum.inl F hvleft
+      obtain ⟨j, _, hjv⟩ := MvPolynomial.mem_vars_rename Sum.inr G hvright
       exact Sum.inl_ne_inr (hiv.trans hjv.symm)
     rw [eval_signedMultiaffineReciprocal hma z hz0]
     simp only [MvPolynomial.eval_mul, MvPolynomial.eval_rename]
@@ -277,12 +271,7 @@ theorem signedMultiaffineReciprocal_C_mul
       MvPolynomial.C c * signedMultiaffineReciprocal P := by
   let s : sigma → Set ℂ := fun _ => {z | z ≠ 0}
   apply MvPolynomial.funext_set s
-  · intro i
-    exact Set.infinite_of_injective_forall_mem UpperHalfPlane.coe_injective
-      fun z => fun hzero => by
-        have hz := z.coe_im_pos
-        rw [hzero] at hz
-        simp at hz
+  · exact fun _ => setOf_ne_zero_infinite
   · intro z hz
     have hz0 : ∀ i, z i ≠ 0 := fun i => hz i (Set.mem_univ i)
     rw [eval_signedMultiaffineReciprocal (hP.C_mul c) z hz0]

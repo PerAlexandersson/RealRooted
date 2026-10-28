@@ -118,14 +118,13 @@ lemma abs_cotTau_le (y : ℝ) (hy : |y| ≤ 1 / 12) (p : ℕ × ℕ) :
       rw [inv_le_iff_one_le_mul₀ (by positivity)]
       field_simp
       linarith
+    have hu_le : 1 / ((n : ℝ) + 1) ≤ 1 := by
+      rw [div_le_one (by positivity)]
+      linarith
     have hA' : |(1 / 4 - ((n : ℝ) + 1))⁻¹| ≤ 4 / 3 := by
-      refine hA.trans ?_
-      have : 1 / ((n : ℝ) + 1) ≤ 1 := by rw [div_le_one (by positivity)]; linarith
-      nlinarith
+      exact hA.trans (by nlinarith)
     have hB' : |(1 / 4 + ((n : ℝ) + 1))⁻¹| ≤ 4 / 3 := by
-      refine hB.trans ?_
-      have : 1 / ((n : ℝ) + 1) ≤ 1 := by rw [div_le_one (by positivity)]; linarith
-      nlinarith
+      exact hB.trans (by nlinarith)
     set u := 1 / ((n : ℝ) + 1) with hu
     have hu0 : 0 ≤ u := by positivity
     -- bound for |a|^(k+2) with |a| ≤ 4/3 u, |a| ≤ 4/3
@@ -209,17 +208,15 @@ lemma hasSum_pi_cot (y : ℝ) (hy : |y| ≤ 1 / 12) :
   have hsumeq := hA.unique hcot
   -- fibre over k
   have hS' : HasSum (fun p : ℕ × ℕ => cotTau y (p.2, p.1)) (∑' p, cotTau y p) := by
-    have := (Equiv.prodComm ℕ ℕ).hasSum_iff.mpr hS
-    convert this using 1
+    convert (Equiv.prodComm ℕ ℕ).hasSum_iff.mpr hS using 1
     funext p
     cases p
     rfl
   have hfib2 : ∀ k : ℕ, HasSum (fun n => cotTau y (n, k)) (y ^ k * cotPairSum k) := by
     intro k
     have hsk : Summable (fun n => cotTau y (n, k)) := by
-      have := (summable_cotTau y hy)
-      have h2 := ((Equiv.prodComm ℕ ℕ).summable_iff.mpr this).prod_factor k
-      simpa [Function.comp] using h2
+      simpa [Function.comp] using
+        ((Equiv.prodComm ℕ ℕ).summable_iff.mpr (summable_cotTau y hy)).prod_factor k
     convert hsk.hasSum using 1
     rw [cotPairSum, ← tsum_mul_left]
     rfl
@@ -262,16 +259,17 @@ lemma eulerG_mul_pow (k : ℕ) (z : ℝ) :
     eulerG k * z ^ k = 1 / π * ((z / (2 * π)) ^ k * (4 ^ (k + 1) + cotPairSum k)) := by
   rw [eulerG, div_pow, inv_pow]; ring
 
+private lemma abs_div_two_mul_pi_le (z : ℝ) (hz : |z| ≤ 1 / 2) :
+    |z / (2 * π)| ≤ 1 / 12 := by
+  rw [abs_div, abs_of_pos (by positivity : 0 < 2 * π), div_le_iff₀ (by positivity)]
+  nlinarith [Real.pi_gt_three]
+
 /-- The analytic expansion of `cot (π/4 - z/2)`. -/
 lemma hasSum_eulerG (z : ℝ) (hz : |z| ≤ 1 / 2) :
     HasSum (fun k : ℕ => eulerG k * z ^ k) (Real.cot (π / 4 - z / 2)) := by
   set y := z / (2 * π) with hy
   have hpi : 0 < π := Real.pi_pos
-  have hyb : |y| ≤ 1 / 12 := by
-    rw [hy, abs_div, abs_of_pos (by positivity : 0 < 2 * π)]
-    rw [div_le_iff₀ (by positivity)]
-    have := Real.pi_gt_three
-    nlinarith
+  have hyb : |y| ≤ 1 / 12 := by simpa [hy] using abs_div_two_mul_pi_le z hz
   have h := (hasSum_pi_cot y hyb).mul_left (1 / π)
   have harg : π * (1 / 4 - y) = π / 4 - z / 2 := by
     rw [hy]; field_simp
@@ -286,18 +284,12 @@ lemma summable_abs_eulerG (z : ℝ) (hz : |z| ≤ 1 / 2) :
     Summable (fun k : ℕ => ‖eulerG k * z ^ k‖) := by
   set y := z / (2 * π) with hy
   have hpi : 0 < π := Real.pi_pos
-  have hyb : |y| ≤ 1 / 12 := by
-    rw [hy, abs_div, abs_of_pos (by positivity : 0 < 2 * π)]
-    rw [div_le_iff₀ (by positivity)]
-    have := Real.pi_gt_three
-    nlinarith
+  have hyb : |y| ≤ 1 / 12 := by simpa [hy] using abs_div_two_mul_pi_le z hz
   -- |eulerG k z^k| ≤ (1/π) (4 |4 y|^k + ∑ₙ |τ(n,k)|)
   have hτ := summable_cotTau y hyb
   have hτabs : Summable (fun p => |cotTau y p|) := hτ.abs
   have hfib : Summable (fun k : ℕ => ∑' n, |cotTau y (n, k)|) := by
-    have := ((Equiv.prodComm ℕ ℕ).summable_iff.mpr hτabs)
-    have h2 := this.prod
-    simpa [Function.comp] using h2
+    simpa [Function.comp] using ((Equiv.prodComm ℕ ℕ).summable_iff.mpr hτabs).prod
   have hgeo : Summable (fun k : ℕ => 4 * (4 * |y|) ^ k) :=
     (summable_geometric_of_lt_one (by positivity) (by linarith)).mul_left 4
   refine Summable.of_norm_bounded ((hgeo.add hfib).mul_left (1 / π)) (fun k => ?_)
@@ -309,12 +301,12 @@ lemma summable_abs_eulerG (z : ℝ) (hz : |z| ≤ 1 / 2) :
   refine (abs_add_le _ _).trans (add_le_add ?_ ?_)
   · rw [abs_mul, abs_pow, abs_pow, mul_pow]; norm_num; ring_nf; rfl
   · have hsk : Summable (fun n => cotTau y (n, k)) := by
-      have h2 := ((Equiv.prodComm ℕ ℕ).summable_iff.mpr hτ).prod_factor k
-      simpa [Function.comp] using h2
-    have : y ^ k * cotPairSum k = ∑' n, cotTau y (n, k) := by
+      simpa [Function.comp] using
+        ((Equiv.prodComm ℕ ℕ).summable_iff.mpr hτ).prod_factor k
+    rw [show y ^ k * cotPairSum k = ∑' n, cotTau y (n, k) by
       rw [cotPairSum, ← tsum_mul_left]; rfl
-    rw [this]
-    have := norm_tsum_le_tsum_norm (f := fun n => cotTau y (n, k)) (by simpa using hsk.abs)
-    simpa using this
+      ]
+    simpa using
+      norm_tsum_le_tsum_norm (f := fun n => cotTau y (n, k)) (by simpa using hsk.abs)
 
 end RealRooted.CenteredEulerian

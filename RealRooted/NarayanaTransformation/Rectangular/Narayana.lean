@@ -30,8 +30,6 @@ theorem narayanaTransformCoeff_eq_factorial (m n k : ℕ) (hk : k ≤ n) :
   have e1 : (m + k) - k = m := by lia
   unfold narayanaTransformCoeff
   rw [Nat.cast_choose ℝ hk, Nat.cast_choose ℝ hk2, Nat.cast_choose ℝ h3, e1]
-  have f0 : ∀ p : ℕ, (Nat.factorial p : ℝ) ≠ 0 := fun p =>
-    Nat.cast_ne_zero.mpr (Nat.factorial_pos p).ne'
   field_simp
 
 /-- Complementary-index symmetry of the generalized Narayana coefficients. -/
@@ -39,10 +37,8 @@ theorem narayanaTransformCoeff_symm (m n k : ℕ) (hk : k ≤ n) :
     narayanaTransformCoeff m n k = narayanaTransformCoeff m n (n - k) := by
   rw [narayanaTransformCoeff_eq_factorial m n k hk,
       narayanaTransformCoeff_eq_factorial m n (n - k) (Nat.sub_le n k)]
-  have h1 : n - (n - k) = k := by lia
-  have h2 : m + (n - k) = n + m - k := by lia
-  have h3 : n + m - (n - k) = m + k := by lia
-  rw [h1, h2, h3]
+  rw [show n - (n - k) = k by lia, show m + (n - k) = n + m - k by lia,
+    show n + m - (n - k) = m + k by lia]
   ring
 
 /-- Reversed-index coefficient of the generalized Narayana polynomial. -/
@@ -64,8 +60,6 @@ theorem rectangularConvolutionGamma_mul_narayanaTransformCoeff
   rw [narayanaTransformCoeff_eq_factorial m n j hj,
       narayanaTransformCoeff_eq_factorial m (n - i) j hji, ea]
   unfold rectangularConvolutionGamma
-  have f0 : ∀ p : ℕ, (Nat.factorial p : ℝ) ≠ 0 := fun p =>
-    Nat.cast_ne_zero.mpr (Nat.factorial_pos p).ne'
   field_simp
 
 /-- Symmetric companion of
@@ -91,10 +85,8 @@ theorem rectangularConvolutionCoeff_narayanaPolynomial_of_le
   apply Finset.sum_congr rfl
   intro i hi
   have hik : i ≤ k := Nat.lt_succ_iff.mp (Finset.mem_range.mp hi)
-  have hi_n : i ≤ n := hik.trans hk
-  have hki_n : k - i ≤ n := (Nat.sub_le k i).trans hk
-  rw [coeff_narayanaPolynomial_sub m n i hi_n,
-    coeff_narayanaPolynomial_sub m n (k - i) hki_n]
+  rw [coeff_narayanaPolynomial_sub m n i (hik.trans hk),
+    coeff_narayanaPolynomial_sub m n (k - i) ((Nat.sub_le k i).trans hk)]
 
 /-- The same convolution sum after transporting one Narayana factor with the
 rectangular convolution coefficient.  The remaining closed-form step is a
@@ -165,22 +157,18 @@ theorem sum_factorial_recip_eq (m k : ℕ) :
     rw [Nat.cast_choose ℝ hik, Nat.cast_choose ℝ hmi]
     field_simp
     rw [show 2 * m + k - (m + i) = m + k - i by lia]
-  convert h_binom using 1
+  rw [h_binom]
   convert congr_arg
       (fun x : ℕ =>
         (x : ℝ) / ((Nat.factorial k : ℝ) * (Nat.factorial (2 * m + k) : ℝ)))
       (sum_choose_mul_choose_shift m k) using 1
-  · rw [sum_choose_mul_choose_shift, Nat.cast_choose]
+  · norm_num [Finset.sum_div]
+  · rw [Nat.cast_choose]
     · rw [show 2 * m + 2 * k - (m + k) = m + k by
         rw [Nat.sub_eq_of_eq_add]
         ring]
       ring
     · lia
-  · convert congr_arg
-        (fun x : ℕ =>
-          (x : ℝ) / ((Nat.factorial k : ℝ) * (Nat.factorial (2 * m + k) : ℝ)))
-        (sum_choose_mul_choose_shift m k) using 1
-    norm_num [Finset.sum_div]
 
 /-- Each summand of the Chu--Vandermonde sum factors as a constant independent
 of `i` times a reciprocal-factorial term. -/
@@ -214,9 +202,7 @@ theorem narayana_product_term_eq (m n k i : ℕ) (hk : k ≤ n) (hi : i ≤ k) :
       show m + (k - i) = m + k - i by lia,
       show n - i + m - (k - i) = n + m - k by lia]
   rw [h_geometric]
-  have f0 : ∀ p : ℕ, (Nat.factorial p : ℝ) ≠ 0 := fun p =>
-    Nat.cast_ne_zero.mpr (Nat.factorial_pos p).ne'
-  field_simp [f0]
+  field_simp
 
 /-- Mao--Wang Section 2 coefficient bridge: closed form for the rectangular
 convolution coefficient of a generalized Narayana polynomial with itself. -/
@@ -286,19 +272,8 @@ theorem coeff_rectangularAdditiveConvolution_degreeSignFlip_narayanaPolynomial_o
   rw [show n - (n - i) = i by lia,
     show n - (n - (n - j - i)) = n - j - i by lia]
   rw [coeff_narayanaPolynomial_sub m n (n - j - i) hki_n]
-  calc
-    rectangularConvolutionGamma m n i (n - j - i) *
-          ((-1 : ℝ) ^ i * p.coeff (n - i)) *
-        ((-1 : ℝ) ^ (n - j - i) * narayanaTransformCoeff m n (n - j - i)) =
-        ((-1 : ℝ) ^ i * (-1 : ℝ) ^ (n - j - i)) *
-          p.coeff (n - i) *
-            (rectangularConvolutionGamma m n i (n - j - i) *
-              narayanaTransformCoeff m n (n - j - i)) := by
-      ring
-    _ = (-1 : ℝ) ^ (n - j) *
-        (p.coeff (n - i) * narayanaTransformCoeff m (n - i) j) := by
-      rw [hsign, hgamma]
-      ring
+  rw [← hsign, ← hgamma]
+  ring
 
 /-- Mao--Wang's coefficient comparison: rectangular convolution of the
 degree-`n` sign flips of `p` and `N_{n,m}` is the degree-`n` sign flip of the
