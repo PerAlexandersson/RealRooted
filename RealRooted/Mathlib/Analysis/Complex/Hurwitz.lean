@@ -5,7 +5,17 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Calculus.FDeriv.Defs
+public import Mathlib.Analysis.Analytic.Basic
+public import Mathlib.Analysis.SpecialFunctions.Complex.Log
+public import Mathlib.Algebra.MvPolynomial.Eval
+import Mathlib.Algebra.MvPolynomial.Funext
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.Analysis.Complex.OpenMapping
+import Mathlib.Analysis.Complex.AbsMax
+import Mathlib.Analysis.Complex.LocallyUniformLimit
+import Mathlib.Analysis.SpecialFunctions.Complex.Analytic
 
 /-!
 # Hurwitz-type theorem for upper-half-plane-stable polynomials

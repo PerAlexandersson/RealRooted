@@ -5,7 +5,8 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib
+public import Mathlib.Analysis.Complex.Exponential
+import Mathlib.Analysis.CStarAlgebra.Classes
 
 /-!
 # The univariate Szász estimate

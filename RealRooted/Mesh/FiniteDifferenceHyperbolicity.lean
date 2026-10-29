@@ -9,6 +9,7 @@ import Mathlib.Analysis.Complex.Polynomial.Basic
 import RealRooted.Mathlib.Analysis.Complex.Hurwitz
 import RealRooted.Mathlib.Analysis.Complex.LimitsOfZeros
 import RealRooted.MultivariateStability.Specialization
+import Mathlib.Analysis.Complex.LocallyUniformLimit
 
 /-!
 # Classical hyperbolicity of finite-difference operators

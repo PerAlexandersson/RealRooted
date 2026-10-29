@@ -261,7 +261,7 @@ lemma le_mulVec
     exact (le_div_iff₀ hi_supp).mp h_le_div
   · have h_vi_zero : v i = 0 := by linarith [hv_nonneg i, not_lt.mp hi_supp]
     simp only [Pi.smul_apply, smul_eq_mul, h_vi_zero, mul_zero]
-    exact mulVec_nonneg hA_nonneg hv_nonneg i
+    exact Matrix.mulVec_nonneg hA_nonneg hv_nonneg i
 
 open scoped Classical in
 /-- The set of values from the Collatz-Wielandt function is bounded above by the maximum row sum
@@ -270,7 +270,7 @@ lemma bddAbove (A : Matrix n n ℝ) (hA_nonneg : ∀ i j, 0 ≤ A i j) :
     BddAbove (collatzWielandtFn A '' nonnegNeZero) := by
   use Finset.univ.sup' Finset.univ_nonempty (fun i ↦ ∑ j, A i j)
   rintro y ⟨x, ⟨hx_nonneg, hx_ne_zero⟩, rfl⟩
-  obtain ⟨m, h_xm_pos, h_xm_max⟩ := exists_pos_maximal_of_nonneg_ne_zero hx_nonneg hx_ne_zero
+  obtain ⟨m, h_xm_pos, h_xm_max⟩ := Pi.exists_pos_maximal_of_nonneg_of_ne_zero hx_nonneg hx_ne_zero
   have h_le_ratio : collatzWielandtFn A x ≤ (A *ᵥ x) m / x m :=
     le_ratio (A := A) m h_xm_pos
   have h_ratio_le :
@@ -294,7 +294,7 @@ lemma collatzWielandtFn_smul {c : ℝ} (hc : 0 < c)
   collatzWielandtFn A (c • x) = collatzWielandtFn A x := by
   dsimp [collatzWielandtFn]
   let S := {i | 0 < x i}.toFinset
-  obtain ⟨i₀, hi₀⟩ := exists_pos_of_ne_zero hx_nonneg hx_ne
+  obtain ⟨i₀, hi₀⟩ := Pi.exists_pos_of_nonneg_of_ne_zero hx_nonneg hx_ne
   have hS_nonempty : S.Nonempty := ⟨i₀, by simp [S, hi₀]⟩
   have h_supp_eq : {i | 0 < (c • x) i}.toFinset = S := by
     ext i
@@ -421,7 +421,7 @@ lemma le_of_max_le_row_sum
     (hx_nonneg : ∀ i, 0 ≤ x i) (hx_ne_zero : x ≠ 0) (h_le_Bx : c • x ≤ B *ᵥ x) :
     c ≤ r := by
   classical
-  obtain ⟨k, h_xk_pos, h_xk_max⟩ := exists_pos_maximal_of_nonneg_ne_zero hx_nonneg hx_ne_zero
+  obtain ⟨k, h_xk_pos, h_xk_max⟩ := Pi.exists_pos_maximal_of_nonneg_of_ne_zero hx_nonneg hx_ne_zero
   have h_le_k := h_le_Bx k
   simp only [Pi.smul_apply, smul_eq_mul] at h_le_k
   have h_Bx_le : (B *ᵥ x) k ≤ r * x k := by
@@ -522,7 +522,7 @@ open scoped Classical in
 lemma sum_pos_of_nonneg_ne_zero {x : n → ℝ}
     (hx_nonneg : ∀ i, 0 ≤ x i) (hx_ne_zero : x ≠ 0) :
     0 < ∑ i, x i := by
-  obtain ⟨i, hi⟩ := exists_pos_of_ne_zero hx_nonneg hx_ne_zero
+  obtain ⟨i, hi⟩ := Pi.exists_pos_of_nonneg_of_ne_zero hx_nonneg hx_ne_zero
   exact Finset.sum_pos' (fun j _ => hx_nonneg j) ⟨i, Finset.mem_univ _, hi⟩
 
 omit [Nonempty n] in
@@ -560,7 +560,7 @@ lemma perronRoot_nonneg (hA_nonneg : ∀ i j, 0 ≤ A i j) :
   · apply Finset.le_inf'
     intro i hi_mem
     apply div_nonneg
-    · exact mulVec_nonneg hA_nonneg hx_nonneg i
+    · exact Matrix.mulVec_nonneg hA_nonneg hx_nonneg i
     · exact (Set.mem_toFinset.mp hi_mem).le
   · exact le_rfl
 
@@ -577,7 +577,7 @@ theorem le_of_subinvariant
     {w : n → ℝ} (hw_nonneg : ∀ i, 0 ≤ w i) (hw_ne_zero : w ≠ 0)
     {lambda : ℝ} (h_sub : lambda • w ≤ A *ᵥ w) :
     lambda ≤ collatzWielandtFn A w := by
-  obtain ⟨i, hi⟩ := exists_pos_of_ne_zero hw_nonneg hw_ne_zero
+  obtain ⟨i, hi⟩ := Pi.exists_pos_of_nonneg_of_ne_zero hw_nonneg hw_ne_zero
   let S := {j | 0 < w j}.toFinset
   have hSi : i ∈ {j | 0 < w j}.toFinset := Set.mem_toFinset.mpr hi
   have hS_nonempty : S.Nonempty := ⟨i, hSi⟩

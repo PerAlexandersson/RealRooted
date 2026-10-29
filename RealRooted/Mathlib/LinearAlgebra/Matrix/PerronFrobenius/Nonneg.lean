@@ -218,7 +218,7 @@ theorem exists_nonneg_mulVec_eq_perronRoot_smul [Nonempty n]
     simpa using this
   -- identify the limit eigenvalue with the Perron root
   have hv₀_mem : v₀ ∈ RealRooted.standardSimplex ℝ n := hK.2
-  have hv₀_ne : v₀ ≠ 0 := ne_zero_of_mem_stdSimplex hv₀_mem
+  have hv₀_ne : v₀ ≠ 0 := RealRooted.ne_zero_of_mem_standardSimplex hv₀_mem
   have h_le : r₀ ≤ perronRoot A :=
     (le_of_subinvariant hA_nonneg hv₀_mem.1 hv₀_ne (le_of_eq h_eig₀.symm)).trans
       (collatzWielandtFn_le_perronRoot hA_nonneg hv₀_mem.1 hv₀_ne)

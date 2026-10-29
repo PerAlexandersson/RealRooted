@@ -5,7 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib
+public import Mathlib.Analysis.Meromorphic.Divisor
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.SpecialFunctions.Pow.Real
+import Mathlib.Analysis.SpecialFunctions.Log.Base
+import Mathlib.Analysis.Complex.JensenFormula
 
 /-!
 # Zeros of entire functions of exponential type

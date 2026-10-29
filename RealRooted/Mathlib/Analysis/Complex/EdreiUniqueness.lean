@@ -5,7 +5,13 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Complex.Exponential
+import Mathlib.Topology.Algebra.InfiniteSum.ENNReal
+import Mathlib.Analysis.SpecificLimits.Basic
+import Mathlib.Analysis.SpecialFunctions.Log.Deriv
+import Mathlib.Analysis.Analytic.Uniqueness
+import Mathlib.Analysis.Normed.Group.Tannery
 
 /-!
 # Uniqueness of Edrei–Thoma parameters

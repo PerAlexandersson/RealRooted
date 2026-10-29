@@ -7,6 +7,15 @@ import RealRooted.EdreiThoma.OddPart
 import RealRooted.EdreiThoma.Reduction
 public import RealRooted.Mathlib.Analysis.Complex.EdreiUniqueness
 import RealRooted.EdreiThoma.PFSeries
+import Mathlib.Analysis.Complex.CauchyIntegral
+import Mathlib.Analysis.Complex.Polynomial.Basic
+import Mathlib.LinearAlgebra.Complex.FiniteDimensional
+import Mathlib.Analysis.Complex.LocallyUniformLimit
+import Mathlib.Analysis.Normed.Algebra.Exponential
+import Mathlib.Analysis.Normed.Module.MultipliableUniformlyOn
+import Mathlib.Analysis.Normed.Module.Connected
+import Mathlib.Analysis.Normed.Module.FiniteDimension
+import Mathlib.Analysis.Calculus.Deriv.Add
 
 /-!
 # The Edrei--Thoma converse

@@ -6,6 +6,11 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.Mathlib.Analysis.Complex.Hurwitz
+public import Mathlib.Algebra.Polynomial.Splits
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Basic
+import Mathlib.Analysis.RCLike.Sqrt
+import Mathlib.Analysis.Complex.OpenMapping
+import Mathlib.Analysis.Analytic.Polynomial
 
 /-!
 # Limits of zeros for order-two recurrences

@@ -5,7 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib
+public import Mathlib.Topology.Instances.Matrix
+public import Mathlib.Topology.MetricSpace.Pseudo.Defs
+public import Mathlib.LinearAlgebra.Matrix.PosDef
+import Mathlib.Analysis.Polynomial.Basic
+import Mathlib.Analysis.Matrix.Order
 
 /-!
 # Positive unimodular polynomial Gram matrices

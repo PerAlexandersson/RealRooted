@@ -5,7 +5,12 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib
+public import Mathlib.Topology.Algebra.InfiniteSum.UniformOn
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.Analytic.Order
+public import Mathlib.Analysis.Complex.Exponential
+import Mathlib.Analysis.Normed.Module.MultipliableUniformlyOn
+import Mathlib.Analysis.Complex.LocallyUniformLimit
 
 /-!
 # Weierstrass products of genus zero and one

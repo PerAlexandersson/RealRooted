@@ -103,7 +103,7 @@ theorem maximizer_is_eigenvector (hA_prim : IsPrimitive A)
     (hv_simplex : v ∈ RealRooted.standardSimplex ℝ n) (r : ℝ) (hr_def : r = collatzWielandtFn A v) :
     A *ᵥ v = r • v := by
   have hv_nonneg : ∀ i, 0 ≤ v i := hv_simplex.1
-  have hv_ne_zero : v ≠ 0 := ne_zero_of_mem_stdSimplex hv_simplex
+  have hv_ne_zero : v ≠ 0 := RealRooted.ne_zero_of_mem_standardSimplex hv_simplex
   have h_fund_ineq : r • v ≤ A *ᵥ v := by
     simpa [hr_def] using CollatzWielandt.le_mulVec hA_nonneg hv_nonneg hv_ne_zero
   by_contra h_ne
@@ -167,7 +167,7 @@ lemma perron_root_pos_of_primitive
   0 < collatzWielandtFn A v := by
   let ones_norm : n → ℝ := fun _ => (Fintype.card n : ℝ)⁻¹
   have h₁ : ones_norm ∈ RealRooted.standardSimplex ℝ n := by
-    simpa [ones_norm] using ones_norm_mem_simplex
+    simpa [ones_norm] using RealRooted.inv_card_mem_standardSimplex
   have cw_one_pos : 0 < collatzWielandtFn A (fun _ => 1) :=
     collatzWielandtFn_of_ones_is_pos (Matrix.IsPrimitive.isIrreducible (A := A) hA_prim) hA_nonneg
   have cw_le_max : collatzWielandtFn A ones_norm ≤ collatzWielandtFn A v := hvM h₁
@@ -182,13 +182,14 @@ theorem exists_positive_eigenvector_of_primitive
   (hA_prim : IsPrimitive A) (hA_nonneg : ∀ i j, 0 ≤ A i j) :
   ∃ (r : ℝ) (v : n → ℝ), r > 0 ∧ (∀ i, v i > 0) ∧ A *ᵥ v = r • v := by
   have : Nonempty (RealRooted.standardSimplex ℝ n) :=
-    ⟨⟨_, ones_norm_mem_simplex⟩⟩
+    ⟨⟨_, RealRooted.inv_card_mem_standardSimplex⟩⟩
   obtain ⟨v, hvS, hvM⟩ := CollatzWielandt.exists_maximizer (A := A)
   let r := collatzWielandtFn A v
   have hr : 0 < r := perron_root_pos_of_primitive hA_prim hA_nonneg hvS hvM
   have h_eig := maximizer_is_eigenvector hA_prim hA_nonneg hvM hvS r rfl
   exact ⟨r, v, hr,
-    eigenvector_of_primitive_is_positive hA_prim hr h_eig hvS.1 (ne_zero_of_mem_stdSimplex hvS),
+    eigenvector_of_primitive_is_positive hA_prim hr h_eig hvS.1
+      (RealRooted.ne_zero_of_mem_standardSimplex hvS),
     h_eig⟩
 
 

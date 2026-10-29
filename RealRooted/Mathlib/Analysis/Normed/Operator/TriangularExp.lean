@@ -5,8 +5,12 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib
-
+public import Mathlib.Analysis.Normed.Algebra.Exponential
+public import Mathlib.Analysis.Complex.Exponential
+public import Mathlib.LinearAlgebra.Matrix.Block
+import Mathlib.Analysis.Normed.Algebra.MatrixExponential
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
+import Mathlib.Analysis.Matrix.Normed
 
 /-!
 # A normalized triangular exponential converges to the top eigenvector

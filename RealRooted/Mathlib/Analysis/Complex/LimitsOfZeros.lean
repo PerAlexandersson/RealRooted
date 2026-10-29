@@ -6,6 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.Mathlib.Analysis.Complex.Hurwitz
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 
 /-!
 # Necessary conditions for limits of zeros
