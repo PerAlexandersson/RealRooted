@@ -23,9 +23,8 @@ nonnegative coefficients (Brenti's theorem, since all roots of the source lie in
 
 Consecutive members `A_{d,l}^{(2)} ≪ A_{d,l+1}^{(2)}` (`l < d`) interlace
 (`cubeColoredEulerian_strictInterl_succ`), by Brändén's Theorem 4.6 in Euler-numerator form.
-The interlacing of the whole row `cubeRelativeHRow d` including the reflected pieces, as needed by
-`isRealRooted_polytopalHPolynomial_of_perm_interlacingNonneg` for the cubical stable-shelling
-theorem, is not formalized yet (issue #1311).
+The interlacing of the whole row, including the reflected pieces, and the cubical stable-shelling
+theorem are in `RealRooted.HlavacekSolus.CubicalShelling`.
 -/
 
 public section

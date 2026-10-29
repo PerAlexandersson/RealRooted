@@ -1940,3 +1940,4 @@ public import RealRooted.DeterminantalStability.Closure
 public import RealRooted.DeterminantalStability.ExactReduction
 public import RealRooted.Transforms.BrandenE.Interlacing
 public import RealRooted.PolynomialValueEulerNumerator.Interlacing
+public import RealRooted.HlavacekSolus.CubicalShelling
