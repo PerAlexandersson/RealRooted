@@ -1,8 +1,12 @@
+module
+
+public import Mathlib.Algebra.Polynomial.Basic
+public import Mathlib.Basic.Real.Basic
 import RealRooted.Tactic.RowInterlacing
 
 open Polynomial
 
-noncomputable section
+@[expose] public noncomputable section
 
 namespace RealRooted.Tactic.Examples.RowPathPowerK5
 

@@ -1,21 +1,23 @@
-import RealRooted.CombinatorialExamples.SturmDerangementsExc
-import RealRooted.CombinatorialExamples.Eulerian
-import RealRooted.CombinatorialExamples.Narayana
-import RealRooted.CombinatorialExamples.Touchard
-import RealRooted.CombinatorialExamples.SingletonFreeSetPartitions
-import RealRooted.CombinatorialExamples.TypeBEulerian
-import RealRooted.CombinatorialExamples.Simsun
-import RealRooted.CombinatorialExamples.Motzkin
-import RealRooted.CombinatorialExamples.OneDescentGamma
-import RealRooted.CombinatorialExamples.PeakValues
-import RealRooted.CombinatorialExamples.PeakValues.Insertion
-import RealRooted.CombinatorialExamples.PeakValues.InsertionSum
-import RealRooted.CombinatorialExamples.PeakValues.Sharpness
-import RealRooted.CombinatorialExamples.PeakValues.Stability
-import RealRooted.CombinatorialExamples.PeakValues.TranslatedRecurrence
-import RealRooted.CombinatorialExamples.PeakValues.WeightedInterleaving
-import RealRooted.CombinatorialExamples.ColoredSetPartitions
-import RealRooted.CombinatorialExamples.StirlingPermutations
+module
+
+public import RealRooted.CombinatorialExamples.SturmDerangementsExc
+public import RealRooted.CombinatorialExamples.Eulerian
+public import RealRooted.CombinatorialExamples.Narayana
+public import RealRooted.CombinatorialExamples.Touchard
+public import RealRooted.CombinatorialExamples.SingletonFreeSetPartitions
+public import RealRooted.CombinatorialExamples.TypeBEulerian
+public import RealRooted.CombinatorialExamples.Simsun
+public import RealRooted.CombinatorialExamples.Motzkin
+public import RealRooted.CombinatorialExamples.OneDescentGamma
+public import RealRooted.CombinatorialExamples.PeakValues
+public import RealRooted.CombinatorialExamples.PeakValues.Insertion
+public import RealRooted.CombinatorialExamples.PeakValues.InsertionSum
+public import RealRooted.CombinatorialExamples.PeakValues.Sharpness
+public import RealRooted.CombinatorialExamples.PeakValues.Stability
+public import RealRooted.CombinatorialExamples.PeakValues.TranslatedRecurrence
+public import RealRooted.CombinatorialExamples.PeakValues.WeightedInterleaving
+public import RealRooted.CombinatorialExamples.ColoredSetPartitions
+public import RealRooted.CombinatorialExamples.StirlingPermutations
 
 /-!
 # Combinatorial Examples

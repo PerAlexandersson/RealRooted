@@ -1,3 +1,5 @@
-import RealRooted.Tactic.Examples.Finish.Basic
-import RealRooted.Tactic.Examples.Finish.Interlacing
-import RealRooted.Tactic.Examples.Finish.Sequences
+module
+
+public import RealRooted.Tactic.Examples.Finish.Basic
+public import RealRooted.Tactic.Examples.Finish.Interlacing
+public import RealRooted.Tactic.Examples.Finish.Sequences

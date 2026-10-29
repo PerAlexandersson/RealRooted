@@ -1,6 +1,10 @@
+module
+
 import RealRooted.Applications.OEIS.A394813
 import RealRooted.Applications.OEIS.A395326
 import RealRooted.Tactic.RowInterlacing
+
+set_option linter.privateModule false
 
 /-!
 # Regression examples for transform-backed OEIS row models

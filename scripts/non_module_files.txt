@@ -1,18 +1,2 @@
 # Files that are not Lean modules yet (issue #2016).  This list may only shrink:
 # convert new files with scripts/modularize.py.  Checked by scripts/check_module_system.py.
-RealRooted.lean
-RealRooted/CombinatorialExamples.lean
-RealRooted/FactorialCompression/Examples.lean
-RealRooted/Production.lean
-RealRooted/Tactic.lean
-RealRooted/Tactic/Examples.lean
-RealRooted/Tactic/Examples/EulerBidiagonalOeis.lean
-RealRooted/Tactic/Examples/Finish.lean
-RealRooted/Tactic/Examples/OEIS.lean
-RealRooted/Tactic/Examples/OEIS/A304334.lean
-RealRooted/Tactic/Examples/OEIS/TransformModels.lean
-RealRooted/Tactic/Examples/PFBidiagonal.lean
-RealRooted/Tactic/Examples/RowPathPowerK5.lean
-RealRooted/Tactic/Examples/SequenceSurvey.lean
-RealRooted/Tactic/Examples/ShortlistRoutes.lean
-RealRooted/Tactic/Examples/Sign.lean

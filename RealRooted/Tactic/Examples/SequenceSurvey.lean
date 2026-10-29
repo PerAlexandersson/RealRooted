@@ -1,3 +1,5 @@
+module
+
 import RealRooted.CombinatorialExamples
 import RealRooted.Tactic.Finish
 

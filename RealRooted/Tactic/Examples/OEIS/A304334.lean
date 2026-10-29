@@ -1,5 +1,9 @@
+module
+
 import RealRooted.Applications.OEIS.A304334
 import RealRooted.Tactic.RowInterlacing
+
+set_option linter.privateModule false
 
 /-!
 # A304334 row-model regression
