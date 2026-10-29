@@ -5,7 +5,6 @@ public import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
 import RealRooted.Mathlib.RingTheory.MvPolynomial.Homogeneous
 import RealRooted.RootContinuity
-import RealRooted.MultivariateStability.JumpSystem
 
 /-!
 # Stability of the top homogeneous component
@@ -276,88 +275,6 @@ theorem MvRealStable.homogeneousComponent_totalDegree
       Polynomial.C_1, one_mul]] at hscaled
   exact ⟨hscaled, Polynomial.leadingCoeff_ne_zero.mp
     (hqlLead.trans_ne hLne)⟩
-
-private theorem weight_neg_one_eq_neg_degree {n : ℕ} (d : Fin n →₀ ℕ) :
-    Finsupp.weight (fun _ => (-1 : ℤ)) d = -(d.degree : ℤ) := by
-  rw [Finsupp.weight_eq_sum, Finsupp.degree_eq_sum]
-  push_cast
-  simp
-
-/-- For finitely many variables, the top homogeneous component of a
-real-stable polynomial is real stable, with no coefficient-sign hypothesis. -/
-theorem MvRealStable.homogeneousComponent_totalDegree_fin
-    {n : ℕ} {P : MvPolynomial (Fin n) ℝ} (hst : MvRealStable P) :
-    MvRealStable
-      (MvPolynomial.homogeneousComponent P.totalDegree P) := by
-  classical
-  let w : Fin n → ℤ := fun _ => -1
-  have hmin : ∀ d ∈ P.support,
-      -(P.totalDegree : ℤ) ≤ Finsupp.weight w d := by
-    intro d hd
-    rw [show Finsupp.weight w d = -(d.degree : ℤ) by
-      simpa [w] using weight_neg_one_eq_neg_degree d]
-    apply neg_le_neg
-    exact_mod_cast MvPolynomial.le_totalDegree hd
-  obtain ⟨d, hd, hdegree⟩ := Finset.exists_mem_eq_sup P.support
-    (MvPolynomial.support_nonempty.mpr hst.ne_zero) (fun e => e.degree)
-  have htotal : P.totalDegree = d.degree := by
-    have hfun :
-        (fun e : Fin n →₀ ℕ => e.sum fun _ k => k) =
-          fun e => e.degree := by
-      funext e
-      rw [Finsupp.degree_apply]
-      rfl
-    rw [MvPolynomial.totalDegree, hfun]
-    exact hdegree
-  have hex : ∃ d ∈ P.support,
-      Finsupp.weight w d = -(P.totalDegree : ℤ) := by
-    refine ⟨d, hd, ?_⟩
-    rw [show Finsupp.weight w d = -(d.degree : ℤ) by
-      simpa [w] using weight_neg_one_eq_neg_degree d, htotal]
-  have hstable : JumpSystem.Stable
-      (MvPolynomial.weightedHomogeneousComponent w
-        (-(P.totalDegree : ℤ)) P) :=
-    JumpSystem.Stable.weightedHomogeneousComponent hst w
-      (-(P.totalDegree : ℤ)) hmin hex
-  have heq :
-      MvPolynomial.weightedHomogeneousComponent w
-          (-(P.totalDegree : ℤ)) P =
-        MvPolynomial.homogeneousComponent P.totalDegree P := by
-    ext e
-    rw [MvPolynomial.coeff_weightedHomogeneousComponent,
-      MvPolynomial.coeff_homogeneousComponent]
-    rw [show Finsupp.weight w e = -(e.degree : ℤ) by
-      simpa [w] using weight_neg_one_eq_neg_degree e]
-    simp
-  rw [heq] at hstable
-  exact hstable
-
-/-- The top homogeneous component of a finite-variable real-stable polynomial
-does not vanish on a coordinatewise strictly positive real vector. -/
-theorem MvRealStable.eval_homogeneousComponent_totalDegree_ne_zero
-    {n : ℕ} {P : MvPolynomial (Fin n) ℝ} (hst : MvRealStable P)
-    (b : Fin n → ℝ) (hb : ∀ i, 0 < b i) :
-    MvPolynomial.eval b
-      (MvPolynomial.homogeneousComponent P.totalDegree P) ≠ 0 := by
-  let H := MvPolynomial.homogeneousComponent P.totalDegree P
-  have hHstable : MvRealStable H := by
-    simpa [H] using hst.homogeneousComponent_totalDegree_fin
-  have hHhom : (complexifyMv H).IsHomogeneous P.totalDegree := by
-    exact (MvPolynomial.homogeneousComponent_isHomogeneous
-      P.totalDegree P).map Complex.ofRealHom
-  intro heval
-  have hevalH : MvPolynomial.eval b H = 0 := by
-    simpa [H] using heval
-  have hcomplexEval :
-      MvPolynomial.eval (fun i => (b i : ℂ)) (complexifyMv H) = 0 := by
-    change MvPolynomial.eval (Complex.ofRealHom ∘ b)
-      (MvPolynomial.map Complex.ofRealHom H) = 0
-    rw [← MvPolynomial.map_eval Complex.ofRealHom b H]
-    simp [hevalH]
-  have hnonzero := hHstable (fun i => Complex.I * (b i : ℂ)) fun i => by
-    simpa using hb i
-  apply hnonzero
-  rw [hHhom.eval_smul, hcomplexEval, mul_zero]
 
 end
 
