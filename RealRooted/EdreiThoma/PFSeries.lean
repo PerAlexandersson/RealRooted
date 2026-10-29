@@ -1,7 +1,10 @@
 module
 
 public import RealRooted.AissenSchoenbergWhitneyBase
+public import Mathlib.Analysis.CStarAlgebra.Classes
 import RealRooted.Mathlib.LinearAlgebra.Matrix.JacobiComplementaryMinor
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.RingTheory.PowerSeries.Inverse
 
 @[expose] public section
 

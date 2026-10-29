@@ -3,6 +3,7 @@ module
 public import RealRooted.BorceaBranden.Transcendental.LambdaBar
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffExtraction
 import RealRooted.Mathlib.Analysis.Complex.Hurwitz
+import Mathlib.Algebra.MvPolynomial.Funext
 
 public section
 

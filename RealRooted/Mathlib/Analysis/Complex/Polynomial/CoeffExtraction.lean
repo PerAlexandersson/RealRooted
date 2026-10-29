@@ -5,9 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffEstimates
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Algebra.MvPolynomial.Equiv
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffEstimates
+import Mathlib.Algebra.MvPolynomial.CommRing
+import Mathlib.Analysis.Normed.Group.FunctionSeries
 
 /-!
 # Coefficient extraction under locally uniform convergence of polynomials

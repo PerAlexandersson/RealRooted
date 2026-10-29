@@ -7,6 +7,7 @@ public import Mathlib.Analysis.Normed.Group.Defs
 import RealRooted.BorceaBranden.Transcendental.UniformSzasz
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Choose
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffEstimates
+import Mathlib.Algebra.MvPolynomial.Funext
 public import RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate
 public import RealRooted.MultivariateStability
 public import Mathlib.Topology.Algebra.InfiniteSum.Defs

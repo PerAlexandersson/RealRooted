@@ -22,11 +22,11 @@ and `mulVec`.
 
 ## Main statements
 
-* `mulVec_nonneg`: a matrix with nonnegative entries maps nonnegative vectors to nonnegative
+* `Matrix.mulVec_nonneg`: a matrix with nonnegative entries maps nonnegative vectors to nonnegative
   vectors.
-* `exists_pos_maximal_of_nonneg_ne_zero`: a nonzero nonnegative vector has a positive coordinate
-  that dominates all others.
-* `ne_zero_of_mem_stdSimplex`: a vector in the standard simplex is nonzero.
+* `Pi.exists_pos_maximal_of_nonneg_of_ne_zero`: a nonzero nonnegative vector has a positive
+  coordinate that dominates all others.
+* `RealRooted.ne_zero_of_mem_standardSimplex`: a vector in the standard simplex is nonzero.
 * `Matrix.dotProduct_pos_of_pos_of_nonneg_ne_zero`: the dot product of a positive vector with a
   nonzero nonnegative vector is positive.
 * `Finset.inf'_eq_ciInf`: the infimum over a nonempty finset equals the infimum over the
@@ -54,19 +54,12 @@ Prefer Mathlib statements when they already exist; this file keeps only what dow
 ## Matrix & Vector Operations
 -/
 
--- Non-negative matrix preserves non-negative vectors
-theorem mulVec_nonneg {n : Type*} [Fintype n] {A : Matrix n n ℝ} (hA : ∀ i j, 0 ≤ A i j)
+/-- A matrix with nonnegative entries sends nonnegative vectors to nonnegative vectors. -/
+theorem Matrix.mulVec_nonneg {n : Type*} [Fintype n] {A : Matrix n n ℝ} (hA : ∀ i j, 0 ≤ A i j)
     {x : n → ℝ} (hx : ∀ i, 0 ≤ x i) : ∀ i, 0 ≤ (A *ᵥ x) i := by
   intro i
   simp only [Matrix.mulVec, dotProduct]
   exact Finset.sum_nonneg fun j _ => mul_nonneg (hA i j) (hx j)
-
--- Matrix power multiplication
-theorem pow_mulVec_succ {n : Type*} [Fintype n] [DecidableEq n] {A : Matrix n n ℝ}
-    (k : ℕ) (x : n → ℝ) :
-    (A^(k+1)).mulVec x = A.mulVec ((A^k).mulVec x) := by
-  simp only [mulVec_mulVec]
-  rw [pow_succ']
 
 
 /-!
@@ -90,7 +83,7 @@ lemma Finset.inf'_eq_ciInf {α β} [ConditionallyCompleteLinearOrder β] {s : Fi
 variable {n : Type*}
 
 /-- A non-negative, non-zero vector must have a positive component. -/
-lemma exists_pos_of_ne_zero {v : n → ℝ} (h_nonneg : ∀ i, 0 ≤ v i) (h_ne_zero : v ≠ 0) :
+lemma Pi.exists_pos_of_nonneg_of_ne_zero {v : n → ℝ} (h_nonneg : ∀ i, 0 ≤ v i) (h_ne_zero : v ≠ 0) :
     ∃ i, 0 < v i := by
   by_contra h_all_nonpos
   apply h_ne_zero
@@ -98,12 +91,12 @@ lemma exists_pos_of_ne_zero {v : n → ℝ} (h_nonneg : ∀ i, 0 ≤ v i) (h_ne_
   exact le_antisymm (by simp_all) (h_nonneg i)
 
 /-- A non-negative, non-zero vector has a positive component that dominates all others. -/
-lemma exists_pos_maximal_of_nonneg_ne_zero [Finite n] [Nonempty n] {v : n → ℝ}
+lemma Pi.exists_pos_maximal_of_nonneg_of_ne_zero [Finite n] [Nonempty n] {v : n → ℝ}
     (h_nonneg : ∀ i, 0 ≤ v i) (h_ne_zero : v ≠ 0) :
     ∃ i, 0 < v i ∧ ∀ j, v j ≤ v i := by
   let _ : Fintype n := Fintype.ofFinite n
   obtain ⟨i, -, hi_max⟩ := Finset.exists_mem_eq_sup' Finset.univ_nonempty v
-  obtain ⟨j, hj_pos⟩ := exists_pos_of_ne_zero h_nonneg h_ne_zero
+  obtain ⟨j, hj_pos⟩ := Pi.exists_pos_of_nonneg_of_ne_zero h_nonneg h_ne_zero
   refine ⟨i, ?_, ?_⟩
   · refine lt_of_lt_of_le hj_pos ?_
     rw [← hi_max]
@@ -112,7 +105,8 @@ lemma exists_pos_maximal_of_nonneg_ne_zero [Finite n] [Nonempty n] {v : n → �
     rw [← hi_max]
     exact Finset.le_sup' v (Finset.mem_univ j)
 
-lemma ones_norm_mem_simplex [Fintype n] [Nonempty n] :
+/-- The uniform vector lies in the standard simplex. -/
+lemma RealRooted.inv_card_mem_standardSimplex [Fintype n] [Nonempty n] :
   (fun _ => (Fintype.card n : ℝ)⁻¹) ∈ RealRooted.standardSimplex ℝ n := by
   dsimp [RealRooted.standardSimplex]; constructor
   · intro i; apply inv_nonneg.2; norm_cast; exact Nat.cast_nonneg _
@@ -123,7 +117,7 @@ If a vector `x` lies in the standard simplex, then it cannot be the zero vector.
 Indeed, the coordinates of a simplex‐vector sum to `1`, whereas the coordinates of
 the zero vector sum to `0`.
 -/
-lemma ne_zero_of_mem_stdSimplex
+lemma RealRooted.ne_zero_of_mem_standardSimplex
     {n : Type*} [Fintype n] {x : n → ℝ}
     (hx : x ∈ RealRooted.standardSimplex ℝ n) :
     x ≠ 0 := by

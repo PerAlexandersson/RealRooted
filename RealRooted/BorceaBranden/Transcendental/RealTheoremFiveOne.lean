@@ -6,6 +6,7 @@ public import RealRooted.BorceaBranden.Transcendental.TranscendentalSymbol
 import RealRooted.BorceaBranden.Transcendental.UniformSzasz
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffEstimates
+import Mathlib.Algebra.MvPolynomial.Funext
 
 @[expose] public section
 

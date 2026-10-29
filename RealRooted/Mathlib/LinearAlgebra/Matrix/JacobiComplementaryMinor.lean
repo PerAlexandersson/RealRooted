@@ -5,8 +5,10 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+public import Mathlib.LinearAlgebra.Matrix.Determinant.TotallyNonneg
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Data.Fintype.Sort
+import Mathlib.Tactic.LinearCombination
 
 /-!
 # Jacobi's complementary minor identity and the inverse of a totally nonnegative matrix

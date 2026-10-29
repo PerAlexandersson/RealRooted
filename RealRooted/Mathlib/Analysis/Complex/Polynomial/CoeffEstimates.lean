@@ -5,7 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib
+public import Mathlib.Analysis.CStarAlgebra.Classes
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+public import Mathlib.Algebra.MvPolynomial.Degrees
+import Mathlib.RingTheory.RootsOfUnity.Complex
+import Mathlib.Analysis.Normed.Group.Tannery
 
 /-!
 # Coefficient estimates for multivariate complex polynomials

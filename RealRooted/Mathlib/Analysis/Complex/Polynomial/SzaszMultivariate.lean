@@ -5,9 +5,14 @@ Authors: Per Alexandersson
 -/
 module
 
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.Szasz
 public import Mathlib.Algebra.MvPolynomial.Eval
 public import Mathlib.Analysis.Complex.Exponential
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.Szasz
+import Mathlib.Analysis.SpecialFunctions.Pow.Real
+import Mathlib.Analysis.MeanInequalities
+import Mathlib.Analysis.Complex.Polynomial.Basic
+import Mathlib.Analysis.SpecificLimits.Basic
+import Mathlib.Algebra.CharP.Defs
 
 /-!
 # The multivariate Szász growth bound

@@ -5,7 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib
+public import Mathlib.MeasureTheory.Integral.CircleAverage
+public import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Complex.TaylorSeries
+import Mathlib.Analysis.Complex.MeanValue
+import Mathlib.Analysis.Complex.ExponentialBounds
 
 /-!
 # Entire functions with polynomially bounded real part are polynomials

@@ -315,9 +315,9 @@ lemma stdSimplex_eigenvector_eq_of_primitive [Nonempty n]
     (hw_eig : A *ᵥ w.1 = s • w.1) :
     v = w := by
   have hv_pos := eigenvector_of_primitive_is_positive hA_prim hr_pos
-    hv_eig v.2.1 (ne_zero_of_mem_stdSimplex v.2)
+    hv_eig v.2.1 (RealRooted.ne_zero_of_mem_standardSimplex v.2)
   have hw_pos := eigenvector_of_primitive_is_positive hA_prim hs_pos
-    hw_eig w.2.1 (ne_zero_of_mem_stdSimplex w.2)
+    hw_eig w.2.1 (RealRooted.ne_zero_of_mem_standardSimplex w.2)
   have hs_le_hr := eigenvalue_le_of_positive_eigenvectors hA_nonneg hv_pos hw_pos hv_eig hw_eig
   have hr_le_hs := eigenvalue_le_of_positive_eigenvectors hA_nonneg hw_pos hv_pos hw_eig hv_eig
   have hr_eq : r = s := le_antisymm hr_le_hs hs_le_hr
@@ -408,7 +408,7 @@ theorem pft_irreducible {n : Type*} [Fintype n] [Nonempty n]
     exact sub_pos.mpr <| by
       simpa [B] using one_lt_eigenvalue_one_add_of_irreducible hA_irred
         (eigenvector_of_primitive_is_positive hB_prim hrB_pos h_eig_B v.2.1
-          (ne_zero_of_mem_stdSimplex v.2))
+          (RealRooted.ne_zero_of_mem_standardSimplex v.2))
         h_eig_B
   refine ⟨v, ⟨r, hr_pos, h_eig_A⟩, ?_⟩
   · intro v' ⟨r', hr'_pos, h_eig_A'⟩
