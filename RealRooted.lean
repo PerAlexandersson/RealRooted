@@ -1939,3 +1939,4 @@ public import RealRooted.Hyperbolicity.SignFree
 public import RealRooted.DeterminantalStability.Closure
 public import RealRooted.DeterminantalStability.ExactReduction
 public import RealRooted.Transforms.BrandenE.Interlacing
+public import RealRooted.PolynomialValueEulerNumerator.Interlacing

@@ -4,6 +4,8 @@ public import RealRooted.PolynomialValueEulerNumerator
 public import RealRooted.PFPolynomial
 import RealRooted.PolynomialValueEulerNumerator.Product.Brenti
 import RealRooted.SequenceClosure
+import RealRooted.PolynomialValueEulerNumerator.Interlacing
+import RealRooted.Transforms.BrandenE.Interlacing
 
 /-!
 # Relative h-polynomials of half-open cubes
@@ -19,10 +21,11 @@ subdivision of that piece is the refined type-B Eulerian polynomial `A_{d,l}^{(2
 `polynomialValueSeries_eq_eulerNumerator_mul_invOneSubPow`.  Every piece is real-rooted with
 nonnegative coefficients (Brenti's theorem, since all roots of the source lie in `[-1, 0]`).
 
-The interlacing of the whole row `cubeRelativeHRow d` (Hlavacek--Solus Lemma 4.1, which rests on
-Brändén's 2006 interlacing theorem for Euler numerators) is not formalized yet (issue #1311); with
-it, `isRealRooted_polytopalHPolynomial_of_perm_interlacingNonneg` gives the cubical
-stable-shelling theorem.
+Consecutive members `A_{d,l}^{(2)} ≪ A_{d,l+1}^{(2)}` (`l < d`) interlace
+(`cubeColoredEulerian_strictInterl_succ`), by Brändén's Theorem 4.6 in Euler-numerator form.
+The interlacing of the whole row `cubeRelativeHRow d` including the reflected pieces, as needed by
+`isRealRooted_polytopalHPolynomial_of_perm_interlacingNonneg` for the cubical stable-shelling
+theorem, is not formalized yet (issue #1311).
 -/
 
 public section
@@ -191,5 +194,137 @@ theorem cubeRelativeHRow_realRooted_nonneg (d : ℕ) :
   have hl : l.val ≤ 2 * d := by lia
   exact ⟨cubeRelativeHPolynomial_ne_zero_and_splits hl,
     cubeRelativeHPolynomial_nonneg d l⟩
+
+private theorem strictInterl_eulerNumerator_cube_succ
+    {d l : ℕ} (hl : l + 1 ≤ d) :
+    StrictInterl
+      (polynomialValueEulerNumerator
+        ((C 2 * X) ^ l * (C 2 * X + 1) ^ (d - l)))
+      (polynomialValueEulerNumerator
+        ((C 2 * X) ^ (l + 1) * (C 2 * X + 1) ^ (d - (l + 1)))) := by
+  let s : Multiset ℝ :=
+    Multiset.replicate l 0 + Multiset.replicate (d - (l + 1)) (-1 / 2)
+  have hs_card : s.card + 1 = d := by
+    simp [s]
+    lia
+  have hs_roots : ∀ r ∈ s, (-1 : ℝ) ≤ r ∧ r ≤ 0 := by
+    intro r hr
+    simp only [s, Multiset.mem_add] at hr
+    rcases hr with hr | hr
+    · rcases Multiset.mem_replicate.mp hr with ⟨_, rfl⟩
+      norm_num
+    · rcases Multiset.mem_replicate.mp hr with ⟨_, rfl⟩
+      norm_num
+  have hleft_roots :
+      ∀ r ∈ (rootPolynomial ((-1 / 2 : ℝ) ::ₘ s)).roots,
+        (-1 : ℝ) ≤ r ∧ r ≤ 0 := by
+    intro r hr
+    rw [roots_rootPolynomial, Multiset.mem_cons] at hr
+    rcases hr with rfl | hr
+    · norm_num
+    · exact hs_roots r hr
+  have hright_roots :
+      ∀ r ∈ (rootPolynomial ((0 : ℝ) ::ₘ s)).roots,
+        (-1 : ℝ) ≤ r ∧ r ≤ 0 := by
+    intro r hr
+    rw [roots_rootPolynomial, Multiset.mem_cons] at hr
+    rcases hr with rfl | hr
+    · norm_num
+    · exact hs_roots r hr
+  have hE := brandenE_strictInterl_rootPolynomial_cons_move s hs_roots
+    (show (-1 / 2 : ℝ) ≤ 0 by norm_num)
+  have hleftE_roots := brandenE_roots_mem_Icc_of_monic
+    (rootPolynomial_monic ((-1 / 2 : ℝ) ::ₘ s))
+    (rootPolynomial_splits ((-1 / 2 : ℝ) ::ₘ s)) hleft_roots
+  have hrightE_roots := brandenE_roots_mem_Icc_of_monic
+    (rootPolynomial_monic ((0 : ℝ) ::ₘ s))
+    (rootPolynomial_splits ((0 : ℝ) ::ₘ s)) hright_roots
+  have hleftE_degree :
+      (brandenE (rootPolynomial ((-1 / 2 : ℝ) ::ₘ s))).natDegree = d := by
+    rw [(brandenE_rootPolynomial_degree_pos ((-1 / 2 : ℝ) ::ₘ s)).1]
+    simpa using hs_card
+  have hrightE_degree :
+      (brandenE (rootPolynomial ((0 : ℝ) ::ₘ s))).natDegree = d := by
+    rw [(brandenE_rootPolynomial_degree_pos ((0 : ℝ) ::ₘ s)).1]
+    simpa using hs_card
+  have hW := strictInterl_cayleyTransform_of_roots_mem_Icc
+    hleftE_degree hrightE_degree hE hleftE_roots hrightE_roots
+  have hleft_degree :
+      (rootPolynomial ((-1 / 2 : ℝ) ::ₘ s)).natDegree = d := by
+    simp only [natDegree_rootPolynomial, Multiset.card_cons, hs_card]
+  have hright_degree :
+      (rootPolynomial ((0 : ℝ) ::ₘ s)).natDegree = d := by
+    simp only [natDegree_rootPolynomial, Multiset.card_cons, hs_card]
+  have hW' :
+      StrictInterl
+        (polynomialValueEulerNumerator
+          (rootPolynomial ((-1 / 2 : ℝ) ::ₘ s)))
+        (polynomialValueEulerNumerator (rootPolynomial ((0 : ℝ) ::ₘ s))) := by
+    simpa only [polynomialValueEulerNumerator_eq_cayleyTransform_brandenE,
+      hleft_degree, hright_degree] using hW
+  have hs_poly : rootPolynomial s =
+      X ^ l * (X + C (1 / 2 : ℝ)) ^ (d - (l + 1)) := by
+    simp [s, rootPolynomial, Multiset.map_add, Multiset.prod_add,
+      sub_eq_add_neg]
+    norm_num
+  have hleft_monic : rootPolynomial ((-1 / 2 : ℝ) ::ₘ s) =
+      X ^ l * (X + C (1 / 2 : ℝ)) ^ (d - l) := by
+    rw [show rootPolynomial ((-1 / 2 : ℝ) ::ₘ s) =
+      (X - C (-1 / 2 : ℝ)) * rootPolynomial s by
+        simp [rootPolynomial]]
+    rw [hs_poly, show d - l = (d - (l + 1)) + 1 by lia, pow_succ]
+    norm_num
+    ring
+  have hright_monic : rootPolynomial ((0 : ℝ) ::ₘ s) =
+      X ^ (l + 1) * (X + C (1 / 2 : ℝ)) ^ (d - (l + 1)) := by
+    rw [show rootPolynomial ((0 : ℝ) ::ₘ s) =
+      (X - C (0 : ℝ)) * rootPolynomial s by simp [rootPolynomial], hs_poly]
+    simp [pow_succ]
+    ring
+  rw [hleft_monic, hright_monic] at hW'
+  let a : ℝ := 2 ^ l * 2 ^ (d - l)
+  let b : ℝ := 2 ^ (l + 1) * 2 ^ (d - (l + 1))
+  have ha : a ≠ 0 := by positivity
+  have hb : b ≠ 0 := by positivity
+  have hfactor : C 2 * X + 1 = C 2 * (X + C (1 / 2 : ℝ)) := by
+    rw [mul_add, ← C_mul]
+    norm_num
+  have hleft_scale :
+      (C 2 * X) ^ l * (C 2 * X + 1) ^ (d - l) =
+        C a * (X ^ l * (X + C (1 / 2 : ℝ)) ^ (d - l)) := by
+    rw [hfactor, mul_pow, mul_pow, ← C_pow, ← C_pow]
+    calc
+      (C (2 ^ l) * X ^ l) *
+          (C (2 ^ (d - l)) * (X + C (1 / 2 : ℝ)) ^ (d - l)) =
+          (C (2 ^ l) * C (2 ^ (d - l))) *
+            (X ^ l * (X + C (1 / 2 : ℝ)) ^ (d - l)) := by ring
+      _ = C a * (X ^ l * (X + C (1 / 2 : ℝ)) ^ (d - l)) := by
+        rw [← C_mul]
+  have hright_scale :
+      (C 2 * X) ^ (l + 1) * (C 2 * X + 1) ^ (d - (l + 1)) =
+        C b * (X ^ (l + 1) *
+          (X + C (1 / 2 : ℝ)) ^ (d - (l + 1))) := by
+    rw [hfactor, mul_pow, mul_pow, ← C_pow, ← C_pow]
+    calc
+      (C (2 ^ (l + 1)) * X ^ (l + 1)) *
+          (C (2 ^ (d - (l + 1))) *
+            (X + C (1 / 2 : ℝ)) ^ (d - (l + 1))) =
+          (C (2 ^ (l + 1)) * C (2 ^ (d - (l + 1)))) *
+            (X ^ (l + 1) *
+              (X + C (1 / 2 : ℝ)) ^ (d - (l + 1))) := by ring
+      _ = C b * (X ^ (l + 1) *
+          (X + C (1 / 2 : ℝ)) ^ (d - (l + 1))) := by
+        rw [← C_mul]
+  have hscaled := (hW'.C_mul_left ha).C_mul_right hb
+  rw [← polynomialValueEulerNumerator_C_mul ha,
+    ← polynomialValueEulerNumerator_C_mul hb,
+    ← hleft_scale, ← hright_scale] at hscaled
+  exact hscaled
+
+/-- Consecutive refined type-B Eulerian polynomials interlace:
+`A_{d,l}^{(2)} ≪ A_{d,l+1}^{(2)}` (Hlavacek--Solus, Lemma 4.1, via Brändén's Theorem 4.6). -/
+theorem cubeColoredEulerian_strictInterl_succ {d l : ℕ} (hl : l + 1 ≤ d) :
+    StrictInterl (cubeColoredEulerian d l) (cubeColoredEulerian d (l + 1)) :=
+  strictInterl_eulerNumerator_cube_succ hl
 
 end RealRooted.HlavacekSolus
