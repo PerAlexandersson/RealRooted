@@ -638,9 +638,6 @@ theorem Interl.factorialHadamardProduct_right {f g p : ℝ[X]}
   · simpa [hg0] using interl_zero_right (factorialHadamardProduct f p)
   · exact StrictInterl.interl_factorialHadamardProduct_right hf hg hp hstrict
 
-@[deprecated (since := "2026-10-06")]
-alias gwSchurProductInterl := Interl.factorialHadamardProduct_right
-
 /-- The factorial Hadamard product with a fixed PF factor sends `f' ≪ f` to the
 corresponding product relation. -/
 theorem factorialHadamardProduct_derivative_interl_self {f p : ℝ[X]}

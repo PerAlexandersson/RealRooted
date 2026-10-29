@@ -1360,7 +1360,7 @@
       "modules": [
         "Mathlib.Data.List.OfFn"
       ],
-      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "note": "Mathlib master (after v4.35.0) has `List.countP_ofFn : (ofFn f).countP p = #{i | p (f i)}` in Mathlib.Data.Fintype.Fin; the local sum form is named `countP_ofFn_eq_sum`, and `card_filter_univ_eq_countP_ofFn` becomes `(List.countP_ofFn f p).symm` at the next bump.",
       "speculative": true
     },
     {
