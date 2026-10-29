@@ -24,7 +24,7 @@ public section
 namespace List
 
 /-- Count the entries of a finite function satisfying a Boolean predicate. -/
-theorem countP_ofFn {n : ℕ} {α : Type*} (f : Fin n → α) (p : α → Bool) :
+theorem countP_ofFn_eq_sum {n : ℕ} {α : Type*} (f : Fin n → α) (p : α → Bool) :
     List.countP p (List.ofFn f) = ∑ i, if p (f i) then 1 else 0 := by
   induction n with
   | zero => simp
@@ -38,7 +38,7 @@ theorem countP_ofFn {n : ℕ} {α : Type*} (f : Fin n → α) (p : α → Bool) 
 theorem card_filter_univ_eq_countP_ofFn {n : ℕ} {α : Type*}
     (f : Fin n → α) (p : α → Bool) :
     (Finset.univ.filter fun i => p (f i)).card = List.countP p (List.ofFn f) := by
-  simp only [Finset.card_filter, countP_ofFn]
+  simp only [Finset.card_filter, countP_ofFn_eq_sum]
 
 /-- Removing a finite-function coordinate agrees with erasing that list index. -/
 theorem ofFn_succAbove_eq_eraseIdx
