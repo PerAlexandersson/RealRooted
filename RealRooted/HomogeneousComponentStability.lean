@@ -178,7 +178,7 @@ theorem tendsto_coeff_realAffineLineRestriction_homogeneousTopApproximation
 
 /-- The top homogeneous component of a nonzero real stable polynomial with
 nonnegative coefficients is real stable. -/
-theorem MvRealStable.homogeneousComponent_totalDegree
+theorem MvRealStable.homogeneousComponent_totalDegree_of_hasNonnegCoeffs
     {σ : Type*} {P : MvPolynomial σ ℝ} (hst : MvRealStable P)
     (hnn : MvPolynomial.HasNonnegCoeffs P) (hP : P ≠ 0) :
     MvRealStable
