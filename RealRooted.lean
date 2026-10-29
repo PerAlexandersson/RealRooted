@@ -1936,3 +1936,5 @@ public import RealRooted.Mesh.DiscreteMultiplierSequenceLaguerrePolya
 public import RealRooted.Mesh.Limit
 public import RealRooted.HlavacekSolus.HalfOpenCube
 public import RealRooted.Hyperbolicity.SignFree
+public import RealRooted.DeterminantalStability.Closure
+public import RealRooted.DeterminantalStability.ExactReduction
