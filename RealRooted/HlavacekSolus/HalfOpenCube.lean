@@ -55,6 +55,26 @@ h-polynomials. -/
 def cubeRelativeHRow (d : ℕ) : List ℝ[X] :=
   List.ofFn fun l : Fin (2 * d + 1) => cubeRelativeHPolynomial d l
 
+theorem cubeValuePolynomial_def (d l : ℕ) :
+    cubeValuePolynomial d l = (C 2 * X) ^ l * (C 2 * X + 1) ^ (d - l) := by
+  simp only [cubeValuePolynomial]
+
+theorem cubeColoredEulerian_def (d l : ℕ) :
+    cubeColoredEulerian d l = polynomialValueEulerNumerator (cubeValuePolynomial d l) := by
+  simp only [cubeColoredEulerian]
+
+theorem cubeRelativeHPolynomial_of_le {d l : ℕ} (h : l ≤ d) :
+    cubeRelativeHPolynomial d l = cubeColoredEulerian d l := by
+  simp [cubeRelativeHPolynomial, h]
+
+theorem cubeRelativeHPolynomial_of_lt {d l : ℕ} (h : d < l) :
+    cubeRelativeHPolynomial d l = X * (cubeColoredEulerian d (2 * d - l)).reflect d := by
+  simp [cubeRelativeHPolynomial, Nat.not_le.mpr h]
+
+theorem cubeRelativeHRow_def (d : ℕ) :
+    cubeRelativeHRow d = List.ofFn fun l : Fin (2 * d + 1) => cubeRelativeHPolynomial d l := by
+  simp only [cubeRelativeHRow]
+
 /-- The source polynomial for a refined cube polynomial is nonzero. -/
 theorem cubeValuePolynomial_ne_zero (d l : ℕ) :
     cubeValuePolynomial d l ≠ 0 := by
