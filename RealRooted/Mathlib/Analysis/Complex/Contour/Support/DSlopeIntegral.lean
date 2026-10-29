@@ -6,8 +6,8 @@ Authors: Chris Birkbeck
 module
 
 public import Mathlib.Analysis.Calculus.DSlope
-public import Mathlib.Analysis.Complex.Liouville
-public import Mathlib.Analysis.Complex.RemovableSingularity
+import Mathlib.Analysis.Complex.Liouville
+import Mathlib.Analysis.Complex.RemovableSingularity
 public import Mathlib.MeasureTheory.Integral.DominatedConvergence
 
 /-!

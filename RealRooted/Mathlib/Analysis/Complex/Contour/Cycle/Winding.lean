@@ -5,9 +5,10 @@ Authors: The Tau Ceti contributors
 -/
 module
 
+public import Mathlib.Topology.LocallyConstant.Basic
 public import RealRooted.Mathlib.Analysis.Complex.Contour.Cycle.Basic
-public import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.LocallyConstant
-public import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Vanishing
+import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.LocallyConstant
+import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Vanishing
 import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Integer
 
 /-!

@@ -5,7 +5,12 @@ Authors: The Tau Ceti contributors
 -/
 module
 
-public import Mathlib.Analysis.SpecialFunctions.Pow.Continuity
+public import Mathlib.Analysis.SpecialFunctions.Pow.Complex
+public import Mathlib.Analysis.SpecialFunctions.Complex.Log
+public import Mathlib.Analysis.SpecialFunctions.Complex.Arg
+public import Mathlib.Topology.Defs.Filter
+public import Mathlib.Basic.Complex.Basic
+import Mathlib.Analysis.SpecialFunctions.Pow.Continuity
 
 /-!
 Original source: `TauCeti/Analysis/Complex/UpperLogContinuity.lean`,

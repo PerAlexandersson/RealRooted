@@ -5,6 +5,7 @@ Authors: Chris Birkbeck
 -/
 module
 
+import Mathlib.Analysis.Complex.RemovableSingularity
 public import RealRooted.Mathlib.Analysis.Complex.Contour.Dixon.Def
 import RealRooted.Mathlib.Analysis.Complex.Contour.Support.DSlopeIntegral
 import Mathlib.Analysis.Calculus.ParametricIntervalIntegral

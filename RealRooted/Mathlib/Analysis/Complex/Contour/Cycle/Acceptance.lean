@@ -5,8 +5,19 @@ Authors: The Tau Ceti contributors
 -/
 module
 
-public import RealRooted.Mathlib.Analysis.Complex.Contour.Cycle.HomologyCauchy
-public import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Number.Circle
+public import Mathlib.MeasureTheory.Integral.CircleIntegral
+public import Mathlib.Analysis.SpecialFunctions.Complex.CircleMap
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Cycle.Basic
+public import Mathlib.Topology.Defs.Basic
+public import Mathlib.GroupTheory.FreeAbelianGroup
+public import Mathlib.Data.Set.Defs
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Basic.Complex.Basic
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+public import Mathlib.Analysis.Normed.Group.Defs
+public import Mathlib.Analysis.Calculus.FDeriv.Defs
+import RealRooted.Mathlib.Analysis.Complex.Contour.Cycle.HomologyCauchy
+import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Number.Circle
 import RealRooted.Mathlib.Analysis.Complex.Contour.Cycle.Winding
 
 /-!

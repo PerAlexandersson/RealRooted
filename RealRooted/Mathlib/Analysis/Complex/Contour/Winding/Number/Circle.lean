@@ -5,8 +5,10 @@ Authors: Claude, Chris Birkbeck
 -/
 module
 
+public import Mathlib.MeasureTheory.Integral.CircleIntegral
+public import Mathlib.Analysis.SpecialFunctions.Complex.CircleMap
 public import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Number.Basic
-public import Mathlib.Analysis.Complex.CauchyIntegral
+import Mathlib.Analysis.Complex.CauchyIntegral
 
 /-!
 Original source: `TauCeti/Analysis/Contour/Winding/Number/Circle.lean`,

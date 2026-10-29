@@ -5,13 +5,14 @@ Authors: The Tau Ceti contributors
 -/
 module
 
+public import RealRooted.Mathlib.Analysis.Complex.Contour.PiecewiseC1On
 public import Mathlib.Analysis.Calculus.Deriv.Basic
 public import Mathlib.Analysis.Calculus.FDeriv.Analytic
 public import Mathlib.Analysis.Calculus.LogDeriv
 public import Mathlib.Analysis.SpecialFunctions.Complex.Log
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 import RealRooted.Mathlib.Analysis.Complex.Contour.Support.UpperLogContinuity
-public import RealRooted.Mathlib.Analysis.Complex.Contour.Curve.Integrability
+import RealRooted.Mathlib.Analysis.Complex.Contour.Curve.Integrability
 
 public import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Number.Basic
 import Mathlib.Analysis.SpecialFunctions.Complex.LogDeriv
