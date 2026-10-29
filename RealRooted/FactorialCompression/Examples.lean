@@ -44,7 +44,6 @@ example :
   norm_num [compression, multiplier, Finset.sum_range_succ, coeff_X, coeff_one, coeff_X_pow,
     Nat.factorial]
 
-
 private theorem roots_X_add_one_pow_neg (N : ℕ) (hN : N ≠ 0) :
     ∀ r ∈ ((X + 1 : ℝ[X]) ^ N).roots, r < 0 := by
   intro r hr

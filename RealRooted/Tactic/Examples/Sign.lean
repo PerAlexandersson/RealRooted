@@ -2,8 +2,6 @@ module
 
 import RealRooted.Tactic.Sign
 
-set_option linter.privateModule false
-
 /-!
 # `rr_sign` examples
 

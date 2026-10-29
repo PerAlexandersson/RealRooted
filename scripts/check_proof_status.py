@@ -2,7 +2,9 @@
 """Audit Lean proof placeholders and low-use theorem-shaped declarations.
 
 The hard-fail policy permits no `sorry`, `admit`, or source `axiom` commands,
-no `set_option`, `simp +decide`, or `simp_all +decide`, no `omega` outside the
+no `set_option` (except the lint-only `set_option linter.privateModule false` in
+regression-example files, whose tactics create only private declarations), no
+`simp +decide` or `simp_all +decide`, no `omega` outside the
 declarations listed in `ALLOWED_OMEGA` (goals `lia` cannot close), and no `try`,
 `all_goals`, or `any_goals` outside tactic implementations (`macro`,
 `macro_rules`, `elab`, and `elab_rules` commands).
@@ -42,6 +44,10 @@ AXIOM_RE = re.compile(
 FORBIDDEN_RE = re.compile(
     r"\b(set_option)\b|\b(simp(?:_all)?\??\s*\+decide)\b|\b(decide\s*:=\s*true)\b"
 )
+# Example-only test files are modules whose tactics create only private auxiliary
+# declarations; this lint-only option is the one `set_option` they may use.
+ALLOWED_SET_OPTION_RE = re.compile(r"^set_option linter\.privateModule false\s*$")
+EXAMPLE_PATH_RE = re.compile(r"(?:/Examples/|Examples\.lean$)")
 OMEGA_RE = re.compile(r"(?<![.'])\bomega\b(?!['?])")
 COMBINATOR_RE = re.compile(r"(?<![.'])\b(try|all_goals|any_goals)\b(?!['?])")
 COMMAND_START_RE = re.compile(r"^(?:@\[[^\]]*\]\s*)?(?:(?:local|scoped)\s+)?([a-z_]+)\b")
@@ -170,6 +176,8 @@ def scan_text(path: str, text: str) -> tuple[list[Finding], list[StatementDeclar
         if axiom_match:
             findings.append(Finding(path, axiom_match.group(1), line_number, "axiom"))
         for forbidden_match in FORBIDDEN_RE.finditer(line):
+            if EXAMPLE_PATH_RE.search(path) and ALLOWED_SET_OPTION_RE.match(line):
+                continue
             findings.append(
                 Finding(
                     path,
@@ -294,6 +302,10 @@ def run_self_test() -> int:
         (21, "try"),
     ], forbidden
     assert all("forbidden" in error for error in admission_errors(forbidden, {}))
+    lint_option = "set_option linter.privateModule false\n"
+    assert not scan_text("RealRooted/Tactic/Examples/T.lean", lint_option)[0]
+    assert scan_text("RealRooted/T.lean", lint_option)[0]
+    assert scan_text("RealRooted/Tactic/Examples/T.lean", "set_option maxHeartbeats 0\n")[0]
     assert not admission_errors(
         [item for item in forbidden if item.kind == "omega"],
         {("RealRooted/Test.lean", "a"): 1},

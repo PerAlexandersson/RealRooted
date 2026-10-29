@@ -1,12 +1,12 @@
 module
 
+public import Mathlib.Algebra.Polynomial.Basic
+public import Mathlib.Basic.Real.Basic
 import RealRooted.Tactic.RowInterlacing
-
-set_option linter.privateModule false
 
 open Polynomial
 
-noncomputable section
+@[expose] public noncomputable section
 
 namespace RealRooted.Tactic.Examples.RowPathPowerK5
 

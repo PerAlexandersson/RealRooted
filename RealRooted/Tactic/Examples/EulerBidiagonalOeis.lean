@@ -1,8 +1,8 @@
 module
 
+public import Mathlib.Algebra.Polynomial.Basic
+public import RealRooted.Basic.ProperPosition
 import RealRooted.Tactic
-
-set_option linter.privateModule false
 
 /-!
 # Euler-bidiagonal OEIS regressions
@@ -14,7 +14,7 @@ zero-parameter boundary case.
 
 open Polynomial RealRooted
 
-noncomputable section
+@[expose] public noncomputable section
 
 namespace RealRooted.Tactic.EulerBidiagonalOeisExamples
 

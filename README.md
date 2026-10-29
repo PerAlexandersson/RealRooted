@@ -211,9 +211,12 @@ Source files use the Lean module system, following Mathlib's conventions:
   a new `public import` that only proofs need.  Accepted exceptions are listed in
   `scripts/private_imports_baseline.txt` (`--update` rewrites it).
 - A module can only import modules, and every tracked file is a module (#2016; Palomar requires
-  this, #1351).  Umbrella files `public import` their members.  Test files that contain only
-  examples or private definitions import privately and set `linter.privateModule false`, so
-  they elaborate as a downstream module would.  `scripts/non_module_files.txt` must stay empty.
+  this, #1351).  Umbrella files `public import` their members.  Test files import the library
+  privately, so they elaborate as a downstream module would; a test file that declares
+  definitions puts them in `@[expose] public section`.  An example-only file whose tactics
+  create private auxiliary declarations may set `linter.privateModule false`, the one
+  `set_option` that `scripts/check_proof_status.py` accepts, and only in example files.
+  `scripts/non_module_files.txt` must stay empty.
 
 Files under `RealRooted/Mathlib/`, the upstream targets, carry Mathlib's file header: the
 copyright block (`Copyright (c) YYYY Names. All rights reserved.`, the Apache 2.0 line and
