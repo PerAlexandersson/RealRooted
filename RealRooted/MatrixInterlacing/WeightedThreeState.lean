@@ -70,7 +70,8 @@ private lemma interl_common_affine_scalars
     (U := s * a) (V := (t + 1) * a)
     (by positivity) (by positivity) (by positivity) (by nlinarith) using 1 <;> grind
 
-private lemma weightedThreeStateMatrix_rect (b alpha d : ℝ) :
+/-- Every row of the weighted three-state matrix has length three. -/
+theorem weightedThreeStateMatrix_rect (b alpha d : ℝ) :
     ∀ row ∈ weightedThreeStateMatrix b alpha d, row.length = 3 := by
   intro row hrow
   simp only [weightedThreeStateMatrix, List.mem_cons, List.not_mem_nil, or_false] at hrow
