@@ -652,32 +652,27 @@ private theorem realAffineLineRestriction_neg_direction
   intro t
   simp [eval_realAffineLineRestriction, Polynomial.eval_comp]
 
-/-- Ordinary homogenization is hyperbolic in every direction that is positive
-on the original coordinates and zero on the homogenizing coordinate. This is
-the boundary-direction part of the stability--hyperbolicity bridge. -/
-theorem MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary
+/-- Ordinary homogenization of a real stable polynomial is hyperbolic in a boundary direction
+`(0, b)` whenever its top homogeneous component is real stable and does not vanish at `b`. -/
+theorem MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary_of_top
     {σ : Type*} {P : MvPolynomial σ ℝ} (hst : MvRealStable P)
-    (hnn : MvPolynomial.HasNonnegCoeffs P) (hP : P ≠ 0)
-    (b : σ → ℝ) (hb : ∀ i, 0 < b i) :
+    (htop : MvRealStable (MvPolynomial.homogeneousComponent P.totalDegree P))
+    (b : σ → ℝ) (hb : ∀ i, 0 < b i)
+    (heval : MvPolynomial.eval b (MvPolynomial.homogeneousComponent P.totalDegree P) ≠ 0) :
     (MvPolynomial.ordinaryHomogenization P P.totalDegree).HyperbolicAt
       (fun o => Option.elim o 0 b) := by
   let H := MvPolynomial.ordinaryHomogenization P P.totalDegree
   let e : Option σ → ℝ := fun o => Option.elim o 0 b
   let Htop := MvPolynomial.homogeneousComponent P.totalDegree P
-  have hHtopNe : Htop ≠ 0 :=
-    MvPolynomial.homogeneousComponent_totalDegree_ne_zero hP
-  have hEvalTopPos : 0 < MvPolynomial.eval b Htop :=
-    (hnn.homogeneousComponent P.totalDegree).eval_pos hHtopNe hb
   have hEval : MvPolynomial.eval e H = MvPolynomial.eval b Htop := by
     simpa [e, H, Htop] using
       MvPolynomial.eval_ordinaryHomogenization_zero P P.totalDegree b
-  refine ⟨hEval.trans_ne hEvalTopPos.ne', ?_⟩
+  refine ⟨hEval.trans_ne heval, ?_⟩
   intro x
   change (realAffineLineRestriction x e H).Splits
   by_cases hx : x none = 0
   · rw [restriction_ordinaryHomogenization_eq_of_none_eq_zero P x b hx]
-    exact (MvRealStable.realAffineLineRestriction_splits_ne_zero
-      (MvRealStable.homogeneousComponent_totalDegree hst hnn hP)
+    exact (MvRealStable.realAffineLineRestriction_splits_ne_zero htop
         (fun i => x (some i)) b hb).1
   · rw [restriction_ordinaryHomogenization_eq_of_none_ne_zero P x b hx]
     rcases lt_or_gt_of_ne hx with hxneg | hxpos
@@ -695,6 +690,20 @@ theorem MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary
     · exact ((hst.realAffineLineRestriction_splits_ne_zero
         (fun i => x (some i) / x none) (fun i => b i / x none)
         (fun i => div_pos (hb i) hxpos)).1).C_mul _
+
+/-- Ordinary homogenization is hyperbolic in every direction that is positive
+on the original coordinates and zero on the homogenizing coordinate. This is
+the boundary-direction part of the stability--hyperbolicity bridge. -/
+theorem MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary
+    {σ : Type*} {P : MvPolynomial σ ℝ} (hst : MvRealStable P)
+    (hnn : MvPolynomial.HasNonnegCoeffs P) (hP : P ≠ 0)
+    (b : σ → ℝ) (hb : ∀ i, 0 < b i) :
+    (MvPolynomial.ordinaryHomogenization P P.totalDegree).HyperbolicAt
+      (fun o => Option.elim o 0 b) :=
+  hst.ordinaryHomogenization_hyperbolicAt_boundary_of_top
+    (MvRealStable.homogeneousComponent_totalDegree hst hnn hP) b hb
+    ((hnn.homogeneousComponent P.totalDegree).eval_pos
+      (MvPolynomial.homogeneousComponent_totalDegree_ne_zero hP) hb).ne'
 
 /-- Every positive original-coordinate boundary direction is joined to every
 strictly positive direction inside the nonvanishing locus of a nonzero
