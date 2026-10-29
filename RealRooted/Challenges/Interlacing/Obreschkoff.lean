@@ -24,7 +24,7 @@ years = [1963, 1992]
 [[definitions]]
 name = "RealRooted.AllComboRealRooted"
 module = "RealRooted.AllCombo"
-label = "Every real combination is real-rooted"
+label = "Every real combination is real-rooted or zero"
 
 [[theorems]]
 name = "RealRooted.Challenges.Obreschkoff.allCombinationsRealRooted_of_interlaces"
@@ -59,8 +59,8 @@ polynomials generate a real-rooted pencil: every real linear
 combination $\alpha f + \beta g$ splits over $\mathbb R$. Conversely, if
 every real linear combination of $f$ and $g$ splits, then $f$ and $g$
 interlace in one of the two orientations, where either polynomial may be zero.
-No degree hypothesis is needed: if every real linear combination of nonzero
-polynomials $f$ and $g$ splits, then $|\deg f - \deg g| \le 1$.
+In fact, if every real combination of nonzero $f,g$ splits, then
+$|\deg f-\deg g|\le1$.
 
 Hence, for real polynomials $f$ and $g$ that are zero or real-rooted, every
 real linear combination of $f$ and $g$ splits if and only if $f$ and $g$
@@ -69,7 +69,7 @@ interlace in one of the two orientations.
 The pencil also has a stable form. Let $f \ne 0$ and $g \ne 0$ have
 nonnegative coefficients, with $f$ nonconstant. Then the bivariate polynomial
 $f(z) + w\,g(z)$ has no zero with $z$ and $w$ both in the open upper half-plane
-if and only if $g$ and $f$ strictly interlace. One direction specializes at
+if and only if $g\ll f$, that is, $f$ has the largest zero. One direction specializes at
 $w = i$ and uses the Hermite–Biehler theorem.
 
 ## References

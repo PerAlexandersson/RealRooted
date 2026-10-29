@@ -79,15 +79,17 @@ label = "Poisson left multiplication preserves real stability"
 
 A linear operator on a finite multidegree box preserves stability precisely
 as described by the finite-symbol classification [@BorceaBranden2009I]: in
-the rank-one or stable-symbol cases. The real univariate theorem gives the
-corresponding positive-symbol criterion for bounded-degree polynomials.
+the rank-one or stable-symbol cases. The real univariate version gives a
+sufficient condition: if the degree-$d$ algebraic symbol of a real-linear
+operator $T$ is stable, then $T$ maps real-rooted polynomials of degree at most
+$d$ to zero or real-rooted polynomials.
 
 Applied in one coordinate, the finite-symbol theorem tensorizes multiplier sequences. Let
 $\gamma$ act diagonally on the exponent of one variable $x_q$. If the Jensen polynomial
 $\sum_{k \le d} \binom{d}{k} \gamma(k) t^k$ is a PF polynomial, then this operator maps every
-stable polynomial of degree at most $d$ in $x_q$ to a stable polynomial or to zero. The other
-variables are unrestricted. In particular, every PF multiplier sequence, and every falling
-factorial $k \mapsto n^{\underline{k}}$, acts stably in a single coordinate.
+stable polynomial of degree at most $d$ in $x_q$ to a stable polynomial or to
+zero. The other variables are unrestricted. In particular, every PF
+multiplier sequence acts stably in a single coordinate.
 
 Combining the falling-factorial multiplier with the finite-symbol theorem on each degree box
 gives the finite-order Weyl-symbol theorem: if $T = \sum_{j \le m} Q_j(x) \partial_q^j$ has a

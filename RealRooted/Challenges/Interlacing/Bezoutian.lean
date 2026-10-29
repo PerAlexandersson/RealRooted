@@ -69,8 +69,9 @@ $$
 where $\alpha_i$ and $\beta_i$ are the zeros of $p$ and $q$, if and only if
 $B_n(q,p)$ is positive definite.
 
-Positive definiteness alone already forces both polynomials to split over
-$\mathbb R$, and it makes the Wronskian $q'p - qp'$ positive on all of
+Positive definiteness of $B_n(q,p)$ already forces $p,q$ of degree $n$ with
+positive leading coefficients to split over $\mathbb R$. For $p,q$ of degree
+at most $n$, it also makes the Wronskian $q'p-qp'$ positive on all of
 $\mathbb R$.
 
 **Theorem** (successor degree). [@Fisk2006x, Cor. 9.145] Let $f$ have degree

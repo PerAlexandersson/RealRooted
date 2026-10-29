@@ -102,10 +102,10 @@ label = "Strict increase from separation"
 <!-- realrooted-catalog-content -->
 # Root amplitudes and separated roots
 
-We study the normalized amplitude of a finite positive sequence at one of its
-indices, obtained by multiplying the absolute factors
-$\lvert 1-g_k/g_j\rvert$ over all other indices. For a positive strictly
-increasing sequence, `amplitude_le_amplitude_of_convex` proves
+The normalized amplitude of a finite positive sequence $(g_j)_{j<n}$ at the
+index $k$ is
+$\operatorname{amp}_k=\prod_{j\neq k}\lvert1-g_k/g_j\rvert$. For a positive
+strictly increasing sequence, `amplitude_le_amplitude_of_convex` proves
 $\operatorname{amp}_k \leq \operatorname{amp}_{k+1}$ when $n \leq 2k+2$ and
 the consecutive gaps are nondecreasing.
 The stronger `amplitude_zero_le` iterates this comparison when the corresponding
@@ -129,10 +129,11 @@ simple and the constant term is nonzero, the absolute normalized derivative at
 the root indexed by the sorted magnitude sequence equals the corresponding
 amplitude. Consequently, negative roots with multiplicative separation satisfy
 the same uniform lower bound for the normalized derivative. At a root of
-smallest magnitude, a reciprocal-square proportion $c > 1/2$ gives the factor
-$(2c-1)/c$; the Newton-type inequality on the first three coefficients
-specializes this to the one-fifth bound. The abstract square-sum result gives
-the related estimate for any finite family of negative factors.
+smallest magnitude, a reciprocal-square proportion $c>1/2$ gives the factor
+$(2c-1)/c$. If $\tfrac92a_0a_2\leq a_1^2$ for the first three coefficients,
+which is the case $c=\tfrac59$, the bound is
+$|s\,p'(s)|\geq p(0)/5$. The abstract square-sum result gives the related
+estimate for any finite family of negative factors.
 
 ## References
 

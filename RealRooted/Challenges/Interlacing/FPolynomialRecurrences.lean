@@ -84,7 +84,7 @@ label = "Padding an f-transform by powers of X + 1"
 [[theorems]]
 name = "RealRooted.StrictInterl.fPolynomial_sequence"
 module = "RealRooted.SymmetricDecomposition.FPolynomialSequence"
-label = "Half-growth sequences transfer consecutive strict interlacing"
+label = "Half-growth sequences transfer consecutive interlacing"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -94,7 +94,7 @@ For a polynomial $h$ of degree at most $d$, we use the
 **f-polynomial transform**
 
 $$
-fPolynomial\ d\ h = \sum_{k=0}^{d} h_k X^k (X+1)^{d-k},
+\operatorname{fPolynomial}(d,h)=\sum_{k=0}^{d}h_kX^k(X+1)^{d-k},
 $$
 
 where $h_k$ is the coefficient of $X^k$ in $h$. We write $f_j(c)$ for
@@ -110,7 +110,7 @@ $$
 
 with $\deg a(n)\leq 2$ and $\deg b(n)\leq 1$. If the degrees of the rows of
 $Q$ are bounded by their indices, then the transformed rows
-$P(n)=fPolynomial\ n\ (Q(n))$ satisfy
+$P(n)=\operatorname{fPolynomial}(n,Q(n))$ satisfy
 
 $$
 P(n+1)=(X+1)f_2(a(n))P'(n)
@@ -125,15 +125,15 @@ defined sequence.
 The transform also transfers the root properties needed in applications. It is
 the substitution $X \mapsto X/(X+1)$ homogenized to degree $d$, so a root $r$ of
 $h$ becomes the root $r/(1-r)$, and the degree drops when $r = 1$. Hence
-$fPolynomial\ d\ h$ splits whenever $h$ splits, with no sign condition on
+$\operatorname{fPolynomial}(d,h)$ splits whenever $h$ splits, with no sign condition on
 the coefficients, and split rows $Q(n)$ give split rows $P(n)$. When $h$ has no
-root at $1$, the roots of $fPolynomial\ (\deg h)\ h$ are exactly the images
+root at $1$, the roots of $\operatorname{fPolynomial}(\deg h,h)$ are exactly the images
 $r/(1-r)$. This map is increasing on $(-\infty, 1)$ and on $(1, \infty)$, so
-strict interlacing transfers whenever all roots of both polynomials lie on one
+interlacing transfers whenever all roots of both polynomials lie on one
 side of $1$. For a
-sequence with half-growth degrees $\deg Q(j)=(j+1)/2$, nonnegative
+sequence with half-growth degrees $\deg Q(j)=\lfloor(j+1)/2\rfloor$, nonnegative
 coefficients, split nonzero rows, and
-consecutive strict interlacing, the padding and peeling lemmas give
+consecutive interlacing, the padding and peeling lemmas give
 
 $$
 P(n) \mathrel{\ll} P(n+1) \qquad (n\geq 1).

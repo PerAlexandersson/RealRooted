@@ -45,7 +45,7 @@ label = "Favard polynomials are real-rooted"
 [[theorems]]
 name = "RealRooted.SatisfiesFavardRecurrence.pairing_iIsOrtho"
 module = "RealRooted.Favard.Orthogonality"
-label = "Favard’s theorem: the polynomials are orthogonal"
+label = "Orthogonality of the Favard polynomials (algebraic part of Favard’s theorem)"
 headline = true
 
 [[theorems]]
@@ -78,6 +78,10 @@ coefficient of $P_0$ in this basis, and let $\langle p, q \rangle = L(pq)$.
   $L'(1) \cdot L$, so $L$ is unique up to scaling.
 - Over an ordered ring, if every $\beta_{n+1}$ is positive, the pairing is
   positive definite: $\langle p, p \rangle > 0$ for all $p \ne 0$.
+
+This is the algebraic part of Favard's theorem. We do not prove here that $L$
+is integration against a positive measure on $\mathbb R$; concrete integral
+realizations appear in the Hermite, Laguerre and Jacobi modules.
 
 ## References
 

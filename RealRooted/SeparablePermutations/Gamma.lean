@@ -14,12 +14,10 @@ factorial compression of the auxiliary polynomial `B_{n-2}`:
 Here `gammaPolynomial` is *defined* by this representation, and `descentPolynomial n` is the
 gamma transform `(1 + t) ^ (n - 1) Γ_n (t / (1 + t) ^ 2)` of `Γ_n`.
 
-These are algebraically defined families.  That `descentPolynomial n` is the descent
-enumerator of `Av_n(2413, 3142)` is the combinatorial identity of Fu--Lin--Zeng combined with
-Zhang's Proposition 3.3; it is not proved here (see
-`RealRooted/SeparablePermutations/Enumerator.lean` for the precise conditional statement and
-the finite checks).  We prove degrees, nonnegativity, positivity of the relevant coefficients,
-and the first values.
+These are algebraically defined families.  The theorem
+`RealRooted.SeparablePermutations.descentEnumerator_eq_descentPolynomial` identifies the
+descent enumerator of `Av_{N+1}(2413, 3142)` with `descentPolynomial (N + 1)`.  We prove
+degrees, nonnegativity, positivity of the relevant coefficients, and the first values.
 -/
 
 @[expose] public section

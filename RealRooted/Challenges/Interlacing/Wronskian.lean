@@ -1,6 +1,7 @@
 module
 
 import RealRooted.Wronskian
+import RealRooted.Wronskian.Converse
 import RealRooted.Wronskian.PolarLaguerre
 
 /-!
@@ -61,6 +62,11 @@ label = "Degree-weighted Laguerre inequality p'² ≤ deg p · (p'² − p p'')"
 name = "RealRooted.polar_laguerreForm_nonneg"
 module = "RealRooted.Wronskian.PolarLaguerre"
 label = "Polar Laguerre inequality (M − 1) p'² ≥ M p p'' for M ≥ deg p"
+
+[[theorems]]
+name = "RealRooted.exists_wronskian_eval_nonneg_not_strictInterl"
+module = "RealRooted.Wronskian.Converse"
+label = "The multiplicity condition cannot be dropped: (x − 1)³ and x³"
 -->
 
 <!-- realrooted-catalog-content -->

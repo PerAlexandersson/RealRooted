@@ -103,8 +103,9 @@ splits, every factor `F n` is nonzero and splits, and
 `(P n).natDegree = (P 0).natDegree + n` and interlacing of consecutive rows.
 
 The interlacing statement rests on a one-step theorem: a nonzero splitting
-polynomial `f` interlaces `L * f` when `L` has natural degree one. A finite
-product of factors `X - C (root j)` is therefore nonzero and splits. If each row has the form
+polynomial `f` interlaces `L * f` when `L` has natural degree one.
+Independently, a finite product of factors `X - C (root j)` is nonzero and
+splits. If each row has the form
 `P n = ∏ j ∈ Finset.range n, (X - C (root n j))`, the finite linear product
 sequence theorem supplies the row certificates without extra base hypotheses.
 The affine family assumes a nonzero splitting base row and uses factors
@@ -123,8 +124,9 @@ nonnegative coefficients. The sum-then-`X` recurrences
 `A (n + 1) = A n + B n` and
 `B (n + 1) = B n + X * A (n + 1)` preserve strict interlacing and hence
 nonzero splitting of both rows. The endpoint-power lift then proves
-real-rootedness for a sequence whose even and odd rows are endpoint powers of
-`A n` and `B n`, respectively.
+real-rootedness for a sequence with
+$P_{2n}=(X+t)^{m_A(n)}A_n$ and
+$P_{2n+1}=(X+t)^{m_B(n)}B_n$.
 
 ## References
 

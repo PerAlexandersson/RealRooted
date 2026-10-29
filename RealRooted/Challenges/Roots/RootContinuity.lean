@@ -132,7 +132,8 @@ $$
 $$
 
 the coefficient error from $f$ is bounded by
-$(t+1)^{-1}(\operatorname{coeffSumRange}(f)+\operatorname{coeffSumRange}(g))$.
+$(t+1)^{-1}(\lVert f\rVert_1+\lVert g\rVert_1)$, where $\lVert p\rVert_1$ is
+the sum of the absolute values of the coefficients (`coeffSumRange`).
 We can choose a positive $t$ making this bound smaller than any prescribed
 positive precision. If $f$ and $g$ are monic of the same degree and the pencil
 is split, the nearby-root results produce either a real root near a real root

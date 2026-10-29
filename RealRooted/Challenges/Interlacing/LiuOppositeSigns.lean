@@ -74,8 +74,8 @@ label = "Degrees of compatible pairs differ by at most two"
 # Liu's opposite-sign compatibility theorem
 
 Two real polynomials $f$ and $g$ are **compatible** if every combination
-$\alpha f + \beta g$ with $\alpha, \beta \geq 0$ is real-rooted. When $f$ and $g$ have leading
-coefficients of the same sign, compatibility is governed by common
+$\alpha f + \beta g$ with $\alpha, \beta \geq 0$ is real-rooted or zero. When
+$f$ and $g$ have leading coefficients of the same sign, compatibility is governed by common
 interleavers (Chudnovsky–Seymour). Liu treats the case of **opposite leading
 signs**, where the answer is a root-count condition.
 
@@ -88,13 +88,18 @@ compatible if and only if one of the following holds:
 
 - after deleting the largest root from whichever of $f$ and $g$ has the
   larger largest root (from $f$ in case of a tie), the root counts of the
-  resulting pair differ by at most one at every point;
+  resulting pair differ by at most one at every point, that is,
+  $|n_{p'}(x)-n_q(x)|\le1$ for every real $x$, where $(p',q)$ is the pair
+  after the indicated deletion;
 - $f$ and $g$ share a root $r$, and the cofactors $f/(x-r)$ and
   $g/(x-r)$ are compatible.
 
 The second branch is missing from the published statement, and it is
 necessary: the forward direction of the published version fails for $x$ and
 $-x^2$, which share the root $0$.
+
+If $f$ and $g$ have no common root, then they are compatible if and only if
+the first branch holds.
 
 **Corollary (Liu).** Compatible real-rooted polynomials with
 opposite leading signs have degrees differing by at most two.

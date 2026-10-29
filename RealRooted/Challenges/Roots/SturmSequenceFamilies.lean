@@ -167,8 +167,9 @@ $\{1, \dotsc, n\}$ without singleton blocks by blocks.
 Two further families: the Motzkin polynomials, defined by their three-term
 recurrence, are real-rooted and consecutive ones interlace. For all $r$ and $m$
 the polynomial $\sum_k \binom{m - rk}{k} x^k$ is real-rooted; for $r \le m$ it
-is the independence polynomial of the $r$-th power of a path, a claw-free
-graph, so real-rootedness also follows from the
+is the independence polynomial of the $r$th power of the path on $m-r$
+vertices, a claw-free graph. This identification is cited, not formalized, so
+real-rootedness also follows from the
 [Chudnovsky–Seymour theorem](/RealRooted/theorems/chudnovsky-seymour/).
 
 ## Proof idea

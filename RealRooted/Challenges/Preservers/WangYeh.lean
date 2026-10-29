@@ -99,10 +99,12 @@ real-rooted. If $b = d = 0$, the claim is the classical fact that every real
 combination $af + cg$ is real-rooted.
 
 For the PF preserver, a nonconstant Pólya-frequency polynomial $p$ satisfies
-$p \ll xp'$, and the bidiagonal image of $p$ equals
-$(ax + b)\,p + (cx + d)\,xp'$, the Wang–Yeh combination for this pair. Each row of the
-triangular array is the bidiagonal image of the previous row, and the two
-inequalities give the determinant condition at every step.
+$p \ll xp'$. The bidiagonal image of $p$ equals
+$(cx+d)f+(ax+b)g$ with $g=p$ and $f=xp'$. This is of Wang–Yeh form with
+coefficient pair $(c,d)$ for $f$ and $(a,b)$ for $g$; its condition reads
+$bc\leq ad$, as assumed. Each row of the triangular array is the bidiagonal
+image of the previous row, and the two inequalities give the determinant
+condition at every step.
 
 ## References
 

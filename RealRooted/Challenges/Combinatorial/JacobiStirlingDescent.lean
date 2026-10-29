@@ -35,7 +35,7 @@ label = "The Jacobi–Stirling descent polynomial A_{k,i}"
 [[theorems]]
 name = "RealRooted.JacobiStirlingDescent.isGood_descentPoly"
 module = "RealRooted.CombinatorialExamples.JacobiStirling.Descent.Basic"
-label = "Each A_{k,S} has degree 2k - |S| - 1 and simple negative zeros"
+label = "For k ≥ 1, each A_{k,S} has degree 2k − |S| − 1 and simple negative zeros"
 
 [[theorems]]
 name = "RealRooted.JacobiStirlingDescent.StrictInterleave.insertion_succ"
@@ -82,9 +82,9 @@ $i \in \{1, 2, 3, k-2, k-1\}$.
 Every nonzero nonnegative combination $\sum_{|S| = i} c_S A_{k,S}$ has only
 simple negative zeros. In particular, $A_{k,i}$ is real-rooted.
 
-Each $A_{k,S}$ has degree $2k - |S| - 1$, constant term $1$ and simple negative
-zeros. When every barred letter is deleted, $x A_{k,[k]}$ is the second-order
-Eulerian polynomial.
+For $k\ge1$, each $A_{k,S}$ has degree $2k - |S| - 1$, constant term $1$ and
+simple negative zeros. Also for $k\ge1$, when every barred letter is deleted,
+$x A_{k,[k]}$ is the second-order Eulerian polynomial.
 
 ## Proof idea
 

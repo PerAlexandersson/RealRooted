@@ -104,8 +104,10 @@ label = "Permutations counted by descents give a real-rooted polynomial"
 The library defines the shifted Eulerian polynomials `eulerianTilde n` by the recurrence
 $P_0 = t$ and $P_{n+1} = t\bigl((n+2) P_n + (1-t) P_n'\bigr)$. Classically, $P_n = t A_{n+1}(t)$,
 where $A_n(t) = \sum_{\sigma \in \mathfrak{S}_n} t^{\operatorname{des}(\sigma)}$ counts
-permutations by descents; this identification is cited, not formalized. The type $B$
-Eulerian polynomials are likewise defined by the recurrence $B_0 = 1$ and
+permutations by descents. This identification is formalized: the descent generating
+polynomial of $\mathfrak S_{n+1}$ equals $E_n^{(1)}$ (`genPoly_univ_descentCount`) and is
+real-rooted. The type $B$ Eulerian polynomials are likewise defined by the recurrence
+$B_0 = 1$ and
 $B_{n+1} = \bigl(1 + (2n+1)t\bigr) B_n + 2t(1-t) B_n'$.
 
 Both families are real-rooted, and consecutive polynomials interlace.
@@ -124,8 +126,9 @@ The coefficients of $E_k^{(1)}$ are given by the alternating sum
 $$
 [t^j]\, E_k^{(1)} = \sum_{i=0}^{j+1} (-1)^{j+1-i} \binom{k+2}{j+1-i}\, i^{k+1}.
 $$
-This is the classical formula for the Eulerian numbers; the descent count
-itself is still not formalized.
+This is the classical formula for the Eulerian numbers; by
+`genPoly_univ_descentCount`, $[t^j]E_k^{(1)}$ is the number of permutations of
+$k+1$ letters with $j$ descents.
 
 ## References
 

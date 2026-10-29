@@ -39,12 +39,12 @@ label = "Multiplication by x reverses interlacing, in either degree pattern"
 [[theorems]]
 name = "RealRooted.StrictInterl.nonneg_combo_left"
 module = "RealRooted.PosCombo"
-label = "If f ≪ g, then f ≪ af + bg for a, b ≥ 0"
+label = "If f ≪ g, then f ≪ af + bg for a, b ≥ 0 not both zero"
 
 [[theorems]]
 name = "RealRooted.StrictInterl.nonneg_combo_right"
 module = "RealRooted.PosCombo"
-label = "If f ≪ g, then af + bg ≪ g for a, b ≥ 0"
+label = "If f ≪ g, then af + bg ≪ g for a, b ≥ 0 not both zero"
 
 [[theorems]]
 name = "RealRooted.Challenges.Wagner.strictInterl_of_consecutive_of_endpoint"
@@ -53,6 +53,9 @@ label = "A consecutive chain with interlacing endpoints is an interlacing sequen
 
 <!-- realrooted-catalog-content -->
 # Wagner’s lemma
+
+We write $f\ll g$ (`StrictInterl f g`) as on the
+[interlacing page](/RealRooted/concepts/interlacing/).
 
 If $f$ and $g$ have positive leading coefficients and both interlace $h$,
 then $f + g$ interlaces $h$. Likewise, if $f$ and $g$ have positive leading

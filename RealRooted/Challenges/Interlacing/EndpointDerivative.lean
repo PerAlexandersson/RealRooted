@@ -18,7 +18,7 @@ references = [
 [[theorems]]
 name = "RealRooted.strictInterl_endpointDerivative"
 module = "RealRooted.EndpointDerivative.Basic"
-label = "Strict interlacing after endpoint differentiation"
+label = "Interlacing after endpoint differentiation"
 headline = true
 
 [[theorems]]
@@ -29,7 +29,7 @@ label = "Root interval after endpoint differentiation"
 [[theorems]]
 name = "RealRooted.strictInterl_derivative_endpointProduct"
 module = "RealRooted.EndpointDerivative.Basic"
-label = "Strict interlacing after differentiating the endpoint product"
+label = "Interlacing after differentiating the endpoint product"
 
 [[theorems]]
 name = "RealRooted.roots_derivative_endpointProduct_mem_Icc"
@@ -39,12 +39,12 @@ label = "Root interval after differentiating the endpoint product"
 [[theorems]]
 name = "RealRooted.strictInterl_endpointDerivative_sequence"
 module = "RealRooted.EndpointDerivative.Sequence"
-label = "Strict sequence for endpoint differentiation"
+label = "Interlacing sequence for endpoint differentiation"
 
 [[theorems]]
 name = "RealRooted.strictInterl_derivative_endpointProduct_sequence"
 module = "RealRooted.EndpointDerivative.Sequence"
-label = "Strict sequence for product differentiation"
+label = "Interlacing sequence for product differentiation"
 
 [[theorems]]
 name = "RealRooted.interlaces_endpointDerivative_sequence"
@@ -92,8 +92,10 @@ label = "Positive leading coefficient after product differentiation"
 
 We fix $a \leq b$ and write $q=(X-a)(X-b)$. If a split polynomial $f$
 has positive leading coefficient, positive degree, and all roots in $[a,b]$,
-then `strictInterl_endpointDerivative` puts $f$ strictly to the left of
-$qf'$. The roots of $qf'$ remain in the same interval, as recorded by
+then `strictInterl_endpointDerivative` puts $f$ to the left of $qf'$ in
+interlacing position. Here `StrictInterl` means that both polynomials are
+nonzero and real-rooted; coinciding roots, for example at $a$ or $b$, are not
+excluded. The roots of $qf'$ remain in the same interval, as recorded by
 `roots_endpointDerivative_mem_Icc`.
 
 We also apply the same argument to $(qf)'$. The product first adds the two
@@ -105,7 +107,11 @@ preserves the root interval.
 We use these one-step results inductively for a sequence $P$. Under the
 corresponding recurrence, base splitting and root-window hypotheses, positive
 leading coefficients, and positive degrees, the two sequence theorems give a
-strict interlacing chain. With the additional successor-degree identity, the
+chain in this `StrictInterl` sense. Here $P(n+1)=qP(n)'$ for the first pair of
+sequence theorems, while $P(n+1)=(qP(n))'$ for the second. In both cases
+$a\le b$, $P(0)$ splits with all roots in $[a,b]$, and every $P(n)$ has
+positive leading coefficient and degree at least $1$. With the additional
+identity $\deg P(n)+1=\deg P(n+1)$, the
 next two theorems convert that chain to `Interlaces`; the final two sequence
 theorems state that every row is nonzero and split.
 

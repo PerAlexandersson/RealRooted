@@ -60,8 +60,8 @@ $$
 **Samuelson's inequality.** Every $x_j$ lies within $\sqrt{n-1}\, s$ of the mean $\mu$, where
 $s^2 = \frac1n \sum_i (x_i - \mu)^2$.
 
-**Laguerre's root bound.** If $x^n + a x^{n-1} + b x^{n-2} + \dotsb$ is real-rooted, every root
-$r$ satisfies
+**Laguerre's root bound.** If $n\geq2$ and
+$x^n+ax^{n-1}+bx^{n-2}+\dotsb$ is real-rooted, every root $r$ satisfies
 $$
 \Bigl(r + \frac{a}{n}\Bigr)^2 \le \frac{n-1}{n}\Bigl(\frac{n-1}{n} a^2 - 2b\Bigr).
 $$

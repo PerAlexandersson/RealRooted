@@ -105,8 +105,11 @@ label = "Elementary-symmetric recurrence"
 <!-- realrooted-catalog-content -->
 # Coefficient dominance and reciprocal gaps
 
-We describe finite positive families through the elementary symmetric values
-`esym x n j` and the leading products `topProd x j`. The expansion in
+For a sequence $x=(x_0,x_1,\dotsc)$, let
+$e_j=e_j(x_0,\dotsc,x_{n-1})$ (`esym x n j`) be the $j$th elementary
+symmetric function and let $\pi_j=x_0\dotsm x_{j-1}$ (`topProd x j`) be the
+leading product. Put $H_j=\sum_{i<j}x_{j-1}/x_i$ (`headSum`) and
+$T_{n,j}=\sum_{j\leq \ell<n}x_\ell/x_{j-1}$ (`tailSum`). The expansion in
 `esym_eq_sum` and the recurrence `esym_succ` give the finite algebraic layer,
 while `topProd_le_esym` supplies a lower bound when all entries are
 nonnegative. The theorem `coeff_prod_one_add` identifies these values with the
@@ -116,7 +119,7 @@ For nonnegative entries and a nonnegative parameter, `esym_mul_pow_le` bounds
 one weighted elementary symmetric term by the full generating product.
 Theorem `esym_le_topProd_mul` rewrites this as a product of head and tail
 corrections under positivity. `esym_le_exp` bounds those corrections by
-exponentials of `headSum` and `tailSum`, and `esym_le_sharp` retains the
+exponentials of $H_j$ and $T_{n,j}$, and `esym_le_sharp` retains the
 leading-product lower bounds for every term except the distinguished one.
 The tail theorem `topProd_mul_tail_le` records a positive part of the next
 elementary symmetric value.

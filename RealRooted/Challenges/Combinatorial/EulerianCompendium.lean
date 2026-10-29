@@ -112,6 +112,32 @@ cyclic paths by balanced binary words, ternary runs by words, even-top descents
 and zig-zag swaps by permutation sums, and peak polynomials by specialization
 of the peak-value enumerator. The super-Eulerian family is recurrence-defined.
 
+The eight statements are as follows.
+
+1. For $n\ge2$, the descent polynomial
+   $\sum_{\pi\in\mathfrak D_n}x^{\operatorname{des}\pi}$ of derangements is
+   nonzero and real-rooted, with all roots nonpositive.
+2. For $n\ge1$, the balanced cyclic-word sum is real-rooted with simple roots:
+   one root is $0$, and the other $n-1$ roots are negative.
+3. For $n\ge2$, the descent polynomial counting descents with even top is
+   real-rooted with negative roots and strictly alternates with the next one;
+   the two polynomials have simple roots and no common root.
+4. For $\ell\ge1$, row $n+1$ of the super-Eulerian recurrence has nonpositive
+   real roots and interlaces row $n+2$. It has a gamma-expansion with
+   $\deg\gamma\le n/2$, where $\gamma$ has nonnegative coefficients and
+   nonpositive real roots.
+5. For every $n$, the run enumerator of ternary words of length $n$ is
+   real-rooted and interlaces the next enumerator, with weak root inequalities.
+6. For $n\ge1$, the peak polynomial
+   $\sum_{\pi\in\mathfrak S_n}x^{\operatorname{pk}(\pi)}$ is real-rooted. For
+   $n\ge3$ it has degree $\lfloor(n-1)/2\rfloor$, negative roots, and strict
+   root alternation with the next peak polynomial.
+7. The multivariate peak-value polynomial is real stable for every $n$.
+   Positive specializations of its variables give weakly interlacing
+   consecutive diagonals for $n\ge1$.
+8. For $n\ge1$, the zig-zag swap enumerator has degree $n-2$ and simple
+   negative roots.
+
 The even-top and univariate peak statements require simple roots and exclude
 common roots. The ternary and positive-weighted peak statements assert weak
 interlacing: the library predicate `StrictInterl` permits equal roots.

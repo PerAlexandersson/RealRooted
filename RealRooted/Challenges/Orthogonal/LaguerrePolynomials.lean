@@ -60,14 +60,14 @@ The library uses the monic, sign-reversed normalization
 
 $$
 P_n^{(\alpha)}(x) = n!\, L_n^{(\alpha)}(-x)
-= \sum_k \binom{n}{k} (\alpha+k+1)_{n-k}\, x^k.
+= \sum_k \binom{n}{k} (\alpha+k+1)_{n-k}\, x^k,
 $$
 
 so that the zeros are nonpositive. For $\alpha \geq -1$:
 
 - every $P_n^{(\alpha)}$ has only real, simple zeros, and they are strictly negative
   when $\alpha > -1$;
-- consecutive polynomials strictly interlace;
+- consecutive polynomials interlace;
 - the family satisfies a Favard three-term recurrence.
 
 For $\alpha > -1$ the family is also orthogonal on the positive half-line:

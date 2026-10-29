@@ -107,7 +107,7 @@ label = "Mao–Wang: powers of an admissible factor keep Pólya-frequency rows"
 [[theorems]]
 name = "DyckWord.card_semilength_peakCount"
 module = "RealRooted.Mathlib.Combinatorics.Enumerative.DyckStatistics"
-label = "Dyck paths of semilength n with k peaks are counted by Narayana numbers"
+label = "Dyck paths of semilength n with k peaks are Narayana-counted, except n = 1, k = 0"
 
 [[theorems]]
 name = "DyckWord.peakGeneratingPolynomial_eq_narayanaPolynomial"

@@ -1,5 +1,6 @@
 module
 
+import RealRooted.Permanent.Basic
 import RealRooted.Permanent.MonotoneColumn
 
 /-!
@@ -79,6 +80,11 @@ name = "RealRooted.Permanent.diagonalPermanent_ne_zero_and_splits_of_increasingC
 module = "RealRooted.Permanent.MonotoneColumn"
 label = "Monotone column permanent theorem"
 headline = true
+
+[[theorems]]
+name = "RealRooted.Permanent.diagonalPermanent_coeff_card"
+module = "RealRooted.Permanent.Basic"
+label = "The leading coefficient of per(zJ + A) is n!"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -103,6 +109,13 @@ increasing columns. Thus
 `columnPermanent_mvRealStable_of_increasingColumns` gives the convention used
 in the original Haglund–Ono–Wagner conjecture [@HaglundOnoWagner1999].
 
+A **Ferrers matrix** is a zero-one matrix with weakly decreasing columns and
+weakly increasing rows. Its two-alphabet permanent
+$$
+\operatorname{per}\bigl(a_{ij}y_j+(1-a_{ij})x_i\bigr)
+$$
+is real stable.
+
 Setting every $z_j$ equal to one variable $z$ gives
 $$
 \operatorname{per}(zJ_n+A).
@@ -119,7 +132,8 @@ $$
 \operatorname{per}\bigl(a_{ij}y_j+(1-a_{ij})x_i\bigr).
 $$
 The five finite Ferrers identities used in this formalization were proved by
-Aristotle. Stability of the recurrence, specialization of the $x_i$, and a
+the Aristotle automated theorem prover and checked in Lean. Stability of the
+recurrence, specialization of the $x_i$, and a
 fractional substitution yield the multivariate theorem.
 
 ## References

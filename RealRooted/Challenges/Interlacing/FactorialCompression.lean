@@ -63,16 +63,14 @@ label = "The common kernel strictly interlaces the degree-changing kernel"
 <!-- realrooted-catalog-content -->
 # Factorial compression and strict interlacing
 
-For integers `N ≥ 1` and `0 ≤ ell ≤ N`, factorial compression rescales the
-coefficient of `x^k` by
-
-`(N-k)! / (N+ell-2k)!`
-
-on its natural support.  If a degree-`N` polynomial `p` has positive leading
-coefficient and all roots strictly negative (repeated roots allowed), then for
-`a > 0` the compression of `p` and the compression of the adjacent differential
-step `(x + a) p + x p'` have the exact floor degrees `⌊(N+ell)/2⌋` and
-`⌊(N+ell+1)/2⌋`, positive leading coefficients, simple strictly negative roots,
+For integers $N\ge1$ and $0\le\ell\le N$, factorial compression rescales the
+coefficient of $x^k$ by $\frac{(N-k)!}{(N+\ell-2k)!}$ for
+$2k\le N+\ell$, and kills it otherwise. If a degree-$N$ polynomial $p$ has
+positive leading coefficient and all roots strictly negative (repeated roots
+allowed), then for $a>0$ the level-$\ell$ compression of $p$ and the
+level-$\ell$ compression with parameter $N+1$ of the adjacent differential
+step $(x+a)p+xp'$ have the exact floor degrees $\lfloor(N+\ell)/2\rfloor$ and
+$\lfloor(N+\ell+1)/2\rfloor$, positive leading coefficients, simple negative roots,
 strictly interlace, and have no common root.
 
 The proof writes the compression as a Schur–Szegő composition with a multiplier,

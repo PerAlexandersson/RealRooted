@@ -84,14 +84,17 @@ the row $(g_{n,0}, g_{n,1}, \dotsc, g_{n,\lfloor n/2\rfloor})$ is an interlacing
 **Theorem (Xiao's conjecture).** [@Xiao2026x] For all $m$ and
 $\varepsilon \leq 1$, the toric
 contribution row is an interlacing sequence.
+Here a list $(f_0,\dotsc,f_k)$ is an interlacing sequence if $f_i\ll f_j$ for
+every $i<j$, not merely for consecutive indices.
 
 The library indexes by the offset from the middle of the row:
 `toricContribution m ε d` is $g_{2m+\varepsilon,\,m-d}$ for $0 \leq d \leq m$.
 
-The proof finds a common left interleaver for the normalized family: the
-terminating hypergeometric polynomials $R_d$ share a Jacobi-type interlacer.
-It follows that every strictly positive weighted sum of the normalized
-reversed contributions is real-rooted.
+For $m\ge1$, the proof finds a common left interleaver for the normalized
+family. Here $R_d$ is the terminating ${}_3F_2$-type polynomial with
+coefficients `rCoeff m ε d k`; these polynomials share a Jacobi-type
+interlacer. Every weighted sum with $w_d>0$ for $0\le d\le m$ of the
+normalized reversed contributions splits over $\mathbb R$.
 
 ## References
 

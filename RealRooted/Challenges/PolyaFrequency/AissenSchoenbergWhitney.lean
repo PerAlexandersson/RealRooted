@@ -61,7 +61,7 @@ label = "Products of power series with PF coefficients have PF coefficients"
 [[theorems]]
 name = "RealRooted.aswKarlinSectorThreshold_le_abs_arg"
 module = "RealRooted.ASWKarlinKernel"
-label = "Karlin: zeros of PF polynomials avoid a sector around the positive axis"
+label = "Karlin: PF zeros satisfy |arg z| ≥ mπ/(m+d−1) for every m ≥ 1"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -81,6 +81,17 @@ listed separately.
 their Cauchy convolution $c_n = \sum_{k=0}^n a_k b_{n-k}$. The sequences may be
 infinite. Equivalently, if the formal power series $F$ and $G$ have Pólya
 frequency coefficient sequences, then so does $FG$.
+
+**Karlin's sector estimate.** Let $p$ be a real polynomial of degree $d\geq1$
+with $p(0)>0$ whose coefficient sequence is a Pólya frequency sequence. For
+every integer $m\geq1$, each complex zero $z$ of $p$ satisfies
+$$
+|\arg z|\geq \frac{m\pi}{m+d-1}.
+$$
+Thus the zeros avoid the sector
+$|\arg z|<m\pi/(m+d-1)$ around the positive real axis. The proof uses the
+variation-diminishing property of the totally nonnegative coefficient-window
+matrices of $p$.
 
 ## Proof idea
 

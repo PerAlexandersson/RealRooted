@@ -32,8 +32,13 @@ label = "Characteristic polynomials of a principal submatrix interlace"
 [[theorems]]
 name = "RealRooted.sortedEigenvalues_add_vecMulVec_succ_le"
 module = "RealRooted.CauchyInterlacing.RankOne"
-label = "Weyl: eigenvalues of a rank-one update interlace"
+label = "Weyl: eigenvalues of A + vv* are at most the previous eigenvalues of A"
 headline = true
+
+[[theorems]]
+name = "RealRooted.sortedEigenvalues_le_add_vecMulVec"
+module = "RealRooted.CauchyInterlacing.RankOne"
+label = "Weyl: rank-one updates raise eigenvalues"
 
 [[theorems]]
 name = "RealRooted.charpoly_strictInterl_add_vecMulVec"
@@ -51,8 +56,9 @@ $\lambda_{k+1} \leq \mu_k \leq \lambda_k$ for every $k$. For real symmetric
 matrices, the corresponding characteristic polynomials also interlace.
 
 Weyl's companion result concerns rank-one updates: the eigenvalues of
-$A + vv^*$ satisfy $\lambda_k(A) \leq \lambda_k(A + vv^*) \leq \lambda_{k-1}(A)$, so the
-characteristic polynomials of $A$ and $A + vv^{T}$ interlace.  Both results follow
+$A+vv^*$ satisfy $\lambda_k(A)\leq\lambda_k(A+vv^*)$, and for $k\ge1$ also
+$\lambda_k(A+vv^*)\leq\lambda_{k-1}(A)$. Thus the characteristic polynomials
+of $A$ and $A+vv^{T}$ interlace. Both results follow
 from the Courant–Fischer min-max principle.
 
 ## References

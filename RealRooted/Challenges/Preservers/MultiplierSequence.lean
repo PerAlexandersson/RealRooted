@@ -126,6 +126,11 @@ label = "Laguerre's theorem: φ(0), φ(1), … is a multiplier sequence"
 headline = true
 
 [[theorems]]
+name = "RealRooted.isPFMultiplierSequence_eval_of_roots_nonpos"
+module = "RealRooted.MultiplierSequence.Laguerre"
+label = "Laguerre's theorem in the PF convention"
+
+[[theorems]]
 name = "RealRooted.isPFMultiplierSequence_natCast_add"
 module = "RealRooted.MultiplierSequence.Laguerre"
 label = "k + r is a PF multiplier sequence for r ≥ 0"
@@ -186,8 +191,8 @@ The following hold:
   function $\sum_k \gamma_k z^k/k!$ is a locally uniform limit of PF polynomials,
   that is, lies in the Laguerre–Pólya class of type I. Without the sign
   condition, $\gamma$ is a multiplier sequence if and only if one of $\pm f(\pm z)$ is of
-  type I, where $f$ is the generating function; equivalently, one of $\pm\gamma_k$
-  and $\pm(-1)^k \gamma_k$ is a PF multiplier sequence.
+  type I, where $f$ is the generating function; in particular, one of
+  $\pm\gamma_k$ and $\pm(-1)^k \gamma_k$ is then a PF multiplier sequence.
 - **Log-concavity:** PF multiplier sequences are log-concave.
 - **Laguerre's theorem:** if a polynomial $\varphi$ has only real nonpositive
   zeros, then $\varphi(0), \varphi(1), \varphi(2), \dotsc$ is a multiplier sequence. It is a PF
@@ -201,6 +206,11 @@ The following hold:
   $1/(\alpha)_k$ form a PF multiplier sequence, and so in particular do $1/k!$.
   After clearing denominators, their Jensen polynomials are generalized
   Laguerre polynomials.
+- **Heat operator:** for $a\geq0$, the operator $e^{-aD^2}$ maps real-rooted
+  polynomials to zero or real-rooted polynomials.
+- **Interlacing:** if $\gamma$ is a multiplier sequence with
+  $\gamma_k>0$ for every $k$ and $f\ll g$, then
+  $\sum_k\gamma_kf_kx^k\ll\sum_k\gamma_kg_kx^k$.
 
 **Bidiagonal PF preservers.** For sequences $\alpha, \beta$, the bidiagonal
 operator sends $\sum_k a_k x^k$ to

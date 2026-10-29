@@ -97,8 +97,9 @@ direction polynomial $F$, differentiating in $w$; this is where finiteness of $\
 For the converse, the cases $G = 0$ and $F = cG$ are direct. Otherwise, for every point $z$
 with all $\operatorname{Im} z_i > 0$, the quotient $F(z)/G(z)$ is not real, since a real
 value $c$ would make $F - cG$, which is real stable, vanish at $z$. The set of such points
-is connected, so $\operatorname{Im}(F/G)$ has constant sign. A positive sign makes
-$G + iF$ stable and a negative sign makes $F + iG$ stable.
+is connected, so $\operatorname{Im}(F/G)$ has constant sign. A negative sign
+makes $G+iF$ stable, that is, $F\ll G$, and a positive sign makes $F+iG$
+stable, that is, $G\ll F$.
 
 ## References
 

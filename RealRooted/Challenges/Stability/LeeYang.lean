@@ -30,6 +30,11 @@ module = "RealRooted.LeeYang"
 label = "No zeros in the open unit polydisc"
 
 [[theorems]]
+name = "RealRooted.LeeYang.lee_yang_exterior"
+module = "RealRooted.LeeYang"
+label = "No zeros in the exterior of the polydisc"
+
+[[theorems]]
 name = "RealRooted.LeeYang.ising_norm_eq_one"
 module = "RealRooted.LeeYang"
 label = "Ferromagnetic Ising partition function"

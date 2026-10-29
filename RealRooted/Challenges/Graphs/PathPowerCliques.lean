@@ -73,6 +73,16 @@ module = "RealRooted.CombinatorialExamples.PathPowerClique"
 label = "Reciprocal shifts of path-power subsequences are real-rooted"
 
 [[theorems]]
+name = "RealRooted.strictInterl_reciprocalShift_pathPowerCliquePolynomial"
+module = "RealRooted.CombinatorialExamples.PathPowerClique"
+label = "Reciprocal shifts of path-power subsequences interlace"
+
+[[theorems]]
+name = "RealRooted.pathPowerCliquePolynomial_three_trisection_add_three"
+module = "RealRooted.CombinatorialExamples.PathPowerClique"
+label = "Row recurrence of OEIS A193636 for the trisection rows Q(3, 3n)"
+
+[[theorems]]
 name = "RealRooted.PathPowerRows.splits_a109955"
 module = "RealRooted.Applications.OEIS.PathPowerRows"
 label = "OEIS A109955 rows are real-rooted"
@@ -81,7 +91,7 @@ headline = true
 [[theorems]]
 name = "RealRooted.PathPowerRows.strictInterl_a109955"
 module = "RealRooted.Applications.OEIS.PathPowerRows"
-label = "OEIS A109955 rows strictly interlace"
+label = "OEIS A109955 rows interlace"
 
 [[theorems]]
 name = "RealRooted.PathPowerRows.splits_a127893"
@@ -91,7 +101,7 @@ label = "OEIS A127893 rows are real-rooted"
 [[theorems]]
 name = "RealRooted.PathPowerRows.strictInterl_a127893"
 module = "RealRooted.Applications.OEIS.PathPowerRows"
-label = "OEIS A127893 rows strictly interlace"
+label = "OEIS A127893 rows interlace"
 
 [[theorems]]
 name = "RealRooted.PathPowerRows.splits_a206294"
@@ -101,7 +111,7 @@ label = "OEIS A206294 rows are real-rooted"
 [[theorems]]
 name = "RealRooted.PathPowerRows.strictInterl_a206294"
 module = "RealRooted.Applications.OEIS.PathPowerRows"
-label = "OEIS A206294 rows strictly interlace"
+label = "OEIS A206294 rows interlace"
 
 [[theorems]]
 name = "RealRooted.PathPowerRows.splits_a109960"
@@ -111,7 +121,7 @@ label = "OEIS A109960 rows are real-rooted"
 [[theorems]]
 name = "RealRooted.PathPowerRows.strictInterl_a109960"
 module = "RealRooted.Applications.OEIS.PathPowerRows"
-label = "OEIS A109960 rows strictly interlace"
+label = "OEIS A109960 rows interlace"
 
 [[theorems]]
 name = "RealRooted.PathPowerRows.splits_a116088"
@@ -121,7 +131,7 @@ label = "OEIS A116088 rows are real-rooted"
 [[theorems]]
 name = "RealRooted.PathPowerRows.strictInterl_a116088"
 module = "RealRooted.Applications.OEIS.PathPowerRows"
-label = "OEIS A116088 rows strictly interlace"
+label = "OEIS A116088 rows interlace"
 
 [[theorems]]
 name = "RealRooted.PathPowerRows.splits_a116089"
@@ -131,7 +141,7 @@ label = "OEIS A116089 rows are real-rooted"
 [[theorems]]
 name = "RealRooted.PathPowerRows.strictInterl_a116089"
 module = "RealRooted.Applications.OEIS.PathPowerRows"
-label = "OEIS A116089 rows strictly interlace"
+label = "OEIS A116089 rows interlace"
 
 [[theorems]]
 name = "RealRooted.PathPowerRows.splits_a277627"
@@ -141,7 +151,7 @@ label = "OEIS A277627 rows are real-rooted"
 [[theorems]]
 name = "RealRooted.PathPowerRows.strictInterl_a277627"
 module = "RealRooted.Applications.OEIS.PathPowerRows"
-label = "OEIS A277627 rows strictly interlace"
+label = "OEIS A277627 rows interlace"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -151,15 +161,18 @@ For $k \ge 2$ let
 $$
 Q(k,N) = \sum_i \binom{N-(k-1)i}{i} X^i .
 $$
-This is the independence polynomial of the $(k-1)$-th power of a path, so it is
-real-rooted because powers of paths are claw-free. We show that these polynomials form
-interlacing cliques of width $k$: for $1 \le j \le k$, $Q(k,N)$ strictly interlaces
-$Q(k,N+j)$. Degree-padded reciprocal shifts transfer this to every subsequence of step at
-most $k$, and the Graeffe transforms of $1 - s - Y s^k$ give the row recurrences.
+For $N\ge k-1$, this is the independence polynomial of the $(k-1)$-st power
+of the path on $N-k+1$ vertices; it equals $1$ for $N<k-1$. It is real-rooted
+because powers of paths are claw-free. We show that these polynomials form
+interlacing cliques of width $k$: for $1\le j\le k$, $Q(k,N)$ interlaces
+$Q(k,N+j)$ in the sense $f\ll g$, meaning nonzero real-rooted polynomials with
+weak root inequalities; common roots are not excluded. Degree-padded
+reciprocal shifts transfer this to every subsequence of step at most $k$, and
+the Graeffe transforms of $1-s-Xs^k$ give the row recurrences.
 
-As applications we prove that the OEIS row families A193636, A109955, A127893, A206294,
-A109960, A116088, A116089 and A277627 are real-rooted and that consecutive rows strictly
-interlace.
+As applications we prove that the OEIS row families A193636 (the rows
+$Q(3,3n)$), A109955, A127893, A206294, A109960, A116088, A116089 and A277627
+are real-rooted and that consecutive rows interlace in this weak sense.
 
 ## References
 

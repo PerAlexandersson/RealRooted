@@ -31,7 +31,7 @@ headline = true
 [[theorems]]
 name = "RealRooted.strictInterl_tDeriv"
 module = "RealRooted.IteratedDerivativeShift"
-label = "Positive shifts give strict interlacing"
+label = "Positive shifts give interlacing"
 headline = true
 
 [[theorems]]
@@ -82,7 +82,7 @@ label = "Sequence iterates preserve splitness"
 [[theorems]]
 name = "RealRooted.Tactic.iterateTDeriv_sequence_strictInterl_succ"
 module = "RealRooted.Tactic.IteratedDerivativeShift"
-label = "Sequence iterates strictly interlace"
+label = "Sequence iterates interlace"
 
 [[theorems]]
 name = "RealRooted.isRealRooted_iterateTDeriv"
@@ -106,23 +106,30 @@ label = "Right-factor product recurrence"
 We study the derivative-shift operator $T_\varepsilon p = p - \varepsilon p'$
 and its iterates. If $p$ is split, then a positive shift preserves splitness,
 and the same is true for every real shift. For a positive shift and a nonzero
-split polynomial, $p$ strictly interlaces $T_\varepsilon p$.
+split polynomial, $p\ll T_\varepsilon p$.
 
 We also record the two interlacing directions used by derivative arguments. For
 a split polynomial with positive leading coefficient and positive degree, a
 nonpositive shift places $p'$ before $T_\varepsilon p$. A common-factor
-version removes the leading-coefficient assumption on $p$ when $p$ and
-$p'$ are represented using a shared factor and an interlacing quotient pair.
+version says that if $p=dq$ and $p'=dr$, where $d$ is nonzero and split,
+$r\ll q$, and $q,r$ have positive leading coefficients, then
+$p'\ll T_\varepsilon p$ for $\varepsilon\le0$ without assuming that $p$ has
+positive leading coefficient.
 
 We obtain split polynomials for positive or arbitrary real shifts, and
-successive positive iterates strictly interlace when the starting polynomial is
+successive positive iterates satisfy $P_n\ll P_{n+1}$ when the starting polynomial is
 nonzero and split. If $f$ is nonzero and split with degree $n$, then
 $T_\varepsilon^n f$ has simple roots for $\varepsilon > 0$. The analogous
 negative-shift statement holds after at least $\deg p$ iterations.
 
-We use the continuity results to make the regularization usable near a prescribed root.
-For a monic split polynomial, each real root has a nearby root of
-$T_\varepsilon^n p$ for sufficiently small positive $\varepsilon$. A
+We use the continuity results to make the regularization usable near a
+prescribed root. For a monic split polynomial $p$, a root $a$ of $p$, and any
+tolerance $\eta>0$, there is $\delta>0$ such that every shift
+$0<\varepsilon<\delta$ gives a real root $b$ of $T_\varepsilon^n p$ with
+$$
+|a-b|<((\deg p+1)\eta)^{1/\deg p}\max(|a|,1).
+$$
+A
 nonzero split polynomial is reduced to the monic case by scaling; the same
 argument applies to roots in an iterated derivative, and hence to any root
 whose multiplicity is larger than the derivative order.

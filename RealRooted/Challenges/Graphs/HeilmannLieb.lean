@@ -1,6 +1,7 @@
 module
 
 import RealRooted.HeilmannLieb
+import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatchingPolyOn
 public import RealRooted.RankTwoMatching.Transform
 public import RealRooted.Graph.MatchingVertexInterlacing
 public import RealRooted.Graph.MatchingPolynomial
@@ -38,6 +39,11 @@ module = "RealRooted.Graph.IndependencePolynomial.Basic"
 label = "Vertex-weighted independence polynomial"
 
 [[definitions]]
+name = "SimpleGraph.matchingPolyOn"
+module = "RealRooted.Mathlib.Combinatorics.SimpleGraph.MatchingPolyOn"
+label = "Matching polynomial μ_S(x) of the induced subgraph G[S]"
+
+[[definitions]]
 name = "RealRooted.Graph.rankTwoBinomialTransform"
 module = "RealRooted.RankTwoMatching.Transform"
 label = "Rank-two binomial transform"
@@ -51,6 +57,11 @@ headline = true
 name = "RealRooted.interlaces_matchingPolyOn_erase"
 module = "RealRooted.Graph.MatchingVertexInterlacing"
 label = "Deleting a vertex interlaces the matching polynomial"
+
+[[theorems]]
+name = "RealRooted.splits_matchingPolyOn"
+module = "RealRooted.Graph.MatchingVertexInterlacing"
+label = "Heilmann–Lieb: μ_S is real-rooted"
 
 [[theorems]]
 name = "RealRooted.abs_le_of_isRoot_matchingPolyOn"
@@ -102,6 +113,8 @@ $n = |V(G)|$.
 
 **Theorem** (Heilmann–Lieb, Godsil). For every vertex $v$, the polynomial
 $\mu_{G - v}$ interlaces $\mu_G$. In particular $\mu_G$ is real-rooted.
+The Lean statements use induced subgraphs on a vertex set $S$, with $G-v$
+represented by $S\setminus\{v\}$.
 
 **Theorem** (Heilmann–Lieb root bound). If every vertex of $G$ has degree at
 most $\Delta \geq 2$, every zero $x$ of $\mu_G$ satisfies

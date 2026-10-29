@@ -109,7 +109,27 @@ label = "Consecutive rows of A156289 interlace"
 [[theorems]]
 name = "RealRooted.EulerBidiagonal.A166960_isNegativeSimple_and_strictInterl_succ"
 module = "RealRooted.CombinatorialExamples.EulerTypeOeis"
-label = "Consecutive rows of A166960 interlace (likewise A166961, A166962, A166972)"
+label = "Consecutive rows of A166960 interlace"
+
+[[theorems]]
+name = "RealRooted.EulerBidiagonal.A166961_spec"
+module = "RealRooted.CombinatorialExamples.EulerTypeOeis"
+label = "Rows of A166961 have simple negative roots and consecutive rows interlace"
+
+[[theorems]]
+name = "RealRooted.EulerBidiagonal.A166962_spec"
+module = "RealRooted.CombinatorialExamples.EulerTypeOeis"
+label = "Rows of A166962 have simple negative roots and consecutive rows interlace"
+
+[[theorems]]
+name = "RealRooted.EulerBidiagonal.A166972_spec"
+module = "RealRooted.CombinatorialExamples.EulerTypeOeis"
+label = "Rows of A166972 have simple negative roots and consecutive rows interlace"
+
+[[theorems]]
+name = "RealRooted.EulerTypeRows.strictInterl_A269945QuotientRows"
+module = "RealRooted.CombinatorialExamples.EulerTypeRows"
+label = "Consecutive A269945 quotient rows interlace without a common root"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -131,7 +151,8 @@ positive-index rows is removed.
 **Theorem.** Let $f \ll g$ be polynomials with positive leading coefficients and simple
 negative roots, with $\deg g = \deg f + 1$ and no common root. Then $Tf \ll Tg$, again
 without common roots. In particular consecutive rows strictly interlace:
-$P_n \ll P_{n+1}$ for all $n$.
+$P_n \ll P_{n+1}$ for all $n$. Here $f\ll g$ means that their zeros alternate
+and the largest zero belongs to $g$.
 
 Real-rootedness of these rows is classical
 [@AndrewsGawronskiLittlejohn2011; @AndrewsEggeGawronskiLittlejohn2013;

@@ -85,6 +85,11 @@ module = "RealRooted.Hadamard.SchurSzegoSigns"
 label = "Kostov–Shapiro: composition with a negative-rooted polynomial preserves root signs"
 
 [[theorems]]
+name = "RealRooted.splits_schurSzegoComp_of_roots_neg"
+module = "RealRooted.Hadamard.SchurSzegoSigns"
+label = "Composition with a negative-rooted polynomial preserves real-rootedness"
+
+[[theorems]]
 name = "RealRooted.Kostov.interiorCoeff_composition"
 module = "RealRooted.Hadamard.KostovMap"
 label = "Kostov: Schur–Szegő factorizations have coefficients affine in σ(a)"
@@ -159,6 +164,14 @@ Pólya frequency sequences is again a Pólya frequency sequence. Equivalently,
 the entrywise product of their totally nonnegative Toeplitz matrices is
 totally nonnegative.
 
+The *Schur–Szegő composition* of
+$f=\sum_k f_kx^k$ and $g=\sum_k g_kx^k$, both of degree at most $n$, is
+$$
+f*_ng=\sum_{k=0}^n\binom nk^{-1}f_kg_kx^k.
+$$
+**Theorem** (Schur–Szegő). If $f$ is a PF polynomial of degree at most $n$ and
+$g$ is real-rooted of degree at most $n$, then $f*_ng$ is zero or real-rooted.
+
 **Theorem** (Kostov–Shapiro; Kostov). [@KostovShapiro2006; @Kostov2010] Let
 $f$ and $g$ have degree $n$, let
 $a \neq 0$ be a root of $f$ of multiplicity $m$ and $b \neq 0$ a root of $g$ of
@@ -203,8 +216,9 @@ nonnegative coefficients):
 
 - **PF closure:** the Hadamard product $\sum_k a_k b_k x^k$ of two PF
   polynomials is PF.
-- **Interlacing:** if $f \ll g$ and $p \ll q$, then $f \ast p \ll g \ast q$, where $\ast$
-  is the Hadamard product.
+- **Interlacing:** if $f \ll g$ and $p \ll q$ have nonnegative coefficients,
+  then $f\ast p \ll g\ast q$, or one of $f\ast p$ and $g\ast q$ is zero, where
+  $\ast$ is the Hadamard product.
 - **Factorial Hadamard product:** the factorial Hadamard product (Schur's
   factorial product), with coefficients $k!\, a_k b_k$, preserves interlacing in
   its first argument.

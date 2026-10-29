@@ -70,7 +70,8 @@ label = "Products of interlacing-preserving matrices preserve interlacing"
 Let $G = (G_{ij})$ be an $m \times n$ matrix of real polynomials. It acts on a
 sequence $F = (f_1, \dots, f_n)$ by $(G F)_i = \sum_j G_{ij} f_j$. For
 polynomials $f, g$ we write $f \ll g$ when $f$ and $g$ interlace weakly: either
-one of them is zero, or both are nonzero, real-rooted and interlacing. Let
+one of them is zero, or both are nonzero, real-rooted and interlacing. Thus,
+unlike elsewhere in the catalog, either side of $f\ll g$ may be zero. Let
 $\mathcal{F}_n^{0}$ be the set of sequences $(f_1, \dots, f_n)$ of polynomials
 with nonnegative coefficients such that every nonzero $f_i$ is real-rooted and
 $f_i \ll f_j$ whenever $i < j$.
@@ -98,10 +99,6 @@ sides of $\ll$ required to be nonzero. Then $G$ maps strict sequences to strict
 sequences. Under conditions 1 and 2 as stated, $G$ maps a strict sequence to a
 sequence $(g_1, \dots, g_m)$ of polynomials with nonnegative coefficients and
 $g_i \ll g_j$ whenever $i < j$, where some $g_i$ may vanish.
-
-The criterion is checked on every ordered $2\times2$ submatrix, including
-repeated row or column indices. The page also records its strict-input and
-zero-aware forward forms.
 
 ## References
 

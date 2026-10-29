@@ -32,7 +32,7 @@ label = "Standardized coefficient distribution of a polynomial"
 [[theorems]]
 name = "Polynomial.coeffVariance_eq_sum"
 module = "RealRooted.Mathlib.Probability.CoeffDistribution"
-label = "Real-rooted coefficient distributions are Bernoulli sums"
+label = "Variance of a real-rooted coefficient distribution is Σᵢ qᵢ(1 − qᵢ)"
 
 [[theorems]]
 name = "Polynomial.tendsto_standardizedCoeffDistribution"
@@ -137,16 +137,19 @@ For example, $(1 + x)^n$ has variance $n/4$, which recovers the de
 Moivre–Laplace theorem for the binomial distribution.
 
 The Eulerian polynomials, with coefficients $A(n+1, k)$, have mean
-$(n+2)/2$ and variance $(n+2)/12$, so the Eulerian numbers are asymptotically
-normal (David–Barton; Bender). Both moments follow from scalar recurrences at
-$x = 1$. The type $B$
-Eulerian numbers have mean $n/2$ and variance $(n+1)/12$, so they are
-asymptotically normal as well.
+$(n+2)/2$ and, for $n\ge1$, variance $(n+2)/12$, so the Eulerian numbers are
+asymptotically normal (David–Barton; Bender). Both moments follow from scalar
+recurrences at $x=1$. The type $B$ Eulerian numbers have mean $n/2$ and, for
+$n\ge2$, variance $(n+1)/12$, so they are asymptotically normal as well.
 
-The Narayana polynomials satisfy
+Let $Q_n(x)=\sum_{k=0}^{n-1}N(n,k+1)x^k$, where
+$N(n,k)=\frac1n\binom nk\binom n{k-1}$. Thus $Q_n=N_{n-1,1}$ in the notation
+of the [Narayana page](/RealRooted/families/narayana/). These polynomials
+satisfy
 $(n+3) Q_{n+2} = (2n+3)(1+x) Q_{n+1} - n(1-x)^2 Q_n$. The last term vanishes to
 second order at $x = 1$, so the same method gives mean $(n-1)/2$ and variance
-$(n^2-1)/(4(2n-1))$. Hence the Narayana numbers are asymptotically normal.
+$(n^2-1)/(4(2n-1))$ for $n\ge1$. Hence the Narayana numbers are asymptotically
+normal.
 
 The descent polynomials of Stirling permutations satisfy
 $P_{n+1} = (2n+1) x P_n + x(1-x) P_n'$. Their coefficients, the second-order

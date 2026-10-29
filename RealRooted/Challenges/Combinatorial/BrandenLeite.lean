@@ -74,7 +74,7 @@ headline = true
 [[theorems]]
 name = "RealRooted.BrandenLeite.chainPolynomial_isPFPolynomial_of_pos_constantDiagonal"
 module = "RealRooted.BrandenLeite.ConstantDiagonal"
-label = "Positive constant diagonal"
+label = "Chain polynomials with positive constant diagonal are PF"
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.compositionRows_isPFPolynomial_and_interl_of_zero"
@@ -99,7 +99,7 @@ label = "Rows of 1 / (1 - x z / (1-z)^e)"
 [[theorems]]
 name = "RealRooted.BrandenLeite.networkMatrix_resolutionLambda_eq"
 module = "RealRooted.BrandenLeite.NetworkWhitney"
-label = "Planar networks from Whitney elimination"
+label = "Every lower-unitriangular TNN matrix is a Whitney-elimination network path matrix"
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.weightedShiftTilingRow_separated_isPFPolynomial"
@@ -123,8 +123,11 @@ only real zeros in $[-1, 0]$, and $P_n$ interlaces $P_{n+1}$.
 
 The matrices covered are exactly the resolvable ones: a lower-unitriangular
 matrix admits a resolution by nonnegative weights and monic polynomials if and
-only if it is totally nonnegative. The same conclusion holds for totally
-nonnegative matrices with a positive constant diagonal. See also the
+only if it is totally nonnegative. For a lower-triangular totally nonnegative
+matrix with constant diagonal $\delta>0$, every $P_n$ is a Pólya frequency
+polynomial: it has nonnegative coefficients and only real nonpositive zeros.
+Moreover, it is the rescaling
+$P_n^A(x)=P_n^{A/\delta}(\delta x)$ of the unitriangular case. See also the
 [lower-unitriangular characterization on symmetricfunctions.com](sf:tnnLowerUnitriangularMatrix).
 
 Applied to power-series kernels built from Pólya frequency sequences, the
@@ -132,7 +135,8 @@ theorem gives PF polynomials whose consecutive rows interlace, for two row
 families:
 
 - the rows of $1/\bigl(1 - x\,h(z)\bigr)$ when $h(0) = 0$;
-- the rows of $g/(1 - xgh)$.
+- the rows of $g/(1-xgh)$ when $g,h$ are Pólya frequency sequences with
+  $g(0)>0$ and $h(0)=0$.
 
 In particular, the rows of $1/\bigl(1 - xz(1+z)^d\bigr)$ and of
 $1/\bigl(1 - xz/(1-z)^e\bigr)$ are PF and interlace. These include OEIS A116088
@@ -140,8 +144,7 @@ $1/\bigl(1 - xz/(1-z)^e\bigr)$ are PF and interlace. These include OEIS A116088
 
 The resolution theorem has a network form. Every lower-unitriangular totally
 nonnegative matrix is the path matrix of a triangular planar network whose
-nonnegative weights come from Whitney elimination. The same machinery gives PF
-rows for tiling polynomials built from weighted lower shifts.
+nonnegative weights come from Whitney elimination.
 
 ## Proof idea
 
