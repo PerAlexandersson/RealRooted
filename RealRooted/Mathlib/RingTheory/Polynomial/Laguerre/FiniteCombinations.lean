@@ -49,7 +49,7 @@ noncomputable def laguerreAuxiliaryOne (γ : R) : R[X] :=
   X - C γ
 
 /-- The degree-one Durán auxiliary polynomial has the unique root `γ`. -/
-@[simp] theorem laguerreAuxiliaryOne_isRoot_iff [IsDomain R] (γ x : R) :
+theorem laguerreAuxiliaryOne_isRoot_iff (γ x : R) :
     (laguerreAuxiliaryOne γ).IsRoot x ↔ x = γ := by
   simp only [laguerreAuxiliaryOne, IsRoot.def, eval_sub, eval_X, eval_C]
   exact sub_eq_zero
