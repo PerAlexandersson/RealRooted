@@ -398,6 +398,7 @@ import RealRooted.CombinatorialExamples.SturmDerangementsExc
 import RealRooted.CombinatorialExamples.SuperEulerian
 import RealRooted.CombinatorialExamples.Touchard
 import RealRooted.CombinatorialExamples.TypeBEulerian
+import RealRooted.Combinatorics.BellCatalyticStates
 import RealRooted.Combinatorics.ComparisonBottom
 import RealRooted.Combinatorics.ComparisonBottomInsertion
 import RealRooted.Combinatorics.MinimumInsertionWord
@@ -575,12 +576,14 @@ import RealRooted.GarloffWagner.KreinExpansion
 import RealRooted.GarloffWagner.Theorem12
 import RealRooted.GeneralizedEulerian
 import RealRooted.GeneralizedEulerian.GeneratingFunction
+import RealRooted.Interlacing.QuadraticPFPreservers
 import RealRooted.Laguerre.FiniteCombinations
 import RealRooted.MaWang.EndpointClassification
 import RealRooted.MaWang.EndpointMultiplicity
 import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.FiniteCombinations
 import RealRooted.MatrixInterlacing.WeightedThreeStateRows
 import RealRooted.MatrixInterlacing.WeightedThreeStateStrip
+import RealRooted.MatrixInterlacing.WeightedThreeStateStripRoots
 import RealRooted.Mesh.FiniteDifferenceHyperbolicity
 import RealRooted.OperatorMatrix.CouplingThresholds
 import RealRooted.MatrixInterlacing.WeightedThreeState
