@@ -223,8 +223,18 @@ theorem-shape suggestions, or proof repairs:
 - Before pushing, run the cheap CI checks locally:
   `lake exe lint-style` (whitespace, no space before `;`, unicode),
   `python3 scripts/check_root_imports.py` (a new module must be imported by `RealRooted.lean`
-  and `RealRooted/Production.lean`), `python3 scripts/check_module_system.py`, and, when
-  catalog pages change, `python3 scripts/audit_challenge_catalog.py --check`.
+  and `RealRooted/Production.lean`), `python3 scripts/check_module_system.py`,
+  `python3 scripts/check_import_architecture.py` (shims under `RealRooted/Mathlib/` must not
+  import the theorem library: keep Mathlib-shaped definitions in the shim and library-dependent
+  theorems elsewhere), and, when catalog pages change,
+  `python3 scripts/audit_challenge_catalog.py --check`.
+- Run the environment linters on each new or changed module after building it:
+  `lake exe runLinter <Module>` (one module per call).  It catches missing docstrings on
+  definitions and structure fields, `@[simp]` lemmas that are not in simp normal form, and unused
+  arguments, which a single-file elaboration does not report.
+- For a new module, check each `public import`: if the file still builds with a plain `import`,
+  use that; if not, the statements may only need modules it re-exports, so import those publicly
+  instead.  CI's private-import ratchet runs `lake shake` on the whole library.
 - A new file under `RealRooted/Mathlib/` needs an entry in `scripts/mathlib_shims.json`;
   `python3 scripts/check_mathlib_shims.py --check-registry --strict` checks it.
 - A `public import` is needed exactly when a public statement mentions the imported
