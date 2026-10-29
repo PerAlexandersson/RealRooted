@@ -3060,6 +3060,16 @@
       ],
       "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/Charpoly/EntryDegree.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.Charpoly.EntryDegree"
+      ],
+      "note": "Speculative target module (#954 items B1/D1); no upstream PR or attribution has been recorded yet.",
+      "speculative": true
     }
   ]
 }

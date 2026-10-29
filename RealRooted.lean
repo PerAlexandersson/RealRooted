@@ -492,6 +492,7 @@ import RealRooted.DerivativeRecurrence.SecondOrderInterlacing
 import RealRooted.DerivativeRecurrence.SecondOrderInterlacing.PolyaFrequency
 import RealRooted.DerivativeRecurrence.SecondOrderODE
 import RealRooted.DeterminantalStability
+import RealRooted.DeterminantalStability.Constants
 import RealRooted.DifferentialBlocks
 import RealRooted.EdreiThoma.Easy
 import RealRooted.ElementaryDifferential
@@ -576,6 +577,7 @@ import RealRooted.GarloffWagner.KreinExpansion
 import RealRooted.GarloffWagner.Theorem12
 import RealRooted.GeneralizedEulerian
 import RealRooted.GeneralizedEulerian.GeneratingFunction
+import RealRooted.HlavacekSolus.PolytopalShelling
 import RealRooted.Interlacing.QuadraticPFPreservers
 import RealRooted.Laguerre.FiniteCombinations
 import RealRooted.MaWang.EndpointClassification
@@ -608,6 +610,7 @@ import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Number.Circle
 import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Number.Reverse
 import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.SegmentSum
 import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Vanishing
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.EntryDegree
 import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.FiniteCombinations
 import RealRooted.MatrixInterlacing.WeightedThreeStateRows
 import RealRooted.MatrixInterlacing.WeightedThreeStateStrip
