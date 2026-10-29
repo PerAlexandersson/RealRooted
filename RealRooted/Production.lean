@@ -132,6 +132,7 @@ import RealRooted.BrandenLeite.Network
 import RealRooted.BrandenLeite.NetworkTotallyNonneg
 import RealRooted.BrandenLeite.NetworkWhitney
 import RealRooted.BrandenLeite.OptionalRiseMatrix
+import RealRooted.BrandenLeite.PFFactorNumerators
 import RealRooted.BrandenLeite.Regularization
 import RealRooted.BrandenLeite.Resolvable
 import RealRooted.BrandenLeite.ResolvableTotallyNonneg
@@ -573,9 +574,12 @@ import RealRooted.GarloffWagner.KreinExpansion
 import RealRooted.GarloffWagner.Theorem12
 import RealRooted.GeneralizedEulerian
 import RealRooted.GeneralizedEulerian.GeneratingFunction
+import RealRooted.Laguerre.FiniteCombinations
 import RealRooted.MaWang.EndpointClassification
 import RealRooted.MaWang.EndpointMultiplicity
+import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.FiniteCombinations
 import RealRooted.MatrixInterlacing.WeightedThreeStateRows
+import RealRooted.MatrixInterlacing.WeightedThreeStateStrip
 import RealRooted.Mesh.FiniteDifferenceHyperbolicity
 import RealRooted.OperatorMatrix.CouplingThresholds
 import RealRooted.MatrixInterlacing.WeightedThreeState
