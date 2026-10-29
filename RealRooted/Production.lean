@@ -1865,6 +1865,7 @@ public import RealRooted.Mesh.FallingFactorial
 public import RealRooted.Mesh.DiscreteMultiplierSequencePolyaSchur
 public import RealRooted.Mesh.DiscreteMultiplierSequenceLaguerrePolya
 public import RealRooted.Mesh.Limit
+public import RealRooted.HlavacekSolus.HalfOpenCube
 
 /-!
 # RealRooted production umbrella
