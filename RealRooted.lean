@@ -574,6 +574,9 @@ import RealRooted.GarloffWagner.KreinExpansion
 import RealRooted.GarloffWagner.Theorem12
 import RealRooted.GeneralizedEulerian
 import RealRooted.GeneralizedEulerian.GeneratingFunction
+import RealRooted.MaWang.EndpointMultiplicity
+import RealRooted.Mesh.FiniteDifferenceHyperbolicity
+import RealRooted.OperatorMatrix.CouplingThresholds
 import RealRooted.MatrixInterlacing.WeightedThreeState
 import RealRooted.PoweredEulerian
 import RealRooted.GeneralizedSnakePosets
