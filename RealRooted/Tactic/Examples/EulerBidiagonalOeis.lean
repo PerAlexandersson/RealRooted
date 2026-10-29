@@ -1,4 +1,8 @@
+module
+
 import RealRooted.Tactic
+
+set_option linter.privateModule false
 
 /-!
 # Euler-bidiagonal OEIS regressions

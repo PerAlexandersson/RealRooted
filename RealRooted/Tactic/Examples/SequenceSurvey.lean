@@ -1,5 +1,9 @@
+module
+
 import RealRooted.CombinatorialExamples
 import RealRooted.Tactic.Finish
+
+set_option linter.privateModule false
 
 /-!
 # Sequence survey for tactic development

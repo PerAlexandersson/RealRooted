@@ -30,3 +30,5 @@ RealRooted/Tactic/Examples/RowParityFactorization.lean: RealRooted.Recurrence.Un
 RealRooted/Tactic/Examples/RowParityFactorization.lean: RealRooted.Tactic.RowInterlacing
 RealRooted/Tactic/Examples/SideGoals.lean: RealRooted.Tactic.SideGoals
 RealRooted/Tactic/Examples/WagnerX.lean: RealRooted.Tactic.RowInterlacing
+RealRooted/Tactic/Sign.lean: RealRooted.Tactic.SideGoals
+RealRooted/Tactic/WagnerX/Frontend.lean: RealRooted.Tactic.Lookup

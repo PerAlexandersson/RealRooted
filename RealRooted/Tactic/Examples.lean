@@ -1,67 +1,69 @@
-import RealRooted.Tactic.Examples.A049325RecurrenceSpace
-import RealRooted.Tactic.Examples.Attr
-import RealRooted.Tactic.Examples.Combinatorial
-import RealRooted.Tactic.Examples.EulerBidiagonalOeis
-import RealRooted.Tactic.Examples.EulerTypeBridges
-import RealRooted.Tactic.Examples.FTransformInterlaces
-import RealRooted.Tactic.Examples.Finish
-import RealRooted.Tactic.Examples.Finish.Basic
-import RealRooted.Tactic.Examples.Finish.Interlacing
-import RealRooted.Tactic.Examples.Finish.Sequences
-import RealRooted.Tactic.Examples.FiniteSymbolPF
-import RealRooted.Tactic.Examples.InterlacesExplicit
-import RealRooted.Tactic.Examples.J1Chebyshev
-import RealRooted.Tactic.Examples.LinRecCancellation
-import RealRooted.Tactic.Examples.Lookup
-import RealRooted.Tactic.Examples.OEIS
-import RealRooted.Tactic.Examples.OEIS.A259454
-import RealRooted.Tactic.Examples.OEIS.A304334
-import RealRooted.Tactic.Examples.OEIS.DegreeTwoGamma
-import RealRooted.Tactic.Examples.OEIS.DegreeTwoSplits
-import RealRooted.Tactic.Examples.OEIS.DerivativeLagCommonRoot
-import RealRooted.Tactic.Examples.OEIS.HarmonicDerivativeRows
-import RealRooted.Tactic.Examples.OEIS.IndispensableDigits
-import RealRooted.Tactic.Examples.OEIS.NextRows
-import RealRooted.Tactic.Examples.OEIS.TouchardImages
-import RealRooted.Tactic.Examples.OEIS.TransformModels
-import RealRooted.Tactic.Examples.OEISTestbed.MaWangRows
-import RealRooted.Tactic.Examples.PFBidiagonal
-import RealRooted.Tactic.Examples.ParametricRows
-import RealRooted.Tactic.Examples.Product
-import RealRooted.Tactic.Examples.Product.Interlacing
-import RealRooted.Tactic.Examples.RecurrenceODE
-import RealRooted.Tactic.Examples.RowCancelRho
-import RealRooted.Tactic.Examples.RowCubicParent
-import RealRooted.Tactic.Examples.RowData
-import RealRooted.Tactic.Examples.RowDegreeRest
-import RealRooted.Tactic.Examples.RowDegreeRoutes
-import RealRooted.Tactic.Examples.RowExplain
-import RealRooted.Tactic.Examples.RowFactorPower
-import RealRooted.Tactic.Examples.RowFastFail
-import RealRooted.Tactic.Examples.RowFixtures
-import RealRooted.Tactic.Examples.RowGeneral
-import RealRooted.Tactic.Examples.RowInterlacing
-import RealRooted.Tactic.Examples.RowModelA080721
-import RealRooted.Tactic.Examples.RowModelFamilies
-import RealRooted.Tactic.Examples.RowModelJensenFamilies
-import RealRooted.Tactic.Examples.RowModelNextFamilies
-import RealRooted.Tactic.Examples.RowModelRegistryBudget
-import RealRooted.Tactic.Examples.RowNonnegative
-import RealRooted.Tactic.Examples.RowParityFactorization
-import RealRooted.Tactic.Examples.RowPathPower
-import RealRooted.Tactic.Examples.RowPathPowerK5
-import RealRooted.Tactic.Examples.RowReaderNormalization
-import RealRooted.Tactic.Examples.RowRegression1689Degree
-import RealRooted.Tactic.Examples.RowRegression1689Interlacing
-import RealRooted.Tactic.Examples.RowRoutes
-import RealRooted.Tactic.Examples.RowStrictInterl
-import RealRooted.Tactic.Examples.RowSubseqDegree
-import RealRooted.Tactic.Examples.RowVariableDelay
-import RealRooted.Tactic.Examples.SequenceSurvey
-import RealRooted.Tactic.Examples.ShortlistRoutes
-import RealRooted.Tactic.Examples.SideGoals
-import RealRooted.Tactic.Examples.Sign
-import RealRooted.Tactic.Examples.WagnerX
+module
+
+public import RealRooted.Tactic.Examples.A049325RecurrenceSpace
+public import RealRooted.Tactic.Examples.Attr
+public import RealRooted.Tactic.Examples.Combinatorial
+public import RealRooted.Tactic.Examples.EulerBidiagonalOeis
+public import RealRooted.Tactic.Examples.EulerTypeBridges
+public import RealRooted.Tactic.Examples.FTransformInterlaces
+public import RealRooted.Tactic.Examples.Finish
+public import RealRooted.Tactic.Examples.Finish.Basic
+public import RealRooted.Tactic.Examples.Finish.Interlacing
+public import RealRooted.Tactic.Examples.Finish.Sequences
+public import RealRooted.Tactic.Examples.FiniteSymbolPF
+public import RealRooted.Tactic.Examples.InterlacesExplicit
+public import RealRooted.Tactic.Examples.J1Chebyshev
+public import RealRooted.Tactic.Examples.LinRecCancellation
+public import RealRooted.Tactic.Examples.Lookup
+public import RealRooted.Tactic.Examples.OEIS
+public import RealRooted.Tactic.Examples.OEIS.A259454
+public import RealRooted.Tactic.Examples.OEIS.A304334
+public import RealRooted.Tactic.Examples.OEIS.DegreeTwoGamma
+public import RealRooted.Tactic.Examples.OEIS.DegreeTwoSplits
+public import RealRooted.Tactic.Examples.OEIS.DerivativeLagCommonRoot
+public import RealRooted.Tactic.Examples.OEIS.HarmonicDerivativeRows
+public import RealRooted.Tactic.Examples.OEIS.IndispensableDigits
+public import RealRooted.Tactic.Examples.OEIS.NextRows
+public import RealRooted.Tactic.Examples.OEIS.TouchardImages
+public import RealRooted.Tactic.Examples.OEIS.TransformModels
+public import RealRooted.Tactic.Examples.OEISTestbed.MaWangRows
+public import RealRooted.Tactic.Examples.PFBidiagonal
+public import RealRooted.Tactic.Examples.ParametricRows
+public import RealRooted.Tactic.Examples.Product
+public import RealRooted.Tactic.Examples.Product.Interlacing
+public import RealRooted.Tactic.Examples.RecurrenceODE
+public import RealRooted.Tactic.Examples.RowCancelRho
+public import RealRooted.Tactic.Examples.RowCubicParent
+public import RealRooted.Tactic.Examples.RowData
+public import RealRooted.Tactic.Examples.RowDegreeRest
+public import RealRooted.Tactic.Examples.RowDegreeRoutes
+public import RealRooted.Tactic.Examples.RowExplain
+public import RealRooted.Tactic.Examples.RowFactorPower
+public import RealRooted.Tactic.Examples.RowFastFail
+public import RealRooted.Tactic.Examples.RowFixtures
+public import RealRooted.Tactic.Examples.RowGeneral
+public import RealRooted.Tactic.Examples.RowInterlacing
+public import RealRooted.Tactic.Examples.RowModelA080721
+public import RealRooted.Tactic.Examples.RowModelFamilies
+public import RealRooted.Tactic.Examples.RowModelJensenFamilies
+public import RealRooted.Tactic.Examples.RowModelNextFamilies
+public import RealRooted.Tactic.Examples.RowModelRegistryBudget
+public import RealRooted.Tactic.Examples.RowNonnegative
+public import RealRooted.Tactic.Examples.RowParityFactorization
+public import RealRooted.Tactic.Examples.RowPathPower
+public import RealRooted.Tactic.Examples.RowPathPowerK5
+public import RealRooted.Tactic.Examples.RowReaderNormalization
+public import RealRooted.Tactic.Examples.RowRegression1689Degree
+public import RealRooted.Tactic.Examples.RowRegression1689Interlacing
+public import RealRooted.Tactic.Examples.RowRoutes
+public import RealRooted.Tactic.Examples.RowStrictInterl
+public import RealRooted.Tactic.Examples.RowSubseqDegree
+public import RealRooted.Tactic.Examples.RowVariableDelay
+public import RealRooted.Tactic.Examples.SequenceSurvey
+public import RealRooted.Tactic.Examples.ShortlistRoutes
+public import RealRooted.Tactic.Examples.SideGoals
+public import RealRooted.Tactic.Examples.Sign
+public import RealRooted.Tactic.Examples.WagnerX
 /-!
 # RealRooted tactic examples
 

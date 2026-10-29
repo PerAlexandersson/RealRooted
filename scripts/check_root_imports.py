@@ -270,7 +270,9 @@ def append_missing_imports(
     directives = _import_directives(lines)
     existing_modules = {directive.module for _, directive in directives}
     missing = sorted(set(missing_modules) - existing_modules)
-    new_directives = [ImportDirective(None, module) for module in missing]
+    # Umbrella modules re-export with `public import`; reuse the qualifier already in use.
+    qualifier = directives[0][1].qualifier if directives else None
+    new_directives = [ImportDirective(qualifier, module) for module in missing]
     block = _contiguous_block(directives)
     if block is not None:
         start, stop = block

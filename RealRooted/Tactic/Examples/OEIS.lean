@@ -1,5 +1,7 @@
-import RealRooted.Tactic.Examples.OEIS.A304334
-import RealRooted.Tactic.Examples.OEIS.IndispensableDigits
+module
+
+public import RealRooted.Tactic.Examples.OEIS.A304334
+public import RealRooted.Tactic.Examples.OEIS.IndispensableDigits
 
 /-!
 # OEIS tactic regression facade

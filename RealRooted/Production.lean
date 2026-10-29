@@ -1,1868 +1,1870 @@
-import RealRooted.ASWKarlinKernel
-import RealRooted.ASWKarlinMatrix
-import RealRooted.ASWKarlinSineBounds
-import RealRooted.ASWKarlinThreshold
-import RealRooted.ASWKarlinVariation
-import RealRooted.ASWKarlinVectors
-import RealRooted.AffineDerivative
-import RealRooted.AffineFamily
-import RealRooted.AffineFamily.Basic
-import RealRooted.AffineFamily.Boundary
-import RealRooted.AffineFamily.LowDegree
-import RealRooted.AffineFamily.PositiveFamily
-import RealRooted.AffineFamily.RootCrossing
-import RealRooted.AffineFamily.Wronskian
-import RealRooted.AffineLineRestriction
-import RealRooted.AffineProperPosition
-import RealRooted.AissenSchoenbergWhitney
-import RealRooted.AissenSchoenbergWhitneyBase
-import RealRooted.AllCombo
-import RealRooted.Analysis.FactorialTail
-import RealRooted.Analysis.PowerTail
-import RealRooted.Analysis.PowerTail.Bernoulli
-import RealRooted.Analysis.PowerTail.Quadratic
-import RealRooted.Analysis.PowerTail.Telescoping
-import RealRooted.Apolarity
-import RealRooted.Applications.BinderVecchi.UniformChow
-import RealRooted.Applications.BinderVecchi.UniformMatroid
-import RealRooted.Applications.EulerianVariations
-import RealRooted.Applications.EulerianVariations.CyclicPathDescents
-import RealRooted.Applications.EulerianVariations.TernaryRuns
-import RealRooted.Applications.EulerianVariations.TernaryRuns.Recurrence
-import RealRooted.Applications.OEIS.A132885
-import RealRooted.Applications.OEIS.A272471.Recurrence
-import RealRooted.Applications.OEIS.InversePeaks
-import RealRooted.Applications.OEIS.InversePeaksTypeB
-import RealRooted.Applications.OEIS.LowerReentrantCorner
-import RealRooted.Applications.PeakPolynomials.HitPolynomials
-import RealRooted.Applications.PeakPolynomials.PeakInduction
-import RealRooted.ArrayPolynomialDeterminant
-import RealRooted.ArrayPolynomialDeterminantIdentification
-import RealRooted.ArrayPolynomialDeterminantRecurrence
-import RealRooted.ArrayPolynomialSchur
-import RealRooted.ArrayPolynomialWeights
-import RealRooted.BalancedRunTransformation
-import RealRooted.BalancedRunTransformation.Interlacing
-import RealRooted.BalancedRunTransformation.Preservation
-import RealRooted.Basic
-import RealRooted.Basic.AffineInterlacing
-import RealRooted.Basic.Coefficients
-import RealRooted.Basic.Coefficients.Multivariate
-import RealRooted.Basic.PolynomialFacts
-import RealRooted.Basic.ProperPosition
-import RealRooted.Basic.RootLists
-import RealRooted.BasisTransform
-import RealRooted.BernsteinCone
-import RealRooted.BernsteinCone.Preserver
-import RealRooted.Bezoutian
-import RealRooted.Bezoutian.ComplexRoots
-import RealRooted.Bezoutian.LowDegree
-import RealRooted.Bezoutian.MatrixBasics
-import RealRooted.Bezoutian.RootEvaluation
-import RealRooted.Bezoutian.StrictInterleaving
-import RealRooted.Bezoutian.Successor
-import RealRooted.Bezoutian.WronskianConverse
-import RealRooted.BinaryRunTransformation.Anchor
-import RealRooted.BinaryRunTransformation.Coefficients
-import RealRooted.BinaryRunTransformation.Continuation
-import RealRooted.BinaryRunTransformation.Contraction
-import RealRooted.BinaryRunTransformation.CriticalValue
-import RealRooted.BinaryRunTransformation.CrossLength
-import RealRooted.BinaryRunTransformation.Deformation
-import RealRooted.BinaryRunTransformation.Interlacing
-import RealRooted.BinaryRunTransformation.KernelIdentities
-import RealRooted.BinaryRunTransformation.MultiplierMotzkin
-import RealRooted.BinaryRunTransformation.PointingPencil
-import RealRooted.BinaryRunTransformation.Sturm
-import RealRooted.BinaryRunTransformation.SymbolCounterexample
-import RealRooted.BivariateOpenMapping
-import RealRooted.BooleanSwapOrbit
-import RealRooted.BorceaBranden.Applications.AffineFiniteSymbol
-import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
-import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
-import RealRooted.BorceaBranden.Applications.ComplexClassification
-import RealRooted.BorceaBranden.Applications.ComplexUnivariateSymbol
-import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
-import RealRooted.BorceaBranden.Applications.EulerFiniteSymbol
-import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
-import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.CoefficientExtraction
-import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
-import RealRooted.BorceaBranden.Applications.HarmonicSubstitution
-import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary
-import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary.Homogeneous
-import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput
-import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PFHomogenize
-import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PolyaFrequency
-import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Product
-import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Stability
-import RealRooted.BorceaBranden.Applications.HomogenizeStable
-import RealRooted.BorceaBranden.Applications.PolarizationIff
-import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
-import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing
-import RealRooted.BorceaBranden.Applications.UnivariateSymbol
-import RealRooted.BorceaBranden.BoundarySpecialization
-import RealRooted.BorceaBranden.FiniteSymbolBasis
-import RealRooted.BorceaBranden.FiniteSymbolClassification
-import RealRooted.BorceaBranden.FiniteSymbolCoefficient
-import RealRooted.BorceaBranden.FiniteSymbolContraction
-import RealRooted.BorceaBranden.FiniteSymbolDegree
-import RealRooted.BorceaBranden.FiniteSymbolPreserver
-import RealRooted.BorceaBranden.FiniteSymbolProduct
-import RealRooted.BorceaBranden.FiniteSymbolReciprocal
-import RealRooted.BorceaBranden.FiniteSymbolReconstruction
-import RealRooted.BorceaBranden.FiniteSymbolReconstructionCore
-import RealRooted.BorceaBranden.UnivariateFiniteSymbol
-import RealRooted.BoundarySpecializationGeneral
-import RealRooted.BoundarySpecializationRight
-import RealRooted.BrandenLC
-import RealRooted.BrandenLC.Infinite
-import RealRooted.BrandenLeite.BinomialShiftedTiling
-import RealRooted.BrandenLeite.ChainPolynomial
-import RealRooted.BrandenLeite.ChainPolynomial.Algebra
-import RealRooted.BrandenLeite.ChainPolynomial.Resolution
-import RealRooted.BrandenLeite.CompositionFamilies
-import RealRooted.BrandenLeite.CompositionRow
-import RealRooted.BrandenLeite.CompositionRowClosure
-import RealRooted.BrandenLeite.ConstantDiagonal
-import RealRooted.BrandenLeite.DiagonalTail
-import RealRooted.BrandenLeite.KernelClosure
-import RealRooted.BrandenLeite.KernelRow
-import RealRooted.BrandenLeite.MarkedShift
-import RealRooted.BrandenLeite.Network
-import RealRooted.BrandenLeite.NetworkTotallyNonneg
-import RealRooted.BrandenLeite.NetworkWhitney
-import RealRooted.BrandenLeite.OptionalRiseMatrix
-import RealRooted.BrandenLeite.PFFactorNumerators
-import RealRooted.BrandenLeite.Regularization
-import RealRooted.BrandenLeite.Resolvable
-import RealRooted.BrandenLeite.ResolvableTotallyNonneg
-import RealRooted.BrandenLeite.ShiftedTiling
-import RealRooted.BrandenLeite.SourceBorder
-import RealRooted.BrandenLeite.SourceBorderKernel
-import RealRooted.BrandenLeite.StationaryTiling
-import RealRooted.BrandenLeite.Theorem37
-import RealRooted.BrandenLeite.TilingFactors
-import RealRooted.BrandenLeite.ToeplitzComposition
-import RealRooted.BrandenLeite.TwoKernel
-import RealRooted.BrandenLeite.TwoKernelAlgebra
-import RealRooted.BrandenLeite.WeightedShift
-import RealRooted.BrandenLeite.WeightedShiftTiling
-import RealRooted.BrandenLeite.WhitneyReduction
-import RealRooted.BrandenLeite.ZeroConstant
-import RealRooted.BrandenVecchi.Chow
-import RealRooted.BrandenVecchi.ChowContinuity
-import RealRooted.BrandenVecchi.ChowFullProjective
-import RealRooted.BrandenVecchi.ChowGeometricScaling
-import RealRooted.BrandenVecchi.ChowInfinitePF
-import RealRooted.BrandenVecchi.ChowInterlacing
-import RealRooted.BrandenVecchi.ChowInterlacingQuotient
-import RealRooted.BrandenVecchi.ChowInterlacingSign
-import RealRooted.BrandenVecchi.ChowProjectiveRegularization
-import RealRooted.BrandenVecchi.ChowResolution
-import RealRooted.BrandenVecchi.ChowResolutionInterlacing
-import RealRooted.BrandenVecchi.ChowRowTransform
-import RealRooted.BrandenVecchi.ChowSignedWords
-import RealRooted.BrandenVecchi.ChowSupersymmetric
-import RealRooted.BrandenVecchi.ChowToeplitz
-import RealRooted.BrandenVecchi.ChowTotallyNonneg
-import RealRooted.BrandenVecchi.ChowZeroPrefix
-import RealRooted.BrandenVecchi.OrdinaryWordSeries
-import RealRooted.BrandenVecchi.ReflectionInterlacing
-import RealRooted.BrandenVecchi.SignedWordEnumerator
-import RealRooted.BrandenVecchi.SignedWordRuns.Basic
-import RealRooted.BrandenVecchi.SignedWordRuns.FiberSum
-import RealRooted.BrandenVecchi.SignedWordRuns.Statistics
-import RealRooted.BrandenVecchi.SignedWords
-import RealRooted.BrandenVecchi.SmirnovChow
-import RealRooted.BrandenVecchi.SmirnovInterlacing
-import RealRooted.BrandenVecchi.SmirnovRecurrence
-import RealRooted.BrandenVecchi.SmirnovSpecialization
-import RealRooted.BrandenVecchi.SmirnovSubstitutionSeries
-import RealRooted.BrandenVecchi.SupersymmetricCoefficients
-import RealRooted.BrandenVecchi.SupersymmetricLimits
-import RealRooted.CauchyInterlacing
-import RealRooted.CauchyInterlacing.Polynomial
-import RealRooted.CauchyInterlacing.RankOne
-import RealRooted.CauchyInterlacing.Submatrix
-import RealRooted.Challenges.PolyaFrequency.AissenSchoenbergWhitney
-import RealRooted.Challenges.Interlacing.Bezoutian
-import RealRooted.Challenges.Combinatorial.BigDescents321
-import RealRooted.Challenges.Preservers.BinaryRunTransformation
-import RealRooted.Challenges.Stability.BorceaBranden
-import RealRooted.Challenges.Combinatorial.BorosMoll
-import RealRooted.Challenges.Preservers.BrandenETransform
-import RealRooted.Challenges.Combinatorial.BrandenLeite
-import RealRooted.Challenges.Combinatorial.BrandenSolus
-import RealRooted.Challenges.Combinatorial.BrandenVecchi
-import RealRooted.Challenges.Matrices.CauchyInterlacing
-import RealRooted.Challenges.Graphs.ChordalClawFreeAcyclicSinks
-import RealRooted.Challenges.Graphs.ChudnovskySeymour
-import RealRooted.Challenges.Graphs.ClawFreeOrientationSinks
-import RealRooted.Challenges.Roots.CoefficientDominance
-import RealRooted.Challenges.Interlacing.CommonInterleaver
-import RealRooted.Challenges.Interlacing.DerivativeInterlacing
-import RealRooted.Challenges.Roots.Descartes
-import RealRooted.Challenges.PolyaFrequency.EdreiThoma
-import RealRooted.Challenges.Roots.EnestromKakeya
-import RealRooted.Challenges.Combinatorial.EulerBidiagonal
-import RealRooted.Challenges.Combinatorial.Eulerian
-import RealRooted.Challenges.Combinatorial.EulerianVariations
-import RealRooted.Challenges.Interlacing.FPolynomialRecurrences
-import RealRooted.Challenges.Interlacing.FactorialCompression
-import RealRooted.Challenges.Interlacing.Favard
-import RealRooted.Challenges.Preservers.FiniteFreeConvolutions
-import RealRooted.Challenges.Preservers.GammaTransform
-import RealRooted.Challenges.Roots.GarloffWagnerHurwitz
-import RealRooted.Challenges.Combinatorial.GeneralizedSnakePosets
-import RealRooted.Challenges.Roots.GraceApolarity
-import RealRooted.Challenges.PolyaFrequency.Hadamard
-import RealRooted.Challenges.Combinatorial.HarperCLT
-import RealRooted.Challenges.Graphs.HeilmannLieb
-import RealRooted.Challenges.Roots.HermiteBiehlerHurwitz
-import RealRooted.Challenges.Orthogonal.HermitePolynomials
-import RealRooted.Challenges.Roots.HermitePoulain
-import RealRooted.Challenges.Roots.Hoggar
-import RealRooted.Challenges.Combinatorial.HosterStump
-import RealRooted.Challenges.Roots.Hutchinson
-import RealRooted.Challenges.Interlacing.Interlacing
-import RealRooted.Challenges.Interlacing.InterlacingClosure
-import RealRooted.Challenges.Orthogonal.JacobiDeformation
-import RealRooted.Challenges.Orthogonal.JacobiPolynomials
-import RealRooted.Challenges.Combinatorial.JacobiStirlingDescent
-import RealRooted.Challenges.Combinatorial.JacobiStirlingNumbers
-import RealRooted.Challenges.Roots.Kurtz
-import RealRooted.Challenges.Matrices.LGV
-import RealRooted.Challenges.Orthogonal.LaguerrePolynomials
-import RealRooted.Challenges.Stability.LeakeRyder
-import RealRooted.Challenges.Stability.LeeYang
-import RealRooted.Challenges.Roots.Liggett
-import RealRooted.Challenges.Interlacing.LiuOppositeSigns
-import RealRooted.Challenges.Interlacing.MaWangLiuWang
-import RealRooted.Challenges.Matrices.MatrixInterlacing
-import RealRooted.Challenges.Graphs.MinimaPolynomial
-import RealRooted.Challenges.Preservers.MonomialChainOperator
-import RealRooted.Challenges.Preservers.MultiplierSequence
-import RealRooted.Challenges.Combinatorial.MultisetEulerianNarayana
-import RealRooted.Challenges.Combinatorial.Narayana
-import RealRooted.Challenges.Roots.NewtonMaclaurin
-import RealRooted.Challenges.PolyaFrequency.Nijenhuis
-import RealRooted.Challenges.Interlacing.Obreschkoff
-import RealRooted.Challenges.Preservers.OperatorPreservers
-import RealRooted.Challenges.Combinatorial.ParkingFunctions
-import RealRooted.Challenges.Combinatorial.PeakPolynomials
-import RealRooted.Challenges.Matrices.PerronFrobenius
-import RealRooted.Challenges.Interlacing.ProductSequence
-import RealRooted.Challenges.Stability.RealStability
-import RealRooted.Challenges.Interlacing.RecurrenceRootWindows
+module
 
-import RealRooted.Challenges.Interlacing.ReciprocalShift
-import RealRooted.Challenges.Roots.RootAmplitude
-import RealRooted.Challenges.Roots.SchurCohn
-import RealRooted.Challenges.Combinatorial.SeparablePermutations
-import RealRooted.Challenges.Matrices.SmallInterlacingMatrices
-import RealRooted.Challenges.Roots.Sturm
-import RealRooted.Challenges.Roots.SturmSequenceFamilies
-import RealRooted.Challenges.Matrices.ThresholdMatrices
-import RealRooted.Challenges.Combinatorial.ToricContribution
-import RealRooted.Challenges.Matrices.TotallyNonnegativeMatrices
-import RealRooted.Challenges.Combinatorial.UniformMatroidHodgePoincare
-import RealRooted.Challenges.Graphs.UnitIntervalAcyclicSinks
-import RealRooted.Challenges.Matrices.VanDerWaerden
-import RealRooted.Challenges.PolyaFrequency.VeroneseSections
-import RealRooted.Challenges.Interlacing.Wagner
-import RealRooted.Challenges.Preservers.WangYeh
-import RealRooted.Challenges.Interlacing.Wronskian
-import RealRooted.ChudnovskySeymour.Core
-import RealRooted.ClassicalHurwitzMatrix
-import RealRooted.ClassicalHurwitzMatrix.Routh
-import RealRooted.ClassicalHurwitzMatrix.Routh.Determinant
-import RealRooted.ClassicalHurwitzMatrix.Routh.ReverseTotallyNonnegative
-import RealRooted.ClassicalHurwitzMatrix.Routh.Sequence
-import RealRooted.ClassicalHurwitzMatrix.Routh.Sequence.TotallyNonnegative
-import RealRooted.ClassicalHurwitzMatrix.Routh.TotallyNonnegative
-import RealRooted.ClassicalHurwitzMatrix.Stability
-import RealRooted.ClassicalHurwitzMatrix.Stability.ClosedLimit
-import RealRooted.ClassicalHurwitzMatrix.Stability.Closure
-import RealRooted.ClassicalHurwitzMatrix.Stability.CoefficientSigns
-import RealRooted.ClassicalHurwitzMatrix.Stability.Converse
-import RealRooted.ClassicalHurwitzMatrix.Stability.Criterion
-import RealRooted.ClassicalHurwitzMatrix.Stability.Extraction
-import RealRooted.ClassicalHurwitzMatrix.Stability.HermiteBiehler
-import RealRooted.ClassicalHurwitzMatrix.Stability.Lace
-import RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse
-import RealRooted.ClassicalHurwitzMatrix.Stability.Parity
-import RealRooted.ClassicalHurwitzMatrix.Stability.Rotation
-import RealRooted.ClassicalHurwitzMatrix.Stability.Routh
-import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.ProperPosition
-import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.Reverse
-import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.Sequence
-import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.WeakReverse
-import RealRooted.ClassicalHurwitzMatrix.Stability.Terminal
-import RealRooted.ClassicalHurwitzMatrix.Stability.Vieta
-import RealRooted.ClassicalHurwitzMatrix.Stability.WeakConverse
-import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
-import RealRooted.CoefficientDominance
-import RealRooted.CoefficientDominance.LogConcavity
-import RealRooted.CoefficientDominance.RootGap
-import RealRooted.CoefficientDominance.Sequence
-import RealRooted.CoefficientDominance.Symmetric
-import RealRooted.CoefficientDominance.Symmetric.Finite
-import RealRooted.CoefficientDominance.Symmetric.Polynomial
-import RealRooted.CoefficientDominance.Symmetric.Sharp
-import RealRooted.CoefficientDominance.Symmetric.Tail
-import RealRooted.CoefficientDominance.Symmetric.Upper
-import RealRooted.CoefficientShape
-import RealRooted.CoefficientShape.Hoggar
-import RealRooted.CoefficientShape.Liggett
-import RealRooted.CoefficientShape.LiuMao
-import RealRooted.CoefficientShape.LiuMao.Elevation
-import RealRooted.CoefficientShape.LiuMao.PathKernel
-import RealRooted.CombinatorialExamples
-import RealRooted.CombinatorialExamples.Avoid132Descents
-import RealRooted.CombinatorialExamples.BigDescents321
-import RealRooted.CombinatorialExamples.BigDescents321.Backward
-import RealRooted.CombinatorialExamples.BigDescents321.Basic
-import RealRooted.CombinatorialExamples.BigDescents321.BottomMoments
-import RealRooted.CombinatorialExamples.BigDescents321.Certificate
-import RealRooted.CombinatorialExamples.BigDescents321.Certificate.Data
-import RealRooted.CombinatorialExamples.BigDescents321.Certificate.Reflect
-import RealRooted.CombinatorialExamples.BigDescents321.Coordinates
-import RealRooted.CombinatorialExamples.BigDescents321.Criterion
-import RealRooted.CombinatorialExamples.BigDescents321.Functionals
-import RealRooted.CombinatorialExamples.BigDescents321.Gegenbauer
-import RealRooted.CombinatorialExamples.BigDescents321.GeneratingFunction
-import RealRooted.CombinatorialExamples.BigDescents321.Kernel
-import RealRooted.CombinatorialExamples.BigDescents321.KernelSum
-import RealRooted.CombinatorialExamples.BigDescents321.Neighbor
-import RealRooted.CombinatorialExamples.BigDescents321.Reference
-import RealRooted.CombinatorialExamples.BigDescents321.Residual
-import RealRooted.CombinatorialExamples.BigDescents321.ScalarBases
-import RealRooted.CombinatorialExamples.BigDescents321.ScalarBounds
-import RealRooted.CombinatorialExamples.BigDescents321.SigmaSign
-import RealRooted.CombinatorialExamples.BigDescents321.SignConversion
-import RealRooted.CombinatorialExamples.BigDescents321.SmallCases.Certificates
-import RealRooted.CombinatorialExamples.BigDescents321.SmallCases.ListPoly
-import RealRooted.CombinatorialExamples.BigDescents321.SmallCases.Literals
-import RealRooted.CombinatorialExamples.BigDescents321.TopCoefficients
-import RealRooted.CombinatorialExamples.BigDescentsOddBinom
-import RealRooted.CombinatorialExamples.BorosMoll
-import RealRooted.CombinatorialExamples.BorosMoll.Basic
-import RealRooted.CombinatorialExamples.BorosMoll.Estimates
-import RealRooted.CombinatorialExamples.BorosMoll.Infinite
-import RealRooted.CombinatorialExamples.CentralFactorial
-import RealRooted.CombinatorialExamples.ColoredSetPartitions
-import RealRooted.CombinatorialExamples.Common
-import RealRooted.CombinatorialExamples.DerangementStatistic
-import RealRooted.CombinatorialExamples.DerangementsExcNormal
-import RealRooted.CombinatorialExamples.DyckNarayana
-import RealRooted.CombinatorialExamples.EulerTypeOeis
-import RealRooted.CombinatorialExamples.EulerTypeRows
-import RealRooted.CombinatorialExamples.Eulerian
-import RealRooted.CombinatorialExamples.EulerianNormal
-import RealRooted.CombinatorialExamples.EulerianStatistic
-import RealRooted.CombinatorialExamples.EvenBinom
-import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Basic
-import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Comparison
-import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Families
-import RealRooted.CombinatorialExamples.JacobiStirling.Descent.RealRooted
-import RealRooted.CombinatorialExamples.JacobiStirling.FirstKind
-import RealRooted.CombinatorialExamples.JacobiStirling.FirstKindPF
-import RealRooted.CombinatorialExamples.JacobiStirling.Inverse
-import RealRooted.CombinatorialExamples.JacobiStirling.SecondKind
-import RealRooted.CombinatorialExamples.JacobiStirling.TotallyNonnegative
-import RealRooted.CombinatorialExamples.JacobiStirling.Weight
-import RealRooted.CombinatorialExamples.Motzkin
-import RealRooted.CombinatorialExamples.MultisetEulerianNarayana
-import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.GammaOperator
-import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.TotallyNonneg
-import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.ZeroMonotonicity
-import RealRooted.CombinatorialExamples.Narayana
-import RealRooted.CombinatorialExamples.NarayanaNormal
-import RealRooted.CombinatorialExamples.OneDescentGamma
-import RealRooted.CombinatorialExamples.PathPowerIndependence
-import RealRooted.CombinatorialExamples.PeakValues
-import RealRooted.CombinatorialExamples.PeakValues.Canonical
-import RealRooted.CombinatorialExamples.PeakValues.Insertion
-import RealRooted.CombinatorialExamples.PeakValues.InsertionSum
-import RealRooted.CombinatorialExamples.PeakValues.Sharpness
-import RealRooted.CombinatorialExamples.PeakValues.Stability
-import RealRooted.CombinatorialExamples.PeakValues.TranslatedRecurrence
-import RealRooted.CombinatorialExamples.PeakValues.WeightedInterleaving
-import RealRooted.CombinatorialExamples.Simsun
-import RealRooted.CombinatorialExamples.SingletonFreeSetPartitions
-import RealRooted.CombinatorialExamples.StirlingPermutations
-import RealRooted.CombinatorialExamples.StirlingPermutationsNormal
-import RealRooted.CombinatorialExamples.SturmDerangementsExc
-import RealRooted.CombinatorialExamples.SuperEulerian
-import RealRooted.CombinatorialExamples.Touchard
-import RealRooted.CombinatorialExamples.TypeBEulerian
-import RealRooted.Combinatorics.BellCatalyticStates
-import RealRooted.Combinatorics.ComparisonBottom
-import RealRooted.Combinatorics.ComparisonBottomInsertion
-import RealRooted.Combinatorics.MinimumInsertionWord
-import RealRooted.Combinatorics.OrderedSubsetPairsNarayana
-import RealRooted.CommonInterleaver.AffineBoundary
-import RealRooted.CommonInterleaver.DescPolynomial
-import RealRooted.CommonInterleaver.FamilySum
-import RealRooted.CommonInterleaver.FamilyUpgrade
-import RealRooted.CommonInterleaver.Finite
-import RealRooted.CommonInterleaver.IntervalLemmas
-import RealRooted.CommonInterleaver.PairBridge
-import RealRooted.CommonInterleaver.PairBridge.Compatibility
-import RealRooted.CommonInterleaver.PairBridge.Compatibility.NonnegativeShift
-import RealRooted.CommonInterleaver.PairBridge.Reduction
-import RealRooted.CommonInterleaver.PairBridge.Reduction.CommonInterleaver
-import RealRooted.CommonInterleaver.PairBridge.Reduction.CommonRoot
-import RealRooted.CommonInterleaver.PairBridge.SuccDegree
-import RealRooted.CommonInterleaver.PairBridge.SuccDegree.ClosedSegment
-import RealRooted.CommonInterleaver.PairBridge.SuccDegree.SlotData
-import RealRooted.CommonInterleaver.PairwiseUpgrade
-import RealRooted.CommonInterleaver.PairwiseUpgrade.FamilyCompatibility
-import RealRooted.CommonInterleaver.PairwiseUpgrade.FourWay
-import RealRooted.CommonInterleaver.PairwiseUpgrade.FourWay.Equivalences
-import RealRooted.CommonInterleaver.PairwiseUpgrade.LowDegree
-import RealRooted.CommonInterleaver.RightPencil
-import RealRooted.CommonInterleaver.RootCountCombinatorics
-import RealRooted.CommonInterleaver.RootDesc
-import RealRooted.CommonInterleaver.RootSelection
-import RealRooted.CommonInterleaver.RootSelectionTree
-import RealRooted.CommonInterleaver.RootSlots
-import RealRooted.CommonInterleaver.RootSlots.Basic
-import RealRooted.CommonInterleaver.SameDegreeRootCount
-import RealRooted.CommonInterleaver.Sequence
-import RealRooted.CommonInterleaver.SuccDegreeEndpoint
-import RealRooted.CommonInterleaver.SuccDegreeLowDegree
-import RealRooted.CommonInterleaver.Counterexamples
-import RealRooted.CommonInterleaverSeq
-import RealRooted.CommonInterleaverTwo
-import RealRooted.Compatibility.Affine
-import RealRooted.Compatibility.Basic
-import RealRooted.Compatibility.ConicImage
-import RealRooted.Compatibility.CutTransform
-import RealRooted.Compatibility.CutTransformClosure
-import RealRooted.Compatibility.CutTransformObstruction
-import RealRooted.Compatibility.InterleaverBridge
-import RealRooted.Compatibility.Leander
-import RealRooted.Compatibility.LeanderOutput
-import RealRooted.Compatibility.LeanderTransform
-import RealRooted.Compatibility.LeanderXOutput
-import RealRooted.Compatibility.NDCutInvariant
-import RealRooted.Compatibility.NDCutPreservation
-import RealRooted.Compatibility.NDCutStaircase
-import RealRooted.Compatibility.NDCutStateClosure
-import RealRooted.Compatibility.NDCutThresholdClosure
-import RealRooted.Compatibility.Pair
-import RealRooted.Compatibility.Three
-import RealRooted.ConvexCombination
-import RealRooted.CriticalValueContinuation
-import RealRooted.CubicDiscriminant
-import RealRooted.CubicNewton
-import RealRooted.DegreeDropDivXPrec
-import RealRooted.DegreeDropReversal
-import RealRooted.DegreeIncreasingLocalLowerCount
-import RealRooted.Derivative
-import RealRooted.Derivative.Algebra
-import RealRooted.Derivative.FamilyClosure
-import RealRooted.Derivative.XMulSequence
-import RealRooted.Derivative.Interlacing
-import RealRooted.Derivative.LinearCombination
-import RealRooted.Derivative.RootCounting
-import RealRooted.Derivative.ShiftRootMatching
-import RealRooted.Derivative.ShiftSequence
-import RealRooted.Derivative.SimpleRoots
-import RealRooted.DerivativeRecurrence
-import RealRooted.DerivativeRecurrence.AffineLagStrict
-import RealRooted.DerivativeRecurrence.Degree
-import RealRooted.DerivativeRecurrence.General
-import RealRooted.DerivativeRecurrence.GeneralizedLaguerre
-import RealRooted.DerivativeRecurrence.GeneralizedLaguerreInterlacing
-import RealRooted.DerivativeRecurrence.Interlacing
-import RealRooted.DerivativeRecurrence.LagWeak
-import RealRooted.DerivativeRecurrence.LagDegree
-import RealRooted.DerivativeRecurrence.Linear
-import RealRooted.DerivativeRecurrence.QuadraticDegree
-import RealRooted.DerivativeRecurrence.QuadraticInterlacing
-import RealRooted.DerivativeRecurrence.QuadraticLagStrict
-import RealRooted.DerivativeRecurrence.QuadraticSeed
-import RealRooted.DerivativeRecurrence.RootWindow
-import RealRooted.DerivativeRecurrence.SecondDerivativeDegree
-import RealRooted.DerivativeRecurrence.SecondOrderDegree
-import RealRooted.DerivativeRecurrence.SecondOrderInterlacing
-import RealRooted.DerivativeRecurrence.SecondOrderInterlacing.PolyaFrequency
-import RealRooted.DerivativeRecurrence.SecondOrderODE
-import RealRooted.DeterminantalStability
-import RealRooted.DeterminantalStability.Constants
-import RealRooted.DifferentialBlocks
-import RealRooted.EdreiThoma.Easy
-import RealRooted.ElementaryDifferential
-import RealRooted.EndpointDerivative
-import RealRooted.EndpointDerivative.Basic
-import RealRooted.EndpointDerivative.Sequence
-import RealRooted.EulerBidiagonal
-import RealRooted.EulerBidiagonal.ComparisonData
-import RealRooted.EulerBidiagonal.DepRows
-import RealRooted.EulerBidiagonal.General
-import RealRooted.EulerBidiagonal.GeneralRows
-import RealRooted.EulerBidiagonal.Location
-import RealRooted.EulerBidiagonal.PairStep
-import RealRooted.EulerBidiagonal.PairTheorem
-import RealRooted.EulerBidiagonal.ZeroParameter
-import RealRooted.EulerOperator
-import RealRooted.EulerOperator.Correction
-import RealRooted.EulerOperator.Darboux
-import RealRooted.EulerOperator.Darboux.Basic
-import RealRooted.EulerOperator.Darboux.Interlacing
-import RealRooted.EulerOperator.Darboux.NegativeRoots
-import RealRooted.EulerOperator.OrderNumerator.Basic
-import RealRooted.EulerOperator.OrderNumerator.Preservation
-import RealRooted.EulerOperator.Pencil
-import RealRooted.EulerOperator.Polar
-import RealRooted.EulerOperator.Polar.Adjacent
-import RealRooted.EulerOperator.Polar.MultiplierSequence
-import RealRooted.EulerOperator.Polar.Pencil
-import RealRooted.EulerOperator.Polar.ProperPosition
-import RealRooted.EulerOperator.Polar.RealParameter
-import RealRooted.EulerOperator.ScaledPolar
-import RealRooted.EulerOperator.Shift
-import RealRooted.EulerianCompletion
-import RealRooted.EulerianCompletion.ProperPosition
-import RealRooted.EulerianMixedCompatibility
-import RealRooted.EulerianMixedCompatibility.Insertion
-import RealRooted.FactorialCompression.Basic
-import RealRooted.FactorialCompression.CommonKernel
-import RealRooted.FactorialCompression.Compression
-import RealRooted.FactorialCompression.DegreeChanging
-import RealRooted.FactorialCompression.Examples
-import RealRooted.FactorialCompression.Kernel
-import RealRooted.Favard
-import RealRooted.Favard.Affine
-import RealRooted.Favard.Affine.Basic
-import RealRooted.Favard.Affine.Denominator
-import RealRooted.Favard.Affine.RowSign
-import RealRooted.Favard.Orthogonality
-import RealRooted.Favard.PathEnvelope
-import RealRooted.Favard.Recurrence
-import RealRooted.FiniteFreeAdditive
-import RealRooted.FiniteFreeAdditive.HalfInteger
-import RealRooted.FiniteFreeAdditive.HalfIntegerConvolution
-import RealRooted.FiniteFreeAdditive.HalfIntegerPreservation
-import RealRooted.FiniteFreeAdditive.Identity
-import RealRooted.FiniteFreeAdditive.Preservation
-import RealRooted.FiniteFreeMultiplicative
-import RealRooted.FiniteFreeRootCount
-import RealRooted.FolkloreLemma
-import RealRooted.GammaPencil.Basic
-import RealRooted.GammaPencil.Intertwining
-import RealRooted.GammaPencil.Invariants
-import RealRooted.GammaPencil.Preserver
-import RealRooted.GammaPencil.Symbol
-import RealRooted.GammaPencil.SymbolStability
-import RealRooted.GammaPencil.Theorem
-import RealRooted.GammaRealRoots
-import RealRooted.GammaTransform
-import RealRooted.GammaTransform.Basic
-import RealRooted.GammaTransform.Preservation
-import RealRooted.GammaTransform.ProperPosition
-import RealRooted.GammaTransform.RootLists
-import RealRooted.GammaTransform.RootMap
-import RealRooted.GammaTransform.StrictLifting
-import RealRooted.GarloffWagner
-import RealRooted.GarloffWagner.Algebra
-import RealRooted.GarloffWagner.Hadamard
-import RealRooted.GarloffWagner.HurwitzStable
-import RealRooted.GarloffWagner.Iterated
-import RealRooted.GarloffWagner.KreinData
-import RealRooted.GarloffWagner.KreinExpansion
-import RealRooted.GarloffWagner.Theorem12
-import RealRooted.GeneralizedEulerian
-import RealRooted.GeneralizedEulerian.GeneratingFunction
-import RealRooted.HlavacekSolus.PolytopalShelling
-import RealRooted.Interlacing.QuadraticPFPreservers
-import RealRooted.Laguerre.FiniteCombinations
-import RealRooted.MaWang.EndpointClassification
-import RealRooted.MaWang.EndpointMultiplicity
-import RealRooted.Mathlib.Analysis.Complex.Contour.Argument.Lift
-import RealRooted.Mathlib.Analysis.Complex.Contour.Cauchy.PrincipalValue.Basic
-import RealRooted.Mathlib.Analysis.Complex.Contour.Curve.Distance
-import RealRooted.Mathlib.Analysis.Complex.Contour.Curve.Integrability
-import RealRooted.Mathlib.Analysis.Complex.Contour.Curve.IntegralBound
-import RealRooted.Mathlib.Analysis.Complex.Contour.Cycle.Acceptance
-import RealRooted.Mathlib.Analysis.Complex.Contour.Cycle.Basic
-import RealRooted.Mathlib.Analysis.Complex.Contour.Cycle.HomologyCauchy
-import RealRooted.Mathlib.Analysis.Complex.Contour.Cycle.Winding
-import RealRooted.Mathlib.Analysis.Complex.Contour.Dixon.Def
-import RealRooted.Mathlib.Analysis.Complex.Contour.Dixon.FunctionDiff
-import RealRooted.Mathlib.Analysis.Complex.Contour.Dixon.H1Diff
-import RealRooted.Mathlib.Analysis.Complex.Contour.Dixon.H2.Bound
-import RealRooted.Mathlib.Analysis.Complex.Contour.Dixon.H2.Diff
-import RealRooted.Mathlib.Analysis.Complex.Contour.LogDerivFTC
-import RealRooted.Mathlib.Analysis.Complex.Contour.NullHomologous
-import RealRooted.Mathlib.Analysis.Complex.Contour.PiecewiseC1On
-import RealRooted.Mathlib.Analysis.Complex.Contour.Support.DSlopeIntegral
-import RealRooted.Mathlib.Analysis.Complex.Contour.Support.UpperLogContinuity
-import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Continuity
-import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.EndpointRatio
-import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Integer
-import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.LocallyConstant
-import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Number.Basic
-import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Number.Circle
-import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Number.Reverse
-import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.SegmentSum
-import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Vanishing
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.EntryDegree
-import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.FiniteCombinations
-import RealRooted.MatrixInterlacing.WeightedThreeStateRows
-import RealRooted.MatrixInterlacing.WeightedThreeStateStrip
-import RealRooted.MatrixInterlacing.WeightedThreeStateStripRoots
-import RealRooted.Mesh.FiniteDifferenceHyperbolicity
-import RealRooted.OperatorMatrix.CouplingThresholds
-import RealRooted.MatrixInterlacing.WeightedThreeState
-import RealRooted.PoweredEulerian
-import RealRooted.GeneralizedSnakePosets
-import RealRooted.GeneralizedSnakePosets.ChainPolynomial
-import RealRooted.GeneralizedSnakePosets.FiniteBoard
-import RealRooted.GeneralizedSnakePosets.MatrixInduction
-import RealRooted.GeneralizedSnakePosets.Narayana.JacobiTransport
-import RealRooted.GeneralizedSnakePosets.Narayana.Modified
-import RealRooted.GeneralizedSnakePosets.Narayana.PFFacts
-import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
-import RealRooted.GeneralizedSnakePosets.Narayana.RootSums
-import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacing
-import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacingAnalytic
-import RealRooted.GeneralizedSnakePosets.Narayana.Turan
-import RealRooted.GeneralizedSnakePosets.SnakeBand
-import RealRooted.GeneralizedSnakePosets.SnakeBoard
-import RealRooted.GeneralizedSnakePosets.SnakeConstant
-import RealRooted.GeneralizedSnakePosets.SnakeCover
-import RealRooted.GeneralizedSnakePosets.SnakeReachability
-import RealRooted.GeneralizedSnakePosets.SnakeRecurrence
-import RealRooted.GeneralizedSnakePosets.SnakeStaircase
-import RealRooted.GeneralizedSnakePosets.SnakeWord
-import RealRooted.GeneralizedSnakePosets.SquarecaseModel
-import RealRooted.GeneralizedSnakePosets.Statements
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Auxiliary
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Basic
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.BottomRow
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.FiniteCases
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.FullStaircase
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowFormulas
-import RealRooted.GeneralizedSnakePosetsNarayana
-import RealRooted.GraceHalfPlane
-import RealRooted.Graph.AcyclicOrientation
-import RealRooted.Graph.AllOrientationSink
-import RealRooted.Graph.AllOrientationSinkIdentity
-import RealRooted.Graph.ChordalAcyclicSink
-import RealRooted.Graph.ClawFree
-import RealRooted.Graph.FiniteDegree
-import RealRooted.Graph.IndependencePolynomial.Basic
-import RealRooted.Graph.IndependencePolynomial.ClawFree
-import RealRooted.Graph.IndependencePolynomial.CliqueDeletion
-import RealRooted.Graph.IndependencePolynomial.CliqueDeletionCompatibility
-import RealRooted.Graph.IndependencePolynomial.Multivariate
-import RealRooted.Graph.IndependencePolynomial.Recurrence
-import RealRooted.Graph.LeakeRyder
-import RealRooted.Graph.MatchingPolynomial
-import RealRooted.Graph.MatchingPolynomial.Multivariate
-import RealRooted.Graph.MatchingVertexInterlacing
-import RealRooted.Graph.MinimaForest
-import RealRooted.Graph.MinimaLocalOrder
-import RealRooted.Graph.MinimaPolynomial
-import RealRooted.Gurvits
-import RealRooted.Gurvits.Capacity
-import RealRooted.Gurvits.Univariate
-import RealRooted.GustafssonSolus
-import RealRooted.Hadamard
-import RealRooted.Hadamard.Basic
-import RealRooted.Hadamard.Consequences
-import RealRooted.Hadamard.Cubic
-import RealRooted.Hadamard.Finite
-import RealRooted.Hadamard.FiniteReflection
-import RealRooted.Hadamard.GarloffWagner
-import RealRooted.Hadamard.Grace
-import RealRooted.Hadamard.Hurwitz
-import RealRooted.Hadamard.KostovMap
-import RealRooted.Hadamard.Newton
-import RealRooted.Hadamard.Product
-import RealRooted.Hadamard.SchurSzegoExamples
-import RealRooted.Hadamard.SchurSzegoMultiplicity
-import RealRooted.Hadamard.SchurSzegoSigns
-import RealRooted.Hadamard.SchurSzegoSimple
-import RealRooted.Hadamard.SchurSzegoStrict
-import RealRooted.HeilmannLieb
-import RealRooted.Hermite
-import RealRooted.Hermite.Basic
-import RealRooted.Hermite.Favard
-import RealRooted.Hermite.Orthogonality
-import RealRooted.Hermite.Orthogonality.Integral
-import RealRooted.Hermite.Poulain
-import RealRooted.Hermite.Bessel
-import RealRooted.Hermite.PoulainInterlacing
-import RealRooted.Hermite.Roots
-import RealRooted.HermiteBiehler
-import RealRooted.HermiteBiehler.Basic
-import RealRooted.HermiteBiehler.Converse
-import RealRooted.HermiteBiehler.Converse.RootGeometry
-import RealRooted.HermiteBiehler.Converse.Wronskian
-import RealRooted.HermiteBiehler.ConverseLowDegree
-import RealRooted.HermiteBiehler.Forward
-import RealRooted.HermiteBiehler.Hurwitz
-import RealRooted.HermiteBiehler.LogDerivative
-import RealRooted.HermiteBiehler.OddEven
-import RealRooted.HermiteBiehler.OrientedPencil
-import RealRooted.HermiteBiehler.StablePencil
-import RealRooted.HlavacekSolus.Shelling
-import RealRooted.HomogeneousComponentStability
-import RealRooted.HomogeneousOre
-import RealRooted.HomogeneousOre.Examples
-import RealRooted.HomogeneousStability
-import RealRooted.HosterStump.BoolChains
-import RealRooted.HosterStump.Chow
-import RealRooted.HosterStump.DesMobius
-import RealRooted.HosterStump.DescentLe
-import RealRooted.HosterStump.Diagram
-import RealRooted.HosterStump.FlagF
-import RealRooted.HosterStump.HVector
-import RealRooted.HosterStump.Permutation
-import RealRooted.HosterStump.PosetBasic
-import RealRooted.HosterStump.PosetChow
-import RealRooted.HosterStump.Refined
-import RealRooted.HosterStump.Sequence
-import RealRooted.HosterStump.Step
-import RealRooted.HosterStumpInterlacing
-import RealRooted.HurwitzMatrix
-import RealRooted.Hutchinson
-import RealRooted.Hyperbolicity
-import RealRooted.HyperbolicityCone
-import RealRooted.Interlacing.Closure
-import RealRooted.Interlacing.ConeBounds
-import RealRooted.Interlacing.Euclid
-import RealRooted.Interlacing.Multiplicity
-import RealRooted.Interlacing.NegativeRoots
-import RealRooted.Interlacing.OuterDifference
-import RealRooted.Interlacing.PencilPreserver
-import RealRooted.Interlacing.RemainderCertificate
-import RealRooted.Interlacing.Residue
-import RealRooted.Interlacing.ResidueCriterion
-import RealRooted.Interlacing.ResidueEulerStep
-import RealRooted.Interlacing.Reversal
-import RealRooted.Interlacing.RootCountSigns
-import RealRooted.Interlacing.RootDeletionExpansion
-import RealRooted.InterlacingSequence
-import RealRooted.InterlacingSequence.NonnegativeShift
-import RealRooted.InterlacingSequenceBasic
-import RealRooted.IteratedDerivativeShift
-import RealRooted.Jacobi
-import RealRooted.Jacobi.DifferentialOperator
-import RealRooted.Jacobi.Favard
-import RealRooted.Jacobi.Markoff
-import RealRooted.Jacobi.Orthogonality
-import RealRooted.Jacobi.Orthogonality.Integral
-import RealRooted.Jacobi.ParameterInterlacing
-import RealRooted.JacobiDeformation
-import RealRooted.JacobiDeformation.Appell
-import RealRooted.JacobiDeformation.BaseProduct
-import RealRooted.JacobiDeformation.Basic
-import RealRooted.JacobiDeformation.Boundary
-import RealRooted.JacobiDeformation.BoundaryProjection
-import RealRooted.JacobiDeformation.Collocation
-import RealRooted.JacobiDeformation.CollocationPositivity
-import RealRooted.JacobiDeformation.CriticalCases
-import RealRooted.JacobiDeformation.CriticalKernelSign
-import RealRooted.JacobiDeformation.ImageProduct
-import RealRooted.JacobiDeformation.JacobiLowering
-import RealRooted.JacobiDeformation.JacobiOperator
-import RealRooted.JacobiDeformation.Kernel
-import RealRooted.JacobiDeformation.KernelExpansion
-import RealRooted.JacobiDeformation.KernelSign
-import RealRooted.JacobiDeformation.Moment
-import RealRooted.JacobiDeformation.NewtonIdentity
-import RealRooted.JacobiDeformation.Parity
-import RealRooted.JacobiDeformation.Pochhammer
-import RealRooted.JacobiDeformation.Quadrature
-import RealRooted.JacobiDeformation.QuasiNodes
-import RealRooted.JacobiDeformation.RootGeometry
-import RealRooted.JacobiDeformation.Shift
-import RealRooted.JacobiDeformation.SpectralKernel
-import RealRooted.JacobiDeformation.Strict
-import RealRooted.JacobiOrthogonality
-import RealRooted.JensenPencilContraction
-import RealRooted.JensenPencilPositiveContraction
-import RealRooted.Kurtz
-import RealRooted.LGV.ChipNetwork.Basic
-import RealRooted.LGV.ChipNetwork.Matrix
-import RealRooted.LGV.ChipNetwork.Paths
-import RealRooted.LGV.ChipNetwork.Word
-import RealRooted.LGV.PathMatrix
-import RealRooted.LGV.PolyaFrequency
-import RealRooted.LGV.RepeatedChip
-import RealRooted.LGV.Toeplitz
-import RealRooted.LGV.TotallyNonnegative
-import RealRooted.Laguerre
-import RealRooted.Laguerre.Favard
-import RealRooted.Laguerre.Orthogonality
-import RealRooted.Laguerre.Orthogonality.Integral
-import RealRooted.Laguerre.Roots
-import RealRooted.LaguerreSamuelson
-import RealRooted.LeeYang
-import RealRooted.Legendre
-import RealRooted.Legendre.Basic
-import RealRooted.Legendre.Roots
-import RealRooted.LiebSokal
-import RealRooted.LiebSokalBoundary
-import RealRooted.LiebSokalOperator
-import RealRooted.LiebSokalOperator.Linearity
-import RealRooted.LiebSokalPointwise
-import RealRooted.Linear
-import RealRooted.LinearPowerFamily
-import RealRooted.LiuOppositeSigns
-import RealRooted.LiuOppositeSigns.BoundedIntervalContinuity
-import RealRooted.LiuOppositeSigns.CompatibilityCriterion
-import RealRooted.LiuOppositeSigns.DeletionBranches
-import RealRooted.LiuOppositeSigns.DerivativeShiftRegularization
-import RealRooted.LiuOppositeSigns.DerivativeShiftSequenceRegularization
-import RealRooted.LiuOppositeSigns.FactorReturnAssembly
-import RealRooted.LiuOppositeSigns.FactorReturnLeft
-import RealRooted.LiuOppositeSigns.FactorReturnTwoDegree
-import RealRooted.LiuOppositeSigns.JensenRootCount
-import RealRooted.LiuOppositeSigns.NoCommonRoots
-import RealRooted.LiuOppositeSigns.NonnegCoeffs
-import RealRooted.LiuOppositeSigns.PositiveSplitPair
-import RealRooted.LiuOppositeSigns.PositiveSplitRootCount
-import RealRooted.LiuOppositeSigns.RootCount
-import RealRooted.LiuOppositeSigns.RootCountBranches.CommonRootDeletion
-import RealRooted.LiuOppositeSigns.RootCountBranches.Interfaces
-import RealRooted.LiuOppositeSigns.RootCountBranches.NoCommonCrossing
-import RealRooted.LiuOppositeSigns.RootCountBranches.NoCommonCrossing.Witnesses
-import RealRooted.LiuOppositeSigns.RootCountClosure
-import RealRooted.LiuOppositeSigns.RootCountRelStability
-import RealRooted.LiuOppositeSigns.RootDeletion
-import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount
-import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.GapCounts
-import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.LeftSuccessor
-import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RightSuccessor
-import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RootFilters
-import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SameDegree
-import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SplitEndpoints
-import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.UpperTail
-import RealRooted.LiuOppositeSigns.XSub.LeftSucc
-import RealRooted.LiuOppositeSigns.XSub.LinearQuadratic
-import RealRooted.LiuOppositeSigns.XSub.QuadraticCubic
-import RealRooted.LiuOppositeSigns.XSub.QuadraticQuadratic
-import RealRooted.LiuOppositeSigns.XSub.SameDegree
-import RealRooted.LiuOppositeSigns.XSub.SplittingTools
-import RealRooted.LiuWang
-import RealRooted.LiuWang.General
-import RealRooted.LiuWang.OneAddXPositive
-import RealRooted.LiuWang.SequenceCore
-import RealRooted.LiuWang.SequencePositive
-import RealRooted.LiuWang.SequenceProducts
-import RealRooted.LiuWangBenchmark
-import RealRooted.LiuWangRecursion
-import RealRooted.LowerTriangularMatrix
-import RealRooted.MaWang
-import RealRooted.MaWang.CountBounds
-import RealRooted.MaWang.CriticalSign
-import RealRooted.MaWang.Derivative
-import RealRooted.MaWang.DerivativeCore
-import RealRooted.MaWang.DerivativeDenominator
-import RealRooted.MaWang.DerivativeSequence
-import RealRooted.MaWang.DerivativeStep
-import RealRooted.MaWang.StrictSigns
-import RealRooted.MaWang.StrictSigns.Assembly
-import RealRooted.MaWang.StrictSigns.RootSigns
-import RealRooted.MaWang.StrictStep
-import RealRooted.MaWang.Strong
-import RealRooted.MaWang.Weak
-import RealRooted.MaWang.Weak.DerivativeSign
-import RealRooted.MaWang.Weak.Endpoint
-import RealRooted.MaWang.Weak.Regularization
-import RealRooted.MaWang.Weak.Successor
-import RealRooted.Maclaurin
-import RealRooted.MagnitudeDominated
-import RealRooted.MaoWangMatrixProduct
-import RealRooted.Mathlib.Algebra.BigOperators.Finset.Unique
-import RealRooted.Mathlib.Algebra.BigOperators.Group.List
-import RealRooted.Mathlib.Algebra.Group.ForwardDiff
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Asymptotics
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev.Trigonometric
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Factors
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Norm
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Norm.Real
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale.Real
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Scale
-import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
-import RealRooted.Mathlib.Algebra.MvPolynomial.Diagonal
-import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
-import RealRooted.Mathlib.Algebra.MvPolynomial.Eval
-import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
-import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
-import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
-import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
-import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivSpecialize
-import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
-import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
-import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
-import RealRooted.Mathlib.Algebra.Order.BigOperators.Alternating
-import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
-import RealRooted.Mathlib.Algebra.Polynomial.Antiderivative
-import RealRooted.Mathlib.Algebra.Polynomial.Basic
-import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
-import RealRooted.Mathlib.Algebra.Polynomial.Bezoutian
-import RealRooted.Mathlib.Algebra.Polynomial.BigOperators
-import RealRooted.Mathlib.Algebra.Polynomial.BudanFourier
-import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform
-import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Algebra
-import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic
-import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Bernstein
-import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.BernsteinBasisTransform
-import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Roots
-import RealRooted.Mathlib.Algebra.Polynomial.Chow
-import RealRooted.Mathlib.Algebra.Polynomial.Coeff
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
-import RealRooted.Mathlib.Algebra.Polynomial.Degree.SmallDegree
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
-import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.SecondOrder
-import RealRooted.Mathlib.Algebra.Polynomial.DividedDifference
-import RealRooted.Mathlib.Algebra.Polynomial.Dominance
-import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
-import RealRooted.Mathlib.Algebra.Polynomial.Eval.Degree
-import RealRooted.Mathlib.Algebra.Polynomial.Eval.ShiftedChoose
-import RealRooted.Mathlib.Algebra.Polynomial.Expand.Splits
-import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
-import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
-import RealRooted.Mathlib.Algebra.Polynomial.MeanMode
-import RealRooted.Mathlib.Algebra.Polynomial.Moment
-import RealRooted.Mathlib.Algebra.Polynomial.Reverse
-import RealRooted.Mathlib.Algebra.Polynomial.Roots
-import RealRooted.Mathlib.Algebra.Polynomial.RuleOfSigns
-import RealRooted.Mathlib.Algebra.Polynomial.Splits
-import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
-import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
-import RealRooted.Mathlib.Algebra.Polynomial.Sturm
-import RealRooted.Mathlib.Algebra.Polynomial.Taylor
-import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
-import RealRooted.Mathlib.Algebra.Ring.Parity
-import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
-import RealRooted.Mathlib.Analysis.Complex.ArgumentPrinciple
-import RealRooted.Mathlib.Analysis.Complex.OpenMapping
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.EnestromKakeya
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.JensenDisks
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.RootsOpen
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.SchurCohn
-import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
-import RealRooted.Mathlib.Analysis.Normed.Algebra.Exponential
-import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
-import RealRooted.Mathlib.Analysis.Normed.Ring.Power
-import RealRooted.Mathlib.Analysis.Polynomial.Asymptotics
-import RealRooted.Mathlib.Analysis.Polynomial.Basic
-import RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure
-import RealRooted.Mathlib.Analysis.SpecialFunctions.Choose
-import RealRooted.Mathlib.Analysis.SpecialFunctions.ExpIntegral
-import RealRooted.Mathlib.Analysis.SpecialFunctions.Gamma.Beta
-import RealRooted.Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
-import RealRooted.Mathlib.Analysis.SpecialFunctions.Integrals.RpowLog
-import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
-import RealRooted.Mathlib.Combinatorics.Enumerative.BooleanLattice
-import RealRooted.Mathlib.Combinatorics.Enumerative.CentralTrinomial
-import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
-import RealRooted.Mathlib.Combinatorics.Enumerative.DyckStatistics
-import RealRooted.Mathlib.Combinatorics.Enumerative.EulerianPeak
-import RealRooted.Mathlib.Combinatorics.Enumerative.Excedance
-import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
-import RealRooted.Mathlib.Combinatorics.Enumerative.InverseStatistics
-import RealRooted.Mathlib.Combinatorics.Enumerative.InversionBridge
-import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
-import RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunction
-import RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunctionCount
-import RealRooted.Mathlib.Combinatorics.Enumerative.Pattern
-import RealRooted.Mathlib.Combinatorics.Enumerative.PatternCount
-import RealRooted.Mathlib.Combinatorics.Enumerative.Peak
-import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
-import RealRooted.Mathlib.Combinatorics.Enumerative.PermSum
-import RealRooted.Mathlib.Combinatorics.Enumerative.PermSumDescent
-import RealRooted.Mathlib.Combinatorics.Enumerative.PermSumPattern
-import RealRooted.Mathlib.Combinatorics.Enumerative.Relation
-import RealRooted.Mathlib.Combinatorics.Enumerative.Separable
-import RealRooted.Mathlib.Combinatorics.Enumerative.SeparableCubic
-import RealRooted.Mathlib.Combinatorics.Enumerative.SimionSchmidt
-import RealRooted.Mathlib.Combinatorics.Quiver.Path.Vertices
-import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatchingPolyOn
-import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatrixTree
-import RealRooted.Mathlib.Data.Fin.Basic
-import RealRooted.Mathlib.Data.Fintype.Card
-import RealRooted.Mathlib.Data.List.Basic
-import RealRooted.Mathlib.Data.List.Destutter
-import RealRooted.Mathlib.Data.List.Interleave
-import RealRooted.Mathlib.Data.List.Interleave.Padding
-import RealRooted.Mathlib.Data.List.OfFn
-import RealRooted.Mathlib.Data.List.Sort.Endpoint
-import RealRooted.Mathlib.Data.List.SplitBy
-import RealRooted.Mathlib.Data.List.Zip
-import RealRooted.Mathlib.Data.Multiset.Card
-import RealRooted.Mathlib.Data.Multiset.Rel
-import RealRooted.Mathlib.Data.Nat.Cast.Basic
-import RealRooted.Mathlib.Data.Nat.Choose.Cast
-import RealRooted.Mathlib.Data.Nat.Choose.Nanjundiah
-import RealRooted.Mathlib.Data.Nat.Factorial.Strict
-import RealRooted.Mathlib.LinearAlgebra.Lagrange.Quadrature
-import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugateExpansion
-import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugatePath
-import RealRooted.Mathlib.LinearAlgebra.Matrix.CauchyBinet
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Rank
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Compound
-import RealRooted.Mathlib.LinearAlgebra.Matrix.CompoundSpectrum
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.BandedHessenberg
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.CauchyBinet
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.ColumnDifference
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Integral
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Plucker
-import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Gaussian
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz.Determinant
-import RealRooted.Mathlib.LinearAlgebra.Matrix.KernelSignVariation
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Oscillatory
-import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing
-import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CStarClasses
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CollatzWielandt
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Dominance
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Irreducible
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Nonneg
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Primitive
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.QuiverPath
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Simplex
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Spectrum
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Uniqueness
-import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneCompression
-import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneUpdate
-import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegular
-import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularRankDeficient
-import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
-import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularVariation
-import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
-import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariationTopology
-import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
-import RealRooted.Mathlib.LinearAlgebra.Matrix.StrictLower
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Border
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Charpoly
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Closure
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.CornerPerturbation
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Closure
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Strict
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Density
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.DiagonalTail
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.ElementarySymmetric
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.PrincipalInterlacing
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.SourceBorder
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Triangularize
-import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
-import RealRooted.Mathlib.LinearAlgebra.Vandermonde
-import RealRooted.Mathlib.Order.Fin.Tuple
-import RealRooted.Mathlib.Probability.CoeffDistribution
-import RealRooted.Mathlib.RingTheory.MvPolynomial.BooleanSwapOrbit
-import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Homogeneous
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.CompleteHomogeneous
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities
-import RealRooted.Mathlib.RingTheory.Polynomial.Chebyshev.Bounds
-import RealRooted.Mathlib.RingTheory.Polynomial.Hermite
-import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi
-import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.DifferentialOperator
-import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.Moment
-import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre
-import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Basic
-import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Differential
-import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Recurrence
-import RealRooted.Mathlib.RingTheory.Polynomial.Pochhammer
-import RealRooted.Mathlib.RingTheory.Polynomial.Resultant.Basic
-import RealRooted.Mathlib.RingTheory.Polynomial.ShiftedLegendre
-import RealRooted.Mathlib.RingTheory.Polynomial.Vieta
-import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
-import RealRooted.Mathlib.RingTheory.PowerSeries.CatalanQuadratic
-import RealRooted.Mathlib.RingTheory.PowerSeries.CausalFwdDiff
-import RealRooted.Mathlib.RingTheory.PowerSeries.LagrangeInversion
-import RealRooted.Mathlib.RingTheory.PowerSeries.MapDerivation
-import RealRooted.Mathlib.RingTheory.PowerSeries.NestedConstants
-import RealRooted.Mathlib.RingTheory.PowerSeries.PiTopology
-import RealRooted.Mathlib.RingTheory.PowerSeries.Regular
-import RealRooted.Mathlib.RingTheory.PowerSeries.Sqrt
-import RealRooted.Mathlib.RingTheory.PowerSeries.ZeroPrefix
-import RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int
-import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
-import RealRooted.Mathlib.Topology.Algebra.Polynomial
-import RealRooted.Mathlib.Topology.Instances.Matrix.Determinant
-import RealRooted.MatrixInterlacing
-import RealRooted.MatrixInterlacing.Action
-import RealRooted.MatrixInterlacing.AffinePair
-import RealRooted.MatrixInterlacing.Closure
-import RealRooted.MatrixInterlacing.Converse
-import RealRooted.MatrixInterlacing.Preservation
-import RealRooted.MatrixInterlacing.PrincipalInterlacingExamples
-import RealRooted.MatrixInterlacing.SparseTests
-import RealRooted.MatrixInterlacing.TotallyNonnegative
-import RealRooted.MatrixInterlacing.TotallyNonnegativeExamples
-import RealRooted.Multiaffine
-import RealRooted.Multiaffine.AffineCoordinateCriterion
-import RealRooted.Multiaffine.AffineCoordinateExtension
-import RealRooted.Multiaffine.AffineEulerCore
-import RealRooted.Multiaffine.AffineLineRestriction
-import RealRooted.Multiaffine.CoordinateWronskian
-import RealRooted.Multiaffine.Rayleigh
-import RealRooted.Multiaffine.Reciprocal
-import RealRooted.Multiaffine.ReciprocalRight
-import RealRooted.Multiaffine.TwoCoordinateSlice
-import RealRooted.MultiplierSequence
-import RealRooted.MultiplierSequence.Bidiagonal
-import RealRooted.MultiplierSequence.Bidiagonal.Jensen
-import RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction
-import RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual
-import RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic
-import RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative
-import RealRooted.MultiplierSequence.Infinite
-import RealRooted.MultiplierSequence.InvPochhammer
-import RealRooted.MultiplierSequence.Laguerre
-import RealRooted.MultiplierSequence.PolyaSchur
-import RealRooted.MultiplierSequence.PolyaSchur.Analytic
-import RealRooted.MultiplierSequence.PolyaSchur.Factorial
-import RealRooted.MultiplierSequence.PolyaSchur.Growth
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Closure
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Examples
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.HeatFlow
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIReverse
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeISigned
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Zeros
-import RealRooted.MultiplierSequence.PolyaSchur.Limit
-import RealRooted.MultiplierSequence.QuadraticExponential
-import RealRooted.MultiplierSequence.PolyaSchur.Schur
-import RealRooted.MultiplierSequence.Sign
-import RealRooted.MultivariateHeilmannLieb
-import RealRooted.MultivariateStability
-import RealRooted.MultivariateStability.AffineEulerCore
-import RealRooted.MultivariateStability.AllCombo
-import RealRooted.MultivariateStability.AllComboAffineLine
-import RealRooted.MultivariateStability.Barrier
-import RealRooted.MultivariateStability.BarrierCross
-import RealRooted.MultivariateStability.BarrierPick
-import RealRooted.MultivariateStability.BarrierStart
-import RealRooted.MultivariateStability.BarrierUpdate
-import RealRooted.MultivariateStability.Diagonal
-import RealRooted.MultivariateStability.DirectionalDerivative
-import RealRooted.MultivariateStability.HomogeneousPencilWronskian
-import RealRooted.MultivariateStability.Inversion
-import RealRooted.MultivariateStability.JumpSystem
-import RealRooted.MultivariateStability.LinearForm
-import RealRooted.MultivariateStability.Lorentzian
-import RealRooted.MultivariateStability.MSSBound
-import RealRooted.MultivariateStability.MixedCharacteristic
-import RealRooted.MultivariateStability.NegativeCorrelation
-import RealRooted.MultivariateStability.PickRatio
-import RealRooted.MultivariateStability.PolyaFrequency
-import RealRooted.MultivariateStability.Rayleigh
-import RealRooted.MultivariateStability.RayleighConverse
-import RealRooted.MultivariateStability.RayleighPencil
-import RealRooted.MultivariateStability.SamePhase
-import RealRooted.MultivariateStability.Specialization
-import RealRooted.NarayanaTransformation
-import RealRooted.NarayanaTransformation.Basis
-import RealRooted.NarayanaTransformation.Basis.Stirling
-import RealRooted.NarayanaTransformation.Coefficients
-import RealRooted.NarayanaTransformation.Composition
-import RealRooted.NarayanaTransformation.Endpoints
-import RealRooted.NarayanaTransformation.Falling
-import RealRooted.NarayanaTransformation.Gamma
-import RealRooted.NarayanaTransformation.Interlacing
-import RealRooted.NarayanaTransformation.Rectangular
-import RealRooted.NarayanaTransformation.Rectangular.Narayana
-import RealRooted.NarayanaTransformation.Rectangular.Preservation
-import RealRooted.NarayanaTransformation.Recurrences
-import RealRooted.NarayanaTransformation.Recurrences.Identities
-import RealRooted.NarayanaTransformation.Recurrences.Interlacing
-import RealRooted.NarayanaTransformation.Rising
-import RealRooted.NarayanaTransformation.RootGeometry
-import RealRooted.NarayanaTransformation.SimpleRoots
-import RealRooted.NatCauchyConvolution
-import RealRooted.NewtonAux
-import RealRooted.ObreschkoffContinuity
-import RealRooted.ObreschkoffConverse
-import RealRooted.ObreschkoffConverse.Converse
-import RealRooted.ObreschkoffConverse.DegreeGap
-import RealRooted.ObreschkoffConverse.Derivative
-import RealRooted.ObreschkoffConverse.Forward
-import RealRooted.ObreschkoffConverse.Regularization
-import RealRooted.OperatorInterlacingUpgrade
-import RealRooted.OperatorInterlacingUpgrade.ImplicitRoot
-import RealRooted.OperatorInterlacingUpgrade.RootOrder
-import RealRooted.OperatorInterlacingUpgrade.StablePencil
-import RealRooted.OperatorPreservesInterlacing
-import RealRooted.OrderedRoots
-import RealRooted.OscillatoryInterlacing
-import RealRooted.PFPolynomial
-import RealRooted.PFPolynomial.Closure
-import RealRooted.PFPolynomial.CoefficientShape
-import RealRooted.PFPolynomial.LinearFactor
-import RealRooted.ParkingFunctions.Descents.Basic
-import RealRooted.ParkingFunctions.Descents.Canonical
-import RealRooted.ParkingFunctions.Descents.ChainSort
-import RealRooted.ParkingFunctions.Descents.CompositionBlocks
-import RealRooted.ParkingFunctions.Descents.ContentOrbit
-import RealRooted.ParkingFunctions.Descents.ContentSymmetry
-import RealRooted.ParkingFunctions.Descents.DescentChains
-import RealRooted.ParkingFunctions.Descents.DescentContainment
-import RealRooted.ParkingFunctions.Descents.DiaconisHicks
-import RealRooted.ParkingFunctions.Descents.ExactDescent
-import RealRooted.ParkingFunctions.Descents.ExactDescentTransfer
-import RealRooted.ParkingFunctions.Descents.Literal
-import RealRooted.ParkingFunctions.Descents.LiteralRecurrence
-import RealRooted.ParkingFunctions.Descents.OrdinaryTransfer
-import RealRooted.ParkingFunctions.Descents.Pollak
-import RealRooted.ParkingFunctions.Descents.PollakTransfer
-import RealRooted.ParkingFunctions.Descents.StrictBlock
-import RealRooted.ParkingFunctions.Descents.Tieless
-import RealRooted.ParkingFunctions.Descents.TielessTransfer
-import RealRooted.ParkingFunctions.Descents.WeakLeftPeak
-import RealRooted.ParkingFunctions.Descents.WeakLeftPeakCutTransform
-import RealRooted.ParkingFunctions.Descents.WeakLeftPeakFactorization
-import RealRooted.ParkingFunctions.Descents.WeakLeftPeakInterlacing
-import RealRooted.ParkingFunctions.Descents.WeakLeftPeakNDCutPreservation
-import RealRooted.ParkingFunctions.Descents.WeakLeftPeakOrderedCut
-import RealRooted.ParkingFunctions.Descents.WeakLeftPeakRecurrence
-import RealRooted.ParkingFunctions.Descents.WordContent
-import RealRooted.ParkingFunctions.Descents.Words
-import RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer
-import RealRooted.ParkingFunctions.ToricContribution.ContributionReversal
-import RealRooted.ParkingFunctions.ToricContribution.Definitions
-import RealRooted.ParkingFunctions.ToricContribution.DiagonalCollapse
-import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset
-import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.BaseAndMoments
-import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.NodeInterlacing
-import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.PencilSplitting
-import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.ProperPositionAndParameters
-import RealRooted.ParkingFunctions.ToricContribution.FiniteOffsets
-import RealRooted.ParkingFunctions.ToricContribution.IntervalInsertion
-import RealRooted.ParkingFunctions.ToricContribution.TriangleAlgebra
-import RealRooted.ParkingFunctions.ToricContribution.TriangleInvariant
-import RealRooted.PartialSumStep
-import RealRooted.PartialSymmetrization
-import RealRooted.PolarDerivative
-import RealRooted.Polarization
-import RealRooted.PolyaFrequency.EventuallyPolynomial
-import RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure
-import RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure.ZeroPrefix
-import RealRooted.PolyaFrequencyConvolution
-import RealRooted.PolyaFrequencyConvolution.Basic
-import RealRooted.PolyaFrequencyConvolution.GeometricScaling
-import RealRooted.PolyaFrequencyConvolution.InverseOneSubPow
-import RealRooted.PolynomialValueEulerNumerator
-import RealRooted.PolynomialValueEulerNumerator.PF
-import RealRooted.PolynomialValueEulerNumerator.PF.Causal
-import RealRooted.PolynomialValueEulerNumerator.Product
-import RealRooted.PolynomialValueEulerNumerator.Product.Brenti
-import RealRooted.PolynomialValueEulerNumerator.Product.PF
-import RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal
-import RealRooted.PosCombo
-import RealRooted.PosCombo.Degree
-import RealRooted.PositiveParameterLocalLowerCount
-import RealRooted.ProductFamily
-import RealRooted.ProductOrientation
-import RealRooted.ProductSequence
-import RealRooted.ProductSequence.Core
-import RealRooted.ProductSequence.EndpointPair
-import RealRooted.ProductSequence.FactorFamilies
-import RealRooted.ProductSequence.Factors
-import RealRooted.ProductSequence.Interlacing
-import RealRooted.ProductSequence.Lifts
-import RealRooted.ProductSequence.ScalarFamilies
-import RealRooted.QuadraticCubicPencil
-import RealRooted.QuadraticInterlacingClosure
-import RealRooted.QuadraticRoot
-import RealRooted.RankTwoMatching
-import RealRooted.RankTwoMatching.Basic
-import RealRooted.RankTwoMatching.DisjointEquiv
-import RealRooted.RankTwoMatching.Endpoint
-import RealRooted.RankTwoMatching.Enumeration
-import RealRooted.RankTwoMatching.Model
-import RealRooted.RankTwoMatching.Orientation
-import RealRooted.RankTwoMatching.Transform
-import RealRooted.ReciprocalShift.Interlacing
-import RealRooted.ReciprocalShift.Interlacing.Inversion
-import RealRooted.ReciprocalShift.ProperPosition
-import RealRooted.ReciprocalShift.Roots
-import RealRooted.RectangularConvolution
-import RealRooted.RectangularConvolutionIdentity
-import RealRooted.RectangularPolarization
-import RealRooted.RectangularPolarizationComplement
-import RealRooted.ReflectedRootCountLocalConstancy
-import RealRooted.RookPolynomial
-import RealRooted.RootAmplitude
-import RealRooted.RootAmplitude.Convex
-import RealRooted.RootAmplitude.Cotangent
-import RealRooted.RootAmplitude.Density
-import RealRooted.RootAmplitude.Extension
-import RealRooted.RootAmplitude.Extreme
-import RealRooted.RootAmplitude.Finite
-import RealRooted.RootAmplitude.Minimum
-import RealRooted.RootAmplitude.Polynomial
-import RealRooted.RootAmplitude.Separation
-import RealRooted.RootAmplitude.Separation.Euler
-import RealRooted.RootAmplitude.Separation.Finite
-import RealRooted.RootAmplitude.Separation.Polynomial
-import RealRooted.RootAmplitude.Separation.Roots
-import RealRooted.RootAmplitude.SmallestRoot
-import RealRooted.RootAmplitude.SumSquares
-import RealRooted.RootBounds
-import RealRooted.RootContinuity
-import RealRooted.RootContinuity.Path
-import RealRooted.RootCountFinite
-import RealRooted.RootCountJump
-import RealRooted.RootCountLocalConstancy
-import RealRooted.RootCounting
-import RealRooted.RootCounting.CrossingExhaustion
-import RealRooted.RootCounting.Descartes
-import RealRooted.RootCounting.Finite
-import RealRooted.RootCounting.SignChanges
-import RealRooted.RootCounting.Sturm
-import RealRooted.RootCounting.Threshold
-import RealRooted.RootCounting.Threshold.Anchor
-import RealRooted.RootCounting.Threshold.Basic
-import RealRooted.RootCounting.Threshold.Derivative
-import RealRooted.RootCounting.Threshold.DominanceFamily
-import RealRooted.RootCounting.Threshold.LogConcavity
-import RealRooted.RootCounting.Threshold.Signs
-import RealRooted.RootCounting.Threshold.Sorted
-import RealRooted.RootMatchingSort
-import RealRooted.RootMultiplicityMatching
-import RealRooted.RootOrderBridge
-import RealRooted.RootPolynomial
-import RealRooted.RootSumBounds
-import RealRooted.RootVieta
-import RealRooted.RootVieta.Newton
-import RealRooted.RowThreshold
-import RealRooted.RowThresholdOne
-import RealRooted.SameDegreeCountFromAnalytic
-import RealRooted.SameDegreeCubicRootCount
-import RealRooted.SameDegreeCubicSecondRootFromAnalytic
-import RealRooted.SameDegreeDerivative
-import RealRooted.SameDegreeMultiplicityLowerCount
-import RealRooted.SameDegreeQuadraticObstruction
-import RealRooted.SameDegreeQuadraticRootCount
-import RealRooted.SamePhaseInterlacing
-import RealRooted.SamePhaseStability
-import RealRooted.SamePhaseStability.Nonnegative
-import RealRooted.ScalarNormalization
-import RealRooted.SeparablePermutations.Basic
-import RealRooted.SeparablePermutations.Cubic
-import RealRooted.SeparablePermutations.Enumerator
-import RealRooted.SeparablePermutations.Gamma
-import RealRooted.SeparablePermutations.GammaCubic
-import RealRooted.SeparablePermutations.Identification
-import RealRooted.SeparablePermutations.Interlacing
-import RealRooted.SequenceClosure
-import RealRooted.ShiftLemma
-import RealRooted.SignEvaluation
-import RealRooted.SimpleRootLogDerivative
-import RealRooted.SimpleRoots
-import RealRooted.SmallPositiveParameterCount
-import RealRooted.SortedRoots
-import RealRooted.SortedRoots.Exhibited
-import RealRooted.SpanningTreeStability
-import RealRooted.SpectralProduct
-import RealRooted.StaircaseSum
-import RealRooted.SuccDegreeLeftEndpoint
-import RealRooted.SuccDegreeRootCrossing
-import RealRooted.SymmetricDecomposition
-import RealRooted.SymmetricDecomposition.Decomposition
-import RealRooted.SymmetricDecomposition.Definitions
-import RealRooted.SymmetricDecomposition.DerangementTransform
-import RealRooted.SymmetricDecomposition.EulerianTransform
-import RealRooted.SymmetricDecomposition.FPolynomial
-import RealRooted.SymmetricDecomposition.FPolynomialInterlacing
-import RealRooted.SymmetricDecomposition.FPolynomialRecurrence
-import RealRooted.SymmetricDecomposition.FPolynomialSequence
-import RealRooted.SymmetricDecomposition.Theorem26
-import RealRooted.Tactic
-import RealRooted.Tactic.AffineDerivative
-import RealRooted.Tactic.AllCombo
-import RealRooted.Tactic.Attr
-import RealRooted.Tactic.Bezoutian
-import RealRooted.Tactic.CoefficientShape
-import RealRooted.Tactic.CommonInterleaver.Core
-import RealRooted.Tactic.Derivative
-import RealRooted.Tactic.EulerOperator
-import RealRooted.Tactic.Favard
-import RealRooted.Tactic.Finish
-import RealRooted.Tactic.FiniteSymbolPF
-import RealRooted.Tactic.GammaRealRoots
-import RealRooted.Tactic.Hadamard
-import RealRooted.Tactic.HermiteBiehler
-import RealRooted.Tactic.HermitePoulain
-import RealRooted.Tactic.InterlacesExplicit
-import RealRooted.Tactic.IteratedDerivativeShift
-import RealRooted.Tactic.IteratedDerivativeShiftProduct
-import RealRooted.Tactic.J1Chebyshev
-import RealRooted.Tactic.Kurtz
-import RealRooted.Tactic.Linear
-import RealRooted.Tactic.LinearPowerFamily
-import RealRooted.Tactic.LiuWang
-import RealRooted.Tactic.Lookup
-import RealRooted.Tactic.MaWang
-import RealRooted.Tactic.MagnitudeDominated
-import RealRooted.Tactic.MultiplierSequence
-import RealRooted.Tactic.Named
-import RealRooted.Tactic.Narayana
-import RealRooted.Tactic.OperatorPreservesInterlacing
-import RealRooted.Tactic.PFBidiagonal
-import RealRooted.Tactic.PFPolynomial
-import RealRooted.Tactic.PosCombo
-import RealRooted.Tactic.PreservingOperatorSequence
-import RealRooted.Tactic.Product
-import RealRooted.Tactic.Product.Interlacing
-import RealRooted.Tactic.ReciprocalShift
-import RealRooted.Tactic.Recurrence
-import RealRooted.Tactic.Recurrence.Cancel
-import RealRooted.Tactic.Recurrence.Degree
-import RealRooted.Tactic.Recurrence.Eval
-import RealRooted.Tactic.Recurrence.LinRec
-import RealRooted.Tactic.Recurrence.LinRecProbe
-import RealRooted.Tactic.Recurrence.ODE
-import RealRooted.Tactic.Recurrence.RowSide
-import RealRooted.Tactic.Recurrence.Shape
-import RealRooted.Tactic.RecurrenceEval
-import RealRooted.Tactic.RootBounds
-import RealRooted.Tactic.RootCount.LowDegree
-import RealRooted.Tactic.RootCount.SequenceCore
-import RealRooted.Tactic.Row.Core
-import RealRooted.Tactic.Row.DerivLag
-import RealRooted.Tactic.Row.DerivativeXMul
-import RealRooted.Tactic.Row.FTransform
-import RealRooted.Tactic.Row.LagFeedback
-import RealRooted.Tactic.Row.LowerOrder
-import RealRooted.Tactic.Row.ParityProduct
-import RealRooted.Tactic.Row.PowerForm
-import RealRooted.Tactic.Row.Reverse
-import RealRooted.Tactic.Row.SideGoals
-import RealRooted.Tactic.Row.Subseq
-import RealRooted.Tactic.Row.Support
-import RealRooted.Tactic.RowClosedForm
-import RealRooted.Tactic.RowInterlacing
-import RealRooted.Tactic.SecondDerivative
-import RealRooted.Tactic.SideGoals
-import RealRooted.Tactic.Sign
-import RealRooted.Tactic.SignAssembly
-import RealRooted.Tactic.StaircaseSum
-import RealRooted.Tactic.SymmetricDecomposition
-import RealRooted.Tactic.Targets
-import RealRooted.Tactic.VeroneseSection
-import RealRooted.Tactic.Wagner
-import RealRooted.Tactic.WagnerX
-import RealRooted.Tactic.WagnerX.Core
-import RealRooted.Tactic.WagnerX.Frontend
-import RealRooted.Tactic.WagnerX.Obstructions
-import RealRooted.Tactic.WagnerX.PositiveLag
-import RealRooted.Tactic.WagnerX.Syntax
-import RealRooted.Tactic.WagnerX.TranslatedLag
-import RealRooted.Tactic.WeightedSum
-import RealRooted.TetradiagonalFactorization
-import RealRooted.ThreeTermRecurrence.Degree
-import RealRooted.ThreeTermRecurrence.HalfGrowth
-import RealRooted.ThreeTermRecurrence.Interlacing
-import RealRooted.ThreeTermRecurrence.LagFeedback
-import RealRooted.ThreeTermRecurrence.Moments
-import RealRooted.ThreeTermRecurrence.NoCommonRoot
-import RealRooted.ThreeTermRecurrence.ParityProduct
-import RealRooted.ThresholdMatrix
-import RealRooted.ThresholdMatrix.Basic
-import RealRooted.ThresholdMatrix.GustafssonSolus
-import RealRooted.ThresholdMatrix.HaglundZhang
-import RealRooted.TotallyNonnegInterlacing
-import RealRooted.Touchard
-import RealRooted.Transforms.BrandenE
-import RealRooted.Transforms.BrandenE.Basic
-import RealRooted.Transforms.BrandenE.BasisImage
-import RealRooted.Transforms.BrandenE.Delannoy
-import RealRooted.Transforms.BrandenE.EvenBinomial
-import RealRooted.Transforms.BrandenE.IntervalPreserver
-import RealRooted.Transforms.BrandenE.Inverse
-import RealRooted.Transforms.BrandenE.OrderedBell
-import RealRooted.Transforms.BrandenE.ProperPosition
-import RealRooted.Transforms.BrandenE.WeightedSum
-import RealRooted.Transforms.ReverseHermite
-import RealRooted.Transforms.ReverseHermite.Basic
-import RealRooted.Transforms.ReverseHermite.Derivative
-import RealRooted.Transforms.ReverseHermite.Preservation
-import RealRooted.Transforms.StirlingRootRegions
-import RealRooted.UnitIntervalGraph.AcyclicSink
-import RealRooted.UpperDerivativeInterlace
-import RealRooted.VeroneseMatrix
-import RealRooted.VeroneseRecognition
-import RealRooted.VeroneseSection
-import RealRooted.VeroneseSectionPair
-import RealRooted.VeroneseSectionPair.HermiteBiehler
-import RealRooted.Wagner
-import RealRooted.Wagner.LeftSum
-import RealRooted.Wagner.NonpositiveRoots
-import RealRooted.WagnerRightSum
-import RealRooted.WagnerRightSum.Sign
-import RealRooted.WagnerX
-import RealRooted.WagnerX.AffineFactors
-import RealRooted.WagnerX.ListInterlacing
-import RealRooted.WagnerX.NonnegativeRoots
-import RealRooted.WagnerX.ProperPosition
-import RealRooted.WangYeh.Affine
-import RealRooted.WangYeh.Examples
-import RealRooted.WangYeh.PF
-import RealRooted.WangYeh.TriangularArray
-import RealRooted.WangYeh.TriangularMatrix
-import RealRooted.WeightedSum
-import RealRooted.Wronskian
-import RealRooted.Wronskian.Algebra
-import RealRooted.Wronskian.Converse
-import RealRooted.Wronskian.Forward
-import RealRooted.Wronskian.PolarLaguerre
-import RealRooted.Wronskian.Successor
-import RealRooted.Wronskian.Successor.Gap
-import RealRooted.Wronskian.Successor.Interlacing
-import RealRooted.Wronskian.Successor.Signs
-import RealRooted.Wronskian.Successor.Splits
-import RealRooted.Wronskian.WeakForward
-import RealRooted.PFPolynomial.PreserverClosure
-import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
-import RealRooted.BorceaBranden.Applications.QuadraticExponentialMultiplier
-import RealRooted.BorceaBranden.Applications.RealCoordinatePFMultiplier
+public import RealRooted.ASWKarlinKernel
+public import RealRooted.ASWKarlinMatrix
+public import RealRooted.ASWKarlinSineBounds
+public import RealRooted.ASWKarlinThreshold
+public import RealRooted.ASWKarlinVariation
+public import RealRooted.ASWKarlinVectors
+public import RealRooted.AffineDerivative
+public import RealRooted.AffineFamily
+public import RealRooted.AffineFamily.Basic
+public import RealRooted.AffineFamily.Boundary
+public import RealRooted.AffineFamily.LowDegree
+public import RealRooted.AffineFamily.PositiveFamily
+public import RealRooted.AffineFamily.RootCrossing
+public import RealRooted.AffineFamily.Wronskian
+public import RealRooted.AffineLineRestriction
+public import RealRooted.AffineProperPosition
+public import RealRooted.AissenSchoenbergWhitney
+public import RealRooted.AissenSchoenbergWhitneyBase
+public import RealRooted.AllCombo
+public import RealRooted.Analysis.FactorialTail
+public import RealRooted.Analysis.PowerTail
+public import RealRooted.Analysis.PowerTail.Bernoulli
+public import RealRooted.Analysis.PowerTail.Quadratic
+public import RealRooted.Analysis.PowerTail.Telescoping
+public import RealRooted.Apolarity
+public import RealRooted.Applications.BinderVecchi.UniformChow
+public import RealRooted.Applications.BinderVecchi.UniformMatroid
+public import RealRooted.Applications.EulerianVariations
+public import RealRooted.Applications.EulerianVariations.CyclicPathDescents
+public import RealRooted.Applications.EulerianVariations.TernaryRuns
+public import RealRooted.Applications.EulerianVariations.TernaryRuns.Recurrence
+public import RealRooted.Applications.OEIS.A132885
+public import RealRooted.Applications.OEIS.A272471.Recurrence
+public import RealRooted.Applications.OEIS.InversePeaks
+public import RealRooted.Applications.OEIS.InversePeaksTypeB
+public import RealRooted.Applications.OEIS.LowerReentrantCorner
+public import RealRooted.Applications.PeakPolynomials.HitPolynomials
+public import RealRooted.Applications.PeakPolynomials.PeakInduction
+public import RealRooted.ArrayPolynomialDeterminant
+public import RealRooted.ArrayPolynomialDeterminantIdentification
+public import RealRooted.ArrayPolynomialDeterminantRecurrence
+public import RealRooted.ArrayPolynomialSchur
+public import RealRooted.ArrayPolynomialWeights
+public import RealRooted.BalancedRunTransformation
+public import RealRooted.BalancedRunTransformation.Interlacing
+public import RealRooted.BalancedRunTransformation.Preservation
+public import RealRooted.Basic
+public import RealRooted.Basic.AffineInterlacing
+public import RealRooted.Basic.Coefficients
+public import RealRooted.Basic.Coefficients.Multivariate
+public import RealRooted.Basic.PolynomialFacts
+public import RealRooted.Basic.ProperPosition
+public import RealRooted.Basic.RootLists
+public import RealRooted.BasisTransform
+public import RealRooted.BernsteinCone
+public import RealRooted.BernsteinCone.Preserver
+public import RealRooted.Bezoutian
+public import RealRooted.Bezoutian.ComplexRoots
+public import RealRooted.Bezoutian.LowDegree
+public import RealRooted.Bezoutian.MatrixBasics
+public import RealRooted.Bezoutian.RootEvaluation
+public import RealRooted.Bezoutian.StrictInterleaving
+public import RealRooted.Bezoutian.Successor
+public import RealRooted.Bezoutian.WronskianConverse
+public import RealRooted.BinaryRunTransformation.Anchor
+public import RealRooted.BinaryRunTransformation.Coefficients
+public import RealRooted.BinaryRunTransformation.Continuation
+public import RealRooted.BinaryRunTransformation.Contraction
+public import RealRooted.BinaryRunTransformation.CriticalValue
+public import RealRooted.BinaryRunTransformation.CrossLength
+public import RealRooted.BinaryRunTransformation.Deformation
+public import RealRooted.BinaryRunTransformation.Interlacing
+public import RealRooted.BinaryRunTransformation.KernelIdentities
+public import RealRooted.BinaryRunTransformation.MultiplierMotzkin
+public import RealRooted.BinaryRunTransformation.PointingPencil
+public import RealRooted.BinaryRunTransformation.Sturm
+public import RealRooted.BinaryRunTransformation.SymbolCounterexample
+public import RealRooted.BivariateOpenMapping
+public import RealRooted.BooleanSwapOrbit
+public import RealRooted.BorceaBranden.Applications.AffineFiniteSymbol
+public import RealRooted.BorceaBranden.Applications.BidiagonalSymbol
+public import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
+public import RealRooted.BorceaBranden.Applications.ComplexClassification
+public import RealRooted.BorceaBranden.Applications.ComplexUnivariateSymbol
+public import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
+public import RealRooted.BorceaBranden.Applications.EulerFiniteSymbol
+public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
+public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.CoefficientExtraction
+public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization.Derivative
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJAuxiliary.Homogeneous
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PFHomogenize
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.PolyaFrequency
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Product
+public import RealRooted.BorceaBranden.Applications.HarmonicSubstitution.BFJOutput.Stability
+public import RealRooted.BorceaBranden.Applications.HomogenizeStable
+public import RealRooted.BorceaBranden.Applications.PolarizationIff
+public import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
+public import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing
+public import RealRooted.BorceaBranden.Applications.UnivariateSymbol
+public import RealRooted.BorceaBranden.BoundarySpecialization
+public import RealRooted.BorceaBranden.FiniteSymbolBasis
+public import RealRooted.BorceaBranden.FiniteSymbolClassification
+public import RealRooted.BorceaBranden.FiniteSymbolCoefficient
+public import RealRooted.BorceaBranden.FiniteSymbolContraction
+public import RealRooted.BorceaBranden.FiniteSymbolDegree
+public import RealRooted.BorceaBranden.FiniteSymbolPreserver
+public import RealRooted.BorceaBranden.FiniteSymbolProduct
+public import RealRooted.BorceaBranden.FiniteSymbolReciprocal
+public import RealRooted.BorceaBranden.FiniteSymbolReconstruction
+public import RealRooted.BorceaBranden.FiniteSymbolReconstructionCore
+public import RealRooted.BorceaBranden.UnivariateFiniteSymbol
+public import RealRooted.BoundarySpecializationGeneral
+public import RealRooted.BoundarySpecializationRight
+public import RealRooted.BrandenLC
+public import RealRooted.BrandenLC.Infinite
+public import RealRooted.BrandenLeite.BinomialShiftedTiling
+public import RealRooted.BrandenLeite.ChainPolynomial
+public import RealRooted.BrandenLeite.ChainPolynomial.Algebra
+public import RealRooted.BrandenLeite.ChainPolynomial.Resolution
+public import RealRooted.BrandenLeite.CompositionFamilies
+public import RealRooted.BrandenLeite.CompositionRow
+public import RealRooted.BrandenLeite.CompositionRowClosure
+public import RealRooted.BrandenLeite.ConstantDiagonal
+public import RealRooted.BrandenLeite.DiagonalTail
+public import RealRooted.BrandenLeite.KernelClosure
+public import RealRooted.BrandenLeite.KernelRow
+public import RealRooted.BrandenLeite.MarkedShift
+public import RealRooted.BrandenLeite.Network
+public import RealRooted.BrandenLeite.NetworkTotallyNonneg
+public import RealRooted.BrandenLeite.NetworkWhitney
+public import RealRooted.BrandenLeite.OptionalRiseMatrix
+public import RealRooted.BrandenLeite.PFFactorNumerators
+public import RealRooted.BrandenLeite.Regularization
+public import RealRooted.BrandenLeite.Resolvable
+public import RealRooted.BrandenLeite.ResolvableTotallyNonneg
+public import RealRooted.BrandenLeite.ShiftedTiling
+public import RealRooted.BrandenLeite.SourceBorder
+public import RealRooted.BrandenLeite.SourceBorderKernel
+public import RealRooted.BrandenLeite.StationaryTiling
+public import RealRooted.BrandenLeite.Theorem37
+public import RealRooted.BrandenLeite.TilingFactors
+public import RealRooted.BrandenLeite.ToeplitzComposition
+public import RealRooted.BrandenLeite.TwoKernel
+public import RealRooted.BrandenLeite.TwoKernelAlgebra
+public import RealRooted.BrandenLeite.WeightedShift
+public import RealRooted.BrandenLeite.WeightedShiftTiling
+public import RealRooted.BrandenLeite.WhitneyReduction
+public import RealRooted.BrandenLeite.ZeroConstant
+public import RealRooted.BrandenVecchi.Chow
+public import RealRooted.BrandenVecchi.ChowContinuity
+public import RealRooted.BrandenVecchi.ChowFullProjective
+public import RealRooted.BrandenVecchi.ChowGeometricScaling
+public import RealRooted.BrandenVecchi.ChowInfinitePF
+public import RealRooted.BrandenVecchi.ChowInterlacing
+public import RealRooted.BrandenVecchi.ChowInterlacingQuotient
+public import RealRooted.BrandenVecchi.ChowInterlacingSign
+public import RealRooted.BrandenVecchi.ChowProjectiveRegularization
+public import RealRooted.BrandenVecchi.ChowResolution
+public import RealRooted.BrandenVecchi.ChowResolutionInterlacing
+public import RealRooted.BrandenVecchi.ChowRowTransform
+public import RealRooted.BrandenVecchi.ChowSignedWords
+public import RealRooted.BrandenVecchi.ChowSupersymmetric
+public import RealRooted.BrandenVecchi.ChowToeplitz
+public import RealRooted.BrandenVecchi.ChowTotallyNonneg
+public import RealRooted.BrandenVecchi.ChowZeroPrefix
+public import RealRooted.BrandenVecchi.OrdinaryWordSeries
+public import RealRooted.BrandenVecchi.ReflectionInterlacing
+public import RealRooted.BrandenVecchi.SignedWordEnumerator
+public import RealRooted.BrandenVecchi.SignedWordRuns.Basic
+public import RealRooted.BrandenVecchi.SignedWordRuns.FiberSum
+public import RealRooted.BrandenVecchi.SignedWordRuns.Statistics
+public import RealRooted.BrandenVecchi.SignedWords
+public import RealRooted.BrandenVecchi.SmirnovChow
+public import RealRooted.BrandenVecchi.SmirnovInterlacing
+public import RealRooted.BrandenVecchi.SmirnovRecurrence
+public import RealRooted.BrandenVecchi.SmirnovSpecialization
+public import RealRooted.BrandenVecchi.SmirnovSubstitutionSeries
+public import RealRooted.BrandenVecchi.SupersymmetricCoefficients
+public import RealRooted.BrandenVecchi.SupersymmetricLimits
+public import RealRooted.CauchyInterlacing
+public import RealRooted.CauchyInterlacing.Polynomial
+public import RealRooted.CauchyInterlacing.RankOne
+public import RealRooted.CauchyInterlacing.Submatrix
+public import RealRooted.Challenges.PolyaFrequency.AissenSchoenbergWhitney
+public import RealRooted.Challenges.Interlacing.Bezoutian
+public import RealRooted.Challenges.Combinatorial.BigDescents321
+public import RealRooted.Challenges.Preservers.BinaryRunTransformation
+public import RealRooted.Challenges.Stability.BorceaBranden
+public import RealRooted.Challenges.Combinatorial.BorosMoll
+public import RealRooted.Challenges.Preservers.BrandenETransform
+public import RealRooted.Challenges.Combinatorial.BrandenLeite
+public import RealRooted.Challenges.Combinatorial.BrandenSolus
+public import RealRooted.Challenges.Combinatorial.BrandenVecchi
+public import RealRooted.Challenges.Matrices.CauchyInterlacing
+public import RealRooted.Challenges.Graphs.ChordalClawFreeAcyclicSinks
+public import RealRooted.Challenges.Graphs.ChudnovskySeymour
+public import RealRooted.Challenges.Graphs.ClawFreeOrientationSinks
+public import RealRooted.Challenges.Roots.CoefficientDominance
+public import RealRooted.Challenges.Interlacing.CommonInterleaver
+public import RealRooted.Challenges.Interlacing.DerivativeInterlacing
+public import RealRooted.Challenges.Roots.Descartes
+public import RealRooted.Challenges.PolyaFrequency.EdreiThoma
+public import RealRooted.Challenges.Roots.EnestromKakeya
+public import RealRooted.Challenges.Combinatorial.EulerBidiagonal
+public import RealRooted.Challenges.Combinatorial.Eulerian
+public import RealRooted.Challenges.Combinatorial.EulerianVariations
+public import RealRooted.Challenges.Interlacing.FPolynomialRecurrences
+public import RealRooted.Challenges.Interlacing.FactorialCompression
+public import RealRooted.Challenges.Interlacing.Favard
+public import RealRooted.Challenges.Preservers.FiniteFreeConvolutions
+public import RealRooted.Challenges.Preservers.GammaTransform
+public import RealRooted.Challenges.Roots.GarloffWagnerHurwitz
+public import RealRooted.Challenges.Combinatorial.GeneralizedSnakePosets
+public import RealRooted.Challenges.Roots.GraceApolarity
+public import RealRooted.Challenges.PolyaFrequency.Hadamard
+public import RealRooted.Challenges.Combinatorial.HarperCLT
+public import RealRooted.Challenges.Graphs.HeilmannLieb
+public import RealRooted.Challenges.Roots.HermiteBiehlerHurwitz
+public import RealRooted.Challenges.Orthogonal.HermitePolynomials
+public import RealRooted.Challenges.Roots.HermitePoulain
+public import RealRooted.Challenges.Roots.Hoggar
+public import RealRooted.Challenges.Combinatorial.HosterStump
+public import RealRooted.Challenges.Roots.Hutchinson
+public import RealRooted.Challenges.Interlacing.Interlacing
+public import RealRooted.Challenges.Interlacing.InterlacingClosure
+public import RealRooted.Challenges.Orthogonal.JacobiDeformation
+public import RealRooted.Challenges.Orthogonal.JacobiPolynomials
+public import RealRooted.Challenges.Combinatorial.JacobiStirlingDescent
+public import RealRooted.Challenges.Combinatorial.JacobiStirlingNumbers
+public import RealRooted.Challenges.Roots.Kurtz
+public import RealRooted.Challenges.Matrices.LGV
+public import RealRooted.Challenges.Orthogonal.LaguerrePolynomials
+public import RealRooted.Challenges.Stability.LeakeRyder
+public import RealRooted.Challenges.Stability.LeeYang
+public import RealRooted.Challenges.Roots.Liggett
+public import RealRooted.Challenges.Interlacing.LiuOppositeSigns
+public import RealRooted.Challenges.Interlacing.MaWangLiuWang
+public import RealRooted.Challenges.Matrices.MatrixInterlacing
+public import RealRooted.Challenges.Graphs.MinimaPolynomial
+public import RealRooted.Challenges.Preservers.MonomialChainOperator
+public import RealRooted.Challenges.Preservers.MultiplierSequence
+public import RealRooted.Challenges.Combinatorial.MultisetEulerianNarayana
+public import RealRooted.Challenges.Combinatorial.Narayana
+public import RealRooted.Challenges.Roots.NewtonMaclaurin
+public import RealRooted.Challenges.PolyaFrequency.Nijenhuis
+public import RealRooted.Challenges.Interlacing.Obreschkoff
+public import RealRooted.Challenges.Preservers.OperatorPreservers
+public import RealRooted.Challenges.Combinatorial.ParkingFunctions
+public import RealRooted.Challenges.Combinatorial.PeakPolynomials
+public import RealRooted.Challenges.Matrices.PerronFrobenius
+public import RealRooted.Challenges.Interlacing.ProductSequence
+public import RealRooted.Challenges.Stability.RealStability
+public import RealRooted.Challenges.Interlacing.RecurrenceRootWindows
 
-import RealRooted.EulerBidiagonal.Preservation
+public import RealRooted.Challenges.Interlacing.ReciprocalShift
+public import RealRooted.Challenges.Roots.RootAmplitude
+public import RealRooted.Challenges.Roots.SchurCohn
+public import RealRooted.Challenges.Combinatorial.SeparablePermutations
+public import RealRooted.Challenges.Matrices.SmallInterlacingMatrices
+public import RealRooted.Challenges.Roots.Sturm
+public import RealRooted.Challenges.Roots.SturmSequenceFamilies
+public import RealRooted.Challenges.Matrices.ThresholdMatrices
+public import RealRooted.Challenges.Combinatorial.ToricContribution
+public import RealRooted.Challenges.Matrices.TotallyNonnegativeMatrices
+public import RealRooted.Challenges.Combinatorial.UniformMatroidHodgePoincare
+public import RealRooted.Challenges.Graphs.UnitIntervalAcyclicSinks
+public import RealRooted.Challenges.Matrices.VanDerWaerden
+public import RealRooted.Challenges.PolyaFrequency.VeroneseSections
+public import RealRooted.Challenges.Interlacing.Wagner
+public import RealRooted.Challenges.Preservers.WangYeh
+public import RealRooted.Challenges.Interlacing.Wronskian
+public import RealRooted.ChudnovskySeymour.Core
+public import RealRooted.ClassicalHurwitzMatrix
+public import RealRooted.ClassicalHurwitzMatrix.Routh
+public import RealRooted.ClassicalHurwitzMatrix.Routh.Determinant
+public import RealRooted.ClassicalHurwitzMatrix.Routh.ReverseTotallyNonnegative
+public import RealRooted.ClassicalHurwitzMatrix.Routh.Sequence
+public import RealRooted.ClassicalHurwitzMatrix.Routh.Sequence.TotallyNonnegative
+public import RealRooted.ClassicalHurwitzMatrix.Routh.TotallyNonnegative
+public import RealRooted.ClassicalHurwitzMatrix.Stability
+public import RealRooted.ClassicalHurwitzMatrix.Stability.ClosedLimit
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Closure
+public import RealRooted.ClassicalHurwitzMatrix.Stability.CoefficientSigns
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Converse
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Criterion
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Extraction
+public import RealRooted.ClassicalHurwitzMatrix.Stability.HermiteBiehler
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Lace
+public import RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Parity
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Rotation
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Routh
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.ProperPosition
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.Reverse
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.Sequence
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Routh.WeakReverse
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Terminal
+public import RealRooted.ClassicalHurwitzMatrix.Stability.Vieta
+public import RealRooted.ClassicalHurwitzMatrix.Stability.WeakConverse
+public import RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative
+public import RealRooted.CoefficientDominance
+public import RealRooted.CoefficientDominance.LogConcavity
+public import RealRooted.CoefficientDominance.RootGap
+public import RealRooted.CoefficientDominance.Sequence
+public import RealRooted.CoefficientDominance.Symmetric
+public import RealRooted.CoefficientDominance.Symmetric.Finite
+public import RealRooted.CoefficientDominance.Symmetric.Polynomial
+public import RealRooted.CoefficientDominance.Symmetric.Sharp
+public import RealRooted.CoefficientDominance.Symmetric.Tail
+public import RealRooted.CoefficientDominance.Symmetric.Upper
+public import RealRooted.CoefficientShape
+public import RealRooted.CoefficientShape.Hoggar
+public import RealRooted.CoefficientShape.Liggett
+public import RealRooted.CoefficientShape.LiuMao
+public import RealRooted.CoefficientShape.LiuMao.Elevation
+public import RealRooted.CoefficientShape.LiuMao.PathKernel
+public import RealRooted.CombinatorialExamples
+public import RealRooted.CombinatorialExamples.Avoid132Descents
+public import RealRooted.CombinatorialExamples.BigDescents321
+public import RealRooted.CombinatorialExamples.BigDescents321.Backward
+public import RealRooted.CombinatorialExamples.BigDescents321.Basic
+public import RealRooted.CombinatorialExamples.BigDescents321.BottomMoments
+public import RealRooted.CombinatorialExamples.BigDescents321.Certificate
+public import RealRooted.CombinatorialExamples.BigDescents321.Certificate.Data
+public import RealRooted.CombinatorialExamples.BigDescents321.Certificate.Reflect
+public import RealRooted.CombinatorialExamples.BigDescents321.Coordinates
+public import RealRooted.CombinatorialExamples.BigDescents321.Criterion
+public import RealRooted.CombinatorialExamples.BigDescents321.Functionals
+public import RealRooted.CombinatorialExamples.BigDescents321.Gegenbauer
+public import RealRooted.CombinatorialExamples.BigDescents321.GeneratingFunction
+public import RealRooted.CombinatorialExamples.BigDescents321.Kernel
+public import RealRooted.CombinatorialExamples.BigDescents321.KernelSum
+public import RealRooted.CombinatorialExamples.BigDescents321.Neighbor
+public import RealRooted.CombinatorialExamples.BigDescents321.Reference
+public import RealRooted.CombinatorialExamples.BigDescents321.Residual
+public import RealRooted.CombinatorialExamples.BigDescents321.ScalarBases
+public import RealRooted.CombinatorialExamples.BigDescents321.ScalarBounds
+public import RealRooted.CombinatorialExamples.BigDescents321.SigmaSign
+public import RealRooted.CombinatorialExamples.BigDescents321.SignConversion
+public import RealRooted.CombinatorialExamples.BigDescents321.SmallCases.Certificates
+public import RealRooted.CombinatorialExamples.BigDescents321.SmallCases.ListPoly
+public import RealRooted.CombinatorialExamples.BigDescents321.SmallCases.Literals
+public import RealRooted.CombinatorialExamples.BigDescents321.TopCoefficients
+public import RealRooted.CombinatorialExamples.BigDescentsOddBinom
+public import RealRooted.CombinatorialExamples.BorosMoll
+public import RealRooted.CombinatorialExamples.BorosMoll.Basic
+public import RealRooted.CombinatorialExamples.BorosMoll.Estimates
+public import RealRooted.CombinatorialExamples.BorosMoll.Infinite
+public import RealRooted.CombinatorialExamples.CentralFactorial
+public import RealRooted.CombinatorialExamples.ColoredSetPartitions
+public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.CombinatorialExamples.DerangementStatistic
+public import RealRooted.CombinatorialExamples.DerangementsExcNormal
+public import RealRooted.CombinatorialExamples.DyckNarayana
+public import RealRooted.CombinatorialExamples.EulerTypeOeis
+public import RealRooted.CombinatorialExamples.EulerTypeRows
+public import RealRooted.CombinatorialExamples.Eulerian
+public import RealRooted.CombinatorialExamples.EulerianNormal
+public import RealRooted.CombinatorialExamples.EulerianStatistic
+public import RealRooted.CombinatorialExamples.EvenBinom
+public import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Basic
+public import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Comparison
+public import RealRooted.CombinatorialExamples.JacobiStirling.Descent.Families
+public import RealRooted.CombinatorialExamples.JacobiStirling.Descent.RealRooted
+public import RealRooted.CombinatorialExamples.JacobiStirling.FirstKind
+public import RealRooted.CombinatorialExamples.JacobiStirling.FirstKindPF
+public import RealRooted.CombinatorialExamples.JacobiStirling.Inverse
+public import RealRooted.CombinatorialExamples.JacobiStirling.SecondKind
+public import RealRooted.CombinatorialExamples.JacobiStirling.TotallyNonnegative
+public import RealRooted.CombinatorialExamples.JacobiStirling.Weight
+public import RealRooted.CombinatorialExamples.Motzkin
+public import RealRooted.CombinatorialExamples.MultisetEulerianNarayana
+public import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.GammaOperator
+public import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.TotallyNonneg
+public import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.ZeroMonotonicity
+public import RealRooted.CombinatorialExamples.Narayana
+public import RealRooted.CombinatorialExamples.NarayanaNormal
+public import RealRooted.CombinatorialExamples.OneDescentGamma
+public import RealRooted.CombinatorialExamples.PathPowerIndependence
+public import RealRooted.CombinatorialExamples.PeakValues
+public import RealRooted.CombinatorialExamples.PeakValues.Canonical
+public import RealRooted.CombinatorialExamples.PeakValues.Insertion
+public import RealRooted.CombinatorialExamples.PeakValues.InsertionSum
+public import RealRooted.CombinatorialExamples.PeakValues.Sharpness
+public import RealRooted.CombinatorialExamples.PeakValues.Stability
+public import RealRooted.CombinatorialExamples.PeakValues.TranslatedRecurrence
+public import RealRooted.CombinatorialExamples.PeakValues.WeightedInterleaving
+public import RealRooted.CombinatorialExamples.Simsun
+public import RealRooted.CombinatorialExamples.SingletonFreeSetPartitions
+public import RealRooted.CombinatorialExamples.StirlingPermutations
+public import RealRooted.CombinatorialExamples.StirlingPermutationsNormal
+public import RealRooted.CombinatorialExamples.SturmDerangementsExc
+public import RealRooted.CombinatorialExamples.SuperEulerian
+public import RealRooted.CombinatorialExamples.Touchard
+public import RealRooted.CombinatorialExamples.TypeBEulerian
+public import RealRooted.Combinatorics.BellCatalyticStates
+public import RealRooted.Combinatorics.ComparisonBottom
+public import RealRooted.Combinatorics.ComparisonBottomInsertion
+public import RealRooted.Combinatorics.MinimumInsertionWord
+public import RealRooted.Combinatorics.OrderedSubsetPairsNarayana
+public import RealRooted.CommonInterleaver.AffineBoundary
+public import RealRooted.CommonInterleaver.DescPolynomial
+public import RealRooted.CommonInterleaver.FamilySum
+public import RealRooted.CommonInterleaver.FamilyUpgrade
+public import RealRooted.CommonInterleaver.Finite
+public import RealRooted.CommonInterleaver.IntervalLemmas
+public import RealRooted.CommonInterleaver.PairBridge
+public import RealRooted.CommonInterleaver.PairBridge.Compatibility
+public import RealRooted.CommonInterleaver.PairBridge.Compatibility.NonnegativeShift
+public import RealRooted.CommonInterleaver.PairBridge.Reduction
+public import RealRooted.CommonInterleaver.PairBridge.Reduction.CommonInterleaver
+public import RealRooted.CommonInterleaver.PairBridge.Reduction.CommonRoot
+public import RealRooted.CommonInterleaver.PairBridge.SuccDegree
+public import RealRooted.CommonInterleaver.PairBridge.SuccDegree.ClosedSegment
+public import RealRooted.CommonInterleaver.PairBridge.SuccDegree.SlotData
+public import RealRooted.CommonInterleaver.PairwiseUpgrade
+public import RealRooted.CommonInterleaver.PairwiseUpgrade.FamilyCompatibility
+public import RealRooted.CommonInterleaver.PairwiseUpgrade.FourWay
+public import RealRooted.CommonInterleaver.PairwiseUpgrade.FourWay.Equivalences
+public import RealRooted.CommonInterleaver.PairwiseUpgrade.LowDegree
+public import RealRooted.CommonInterleaver.RightPencil
+public import RealRooted.CommonInterleaver.RootCountCombinatorics
+public import RealRooted.CommonInterleaver.RootDesc
+public import RealRooted.CommonInterleaver.RootSelection
+public import RealRooted.CommonInterleaver.RootSelectionTree
+public import RealRooted.CommonInterleaver.RootSlots
+public import RealRooted.CommonInterleaver.RootSlots.Basic
+public import RealRooted.CommonInterleaver.SameDegreeRootCount
+public import RealRooted.CommonInterleaver.Sequence
+public import RealRooted.CommonInterleaver.SuccDegreeEndpoint
+public import RealRooted.CommonInterleaver.SuccDegreeLowDegree
+public import RealRooted.CommonInterleaver.Counterexamples
+public import RealRooted.CommonInterleaverSeq
+public import RealRooted.CommonInterleaverTwo
+public import RealRooted.Compatibility.Affine
+public import RealRooted.Compatibility.Basic
+public import RealRooted.Compatibility.ConicImage
+public import RealRooted.Compatibility.CutTransform
+public import RealRooted.Compatibility.CutTransformClosure
+public import RealRooted.Compatibility.CutTransformObstruction
+public import RealRooted.Compatibility.InterleaverBridge
+public import RealRooted.Compatibility.Leander
+public import RealRooted.Compatibility.LeanderOutput
+public import RealRooted.Compatibility.LeanderTransform
+public import RealRooted.Compatibility.LeanderXOutput
+public import RealRooted.Compatibility.NDCutInvariant
+public import RealRooted.Compatibility.NDCutPreservation
+public import RealRooted.Compatibility.NDCutStaircase
+public import RealRooted.Compatibility.NDCutStateClosure
+public import RealRooted.Compatibility.NDCutThresholdClosure
+public import RealRooted.Compatibility.Pair
+public import RealRooted.Compatibility.Three
+public import RealRooted.ConvexCombination
+public import RealRooted.CriticalValueContinuation
+public import RealRooted.CubicDiscriminant
+public import RealRooted.CubicNewton
+public import RealRooted.DegreeDropDivXPrec
+public import RealRooted.DegreeDropReversal
+public import RealRooted.DegreeIncreasingLocalLowerCount
+public import RealRooted.Derivative
+public import RealRooted.Derivative.Algebra
+public import RealRooted.Derivative.FamilyClosure
+public import RealRooted.Derivative.XMulSequence
+public import RealRooted.Derivative.Interlacing
+public import RealRooted.Derivative.LinearCombination
+public import RealRooted.Derivative.RootCounting
+public import RealRooted.Derivative.ShiftRootMatching
+public import RealRooted.Derivative.ShiftSequence
+public import RealRooted.Derivative.SimpleRoots
+public import RealRooted.DerivativeRecurrence
+public import RealRooted.DerivativeRecurrence.AffineLagStrict
+public import RealRooted.DerivativeRecurrence.Degree
+public import RealRooted.DerivativeRecurrence.General
+public import RealRooted.DerivativeRecurrence.GeneralizedLaguerre
+public import RealRooted.DerivativeRecurrence.GeneralizedLaguerreInterlacing
+public import RealRooted.DerivativeRecurrence.Interlacing
+public import RealRooted.DerivativeRecurrence.LagWeak
+public import RealRooted.DerivativeRecurrence.LagDegree
+public import RealRooted.DerivativeRecurrence.Linear
+public import RealRooted.DerivativeRecurrence.QuadraticDegree
+public import RealRooted.DerivativeRecurrence.QuadraticInterlacing
+public import RealRooted.DerivativeRecurrence.QuadraticLagStrict
+public import RealRooted.DerivativeRecurrence.QuadraticSeed
+public import RealRooted.DerivativeRecurrence.RootWindow
+public import RealRooted.DerivativeRecurrence.SecondDerivativeDegree
+public import RealRooted.DerivativeRecurrence.SecondOrderDegree
+public import RealRooted.DerivativeRecurrence.SecondOrderInterlacing
+public import RealRooted.DerivativeRecurrence.SecondOrderInterlacing.PolyaFrequency
+public import RealRooted.DerivativeRecurrence.SecondOrderODE
+public import RealRooted.DeterminantalStability
+public import RealRooted.DeterminantalStability.Constants
+public import RealRooted.DifferentialBlocks
+public import RealRooted.EdreiThoma.Easy
+public import RealRooted.ElementaryDifferential
+public import RealRooted.EndpointDerivative
+public import RealRooted.EndpointDerivative.Basic
+public import RealRooted.EndpointDerivative.Sequence
+public import RealRooted.EulerBidiagonal
+public import RealRooted.EulerBidiagonal.ComparisonData
+public import RealRooted.EulerBidiagonal.DepRows
+public import RealRooted.EulerBidiagonal.General
+public import RealRooted.EulerBidiagonal.GeneralRows
+public import RealRooted.EulerBidiagonal.Location
+public import RealRooted.EulerBidiagonal.PairStep
+public import RealRooted.EulerBidiagonal.PairTheorem
+public import RealRooted.EulerBidiagonal.ZeroParameter
+public import RealRooted.EulerOperator
+public import RealRooted.EulerOperator.Correction
+public import RealRooted.EulerOperator.Darboux
+public import RealRooted.EulerOperator.Darboux.Basic
+public import RealRooted.EulerOperator.Darboux.Interlacing
+public import RealRooted.EulerOperator.Darboux.NegativeRoots
+public import RealRooted.EulerOperator.OrderNumerator.Basic
+public import RealRooted.EulerOperator.OrderNumerator.Preservation
+public import RealRooted.EulerOperator.Pencil
+public import RealRooted.EulerOperator.Polar
+public import RealRooted.EulerOperator.Polar.Adjacent
+public import RealRooted.EulerOperator.Polar.MultiplierSequence
+public import RealRooted.EulerOperator.Polar.Pencil
+public import RealRooted.EulerOperator.Polar.ProperPosition
+public import RealRooted.EulerOperator.Polar.RealParameter
+public import RealRooted.EulerOperator.ScaledPolar
+public import RealRooted.EulerOperator.Shift
+public import RealRooted.EulerianCompletion
+public import RealRooted.EulerianCompletion.ProperPosition
+public import RealRooted.EulerianMixedCompatibility
+public import RealRooted.EulerianMixedCompatibility.Insertion
+public import RealRooted.FactorialCompression.Basic
+public import RealRooted.FactorialCompression.CommonKernel
+public import RealRooted.FactorialCompression.Compression
+public import RealRooted.FactorialCompression.DegreeChanging
+public import RealRooted.FactorialCompression.Examples
+public import RealRooted.FactorialCompression.Kernel
+public import RealRooted.Favard
+public import RealRooted.Favard.Affine
+public import RealRooted.Favard.Affine.Basic
+public import RealRooted.Favard.Affine.Denominator
+public import RealRooted.Favard.Affine.RowSign
+public import RealRooted.Favard.Orthogonality
+public import RealRooted.Favard.PathEnvelope
+public import RealRooted.Favard.Recurrence
+public import RealRooted.FiniteFreeAdditive
+public import RealRooted.FiniteFreeAdditive.HalfInteger
+public import RealRooted.FiniteFreeAdditive.HalfIntegerConvolution
+public import RealRooted.FiniteFreeAdditive.HalfIntegerPreservation
+public import RealRooted.FiniteFreeAdditive.Identity
+public import RealRooted.FiniteFreeAdditive.Preservation
+public import RealRooted.FiniteFreeMultiplicative
+public import RealRooted.FiniteFreeRootCount
+public import RealRooted.FolkloreLemma
+public import RealRooted.GammaPencil.Basic
+public import RealRooted.GammaPencil.Intertwining
+public import RealRooted.GammaPencil.Invariants
+public import RealRooted.GammaPencil.Preserver
+public import RealRooted.GammaPencil.Symbol
+public import RealRooted.GammaPencil.SymbolStability
+public import RealRooted.GammaPencil.Theorem
+public import RealRooted.GammaRealRoots
+public import RealRooted.GammaTransform
+public import RealRooted.GammaTransform.Basic
+public import RealRooted.GammaTransform.Preservation
+public import RealRooted.GammaTransform.ProperPosition
+public import RealRooted.GammaTransform.RootLists
+public import RealRooted.GammaTransform.RootMap
+public import RealRooted.GammaTransform.StrictLifting
+public import RealRooted.GarloffWagner
+public import RealRooted.GarloffWagner.Algebra
+public import RealRooted.GarloffWagner.Hadamard
+public import RealRooted.GarloffWagner.HurwitzStable
+public import RealRooted.GarloffWagner.Iterated
+public import RealRooted.GarloffWagner.KreinData
+public import RealRooted.GarloffWagner.KreinExpansion
+public import RealRooted.GarloffWagner.Theorem12
+public import RealRooted.GeneralizedEulerian
+public import RealRooted.GeneralizedEulerian.GeneratingFunction
+public import RealRooted.HlavacekSolus.PolytopalShelling
+public import RealRooted.Interlacing.QuadraticPFPreservers
+public import RealRooted.Laguerre.FiniteCombinations
+public import RealRooted.MaWang.EndpointClassification
+public import RealRooted.MaWang.EndpointMultiplicity
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Argument.Lift
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Cauchy.PrincipalValue.Basic
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Curve.Distance
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Curve.Integrability
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Curve.IntegralBound
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Cycle.Acceptance
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Cycle.Basic
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Cycle.HomologyCauchy
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Cycle.Winding
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Dixon.Def
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Dixon.FunctionDiff
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Dixon.H1Diff
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Dixon.H2.Bound
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Dixon.H2.Diff
+public import RealRooted.Mathlib.Analysis.Complex.Contour.LogDerivFTC
+public import RealRooted.Mathlib.Analysis.Complex.Contour.NullHomologous
+public import RealRooted.Mathlib.Analysis.Complex.Contour.PiecewiseC1On
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Support.DSlopeIntegral
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Support.UpperLogContinuity
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Continuity
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.EndpointRatio
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Integer
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.LocallyConstant
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Number.Basic
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Number.Circle
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Number.Reverse
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.SegmentSum
+public import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Vanishing
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.EntryDegree
+public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.FiniteCombinations
+public import RealRooted.MatrixInterlacing.WeightedThreeStateRows
+public import RealRooted.MatrixInterlacing.WeightedThreeStateStrip
+public import RealRooted.MatrixInterlacing.WeightedThreeStateStripRoots
+public import RealRooted.Mesh.FiniteDifferenceHyperbolicity
+public import RealRooted.OperatorMatrix.CouplingThresholds
+public import RealRooted.MatrixInterlacing.WeightedThreeState
+public import RealRooted.PoweredEulerian
+public import RealRooted.GeneralizedSnakePosets
+public import RealRooted.GeneralizedSnakePosets.ChainPolynomial
+public import RealRooted.GeneralizedSnakePosets.FiniteBoard
+public import RealRooted.GeneralizedSnakePosets.MatrixInduction
+public import RealRooted.GeneralizedSnakePosets.Narayana.JacobiTransport
+public import RealRooted.GeneralizedSnakePosets.Narayana.Modified
+public import RealRooted.GeneralizedSnakePosets.Narayana.PFFacts
+public import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
+public import RealRooted.GeneralizedSnakePosets.Narayana.RootSums
+public import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacing
+public import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacingAnalytic
+public import RealRooted.GeneralizedSnakePosets.Narayana.Turan
+public import RealRooted.GeneralizedSnakePosets.SnakeBand
+public import RealRooted.GeneralizedSnakePosets.SnakeBoard
+public import RealRooted.GeneralizedSnakePosets.SnakeConstant
+public import RealRooted.GeneralizedSnakePosets.SnakeCover
+public import RealRooted.GeneralizedSnakePosets.SnakeReachability
+public import RealRooted.GeneralizedSnakePosets.SnakeRecurrence
+public import RealRooted.GeneralizedSnakePosets.SnakeStaircase
+public import RealRooted.GeneralizedSnakePosets.SnakeWord
+public import RealRooted.GeneralizedSnakePosets.SquarecaseModel
+public import RealRooted.GeneralizedSnakePosets.Statements
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Auxiliary
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Basic
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.BottomRow
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.FiniteCases
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.FullStaircase
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowFormulas
+public import RealRooted.GeneralizedSnakePosetsNarayana
+public import RealRooted.GraceHalfPlane
+public import RealRooted.Graph.AcyclicOrientation
+public import RealRooted.Graph.AllOrientationSink
+public import RealRooted.Graph.AllOrientationSinkIdentity
+public import RealRooted.Graph.ChordalAcyclicSink
+public import RealRooted.Graph.ClawFree
+public import RealRooted.Graph.FiniteDegree
+public import RealRooted.Graph.IndependencePolynomial.Basic
+public import RealRooted.Graph.IndependencePolynomial.ClawFree
+public import RealRooted.Graph.IndependencePolynomial.CliqueDeletion
+public import RealRooted.Graph.IndependencePolynomial.CliqueDeletionCompatibility
+public import RealRooted.Graph.IndependencePolynomial.Multivariate
+public import RealRooted.Graph.IndependencePolynomial.Recurrence
+public import RealRooted.Graph.LeakeRyder
+public import RealRooted.Graph.MatchingPolynomial
+public import RealRooted.Graph.MatchingPolynomial.Multivariate
+public import RealRooted.Graph.MatchingVertexInterlacing
+public import RealRooted.Graph.MinimaForest
+public import RealRooted.Graph.MinimaLocalOrder
+public import RealRooted.Graph.MinimaPolynomial
+public import RealRooted.Gurvits
+public import RealRooted.Gurvits.Capacity
+public import RealRooted.Gurvits.Univariate
+public import RealRooted.GustafssonSolus
+public import RealRooted.Hadamard
+public import RealRooted.Hadamard.Basic
+public import RealRooted.Hadamard.Consequences
+public import RealRooted.Hadamard.Cubic
+public import RealRooted.Hadamard.Finite
+public import RealRooted.Hadamard.FiniteReflection
+public import RealRooted.Hadamard.GarloffWagner
+public import RealRooted.Hadamard.Grace
+public import RealRooted.Hadamard.Hurwitz
+public import RealRooted.Hadamard.KostovMap
+public import RealRooted.Hadamard.Newton
+public import RealRooted.Hadamard.Product
+public import RealRooted.Hadamard.SchurSzegoExamples
+public import RealRooted.Hadamard.SchurSzegoMultiplicity
+public import RealRooted.Hadamard.SchurSzegoSigns
+public import RealRooted.Hadamard.SchurSzegoSimple
+public import RealRooted.Hadamard.SchurSzegoStrict
+public import RealRooted.HeilmannLieb
+public import RealRooted.Hermite
+public import RealRooted.Hermite.Basic
+public import RealRooted.Hermite.Favard
+public import RealRooted.Hermite.Orthogonality
+public import RealRooted.Hermite.Orthogonality.Integral
+public import RealRooted.Hermite.Poulain
+public import RealRooted.Hermite.Bessel
+public import RealRooted.Hermite.PoulainInterlacing
+public import RealRooted.Hermite.Roots
+public import RealRooted.HermiteBiehler
+public import RealRooted.HermiteBiehler.Basic
+public import RealRooted.HermiteBiehler.Converse
+public import RealRooted.HermiteBiehler.Converse.RootGeometry
+public import RealRooted.HermiteBiehler.Converse.Wronskian
+public import RealRooted.HermiteBiehler.ConverseLowDegree
+public import RealRooted.HermiteBiehler.Forward
+public import RealRooted.HermiteBiehler.Hurwitz
+public import RealRooted.HermiteBiehler.LogDerivative
+public import RealRooted.HermiteBiehler.OddEven
+public import RealRooted.HermiteBiehler.OrientedPencil
+public import RealRooted.HermiteBiehler.StablePencil
+public import RealRooted.HlavacekSolus.Shelling
+public import RealRooted.HomogeneousComponentStability
+public import RealRooted.HomogeneousOre
+public import RealRooted.HomogeneousOre.Examples
+public import RealRooted.HomogeneousStability
+public import RealRooted.HosterStump.BoolChains
+public import RealRooted.HosterStump.Chow
+public import RealRooted.HosterStump.DesMobius
+public import RealRooted.HosterStump.DescentLe
+public import RealRooted.HosterStump.Diagram
+public import RealRooted.HosterStump.FlagF
+public import RealRooted.HosterStump.HVector
+public import RealRooted.HosterStump.Permutation
+public import RealRooted.HosterStump.PosetBasic
+public import RealRooted.HosterStump.PosetChow
+public import RealRooted.HosterStump.Refined
+public import RealRooted.HosterStump.Sequence
+public import RealRooted.HosterStump.Step
+public import RealRooted.HosterStumpInterlacing
+public import RealRooted.HurwitzMatrix
+public import RealRooted.Hutchinson
+public import RealRooted.Hyperbolicity
+public import RealRooted.HyperbolicityCone
+public import RealRooted.Interlacing.Closure
+public import RealRooted.Interlacing.ConeBounds
+public import RealRooted.Interlacing.Euclid
+public import RealRooted.Interlacing.Multiplicity
+public import RealRooted.Interlacing.NegativeRoots
+public import RealRooted.Interlacing.OuterDifference
+public import RealRooted.Interlacing.PencilPreserver
+public import RealRooted.Interlacing.RemainderCertificate
+public import RealRooted.Interlacing.Residue
+public import RealRooted.Interlacing.ResidueCriterion
+public import RealRooted.Interlacing.ResidueEulerStep
+public import RealRooted.Interlacing.Reversal
+public import RealRooted.Interlacing.RootCountSigns
+public import RealRooted.Interlacing.RootDeletionExpansion
+public import RealRooted.InterlacingSequence
+public import RealRooted.InterlacingSequence.NonnegativeShift
+public import RealRooted.InterlacingSequenceBasic
+public import RealRooted.IteratedDerivativeShift
+public import RealRooted.Jacobi
+public import RealRooted.Jacobi.DifferentialOperator
+public import RealRooted.Jacobi.Favard
+public import RealRooted.Jacobi.Markoff
+public import RealRooted.Jacobi.Orthogonality
+public import RealRooted.Jacobi.Orthogonality.Integral
+public import RealRooted.Jacobi.ParameterInterlacing
+public import RealRooted.JacobiDeformation
+public import RealRooted.JacobiDeformation.Appell
+public import RealRooted.JacobiDeformation.BaseProduct
+public import RealRooted.JacobiDeformation.Basic
+public import RealRooted.JacobiDeformation.Boundary
+public import RealRooted.JacobiDeformation.BoundaryProjection
+public import RealRooted.JacobiDeformation.Collocation
+public import RealRooted.JacobiDeformation.CollocationPositivity
+public import RealRooted.JacobiDeformation.CriticalCases
+public import RealRooted.JacobiDeformation.CriticalKernelSign
+public import RealRooted.JacobiDeformation.ImageProduct
+public import RealRooted.JacobiDeformation.JacobiLowering
+public import RealRooted.JacobiDeformation.JacobiOperator
+public import RealRooted.JacobiDeformation.Kernel
+public import RealRooted.JacobiDeformation.KernelExpansion
+public import RealRooted.JacobiDeformation.KernelSign
+public import RealRooted.JacobiDeformation.Moment
+public import RealRooted.JacobiDeformation.NewtonIdentity
+public import RealRooted.JacobiDeformation.Parity
+public import RealRooted.JacobiDeformation.Pochhammer
+public import RealRooted.JacobiDeformation.Quadrature
+public import RealRooted.JacobiDeformation.QuasiNodes
+public import RealRooted.JacobiDeformation.RootGeometry
+public import RealRooted.JacobiDeformation.Shift
+public import RealRooted.JacobiDeformation.SpectralKernel
+public import RealRooted.JacobiDeformation.Strict
+public import RealRooted.JacobiOrthogonality
+public import RealRooted.JensenPencilContraction
+public import RealRooted.JensenPencilPositiveContraction
+public import RealRooted.Kurtz
+public import RealRooted.LGV.ChipNetwork.Basic
+public import RealRooted.LGV.ChipNetwork.Matrix
+public import RealRooted.LGV.ChipNetwork.Paths
+public import RealRooted.LGV.ChipNetwork.Word
+public import RealRooted.LGV.PathMatrix
+public import RealRooted.LGV.PolyaFrequency
+public import RealRooted.LGV.RepeatedChip
+public import RealRooted.LGV.Toeplitz
+public import RealRooted.LGV.TotallyNonnegative
+public import RealRooted.Laguerre
+public import RealRooted.Laguerre.Favard
+public import RealRooted.Laguerre.Orthogonality
+public import RealRooted.Laguerre.Orthogonality.Integral
+public import RealRooted.Laguerre.Roots
+public import RealRooted.LaguerreSamuelson
+public import RealRooted.LeeYang
+public import RealRooted.Legendre
+public import RealRooted.Legendre.Basic
+public import RealRooted.Legendre.Roots
+public import RealRooted.LiebSokal
+public import RealRooted.LiebSokalBoundary
+public import RealRooted.LiebSokalOperator
+public import RealRooted.LiebSokalOperator.Linearity
+public import RealRooted.LiebSokalPointwise
+public import RealRooted.Linear
+public import RealRooted.LinearPowerFamily
+public import RealRooted.LiuOppositeSigns
+public import RealRooted.LiuOppositeSigns.BoundedIntervalContinuity
+public import RealRooted.LiuOppositeSigns.CompatibilityCriterion
+public import RealRooted.LiuOppositeSigns.DeletionBranches
+public import RealRooted.LiuOppositeSigns.DerivativeShiftRegularization
+public import RealRooted.LiuOppositeSigns.DerivativeShiftSequenceRegularization
+public import RealRooted.LiuOppositeSigns.FactorReturnAssembly
+public import RealRooted.LiuOppositeSigns.FactorReturnLeft
+public import RealRooted.LiuOppositeSigns.FactorReturnTwoDegree
+public import RealRooted.LiuOppositeSigns.JensenRootCount
+public import RealRooted.LiuOppositeSigns.NoCommonRoots
+public import RealRooted.LiuOppositeSigns.NonnegCoeffs
+public import RealRooted.LiuOppositeSigns.PositiveSplitPair
+public import RealRooted.LiuOppositeSigns.PositiveSplitRootCount
+public import RealRooted.LiuOppositeSigns.RootCount
+public import RealRooted.LiuOppositeSigns.RootCountBranches.CommonRootDeletion
+public import RealRooted.LiuOppositeSigns.RootCountBranches.Interfaces
+public import RealRooted.LiuOppositeSigns.RootCountBranches.NoCommonCrossing
+public import RealRooted.LiuOppositeSigns.RootCountBranches.NoCommonCrossing.Witnesses
+public import RealRooted.LiuOppositeSigns.RootCountClosure
+public import RealRooted.LiuOppositeSigns.RootCountRelStability
+public import RealRooted.LiuOppositeSigns.RootDeletion
+public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount
+public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.GapCounts
+public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.LeftSuccessor
+public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RightSuccessor
+public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RootFilters
+public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SameDegree
+public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SplitEndpoints
+public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.UpperTail
+public import RealRooted.LiuOppositeSigns.XSub.LeftSucc
+public import RealRooted.LiuOppositeSigns.XSub.LinearQuadratic
+public import RealRooted.LiuOppositeSigns.XSub.QuadraticCubic
+public import RealRooted.LiuOppositeSigns.XSub.QuadraticQuadratic
+public import RealRooted.LiuOppositeSigns.XSub.SameDegree
+public import RealRooted.LiuOppositeSigns.XSub.SplittingTools
+public import RealRooted.LiuWang
+public import RealRooted.LiuWang.General
+public import RealRooted.LiuWang.OneAddXPositive
+public import RealRooted.LiuWang.SequenceCore
+public import RealRooted.LiuWang.SequencePositive
+public import RealRooted.LiuWang.SequenceProducts
+public import RealRooted.LiuWangBenchmark
+public import RealRooted.LiuWangRecursion
+public import RealRooted.LowerTriangularMatrix
+public import RealRooted.MaWang
+public import RealRooted.MaWang.CountBounds
+public import RealRooted.MaWang.CriticalSign
+public import RealRooted.MaWang.Derivative
+public import RealRooted.MaWang.DerivativeCore
+public import RealRooted.MaWang.DerivativeDenominator
+public import RealRooted.MaWang.DerivativeSequence
+public import RealRooted.MaWang.DerivativeStep
+public import RealRooted.MaWang.StrictSigns
+public import RealRooted.MaWang.StrictSigns.Assembly
+public import RealRooted.MaWang.StrictSigns.RootSigns
+public import RealRooted.MaWang.StrictStep
+public import RealRooted.MaWang.Strong
+public import RealRooted.MaWang.Weak
+public import RealRooted.MaWang.Weak.DerivativeSign
+public import RealRooted.MaWang.Weak.Endpoint
+public import RealRooted.MaWang.Weak.Regularization
+public import RealRooted.MaWang.Weak.Successor
+public import RealRooted.Maclaurin
+public import RealRooted.MagnitudeDominated
+public import RealRooted.MaoWangMatrixProduct
+public import RealRooted.Mathlib.Algebra.BigOperators.Finset.Unique
+public import RealRooted.Mathlib.Algebra.BigOperators.Group.List
+public import RealRooted.Mathlib.Algebra.Group.ForwardDiff
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Asymptotics
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Chebyshev.Trigonometric
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Factors
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Norm
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Norm.Real
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Rescale.Real
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic.Scale
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Diagonal
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Eval
+public import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
+public import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
+public import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivSpecialize
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
+public import RealRooted.Mathlib.Algebra.Order.BigOperators.Alternating
+public import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
+public import RealRooted.Mathlib.Algebra.Polynomial.Antiderivative
+public import RealRooted.Mathlib.Algebra.Polynomial.Basic
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+public import RealRooted.Mathlib.Algebra.Polynomial.Bezoutian
+public import RealRooted.Mathlib.Algebra.Polynomial.BigOperators
+public import RealRooted.Mathlib.Algebra.Polynomial.BudanFourier
+public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform
+public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Algebra
+public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic
+public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Bernstein
+public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.BernsteinBasisTransform
+public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Roots
+public import RealRooted.Mathlib.Algebra.Polynomial.Chow
+public import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
+public import RealRooted.Mathlib.Algebra.Polynomial.Degree.SmallDegree
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.SecondOrder
+public import RealRooted.Mathlib.Algebra.Polynomial.DividedDifference
+public import RealRooted.Mathlib.Algebra.Polynomial.Dominance
+public import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
+public import RealRooted.Mathlib.Algebra.Polynomial.Eval.Degree
+public import RealRooted.Mathlib.Algebra.Polynomial.Eval.ShiftedChoose
+public import RealRooted.Mathlib.Algebra.Polynomial.Expand.Splits
+public import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
+public import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
+public import RealRooted.Mathlib.Algebra.Polynomial.MeanMode
+public import RealRooted.Mathlib.Algebra.Polynomial.Moment
+public import RealRooted.Mathlib.Algebra.Polynomial.Reverse
+public import RealRooted.Mathlib.Algebra.Polynomial.Roots
+public import RealRooted.Mathlib.Algebra.Polynomial.RuleOfSigns
+public import RealRooted.Mathlib.Algebra.Polynomial.Splits
+public import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
+public import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
+public import RealRooted.Mathlib.Algebra.Polynomial.Sturm
+public import RealRooted.Mathlib.Algebra.Polynomial.Taylor
+public import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
+public import RealRooted.Mathlib.Algebra.Ring.Parity
+public import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
+public import RealRooted.Mathlib.Analysis.Complex.ArgumentPrinciple
+public import RealRooted.Mathlib.Analysis.Complex.OpenMapping
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.EnestromKakeya
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.JensenDisks
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.RootsOpen
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.SchurCohn
+public import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
+public import RealRooted.Mathlib.Analysis.Normed.Algebra.Exponential
+public import RealRooted.Mathlib.Analysis.Normed.Field.Approximation
+public import RealRooted.Mathlib.Analysis.Normed.Ring.Power
+public import RealRooted.Mathlib.Analysis.Polynomial.Asymptotics
+public import RealRooted.Mathlib.Analysis.Polynomial.Basic
+public import RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.Choose
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.ExpIntegral
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.Gamma.Beta
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.Integrals.RpowLog
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
+public import RealRooted.Mathlib.Combinatorics.Enumerative.BooleanLattice
+public import RealRooted.Mathlib.Combinatorics.Enumerative.CentralTrinomial
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
+public import RealRooted.Mathlib.Combinatorics.Enumerative.DyckStatistics
+public import RealRooted.Mathlib.Combinatorics.Enumerative.EulerianPeak
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Excedance
+public import RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly
+public import RealRooted.Mathlib.Combinatorics.Enumerative.InverseStatistics
+public import RealRooted.Mathlib.Combinatorics.Enumerative.InversionBridge
+public import RealRooted.Mathlib.Combinatorics.Enumerative.OrderedSubsetPairs
+public import RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunction
+public import RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunctionCount
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Pattern
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PatternCount
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Peak
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermStatistics
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermSum
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermSumDescent
+public import RealRooted.Mathlib.Combinatorics.Enumerative.PermSumPattern
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Relation
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Separable
+public import RealRooted.Mathlib.Combinatorics.Enumerative.SeparableCubic
+public import RealRooted.Mathlib.Combinatorics.Enumerative.SimionSchmidt
+public import RealRooted.Mathlib.Combinatorics.Quiver.Path.Vertices
+public import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatchingPolyOn
+public import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatrixTree
+public import RealRooted.Mathlib.Data.Fin.Basic
+public import RealRooted.Mathlib.Data.Fintype.Card
+public import RealRooted.Mathlib.Data.List.Basic
+public import RealRooted.Mathlib.Data.List.Destutter
+public import RealRooted.Mathlib.Data.List.Interleave
+public import RealRooted.Mathlib.Data.List.Interleave.Padding
+public import RealRooted.Mathlib.Data.List.OfFn
+public import RealRooted.Mathlib.Data.List.Sort.Endpoint
+public import RealRooted.Mathlib.Data.List.SplitBy
+public import RealRooted.Mathlib.Data.List.Zip
+public import RealRooted.Mathlib.Data.Multiset.Card
+public import RealRooted.Mathlib.Data.Multiset.Rel
+public import RealRooted.Mathlib.Data.Nat.Cast.Basic
+public import RealRooted.Mathlib.Data.Nat.Choose.Cast
+public import RealRooted.Mathlib.Data.Nat.Choose.Nanjundiah
+public import RealRooted.Mathlib.Data.Nat.Factorial.Strict
+public import RealRooted.Mathlib.LinearAlgebra.Lagrange.Quadrature
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugateExpansion
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.AdjugatePath
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.CauchyBinet
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Rank
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Compound
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.CompoundSpectrum
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.BandedHessenberg
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.CauchyBinet
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.ColumnDifference
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Integral
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Plucker
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Gaussian
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz.Determinant
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.KernelSignVariation
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Oscillatory
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CStarClasses
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CollatzWielandt
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Dominance
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Irreducible
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Nonneg
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Primitive
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.QuiverPath
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Simplex
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Spectrum
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Uniqueness
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneCompression
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneUpdate
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegular
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularRankDeficient
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularStrictification
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularVariation
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariationTopology
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SpectrumClosed
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.StrictLower
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Border
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Charpoly
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Closure
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.CornerPerturbation
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Closure
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Strict
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Density
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.DiagonalTail
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.ElementarySymmetric
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.PrincipalInterlacing
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.SourceBorder
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Triangularize
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.VariationDiminishing
+public import RealRooted.Mathlib.LinearAlgebra.Vandermonde
+public import RealRooted.Mathlib.Order.Fin.Tuple
+public import RealRooted.Mathlib.Probability.CoeffDistribution
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.BooleanSwapOrbit
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.EulerIdentity
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Homogeneous
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.CompleteHomogeneous
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.NewtonIdentities
+public import RealRooted.Mathlib.RingTheory.Polynomial.Chebyshev.Bounds
+public import RealRooted.Mathlib.RingTheory.Polynomial.Hermite
+public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi
+public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.DifferentialOperator
+public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.Moment
+public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre
+public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Basic
+public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Differential
+public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Recurrence
+public import RealRooted.Mathlib.RingTheory.Polynomial.Pochhammer
+public import RealRooted.Mathlib.RingTheory.Polynomial.Resultant.Basic
+public import RealRooted.Mathlib.RingTheory.Polynomial.ShiftedLegendre
+public import RealRooted.Mathlib.RingTheory.Polynomial.Vieta
+public import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
+public import RealRooted.Mathlib.RingTheory.PowerSeries.CatalanQuadratic
+public import RealRooted.Mathlib.RingTheory.PowerSeries.CausalFwdDiff
+public import RealRooted.Mathlib.RingTheory.PowerSeries.LagrangeInversion
+public import RealRooted.Mathlib.RingTheory.PowerSeries.MapDerivation
+public import RealRooted.Mathlib.RingTheory.PowerSeries.NestedConstants
+public import RealRooted.Mathlib.RingTheory.PowerSeries.PiTopology
+public import RealRooted.Mathlib.RingTheory.PowerSeries.Regular
+public import RealRooted.Mathlib.RingTheory.PowerSeries.Sqrt
+public import RealRooted.Mathlib.RingTheory.PowerSeries.ZeroPrefix
+public import RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int
+public import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
+public import RealRooted.Mathlib.Topology.Algebra.Polynomial
+public import RealRooted.Mathlib.Topology.Instances.Matrix.Determinant
+public import RealRooted.MatrixInterlacing
+public import RealRooted.MatrixInterlacing.Action
+public import RealRooted.MatrixInterlacing.AffinePair
+public import RealRooted.MatrixInterlacing.Closure
+public import RealRooted.MatrixInterlacing.Converse
+public import RealRooted.MatrixInterlacing.Preservation
+public import RealRooted.MatrixInterlacing.PrincipalInterlacingExamples
+public import RealRooted.MatrixInterlacing.SparseTests
+public import RealRooted.MatrixInterlacing.TotallyNonnegative
+public import RealRooted.MatrixInterlacing.TotallyNonnegativeExamples
+public import RealRooted.Multiaffine
+public import RealRooted.Multiaffine.AffineCoordinateCriterion
+public import RealRooted.Multiaffine.AffineCoordinateExtension
+public import RealRooted.Multiaffine.AffineEulerCore
+public import RealRooted.Multiaffine.AffineLineRestriction
+public import RealRooted.Multiaffine.CoordinateWronskian
+public import RealRooted.Multiaffine.Rayleigh
+public import RealRooted.Multiaffine.Reciprocal
+public import RealRooted.Multiaffine.ReciprocalRight
+public import RealRooted.Multiaffine.TwoCoordinateSlice
+public import RealRooted.MultiplierSequence
+public import RealRooted.MultiplierSequence.Bidiagonal
+public import RealRooted.MultiplierSequence.Bidiagonal.Jensen
+public import RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction
+public import RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual
+public import RealRooted.MultiplierSequence.Bidiagonal.Jensen.CubicResidual.Quadratic
+public import RealRooted.MultiplierSequence.Bidiagonal.SecondDerivative
+public import RealRooted.MultiplierSequence.Infinite
+public import RealRooted.MultiplierSequence.InvPochhammer
+public import RealRooted.MultiplierSequence.Laguerre
+public import RealRooted.MultiplierSequence.PolyaSchur
+public import RealRooted.MultiplierSequence.PolyaSchur.Analytic
+public import RealRooted.MultiplierSequence.PolyaSchur.Factorial
+public import RealRooted.MultiplierSequence.PolyaSchur.Growth
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Closure
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Examples
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.HeatFlow
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIReverse
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeISigned
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Zeros
+public import RealRooted.MultiplierSequence.PolyaSchur.Limit
+public import RealRooted.MultiplierSequence.QuadraticExponential
+public import RealRooted.MultiplierSequence.PolyaSchur.Schur
+public import RealRooted.MultiplierSequence.Sign
+public import RealRooted.MultivariateHeilmannLieb
+public import RealRooted.MultivariateStability
+public import RealRooted.MultivariateStability.AffineEulerCore
+public import RealRooted.MultivariateStability.AllCombo
+public import RealRooted.MultivariateStability.AllComboAffineLine
+public import RealRooted.MultivariateStability.Barrier
+public import RealRooted.MultivariateStability.BarrierCross
+public import RealRooted.MultivariateStability.BarrierPick
+public import RealRooted.MultivariateStability.BarrierStart
+public import RealRooted.MultivariateStability.BarrierUpdate
+public import RealRooted.MultivariateStability.Diagonal
+public import RealRooted.MultivariateStability.DirectionalDerivative
+public import RealRooted.MultivariateStability.HomogeneousPencilWronskian
+public import RealRooted.MultivariateStability.Inversion
+public import RealRooted.MultivariateStability.JumpSystem
+public import RealRooted.MultivariateStability.LinearForm
+public import RealRooted.MultivariateStability.Lorentzian
+public import RealRooted.MultivariateStability.MSSBound
+public import RealRooted.MultivariateStability.MixedCharacteristic
+public import RealRooted.MultivariateStability.NegativeCorrelation
+public import RealRooted.MultivariateStability.PickRatio
+public import RealRooted.MultivariateStability.PolyaFrequency
+public import RealRooted.MultivariateStability.Rayleigh
+public import RealRooted.MultivariateStability.RayleighConverse
+public import RealRooted.MultivariateStability.RayleighPencil
+public import RealRooted.MultivariateStability.SamePhase
+public import RealRooted.MultivariateStability.Specialization
+public import RealRooted.NarayanaTransformation
+public import RealRooted.NarayanaTransformation.Basis
+public import RealRooted.NarayanaTransformation.Basis.Stirling
+public import RealRooted.NarayanaTransformation.Coefficients
+public import RealRooted.NarayanaTransformation.Composition
+public import RealRooted.NarayanaTransformation.Endpoints
+public import RealRooted.NarayanaTransformation.Falling
+public import RealRooted.NarayanaTransformation.Gamma
+public import RealRooted.NarayanaTransformation.Interlacing
+public import RealRooted.NarayanaTransformation.Rectangular
+public import RealRooted.NarayanaTransformation.Rectangular.Narayana
+public import RealRooted.NarayanaTransformation.Rectangular.Preservation
+public import RealRooted.NarayanaTransformation.Recurrences
+public import RealRooted.NarayanaTransformation.Recurrences.Identities
+public import RealRooted.NarayanaTransformation.Recurrences.Interlacing
+public import RealRooted.NarayanaTransformation.Rising
+public import RealRooted.NarayanaTransformation.RootGeometry
+public import RealRooted.NarayanaTransformation.SimpleRoots
+public import RealRooted.NatCauchyConvolution
+public import RealRooted.NewtonAux
+public import RealRooted.ObreschkoffContinuity
+public import RealRooted.ObreschkoffConverse
+public import RealRooted.ObreschkoffConverse.Converse
+public import RealRooted.ObreschkoffConverse.DegreeGap
+public import RealRooted.ObreschkoffConverse.Derivative
+public import RealRooted.ObreschkoffConverse.Forward
+public import RealRooted.ObreschkoffConverse.Regularization
+public import RealRooted.OperatorInterlacingUpgrade
+public import RealRooted.OperatorInterlacingUpgrade.ImplicitRoot
+public import RealRooted.OperatorInterlacingUpgrade.RootOrder
+public import RealRooted.OperatorInterlacingUpgrade.StablePencil
+public import RealRooted.OperatorPreservesInterlacing
+public import RealRooted.OrderedRoots
+public import RealRooted.OscillatoryInterlacing
+public import RealRooted.PFPolynomial
+public import RealRooted.PFPolynomial.Closure
+public import RealRooted.PFPolynomial.CoefficientShape
+public import RealRooted.PFPolynomial.LinearFactor
+public import RealRooted.ParkingFunctions.Descents.Basic
+public import RealRooted.ParkingFunctions.Descents.Canonical
+public import RealRooted.ParkingFunctions.Descents.ChainSort
+public import RealRooted.ParkingFunctions.Descents.CompositionBlocks
+public import RealRooted.ParkingFunctions.Descents.ContentOrbit
+public import RealRooted.ParkingFunctions.Descents.ContentSymmetry
+public import RealRooted.ParkingFunctions.Descents.DescentChains
+public import RealRooted.ParkingFunctions.Descents.DescentContainment
+public import RealRooted.ParkingFunctions.Descents.DiaconisHicks
+public import RealRooted.ParkingFunctions.Descents.ExactDescent
+public import RealRooted.ParkingFunctions.Descents.ExactDescentTransfer
+public import RealRooted.ParkingFunctions.Descents.Literal
+public import RealRooted.ParkingFunctions.Descents.LiteralRecurrence
+public import RealRooted.ParkingFunctions.Descents.OrdinaryTransfer
+public import RealRooted.ParkingFunctions.Descents.Pollak
+public import RealRooted.ParkingFunctions.Descents.PollakTransfer
+public import RealRooted.ParkingFunctions.Descents.StrictBlock
+public import RealRooted.ParkingFunctions.Descents.Tieless
+public import RealRooted.ParkingFunctions.Descents.TielessTransfer
+public import RealRooted.ParkingFunctions.Descents.WeakLeftPeak
+public import RealRooted.ParkingFunctions.Descents.WeakLeftPeakCutTransform
+public import RealRooted.ParkingFunctions.Descents.WeakLeftPeakFactorization
+public import RealRooted.ParkingFunctions.Descents.WeakLeftPeakInterlacing
+public import RealRooted.ParkingFunctions.Descents.WeakLeftPeakNDCutPreservation
+public import RealRooted.ParkingFunctions.Descents.WeakLeftPeakOrderedCut
+public import RealRooted.ParkingFunctions.Descents.WeakLeftPeakRecurrence
+public import RealRooted.ParkingFunctions.Descents.WordContent
+public import RealRooted.ParkingFunctions.Descents.Words
+public import RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer
+public import RealRooted.ParkingFunctions.ToricContribution.ContributionReversal
+public import RealRooted.ParkingFunctions.ToricContribution.Definitions
+public import RealRooted.ParkingFunctions.ToricContribution.DiagonalCollapse
+public import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset
+public import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.BaseAndMoments
+public import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.NodeInterlacing
+public import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.PencilSplitting
+public import RealRooted.ParkingFunctions.ToricContribution.ExceptionalOffset.ProperPositionAndParameters
+public import RealRooted.ParkingFunctions.ToricContribution.FiniteOffsets
+public import RealRooted.ParkingFunctions.ToricContribution.IntervalInsertion
+public import RealRooted.ParkingFunctions.ToricContribution.TriangleAlgebra
+public import RealRooted.ParkingFunctions.ToricContribution.TriangleInvariant
+public import RealRooted.PartialSumStep
+public import RealRooted.PartialSymmetrization
+public import RealRooted.PolarDerivative
+public import RealRooted.Polarization
+public import RealRooted.PolyaFrequency.EventuallyPolynomial
+public import RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure
+public import RealRooted.PolyaFrequency.EventuallyPolynomial.CausalClosure.ZeroPrefix
+public import RealRooted.PolyaFrequencyConvolution
+public import RealRooted.PolyaFrequencyConvolution.Basic
+public import RealRooted.PolyaFrequencyConvolution.GeometricScaling
+public import RealRooted.PolyaFrequencyConvolution.InverseOneSubPow
+public import RealRooted.PolynomialValueEulerNumerator
+public import RealRooted.PolynomialValueEulerNumerator.PF
+public import RealRooted.PolynomialValueEulerNumerator.PF.Causal
+public import RealRooted.PolynomialValueEulerNumerator.Product
+public import RealRooted.PolynomialValueEulerNumerator.Product.Brenti
+public import RealRooted.PolynomialValueEulerNumerator.Product.PF
+public import RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal
+public import RealRooted.PosCombo
+public import RealRooted.PosCombo.Degree
+public import RealRooted.PositiveParameterLocalLowerCount
+public import RealRooted.ProductFamily
+public import RealRooted.ProductOrientation
+public import RealRooted.ProductSequence
+public import RealRooted.ProductSequence.Core
+public import RealRooted.ProductSequence.EndpointPair
+public import RealRooted.ProductSequence.FactorFamilies
+public import RealRooted.ProductSequence.Factors
+public import RealRooted.ProductSequence.Interlacing
+public import RealRooted.ProductSequence.Lifts
+public import RealRooted.ProductSequence.ScalarFamilies
+public import RealRooted.QuadraticCubicPencil
+public import RealRooted.QuadraticInterlacingClosure
+public import RealRooted.QuadraticRoot
+public import RealRooted.RankTwoMatching
+public import RealRooted.RankTwoMatching.Basic
+public import RealRooted.RankTwoMatching.DisjointEquiv
+public import RealRooted.RankTwoMatching.Endpoint
+public import RealRooted.RankTwoMatching.Enumeration
+public import RealRooted.RankTwoMatching.Model
+public import RealRooted.RankTwoMatching.Orientation
+public import RealRooted.RankTwoMatching.Transform
+public import RealRooted.ReciprocalShift.Interlacing
+public import RealRooted.ReciprocalShift.Interlacing.Inversion
+public import RealRooted.ReciprocalShift.ProperPosition
+public import RealRooted.ReciprocalShift.Roots
+public import RealRooted.RectangularConvolution
+public import RealRooted.RectangularConvolutionIdentity
+public import RealRooted.RectangularPolarization
+public import RealRooted.RectangularPolarizationComplement
+public import RealRooted.ReflectedRootCountLocalConstancy
+public import RealRooted.RookPolynomial
+public import RealRooted.RootAmplitude
+public import RealRooted.RootAmplitude.Convex
+public import RealRooted.RootAmplitude.Cotangent
+public import RealRooted.RootAmplitude.Density
+public import RealRooted.RootAmplitude.Extension
+public import RealRooted.RootAmplitude.Extreme
+public import RealRooted.RootAmplitude.Finite
+public import RealRooted.RootAmplitude.Minimum
+public import RealRooted.RootAmplitude.Polynomial
+public import RealRooted.RootAmplitude.Separation
+public import RealRooted.RootAmplitude.Separation.Euler
+public import RealRooted.RootAmplitude.Separation.Finite
+public import RealRooted.RootAmplitude.Separation.Polynomial
+public import RealRooted.RootAmplitude.Separation.Roots
+public import RealRooted.RootAmplitude.SmallestRoot
+public import RealRooted.RootAmplitude.SumSquares
+public import RealRooted.RootBounds
+public import RealRooted.RootContinuity
+public import RealRooted.RootContinuity.Path
+public import RealRooted.RootCountFinite
+public import RealRooted.RootCountJump
+public import RealRooted.RootCountLocalConstancy
+public import RealRooted.RootCounting
+public import RealRooted.RootCounting.CrossingExhaustion
+public import RealRooted.RootCounting.Descartes
+public import RealRooted.RootCounting.Finite
+public import RealRooted.RootCounting.SignChanges
+public import RealRooted.RootCounting.Sturm
+public import RealRooted.RootCounting.Threshold
+public import RealRooted.RootCounting.Threshold.Anchor
+public import RealRooted.RootCounting.Threshold.Basic
+public import RealRooted.RootCounting.Threshold.Derivative
+public import RealRooted.RootCounting.Threshold.DominanceFamily
+public import RealRooted.RootCounting.Threshold.LogConcavity
+public import RealRooted.RootCounting.Threshold.Signs
+public import RealRooted.RootCounting.Threshold.Sorted
+public import RealRooted.RootMatchingSort
+public import RealRooted.RootMultiplicityMatching
+public import RealRooted.RootOrderBridge
+public import RealRooted.RootPolynomial
+public import RealRooted.RootSumBounds
+public import RealRooted.RootVieta
+public import RealRooted.RootVieta.Newton
+public import RealRooted.RowThreshold
+public import RealRooted.RowThresholdOne
+public import RealRooted.SameDegreeCountFromAnalytic
+public import RealRooted.SameDegreeCubicRootCount
+public import RealRooted.SameDegreeCubicSecondRootFromAnalytic
+public import RealRooted.SameDegreeDerivative
+public import RealRooted.SameDegreeMultiplicityLowerCount
+public import RealRooted.SameDegreeQuadraticObstruction
+public import RealRooted.SameDegreeQuadraticRootCount
+public import RealRooted.SamePhaseInterlacing
+public import RealRooted.SamePhaseStability
+public import RealRooted.SamePhaseStability.Nonnegative
+public import RealRooted.ScalarNormalization
+public import RealRooted.SeparablePermutations.Basic
+public import RealRooted.SeparablePermutations.Cubic
+public import RealRooted.SeparablePermutations.Enumerator
+public import RealRooted.SeparablePermutations.Gamma
+public import RealRooted.SeparablePermutations.GammaCubic
+public import RealRooted.SeparablePermutations.Identification
+public import RealRooted.SeparablePermutations.Interlacing
+public import RealRooted.SequenceClosure
+public import RealRooted.ShiftLemma
+public import RealRooted.SignEvaluation
+public import RealRooted.SimpleRootLogDerivative
+public import RealRooted.SimpleRoots
+public import RealRooted.SmallPositiveParameterCount
+public import RealRooted.SortedRoots
+public import RealRooted.SortedRoots.Exhibited
+public import RealRooted.SpanningTreeStability
+public import RealRooted.SpectralProduct
+public import RealRooted.StaircaseSum
+public import RealRooted.SuccDegreeLeftEndpoint
+public import RealRooted.SuccDegreeRootCrossing
+public import RealRooted.SymmetricDecomposition
+public import RealRooted.SymmetricDecomposition.Decomposition
+public import RealRooted.SymmetricDecomposition.Definitions
+public import RealRooted.SymmetricDecomposition.DerangementTransform
+public import RealRooted.SymmetricDecomposition.EulerianTransform
+public import RealRooted.SymmetricDecomposition.FPolynomial
+public import RealRooted.SymmetricDecomposition.FPolynomialInterlacing
+public import RealRooted.SymmetricDecomposition.FPolynomialRecurrence
+public import RealRooted.SymmetricDecomposition.FPolynomialSequence
+public import RealRooted.SymmetricDecomposition.Theorem26
+public import RealRooted.Tactic
+public import RealRooted.Tactic.AffineDerivative
+public import RealRooted.Tactic.AllCombo
+public import RealRooted.Tactic.Attr
+public import RealRooted.Tactic.Bezoutian
+public import RealRooted.Tactic.CoefficientShape
+public import RealRooted.Tactic.CommonInterleaver.Core
+public import RealRooted.Tactic.Derivative
+public import RealRooted.Tactic.EulerOperator
+public import RealRooted.Tactic.Favard
+public import RealRooted.Tactic.Finish
+public import RealRooted.Tactic.FiniteSymbolPF
+public import RealRooted.Tactic.GammaRealRoots
+public import RealRooted.Tactic.Hadamard
+public import RealRooted.Tactic.HermiteBiehler
+public import RealRooted.Tactic.HermitePoulain
+public import RealRooted.Tactic.InterlacesExplicit
+public import RealRooted.Tactic.IteratedDerivativeShift
+public import RealRooted.Tactic.IteratedDerivativeShiftProduct
+public import RealRooted.Tactic.J1Chebyshev
+public import RealRooted.Tactic.Kurtz
+public import RealRooted.Tactic.Linear
+public import RealRooted.Tactic.LinearPowerFamily
+public import RealRooted.Tactic.LiuWang
+public import RealRooted.Tactic.Lookup
+public import RealRooted.Tactic.MaWang
+public import RealRooted.Tactic.MagnitudeDominated
+public import RealRooted.Tactic.MultiplierSequence
+public import RealRooted.Tactic.Named
+public import RealRooted.Tactic.Narayana
+public import RealRooted.Tactic.OperatorPreservesInterlacing
+public import RealRooted.Tactic.PFBidiagonal
+public import RealRooted.Tactic.PFPolynomial
+public import RealRooted.Tactic.PosCombo
+public import RealRooted.Tactic.PreservingOperatorSequence
+public import RealRooted.Tactic.Product
+public import RealRooted.Tactic.Product.Interlacing
+public import RealRooted.Tactic.ReciprocalShift
+public import RealRooted.Tactic.Recurrence
+public import RealRooted.Tactic.Recurrence.Cancel
+public import RealRooted.Tactic.Recurrence.Degree
+public import RealRooted.Tactic.Recurrence.Eval
+public import RealRooted.Tactic.Recurrence.LinRec
+public import RealRooted.Tactic.Recurrence.LinRecProbe
+public import RealRooted.Tactic.Recurrence.ODE
+public import RealRooted.Tactic.Recurrence.RowSide
+public import RealRooted.Tactic.Recurrence.Shape
+public import RealRooted.Tactic.RecurrenceEval
+public import RealRooted.Tactic.RootBounds
+public import RealRooted.Tactic.RootCount.LowDegree
+public import RealRooted.Tactic.RootCount.SequenceCore
+public import RealRooted.Tactic.Row.Core
+public import RealRooted.Tactic.Row.DerivLag
+public import RealRooted.Tactic.Row.DerivativeXMul
+public import RealRooted.Tactic.Row.FTransform
+public import RealRooted.Tactic.Row.LagFeedback
+public import RealRooted.Tactic.Row.LowerOrder
+public import RealRooted.Tactic.Row.ParityProduct
+public import RealRooted.Tactic.Row.PowerForm
+public import RealRooted.Tactic.Row.Reverse
+public import RealRooted.Tactic.Row.SideGoals
+public import RealRooted.Tactic.Row.Subseq
+public import RealRooted.Tactic.Row.Support
+public import RealRooted.Tactic.RowClosedForm
+public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.SecondDerivative
+public import RealRooted.Tactic.SideGoals
+public import RealRooted.Tactic.Sign
+public import RealRooted.Tactic.SignAssembly
+public import RealRooted.Tactic.StaircaseSum
+public import RealRooted.Tactic.SymmetricDecomposition
+public import RealRooted.Tactic.Targets
+public import RealRooted.Tactic.VeroneseSection
+public import RealRooted.Tactic.Wagner
+public import RealRooted.Tactic.WagnerX
+public import RealRooted.Tactic.WagnerX.Core
+public import RealRooted.Tactic.WagnerX.Frontend
+public import RealRooted.Tactic.WagnerX.Obstructions
+public import RealRooted.Tactic.WagnerX.PositiveLag
+public import RealRooted.Tactic.WagnerX.Syntax
+public import RealRooted.Tactic.WagnerX.TranslatedLag
+public import RealRooted.Tactic.WeightedSum
+public import RealRooted.TetradiagonalFactorization
+public import RealRooted.ThreeTermRecurrence.Degree
+public import RealRooted.ThreeTermRecurrence.HalfGrowth
+public import RealRooted.ThreeTermRecurrence.Interlacing
+public import RealRooted.ThreeTermRecurrence.LagFeedback
+public import RealRooted.ThreeTermRecurrence.Moments
+public import RealRooted.ThreeTermRecurrence.NoCommonRoot
+public import RealRooted.ThreeTermRecurrence.ParityProduct
+public import RealRooted.ThresholdMatrix
+public import RealRooted.ThresholdMatrix.Basic
+public import RealRooted.ThresholdMatrix.GustafssonSolus
+public import RealRooted.ThresholdMatrix.HaglundZhang
+public import RealRooted.TotallyNonnegInterlacing
+public import RealRooted.Touchard
+public import RealRooted.Transforms.BrandenE
+public import RealRooted.Transforms.BrandenE.Basic
+public import RealRooted.Transforms.BrandenE.BasisImage
+public import RealRooted.Transforms.BrandenE.Delannoy
+public import RealRooted.Transforms.BrandenE.EvenBinomial
+public import RealRooted.Transforms.BrandenE.IntervalPreserver
+public import RealRooted.Transforms.BrandenE.Inverse
+public import RealRooted.Transforms.BrandenE.OrderedBell
+public import RealRooted.Transforms.BrandenE.ProperPosition
+public import RealRooted.Transforms.BrandenE.WeightedSum
+public import RealRooted.Transforms.ReverseHermite
+public import RealRooted.Transforms.ReverseHermite.Basic
+public import RealRooted.Transforms.ReverseHermite.Derivative
+public import RealRooted.Transforms.ReverseHermite.Preservation
+public import RealRooted.Transforms.StirlingRootRegions
+public import RealRooted.UnitIntervalGraph.AcyclicSink
+public import RealRooted.UpperDerivativeInterlace
+public import RealRooted.VeroneseMatrix
+public import RealRooted.VeroneseRecognition
+public import RealRooted.VeroneseSection
+public import RealRooted.VeroneseSectionPair
+public import RealRooted.VeroneseSectionPair.HermiteBiehler
+public import RealRooted.Wagner
+public import RealRooted.Wagner.LeftSum
+public import RealRooted.Wagner.NonpositiveRoots
+public import RealRooted.WagnerRightSum
+public import RealRooted.WagnerRightSum.Sign
+public import RealRooted.WagnerX
+public import RealRooted.WagnerX.AffineFactors
+public import RealRooted.WagnerX.ListInterlacing
+public import RealRooted.WagnerX.NonnegativeRoots
+public import RealRooted.WagnerX.ProperPosition
+public import RealRooted.WangYeh.Affine
+public import RealRooted.WangYeh.Examples
+public import RealRooted.WangYeh.PF
+public import RealRooted.WangYeh.TriangularArray
+public import RealRooted.WangYeh.TriangularMatrix
+public import RealRooted.WeightedSum
+public import RealRooted.Wronskian
+public import RealRooted.Wronskian.Algebra
+public import RealRooted.Wronskian.Converse
+public import RealRooted.Wronskian.Forward
+public import RealRooted.Wronskian.PolarLaguerre
+public import RealRooted.Wronskian.Successor
+public import RealRooted.Wronskian.Successor.Gap
+public import RealRooted.Wronskian.Successor.Interlacing
+public import RealRooted.Wronskian.Successor.Signs
+public import RealRooted.Wronskian.Successor.Splits
+public import RealRooted.Wronskian.WeakForward
+public import RealRooted.PFPolynomial.PreserverClosure
+public import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
+public import RealRooted.BorceaBranden.Applications.QuadraticExponentialMultiplier
+public import RealRooted.BorceaBranden.Applications.RealCoordinatePFMultiplier
 
-import RealRooted.LiuWang.FiniteFamily
+public import RealRooted.EulerBidiagonal.Preservation
 
-import RealRooted.DerivativeRecurrence.EndpointWindow
-import RealRooted.MatrixInterlacing.Composition
-import RealRooted.MultiplierSequence.ProperPosition
+public import RealRooted.LiuWang.FiniteFamily
 
-import RealRooted.Tactic.Row.ClosedFormInterlaces
-import RealRooted.BorceaBranden.FiniteOrderWeylPreserver
-import RealRooted.MultivariateStability.Substitution
+public import RealRooted.DerivativeRecurrence.EndpointWindow
+public import RealRooted.MatrixInterlacing.Composition
+public import RealRooted.MultiplierSequence.ProperPosition
 
-import RealRooted.Challenges.Interlacing.EndpointDerivative
-import RealRooted.Challenges.Roots.RootContinuity
-import RealRooted.BorceaBranden.Applications.PoissonStability
-import RealRooted.BorceaBranden.Applications.PoissonStar
+public import RealRooted.Tactic.Row.ClosedFormInterlaces
+public import RealRooted.BorceaBranden.FiniteOrderWeylPreserver
+public import RealRooted.MultivariateStability.Substitution
 
-import RealRooted.Challenges.Interlacing.IteratedDerivativeShift
-import RealRooted.CoefficientDominance.NewtonDefectRoots
-import RealRooted.FiniteMemory.Defect
-import RealRooted.MultiplierSequence.ProperPositionPF
-import RealRooted.BorceaBranden.Applications.UnivariatePoissonStar
-import RealRooted.Challenges.Roots.FiniteMemoryDefect
-import RealRooted.Challenges.Roots.NewtonDefectRoots
-import RealRooted.Challenges.Preservers.ProperPositionPF
-import RealRooted.Challenges.Preservers.UnivariatePoissonStar
-import RealRooted.Wronskian.OdeRootExclusion
-import RealRooted.BorceaBranden.Applications.PoissonStarFallingFactorial
-import RealRooted.DerivativeRecurrence.OuterSelectedHeight
-import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneExpectation
-import RealRooted.MultivariateStability.ExpectedCharpoly
-import RealRooted.DerivativeRecurrence.ScalarRecInvariantCone
-import RealRooted.CoefficientShape.LocalLimit
-import RealRooted.Mathlib.Probability.LocalLimit
+public import RealRooted.Challenges.Interlacing.EndpointDerivative
+public import RealRooted.Challenges.Roots.RootContinuity
+public import RealRooted.BorceaBranden.Applications.PoissonStability
+public import RealRooted.BorceaBranden.Applications.PoissonStar
 
-import RealRooted.ToeplitzFin
-import RealRooted.Applications.OEIS.A046802
-import RealRooted.ThreeTermRecurrence.CoeffMoments
-import RealRooted.Applications.OEIS.A151775
-import RealRooted.Applications.OEIS.A056939
-import RealRooted.Applications.OEIS.A359363
-import RealRooted.Applications.OEIS.A297191
-import RealRooted.Applications.OEIS.QuarticGamma
-import RealRooted.Applications.OEIS.A286785
-import RealRooted.MultivariateStability.CoeffLimit
-import RealRooted.Mathlib.Analysis.Complex.EntireExponentialType
-import RealRooted.Hadamard.Kostov.Bernstein
-import RealRooted.Hadamard.Kostov.BernsteinRoots
-import RealRooted.Hadamard.Kostov.Eigen
-import RealRooted.Hadamard.Kostov.Interlacing
-import RealRooted.Hadamard.Kostov.RootReal
-import RealRooted.Hadamard.Kostov.Roots
-import RealRooted.Hadamard.Kostov.Tangent
-import RealRooted.Hadamard.Kostov.TwoStep
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Polynomial.PosDef
-import RealRooted.BorceaBranden.Applications.PoissonStarGeneral
-import RealRooted.BorceaBranden.Applications.PoissonStarTransport
-import RealRooted.BorceaBranden.Applications.PoissonStarClose
-import RealRooted.BorceaBranden.Applications.PoissonStarFinal
-import RealRooted.Mathlib.Analysis.Complex.WeierstrassProduct
-import RealRooted.Mathlib.Analysis.Complex.ZeroCounting
-import RealRooted.Mathlib.Analysis.Complex.EdreiUniqueness
-import RealRooted.Mathlib.Analysis.Complex.HadamardExponentialType
-import RealRooted.EdreiThoma.PFSeries
-import RealRooted.Mathlib.LinearAlgebra.Matrix.JacobiComplementaryMinor
-import RealRooted.EdreiThoma.FinalStep
-import RealRooted.EdreiThoma.Identities
-import RealRooted.Mathlib.LinearAlgebra.Matrix.DesnanotJacobi
-import RealRooted.CombinatorialExamples.PathPowerClique
-import RealRooted.EdreiThoma.OddPart
-import RealRooted.EdreiThoma.Reduction
-import RealRooted.Mathlib.Analysis.Complex.BorelGrowth
-import RealRooted.Applications.OEIS.PathPowerRows
-import RealRooted.Applications.OEIS.A271697
-import RealRooted.EdreiThoma.Continuation
-import RealRooted.EdreiThoma.Converse
-import RealRooted.DerivativeRecurrence.MultiLagCancel
-import RealRooted.Applications.OEIS.CubicParentRows
-import RealRooted.Graph.IndependencePolynomial.CubicParent
-import RealRooted.Challenges.Roots.KostovEigenpolynomials
-import RealRooted.Challenges.Graphs.PathPowerCliques
-import RealRooted.BorceaBranden.MultivariateHKO
-import RealRooted.BorceaBranden.RealFiniteClassification
-import RealRooted.Mathlib.Analysis.Complex.Hurwitz
-import RealRooted.Mathlib.Analysis.Complex.LimitsOfZeros
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffEstimates
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.Szasz
-import RealRooted.Tactic.Row.PathPower
-import RealRooted.Applications.OEIS.PeriodicTopRows
-import RealRooted.BorceaBranden.Transcendental.JensenMultiplier
-import RealRooted.BorceaBranden.Transcendental.PivotConverse
-import RealRooted.BorceaBranden.Transcendental.UniformSzasz
-import RealRooted.CoefficientShape.RowCLT
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate
-import RealRooted.Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
-import RealRooted.Mathlib.RingTheory.MvPolynomial.DividedDifference
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.Homogeneous
-import RealRooted.MultiplierSequence.InvPochhammerSimple
-import RealRooted.Applications.OEIS.ClosedFormRows
-import RealRooted.MultivariateStability.MorrisOperator
-import RealRooted.BorceaBranden.Applications.ComplexDiagonalRootLocation
-import RealRooted.MultivariateStability.MorrisBFlow
-import RealRooted.MultivariateStability.MorrisDFlow
-import RealRooted.MultivariateStability.MorrisEigenfunction
-import RealRooted.BorceaBranden.Transcendental.LambdaBar
-import RealRooted.BorceaBranden.Transcendental.PivotForward
-import RealRooted.BorceaBranden.Transcendental.TranscendentalSymbol
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffExtraction
-import RealRooted.CombinatorialExamples.PathPowerGap
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Subsequence
-import RealRooted.BorceaBranden.Transcendental.ComplexClassification
-import RealRooted.BorceaBranden.Transcendental.SymbolBridge
-import RealRooted.BorceaBranden.RealFiniteNecessity
-import RealRooted.BorceaBranden.RealFiniteSymbolSufficiency
-import RealRooted.BorceaBranden.RealHKOConverse
-import RealRooted.BorceaBranden.RealFiniteClassificationIff
-import RealRooted.BorceaBranden.RealFiniteHomotopy
-import RealRooted.BorceaBranden.Transcendental.RealClassification
-import RealRooted.BorceaBranden.Transcendental.RealClassificationCore
-import RealRooted.BorceaBranden.Transcendental.RealOperatorBasics
-import RealRooted.BorceaBranden.Transcendental.RealTheoremFiveOne
-import RealRooted.GammaTransform.TwoStep
-import RealRooted.Challenges.Stability.BorceaBrandenClassification
-import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivProd
-import RealRooted.Mathlib.Algebra.MvPolynomial.SpecializeList
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Permanent
-import RealRooted.Permanent
-import RealRooted.Permanent.Basic
-import RealRooted.Permanent.Ferrers
-import RealRooted.Permanent.MonotoneColumn
-import RealRooted.Permanent.MonotoneColumn.Reduction
-import RealRooted.Permanent.Stability
-import RealRooted.Permanent.Stability.Cone
-import RealRooted.Permanent.Stability.Ferrers
-import RealRooted.Permanent.Stability.Fractional
-import RealRooted.Permanent.Stability.Operator
-import RealRooted.Challenges.Matrices.MonotoneColumnPermanent
-import RealRooted.Interlacing.WindowInduction
-import RealRooted.DerivativeRecurrence.SecondOrder.GammaFamily
-import RealRooted.DerivativeRecurrence.SecondOrder.Top
-import RealRooted.LiuWang.CombinedFlux
-import RealRooted.Recurrence.Telescoping
-import RealRooted.Recurrence.Uniqueness
-import RealRooted.DerivativeRecurrence.Nonnegative
-import RealRooted.Recurrence.FactorPower
-import RealRooted.Tactic.Row.DelayedProduct
-import RealRooted.Tactic.Row.FactorPower
-import RealRooted.GammaTransform.Derivative
-import RealRooted.Mathlib.Analysis.Complex.LocallyUniformLimit
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Inequality
-import RealRooted.Recurrence.RowModel
-import RealRooted.ParityFactorization
-import RealRooted.MultiplierSequence.TwoSidedJensen
-import RealRooted.Interlacing.ReversalLeftDegree
-import RealRooted.Tactic.Row.EndpointWindow
-import RealRooted.Tactic.Row.RationalReverse
-import RealRooted.Applications.OEIS.ReflectedEulerRows
-import RealRooted.Interlacing.ReversalCommonFactor
-import RealRooted.Applications.OEIS.A394813
-import RealRooted.Applications.OEIS.A395326
-import RealRooted.Applications.OEIS.A318397
-import RealRooted.MultiplierSequence.JensenHypergeometric
-import RealRooted.Applications.OEIS.HigherOrderDegreeModels
-import RealRooted.Applications.OEIS.IndispensableDigits
-import RealRooted.MatrixInterlacing.DigitStep
-import RealRooted.Applications.OEIS.A119308
-import RealRooted.MultiplierSequence.JensenAffineTheta
-import RealRooted.Applications.OEIS.A304334
-import RealRooted.Applications.OEIS.A304330
-import RealRooted.Applications.OEIS.TouchardImages
-import RealRooted.Applications.OEIS.A080721
-import RealRooted.Applications.OEIS.HarmonicDerivativeRows
-import RealRooted.Applications.OEIS.A259454
-import RealRooted.Mathlib.Combinatorics.Enumerative.Partition.Dominance
-import RealRooted.Mathlib.LinearAlgebra.TriangularBasis
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.ElementaryMonomial
-import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.Monomial
-import RealRooted.Mathlib.Analysis.Normed.Operator.Trotter
-import RealRooted.Mathlib.Analysis.Normed.Operator.TriangularExp
-import RealRooted.RootVieta.SortedRoots
-import RealRooted.AffineFamily.PF
-import RealRooted.ChudnovskySeymour.PF
-import RealRooted.OperatorMatrix.LocalToGlobal
-import RealRooted.OperatorMatrix.Composition
-import RealRooted.OperatorMatrix.Directed
-import RealRooted.OperatorMatrix.EulerDerivativeLag
-import RealRooted.OperatorMatrix.OneThetaX
-import RealRooted.OperatorMatrix.MixedLemma
-import RealRooted.OperatorMatrix.OneThetaXBoards
-import RealRooted.OperatorMatrix.OneThetaXBoardsExtra
-import RealRooted.GraceWalshSzego
-import RealRooted.Challenges.Matrices.CourantFischer
-import RealRooted.Challenges.Roots.LaguerrePolarDerivative
-import RealRooted.Challenges.Preservers.LaguerrePolya
-import RealRooted.Challenges.Stability.MorrisFlow
-import RealRooted.Challenges.Stability.MultivariateObreschkoff
-import RealRooted.Challenges.Stability.SzaszGrowth
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.CanonicalProduct
-import RealRooted.Tactic.Row.ThresholdOrbit
-import RealRooted.ThresholdMatrix.Orbit
-import RealRooted.NarayanaInterpolation
-import RealRooted.Mathlib.Algebra.LinearRecurrence.Operator
-import RealRooted.RecurrenceSpace.Defect
-import RealRooted.RecurrenceSpace.Filtered
-import RealRooted.RecurrenceSpace.Operators
-import RealRooted.IntervalDifferential.Basic
-import RealRooted.IntervalDifferential.Certificates
-import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedColumnBound
-import RealRooted.IntervalDifferential.CubicDisk
-import RealRooted.IntervalDifferential.Degree
-import RealRooted.IntervalDifferential.LinearInsertion
-import RealRooted.IntervalDifferential.ParityQuarticFactor
-import RealRooted.IntervalDifferential.QuadraticInsertion
-import RealRooted.IntervalDifferential.QuarticBounds
-import RealRooted.IntervalDifferential.QuarticSeeds
-import RealRooted.IntervalDifferential.RootSums
-import RealRooted.IntervalDifferential.Seeds
-import RealRooted.Mathlib.Algebra.Polynomial.IntervalSignChanges
-import RealRooted.Mathlib.Algebra.Polynomial.RealQuadraticFactor
-import RealRooted.IntervalDifferential.FactorShapes
-import RealRooted.IntervalDifferential.UniversalTransfer
-import RealRooted.IntervalDifferential.MobiusRoots
-import RealRooted.CenteredEulerian.ArcsinBound
-import RealRooted.CenteredEulerian.Basis
-import RealRooted.CenteredEulerian.ChangeBasis
-import RealRooted.CenteredEulerian.Coefficients
-import RealRooted.CenteredEulerian.ColumnBound
-import RealRooted.CenteredEulerian.EulerAnalytic
-import RealRooted.CenteredEulerian.EulerFormula
-import RealRooted.CenteredEulerian.FormalArcsin
-import RealRooted.CenteredEulerian.HBound
-import RealRooted.CenteredEulerian.Majorants
-import RealRooted.CenteredEulerian.Parity
-import RealRooted.CenteredEulerian.PhiBound
-import RealRooted.CenteredEulerian.Riccati
-import RealRooted.CenteredEulerian.RootCriterion
-import RealRooted.CenteredEulerian.SeriesBasic
-import RealRooted.CombinatorialExamples.ZigzagEulerian.CenteredSeries
-import RealRooted.CombinatorialExamples.ZigzagEulerian.Definitions
-import RealRooted.CombinatorialExamples.ZigzagEulerian.Degree
-import RealRooted.CombinatorialExamples.ZigzagEulerian.GeneratingSeries
-import RealRooted.CombinatorialExamples.ZigzagEulerian.Identification
-import RealRooted.CombinatorialExamples.ZigzagEulerian.RealRooted
-import RealRooted.CombinatorialExamples.ZigzagEulerian.Roots
-import RealRooted.CombinatorialExamples.ZigzagEulerian.SmallRoots
-import RealRooted.CombinatorialExamples.ZigzagEulerian.Standardization
-import RealRooted.CombinatorialExamples.ZigzagEulerian.WordRecurrence
-import RealRooted.CombinatorialExamples.ZigzagEulerian.WordSeries
-import RealRooted.Combinatorics.ForcedGapWords
-import RealRooted.Challenges.Combinatorial.ZigzagEulerian
-import RealRooted.CombinatorialExamples.ZigzagEulerian.Recurrence
-import RealRooted.CombinatorialExamples.ZigzagEulerian.RecurrencePolynomial
-import RealRooted.Applications.EulerianCompendium.CyclicWords
-import RealRooted.Applications.EulerianCompendium.Definitions
-import RealRooted.Applications.EulerianCompendium.DeletionFamily
-import RealRooted.Applications.EulerianCompendium.DeletionRoots
-import RealRooted.Applications.EulerianCompendium.DerangementReciprocal
-import RealRooted.Applications.EulerianCompendium.DerangementRecurrence
-import RealRooted.Applications.EulerianCompendium.Derangements
-import RealRooted.Applications.EulerianCompendium.EvenTop
-import RealRooted.Applications.EulerianCompendium.EvenTopRoots
-import RealRooted.Applications.EulerianCompendium.Peaks
-import RealRooted.Applications.EulerianCompendium.Results
-import RealRooted.Applications.EulerianCompendium.TernaryRecurrence
-import RealRooted.Applications.EulerianCompendium.TernaryWords
-import RealRooted.Challenges.Combinatorial.EulerianCompendium
-import RealRooted.Combinatorics.ForcedSteps
-import RealRooted.Combinatorics.SortingFixedPoints
-import RealRooted.ThresholdMatrix.Attr
-import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Skewness
-import RealRooted.LiebSokalGeneral
-import RealRooted.CombinatorialExamples.BigDescents132.Quartic
-import RealRooted.Challenges.HermitePoulain
-import RealRooted.ClassicalHurwitzMatrix.Examples
-import RealRooted.HurwitzMatrix.CornerZeroedCounterexample
-import RealRooted.HurwitzMatrix.HadamardObstruction
-import RealRooted.Mathlib.Analysis.Complex.RealPart
-import RealRooted.Mathlib.Analysis.Matrix.Spectrum
-import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.TraceSq
-import RealRooted.CombinatorialExamples.BigDescents132.Basic
-import RealRooted.CombinatorialExamples.BigDescents132.GeneratingFunction
-import RealRooted.Interlacing.VariableDelay
-import RealRooted.CombinatorialExamples.WeightedRenewal
-import RealRooted.Mathlib.Data.Nat.Choose.Sum
-import RealRooted.Tactic.Row.Routes
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative.Prod
-import RealRooted.Mathlib.Data.Fintype.Pigeonhole
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PosSemidefPencil
-import RealRooted.CombinatorialExamples.RestrictedExponential
-import RealRooted.Mathlib.Combinatorics.SimpleGraph.Acyclic
-import RealRooted.Mathlib.RingTheory.Polynomial.Bernstein
-import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Finset
-import RealRooted.ThreeTermRecurrence.WangZhang
-import RealRooted.ThreeTermRecurrence.OrderTwoLimitZeros
-import RealRooted.Mesh.Basic
-import RealRooted.Mesh.FiniteDifference
-import RealRooted.Mathlib.Algebra.Order.Ring.Lemmas
-import RealRooted.Mesh.Derivative
-import RealRooted.Mesh.HermitePoulain
-import RealRooted.Mesh.DiscreteHermitePoulain
-import RealRooted.Mesh.DiscreteMultiplier
-import RealRooted.Challenges.Roots.LimitsOfZeros
-import RealRooted.Challenges.Roots.MeshFiniteDifference
-import RealRooted.Mesh.DiscreteMultiplierSequence
-import RealRooted.Mesh.FallingFactorial
-import RealRooted.Mesh.DiscreteMultiplierSequencePolyaSchur
-import RealRooted.Mesh.DiscreteMultiplierSequenceLaguerrePolya
-import RealRooted.Mesh.Limit
+public import RealRooted.Challenges.Interlacing.IteratedDerivativeShift
+public import RealRooted.CoefficientDominance.NewtonDefectRoots
+public import RealRooted.FiniteMemory.Defect
+public import RealRooted.MultiplierSequence.ProperPositionPF
+public import RealRooted.BorceaBranden.Applications.UnivariatePoissonStar
+public import RealRooted.Challenges.Roots.FiniteMemoryDefect
+public import RealRooted.Challenges.Roots.NewtonDefectRoots
+public import RealRooted.Challenges.Preservers.ProperPositionPF
+public import RealRooted.Challenges.Preservers.UnivariatePoissonStar
+public import RealRooted.Wronskian.OdeRootExclusion
+public import RealRooted.BorceaBranden.Applications.PoissonStarFallingFactorial
+public import RealRooted.DerivativeRecurrence.OuterSelectedHeight
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.RankOneExpectation
+public import RealRooted.MultivariateStability.ExpectedCharpoly
+public import RealRooted.DerivativeRecurrence.ScalarRecInvariantCone
+public import RealRooted.CoefficientShape.LocalLimit
+public import RealRooted.Mathlib.Probability.LocalLimit
+
+public import RealRooted.ToeplitzFin
+public import RealRooted.Applications.OEIS.A046802
+public import RealRooted.ThreeTermRecurrence.CoeffMoments
+public import RealRooted.Applications.OEIS.A151775
+public import RealRooted.Applications.OEIS.A056939
+public import RealRooted.Applications.OEIS.A359363
+public import RealRooted.Applications.OEIS.A297191
+public import RealRooted.Applications.OEIS.QuarticGamma
+public import RealRooted.Applications.OEIS.A286785
+public import RealRooted.MultivariateStability.CoeffLimit
+public import RealRooted.Mathlib.Analysis.Complex.EntireExponentialType
+public import RealRooted.Hadamard.Kostov.Bernstein
+public import RealRooted.Hadamard.Kostov.BernsteinRoots
+public import RealRooted.Hadamard.Kostov.Eigen
+public import RealRooted.Hadamard.Kostov.Interlacing
+public import RealRooted.Hadamard.Kostov.RootReal
+public import RealRooted.Hadamard.Kostov.Roots
+public import RealRooted.Hadamard.Kostov.Tangent
+public import RealRooted.Hadamard.Kostov.TwoStep
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Polynomial.PosDef
+public import RealRooted.BorceaBranden.Applications.PoissonStarGeneral
+public import RealRooted.BorceaBranden.Applications.PoissonStarTransport
+public import RealRooted.BorceaBranden.Applications.PoissonStarClose
+public import RealRooted.BorceaBranden.Applications.PoissonStarFinal
+public import RealRooted.Mathlib.Analysis.Complex.WeierstrassProduct
+public import RealRooted.Mathlib.Analysis.Complex.ZeroCounting
+public import RealRooted.Mathlib.Analysis.Complex.EdreiUniqueness
+public import RealRooted.Mathlib.Analysis.Complex.HadamardExponentialType
+public import RealRooted.EdreiThoma.PFSeries
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.JacobiComplementaryMinor
+public import RealRooted.EdreiThoma.FinalStep
+public import RealRooted.EdreiThoma.Identities
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.DesnanotJacobi
+public import RealRooted.CombinatorialExamples.PathPowerClique
+public import RealRooted.EdreiThoma.OddPart
+public import RealRooted.EdreiThoma.Reduction
+public import RealRooted.Mathlib.Analysis.Complex.BorelGrowth
+public import RealRooted.Applications.OEIS.PathPowerRows
+public import RealRooted.Applications.OEIS.A271697
+public import RealRooted.EdreiThoma.Continuation
+public import RealRooted.EdreiThoma.Converse
+public import RealRooted.DerivativeRecurrence.MultiLagCancel
+public import RealRooted.Applications.OEIS.CubicParentRows
+public import RealRooted.Graph.IndependencePolynomial.CubicParent
+public import RealRooted.Challenges.Roots.KostovEigenpolynomials
+public import RealRooted.Challenges.Graphs.PathPowerCliques
+public import RealRooted.BorceaBranden.MultivariateHKO
+public import RealRooted.BorceaBranden.RealFiniteClassification
+public import RealRooted.Mathlib.Analysis.Complex.Hurwitz
+public import RealRooted.Mathlib.Analysis.Complex.LimitsOfZeros
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffEstimates
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.Szasz
+public import RealRooted.Tactic.Row.PathPower
+public import RealRooted.Applications.OEIS.PeriodicTopRows
+public import RealRooted.BorceaBranden.Transcendental.JensenMultiplier
+public import RealRooted.BorceaBranden.Transcendental.PivotConverse
+public import RealRooted.BorceaBranden.Transcendental.UniformSzasz
+public import RealRooted.CoefficientShape.RowCLT
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Partition.YoungDiagram
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.DividedDifference
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.Homogeneous
+public import RealRooted.MultiplierSequence.InvPochhammerSimple
+public import RealRooted.Applications.OEIS.ClosedFormRows
+public import RealRooted.MultivariateStability.MorrisOperator
+public import RealRooted.BorceaBranden.Applications.ComplexDiagonalRootLocation
+public import RealRooted.MultivariateStability.MorrisBFlow
+public import RealRooted.MultivariateStability.MorrisDFlow
+public import RealRooted.MultivariateStability.MorrisEigenfunction
+public import RealRooted.BorceaBranden.Transcendental.LambdaBar
+public import RealRooted.BorceaBranden.Transcendental.PivotForward
+public import RealRooted.BorceaBranden.Transcendental.TranscendentalSymbol
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffExtraction
+public import RealRooted.CombinatorialExamples.PathPowerGap
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Subsequence
+public import RealRooted.BorceaBranden.Transcendental.ComplexClassification
+public import RealRooted.BorceaBranden.Transcendental.SymbolBridge
+public import RealRooted.BorceaBranden.RealFiniteNecessity
+public import RealRooted.BorceaBranden.RealFiniteSymbolSufficiency
+public import RealRooted.BorceaBranden.RealHKOConverse
+public import RealRooted.BorceaBranden.RealFiniteClassificationIff
+public import RealRooted.BorceaBranden.RealFiniteHomotopy
+public import RealRooted.BorceaBranden.Transcendental.RealClassification
+public import RealRooted.BorceaBranden.Transcendental.RealClassificationCore
+public import RealRooted.BorceaBranden.Transcendental.RealOperatorBasics
+public import RealRooted.BorceaBranden.Transcendental.RealTheoremFiveOne
+public import RealRooted.GammaTransform.TwoStep
+public import RealRooted.Challenges.Stability.BorceaBrandenClassification
+public import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivProd
+public import RealRooted.Mathlib.Algebra.MvPolynomial.SpecializeList
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Permanent
+public import RealRooted.Permanent
+public import RealRooted.Permanent.Basic
+public import RealRooted.Permanent.Ferrers
+public import RealRooted.Permanent.MonotoneColumn
+public import RealRooted.Permanent.MonotoneColumn.Reduction
+public import RealRooted.Permanent.Stability
+public import RealRooted.Permanent.Stability.Cone
+public import RealRooted.Permanent.Stability.Ferrers
+public import RealRooted.Permanent.Stability.Fractional
+public import RealRooted.Permanent.Stability.Operator
+public import RealRooted.Challenges.Matrices.MonotoneColumnPermanent
+public import RealRooted.Interlacing.WindowInduction
+public import RealRooted.DerivativeRecurrence.SecondOrder.GammaFamily
+public import RealRooted.DerivativeRecurrence.SecondOrder.Top
+public import RealRooted.LiuWang.CombinedFlux
+public import RealRooted.Recurrence.Telescoping
+public import RealRooted.Recurrence.Uniqueness
+public import RealRooted.DerivativeRecurrence.Nonnegative
+public import RealRooted.Recurrence.FactorPower
+public import RealRooted.Tactic.Row.DelayedProduct
+public import RealRooted.Tactic.Row.FactorPower
+public import RealRooted.GammaTransform.Derivative
+public import RealRooted.Mathlib.Analysis.Complex.LocallyUniformLimit
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Inequality
+public import RealRooted.Recurrence.RowModel
+public import RealRooted.ParityFactorization
+public import RealRooted.MultiplierSequence.TwoSidedJensen
+public import RealRooted.Interlacing.ReversalLeftDegree
+public import RealRooted.Tactic.Row.EndpointWindow
+public import RealRooted.Tactic.Row.RationalReverse
+public import RealRooted.Applications.OEIS.ReflectedEulerRows
+public import RealRooted.Interlacing.ReversalCommonFactor
+public import RealRooted.Applications.OEIS.A394813
+public import RealRooted.Applications.OEIS.A395326
+public import RealRooted.Applications.OEIS.A318397
+public import RealRooted.MultiplierSequence.JensenHypergeometric
+public import RealRooted.Applications.OEIS.HigherOrderDegreeModels
+public import RealRooted.Applications.OEIS.IndispensableDigits
+public import RealRooted.MatrixInterlacing.DigitStep
+public import RealRooted.Applications.OEIS.A119308
+public import RealRooted.MultiplierSequence.JensenAffineTheta
+public import RealRooted.Applications.OEIS.A304334
+public import RealRooted.Applications.OEIS.A304330
+public import RealRooted.Applications.OEIS.TouchardImages
+public import RealRooted.Applications.OEIS.A080721
+public import RealRooted.Applications.OEIS.HarmonicDerivativeRows
+public import RealRooted.Applications.OEIS.A259454
+public import RealRooted.Mathlib.Combinatorics.Enumerative.Partition.Dominance
+public import RealRooted.Mathlib.LinearAlgebra.TriangularBasis
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.ElementaryMonomial
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric.Monomial
+public import RealRooted.Mathlib.Analysis.Normed.Operator.Trotter
+public import RealRooted.Mathlib.Analysis.Normed.Operator.TriangularExp
+public import RealRooted.RootVieta.SortedRoots
+public import RealRooted.AffineFamily.PF
+public import RealRooted.ChudnovskySeymour.PF
+public import RealRooted.OperatorMatrix.LocalToGlobal
+public import RealRooted.OperatorMatrix.Composition
+public import RealRooted.OperatorMatrix.Directed
+public import RealRooted.OperatorMatrix.EulerDerivativeLag
+public import RealRooted.OperatorMatrix.OneThetaX
+public import RealRooted.OperatorMatrix.MixedLemma
+public import RealRooted.OperatorMatrix.OneThetaXBoards
+public import RealRooted.OperatorMatrix.OneThetaXBoardsExtra
+public import RealRooted.GraceWalshSzego
+public import RealRooted.Challenges.Matrices.CourantFischer
+public import RealRooted.Challenges.Roots.LaguerrePolarDerivative
+public import RealRooted.Challenges.Preservers.LaguerrePolya
+public import RealRooted.Challenges.Stability.MorrisFlow
+public import RealRooted.Challenges.Stability.MultivariateObreschkoff
+public import RealRooted.Challenges.Stability.SzaszGrowth
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.CanonicalProduct
+public import RealRooted.Tactic.Row.ThresholdOrbit
+public import RealRooted.ThresholdMatrix.Orbit
+public import RealRooted.NarayanaInterpolation
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Operator
+public import RealRooted.RecurrenceSpace.Defect
+public import RealRooted.RecurrenceSpace.Filtered
+public import RealRooted.RecurrenceSpace.Operators
+public import RealRooted.IntervalDifferential.Basic
+public import RealRooted.IntervalDifferential.Certificates
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedColumnBound
+public import RealRooted.IntervalDifferential.CubicDisk
+public import RealRooted.IntervalDifferential.Degree
+public import RealRooted.IntervalDifferential.LinearInsertion
+public import RealRooted.IntervalDifferential.ParityQuarticFactor
+public import RealRooted.IntervalDifferential.QuadraticInsertion
+public import RealRooted.IntervalDifferential.QuarticBounds
+public import RealRooted.IntervalDifferential.QuarticSeeds
+public import RealRooted.IntervalDifferential.RootSums
+public import RealRooted.IntervalDifferential.Seeds
+public import RealRooted.Mathlib.Algebra.Polynomial.IntervalSignChanges
+public import RealRooted.Mathlib.Algebra.Polynomial.RealQuadraticFactor
+public import RealRooted.IntervalDifferential.FactorShapes
+public import RealRooted.IntervalDifferential.UniversalTransfer
+public import RealRooted.IntervalDifferential.MobiusRoots
+public import RealRooted.CenteredEulerian.ArcsinBound
+public import RealRooted.CenteredEulerian.Basis
+public import RealRooted.CenteredEulerian.ChangeBasis
+public import RealRooted.CenteredEulerian.Coefficients
+public import RealRooted.CenteredEulerian.ColumnBound
+public import RealRooted.CenteredEulerian.EulerAnalytic
+public import RealRooted.CenteredEulerian.EulerFormula
+public import RealRooted.CenteredEulerian.FormalArcsin
+public import RealRooted.CenteredEulerian.HBound
+public import RealRooted.CenteredEulerian.Majorants
+public import RealRooted.CenteredEulerian.Parity
+public import RealRooted.CenteredEulerian.PhiBound
+public import RealRooted.CenteredEulerian.Riccati
+public import RealRooted.CenteredEulerian.RootCriterion
+public import RealRooted.CenteredEulerian.SeriesBasic
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.CenteredSeries
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.Definitions
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.Degree
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.GeneratingSeries
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.Identification
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.RealRooted
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.Roots
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.SmallRoots
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.Standardization
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.WordRecurrence
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.WordSeries
+public import RealRooted.Combinatorics.ForcedGapWords
+public import RealRooted.Challenges.Combinatorial.ZigzagEulerian
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.Recurrence
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.RecurrencePolynomial
+public import RealRooted.Applications.EulerianCompendium.CyclicWords
+public import RealRooted.Applications.EulerianCompendium.Definitions
+public import RealRooted.Applications.EulerianCompendium.DeletionFamily
+public import RealRooted.Applications.EulerianCompendium.DeletionRoots
+public import RealRooted.Applications.EulerianCompendium.DerangementReciprocal
+public import RealRooted.Applications.EulerianCompendium.DerangementRecurrence
+public import RealRooted.Applications.EulerianCompendium.Derangements
+public import RealRooted.Applications.EulerianCompendium.EvenTop
+public import RealRooted.Applications.EulerianCompendium.EvenTopRoots
+public import RealRooted.Applications.EulerianCompendium.Peaks
+public import RealRooted.Applications.EulerianCompendium.Results
+public import RealRooted.Applications.EulerianCompendium.TernaryRecurrence
+public import RealRooted.Applications.EulerianCompendium.TernaryWords
+public import RealRooted.Challenges.Combinatorial.EulerianCompendium
+public import RealRooted.Combinatorics.ForcedSteps
+public import RealRooted.Combinatorics.SortingFixedPoints
+public import RealRooted.ThresholdMatrix.Attr
+public import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Skewness
+public import RealRooted.LiebSokalGeneral
+public import RealRooted.CombinatorialExamples.BigDescents132.Quartic
+public import RealRooted.Challenges.HermitePoulain
+public import RealRooted.ClassicalHurwitzMatrix.Examples
+public import RealRooted.HurwitzMatrix.CornerZeroedCounterexample
+public import RealRooted.HurwitzMatrix.HadamardObstruction
+public import RealRooted.Mathlib.Analysis.Complex.RealPart
+public import RealRooted.Mathlib.Analysis.Matrix.Spectrum
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.TraceSq
+public import RealRooted.CombinatorialExamples.BigDescents132.Basic
+public import RealRooted.CombinatorialExamples.BigDescents132.GeneratingFunction
+public import RealRooted.Interlacing.VariableDelay
+public import RealRooted.CombinatorialExamples.WeightedRenewal
+public import RealRooted.Mathlib.Data.Nat.Choose.Sum
+public import RealRooted.Tactic.Row.Routes
+public import RealRooted.Mathlib.Algebra.Polynomial.Derivative.Prod
+public import RealRooted.Mathlib.Data.Fintype.Pigeonhole
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PosSemidefPencil
+public import RealRooted.CombinatorialExamples.RestrictedExponential
+public import RealRooted.Mathlib.Combinatorics.SimpleGraph.Acyclic
+public import RealRooted.Mathlib.RingTheory.Polynomial.Bernstein
+public import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Finset
+public import RealRooted.ThreeTermRecurrence.WangZhang
+public import RealRooted.ThreeTermRecurrence.OrderTwoLimitZeros
+public import RealRooted.Mesh.Basic
+public import RealRooted.Mesh.FiniteDifference
+public import RealRooted.Mathlib.Algebra.Order.Ring.Lemmas
+public import RealRooted.Mesh.Derivative
+public import RealRooted.Mesh.HermitePoulain
+public import RealRooted.Mesh.DiscreteHermitePoulain
+public import RealRooted.Mesh.DiscreteMultiplier
+public import RealRooted.Challenges.Roots.LimitsOfZeros
+public import RealRooted.Challenges.Roots.MeshFiniteDifference
+public import RealRooted.Mesh.DiscreteMultiplierSequence
+public import RealRooted.Mesh.FallingFactorial
+public import RealRooted.Mesh.DiscreteMultiplierSequencePolyaSchur
+public import RealRooted.Mesh.DiscreteMultiplierSequenceLaguerrePolya
+public import RealRooted.Mesh.Limit
 
 /-!
 # RealRooted production umbrella

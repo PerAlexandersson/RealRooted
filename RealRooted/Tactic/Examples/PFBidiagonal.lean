@@ -1,4 +1,9 @@
+module
+
+import RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction
 import RealRooted.Tactic.PFBidiagonal
+
+set_option linter.privateModule false
 
 /-!
 # PF-bidiagonal API smoke tests

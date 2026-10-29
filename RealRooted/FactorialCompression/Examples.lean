@@ -1,4 +1,8 @@
+module
+
 import RealRooted.FactorialCompression.DegreeChanging
+
+set_option linter.privateModule false
 
 /-!
 # Regression examples for the factorial compression

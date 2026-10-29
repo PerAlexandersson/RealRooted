@@ -1,4 +1,8 @@
+module
+
 import RealRooted.Tactic.RowInterlacing
+
+set_option linter.privateModule false
 
 open Polynomial
 

@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.Tactic.WagnerX.Syntax
-import RealRooted.Tactic.Lookup
+public import RealRooted.Tactic.Lookup
 public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
