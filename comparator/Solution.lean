@@ -1,6 +1,8 @@
-import RealRooted.AissenSchoenbergWhitney
-import RealRooted.Bezoutian.LowDegree
-import RealRooted.SymmetricDecomposition.Theorem26
+module
+
+public import RealRooted.AissenSchoenbergWhitney
+public import RealRooted.Bezoutian.LowDegree
+public import RealRooted.SymmetricDecomposition.Theorem26
 
 /-!
 # Solution: bridge from Challenge to the RealRooted library
@@ -8,7 +10,7 @@ import RealRooted.SymmetricDecomposition.Theorem26
 
 open Polynomial
 
-noncomputable section
+@[expose] public noncomputable section
 
 namespace Comparator
 

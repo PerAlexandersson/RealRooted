@@ -1,4 +1,6 @@
-import Mathlib
+module
+
+public import Mathlib
 
 /-!
 # Challenge: human-auditable theorem statements
@@ -12,7 +14,7 @@ open Polynomial
 
 -- `List.Interleaves` is Mathlib's (`Mathlib.Data.List.Interleave`, mathlib4#39870).
 
-noncomputable section
+@[expose] public noncomputable section
 
 namespace Comparator
 
