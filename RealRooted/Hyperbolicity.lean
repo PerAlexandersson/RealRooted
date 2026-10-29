@@ -652,32 +652,27 @@ private theorem realAffineLineRestriction_neg_direction
   intro t
   simp [eval_realAffineLineRestriction, Polynomial.eval_comp]
 
-/-- Ordinary homogenization is hyperbolic in every direction that is positive
-on the original coordinates and zero on the homogenizing coordinate. This is
-the boundary-direction part of the stability--hyperbolicity bridge. -/
-theorem MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary
+/-- Ordinary homogenization of a real stable polynomial is hyperbolic in a boundary direction
+`(0, b)` whenever its top homogeneous component is real stable and does not vanish at `b`. -/
+theorem MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary_of_top
     {σ : Type*} {P : MvPolynomial σ ℝ} (hst : MvRealStable P)
-    (hnn : MvPolynomial.HasNonnegCoeffs P) (hP : P ≠ 0)
-    (b : σ → ℝ) (hb : ∀ i, 0 < b i) :
+    (htop : MvRealStable (MvPolynomial.homogeneousComponent P.totalDegree P))
+    (b : σ → ℝ) (hb : ∀ i, 0 < b i)
+    (heval : MvPolynomial.eval b (MvPolynomial.homogeneousComponent P.totalDegree P) ≠ 0) :
     (MvPolynomial.ordinaryHomogenization P P.totalDegree).HyperbolicAt
       (fun o => Option.elim o 0 b) := by
   let H := MvPolynomial.ordinaryHomogenization P P.totalDegree
   let e : Option σ → ℝ := fun o => Option.elim o 0 b
   let Htop := MvPolynomial.homogeneousComponent P.totalDegree P
-  have hHtopNe : Htop ≠ 0 :=
-    MvPolynomial.homogeneousComponent_totalDegree_ne_zero hP
-  have hEvalTopPos : 0 < MvPolynomial.eval b Htop :=
-    (hnn.homogeneousComponent P.totalDegree).eval_pos hHtopNe hb
   have hEval : MvPolynomial.eval e H = MvPolynomial.eval b Htop := by
     simpa [e, H, Htop] using
       MvPolynomial.eval_ordinaryHomogenization_zero P P.totalDegree b
-  refine ⟨hEval.trans_ne hEvalTopPos.ne', ?_⟩
+  refine ⟨hEval.trans_ne heval, ?_⟩
   intro x
   change (realAffineLineRestriction x e H).Splits
   by_cases hx : x none = 0
   · rw [restriction_ordinaryHomogenization_eq_of_none_eq_zero P x b hx]
-    exact (MvRealStable.realAffineLineRestriction_splits_ne_zero
-      (MvRealStable.homogeneousComponent_totalDegree hst hnn hP)
+    exact (MvRealStable.realAffineLineRestriction_splits_ne_zero htop
         (fun i => x (some i)) b hb).1
   · rw [restriction_ordinaryHomogenization_eq_of_none_ne_zero P x b hx]
     rcases lt_or_gt_of_ne hx with hxneg | hxpos
@@ -695,6 +690,32 @@ theorem MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary
     · exact ((hst.realAffineLineRestriction_splits_ne_zero
         (fun i => x (some i) / x none) (fun i => b i / x none)
         (fun i => div_pos (hb i) hxpos)).1).C_mul _
+
+/-- Ordinary homogenization is hyperbolic in every direction that is positive
+on the original coordinates and zero on the homogenizing coordinate. This is
+the boundary-direction part of the stability--hyperbolicity bridge. -/
+theorem MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary
+    {σ : Type*} {P : MvPolynomial σ ℝ} (hst : MvRealStable P)
+    (hnn : MvPolynomial.HasNonnegCoeffs P) (hP : P ≠ 0)
+    (b : σ → ℝ) (hb : ∀ i, 0 < b i) :
+    (MvPolynomial.ordinaryHomogenization P P.totalDegree).HyperbolicAt
+      (fun o => Option.elim o 0 b) :=
+  hst.ordinaryHomogenization_hyperbolicAt_boundary_of_top
+    (MvRealStable.homogeneousComponent_totalDegree hst hnn hP) b hb
+    ((hnn.homogeneousComponent P.totalDegree).eval_pos
+      (MvPolynomial.homogeneousComponent_totalDegree_ne_zero hP) hb).ne'
+
+/-- For finitely many variables, exact ordinary homogenization is hyperbolic in every direction
+that is positive on the original coordinates and zero on the homogenizing coordinate, with no
+coefficient-sign hypothesis. -/
+theorem MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary_fin
+    {n : ℕ} {P : MvPolynomial (Fin n) ℝ} (hst : MvRealStable P)
+    (b : Fin n → ℝ) (hb : ∀ i, 0 < b i) :
+    (MvPolynomial.ordinaryHomogenization P P.totalDegree).HyperbolicAt
+      (fun o => Option.elim o 0 b) :=
+  hst.ordinaryHomogenization_hyperbolicAt_boundary_of_top
+    hst.homogeneousComponent_totalDegree_fin b hb
+    (hst.eval_homogeneousComponent_totalDegree_ne_zero b hb)
 
 /-- Every positive original-coordinate boundary direction is joined to every
 strictly positive direction inside the nonvanishing locus of a nonzero
@@ -802,6 +823,72 @@ theorem mvUpperHalfPlaneStableOrZero_complexify_ordinaryHomogenization
     rw [hzero]
     simp [complexifyMv, MvPolynomial.ordinaryHomogenization]
   · exact Or.inr (hst.ordinaryHomogenization_of_totalDegree_le hnn hst.ne_zero hdeg)
+
+/-! ### Sign-free boundary hyperbolicity: examples from issue #954 -/
+
+example :
+    let P : MvPolynomial (Fin 1) ℝ :=
+      MvPolynomial.X 0 - MvPolynomial.C 1
+    (MvPolynomial.ordinaryHomogenization P P.totalDegree).HyperbolicAt
+      (fun o => Option.elim o 0 (fun _ => 1)) := by
+  dsimp only
+  apply MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary_fin
+  · intro z hz
+    change ∀ i, 0 < (z i).im at hz
+    simp only [complexifyMv, map_sub, MvPolynomial.map_X,
+      MvPolynomial.map_C, MvPolynomial.eval_X,
+      MvPolynomial.eval_C]
+    intro hzero
+    have him := congrArg Complex.im hzero
+    have him0 : (z 0).im = 0 := by simpa using him
+    exact (hz 0).ne' him0
+  · simp
+
+example :
+    let P : MvPolynomial (Fin 2) ℝ :=
+      MvPolynomial.X 0 * MvPolynomial.X 1 - MvPolynomial.C 1
+    (MvPolynomial.ordinaryHomogenization P P.totalDegree).HyperbolicAt
+      (fun o => Option.elim o 0 (fun _ => 1)) := by
+  dsimp only
+  apply MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary_fin
+  · intro z hz
+    change ∀ i, 0 < (z i).im at hz
+    simp only [complexifyMv, map_sub, map_mul, MvPolynomial.map_X,
+      MvPolynomial.map_C, MvPolynomial.eval_X,
+      MvPolynomial.eval_C]
+    intro hzero
+    have hmul : z 0 * z 1 = 1 := by
+      simpa using sub_eq_zero.mp hzero
+    have hz0 : z 0 ≠ 0 := fun h => by
+      rw [h, zero_mul] at hmul
+      exact zero_ne_one hmul
+    have hone : (z 0)⁻¹ * z 0 = 1 := inv_mul_cancel₀ hz0
+    have hz1 : z 1 = (z 0)⁻¹ := by
+      calc
+        z 1 = 1 * z 1 := by simp
+        _ = ((z 0)⁻¹ * z 0) * z 1 := by rw [hone]
+        _ = (z 0)⁻¹ * (z 0 * z 1) := by rw [mul_assoc]
+        _ = (z 0)⁻¹ := by rw [hmul, mul_one]
+    have hinvneg : ((z 0)⁻¹).im < 0 := by
+      simpa [one_div] using
+        (Complex.one_div_sub_im_neg (w := z 0) (r := 0) (by
+          simpa using hz 0))
+    have hz1pos := hz 1
+    rw [hz1] at hz1pos
+    exact (not_lt_of_ge hz1pos.le) hinvneg
+  · simp
+
+example :
+    let P : MvPolynomial (Fin 1) ℝ := MvPolynomial.C (-1)
+    (MvPolynomial.ordinaryHomogenization P P.totalDegree).HyperbolicAt
+      (fun o => Option.elim o 0 (fun _ => 1)) := by
+  dsimp only
+  apply MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary_fin
+  · simpa using
+      (MvRealStable.one.C_mul (by norm_num : (-1 : ℝ) ≠ 0) :
+        MvRealStable (MvPolynomial.C (-1) * 1 :
+          MvPolynomial (Fin 1) ℝ))
+  · simp
 
 end
 
