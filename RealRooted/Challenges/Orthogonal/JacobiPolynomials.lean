@@ -141,11 +141,8 @@ value $0$ of that lookup is irrelevant. The case of general $\beta$ is not
 formalized.
 
 The shifted Legendre polynomials of Mathlib, mapped to $\mathbb{R}$, are the
-case $\alpha = \beta = 0$.
-
-For the shifted Legendre polynomials (the case $\alpha = \beta = 0$ on
-$[0, 1]$), real-rootedness and interlacing of consecutive polynomials are also
-proved directly.
+case $\alpha=\beta=0$; for them real-rootedness and interlacing of consecutive
+polynomials are also proved directly.
 
 ## References
 

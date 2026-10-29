@@ -36,8 +36,9 @@ noncomputable section
 namespace RealRooted
 
 /-- The shifted Eulerian polynomials, defined by the recurrence `P_0 = X` and
-`P_{n+1} = X ((n + 2) P_n + (1 - X) P_n')`.  The classical identification with
-`X` times the descent polynomial of the symmetric group is not formalized. -/
+`P_{n+1} = X ((n + 2) P_n + (1 - X) P_n')`.  Theorems
+`eulerianTilde_eq_X_mul_generalizedEulerian_one` and `genPoly_univ_descentCount` identify
+`P_n` with `X` times the descent generating polynomial of permutations of `Fin (n + 1)`. -/
 def eulerianTilde : Nat → ℝ[X]
   | 0 => X
   | n + 1 =>

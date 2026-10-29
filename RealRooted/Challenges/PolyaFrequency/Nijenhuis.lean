@@ -31,6 +31,11 @@ name = "RealRooted.Rook.nijenhuisRookPolynomial"
 module = "RealRooted.RookPolynomial"
 label = "Nijenhuis's signed rook polynomial"
 
+[[definitions]]
+name = "RealRooted.Rook.rookPolynomial"
+module = "RealRooted.RookPolynomial"
+label = "Rook polynomial of a finite board"
+
 [[theorems]]
 name = "RealRooted.Rook.weightedRookPolynomial_eq_weightedMatchingPolynomialByEdges"
 module = "RealRooted.RookPolynomial"
@@ -51,14 +56,36 @@ name = "RealRooted.Rook.rookPolynomial_splits"
 module = "RealRooted.RookPolynomial"
 label = "Rook polynomials of boards are real-rooted"
 headline = true
+
+[[theorems]]
+name = "RealRooted.Rook.weightedRookPolynomial_isPFPolynomial"
+module = "RealRooted.RookPolynomial"
+label = "Nonnegative weighted rook polynomials are PF"
+
+[[theorems]]
+name = "RealRooted.Rook.rookPolynomial_isPFPolynomial"
+module = "RealRooted.RookPolynomial"
+label = "Rook polynomials of finite boards are PF"
 -->
 
 <!-- realrooted-catalog-content -->
 # Rook polynomials
 
+A *rook placement* in an $m\times n$ array is a set of cells, no two of which
+share a row or a column. For a matrix $A=(a_{rc})$ with nonnegative entries,
+the *weighted rook polynomial* is
+$$
+\sum_P \prod_{(r,c)\in P} a_{rc}\,x^{|P|},
+$$
+summed over rook placements $P$. For a board $B$, that is, a set of cells, the
+ordinary rook polynomial $\sum_k r_k(B)x^k$ is the case of the $0/1$ indicator
+matrix of $B$.
+
 Weighted rook polynomials are weighted matching polynomials of complete
-bipartite graphs. For every nonnegative finite matrix they are real-rooted,
-with nonpositive roots; Nijenhuis’s signed normalization has nonnegative roots.
+bipartite graphs. For every nonnegative finite matrix they are PF polynomials,
+so they are real-rooted with nonpositive roots. In particular, every rook
+polynomial of a finite board is PF and real-rooted. Nijenhuis's signed
+normalization $p(-x)$ has nonnegative roots.
 
 ## References
 

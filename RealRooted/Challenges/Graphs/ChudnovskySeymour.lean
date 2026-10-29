@@ -37,6 +37,11 @@ label = "Independence polynomial"
 name = "RealRooted.Challenges.ChudnovskySeymour.clawFree_indepPoly_splits"
 label = "Chudnovsky–Seymour: claw-free graphs have real-rooted independence polynomials"
 headline = true
+
+[[theorems]]
+name = "RealRooted.Graph.clawFree_weightedIndepPoly_splits"
+module = "RealRooted.Graph.IndependencePolynomial.ClawFree"
+label = "Weighted independence polynomials of claw-free graphs are real-rooted"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -45,6 +50,10 @@ headline = true
 The independence polynomial counts independent vertex sets by cardinality.
 Chudnovsky and Seymour proved that it is real-rooted for every finite
 claw-free graph [@ChudnovskySeymour2007].
+
+The same holds for the weighted independence polynomial
+$\sum_A x^{|A|}\prod_{v\in A}w(v)$ when all $w(v)\ge0$ (Engström; see the
+[Heilmann–Lieb page](/RealRooted/theorems/heilmann-lieb/)).
 
 ## References
 

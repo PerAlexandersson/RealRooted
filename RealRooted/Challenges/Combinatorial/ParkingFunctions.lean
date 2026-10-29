@@ -83,6 +83,10 @@ of length $n$ are real-rooted:
   Brändén–Vecchi Chow polynomial of an elementary Toeplitz matrix.
 - **Weak left peaks:** $\sum_w x^{\operatorname{wlpk}(w)}$.
 
+Here $\operatorname{des}(w)=\#\{i:w_i>w_{i+1}\}$ and
+$\operatorname{wlpk}(w)=\#\{i\ge1:w_{i-1}\le w_i>w_{i+1}\}$, with positions
+numbered from $0$.
+
 ## References
 
 See [@DiaconisHicks2017]. The Chow polynomials appear on the

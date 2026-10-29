@@ -15,6 +15,11 @@ references = [
   "NyandwiHaggKurujyibwamiUwimbabazi2026x",
 ]
 
+[[definitions]]
+name = "RealRooted.FiniteMemory.sharpDefectBridges_residueDefect_of_setGcd_eq_one"
+module = "RealRooted.FiniteMemory.Defect"
+label = "Coprime active lags produce sharp residue-defect bridges"
+
 [[theorems]]
 name = "RealRooted.HasNonnegCoeffs.natDegree_add_eq_max"
 module = "RealRooted.FiniteMemory.Defect"
@@ -59,7 +64,7 @@ label = "Sharp bridges give scaled lower-degree words"
 [[theorems]]
 name = "RealRooted.FiniteMemory.exists_fractional_upper_degree_word"
 module = "RealRooted.FiniteMemory.Defect"
-label = "The fractional $(2,3)$ upper-degree bridge"
+label = "The fractional (2, 3) upper-degree bridge"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -75,9 +80,9 @@ fundamental rows have nonnegative coefficients when the symbol coefficients do.
 We next construct a `SharpDefectBridges` certificate from any bounded positive
 active lag set of gcd one and a chosen zero-cost lag.  A finite residue
 automaton shortens minimum-cost representatives to simple paths, giving the
-uniform threshold $(r-1)(r-2)$.  Thus every index above that threshold has an
+uniform threshold $(r-1)(r-2)$. Thus every index $n\geq(r-1)(r-2)$ has an
 active lag word of the prescribed residue cost, and no active word of the same
-total lag has smaller cost.  The upper and lower bridge theorems turn the
+total lag has smaller cost. The upper and lower bridge theorems turn the
 pointwise scaled degree identities into exact word identities.
 
 For active lags $2$ and $3$, with upper costs $1$ and $0$, respectively, the

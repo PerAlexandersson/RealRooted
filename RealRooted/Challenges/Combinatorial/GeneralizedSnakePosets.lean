@@ -131,20 +131,23 @@ the board, its non-nesting rook polynomial $M_w$, and the recurrence below.
 real-rooted, and
 deleting the last letter of $w$ gives a polynomial interlacing $M_w$.
 
-The proof uses the **modified Narayana polynomials** $P_n = t^{-1} N_{n+1}$,
+The proof uses the **modified Narayana polynomials** $P_n=t^{-1}N_{n+1}$,
+where
+$N_n(t)=\sum_k\frac1n\binom nk\binom n{k-1}t^k$,
 which are the rook polynomials of the full truncated staircase boards, and
 auxiliary polynomials $G_n$, which are sums of truncated-staircase rook
 polynomials.
 
 - **Recurrence.** If $k$ is the last position where $w$ differs from its final
-  letter and $s = |w| - k - 1$, then
+  letter, with positions numbered from $0$, and $s = |w| - k - 1$, then
   $M_w = M_{w[:k+1]}\, P_s + x\, M_{w[:k]}\, G_s$. Constant words give
   $M_w = P_{|w|+1}$.
 - **Narayana input.** Every $P_n$ is a PF polynomial, $P_n \ll P_{n+1}$, and
   for $m \geq 2$, $\lambda \geq 0$ and $\nu \geq -1$,
   $(\lambda x+\nu) P_{m-1} + P_m \ll (\lambda x+\nu) P_m + P_{m+1}$.
-- **Staircase input.** $x\, G_{n-1} = P_n - (1+x) P_{n-1}$, and $G_n - G_{n-1}$
-  has nonnegative coefficients.
+- **Staircase input.** For $n\ge1$,
+  $x\,G_{n-1}=P_n-(1+x)P_{n-1}$, and $G_n-G_{n-1}$ has nonnegative
+  coefficients.
 - **Auxiliary interlacing.** For $n \geq 1$, $G_n \ll P_n$.
 
 Induction on the length of $w$ along the recurrence then gives the theorem.

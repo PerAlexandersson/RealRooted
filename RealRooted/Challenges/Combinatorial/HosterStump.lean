@@ -43,6 +43,11 @@ label = "Hoster–Stump: Chow polynomials of h-positive simplicial posets are re
 headline = true
 
 [[theorems]]
+name = "RealRooted.HosterStump.isRealRooted_chowOfFlagH_dualFlagH_flagH"
+module = "RealRooted.HosterStump.PosetChow"
+label = "Hoster–Stump: the dual Chow polynomial is real-rooted"
+
+[[theorems]]
 name = "RealRooted.HosterStump.isRealRooted_augChowOfFlagH_flagH"
 module = "RealRooted.HosterStump.PosetChow"
 label = "Hoster–Stump: the augmented Chow polynomial is real-rooted"
@@ -80,9 +85,11 @@ where a set is *isolated* if it contains no two consecutive integers.
 
 **Theorem** (Hoster–Stump). [@HosterStump2025x] If the $h$-vector of $P$ is nonnegative, then
 $H_{\hat P}$, $H_{\hat P^*}$ and $H^{\mathrm{aug}}_{\hat P}$ are real-rooted, and the
-roots of $H_{\hat P^*}$ interlace those of $H^{\mathrm{aug}}_{\hat P}$.
+roots of $H_{\hat P^*}$ interlace those of $H^{\mathrm{aug}}_{\hat P}$ when
+the rank $n\ge1$.
 
-This covers Cohen–Macaulay simplicial posets and the lattices of flats of uniform matroids.
+The paper notes that this covers Cohen–Macaulay simplicial posets and the
+lattices of flats of uniform matroids.
 
 ## Proof idea
 

@@ -101,6 +101,16 @@ polynomial $P_\alpha$ has degree $N - 1$, nonnegative coefficients and only
 simple negative zeros. Consecutive partial products of the factorization strictly
 interlace, and $P_\alpha$ is palindromic.
 
+**Theorem** (Zhang–Zhao, Lemma 3.2 and Proposition 3.4). For $a>0$ and
+$d\in\{2m,2m+1\}$, where $m=\deg\Gamma$, the gamma operator
+$$
+\Phi_{d,a}\Gamma
+=\Gamma+\frac{z(1-4z)\Gamma'+2dz\Gamma}{a}
+$$
+maps polynomials with simple negative zeros to polynomials of the same type.
+Moreover, each zero of the output moves strictly right when an input zero
+moves right.
+
 **Theorem** (Zhang–Zhao, Theorem 1.3). [@ZhangZhao2026x, Thm. 1.3] The
 matrices $K^{(p,r)}$ that send the
 coefficients of an input polynomial to those of its image under $r$ consecutive steps

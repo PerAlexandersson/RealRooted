@@ -29,10 +29,12 @@ headline = true
 <!-- realrooted-catalog-content -->
 # Veronese sections
 
-The $k$th $r$-Veronese section of a polynomial keeps the coefficients whose
-indices are congruent to $k$ modulo $r$. Let $0 \leq k < r$. If a polynomial
-with nonnegative coefficients splits over $\mathbb R$, then its $k$th
-$r$-Veronese section is zero or splits over $\mathbb R$.
+The $k$th $r$-Veronese section of $p=\sum_i p_i x^i$ is
+$\sum_{n\geq0}p_{rn+k}x^n$: it keeps the coefficients whose indices are
+congruent to $k$ modulo $r$ and re-indexes them by $n=(i-k)/r$. Let
+$0 \leq k < r$. If a polynomial with nonnegative coefficients splits over
+$\mathbb R$, then its $k$th $r$-Veronese section is zero or splits over
+$\mathbb R$.
 This follows from the Pólya frequency characterization and total
 nonnegativity.
 

@@ -1,5 +1,6 @@
 module
 
+import RealRooted.Hutchinson
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.CanonicalProduct
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Closure
@@ -126,8 +127,10 @@ $p_n \in \mathbb R[x]$ such that $p_n \to f$ locally uniformly on $\mathbb C$. T
 belongs to the class, because we allow the zero polynomial.
 
 The **type I** subclass (`IsLaguerrePolyaTypeI`) asks that the approximating polynomials be
-Pólya-frequency polynomials. Every type I function is Laguerre–Pólya. Type I functions are the
-exponential generating functions of the PF multiplier sequences, see the
+Pólya-frequency polynomials. Every type I function is Laguerre–Pólya. If the
+exponential generating function $\sum_k\gamma_kz^k/k!$ has positive radius of
+convergence, then it is of type I exactly when $\gamma$ is a PF multiplier
+sequence; see the
 [multiplier sequences page](/RealRooted/concepts/multiplier-sequences/).
 
 ## Closure properties

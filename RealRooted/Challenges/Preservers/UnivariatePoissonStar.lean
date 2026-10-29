@@ -41,6 +41,11 @@ module = "RealRooted.BorceaBranden.Applications.UnivariatePoissonStar"
 label = "Affine test for a single linear factor"
 
 [[theorems]]
+name = "RealRooted.Poisson.starC_root_obstruction_not_splits"
+module = "RealRooted.BorceaBranden.Applications.UnivariatePoissonStar"
+label = "A root of the wrong sign obstructs real-rootedness"
+
+[[theorems]]
 name = "RealRooted.Poisson.poissonSignedSymbol_stable"
 module = "RealRooted.BorceaBranden.Applications.UnivariatePoissonStar"
 label = "Signed-symbol stability from the root-sign condition"

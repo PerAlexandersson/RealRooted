@@ -21,7 +21,7 @@ references = [
 [[theorems]]
 name = "RealRooted.reciprocalShift_reverses_strictInterl"
 module = "RealRooted.ReciprocalShift.ProperPosition"
-label = "Reciprocal shifts reverse strict interlacing"
+label = "Reciprocal shifts reverse interlacing"
 headline = true
 
 [[theorems]]
@@ -70,8 +70,9 @@ label = "Antitonicity of inversion on negative numbers"
 
 We write the degree-padded reciprocal shift as $t^D p(1/t)$. When
 $\operatorname{natDegree}(p) \leq D$, the factorization theorem expresses it as
-$X^{D-\operatorname{natDegree}(p)}p^{\mathrm{reverse}}$, and a PF polynomial
-remains PF after this transformation.
+$X^{D-\operatorname{natDegree}(p)}p^{\mathrm{reverse}}$. A PF polynomial has
+nonnegative coefficients and is either zero or split with all roots
+nonpositive; this property is preserved by the transformation.
 
 For a nonzero split polynomial, the roots theorem describes the new multiset:
 we discard the zero roots, invert the remaining roots, and add
@@ -81,12 +82,12 @@ has exactly the roots of the reciprocal shift.
 
 We use the interleaving lemmas to handle the order reversal behind this
 description. If two lists contain only strictly negative numbers and interleave,
-then reversing and inverting them preserves the appropriate orientation when
-their lengths are equal, or when the right list has one additional entry. The
+then reversing and inverting them swaps the two lists when their lengths are
+equal and keeps their order when the right list has one additional entry. The
 antitonicity lemma for $x \mapsto 1/x$ supplies the order step.
 
 Finally, we show that if $p$ and $q$ are PF polynomials with degrees at most the
-same bound $D$ and $p$ is strictly interlaced with $q$, the reciprocal shift
+same bound $D$ and $p\ll q$, the reciprocal shift
 reverses the pair: $\operatorname{StrictInterl}(p,q)$ becomes
 $\operatorname{StrictInterl}(\operatorname{reciprocalShift}(D,q),
 \operatorname{reciprocalShift}(D,p))$.

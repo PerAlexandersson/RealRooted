@@ -75,8 +75,12 @@ second-kind triangle are mutually inverse.
 
 **Theorem** (Mongelli). [@Mongelli2012] For $z \geq -1$ the first-kind triangle
 $(\mathrm{Jc}(n,k;z))_{n,k}$ is totally nonnegative, and every row is a
-Pólya-frequency sequence: the row polynomial $\sum_k \mathrm{Jc}(n,k;z)\,x^k$
-factors into linear terms $x + i(i+z)$ with nonnegative constants.
+Pólya-frequency sequence. For $n\ge1$, its row polynomial factors as
+$$
+\sum_k \mathrm{Jc}(n,k;z)x^k
+=x\prod_{i=1}^{n-1}\bigl(x+i(i+z)\bigr),
+$$
+with nonnegative constants in the nontrivial linear factors.
 
 ## Proof idea
 

@@ -100,13 +100,17 @@ real-rooted.
   $B_n(x) = \sum_k \binom{n}{k}^2 x^k$ is the type-B Narayana polynomial
   (`narayanaPolynomial 0 n`). Its zeros are simple: $0$, together with $n - 1$
   negative zeros.
-- **Peak values:** the multivariate peak-value polynomial is real stable.
-  For every choice of positive weights, consecutive weighted diagonals
-  interlace.
-- **Ternary runs:** the ternary run polynomials are PF polynomials, and
-  consecutive ones interlace.
-
-- **Super-Eulerian polynomials:** consecutive rows interlace, and their
+- **Peak values:**
+  $K_n(\mathbf x)=\sum_{\pi\in\mathfrak S_n}\prod_{v\in\operatorname{PeakVal}(\pi)}x_v$
+  is real stable. For every choice of positive weights, consecutive weighted
+  diagonals interlace.
+- **Ternary runs:** $T_n(x)=\sum_{w\in\{0,1,2\}^n}x^{\operatorname{runs}(w)}$,
+  where runs are maximal strictly increasing factors, is a PF polynomial, and
+  consecutive $T_n$ interlace.
+- **Super-Eulerian polynomials:** let
+  $E_n^{(\ell)}(x)=\sum_{k<n}E_{n,k}x^k$, where
+  $E_{n,k}=(k+1)^\ell E_{n-1,k}+(n-k)^\ell E_{n-1,k-1}$. For $\ell\ge1$ these
+  polynomials are real-rooted, consecutive ones interlace, and their
   gamma-polynomials are real-rooted with nonnegative coefficients.
 
 The [Eulerian compendium](/RealRooted/theorems/eulerian-compendium/) records

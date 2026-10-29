@@ -64,9 +64,8 @@ order of the $\deg v$ edges at $v$. An edge is a **mutual minimum** if it comes
 first at both of its endpoints. The minima polynomial is
 
 $$
-M_G(t) = \sum_{L} t^{\operatorname{mm}(L)}.
+M_G(t) = \sum_{L} t^{\operatorname{mm}(L)}
 $$
-
 summed over the $\prod_v \deg v!$ local orders $L$, where $\operatorname{mm}(L)$
 counts the mutual minima.
 

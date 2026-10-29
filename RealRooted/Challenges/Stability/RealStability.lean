@@ -253,6 +253,9 @@ then so is this inversion. Without further variables: if $p$ has no zeros in
 the open upper half-plane and $\deg p \leq d$, then neither has
 $z^d p(-1/z)$.
 
+For real positive semidefinite matrices $A_i$, the mixed characteristic
+polynomial $\mu[A]$ is nonzero and real-rooted.
+
 **Theorem** (Marcus–Spielman–Srivastava).
 [@MarcusSpielmanSrivastava2015II] Let $A_1, \dotsc, A_m$ be real positive
 semidefinite $n \times n$ matrices with $\sum_i A_i = I$ and $\operatorname{tr} A_i \leq
@@ -308,6 +311,10 @@ $\beta$ has $\alpha + s + t$ in the support. Partial derivatives, inversion in o
 variable, truncation and lowest weighted-homogeneous parts preserve stability; they reduce
 the claim to a box between $\alpha$ and $\beta$, where a homogeneous part of degree at least
 three would vanish somewhere in the product of upper half-planes.
+
+**Corollary** (Brändén). If $P$ is homogeneous, multiaffine, and real stable,
+its support is the set of bases of a matroid: $B$ is a basis exactly when its
+indicator vector lies in the support of $P$.
 
 **Theorem** (Brändén–Huh). [@BrandenHuh2020] A homogeneous real stable polynomial with
 nonnegative coefficients is Lorentzian.

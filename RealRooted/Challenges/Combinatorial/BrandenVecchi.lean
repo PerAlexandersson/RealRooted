@@ -102,14 +102,23 @@ label = "Specialization to Smirnov word polynomials"
 name = "RealRooted.BrandenVecchi.three_zero_prefix_constant_isPolyaFreqSeq"
 module = "RealRooted.BrandenVecchi.ChowZeroPrefix"
 label = "The zero-prefix symbol is still a Pólya frequency sequence"
+
+[[theorems]]
+name = "RealRooted.BrandenVecchi.chowPolynomial_three_zero_prefix_six_not_splits"
+module = "RealRooted.BrandenVecchi.ChowZeroPrefix"
+label = "Three leading zeros: the Chow polynomial c₆ = x² + x + 1 is not real-rooted"
 -->
 
 <!-- realrooted-catalog-content -->
 # Chow polynomials of totally nonnegative matrices
 
-For a lower-triangular matrix $A$, the Chow derangement polynomials $d_n$
-satisfy a triangular recurrence driven by the rows of $A$. The Chow
-polynomials are
+For a lower-triangular matrix $A$, the Chow derangement polynomials satisfy
+$d_0=1$ and
+$$
+d_n=x\,S_{n-1}\!\left(\sum_{k<n}A(n,k)d_k\right),\qquad
+S_m(q)=\frac{x^mq(1/x)-q}{x-1}.
+$$
+The Chow polynomials are
 
 $$c_n = \sum_{k \leq n} A(n,k)\, d_k.$$
 
@@ -127,7 +136,8 @@ Further results:
 - **Pólya frequency symbols:** for the Toeplitz matrix of an
   Aissen–Schoenberg–Whitney–Edrei symbol
   $e^{\gamma z} \prod_i (1 + \alpha_i z) \big/ \prod_i (1 - \beta_i z)$, the Chow
-  polynomials are PF polynomials and interlace consecutively.
+  polynomials are PF polynomials and interlace consecutively, provided
+  $\gamma,\alpha_i,\beta_i\ge0$ and $\sum_i(\alpha_i+\beta_i)<\infty$.
 - **Signed words:** for finite supersymmetric symbols, the Chow polynomial
   equals a signed-word enumerator by descents and collisions.
   It specializes to the Smirnov word polynomials.

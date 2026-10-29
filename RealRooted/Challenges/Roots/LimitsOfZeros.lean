@@ -73,15 +73,16 @@ $|\beta_k(z_0)| < |\beta_j(z_0)|$ for every other $k \in s$, and that $\beta_i /
 is not constant near $z_0$. Then $z_0$ is a limit of zeros of $(f_n)$.
 
 **Theorem (unique dominant base).** With $f_n$ as above, suppose that
-$|\beta_k(z_0)| < |\beta_i(z_0)|$ for every $k \neq i$, and that $\alpha_i(z_0) = 0$ while
-$\alpha_i$ does not vanish identically near $z_0$. Then $z_0$ is a limit of zeros of
-$(f_n)$.
+$\beta_i(z_0)\neq0$, $|\beta_k(z_0)|<|\beta_i(z_0)|$ for every $k\neq i$,
+and that $\alpha_i(z_0)=0$ while $\alpha_i$ does not vanish identically near
+$z_0$. Then $z_0$ is a limit of zeros of $(f_n)$.
 
 **Theorem (reverse direction).** With $f_n$ as above and $\alpha_k, \beta_k$ continuous at
 $z_0$, suppose that $\beta_i(z_0) \neq 0$, $|\beta_k(z_0)| < |\beta_i(z_0)|$ for every
-$k \neq i$, and $\alpha_i(z_0) \neq 0$. Then some ball around $z_0$ contains no zero of $f_n$
-for all sufficiently large $n$. Hence every limit of zeros has two bases of maximal modulus, or a
-unique dominant base whose coefficient vanishes there, or only vanishing bases.
+$k \neq i$, and $\alpha_i(z_0) \neq 0$. Then $z_0$ is not a limit of zeros of
+$(f_n)$. Hence every limit of zeros has two bases of maximal modulus, or a
+unique dominant base whose coefficient vanishes there, or only vanishing
+bases.
 
 **Order-two recurrences.** Let $W_{n+2} = A\,W_{n+1} + B\,W_n$ with analytic coefficients,
 and suppose that near $z_0$ the characteristic roots $u \neq v$ are analytic with
@@ -90,6 +91,9 @@ near $z_0$, and the interpolation coefficients $W_1 - v W_0$ and $u W_0 - W_1$ d
 vanish at $z_0$, then $z_0$ is a limit of zeros of $(W_n)$. If a sequence of nonzero real
 polynomials $W_n$ has a nonreal limit of zeros, then $W_n$ is not real-rooted for all
 sufficiently large $n$.
+
+If instead $|u(z_0)|\neq|v(z_0)|$ and the coefficient attached to the dominant
+root does not vanish at $z_0$, then $z_0$ is not a limit of zeros of $(W_n)$.
 
 **Theorem (Wang–Zhang).** Let $a, b, c, d > 0$ and $W_0 = 1$, $W_1 = x$,
 $$W_{n+2} = (a x + b)\,W_{n+1} + (c x + d)\,W_n.$$

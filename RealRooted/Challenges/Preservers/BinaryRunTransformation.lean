@@ -100,6 +100,8 @@ sends $X^m$, for $1 \leq m \leq n$, to
 
 $$\frac{1}{\binom{n}{m}} \sum_k \binom{m-1}{k-1}\binom{n+1-m}{k} X^k.$$
 
+We write $J_n$ for the linear map `binaryRunTransform n`.
+
 By the algebraic-symbol method [@BorceaBranden2009I], if the input has degree
 at most $n$, nonnegative coefficients, and only real
 nonpositive zeros, then its image has the same properties. If the input has

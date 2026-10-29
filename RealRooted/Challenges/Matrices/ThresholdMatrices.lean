@@ -59,11 +59,17 @@ a marker entry at column $t$, and $1$ after it. Applied to a sequence
 $(f_j)$ of polynomials, it gives $x \sum_{j<t} f_j + \alpha f_t + \sum_{j>t} f_j$.
 A matrix of such rows with weakly increasing thresholds maps interlacing
 sequences of polynomials with nonnegative coefficients to interlacing
-sequences, as long as finitely many $2 \times 2$ compatibility checks hold.
+sequences, provided the rows satisfy a compatibility condition on rows with
+equal thresholds. This condition on $2 \times 2$ minors is made explicit in
+the two theorems below.
 
-**Theorem** (Haglund–Zhang). [@HaglundZhang2019] Threshold matrices whose markers are $1$ or
-$1 + x$ preserve interlacing sequences. As a consequence, the binomial
-Eulerian polynomials are real-rooted, confirming a conjecture of Ma, Ma and Yeh [@MaMaYeh2017x].
+**Theorem** (Haglund–Zhang). [@HaglundZhang2019] Threshold matrices whose
+markers are $1$ or $1+x$, whose thresholds weakly increase down the rows, and
+in which, among rows with the same threshold, a marker $1+x$ is never followed
+by a marker $1$, map interlacing sequences of polynomials with nonnegative
+coefficients to interlacing sequences; zero polynomials may occur in the
+output. As a consequence, the binomial Eulerian polynomials are real-rooted,
+confirming a conjecture of Ma, Ma and Yeh [@MaMaYeh2017x].
 
 Here the binomial Eulerian polynomials are defined by the Haglund–Zhang
 recursion on refined vectors, with marker $1 + x$ at threshold zero and $1$ at

@@ -102,16 +102,14 @@ $$\Bigl(\sum_{i \in s} b_i(r)\, g_i(r)\Bigr) f'(r) \leq 0$$
 at every real zero $r$ of $f$, and $b_i(r) \leq 0$ for every $i$ at every repeated
 zero $r$ of $f$, then $f \ll F$.
 
-All criteria below are special cases, and in RealRooted they are proved as
-corollaries of this theorem:
-- one interlacer $g \ll f$ gives the Liu–Wang theorem;
-- $g = f'$ gives the Ma–Wang theorem;
-- a finite family with termwise signs gives the finite-sum form;
-- at simple zeros the combined condition reduces to the derivative-sign criterion
-  $F(r) f'(r) \leq 0$.
+In RealRooted the derivative-sign criterion below, a simple-zero case of the
+combined flux condition, is the ingredient from which the general theorem is
+proved. The Liu–Wang theorem for one interlacer $g\ll f$, the Ma–Wang theorem
+for $g=f'$, and the finite-sum form are then corollaries of it.
 
-**Theorem (weak signs).** If $g$ interlaces $f$, the two have no common zeros, $g$ and
-$F$ have positive leading coefficients, $\deg f \leq \deg F \leq \deg f + 1$, and
+**Theorem (weak signs).** If $g\ll f$ with $\deg g+1=\deg f$, the two have no
+common zeros, $g$ and $F$ have positive leading coefficients,
+$\deg f \leq \deg F \leq \deg f + 1$, and
 $F(r)\, g(r) \leq 0$ at every zero $r$ of $f$, then $f \ll F$. The derivative-sign
 criterion below is the case $g = f'$.
 
@@ -143,9 +141,10 @@ that $\deg f \neq 0$, that $f$ has simple zeros, that $\deg F = \deg f + 1$, and
 that $v(r) < 0$ at every zero $r$ of $f$. Then $f \ll F$ and $F$ has simple
 zeros.
 
-**Theorem (finite sums).** Let $f$ be real-rooted with a positive leading
-coefficient (repeated zeros are allowed), and let $F = a f + \sum_{i \in s} b_i g_i$ for a
-finite index set $s$. Suppose that $g_i \ll f$ and $g_i$ has a positive leading
+**Theorem (finite sums).** Let $f$ be nonzero and real-rooted; its leading
+coefficient may have either sign, and repeated zeros are allowed. Let
+$F = a f + \sum_{i \in s} b_i g_i$ for a finite index set $s$. Suppose that
+$g_i \ll f$ and $g_i$ has a positive leading
 coefficient for each $i \in s$, that $F$ has a positive leading coefficient, and
 that $\deg f \leq \deg F \leq \deg f + 1$. If $b_i(r) \leq 0$ at every zero $r$
 of $f$ for each $i \in s$, then $f \ll F$. At repeated zeros the termwise conditions

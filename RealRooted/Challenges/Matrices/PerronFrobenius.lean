@@ -72,7 +72,8 @@ $$
   eigenvalue $\mu$ satisfies $|\mu| \leq r(A)$.
 - If $A$ is primitive (some power is entrywise positive), a nonnegative
   eigenvector with positive eigenvalue is unique up to scaling.
-- A strictly positive eigenvector can only belong to the eigenvalue $r(A)$.
+- A strictly positive eigenvector with positive eigenvalue $r$ forces
+  $r=r(A)$.
 
 The proofs go through the Collatz–Wielandt function on the standard simplex,
 upper semicontinuity and compactness for existence, and a triangle-equality

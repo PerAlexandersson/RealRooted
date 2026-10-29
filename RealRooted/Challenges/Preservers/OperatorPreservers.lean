@@ -112,7 +112,9 @@ either polynomial to be zero, except in the last statement.
   $p \ll q$ are nonzero and both have degree at most $D$, then
   $x^D q(1/x) \ll x^D p(1/x)$.
 
-The reverse-Hermite transform preserves the cone of Pólya-frequency
+The reverse-Hermite transform is the linear map sending $x^n$ to $B_n$, where
+$B_0=1$, $B_1=x$, and
+$B_{n+2}=x(B_{n+1}+(n+1)B_n)$. It preserves the cone of Pólya-frequency
 polynomials and preserves interlacing of PF pairs.
 
 To show that a linear operator preserves PF polynomials, it suffices to check
@@ -121,9 +123,10 @@ Every PF polynomial $p$ of degree $d$ is the coefficientwise limit of
 $(1 + \varepsilon D)^d p$ as $\varepsilon \to 0^+$; these polynomials have simple
 negative roots, and the PF cone is closed under coefficientwise limits of
 bounded degree. The regularization keeps the degree, so the transfer also holds degree by
-degree: strict preservation up to degree $d$ gives PF preservation up to degree $d$. One
-consumer is the Euler bidiagonal step, which preserves PF polynomials for $a, b \ge 0$ with
-$ab > 0$.
+degree: strict preservation up to degree $d$ gives PF preservation up to degree
+$d$. One consumer is the Euler bidiagonal step
+$p\mapsto xp+(\theta+a)(\theta+b)p$, which preserves PF polynomials for
+$a,b\geq0$ with $ab>0$.
 
 ## References
 

@@ -1,5 +1,6 @@
 module
 
+import RealRooted.SeparablePermutations.Gamma
 import RealRooted.SeparablePermutations.Identification
 import RealRooted.SeparablePermutations.Interlacing
 
@@ -57,12 +58,22 @@ label = "Consecutive gamma-polynomials Γ_n, Γ_{n+1} strictly interlace without
 [[theorems]]
 name = "RealRooted.SeparablePermutations.strictInterl_compressionSourcePolynomial"
 module = "RealRooted.SeparablePermutations.Basic"
-label = "Consecutive auxiliary polynomials B_N, B_{N+1} strictly interlace"
+label = "Consecutive auxiliary polynomials B_N, B_{N+1} interlace without a common root"
 
 [[theorems]]
 name = "RealRooted.SeparablePermutations.hasSimpleRoots_descentPolynomial"
 module = "RealRooted.SeparablePermutations.Interlacing"
 label = "The descent polynomials S_n have simple roots"
+
+[[theorems]]
+name = "RealRooted.SeparablePermutations.roots_descentPolynomial_neg"
+module = "RealRooted.SeparablePermutations.Interlacing"
+label = "All roots of S_n are negative for n ≥ 2"
+
+[[theorems]]
+name = "RealRooted.SeparablePermutations.natDegree_descentPolynomial"
+module = "RealRooted.SeparablePermutations.Gamma"
+label = "S_n has degree n − 1 for n ≥ 1"
 
 [[theorems]]
 name = "RealRooted.SeparablePermutations.strictInterl_descentEnumerator"
@@ -105,7 +116,9 @@ $S = z + (1+t)zS + tzS^2 + tS^3$ for the enumerator, while Zhang's closed form s
 and Zeng's cubic $G = w + wG + xwG^2 + xG^3$ for the gamma-polynomials (proved with a general
 Lagrange–Bürmann inversion theorem), which the gamma substitution carries to the same recurrence.
 This proves Zhang's strict-interlacing theorem for the permutation statistic
-(`strictInterl_descentEnumerator`).
+(`strictInterl_descentEnumerator`). In Lean, `descentEnumerator n` is the
+enumerator for $n+1$ letters, namely $S_{n+1}$, so that theorem assumes
+$n\ge1$.
 
 ## Proof idea
 

@@ -53,22 +53,37 @@ label = "Monomial-chain operators preserve nonnegative stable pencils"
 <!-- realrooted-catalog-content -->
 # Interlacing from a monomial chain
 
-Let $T$ be a real-linear operator on polynomials of degree at most $D$.
-Suppose that $T$ preserves nonnegative coefficients, sends every nonzero PF
-polynomial in the degree box to a nonzero real-rooted polynomial, and its
-monomial images form the oriented chain
+Let $T$ be a real-linear operator on $\mathbb R[x]$ and let $D\in\mathbb N$.
+Suppose that $T$ maps polynomials with nonnegative coefficients to polynomials
+with nonnegative coefficients, sends every nonzero PF polynomial of degree at
+most $D$ to a nonzero real-rooted polynomial, and its monomial images form the
+oriented chain
 
 $$
 T(1) \ll T(X) \ll \dotsb \ll T(X^D).
 $$
 
-Then $T$ preserves oriented interlacing of nonnegative-coefficient
-real-rooted inputs in the same degree box.  The quadratic tangent theorem
-propagates the monomial chain through each nonpositive linear factor.
+Then $f\ll g$ with nonnegative coefficients and $\deg g\leq D$ implies
+$Tf\ll Tg$. The quadratic interlacing closure lemma propagates the monomial
+chain through each nonpositive linear factor.
 
 The proof first propagates the monomial chain through all PF factors, and then
 uses the Garloff–Wagner Krein expansion to pass from one-root deletions to every
 oriented interlacing pair.
+
+## Consequences
+
+Under the corresponding degree and nonvanishing hypotheses, moving one
+nonpositive input root to the right moves every output root weakly to the
+right. If $\rho$ is a simple root of $Tp$ and $r_i$ is the input root being
+moved, the derivative of the resulting root branch is
+$$
+\frac{T(p/(x-r_i))(\rho)}{(Tp)'(\rho)}.
+$$
+The operator also preserves stability of nonnegative bivariate pencils
+$f(z)+wg(z)$ under the hypotheses of the listed stable-pencil theorem. The
+Mao–Wang Narayana transform is an instance; see the
+[Narayana page](/RealRooted/families/narayana/).
 
 ## References
 

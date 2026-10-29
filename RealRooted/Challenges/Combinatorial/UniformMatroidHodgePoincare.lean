@@ -70,8 +70,8 @@ label = "The Eulerian transform of a magic-cone polynomial lies between its two 
 <!-- realrooted-catalog-content -->
 # Refined Hodge–Poincaré polynomials of uniform matroids
 
-For the uniform matroid $U_{r,n}$ and $1 \le i \le n-r$, Binder and Vecchi give explicit
-formulas for the refined Hodge–Poincaré polynomial
+For the uniform matroid $U_{r,n}$, where $r\ge1$ and $1\le i\le n-r$, Binder
+and Vecchi give explicit formulas for the refined Hodge–Poincaré polynomial
 $$
 \underline H^i_{r,n}(x) = \sum_{j<r} W_{j,i}(r,n)\, d_j(x)\, x^{r-1-j}
 $$
@@ -79,7 +79,9 @@ and for its modified augmented variant
 $$
 \widetilde H^i_{r,n}(x) = \sum_{s<r} W_{s,i}(r,n)\, A_s(x)\, x^{r-s},
 $$
-where $d_j$ are the derangement polynomials, $A_s$ the Eulerian polynomials, and
+where $d_j$ are the derangement polynomials and $A_0=1$,
+$A_s(x)=\sum_{\sigma\in\mathfrak S_s}x^{\operatorname{des}\sigma}$ are the
+Eulerian polynomials. Also,
 $W_{j,i}(r,n) = \binom nj \sum_{\ell=1}^{n-r-i+1}\binom{n-j-\ell}{r-j-1}\binom{n-r-\ell}{i-1}$.
 
 **Theorem** (Binder–Vecchi, Theorems 1.4 and 1.6).
@@ -96,6 +98,8 @@ for $\mathcal D$ this is Brändén–Solus (via the Brändén–Vecchi Chow reso
 matrix), and for $\mathcal A$ it is Athanasiadis's theorem
 [@Athanasiadis2025EulerianTransformation], proved here with the Brändén–Vecchi
 staircase row transform.
+
+Here $I_k(p)=x^kp(1/x)$ denotes reversal at degree $k$.
 
 For $i = 0$ the two families are the Chow and augmented Chow polynomials of $U_{r,n}$; their
 real-rootedness is proved from explicit formulas with the same Brändén–Vecchi staircase

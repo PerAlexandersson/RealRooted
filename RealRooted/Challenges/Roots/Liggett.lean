@@ -49,8 +49,9 @@ convolution $c_k = \sum_i a_i b_{k-i}$ is ULC($m+n$). Equivalently,
 ultra-log-concave coefficient sequences are closed under multiplication of
 polynomials.
 
-This strengthens [Hoggar's theorem](/RealRooted/theorems/hoggar-log-concavity/),
-which is the same statement for ordinary log-concavity. The hypothesis on
+This is the ultra-log-concave analogue of
+[Hoggar's theorem](/RealRooted/theorems/hoggar-log-concavity/), which is the
+same statement for ordinary log-concavity. The hypothesis on
 internal zeros cannot be dropped. The sequence $1, 0, 0, 1$ satisfies the
 displayed inequalities for $d = 3$, but its product with $1 + x$ does not
 satisfy them for $d = 4$.

@@ -89,6 +89,14 @@ nonpositive roots, and $g \ll f$. If $f - x g$ has positive leading
 coefficient, then $g \ll f - x g \ll f$. The positivity hypothesis is not
 automatic, since the leading terms of $f$ and $x g$ cancel.
 
+**Shellings (Hlavacek–Solus).** Let a finite simplicial subdivision of a
+shellable complex be given, together with a shelling of the base complex.
+Suppose that, in some order, the h-polynomials of the relative pieces form an
+interlacing sequence of real-rooted polynomials with nonnegative coefficients,
+and that the h-polynomial of the subdivision is nonzero. Then the latter
+h-polynomial is real-rooted. Only the finite combinatorial content of the
+subdivision axioms is formalized.
+
 ## Proof idea
 
 The last three statements are sign arguments at the roots of $f$: at such a
@@ -105,6 +113,9 @@ turn this into $f \ll g$ by Wagner's lemma.
 See [@Fisk2006x], [@Branden2015, Lemma 7.8.4], and
 [@BrandenLeite2024x, Lemma 3.1]. See also the
 [interlacing sequences on symmetricfunctions.com](sf:interlacingSequenceDefinition).
+For the shelling criterion, see M. Hlavacek and L. Solus, “Subdivisions of
+shellable complexes,” *J. Combin. Theory Ser. A* (2021), Theorem 3.1,
+[arXiv:2003.07328](https://arxiv.org/abs/2003.07328).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in `RealRooted.AffineFamily`,

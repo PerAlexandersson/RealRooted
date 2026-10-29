@@ -121,6 +121,8 @@ label = "Interlacing families: some leaf's largest root is at most the root node
 
 A finite family of real-rooted polynomials $f_1, \dotsc, f_m$ has a **common
 interleaver** if a single real-rooted $h$ satisfies $f_i \ll h$ for every $i$.
+Here $f\ll h$ means that $f$ interlaces $h$; see the
+[interlacing page](/RealRooted/concepts/interlacing/).
 The family is **compatible** if every nonnegative combination
 $c_1 f_1 + \dotsb + c_m f_m$ is zero or real-rooted.
 
@@ -156,11 +158,13 @@ $$
 Then the family $L(f)_0, \dotsc, L(f)_{n-1}$ satisfies the same two
 conditions.
 
-**Interlacing families** (Marcus–Spielman–Srivastava). If polynomials of the
-same degree with positive leading coefficients have a common interlacer, then
-one of them has largest root at most the largest root of their sum. Iterating
-this along a tree whose sibling polynomials have common interlacers, some leaf
-has largest root at most that of the polynomial at the root.
+**Interlacing families** (Marcus–Spielman–Srivastava). If polynomials
+$p_1,\dotsc,p_m$ of the same degree $d\ge1$ with positive leading
+coefficients have a common **left** interlacer—a polynomial $h$ of degree
+$d-1$ with $h\ll p_i$ for every $i$—then some $p_i$ has largest root at most
+the largest root of $\sum_i p_i$. Iterating along a tree of degree-$d$
+polynomials whose sibling polynomials have such common left interlacers, some
+leaf has largest root at most that of the root polynomial.
 
 ## References
 
