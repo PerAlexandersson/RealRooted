@@ -2780,6 +2780,286 @@
       ],
       "note": "Speculative target module (Durán 2025, Theorem 1.3, case K = 1; #2069); no upstream PR or attribution has been recorded yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Argument/Lift.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Argument.Lift"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Cauchy/PrincipalValue/Basic.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Cauchy.PrincipalValue.Basic"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Curve/Distance.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Curve.Distance"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Curve/Integrability.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Curve.Integrability"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Curve/IntegralBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Curve.IntegralBound"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Cycle/Acceptance.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Cycle.Acceptance"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Cycle/Basic.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Cycle.Basic"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Cycle/HomologyCauchy.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Cycle.HomologyCauchy"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Cycle/Winding.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Cycle.Winding"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Dixon/Def.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Dixon.Def"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Dixon/FunctionDiff.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Dixon.FunctionDiff"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Dixon/H1Diff.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Dixon.H1Diff"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Dixon/H2/Bound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Dixon.H2.Bound"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Dixon/H2/Diff.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Dixon.H2.Diff"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/LogDerivFTC.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.LogDerivFTC"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/NullHomologous.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.NullHomologous"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/PiecewiseC1On.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.PiecewiseC1On"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Support/DSlopeIntegral.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Support.DSlopeIntegral"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Support/UpperLogContinuity.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Support.UpperLogContinuity"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Winding/Continuity.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Winding.Continuity"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Winding/EndpointRatio.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Winding.EndpointRatio"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Winding/Integer.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Winding.Integer"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Winding/LocallyConstant.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Winding.LocallyConstant"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Winding/Number/Basic.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Winding.Number.Basic"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Winding/Number/Circle.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Winding.Number.Circle"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Winding/Number/Reverse.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Winding.Number.Reverse"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Winding/SegmentSum.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Winding.SegmentSum"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Contour/Winding/Vanishing.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Contour.Winding.Vanishing"
+      ],
+      "note": "Ported from Tau Ceti (TauCetiProject/TauCeti@5f291f7, Apache-2.0) for #1696; upstream target follows Tau Ceti's own Mathlib plans.",
+      "speculative": true
     }
   ]
 }
