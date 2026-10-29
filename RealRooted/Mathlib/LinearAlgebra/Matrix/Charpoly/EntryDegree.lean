@@ -5,10 +5,12 @@ Authors: Per Alexandersson
 -/
 module
 
+public import Mathlib.RingTheory.PowerBasis
+public import Mathlib.FieldTheory.Minpoly.Basic
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.TraceSq
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.RingTheory.Trace.Defs
-public import Mathlib.LinearAlgebra.Matrix.Charpoly.Minpoly
+import Mathlib.LinearAlgebra.Matrix.Charpoly.Minpoly
 import Mathlib.LinearAlgebra.Charpoly.ToMatrix
 
 /-!
