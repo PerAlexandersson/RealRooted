@@ -379,7 +379,7 @@ theorem mvRealStable_homogeneousComponent_totalDegree {σ : Type*}
     {P : MvPolynomial σ ℝ} (hst : MvRealStable P) (hnn : MvPolynomial.HasNonnegCoeffs P)
     (hP : P ≠ 0) :
     MvRealStable (MvPolynomial.homogeneousComponent P.totalDegree P) :=
-  hst.homogeneousComponent_totalDegree hnn hP
+  hst.homogeneousComponent_totalDegree_of_hasNonnegCoeffs hnn hP
 
 /-- Every real stable polynomial is same-phase stable. -/
 theorem samePhaseStable {σ : Type*} {P : MvPolynomial σ ℝ} (hP : MvRealStable P) :

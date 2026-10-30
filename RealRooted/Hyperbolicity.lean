@@ -694,14 +694,14 @@ theorem MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary_of_top
 /-- Ordinary homogenization is hyperbolic in every direction that is positive
 on the original coordinates and zero on the homogenizing coordinate. This is
 the boundary-direction part of the stability--hyperbolicity bridge. -/
-theorem MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary
+theorem MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary_of_hasNonnegCoeffs
     {σ : Type*} {P : MvPolynomial σ ℝ} (hst : MvRealStable P)
     (hnn : MvPolynomial.HasNonnegCoeffs P) (hP : P ≠ 0)
     (b : σ → ℝ) (hb : ∀ i, 0 < b i) :
     (MvPolynomial.ordinaryHomogenization P P.totalDegree).HyperbolicAt
       (fun o => Option.elim o 0 b) :=
   hst.ordinaryHomogenization_hyperbolicAt_boundary_of_top
-    (MvRealStable.homogeneousComponent_totalDegree hst hnn hP) b hb
+    (MvRealStable.homogeneousComponent_totalDegree_of_hasNonnegCoeffs hst hnn hP) b hb
     ((hnn.homogeneousComponent P.totalDegree).eval_pos
       (MvPolynomial.homogeneousComponent_totalDegree_ne_zero hP) hb).ne'
 
@@ -763,7 +763,7 @@ theorem MvRealStable.ordinaryHomogenization
   let b : σ → ℝ := fun i => u (some i)
   have hb : ∀ i, 0 < b i := fun i => hu (some i)
   have he : H.HyperbolicAt (fun o => Option.elim o 0 b) :=
-    hst.ordinaryHomogenization_hyperbolicAt_boundary hnn hP b hb
+    hst.ordinaryHomogenization_hyperbolicAt_boundary_of_hasNonnegCoeffs hnn hP b hb
   apply MvPolynomial.HyperbolicAt.of_joinedIn he hhom
   exact MvPolynomial.HasNonnegCoeffs.ordinaryHomogenization_boundary_joinedIn_positive
     hnn hP b hb u hu

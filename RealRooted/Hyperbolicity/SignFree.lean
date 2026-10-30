@@ -9,14 +9,16 @@ import RealRooted.MultivariateStability.JumpSystem
 /-!
 # Sign-free top components and boundary hyperbolicity
 
-For finitely many variables, the initial-form theorem for weights `-1`
-(`JumpSystem.Stable.weightedHomogeneousComponent`) shows that the top homogeneous component of
-a real stable polynomial is real stable, with no coefficient-sign hypothesis.  Its value at a
-strictly positive vector is therefore nonzero, and the exact ordinary homogenization is
-hyperbolic in every boundary direction `(0, b)`.  This is item A of issue #954; the versions
-with nonnegative coefficients and arbitrary variable types are
-`MvRealStable.homogeneousComponent_totalDegree` and
-`MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary`.
+The top homogeneous component of a real stable polynomial is real stable, with no
+coefficient-sign hypothesis (`MvRealStable.homogeneousComponent_totalDegree`): for finitely many
+variables this is the initial-form theorem for weights `-1`
+(`JumpSystem.Stable.weightedHomogeneousComponent`), and the general case reduces to it through
+`MvPolynomial.exists_fin_rename`.  Its value at a strictly positive vector is therefore nonzero,
+and the exact ordinary homogenization is hyperbolic in every boundary direction `(0, b)`
+(`MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary`).  This is item A of issue #954;
+the earlier versions assuming nonnegative coefficients are
+`MvRealStable.homogeneousComponent_totalDegree_of_hasNonnegCoeffs` and
+`MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary_of_hasNonnegCoeffs`.
 -/
 
 public section
@@ -35,7 +37,7 @@ private theorem weight_neg_one_eq_neg_degree {n : ℕ} (d : Fin n →₀ ℕ) :
 
 /-- For finitely many variables, the top homogeneous component of a
 real-stable polynomial is real stable, with no coefficient-sign hypothesis. -/
-theorem MvRealStable.homogeneousComponent_totalDegree_fin
+private theorem MvRealStable.homogeneousComponent_totalDegree_fin
     {n : ℕ} {P : MvPolynomial (Fin n) ℝ} (hst : MvRealStable P) :
     MvRealStable
       (MvPolynomial.homogeneousComponent P.totalDegree P) := by
@@ -82,16 +84,38 @@ theorem MvRealStable.homogeneousComponent_totalDegree_fin
   rw [heq] at hstable
   exact hstable
 
-/-- The top homogeneous component of a finite-variable real-stable polynomial
+private theorem totalDegree_rename_of_injective
+    {R σ τ : Type*} [CommSemiring R] (f : σ → τ)
+    (hf : Function.Injective f) (P : MvPolynomial σ R) :
+    (MvPolynomial.rename f P).totalDegree = P.totalDegree := by
+  have h := MvPolynomial.weightedTotalDegree_rename_of_injective
+    (R := R) (e := f) (w := (1 : τ → ℕ)) (P := P) hf
+  have hcomp : (1 : τ → ℕ) ∘ f = (1 : σ → ℕ) := rfl
+  rw [MvPolynomial.weightedTotalDegree_one, hcomp,
+    MvPolynomial.weightedTotalDegree_one] at h
+  exact h
+
+/-- For an arbitrary variable type, the top homogeneous component of a real-stable polynomial is
+real stable, with no coefficient-sign hypothesis. -/
+theorem MvRealStable.homogeneousComponent_totalDegree
+    {σ : Type*} {P : MvPolynomial σ ℝ} (hst : MvRealStable P) :
+    MvRealStable (MvPolynomial.homogeneousComponent P.totalDegree P) := by
+  classical
+  obtain ⟨n, f, hf, Q, rfl⟩ := MvPolynomial.exists_fin_rename P
+  rw [totalDegree_rename_of_injective f hf Q,
+    ← MvPolynomial.rename_homogeneousComponent]
+  exact ((hst.of_rename hf).homogeneousComponent_totalDegree_fin).rename f
+
+/-- For an arbitrary variable type, the top homogeneous component of a real-stable polynomial
 does not vanish on a coordinatewise strictly positive real vector. -/
 theorem MvRealStable.eval_homogeneousComponent_totalDegree_ne_zero
-    {n : ℕ} {P : MvPolynomial (Fin n) ℝ} (hst : MvRealStable P)
-    (b : Fin n → ℝ) (hb : ∀ i, 0 < b i) :
+    {σ : Type*} {P : MvPolynomial σ ℝ} (hst : MvRealStable P)
+    (b : σ → ℝ) (hb : ∀ i, 0 < b i) :
     MvPolynomial.eval b
       (MvPolynomial.homogeneousComponent P.totalDegree P) ≠ 0 := by
   let H := MvPolynomial.homogeneousComponent P.totalDegree P
   have hHstable : MvRealStable H := by
-    simpa [H] using hst.homogeneousComponent_totalDegree_fin
+    simpa [H] using hst.homogeneousComponent_totalDegree
   have hHhom : (complexifyMv H).IsHomogeneous P.totalDegree := by
     exact (MvPolynomial.homogeneousComponent_isHomogeneous
       P.totalDegree P).map Complex.ofRealHom
@@ -109,16 +133,16 @@ theorem MvRealStable.eval_homogeneousComponent_totalDegree_ne_zero
   apply hnonzero
   rw [hHhom.eval_smul, hcomplexEval, mul_zero]
 
-/-- For finitely many variables, exact ordinary homogenization is hyperbolic in every direction
-that is positive on the original coordinates and zero on the homogenizing coordinate, with no
-coefficient-sign hypothesis. -/
-theorem MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary_fin
-    {n : ℕ} {P : MvPolynomial (Fin n) ℝ} (hst : MvRealStable P)
-    (b : Fin n → ℝ) (hb : ∀ i, 0 < b i) :
+/-- For an arbitrary variable type, exact ordinary homogenization is hyperbolic in every
+direction that is positive on the original coordinates and zero on the homogenizing coordinate,
+with no coefficient-sign hypothesis. -/
+theorem MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary
+    {σ : Type*} {P : MvPolynomial σ ℝ} (hst : MvRealStable P)
+    (b : σ → ℝ) (hb : ∀ i, 0 < b i) :
     (MvPolynomial.ordinaryHomogenization P P.totalDegree).HyperbolicAt
       (fun o => Option.elim o 0 b) :=
   hst.ordinaryHomogenization_hyperbolicAt_boundary_of_top
-    hst.homogeneousComponent_totalDegree_fin b hb
+    hst.homogeneousComponent_totalDegree b hb
     (hst.eval_homogeneousComponent_totalDegree_ne_zero b hb)
 
 /-! ### Sign-free boundary hyperbolicity: examples from issue #954 -/
@@ -129,7 +153,7 @@ example :
     (MvPolynomial.ordinaryHomogenization P P.totalDegree).HyperbolicAt
       (fun o => Option.elim o 0 (fun _ => 1)) := by
   dsimp only
-  apply MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary_fin
+  apply MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary
   · intro z hz
     change ∀ i, 0 < (z i).im at hz
     simp only [complexifyMv, map_sub, MvPolynomial.map_X,
@@ -147,7 +171,7 @@ example :
     (MvPolynomial.ordinaryHomogenization P P.totalDegree).HyperbolicAt
       (fun o => Option.elim o 0 (fun _ => 1)) := by
   dsimp only
-  apply MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary_fin
+  apply MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary
   · intro z hz
     change ∀ i, 0 < (z i).im at hz
     simp only [complexifyMv, map_sub, map_mul, MvPolynomial.map_X,
@@ -180,7 +204,7 @@ example :
     (MvPolynomial.ordinaryHomogenization P P.totalDegree).HyperbolicAt
       (fun o => Option.elim o 0 (fun _ => 1)) := by
   dsimp only
-  apply MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary_fin
+  apply MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary
   · simpa using
       (MvRealStable.one.C_mul (by norm_num : (-1 : ℝ) ≠ 0) :
         MvRealStable (MvPolynomial.C (-1) * 1 :

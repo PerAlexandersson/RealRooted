@@ -171,7 +171,7 @@ For goals about rows of a recurrence, try the row tactics first (`rr_row_interla
 | 2 | `RealRooted.MvRealStable.X` | `RealRooted.MultivariateStability` | Each real coordinate variable is multivariate real stable. |
 | 2 | `RealRooted.MvRealStable.X_add_X` | `RealRooted.MultivariateStability` | The sum of two real coordinate variables is multivariate real stable. |
 | 2 | `RealRooted.MvRealStable.finset_prod` | `RealRooted.MultivariateStability` | A finite product of multivariate real-stable polynomials is real stable. |
-| 2 | `RealRooted.MvRealStable.homogeneousComponent_totalDegree` | `RealRooted.HomogeneousComponentStability` | The top homogeneous component of a nonzero real stable polynomial with nonnegative coefficients is real stable. |
+| 2 | `RealRooted.MvRealStable.homogeneousComponent_totalDegree_of_hasNonnegCoeffs` | `RealRooted.HomogeneousComponentStability` | The top homogeneous component of a nonzero real stable polynomial with nonnegative coefficients is real stable. |
 | 2 | `RealRooted.MvRealStable.of_coeff_tendsto_of_totalDegree_le` | `RealRooted.MultivariateStability.CoeffLimit` | A nonzero, uniformly bounded-degree coefficientwise limit of real-stable multivariate polynomials is real stable. |
 | 2 | `RealRooted.mvRealStable_of_forall_realAffineLineRestriction` | `RealRooted.AffineLineRestriction` | If every positive-direction real affine restriction is nonzero and real-rooted, then the multivariate polynomial is real stable. |
 | 2 | `RealRooted.peakValuePolynomial_mvRealStable` | `RealRooted.CombinatorialExamples.PeakValues.Stability` | The peak-value enumerator is multivariate real stable in every rank. |

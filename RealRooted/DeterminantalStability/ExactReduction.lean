@@ -147,7 +147,7 @@ theorem _root_.RealRooted.MvRealStable.normalizedExactReduction_hyperbolicAt
     (normalizedExactReduction p).HyperbolicAt exactReductionDirection := by
   let H := MvPolynomial.ordinaryHomogenization p p.totalDegree
   have hH : H.HyperbolicAt homogenizationBoundary :=
-    hst.ordinaryHomogenization_hyperbolicAt_boundary_fin (fun _ => 1) (fun _ => by positivity)
+    hst.ordinaryHomogenization_hyperbolicAt_boundary (fun _ => 1) (fun _ => by positivity)
   refine ⟨(eval_normalizedExactReduction_eq_one hc).trans_ne one_ne_zero, ?_⟩
   intro x
   have hsplits := hH.2 (exactReductionMap x)
