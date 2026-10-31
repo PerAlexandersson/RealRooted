@@ -1,6 +1,7 @@
 module
 
 import RealRooted.AffineProperPosition
+import RealRooted.AffineFamily
 import RealRooted.QuadraticRoot
 public import RealRooted.MatrixInterlacing.Converse
 
@@ -155,7 +156,20 @@ private lemma interl_separatedCharacteristicConstant_pencils
   · apply interl_affine_linear_affine_linear_of_cross
     · exact mul_pos hs hBpos
     · exact mul_pos hs hApos
-    · nlinarith
+    · nlinarith [mul_nonneg hs.le (sub_nonneg.mpr hdet)]
+
+private lemma interl_separatedCharacteristicAffineX_self
+    {A E s t : ℝ} (hA : 0 ≤ A) (hs : 0 < s) :
+    Interl ((C s * X + C t) * C A + (X + C E))
+      ((C s * X + C t) * C A + (X + C E)) := by
+  apply Interl.refl
+  intro _
+  have hsA : 0 < s * A + 1 := by positivity
+  have hsplit := (isRealRooted_affine_factor (s := s * A + 1)
+    (t := t * A + E) hsA).2
+  convert hsplit using 1
+  simp only [C_add, C_mul, C_1]
+  ring
 
 /-- The tail parameter belonging to a column of a separated-characteristic
 matrix.  It is zero on the initial `h` columns and equals the corresponding
@@ -200,6 +214,13 @@ private lemma separatedCharacteristicScalarEntry_nonneg {h m : ℕ}
   · exact sub_nonneg.mpr ((separatedCharacteristicTailCoeff_nonpos hb j).trans (ha j))
   · exact le_rfl
 
+private lemma separatedCharacteristicScalarEntry_eq_zero_of_lt {h m : ℕ}
+    {a : Fin (h + m) → ℝ} {b : Fin m → ℝ}
+    {i j : Fin (h + m)} (hji : j < i) :
+    separatedCharacteristicScalarEntry a b i j = 0 := by
+  unfold separatedCharacteristicScalarEntry
+  simp [hji.ne', hji.not_gt]
+
 private lemma separatedCharacteristicScalarEntry_antitone_row {h m : ℕ}
     {a : Fin (h + m) → ℝ} {b : Fin m → ℝ}
     (ha : ∀ i, 0 ≤ a i) (hb : ∀ j, b j ≤ 0)
@@ -239,6 +260,54 @@ private lemma separatedCharacteristicScalarEntry_det_nonneg {h m : ℕ}
   unfold separatedCharacteristicScalarEntry
   split_ifs <;> simp_all <;> grind
 
+private def separatedCharacteristicConstantEntry {h m : ℕ}
+    (a : Fin (h + m) → ℝ) (b : Fin m → ℝ)
+    (i j : Fin (h + m)) : ℝ :=
+  if (i : ℕ) + 1 < h then
+    if j = i then a i else if (j : ℕ) = i + 1 then 1 else 0
+  else separatedCharacteristicScalarEntry a b i j
+
+private lemma separatedCharacteristicConstantEntry_nonneg {h m : ℕ}
+    {a : Fin (h + m) → ℝ} {b : Fin m → ℝ}
+    (ha : ∀ i, 0 ≤ a i) (hb : ∀ j, b j ≤ 0) (i j : Fin (h + m)) :
+    0 ≤ separatedCharacteristicConstantEntry a b i j := by
+  unfold separatedCharacteristicConstantEntry
+  split
+  · split_ifs
+    · exact ha i
+    · exact zero_le_one
+    · exact le_rfl
+  · exact separatedCharacteristicScalarEntry_nonneg ha hb i j
+
+private lemma separatedCharacteristicConstantEntry_det_nonneg {h m : ℕ}
+    {a : Fin (h + m) → ℝ} {b : Fin m → ℝ}
+    (ha : ∀ i, 0 ≤ a i) (hb : ∀ j, b j ≤ 0)
+    (i₁ i₂ j₁ j₂ : Fin (h + m)) (hi : i₁ ≤ i₂) (hj : j₁ ≤ j₂) :
+    separatedCharacteristicConstantEntry a b i₁ j₂ *
+        separatedCharacteristicConstantEntry a b i₂ j₁ ≤
+      separatedCharacteristicConstantEntry a b i₁ j₁ *
+        separatedCharacteristicConstantEntry a b i₂ j₂ := by
+  by_cases hi₁ : (i₁ : ℕ) + 1 < h
+  · by_cases hi₂ : (i₂ : ℕ) + 1 < h
+    · have haa : 0 ≤ a i₁ * a i₂ := mul_nonneg (ha i₁) (ha i₂)
+      unfold separatedCharacteristicConstantEntry
+      simp only [hi₁, hi₂, ite_true]
+      split_ifs <;> grind
+    · have hs₁ := separatedCharacteristicScalarEntry_nonneg ha hb i₂ j₁
+      have hs₂ := separatedCharacteristicScalarEntry_nonneg ha hb i₂ j₂
+      have has₁ : 0 ≤ a i₁ * separatedCharacteristicScalarEntry a b i₂ j₁ :=
+        mul_nonneg (ha i₁) hs₁
+      have has₂ : 0 ≤ a i₁ * separatedCharacteristicScalarEntry a b i₂ j₂ :=
+        mul_nonneg (ha i₁) hs₂
+      unfold separatedCharacteristicConstantEntry
+      simp only [hi₁, hi₂, ite_true, ite_false]
+      unfold separatedCharacteristicScalarEntry at hs₁ hs₂ has₁ has₂ ⊢
+      split_ifs <;> grind
+  · have hi₂ : ¬(i₂ : ℕ) + 1 < h := by lia
+    unfold separatedCharacteristicConstantEntry
+    simp only [hi₁, hi₂, ite_false]
+    exact separatedCharacteristicScalarEntry_det_nonneg ha hb i₁ i₂ j₁ j₂ hi hj
+
 /-- The finite polynomial matrix for a separated-characteristic recurrence.
 
 The matrix has size `h + m`.  Its first `h - 1` rows are bidiagonal.  Every
@@ -255,19 +324,29 @@ def separatedCharacteristicFinMatrix {h m : ℕ}
       (if j = i then C (a i) else 0) +
         if i < j then C (a j - separatedCharacteristicTailCoeff b j) else 0
 
-private lemma separatedCharacteristicFinMatrix_one_eq {m : ℕ}
-    (a : Fin (1 + m) → ℝ) (b : Fin m → ℝ) (i j : Fin (1 + m)) :
+private lemma separatedCharacteristicFinMatrix_eq_constantEntry {h m : ℕ}
+    (a : Fin (h + m) → ℝ) (b : Fin m → ℝ) (i j : Fin (h + m)) :
     separatedCharacteristicFinMatrix a b i j =
-      (if (j : ℕ) = 0 then X else 0) +
-        C (separatedCharacteristicScalarEntry a b i j) := by
-  simp only [separatedCharacteristicFinMatrix, show ¬(i : ℕ) + 1 < 1 by lia]
-  by_cases hji : j = i
-  · subst j
-    simp [separatedCharacteristicScalarEntry]
-  have hij' : i ≠ j := Ne.symm hji
-  by_cases hij : i < j
-  · simp [separatedCharacteristicScalarEntry, hji, hij', hij, C_sub]
-  · simp [separatedCharacteristicScalarEntry, hji, hij', hij]
+      (if (i : ℕ) + 1 < h then 0 else if (j : ℕ) = 0 then X else 0) +
+        C (separatedCharacteristicConstantEntry a b i j) := by
+  by_cases hi : (i : ℕ) + 1 < h
+  · simp only [separatedCharacteristicFinMatrix, separatedCharacteristicConstantEntry,
+      hi, ite_true, zero_add]
+    by_cases hji : j = i
+    · subst j
+      simp
+    by_cases hsucc : (j : ℕ) = i + 1
+    · simp [hji, hsucc]
+    · simp [hji, hsucc]
+  · simp only [separatedCharacteristicFinMatrix, separatedCharacteristicConstantEntry,
+      hi, ite_false]
+    by_cases hji : j = i
+    · subst j
+      simp [separatedCharacteristicScalarEntry]
+    have hij' : i ≠ j := Ne.symm hji
+    by_cases hij : i < j
+    · simp [separatedCharacteristicScalarEntry, hji, hij', hij, C_sub]
+    · simp [separatedCharacteristicScalarEntry, hji, hij', hij]
 
 /-- Under the separated-sign hypotheses, every matrix entry has nonnegative
 coefficients. -/
@@ -298,42 +377,71 @@ theorem separatedCharacteristicFinMatrix_hasNonnegCoeffs {h m : ℕ}
   · exact hdiag.add hsucc
   · exact (hX.add hdiag).add hupp
 
-private lemma separatedCharacteristicFinMatrix_has2x2_one {m : ℕ}
-    {a : Fin (1 + m) → ℝ} {b : Fin m → ℝ}
+private lemma separatedCharacteristicFinMatrix_has2x2 {h m : ℕ}
+    {a : Fin (h + m) → ℝ} {b : Fin m → ℝ}
     (ha : ∀ i, 0 ≤ a i) (hb : ∀ j, b j ≤ 0)
-    (i₁ i₂ j₁ j₂ : Fin (1 + m)) (hi : i₁ ≤ i₂) (hj : j₁ ≤ j₂) :
+    (i₁ i₂ j₁ j₂ : Fin (h + m)) (hi : i₁ ≤ i₂) (hj : j₁ ≤ j₂) :
     Has2x2InterlacingProperty0
       (separatedCharacteristicFinMatrix a b i₁ j₁)
       (separatedCharacteristicFinMatrix a b i₁ j₂)
       (separatedCharacteristicFinMatrix a b i₂ j₁)
       (separatedCharacteristicFinMatrix a b i₂ j₂) := by
-  rw [separatedCharacteristicFinMatrix_one_eq,
-    separatedCharacteristicFinMatrix_one_eq,
-    separatedCharacteristicFinMatrix_one_eq,
-    separatedCharacteristicFinMatrix_one_eq]
+  rw [separatedCharacteristicFinMatrix_eq_constantEntry,
+    separatedCharacteristicFinMatrix_eq_constantEntry,
+    separatedCharacteristicFinMatrix_eq_constantEntry,
+    separatedCharacteristicFinMatrix_eq_constantEntry]
   intro s t hs ht
-  have hnonneg (i j : Fin (1 + m)) :
-      0 ≤ separatedCharacteristicScalarEntry a b i j :=
-    separatedCharacteristicScalarEntry_nonneg ha hb i j
-  have hanti (j : Fin (1 + m)) :
-      separatedCharacteristicScalarEntry a b i₂ j ≤
-        separatedCharacteristicScalarEntry a b i₁ j :=
-    separatedCharacteristicScalarEntry_antitone_row ha hb i₁ i₂ j hi
-  have hdet := separatedCharacteristicScalarEntry_det_nonneg
+  have hnonneg (i j : Fin (h + m)) :
+      0 ≤ separatedCharacteristicConstantEntry a b i j :=
+    separatedCharacteristicConstantEntry_nonneg ha hb i j
+  have hdet := separatedCharacteristicConstantEntry_det_nonneg
     ha hb i₁ i₂ j₁ j₂ hi hj
-  by_cases hj10 : (j₁ : ℕ) = 0
-  · by_cases hj20 : (j₂ : ℕ) = 0
-    · have hj_eq : j₁ = j₂ := Fin.ext (by lia)
-      subst j₂
-      simpa [hj10] using interl_separatedCharacteristicQuadratic_self
-        (hanti j₁) hs
-    · simpa [hj10, hj20] using interl_separatedCharacteristicLinear_quadratic
-        (hanti j₁) (hnonneg i₂ j₂) (hanti j₂)
-        (by simpa [mul_comm] using hdet) hs ht
-  · have hj20 : (j₂ : ℕ) ≠ 0 := by lia
-    simpa [hj10, hj20] using interl_separatedCharacteristicConstant_pencils
-      (hnonneg i₁ j₁) (hnonneg i₁ j₂) (hnonneg i₂ j₁)
-      (hnonneg i₂ j₂) hdet hs
+  by_cases hi₁ : (i₁ : ℕ) + 1 < h
+  · by_cases hi₂ : (i₂ : ℕ) + 1 < h
+    · simpa [hi₁, hi₂] using interl_separatedCharacteristicConstant_pencils
+        (hnonneg i₁ j₁) (hnonneg i₁ j₂) (hnonneg i₂ j₁)
+        (hnonneg i₂ j₂) hdet hs
+    · by_cases hj10 : (j₁ : ℕ) = 0
+      · by_cases hj20 : (j₂ : ℕ) = 0
+        · have hj_eq : j₁ = j₂ := Fin.ext (by lia)
+          subst j₂
+          simpa [hi₁, hi₂, hj10] using interl_separatedCharacteristicAffineX_self
+            (hnonneg i₁ j₁) hs
+        · have hj1i2 : j₁ < i₂ := by lia
+          have hzero : separatedCharacteristicConstantEntry a b i₂ j₁ = 0 := by
+            unfold separatedCharacteristicConstantEntry
+            simp only [hi₂, ite_false]
+            exact separatedCharacteristicScalarEntry_eq_zero_of_lt hj1i2
+          simpa [hi₁, hi₂, hj10, hj20, hzero] using
+            interl_separatedCharacteristicConstant_X
+              (hnonneg i₁ j₁) (hnonneg i₁ j₂) (hnonneg i₂ j₂) hs ht
+      · have hj20 : (j₂ : ℕ) ≠ 0 := by lia
+        simpa [hi₁, hi₂, hj10, hj20] using
+          interl_separatedCharacteristicConstant_pencils
+            (hnonneg i₁ j₁) (hnonneg i₁ j₂) (hnonneg i₂ j₁)
+            (hnonneg i₂ j₂) hdet hs
+  · have hi₂ : ¬(i₂ : ℕ) + 1 < h := by lia
+    have hanti (j : Fin (h + m)) :
+        separatedCharacteristicConstantEntry a b i₂ j ≤
+          separatedCharacteristicConstantEntry a b i₁ j := by
+      unfold separatedCharacteristicConstantEntry
+      simp only [hi₁, hi₂, ite_false]
+      exact separatedCharacteristicScalarEntry_antitone_row ha hb i₁ i₂ j hi
+    by_cases hj10 : (j₁ : ℕ) = 0
+    · by_cases hj20 : (j₂ : ℕ) = 0
+      · have hj_eq : j₁ = j₂ := Fin.ext (by lia)
+        subst j₂
+        simpa [hi₁, hi₂, hj10, separatedCharacteristicConstantEntry] using
+          interl_separatedCharacteristicQuadratic_self (hanti j₁) hs
+      · simpa [hi₁, hi₂, hj10, hj20, separatedCharacteristicConstantEntry] using
+          interl_separatedCharacteristicLinear_quadratic
+            (hanti j₁) (hnonneg i₂ j₂) (hanti j₂)
+            (by simpa [mul_comm] using hdet) hs ht
+    · have hj20 : (j₂ : ℕ) ≠ 0 := by lia
+      simpa [hi₁, hi₂, hj10, hj20] using
+        interl_separatedCharacteristicConstant_pencils
+          (hnonneg i₁ j₁) (hnonneg i₁ j₂) (hnonneg i₂ j₁)
+          (hnonneg i₂ j₂) hdet hs
 
 /-- The row-major list form used by the matrix-interlacing API. -/
 def separatedCharacteristicMatrix {h m : ℕ}
@@ -362,12 +470,12 @@ theorem separatedCharacteristicMatrix_rect {h m : ℕ}
       separatedCharacteristicFinMatrix a b i j := by
   simp [separatedCharacteristicMatrix]
 
-/-- When there is one initial characteristic root, separated parameters give
-a matrix preserving zero-aware nonnegative real-rooted interlacing vectors. -/
-theorem separatedCharacteristicMatrix_one_preservesInterlacingSeq0 {m : ℕ}
-    {a : Fin (1 + m) → ℝ} {b : Fin m → ℝ}
+/-- Separated parameters give a matrix preserving zero-aware nonnegative
+real-rooted interlacing vectors. -/
+theorem separatedCharacteristicMatrix_preservesInterlacingSeq0 {h m : ℕ}
+    {a : Fin (h + m) → ℝ} {b : Fin m → ℝ}
     (ha : ∀ i, 0 ≤ a i) (hb : ∀ j, b j ≤ 0) :
-    PreservesInterlacingSeq0 (1 + m) (separatedCharacteristicMatrix a b) := by
+    PreservesInterlacingSeq0 (h + m) (separatedCharacteristicMatrix a b) := by
   apply (preservesInterlacingSeq0_iff (separatedCharacteristicMatrix a b)
     (separatedCharacteristicMatrix_rect a b)).2
   constructor
@@ -378,25 +486,25 @@ theorem separatedCharacteristicMatrix_one_preservesInterlacingSeq0 {m : ℕ}
     obtain ⟨j, rfl⟩ := hp
     exact separatedCharacteristicFinMatrix_hasNonnegCoeffs ha hb i j
   · intro i₁ i₂ j₁ j₂ hi hj
-    let i₁' : Fin (1 + m) := ⟨i₁, by simpa using i₁.isLt⟩
-    let i₂' : Fin (1 + m) := ⟨i₂, by simpa using i₂.isLt⟩
+    let i₁' : Fin (h + m) := ⟨i₁, by simpa using i₁.isLt⟩
+    let i₂' : Fin (h + m) := ⟨i₂, by simpa using i₂.isLt⟩
     have hi' : i₁' ≤ i₂' := hi
     have hi₁ : i₁ = ⟨i₁', by simp [separatedCharacteristicMatrix]⟩ := Fin.ext rfl
     have hi₂ : i₂ = ⟨i₂', by simp [separatedCharacteristicMatrix]⟩ := Fin.ext rfl
     rw [hi₁, hi₂]
     simp only [List.get_eq_getElem]
     simp only [separatedCharacteristicMatrix, List.getElem_ofFn]
-    exact separatedCharacteristicFinMatrix_has2x2_one ha hb i₁' i₂' j₁ j₂ hi' hj
+    exact separatedCharacteristicFinMatrix_has2x2 ha hb i₁' i₂' j₁ j₂ hi' hj
 
-/-- Shifted form of the one-initial-root preservation theorem.  The displayed
-matrix is the parameter form of `M - ρ I`; its upper-triangular differences
-are unchanged by the common shift. -/
-theorem separatedCharacteristicMatrix_one_preservesInterlacingSeq0_shift
-    {m : ℕ} {a : Fin (1 + m) → ℝ} {b : Fin m → ℝ} {ρ : ℝ}
+/-- Shifted form of the preservation theorem.  The displayed matrix is the
+parameter form of `M - ρ I`; its upper-triangular differences are unchanged by
+the common shift. -/
+theorem separatedCharacteristicMatrix_preservesInterlacingSeq0_shift
+    {h m : ℕ} {a : Fin (h + m) → ℝ} {b : Fin m → ℝ} {ρ : ℝ}
     (ha : ∀ i, ρ ≤ a i) (hb : ∀ j, b j ≤ ρ) :
-    PreservesInterlacingSeq0 (1 + m)
+    PreservesInterlacingSeq0 (h + m)
       (separatedCharacteristicMatrix (fun i ↦ a i - ρ) (fun j ↦ b j - ρ)) := by
-  apply separatedCharacteristicMatrix_one_preservesInterlacingSeq0
+  apply separatedCharacteristicMatrix_preservesInterlacingSeq0
   · intro i
     exact sub_nonneg.mpr (ha i)
   · intro j
