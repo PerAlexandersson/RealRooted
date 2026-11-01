@@ -844,7 +844,10 @@ private def rowNonnegCore (log : RowAttemptLog) : TacticM Unit := withMainContex
   let hrec ← r.hrecTerm 0
   let D₀? ← if r.shape.isLag then pure none else findRowDegree P r.shift r.params
   let mut mains : Array (Name × Option Nat × TSyntax `tactic) := #[]
-  unless r.shape.isLag do
+  if r.shape.isLag then
+    mains := mains.push (`threeTerm, none, ← `(tactic|
+      refine RealRooted.threeTerm_hasNonnegCoeffs (P := $Q) $hrec ?_ ?_ ?_ ?_ $t))
+  else
     -- a second-order recurrence needs a first-order one in the context, such as the
     -- `hrec₁` that `rr_row_interlaces` derives from an eigen-ODE
     let mut recs : Array Term := #[]

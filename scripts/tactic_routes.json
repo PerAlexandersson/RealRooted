@@ -587,9 +587,22 @@
       "pseudo": false
     },
     {
-      "name": "secondOrder",
+      "name": "threeTerm",
       "frontEnds": [
         {"tactic": "rr_row_nonneg_coeffs", "position": 3, "selectable": false}
+      ],
+      "conclusion": "HasNonnegCoeffs (P n)",
+      "theorems": ["RealRooted.threeTerm_hasNonnegCoeffs"],
+      "module": "RealRooted.Tactic.RowInterlacing",
+      "summary": "Three-term induction preserves coefficient nonnegativity.",
+      "requires": "The recurrence, nonnegative multipliers, and two nonnegative bases.",
+      "examples": ["RealRooted.Tactic.Examples.RowRegressions2313"],
+      "pseudo": false
+    },
+    {
+      "name": "secondOrder",
+      "frontEnds": [
+        {"tactic": "rr_row_nonneg_coeffs", "position": 4, "selectable": false}
       ],
       "conclusion": "HasNonnegCoeffs (P n)",
       "theorems": ["RealRooted.derivRec₂_hasNonnegCoeffs"],
@@ -602,14 +615,17 @@
     {
       "name": "derivativeMult",
       "frontEnds": [
-        {"tactic": "rr_row_nonneg_coeffs", "position": 4, "selectable": false}
+        {"tactic": "rr_row_nonneg_coeffs", "position": 5, "selectable": false}
       ],
       "conclusion": "HasNonnegCoeffs (P n)",
       "theorems": ["RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult"],
       "module": "RealRooted.Tactic.RowInterlacing",
       "summary": "A degree-aware multiplier inequality proves nonnegativity.",
       "requires": "First-order recurrence, base degree, multiplier bound, and base.",
-      "examples": ["RealRooted.Tactic.Examples.RowNonnegative"],
+      "examples": [
+        "RealRooted.Tactic.Examples.RowNonnegative",
+        "RealRooted.Tactic.Examples.RowRegressions2313"
+      ],
       "pseudo": false
     },
     {
