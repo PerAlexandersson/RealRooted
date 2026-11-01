@@ -45,22 +45,24 @@ multiple of the orbit. -/
   rw [Polynomial.X_pow_eq_monomial, polynomialOrbitMap_monomial]
   simp
 
+/-- The orbit map is evaluation of the input polynomial at the endomorphism, applied to `g`. -/
+theorem polynomialOrbitMap_apply (L : Module.End ℝ V) (g : V) (p : ℝ[X]) :
+    polynomialOrbitMap L g p = aeval L p g := by
+  induction p using Polynomial.induction_on' with
+  | add p q hp hq =>
+      rw [LinearMap.map_add, hp, hq, map_add, LinearMap.add_apply]
+  | monomial n b =>
+      simp [polynomialOrbitMap_monomial, aeval_monomial, Module.algebraMap_end_apply]
+
 /-- Multiplication by an affine factor before the orbit map applies the
 corresponding affine expression in the endomorphism afterwards. -/
 theorem polynomialOrbitMap_mul_X_add_C
     (L : Module.End ℝ V) (g : V) (p : ℝ[X]) (a : ℝ) :
     polynomialOrbitMap L g (p * (X + C a)) =
       (L + a • (1 : Module.End ℝ V)) (polynomialOrbitMap L g p) := by
-  induction p using Polynomial.induction_on' with
-  | add p q hp hq =>
-      simp only [add_mul, LinearMap.map_add, hp, hq]
-  | monomial n b =>
-      rw [mul_add, Polynomial.monomial_mul_X,
-        Polynomial.monomial_mul_C, LinearMap.map_add]
-      simp only [polynomialOrbitMap_monomial, LinearMap.add_apply,
-        LinearMap.smul_apply, Module.End.one_apply]
-      rw [pow_succ', Module.End.mul_apply, LinearMap.map_smul]
-      simp [smul_smul, mul_comm]
+  rw [polynomialOrbitMap_apply, polynomialOrbitMap_apply, mul_comm, map_mul,
+    Module.End.mul_apply]
+  simp [Algebra.algebraMap_eq_smul_one]
 
 /-- For polynomial-valued orbits, `polynomialOrbitMap` is the existing basis
 transform whose `n`th basis element is `L ^ n g`. -/
