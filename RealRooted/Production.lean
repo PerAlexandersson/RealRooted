@@ -1880,6 +1880,8 @@ public import RealRooted.BasisTransform.EventuallyGeometric
 public import RealRooted.BasisTransform.OrderTwoPF
 public import RealRooted.Hermite.ImaginaryCentralDifference
 public import RealRooted.Recurrence.ReciprocalFactorial
+public import RealRooted.MaWang.EndpointTwoSided
+public import RealRooted.MaWang.EndpointRecurrence
 
 /-!
 # RealRooted production umbrella
