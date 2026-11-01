@@ -1937,6 +1937,7 @@ public import RealRooted.ProductSequence.BinomialDerivativeFamily
 public import RealRooted.BasisTransform.AppellTranslationRigidity
 public import RealRooted.ThreeTermRecurrence.ShiftedChebyshevRootRegions
 public import RealRooted.Interlacing.QuadraticDifferentialOrbit
+public import RealRooted.BrandenLeite.PFFactorRenewal
 
 /-!
 # RealRooted production umbrella
