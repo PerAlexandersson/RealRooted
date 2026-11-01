@@ -1981,3 +1981,4 @@ public import RealRooted.Interlacing.SecondOrderNecessity
 public import RealRooted.BasisTransform.SemigroupClassification
 public import RealRooted.MaWang.GrowingZeroMultiplicity
 public import RealRooted.Recurrence.CubicTransition
+public import RealRooted.CombinatorialExamples.PathDerivativeImages
