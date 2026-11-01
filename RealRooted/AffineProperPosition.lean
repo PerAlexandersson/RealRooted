@@ -2,6 +2,8 @@ module
 
 import RealRooted.AffineFamily
 import RealRooted.Linear
+import RealRooted.MaWang.Weak.Successor
+public import RealRooted.Basic.Coefficients
 public import RealRooted.Basic.ProperPosition
 
 /-!
@@ -83,6 +85,30 @@ lemma interl_C_affine_linear {c u v : ℝ} (hu : 0 < u) :
   · left
     simp [hc]
   exact (interlaces_C_linear hc (by grind)).toStrictInterl.toInterl
+
+/-- A linear polynomial interlaces a split quadratic when the quadratic is
+nonpositive at the root of the linear polynomial and has positive leading
+coefficient. -/
+theorem interl_linear_quadratic_of_eval_nonpos {f F : ℝ[X]}
+    (hfdeg : f.natDegree = 1) (hFdeg : F.natDegree = 2)
+    (hF_splits : F.Splits) (hF_pos : HasPosLeadingCoeff F)
+    (hroot_nonpos : ∀ r, f.IsRoot r → F.eval r ≤ 0) :
+    Interl f F := by
+  have hInter : Interlaces (1 : ℝ[X]) f := interlaces_one_linear hfdeg
+  have hF_ne : F ≠ 0 := by
+    intro hF
+    rw [hF, natDegree_zero] at hFdeg
+    norm_num at hFdeg
+  have hno : ∀ r, f.IsRoot r → ¬ (1 : ℝ[X]).IsRoot r := by
+    intro r _ h
+    simp at h
+  have hroot : ∀ r, f.IsRoot r → F.eval r * (1 : ℝ[X]).eval r ≤ 0 := by
+    intro r hr
+    simpa using hroot_nonpos r hr
+  exact
+    (strictInterl_of_interlaces_eval_mul_nonpos_of_no_common
+      hInter hasPosLeadingCoeff_one hF_ne hF_splits hF_pos
+      (by lia) (by lia) hno hroot).toInterl
 
 lemma interl_congr {p q p' q' : ℝ[X]} (hp : p = p') (hq : q = q')
     (h : Interl p' q') : Interl p q := by simpa only [hp, hq] using h

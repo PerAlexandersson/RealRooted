@@ -93,7 +93,9 @@ private theorem finiteDifferentialTest_coeff_nonneg
     exact_mod_cast Nat.descFactorial_pos.mpr hj
   nlinarith
 
-private theorem applyAsDifferentialOperator_hasNonnegCoeffs_of_test
+/-- If the finite differential test polynomial is PF, the operator sends nonnegative inputs to
+polynomials with nonnegative coefficients. -/
+theorem applyAsDifferentialOperator_hasNonnegCoeffs_of_test
     {N : ℕ} {h p : ℝ[X]}
     (hF : IsPFPolynomial (finiteDifferentialTest N h))
     (hp : HasNonnegCoeffs p) (hpdeg : p.natDegree ≤ N) :
