@@ -1941,4 +1941,5 @@ public import RealRooted.DeterminantalStability.ExactReduction
 public import RealRooted.Transforms.BrandenE.Interlacing
 public import RealRooted.PolynomialValueEulerNumerator.Interlacing
 public import RealRooted.HlavacekSolus.CubicalShelling
+public import RealRooted.ProductSequence.FixedDerivative
 public import RealRooted.Wronskian.OdeRootBound
