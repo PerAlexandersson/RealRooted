@@ -1928,6 +1928,7 @@ public import RealRooted.Jacobi.CoefficientFamily
 public import RealRooted.NarayanaTransformation.ReflectedNarayanaGamma
 public import RealRooted.Jacobi.ParameterShifts
 public import RealRooted.CombinatorialExamples.EvenBinomChebyshevTransport
+public import RealRooted.Recurrence.ResidueSubsequence
 
 /-!
 # RealRooted production umbrella
