@@ -1,7 +1,13 @@
 module
 
-public import RealRooted.SymmetricDecomposition.FPolynomialRecurrence
-public import RealRooted.EulerOperator.Pencil
+public import RealRooted.SymmetricDecomposition.FPolynomial
+public import RealRooted.Basic.ProperPosition
+public import RealRooted.Basic.Coefficients
+public import RealRooted.EulerOperator
+public import RealRooted.PFPolynomial
+public import Mathlib.Basic.Real.Basic
+import RealRooted.SymmetricDecomposition.FPolynomialRecurrence
+import RealRooted.EulerOperator.Pencil
 public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Bernstein
 import RealRooted.BernsteinCone
 import RealRooted.BrandenLeite.ChainPolynomial

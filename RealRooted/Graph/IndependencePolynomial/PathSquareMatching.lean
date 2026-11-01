@@ -1,6 +1,14 @@
 module
 
-public import RealRooted.Graph.IndependencePolynomial.SimplicialCliqueDeletion
+public import Mathlib.Order.Interval.Finset.Defs
+public import Mathlib.Basic.Logic.Basic
+public import Mathlib.Algebra.Polynomial.Basic
+public import Mathlib.Logic.Embedding.Basic
+public import Mathlib.Combinatorics.SimpleGraph.Basic
+public import Mathlib.Data.Finset.Defs
+public import RealRooted.Graph.IndependencePolynomial.Basic
+public import Mathlib.Basic.Real.Basic
+import RealRooted.Graph.IndependencePolynomial.SimplicialCliqueDeletion
 import RealRooted.Graph.IndependencePolynomial.ClawFree
 import RealRooted.Graph.IndependencePolynomial.Recurrence
 import RealRooted.Mathlib.Probability.CoeffDistribution
