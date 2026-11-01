@@ -159,6 +159,12 @@ def HasNonconstantRatio (A B : ℝ[X]) : Prop :=
   ∀ z : ℂ,
     A.map Complex.ofRealHom - C z * B.map Complex.ofRealHom ≠ 0
 
+/-- Unfolding lemma for `HasNonconstantRatio`. -/
+theorem hasNonconstantRatio_iff {A B : ℝ[X]} :
+    HasNonconstantRatio A B ↔
+      ∀ z : ℂ, A.map Complex.ofRealHom - C z * B.map Complex.ofRealHom ≠ 0 := by
+  simp only [HasNonconstantRatio]
+
 /-- A denominator-cleared substitution with nonzero source and nonconstant
 quotient is nonzero. -/
 theorem rationalSubstitution_ne_zero {A B p : ℝ[X]} (hp : p ≠ 0)
