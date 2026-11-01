@@ -1978,3 +1978,4 @@ public import RealRooted.BasisTransform.LimitingAppell
 public import RealRooted.BasisTransform.IntervalBasisMaps
 public import RealRooted.Interlacing.SecondOrderIff
 public import RealRooted.Interlacing.SecondOrderNecessity
+public import RealRooted.BasisTransform.SemigroupClassification
