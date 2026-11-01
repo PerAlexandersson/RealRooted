@@ -301,6 +301,47 @@ theorem basisTransform_injective_of_natDegree_eq
     basisTransform_add, basisTransform_smul, hpq]
   simp
 
+/-- A degree-triangular polynomial basis sends nonzero polynomials to nonzero
+polynomials. -/
+theorem basisTransform_ne_zero
+    {B : ℕ → R[X]}
+    (hdegree : ∀ n, (B n).natDegree = n)
+    (hnonzero : ∀ n, B n ≠ 0) {p : R[X]} (hp : p ≠ 0) :
+    basisTransform B p ≠ 0 := by
+  intro hzero
+  apply hp
+  apply basisTransform_injective_of_natDegree_eq hdegree hnonzero
+  simpa using hzero
+
+/-- A degree-triangular polynomial basis preserves the degree of every
+nonzero polynomial. -/
+theorem basisTransform_natDegree_eq
+    {B : ℕ → R[X]}
+    (hdegree : ∀ n, (B n).natDegree = n)
+    (hnonzero : ∀ n, B n ≠ 0) {p : R[X]} (hp : p ≠ 0) :
+    (basisTransform B p).natDegree = p.natDegree := by
+  apply natDegree_eq_of_le_of_coeff_ne_zero
+  · exact basisTransform_natDegree_le_of_natDegree_le
+      (fun n ↦ (hdegree n).le) p
+  · rw [coeff_basisTransform, Polynomial.sum_def]
+    have hdmem : p.natDegree ∈ p.support :=
+      natDegree_mem_support_of_nonzero hp
+    rw [Finset.sum_eq_single_of_mem p.natDegree hdmem]
+    · apply mul_ne_zero (Polynomial.mem_support_iff.mp hdmem)
+      have hlead : (B p.natDegree).leadingCoeff ≠ 0 :=
+        leadingCoeff_ne_zero.mpr (hnonzero p.natDegree)
+      rw [← coeff_natDegree, hdegree p.natDegree] at hlead
+      simpa using hlead
+    · intro n hn hne
+      have hnle : n ≤ p.natDegree :=
+        le_natDegree_of_ne_zero (Polynomial.mem_support_iff.mp hn)
+      have hnlt : n < p.natDegree := lt_of_le_of_ne hnle hne
+      have hzero : (B n).coeff p.natDegree = 0 := by
+        apply coeff_eq_zero_of_natDegree_lt
+        rw [hdegree n]
+        exact hnlt
+      simp [hzero]
+
 end Domain
 
 end Polynomial

@@ -55,6 +55,8 @@ public import RealRooted.Basic.PolynomialFacts
 public import RealRooted.Basic.ProperPosition
 public import RealRooted.Basic.RootLists
 public import RealRooted.BasisTransform
+public import RealRooted.BasisTransform.FiniteSymbol
+public import RealRooted.BasisTransform.ScalarIndexFactorization
 public import RealRooted.BernsteinCone
 public import RealRooted.BernsteinCone.Preserver
 public import RealRooted.Bezoutian
@@ -1124,6 +1126,11 @@ public import RealRooted.MatrixInterlacing.Closure
 public import RealRooted.MatrixInterlacing.Converse
 public import RealRooted.MatrixInterlacing.Preservation
 public import RealRooted.MatrixInterlacing.PrincipalInterlacingExamples
+public import RealRooted.MatrixInterlacing.SeparatedCharacteristic
+public import RealRooted.MatrixInterlacing.SeparatedCharacteristicDeterminant
+public import RealRooted.MatrixInterlacing.SeparatedCharacteristicExamples
+public import RealRooted.MatrixInterlacing.SeparatedCharacteristicRows
+public import RealRooted.MatrixInterlacing.SeparatedCharacteristicRecurrence
 public import RealRooted.MatrixInterlacing.SparseTests
 public import RealRooted.MatrixInterlacing.TotallyNonnegative
 public import RealRooted.MatrixInterlacing.TotallyNonnegativeExamples
@@ -1751,6 +1758,7 @@ public import RealRooted.Recurrence.Uniqueness
 public import RealRooted.DerivativeRecurrence.Nonnegative
 public import RealRooted.Tactic.Examples.RowNonnegative
 public import RealRooted.Recurrence.FactorPower
+public import RealRooted.Recurrence.QuarticInterlacing
 public import RealRooted.Tactic.Examples.RowFactorPower
 public import RealRooted.Tactic.Row.DelayedProduct
 public import RealRooted.Tactic.Row.FactorPower

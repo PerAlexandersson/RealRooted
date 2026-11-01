@@ -61,52 +61,56 @@ private theorem aeval_forwardShift_apply_eq_mulVec {k : ℕ}
       rw [← Matrix.mulVec_mulVec, Matrix.mulVec_diagonal]
       simp
 
+/-- The characteristic polynomial of the recurrence encoded by a matrix is
+the characteristic polynomial of that matrix. -/
+@[simp] theorem charPoly_ofMatrix {k : ℕ} (A : Matrix (Fin k) (Fin k) R) :
+    (ofMatrix A).charPoly = A.charpoly := by
+  rcases subsingleton_or_nontrivial R with hR | hR
+  · exact Subsingleton.elim _ _
+  let _ := hR
+  change Polynomial.monomial k 1 -
+    ∑ i : Fin k, Polynomial.monomial i (-A.charpoly.coeff i) = A.charpoly
+  ext n
+  simp only [coeff_sub, coeff_monomial, finsetSum_coeff]
+  rcases lt_trichotomy n k with hn | hn | hn
+  · have hsum : (∑ i : Fin k, if (i : ℕ) = n then -A.charpoly.coeff i else 0) =
+        -A.charpoly.coeff n := by
+      rw [Finset.sum_eq_single ⟨n, hn⟩]
+      · simp
+      · intro b _ hb
+        split_ifs with hbn
+        · exact (hb (Fin.ext hbn)).elim
+        · rfl
+      · simp
+    rw [hsum]
+    rw [ite_eq_right (ne_of_gt hn), zero_sub, neg_neg]
+  · subst n
+    have hsum : (∑ i : Fin k, if (i : ℕ) = k then -A.charpoly.coeff i else 0) = 0 := by
+      apply Finset.sum_eq_zero
+      intro i _
+      simp [i.isLt.ne]
+    rw [hsum, sub_zero]
+    rw [ite_eq_left rfl]
+    have hlead := A.charpoly_monic.coeff_natDegree
+    rw [Matrix.charpoly_natDegree_eq_dim, Fintype.card_fin] at hlead
+    exact hlead.symm
+  · have hcoeff : A.charpoly.coeff n = 0 := by
+      apply coeff_eq_zero_of_natDegree_lt
+      simpa only [Matrix.charpoly_natDegree_eq_dim, Fintype.card_fin] using hn
+    have hsum : (∑ i : Fin k, if (i : ℕ) = n then -A.charpoly.coeff i else 0) = 0 := by
+      apply Finset.sum_eq_zero
+      intro i _
+      simp [ne_of_lt (i.isLt.trans hn)]
+    rw [hsum, hcoeff]
+    rw [ite_eq_right (ne_of_lt hn), sub_zero]
+
 /-- Every coordinate of a matrix orbit satisfies the recurrence encoded by the
 matrix characteristic polynomial. -/
 theorem ofMatrix_isSolution {k : ℕ} (A : Matrix (Fin k) (Fin k) R)
     (v : ℕ → Fin k → R) (hv : ∀ n, v (n + 1) = A *ᵥ v n) (j : Fin k) :
     (ofMatrix A).IsSolution fun n ↦ v n j := by
   rw [isSolution_iff_aeval_charPoly_eq_zero]
-  have hchar : (ofMatrix A).charPoly = A.charpoly := by
-    rcases subsingleton_or_nontrivial R with hR | hR
-    · exact Subsingleton.elim _ _
-    let _ := hR
-    change Polynomial.monomial k 1 -
-      ∑ i : Fin k, Polynomial.monomial i (-A.charpoly.coeff i) = A.charpoly
-    ext n
-    simp only [coeff_sub, coeff_monomial, finsetSum_coeff]
-    rcases lt_trichotomy n k with hn | hn | hn
-    · have hsum : (∑ i : Fin k, if (i : ℕ) = n then -A.charpoly.coeff i else 0) =
-          -A.charpoly.coeff n := by
-        rw [Finset.sum_eq_single ⟨n, hn⟩]
-        · simp
-        · intro b _ hb
-          split_ifs with hbn
-          · exact (hb (Fin.ext hbn)).elim
-          · rfl
-        · simp
-      rw [hsum]
-      rw [ite_eq_right (ne_of_gt hn), zero_sub, neg_neg]
-    · subst n
-      have hsum : (∑ i : Fin k, if (i : ℕ) = k then -A.charpoly.coeff i else 0) = 0 := by
-        apply Finset.sum_eq_zero
-        intro i _
-        simp [i.isLt.ne]
-      rw [hsum, sub_zero]
-      rw [ite_eq_left rfl]
-      have hlead := A.charpoly_monic.coeff_natDegree
-      rw [Matrix.charpoly_natDegree_eq_dim, Fintype.card_fin] at hlead
-      exact hlead.symm
-    · have hcoeff : A.charpoly.coeff n = 0 := by
-        apply coeff_eq_zero_of_natDegree_lt
-        simpa only [Matrix.charpoly_natDegree_eq_dim, Fintype.card_fin] using hn
-      have hsum : (∑ i : Fin k, if (i : ℕ) = n then -A.charpoly.coeff i else 0) = 0 := by
-        apply Finset.sum_eq_zero
-        intro i _
-        simp [ne_of_lt (i.isLt.trans hn)]
-      rw [hsum, hcoeff]
-      rw [ite_eq_right (ne_of_lt hn), sub_zero]
-  rw [hchar]
+  rw [charPoly_ofMatrix]
   ext m
   rw [aeval_forwardShift_apply_eq_mulVec A v hv j A.charpoly m,
     Matrix.aeval_self_charpoly]
