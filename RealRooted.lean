@@ -1996,3 +1996,4 @@ public import RealRooted.EulerOperator.CoupledInsertion
 public import RealRooted.Jacobi.CoefficientFamily
 public import RealRooted.NarayanaTransformation.ReflectedNarayanaGamma
 public import RealRooted.Jacobi.ParameterShifts
+public import RealRooted.CombinatorialExamples.EvenBinomChebyshevTransport
