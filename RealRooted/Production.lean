@@ -1125,6 +1125,9 @@ public import RealRooted.MatrixInterlacing.Converse
 public import RealRooted.MatrixInterlacing.Preservation
 public import RealRooted.MatrixInterlacing.PrincipalInterlacingExamples
 public import RealRooted.MatrixInterlacing.SeparatedCharacteristic
+public import RealRooted.MatrixInterlacing.SeparatedCharacteristicDeterminant
+public import RealRooted.MatrixInterlacing.SeparatedCharacteristicRows
+public import RealRooted.MatrixInterlacing.SeparatedCharacteristicRecurrence
 public import RealRooted.MatrixInterlacing.SparseTests
 public import RealRooted.MatrixInterlacing.TotallyNonnegative
 public import RealRooted.MatrixInterlacing.TotallyNonnegativeExamples
