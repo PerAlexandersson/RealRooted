@@ -1128,6 +1128,7 @@ public import RealRooted.MatrixInterlacing.Preservation
 public import RealRooted.MatrixInterlacing.PrincipalInterlacingExamples
 public import RealRooted.MatrixInterlacing.SeparatedCharacteristic
 public import RealRooted.MatrixInterlacing.SeparatedCharacteristicDeterminant
+public import RealRooted.MatrixInterlacing.SeparatedCharacteristicExamples
 public import RealRooted.MatrixInterlacing.SeparatedCharacteristicRows
 public import RealRooted.MatrixInterlacing.SeparatedCharacteristicRecurrence
 public import RealRooted.MatrixInterlacing.SparseTests
@@ -1640,6 +1641,7 @@ public import RealRooted.Mathlib.Probability.LocalLimit
 public import RealRooted.ToeplitzFin
 public import RealRooted.ThreeTermRecurrence.CoeffMoments
 public import RealRooted.Applications.OEIS.A151775
+public import RealRooted.Applications.OEIS.A181327Quartic
 public import RealRooted.Applications.OEIS.A056939
 public import RealRooted.Applications.OEIS.A359363
 public import RealRooted.Applications.OEIS.A297191
