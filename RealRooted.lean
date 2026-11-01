@@ -1973,6 +1973,7 @@ public import RealRooted.Transforms.RationalSubstitution
 public import RealRooted.BasisTransform.NewtonBasisPreservers
 public import RealRooted.Transforms.RationalSubstitutionDerivative
 public import RealRooted.Interlacing.SecondOrderPreservation
+public import RealRooted.ClassicalHurwitzMatrix.Stability.BinomialPerturbation
 public import RealRooted.BasisTransform.LimitingAppell
 public import RealRooted.BasisTransform.IntervalBasisMaps
 public import RealRooted.Interlacing.SecondOrderIff
