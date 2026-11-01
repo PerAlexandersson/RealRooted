@@ -1899,6 +1899,7 @@ public import RealRooted.Wronskian.OdePropagation
 public import RealRooted.Interlacing.SecondOrderClassification
 public import RealRooted.Transforms.RationalSubstitution
 public import RealRooted.Interlacing.SecondOrderPreservation
+public import RealRooted.BasisTransform.LimitingAppell
 
 /-!
 # RealRooted production umbrella
