@@ -1961,3 +1961,4 @@ public import RealRooted.FiniteFreeAdditive.FiniteDegreeTests
 public import RealRooted.MaWang.EndpointTwoSided
 public import RealRooted.MaWang.EndpointRecurrence
 public import RealRooted.FiniteFreeAdditive.FiniteDegreeOrderedTests
+public import RealRooted.Wronskian.OdePropagation
