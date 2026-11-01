@@ -1,7 +1,9 @@
 module
 
+public import RealRooted.MultivariateStability
+public import RealRooted.BorceaBranden.UnivariateFiniteSymbol
 public import RealRooted.BasisTransform
-public import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
+import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
 public import RealRooted.PFPolynomial
 
 /-!

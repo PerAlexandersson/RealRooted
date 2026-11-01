@@ -1,7 +1,16 @@
 module
 
-public import RealRooted.MatrixInterlacing.SeparatedCharacteristicDeterminant
-public import RealRooted.MatrixInterlacing.SeparatedCharacteristicRecurrence
+public import RealRooted.MatrixInterlacing.SeparatedCharacteristic
+public import RealRooted.PFPolynomial
+public import Mathlib.Algebra.Polynomial.Basic
+public import RealRooted.MatrixInterlacing.SeparatedCharacteristicRows
+public import Mathlib.LinearAlgebra.Matrix.Defs
+public import RealRooted.Basic.ProperPosition
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Data.Fin.VecNotation
+public import RealRooted.InterlacingSequenceBasic
+import RealRooted.MatrixInterlacing.SeparatedCharacteristicDeterminant
+import RealRooted.MatrixInterlacing.SeparatedCharacteristicRecurrence
 import RealRooted.AffineProperPosition
 import RealRooted.Compatibility.NDCutInvariant
 
