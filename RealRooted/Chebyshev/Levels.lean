@@ -13,6 +13,7 @@ import RealRooted.MaWang.Weak.DerivativeSign
 import RealRooted.Mathlib.RingTheory.Polynomial.Chebyshev.Bounds
 import RealRooted.PosCombo
 import RealRooted.RootCountJump
+import RealRooted.SameDegreeDerivative
 import RealRooted.WagnerRightSum.Sign
 
 /-!
@@ -685,6 +686,70 @@ theorem forall_pos_affineLevel_isPFPolynomial_iff_abs_le_one
       (affineLevel_hasPosLeadingCoeff hn hα hlam).ne_zero |>.2
   · intro hh n hn
     exact affineLevel_isPFPolynomial hn hα hlam (abs_le.mp hh)
+
+/-- A Chebyshev polynomial of degree at least two shifted upward by more than one
+cannot split over the reals. -/
+theorem not_splits_T_add_C_of_one_lt {d : ℕ} {c : ℝ}
+    (hd : 2 ≤ d) (hc : 1 < c) :
+    ¬(Polynomial.Chebyshev.T ℝ d + C c).Splits := by
+  let q := Polynomial.Chebyshev.T ℝ d + C c
+  have hTdegree : (Polynomial.Chebyshev.T ℝ d).natDegree = d := by
+    simp
+  have hdegree : q.natDegree = d := by
+    dsimp [q]
+    rw [Polynomial.natDegree_add_eq_left_of_natDegree_lt]
+    · exact hTdegree
+    · rw [hTdegree]
+      simp
+      lia
+  intro hsplits
+  have hroots : ∀ r ∈ q.roots, r < -1 := by
+    intro r hr
+    have hrzero := Polynomial.isRoot_of_mem_roots hr
+    rw [Polynomial.IsRoot.def] at hrzero
+    by_contra hrnot
+    have hrge : -1 ≤ r := le_of_not_gt hrnot
+    by_cases hrle : r ≤ 1
+    · have hbound := Polynomial.Chebyshev.abs_eval_T_real_le_one (d : ℤ)
+        (abs_le.mpr ⟨by linarith, hrle⟩)
+      have hlower := (abs_le.mp hbound).1
+      simp only [q, eval_add, eval_C] at hrzero
+      linarith
+    · have hbound := Polynomial.Chebyshev.one_le_eval_T_real (d : ℤ)
+        (le_of_not_ge hrle)
+      simp only [q, eval_add, eval_C] at hrzero
+      linarith
+  have hderDegree : q.derivative.natDegree = d - 1 := by
+    rw [q.natDegree_derivative, hdegree]
+  have hderSplits : q.derivative.Splits := hsplits.derivative
+  have hcard : q.derivative.roots.card = d - 1 := by
+    rw [Polynomial.splits_iff_card_roots.mp hderSplits, hderDegree]
+  have hcardPos : 0 < q.derivative.roots.card := by
+    rw [hcard]
+    lia
+  obtain ⟨r, hr⟩ := Multiset.card_pos_iff_exists_mem.mp hcardPos
+  have hqDegree : 2 ≤ q.natDegree := by
+    rw [hdegree]
+    exact hd
+  have hrlt : r < -1 := roots_derivative_lt_of_roots_lt hsplits hqDegree hroots r hr
+  have hrzero := Polynomial.isRoot_of_mem_roots hr
+  rw [Polynomial.IsRoot.def] at hrzero
+  have hindex : (d : ℤ) - 1 = ((d - 1 : ℕ) : ℤ) := by
+    norm_cast
+    lia
+  have hUzero :
+      (Polynomial.Chebyshev.U ℝ ((d - 1 : ℕ) : ℤ)).eval r = 0 := by
+    simp only [q, derivative_add, Polynomial.Chebyshev.T_derivative_eq_U,
+      derivative_C, add_zero, eval_mul, eval_intCast] at hrzero
+    rw [hindex] at hrzero
+    exact (mul_eq_zero.mp hrzero).resolve_left (by positivity)
+  have hUne : Polynomial.Chebyshev.U ℝ ((d - 1 : ℕ) : ℤ) ≠ 0 :=
+    Polynomial.Chebyshev.U_ne_zero ℝ _ (by norm_num)
+  have hUmem := (Polynomial.mem_roots hUne).mpr hUzero
+  rw [Polynomial.Chebyshev.roots_U_real, Finset.mem_val] at hUmem
+  obtain ⟨k, _, hrEq⟩ := Finset.mem_image.mp hUmem
+  rw [← hrEq] at hrlt
+  exact (not_lt_of_ge (Real.neg_one_le_cos _)) hrlt
 
 end Chebyshev
 

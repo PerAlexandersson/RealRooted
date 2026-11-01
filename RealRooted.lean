@@ -1991,3 +1991,4 @@ public import RealRooted.DerivativeRecurrence.LagParameterFamily
 public import RealRooted.ThreeTermRecurrence.PositiveAffineLag
 public import RealRooted.Chebyshev.Levels
 public import RealRooted.Derivative.PowerShift
+public import RealRooted.CombinatorialExamples.EvenBinomPerturbation
