@@ -36,7 +36,6 @@ theorem reciprocalFactorial_of_neg {a : ℤ} (ha : a < 0) :
   simp [reciprocalFactorial, not_le.mpr ha]
 
 /-- On natural-number arguments, `reciprocalFactorial` is the reciprocal factorial. -/
-@[simp]
 theorem reciprocalFactorial_natCast (n : ℕ) :
     reciprocalFactorial (n : ℤ) = (n.factorial : ℚ)⁻¹ := by
   simp [reciprocalFactorial]
