@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.Graph.IndependencePolynomial.ClawFree
+import RealRooted.Graph.IndependencePolynomial.ClawFree
 public import RealRooted.Graph.MatchingPolynomial
 import RealRooted.Compatibility.Three
 

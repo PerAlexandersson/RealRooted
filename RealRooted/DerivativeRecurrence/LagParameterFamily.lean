@@ -1,6 +1,9 @@
 module
 
-public import RealRooted.PosCombo
+public import Mathlib.Basic.Real.Basic
+public import RealRooted.Basic.ProperPosition
+public import RealRooted.Basic.Coefficients
+import RealRooted.PosCombo
 public import Mathlib.RingTheory.Polynomial.Pochhammer
 import RealRooted.WagnerX.NonnegativeRoots
 import RealRooted.Derivative.Algebra

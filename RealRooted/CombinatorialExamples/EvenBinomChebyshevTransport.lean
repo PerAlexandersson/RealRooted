@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.Chebyshev.Levels
-public import RealRooted.CombinatorialExamples.EvenBinomPerturbation
+public import RealRooted.CombinatorialExamples.EvenBinom
+public import Mathlib.RingTheory.Polynomial.Chebyshev
+import RealRooted.Chebyshev.Levels
+import RealRooted.CombinatorialExamples.EvenBinomPerturbation
 public import RealRooted.Transforms.RationalSubstitution
 import RealRooted.Transforms.RationalSubstitutionDerivative
 

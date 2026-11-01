@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.GammaOperator
-public import RealRooted.DegreeDropReversal
+import RealRooted.DegreeDropReversal
 public import RealRooted.NarayanaTransformation.ContinuousNarayanaGamma
 import RealRooted.PFPolynomial
 import RealRooted.MultiplierSequence.JensenHypergeometric

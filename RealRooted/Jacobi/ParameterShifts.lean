@@ -1,8 +1,10 @@
 module
 
+public import RealRooted.MultiplierSequence
+public import RealRooted.EulerOperator.Shift
 public import RealRooted.Jacobi.CoefficientFamily
 public import RealRooted.JacobiDeformation.Pochhammer
-public import RealRooted.MultiplierSequence.ProperPosition
+import RealRooted.MultiplierSequence.ProperPosition
 import RealRooted.MultiplierSequence.Laguerre
 
 /-!

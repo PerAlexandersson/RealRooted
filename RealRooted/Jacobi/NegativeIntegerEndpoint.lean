@@ -1,7 +1,13 @@
 module
 
-public import RealRooted.AissenSchoenbergWhitney
-public import RealRooted.Jacobi
+public import RealRooted.Basic.Coefficients
+public import RealRooted.AissenSchoenbergWhitneyBase
+public import RealRooted.SimpleRoots
+public import Mathlib.Basic.Real.Basic
+public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi
+public import Mathlib.Algebra.Polynomial.Basic
+import RealRooted.AissenSchoenbergWhitney
+import RealRooted.Jacobi
 
 import Mathlib.Tactic
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas

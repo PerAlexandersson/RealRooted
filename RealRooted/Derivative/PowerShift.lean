@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.Derivative.Algebra
+public import RealRooted.Basic.Coefficients
+import RealRooted.Derivative.Algebra
 public import RealRooted.Basic.ProperPosition
 import RealRooted.Derivative.LinearCombination
 import RealRooted.ObreschkoffConverse.DegreeGap

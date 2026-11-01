@@ -1,9 +1,10 @@
 module
 
+public import RealRooted.PFPolynomial
 public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.RootsExtrema
 public import RealRooted.CombinatorialExamples.EvenBinom
 public import RealRooted.Interlacing.PencilPreserver
-public import RealRooted.PFPolynomial.Closure
+import RealRooted.PFPolynomial.Closure
 import Mathlib.Data.Nat.Choose.Vandermonde
 import RealRooted.EulerBidiagonal.General
 import RealRooted.MaWang.StrictSigns.RootSigns
