@@ -2002,3 +2002,4 @@ public import RealRooted.Interlacing.ConstantPrefixFixedDelay
 public import RealRooted.CombinatorialExamples.TouchardTransforms
 public import RealRooted.DerivativeRecurrence.Evaluation
 public import RealRooted.ThreeTermRecurrence.ShiftedChebyshevFamily
+public import RealRooted.ProductSequence.BinomialDerivativeFamily
