@@ -1902,6 +1902,8 @@ public import RealRooted.Interlacing.SecondOrderClassification
 public import RealRooted.Transforms.RationalSubstitution
 public import RealRooted.Transforms.RationalSubstitutionDerivative
 public import RealRooted.Interlacing.SecondOrderPreservation
+public import RealRooted.BasisTransform.LimitingAppell
+public import RealRooted.BasisTransform.IntervalBasisMaps
 public import RealRooted.Interlacing.SecondOrderIff
 
 /-!
