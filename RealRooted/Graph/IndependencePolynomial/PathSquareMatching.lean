@@ -41,10 +41,11 @@ namespace PathSquareEdge
 @[expose] def conflictGraph : SimpleGraph PathSquareEdge :=
   SimpleGraph.fromRel fun e f => (e.endpoints ∩ f.endpoints).Nonempty
 
+/-- Classical decidability of adjacency in the conflict graph. -/
 local instance conflictGraphDecidableAdj : DecidableRel conflictGraph.Adj :=
   Classical.decRel _
 
-@[simp] private lemma conflictGraph_adj_iff {e f : PathSquareEdge} :
+private lemma conflictGraph_adj_iff {e f : PathSquareEdge} :
     conflictGraph.Adj e f ↔ e ≠ f ∧ (e.endpoints ∩ f.endpoints).Nonempty := by
   simp only [conflictGraph, SimpleGraph.fromRel_adj]
   constructor
