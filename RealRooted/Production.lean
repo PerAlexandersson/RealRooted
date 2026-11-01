@@ -1872,6 +1872,8 @@ public import RealRooted.DeterminantalStability.ExactReduction
 public import RealRooted.Transforms.BrandenE.Interlacing
 public import RealRooted.PolynomialValueEulerNumerator.Interlacing
 public import RealRooted.HlavacekSolus.CubicalShelling
+public import RealRooted.Interlacing.QuarticSevenComparisons
+public import RealRooted.ProductSequence.FixedDerivative
 
 /-!
 # RealRooted production umbrella
