@@ -1985,3 +1985,5 @@ public import RealRooted.CombinatorialExamples.PathDerivativeImages
 public import RealRooted.Jacobi.NegativeIntegerEndpoint
 public import RealRooted.Graph.IndependencePolynomial.SimplicialCliqueDeletion
 public import RealRooted.NarayanaTransformation.ContinuousNarayanaGamma
+public import RealRooted.EulerOperator.PowerSeries
+public import RealRooted.Interlacing.QuadraticRemainderCriterion
