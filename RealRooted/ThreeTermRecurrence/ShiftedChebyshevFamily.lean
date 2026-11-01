@@ -1,8 +1,9 @@
 module
 
-public import RealRooted.Favard
-public import RealRooted.Interlacing.Reversal
+import RealRooted.Favard
+import RealRooted.Interlacing.Reversal
 public import RealRooted.SimpleRoots
+public import Mathlib.Algebra.Polynomial.Degree.IsMonicOfDegree
 import RealRooted.DegreeDropReversal
 
 /-!

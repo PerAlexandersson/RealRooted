@@ -1,7 +1,14 @@
 module
 
-public import RealRooted.CombinatorialExamples.Touchard
-public import RealRooted.Mathlib.Algebra.Polynomial.Reverse
+public import RealRooted.Basic.Coefficients
+public import Mathlib.Algebra.Polynomial.Degree.IsMonicOfDegree
+public import Mathlib.Algebra.Polynomial.Reverse
+public import RealRooted.Touchard
+public import Mathlib.Basic.Real.Basic
+public import RealRooted.Basic.ProperPosition
+public import Mathlib.Algebra.Polynomial.Basic
+import RealRooted.CombinatorialExamples.Touchard
+import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 import RealRooted.Basic.AffineInterlacing
 import RealRooted.Interlacing.Reversal
 import RealRooted.Recurrence.Uniqueness

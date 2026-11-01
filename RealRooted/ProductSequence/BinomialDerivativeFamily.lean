@@ -1,6 +1,13 @@
 module
 
-public import RealRooted.ProductSequence.FixedDerivative
+public import RealRooted.Basic.Coefficients
+public import Mathlib.Data.Nat.Choose.Basic
+public import Mathlib.Logic.Function.Iterate
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.Order.Interval.Set.Defs
+public import RealRooted.Basic.ProperPosition
+public import Mathlib.Algebra.Polynomial.Basic
+import RealRooted.ProductSequence.FixedDerivative
 
 /-!
 # A two-parameter binomial derivative family
