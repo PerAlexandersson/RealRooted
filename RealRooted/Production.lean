@@ -1928,6 +1928,15 @@ public import RealRooted.Jacobi.CoefficientFamily
 public import RealRooted.NarayanaTransformation.ReflectedNarayanaGamma
 public import RealRooted.Jacobi.ParameterShifts
 public import RealRooted.CombinatorialExamples.EvenBinomChebyshevTransport
+public import RealRooted.Recurrence.ResidueSubsequence
+public import RealRooted.Interlacing.ConstantPrefixFixedDelay
+public import RealRooted.CombinatorialExamples.TouchardTransforms
+public import RealRooted.DerivativeRecurrence.Evaluation
+public import RealRooted.ThreeTermRecurrence.ShiftedChebyshevFamily
+public import RealRooted.ProductSequence.BinomialDerivativeFamily
+public import RealRooted.BasisTransform.AppellTranslationRigidity
+public import RealRooted.ThreeTermRecurrence.ShiftedChebyshevRootRegions
+public import RealRooted.Interlacing.QuadraticDifferentialOrbit
 
 /-!
 # RealRooted production umbrella
