@@ -217,9 +217,18 @@ theorem coeff_top_generalizedEulerian_one : ∀ n : ℕ,
       rw [leadingCoeff, hdeg]]
   exact generalizedEulerian_monic 1 n
 
-/-- The coefficients of an ordinary Eulerian polynomial are palindromic. -/
-theorem coeff_symm_generalizedEulerian_one : ∀ n i j : ℕ, i + j = n →
-    (generalizedEulerian 1 n).coeff i = (generalizedEulerian 1 n).coeff j := by
+/-- The top coefficient of a generalized Eulerian polynomial equals one. -/
+private lemma coeff_top_generalizedEulerian (c : ℝ) (n : ℕ) :
+    (generalizedEulerian c n).coeff n = 1 := by
+  rw [show (generalizedEulerian c n).coeff n =
+    (generalizedEulerian c n).leadingCoeff by
+      rw [leadingCoeff, generalizedEulerian_natDegree]]
+  exact generalizedEulerian_monic c n
+
+/-- The coefficients of a generalized Eulerian polynomial are palindromic
+for every real parameter. -/
+theorem coeff_symm_generalizedEulerian (c : ℝ) : ∀ n i j : ℕ, i + j = n →
+    (generalizedEulerian c n).coeff i = (generalizedEulerian c n).coeff j := by
   intro n
   induction n with
   | zero =>
@@ -232,22 +241,22 @@ theorem coeff_symm_generalizedEulerian_one : ∀ n i j : ℕ, i + j = n →
       match i, j with
       | 0, j =>
           have hj : j = n + 1 := by lia
-          rw [hj, coeff_zero_generalizedEulerian, coeff_top_generalizedEulerian_one]
+          rw [hj, coeff_zero_generalizedEulerian, coeff_top_generalizedEulerian]
       | i, 0 =>
           have hi : i = n + 1 := by lia
-          rw [hi, coeff_zero_generalizedEulerian, coeff_top_generalizedEulerian_one]
+          rw [hi, coeff_zero_generalizedEulerian, coeff_top_generalizedEulerian]
       | i' + 1, j' + 1 =>
           have hn : 1 ≤ n := by lia
           have hsum : i' + j' = n - 1 := by lia
-          have hleft := coeff_generalizedEulerian_succ 1 n i'
-          have hright := coeff_generalizedEulerian_succ 1 n j'
+          have hleft := coeff_generalizedEulerian_succ c n i'
+          have hright := coeff_generalizedEulerian_succ c n j'
           have hcross_left :
-              (generalizedEulerian 1 n).coeff (i' + 1) =
-                (generalizedEulerian 1 n).coeff j' :=
+              (generalizedEulerian c n).coeff (i' + 1) =
+                (generalizedEulerian c n).coeff j' :=
             ih (i' + 1) j' (by lia)
           have hcross_right :
-              (generalizedEulerian 1 n).coeff i' =
-                (generalizedEulerian 1 n).coeff (j' + 1) :=
+              (generalizedEulerian c n).coeff i' =
+                (generalizedEulerian c n).coeff (j' + 1) :=
             ih i' (j' + 1) (by lia)
           rw [hleft, hright, hcross_left, hcross_right]
           have hcast : (i' : ℝ) + (j' : ℝ) = (n : ℝ) - 1 := by
@@ -256,22 +265,23 @@ theorem coeff_symm_generalizedEulerian_one : ∀ n i j : ℕ, i + j = n →
             push_cast [Nat.cast_sub hn] at hcast'
             linarith
           have hfactor_left :
-              (1 : ℝ) + 1 * ((i' : ℝ) + 1) = 1 + 1 * ((n : ℝ) - (j' : ℝ)) := by
-            linarith
+              1 + c * ((i' : ℝ) + 1) = 1 + c * ((n : ℝ) - (j' : ℝ)) := by
+            rw [show (n : ℝ) - (j' : ℝ) = (i' : ℝ) + 1 by linarith]
           have hfactor_right :
-              (1 : ℝ) + 1 * ((n : ℝ) - (i' : ℝ)) = 1 + 1 * ((j' : ℝ) + 1) := by
-            linarith
+              1 + c * ((n : ℝ) - (i' : ℝ)) = 1 + c * ((j' : ℝ) + 1) := by
+            rw [show (n : ℝ) - (i' : ℝ) = (j' : ℝ) + 1 by linarith]
           rw [hfactor_left, hfactor_right]
           ring
 
-/-- Reflection through the degree fixes every ordinary Eulerian polynomial. -/
-theorem generalizedEulerian_one_reflect (n : ℕ) :
-    Polynomial.reflect n (generalizedEulerian 1 n) = generalizedEulerian 1 n := by
+/-- Reflection through the degree fixes every generalized Eulerian polynomial,
+for every real parameter. -/
+theorem generalizedEulerian_reflect (c : ℝ) (n : ℕ) :
+    Polynomial.reflect n (generalizedEulerian c n) = generalizedEulerian c n := by
   ext i
   rw [coeff_reflect]
   by_cases hi : i ≤ n
   · rw [revAt_le hi]
-    exact coeff_symm_generalizedEulerian_one n (n - i) i (Nat.sub_add_cancel hi)
+    exact coeff_symm_generalizedEulerian c n (n - i) i (Nat.sub_add_cancel hi)
   · rw [revAt_eq_self_of_lt (Nat.lt_of_not_ge hi)]
 
 /-- Reciprocal evaluation identity for ordinary Eulerian polynomials. -/
@@ -283,7 +293,7 @@ theorem eval_recip_generalizedEulerian_one (n : ℕ) {x : ℝ} (hx : x ≠ 0) :
     (generalizedEulerian_natDegree 1 n).le
   have heval := Polynomial.eval₂_reflect_mul_pow
     (i := RingHom.id ℝ) (x := x) n (generalizedEulerian 1 n) hdeg
-  rw [generalizedEulerian_one_reflect] at heval
+  rw [generalizedEulerian_reflect] at heval
   simpa [Polynomial.eval₂_id, invOf_eq_inv, one_div, mul_comm] using heval.symm
 
 /-- The linear coefficient of an ordinary Eulerian polynomial satisfies its
