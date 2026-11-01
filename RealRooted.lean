@@ -1965,3 +1965,4 @@ public import RealRooted.Hermite.BesselOperatorFamily
 public import RealRooted.FiniteFreeAdditive.FiniteDegreeOrderedTests
 public import RealRooted.Wronskian.OdePropagation
 public import RealRooted.BasisTransform.TranslationLahPositiveMeasure
+public import RealRooted.Transforms.RationalSubstitution
