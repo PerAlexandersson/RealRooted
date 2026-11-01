@@ -315,5 +315,12 @@ example (x : ℝ) :
     ((X + C 1 : ℝ[X]).eval x) = x + 1 := by
   rr_close_side
 
+/-- The certificate field names of the side-goal syntax are non-reserved keywords, so files
+importing the tactics can still use them as names. -/
+example (left right nonneg degree recurrence certificate : ℕ) (h : left = right) :
+    right + nonneg + degree + recurrence + certificate =
+      left + nonneg + degree + recurrence + certificate := by
+  rw [h]
+
 end Tactic
 end RealRooted

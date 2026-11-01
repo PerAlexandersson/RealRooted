@@ -17,9 +17,9 @@ namespace Tactic
 `left_nonneg : HasNonnegCoeffs f`; and `right_nonneg : HasNonnegCoeffs g`. -/
 syntax (name := rr_strict_interl_mul_X)
   "rr_strict_interl_mul_X" " using "
-    "proper" ":=" term ","
-    "left_nonneg" ":=" term ","
-    "right_nonneg" ":=" term :
+    &"proper" ":=" term ","
+    &"left_nonneg" ":=" term ","
+    &"right_nonneg" ":=" term :
   tactic
 
 /-- Bare form of `rr_strict_interl_mul_X`: finds the three certificates in the local context by
@@ -30,15 +30,15 @@ syntax (name := rr_strict_interl_mul_X_inferred)
 /-- Closes `StrictInterl (X * f) (X * g)` from `proper : StrictInterl f g`.
 The former `left_nonneg` and `right_nonneg` fields remain accepted for compatibility. -/
 syntax (name := rr_strict_interl_mul_X_both)
-  "rr_strict_interl_mul_X_both" " using " "proper" ":=" term :
+  "rr_strict_interl_mul_X_both" " using " &"proper" ":=" term :
   tactic
 
 @[tactic_alt rr_strict_interl_mul_X_both]
 syntax (name := rrStrictInterlMulXBothCompat)
   "rr_strict_interl_mul_X_both" " using "
-    "proper" ":=" term ","
-    "left_nonneg" ":=" term ","
-    "right_nonneg" ":=" term :
+    &"proper" ":=" term ","
+    &"left_nonneg" ":=" term ","
+    &"right_nonneg" ":=" term :
   tactic
 
 /-- Bare form of `rr_strict_interl_mul_X_both`: finds the strict-interlacing

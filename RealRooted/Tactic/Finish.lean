@@ -51,24 +51,24 @@ syntax (name := rr_degree_le_one) "rr_degree_le_one" : tactic
 `above : ∀ m, n < m → p.coeff m = 0`. -/
 syntax (name := rr_natDegree_from_top_above)
   "rr_natDegree_from_top_above" " using "
-    "top_ne" ":=" term ","
-    "above" ":=" term :
+    &"top_ne" ":=" term ","
+    &"above" ":=" term :
   tactic
 
 /-- Closes `p.natDegree = n` from `above : ∀ m, n < m → p.coeff m = 0` and `top_eq`,
 an equation for `p.coeff n` whose value `simp` shows to be nonzero. -/
 syntax (name := rr_natDegree_from_top_eq_above)
   "rr_natDegree_from_top_above" " using "
-    "top_eq" ":=" term ","
-    "above" ":=" term :
+    &"top_eq" ":=" term ","
+    &"above" ":=" term :
   tactic
 
 /-- Closes `p.natDegree = n` from `top_pos : 0 < p.coeff n` and
 `above : ∀ m, n < m → p.coeff m = 0`. -/
 syntax (name := rr_natDegree_from_top_pos_above)
   "rr_natDegree_from_top_above" " using "
-    "top_pos" ":=" term ","
-    "above" ":=" term :
+    &"top_pos" ":=" term ","
+    &"above" ":=" term :
   tactic
 
 /-- Closes the goal by `exact` of the certificate `h`, or of one of its projections: the
@@ -108,8 +108,8 @@ syntax (name := rr_splits) "rr_splits" " using " term : tactic
 /-- Closes `p.divX.Splits` from `coeff_zero : p.coeff 0 = 0` and `splits : p.Splits`. -/
 syntax (name := rr_splits_divX)
   "rr_splits_divX" " using "
-    "coeff_zero" ":=" term ","
-    "splits" ":=" term :
+    &"coeff_zero" ":=" term ","
+    &"splits" ":=" term :
   tactic
 /-- Closes `p = 0 ∨ p.Splits` from the certificate `h`: a real-rooted, pair, `Interlaces` or
 `StrictInterl` fact, or a sequence of such facts. -/
@@ -154,23 +154,23 @@ syntax (name := rr_sturm_base) "rr_sturm_base" : tactic
 `strictInterl_sequence_of_base_and_step`, from `base` and `step`. -/
 syntax (name := rr_strict_interl_sequence_realrooted)
   "rr_strict_interl_sequence_realrooted" " using "
-    "base" ":=" term ","
-    "step" ":=" term :
+    &"base" ":=" term ","
+    &"step" ":=" term :
   tactic
 
 /-- Sequence finisher: the same as `rr_strict_interl_sequence_realrooted`, from `base` and
 `step`. -/
 syntax (name := rr_finish_sequence_base_step)
   "rr_finish_sequence" " using "
-    "base" ":=" term ","
-    "step" ":=" term :
+    &"base" ":=" term ","
+    &"step" ":=" term :
   tactic
 
 /-- Closes the real-rootedness of a sequence from `strictInterl`, a chain of strict interlacings
 `StrictInterl (P n) (P (n + 1))` for all `n`. -/
 syntax (name := rr_finish_sequence_strict_interl)
   "rr_finish_sequence" " using "
-    "strictInterl" ":=" term :
+    &"strictInterl" ":=" term :
   tactic
 
 /-- Closes `∀ n, Interlaces (P n) (P (n + 1))` from the chain `strictInterl` and the `degree`
@@ -178,8 +178,8 @@ increments `(P n).natDegree + 1 = (P (n + 1)).natDegree`. It falls back to real-
 sequence. -/
 syntax (name := rr_finish_sequence_strict_interl_degree)
   "rr_finish_sequence" " using "
-    "strictInterl" ":=" term ","
-    "degree" ":=" term :
+    &"strictInterl" ":=" term ","
+    &"degree" ":=" term :
   tactic
 
 /-- Closes the goal from the certificate `h`, trying exact use, derivative interlacing, projections

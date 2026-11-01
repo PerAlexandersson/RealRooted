@@ -80,40 +80,40 @@ syntax (name := rr_nonneg_coeffs_using_three)
 `poly_nonneg : HasNonnegCoeffs p`. -/
 syntax (name := rr_nonneg_coeffs_C_mul)
   "rr_nonneg_coeffs_C_mul" " using "
-    "scalar_nonneg" ":=" term "," "poly_nonneg" ":=" term : tactic
+    &"scalar_nonneg" ":=" term "," &"poly_nonneg" ":=" term : tactic
 /-- Closes `HasNonnegCoeffs (X * p)` from `poly_nonneg : HasNonnegCoeffs p`. -/
 syntax (name := rr_nonneg_coeffs_X_mul)
-  "rr_nonneg_coeffs_X_mul" " using " "poly_nonneg" ":=" term : tactic
+  "rr_nonneg_coeffs_X_mul" " using " &"poly_nonneg" ":=" term : tactic
 /-- Closes `HasNonnegCoeffs (p + q)` from `left : HasNonnegCoeffs p` and
 `right : HasNonnegCoeffs q`. -/
 syntax (name := rr_nonneg_coeffs_add)
-  "rr_nonneg_coeffs_add" " using " "left" ":=" term "," "right" ":=" term : tactic
+  "rr_nonneg_coeffs_add" " using " &"left" ":=" term "," &"right" ":=" term : tactic
 /-- Closes `HasNonnegCoeffs (p * q)` from `left : HasNonnegCoeffs p` and
 `right : HasNonnegCoeffs q`. -/
 syntax (name := rr_nonneg_coeffs_mul)
-  "rr_nonneg_coeffs_mul" " using " "left" ":=" term "," "right" ":=" term : tactic
+  "rr_nonneg_coeffs_mul" " using " &"left" ":=" term "," &"right" ":=" term : tactic
 /-- Closes `HasPosLeadingCoeff p` for polynomials built from `1`, positive scalar multiples, `X`
 multiples, products, derivatives, sums with a dominant term, and polynomials with nonnegative
 coefficients. -/
 syntax (name := rr_pos_lc_auto) "rr_pos_lc" : tactic
 /-- Closes `HasPosLeadingCoeff p` from `nonneg : HasNonnegCoeffs p` and `nonzero : p ≠ 0`. -/
 syntax (name := rr_pos_lc_from_nonneg)
-  "rr_pos_lc" " using " "nonneg" ":=" term "," "nonzero" ":=" term : tactic
+  "rr_pos_lc" " using " &"nonneg" ":=" term "," &"nonzero" ":=" term : tactic
 /-- Closes `HasPosLeadingCoeff p` from `nonzero : p ≠ 0`, proving that `p` has nonnegative
 coefficients by `rr_nonneg_coeffs`. -/
 syntax (name := rr_pos_lc_from_nonzero)
-  "rr_pos_lc" " using " "nonzero" ":=" term : tactic
+  "rr_pos_lc" " using " &"nonzero" ":=" term : tactic
 /-- Closes `HasPosLeadingCoeff (C a * p)` from `scalar_pos : 0 < a` and
 `pos_lc : HasPosLeadingCoeff p`. -/
 syntax (name := rr_pos_lc_C_mul)
-  "rr_pos_lc_C_mul" " using " "scalar_pos" ":=" term "," "pos_lc" ":=" term : tactic
+  "rr_pos_lc_C_mul" " using " &"scalar_pos" ":=" term "," &"pos_lc" ":=" term : tactic
 /-- Closes `HasPosLeadingCoeff (p * q)` from `left : HasPosLeadingCoeff p` and
 `right : HasPosLeadingCoeff q`. -/
 syntax (name := rr_pos_lc_mul)
-  "rr_pos_lc_mul" " using " "left" ":=" term "," "right" ":=" term : tactic
+  "rr_pos_lc_mul" " using " &"left" ":=" term "," &"right" ":=" term : tactic
 /-- Closes `HasPosLeadingCoeff (X * p)` from `pos_lc : HasPosLeadingCoeff p`. -/
 syntax (name := rr_pos_lc_X_mul)
-  "rr_pos_lc_X_mul" " using " "pos_lc" ":=" term : tactic
+  "rr_pos_lc_X_mul" " using " &"pos_lc" ":=" term : tactic
 /-- Simplifies polynomial evaluations in the goal and context with `simp_all`, using `eval_add`,
 `eval_sub`, `eval_mul`, `eval_pow`, `eval_C` and `eval_X`. -/
 syntax (name := rr_eval_simp) "rr_eval_simp" : tactic
@@ -132,15 +132,15 @@ syntax (name := rr_side) "rr_side" : tactic
 equation. -/
 syntax (name := rr_recurrence_simpa)
   "rr_recurrence_simpa" " using "
-    "recurrence" ":=" term ","
-    "certificate" ":=" term :
+    &"recurrence" ":=" term ","
+    &"certificate" ":=" term :
   tactic
 /-- Rewrites the goal with the reversed `recurrence` equation and closes it by `lia` from the
 `degree` fact. -/
 syntax (name := rr_recurrence_degree)
   "rr_recurrence_degree" " using "
-    "recurrence" ":=" term ","
-    "degree" ":=" term :
+    &"recurrence" ":=" term ","
+    &"degree" ":=" term :
   tactic
 
 /-- Term form of `rr_side_nonneg`: elaborates to `by rr_side_nonneg`. -/
