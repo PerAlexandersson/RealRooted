@@ -1913,6 +1913,7 @@ public import RealRooted.BasisTransform.SemigroupClassification
 public import RealRooted.MaWang.GrowingZeroMultiplicity
 public import RealRooted.Recurrence.CubicTransition
 public import RealRooted.CombinatorialExamples.PathDerivativeImages
+public import RealRooted.Jacobi.NegativeIntegerEndpoint
 
 /-!
 # RealRooted production umbrella
