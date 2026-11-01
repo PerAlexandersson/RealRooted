@@ -1992,3 +1992,4 @@ public import RealRooted.ThreeTermRecurrence.PositiveAffineLag
 public import RealRooted.Chebyshev.Levels
 public import RealRooted.Derivative.PowerShift
 public import RealRooted.CombinatorialExamples.EvenBinomPerturbation
+public import RealRooted.EulerOperator.CoupledInsertion
