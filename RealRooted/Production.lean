@@ -54,6 +54,8 @@ public import RealRooted.Basic.PolynomialFacts
 public import RealRooted.Basic.ProperPosition
 public import RealRooted.Basic.RootLists
 public import RealRooted.BasisTransform
+public import RealRooted.BasisTransform.FiniteSymbol
+public import RealRooted.BasisTransform.ScalarIndexFactorization
 public import RealRooted.BernsteinCone
 public import RealRooted.BernsteinCone.Preserver
 public import RealRooted.Bezoutian
@@ -1122,6 +1124,11 @@ public import RealRooted.MatrixInterlacing.Closure
 public import RealRooted.MatrixInterlacing.Converse
 public import RealRooted.MatrixInterlacing.Preservation
 public import RealRooted.MatrixInterlacing.PrincipalInterlacingExamples
+public import RealRooted.MatrixInterlacing.SeparatedCharacteristic
+public import RealRooted.MatrixInterlacing.SeparatedCharacteristicDeterminant
+public import RealRooted.MatrixInterlacing.SeparatedCharacteristicExamples
+public import RealRooted.MatrixInterlacing.SeparatedCharacteristicRows
+public import RealRooted.MatrixInterlacing.SeparatedCharacteristicRecurrence
 public import RealRooted.MatrixInterlacing.SparseTests
 public import RealRooted.MatrixInterlacing.TotallyNonnegative
 public import RealRooted.MatrixInterlacing.TotallyNonnegativeExamples
@@ -1702,6 +1709,7 @@ public import RealRooted.Recurrence.Telescoping
 public import RealRooted.Recurrence.Uniqueness
 public import RealRooted.DerivativeRecurrence.Nonnegative
 public import RealRooted.Recurrence.FactorPower
+public import RealRooted.Recurrence.QuarticInterlacing
 public import RealRooted.Tactic.Row.DelayedProduct
 public import RealRooted.Tactic.Row.FactorPower
 public import RealRooted.GammaTransform.Derivative
@@ -1880,8 +1888,10 @@ public import RealRooted.BasisTransform.EventuallyGeometric
 public import RealRooted.BasisTransform.OrderTwoPF
 public import RealRooted.Hermite.ImaginaryCentralDifference
 public import RealRooted.Recurrence.ReciprocalFactorial
+public import RealRooted.FiniteFreeAdditive.FiniteDegreeTests
 public import RealRooted.MaWang.EndpointTwoSided
 public import RealRooted.MaWang.EndpointRecurrence
+public import RealRooted.FiniteFreeAdditive.FiniteDegreeOrderedTests
 
 /-!
 # RealRooted production umbrella
@@ -1890,4 +1900,3 @@ This entry point imports every production module and excludes tactic regression
 examples. Use `RealRooted` for the historical broad compatibility surface and
 `RealRooted.Tactic.Examples` for the mandatory regression suite.
 -/
-
