@@ -171,8 +171,7 @@ theorem delayedTailSeed_interlacing :
     simp only [List.pairwise_cons, List.mem_cons, List.not_mem_nil, or_false]
     refine ⟨?_, ?_⟩
     · intro p hp
-      rcases hp with rfl | rfl
-      all_goals simpa using
+      rcases hp with rfl | rfl <;> simpa using
         interl_C_affine_linear (c := 3) (u := 2) (v := 0) (by norm_num)
     · refine ⟨?_, ?_, List.Pairwise.nil⟩
       · intro p hp
@@ -184,12 +183,14 @@ theorem delayedTailSeed_interlacing :
     simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
     rcases hp with rfl | rfl | rfl
     · exact hasNonnegCoeffs_C (by norm_num)
-    all_goals exact hasNonnegCoeffs_C_mul (by norm_num) hasNonnegCoeffs_X
+    · exact hasNonnegCoeffs_C_mul (by norm_num) hasNonnegCoeffs_X
+    · exact hasNonnegCoeffs_C_mul (by norm_num) hasNonnegCoeffs_X
   · intro p hp hp0
     simp only [List.mem_cons, List.not_mem_nil, or_false] at hp
     rcases hp with rfl | rfl | rfl
     · exact ⟨hp0, Splits.C 3⟩
-    all_goals exact ⟨hp0, isRealRooted_X.2.C_mul 2⟩
+    · exact ⟨hp0, isRealRooted_X.2.C_mul 2⟩
+    · exact ⟨hp0, isRealRooted_X.2.C_mul 2⟩
 
 /-- The first three rows of coordinate two from seed `(3,2X,2X)` are
 `2X`, `3X`, and `2X²`. -/
