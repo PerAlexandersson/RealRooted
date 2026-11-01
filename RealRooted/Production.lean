@@ -1889,6 +1889,7 @@ public import RealRooted.BasisTransform.PolynomialSemigroups
 public import RealRooted.Hermite.BesselOperatorFamily
 public import RealRooted.FiniteFreeAdditive.FiniteDegreeOrderedTests
 public import RealRooted.Wronskian.OdePropagation
+public import RealRooted.FiniteFreeAdditive.FiniteDegreeCompanions
 
 /-!
 # RealRooted production umbrella
