@@ -1945,3 +1945,4 @@ public import RealRooted.ProductSequence.FixedDerivative
 public import RealRooted.Wronskian.OdeRootBound
 public import RealRooted.FiniteFreeAdditive.FiniteDegreeTests
 public import RealRooted.MaWang.EndpointTwoSided
+public import RealRooted.MaWang.EndpointRecurrence
