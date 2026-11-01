@@ -1938,6 +1938,7 @@ public import RealRooted.BasisTransform.AppellTranslationRigidity
 public import RealRooted.ThreeTermRecurrence.ShiftedChebyshevRootRegions
 public import RealRooted.Interlacing.QuadraticDifferentialOrbit
 public import RealRooted.BrandenLeite.PFFactorRenewal
+public import RealRooted.VeroneseRecognition.Affine
 
 /-!
 # RealRooted production umbrella
