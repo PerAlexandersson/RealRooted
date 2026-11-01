@@ -28,7 +28,24 @@ root is at the origin. -/
 def shiftedPowerImage (P : ℕ → ℝ[X]) (k : ℕ) (r : ℝ) : ℝ[X] :=
   (basisTransform P ((X + C r) ^ k)).comp (X - C r)
 
-private theorem basisTransform_add_pow (P : ℕ → ℝ[X]) (k : ℕ) (r : ℝ) :
+/-- Unfolding lemma for `shiftedPowerImage`. -/
+theorem shiftedPowerImage_eq (P : ℕ → ℝ[X]) (k : ℕ) (r : ℝ) :
+    shiftedPowerImage P k r = (basisTransform P ((X + C r) ^ k)).comp (X - C r) := by
+  simp only [shiftedPowerImage]
+
+/-- The shifted repeated-root image splits exactly when the untranslated image splits. -/
+theorem splits_shiftedPowerImage_iff (P : ℕ → ℝ[X]) (k : ℕ) (r : ℝ) :
+    (shiftedPowerImage P k r).Splits ↔ (basisTransform P ((X + C r) ^ k)).Splits := by
+  rw [shiftedPowerImage_eq]
+  constructor
+  · intro h
+    have := h.comp_X_add_C r
+    simpa [comp_assoc] using this
+  · intro h
+    simpa [sub_eq_add_neg] using h.comp_X_add_C (-r)
+
+/-- The repeated-root image before translation, as an explicit sum over the basis. -/
+theorem basisTransform_add_pow (P : ℕ → ℝ[X]) (k : ℕ) (r : ℝ) :
     basisTransform P ((X + C r) ^ k) =
       ∑ j ∈ range (k + 1),
         C ((k.choose j : ℝ) * r ^ (k - j)) * P j := by
@@ -58,7 +75,8 @@ theorem eval_zero_shiftedPowerImage
   simp [appellCoefficient, eval_finsetSum]
   field_simp
 
-private theorem shiftedPowerImage_monic
+/-- For a monic basis of exact degrees, the shifted repeated-root image is monic. -/
+theorem shiftedPowerImage_monic
     {P : ℕ → ℝ[X]} (hPdeg : ∀ n, (P n).natDegree = n)
     (hPmonic : ∀ n, (P n).Monic) (k : ℕ) (r : ℝ) :
     (shiftedPowerImage P k r).Monic := by
@@ -67,7 +85,8 @@ private theorem shiftedPowerImage_monic
   rw [shiftedPowerImage, show X - C r = X + C (-r) by rw [C_neg]; ring]
   exact himage.comp_X_add_C (-r)
 
-private theorem shiftedPowerImage_natDegree
+/-- For a monic basis of exact degrees, the shifted repeated-root image has degree `k`. -/
+theorem shiftedPowerImage_natDegree
     {P : ℕ → ℝ[X]} (hPdeg : ∀ n, (P n).natDegree = n)
     (hPmonic : ∀ n, (P n).Monic) (k : ℕ) (r : ℝ) :
     (shiftedPowerImage P k r).natDegree = k := by
