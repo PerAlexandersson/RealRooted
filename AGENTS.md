@@ -158,6 +158,13 @@ Follow the `Polynomial.natDegree_derivative` extraction pattern.
   `dupbody.py` find duplicate statements and proof bodies, `grind_candidates.py`
   lists small tactic proofs, and `golf_driver.sh` trials a replacement tactic
   file by file and keeps only what still elaborates.
+- `scripts/golf/apply_lint_fixes.py FILE...` applies the mechanical linter suggestions (unused
+  simp arguments, `simpa` that should be `simp`, `haveI`/`letI` in proofs, do-nothing tactics)
+  and reverts a round that adds errors.  Run it on warnings before fixing them by hand.
+- After a downstream project moves its RealRooted pin, `scripts/golf/replay_row_tactics.py`
+  replaces failing `rr_row_*` calls by the proofs their `?` variants print at the old pin, and
+  `--report` writes a brief for the calls that still need a hand adaptation.  Report each lost
+  goal class as a row-tactic regression.
 - Do not use `omega`; use `lia` for linear arithmetic.
 - Use `grind`, `simp_all`, and `positivity` for routine local plumbing when they
   keep the proof shorter and stable.
