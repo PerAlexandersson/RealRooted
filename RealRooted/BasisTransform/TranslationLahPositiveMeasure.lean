@@ -182,6 +182,12 @@ def HasTranslationLahEGF
     PowerSeries.coeff (j + 1) (translationLahSubstitutionSeries β) = β ^ j := by
   simp [translationLahSubstitutionSeries]
 
+/-- The substitution series has zero constant coefficient. -/
+@[simp] theorem constantCoeff_translationLahSubstitutionSeries (β : ℝ) :
+    PowerSeries.constantCoeff (translationLahSubstitutionSeries β) = 0 := by
+  rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply]
+  simp [translationLahSubstitutionSeries]
+
 /-- The constant coefficient of the atomic logarithm is zero. -/
 @[simp] theorem constantCoeff_translationLahLogSeries
     (atoms : List (ℝ × ℝ)) :
@@ -196,6 +202,605 @@ theorem coeff_translationLahLogSeries_succ
     PowerSeries.coeff (j + 1) (translationLahLogSeries atoms) =
       (atoms.map fun ua => ua.2 * ua.1 ^ j).sum := by
   simp [translationLahLogSeries]
+
+/-- Adding a translation atom adds its geometric moment series to the formal
+logarithm when the substitution series is known to have zero constant term. -/
+theorem translationLahLogSeries_cons_of_constantCoeff_eq_zero
+    (u a : ℝ) (atoms : List (ℝ × ℝ))
+    (hzero : PowerSeries.constantCoeff (translationLahSubstitutionSeries u) = 0) :
+    translationLahLogSeries ((u, a) :: atoms) =
+      translationLahLogSeries atoms +
+        PowerSeries.C a * translationLahSubstitutionSeries u := by
+  apply PowerSeries.ext
+  intro n
+  cases n with
+  | zero =>
+      simp [PowerSeries.coeff_zero_eq_constantCoeff_apply, hzero]
+  | succ n =>
+      simp [coeff_translationLahLogSeries_succ,
+        coeff_translationLahSubstitutionSeries_succ]
+      ring
+
+/-- Adding a translation atom adds its geometric moment series to the formal
+logarithm of the EGF prefactor. -/
+theorem translationLahLogSeries_cons (u a : ℝ) (atoms : List (ℝ × ℝ)) :
+    translationLahLogSeries ((u, a) :: atoms) =
+      translationLahLogSeries atoms +
+        PowerSeries.C a * translationLahSubstitutionSeries u :=
+  translationLahLogSeries_cons_of_constantCoeff_eq_zero u a atoms (by simp)
+
+private theorem powerSeries_eq_of_derivative_eq_mul
+    {f g h : PowerSeries ℝ}
+    (hf : PowerSeries.derivative f = f * h)
+    (hg : PowerSeries.derivative g = g * h)
+    (hzero : PowerSeries.constantCoeff f = PowerSeries.constantCoeff g) :
+    f = g := by
+  apply PowerSeries.ext
+  intro n
+  induction n using Nat.strong_induction_on with
+  | h n ih =>
+      cases n with
+      | zero =>
+          simpa [PowerSeries.coeff_zero_eq_constantCoeff_apply] using hzero
+      | succ n =>
+          have hfc := congrArg (PowerSeries.coeff n) hf
+          have hgc := congrArg (PowerSeries.coeff n) hg
+          rw [PowerSeries.coeff_derivative] at hfc hgc
+          rw [PowerSeries.coeff_mul] at hfc hgc
+          have hsum :
+              (∑ x ∈ Finset.HasAntidiagonal.antidiagonal n,
+                PowerSeries.coeff x.1 f * PowerSeries.coeff x.2 h) =
+              ∑ x ∈ Finset.HasAntidiagonal.antidiagonal n,
+                PowerSeries.coeff x.1 g * PowerSeries.coeff x.2 h := by
+            apply Finset.sum_congr rfl
+            intro x hx
+            rw [ih x.1 (Finset.Nat.antidiagonal.fst_lt hx)]
+          rw [hsum] at hfc
+          apply mul_right_cancel₀ (by positivity : (n + 1 : ℝ) ≠ 0)
+          exact hfc.trans hgc.symm
+
+private theorem subst_exp_add {f g : PowerSeries ℝ}
+    (hf : PowerSeries.constantCoeff f = 0)
+    (hg : PowerSeries.constantCoeff g = 0) :
+    (PowerSeries.exp ℝ).subst (f + g) =
+      (PowerSeries.exp ℝ).subst f * (PowerSeries.exp ℝ).subst g := by
+  have hfsubst : PowerSeries.HasSubst f :=
+    PowerSeries.HasSubst.of_constantCoeff_zero' hf
+  have hgsubst : PowerSeries.HasSubst g :=
+    PowerSeries.HasSubst.of_constantCoeff_zero' hg
+  have haddsubst : PowerSeries.HasSubst (f + g) := hfsubst.add hgsubst
+  apply powerSeries_eq_of_derivative_eq_mul
+    (h := PowerSeries.derivative f + PowerSeries.derivative g)
+  · rw [PowerSeries.derivative_subst haddsubst, PowerSeries.derivative_exp,
+      PowerSeries.derivative.map_add]
+  · rw [PowerSeries.derivative.leibniz,
+      PowerSeries.derivative_subst hfsubst, PowerSeries.derivative_exp,
+      PowerSeries.derivative_subst hgsubst, PowerSeries.derivative_exp]
+    simp only [smul_eq_mul]
+    ring
+  · have hfg : PowerSeries.constantCoeff (f + g) = 0 := by
+      simp [hf, hg]
+    have hleft : PowerSeries.constantCoeff
+        ((PowerSeries.exp ℝ).subst (f + g)) = 1 := by
+      rw [PowerSeries.constantCoeff_eq,
+        PowerSeries.constantCoeff_subst_of_constantCoeff_zero hfg]
+      simp
+    have hfirst : PowerSeries.constantCoeff
+        ((PowerSeries.exp ℝ).subst f) = 1 := by
+      rw [PowerSeries.constantCoeff_eq,
+        PowerSeries.constantCoeff_subst_of_constantCoeff_zero hf]
+      simp
+    have hsecond : PowerSeries.constantCoeff
+        ((PowerSeries.exp ℝ).subst g) = 1 := by
+      rw [PowerSeries.constantCoeff_eq,
+        PowerSeries.constantCoeff_subst_of_constantCoeff_zero hg]
+      simp
+    rw [map_mul, hleft, hfirst, hsecond, mul_one]
+
+private theorem translationLahSubstitutionSeries_mul_one_sub (β : ℝ) :
+    translationLahSubstitutionSeries β *
+        (1 - PowerSeries.C β * PowerSeries.X) =
+      PowerSeries.X := by
+  rw [mul_sub, mul_one]
+  rw [show translationLahSubstitutionSeries β *
+      (PowerSeries.C β * PowerSeries.X) =
+      PowerSeries.C β *
+        (translationLahSubstitutionSeries β * PowerSeries.X) by ring]
+  apply PowerSeries.ext
+  intro n
+  cases n with
+  | zero => simp
+  | succ n =>
+      cases n with
+      | zero => simp [coeff_translationLahSubstitutionSeries_succ,
+          PowerSeries.coeff_succ_mul_X]
+      | succ n =>
+          simp [coeff_translationLahSubstitutionSeries_succ,
+            PowerSeries.coeff_succ_mul_X, PowerSeries.coeff_X, pow_succ]
+          ring
+
+/-- Composing two Lah substitution series adds their parameters. -/
+theorem translationLahSubstitutionSeries_subst (β b : ℝ) :
+    (translationLahSubstitutionSeries b).subst
+        (translationLahSubstitutionSeries β) =
+      translationLahSubstitutionSeries (β + b) := by
+  let P := translationLahSubstitutionSeries β
+  let Q := translationLahSubstitutionSeries (β + b)
+  let D : PowerSeries ℝ := 1 - PowerSeries.C β * PowerSeries.X
+  let R : PowerSeries ℝ := 1 - PowerSeries.C b * P
+  have hP : P * D = PowerSeries.X := by
+    simpa [P, D] using translationLahSubstitutionSeries_mul_one_sub β
+  have hQ : Q * (1 - PowerSeries.C (β + b) * PowerSeries.X) =
+      PowerSeries.X := by
+    simpa [Q] using translationLahSubstitutionSeries_mul_one_sub (β + b)
+  have hPsubst : PowerSeries.HasSubst P := by
+    apply PowerSeries.HasSubst.of_constantCoeff_zero'
+    simp [P]
+  have hsub : (translationLahSubstitutionSeries b).subst P * R = P := by
+    have hidentity := translationLahSubstitutionSeries_mul_one_sub b
+    rw [PowerSeries.C_eq_algebraMap] at hidentity
+    have hmap := congrArg (PowerSeries.substAlgHom hPsubst)
+      hidentity
+    rw [map_mul, map_sub, map_one, map_mul,
+      PowerSeries.substAlgHom_X] at hmap
+    rw [(PowerSeries.substAlgHom hPsubst).commutes b] at hmap
+    simpa [PowerSeries.coe_substAlgHom, PowerSeries.algebraMap_eq,
+      PowerSeries.C_apply, R] using hmap
+  have hRD : R * D = 1 - PowerSeries.C (β + b) * PowerSeries.X := by
+    calc
+      R * D = D - PowerSeries.C b * (P * D) := by
+        simp only [R]
+        ring
+      _ = D - PowerSeries.C b * PowerSeries.X := by rw [hP]
+      _ = 1 - PowerSeries.C (β + b) * PowerSeries.X := by
+        simp only [D, map_add]
+        ring
+  have hD : D ≠ 0 := by
+    intro hzero
+    have hconstant := congrArg PowerSeries.constantCoeff hzero
+    simp [D] at hconstant
+  have hQR : Q * R = P := by
+    apply mul_right_cancel₀ hD
+    calc
+      Q * R * D = Q * (R * D) := by ring
+      _ = Q * (1 - PowerSeries.C (β + b) * PowerSeries.X) := by rw [hRD]
+      _ = PowerSeries.X := hQ
+      _ = P * D := hP.symm
+  have hR : R ≠ 0 := by
+    intro hzero
+    have hconstant := congrArg PowerSeries.constantCoeff hzero
+    simp [R, P] at hconstant
+  apply mul_right_cancel₀ hR
+  exact hsub.trans hQR.symm
+
+/-- Prepending an atom multiplies the prefactor by its formal exponential. -/
+theorem translationLahPrefactorSeries_cons
+    (u a : ℝ) (atoms : List (ℝ × ℝ)) :
+    translationLahPrefactorSeries ((u, a) :: atoms) =
+      translationLahPrefactorSeries atoms *
+        (PowerSeries.exp ℝ).subst
+          (PowerSeries.C a * translationLahSubstitutionSeries u) := by
+  rw [translationLahPrefactorSeries, translationLahPrefactorSeries,
+    translationLahLogSeries_cons]
+  apply subst_exp_add
+  · exact constantCoeff_translationLahLogSeries atoms
+  · simp
+
+private def basisTransformSeries
+    (Q : ℕ → ℝ[X]) (F : PowerSeries ℝ[X]) : PowerSeries ℝ[X] :=
+  PowerSeries.mk fun n => basisTransform Q (PowerSeries.coeff n F)
+
+private theorem polynomialRowEGF_basisTransform
+    (Q P : ℕ → ℝ[X]) :
+    polynomialRowEGF (fun n => basisTransform Q (P n)) =
+      basisTransformSeries Q (polynomialRowEGF P) := by
+  apply PowerSeries.ext
+  intro n
+  simp only [polynomialRowEGF, basisTransformSeries, PowerSeries.coeff_mk]
+  simpa [Polynomial.smul_eq_C_mul] using
+    (basisTransform_smul Q ((n.factorial : ℝ)⁻¹) (P n)).symm
+
+private theorem basisTransformSeries_map_mul
+    (Q : ℕ → ℝ[X]) (A : PowerSeries ℝ) (F : PowerSeries ℝ[X]) :
+    basisTransformSeries Q (A.map C * F) =
+      A.map C * basisTransformSeries Q F := by
+  apply PowerSeries.ext
+  intro n
+  simp only [basisTransformSeries, PowerSeries.coeff_mk, PowerSeries.coeff_mul,
+    PowerSeries.coeff_map]
+  rw [basisTransform_finset_sum]
+  apply Finset.sum_congr rfl
+  intro x hx
+  simpa [Polynomial.smul_eq_C_mul] using
+    basisTransform_smul Q (PowerSeries.coeff x.1 A)
+      (PowerSeries.coeff x.2 F)
+
+private theorem basisTransformSeries_exp_subst
+    (Q : ℕ → ℝ[X]) (B : PowerSeries ℝ)
+    (hB : PowerSeries.constantCoeff B = 0) :
+    basisTransformSeries Q
+        ((PowerSeries.exp ℝ[X]).subst
+          (PowerSeries.C X * B.map C)) =
+      (polynomialRowEGF Q).subst (B.map C) := by
+  have hBmap : PowerSeries.constantCoeff (B.map C) = 0 := by
+    rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply,
+      PowerSeries.coeff_map,
+      PowerSeries.coeff_zero_eq_constantCoeff_apply, hB, map_zero]
+  have hinner : PowerSeries.constantCoeff
+      (PowerSeries.C X * B.map C) = 0 := by
+    rw [map_mul, hBmap, mul_zero]
+  have hBsubst : PowerSeries.HasSubst (B.map C) :=
+    PowerSeries.HasSubst.of_constantCoeff_zero' hBmap
+  have hinnersubst : PowerSeries.HasSubst
+      (PowerSeries.C X * B.map C) :=
+    PowerSeries.HasSubst.of_constantCoeff_zero' hinner
+  apply PowerSeries.ext
+  intro n
+  simp only [basisTransformSeries, PowerSeries.coeff_mk]
+  rw [PowerSeries.coeff_subst' hinnersubst,
+    PowerSeries.coeff_subst' hBsubst]
+  change (basisTransformₗ Q).toAddMonoidHom (∑ᶠ d : ℕ,
+      PowerSeries.coeff d (PowerSeries.exp ℝ[X]) •
+        PowerSeries.coeff n ((PowerSeries.C X * B.map C) ^ d)) = _
+  rw [AddMonoidHom.map_finsum (basisTransformₗ Q).toAddMonoidHom
+    (PowerSeries.coeff_subst_finite' hinnersubst (PowerSeries.exp ℝ[X]) n)]
+  apply finsum_congr
+  intro d
+  simp only [PowerSeries.coeff_exp, polynomialRowEGF,
+    PowerSeries.coeff_mk]
+  rw [mul_pow, ← map_pow, PowerSeries.coeff_C_mul,
+    ← map_pow, PowerSeries.coeff_map]
+  have hrat : (algebraMap ℚ ℝ[X]) (1 / (d.factorial : ℚ)) =
+      C ((d.factorial : ℝ)⁻¹) := by
+    change (algebraMap ℚ ℝ[X]) (1 / (d.factorial : ℚ)) =
+      (algebraMap ℝ ℝ[X]) ((d.factorial : ℝ)⁻¹)
+    rw [IsScalarTower.algebraMap_apply ℚ ℝ ℝ[X]]
+    congr 1
+    norm_num
+  rw [hrat]
+  simp only [smul_eq_mul]
+  change basisTransform Q
+      (C ((d.factorial : ℝ)⁻¹) *
+        (X ^ d * C (PowerSeries.coeff n (B ^ d)))) = _
+  rw [show C ((d.factorial : ℝ)⁻¹) *
+      (X ^ d * C (PowerSeries.coeff n (B ^ d))) =
+      C ((d.factorial : ℝ)⁻¹ * PowerSeries.coeff n (B ^ d)) * X ^ d by
+    rw [map_mul]
+    ring, basisTransform_C_mul_X_pow, map_mul]
+  ring
+
+private theorem polynomialRowEGF_basisTransform_of_comp
+    (Q P : ℕ → ℝ[X]) (A D B E : PowerSeries ℝ)
+    (hB : PowerSeries.constantCoeff B = 0)
+    (hE : PowerSeries.constantCoeff E = 0)
+    (hP : polynomialRowEGF P =
+      A.map C * (PowerSeries.exp ℝ[X]).subst (PowerSeries.C X * B.map C))
+    (hQ : polynomialRowEGF Q =
+      D.map C * (PowerSeries.exp ℝ[X]).subst (PowerSeries.C X * E.map C)) :
+    polynomialRowEGF (fun n => basisTransform Q (P n)) =
+      (A * D.subst B).map C *
+        (PowerSeries.exp ℝ[X]).subst
+          (PowerSeries.C X * (E.subst B).map C) := by
+  have hBmap : PowerSeries.constantCoeff (B.map C) = 0 := by
+    rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply,
+      PowerSeries.coeff_map,
+      PowerSeries.coeff_zero_eq_constantCoeff_apply, hB, map_zero]
+  have hEmap : PowerSeries.constantCoeff (E.map C) = 0 := by
+    rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply,
+      PowerSeries.coeff_map,
+      PowerSeries.coeff_zero_eq_constantCoeff_apply, hE, map_zero]
+  have hinner : PowerSeries.constantCoeff
+      (PowerSeries.C X * E.map C) = 0 := by
+    rw [map_mul, hEmap, mul_zero]
+  have hBsubst : PowerSeries.HasSubst (B.map C) :=
+    PowerSeries.HasSubst.of_constantCoeff_zero' hBmap
+  have hinnersubst : PowerSeries.HasSubst
+      (PowerSeries.C X * E.map C) :=
+    PowerSeries.HasSubst.of_constantCoeff_zero' hinner
+  have hmapD : (D.map C).subst (B.map C) = (D.subst B).map C := by
+    symm
+    exact PowerSeries.map_subst
+      (PowerSeries.HasSubst.of_constantCoeff_zero' hB) D
+  have hmapE : (E.map C).subst (B.map C) = (E.subst B).map C := by
+    symm
+    exact PowerSeries.map_subst
+      (PowerSeries.HasSubst.of_constantCoeff_zero' hB) E
+  rw [polynomialRowEGF_basisTransform, hP,
+    basisTransformSeries_map_mul,
+    basisTransformSeries_exp_subst Q B hB, hQ]
+  rw [PowerSeries.subst_mul hBsubst, hmapD]
+  rw [PowerSeries.subst_comp_subst_apply hinnersubst hBsubst]
+  rw [PowerSeries.subst_mul hBsubst, PowerSeries.subst_C,
+    hmapE, map_mul]
+  rw [show (MvPowerSeries.C X : PowerSeries ℝ[X]) =
+    PowerSeries.C X by rfl]
+  exact (mul_assoc _ _ _).symm
+
+private theorem raySemigroupBasis_translation (a : ℝ) (n : ℕ) :
+    raySemigroupBasis a 0 1 n = (X + C a) ^ n := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      rw [raySemigroupBasis_succ, ih]
+      simp only [zero_mul, add_zero, one_mul, map_zero]
+      ring
+
+private theorem polynomialRowEGF_raySemigroupBasis_translation (a : ℝ) :
+    polynomialRowEGF (raySemigroupBasis a 0 1) =
+      PowerSeries.rescale (X + C a) (PowerSeries.exp ℝ[X]) := by
+  apply PowerSeries.ext
+  intro n
+  simp [polynomialRowEGF, raySemigroupBasis_translation,
+    PowerSeries.coeff_rescale]
+  ring
+
+private theorem basisTransform_derivative_monomials (p : ℝ[X]) :
+    basisTransform (fun n : ℕ => ((X : ℝ[X]) ^ n).derivative) p =
+      p.derivative := by
+  induction p using Polynomial.induction_on' with
+  | add p q hp hq =>
+      rw [basisTransform_add, derivative_add, hp, hq]
+  | monomial n a =>
+      rw [basisTransform_monomial, ← Polynomial.C_mul_X_pow_eq_monomial,
+        derivative_mul, derivative_C, zero_mul, zero_add]
+
+private theorem polynomialRowEGF_derivative_monomials :
+    polynomialRowEGF (fun n : ℕ => ((X : ℝ[X]) ^ n).derivative) =
+      PowerSeries.X * PowerSeries.rescale X (PowerSeries.exp ℝ[X]) := by
+  apply PowerSeries.ext
+  intro n
+  cases n with
+  | zero => simp [polynomialRowEGF]
+  | succ n =>
+      rw [PowerSeries.coeff_succ_X_mul, PowerSeries.coeff_rescale]
+      simp only [polynomialRowEGF, PowerSeries.coeff_mk,
+        PowerSeries.coeff_exp, derivative_pow, Nat.cast_add, Nat.cast_one]
+      have hfactorial : ((n + 1).factorial : ℝ) =
+          (n + 1 : ℝ) * (n.factorial : ℝ) := by
+        rw [Nat.factorial_succ, Nat.cast_mul, Nat.cast_add, Nat.cast_one]
+      have hrat : (algebraMap ℚ ℝ[X]) (1 / (n.factorial : ℚ)) =
+          C ((n.factorial : ℝ)⁻¹) := by
+        change (algebraMap ℚ ℝ[X]) (1 / (n.factorial : ℚ)) =
+          (algebraMap ℝ ℝ[X]) ((n.factorial : ℝ)⁻¹)
+        rw [IsScalarTower.algebraMap_apply ℚ ℝ ℝ[X]]
+        congr 1
+        norm_num
+      rw [hfactorial]
+      rw [hrat]
+      simp only [derivative_X, mul_one, Nat.succ_sub_one]
+      rw [show C (((n + 1 : ℝ) * (n.factorial : ℝ))⁻¹) *
+          (C (n + 1 : ℝ) * X ^ n) =
+          (C (((n + 1 : ℝ) * (n.factorial : ℝ))⁻¹) *
+            C (n + 1 : ℝ)) * X ^ n by ring]
+      rw [← map_mul]
+      rw [show (((n + 1 : ℝ) * (n.factorial : ℝ))⁻¹ * (n + 1 : ℝ)) =
+          (n.factorial : ℝ)⁻¹ by
+        field_simp]
+      ring
+
+private theorem basisTransformSeries_derivative_exp_subst
+    (B : PowerSeries ℝ) (hB : PowerSeries.constantCoeff B = 0) :
+    basisTransformSeries
+        (fun n : ℕ => ((X : ℝ[X]) ^ n).derivative)
+        ((PowerSeries.exp ℝ[X]).subst (PowerSeries.C X * B.map C)) =
+      B.map C *
+        (PowerSeries.exp ℝ[X]).subst (PowerSeries.C X * B.map C) := by
+  have hBmap : PowerSeries.constantCoeff (B.map C) = 0 := by
+    rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply,
+      PowerSeries.coeff_map,
+      PowerSeries.coeff_zero_eq_constantCoeff_apply, hB, map_zero]
+  have hBsubst : PowerSeries.HasSubst (B.map C) :=
+    PowerSeries.HasSubst.of_constantCoeff_zero' hBmap
+  rw [basisTransformSeries_exp_subst _ B hB,
+    polynomialRowEGF_derivative_monomials]
+  rw [PowerSeries.subst_mul hBsubst, PowerSeries.subst_X hBsubst]
+  rw [PowerSeries.rescale_eq_subst]
+  rw [PowerSeries.smul_eq_C_mul]
+  have hlinear : PowerSeries.HasSubst
+      (PowerSeries.C X * PowerSeries.X : PowerSeries ℝ[X]) :=
+    PowerSeries.HasSubst.X'.mul_right
+  rw [PowerSeries.subst_comp_subst_apply hlinear hBsubst]
+  rw [PowerSeries.subst_mul hBsubst, PowerSeries.subst_C,
+    PowerSeries.subst_X hBsubst]
+  rfl
+
+private theorem derivative_translationLahSubstitutionSeries (b : ℝ) :
+    PowerSeries.derivative (translationLahSubstitutionSeries b) =
+      1 + PowerSeries.C b * translationLahSubstitutionSeries b +
+        PowerSeries.C b * PowerSeries.X *
+          PowerSeries.derivative (translationLahSubstitutionSeries b) := by
+  rw [show PowerSeries.C b * PowerSeries.X *
+      PowerSeries.derivative (translationLahSubstitutionSeries b) =
+      PowerSeries.C b * (PowerSeries.X *
+        PowerSeries.derivative (translationLahSubstitutionSeries b)) by ring]
+  apply PowerSeries.ext
+  intro n
+  cases n with
+  | zero =>
+      simp [PowerSeries.coeff_derivative,
+        coeff_translationLahSubstitutionSeries_succ]
+  | succ n =>
+      rw [PowerSeries.coeff_derivative]
+      simp [coeff_translationLahSubstitutionSeries_succ,
+        PowerSeries.coeff_succ_X_mul, PowerSeries.coeff_derivative, pow_succ]
+      ring
+
+private theorem derivative_map_C (B : PowerSeries ℝ) :
+    PowerSeries.derivative (B.map C) =
+      (PowerSeries.derivative B).map C := by
+  apply PowerSeries.ext
+  intro n
+  simp [PowerSeries.coeff_derivative]
+
+private theorem derivative_exp_subst_translationLahSubstitutionSeries (b : ℝ) :
+    let B := translationLahSubstitutionSeries b
+    let F := (PowerSeries.exp ℝ[X]).subst (PowerSeries.C X * B.map C)
+    PowerSeries.derivative F =
+      PowerSeries.C X * F +
+        PowerSeries.C (C b) * PowerSeries.X * PowerSeries.derivative F +
+          PowerSeries.C (C b * X) * (B.map C * F) := by
+  dsimp only
+  let B := translationLahSubstitutionSeries b
+  let F := (PowerSeries.exp ℝ[X]).subst (PowerSeries.C X * B.map C)
+  have hBmap : PowerSeries.constantCoeff (B.map C) = 0 := by
+    rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply,
+      PowerSeries.coeff_map,
+      PowerSeries.coeff_zero_eq_constantCoeff_apply]
+    simp [B]
+  have hinner : PowerSeries.HasSubst (PowerSeries.C X * B.map C) := by
+    apply PowerSeries.HasSubst.of_constantCoeff_zero'
+    rw [map_mul, hBmap, mul_zero]
+  have hderinner : PowerSeries.derivative (PowerSeries.C X * B.map C) =
+      PowerSeries.C X * (PowerSeries.derivative B).map C := by
+    apply PowerSeries.ext
+    intro n
+    simp [PowerSeries.coeff_derivative, PowerSeries.coeff_map,
+      PowerSeries.coeff_C_mul]
+  have hchain : PowerSeries.derivative F =
+      F * (PowerSeries.C X * (PowerSeries.derivative B).map C) := by
+    dsimp only [F]
+    rw [PowerSeries.derivative_subst hinner, PowerSeries.derivative_exp,
+      hderinner]
+  have hDB := congrArg (PowerSeries.map C)
+    (derivative_translationLahSubstitutionSeries b)
+  change PowerSeries.derivative F = _
+  simp only [map_add, map_mul, map_one, PowerSeries.map_C,
+    PowerSeries.map_X] at hDB
+  have hbX : PowerSeries.C (C b * X) =
+      PowerSeries.C (C b) * PowerSeries.C X := by
+    rw [map_mul]
+  calc
+    PowerSeries.derivative F =
+        F * (PowerSeries.C X * (PowerSeries.derivative B).map C) := hchain
+    _ = F * (PowerSeries.C X *
+        (1 + PowerSeries.C (C b) * B.map C +
+          PowerSeries.C (C b) * PowerSeries.X *
+            (PowerSeries.derivative B).map C)) := by
+      exact congrArg
+        (fun G => F * (PowerSeries.C X * G)) hDB
+    _ = PowerSeries.C X * F +
+        PowerSeries.C (C b) * PowerSeries.X *
+          (F * (PowerSeries.C X * (PowerSeries.derivative B).map C)) +
+        PowerSeries.C (C b * X) * (B.map C * F) := by
+      rw [hbX]
+      ring
+    _ = PowerSeries.C X * F +
+        PowerSeries.C (C b) * PowerSeries.X * PowerSeries.derivative F +
+          PowerSeries.C (C b * X) * (B.map C * F) := by
+      rw [hchain]
+
+private theorem coeff_mul_exp_subst_translationLahSubstitutionSeries
+    (b : ℝ) (n : ℕ) :
+    let B := translationLahSubstitutionSeries b
+    let F := (PowerSeries.exp ℝ[X]).subst (PowerSeries.C X * B.map C)
+    PowerSeries.coeff n (B.map C * F) =
+      (PowerSeries.coeff n F).derivative := by
+  dsimp only
+  have h := congrArg (PowerSeries.coeff n)
+    (basisTransformSeries_derivative_exp_subst
+      (translationLahSubstitutionSeries b)
+      (constantCoeff_translationLahSubstitutionSeries b))
+  simp only [basisTransformSeries, PowerSeries.coeff_mk] at h
+  rw [basisTransform_derivative_monomials] at h
+  exact h.symm
+
+private theorem coeff_succ_exp_subst_translationLahSubstitutionSeries
+    (b : ℝ) (n : ℕ) :
+    let B := translationLahSubstitutionSeries b
+    let F := (PowerSeries.exp ℝ[X]).subst (PowerSeries.C X * B.map C)
+    C (n + 1 : ℝ) * PowerSeries.coeff (n + 1) F =
+      (X + C (b * n)) * PowerSeries.coeff n F +
+        C b * X * (PowerSeries.coeff n F).derivative := by
+  dsimp only
+  let B := translationLahSubstitutionSeries b
+  let F := (PowerSeries.exp ℝ[X]).subst (PowerSeries.C X * B.map C)
+  have hode := derivative_exp_subst_translationLahSubstitutionSeries b
+  change PowerSeries.derivative F = _ at hode
+  rw [show PowerSeries.C (C b) * PowerSeries.X * PowerSeries.derivative F =
+      PowerSeries.C (C b) *
+        (PowerSeries.X * PowerSeries.derivative F) by ring] at hode
+  rw [show PowerSeries.C (C b * X) =
+      PowerSeries.C (C b) * PowerSeries.C X by
+    rw [map_mul]] at hode
+  rw [show PowerSeries.C (C b) * PowerSeries.C X * (B.map C * F) =
+      PowerSeries.C (C b) *
+        (PowerSeries.C X * (B.map C * F)) by ring] at hode
+  have hcoeff := congrArg (PowerSeries.coeff n) hode
+  dsimp only [F, B] at hcoeff
+  have hpoly := coeff_mul_exp_subst_translationLahSubstitutionSeries b n
+  change PowerSeries.coeff n (B.map C * F) = _ at hpoly
+  cases n with
+  | zero =>
+      simp only [map_add, PowerSeries.coeff_C_mul] at hcoeff
+      rw [hpoly] at hcoeff
+      simp [PowerSeries.coeff_derivative] at hcoeff ⊢
+      simpa only [mul_assoc] using hcoeff
+  | succ n =>
+      simp only [map_add, PowerSeries.coeff_C_mul] at hcoeff
+      rw [hpoly] at hcoeff
+      simp [PowerSeries.coeff_derivative,
+        PowerSeries.coeff_succ_X_mul] at hcoeff ⊢
+      ring_nf at hcoeff ⊢
+      exact hcoeff
+
+private theorem raySemigroupBasis_lah_eq_coeff (b : ℝ) (n : ℕ) :
+    let B := translationLahSubstitutionSeries b
+    let F := (PowerSeries.exp ℝ[X]).subst (PowerSeries.C X * B.map C)
+    raySemigroupBasis 0 b 1 n = C (n.factorial : ℝ) * PowerSeries.coeff n F := by
+  dsimp only
+  let B := translationLahSubstitutionSeries b
+  let F := (PowerSeries.exp ℝ[X]).subst (PowerSeries.C X * B.map C)
+  change raySemigroupBasis 0 b 1 n =
+    C (n.factorial : ℝ) * PowerSeries.coeff n F
+  induction n with
+  | zero =>
+      have hBmap : PowerSeries.constantCoeff (B.map C) = 0 := by
+        rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply,
+          PowerSeries.coeff_map,
+          PowerSeries.coeff_zero_eq_constantCoeff_apply]
+        simp [B]
+      have hinner : PowerSeries.constantCoeff (PowerSeries.C X * B.map C) = 0 := by
+        rw [map_mul, hBmap, mul_zero]
+      have hconst : PowerSeries.constantCoeff F = 1 := by
+        dsimp only [F]
+        rw [PowerSeries.constantCoeff_eq,
+          PowerSeries.constantCoeff_subst_of_constantCoeff_zero hinner]
+        simp
+      simp [raySemigroupBasis, PowerSeries.coeff_zero_eq_constantCoeff_apply,
+        hconst]
+  | succ n ih =>
+      have hrec :=
+        coeff_succ_exp_subst_translationLahSubstitutionSeries b n
+      change C (n + 1 : ℝ) * PowerSeries.coeff (n + 1) F = _ at hrec
+      rw [raySemigroupBasis_succ, ih]
+      simp only [zero_add, one_mul, mul_one]
+      rw [derivative_mul, derivative_C, zero_mul, zero_add]
+      calc
+        (X + C (b * n)) * (C (n.factorial : ℝ) * PowerSeries.coeff n F) +
+            C b * X * (C (n.factorial : ℝ) *
+              (PowerSeries.coeff n F).derivative) =
+            C (n.factorial : ℝ) *
+              ((X + C (b * n)) * PowerSeries.coeff n F +
+                C b * X * (PowerSeries.coeff n F).derivative) := by ring
+        _ = C (n.factorial : ℝ) *
+            (C (n + 1 : ℝ) * PowerSeries.coeff (n + 1) F) := by rw [hrec]
+        _ = C ((n + 1).factorial : ℝ) * PowerSeries.coeff (n + 1) F := by
+          rw [Nat.factorial_succ, Nat.cast_mul, Nat.cast_add, Nat.cast_one,
+            map_mul]
+          ring
+
+private theorem polynomialRowEGF_raySemigroupBasis_lah (b : ℝ) :
+    polynomialRowEGF (raySemigroupBasis 0 b 1) =
+      (PowerSeries.exp ℝ[X]).subst
+        (PowerSeries.C X * (translationLahSubstitutionSeries b).map C) := by
+  apply PowerSeries.ext
+  intro n
+  rw [polynomialRowEGF, PowerSeries.coeff_mk,
+    raySemigroupBasis_lah_eq_coeff]
+  rw [← mul_assoc, ← map_mul]
+  rw [show (n.factorial : ℝ)⁻¹ * (n.factorial : ℝ) = 1 by
+    exact inv_mul_cancel₀ (by positivity)]
+  simp
 
 @[simp] private theorem translationLahLogSeries_nil :
     translationLahLogSeries [] = 0 := by
@@ -232,6 +837,133 @@ theorem hasTranslationLahEGF_nil :
   apply PowerSeries.ext
   intro n
   simp [polynomialRowEGF, translationLahWordBasis, PowerSeries.coeff_rescale]
+
+/-- A single translation generator has the expected atomic EGF. -/
+theorem hasTranslationLahEGF_translation (a : ℝ) :
+    HasTranslationLahEGF
+      (raySemigroupBasis a 0 1) 0 [(0, a)] := by
+  unfold HasTranslationLahEGF
+  rw [polynomialRowEGF_raySemigroupBasis_translation,
+    translationLahPrefactorSeries_cons,
+    translationLahPrefactorSeries_nil,
+    translationLahSubstitutionSeries_zero]
+  simp only [one_mul, PowerSeries.map_X]
+  rw [← PowerSeries.smul_eq_C_mul, ← PowerSeries.rescale_eq_subst,
+    ← PowerSeries.rescale_map]
+  rw [← PowerSeries.smul_eq_C_mul, ← PowerSeries.rescale_eq_subst]
+  simpa [add_comm] using
+    (PowerSeries.exp_mul_exp_eq_exp_add (C a) X).symm
+
+/-- A single Lah generator has substitution series `z / (1 - b z)`. -/
+theorem hasTranslationLahEGF_lah (b : ℝ) :
+    HasTranslationLahEGF (raySemigroupBasis 0 b 1) b [] := by
+  unfold HasTranslationLahEGF
+  rw [polynomialRowEGF_raySemigroupBasis_lah,
+    translationLahPrefactorSeries_nil]
+  simp
+
+/-- Prepending a translation generator inserts an atom at the current Lah
+time in the EGF data. -/
+theorem HasTranslationLahEGF.translation_cons
+    {P : ℕ → ℝ[X]} {β : ℝ} {atoms : List (ℝ × ℝ)}
+    (h : HasTranslationLahEGF P β atoms) (a : ℝ) :
+    HasTranslationLahEGF
+      (fun n => basisTransform (raySemigroupBasis a 0 1) (P n))
+      β ((β, a) :: atoms) := by
+  have hcomp := polynomialRowEGF_basisTransform_of_comp
+    (raySemigroupBasis a 0 1) P
+    (translationLahPrefactorSeries atoms)
+    (translationLahPrefactorSeries [(0, a)])
+    (translationLahSubstitutionSeries β)
+    (translationLahSubstitutionSeries 0)
+    (constantCoeff_translationLahSubstitutionSeries β)
+    (constantCoeff_translationLahSubstitutionSeries 0)
+    h (hasTranslationLahEGF_translation a)
+  have hD :
+      (translationLahPrefactorSeries [(0, a)]).subst
+          (translationLahSubstitutionSeries β) =
+        (PowerSeries.exp ℝ).subst
+          (PowerSeries.C a * translationLahSubstitutionSeries β) := by
+    rw [translationLahPrefactorSeries_cons,
+      translationLahPrefactorSeries_nil,
+      translationLahSubstitutionSeries_zero, one_mul]
+    have hβsubst : PowerSeries.HasSubst
+        (translationLahSubstitutionSeries β) :=
+      PowerSeries.HasSubst.of_constantCoeff_zero'
+        (constantCoeff_translationLahSubstitutionSeries β)
+    have hlinear : PowerSeries.HasSubst
+        (PowerSeries.C a * PowerSeries.X) := by
+      apply PowerSeries.HasSubst.of_constantCoeff_zero'
+      simp
+    rw [PowerSeries.subst_comp_subst_apply hlinear hβsubst,
+      PowerSeries.subst_mul hβsubst, PowerSeries.subst_C,
+      PowerSeries.subst_X hβsubst]
+    rfl
+  unfold HasTranslationLahEGF
+  rw [translationLahPrefactorSeries_cons, ← hD]
+  have hzeroSub :
+      (translationLahSubstitutionSeries 0).subst
+          (translationLahSubstitutionSeries β) =
+        translationLahSubstitutionSeries β := by
+    rw [translationLahSubstitutionSeries_zero,
+      PowerSeries.subst_X]
+    exact PowerSeries.HasSubst.of_constantCoeff_zero'
+      (constantCoeff_translationLahSubstitutionSeries β)
+  rw [hzeroSub] at hcomp
+  exact hcomp
+
+/-- Prepending a Lah generator composes the substitution series and adds its
+parameter to the current Lah time. -/
+theorem HasTranslationLahEGF.lah_cons
+    {P : ℕ → ℝ[X]} {β : ℝ} {atoms : List (ℝ × ℝ)}
+    (h : HasTranslationLahEGF P β atoms) (b : ℝ) :
+    HasTranslationLahEGF
+      (fun n => basisTransform (raySemigroupBasis 0 b 1) (P n))
+      (β + b) atoms := by
+  have hcomp := polynomialRowEGF_basisTransform_of_comp
+    (raySemigroupBasis 0 b 1) P
+    (translationLahPrefactorSeries atoms)
+    (translationLahPrefactorSeries [])
+    (translationLahSubstitutionSeries β)
+    (translationLahSubstitutionSeries b)
+    (constantCoeff_translationLahSubstitutionSeries β)
+    (constantCoeff_translationLahSubstitutionSeries b)
+    h (hasTranslationLahEGF_lah b)
+  unfold HasTranslationLahEGF
+  rw [translationLahPrefactorSeries_nil] at hcomp
+  have hβsubst : PowerSeries.HasSubst
+      (translationLahSubstitutionSeries β) :=
+    PowerSeries.HasSubst.of_constantCoeff_zero'
+      (constantCoeff_translationLahSubstitutionSeries β)
+  have hone : (1 : PowerSeries ℝ).subst
+      (translationLahSubstitutionSeries β) = 1 := by
+    rw [← PowerSeries.coe_substAlgHom hβsubst, map_one]
+  rw [hone] at hcomp
+  simp only [mul_one] at hcomp
+  rw [translationLahSubstitutionSeries_subst] at hcomp
+  rw [show (MvPowerSeries.map C)
+      (translationLahSubstitutionSeries (β + b)) =
+      (PowerSeries.map C) (translationLahSubstitutionSeries (β + b)) by rfl]
+    at hcomp
+  exact hcomp
+
+/-- Every finite translation--Lah word, hence every valid nonempty word, has
+the EGF determined by its total Lah time and translation atoms. -/
+theorem hasTranslationLahEGF_word (w : List TranslationLahGenerator) :
+    HasTranslationLahEGF (translationLahWordBasis w)
+      (translationLahWordBeta w) (translationLahWordAtoms w) := by
+  induction w with
+  | nil => exact hasTranslationLahEGF_nil
+  | cons g w ih =>
+      cases g with
+      | translation a =>
+          simpa [translationLahWordBasis, translationLahWordBeta,
+            translationLahWordAtoms, TranslationLahGenerator.basis] using
+            ih.translation_cons a
+      | lah b =>
+          simpa [translationLahWordBasis, translationLahWordBeta,
+            translationLahWordAtoms, TranslationLahGenerator.basis] using
+            ih.lah_cons b
 
 /-- Reachable EGF parameters for finite translation--Lah compositions.
 
