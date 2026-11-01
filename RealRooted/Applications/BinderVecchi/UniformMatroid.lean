@@ -364,7 +364,7 @@ theorem reflect_eulerian (s : ℕ) :
   | succ s =>
     simp only [eulerian, EulerianTransform.image]
     rw [reflect_add_right_of_reflect 1 (generalizedEulerian_natDegree 1 s).le
-      (generalizedEulerian_one_reflect s), pow_one, mul_comm]
+      (generalizedEulerian_reflect 1 s), pow_one, mul_comm]
 
 private theorem reflect_X_pow_mul_eulerian {s r : ℕ} (hs : s ≤ r) :
     (X ^ (r - s) * eulerian s).reflect r = EulerianTransform.image s := by

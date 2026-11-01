@@ -168,7 +168,7 @@ theorem chowDerangement_pascal :
     change (transform ((1 + X) ^ (n + 1))).reflect (n + 1) = X * transform ((1 + X) ^ (n + 1))
     rw [transform_one_add_X_pow_succ_eq,
       reflect_add_right_of_reflect 1 (generalizedEulerian_natDegree 1 n).le
-        (generalizedEulerian_one_reflect n)]
+        (generalizedEulerian_reflect 1 n)]
     ring
   · intro n
     rw [one_add_X_pow_eq_sum, map_sum]

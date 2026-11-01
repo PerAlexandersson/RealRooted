@@ -296,7 +296,7 @@ private theorem reflect_image_succ (n : ℕ) : (image (n + 1)).reflect (n + 1) =
   rw [image]
   have := reflect_mul X (generalizedEulerian 1 n) (F := 1) (G := n) natDegree_X_le
     (generalizedEulerian_natDegree 1 n).le
-  rw [show 1 + n = n + 1 by lia, reflect_one_X, generalizedEulerian_one_reflect, one_mul] at this
+  rw [show 1 + n = n + 1 by lia, reflect_one_X, generalizedEulerian_reflect, one_mul] at this
   exact this
 
 /-- The Eulerian polynomial is the Chow operator of the row total, with reflection bound

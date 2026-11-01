@@ -1896,6 +1896,7 @@ public import RealRooted.Hermite.BesselOperatorFamily
 public import RealRooted.FiniteFreeAdditive.FiniteDegreeOrderedTests
 public import RealRooted.MaWang.RootSignSuccessor
 public import RealRooted.Wronskian.OdePropagation
+public import RealRooted.BasisTransform.TranslationLahPositiveMeasure
 public import RealRooted.FiniteFreeAdditive.FiniteDegreeCompanions
 public import RealRooted.FiniteFreeAdditive.FiniteDegreeCompanionCone
 public import RealRooted.Interlacing.SecondOrderClassification
@@ -1903,9 +1904,30 @@ public import RealRooted.Transforms.RationalSubstitution
 public import RealRooted.BasisTransform.NewtonBasisPreservers
 public import RealRooted.Transforms.RationalSubstitutionDerivative
 public import RealRooted.Interlacing.SecondOrderPreservation
+public import RealRooted.ClassicalHurwitzMatrix.Stability.BinomialPerturbation
 public import RealRooted.BasisTransform.LimitingAppell
 public import RealRooted.BasisTransform.IntervalBasisMaps
 public import RealRooted.Interlacing.SecondOrderIff
+public import RealRooted.Interlacing.SecondOrderNecessity
+public import RealRooted.BasisTransform.SemigroupClassification
+public import RealRooted.MaWang.GrowingZeroMultiplicity
+public import RealRooted.Recurrence.CubicTransition
+public import RealRooted.CombinatorialExamples.PathDerivativeImages
+public import RealRooted.Jacobi.NegativeIntegerEndpoint
+public import RealRooted.Graph.IndependencePolynomial.SimplicialCliqueDeletion
+public import RealRooted.NarayanaTransformation.ContinuousNarayanaGamma
+public import RealRooted.EulerOperator.PowerSeries
+public import RealRooted.Interlacing.QuadraticRemainderCriterion
+public import RealRooted.DerivativeRecurrence.LagParameterFamily
+public import RealRooted.ThreeTermRecurrence.PositiveAffineLag
+public import RealRooted.Chebyshev.Levels
+public import RealRooted.Derivative.PowerShift
+public import RealRooted.CombinatorialExamples.EvenBinomPerturbation
+public import RealRooted.EulerOperator.CoupledInsertion
+public import RealRooted.Jacobi.CoefficientFamily
+public import RealRooted.NarayanaTransformation.ReflectedNarayanaGamma
+public import RealRooted.Jacobi.ParameterShifts
+public import RealRooted.CombinatorialExamples.EvenBinomChebyshevTransport
 
 /-!
 # RealRooted production umbrella
