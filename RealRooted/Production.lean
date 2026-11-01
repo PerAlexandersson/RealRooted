@@ -1915,6 +1915,7 @@ public import RealRooted.Recurrence.CubicTransition
 public import RealRooted.CombinatorialExamples.PathDerivativeImages
 public import RealRooted.Jacobi.NegativeIntegerEndpoint
 public import RealRooted.Graph.IndependencePolynomial.SimplicialCliqueDeletion
+public import RealRooted.NarayanaTransformation.ContinuousNarayanaGamma
 
 /-!
 # RealRooted production umbrella
