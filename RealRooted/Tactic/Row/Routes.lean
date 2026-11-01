@@ -459,6 +459,16 @@ def rowRouteTable : List RowRouteInfo := [
         `RealRooted.LinRec.natDegree_eq_and_leadingCoeff_eq_of_coeff
       ]
   },
+  { name := `threeTerm
+    frontEnds := [
+      "rr_row_nonneg_coeffs"
+    ]
+    conclusion := "HasNonnegCoeffs (P n)"
+    theorems :=
+      [
+        `RealRooted.threeTerm_hasNonnegCoeffs
+      ]
+  },
   { name := `secondOrder
     frontEnds := [
       "rr_row_nonneg_coeffs"

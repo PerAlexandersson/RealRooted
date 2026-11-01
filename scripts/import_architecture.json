@@ -16,7 +16,7 @@
   ],
   "budgets": {
     "RealRooted": {
-      "max_modules": 2001
+      "max_modules": 2002
     },
     "RealRooted.Production": {
       "max_modules": 1935

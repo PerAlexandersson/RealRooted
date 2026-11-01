@@ -95,8 +95,9 @@ side conditions, implementing modules, and regression examples.
 |---:|---|---|---|
 | 1 | `variableDelay` | StrictInterl, Interlaces, Splits, or HasNonnegCoeffs. | `strictInterl_of_fixedDelay_recurrence`, `strictInterl_of_scaled_fixedDelay_recurrence`, `hasNonnegCoeffs_of_scaled_fixedDelay_recurrence` |
 | 2 | `cone` | HasNonnegCoeffs, degree, nonvanishing, or positive leader. | `LinRec.hasNonnegCoeffs`, `LinRec.natDegree_eq_and_leadingCoeff_pos`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_degreeLaw`, `LinRec.natDegree_eq_and_leadingCoeff_eq_of_coeff` |
-| 3 | `secondOrder` | HasNonnegCoeffs (P n) | `derivRec₂_hasNonnegCoeffs` |
-| 4 | `derivativeMult` | HasNonnegCoeffs (P n) | `derivativeRecurrence_hasNonnegCoeffs_of_mult` |
+| 3 | `threeTerm` | HasNonnegCoeffs (P n) | `threeTerm_hasNonnegCoeffs` |
+| 4 | `secondOrder` | HasNonnegCoeffs (P n) | `derivRec₂_hasNonnegCoeffs` |
+| 5 | `derivativeMult` | HasNonnegCoeffs (P n) | `derivativeRecurrence_hasNonnegCoeffs_of_mult` |
 
 ## `rowInterlacesCoreAt`
 
@@ -397,6 +398,13 @@ side conditions, implementing modules, and regression examples.
 - **Module:** `RealRooted.Tactic.Recurrence.LinRec`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowDegreeRoutes`
 
+## `threeTerm`
+
+- **Summary:** Three-term induction preserves coefficient nonnegativity.
+- **Side conditions:** The recurrence, nonnegative multipliers, and two nonnegative bases.
+- **Module:** `RealRooted.Tactic.RowInterlacing`
+- **Regression examples:** `RealRooted.Tactic.Examples.RowRegressions2313`
+
 ## `secondOrder`
 
 - **Summary:** A second-order derivative recurrence preserves nonnegativity.
@@ -409,7 +417,8 @@ side conditions, implementing modules, and regression examples.
 - **Summary:** A degree-aware multiplier inequality proves nonnegativity.
 - **Side conditions:** First-order recurrence, base degree, multiplier bound, and base.
 - **Module:** `RealRooted.Tactic.RowInterlacing`
-- **Regression examples:** `RealRooted.Tactic.Examples.RowNonnegative`
+- **Regression examples:** `RealRooted.Tactic.Examples.RowNonnegative`,
+  `RealRooted.Tactic.Examples.RowRegressions2313`
 
 ## `recurrence`
 

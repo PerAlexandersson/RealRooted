@@ -1,0 +1,53 @@
+module
+
+public import RealRooted.Basic
+import RealRooted.Tactic.RowInterlacing
+
+/-!
+# Lost row-route regressions
+
+These downstream-shaped rows exercise coefficient nonnegativity inside the three-term and
+first-order derivative interlacing routes.
+-/
+
+@[expose] public section
+
+open Polynomial
+
+namespace RealRooted.Tactic.Examples.RowRegressions2313
+
+noncomputable section
+
+/-- A three-term row whose interlacing route needs nonnegative coefficients by induction. -/
+def classTwoRows : ℕ → ℝ[X]
+  | 0 => 2
+  | 1 => 3 + 3 * X
+  | 2 => 2 + 14 * X + 2 * X ^ 2
+  | n + 3 => (1 + X) * classTwoRows (n + 2) + 3 * X * classTwoRows (n + 1)
+
+/-- Consecutive rows of `classTwoRows` interlace by the plain row tactic. -/
+theorem classTwoRows_interlaces (n : ℕ) :
+    Interlaces (classTwoRows n) (classTwoRows (n + 1)) := by
+  rr_row_interlaces
+
+/-- A first-order derivative row with a rational quadratic derivative multiplier. -/
+def classOneRows : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 =>
+      (C ((1 / ((-1 / 2) * (n : ℝ) + (-1 / 2) * (2 + (n : ℝ)) ^ 2)) *
+            (-5 / 2 + -1 * (n : ℝ))) * X +
+          C ((1 / ((-1 / 2) * (n : ℝ) + (-1 / 2) * (2 + (n : ℝ)) ^ 2)) *
+            (5 / 2 + (n : ℝ))) * X ^ 2) *
+        (classOneRows n).derivative +
+      (C 1 +
+          C ((1 / ((-1 / 2) * (n : ℝ) + (-1 / 2) * (2 + (n : ℝ)) ^ 2)) *
+            (-2 + (-3 / 2) * (2 + (n : ℝ)) ^ 2 + (-1 / 2) * (n : ℝ))) * X) *
+        classOneRows n
+
+/-- Consecutive rows of `classOneRows` interlace by the plain row tactic. -/
+theorem classOneRows_interlaces (n : ℕ) :
+    Interlaces (classOneRows n) (classOneRows (n + 1)) := by
+  rr_row_interlaces
+
+end
+end RealRooted.Tactic.Examples.RowRegressions2313
