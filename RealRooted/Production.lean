@@ -1935,6 +1935,7 @@ public import RealRooted.DerivativeRecurrence.Evaluation
 public import RealRooted.ThreeTermRecurrence.ShiftedChebyshevFamily
 public import RealRooted.ProductSequence.BinomialDerivativeFamily
 public import RealRooted.BasisTransform.AppellTranslationRigidity
+public import RealRooted.ThreeTermRecurrence.ShiftedChebyshevRootRegions
 
 /-!
 # RealRooted production umbrella
