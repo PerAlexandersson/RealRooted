@@ -76,6 +76,19 @@ theorem basisTransform_smul (B : ℕ → R[X]) (a : R) (p : R[X]) :
   · simp [Polynomial.sum_def, Finset.mul_sum, mul_assoc]
   · simp
 
+/-- Composition of two polynomial basis transforms is the basis transform
+whose `n`th basis element is the outer transform of the inner one. -/
+theorem basisTransform_basisTransform (B D : ℕ → R[X]) (p : R[X]) :
+    basisTransform B (basisTransform D p) =
+      basisTransform (fun n => basisTransform B (D n)) p := by
+  induction p using Polynomial.induction_on' with
+  | add p q hp hq =>
+      simp only [basisTransform_add, hp, hq]
+  | monomial n a =>
+      rw [basisTransform_monomial, basisTransform_monomial,
+        show C a * D n = a • D n by rw [smul_eq_C_mul],
+        basisTransform_smul]
+
 /-- `basisTransform B` as an `R`-linear map. -/
 def basisTransformₗ (B : ℕ → R[X]) : R[X] →ₗ[R] R[X] where
   toFun := basisTransform B
