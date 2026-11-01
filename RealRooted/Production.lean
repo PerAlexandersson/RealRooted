@@ -1882,9 +1882,17 @@ public import RealRooted.PolynomialValueEulerNumerator.Interlacing
 public import RealRooted.HlavacekSolus.CubicalShelling
 public import RealRooted.ProductSequence.FixedDerivative
 public import RealRooted.Wronskian.OdeRootBound
+public import RealRooted.BasisTransform.AppellRigidity
+public import RealRooted.BasisTransform.DifferentialOperatorMaps
+public import RealRooted.BasisTransform.EventuallyGeometric
+public import RealRooted.BasisTransform.OrderTwoPF
+public import RealRooted.Hermite.ImaginaryCentralDifference
+public import RealRooted.Recurrence.ReciprocalFactorial
 public import RealRooted.FiniteFreeAdditive.FiniteDegreeTests
 public import RealRooted.MaWang.EndpointTwoSided
 public import RealRooted.MaWang.EndpointRecurrence
+public import RealRooted.BasisTransform.PolynomialSemigroups
+public import RealRooted.Hermite.BesselOperatorFamily
 public import RealRooted.FiniteFreeAdditive.FiniteDegreeOrderedTests
 public import RealRooted.Wronskian.OdePropagation
 public import RealRooted.Transforms.RationalSubstitution
