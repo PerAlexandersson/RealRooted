@@ -1925,6 +1925,7 @@ public import RealRooted.Derivative.PowerShift
 public import RealRooted.CombinatorialExamples.EvenBinomPerturbation
 public import RealRooted.EulerOperator.CoupledInsertion
 public import RealRooted.Jacobi.CoefficientFamily
+public import RealRooted.NarayanaTransformation.ReflectedNarayanaGamma
 
 /-!
 # RealRooted production umbrella
