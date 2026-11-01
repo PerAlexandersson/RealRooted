@@ -1999,3 +1999,5 @@ public import RealRooted.Jacobi.ParameterShifts
 public import RealRooted.CombinatorialExamples.EvenBinomChebyshevTransport
 public import RealRooted.Recurrence.ResidueSubsequence
 public import RealRooted.Interlacing.ConstantPrefixFixedDelay
+public import RealRooted.CombinatorialExamples.TouchardTransforms
+public import RealRooted.DerivativeRecurrence.Evaluation
