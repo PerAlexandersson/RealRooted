@@ -1894,8 +1894,11 @@ public import RealRooted.MaWang.EndpointRecurrence
 public import RealRooted.BasisTransform.PolynomialSemigroups
 public import RealRooted.Hermite.BesselOperatorFamily
 public import RealRooted.FiniteFreeAdditive.FiniteDegreeOrderedTests
+public import RealRooted.MaWang.RootSignSuccessor
 public import RealRooted.Wronskian.OdePropagation
 public import RealRooted.BasisTransform.TranslationLahPositiveMeasure
+public import RealRooted.FiniteFreeAdditive.FiniteDegreeCompanions
+public import RealRooted.FiniteFreeAdditive.FiniteDegreeCompanionCone
 public import RealRooted.Interlacing.SecondOrderClassification
 public import RealRooted.Transforms.RationalSubstitution
 public import RealRooted.Interlacing.SecondOrderPreservation
