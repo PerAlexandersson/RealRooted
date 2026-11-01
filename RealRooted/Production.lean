@@ -1908,6 +1908,7 @@ public import RealRooted.ClassicalHurwitzMatrix.Stability.BinomialPerturbation
 public import RealRooted.BasisTransform.LimitingAppell
 public import RealRooted.BasisTransform.IntervalBasisMaps
 public import RealRooted.Interlacing.SecondOrderIff
+public import RealRooted.Interlacing.SecondOrderNecessity
 
 /-!
 # RealRooted production umbrella
