@@ -134,20 +134,53 @@ elab "rr_row_eval_sign" : tactic => withMainContext do
 of `RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult`, for `A n`, `B n` of degree at most
 two: split off `i = 0, 1, 2`, where the coefficients beyond the degree vanish. -/
 private def multiplierGoal : TacticM Unit := do
+  let coeffs ← `(tactic| simp only [
+    Polynomial.coeff_add, Polynomial.coeff_sub, Polynomial.coeff_neg,
+    Polynomial.coeff_C_mul, Polynomial.coeff_mul_C, Polynomial.coeff_X_pow,
+    Polynomial.coeff_X, Polynomial.coeff_C, Polynomial.coeff_one,
+    Polynomial.coeff_ofNat_mul, Polynomial.coeff_mul_ofNat,
+    Polynomial.coeff_ofNat_zero, Polynomial.coeff_ofNat_succ, Polynomial.coeff_zero,
+    neg_mul, one_mul])
+  let finish ← `(tactic| (
+    rcases i with _ | _ | _ | i <;> (
+      $coeffs:tactic
+      push_cast
+      try norm_num
+      first | done | positivity | nlinarith | rr_row_field | (ring_nf; rr_row_field))))
+  let sharedNegativeDenominator ← `(tactic| (
+    rcases i with _ | _ | _ | i
+    · apply add_nonneg
+      · apply mul_nonneg
+        · $coeffs:tactic
+          push_cast
+          rr_row_field
+        · exact Nat.cast_nonneg j
+      · $coeffs:tactic
+        push_cast
+        first | positivity | rr_row_field
+    · $coeffs:tactic
+      push_cast
+      try norm_num
+      have hjn : (j : ℝ) ≤ (n : ℝ) := by nlinarith [hj']
+      have hnj : 0 ≤ (n : ℝ) * ((n : ℝ) - (j : ℝ)) :=
+        mul_nonneg (Nat.cast_nonneg n) (sub_nonneg.mpr hjn)
+      nth_rewrite 1 [mul_assoc]
+      rw [← mul_add]
+      apply mul_nonneg_of_nonpos_of_nonpos
+      · rr_row_field
+      · nlinarith
+    · $coeffs:tactic
+      norm_num
+    · $coeffs:tactic
+      norm_num))
   evalTactic (← `(tactic| (
     intro n i j hj
     have hj' : ((j : ℕ) : ℝ) ≤ _ := Nat.cast_le.mpr hj
     push_cast at hj'
-    ring_nf
-    rcases i with _ | _ | _ | i <;> (
-      simp only [Polynomial.coeff_add, Polynomial.coeff_sub, Polynomial.coeff_neg,
-        Polynomial.coeff_C_mul, Polynomial.coeff_mul_C, Polynomial.coeff_X_pow,
-        Polynomial.coeff_X, Polynomial.coeff_C, Polynomial.coeff_one,
-        Polynomial.coeff_ofNat_mul, Polynomial.coeff_mul_ofNat, Polynomial.coeff_ofNat_zero,
-        Polynomial.coeff_ofNat_succ, Polynomial.coeff_zero, neg_mul, one_mul]
-      push_cast
-      try norm_num
-      first | done | positivity | nlinarith | rr_row_field))))
+    first
+    | (ring_nf; $finish:tactic)
+    | $finish:tactic
+    | $sharedNegativeDenominator:tactic)))
 
 /-- Close `A.coeff 0 ≥ 0` after a product in the coefficient has been normalized. -/
 private def constantCoeffGoal : TacticM Unit := do
