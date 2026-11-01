@@ -1929,6 +1929,7 @@ public import RealRooted.NarayanaTransformation.ReflectedNarayanaGamma
 public import RealRooted.Jacobi.ParameterShifts
 public import RealRooted.CombinatorialExamples.EvenBinomChebyshevTransport
 public import RealRooted.Recurrence.ResidueSubsequence
+public import RealRooted.Interlacing.ConstantPrefixFixedDelay
 
 /-!
 # RealRooted production umbrella
