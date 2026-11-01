@@ -1964,5 +1964,7 @@ public import RealRooted.BasisTransform.PolynomialSemigroups
 public import RealRooted.Hermite.BesselOperatorFamily
 public import RealRooted.FiniteFreeAdditive.FiniteDegreeOrderedTests
 public import RealRooted.Wronskian.OdePropagation
+public import RealRooted.Interlacing.SecondOrderClassification
 public import RealRooted.Transforms.RationalSubstitution
 public import RealRooted.Transforms.RationalSubstitutionDerivative
+public import RealRooted.Interlacing.SecondOrderPreservation
