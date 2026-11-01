@@ -1966,4 +1966,6 @@ public import RealRooted.FiniteFreeAdditive.FiniteDegreeOrderedTests
 public import RealRooted.Wronskian.OdePropagation
 public import RealRooted.FiniteFreeAdditive.FiniteDegreeCompanions
 public import RealRooted.FiniteFreeAdditive.FiniteDegreeCompanionCone
+public import RealRooted.Interlacing.SecondOrderClassification
 public import RealRooted.Transforms.RationalSubstitution
+public import RealRooted.Interlacing.SecondOrderPreservation
