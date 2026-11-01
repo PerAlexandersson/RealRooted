@@ -1914,6 +1914,7 @@ public import RealRooted.MaWang.GrowingZeroMultiplicity
 public import RealRooted.Recurrence.CubicTransition
 public import RealRooted.CombinatorialExamples.PathDerivativeImages
 public import RealRooted.Jacobi.NegativeIntegerEndpoint
+public import RealRooted.Graph.IndependencePolynomial.SimplicialCliqueDeletion
 
 /-!
 # RealRooted production umbrella
