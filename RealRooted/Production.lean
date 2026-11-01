@@ -1940,6 +1940,7 @@ public import RealRooted.Interlacing.QuadraticDifferentialOrbit
 public import RealRooted.BrandenLeite.PFFactorRenewal
 public import RealRooted.VeroneseRecognition.Affine
 public import RealRooted.SymmetricDecomposition.EulerFPolynomial
+public import RealRooted.Laguerre.GeneralizedBell
 
 /-!
 # RealRooted production umbrella
