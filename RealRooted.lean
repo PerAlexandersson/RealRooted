@@ -1960,5 +1960,7 @@ public import RealRooted.Recurrence.ReciprocalFactorial
 public import RealRooted.FiniteFreeAdditive.FiniteDegreeTests
 public import RealRooted.MaWang.EndpointTwoSided
 public import RealRooted.MaWang.EndpointRecurrence
+public import RealRooted.BasisTransform.PolynomialSemigroups
+public import RealRooted.Hermite.BesselOperatorFamily
 public import RealRooted.FiniteFreeAdditive.FiniteDegreeOrderedTests
 public import RealRooted.Wronskian.OdePropagation
