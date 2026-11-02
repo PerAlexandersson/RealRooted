@@ -43,6 +43,8 @@ public import RealRooted.Tactic.Examples.RowFastFail
 public import RealRooted.Tactic.Examples.RowFixtures
 public import RealRooted.Tactic.Examples.RowGeneral
 public import RealRooted.Tactic.Examples.RowInterlacing
+public import RealRooted.Tactic.Examples.RowInterlacingPowers
+public import RealRooted.Tactic.Examples.RowInterlacingProducts
 public import RealRooted.Tactic.Examples.RowModelA080721
 public import RealRooted.Tactic.Examples.RowModelFamilies
 public import RealRooted.Tactic.Examples.RowModelJensenFamilies

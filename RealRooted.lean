@@ -2014,3 +2014,5 @@ public import RealRooted.Laguerre.GeneralizedBell
 public import RealRooted.Graph.IndependencePolynomial.PathSquareMatching
 public import RealRooted.Tactic.Examples.RowRegressions2313
 public import RealRooted.Tactic.Ring
+public import RealRooted.Tactic.Examples.RowInterlacingPowers
+public import RealRooted.Tactic.Examples.RowInterlacingProducts
