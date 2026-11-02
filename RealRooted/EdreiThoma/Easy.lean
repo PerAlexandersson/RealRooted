@@ -185,12 +185,6 @@ private theorem denominatorPrefix_eq_prod_geometricFactor (β : ℕ → ℝ) (N 
   ext n
   simp [supersymmetricDenominatorFactor, geometricFactor]
 
-private theorem summable_abs_of_summable_add {α β : ℕ → ℝ} (hα : ∀ i, 0 ≤ α i)
-    (hβ : ∀ i, 0 ≤ β i) (hsum : Summable fun i => α i + β i) :
-    Summable (fun i => |α i|) ∧ Summable (fun i => |β i|) :=
-  ⟨summable_abs_iff.mpr (hsum.of_nonneg_of_le hα fun i => le_add_of_nonneg_right (hβ i)),
-    summable_abs_iff.mpr (hsum.of_nonneg_of_le hβ fun i => le_add_of_nonneg_left (hα i))⟩
-
 private theorem tprod_one_sub_eq (β : ℕ → ℝ) :
     (∏' i, (1 - PowerSeries.C (β i) * PowerSeries.X)) =
       linearFactorProduct fun i => -β i := by

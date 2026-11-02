@@ -161,26 +161,6 @@ theorem secondOrder_exists_gapPoint {p : ℝ[X]}
     linarith
   exact ⟨x, hxneg, by simpa [q] using hxq, hxnotp, hcount, hratio⟩
 
-/-- Splitting a list by a predicate does not change the sum of a mapped
-function. -/
-private theorem sum_map_filter_add_sum_map_filter_not
-    (l : List ℝ) (f : ℝ → ℝ) (P : ℝ → Prop) [DecidablePred P] :
-    ((l.filter P).map f).sum +
-        ((l.filter fun x ↦ !decide (P x)).map f).sum =
-      (l.map f).sum := by
-  induction l with
-  | nil => simp
-  | cons x xs ih =>
-      by_cases hx : P x
-      · rw [List.filter_cons_of_pos (by simp [hx]),
-          List.filter_cons_of_neg (by simp [hx])]
-        simp only [List.map_cons, List.sum_cons]
-        linarith
-      · rw [List.filter_cons_of_neg (by simp [hx]),
-          List.filter_cons_of_pos (by simp [hx])]
-        simp only [List.map_cons, List.sum_cons]
-        linarith
-
 /-- At a gap point with `j` roots to the right, the actual root-sum terms
 satisfy the two sharp square-sum bounds `j ≤ q` and `s² ≤ jq`.
 
@@ -251,8 +231,8 @@ theorem secondOrder_gap_squareSum_bound {p : ℝ[X]} {x v : ℝ} {j : ℕ}
     linarith
   have hsum : positive.sum + negative.sum = -v * x := by
     change ((roots.filter fun r ↦ x < r).map fun r ↦ x / (x - r)).sum +
-        ((roots.filter fun r ↦ !decide (x < r)).map fun r ↦ x / (x - r)).sum = _
-    rw [sum_map_filter_add_sum_map_filter_not]
+        ((roots.filter fun r ↦ ¬x < r).map fun r ↦ x / (x - r)).sum = _
+    rw [List.sum_map_filter_add_sum_map_filter_not]
     have hall : (roots.map fun r ↦ x / (x - r)).sum =
         (p.roots.map fun r ↦ x / (x - r)).sum := by
       have h := congrArg

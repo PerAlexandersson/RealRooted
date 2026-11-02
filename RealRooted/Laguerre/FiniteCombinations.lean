@@ -66,7 +66,9 @@ theorem laguerreCombinationOne_comp_neg_X
   norm_num
   ring
 
-private theorem hasNonnegCoeffs_laguerreRaisingStep
+/-- A Laguerre raising step preserves coefficientwise nonnegativity when its parameter is
+nonnegative. -/
+theorem HasNonnegCoeffs.laguerreRaisingStep
     {a : ℝ} (ha : 0 ≤ a) {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
     HasNonnegCoeffs (laguerreRaisingStep a p) := by
   intro k
@@ -134,7 +136,7 @@ theorem generalizedLaguerre_sub_prev_strict_package
   rw [hstep]
   refine ⟨hpair.1, hpair.2, ?_⟩
   apply roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne
-    (hasNonnegCoeffs_laguerreRaisingStep ha.le
+    (HasNonnegCoeffs.laguerreRaisingStep ha.le
       (generalizedLaguerre_hasNonnegCoeffs (n - 1) hα.le))
   have hp0 : p.coeff 0 ≠ 0 := by
     dsimp [p]

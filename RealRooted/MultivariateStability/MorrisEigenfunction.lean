@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.MultivariateStability.MorrisDFlow
+import RealRooted.Mathlib.Analysis.Normed.Algebra.Exponential
 import RealRooted.Mathlib.Analysis.Normed.Operator.TriangularExp
 public import Mathlib.Data.Finset.Sort
 public import Mathlib.Order.Extension.Linear
@@ -591,34 +592,6 @@ private theorem toMatrix_diag_eq_of_isTriangularOn {n : ℕ} {E : Type*}
     simpa [map_sub, map_smul, Module.Basis.repr_self] using hzero
   linarith
 
-private theorem exp_apply_of_eigenvector {E : Type*}
-    [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
-    (T : E →L[ℝ] E) (x : E) (c : ℝ) (hx : T x = c • x) :
-    NormedSpace.exp T x = Real.exp c • x := by
-  have hpow : ∀ n : ℕ, (T ^ n) x = c ^ n • x := by
-    intro n
-    induction n with
-    | zero => simp
-    | succ n ih =>
-        rw [pow_succ', mul_apply_eq_comp, ih, map_smul, hx,
-          pow_succ, smul_smul]
-  have hs : Summable fun n : ℕ => (n.factorial : ℝ)⁻¹ • T ^ n := by
-    simpa only [NormedSpace.expSeries_apply_eq] using
-      NormedSpace.expSeries_summable T
-  rw [NormedSpace.exp_eq_tsum ℝ]
-  change (∑' n : ℕ, (n.factorial : ℝ)⁻¹ • T ^ n) x = _
-  rw [show (∑' n : ℕ, (n.factorial : ℝ)⁻¹ • T ^ n) x =
-      ∑' n : ℕ, ((n.factorial : ℝ)⁻¹ • T ^ n) x by
-    simpa using (ContinuousLinearMap.apply ℝ E x).map_tsum hs]
-  simp_rw [smul_apply, hpow, smul_smul]
-  have hc : Summable fun n : ℕ => (n.factorial : ℝ)⁻¹ * c ^ n := by
-    simpa [div_eq_mul_inv, mul_comm] using
-      Real.summable_pow_div_factorial c
-  rw [hc.tsum_smul_const x]
-  congr 1
-  rw [Real.exp_eq_exp_ℝ, NormedSpace.exp_eq_tsum ℝ]
-  congr
-
 private theorem LinearMap.IsTriangularOn.conj_equiv {n : ℕ}
     {E F : Type*} [AddCommGroup E] [Module ℝ E]
     [AddCommGroup F] [Module ℝ F] (b : Module.Basis (Fin (n + 1)) ℝ E)
@@ -929,7 +902,7 @@ private theorem eq_morrisDownset_of_eigen_topCoeff_of_tendsto {N q : ℕ}
         LinearMap.comp_apply] using congrArg e hQrestrict
     rw [show NormedSpace.exp (t • T) (e Q) =
         Real.exp (t * morrisEigenvalue q lambda) • e Q by
-      apply exp_apply_of_eigenvector
+      apply ContinuousLinearMap.exp_apply_of_eigenvector
       simpa [smul_apply, smul_smul] using congrArg (t • ·) hQeigen]
     rw [smul_smul, ← Real.exp_add]
     ring_nf

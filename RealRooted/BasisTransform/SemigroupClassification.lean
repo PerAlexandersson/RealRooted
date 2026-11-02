@@ -17,23 +17,6 @@ noncomputable section
 
 namespace RealRooted
 
-private theorem raySemigroupBasis_euler_identity (a b t : ℝ) (n : ℕ) :
-    C (n : ℝ) * raySemigroupBasis a b t n =
-      (X + C (t * a)) * (raySemigroupBasis a b t n).derivative +
-        C (b * t) * X * (raySemigroupBasis a b t n).derivative.derivative := by
-  have h := raySemigroupTransform_X_mul_derivative a b t (X ^ n)
-  have htheta : X * (X ^ n : ℝ[X]).derivative = C (n : ℝ) * X ^ n := by
-    cases n with
-    | zero => simp
-    | succ n =>
-        rw [derivative_X_pow, Nat.cast_add, Nat.cast_one]
-        simp only [Nat.add_sub_cancel, map_add, map_one]
-        ring
-  rw [htheta] at h
-  rw [show C (n : ℝ) * X ^ n = (n : ℝ) • X ^ n by
-    rw [Polynomial.smul_eq_C_mul], raySemigroupTransform_smul] at h
-  simpa using h
-
 private theorem raySemigroupTransform_basis_add (a b s t : ℝ) (n : ℕ) :
     raySemigroupTransform a b s (raySemigroupBasis a b t n) =
       raySemigroupBasis a b (s + t) n := by
@@ -58,7 +41,7 @@ private theorem raySemigroupTransform_basis_add (a b s t : ℝ) (n : ℕ) :
         ring]
       rw [raySemigroupTransform_smul, raySemigroupTransform_X_mul_derivative, ih]
       rw [raySemigroupBasis_succ]
-      have heuler := raySemigroupBasis_euler_identity a b (s + t) n
+      have heuler := raySemigroupBasis_differential a b (s + t) n
       simp only [map_mul, map_add, map_natCast] at heuler ⊢
       linear_combination -(C b * C s) * heuler
 

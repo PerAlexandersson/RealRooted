@@ -514,18 +514,12 @@ theorem orderTwoBasis_eq_comp (a b c s : ℝ) (n : ℕ) :
       simp only [orderTwoBasis, add_comp, mul_comp, C_comp, X_comp, ih₀, ih₁,
         map_one, map_zero, one_mul, add_zero]
 
-private lemma basisTransform_comp_basis (B : ℕ → ℝ[X]) (q p : ℝ[X]) :
-    basisTransform (fun n => (B n).comp q) p = (basisTransform B p).comp q := by
-  induction p using Polynomial.induction_on' with
-  | add p r hp hr => simp only [basisTransform_add, add_comp, hp, hr]
-  | monomial n z => simp [basisTransform_monomial, mul_comp]
-
 /-- The basis transform itself commutes with the affine substitution relating
 the general basis to its unshifted normalization. -/
 theorem basisTransform_orderTwoBasis_eq_comp (a b c s : ℝ) (p : ℝ[X]) :
     basisTransform (orderTwoBasis a b c s) p =
       (basisTransform (orderTwoBasis a 1 0 s) p).comp (C b * X + C c) := by
-  rw [← basisTransform_comp_basis]
+  rw [← basisTransform_comp]
   congr 2
   funext n
   exact orderTwoBasis_eq_comp a b c s n

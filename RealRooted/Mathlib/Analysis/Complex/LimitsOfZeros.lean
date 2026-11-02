@@ -157,7 +157,9 @@ end Complex
 
 namespace RealRooted
 
-private theorem two_step_closed_form (w : ℕ → ℂ) (A B u v : ℂ)
+/-- Closed form of a recurrence `w (n + 2) = A * w (n + 1) + B * w n` whose characteristic
+polynomial has the distinct roots `u` and `v`. -/
+theorem eq_mul_pow_add_mul_pow_of_two_step (w : ℕ → ℂ) (A B u v : ℂ)
     (hrec : ∀ n, w (n + 2) = A * w (n + 1) + B * w n)
     (hsum : u + v = A) (hprod : u * v = -B) (huv : u ≠ v) :
     ∀ n, w n = (w 1 - v * w 0) / (u - v) * u ^ n +
@@ -224,7 +226,7 @@ theorem not_isLimitOfZeros_two_step_of_roots {A B U V u v : ℂ → ℂ}
   have hform (n : ℕ) (z : ℂ) (hz : z ∈ ball z₀ ρ) :
       W n z = αu z * u z ^ n + αv z * v z ^ n := by
     have hrz := hroots z hz
-    simpa [αu, αv, ← h0, ← h1] using two_step_closed_form
+    simpa [αu, αv, ← h0, ← h1] using eq_mul_pow_add_mul_pow_of_two_step
       (fun m => W m z) (A z) (B z) (u z) (v z)
         (fun m => hrec m z) hrz.1 hrz.2.1 hrz.2.2 n
   rcases lt_or_gt_of_ne hnorm with huv | hvu

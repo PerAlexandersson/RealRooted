@@ -29,35 +29,6 @@ namespace Differentiable
 
 open Complex
 
-private lemma count_le_divisor {ι : Type*} {f : ℂ → ℂ} (hf : Differentiable ℂ f)
-    (h0 : f 0 ≠ 0)
-    {z : ι → ℂ} (hz : ∀ w : ℂ, analyticOrderAt f w = Set.encard {k | z k = w})
-    (s : Finset ι) (r : ℝ) :
-    ((s.filter (fun k => ‖z k‖ ≤ r)).card : ℤ) ≤
-      ∑ᶠ u, divisor f (Metric.closedBall 0 r) u := by
-  classical
-  have ha : AnalyticOnNhd ℂ f Set.univ := fun z _ => hf.analyticAt z
-  set D := divisor f (Metric.closedBall (0 : ℂ) r)
-  have hDnn : ∀ u, 0 ≤ D u := fun u => (ha.mono (Set.subset_univ _)).divisor_nonneg u
-  have hfin := D.finiteSupport (isCompact_closedBall 0 r)
-  set s' := s.filter (fun k => ‖z k‖ ≤ r)
-  set T := s'.image z
-  rw [Finset.card_eq_sum_card_image z s']
-  push_cast
-  calc ∑ b ∈ T, (({a ∈ s' | z a = b}.card : ℕ) : ℤ)
-      ≤ ∑ b ∈ T, D b := by
-        refine Finset.sum_le_sum fun b hb => ?_
-        obtain ⟨k, hk, rfl⟩ := Finset.mem_image.1 hb
-        refine le_trans ?_ (card_filter_eq_le_divisor hf h0 hz s (Finset.mem_filter.1 hk).2)
-        exact_mod_cast Finset.card_le_card
-          (Finset.filter_subset_filter _ (Finset.filter_subset _ _))
-    _ ≤ ∑ b ∈ T ∪ hfin.toFinset, D b :=
-        Finset.sum_le_sum_of_subset_of_nonneg Finset.subset_union_left (fun i _ _ => hDnn i)
-    _ = ∑ᶠ u, D u := by
-        rw [finsum_eq_sum_of_support_subset (s := T ∪ hfin.toFinset)]
-        intro u hu
-        simp only [Finset.coe_union, Set.Finite.coe_toFinset]
-        exact Or.inr hu
 private theorem exists_entire_quotient {f P : ℂ → ℂ} (hf : Differentiable ℂ f) (hP :
   Differentiable ℂ P)
     (hf0 : f 0 ≠ 0) (hord : ∀ w, analyticOrderAt f w = analyticOrderAt P w) :

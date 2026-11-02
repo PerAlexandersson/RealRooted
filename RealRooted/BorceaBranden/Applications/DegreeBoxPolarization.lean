@@ -106,54 +106,6 @@ end RealRooted.BorceaBranden
 
 namespace MvPolynomial
 
-private theorem sumAlgEquiv_monomial
-    {S₁ S₂ R : Type*} [CommSemiring R]
-    (a : S₁ →₀ ℕ) (b : S₂ →₀ ℕ) (r : R) :
-    MvPolynomial.sumAlgEquiv R S₁ S₂
-        (MvPolynomial.monomial (a.sumElim b) r) =
-      MvPolynomial.monomial a (MvPolynomial.monomial b r) := by
-  classical
-  rw [MvPolynomial.monomial_eq, MvPolynomial.monomial_eq,
-    MvPolynomial.monomial_eq, Finsupp.prod_sumElim]
-  simp only [map_mul, MvPolynomial.sumAlgEquiv_C_inl]
-  simp [Finsupp.prod]
-  simp only [← map_pow, ← map_prod]
-  simp only [MvPolynomial.prod_X_pow_eq_monomial]
-  ring
-
-/-- Extracting an outer and then an inner coefficient through `sumAlgEquiv`
-is the same as extracting the combined exponent from the original polynomial. -/
-theorem coeff_coeff_sumAlgEquiv
-    {S₁ S₂ R : Type*} [CommSemiring R]
-    (P : MvPolynomial (S₁ ⊕ S₂) R)
-    (a : S₁ →₀ ℕ) (b : S₂ →₀ ℕ) :
-    ((MvPolynomial.sumAlgEquiv R S₁ S₂ P).coeff a).coeff b =
-      P.coeff (a.sumElim b) := by
-  classical
-  induction P using MvPolynomial.induction_on' with
-  | add p q hp hq =>
-      simp [hp, hq]
-  | monomial d r =>
-      let d₁ : S₁ →₀ ℕ :=
-        Finsupp.comapDomain Sum.inl d Sum.inl_injective.injOn
-      let d₂ : S₂ →₀ ℕ :=
-        Finsupp.comapDomain Sum.inr d Sum.inr_injective.injOn
-      have hd : d₁.sumElim d₂ = d :=
-        Finsupp.comapDomain_sumElim_comapDomain d
-      rw [← hd, sumAlgEquiv_monomial]
-      have hsum : d₁.sumElim d₂ = a.sumElim b ↔ d₁ = a ∧ d₂ = b := by
-        constructor
-        · exact fun h => ⟨Finsupp.ext fun i => DFunLike.congr_fun h (Sum.inl i),
-            Finsupp.ext fun i => DFunLike.congr_fun h (Sum.inr i)⟩
-        · rintro ⟨rfl, rfl⟩
-          rfl
-      by_cases hda : d₁ = a
-      · have hright : a.sumElim d₂ = a.sumElim b ↔ d₂ = b :=
-          ⟨fun h => Finsupp.ext fun i => DFunLike.congr_fun h (Sum.inr i),
-            congrArg (Finsupp.sumElim a)⟩
-        simp [MvPolynomial.coeff_monomial, hda, hright]
-      · simp [MvPolynomial.coeff_monomial, hsum, hda]
-
 /-- The coefficient of source degree `k`, after viewing a polynomial in
 `tau ⊕ Fin 1` as a polynomial in the single source variable with coefficients
 in the output-variable ring `MvPolynomial tau ℂ`. -/

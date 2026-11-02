@@ -37,16 +37,6 @@ namespace RealRooted.MaWang
 def endpointStep (c a b : ℝ) (p : ℝ[X]) : ℝ[X] :=
   (C a * X + C b) * p + X * (X + C c) * p.derivative
 
-private lemma natDegree_affine_le (a b : ℝ) :
-    (C a * X + C b : ℝ[X]).natDegree ≤ 1 := by
-  apply natDegree_add_le_of_degree_le
-  · calc
-      (C a * X : ℝ[X]).natDegree ≤ (C a).natDegree + X.natDegree := natDegree_mul_le
-      _ ≤ 0 + 1 := Nat.add_le_add (by rw [natDegree_C]) (by simp)
-      _ = 1 := by simp
-  · rw [natDegree_C]
-    simp
-
 private lemma natDegree_endpointQuadratic_le (c : ℝ) :
     (X * (X + C c) : ℝ[X]).natDegree ≤ 2 := by
   calc
@@ -60,7 +50,7 @@ private lemma endpointStep_degree_le (c a b : ℝ) (p : ℝ[X]) :
     (endpointStep c a b p).natDegree ≤ p.natDegree + 1 := by
   apply natDegree_add_le_of_degree_le
   · exact natDegree_mul_iterate_derivative_le (d := 1) (j := 0)
-      (natDegree_affine_le a b) le_rfl
+      (natDegree_linear_le (a := a) (b := b)) le_rfl
   · exact natDegree_mul_iterate_derivative_le (d := 1) (j := 1)
       (natDegree_endpointQuadratic_le c) le_rfl
 
@@ -70,7 +60,7 @@ private lemma endpointStep_coeff_succ (c a b : ℝ) (p : ℝ[X]) :
   rw [endpointStep, coeff_add]
   have h0 := coeff_mul_iterate_derivative_of_natDegree_le
     (A := C a * X + C b) (p := p) (d := 1) (j := 0) (D := p.natDegree)
-    (natDegree_affine_le a b) le_rfl
+    (natDegree_linear_le (a := a) (b := b)) le_rfl
   have h1 := coeff_mul_iterate_derivative_of_natDegree_le
     (A := X * (X + C c)) (p := p) (d := 1) (j := 1) (D := p.natDegree)
     (natDegree_endpointQuadratic_le c) le_rfl

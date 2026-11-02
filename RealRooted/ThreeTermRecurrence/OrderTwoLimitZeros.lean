@@ -7,6 +7,7 @@ module
 
 public import RealRooted.Mathlib.Analysis.Complex.Hurwitz
 public import Mathlib.Algebra.Polynomial.Splits
+import RealRooted.Mathlib.Analysis.Complex.LimitsOfZeros
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.Basic
 import Mathlib.Analysis.RCLike.Sqrt
 import Mathlib.Analysis.Complex.OpenMapping
@@ -63,35 +64,6 @@ theorem exists_ball_analytic_square_root {D : ℂ → ℂ} {z₀ : ℂ}
   · simp [d, d₀, hd₀]
 
 end Complex
-
-private theorem two_step_closed_form (w : ℕ → ℂ) (A B u v : ℂ)
-    (hrec : ∀ n, w (n + 2) = A * w (n + 1) + B * w n)
-    (hsum : u + v = A) (hprod : u * v = -B) (huv : u ≠ v) :
-    ∀ n, w n = (w 1 - v * w 0) / (u - v) * u ^ n +
-      (u * w 0 - w 1) / (u - v) * v ^ n := by
-  have hden : u - v ≠ 0 := sub_ne_zero.mpr huv
-  have hrootu : u ^ 2 = A * u + B := by
-    rw [← hsum, ← neg_eq_iff_eq_neg.mpr hprod]
-    ring
-  have hrootv : v ^ 2 = A * v + B := by
-    rw [← hsum, ← neg_eq_iff_eq_neg.mpr hprod]
-    ring
-  intro n
-  induction n using Nat.twoStepInduction with
-  | zero =>
-      simp only [pow_zero, mul_one]
-      field_simp [hden]
-      ring
-  | one =>
-      simp only [pow_one]
-      field_simp [hden]
-      ring
-  | more n ih0 ih1 =>
-      rw [hrec, ih0, ih1]
-      simp only [pow_succ]
-      linear_combination
-        -((w 1 - v * w 0) / (u - v) * u ^ n) * hrootu -
-        ((u * w 0 - w 1) / (u - v) * v ^ n) * hrootv
 
 private theorem two_step_chebyshev_form (w : ℕ → ℂ) (A B t : ℂ)
     (ht : t ≠ 0) (htsq : t ^ 2 = -B)
@@ -449,7 +421,7 @@ theorem isLimitOfZeros_two_step_of_roots {A B U V u v : ℂ → ℂ}
   have hform (n : ℕ) (z : ℂ) (hz : z ∈ ball z₀ ρ) :
       W n z = αu z * u z ^ n + αv z * v z ^ n := by
     have hrz := hroots z hz
-    simpa [αu, αv, ← h0, ← h1] using two_step_closed_form
+    simpa [αu, αv, ← h0, ← h1] using eq_mul_pow_add_mul_pow_of_two_step
       (fun n => W n z) (A z) (B z) (u z) (v z)
         (fun n => hrec n z) hrz.1 hrz.2.1 hrz.2.2 n
   have htwo : Complex.IsLimitOfZeros
@@ -498,7 +470,7 @@ theorem isLimitOfZeros_two_step_of_roots_closure {A B U V u v : ℂ → ℂ}
   have hform (n : ℕ) (z : ℂ) (hz : z ∈ ball z₀ ρ) :
       W n z = αu z * u z ^ n + αv z * v z ^ n := by
     have hrz := hroots z hz
-    simpa [αu, αv, ← h0, ← h1] using two_step_closed_form
+    simpa [αu, αv, ← h0, ← h1] using eq_mul_pow_add_mul_pow_of_two_step
       (fun n => W n z) (A z) (B z) (u z) (v z)
         (fun n => hrec n z) hrz.1 hrz.2.1 hrz.2.2 n
   let α : Bool → ℂ → ℂ := fun k => if k then αu else αv

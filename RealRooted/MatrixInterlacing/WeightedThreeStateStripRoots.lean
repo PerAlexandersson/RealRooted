@@ -165,23 +165,6 @@ theorem weightedStripRow_hasPosLeadingCoeff {rho e : ℝ}
   rw [HasPosLeadingCoeff, leadingCoeff, weightedStripRow_natDegree hrho he n]
   exact (weightedStripRow_coeff_support hrho he n).1 (n / 2) le_rfl
 
-/-- Three initial cases and a three-step recurrence prove a statement for all
-natural indices. -/
-private theorem nat_threeStepInduction_local {motive : ℕ → Prop}
-    (zero : motive 0) (one : motive 1) (two : motive 2)
-    (more : ∀ n, motive n → motive (n + 1) → motive (n + 2) → motive (n + 3)) :
-    ∀ n, motive n := by
-  intro n
-  induction n using Nat.strong_induction_on with
-  | h n ih =>
-      rcases n with _ | n
-      · exact zero
-      rcases n with _ | n
-      · exact one
-      rcases n with _ | n
-      · exact two
-      exact more n (ih n (by lia)) (ih (n + 1) (by lia)) (ih (n + 2) (by lia))
-
 /-- A three-state middle coordinate with total `X`-weight `A` is a normalized
 strip row after the variable rescaling `X ↦ A X`. -/
 theorem weightedThreeState_P_eq_strip_comp {A B E alpha d : ℝ}
@@ -198,7 +181,7 @@ theorem weightedThreeState_P_eq_strip_comp {A B E alpha d : ℝ}
     rw [← mul_assoc, ← C_mul, hEA]
   have hscaleB : C (B / A - 1) * (C A * X) = C (B - A) * X := by
     rw [← mul_assoc, ← C_mul, hBA]
-  induction n using nat_threeStepInduction_local with
+  induction n using nat_threeStepInduction with
   | zero => simp [hp.1, hq.1]
   | one => simp [hp.2.1, hq.2.1]
   | two =>

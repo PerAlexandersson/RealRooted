@@ -108,22 +108,6 @@ private lemma coeff_brandenE_eq_fwdDiff (p : ℝ[X]) (k : ℕ) :
     repr_iterate_forwardDifference]
   simp [coeff_brandenE_eq_factorial_mul_repr]
 
-private lemma cayleyTransform_eq_finiteSum {p : ℝ[X]} {n : ℕ}
-    (hdeg : p.natDegree ≤ n) :
-    Polynomial.cayleyTransform n p =
-      ∑ k ∈ Finset.range (n + 1),
-        C (p.coeff k) * X ^ k * (1 - X) ^ (n - k) := by
-  rw [Polynomial.cayleyTransform,
-    Polynomial.homogenize_eq_sum_range_C_mul_X_pow hdeg]
-  simp only [map_sum, map_mul, map_pow, MvPolynomial.aeval_def,
-    MvPolynomial.eval₂_C]
-  apply Finset.sum_congr rfl
-  intro k hk
-  simp only [MvPolynomial.eval₂_X, Fin.isValue, Matrix.cons_val_zero,
-    Matrix.cons_val_one]
-  rw [← Polynomial.C_eq_algebraMap]
-  ring
-
 /-- The canonical Euler numerator is the degree-capped Cayley transform of
 Brändén's `E` transform.  Roots at `-1` are represented by the resulting
 degree drop rather than by an additional factor. -/
@@ -131,7 +115,7 @@ theorem polynomialValueEulerNumerator_eq_cayleyTransform_brandenE (p : ℝ[X]) :
     polynomialValueEulerNumerator p =
       Polynomial.cayleyTransform p.natDegree (brandenE p) := by
   rw [polynomialValueEulerNumerator, finiteEulerNumerator,
-    cayleyTransform_eq_finiteSum]
+    Polynomial.cayleyTransform_eq_sum]
   · apply Finset.sum_congr rfl
     intro k hk
     rw [coeff_brandenE_eq_fwdDiff]

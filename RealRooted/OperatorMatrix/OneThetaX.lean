@@ -680,22 +680,6 @@ private theorem isPFPolynomial_X_mul_add_right
   have hqp : Interl q (X * p) := (interl_iff_interl_X_mul hp hq).mp hpq
   simpa only [add_comm] using hq.add_of_interl hp.X_mul hqp
 
-private theorem interl_add_add_X_mul_add
-    {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
-    (hpq : Interl p q) :
-    Interl (p + q) (X * p + q) := by
-  have hpXp : Interl p (X * p) :=
-    (interl_iff_interl_X_mul hp hp).mp hp.interl_self
-  have hqXp : Interl q (X * p) := (interl_iff_interl_X_mul hp hq).mp hpq
-  have hpout : Interl p (X * p + q) :=
-    interl_add_right_of_common_left_of_nonneg hpXp hpq hp.X_mul.hasNonnegCoeffs
-      hq.hasNonnegCoeffs
-  have hqout : Interl q (X * p + q) :=
-    interl_add_right_of_common_left_of_nonneg hqXp hq.interl_self
-      hp.X_mul.hasNonnegCoeffs hq.hasNonnegCoeffs
-  exact interl_add_left_of_common_right_of_nonneg hpout hqout
-    hp.hasNonnegCoeffs hq.hasNonnegCoeffs
-
 private theorem interl_X_mul_add_X_mul_add_X_mul
     {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpq : Interl p q) :
@@ -749,7 +733,7 @@ theorem preservesOrderedPFPair_one_one_x_one :
     by simpa only [Letter.linearMap_x, Letter.linearMap_one] using
       isPFPolynomial_X_mul_add_right hp hq hpq,
     by simpa only [Letter.linearMap_x, Letter.linearMap_one] using
-      interl_add_add_X_mul_add hp hq hpq⟩
+      interl_add_X_mul_add_of_interl hp hq hpq⟩
 
 /-- The staircase block `(1,1)/(X,X)` preserves ordered PF pairs. -/
 theorem preservesOrderedPFPair_one_one_x_x :

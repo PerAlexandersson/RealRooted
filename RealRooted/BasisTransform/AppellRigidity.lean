@@ -559,7 +559,8 @@ theorem two_mul_coeff_one_appellCoefficient_two
   norm_num
   ring
 
-private theorem slope_nonneg_of_affine_nonneg_on_nonneg {A B : ℝ}
+/-- An affine function that is nonnegative on the nonnegative ray has nonnegative slope. -/
+theorem nonneg_of_affine_nonneg_on_nonneg {A B : ℝ}
     (h : ∀ r : ℝ, 0 ≤ r → 0 ≤ A + B * r) : 0 ≤ B := by
   by_contra hB
   have hBneg : B < 0 := lt_of_not_ge hB
@@ -829,7 +830,7 @@ theorem two_mul_coeff_one_appellCoefficient_two_nonneg
     exact (isRealRooted_comp_X_add_C hnonzero himage (-r)).2
   have hslope : 0 ≤ -2 *
       (2 * (P 1).coeff 0 - (P 2).coeff 1) := by
-    apply slope_nonneg_of_affine_nonneg_on_nonneg
+    apply nonneg_of_affine_nonneg_on_nonneg
       (A := (P 2).coeff 1 ^ 2 - 2 * (P 2).coeff 0)
     intro r hr
     have h := coeff_sq_sub_two_mul_nonneg

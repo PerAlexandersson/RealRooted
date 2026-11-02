@@ -57,27 +57,11 @@ end RealRooted
 
 namespace RealRooted.HlavacekSolus
 
-private lemma cayleyTransform_eq_sum {p : ℝ[X]} {n : ℕ}
-    (hdeg : p.natDegree ≤ n) :
-    Polynomial.cayleyTransform n p =
-      ∑ k ∈ Finset.range (n + 1),
-        C (p.coeff k) * X ^ k * (1 - X) ^ (n - k) := by
-  rw [Polynomial.cayleyTransform,
-    Polynomial.homogenize_eq_sum_range_C_mul_X_pow hdeg]
-  simp only [map_sum, map_mul, map_pow, MvPolynomial.aeval_def,
-    MvPolynomial.eval₂_C]
-  apply Finset.sum_congr rfl
-  intro k hk
-  simp only [MvPolynomial.eval₂_X, Fin.isValue, Matrix.cons_val_zero,
-    Matrix.cons_val_one]
-  rw [← Polynomial.C_eq_algebraMap]
-  ring
-
 private lemma eval_cayleyTransform {p : ℝ[X]} {n : ℕ}
     (hdeg : p.natDegree ≤ n) {x : ℝ} (hx : 1 - x ≠ 0) :
     (Polynomial.cayleyTransform n p).eval x =
       (1 - x) ^ n * p.eval (x / (1 - x)) := by
-  rw [cayleyTransform_eq_sum hdeg, eval_finsetSum,
+  rw [Polynomial.cayleyTransform_eq_sum hdeg, eval_finsetSum,
     p.eval_eq_sum_range' (n := n + 1) (by lia), Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro k hk
@@ -89,7 +73,7 @@ private lemma eval_cayleyTransform {p : ℝ[X]} {n : ℕ}
 private lemma natDegree_cayleyTransform_le {p : ℝ[X]} {n : ℕ}
     (hdeg : p.natDegree ≤ n) :
     (Polynomial.cayleyTransform n p).natDegree ≤ n := by
-  rw [cayleyTransform_eq_sum hdeg]
+  rw [Polynomial.cayleyTransform_eq_sum hdeg]
   apply Polynomial.natDegree_sum_le_of_forall_le
   intro k hk
   have hkn : k ≤ n := by simpa using Finset.mem_range.mp hk

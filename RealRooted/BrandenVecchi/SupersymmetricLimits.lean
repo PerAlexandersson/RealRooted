@@ -335,16 +335,13 @@ theorem aswEdreiTruncationSeries_eq
     exponentialTruncation, supersymmetricNumeratorPrefix,
     supersymmetricDenominatorPrefix, supersymmetricNumeratorFactor]
 
-private theorem summable_parameters_of_sum
-    {alpha beta : ℕ → ℝ} (halpha : ∀ i, 0 ≤ alpha i)
-    (hbeta : ∀ i, 0 ≤ beta i)
-    (hsum : Summable fun i => alpha i + beta i) :
-    Summable (fun i => |alpha i|) ∧ Summable (fun i => |beta i|) := by
-  have ha : Summable alpha := hsum.of_nonneg_of_le halpha
-    (fun i => le_add_of_nonneg_right (hbeta i))
-  have hb : Summable beta := hsum.of_nonneg_of_le hbeta
-    (fun i => le_add_of_nonneg_left (halpha i))
-  simpa [abs_of_nonneg, halpha, hbeta] using And.intro ha hb
+/-- If `α i + β i` is summable with `α, β` nonnegative, then `α` and `β` are absolutely
+summable. -/
+theorem summable_abs_of_summable_add {α β : ℕ → ℝ} (hα : ∀ i, 0 ≤ α i)
+    (hβ : ∀ i, 0 ≤ β i) (hsum : Summable fun i => α i + β i) :
+    Summable (fun i => |α i|) ∧ Summable (fun i => |β i|) :=
+  ⟨summable_abs_iff.mpr (hsum.of_nonneg_of_le hα fun i => le_add_of_nonneg_right (hβ i)),
+    summable_abs_iff.mpr (hsum.of_nonneg_of_le hβ fun i => le_add_of_nonneg_left (hα i))⟩
 
 /-- The stated nonnegative Edrei summability hypothesis gives convergence of
 the numerator and reciprocal-denominator prefixes separately. -/
@@ -356,7 +353,7 @@ theorem tendsto_supersymmetricPrefixes_of_summable
         (𝓝 (linearFactorProduct alpha)) ∧
       Tendsto (supersymmetricDenominatorPrefix beta) atTop
         (𝓝 (linearFactorProduct (fun i => -beta i))⁻¹) := by
-  obtain ⟨ha, hb⟩ := summable_parameters_of_sum halpha hbeta hsum
+  obtain ⟨ha, hb⟩ := summable_abs_of_summable_add halpha hbeta hsum
   exact ⟨tendsto_supersymmetricNumeratorPrefix alpha ha,
     tendsto_supersymmetricDenominatorPrefix beta hb⟩
 
@@ -388,7 +385,7 @@ theorem tendsto_aswEdreiTruncationSeries
     (hsum : Summable fun i => alpha i + beta i) :
     Tendsto (aswEdreiTruncationSeries gamma alpha beta) atTop
       (𝓝 (aswEdreiSymbol gamma alpha beta)) := by
-  obtain ⟨ha, hb⟩ := summable_parameters_of_sum halpha hbeta hsum
+  obtain ⟨ha, hb⟩ := summable_abs_of_summable_add halpha hbeta hsum
   rw [show aswEdreiTruncationSeries gamma alpha beta = fun N =>
       exponentialTruncation gamma N *
         supersymmetricNumeratorPrefix alpha N *

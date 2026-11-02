@@ -513,25 +513,6 @@ theorem secondOrder_upper_formula_certificate
 
 /-! ## Direct gap bounds and preservation -/
 
-/-- Splitting a list by a predicate preserves a mapped sum. -/
-private theorem sum_filter_map_add_sum_filter_not
-    (l : List ℝ) (g : ℝ → ℝ) (P : ℝ → Prop) [DecidablePred P] :
-    ((l.filter P).map g).sum +
-        ((l.filter fun x ↦ !decide (P x)).map g).sum =
-      (l.map g).sum := by
-  induction l with
-  | nil => simp
-  | cons x xs ih =>
-      by_cases hx : P x
-      · rw [List.filter_cons_of_pos (by simp [hx]),
-          List.filter_cons_of_neg (by simp [hx])]
-        simp only [List.map_cons, List.sum_cons]
-        linarith
-      · rw [List.filter_cons_of_neg (by simp [hx]),
-          List.filter_cons_of_pos (by simp [hx])]
-        simp only [List.map_cons, List.sum_cons]
-        linarith
-
 /-- The Round-4 gap estimate, rewritten using the multiset sums occurring
 in the exact operator quotient. -/
 private theorem secondOrder_gap_squareSum_bound_multiset
@@ -553,9 +534,7 @@ private theorem secondOrder_gap_squareSum_bound_multiset
       (((roots.filter fun r ↦ x < r).map fun r ↦ x / (x - r)).sum +
         ((roots.filter fun r ↦ ¬x < r).map fun r ↦ x / (x - r)).sum) =
         (p.roots.map fun r ↦ x / (x - r)).sum := by
-    change (((roots.filter fun r ↦ x < r).map fun r ↦ x / (x - r)).sum +
-      ((roots.filter fun r ↦ !decide (x < r)).map fun r ↦ x / (x - r)).sum) = _
-    rw [sum_filter_map_add_sum_filter_not]
+    rw [List.sum_map_filter_add_sum_map_filter_not]
     have := congrArg
       (fun s : Multiset ℝ ↦ (s.map fun r ↦ x / (x - r)).sum) hroots
     simpa using this
@@ -568,9 +547,9 @@ private theorem secondOrder_gap_squareSum_bound_multiset
     simp only [List.map_map]
     change (((roots.filter fun r ↦ x < r).map
         fun r ↦ (x / (x - r)) ^ 2).sum +
-      ((roots.filter fun r ↦ !decide (x < r)).map
+      ((roots.filter fun r ↦ ¬x < r).map
         fun r ↦ (x / (x - r)) ^ 2).sum) = _
-    rw [sum_filter_map_add_sum_filter_not]
+    rw [List.sum_map_filter_add_sum_map_filter_not]
     rw [Multiset.map_map]
     have := congrArg
       (fun s : Multiset ℝ ↦

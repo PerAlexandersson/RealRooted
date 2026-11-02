@@ -63,23 +63,12 @@ private theorem eq_X_mul_expand_contract_of_odd (q : ℝ[X])
       coeff_contract (by norm_num : 2 ≠ 0), coeff_divX]
     simp only [mul_comm]
 
-private theorem monic_quadratic_shape {q : ℝ[X]} (hq : q.Monic)
-    (hdeg : q.natDegree = 2) :
-    q = X ^ 2 + C (q.coeff 1) * X + C (q.coeff 0) := by
-  have hlead : q.coeff 2 = 1 := by simpa [hdeg] using hq.coeff_natDegree
-  calc
-    q = ∑ i ∈ Finset.range 3, C (q.coeff i) * X ^ i := by
-      simpa [hdeg] using q.as_sum_range_C_mul_X_pow
-    _ = X ^ 2 + C (q.coeff 1) * X + C (q.coeff 0) := by
-      simp [Finset.sum_range_succ, hlead]
-      ring
-
 private theorem exists_quartic_dvd_expand (r : ℝ[X]) (hr : 2 ≤ r.natDegree) :
     ∃ k p : ℝ, (X ^ 4 + C k * X ^ 2 + C p : ℝ[X]) ∣ expand ℝ 2 r := by
   obtain ⟨q, hmonic, hdeg, hdiv⟩ := Polynomial.exists_monic_natDegree_two_dvd r hr
   let k := q.coeff 1
   let p := q.coeff 0
-  have hshape : q = X ^ 2 + C k * X + C p := monic_quadratic_shape hmonic hdeg
+  have hshape : q = X ^ 2 + C k * X + C p := hmonic.eq_X_sq_add_C_mul_X_add_C hdeg
   have hexpand : expand ℝ 2 q = X ^ 4 + C k * X ^ 2 + C p := by
     rw [hshape]
     simp only [map_add, map_mul, map_pow, expand_X, expand_C]

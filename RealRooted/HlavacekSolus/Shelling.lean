@@ -245,7 +245,8 @@ def unionList : List (Finset α) → Finset α
   | [] => ∅
   | S :: Ss => S ∪ unionList Ss
 
-private lemma mem_unionList_iff {Ss : List (Finset α)} {a : α} :
+/-- A point lies in the union of a list of finite sets iff it lies in one of them. -/
+lemma mem_unionList_iff {Ss : List (Finset α)} {a : α} :
     a ∈ unionList Ss ↔ ∃ S ∈ Ss, a ∈ S := by
   induction Ss with
   | nil => simp [unionList]

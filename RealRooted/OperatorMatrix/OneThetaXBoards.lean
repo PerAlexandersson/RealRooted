@@ -30,10 +30,6 @@ def OnesFormUpperRightRectangle {m n : ℕ} (L : Fin m → Fin n → Letter) : P
   ∃ r, r ≤ m ∧ ∃ c, c ≤ n ∧
     ∀ i j, L i j = .one ↔ i.1 < r ∧ c ≤ j.1
 
-private theorem exists_fin_ne {n : ℕ} (hn : 2 ≤ n) (i : Fin n) : ∃ k : Fin n, k ≠ i :=
-  haveI := Fin.nontrivial_iff_two_le.mpr hn
-  exists_ne i
-
 private theorem allowed_one_theta_top_right_one
     {a b c d : Letter}
     (hb : b = .one ∨ b = .theta)
