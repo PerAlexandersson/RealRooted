@@ -137,13 +137,6 @@ private theorem induction_on_realFactors {S : Set ℂ} {motive : ℝ[X] → Prop
     exact hquad z q (hS z hz) him
       (step _ _ (monic_conjPairQuadratic z) (by simp [natDegree_conjPairQuadratic]) hq)
 
-private theorem hasNonnegCoeffs_of_forall_coeff_pos {p : ℝ[X]}
-    (h : ∀ k ≤ p.natDegree, 0 < p.coeff k) : HasNonnegCoeffs p := by
-  intro k
-  by_cases hk : k ≤ p.natDegree
-  · exact (h k hk).le
-  · rw [coeff_eq_zero_of_natDegree_lt (by lia)]
-
 private theorem forall_coeff_pos_mul {a b : ℝ[X]}
     (ha : ∀ k ≤ a.natDegree, 0 < a.coeff k) (hb : ∀ k ≤ b.natDegree, 0 < b.coeff k) :
     ∀ k ≤ (a * b).natDegree, 0 < (a * b).coeff k := by

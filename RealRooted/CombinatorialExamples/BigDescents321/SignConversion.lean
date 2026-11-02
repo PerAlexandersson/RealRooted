@@ -1,5 +1,6 @@
 module
 
+import RealRooted.Basic.Coefficients
 import RealRooted.CombinatorialExamples.BigDescents321.Criterion
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.Calculus.Deriv.Add
@@ -35,18 +36,11 @@ namespace RealRooted.BigDescents321
 /-- `M_k(x) > 0` for `x ≥ 0`: the coefficients are nonnegative and `M_k(0) = 2^k`. -/
 theorem eval_motzkinRef_pos_of_nonneg (k : ℕ) {x : ℝ} (hx : 0 ≤ x) :
     0 < (motzkinRef k : ℝ[X]).eval x := by
-  rw [eval_eq_sum_range]
-  have h0 : (motzkinRef k : ℝ[X]).coeff 0 * x ^ 0 = 2 ^ k := by
-    rw [pow_zero, mul_one, coeff_zero_eq_eval_zero, eval_zero_motzkinRef]
-  calc (0 : ℝ) < 2 ^ k := by positivity
-    _ = (motzkinRef k : ℝ[X]).coeff 0 * x ^ 0 := h0.symm
-    _ ≤ ∑ i ∈ range ((motzkinRef k : ℝ[X]).natDegree + 1),
-          (motzkinRef k : ℝ[X]).coeff i * x ^ i := by
-      apply single_le_sum (f := fun i ↦ (motzkinRef k : ℝ[X]).coeff i * x ^ i)
-      · intro i _
-        rw [coeff_motzkinRef_eq_cast]
-        positivity
-      · simp
+  refine HasNonnegCoeffs.eval_pos_of_coeff_zero_pos (fun i ↦ ?_) ?_ hx
+  · rw [coeff_motzkinRef_eq_cast]
+    positivity
+  · rw [coeff_zero_eq_eval_zero, eval_zero_motzkinRef]
+    positivity
 
 theorem neg_of_isRoot_motzkinRef {k : ℕ} {r : ℝ} (hr : (motzkinRef k : ℝ[X]).IsRoot r) : r < 0 := by
   by_contra h

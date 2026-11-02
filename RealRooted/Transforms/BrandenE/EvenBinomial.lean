@@ -3,6 +3,7 @@ module
 public import RealRooted.GeneralizedEulerian
 public import RealRooted.SymmetricDecomposition.FPolynomial
 public import RealRooted.Transforms.BrandenE.WeightedSum
+import RealRooted.SymmetricDecomposition.FPolynomialRecurrence
 
 /-!
 # The even-binomial cone of Brändén's E transform
@@ -65,48 +66,8 @@ theorem fPolynomial_derivative_identity {d : ℕ} {p : ℝ[X]}
     (hp : p.natDegree ≤ d) :
     (X + 1) ^ 2 * (fPolynomial d p).derivative =
       C (d : ℝ) * (X + 1) * fPolynomial d p +
-        fPolynomial d p.derivative := by
-  classical
-  have hfsum (s : Finset ℕ) (g : ℕ → ℝ[X]) :
-      fPolynomial d (∑ i ∈ s, g i) = ∑ i ∈ s, fPolynomial d (g i) := by
-    induction s using Finset.induction_on with
-    | empty => simp
-    | @insert a s ha ih => simp_all
-  rw [p.as_sum_range]
-  rw [hfsum, Polynomial.derivative_sum, Finset.mul_sum]
-  rw [Polynomial.derivative_sum, hfsum, Finset.mul_sum]
-  rw [← Finset.sum_add_distrib]
-  apply Finset.sum_congr rfl
-  intro k hk
-  have hk_le : k ≤ d := by grind
-  rw [fPolynomial_monomial, ite_eq_left hk_le]
-  rcases k with _ | k
-  · have hder : derivative (monomial 0 (p.coeff 0)) = 0 := by simp
-    rw [hder, fPolynomial_zero]
-    by_cases hd : d = 0
-    · simp_all
-    · have hdform : d = (d - 1) + 1 := by lia
-      simp only [derivative_mul, derivative_C, derivative_pow, derivative_add,
-        derivative_one, derivative_X, zero_mul, add_zero]
-      grind
-  · rw [Polynomial.derivative_monomial]
-    rw [fPolynomial_monomial, ite_eq_left (by lia)]
-    by_cases heq : k + 1 = d
-    · subst d
-      simp only [tsub_self, pow_zero, mul_one, derivative_mul, derivative_C,
-        derivative_X_pow, zero_mul, zero_add, Nat.cast_add, Nat.cast_one]
-      push_cast
-      norm_num at *
-      ring
-    · have hlt : k + 1 < d := lt_of_le_of_ne hk_le heq
-      obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_lt hlt
-      simp only [derivative_mul, derivative_C, derivative_pow, derivative_add,
-        derivative_one, derivative_X, zero_mul, add_zero, Nat.cast_add, Nat.cast_one]
-      push_cast
-      norm_num at *
-      simp only [show k + 1 + m - k = m + 1 by lia,
-        show k + 1 + m + 1 - k = m + 2 by lia]
-      grind
+        fPolynomial d p.derivative :=
+  fPolynomial_derivative hp
 
 private theorem fPolynomial_generalizedEulerian_two_succ (n : ℕ) :
     fPolynomial (n + 1) (generalizedEulerian 2 (n + 1)) =
