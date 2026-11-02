@@ -101,20 +101,6 @@ private theorem polynomialToMv_injective : Function.Injective polynomialToMv := 
   have := congrArg (MvPolynomial.eval₂ C (fun _ : Unit => X)) hpq
   simpa only [hleft] using this
 
-private theorem complexify_iterate_derivative (j : ℕ) (p : ℝ[X]) :
-    complexify ((derivative^[j]) p) =
-      (derivative^[j]) (complexify p) := by
-  induction j with
-  | zero => rfl
-  | succ j ih =>
-      rw [Function.iterate_succ_apply', Function.iterate_succ_apply']
-      have hderivative (q : ℝ[X]) :
-          complexify q.derivative = (complexify q).derivative := by
-        ext n
-        simp [complexify, coeff_derivative]
-      rw [hderivative]
-      exact congrArg derivative ih
-
 private theorem complexify_finset_sum {ι : Type*} (s : Finset ι)
     (p : ι → ℝ[X]) :
     complexify (∑ i ∈ s, p i) = ∑ i ∈ s, complexify (p i) := by

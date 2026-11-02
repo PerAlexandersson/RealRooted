@@ -186,7 +186,8 @@ theorem X_pow_mul_reverse {p : K[X]} (h : p.Splits) (N : ℕ) :
 end Splits
 
 /-- Reflecting at a degree bound factors through reversal and a power of `X`. -/
-theorem reflect_eq_X_pow_mul_reverse (p : K[X]) {N : ℕ} (hN : p.natDegree ≤ N) :
+theorem reflect_eq_X_pow_mul_reverse {R : Type*} [Semiring R] (p : R[X]) {N : ℕ}
+    (hN : p.natDegree ≤ N) :
     reflect N p = X ^ (N - p.natDegree) * p.reverse := by
   obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hN
   induction k with

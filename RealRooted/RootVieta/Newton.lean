@@ -287,7 +287,8 @@ private lemma sum_coe_pow {R : Type*} [CommSemiring R] [DecidableEq R]
       congrArg Multiset.sum (Multiset.map_univ s fun x : R => x ^ k)
     _ = _ := rfl
 
-private lemma newtonSum_eq_roots_powerSum {p : ℝ[X]} (hp : p.Splits) (k : ℕ) :
+/-- The Newton sums of a real-splitting polynomial are the power sums of its roots. -/
+lemma newtonSum_eq_roots_powerSum {p : ℝ[X]} (hp : p.Splits) (k : ℕ) :
     newtonSum p k = p.roots.powerSum k := by
   apply Complex.ofReal_injective
   rw [ofReal_newtonSum, complexNewtonSum, complexRoots, hp.roots_map,

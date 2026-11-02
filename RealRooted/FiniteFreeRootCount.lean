@@ -698,7 +698,7 @@ theorem card_filter_roots_signedReciprocal
     rcases hx with ⟨_, rfl⟩
     exact hP0
   rw [signedReciprocal,
-    DegreeDropReversal.reflect_eq_X_pow_mul_reverse g hgdeg,
+    Polynomial.reflect_eq_X_pow_mul_reverse g hgdeg,
     Polynomial.roots_mul
       (mul_ne_zero (pow_ne_zero _ Polynomial.X_ne_zero) hrev0),
     Polynomial.roots_pow, Polynomial.roots_X, Multiset.filter_add,

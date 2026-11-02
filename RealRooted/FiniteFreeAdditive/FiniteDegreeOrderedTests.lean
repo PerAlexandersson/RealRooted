@@ -34,11 +34,6 @@ namespace RealRooted.FiniteDegreeOrdered
 
 open BorceaBranden HermitePoulain
 
-/-- The degree-`N` monomial test for a constant-coefficient differential
-symbol. -/
-def differentialTest (N : ℕ) (h : ℝ[X]) : ℝ[X] :=
-  applyAsDifferentialOperator h (X ^ N)
-
 private theorem complexPolynomialInFirstMv_smul (c : ℂ) (p : ℂ[X]) :
     complexPolynomialInFirstMv (c • p) =
       c • complexPolynomialInFirstMv p := by
@@ -53,20 +48,6 @@ private def complexDifferentialOperator (h : ℝ[X]) : ℂ[X] →ₗ[ℂ] ℂ[X]
   map_smul' c p := by
     simp [smul_eq_C_mul, iterate_derivative_C_mul, Finset.mul_sum,
       mul_left_comm]
-
-private theorem complexify_iterate_derivative (j : ℕ) (p : ℝ[X]) :
-    complexify ((derivative^[j]) p) =
-      (derivative^[j]) (complexify p) := by
-  induction j with
-  | zero => rfl
-  | succ j ih =>
-      rw [Function.iterate_succ_apply', Function.iterate_succ_apply']
-      have hderivative (q : ℝ[X]) :
-          complexify q.derivative = (complexify q).derivative := by
-        ext n
-        simp [complexify, coeff_derivative]
-      rw [hderivative]
-      exact congrArg derivative ih
 
 private theorem complexDifferentialOperator_complexify
     (h p : ℝ[X]) :
@@ -154,7 +135,7 @@ private theorem eval_complexPolynomialInFirstMv
 private theorem eval_complexDifferentialOperator_X_add_C_pow
     (N : ℕ) (h : ℝ[X]) (x w : ℂ) :
     (complexDifferentialOperator h ((X + C w) ^ N)).eval x =
-      (complexify (differentialTest N h)).eval (x + w) := by
+      (complexify (finiteDifferentialTest N h)).eval (x + w) := by
   have hshift : (X + C w : ℂ[X]) ^ N =
       Polynomial.taylor w ((X : ℂ[X]) ^ N) := by
     simp [Polynomial.taylor_apply]
@@ -162,15 +143,15 @@ private theorem eval_complexDifferentialOperator_X_add_C_pow
   have hpow : ((X : ℂ[X]) ^ N) = complexify ((X : ℝ[X]) ^ N) := by
     simp [complexify]
   rw [hpow, complexDifferentialOperator_complexify]
-  simp [differentialTest, Polynomial.taylor_apply, Polynomial.eval_comp]
+  simp [finiteDifferentialTest, Polynomial.taylor_apply, Polynomial.eval_comp]
 
 private theorem eval_differentialPencilDegreeBoxMap_shiftedBoxPolynomial
     (N : ℕ) (h k : ℝ[X]) (w : ℂ) (z : Fin 2 → ℂ) :
     MvPolynomial.eval z
         (differentialPencilDegreeBoxMap N h k
           (shiftedBoxPolynomial (fun _ : Fin 1 ↦ N) (fun _ ↦ w))) =
-      (complexify (differentialTest N k)).eval (z 0 + w) +
-        z 1 * (complexify (differentialTest N h)).eval (z 0 + w) := by
+      (complexify (finiteDifferentialTest N k)).eval (z 0 + w) +
+        z 1 * (complexify (finiteDifferentialTest N h)).eval (z 0 + w) := by
   change MvPolynomial.eval z
       (complexPolynomialInFirstMv
           (complexDifferentialOperator k
@@ -189,7 +170,7 @@ private theorem eval_differentialPencilDegreeBoxMap_shiftedBoxPolynomial
 private theorem algebraicSymbol_differentialPencilDegreeBoxMap_stable
     {N : ℕ} {h k : ℝ[X]}
     (hcap : MvUpperHalfPlaneStable
-      (bivariatePencil (differentialTest N k) (differentialTest N h))) :
+      (bivariatePencil (finiteDifferentialTest N k) (finiteDifferentialTest N h))) :
     MvUpperHalfPlaneStable
       (MvPolynomial.algebraicSymbol (fun _ : Fin 1 ↦ N)
         (differentialPencilDegreeBoxMap N h k)) := by
@@ -217,21 +198,21 @@ private theorem algebraicSymbol_differentialPencilDegreeBoxMap_stable
 
 private theorem capPencil_eq_zero_pair_or_stable
     {N : ℕ} {h k : ℝ[X]}
-    (hh : IsPFPolynomial (differentialTest N h))
-    (hk : IsPFPolynomial (differentialTest N k))
-    (horder : Interl (differentialTest N h) (differentialTest N k)) :
-    (differentialTest N h = 0 ∧ differentialTest N k = 0) ∨
+    (hh : IsPFPolynomial (finiteDifferentialTest N h))
+    (hk : IsPFPolynomial (finiteDifferentialTest N k))
+    (horder : Interl (finiteDifferentialTest N h) (finiteDifferentialTest N k)) :
+    (finiteDifferentialTest N h = 0 ∧ finiteDifferentialTest N k = 0) ∨
       MvUpperHalfPlaneStable
-        (bivariatePencil (differentialTest N k) (differentialTest N h)) := by
+        (bivariatePencil (finiteDifferentialTest N k) (finiteDifferentialTest N h)) := by
   rcases horder with hh0 | hk0 | hstrict
-  · by_cases hkzero : differentialTest N k = 0
+  · by_cases hkzero : finiteDifferentialTest N k = 0
     · exact Or.inl ⟨hh0, hkzero⟩
     · right
       apply mvUpperHalfPlaneStable_bivariatePencil_iff.mpr
       simpa [hh0] using
         isUpperHalfPlaneStablePencil_zero_right hkzero
           (hk.eq_zero_or_splits.resolve_left hkzero)
-  · by_cases hhzero : differentialTest N h = 0
+  · by_cases hhzero : finiteDifferentialTest N h = 0
     · exact Or.inl ⟨hhzero, hk0⟩
     · right
       apply mvUpperHalfPlaneStable_bivariatePencil_iff.mpr
@@ -244,57 +225,17 @@ private theorem capPencil_eq_zero_pair_or_stable
       (hk.hasNonnegCoeffs.pos_leadingCoeff hstrict.2.1.1)
       (hh.hasNonnegCoeffs.pos_leadingCoeff hstrict.1.1) hstrict
 
-private theorem coeff_differentialTest_of_le
-    (N : ℕ) (h : ℝ[X]) {j : ℕ} (hj : j ≤ N) :
-    (differentialTest N h).coeff (N - j) =
-      (N.descFactorial j : ℝ) * h.coeff j := by
-  rw [differentialTest, applyAsDifferentialOperator,
-    Polynomial.finsetSum_coeff]
-  by_cases hh : j ≤ h.natDegree
-  · rw [Finset.sum_eq_single j]
-    · rw [Polynomial.coeff_C_mul, Polynomial.coeff_iterate_derivative]
-      simp only [nsmul_eq_mul]
-      rw [Nat.sub_add_cancel hj]
-      simp
-      ring
-    · intro q hq hqj
-      rw [Polynomial.coeff_C_mul, Polynomial.coeff_iterate_derivative]
-      simp only [nsmul_eq_mul]
-      simp [coeff_X_pow, show N - j + q ≠ N by lia]
-    · intro hjnot
-      exact (hjnot (by simpa using Nat.lt_succ_of_le hh)).elim
-  · rw [Polynomial.coeff_eq_zero_of_natDegree_lt (Nat.lt_of_not_ge hh),
-      mul_zero]
-    apply Finset.sum_eq_zero
-    intro q hq
-    rw [Polynomial.coeff_C_mul, Polynomial.coeff_iterate_derivative]
-    simp only [nsmul_eq_mul]
-    by_cases hqj : q = j
-    · subst q
-      rw [Polynomial.coeff_eq_zero_of_natDegree_lt (Nat.lt_of_not_ge hh)]
-      simp
-    · simp [coeff_X_pow, show N - j + q ≠ N by lia]
-
 private theorem coeff_eq_zero_of_differentialTest_eq_zero
-    {N : ℕ} {h : ℝ[X]} (htest : differentialTest N h = 0)
+    {N : ℕ} {h : ℝ[X]} (htest : finiteDifferentialTest N h = 0)
     {j : ℕ} (hj : j ≤ N) : h.coeff j = 0 := by
   have hcoeff := congrArg (fun p : ℝ[X] ↦ p.coeff (N - j)) htest
-  rw [coeff_differentialTest_of_le N h hj, Polynomial.coeff_zero] at hcoeff
+  rw [coeff_finiteDifferentialTest_of_le N h hj, Polynomial.coeff_zero] at hcoeff
   have hfall : (N.descFactorial j : ℝ) ≠ 0 := by
     exact_mod_cast Nat.ne_of_gt (Nat.descFactorial_pos.mpr hj)
   exact (mul_eq_zero.mp hcoeff).resolve_left hfall
 
-private theorem differentialTest_coeff_nonneg
-    {N : ℕ} {h : ℝ[X]} (htest : IsPFPolynomial (differentialTest N h))
-    {j : ℕ} (hj : j ≤ N) : 0 ≤ h.coeff j := by
-  have hcoeff := htest.hasNonnegCoeffs (N - j)
-  rw [coeff_differentialTest_of_le N h hj] at hcoeff
-  have hfall : 0 < (N.descFactorial j : ℝ) := by
-    exact_mod_cast Nat.descFactorial_pos.mpr hj
-  nlinarith
-
 private theorem applyAsDifferentialOperator_eq_zero_of_test_eq_zero
-    {N : ℕ} {h p : ℝ[X]} (htest : differentialTest N h = 0)
+    {N : ℕ} {h p : ℝ[X]} (htest : finiteDifferentialTest N h = 0)
     (hpdeg : p.natDegree ≤ N) :
     applyAsDifferentialOperator h p = 0 := by
   rw [applyAsDifferentialOperator_eq_sum_range_right]
@@ -378,9 +319,9 @@ private theorem differentialPencilDegreeBoxMap_complexify
 degree box. -/
 theorem preservesOrderedPFUpTo_of_differentialTests
     {N : ℕ} {h k : ℝ[X]}
-    (hh : IsPFPolynomial (differentialTest N h))
-    (hk : IsPFPolynomial (differentialTest N k))
-    (horder : Interl (differentialTest N h) (differentialTest N k)) :
+    (hh : IsPFPolynomial (finiteDifferentialTest N h))
+    (hk : IsPFPolynomial (finiteDifferentialTest N k))
+    (horder : Interl (finiteDifferentialTest N h) (finiteDifferentialTest N k)) :
     PreservesOrderedPFUpTo N h k := by
   rcases capPencil_eq_zero_pair_or_stable hh hk horder with hzero | hcap
   · intro p hp hpdeg
@@ -436,9 +377,9 @@ theorem preservesOrderedPFUpTo_of_differentialTests
 PF and ordered. -/
 theorem differentialTests_ordered_of_preservesOrderedPFUpTo
     {N : ℕ} {h k : ℝ[X]} (hpres : PreservesOrderedPFUpTo N h k) :
-    IsPFPolynomial (differentialTest N h) ∧
-      IsPFPolynomial (differentialTest N k) ∧
-        Interl (differentialTest N h) (differentialTest N k) := by
+    IsPFPolynomial (finiteDifferentialTest N h) ∧
+      IsPFPolynomial (finiteDifferentialTest N k) ∧
+        Interl (finiteDifferentialTest N h) (finiteDifferentialTest N k) := by
   exact hpres (isPFPolynomial_X_pow N) (by simp)
 
 /-- Two constant-coefficient differential operators preserve the ordered PF
@@ -447,9 +388,9 @@ the same order. -/
 theorem preservesOrderedPFUpTo_iff_differentialTests
     (N : ℕ) (h k : ℝ[X]) :
     PreservesOrderedPFUpTo N h k ↔
-      IsPFPolynomial (differentialTest N h) ∧
-        IsPFPolynomial (differentialTest N k) ∧
-          Interl (differentialTest N h) (differentialTest N k) := by
+      IsPFPolynomial (finiteDifferentialTest N h) ∧
+        IsPFPolynomial (finiteDifferentialTest N k) ∧
+          Interl (finiteDifferentialTest N h) (finiteDifferentialTest N k) := by
   constructor
   · exact differentialTests_ordered_of_preservesOrderedPFUpTo
   · rintro ⟨hh, hk, horder⟩
@@ -458,7 +399,7 @@ theorem preservesOrderedPFUpTo_iff_differentialTests
 /-- The degree-`N` Jensen polynomial of a differential symbol, normalized by
 falling factorials. -/
 def jensenDifferentialTest (N : ℕ) (h : ℝ[X]) : ℝ[X] :=
-  (differentialTest N h).reflect N
+  (finiteDifferentialTest N h).reflect N
 
 /-- The coefficient of the degree-`N` Jensen polynomial is the corresponding
 symbol coefficient multiplied by a falling factorial. -/
@@ -467,58 +408,36 @@ theorem coeff_jensenDifferentialTest_of_le
     (jensenDifferentialTest N h).coeff j =
       (N.descFactorial j : ℝ) * h.coeff j := by
   rw [jensenDifferentialTest, Polynomial.coeff_reflect,
-    Polynomial.revAt_le hj, coeff_differentialTest_of_le N h hj]
-
-private theorem natDegree_differentialTest_le (N : ℕ) (h : ℝ[X]) :
-    (differentialTest N h).natDegree ≤ N := by
-  rw [differentialTest, applyAsDifferentialOperator]
-  apply Polynomial.natDegree_sum_le_of_forall_le
-  intro j _
-  exact (Polynomial.natDegree_C_mul_le _ _).trans
-    ((Polynomial.natDegree_iterate_derivative (X ^ N) j).trans
-      ((Nat.sub_le _ _).trans (by simp)))
-
-private theorem reflect_reverses_interl_of_pf
-    {N : ℕ} {p q : ℝ[X]}
-    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
-    (hpdeg : p.natDegree ≤ N) (hqdeg : q.natDegree ≤ N)
-    (hpq : Interl p q) : Interl (q.reflect N) (p.reflect N) := by
-  rcases hpq with hpzero | hqzero | hpq
-  · subst p
-    simpa using interl_zero_right (q.reflect N)
-  · subst q
-    simpa using interl_zero_left (p.reflect N)
-  · exact (reciprocalShift_reverses_strictInterl
-      hp hq hpdeg hqdeg hpq).toInterl
+    Polynomial.revAt_le hj, coeff_finiteDifferentialTest_of_le N h hj]
 
 /-- At a common cap, ordered monomial tests are equivalent to PF Jensen
 polynomials in the reversed interlacing order. -/
 theorem differentialTests_ordered_iff_jensenDifferentialTests
     (N : ℕ) (h k : ℝ[X]) :
-    (IsPFPolynomial (differentialTest N h) ∧
-        IsPFPolynomial (differentialTest N k) ∧
-          Interl (differentialTest N h) (differentialTest N k)) ↔
+    (IsPFPolynomial (finiteDifferentialTest N h) ∧
+        IsPFPolynomial (finiteDifferentialTest N k) ∧
+          Interl (finiteDifferentialTest N h) (finiteDifferentialTest N k)) ↔
       (IsPFPolynomial (jensenDifferentialTest N h) ∧
         IsPFPolynomial (jensenDifferentialTest N k) ∧
           Interl (jensenDifferentialTest N k)
             (jensenDifferentialTest N h)) := by
   constructor
   · rintro ⟨hh, hk, horder⟩
-    have hhdeg := natDegree_differentialTest_le N h
-    have hkdeg := natDegree_differentialTest_le N k
+    have hhdeg := natDegree_finiteDifferentialTest_le N h
+    have hkdeg := natDegree_finiteDifferentialTest_le N k
     exact ⟨isPFPolynomial_reflect hh hhdeg,
       isPFPolynomial_reflect hk hkdeg,
-      reflect_reverses_interl_of_pf hh hk hhdeg hkdeg horder⟩
+      reciprocalShift_reverses_interl hh hk hhdeg hkdeg horder⟩
   · rintro ⟨hh, hk, horder⟩
     have hhdeg : (jensenDifferentialTest N h).natDegree ≤ N :=
       Polynomial.natDegree_reflect_le.trans
-        (max_le le_rfl (natDegree_differentialTest_le N h))
+        (max_le le_rfl (natDegree_finiteDifferentialTest_le N h))
     have hkdeg : (jensenDifferentialTest N k).natDegree ≤ N :=
       Polynomial.natDegree_reflect_le.trans
-        (max_le le_rfl (natDegree_differentialTest_le N k))
+        (max_le le_rfl (natDegree_finiteDifferentialTest_le N k))
     have hhback := isPFPolynomial_reflect hh hhdeg
     have hkback := isPFPolynomial_reflect hk hkdeg
-    have hback := reflect_reverses_interl_of_pf hk hh hkdeg hhdeg horder
+    have hback := reciprocalShift_reverses_interl hk hh hkdeg hhdeg horder
     simpa only [jensenDifferentialTest, Polynomial.reflect_reflect] using
       And.intro hhback (And.intro hkback hback)
 
@@ -562,7 +481,7 @@ theorem jensenDifferentialTest_capNormalizedDifferentialSymbol
     rw [Polynomial.coeff_eq_zero_of_natDegree_lt,
       Polynomial.coeff_eq_zero_of_natDegree_lt (hqdeg.trans_lt hjN)]
     exact (Polynomial.natDegree_reflect_le.trans
-      (max_le le_rfl (natDegree_differentialTest_le N _))).trans_lt hjN
+      (max_le le_rfl (natDegree_finiteDifferentialTest_le N _))).trans_lt hjN
 
 /-- Any PF pair in reversed Jensen order gives a finite-cap companion pair
 after coefficientwise division by falling factorials. -/
@@ -690,7 +609,7 @@ private theorem reflect_C_mul_X_add_one_pow_at_cap
 `X ^ (N - r) * (X + s) ^ r`. -/
 theorem differentialTest_binomialDifferentialSymbol
     {N r : ℕ} (s : ℝ) (hrN : r ≤ N) :
-    differentialTest N (binomialDifferentialSymbol N r s) =
+    finiteDifferentialTest N (binomialDifferentialSymbol N r s) =
       X ^ (N - r) * (X + C s) ^ r := by
   have h := congrArg (reflect N)
     (jensenDifferentialTest_binomialDifferentialSymbol s hrN)
@@ -749,33 +668,6 @@ theorem binomialDifferentialRecurrence_pf_and_interl
     preservesOrderedPFUpTo_binomialDifferentialSymbol hr hrN hs hp hpdeg
   exact ⟨isPFPolynomial_X_mul_add_C_mul hh hk horder ha,
     interl_X_mul_add_C_mul hh hk horder ha⟩
-
-private theorem natDegree_applyAsDifferentialOperator_le (h p : ℝ[X]) :
-    (applyAsDifferentialOperator h p).natDegree ≤ p.natDegree := by
-  rw [applyAsDifferentialOperator]
-  apply Polynomial.natDegree_sum_le_of_forall_le
-  intro j _
-  exact (Polynomial.natDegree_C_mul_le _ _).trans
-    ((Polynomial.natDegree_iterate_derivative p j).trans (Nat.sub_le _ _))
-
-private theorem applyAsDifferentialOperator_ne_zero_of_coeff_zero_eq_one
-    {h p : ℝ[X]} (hzero : h.coeff 0 = 1) (hp0 : p ≠ 0) :
-    applyAsDifferentialOperator h p ≠ 0 := by
-  intro houtput
-  have htop := congrArg (fun q : ℝ[X] ↦ q.coeff p.natDegree) houtput
-  rw [coeff_applyAsDifferentialOperator_natDegree, hzero, one_mul,
-    Polynomial.coeff_zero] at htop
-  exact (Polynomial.leadingCoeff_ne_zero.mpr hp0) (by
-    simpa [Polynomial.coeff_natDegree] using htop)
-
-private theorem natDegree_applyAsDifferentialOperator_of_coeff_zero_eq_one
-    {h p : ℝ[X]} (hzero : h.coeff 0 = 1) (hp0 : p ≠ 0) :
-    (applyAsDifferentialOperator h p).natDegree = p.natDegree := by
-  apply Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
-  · exact natDegree_applyAsDifferentialOperator_le h p
-  · rw [coeff_applyAsDifferentialOperator_natDegree, hzero, one_mul,
-      Polynomial.coeff_natDegree]
-    exact Polynomial.leadingCoeff_ne_zero.mpr hp0
 
 /-- On a nonzero input, the explicit higher-order recurrence increases the
 degree by exactly one. -/

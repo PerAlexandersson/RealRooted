@@ -207,17 +207,6 @@ theorem natDegree_quadraticInterlacingPencil_eq
     simp only [quadraticInterlacingPencil, coeff_add, coeff_C_mul]
     nlinarith [mul_nonneg ha hGcoeff, mul_nonneg (sq_nonneg a) hFcoeff]
 
-/-- A nonnegative-coefficient polynomial with nonzero constant coefficient
-has strictly negative roots. -/
-theorem roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne
-    {p : ℝ[X]} (hp : HasNonnegCoeffs p)
-    (hp0 : p.coeff 0 ≠ 0) : ∀ r ∈ p.roots, r < 0 := by
-  intro r hr
-  apply lt_of_le_of_ne (roots_nonpos_of_hasNonnegCoeffs hp r hr)
-  rintro rfl
-  exact hp0 (by simpa [Polynomial.IsRoot.def, Polynomial.coeff_zero_eq_eval_zero] using
-    Polynomial.isRoot_of_mem_roots hr)
-
 /-- The compactified pencil has degree at most its reflection degree. -/
 theorem natDegree_compactifiedQuadraticInterlacingPencil_le
     {F G H : ℝ[X]} {D : ℕ}

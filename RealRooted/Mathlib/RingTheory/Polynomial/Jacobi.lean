@@ -939,7 +939,9 @@ noncomputable def shiftedJacobiSubdiag (n : ℕ) (α β : ℝ) : ℝ :=
       ((2 * n + α + β) ^ 2 *
         (2 * n + α + β - 1) * (2 * n + α + β + 1))
 
-private lemma succ_mul_choose_succ (r : ℝ) (k : ℕ) :
+/-- `(k + 1) * choose (r + 1) (k + 1) = (r + 1) * choose r k` for the generalized binomial
+coefficient. -/
+lemma succ_mul_choose_succ (r : ℝ) (k : ℕ) :
     (k + 1 : ℝ) * Ring.choose (r + 1) (k + 1) =
       (r + 1) * Ring.choose r k := by
   rw [Ring.choose_eq_smul, Ring.choose_eq_smul]
@@ -949,7 +951,9 @@ private lemma succ_mul_choose_succ (r : ℝ) (k : ℕ) :
     Nat.cast_add, Nat.cast_one]
   field_simp
 
-private lemma sub_mul_choose_add_one (r : ℝ) (k : ℕ) :
+/-- `(r + 1 - k) * choose (r + 1) k = (r + 1) * choose r k` for the generalized binomial
+coefficient. -/
+lemma sub_mul_choose_add_one (r : ℝ) (k : ℕ) :
     (r + 1 - k) * Ring.choose (r + 1) k =
       (r + 1) * Ring.choose r k := by
   cases k with
@@ -962,7 +966,9 @@ private lemma sub_mul_choose_add_one (r : ℝ) (k : ℕ) :
       push_cast at h ⊢
       linear_combination -h
 
-private lemma succ_mul_ringChoose_same (x : ℝ) (k : ℕ) :
+/-- `(k + 1) * choose x (k + 1) = (x - k) * choose x k` for the generalized binomial
+coefficient. -/
+lemma succ_mul_ringChoose_same (x : ℝ) (k : ℕ) :
     (k + 1 : ℝ) * Ring.choose x (k + 1) =
       (x - k) * Ring.choose x k := by
   have hleft := succ_mul_ringChoose x k

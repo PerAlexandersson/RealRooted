@@ -189,20 +189,6 @@ theorem IsQuadraticDifferentialOrbit.newtonSum_two_eq
         complexRoots, quadraticOrbitSecondMoment, Multiset.powerSum]
       norm_cast
 
-private lemma newtonSum_eq_roots_powerSum {p : ℝ[X]} (hp : p.Splits) (k : ℕ) :
-    newtonSum p k = p.roots.powerSum k := by
-  rw [newtonSum, complexNewtonSum, complexRoots, hp.roots_map,
-    Multiset.powerSum, Multiset.powerSum]
-  simp only [Multiset.map_map, Function.comp_apply]
-  induction p.roots using Multiset.induction with
-  | empty => simp
-  | cons a s ih =>
-      have ha : (Complex.ofRealHom a ^ k).re = a ^ k := by
-        rw [← map_pow]
-        exact Complex.ofReal_re _
-      simp only [Multiset.map_cons, Multiset.sum_cons, Complex.add_re,
-        ih, ha]
-
 /-- Cauchy--Schwarz for the first two Newton sums of a real-splitting polynomial. -/
 theorem newtonSum_one_sq_le_natDegree_mul_newtonSum_two_of_splits
     {p : ℝ[X]} (hp : p.Splits) :

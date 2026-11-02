@@ -217,6 +217,15 @@ theorem interl_one_affine_add_X {s t : ℝ} (hs : 0 < s) :
 theorem interl_X_X : Interl (X : ℝ[X]) X :=
   Interl.refl fun _ => isRealRooted_X.2
 
+/-- `X` does not interlace `X + 1` in this order. -/
+theorem not_interl_X_X_add_one : ¬ Interl (X : ℝ[X]) (X + 1) := by
+  intro hinterl
+  have hiff : Interl (X + C 0 : ℝ[X]) (X + C 1) ↔ (1 : ℝ) ≤ 0 :=
+    Interl.X_add_C_iff
+  apply (not_le_of_gt (zero_lt_one : (0 : ℝ) < 1))
+  apply hiff.mp
+  simpa only [map_zero, map_one, add_zero] using hinterl
+
 theorem interl_affine_X {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl (C s * X + C t) X := by
   simpa using interl_affine_linear_affine_linear_of_cross

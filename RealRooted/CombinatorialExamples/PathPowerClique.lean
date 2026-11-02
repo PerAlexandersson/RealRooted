@@ -165,26 +165,6 @@ theorem pathPowerCliquePolynomial_subsequence_natDegree_le (k p c n : ℕ)
       rw [Nat.mul_succ]
       lia
 
-private theorem reciprocalShift_succ_eq_X_mul {D : ℕ} {p : ℝ[X]}
-    (hdegree : p.natDegree ≤ D) :
-    reciprocalShift (D + 1) p = X * reciprocalShift D p := by
-  ext i
-  cases i with
-  | zero =>
-      rw [reciprocalShift, Polynomial.coeff_reflect, Polynomial.revAt_zero,
-        coeff_X_mul_zero]
-      exact coeff_eq_zero_of_natDegree_lt (by lia)
-  | succ i =>
-      rw [reciprocalShift, Polynomial.coeff_reflect, coeff_X_mul,
-        reciprocalShift, Polynomial.coeff_reflect]
-      by_cases hi : i ≤ D
-      · simp_all
-      · have hDi : D < i := by lia
-        rw [Polynomial.revAt_eq_self_of_lt hDi,
-          Polynomial.revAt_eq_self_of_lt (by lia : D + 1 < i + 1),
-          coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hdegree hDi),
-          coeff_eq_zero_of_natDegree_lt (by lia)]
-
 /-- Reflected path-power subsequences are strictly interlacing.  The padding
 starts at the degree of the offset row and increases by one at each step, so
 this statement applies to every `1 ≤ p ≤ k` and every offset `c`. -/

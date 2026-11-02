@@ -66,10 +66,10 @@ theorem strictInterl_reverse_of_pf_of_natDegree_add_one
     grind
   have hqdeg : q.natDegree = N := rfl
   have hRq : reflect N q = q.reverse := by
-    rw [DegreeDropReversal.reflect_eq_X_pow_mul_reverse q hqdeg.le]
+    rw [Polynomial.reflect_eq_X_pow_mul_reverse q hqdeg.le]
     simp [hqdeg]
   have hRXp : reflect N (X * p) = p.reverse := by
-    rw [DegreeDropReversal.reflect_eq_X_pow_mul_reverse
+    rw [Polynomial.reflect_eq_X_pow_mul_reverse
       (X * p) hXpdeg.le]
     rw [hXpdeg, Nat.sub_self, pow_zero, one_mul,
       Polynomial.reverse_X_mul]
@@ -181,9 +181,9 @@ theorem strictInterl_polarTheta_adjacent
       (N + 2) q (by simp_all), hPin, hQin]
   change StrictInterl (reflect N P.derivative)
     (reflect (N + 1) Q.derivative)
-  rw [DegreeDropReversal.reflect_eq_X_pow_mul_reverse
+  rw [Polynomial.reflect_eq_X_pow_mul_reverse
       P.derivative hPderdeg.le,
-    DegreeDropReversal.reflect_eq_X_pow_mul_reverse
+    Polynomial.reflect_eq_X_pow_mul_reverse
       Q.derivative hQderdeg.le,
     hPderdeg, hQderdeg]
   simpa using hrevder

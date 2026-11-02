@@ -312,7 +312,7 @@ theorem splits_schurSzegoComp_X_mul_right {n : Nat} (hn : 1 ≤ n) {f p₁ : ℝ
 
 theorem isPFPolynomial_reflect {n : Nat} {f : ℝ[X]} (hf : IsPFPolynomial f)
     (hfdeg : f.natDegree ≤ n) : IsPFPolynomial (reflect n f) := by
-  rw [DegreeDropReversal.reflect_eq_X_pow_mul_reverse f hfdeg]
+  rw [Polynomial.reflect_eq_X_pow_mul_reverse f hfdeg]
   exact (isPFPolynomial_X_pow _).mul hf.reverse
 
 theorem splits_schurSzegoComp_of_isPF (n : Nat) :

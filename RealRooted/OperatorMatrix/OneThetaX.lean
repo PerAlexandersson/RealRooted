@@ -7,6 +7,7 @@ import RealRooted.OperatorMatrix.Directed
 public import RealRooted.EulerOperator
 import RealRooted.WagnerX.ListInterlacing
 import RealRooted.Linear
+import RealRooted.AffineProperPosition
 
 /-!
 # Two-by-two operator matrices over `{1, θ, X}`
@@ -173,11 +174,6 @@ private theorem not_isPFPolynomial_X_add_X_sq_add_X_cu :
   rw [← hfactor] at hsplits
   exact (Polynomial.splits_mul_iff_right Polynomial.X_ne_zero Polynomial.Splits.X).mp hsplits
 
-private theorem interl_one_X : Interl (1 : ℝ[X]) X := by
-  simpa only [mul_one] using
-    (interl_iff_interl_X_mul IsPFPolynomial.one IsPFPolynomial.one).mp
-      IsPFPolynomial.one.interl_self
-
 private theorem not_preservesOrderedPFPair_of_top_row_one_x (c d : Letter) :
     ¬ PreservesOrderedPFPair Letter.one.linearMap Letter.x.linearMap c.linearMap d.linearMap := by
   intro hpreserves
@@ -265,14 +261,6 @@ private theorem roots_X_mul_P : (X * (X + 1) : ℝ[X]).roots = ↑([-1, 0] : Lis
 private theorem roots_X : (X : ℝ[X]).roots = ↑([0] : List ℝ) := by
   rw [Polynomial.roots_X]
   rfl
-
-private theorem not_interl_X_X_add_one : ¬ Interl (X : ℝ[X]) (X + 1) := by
-  intro hinterl
-  have hiff : Interl (X + C 0 : ℝ[X]) (X + C 1) ↔ (1 : ℝ) ≤ 0 :=
-    Interl.X_add_C_iff
-  apply (not_le_of_gt (zero_lt_one : (0 : ℝ) < 1))
-  apply hiff.mp
-  simpa only [map_zero, map_one, add_zero] using hinterl
 
 private theorem not_interl_X_mul_P_P : ¬ Interl (X * (X + 1)) (X + 1) := by
   exact not_interl_of_sorted_roots (leftRoots := [-1, 0]) (rightRoots := [-1])
@@ -678,7 +666,7 @@ private theorem isPFPolynomial_add_derivative_of_interl
   have hnonneg : HasNonnegCoeffs (p + q.derivative) :=
     hp.hasNonnegCoeffs.add hqder.hasNonnegCoeffs
   have hinterl : Interl (p + q.derivative) q :=
-    interl_add_left_of_common_right_of_nonneg hpq hq.interl_derivative_self
+    interl_add_left_of_common_right_of_nonneg hpq hq.derivative_interl_self
       hp.hasNonnegCoeffs hqder.hasNonnegCoeffs
   apply IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits hnonneg
   by_cases hzero : p + q.derivative = 0

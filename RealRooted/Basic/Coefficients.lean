@@ -172,6 +172,17 @@ theorem lt_zero_of_lt_isRoot_of_hasNonnegCoeffs {p : ℝ[X]} (hp : HasNonnegCoef
     x < 0 :=
   lt_of_lt_of_le hxr (isRoot_nonpos_of_hasNonnegCoeffs hp hp_ne hr)
 
+/-- A nonnegative-coefficient polynomial with nonzero constant coefficient
+has strictly negative roots. -/
+theorem roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne
+    {p : ℝ[X]} (hp : HasNonnegCoeffs p)
+    (hp0 : p.coeff 0 ≠ 0) : ∀ r ∈ p.roots, r < 0 := by
+  intro r hr
+  apply lt_of_le_of_ne (roots_nonpos_of_hasNonnegCoeffs hp r hr)
+  rintro rfl
+  exact hp0 (by simpa [Polynomial.IsRoot.def, Polynomial.coeff_zero_eq_eval_zero] using
+    Polynomial.isRoot_of_mem_roots hr)
+
 lemma hasPosLeadingCoeff_of_monic {p : ℝ[X]} (hp : p.Monic) :
     HasPosLeadingCoeff p := by
   simp [HasPosLeadingCoeff, hp.leadingCoeff]

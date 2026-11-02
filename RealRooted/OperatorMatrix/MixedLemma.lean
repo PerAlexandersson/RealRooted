@@ -512,7 +512,7 @@ theorem interl_derivative_add_derivative_add_X_mul_derivative {p q : ℝ[X]}
     Interl (p.derivative + q.derivative) (q + X * p.derivative) := by
   rcases eq_or_ne p 0 with rfl | hp0
   · simpa only [derivative_zero, zero_add, mul_zero, add_zero] using
-      hq.interl_derivative_self
+      hq.derivative_interl_self
   rcases eq_or_ne q 0 with rfl | hq0
   · simp only [derivative_zero, add_zero, zero_add]
     apply (interl_iff_interl_X_mul hp.derivative hp.derivative).mp

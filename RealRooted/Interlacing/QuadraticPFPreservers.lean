@@ -38,14 +38,14 @@ theorem IsPFPolynomial.affineDerivative_of_nonneg {p : ℝ[X]}
     {a : ℝ} (ha : 0 ≤ a) : IsPFPolynomial (affineDerivative a p) := by
   unfold affineDerivative
   exact hp.derivative.add_of_interl ((IsPFPolynomial.of_C_nonneg ha).mul hp)
-    (hp.interl_derivative_self.C_mul_right_of_nonneg ha)
+    (hp.derivative_interl_self.C_mul_right_of_nonneg ha)
 
 /-- A nonnegative affine derivative precedes its input in zero-aware proper position. -/
 theorem IsPFPolynomial.interl_affineDerivative_self {p : ℝ[X]}
     (hp : IsPFPolynomial p) {a : ℝ} (ha : 0 ≤ a) :
     Interl (affineDerivative a p) p := by
   unfold affineDerivative
-  exact interl_add_left_of_common_right_of_nonneg hp.interl_derivative_self
+  exact interl_add_left_of_common_right_of_nonneg hp.derivative_interl_self
     (hp.interl_self.C_mul_left_of_nonneg ha)
     hp.derivative.hasNonnegCoeffs
     (hasNonnegCoeffs_C_mul ha hp.hasNonnegCoeffs)

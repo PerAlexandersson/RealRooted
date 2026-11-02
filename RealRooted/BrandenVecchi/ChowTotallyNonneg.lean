@@ -24,19 +24,6 @@ noncomputable section
 
 variable {A : LowerTriangularMatrix ℝ}
 
-private theorem reflect_reverses_interl_of_pf
-    {n : ℕ} {p q : ℝ[X]}
-    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
-    (hpdeg : p.natDegree ≤ n) (hqdeg : q.natDegree ≤ n)
-    (hpq : Interl p q) :
-    Interl (q.reflect n) (p.reflect n) := by
-  rcases hpq with hpzero | hqzero | hpq
-  · subst p
-    simpa using interl_zero_right (q.reflect n)
-  · subst q
-    simpa using interl_zero_left (p.reflect n)
-  · exact (reciprocalShift_reverses_strictInterl hp hq hpdeg hqdeg hpq).toInterl
-
 private theorem reflectionInterlacing_pair_of_relations
     {n : ℕ} {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
@@ -138,10 +125,10 @@ private theorem resolvedChowRow_endpoint_reflection_relations
   · intro i hi j hj
     exact hcross (d i) (hmem i hi) ((d j).reflect n) (hrefmem j hj)
   · intro j hj
-    exact reflect_reverses_interl_of_pf (hdpf 0 (Nat.zero_le n))
+    exact reciprocalShift_reverses_interl (hdpf 0 (Nat.zero_le n))
       (hdpf j hj) (hddeg 0 (Nat.zero_le n)) (hddeg j hj) (hleft j hj)
   · intro j hj
-    exact reflect_reverses_interl_of_pf (hdpf j hj) (hdpf n le_rfl)
+    exact reciprocalShift_reverses_interl (hdpf j hj) (hdpf n le_rfl)
       (hddeg j hj) (hddeg n le_rfl) (hright j hj)
 
 /-- Endpoint and self-reflection relations pass to a nonnegative weighted row sum. -/

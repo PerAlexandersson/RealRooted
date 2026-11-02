@@ -49,26 +49,8 @@ theorem mem_roots_reverse_iff {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
     {x : K} : x ∈ p.reverse.roots ↔ ∃ r ∈ p.roots, r⁻¹ = x := by
   rw [Polynomial.roots_reverse_eq_map_inv hp h0, Multiset.mem_map]
 
-/-- Reversal preserves `Splits` over a field. -/
-@[deprecated Polynomial.Splits.reverse (since := "2026-10-21")]
-theorem splits_reverse {p : K[X]} (h : p.Splits) :
-    p.reverse.Splits :=
-  h.reverse
-
-/-- Reflecting a polynomial at a degree `N` at least its own `natDegree` factors
-a power of `X` out of its reversal. -/
-theorem reflect_eq_X_pow_mul_reverse {R : Type*} [Semiring R] (f : R[X]) {N : ℕ}
-    (hN : f.natDegree ≤ N) :
-    reflect N f = X ^ (N - f.natDegree) * f.reverse := by
-  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hN
-  induction k with
-  | zero => simp [Polynomial.reverse]
-  | succ k ih =>
-      rw [Nat.add_succ, Polynomial.reflect_succ f (Nat.le_add_right _ _),
-        ih (Nat.le_add_right _ _),
-        mul_assoc, ← Polynomial.commute_X, ← mul_assoc, ← pow_succ]
-      rw [show f.natDegree + k - f.natDegree = k by lia,
-        show f.natDegree + k + 1 - f.natDegree = k + 1 by lia]
+@[deprecated Polynomial.reflect_eq_X_pow_mul_reverse (since := "2026-11-02")]
+alias reflect_eq_X_pow_mul_reverse := Polynomial.reflect_eq_X_pow_mul_reverse
 
 /-- Reflection is linear on a polynomial family `f + C μ * g`. -/
 theorem reflect_add_C_mul {R : Type*} [Semiring R] (f g : R[X]) (μ : R) (N : ℕ) :
@@ -89,20 +71,6 @@ theorem leadingCoeff_reflect_eq_coeff_zero_of_natDegree_le {R : Type*} [Semiring
     {p : R[X]} {N : ℕ} (hN : p.natDegree ≤ N) (h0 : p.coeff 0 ≠ 0) :
     (reflect N p).leadingCoeff = p.coeff 0 := by
   simp [Polynomial.leadingCoeff, natDegree_reflect_eq_of_coeff_zero_ne hN h0]
-
-/-- Reflection at any degree at least `p.natDegree` preserves splitting. -/
-@[deprecated Polynomial.Splits.reflect (since := "2026-10-21")]
-theorem splits_reflect_of_splits {p : K[X]} (h : p.Splits) {N : ℕ}
-    (hN : p.natDegree ≤ N) :
-    (reflect N p).Splits :=
-  h.reflect hN
-
-/-- For polynomials of degree at most `N`, reflection preserves and reflects
-splitting. -/
-@[deprecated Polynomial.splits_reflect_iff (since := "2026-10-21")]
-theorem splits_reflect_iff {p : K[X]} {N : ℕ} (hN : p.natDegree ≤ N) :
-    (reflect N p).Splits ↔ p.Splits :=
-  Polynomial.splits_reflect_iff hN
 
 /-- Reflection sends a nonzero root to its inverse at any valid degree bound. -/
 theorem isRoot_reflect_inv_iff {p : K[X]} {b : K} (hb : b ≠ 0)
@@ -177,7 +145,7 @@ theorem card_roots_reflect_Ioi {p : K[X]} (hp : p.Splits) (h0 : p.coeff 0 ≠ 0)
     rw [Multiset.filter_nsmul, Multiset.filter_singleton,
       ite_eq_right (not_lt_of_ge ha.le)]
     simp
-  rw [reflect_eq_X_pow_mul_reverse p hN,
+  rw [Polynomial.reflect_eq_X_pow_mul_reverse p hN,
     Polynomial.roots_mul
       (mul_ne_zero (pow_ne_zero _ Polynomial.X_ne_zero)
         (reverse_ne_zero_of_coeff_zero_ne h0)),
@@ -210,7 +178,7 @@ private theorem card_roots_reflect_Ioi_of_neg {p : K[X]} (hp : p.Splits)
     ((reflect N p).roots.filter (fun x => a < x)).card =
       (N - p.natDegree) +
         (p.roots.filter (fun r => r < a⁻¹)).card := by
-  rw [reflect_eq_X_pow_mul_reverse p hN,
+  rw [Polynomial.reflect_eq_X_pow_mul_reverse p hN,
     Polynomial.roots_mul
       (mul_ne_zero (pow_ne_zero _ Polynomial.X_ne_zero)
         (reverse_ne_zero_of_coeff_zero_ne h0)),

@@ -66,10 +66,6 @@ private lemma summable_norm_expSeq (ε : ℝ) (z : ℂ) :
     Summable fun n => ‖(expSeq ε n : ℂ) * z ^ n‖ := by
   simpa [expSeq, norm_pow] using (hasSum_expSeq |ε| ‖z‖).summable.norm
 
-private lemma eventually_disc (c : ℝ) : ∀ᶠ z in 𝓝 (0 : ℂ), c * ‖z‖ < 1 := by
-  exact (continuous_const.mul continuous_norm).continuousAt.eventually_lt continuousAt_const
-    (by simp)
-
 private lemma eventually_hasSum_genFun {a : ℕ → ℝ} (h : IsPolyaFreqSeq a) (h0 : a 0 = 1) :
     ∀ᶠ z in 𝓝 (0 : ℂ),
       HasSum (fun n => (a n : ℂ) * z ^ n) (∑' n, (a n : ℂ) * z ^ n) :=
@@ -228,29 +224,6 @@ private lemma summable_norm_of_nonneg_hasSum {p : ℕ → ℝ} (hp : ∀ n, 0 �
 
 end Lib
 
-namespace FinalAux
-
-private lemma nonneg_series_real {p : ℕ → ℝ} {F : ℂ → ℂ}
-    (hF : ∀ z : ℂ, HasSum (fun n => (p n : ℂ) * z ^ n) (F z)) (r : ℝ) :
-    HasSum (fun n => p n * r ^ n) (F r).re ∧ (F r).im = 0 := by
-  have h := (Complex.hasSum_iff _ _).1 (hF r)
-  refine ⟨?_, ?_⟩
-  · simpa [← Complex.ofReal_pow, Complex.re_ofReal_mul] using h.1
-  · have him := h.2
-    simp only [← Complex.ofReal_pow, ← Complex.ofReal_mul, Complex.ofReal_im] at him
-    exact him.unique hasSum_zero
-
-private lemma nonneg_series_ge {p : ℕ → ℝ} (hp : ∀ n, 0 ≤ p n) {F : ℂ → ℂ}
-    (hF : ∀ z : ℂ, HasSum (fun n => (p n : ℂ) * z ^ n) (F z))
-    {r : ℝ} (hr : 0 ≤ r) : p 0 ≤ ‖F r‖ := by
-  have h := (nonneg_series_real hF r).1
-  have h0 : p 0 * r ^ 0 ≤ (F r).re :=
-    le_hasSum h 0 (fun j _ => mul_nonneg (hp j) (pow_nonneg hr j))
-  simp only [pow_zero, mul_one] at h0
-  exact h0.trans (Complex.re_le_norm _)
-
-end FinalAux
-
 /-- **Edrei's Proposition A for sequences with property (P) (E8).**
 `f = e^φ ∏(1+α z)/∏(1-β z)`
 near `0` with `φ` entire and `α, β ≥ 0` summable; moreover `e^φ ∏(1+α z)` and
@@ -329,7 +302,7 @@ private theorem exists_hasSum_exp_mul_prod_div {a : ℕ → ℝ} (hpf : IsPolyaF
       exact Lib.tprod_one_add_ne_zero (Lib.summable_norm_ofReal sα) hc hz
     obtain ⟨hai, hzi⟩ := Lib.eq_neg_inv_of_one_add_mul_eq_zero hi
     have hr : (0 : ℝ) ≤ 1 / α i := div_nonneg zero_le_one (hα i)
-    have := FinalAux.nonneg_series_ge hq hGs hr
+    have := nonneg_series_ge hq hGs hr
     rw [hq0] at this
     rw [hzi, ← Complex.ofReal_neg, neg_neg]
     intro h0'; rw [h0', norm_zero] at this; linarith
@@ -344,7 +317,7 @@ private theorem exists_hasSum_exp_mul_prod_div {a : ℕ → ℝ} (hpf : IsPolyaF
     obtain ⟨hbi, hzi⟩ := Lib.eq_neg_inv_of_one_add_mul_eq_zero hi
     have hr : (0 : ℝ) ≤ -(1 / -β i) := by
       rw [div_neg, neg_neg]; exact div_nonneg zero_le_one (hβ i)
-    have := FinalAux.nonneg_series_ge hp hFs hr
+    have := nonneg_series_ge hp hFs hr
     rw [hp0] at this
     rw [hzi]
     intro h0'; rw [h0', norm_zero] at this; linarith

@@ -23,26 +23,6 @@ namespace RealRooted.Poisson
 
 noncomputable section
 
-private theorem derivative_interl_self {p : ℝ[X]} (hp : IsPFPolynomial p) :
-    Interl p.derivative p := by
-  by_cases hp0 : p = 0
-  · rw [hp0, derivative_zero]
-    exact interl_zero_left 0
-  have hps := hp.ne_zero_and_splits hp0
-  by_cases hdeg0 : p.natDegree = 0
-  · rw [Polynomial.derivative_eq_zero.mpr hdeg0]
-    exact interl_zero_left p
-  by_cases hdeg1 : p.natDegree = 1
-  · have hder_ne : p.derivative ≠ 0 :=
-      Polynomial.derivative_ne_zero.mpr hdeg0
-    have hder_deg0 : p.derivative.natDegree = 0 := by
-      rw [p.natDegree_derivative, hdeg1]
-    exact
-      (StrictInterl.of_degree_zero_right_of_degree_one hder_ne
-        (Polynomial.Splits.of_natDegree_eq_zero hder_deg0) hp0 hps.2
-        hder_deg0 hdeg1).toInterl
-  · exact (derivative_interlaces_of_natDegree_ne_zero hps.2 hdeg0).toStrictInterl.toInterl
-
 private def affinePFStep (r : ℝ) (D F : ℝ[X]) : ℝ[X] :=
   (X + C r) * F + X * D
 
@@ -92,7 +72,7 @@ theorem preservesPF_affine_of_nonneg {c a b : ℝ} (hc : 0 ≤ c)
   have hD : IsPFPolynomial D :=
     (IsPFPolynomial.of_C_nonneg hc).mul hf.derivative
   have hDf : Interl D f := by
-    exact (derivative_interl_self hf).C_mul_left_of_nonneg hc
+    exact hf.derivative_interl_self.C_mul_left_of_nonneg hc
   have hstep : IsPFPolynomial (affinePFStep (a / b) D f) :=
     affinePFStep_isPF (div_nonneg ha hb) hDf hD hf
   have hscale : IsPFPolynomial (C b * affinePFStep (a / b) D f) :=
@@ -126,7 +106,7 @@ theorem interl_starC_affine_self_of_nonneg {c a b : ℝ} (hc : 0 ≤ c)
   have hD : IsPFPolynomial D :=
     (IsPFPolynomial.of_C_nonneg hc).mul hf.derivative
   have hDf : Interl D f :=
-    (derivative_interl_self hf).C_mul_left_of_nonneg hc
+    hf.derivative_interl_self.C_mul_left_of_nonneg hc
   have hXD : Interl f (X * D) :=
     interl_mul_X_of_interl hDf hD.hasNonnegCoeffs hf.hasNonnegCoeffs
   have hXF : Interl f (X * f) :=
