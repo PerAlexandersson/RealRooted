@@ -629,7 +629,8 @@ private def linRecAttempt (L : LinRecData) (pr : LinRecProbe) (reg : Regime) (ki
       | ((simp only [RealRooted.LinRec.rhs, List.map_cons, List.map_nil, List.sum_cons,
             List.sum_nil, Function.iterate_zero, Function.iterate_one,
             Function.iterate_succ_apply', id_eq, add_zero, Nat.add_assoc, Nat.reduceAdd] <;>
-          ring) <;> done)
+          -- not `ring`: its `ring_nf` fallback would print a "Try this" in the user's file
+          first | ring1 | (ring_nf; done)) <;> done)
       | (change _ = $rhs
          apply Polynomial.funext
          intro x
