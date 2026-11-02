@@ -5,7 +5,8 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
+public import Mathlib.Algebra.Polynomial.Homogenize
+import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
 public import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.Ring
 

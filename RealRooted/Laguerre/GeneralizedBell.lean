@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.Laguerre.FiniteCombinations
+public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.FiniteCombinations
+public import RealRooted.SimpleRoots
+import RealRooted.Laguerre.FiniteCombinations
 
 import RealRooted.MaWang.StrictStep
 import RealRooted.QuadraticInterlacingClosure
