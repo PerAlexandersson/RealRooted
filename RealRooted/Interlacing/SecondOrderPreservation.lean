@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.Interlacing.SecondOrderClassification
+public import RealRooted.Interlacing.QuadraticPFPreservers
+import RealRooted.Interlacing.SecondOrderClassification
 import RealRooted.Derivative.Interlacing
 import RealRooted.Interlacing.Residue
 import RealRooted.Interlacing.RootCountSigns

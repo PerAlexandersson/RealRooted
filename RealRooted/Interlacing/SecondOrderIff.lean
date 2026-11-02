@@ -4,7 +4,8 @@ public import RealRooted.PFPolynomial
 public import RealRooted.Basic.Coefficients
 public import Mathlib.Algebra.Polynomial.Basic
 public import RealRooted.SimpleRoots
-public import RealRooted.Interlacing.SecondOrderClassification
+public import RealRooted.Interlacing.QuadraticPFPreservers
+import RealRooted.Interlacing.SecondOrderClassification
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.Analysis.Real.Sqrt
 public import Mathlib.Algebra.Order.Group.Unbundled.Abs
