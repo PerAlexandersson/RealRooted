@@ -78,7 +78,7 @@ theorem IsQuadraticDifferentialOrbit.monic_and_natDegree_eq
           rhoGammaOperator ρ γ (P n) =
             (C ρ * X + C 0 * X ^ 2) * (P n).derivative +
               (C γ + C 1 * X) * P n + r := by
-        simp only [rhoGammaOperator, r, map_zero, zero_mul, add_zero,
+        simp only [rhoGammaOperator_eq, r, map_zero, zero_mul, add_zero,
           map_one, one_mul]
         ring
       rw [hP.2 n, hform]
@@ -95,7 +95,7 @@ private lemma coeff_rhoGammaOperator_succ (ρ γ : ℝ) (p : ℝ[X]) (k : ℕ) :
       rhoGammaOperator ρ γ p =
         (C ρ * X + C 0 * X ^ 2) * p.derivative +
           (C γ + C 1 * X) * p + X * p.derivative.derivative := by
-    simp only [rhoGammaOperator, map_zero, zero_mul, add_zero, map_one,
+    simp only [rhoGammaOperator_eq, map_zero, zero_mul, add_zero, map_one,
       one_mul]
     ring
   rw [hform, coeff_add,
@@ -110,7 +110,7 @@ private lemma coeff_pred_eq_firstMoment {P : ℕ → ℝ[X]} {ρ γ : ℝ}
   induction n, hn using Nat.le_induction with
   | base =>
       rw [hP.2 0, hP.1]
-      simp [rhoGammaOperator, quadraticOrbitFirstMoment]
+      simp [rhoGammaOperator_eq, quadraticOrbitFirstMoment]
   | succ n hn ih =>
       have hshape := hP.monic_and_natDegree_eq n
       have htop : (P n).coeff n = 1 := by
@@ -149,7 +149,7 @@ private lemma coeff_pred_pred_eq_moments {P : ℕ → ℝ[X]} {ρ γ : ℝ}
   induction n, hn using Nat.le_induction with
   | base =>
       rw [hP.2 1, hP.2 0, hP.1]
-      norm_num [rhoGammaOperator, quadraticOrbitFirstMoment,
+      norm_num [rhoGammaOperator_eq, quadraticOrbitFirstMoment,
         quadraticOrbitSecondMoment]
       ring
   | succ n hn ih =>
@@ -185,7 +185,7 @@ theorem IsQuadraticDifferentialOrbit.newtonSum_two_eq
       norm_num [newtonSum, complexNewtonSum, complexRoots,
         quadraticOrbitSecondMoment, Multiset.powerSum]
     · rw [hP.2 0, hP.1]
-      norm_num [rhoGammaOperator, newtonSum, complexNewtonSum,
+      norm_num [rhoGammaOperator_eq, newtonSum, complexNewtonSum,
         complexRoots, quadraticOrbitSecondMoment, Multiset.powerSum]
       norm_cast
 
