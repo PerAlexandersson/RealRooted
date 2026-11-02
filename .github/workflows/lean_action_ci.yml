@@ -105,12 +105,12 @@ jobs:
           key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}
           restore-keys: |
             lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-
+      # The library only: the tactic regression examples (`RealRooted.Tactic.Examples`, about half
+      # of the build time) run in the parallel `examples` job.
       - uses: leanprover/lean-action@v1
         with:
-          # Keep the required check an explicit ordinary `lake build`, even
-          # if future Lake metadata changes lean-action auto-detection.
           build: true
-          build-args: ""
+          build-args: "RealRooted.Production"
           # caching is done by the explicit restore/save steps around this one
           use-github-cache: false
       - name: Save build cache
@@ -124,12 +124,12 @@ jobs:
       - name: Text-based style linters (lake exe lint-style)
         run: lake exe lint-style --github
       - name: Environment linters (lake exe runLinter)
-        run: env LEAN_ABORT_ON_PANIC=1 lake exe runLinter RealRooted
+        run: env LEAN_ABORT_ON_PANIC=1 lake exe runLinter RealRooted.Production
       # Imports needed only inside proofs must be plain `import`s (#2086); accepted
       # exceptions (e.g. modules named in tactic macro quotations) are in
       # scripts/private_imports_baseline.txt.
       - name: Check private imports (lake shake)
-        run: python3 scripts/check_private_imports.py
+        run: python3 scripts/check_private_imports.py --exclude RealRooted.Tactic.Examples
       - name: Check Mathlib shim registry
         run: |
           PYTHONDONTWRITEBYTECODE=1 python3 scripts/test_check_mathlib_shims.py
@@ -151,12 +151,56 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+  # The tactic regression examples, in parallel with `build`: they import only the tactics and
+  # the theory those use, so tactic changes no longer wait for the whole library and then the
+  # examples in one job.  It keeps its own cache (key prefix `lake-examples-`, saved on `main`),
+  # falling back to the library cache of `build`.
+  examples:
+    name: examples
+    if: ${{ github.event_name != 'pull_request' || !github.event.pull_request.draft }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    concurrency:
+      group: ${{ github.workflow }}-examples-${{ github.event.pull_request.number || github.ref }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Free up disk space
+        run: |
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc \
+            /usr/local/.ghcup /opt/hostedtoolcache/CodeQL || true
+          sudo apt-get clean || true
+      - name: Restore build cache
+        uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: .lake
+          key: lake-examples-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}
+          restore-keys: |
+            lake-examples-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-
+      - uses: leanprover/lean-action@v1
+        with:
+          build: true
+          build-args: "RealRooted.Tactic.Examples"
+          use-github-cache: false
+      - name: Save build cache
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: .lake
+          key: lake-examples-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain') }}-${{ hashFiles('lake-manifest.json') }}-${{ github.sha }}
+      - name: Environment linters (lake exe runLinter)
+        run: env LEAN_ABORT_ON_PANIC=1 lake exe runLinter RealRooted.Tactic.Examples
+      - name: Check private imports (lake shake)
+        run: python3 scripts/check_private_imports.py --only RealRooted.Tactic.Examples
+
   publish:
     name: publish
-    needs: [build, catalog]
+    needs: [build, examples, catalog]
     if: >-
       ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' &&
-          needs.build.result == 'success' && needs.catalog.result == 'success' }}
+          needs.build.result == 'success' && needs.examples.result == 'success' &&
+          needs.catalog.result == 'success' }}
     permissions:
       contents: read
       actions: read
