@@ -62,6 +62,7 @@ public import RealRooted.Tactic.Examples.RowRoutes
 public import RealRooted.Tactic.Examples.RowStrictInterl
 public import RealRooted.Tactic.Examples.RowSubseqDegree
 public import RealRooted.Tactic.Examples.RowVariableDelay
+public import RealRooted.Tactic.Examples.RowViaRoutes
 public import RealRooted.Tactic.Examples.SequenceSurvey
 public import RealRooted.Tactic.Examples.ShortlistRoutes
 public import RealRooted.Tactic.Examples.SideGoals
