@@ -14,6 +14,10 @@ usage:
   check_private_imports.py --report FILE   use an existing shake report instead of running shake
   check_private_imports.py --update        rewrite the baseline from the current findings
   check_private_imports.py --lake CMD      lake command to run (default `lake`)
+  check_private_imports.py --only PREFIX   check only the modules whose name starts with PREFIX
+  check_private_imports.py --exclude PREFIX  skip the modules whose name starts with PREFIX
+
+CI checks the library and the tactic examples in separate jobs, each with its own prefix.
 """
 import re
 import subprocess
@@ -25,7 +29,12 @@ BASELINE = ROOT / 'scripts' / 'private_imports_baseline.txt'
 NON_MODULES = ROOT / 'scripts' / 'non_module_files.txt'
 
 
-def module_names():
+def in_scope(module, only, exclude):
+    return ((only is None or module.startswith(only))
+            and (exclude is None or not module.startswith(exclude)))
+
+
+def module_names(only=None, exclude=None):
     skip = set()
     if NON_MODULES.exists():
         skip = {l.strip() for l in NON_MODULES.read_text().splitlines()
@@ -37,8 +46,9 @@ def module_names():
         if f in skip:
             continue
         head = (ROOT / f).read_text(encoding='utf-8').split('\n')[:12]
-        if 'module' in head:
-            mods.append(f[:-len('.lean')].replace('/', '.'))
+        name = f[:-len('.lean')].replace('/', '.')
+        if 'module' in head and in_scope(name, only, exclude):
+            mods.append(name)
     return mods
 
 
@@ -64,10 +74,13 @@ def findings(report):
 
 def main(argv):
     lake = argv[argv.index('--lake') + 1] if '--lake' in argv else 'lake'
+    only = argv[argv.index('--only') + 1] if '--only' in argv else None
+    exclude = argv[argv.index('--exclude') + 1] if '--exclude' in argv else None
+    scoped = only is not None or exclude is not None
     if '--report' in argv:
         report = Path(argv[argv.index('--report') + 1]).read_text(encoding='utf-8')
     else:
-        proc = subprocess.run([*lake.split(), 'shake', *module_names()], cwd=ROOT,
+        proc = subprocess.run([*lake.split(), 'shake', *module_names(only, exclude)], cwd=ROOT,
                               capture_output=True, text=True)
         report = proc.stdout + proc.stderr
     errors = re.findall(r'^error:.*$', report, re.M)
@@ -78,13 +91,22 @@ def main(argv):
             print(f'  {l}')
         return 2
     found = findings(report)
+
+    def path_in_scope(line):
+        return in_scope(line.split(':')[0][:-len('.lean')].replace('/', '.'), only, exclude)
+
+    found = {l for l in found if path_in_scope(l)}
+    if '--update' in argv and scoped:
+        print('error: --update needs the whole library; run it without --only/--exclude')
+        return 2
     if '--update' in argv:
         BASELINE.write_text(''.join(f'{l}\n' for l in sorted(found)), encoding='utf-8')
         print(f'wrote {len(found)} accepted finding(s) to {BASELINE.relative_to(ROOT)}')
         return 0
     base = set()
     if BASELINE.exists():
-        base = {l.strip() for l in BASELINE.read_text(encoding='utf-8').splitlines() if l.strip()}
+        base = {l.strip() for l in BASELINE.read_text(encoding='utf-8').splitlines()
+                if l.strip() and path_in_scope(l.strip())}
     new = sorted(found - base)
     gone = len(base - found)
     if new:

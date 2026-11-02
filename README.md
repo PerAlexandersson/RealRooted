@@ -38,7 +38,9 @@ lake build RealRooted.Hadamard          # any single module
 ```
 
 The default build covers the broad `RealRooted` umbrella, `Production`, and the
-tactic regressions. For an independent kernel re-check and axiom audit of the
+tactic regressions. CI builds `RealRooted.Production` (job `build`) and
+`RealRooted.Tactic.Examples` (job `examples`) in parallel; together they cover
+every module. For an independent kernel re-check and axiom audit of the
 comparator theorem surface, run `./verify.sh` on x86_64 Linux or
 `./verify_docker.sh` elsewhere. Pinned tool versions are in
 `comparator/versions.env`. These scripts complement `lake build`; they do not
@@ -207,8 +209,9 @@ Source files use the Lean module system, following Mathlib's conventions:
   or dropped.  Shake cannot see names inside syntax quotations: a tactic module whose macro
   expands to a theorem, or to another tactic, must `public import` the module that declares it;
   otherwise the expansion fails in importers that are modules ("has not been implemented").
-  CI runs `python3 scripts/check_private_imports.py` after the build: it fails when shake finds
-  a new `public import` that only proofs need.  Accepted exceptions are listed in
+  CI runs `python3 scripts/check_private_imports.py` after the build (job `build` for the
+  library, job `examples` for the tactic examples, via `--exclude`/`--only`): it fails when
+  shake finds a new `public import` that only proofs need.  Accepted exceptions are listed in
   `scripts/private_imports_baseline.txt` (`--update` rewrites it).
 - A module can only import modules, and every tracked file is a module (#2016; Palomar requires
   this, #1351).  Umbrella files `public import` their members.  Test files import the library
@@ -249,9 +252,9 @@ beside their declarations; track missing proofs in GitHub issues.
   GitHub runners can validate PRs independently. One integrator reviews the
   statements, assumptions, source changes, and verification results.
 - Before merging, the exact candidate revision must pass all source guards,
-  the ordinary default build (including `Production` and the tactic
-  regressions), and the applicable transitive-axiom checks. The Comparator
-  audit covers only its listed theorem surface.
+  the ordinary default build (in CI the `build` job for `Production` and the
+  `examples` job for the tactic regressions), and the applicable transitive-axiom
+  checks. The Comparator audit covers only its listed theorem surface.
 - After a rebase or integration change, rerun the relevant checks. Cancelled,
   skipped, stale, or missing checks never count as success. Fix failed draft
   checks before marking a PR ready.
