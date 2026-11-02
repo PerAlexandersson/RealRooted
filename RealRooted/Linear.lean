@@ -528,4 +528,14 @@ lemma add_ne_zero_of_same_natDegree_of_posLeadingCoeff {p q : ℝ[X]}
     p + q ≠ 0 :=
   (hasPosLeadingCoeff_add_of_same_natDegree hdeg hp_pos hq_pos).ne_zero
 
+/-- The constant `1` interlaces itself. -/
+theorem interl_one_one : Interl (1 : ℝ[X]) 1 := Interl.refl fun _ => by simp
+
+/-- `X` interlaces itself. -/
+theorem interl_X_X : Interl (X : ℝ[X]) X := Interl.refl fun _ => isRealRooted_X.2
+
+/-- The constant `1` interlaces `X`. -/
+theorem interl_one_X : Interl (1 : ℝ[X]) X :=
+  (interlaces_one_linear natDegree_X).toStrictInterl.toInterl
+
 end RealRooted
