@@ -229,19 +229,10 @@ theorem IsPFPolynomial.interl_theta {p : ℝ[X]} (hp : IsPFPolynomial p) :
     exact interl_zero_right p
   · exact (strictInterl_self_theta_of_natDegree_ne_zero hp hdeg).toInterl
 
-/-- The derivative of a PF polynomial precedes the polynomial, including constants. -/
-theorem IsPFPolynomial.interl_derivative_self {p : ℝ[X]} (hp : IsPFPolynomial p) :
-    Interl p.derivative p := by
-  by_cases hdeg : p.natDegree = 0
-  · rw [derivative_eq_zero.mpr hdeg]
-    exact interl_zero_left p
-  · exact (derivative_interlaces_of_natDegree_ne_zero
-      (hp.ne_zero_and_splits (fun hp0 ↦ hdeg (by simp [hp0]))).2 hdeg).toStrictInterl.toInterl
-
 /-- The Euler derivative of a PF polynomial precedes its product by `X`. -/
 theorem IsPFPolynomial.interl_theta_X_mul {p : ℝ[X]} (hp : IsPFPolynomial p) :
     Interl (theta p) (X * p) := by
-  simpa [theta] using hp.interl_derivative_self.mul_X_both
+  simpa [theta] using hp.derivative_interl_self.mul_X_both
 
 /-- Zero-aware `X`-duality for PF polynomials. -/
 theorem interl_iff_interl_X_mul {p q : ℝ[X]}

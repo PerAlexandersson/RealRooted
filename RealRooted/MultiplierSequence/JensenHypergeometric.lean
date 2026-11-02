@@ -170,28 +170,6 @@ theorem strictInterl_doubleNarayanaPolynomial_succ (n : ℕ) :
       (hasNonnegCoeffs_X.pow n)
       (hasNonnegCoeffs_X.pow (n + 1)) 0 0
 
-/-- Increasing the padding of a reciprocal shift inserts one factor of `X`. -/
-theorem reciprocalShift_succ_eq_X_mul {D : ℕ} {p : ℝ[X]}
-    (hdegree : p.natDegree ≤ D) :
-    reciprocalShift (D + 1) p = X * reciprocalShift D p := by
-  ext i
-  cases i with
-  | zero =>
-      rw [reciprocalShift, Polynomial.coeff_reflect, Polynomial.revAt_zero,
-        coeff_X_mul_zero]
-      exact coeff_eq_zero_of_natDegree_lt (by lia)
-  | succ i =>
-      rw [reciprocalShift, Polynomial.coeff_reflect, coeff_X_mul,
-        reciprocalShift, Polynomial.coeff_reflect]
-      by_cases hi : i ≤ D
-      · rw [Polynomial.revAt_le hi, Polynomial.revAt_le (by lia)]
-        congr 1
-        lia
-      · rw [Polynomial.revAt_eq_self_of_lt (by lia),
-          Polynomial.revAt_eq_self_of_lt (by lia)]
-        rw [coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hdegree (by lia)),
-          coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hdegree (by lia))]
-
 /-- Reciprocal shifts at consecutive exact degree bounds preserve the
 forward orientation of a PF interlacing pair. -/
 theorem strictInterl_reciprocalShift_succ

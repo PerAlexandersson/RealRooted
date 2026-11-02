@@ -28,6 +28,13 @@ lemma rootMultiplicity_le_natDegree (p : R[X]) (a : R) :
   exact (count_roots p).symm.le.trans
     ((Multiset.count_le_card a p.roots).trans (card_roots' p))
 
+/-- Multiplication by a nonzero constant does not change a root multiplicity. -/
+lemma rootMultiplicity_C_mul {c a : R} (hc : c ≠ 0) (p : R[X]) :
+    (C c * p).rootMultiplicity a = p.rootMultiplicity a := by
+  obtain rfl | hp := eq_or_ne p 0
+  · simp
+  rw [rootMultiplicity_mul (mul_ne_zero (C_ne_zero.mpr hc) hp), rootMultiplicity_C, zero_add]
+
 /-- Multiplying a polynomial by `X` does not change the sum of its roots. -/
 @[simp] theorem sum_roots_X_mul (p : R[X]) :
     (X * p).roots.sum = p.roots.sum := by

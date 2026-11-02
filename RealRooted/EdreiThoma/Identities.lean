@@ -256,52 +256,6 @@ theorem S_succ_shift_sub_eq {a : ℕ → ℝ} (hA : ∀ n m, A a n m ≠ 0) (m n
   simp only [mul_comp, C_comp, X_comp]
   ring
 
-/-- The leading `N × N` block of the Toeplitz matrix. -/
-private def toepMat (a : ℕ → ℝ) (N : ℕ) : Matrix (Fin N) (Fin N) ℝ :=
-  Matrix.of fun i j => toeplitz a i j
-
-private lemma toepMat_mul {a c : ℕ → ℝ}
-    (hconv : ∀ n, ∑ k ∈ Finset.range (n + 1), c k * a (n - k) = if n = 0 then 1 else 0)
-    (N : ℕ) : toepMat a N * toepMat c N = 1 := by
-  ext i j; simp only [Matrix.mul_apply, toepMat, Matrix.of_apply, Matrix.one_apply]
-  rcases lt_or_ge (i : ℕ) j with hij | hij
-  · rw [ite_eq_right (by intro e; subst e; exact lt_irrefl _ hij)]
-    apply Finset.sum_eq_zero
-    intro l _
-    simp only [toeplitz_apply]
-    split_ifs <;> first | (exfalso; lia) | simp
-  · have := Fin.sum_univ_eq_sum_range
-      (fun l => toeplitz a i l * toeplitz c l j) N
-    rw [this]
-    have hsub : Finset.Ico (j : ℕ) (i + 1) ⊆ Finset.range N := by
-      intro l hl; simp at hl ⊢; lia
-    rw [← Finset.sum_subset hsub (fun l _ hl => by
-      simp only [Finset.mem_Ico, not_and_or, not_le, not_lt] at hl
-      simp only [toeplitz_apply]; split_ifs <;> first | (exfalso; lia) | simp)]
-    rw [Finset.sum_Ico_eq_sum_range]
-    have h2 : (i : ℕ) + 1 - j = (i - j : ℕ) + 1 := by lia
-    rw [h2]
-    have h3 : ∀ q ∈ Finset.range ((i - j : ℕ) + 1),
-        toeplitz a i (j + q) * toeplitz c (j + q) j = c q * a ((i - j : ℕ) - q) := by
-      intro q hq
-      simp at hq
-      simp only [toeplitz_apply]
-      rw [ite_eq_left (by lia), ite_eq_left (by lia)]
-      rw [mul_comm]; congr 2 <;> lia
-    rw [Finset.sum_congr rfl h3, hconv]
-    congr 1
-    simp only [Fin.ext_iff, eq_iff_iff]
-    lia
-
-private lemma toepMat_det {a : ℕ → ℝ} (h0 : a 0 = 1) (N : ℕ) : (toepMat a N).det = 1 := by
-  rw [Matrix.det_of_isLowerTriangular]
-  · simp [toepMat, toeplitz, h0]
-  · intro i j hij
-    simp only [toepMat, Matrix.of_apply, toeplitz]
-    rw [ite_eq_right]
-    have : i < j := hij
-    rw [Fin.lt_def] at this; lia
-
 /-- sign twist of the Toeplitz entries. -/
 private lemma tc_alt (b : ℕ → ℝ) (n i j : ℕ) :
     tc (fun k => (-1) ^ k * b k) ((n : ℤ) + i - j) =
@@ -488,10 +442,12 @@ private lemma coeff_S_big (a : ℕ → ℝ) (m n k : ℕ) (hk : n < k) : (S a m 
   rw [coeff_C_mul_X_pow, ite_eq_right]
   have := j.isLt; lia
 
-private lemma A_zero_size (a : ℕ → ℝ) (m : ℕ) : A a 0 m = 1 := by
+/-- The `0 × 0` determinant is `1`. -/
+lemma A_zero (a : ℕ → ℝ) (m : ℕ) : A a 0 m = 1 := by
   simp [A]
 
-private lemma A_one_size (a : ℕ → ℝ) (m : ℕ) : A a 1 m = a m := by
+/-- The `1 × 1` determinant is the entry itself. -/
+lemma A_one (a : ℕ → ℝ) (m : ℕ) : A a 1 m = a m := by
   simp [A, Matrix.det_unique, tc]
 
 private lemma A_shift_zero {a : ℕ → ℝ} (h0 : a 0 = 1) (n : ℕ) : A a n 0 = 1 := by
@@ -504,7 +460,7 @@ private lemma A_shift_zero {a : ℕ → ℝ} (h0 : a 0 = 1) (n : ℕ) : A a n 0 
     rw [Fin.lt_def] at this; lia
 
 private lemma S_size_zero {a : ℕ → ℝ} (m : ℕ) : S a m 0 = 1 := by
-  rw [S_eq_sum]; simp [A_zero_size, minorK]
+  rw [S_eq_sum]; simp [A_zero, minorK]
 
 private lemma coeff_CXmul_succ (r : ℝ) (P : ℝ[X]) (k : ℕ) :
     (C r * X * P).coeff (k + 1) = r * P.coeff k := by
@@ -520,7 +476,7 @@ private lemma coeff1_S_zero_shift {a : ℕ → ℝ} (h0 : a 0 = 1)
   | zero =>
     have := congrArg (fun p => p.coeff 1) (S_succ_eq hA 0 0)
     simp only [coeff_add, coeff_CXmul_succ, coeff_S_zero hA, coeff_S_big a 1 0 1 one_pos] at this
-    rw [this, rr, A_one_size, A_one_size, A_zero_size, A_zero_size, h0]
+    rw [this, rr, A_one, A_one, A_zero, A_zero, h0]
     simp
   | succ n ih =>
     have h5 := congrArg (fun p => p.coeff 1) (S_succ_eq hA 0 (n + 1))
@@ -532,7 +488,7 @@ private lemma coeff1_S_zero_shift {a : ℕ → ℝ} (h0 : a 0 = 1)
     linarith
 
 /-- Property (P) makes every `γ` ratio strictly positive. -/
-private lemma gam_pos_of_A_pos {a : ℕ → ℝ} (hP : ∀ n m, 0 < A a n m) (m n : ℕ) :
+lemma gam_pos_of_A_pos {a : ℕ → ℝ} (hP : ∀ n m, 0 < A a n m) (m n : ℕ) :
     0 < gam a m n := by
   unfold gam
   have := hP (n + 2) (m + 1)

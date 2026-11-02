@@ -99,7 +99,7 @@ private theorem roots_signedReciprocal_nonneg {d : ℕ} {F : ℝ[X]}
     DegreeDropReversal.reverse_ne_zero_of_coeff_zero_ne hq0
   intro r hr
   rw [signedReciprocal,
-    DegreeDropReversal.reflect_eq_X_pow_mul_reverse q hqdeg,
+    Polynomial.reflect_eq_X_pow_mul_reverse q hqdeg,
     Polynomial.roots_mul
       (mul_ne_zero (pow_ne_zero _ Polynomial.X_ne_zero) hrev0),
     Polynomial.roots_pow, Polynomial.roots_X, Multiset.mem_add] at hr

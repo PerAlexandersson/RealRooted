@@ -1154,12 +1154,6 @@ namespace SchurSzegoAristotle
 
 local notation "ssc" => RealRooted.schurSzegoComp
 
-private theorem rootMultiplicity_C_mul' {c : ℝ} (hc : c ≠ 0) (p : ℝ[X]) (a : ℝ) :
-    (C c * p).rootMultiplicity a = p.rootMultiplicity a := by
-  obtain rfl | hp := eq_or_ne p 0
-  · simp
-  rw [rootMultiplicity_mul (mul_ne_zero (C_ne_zero.mpr hc) hp), rootMultiplicity_C, zero_add]
-
 private theorem natDegree_derivative_eq' {p : ℝ[X]} {N : ℕ} (hp : p.natDegree = N + 1) :
     p.derivative.natDegree = N := by rw [Polynomial.natDegree_derivative, hp]; lia
 
@@ -1173,7 +1167,7 @@ private theorem rootMultiplicity_ssc_derivative (N : ℕ) (P Q : ℝ[X]) {r : �
     (ssc N P.derivative Q.derivative).rootMultiplicity r =
       (ssc (N + 1) P Q).rootMultiplicity r - 1 := by
   rw [← derivative_rootMultiplicity_of_root hr, derivative_ssc,
-    rootMultiplicity_C_mul' (by positivity)]
+    rootMultiplicity_C_mul (by positivity)]
 
 /-- `ssc` at a root: evaluation vanishes if the inputs have a common forced root. -/
 private theorem ssc_isRoot_of_forced {n : ℕ} {P Q : ℝ[X]} (hP : P.natDegree ≤ n)

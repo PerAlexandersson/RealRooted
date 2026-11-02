@@ -236,31 +236,6 @@ private theorem factorialHadamardProduct_interl_of_kreinSummandExpansion {f g p 
     (fun ap hap => hinterl ap.2 (hsummand ap hap))
     (fun ap hap => hnn ap.2 (hsummand ap hap))
 
-/-- A PF polynomial's derivative precedes the polynomial itself in the
-zero-aware orientation. -/
-theorem IsPFPolynomial.derivative_interl_self {p : ℝ[X]}
-    (hp : IsPFPolynomial p) :
-    Interl p.derivative p := by
-  by_cases hp0 : p = 0
-  · rw [hp0, derivative_zero]
-    exact interl_zero_left 0
-  have hps := hp.ne_zero_and_splits hp0
-  by_cases hdeg0 : p.natDegree = 0
-  · have hder0 : p.derivative = 0 :=
-      Polynomial.derivative_eq_zero.mpr hdeg0
-    rw [hder0]
-    exact interl_zero_left p
-  by_cases hdeg1 : p.natDegree = 1
-  · have hder_ne : p.derivative ≠ 0 :=
-      Polynomial.derivative_ne_zero.mpr hdeg0
-    have hder_deg0 : p.derivative.natDegree = 0 := by rw [p.natDegree_derivative, hdeg1]
-    exact
-      (StrictInterl.of_degree_zero_right_of_degree_one hder_ne
-        (Polynomial.Splits.of_natDegree_eq_zero hder_deg0) hp0 hps.2 hder_deg0
-        hdeg1).toInterl
-  · have hdeg2 : 2 ≤ p.natDegree := by lia
-    exact (derivative_interlaces_of_natDegree_ne_zero hps.2 (by lia)).toStrictInterl.toInterl
-
 /-- The first one-variable relation in Garloff--Wagner's double-deleted
 paragraph: for `u <= 0`, `(1 - uD)Lp` precedes `Lp`. -/
 theorem divFactorial_sub_C_mul_derivative_interl_self {p : ℝ[X]} {u : ℝ}

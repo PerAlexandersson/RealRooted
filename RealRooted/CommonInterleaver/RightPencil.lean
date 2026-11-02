@@ -193,17 +193,6 @@ theorem closedSegment_isRoot_iff_add_right_of_lt_one
   rw [closedSegment_eq_C_mul_add_right hβ]
   simp [Polynomial.IsRoot.def, (by linarith : 1 - β ≠ 0)]
 
-/-- Multiplying by a nonzero scalar preserves simple real roots. -/
-theorem HasSimpleRoots.C_mul {p : ℝ[X]} {c : ℝ}
-    (hp : HasSimpleRoots p) (hc : c ≠ 0) :
-    HasSimpleRoots (C c * p) := by
-  intro x hx
-  have hp_ne : p ≠ 0 := hp.ne_zero
-  have hcp_ne : C c * p ≠ 0 := mul_ne_zero (C_ne_zero.mpr hc) hp_ne
-  rw [Polynomial.rootMultiplicity_mul hcp_ne, Polynomial.rootMultiplicity_C]
-  have hroot_p : p.IsRoot x := by simpa [Polynomial.IsRoot.def, eval_mul, eval_C, hc] using hx
-  rw [hp x hroot_p]
-
 /-- The change of variables `β = μ / (μ + 1)` turns a nonnegative right-pencil
 parameter into an interior closed-segment parameter and preserves the root
 predicate. -/

@@ -122,7 +122,7 @@ reciprocals of the roots of `p n`, together with `0` to multiplicity
 theorem splits_reflect_of_isPFPolynomial {p : ℝ[X]} {n : ℕ}
     (hp : IsPFPolynomial p) (hp0 : p ≠ 0) (hn : p.natDegree ≤ n) :
     (reflect n p).Splits := by
-  rw [DegreeDropReversal.reflect_eq_X_pow_mul_reverse p hn]
+  rw [Polynomial.reflect_eq_X_pow_mul_reverse p hn]
   exact Polynomial.Splits.X_pow_mul_reverse (hp.2.1.resolve_left hp0) n
 
 /-- **The array-polynomial conclusion, modulo the normalized input.**  If the

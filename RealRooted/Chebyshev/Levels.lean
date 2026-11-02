@@ -8,6 +8,7 @@ public import Mathlib.RingTheory.Polynomial.Chebyshev
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.RootsExtrema
 import RealRooted.CubicDiscriminant
 import RealRooted.Interlacing.OuterDifference
+import RealRooted.Linear
 import RealRooted.MaWang.CriticalSign
 import RealRooted.MaWang.Weak.DerivativeSign
 import RealRooted.Mathlib.RingTheory.Polynomial.Chebyshev.Bounds
@@ -295,27 +296,6 @@ private lemma hasPosLeadingCoeff_comp_C_mul_X {p : ℝ[X]} {a : ℝ}
     Polynomial.leadingCoeff_C_mul_X]
   exact mul_pos hp (pow_pos ha _)
 
-/-- Translation of the variable preserves a positive leading coefficient. -/
-private lemma hasPosLeadingCoeff_comp_X_add_C {p : ℝ[X]}
-    (hp : HasPosLeadingCoeff p) (a : ℝ) :
-    HasPosLeadingCoeff (p.comp (X + C a)) := by
-  unfold HasPosLeadingCoeff at hp ⊢
-  rw [Polynomial.leadingCoeff_comp (by simp), Polynomial.leadingCoeff_X_add_C,
-    one_pow, mul_one]
-  exact hp
-
-/-- Multiplication by a nonzero scalar preserves simple roots. -/
-private lemma hasSimpleRoots_C_mul {p : ℝ[X]} {a : ℝ}
-    (hp : HasSimpleRoots p) (ha : a ≠ 0) :
-    HasSimpleRoots (C a * p) := by
-  intro r hr
-  have hp_ne : p ≠ 0 := hp.ne_zero
-  have hprod_ne : C a * p ≠ 0 := mul_ne_zero (C_ne_zero.mpr ha) hp_ne
-  rw [Polynomial.rootMultiplicity_mul hprod_ne, Polynomial.rootMultiplicity_C]
-  have hroot_p : p.IsRoot r := by
-    simpa [Polynomial.IsRoot.def, ha] using hr
-  rw [hp r hroot_p]
-
 /-- At every critical point of `Tₙ`, a level `h ∈ [-1, 1]` has the weak sign required
 by the critical-value criterion. -/
 private lemma eval_secondDerivative_mul_sub_nonpos {n : ℕ} (hn : 2 ≤ n)
@@ -487,7 +467,7 @@ theorem affineLevel_hasPosLeadingCoeff {α lam h : ℝ} {n : ℕ}
   have hlevel_pos : HasPosLeadingCoeff (T ℝ n - C h) :=
     hasPosLeadingCoeff_sub_C (f := T ℝ n) (by simp [HasPosLeadingCoeff])
       (by simpa using hn) h
-  have htranslated := hasPosLeadingCoeff_comp_X_add_C hlevel_pos 1
+  have htranslated := HasPosLeadingCoeff.comp_X_add_C hlevel_pos 1
   have hscaled := hasPosLeadingCoeff_comp_C_mul_X htranslated hlam
   have hfinal := hasPosLeadingCoeff_C_mul hα hscaled
   simpa [affineLevel, Polynomial.comp_assoc, add_comm] using hfinal
@@ -570,7 +550,7 @@ theorem affineLevel_isPFPolynomial {α lam h : ℝ} {n : ℕ}
     hasPosLeadingCoeff_sub_C (f := T ℝ n) (by simp [HasPosLeadingCoeff])
       (by simpa using hn) h
   have hq_pos : HasPosLeadingCoeff q :=
-    hasPosLeadingCoeff_comp_X_add_C hlevel_pos 1
+    HasPosLeadingCoeff.comp_X_add_C hlevel_pos 1
   have hq_roots : ∀ r ∈ q.roots, r ≤ 0 := by
     intro r hr
     have hq_root := (Polynomial.mem_roots hq_pos.ne_zero).mp hr
@@ -597,7 +577,7 @@ theorem affineLevel_splits_simple_roots_mem_Ioo {α lam h : ℝ} {n : ℕ}
   have hbase := T_sub_C_splits_simple_roots_mem_Ioo hn hh
   have hcomp_simple := hbase.2.1.comp_C_mul_X_add_C (a := lam) (b := 1) hlam.ne'
   have hsimple : HasSimpleRoots (affineLevel α lam h n) := by
-    apply hasSimpleRoots_C_mul (a := α) _ hα.ne'
+    apply HasSimpleRoots.C_mul (c := α) _ hα.ne'
     simpa [affineLevel, add_comm] using hcomp_simple
   refine ⟨affineLevel_splits α lam h hn ⟨hh.1.le, hh.2.le⟩, hsimple, ?_⟩
   intro r hr

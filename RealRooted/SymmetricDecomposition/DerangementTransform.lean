@@ -219,10 +219,6 @@ def pascalResolution : BrandenLeite.Resolution pascal where
     rw [show n + 1 - k = (n - k) + 1 by lia, show n + 1 - (k + 1) = n - k by lia]
     ring
 
-/-- The degree-`d` magic-basis expansion with coefficients `c`. -/
-def magicExpansion (d : ℕ) (c : ℕ → ℝ) : ℝ[X] :=
-  Polynomial.magicExpansion d c
-
 /-- **Brändén--Solus, Corollary 3.7** (Pólya frequency part): the deranged image of a
 nonnegative combination `∑ c_k X^k (1 + X)^(d-k)` is zero or real-rooted with nonnegative
 coefficients and only nonpositive roots. The zero case happens only for `d = 1` or when all
@@ -263,8 +259,8 @@ theorem transform_X : transform X = 0 := by
 theorem transform_magicExpansion_of_le_one {d : ℕ} (hd : d ≤ 1) (c : ℕ → ℝ) :
     transform (magicExpansion d c) = C (c 0) := by
   interval_cases d
-  · simp [magicExpansion, Polynomial.magicExpansion]
-  · simp [magicExpansion, Polynomial.magicExpansion, Finset.sum_range_succ]
+  · simp [Polynomial.magicExpansion]
+  · simp [Polynomial.magicExpansion, Finset.sum_range_succ]
 
 private theorem hasNonnegCoeffs_polynomial (n : ℕ) : HasNonnegCoeffs (polynomial n) := by
   cases n with
@@ -306,7 +302,7 @@ theorem transform_magicExpansion_ne_zero {d : ℕ} (hd : 2 ≤ d) {c : ℕ → �
   have h1 : (transform (magicExpansion d c)).eval 1 = 0 := by simp [h0]
   have h2 : (transform (magicExpansion d c)).eval 1 =
       ∑ k ∈ Finset.range (d + 1), c k * (transform (X ^ k * (1 + X) ^ (d - k))).eval 1 := by
-    simp [magicExpansion, Polynomial.magicExpansion, map_sum, eval_finsetSum]
+    simp [Polynomial.magicExpansion, map_sum, eval_finsetSum]
   have hnn : ∀ k ∈ Finset.range (d + 1),
       0 ≤ c k * (transform (X ^ k * (1 + X) ^ (d - k))).eval 1 := by
     intro k hk

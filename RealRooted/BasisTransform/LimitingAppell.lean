@@ -2,6 +2,7 @@ module
 
 public import RealRooted.BasisTransform.AppellRigidity
 
+import RealRooted.BasisTransform.AppellTranslationRigidity
 import RealRooted.RootContinuity
 import RealRooted.Linear
 import RealRooted.Hadamard.Newton
@@ -166,91 +167,6 @@ private theorem scaledAppellCoefficient_zero (q : ℝ[X]) (k : ℕ) :
     rw [hzero]
     simp
 
-private theorem eq_sum_of_isAppellExpansion
-    {P Q : ℕ → ℝ[X]} (hPQ : IsAppellExpansion P Q)
-    (hPdeg : ∀ n, (P n).natDegree = n)
-    (hQdeg : ∀ k, (Q k).natDegree ≤ k / 2) (n : ℕ) :
-    P n = ∑ k ∈ range (n + 1),
-      C (n.descFactorial k : ℝ) * (X ^ (n - k) * Q k) := by
-  ext i
-  by_cases hi : i ≤ n
-  · have hcoeff := coeff_eq_sum_descFactorial_of_isAppellExpansion hPQ
-      (j := n - i) (Nat.sub_le n i)
-    rw [Nat.sub_sub_self hi] at hcoeff
-    rw [hcoeff, finsetSum_coeff]
-    have hsubset : Icc (n - i) n ⊆ range (n + 1) := by
-      intro k hk
-      exact Finset.mem_range.mpr (Nat.lt_succ_iff.mpr (Finset.mem_Icc.mp hk).2)
-    rw [← Finset.sum_subset hsubset]
-    · apply Finset.sum_congr rfl
-      intro k hk
-      have hbounds := Finset.mem_Icc.mp hk
-      rw [coeff_C_mul, coeff_X_pow_mul', ite_eq_left]
-      · congr 2
-        lia
-      · lia
-    · intro k hkrange hkIcc
-      have hkn : k ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hkrange)
-      have hklt : k < n - i := lt_of_not_ge fun hkge =>
-        hkIcc (Finset.mem_Icc.mpr ⟨hkge, hkn⟩)
-      rw [coeff_C_mul, coeff_X_pow_mul', ite_eq_right]
-      · simp
-      · lia
-  · have hni : n < i := lt_of_not_ge hi
-    rw [coeff_eq_zero_of_natDegree_lt (by simpa [hPdeg n] using hni), finsetSum_coeff]
-    symm
-    apply Finset.sum_eq_zero
-    intro k hk
-    apply coeff_eq_zero_of_natDegree_lt
-    have hkn : k ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
-    calc
-      (C (n.descFactorial k : ℝ) * (X ^ (n - k) * Q k)).natDegree ≤
-          (X ^ (n - k) * Q k).natDegree := natDegree_C_mul_le _ _
-      _ ≤ (X ^ (n - k)).natDegree + (Q k).natDegree := natDegree_mul_le
-      _ ≤ (n - k) + k / 2 := by
-        rw [natDegree_X_pow]
-        exact Nat.add_le_add_left (hQdeg k) (n - k)
-      _ ≤ n := by lia
-      _ < i := hni
-
-private theorem basisTransform_eq_sum_iterate_derivative
-    {P Q : ℕ → ℝ[X]} (hPQ : IsAppellExpansion P Q)
-    (hPdeg : ∀ n, (P n).natDegree = n)
-    (hQdeg : ∀ k, (Q k).natDegree ≤ k / 2)
-    {p : ℝ[X]} {N : ℕ} (hp : p.natDegree ≤ N) :
-    basisTransform P p =
-      ∑ k ∈ range (N + 1), Q k * derivative^[k] p := by
-  have hpsum := p.as_sum_range_C_mul_X_pow' (Nat.lt_succ_of_le hp)
-  conv_lhs => rw [hpsum]
-  rw [basisTransform_finset_sum]
-  simp only [basisTransform_C_mul_X_pow]
-  calc
-    _ = ∑ n ∈ range (N + 1), ∑ k ∈ range (N + 1),
-        C (p.coeff n) *
-          (C (n.descFactorial k : ℝ) * (X ^ (n - k) * Q k)) := by
-      apply Finset.sum_congr rfl
-      intro n hn
-      rw [eq_sum_of_isAppellExpansion hPQ hPdeg hQdeg n, Finset.mul_sum]
-      apply Finset.sum_subset (range_mono (by
-        exact Nat.succ_le_succ (Nat.le_of_lt_succ (Finset.mem_range.mp hn))))
-      intro k hkN hkn
-      have hnk : n < k := by
-        have hknot : ¬k < n + 1 := fun h => hkn (Finset.mem_range.mpr h)
-        lia
-      rw [Nat.descFactorial_eq_zero_iff_lt.mpr hnk]
-      simp
-    _ = ∑ k ∈ range (N + 1), Q k * derivative^[k] p := by
-      rw [Finset.sum_comm]
-      apply Finset.sum_congr rfl
-      intro k hk
-      conv_rhs => rw [hpsum]
-      rw [iterate_derivative_sum]
-      rw [Finset.mul_sum]
-      apply Finset.sum_congr rfl
-      intro n hn
-      rw [iterate_derivative_C_mul, iterate_derivative_X_pow_eq_C_mul]
-      ring
-
 private theorem rescaledBasisPower_eq_sum_scaled
     {P : ℕ → ℝ[X]} (hPdeg : ∀ n, (P n).natDegree = n)
     (hPmonic : ∀ n, (P n).Monic)
@@ -267,7 +183,7 @@ private theorem rescaledBasisPower_eq_sum_scaled
   have hQdeg := appellCoefficient_natDegree_le hPdeg hPmonic hpres
   have hinputdeg : ((X + C (s ^ 2)) ^ N : ℝ[X]).natDegree ≤ N := by
     rw [natDegree_pow, natDegree_X_add_C, mul_one]
-  have hexpand := basisTransform_eq_sum_iterate_derivative
+  have hexpand := basisTransform_eq_sum_iterate_derivative_of_isAppellExpansion
     (isAppellExpansion_appellCoefficient P) hPdeg hQdeg hinputdeg
   rw [rescaledBasisPower]
   change C ((s ^ N)⁻¹) *
@@ -415,8 +331,8 @@ private theorem coeff_zero_appellCoefficient_zero_eq_one
       (∀ r ∈ p.roots, r ≤ 0) → (basisTransform P p).Splits) :
     (appellCoefficient P 0).coeff 0 = 1 := by
   have hQdeg := appellCoefficient_natDegree_le hPdeg hPmonic hpres
-  have hexpand := eq_sum_of_isAppellExpansion
-    (isAppellExpansion_appellCoefficient P) hPdeg hQdeg 0
+  have hexpand := eq_sum_of_isAppellExpansion_of_natDegree_le
+    (isAppellExpansion_appellCoefficient P) hPdeg hQdeg (Nat.le_refl 0)
   have hPzero : P 0 = 1 :=
     eq_one_of_monic_natDegree_zero (hPmonic 0) (hPdeg 0)
   norm_num [Finset.sum_range_succ] at hexpand

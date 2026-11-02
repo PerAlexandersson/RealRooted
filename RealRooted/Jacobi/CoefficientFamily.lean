@@ -143,30 +143,6 @@ theorem jacobiCoefficientPolynomial_nat_diagonal (m n : ℕ) :
   · rw [coeff_jacobiCoefficientPolynomial, ite_eq_right hk,
       coeff_narayanaPolynomial_of_lt (Nat.lt_of_not_ge hk)]
 
-private lemma succ_mul_ring_choose_add_one (x : ℝ) (k : ℕ) :
-    (k + 1 : ℝ) * Ring.choose (x + 1) (k + 1) =
-      (x + 1) * Ring.choose x k := by
-  rw [Ring.choose_eq_smul, Ring.choose_eq_smul]
-  simp only [smul_eq_mul, descPochhammer_succ_left, smeval_mul,
-    smeval_X, pow_one, smeval_comp, smeval_sub, smeval_one, pow_zero,
-    one_smul, add_sub_cancel_right, Nat.factorial_succ, Nat.cast_mul,
-    Nat.cast_add, Nat.cast_one]
-  field_simp
-
-private lemma sub_mul_ring_choose_add_one (x : ℝ) (k : ℕ) :
-    (x + 1 - k) * Ring.choose (x + 1) k =
-      (x + 1) * Ring.choose x k := by
-  cases k with
-  | zero => simp
-  | succ k =>
-      rw [Ring.choose_succ_succ]
-      have h := Ring.choose_smul_choose (R := ℝ) x
-        (n := k + 1) (k := k) (by lia)
-      simp only [Nat.choose_succ_self_right, nsmul_eq_mul, Nat.cast_add,
-        Nat.cast_one, Nat.add_sub_cancel_left, Ring.choose_one_right] at h
-      push_cast at h ⊢
-      linear_combination -h
-
 /-- Differentiation increments the first parameter, up to the displayed
 positive scalar. -/
 theorem derivative_jacobiCoefficientPolynomial (n : ℕ) {a b : ℝ}
@@ -187,9 +163,9 @@ theorem derivative_jacobiCoefficientPolynomial (n : ℕ) {a b : ℝ}
         (Nat.add_one_mul_choose_eq n k).symm
       norm_num only [Nat.cast_mul, Nat.cast_add, Nat.cast_one] at h ⊢
       nlinarith
-    have hnum := succ_mul_ring_choose_add_one (n + b) k
-    have hdenSucc := succ_mul_ring_choose_add_one (a + k) k
-    have hdenShift := sub_mul_ring_choose_add_one (a + k) k
+    have hnum := Polynomial.succ_mul_choose_succ (n + b) k
+    have hdenSucc := Polynomial.succ_mul_choose_succ (a + k) k
+    have hdenShift := Polynomial.sub_mul_choose_add_one (a + k) k
     have hden0 : Ring.choose (a + (k + 1)) (k + 1) ≠ 0 := by
       simpa only [Nat.cast_add, Nat.cast_one] using
         (ring_choose_den_pos (k + 1) ha).ne'
@@ -247,7 +223,7 @@ private lemma jacobiCoefficient_succ_rank_mul {n k : ℕ} (a b : ℝ)
     push_cast at hcast
     ring_nf at hcast ⊢
     exact hcast.symm
-  have hring := sub_mul_ring_choose_add_one (n + b) k
+  have hring := Polynomial.sub_mul_choose_add_one (n + b) k
   rw [jacobiCoefficient, jacobiCoefficient]
   norm_num only [Nat.cast_add, Nat.cast_one]
   calc
@@ -258,17 +234,6 @@ private lemma jacobiCoefficient_succ_rank_mul {n k : ℕ} (a b : ℝ)
           ((n + b + 1) * Ring.choose (n + b) k)) /
         Ring.choose (a + k) k := by rw [hnat, hring]
     _ = _ := by ring
-
-private lemma succ_mul_ring_choose_same (x : ℝ) (k : ℕ) :
-    (k + 1 : ℝ) * Ring.choose x (k + 1) =
-      (x - k) * Ring.choose x k := by
-  have hleft := succ_mul_ring_choose_add_one (x - 1) k
-  have hright := sub_mul_ring_choose_add_one (x - 1) k
-  calc
-    (k + 1 : ℝ) * Ring.choose x (k + 1) =
-        x * Ring.choose (x - 1) k := by convert hleft using 1 <;> ring
-    _ = (x - k) * Ring.choose x k := by
-      convert hright.symm using 1 <;> ring
 
 private lemma jacobiCoefficient_pred_rank_mul {n k : ℕ} {a b : ℝ}
     (ha : -1 < a) (hk0 : 1 ≤ k) (hk : k ≤ n) :
@@ -288,14 +253,14 @@ private lemma jacobiCoefficient_pred_rank_mul {n k : ℕ} {a b : ℝ}
     norm_num at hcast
     ring_nf at hcast ⊢
     exact hcast.symm
-  have hnum0 := succ_mul_ring_choose_same (n + b) (k - 1)
+  have hnum0 := Polynomial.succ_mul_ringChoose_same (n + b) (k - 1)
   have hnum :
       (n + b + 1 - k) * Ring.choose (n + b) (k - 1) =
         (k : ℝ) * Ring.choose (n + b) k := by
     rw [hkpred] at hnum0
     norm_num only [Nat.cast_sub hk0, Nat.cast_one] at hnum0
     nlinarith
-  have hden0 := succ_mul_ring_choose_add_one (a + (k - 1)) (k - 1)
+  have hden0 := Polynomial.succ_mul_choose_succ (a + (k - 1)) (k - 1)
   have hden :
       (k : ℝ) * Ring.choose (a + k) k =
         (a + k) * Ring.choose (a + (k - 1)) (k - 1) := by
@@ -336,8 +301,8 @@ private lemma jacobiCoefficient_succ_top_mul (n : ℕ) {a b : ℝ}
     (ha : -1 < a) :
     (n + a + 1) * jacobiCoefficient (n + 1) (n + 1) a b =
       (n + b + 1) * jacobiCoefficient n n a b := by
-  have hnum := succ_mul_ring_choose_add_one (n + b) n
-  have hden := succ_mul_ring_choose_add_one (a + n) n
+  have hnum := Polynomial.succ_mul_choose_succ (n + b) n
+  have hden := Polynomial.succ_mul_choose_succ (a + n) n
   have hden0 : Ring.choose (a + (n + 1)) (n + 1) ≠ 0 := by
     simpa only [Nat.cast_add, Nat.cast_one] using
       (ring_choose_den_pos (n + 1) ha).ne'

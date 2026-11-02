@@ -321,13 +321,6 @@ private lemma not_interl_X_two_mul_X_add_one :
       (u := 1) (v := 0) (U := 2) (V := 1)
       (by norm_num) (by norm_num) (by norm_num))
 
-private lemma not_interl_X_X_add_one :
-    ¬ Interl (X : ℝ[X]) (X + 1) := by
-  simpa only [C_0, C_1, C_ofNat, one_mul, add_zero] using
-    (not_interl_affine_of_cross_lt
-      (u := 1) (v := 0) (U := 1) (V := 1)
-      (by norm_num) (by norm_num) (by norm_num))
-
 private lemma not_interl_X_X_add_two :
     ¬ Interl (X : ℝ[X]) (X + 2) := by
   simpa only [C_0, C_1, C_ofNat, one_mul, add_zero] using

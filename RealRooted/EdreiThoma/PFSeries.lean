@@ -51,10 +51,11 @@ theorem IsPolyaFreqSeq.exists_geometric_bound {a : ℕ → ℝ} (h : IsPolyaFreq
     ∃ M : ℝ, 0 ≤ M ∧ ∀ n, a n ≤ M ^ n :=
   ⟨a 1, h.nonneg 1, h.le_pow_one h0⟩
 /-- The leading `N × N` block of the Toeplitz matrix. -/
-private def toepMat (a : ℕ → ℝ) (N : ℕ) : Matrix (Fin N) (Fin N) ℝ :=
+def toepMat (a : ℕ → ℝ) (N : ℕ) : Matrix (Fin N) (Fin N) ℝ :=
   Matrix.of fun i j => toeplitz a i j
 
-private lemma toepMat_mul {a c : ℕ → ℝ}
+/-- The Toeplitz blocks of two series with convolution `δ_{n0}` are mutually inverse. -/
+lemma toepMat_mul {a c : ℕ → ℝ}
     (hconv : ∀ n, ∑ k ∈ Finset.range (n + 1), c k * a (n - k) = if n = 0 then 1 else 0)
     (N : ℕ) : toepMat a N * toepMat c N = 1 := by
   ext i j
@@ -88,7 +89,8 @@ private lemma toepMat_mul {a c : ℕ → ℝ}
     simp only [Fin.ext_iff, eq_iff_iff]
     lia
 
-private lemma toepMat_det {a : ℕ → ℝ} (h0 : a 0 = 1) (N : ℕ) : (toepMat a N).det = 1 := by
+/-- A unit-leading Toeplitz block is unitriangular, so its determinant is `1`. -/
+lemma toepMat_det {a : ℕ → ℝ} (h0 : a 0 = 1) (N : ℕ) : (toepMat a N).det = 1 := by
   rw [Matrix.det_of_isLowerTriangular]
   · simp [toepMat, toeplitz_apply, h0]
   · intro i j hij

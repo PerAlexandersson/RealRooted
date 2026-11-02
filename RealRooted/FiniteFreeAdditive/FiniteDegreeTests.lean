@@ -41,7 +41,9 @@ def PreservesOrderedPFUpTo (N : ℕ) (h k : ℝ[X]) : Prop :=
         Interl (applyAsDifferentialOperator h p)
           (applyAsDifferentialOperator k p)
 
-private theorem coeff_finiteDifferentialTest_of_le
+/-- The coefficients of the degree-`N` test are the symbol coefficients multiplied by falling
+factorials. -/
+theorem coeff_finiteDifferentialTest_of_le
     (N : ℕ) (h : ℝ[X]) {j : ℕ} (hj : j ≤ N) :
     (finiteDifferentialTest N h).coeff (N - j) =
       (N.descFactorial j : ℝ) * h.coeff j := by
@@ -71,7 +73,8 @@ private theorem coeff_finiteDifferentialTest_of_le
       simp
     · simp [coeff_X_pow, show N - j + k ≠ N by lia]
 
-private theorem natDegree_finiteDifferentialTest_le (N : ℕ) (h : ℝ[X]) :
+/-- The degree-`N` monomial test has degree at most `N`. -/
+theorem natDegree_finiteDifferentialTest_le (N : ℕ) (h : ℝ[X]) :
     (finiteDifferentialTest N h).natDegree ≤ N := by
   rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
   intro j hj
@@ -83,7 +86,8 @@ private theorem natDegree_finiteDifferentialTest_le (N : ℕ) (h : ℝ[X]) :
   simp only [nsmul_eq_mul]
   simp [coeff_X_pow, show j + k ≠ N by lia]
 
-private theorem finiteDifferentialTest_coeff_nonneg
+/-- If the degree-`N` test is PF, the symbol coefficients up to `N` are nonnegative. -/
+theorem finiteDifferentialTest_coeff_nonneg
     {N : ℕ} {h : ℝ[X]} (hF : IsPFPolynomial (finiteDifferentialTest N h))
     {j : ℕ} (hj : j ≤ N) :
     0 ≤ h.coeff j := by

@@ -29,17 +29,6 @@ namespace RealRooted
 open HermitePoulain
 open FiniteDegreeOrdered
 
-private theorem natDegree_differentialTest_le'
-    (N : ℕ) (h : ℝ[X]) :
-    (FiniteDegreeOrdered.differentialTest N h).natDegree ≤ N := by
-  unfold FiniteDegreeOrdered.differentialTest
-  rw [applyAsDifferentialOperator]
-  apply Polynomial.natDegree_sum_le_of_forall_le
-  intro i _
-  exact (Polynomial.natDegree_C_mul_le _ _).trans
-    ((Polynomial.natDegree_iterate_derivative (X ^ N) i).trans
-      ((Nat.sub_le _ _).trans (by simp)))
-
 /-- The Jensen test rescaled by `X \mapsto X / N`. -/
 def rescaledJensenDifferentialTest (N : ℕ) (h : ℝ[X]) : ℝ[X] :=
   (jensenDifferentialTest N h).comp (C (N : ℝ)⁻¹ * X)
@@ -70,7 +59,7 @@ private theorem natDegree_rescaledJensenDifferentialTest_le
     have houter : (jensenDifferentialTest N h).natDegree ≤ N := by
       rw [jensenDifferentialTest]
       exact Polynomial.natDegree_reflect_le.trans
-        (max_le le_rfl (natDegree_differentialTest_le' N h))
+        (max_le le_rfl (natDegree_finiteDifferentialTest_le N h))
     nlinarith [Nat.zero_le (jensenDifferentialTest N h).natDegree]
 
 private theorem tendsto_coeff_rescaledJensenDifferentialTest_add
