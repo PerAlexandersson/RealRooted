@@ -1,6 +1,6 @@
 module
 
-import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.RowInterlacing
 public import RealRooted.Tactic.Examples.RowFixtures
 public import RealRooted.Tactic.Examples.RowInterlacing
 

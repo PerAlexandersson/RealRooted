@@ -23,6 +23,8 @@ RealRooted/Tactic/Examples/Product/Interlacing.lean: RealRooted.Tactic.Product.I
 RealRooted/Tactic/Examples/RecurrenceODE.lean: RealRooted.Tactic.RowInterlacing
 RealRooted/Tactic/Examples/RowGeneral.lean: RealRooted.Tactic.RowInterlacing
 RealRooted/Tactic/Examples/RowInterlacing.lean: RealRooted.Tactic.RowInterlacing
+RealRooted/Tactic/Examples/RowInterlacingPowers.lean: RealRooted.Tactic.RowInterlacing
+RealRooted/Tactic/Examples/RowInterlacingProducts.lean: RealRooted.Tactic.RowInterlacing
 RealRooted/Tactic/Examples/RowParityFactorization.lean: RealRooted.Favard.Affine.Basic
 RealRooted/Tactic/Examples/RowParityFactorization.lean: RealRooted.ParityFactorization
 RealRooted/Tactic/Examples/RowParityFactorization.lean: RealRooted.Recurrence.RowModel
