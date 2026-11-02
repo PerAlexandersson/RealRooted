@@ -116,28 +116,17 @@ elab "rr_product_natDegree" : tactic => withMainContext do
   evalTactic (← `(tactic|
     rw [RealRooted.productSequence_natDegree (P := $Pid) ?_ ?_ ?_ (fun _ => rfl)]))
   -- close the main degree goal `(P 0).natDegree + n = rhs`, trying base degrees `0, …, 6`
-  evalTactic (← `(tactic| first
-    | (have hbase : ($Pid 0).natDegree = 0 :=
-          (by simp only [$Pid:ident]; first | rfl | (simp; done) | (compute_degree!; done) | fail)
-       rw [hbase]; first | lia | rr_ring | simp)
-    | (have hbase : ($Pid 0).natDegree = 1 :=
-          (by simp only [$Pid:ident]; first | rfl | (simp; done) | (compute_degree!; done) | fail)
-       rw [hbase]; first | lia | rr_ring | simp)
-    | (have hbase : ($Pid 0).natDegree = 2 :=
-          (by simp only [$Pid:ident]; first | rfl | (simp; done) | (compute_degree!; done) | fail)
-       rw [hbase]; first | lia | rr_ring | simp)
-    | (have hbase : ($Pid 0).natDegree = 3 :=
-          (by simp only [$Pid:ident]; first | rfl | (simp; done) | (compute_degree!; done) | fail)
-       rw [hbase]; first | lia | rr_ring | simp)
-    | (have hbase : ($Pid 0).natDegree = 4 :=
-          (by simp only [$Pid:ident]; first | rfl | (simp; done) | (compute_degree!; done) | fail)
-       rw [hbase]; first | lia | rr_ring | simp)
-    | (have hbase : ($Pid 0).natDegree = 5 :=
-          (by simp only [$Pid:ident]; first | rfl | (simp; done) | (compute_degree!; done) | fail)
-       rw [hbase]; first | lia | rr_ring | simp)
-    | (have hbase : ($Pid 0).natDegree = 6 :=
-          (by simp only [$Pid:ident]; first | rfl | (simp; done) | (compute_degree!; done) | fail)
-       rw [hbase]; first | lia | rr_ring | simp)))
+  let baseDegree (k : Nat) : TacticM (TSyntax `tactic) := do
+    let kl : TSyntax `num := Syntax.mkNumLit (toString k)
+    `(tactic| (
+      have hbase : ($Pid 0).natDegree = $kl :=
+        (by simp only [$Pid:ident]; first | rfl | (simp; done) | (compute_degree!; done) | fail)
+      rw [hbase]; first | lia | rr_ring | simp))
+  -- `first | k = 0 | … | k = 6`, nested from the right
+  let mut alts ← baseDegree 6
+  for i in [0:6] do
+    alts ← `(tactic| first | $(← baseDegree (5 - i)):tactic | $alts:tactic)
+  evalTactic alts
   productSideGoals Pid
 
 end RealRooted.Tactic
