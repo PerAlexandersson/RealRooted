@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **167 IDs**; **17 formalized**, **136 shells**, **1 fragments**, and **13 documented-only**.
+Current totals: **168 IDs**; **17 formalized**, **136 shells**, **1 fragments**, and **14 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -88,6 +88,7 @@ Current totals: **167 IDs**; **17 formalized**, **136 shells**, **1 fragments**,
 | A105278 | `shell` | Generalized Laguerre rows ().<br>def : ℕ → ℝ[X]<br>+12 additional test intents | `rr_row_interlaces`, `rr_row_ode` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A106246 | `shell` | polynomial `(λ - X)³` (): consecutive rows interlace by a division-remainder certificate.<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A108426 | `shell` | namespace Downstream<br>The exact downstream recurrence presentation of .<br>+14 additional test intents | `rr_row_interlaces`, `rr_row_natDegree` | `n`, `via` | concrete row definition and proofs of the listed certificates |
+| A109446 | `documented` | A lag-two row with literal multipliers (): the degree side goals of its residue | none | not recorded | executable tactic route and its certificates |
 | A109955 | `documented` | copied from the downstream row recurrence. | none | not recorded | executable tactic route and its certificates |
 | A109960 | `documented` | copied from the downstream row recurrence. | none | not recorded | executable tactic route and its certificates |
 | A109983 | `shell` | OEIS in its generated two-lag coefficient form.<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
@@ -144,7 +145,7 @@ Current totals: **167 IDs**; **17 formalized**, **136 shells**, **1 fragments**,
 | A178820 | `shell` | The OEIS polynomial sequence, defined by a product recurrence with a linear factor.<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_product_interlaces`, `rr_product_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A180047 | `shell` | Half growth after the zero row `P 0 = 0` ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A181738 | `fragment` | -style negative-definite quadratic lag. | `rr_sign` | root sign/interval hypotheses | full recurrence shell, base cases, degree, and leading-coefficient data |
-| A184883 | `documented` | copied from the downstream row recurrence. | none | not recorded | executable tactic route and its certificates |
+| A184883 | `documented` | copied from the downstream row recurrence.<br>A cubic-parent row whose recurrence is not written in the canonical form (). | none | not recorded | executable tactic route and its certificates |
 | A186370 | `shell` | namespace Downstream<br>The exact downstream recurrence presentation of .<br>+19 additional test intents | `rr_row_interlaces`, `rr_row_natDegree`, `rr_row_splits` | `via` | concrete row definition and proofs of the listed certificates |
 | A188440 | `shell` | A two-step product `P (n + 2) = (1 + 2 X) P n` ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A191935 | `shell` | Reversed rows again ().<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |

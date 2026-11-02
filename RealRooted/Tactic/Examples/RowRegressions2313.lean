@@ -49,5 +49,30 @@ theorem classOneRows_interlaces (n : ℕ) :
     Interlaces (classOneRows n) (classOneRows (n + 1)) := by
   rr_row_interlaces
 
+/-- A lag-two row with literal multipliers (A109446): the degree side goals of its residue
+classes, such as `0 ≤ (2 + 2 * X).coeff 1`, need the general side-goal closer (#2366). -/
+def residueRows : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1
+  | 2 => 1 + X
+  | 3 => 3 + X
+  | n + 4 => (2 + 2 * X) * residueRows (n + 2) + (-1 + -1 * X ^ 2 + 2 * X) * residueRows n
+
+/-- The rows of `residueRows` split by the plain row tactic. -/
+theorem residueRows_splits (n : ℕ) : (residueRows n).Splits := by
+  rr_row_splits
+
+/-- A cubic-parent row whose recurrence is not written in the canonical form (A184883). -/
+def cubicParentRows : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | 2 => 1 + 5 * X + X ^ 2
+  | n + 3 => (1 + 2 * X) * cubicParentRows (n + 2) +
+      (-1 * X ^ 2 + 2 * X) * cubicParentRows (n + 1) + X ^ 2 * cubicParentRows n
+
+/-- The rows of `cubicParentRows` split by the plain row tactic. -/
+theorem cubicParentRows_splits (n : ℕ) : (cubicParentRows n).Splits := by
+  rr_row_splits
+
 end
 end RealRooted.Tactic.Examples.RowRegressions2313
