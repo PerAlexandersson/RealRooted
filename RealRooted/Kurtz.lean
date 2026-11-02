@@ -48,11 +48,8 @@ theorem hasPosLeadingCoeff_of_kurtz {p : ℝ[X]}
 
 theorem hasNonnegCoeffs_of_kurtz {p : ℝ[X]}
     (hpos : PositiveCoeffsUpToDegree p) :
-    HasNonnegCoeffs p := fun n ↦
-  if hn : n ≤ p.natDegree then
-    (hpos n hn).le
-  else
-    (coeff_eq_zero_of_natDegree_lt (lt_of_not_ge hn)).symm.le
+    HasNonnegCoeffs p :=
+  hasNonnegCoeffs_of_forall_coeff_pos hpos
 
 lemma sum_range_succ_alternating (c : ℕ → ℝ) (n : ℕ) :
     ∑ j ∈ Finset.range (n + 1), (-1 : ℝ) ^ j * c j =
