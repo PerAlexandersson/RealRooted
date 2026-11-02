@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.EdreiThoma.PFSeries
+import RealRooted.EdreiThoma.PFSeries
 import RealRooted.Mathlib.LinearAlgebra.Matrix.DesnanotJacobi
 import RealRooted.Mathlib.LinearAlgebra.Matrix.JacobiComplementaryMinor
 public import RealRooted.AissenSchoenbergWhitneyBase
