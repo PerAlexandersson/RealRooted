@@ -198,12 +198,6 @@ Interlacing between the constants `1` and `X`, the affine forms `s X + t`, and
 their `X`-multiples, used by the 2×2 matrix-interlacing and threshold-matrix
 certificates. -/
 
-theorem interl_one_one : Interl (1 : ℝ[X]) 1 := by
-  simpa using interl_C_C (1 : ℝ) 1
-
-theorem interl_one_X : Interl (1 : ℝ[X]) X := by
-  simpa using interl_C_affine_linear (c := 1) (u := 1) (v := 0) zero_lt_one
-
 theorem interl_one_affine_add_one {s t : ℝ} (hs : 0 < s) :
     Interl (1 : ℝ[X]) (C s * X + C t + 1) := by
   rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
@@ -213,9 +207,6 @@ theorem interl_one_affine_add_X {s t : ℝ} (hs : 0 < s) :
     Interl (1 : ℝ[X]) (C s * X + C t + X) := by
   rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
   exact interl_C_affine_linear (by positivity)
-
-theorem interl_X_X : Interl (X : ℝ[X]) X :=
-  Interl.refl fun _ => isRealRooted_X.2
 
 /-- `X` does not interlace `X + 1` in this order. -/
 theorem not_interl_X_X_add_one : ¬ Interl (X : ℝ[X]) (X + 1) := by

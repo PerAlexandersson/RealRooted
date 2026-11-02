@@ -143,13 +143,6 @@ private lemma e1_bot1 : bot 2 (Finset.range 1) 1 = X := by simp [bot, refined]
 
 private lemma e1_bot2 : bot 2 (Finset.range 1) 2 = X := by simp [bot, refined]
 
-private lemma interl_one_one : Interl (1 : ℝ[X]) 1 := Interl.refl fun _ => by simp
-
-private lemma interl_X_X : Interl (X : ℝ[X]) X := Interl.refl fun _ => isRealRooted_X.2
-
-private lemma interl_one_X : Interl (1 : ℝ[X]) X :=
-  (interlaces_one_linear natDegree_X).toStrictInterl.toInterl
-
 private lemma strictInterl_one_add_X_X : StrictInterl (1 + X : ℝ[X]) X := by
   simpa [add_comm] using
     (StrictInterl.X_add_C_iff (a := 0) (b := 1)).mpr (by norm_num)
