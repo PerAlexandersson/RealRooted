@@ -226,7 +226,7 @@ def thresholdOrbitSplits : TacticM Unit := do
       induction $m:ident
       · refine ⟨?_, ?_, ?_⟩ <;>
           (simp only [$P:ident, rr_threshold_unfold, Nat.reduceLT, Nat.reduceEqDiff, reduceIte];
-           first | rfl | ring | simp)
+           first | rfl | rr_ring | simp)
       · rename_i $m:ident ih
         obtain ⟨h₀, h₁, h₂⟩ := ih
         obtain ⟨a, b, c, h⟩ := rr_hstate $m
@@ -242,7 +242,7 @@ def thresholdOrbitSplits : TacticM Unit := do
           simp only [rr_threshold_unfold, Nat.reduceLT, Nat.reduceEqDiff, reduceIte]
           rw [h]
           $unfold:tactic
-          ring
+          rr_ring
     $finish:tactic))
   evalTactic rr_script
 

@@ -603,10 +603,10 @@ private def rowInterlacesTop (log : RowAttemptLog) (hints : RowHints) :
         {routeNamesForError interlacesRoutes}"
   let use (route : Name) := hints.via.isNone || hints.via == some route
   let unrestricted := hints.thm.isNone && hints.window.isNone && hints.upper.isNone
+  let s ← RouteSearch.new log hints.via
   if use `variableDelay && unrestricted then
-    match ← rowRoute `variableDelay (variableDelayGoal .interlaces) (some log) with
-    | .ok _ => return (#[], hints)
-    | .error error => if hints.via == some `variableDelay then throwError error
+    if (← s.attempt `variableDelay (variableDelayGoal .interlaces)).isSome then
+      return (#[], hints)
   else
     rowSkip `variableDelay m!"disabled by hints" (some log)
   if hints.via.isSome then rowSkip `probe m!"disabled by the via hint" (some log)
@@ -615,14 +615,13 @@ private def rowInterlacesTop (log : RowAttemptLog) (hints : RowHints) :
       rowVeto `probe why (some log)
       -- An exactly matching registered model may prove rows that the generic probe rejects.
       if let some (P, candidates) ← rowModelCandidates? .direct then
-        if let .ok _ ← rowRoute `rowModel (rowModelGoal log P candidates) (some log) then
+        if (← s.attempt `rowModel (rowModelGoal log P candidates)).isSome then
           return (#[], hints)
-      throwError "rr_row_interlaces: no strategy (probe: {why})"
+      s.fail m!"rr_row_interlaces: no strategy (probe: {why})"
   if use `rowModel && unrestricted then
     if let some (P, candidates) ← rowModelCandidates? .direct then
-      match ← rowRoute `rowModel (rowModelGoal log P candidates) (some log) with
-      | .ok _ => return (#[], hints)
-      | .error error => if hints.via == some `rowModel then throwError error
+      if (← s.attempt `rowModel (rowModelGoal log P candidates)).isSome then
+        return (#[], hints)
     else if hints.via == some `rowModel then
       rowVeto `rowModel m!"no registered row model matches the goal" (some log)
       throwError "rr_row_interlaces: no registered row model matches the goal"
@@ -641,18 +640,14 @@ private def rowInterlacesTop (log : RowAttemptLog) (hints : RowHints) :
   let rowRecReadable := (← rowAttempt (rowRecSetup "rr_row_interlaces")) matches .ok _
   if !rowRecReadable then
     if use `pathPower && unrestricted then
-      match ← rowRoute `pathPower (pathPowerGoal false) (some log) with
-      | .ok _ => return (#[], hints)
-      | .error error => if hints.via == some `pathPower then throwError error
+      if (← s.attempt `pathPower (pathPowerGoal false)).isSome then return (#[], hints)
     if use `lowerOrder then
-      match ← rowRoute `lowerOrder (lowerOrderInterlaces hints) (some log) with
-      | .ok _ => return (#[], hints)
-      | .error error => if hints.via == some `lowerOrder then throwError error
+      if (← s.attempt `lowerOrder (lowerOrderInterlaces hints)).isSome then
+        return (#[], hints)
     -- parity products of two three-term sequences (`Row.ParityProduct`)
     if use `parityProduct then
-      match ← rowRoute `parityProduct (parityProductGoal false) (some log) with
-      | .ok _ => return (#[], hints)
-      | .error error => if hints.via == some `parityProduct then throwError error
+      if (← s.attempt `parityProduct (parityProductGoal false)).isSome then
+        return (#[], hints)
   else if hints.via.isSome then
     for route in [`pathPower, `lowerOrder, `parityProduct] do
       rowSkip route m!"not selected by the via hint" (some log)
@@ -660,39 +655,17 @@ private def rowInterlacesTop (log : RowAttemptLog) (hints : RowHints) :
   -- by an exact probe, before the more expensive core
   if unrestricted then
     -- inverse rational reflection, rejected by coefficient shape before row computation
-    if use `rationalReverse then
-      match ← rowRoute `rationalReverse rationalReverseInterlacesGoal (some log) with
-      | .ok _ => return (#[], hints)
-      | .error error => if hints.via == some `rationalReverse then throwError error
-    else
-      rowSkip `rationalReverse m!"not selected by the via hint" (some log)
+    if (← s.attempt `rationalReverse rationalReverseInterlacesGoal).isSome then
+      return (#[], hints)
     -- moving rational endpoint windows fitted from exact rows and certified symbolically
-    if use `endpointWindow then
-      match ← rowRoute `endpointWindow rationalEndpointWindowGoal (some log) with
-      | .ok _ => return (#[], hints)
-      | .error error => if hints.via == some `endpointWindow then throwError error
-    else
-      rowSkip `endpointWindow m!"not selected by the via hint" (some log)
+    if (← s.attempt `endpointWindow rationalEndpointWindowGoal).isSome then
+      return (#[], hints)
     -- transfer consecutive interlacing from half-growth auxiliary rows
-    if use `fTransform then
-      match ← rowRoute `fTransform fTransformInterlacesGoal (some log) with
-      | .ok _ => return (#[], hints)
-      | .error error => if hints.via == some `fTransform then throwError error
-    else
-      rowSkip `fTransform m!"not selected by the via hint" (some log)
-    if use `powerForm then
-      match ← rowRoute `powerForm powerFormRoute (some log) with
-      | .ok _ => return (#[], hints)
-      | .error error => if hints.via == some `powerForm then throwError error
-    else
-      rowSkip `powerForm m!"not selected by the via hint" (some log)
+    if (← s.attempt `fTransform fTransformInterlacesGoal).isSome then return (#[], hints)
+    if (← s.attempt `powerForm powerFormRoute).isSome then return (#[], hints)
     -- closed-form rows `q ^ (D₀ + m) · R m` with a division-remainder certificate
-    if use `closedForm then
-      match ← rowRoute `closedForm CFI.closedFormInterlacesGoal (some log) with
-      | .ok _ => return (#[], hints)
-      | .error error => if hints.via == some `closedForm then throwError error
-    else
-      rowSkip `closedForm m!"not selected by the via hint" (some log)
+    if (← s.attempt `closedForm CFI.closedFormInterlacesGoal).isSome then
+      return (#[], hints)
   let useCore := match hints.via with
     | none => true
     | some route => interlacesCoreRoutes.contains route
@@ -706,10 +679,8 @@ private def rowInterlacesTop (log : RowAttemptLog) (hints : RowHints) :
   | .error e =>
     -- the reversed rows (`Row.Reverse`), when no theorem applies to the rows themselves
     if use `reversed && unrestricted then
-      match ← rowRoute `reversed (reverseRowGoal false) (some log) with
-      | .ok _ => return (#[], hints)
-      | .error error => if hints.via == some `reversed then throwError error
-    throwError e
+      if (← s.attempt `reversed (reverseRowGoal false)).isSome then return (#[], hints)
+    s.failWith e
 
 /-- Run a row tactic `core` and print the hinted call `name hs'*` and the certificate. -/
 private def rowElabWithHints (tk : Syntax) (core : TacticM (Cert × RowHints))
@@ -833,8 +804,9 @@ private def derivativeMultPlausible (r : RowRec) (D₀ d : Nat) : MetaM Bool := 
   return true
 
 private def rowNonnegCore (log : RowAttemptLog) : TacticM Unit := withMainContext do
-  if let .ok _ ← rowRoute `variableDelay (variableDelayGoal .nonneg) (some log) then return
-  if let .ok _ ← rowRoute `cone linRecNonneg (some log) then return
+  let s ← RouteSearch.new log
+  if (← s.attempt `variableDelay (variableDelayGoal .nonneg)).isSome then return
+  if (← s.attempt `cone linRecNonneg).isSome then return
   discard introIfForall
   withMainContext do
   let r := (← rowRecSetup "rr_row_nonneg_coeffs").asLagLeft
@@ -873,19 +845,15 @@ private def rowNonnegCore (log : RowAttemptLog) : TacticM Unit := withMainContex
     if mains.isEmpty then
       throwError "rr_row_nonneg_coeffs: the second-order recurrence of {P} needs a \
         first-order recurrence `∀ n, {P} (n + 1) = A n * ({P} n)' + B n * {P} n` in the context"
-  let mut failures := #[]
   for (route, d?, main) in mains do
     if let some d := d? then
       if let some D₀ := D₀? then
         unless ← derivativeMultPlausible r D₀ d do
           rowVeto route m!"an exact degree or coefficient hypothesis is false" (some log)
-          failures := failures.push (m!"{main}",
-            m!"vetoed: an exact degree or coefficient hypothesis is false")
+          s.record m!"{main}" m!"vetoed: an exact degree or coefficient hypothesis is false"
           continue
-    match ← rowRoute route (applyThenSideFull P main) (some log) with
-    | .ok _ => return
-    | .error e => failures := failures.push (m!"{main}", e)
-  throwRowFailures m!"rr_row_nonneg_coeffs: no strategy proves the goal for {P}" failures
+    if (← s.attempt route (applyThenSideFull P main) (what := m!"{main}")).isSome then return
+  s.fail m!"rr_row_nonneg_coeffs: no strategy proves the goal for {P}"
 
 elab_rules : tactic
   | `(tactic| rr_row_nonneg_coeffs) =>
@@ -901,7 +869,7 @@ if the summands are not in the order of the theorems). -/
 private def assertRec (r : RowRec) : TacticM Unit := withMainContext do
   let n := mkIdent `n
   let pf ← if r.canonical then `(fun $n:ident => $(mkIdent r.eqn) $n)
-    else `(fun $n:ident => ($(mkIdent r.eqn) $n).trans (by ring))
+    else `(fun $n:ident => ($(mkIdent r.eqn) $n).trans (by rr_ring))
   let e ← elabTermEnsuringType pf r.stmt
   Term.synthesizeSyntheticMVarsNoPostponing
   let e ← instantiateMVars e
@@ -1018,38 +986,61 @@ def halfGrowthPlausible (r : RowRec) (k : Nat) : MetaM Bool := do
     unless xs.all (fun x => 0 ≤ b₁.eval x * b₀.eval x) do return false
   return true
 
-/-- Prove consecutive `StrictInterl` for a first-order derivative recurrence whose exact
-rows reveal a half-growth degree pattern.  Positive base degree uses the general
-degree-pattern backend; degree-zero bases use its constant-row half-degree companions. -/
-private def degreePatternStrictGoal : TacticM RowHints := do
-  discard introIfForall
-  withMainContext do
-  let r ← rowRecSetup "rr_row_strictInterl"
+/-- A half-growth degree law `c + (x + e) / 2` (`e ∈ {0, 1}`), in the form the degree
+tactics read: `x / 2`, `(x + 1) / 2`, `c + …`. -/
+private def halfLawTerm (c e : Nat) (x : Term) : TacticM Term := do
+  let half : Term ← if e == 0 then `($x / 2) else `(($x + $(rowNumLit e)) / 2)
+  if c == 0 then pure half else `($(rowNumLit c) + $half)
+
+/-- The data shared by the half-growth degree-pattern routes of `rr_row_splits` and
+`rr_row_strictInterl`: the law `c + (n + e) / 2` of the rows from the shift on, the hypothesis
+`hdeg_pos_all` for the unshifted rows, the aligned index `t`, the shifted sequence `Q`, and
+the recurrence `hrec` of `Q` with its multipliers `A` and `B`. -/
+private structure DegreePatternSetup where
+  /-- the constant term `c` of the degree law of the shifted rows -/
+  c : Nat
+  /-- the phase `e ∈ {0, 1}` of the degree law of the shifted rows -/
+  e : Nat
+  /-- the hypothesis `∀ n, (P n).natDegree = … ∧ 0 < (P n).leadingCoeff` -/
+  hdegPosAll : Ident
+  /-- the index of the aligned row -/
+  t : Term
+  /-- the shifted sequence -/
+  Q : Term
+  /-- the recurrence hypothesis for `Q` -/
+  hrec : Term
+  /-- the multiplier of `Q n.derivative` -/
+  A : Term
+  /-- the multiplier of `Q n` -/
+  B : Term
+
+/-- Read the exact rows of a first-order derivative recurrence `r` whose degrees follow
+`c + (n + e) / 2` with nonnegative coefficients, state `hdeg_pos_all`, align the goal row and
+normalize the recurrence (as `hrecName` when the multipliers are normalized).  `who` prefixes
+the errors and `firstRowsMsg` is the error when the first rows do not follow a degree law. -/
+private def degreePatternSetup (who firstRowsMsg : String) (hrecName : Name) (r : RowRec)
+    (P : Ident) : TacticM DegreePatternSetup := do
   unless r.shape == .deriv₁ do
-    throwError "rr_row_strictInterl: not a first-order derivative recurrence"
-  let P := mkIdent r.P
-  let some L ← linRec? r.P r.params | throwError "rr_row_strictInterl: no linear recurrence"
-  let some rows ← linRecRows? L (r.shift + 22)
-    | throwError "rr_row_strictInterl: rows not computable"
+    throwError "{who}: not a first-order derivative recurrence"
+  let some L ← linRec? r.P r.params | throwError "{who}: no linear recurrence"
+  let some rows ← linRecRows? L (r.shift + 22) | throwError "{who}: rows not computable"
   let c := (rows[r.shift]!).natDegree
   let fits (e : Nat) := (List.range 20).all fun m =>
     !(rows[r.shift + m]!).isZero && (rows[r.shift + m]!).natDegree == c + (m + e) / 2
   let some e := [0, 1].find? fits
-    | throwError "rr_row_strictInterl: the degrees do not follow `c + (n + e) / 2`"
+    | throwError "{who}: the degrees do not follow `c + (n + e) / 2`"
   unless (List.range 20).all fun m => (rows[r.shift + m]!).coeffs.all (0 ≤ ·) do
-    throwError "rr_row_strictInterl: the rows do not have nonnegative coefficients"
+    throwError "{who}: the rows do not have nonnegative coefficients"
+  -- the law of the unshifted rows `P n`, which the degree tactics prove for a variable `n`
   let c' := (rows[0]!).natDegree
   let some e' := [0, 1].find? fun e' => (List.range (r.shift + 20)).all fun n =>
       !(rows[n]!).isZero && (rows[n]!).natDegree == c' + (n + e') / 2
-    | throwError "rr_row_strictInterl: the initial rows do not follow the degree law"
-  let law (c e : Nat) (x : Term) : TacticM Term := do
-    let half : Term ← if e == 0 then `($x / 2) else `(($x + $(rowNumLit e)) / 2)
-    if c == 0 then pure half else `($(rowNumLit c) + $half)
+    | throwError "{who}: {firstRowsMsg}"
   let hdegPosAll := mkIdent `hdeg_pos_all
   let nI := mkIdent `n
   evalTactic (← `(tactic|
     have $hdegPosAll:ident : ∀ $nI:ident : ℕ,
-        ($P $nI).natDegree = $(← law c' e' nI) ∧ 0 < ($P $nI).leadingCoeff := by
+        ($P $nI).natDegree = $(← halfLawTerm c' e' nI) ∧ 0 < ($P $nI).leadingCoeff := by
       intro $nI:ident
       rr_row_natDegree_leadingCoeff_pos))
   let (_, t) ← alignRow r.P r.shift (smallRowSplits P)
@@ -1061,18 +1052,30 @@ private def degreePatternStrictGoal : TacticM RowHints := do
   let normalizedB? ← normalizedCoeffTerm? r.coeffs[1]! 0
   let A := normalizedA?.getD rawA
   let B := normalizedB?.getD rawB
-  let hrecName := mkIdent `h_strictDegreePatternRec
+  let hrecId := mkIdent hrecName
   let hrec : Term ← if normalizedA?.isNone && normalizedB?.isNone then pure hrecRaw else do
     evalTactic (← `(tactic|
-      have $hrecName:ident : ∀ n : ℕ,
+      have $hrecId:ident : ∀ n : ℕ,
           $Q (n + 1) = $A n * ($Q n).derivative + $B n * $Q n := by
         intro n
         have hraw : $Q (n + 1) =
             $rawA n * ($Q n).derivative + $rawB n * $Q n := $hrecRaw n
         rw [hraw] <;> rr_cf_identity))
-    pure hrecName
+    pure hrecId
+  return { c, e, hdegPosAll, t, Q, hrec, A, B }
+
+/-- Prove consecutive `StrictInterl` for a first-order derivative recurrence whose exact
+rows reveal a half-growth degree pattern.  Positive base degree uses the general
+degree-pattern backend; degree-zero bases use its constant-row half-degree companions. -/
+private def degreePatternStrictGoal : TacticM RowHints := do
+  discard introIfForall
+  withMainContext do
+  let r ← rowRecSetup "rr_row_strictInterl"
+  let P := mkIdent r.P
+  let ⟨c, e, hdegPosAll, t, Q, hrec, A, B⟩ ← degreePatternSetup "rr_row_strictInterl"
+    "the initial rows do not follow the degree law" `h_strictDegreePatternRec r P
   let m := mkIdent `m
-  let Dt ← `(fun $m:ident : ℕ => $(← law c e m))
+  let Dt ← `(fun $m:ident : ℕ => $(← halfLawTerm c e m))
   if c == 0 then
     let strictThm := if e == 0 then
         mkIdent ``derivativeRecurrence_strictInterl_of_floor_half_degree
@@ -1136,35 +1139,17 @@ private def rowSplitsCoreDirect (log : RowAttemptLog) (hints : RowHints) :
       throwError "rr_row_splits: unknown route {v}; the routes are\n\
         {routeNamesForError splitsRoutes}"
   let use (route : Name) : Bool := hints.via.isNone || hints.via == some route
-  if use `variableDelay then
-    match ← rowRoute `variableDelay (variableDelayGoal .splits) (some log) with
-    | .ok _ => return { via := some `variableDelay }
-    | .error e => if hints.via == some `variableDelay then throwError e
-  else
-    rowSkip `variableDelay m!"not selected by the via hint" (some log)
-  if hints.via == some `derivativeXMul then
-    match ← rowRoute `derivativeXMul derivativeXMulSplits (some log) with
-    | .ok _ => return { via := some `derivativeXMul }
-    | .error error => throwError error
-  if hints.via.isNone then
-    if let .ok _ ← rowRoute `derivativeXMul derivativeXMulSplits (some log) then
-      return { via := some `derivativeXMul }
-  else if hints.via != some `derivativeXMul then
-    rowSkip `derivativeXMul m!"not selected by the via hint" (some log)
+  let s ← RouteSearch.new log hints.via
+  if (← s.attempt `variableDelay (variableDelayGoal .splits)).isSome then
+    return { via := some `variableDelay }
+  if (← s.attempt `derivativeXMul derivativeXMulSplits).isSome then
+    return { via := some `derivativeXMul }
   -- Deflation must precede `topSplitsProbe`: the original rows grow by two, while the
   -- certified quotient rows sent to `rowInterlacesCore` grow by one.
-  if use `factorPower then
-    match ← rowRoute `factorPower factorPowerSplits (some log) with
-    | .ok _ => return { via := some `factorPower }
-    | .error e => if hints.via == some `factorPower then throwError e
-  else
-    rowSkip `factorPower m!"not selected by the via hint" (some log)
-  if use `delayedProduct then
-    match ← rowRoute `delayedProduct delayedProductSplits (some log) with
-    | .ok _ => return { via := some `delayedProduct }
-    | .error e => if hints.via == some `delayedProduct then throwError e
-  else
-    rowSkip `delayedProduct m!"not selected by the via hint" (some log)
+  if (← s.attempt `factorPower factorPowerSplits).isSome then
+    return { via := some `factorPower }
+  if (← s.attempt `delayedProduct delayedProductSplits).isSome then
+    return { via := some `delayedProduct }
   if hints.via.isSome then rowSkip `probe m!"disabled by the via hint" (some log)
   match ← topSplitsProbe hints with
   | .veto why =>
@@ -1174,21 +1159,21 @@ private def rowSplitsCoreDirect (log : RowAttemptLog) (hints : RowHints) :
       if hints.via.isNone && hints.thm.isNone && hints.window.isNone &&
           hints.upper.isNone then
         if let some (P, candidates) ← rowModelCandidates? .direct then
-          if let .ok _ ← rowRoute `rowModel (rowModelGoal log P candidates) (some log) then
+          if (← s.attempt `rowModel (rowModelGoal log P candidates)).isSome then
             return {}
-      throwError "rr_row_splits: no strategy (probe: {why})"
+      s.fail m!"rr_row_splits: no strategy (probe: {why})"
   | .closedForm plan =>
       if hints.via.isNone then
         let provePlan : TacticM Unit := do
           cfProve plan
           unless (← getGoals).isEmpty do throwError "rr_row_splits: goals remain"
-        if let .ok _ ← rowRoute `closedForm provePlan (some log) then
+        if (← s.attempt `closedForm provePlan (what := m!"closedForm plan")).isSome then
           return { via := some `closedForm }
   | .pass => pure ()
   if hints.via.isNone && hints.thm.isNone && hints.window.isNone &&
       hints.upper.isNone then
     if let some (P, candidates) ← rowModelCandidates? .direct then
-      if let .ok _ ← rowRoute `rowModel (rowModelGoal log P candidates) (some log) then
+      if (← s.attempt `rowModel (rowModelGoal log P candidates)).isSome then
         return {}
   else
     rowSkip `rowModel m!"disabled by hints" (some log)
@@ -1199,25 +1184,15 @@ private def rowSplitsCoreDirect (log : RowAttemptLog) (hints : RowHints) :
   discard introIfForall
   withMainContext do
   -- closed forms `residual * ∏ qᵢ ^ eᵢ n`, found by a numeric probe before any elaboration
-  if hints.via == some `closedForm then
-    match ← rowRoute `closedForm rowClosedFormSplits (some log) with
-    | .ok _ => return { via := some `closedForm }
-    | .error error => throwError error
-  if hints.via.isNone then
-    if let .ok _ ← rowRoute `closedForm rowClosedFormSplits (some log) then
-      return { via := some `closedForm }
-  else if hints.via != some `closedForm then
-    rowSkip `closedForm m!"not selected by the via hint" (some log)
-  if hints.via == some `pathPower then
-    match ← rowRoute `pathPower (pathPowerGoal true) (some log) with
-    | .ok _ => return { via := some `pathPower }
-    | .error error => throwError error
-  else if hints.via.isSome then
-    rowSkip `pathPower m!"not selected by the via hint" (some log)
+  if (← s.attempt `closedForm rowClosedFormSplits).isSome then
+    return { via := some `closedForm }
+  if hints.via.isSome then
+    if (← s.attempt `pathPower (pathPowerGoal true)).isSome then
+      return { via := some `pathPower }
   -- shapes outside `RecShape` whose lags share a period: residue subsequences
   if (← rowAttempt (rowRecSetup "rr_row_splits")) matches .error _ then
     if hints.via.isNone then
-      if let .ok _ ← rowRoute `pathPower (pathPowerGoal true) (some log) then
+      if (← s.attempt `pathPower (pathPowerGoal true)).isSome then
         return { via := some `pathPower }
     -- order-three recurrences through a three-term recurrence
     let viaLower : TacticM Unit := do
@@ -1229,43 +1204,26 @@ private def rowSplitsCoreDirect (log : RowAttemptLog) (hints : RowHints) :
       evalTactic (← `(tactic|
         refine (?_ : RealRooted.Interlaces ($P $e) ($P ($e + 1))).2.1.2))
       lowerOrderInterlaces {}
-    if hints.via == some `lowerOrder then
-      match ← rowRoute `lowerOrder viaLower (some log) with
-      | .ok _ => return { via := some `lowerOrder }
-      | .error error => throwError error
-    if hints.via.isNone then
-      if let .ok _ ← rowRoute `lowerOrder viaLower (some log) then
-        return { via := some `lowerOrder }
+    if use `lowerOrder then
+      if (← s.attempt `lowerOrder viaLower).isSome then return { via := some `lowerOrder }
     -- order-three recurrences as threshold-matrix orbits (`Row.ThresholdOrbit`)
-    if hints.via == some `thresholdOrbit then
-      match ← rowRoute `thresholdOrbit thresholdOrbitSplits (some log) with
-      | .ok _ => return { via := some `thresholdOrbit }
-      | .error error => throwError error
-    if hints.via.isNone then
-      if let .ok _ ← rowRoute `thresholdOrbit thresholdOrbitSplits (some log) then
+    if use `thresholdOrbit then
+      if (← s.attempt `thresholdOrbit thresholdOrbitSplits).isSome then
         return { via := some `thresholdOrbit }
-    if hints.via == some `parityProduct then
-      match ← rowRoute `parityProduct (parityProductGoal true) (some log) with
-      | .ok _ => return { via := some `parityProduct }
-      | .error error => throwError error
-    if hints.via.isNone then
-      if let .ok _ ← rowRoute `parityProduct (parityProductGoal true) (some log) then
+    if use `parityProduct then
+      if (← s.attempt `parityProduct (parityProductGoal true)).isSome then
         return { via := some `parityProduct }
     -- lag recurrences with a feedback term (`Row.LagFeedback`)
-    if hints.via == some `lagFeedback then
-      match ← rowRoute `lagFeedback lagFeedbackSplits (some log) with
-      | .ok _ => return { via := some `lagFeedback }
-      | .error error => throwError error
-    if hints.via.isNone then
-      if let .ok _ ← rowRoute `lagFeedback lagFeedbackSplits (some log) then
+    if use `lagFeedback then
+      if (← s.attempt `lagFeedback lagFeedbackSplits).isSome then
         return { via := some `lagFeedback }
     if let some v := hints.via then
       unless v == `subseq do
         throwError "rr_row_splits: the route {v} needs a recurrence that \
           `rr_row_interlaces` reads"
-    match ← rowRoute `subseq (evalTactic (← `(tactic| rr_row_subseq_splits))) (some log) with
-    | .ok _ => return { via := some `subseq }
-    | .error error => throwError error
+    if (← s.attempt `subseq (evalTactic (← `(tactic| rr_row_subseq_splits)))).isSome then
+      return { via := some `subseq }
+    s.fail m!"rr_row_splits: no route proves the goal"
   let r ← rowRecSetup "rr_row_splits"
   let P := mkIdent r.P
   if r.shape == .product then
@@ -1287,14 +1245,11 @@ private def rowSplitsCoreDirect (log : RowAttemptLog) (hints : RowHints) :
       setGoals [hq]
       evalTactic (← factorSplitsTac)
       unless (← getGoals).isEmpty do throwError "rr_row_splits: goals remain"
-    let mut failures := #[]
     for (route, what, tac) in [(`linearFactors, "linear factors", viaLinear),
         (`splitFactors, "split factors", viaFactors)] do
       unless use route do continue
-      match ← rowRoute route tac (some log) with
-      | .ok _ => return { via := some route }
-      | .error e => failures := failures.push (m!"{what}", e)
-    throwRowFailures m!"rr_row_splits: no strategy proves the goal for the product {P}" failures
+      if (← s.attempt route tac (what := m!"{what}")).isSome then return { via := some route }
+    s.fail m!"rr_row_splits: no strategy proves the goal for the product {P}"
   let (t, c) ← rowIndexParts r.P
   let e ← indexTerm t c
   -- `P t` is the right side of `Interlaces (P t) (P (t + 1))`; after splitting off `k` rows
@@ -1376,54 +1331,10 @@ private def rowSplitsCoreDirect (log : RowAttemptLog) (hints : RowHints) :
   -- the degree law `c + (n + e) / 2` and nonnegative coefficients
   -- (`RealRooted.derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs`)
   let viaDegreePattern := do
-    unless r.shape == .deriv₁ do
-      throwError "rr_row_splits: not a first-order derivative recurrence"
-    let some L ← linRec? r.P r.params | throwError "rr_row_splits: no linear recurrence"
-    let some rows ← linRecRows? L (r.shift + 22) | throwError "rr_row_splits: rows not computable"
-    let c := (rows[r.shift]!).natDegree
-    let fits (e : Nat) := (List.range 20).all fun m =>
-      !(rows[r.shift + m]!).isZero && (rows[r.shift + m]!).natDegree == c + (m + e) / 2
-    let some e := [0, 1].find? fits
-      | throwError "rr_row_splits: the degrees do not follow `c + (n + e) / 2`"
-    unless (List.range 20).all fun m => (rows[r.shift + m]!).coeffs.all (0 ≤ ·) do
-      throwError "rr_row_splits: the rows do not have nonnegative coefficients"
-    -- the law of the unshifted rows `P n`, which the degree tactics prove for a variable `n`
-    let c' := (rows[0]!).natDegree
-    let some e' := [0, 1].find? fun e' => (List.range (r.shift + 20)).all fun n =>
-        !(rows[n]!).isZero && (rows[n]!).natDegree == c' + (n + e') / 2
-      | throwError "rr_row_splits: the degrees of the first rows do not follow the law"
+    let ⟨c, e, hdegPosAll, t, Q, hrec, _, _⟩ ← degreePatternSetup "rr_row_splits"
+      "the degrees of the first rows do not follow the law" `h_degreePatternRec r P
     let m := mkIdent `m
-    -- a law in the form the degree tactics read: `m / 2`, `(m + 1) / 2`, `c + …`
-    let law (c e : Nat) (x : Term) : TacticM Term := do
-      let half : Term ← if e == 0 then `($x / 2) else `(($x + $(rowNumLit e)) / 2)
-      if c == 0 then pure half else `($(rowNumLit c) + $half)
-    let hdegPosAll := mkIdent `hdeg_pos_all
-    let nI := mkIdent `n
-    evalTactic (← `(tactic|
-      have $hdegPosAll:ident : ∀ $nI:ident : ℕ,
-          ($P $nI).natDegree = $(← law c' e' nI) ∧ 0 < ($P $nI).leadingCoeff := by
-        intro $nI:ident
-        rr_row_natDegree_leadingCoeff_pos))
-    let (_, t) ← alignRow r.P r.shift (smallRowSplits P)
-    let Q ← r.seq 0
-    let hrecRaw ← r.hrecTerm 0
-    let rawA ← certTerm r.coeffs[0]!
-    let rawB ← certTerm r.coeffs[1]!
-    let normalizedA? ← normalizedCoeffTerm? r.coeffs[0]! 0
-    let normalizedB? ← normalizedCoeffTerm? r.coeffs[1]! 0
-    let A := normalizedA?.getD rawA
-    let B := normalizedB?.getD rawB
-    let hrecName := mkIdent `h_degreePatternRec
-    let hrec : Term ← if normalizedA?.isNone && normalizedB?.isNone then pure hrecRaw else do
-      evalTactic (← `(tactic|
-        have $hrecName:ident : ∀ n : ℕ,
-            $Q (n + 1) = $A n * ($Q n).derivative + $B n * $Q n := by
-          intro n
-          have hraw : $Q (n + 1) =
-              $rawA n * ($Q n).derivative + $rawB n * $Q n := $hrecRaw n
-          rw [hraw] <;> rr_cf_identity))
-      pure hrecName
-    let Dt ← `(fun $m:ident : ℕ => $(← law c e m))
+    let Dt ← `(fun $m:ident : ℕ => $(← halfLawTerm c e m))
     let splitsThm :=
       mkIdent ``RealRooted.derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs
     evalTactic (← `(tactic|
@@ -1459,7 +1370,7 @@ private def rowSplitsCoreDirect (log : RowAttemptLog) (hints : RowHints) :
     let n := mkIdent `n
     evalTactic (← `(tactic|
       refine RealRooted.twoStepProduct_splits (P := $(← r.seq 0)) (q := $q)
-        (fun $n:ident => ($(mkIdent r.eqn) $n).trans (by beta_reduce; ring)) ?_ ?_ ?_ $t))
+        (fun $n:ident => ($(mkIdent r.eqn) $n).trans (by beta_reduce; rr_ring)) ?_ ?_ ?_ $t))
     let gs ← getGoals
     let [hq, h0, h1] := gs | throwError "rr_row_splits: unexpected side goals"
     for g in [h0, h1] do
@@ -1468,7 +1379,6 @@ private def rowSplitsCoreDirect (log : RowAttemptLog) (hints : RowHints) :
     setGoals [hq]
     evalTactic (← factorSplitsTac)
     unless (← getGoals).isEmpty do throwError "rr_row_splits: goals remain"
-  let mut failures := #[]
   let viaSubseq := evalTactic (← `(tactic| rr_row_subseq_splits))
   let route (r : Name) (tac : TacticM Unit) : TacticM RowHints := do
     tac
@@ -1510,13 +1420,12 @@ private def rowSplitsCoreDirect (log : RowAttemptLog) (hints : RowHints) :
     match ← rowRoute routeName tac (some log) with
     | .ok h => return h
     | .error e =>
-        failures := failures.push (m!"{what}", e)
+        s.record m!"{what}" e
         if hints.via.isNone && shapeRoute then
-          throwRowFailures
-            m!"rr_row_splits: the first strategy confirmed by the probe failed for {P}" failures
+          s.fail m!"rr_row_splits: the first strategy confirmed by the probe failed for {P}"
   if hints.via.isNone && !probeConfirmed then
     throwError "rr_row_splits: no strategy (probe) for {P}"
-  throwRowFailures m!"rr_row_splits: no strategy proves the goal for {P}" failures
+  s.fail m!"rr_row_splits: no strategy proves the goal for {P}"
 
 /-- Run the ordinary splitting routes, then project a registered interlacing transfer. -/
 private def rowSplitsCore (log : RowAttemptLog) (hints : RowHints) : TacticM RowHints := do
@@ -1560,41 +1469,29 @@ private def rowStrictInterlCore (log : RowAttemptLog) (hints : RowHints) : Tacti
     unless routes.contains v do
       throwError "rr_row_strictInterl: unknown route {v}; the routes are\n\
         {routeNamesForError routes}"
-  let mut failures : Array (MessageData × MessageData) := #[]
-  if hints.via.isNone || hints.via == some `variableDelay then
-    match ← rowRoute `variableDelay (variableDelayGoal .strict) (some log) with
-    | .ok _ => return { via := some `variableDelay }
-    | .error e => failures := failures.push (m!"fixed-delay recurrence", e)
-  else
-    rowSkip `variableDelay m!"not selected by the via hint" (some log)
+  let s ← RouteSearch.new log hints.via
+  if (← s.attempt `variableDelay (variableDelayGoal .strict)
+      (what := m!"fixed-delay recurrence")).isSome then
+    return { via := some `variableDelay }
   if (← strictConsecutiveRows?) == some false then
     for route in [`halfGrowth, `degreePattern, `interlaces] do
       if hints.via.isNone || hints.via == some route then
         rowVeto route m!"the goal is not consecutive rows of one polynomial sequence" (some log)
       else
         rowSkip route m!"not selected by the via hint" (some log)
-    throwRowFailures m!"rr_row_strictInterl: no strategy proves the goal" failures
-  if hints.via.isNone || hints.via == some `halfGrowth then
-    match ← rowRoute `halfGrowth (derivLagCore false true hints (some log)) (some log) with
-    | .ok result => return { result with via := some `halfGrowth }
-    | .error e => failures := failures.push (m!"half-growth derivative-lag induction", e)
-  else
-    rowSkip `halfGrowth m!"not selected by the via hint" (some log)
-  if hints.via.isNone || hints.via == some `degreePattern then
-    match ← rowRoute `degreePattern degreePatternStrictGoal (some log) with
-    | .ok result => return result
-    | .error e => failures := failures.push (m!"first-order degree pattern", e)
-  else
-    rowSkip `degreePattern m!"not selected by the via hint" (some log)
-  if hints.via.isNone || hints.via == some `interlaces then
-    match ← rowRoute `interlaces (do
+    s.fail m!"rr_row_strictInterl: no strategy proves the goal"
+  if let some result ← s.attempt `halfGrowth (derivLagCore false true hints (some log))
+      (what := m!"half-growth derivative-lag induction") then
+    return { result with via := some `halfGrowth }
+  if let some result ← s.attempt `degreePattern degreePatternStrictGoal
+      (what := m!"first-order degree pattern") then
+    return result
+  if (← s.attempt `interlaces (do
         evalTactic (← `(tactic| refine RealRooted.Interlaces.toStrictInterl ?_))
-        discard <| rowInterlacesTop log { hints with via := none }) (some log) with
-    | .ok _ => return { hints with via := some `interlaces }
-    | .error e => failures := failures.push (m!"general interlacing fallback", e)
-  else
-    rowSkip `interlaces m!"not selected by the via hint" (some log)
-  throwRowFailures m!"rr_row_strictInterl: no strategy proves the goal" failures
+        discard <| rowInterlacesTop log { hints with via := none })
+      (what := m!"general interlacing fallback")).isSome then
+    return { hints with via := some `interlaces }
+  s.fail m!"rr_row_strictInterl: no strategy proves the goal"
 
 elab_rules : tactic
   | `(tactic| rr_row_window) => withMainContext rowWindowGoal

@@ -43,7 +43,7 @@ macro (name := rrReplayFactor) "rr_replay_factor" : tactic => `(tactic| (
        Polynomial.derivative_sub,
        Polynomial.derivative_mul, Polynomial.derivative_pow, Polynomial.derivative_X,
        Polynomial.derivative_one, Polynomial.derivative_ofNat]
-     ring)
+     rr_ring)
   done))
 
 /-- Replay a short factor certificate from a pure-lag recurrence and its lift seeds. -/

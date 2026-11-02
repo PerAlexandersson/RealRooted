@@ -125,12 +125,10 @@ example (n : ℕ) : StrictInterl (delayRows n) (delayRows (n + 1)) := by
 
 /--
 info: rr.row explain:
-route           outcome  reason
-variableDelay   failed   rr_row: no canonical fixed-delay recurrence
-(other routes)  skipped  not selected by the via hint
+route          outcome  reason
+variableDelay  failed   rr_row: no canonical fixed-delay recurrence
 ---
-error: rr_row_strictInterl: no strategy proves the goal
-• fixed-delay recurrence: rr_row: no canonical fixed-delay recurrence
+error: rr_row: no canonical fixed-delay recurrence
 -/
 #guard_msgs in
 example : StrictInterl (1 : ℝ[X]) (X ^ 2 + 1) := by

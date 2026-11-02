@@ -64,7 +64,7 @@ def derivativeXMulSplits : TacticM Unit := withMainContext do
       intro $n:ident
       rw [$(mkIdent L.eqn) $n]
       simp only [Polynomial.derivative_mul, Polynomial.derivative_X]
-      ring)))
+      rr_ring)))
     unless (← getGoals).isEmpty do throwError "rr_row_splits: goals remain"
 
 /-- Invoke the fixed multiplier / differentiated `X` splitting route directly. -/

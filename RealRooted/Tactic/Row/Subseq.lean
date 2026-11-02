@@ -161,7 +161,7 @@ private def Reduced.proveRec (R : Reduced) (c : Nat) : TacticM Unit := do
     let dst ← if j' == 0 then `($p * $m + $(natLit c))
       else `($p * ($m + $(natLit j')) + $(natLit c))
     unless j == 0 && j' == 0 && e == c do
-      eqs := eqs.push (← `(tactic| rw [show ($src : ℕ) = $dst by ring] at h0))
+      eqs := eqs.push (← `(tactic| rw [show ($src : ℕ) = $dst by rr_ring] at h0))
   let optional (t : TSyntax `tactic) : TacticM Unit := discard <| rowAttempt (evalTactic t)
   let viaRw := do
     optional (← `(tactic| simp only [Nat.succ_eq_add_one] at h0))
@@ -192,6 +192,39 @@ private def subHave (h : Ident) (T : Term) : TacticM (MVarId × MVarId) := do
     else proof? := some g
   let (some pg, some mg) := (proof?, main?) | throwError "rr_row_subseq_splits: unexpected goals"
   return (pg, mg)
+
+/-- The terms of the residue class `p * m + c` of a reduced recurrence: the sequence `P`, the
+period `p`, the variable `m`, the offset `c` and the class sequence `Q = fun m => P (p * m + c)`. -/
+private structure ClassTerms where
+  /-- the sequence -/
+  P : Ident
+  /-- the period, as a numeral -/
+  p : Term
+  /-- the variable of the class -/
+  m : Ident
+  /-- the offset of the class, as a numeral -/
+  cL : Term
+  /-- the class sequence -/
+  Q : Term
+
+/-- The terms of the residue class `c` of `R`. -/
+private def classTerms (R : Reduced) (c : Nat) : TacticM ClassTerms := do
+  let P := R.P
+  let p := natLit R.p
+  let m := mkIdent `m
+  let cL := natLit c
+  let Q ← `(fun $m:ident => $P ($p * $m + $cL))
+  return ⟨P, p, m, cL, Q⟩
+
+/-- Add `hrecI`, the recurrence of the residue class `c` of `R`, to the context of the main
+goal (proved by `R.proveRec`) and continue in the main goal. -/
+private def haveClassRec (R : Reduced) (c : Nat) : TacticM Ident := do
+  let hrecI := mkIdent `hrecI
+  let (hg, main) ← subHave hrecI (← R.stmt c)
+  setGoals [hg]
+  R.proveRec c
+  setGoals [main]
+  return hrecI
 
 /-- Normalize numeral indices such as `2 * 0 + 1` in the main goal. -/
 private def subNormIdx : TacticM Unit := do
@@ -248,20 +281,12 @@ private def subParse (r : String) : TacticM Term := do
 /-- Prove `∀ m, (P (p * m + c)).Splits` for a class of nonzero rows of degree `D₀ + m`
 (`K ≥ 1`, derivative or three-term shape) from the interlacing of consecutive rows. -/
 private def proveInterlaceClass (R : Reduced) (c D₀ : Nat) : TacticM Unit := do
-  let P := R.P
-  let p := natLit R.p
-  let m := mkIdent `m
-  let cL := natLit c
+  let ⟨P, p, m, cL, Q⟩ ← classTerms R c
   let Dq := natLit D₀
-  let Q ← `(fun $m:ident => $P ($p * $m + $cL))
-  let hrecI := mkIdent `hrecI
   let hdegI := mkIdent `hdegI
   let hposI := mkIdent `hposI
   let hdp := mkIdent `hdp
-  let (hg, main) ← subHave hrecI (← R.stmt c)
-  setGoals [hg]
-  R.proveRec c
-  setGoals [main]
+  let hrecI ← haveClassRec R c
   withMainContext do
   let args ← R.coeffArgs c
   let d1 := natLit 1
@@ -350,16 +375,8 @@ private def proveInterlaceClass (R : Reduced) (c D₀ : Nat) : TacticM Unit := d
 
 /-- Prove `∀ m, (P (p * m + c)).Splits` for a product class (of `P` or of its derivative). -/
 private def proveProductClass (R : Reduced) (c : Nat) : TacticM Unit := do
-  let P := R.P
-  let p := natLit R.p
-  let m := mkIdent `m
-  let cL := natLit c
-  let Q ← `(fun $m:ident => $P ($p * $m + $cL))
-  let hrecI := mkIdent `hrecI
-  let (hg, main) ← subHave hrecI (← R.stmt c)
-  setGoals [hg]
-  R.proveRec c
-  setGoals [main]
+  let ⟨P, _, m, cL, Q⟩ ← classTerms R c
+  let hrecI ← haveClassRec R c
   withMainContext do
   let args ← R.coeffArgs c
   -- the base row `P c` is explicit
@@ -380,19 +397,11 @@ private def proveProductClass (R : Reduced) (c : Nat) : TacticM Unit := do
 
 /-- Add the proved identity `∀ m, P (p * m + c) = 0` to the local context. -/
 private def haveZeroClass (R : Reduced) (c : Nat) (hzero : Ident) : TacticM Unit := do
-  let P := R.P
-  let p := natLit R.p
-  let m := mkIdent `m
-  let cL := natLit c
-  let Q ← `(fun $m:ident => $P ($p * $m + $cL))
-  let hrecI := mkIdent `hrecI
+  let ⟨P, p, m, cL, Q⟩ ← classTerms R c
   let (hzGoal, hzMain) ← subHave hzero
     (← `(∀ $m:ident, $P ($p * $m + $cL) = 0))
   setGoals [hzGoal]
-  let (hg, main) ← subHave hrecI (← R.stmt c)
-  setGoals [hg]
-  R.proveRec c
-  setGoals [main]
+  let hrecI ← haveClassRec R c
   withMainContext do
   let args ← R.coeffArgs c
   let base (j : Nat) : TacticM Unit := do
@@ -458,16 +467,8 @@ private def degreeClassKind (rows : Array QPoly) (p c : Nat) :
 
 /-- Prove the linear degree law of a nonzero reduced three-term residue class. -/
 private def proveLagDegreeClass (R : Reduced) (c D₀ d : Nat) : TacticM Unit := do
-  let P := R.P
-  let p := natLit R.p
-  let m := mkIdent `m
-  let cL := natLit c
-  let Q ← `(fun $m:ident => $P ($p * $m + $cL))
-  let hrecI := mkIdent `hrecI
-  let (hg, main) ← subHave hrecI (← R.stmt c)
-  setGoals [hg]
-  R.proveRec c
-  setGoals [main]
+  let ⟨P, _, _, _, Q⟩ ← classTerms R c
+  let hrecI ← haveClassRec R c
   withMainContext do
   let args ← R.coeffArgs c
   let dT := natLit d
@@ -487,16 +488,8 @@ private def proveLagDegreeClass (R : Reduced) (c D₀ d : Nat) : TacticM Unit :=
 
 /-- Prove the linear degree law of a nonzero reduced product residue class. -/
 private def proveProductDegreeClass (R : Reduced) (c D₀ d : Nat) : TacticM Unit := do
-  let P := R.P
-  let p := natLit R.p
-  let m := mkIdent `m
-  let cL := natLit c
-  let Q ← `(fun $m:ident => $P ($p * $m + $cL))
-  let hrecI := mkIdent `hrecI
-  let (hg, main) ← subHave hrecI (← R.stmt c)
-  setGoals [hg]
-  R.proveRec c
-  setGoals [main]
+  let ⟨P, _, m, _, Q⟩ ← classTerms R c
+  let hrecI ← haveClassRec R c
   withMainContext do
   let q ← R.coeffAt 0 0 (c - R.jmin)
   let dT := natLit d

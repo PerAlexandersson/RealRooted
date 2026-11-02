@@ -775,7 +775,7 @@ def RowRec.hrecTerm (r : RowRec) (k : Nat) : TacticM Term := do
     let n := mkIdent `n
     let eqn ← certTerm (mkAppN (← mkConstWithFreshMVarLevels r.eqn) r.params)
     let h₀ ← `((show $(← certTerm r.stmt) from
-      fun $n:ident => ($eqn $n).trans (by rr_row_unfold; ring)))
+      fun $n:ident => ($eqn $n).trans (by rr_row_unfold; rr_ring)))
     let extra := r.offset - r.stmtOffset + k
     let h ← if extra == 0 then pure h₀ else `(fun $n:ident => $h₀ ($n + $(rowNumLit extra)))
     match r.shape with
@@ -938,7 +938,8 @@ structure RowHints where
   window : Option (Term × Term) := none
   /-- the root window `(-∞, U]` -/
   upper : Option Term := none
-  /-- the route of `rr_row_splits` -/
+  /-- the route (a name from the route table) that all row tactics restrict themselves to, skipping
+  the other routes -/
   via : Option Name := none
 
 /-- Parse the hints. -/
@@ -985,17 +986,63 @@ def RowHints.toSyntax (h : RowHints) : TacticM (Array (TSyntax ``rrRowHint)) := 
   if let some u := h.upper then out := out.push (← `(rrRowHint| (upper := $u)))
   return out
 
-/-- Report failed strategies under `trace.rr.row` and as an error. -/
-def throwRowFailures (header : MessageData) (failures : Array (MessageData × MessageData)) :
-    TacticM α := do
+/-- Report failed strategies under `trace.rr.row` and as an error; at most `limit` strategies
+are shown, each with its first four lines. -/
+def throwRowFailures (header : MessageData) (failures : Array (MessageData × MessageData))
+    (limit : Nat := 6) : TacticM α := do
   for (what, why) in failures do
     trace[rr.row] "{what} failed: {why}"
-  let shown := failures.toList.take 6
+  let shown := failures.toList.take limit
   let lines ← shown.mapM fun (what, why) => do
     let text := "\n  ".intercalate (((← why.toString).splitOn "\n").take 4)
     return m!"\n• {what}: {text}"
-  let more := if failures.size > 6 then m!"\n(and {failures.size - 6} more; see \
+  let more := if failures.size > limit then m!"\n(and {failures.size - limit} more; see \
     `set_option trace.rr.row true`)" else m!""
   throwError "{header}{MessageData.joinSep lines ""}{more}"
+
+/-- The state of one route search of a row front end: the route selected by the `via` hint, the
+call-local attempt log, and the reasons why the routes tried so far failed. -/
+structure RouteSearch where
+  /-- the route that the `via` hint restricts the search to -/
+  via : Option Name
+  /-- the call-local attempt log -/
+  log : RowAttemptLog
+  /-- the routes that failed, with their reasons, in the order of the attempts -/
+  failures : IO.Ref (Array (MessageData × MessageData))
+
+/-- A fresh route search, restricted to the route `via` if given. -/
+def RouteSearch.new (log : RowAttemptLog) (via : Option Name := none) : BaseIO RouteSearch :=
+  return { via, log, failures := ← IO.mkRef #[] }
+
+/-- Record that the strategy `what` failed for the reason `why`. -/
+def RouteSearch.record (s : RouteSearch) (what why : MessageData) : BaseIO Unit :=
+  s.failures.modify (·.push (what, why))
+
+/-- Try the route `name` (described as `what` in failure reports): skipped when the `via` hint
+selects another route; otherwise run as a logged route.  Returns `none` on failure and records
+the reason, except when `via` selects this route, whose error is then thrown as it is. -/
+def RouteSearch.attempt (s : RouteSearch) (name : Name) (tac : TacticM α)
+    (what : MessageData := toMessageData name) : TacticM (Option α) := do
+  if let some v := s.via then
+    if v != name then
+      rowSkip name m!"not selected by the via hint" (some s.log)
+      return none
+  match ← rowRoute name tac (some s.log) with
+  | .ok a => return some a
+  | .error e =>
+    if s.via == some name then throwError e
+    s.record what e
+    return none
+
+/-- Fail with `header` followed by the reasons why the routes that were tried failed. -/
+def RouteSearch.fail (s : RouteSearch) (header : MessageData) : TacticM α := do
+  throwRowFailures header (← s.failures.get) (limit := 12)
+
+/-- Fail with the error `e` of the main strategy; if other routes failed too, list their
+reasons after it. -/
+def RouteSearch.failWith (s : RouteSearch) (e : MessageData) : TacticM α := do
+  let failures ← s.failures.get
+  if failures.isEmpty then throwError e
+  throwRowFailures m!"{e}\n\nThe other routes failed as well:" failures (limit := 12)
 
 end RealRooted.Tactic
