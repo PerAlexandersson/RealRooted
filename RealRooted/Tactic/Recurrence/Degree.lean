@@ -281,15 +281,14 @@ private def degreeModelGoal (log : RowAttemptLog) : TacticM Unit := withMainCont
 of `RecShape` first, then, without hints, general linear recurrences (`linRecRow`). -/
 private def rowDegreeCore (log : RowAttemptLog) (kind : String) (hints : RowHints) :
     TacticM (Cert × RowHints) := do
+  let s ← RouteSearch.new log hints.via
   if hints.via == some `cancel then
     let cancel ← `(tactic| rr_row_cancel)
-    match ← rowRoute `cancel (evalTactic cancel) (some log) with
-    | .ok _ => return (#[cancel], { via := some `cancel })
-    | .error error => throwError error
+    if (← s.attempt `cancel (evalTactic cancel)).isSome then
+      return (#[cancel], { via := some `cancel })
   if hints.via == some `cone then
-    match ← rowRoute `cone (linRecRow kind (some `cone)) (some log) with
-    | .ok cert => return (cert, { via := some `cone })
-    | .error error => throwError error
+    if let some cert ← s.attempt `cone (linRecRow kind (some `cone)) then
+      return (cert, { via := some `cone })
   match ← rowRoute `recurrence (rowDegreeShapeCore kind hints) (some log) with
   | .ok r => return r
   | .error e =>
@@ -300,33 +299,29 @@ private def rowDegreeCore (log : RowAttemptLog) (kind : String) (hints : RowHint
           rowSkip route m!"disabled by hints" (some log)
         throwError e
       if kind == "natDegree" then
-        if let .ok tac ← rowRoute `twoStep twoStepDegree (some log) then return (#[tac], {})
+        if let some tac ← s.attempt `twoStep twoStepDegree then return (#[tac], {})
       else
         rowSkip `twoStep m!"only available for natural-degree goals" (some log)
-      match ← rowRoute `cone (linRecRow kind) (some log) with
-      | .ok cert => return (cert, {})
-      | .error e' =>
-        -- first-order derivative recurrences whose top terms cancel
-        let cancel ← `(tactic| rr_row_cancel)
-        match ← rowRoute `cancel (evalTactic cancel) (some log) with
-        | .ok _ => return (#[cancel], {})
-        | .error e'' =>
-            if kind == "natDegree" then
-              let subseq ← `(tactic| rr_row_subseq_natDegree)
-              match ← rowRoute `subseq (evalTactic subseq) (some log) with
-              | .ok _ => return (#[subseq], {})
-              | .error e''' =>
-                match ← rowRoute `rowModel (degreeModelGoal log) (some log) with
-                | .ok _ => return (#[], {})
-                | .error e'''' =>
-                  throwError "{e}\n\nAs a general linear recurrence: {e'}\n\n\
-                    With cancelling top terms: {e''}\n\nAs residue subsequences: {e'''}\n\n\
-                    As a registered degree model: {e''''}"
-            else
-              rowSkip `subseq m!"only available for natural-degree goals" (some log)
-              rowSkip `rowModel m!"only available for natural-degree goals" (some log)
-              throwError "{e}\n\nAs a general linear recurrence: {e'}\n\n\
-                With cancelling top terms: {e''}"
+      if let some cert ← s.attempt `cone (linRecRow kind)
+          (what := m!"as a general linear recurrence") then
+        return (cert, {})
+      -- first-order derivative recurrences whose top terms cancel
+      let cancel ← `(tactic| rr_row_cancel)
+      if (← s.attempt `cancel (evalTactic cancel)
+          (what := m!"with cancelling top terms")).isSome then
+        return (#[cancel], {})
+      if kind == "natDegree" then
+        let subseq ← `(tactic| rr_row_subseq_natDegree)
+        if (← s.attempt `subseq (evalTactic subseq)
+            (what := m!"as residue subsequences")).isSome then
+          return (#[subseq], {})
+        if (← s.attempt `rowModel (degreeModelGoal log)
+            (what := m!"as a registered degree model")).isSome then
+          return (#[], {})
+      else
+        rowSkip `subseq m!"only available for natural-degree goals" (some log)
+        rowSkip `rowModel m!"only available for natural-degree goals" (some log)
+      s.failWith e
 
 /-- Run a degree tactic; with `?`, print the hinted call and the certificate. -/
 private def rowDegreeElab (kind : String) (tk : Option Syntax)
