@@ -114,19 +114,6 @@ def rationalReversal? (P : Name) : MetaM (Option RationalReversal) := do
   if palindromic then return none
   return some { L, D₀, base := r0.reflect D₀, a₁, a₀, den }
 
-private def rationalLrCoeffFun (L : LinRecData) (i : Nat) : TacticM Term := do
-  let n := mkIdent `n
-  let mut acc : Option Term := none
-  for (j', i', A) in L.terms do
-    if j' != 0 || i' != i then continue
-    let t ← Term.exprToSyntax A
-    acc ← match acc with
-      | none => pure (some (← `($t $n:ident)))
-      | some s => pure (some (← `($s + $t $n:ident)))
-  match acc with
-  | some t => `(fun $n:ident : ℕ => $t)
-  | none => `(fun _ : ℕ => (0 : ℝ[X]))
-
 /-- Define the rational reflected auxiliary family and certify its link to the
 original rows. -/
 def rationalReversalLink (P : Name) (rv : RationalReversal) :
@@ -144,11 +131,7 @@ def rationalReversalLink (P : Name) (rv : RationalReversal) :
   let Pi := mkIdent P
   let eqn := mkIdent rv.L.eqn
   let D₀ := rowNumLit rv.D₀
-  let simpReflect ← `(tactic|
-    simp only [reflect_add, reflect_neg, reflect_C_mul, reflect_C_mul_X_pow,
-      reflect_C, reflect_monomial, reflect_X, reflect_one, reflect_ofNat_mul,
-      reflect_zero, revAt_eq_ite, neg_mul, one_mul, mul_one, zero_mul,
-      mul_zero, add_zero, zero_add])
+  let simpReflect ← Tactic.reflectSimp
   let identity ← `(tactic| first
     | ($simpReflect:tactic <;> norm_num <;> rr_cf_identity)
     | ($simpReflect:tactic <;> rr_cf_identity)
@@ -173,8 +156,8 @@ def rationalReversalLink (P : Name) (rv : RationalReversal) :
   let proof ← `(RealRooted.eq_reflect_of_secondOrderDerivativeRecurrence_of_left_degree
     (P := $R) (R := $Pi) (D₀ := $D₀)
     (A₂ := $zero) (A₁ := $A₁) (A₀ := $A₀)
-    (B₂ := $zero) (B₁ := $(← rationalLrCoeffFun rv.L 1))
-    (B₀ := $(← rationalLrCoeffFun rv.L 0))
+    (B₂ := $zero) (B₁ := $(← Tactic.lrCoeffFun rv.L 0 1))
+    (B₀ := $(← Tactic.lrCoeffFun rv.L 0 0))
     $hP $hR $deg $deg $deg
     (fun $n:ident => by beta_reduce; $identity:tactic)
     (fun $n:ident => by beta_reduce; $identity:tactic)

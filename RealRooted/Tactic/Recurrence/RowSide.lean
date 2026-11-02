@@ -75,17 +75,21 @@ where
     | .mdata _ b => go b acc
     | _ => acc
 
-/-- Close `x ≠ 0`, `x ≤ y` or `x < y` for real rational expressions in natural-number
-variables: record `0 ≤ (m : ℝ)` for every `m : ℕ`, prove every denominator positive
-(or at least nonzero) by `positivity` or `nlinarith`, clear denominators with
-`field_simp`, and conclude with `nlinarith`. -/
-elab "rr_row_field" : tactic => withMainContext do
+/-- Record `0 ≤ (m : ℝ)` for every local `m : ℕ`. -/
+def addNatCastNonneg : TacticM Unit := withMainContext do
   for decl in ← getLCtx do
     if decl.isImplementationDetail then continue
     if (← instantiateMVars decl.type).isConstOf ``Nat then
       let m ← Term.exprToSyntax decl.toExpr
       evalTactic (← `(tactic| have := (Nat.cast_nonneg $m : (0 : ℝ) ≤ ($m : ℝ))))
-  -- `field_simp` may renormalize denominators, so repeat until none are left
+
+/-- Up to three rounds of clearing denominators from the main goal: `prove x` is the tactic
+proving the denominator `x` nonzero or positive, and `fieldSimp` clears the denominators.
+`field_simp` may renormalize denominators, hence the rounds.  With `untilClosed`, the rounds
+end when `fieldSimp` closes the goal (and the result is `true`); otherwise they end when
+`fieldSimp` leaves the goal unchanged. -/
+def clearDenominatorRounds (prove : Term → TacticM (TSyntax `tactic))
+    (fieldSimp : TSyntax `tactic) (untilClosed : Bool) : TacticM Bool := do
   for _ in [0:3] do
     let dens ← withMainContext do
       return denominators (← instantiateMVars (← getMainTarget))
@@ -95,18 +99,32 @@ elab "rr_row_field" : tactic => withMainContext do
       for x in dens do
         if seen.contains x then continue
         seen := seen.push x
-        let xs ← Term.exprToSyntax x
-        evalTactic (← `(tactic| first
-          | have : 0 < $xs := by first | positivity | nlinarith | fail
-          | have : $xs ≠ 0 := by
-              first
-                | (apply ne_of_lt; nlinarith)
-                | (apply ne_of_gt; nlinarith)
-                | fail
-          | fail))
-    let before ← instantiateMVars (← getMainTarget)
-    evalTactic (← `(tactic| try field_simp))
-    if (← instantiateMVars (← getMainTarget)) == before then break
+        evalTactic (← prove (← Term.exprToSyntax x))
+    if untilClosed then
+      evalTactic fieldSimp
+      if (← getGoals).isEmpty then return true
+    else
+      let before ← instantiateMVars (← getMainTarget)
+      evalTactic fieldSimp
+      if (← instantiateMVars (← getMainTarget)) == before then break
+  return false
+
+/-- Close `x ≠ 0`, `x ≤ y` or `x < y` for real rational expressions in natural-number
+variables: record `0 ≤ (m : ℝ)` for every `m : ℕ`, prove every denominator positive
+(or at least nonzero) by `positivity` or `nlinarith`, clear denominators with
+`field_simp`, and conclude with `nlinarith`. -/
+elab "rr_row_field" : tactic => withMainContext do
+  addNatCastNonneg
+  discard <| clearDenominatorRounds
+    (fun xs => `(tactic| first
+      | have : 0 < $xs := by first | positivity | nlinarith | fail
+      | have : $xs ≠ 0 := by
+          first
+            | (apply ne_of_lt; nlinarith)
+            | (apply ne_of_gt; nlinarith)
+            | fail
+      | fail))
+    (← `(tactic| try field_simp)) false
   -- an inequality with a single fraction left: multiply out by a denominator of known sign
   let dens ← withMainContext do return denominators (← instantiateMVars (← getMainTarget))
   for x in dens do
