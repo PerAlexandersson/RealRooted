@@ -18,18 +18,8 @@ as a convenient fallback once the proof shape is stable.
 - `[rr_nonzero]` for nonzero lemmas;
 - `[rr_pos_lc]` for positive-leading-coefficient lemmas;
 - `[rr_nonneg]` for nonnegative-coefficient lemmas;
-- `[rr_root_bound]` for root-interval lemmas;
 - `[rr_base_strict_interl]` for base `StrictInterl` cases;
-- `[rr_base_prec]` is retained as deprecated compatibility syntax for the
-  former name of the preceding attribute;
-- `[rr_base_interlaces]` for base `Interlaces` cases.
-
-Planned matrix attributes:
-
-- `[rr_matrix_rect]`;
-- `[rr_matrix_nonneg]`;
-- `[rr_matrix_2x2]`;
-- `[rr_matrix_threshold]`.
+- `[rr_matrix_rect]` for matrix rectangularity lemmas.
 -/
 
 public meta section
@@ -64,52 +54,17 @@ initialize rrNonnegAttr : Lean.TagAttribute ←
   Lean.registerTagAttribute `rr_nonneg
     "nonnegative-coefficient lemmas used by RealRooted recurrence tactics"
 
-/-- Tag attribute `rr_root_bound`, marking root-location lemmas used by the RealRooted
-recurrence tactics. -/
-initialize rrRootBoundAttr : Lean.TagAttribute ←
-  Lean.registerTagAttribute `rr_root_bound
-    "root-location lemmas used by RealRooted recurrence tactics"
-
 /-- Tag attribute `rr_base_strict_interl`, marking base `StrictInterl` cases used by the
 RealRooted recurrence tactics. -/
 initialize rrBaseStrictInterlAttr : Lean.TagAttribute ←
   Lean.registerTagAttribute `rr_base_strict_interl
     "base StrictInterl cases used by RealRooted recurrence tactics"
 
-/-- Tag attribute `rr_base_prec`, a deprecated compatibility name for `rr_base_strict_interl`. -/
-initialize rrBasePrecAttr : Lean.TagAttribute ←
-  Lean.registerTagAttribute `rr_base_prec
-    "deprecated compatibility name for rr_base_strict_interl"
-
-/-- Tag attribute `rr_base_interlaces`, marking base `Interlaces` cases used by the RealRooted
-recurrence tactics. -/
-initialize rrBaseInterlacesAttr : Lean.TagAttribute ←
-  Lean.registerTagAttribute `rr_base_interlaces
-    "base Interlaces cases used by RealRooted recurrence tactics"
-
 /-- Tag attribute `rr_matrix_rect`, marking matrix rectangularity lemmas used by the RealRooted
 matrix tactics. -/
 initialize rrMatrixRectAttr : Lean.TagAttribute ←
   Lean.registerTagAttribute `rr_matrix_rect
     "matrix rectangularity lemmas used by RealRooted matrix tactics"
-
-/-- Tag attribute `rr_matrix_nonneg`, marking matrix nonnegative-coefficient lemmas used by the
-RealRooted matrix tactics. -/
-initialize rrMatrixNonnegAttr : Lean.TagAttribute ←
-  Lean.registerTagAttribute `rr_matrix_nonneg
-    "matrix nonnegative-coefficient lemmas used by RealRooted matrix tactics"
-
-/-- Tag attribute `rr_matrix_2x2`, marking matrix `2 × 2` interlacing lemmas used by the
-RealRooted matrix tactics. -/
-initialize rrMatrix2x2Attr : Lean.TagAttribute ←
-  Lean.registerTagAttribute `rr_matrix_2x2
-    "matrix 2x2 interlacing lemmas used by RealRooted matrix tactics"
-
-/-- Tag attribute `rr_matrix_threshold`, marking row-threshold lemmas used by the RealRooted
-matrix tactics. -/
-initialize rrMatrixThresholdAttr : Lean.TagAttribute ←
-  Lean.registerTagAttribute `rr_matrix_threshold
-    "row-threshold lemmas used by RealRooted matrix tactics"
 
 namespace RealRooted
 namespace Tactic
@@ -128,18 +83,9 @@ def rrCertificateAttributes : Array (Name × Lean.TagAttribute) :=
     (`rr_nonzero, rrNonzeroAttr),
     (`rr_pos_lc, rrPosLCAttr),
     (`rr_nonneg, rrNonnegAttr),
-    (`rr_root_bound, rrRootBoundAttr),
     (`rr_base_strict_interl, rrBaseStrictInterlAttr),
-    (`rr_base_prec, rrBasePrecAttr),
-    (`rr_base_interlaces, rrBaseInterlacesAttr),
-    (`rr_matrix_rect, rrMatrixRectAttr),
-    (`rr_matrix_nonneg, rrMatrixNonnegAttr),
-    (`rr_matrix_2x2, rrMatrix2x2Attr),
-    (`rr_matrix_threshold, rrMatrixThresholdAttr)
+    (`rr_matrix_rect, rrMatrixRectAttr)
   ]
-
-private def taggedDecls (env : Environment) (attr : Lean.TagAttribute) : Array Name :=
-  (attr.getDecls env).qsort Name.quickLt
 
 /-- Format a list of declaration names for tactic diagnostics. -/
 def formatNameList (names : Array Name) : String :=
@@ -147,13 +93,6 @@ def formatNameList (names : Array Name) : String :=
     "(none)"
   else
     String.intercalate ", " (names.toList.map toString)
-
-private def logTaggedCertificates [Monad m] [MonadEnv m] [MonadLog m]
-    [MonadOptions m] [AddMessageContext m] : m Unit := do
-  let env ← getEnv
-  for (attrName, attr) in rrCertificateAttributes do
-    let names := taggedDecls env attr
-    logInfo m!"[{attrName}] {names.size}: {formatNameList names}"
 
 end Tactic
 end RealRooted

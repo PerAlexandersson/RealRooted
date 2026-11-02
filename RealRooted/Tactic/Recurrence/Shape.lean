@@ -547,13 +547,6 @@ def linRec? (P : Name) (params : Array Expr := #[]) : MetaM (Option LinRecData) 
     if let some r := r then return some r
   return none
 
-/-- The shape of the recurrence of `P`, if it is read with offset `RecShape.base` and in
-the summand order of the theorems. -/
-def recShape? (P : Name) (params : Array Expr := #[]) : MetaM (Option RecShape) := do
-  match ← rowRec? P params with
-  | .ok r => return if r.canonical && r.shift == 0 then some r.shape else none
-  | .error _ => return none
-
 /-- Run `tac` with a fresh heartbeat budget, distinguishing a heartbeat timeout from other
 failures before converting its exception to a message. -/
 private def rowAttemptClassified (tac : TacticM α) :
@@ -775,7 +768,7 @@ def RowRec.hrecTerm (r : RowRec) (k : Nat) : TacticM Term := do
     let n := mkIdent `n
     let eqn ← certTerm (mkAppN (← mkConstWithFreshMVarLevels r.eqn) r.params)
     let h₀ ← `((show $(← certTerm r.stmt) from
-      fun $n:ident => ($eqn $n).trans (by rr_row_unfold; ring)))
+      fun $n:ident => ($eqn $n).trans (by rr_row_unfold; rr_ring)))
     let extra := r.offset - r.stmtOffset + k
     let h ← if extra == 0 then pure h₀ else `(fun $n:ident => $h₀ ($n + $(rowNumLit extra)))
     match r.shape with
@@ -938,7 +931,8 @@ structure RowHints where
   window : Option (Term × Term) := none
   /-- the root window `(-∞, U]` -/
   upper : Option Term := none
-  /-- the route of `rr_row_splits` -/
+  /-- the route (a name from the route table) that all row tactics restrict themselves to, skipping
+  the other routes -/
   via : Option Name := none
 
 /-- Parse the hints. -/

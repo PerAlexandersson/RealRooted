@@ -172,8 +172,8 @@ def reversalLink (P : Name) (rv : Reversal) : TacticM (Ident × Ident) := do
     match rv.terms.find? (fun (j', i', _) => j' == j && i' == i) with
     | some (_, _, cs) => `(fun $n:ident : ℕ => $(← xPolyTerm cs N))
     | none => `(fun _ : ℕ => (0 : ℝ[X]))
-  let hP ← `(fun $n:ident => by beta_reduce; rw [$eqn:ident $n:ident] <;> ring)
-  let hR ← `(fun $n:ident => by first | rfl | (beta_reduce; rw [$R:ident] <;> ring))
+  let hP ← `(fun $n:ident => by beta_reduce; rw [$eqn:ident $n:ident] <;> rr_ring)
+  let hR ← `(fun $n:ident => by first | rfl | (beta_reduce; rw [$R:ident] <;> rr_ring))
   let deg ← `(fun $n:ident => by beta_reduce; first | compute_degree | simp)
   let hB : TacticM Term := `(fun $n:ident => by beta_reduce; $identity:tactic)
   let hRdeg ← `(fun $n:ident => le_of_eq (by rr_row_natDegree))

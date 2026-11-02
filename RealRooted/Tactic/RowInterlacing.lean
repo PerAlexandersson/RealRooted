@@ -901,7 +901,7 @@ if the summands are not in the order of the theorems). -/
 private def assertRec (r : RowRec) : TacticM Unit := withMainContext do
   let n := mkIdent `n
   let pf ← if r.canonical then `(fun $n:ident => $(mkIdent r.eqn) $n)
-    else `(fun $n:ident => ($(mkIdent r.eqn) $n).trans (by ring))
+    else `(fun $n:ident => ($(mkIdent r.eqn) $n).trans (by rr_ring))
   let e ← elabTermEnsuringType pf r.stmt
   Term.synthesizeSyntheticMVarsNoPostponing
   let e ← instantiateMVars e
@@ -1459,7 +1459,7 @@ private def rowSplitsCoreDirect (log : RowAttemptLog) (hints : RowHints) :
     let n := mkIdent `n
     evalTactic (← `(tactic|
       refine RealRooted.twoStepProduct_splits (P := $(← r.seq 0)) (q := $q)
-        (fun $n:ident => ($(mkIdent r.eqn) $n).trans (by beta_reduce; ring)) ?_ ?_ ?_ $t))
+        (fun $n:ident => ($(mkIdent r.eqn) $n).trans (by beta_reduce; rr_ring)) ?_ ?_ ?_ $t))
     let gs ← getGoals
     let [hq, h0, h1] := gs | throwError "rr_row_splits: unexpected side goals"
     for g in [h0, h1] do

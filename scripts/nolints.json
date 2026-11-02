@@ -841,14 +841,6 @@
  ],
  [
   "defsWithUnderscore",
-  "RealRooted.Tactic.rr_positivity_seq"
- ],
- [
-  "defsWithUnderscore",
-  "RealRooted.Tactic.rr_positivity_seq_term"
- ],
- [
-  "defsWithUnderscore",
   "RealRooted.Tactic.rr_positivity_term"
  ],
  [
@@ -889,27 +881,11 @@
  ],
  [
   "defsWithUnderscore",
-  "RealRooted.Tactic.rr_side_ne_seq"
- ],
- [
-  "defsWithUnderscore",
-  "RealRooted.Tactic.rr_side_ne_seq_term"
- ],
- [
-  "defsWithUnderscore",
   "RealRooted.Tactic.rr_side_ne_term"
  ],
  [
   "defsWithUnderscore",
   "RealRooted.Tactic.rr_side_nonneg"
- ],
- [
-  "defsWithUnderscore",
-  "RealRooted.Tactic.rr_side_nonneg_seq"
- ],
- [
-  "defsWithUnderscore",
-  "RealRooted.Tactic.rr_side_nonneg_seq_term"
  ],
  [
   "defsWithUnderscore",
@@ -1142,14 +1118,6 @@
  [
   "defsWithUnderscore",
   "RealRooted.Tactic.tacticRr_row_ode"
- ],
- [
-  "defsWithUnderscore",
-  "RealRooted.Tactic.tacticRr_row_path_power_interlaces"
- ],
- [
-  "defsWithUnderscore",
-  "RealRooted.Tactic.tacticRr_row_path_power_splits"
  ],
  [
   "defsWithUnderscore",

@@ -3,9 +3,11 @@ module
 public import RealRooted.ProductSequence.Interlacing
 public import RealRooted.QuadraticRoot
 public import Mathlib.Tactic.ComputeDegree
+public import RealRooted.Tactic.Ring
 public meta import RealRooted.ProductSequence.Interlacing
 public meta import RealRooted.QuadraticRoot
 public meta import Mathlib.Tactic.ComputeDegree
+public meta import RealRooted.Tactic.Ring
 
 /-!
 # Tactics for product sequences
@@ -117,25 +119,25 @@ elab "rr_product_natDegree" : tactic => withMainContext do
   evalTactic (← `(tactic| first
     | (have hbase : ($Pid 0).natDegree = 0 :=
           (by simp only [$Pid:ident]; first | rfl | (simp; done) | (compute_degree!; done) | fail)
-       rw [hbase]; first | lia | ring | simp)
+       rw [hbase]; first | lia | rr_ring | simp)
     | (have hbase : ($Pid 0).natDegree = 1 :=
           (by simp only [$Pid:ident]; first | rfl | (simp; done) | (compute_degree!; done) | fail)
-       rw [hbase]; first | lia | ring | simp)
+       rw [hbase]; first | lia | rr_ring | simp)
     | (have hbase : ($Pid 0).natDegree = 2 :=
           (by simp only [$Pid:ident]; first | rfl | (simp; done) | (compute_degree!; done) | fail)
-       rw [hbase]; first | lia | ring | simp)
+       rw [hbase]; first | lia | rr_ring | simp)
     | (have hbase : ($Pid 0).natDegree = 3 :=
           (by simp only [$Pid:ident]; first | rfl | (simp; done) | (compute_degree!; done) | fail)
-       rw [hbase]; first | lia | ring | simp)
+       rw [hbase]; first | lia | rr_ring | simp)
     | (have hbase : ($Pid 0).natDegree = 4 :=
           (by simp only [$Pid:ident]; first | rfl | (simp; done) | (compute_degree!; done) | fail)
-       rw [hbase]; first | lia | ring | simp)
+       rw [hbase]; first | lia | rr_ring | simp)
     | (have hbase : ($Pid 0).natDegree = 5 :=
           (by simp only [$Pid:ident]; first | rfl | (simp; done) | (compute_degree!; done) | fail)
-       rw [hbase]; first | lia | ring | simp)
+       rw [hbase]; first | lia | rr_ring | simp)
     | (have hbase : ($Pid 0).natDegree = 6 :=
           (by simp only [$Pid:ident]; first | rfl | (simp; done) | (compute_degree!; done) | fail)
-       rw [hbase]; first | lia | ring | simp)))
+       rw [hbase]; first | lia | rr_ring | simp)))
   productSideGoals Pid
 
 end RealRooted.Tactic

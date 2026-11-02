@@ -161,7 +161,7 @@ private def Reduced.proveRec (R : Reduced) (c : Nat) : TacticM Unit := do
     let dst ← if j' == 0 then `($p * $m + $(natLit c))
       else `($p * ($m + $(natLit j')) + $(natLit c))
     unless j == 0 && j' == 0 && e == c do
-      eqs := eqs.push (← `(tactic| rw [show ($src : ℕ) = $dst by ring] at h0))
+      eqs := eqs.push (← `(tactic| rw [show ($src : ℕ) = $dst by rr_ring] at h0))
   let optional (t : TSyntax `tactic) : TacticM Unit := discard <| rowAttempt (evalTactic t)
   let viaRw := do
     optional (← `(tactic| simp only [Nat.succ_eq_add_one] at h0))

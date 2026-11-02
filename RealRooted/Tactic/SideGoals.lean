@@ -46,15 +46,8 @@ syntax (name := rr_side_pos) "rr_side_pos" : tactic
 /-- Closes a nonvanishing side goal `e ≠ 0` by assumption, casts, powers, quotients, inverses,
 `positivity`, `norm_num` or `nlinarith`. -/
 syntax (name := rr_side_ne) "rr_side_ne" : tactic
-/-- Sequence form of `rr_side_nonneg`: introduces the row index `n` and closes the goal for it. -/
-syntax (name := rr_side_nonneg_seq) "rr_side_nonneg_seq" : tactic
 /-- Sequence form of `rr_side_pos`: introduces the row index `n` and closes the goal for it. -/
 syntax (name := rr_side_pos_seq) "rr_side_pos_seq" : tactic
-/-- Sequence form of `rr_side_ne`: introduces the row index `n` and closes the goal for it. -/
-syntax (name := rr_side_ne_seq) "rr_side_ne_seq" : tactic
-/-- Sequence form of `positivity`: introduces the row index `n` and closes the goal by
-`positivity`. -/
-syntax (name := rr_positivity_seq) "rr_positivity_seq" : tactic
 /-- Simplifies polynomial coefficient expressions such as `coeff_add`, `coeff_C_mul` and
 `coeff_X_pow` using a fixed `simp only` set. -/
 syntax (name := rr_coeff_simp) "rr_coeff_simp" : tactic
@@ -121,10 +114,10 @@ syntax (name := rr_eval_simp) "rr_eval_simp" : tactic
 syntax (name := rr_side_arith) "rr_side_arith" : tactic
 /-- Runs `rr_eval_simp` and then `rr_side_arith`. -/
 syntax (name := rr_eval_simp_arith) "rr_eval_simp_arith" : tactic
-/-- Closes a side goal by assumption, `positivity`, `norm_num`, `rr_coeff`, `ring_nf`, `ring`,
-`lia`, `nlinarith`, `rr_eval_simp` or `grind`. Each alternative must close the goal. -/
+/-- Closes a side goal by assumption, `positivity`, `norm_num`, `rr_coeff`, `ring_nf`,
+`ring1`, `lia`, `nlinarith`, `rr_eval_simp` or `grind`. Each alternative must close the goal. -/
 syntax (name := rr_close_side) "rr_close_side" : tactic
-/-- Applies the first of `positivity`, `norm_num`, `rr_coeff`, `ring_nf`, `ring`, `lia`,
+/-- Applies the first of `positivity`, `norm_num`, `rr_coeff`, `ring_nf`, `lia`,
 `nlinarith`, `rr_eval_simp` and `grind` that succeeds on a side goal, without requiring that the
 goal be closed. -/
 syntax (name := rr_side) "rr_side" : tactic
@@ -173,10 +166,10 @@ macro_rules
               first
                 | exact sub_nonneg.mpr (by exact_mod_cast (by lia))
                 | positivity
-                | norm_num
+                | (norm_num; done)
                 | nlinarith)
           | positivity
-          | norm_num
+          | (norm_num; done)
           | nlinarith)
   | `(tactic| rr_side_pos) =>
       `(tactic|
@@ -185,7 +178,7 @@ macro_rules
           | exact_mod_cast (by assumption)
           | exact sub_pos.mpr (by exact_mod_cast (by lia))
           | positivity
-          | norm_num
+          | (norm_num; done)
           | nlinarith)
   | `(tactic| rr_side_ne) =>
       `(tactic|
@@ -215,14 +208,8 @@ macro_rules
             positivity
           | apply ne_of_lt
             nlinarith)
-  | `(tactic| rr_side_nonneg_seq) =>
-      `(tactic| intro n <;> rr_side_nonneg)
   | `(tactic| rr_side_pos_seq) =>
       `(tactic| intro n <;> rr_side_pos)
-  | `(tactic| rr_side_ne_seq) =>
-      `(tactic| intro n <;> rr_side_ne)
-  | `(tactic| rr_positivity_seq) =>
-      `(tactic| intro n <;> positivity)
   | `(tactic| rr_coeff_simp) =>
       `(tactic|
         simp (discharger := decide) only [
@@ -417,7 +404,7 @@ macro_rules
           | norm_num <;> done
           | rr_coeff <;> done
           | ring_nf <;> done
-          | ring <;> done
+          | ring1
           | lia
           | nlinarith
           | rr_eval_simp <;> done
@@ -429,7 +416,6 @@ macro_rules
           | norm_num
           | rr_coeff
           | ring_nf
-          | ring
           | lia
           | nlinarith
           | rr_eval_simp
@@ -439,7 +425,6 @@ macro_rules
         first
           | rr_coeff
           | ring_nf
-          | ring
           | lia
           | rr_eval_simp
           | grind)

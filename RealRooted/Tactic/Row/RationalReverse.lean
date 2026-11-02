@@ -153,8 +153,8 @@ def rationalReversalLink (P : Name) (rv : RationalReversal) :
     | ($simpReflect:tactic <;> norm_num <;> rr_cf_identity)
     | ($simpReflect:tactic <;> rr_cf_identity)
     | rr_cf_identity)
-  let hP ← `(fun $n:ident => by beta_reduce; rw [$R:ident] <;> ring)
-  let hR ← `(fun $n:ident => by beta_reduce; rw [$eqn:ident $n:ident] <;> ring)
+  let hP ← `(fun $n:ident => by beta_reduce; rw [$R:ident] <;> rr_ring)
+  let hR ← `(fun $n:ident => by beta_reduce; rw [$eqn:ident $n:ident] <;> rr_ring)
   let deg ← `(fun $n:ident => by
     beta_reduce
     first | (compute_degree <;> norm_num) | simp)
