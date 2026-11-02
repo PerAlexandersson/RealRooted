@@ -353,6 +353,7 @@ public import RealRooted.CombinatorialExamples.BorosMoll
 public import RealRooted.CombinatorialExamples.BorosMoll.Basic
 public import RealRooted.CombinatorialExamples.BorosMoll.Estimates
 public import RealRooted.CombinatorialExamples.BorosMoll.Infinite
+public import RealRooted.CombinatorialExamples.BorosMoll.NarayanaBridge
 public import RealRooted.CombinatorialExamples.CentralFactorial
 public import RealRooted.CombinatorialExamples.ColoredSetPartitions
 public import RealRooted.CombinatorialExamples.Common
