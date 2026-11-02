@@ -160,9 +160,6 @@ private theorem reflect_one_one_add_X : reflect 1 (1 + X : ℝ[X]) = 1 + X := by
   rw [reflect_add, add_comm]
   simp
 
-private theorem reflect_one_X : reflect 1 (X : ℝ[X]) = 1 := by
-  simp
-
 private theorem reflect_two_X_mul_one_sub_X : reflect 2 (X * (1 - X) : ℝ[X]) = X - 1 := by
   have h : reflect 2 (X : ℝ[X]) = X := by
     have := reflect_monomial (R := ℝ) 2 1
@@ -369,15 +366,11 @@ theorem row_reflectionInterlacing :
     rw [row_succ]
     exact (row_reflectionInterlacing n).chowRowTransform
 
-/-- The degree-`d` magic-basis expansion with coefficients `c`. -/
-def magicExpansion (d : ℕ) (c : ℕ → ℝ) : ℝ[X] :=
-  Polynomial.magicExpansion d c
-
 /-- The Eulerian transformation of a magic-basis expansion is the corresponding combination
 of the image row. -/
 theorem transform_magicExpansion (d : ℕ) (c : ℕ → ℝ) :
     transform (magicExpansion d c) = ∑ k ∈ Finset.range (d + 1), C (c k) * basisImage d k := by
-  simp [magicExpansion, Polynomial.magicExpansion, basisImage, map_sum]
+  simp [Polynomial.magicExpansion, basisImage, map_sum]
 
 private def scaledRow (d : ℕ) (c : ℕ → ℝ) : List ℝ[X] :=
   (List.range (d + 1)).map fun k => C (c k) * basisImage d k

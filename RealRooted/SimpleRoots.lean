@@ -114,6 +114,17 @@ theorem HasSimpleRoots.comp_C_mul_X_add_C (hsimple : HasSimpleRoots p)
   rw [Polynomial.IsRoot.def] at hr ⊢
   simpa using hr
 
+/-- Multiplying by a nonzero scalar preserves simple real roots. -/
+theorem HasSimpleRoots.C_mul {p : ℝ[X]} {c : ℝ}
+    (hp : HasSimpleRoots p) (hc : c ≠ 0) :
+    HasSimpleRoots (C c * p) := by
+  intro x hx
+  have hp_ne : p ≠ 0 := hp.ne_zero
+  have hcp_ne : C c * p ≠ 0 := mul_ne_zero (C_ne_zero.mpr hc) hp_ne
+  rw [Polynomial.rootMultiplicity_mul hcp_ne, Polynomial.rootMultiplicity_C]
+  have hroot_p : p.IsRoot x := by simpa [Polynomial.IsRoot.def, eval_mul, eval_C, hc] using hx
+  rw [hp x hroot_p]
+
 /-- A nonzero polynomial with a duplicate-free root multiset has simple real
 roots. -/
 lemma HasSimpleRoots.of_roots_nodup {p : ℝ[X]}

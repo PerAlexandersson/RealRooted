@@ -26,7 +26,8 @@ noncomputable section
 
 namespace RealRooted.EdreiThoma
 
-private lemma eventually_disc (c : ℝ) : ∀ᶠ z in 𝓝 (0 : ℂ), c * ‖z‖ < 1 := by
+/-- Eventually near `0 : ℂ`, `c * ‖z‖ < 1`. -/
+lemma eventually_disc (c : ℝ) : ∀ᶠ z in 𝓝 (0 : ℂ), c * ‖z‖ < 1 := by
   exact (continuous_const.mul continuous_norm).continuousAt.eventually_lt continuousAt_const
     (by simp)
 
@@ -183,12 +184,6 @@ private lemma pc_succ_sub_zero (a : ℕ → ℝ) (hA : ∀ n m, A a n m ≠ 0) (
   rw [← sub_eq_zero, pc, pc, ← cp_sub, Q_succ_sub a hA, mul_assoc, cp_C_mul,
     cp_X_mul_zero, mul_zero]
 
-private lemma A_zero (a : ℕ → ℝ) (m : ℕ) : A a 0 m = 1 := by
-  simp [A]
-
-private lemma A_one (a : ℕ → ℝ) (m : ℕ) : A a 1 m = a m := by
-  simp [A, Matrix.det_unique, tc]
-
 private lemma Q_zero (a : ℕ → ℝ) (m : ℕ) : Q a m 0 = 1 := by
   simp [Q, A_zero, Matrix.det_unique]
 
@@ -213,10 +208,6 @@ private lemma gam_eq {a : ℕ → ℝ} (hP : ∀ n m, 0 < A a n m) (m n : ℕ) :
     gam a m n = w a (n + 1) (m + 1) / w a n m := by
   simp only [gam, w]
   field_simp [ne_of_gt (hP _ _)]
-
-private lemma gam_pos {a : ℕ → ℝ} (hP : ∀ n m, 0 < A a n m) (m n : ℕ) :
-    0 < gam a m n := by
-  rw [gam_eq hP]; exact div_pos (w_pos hP _ _) (w_pos hP _ _)
 
 /-- `u k ≤ C (L + δ)^k` for every `δ > 0`. -/
 private def GrowthBound (u : ℕ → ℝ) (L : ℝ) : Prop :=
@@ -432,7 +423,7 @@ private lemma pc_le_pn {μ n k : ℕ} (hk : k ≤ μ) :
       | zero => simp only [add_zero]; rw [pc_succ_sub_zero a hA]
       | succ k =>
         have h1 := pc_succ_sub a hA (i + (k + 1)) n k
-        have h2 := mul_nonneg (gam_pos hP (i + (k + 1)) n).le
+        have h2 := mul_nonneg (gam_pos_of_A_pos hP (i + (k + 1)) n).le
           (pc_nonneg hpf hP (m := i + (k + 1)) (n := n) (k := k) (by lia))
         linarith
     have ht : Tendsto g atTop (𝓝 (cp a ((Sinf (n + 1)).comp (-X)) k)) :=
@@ -463,14 +454,14 @@ private lemma pn_succ_le_T (n k : ℕ) (sγ : Summable fun m => gam a m n) :
     calc ∑ μ ∈ Finset.Ico k M, gam a μ n * pc a μ n k
         ≤ ∑ μ ∈ Finset.Ico k M, gam a μ n * cp a ((Sinf n).comp (-X)) k :=
           Finset.sum_le_sum fun μ hμ => mul_le_mul_of_nonneg_left
-            (pc_le_pn hpf hP hS0 hSlim (Finset.mem_Ico.1 hμ).1) (gam_pos hP μ n).le
+            (pc_le_pn hpf hP hS0 hSlim (Finset.mem_Ico.1 hμ).1) (gam_pos_of_A_pos hP μ n).le
       _ = cp a ((Sinf n).comp (-X)) k * ∑ μ ∈ Finset.Ico k M, gam a μ n := by
           rw [← Finset.sum_mul, mul_comm]
       _ ≤ cp a ((Sinf n).comp (-X)) k * ∑' μ, gam a (μ + k) n := by
           refine mul_le_mul_of_nonneg_left ?_ (pn_nonneg hpf hP hSlim n k)
           rw [Finset.sum_Ico_eq_sum_range]
           simp only [add_comm k]
-          exact sγ'.sum_le_tsum _ fun i _ => (gam_pos hP _ n).le
+          exact sγ'.sum_le_tsum _ fun i _ => (gam_pos_of_A_pos hP _ n).le
   exact le_of_tendsto (pc_tendsto hSlim (n + 1) (k + 1)) ((eventually_ge_atTop k).mono hT)
 
 end Limits
@@ -523,7 +514,7 @@ private lemma pn_growth (n : ℕ) : GrowthBound (fun k => cp a ((Sinf n).comp (-
     simpa only [pn_zero hS0, w_zero] using hC k
   | succ n ih =>
     exact growth_step ih (pn_nonneg hpf hP hSlim n) (pn_succ_le hpf hP hSlim hβ hSrec n)
-      (fun k => pn_succ_le_T hpf hP hS0 hSlim n k (sγ n)) (fun m => (gam_pos hP m n).le)
+      (fun k => pn_succ_le_T hpf hP hS0 hSlim n k (sγ n)) (fun m => (gam_pos_of_A_pos hP m n).le)
       (w_pos hP n) (w_pos hP (n + 1)) (fun m => gam_eq hP m n)
       (w_ratio_tendsto hP hrr n) (w_ratio_tendsto hP hrr (n + 1))
 

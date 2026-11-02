@@ -235,4 +235,18 @@ theorem reciprocalShift_reverses_strictInterl
       hpd hqd hss_length hrs_length hss_sorted hrs_sorted hss_nonpos hrs_nonpos
       hlensame halternates
 
+/-- At a common degree bound, reflection reverses an interlacing pair of PF polynomials. -/
+theorem reciprocalShift_reverses_interl
+    {n : ℕ} {p q : ℝ[X]}
+    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
+    (hpdeg : p.natDegree ≤ n) (hqdeg : q.natDegree ≤ n)
+    (hpq : Interl p q) :
+    Interl (q.reflect n) (p.reflect n) := by
+  rcases hpq with hpzero | hqzero | hpq
+  · subst p
+    simpa using interl_zero_right (q.reflect n)
+  · subst q
+    simpa using interl_zero_left (p.reflect n)
+  · exact (reciprocalShift_reverses_strictInterl hp hq hpdeg hqdeg hpq).toInterl
+
 end RealRooted

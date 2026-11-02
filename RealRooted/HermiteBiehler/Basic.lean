@@ -43,6 +43,21 @@ def complexify (p : ℝ[X]) : ℂ[X] :=
     complexify X = X := by
   simp [complexify]
 
+/-- Complexification commutes with iterated derivatives. -/
+theorem complexify_iterate_derivative (j : ℕ) (p : ℝ[X]) :
+    complexify ((derivative^[j]) p) =
+      (derivative^[j]) (complexify p) := by
+  induction j with
+  | zero => rfl
+  | succ j ih =>
+      rw [Function.iterate_succ_apply', Function.iterate_succ_apply']
+      have hderivative (q : ℝ[X]) :
+          complexify q.derivative = (complexify q).derivative := by
+        ext n
+        simp [complexify, coeff_derivative]
+      rw [hderivative]
+      exact congrArg derivative ih
+
 /-- A univariate complex polynomial is upper-half-plane stable if it has no root
 with strictly positive imaginary part. -/
 def IsUpperHalfPlaneStable (p : ℂ[X]) : Prop :=

@@ -797,18 +797,6 @@ theorem normalizedAffineEndpointSequence_roots_mem_Icc_iff
             exact hstepRoots r hr
     exact (key n).2.2
 
-/-- Multiplication by a nonzero real constant does not change a root
-multiplicity. -/
-private lemma rootMultiplicity_C_mul_eq
-    {c e : ℝ} (hc : c ≠ 0) (p : ℝ[X]) :
-    (C c * p).rootMultiplicity e = p.rootMultiplicity e := by
-  by_cases hp : p = 0
-  · simp [hp]
-  · rw [rootMultiplicity_mul (mul_ne_zero (C_ne_zero.mpr hc) hp)]
-    rw [rootMultiplicity_eq_zero]
-    · simp
-    · simp [Polynomial.IsRoot.def, hc]
-
 /-- Confinement supplies positive-leading-coefficient and splitting
 certificates for every normalized affine row. -/
 private lemma normalizedAffineEndpointSequence_certificates
@@ -932,7 +920,7 @@ theorem normalizedAffineEndpointSequence_parameter_trichotomy
         (hcert n).1 (hcert n).2 (fun z hz => hall n z hz)
       have hc : ((n : ℝ) + 1)⁻¹ ≠ 0 := by positivity
       dsimp [m]
-      rw [hrec n, rootMultiplicity_C_mul_eq hc]
+      rw [hrec n, rootMultiplicity_C_mul hc]
       rw [hpack.2.2.2.2.2.2]
       congr 1
       apply propext
@@ -957,7 +945,7 @@ theorem normalizedAffineEndpointSequence_parameter_trichotomy
         (hcert n).1 (hcert n).2 (fun z hz => hall n z hz)
       have hc : ((n : ℝ) + 1)⁻¹ ≠ 0 := by positivity
       dsimp [m]
-      rw [hrec n, rootMultiplicity_C_mul_eq hc]
+      rw [hrec n, rootMultiplicity_C_mul hc]
       rw [hpack.2.2.2.2.2.1]
       congr 1
       apply propext

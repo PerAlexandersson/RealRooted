@@ -22,20 +22,6 @@ namespace RealRooted
 
 open GammaTransform
 
-private lemma roots_neg_of_nonnegCoeffs_of_coeff_zero_ne
-    {p : ℝ[X]} (hnn : HasNonnegCoeffs p) (hzero : p.coeff 0 ≠ 0) :
-    ∀ x ∈ p.roots, x < 0 := by
-  intro x hx
-  have hxle := roots_nonpos_of_hasNonnegCoeffs hnn x hx
-  have hxne : x ≠ 0 := by
-    intro hxeq
-    subst x
-    have hroot : p.eval 0 = 0 := isRoot_of_mem_roots hx
-    apply hzero
-    rw [Polynomial.coeff_zero_eq_eval_zero]
-    exact hroot
-  exact lt_of_le_of_ne hxle hxne
-
 private noncomputable def preferredRoots (d : ℕ) (γ : ℝ[X]) : List ℝ :=
   ((gammaTransform d γ).roots.filter
     (fun x => x ∈ Set.Ioo (-1 : ℝ) 0)).sort (· ≤ ·)
@@ -394,8 +380,8 @@ theorem strictInterl_gammaTransform_succ_iff
     intro hzero
     apply hδ0
     simp [hzero]
-  have hγneg := roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hγnn hγ0
-  have hδneg := roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hδnn hδ0
+  have hγneg := roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne hγnn hγ0
+  have hδneg := roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne hδnn hδ0
   have hTγnn : HasNonnegCoeffs (gammaTransform d γ) :=
     hasNonnegCoeffs_gammaTransform hγnn
   have hTδnn : HasNonnegCoeffs (gammaTransform (d + 1) δ) :=
@@ -404,8 +390,8 @@ theorem strictInterl_gammaTransform_succ_iff
     simpa [coeff_zero_gammaTransform] using hγ0
   have hTδ0 : (gammaTransform (d + 1) δ).coeff 0 ≠ 0 := by
     simpa [coeff_zero_gammaTransform] using hδ0
-  have hTγneg := roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hTγnn hTγ0
-  have hTδneg := roots_neg_of_nonnegCoeffs_of_coeff_zero_ne hTδnn hTδ0
+  have hTγneg := roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne hTγnn hTγ0
+  have hTδneg := roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne hTδnn hTδ0
   constructor
   · intro hTstrictInterl
     obtain ⟨hγrr, hδrr, hpreferred⟩ :=

@@ -32,7 +32,7 @@ open Complex
 /-! ### Auxiliary lemmas for `final_lemma` -/
 
 /-- Power series with nonnegative coefficients: values at real points. -/
-private lemma nonneg_series_real {p : ℕ → ℝ} {F : ℂ → ℂ}
+lemma nonneg_series_real {p : ℕ → ℝ} {F : ℂ → ℂ}
     (hF : ∀ z : ℂ, HasSum (fun n => (p n : ℂ) * z ^ n) (F z)) (r : ℝ) :
     HasSum (fun n => p n * r ^ n) (F r).re ∧ (F r).im = 0 := by
   have := (Complex.hasSum_iff _ _).1 (hF r)
@@ -50,7 +50,8 @@ private lemma nonneg_series_zero {p : ℕ → ℝ} {F : ℂ → ℂ}
   · intro b hb
     simp [zero_pow hb]
 
-private lemma nonneg_series_ge {p : ℕ → ℝ} (hp : ∀ n, 0 ≤ p n) {F : ℂ → ℂ}
+/-- Power series with nonnegative coefficients: `p 0 ≤ ‖F r‖` at nonnegative real points. -/
+lemma nonneg_series_ge {p : ℕ → ℝ} (hp : ∀ n, 0 ≤ p n) {F : ℂ → ℂ}
     (hF : ∀ z : ℂ, HasSum (fun n => (p n : ℂ) * z ^ n) (F z)) {r : ℝ} (hr : 0 ≤ r) :
     p 0 ≤ ‖F r‖ := by
   have h := (nonneg_series_real hF r).1

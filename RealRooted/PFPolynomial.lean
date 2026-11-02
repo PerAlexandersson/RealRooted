@@ -292,6 +292,15 @@ theorem of_interl_self {p : ℝ[X]}
   · exact IsPFPolynomial.zero
   · exact IsPFPolynomial.of_realRooted_nonneg hpnn hpp'.1.2
 
+/-- The derivative of a PF polynomial precedes the polynomial, including constants. -/
+theorem derivative_interl_self {p : ℝ[X]} (hp : IsPFPolynomial p) :
+    Interl p.derivative p := by
+  by_cases hdeg : p.natDegree = 0
+  · rw [derivative_eq_zero.mpr hdeg]
+    exact interl_zero_left p
+  · exact (derivative_interlaces_of_natDegree_ne_zero
+      (hp.ne_zero_and_splits (fun hp0 ↦ hdeg (by simp [hp0]))).2 hdeg).toStrictInterl.toInterl
+
 end IsPFPolynomial
 
 /-- The polynomial `X` is PF. -/
@@ -463,7 +472,7 @@ theorem reciprocalShift_eq_X_pow_mul_reverse {D : ℕ} {p : ℝ[X]}
     (hdeg : p.natDegree ≤ D) :
     reciprocalShift D p = X ^ (D - p.natDegree) * p.reverse := by
   simpa [reciprocalShift] using
-    DegreeDropReversal.reflect_eq_X_pow_mul_reverse p hdeg
+    Polynomial.reflect_eq_X_pow_mul_reverse p hdeg
 
 /-- Shifted reciprocals preserve the PF cone when the shift bounds the
 degree. -/
@@ -472,6 +481,27 @@ theorem reciprocalShift_preserves_pf {D : ℕ} {p : ℝ[X]}
     IsPFPolynomial (reciprocalShift D p) := by
   rw [reciprocalShift_eq_X_pow_mul_reverse hdeg]
   exact (isPFPolynomial_X_pow (D - p.natDegree)).mul hp.reverse
+
+/-- Increasing the padding of a reciprocal shift inserts one factor of `X`. -/
+theorem reciprocalShift_succ_eq_X_mul {D : ℕ} {p : ℝ[X]}
+    (hdegree : p.natDegree ≤ D) :
+    reciprocalShift (D + 1) p = X * reciprocalShift D p := by
+  ext i
+  cases i with
+  | zero =>
+      rw [reciprocalShift, Polynomial.coeff_reflect, Polynomial.revAt_zero,
+        coeff_X_mul_zero]
+      exact coeff_eq_zero_of_natDegree_lt (by lia)
+  | succ i =>
+      rw [reciprocalShift, Polynomial.coeff_reflect, coeff_X_mul,
+        reciprocalShift, Polynomial.coeff_reflect]
+      by_cases hi : i ≤ D
+      · simp_all
+      · have hDi : D < i := by lia
+        rw [Polynomial.revAt_eq_self_of_lt hDi,
+          Polynomial.revAt_eq_self_of_lt (by lia : D + 1 < i + 1),
+          coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hdegree hDi),
+          coeff_eq_zero_of_natDegree_lt (by lia)]
 
 /-- Multiplication by `X + 1` preserves the polynomial PF cone. -/
 theorem isPFPolynomial_mul_X_add_one {p : ℝ[X]}

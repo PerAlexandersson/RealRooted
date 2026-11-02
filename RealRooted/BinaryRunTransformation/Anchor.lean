@@ -289,7 +289,7 @@ private theorem hasSimpleRoots_of_reflect_roots_nodup {p : ℝ[X]} {d : ℕ}
     (hp0 : p ≠ 0) (hpconst : p.coeff 0 ≠ 0) (hdeg : p.natDegree = d) (hsplits : p.Splits)
     (hroots : (p.reflect d).roots.Nodup) : HasSimpleRoots p := by
   have hreverse : p.reverse = p.reflect d := by
-    rw [DegreeDropReversal.reflect_eq_X_pow_mul_reverse p hdeg.le, hdeg]
+    rw [Polynomial.reflect_eq_X_pow_mul_reverse p hdeg.le, hdeg]
     simp
   rw [← hreverse, Polynomial.roots_reverse_eq_map_inv hsplits hpconst] at hroots
   exact HasSimpleRoots.of_roots_nodup hp0

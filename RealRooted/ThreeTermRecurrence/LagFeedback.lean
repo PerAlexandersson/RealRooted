@@ -26,10 +26,6 @@ open Polynomial
 
 namespace RealRooted
 
-private lemma hasPosLeadingCoeff_of_nonneg {f : ℝ[X]} (hf : HasNonnegCoeffs f) (h0 : f ≠ 0) :
-    HasPosLeadingCoeff f :=
-  lt_of_le_of_ne (hf _) (leadingCoeff_ne_zero.mpr h0).symm
-
 /-- Windows of a lag recurrence with a feedback term stay pairwise interlacing. -/
 theorem strictInterl_of_lagFeedback {P : ℕ → ℝ[X]} {p : ℕ} {α : ℝ} {c : ℕ → ℝ}
     (hp : 2 ≤ p) (hα : 0 < α) (hc : ∀ n, 0 < c n)
@@ -67,10 +63,9 @@ theorem strictInterl_of_lagFeedback {P : ℕ → ℝ[X]} {p : ℕ} {α : ℝ} {c
         have hg := h2.C_mul_right (hc n).ne'
         rw [hrec n, mul_assoc (C (c n))]
         exact hf.add_of_left hg
-          (hasPosLeadingCoeff_of_nonneg (hasNonnegCoeffs_C_mul hα.le (hN (p - 1) (by lia)))
-            hf.2.1.1)
-          (hasPosLeadingCoeff_of_nonneg
-            ((hasNonnegCoeffs_C_mul (hc n).le (hasNonnegCoeffs_X.mul hNn))) hg.2.1.1)
+          ((hasNonnegCoeffs_C_mul hα.le (hN (p - 1) (by lia))).pos_leadingCoeff hf.2.1.1)
+          ((hasNonnegCoeffs_C_mul (hc n).le (hasNonnegCoeffs_X.mul hNn)).pos_leadingCoeff
+            hg.2.1.1)
       refine ⟨fun i j hij hj => ?_, fun i hi => ?_⟩
       · rcases Nat.lt_or_ge (j + 1) p with h | h
         · rw [show n + 1 + i = n + (i + 1) by lia, show n + 1 + j = n + (j + 1) by lia]

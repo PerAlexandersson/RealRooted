@@ -239,13 +239,6 @@ private theorem rayDifferentialStep_package_of_pos
     exact Nat.le_add_right m _
   exact ⟨hFne, hsplits, htransfer.trans hHroots, hmult⟩
 
-private lemma rootMultiplicity_C_mul_eq {c h : ℝ} (hc : c ≠ 0) (p : ℝ[X]) :
-    (C c * p).rootMultiplicity h = p.rootMultiplicity h := by
-  by_cases hp : p = 0
-  · simp [hp]
-  · rw [rootMultiplicity_mul (mul_ne_zero (C_ne_zero.mpr hc) hp),
-      rootMultiplicity_C, zero_add]
-
 /-- A shifted ray step is always nonzero and split.  Its roots remain in the
 target ray exactly up to the endpoint-multiplicity threshold, and the endpoint
 multiplicity cannot decrease. -/
@@ -280,7 +273,7 @@ theorem rayDifferentialStep_package
     ring
   have hmultP : P.rootMultiplicity h = p.rootMultiplicity h := by
     dsimp [P]
-    exact rootMultiplicity_C_mul_eq hc p
+    exact rootMultiplicity_C_mul hc p
   have hpack := rayDifferentialStep_package_of_pos
     (a := a) (rho := rho) hb hkappa hPpos hPs hProots
   have hstep_ne : rayDifferentialStep a b kappa h rho p ≠ 0 := by
@@ -298,7 +291,7 @@ theorem rayDifferentialStep_package
       (rayDifferentialStep a b kappa h rho P).rootMultiplicity h =
         (rayDifferentialStep a b kappa h rho p).rootMultiplicity h := by
     rw [hstep]
-    exact rootMultiplicity_C_mul_eq hc _
+    exact rootMultiplicity_C_mul hc _
   refine ⟨hstep_ne, hstep_splits, ?_, ?_⟩
   · rw [← hroot_transfer, hpack.2.2.1, hmultP]
   · rw [← hmultP, ← houtmult]

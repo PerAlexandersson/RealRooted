@@ -76,6 +76,36 @@ theorem coeff_applyAsDifferentialOperator_natDegree (f g : ℝ[X]) :
     simp
   · simp
 
+/-- `f(D)g` has degree at most that of `g`. -/
+theorem natDegree_applyAsDifferentialOperator_le (h p : ℝ[X]) :
+    (applyAsDifferentialOperator h p).natDegree ≤ p.natDegree := by
+  rw [applyAsDifferentialOperator]
+  apply Polynomial.natDegree_sum_le_of_forall_le
+  intro j _
+  exact (Polynomial.natDegree_C_mul_le _ _).trans
+    ((Polynomial.natDegree_iterate_derivative p j).trans (Nat.sub_le _ _))
+
+/-- A symbol with constant term one does not annihilate a nonzero input. -/
+theorem applyAsDifferentialOperator_ne_zero_of_coeff_zero_eq_one
+    {h p : ℝ[X]} (hzero : h.coeff 0 = 1) (hp0 : p ≠ 0) :
+    applyAsDifferentialOperator h p ≠ 0 := by
+  intro houtput
+  have htop := congrArg (fun q : ℝ[X] ↦ q.coeff p.natDegree) houtput
+  rw [coeff_applyAsDifferentialOperator_natDegree, hzero, one_mul,
+    Polynomial.coeff_zero] at htop
+  exact (Polynomial.leadingCoeff_ne_zero.mpr hp0) (by
+    simpa [Polynomial.coeff_natDegree] using htop)
+
+/-- A symbol with constant term one preserves the degree of a nonzero input. -/
+theorem natDegree_applyAsDifferentialOperator_of_coeff_zero_eq_one
+    {h p : ℝ[X]} (hzero : h.coeff 0 = 1) (hp0 : p ≠ 0) :
+    (applyAsDifferentialOperator h p).natDegree = p.natDegree := by
+  apply Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
+  · exact natDegree_applyAsDifferentialOperator_le h p
+  · rw [coeff_applyAsDifferentialOperator_natDegree, hzero, one_mul,
+      Polynomial.coeff_natDegree]
+    exact Polynomial.leadingCoeff_ne_zero.mpr hp0
+
 /-- A constant-term-one differential symbol sends a monic polynomial to a
 monic polynomial. -/
 theorem applyAsDifferentialOperator_monic {f g : ℝ[X]}
