@@ -24,13 +24,29 @@ noncomputable section
 
 namespace RealRooted
 
+/-- The affine-coefficient second-order differential operator
+`(a + bX) p + (c + dX) p' + f X p''` on the ray.  The operators below are slices of it. -/
+def secondOrderRayOperator (a b c d f : ℝ) (p : ℝ[X]) : ℝ[X] :=
+  (C a + C b * X) * p + (C c + C d * X) * p.derivative +
+    C f * X * p.derivative.derivative
+
 /-- The first-order differential operator `(D + a I)`. -/
 def affineDerivative (a : ℝ) (p : ℝ[X]) : ℝ[X] :=
   p.derivative + C a * p
 
-/-- The quadratic differential operator `X (D + b I) (D + a I) + c I`. -/
+/-- The quadratic differential operator `X (D + b I) (D + a I) + c I`, as the slice
+`(c + abX) + (a + b) X D + X D²` of the second-order ray operator. -/
 def quadraticPFOperator (a b c : ℝ) (p : ℝ[X]) : ℝ[X] :=
-  X * affineDerivative b (affineDerivative a p) + C c * p
+  secondOrderRayOperator c (a * b) 0 (a + b) 1 p
+
+/-- The factored form `X (D + b I) (D + a I) p + c p` of the quadratic operator. -/
+theorem quadraticPFOperator_eq (a b c : ℝ) (p : ℝ[X]) :
+    quadraticPFOperator a b c p =
+      X * affineDerivative b (affineDerivative a p) + C c * p := by
+  simp only [quadraticPFOperator, secondOrderRayOperator, affineDerivative,
+    derivative_mul, derivative_C, zero_mul, map_mul, map_add, map_zero,
+    map_one, zero_add, one_mul]
+  ring
 
 /-- A nonnegative affine derivative preserves the PF cone. -/
 theorem IsPFPolynomial.affineDerivative_of_nonneg {p : ℝ[X]}
@@ -81,7 +97,7 @@ theorem natDegree_quadraticPFOperator {p : ℝ[X]} (hp0 : p ≠ 0)
   have hsmall : (C c * p).natDegree < (X * h).natDegree := by
     rw [natDegree_mul X_ne_zero hh0, natDegree_X, hh.1, hg.1]
     exact (natDegree_C_mul_le c p).trans_lt (by lia)
-  rw [quadraticPFOperator, natDegree_add_eq_left_of_natDegree_lt hsmall,
+  rw [quadraticPFOperator_eq, natDegree_add_eq_left_of_natDegree_lt hsmall,
     natDegree_mul X_ne_zero hh0, natDegree_X, hh.1, hg.1]
   simp [Nat.add_comm]
 
@@ -93,7 +109,7 @@ theorem IsPFPolynomial.quadraticPFOperator_of_pos {p : ℝ[X]}
     (ha : 0 < a) (hb : 0 < b) (hc : 0 ≤ c) :
     IsPFPolynomial (quadraticPFOperator a b c p) := by
   by_cases hp0 : p = 0
-  · simp [hp0, quadraticPFOperator, affineDerivative, IsPFPolynomial.zero]
+  · simp [hp0, quadraticPFOperator_eq, affineDerivative, IsPFPolynomial.zero]
   let g := affineDerivative a p
   let h := affineDerivative b g
   have hgp : IsPFPolynomial g := hp.affineDerivative_of_nonneg ha.le
@@ -115,27 +131,35 @@ theorem IsPFPolynomial.quadraticPFOperator_of_pos {p : ℝ[X]}
       hhp.X_mul.hasNonnegCoeffs
       (hasNonnegCoeffs_C_mul hc hp.hasNonnegCoeffs)
   apply IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
-  · simpa [quadraticPFOperator, g, h] using
+  · simpa [quadraticPFOperator_eq, g, h] using
       hhp.X_mul.hasNonnegCoeffs.add
         (hasNonnegCoeffs_C_mul hc hp.hasNonnegCoeffs)
-  · simpa [quadraticPFOperator, g, h] using
+  · simpa [quadraticPFOperator_eq, g, h] using
       (show X * h + C c * p = 0 ∨ (X * h + C c * p).Splits by
         rcases hg_out with hgzero | houtzero | hgstrict
         · exact (hg0 hgzero).elim
         · exact Or.inl houtzero
         · exact Or.inr hgstrict.2.1.2)
 
-/-- The coefficient-form operator `X (A D² + B D + C) + E I`. -/
+/-- The coefficient-form operator `X (A D² + B D + C) + E I`: the slice of the second-order
+ray operator with zero constant-derivative coefficient, parameters reordered. -/
 def secondOrderPFOperator (A B C₀ E : ℝ) (p : ℝ[X]) : ℝ[X] :=
-  X * (C A * p.derivative.derivative + C B * p.derivative + C C₀ * p) +
-    C E * p
+  secondOrderRayOperator E C₀ 0 B A p
+
+/-- The coefficient form `X (A p'' + B p' + C p) + E p` of `secondOrderPFOperator`. -/
+theorem secondOrderPFOperator_eq (A B C₀ E : ℝ) (p : ℝ[X]) :
+    secondOrderPFOperator A B C₀ E p =
+      X * (C A * p.derivative.derivative + C B * p.derivative + C C₀ * p) +
+        C E * p := by
+  simp [secondOrderPFOperator, secondOrderRayOperator]
+  ring
 
 private theorem secondOrderPFOperator_eq_factor
     (A B C₀ E a b : ℝ) (p : ℝ[X]) (hA : A ≠ 0)
     (hsum : A * (a + b) = B) (hprod : A * a * b = C₀) :
     secondOrderPFOperator A B C₀ E p =
       C A * quadraticPFOperator a b (E / A) p := by
-  simp only [secondOrderPFOperator, quadraticPFOperator, affineDerivative,
+  simp only [secondOrderPFOperator_eq, quadraticPFOperator_eq, affineDerivative,
     derivative_add, derivative_mul, derivative_C, zero_mul]
   rw [← hsum, ← hprod]
   simp only [map_mul, map_add]
@@ -185,9 +209,17 @@ theorem IsPFPolynomial.secondOrderPFOperator_of_discrim_nonneg
   rw [secondOrderPFOperator_eq_factor A B C₀ E a b p hA.ne' hsum hprod]
   exact (hp.quadraticPFOperator_of_pos ha hb (div_nonneg hE hA.le)).const_mul hA
 
-/-- The normalized operator `X D² + rho X D + X + gamma I`. -/
+/-- The normalized operator `X D² + rho X D + X + gamma I`, the slice `A = C₀ = 1` of
+`secondOrderPFOperator`. -/
 def rhoGammaOperator (rho gamma : ℝ) (p : ℝ[X]) : ℝ[X] :=
-  X * p.derivative.derivative + C rho * X * p.derivative + X * p + C gamma * p
+  secondOrderPFOperator 1 rho 1 gamma p
+
+/-- The explicit form `X p'' + rho X p' + X p + gamma p` of the normalized operator. -/
+theorem rhoGammaOperator_eq (rho gamma : ℝ) (p : ℝ[X]) :
+    rhoGammaOperator rho gamma p =
+      X * p.derivative.derivative + C rho * X * p.derivative + X * p + C gamma * p := by
+  simp only [rhoGammaOperator, secondOrderPFOperator_eq, map_one, one_mul]
+  ring
 
 /-- For `rho ≥ 2` and `gamma ≥ 0`, the normalized quadratic operator
 preserves every PF polynomial. -/
@@ -197,11 +229,6 @@ theorem IsPFPolynomial.rhoGammaOperator_of_two_le {p : ℝ[X]}
   have hpres := hp.secondOrderPFOperator_of_discrim_nonneg
     (A := 1) (B := rho) (C₀ := 1) (E := gamma)
     (by norm_num) (by norm_num) (by linarith) hgamma (by nlinarith)
-  have hop : rhoGammaOperator rho gamma p =
-      secondOrderPFOperator 1 rho 1 gamma p := by
-    simp only [secondOrderPFOperator, rhoGammaOperator, map_one, one_mul]
-    ring
-  rw [hop]
   exact hpres
 
 /-- The boundary normalization `rho = 2` preserves the PF cone for every
@@ -218,7 +245,8 @@ theorem not_isPFPolynomial_rhoGammaOperator_zero_one :
       (rhoGammaOperator 0 1 ((X + 1 : ℝ[X]) ^ 2)) := by
   let q : ℝ[X] := C 1 * X ^ 3 + C 3 * X ^ 2 + C 5 * X + C 1
   have hout : rhoGammaOperator 0 1 ((X + 1 : ℝ[X]) ^ 2) = q := by
-    dsimp [rhoGammaOperator, q]
+    dsimp only [q]
+    rw [rhoGammaOperator_eq]
     simp only [derivative_pow, derivative_mul, derivative_add, derivative_X,
       derivative_one, derivative_ofNat, add_zero, Nat.cast_ofNat, map_ofNat,
       mul_one]

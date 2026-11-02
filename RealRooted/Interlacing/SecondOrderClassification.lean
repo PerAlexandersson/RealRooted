@@ -29,19 +29,13 @@ noncomputable section
 
 namespace RealRooted
 
-/-- The affine-coefficient second-order differential operator on the ray. -/
-def secondOrderRayOperator (a b c d f : ℝ) (p : ℝ[X]) : ℝ[X] :=
-  (C a + C b * X) * p + (C c + C d * X) * p.derivative +
-    C f * X * p.derivative.derivative
-
 /-- The factored PF operator is the zero constant-derivative slice of the ray
 operator, with its parameters reordered. -/
 theorem secondOrderPFOperator_eq_secondOrderRayOperator
     (A B C₀ E : ℝ) (p : ℝ[X]) :
     secondOrderPFOperator A B C₀ E p =
-      secondOrderRayOperator E C₀ 0 B A p := by
-  simp [secondOrderPFOperator, secondOrderRayOperator]
-  ring
+      secondOrderRayOperator E C₀ 0 B A p :=
+  rfl
 
 /-- The second-order ray operator, packaged as a real-linear map. -/
 def secondOrderRayOperatorₗ (a b c d f : ℝ) : ℝ[X] →ₗ[ℝ] ℝ[X] :=
