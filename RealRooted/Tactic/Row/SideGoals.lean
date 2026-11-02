@@ -409,7 +409,9 @@ private def interlaceSideGoal (P? : Option Ident) : TacticM Unit := do
     else if ty.isForall && ty.bindingBody!.isForall then
       [multiplierGoal]
     else if ty.isForall && !mentionsP && has ``LE.le && has ``Polynomial.coeff then
-      [constantCoeffGoal]
+      -- `ring_nf` in `constantCoeffGoal` can miss literal coefficients such as
+      -- `(2 + 2 * X).coeff 1` (#2366), which the general closer handles
+      [constantCoeffGoal, rowSideGoal P?]
     else [rowSideGoal P?]
   for strategy in strategies do
     if ← rowSucceeds (do
