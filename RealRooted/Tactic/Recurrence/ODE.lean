@@ -223,7 +223,7 @@ elab "rr_row_ode" : tactic => do
       Polynomial.eval_pow, Polynomial.eval_ofNat, Polynomial.eval_one, Polynomial.eval_zero,
       Polynomial.eval_natCast]
     push_cast
-    ring)))
+    rr_ring)))
 
 /-- Suggest the eigen-ODE of the second-order recurrence in the goal, as a `have`. -/
 elab tk:"rr_find_ode" : tactic => withMainContext do

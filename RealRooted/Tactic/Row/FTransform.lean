@@ -192,7 +192,7 @@ def fTransformSplitsGoal : TacticM Unit := do
         Polynomial.coeff_C_mul, Polynomial.coeff_C_mul_X_pow, Polynomial.coeff_C_mul_X,
         Polynomial.coeff_C, Polynomial.coeff_X_pow, Polynomial.coeff_X]
        norm_num [map_ofNat]
-       ring)
+       rr_ring)
     | rr_cf_identity)
   withMainContext do
   evalTactic (← `(tactic|
@@ -456,7 +456,7 @@ def fTransformInterlacesGoal : TacticM Unit := do
             Polynomial.coeff_C_mul_X_pow, Polynomial.coeff_C_mul_X,
             Polynomial.coeff_C, Polynomial.coeff_X_pow, Polynomial.coeff_X]
            norm_num [map_ofNat]
-           ring)
+           rr_ring)
         | rr_cf_identity)
     else `(tactic| (
       simp only [RealRooted.fPolynomial_two, RealRooted.fPolynomial_one,

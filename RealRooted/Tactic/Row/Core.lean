@@ -308,7 +308,7 @@ private def eulerStepRoute (r : RowRec) (P : Ident) : TacticM (TSyntax `tactic) 
       case hκ => norm_num
       case hb => norm_num
       case hu0 => norm_num
-      case hshift => intro $n:ident; push_cast; ring
+      case hshift => intro $n:ident; push_cast; rr_ring
       case hell =>
         intro $n:ident $k:ident $hk:ident
         have := (Nat.cast_le (α := ℝ)).mpr $hk:ident
@@ -337,7 +337,7 @@ private def eulerStepRoute (r : RowRec) (P : Ident) : TacticM (TSyntax `tactic) 
     case hκ => norm_num
     case ha => norm_num
     case hb => norm_num
-    case hshift => intro $n:ident; push_cast; ring
+    case hshift => intro $n:ident; push_cast; rr_ring
     case hell =>
       intro $n:ident $k:ident $hk:ident
       have := (Nat.cast_le (α := ℝ)).mpr $hk:ident
@@ -574,7 +574,7 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
         let main ← `(tactic|
           refine RealRooted.twoStepProduct_interlaces (P := $(← r.seq 0))
             (q := $(← certTerm qBody))
-            (fun n => by beta_reduce; rw [$(← r.hrecTerm 0) n]; beta_reduce; ring)
+            (fun n => by beta_reduce; rw [$(← r.hrecTerm 0) n]; beta_reduce; rr_ring)
             ?_ ?_ ?_ ?_ $t)
         evalTactic main
         for g in ← getGoals do
@@ -947,7 +947,7 @@ def rowInterlacesCoreAt (hints : RowHints) (k : Nat)
             intro $nI:ident $xI:ident h
             beta_reduce
             obtain ⟨$yI:ident, hy, hxy⟩ : ∃ $yI:ident, 0 < $yI ∧ $xI = $ρT + $yI :=
-              ⟨$xI - $ρT, by linarith, by ring⟩
+              ⟨$xI - $ρT, by linarith, by rr_ring⟩
             subst hxy
             refine ⟨?_, ?_⟩ <;> ($evalSimp:tactic; push_cast; rr_row_field)
           case h0 => rr_row_side
