@@ -841,6 +841,10 @@
  ],
  [
   "defsWithUnderscore",
+  "RealRooted.Tactic.rr_positivity_seq"
+ ],
+ [
+  "defsWithUnderscore",
   "RealRooted.Tactic.rr_positivity_term"
  ],
  [
@@ -881,11 +885,19 @@
  ],
  [
   "defsWithUnderscore",
+  "RealRooted.Tactic.rr_side_ne_seq"
+ ],
+ [
+  "defsWithUnderscore",
   "RealRooted.Tactic.rr_side_ne_term"
  ],
  [
   "defsWithUnderscore",
   "RealRooted.Tactic.rr_side_nonneg"
+ ],
+ [
+  "defsWithUnderscore",
+  "RealRooted.Tactic.rr_side_nonneg_seq"
  ],
  [
   "defsWithUnderscore",

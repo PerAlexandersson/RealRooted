@@ -46,8 +46,15 @@ syntax (name := rr_side_pos) "rr_side_pos" : tactic
 /-- Closes a nonvanishing side goal `e ≠ 0` by assumption, casts, powers, quotients, inverses,
 `positivity`, `norm_num` or `nlinarith`. -/
 syntax (name := rr_side_ne) "rr_side_ne" : tactic
+/-- Sequence form of `rr_side_nonneg`: introduces the row index `n` and closes the goal for it. -/
+syntax (name := rr_side_nonneg_seq) "rr_side_nonneg_seq" : tactic
 /-- Sequence form of `rr_side_pos`: introduces the row index `n` and closes the goal for it. -/
 syntax (name := rr_side_pos_seq) "rr_side_pos_seq" : tactic
+/-- Sequence form of `rr_side_ne`: introduces the row index `n` and closes the goal for it. -/
+syntax (name := rr_side_ne_seq) "rr_side_ne_seq" : tactic
+/-- Sequence form of `positivity`: introduces the row index `n` and closes the goal by
+`positivity`. -/
+syntax (name := rr_positivity_seq) "rr_positivity_seq" : tactic
 /-- Simplifies polynomial coefficient expressions such as `coeff_add`, `coeff_C_mul` and
 `coeff_X_pow` using a fixed `simp only` set. -/
 syntax (name := rr_coeff_simp) "rr_coeff_simp" : tactic
@@ -208,8 +215,14 @@ macro_rules
             positivity
           | apply ne_of_lt
             nlinarith)
+  | `(tactic| rr_side_nonneg_seq) =>
+      `(tactic| intro n <;> rr_side_nonneg)
   | `(tactic| rr_side_pos_seq) =>
       `(tactic| intro n <;> rr_side_pos)
+  | `(tactic| rr_side_ne_seq) =>
+      `(tactic| intro n <;> rr_side_ne)
+  | `(tactic| rr_positivity_seq) =>
+      `(tactic| intro n <;> positivity)
   | `(tactic| rr_coeff_simp) =>
       `(tactic|
         simp (discharger := decide) only [
