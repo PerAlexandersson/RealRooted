@@ -80,7 +80,12 @@ def main(argv):
     if '--report' in argv:
         report = Path(argv[argv.index('--report') + 1]).read_text(encoding='utf-8')
     else:
-        proc = subprocess.run([*lake.split(), 'shake', *module_names(only, exclude)], cwd=ROOT,
+        # A scoped run checks the half that this CI job built.  Shake's sanity check
+        # (`lake build --no-build` of the default targets) would see the other half as stale, so
+        # it is skipped with `--force`; everything reachable from the listed modules is built.
+        force = ['--force'] if scoped else []
+        proc = subprocess.run([*lake.split(), 'shake', *force, *module_names(only, exclude)],
+                              cwd=ROOT,
                               capture_output=True, text=True)
         report = proc.stdout + proc.stderr
     errors = re.findall(r'^error:.*$', report, re.M)
