@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.Interlacing.QuadraticPFPreservers
+public import RealRooted.SimpleRoots
 import RealRooted.Interlacing.SecondOrderClassification
 import RealRooted.Derivative.Interlacing
 import RealRooted.Interlacing.Residue
