@@ -790,6 +790,9 @@ private def applyPathPowerGoal (splits : Bool) (fit : PathPowerFit) (idx : Expr)
               using hmul))
   | _ => throwError "rr_row: unexpected cubic model"
 
+/-- Apply the cubic-parent theorem of the fitted kind.  The recurrence of `P` is proved by
+unfolding, then by `ring` when the definition is not literally in the canonical form, such as
+`-1 * X ^ 2 + 2 * X` for `2 * X - X ^ 2` (A184883, #2366). -/
 private def applyCubicParentGoal (P : Name) (fit : PathPowerFit) (idx : Expr) :
     TacticM Unit := do
   let Pi := mkIdent P
@@ -798,15 +801,18 @@ private def applyCubicParentGoal (P : Name) (fit : PathPowerFit) (idx : Expr) :
   | .cubicEven =>
       evalTactic (← `(tactic| exact
         RealRooted.CubicParent.splits_of_even_recurrence
-          $Pi rfl rfl rfl (fun n ↦ by rw [$Pi:ident]) $idxStx))
+          $Pi rfl rfl rfl (fun n ↦ by first | (rw [$Pi:ident]; done) | (rw [$Pi:ident]; ring))
+          $idxStx))
   | .cubicEvenReflect =>
       evalTactic (← `(tactic| exact
         RealRooted.CubicParent.splits_of_even_reflected_recurrence
-          $Pi rfl rfl rfl (fun n ↦ by rw [$Pi:ident]) $idxStx))
+          $Pi rfl rfl rfl (fun n ↦ by first | (rw [$Pi:ident]; done) | (rw [$Pi:ident]; ring))
+          $idxStx))
   | .cubicOddReflect =>
       evalTactic (← `(tactic| exact
         RealRooted.CubicParent.splits_of_odd_reflected_recurrence
-          $Pi rfl rfl rfl (fun n ↦ by rw [$Pi:ident]) $idxStx))
+          $Pi rfl rfl rfl (fun n ↦ by first | (rw [$Pi:ident]; done) | (rw [$Pi:ident]; ring))
+          $idxStx))
   | _ => throwError "rr_row: expected a cubic-parent model"
 
 /-- Close a splitting or consecutive-interlacing row goal after the bounded exact probe. -/
