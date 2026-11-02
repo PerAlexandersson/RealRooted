@@ -2,9 +2,9 @@ module
 
 public import RealRooted.Basic
 public import RealRooted.Tactic.Named
-public import RealRooted.Tactic.Ring
 public meta import RealRooted.Basic
 public meta import RealRooted.Tactic.Named
+public import RealRooted.Tactic.Ring
 public meta import RealRooted.Tactic.Ring
 
 /-!
@@ -77,6 +77,42 @@ theorem recurrenceEval_X_mul_C_add_C_assoc {R : Type _} [CommSemiring R]
     (a b : R) (q : R[X]) :
     X * C a + (X * C b + q) = X * C (a + b) + q := by
   rw [← add_assoc, ← mul_add, ← Polynomial.C_add]
+
+theorem recurrenceEval_neg_C_mul_X_pow (a : ℝ) (n : Nat) :
+    (-(C a * X ^ n) : ℝ[X]) = C (-a) * X ^ n := by
+  rw [← neg_mul, ← Polynomial.C_neg]
+
+theorem recurrenceEval_neg_C_mul_X (a : ℝ) :
+    (-(C a * X) : ℝ[X]) = C (-a) * X := by
+  rw [← neg_mul, ← Polynomial.C_neg]
+
+theorem recurrenceEval_neg_C (a : ℝ) :
+    (-C a : ℝ[X]) = C (-a) := by
+  rw [← Polynomial.C_neg]
+
+theorem recurrenceEval_merge_pow (a b : ℝ) (n : Nat) (q : ℝ[X]) :
+    (C a * X ^ n + (C b * X ^ n + q) : ℝ[X]) = C (a + b) * X ^ n + q := by
+  rw [← add_assoc, ← add_mul, ← Polynomial.C_add]
+
+theorem recurrenceEval_merge_pow_end (a b : ℝ) (n : Nat) :
+    (C a * X ^ n + C b * X ^ n : ℝ[X]) = C (a + b) * X ^ n := by
+  rw [← add_mul, ← Polynomial.C_add]
+
+theorem recurrenceEval_merge_X (a b : ℝ) (q : ℝ[X]) :
+    (C a * X + (C b * X + q) : ℝ[X]) = C (a + b) * X + q := by
+  rw [← add_assoc, ← add_mul, ← Polynomial.C_add]
+
+theorem recurrenceEval_merge_X_end (a b : ℝ) :
+    (C a * X + C b * X : ℝ[X]) = C (a + b) * X := by
+  rw [← add_mul, ← Polynomial.C_add]
+
+theorem recurrenceEval_merge_C (a b : ℝ) (q : ℝ[X]) :
+    (C a + (C b + q) : ℝ[X]) = C (a + b) + q := by
+  rw [← add_assoc, ← Polynomial.C_add]
+
+theorem recurrenceEval_merge_C_end (a b : ℝ) :
+    (C a + C b : ℝ[X]) = C (a + b) := by
+  rw [← Polynomial.C_add]
 
 open Lean
 open Lean.Meta

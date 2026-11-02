@@ -547,6 +547,13 @@ def linRec? (P : Name) (params : Array Expr := #[]) : MetaM (Option LinRecData) 
     if let some r := r then return some r
   return none
 
+/-- The shape of the recurrence of `P`, if it is read with offset `RecShape.base` and in
+the summand order of the theorems. -/
+def recShape? (P : Name) (params : Array Expr := #[]) : MetaM (Option RecShape) := do
+  match ← rowRec? P params with
+  | .ok r => return if r.canonical && r.shift == 0 then some r.shape else none
+  | .error _ => return none
+
 /-- Run `tac` with a fresh heartbeat budget, distinguishing a heartbeat timeout from other
 failures before converting its exception to a message. -/
 private def rowAttemptClassified (tac : TacticM α) :

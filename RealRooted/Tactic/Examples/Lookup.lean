@@ -90,9 +90,9 @@ example (h : RRLookupLocalPrecedenceRel) : RRLookupLocalPrecedenceRel := by
 inductive RRLookupNoCertificateRel : Prop where
   | intro
 
-/-- error: rr_lookup failed: no local or tagged certificate matches the goal for [rr_pos_lc] -/
+/-- error: rr_lookup failed: no local or tagged certificate matches the goal for [rr_root_bound] -/
 #guard_msgs in
-example : RRLookupNoCertificateRel := by rr_lookup [rr_pos_lc]
+example : RRLookupNoCertificateRel := by rr_lookup [rr_root_bound]
 
 @[rr_matrix_rect] theorem rr_lookup_forall_smoke (m : ℕ) :
     ∀ n : ℕ, RRLookupSmokeRel (n + m) := by
