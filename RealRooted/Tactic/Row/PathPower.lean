@@ -449,7 +449,7 @@ private def assertComputedPathPowerLink (P : Name) (fit : PathPowerFit) : Tactic
         RealRooted.PathPowerGap.companion, pow_succ, Matrix.mul_apply,
         Matrix.charpoly, Matrix.charmatrix, Matrix.det_succ_row_zero,
         Fin.sum_univ_succ, Fin.succAbove, List.range, List.range.loop, List.map] <;>
-        ring))
+        rr_ring))
   evalTactic (← `(tactic|
     have hraw_evaluated : (evaluatedRecurrence $k $p).IsSolution
         (fun n : ℕ => RealRooted.pathPowerCliquePolynomial $k ($p * n + $c)) := by
@@ -466,7 +466,7 @@ private def assertComputedPathPowerLink (P : Name) (fit : PathPowerFit) : Tactic
           norm_num [$hcoeff:ident, List.getD, intPolynomialToReal,
             C_natCast_eq, map_ofNat] <;>
           first
-          | (ring; done)
+          | rr_ring
           | simp [Polynomial.coeff_monomial]]
       exact hraw_evaluated))
   unless fit.kind matches .direct | .shifted do
@@ -493,7 +493,7 @@ private def assertComputedPathPowerLink (P : Name) (fit : PathPowerFit) : Tactic
                    Polynomial.coeff_C, Polynomial.coeff_ofNat_succ,
                    Polynomial.coeff_one, C_natCast_eq, map_ofNat] <;>
                  first
-                 | (ring; done)
+                 | rr_ring
                  | simp [Polynomial.coeff_monomial, Nat.choose]
              · compute_degree!
              · compute_degree!)))
@@ -575,7 +575,7 @@ private def assertComputedPathPowerLink (P : Name) (fit : PathPowerFit) : Tactic
         reflect_X_pow_mul_natCast, reflect_X_mul_natCast, reflect_add,
         reflect_neg, reflect_sub, reflect_monomial, reflect_one,
         reflect_X_pow_mul_C, reflect_X_mul_C,
-        Polynomial.reflect_C_mul_X_pow, C_natCast_eq, map_ofNat] <;> ring))
+        Polynomial.reflect_C_mul_X_pow, C_natCast_eq, map_ofNat] <;> rr_ring))
   if fit.kind matches .direct then
     evalTactic (← `(tactic|
       have hinit_pathPower :
@@ -583,7 +583,7 @@ private def assertComputedPathPowerLink (P : Name) (fit : PathPowerFit) : Tactic
         intro i
         fin_cases i <;>
           norm_num [$Pi:ident, RealRooted.pathPowerCliquePolynomial,
-            Finset.sum_range_succ] <;> ring))
+            Finset.sum_range_succ] <;> rr_ring))
   else
     evalTactic (← `(tactic|
       have hinit_pathPower :
@@ -607,7 +607,7 @@ private def assertComputedPathPowerLink (P : Name) (fit : PathPowerFit) : Tactic
                    Polynomial.coeff_natCast_ite,
                    Polynomial.coeff_monomial] at hj ⊢ <;>
                  first
-                 | (ring; done)
+                 | rr_ring
                  | norm_num [Nat.choose]
              · norm_num [RealRooted.pathPowerCliquePolynomial,
                  Finset.sum_range_succ] <;> compute_degree!
@@ -801,17 +801,17 @@ private def applyCubicParentGoal (P : Name) (fit : PathPowerFit) (idx : Expr) :
   | .cubicEven =>
       evalTactic (← `(tactic| exact
         RealRooted.CubicParent.splits_of_even_recurrence
-          $Pi rfl rfl rfl (fun n ↦ by first | (rw [$Pi:ident]; done) | (rw [$Pi:ident]; ring))
+          $Pi rfl rfl rfl (fun n ↦ by first | (rw [$Pi:ident]; done) | (rw [$Pi:ident]; rr_ring))
           $idxStx))
   | .cubicEvenReflect =>
       evalTactic (← `(tactic| exact
         RealRooted.CubicParent.splits_of_even_reflected_recurrence
-          $Pi rfl rfl rfl (fun n ↦ by first | (rw [$Pi:ident]; done) | (rw [$Pi:ident]; ring))
+          $Pi rfl rfl rfl (fun n ↦ by first | (rw [$Pi:ident]; done) | (rw [$Pi:ident]; rr_ring))
           $idxStx))
   | .cubicOddReflect =>
       evalTactic (← `(tactic| exact
         RealRooted.CubicParent.splits_of_odd_reflected_recurrence
-          $Pi rfl rfl rfl (fun n ↦ by first | (rw [$Pi:ident]; done) | (rw [$Pi:ident]; ring))
+          $Pi rfl rfl rfl (fun n ↦ by first | (rw [$Pi:ident]; done) | (rw [$Pi:ident]; rr_ring))
           $idxStx))
   | _ => throwError "rr_row: expected a cubic-parent model"
 
@@ -842,12 +842,6 @@ def pathPowerGoal (splits : Bool) : TacticM Unit := do
   let link ← assertComputedPathPowerLink P fit
   let idx ← mainRowIndex (mkIdent P)
   applyPathPowerGoal splits fit idx hdegree link
-
-/-- Run only the bounded path-power and cubic-parent splitting route. -/
-elab "rr_row_path_power_splits" : tactic => pathPowerGoal true
-
-/-- Run only the bounded path-power consecutive-interlacing route. -/
-elab "rr_row_path_power_interlaces" : tactic => pathPowerGoal false
 
 end
 
@@ -1043,7 +1037,7 @@ def variableDelayGoal (kind : VariableDelayGoalKind) : TacticM Unit := do
     let hP0 ← `(by simp only [$P:ident])
     let hrec ← `(fun n => by
       beta_reduce
-      rw [$eqn n] <;> simp only [map_one, mul_one] <;> ring)
+      rw [$eqn n] <;> simp only [map_one, mul_one] <;> rr_ring)
     let strictMain : TacticM (TSyntax `tactic) := do
       if data.scaled then
         `(tactic|

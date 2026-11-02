@@ -116,13 +116,13 @@ def parityProductGoal (splits : Bool) : TacticM Unit := do
     have $link:ident := RealRooted.eq_parityProduct_of_thirdOrderRecurrence
       (P := $Pi) (s := $S) (t := $T)
       (β := $βT) (μ := $μT)
-      (fun n => by rw [$eqn:ident n] <;> ring)
-      (fun $m:ident => by rw [$S:ident] <;> ring)
-      (fun $m:ident => by rw [$T:ident] <;> ring)
-      (by simp only [$Pi:ident, $S:ident, $T:ident] <;> ring)
-      (by simp only [$Pi:ident, $S:ident, $T:ident] <;> ring)
-      (by simp only [$Pi:ident, $S:ident, $T:ident] <;> ring)
-      (by simp only [$S:ident, $T:ident] <;> ring)))
+      (fun n => by rw [$eqn:ident n] <;> rr_ring)
+      (fun $m:ident => by rw [$S:ident] <;> rr_ring)
+      (fun $m:ident => by rw [$T:ident] <;> rr_ring)
+      (by simp only [$Pi:ident, $S:ident, $T:ident] <;> rr_ring)
+      (by simp only [$Pi:ident, $S:ident, $T:ident] <;> rr_ring)
+      (by simp only [$Pi:ident, $S:ident, $T:ident] <;> rr_ring)
+      (by simp only [$S:ident, $T:ident] <;> rr_ring)))
   withMainContext do
   if splits then
     evalTactic (← `(tactic|

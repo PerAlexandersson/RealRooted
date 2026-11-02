@@ -121,10 +121,10 @@ syntax (name := rr_eval_simp) "rr_eval_simp" : tactic
 syntax (name := rr_side_arith) "rr_side_arith" : tactic
 /-- Runs `rr_eval_simp` and then `rr_side_arith`. -/
 syntax (name := rr_eval_simp_arith) "rr_eval_simp_arith" : tactic
-/-- Closes a side goal by assumption, `positivity`, `norm_num`, `rr_coeff`, `ring_nf`, `ring`,
-`lia`, `nlinarith`, `rr_eval_simp` or `grind`. Each alternative must close the goal. -/
+/-- Closes a side goal by assumption, `positivity`, `norm_num`, `rr_coeff`, `ring_nf`,
+`ring1`, `lia`, `nlinarith`, `rr_eval_simp` or `grind`. Each alternative must close the goal. -/
 syntax (name := rr_close_side) "rr_close_side" : tactic
-/-- Applies the first of `positivity`, `norm_num`, `rr_coeff`, `ring_nf`, `ring`, `lia`,
+/-- Applies the first of `positivity`, `norm_num`, `rr_coeff`, `ring_nf`, `lia`,
 `nlinarith`, `rr_eval_simp` and `grind` that succeeds on a side goal, without requiring that the
 goal be closed. -/
 syntax (name := rr_side) "rr_side" : tactic
@@ -173,10 +173,10 @@ macro_rules
               first
                 | exact sub_nonneg.mpr (by exact_mod_cast (by lia))
                 | positivity
-                | norm_num
+                | (norm_num; done)
                 | nlinarith)
           | positivity
-          | norm_num
+          | (norm_num; done)
           | nlinarith)
   | `(tactic| rr_side_pos) =>
       `(tactic|
@@ -185,7 +185,7 @@ macro_rules
           | exact_mod_cast (by assumption)
           | exact sub_pos.mpr (by exact_mod_cast (by lia))
           | positivity
-          | norm_num
+          | (norm_num; done)
           | nlinarith)
   | `(tactic| rr_side_ne) =>
       `(tactic|
@@ -417,7 +417,7 @@ macro_rules
           | norm_num <;> done
           | rr_coeff <;> done
           | ring_nf <;> done
-          | ring <;> done
+          | ring1
           | lia
           | nlinarith
           | rr_eval_simp <;> done
@@ -429,7 +429,6 @@ macro_rules
           | norm_num
           | rr_coeff
           | ring_nf
-          | ring
           | lia
           | nlinarith
           | rr_eval_simp
@@ -439,7 +438,6 @@ macro_rules
         first
           | rr_coeff
           | ring_nf
-          | ring
           | lia
           | rr_eval_simp
           | grind)

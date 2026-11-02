@@ -175,12 +175,12 @@ macro_rules
               <;>
               first
                 | positivity
-                | norm_num
+                | (norm_num; done)
                 | nlinarith
                 | ring_nf <;> nlinarith
                 | rr_side_rest
             | positivity
-            | norm_num
+            | (norm_num; done)
             | nlinarith
             | ring_nf <;> nlinarith
             | rr_side_rest)
