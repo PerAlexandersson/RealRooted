@@ -212,10 +212,4 @@ theorem derivative
 
 end PosComboRealRooted
 
-/-- Splitting is preserved by one differentiation in degree at least two. -/
-theorem splits_derivative_of_two_le_natDegree {p : ℝ[X]}
-    (hp : p.Splits) (hdeg : 2 ≤ p.natDegree) :
-    p.derivative.Splits :=
-  (derivative_interlaces_of_natDegree_ne_zero hp (by lia)).2.1.2
-
 end RealRooted
