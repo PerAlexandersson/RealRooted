@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.PFPolynomial
-public import RealRooted.Interlacing.SecondOrderClassification
+public import RealRooted.Interlacing.QuadraticPFPreservers
+import RealRooted.Interlacing.SecondOrderClassification
 import RealRooted.Interlacing.SecondOrderIff
 public import RealRooted.CubicDiscriminant
 public import RealRooted.RootCounting.Descartes
