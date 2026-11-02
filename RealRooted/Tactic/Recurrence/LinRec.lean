@@ -106,72 +106,30 @@ private def coneFormsTerm (k : Nat) (forms : Array (Array Rat)) : TacticM Term :
     ts := ts.push (← coneFormTerm k form)
   `(![$ts,*])
 
-/-- Denominators `x` of `x⁻¹` and `a / x` in `e`. -/
-private partial def linRecDenominators (e : Expr) : Array Expr :=
-  go e #[]
-where
-  go (e : Expr) (acc : Array Expr) : Array Expr :=
-    let acc :=
-      if e.isAppOfArity ``Inv.inv 3 then acc.push e.appArg!
-      else if e.isAppOfArity ``HDiv.hDiv 6 then acc.push e.appArg!
-      else acc
-    match e with
-    | .app f a => go a (go f acc)
-    | .mdata _ b => go b acc
-    | _ => acc
-
 /-- `rr_linrec_field` proves an identity between real rational functions of natural numbers:
 it records `0 ≤ (m : ℝ)` for every `m : ℕ`, proves every denominator nonzero (by `positivity`
 or `nlinarith`), clears them with `field_simp` and closes the goal by `ring1` (or `ring_nf`,
 which also normalizes the bodies of products). -/
 elab "rr_linrec_field" : tactic => withMainContext do
-  for decl in ← getLCtx do
-    if decl.isImplementationDetail then continue
-    if (← instantiateMVars decl.type).isConstOf ``Nat then
-      let m ← Term.exprToSyntax decl.toExpr
-      evalTactic (← `(tactic| have := (Nat.cast_nonneg $m : (0 : ℝ) ≤ ($m : ℝ))))
-  for _ in [0:3] do
-    let dens ← withMainContext do
-      return linRecDenominators (← instantiateMVars (← getMainTarget))
-    if dens.isEmpty then break
-    withMainContext do
-      let mut seen : Array Expr := #[]
-      for x in dens do
-        if seen.contains x then continue
-        seen := seen.push x
-        let xs ← Term.exprToSyntax x
-        evalTactic (← `(tactic| have : $xs ≠ 0 := by
-          first
-            | positivity
-            | (apply ne_of_gt; nlinarith)
-            | (apply ne_of_lt; nlinarith)
-            | fail))
-    let before ← instantiateMVars (← getMainTarget)
-    evalTactic (← `(tactic| field_simp))
-    if (← instantiateMVars (← getMainTarget)) == before then break
+  addNatCastNonneg
+  discard <| clearDenominatorRounds
+    (fun xs => `(tactic| have : $xs ≠ 0 := by
+      first
+        | positivity
+        | (apply ne_of_gt; nlinarith)
+        | (apply ne_of_lt; nlinarith)
+        | fail))
+    (← `(tactic| field_simp)) false
   evalTactic (← `(tactic| first | ring1 | (ring_nf; done)))
 
 /-- `rr_linrec_cone_field` clears positive rational-function denominators in a cone
 inequality and leaves the polynomial inequality to `nlinarith`. -/
 elab "rr_linrec_cone_field" : tactic => withMainContext do
-  for decl in ← getLCtx do
-    if decl.isImplementationDetail then continue
-    if (← instantiateMVars decl.type).isConstOf ``Nat then
-      let m ← Term.exprToSyntax decl.toExpr
-      evalTactic (← `(tactic| have := (Nat.cast_nonneg $m : (0 : ℝ) ≤ ($m : ℝ))))
-  for _ in [0:3] do
-    let dens ← withMainContext do
-      return linRecDenominators (← instantiateMVars (← getMainTarget))
-    if dens.isEmpty then break
-    withMainContext do
-      let mut seen : Array Expr := #[]
-      for x in dens do
-        if seen.contains x then continue
-        seen := seen.push x
-        let xs ← Term.exprToSyntax x
-        evalTactic (← `(tactic| have : 0 < $xs := by first | positivity | nlinarith | fail))
-    evalTactic (← `(tactic| field_simp))
-    if (← getGoals).isEmpty then return
+  addNatCastNonneg
+  if ← clearDenominatorRounds
+      (fun xs => `(tactic| have : 0 < $xs := by first | positivity | nlinarith | fail))
+      (← `(tactic| field_simp)) true then
+    return
   evalTactic (← `(tactic| nlinarith))
 
 /-- Finishers for a top-coefficient multiplier goal, after the coefficients have been

@@ -188,7 +188,7 @@ private def normalizeRows (d : DerivLagRec) (M : Nat) : TacticM Unit := do
           | (simp only [$P:ident]; done)
           | (simp [$P:ident]; done)
           | (simp [$P:ident]; rr_poly_identity)
-          | (simp [$P:ident]; ring)
+          | (simp [$P:ident]; rr_ring)
       try rw [$e:ident])))
 
 /-- A rational polynomial evaluated at the term `x`, as a real term (Horner form). -/
@@ -298,14 +298,14 @@ private def baseGoals (d : DerivLagRec) (S : Nat) (hbase hbaseNo : MVarId) : Tac
           | (simp only [$P:ident]; rr_poly_identity)
           | (simp [$P:ident]; done)
           | (simp [$P:ident]; rr_poly_identity)
-          | (simp [$P:ident]; ring)
+          | (simp [$P:ident]; rr_ring)
       have $eG:ident : $P $(rowNumLit (S + 1)) = $gT := by
         first
           | (simp only [$P:ident]; done)
           | (simp only [$P:ident]; rr_poly_identity)
           | (simp [$P:ident]; done)
           | (simp [$P:ident]; rr_poly_identity)
-          | (simp [$P:ident]; ring)))
+          | (simp [$P:ident]; rr_ring)))
   -- the interlacing of the base rows
   setGoals [hbase]
   withMainContext do
@@ -368,12 +368,12 @@ private def baseInterlGoal (d : DerivLagRec) (S : Nat) (allowEqual : Bool)
         first
           | (simp only [$P:ident]; done)
           | (simp only [$P:ident]; rr_poly_identity)
-          | (simp only [$P:ident]; ring)
+          | (simp only [$P:ident]; rr_ring)
       have $eG:ident : $P $(rowNumLit (S + 1)) = $gT := by
         first
           | (simp only [$P:ident]; done)
           | (simp only [$P:ident]; rr_poly_identity)
-          | (simp only [$P:ident]; ring)))
+          | (simp only [$P:ident]; rr_ring)))
   setGoals [hbase]
   withMainContext do
     if allowEqual && f == g then
@@ -465,7 +465,7 @@ private def derivLagAttempt (d : DerivLagRec) (wantSplits wantStrict : Bool) (hi
     have $hrec0:ident : ∀ $n:ident : ℕ, $(← rowTerm k) = (($uT) $n) * $(← rowTerm (k - 1)) +
         (($vT) $n) * Polynomial.derivative $(← rowTerm (k - 1)) +
         (($wT) $n) * $(← rowTerm (k - 2)) :=
-      fun $n:ident => ($(mkIdent d.eqn) $n).trans (by beta_reduce; ring)))
+      fun $n:ident => ($(mkIdent d.eqn) $n).trans (by beta_reduce; rr_ring)))
   evalTactic (← `(tactic| have $hrecQ:ident := fun $n:ident => $hrec0 ($n + $(rowNumLit s))))
   -- degrees and leading coefficients
   let hdeg := mkIdent `hdeg_row

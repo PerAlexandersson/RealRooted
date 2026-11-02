@@ -105,7 +105,7 @@ def isRevAux (P : Name) : Bool :=
   | _ => false
 
 /-- The multiplier `fun n => …` of the summands `(j, i)` of `L`, or `fun _ => 0`. -/
-private def lrCoeffFun (L : LinRecData) (j i : Nat) : TacticM Term := do
+def lrCoeffFun (L : LinRecData) (j i : Nat) : TacticM Term := do
   let n := mkIdent `n
   let mut acc : Option Term := none
   for (j', i', A) in L.terms do
@@ -117,6 +117,13 @@ private def lrCoeffFun (L : LinRecData) (j i : Nat) : TacticM Term := do
   match acc with
   | some t => `(fun $n:ident : ℕ => $t)
   | none => `(fun _ : ℕ => (0 : ℝ[X]))
+
+/-- The `simp only` call reflecting explicit multipliers, for the reversal links. -/
+def reflectSimp : TacticM (TSyntax `tactic) :=
+  `(tactic|
+    simp only [reflect_add, reflect_neg, reflect_C_mul, reflect_C_mul_X_pow, reflect_C,
+      reflect_monomial, reflect_X, reflect_one, reflect_ofNat_mul, reflect_zero,
+      revAt_eq_ite, neg_mul, one_mul, mul_one, zero_mul, mul_zero, add_zero, zero_add])
 
 /-- Define the reversed sequence and prove the link `∀ n, P n = reflect (D₀ + n) (R n)`;
 returns the reversed sequence and the name of the link. -/
@@ -159,10 +166,7 @@ def reversalLink (P : Name) (rv : Reversal) : TacticM (Ident × Ident) := do
   let D₀ := rowNumLit rv.D₀
   let link := mkIdent `hlink_rev
   -- the reflection of explicit multipliers, then the identity of coefficients
-  let simpReflect ← `(tactic|
-    simp only [reflect_add, reflect_neg, reflect_C_mul, reflect_C_mul_X_pow, reflect_C,
-      reflect_monomial, reflect_X, reflect_one, reflect_ofNat_mul, reflect_zero,
-      revAt_eq_ite, neg_mul, one_mul, mul_one, zero_mul, mul_zero, add_zero, zero_add])
+  let simpReflect ← reflectSimp
   let identity ← `(tactic| first
     | ($simpReflect:tactic <;> norm_num <;> done)
     | ($simpReflect:tactic <;> norm_num <;> rr_cf_identity)
@@ -172,8 +176,8 @@ def reversalLink (P : Name) (rv : Reversal) : TacticM (Ident × Ident) := do
     match rv.terms.find? (fun (j', i', _) => j' == j && i' == i) with
     | some (_, _, cs) => `(fun $n:ident : ℕ => $(← xPolyTerm cs N))
     | none => `(fun _ : ℕ => (0 : ℝ[X]))
-  let hP ← `(fun $n:ident => by beta_reduce; rw [$eqn:ident $n:ident] <;> ring)
-  let hR ← `(fun $n:ident => by first | rfl | (beta_reduce; rw [$R:ident] <;> ring))
+  let hP ← `(fun $n:ident => by beta_reduce; rw [$eqn:ident $n:ident] <;> rr_ring)
+  let hR ← `(fun $n:ident => by first | rfl | (beta_reduce; rw [$R:ident] <;> rr_ring))
   let deg ← `(fun $n:ident => by beta_reduce; first | compute_degree | simp)
   let hB : TacticM Term := `(fun $n:ident => by beta_reduce; $identity:tactic)
   let hRdeg ← `(fun $n:ident => le_of_eq (by rr_row_natDegree))

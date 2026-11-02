@@ -901,7 +901,7 @@ if the summands are not in the order of the theorems). -/
 private def assertRec (r : RowRec) : TacticM Unit := withMainContext do
   let n := mkIdent `n
   let pf ← if r.canonical then `(fun $n:ident => $(mkIdent r.eqn) $n)
-    else `(fun $n:ident => ($(mkIdent r.eqn) $n).trans (by ring))
+    else `(fun $n:ident => ($(mkIdent r.eqn) $n).trans (by rr_ring))
   let e ← elabTermEnsuringType pf r.stmt
   Term.synthesizeSyntheticMVarsNoPostponing
   let e ← instantiateMVars e
@@ -1018,38 +1018,61 @@ def halfGrowthPlausible (r : RowRec) (k : Nat) : MetaM Bool := do
     unless xs.all (fun x => 0 ≤ b₁.eval x * b₀.eval x) do return false
   return true
 
-/-- Prove consecutive `StrictInterl` for a first-order derivative recurrence whose exact
-rows reveal a half-growth degree pattern.  Positive base degree uses the general
-degree-pattern backend; degree-zero bases use its constant-row half-degree companions. -/
-private def degreePatternStrictGoal : TacticM RowHints := do
-  discard introIfForall
-  withMainContext do
-  let r ← rowRecSetup "rr_row_strictInterl"
+/-- A half-growth degree law `c + (x + e) / 2` (`e ∈ {0, 1}`), in the form the degree
+tactics read: `x / 2`, `(x + 1) / 2`, `c + …`. -/
+private def halfLawTerm (c e : Nat) (x : Term) : TacticM Term := do
+  let half : Term ← if e == 0 then `($x / 2) else `(($x + $(rowNumLit e)) / 2)
+  if c == 0 then pure half else `($(rowNumLit c) + $half)
+
+/-- The data shared by the half-growth degree-pattern routes of `rr_row_splits` and
+`rr_row_strictInterl`: the law `c + (n + e) / 2` of the rows from the shift on, the hypothesis
+`hdeg_pos_all` for the unshifted rows, the aligned index `t`, the shifted sequence `Q`, and
+the recurrence `hrec` of `Q` with its multipliers `A` and `B`. -/
+private structure DegreePatternSetup where
+  /-- the constant term `c` of the degree law of the shifted rows -/
+  c : Nat
+  /-- the phase `e ∈ {0, 1}` of the degree law of the shifted rows -/
+  e : Nat
+  /-- the hypothesis `∀ n, (P n).natDegree = … ∧ 0 < (P n).leadingCoeff` -/
+  hdegPosAll : Ident
+  /-- the index of the aligned row -/
+  t : Term
+  /-- the shifted sequence -/
+  Q : Term
+  /-- the recurrence hypothesis for `Q` -/
+  hrec : Term
+  /-- the multiplier of `Q n.derivative` -/
+  A : Term
+  /-- the multiplier of `Q n` -/
+  B : Term
+
+/-- Read the exact rows of a first-order derivative recurrence `r` whose degrees follow
+`c + (n + e) / 2` with nonnegative coefficients, state `hdeg_pos_all`, align the goal row and
+normalize the recurrence (as `hrecName` when the multipliers are normalized).  `who` prefixes
+the errors and `firstRowsMsg` is the error when the first rows do not follow a degree law. -/
+private def degreePatternSetup (who firstRowsMsg : String) (hrecName : Name) (r : RowRec)
+    (P : Ident) : TacticM DegreePatternSetup := do
   unless r.shape == .deriv₁ do
-    throwError "rr_row_strictInterl: not a first-order derivative recurrence"
-  let P := mkIdent r.P
-  let some L ← linRec? r.P r.params | throwError "rr_row_strictInterl: no linear recurrence"
-  let some rows ← linRecRows? L (r.shift + 22)
-    | throwError "rr_row_strictInterl: rows not computable"
+    throwError "{who}: not a first-order derivative recurrence"
+  let some L ← linRec? r.P r.params | throwError "{who}: no linear recurrence"
+  let some rows ← linRecRows? L (r.shift + 22) | throwError "{who}: rows not computable"
   let c := (rows[r.shift]!).natDegree
   let fits (e : Nat) := (List.range 20).all fun m =>
     !(rows[r.shift + m]!).isZero && (rows[r.shift + m]!).natDegree == c + (m + e) / 2
   let some e := [0, 1].find? fits
-    | throwError "rr_row_strictInterl: the degrees do not follow `c + (n + e) / 2`"
+    | throwError "{who}: the degrees do not follow `c + (n + e) / 2`"
   unless (List.range 20).all fun m => (rows[r.shift + m]!).coeffs.all (0 ≤ ·) do
-    throwError "rr_row_strictInterl: the rows do not have nonnegative coefficients"
+    throwError "{who}: the rows do not have nonnegative coefficients"
+  -- the law of the unshifted rows `P n`, which the degree tactics prove for a variable `n`
   let c' := (rows[0]!).natDegree
   let some e' := [0, 1].find? fun e' => (List.range (r.shift + 20)).all fun n =>
       !(rows[n]!).isZero && (rows[n]!).natDegree == c' + (n + e') / 2
-    | throwError "rr_row_strictInterl: the initial rows do not follow the degree law"
-  let law (c e : Nat) (x : Term) : TacticM Term := do
-    let half : Term ← if e == 0 then `($x / 2) else `(($x + $(rowNumLit e)) / 2)
-    if c == 0 then pure half else `($(rowNumLit c) + $half)
+    | throwError "{who}: {firstRowsMsg}"
   let hdegPosAll := mkIdent `hdeg_pos_all
   let nI := mkIdent `n
   evalTactic (← `(tactic|
     have $hdegPosAll:ident : ∀ $nI:ident : ℕ,
-        ($P $nI).natDegree = $(← law c' e' nI) ∧ 0 < ($P $nI).leadingCoeff := by
+        ($P $nI).natDegree = $(← halfLawTerm c' e' nI) ∧ 0 < ($P $nI).leadingCoeff := by
       intro $nI:ident
       rr_row_natDegree_leadingCoeff_pos))
   let (_, t) ← alignRow r.P r.shift (smallRowSplits P)
@@ -1061,18 +1084,30 @@ private def degreePatternStrictGoal : TacticM RowHints := do
   let normalizedB? ← normalizedCoeffTerm? r.coeffs[1]! 0
   let A := normalizedA?.getD rawA
   let B := normalizedB?.getD rawB
-  let hrecName := mkIdent `h_strictDegreePatternRec
+  let hrecId := mkIdent hrecName
   let hrec : Term ← if normalizedA?.isNone && normalizedB?.isNone then pure hrecRaw else do
     evalTactic (← `(tactic|
-      have $hrecName:ident : ∀ n : ℕ,
+      have $hrecId:ident : ∀ n : ℕ,
           $Q (n + 1) = $A n * ($Q n).derivative + $B n * $Q n := by
         intro n
         have hraw : $Q (n + 1) =
             $rawA n * ($Q n).derivative + $rawB n * $Q n := $hrecRaw n
         rw [hraw] <;> rr_cf_identity))
-    pure hrecName
+    pure hrecId
+  return { c, e, hdegPosAll, t, Q, hrec, A, B }
+
+/-- Prove consecutive `StrictInterl` for a first-order derivative recurrence whose exact
+rows reveal a half-growth degree pattern.  Positive base degree uses the general
+degree-pattern backend; degree-zero bases use its constant-row half-degree companions. -/
+private def degreePatternStrictGoal : TacticM RowHints := do
+  discard introIfForall
+  withMainContext do
+  let r ← rowRecSetup "rr_row_strictInterl"
+  let P := mkIdent r.P
+  let ⟨c, e, hdegPosAll, t, Q, hrec, A, B⟩ ← degreePatternSetup "rr_row_strictInterl"
+    "the initial rows do not follow the degree law" `h_strictDegreePatternRec r P
   let m := mkIdent `m
-  let Dt ← `(fun $m:ident : ℕ => $(← law c e m))
+  let Dt ← `(fun $m:ident : ℕ => $(← halfLawTerm c e m))
   if c == 0 then
     let strictThm := if e == 0 then
         mkIdent ``derivativeRecurrence_strictInterl_of_floor_half_degree
@@ -1376,54 +1411,10 @@ private def rowSplitsCoreDirect (log : RowAttemptLog) (hints : RowHints) :
   -- the degree law `c + (n + e) / 2` and nonnegative coefficients
   -- (`RealRooted.derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs`)
   let viaDegreePattern := do
-    unless r.shape == .deriv₁ do
-      throwError "rr_row_splits: not a first-order derivative recurrence"
-    let some L ← linRec? r.P r.params | throwError "rr_row_splits: no linear recurrence"
-    let some rows ← linRecRows? L (r.shift + 22) | throwError "rr_row_splits: rows not computable"
-    let c := (rows[r.shift]!).natDegree
-    let fits (e : Nat) := (List.range 20).all fun m =>
-      !(rows[r.shift + m]!).isZero && (rows[r.shift + m]!).natDegree == c + (m + e) / 2
-    let some e := [0, 1].find? fits
-      | throwError "rr_row_splits: the degrees do not follow `c + (n + e) / 2`"
-    unless (List.range 20).all fun m => (rows[r.shift + m]!).coeffs.all (0 ≤ ·) do
-      throwError "rr_row_splits: the rows do not have nonnegative coefficients"
-    -- the law of the unshifted rows `P n`, which the degree tactics prove for a variable `n`
-    let c' := (rows[0]!).natDegree
-    let some e' := [0, 1].find? fun e' => (List.range (r.shift + 20)).all fun n =>
-        !(rows[n]!).isZero && (rows[n]!).natDegree == c' + (n + e') / 2
-      | throwError "rr_row_splits: the degrees of the first rows do not follow the law"
+    let ⟨c, e, hdegPosAll, t, Q, hrec, _, _⟩ ← degreePatternSetup "rr_row_splits"
+      "the degrees of the first rows do not follow the law" `h_degreePatternRec r P
     let m := mkIdent `m
-    -- a law in the form the degree tactics read: `m / 2`, `(m + 1) / 2`, `c + …`
-    let law (c e : Nat) (x : Term) : TacticM Term := do
-      let half : Term ← if e == 0 then `($x / 2) else `(($x + $(rowNumLit e)) / 2)
-      if c == 0 then pure half else `($(rowNumLit c) + $half)
-    let hdegPosAll := mkIdent `hdeg_pos_all
-    let nI := mkIdent `n
-    evalTactic (← `(tactic|
-      have $hdegPosAll:ident : ∀ $nI:ident : ℕ,
-          ($P $nI).natDegree = $(← law c' e' nI) ∧ 0 < ($P $nI).leadingCoeff := by
-        intro $nI:ident
-        rr_row_natDegree_leadingCoeff_pos))
-    let (_, t) ← alignRow r.P r.shift (smallRowSplits P)
-    let Q ← r.seq 0
-    let hrecRaw ← r.hrecTerm 0
-    let rawA ← certTerm r.coeffs[0]!
-    let rawB ← certTerm r.coeffs[1]!
-    let normalizedA? ← normalizedCoeffTerm? r.coeffs[0]! 0
-    let normalizedB? ← normalizedCoeffTerm? r.coeffs[1]! 0
-    let A := normalizedA?.getD rawA
-    let B := normalizedB?.getD rawB
-    let hrecName := mkIdent `h_degreePatternRec
-    let hrec : Term ← if normalizedA?.isNone && normalizedB?.isNone then pure hrecRaw else do
-      evalTactic (← `(tactic|
-        have $hrecName:ident : ∀ n : ℕ,
-            $Q (n + 1) = $A n * ($Q n).derivative + $B n * $Q n := by
-          intro n
-          have hraw : $Q (n + 1) =
-              $rawA n * ($Q n).derivative + $rawB n * $Q n := $hrecRaw n
-          rw [hraw] <;> rr_cf_identity))
-      pure hrecName
-    let Dt ← `(fun $m:ident : ℕ => $(← law c e m))
+    let Dt ← `(fun $m:ident : ℕ => $(← halfLawTerm c e m))
     let splitsThm :=
       mkIdent ``RealRooted.derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs
     evalTactic (← `(tactic|
@@ -1459,7 +1450,7 @@ private def rowSplitsCoreDirect (log : RowAttemptLog) (hints : RowHints) :
     let n := mkIdent `n
     evalTactic (← `(tactic|
       refine RealRooted.twoStepProduct_splits (P := $(← r.seq 0)) (q := $q)
-        (fun $n:ident => ($(mkIdent r.eqn) $n).trans (by beta_reduce; ring)) ?_ ?_ ?_ $t))
+        (fun $n:ident => ($(mkIdent r.eqn) $n).trans (by beta_reduce; rr_ring)) ?_ ?_ ?_ $t))
     let gs ← getGoals
     let [hq, h0, h1] := gs | throwError "rr_row_splits: unexpected side goals"
     for g in [h0, h1] do

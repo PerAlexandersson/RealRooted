@@ -214,7 +214,7 @@ def rationalEndpointWindowGoal : TacticM Unit := do
       simp only [Polynomial.eval_add, Polynomial.eval_sub, Polynomial.eval_mul,
         Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_pow,
         Polynomial.eval_neg, Polynomial.eval_one, Polynomial.eval_zero]
-      field_simp <;> ring
+      field_simp <;> rr_ring
     rw [hfactorization]
     exact mul_nonpos_of_nonpos_of_nonneg heffective hproduct))
   let hrecRaw ← r.hrecTerm 0

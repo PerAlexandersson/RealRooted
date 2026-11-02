@@ -248,10 +248,10 @@ def polyWithShiftProof (name : Ident) (p : QPoly) (m0 : Nat) (m k : Term)
   let rhs ← qpolyAtTerm pp k
   let eqn ← if negative then
     `(tactic| have $name : $lhs = -$rhs := by
-      simp only [rr_hshift] <;> ring)
+      simp only [rr_hshift] <;> rr_ring)
   else
     `(tactic| have $name : $lhs = $rhs := by
-      simp only [rr_hshift] <;> ring)
+      simp only [rr_hshift] <;> rr_ring)
   return eqn
 
 /-- Builds the tactics proving that the rational function `r` at `m` is positive (or negative if
@@ -534,7 +534,7 @@ def cfiProof (cp : CFIPlan) : TacticM Unit := do
             have rr_hq1 := congrArg (fun z : ℝ[X] => z.coeff 1) rr_hq0
             norm_num [Polynomial.coeff_one] at rr_hq1)
           (by simpa only [div_one] using $ha) $hp $hbeta) using 1 <;>
-          simp [Nat.cast_add, Nat.cast_one] <;> ring)
+          simp [Nat.cast_add, Nat.cast_one] <;> rr_ring)
   else
     `(tactic|
       have $hinter : ∀ $m : ℕ, $(rowNumLit m0) ≤ $m →

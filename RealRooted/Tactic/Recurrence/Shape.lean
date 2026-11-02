@@ -775,7 +775,7 @@ def RowRec.hrecTerm (r : RowRec) (k : Nat) : TacticM Term := do
     let n := mkIdent `n
     let eqn ← certTerm (mkAppN (← mkConstWithFreshMVarLevels r.eqn) r.params)
     let h₀ ← `((show $(← certTerm r.stmt) from
-      fun $n:ident => ($eqn $n).trans (by rr_row_unfold; ring)))
+      fun $n:ident => ($eqn $n).trans (by rr_row_unfold; rr_ring)))
     let extra := r.offset - r.stmtOffset + k
     let h ← if extra == 0 then pure h₀ else `(fun $n:ident => $h₀ ($n + $(rowNumLit extra)))
     match r.shape with
@@ -938,7 +938,8 @@ structure RowHints where
   window : Option (Term × Term) := none
   /-- the root window `(-∞, U]` -/
   upper : Option Term := none
-  /-- the route of `rr_row_splits` -/
+  /-- the route (a name from the route table) that all row tactics restrict themselves to, skipping
+  the other routes -/
   via : Option Name := none
 
 /-- Parse the hints. -/
