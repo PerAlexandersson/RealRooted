@@ -138,24 +138,6 @@ theorem bellPascalState_succ (j k i : ℕ) :
   simp only [Nat.sub_sub]
   rw [Nat.add_comm]
 
-/-- The forward half of the dense Ferrers endpoint criterion from issue #1990: an ordered PF
-pair remains ordered after replacing it by its row sum and its `X`-weighted row sum. -/
-theorem interl_add_X_mul_add_of_interl {p q : ℝ[X]}
-    (hp : IsPFPolynomial p) (hq : IsPFPolynomial q) (hpq : Interl p q) :
-    Interl (p + q) (X * p + q) := by
-  have hpXp : Interl p (X * p) :=
-    (interl_iff_interl_X_mul hp hp).mp hp.interl_self
-  have hqXp : Interl q (X * p) :=
-    (interl_iff_interl_X_mul hp hq).mp hpq
-  have hpout : Interl p (X * p + q) :=
-    interl_add_right_of_common_left_of_nonneg hpXp hpq
-      hp.X_mul.hasNonnegCoeffs hq.hasNonnegCoeffs
-  have hqout : Interl q (X * p + q) :=
-    interl_add_right_of_common_left_of_nonneg hqXp hq.interl_self
-      hp.X_mul.hasNonnegCoeffs hq.hasNonnegCoeffs
-  exact interl_add_left_of_common_right_of_nonneg hpout hqout
-    hp.hasNonnegCoeffs hq.hasNonnegCoeffs
-
 /-- Active/remainder interlacing implies the associated catalytic endpoint comparison. -/
 theorem bellCatalyticEndpoints_interl_of_active_remainder
     (j k : ℕ) (hA : IsPFPolynomial (bellActive j k))

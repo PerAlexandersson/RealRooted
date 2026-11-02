@@ -7,10 +7,16 @@ module
 
 public import Mathlib.Algebra.Order.Antidiag.Pi
 public import Mathlib.Algebra.Polynomial.Derivative
+import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.LinearCombination
 
 /-!
-# Iterated derivatives of products of powers of linear factors
+# Derivatives of products of polynomials
+
+The logarithmic derivative of a finite product of polynomials is the sum of the logarithmic
+derivatives of the factors (`Polynomial.eval_derivative_prod_div_eval_prod`).
+
+## Iterated derivatives of products of powers of linear factors
 
 The multinomial Leibniz rule for `∏ i ∈ s, (X + C (a i)) ^ n i`:
 its `k`-th derivative is `k! ∑_{|α| = k} ∏ i, (n i).choose (α i) * (X + C (a i)) ^ (n i - α i)`,
@@ -93,5 +99,29 @@ theorem iterate_derivative_prod_X_add_C_pow_of_le [Fintype ι] (a : ι → R) (n
   refine prod_congr rfl fun i _ => ?_
   rw [show n i - α i = (n i - m) + (m - α i) by have := hle i; have := hn i; lia, pow_add]
   ring
+
+section Field
+
+/-- The logarithmic derivative of a finite product of polynomials is the sum of the logarithmic
+derivatives of the factors, at a point where no factor vanishes. -/
+theorem eval_derivative_prod_div_eval_prod {K ι : Type*} [Field K] (u : Finset ι)
+    (g : ι → K[X]) (x : K) (h : ∀ i ∈ u, (g i).eval x ≠ 0) :
+    (derivative (∏ i ∈ u, g i)).eval x / (∏ i ∈ u, g i).eval x =
+      ∑ i ∈ u, (derivative (g i)).eval x / (g i).eval x := by
+  classical
+  induction u using Finset.induction_on with
+  | empty => simp
+  | insert i u hi ih =>
+      have hprod : (∏ j ∈ u, g j).eval x ≠ 0 := by
+        rw [Polynomial.eval_prod]
+        exact Finset.prod_ne_zero_iff.mpr fun j hj =>
+          h j (Finset.mem_insert_of_mem hj)
+      have hgi : (g i).eval x ≠ 0 := h i (Finset.mem_insert_self i u)
+      rw [Finset.prod_insert hi, Finset.sum_insert hi, Polynomial.derivative_mul]
+      simp only [Polynomial.eval_add, Polynomial.eval_mul]
+      rw [← ih fun j hj => h j (Finset.mem_insert_of_mem hj)]
+      field_simp
+
+end Field
 
 end Polynomial

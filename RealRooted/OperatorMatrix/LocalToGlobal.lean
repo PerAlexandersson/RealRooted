@@ -130,7 +130,8 @@ private lemma singleInput_isOrderedPF {n : ℕ} (j : Fin n) {f : ℝ[X]}
       simp [singleInput, hqj, hrj, interl_zero_right]
     · simp [singleInput, hqj, interl_zero_left]
 
-private lemma exists_fin_ne {n : ℕ} (hn : 2 ≤ n) (i : Fin n) : ∃ k : Fin n, k ≠ i :=
+/-- In `Fin n` with `2 ≤ n`, every index differs from some other index. -/
+lemma exists_fin_ne {n : ℕ} (hn : 2 ≤ n) (i : Fin n) : ∃ k : Fin n, k ≠ i :=
   haveI := Fin.nontrivial_iff_two_le.mpr hn
   exists_ne i
 

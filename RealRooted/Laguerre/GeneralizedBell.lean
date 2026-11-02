@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.Laguerre.FiniteCombinations
+public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.FiniteCombinations
+public import RealRooted.SimpleRoots
+import RealRooted.Laguerre.FiniteCombinations
 
 import RealRooted.MaWang.StrictStep
 import RealRooted.QuadraticInterlacingClosure
@@ -68,18 +70,6 @@ theorem laguerreAuxiliary_monic {K : ℕ} {gamma : ℕ → ℝ} (hgamma : gamma 
     List R → R[X] → R[X]
   | [], p => p
   | a :: as, p => laguerreRaisingStep a (laguerreRaisingSteps as p)
-
-/-- A Laguerre raising step preserves coefficientwise nonnegativity when its parameter is
-nonnegative. -/
-theorem HasNonnegCoeffs.laguerreRaisingStep {a : ℝ} (ha : 0 ≤ a)
-    {p : ℝ[X]} (hp : HasNonnegCoeffs p) :
-    HasNonnegCoeffs (laguerreRaisingStep a p) := by
-  intro k
-  rw [coeff_laguerreRaisingStep]
-  split_ifs with hk
-  · subst k
-    simpa using mul_nonneg ha (hp 0)
-  · exact add_nonneg (hp (k - 1)) (mul_nonneg (by positivity) (hp k))
 
 /-- The constant coefficient of a Laguerre raising step. -/
 @[simp] theorem coeff_zero_laguerreRaisingStep {R : Type*} [CommSemiring R]

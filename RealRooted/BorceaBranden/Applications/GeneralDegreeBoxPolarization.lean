@@ -4,6 +4,7 @@ public import RealRooted.BorceaBranden.Applications.DegreeBoxPolarization
 import RealRooted.BorceaBranden.FiniteSymbolPreserver
 public import RealRooted.Polarization
 import RealRooted.BorceaBranden.FiniteSymbolDegree
+import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
 
 /-!
 # Source diagonalization for a general degree box

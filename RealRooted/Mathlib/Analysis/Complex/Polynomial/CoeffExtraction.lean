@@ -7,6 +7,7 @@ module
 
 public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Algebra.MvPolynomial.Equiv
+import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffEstimates
 import Mathlib.Algebra.MvPolynomial.CommRing
 import Mathlib.Analysis.Normed.Group.FunctionSeries
@@ -140,53 +141,6 @@ theorem tendsto_coeff_of_tendstoLocallyUniformly_tsum
     (p k - q) (by norm_num : (0 : ℝ) < 1) hbound m
   rw [MvPolynomial.coeff_sub, hqcoeff, one_pow, mul_one] at hcoeff
   simpa only [dist_eq_norm] using lt_of_le_of_lt hcoeff (half_lt_self hε)
-
-private theorem sumAlgEquiv_monomial
-    {S₁ S₂ R : Type*} [CommSemiring R]
-    (a : S₁ →₀ ℕ) (b : S₂ →₀ ℕ) (r : R) :
-    MvPolynomial.sumAlgEquiv R S₁ S₂
-        (MvPolynomial.monomial (a.sumElim b) r) =
-      MvPolynomial.monomial a (MvPolynomial.monomial b r) := by
-  classical
-  rw [MvPolynomial.monomial_eq, MvPolynomial.monomial_eq,
-    MvPolynomial.monomial_eq, Finsupp.prod_sumElim]
-  simp only [map_mul, MvPolynomial.sumAlgEquiv_C_inl]
-  simp [Finsupp.prod]
-  simp only [← map_pow, ← map_prod]
-  simp only [MvPolynomial.prod_X_pow_eq_monomial]
-  ring
-
-private theorem coeff_coeff_sumAlgEquiv
-    {S₁ S₂ R : Type*} [CommSemiring R]
-    (p : MvPolynomial (S₁ ⊕ S₂) R)
-    (a : S₁ →₀ ℕ) (b : S₂ →₀ ℕ) :
-    ((MvPolynomial.sumAlgEquiv R S₁ S₂ p).coeff a).coeff b =
-      p.coeff (a.sumElim b) := by
-  classical
-  induction p using MvPolynomial.induction_on' with
-  | add p q hp hq =>
-      simp [hp, hq]
-  | monomial d r =>
-      let d₁ : S₁ →₀ ℕ :=
-        Finsupp.comapDomain Sum.inl d Sum.inl_injective.injOn
-      let d₂ : S₂ →₀ ℕ :=
-        Finsupp.comapDomain Sum.inr d Sum.inr_injective.injOn
-      have hd : d₁.sumElim d₂ = d :=
-        Finsupp.comapDomain_sumElim_comapDomain d
-      rw [← hd, sumAlgEquiv_monomial]
-      have hsum : d₁.sumElim d₂ = a.sumElim b ↔ d₁ = a ∧ d₂ = b := by
-        constructor
-        · intro h
-          exact ⟨Finsupp.ext fun i => DFunLike.congr_fun h (Sum.inl i),
-            Finsupp.ext fun i => DFunLike.congr_fun h (Sum.inr i)⟩
-        · rintro ⟨rfl, rfl⟩
-          rfl
-      by_cases hda : d₁ = a
-      · have hright : a.sumElim d₂ = a.sumElim b ↔ d₂ = b :=
-          ⟨fun h => Finsupp.ext fun i => DFunLike.congr_fun h (Sum.inr i),
-            fun h => congrArg (Finsupp.sumElim a) h⟩
-        simp [MvPolynomial.coeff_monomial, hda, hright]
-      · simp [MvPolynomial.coeff_monomial, hsum, hda]
 
 /-- The polynomial in the left variables obtained by extracting the coefficient of `w^α`
 from a polynomial in split variables `(z, w)`. -/

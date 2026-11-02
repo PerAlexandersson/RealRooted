@@ -111,19 +111,6 @@ private theorem appellCoefficient_newton_natDegree_le_half
   simpa only [newtonBasisTransform, Polynomial.basisTransformₗ_apply] using
     htest k hkN r hr
 
-private theorem nonneg_of_affine_nonneg_on_nonneg {A B : ℝ}
-    (h : ∀ r : ℝ, 0 ≤ r → 0 ≤ A + B * r) : 0 ≤ B := by
-  by_contra hB
-  have hBneg : B < 0 := lt_of_not_ge hB
-  let r := (|A| + 1) / (-B)
-  have hr : 0 ≤ r := by
-    exact div_nonneg (by positivity) (neg_nonneg.mpr hBneg.le)
-  have hvalue := h r hr
-  have hB0 : B ≠ 0 := ne_of_lt hBneg
-  dsimp only [r] at hvalue
-  field_simp [hB0] at hvalue
-  linarith [le_abs_self A]
-
 private theorem two_mul_appellCoefficient_two_nonneg_of_repeatedRootTestsUpTo
     {N : ℕ} {c : ℕ → ℝ} (hN : 2 ≤ N)
     (htest : NewtonRepeatedRootTestsUpTo N c) :
@@ -232,14 +219,6 @@ private theorem newton_parameters_affine_data_of_repeatedRootTestsUpTo
   push_cast [hchoose] at hnext
   nlinarith
 
-private theorem basisTransform_comp_basis (B : ℕ → ℝ[X]) (q p : ℝ[X]) :
-    basisTransform (fun n => (B n).comp q) p = (basisTransform B p).comp q := by
-  induction p using Polynomial.induction_on' with
-  | add p s hp hs =>
-      simp only [basisTransform_add, add_comp, hp, hs]
-  | monomial n a =>
-      simp [mul_comp]
-
 private theorem newtonBasisPolynomial_eq_rising_comp
     {c : ℕ → ℝ} {h : ℝ} {n : ℕ}
     (hc : ∀ j < n, c j = c 0 + (j : ℝ) * h) :
@@ -317,7 +296,7 @@ private theorem newtonBasisTransform_eq_rising_comp
       (risingFactorialPolynomial h n).comp (X + C (c 0)) := by
     funext n
     exact newtonBasisPolynomial_eq_rising_comp fun j _ => hc j
-  rw [hbasis, basisTransform_comp_basis]
+  rw [hbasis, basisTransform_comp]
 
 /-- Arithmetic-progression Newton parameters preserve real-rootedness for all
 inputs with only nonpositive roots. -/

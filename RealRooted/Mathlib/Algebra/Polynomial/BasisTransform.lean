@@ -207,6 +207,15 @@ section Differential
 
 variable [CommSemiring R]
 
+/-- Composing the basis with a polynomial `q` commutes with the basis transform. -/
+theorem basisTransform_comp (B : ℕ → R[X]) (q p : R[X]) :
+    basisTransform (fun n => (B n).comp q) p = (basisTransform B p).comp q := by
+  induction p using Polynomial.induction_on' with
+  | add p s hp hs =>
+      simp only [basisTransform_add, add_comp, hp, hs]
+  | monomial n a =>
+      simp [mul_comp]
+
 /-- A basis transform transports multiplication by `X` to a first-order
 differential operator when its basis satisfies the corresponding successor
 recurrence. -/

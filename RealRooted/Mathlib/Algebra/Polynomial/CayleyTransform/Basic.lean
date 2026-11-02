@@ -5,8 +5,10 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
+public import Mathlib.Algebra.Polynomial.Homogenize
+import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
 public import Mathlib.Tactic.FinCases
+import Mathlib.Tactic.Ring
 
 /-!
 # Finite-degree Cayley transform of a polynomial
@@ -70,5 +72,19 @@ theorem cayleyTransform_finset_sum {ι : Type*} (n : ℕ)
   induction s using Finset.induction_on with
   | empty => simp [cayleyTransform]
   | @insert i s hi ih => simp [hi, ih, cayleyTransform_add]
+
+/-- A polynomial of degree at most `n` has Cayley transform `∑ k, a_k X^k (1 - X)^(n - k)`. -/
+theorem cayleyTransform_eq_sum {p : R[X]} {n : ℕ} (hdeg : p.natDegree ≤ n) :
+    cayleyTransform n p =
+      ∑ k ∈ Finset.range (n + 1), C (p.coeff k) * X ^ k * (1 - X) ^ (n - k) := by
+  rw [cayleyTransform, Polynomial.homogenize_eq_sum_range_C_mul_X_pow hdeg]
+  simp only [map_sum, map_mul, map_pow, MvPolynomial.aeval_def,
+    MvPolynomial.eval₂_C]
+  apply Finset.sum_congr rfl
+  intro k hk
+  simp only [MvPolynomial.eval₂_X, Fin.isValue, Matrix.cons_val_zero,
+    Matrix.cons_val_one]
+  rw [← Polynomial.C_eq_algebraMap]
+  ring
 
 end Polynomial

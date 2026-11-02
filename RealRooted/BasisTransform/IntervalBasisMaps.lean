@@ -71,16 +71,6 @@ theorem intervalDifferentialOperator_sub_apply
       intervalDifferentialStep alpha beta rho kappa L U xi p :=
   intervalDifferentialOperator_sub_apply_algebra alpha beta rho kappa L U xi p
 
-private lemma intervalAffine_natDegree_le (a b : ℝ) :
-    (C a * X + C b : ℝ[X]).natDegree ≤ 1 := by
-  apply natDegree_add_le_of_degree_le
-  · calc
-      (C a * X : ℝ[X]).natDegree ≤ (C a).natDegree + X.natDegree :=
-        natDegree_mul_le
-      _ ≤ 0 + 1 := Nat.add_le_add (by rw [natDegree_C]) (by simp)
-      _ = 1 := by simp
-  · simp
-
 private lemma intervalDerivativeCoeff_natDegree_le (k L U : ℝ) :
     (C k * (X - C L) * (X - C U) : ℝ[X]).natDegree ≤ 2 := by
   calc
@@ -99,7 +89,7 @@ private lemma intervalStep_degree_le (a b k L U : ℝ) (p : ℝ[X]) :
         p.natDegree + 1 := by
   apply natDegree_add_le_of_degree_le
   · exact natDegree_mul_iterate_derivative_le (d := 1) (j := 0)
-      (intervalAffine_natDegree_le a b) le_rfl
+      (natDegree_linear_le (a := a) (b := b)) le_rfl
   · exact natDegree_mul_iterate_derivative_le (d := 1) (j := 1)
       (intervalDerivativeCoeff_natDegree_le k L U) le_rfl
 
@@ -109,7 +99,7 @@ private lemma intervalStep_coeff_succ (a b k L U : ℝ) (p : ℝ[X]) :
         (p.natDegree + 1) = (a + k * p.natDegree) * p.leadingCoeff := by
   have h0 := coeff_mul_iterate_derivative_of_natDegree_le
     (A := C a * X + C b) (p := p) (d := 1) (j := 0)
-    (D := p.natDegree) (intervalAffine_natDegree_le a b) le_rfl
+    (D := p.natDegree) (natDegree_linear_le (a := a) (b := b)) le_rfl
   have h1 := coeff_mul_iterate_derivative_of_natDegree_le
     (A := C k * (X - C L) * (X - C U)) (p := p) (d := 1) (j := 1)
     (D := p.natDegree) (intervalDerivativeCoeff_natDegree_le k L U) le_rfl

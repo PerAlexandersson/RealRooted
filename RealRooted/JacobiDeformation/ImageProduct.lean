@@ -2,6 +2,7 @@ module
 
 public import RealRooted.JacobiDeformation.RootGeometry
 import RealRooted.Derivative.SimpleRoots
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative.Prod
 public import Mathlib.Tactic.FieldSimp
 public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.Positivity
@@ -247,24 +248,6 @@ theorem imageProduct_coordinate_identity
       simp
 
 /-! ## Fixed-coordinate derivative identity for the image product -/
-
-private theorem eval_derivative_prod_div_eval_prod
-    {ι : Type*} (s : Finset ι) (g : ι → ℝ[X]) (x : ℝ)
-    (h : ∀ i ∈ s, (g i).eval x ≠ 0) :
-    (derivative (∏ i ∈ s, g i)).eval x / (∏ i ∈ s, g i).eval x =
-      ∑ i ∈ s, (derivative (g i)).eval x / (g i).eval x := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | insert a s ha ih =>
-      have hprod : (∏ i ∈ s, g i).eval x ≠ 0 := by
-        rw [Polynomial.eval_prod]
-        exact Finset.prod_ne_zero_iff.mpr fun i hi => h i (Finset.mem_insert_of_mem hi)
-      have hga : (g a).eval x ≠ 0 := h a (Finset.mem_insert_self a s)
-      rw [Finset.prod_insert ha, Finset.sum_insert ha, Polynomial.derivative_mul]
-      simp only [Polynomial.eval_add, Polynomial.eval_mul]
-      rw [← ih fun i hi => h i (Finset.mem_insert_of_mem hi)]
-      field_simp
 
 private theorem image_node_log_derivative
     (t xi r z U V : ℝ) (ht0 : t ≠ 0) (ht1 : 1 - t ≠ 0)

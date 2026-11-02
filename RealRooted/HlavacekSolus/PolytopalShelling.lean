@@ -93,12 +93,6 @@ private lemma polytopalHPolynomial_union_disjoint {rank : α → ℕ} {A B : Fin
   simp only [polytopalFaceCount_union_disjoint h, Nat.cast_add, C_add, add_mul,
     Finset.sum_add_distrib]
 
-private lemma mem_unionList_iff_polytopal {pieces : List (Finset α)} {F : α} :
-    F ∈ unionList pieces ↔ ∃ R ∈ pieces, F ∈ R := by
-  induction pieces with
-  | nil => simp [unionList]
-  | cons R pieces ih => simp [unionList, ih]
-
 private lemma polytopalHPolynomial_unionList_of_pairwise_disjoint
     (d : ℕ) (rank : α → ℕ) (pieces : List (Finset α))
     (hpieces : pieces.Pairwise Disjoint) :
@@ -110,7 +104,7 @@ private lemma polytopalHPolynomial_unionList_of_pairwise_disjoint
       have hdisj : Disjoint R (unionList pieces) := by
         rw [Finset.disjoint_left]
         intro F hFR hFU
-        rcases mem_unionList_iff_polytopal.mp hFU with ⟨S, hS, hFS⟩
+        rcases mem_unionList_iff.mp hFU with ⟨S, hS, hFS⟩
         exact (Finset.disjoint_left.mp ((List.pairwise_cons.mp hpieces).1 S hS)) hFR hFS
       rw [unionList, polytopalHPolynomial_union_disjoint hdisj,
         ih (List.pairwise_cons.mp hpieces).2]
@@ -126,7 +120,7 @@ theorem polytopalHPolynomial_eq_sum_relativePieces
       (polytopalRelativeHPolynomials d C sh).sum := by
   have hunion : unionList sh.relativePieces = C.faces := by
     ext F
-    rw [mem_unionList_iff_polytopal]
+    rw [mem_unionList_iff]
     exact (sh.covers F).symm
   rw [← hunion]
   exact polytopalHPolynomial_unionList_of_pairwise_disjoint

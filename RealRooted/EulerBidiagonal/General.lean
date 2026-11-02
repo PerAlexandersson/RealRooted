@@ -194,7 +194,8 @@ noncomputable section
 
 namespace RealRooted.EulerBidiagonal
 
-private lemma eval_zero_pos_of_negativeSimple {q : ℝ[X]} (hq : IsNegativeSimple q) :
+/-- `0 < q(0)` for a negative-simple polynomial. -/
+lemma eval_zero_pos_of_isNegativeSimple {q : ℝ[X]} (hq : IsNegativeSimple q) :
     0 < q.eval 0 := by
   have hmem : (0 : ℝ) ∉ q.roots := fun h => lt_irrefl _ (hq.2.2.2.2 0 h)
   have hcount : q.roots.countP (fun x => 0 < x) = 0 :=
@@ -315,7 +316,7 @@ theorem generalComparison_eval_zero_pos
     (κ a b v : ℝ) (q : ℝ[X]) (hκ : 0 < κ) (ha : 0 < a) (hb : 0 < b)
     (hq : IsNegativeSimple q) :
     0 < (generalComparison κ a b v q).eval 0 := by
-  have hq0 := eval_zero_pos_of_negativeSimple hq
+  have hq0 := eval_zero_pos_of_isNegativeSimple hq
   rw [generalComparison]
   simp only [eval_add, eval_mul, eval_C, eval_X, theta]
   nlinarith [mul_pos (mul_pos hκ (by linarith : 0 < a + b + 1)) hq0]
@@ -776,7 +777,7 @@ theorem isNegativeSimple_generalStep_zero
     IsNegativeSimple (generalStep κ a b u v q) ∧
       (generalStep κ a b u v q).natDegree = 1 := by
   have hqC : q = C (q.coeff 0) := eq_C_of_natDegree_eq_zero hqd
-  have hq0 := eval_zero_pos_of_negativeSimple hq
+  have hq0 := eval_zero_pos_of_isNegativeSimple hq
   have hq0c : 0 < q.coeff 0 := by
     simpa [coeff_zero_eq_eval_zero] using hq0
   have hform : generalStep κ a b u v q =
@@ -938,7 +939,7 @@ theorem isNegativeSimple_generalStep_of_pos
     IsNegativeSimple (generalStep κ a b u v q) ∧
       (generalStep κ a b u v q).natDegree = m + 1 := by
   have hqlc : 0 < q.leadingCoeff := hq.2.2.2.1
-  have hq0 := eval_zero_pos_of_negativeSimple hq
+  have hq0 := eval_zero_pos_of_isNegativeSimple hq
   have hT0 : 0 < (generalStep κ a b u v q).eval 0 := by
     have hq0c : 0 < q.coeff 0 := by simpa [coeff_zero_eq_eval_zero] using hq0
     calc

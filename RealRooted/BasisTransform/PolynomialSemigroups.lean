@@ -314,7 +314,9 @@ theorem raySemigroupTransform_X_mul (a b t : ℝ) (p : ℝ[X]) :
   simp only [map_mul, map_natCast]
   ring
 
-private theorem raySemigroupBasis_differential (a b t : ℝ) (n : ℕ) :
+/-- The ray semigroup basis satisfies the differential equation
+`n * B_n = (X + t a) * B_n' + b t X * B_n''`. -/
+theorem raySemigroupBasis_differential (a b t : ℝ) (n : ℕ) :
     C (n : ℝ) * raySemigroupBasis a b t n =
       (X + C (t * a)) * (raySemigroupBasis a b t n).derivative +
         C (b * t) * X * (raySemigroupBasis a b t n).derivative.derivative := by

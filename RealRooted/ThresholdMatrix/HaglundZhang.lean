@@ -222,35 +222,10 @@ private lemma hzMiddleQuadratic_posLeadingCoeff {s t : ℝ} (hs : 0 < s) :
   rw [hzMiddleQuadratic_eq, leadingCoeff_quadratic hs.ne']
   exact hs
 
-private lemma interl_hz_linear_to_quadratic_of_eval_nonpos
-    {f F : ℝ[X]}
-    (hfdeg : f.natDegree = 1)
-    (hFdeg : F.natDegree = 2)
-    (hF_splits : F.Splits)
-    (hF_pos : HasPosLeadingCoeff F)
-    (hroot_nonpos : ∀ r, f.IsRoot r → F.eval r ≤ 0) :
-    Interl f F := by
-  have hInter : Interlaces (1 : ℝ[X]) f := interlaces_one_linear hfdeg
-  have hF_ne : F ≠ 0 := by
-    intro hF
-    rw [hF, natDegree_zero] at hFdeg
-    norm_num at hFdeg
-  have hno : ∀ r, f.IsRoot r → ¬ (1 : ℝ[X]).IsRoot r := by
-    intro r _ h
-    simp at h
-  have hroot :
-      ∀ r, f.IsRoot r → F.eval r * (1 : ℝ[X]).eval r ≤ 0 := by
-    intro r hr
-    simpa using hroot_nonpos r hr
-  exact
-    (strictInterl_of_interlaces_eval_mul_nonpos_of_no_common
-      hInter hasPosLeadingCoeff_one hF_ne hF_splits hF_pos
-      (by lia) (by lia) hno hroot).toInterl
-
 private lemma interl_hz_affine_add_one_middleQuadratic
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl (C s * X + C t + 1) ((C s * X + C t) * (1 + X) + X) := by
-  apply interl_hz_linear_to_quadratic_of_eval_nonpos
+  apply interl_linear_quadratic_of_eval_nonpos
   · rw [show (C s * X + C t + 1 : ℝ[X]) = C s * X + C (t + 1) by grind]
     grind
   · exact hzMiddleQuadratic_natDegree hs
@@ -270,7 +245,7 @@ private lemma interl_hz_affine_add_one_middleQuadratic
 private lemma interl_hz_affine_add_one_add_X_middleQuadratic
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl (C s * X + C t + (1 + X)) ((C s * X + C t) * (1 + X) + X) := by
-  apply interl_hz_linear_to_quadratic_of_eval_nonpos
+  apply interl_linear_quadratic_of_eval_nonpos
   · rw [show (C s * X + C t + (1 + X) : ℝ[X]) =
         C (s + 1) * X + C (t + 1) by grind]
     grind
@@ -294,7 +269,7 @@ private lemma interl_hz_affine_add_one_add_X_middleQuadratic
 private lemma interl_hz_affine_add_X_middleQuadratic
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :
     Interl (C s * X + C t + X) ((C s * X + C t) * (1 + X) + X) := by
-  apply interl_hz_linear_to_quadratic_of_eval_nonpos
+  apply interl_linear_quadratic_of_eval_nonpos
   · rw [show (C s * X + C t + X : ℝ[X]) = C (s + 1) * X + C t by grind]
     grind
   · exact hzMiddleQuadratic_natDegree hs

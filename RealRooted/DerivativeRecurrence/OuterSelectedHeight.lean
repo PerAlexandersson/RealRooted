@@ -2,6 +2,7 @@ module
 
 import Mathlib.Analysis.MeanInequalities
 public import RealRooted.DerivativeRecurrence.RootWindow
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative.Prod
 
 /-!
 # The outer selected-height bound
@@ -33,25 +34,6 @@ private theorem fin_prod_le_avg_pow {d : ℕ} (hd : d ≠ 0) (e : Fin d → ℝ)
   have hpow := pow_le_pow_left₀
     (Real.rpow_nonneg (Finset.prod_nonneg fun i _ => he i) _) h' d
   rwa [Real.rpow_inv_natCast_pow (Finset.prod_nonneg fun i _ => he i) hd] at hpow
-
-private theorem eval_derivative_finset_prod_div_eval
-    {ι : Type*} (u : Finset ι) (g : ι → ℝ[X]) (x : ℝ)
-    (h : ∀ i ∈ u, (g i).eval x ≠ 0) :
-    (derivative (∏ i ∈ u, g i)).eval x / (∏ i ∈ u, g i).eval x =
-      ∑ i ∈ u, (derivative (g i)).eval x / (g i).eval x := by
-  classical
-  induction u using Finset.induction_on with
-  | empty => simp
-  | insert i u hi ih =>
-      have hprod : (∏ j ∈ u, g j).eval x ≠ 0 := by
-        rw [Polynomial.eval_prod]
-        exact Finset.prod_ne_zero_iff.mpr fun j hj =>
-          h j (Finset.mem_insert_of_mem hj)
-      have hgi : (g i).eval x ≠ 0 := h i (Finset.mem_insert_self i u)
-      rw [Finset.prod_insert hi, Finset.sum_insert hi, Polynomial.derivative_mul]
-      simp only [Polynomial.eval_add, Polynomial.eval_mul]
-      rw [← ih fun j hj => h j (Finset.mem_insert_of_mem hj)]
-      field_simp
 
 /-- Suppose `f` is the product of `d ≠ 0` normalized linear factors with roots
 `-a i < 0`. If `s` lies strictly to the left of every root and satisfies the
@@ -92,7 +74,7 @@ theorem two_mul_degree_pow_lt_signed_eval_of_outer_critical
     exact Finset.prod_ne_zero_iff.mpr fun i _ => neg_ne_zero.mpr (hb i).ne'
   have hlog : f.derivative.eval s / f.eval s = -∑ i, c i := by
     rw [hfactor]
-    have h := eval_derivative_finset_prod_div_eval Finset.univ g s
+    have h := eval_derivative_prod_div_eval_prod Finset.univ g s
       (fun i _ => (hgeval i).trans_ne (neg_ne_zero.mpr (hb i).ne'))
     simp only [g, derivative_add, derivative_one, derivative_mul, derivative_C,
       derivative_X, zero_add, zero_mul, mul_one, eval_C] at h

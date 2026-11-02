@@ -349,7 +349,9 @@ theorem weightedThreeStateExpansion_add_three {rho e r s v : ℝ}
   rw [hrealPow, hplusPow, hminusPow]
   ring
 
-private theorem nat_threeStepInduction {motive : ℕ → Prop}
+/-- Three initial cases and a three-step recurrence prove a statement for all natural
+indices. -/
+theorem nat_threeStepInduction {motive : ℕ → Prop}
     (zero : motive 0) (one : motive 1) (two : motive 2)
     (more : ∀ n, motive n → motive (n + 1) → motive (n + 2) → motive (n + 3)) :
     ∀ n, motive n := by

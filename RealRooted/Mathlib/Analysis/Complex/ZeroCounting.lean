@@ -256,7 +256,9 @@ theorem card_filter_eq_le_divisor {ι : Type*} {f : ℂ → ℂ} (hf : Different
     exact hk.2
   exact_mod_cast this
 
-private lemma count_le_divisor {ι : Type*} {f : ℂ → ℂ} (hf : Differentiable ℂ f)
+/-- The number of enumerated zeros of `f` in a finite set of indices, lying in the closed disc of
+radius `r`, is at most the total multiplicity of `f` in that disc. -/
+lemma count_le_divisor {ι : Type*} {f : ℂ → ℂ} (hf : Differentiable ℂ f)
     (h0 : f 0 ≠ 0)
     {z : ι → ℂ} (hz : ∀ w : ℂ, analyticOrderAt f w = Set.encard {k | z k = w})
     (s : Finset ι) (r : ℝ) :

@@ -53,14 +53,6 @@ theorem eval_mul_neg_of_alternating {F : ℝ[X]} {Pts : List ℝ}
   rw [this, hsq] at hprod
   linarith
 
-/-- `0 < q(0)` for a negative-simple polynomial. -/
-theorem eval_zero_pos_of_isNegativeSimple {q : ℝ[X]} (hq : IsNegativeSimple q) :
-    0 < q.eval 0 := by
-  have hq0mem : (0 : ℝ) ∉ q.roots := fun hmem => lt_irrefl _ (hq.2.2.2.2 0 hmem)
-  have hcount : q.roots.countP (fun x => 0 < x) = 0 :=
-    Multiset.countP_eq_zero.mpr fun x hx => not_lt_of_ge (hq.2.2.2.2 x hx).le
-  simpa [hcount] using eval_sign hq.2.1 hq.2.2.2.1 0 hq0mem
-
 /-- `(T q)(0) > 0` for a negative-simple `q`. -/
 theorem generalStep_eval_zero_pos (κ a b u v : ℝ) (q : ℝ[X]) (hκ : 0 < κ) (ha : 0 < a)
     (hb : 0 < b) (hq : IsNegativeSimple q) :
