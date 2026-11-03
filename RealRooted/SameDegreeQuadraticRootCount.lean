@@ -1,6 +1,7 @@
 module
 
 import RealRooted.SameDegreeQuadraticObstruction
+import RealRooted.Mathlib.Algebra.Polynomial.Splits
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.Algebra.Polynomial.Splits
 
@@ -48,15 +49,12 @@ theorem exists_roots_pair_of_splits_natDegree_two {f : ℝ[X]}
     (hf : f.Splits) (hdeg : f.natDegree = 2) :
     ∃ a b : ℝ, a ≤ b ∧ f.roots = {a, b} ∧
       f = C f.leadingCoeff * ((X - C a) * (X - C b)) := by
-  have hcard : f.roots.card = 2 := (splits_iff_card_roots.1 hf).trans hdeg
-  obtain ⟨u, v, huv⟩ := Multiset.card_eq_two.1 hcard
-  have hfac : ∀ p q : ℝ, f.roots = {p, q} →
-      f = C f.leadingCoeff * ((X - C p) * (X - C q)) := by
-    intro p q hpq
-    rw [Polynomial.Splits.eq_prod_roots hf, hpq]
-    simp [Multiset.map_cons, Multiset.prod_cons]
-  have hswap : f.roots = {v, u} := huv.trans (Multiset.cons_swap ..)
-  grind
+  obtain ⟨a, b, hrs⟩ := List.length_eq_two.mp (hf.length_sort_roots.trans hdeg)
+  refine ⟨a, b, ?_, ?_, ?_⟩
+  · simpa [hrs] using Multiset.pairwise_sort f.roots (· ≤ ·)
+  · rw [← Multiset.sort_eq f.roots (· ≤ ·), hrs]
+    rfl
+  · simpa [hrs] using hf.eq_C_mul_prod_sort_roots
 
 /-- Root count of a two-element multiset below a threshold, as a sum of
 indicators. -/

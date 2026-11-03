@@ -7,6 +7,7 @@ module
 
 public import Mathlib.Algebra.Polynomial.Splits
 public import Mathlib.Basic.Real.Basic
+public import Mathlib.Data.Multiset.Sort
 import Mathlib.Tactic
 
 /-!
@@ -45,6 +46,19 @@ theorem Splits.length_eq_natDegree_of_coe_eq_roots
     {rs : List K} (hrs : (↑rs : Multiset K) = p.roots) :
     rs.length = p.natDegree := by
   rw [← Multiset.coe_card, hrs, ← hp.natDegree_eq_card_roots]
+
+/-- A splitting polynomial has as many sorted roots as its natural degree. -/
+theorem Splits.length_sort_roots {K : Type*} [Field K] [LinearOrder K] {p : K[X]}
+    (hp : p.Splits) : (p.roots.sort (· ≤ ·)).length = p.natDegree :=
+  hp.length_eq_natDegree_of_coe_eq_roots (Multiset.sort_eq _ _)
+
+/-- A splitting polynomial is its leading coefficient times the product of the linear factors
+over its roots, listed in increasing order. -/
+theorem Splits.eq_C_mul_prod_sort_roots {K : Type*} [Field K] [LinearOrder K] {p : K[X]}
+    (hp : p.Splits) :
+    p = C p.leadingCoeff * ((p.roots.sort (· ≤ ·)).map fun a => X - C a).prod := by
+  conv_lhs => rw [hp.eq_prod_roots, ← Multiset.sort_eq p.roots (· ≤ ·)]
+  rw [Multiset.map_coe, Multiset.prod_coe]
 
 /-- Vieta's root-sum formula in division form. -/
 theorem Splits.sum_roots_eq_neg_nextCoeff_div_leadingCoeff

@@ -8,6 +8,7 @@ public import RealRooted.ObreschkoffContinuity
 import RealRooted.Derivative.FamilyClosure
 import RealRooted.Derivative.Interlacing
 import RealRooted.Derivative.Algebra
+import RealRooted.Mathlib.Algebra.Polynomial.Splits
 
 /-!
 # Degree-three same-degree root-count helpers
@@ -27,58 +28,15 @@ theorem exists_roots_triple_of_splits_natDegree_three {f : ℝ[X]}
     (hf : f.Splits) (hdeg : f.natDegree = 3) :
     ∃ a b c : ℝ, a ≤ b ∧ b ≤ c ∧ f.roots = {a, b, c} ∧
       f = C f.leadingCoeff * ((X - C a) * (X - C b) * (X - C c)) := by
-  let rs := f.roots.sort (· ≤ ·)
-  have hrs_len : rs.length = 3 := by simp [rs, Polynomial.splits_iff_card_roots.mp hf, hdeg]
-  obtain ⟨a, b, c, hrs⟩ := List.length_eq_three.mp hrs_len
-  have hrs_sorted : rs.Pairwise (· ≤ ·) := by simp [rs]
-  have hsorted : ([a, b, c] : List ℝ).Pairwise (· ≤ ·) := by simp_all
-  have hab : a ≤ b := by grind
-  have hbc : b ≤ c := by simp_all
-  have hcoe : f.roots = {a, b, c} := by
-    have hse : (↑rs : Multiset ℝ) = f.roots := by simp [rs]
-    rw [hrs] at hse
-    rw [← hse]
+  obtain ⟨a, b, c, hrs⟩ := List.length_eq_three.mp (hf.length_sort_roots.trans hdeg)
+  have hsorted := Multiset.pairwise_sort f.roots (· ≤ ·)
+  rw [hrs] at hsorted
+  refine ⟨a, b, c, ?_, ?_, ?_, ?_⟩
+  · grind
+  · simp_all
+  · rw [← Multiset.sort_eq f.roots (· ≤ ·), hrs]
     rfl
-  refine ⟨a, b, c, hab, hbc, hcoe, ?_⟩
-  rw [Polynomial.Splits.eq_prod_roots hf, hcoe]
-  simp [Multiset.map_cons, Multiset.prod_cons, mul_assoc]
-
-/-- Recover the leading-coefficient factorisation of a split cubic from a
-specified triple of roots. -/
-theorem eq_C_leadingCoeff_mul_prod_three
-    {f : ℝ[X]} (hf : f.Splits) (a b c : ℝ) (hr : f.roots = {a, b, c}) :
-    f = C f.leadingCoeff * ((X - C a) * (X - C b) * (X - C c)) := by
-  rw [Polynomial.Splits.eq_prod_roots hf, hr]
-  simp [Multiset.map_cons, Multiset.prod_cons, mul_assoc]
-
-/-- A split real quartic factors through an ordered quadruple of real roots. -/
-theorem exists_roots_quadruple_of_splits_natDegree_four {f : ℝ[X]}
-    (hf : f.Splits) (hdeg : f.natDegree = 4) :
-    ∃ a b c d : ℝ, a ≤ b ∧ b ≤ c ∧ c ≤ d ∧
-      f.roots = {a, b, c, d} ∧
-        f = C f.leadingCoeff *
-          ((X - C a) * (X - C b) * (X - C c) * (X - C d)) := by
-  let rs := f.roots.sort (· ≤ ·)
-  have hrs_len : rs.length = 4 := by simp [rs, Polynomial.splits_iff_card_roots.mp hf, hdeg]
-  obtain ⟨a, b, c, d, hrs⟩ := List.length_eq_four.mp hrs_len
-  have hrs_sorted : rs.Pairwise (· ≤ ·) := by simp [rs]
-  have hsorted : ([a, b, c, d] : List ℝ).Pairwise (· ≤ ·) := by simpa [hrs] using hrs_sorted
-  have hab : a ≤ b := by simpa using (List.pairwise_cons.1 hsorted).1 b (by simp)
-  have hbc : b ≤ c := by
-    have htail := (List.pairwise_cons.1 hsorted).2
-    simpa using (List.pairwise_cons.1 htail).1 c (by simp)
-  have hcd : c ≤ d := by
-    have htail := (List.pairwise_cons.1 hsorted).2
-    have htail2 := (List.pairwise_cons.1 htail).2
-    simpa using (List.pairwise_cons.1 htail2).1 d (by simp)
-  have hcoe : f.roots = {a, b, c, d} := by
-    have hse : (↑rs : Multiset ℝ) = f.roots := by simp [rs]
-    rw [hrs] at hse
-    rw [← hse]
-    rfl
-  refine ⟨a, b, c, d, hab, hbc, hcd, hcoe, ?_⟩
-  rw [Polynomial.Splits.eq_prod_roots hf, hcoe]
-  simp [Multiset.map_cons, Multiset.prod_cons, mul_assoc]
+  · simpa [hrs, mul_assoc] using hf.eq_C_mul_prod_sort_roots
 
 /-- Evaluation of the monic cubic root pencil `F + sG`. -/
 theorem eval_monicCubicPencil (a b c p q r s x : ℝ) :
