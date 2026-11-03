@@ -1,5 +1,6 @@
 module
 
+import RealRooted.CoefficientShape
 import RealRooted.Maclaurin
 import RealRooted.LaguerreSamuelson
 import RealRooted.Mathlib.Algebra.Polynomial.MeanMode
@@ -19,6 +20,21 @@ years = [1707, 1729, 1880, 1964, 1968]
 name = "NewtonAux.newton_esymm_ineq"
 module = "RealRooted.NewtonAux"
 label = "Newton's inequalities"
+
+[[theorems]]
+name = "RealRooted.hasUltraLogConcaveCoeffs_of_eq_zero_or_splits"
+module = "RealRooted.CoefficientShape"
+label = "Newton's inequalities for every real-rooted polynomial"
+
+[[theorems]]
+name = "RealRooted.coeffUltraLogConcaveUpTo_of_natDegree_le"
+module = "RealRooted.CoefficientShape"
+label = "Newton's inequalities at any level at least the degree"
+
+[[theorems]]
+name = "RealRooted.hasLogConcaveCoeffs_of_eq_zero_or_splits"
+module = "RealRooted.CoefficientShape"
+label = "Real-rooted polynomials have log-concave coefficients"
 
 [[theorems]]
 name = "RealRooted.Maclaurin.esymm_div_choose_rpow_le"
@@ -50,7 +66,11 @@ $E_k = e_k / \binom{n}{k}$.
 
 **Newton's inequalities.** $E_{k-1} E_{k+1} \le E_k^2$ for $0 < k < n$; equivalently, the
 coefficients of a real-rooted polynomial, divided by binomial coefficients, form a
-log-concave sequence.
+log-concave sequence. In polynomial form: for every real-rooted polynomial $p$ of degree $d$,
+with no sign condition on its coefficients, $(k+1)(d-k+1)\, p_{k-1} p_{k+1} \le
+k(d-k)\, p_k^2$ for $0 < k < d$ (the coefficient sequence is ultra-log-concave).
+The same holds at any level $n \ge d$, viewing $p$ as a polynomial of degree at most $n$, and
+in particular the coefficients of $p$ are log-concave.
 
 **Maclaurin's inequalities.** If all $x_i \ge 0$, then
 $$

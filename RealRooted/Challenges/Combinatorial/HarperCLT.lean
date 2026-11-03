@@ -47,6 +47,11 @@ label = "Bender: real-rooted coefficient rows satisfy a local limit theorem"
 headline = true
 
 [[theorems]]
+name = "Polynomial.tendsto_localLimit_of_logConcave"
+module = "RealRooted.Mathlib.Probability.LocalLimit"
+label = "Bender: log-concave rows satisfying a central limit theorem satisfy a local limit theorem"
+
+[[theorems]]
 name = "Polynomial.tendsto_standardizedCoeffDistribution_one_add_X_pow"
 module = "RealRooted.Mathlib.Probability.CoeffDistribution"
 label = "De Moivre–Laplace: the binomial distribution is asymptotically normal"
@@ -133,6 +138,22 @@ density at the corresponding standardized location. The formalized theorem
 `tendsto_localLimit_of_splits` obtains this from log-concavity, the absence of
 internal coefficient zeros, and Harper's central limit theorem.
 
+**Theorem** (Bender, local limit theorem). [@Bender1973, Thm. 2] Let $P_n$ be
+polynomials with nonnegative, log-concave coefficients and no internal zeros.
+Suppose that $\sigma^2(P_n) \to \infty$ and that the standardized coefficient
+distributions converge weakly to the standard normal distribution. Then, with
+$\mu_n$ and $\sigma_n$ the mean and standard deviation of the coefficient
+distribution, and $\varphi$ the standard Gaussian density,
+$$
+\sup_{k \geq 0} \left| \sigma_n \frac{[x^k] P_n(x)}{P_n(1)}
+- \varphi\!\left(\frac{k - \mu_n}{\sigma_n}\right) \right| \longrightarrow 0
+\quad (n \to \infty).
+$$
+For real-rooted $P_n$ the log-concavity and the absence of internal zeros are
+automatic, and Harper's theorem supplies the weak convergence, which gives the
+statement `tendsto_localLimit_of_splits` above. The general statement lives in
+`RealRooted.Mathlib.Probability.LocalLimit`.
+
 For example, $(1 + x)^n$ has variance $n/4$, which recovers the de
 Moivre–Laplace theorem for the binomial distribution.
 
@@ -175,6 +196,12 @@ centred Bernoulli factors. Each factor differs from
 $\exp(-q_i(1-q_i)t^2/2\sigma^2)$ by at most $2q_i(1-q_i)|t|^3/\sigma^3$, so the
 product is within $2|t|^3/\sigma$ of $e^{-t^2/2}$. Lévy's continuity theorem
 turns pointwise convergence of characteristic functions into weak convergence.
+
+The local limit theorem follows from deterministic window estimates. Log-concavity
+without internal zeros makes the coefficient sequence quasi-concave, and
+weak convergence gives, via Pólya's theorem, uniform convergence of the
+standardized distribution functions. The window sums of the coefficients are then
+uniformly close to Gaussian integrals, which pins down each coefficient.
 
 ## References
 
