@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.HermiteBiehler.Converse.Wronskian
+import RealRooted.CommonInterleaver.SuccDegreeLowDegree
 import RealRooted.HermiteBiehler.ConverseLowDegree
 import RealRooted.HermiteBiehler.Forward
 import RealRooted.Interlacing.Residue
@@ -15,7 +16,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 This file proves that upper-half-plane stability of `f + i g`, together with
 positive leading coefficients, forces the appropriate interlacing relation.
 It contains the common-root inductions and ratio endpoints built on the
-Wronskian and degree-at-most-two converse layers.
+Wronskian converse lemmas, which hold in every degree.
 -/
 
 public section
@@ -43,8 +44,9 @@ theorem hermiteBiehlerConverse_general :
   induction n using Nat.strong_induction_on with
   | _ n ih =>
     intro f g h_fn hf hg hstab
-    rcases Nat.lt_or_ge n 3 with h_lt | h_ge
-    · exact hermiteBiehlerConverse_of_natDegree_le_two hf hg (by lia) hstab
+    obtain ⟨hgle, hfle⟩ := natDegree_shape_of_stable hf hg hstab
+    rcases Nat.eq_zero_or_pos n with h0 | hn
+    · exact strictInterl_or_reverse_of_natDegree_le_one hg hf (by lia) (by lia)
     · by_cases hc : ∃ r : ℝ, f.IsRoot r ∧ g.IsRoot r
       · obtain ⟨r, hrf, hrg⟩ := hc
         set f₁ := f /ₘ (X - C r) with hf₁
@@ -62,7 +64,6 @@ theorem hermiteBiehlerConverse_general :
         · exact Or.inl (h.of_cofactor_of_common_root hrf hrg)
         · exact Or.inr (h.of_cofactor_of_common_root hrg hrf)
       · push Not at hc
-        obtain ⟨hgle, hfle⟩ := natDegree_shape_of_stable hf hg hstab
         rcases Nat.lt_or_ge g.natDegree f.natDegree with h_g_lt | h_g_ge
         · exact Or.inl (strictInterl_of_stable_succ_degree hf hg hstab (by
             simp_all) (by lia))

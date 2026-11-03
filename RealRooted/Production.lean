@@ -425,7 +425,6 @@ public import RealRooted.CommonInterleaver.PairwiseUpgrade
 public import RealRooted.CommonInterleaver.PairwiseUpgrade.FamilyCompatibility
 public import RealRooted.CommonInterleaver.PairwiseUpgrade.FourWay
 public import RealRooted.CommonInterleaver.PairwiseUpgrade.FourWay.Equivalences
-public import RealRooted.CommonInterleaver.PairwiseUpgrade.LowDegree
 public import RealRooted.CommonInterleaver.RightPencil
 public import RealRooted.CommonInterleaver.RootCountCombinatorics
 public import RealRooted.CommonInterleaver.RootDesc
@@ -1464,7 +1463,6 @@ public import RealRooted.Tactic.Recurrence.RowSide
 public import RealRooted.Tactic.Recurrence.Shape
 public import RealRooted.Tactic.RecurrenceEval
 public import RealRooted.Tactic.RootBounds
-public import RealRooted.Tactic.RootCount.LowDegree
 public import RealRooted.Tactic.RootCount.SequenceCore
 public import RealRooted.Tactic.Row.Core
 public import RealRooted.Tactic.Row.DerivLag
@@ -1944,6 +1942,9 @@ public import RealRooted.SymmetricDecomposition.EulerFPolynomial
 public import RealRooted.Laguerre.GeneralizedBell
 public import RealRooted.Graph.IndependencePolynomial.PathSquareMatching
 public import RealRooted.Tactic.Ring
+public import RealRooted.GeneralizedEulerian.EvalNeg
+public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.Sonin
+public import RealRooted.PFPolynomial.LowCoefficients
 
 /-!
 # RealRooted production umbrella
