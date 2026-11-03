@@ -170,39 +170,6 @@ theorem coeff_zero_schurSzegoComp (n : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).coeff 0 = f.coeff 0 * g.coeff 0 := by
   simpa using coeff_schurSzegoComp_of_le (Nat.zero_le n) f g
 
-/-- Linear coefficient of a fixed-degree Schur--Szegő composition. -/
-theorem coeff_one_schurSzegoComp_of_one_le
-    {n : Nat} (hn : 1 ≤ n) (f g : ℝ[X]) :
-    (schurSzegoComp n f g).coeff 1 =
-      f.coeff 1 * g.coeff 1 / (n : ℝ) := by
-  simpa [Nat.choose_one_right] using coeff_schurSzegoComp_of_le hn f g
-
-/-- Quadratic coefficient of a fixed-degree Schur--Szegő composition, with
-`Nat.choose n 2` expanded. -/
-theorem coeff_two_schurSzegoComp_of_two_le
-    {n : Nat} (hn : 2 ≤ n) (f g : ℝ[X]) :
-    (schurSzegoComp n f g).coeff 2 =
-      2 * (f.coeff 2 * g.coeff 2) / ((n : ℝ) * ((n : ℝ) - 1)) := by
-  have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
-  have hn0 : 0 < (n : ℝ) := by linarith
-  have hn1 : 0 < (n : ℝ) - 1 := by linarith
-  rw [coeff_schurSzegoComp_of_le hn, Nat.cast_choose_two]
-  field_simp [show (n : ℝ) * ((n : ℝ) - 1) ≠ 0 by positivity]
-
-/-- Cubic coefficient of a fixed-degree Schur--Szegő composition, with
-`Nat.choose n 3` expanded. -/
-theorem coeff_three_schurSzegoComp_of_three_le
-    {n : Nat} (hn : 3 ≤ n) (f g : ℝ[X]) :
-    (schurSzegoComp n f g).coeff 3 =
-      6 * (f.coeff 3 * g.coeff 3) /
-        ((n : ℝ) * ((n : ℝ) - 1) * ((n : ℝ) - 2)) := by
-  have hnR : (3 : ℝ) ≤ n := by exact_mod_cast hn
-  have hn0 : 0 < (n : ℝ) := by linarith
-  have hn1 : 0 < (n : ℝ) - 1 := by linarith
-  have hn2 : 0 < (n : ℝ) - 2 := by linarith
-  rw [coeff_schurSzegoComp_of_le hn, Nat.cast_choose_three]
-  field_simp [show (n : ℝ) * ((n : ℝ) - 1) * ((n : ℝ) - 2) ≠ 0 by positivity]
-
 /-- Fixed-degree Schur--Szego composition is a diagonal operator. -/
 theorem schurSzegoComp_eq_diagonalOperator (n : Nat) (f g : ℝ[X]) :
     schurSzegoComp n f g =

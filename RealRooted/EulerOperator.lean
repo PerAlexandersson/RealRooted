@@ -191,13 +191,6 @@ theorem Interl.theta {p q : ℝ[X]} (hpq : Interl p q) :
     Interl (theta p) (theta q) := by
   simpa [RealRooted.theta] using (derivativePreservesInterl hpq).mul_X_both
 
-/-- Compatibility form retaining the former PF hypotheses. -/
-@[deprecated Interl.theta +typeChanged (since := "2026-10-21")]
-theorem thetaPreservesInterl {p q : ℝ[X]}
-    (_hp : IsPFPolynomial p) (_hq : IsPFPolynomial q) (hpq : Interl p q) :
-    Interl (theta p) (theta q) :=
-  hpq.theta
-
 /-- `theta + 1` preserves the polynomial PF cone. -/
 theorem thetaPlusOne_preserves_pf {p : ℝ[X]} (hp : IsPFPolynomial p) :
     IsPFPolynomial (thetaPlusOne p) := by
@@ -209,13 +202,6 @@ theorem Interl.thetaPlusOne {p q : ℝ[X]} (hpq : Interl p q) :
     Interl (thetaPlusOne p) (thetaPlusOne q) := by
   simpa [thetaPlusOne_eq_derivative_X_mul] using
     derivativePreservesInterl hpq.mul_X_both
-
-/-- Compatibility form retaining the former PF hypotheses. -/
-@[deprecated Interl.thetaPlusOne +typeChanged (since := "2026-10-21")]
-theorem thetaPlusOnePreservesInterl {p q : ℝ[X]}
-    (_hp : IsPFPolynomial p) (_hq : IsPFPolynomial q) (hpq : Interl p q) :
-    Interl (thetaPlusOne p) (thetaPlusOne q) :=
-  hpq.thetaPlusOne
 
 /-- A PF polynomial need not interlace its iterates under `theta + 1`: for
 `p = (X + 2) (X + 3)`, `(theta + 1)^2 p = 9X² + 20X + 6` has both roots in `(-2, 0)`, to the

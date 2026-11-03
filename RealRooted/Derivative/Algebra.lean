@@ -22,9 +22,6 @@ The following lemmas restate a handful of `Polynomial` facts about derivatives
 using API that is stable across the Mathlib versions this file is built against.
 -/
 
-@[deprecated Polynomial.Splits.of_natDegree_eq_zero (since := "2026-10-06")]
-alias splits_of_natDegree_eq_zero := Polynomial.Splits.of_natDegree_eq_zero
-
 /-! ## Exact degree of derivative -/
 
 protected lemma HasNonnegCoeffs.derivative {p : ℝ[X]} (hp : HasNonnegCoeffs p) :

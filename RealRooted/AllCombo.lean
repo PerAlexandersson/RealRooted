@@ -237,7 +237,7 @@ lemma hasSimpleRoots_tDeriv
   have hmult_pos : 1 ≤ (tDeriv eps p).rootMultiplicity a :=
     (rootMultiplicity_pos <| tDeriv_ne_zero hsimple.ne_zero).mpr ha
   have hmult_le : (tDeriv eps p).rootMultiplicity a ≤ 1 :=
-    rootMultiplicity_tDeriv_le_one_of_not_isRoot heps hp hp_not_root
+    rootMultiplicity_tDeriv_le_one_of_not_isRoot_all hp hp_not_root
   lia
 
 lemma hasSimpleRoots_iterateTDeriv

@@ -576,9 +576,6 @@ theorem IsPFPolynomial.hadamardProduct {p q : ℝ[X]}
   simpa [factorialHadamardProduct_divFactorial_left] using
     hp.divFactorial.factorialHadamardProduct hq
 
-@[deprecated (since := "2026-10-06")]
-alias gwHadamardProductPF := IsPFPolynomial.hadamardProduct
-
 /-- The `L` operator preserves strict interlacing. -/
 theorem StrictInterl.divFactorial {f g : ℝ[X]} (hfg : StrictInterl f g) :
     StrictInterl (divFactorial f) (divFactorial g) := by

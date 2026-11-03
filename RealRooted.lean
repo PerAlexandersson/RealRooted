@@ -2014,6 +2014,7 @@ public import RealRooted.Tactic.Examples.RowViaRoutes
 public import RealRooted.Tactic.Ring
 public import RealRooted.Tactic.Examples.RowInterlacingPowers
 public import RealRooted.Tactic.Examples.RowInterlacingProducts
+public import RealRooted.Mathlib.Algebra.BigOperators.Intervals
 public import RealRooted.GeneralizedEulerian.EvalNeg
 public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.Sonin
 public import RealRooted.PFPolynomial.LowCoefficients

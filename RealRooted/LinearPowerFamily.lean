@@ -24,9 +24,6 @@ open Polynomial
 
 namespace RealRooted
 
-@[deprecated interlaces_of_natDegree_eq_zero_of_natDegree_eq_one (since := "2026-10-11")]
-alias interlaces_const_linear := interlaces_of_natDegree_eq_zero_of_natDegree_eq_one
-
 /-- `StrictInterl (X^n) (X^(n+1))`: repeated root at `0`. -/
 theorem strictInterl_X_pow_succ (n : ℕ) : StrictInterl ((X : ℝ[X]) ^ n) (X ^ (n + 1)) := by
   have hne : (X : ℝ[X]) ^ n ≠ 0 := pow_ne_zero _ X_ne_zero

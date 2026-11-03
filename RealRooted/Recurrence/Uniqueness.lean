@@ -78,16 +78,9 @@ theorem sequence_eq_of_same_lag_three_recurrence
       P (n + 3) = update n (P (n + 2)) (P (n + 1)) (P n))
     (hQ : ∀ n : Nat,
       Q (n + 3) = update n (Q (n + 2)) (Q (n + 1)) (Q n)) :
-    ∀ n : Nat, P n = Q n := by
-  intro n
-  induction n using Nat.strong_induction_on with
-  | h n ih =>
-      rcases n with _ | _ | _ | n
-      · exact hzero
-      · exact hone
-      · exact htwo
-      · rw [hP n, hQ n, ih (n + 2) (by lia), ih (n + 1) (by lia),
-          ih n (by lia)]
+    ∀ n : Nat, P n = Q n :=
+  sequence_eq_of_same_finite_recurrence (k := 3) (op := fun n w => update n (w 2) (w 1) (w 0))
+    (fun i hi => by interval_cases i <;> assumption) (fun n => hP n) (fun n => hQ n)
 
 /-- Two sequences with the same first four values and lag-four recurrence agree. -/
 theorem sequence_eq_of_same_lag_four_recurrence
@@ -101,16 +94,9 @@ theorem sequence_eq_of_same_lag_four_recurrence
       P (n + 4) = update n (P (n + 3)) (P (n + 2)) (P (n + 1)) (P n))
     (hQ : ∀ n : Nat,
       Q (n + 4) = update n (Q (n + 3)) (Q (n + 2)) (Q (n + 1)) (Q n)) :
-    ∀ n : Nat, P n = Q n := by
-  intro n
-  induction n using Nat.strong_induction_on with
-  | h n ih =>
-      rcases n with _ | _ | _ | _ | n
-      · exact hzero
-      · exact hone
-      · exact htwo
-      · exact hthree
-      · rw [hP n, hQ n, ih (n + 3) (by lia), ih (n + 2) (by lia),
-          ih (n + 1) (by lia), ih n (by lia)]
+    ∀ n : Nat, P n = Q n :=
+  sequence_eq_of_same_finite_recurrence (k := 4)
+    (op := fun n w => update n (w 3) (w 2) (w 1) (w 0))
+    (fun i hi => by interval_cases i <;> assumption) (fun n => hP n) (fun n => hQ n)
 
 end RealRooted

@@ -1,20 +1,17 @@
 module
 
-import Mathlib.Algebra.Order.Field.Basic
-public import Mathlib.Tactic.Linarith
-public import Mathlib.Tactic.NormNum
-public import Mathlib.Tactic.Ring
-import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.DerivativeRecurrence.Degree
+import Mathlib.Tactic.ComputeDegree
 public import Mathlib.Algebra.Polynomial.Derivative
-import Mathlib.Algebra.Polynomial.Degree.Lemmas
+public import Mathlib.Basic.Real.Basic
 
 /-!
 # Degree of quadratic-coefficient derivative recurrences
 
-Coefficient, degree, and nonvanishing results over ordered fields for
-derivative recurrences whose derivative coefficient is quadratic.  The
-real-root and interlacing consequences live in the separate real-valued
-`QuadraticInterlacing` module.
+Degree and leading-coefficient results for the derivative recurrences `P 0 = 1`,
+`P (n + 1) = (a X - b X ^ 2) P n' + ((c + u n) + (s + t n) X) P n`, a special case of
+`derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos`.  The real-root and interlacing
+consequences live in `QuadraticInterlacing`.
 -/
 
 public section
@@ -25,182 +22,42 @@ noncomputable section
 
 namespace RealRooted
 
-variable {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K]
-
-omit [LinearOrder K] [IsStrictOrderedRing K] in
-lemma quadratic_derivative_bilinear_coeff_succ
-    (P : ℕ → K[X]) (a b c u s t : K)
-    (hrec : ∀ n, P (n + 1) =
-      (C a * X + C (-b) * X ^ 2) * (P n).derivative +
-        (C (c + u * (n : K)) + C (s + t * (n : K)) * X) * P n)
-    (n k : ℕ) :
-    Polynomial.coeff (P (n + 1)) (k + 1) =
-      (a * ((k : K) + 1) + c + u * (n : K)) * Polynomial.coeff (P n) (k + 1) +
-        (s + t * (n : K) - b * (k : K)) * Polynomial.coeff (P n) k := by
-  rw [hrec n]
-  rw [Polynomial.coeff_quadratic_derivative_add_linear_mul_succ]
-  ring
-
-lemma quadratic_derivative_bilinear_offset_top_and_above
-    (P : ℕ → K[X]) (a b c u s t : K) (d : ℕ)
-    (hbase_top : 0 < Polynomial.coeff (P 0) d)
-    (hbase_above : ∀ m > d, Polynomial.coeff (P 0) m = 0)
-    (hrec : ∀ n, P (n + 1) =
-      (C a * X + C (-b) * X ^ 2) * (P n).derivative +
-        (C (c + u * (n : K)) + C (s + t * (n : K)) * X) * P n)
-    (hsd : 0 < s - b * (d : K)) (hbt : b ≤ t) :
-    ∀ n : ℕ, 0 < Polynomial.coeff (P n) (n + d) ∧
-      ∀ m > n + d, Polynomial.coeff (P n) m = 0
-  | 0 => by
-      grind
-  | n + 1 => by
-      rcases quadratic_derivative_bilinear_offset_top_and_above P a b c u s t d
-        hbase_top hbase_above hrec hsd hbt n with ⟨htop, habove⟩
-      constructor
-      · rw [show n + 1 + d = (n + d) + 1 by lia]
-        rw [quadratic_derivative_bilinear_coeff_succ P a b c u s t hrec]
-        rw [habove (n + d + 1) (by lia)]
-        have hn : 0 ≤ (n : K) := by simp
-        have hfactor : 0 < s + t * (n : K) - b * ((n + d : ℕ) : K) := by
-          have hdcast : ((n + d : ℕ) : K) = (n : K) + (d : K) := by norm_num
-          rw [hdcast]
-          linarith [mul_nonneg (sub_nonneg.mpr hbt) hn]
-        simp_all
-      · intro m hm
-        obtain ⟨k, rfl⟩ : ∃ k, m = k + 1 := ⟨m - 1, by lia⟩
-        rw [quadratic_derivative_bilinear_coeff_succ P a b c u s t hrec]
-        grind
-
-theorem natDegree_of_quadratic_derivative_bilinear_offset
-    (P : ℕ → K[X]) (a b c u s t : K) (d : ℕ)
-    (hbase_top : 0 < Polynomial.coeff (P 0) d)
-    (hbase_above : ∀ m > d, Polynomial.coeff (P 0) m = 0)
-    (hrec : ∀ n, P (n + 1) =
-      (C a * X + C (-b) * X ^ 2) * (P n).derivative +
-        (C (c + u * (n : K)) + C (s + t * (n : K)) * X) * P n)
-    (hsd : 0 < s - b * (d : K)) (hbt : b ≤ t) (n : ℕ) :
-    (P n).natDegree = n + d := by
-  rcases quadratic_derivative_bilinear_offset_top_and_above P a b c u s t d
-    hbase_top hbase_above hrec hsd hbt n with ⟨htop, habove⟩
-  exact natDegree_eq_of_le_of_coeff_ne_zero
-    (natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm)) htop.ne'
-
-theorem ne_zero_of_quadratic_derivative_bilinear_offset
-    (P : ℕ → K[X]) (a b c u s t : K) (d : ℕ)
-    (hbase_top : 0 < Polynomial.coeff (P 0) d)
-    (hbase_above : ∀ m > d, Polynomial.coeff (P 0) m = 0)
-    (hrec : ∀ n, P (n + 1) =
-      (C a * X + C (-b) * X ^ 2) * (P n).derivative +
-        (C (c + u * (n : K)) + C (s + t * (n : K)) * X) * P n)
-    (hsd : 0 < s - b * (d : K)) (hbt : b ≤ t) (n : ℕ) :
-    P n ≠ 0 := by
-  intro hzero
-  have htop := (quadratic_derivative_bilinear_offset_top_and_above P a b c u s t d
-    hbase_top hbase_above hrec hsd hbt n).1
-  simp_all
-
-lemma quadratic_derivative_bilinear_top_and_above
-    (P : ℕ → K[X]) (a b c u s t : K)
+private theorem natDegree_eq_and_leadingCoeff_pos_of_quadratic_derivative_bilinear
+    (P : ℕ → ℝ[X]) (a b c u s t : ℝ)
     (h0 : P 0 = 1)
     (hrec : ∀ n, P (n + 1) =
       (C a * X + C (-b) * X ^ 2) * (P n).derivative +
-        (C (c + u * (n : K)) + C (s + t * (n : K)) * X) * P n)
-    (hs : 0 < s) (hbt : b ≤ t) :
-    ∀ n : ℕ, 0 < Polynomial.coeff (P n) n ∧ ∀ m > n, Polynomial.coeff (P n) m = 0 := by
-  have hbase_top : 0 < Polynomial.coeff (P 0) 0 := by
-    rw [h0]
-    norm_num
-  have hbase_above : ∀ m > 0, Polynomial.coeff (P 0) m = 0 := by
-    intro m hm
-    rw [h0, coeff_one]
-    grind
-  simpa using quadratic_derivative_bilinear_offset_top_and_above P a b c u s t 0
-    hbase_top hbase_above hrec (by simpa using hs) hbt
+        (C (c + u * (n : ℝ)) + C (s + t * (n : ℝ)) * X) * P n)
+    (hs : 0 < s) (hbt : b ≤ t) (n : ℕ) :
+    (P n).natDegree = n ∧ 0 < (P n).leadingCoeff := by
+  simpa using derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos (P := P) (d := 1) (D₀ := 0)
+    (A := fun _ => C a * X + C (-b) * X ^ 2)
+    (B := fun n => C (c + u * (n : ℝ)) + C (s + t * (n : ℝ)) * X) hrec
+    (fun _ => by compute_degree!) (fun _ => by compute_degree!) (by simp [h0]) (by simp [h0])
+    (by simp [h0]) (fun n => by
+      simp [coeff_C, coeff_X_pow]
+      nlinarith [mul_nonneg (sub_nonneg.mpr hbt) (Nat.cast_nonneg (α := ℝ) n)]) n
 
 theorem natDegree_of_quadratic_derivative_bilinear
-    (P : ℕ → K[X]) (a b c u s t : K)
+    (P : ℕ → ℝ[X]) (a b c u s t : ℝ)
     (h0 : P 0 = 1)
     (hrec : ∀ n, P (n + 1) =
       (C a * X + C (-b) * X ^ 2) * (P n).derivative +
-        (C (c + u * (n : K)) + C (s + t * (n : K)) * X) * P n)
+        (C (c + u * (n : ℝ)) + C (s + t * (n : ℝ)) * X) * P n)
     (hs : 0 < s) (hbt : b ≤ t) (n : ℕ) :
-    (P n).natDegree = n := by
-  have hbase_top : 0 < Polynomial.coeff (P 0) 0 := by
-    rw [h0]
-    norm_num
-  have hbase_above : ∀ m > 0, Polynomial.coeff (P 0) m = 0 := by
-    intro m hm
-    rw [h0, coeff_one]
-    grind
-  simpa using natDegree_of_quadratic_derivative_bilinear_offset P a b c u s t 0
-    hbase_top hbase_above hrec (by simpa using hs) hbt n
+    (P n).natDegree = n :=
+  (natDegree_eq_and_leadingCoeff_pos_of_quadratic_derivative_bilinear
+    P a b c u s t h0 hrec hs hbt n).1
 
-theorem ne_zero_of_quadratic_derivative_bilinear
-    (P : ℕ → K[X]) (a b c u s t : K)
+theorem leadingCoeff_pos_of_quadratic_derivative_bilinear
+    (P : ℕ → ℝ[X]) (a b c u s t : ℝ)
     (h0 : P 0 = 1)
     (hrec : ∀ n, P (n + 1) =
       (C a * X + C (-b) * X ^ 2) * (P n).derivative +
-        (C (c + u * (n : K)) + C (s + t * (n : K)) * X) * P n)
+        (C (c + u * (n : ℝ)) + C (s + t * (n : ℝ)) * X) * P n)
     (hs : 0 < s) (hbt : b ≤ t) (n : ℕ) :
-    P n ≠ 0 := by
-  have hbase_top : 0 < Polynomial.coeff (P 0) 0 := by
-    rw [h0]
-    norm_num
-  have hbase_above : ∀ m > 0, Polynomial.coeff (P 0) m = 0 := by
-    intro m hm
-    rw [h0, coeff_one]
-    grind
-  simpa using ne_zero_of_quadratic_derivative_bilinear_offset P a b c u s t 0
-    hbase_top hbase_above hrec (by simpa using hs) hbt n
-
-omit [LinearOrder K] [IsStrictOrderedRing K] in
-lemma quadratic_derivative_linear_coeff_succ
-    (P : ℕ → K[X]) (a b c s t : K)
-    (hrec : ∀ n, P (n + 1) =
-      (C a * X + C (-b) * X ^ 2) * (P n).derivative +
-        (C c + C (s + t * (n : K)) * X) * P n)
-    (n k : ℕ) :
-    Polynomial.coeff (P (n + 1)) (k + 1) =
-      (a * ((k : K) + 1) + c) * Polynomial.coeff (P n) (k + 1) +
-        (s + t * (n : K) - b * (k : K)) * Polynomial.coeff (P n) k := by
-  simpa using quadratic_derivative_bilinear_coeff_succ P a b c 0 s t
-    (by simpa using hrec) n k
-
-lemma quadratic_derivative_linear_offset_top_and_above
-    (P : ℕ → K[X]) (a b c s t : K) (d : ℕ)
-    (hbase_top : 0 < Polynomial.coeff (P 0) d)
-    (hbase_above : ∀ m > d, Polynomial.coeff (P 0) m = 0)
-    (hrec : ∀ n, P (n + 1) =
-      (C a * X + C (-b) * X ^ 2) * (P n).derivative +
-        (C c + C (s + t * (n : K)) * X) * P n)
-    (hsd : 0 < s - b * (d : K)) (hbt : b ≤ t) :
-    ∀ n : ℕ, 0 < Polynomial.coeff (P n) (n + d) ∧
-      ∀ m > n + d, Polynomial.coeff (P n) m = 0 := by
-  simpa using quadratic_derivative_bilinear_offset_top_and_above P a b c 0 s t d
-    hbase_top hbase_above (by simpa using hrec) hsd hbt
-
-theorem natDegree_of_quadratic_derivative_linear_offset
-    (P : ℕ → K[X]) (a b c s t : K) (d : ℕ)
-    (hbase_top : 0 < Polynomial.coeff (P 0) d)
-    (hbase_above : ∀ m > d, Polynomial.coeff (P 0) m = 0)
-    (hrec : ∀ n, P (n + 1) =
-      (C a * X + C (-b) * X ^ 2) * (P n).derivative +
-        (C c + C (s + t * (n : K)) * X) * P n)
-    (hsd : 0 < s - b * (d : K)) (hbt : b ≤ t) (n : ℕ) :
-    (P n).natDegree = n + d := by
-  simpa using natDegree_of_quadratic_derivative_bilinear_offset P a b c 0 s t d
-    hbase_top hbase_above (by simpa using hrec) hsd hbt n
-
-theorem ne_zero_of_quadratic_derivative_linear_offset
-    (P : ℕ → K[X]) (a b c s t : K) (d : ℕ)
-    (hbase_top : 0 < Polynomial.coeff (P 0) d)
-    (hbase_above : ∀ m > d, Polynomial.coeff (P 0) m = 0)
-    (hrec : ∀ n, P (n + 1) =
-      (C a * X + C (-b) * X ^ 2) * (P n).derivative +
-        (C c + C (s + t * (n : K)) * X) * P n)
-    (hsd : 0 < s - b * (d : K)) (hbt : b ≤ t) (n : ℕ) :
-    P n ≠ 0 := by
-  simpa using ne_zero_of_quadratic_derivative_bilinear_offset P a b c 0 s t d
-    hbase_top hbase_above (by simpa using hrec) hsd hbt n
+    0 < (P n).leadingCoeff :=
+  (natDegree_eq_and_leadingCoeff_pos_of_quadratic_derivative_bilinear
+    P a b c u s t h0 hrec hs hbt n).2
 
 end RealRooted

@@ -1,3 +1,10 @@
+RealRooted/AffineFamily/Basic.lean: RealRooted.WagnerX.NonnegativeRoots
+RealRooted/AissenSchoenbergWhitney.lean: RealRooted.QuadraticRoot
+RealRooted/BinaryRunTransformation/Continuation.lean: RealRooted.QuadraticRoot
+RealRooted/CubicDiscriminant.lean: RealRooted.QuadraticRoot
+RealRooted/HosterStump/Sequence.lean: RealRooted.WagnerX.NonnegativeRoots
+RealRooted/LinearPowerFamily.lean: RealRooted.ThreeTermRecurrence.Interlacing
+RealRooted/LiuOppositeSigns/XSub/LeftSucc.lean: RealRooted.QuadraticRoot
 RealRooted/Tactic/Attr.lean: Batteries.Lean.TagAttribute
 RealRooted/Tactic/Examples/A049325RecurrenceSpace.lean: RealRooted.Tactic.Recurrence
 RealRooted/Tactic/Examples/Attr.lean: RealRooted.Tactic.Attr
@@ -36,3 +43,4 @@ RealRooted/Tactic/Product/Interlacing.lean: RealRooted.Tactic.Ring
 RealRooted/Tactic/RecurrenceEval.lean: RealRooted.Tactic.Ring
 RealRooted/Tactic/Sign.lean: RealRooted.Tactic.SideGoals
 RealRooted/Tactic/WagnerX/Frontend.lean: RealRooted.Tactic.Lookup
+RealRooted/WagnerX/NonnegativeRoots.lean: RealRooted.WagnerX.ListInterlacing

@@ -371,26 +371,6 @@ theorem interl_mul_X_of_interl {f g : ℝ[X]}
   · exact interl_zero_left (X * f)
   · exact (strictInterl_mul_X_of_strictInterl_of_nonneg hfg hfnn hgnn).toInterl
 
-/-- Multiplying both polynomials by `X` preserves strict interlacing when all
-roots are nonpositive. -/
-@[deprecated StrictInterl.mul_X_sub_C_both +typeChanged (since := "2026-10-21")]
-theorem StrictInterl.mul_X_both_of_roots_nonpos {f g : ℝ[X]} (h : StrictInterl f g)
-    (_hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
-    (_hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
-    StrictInterl (X * f) (X * g) := by
-  simpa using h.mul_X_sub_C_both 0
-
-/-- Cancelling a common factor `X` preserves strict interlacing when all
-remaining roots are nonpositive. -/
-@[deprecated StrictInterl.of_mul_X_sub_C_both +typeChanged (since := "2026-10-21")]
-theorem StrictInterl.of_mul_X_both_of_roots_nonpos {f g : ℝ[X]}
-    (h : StrictInterl (X * f) (X * g))
-    (_hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
-    (_hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
-    StrictInterl f g := by
-  apply StrictInterl.of_mul_X_sub_C_both (r := 0)
-  simpa using h
-
 /-! ## Wagner `X`-multiplication interlacing bridges -/
 
 /- The canonical names below are kept in this lower dependency layer so that
@@ -410,29 +390,5 @@ lemma strictInterl_of_strictInterl_X_mul_of_nonneg {f g : ℝ[X]}
     StrictInterl f g :=
   (strictInterl_iff_mul_X_of_roots_nonpos (roots_nonpos_of_hasNonnegCoeffs hfnn)
     (roots_nonpos_of_hasNonnegCoeffs hgnn)).mpr h
-
-/-- Nonnegative-coefficient form of the common-factor Wagner `X` bridge. -/
-@[deprecated StrictInterl.mul_X_sub_C_both +typeChanged (since := "2026-10-21")]
-theorem StrictInterl.mul_X_both_of_nonneg {f g : ℝ[X]}
-    (h : StrictInterl f g) (_hfnn : HasNonnegCoeffs f) (_hgnn : HasNonnegCoeffs g) :
-    StrictInterl (X * f) (X * g) := by
-  simpa using h.mul_X_sub_C_both 0
-
-/-- Multiplication by `X` on both sides is an equivalence on strict
-interlacing when all roots are nonpositive. -/
-@[deprecated StrictInterl.mul_X_sub_C_both_iff +typeChanged (since := "2026-10-21")]
-theorem StrictInterl.mul_X_both_iff_of_roots_nonpos {f g : ℝ[X]}
-    (_hf_nonpos : ∀ r ∈ f.roots, r ≤ 0)
-    (_hg_nonpos : ∀ r ∈ g.roots, r ≤ 0) :
-    StrictInterl f g ↔ StrictInterl (X * f) (X * g) := by
-  simpa using StrictInterl.mul_X_sub_C_both_iff (f := f) (g := g) 0
-
-/-- Compatibility form of common-`X` multiplication for zero-aware
-interlacing. -/
-@[deprecated Interl.mul_X_both +typeChanged (since := "2026-10-21")]
-theorem Interl.mul_X_both_of_nonneg {f g : ℝ[X]}
-    (h : Interl f g) (_hfnn : HasNonnegCoeffs f) (_hgnn : HasNonnegCoeffs g) :
-    Interl (X * f) (X * g) := by
-  exact h.mul_X_both
 
 end RealRooted

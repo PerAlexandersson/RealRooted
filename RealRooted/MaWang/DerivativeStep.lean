@@ -85,8 +85,8 @@ theorem strictInterl_derivative_C_mul_X_mul_of_nonneg_on_roots_of_splits
       eval_C_mul_X_mul_nonpos_of_nonneg_of_nonpos_of_nonneg
         hc (hf_roots r hr) (hq_nonneg r hr))
 
-/-- Version of `strictInterl_derivative_X_mul_one_add_X_of_roots_in_Icc`
-without a degree hypothesis. -/
+/-- Ma--Wang derivative step for the coefficient `X (1 + X)` when all roots lie in `[-1, 0]`,
+with no degree hypothesis on `f`. -/
 theorem strictInterl_derivative_X_mul_one_add_X_of_roots_in_Icc_of_splits
     {f u : ℝ[X]}
     (hf : f.Splits)
@@ -102,8 +102,8 @@ theorem strictInterl_derivative_X_mul_one_add_X_of_roots_in_Icc_of_splits
     (fun r hr => eval_X_mul_one_add_X_nonpos_of_mem_Icc
       (hroot_lo r hr) (hroot_hi r hr))
 
-/-- Version of `strictInterl_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one`
-without a degree hypothesis. -/
+/-- Ma--Wang derivative step for the coefficient `-c X (1 + X)` when all roots are at most `-1`,
+with no degree hypothesis on `f`. -/
 theorem strictInterl_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one_of_splits
     {f u : ℝ[X]} {c : ℝ}
     (hf : f.Splits)
@@ -123,8 +123,8 @@ theorem strictInterl_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one_of
       eval_neg_C_mul_X_mul_one_add_X_nonpos_of_nonneg_of_le_neg_one
         hc (hroot_hi r hr))
 
-/-- Version of `strictInterl_derivative_neg_C_mul_X_sq`
-without a degree hypothesis. -/
+/-- Ma--Wang derivative step for the coefficient `-c X ^ 2` with `0 ≤ c`, with no degree
+hypothesis on `f`. -/
 theorem strictInterl_derivative_neg_C_mul_X_sq_of_splits {f u : ℝ[X]} {c : ℝ}
     (hf : f.Splits)
     (hdeg_lo :
@@ -152,76 +152,6 @@ theorem strictInterl_derivative_of_nonpos_of_pos_natDegree {f u v : ℝ[X]}
     (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
     StrictInterl f (u * f + v * f.derivative) :=
   strictInterl_derivative_of_nonpos_of_splits hf hdeg_lo hdeg_hi hF_pos hf_pos hv_nonpos
-
-/-- Deprecated degree-restricted form of `strictInterl_derivative_of_nonpos_of_splits`. -/
-@[deprecated "Use `strictInterl_derivative_of_nonpos_of_splits`." (since := "2026-10-06")]
-theorem strictInterl_derivative_of_nonpos {f u v : ℝ[X]}
-    (hf : f.Splits)
-    (_ : 2 ≤ f.natDegree)
-    (hdeg_lo : f.natDegree ≤ (u * f + v * f.derivative).natDegree)
-    (hdeg_hi : (u * f + v * f.derivative).natDegree ≤ f.natDegree + 1)
-    (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
-    (hf_pos : HasPosLeadingCoeff f)
-    (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
-    StrictInterl f (u * f + v * f.derivative) :=
-  strictInterl_derivative_of_nonpos_of_splits hf hdeg_lo hdeg_hi hF_pos hf_pos hv_nonpos
-
-/-- Deprecated degree-restricted form of
-`strictInterl_derivative_of_nonpos_of_recurrence_of_splits`. -/
-@[deprecated "Use `strictInterl_derivative_of_nonpos_of_recurrence_of_splits`."
-  (since := "2026-10-06")]
-theorem strictInterl_derivative_of_nonpos_of_recurrence {f F u v : ℝ[X]}
-    (hf : f.Splits)
-    (_ : 2 ≤ f.natDegree)
-    (hrec : F = u * f + v * f.derivative)
-    (hF_pos : HasPosLeadingCoeff F)
-    (hdeg_lo : f.natDegree ≤ F.natDegree)
-    (hdeg_hi : F.natDegree ≤ f.natDegree + 1)
-    (hf_pos : HasPosLeadingCoeff f)
-    (hv_nonpos : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
-    StrictInterl f (u * f + v * f.derivative) :=
-  strictInterl_derivative_of_nonpos_of_recurrence_of_splits hf hrec hF_pos hdeg_lo hdeg_hi hf_pos
-    hv_nonpos
-
-/-- Deprecated degree-restricted form of
-`strictInterl_derivative_X_mul_one_add_X_of_roots_in_Icc_of_splits`. -/
-@[deprecated "Use `strictInterl_derivative_X_mul_one_add_X_of_roots_in_Icc_of_splits`."
-  (since := "2026-10-06")]
-theorem strictInterl_derivative_X_mul_one_add_X_of_roots_in_Icc {f u : ℝ[X]}
-    (hf : f.Splits)
-    (_ : 2 ≤ f.natDegree)
-    (hdeg_lo : f.natDegree ≤ (u * f + (X * (1 + X)) * f.derivative).natDegree)
-    (hdeg_hi :
-      (u * f + (X * (1 + X)) * f.derivative).natDegree ≤ f.natDegree + 1)
-    (hF_pos : HasPosLeadingCoeff (u * f + (X * (1 + X)) * f.derivative))
-    (hf_pos : HasPosLeadingCoeff f)
-    (hroot_lo : ∀ r, f.IsRoot r → -1 ≤ r)
-    (hroot_hi : ∀ r, f.IsRoot r → r ≤ 0) :
-    StrictInterl f (u * f + (X * (1 + X)) * f.derivative) :=
-  strictInterl_derivative_X_mul_one_add_X_of_roots_in_Icc_of_splits hf hdeg_lo hdeg_hi hF_pos hf_pos
-    hroot_lo hroot_hi
-
-/-- Deprecated degree-restricted form of
-`strictInterl_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one_of_splits`. -/
-@[deprecated "Use the `_of_splits` version named in the docstring."
-  (since := "2026-10-06")]
-theorem strictInterl_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one
-    {f u : ℝ[X]} {c : ℝ}
-    (hf : f.Splits)
-    (_ : 2 ≤ f.natDegree)
-    (hdeg_lo :
-      f.natDegree ≤ (u * f + (-(C c) * X * (1 + X)) * f.derivative).natDegree)
-    (hdeg_hi :
-      (u * f + (-(C c) * X * (1 + X)) * f.derivative).natDegree ≤
-        f.natDegree + 1)
-    (hF_pos :
-      HasPosLeadingCoeff (u * f + (-(C c) * X * (1 + X)) * f.derivative))
-    (hf_pos : HasPosLeadingCoeff f)
-    (hc : 0 ≤ c)
-    (hroot_hi : ∀ r, f.IsRoot r → r ≤ -1) :
-    StrictInterl f (u * f + (-(C c) * X * (1 + X)) * f.derivative) :=
-  strictInterl_derivative_neg_C_mul_X_mul_one_add_X_of_roots_le_neg_one_of_splits hf hdeg_lo hdeg_hi
-    hF_pos hf_pos hc hroot_hi
 
 end RealRooted.MaWang
 

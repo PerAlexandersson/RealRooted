@@ -277,7 +277,7 @@
       "max_modules": 11
     },
     "RealRooted.Laguerre": {
-      "max_modules": 65
+      "max_modules": 68
     },
     "RealRooted.Laguerre.Orthogonality": {
       "max_modules": 8
@@ -286,7 +286,7 @@
       "max_modules": 9
     },
     "RealRooted.Laguerre.Roots": {
-      "max_modules": 59
+      "max_modules": 62
     },
     "RealRooted.Hermite": {
       "max_modules": 56
@@ -886,7 +886,7 @@
       "max_modules": 9
     },
     "RealRooted.Challenges.Combinatorial.Narayana": {
-      "max_modules": 216
+      "max_modules": 219
     },
     "RealRooted.Tactic.Wagner": {
       "max_modules": 92
@@ -1087,7 +1087,7 @@
       "max_modules": 6
     },
     "RealRooted.FiniteFreeAdditive.HalfIntegerConvolution": {
-      "max_modules": 7
+      "max_modules": 8
     },
     "RealRooted.FiniteFreeAdditive.HalfIntegerPreservation": {
       "max_modules": 43
@@ -1156,7 +1156,7 @@
       "max_modules": 172
     },
     "RealRooted.DerivativeRecurrence": {
-      "max_modules": 60
+      "max_modules": 63
     },
     "RealRooted.DerivativeRecurrence.GeneralizedLaguerre": {
       "max_modules": 12
@@ -1168,7 +1168,7 @@
       "max_modules": 12
     },
     "RealRooted.DerivativeRecurrence.QuadraticInterlacing": {
-      "max_modules": 48
+      "max_modules": 51
     },
     "RealRooted.DerivativeRecurrence.QuadraticLagStrict": {
       "max_modules": 46

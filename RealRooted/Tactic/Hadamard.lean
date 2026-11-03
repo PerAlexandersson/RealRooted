@@ -39,62 +39,6 @@ theorem schurSzegoComp_splits_of_nonzero {n : ℕ} {f p : ℝ[X]}
   Or.resolve_left
     (finiteSchurSzegoComposition hf hfdeg hpdeg hsplits) hout
 
-/-- A nonzero finite Schur--Szegő composition splits when its PF factor has
-degree at most two and its split input has degree at most the level. -/
-theorem schurSzegoComp_splits_of_pf_factor_natDegree_le_two
-    {n : ℕ} {f p : ℝ[X]}
-    (hf : IsPFPolynomial f)
-    (hfdeg : f.natDegree ≤ 2)
-    (hpdeg : p.natDegree ≤ n)
-    (hsplits : p.Splits)
-    (hout : schurSzegoComp n f p ≠ 0) :
-    (schurSzegoComp n f p).Splits :=
-  Or.resolve_left
-    (finiteSchurSzegoComposition_of_pf_factor_natDegree_le_two
-      hf hfdeg hpdeg hsplits)
-    hout
-
-/-- A nonzero finite Schur--Szegő composition splits when its PF factor and
-split input both have degree at most two. -/
-theorem schurSzegoComp_splits_of_factors_natDegree_le_two
-    {n : ℕ} {f p : ℝ[X]}
-    (hf : IsPFPolynomial f)
-    (hfdeg : f.natDegree ≤ 2)
-    (hpdeg : p.natDegree ≤ 2)
-    (hsplits : p.Splits)
-    (hout : schurSzegoComp n f p ≠ 0) :
-    (schurSzegoComp n f p).Splits :=
-  Or.resolve_left
-    (finiteSchurSzegoComposition_of_factors_natDegree_le_two
-      hf hfdeg hpdeg hsplits)
-    hout
-
-/-- A nonzero finite Schur--Szegő composition splits when the factor has
-degree at most three and the composition has nonnegative cubic discriminant. -/
-theorem schurSzegoComp_splits_of_pf_factor_natDegree_le_three_cubicDiscr
-    {n : ℕ} {f p : ℝ[X]}
-    (hfdeg : f.natDegree ≤ 3)
-    (hdisc : 0 ≤ cubicDiscr (schurSzegoComp n f p))
-    (hout : schurSzegoComp n f p ≠ 0) :
-    (schurSzegoComp n f p).Splits :=
-  Or.resolve_left
-    (finiteSchurSzegoComposition_of_natDegree_le_three_cubicDiscr_nonneg hfdeg hdisc)
-    hout
-
-/-- At a level of at least three, a nonzero finite Schur--Szegő composition
-with factor degree at most three splits when its cubic-discriminant numerator
-is nonnegative. -/
-theorem schurSzegoComp_splits_of_pf_factor_natDegree_le_three_cubicNum
-    {n : ℕ} (hn : 3 ≤ n) {f p : ℝ[X]}
-    (hfdeg : f.natDegree ≤ 3)
-    (hnum : 0 ≤ schurSzegoCompCubicDiscrNumerator n f p)
-    (hout : schurSzegoComp n f p ≠ 0) :
-    (schurSzegoComp n f p).Splits :=
-  Or.resolve_left
-    (finiteSchurSzegoComposition_of_pf_factor_natDegree_le_three_cubicDiscrNumerator_nonneg
-      hn hfdeg hnum)
-    hout
-
 /-- Pointwise finite Schur--Szegő compositions of bounded-degree PF factors
 and bounded-degree split inputs are zero or split. -/
 theorem schurSzegoComp_sequence_zero_or_splits {N : Nat → ℕ}

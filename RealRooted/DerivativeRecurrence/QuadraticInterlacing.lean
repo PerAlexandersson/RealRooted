@@ -1,11 +1,9 @@
 module
 
 import RealRooted.DerivativeRecurrence.QuadraticDegree
+import RealRooted.DerivativeRecurrence.Interlacing
 public import RealRooted.MaWang
 import RealRooted.SignEvaluation
-import RealRooted.MaWang.Weak.Endpoint
-import RealRooted.Derivative.Interlacing
-import RealRooted.Derivative.Algebra
 import RealRooted.Linear
 public import RealRooted.Basic.Coefficients
 public import RealRooted.Basic.ProperPosition
@@ -14,7 +12,8 @@ public import RealRooted.Basic.ProperPosition
 # Interlacing for quadratic-coefficient derivative recurrences
 
 Nonnegative-coefficient and interlacing results for the general
-linear-multiplier recurrence, including degree offsets.
+linear-multiplier recurrence, a special case of the first-order derivative recurrence
+theorems of `RealRooted.DerivativeRecurrence.Interlacing`.
 -/
 
 public section
@@ -25,17 +24,7 @@ noncomputable section
 
 namespace RealRooted
 
-lemma quadratic_derivative_bilinear_coeff_zero_succ
-    (P : ℕ → ℝ[X]) (a b c u s t : ℝ)
-    (hrec : ∀ n, P (n + 1) =
-      (C a * X + C (-b) * X ^ 2) * (P n).derivative +
-        (C (c + u * (n : ℝ)) + C (s + t * (n : ℝ)) * X) * P n)
-    (n : ℕ) :
-    Polynomial.coeff (P (n + 1)) 0 =
-      (c + u * (n : ℝ)) * Polynomial.coeff (P n) 0 := by
-  simp_all
-
-lemma hasNonnegCoeffs_of_quadratic_derivative_bilinear
+theorem hasNonnegCoeffs_of_quadratic_derivative_bilinear
     (P : ℕ → ℝ[X]) (a b c u s t : ℝ)
     (h0 : P 0 = 1)
     (hrec : ∀ n, P (n + 1) =
@@ -43,110 +32,21 @@ lemma hasNonnegCoeffs_of_quadratic_derivative_bilinear
         (C (c + u * (n : ℝ)) + C (s + t * (n : ℝ)) * X) * P n)
     (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) (hu : 0 ≤ u)
     (hs : 0 < s) (hbt : b ≤ t) :
-    ∀ n : ℕ, HasNonnegCoeffs (P n)
-  | 0 => by
-      intro k
-      rw [h0]
-      rcases k with _ | k <;> simp [coeff_one]
-  | n + 1 => by
-      rintro (_ | k)
-      · rw [quadratic_derivative_bilinear_coeff_zero_succ P a b c u s t hrec]
-        exact mul_nonneg (add_nonneg hc (mul_nonneg hu (Nat.cast_nonneg n)))
-          (hasNonnegCoeffs_of_quadratic_derivative_bilinear P a b c u s t h0 hrec
-            ha hb hc hu hs hbt n 0)
-      · rw [quadratic_derivative_bilinear_coeff_succ P a b c u s t hrec]
-        refine add_nonneg
-          (mul_nonneg (by
-            nlinarith [ha, hc, hu, Nat.cast_nonneg (α := ℝ) k, Nat.cast_nonneg (α := ℝ) n])
-            (hasNonnegCoeffs_of_quadratic_derivative_bilinear P a b c u s t h0 hrec
-              ha hb hc hu hs hbt n (k + 1))) ?_
-        rcases quadratic_derivative_bilinear_top_and_above P a b c u s t h0 hrec hs hbt n with
-          ⟨_, habove⟩
-        by_cases hkn : k ≤ n
-        · exact mul_nonneg (by
-            have hn : 0 ≤ (n : ℝ) := by simp
-            have hkn' : (k : ℝ) ≤ (n : ℝ) := by exact_mod_cast hkn
-            nlinarith [hs, hb, hbt, hn, hkn'])
-            (hasNonnegCoeffs_of_quadratic_derivative_bilinear P a b c u s t h0 hrec
-              ha hb hc hu hs hbt n k)
-        · simp_all
-
-lemma hasPosLeadingCoeff_of_quadratic_derivative_bilinear
-    (P : ℕ → ℝ[X]) (a b c u s t : ℝ)
-    (h0 : P 0 = 1)
-    (hrec : ∀ n, P (n + 1) =
-      (C a * X + C (-b) * X ^ 2) * (P n).derivative +
-        (C (c + u * (n : ℝ)) + C (s + t * (n : ℝ)) * X) * P n)
-    (hs : 0 < s) (hbt : b ≤ t) (n : ℕ) :
-    HasPosLeadingCoeff (P n) := by
-  rw [HasPosLeadingCoeff, leadingCoeff,
-    natDegree_of_quadratic_derivative_bilinear P a b c u s t h0 hrec hs hbt]
-  exact (quadratic_derivative_bilinear_top_and_above
-    P a b c u s t h0 hrec hs hbt n).1
-
-lemma strictInterl_step_of_quadratic_derivative_bilinear
-    (P : ℕ → ℝ[X]) (a b c u s t : ℝ)
-    (h0 : P 0 = 1)
-    (hrec : ∀ n, P (n + 1) =
-      (C a * X + C (-b) * X ^ 2) * (P n).derivative +
-        (C (c + u * (n : ℝ)) + C (s + t * (n : ℝ)) * X) * P n)
-    (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) (hu : 0 ≤ u)
-    (hs : 0 < s) (hbt : b ≤ t)
-    (n : ℕ) (hn : 2 ≤ n) (hsp : (P n).Splits) :
-    StrictInterl (P n) (P (n + 1)) := by
-  have hne : P n ≠ 0 :=
-    ne_zero_of_quadratic_derivative_bilinear P a b c u s t h0 hrec hs hbt n
-  have hroots_nonpos : ∀ r, (P n).IsRoot r → r ≤ 0 := fun r hr =>
-    roots_nonpos_of_hasNonnegCoeffs
-      (hasNonnegCoeffs_of_quadratic_derivative_bilinear P a b c u s t h0 hrec
-        ha hb hc hu hs hbt n) r ((mem_roots hne).mpr hr)
-  have hInter : Interlaces (P n).derivative (P n) :=
-    derivative_interlaces_of_natDegree_ne_zero hsp (by
-      rw [natDegree_of_quadratic_derivative_bilinear P a b c u s t h0 hrec hs hbt]
-      lia)
-  have hg_pos : HasPosLeadingCoeff (P n).derivative :=
-    (hasPosLeadingCoeff_of_quadratic_derivative_bilinear
-      P a b c u s t h0 hrec hs hbt n).derivative (by
-        rw [natDegree_of_quadratic_derivative_bilinear P a b c u s t h0 hrec hs hbt]
-        lia)
-  have hF_eq :
-      (C (c + u * (n : ℝ)) + C (s + t * (n : ℝ)) * X) * P n +
-        (C a * X + C (-b) * X ^ 2) * (P n).derivative = P (n + 1) := by
-    grind
-  have hF_pos :
-      HasPosLeadingCoeff
-        ((C (c + u * (n : ℝ)) + C (s + t * (n : ℝ)) * X) * P n +
-          (C a * X + C (-b) * X ^ 2) * (P n).derivative) := by
-    rw [hF_eq]
-    exact hasPosLeadingCoeff_of_quadratic_derivative_bilinear
-      P a b c u s t h0 hrec hs hbt (n + 1)
-  have hdeg_lo :
-      (P n).natDegree ≤
-        ((C (c + u * (n : ℝ)) + C (s + t * (n : ℝ)) * X) * P n +
-          (C a * X + C (-b) * X ^ 2) * (P n).derivative).natDegree := by
-    rw [hF_eq, natDegree_of_quadratic_derivative_bilinear
-      P a b c u s t h0 hrec hs hbt,
-      natDegree_of_quadratic_derivative_bilinear P a b c u s t h0 hrec hs hbt]
-    lia
-  have hdeg_hi :
-      ((C (c + u * (n : ℝ)) + C (s + t * (n : ℝ)) * X) * P n +
-        (C a * X + C (-b) * X ^ 2) * (P n).derivative).natDegree ≤
-          (P n).natDegree + 1 := by
-    rw [hF_eq, natDegree_of_quadratic_derivative_bilinear
-      P a b c u s t h0 hrec hs hbt,
-      natDegree_of_quadratic_derivative_bilinear P a b c u s t h0 hrec hs hbt]
-  have hb_nonpos : ∀ r, (P n).IsRoot r →
-      (C a * X + C (-b) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
-    intro r hr
-    exact eval_C_mul_X_add_C_neg_mul_X_sq_nonpos_of_nonneg_of_nonneg_of_nonpos ha hb
-      (hroots_nonpos r hr)
-  have := strictInterl_of_interlaces_evalCoeff_nonpos
-    (f := P n) (g := (P n).derivative)
-    (a := C (c + u * (n : ℝ)) + C (s + t * (n : ℝ)) * X)
-    (b := C a * X + C (-b) * X ^ 2)
-    hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
-  rw [hF_eq] at this
-  exact this
+    ∀ n : ℕ, HasNonnegCoeffs (P n) := by
+  have hdeg := natDegree_of_quadratic_derivative_bilinear P a b c u s t h0 hrec hs hbt
+  refine derivativeRecurrence_hasNonnegCoeffs_of_mult (D₀ := 0) (d := 1)
+    (A := fun _ => C a * X + C (-b) * X ^ 2)
+    (B := fun n => C (c + u * (n : ℝ)) + C (s + t * (n : ℝ)) * X) hrec
+    (fun n => by simpa using (hdeg n).le) (fun n => by simp) ?_
+    (by rw [h0]; exact hasNonnegCoeffs_one)
+  intro n i j hj
+  have hj' : (j : ℝ) ≤ n := by exact_mod_cast (by simpa using hj : j ≤ n)
+  have hn : (0 : ℝ) ≤ n := by positivity
+  have hj0 : (0 : ℝ) ≤ j := by positivity
+  rcases i with _ | _ | i <;>
+    simp [coeff_X, coeff_C, coeff_X_pow] <;>
+    nlinarith [mul_nonneg ha hj0, mul_nonneg hu hn, mul_nonneg (sub_nonneg.mpr hbt) hn,
+      mul_nonneg hb (sub_nonneg.mpr hj')]
 
 theorem strictInterl_of_quadratic_derivative_bilinear
     (P : ℕ → ℝ[X]) (a b c u s t : ℝ)
@@ -156,220 +56,22 @@ theorem strictInterl_of_quadratic_derivative_bilinear
         (C (c + u * (n : ℝ)) + C (s + t * (n : ℝ)) * X) * P n)
     (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) (hu : 0 ≤ u)
     (hs : 0 < s) (hbt : b ≤ t) :
-    ∀ n : ℕ, StrictInterl (P n) (P (n + 1))
-  | 0 => by
-      have : Interlaces (P 0) (P 1) := by
-        rw [h0]
-        exact interlaces_one_linear (p := P 1)
-          (by rw [natDegree_of_quadratic_derivative_bilinear
-            P a b c u s t h0 hrec hs hbt])
-      exact this.toStrictInterl
-  | 1 => by
-      have hp1 : P 1 = C c + C s * X := by simp_all
-      have hder : (P 1).derivative = C s := by simp_all
-      have hInter : Interlaces (P 1).derivative (P 1) := by
-        rw [hder]
-        exact interlaces_C_linear (c := s) hs.ne' (p := P 1)
-          (by rw [natDegree_of_quadratic_derivative_bilinear
-            P a b c u s t h0 hrec hs hbt])
-      have hg_pos : HasPosLeadingCoeff (P 1).derivative := by
-        rw [hder]
-        simpa [HasPosLeadingCoeff, leadingCoeff] using hs
-      have hF_eq :
-          (C (c + u * ((1 : ℕ) : ℝ)) + C (s + t * ((1 : ℕ) : ℝ)) * X) * P 1 +
-            (C a * X + C (-b) * X ^ 2) * (P 1).derivative = P 2 := by
-        grind
-      have hF_pos :
-          HasPosLeadingCoeff
-            ((C (c + u * ((1 : ℕ) : ℝ)) + C (s + t * ((1 : ℕ) : ℝ)) * X) * P 1 +
-              (C a * X + C (-b) * X ^ 2) * (P 1).derivative) := by
-        rw [hF_eq]
-        exact hasPosLeadingCoeff_of_quadratic_derivative_bilinear
-          P a b c u s t h0 hrec hs hbt 2
-      have hdeg_lo :
-          (P 1).natDegree ≤
-            ((C (c + u * ((1 : ℕ) : ℝ)) + C (s + t * ((1 : ℕ) : ℝ)) * X) * P 1 +
-              (C a * X + C (-b) * X ^ 2) * (P 1).derivative).natDegree := by
-        rw [hF_eq, natDegree_of_quadratic_derivative_bilinear
-          P a b c u s t h0 hrec hs hbt,
-          natDegree_of_quadratic_derivative_bilinear P a b c u s t h0 hrec hs hbt]
-        lia
-      have hdeg_hi :
-          ((C (c + u * ((1 : ℕ) : ℝ)) + C (s + t * ((1 : ℕ) : ℝ)) * X) * P 1 +
-            (C a * X + C (-b) * X ^ 2) * (P 1).derivative).natDegree ≤
-              (P 1).natDegree + 1 := by
-        rw [hF_eq, natDegree_of_quadratic_derivative_bilinear
-          P a b c u s t h0 hrec hs hbt,
-          natDegree_of_quadratic_derivative_bilinear P a b c u s t h0 hrec hs hbt]
-      have hne : P 1 ≠ 0 :=
-        ne_zero_of_quadratic_derivative_bilinear P a b c u s t h0 hrec hs hbt 1
-      have hb_nonpos : ∀ r, (P 1).IsRoot r →
-          (C a * X + C (-b) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
-        intro r hr
-        have hr_nonpos := roots_nonpos_of_hasNonnegCoeffs
-          (hasNonnegCoeffs_of_quadratic_derivative_bilinear P a b c u s t h0 hrec
-            ha hb hc hu hs hbt 1) r ((mem_roots hne).mpr hr)
-        exact eval_C_mul_X_add_C_neg_mul_X_sq_nonpos_of_nonneg_of_nonneg_of_nonpos ha hb hr_nonpos
-      have := strictInterl_of_interlaces_evalCoeff_nonpos
-        (f := P 1) (g := (P 1).derivative)
-        (a := C (c + u * ((1 : ℕ) : ℝ)) + C (s + t * ((1 : ℕ) : ℝ)) * X)
-        (b := C a * X + C (-b) * X ^ 2)
-        hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
-      rw [hF_eq] at this
-      exact this
-  | n + 2 =>
-      strictInterl_step_of_quadratic_derivative_bilinear P a b c u s t h0 hrec
-        ha hb hc hu hs hbt (n + 2) (by lia)
-        (strictInterl_of_quadratic_derivative_bilinear P a b c u s t h0 hrec
-          ha hb hc hu hs hbt (n + 1)).2.1.2
-
-lemma quadratic_derivative_linear_coeff_zero_succ
-    (P : ℕ → ℝ[X]) (a b c s t : ℝ)
-    (hrec : ∀ n, P (n + 1) =
-      (C a * X + C (-b) * X ^ 2) * (P n).derivative +
-        (C c + C (s + t * (n : ℝ)) * X) * P n)
-    (n : ℕ) :
-    Polynomial.coeff (P (n + 1)) 0 = c * Polynomial.coeff (P n) 0 := by
-  simpa using quadratic_derivative_bilinear_coeff_zero_succ P a b c 0 s t
-    (by simpa using hrec) n
-
-lemma hasNonnegCoeffs_of_quadratic_derivative_linear_offset
-    (P : ℕ → ℝ[X]) (a b c s t : ℝ) (d : ℕ)
-    (hbase_nonneg : HasNonnegCoeffs (P 0))
-    (hbase_top : 0 < Polynomial.coeff (P 0) d)
-    (hbase_above : ∀ m > d, Polynomial.coeff (P 0) m = 0)
-    (hrec : ∀ n, P (n + 1) =
-      (C a * X + C (-b) * X ^ 2) * (P n).derivative +
-        (C c + C (s + t * (n : ℝ)) * X) * P n)
-    (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) (hsd : 0 < s - b * (d : ℝ))
-    (hbt : b ≤ t) :
-    ∀ n : ℕ, HasNonnegCoeffs (P n)
-  | 0 => hbase_nonneg
-  | n + 1 => by
-      rintro (_ | m)
-      · rw [quadratic_derivative_linear_coeff_zero_succ P a b c s t hrec]
-        exact mul_nonneg hc
-          (hasNonnegCoeffs_of_quadratic_derivative_linear_offset P a b c s t d
-            hbase_nonneg hbase_top hbase_above hrec ha hb hc hsd hbt n 0)
-      · rw [quadratic_derivative_linear_coeff_succ P a b c s t hrec]
-        refine add_nonneg
-          (mul_nonneg (by nlinarith [ha, hc, Nat.cast_nonneg (α := ℝ) m])
-            (hasNonnegCoeffs_of_quadratic_derivative_linear_offset P a b c s t d
-              hbase_nonneg hbase_top hbase_above hrec ha hb hc hsd hbt n (m + 1))) ?_
-        rcases quadratic_derivative_linear_offset_top_and_above P a b c s t d
-          hbase_top hbase_above hrec hsd hbt n with ⟨_, habove⟩
-        by_cases hmn : m ≤ n + d
-        · exact mul_nonneg (by
-            have hn : 0 ≤ (n : ℝ) := by simp
-            have hmn' : (m : ℝ) ≤ (n : ℝ) + (d : ℝ) := by
-              have hcast : ((n + d : ℕ) : ℝ) = (n : ℝ) + (d : ℝ) := by norm_num
-              rw [← hcast]
-              exact_mod_cast hmn
-            nlinarith [hsd, hb, hbt, hn, hmn'])
-            (hasNonnegCoeffs_of_quadratic_derivative_linear_offset P a b c s t d
-              hbase_nonneg hbase_top hbase_above hrec ha hb hc hsd hbt n m)
-        · simp_all
-
-lemma hasPosLeadingCoeff_of_quadratic_derivative_linear_offset
-    (P : ℕ → ℝ[X]) (a b c s t : ℝ) (d : ℕ)
-    (hbase_top : 0 < Polynomial.coeff (P 0) d)
-    (hbase_above : ∀ m > d, Polynomial.coeff (P 0) m = 0)
-    (hrec : ∀ n, P (n + 1) =
-      (C a * X + C (-b) * X ^ 2) * (P n).derivative +
-        (C c + C (s + t * (n : ℝ)) * X) * P n)
-    (hsd : 0 < s - b * (d : ℝ)) (hbt : b ≤ t) (n : ℕ) :
-    HasPosLeadingCoeff (P n) := by
-  rw [HasPosLeadingCoeff, leadingCoeff,
-    natDegree_of_quadratic_derivative_linear_offset P a b c s t d
-      hbase_top hbase_above hrec hsd hbt]
-  exact (quadratic_derivative_linear_offset_top_and_above P a b c s t d
-    hbase_top hbase_above hrec hsd hbt n).1
-
-lemma strictInterl_step_of_quadratic_derivative_linear_offset
-    (P : ℕ → ℝ[X]) (a b c s t : ℝ) (d : ℕ)
-    (hbase_nonneg : HasNonnegCoeffs (P 0))
-    (hbase_top : 0 < Polynomial.coeff (P 0) d)
-    (hbase_above : ∀ m > d, Polynomial.coeff (P 0) m = 0)
-    (hrec : ∀ n, P (n + 1) =
-      (C a * X + C (-b) * X ^ 2) * (P n).derivative +
-        (C c + C (s + t * (n : ℝ)) * X) * P n)
-    (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) (hsd : 0 < s - b * (d : ℝ))
-    (hbt : b ≤ t) (hd : 2 ≤ d) (m : ℕ) (hsp : (P m).Splits) :
-    StrictInterl (P m) (P (m + 1)) := by
-  have hne : P m ≠ 0 := ne_zero_of_quadratic_derivative_linear_offset P a b c s t d
-    hbase_top hbase_above hrec hsd hbt m
-  have hroots_nonpos : ∀ r, (P m).IsRoot r → r ≤ 0 := fun r hr =>
-    roots_nonpos_of_hasNonnegCoeffs
-      (hasNonnegCoeffs_of_quadratic_derivative_linear_offset P a b c s t d
-        hbase_nonneg hbase_top hbase_above hrec ha hb hc hsd hbt m)
-      r ((mem_roots hne).mpr hr)
-  have hInter : Interlaces (P m).derivative (P m) :=
-    derivative_interlaces_of_natDegree_ne_zero hsp (by
-      rw [natDegree_of_quadratic_derivative_linear_offset P a b c s t d
-        hbase_top hbase_above hrec hsd hbt]
-      lia)
-  have hg_pos : HasPosLeadingCoeff (P m).derivative :=
-    (hasPosLeadingCoeff_of_quadratic_derivative_linear_offset P a b c s t d
-      hbase_top hbase_above hrec hsd hbt m).derivative (by
-        rw [natDegree_of_quadratic_derivative_linear_offset P a b c s t d
-          hbase_top hbase_above hrec hsd hbt]
-        lia)
-  have hF_eq : (C c + C (s + t * (m : ℝ)) * X) * P m
-      + (C a * X + C (-b) * X ^ 2) * (P m).derivative = P (m + 1) := by grind
-  have hF_pos :
-      HasPosLeadingCoeff ((C c + C (s + t * (m : ℝ)) * X) * P m
-        + (C a * X + C (-b) * X ^ 2) * (P m).derivative) := by
-    rw [hF_eq]
-    exact hasPosLeadingCoeff_of_quadratic_derivative_linear_offset P a b c s t d
-      hbase_top hbase_above hrec hsd hbt (m + 1)
-  have hdeg_lo :
-      (P m).natDegree ≤ ((C c + C (s + t * (m : ℝ)) * X) * P m
-        + (C a * X + C (-b) * X ^ 2) * (P m).derivative).natDegree := by
-    rw [hF_eq, natDegree_of_quadratic_derivative_linear_offset P a b c s t d
-      hbase_top hbase_above hrec hsd hbt,
-      natDegree_of_quadratic_derivative_linear_offset P a b c s t d
-        hbase_top hbase_above hrec hsd hbt]
-    lia
-  have hdeg_hi :
-      ((C c + C (s + t * (m : ℝ)) * X) * P m
-        + (C a * X + C (-b) * X ^ 2) * (P m).derivative).natDegree ≤
-        (P m).natDegree + 1 := by
-    rw [hF_eq, natDegree_of_quadratic_derivative_linear_offset P a b c s t d
-      hbase_top hbase_above hrec hsd hbt,
-      natDegree_of_quadratic_derivative_linear_offset P a b c s t d
-        hbase_top hbase_above hrec hsd hbt]
-    lia
-  have hb_nonpos : ∀ r, (P m).IsRoot r →
-      (C a * X + C (-b) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
-    intro r hr
-    exact eval_C_mul_X_add_C_neg_mul_X_sq_nonpos_of_nonneg_of_nonneg_of_nonpos ha hb
-      (hroots_nonpos r hr)
-  have := strictInterl_of_interlaces_evalCoeff_nonpos
-    (f := P m) (g := (P m).derivative)
-    (a := C c + C (s + t * (m : ℝ)) * X) (b := C a * X + C (-b) * X ^ 2)
-    hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
-  simp_all
-
-theorem strictInterl_of_quadratic_derivative_linear_offset
-    (P : ℕ → ℝ[X]) (a b c s t : ℝ) (d : ℕ)
-    (hbase_nonneg : HasNonnegCoeffs (P 0))
-    (hbase_top : 0 < Polynomial.coeff (P 0) d)
-    (hbase_above : ∀ m > d, Polynomial.coeff (P 0) m = 0)
-    (hbase_splits : (P 0).Splits)
-    (hrec : ∀ n, P (n + 1) =
-      (C a * X + C (-b) * X ^ 2) * (P n).derivative +
-        (C c + C (s + t * (n : ℝ)) * X) * P n)
-    (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c) (hsd : 0 < s - b * (d : ℝ))
-    (hbt : b ≤ t) (hd : 2 ≤ d) :
-    ∀ n : ℕ, StrictInterl (P n) (P (n + 1))
-  | 0 =>
-      strictInterl_step_of_quadratic_derivative_linear_offset P a b c s t d
-        hbase_nonneg hbase_top hbase_above hrec ha hb hc hsd hbt hd 0 hbase_splits
-  | n + 1 =>
-      strictInterl_step_of_quadratic_derivative_linear_offset P a b c s t d
-        hbase_nonneg hbase_top hbase_above hrec ha hb hc hsd hbt hd (n + 1)
-        (strictInterl_of_quadratic_derivative_linear_offset P a b c s t d
-          hbase_nonneg hbase_top hbase_above hbase_splits hrec
-          ha hb hc hsd hbt hd n).2.1.2
+    ∀ n : ℕ, StrictInterl (P n) (P (n + 1)) := by
+  have hdeg := natDegree_of_quadratic_derivative_bilinear P a b c u s t h0 hrec hs hbt
+  have hpos := leadingCoeff_pos_of_quadratic_derivative_bilinear P a b c u s t h0 hrec hs hbt
+  have hnn := hasNonnegCoeffs_of_quadratic_derivative_bilinear P a b c u s t h0 hrec
+    ha hb hc hu hs hbt
+  intro n
+  induction n with
+  | zero =>
+      rw [h0]
+      exact (interlaces_one_linear (p := P 1) (by rw [hdeg])).toStrictInterl
+  | succ n ih =>
+      refine derivativeRecurrence_strictInterl_step (hrec (n + 1)) ih.2.1.2
+        (by rw [hdeg]; lia) (hpos (n + 1)) (hpos (n + 2)) (by rw [hdeg, hdeg]; lia)
+        (by rw [hdeg, hdeg]) fun r hr => ?_
+      have hne : P (n + 1) ≠ 0 := leadingCoeff_ne_zero.mp (hpos (n + 1)).ne'
+      exact eval_C_mul_X_add_C_neg_mul_X_sq_nonpos_of_nonneg_of_nonneg_of_nonpos ha hb
+        (roots_nonpos_of_hasNonnegCoeffs (hnn (n + 1)) r ((mem_roots hne).mpr hr))
 
 end RealRooted

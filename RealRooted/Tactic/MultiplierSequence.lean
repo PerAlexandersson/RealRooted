@@ -95,28 +95,6 @@ theorem finitePFMultiplierSequence_sequence_of_finite_multiplier
   isFinitePFMultiplierSequence_of_finiteMultiplierSequence
     (hGamma i) (hmult i)
 
-/-- At levels at most two, pointwise nonnegative sequences with PF Jensen
-polynomials are finite multiplier sequences. -/
-theorem finiteMultiplierSequence_sequence_le_two_of_jensen_pf
-    {N : Nat → ℕ} {Gamma : Nat → ℕ → ℝ}
-    (hN : ∀ i : Nat, N i ≤ 2)
-    (hGamma : ∀ i k, 0 ≤ Gamma i k)
-    (hjensen : ∀ i : Nat, IsPFPolynomial (jensenPolynomial (N i) (Gamma i))) :
-    ∀ i : Nat, IsFiniteMultiplierSequence (N i) (Gamma i) := fun i =>
-  isFiniteMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
-    (hN i) (hGamma i) (hjensen i)
-
-/-- At levels at most two, pointwise nonnegative sequences with PF Jensen
-polynomials are finite PF multiplier sequences. -/
-theorem finitePFMultiplierSequence_sequence_le_two_of_jensen_pf
-    {N : Nat → ℕ} {Gamma : Nat → ℕ → ℝ}
-    (hN : ∀ i : Nat, N i ≤ 2)
-    (hGamma : ∀ i k, 0 ≤ Gamma i k)
-    (hjensen : ∀ i : Nat, IsPFPolynomial (jensenPolynomial (N i) (Gamma i))) :
-    ∀ i : Nat, IsFinitePFMultiplierSequence (N i) (Gamma i) := fun i =>
-  isFinitePFMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
-    (hN i) (hGamma i) (hjensen i)
-
 end Tactic
 end RealRooted
 

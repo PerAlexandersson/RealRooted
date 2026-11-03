@@ -417,10 +417,6 @@ theorem StrictInterl.exists_kreinSummandExpansion {f g : ℝ[X]}
   · exact exists_kreinSummandExpansion_nonneg_right_of_pos_natDegree hfg hfpos
       hgpos (Nat.pos_of_ne_zero hgdeg0)
 
-@[deprecated (since := "2026-10-06")]
-alias gwTheorem11StrictInterlKreinSummandExpansion :=
-  StrictInterl.exists_kreinSummandExpansion
-
 /-- Garloff--Wagner, Theorem 11(c), in the local orientation: Garloff--Wagner's
 `g $ f` is represented by `StrictInterl f g`, and `J^k L` preserves it. -/
 theorem StrictInterl.divFactorialShift {f g : ℝ[X]} (hfg : StrictInterl f g) (k : ℕ) :

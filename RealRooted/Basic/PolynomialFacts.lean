@@ -33,10 +33,6 @@ theorem IsCoprime.not_isRoot_right {p q : R[X]}
 namespace RealRooted
 
 @[deprecated Polynomial.splits_iff_card_roots +typeChanged (since := "2026-10-21")]
-lemma card_roots_of_splits {p : ℝ[X]} (h : p.Splits) : p.roots.card = p.natDegree :=
-  splits_iff_card_roots.mp h
-
-@[deprecated Polynomial.splits_iff_card_roots +typeChanged (since := "2026-10-21")]
 lemma splits_of_card_roots {p : ℝ[X]} (h : p.roots.card = p.natDegree) : p.Splits :=
   splits_iff_card_roots.mpr h
 
