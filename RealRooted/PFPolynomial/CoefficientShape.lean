@@ -23,8 +23,7 @@ namespace IsPFPolynomial
 /-- A Pólya-frequency polynomial has ultra-log-concave coefficients. -/
 theorem hasUltraLogConcaveCoeffs {p : ℝ[X]} (hp : IsPFPolynomial p) :
     HasUltraLogConcaveCoeffs p :=
-  hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits
-    hp.hasNonnegCoeffs hp.eq_zero_or_splits
+  hasUltraLogConcaveCoeffs_of_eq_zero_or_splits hp.eq_zero_or_splits
 
 /-- A Pólya-frequency polynomial has no internal coefficient zeros. -/
 theorem hasNoInternalCoeffZeros {p : ℝ[X]} (hp : IsPFPolynomial p) :
@@ -35,8 +34,7 @@ theorem hasNoInternalCoeffZeros {p : ℝ[X]} (hp : IsPFPolynomial p) :
 /-- A Pólya-frequency polynomial has log-concave coefficients. -/
 theorem hasLogConcaveCoeffs {p : ℝ[X]} (hp : IsPFPolynomial p) :
     HasLogConcaveCoeffs p :=
-  hasLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits
-    hp.hasNonnegCoeffs hp.eq_zero_or_splits
+  hasLogConcaveCoeffs_of_eq_zero_or_splits hp.eq_zero_or_splits
 
 /-- A Pólya-frequency polynomial has unimodal coefficients. -/
 theorem hasUnimodalCoeffs {p : ℝ[X]} (hp : IsPFPolynomial p) :
