@@ -4,6 +4,7 @@ public import RealRooted.LiuWang.CombinedFlux
 public import RealRooted.LiuWang.SequenceCore
 public import RealRooted.LiuWang.FiniteFamily
 public import RealRooted.MaWang.CriticalSign
+import RealRooted.LiuWangRecursion
 import RealRooted.MaWang.DerivativeStep
 public import RealRooted.MaWang.DerivativeSequence
 import RealRooted.MaWang.StrictStep
@@ -81,6 +82,16 @@ label = "Liu–Wang criterion for three-term recurrences"
 name = "RealRooted.MaWang.strictInterl_derivative_nonpos_sequence"
 module = "RealRooted.MaWang.DerivativeSequence"
 label = "Ma–Wang criterion for derivative recurrences"
+
+[[theorems]]
+name = "RealRooted.LiuWang.strictInterl_derivative_lag_of_eval_nonpos"
+module = "RealRooted.LiuWang.FiniteFamily"
+label = "Liu–Wang step with an additional derivative term"
+
+[[theorems]]
+name = "RealRooted.LiuWang.strictInterl_derivative_lag_sequence_of_eval_nonpos_of_splits"
+module = "RealRooted.LiuWangRecursion"
+label = "Liu–Wang criterion for derivative–lag recurrences"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -165,6 +176,24 @@ for all $n$.
 
 In both cases every $P_n$ is real-rooted, and consecutive polynomials may share
 zeros.
+
+**Theorem (derivative–lag step).** Let $f$ be nonzero and real-rooted with a
+positive leading coefficient, let $g \ll f$ have a positive leading coefficient,
+and put $F = u f + v f' + w g$. Suppose that $F$ has a positive leading
+coefficient and $\deg f \leq \deg F \leq \deg f + 1$. If $v(r) \leq 0$ and
+$w(r) \leq 0$ at every zero $r$ of $f$, then $f \ll F$. Common zeros of $f$ and
+$g$ are allowed. The derivative term is treated as one more interlacer of $f$,
+alongside the distinguished interlacer $g$.
+
+**Theorem (derivative–lag recurrences).** Let $(P_n)_{n \geq 0}$ have positive
+leading coefficients, with $P_0 \ll P_1$ and
+$\deg P_{n+1} \leq \deg P_{n+2} \leq \deg P_{n+1} + 1$ for all $n$. If
+$$
+P_{n+2} = U_n P_{n+1} + V_n P_{n+1}' + W_n P_n
+$$
+and $V_n(r) \leq 0$ and $W_n(r) \leq 0$ at every zero $r$ of $P_{n+1}$, then
+$P_n \ll P_{n+1}$ for all $n$. The proof is the induction of the sequence forms
+above, applying the derivative–lag step at each stage.
 
 The site states the Liu–Wang theorem with $F$ and $g$ having leading
 coefficients of the same sign; the negative case follows by replacing $F$ and

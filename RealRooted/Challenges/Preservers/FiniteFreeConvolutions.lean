@@ -55,6 +55,16 @@ name = "RealRooted.HasOnlyNonnegRoots"
 module = "RealRooted.NarayanaTransformation.RootGeometry"
 label = "Zero, or real-rooted with nonnegative roots"
 
+[[definitions]]
+name = "RealRooted.rectangularPolarization"
+module = "RealRooted.RectangularPolarization"
+label = "Two-block polarization of y^m p(xy)"
+
+[[definitions]]
+name = "RealRooted.reciprocalRectangularPolarization"
+module = "RealRooted.RectangularPolarizationComplement"
+label = "Signed reciprocal of the rectangular polarization"
+
 [[theorems]]
 name = "RealRooted.splits_finiteFreeAdditiveConvolution"
 module = "RealRooted.FiniteFreeAdditive.Preservation"
@@ -85,6 +95,37 @@ headline = true
 name = "RealRooted.signedReciprocal_schurSzegoComp"
 module = "RealRooted.FiniteFreeMultiplicative"
 label = "The signed reciprocal turns Schur–Szegő composition into ⊠_d"
+
+[[theorems]]
+name = "RealRooted.coeff_rectangularAdditiveConvolution_of_le"
+module = "RealRooted.RectangularConvolution"
+label = "Coefficients of the rectangular additive convolution"
+
+[[theorems]]
+name = "RealRooted.natDegree_rectangularAdditiveConvolution_le"
+module = "RealRooted.RectangularConvolution"
+label = "The rectangular additive convolution has degree at most n"
+
+[[theorems]]
+name = "RealRooted.isMultiaffine_rectangularPolarization"
+module = "RealRooted.RectangularPolarization"
+label = "The rectangular polarization is multiaffine in both blocks"
+
+[[theorems]]
+name = "RealRooted.mvUpperHalfPlaneStable_rectangularPolarization"
+module = "RealRooted.RectangularPolarization"
+label = "Rectangular polarization preserves upper-half-plane stability"
+
+[[theorems]]
+name = """RealRooted.\
+mvUpperHalfPlaneStable_reciprocalRectangularPolarization"""
+module = "RealRooted.RectangularPolarizationComplement"
+label = "The signed reciprocal polarization is also stable"
+
+[[theorems]]
+name = "RealRooted.rectangularDifferential_diagonal_identity"
+module = "RealRooted.RectangularConvolutionIdentity"
+label = "The differential pairing of the two polarizations is the rectangular convolution"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -131,6 +172,31 @@ lists $p_k$, $q_k$.
 - The signed reciprocal $p \mapsto x^d\, p(-1/x)$ carries Schur–Szegő
   composition to multiplicative convolution:
   $\widehat{p *_d q} = \widehat{p} \boxtimes_d \widehat{q}$.
+
+## Rectangular convolution through polarization
+
+For $f$ of degree at most $n$, write $f_k$ for its coefficient of $x^k$. The
+coefficient of $x^j$ in $f \boxplus_{m,n} g$, for $j\le n$, is the sum, over
+$0\le i\le n-j$, of the weight above times $f_{n-i}\,g_{j+i}$; the
+coefficients above degree $n$ vanish, so the degree is at most $n$.
+
+The **rectangular polarization** of a complex polynomial $p$ of degree $n$ is
+$$
+\sum_{k=0}^{n} \frac{p_k}{\binom{n}{k}\binom{m+n}{m+k}}\,
+  e_k(x_1,\dots,x_n)\, e_{m+k}(y_1,\dots,y_{m+n}),
+$$
+a polynomial in $n$ variables $x_i$ and $m+n$ variables $y_j$ that restricts to
+$y^m p(xy)$ when all $x_i$ equal $x$ and all $y_j$ equal $y$. It is multiaffine. If
+the bivariate polynomial $p(xy)$ is upper-half-plane stable and $p$ has degree
+exactly $n$, then the polarization is upper-half-plane stable: one polarizes the
+right slice first and then the left slice. Its signed reciprocal
+$(-1)^m \prod z_i\, P(-1/z)$ is again multiaffine and stable.
+
+For real $f$ and $g$, apply the reciprocal polarization of $g$ as a differential
+operator $F(-\partial)$ to the polarization of $f$, then set all $x_i$ equal and all
+$y_j$ equal. The result is $y^m\,(f \boxplus_{m,n} g)(xy)$. This is the algebraic identity
+used in [@GribinskiMarcus2022] to realize the rectangular convolution through the
+Lieb–Sokal differential action.
 
 ## Proof idea
 
