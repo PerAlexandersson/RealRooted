@@ -586,41 +586,6 @@ theorem isLimitOfZeros_pow_sub_of_analyticAt {r h : ℂ → ℂ} {z₀ : ℂ}
       (fun w hw => hHexp w (hsubH hw)) hn hzero
   exact isLimitOfZeros_of_auxiliary hρ hGanalytic hconv hL0 hLnonconst himp
 
-/-- Two nonzero, equimodular analytic bases with a nonconstant ratio produce nearby zeros of
-their two-term exponential sum. This is the two-term case of Sokal, *Combinatorics, Probability
-and Computing* 13 (2004), Theorem 1.5(b). -/
-theorem isLimitOfZeros_two_terms {α₁ α₂ β₁ β₂ : ℂ → ℂ} {z₀ : ℂ}
-    (hα₁ : AnalyticAt ℂ α₁ z₀) (hα₂ : AnalyticAt ℂ α₂ z₀)
-    (hβ₁ : AnalyticAt ℂ β₁ z₀) (hβ₂ : AnalyticAt ℂ β₂ z₀)
-    (hα₁0 : α₁ z₀ ≠ 0) (hα₂0 : α₂ z₀ ≠ 0)
-    (hβ₂0 : β₂ z₀ ≠ 0) (heq : ‖β₁ z₀‖ = ‖β₂ z₀‖)
-    (hnconst : ¬∀ᶠ z in 𝓝 z₀, β₁ z / β₂ z = β₁ z₀ / β₂ z₀) :
-    IsLimitOfZeros (fun n z => α₁ z * β₁ z ^ n + α₂ z * β₂ z ^ n) z₀ := by
-  let r : ℂ → ℂ := fun z => β₁ z / β₂ z
-  let h : ℂ → ℂ := fun z => -α₂ z / α₁ z
-  have hr : AnalyticAt ℂ r z₀ := hβ₁.div hβ₂ hβ₂0
-  have hh : AnalyticAt ℂ h z₀ := hα₂.neg.div hα₁ hα₁0
-  have hrunit : ‖r z₀‖ = 1 := by
-    simp [r, heq, hβ₂0]
-  have hh0 : h z₀ ≠ 0 := div_ne_zero (neg_ne_zero.mpr hα₂0) hα₁0
-  have hβ₂ev : ∀ᶠ z in 𝓝 z₀, β₂ z ≠ 0 :=
-    hβ₂.continuousAt.eventually_ne hβ₂0
-  have hα₁ev : ∀ᶠ z in 𝓝 z₀, α₁ z ≠ 0 :=
-    hα₁.continuousAt.eventually_ne hα₁0
-  obtain ⟨ρ, hρ, hball⟩ := Metric.mem_nhds_iff.mp (hβ₂ev.and hα₁ev)
-  have himp : ∀ᶠ n in atTop, ∀ z ∈ ball z₀ ρ,
-      r z ^ n - h z = 0 → α₁ z * β₁ z ^ n + α₂ z * β₂ z ^ n = 0 := by
-    exact Eventually.of_forall fun n z hz hzero => by
-      have hβ₂z : β₂ z ≠ 0 := (hball hz).1
-      have hα₁z : α₁ z ≠ 0 := (hball hz).2
-      have heqz : r z ^ n = h z := sub_eq_zero.mp hzero
-      simp only [r, h] at heqz
-      rw [div_pow] at heqz
-      field_simp [hα₁z, hβ₂z] at heqz
-      linear_combination heqz
-  exact isLimitOfZeros_of_eventually_zero_imp hρ
-    (isLimitOfZeros_pow_sub_of_analyticAt hr hh hrunit hh0 hnconst) himp
-
 private theorem tendstoUniformlyOn_mul_pow_of_bounds {a b : ℂ → ℂ}
     {s : Set ℂ} {M q : ℝ} (hM : 0 ≤ M) (hq0 : 0 ≤ q) (hq1 : q < 1)
     (ha : ∀ z ∈ s, ‖a z‖ ≤ M) (hb : ∀ z ∈ s, ‖b z‖ ≤ q) :
@@ -928,6 +893,21 @@ theorem isLimitOfZeros_two_dominant_with_tail {κ : Type*}
         exact Finset.sum_congr rfl fun k _ => by field_simp [hαiz, hβjz]
       linear_combination hzero - hsum
   exact isLimitOfZeros_of_eventually_zero_imp hρ hzeros himp
+
+/-- Two nonzero, equimodular analytic bases with a nonconstant ratio produce nearby zeros of
+their two-term exponential sum. This is the two-term case of Sokal, *Combinatorics, Probability
+and Computing* 13 (2004), Theorem 1.5(b). -/
+theorem isLimitOfZeros_two_terms {α₁ α₂ β₁ β₂ : ℂ → ℂ} {z₀ : ℂ}
+    (hα₁ : AnalyticAt ℂ α₁ z₀) (hα₂ : AnalyticAt ℂ α₂ z₀)
+    (hβ₁ : AnalyticAt ℂ β₁ z₀) (hβ₂ : AnalyticAt ℂ β₂ z₀)
+    (hα₁0 : α₁ z₀ ≠ 0) (hα₂0 : α₂ z₀ ≠ 0)
+    (hβ₂0 : β₂ z₀ ≠ 0) (heq : ‖β₁ z₀‖ = ‖β₂ z₀‖)
+    (hnconst : ¬∀ᶠ z in 𝓝 z₀, β₁ z / β₂ z = β₁ z₀ / β₂ z₀) :
+    IsLimitOfZeros (fun n z => α₁ z * β₁ z ^ n + α₂ z * β₂ z ^ n) z₀ := by
+  have := isLimitOfZeros_two_dominant_with_tail (κ := Bool) ∅
+    (fun b => cond b α₁ α₂) (fun b => cond b β₁ β₂) true false
+    hα₁ hα₂ hβ₁ hβ₂ (by simp) (by simp) hα₁0 hα₂0 hβ₂0 heq (by simp) hnconst
+  simpa using this
 
 /-- Sokal's two-dominant-index zero-limit theorem for a finite analytic exponential sum,
 with nonvanishing leading coefficients; *Combinatorics, Probability and Computing* 13 (2004),
