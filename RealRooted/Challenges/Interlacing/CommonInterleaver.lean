@@ -11,6 +11,9 @@ public import RealRooted.Compatibility.Leander
 import RealRooted.CommonInterleaver.PairBridge.Compatibility.NonnegativeShift
 public import RealRooted.Compatibility.Pair
 public import RealRooted.Basic.ProperPosition
+import RealRooted.CommonInterleaverSeq
+import RealRooted.DegreeDropDivXPrec
+import RealRooted.SameDegreeCountFromAnalytic
 
 /-!
 # Common interleaver challenge entry point
@@ -101,6 +104,41 @@ label = "Chudnovsky–Seymour: pairwise compatible ⇔ compatible family"
 headline = true
 
 [[theorems]]
+name = "RealRooted.posComboPairHasCommonInterleaver_of_splits"
+module = "RealRooted.CommonInterleaver.PairBridge.Compatibility.NonnegativeShift"
+label = "Split polynomials with real-rooted positive combinations have a common interleaver"
+
+[[theorems]]
+name = "RealRooted.pairHasCommonInterleaver_of_posCombo_sameDegree"
+module = "RealRooted.SameDegreeCountFromAnalytic"
+label = "Chudnovsky–Seymour for two polynomials of the same degree without common roots"
+
+[[theorems]]
+name = "RealRooted.pairHasCommonInterleaver_of_posCombo_succDegree"
+module = "RealRooted.CommonInterleaver.PairBridge.SuccDegree.SlotData"
+label = "Chudnovsky–Seymour for two polynomials whose degrees differ by one"
+
+[[theorems]]
+name = "RealRooted.pairHasCommonInterleaver_of_posCombo_noCommon_of_natDegree_close"
+module = "RealRooted.CommonInterleaver.PairBridge.Reduction.CommonInterleaver"
+label = "Chudnovsky–Seymour for two polynomials of close degrees without common roots"
+
+[[theorems]]
+name = "RealRooted.sameDegree_rootCountAbove_bounds_of_posCombo_noCommon"
+module = "RealRooted.SameDegreeCountFromAnalytic"
+label = "Same-degree positive-combination pairs have upper root counts differing by at most one"
+
+[[theorems]]
+name = "RealRooted.pairHasCommonLeftInterleaver_of_commonInterleaver"
+module = "RealRooted.CommonInterleaverSeq"
+label = "A common right interleaver of a close-degree pair gives a common left interleaver"
+
+[[theorems]]
+name = "RealRooted.strictInterl_iff_strictInterl_divX_left_of_hasNonnegCoeffs_coeff_zero"
+module = "RealRooted.DegreeDropDivXPrec"
+label = "Degree drop at a zero constant coefficient: f ≪ g iff g/X ≪ f"
+
+[[theorems]]
 name = "RealRooted.leanderTransform_preserves_compatibility"
 module = "RealRooted.Compatibility.Leander"
 label = "Leander: the transform preserves ordered compatibility"
@@ -144,6 +182,28 @@ The library proves each implication:
 - **Pairwise to global:** 2 ⇒ 3.
 - **Common interleavers give compatibility:** 3 ⇒ 4. In particular, the sum of
   a family with a common interleaver is real-rooted.
+
+The two-polynomial theorem is proved by cases on the degrees. For a pair
+$f, g$ of positive leading coefficients such that every positive combination
+$\lambda f + \mu g$ is nonzero and real-rooted, the library has a common
+interleaver in each of the following situations:
+
+- $\deg g = \deg f$ and $f, g$ have no common root. Then for every real $x$ that
+  is not a root of $f$ or $g$, the numbers of roots of $f$ and of $g$ larger
+  than $x$ differ by at most one;
+- $\deg g = \deg f + 1$;
+- $\deg f \leq \deg g \leq \deg f + 1$ and $f, g$ have no common root, as a
+  combination of the two cases above;
+- $f$ and $g$ split, with no restriction on the degrees. This is the
+  positive-combination form of the theorem for compatible pairs; the proof
+  translates both polynomials far enough to make their coefficients
+  nonnegative, applies the nonnegative case, and translates back.
+
+If $f, g$ have degrees $d$ and $d$ or $d + 1$, and $h$ is a common right
+interleaver, then there is also a common left interleaver $\ell$ with
+$\ell \ll f$ and $\ell \ll g$. In the degree-drop situation $\deg g = \deg f + 1$
+with $g$ divisible by $x$ and both polynomials having nonnegative coefficients,
+$f \ll g$ holds if and only if $g/x \ll f$.
 
 This is the interlacing input for the real-rootedness of independence
 polynomials of claw-free graphs; see the

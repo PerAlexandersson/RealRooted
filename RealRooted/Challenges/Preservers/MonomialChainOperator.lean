@@ -5,6 +5,7 @@ public import RealRooted.OperatorInterlacingUpgrade.ImplicitRoot
 import RealRooted.OperatorInterlacingUpgrade.RootOrder
 public import RealRooted.OperatorInterlacingUpgrade.StablePencil
 public import RealRooted.PFPolynomial
+import RealRooted.QuadraticInterlacingClosure
 
 /-!
 # Monomial-chain operator challenge entry point
@@ -17,6 +18,16 @@ formalized = "2026-05-12"
 references = [
   "Branden2011b",
 ]
+
+[[definitions]]
+name = "RealRooted.quadraticInterlacingPencil"
+module = "RealRooted.QuadraticInterlacingClosure"
+label = "Quadratic interlacing pencil"
+
+[[definitions]]
+name = "RealRooted.quadraticInterlacingTangent"
+module = "RealRooted.QuadraticInterlacingClosure"
+label = "Tangent of the quadratic interlacing pencil"
 
 [[theorems]]
 name = "RealRooted.Challenges.MonomialChainOperator.preservesInterlacing"
@@ -48,6 +59,24 @@ label = "Implicit derivative of a simple output root in one input root"
 name = "RealRooted.mvUpperHalfPlaneStable_bivariatePencil_map_of_monomialChain"
 module = "RealRooted.OperatorInterlacingUpgrade.StablePencil"
 label = "Monomial-chain operators preserve nonnegative stable pencils"
+
+[[theorems]]
+name = "RealRooted.positiveRootCount_quadraticParameterEvaluation_le_rootCountDrop"
+module = "RealRooted.QuadraticInterlacingClosure"
+label = "Descartes budget for the quadratic parameter evaluation of an interlacing chain"
+tags = ["realrooted-original"]
+
+[[theorems]]
+name = "RealRooted.strictInterl_quadraticInterlacingTangent_pencil"
+module = "RealRooted.QuadraticInterlacingClosure"
+label = "The tangent of a real-rooted quadratic pencil precedes the pencil"
+tags = ["realrooted-original"]
+
+[[theorems]]
+name = "RealRooted.strictInterl_quadraticInterlacingRight_of_tangent"
+module = "RealRooted.QuadraticInterlacingClosure"
+label = "The tangent precedes the right member of the quadratic closure"
+tags = ["realrooted-original"]
 -->
 
 <!-- realrooted-catalog-content -->
@@ -70,6 +99,31 @@ chain through each nonpositive linear factor.
 The proof first propagates the monomial chain through all PF factors, and then
 uses the Garloff–Wagner Krein expansion to pass from one-root deletions to every
 oriented interlacing pair.
+
+## The quadratic interlacing closure
+
+The step that passes the chain through one nonpositive linear factor is the following
+statement about three polynomials with nonnegative coefficients and $F \ll G \ll H$. For
+$b \ge 0$ put
+$$
+Q_b = H + 2bG + b^2 F, \qquad A_b = G + bF, \qquad B_b = H + bG,
+$$
+so that $Q_b = B_b + b A_b$ and $A_b$ is half the derivative of $Q_b$ in the parameter.
+
+**Theorem.** If $Q_b$ is real-rooted for every $b \ge 0$, then $A_a \ll Q_a$ for every
+$a \ge 0$, and consequently $A_a \ll B_a$, that is,
+$$
+G + aF \;\ll\; H + aG .
+$$
+
+The second conclusion is purely algebraic: the pairs $(A_a, Q_a)$ and $(A_a, B_a)$ span the same
+real pencil and have the same oriented Wronskian, so interlacing transfers. The first conclusion
+is the analytic heart. It follows root-count budgets from Descartes' rule of signs: for a fixed
+point $r$, the quadratic $b \mapsto Q_b(r)$ has at most as many positive roots as the number of
+roots of $H$ above $r$ minus the number of roots of $F$ above $r$. Together with the signs of the
+residues of $A_a / Q_a$ at the roots of $Q_a$, this shows that the roots of $Q_b$ move
+monotonically in $b$. Repeated and common roots are removed by a common derivative
+regularization, and coefficientwise closure then recovers the general case.
 
 ## Consequences
 

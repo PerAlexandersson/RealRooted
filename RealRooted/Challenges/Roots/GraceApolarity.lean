@@ -8,6 +8,7 @@ import RealRooted.LiebSokal
 public import RealRooted.Polarization
 public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
 public import RealRooted.LiebSokalOperator
+import RealRooted.LiebSokalGeneral
 
 /-!
 # Grace apolarity challenge entry point
@@ -130,6 +131,12 @@ label = "Grace's apolarity theorem for closed half-planes"
 [[theorems]]
 name = "RealRooted.Challenges.GraceApolarity.applyNegDifferential_eq_zero_or_stable"
 label = "Lieb–Sokal theorem for multiaffine polynomials"
+
+[[theorems]]
+name = "RealRooted.MvUpperHalfPlaneStable.liebSokal"
+module = "RealRooted.LiebSokalGeneral"
+label = "Lieb–Sokal theorem without the multiaffine hypothesis"
+headline = true
 -->
 
 <!-- realrooted-catalog-content -->
@@ -195,6 +202,12 @@ multiaffine polynomials in $\mathbb{C}[z_1, \dotsc, z_m]$. Then
 $F(-\partial)\, G$, the result of substituting $-\partial/\partial z_i$ for
 $z_i$ in $F$ and applying it to $G$, is zero or stable.
 
+The multiaffine hypothesis can be removed.
+
+**Theorem** (Lieb–Sokal). [@LiebSokal1981] Let $F$ and $G$ be stable polynomials
+in $\mathbb{C}[z_1, \dotsc, z_m]$, of arbitrary degrees. Then $F(-\partial)\, G$
+is zero or stable.
+
 ## Proof idea
 
 Grace's theorem is proved by induction on $n$. Apolarity is invariant under
@@ -224,6 +237,10 @@ blockwise polarization, and identifying variables preserves stability. The
 Lieb–Sokal theorem
 follows by pairing the variables of $F$ and $G$ and contracting each pair, an
 operation that preserves stability of multiaffine polynomials.
+For arbitrary degrees, we rescale the coefficients by descending factorials,
+which preserves stability up to zero, polarize $F$ and $G$ in a common degree
+box, apply the multiaffine theorem, and identify the polarized differential
+action with $F(-\partial)\, G$ on the diagonal.
 
 ## References
 
@@ -237,7 +254,7 @@ The classical sources are [@Grace1902; @Walsh1922; @Szego1922] and
 This module exposes Grace's theorem for closed disks and closed upper
 half-planes, univariate and blockwise polarization, the Grace–Walsh–Szegő
 characterization of stable symmetric multiaffine polynomials, and the
-multiaffine Lieb–Sokal theorem. The proofs live in `RealRooted.Apolarity`,
+multiaffine and general Lieb–Sokal theorems. The proofs live in `RealRooted.Apolarity`,
 `RealRooted.GraceHalfPlane`, `RealRooted.Polarization`,
 `RealRooted.BorceaBranden.Applications.PolarizationIff` and
 `RealRooted.LiebSokal`.

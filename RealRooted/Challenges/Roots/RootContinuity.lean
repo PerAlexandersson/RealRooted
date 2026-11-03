@@ -1,5 +1,6 @@
 module
 
+import RealRooted.DegreeIncreasingLocalLowerCount
 import RealRooted.RootContinuity
 import RealRooted.RootContinuity.Path
 
@@ -113,6 +114,12 @@ label = "Count differences at interior samples"
 name = "RealRooted.odd_card_roots_filter_gt_sub_iff_of_no_isRoot_Ioo"
 module = "RealRooted.RootContinuity"
 label = "Parity of interior count differences"
+
+[[theorems]]
+name = "RealRooted.degreeIncreasing_local_lower_count"
+module = "RealRooted.DegreeIncreasingLocalLowerCount"
+label = "Roots of f survive near their positions in a degree-increasing perturbation f + μg"
+tags = ["realrooted-original"]
 -->
 
 <!-- realrooted-catalog-content -->
@@ -157,6 +164,18 @@ count theorem records both threshold equalities and the absence of roots in
 the window. For two polynomials, the corresponding integer differences are
 also constant, and the open-interval forms allow any two interior sample
 points; the final theorem records the resulting parity invariance.
+
+When the perturbing polynomial has larger degree, the normalized pencil above is
+not available, since the leading coefficient of $f+\mu g$ tends to zero with
+$\mu$. In this degree-increasing case we still have a lower bound for the roots
+near each root of $f$. Let $f$ split over $\mathbb R$ with
+$\deg f<\deg g$, and let $\rho>0$. Then there is $\delta>0$ such that for all
+$0<\mu<\delta$ for which $f+\mu g$ splits, every root $a$ of $f$ of multiplicity
+$k$ has at least $k$ roots of $f+\mu g$, counted with multiplicity, within
+distance $\rho$ of $a$. The proof factors out the roots that escape to infinity as
+$\mu\to0^+$. Their product has a large constant term, so the low coefficients of
+the remaining monic factor, which come from the Taylor expansion of $g$ at $a$,
+force enough of its roots to lie near $a$.
 
 ## References
 
