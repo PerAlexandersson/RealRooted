@@ -96,7 +96,7 @@ theorem gammaOperator_natDegree_le_of_natDegree_le
 
 /-! ### The two gamma components -/
 
-theorem gammaU_natDegree_le_add_two (n : ℕ) :
+private theorem gammaU_natDegree_le_add_two (n : ℕ) :
     (gammaU (n + 2)).natDegree ≤ (n + 2) / 2 := by
   induction n with
   | zero => simp [gammaU]
@@ -104,7 +104,7 @@ theorem gammaU_natDegree_le_add_two (n : ℕ) :
       change (gammaOperator (n + 2) (gammaU (n + 2))).natDegree ≤ (n + 3) / 2
       exact gammaOperator_natDegree_le_of_natDegree_le ih
 
-theorem gammaV_natDegree_le_add_two (n : ℕ) :
+private theorem gammaV_natDegree_le_add_two (n : ℕ) :
     (gammaV (n + 2)).natDegree ≤ (n + 2) / 2 := by
   induction n with
   | zero => simp [gammaV]
@@ -112,7 +112,7 @@ theorem gammaV_natDegree_le_add_two (n : ℕ) :
       change (gammaOperator (n + 2) (gammaV (n + 2))).natDegree ≤ (n + 3) / 2
       exact gammaOperator_natDegree_le_of_natDegree_le ih
 
-theorem gammaU_hasNonnegCoeffs_add_two (n : ℕ) :
+private theorem gammaU_hasNonnegCoeffs_add_two (n : ℕ) :
     HasNonnegCoeffs (gammaU (n + 2)) := by
   induction n with
   | zero => exact hasNonnegCoeffs_one
@@ -121,7 +121,7 @@ theorem gammaU_hasNonnegCoeffs_add_two (n : ℕ) :
       exact gammaOperator_hasNonnegCoeffs_of_natDegree_le
         (gammaU_natDegree_le_add_two n) ih
 
-theorem gammaV_hasNonnegCoeffs_add_two (n : ℕ) :
+private theorem gammaV_hasNonnegCoeffs_add_two (n : ℕ) :
     HasNonnegCoeffs (gammaV (n + 2)) := by
   induction n with
   | zero => simpa using hasNonnegCoeffs_X
@@ -130,7 +130,7 @@ theorem gammaV_hasNonnegCoeffs_add_two (n : ℕ) :
       exact gammaOperator_hasNonnegCoeffs_of_natDegree_le
         (gammaV_natDegree_le_add_two n) ih
 
-theorem gammaU_ne_zero_add_two (n : ℕ) : gammaU (n + 2) ≠ 0 := by
+private theorem gammaU_ne_zero_add_two (n : ℕ) : gammaU (n + 2) ≠ 0 := by
   intro hzero
   have hconstant := congrArg constantCoeff hzero
   rw [gammaU_constantCoeff_add_two] at hconstant
@@ -152,7 +152,7 @@ theorem gammaU_ne_zero (n : ℕ) (hn : 2 ≤ n) : gammaU n ≠ 0 := by
 
 /-! ### The distinguished coefficient of the parameter component -/
 
-theorem gammaV_coeff_one_add_two (n : ℕ) :
+private theorem gammaV_coeff_one_add_two (n : ℕ) :
     (gammaV (n + 2)).coeff 1 = 2 ^ n := by
   induction n with
   | zero => simp [gammaV]
@@ -172,7 +172,7 @@ theorem gammaV_coeff_one (n : ℕ) (hn : 2 ≤ n) :
   rw [← Nat.sub_add_cancel hn]
   simpa using gammaV_coeff_one_add_two (n - 2)
 
-theorem gammaV_ne_zero_add_two (n : ℕ) : gammaV (n + 2) ≠ 0 := by
+private theorem gammaV_ne_zero_add_two (n : ℕ) : gammaV (n + 2) ≠ 0 := by
   intro hzero
   have hcoeff := congrArg (fun p : ℝ[X] => p.coeff 1) hzero
   rw [gammaV_coeff_one_add_two] at hcoeff
@@ -196,20 +196,20 @@ theorem gammaV_ne_zero (n : ℕ) (hn : 2 ≤ n) : gammaV n ≠ 0 := by
 
 /-! ### The affine pencil -/
 
-theorem gammaPencil_hasNonnegCoeffs_add_two {a : ℝ} (ha : 0 ≤ a) (n : ℕ) :
+private theorem gammaPencil_hasNonnegCoeffs_add_two {a : ℝ} (ha : 0 ≤ a) (n : ℕ) :
     HasNonnegCoeffs (gammaPencil a (n + 2)) := by
   rw [gammaPencil, Polynomial.smul_eq_C_mul]
   exact (gammaU_hasNonnegCoeffs_add_two n).add
     (hasNonnegCoeffs_C_mul ha (gammaV_hasNonnegCoeffs_add_two n))
 
-theorem gammaPencil_natDegree_le_add_two (a : ℝ) (n : ℕ) :
+private theorem gammaPencil_natDegree_le_add_two (a : ℝ) (n : ℕ) :
     (gammaPencil a (n + 2)).natDegree ≤ (n + 2) / 2 := by
   rw [gammaPencil, Polynomial.smul_eq_C_mul]
   exact (natDegree_add_le _ _).trans <| max_le
     (gammaU_natDegree_le_add_two n)
     ((natDegree_C_mul_le _ _).trans (gammaV_natDegree_le_add_two n))
 
-theorem gammaPencil_constantCoeff_add_two_ne_zero (a : ℝ) (n : ℕ) :
+private theorem gammaPencil_constantCoeff_add_two_ne_zero (a : ℝ) (n : ℕ) :
     gammaPencil a (n + 2) ≠ 0 := by
   intro hzero
   have hconstant := congrArg constantCoeff hzero

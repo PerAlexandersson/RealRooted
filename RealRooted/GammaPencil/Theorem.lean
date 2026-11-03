@@ -43,8 +43,8 @@ theorem gammaUV_allComboRealRooted_add_two (n : ℕ) :
         (gammaOperator (n + 2) (gammaU (n + 2)))
         (gammaOperator (n + 2) (gammaV (n + 2)))
       exact gammaOperator_allComboRealRooted (by lia)
-        (gammaU_natDegree_le_add_two n)
-        (gammaV_natDegree_le_add_two n) ih
+        (gammaU_natDegree_le (n + 2) (by lia))
+        (gammaV_natDegree_le (n + 2) (by lia)) ih
 
 /-- Every real linear combination of the rank-`n` gamma components splits. -/
 theorem gammaUV_allComboRealRooted (n : ℕ) (hn : 2 ≤ n) :

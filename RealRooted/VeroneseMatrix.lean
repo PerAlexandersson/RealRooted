@@ -19,9 +19,10 @@ recursion is given by a cyclic bidiagonal matrix with its `X` entry in the
 lower-left corner.
 
 The main payoff is
-`isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg_matrix`:
-every fixed Veronese section of a real-rooted polynomial with nonnegative
-coefficients is real-rooted-or-zero.  The proof factors the input polynomial
+`isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_of_realRooted_nonneg`:
+the descending Veronese sections of a real-rooted polynomial with nonnegative
+coefficients are weakly interlacing, and every nonzero section is real-rooted
+(so every fixed section is real-rooted-or-zero).  The proof factors the input polynomial
 into nonnegative linear factors `X + a`, proves the finite `2 × 2` affine
 condition for the cyclic matrix, and then iterates the matrix-preserver theorem
 for weak interlacing sequences.
@@ -784,32 +785,22 @@ theorem isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_of_re
     exact isInterlacingSeq0Nonneg_map_C_mul hlead_pos.le (ne_of_gt hlead_pos) hpkg.1
   · simp_all
 
-/-- In particular, each Veronese section of a real-rooted polynomial with
-nonnegative coefficients is real-rooted, allowing the section to vanish. -/
+/-- Each Veronese section of a real-rooted polynomial with nonnegative coefficients is
+real-rooted, allowing the section to vanish.  The hypothesis `p ≠ 0` is not needed. -/
+@[deprecated splits_veroneseSectionPolynomial_of_splits_nonneg +typeChanged
+  (since := "2026-11-03")]
 theorem isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg_matrix
     {r k : ℕ} (hr : 0 < r) (hk : k < r) {p : ℝ[X]}
-    (hpnn : HasNonnegCoeffs p) (hprr_ne : p ≠ 0) (hprr_splits : p.Splits) :
+    (hpnn : HasNonnegCoeffs p) (_hprr_ne : p ≠ 0) (hprr_splits : p.Splits) :
     veroneseSectionPolynomial r k p = 0 ∨
-      (veroneseSectionPolynomial r k p).Splits := by
-  have hpkg :=
-    isInterlacingSeq0Nonneg_and_real_veroneseSectionPolynomialListDesc_of_realRooted_nonneg
-      (r := r) hr hpnn hprr_ne hprr_splits
-  have hmem := mem_veroneseSectionPolynomialListDesc (r := r) (k := k) p hk
-  by_cases hzero : veroneseSectionPolynomial r k p = 0
-  · exact Or.inl hzero
-  · exact Or.inr (hpkg.2 _ hmem hzero).2
+      (veroneseSectionPolynomial r k p).Splits :=
+  splits_veroneseSectionPolynomial_of_splits_nonneg hpnn hprr_splits hr hk
 
 /-- Veronese sections preserve real-rootedness for polynomials with
 nonnegative coefficients, allowing the selected section to vanish. -/
 theorem veroneseSectionPolynomial_eq_zero_or_splits {r k : ℕ} (hk : k < r)
     {p : ℝ[X]} (hp : HasNonnegCoeffs p) (hsplits : p.Splits) :
-    veroneseSectionPolynomial r k p = 0 ∨ (veroneseSectionPolynomial r k p).Splits := by
-  have hr : 0 < r := by lia
-  rcases eq_or_ne p 0 with rfl | hp0
-  · left
-    ext n
-    simp [coeff_veroneseSectionPolynomial hr]
-  · exact isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg_matrix
-      hr hk hp hp0 hsplits
+    veroneseSectionPolynomial r k p = 0 ∨ (veroneseSectionPolynomial r k p).Splits :=
+  splits_veroneseSectionPolynomial_of_splits_nonneg hp hsplits (by lia) hk
 
 end RealRooted
