@@ -105,19 +105,10 @@ theorem neg_of_isRoot_bigDescentPoly {n : ℕ} {x : ℝ} (hx : (bigDescentPoly n
     x < 0 := by
   by_contra h
   push Not at h
-  have hpos : 0 < (bigDescentPoly n : ℝ[X]).eval x := by
-    rw [eval_eq_sum_range]
-    have h0 : (bigDescentPoly n : ℝ[X]).coeff 0 * x ^ 0 = ((n + 1).fib : ℝ) := by
-      rw [pow_zero, mul_one, coeff_zero_eq_eval_zero, eval_zero_bigDescentPoly]
-    calc (0 : ℝ) < ((n + 1).fib : ℝ) := by exact_mod_cast Nat.fib_pos.mpr (by lia)
-      _ = (bigDescentPoly n : ℝ[X]).coeff 0 * x ^ 0 := h0.symm
-      _ ≤ ∑ i ∈ Finset.range ((bigDescentPoly n : ℝ[X]).natDegree + 1),
-            (bigDescentPoly n : ℝ[X]).coeff i * x ^ i := by
-        apply Finset.single_le_sum (f := fun i ↦ (bigDescentPoly n : ℝ[X]).coeff i * x ^ i)
-        · intro i _
-          rw [coeff_bigDescentPoly_eq_cast]
-          positivity
-        · simp
-  exact hpos.ne' hx
+  refine (HasNonnegCoeffs.eval_pos_of_coeff_zero_pos (fun i ↦ ?_) ?_ h).ne' hx
+  · rw [coeff_bigDescentPoly_eq_cast]
+    positivity
+  · rw [coeff_zero_eq_eval_zero, eval_zero_bigDescentPoly]
+    exact_mod_cast Nat.fib_pos.mpr (by lia)
 
 end RealRooted.BigDescents321

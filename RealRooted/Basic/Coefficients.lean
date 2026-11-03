@@ -44,6 +44,13 @@ lemma hasNonnegCoeffs_C_mul {a : ℝ} (ha : 0 ≤ a) {p : ℝ[X]}
   intro n
   simpa [coeff_C_mul] using mul_nonneg ha (hp n)
 
+/-- Positivity of every coefficient up to the degree implies nonnegative coefficients. -/
+lemma hasNonnegCoeffs_of_forall_coeff_pos {p : ℝ[X]}
+    (h : ∀ k ≤ p.natDegree, 0 < p.coeff k) : HasNonnegCoeffs p := fun k ↦ by
+  by_cases hk : k ≤ p.natDegree
+  · exact (h k hk).le
+  · rw [coeff_eq_zero_of_natDegree_lt (by lia)]
+
 /-- Compatibility alias for `hasNonnegCoeffs_C_mul`. -/
 @[deprecated hasNonnegCoeffs_C_mul (since := "2026-10-21")]
 lemma nonnegCoeffs_C_mul {a : ℝ} (ha : 0 ≤ a) {p : ℝ[X]}
@@ -101,6 +108,17 @@ lemma HasNonnegCoeffs.eval_nonneg {p : ℝ[X]}
     0 ≤ p.eval x := by
   rw [Polynomial.eval_eq_sum, Polynomial.sum_def]
   exact Finset.sum_nonneg fun n _ => mul_nonneg (hp n) (pow_nonneg hx _)
+
+/-- A polynomial with nonnegative coefficients and positive constant coefficient is positive at
+every nonnegative real argument. -/
+lemma HasNonnegCoeffs.eval_pos_of_coeff_zero_pos {p : ℝ[X]}
+    (hp : HasNonnegCoeffs p) (h0 : 0 < p.coeff 0) {x : ℝ} (hx : 0 ≤ x) :
+    0 < p.eval x := by
+  rw [Polynomial.eval_eq_sum_range, Finset.sum_range_succ']
+  have := Finset.sum_nonneg fun i (_ : i ∈ Finset.range p.natDegree) =>
+    mul_nonneg (hp (i + 1)) (pow_nonneg hx (i + 1))
+  simp only [pow_zero, mul_one]
+  linarith
 
 /-- Reflection at an arbitrary degree preserves nonnegative coefficients. -/
 lemma HasNonnegCoeffs.reflect {p : ℝ[X]} (hp : HasNonnegCoeffs p) (n : ℕ) :
