@@ -431,15 +431,6 @@ theorem forall₂_sort_le_iff_prefixDominates {A B : Finset ℕ}
     simp_rw [countP_sort_eq_card_filter]
   · simp [hcard]
 
-/-- A bad sorted-list pair has a threshold where `B` has more small elements
-than `A`. -/
-theorem not_forall₂_sort_le_iff_exists_card_filter_lt {A B : Finset ℕ}
-    (hcard : A.card = B.card) :
-    ¬ List.Forall₂ (· ≤ ·) (A.sort (· ≤ ·)) (B.sort (· ≤ ·)) ↔
-      ∃ i : ℕ, (A.filter fun x => x ≤ i).card < (B.filter fun x => x ≤ i).card := by
-  rw [forall₂_sort_le_iff_prefixDominates hcard]
-  exact not_prefixDominates_iff_exists_card_filter_lt
-
 /-- Pairs of `k`-subsets of `range n` whose sorted lists are componentwise
 ordered. -/
 def orderedKSubsetPairs (n k : ℕ) : Finset (Finset ℕ × Finset ℕ) :=

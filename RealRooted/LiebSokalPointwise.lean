@@ -187,16 +187,6 @@ theorem MvUpperHalfPlaneStable.directionalPDeriv_pencil
   rw [heq] at hratio
   linarith
 
-/-- The all-ones directional-derivative pencil is stable. -/
-theorem MvUpperHalfPlaneStable.sum_pderiv_pencil
-    {σ : Type*} [Fintype σ] {P : MvPolynomial σ ℂ}
-    (hP : MvUpperHalfPlaneStable P) :
-    MvUpperHalfPlaneStable
-      (MvPolynomial.rename some P + MvPolynomial.X none *
-        MvPolynomial.rename some (∑ i : σ, MvPolynomial.pderiv i P)) := by
-  simpa [directionalPDeriv] using
-    hP.directionalPDeriv_pencil (fun _ => (1 : ℝ)) fun _ => zero_le_one
-
 /-- A nonnegative directional-derivative pencil over a real stable polynomial
 is real stable. -/
 theorem MvRealStable.directionalPDeriv_pencil
@@ -209,16 +199,6 @@ theorem MvRealStable.directionalPDeriv_pencil
   have h := hP.directionalPDeriv_pencil c hc
   simpa [complexifyMv, directionalPDeriv, MvPolynomial.map_rename,
     MvPolynomial.pderiv_map] using h
-
-/-- The real all-ones directional-derivative pencil is stable. -/
-theorem MvRealStable.sum_pderiv_pencil
-    {σ : Type*} [Fintype σ] {P : MvPolynomial σ ℝ}
-    (hP : MvRealStable P) :
-    MvRealStable
-      (MvPolynomial.rename some P + MvPolynomial.X none *
-        MvPolynomial.rename some (∑ i : σ, MvPolynomial.pderiv i P)) := by
-  simpa [directionalPDeriv] using
-    hP.directionalPDeriv_pencil (fun _ => (1 : ℝ)) fun _ => zero_le_one
 
 /-- Renaming a nonnegative directional-derivative pencil into any target
 coordinates preserves upper-half-plane stability. Coordinate identification is
@@ -235,18 +215,6 @@ theorem MvUpperHalfPlaneStable.directionalPDeriv_pencil_rename
   have h := (hP.directionalPDeriv_pencil c hc).rename (f := g)
   simpa [g, MvPolynomial.rename_rename, Function.comp_def] using h
 
-/-- The target-coordinate version of the all-ones directional-derivative
-pencil. -/
-theorem MvUpperHalfPlaneStable.sum_pderiv_pencil_rename
-    {σ τ : Type*} [Fintype σ] {P : MvPolynomial σ ℂ}
-    (hP : MvUpperHalfPlaneStable P) (f : σ → τ) (z : τ) :
-    MvUpperHalfPlaneStable
-      (MvPolynomial.rename f P + MvPolynomial.X z *
-        MvPolynomial.rename f (∑ i : σ, MvPolynomial.pderiv i P)) := by
-  simpa [directionalPDeriv] using
-    hP.directionalPDeriv_pencil_rename (fun _ => (1 : ℝ))
-      (fun _ => zero_le_one) f z
-
 /-- The real target-coordinate version of a nonnegative
 directional-derivative pencil. -/
 theorem MvRealStable.directionalPDeriv_pencil_rename
@@ -260,18 +228,6 @@ theorem MvRealStable.directionalPDeriv_pencil_rename
   have h := hP.directionalPDeriv_pencil_rename c hc f z
   simpa [complexifyMv, directionalPDeriv, MvPolynomial.map_rename,
     MvPolynomial.pderiv_map] using h
-
-/-- The real target-coordinate version of the all-ones
-directional-derivative pencil. -/
-theorem MvRealStable.sum_pderiv_pencil_rename
-    {σ τ : Type*} [Fintype σ] {P : MvPolynomial σ ℝ}
-    (hP : MvRealStable P) (f : σ → τ) (z : τ) :
-    MvRealStable
-      (MvPolynomial.rename f P + MvPolynomial.X z *
-        MvPolynomial.rename f (∑ i : σ, MvPolynomial.pderiv i P)) := by
-  simpa [directionalPDeriv] using
-    hP.directionalPDeriv_pencil_rename (fun _ => (1 : ℝ))
-      (fun _ => zero_le_one) f z
 
 /-- A partial derivative of a coordinatewise affine stable polynomial is zero
 or stable. -/
@@ -541,17 +497,6 @@ theorem MvUpperHalfPlaneStable.affineRoot_im_nonpos_of_degreeOf_le_one
   field_simp
   ring
 
-/-- The root of an affine slice of a stable multiaffine polynomial is outside
-the open upper half-plane. -/
-theorem MvUpperHalfPlaneStable.affineRoot_im_nonpos
-    {sigma : Type*} [DecidableEq sigma] {P : MvPolynomial sigma ℂ}
-    (hP : MvUpperHalfPlaneStable P) (hPma : MvPolynomial.IsMultiaffine P)
-    (i : sigma) (z : sigma → ℂ) (hz : ∀ j, 0 < (z j).im)
-    (ha : MvPolynomial.eval z (MvPolynomial.pderiv i P) ≠ 0) :
-    (-MvPolynomial.eval (Function.update z i 0) P /
-        MvPolynomial.eval z (MvPolynomial.pderiv i P)).im ≤ 0 :=
-  hP.affineRoot_im_nonpos_of_degreeOf_le_one i (hPma i) z hz ha
-
 /-- One-variable Lieb--Sokal step under an explicit stable-pencil hypothesis. -/
 theorem MvUpperHalfPlaneStable.sub_pderiv_of_stable_pencil_of_degreeOf_le_one
     {sigma : Type*} {F G : MvPolynomial sigma ℂ}
@@ -724,16 +669,6 @@ theorem MvUpperHalfPlaneStable.sub_pderiv_of_stable_mvPencil_of_degreeOf_le_one
   apply hF.sub_pderiv_of_stable_pencil_of_degreeOf_le_one hG i hi
   intro z hz w hw
   exact hFG.pencil_nonzero z hz w hw
-
-/-- One-variable Lieb--Sokal step stated using a stable polynomial pencil on
-an added variable. -/
-theorem MvUpperHalfPlaneStable.sub_pderiv_of_stable_mvPencil
-    {sigma : Type*} {F G : MvPolynomial sigma ℂ}
-    (hF : MvUpperHalfPlaneStable F) (hG : MvUpperHalfPlaneStable G)
-    (hGma : MvPolynomial.IsMultiaffine G) (i : sigma)
-    (hFG : MvUpperHalfPlaneStable (mvPencil F G)) :
-    MvUpperHalfPlaneStable (F - MvPolynomial.pderiv i G) :=
-  hF.sub_pderiv_of_stable_mvPencil_of_degreeOf_le_one hG i (hGma i) hFG
 
 /-- Eliminating one variable by replacing it with negative partial
 differentiation in another variable preserves stability, up to zero. -/

@@ -418,22 +418,6 @@ theorem mk_a207327Kernel_mul_one_sub :
 def a207327Row (n : ℕ) : ℝ[X] :=
   compositionRow (PowerSeries.mk a207327Kernel) n
 
-/-- A207327 rows are PF and consecutive rows are in zero-aware proper
-position. -/
-theorem a207327Rows_pf_and_interl :
-    (∀ n, IsPFPolynomial (a207327Row n)) ∧
-      ∀ n, Interl (a207327Row n) (a207327Row (n + 1)) := by
-  simpa [a207327Row, a207327Kernel] using
-    (shiftedFiniteSupersymmetricCompositionRows_pf_and_interl
-      (xs := [1, 1]) (ys := [1]) (by simp) (by simp))
-
-/-- Every nonzero root of an A207327 row is strictly negative. -/
-theorem a207327Row_nonzero_roots_neg
-    (n : ℕ) {r : ℝ} (hr : r ∈ (a207327Row n).roots)
-    (hr0 : r ≠ 0) : r < 0 :=
-  lt_of_le_of_ne
-    ((a207327Rows_pf_and_interl.1 n).roots_nonpos r hr) hr0
-
 /-- The polynomial-valued denominator
 `(1-z) - X*z*(1+z)^2` for the A207327 row series. -/
 def a207327DenominatorSeries : PowerSeries ℝ[X] :=
@@ -628,97 +612,21 @@ theorem eq_a207327Row_of_initial_and_recurrence
                     ih (n + 2) (by lia), ih (n + 1) (by lia),
                     ih n (by lia)]
 
-/-! ## Thin OEIS aliases for the polynomial and inverse-power families -/
+/-- A207327 rows are PF and consecutive rows are in zero-aware proper
+position. -/
+theorem a207327Rows_pf_and_interl :
+    (∀ n, IsPFPolynomial (a207327Row n)) ∧
+      ∀ n, Interl (a207327Row n) (a207327Row (n + 1)) := by
+  simpa [a207327Row, a207327Kernel] using
+    (shiftedFiniteSupersymmetricCompositionRows_pf_and_interl
+      (xs := [1, 1]) (ys := [1]) (by simp) (by simp))
 
-/-- A116088 is the quadratic binomial composition family. -/
-def a116088Row (n : ℕ) : ℝ[X] :=
-  compositionRow (PowerSeries.mk (binomialCompositionKernel 2)) n
-
-/-- The exact A116088 binomial row formula. -/
-theorem a116088Row_eq_sum_choose (n : ℕ) :
-    a116088Row n =
-      ∑ k ∈ Finset.range (n + 1),
-        C (Nat.choose (2 * k) (n - k) : ℝ) * X ^ k :=
-  compositionRow_binomialCompositionKernel 2 n
-
-/-- A116088 rows are PF and consecutively in zero-aware interlacing. -/
-theorem a116088Rows_pf_and_interl :
-    (∀ n, IsPFPolynomial (a116088Row n)) ∧
-      ∀ n, Interl (a116088Row n) (a116088Row (n + 1)) :=
-  binomialCompositionRows_pf_and_interl 2
-
-/-- The zero root of a positive A116088 row has multiplicity
-`ceil(n/3)`. -/
-theorem a116088Row_exact_X_power (n : ℕ) :
-    let m := n ⌈/⌉ 3
-    X ^ m ∣ a116088Row n ∧ ¬X ^ (m + 1) ∣ a116088Row n := by
-  simpa [a116088Row] using
-    (binomialCompositionRow_exact_X_power 2 n)
-
-/-- Every nonzero root of an A116088 row is strictly negative. -/
-theorem a116088Row_nonzero_roots_neg
-    (n : ℕ) {r : ℝ} (hr : r ∈ (a116088Row n).roots)
+/-- Every nonzero root of an A207327 row is strictly negative. -/
+theorem a207327Row_nonzero_roots_neg
+    (n : ℕ) {r : ℝ} (hr : r ∈ (a207327Row n).roots)
     (hr0 : r ≠ 0) : r < 0 :=
-  binomialCompositionRow_nonzero_roots_neg 2 n hr hr0
-
-/-- A116089 is the cubic binomial composition family. -/
-def a116089Row (n : ℕ) : ℝ[X] :=
-  compositionRow (PowerSeries.mk (binomialCompositionKernel 3)) n
-
-/-- The exact A116089 binomial row formula. -/
-theorem a116089Row_eq_sum_choose (n : ℕ) :
-    a116089Row n =
-      ∑ k ∈ Finset.range (n + 1),
-        C (Nat.choose (3 * k) (n - k) : ℝ) * X ^ k :=
-  compositionRow_binomialCompositionKernel 3 n
-
-/-- A116089 rows are PF and consecutively in zero-aware interlacing. -/
-theorem a116089Rows_pf_and_interl :
-    (∀ n, IsPFPolynomial (a116089Row n)) ∧
-      ∀ n, Interl (a116089Row n) (a116089Row (n + 1)) :=
-  binomialCompositionRows_pf_and_interl 3
-
-/-- The zero root of a positive A116089 row has multiplicity
-`ceil(n/4)`. -/
-theorem a116089Row_exact_X_power (n : ℕ) :
-    let m := n ⌈/⌉ 4
-    X ^ m ∣ a116089Row n ∧ ¬X ^ (m + 1) ∣ a116089Row n := by
-  simpa [a116089Row] using
-    (binomialCompositionRow_exact_X_power 3 n)
-
-/-- Every nonzero root of an A116089 row is strictly negative. -/
-theorem a116089Row_nonzero_roots_neg
-    (n : ℕ) {r : ℝ} (hr : r ∈ (a116089Row n).roots)
-    (hr0 : r ≠ 0) : r < 0 :=
-  binomialCompositionRow_nonzero_roots_neg 3 n hr hr0
-
-/-- A206294 is the cubic inverse-power composition family. -/
-def a206294Row (n : ℕ) : ℝ[X] :=
-  compositionRow (PowerSeries.mk (inversePowerCompositionKernel 3)) n
-
-/-- The exact guarded negative-binomial A206294 row formula. -/
-theorem a206294Row_eq_sum_choose (n : ℕ) :
-    a206294Row n =
-      ∑ k ∈ Finset.range (n + 1),
-        C (inversePowerCompositionRowCoeff 3 n k) * X ^ k :=
-  compositionRow_inversePowerCompositionKernel (by norm_num) n
-
-/-- A206294 rows are PF and consecutively in zero-aware interlacing. -/
-theorem a206294Rows_pf_and_interl :
-    (∀ n, IsPFPolynomial (a206294Row n)) ∧
-      ∀ n, Interl (a206294Row n) (a206294Row (n + 1)) :=
-  inversePowerCompositionRows_pf_and_interl 3
-
-/-- Every positive-index A206294 row has a simple zero. -/
-theorem a206294Row_exact_X {n : ℕ} (hn : 1 ≤ n) :
-    X ∣ a206294Row n ∧ ¬X ^ 2 ∣ a206294Row n :=
-  inversePowerCompositionRow_exact_X (by norm_num) hn
-
-/-- Every nonzero root of an A206294 row is strictly negative. -/
-theorem a206294Row_nonzero_roots_neg
-    (n : ℕ) {r : ℝ} (hr : r ∈ (a206294Row n).roots)
-    (hr0 : r ≠ 0) : r < 0 :=
-  inversePowerCompositionRow_nonzero_roots_neg 3 n hr hr0
+  lt_of_le_of_ne
+    ((a207327Rows_pf_and_interl.1 n).roots_nonpos r hr) hr0
 
 end
 

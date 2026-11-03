@@ -212,11 +212,6 @@ theorem restrictInit_directed {m : ℕ} (a : Data (m + 1))
     (a.restrictInit O).Directed x y ↔
       O.Directed x.castSucc y.castSucc := by rfl
 
-theorem restrictInit_isAcyclic {m : ℕ} (a : Data (m + 1))
-    {O : Graph.Orientation a.graph} (hO : O.IsAcyclic) :
-    (a.restrictInit O).IsAcyclic :=
-  a.restrictPrefix_isAcyclic (Nat.le_succ m) hO
-
 /-- Earlier neighbors of the final vertex, represented in the initial graph. -/
 abbrev lastEarlierNeighbors {m : ℕ} (a : Data (m + 1)) : Finset (Fin m) :=
   a.toFinRPEO.lastEarlierNeighbors
@@ -285,13 +280,6 @@ theorem extendOrientation_directed_to_last {m : ℕ} (a : Data (m + 1))
     (a.extendOrientation O cut).Directed
         (a.prefixEmbedding (Nat.le_succ m) x) (Fin.last m) ↔ x ∈ cut.lower :=
   a.toFinRPEO.extendOrientation_directed_to_last O cut x
-
-theorem extendOrientation_directed_from_last {m : ℕ} (a : Data (m + 1))
-    (O : Graph.Orientation a.init.graph) (cut : InsertionCut a O) (y : Fin m) :
-    (a.extendOrientation O cut).Directed
-        (Fin.last m) (a.prefixEmbedding (Nat.le_succ m) y) ↔
-      y ∈ a.lastEarlierNeighbors ∧ y ∉ cut.lower :=
-  a.toFinRPEO.extendOrientation_directed_from_last O cut y
 
 /-- Insertion cuts of an acyclic orientation are indexed by their size. -/
 noncomputable abbrev insertionCutEquivFin {m : ℕ} (a : Data (m + 1))
@@ -1087,17 +1075,6 @@ theorem acyclicSinkClosedForm_splits
     (isRealRooted_comp_X_add_C hne hind (-1)).2
   simpa [acyclicSinkClosedForm, sub_eq_add_neg] using
     (show (C (normalization a q) : ℝ[X]).Splits from by simp).mul hshift
-
-/-- Real-rootedness from the weighted-independence identity, taken as a
-hypothesis.  The identity itself is `acyclicSinkPolynomial_eq_closedForm`, so
-`acyclicSinkPolynomial_splits` is the unconditional form. -/
-theorem acyclicSinkPolynomial_splits_of_eq_closedForm
-    (a : Data n) {q : ℝ} (hq : 0 ≤ q)
-    (hidentity :
-      Graph.acyclicSinkPolynomial a.graph q =
-        acyclicSinkClosedForm a q) :
-    (Graph.acyclicSinkPolynomial a.graph q).Splits := by
-  simpa only [hidentity] using acyclicSinkClosedForm_splits a hq
 
 /-- The ascent-refined acyclic sink polynomial of every natural unit interval
 graph is real-rooted when q ≥ 0. -/

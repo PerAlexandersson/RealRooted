@@ -1463,7 +1463,6 @@ public import RealRooted.Tactic.Recurrence.RowSide
 public import RealRooted.Tactic.Recurrence.Shape
 public import RealRooted.Tactic.RecurrenceEval
 public import RealRooted.Tactic.RootBounds
-public import RealRooted.Tactic.RootCount.SequenceCore
 public import RealRooted.Tactic.Row.Core
 public import RealRooted.Tactic.Row.DerivLag
 public import RealRooted.Tactic.Row.DerivativeXMul
@@ -1946,6 +1945,9 @@ public import RealRooted.Mathlib.Algebra.BigOperators.Intervals
 public import RealRooted.GeneralizedEulerian.EvalNeg
 public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.Sonin
 public import RealRooted.PFPolynomial.LowCoefficients
+public import RealRooted.Challenges.Interlacing.HigherOrderRecurrenceStates
+public import RealRooted.Challenges.Preservers.BasisTransformPreservers
+public import RealRooted.Challenges.Preservers.OperatorMatrices
 public import RealRooted.Challenges.PolyaFrequency.LowCoefficients
 public import RealRooted.Challenges.Roots.SoninEnvelope
 public import RealRooted.Challenges.Interlacing.RecurrenceSpaceCertificates

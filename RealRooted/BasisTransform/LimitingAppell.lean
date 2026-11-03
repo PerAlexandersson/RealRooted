@@ -1039,20 +1039,6 @@ theorem limitingAppellPolynomial_splits_of_basisTransform
   · exact rescaledBasisPower_splits hPdeg hPmonic hpres N
   · exact tendsto_coeff_rescaledBasisPower hPdeg hPmonic hpres N
 
-/-- The fourth differential coefficient of a root-preserving monic basis is
-bounded by half the square of its second differential coefficient. -/
-theorem coeff_two_appellCoefficient_four_le_half_square
-    {P : ℕ → ℝ[X]} (hPdeg : ∀ n, (P n).natDegree = n)
-    (hPmonic : ∀ n, (P n).Monic)
-    (hpres : ∀ p : ℝ[X], p.Splits →
-      (∀ r ∈ p.roots, r ≤ 0) → (basisTransform P p).Splits) :
-    (appellCoefficient P 4).coeff 2 ≤
-      (appellCoefficient P 2).coeff 1 ^ 2 / 2 := by
-  apply limitingAppellCoefficient_two_le_half_square
-    (d := fun j => (appellCoefficient P (2 * j)).coeff j)
-    (coeff_zero_appellCoefficient_zero_eq_one hPdeg hPmonic hpres)
-  exact limitingAppellPolynomial_splits_of_basisTransform hPdeg hPmonic hpres
-
 /-- All even top differential coefficients of a root-preserving monic basis
 obey the sharp factorial bounds. -/
 theorem coeff_appellCoefficient_even_bounds
@@ -1118,16 +1104,5 @@ theorem forall_limitingAppellPolynomial_eq_iff_coeff_eq_pow_div_factorial
     congr 1
     funext j
     exact hd j
-
-/-- Substituting exponential coefficient data gives the corresponding
-Gaussian limiting Appell family. -/
-theorem limitingAppellPolynomial_eq_of_coeff_eq_pow_div_factorial
-    {d : ℕ → ℝ} {c : ℝ} (hd : ∀ j, d j = c ^ j / (j.factorial : ℝ))
-    (N : ℕ) :
-    limitingAppellPolynomial d N =
-      limitingAppellPolynomial (fun j => c ^ j / (j.factorial : ℝ)) N := by
-  congr 1
-  funext j
-  exact hd j
 
 end RealRooted
