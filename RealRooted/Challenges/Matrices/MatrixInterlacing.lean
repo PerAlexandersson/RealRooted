@@ -45,6 +45,11 @@ name = "RealRooted.Has2x2InterlacingProperty"
 module = "RealRooted.AffineFamily.Basic"
 label = "2 × 2 interlacing condition"
 
+[[definitions]]
+name = "RealRooted.IsInterlacingSeqNonneg"
+module = "RealRooted.InterlacingSequenceBasic"
+label = "Interlacing sequence of real-rooted polynomials with nonnegative coefficients"
+
 [[theorems]]
 name = "RealRooted.Challenges.MatrixInterlacing.preservesInterlacingSeq0_iff"
 label = "A matrix preserves interlacing sequences exactly when its 2 × 2 submatrices do"
@@ -62,6 +67,27 @@ label = "Strict input, zero-aware output"
 name = "RealRooted.matPolyMul_preservesInterlacingSeq0"
 module = "RealRooted.MatrixInterlacing.Composition"
 label = "Products of interlacing-preserving matrices preserve interlacing"
+
+[[theorems]]
+name = "RealRooted.isInterlacingSeq_iff_pairwise"
+module = "RealRooted.InterlacingSequenceBasic"
+label = "A sequence is interlacing exactly when it is pairwise interlacing"
+
+[[theorems]]
+name = "RealRooted.isInterlacingSeq0_iff_pairwise"
+module = "RealRooted.InterlacingSequenceBasic"
+label = "The zero-aware version is pairwise weak interlacing"
+
+[[theorems]]
+name = "RealRooted.isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeqNonneg"
+module = "RealRooted.ProductFamily"
+label = "The reversed product-sum of two interlacing nonnegative sequences is real-rooted"
+
+[[theorems]]
+name = """RealRooted.isRealRooted_zipWith_mul_sum_reverse_of_\
+interlacingSeq0Nonneg_both"""
+module = "RealRooted.ProductFamily"
+label = "The reversed product-sum theorem allowing zero terms in both sequences"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -99,6 +125,28 @@ sides of $\ll$ required to be nonzero. Then $G$ maps strict sequences to strict
 sequences. Under conditions 1 and 2 as stated, $G$ maps a strict sequence to a
 sequence $(g_1, \dots, g_m)$ of polynomials with nonnegative coefficients and
 $g_i \ll g_j$ whenever $i < j$, where some $g_i$ may vanish.
+
+## Interlacing sequences and the product-sum theorem
+
+A list $(f_1, \dots, f_n)$ of polynomials is an *interlacing sequence* if
+$f_i \ll f_j$ whenever $i < j$; with nonnegative coefficients and real-rooted
+terms we speak of an interlacing sequence in $\mathcal F_n^{+}$. In Lean this is
+recorded as a pairwise condition: a list is an interlacing sequence if and only if
+it is pairwise interlacing, and likewise for the zero-aware version, where the
+relation is weak interlacing.
+
+**Theorem** (Brändén, [@Branden2015, §7.8]). Let $(f_1, \dots, f_n)$ and
+$(g_1, \dots, g_n)$ be interlacing sequences of real-rooted polynomials with
+nonnegative coefficients, $n \ge 1$. Then
+$$
+\sum_{i=1}^n f_i\, g_{n+1-i}
+$$
+is nonzero and real-rooted. The proof shows that the products
+$f_i g_{n+1-i}$ have pairwise common interleavers, upgrades this to a common
+interleaver for the whole family by the Chudnovsky--Seymour theorem, and sums.
+A two-sided version allows zero terms in both sequences: if the terms of
+each sequence interlace weakly, every nonzero term is real-rooted, and the sum is
+nonzero, then the sum is real-rooted.
 
 ## References
 

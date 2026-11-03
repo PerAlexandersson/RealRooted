@@ -3,6 +3,8 @@ module
 import RealRooted.GammaPencil.Theorem
 import RealRooted.GammaTransform.Preservation
 import RealRooted.GammaTransform.ProperPosition
+import RealRooted.GammaTransform.StrictLifting
+import RealRooted.GammaTransform.TwoStep
 import RealRooted.GammaPencil.Preserver
 public import RealRooted.GammaPencil.Basic
 public import RealRooted.GammaTransform.Basic
@@ -19,6 +21,7 @@ references = [
   "Petersen2015EulerianNumbers",
   "HosterStump2025x",
   "Branden2015",
+  "Zhang2026SeparableInterlacing",
 ]
 authors = ["Petersen", "Hoster", "Stump"]
 years = [2015, 2025]
@@ -68,6 +71,32 @@ label = "Every real combination of the gamma-pencil components is real-rooted"
 [[theorems]]
 name = "RealRooted.Challenges.GammaTransform.gammaOperator_eq_zero_or_splits"
 label = "The gamma-pencil operator preserves real-rootedness"
+
+[[definitions]]
+name = "RealRooted.IsGammaExpansion"
+module = "RealRooted.GammaTransform.Basic"
+label = "The polynomial γ is the gamma polynomial of p in ambient degree d"
+
+[[theorems]]
+name = "RealRooted.IsGammaExpansion.isRealRooted_and_hasRootsNonpos_iff"
+module = "RealRooted.GammaTransform.Preservation"
+label = "A gamma expansion is real-rooted with nonpositive roots iff its gamma polynomial is"
+
+[[theorems]]
+name = "RealRooted.roots_gammaTransform_eq_reciprocal_add_neg_one_add"
+module = "RealRooted.GammaTransform.RootLists"
+label = "The roots of a gamma transform are reciprocal pairs together with roots at −1"
+
+[[theorems]]
+name = """RealRooted.strictInterl_gammaTransform_succ_of_\
+strictInterl_of_no_common"""
+module = "RealRooted.GammaTransform.StrictLifting"
+label = "Strict interlacing of gamma polynomials lifts to simple-rooted gamma transforms"
+
+[[theorems]]
+name = "RealRooted.strictInterl_gammaTransform_two_step"
+module = "RealRooted.GammaTransform.TwoStep"
+label = "Two successive gamma-transform steps preserve proper position"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -132,6 +161,31 @@ degree box. It therefore maps the real pencil spanned by $U_n$ and $V_n$ into
 the next one, starting from the linear pencil $a + bx$. By Obreschkoff's
 theorem, the pencil property makes $U_n$ and $V_n$ interlace, and the
 constant terms $U_n(0) = 1$ and $V_n(0) = 0$ fix the orientation.
+
+## Root structure, strict lifting and two steps
+
+The gamma transform is determined by the root map $y=x/(1+x)^2$. If $\gamma\ne0$
+and every root of $\Gamma_d(\gamma)$ is negative, then the roots of
+$\Gamma_d(\gamma)$ are the reciprocal pairs $\{x,1/x\}$ with $x\in(-1,0)$, together
+with $d-2\deg\gamma$ roots at $-1$. In the Hoster–Stump description this is the
+exact root multiset of the transform [@HosterStump2025x, Prop. 2.5]. For an
+arbitrary polynomial $p=\Gamma_d(\gamma)$ with $\deg\gamma\le d/2$, the real-rootedness
+criterion above applies without any symmetry assumption on $p$.
+
+The interlacing equivalence has a strict form. Let $A$ and $B$ have positive
+leading coefficients, negative roots, degrees $\lfloor (n-1)/2\rfloor$ and
+$\lfloor n/2\rfloor$ with $n\ge2$, and suppose $A\ll B$ with no common root. Then
+$\Gamma_{n-1}(A)$ and $\Gamma_n(B)$ again have degrees $n-1$ and $n$, simple negative
+roots, no common root, and $\Gamma_{n-1}(A)\ll\Gamma_n(B)$. The argument is the one
+used by Zhang for the descent polynomials of separable permutations
+[@Zhang2026SeparableInterlacing].
+
+Finally, if $\gamma\ll\delta$ have nonnegative coefficients and nonzero constant
+terms with $\deg\gamma\le n$ and $\deg\delta\le n+1$, then
+$$
+\Gamma_{2n}(\gamma)\ \ll\ (x+1)\,\Gamma_{2n}(\gamma)\ \ll\ \Gamma_{2n+2}(\delta),
+$$
+so two successive gamma-transform steps preserve proper position.
 
 ## References
 
