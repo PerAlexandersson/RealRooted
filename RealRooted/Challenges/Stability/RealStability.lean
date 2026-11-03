@@ -4,6 +4,9 @@ public import RealRooted.AffineLineRestriction
 public import RealRooted.DeterminantalStability
 import RealRooted.HomogeneousComponentStability
 import RealRooted.Hyperbolicity
+import RealRooted.Hyperbolicity.SignFree
+import RealRooted.BoundarySpecializationGeneral
+import RealRooted.HomogeneousStability
 public import RealRooted.HyperbolicityCone
 public import RealRooted.MultivariateStability.Inversion
 public import RealRooted.MultivariateStability.JumpSystem
@@ -17,6 +20,9 @@ import RealRooted.MultivariateStability.SamePhase
 public import RealRooted.SpanningTreeStability
 public import RealRooted.SamePhaseStability
 public import RealRooted.Multiaffine.Rayleigh
+import RealRooted.Multiaffine.AffineCoordinateCriterion
+import RealRooted.Multiaffine.CoordinateWronskian
+import RealRooted.Multiaffine.Reciprocal
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
 public import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
 
@@ -75,6 +81,21 @@ label = "Inversion z^d P(−1/z) in one variable"
 name = "RealRooted.mvDetPencil"
 module = "RealRooted.DeterminantalStability"
 label = "Determinant of a linear matrix pencil"
+
+[[definitions]]
+name = "RealRooted.MvUpperHalfPlaneStableOrZero"
+module = "RealRooted.MultivariateStability"
+label = "Stable or zero"
+
+[[definitions]]
+name = "MvPolynomial.coordinateWronskian"
+module = "RealRooted.Multiaffine.CoordinateWronskian"
+label = "Coordinate Wronskian"
+
+[[definitions]]
+name = "RealRooted.MvCommonRotationStable"
+module = "RealRooted.HomogeneousStability"
+label = "Common-rotation stability"
 
 [[theorems]]
 name = "RealRooted.Challenges.RealStability.mvRealStable_iff_isRayleigh"
@@ -181,6 +202,81 @@ name = "RealRooted.MixedCharacteristic.expectedCharpoly_eq_mixedCharacteristic"
 module = "RealRooted.MultivariateStability.ExpectedCharpoly"
 label = "MSS: expected characteristic polynomials are mixed characteristic"
 headline = true
+
+[[theorems]]
+name = "RealRooted.MvPolynomial.HyperbolicAt.of_joinedIn"
+module = "RealRooted.Hyperbolicity"
+label = "Hyperbolicity is constant on path components of the nonvanishing locus"
+
+[[theorems]]
+name = "RealRooted.MvRealStable.homogeneousComponent_totalDegree"
+module = "RealRooted.Hyperbolicity.SignFree"
+label = "The top homogeneous component of any real stable polynomial is real stable"
+
+[[theorems]]
+name = "RealRooted.MvRealStable.ordinaryHomogenization_hyperbolicAt_boundary"
+module = "RealRooted.Hyperbolicity.SignFree"
+label = "Ordinary homogenization is hyperbolic in every boundary direction"
+
+[[theorems]]
+name = "RealRooted.MvRealStable.ordinaryHomogenization_of_totalDegree_le"
+module = "RealRooted.Hyperbolicity"
+label = "Homogenization in any degree at least the total degree preserves real stability"
+
+[[theorems]]
+name = "RealRooted.MvUpperHalfPlaneStable.specializeAt_real_zero_or_general"
+module = "RealRooted.BoundarySpecializationGeneral"
+label = "Specializing a coordinate at a real value gives a stable polynomial or zero"
+
+[[theorems]]
+name = "RealRooted.MvUpperHalfPlaneStableOrZero.specializeAtList_real_general"
+module = "RealRooted.BoundarySpecializationGeneral"
+label = "Specializing several coordinates at real values preserves stability or zero"
+
+[[theorems]]
+name = "RealRooted.MvUpperHalfPlaneStable.specializeRight_zero_or_general"
+module = "RealRooted.BoundarySpecializationGeneral"
+label = "Setting a finite block of variables to zero gives a stable polynomial or zero"
+
+[[theorems]]
+name = "MvPolynomial.isRayleigh_add_X_mul_iff_of_fresh"
+module = "RealRooted.Multiaffine.AffineCoordinateCriterion"
+label = "Exact Rayleigh criterion for a fresh affine extension"
+
+[[theorems]]
+name = "RealRooted.MvUpperHalfPlaneStable.signedMultiaffineReciprocal"
+module = "RealRooted.Multiaffine.Reciprocal"
+label = "The signed multiaffine reciprocal preserves stability"
+
+[[theorems]]
+name = "MvPolynomial.coordinateWronskian_plucker"
+module = "RealRooted.Multiaffine.CoordinateWronskian"
+label = "Plücker relation for coordinate Wronskians"
+
+[[theorems]]
+name = "RealRooted.MvPolynomial.IsRayleigh.laguerre_realAffineLineRestriction"
+module = "RealRooted.Multiaffine.AffineLineRestriction"
+label = "Laguerre's inequality for line restrictions of Rayleigh polynomials"
+
+[[theorems]]
+name = "RealRooted.mvUpperHalfPlaneStable_iff_commonRotation_dehomogenize"
+module = "RealRooted.HomogeneousStability"
+label = "A homogeneous polynomial is stable iff its dehomogenization is common-rotation stable"
+
+[[theorems]]
+name = "RealRooted.mvRealStable_iff_commonRotation_dehomogenize"
+module = "RealRooted.HomogeneousStability"
+label = "Real-stable analogue of the common-rotation criterion"
+
+[[theorems]]
+name = "RealRooted.mvUpperHalfPlaneStable_ordinaryHomogenization_iff"
+module = "RealRooted.HomogeneousStability"
+label = "Ordinary homogenization is stable iff the source is common-rotation stable"
+
+[[theorems]]
+name = "RealRooted.MvUpperHalfPlaneStable.pderiv_none_of_top_coeff_C"
+module = "RealRooted.HomogeneousStability"
+label = "Differentiation in a variable with constant leading coefficient preserves stability"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -242,6 +338,17 @@ total degree $d$. Then its homogenization
 $z_0^d P(z_1/z_0, \dotsc, z_n/z_0)$ and its top homogeneous component, the
 part of degree $d$, are real stable.
 
+**Theorem** (sign-free top component). If $P$ is real stable, with no
+hypothesis on the signs of its coefficients, then its top homogeneous component
+is real stable. Consequently, for every $b \in \mathbb{R}^n$ with all
+$b_i > 0$, the top component does not vanish at $b$, and the homogenization
+$z_0^d P(z_1/z_0, \dotsc, z_n/z_0)$, with $d$ the total degree of $P$, is
+hyperbolic in the boundary direction $(0, b)$.
+
+**Theorem.** Let $P$ be a homogeneous real polynomial, hyperbolic in the
+direction $e$, and let $u$ lie in the same path component of
+$\{x : P(x) \neq 0\}$ as $e$. Then $P$ is hyperbolic in the direction $u$.
+
 **Theorem.** If $P$ is real stable, then $P$ is same-phase stable: for every
 $w \in \mathbb{R}^n$ with all $w_i \geq 0$, the univariate polynomial
 $P(w_1 t, \dotsc, w_n t)$ is real-rooted.
@@ -252,6 +359,49 @@ $d$ in $z_0$. Then $z_0^d P(-1/z_0, z')$ is stable. If $P$ is real stable,
 then so is this inversion. Without further variables: if $p$ has no zeros in
 the open upper half-plane and $\deg p \leq d$, then neither has
 $z^d p(-1/z)$.
+
+**Theorem** (specialization). Let $P$ be a stable polynomial and let $c$ be a
+real number. Then $P$ with the variable $z_i$ replaced by $c$ is stable or
+identically zero. No bound on the degree of $P$ in $z_i$ is needed. The
+statement extends to the repeated specialization of several variables at real
+values, and to setting a whole finite block of variables to zero.
+
+**Theorem** (multiaffine tools). Let $P$ and $Q$ be multiaffine polynomials
+that do not involve the variable $z_k$. Write
+$W_i(Q, P) = Q\, \partial_i P - P\, \partial_i Q$ for the coordinate
+Wronskian, let $R_{ij}(F) = \partial_i F\, \partial_j F - F\, \partial_i \partial_j F$
+be the Rayleigh difference, and let
+$M_{ij} = \partial_i P\, \partial_j Q + \partial_i Q\, \partial_j P
+- P\, \partial_i \partial_j Q - Q\, \partial_i \partial_j P$ be the mixed one.
+Then $P + z_k Q$ is Rayleigh if and only if
+
+* $P$ and $Q$ are Rayleigh,
+* $W_i(Q, P)(x) \geq 0$ for all $i$ and $x \in \mathbb{R}^n$, and
+* $M_{ij}^2 - 4 R_{ij}(Q) R_{ij}(P) \leq 0$ at every $x \in \mathbb{R}^n$,
+  for all $i, j \neq k$.
+
+The coordinate Wronskians of four polynomials satisfy the Plücker relation
+$W_i(P, A)\, W_i(Q, B) = W_i(P, Q)\, W_i(A, B) + W_i(P, B)\, W_i(Q, A)$.
+If $P \in \mathbb{C}[z_1, \dotsc, z_n]$ is multiaffine and stable, then so is
+the signed reciprocal $z \mapsto \prod_i z_i\, P(-1/z_1, \dotsc, -1/z_n)$.
+Finally, if $P$ is Rayleigh, $a \in \mathbb{R}^n$, and $b \in \mathbb{R}^n$ has
+nonnegative entries, then $p(t) = P(a + tb)$ satisfies Laguerre's inequality
+$p'(t)^2 - p(t)\, p''(t) \geq 0$ for all real $t$.
+
+**Theorem** (common-rotation criterion). Call a complex polynomial $Q$
+*common-rotation stable* if $Q(z) \neq 0$ whenever some single $c$ with
+$\operatorname{Im} c > 0$ satisfies $\operatorname{Im}(c z_i) > 0$ for all $i$.
+A homogeneous polynomial $P$ in the variables $z_0, z_1, \dotsc, z_n$ is stable
+if and only if its dehomogenization $P(1, z_1, \dotsc, z_n)$ is common-rotation
+stable; for a homogeneous real polynomial the same holds for real stability.
+In particular, the ordinary homogenization of $p$, in any degree at least the
+total degree of $p$, is stable if and only if $p$ is common-rotation stable.
+
+**Theorem.** Let $P$ be stable in the variables $z_0, z_1, \dotsc, z_n$, of
+degree at most $m \geq 1$ in $z_0$, and suppose that the coefficient of
+$z_0^m$ is a nonzero constant. Then $\partial P / \partial z_0$ is stable.
+The constant leading coefficient prevents a specialization of the other
+variables from lowering the degree in $z_0$.
 
 For real positive semidefinite matrices $A_i$, the mixed characteristic
 polynomial $\mu[A]$ is nonzero and real-rooted.
@@ -297,6 +447,15 @@ hyperbolicity propagates along a path to all positive directions. The top
 component is the endpoint of a homotopy of stable polynomials, and root
 continuity keeps its line restrictions real-rooted. Same-phase stability is
 the case $x = 0$, together with a limit for weights that vanish.
+
+Without sign hypotheses, the top component is the initial form for the weights
+$-1$, which the jump-system machinery shows to be stable. Specialization at a
+real value reduces, after a real translation, to specialization at zero, and
+repeated specialization follows by induction. For a fresh affine extension
+$P + z_k Q$ and $i, j \neq k$, the Rayleigh difference is a quadratic in $z_k$
+with coefficients $R_{ij}(P)$, $M_{ij}$ and $R_{ij}(Q)$; for $i = k$ it equals
+$W_j(Q, P)$, independent of $z_k$. This explains the three conditions in the
+criterion.
 
 Inversion works because $z \mapsto -1/z$ maps the open upper half-plane to
 itself: $\operatorname{Im}(-1/z) = \operatorname{Im} z / |z|^2$. For

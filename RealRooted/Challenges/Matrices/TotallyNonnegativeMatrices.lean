@@ -6,6 +6,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Closure
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum
 public import RealRooted.MatrixInterlacing.TotallyNonnegative
 import RealRooted.OscillatoryInterlacing
+import RealRooted.TetradiagonalFactorization
 import RealRooted.TotallyNonnegInterlacing
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
@@ -45,6 +46,21 @@ label = "Sign variations of a vector"
 name = "Matrix.HasNonnegInitialColumnMinors"
 module = "RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer"
 label = "Nonnegative initial-column minors"
+
+[[definitions]]
+name = "RealRooted.IsNonnegativeLowerSplit"
+module = "RealRooted.TetradiagonalFactorization"
+label = "Nonnegative split of a lower matrix into two bidiagonal factors"
+
+[[definitions]]
+name = "RealRooted.CanonicalLowerSplitSucceeds"
+module = "RealRooted.TetradiagonalFactorization"
+label = "Success of the zero-aware canonical split"
+
+[[definitions]]
+name = "RealRooted.tetradiagonalMatrix"
+module = "RealRooted.TetradiagonalFactorization"
+label = "Tetradiagonal lower-Hessenberg matrix"
 
 [[theorems]]
 name = "RealRooted.Challenges.TotallyNonnegativeMatrices.exists_charpoly_eq_prod_nonneg"
@@ -101,6 +117,31 @@ module = "RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein"
 label = "Primitive compounds make the characteristic polynomial real-rooted with positive roots"
 
 [[theorems]]
+name = "RealRooted.canonicalLowerSplitSucceeds_iff"
+module = "RealRooted.TetradiagonalFactorization"
+label = "The canonical algorithm succeeds exactly when a nonnegative bidiagonal split exists"
+
+[[theorems]]
+name = "RealRooted.canonicalSecondFactor_maximal"
+module = "RealRooted.TetradiagonalFactorization"
+label = "Every nonnegative split is bounded by the canonical pivots"
+
+[[theorems]]
+name = "RealRooted.canonicalLowerSplitSucceeds_of_lower_bound"
+module = "RealRooted.TetradiagonalFactorization"
+label = "A positive lower bound for the pivots forces the canonical split to succeed"
+
+[[theorems]]
+name = "RealRooted.positivePivotReconstruction_unique"
+module = "RealRooted.TetradiagonalFactorization"
+label = "Positive-pivot reconstruction of a tetradiagonal factorization is unique"
+
+[[theorems]]
+name = "RealRooted.tetradiagonalPolynomial_eq_charpoly"
+module = "RealRooted.TetradiagonalFactorization"
+label = "The four-term recurrence gives the characteristic polynomials of tetradiagonal sections"
+
+[[theorems]]
 name = "Matrix.det_gaussianMatrix_submatrix_pos"
 module = "RealRooted.Mathlib.LinearAlgebra.Matrix.Gaussian"
 label = "Karlin: Gaussian matrices are strictly totally positive"
@@ -151,6 +192,43 @@ simple. Karlin's Gaussian matrices $\bigl(e^{-a(i-j)^2}\bigr)$ with $a > 0$ are
 strictly totally positive: every minor with strictly increasing rows and
 columns is positive [@Karlin1968].
 
+**Theorem** (tetradiagonal factorization). Index rows and columns from $0$. A
+tetradiagonal lower-Hessenberg matrix $T$ has diagonal entries $d_i$,
+superdiagonal entries $1$, subdiagonal entries $s_i$ in row $i$, and second
+subdiagonal entries $t_i$ in row $i$. The characteristic polynomial $p_N$ of the
+leading $N \times N$ section satisfies the four-term recurrence
+$$
+p_N = (x - d_{N-1})\, p_{N-1} - s_{N-1}\, p_{N-2} - t_{N-1}\, p_{N-3}
+\qquad (N \geq 3),
+$$
+with $p_0 = 1$, $p_1 = x - d_0$ and $p_2 = (x - d_1)(x - d_0) - s_1$. Write $T$
+as a product of a unit lower matrix with subdiagonal $\ell$ and second
+subdiagonal $m$, and an upper-bidiagonal matrix with diagonal entries
+$u_n > 0$ (the pivots) and superdiagonal entries $1$. Comparing entries gives
+$d_0 = u_0$, $d_{n+1} = u_{n+1} + \ell_n$, $s_{n+1} = \ell_n u_n + m_n$ and
+$t_{n+2} = m_{n+1} u_n$, and these equations determine the pivots, $\ell$ and
+$m$ uniquely. The lower factor splits further into two unit lower-bidiagonal
+matrices with nonnegative entries exactly when the following scalar problem has
+a solution. Let $(\ell_n)$ and $(m_n)$ be sequences with $m_n \geq 0$. A
+*nonnegative split* consists of sequences $a_n, b_n \geq 0$ with
+$a_n + b_n = \ell_n$ and $a_{n+1} b_n = m_{n+1}$. The
+*canonical pivots* are $u_0 = \ell_0$ and
+$$
+u_{n+1} = \begin{cases}
+\ell_{n+1} & \text{if } u_n = 0, \\
+\ell_{n+1} - m_{n+1} / u_n & \text{otherwise,}
+\end{cases}
+$$
+and the canonical split uses $b_n = u_n$ and $a_{n+1} = m_{n+1} / u_n$ (or $0$
+if $u_n = 0$). The canonical split *succeeds* if every $u_n \geq 0$ and
+$u_n = 0$ implies $m_{n+1} = 0$. Then a nonnegative split exists if and only
+if the canonical split succeeds, and in that case $b_n \leq u_n$ for every
+nonnegative split. In particular, the canonical split succeeds if there are
+positive numbers $v_n$ with $v_0 \leq \ell_0$ and
+$v_{n+1} + m_{n+1} / v_n \leq \ell_{n+1}$. The criterion follows Branquinho,
+Foulquié-Moreno and Mañas, with the zero branches, where a pivot vanishes and
+the construction restarts, made explicit.
+
 ## Proof idea
 
 For the spectrum, the eigenvalues of the $q$-th compound matrix are the
@@ -172,6 +250,14 @@ $2 \times 2$ minors of a TNN matrix satisfy the affine interlacing condition.
 The variation-diminishing property holds for sign-regular matrices, and Cryer's
 criterion follows by strictifying consecutive minors with a Gaussian kernel
 and passing to the limit.
+
+For the split criterion, an induction on $n$ shows that for every nonnegative
+split the canonical pivot $u_n$ is nonnegative, dominates $b_n$, and vanishes
+only if $m_{n+1} = 0$; the zero pivot, where the division is undefined, is
+treated as a separate branch. Conversely, when the canonical split succeeds,
+its entries satisfy the defining equations. The recurrence for the
+characteristic polynomials is the expansion of the determinant of
+$xI - T$ along the band structure, and it holds for all coefficient signs.
 
 ## References
 

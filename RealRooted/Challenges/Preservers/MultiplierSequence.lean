@@ -2,6 +2,8 @@ module
 
 import RealRooted.BorceaBranden.Applications.BidiagonalSymbol.RealConsequences
 import RealRooted.MultiplierSequence.Bidiagonal.Jensen.Contraction
+import RealRooted.JensenPencilContraction
+import RealRooted.JensenPencilPositiveContraction
 import RealRooted.MultiplierSequence.InvPochhammer
 import RealRooted.MultiplierSequence.Laguerre
 import RealRooted.MultiplierSequence.PolyaSchur
@@ -164,6 +166,30 @@ label = "Bidiagonal PF preservers from a Jensen-pencil certificate"
 name = "RealRooted.IsMultiplierSequence.strictInterl_diagonalOperator_of_pos"
 module = "RealRooted.MultiplierSequence.ProperPosition"
 label = "Positive multiplier sequences preserve directed proper position"
+
+[[theorems]]
+name = "RealRooted.compatible_schurSzego_jensen_of_pos_coeff_zero"
+module = "RealRooted.JensenPencilPositiveContraction"
+label = "Schur–Szegő composition preserves Jensen-pencil compatibility, positive constant terms"
+tags = ["realrooted-original"]
+
+[[theorems]]
+name = "RealRooted.compatible_jensen_translate"
+module = "RealRooted.JensenPencilContraction"
+label = "Positive translation preserves Jensen-pencil compatibility"
+tags = ["realrooted-original"]
+
+[[theorems]]
+name = "RealRooted.IsPolyaFreqSeq.of_continuous_curve"
+module = "RealRooted.JensenPencilContraction"
+label = "A coefficientwise continuous curve of PF sequences has a PF endpoint"
+tags = ["realrooted-original"]
+
+[[theorems]]
+name = "RealRooted.schurSzegoPreservesJensenPencilCompatibility"
+module = "RealRooted.JensenPencilContraction"
+label = "Schur–Szegő composition by a PF polynomial preserves Jensen-pencil compatibility"
+tags = ["realrooted-original"]
 -->
 
 <!-- realrooted-catalog-content -->
@@ -227,6 +253,26 @@ polynomials:
 
 The second criterion goes through Schur–Szegő composition and
 Chudnovsky–Seymour compatibility rather than the symbol.
+
+**Jensen-pencil contraction.** Here $A$, $B$ and $p$ are PF polynomials of degree at most $d$,
+and the pair $(A, xB)$ is *compatible*: every nonnegative linear combination of $A$ and $xB$ is
+zero or real-rooted. Let $*_d$ denote Schur–Szegő composition, see the page on Hadamard
+products. The key fact is that simultaneous composition with a PF polynomial keeps the pair
+compatible,
+$$
+(A, xB) \text{ compatible} \;\Longrightarrow\; (A *_d p,\; x\,(B *_d p)) \text{ compatible},
+$$
+which is exactly what the Jensen-pencil certificate needs. The proof has two steps.
+
+* If $A$, $B$ and $p$ have positive constant coefficients, a signed reciprocal reversal turns
+  compatibility into two finite-free upper-root-count contractions, and the claim follows
+  from the root-count form of compatibility.
+* In general, the translation $x \mapsto x + \varepsilon$ with $\varepsilon > 0$ preserves PF
+  polynomials and makes all constant coefficients positive; it also preserves the Jensen-pencil
+  compatibility of $(A, xB)$. Applying the positive case to the translates and letting
+  $\varepsilon \to 0$ is justified by the closure of the PF cone: a coefficientwise
+  continuous curve of PF sequences has a PF endpoint, since every minor of the Toeplitz
+  matrix is a continuous function of the parameter.
 
 
 **Laguerre–Pólya operator theorem.** If $\varphi$ is a locally uniform limit of real-rooted
