@@ -1,6 +1,7 @@
 module
 
 import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
+import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowFormulas
 public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Auxiliary
 import RealRooted.Mathlib.Algebra.BigOperators.Group.List
 public import RealRooted.GeneralizedSnakePosets.Narayana.Modified

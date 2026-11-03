@@ -1,7 +1,8 @@
 module
 
 import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.FiniteCases
-public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowFormulas
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.BottomRow
+import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowFormulas
 
 /-!
 # Auxiliary polynomials from truncated staircases
