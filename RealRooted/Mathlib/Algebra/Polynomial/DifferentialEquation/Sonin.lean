@@ -5,8 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Analysis.Calculus.Deriv.Polynomial
+public import Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Analysis.Calculus.Deriv.Basic
+public import Mathlib.Basic.Real.Basic
 
+import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Analysis.Calculus.Deriv.Inv
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
 import Mathlib.Analysis.Calculus.Deriv.Slope
