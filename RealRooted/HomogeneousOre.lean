@@ -385,35 +385,6 @@ theorem homogeneous_induced_two_coordinate_cone_backend_of_step_preservers
   rw [hQstate j]
   simp [sub_eq_add_neg, add_assoc, add_left_comm, add_comm]
 
-/-- Endpoint `Splits` consequence of
-`homogeneous_induced_two_coordinate_cone_backend`. -/
-theorem homogeneous_induced_two_coordinate_cone_backend_splits
-    {T : ℕ → ℝ[X] →ₗ[ℝ] ℝ[X]} {ell m k : ℕ → ℝ[X]}
-    {P Q : ℕ → ℝ[X]}
-    (hbase : AllComboRealRooted (P 0) (Q 0))
-    (hrow : HomogeneousInducedConeRowsAlong T ell m k P Q)
-    (hQstate : ∀ j : ℕ,
-      Q j = P (j + 1) - oreAffineDerivativeLinearMap (ell j) (m j) (P j))
-    (hQnext : ∀ j : ℕ, Q (j + 1) = polynomialMulLinearMap (k j) (Q j)) :
-    ∀ j : ℕ, (P j).Splits := fun j => by
-  simpa using
-    (homogeneous_induced_two_coordinate_cone_backend
-      hbase hrow hQstate hQnext j 1 0)
-
-/-- Endpoint `Splits` consequence of
-`homogeneous_induced_two_coordinate_cone_backend_of_step_preservers`. -/
-theorem homogeneous_induced_two_coordinate_cone_backend_splits_of_step_preservers
-    {ell m k : ℕ → ℝ[X]} {P Q : ℕ → ℝ[X]}
-    (hbase : AllComboRealRooted (P 0) (Q 0))
-    (hstep : HomogeneousInducedConeStepPreserversAlong ell m k P Q)
-    (hQstate : ∀ j : ℕ,
-      Q j = P (j + 1) - oreAffineDerivativeLinearMap (ell j) (m j) (P j))
-    (hQnext : ∀ j : ℕ, Q (j + 1) = polynomialMulLinearMap (k j) (Q j)) :
-    ∀ j : ℕ, (P j).Splits := fun j => by
-  simpa using
-    (homogeneous_induced_two_coordinate_cone_backend_of_step_preservers
-      hbase hstep hQstate hQnext j 1 0)
-
 /-- Closed-form `Splits` exit from the direct step-preserver homogeneous
 induced-cone backend. -/
 theorem
@@ -447,63 +418,6 @@ theorem
     (homogeneous_induced_two_coordinate_cone_backend_of_step_preservers
       hbase hstep hQstate hQnext) hR hR0
 
-/-- Closed-form `Splits` exit from the homogeneous induced-cone backend.
-
-The target family may be any pointwise real linear combination of the carried
-state `(P j, Q j)`. -/
-theorem homogeneous_induced_two_coordinate_cone_backend_splits_of_eq_combo
-    {T : ℕ → ℝ[X] →ₗ[ℝ] ℝ[X]} {ell m k : ℕ → ℝ[X]}
-    {P Q R : ℕ → ℝ[X]} {u v : ℕ → ℝ}
-    (hbase : AllComboRealRooted (P 0) (Q 0))
-    (hrow : HomogeneousInducedConeRowsAlong T ell m k P Q)
-    (hQstate : ∀ j : ℕ,
-      Q j = P (j + 1) - oreAffineDerivativeLinearMap (ell j) (m j) (P j))
-    (hQnext : ∀ j : ℕ, Q (j + 1) = polynomialMulLinearMap (k j) (Q j))
-    (hR : ∀ j : ℕ, R j = C (u j) * P j + C (v j) * Q j) :
-    ∀ j : ℕ, (R j).Splits :=
-  AllComboRealRooted.splits_sequence_of_eq_combo
-    (homogeneous_induced_two_coordinate_cone_backend
-      hbase hrow hQstate hQnext) hR
-
-/-- Nonzero real-rootedness package for a closed-form exit from the homogeneous
-induced-cone backend. -/
-theorem homogeneous_induced_two_coordinate_cone_backend_ne_zero_and_splits_of_eq_combo
-    {T : ℕ → ℝ[X] →ₗ[ℝ] ℝ[X]} {ell m k : ℕ → ℝ[X]}
-    {P Q R : ℕ → ℝ[X]} {u v : ℕ → ℝ}
-    (hbase : AllComboRealRooted (P 0) (Q 0))
-    (hrow : HomogeneousInducedConeRowsAlong T ell m k P Q)
-    (hQstate : ∀ j : ℕ,
-      Q j = P (j + 1) - oreAffineDerivativeLinearMap (ell j) (m j) (P j))
-    (hQnext : ∀ j : ℕ, Q (j + 1) = polynomialMulLinearMap (k j) (Q j))
-    (hR : ∀ j : ℕ, R j = C (u j) * P j + C (v j) * Q j)
-    (hR0 : ∀ j : ℕ, R j ≠ 0) :
-    ∀ j : ℕ, R j ≠ 0 ∧ (R j).Splits :=
-  AllComboRealRooted.ne_zero_and_splits_sequence_of_eq_combo
-    (homogeneous_induced_two_coordinate_cone_backend
-      hbase hrow hQstate hQnext) hR hR0
-
-/-- Named homogeneous induced-cone backend with row certificates constructed
-from generated-row-facing pencil data. -/
-theorem homogeneous_induced_two_coordinate_cone_backend_of_pencil
-    {T : ℕ → ℝ[X] →ₗ[ℝ] ℝ[X]} {ell m k : ℕ → ℝ[X]}
-    {P Q : ℕ → ℝ[X]} {a b c d : ℕ → ℝ}
-    (hbase : AllComboRealRooted (P 0) (Q 0))
-    (hT : PreservesRealRootedOnPencilsAlong T P Q)
-    (hPimage : ∀ j : ℕ,
-      oreAffineDerivativeLinearMap (ell j) (m j) (P j) + Q j =
-        C (a j) * T j (P j) + C (b j) * T j (Q j))
-    (hQimage : ∀ j : ℕ,
-      polynomialMulLinearMap (k j) (Q j) =
-        C (c j) * T j (P j) + C (d j) * T j (Q j))
-    (hQstate : ∀ j : ℕ,
-      Q j = P (j + 1) - oreAffineDerivativeLinearMap (ell j) (m j) (P j))
-    (hQnext : ∀ j : ℕ, Q (j + 1) = polynomialMulLinearMap (k j) (Q j)) :
-    ∀ j : ℕ, AllComboRealRooted (P j) (Q j) :=
-  homogeneous_induced_two_coordinate_cone_backend hbase
-    (homogeneousInducedConeRowsAlong_of_pencil
-      (a := a) (b := b) (c := c) (d := d) hT hPimage hQimage)
-    hQstate hQnext
-
 /-- The named homogeneous induced-cone backend specialized to scalar
 triangular rows with the identity preserver. -/
 theorem homogeneous_induced_two_coordinate_cone_backend_scalar_id
@@ -518,51 +432,6 @@ theorem homogeneous_induced_two_coordinate_cone_backend_scalar_id
   homogeneous_induced_two_coordinate_cone_backend hbase
     (homogeneousInducedConeRowsAlong_scalar_id r s P Q) hQstate hQnext
 
-/-- Endpoint `Splits` consequence of
-`homogeneous_induced_two_coordinate_cone_backend_of_pencil`. -/
-theorem homogeneous_induced_two_coordinate_cone_backend_splits_of_pencil
-    {T : ℕ → ℝ[X] →ₗ[ℝ] ℝ[X]} {ell m k : ℕ → ℝ[X]}
-    {P Q : ℕ → ℝ[X]} {a b c d : ℕ → ℝ}
-    (hbase : AllComboRealRooted (P 0) (Q 0))
-    (hT : PreservesRealRootedOnPencilsAlong T P Q)
-    (hPimage : ∀ j : ℕ,
-      oreAffineDerivativeLinearMap (ell j) (m j) (P j) + Q j =
-        C (a j) * T j (P j) + C (b j) * T j (Q j))
-    (hQimage : ∀ j : ℕ,
-      polynomialMulLinearMap (k j) (Q j) =
-        C (c j) * T j (P j) + C (d j) * T j (Q j))
-    (hQstate : ∀ j : ℕ,
-      Q j = P (j + 1) - oreAffineDerivativeLinearMap (ell j) (m j) (P j))
-    (hQnext : ∀ j : ℕ, Q (j + 1) = polynomialMulLinearMap (k j) (Q j)) :
-    ∀ j : ℕ, (P j).Splits := fun j => by
-  simpa using
-    (homogeneous_induced_two_coordinate_cone_backend_of_pencil
-      (a := a) (b := b) (c := c) (d := d)
-      hbase hT hPimage hQimage hQstate hQnext j 1 0)
-
-/-- Closed-form `Splits` exit from generated-row-facing pencil data. -/
-theorem homogeneous_induced_two_coordinate_cone_backend_splits_of_eq_combo_of_pencil
-    {T : ℕ → ℝ[X] →ₗ[ℝ] ℝ[X]} {ell m k : ℕ → ℝ[X]}
-    {P Q R : ℕ → ℝ[X]} {a b c d u v : ℕ → ℝ}
-    (hbase : AllComboRealRooted (P 0) (Q 0))
-    (hT : PreservesRealRootedOnPencilsAlong T P Q)
-    (hPimage : ∀ j : ℕ,
-      oreAffineDerivativeLinearMap (ell j) (m j) (P j) + Q j =
-        C (a j) * T j (P j) + C (b j) * T j (Q j))
-    (hQimage : ∀ j : ℕ,
-      polynomialMulLinearMap (k j) (Q j) =
-        C (c j) * T j (P j) + C (d j) * T j (Q j))
-    (hQstate : ∀ j : ℕ,
-      Q j = P (j + 1) - oreAffineDerivativeLinearMap (ell j) (m j) (P j))
-    (hQnext : ∀ j : ℕ, Q (j + 1) = polynomialMulLinearMap (k j) (Q j))
-    (hR : ∀ j : ℕ, R j = C (u j) * P j + C (v j) * Q j) :
-    ∀ j : ℕ, (R j).Splits :=
-  homogeneous_induced_two_coordinate_cone_backend_splits_of_eq_combo
-    hbase
-    (homogeneousInducedConeRowsAlong_of_pencil
-      (a := a) (b := b) (c := c) (d := d) hT hPimage hQimage)
-    hQstate hQnext hR
-
 /-- Closed-form `Splits` exit for scalar triangular rows with the
 identity preserver. -/
 theorem homogeneous_induced_two_coordinate_cone_backend_splits_of_eq_combo_scalar_id
@@ -575,9 +444,9 @@ theorem homogeneous_induced_two_coordinate_cone_backend_splits_of_eq_combo_scala
       Q (j + 1) = polynomialMulLinearMap (C (s j)) (Q j))
     (hR : ∀ j : ℕ, R j = C (u j) * P j + C (v j) * Q j) :
     ∀ j : ℕ, (R j).Splits :=
-  homogeneous_induced_two_coordinate_cone_backend_splits_of_eq_combo
-    hbase (homogeneousInducedConeRowsAlong_scalar_id r s P Q)
-    hQstate hQnext hR
+  AllComboRealRooted.splits_sequence_of_eq_combo
+    (homogeneous_induced_two_coordinate_cone_backend_scalar_id
+      hbase hQstate hQnext) hR
 
 /-- Nonzero real-rootedness package for a closed-form exit from scalar
 triangular rows with the identity preserver. -/
@@ -592,9 +461,9 @@ theorem homogeneous_induced_two_coordinate_cone_backend_ne_zero_and_splits_of_eq
     (hR : ∀ j : ℕ, R j = C (u j) * P j + C (v j) * Q j)
     (hR0 : ∀ j : ℕ, R j ≠ 0) :
     ∀ j : ℕ, R j ≠ 0 ∧ (R j).Splits :=
-  homogeneous_induced_two_coordinate_cone_backend_ne_zero_and_splits_of_eq_combo
-    hbase (homogeneousInducedConeRowsAlong_scalar_id r s P Q)
-    hQstate hQnext hR hR0
+  AllComboRealRooted.ne_zero_and_splits_sequence_of_eq_combo
+    (homogeneous_induced_two_coordinate_cone_backend_scalar_id
+      hbase hQstate hQnext) hR hR0
 
 /-- Unoriented `Interl` consequence of sequence-level pencil transport.
 
