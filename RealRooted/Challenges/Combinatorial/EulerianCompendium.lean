@@ -1,6 +1,8 @@
 module
 
 import RealRooted.Applications.EulerianCompendium.Results
+import RealRooted.EulerianMixedCompatibility
+import RealRooted.EulerianCompletion
 public import RealRooted.Applications.EulerianCompendium.TernaryWords
 public import RealRooted.Applications.EulerianCompendium.CyclicWords
 import RealRooted.CombinatorialExamples.ZigzagEulerian.RealRooted
@@ -49,6 +51,16 @@ name = "RealRooted.EulerianCompendium.StrictlyAlternatingRoots"
 module = "RealRooted.Applications.EulerianCompendium.Definitions"
 label = "Strict root alternation"
 
+[[definitions]]
+name = "RealRooted.eulerInsertionStep"
+module = "RealRooted.EulerianMixedCompatibility.Insertion"
+label = "Euler insertion operator"
+
+[[definitions]]
+name = "RealRooted.loweringEulerStep"
+module = "RealRooted.EulerianCompletion"
+label = "Lowering Euler operator"
+
 [[theorems]]
 name = "RealRooted.EulerianCompendium.PaperChallenges.derangementDescent_realRooted"
 module = "RealRooted.Challenges.Combinatorial.EulerianCompendium"
@@ -96,6 +108,30 @@ name = "RealRooted.EulerianCompendium.PaperChallenges.zigzagEulerian_roots"
 module = "RealRooted.Challenges.Combinatorial.EulerianCompendium"
 label = "Zig-zag Eulerian simple negative roots"
 tags = ["realrooted-original"]
+
+[[theorems]]
+name = "RealRooted.compatible_eulerInsertionStep_one_zero_succ"
+module = "RealRooted.EulerianMixedCompatibility"
+label = "Mixed adjacent Euler insertion steps are compatible"
+tags = ["coauthored-paper"]
+
+[[theorems]]
+name = "RealRooted.mixedEulerStep_splits"
+module = "RealRooted.EulerianMixedCompatibility"
+label = "Every positive mixture of adjacent Euler steps is real-rooted"
+tags = ["realrooted-original"]
+
+[[theorems]]
+name = "RealRooted.loweringEulerStep_strictInterl"
+module = "RealRooted.EulerianCompletion"
+label = "The lowering Euler operator preserves oriented PF interlacing"
+tags = ["realrooted-original"]
+
+[[theorems]]
+name = "RealRooted.crossedEulerCompletion_commonLeftInterleaver"
+module = "RealRooted.EulerianCompletion"
+label = "Four crossed Euler completions have a common left interleaver"
+tags = ["realrooted-original"]
 -->
 
 <!-- realrooted-catalog-content -->
@@ -142,6 +178,35 @@ The even-top and univariate peak statements require simple roots and exclude
 common roots. The ternary and positive-weighted peak statements assert weak
 interlacing: the library predicate `StrictInterl` permits equal roots.
 The zig-zag theorem asserts simple negative roots, without consecutive interlacing.
+
+## Euler insertion operators
+
+The derangement-descent argument uses the two adjacent Euler insertion operators
+$$
+E_{c,d}\, p = \bigl(c + (d+1)x\bigr)\, p + (x - x^2)\, p',
+$$
+where $d$ bounds the degree of $p$ and $c \in \{0, 1\}$ is the constant boundary weight. Two
+operator-theoretic results, independent of any particular sequence, drive that argument.
+
+**Mixed compatibility.** Let $f, g$ be real polynomials with nonnegative coefficients and
+positive leading coefficients, $\deg f = \deg g + 1 \le n + 1$, such that $g$ strictly
+interlaces $f$. Then $E_{1,n}\, g$ and
+$E_{0,n+1}\, f$ are *compatible*: every nonnegative linear combination is zero or real-rooted.
+In particular, for every $\lambda > 0$ the mixture $E_{0,n+1} f + \lambda E_{1,n} g$ is
+real-rooted. This is the common-root-safe form of the mixed lemma of the paper: no genericity
+assumption on the roots remains, because multiple and common roots are removed by the
+nonnegative regularizations $p + \varepsilon p'$ and a limiting argument.
+
+**Oriented Euler completion.** The lowering operator $p \mapsto M p + (1 - x) p'$ has a
+finite algebraic symbol which is stable in the upper half-plane. Consequently it preserves
+strict interlacing of PF polynomials of the same top degree $D$, whenever $M \ge D + 1$. This
+yields the relation between a derivative step and a zero-boundary insertion step, and from it
+the following statement: if $p$ and $p + 1$ are PF polynomials of degree $D \ge 2$ and
+$M \ge D + 2$, then
+$$
+E_{1,M-2}\, p,\quad E_{1,M-2}(p+1),\quad E_{0,M-1}\, p,\quad E_{0,M-1}(p+1)
+$$
+have a common left interleaver, namely $E_{1,M-2}\, p'$.
 
 ## References
 
