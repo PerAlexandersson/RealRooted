@@ -77,23 +77,6 @@ theorem rootMultiplicity_eq_add_of_iterate_derivative_ge_two
       rw [ih hp hmn, hstep]
       lia
 
-/-- Differentiating `k` times removes at most `k` copies of a prescribed
-linear factor. -/
-theorem pow_tsub_dvd_iterate_derivative_of_pow_dvd
-    {p : ℝ[X]} {a : ℝ} {n : ℕ}
-    (h : (X - C a) ^ n ∣ p) (k : ℕ) :
-    (X - C a) ^ (n - k) ∣ (derivative^[k]) p := by
-  induction k generalizing p n with
-  | zero => simpa
-  | succ k ih =>
-      rw [Function.iterate_succ_apply']
-      have hd := pow_sub_one_dvd_derivative_of_pow_dvd h
-      have hcomm : derivative ((derivative^[k]) p) =
-          (derivative^[k]) (derivative p) := by
-        rw [← Function.iterate_succ_apply, Function.iterate_succ_apply']
-      rw [hcomm]
-      simpa [Nat.sub_sub, Nat.add_comm] using ih hd
-
 /-- A polynomial of degree below `k` which vanishes at `k` consecutive
 integers is zero. -/
 theorem eq_zero_of_natDegree_lt_of_eval_nat_add_eq_zero
@@ -309,7 +292,7 @@ theorem eq_zero_of_add_scaled_linear_pow_splits
     ring
   have hfactor_der : (X - C z) ^ (N - m) ∣ (derivative^[m]) F := by
     rw [hFder]
-    exact pow_tsub_dvd_iterate_derivative_of_pow_dvd hfactor m
+    exact pow_sub_dvd_iterate_derivative_of_pow_dvd m hfactor
   have hmult_der : N - m ≤ ((derivative^[m]) F).rootMultiplicity z :=
     (le_rootMultiplicity_iff hFder0).mpr hfactor_der
   have htwo : 2 ≤ ((derivative^[m]) F).rootMultiplicity z := by

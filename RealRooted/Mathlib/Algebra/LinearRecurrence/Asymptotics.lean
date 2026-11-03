@@ -6,6 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.Analysis.Asymptotics.Lemmas
+import Mathlib.Algebra.Polynomial.Eval.Degree
 import Mathlib.Analysis.SpecificLimits.Normed
 public import RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic
 public import Mathlib.Algebra.Polynomial.Derivative
@@ -28,48 +29,50 @@ open scoped Polynomial
 
 namespace LinearRecurrence
 
+/-- A polynomial in `n` times a geometric sequence with ratio `|r| < 1` tends to zero. -/
+theorem tendsto_eval_nat_mul_pow_nhds_zero {r : ℝ} (hr : |r| < 1) (R : ℝ[X]) :
+    Tendsto (fun n : ℕ => R.eval (n : ℝ) * r ^ n) atTop (𝓝 0) := by
+  simp_rw [Polynomial.eval_eq_sum_range, Finset.sum_mul, mul_assoc]
+  simpa using tendsto_finsetSum (Finset.range (R.natDegree + 1)) fun k _ =>
+    (tendsto_pow_const_mul_const_pow_of_abs_lt_one k hr).const_mul (R.coeff k)
+
+/-- If `A ≠ 0` and `|r| < 1`, the ratio `(P n + Q n * rⁿ) / (A + B * rⁿ)` differs from `P n / A`
+by a quantity that, even multiplied by a polynomial `S n`, tends to zero. -/
+theorem tendsto_mul_ratio_sub_div_nhds_zero {A B r : ℝ} (hA : A ≠ 0) (hr : |r| < 1)
+    (P Q S : ℝ[X]) :
+    Tendsto (fun n : ℕ => S.eval (n : ℝ) *
+      ((P.eval (n : ℝ) + Q.eval (n : ℝ) * r ^ n) / (A + B * r ^ n) -
+        P.eval (n : ℝ) / A)) atTop (𝓝 0) := by
+  have hden : Tendsto (fun n : ℕ => A + B * r ^ n) atTop (𝓝 A) := by
+    simpa only [mul_zero, add_zero] using
+      (tendsto_const_nhds (f := atTop) (x := A)).add
+        ((tendsto_const_nhds (f := atTop) (x := B)).mul
+          (tendsto_pow_atTop_nhds_zero_of_abs_lt_one hr))
+  have hnum := tendsto_eval_nat_mul_pow_nhds_zero hr
+    (S * (Polynomial.C A * Q - Polynomial.C B * P))
+  have hquot := hnum.div (hden.const_mul A) (mul_ne_zero hA hA)
+  rw [zero_div] at hquot
+  refine hquot.congr' ?_
+  filter_upwards [hden.eventually_ne hA] with n hn
+  simp only [Pi.div_apply, Polynomial.eval_mul, Polynomial.eval_sub, Polynomial.eval_C]
+  field_simp
+  ring
+
+open Polynomial in
 /-- The normalized linear root-mode ratio has a finite limit. -/
 theorem linear_ratio_tendsto {A B α β γ δ r : ℝ} (hA : A ≠ 0)
     (hr : |r| < 1) :
     Tendsto (fun n : ℕ =>
       (((α * (n : ℝ) + β) + (γ * (n : ℝ) + δ) * r ^ n) /
         (A + B * r ^ n) - (α / A) * (n : ℝ))) atTop (𝓝 (β / A)) := by
-  have hpow0 : Tendsto (fun n : ℕ => r ^ n) atTop (𝓝 0) :=
-    tendsto_pow_atTop_nhds_zero_of_abs_lt_one hr
-  have hpow1 : Tendsto (fun n : ℕ => (n : ℝ) * r ^ n) atTop (𝓝 0) :=
-    tendsto_self_mul_const_pow_of_abs_lt_one hr
-  have hden : Tendsto (fun n : ℕ => A + B * r ^ n) atTop (𝓝 A) := by
-    simpa only [mul_zero, add_zero] using
-      (tendsto_const_nhds (f := atTop) (x := A)).add
-        ((tendsto_const_nhds (f := atTop) (x := B)).mul hpow0)
-  have hnum : Tendsto
-      (fun n : ℕ => A * β + A * (γ * (n : ℝ) + δ) * r ^ n -
-        α * (n : ℝ) * B * r ^ n) atTop (𝓝 (A * β)) := by
-    have h := ((tendsto_const_nhds (f := atTop) (x := A * β)).add
-      (hpow1.const_mul (A * γ - α * B))).add (hpow0.const_mul (A * δ))
-    convert h using 1
-    · funext n
-      ring
-    · simp
-  have hquot := hnum.div (hden.const_mul A) (mul_ne_zero hA hA)
-  have hquot' : Tendsto (fun n : ℕ =>
-      (A * β + A * (γ * (n : ℝ) + δ) * r ^ n -
-        α * (n : ℝ) * B * r ^ n) / (A * (A + B * r ^ n)))
-      atTop (𝓝 (β / A)) := by
-    convert hquot using 1
-    field_simp [hA]
-  have hden_ne : ∀ᶠ n : ℕ in atTop, A + B * r ^ n ≠ 0 := hden.eventually_ne hA
-  have heq : ∀ᶠ n : ℕ in atTop,
-      (((α * (n : ℝ) + β) + (γ * (n : ℝ) + δ) * r ^ n) /
-        (A + B * r ^ n) - (α / A) * (n : ℝ)) =
-      (A * β + A * (γ * (n : ℝ) + δ) * r ^ n -
-        α * (n : ℝ) * B * r ^ n) / (A * (A + B * r ^ n)) := by
-    filter_upwards [hden_ne] with n hn
-    apply (eq_div_iff (mul_ne_zero hA hn)).2
-    field_simp [hA, hn, add_comm, mul_comm]
-    ring
-  exact hquot'.congr' (heq.mono fun _ h => h.symm)
+  have h := (tendsto_mul_ratio_sub_div_nhds_zero (B := B) hA hr (C α * X + C β)
+    (C γ * X + C δ) 1).add_const (β / A)
+  rw [zero_add] at h
+  refine h.congr fun n => ?_
+  simp only [eval_add, eval_mul, eval_C, eval_X, eval_one]
+  ring
 
+open Polynomial in
 /-- The linear ratio remainder is exponentially small after one extra factor of
 the index. -/
 theorem linear_ratio_remainder_mul_tendsto {A B α β γ δ r : ℝ} (hA : A ≠ 0)
@@ -77,44 +80,12 @@ theorem linear_ratio_remainder_mul_tendsto {A B α β γ δ r : ℝ} (hA : A ≠
     Tendsto (fun n : ℕ => (n : ℝ) *
       ((((α * (n : ℝ) + β) + (γ * (n : ℝ) + δ) * r ^ n) /
         (A + B * r ^ n) - (α / A) * (n : ℝ)) - β / A)) atTop (𝓝 0) := by
-  have hpow0 : Tendsto (fun n : ℕ => r ^ n) atTop (𝓝 0) :=
-    tendsto_pow_atTop_nhds_zero_of_abs_lt_one hr
-  have hpow1 : Tendsto (fun n : ℕ => (n : ℝ) * r ^ n) atTop (𝓝 0) :=
-    tendsto_self_mul_const_pow_of_abs_lt_one hr
-  have hpow2 : Tendsto (fun n : ℕ => (n : ℝ) ^ 2 * r ^ n) atTop (𝓝 0) :=
-    tendsto_pow_const_mul_const_pow_of_abs_lt_one 2 hr
-  have hden : Tendsto (fun n : ℕ => A + B * r ^ n) atTop (𝓝 A) := by
-    simpa only [mul_zero, add_zero] using
-      (tendsto_const_nhds (f := atTop) (x := A)).add
-        ((tendsto_const_nhds (f := atTop) (x := B)).mul hpow0)
-  have hnum' : Tendsto (fun n : ℕ =>
-      ((A * γ - α * B) * (n : ℝ) + (A * δ - β * B)) *
-        (n : ℝ) * r ^ n) atTop (𝓝 0) := by
-    have h := (hpow2.const_mul (A * γ - α * B)).add
-      (hpow1.const_mul (A * δ - β * B))
-    convert h using 1
-    · funext n
-      ring
-    · simp
-  have hquot := hnum'.div (hden.const_mul A) (mul_ne_zero hA hA)
-  have hquot' : Tendsto (fun n : ℕ =>
-      (((A * γ - α * B) * (n : ℝ) + (A * δ - β * B)) *
-        (n : ℝ) * r ^ n) / (A * (A + B * r ^ n))) atTop (𝓝 0) := by
-    convert hquot using 1
-    simp only [zero_div]
-  have hden_ne : ∀ᶠ n : ℕ in atTop, A + B * r ^ n ≠ 0 := hden.eventually_ne hA
-  have heq : ∀ᶠ n : ℕ in atTop,
-      (n : ℝ) *
-        ((((α * (n : ℝ) + β) + (γ * (n : ℝ) + δ) * r ^ n) /
-          (A + B * r ^ n) - (α / A) * (n : ℝ)) - β / A) =
-      (((A * γ - α * B) * (n : ℝ) + (A * δ - β * B)) *
-        (n : ℝ) * r ^ n) / (A * (A + B * r ^ n)) := by
-    filter_upwards [hden_ne] with n hn
-    apply (eq_div_iff (mul_ne_zero hA hn)).2
-    field_simp [hA, hn, add_comm, mul_comm]
-    ring
-  exact hquot'.congr' (heq.mono fun _ h => h.symm)
+  refine (tendsto_mul_ratio_sub_div_nhds_zero (B := B) hA hr (C α * X + C β)
+    (C γ * X + C δ) X).congr fun n => ?_
+  simp only [eval_add, eval_mul, eval_C, eval_X]
+  ring
 
+open Polynomial in
 /-- The normalized quadratic root-mode ratio has a finite limit after its
 quadratic and linear terms are removed. -/
 theorem quadratic_ratio_tendsto {A B η θ κ ζ ξ χ r : ℝ} (hA : A ≠ 0)
@@ -124,48 +95,12 @@ theorem quadratic_ratio_tendsto {A B η θ κ ζ ξ χ r : ℝ} (hA : A ≠ 0)
           (ζ * (n : ℝ) ^ 2 + ξ * (n : ℝ) + χ) * r ^ n) /
         (A + B * r ^ n) - (η / A) * (n : ℝ) ^ 2 -
         (θ / A) * (n : ℝ))) atTop (𝓝 (κ / A)) := by
-  have hpow0 : Tendsto (fun n : ℕ => r ^ n) atTop (𝓝 0) :=
-    tendsto_pow_atTop_nhds_zero_of_abs_lt_one hr
-  have hpow1 : Tendsto (fun n : ℕ => (n : ℝ) * r ^ n) atTop (𝓝 0) :=
-    tendsto_self_mul_const_pow_of_abs_lt_one hr
-  have hpow2 : Tendsto (fun n : ℕ => (n : ℝ) ^ 2 * r ^ n) atTop (𝓝 0) :=
-    tendsto_pow_const_mul_const_pow_of_abs_lt_one 2 hr
-  have hden : Tendsto (fun n : ℕ => A + B * r ^ n) atTop (𝓝 A) := by
-    simpa only [mul_zero, add_zero] using
-      (tendsto_const_nhds (f := atTop) (x := A)).add
-        ((tendsto_const_nhds (f := atTop) (x := B)).mul hpow0)
-  have hnum : Tendsto (fun n : ℕ =>
-      A * κ + A * (ζ * (n : ℝ) ^ 2 + ξ * (n : ℝ) + χ) * r ^ n -
-        η * (n : ℝ) ^ 2 * B * r ^ n - θ * (n : ℝ) * B * r ^ n)
-      atTop (𝓝 (A * κ)) := by
-    have h := (((tendsto_const_nhds (f := atTop) (x := A * κ)).add
-      (hpow2.const_mul (A * ζ - η * B))).add
-      (hpow1.const_mul (A * ξ - θ * B))).add (hpow0.const_mul (A * χ))
-    convert h using 1
-    · funext n
-      ring
-    · simp
-  have hquot := hnum.div (hden.const_mul A) (mul_ne_zero hA hA)
-  have hquot' : Tendsto (fun n : ℕ =>
-      (A * κ + A * (ζ * (n : ℝ) ^ 2 + ξ * (n : ℝ) + χ) * r ^ n -
-        η * (n : ℝ) ^ 2 * B * r ^ n - θ * (n : ℝ) * B * r ^ n) /
-        (A * (A + B * r ^ n))) atTop (𝓝 (κ / A)) := by
-    convert hquot using 1
-    field_simp [hA]
-  have hden_ne : ∀ᶠ n : ℕ in atTop, A + B * r ^ n ≠ 0 := hden.eventually_ne hA
-  have heq : ∀ᶠ n : ℕ in atTop,
-      (((η * (n : ℝ) ^ 2 + θ * (n : ℝ) + κ) +
-          (ζ * (n : ℝ) ^ 2 + ξ * (n : ℝ) + χ) * r ^ n) /
-        (A + B * r ^ n) - (η / A) * (n : ℝ) ^ 2 -
-        (θ / A) * (n : ℝ)) =
-      (A * κ + A * (ζ * (n : ℝ) ^ 2 + ξ * (n : ℝ) + χ) * r ^ n -
-        η * (n : ℝ) ^ 2 * B * r ^ n - θ * (n : ℝ) * B * r ^ n) /
-        (A * (A + B * r ^ n)) := by
-    filter_upwards [hden_ne] with n hn
-    apply (eq_div_iff (mul_ne_zero hA hn)).2
-    field_simp [hA, hn, add_comm, mul_comm]
-    ring
-  exact hquot'.congr' (heq.mono fun _ h => h.symm)
+  have h := (tendsto_mul_ratio_sub_div_nhds_zero (B := B) hA hr
+    (C η * X ^ 2 + C θ * X + C κ) (C ζ * X ^ 2 + C ξ * X + C χ) 1).add_const (κ / A)
+  rw [zero_add] at h
+  refine h.congr fun n => ?_
+  simp only [eval_add, eval_mul, eval_C, eval_X, eval_pow, eval_one]
+  ring
 
 /-- The mean correction is bounded in the algebraic two-mode model. -/
 theorem linear_ratio_isBigO {A B α β γ δ r : ℝ} (hA : A ≠ 0)
