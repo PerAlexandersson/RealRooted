@@ -650,6 +650,7 @@ public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Auxiliary
 public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Basic
 public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.BottomRow
 public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.FiniteCases
 public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.FullStaircase
 public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowFormulas
 public import RealRooted.GeneralizedSnakePosetsNarayana

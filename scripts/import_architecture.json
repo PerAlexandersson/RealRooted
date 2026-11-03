@@ -247,13 +247,13 @@
       "max_modules": 238
     },
     "RealRooted.EulerOperator.Darboux": {
-      "max_modules": 50
+      "max_modules": 49
     },
     "RealRooted.EulerOperator.Darboux.Basic": {
       "max_modules": 2
     },
     "RealRooted.EulerOperator.Darboux.Interlacing": {
-      "max_modules": 49
+      "max_modules": 48
     },
     "RealRooted.Jacobi.DifferentialOperator": {
       "max_modules": 4
@@ -277,7 +277,7 @@
       "max_modules": 11
     },
     "RealRooted.Laguerre": {
-      "max_modules": 65
+      "max_modules": 64
     },
     "RealRooted.Laguerre.Orthogonality": {
       "max_modules": 8
@@ -286,7 +286,7 @@
       "max_modules": 9
     },
     "RealRooted.Laguerre.Roots": {
-      "max_modules": 59
+      "max_modules": 58
     },
     "RealRooted.Hermite": {
       "max_modules": 56
@@ -886,7 +886,7 @@
       "max_modules": 9
     },
     "RealRooted.Challenges.Combinatorial.Narayana": {
-      "max_modules": 216
+      "max_modules": 215
     },
     "RealRooted.Tactic.Wagner": {
       "max_modules": 92
@@ -1168,7 +1168,7 @@
       "max_modules": 12
     },
     "RealRooted.DerivativeRecurrence.QuadraticInterlacing": {
-      "max_modules": 48
+      "max_modules": 47
     },
     "RealRooted.DerivativeRecurrence.QuadraticLagStrict": {
       "max_modules": 46
@@ -1528,13 +1528,13 @@
       "max_modules": 131
     },
     "RealRooted.Tactic.WagnerX.Syntax": {
-      "max_modules": 128
+      "max_modules": 127
     },
     "RealRooted.Tactic.WagnerX.Frontend": {
-      "max_modules": 129
+      "max_modules": 128
     },
     "RealRooted.Tactic.WagnerX": {
-      "max_modules": 131
+      "max_modules": 130
     },
     "RealRooted.Tactic.LiuWang": {
       "max_modules": 61
@@ -1579,16 +1579,16 @@
       "max_modules": 42
     },
     "RealRooted.MaWang.DerivativeStep": {
-      "max_modules": 46
+      "max_modules": 45
     },
     "RealRooted.MaWang.DerivativeSequence": {
-      "max_modules": 55
+      "max_modules": 54
     },
     "RealRooted.MaWang.DerivativeDenominator": {
-      "max_modules": 57
+      "max_modules": 56
     },
     "RealRooted.MaWang.Derivative": {
-      "max_modules": 58
+      "max_modules": 57
     },
     "RealRooted.MaWang.StrictStep": {
       "max_modules": 46
@@ -1603,7 +1603,7 @@
       "max_modules": 25
     },
     "RealRooted.Tactic.MaWang": {
-      "max_modules": 59
+      "max_modules": 58
     },
     "RealRooted.Tactic.Product": {
       "max_modules": 92

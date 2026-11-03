@@ -102,6 +102,26 @@ theorem quadratic_ratio_tendsto {A B η θ κ ζ ξ χ r : ℝ} (hA : A ≠ 0)
   simp only [eval_add, eval_mul, eval_C, eval_X, eval_pow, eval_one]
   ring
 
+/-- The mean correction is bounded in the algebraic two-mode model. -/
+theorem linear_ratio_isBigO {A B α β γ δ r : ℝ} (hA : A ≠ 0)
+    (hr : |r| < 1) :
+    (fun n : ℕ =>
+      (((α * (n : ℝ) + β) + (γ * (n : ℝ) + δ) * r ^ n) /
+        (A + B * r ^ n) - (α / A) * (n : ℝ))) =O[atTop]
+      (fun _ => (1 : ℝ)) := by
+  exact (linear_ratio_tendsto hA hr).isBigO_one ℝ
+
+/-- The quadratic ratio has bounded remainder after its two leading terms. -/
+theorem quadratic_ratio_isBigO {A B η θ κ ζ ξ χ r : ℝ} (hA : A ≠ 0)
+    (hr : |r| < 1) :
+    (fun n : ℕ =>
+      (((η * (n : ℝ) ^ 2 + θ * (n : ℝ) + κ) +
+          (ζ * (n : ℝ) ^ 2 + ξ * (n : ℝ) + χ) * r ^ n) /
+        (A + B * r ^ n) - (η / A) * (n : ℝ) ^ 2 -
+        (θ / A) * (n : ℝ))) =O[atTop]
+      (fun _ => (1 : ℝ)) := by
+  exact (quadratic_ratio_tendsto hA hr).isBigO_one ℝ
+
 /-- A quadratic second-mode ratio and a linear first-mode ratio give a bounded
 variance remainder. -/
 theorem variance_ratio_tendsto {A B α β γ δ η θ κ ζ ξ χ r m c σ : ℝ}
