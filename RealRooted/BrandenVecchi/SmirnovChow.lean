@@ -197,15 +197,6 @@ theorem weightedSmirnovPolynomial_zeroWeights {m : ℕ} (n : ℕ) :
       (i := (0 : Fin (n + 1))) rfl
   simp [hweight]
 
-/-- Pointwise equal weights give equal literal enumerators. -/
-theorem weightedSmirnovPolynomial_congr {m : ℕ}
-    {weight weight' : Fin m → R} (h : ∀ i, weight i = weight' i)
-    (n : ℕ) :
-    weightedSmirnovPolynomial weight n =
-      weightedSmirnovPolynomial weight' n := by
-  have hweight : weight = weight' := funext h
-  rw [hweight]
-
 /-- The contribution of nonempty Smirnov words with prescribed final
 letter.  The index `n` counts the letters before that final letter. -/
 def weightedSmirnovEndingSummand {m n : ℕ}

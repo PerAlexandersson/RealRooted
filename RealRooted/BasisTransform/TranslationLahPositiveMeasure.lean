@@ -110,13 +110,6 @@ theorem translationLahWordTransform_isPFPolynomial
             raySemigroupTransform_isPFPolynomial (by norm_num) hw.1 zero_le_one
               (ih hw.2)
 
-/-- The Lah flow `exp (b X D²)`, represented by the library ray semigroup,
-preserves every PF polynomial for `b ≥ 0`. -/
-theorem lahFlowTransform_isPFPolynomial
-    {b : ℝ} (hb : 0 ≤ b) {p : ℝ[X]} (hp : IsPFPolynomial p) :
-    IsPFPolynomial (raySemigroupTransform 0 b 1 p) :=
-  raySemigroupTransform_isPFPolynomial (by norm_num) hb zero_le_one hp
-
 /-- A family of monomial images belongs to the sequential coefficientwise
 closure of valid finite translation--Lah words. -/
 def IsTranslationLahWordClosure (T : ℕ → ℝ[X]) : Prop :=
@@ -1073,20 +1066,6 @@ theorem translationLahParameters_of_pairwise
         simpa [Prod.eta] using htail.translation ua.2 huaweight
       convert hins.lah (β - ua.1) (sub_nonneg.mpr (hupper ua (by simp))) using 1
       ring
-
-/-- Constructive finite atomic realization: every decreasing list of
-nonnegative atoms in `[0, β]` is the atom list of a valid finite word whose
-total Lah time is `β`. -/
-theorem exists_translationLahWord_of_pairwise
-    {β : ℝ} {atoms : List (ℝ × ℝ)} (hβ : 0 ≤ β)
-    (hnonneg : ∀ ua ∈ atoms, 0 ≤ ua.1 ∧ 0 ≤ ua.2)
-    (hordered : atoms.Pairwise fun ua va => va.1 ≤ ua.1)
-    (hupper : ∀ ua ∈ atoms, ua.1 ≤ β) :
-    ∃ w : List TranslationLahGenerator,
-      TranslationLahWordValid w ∧
-      translationLahWordBeta w = β ∧
-      translationLahWordAtoms w = atoms :=
-  (translationLahParameters_of_pairwise hβ hnonneg hordered hupper).exists_word
 
 /-- The `j`th moment of a finite atomic measure with locations `u` and
 weights `w`. -/

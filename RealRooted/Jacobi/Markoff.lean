@@ -38,12 +38,6 @@ def jacobiBetaOneLogFunctional (α : ℝ) (p : ℝ[X]) : ℝ :=
   Polynomial.momentFunctional (jacobiBetaOneLogMoment α) p
 
 @[simp]
-theorem jacobiBetaOneLogFunctional_zero (α : ℝ) :
-    jacobiBetaOneLogFunctional α 0 = 0 := by
-  simpa only [jacobiBetaOneLogFunctional] using
-    Polynomial.momentFunctional_zero (jacobiBetaOneLogMoment α)
-
-@[simp]
 theorem jacobiBetaOneLogFunctional_add (α : ℝ) (p q : ℝ[X]) :
     jacobiBetaOneLogFunctional α (p + q) =
       jacobiBetaOneLogFunctional α p +
@@ -91,11 +85,6 @@ theorem hasDerivAt_jacobiBetaOneMoment {α : ℝ} (hα : -1 < α) (k : ℕ) :
     simp only [jacobiBetaOneLogMoment]
     field_simp [hu, hv]
     ring
-
-theorem deriv_jacobiBetaOneMoment {α : ℝ} (hα : -1 < α) (k : ℕ) :
-    deriv (fun a => jacobiBetaOneMoment a k) α =
-      jacobiBetaOneLogMoment α k :=
-  (hasDerivAt_jacobiBetaOneMoment hα k).deriv
 
 /-- Differentiating the beta-one moment functional at a fixed polynomial
 gives its logarithmic moment functional. -/

@@ -184,18 +184,6 @@ private theorem weightedIndepPolyOn_map_embedding
       ((hadj x y).mpr hxyG)
   · simp
 
-/-- Weighted independence polynomials on finite supports are invariant under
-graph isomorphism, with the weights pulled back along the isomorphism. -/
-theorem weightedIndepPolyOn_iso
-    {W : Type v} {G : _root_.SimpleGraph V} {H : _root_.SimpleGraph W}
-    [DecidableEq V] [DecidableEq W]
-    [DecidableRel G.Adj] [DecidableRel H.Adj]
-    (e : G ≃g H) (S : Finset V) (wt : W → ℝ) :
-    weightedIndepPolyOn H (S.map e.toEquiv.toEmbedding) wt =
-      weightedIndepPolyOn G S (wt ∘ e) :=
-  weightedIndepPolyOn_map_embedding e.toEquiv.toEmbedding
-    (fun _ _ ↦ e.map_adj_iff) S wt
-
 /-- Scale weights on a specified vertex set. -/
 def scaleWeightsOn {W : Type*} [DecidableEq W]
     (K : Finset W) (c : ℝ) (wt : W → ℝ) (v : W) : ℝ :=
@@ -1384,15 +1372,6 @@ theorem ordinaryAcyclicSinkPolynomial_splits_of_clawFree
   rw [hmodel]
   exact (clawFree_weightedIndepPoly_splits hG wt hwt).C_mul D
 
-/-- At `q = 1`, the ascent-refined acyclic sink polynomial splits for a
-claw-free graph supplied with a reverse perfect elimination order on `Fin n`. -/
-theorem acyclicSinkPolynomial_one_splits_of_clawFree
-    {n : ℕ} (P : FinReversePerfectEliminationOrder n)
-    (hG : ClawFree P.graph) :
-    (acyclicSinkPolynomial P.graph 1).Splits := by
-  simpa [acyclicSinkPolynomial_one_eq_ordinary] using
-    P.ordinaryAcyclicSinkPolynomial_splits_of_clawFree hG
-
 end FinReversePerfectEliminationOrder
 
 namespace ReversePerfectEliminationOrder
@@ -1441,16 +1420,6 @@ theorem ordinaryAcyclicSinkPolynomial_splits_of_clawFree
   simpa only [ordinaryAcyclicSinkPolynomial_iso P.finModelIso] using
     P.finModel.ordinaryAcyclicSinkPolynomial_splits_of_clawFree
       (ClawFree.comap_equiv (V := V) hG P.equivFin)
-
-/-- At `q = 1`, the ascent-refined acyclic sink polynomial of every finite
-claw-free graph with a reverse perfect elimination order splits over the
-reals. -/
-theorem acyclicSinkPolynomial_one_splits_of_clawFree
-    [LinearOrder V] (P : ReversePerfectEliminationOrder G)
-    (hG : ClawFree G) :
-    (acyclicSinkPolynomial G 1).Splits := by
-  rw [acyclicSinkPolynomial_one_eq_ordinary]
-  exact P.ordinaryAcyclicSinkPolynomial_splits_of_clawFree hG
 
 end ReversePerfectEliminationOrder
 

@@ -111,10 +111,6 @@ theorem isMultiplierSequence_one_sequence :
     IsMultiplierSequence (fun _ => (1 : ℝ)) :=
   isMultiplierSequence_const_sequence 1
 
-theorem isMultiplierSequence_zero_sequence :
-    IsMultiplierSequence (fun _ => (0 : ℝ)) :=
-  isMultiplierSequence_const_sequence 0
-
 theorem isPFMultiplierSequence_const_sequence {a : ℝ} (ha : 0 ≤ a) :
     IsPFMultiplierSequence (fun _ => a) :=
   fun n => isFinitePFMultiplierSequence_const_sequence (n := n) ha
@@ -122,10 +118,6 @@ theorem isPFMultiplierSequence_const_sequence {a : ℝ} (ha : 0 ≤ a) :
 theorem isPFMultiplierSequence_one_sequence :
     IsPFMultiplierSequence (fun _ => (1 : ℝ)) :=
   isPFMultiplierSequence_const_sequence zero_le_one
-
-theorem isPFMultiplierSequence_zero_sequence :
-    IsPFMultiplierSequence (fun _ => (0 : ℝ)) :=
-  isPFMultiplierSequence_const_sequence le_rfl
 
 /-- Scalar multiplication of a multiplier sequence. No sign condition is
 needed for preservation of real-rootedness. -/
@@ -243,17 +235,9 @@ theorem isMultiplierSequence_natCast_add_one :
     IsMultiplierSequence (fun k => (k : ℝ) + 1) := by
   simpa using isMultiplierSequence_natCast_add_nat 1
 
-theorem isPFMultiplierSequence_natCast :
-    IsPFMultiplierSequence (fun k => (k : ℝ)) :=
-  isMultiplierSequence_natCast.toPF fun k => Nat.cast_nonneg k
-
 theorem isPFMultiplierSequence_natCast_add_nat (r : ℕ) :
     IsPFMultiplierSequence (fun k => (k : ℝ) + r) :=
   (isMultiplierSequence_natCast_add_nat r).toPF fun k => by positivity
-
-theorem isPFMultiplierSequence_natCast_add_one :
-    IsPFMultiplierSequence (fun k => (k : ℝ) + 1) := by
-  simpa using isPFMultiplierSequence_natCast_add_nat 1
 
 /-- The diagonal sequence `k + a` realizes the shifted Euler operator. This
 identity holds for every real `a`; multiplier preservation is asserted above
@@ -279,14 +263,6 @@ theorem IsPFMultiplierSequence.hadamardProduct_right
     {p : ℝ[X]} (hp : IsPFPolynomial p) :
     IsPFPolynomial (hadamardProduct p q) := by
   simpa only [hadamardProduct_eq_diagonalOperator] using hq.diagonalOperator_isPF hp
-
-/-- Every Jensen polynomial of a nonnegative multiplier sequence is PF. -/
-theorem isPFPolynomial_jensenPolynomial_of_multiplierSequence
-    {gamma : ℕ → ℝ} (hgamma_nonneg : ∀ k, 0 ≤ gamma k)
-    (hgamma : IsMultiplierSequence gamma) (n : ℕ) :
-    IsPFPolynomial (jensenPolynomial n gamma) :=
-  isPFPolynomial_jensenPolynomial_of_finiteMultiplierSequence
-    hgamma_nonneg (hgamma.finite n)
 
 /-- Every Jensen polynomial of a PF multiplier sequence is PF. -/
 theorem isPFPolynomial_jensenPolynomial_of_PFMultiplierSequence

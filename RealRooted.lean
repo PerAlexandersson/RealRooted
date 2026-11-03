@@ -1498,7 +1498,6 @@ public import RealRooted.Tactic.Recurrence.RowSide
 public import RealRooted.Tactic.Recurrence.Shape
 public import RealRooted.Tactic.RecurrenceEval
 public import RealRooted.Tactic.RootBounds
-public import RealRooted.Tactic.RootCount.SequenceCore
 public import RealRooted.Tactic.Row.Core
 public import RealRooted.Tactic.Row.DerivLag
 public import RealRooted.Tactic.Row.DerivativeXMul

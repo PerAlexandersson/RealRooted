@@ -117,36 +117,6 @@ def addFirstColumnPlacement (P : Finset (ℕ × ℕ)) :
     Finset (ℕ × ℕ) :=
   P.image fun a => (a.1, a.2 + 1)
 
-/-- Skew Ferrers rook polynomials have nonnegative coefficients. -/
-theorem skewFerrersRookPolynomial_hasNonnegCoeffs (lam mu : List ℕ) :
-    HasNonnegCoeffs (skewFerrersRookPolynomial lam mu) :=
-  rookPolynomial_hasNonnegCoeffs _
-
-/-- Ferrers rook polynomials have nonnegative coefficients. -/
-theorem ferrersRookPolynomial_hasNonnegCoeffs (lam : List ℕ) :
-    HasNonnegCoeffs (ferrersRookPolynomial lam) :=
-  rookPolynomial_hasNonnegCoeffs _
-
-/-- Skew Ferrers rook polynomials have constant coefficient one. -/
-@[simp] theorem skewFerrersRookPolynomial_coeff_zero (lam mu : List ℕ) :
-    (skewFerrersRookPolynomial lam mu).coeff 0 = 1 :=
-  rookPolynomial_coeff_zero _
-
-/-- Ferrers rook polynomials have constant coefficient one. -/
-@[simp] theorem ferrersRookPolynomial_coeff_zero (lam : List ℕ) :
-    (ferrersRookPolynomial lam).coeff 0 = 1 :=
-  rookPolynomial_coeff_zero _
-
-/-- Skew Ferrers rook polynomials are nonzero. -/
-theorem skewFerrersRookPolynomial_ne_zero (lam mu : List ℕ) :
-    skewFerrersRookPolynomial lam mu ≠ 0 :=
-  rookPolynomial_ne_zero _
-
-/-- Ferrers rook polynomials are nonzero. -/
-theorem ferrersRookPolynomial_ne_zero (lam : List ℕ) :
-    ferrersRookPolynomial lam ≠ 0 :=
-  rookPolynomial_ne_zero _
-
 /-- Valid Ferrers placements with no rook in the first column. -/
 def nonNestingPlacementsWithoutFirstColumn (lam : List ℕ) :
     Finset (Finset (ℕ × ℕ)) := by

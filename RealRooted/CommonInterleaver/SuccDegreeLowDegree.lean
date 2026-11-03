@@ -93,12 +93,6 @@ lemma of_strictInterl {f g : ℝ[X]} (h : StrictInterl f g) :
     Compatible f g :=
   of_allComboRealRooted (allComboRealRooted_of_strictInterl h)
 
-/-- Either `StrictInterl` orientation implies Chudnovsky--Seymour nonnegative
-compatibility. -/
-lemma of_strictInterl_or_reverse {f g : ℝ[X]} (h : StrictInterl f g ∨ StrictInterl g f) :
-    Compatible f g :=
-  of_allComboRealRooted (allComboRealRooted_of_strictInterl_or_reverse h)
-
 end Compatible
 
 /-- Therefore every positive-leading pair of degree at most one already
@@ -195,17 +189,6 @@ theorem pairHasCommonInterleaver_of_sameDegree_natDegree_le_one
     (hf_deg_le_one : f.natDegree ≤ 1) :
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   pairHasCommonInterleaver_of_natDegree_le_one
-    hf_pos hg_pos hf_deg_le_one (by lia)
-
-/-- Same-degree specialization of the low-degree common-left pair endpoint. -/
-theorem pairHasCommonLeftInterleaver_of_sameDegree_natDegree_le_one
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hdeg : g.natDegree = f.natDegree)
-    (hf_deg_le_one : f.natDegree ≤ 1) :
-    ∃ h : ℝ[X], StrictInterl h f ∧ StrictInterl h g :=
-  pairHasCommonLeftInterleaver_of_natDegree_le_one
     hf_pos hg_pos hf_deg_le_one (by lia)
 
 /-- Degree-zero base case for the succ-degree root-count formulation.

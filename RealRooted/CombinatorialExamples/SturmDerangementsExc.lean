@@ -80,11 +80,6 @@ lemma X_dvd_sturmDerangementsExc : ∀ n : Nat, X ∣ sturmDerangementsExc n
         (1 - X) * (sturmDerangementsExc (n + 2)).derivative, by
         simp [sturmDerangementsExc]⟩
 
-/-- Equivalently, `0` is a root of every derangement excedance polynomial. -/
-lemma sturmDerangementsExc_isRoot_zero (n : Nat) : (sturmDerangementsExc n).IsRoot 0 := by
-  rcases X_dvd_sturmDerangementsExc n with ⟨q, hq⟩
-  simp_all
-
 lemma sturmDerangementsExc_three :
     sturmDerangementsExc 3 = X ^ 2 + X := by
   rw [sturmDerangementsExc_recurrence 0]
@@ -260,11 +255,6 @@ lemma reflect_sturmDerangementsExc (n : Nat) :
   · rw [Polynomial.revAt_le hm, coeff_sturmDerangementsExc_symm n m hm]
   · rw [Polynomial.revAt_eq_self_of_lt (lt_of_not_ge hm)]
 
-lemma eval_neg_one_mul_neg_one_pow_sturmDerangementsExc (n : Nat) :
-    (sturmDerangementsExc n).eval (-1) * (-1 : ℝ) ^ n = (sturmDerangementsExc n).eval (-1) :=
-  Polynomial.eval_neg_one_mul_neg_one_pow_of_reflect_eq_self
-    (natDegree_le_sturmDerangementsExc n) (reflect_sturmDerangementsExc n)
-
 lemma sturmDerangementsExc_isRoot_neg_one_of_odd {n : Nat} (hn : Odd n) :
     (sturmDerangementsExc n).IsRoot (-1) :=
   Polynomial.isRoot_neg_one_of_reflect_eq_self_of_odd
@@ -403,12 +393,6 @@ lemma X_add_one_dvd_recurrenceCoreSturmDerangementsExc_of_even {n : Nat}
     exact dvd_mul_of_dvd_right (X_add_one_dvd_sturmDerangementsExc_of_odd hodd) (C (n : ℝ))
   · exact X_add_one_dvd_affine_sturmDerangementsExc_of_even hn h2
 
-lemma exists_recurrenceCoreSturmDerangementsExc_eq_X_add_one_mul_of_even {n : Nat}
-    (hn : Even n) (h2 : 2 ≤ n) :
-    ∃ q : ℝ[X], recurrenceCoreSturmDerangementsExc n = (X + 1) * q := by
-  rcases X_add_one_dvd_recurrenceCoreSturmDerangementsExc_of_even hn h2 with ⟨q, hq⟩
-  simp_all
-
 lemma recurrenceCoreSturmDerangementsExc_nonnegCoeffs {n : Nat} (hn : 2 ≤ n) :
     HasNonnegCoeffs (recurrenceCoreSturmDerangementsExc n) := by
   rw [recurrenceCoreSturmDerangementsExc]
@@ -426,14 +410,6 @@ lemma recurrenceCoreSturmDerangementsExc_ne_zero {n : Nat} (hn : 2 ≤ n) :
   rw [sturmDerangementsExc_succ_eq_X_mul_recurrenceCore n hn] at hsucc_ne
   simp_all
 
-lemma strictInterl_sturmDerangementsExc_affine_mul_X {n : Nat} (hn : 2 ≤ n)
-    (hrr : (sturmDerangementsExc n).Splits) :
-    StrictInterl (sturmDerangementsExc n) (X * affineSturmDerangementsExc n) :=
-  strictInterl_mul_X_of_strictInterl_of_nonneg
-    (strictInterl_affine_sturmDerangementsExc hn hrr)
-    (affine_sturmDerangementsExc_nonnegCoeffs hn)
-    (sturmDerangementsExc_nonnegCoeffs n)
-
 lemma strictInterl_X_mul_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n)
     (hrr : (sturmDerangementsExc n).Splits) :
     StrictInterl (X * affineSturmDerangementsExc n) (X * sturmDerangementsExc n) :=
@@ -450,15 +426,6 @@ lemma strictInterl_X_mul_lowerTerm_sturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
       HasNonnegCoeffs (C (n : ℝ) * sturmDerangementsExc (n - 1)) :=
     hasNonnegCoeffs_C_mul (by positivity) (sturmDerangementsExc_nonnegCoeffs (n - 1))
   simpa using hlower.mul_X_sub_C_both 0
-
-/-- The two inner summands in the derangement recurrence both precede `X * P_n`.
-This matches the main induction-step input in the human proof. -/
-lemma strictInterl_X_mul_recurrenceSummands_sturmDerangementsExc {n : Nat} (hn : 3 ≤ n)
-    (hstrictInterl : StrictInterl (sturmDerangementsExc (n - 1)) (sturmDerangementsExc n)) :
-    StrictInterl (X * (C (n : ℝ) * sturmDerangementsExc (n - 1))) (X * sturmDerangementsExc n) ∧
-      StrictInterl (X * affineSturmDerangementsExc n) (X * sturmDerangementsExc n) :=
-  ⟨strictInterl_X_mul_lowerTerm_sturmDerangementsExc hn hstrictInterl,
-    strictInterl_X_mul_affine_sturmDerangementsExc (by lia) hstrictInterl.2.1.2⟩
 
 /-- The recurrence core
 `n * P_{n-1} + (n * P_n + (1 - X) P'_n)` precedes `P_n` once `P_{n-1} ≪ P_n`.

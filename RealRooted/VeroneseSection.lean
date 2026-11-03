@@ -463,23 +463,6 @@ theorem fullyInterlacingPair_veroneseSectionPairwise {a b : ℕ → ℝ} {r i j 
   VeronesePairFullyInterlacing.sectionPair
     (fullyInterlacingPair_veronesePair h hr) hr hij hj
 
-/-- Fin-indexed form of `VeronesePairFullyInterlacing.sectionPair`, avoiding
-an explicit upper-bound hypothesis on the second index. -/
-theorem VeronesePairFullyInterlacing.sectionPair_fin {a b : ℕ → ℝ} {r : ℕ}
-    (h : VeronesePairFullyInterlacing r a b) (hr : 0 < r)
-    (i j : Fin (2 * r)) (hij : i < j) :
-    FullyInterlacingPair (veronesePairSectionSeq r a b i)
-      (veronesePairSectionSeq r a b j) :=
-  h.sectionPair hr hij j.isLt
-
-/-- Fin-indexed pairwise Veronese theorem for a fully interlacing pair. -/
-theorem fullyInterlacingPair_veroneseSectionPairwise_fin {a b : ℕ → ℝ}
-    {r : ℕ} (h : FullyInterlacingPair a b) (hr : 0 < r)
-    (i j : Fin (2 * r)) (hij : i < j) :
-    FullyInterlacingPair (veronesePairSectionSeq r a b i)
-      (veronesePairSectionSeq r a b j) :=
-  fullyInterlacingPair_veroneseSectionPairwise h hr hij j.isLt
-
 /-- The `i`th polynomial in the interleaved Veronese sequence
 `S_0 p, S_0 q, S_1 p, S_1 q, ...`. -/
 def veronesePairSectionPolynomial (r : ℕ) (p q : ℝ[X]) (i : ℕ) : ℝ[X] :=
@@ -512,16 +495,6 @@ theorem coeff_function_veronesePairSectionPolynomial {r i : ℕ} {p q : ℝ[X]}
       veronesePairSectionSeq r p.coeff q.coeff i := by
   funext n
   exact coeff_veronesePairSectionPolynomial (r := r) (i := i) (n := n) hr
-
-theorem fullyInterlacingPair_veroneseSectionPolynomial_coeff
-    {p q : ℝ[X]} {r k : ℕ}
-    (hfull : FullyInterlacingPair p.coeff q.coeff)
-    (hr : 0 < r) (hk : k < r) :
-    FullyInterlacingPair (veroneseSectionPolynomial r k p).coeff
-      (veroneseSectionPolynomial r k q).coeff := by
-  simpa [coeff_function_veroneseSectionPolynomial (p := p) hr,
-    coeff_function_veroneseSectionPolynomial (p := q) hr] using
-    fullyInterlacingPair_veroneseSectionPair hfull hr hk
 
 theorem fullyInterlacingPair_veronesePairSectionPolynomial_coeff
     {p q : ℝ[X]} {r i j : ℕ}
