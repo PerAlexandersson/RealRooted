@@ -3,7 +3,6 @@ module
 public import Mathlib
 public import RealRooted.AffineFamily
 import RealRooted.Linear
-import RealRooted.SequenceClosure
 public import RealRooted.WagnerX
 public import RealRooted.ThreeTermRecurrence.Interlacing
 import RealRooted.PosCombo
@@ -129,13 +128,6 @@ private lemma fixedMulLinearFactorPow_natDegree {fixed : ℝ[X]} {a b : ℝ}
     (fixed * (C a + C b * X) ^ n : ℝ[X]).natDegree = fixed.natDegree + n := by
   rw [natDegree_mul hfixed (pow_ne_zero _ (linearFactor_ne_zero (a := a) hb)),
     natDegree_pow, linearFactor_natDegree hb, mul_one]
-
-/-- Scalar multiple of `interlaces_linear_pow`; scaling by `C c` preserves roots. -/
-theorem interlaces_C_mul_linear_pow (c a b : ℝ) (hc : c ≠ 0) (hb : 0 < b)
-    (n : ℕ) :
-    Interlaces (C c * (C a + C b * X) ^ n)
-      (C c * (C a + C b * X) ^ (n + 1)) :=
-  interlaces_C_mul_linear_pow_succ c c a b hc hc hb n
 
 /-- Nonnegative coefficients of `(C a + C b * X)^n` when `a, b ≥ 0`. -/
 theorem hasNonnegCoeffs_linear_pow {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
@@ -412,129 +404,5 @@ theorem interlaces_X_sub_C_pow_mul_linear_pow (r : ℝ) (m : ℕ) (a b : ℝ)
   commonFactorLinearPowerStep_interlaces
     ⟨pow_ne_zero _ (X_sub_C_ne_zero r),
       (Polynomial.Splits.X_sub_C r).pow m⟩ hb n
-
-/-- Sequence wrapper for scalar multiples of a positive-slope linear-power
-closed form whose exponent increases by one at each step. -/
-theorem linearPowerScalarSequence_interlaces
-    {P : Nat → ℝ[X]} {scalar : Nat → ℝ} {a b : ℝ} {expn : Nat → Nat}
-    (hclosed : ∀ n : Nat, P n = C (scalar n) * (C a + C b * X) ^ expn n)
-    (hscalar : ∀ n : Nat, scalar n ≠ 0)
-    (hexponent : ∀ n : Nat, expn (n + 1) = expn n + 1)
-    (hb : 0 < b) :
-    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
-  intro n
-  rw [hclosed n, hclosed (n + 1), hexponent n]
-  exact interlaces_C_mul_linear_pow_succ
-    _ _ _ _ (hscalar n) (hscalar (n + 1)) hb (expn n)
-
-/-- Real-rootedness consequence of `linearPowerScalarSequence_interlaces`. -/
-theorem linearPowerScalarSequence_realRooted
-    {P : Nat → ℝ[X]} {scalar : Nat → ℝ} {a b : ℝ} {expn : Nat → Nat}
-    (hclosed : ∀ n : Nat, P n = C (scalar n) * (C a + C b * X) ^ expn n)
-    (hscalar : ∀ n : Nat, scalar n ≠ 0)
-    (hexponent : ∀ n : Nat, expn (n + 1) = expn n + 1)
-    (hb : 0 < b) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_interlaces_chain <|
-    linearPowerScalarSequence_interlaces hclosed hscalar hexponent hb
-
-/-- Sequence wrapper for a positive-slope linear-power closed form where each
-row carries an existential nonzero scalar. -/
-theorem linearPowerExistsScalarSequence_interlaces
-    {P : Nat → ℝ[X]} {a b : ℝ} {expn : Nat → Nat}
-    (hclosed :
-      ∀ n : Nat, ∃ scalar : ℝ,
-        scalar ≠ 0 ∧ P n = C scalar * (C a + C b * X) ^ expn n)
-    (hexponent : ∀ n : Nat, expn (n + 1) = expn n + 1)
-    (hb : 0 < b) :
-    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
-  intro n
-  rcases hclosed n with ⟨c, hc, hP⟩
-  rcases hclosed (n + 1) with ⟨d, hd, hPsucc⟩
-  rw [hP, hPsucc, hexponent n]
-  exact interlaces_C_mul_linear_pow_succ _ _ _ _ hc hd hb (expn n)
-
-/-- Real-rootedness consequence of `linearPowerExistsScalarSequence_interlaces`. -/
-theorem linearPowerExistsScalarSequence_realRooted
-    {P : Nat → ℝ[X]} {a b : ℝ} {expn : Nat → Nat}
-    (hclosed :
-      ∀ n : Nat, ∃ scalar : ℝ,
-        scalar ≠ 0 ∧ P n = C scalar * (C a + C b * X) ^ expn n)
-    (hexponent : ∀ n : Nat, expn (n + 1) = expn n + 1)
-    (hb : 0 < b) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_interlaces_chain <|
-    linearPowerExistsScalarSequence_interlaces hclosed hexponent hb
-
-/-- Sequence wrapper for powers of one positive-slope linear factor whose
-exponent increases by one at each step. -/
-theorem linearPowerSequence_interlaces
-    {P : Nat → ℝ[X]} {a b : ℝ} {expn : Nat → Nat}
-    (hclosed : ∀ n : Nat, P n = (C a + C b * X) ^ expn n)
-    (hexponent : ∀ n : Nat, expn (n + 1) = expn n + 1)
-    (hb : 0 < b) :
-    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
-  intro n
-  rw [hclosed n, hclosed (n + 1), hexponent n]
-  exact interlaces_linear_pow a b hb (expn n)
-
-/-- Real-rootedness consequence of `linearPowerSequence_interlaces`. -/
-theorem linearPowerSequence_realRooted
-    {P : Nat → ℝ[X]} {a b : ℝ} {expn : Nat → Nat}
-    (hclosed : ∀ n : Nat, P n = (C a + C b * X) ^ expn n)
-    (hexponent : ∀ n : Nat, expn (n + 1) = expn n + 1)
-    (hb : 0 < b) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_interlaces_chain <|
-    linearPowerSequence_interlaces hclosed hexponent hb
-
-/-- Sequence wrapper for a fixed root-power factor times powers of one
-positive-slope linear factor. -/
-theorem fixedLinearPowerSequence_interlaces
-    {P : Nat → ℝ[X]} {r a b : ℝ} {multiplicity : Nat} {expn : Nat → Nat}
-    (hclosed :
-      ∀ n : Nat, P n = (X - C r) ^ multiplicity * (C a + C b * X) ^ expn n)
-    (hexponent : ∀ n : Nat, expn (n + 1) = expn n + 1)
-    (hb : 0 < b) :
-    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
-  intro n
-  rw [hclosed n, hclosed (n + 1), hexponent n]
-  exact interlaces_X_sub_C_pow_mul_linear_pow r multiplicity a b hb (expn n)
-
-/-- Real-rootedness consequence of `fixedLinearPowerSequence_interlaces`. -/
-theorem fixedLinearPowerSequence_realRooted
-    {P : Nat → ℝ[X]} {r a b : ℝ} {multiplicity : Nat} {expn : Nat → Nat}
-    (hclosed :
-      ∀ n : Nat, P n = (X - C r) ^ multiplicity * (C a + C b * X) ^ expn n)
-    (hexponent : ∀ n : Nat, expn (n + 1) = expn n + 1)
-    (hb : 0 < b) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_interlaces_chain <|
-    fixedLinearPowerSequence_interlaces hclosed hexponent hb
-
-/-- Sequence wrapper for an arbitrary fixed nonzero real-rooted factor times
-powers of one positive-slope linear factor. -/
-theorem commonFactorLinearPowerSequence_interlaces
-    {P : Nat → ℝ[X]} {fixed : ℝ[X]} {a b : ℝ} {expn : Nat → Nat}
-    (hfixed : fixed ≠ 0 ∧ fixed.Splits)
-    (hclosed : ∀ n : Nat, P n = fixed * (C a + C b * X) ^ expn n)
-    (hexponent : ∀ n : Nat, expn (n + 1) = expn n + 1)
-    (hb : 0 < b) :
-    ∀ n : Nat, Interlaces (P n) (P (n + 1)) := by
-  intro n
-  rw [hclosed n, hclosed (n + 1), hexponent n]
-  exact commonFactorLinearPowerStep_interlaces hfixed hb (expn n)
-
-/-- Real-rootedness consequence of
-`commonFactorLinearPowerSequence_interlaces`. -/
-theorem commonFactorLinearPowerSequence_realRooted
-    {P : Nat → ℝ[X]} {fixed : ℝ[X]} {a b : ℝ} {expn : Nat → Nat}
-    (hfixed : fixed ≠ 0 ∧ fixed.Splits)
-    (hclosed : ∀ n : Nat, P n = fixed * (C a + C b * X) ^ expn n)
-    (hexponent : ∀ n : Nat, expn (n + 1) = expn n + 1)
-    (hb : 0 < b) :
-    ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits :=
-  isRealRooted_of_interlaces_chain <|
-    commonFactorLinearPowerSequence_interlaces hfixed hclosed hexponent hb
 
 end RealRooted
