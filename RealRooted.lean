@@ -1979,6 +1979,7 @@ public import RealRooted.Interlacing.SecondOrderNecessity
 public import RealRooted.BasisTransform.SemigroupClassification
 public import RealRooted.MaWang.GrowingZeroMultiplicity
 public import RealRooted.Recurrence.CubicTransition
+public import RealRooted.Recurrence.PFTripleMatrix
 public import RealRooted.CombinatorialExamples.PathDerivativeImages
 public import RealRooted.Jacobi.NegativeIntegerEndpoint
 public import RealRooted.Graph.IndependencePolynomial.SimplicialCliqueDeletion
@@ -2004,6 +2005,8 @@ public import RealRooted.ProductSequence.BinomialDerivativeFamily
 public import RealRooted.BasisTransform.AppellTranslationRigidity
 public import RealRooted.ThreeTermRecurrence.ShiftedChebyshevRootRegions
 public import RealRooted.Interlacing.QuadraticDifferentialOrbit
+public import RealRooted.Interlacing.CoupledQuadraticRecurrence
+public import RealRooted.Interlacing.WeightedLadder
 public import RealRooted.BrandenLeite.PFFactorRenewal
 public import RealRooted.VeroneseRecognition.Affine
 public import RealRooted.SymmetricDecomposition.EulerFPolynomial
@@ -2018,6 +2021,7 @@ public import RealRooted.Mathlib.Algebra.BigOperators.Intervals
 public import RealRooted.GeneralizedEulerian.EvalNeg
 public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.Sonin
 public import RealRooted.PFPolynomial.LowCoefficients
+public import RealRooted.Challenges.Interlacing.CoupledQuadraticRecurrence
 public import RealRooted.Challenges.Interlacing.HigherOrderRecurrenceStates
 public import RealRooted.Challenges.Preservers.BasisTransformPreservers
 public import RealRooted.Challenges.Preservers.OperatorMatrices
