@@ -1945,6 +1945,8 @@ public import RealRooted.Tactic.Ring
 public import RealRooted.GeneralizedEulerian.EvalNeg
 public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.Sonin
 public import RealRooted.PFPolynomial.LowCoefficients
+public import RealRooted.Challenges.PolyaFrequency.LowCoefficients
+public import RealRooted.Challenges.Roots.SoninEnvelope
 
 /-!
 # RealRooted production umbrella
