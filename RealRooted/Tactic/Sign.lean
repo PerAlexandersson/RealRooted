@@ -47,14 +47,9 @@ macro_rules
           | first
             | assumption
             | (refine RealRooted.eval_X_add_X_sq_nonpos_of_mem_Icc ?_ ?_ <;> rr_sign_side)
-            | exact RealRooted.eval_neg_one_add_two_X_sub_X_sq_nonpos
-            | exact RealRooted.eval_neg_one_sub_two_X_sub_X_sq_nonpos
-            | exact
-                RealRooted.eval_neg_two_fifths_add_four_fifths_X_sub_two_fifths_X_sq_nonpos
-            | exact
-                RealRooted.eval_neg_two_thirds_add_four_thirds_X_sub_two_thirds_X_sq_nonpos
-            | exact
-                RealRooted.eval_neg_eight_fifths_add_eight_fifths_X_sub_two_fifths_X_sq_nonpos
+            | (refine
+                RealRooted.eval_quadratic_nonpos_of_nonpos_of_nonpos_of_discrim_nonpos ?_ ?_ ?_
+                <;> norm_num; done)
             | (refine
                 RealRooted.eval_X_mul_one_add_four_mul_X_nonpos_of_mem_Icc ?_ ?_
                 <;> rr_sign_side)

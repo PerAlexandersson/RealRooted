@@ -124,9 +124,9 @@ theorem quadraticBidiagonalJensenPencil_eq_factor_residual_one
         (quadraticJensenWeight aa ab ac)
         (quadraticJensenWeight ba bb bc) d 1 =
       (X + 1) ^ (d - 2) *
-        quadraticBidiagonalResidual aa ab ac ba bb bc d := by
-  rw [quadraticBidiagonalJensenPencil_eq_factor_residual aa ab ac ba bb bc 1 hd]
-  rw [quadraticBidiagonalPencilResidual_one]
+        quadraticBidiagonalResidual aa ab ac ba bb bc d :=
+  quadraticBidiagonalPencilResidual_one aa ab ac ba bb bc d ▸
+    quadraticBidiagonalJensenPencil_eq_factor_residual aa ab ac ba bb bc 1 hd
 
 @[simp] theorem bidiagonalJensenPencil_zero_lambda
     (alpha beta : ℕ → ℝ) (d : ℕ) :

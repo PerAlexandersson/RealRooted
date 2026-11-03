@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.Basic
+import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
 public import Mathlib.Tactic
 
 /-!
@@ -311,14 +312,6 @@ lemma eval_neg_C_mul_one_sub_X_sq_nonpos_of_nonneg {c r : ℝ}
   have hsq : 0 ≤ (1 - r) ^ 2 := sq_nonneg (1 - r)
   simpa [sub_eq_add_neg] using mul_nonpos_of_nonpos_of_nonneg hneg hsq
 
-lemma eval_neg_one_add_two_X_sub_X_sq_nonpos {r : ℝ} :
-    (C (-1 : ℝ) + C (2 : ℝ) * X + C (-1 : ℝ) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
-  convert eval_neg_C_mul_one_sub_X_sq_nonpos_of_nonneg (c := 1) (r := r) zero_le_one using 1
-  simp only [Polynomial.eval_add, Polynomial.eval_sub, Polynomial.eval_mul,
-    Polynomial.eval_pow, Polynomial.eval_neg, Polynomial.eval_C, Polynomial.eval_X,
-    Polynomial.eval_one]
-  ring
-
 lemma eval_neg_C_mul_X_sq_nonpos_of_nonneg {c r : ℝ}
     (hc : 0 ≤ c) :
     (-(C c) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
@@ -338,14 +331,6 @@ lemma eval_C_neg_add_C_neg_two_mul_X_add_C_neg_mul_X_sq_nonpos_of_nonneg
     {c r : ℝ} (hc : 0 ≤ c) :
     (C (-c) + C (-(2 * c)) * X + C (-c) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
   convert eval_neg_C_mul_one_add_X_sq_nonpos_of_nonneg (c := c) (r := r) hc using 1
-  simp only [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_pow,
-    Polynomial.eval_neg, Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_one]
-  ring
-
-lemma eval_neg_one_sub_two_X_sub_X_sq_nonpos {r : ℝ} :
-    (C (-1 : ℝ) + C (-2 : ℝ) * X + C (-1 : ℝ) * X ^ 2 : ℝ[X]).eval r ≤ 0 := by
-  convert eval_neg_C_mul_one_add_X_sq_nonpos_of_nonneg
-    (c := 1) (r := r) zero_le_one using 1
   simp only [Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_pow,
     Polynomial.eval_neg, Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_one]
   ring
@@ -391,10 +376,9 @@ lemma eval_neg_quadratic_nonpos_of_discrim_nonpos
     {a b c r : ℝ} (ha : 0 ≤ a) (hc : 0 ≤ c) (hdisc : b ^ 2 ≤ 4 * a * c) :
     (-(C a * X ^ 2 + C b * X + C c) : ℝ[X]).eval r ≤ 0 := by
   have hpoly : 0 ≤ a * r ^ 2 + b * r + c := by
-    by_cases ha0 : a = 0
-    · simp_all
-    · have hapos : 0 < a := lt_of_le_of_ne' ha ha0
-      nlinarith [sq_nonneg (2 * a * r + b)]
+    have hq := Quadratic.nonneg_of_nonneg_of_discrim_nonpos ha hc
+      (b := b) (by rw [discrim]; linarith) r
+    simpa [sq] using hq
   simpa [
     Polynomial.eval_add,
     Polynomial.eval_mul,
@@ -426,27 +410,5 @@ lemma eval_quadratic_nonpos_of_nonpos_of_nonpos_of_discrim_nonpos
     eval_neg_expanded_quadratic_nonpos_of_discrim_nonpos
       (a := -a) (b := b) (c := -c) (r := r) (by linarith) (by linarith) hdisc'
   simpa using htail
-
-lemma eval_neg_two_fifths_add_four_fifths_X_sub_two_fifths_X_sq_nonpos {r : ℝ} :
-    (C (-2 / 5 : ℝ) + C (4 / 5 : ℝ) * X + C (-2 / 5 : ℝ) * X ^ 2 :
-      ℝ[X]).eval r ≤ 0 :=
-  eval_quadratic_nonpos_of_nonpos_of_nonpos_of_discrim_nonpos
-    (a := -2 / 5) (b := 4 / 5) (c := -2 / 5) (r := r)
-    (by norm_num) (by norm_num) (by norm_num)
-
-lemma eval_neg_two_thirds_add_four_thirds_X_sub_two_thirds_X_sq_nonpos {r : ℝ} :
-    (C (-2 / 3 : ℝ) + C (4 / 3 : ℝ) * X + C (-2 / 3 : ℝ) * X ^ 2 :
-      ℝ[X]).eval r ≤ 0 :=
-  eval_quadratic_nonpos_of_nonpos_of_nonpos_of_discrim_nonpos
-    (a := -2 / 3) (b := 4 / 3) (c := -2 / 3) (r := r)
-    (by norm_num) (by norm_num) (by norm_num)
-
-lemma eval_neg_eight_fifths_add_eight_fifths_X_sub_two_fifths_X_sq_nonpos {r : ℝ} :
-    (C (-8 / 5 : ℝ) + C (8 / 5 : ℝ) * X + C (-2 / 5 : ℝ) * X ^ 2 :
-      ℝ[X]).eval r ≤ 0 :=
-  eval_quadratic_nonpos_of_nonpos_of_nonpos_of_discrim_nonpos
-    (a := -8 / 5) (b := 8 / 5) (c := -2 / 5) (r := r)
-    (by norm_num) (by norm_num) (by norm_num)
-
 
 end RealRooted

@@ -87,30 +87,6 @@ theorem modifiedNarayanaPolynomial_splits (n : ℕ) :
   (modifiedNarayanaPolynomial_isPFPolynomial n).ne_zero_and_splits
     (modifiedNarayanaPolynomial_ne_zero n) |>.2
 
-/-- The `P_6` modified Narayana polynomial splits over `ℝ`. -/
-theorem modifiedNarayanaPolynomial_six_splits : (modifiedNarayanaPolynomial 6).Splits :=
-  modifiedNarayanaPolynomial_splits 6
-
-/-- The `P_6` modified Narayana polynomial has a sorted six-root list. -/
-theorem modifiedNarayanaPolynomial_six_exists_ordered_roots :
-    ∃ a b c d e r : ℝ,
-      (modifiedNarayanaPolynomial 6).roots =
-        (↑[a, b, c, d, e, r] : Multiset ℝ) ∧
-        a ≤ b ∧ b ≤ c ∧ c ≤ d ∧ d ≤ e ∧ e ≤ r := by
-  obtain ⟨rs, hrs_eq, hrs_sorted⟩ :
-      ∃ rs : List ℝ,
-        (↑rs : Multiset ℝ) = (modifiedNarayanaPolynomial 6).roots ∧
-          rs.Pairwise (· ≤ ·) :=
-    ⟨(modifiedNarayanaPolynomial 6).roots.sort (· ≤ ·),
-      Multiset.sort_eq .., Multiset.pairwise_sort ..⟩
-  have hlen : rs.length = 6 := by
-    rw [← Multiset.coe_card, hrs_eq,
-      Polynomial.splits_iff_card_roots.mp modifiedNarayanaPolynomial_six_splits]
-    exact modifiedNarayanaPolynomial_six_natDegree
-  match rs, hlen, hrs_eq, hrs_sorted with
-  | [a, b, c, d, e, r], _, hrs_eq, hrs_sorted =>
-    exact ⟨a, b, c, d, e, r, hrs_eq.symm, by simp_all⟩
-
 /-- Modified Narayana polynomials are nonzero and split over the reals. -/
 theorem modifiedNarayanaPolynomial_ne_zero_and_splits (n : ℕ) :
     modifiedNarayanaPolynomial n ≠ 0 ∧

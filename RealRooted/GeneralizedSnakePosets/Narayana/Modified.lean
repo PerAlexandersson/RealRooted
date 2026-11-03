@@ -337,81 +337,6 @@ theorem modifiedNarayanaCoeffPolynomial_one_interlaces_two :
     rw [modifiedNarayanaCoeffPolynomial_natDegree,
       modifiedNarayanaCoeffPolynomial_natDegree])
 
-/-- The `n = 6` the auxiliary recurrence reduces to the concrete `G_5`
-finite-board computation. -/
-theorem narayanaCoeffAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five
-    (hG5 : FiniteSkewBoard.auxiliaryG 5 =
-      5 + C (40 : ℝ) * X + C (75 : ℝ) * X ^ 2 +
-        C (40 : ℝ) * X ^ 3 + C (5 : ℝ) * X ^ 4) :
-    X * FiniteSkewBoard.auxiliaryG 5 =
-      modifiedNarayanaCoeffPolynomial 6 -
-        (1 + X) * modifiedNarayanaCoeffPolynomial 5 := by
-  rw [hG5, modifiedNarayanaCoeffPolynomial_five,
-    modifiedNarayanaCoeffPolynomial_six]
-  have hC5 : (C (5 : ℝ) : ℝ[X]) = 5 := Polynomial.C_eq_natCast (R := ℝ) 5
-  have hC15 : (C (15 : ℝ) : ℝ[X]) = 15 :=
-    Polynomial.C_eq_natCast (R := ℝ) 15
-  have hC21 : (C (21 : ℝ) : ℝ[X]) = 21 :=
-    Polynomial.C_eq_natCast (R := ℝ) 21
-  have hC40 : (C (40 : ℝ) : ℝ[X]) = 40 :=
-    Polynomial.C_eq_natCast (R := ℝ) 40
-  have hC50 : (C (50 : ℝ) : ℝ[X]) = 50 :=
-    Polynomial.C_eq_natCast (R := ℝ) 50
-  have hC75 : (C (75 : ℝ) : ℝ[X]) = 75 :=
-    Polynomial.C_eq_natCast (R := ℝ) 75
-  have hC105 : (C (105 : ℝ) : ℝ[X]) = 105 :=
-    Polynomial.C_eq_natCast (R := ℝ) 105
-  have hC175 : (C (175 : ℝ) : ℝ[X]) = 175 :=
-    Polynomial.C_eq_natCast (R := ℝ) 175
-  rw [hC5, hC15, hC21, hC40, hC50, hC75, hC105, hC175]
-  ring_nf
-
-/-- The `n = 6` the auxiliary recurrence reduces to the remaining three-row
-and four-row truncated-staircase rook-polynomial computations. -/
-theorem narayanaCoeffAuxiliaryGRecurrence_modified_six_of_staircase_five_tail
-    (h53 : FiniteSkewBoard.truncatedStaircaseRookPolynomial 5 3 =
-      1 + C (12 : ℝ) * X + C (25 : ℝ) * X ^ 2 + C (10 : ℝ) * X ^ 3)
-    (h54 : FiniteSkewBoard.truncatedStaircaseRookPolynomial 5 4 =
-      1 + C (14 : ℝ) * X + C (40 : ℝ) * X ^ 2 +
-        C (30 : ℝ) * X ^ 3 + C (5 : ℝ) * X ^ 4) :
-    X * FiniteSkewBoard.auxiliaryG 5 =
-      modifiedNarayanaCoeffPolynomial 6 -
-        (1 + X) * modifiedNarayanaCoeffPolynomial 5 :=
-  narayanaCoeffAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five
-    (FiniteSkewBoard.auxiliaryG_five_of_truncatedStaircaseRookPolynomial_five_three_four
-      h53 h54)
-
-/-- The `n = 6` the auxiliary recurrence reduces to the bottom-row expansions
-for the two remaining `n = 5` truncated-staircase rook-polynomial rows. -/
-theorem narayanaCoeffAuxiliaryGRecurrence_modified_six_of_bottom_row_expansions
-    (hbottom53 : FiniteSkewBoard.truncatedStaircaseRookPolynomial 5 3 =
-      FiniteSkewBoard.truncatedStaircaseRookPolynomial 5 2 +
-        X * (FiniteSkewBoard.truncatedStaircaseRookPolynomial 4 2 +
-          FiniteSkewBoard.truncatedStaircaseRookPolynomial 3 2 +
-            FiniteSkewBoard.truncatedStaircaseRookPolynomial 2 2))
-    (hbottom54 : FiniteSkewBoard.truncatedStaircaseRookPolynomial 5 4 =
-      FiniteSkewBoard.truncatedStaircaseRookPolynomial 5 3 +
-        X * (FiniteSkewBoard.truncatedStaircaseRookPolynomial 4 3 +
-          FiniteSkewBoard.truncatedStaircaseRookPolynomial 3 3)) :
-    X * FiniteSkewBoard.auxiliaryG 5 =
-      modifiedNarayanaCoeffPolynomial 6 -
-        (1 + X) * modifiedNarayanaCoeffPolynomial 5 :=
-  narayanaCoeffAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five
-    (FiniteSkewBoard.auxiliaryG_five_of_bottom_row_expansions
-      hbottom53 hbottom54)
-
-/-- The `n = 6` the auxiliary recurrence reduces to the named bottom-row
-expansion predicate for the two remaining `n = 5` truncated-staircase rows. -/
-theorem narayanaCoeffAuxiliaryGRecurrence_modified_six_of_bottom_row_expansion_statements
-    (hbottom53 : FiniteSkewBoard.truncatedStaircaseBottomRowExpansion 5 2)
-    (hbottom54 : FiniteSkewBoard.truncatedStaircaseBottomRowExpansion 5 3) :
-    X * FiniteSkewBoard.auxiliaryG 5 =
-      modifiedNarayanaCoeffPolynomial 6 -
-        (1 + X) * modifiedNarayanaCoeffPolynomial 5 :=
-  narayanaCoeffAuxiliaryGRecurrence_modified_six_of_auxiliaryG_five
-    (FiniteSkewBoard.auxiliaryG_five_of_bottom_row_expansion_statements
-      hbottom53 hbottom54)
-
 /-- The quotient-style and coefficient-side modified Narayana models agree. -/
 theorem modifiedNarayanaPolynomial_eq_coeffPolynomial (n : ℕ) :
     modifiedNarayanaPolynomial n = modifiedNarayanaCoeffPolynomial n :=
@@ -497,15 +422,6 @@ theorem modifiedNarayanaPolynomial_no_common_root (n : ℕ) :
           C (21 : ℝ) * X ^ 5 + X ^ 6 := by
   rw [modifiedNarayanaPolynomial_eq_coeffPolynomial,
     modifiedNarayanaCoeffPolynomial_six]
-
-/-- Degree of the `P_6` modified Narayana polynomial. -/
-theorem modifiedNarayanaPolynomial_six_natDegree :
-    (modifiedNarayanaPolynomial 6).natDegree = 6 :=
-  modifiedNarayanaPolynomial_natDegree 6
-
-/-- The `P_6` modified Narayana polynomial is nonzero. -/
-theorem modifiedNarayanaPolynomial_six_ne_zero : modifiedNarayanaPolynomial 6 ≠ 0 :=
-  modifiedNarayanaPolynomial_ne_zero 6
 
 @[simp] theorem modifiedNarayanaPolynomial_seven :
     modifiedNarayanaPolynomial 7 =
