@@ -113,53 +113,6 @@ theorem cubicDiscr_quadraticCubicPencil_const_eq (a b p q r t : ℝ) (ht : t = 0
   subst t
   ring
 
-/-- The mixed quadratic/cubic pencil discriminant has positive constant value. -/
-theorem cubicDiscr_quadraticCubicPencil_const_pos (a b p q r t : ℝ) (ht : t = 0)
-    (hab : a ≠ b) :
-    0 < cubicDiscr (quadraticCubicPencil a b p q r t) := by
-  rw [cubicDiscr_quadraticCubicPencil_const_eq a b p q r t ht]
-  exact sq_pos_of_ne_zero (sub_ne_zero.mpr hab)
-
-/-- Nonnegative form of the mixed quadratic/cubic pencil constant discriminant. -/
-theorem cubicDiscr_quadraticCubicPencil_const_nonneg
-    (a b p q r t : ℝ) (ht : t = 0) :
-    0 ≤ cubicDiscr (quadraticCubicPencil a b p q r t) := by
-  rw [cubicDiscr_quadraticCubicPencil_const_eq a b p q r t ht]
-  exact sq_nonneg _
-
-/-- Zero-iff form of the mixed quadratic/cubic pencil constant discriminant. -/
-theorem cubicDiscr_quadraticCubicPencil_const_eq_zero_iff
-    (a b p q r t : ℝ) (ht : t = 0) :
-    cubicDiscr (quadraticCubicPencil a b p q r t) = 0 ↔ a = b := by
-  rw [cubicDiscr_quadraticCubicPencil_const_eq a b p q r t ht, sq_eq_zero_iff,
-    sub_eq_zero]
-
-/-- Nonzero-iff form of the mixed quadratic/cubic pencil constant discriminant. -/
-theorem cubicDiscr_quadraticCubicPencil_const_ne_zero_iff
-    (a b p q r t : ℝ) (ht : t = 0) :
-    cubicDiscr (quadraticCubicPencil a b p q r t) ≠ 0 ↔ a ≠ b :=
-  not_congr (cubicDiscr_quadraticCubicPencil_const_eq_zero_iff a b p q r t ht)
-
-/-- Positive-iff form of the mixed quadratic/cubic pencil constant discriminant. -/
-theorem cubicDiscr_quadraticCubicPencil_const_pos_iff
-    (a b p q r t : ℝ) (ht : t = 0) :
-    0 < cubicDiscr (quadraticCubicPencil a b p q r t) ↔ a ≠ b := by
-  constructor
-  · intro h
-    exact (cubicDiscr_quadraticCubicPencil_const_ne_zero_iff a b p q r t ht).mp
-      (ne_of_gt h)
-  · intro hab
-    exact cubicDiscr_quadraticCubicPencil_const_pos a b p q r t ht hab
-
-/-- Nonpositive-iff form of the mixed quadratic/cubic pencil constant discriminant. -/
-theorem cubicDiscr_quadraticCubicPencil_const_nonpos_iff_eq_zero
-    (a b p q r t : ℝ) (ht : t = 0) :
-    cubicDiscr (quadraticCubicPencil a b p q r t) ≤ 0 ↔
-      cubicDiscr (quadraticCubicPencil a b p q r t) = 0 :=
-  ⟨fun h => le_antisymm h
-      (cubicDiscr_quadraticCubicPencil_const_nonneg a b p q r t ht),
-    fun h => le_of_eq h⟩
-
 /-- A negative mixed-pencil discriminant at a nonnegative parameter occurs at a
 strictly positive parameter. -/
 theorem cubicDiscr_quadraticCubicPencil_neg_pos (a b p q r t : ℝ) (ht : 0 ≤ t)
