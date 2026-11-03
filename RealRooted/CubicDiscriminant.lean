@@ -221,18 +221,6 @@ theorem cubicDiscr_monicPencil_affine
   field_simp
   ring
 
-/-- #41-only cubic support, not #42.  Single-monic-cubic special case of
-`cubicDiscr_monicPencil_affine`. -/
-theorem cubicDiscr_prod_three_X_sub_C_affine
-    (k t a b c : ℝ) (hk : k ≠ 0) :
-    cubicDiscr ((X - C a) * (X - C b) * (X - C c)) =
-      k ^ 6 * cubicDiscr
-        ((X - C ((a - t) / k)) * (X - C ((b - t) / k)) *
-          (X - C ((c - t) / k))) := by
-  rw [cubicDiscr_prod_three_X_sub_C, cubicDiscr_prod_three_X_sub_C]
-  field_simp
-  ring
-
 /-- Every real cubic has a real root: a degree-three real polynomial without a
 root would be irreducible, contradicting that irreducible real polynomials have
 degree at most two. -/
@@ -429,50 +417,5 @@ theorem cubicDiscr_nonneg_iff_splits_of_natDegree_le_three
     0 ≤ cubicDiscr p ↔ p.Splits :=
   ⟨splits_of_natDegree_le_three_cubicDiscr_nonneg hdeg,
     cubicDiscr_nonneg_of_splits_natDegree_le_three hdeg⟩
-
-/-- The cubic discriminant of a monic split cubic with three distinct real roots
-is strictly positive. -/
-theorem cubicDiscr_prod_three_X_sub_C_pos {a b c : ℝ}
-    (hab : a ≠ b) (hbc : b ≠ c) (hac : a ≠ c) :
-    0 < cubicDiscr ((X - C a) * (X - C b) * (X - C c)) := by
-  rw [cubicDiscr_prod_three_X_sub_C]
-  have hne : (a - b) * (b - c) * (a - c) ≠ 0 :=
-    mul_ne_zero (mul_ne_zero (sub_ne_zero.mpr hab) (sub_ne_zero.mpr hbc))
-      (sub_ne_zero.mpr hac)
-  exact (sq_nonneg _).lt_of_ne (Ne.symm (pow_ne_zero 2 hne))
-
-/-- The discriminant of a monic split cubic vanishes exactly when two roots
-coincide. -/
-theorem cubicDiscr_prod_three_X_sub_C_eq_zero_iff (a b c : ℝ) :
-    cubicDiscr ((X - C a) * (X - C b) * (X - C c)) = 0
-      ↔ a = b ∨ b = c ∨ a = c := by
-  rw [cubicDiscr_prod_three_X_sub_C, pow_eq_zero_iff (by norm_num)]
-  rw [mul_eq_zero, mul_eq_zero, sub_eq_zero, sub_eq_zero, sub_eq_zero, or_assoc]
-
-/-- Nonnegativity of the discriminant of a split monic cubic. -/
-theorem cubicDiscr_prod_three_X_sub_C_nonneg (a b c : ℝ) :
-    0 ≤ cubicDiscr ((X - C a) * (X - C b) * (X - C c)) := by
-  rw [cubicDiscr_prod_three_X_sub_C]
-  exact sq_nonneg _
-
-/-- A split monic cubic has nonpositive discriminant iff its discriminant
-vanishes. -/
-theorem cubicDiscr_prod_three_X_sub_C_nonpos_iff_eq_zero (a b c : ℝ) :
-    cubicDiscr ((X - C a) * (X - C b) * (X - C c)) ≤ 0 ↔
-      cubicDiscr ((X - C a) * (X - C b) * (X - C c)) = 0 :=
-  ⟨fun h => le_antisymm h (cubicDiscr_prod_three_X_sub_C_nonneg a b c),
-    fun h => le_of_eq h⟩
-
-/-- A split monic cubic cannot have negative discriminant. -/
-theorem cubicDiscr_prod_three_X_sub_C_not_neg (a b c : ℝ) :
-    ¬ cubicDiscr ((X - C a) * (X - C b) * (X - C c)) < 0 :=
-  not_lt.mpr (cubicDiscr_prod_three_X_sub_C_nonneg a b c)
-
-/-- Positivity of the cubic discriminant from strictly ordered roots. -/
-theorem cubicDiscr_prod_three_X_sub_C_pos_of_lt {a b c : ℝ}
-    (hab : a < b) (hbc : b < c) :
-    0 < cubicDiscr ((X - C a) * (X - C b) * (X - C c)) :=
-  cubicDiscr_prod_three_X_sub_C_pos (ne_of_lt hab) (ne_of_lt hbc)
-    (ne_of_lt (hab.trans hbc))
 
 end RealRooted
