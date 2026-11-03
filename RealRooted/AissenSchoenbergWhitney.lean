@@ -257,18 +257,9 @@ sequence of `p` is Pólya-frequency and `p.natDegree ≤ 2`, then
 `4 * (coeff 0 * coeff 2) ≤ (coeff 1) ^ 2`. -/
 lemma disc_nonneg_of_isPolyaFreqSeq_natDegree_le_two {p : ℝ[X]}
     (hpf : IsPolyaFreqSeq p.coeff) (hdeg : p.natDegree ≤ 2) :
-    4 * (p.coeff 0 * p.coeff 2) ≤ (p.coeff 1) ^ 2 := by
-  rcases hdeg.lt_or_eq with hlt | h2
-  · rw [coeff_eq_zero_of_natDegree_lt hlt]
-    nlinarith [sq_nonneg (p.coeff 1)]
-  · obtain ⟨x, hx⟩ := (aissenSchoenbergWhitneyForwardSplits hpf).exists_eval_eq_zero
-      (degree_ne_of_natDegree_ne (by simp [h2]))
-    rw [eval_eq_sum_range, h2] at hx
-    simp only [Finset.sum_range_succ, Finset.sum_range_zero] at hx
-    have hdisc := discrim_eq_sq_of_quadratic_eq_zero
-      (a := p.coeff 2) (b := p.coeff 1) (c := p.coeff 0) (x := x) (by linear_combination hx)
-    rw [discrim] at hdisc
-    nlinarith [sq_nonneg (2 * p.coeff 2 * x + p.coeff 1)]
+    4 * (p.coeff 0 * p.coeff 2) ≤ (p.coeff 1) ^ 2 :=
+  quadratic_disc_coeff_le_of_splits_natDegree_le_two hdeg
+    (aissenSchoenbergWhitneyForwardSplits hpf)
 
 /-- Equivalent forward ASW statement with the redundant nonnegative-coefficient
 hypothesis removed. -/

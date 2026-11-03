@@ -172,15 +172,6 @@ theorem cubicDiscr_diagonalOperator (gamma : ℕ → ℝ) (p : ℝ[X]) :
   unfold cubicDiscr
   simp only [coeff_diagonalOperator]
 
-/-- Degree-three diagonal-operator output splits once its cubic discriminant is
-nonnegative. -/
-theorem diagonalOperator_splits_of_natDegree_three_cubicDiscr_nonneg
-    {gamma : ℕ → ℝ} {p : ℝ[X]}
-    (hdeg : (diagonalOperator gamma p).natDegree = 3)
-    (hdisc : 0 ≤ cubicDiscr (diagonalOperator gamma p)) :
-    (diagonalOperator gamma p).Splits :=
-  splits_of_cubicDiscr_nonneg hdeg hdisc
-
 /-- Degree-at-most-three diagonal-operator output splits once its cubic
 discriminant is nonnegative. -/
 theorem diagonalOperator_splits_of_natDegree_le_three_cubicDiscr_nonneg
@@ -646,35 +637,14 @@ theorem IsPFPolynomial.coeffLogConcaveUpTo_of_isPF_jensenPolynomial
   apply le_of_mul_le_mul_right _ hcommon_pos
   nlinarith [hscaled, hfactor_scaled]
 
-/-- The degree-two Jensen PF hypothesis gives the expected log-concavity
-inequality on the first three diagonal entries. -/
-theorem IsPFPolynomial.jensenPolynomial_two_logConcave {gamma : ℕ → ℝ}
-    (hj : IsPFPolynomial (jensenPolynomial 2 gamma)) :
-    gamma 0 * gamma 2 ≤ gamma 1 ^ 2 := by
-  simpa using hj.coeffLogConcaveUpTo_of_isPF_jensenPolynomial 1 (by norm_num) (by norm_num)
-
-/-- Left adjacent log-concavity inequality extracted from a degree-three PF
-Jensen polynomial. -/
-theorem IsPFPolynomial.jensenPolynomial_three_logConcave_left {gamma : ℕ → ℝ}
-    (hj : IsPFPolynomial (jensenPolynomial 3 gamma)) :
-    gamma 0 * gamma 2 ≤ gamma 1 ^ 2 := by
-  simpa using hj.coeffLogConcaveUpTo_of_isPF_jensenPolynomial 1 (by norm_num) (by norm_num)
-
-/-- Right adjacent log-concavity inequality extracted from a degree-three PF
-Jensen polynomial. -/
-theorem IsPFPolynomial.jensenPolynomial_three_logConcave_right {gamma : ℕ → ℝ}
-    (hj : IsPFPolynomial (jensenPolynomial 3 gamma)) :
-    gamma 1 * gamma 3 ≤ gamma 2 ^ 2 := by
-  simpa using hj.coeffLogConcaveUpTo_of_isPF_jensenPolynomial 2 (by norm_num) (by norm_num)
-
 /-- Adjacent log-concavity inequalities extracted from a degree-three PF
 Jensen polynomial. -/
 theorem IsPFPolynomial.jensenPolynomial_three_logConcave {gamma : ℕ → ℝ}
     (hj : IsPFPolynomial (jensenPolynomial 3 gamma)) :
     gamma 0 * gamma 2 ≤ gamma 1 ^ 2 ∧
       gamma 1 * gamma 3 ≤ gamma 2 ^ 2 :=
-  ⟨hj.jensenPolynomial_three_logConcave_left,
-    hj.jensenPolynomial_three_logConcave_right⟩
+  ⟨by simpa using hj.coeffLogConcaveUpTo_of_isPF_jensenPolynomial 1 (by norm_num) (by norm_num),
+    by simpa using hj.coeffLogConcaveUpTo_of_isPF_jensenPolynomial 2 (by norm_num) (by norm_num)⟩
 
 /-- Adjacent log-concavity inequalities for a Jensen cubic that is zero or
 splits.  This degree-`≤ 3` form packages the degenerate cases with the exact
@@ -734,23 +704,14 @@ theorem isFiniteMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
   have hqdeg : (diagonalOperator gamma p).natDegree = 2 := by
     have hq_le_two := (natDegree_diagonalOperator_le gamma p).trans hp
     lia
-  have hlog := hjensen.jensenPolynomial_two_logConcave
+  have hlog : gamma 0 * gamma 2 ≤ gamma 1 ^ 2 := by
+    simpa using hjensen.coeffLogConcaveUpTo_of_isPF_jensenPolynomial 1 (by norm_num) (by norm_num)
   have hpdisc :=
     quadratic_disc_coeff_le_of_splits_natDegree_two
       hpdeg hsplit
   have hqdisc := diagonalOperator_discrim_nonneg_of_natDegree_two
     (hgamma 0) (hgamma 2) hlog hpdisc
   exact Or.inr (splits_of_natDegree_eq_two_of_discrim_nonneg hqdeg hqdisc)
-
-/-- Degree-two finite multiplier sequences are classified by the PF Jensen
-polynomial condition. -/
-theorem isFiniteMultiplierSequence_natDegree_two_of_isPF_jensenPolynomial
-    {gamma : ℕ → ℝ}
-    (hgamma : ∀ k, 0 ≤ gamma k)
-    (hjensen : IsPFPolynomial (jensenPolynomial 2 gamma)) :
-    IsFiniteMultiplierSequence 2 gamma :=
-  isFiniteMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
-    le_rfl hgamma hjensen
 
 theorem splits_X_add_one_pow (n : ℕ) :
     ((X + 1 : ℝ[X]) ^ n).Splits :=
@@ -811,13 +772,6 @@ theorem finitePolyaSchur_nonneg_of_natDegree_le_two
   ⟨isPFPolynomial_jensenPolynomial_of_finiteMultiplierSequence hgamma,
     isFiniteMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two hn hgamma⟩
 
-/-- Degree-two case of the full finite Pólya--Schur classification. -/
-theorem finitePolyaSchur_nonneg_natDegree_two
-    {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k) :
-    IsFiniteMultiplierSequence 2 gamma ↔
-      IsPFPolynomial (jensenPolynomial 2 gamma) :=
-  finitePolyaSchur_nonneg_of_natDegree_le_two le_rfl hgamma
-
 /-- A nonnegative finite multiplier sequence preserves the PF cone on the same
 degree range. -/
 theorem isFinitePFMultiplierSequence_of_finiteMultiplierSequence
@@ -848,13 +802,6 @@ theorem isFinitePFMultiplierSequence_natDegree_zero
     IsFinitePFMultiplierSequence 0 gamma :=
   isFinitePFMultiplierSequence_of_natDegree_le_one (by norm_num) hgamma
 
-/-- Degree-one finite PF multiplier sequences are automatic for nonnegative
-diagonal sequences. -/
-theorem isFinitePFMultiplierSequence_natDegree_one
-    {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k) :
-    IsFinitePFMultiplierSequence 1 gamma :=
-  isFinitePFMultiplierSequence_of_natDegree_le_one le_rfl hgamma
-
 /-- Degree at most two PF-preservation case of the backward finite
 Pólya--Schur direction. -/
 theorem isFinitePFMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
@@ -866,16 +813,6 @@ theorem isFinitePFMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
     (isFiniteMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
       hn hgamma hjensen)
 
-/-- Degree-two finite PF multiplier sequences are classified by the PF Jensen
-polynomial condition. -/
-theorem isFinitePFMultiplierSequence_natDegree_two_of_isPF_jensenPolynomial
-    {gamma : ℕ → ℝ}
-    (hgamma : ∀ k, 0 ≤ gamma k)
-    (hjensen : IsPFPolynomial (jensenPolynomial 2 gamma)) :
-    IsFinitePFMultiplierSequence 2 gamma :=
-  isFinitePFMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
-    le_rfl hgamma hjensen
-
 /-- Degree at most two PF-preservation form of finite Pólya--Schur. -/
 theorem isFinitePFMultiplierSequence_iff_jensenPolynomial_natDegree_le_two
     {n : ℕ} (hn : n ≤ 2) {gamma : ℕ → ℝ}
@@ -885,13 +822,5 @@ theorem isFinitePFMultiplierSequence_iff_jensenPolynomial_natDegree_le_two
   ⟨isPFPolynomial_jensenPolynomial_of_finitePFMultiplierSequence,
     isFinitePFMultiplierSequence_of_isPF_jensenPolynomial_natDegree_le_two
       hn hgamma⟩
-
-/-- Degree-two PF-preservation form of finite Pólya--Schur. -/
-theorem isFinitePFMultiplierSequence_iff_jensenPolynomial_natDegree_two
-    {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k) :
-    IsFinitePFMultiplierSequence 2 gamma ↔
-      IsPFPolynomial (jensenPolynomial 2 gamma) :=
-  isFinitePFMultiplierSequence_iff_jensenPolynomial_natDegree_le_two
-    le_rfl hgamma
 
 end RealRooted

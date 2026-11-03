@@ -71,9 +71,6 @@ lemma isRealRooted_of_self_2x2 (p : ℝ[X])
   have hdiv : p ∣ (((C (1 : ℝ) * X + C (1 : ℝ)) * p) + p) := by simp
   exact isRealRooted_of_dvd hcombo_rr.1 hcombo_rr.2 hp0 hdiv
 
-@[deprecated strictInterl_mul_X_of_strictInterl_of_nonneg (since := "2026-10-11")]
-alias strictInterl_to_strictInterl_mul_X_of_nonneg := strictInterl_mul_X_of_strictInterl_of_nonneg
-
 theorem isRealRooted_affine_combo_of_strictInterl_nonneg {f g : ℝ[X]}
     (h : StrictInterl f g) (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
     {s t : ℝ} (hs : 0 < s) (ht : 0 < t) :

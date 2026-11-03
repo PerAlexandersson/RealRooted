@@ -239,13 +239,6 @@ This holds because:
 
 The count equality (3) follows from the interlacing giving one root per interval. -/
 
-/-- Evaluation of a real-rooted polynomial via its factorization. -/
-@[deprecated Polynomial.Splits.eval_eq_prod_roots +typeChanged (since := "2026-10-21")]
-lemma eval_eq_leadingCoeff_mul_prod_sub {p : ℝ[X]}
-  (hp_splits : p.Splits) (x : ℝ) :
-    p.eval x = p.leadingCoeff * (p.roots.map (x - ·)).prod :=
-  hp_splits.eval_eq_prod_roots x
-
 lemma eval_pos_of_all_roots_lt {p : ℝ[X]} {r : ℝ}
     (hp_ne : p ≠ 0) (hp_splits : p.Splits) (hp_pos : HasPosLeadingCoeff p)
     (hlt : ∀ t ∈ p.roots, t < r) :

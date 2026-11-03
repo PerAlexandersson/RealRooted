@@ -95,7 +95,7 @@ theorem rootMultiplicity_applyTDerivList_eq_add_length_of_ge_two
       have hTmult : 2 ≤ (tDeriv eps p).rootMultiplicity a := by
         rw [htail_eq]
         exact le_trans hm' (Nat.le_add_right _ _)
-      have hstep := rootMultiplicity_eq_succ_of_tDeriv_ge_two heps hp hTmult
+      have hstep := rootMultiplicity_eq_succ_of_tDeriv_ge_two_of_ne heps.ne' hp hTmult
       simp only [applyTDerivList_cons, List.length_cons]
       lia
 

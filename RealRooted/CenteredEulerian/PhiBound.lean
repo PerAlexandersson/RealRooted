@@ -5,6 +5,7 @@ Authors: Per Alexandersson
 -/
 module
 
+import RealRooted.Mathlib.Algebra.BigOperators.Intervals
 import Mathlib.Analysis.Real.Pi.Bounds
 public import RealRooted.CenteredEulerian.ChangeBasis
 public import RealRooted.CenteredEulerian.Majorants
@@ -24,18 +25,9 @@ open PowerSeries Real
 
 namespace RealRooted.CenteredEulerian
 
-lemma sum_range_two_mul (f : ℕ → ℝ) (R : ℕ) :
-    ∑ k ∈ Finset.range (2 * R), f k = ∑ r ∈ Finset.range R, (f (2 * r) + f (2 * r + 1)) := by
-  induction R with
-  | zero => simp
-  | succ R ih =>
-    rw [show 2 * (R + 1) = 2 * R + 1 + 1 by ring, Finset.sum_range_succ, Finset.sum_range_succ, ih,
-      Finset.sum_range_succ]
-    ring
-
 lemma sum_le_sum_two_mul {f : ℕ → ℝ} (hf : ∀ k, 0 ≤ f k) (K : ℕ) :
     ∑ k ∈ Finset.range K, f k ≤ ∑ r ∈ Finset.range K, (f (2 * r) + f (2 * r + 1)) := by
-  rw [← sum_range_two_mul]
+  rw [← Finset.sum_range_two_mul]
   exact Finset.sum_le_sum_of_subset_of_nonneg (by intro k; simp; lia) (fun k _ _ => hf k)
 
 lemma geom_partial_le {y : ℝ} (hy0 : 0 ≤ y) (hy1 : y < 1) (K : ℕ) :

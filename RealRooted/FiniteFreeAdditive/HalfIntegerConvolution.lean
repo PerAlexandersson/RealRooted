@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.FiniteFreeAdditive.HalfInteger
+import RealRooted.Mathlib.Algebra.BigOperators.Intervals
 import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 
@@ -26,21 +27,10 @@ private theorem sum_range_two_mul_add_one_eq_sum_range_two_mul {R : Type*}
     (hodd : ∀ i, i ≤ 2 * k → Odd i → F i = 0) :
     (∑ i ∈ Finset.range (2 * k + 1), F i) =
       ∑ i ∈ Finset.range (k + 1), F (2 * i) := by
-  induction k with
-  | zero => simp
-  | succ k ih =>
-      have hodd' : ∀ i, i ≤ 2 * k → Odd i → F i = 0 :=
-        fun i _ => hodd i (by lia)
-      rw [show 2 * (k + 1) + 1 = (2 * k + 1) + 2 by ring]
-      rw [Finset.sum_range_succ, Finset.sum_range_succ, ih hodd']
-      rw [hodd (2 * k + 1) (by lia) (odd_two_mul_add_one k)]
-      calc
-        (∑ i ∈ Finset.range (k + 1), F (2 * i)) + 0 + F (2 * k + 2) =
-            (∑ i ∈ Finset.range (k + 1), F (2 * i)) + F (2 * (k + 1)) := by
-          rw [show 2 * k + 2 = 2 * (k + 1) by ring]
-          simp
-        _ = ∑ i ∈ Finset.range (k + 1 + 1), F (2 * i) :=
-          (Finset.sum_range_succ _ _).symm
+  rw [Finset.sum_range_succ, Finset.sum_range_two_mul, Finset.sum_range_succ (fun i => F (2 * i))]
+  congr 1
+  refine Finset.sum_congr rfl fun j hj => ?_
+  rw [hodd (2 * j + 1) (by have := Finset.mem_range.1 hj; lia) (odd_two_mul_add_one j), add_zero]
 
 /-- The coefficient of generalized rectangular additive convolution in its
 ambient degree box. -/

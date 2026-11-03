@@ -1,5 +1,6 @@
 module
 
+import RealRooted.Mathlib.Algebra.BigOperators.Intervals
 import RealRooted.Mathlib.RingTheory.Polynomial.Chebyshev.Bounds
 public import RealRooted.Favard.Recurrence
 import Mathlib.Algebra.BigOperators.Field
@@ -216,14 +217,6 @@ theorem abs_mul_le_chord {a b c d y s t : K} (ha : 0 ≤ a) (hab : a ≤ b) (hcd
     _ ≤ a * c * (1 - y) + b * d * y := by
         nlinarith [mul_nonneg (mul_nonneg hy0 (by linarith : (0 : K) ≤ 1 - y))
           (mul_nonneg (by linarith : (0 : K) ≤ b - a) (by linarith : (0 : K) ≤ d - c))]
-
-theorem sum_range_two_mul {M : Type*} [AddCommMonoid M] (f : ℕ → M) (m : ℕ) :
-    ∑ i ∈ range (2 * m), f i = ∑ j ∈ range m, (f (2 * j) + f (2 * j + 1)) := by
-  induction m with
-  | zero => simp
-  | succ m ih =>
-    rw [show 2 * (m + 1) = 2 * m + 1 + 1 by ring, sum_range_succ, sum_range_succ, ih,
-      sum_range_succ, add_assoc]
 
 /-! ### The envelope induction -/
 

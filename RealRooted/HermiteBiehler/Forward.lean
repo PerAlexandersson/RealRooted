@@ -397,9 +397,6 @@ theorem hermiteBiehlerForwardPos {f g : ℝ[X]}
         exact hermiteBiehlerForwardPos_of_distinct hf hg h hfnd hgnd
           (fun s hsf hsg ↦ hcom s hsf hsg) h_deg₁
 
-@[deprecated HasNonnegCoeffs.pos_leadingCoeff (since := "2026-10-06")]
-alias hasPosLeadingCoeff_of_nonnegCoeffs_of_ne_zero := HasNonnegCoeffs.pos_leadingCoeff
-
 /-- Concrete obstruction to a sign-free forward Hermite--Biehler route:
 `X - i` has the upper-half-plane root `i`. -/
 theorem not_isUpperHalfPlaneStable_hermiteBiehlerPolynomial_X_neg_one :

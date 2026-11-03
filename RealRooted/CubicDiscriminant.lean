@@ -292,9 +292,6 @@ lemma cubicDiscr_eq_of_factor {q : ℝ[X]} {r : ℝ} (hqdeg : q.natDegree = 2) :
   rw [h3, h2, h1, h0]
   ring
 
-@[deprecated splits_of_natDegree_eq_two_of_discrim_nonneg (since := "2026-10-07")]
-alias quadratic_splits_of_discrim_nonneg := splits_of_natDegree_eq_two_of_discrim_nonneg
-
 /-- **Discriminant criterion for real cubics.**  A real polynomial of
 `natDegree` three with nonnegative coefficient discriminant splits over `ℝ`. -/
 theorem splits_of_cubicDiscr_nonneg {p : ℝ[X]} (hdeg : p.natDegree = 3)

@@ -51,12 +51,6 @@ lemma hasNonnegCoeffs_of_forall_coeff_pos {p : ℝ[X]}
   · exact (h k hk).le
   · rw [coeff_eq_zero_of_natDegree_lt (by lia)]
 
-/-- Compatibility alias for `hasNonnegCoeffs_C_mul`. -/
-@[deprecated hasNonnegCoeffs_C_mul (since := "2026-10-21")]
-lemma nonnegCoeffs_C_mul {a : ℝ} (ha : 0 ≤ a) {p : ℝ[X]}
-    (hp : HasNonnegCoeffs p) : HasNonnegCoeffs (C a * p) :=
-  hasNonnegCoeffs_C_mul ha hp
-
 lemma HasNonnegCoeffs.add {p q : ℝ[X]}
     (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q) :
     HasNonnegCoeffs (p + q) := fun n => by

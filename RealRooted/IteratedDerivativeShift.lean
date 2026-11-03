@@ -1046,24 +1046,6 @@ theorem exists_delta_and_real_root_near_iterateTDeriv_of_lt_rootMultiplicity
   · grind
   · grind
 
-/-- If `rootMultiplicity a p ≥ 1` and `rootMultiplicity a (T_ε p) ≥ 2`, then
-    `rootMultiplicity a p ≥ 2` and the exact formula applies. In other words,
-    a simple root can't produce a double root (it vanishes instead). -/
-lemma rootMultiplicity_ge_two_of_tDeriv_ge_two
-    {eps : ℝ} {p : ℝ[X]} {a : ℝ}
-    (heps : 0 < eps) (hp_ne : p ≠ 0)
-    (hroot : 1 ≤ p.rootMultiplicity a)
-    (hm : 2 ≤ (tDeriv eps p).rootMultiplicity a) :
-    2 ≤ p.rootMultiplicity a := by
-  by_contra h
-  push Not at h
-  have h1 : p.rootMultiplicity a = 1 := by lia
-  have hroot_a : p.IsRoot a := (rootMultiplicity_pos hp_ne).mp (by lia)
-  have hnotroot := not_isRoot_tDeriv_of_simple_root (ne_of_gt heps) hp_ne hroot_a h1
-  have hroot2 : (tDeriv eps p).IsRoot a :=
-    (rootMultiplicity_pos (tDeriv_ne_zero hp_ne)).mp (by lia)
-  lia
-
 lemma deriv2_mul_lt_deriv_sq_at_non_root {p : ℝ[X]} {a : ℝ} (hp : p.Splits)
     (hdeg : 1 ≤ p.natDegree)
     (ha : p.eval a ≠ 0) :
@@ -1147,8 +1129,11 @@ lemma deriv2_mul_lt_deriv_sq_at_non_root {p : ℝ[X]} {a : ℝ} (hp : p.Splits)
         mul_nonpos_of_nonneg_of_nonpos (sq_nonneg ar) (le_of_lt h_neg)
       linarith [sq_pos_of_ne_zero ht_eval]
 
-private lemma rootMultiplicity_tDeriv_le_one_of_not_isRoot_aux
-    {eps : ℝ} {p : ℝ[X]} {a : ℝ} (hp : p.Splits) (ha : ¬ p.IsRoot a) :
+/-- `T_ε` cannot create double roots at non-roots of a real-rooted polynomial,
+for arbitrary real `ε`. -/
+lemma rootMultiplicity_tDeriv_le_one_of_not_isRoot_all
+    {eps : ℝ} {p : ℝ[X]} {a : ℝ}
+    (hp : p.Splits) (ha : ¬ p.IsRoot a) :
     (tDeriv eps p).rootMultiplicity a ≤ 1 := by
   obtain hp₀ | hp₀ := eq_zero_or_pos p.natDegree
   · simp [tDeriv_of_natDegree_eq_zero, rootMultiplicity_eq_zero ha, *]
@@ -1168,55 +1153,6 @@ private lemma rootMultiplicity_tDeriv_le_one_of_not_isRoot_aux
       using hT_deriv_root
   have heq : p.derivative.derivative.eval a * p.eval a = p.derivative.eval a ^ 2 := by grind
   linarith [deriv2_mul_lt_deriv_sq_at_non_root hp hp₀ hpa]
-
-/-- `T_ε` cannot create double roots at non-roots of a real-rooted polynomial.
-
-If `p` is real-rooted with `p(a) ≠ 0`, then `rootMultiplicity a (T_ε p) ≤ 1`.
-
-Proof: if `T_ε p` had a double root at `a`, then `p(a) = ε·p'(a)` and `p'(a) = ε·p''(a)`,
-giving `p''(a)·p(a) = p'(a)²`. But `deriv2_mul_lt_deriv_sq_at_non_root` says
-`p''(a)·p(a) < p'(a)²`. Contradiction. -/
-lemma rootMultiplicity_tDeriv_le_one_of_not_isRoot
-    {eps : ℝ} {p : ℝ[X]} {a : ℝ}
-    (heps : 0 < eps) (hp : p.Splits)
-    (ha : ¬ p.IsRoot a) :
-    (tDeriv eps p).rootMultiplicity a ≤ 1 := by
-  have _heps_ne : eps ≠ 0 := ne_of_gt heps
-  exact rootMultiplicity_tDeriv_le_one_of_not_isRoot_aux hp ha
-
-/-- Backward chain: if `rootMultiplicity a (tDeriv eps p) ≥ 2` and `p` is real-rooted with
-    `deg ≥ 1`, then `rootMultiplicity a p ≥ 2` and in fact equals
-    `rootMultiplicity a (tDeriv eps p) + 1`. -/
-lemma rootMultiplicity_eq_succ_of_tDeriv_ge_two
-    {eps : ℝ} {p : ℝ[X]} {a : ℝ}
-    (heps : 0 < eps) (hp : p.Splits)
-    (hm : 2 ≤ (tDeriv eps p).rootMultiplicity a) :
-    p.rootMultiplicity a = (tDeriv eps p).rootMultiplicity a + 1 := by
-  obtain rfl | hp₀ := eq_or_ne p 0
-  · simp at hm
-  -- rootMultiplicity a p can't be 0 (non-root → tDeriv mult ≤ 1)
-  have hroot : p.IsRoot a := by
-    by_contra ha
-    have := rootMultiplicity_tDeriv_le_one_of_not_isRoot heps hp ha
-    lia
-  -- rootMultiplicity a p can't be 1 (simple root vanishes)
-  have h2 : 2 ≤ p.rootMultiplicity a := by
-    have h1 := (rootMultiplicity_pos hp₀).mpr hroot
-    by_contra hlt; push Not at hlt
-    have h1eq : p.rootMultiplicity a = 1 := by lia
-    have := not_isRoot_tDeriv_of_simple_root (ne_of_gt heps) hp₀ hroot h1eq
-    exact this ((rootMultiplicity_pos (tDeriv_ne_zero hp₀)).mp (by lia))
-  -- Exact formula from rootMultiplicity_tDeriv_of_multiple
-  rw [rootMultiplicity_tDeriv_of_multiple (ne_of_gt heps) hp₀ h2 (tDeriv_ne_zero hp₀)]
-  lia
-
-/-- `T_ε` cannot create double roots at non-roots of a real-rooted polynomial,
-for arbitrary real `ε`. -/
-lemma rootMultiplicity_tDeriv_le_one_of_not_isRoot_all
-    {eps : ℝ} {p : ℝ[X]} {a : ℝ}
-    (hp : p.Splits) (ha : ¬ p.IsRoot a) :
-    (tDeriv eps p).rootMultiplicity a ≤ 1 :=
-  rootMultiplicity_tDeriv_le_one_of_not_isRoot_aux hp ha
 
 /-- Backward chain for an arbitrary nonzero derivative shift. -/
 lemma rootMultiplicity_eq_succ_of_tDeriv_ge_two_of_ne
@@ -1323,8 +1259,8 @@ theorem hasSimpleRoots_iterateTDeriv_of_natDegree
       -- iterateTDeriv eps (n - j) f = tDeriv eps (iterateTDeriv eps (n - j - 1) f)
       have hstep : n - j = (n - (j + 1)) + 1 := by lia
       rw [hstep, iterateTDeriv_succ] at hprev
-      have := rootMultiplicity_eq_succ_of_tDeriv_ge_two heps (splits_iterateTDeriv heps hf)
-        (by linarith)
+      have := rootMultiplicity_eq_succ_of_tDeriv_ge_two_of_ne heps.ne'
+        (splits_iterateTDeriv heps hf) (by linarith)
       lia
   -- At j = n (step 0): rootMultiplicity a f ≥ 2 + n
   have h0 := step n le_rfl

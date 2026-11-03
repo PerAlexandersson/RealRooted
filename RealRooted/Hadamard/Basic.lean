@@ -170,39 +170,6 @@ theorem coeff_zero_schurSzegoComp (n : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).coeff 0 = f.coeff 0 * g.coeff 0 := by
   simpa using coeff_schurSzegoComp_of_le (Nat.zero_le n) f g
 
-/-- Linear coefficient of a fixed-degree Schur--Szegő composition. -/
-theorem coeff_one_schurSzegoComp_of_one_le
-    {n : Nat} (hn : 1 ≤ n) (f g : ℝ[X]) :
-    (schurSzegoComp n f g).coeff 1 =
-      f.coeff 1 * g.coeff 1 / (n : ℝ) := by
-  simpa [Nat.choose_one_right] using coeff_schurSzegoComp_of_le hn f g
-
-/-- Quadratic coefficient of a fixed-degree Schur--Szegő composition, with
-`Nat.choose n 2` expanded. -/
-theorem coeff_two_schurSzegoComp_of_two_le
-    {n : Nat} (hn : 2 ≤ n) (f g : ℝ[X]) :
-    (schurSzegoComp n f g).coeff 2 =
-      2 * (f.coeff 2 * g.coeff 2) / ((n : ℝ) * ((n : ℝ) - 1)) := by
-  have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
-  have hn0 : 0 < (n : ℝ) := by linarith
-  have hn1 : 0 < (n : ℝ) - 1 := by linarith
-  rw [coeff_schurSzegoComp_of_le hn, Nat.cast_choose_two]
-  field_simp [show (n : ℝ) * ((n : ℝ) - 1) ≠ 0 by positivity]
-
-/-- Cubic coefficient of a fixed-degree Schur--Szegő composition, with
-`Nat.choose n 3` expanded. -/
-theorem coeff_three_schurSzegoComp_of_three_le
-    {n : Nat} (hn : 3 ≤ n) (f g : ℝ[X]) :
-    (schurSzegoComp n f g).coeff 3 =
-      6 * (f.coeff 3 * g.coeff 3) /
-        ((n : ℝ) * ((n : ℝ) - 1) * ((n : ℝ) - 2)) := by
-  have hnR : (3 : ℝ) ≤ n := by exact_mod_cast hn
-  have hn0 : 0 < (n : ℝ) := by linarith
-  have hn1 : 0 < (n : ℝ) - 1 := by linarith
-  have hn2 : 0 < (n : ℝ) - 2 := by linarith
-  rw [coeff_schurSzegoComp_of_le hn, Nat.cast_choose_three]
-  field_simp [show (n : ℝ) * ((n : ℝ) - 1) * ((n : ℝ) - 2) ≠ 0 by positivity]
-
 /-- Fixed-degree Schur--Szego composition is a diagonal operator. -/
 theorem schurSzegoComp_eq_diagonalOperator (n : Nat) (f g : ℝ[X]) :
     schurSzegoComp n f g =
@@ -381,92 +348,6 @@ theorem schurSzegoComp_eq_jensenPolynomial_three_normalized
       coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hfdeg hklt)
     simp [hk3, hfcoeff]
 
-/-- Cubic-discriminant form of
-`schurSzegoComp_eq_jensenPolynomial_three_normalized`. -/
-theorem cubicDiscr_schurSzegoComp_eq_jensenPolynomial_three_normalized
-    {n : Nat} {f p : ℝ[X]} (hfdeg : f.natDegree ≤ 3) :
-    cubicDiscr (schurSzegoComp n f p) =
-      cubicDiscr
-        (jensenPolynomial 3 (fun k =>
-          (p.coeff k / (Nat.choose n k : ℝ)) *
-            (f.coeff k / (Nat.choose 3 k : ℝ)))) :=
-  congrArg cubicDiscr (schurSzegoComp_eq_jensenPolynomial_three_normalized hfdeg)
-
-/-- Diagonal-operator form of
-`schurSzegoComp_eq_jensenPolynomial_three_normalized`: the degree-`≤ 3` factor
-provides the diagonal sequence acting on the degree-three Jensen polynomial of
-the other binomially normalized coefficient sequence. -/
-theorem schurSzegoComp_eq_diagonalOperator_jensenPolynomial_three_normalized
-    {n : Nat} {f p : ℝ[X]} (hfdeg : f.natDegree ≤ 3) :
-    schurSzegoComp n f p =
-      diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
-        (jensenPolynomial 3 (fun k => p.coeff k / (Nat.choose n k : ℝ))) := by
-  rw [schurSzegoComp_eq_jensenPolynomial_three_normalized hfdeg,
-    ← jensenPolynomial_mul_sequence_eq_diagonalOperator
-      3 (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
-        (fun k => p.coeff k / (Nat.choose n k : ℝ))]
-  congr with k; ring
-
-/-- Cubic-discriminant form of
-`schurSzegoComp_eq_diagonalOperator_jensenPolynomial_three_normalized`. -/
-theorem cubicDiscr_schurSzegoComp_eq_diagonalOperator_jensenPolynomial_three_normalized
-    {n : Nat} {f p : ℝ[X]} (hfdeg : f.natDegree ≤ 3) :
-    cubicDiscr (schurSzegoComp n f p) =
-      cubicDiscr
-        (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
-          (jensenPolynomial 3 (fun k => p.coeff k / (Nat.choose n k : ℝ)))) :=
-  congrArg cubicDiscr
-    (schurSzegoComp_eq_diagonalOperator_jensenPolynomial_three_normalized hfdeg)
-
-/-- Degree-three Schur--Szego composition, written as a diagonal operator applied
-to a reflected iterated derivative of the right factor. -/
-theorem schurSzegoComp_eq_diagonalOperator_reflect_iterate_derivative_three
-    {n : Nat} (hn : 3 ≤ n) {f p : ℝ[X]}
-    (hfdeg : f.natDegree ≤ 3) (hpdeg : p.natDegree ≤ n) :
-    schurSzegoComp n f p =
-      diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
-        (C ((6 : ℝ) / Nat.factorial n) *
-          reflect 3 ((derivative^[n - 3]) (reflect n p))) := by
-  rw [schurSzegoComp_eq_diagonalOperator_jensenPolynomial_three_normalized hfdeg,
-    jensenPolynomial_three_normalized_eq_reflect_iterate_derivative hn hpdeg]
-
-/-- Scalar-pulled form of
-`schurSzegoComp_eq_diagonalOperator_reflect_iterate_derivative_three`. -/
-theorem schurSzegoComp_eq_C_mul_diagonalOperator_reflect_iterate_derivative_three
-    {n : Nat} (hn : 3 ≤ n) {f p : ℝ[X]}
-    (hfdeg : f.natDegree ≤ 3) (hpdeg : p.natDegree ≤ n) :
-    schurSzegoComp n f p =
-      C ((6 : ℝ) / Nat.factorial n) *
-        diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
-          (reflect 3 ((derivative^[n - 3]) (reflect n p))) := by
-  rw [schurSzegoComp_eq_diagonalOperator_reflect_iterate_derivative_three
-    hn hfdeg hpdeg, diagonalOperator_C_mul]
-
-/-- Cubic discriminant form of
-`schurSzegoComp_eq_C_mul_diagonalOperator_reflect_iterate_derivative_three`. -/
-theorem cubicDiscr_schurSzegoComp_eq_reflect_diagonalOperator_three
-    {n : Nat} (hn : 3 ≤ n) {f p : ℝ[X]}
-    (hfdeg : f.natDegree ≤ 3) (hpdeg : p.natDegree ≤ n) :
-    cubicDiscr (schurSzegoComp n f p) =
-      ((6 : ℝ) / Nat.factorial n) ^ 4 *
-        cubicDiscr
-          (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
-            (reflect 3 ((derivative^[n - 3]) (reflect n p)))) := by
-  rw [schurSzegoComp_eq_C_mul_diagonalOperator_reflect_iterate_derivative_three
-    hn hfdeg hpdeg, cubicDiscr_C_mul]
-
-/-- Nonnegativity transfer through the reflected-derivative form of degree-three
-Schur--Szego composition. -/
-theorem cubicDiscr_schurSzegoComp_nonneg_of_reflect_diagonalOperator_three
-    {n : Nat} (hn : 3 ≤ n) {f p : ℝ[X]}
-    (hfdeg : f.natDegree ≤ 3) (hpdeg : p.natDegree ≤ n)
-    (hdisc : 0 ≤ cubicDiscr
-      (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
-        (reflect 3 ((derivative^[n - 3]) (reflect n p))))) :
-    0 ≤ cubicDiscr (schurSzegoComp n f p) := by
-  rw [cubicDiscr_schurSzegoComp_eq_reflect_diagonalOperator_three hn hfdeg hpdeg]
-  positivity
-
 /-- The iterated derivative of the degree-`n` reflection has degree at most
 three after `n - 3` derivatives. -/
 theorem natDegree_iterate_derivative_reflect_le_three
@@ -566,23 +447,6 @@ theorem cubicDiscr_schurSzegoComp_nonneg_iff_of_three_le
         Nat.choose_zero_right, Nat.choose_one_right, Nat.cast_one]
     field_simp [ne_of_gt hc2R, ne_of_gt hc3R, ne_of_gt hnR]
   rw [← mul_nonneg_iff_of_pos_right hKpos, hEq]
-
-/-- The diagonal-operator Jensen form is enough for the denominator-cleared
-cubic-discriminant numerator.
-
-This isolates the remaining degree-three PF-factor kernel: after the
-`p`-side has been rewritten as its normalized Jensen section, it remains to
-prove cubic-discriminant nonnegativity for the diagonal action attached to the
-degree-`≤ 3` PF factor `f`. -/
-theorem schurSzegoCompCubicDiscrNumerator_nonneg_of_diagonalOperator_jensen_nonneg
-    {n : ℕ} (hn : 3 ≤ n) {f p : ℝ[X]} (hfdeg : f.natDegree ≤ 3)
-    (hdisc : 0 ≤ cubicDiscr
-      (diagonalOperator (fun k => f.coeff k / (Nat.choose 3 k : ℝ))
-        (jensenPolynomial 3 (fun k => p.coeff k / (Nat.choose n k : ℝ))))) :
-    0 ≤ schurSzegoCompCubicDiscrNumerator n f p :=
-  (cubicDiscr_schurSzegoComp_nonneg_iff_of_three_le hn f p).1 <| by
-    simpa [cubicDiscr_schurSzegoComp_eq_diagonalOperator_jensenPolynomial_three_normalized
-      hfdeg] using hdisc
 
 theorem support_schurSzegoComp_eq_filter_right (n : Nat) (f g : ℝ[X]) :
     (schurSzegoComp n f g).support =

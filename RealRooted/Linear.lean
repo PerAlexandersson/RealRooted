@@ -459,26 +459,6 @@ lemma natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff {p q : ℝ[X]}
         rw [show q.coeff p.natDegree = q.leadingCoeff by rw [hdeg]; rfl]
         positivity
 
-/-- If the right summand has strictly larger degree and positive leading coefficient,
-then the sum keeps that degree. -/
-@[deprecated Polynomial.natDegree_add_eq_right_of_natDegree_lt +typeChanged
-  (since := "2026-10-21")]
-lemma natDegree_add_eq_right_of_natDegree_lt_of_posLeadingCoeff {p q : ℝ[X]}
-    (hdeg : p.natDegree < q.natDegree) (hq_pos : HasPosLeadingCoeff q) :
-    (p + q).natDegree = q.natDegree := by
-  have _ := hq_pos.ne_zero
-  exact Polynomial.natDegree_add_eq_right_of_natDegree_lt hdeg
-
-/-- If the left summand has strictly larger degree and positive leading coefficient,
-then the sum keeps that degree. -/
-@[deprecated Polynomial.natDegree_add_eq_left_of_natDegree_lt +typeChanged
-  (since := "2026-10-21")]
-lemma natDegree_add_eq_left_of_natDegree_lt_of_posLeadingCoeff {p q : ℝ[X]}
-    (hdeg : q.natDegree < p.natDegree) (hp_pos : HasPosLeadingCoeff p) :
-    (p + q).natDegree = p.natDegree := by
-  have _ := hp_pos.ne_zero
-  exact Polynomial.natDegree_add_eq_left_of_natDegree_lt hdeg
-
 /-- A real parameter avoids canceling `a + t * b` exactly when it is not the
 unique cancellation value `-a / b`. -/
 private theorem add_mul_ne_zero_iff_ne_neg_div {a b t : ℝ} (hb : b ≠ 0) :

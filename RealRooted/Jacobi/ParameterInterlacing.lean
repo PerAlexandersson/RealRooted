@@ -1,6 +1,5 @@
 module
 
-import RealRooted.Bezoutian.LowDegree
 public import RealRooted.Derivative
 import RealRooted.Jacobi
 import RealRooted.Jacobi.Markoff
@@ -478,164 +477,6 @@ theorem shiftedJacobiMonic_strictInterl_alpha_add_degree_one
       (shiftedJacobiMonic 1 (α + t) β) :=
   (shiftedJacobiMonic_strictInterlSameDegree_alpha_add_degree_one hα hβ ht).toStrictInterl
 
-private theorem shiftedJacobiMonic_eq_of_natDegree_le_of_coeff_eq
-    {n : ℕ} {α β : ℝ} (hα : -1 < α) (hβ : -1 < β) {q : ℝ[X]}
-    (hqdeg : q.natDegree ≤ n)
-    (hcoeff : ∀ k ≤ n, (shiftedJacobiMonic n α β).coeff k = q.coeff k) :
-    shiftedJacobiMonic n α β = q := by
-  ext k
-  by_cases hk : k ≤ n
-  · exact hcoeff k hk
-  · rw [coeff_eq_zero_of_natDegree_lt (by
-        rw [natDegree_shiftedJacobiMonic n hα hβ]
-        lia), coeff_eq_zero_of_natDegree_lt (by lia)]
-
-private theorem shiftedJacobiMonic_strictInterlSameDegree_of_bezoutMatrix_posDef
-    (n : ℕ) {α γ β : ℝ} (hα : -1 < α) (hγ : -1 < γ) (hβ : -1 < β)
-    (hpos : (bezoutMatrix n (shiftedJacobiMonic n γ β)
-      (shiftedJacobiMonic n α β)).PosDef) :
-    StrictInterlSameDegree (shiftedJacobiMonic n α β)
-      (shiftedJacobiMonic n γ β) := by
-  rw [strictInterlSameDegree_iff_bezoutMatrix_posDef
-    (hasPosLeadingCoeff_of_monic (monic_shiftedJacobiMonic n hα hβ))
-    (hasPosLeadingCoeff_of_monic (monic_shiftedJacobiMonic n hγ hβ))
-    (natDegree_shiftedJacobiMonic n hα hβ)
-    (natDegree_shiftedJacobiMonic n hγ hβ)]
-  exact hpos
-
-local macro "verify_shiftedJacobiMonic_explicit" : tactic => `(tactic| (
-  apply shiftedJacobiMonic_eq_of_natDegree_le_of_coeff_eq
-    (by norm_num) (by norm_num) (by compute_degree!)
-  intro k hk
-  rw [coeff_shiftedJacobiMonic]
-  interval_cases k <;>
-    norm_num [Ring.choose_eq_smul, descPochhammer_succ_left, smeval_mul,
-      smeval_X, smeval_comp, smeval_sub, smeval_one, coeff_sub, coeff_add,
-      coeff_C_mul, Polynomial.coeff_X_pow, coeff_X, coeff_C]))
-
-private theorem shiftedJacobiMonic_two_neg_half_one :
-    shiftedJacobiMonic 2 (-(1 / 2) : ℝ) 1 =
-      X ^ 2 - C (2 / 3 : ℝ) * X + C (1 / 21 : ℝ) := by verify_shiftedJacobiMonic_explicit
-
-private theorem shiftedJacobiMonic_two_one_one :
-    shiftedJacobiMonic 2 (1 : ℝ) 1 =
-      X ^ 2 - X + C (1 / 5 : ℝ) := by verify_shiftedJacobiMonic_explicit
-
-private theorem shiftedJacobiMonic_two_half_one :
-    shiftedJacobiMonic 2 (1 / 2 : ℝ) 1 =
-      X ^ 2 - C (10 / 11 : ℝ) * X + C (5 / 33 : ℝ) := by verify_shiftedJacobiMonic_explicit
-
-private theorem shiftedJacobiMonic_two_two_one :
-    shiftedJacobiMonic 2 (2 : ℝ) 1 =
-      X ^ 2 - C (8 / 7 : ℝ) * X + C (2 / 7 : ℝ) := by verify_shiftedJacobiMonic_explicit
-
-local macro "verify_shiftedJacobiMonic_degree_two" h₀:term "," h₁:term : tactic => `(tactic| (
-  apply shiftedJacobiMonic_strictInterlSameDegree_of_bezoutMatrix_posDef
-    2 (by norm_num) (by norm_num) (by norm_num)
-  rw [($h₀), ($h₁), bezoutMatrix.fin_two_eq_coeff_of_natDegree_le_two
-    (by compute_degree) (by compute_degree)]
-  norm_num [coeff_sub, coeff_add, coeff_C_mul,
-    Polynomial.coeff_X_pow, coeff_X, coeff_C]
-  apply Matrix.posDef_fin_two_of_entries <;> norm_num))
-
-/-- In degree two, the fractional first-parameter comparison needed by the
-two parking-function parity classes is strictly interleaving. -/
-theorem shiftedJacobiMonic_strictInterlSameDegree_three_halves_degree_two
-    (ε : ℕ) (hε : ε < 2) :
-    StrictInterlSameDegree
-      (shiftedJacobiMonic 2 ((ε : ℝ) - 1 / 2) 1)
-      (shiftedJacobiMonic 2 ((ε : ℝ) + 1) 1) := by
-  interval_cases ε
-  · norm_num
-    verify_shiftedJacobiMonic_degree_two
-      shiftedJacobiMonic_two_neg_half_one, shiftedJacobiMonic_two_one_one
-  · norm_num
-    verify_shiftedJacobiMonic_degree_two
-      shiftedJacobiMonic_two_half_one, shiftedJacobiMonic_two_two_one
-
-private theorem shiftedJacobiMonic_three_neg_half_one :
-    shiftedJacobiMonic 3 (-(1 / 2) : ℝ) 1 =
-      X ^ 3 - C (15 / 13 : ℝ) * X ^ 2 +
-        C (45 / 143 : ℝ) * X - C (5 / 429 : ℝ) := by verify_shiftedJacobiMonic_explicit
-
-private theorem shiftedJacobiMonic_three_one_one :
-    shiftedJacobiMonic 3 (1 : ℝ) 1 =
-      X ^ 3 - C (3 / 2 : ℝ) * X ^ 2 +
-        C (9 / 14 : ℝ) * X - C (1 / 14 : ℝ) := by verify_shiftedJacobiMonic_explicit
-
-private theorem shiftedJacobiMonic_three_half_one :
-    shiftedJacobiMonic 3 (1 / 2 : ℝ) 1 =
-      X ^ 3 - C (7 / 5 : ℝ) * X ^ 2 +
-        C (7 / 13 : ℝ) * X - C (7 / 143 : ℝ) := by verify_shiftedJacobiMonic_explicit
-
-private theorem shiftedJacobiMonic_three_two_one :
-    shiftedJacobiMonic 3 (2 : ℝ) 1 =
-      X ^ 3 - C (5 / 3 : ℝ) * X ^ 2 +
-        C (5 / 6 : ℝ) * X - C (5 / 42 : ℝ) := by verify_shiftedJacobiMonic_explicit
-
-/-- In degree three, the fractional first-parameter comparison needed by the
-two parking-function parity classes is strictly interleaving. -/
-theorem shiftedJacobiMonic_strictInterlSameDegree_three_halves_degree_three
-    (ε : ℕ) (hε : ε < 2) :
-    StrictInterlSameDegree
-      (shiftedJacobiMonic 3 ((ε : ℝ) - 1 / 2) 1)
-      (shiftedJacobiMonic 3 ((ε : ℝ) + 1) 1) := by
-  interval_cases ε
-  · norm_num
-    apply shiftedJacobiMonic_strictInterlSameDegree_of_bezoutMatrix_posDef
-      3 (by norm_num) (by norm_num) (by norm_num)
-    rw [shiftedJacobiMonic_three_neg_half_one,
-      shiftedJacobiMonic_three_one_one]
-    have hmatrix :
-        bezoutMatrix 3
-            (X ^ 3 - C (3 / 2 : ℝ) * X ^ 2 +
-              C (9 / 14 : ℝ) * X - C (1 / 14 : ℝ))
-            (X ^ 3 - C (15 / 13 : ℝ) * X ^ 2 +
-              C (45 / 143 : ℝ) * X - C (5 / 429 : ℝ)) =
-          !![(15 / 1001 : ℝ), -5 / 77, 359 / 6006;
-            -5 / 77, 1979 / 6006, -657 / 2002;
-            359 / 6006, -657 / 2002, 9 / 26] := by
-      ext i j
-      fin_cases i <;> fin_cases j <;>
-        norm_num [Polynomial.bezoutMatrix, Polynomial.bezoutEntry, bezoutSeqEntry, coeff_sub,
-          coeff_add, coeff_C_mul, Polynomial.coeff_X_pow, coeff_X, coeff_C,
-          Finset.sum_range_succ]
-    rw [hmatrix]
-    convert Matrix.posDef_fin_three_of_ldl
-      (d₀ := (15 / 1001 : ℝ)) (d₁ := (289 / 6006 : ℝ))
-      (d₂ := (1303021 / 156216060 : ℝ))
-      (l₁₀ := (-13 / 3 : ℝ)) (l₂₀ := (359 / 90 : ℝ))
-      (l₂₁ := (-1246 / 867 : ℝ))
-      (by norm_num) (by norm_num) (by norm_num) using 1
-    norm_num
-  · norm_num
-    apply shiftedJacobiMonic_strictInterlSameDegree_of_bezoutMatrix_posDef
-      3 (by norm_num) (by norm_num) (by norm_num)
-    rw [shiftedJacobiMonic_three_half_one,
-      shiftedJacobiMonic_three_two_one]
-    have hmatrix :
-        bezoutMatrix 3
-            (X ^ 3 - C (5 / 3 : ℝ) * X ^ 2 +
-              C (5 / 6 : ℝ) * X - C (5 / 42 : ℝ))
-            (X ^ 3 - C (7 / 5 : ℝ) * X ^ 2 +
-              C (7 / 13 : ℝ) * X - C (7 / 143 : ℝ)) =
-          !![(10 / 429 : ℝ), -73 / 858, 421 / 6006;
-            -73 / 858, 1019 / 3003, -23 / 78;
-            421 / 6006, -23 / 78, 4 / 15] := by
-      ext i j
-      fin_cases i <;> fin_cases j <;>
-        norm_num [Polynomial.bezoutMatrix, Polynomial.bezoutEntry, bezoutSeqEntry, coeff_sub,
-          coeff_add, coeff_C_mul, Polynomial.coeff_X_pow, coeff_X, coeff_C,
-          Finset.sum_range_succ]
-    rw [hmatrix]
-    convert Matrix.posDef_fin_three_of_ldl
-      (d₀ := (10 / 429 : ℝ)) (d₁ := (3457 / 120120 : ℝ))
-      (d₂ := (1080556 / 363347985 : ℝ))
-      (l₁₀ := (-73 / 20 : ℝ)) (l₂₀ := (421 / 140 : ℝ))
-      (l₂₁ := (-4687 / 3457 : ℝ))
-      (by norm_num) (by norm_num) (by norm_num) using 1
-    norm_num
-
 /-- A beta-one shifted Jacobi polynomial and a positive first-parameter shift
 of at most two have no common root. -/
 theorem shiftedJacobiMonic_noCommonRoot_alpha_add
@@ -770,6 +611,21 @@ theorem shiftedJacobiMonic_strictInterl_three_halves (n ε : ℕ) :
     (by norm_num : (0 : ℝ) < 3 / 2) (by norm_num : (3 / 2 : ℝ) ≤ 2)
   convert hstrictInterl using 1
   ring_nf
+
+/-- The fractional first-parameter comparison used by the two parity classes in the A390883
+Jacobi representation is a strict interlacing of polynomials of the same degree. -/
+theorem shiftedJacobiMonic_strictInterlSameDegree_three_halves (n ε : ℕ) :
+    StrictInterlSameDegree (shiftedJacobiMonic n ((ε : ℝ) - 1 / 2) 1)
+      (shiftedJacobiMonic n ((ε : ℝ) + 1) 1) := by
+  have hε : 0 ≤ (ε : ℝ) := Nat.cast_nonneg ε
+  have hα : -1 < (ε : ℝ) - 1 / 2 := by linarith
+  have hno := shiftedJacobiMonic_noCommonRoot_alpha_add n hα
+    (by norm_num : (0 : ℝ) < 3 / 2) (by norm_num : (3 / 2 : ℝ) ≤ 2)
+  rw [show (ε : ℝ) - 1 / 2 + 3 / 2 = (ε : ℝ) + 1 by ring] at hno
+  exact StrictInterlSameDegree.of_strictInterl_of_no_common
+    (shiftedJacobiMonic_strictInterl_three_halves n ε)
+    (by rw [natDegree_shiftedJacobiMonic n hα (by norm_num),
+      natDegree_shiftedJacobiMonic n (by linarith) (by norm_num)]) hno
 
 /-- At a root of the degree-`m + 1` lower-parameter polynomial, the
 degree-`m` polynomials at first-parameter shifts zero and two have the same

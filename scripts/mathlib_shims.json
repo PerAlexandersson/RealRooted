@@ -15,6 +15,16 @@
     },
     {
       "sources": [
+        "RealRooted/Mathlib/Algebra/BigOperators/Intervals.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.BigOperators.Intervals"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
         "RealRooted/Mathlib/Algebra/BigOperators/Finset/Unique.lean"
       ],
       "modules": [
