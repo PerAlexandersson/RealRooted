@@ -72,12 +72,45 @@ def CoeffUnimodalUpTo (d : ℕ) (a : ℕ → ℝ) : Prop :=
     (∀ i j, i ≤ j → j ≤ m → a i ≤ a j) ∧
       ∀ i j, m ≤ i → i ≤ j → j ≤ d → a j ≤ a i
 
+/-- Ultra-log-concavity at a lower level lifts to any higher level, provided the sequence
+vanishes above the lower level (Newton's inequalities weaken as the level grows). -/
+theorem CoeffUltraLogConcaveUpTo.of_le {d n : ℕ} {a : ℕ → ℝ} (hdn : d ≤ n)
+    (hz : ∀ k, d < k → a k = 0) (h : CoeffUltraLogConcaveUpTo d a) :
+    CoeffUltraLogConcaveUpTo n a := by
+  intro k hk0 hkn
+  rcases lt_or_ge k d with hkd | hkd
+  · have hk := h k hk0 hkd
+    have e1 : ((d - k + 1 : ℕ) : ℝ) = (d : ℝ) - k + 1 := by
+      push_cast [Nat.cast_sub hkd.le]; ring
+    have e2 : ((n - k + 1 : ℕ) : ℝ) = (n : ℝ) - k + 1 := by
+      push_cast [Nat.cast_sub hkn.le]; ring
+    have e3 : ((d - k : ℕ) : ℝ) = (d : ℝ) - k := by push_cast [Nat.cast_sub hkd.le]; ring
+    have e4 : ((n - k : ℕ) : ℝ) = (n : ℝ) - k := by push_cast [Nat.cast_sub hkn.le]; ring
+    rw [e1, e3] at hk
+    rw [e2, e4]
+    have hdn' : (d : ℝ) ≤ n := by exact_mod_cast hdn
+    have hkd' : (k : ℝ) < d := by exact_mod_cast hkd
+    have hk0' : (0 : ℝ) < k := by exact_mod_cast hk0
+    set B := a (k - 1) * a (k + 1)
+    set A := a k ^ 2
+    have hA : 0 ≤ A := sq_nonneg _
+    rcases le_or_gt B 0 with hB | hB
+    · nlinarith [mul_nonneg hA (mul_nonneg hk0'.le (show (0 : ℝ) ≤ n - k by linarith)),
+        mul_nonneg (neg_nonneg.mpr hB) (mul_nonneg (show (0 : ℝ) ≤ k + 1 by linarith)
+          (show (0 : ℝ) ≤ n - k + 1 by linarith))]
+    · have hx : (0 : ℝ) < d - k := by linarith
+      refine le_of_mul_le_mul_left ?_ hx
+      nlinarith [mul_nonneg (mul_nonneg hB.le (show (0 : ℝ) ≤ k + 1 by linarith))
+        (show (0 : ℝ) ≤ n - d by linarith), mul_le_mul_of_nonneg_left hk
+        (show (0 : ℝ) ≤ n - k by linarith)]
+  · rw [hz (k + 1) (by lia)]
+    simp only [mul_zero, zero_mul]
+    positivity
+
+/-- Ultra-log-concavity implies log-concavity; no sign condition is needed. -/
 theorem CoeffUltraLogConcaveUpTo.logConcave {d : ℕ} {a : ℕ → ℝ}
-    (hnonneg : CoeffNonnegUpTo d a) (hulc : CoeffUltraLogConcaveUpTo d a) :
-    CoeffLogConcaveUpTo d a := by
+    (hulc : CoeffUltraLogConcaveUpTo d a) : CoeffLogConcaveUpTo d a := by
   intro k hk0 hkd
-  have hprod_nonneg : 0 ≤ a (k - 1) * a (k + 1) :=
-    mul_nonneg (hnonneg (k - 1) (by lia)) (hnonneg (k + 1) (by lia))
   have hk_pos_real : (0 : ℝ) < k := Nat.cast_pos.mpr hk0
   have hdk_pos_real : (0 : ℝ) < ((d - k : ℕ) : ℝ) :=
     Nat.cast_pos.mpr (Nat.sub_pos_of_lt hkd)
@@ -86,13 +119,14 @@ theorem CoeffUltraLogConcaveUpTo.logConcave {d : ℕ} {a : ℕ → ℝ}
   have hfactor_le :
       (k : ℝ) * ((d - k : ℕ) : ℝ) ≤
         (k + 1 : ℝ) * ((d - k + 1 : ℕ) : ℝ) := by grind
-  have hmul_le := mul_le_mul_of_nonneg_left hfactor_le hprod_nonneg
   have hulc_k := hulc k hk0 hkd
-  have hcombined :
-      a (k - 1) * a (k + 1) * ((k : ℝ) * ((d - k : ℕ) : ℝ)) ≤
-        a k ^ 2 * ((k : ℝ) * ((d - k : ℕ) : ℝ)) :=
-    le_trans hmul_le hulc_k
-  simp_all
+  rcases le_or_gt (a (k - 1) * a (k + 1)) 0 with hB | hB
+  · nlinarith [sq_nonneg (a k)]
+  · have hcombined :
+        a (k - 1) * a (k + 1) * ((k : ℝ) * ((d - k : ℕ) : ℝ)) ≤
+          a k ^ 2 * ((k : ℝ) * ((d - k : ℕ) : ℝ)) :=
+      le_trans (mul_le_mul_of_nonneg_left hfactor_le hB.le) hulc_k
+    simp_all
 
 /-- If a nonnegative log-concave sequence strictly decreases at `k`, then it
 strictly decreases at the next adjacent pair, provided the middle term is
@@ -237,7 +271,7 @@ theorem CoeffUltraLogConcaveUpTo.unimodal {d : ℕ} {a : ℕ → ℝ}
     (hnonneg : CoeffNonnegUpTo d a) (hnozero : CoeffNoInternalZerosUpTo d a)
     (hulc : CoeffUltraLogConcaveUpTo d a) :
     CoeffUnimodalUpTo d a :=
-  (hulc.logConcave hnonneg).unimodal hnonneg hnozero
+  hulc.logConcave.unimodal hnonneg hnozero
 
 /-! ## Polya-frequency consequences -/
 
@@ -275,11 +309,10 @@ theorem coeffNonnegUpTo_of_hasNonnegCoeffs {p : ℝ[X]} (hp : HasNonnegCoeffs p)
     CoeffNonnegUpTo p.natDegree fun k => p.coeff k :=
   fun k _ => hp k
 
-theorem HasUltraLogConcaveCoeffs.logConcave {p : ℝ[X]} (hpnn : HasNonnegCoeffs p)
-    (hulc : HasUltraLogConcaveCoeffs p) :
-    HasLogConcaveCoeffs p :=
-  CoeffUltraLogConcaveUpTo.logConcave
-    (coeffNonnegUpTo_of_hasNonnegCoeffs hpnn) hulc
+/-- Ultra-log-concave coefficients are log-concave; no sign condition is needed. -/
+theorem HasUltraLogConcaveCoeffs.hasLogConcaveCoeffs {p : ℝ[X]}
+    (hulc : HasUltraLogConcaveCoeffs p) : HasLogConcaveCoeffs p :=
+  CoeffUltraLogConcaveUpTo.logConcave hulc
 
 theorem HasLogConcaveCoeffs.unimodal {p : ℝ[X]} (hpnn : HasNonnegCoeffs p)
     (hnozero : HasNoInternalCoeffZeros p) (hlc : HasLogConcaveCoeffs p) :
@@ -290,7 +323,7 @@ theorem HasLogConcaveCoeffs.unimodal {p : ℝ[X]} (hpnn : HasNonnegCoeffs p)
 theorem HasUltraLogConcaveCoeffs.unimodal {p : ℝ[X]} (hpnn : HasNonnegCoeffs p)
     (hnozero : HasNoInternalCoeffZeros p) (hulc : HasUltraLogConcaveCoeffs p) :
     HasUnimodalCoeffs p :=
-  (hulc.logConcave hpnn).unimodal hpnn hnozero
+  hulc.hasLogConcaveCoeffs.unimodal hpnn hnozero
 
 theorem hasLogConcaveCoeffs_of_isPolyaFreqSeq_coeff {p : ℝ[X]}
     (hpf : IsPolyaFreqSeq fun n => p.coeff n) :
@@ -353,10 +386,9 @@ lemma coeff_eq_leadingCoeff_mul_esymm_neg_roots {p : ℝ[X]} (hp : p.Splits) {k 
   rw [Polynomial.coeff_eq_esymm_roots_of_splits hp hk, Multiset.esymm_neg]
   ring
 
-/-- Newton inequalities for nonnegative real-rooted polynomials, stated as
-ultra-log-concavity of the coefficient sequence. -/
-theorem hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : ℝ[X]}
-    (hpnn : HasNonnegCoeffs p) (hrr : p = 0 ∨ p.Splits) :
+/-- Newton inequalities for real-rooted polynomials, stated as ultra-log-concavity of the
+coefficient sequence.  No sign condition on the coefficients is needed. -/
+theorem hasUltraLogConcaveCoeffs_of_eq_zero_or_splits {p : ℝ[X]} (hrr : p = 0 ∨ p.Splits) :
     HasUltraLogConcaveCoeffs p := by
   rcases hrr with rfl | hsplits
   · intro k hk0 hkd
@@ -384,6 +416,18 @@ theorem hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : �
     have hscaled := mul_le_mul_of_nonneg_left hnewton (sq_nonneg p.leadingCoeff)
     grind
 
+@[deprecated hasUltraLogConcaveCoeffs_of_eq_zero_or_splits +typeChanged (since := "2026-11-02")]
+theorem hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : ℝ[X]}
+    (_hpnn : HasNonnegCoeffs p) (hrr : p = 0 ∨ p.Splits) :
+    HasUltraLogConcaveCoeffs p :=
+  hasUltraLogConcaveCoeffs_of_eq_zero_or_splits hrr
+
+/-- Level-`n` Newton inequalities for a real-rooted polynomial of degree at most `n`. -/
+theorem coeffUltraLogConcaveUpTo_of_natDegree_le {p : ℝ[X]} {n : ℕ} (hpn : p.natDegree ≤ n)
+    (hrr : p = 0 ∨ p.Splits) : CoeffUltraLogConcaveUpTo n fun k => p.coeff k :=
+  CoeffUltraLogConcaveUpTo.of_le hpn (fun _ hk => coeff_eq_zero_of_natDegree_lt hk)
+    (hasUltraLogConcaveCoeffs_of_eq_zero_or_splits hrr)
+
 /-- Nonnegative real-rooted polynomials have no internal coefficient zeros. -/
 theorem hasNoInternalCoeffZeros_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hrr : p = 0 ∨ p.Splits) :
@@ -408,19 +452,21 @@ theorem hasNoInternalCoeffZeros_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : ℝ
     have hcoeff_j := coeff_eq_leadingCoeff_mul_esymm_neg_roots hsplits hjd
     grind
 
+/-- Real-rooted polynomials have log-concave coefficients; no sign condition is needed. -/
+theorem hasLogConcaveCoeffs_of_eq_zero_or_splits {p : ℝ[X]} (hrr : p = 0 ∨ p.Splits) :
+    HasLogConcaveCoeffs p :=
+  (hasUltraLogConcaveCoeffs_of_eq_zero_or_splits hrr).hasLogConcaveCoeffs
+
+@[deprecated hasLogConcaveCoeffs_of_eq_zero_or_splits +typeChanged (since := "2026-11-02")]
 theorem hasLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : ℝ[X]}
-    (hpnn : HasNonnegCoeffs p) (hrr : p = 0 ∨ p.Splits) :
-    HasLogConcaveCoeffs p := by
-  rcases hrr with rfl | hsplits
-  · exact hasLogConcaveCoeffs_of_isPolyaFreqSeq_coeff (by simpa using isPolyaFreqSeq_zero)
-  · exact hasLogConcaveCoeffs_of_isPolyaFreqSeq_coeff <|
-      aissenSchoenbergWhitney_reverse hpnn hsplits
-      (roots_nonpos_of_hasNonnegCoeffs hpnn)
+    (_hpnn : HasNonnegCoeffs p) (hrr : p = 0 ∨ p.Splits) :
+    HasLogConcaveCoeffs p :=
+  hasLogConcaveCoeffs_of_eq_zero_or_splits hrr
 
 theorem hasUnimodalCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hrr : p = 0 ∨ p.Splits) :
     HasUnimodalCoeffs p :=
-  (hasLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits hpnn hrr).unimodal hpnn
+  (hasLogConcaveCoeffs_of_eq_zero_or_splits hrr).unimodal hpnn
     (hasNoInternalCoeffZeros_of_hasNonnegCoeffs_of_eq_zero_or_splits hpnn hrr)
 
 end RealRooted

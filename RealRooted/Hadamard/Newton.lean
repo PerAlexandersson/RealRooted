@@ -2,7 +2,7 @@ module
 
 public import RealRooted.Hadamard.Finite
 public import RealRooted.Hadamard.Basic
-import RealRooted.NewtonAux
+import RealRooted.CoefficientShape
 import RealRooted.Linear
 import RealRooted.Mathlib.Data.Nat.Choose.Cast
 
@@ -17,248 +17,52 @@ namespace RealRooted
 /-!
 # Normalized coefficient inequalities
 
-Newton inequalities, level-lifting, normalized log-concavity, and the
+Newton inequalities in the level-`n` normalization, normalized log-concavity, and the
 degree-two PF Schur--Szego base case.
 -/
 
-/-- Newton's first coefficient inequality (`k = 1`) for a real polynomial that
-splits and has degree at least two, in the level-`natDegree` normalization:
-`2 * natDegree * coeff 0 * coeff 2 ≤ (natDegree - 1) * coeff 1 ^ 2`.
-
-This is the splitting-only form of the ultra-log-concavity inequality
-`hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits` at index
-`k = 1`; no nonnegativity of the coefficients is assumed. -/
-theorem two_natDegree_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits
-    {p : ℝ[X]} (hdeg : 2 ≤ p.natDegree) (hs : p.Splits) :
-    2 * (p.natDegree : ℝ) * (p.coeff 0 * p.coeff 2) ≤
-      ((p.natDegree : ℝ) - 1) * p.coeff 1 ^ 2 := by
-  set t := p.roots.map Neg.neg with ht_def
-  have htcard : Multiset.card t = p.natDegree := by
-    rw [ht_def, Multiset.card_map, Polynomial.splits_iff_card_roots.mp hs]
-  have h1d : 1 ≤ p.natDegree := le_trans one_le_two hdeg
-  have hc0 := coeff_eq_leadingCoeff_mul_esymm_neg_roots hs (k := 0) (Nat.zero_le _)
-  have hc1 := coeff_eq_leadingCoeff_mul_esymm_neg_roots hs (k := 1) h1d
-  have hc2 := coeff_eq_leadingCoeff_mul_esymm_neg_roots hs (k := 2) hdeg
-  rw [← ht_def] at hc0 hc1 hc2
-  have hnewton := NewtonAux.newton_esymm_ineq t (n := p.natDegree)
-    (m := p.natDegree - 1) htcard
-    (Nat.sub_pos_of_lt (lt_of_lt_of_le one_lt_two hdeg))
-    (Nat.sub_lt (lt_of_lt_of_le (by norm_num) hdeg) Nat.one_pos)
-  have idxm1 : p.natDegree - 1 - 1 = p.natDegree - 2 := by rw [Nat.sub_sub]
-  have idxp1 : p.natDegree - 1 + 1 = p.natDegree := Nat.sub_add_cancel h1d
-  rw [idxm1, idxp1] at hnewton
-  have hi0 : p.natDegree - 0 = p.natDegree := Nat.sub_zero _
-  rw [hi0] at hc0
-  norm_num [Nat.cast_sub h1d, Nat.sub_sub_self h1d] at hnewton
-  rw [hc0, hc1, hc2]
-  linarith [mul_le_mul_of_nonneg_left hnewton (sq_nonneg p.leadingCoeff),
-    sq_nonneg p.leadingCoeff]
-
-/-- Level-lift arithmetic for Newton's `k = 1` inequality: an inequality in the
-level-`N` normalization lifts to any larger level `M ≥ N`.  The key algebraic
-identity is
-`(N - 1) * ((M - 1) * A - 2 * M * B) =
-  (M - 1) * ((N - 1) * A - 2 * N * B) + 2 * B * (M - N)`. -/
-private theorem newton_level_lift_arith {A B M N : ℝ}
-    (hA : 0 ≤ A) (hMN : N ≤ M) (hN1 : 1 < N)
-    (hnat : 2 * N * B ≤ (N - 1) * A) :
-    2 * M * B ≤ (M - 1) * A := by
-  rcases le_or_gt B 0 with hB | hB
-  · linarith [mul_nonneg (show (0 : ℝ) ≤ M - 1 by linarith) hA,
-      mul_nonneg (show (0 : ℝ) ≤ M by linarith)
-        (show (0 : ℝ) ≤ -B by linarith)]
-  · have key : (N - 1) * ((M - 1) * A - 2 * M * B)
-        = (M - 1) * ((N - 1) * A - 2 * N * B) + 2 * B * (M - N) := by
-      ring
-    nlinarith [key,
-      mul_nonneg (show (0 : ℝ) ≤ M - 1 by linarith)
-        (show (0 : ℝ) ≤ (N - 1) * A - 2 * N * B by linarith),
-      mul_nonneg hB.le (show (0 : ℝ) ≤ M - N by linarith), hN1]
-
 /-- Newton's first coefficient inequality (`k = 1`) in the level-`n`
-normalization, for a splitting polynomial of degree at most `n`.  It is the
-level-`natDegree` inequality
-`two_natDegree_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits` lifted to
-level `n` via `newton_level_lift_arith`; the low-degree cases (`natDegree ≤ 1`)
-have `coeff 2 = 0`. -/
+normalization, for a splitting polynomial of degree at most `n`: the level-`n`
+ultra-log-concavity inequality `coeffUltraLogConcaveUpTo_of_natDegree_le` at `k = 1`. -/
 theorem two_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits_of_natDegree_le
     {n : ℕ} (hn : 2 ≤ n) {p : ℝ[X]} (hpdeg : p.natDegree ≤ n) (hs : p.Splits) :
     2 * (n : ℝ) * (p.coeff 0 * p.coeff 2) ≤ ((n : ℝ) - 1) * p.coeff 1 ^ 2 := by
-  rcases le_or_gt 2 p.natDegree with hdeg | hdeg
-  · have hnat :=
-      two_natDegree_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits hdeg hs
-    have hNn : (p.natDegree : ℝ) ≤ (n : ℝ) := by exact_mod_cast hpdeg
-    have h1N : (1 : ℝ) < (p.natDegree : ℝ) := by
-      have : (2 : ℝ) ≤ (p.natDegree : ℝ) := by exact_mod_cast hdeg
-      linarith
-    exact newton_level_lift_arith (A := p.coeff 1 ^ 2)
-      (B := p.coeff 0 * p.coeff 2) (M := (n : ℝ)) (N := (p.natDegree : ℝ))
-      (sq_nonneg _) hNn h1N hnat
-  · have hc2 : p.coeff 2 = 0 := coeff_eq_zero_of_natDegree_lt hdeg
-    have hnR : (2 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
-    rw [hc2]
-    nlinarith [sq_nonneg (p.coeff 1), hnR]
+  have h := coeffUltraLogConcaveUpTo_of_natDegree_le hpdeg (Or.inr hs) 1 one_pos (by lia)
+  have h1 : ((n - 1 + 1 : ℕ) : ℝ) = n := by rw [Nat.sub_add_cancel (by lia)]
+  simp only [h1, Nat.cast_sub (by lia : 1 ≤ n)] at h
+  norm_num at h
+  linarith
 
-/-- Newton's second coefficient inequality (`k = 2`) for a real polynomial that
-splits and has degree at least three, in the level-`natDegree` normalization:
-`3 * (natDegree - 1) * coeff 1 * coeff 3 ≤
-  2 * (natDegree - 2) * coeff 2 ^ 2`.
+/-- First adjacent normalized log-concavity inequality for a splitting polynomial at
+binomial level `n`.
 
-This is the splitting-only form of the ultra-log-concavity inequality
-`hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits` at index
-`k = 2`; no nonnegativity of the coefficients is assumed. -/
-theorem newton_three_coeff_one_coeff_three_of_splits
-    {p : ℝ[X]} (hdeg : 3 ≤ p.natDegree) (hs : p.Splits) :
-    3 * ((p.natDegree : ℝ) - 1) * (p.coeff 1 * p.coeff 3) ≤
-      2 * ((p.natDegree : ℝ) - 2) * p.coeff 2 ^ 2 := by
-  set t := p.roots.map Neg.neg with ht_def
-  have htcard : Multiset.card t = p.natDegree := by
-    rw [ht_def, Multiset.card_map, Polynomial.splits_iff_card_roots.mp hs]
-  have h1d : 1 ≤ p.natDegree := by lia
-  have h2d : 2 ≤ p.natDegree := by lia
-  have hc1 := coeff_eq_leadingCoeff_mul_esymm_neg_roots hs (k := 1) h1d
-  have hc2 := coeff_eq_leadingCoeff_mul_esymm_neg_roots hs (k := 2) h2d
-  have hc3 := coeff_eq_leadingCoeff_mul_esymm_neg_roots hs (k := 3) hdeg
-  rw [← ht_def] at hc1 hc2 hc3
-  have hnewton := NewtonAux.newton_esymm_ineq t (n := p.natDegree)
-    (m := p.natDegree - 2) htcard (by lia) (by lia)
-  have idxm1 : p.natDegree - 2 - 1 = p.natDegree - 3 := by rw [Nat.sub_sub]
-  have idxp1 : p.natDegree - 2 + 1 = p.natDegree - 1 := by lia
-  rw [idxm1, idxp1] at hnewton
-  have hnm2 : p.natDegree - (p.natDegree - 2) = 2 := by lia
-  norm_num [Nat.cast_sub h2d, hnm2] at hnewton
-  rw [hc1, hc2, hc3]
-  linarith [mul_le_mul_of_nonneg_left hnewton (sq_nonneg p.leadingCoeff),
-    sq_nonneg p.leadingCoeff]
-
-/-- Level-lift arithmetic for Newton's `k = 2` inequality: an inequality in the
-level-`N` normalization lifts to any larger level `M ≥ N`.  The key algebraic
-identity is
-`(N - 1) * (2 * (M - 2) * A - 3 * (M - 1) * B) =
-  (M - 1) * (2 * (N - 2) * A - 3 * (N - 1) * B) + 2 * A * (M - N)`. -/
-private theorem newton_second_level_lift_arith {A B M N : ℝ}
-    (hA : 0 ≤ A) (hMN : N ≤ M) (hN2 : 2 < N)
-    (hnat : 3 * (N - 1) * B ≤ 2 * (N - 2) * A) :
-    3 * (M - 1) * B ≤ 2 * (M - 2) * A := by
-  rcases le_or_gt B 0 with hB | hB
-  · linarith [mul_nonneg (show (0 : ℝ) ≤ M - 2 by linarith) hA,
-      mul_nonneg (show (0 : ℝ) ≤ M - 1 by linarith)
-        (show (0 : ℝ) ≤ -B by linarith)]
-  · have key : (N - 1) * (2 * (M - 2) * A - 3 * (M - 1) * B)
-        = (M - 1) * (2 * (N - 2) * A - 3 * (N - 1) * B) +
-          2 * A * (M - N) := by
-      ring
-    nlinarith [key,
-      mul_nonneg (show (0 : ℝ) ≤ M - 1 by linarith)
-        (show (0 : ℝ) ≤ 2 * (N - 2) * A - 3 * (N - 1) * B by linarith),
-      mul_nonneg hA (show (0 : ℝ) ≤ M - N by linarith), hN2]
-
-/-- Newton's second coefficient inequality (`k = 2`) in the level-`n`
-normalization, for a splitting polynomial of degree at most `n`.  It is the
-level-`natDegree` inequality `newton_three_coeff_one_coeff_three_of_splits`
-lifted to level `n`; the low-degree cases (`natDegree ≤ 2`) have
-`coeff 3 = 0`. -/
-theorem newton_three_coeff_one_coeff_three_of_splits_of_natDegree_le
-    {n : ℕ} (hn : 3 ≤ n) {p : ℝ[X]} (hpdeg : p.natDegree ≤ n) (hs : p.Splits) :
-    3 * ((n : ℝ) - 1) * (p.coeff 1 * p.coeff 3) ≤
-      2 * ((n : ℝ) - 2) * p.coeff 2 ^ 2 := by
-  rcases le_or_gt 3 p.natDegree with hdeg | hdeg
-  · have hnat :=
-      newton_three_coeff_one_coeff_three_of_splits hdeg hs
-    have hNn : (p.natDegree : ℝ) ≤ (n : ℝ) := by exact_mod_cast hpdeg
-    have h2N : (2 : ℝ) < (p.natDegree : ℝ) := by
-      have : (3 : ℝ) ≤ (p.natDegree : ℝ) := by exact_mod_cast hdeg
-      linarith
-    exact newton_second_level_lift_arith (A := p.coeff 2 ^ 2)
-      (B := p.coeff 1 * p.coeff 3) (M := (n : ℝ)) (N := (p.natDegree : ℝ))
-      (sq_nonneg _) hNn h2N hnat
-  · have hc3 : p.coeff 3 = 0 := coeff_eq_zero_of_natDegree_lt hdeg
-    have hnR : (3 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
-    rw [hc3]
-    nlinarith [sq_nonneg (p.coeff 2), hnR]
-
-/-- Normalized binomial-level coefficient log-concavity of a splitting polynomial.
-
-Writing `γ k = p.coeff k / (n.choose k)`, the two adjacent inequalities
-`γ 0 * γ 2 ≤ γ 1 ^ 2` and `γ 1 * γ 3 ≤ γ 2 ^ 2` hold when `p` splits and has
-degree at most `n`.  These are exactly the level-`n` Newton inequalities at
-`k = 1` and `k = 2`, divided through by the binomial factors.
-
-This is the splitting-factor input for the normalized Jensen-product form of
-the degree-`≤ 3` Schur--Szegő cubic-discriminant route. -/
-theorem normalized_coeff_logConcave_of_splits_natDegree_le
-    {n : ℕ} {p : ℝ[X]} (hpdeg : p.natDegree ≤ n) (hs : p.Splits) :
-    (p.coeff 0 / (n.choose 0 : ℝ)) * (p.coeff 2 / (n.choose 2 : ℝ)) ≤
-        (p.coeff 1 / (n.choose 1 : ℝ)) ^ 2 ∧
-      (p.coeff 1 / (n.choose 1 : ℝ)) * (p.coeff 3 / (n.choose 3 : ℝ)) ≤
-        (p.coeff 2 / (n.choose 2 : ℝ)) ^ 2 := by
-  set N : ℝ := (n : ℝ) with hN_def
-  constructor
-  · rcases le_or_gt 2 n with h2 | h2
-    · have hpd :=
-        two_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits_of_natDegree_le
-          h2 hpdeg hs
-      have hN2 : (2 : ℝ) ≤ N := by rw [hN_def]; exact_mod_cast h2
-      have hNpos : (0 : ℝ) < N := by linarith
-      have hN1pos : (0 : ℝ) < N - 1 := by linarith
-      have hc0 : (n.choose 0 : ℝ) = 1 := by norm_num
-      have hc1 : (n.choose 1 : ℝ) = N := by rw [Nat.choose_one_right, hN_def]
-      have hc2 : (n.choose 2 : ℝ) = N * (N - 1) / 2 := by rw [Nat.cast_choose_two, hN_def]
-      rw [hc0, hc1, hc2]
-      have key1 :
-          p.coeff 0 / 1 * (p.coeff 2 / (N * (N - 1) / 2))
-            = 2 * (p.coeff 0 * p.coeff 2) / (N * (N - 1)) := by
-        field_simp
-      have key2 : (p.coeff 1 / N) ^ 2 = p.coeff 1 ^ 2 / N ^ 2 := by rw [div_pow]
-      rw [key1, key2, div_le_div_iff₀ (mul_pos hNpos hN1pos) (pow_pos hNpos 2)]
-      linarith [mul_le_mul_of_nonneg_right hpd hNpos.le, hpd]
-    · rw [Nat.choose_eq_zero_of_lt h2, Nat.cast_zero, div_zero, mul_zero]
-      positivity
-  · rcases le_or_gt 3 n with h3 | h3
-    · have hpd :=
-        newton_three_coeff_one_coeff_three_of_splits_of_natDegree_le
-          h3 hpdeg hs
-      have hN3 : (3 : ℝ) ≤ N := by rw [hN_def]; exact_mod_cast h3
-      have hNpos : (0 : ℝ) < N := by linarith
-      have hN1pos : (0 : ℝ) < N - 1 := by linarith
-      have hN2pos : (0 : ℝ) < N - 2 := by linarith
-      have hc1 : (n.choose 1 : ℝ) = N := by rw [Nat.choose_one_right, hN_def]
-      have hc2 : (n.choose 2 : ℝ) = N * (N - 1) / 2 := by rw [Nat.cast_choose_two, hN_def]
-      have hc3 : (n.choose 3 : ℝ) = N * (N - 1) * (N - 2) / 6 := by
-        rw [Nat.cast_choose_three, hN_def]
-      rw [hc1, hc2, hc3]
-      have key1 :
-          p.coeff 1 / N * (p.coeff 3 / (N * (N - 1) * (N - 2) / 6))
-            = 6 * (p.coeff 1 * p.coeff 3) / (N ^ 2 * (N - 1) * (N - 2)) := by
-        field_simp
-      have key2 :
-          (p.coeff 2 / (N * (N - 1) / 2)) ^ 2
-            = 4 * p.coeff 2 ^ 2 / (N ^ 2 * (N - 1) ^ 2) := by
-        field_simp
-        ring
-      have hden1 : (0 : ℝ) < N ^ 2 * (N - 1) * (N - 2) := by positivity
-      have hden2 : (0 : ℝ) < N ^ 2 * (N - 1) ^ 2 := by positivity
-      rw [key1, key2, div_le_div_iff₀ hden1 hden2]
-      linarith [mul_le_mul_of_nonneg_right hpd
-        (show (0 : ℝ) ≤ 2 * N ^ 2 * (N - 1) by positivity), hpd]
-    · rw [Nat.choose_eq_zero_of_lt h3, Nat.cast_zero, div_zero, mul_zero]
-      positivity
-
-/-- First adjacent normalized log-concavity inequality for a splitting
-polynomial at binomial level `n`. -/
+Writing `γ k = p.coeff k / (n.choose k)`, the inequality `γ 0 * γ 2 ≤ γ 1 ^ 2` holds when `p`
+splits and has degree at most `n`.  It is the level-`n` Newton inequality at `k = 1`, divided
+through by the binomial factors. -/
 theorem normalized_coeff_left_logConcave_of_splits_natDegree_le
     {n : ℕ} {p : ℝ[X]} (hpdeg : p.natDegree ≤ n) (hs : p.Splits) :
     (p.coeff 0 / (n.choose 0 : ℝ)) * (p.coeff 2 / (n.choose 2 : ℝ)) ≤
-      (p.coeff 1 / (n.choose 1 : ℝ)) ^ 2 :=
-  (normalized_coeff_logConcave_of_splits_natDegree_le hpdeg hs).1
-
-/-- Second adjacent normalized log-concavity inequality for a splitting
-polynomial at binomial level `n`. -/
-theorem normalized_coeff_right_logConcave_of_splits_natDegree_le
-    {n : ℕ} {p : ℝ[X]} (hpdeg : p.natDegree ≤ n) (hs : p.Splits) :
-    (p.coeff 1 / (n.choose 1 : ℝ)) * (p.coeff 3 / (n.choose 3 : ℝ)) ≤
-      (p.coeff 2 / (n.choose 2 : ℝ)) ^ 2 :=
-  (normalized_coeff_logConcave_of_splits_natDegree_le hpdeg hs).2
+      (p.coeff 1 / (n.choose 1 : ℝ)) ^ 2 := by
+  set N : ℝ := (n : ℝ) with hN_def
+  rcases le_or_gt 2 n with h2 | h2
+  · have hpd :=
+      two_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits_of_natDegree_le h2 hpdeg hs
+    have hN2 : (2 : ℝ) ≤ N := by rw [hN_def]; exact_mod_cast h2
+    have hNpos : (0 : ℝ) < N := by linarith
+    have hN1pos : (0 : ℝ) < N - 1 := by linarith
+    have hc0 : (n.choose 0 : ℝ) = 1 := by norm_num
+    have hc1 : (n.choose 1 : ℝ) = N := by rw [Nat.choose_one_right, hN_def]
+    have hc2 : (n.choose 2 : ℝ) = N * (N - 1) / 2 := by rw [Nat.cast_choose_two, hN_def]
+    rw [hc0, hc1, hc2]
+    have key1 :
+        p.coeff 0 / 1 * (p.coeff 2 / (N * (N - 1) / 2))
+          = 2 * (p.coeff 0 * p.coeff 2) / (N * (N - 1)) := by
+      field_simp
+    have key2 : (p.coeff 1 / N) ^ 2 = p.coeff 1 ^ 2 / N ^ 2 := by rw [div_pow]
+    rw [key1, key2, div_le_div_iff₀ (mul_pos hNpos hN1pos) (pow_pos hNpos 2)]
+    linarith [mul_le_mul_of_nonneg_right hpd hNpos.le, hpd]
+  · rw [Nat.choose_eq_zero_of_lt h2, Nat.cast_zero, div_zero, mul_zero]
+    positivity
 
 /-- Binomially normalized coefficients of a PF polynomial are nonnegative. -/
 theorem normalized_coeff_nonneg_of_isPF (n : ℕ) {f : ℝ[X]}
@@ -267,41 +71,6 @@ theorem normalized_coeff_nonneg_of_isPF (n : ℕ) {f : ℝ[X]}
   fun k =>
     div_nonneg (hf.hasNonnegCoeffs k)
       (by exact_mod_cast Nat.zero_le (Nat.choose n k))
-
-/-- Normalized coefficient log-concavity of a degree-`≤ 3` PF polynomial.
-
-Writing `γ k = f.coeff k / (3.choose k)`, the adjacent cubic log-concavity
-inequalities `γ 0 * γ 2 ≤ γ 1 ^ 2` and `γ 1 * γ 3 ≤ γ 2 ^ 2` follow by
-identifying the degree-three Jensen polynomial of `γ` with `f`.  This is the
-PF-factor input parallel to
-`normalized_coeff_logConcave_of_splits_natDegree_le` in the normalized
-Jensen-product Schur--Szegő route. -/
-theorem normalized_coeff_logConcave_of_isPF_natDegree_le_three
-    {f : ℝ[X]} (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3) :
-    (f.coeff 0 / (Nat.choose 3 0 : ℝ)) * (f.coeff 2 / (Nat.choose 3 2 : ℝ)) ≤
-        (f.coeff 1 / (Nat.choose 3 1 : ℝ)) ^ 2 ∧
-      (f.coeff 1 / (Nat.choose 3 1 : ℝ)) * (f.coeff 3 / (Nat.choose 3 3 : ℝ)) ≤
-        (f.coeff 2 / (Nat.choose 3 2 : ℝ)) ^ 2 := by
-  let gamma : ℕ → ℝ := fun k => f.coeff k / (Nat.choose 3 k : ℝ)
-  have hjensen : IsPFPolynomial (jensenPolynomial 3 gamma) := by
-    simpa [gamma] using hf.jensenPolynomial_normalized_coeff_of_natDegree_le hfdeg
-  simpa [gamma] using hjensen.jensenPolynomial_three_logConcave
-
-/-- First adjacent normalized log-concavity inequality for a degree-`≤ 3` PF
-polynomial. -/
-theorem normalized_coeff_left_logConcave_of_isPF_natDegree_le_three
-    {f : ℝ[X]} (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3) :
-    (f.coeff 0 / (Nat.choose 3 0 : ℝ)) * (f.coeff 2 / (Nat.choose 3 2 : ℝ)) ≤
-      (f.coeff 1 / (Nat.choose 3 1 : ℝ)) ^ 2 :=
-  (normalized_coeff_logConcave_of_isPF_natDegree_le_three hf hfdeg).1
-
-/-- Second adjacent normalized log-concavity inequality for a degree-`≤ 3` PF
-polynomial. -/
-theorem normalized_coeff_right_logConcave_of_isPF_natDegree_le_three
-    {f : ℝ[X]} (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ 3) :
-    (f.coeff 1 / (Nat.choose 3 1 : ℝ)) * (f.coeff 3 / (Nat.choose 3 3 : ℝ)) ≤
-      (f.coeff 2 / (Nat.choose 3 2 : ℝ)) ^ 2 :=
-  (normalized_coeff_logConcave_of_isPF_natDegree_le_three hf hfdeg).2
 
 /-- Pure arithmetic core of the Schur--Szego discriminant inequality when only
 the PF factor has degree at most two.  Here `a`, `b`, `c` are the coefficients of
