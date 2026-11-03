@@ -48,6 +48,11 @@ name = "RealRooted.Graph.rankTwoBinomialTransform"
 module = "RealRooted.RankTwoMatching.Transform"
 label = "Rank-two binomial transform"
 
+[[definitions]]
+name = "RealRooted.Graph.completeGraphRankTwoWeight"
+module = "RealRooted.RankTwoMatching.Basic"
+label = "Rank-two edge weights a_i b_j + a_j b_i on a complete graph"
+
 [[theorems]]
 name = "RealRooted.Challenges.HeilmannLieb.matchingPolynomial_splits"
 label = "Heilmann–Lieb: the matching polynomial is real-rooted"
@@ -84,6 +89,16 @@ label = "Weighted matching polynomials are PF polynomials"
 [[theorems]]
 name = "RealRooted.Challenges.HeilmannLieb.rankTwoBinomialTransform_isPFPolynomial"
 label = "The rank-two binomial transform preserves PF polynomials"
+
+[[theorems]]
+name = "RealRooted.Graph.exists_nonneg_completeGraphRankTwoWeight_eq_coeff_sum"
+module = "RealRooted.RankTwoMatching.Endpoint"
+label = "A PF polynomial is a rank-two weighted matching polynomial of K_M"
+
+[[theorems]]
+name = "RealRooted.Graph.weightedMatchingNumber_completeGraph_rankTwo"
+module = "RealRooted.RankTwoMatching.Endpoint"
+label = "Rank-two weighted matching numbers of a complete graph"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -129,14 +144,17 @@ I(G, w, x) = \sum_{A} x^{|A|} \prod_{v \in A} w(v),
 $$
 where $A$ ranges over the independent sets of $G$, is real-rooted.
 
-**Corollary.** Let $p$ be a polynomial with nonnegative coefficients,
-nonpositive real zeros, and $p(0) = 1$, and let $M \geq \deg p$. Then the
-rank-two binomial transform
+**Theorem** (rank-two binomial transform). Let $p$ be a polynomial with
+nonnegative coefficients, nonpositive real zeros, and $p(0) = 1$, and let
+$M \geq \deg p$. Then the rank-two binomial transform
 $$
 \sum_{k=0}^{M} k! \left( \sum_{j=0}^{\deg p} p_j \binom{j}{k} \binom{M-j}{k}
 \right) x^k
 $$
-also has nonnegative coefficients and nonpositive real zeros.
+also has nonnegative coefficients and nonpositive real zeros. Equivalently,
+it equals $p(1)$ times the matching-generating polynomial of the complete
+graph $K_M$ with edge weights $a_i b_j + a_j b_i \geq 0$ for suitable
+nonnegative vectors $a$ and $b$ determined by $p$.
 
 ## Proof idea
 
@@ -147,10 +165,14 @@ polynomials obtained by deleting closed neighborhoods are compatible. The
 matchings of $G$ are exactly the independent sets of the line graph $L(G)$,
 which is claw-free, so the weighted matching polynomial of $G$ is the
 weighted independence polynomial of $L(G)$. Nonnegative coefficients then
-force the zeros to be nonpositive. For the corollary, we write the
-coefficients of $p$ through rank-two edge weights $a_i b_j + a_j b_i \geq 0$
-on the complete graph $K_M$; the transform is then $p(1)$ times the weighted
-matching polynomial of $K_M$.
+force the zeros to be nonpositive. For the rank-two theorem, we first show
+that the coefficients of $p$ can be written through nonnegative vectors $a$
+and $b$ in terms of ordered pairs of disjoint $k$-subsets, and then that the
+weighted $k$-matching number of $K_M$ with weights $a_i b_j + a_j b_i$ equals
+$k!$ times the same sum, by orienting every edge of a matching. The transform
+is therefore $p(1)$ times the weighted matching polynomial of $K_M$, which has
+nonnegative coefficients and real zeros by the weighted Heilmann--Lieb theorem
+above.
 
 The vertex-deletion theorem follows from the recurrence
 $\mu_G = x\,\mu_{G-v} - \sum_{u \sim v} \mu_{G-v-u}$. By induction every

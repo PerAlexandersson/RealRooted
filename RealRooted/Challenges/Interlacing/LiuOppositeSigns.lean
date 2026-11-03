@@ -95,8 +95,13 @@ compatible if and only if one of the following holds:
   $g/(x-r)$ are compatible.
 
 The second branch is missing from the published statement, and it is
-necessary: the forward direction of the published version fails for $x$ and
-$-x^2$, which share the root $0$.
+necessary. The forward direction of the published version, which asserts the
+first branch alone, is false: for $x$ and $-x^2$, which share their largest
+root $0$, the pair is compatible but the first branch fails, because the
+right branch requires a strict largest-root inequality, while deleting the
+largest root from only one endpoint can leave a root-count gap of two. The
+statement above, with the common-root branch, is the one proved in this
+library, and the headline theorem on this page is that corrected form.
 
 If $f$ and $g$ have no common root, then they are compatible if and only if
 the first branch holds.
@@ -105,9 +110,12 @@ the first branch holds.
 opposite leading signs have degrees differing by at most two.
 
 For pairs without common roots, the forward direction is first proved for
-polynomials with simple roots. Small derivative-shift regularizations, which
-preserve compatibility, reduce the general case to that one, and root
-matching passes back to the limit.
+polynomials with simple roots. Liu's source proof reduces to endpoints with no
+common zeros and then treats those endpoints as if all of their zeros were
+simple; that implication is false for individual endpoints. We replace it by
+small derivative-shift regularizations, which preserve compatibility and
+reduce the general case to the simple-root one, and root matching passes back
+to the limit.
 
 ## References
 
