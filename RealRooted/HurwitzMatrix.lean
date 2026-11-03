@@ -31,9 +31,7 @@ under entrywise products; both are refuted below.
 
 /-! ### Row-parity entry formulas for arbitrary coefficient sequences
 
-The polynomial-specific apply lemmas below are the `c = p.coeff` special cases
-of these general facts, which describe every entry of `hurwitz c` by row
-parity. -/
+These facts describe every entry of `hurwitz c` by row parity. -/
 
 /-- Even-row entry of the Hurwitz matrix of an arbitrary coefficient sequence. -/
 theorem hurwitz_even_row_apply (c : ℕ → ℝ) (i j : ℕ) :
@@ -57,16 +55,6 @@ theorem hurwitz_apply_eq_zero_of_lt (c : ℕ → ℝ) {i j : ℕ} (h : i < 2 * j
     rw [show m + m = 2 * m by ring, hurwitz_even_row_apply, ite_eq_right (by lia)]
   · subst hm
     rw [hurwitz_odd_row_apply, ite_eq_right (by lia)]
-
-theorem hurwitz_coeff_even_row_apply (p : ℝ[X]) (i j : ℕ) :
-    hurwitz p.coeff (2 * i) j =
-      if j ≤ i then p.coeff (2 * (i - j) + 1) else 0 :=
-  hurwitz_even_row_apply p.coeff i j
-
-theorem hurwitz_coeff_odd_row_apply (p : ℝ[X]) (i j : ℕ) :
-    hurwitz p.coeff (2 * i + 1) j =
-      if j ≤ i then p.coeff (2 * (i - j)) else 0 :=
-  hurwitz_odd_row_apply p.coeff i j
 
 /-! ### Odd/even Toeplitz submatrices of a Hurwitz matrix -/
 
@@ -128,15 +116,6 @@ theorem hurwitz_schurProduct_entry_nonneg {a b : ℕ → ℝ}
     0 ≤ (Matrix.of fun i j => hurwitz a i j * hurwitz b i j) i j := by
   simpa using mul_nonneg (ha.nonneg i j) (hb.nonneg i j)
 
-/-- Every `2 × 2` minor of the entrywise product of two totally nonnegative
-Hurwitz matrices is nonnegative.  This is the general two-by-two Hadamard minor
-lemma specialized to Hurwitz matrices. -/
-theorem hurwitz_schurProduct_det_fin_two {a b : ℕ → ℝ}
-    (ha : (hurwitz a).IsTotallyNonneg) (hb : (hurwitz b).IsTotallyNonneg)
-    {rows cols : Fin 2 → ℕ} (hrows : StrictMono rows) (hcols : StrictMono cols) :
-    0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det :=
-  ha.hadamard_det_fin_two hb hrows hcols
-
 /-! ### The `3 × 3` minor case: structural zero patterns -/
 
 /-- Entry of the entrywise Hurwitz product vanishes above the staircase. -/
@@ -176,13 +155,6 @@ theorem hurwitz_schurProduct_det_fin_three_of_band_fail {a b : ℕ → ℝ}
       hurwitz_apply_eq_zero_of_lt a (by lia : rows 1 < 2 * cols 2),
       hurwitz_apply_eq_zero_of_lt a (by lia : rows 2 < 2 * cols 2)]
     ring
-
-/-- Nonnegativity form of the structural band-fail `3 × 3` case. -/
-theorem hurwitz_schurProduct_det_fin_three_nonneg_of_band_fail {a b : ℕ → ℝ}
-    {rows cols : Fin 3 → ℕ} (hrows : StrictMono rows) (hcols : StrictMono cols)
-    (l : Fin 3) (hl : rows l < 2 * cols l) :
-    0 ≤ ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det := by
-  rw [hurwitz_schurProduct_det_fin_three_of_band_fail hrows hcols l hl]
 
 /-- Every minor of size at most two of the entrywise product of two totally
 nonnegative Hurwitz matrices is nonnegative.  This fails already for `3 × 3`
@@ -282,15 +254,6 @@ theorem hurwitz_schurProduct_core_inband_entries
   have : rows 0 ≤ rows 1 := hrows.monotone (by simp)
   have : rows 1 ≤ rows 2 := hrows.monotone (by simp)
   grind
-
-/-- The Hadamard-product matrix of two Hurwitz matrices is itself the Hurwitz
-matrix of the coefficientwise product, so every one of its minors is the same
-minor of `hurwitz (fun k => a k * b k)`. -/
-theorem hurwitz_schurProduct_submatrix_eq (a b : ℕ → ℝ) {n : ℕ}
-    (rows cols : Fin n → ℕ) :
-    (Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols =
-      (hurwitz (fun k => a k * b k)).submatrix rows cols := by
-  rw [hurwitz_mul_entrywise_matrix]
 
 /-- Fundamental column-shift structure of a Hurwitz matrix: in the nonzero
 staircase, moving one column to the right is the same as moving two rows up. -/
@@ -622,17 +585,6 @@ theorem hurwitz_schurProduct_submatrix_eq_toeplitz_of_band
     hurwitz_eq_toeplitz_colZero b (hband i j), toeplitz_apply, toeplitz_apply,
     toeplitz_apply, ite_eq_left (hband i j), ite_eq_left (hband i j), ite_eq_left (hband i j)]
 
-/-- Determinant form of the Toeplitz normal form: a fully in-band minor of the
-entrywise Hurwitz product has the same determinant as the corresponding
-doubled-column Toeplitz minor of the pointwise product sequence. -/
-theorem hurwitz_schurProduct_det_submatrix_eq_toeplitz_of_band
-    (a b : ℕ → ℝ) {n : ℕ} {rows cols : Fin n → ℕ}
-    (hband : ∀ i j, 2 * cols j ≤ rows i) :
-    ((Matrix.of fun i j => hurwitz a i j * hurwitz b i j).submatrix rows cols).det =
-      ((toeplitz (fun k => hurwitz a k 0 * hurwitz b k 0)).submatrix rows
-        (fun j => 2 * cols j)).det := by
-  rw [hurwitz_schurProduct_submatrix_eq_toeplitz_of_band a b hband]
-
 /-! ### Hadamard normal form for even-column Toeplitz minors
 
 The even-column Toeplitz minor of the pointwise product of the two column-`0`
@@ -711,19 +663,6 @@ theorem toeplitz_colZeroProduct_apply_eq_hurwitz_mul (a b : ℕ → ℝ) (i j : 
         hurwitz_odd_row_apply, hurwitz_odd_row_apply]
       simp
     · grind
-
-/-- Hurwitz normal form for the column-`0` product minor.  For arbitrary rows
-and columns, the even-column Toeplitz submatrix of the pointwise product of the
-two column-`0` sequences equals the corresponding submatrix of the Hurwitz
-matrix of the pointwise product `fun k => a k * b k`. -/
-theorem toeplitz_colZeroProduct_submatrix_eq_hurwitz_mul
-    (a b : ℕ → ℝ) {n : ℕ} (rows cols : Fin n → ℕ) :
-    (toeplitz (fun k => hurwitz a k 0 * hurwitz b k 0)).submatrix rows
-        (fun j => 2 * cols j)
-      = (hurwitz (fun k => a k * b k)).submatrix rows cols := by
-  ext i j
-  simp only [Matrix.submatrix_apply]
-  exact toeplitz_colZeroProduct_apply_eq_hurwitz_mul a b (rows i) (cols j)
 
 /-! ### The column-`0` product sequence need not be Pólya-frequency
 

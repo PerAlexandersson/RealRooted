@@ -170,14 +170,6 @@ theorem affineSubstitutionMatrix_isLowerTriangular (a d : ℝ) :
   simpa [affineSubstitutionMatrix] using
     rowPolynomial_basisCoefficientMatrix (natDegree_affineBasisPolynomial_le a d) n
 
-theorem rowPolynomial_mul_affineSubstitutionMatrix
-    (a d : ℝ) (M : LowerTriangularMatrix ℝ) (i : ℕ) :
-    rowPolynomial (mul M (affineSubstitutionMatrix a d)) i =
-      (rowPolynomial M i).comp (C a * X + C d) := by
-  simp [affineSubstitutionMatrix,
-    rowPolynomial_mul_basisCoefficientMatrix (natDegree_affineBasisPolynomial_le a d),
-    basisTransform_affineBasisPolynomial]
-
 theorem RowGeneratingFunctionsPF.mul_affineSubstitutionMatrix
     {M : LowerTriangularMatrix ℝ} (hM : RowGeneratingFunctionsPF M)
     {a d : ℝ} (ha : 0 < a) (hd : 0 ≤ d) :
@@ -193,11 +185,6 @@ theorem affineSubstitutionMatrix_rightPreservesRowGeneratingFunctionsPF
     RightPreservesRowGeneratingFunctionsPF (affineSubstitutionMatrix a d) := by
   intro M hM
   exact hM.mul_affineSubstitutionMatrix ha hd
-
-theorem affineSubstitutionMatrix_rightPowersPreserveRowGeneratingFunctionsPF
-    {a d : ℝ} (ha : 0 < a) (hd : 0 ≤ d) :
-    RightPowersPreserveRowGeneratingFunctionsPF (affineSubstitutionMatrix a d) :=
-  (affineSubstitutionMatrix_rightPreservesRowGeneratingFunctionsPF ha hd).rightPowers
 
 /-- The falling-factorial basis has degree at most its index. -/
 theorem natDegree_fallingFactorialPolynomial_le (n : ℕ) :
@@ -267,10 +254,6 @@ theorem natDegree_touchard_le (n : ℕ) :
 def fallingFactorialMatrix : LowerTriangularMatrix ℝ :=
   basisCoefficientMatrix fallingFactorialPolynomial
 
-theorem fallingFactorialMatrix_isLowerTriangular :
-    IsLowerTriangular fallingFactorialMatrix :=
-  basisCoefficientMatrix_isLowerTriangular natDegree_fallingFactorialPolynomial_le
-
 @[simp] theorem rowPolynomial_fallingFactorialMatrix (n : ℕ) :
     rowPolynomial fallingFactorialMatrix n = fallingFactorialPolynomial n := by
   simpa [fallingFactorialMatrix] using
@@ -317,10 +300,6 @@ theorem touchardMatrix_rightPreservesRowGeneratingFunctionsPF :
   intro M hM
   exact hM.mul_touchardMatrix
 
-theorem touchardMatrix_rightPowersPreserveRowGeneratingFunctionsPF :
-    RightPowersPreserveRowGeneratingFunctionsPF touchardMatrix :=
-  touchardMatrix_rightPreservesRowGeneratingFunctionsPF.rightPowers
-
 /-- Coefficient matrix for the generalized rising-factorial basis. -/
 def risingFactorialMatrix (μ : ℝ) : LowerTriangularMatrix ℝ :=
   basisCoefficientMatrix (risingFactorialPolynomial μ)
@@ -333,14 +312,6 @@ theorem risingFactorialMatrix_isLowerTriangular (μ : ℝ) :
     rowPolynomial (risingFactorialMatrix μ) n = risingFactorialPolynomial μ n := by
   simpa [risingFactorialMatrix] using
     rowPolynomial_basisCoefficientMatrix (natDegree_risingFactorialPolynomial_le μ) n
-
-theorem rowPolynomial_mul_risingFactorialMatrix
-    (μ : ℝ) (M : LowerTriangularMatrix ℝ) (i : ℕ) :
-    rowPolynomial (mul M (risingFactorialMatrix μ)) i =
-      basisTransform (risingFactorialPolynomial μ) (rowPolynomial M i) := by
-  simpa [risingFactorialMatrix] using
-    rowPolynomial_mul_basisCoefficientMatrix
-      (P := risingFactorialPolynomial μ) (natDegree_risingFactorialPolynomial_le μ) M i
 
 theorem RowGeneratingFunctionsPF.mul_risingFactorialMatrix
     {M : LowerTriangularMatrix ℝ} (hM : RowGeneratingFunctionsPF M)
@@ -356,11 +327,6 @@ theorem risingFactorialMatrix_rightPreservesRowGeneratingFunctionsPF
   intro M hM
   exact hM.mul_risingFactorialMatrix hμ
 
-theorem risingFactorialMatrix_rightPowersPreserveRowGeneratingFunctionsPF
-    {μ : ℝ} (hμ : 0 < μ) :
-    RightPowersPreserveRowGeneratingFunctionsPF (risingFactorialMatrix μ) :=
-  (risingFactorialMatrix_rightPreservesRowGeneratingFunctionsPF hμ).rightPowers
-
 /-- Mao--Wang's Narayana coefficient matrix, whose row `n` generates
 `N_{n,m}`. -/
 def narayanaMatrix (m : ℕ) : LowerTriangularMatrix ℝ :=
@@ -375,14 +341,6 @@ theorem narayanaMatrix_isLowerTriangular (m : ℕ) :
   simpa [narayanaMatrix] using
     rowPolynomial_basisCoefficientMatrix (natDegree_narayanaPolynomial_le m) n
 
-theorem rowPolynomial_mul_narayanaMatrix
-    (m : ℕ) (M : LowerTriangularMatrix ℝ) (i : ℕ) :
-    rowPolynomial (mul M (narayanaMatrix m)) i =
-      narayanaTransform m (rowPolynomial M i) := by
-  simpa [narayanaMatrix, narayanaTransform] using
-    rowPolynomial_mul_basisCoefficientMatrix
-      (P := narayanaPolynomial m) (natDegree_narayanaPolynomial_le m) M i
-
 theorem RowGeneratingFunctionsPF.mul_narayanaMatrix
     {M : LowerTriangularMatrix ℝ} (hM : RowGeneratingFunctionsPF M) (m : ℕ) :
     RowGeneratingFunctionsPF (mul M (narayanaMatrix m)) := by
@@ -394,10 +352,6 @@ theorem narayanaMatrix_rightPreservesRowGeneratingFunctionsPF (m : ℕ) :
     RightPreservesRowGeneratingFunctionsPF (narayanaMatrix m) := by
   intro M hM
   exact hM.mul_narayanaMatrix m
-
-theorem narayanaMatrix_rightPowersPreserveRowGeneratingFunctionsPF (m : ℕ) :
-    RightPowersPreserveRowGeneratingFunctionsPF (narayanaMatrix m) :=
-  (narayanaMatrix_rightPreservesRowGeneratingFunctionsPF m).rightPowers
 
 /-- The one-step lower-triangular matrix factors covered by Mao--Wang's
 matrix-product criterion.  The falling-factorial coefficient matrix is kept
@@ -443,12 +397,6 @@ theorem MaoWangAdmissibleMatrix.rightPowersPreserveRowGeneratingFunctionsPF
     RightPowersPreserveRowGeneratingFunctionsPF B :=
   hB.rightPreservesRowGeneratingFunctionsPF.rightPowers
 
-theorem maoWangAdmissibleMatrix_listProduct_isLowerTriangular
-    {Bs : List (LowerTriangularMatrix ℝ)}
-    (hBs : ∀ B ∈ Bs, MaoWangAdmissibleMatrix B) :
-    IsLowerTriangular (listProduct Bs) :=
-  IsLowerTriangular.listProduct fun B hB => (hBs B hB).isLowerTriangular
-
 theorem maoWangAdmissibleMatrix_listProduct_rightPreservesRowGeneratingFunctionsPF
     {Bs : List (LowerTriangularMatrix ℝ)}
     (hBs : ∀ B ∈ Bs, MaoWangAdmissibleMatrix B) :
@@ -489,6 +437,7 @@ theorem RowGeneratingFunctionsPF.hasOnlyNonposRoots
   intro i
   exact (hA.row i).hasOnlyNonposRoots
 
+
 /-- Mao--Wang matrix-product criterion in the paper-facing root-location
 form, for right powers of an admissible one-step factor. -/
 theorem maoWang_matrixProduct_rowGeneratingFunctions_nonposRoots :
@@ -509,7 +458,6 @@ theorem maoWang_matrixListProduct_rowGeneratingFunctions_nonposRoots :
           RowGeneratingFunctionsHaveOnlyNonposRoots (mul M (listProduct Bs)) := by
   intro M Bs hBs hM
   exact (maoWang_matrixListProduct_rowGeneratingFunctions_pf hBs hM).hasOnlyNonposRoots
-
 /-- Rowwise Brenti inverse theorem for the falling-factorial coefficient
 matrix. -/
 theorem RowGeneratingFunctionsHaveOnlyNonposRoots.of_mul_fallingFactorialMatrix

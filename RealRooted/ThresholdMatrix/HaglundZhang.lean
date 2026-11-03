@@ -497,15 +497,6 @@ theorem isRealRooted_terminalPolynomial
   exact hout.2 (terminalPolynomial q fs)
     (terminalPolynomial_mem_matPolyAction q fs) hterminal_ne
 
-theorem isRealRooted_terminalPolynomial_of_interlacing
-    {q : ℕ} (fs : List ℝ[X]) (hfs_len : fs.length = q)
-    (hfs : IsInterlacingSeqNonneg fs)
-    (hterminal_ne : terminalPolynomial q fs ≠ 0) :
-    terminalPolynomial q fs ≠ 0 ∧ (terminalPolynomial q fs).Splits := by
-  have hfs_weak := weakData_of_isInterlacingSeqNonneg hfs
-  exact isRealRooted_terminalPolynomial
-    fs hfs_len hfs_weak.1 hfs_weak.2 hterminal_ne
-
 /-- Binomial Eulerian specialization: all diagonal markers are `1 + X`. -/
 theorem isInterlacingSeq0Nonneg_binomialMatrix
     {q : ℕ} (ts : List ℕ)
@@ -516,14 +507,6 @@ theorem isInterlacingSeq0Nonneg_binomialMatrix
       (matPolyAction (binomialMatrix q ts) fs) :=
   isInterlacingSeq0Nonneg_matPolyAction _
     (binomialRows_rowData hmono) fs hfs_len hfs
-
-theorem isInterlacingSeq0Nonneg_binomialMatrix_binomialThresholds
-    {q n : ℕ} (fs : List ℝ[X]) (hfs_len : fs.length = q)
-    (hfs : IsInterlacingSeqNonneg fs) :
-    IsInterlacingSeq0Nonneg
-      (matPolyAction (binomialMatrix q (binomialThresholds n)) fs) :=
-  isInterlacingSeq0Nonneg_binomialMatrix
-    (binomialThresholds n) (binomialThresholds_mono n) fs hfs_len hfs
 
 theorem isInterlacingSeq0Nonneg_binomialMatrix_and_realRooted
     {q : ℕ} (ts : List ℕ)
@@ -796,11 +779,6 @@ theorem binomialEulerianPolynomial_realRooted_of_ne
       (by simp)
       (binomialRefined_interlaces n) (binomialRefined_realRooted n)
       (by simpa [binomialEulerianPolynomial] using hne)
-
-theorem binomialEulerianPolynomial_splits_of_ne
-    (n : ℕ) (hne : binomialEulerianPolynomial n ≠ 0) :
-    (binomialEulerianPolynomial n).Splits :=
-  (binomialEulerianPolynomial_realRooted_of_ne n hne).2
 
 theorem binomialEulerianPolynomial_realRooted (n : ℕ) :
     binomialEulerianPolynomial n ≠ 0 ∧

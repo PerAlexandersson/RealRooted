@@ -88,19 +88,6 @@ lemma divX_rootCount_eq_length_pred_of_coeff_zero {g : ℝ[X]} {rs : List ℝ}
     divX_roots_eq_dropLast_of_coeff_zero hg hg0 hrs_eq hrs_ne hlast
   rw [← hdivX_roots, Multiset.coe_card, List.length_dropLast]
 
-/-- Additive root-count form of `divX_rootCount_eq_length_pred_of_coeff_zero`.
-
-This avoids downstream reasoning about truncated subtraction in the right-zero
-degree-drop branch. -/
-lemma divX_rootCount_succ_eq_length_of_coeff_zero {g : ℝ[X]} {rs : List ℝ}
-    (hg : g ≠ 0) (hg0 : g.coeff 0 = 0)
-    (hrs_eq : (↑rs : Multiset ℝ) = g.roots)
-    (hrs_ne : rs ≠ [])
-    (hlast : rs.getLast hrs_ne = 0) :
-    Multiset.card g.divX.roots + 1 = rs.length := by
-  rw [divX_rootCount_eq_length_pred_of_coeff_zero hg hg0 hrs_eq hrs_ne hlast]
-  grind
-
 /-- List-level factorization behind the right-zero degree drop.
 
 For equal-length lists, `ss` interlaces the one-longer list `ts ++ [m]` exactly
@@ -200,15 +187,6 @@ lemma natDegree_and_card_divX_roots_eq_natDegree_of_succDegree_of_coeff_zero
   ⟨natDegree_divX_eq_of_succDegree hdeg,
     card_divX_roots_eq_natDegree_of_succDegree_of_coeff_zero hg hg0 hg_split hdeg⟩
 
-/-- Domination wrapper for `listInterlaces_append_singleton_iff`.
-
-For equal-length lists, if `ss` interlaces `ts ++ [m]`, then `m` dominates
-every entry of `ss`. -/
-lemma forall_le_of_listInterlaces_append_singleton {m : ℝ} {ss ts : List ℝ}
-    (hlen : ss.length = ts.length) (h : ListInterlaces ss (ts ++ [m])) :
-    ∀ s ∈ ss, s ≤ m :=
-  ((listInterlaces_append_singleton_iff hlen).mp h).2
-
 /-- If `ss` interlaces the strictly longer list `rs`, then dropping the
 rightmost element of `rs` leaves an equal-length pair that alternates. -/
 lemma listAlternates_dropLast_of_listInterlaces {ss rs : List ℝ}
@@ -304,18 +282,6 @@ theorem strictInterl_divX_left_of_strictInterl_sameDegree_of_roots_nonpos_coeff_
   exact ⟨⟨hdivX_ne, hdivX_split⟩, hf, rs.dropLast, ss, hdrop_sorted,
     hss_sorted, hdivX_roots, hss_eq,
     Or.inl ⟨hlen, listInterlaces_dropLast_right_of_listAlternates hAlt⟩⟩
-
-/-- Nonnegative-coefficient wrapper for
-`strictInterl_divX_left_of_strictInterl_sameDegree_of_roots_nonpos_coeff_zero`. -/
-theorem strictInterl_divX_left_of_strictInterl_sameDegree_of_hasNonnegCoeffs_coeff_zero
-    {f g : ℝ[X]}
-    (hstrictInterl : StrictInterl f g)
-    (hgnn : HasNonnegCoeffs g)
-    (hg0 : g.coeff 0 = 0)
-    (hdeg : g.natDegree = f.natDegree) :
-    StrictInterl g.divX f :=
-  strictInterl_divX_left_of_strictInterl_sameDegree_of_roots_nonpos_coeff_zero hstrictInterl
-    (fun r hr => roots_nonpos_of_hasNonnegCoeffs hgnn r hr) hg0 hdeg
 
 /-- Right-zero degree-drop reduction at the `StrictInterl` level.
 
@@ -460,30 +426,6 @@ lemma sameDegreePair_divX_strictInterl_iff_of_succDegree_of_coeff_zero
   (sameDegreePair_divX_data_of_succDegree_of_coeff_zero
     hfnn hgnn hg hg_split hg0 hdeg).2
 
-/-- Forward orientation projection from the right-zero succ-degree divX
-equivalence. -/
-lemma sameDegreePair_divX_strictInterl_forward_of_succDegree_of_coeff_zero
-    {f g : ℝ[X]}
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
-    (hg : g ≠ 0) (hg_split : g.Splits)
-    (hg0 : g.coeff 0 = 0) (hdeg : g.natDegree = f.natDegree + 1)
-    (hstrictInterl : StrictInterl f g) :
-    StrictInterl (g.divX) f :=
-  (sameDegreePair_divX_strictInterl_iff_of_succDegree_of_coeff_zero
-    hfnn hgnn hg hg_split hg0 hdeg).mp hstrictInterl
-
-/-- Backward orientation projection from the right-zero succ-degree divX
-equivalence. -/
-lemma sameDegreePair_divX_strictInterl_backward_of_succDegree_of_coeff_zero
-    {f g : ℝ[X]}
-    (hfnn : HasNonnegCoeffs f) (hgnn : HasNonnegCoeffs g)
-    (hg : g ≠ 0) (hg_split : g.Splits)
-    (hg0 : g.coeff 0 = 0) (hdeg : g.natDegree = f.natDegree + 1)
-    (hstrictInterl : StrictInterl (g.divX) f) :
-    StrictInterl f g :=
-  (sameDegreePair_divX_strictInterl_iff_of_succDegree_of_coeff_zero
-    hfnn hgnn hg hg_split hg0 hdeg).mpr hstrictInterl
-
 /-- Same-degree data projection from the bundled right-zero succ-degree divX data. -/
 lemma sameDegreePair_divX_natDegree_eq_of_succDegree_of_coeff_zero
     {f g : ℝ[X]}
@@ -600,21 +542,5 @@ lemma divX_roots_nonpos_of_strictInterl_hasNonnegCoeffs {f g : ℝ[X]}
     (hstrictInterl : StrictInterl f g) (hgnn : HasNonnegCoeffs g) (hg0 : g.coeff 0 = 0) :
     ∀ a ∈ g.divX.roots, a ≤ 0 :=
   divX_roots_nonpos_of_hasNonnegCoeffs hstrictInterl.2.1.1 hgnn hg0
-
-/-- Bundled right-zero degree-drop package. -/
-theorem rightZeroDivX_package_of_strictInterl_of_hasNonnegCoeffs_coeff_zero
-    {f g : ℝ[X]}
-    (hstrictInterl : StrictInterl f g)
-    (hgnn : HasNonnegCoeffs g)
-    (hg0 : g.coeff 0 = 0)
-    (hdeg : g.natDegree = f.natDegree + 1) :
-    Interl (g.divX) f
-      ∧ (g.divX ≠ 0 ∧ g.divX.Splits)
-      ∧ (0 : ℝ) ∈ g.roots
-      ∧ (∀ a ∈ g.divX.roots, a ≤ 0) :=
-  ⟨interl_divX_left_of_strictInterl_of_hasNonnegCoeffs_coeff_zero hstrictInterl hgnn hg0 hdeg,
-    divX_realRooted_of_strictInterl_coeff_zero hstrictInterl hg0,
-    zero_mem_roots_of_strictInterl_coeff_zero hstrictInterl hg0,
-    divX_roots_nonpos_of_strictInterl_hasNonnegCoeffs hstrictInterl hgnn hg0⟩
 
 end RealRooted

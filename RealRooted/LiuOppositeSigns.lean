@@ -547,47 +547,6 @@ end LeftRootCountBranch
 
 namespace RightRootCountBranch
 
-theorem delete_splits {f g : ℝ[X]} {r s : ℝ}
-    (h : RightRootCountBranch f g r s) (hg_splits : g.Splits) :
-    (deleteRootFactor g s).Splits :=
-  h.toLeftBranch_symm.delete_splits hg_splits
-
-theorem delete_ne_zero {f g : ℝ[X]} {r s : ℝ}
-    (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0) :
-    deleteRootFactor g s ≠ 0 :=
-  h.toLeftBranch_symm.delete_ne_zero hg_ne
-
-theorem delete_ne_zero_and_splits {f g : ℝ[X]} {r s : ℝ}
-    (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0)
-    (hg_splits : g.Splits) :
-    deleteRootFactor g s ≠ 0 ∧ (deleteRootFactor g s).Splits :=
-  h.toLeftBranch_symm.delete_ne_zero_and_splits hg_ne hg_splits
-
-theorem delete_oppositeLeadingSigns {f g : ℝ[X]} {r s : ℝ}
-    (h : RightRootCountBranch f g r s) (hsgn : OppositeLeadingSigns f g) :
-    OppositeLeadingSigns f (deleteRootFactor g s) :=
-  (h.toLeftBranch_symm.delete_oppositeLeadingSigns hsgn.symm).symm
-
-theorem positiveDeletionCount {f g : ℝ[X]} {r s : ℝ}
-    (h : RightRootCountBranch f g r s) (hsgn : OppositeLeadingSigns f g) :
-    (HasPosLeadingCoeff f ∧ HasPosLeadingCoeff (-(deleteRootFactor g s)) ∧
-        RootCountCompatible f (-(deleteRootFactor g s))) ∨
-      (HasPosLeadingCoeff (-f) ∧ HasPosLeadingCoeff (deleteRootFactor g s) ∧
-        RootCountCompatible (-f) (deleteRootFactor g s)) := by
-  rcases h.toLeftBranch_symm.positiveDeletionCount hsgn.symm with hpos | hpos
-  · exact Or.inr ⟨hpos.2.1, hpos.1, hpos.2.2.symm⟩
-  · exact Or.inl ⟨hpos.2.1, hpos.1, hpos.2.2.symm⟩
-
-theorem positiveSplitDeletionCount {f g : ℝ[X]} {r s : ℝ}
-    (h : RightRootCountBranch f g r s) (hsgn : OppositeLeadingSigns f g)
-    (hf_splits : f.Splits) (hg_splits : g.Splits) :
-    PositiveSplitRootCountPair f (-(deleteRootFactor g s)) ∨
-      PositiveSplitRootCountPair (-f) (deleteRootFactor g s) := by
-  rcases h.toLeftBranch_symm.positiveSplitDeletionCount hsgn.symm
-    hg_splits hf_splits with hpair | hpair
-  · exact Or.inr hpair.symm
-  · exact Or.inl hpair.symm
-
 theorem of_rootCountAbove_delete_abs_sub_le_one_of_nonRoot
     {f g : ℝ[X]} {r s : ℝ} (hf_ne : f ≠ 0) (hg_ne : g ≠ 0)
     (hr : IsLargestRoot f r) (hs : IsLargestRoot g s) (hlargest : r < s)
@@ -600,45 +559,11 @@ theorem of_rootCountAbove_delete_abs_sub_le_one_of_nonRoot
   intro x hgx hfx
   simpa [abs_sub_comm] using hbound x hfx hgx
 
-theorem root_delete_le {f g : ℝ[X]} {r s t : ℝ}
-    (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0)
-    (ht : (deleteRootFactor g s).IsRoot t) :
-    t ≤ s :=
-  h.toLeftBranch_symm.root_delete_le hg_ne ht
-
-theorem delete_roots_le_largest {f g : ℝ[X]} {r s : ℝ}
-    (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0) :
-    ∀ t ∈ (deleteRootFactor g s).roots, t ≤ s :=
-  h.toLeftBranch_symm.delete_roots_le_largest hg_ne
-
 theorem right_comp_X_add_C_eq_X_mul_deleteRootFactor_comp
     {f g : ℝ[X]} {r s : ℝ} (h : RightRootCountBranch f g r s) :
     g.comp (X + C s) =
       X * (deleteRootFactor g s).comp (X + C s) :=
   h.toLeftBranch_symm.left_comp_X_add_C_eq_X_mul_deleteRootFactor_comp
-
-theorem delete_natDegree_add_one_eq {f g : ℝ[X]} {r s : ℝ}
-    (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0) :
-    (deleteRootFactor g s).natDegree + 1 = g.natDegree :=
-  h.toLeftBranch_symm.delete_natDegree_add_one_eq hg_ne
-
-theorem delete_natDegree_add_one_eq_of_sameDegree {f g : ℝ[X]} {r s : ℝ}
-    (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0)
-    (hdeg : g.natDegree = f.natDegree) :
-    (deleteRootFactor g s).natDegree + 1 = f.natDegree :=
-  h.toLeftBranch_symm.delete_natDegree_add_one_eq_of_sameDegree hg_ne hdeg
-
-theorem delete_natDegree_eq_of_succDegree {f g : ℝ[X]} {r s : ℝ}
-    (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0)
-    (hdeg : g.natDegree = f.natDegree + 1) :
-    (deleteRootFactor g s).natDegree = f.natDegree :=
-  h.toLeftBranch_symm.delete_natDegree_eq_of_succDegree hg_ne hdeg
-
-theorem delete_natDegree_eq_succ_of_twoDegree {f g : ℝ[X]} {r s : ℝ}
-    (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0)
-    (hdeg : g.natDegree = f.natDegree + 2) :
-    (deleteRootFactor g s).natDegree = f.natDegree + 1 :=
-  h.toLeftBranch_symm.delete_natDegree_eq_succ_of_twoDegree hg_ne hdeg
 
 theorem natDegree_abs_sub_le_two {f g : ℝ[X]} {r s : ℝ}
     (h : RightRootCountBranch f g r s) (hg_ne : g ≠ 0)
