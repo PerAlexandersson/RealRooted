@@ -1,6 +1,7 @@
 module
 
 import RealRooted.Recurrence.CubicTransition
+import RealRooted.Recurrence.PFTripleMatrix
 import RealRooted.Recurrence.QuarticInterlacing
 import RealRooted.Recurrence.ResidueSubsequence
 
@@ -26,6 +27,16 @@ label = "Ordered PF triple"
 name = "RealRooted.PreservesCubicTransition"
 module = "RealRooted.Recurrence.CubicTransition"
 label = "The cubic transition preserves ordered PF triples"
+
+[[definitions]]
+name = "RealRooted.PreservesPFTriple"
+module = "RealRooted.Recurrence.PFTripleMatrix"
+label = "The matrix [[0,0,1],[x,0,1],[cx,dx,a+bx]] preserves ordered PF triples"
+
+[[definitions]]
+name = "RealRooted.PreservesScaledPFTriple"
+module = "RealRooted.Recurrence.PFTripleMatrix"
+label = "The scaled matrix [[0,0,1],[lx,0,1],[cx,dx,a+bx]] preserves ordered PF triples"
 
 [[definitions]]
 name = "RealRooted.cubicTransitionFamily"
@@ -64,6 +75,33 @@ name = "RealRooted.interl_quarticInterlacingRow_succ"
 module = "RealRooted.Recurrence.QuarticInterlacing"
 label = "Consecutive rows of an admissible quartic state interlace"
 headline = true
+
+[[theorems]]
+name = "RealRooted.preservesPFTriple_iff"
+module = "RealRooted.Recurrence.PFTripleMatrix"
+label = "The three-coordinate matrix preserves ordered PF triples iff a, b, d ≥ 0 and c ≥ a"
+headline = true
+
+[[theorems]]
+name = "RealRooted.preservesScaledPFTriple_iff"
+module = "RealRooted.Recurrence.PFTripleMatrix"
+label = "The scaled matrix preserves ordered PF triples iff a, b, d ≥ 0 and c ≥ a l"
+
+[[theorems]]
+name = "RealRooted.isOrderedPFTriple_of_recurrence"
+module = "RealRooted.Recurrence.PFTripleMatrix"
+label = "Third-order recurrences with a, b, d ≥ 0 and e ≥ a + d have PF rows and ordered states"
+headline = true
+
+[[theorems]]
+name = "RealRooted.interl_of_recurrence"
+module = "RealRooted.Recurrence.PFTripleMatrix"
+label = "Consecutive rows of such a third-order recurrence interlace"
+
+[[theorems]]
+name = "RealRooted.isOrderedPFTriple_of_recurrence_scaled"
+module = "RealRooted.Recurrence.PFTripleMatrix"
+label = "The scaled state: a κ² − e κ + d ≤ 0 for some κ > 0 suffices"
 
 [[theorems]]
 name = "RealRooted.preservesCubicTransition_of_nonneg"
@@ -207,6 +245,33 @@ residuals of the old one. Applied with $p=\alpha+\gamma$, $q=\alpha\gamma$ and
 $u=wx$, it gives the recurrence of the residue-class subsequences of the cubic
 family.
 
+## A sharp three-coordinate matrix and third-order recurrences
+
+For real $a,b,c,d$ and $\lambda>0$ consider the transition
+$$
+(p,u,r)\ \longmapsto\ \bigl(r,\ r+\lambda x\,p,\ c\,x\,p+d\,x\,u+(a+bx)\,r\bigr),
+$$
+that is, the matrix $\begin{pmatrix}0&0&1\\\lambda x&0&1\\cx&dx&a+bx\end{pmatrix}$.
+
+**Theorem.** The transition maps every ordered PF triple to an ordered PF triple if
+and only if $a,b,d\ge0$ and $c\ge a\lambda$. There are no degree or nonzero-coordinate
+hypotheses.
+
+For sufficiency write $L=r+\lambda xp$ and $N=aL+bxr+(c-a\lambda)xp+dxu$: every
+scalar is nonnegative, $r$ and $L$ precede every summand, and the cone lemmas
+give $r\ll L$, $r\ll N$ and $L\ll N$; the case $r=0$ is handled separately. For
+necessity the triples $(0,0,1)$, $(0,1,0)$, $(1,0,0)$ force the signs, and the
+triples $(K,0,1)$ with $K$ large force $c\ge a\lambda$.
+
+**Corollary.** Let $a_s,b_s,d_s\ge0$, start from $P_{-1}=P_0=0$, $P_1=1$, and let
+$$
+P_{s+2}=(a_s+b_sx)P_{s+1}+e_s\,x\,P_s+d_s\,x^2P_{s-1}.
+$$
+If $a_s\kappa^2-e_s\kappa+d_s\le0$ for some $\kappa>0$ and all $s$ (for $\kappa=1$:
+$e_s\ge a_s+d_s$), then $(P_s,\ P_s+\kappa xP_{s-1},\ P_{s+1})$ is an ordered PF
+triple for every $s$. In particular every $P_s$ is PF and consecutive rows
+interlace, $P_s\ll P_{s+1}$.
+
 ## The quartic transition
 
 For parameters $u,v,w$ consider a state $S=(f_0,f_1,f_2,d,s)$ of five polynomials
@@ -258,5 +323,6 @@ this page are not attributed to a published source.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in `RealRooted.Recurrence.CubicTransition`,
-`RealRooted.Recurrence.QuarticInterlacing` and `RealRooted.Recurrence.ResidueSubsequence`.
+`RealRooted.Recurrence.PFTripleMatrix`, `RealRooted.Recurrence.QuarticInterlacing` and
+`RealRooted.Recurrence.ResidueSubsequence`.
 -/
