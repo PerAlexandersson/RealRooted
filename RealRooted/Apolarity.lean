@@ -259,11 +259,6 @@ theorem AreApolar.symm {R : Type*} [CommRing R]
     AreApolar n g f := by
   rw [AreApolar, apolarPairing_comm_sign, h, mul_zero]
 
-theorem areApolar_comm {R : Type*} [CommRing R]
-    {n : Nat} {f g : R[X]} :
-    AreApolar n f g ↔ AreApolar n g f :=
-  ⟨AreApolar.symm, AreApolar.symm⟩
-
 theorem apolarPairing_monomial_left {R : Type*} [CommRing R]
     (n i : Nat) (a : R) (g : R[X]) :
     apolarPairing n (monomial i a) g =

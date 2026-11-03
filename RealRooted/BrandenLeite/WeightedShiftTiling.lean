@@ -361,22 +361,6 @@ theorem weightedShiftTilingRow_separated_isPFPolynomial
   obtain ⟨a, ha, rfl⟩ := List.mem_map.mp hf
   exact mul_nonneg (halphas a ha) (hw n)
 
-/-- Consecutive rows of nonnegative separated data remain in an interlacing relation. -/
-theorem interl_weightedShiftTilingRow_separated_succ
-    {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n)
-    {alphas : List ℝ} (halphas : ∀ a ∈ alphas, 0 ≤ a)
-    {w : ℕ → ℝ} (hw : ∀ n, 0 ≤ w n)
-    (N : ℕ) {r : ℕ} (hr : 0 < r) (i : Fin N) :
-    Interl
-      (weightedShiftTilingRow b (alphas.map fun a n => a * w n)
-        N r i.castSucc)
-      (weightedShiftTilingRow b (alphas.map fun a n => a * w n)
-        N r i.succ) := by
-  refine interl_weightedShiftTilingRow_succ hb ?_ N hr i
-  rintro f hf n
-  obtain ⟨a, ha, rfl⟩ := List.mem_map.mp hf
-  exact mul_nonneg (halphas a ha) (hw n)
-
 /-- With two optional-rise factors, the displacement-`r` marked entry has
 coefficient one. -/
 theorem markedShiftKernel_pair_apply_displacement
@@ -558,27 +542,6 @@ theorem weightedShiftTilingRow_eq_C_of_lt
     markedShiftKernel_eq_zero_of_lt as hNr,
     kernelRow_zero_kernel, weightedGreenKernel_apply]
   simp
-
-/-- A zero background weight among levels `1, ..., i` forces the row's
-constant coefficient to vanish. -/
-theorem coeff_zero_weightedShiftTilingRow_eq_zero_of_weight_eq_zero
-    (b : ℕ → ℝ) (as : List (ℕ → ℝ)) (N r : ℕ)
-    (i : Fin (N + 1)) {k : ℕ} (hk : k < i.val) (hbk : b (k + 1) = 0) :
-    (weightedShiftTilingRow b as N r i).coeff 0 = 0 := by
-  rw [coeff_zero_weightedShiftTilingRow_eq_prod_range]
-  exact Finset.prod_eq_zero (Finset.mem_range.mpr hk) hbk
-
-/-- Under nonnegative marked weights and positive background weights, all roots
-of every tiling row are strictly negative. -/
-theorem weightedShiftTilingRow_roots_neg
-    {b : ℕ → ℝ} (hb : ∀ n, 0 < b n)
-    {as : List (ℕ → ℝ)} (has : ∀ a ∈ as, ∀ n, 0 ≤ a n)
-    (N : ℕ) {r : ℕ} (hr : 0 < r) (i : Fin (N + 1))
-    (x : ℝ) (hx : x ∈ (weightedShiftTilingRow b as N r i).roots) :
-    x < 0 :=
-  (weightedShiftTilingRow_isPFPolynomial (fun n => (hb n).le)
-    has N hr i).roots_neg_of_coeff_zero_ne
-      (ne_of_gt (coeff_zero_weightedShiftTilingRow_pos hb as N r i)) x hx
 
 end
 

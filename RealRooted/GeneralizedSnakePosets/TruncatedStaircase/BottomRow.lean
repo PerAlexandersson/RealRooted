@@ -651,11 +651,6 @@ theorem sum_bottomRowCells_nonNestingPlacementsWithCell_eq_mul_sum
     truncatedStaircase n 0 = empty := by
   simp [truncatedStaircase, empty]
 
-/-- Truncated-staircase rook polynomials have constant coefficient one. -/
-@[simp] theorem truncatedStaircaseRookPolynomial_coeff_zero (n i : ℕ) :
-    (truncatedStaircaseRookPolynomial n i).coeff 0 = 1 :=
-  rookPolynomial_coeff_zero _
-
 /-- A truncated-staircase rook polynomial has no coefficient above its number
 of rows. -/
 theorem coeff_truncatedStaircaseRookPolynomial_eq_zero_of_rows_lt

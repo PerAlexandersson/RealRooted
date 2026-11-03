@@ -84,15 +84,6 @@ lemma length_destutter_replicate_signType (s : SignType) (n : ℕ) :
   change (destutter' (fun x y : SignType => x ≠ y) s (replicate n s)).length = 1
   exact length_destutter'_replicate_signType s n
 
-lemma length_destutter'_replicate_one_signType (n : ℕ) :
-    (destutter' (fun x y : SignType => x ≠ y) (1 : SignType)
-      (replicate n (1 : SignType))).length = 1 :=
-  length_destutter'_replicate_signType 1 n
-
-lemma length_destutter_replicate_one_signType (n : ℕ) :
-    ((replicate (n + 1) (1 : SignType)).destutter (· ≠ ·)).length = 1 :=
-  length_destutter_replicate_signType 1 n
-
 lemma length_destutter'_replicate_le_two (a s : SignType) (n : ℕ) :
     (destutter' (fun x y : SignType => x ≠ y) a (replicate n s)).length ≤ 2 := by
   cases n with
@@ -188,7 +179,7 @@ lemma signVariations_eq_zero_of_forall_nonneg (l : List ℝ)
   have hmap := filter_sign_eq_replicate_one_of_forall_nonneg l h
   rw [hmap]
   cases ((l.map SignType.sign).filter (· ≠ 0)).length <;>
-    simp [length_destutter_replicate_one_signType]
+    simp [length_destutter_replicate_signType]
 
 /-- A nonnegative block followed by a nonpositive block has at most one sign
 variation. -/
@@ -812,7 +803,6 @@ private theorem nodalInsertion_coreSigns_remove
       · apply nodalInsertion_coreSigns_interior x y k
           (Nat.pos_of_ne_zero hkzero) (by lia) hopposite
 
-
 /-- Remove one interior zero, apply the shorter nodal-insertion chain, and reinsert it.
 
 This is the finite induction step in the endpoint-perturbation route used in Karlin's
@@ -1012,12 +1002,6 @@ theorem signVariations_le_add_two_of_sign_eq_on_nonzero_of_interior_nodal
     · have h : core.signVariations ≤ Fin.signVariations x + 2 := by rw [hcore]; lia
       simpa [core, middle, Fin.nodalPerturbationCoreSigns, hzero, hlast] using h
 
-/-- A finite vector has at most one fewer sign variation than its length. -/
-lemma signVariations_le_card_sub_one {R : Type*} [Zero R] [LinearOrder R]
-    {n : ℕ} (x : Fin n → R) : signVariations x ≤ n - 1 := by
-  rw [signVariations]
-  simpa using List.signVariations_le_length_sub_one (List.ofFn x)
-
 /-- If the first entry is zero, a finite vector has at most two fewer sign
 variations than its length. -/
 lemma signVariations_le_card_sub_two_of_zero_first {R : Type*}
@@ -1082,18 +1066,6 @@ lemma signVariations_le_one_of_castAdd_nonneg_natAdd_nonpos {m n : ℕ}
     signVariations x ≤ 1 := by
   simpa [Fin.append_castAdd_natAdd] using
     signVariations_append_nonneg_nonpos_le_one
-      (fun i : Fin m => x (Fin.castAdd n i))
-      (fun i : Fin n => x (Fin.natAdd m i)) hleft hright
-
-/-- A finite vector split into a nonpositive initial block and a nonnegative
-final block has at most one sign variation. -/
-lemma signVariations_le_one_of_castAdd_nonpos_natAdd_nonneg {m n : ℕ}
-    (x : Fin (m + n) → ℝ)
-    (hleft : ∀ i : Fin m, x (Fin.castAdd n i) ≤ 0)
-    (hright : ∀ i : Fin n, 0 ≤ x (Fin.natAdd m i)) :
-    signVariations x ≤ 1 := by
-  simpa [Fin.append_castAdd_natAdd] using
-    signVariations_append_nonpos_nonneg_le_one
       (fun i : Fin m => x (Fin.castAdd n i))
       (fun i : Fin n => x (Fin.natAdd m i)) hleft hright
 

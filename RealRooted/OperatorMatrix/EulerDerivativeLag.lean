@@ -645,14 +645,6 @@ theorem splits_of_recurrence (P : ℕ → ℝ[X])
   (isPFPolynomial_of_recurrence P hrec hseed n).eq_zero_or_splits.elim
     (fun h => h ▸ Splits.zero) id
 
-/-- The initial values `P 0 = 1` and `P 1 = X` supply the ordered seed needed by the orbit
-theorem. -/
-theorem isPFPolynomial_of_recurrence_one_X (P : ℕ → ℝ[X])
-    (hrec : ∀ k, P (k + 2) = RealRooted.theta (P (k + 1)) + X * RealRooted.theta (P k))
-    (hzero : P 0 = 1) (hone : P 1 = X) (n : ℕ) : IsPFPolynomial (P n) := by
-  apply isPFPolynomial_of_recurrence P hrec
-  simpa [hzero, hone] using isOrderedPF_one_X
-
 /-- Every recurrence family with initial values `(1,X)` splits in every row. -/
 theorem splits_of_recurrence_one_X (P : ℕ → ℝ[X])
     (hrec : ∀ k, P (k + 2) = RealRooted.theta (P (k + 1)) + X * RealRooted.theta (P k))

@@ -99,10 +99,6 @@ private lemma delannoyFavard_beta_pos (n : ℕ) :
     0 < ((((n + 1 : ℕ) : ℝ) ^ 2) / 4) := by
   positivity
 
-theorem delannoyFavard_strictInterl (n : ℕ) :
-    StrictInterl (delannoyFavard n) (delannoyFavard (n + 1)) :=
-  favardInterlacing delannoyFavard_recurrence delannoyFavard_beta_pos n
-
 theorem delannoyFavard_splits (n : ℕ) :
     (delannoyFavard n).Splits :=
   (isRealRooted_of_favard delannoyFavard_recurrence

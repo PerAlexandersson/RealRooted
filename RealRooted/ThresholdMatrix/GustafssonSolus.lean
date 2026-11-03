@@ -487,35 +487,6 @@ theorem realRooted_of_mem_choiceMatrix_finChoices
   (isInterlacingSeq0Nonneg_choiceMatrix_finChoices_and_realRooted_of_interlacing
     phi delete hphi hlocal fs hfs_len hfs).2
 
-theorem isInterlacingSeq0Nonneg_rowPolynomials_and_realRooted
-    {q m : ℕ} (phi : Fin (m + 1) → ℕ) (delete : Fin (m + 1) → Bool)
-    (hphi : ∀ i : Fin m, phi i.castSucc ≤ phi i.succ)
-    (hlocal : ∀ i : Fin m, phi i.castSucc = phi i.succ →
-      delete i.castSucc = true → delete i.succ = true)
-    (fs : List ℝ[X]) (hfs_len : fs.length = q)
-    (hfs : IsInterlacingSeq0Nonneg fs)
-    (hfs_real : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits)) :
-    IsInterlacingSeq0Nonneg (rowPolynomials q m phi delete fs) ∧
-      ∀ f ∈ rowPolynomials q m phi delete fs,
-        f ≠ 0 → (f ≠ 0 ∧ f.Splits) := by
-  simpa using
-    isInterlacingSeq0Nonneg_choiceMatrix_finChoices_and_realRooted
-      phi delete hphi hlocal fs hfs_len hfs hfs_real
-
-theorem isInterlacingSeq0Nonneg_rowPolynomials_and_realRooted_of_interlacing
-    {q m : ℕ} (phi : Fin (m + 1) → ℕ) (delete : Fin (m + 1) → Bool)
-    (hphi : ∀ i : Fin m, phi i.castSucc ≤ phi i.succ)
-    (hlocal : ∀ i : Fin m, phi i.castSucc = phi i.succ →
-      delete i.castSucc = true → delete i.succ = true)
-    (fs : List ℝ[X]) (hfs_len : fs.length = q)
-    (hfs : IsInterlacingSeqNonneg fs) :
-    IsInterlacingSeq0Nonneg (rowPolynomials q m phi delete fs) ∧
-      ∀ f ∈ rowPolynomials q m phi delete fs,
-        f ≠ 0 → (f ≠ 0 ∧ f.Splits) := by
-  simpa using
-    isInterlacingSeq0Nonneg_choiceMatrix_finChoices_and_realRooted_of_interlacing
-      phi delete hphi hlocal fs hfs_len hfs
-
 /-- Interlacing projection of the paper-shaped Gustafsson--Solus polynomial-list
 recursion. -/
 theorem isInterlacingSeq0Nonneg_rowPolynomials

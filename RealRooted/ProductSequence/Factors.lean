@@ -38,79 +38,10 @@ theorem isRealRooted_X_add_C (t : ℝ) :
     (X + C t : ℝ[X]) ≠ 0 ∧ (X + C t : ℝ[X]).Splits := by
   simpa using isRealRooted_C_mul_X_add_C (s := 1) (t := t) (by norm_num)
 
-/-- Constant-first spelling of `isRealRooted_X_add_C`. -/
-theorem isRealRooted_C_add_X (t : ℝ) :
-    (C t + X : ℝ[X]) ≠ 0 ∧ (C t + X : ℝ[X]).Splits := by
-  simpa [add_comm] using isRealRooted_X_add_C t
-
-/-- Constant-first spelling of `isRealRooted_C_mul_X_add_C`. -/
-theorem isRealRooted_C_add_C_mul_X {s t : ℝ} (hs : s ≠ 0) :
-    (C t + C s * X : ℝ[X]) ≠ 0 ∧ (C t + C s * X : ℝ[X]).Splits := by
-  simpa [add_comm] using isRealRooted_C_mul_X_add_C (s := s) (t := t) hs
-
-/-- If `p` is nonzero and splits and `s ≠ 0`, then `(C s * X + C t) * p` is
-nonzero and splits. -/
-theorem isRealRooted_C_mul_X_add_C_mul {p : ℝ[X]} {s t : ℝ}
-    (hp : p ≠ 0 ∧ p.Splits) (hs : s ≠ 0) :
-    ((C s * X + C t) * p ≠ 0 ∧ ((C s * X + C t) * p).Splits) :=
-  isRealRooted_mul_of_isRealRooted (isRealRooted_C_mul_X_add_C hs) hp
-
-/-- If `p` is nonzero and splits and `s ≠ 0`, then `p * (C s * X + C t)` is
-nonzero and splits. -/
-theorem isRealRooted_mul_C_mul_X_add_C {p : ℝ[X]} {s t : ℝ}
-    (hp : p ≠ 0 ∧ p.Splits) (hs : s ≠ 0) :
-    (p * (C s * X + C t) ≠ 0 ∧ (p * (C s * X + C t)).Splits) :=
-  isRealRooted_mul_of_isRealRooted hp (isRealRooted_C_mul_X_add_C hs)
-
-/-- If `p` is nonzero and splits and `s ≠ 0`, then `(C t + C s * X) * p` is
-nonzero and splits. -/
-theorem isRealRooted_C_add_C_mul_X_mul {p : ℝ[X]} {s t : ℝ}
-    (hp : p ≠ 0 ∧ p.Splits) (hs : s ≠ 0) :
-    ((C t + C s * X) * p ≠ 0 ∧ ((C t + C s * X) * p).Splits) := by
-  simpa [add_comm] using isRealRooted_C_mul_X_add_C_mul (p := p) (s := s) (t := t) hp hs
-
-/-- If `p` is nonzero and splits and `s ≠ 0`, then `p * (C t + C s * X)` is
-nonzero and splits. -/
-theorem isRealRooted_mul_C_add_C_mul_X {p : ℝ[X]} {s t : ℝ}
-    (hp : p ≠ 0 ∧ p.Splits) (hs : s ≠ 0) :
-    (p * (C t + C s * X) ≠ 0 ∧ (p * (C t + C s * X)).Splits) := by
-  simpa [add_comm] using isRealRooted_mul_C_mul_X_add_C (p := p) (s := s) (t := t) hp hs
-
-/-- If `p` is nonzero and splits, then `(X + C t) * p` is nonzero and splits. -/
-theorem isRealRooted_X_add_C_mul {p : ℝ[X]} {t : ℝ}
-    (hp : p ≠ 0 ∧ p.Splits) :
-    ((X + C t) * p ≠ 0 ∧ ((X + C t) * p).Splits) := by
-  simpa using
-    (isRealRooted_C_mul_X_add_C_mul (p := p) (s := 1) (t := t) hp (by norm_num))
-
-/-- If `p` is nonzero and splits, then `p * (X + C t)` is nonzero and splits. -/
-theorem isRealRooted_mul_X_add_C {p : ℝ[X]} {t : ℝ}
-    (hp : p ≠ 0 ∧ p.Splits) :
-    (p * (X + C t) ≠ 0 ∧ (p * (X + C t)).Splits) := by
-  simpa using
-    (isRealRooted_mul_C_mul_X_add_C (p := p) (s := 1) (t := t) hp (by norm_num))
-
-/-- Constant-first spelling of `isRealRooted_X_add_C_mul`. -/
-theorem isRealRooted_C_add_X_mul {p : ℝ[X]} {t : ℝ}
-    (hp : p ≠ 0 ∧ p.Splits) :
-    ((C t + X) * p ≠ 0 ∧ ((C t + X) * p).Splits) := by
-  simpa [add_comm] using isRealRooted_X_add_C_mul (p := p) (t := t) hp
-
-/-- Right-factor variant of `isRealRooted_C_add_X_mul`. -/
-theorem isRealRooted_mul_C_add_X {p : ℝ[X]} {t : ℝ}
-    (hp : p ≠ 0 ∧ p.Splits) :
-    (p * (C t + X) ≠ 0 ∧ (p * (C t + X)).Splits) := by
-  simpa [add_comm] using isRealRooted_mul_X_add_C (p := p) (t := t) hp
-
 /-- Powers of a unit-slope real linear factor are real-rooted. -/
 theorem isRealRooted_X_add_C_pow (t : ℝ) (n : Nat) :
     ((X + C t : ℝ[X]) ^ n ≠ 0 ∧ ((X + C t : ℝ[X]) ^ n).Splits) :=
   isRealRooted_pow_of_isRealRooted (isRealRooted_X_add_C t) n
-
-/-- Constant-first spelling of `isRealRooted_X_add_C_pow`. -/
-theorem isRealRooted_C_add_X_pow (t : ℝ) (n : Nat) :
-    ((C t + X : ℝ[X]) ^ n ≠ 0 ∧ ((C t + X : ℝ[X]) ^ n).Splits) :=
-  isRealRooted_pow_of_isRealRooted (isRealRooted_C_add_X t) n
 
 /-- Powers of a nonzero-slope real linear factor are real-rooted. -/
 theorem isRealRooted_C_mul_X_add_C_pow {s t : ℝ} (hs : s ≠ 0) (n : Nat) :
@@ -118,28 +49,11 @@ theorem isRealRooted_C_mul_X_add_C_pow {s t : ℝ} (hs : s ≠ 0) (n : Nat) :
       ((C s * X + C t : ℝ[X]) ^ n).Splits) :=
   isRealRooted_pow_of_isRealRooted (isRealRooted_C_mul_X_add_C hs) n
 
-/-- Constant-first spelling of `isRealRooted_C_mul_X_add_C_pow`. -/
-theorem isRealRooted_C_add_C_mul_X_pow {s t : ℝ} (hs : s ≠ 0) (n : Nat) :
-    ((C t + C s * X : ℝ[X]) ^ n ≠ 0 ∧
-      ((C t + C s * X : ℝ[X]) ^ n).Splits) := by
-  simpa [add_comm] using isRealRooted_C_mul_X_add_C_pow (s := s) (t := t) hs n
-
-
 namespace ProductSequence
 
 theorem isRealRooted_X_add_C_one_sequence (t : Nat → ℝ) :
     ∀ n : Nat, (X + C (t n) : ℝ[X]) ≠ 0 ∧ (X + C (t n) : ℝ[X]).Splits :=
   fun n => by simpa using isRealRooted_X_add_C_pow (t n) 1
-
-theorem isRealRooted_C_add_X_one_sequence (t : Nat → ℝ) :
-    ∀ n : Nat, (C (t n) + X : ℝ[X]) ≠ 0 ∧ (C (t n) + X : ℝ[X]).Splits :=
-  fun n => by simpa using isRealRooted_C_add_X_pow (t n) 1
-
-theorem isRealRooted_C_add_C_mul_X_one_sequence {s t : Nat → ℝ}
-    (hs : ∀ n : Nat, s n ≠ 0) :
-    ∀ n : Nat, (C (t n) + C (s n) * X : ℝ[X]) ≠ 0 ∧
-      (C (t n) + C (s n) * X : ℝ[X]).Splits :=
-  fun n => by simpa using isRealRooted_C_add_C_mul_X_pow (hs n) 1
 
 theorem isRealRooted_X_sequence :
     ∀ _ : Nat, (X : ℝ[X]) ≠ 0 ∧ (X : ℝ[X]).Splits :=
@@ -188,48 +102,11 @@ theorem isRealRooted_X_add_C_pow_sequence (t : Nat → ℝ) (m : Nat → Nat) :
       ((X + C (t n) : ℝ[X]) ^ (m n)).Splits :=
   fun n => isRealRooted_X_add_C_pow (t n) (m n)
 
-theorem isRealRooted_C_add_X_pow_sequence (t : Nat → ℝ) (m : Nat → Nat) :
-    ∀ n : Nat, (C (t n) + X : ℝ[X]) ^ (m n) ≠ 0 ∧
-      ((C (t n) + X : ℝ[X]) ^ (m n)).Splits :=
-  fun n => isRealRooted_C_add_X_pow (t n) (m n)
-
-theorem isRealRooted_C_mul_X_add_C_pow_sequence {s t : Nat → ℝ}
-    (hs : ∀ n : Nat, s n ≠ 0) (m : Nat → Nat) :
-    ∀ n : Nat, (C (s n) * X + C (t n) : ℝ[X]) ^ (m n) ≠ 0 ∧
-      ((C (s n) * X + C (t n) : ℝ[X]) ^ (m n)).Splits :=
-  fun n => isRealRooted_C_mul_X_add_C_pow (hs n) (m n)
-
-theorem isRealRooted_C_add_C_mul_X_pow_sequence {s t : Nat → ℝ}
-    (hs : ∀ n : Nat, s n ≠ 0) (m : Nat → Nat) :
-    ∀ n : Nat, (C (t n) + C (s n) * X : ℝ[X]) ^ (m n) ≠ 0 ∧
-      ((C (t n) + C (s n) * X : ℝ[X]) ^ (m n)).Splits :=
-  fun n => isRealRooted_C_add_C_mul_X_pow (hs n) (m n)
-
-
 end ProductSequence
 
 /-- Powers of the root-at-zero factor are real-rooted. -/
 theorem isRealRooted_X_pow (n : Nat) :
     ((X : ℝ[X]) ^ n ≠ 0 ∧ (((X : ℝ[X]) ^ n).Splits)) :=
   isRealRooted_pow_of_isRealRooted isRealRooted_X n
-
-/-- Powers of a nonzero scalar constant are real-rooted. -/
-theorem isRealRooted_C_pow {a : ℝ} (ha : a ≠ 0) (n : Nat) :
-    ((C a : ℝ[X]) ^ n ≠ 0 ∧ (((C a : ℝ[X]) ^ n).Splits)) :=
-  isRealRooted_pow_of_isRealRooted (isRealRooted_C ha) n
-
-namespace ProductSequence
-
-theorem isRealRooted_C_pow_sequence {c : Nat → ℝ}
-    (hc : ∀ n : Nat, c n ≠ 0) (m : Nat → Nat) :
-    ∀ n : Nat, (C (c n) : ℝ[X]) ^ (m n) ≠ 0 ∧
-      ((C (c n) : ℝ[X]) ^ (m n)).Splits :=
-  fun n => isRealRooted_C_pow (hc n) (m n)
-
-theorem isRealRooted_X_pow_sequence (m : Nat → Nat) :
-    ∀ n : Nat, (X : ℝ[X]) ^ (m n) ≠ 0 ∧ ((X : ℝ[X]) ^ (m n)).Splits :=
-  fun n => isRealRooted_X_pow (m n)
-
-end ProductSequence
 
 end RealRooted
