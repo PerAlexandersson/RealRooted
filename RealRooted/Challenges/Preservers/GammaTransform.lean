@@ -143,7 +143,9 @@ See [@Petersen2015EulerianNumbers, Sec. 4.6],
 This module exposes the real-rootedness transfer for the gamma transform, the
 Hoster–Stump interlacing equivalence, and the all-rank gamma-pencil theorem.
 The gamma transform lives in `RealRooted.GammaTransform`; the pencil lives in
-`RealRooted.GammaPencil`.
+`RealRooted.GammaPencil`.  The two pencil statements restate
+`RealRooted.gammaUV_allComboRealRooted` and `RealRooted.gammaU_strictInterl_gammaV`
+from `RealRooted.GammaPencil.Theorem`.
 -/
 
 public section
