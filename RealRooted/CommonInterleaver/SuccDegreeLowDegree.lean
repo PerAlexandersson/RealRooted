@@ -392,12 +392,9 @@ theorem compatibleSuccDegreeRootCountAbove_of_natDegree_eq_one
     (hdeg : g.natDegree = f.natDegree + 1)
     (hf_split : f.Splits) (hfdeg : f.natDegree = 1) (x : ℝ) :
       ((f.roots.filter (x < ·)).card : ℤ) - (g.roots.filter (x < ·)).card ≤ 1 ∧
-      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 := by
-  obtain ⟨_a, α, _ha, hαroots, _b, β, γ, _hb, _hβγ, hgroots, hγα⟩ :=
-    smallRoot_le_of_posCombo_natDegree_eq_one hf_pos hg_pos
-      (hcomp.toPosComboRealRooted hf_pos hg_pos) hdeg hf_split hfdeg
-  rw [hαroots, hgroots]
-  exact count_above_singleton_pair_le hγα
+      ((g.roots.filter (x < ·)).card : ℤ) - (f.roots.filter (x < ·)).card ≤ 1 :=
+  succDegreeRootCountAbove_of_posCombo_natDegree_eq_one hf_pos hg_pos
+    (hcomp.toPosComboRealRooted hf_pos hg_pos) hdeg hf_split hfdeg x
 
 /-- Low-degree compatible-pair base case for the upper-threshold succ-degree
 root-count formulation. -/
