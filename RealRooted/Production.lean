@@ -1941,6 +1941,9 @@ public import RealRooted.SymmetricDecomposition.EulerFPolynomial
 public import RealRooted.Laguerre.GeneralizedBell
 public import RealRooted.Graph.IndependencePolynomial.PathSquareMatching
 public import RealRooted.Tactic.Ring
+public import RealRooted.GeneralizedEulerian.EvalNeg
+public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.Sonin
+public import RealRooted.PFPolynomial.LowCoefficients
 
 /-!
 # RealRooted production umbrella
