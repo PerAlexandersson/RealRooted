@@ -592,8 +592,7 @@ theorem IsPFPolynomial.coeffLogConcaveUpTo_of_isPF_jensenPolynomial
   have hksucc_le_n : k + 1 ≤ n := by lia
   have hkp_le_n : k - 1 ≤ n := by lia
   have hulc_all : HasUltraLogConcaveCoeffs p :=
-    hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits
-      hj.hasNonnegCoeffs hj.eq_zero_or_splits
+    hasUltraLogConcaveCoeffs_of_eq_zero_or_splits hj.eq_zero_or_splits
   change CoeffUltraLogConcaveUpTo d (fun i => p.coeff i) at hulc_all
   have hulc := hulc_all k hk0 hkd
   simp only [p, coeff_jensenPolynomial, ite_eq_left hkp_le_n,

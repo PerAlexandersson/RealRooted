@@ -18,13 +18,6 @@ open Polynomial
 
 namespace RealRooted
 
-/-- Ultra-log-concavity from nonnegative coefficients and strict real-rootedness. -/
-theorem hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_isRealRooted {p : ℝ[X]}
-    (hpnn : HasNonnegCoeffs p) (hrr : p ≠ 0 ∧ p.Splits) :
-    HasUltraLogConcaveCoeffs p :=
-  hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits hpnn
-    (eq_zero_or_splits_of_isRealRooted hrr)
-
 /-- No-internal-zero coefficients from nonnegative coefficients and strict
 real-rootedness. -/
 theorem hasNoInternalCoeffZeros_of_hasNonnegCoeffs_of_isRealRooted {p : ℝ[X]}
@@ -33,27 +26,12 @@ theorem hasNoInternalCoeffZeros_of_hasNonnegCoeffs_of_isRealRooted {p : ℝ[X]}
   hasNoInternalCoeffZeros_of_hasNonnegCoeffs_of_eq_zero_or_splits hpnn
     (eq_zero_or_splits_of_isRealRooted hrr)
 
-/-- Log-concavity from nonnegative coefficients and strict real-rootedness. -/
-theorem hasLogConcaveCoeffs_of_hasNonnegCoeffs_of_isRealRooted {p : ℝ[X]}
-    (hpnn : HasNonnegCoeffs p) (hrr : p ≠ 0 ∧ p.Splits) :
-    HasLogConcaveCoeffs p :=
-  hasLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits hpnn
-    (eq_zero_or_splits_of_isRealRooted hrr)
-
 /-- Unimodality from nonnegative coefficients and strict real-rootedness. -/
 theorem hasUnimodalCoeffs_of_hasNonnegCoeffs_of_isRealRooted {p : ℝ[X]}
     (hpnn : HasNonnegCoeffs p) (hrr : p ≠ 0 ∧ p.Splits) :
     HasUnimodalCoeffs p :=
   hasUnimodalCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits hpnn
     (eq_zero_or_splits_of_isRealRooted hrr)
-
-/-- Row-wise ultra-log-concavity from nonnegative coefficients and zero-aware splitting. -/
-theorem sequence_hasUltraLogConcaveCoeffs_of_nonneg_of_eq_zero_or_splits
-    {P : Nat → ℝ[X]} (hPnn : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hPrr : ∀ n : Nat, P n = 0 ∨ (P n).Splits) :
-    ∀ n : Nat, HasUltraLogConcaveCoeffs (P n) :=
-  fun n => hasUltraLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits (hPnn n)
-    (hPrr n)
 
 /-- Row-wise no-internal-zero coefficients from nonnegative coefficients and
 zero-aware splitting. -/
@@ -64,14 +42,6 @@ theorem sequence_hasNoInternalCoeffZeros_of_nonneg_of_eq_zero_or_splits
   fun n => hasNoInternalCoeffZeros_of_hasNonnegCoeffs_of_eq_zero_or_splits (hPnn n)
     (hPrr n)
 
-/-- Row-wise log-concavity from nonnegative coefficients and zero-aware splitting. -/
-theorem sequence_hasLogConcaveCoeffs_of_nonneg_of_eq_zero_or_splits
-    {P : Nat → ℝ[X]} (hPnn : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hPrr : ∀ n : Nat, P n = 0 ∨ (P n).Splits) :
-    ∀ n : Nat, HasLogConcaveCoeffs (P n) :=
-  fun n => hasLogConcaveCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits (hPnn n)
-    (hPrr n)
-
 /-- Row-wise unimodality from nonnegative coefficients and zero-aware splitting. -/
 theorem sequence_hasUnimodalCoeffs_of_nonneg_of_eq_zero_or_splits
     {P : Nat → ℝ[X]} (hPnn : ∀ n : Nat, HasNonnegCoeffs (P n))
@@ -80,14 +50,6 @@ theorem sequence_hasUnimodalCoeffs_of_nonneg_of_eq_zero_or_splits
   fun n => hasUnimodalCoeffs_of_hasNonnegCoeffs_of_eq_zero_or_splits (hPnn n)
     (hPrr n)
 
-/-- Row-wise ultra-log-concavity from nonnegative coefficients and strict real-rootedness. -/
-theorem sequence_hasUltraLogConcaveCoeffs_of_nonneg_of_isRealRooted
-    {P : Nat → ℝ[X]} (hPnn : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hPrr : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
-    ∀ n : Nat, HasUltraLogConcaveCoeffs (P n) :=
-  sequence_hasUltraLogConcaveCoeffs_of_nonneg_of_eq_zero_or_splits hPnn
-    (eq_zero_or_splits_of_isRealRooted_sequence hPrr)
-
 /-- Row-wise no-internal-zero coefficients from nonnegative coefficients and
 real-rootedness. -/
 theorem sequence_hasNoInternalCoeffZeros_of_nonneg_of_isRealRooted
@@ -95,14 +57,6 @@ theorem sequence_hasNoInternalCoeffZeros_of_nonneg_of_isRealRooted
     (hPrr : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
     ∀ n : Nat, HasNoInternalCoeffZeros (P n) :=
   sequence_hasNoInternalCoeffZeros_of_nonneg_of_eq_zero_or_splits hPnn
-    (eq_zero_or_splits_of_isRealRooted_sequence hPrr)
-
-/-- Row-wise log-concavity from nonnegative coefficients and strict real-rootedness. -/
-theorem sequence_hasLogConcaveCoeffs_of_nonneg_of_isRealRooted
-    {P : Nat → ℝ[X]} (hPnn : ∀ n : Nat, HasNonnegCoeffs (P n))
-    (hPrr : ∀ n : Nat, P n ≠ 0 ∧ (P n).Splits) :
-    ∀ n : Nat, HasLogConcaveCoeffs (P n) :=
-  sequence_hasLogConcaveCoeffs_of_nonneg_of_eq_zero_or_splits hPnn
     (eq_zero_or_splits_of_isRealRooted_sequence hPrr)
 
 /-- Row-wise unimodality from nonnegative coefficients and strict real-rootedness. -/
@@ -114,4 +68,3 @@ theorem sequence_hasUnimodalCoeffs_of_nonneg_of_isRealRooted
     (eq_zero_or_splits_of_isRealRooted_sequence hPrr)
 
 end RealRooted
-
