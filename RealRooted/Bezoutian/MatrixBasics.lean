@@ -6,6 +6,7 @@ import Mathlib.RingTheory.Polynomial.SmallDegreeVieta
 public import RealRooted.Bezoutian.StrictInterleaving
 public import RealRooted.Mathlib.Algebra.Polynomial.Bezoutian
 import RealRooted.Linear
+import RealRooted.QuadraticRoot
 public import RealRooted.Basic.Coefficients
 public import Mathlib.LinearAlgebra.Matrix.PosDef
 public import Mathlib.Basic.Complex.Basic
@@ -67,22 +68,6 @@ lemma Matrix.PosDef.sum_pos {m : ℕ} {B : Matrix (Fin m) (Fin m) ℝ} (hB : B.P
     refine Finset.sum_congr rfl fun i _ ↦ Finset.sum_congr rfl fun j _ ↦ by ring
   simp_all
 
-lemma bezoutMatrix.left_ne_zero_of_posDef_two {p q : ℝ[X]}
-    (h : (bezoutMatrix 2 p q).PosDef) :
-    p ≠ 0 := by
-  rintro rfl
-  have hdiag : 0 < bezoutMatrix 2 0 q 0 0 := h.diag_pos
-  simp [bezoutMatrix, Polynomial.bezoutMatrix, Polynomial.bezoutEntry,
-    bezoutSeqEntry] at hdiag
-
-lemma bezoutMatrix.right_ne_zero_of_posDef_two {p q : ℝ[X]}
-    (h : (bezoutMatrix 2 p q).PosDef) :
-    q ≠ 0 := by
-  rintro rfl
-  have hdiag : 0 < bezoutMatrix 2 p 0 0 0 := h.diag_pos
-  simp [bezoutMatrix, Polynomial.bezoutMatrix, Polynomial.bezoutEntry,
-    bezoutSeqEntry] at hdiag
-
 lemma bezoutEntry.C_mul_C_mul (u v : ℝ) (p q : ℝ[X]) (i j : ℕ) :
     bezoutEntry (C u * p) (C v * q) i j = u * v * bezoutEntry p q i j := by
   simp only [bezoutEntry, Polynomial.bezoutEntry, bezoutSeqEntry, coeff_C_mul,
@@ -95,133 +80,22 @@ lemma bezoutMatrix.C_mul_C_mul (n : ℕ) (u v : ℝ) (p q : ℝ[X]) :
   simpa [bezoutMatrix, Polynomial.bezoutMatrix] using
     bezoutEntry.C_mul_C_mul u v p q i j
 
-lemma bezoutMatrix.C_mul_C_mul_posDef_iff {n : ℕ} {u v : ℝ} {p q : ℝ[X]}
-    (hu : 0 < u) (hv : 0 < v) :
-    (bezoutMatrix n (C u * p) (C v * q)).PosDef ↔ (bezoutMatrix n p q).PosDef := by
-  rw [bezoutMatrix.C_mul_C_mul]
-  refine ⟨fun h ↦ ?_, fun h ↦ h.smul (mul_pos hu hv)⟩
-  have hscaled := h.smul (inv_pos.mpr (mul_pos hu hv))
-  rwa [smul_smul, inv_mul_cancel₀ (mul_ne_zero hu.ne' hv.ne'), one_smul] at hscaled
-
-lemma bezoutMatrix.linear_eq_diagonal (a b : ℝ) :
-    bezoutMatrix 1 (X + C a) (X + C b) =
-    Matrix.diagonal (fun _ : Fin 1 ↦ b - a) := by
-  ext i j
-  fin_cases i
-  fin_cases j
-  simp [bezoutMatrix, Polynomial.bezoutMatrix, Polynomial.bezoutEntry,
-    bezoutSeqEntry, Matrix.diagonal]
-
-lemma bezoutMatrix.linear_posDef_one {a b : ℝ} (hab : a < b) :
-    (bezoutMatrix 1 (X + C a) (X + C b)).PosDef := by
-  rw [bezoutMatrix.linear_eq_diagonal]
-  simp_all
-
-lemma bezoutMatrix.lt_of_linear_posDef_one {a b : ℝ}
-    (h : (bezoutMatrix 1 (X + C a) (X + C b)).PosDef) :
-    a < b := by
-  have hdiag := h.diag_pos (i := 0)
-  rw [bezoutMatrix.linear_eq_diagonal] at hdiag
-  simp_all
-
-lemma bezoutMatrix.linear_posDef_one_iff {a b : ℝ} :
-    (bezoutMatrix 1 (X + C a) (X + C b)).PosDef ↔ a < b :=
-  ⟨bezoutMatrix.lt_of_linear_posDef_one, bezoutMatrix.linear_posDef_one⟩
-
 /-- Every polynomial of the form `X + C a` is real-rooted. -/
 lemma Polynomial.isRealRooted_X_add_C (a : ℝ) :
     (X + C a : ℝ[X]) ≠ 0 ∧ (X + C a).Splits := by
   simpa [sub_eq_add_neg] using isRealRooted_X_sub_C (-a)
-
-lemma Polynomial.roots_sort_mul_X_add_C_X_add_C {a c : ℝ} (hac : a ≤ c) :
-    ((X + C a) * (X + C c)).roots.sort (· ≤ ·) = [(-c : ℝ), -a] := by
-  apply List.Perm.eq_of_pairwise' (r := (· ≤ ·))
-  · simp
-  · simp [neg_le_neg hac]
-  · apply Multiset.coe_eq_coe.mp
-    rw [Multiset.sort_eq]
-    rw [roots_mul (mul_ne_zero (X_add_C_ne_zero a) (X_add_C_ne_zero c)),
-      roots_X_add_C, roots_X_add_C]
-    exact Multiset.pair_comm (-a) (-c)
-
-lemma Polynomial.exists_pos_scalar_mul_X_add_C_of_natDegree_one {p : ℝ[X]}
-    (hp_pos : HasPosLeadingCoeff p) (hp_deg : p.natDegree = 1) :
-    ∃ u a : ℝ, 0 < u ∧ p = C u * (X + C a) := by
-  let u := p.coeff 1
-  have hu_pos : 0 < u := by simpa [HasPosLeadingCoeff, leadingCoeff, hp_deg, u] using hp_pos
-  refine ⟨u, p.coeff 0 / u, hu_pos, ?_⟩
-  calc
-    p = C u * X + C (p.coeff 0) := by
-      simpa [u] using Polynomial.eq_X_add_C_of_natDegree_le_one (p := p) hp_deg.le
-    _ = C u * (X + C (p.coeff 0 / u)) := by rw [mul_add, ← C_mul, mul_div_cancel₀ _ hu_pos.ne']
 
 lemma StrictInterlSameDegree.X_add_C_iff {a b : ℝ} :
     StrictInterlSameDegree (X + C b) (X + C a) ↔ a < b := by
   simp [StrictInterlSameDegree, Polynomial.isRealRooted_X_add_C,
     List.interleaves_singleton_singleton]
 
-lemma StrictInterlSameDegree.X_add_C_bezoutMatrix_posDef_iff_one {a b : ℝ} :
-    StrictInterlSameDegree (X + C b) (X + C a) ↔
-    (bezoutMatrix 1 (X + C a) (X + C b)).PosDef := by
-  rw [StrictInterlSameDegree.X_add_C_iff, bezoutMatrix.linear_posDef_one_iff]
-
-lemma Polynomial.isRealRooted_of_natDegree_two_of_isRoot {p : ℝ[X]} {x : ℝ}
-    (hdeg : p.natDegree = 2) (hx : p.IsRoot x) :
-    p ≠ 0 ∧ p.Splits := by
-  have hp_ne : p ≠ 0 := fun hp ↦ by
-    simp_all
-  exact ⟨hp_ne, Splits.of_natDegree_eq_two hdeg hx⟩
-
-lemma Polynomial.eq_quadratic_of_natDegree_le_two {p : ℝ[X]} (hp : p.natDegree ≤ 2) :
-    p = C (p.coeff 2) * X ^ 2 + C (p.coeff 1) * X + C (p.coeff 0) :=
-  Polynomial.eq_quadratic_of_degree_le_two (p := p) (Polynomial.degree_le_of_natDegree_le hp)
-
-lemma Polynomial.exists_quadratic_eq_zero_of_discrim_nonneg {a b c : ℝ}
-    (ha : a ≠ 0) (hdisc : 0 ≤ discrim a b c) :
-    ∃ x : ℝ, a * (x * x) + b * x + c = 0 := by
-  refine exists_quadratic_eq_zero ha
-    ⟨Real.sqrt (discrim a b c), by simp_all⟩
-
 lemma Polynomial.isRealRooted_of_natDegree_two_of_discrim_nonneg {p : ℝ[X]}
     (hdeg : p.natDegree = 2)
     (hdisc : 0 ≤ discrim (p.coeff 2) (p.coeff 1) (p.coeff 0)) :
-    p ≠ 0 ∧ p.Splits := by
-  have hp_ne : p ≠ 0 := fun hp ↦ by
-    simp_all
-  have hcoeff2 : p.coeff 2 ≠ 0 := hdeg.symm ▸ leadingCoeff_ne_zero.mpr hp_ne
-  rcases exists_quadratic_eq_zero_of_discrim_nonneg hcoeff2 hdisc with ⟨x, hx⟩
-  have h_root : p.IsRoot x := by
-    rw [IsRoot.def, eq_quadratic_of_natDegree_le_two hdeg.le]
-    simpa [pow_two] using hx
-  exact isRealRooted_of_natDegree_two_of_isRoot hdeg h_root
-
-/-- A real-rooted quadratic is a positive/negative scalar multiple of two
-linear factors, with the constants ordered in the `X + C a` convention used
-below. -/
-lemma Polynomial.exists_sorted_linear_factors_of_isRealRooted_natDegree_two {p : ℝ[X]}
-    (hp_splits : p.Splits) (hdeg : p.natDegree = 2) :
-    ∃ a c : ℝ, a ≤ c ∧ p = C p.leadingCoeff * ((X + C a) * (X + C c)) := by
-  have hcard : p.roots.card = 2 := by rw [hp_splits.natDegree_eq_card_roots.symm, hdeg]
-  rcases Multiset.card_eq_two.mp hcard with ⟨r, s, hroots⟩
-  by_cases hrs : r ≤ s
-  · refine ⟨-s, -r, neg_le_neg hrs, ?_⟩
-    conv_lhs => rw [hp_splits.eq_prod_roots]
-    rw [hroots]
-    simp [sub_eq_add_neg, mul_comm]
-  · refine ⟨-r, -s, neg_le_neg (not_le.mp hrs).le, ?_⟩
-    conv_lhs => rw [hp_splits.eq_prod_roots]
-    rw [hroots]
-    simp [sub_eq_add_neg]
-
-lemma bezoutMatrix.quadratic_eq_fin_two (a b c d : ℝ) :
-    bezoutMatrix 2 ((X + C a) * (X + C c)) ((X + C b) * (X + C d)) =
-    !![(a + c) * (b * d) - (b + d) * (a * c), b * d - a * c;
-    b * d - a * c, b + d - (a + c)] := by
-  ext i j
-  fin_cases i <;> fin_cases j <;>
-    norm_num [bezoutMatrix, Polynomial.bezoutMatrix, Polynomial.bezoutEntry,
-      bezoutSeqEntry, coeff_add, coeff_mul, Finset.HasAntidiagonal.antidiagonal,
-      Finset.range, coeff_X, coeff_C]
+    p ≠ 0 ∧ p.Splits :=
+  ⟨ne_zero_of_natDegree_gt (n := 0) (by lia),
+    splits_of_natDegree_eq_two_of_discrim_nonneg hdeg hdisc⟩
 
 lemma bezoutMatrix.fin_two_eq_coeff_of_natDegree_le_two {p q : ℝ[X]}
     (hp_deg : p.natDegree ≤ 2) (hq_deg : q.natDegree ≤ 2) :
@@ -236,105 +110,6 @@ lemma bezoutMatrix.fin_two_eq_coeff_of_natDegree_le_two {p q : ℝ[X]}
   fin_cases i <;> fin_cases j <;>
     norm_num [bezoutMatrix, Polynomial.bezoutMatrix, Polynomial.bezoutEntry,
       bezoutSeqEntry, hp3, hq3, Finset.sum_range_succ]
-
-lemma bezoutMatrix.dotProduct_fin_two_coeff_discrim_right_top {p q : ℝ[X]}
-    (hp_deg : p.natDegree ≤ 2) (hq_deg : q.natDegree ≤ 2) :
-    let x : Fin 2 → ℝ := fun i ↦ if i = 0 then 2 * p.coeff 2 else -p.coeff 1
-    dotProduct (star x) (Matrix.mulVec (bezoutMatrix 2 q p) x) =
-    discrim (p.coeff 2) (p.coeff 1) (p.coeff 0) * (bezoutMatrix 2 q p 1 1) := by
-  intro x
-  rw [bezoutMatrix.fin_two_eq_coeff_of_natDegree_le_two hp_deg hq_deg]
-  norm_num [x, dotProduct, Matrix.mulVec, discrim]
-  ring
-
-lemma bezoutMatrix.discrim_pos_of_posDef_of_entry_pos_right_top {p q : ℝ[X]}
-    (hp_deg : p.natDegree ≤ 2) (hq_deg : q.natDegree ≤ 2)
-    (hp_coeff2 : p.coeff 2 ≠ 0)
-    (hentry : 0 < bezoutMatrix 2 q p 1 1)
-    (h : (bezoutMatrix 2 q p).PosDef) :
-    0 < discrim (p.coeff 2) (p.coeff 1) (p.coeff 0) := by
-  let x : Fin 2 → ℝ := fun i ↦ if i = 0 then 2 * p.coeff 2 else -p.coeff 1
-  have hx : x ≠ 0 := fun hx0 ↦ hp_coeff2 (by simpa [x] using congr_fun hx0 0)
-  have hquad : 0 < dotProduct (star x) (Matrix.mulVec (bezoutMatrix 2 q p) x) :=
-    h.dotProduct_mulVec_pos hx
-  rw [bezoutMatrix.dotProduct_fin_two_coeff_discrim_right_top hp_deg hq_deg] at hquad
-  simp_all
-
-lemma bezoutMatrix.right_isRealRooted_of_posDef_two_of_natDegree_two {p q : ℝ[X]}
-    (hp_deg : p.natDegree = 2) (hq_deg : q.natDegree ≤ 2)
-    (h : (bezoutMatrix 2 q p).PosDef) :
-    p ≠ 0 ∧ p.Splits := by
-  have hp_ne : p ≠ 0 := bezoutMatrix.right_ne_zero_of_posDef_two h
-  have hp_coeff2 : p.coeff 2 ≠ 0 := hp_deg.symm ▸ leadingCoeff_ne_zero.mpr hp_ne
-  have hentry := h.diag_pos (i := 1)
-  have hdisc : 0 ≤ discrim (p.coeff 2) (p.coeff 1) (p.coeff 0) :=
-    (bezoutMatrix.discrim_pos_of_posDef_of_entry_pos_right_top hp_deg.le hq_deg
-      hp_coeff2 hentry h).le
-  exact Polynomial.isRealRooted_of_natDegree_two_of_discrim_nonneg hp_deg hdisc
-
-lemma bezoutMatrix.dotProduct_fin_two_coeff_discrim_left_top {p q : ℝ[X]}
-    (hp_deg : p.natDegree ≤ 2) (hq_deg : q.natDegree ≤ 2) :
-    let x : Fin 2 → ℝ := fun i ↦ if i = 0 then 2 * q.coeff 2 else -q.coeff 1
-    dotProduct (star x) (Matrix.mulVec (bezoutMatrix 2 q p) x) =
-    discrim (q.coeff 2) (q.coeff 1) (q.coeff 0) * (bezoutMatrix 2 q p 1 1) := by
-  intro x
-  rw [bezoutMatrix.fin_two_eq_coeff_of_natDegree_le_two hp_deg hq_deg]
-  norm_num [x, dotProduct, Matrix.mulVec, discrim]
-  ring
-
-lemma bezoutMatrix.left_isRealRooted_of_posDef_two_of_natDegree_two {p q : ℝ[X]}
-    (hp_deg : p.natDegree ≤ 2) (hq_deg : q.natDegree = 2)
-    (h : (bezoutMatrix 2 q p).PosDef) :
-    q ≠ 0 ∧ q.Splits := by
-  have hq_ne : q ≠ 0 := bezoutMatrix.left_ne_zero_of_posDef_two h
-  have hq_coeff2 : q.coeff 2 ≠ 0 := hq_deg.symm ▸ leadingCoeff_ne_zero.mpr hq_ne
-  let x : Fin 2 → ℝ := fun i ↦ if i = 0 then 2 * q.coeff 2 else -q.coeff 1
-  have hx : x ≠ 0 := fun hx0 ↦ hq_coeff2 (by simpa [x] using congr_fun hx0 0)
-  have hquad : 0 < dotProduct (star x) (Matrix.mulVec (bezoutMatrix 2 q p) x) :=
-    h.dotProduct_mulVec_pos hx
-  rw [bezoutMatrix.dotProduct_fin_two_coeff_discrim_left_top hp_deg hq_deg.le] at hquad
-  have hentry := h.diag_pos (i := 1)
-  have hdisc : 0 ≤ discrim (q.coeff 2) (q.coeff 1) (q.coeff 0) :=
-    (pos_of_mul_pos_left hquad hentry.le).le
-  exact Polynomial.isRealRooted_of_natDegree_two_of_discrim_nonneg hq_deg hdisc
-
-/-- The lower-right diagonal entry gives a necessary sum inequality for a
-positive-semidefinite quadratic Bezoutian. -/
-lemma bezoutMatrix.sum_le_of_quadratic_posSemidef {a b c d : ℝ}
-    (h : (bezoutMatrix 2 ((X + C a) * (X + C c))
-    ((X + C b) * (X + C d))).PosSemidef) :
-    a + c ≤ b + d := by
-  have hdiag := h.diag_nonneg (i := 1)
-  rw [bezoutMatrix.quadratic_eq_fin_two] at hdiag
-  simpa using hdiag
-
-/-- The determinant inequality for a positive-semidefinite `2 × 2` real matrix,
-written in entry form. -/
-lemma _root_.Matrix.PosSemidef.det_nonneg_fin_two {A : Matrix (Fin 2) (Fin 2) ℝ}
-    (hA : A.PosSemidef) :
-    0 ≤ A 0 0 * A 1 1 - A 0 1 * A 1 0 := by
-  have hdet : 0 ≤ A.det := hA.det_nonneg
-  simpa [Matrix.det_fin_two] using hdet
-
-/-- The determinant inequality extracted from the closed-form quadratic
-Bezoutian. -/
-lemma bezoutMatrix.det_nonneg_of_quadratic_posSemidef {a b c d : ℝ}
-    (h : (bezoutMatrix 2 ((X + C a) * (X + C c))
-    ((X + C b) * (X + C d))).PosSemidef) :
-    0 ≤ ((a + c) * (b * d) - (b + d) * (a * c)) * (b + d - (a + c)) -
-    (b * d - a * c) * (b * d - a * c) := by
-  have hdet := h.det_nonneg_fin_two
-  rw [bezoutMatrix.quadratic_eq_fin_two] at hdet
-  simpa using hdet
-
-/-- The determinant obstruction for the quadratic Bezoutian in fact factors
-into the four expected endpoint gaps. -/
-lemma bezoutMatrix.det_factor_nonneg_of_quadratic_posSemidef {a b c d : ℝ}
-    (h : (bezoutMatrix 2 ((X + C a) * (X + C c))
-    ((X + C b) * (X + C d))).PosSemidef) :
-    0 ≤ (a - b) * (a - d) * (b - c) * (c - d) := by
-  have hdet := bezoutMatrix.det_nonneg_of_quadratic_posSemidef h
-  grind
 
 lemma _root_.Matrix.posDef_fin_two_of_entries {a b c : ℝ}
     (ha : 0 < a) (hdet : 0 < a * c - b * b) :
