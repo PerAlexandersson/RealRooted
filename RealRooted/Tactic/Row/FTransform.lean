@@ -382,16 +382,10 @@ theorem interlaces_fPolynomial_sequence_pred
 theorem strictInterl_of_natDegree_eq_zero {f g : ℝ[X]}
     (hfdeg : f.natDegree = 0) (hgdeg : g.natDegree = 0)
     (hfpos : 0 < f.leadingCoeff) (hgpos : 0 < g.leadingCoeff) :
-    StrictInterl f g := by
-  have hf0 : 0 < f.coeff 0 := by
-    simpa only [leadingCoeff, hfdeg] using hfpos
-  have hg0 : 0 < g.coeff 0 := by
-    simpa only [leadingCoeff, hgdeg] using hgpos
-  rw [Polynomial.eq_C_of_natDegree_eq_zero hfdeg,
-    Polynomial.eq_C_of_natDegree_eq_zero hgdeg]
-  simpa only [mul_one] using
-    ((StrictInterl.refl (f := (1 : ℝ[X])) one_ne_zero (Polynomial.Splits.C _)).C_mul_left
-      hf0.ne').C_mul_right hg0.ne'
+    StrictInterl f g :=
+  StrictInterl.of_degree_zero_degree_zero (leadingCoeff_ne_zero.mp hfpos.ne')
+    (Splits.of_natDegree_le_one (by lia)) (leadingCoeff_ne_zero.mp hgpos.ne')
+    (Splits.of_natDegree_le_one (by lia)) hfdeg hgdeg
 
 /-- Prove consecutive interlacing by transferring a half-growth auxiliary
 sequence through the `f`-polynomial transform. -/

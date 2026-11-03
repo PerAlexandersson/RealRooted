@@ -29,15 +29,8 @@ def generalRows (κ a b u v : ℝ) : ℕ → ℝ[X]
 
 /-- `1 ≪ p` strictly for a polynomial `p` that splits and has degree one. -/
 theorem strictInterl_one_of_natDegree_eq_one {p : ℝ[X]} (hp : p ≠ 0) (hps : p.Splits)
-    (hdeg : p.natDegree = 1) : StrictInterl (1 : ℝ[X]) p := by
-  have hcard : Multiset.card p.roots = 1 := by
-    rw [Polynomial.splits_iff_card_roots.mp hps, hdeg]
-  obtain ⟨r, hr⟩ := Multiset.card_eq_one.mp hcard
-  refine ⟨⟨one_ne_zero, Splits.one⟩, ⟨hp, hps⟩, [], [r], by simp, by simp, ?_, ?_, ?_⟩
-  · simp
-  · rw [hr]
-    simp
-  · exact Or.inl ⟨by simp, by simp [ListInterlaces]⟩
+    (hdeg : p.natDegree = 1) : StrictInterl (1 : ℝ[X]) p :=
+  StrictInterl.of_degree_zero_right_of_degree_one one_ne_zero Splits.one hp hps (by simp) hdeg
 
 /-- Every row is negative-simple of degree `n`, and consecutive rows strictly interlace with no
 common root. -/

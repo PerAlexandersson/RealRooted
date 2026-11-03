@@ -1515,9 +1515,6 @@
     "RealRooted.Tactic.RootCount.SequenceCore": {
       "max_modules": 98
     },
-    "RealRooted.Tactic.RootCount.LowDegree": {
-      "max_modules": 151
-    },
     "RealRooted.Tactic.WagnerX.Core": {
       "max_modules": 129
     },
@@ -2033,7 +2030,6 @@
     "RealRooted.Tactic.Product",
     "RealRooted.Tactic.CommonInterleaver.Core",
     "RealRooted.Tactic.RootCount.SequenceCore",
-    "RealRooted.Tactic.RootCount.LowDegree",
     "RealRooted.Tactic"
   ]
 }

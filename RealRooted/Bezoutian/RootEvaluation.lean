@@ -408,32 +408,32 @@ theorem StrictInterlSameDegree.derivative_mul_eval_neg {n : ℕ}
           (∏ j : Fin n, (s k - r j))) := by ring
     _ < 0 := mul_neg_of_pos_of_neg (mul_pos hc₁ hc₂) hprod
 
-lemma StrictInterlSameDegree.bezoutMatrix_posDef_three_le
+lemma StrictInterlSameDegree.bezoutMatrix_posDef
     {p q : ℝ[X]} {n : ℕ}
     (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
-    (hp_deg : p.natDegree = n + 3) (hq_deg : q.natDegree = n + 3)
+    (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n)
     (h : StrictInterlSameDegree p q) :
-    (bezoutMatrix (n + 3) q p).PosDef := by
+    (bezoutMatrix n q p).PosDef := by
   obtain ⟨_, hq_nodup⟩ := h.roots_nodup
   have hq_splits := h.2.1.2
   obtain ⟨s, hs_mono, hs_roots⟩ :
-      ∃ s : Fin (n + 3) → ℝ, StrictMono s ∧ ∀ k, q.IsRoot (s k) :=
+      ∃ s : Fin n → ℝ, StrictMono s ∧ ∀ k, q.IsRoot (s k) :=
     Polynomial.exists_strictMono_roots hq_splits hq_deg hq_nodup
-  have h_v_eq : vandermonde s * bezoutMatrix (n + 3) q p * (vandermonde s)ᵀ =
+  have h_v_eq : vandermonde s * bezoutMatrix n q p * (vandermonde s)ᵀ =
       diagonal fun k ↦ q.derivative.eval (s k) * p.eval (s k) := by
-    have h_vandermonde : ∀ k : Fin (n + 3),
+    have h_vandermonde : ∀ k : Fin n,
         p.derivative.eval (s k) * q.eval (s k) -
           p.eval (s k) * q.derivative.eval (s k) =
         q.derivative.eval (s k) * p.eval (s k) * (-1) := by
       intro k
       have hq_zero : q.eval (s k) = 0 := hs_roots k
       grind
-    have h_neg : bezoutMatrix (n + 3) q p = -bezoutMatrix (n + 3) p q := by
+    have h_neg : bezoutMatrix n q p = -bezoutMatrix n p q := by
       ext i j
       simp [bezoutMatrix, Polynomial.bezoutMatrix, Polynomial.bezoutEntry,
         Polynomial.bezoutSeqEntry]
     convert congr_arg (fun x ↦ -x)
-      (bezoutMatrix.vandermonde_eq_diagonal p q (n + 3) s hp_deg.le hq_deg.le
+      (bezoutMatrix.vandermonde_eq_diagonal p q n s hp_deg.le hq_deg.le
         (by simp_all) hs_mono.injective) using 1 <;> simp_all
   refine Matrix.PosDef.of_congruent_to_diagonal ?_ ?_ h_v_eq
   · intro k
