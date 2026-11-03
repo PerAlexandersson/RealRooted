@@ -23,6 +23,11 @@ references = [
 authors = ["Wagner"]
 years = [1992]
 
+[[definitions]]
+name = "RealRooted.weightedSum"
+module = "RealRooted.WeightedSum"
+label = "The weighted sum of a list of weight–polynomial pairs"
+
 [[theorems]]
 name = "RealRooted.Challenges.Wagner.commonRight_add"
 label = "A sum of polynomials interlacing h interlaces h"
@@ -49,6 +54,31 @@ label = "If f ≪ g, then af + bg ≪ g for a, b ≥ 0 not both zero"
 [[theorems]]
 name = "RealRooted.Challenges.Wagner.strictInterl_of_consecutive_of_endpoint"
 label = "A consecutive chain with interlacing endpoints is an interlacing sequence"
+
+[[theorems]]
+name = "RealRooted.StrictInterl.add_of_right_of_no_common_right"
+module = "RealRooted.WagnerRightSum"
+label = "Wagner's sum theorem when f + g has no root in common with h"
+
+[[theorems]]
+name = "RealRooted.StrictInterl.weightedSum_right_of_nonneg"
+module = "RealRooted.WeightedSum"
+label = "A nonnegative weighted sum of polynomials interlacing h interlaces h"
+
+[[theorems]]
+name = "RealRooted.StrictInterl.sum_right"
+module = "RealRooted.WeightedSum"
+label = "A finite sum of polynomials interlacing h interlaces h"
+
+[[theorems]]
+name = "RealRooted.strictInterl_mul_X_of_strictInterl_of_nonneg"
+module = "RealRooted.WagnerX.NonnegativeRoots"
+label = "If f ≪ g and both have nonnegative coefficients, then g ≪ xf"
+
+[[theorems]]
+name = "RealRooted.StrictInterl.mul_X_sub_C_both_iff"
+module = "RealRooted.WagnerX.ListInterlacing"
+label = "Multiplying both sides by a common linear factor preserves interlacing, and conversely"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -67,6 +97,19 @@ and $\deg g = \deg f$ are covered.
 Two consequences for nonnegative combinations: if $f$ interlaces $g$, both
 have positive leading coefficients, and $a, b \ge 0$ are not both zero, then
 $f$ interlaces $af + bg$, and $af + bg$ interlaces $g$.
+
+**Finite sums.** Wagner's lemma extends by induction to finitely many summands.
+If $f_1,\dots,f_k$ all interlace $h$ and have positive leading coefficients, and
+$a_1,\dots,a_k\ge0$ are weights, not all zero, then the weighted sum
+$\sum_i a_i f_i$ interlaces $h$; in particular $\sum_i f_i \ll h$ for $k\ge1$.
+The two-summand case needs no coprimeness hypothesis. It is proved by induction
+on $\deg h$: a root shared by $h$ and $f+g$ is cancelled, and when there is no
+shared root, the claim follows from the signs of $f+g$ at the roots of $h$.
+
+**Multiplication by $x$ and by a linear factor.** If $f\ll g$ and both have
+nonnegative coefficients, then $g\ll xf$. Multiplying both polynomials by a common
+factor $x-r$ preserves interlacing, and cancelling such a factor reverses this: $f\ll g$
+if and only if $(x-r)f\ll(x-r)g$.
 
 Interlacing is not transitive, but a chain can be closed up. If
 $F_a \ll F_{a+1} \ll \dots \ll F_b$ and also $F_a \ll F_b$, then
