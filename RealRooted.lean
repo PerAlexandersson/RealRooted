@@ -2029,3 +2029,5 @@ public import RealRooted.Challenges.PolyaFrequency.LowCoefficients
 public import RealRooted.Challenges.Roots.SoninEnvelope
 public import RealRooted.Challenges.Interlacing.RecurrenceSpaceCertificates
 public import RealRooted.Challenges.PolyaFrequency.PolynomialTails
+public import RealRooted.MultiplierSequence.CoefficientRatio
+public import RealRooted.MultiplierSequence.EulerCoefficientRatio
