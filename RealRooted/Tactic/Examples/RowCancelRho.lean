@@ -97,6 +97,27 @@ example (n : ℕ) : (A108426 n).natDegree = n := by
 example (n : ℕ) : (A186370 n).natDegree = n := by
   rr_row_natDegree (via := cancel)
 
+/-- The automatic fallback recognizes the wrapped positivity predicate. -/
+theorem A101343_hasPosLeadingCoeff (n : ℕ) : HasPosLeadingCoeff (A101343 n) := by
+  rr_row_leadingCoeff_pos
+
+/-- Explicit cancellation accepts the wrapped positivity predicate too. -/
+example (n : ℕ) : HasPosLeadingCoeff (A101343 n) := by
+  rr_row_leadingCoeff_pos (via := cancel)
+
+/-- The direct cancellation tactic shares the same predicate recognition. -/
+example (n : ℕ) : HasPosLeadingCoeff (A101343 n) := by
+  rr_row_cancel
+
+/-- The unwrapped positivity goal exercises the same cancellation certificate. -/
+example (n : ℕ) : 0 < (A101343 n).leadingCoeff := by
+  rr_row_leadingCoeff_pos
+
+/-- Degree and leading-coefficient positivity come from one cancellation certificate. -/
+example (n : ℕ) :
+    (A101343 n).natDegree = (n + 1) / 2 ∧ 0 < (A101343 n).leadingCoeff := by
+  rr_row_natDegree_leadingCoeff_pos
+
 end
 
 end RealRooted.Tactic.RowCancelRho

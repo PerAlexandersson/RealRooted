@@ -51,6 +51,7 @@ def rowPropertyGoalKind? (tgt : Expr) : Option String :=
   | (``Eq, #[_, a, _]) =>
       if a.getAppFn.isConstOf ``Polynomial.natDegree then some "natDegree" else none
   | (``Ne, _) => some "ne_zero"
+  | (``RealRooted.HasPosLeadingCoeff, _) => some "leadingCoeff_pos"
   | (``LT.lt, #[_, _, _, b]) =>
       if b.getAppFn.isConstOf ``Polynomial.leadingCoeff then some "leadingCoeff_pos" else none
   | (``And, _) => some "natDegree_leadingCoeff_pos"

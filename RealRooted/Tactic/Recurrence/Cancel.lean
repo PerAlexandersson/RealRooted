@@ -326,9 +326,9 @@ private def cancelRatioStepOne (p : Nat) (grow : Array Bool) (A B Q Dfun : Term)
     residue := residue + 1
     setGoals [g]
     evalTactic (← `(tactic| (
-        let rr_A : ℝ[X] := $A $nv
-        let rr_B : ℝ[X] := $B $nv
-        let rr_f : ℝ[X] := $Q $nv
+        let rr_A : Polynomial ℝ := $A $nv
+        let rr_B : Polynomial ℝ := $B $nv
+        let rr_f : Polynomial ℝ := $Q $nv
         let rr_D : ℕ := $Dfun $nv
         have rr_hAdeg : rr_A.natDegree ≤ 2 := rr_cancel_hA $nv
         have rr_hBdeg : rr_B.natDegree ≤ 1 := rr_cancel_hB $nv
@@ -478,7 +478,7 @@ def cancelCore (kind : String) : TacticM Unit := withMainContext do
   if plan.ratioNeeded then
     evalTactic (← `(tactic|
       have rr_cancel_hA : ∀ q : ℕ,
-          (($A q : ℝ[X])).natDegree ≤ $(rowNumLit (plan.m + 1)) := ?_))
+          (($A q : Polynomial ℝ)).natDegree ≤ $(rowNumLit (plan.m + 1)) := ?_))
     let [main, gA] ← getGoals | throwError "rr_row_cancel: missing hA goal"
     cancelRun "ratio hA" gA do
       evalTactic (← `(tactic| intro q))
@@ -487,7 +487,7 @@ def cancelCore (kind : String) : TacticM Unit := withMainContext do
     setGoals [main]
     evalTactic (← `(tactic|
       have rr_cancel_hB : ∀ q : ℕ,
-          (($B q : ℝ[X])).natDegree ≤ $(rowNumLit plan.m) := ?_))
+          (($B q : Polynomial ℝ)).natDegree ≤ $(rowNumLit plan.m) := ?_))
     let [main, gB] ← getGoals | throwError "rr_row_cancel: missing hB goal"
     cancelRun "ratio hB" gB do
       evalTactic (← `(tactic| intro q))
@@ -495,7 +495,7 @@ def cancelCore (kind : String) : TacticM Unit := withMainContext do
       rowSideGoal none
     setGoals [main]
     evalTactic (← `(tactic|
-      have rr_cancel_hA0eq : ∀ q : ℕ, (($A q : ℝ[X])).coeff 0 = 0 := ?_))
+      have rr_cancel_hA0eq : ∀ q : ℕ, (($A q : Polynomial ℝ)).coeff 0 = 0 := ?_))
     let [main, gA0] ← getGoals | throwError "rr_row_cancel: missing hA0 goal"
     cancelRun "ratio hA0" gA0 do
       evalTactic (← `(tactic| intro $cancelN:ident))
@@ -505,8 +505,8 @@ def cancelCore (kind : String) : TacticM Unit := withMainContext do
     setGoals [main]
     evalTactic (← `(tactic|
       have rr_cancel_hmult : ∀ q i j : ℕ, j ≤ $Dfun q →
-          0 ≤ (($A q : ℝ[X])).coeff (i + 1) * (j : ℝ) +
-            (($B q : ℝ[X])).coeff i := ?_))
+          0 ≤ (($A q : Polynomial ℝ)).coeff (i + 1) * (j : ℝ) +
+            (($B q : Polynomial ℝ)).coeff i := ?_))
     let [main, gmult] ← getGoals | throwError "rr_row_cancel: missing hmult goal"
     cancelRun "ratio hmult" gmult (cancelMult law.p plan.m)
     setGoals [main]
