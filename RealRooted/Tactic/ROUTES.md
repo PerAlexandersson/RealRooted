@@ -110,7 +110,7 @@ side conditions, implementing modules, and regression examples.
 | 5 | `cone` | HasNonnegCoeffs, degree, nonvanishing, or positive leader. | `LinRec.hasNonnegCoeffs`, `LinRec.natDegree_eq_and_leadingCoeff_pos`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_degreeLaw`, `LinRec.natDegree_eq_and_leadingCoeff_eq_of_coeff` |
 | 6 | `cancel` | The requested degree, nonvanishing, leading-coefficient, or conjunction goal. | `derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos_of_cancel`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_cancel` |
 | 7 | `subseq` | Splitting, a natural-degree identity, or a positive leading coefficient. | `productSequence_splits`, `threeTermPos_natDegree`, `productSequence_natDegree_of_constant_degree` |
-| 8 | `coefficients` | HasPosLeadingCoeff (P n) | `LinRec.natDegree_le_and_hasNonnegCoeffs`, `HasNonnegCoeffs.pos_leadingCoeff` |
+| 8 | `coefficients` | HasPosLeadingCoeff (P n) | `LinRec.natDegree_le_and_hasNonnegCoeffs`, `hasNonnegCoeffs_and_sub_mul_of_threeTerm`, `HasNonnegCoeffs.pos_leadingCoeff` |
 
 ## `rowInterlacesCoreAt`
 
@@ -448,10 +448,12 @@ side conditions, implementing modules, and regression examples.
 
 ## `coefficients`
 
-- **Summary:** Propagate nonnegative coefficients and an affine degree envelope through paired
-  finite-lag differential terms.
-- **Side conditions:** At most first derivatives, certified degree bounds and coefficient
-  multipliers, nonnegative initial rows, and a nonzero target row.
+- **Summary:** Propagate nonnegative coefficients through finite-lag differential recurrences,
+  polynomial-weighted differences, and general polynomial operations.
+- **Side conditions:** Nonnegative operand coefficients and scalar weights, and a nonzero
+  target. Recurrence leaves require certified coefficient multipliers and bases. Three-term
+  recurrences may instead certify nonnegative rows and differences P(n+1)-R*P(n), with R=1 or
+  R=X.
 - **Module:** `RealRooted.Tactic.Recurrence.Coefficients`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowGeneral`
 

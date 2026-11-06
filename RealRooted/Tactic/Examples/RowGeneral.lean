@@ -564,6 +564,106 @@ example (p q : ℝ[X]) (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q)
 
 end GenericCaseTests
 
+namespace CoefficientClosureTests
+
+/-- A finite-lag differential recurrence used under coefficientwise operations. -/
+def rows : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => (X + 1) * rows n + X * (rows n).derivative
+
+example (n : ℕ) (hn : rows (n + 1) ≠ 0) :
+    HasPosLeadingCoeff ((fun k => rows (k + 1)) n) := by
+  rr_row_leadingCoeff_pos (via := coefficients)
+
+/-- A coefficient-weighted finite sum with a positive denominator. -/
+def weightedRows (n : ℕ) : ℝ[X] :=
+  ∑ k ∈ Finset.range (n + 1),
+    monomial k ((rows n).coeff k * (Nat.choose (n + 1) k : ℝ) / ((k : ℝ) + 1))
+
+example (n : ℕ) (hn : weightedRows n ≠ 0) :
+    HasPosLeadingCoeff (weightedRows n) := by
+  rr_row_leadingCoeff_pos (via := coefficients)
+
+example (p q : ℝ[X]) (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
+    (hn : hadamardProduct p q ≠ 0) : HasPosLeadingCoeff (hadamardProduct p q) := by
+  rr_row_leadingCoeff_pos (via := coefficients)
+
+example (n : ℕ) (hn : schurSzegoComp n (rows n) (rows n) ≠ 0) :
+    HasPosLeadingCoeff (schurSzegoComp n (rows n) (rows n)) := by
+  rr_row_leadingCoeff_pos (via := coefficients)
+
+example (p : ℝ[X]) (hp : HasNonnegCoeffs p) (n : ℕ)
+    (hn : hadamardProduct p (rows n) ≠ 0) :
+    HasPosLeadingCoeff (hadamardProduct p (rows n)) := by
+  rr_row_leadingCoeff_pos
+
+example (n : ℕ) (hn : (rows n).reverse ≠ 0) :
+    HasPosLeadingCoeff (rows n).reverse := by
+  rr_row_leadingCoeff_pos (via := coefficients)
+
+example (n : ℕ) (hn : (rows n).derivative ≠ 0) :
+    HasPosLeadingCoeff (rows n).derivative := by
+  rr_row_leadingCoeff_pos (via := coefficients)
+
+#guard_msgs (drop info) in
+example (p q : ℝ[X]) (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
+    (hn : hadamardProduct p q ≠ 0) : HasPosLeadingCoeff (hadamardProduct p q) := by
+  rr_row_leadingCoeff_pos? (via := coefficients)
+
+example : True := by
+  fail_if_success
+    have : HasPosLeadingCoeff (hadamardProduct X (-X)) := by
+      rr_row_leadingCoeff_pos (via := coefficients)
+  fail_if_success
+    have : HasPosLeadingCoeff (hadamardProduct X 1) := by
+      rr_row_leadingCoeff_pos (via := coefficients)
+  trivial
+
+/-- A negative constant lag is controlled by ordinary differences. -/
+def differenceRows (a b : ℝ) : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => C (1 + a) + C b * X
+  | n + 2 => (2 + C b * X) * differenceRows a b (n + 1) - differenceRows a b n
+
+example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) (n : ℕ) :
+    HasNonnegCoeffs (differenceRows a b n) := by
+  rr_row_coefficient_closure 16
+
+/-- Polynomial-weighted differences cancel a negative quadratic lag. -/
+def polynomialDifferenceRows (a b : ℝ) : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => X
+  | n + 2 => (C (1 + a) * X) * polynomialDifferenceRows a b (n + 1) +
+      (C b * X - C a * X ^ 2) * polynomialDifferenceRows a b n
+
+example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) (n : ℕ) :
+    HasNonnegCoeffs (polynomialDifferenceRows a b n) := by
+  rr_row_coefficient_closure 16
+
+example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) (n : ℕ)
+    (hn : hadamardProduct (rows n) (polynomialDifferenceRows a b n) ≠ 0) :
+    HasPosLeadingCoeff (hadamardProduct (rows n) (polynomialDifferenceRows a b n)) := by
+  rr_row_leadingCoeff_pos
+
+example (n : ℕ) : HasNonnegCoeffs (differenceRows 2 1 n) := by
+  rr_row_coefficient_closure 16
+
+/-- Rational index-dependent multipliers use the same polynomial difference invariant. -/
+def rationalDifferenceRows (c b : ℝ) : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => X
+  | n + 2 => (C ((c + 1 + 2 * n) / (c + n)) * X) *
+      rationalDifferenceRows c b (n + 1) +
+      (C (b * (n + 1) / (c + n)) * X - C ((n + 1) / (c + n)) * X ^ 2) *
+        rationalDifferenceRows c b n
+
+example (c b : ℝ) (hc : 0 < c) (hb : 0 ≤ b) (n : ℕ) :
+    HasNonnegCoeffs (rationalDifferenceRows c b n) := by
+  rr_row_coefficient_closure 16
+
+end CoefficientClosureTests
+
+
 end
 
 end RealRooted.Tactic.RowGeneralExamples

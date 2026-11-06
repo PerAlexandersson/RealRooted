@@ -674,11 +674,12 @@
       "conclusion": "HasPosLeadingCoeff (P n)",
       "theorems": [
         "RealRooted.LinRec.natDegree_le_and_hasNonnegCoeffs",
+        "RealRooted.hasNonnegCoeffs_and_sub_mul_of_threeTerm",
         "RealRooted.HasNonnegCoeffs.pos_leadingCoeff"
       ],
       "module": "RealRooted.Tactic.Recurrence.Coefficients",
-      "summary": "Propagate nonnegative coefficients and an affine degree envelope through paired finite-lag differential terms.",
-      "requires": "At most first derivatives, certified degree bounds and coefficient multipliers, nonnegative initial rows, and a nonzero target row.",
+      "summary": "Propagate nonnegative coefficients through finite-lag differential recurrences, polynomial-weighted differences, and general polynomial operations.",
+      "requires": "Nonnegative operand coefficients and scalar weights, and a nonzero target. Recurrence leaves require certified coefficient multipliers and bases. Three-term recurrences may instead certify nonnegative rows and differences P(n+1)-R*P(n), with R=1 or R=X.",
       "examples": [
         "RealRooted.Tactic.Examples.RowGeneral"
       ],

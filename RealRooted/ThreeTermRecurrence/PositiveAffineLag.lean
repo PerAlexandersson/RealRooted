@@ -1,6 +1,7 @@
 module
 
 import RealRooted.LiuWang.SequenceCore
+import RealRooted.ThreeTermRecurrence.Coefficients
 import RealRooted.ThreeTermRecurrence.Degree
 import RealRooted.ThreeTermRecurrence.NoCommonRoot
 public import RealRooted.SimpleRoots
@@ -36,27 +37,21 @@ private theorem coefficients_nonneg
     (hrec : ∀ n, P (n + 2) =
       C (1 + b n + c n) * P (n + 1) + (C (d n) * X - C (b n)) * P n) :
     ∀ n, HasNonnegCoeffs (P n) ∧ HasNonnegCoeffs (P (n + 1) - P n) := by
+  have hA (n : ℕ) : HasNonnegCoeffs (C (1 + b n + c n) - 1) := by
+    convert hasNonnegCoeffs_C (add_nonneg (hb n) (hc n)) using 1
+    simp only [map_add, map_one]
+    ring
+  have hB (n : ℕ) : HasNonnegCoeffs
+      (1 * (C (1 + b n + c n) - 1) + (C (d n) * X - C (b n))) := by
+    convert (hasNonnegCoeffs_C (hc n)).add
+      ((hasNonnegCoeffs_C (hd n).le).mul hasNonnegCoeffs_X) using 1
+    simp only [map_add, map_one]
+    ring
   intro n
-  induction n with
-  | zero =>
-      refine ⟨?_, ?_⟩
-      · simpa [hP0] using hasNonnegCoeffs_C hp.le
-      · simpa [hP0, hP1] using hasNonnegCoeffs_C (sub_nonneg.mpr hpq)
-  | succ n ih =>
-      have hPn1 : HasNonnegCoeffs (P (n + 1)) := by
-        rw [show P (n + 1) = P n + (P (n + 1) - P n) by ring]
-        exact ih.1.add ih.2
-      have hdiff : P (n + 2) - P (n + 1) =
-          C (c n) * P (n + 1) + C (b n) * (P (n + 1) - P n) +
-            (C (d n) * X) * P n := by
-        rw [hrec n]
-        simp only [map_add, map_one]
-        ring
-      refine ⟨hPn1, ?_⟩
-      rw [hdiff]
-      exact ((hasNonnegCoeffs_C_mul (hc n) hPn1).add
-        (hasNonnegCoeffs_C_mul (hb n) ih.2)).add
-          ((hasNonnegCoeffs_C (hd n).le).mul hasNonnegCoeffs_X |>.mul ih.1)
+  simpa only [one_mul] using hasNonnegCoeffs_and_sub_mul_of_threeTerm
+    (R := 1) hrec hasNonnegCoeffs_one hA hB
+    (by simpa [hP0] using hasNonnegCoeffs_C hp.le)
+    (by simpa [hP0, hP1] using hasNonnegCoeffs_C (sub_nonneg.mpr hpq)) n
 
 /-- Positive constant terms follow from the scalar ratio invariant with ratio one. -/
 private theorem eval_zero_pos
@@ -197,35 +192,25 @@ private theorem ratio_coefficients_nonneg
       C (a n) * P (n + 1) + (C (d n) * X - C (b n)) * P n) :
     ∀ n, HasNonnegCoeffs (P n) ∧
       HasNonnegCoeffs (P (n + 1) - C rho * P n) := by
-  intro n
-  induction n with
-  | zero =>
-      refine ⟨?_, ?_⟩
-      · simpa [hP0] using hasNonnegCoeffs_C hp.le
-      · rw [hP0, hP1, ← map_mul, ← map_sub]
-        exact hasNonnegCoeffs_C (sub_nonneg.mpr hpq)
-  | succ n ih =>
-      have hPn1 : HasNonnegCoeffs (P (n + 1)) := by
-        rw [show P (n + 1) = C rho * P n +
-          (P (n + 1) - C rho * P n) by ring]
-        exact (hasNonnegCoeffs_C_mul hrho.le ih.1).add ih.2
-      have hdiff : P (n + 2) - C rho * P (n + 1) =
-          C (a n - rho - b n / rho) * P (n + 1) +
-            C (b n / rho) * (P (n + 1) - C rho * P n) +
-              (C (d n) * X) * P n := by
-        have hC : C (b n / rho) * C rho = C (b n) := by
-          rw [← map_mul]
-          congr 1
-          field_simp [hrho.ne']
-        rw [hrec n]
-        simp only [map_sub]
-        rw [mul_sub, ← mul_assoc, hC]
-        ring
-      refine ⟨hPn1, ?_⟩
-      rw [hdiff]
-      exact ((hasNonnegCoeffs_C_mul (by linarith [ha n]) hPn1).add
-        (hasNonnegCoeffs_C_mul (div_nonneg (hb n) hrho.le) ih.2)).add
-          ((hasNonnegCoeffs_C (hd n).le).mul hasNonnegCoeffs_X |>.mul ih.1)
+  have hA (n : ℕ) : HasNonnegCoeffs (C (a n) - C rho) := by
+    rw [← map_sub]
+    apply hasNonnegCoeffs_C
+    have := div_nonneg (hb n) hrho.le
+    linarith [ha n]
+  have hB (n : ℕ) : HasNonnegCoeffs
+      (C rho * (C (a n) - C rho) + (C (d n) * X - C (b n))) := by
+    have hratio : rho * (b n / rho) = b n := by field_simp [hrho.ne']
+    have hconst : 0 ≤ rho * (a n - rho) - b n := by
+      nlinarith [mul_nonneg hrho.le (show 0 ≤ a n - rho - b n / rho by linarith [ha n])]
+    convert (hasNonnegCoeffs_C hconst).add
+      ((hasNonnegCoeffs_C (hd n).le).mul hasNonnegCoeffs_X) using 1
+    simp only [map_sub, map_mul]
+    ring
+  exact hasNonnegCoeffs_and_sub_mul_of_threeTerm hrec
+    (hasNonnegCoeffs_C hrho.le) hA hB
+    (by simpa [hP0] using hasNonnegCoeffs_C hp.le)
+    (by simpa [hP0, hP1, ← map_mul, ← map_sub] using
+      hasNonnegCoeffs_C (sub_nonneg.mpr hpq))
 
 /-- The ratio barrier makes every constant term positive. -/
 private theorem ratio_eval_zero_pos

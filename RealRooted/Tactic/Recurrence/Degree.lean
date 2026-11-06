@@ -377,6 +377,25 @@ private def rowDegreeCore (log : RowAttemptLog) (kind : String) (hints : RowHint
       return (cert, { via := some `scale })
     if let some cert ← s.attempt `algebra (algebraRowLeadingCoeff true) then
       return (cert, { via := some `algebra })
+    if hints.via.isNone then
+      let target ← instantiateMVars (← getMainTarget)
+      let p? := match target.getAppFnArgs with
+        | (``RealRooted.HasPosLeadingCoeff, #[p]) => some p
+        | (``LT.lt, #[_, _, _, rhs]) =>
+          if rhs.isAppOf ``Polynomial.leadingCoeff then some rhs.appArg! else none
+        | _ => none
+      if let some p := p? then
+        let p ← Core.betaReduce p
+        let family? ← findPolySeqApp? p
+        let direct := family?.any fun f =>
+          p.getAppFn.isConstOf f.name && p.getAppArgs.size == f.params.size + 1
+        unless direct do
+          -- A recurrence for a nested operand cannot certify the whole operation.
+          for route in [`recurrence, `twoStep, `cone, `cancel, `subseq, `rowModel] do
+            rowSkip route m!"the goal is not a recurrence family application" (some log)
+          if let some cert ← s.attempt `coefficients coefficientRowLeadingCoeff then
+            return (cert, { via := some `coefficients })
+          return ← s.failWith m!"no algebraic or coefficient certificate proves the goal"
   if kind == "leadingCoeff_pos" && noShapeHints && hints.via == some `twoStep then
     if let some cert ← s.attempt `twoStep twoStepLeadingCoeff then
       return (cert, { via := some `twoStep })

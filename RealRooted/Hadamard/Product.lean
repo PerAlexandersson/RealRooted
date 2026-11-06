@@ -48,6 +48,13 @@ theorem hadamardProduct_eq_diagonalOperator (p q : ℝ[X]) :
   ext n
   rw [coeff_hadamardProduct, coeff_diagonalOperator, mul_comm]
 
+/-- Nonnegative coefficients are preserved by coefficientwise Hadamard
+products. -/
+theorem HasNonnegCoeffs.hadamardProduct {p q : ℝ[X]}
+    (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q) :
+    HasNonnegCoeffs (hadamardProduct p q) :=
+  (hadamardProduct_eq_diagonalOperator p q).symm ▸ hp.diagonalOperator hq
+
 theorem hadamardProduct_assoc (p q r : ℝ[X]) :
     hadamardProduct (hadamardProduct p q) r =
       hadamardProduct p (hadamardProduct q r) := by

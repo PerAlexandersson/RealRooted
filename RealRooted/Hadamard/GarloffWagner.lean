@@ -20,13 +20,6 @@ Nonnegative coefficient closure, odd/even algebra, and the checked direct
 interlacing theorems of Garloff--Wagner.
 -/
 
-/-- Nonnegative coefficients are preserved by coefficientwise Hadamard
-products. -/
-theorem HasNonnegCoeffs.hadamardProduct {p q : ℝ[X]}
-    (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q) :
-    HasNonnegCoeffs (hadamardProduct p q) :=
-  (hadamardProduct_eq_diagonalOperator p q).symm ▸ hp.diagonalOperator hq
-
 /-- **Odd/even Hadamard identity.**  The coefficientwise Hadamard product
 commutes with the odd/even construction `oddEvenPolynomial p q = q(x²) + x·p(x²)`:
 the even coefficients multiply the `q`-parts and the odd coefficients multiply
