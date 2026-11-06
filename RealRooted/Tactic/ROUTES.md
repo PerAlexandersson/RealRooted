@@ -110,6 +110,7 @@ side conditions, implementing modules, and regression examples.
 | 5 | `cone` | HasNonnegCoeffs, degree, nonvanishing, or positive leader. | `LinRec.hasNonnegCoeffs`, `LinRec.natDegree_eq_and_leadingCoeff_pos`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_degreeLaw`, `LinRec.natDegree_eq_and_leadingCoeff_eq_of_coeff` |
 | 6 | `cancel` | The requested degree, nonvanishing, leading-coefficient, or conjunction goal. | `derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos_of_cancel`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_cancel` |
 | 7 | `subseq` | Splitting, a natural-degree identity, or a positive leading coefficient. | `productSequence_splits`, `threeTermPos_natDegree`, `productSequence_natDegree_of_constant_degree` |
+| 8 | `coefficients` | HasPosLeadingCoeff (P n) | `LinRec.natDegree_le_and_hasNonnegCoeffs`, `HasNonnegCoeffs.pos_leadingCoeff` |
 
 ## `rowInterlacesCoreAt`
 
@@ -442,6 +443,15 @@ side conditions, implementing modules, and regression examples.
 - **Side conditions:** Positive or nonnegative component leaders, or nonnegative coefficients
   plus a nonzero polynomial. Scalar signs and derivative degrees when needed.
 - **Module:** `RealRooted.Tactic.Recurrence.LeadingCoeff`
+- **Regression examples:** `RealRooted.Tactic.Examples.RowGeneral`
+
+## `coefficients`
+
+- **Summary:** Propagate nonnegative coefficients and an affine degree envelope through paired
+  finite-lag differential terms.
+- **Side conditions:** At most first derivatives, certified degree bounds and coefficient
+  multipliers, nonnegative initial rows, and a nonzero target row.
+- **Module:** `RealRooted.Tactic.Recurrence.Coefficients`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowGeneral`
 
 ## `recurrence`

@@ -521,6 +521,17 @@ def rowRouteTable : List RowRouteInfo := [
         `RealRooted.hasNonnegCoeffs_finsetSum
       ]
   },
+  { name := `coefficients
+    frontEnds := [
+      "rr_row_leadingCoeff_pos"
+    ]
+    conclusion := "HasPosLeadingCoeff (P n)"
+    theorems :=
+      [
+        `RealRooted.LinRec.natDegree_le_and_hasNonnegCoeffs,
+        `RealRooted.HasNonnegCoeffs.pos_leadingCoeff
+      ]
+  },
   { name := `recurrence
     frontEnds := [
       "rr_row_natDegree",
@@ -622,7 +633,8 @@ def rowRoutesOf (frontEnd : String) : List Name :=
       `algebra,
       `twoStep,
       `cone,
-      `cancel
+      `cancel,
+      `coefficients
     ]
   | "rowInterlacesCoreAt" => [
       `product,

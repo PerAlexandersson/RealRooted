@@ -367,6 +367,63 @@ example (s : Finset ℕ) (a : ℕ → ℕ) :
   rr_row_leadingCoeff_nonneg
 
 
+/-- The two derivative lags of A219836 need compensation from their own row terms. -/
+def pairedDerivativeRows : ℕ → ℝ[X]
+  | 0 => 0
+  | 1 => X
+  | n + 2 => (X - X ^ 2) * (pairedDerivativeRows (n + 1)).derivative +
+      (X ^ 2 - X ^ 3) * (pairedDerivativeRows n).derivative +
+      (1 + C (1 + (n : ℝ)) * X) * pairedDerivativeRows (n + 1) +
+      (X + C (1 + (n : ℝ)) * X ^ 2) * pairedDerivativeRows n
+
+example (n : ℕ) (hn : pairedDerivativeRows n ≠ 0) :
+    HasPosLeadingCoeff (pairedDerivativeRows n) := by rr_row_leadingCoeff_pos
+
+#guard_msgs (drop info) in
+example (n : ℕ) (hn : pairedDerivativeRows n ≠ 0) :
+    HasPosLeadingCoeff (pairedDerivativeRows n) := by
+  rr_row_leadingCoeff_pos? (via := coefficients)
+
+example : True := by
+  fail_if_success
+    have : HasPosLeadingCoeff (pairedDerivativeRows 0) := by
+      rr_row_leadingCoeff_pos (via := coefficients)
+  trivial
+
+/-- A fixed parameter controls both compensating multipliers. -/
+def parametricPairedRows (a : ℝ) : ℕ → ℝ[X]
+  | 0 => 0
+  | 1 => X
+  | n + 2 => (X - X ^ 2) * (parametricPairedRows a (n + 1)).derivative +
+      (X ^ 2 - X ^ 3) * (parametricPairedRows a n).derivative +
+      (1 + C (a + (n : ℝ)) * X) * parametricPairedRows a (n + 1) +
+      (X + C (a + (n : ℝ)) * X ^ 2) * parametricPairedRows a n
+
+example (a : ℝ) (ha : 1 ≤ a) (n : ℕ) (hn : parametricPairedRows a n ≠ 0) :
+    HasPosLeadingCoeff (parametricPairedRows a n) := by
+  rr_row_leadingCoeff_pos (via := coefficients)
+
+
+/-- Three lags, a zero initial row, and repeated derivative summands at one lag. -/
+def threeLagPairedRows : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + X
+  | 2 => 0
+  | n + 3 => X * threeLagPairedRows (n + 2) + X * threeLagPairedRows (n + 1) +
+      X ^ 2 * (threeLagPairedRows (n + 1)).derivative +
+      (X - X ^ 2) * (threeLagPairedRows (n + 1)).derivative + threeLagPairedRows n
+
+example (n : ℕ) (hn : threeLagPairedRows n ≠ 0) :
+    HasPosLeadingCoeff (threeLagPairedRows n) := by
+  rr_row_leadingCoeff_pos (via := coefficients)
+
+example : True := by
+  fail_if_success
+    have : HasPosLeadingCoeff (parametricPairedRows 0 2) := by
+      rr_row_leadingCoeff_pos (via := coefficients)
+  trivial
+
+
 end
 
 end RealRooted.Tactic.RowGeneralExamples

@@ -664,6 +664,27 @@
       "pseudo": false
     },
     {
+      "name": "coefficients",
+      "frontEnds": [
+        {
+          "tactic": "rr_row_leadingCoeff_pos",
+          "position": 8
+        }
+      ],
+      "conclusion": "HasPosLeadingCoeff (P n)",
+      "theorems": [
+        "RealRooted.LinRec.natDegree_le_and_hasNonnegCoeffs",
+        "RealRooted.HasNonnegCoeffs.pos_leadingCoeff"
+      ],
+      "module": "RealRooted.Tactic.Recurrence.Coefficients",
+      "summary": "Propagate nonnegative coefficients and an affine degree envelope through paired finite-lag differential terms.",
+      "requires": "At most first derivatives, certified degree bounds and coefficient multipliers, nonnegative initial rows, and a nonzero target row.",
+      "examples": [
+        "RealRooted.Tactic.Examples.RowGeneral"
+      ],
+      "pseudo": false
+    },
+    {
       "name": "recurrence",
       "frontEnds": [
         {"tactic": "rr_row_natDegree", "position": 1, "selectable": false},

@@ -6,6 +6,7 @@ public meta import RealRooted.Tactic.Recurrence.LinRec
 public meta import RealRooted.Recurrence.RowModel
 public import RealRooted.Tactic.Recurrence.RowSide
 public meta import RealRooted.Tactic.Recurrence.LeadingCoeff
+public meta import RealRooted.Tactic.Recurrence.Coefficients
 
 /-!
 # Degree tactics for recurrences
@@ -32,7 +33,9 @@ in any order, and the left side may be `P (n + k)` with explicit rows below `k`,
 * `rr_row_leadingCoeff_pos` closes `0 < (P t).leadingCoeff`, including positive
   scalar normalizations `C (a t) * P t` exposed through non-recursive definitions
   and fixed two-step products without a degree law. Algebraic sums, products, powers,
-  derivatives and finite products reduce to component leading-coefficient goals;
+  derivatives and finite products reduce to component leading-coefficient goals.
+  Finite-lag differential recurrences can instead use nonnegative coefficients and
+  an affine degree upper bound, with a nonzero-row premise;
 * `rr_row_natDegree_leadingCoeff_pos` closes the conjunction
   `(P t).natDegree = e ∧ 0 < (P t).leadingCoeff`, discharging the shared side goals once;
 * `rr_row_side` closes their side goals.
@@ -377,6 +380,9 @@ private def rowDegreeCore (log : RowAttemptLog) (kind : String) (hints : RowHint
   if kind == "leadingCoeff_pos" && noShapeHints && hints.via == some `twoStep then
     if let some cert ← s.attempt `twoStep twoStepLeadingCoeff then
       return (cert, { via := some `twoStep })
+  if kind == "leadingCoeff_pos" && noShapeHints && hints.via == some `coefficients then
+    if let some cert ← s.attempt `coefficients coefficientRowLeadingCoeff then
+      return (cert, { via := some `coefficients })
   if hints.via == some `cancel then
     let cancel ← `(tactic| rr_row_cancel)
     if (← s.attempt `cancel (evalTactic cancel)).isSome then
@@ -390,7 +396,7 @@ private def rowDegreeCore (log : RowAttemptLog) (kind : String) (hints : RowHint
       let noHints := hints.thm.isNone && hints.degree.isNone && hints.growth.isNone &&
         hints.drop.isNone && hints.ratio.isNone && hints.half.isNone && hints.via.isNone
       unless noHints && kind != "leadingCoeff_ratio" do
-        for route in [`twoStep, `cone, `cancel, `subseq, `rowModel] do
+        for route in [`twoStep, `coefficients, `cone, `cancel, `subseq, `rowModel] do
           rowSkip route m!"disabled by hints" (some log)
         throwError e
       if kind == "natDegree" then
@@ -415,6 +421,9 @@ private def rowDegreeCore (log : RowAttemptLog) (kind : String) (hints : RowHint
           return (#[subseq], {})
       else
         rowSkip `subseq m!"only available for degree or leading-coefficient goals" (some log)
+      if kind == "leadingCoeff_pos" then
+        if let some cert ← s.attempt `coefficients coefficientRowLeadingCoeff then
+          return (cert, { via := some `coefficients })
       if kind == "natDegree" then
         if (← s.attempt `rowModel (degreeModelGoal log)
             (what := m!"as a registered degree model")).isSome then
