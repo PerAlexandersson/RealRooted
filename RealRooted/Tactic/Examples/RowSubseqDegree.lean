@@ -71,6 +71,34 @@ example (n : ℕ) : (alternatingDegree n).Splits := by
 example (n : ℕ) : (zeroOddThreeTerm n).Splits := by
   rr_row_splits
 
+/-- The nonzero rows of the reduced three-term recurrence (A286100) have positive leaders. -/
+theorem zeroOddThreeTerm_leadingCoeff_pos (n : ℕ) (h : zeroOddThreeTerm n ≠ 0) :
+    HasPosLeadingCoeff (zeroOddThreeTerm n) := by
+  rr_row_leadingCoeff_pos
+
+example (n : ℕ) (h : zeroOddThreeTerm n ≠ 0) :
+    0 < (zeroOddThreeTerm n).leadingCoeff := by
+  rr_row_leadingCoeff_pos?
+
+/-- Three residue classes: two positive product sequences and one zero sequence. -/
+def threeResidueProduct : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 2 * X
+  | 2 => 0
+  | n + 3 => (1 + X) * threeResidueProduct n
+
+example (n : ℕ) (h : threeResidueProduct n ≠ 0) :
+    HasPosLeadingCoeff (threeResidueProduct n) := by
+  rr_row_leadingCoeff_pos
+
+example : True := by
+  fail_if_success
+    have : ∀ n, HasPosLeadingCoeff (threeResidueProduct n) := by
+      intro n
+      rr_row_leadingCoeff_pos
+  trivial
+
+
 end
 
 end RealRooted.Tactic.Examples.RowSubseqDegree

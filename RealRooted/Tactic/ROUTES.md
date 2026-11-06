@@ -60,7 +60,7 @@ side conditions, implementing modules, and regression examples.
 | 11 | `thresholdOrbit` | (P n).Splits | `HaglundZhang.splits_orbit_sum`, `GustafssonSolus.splits_orbit_sum` |
 | 12 | `parityProduct` | Interlaces (P n) (P (n + 1)) or (P n).Splits. | `eq_parityProduct_of_thirdOrderRecurrence`, `interlaces_of_parityProduct`, `splits_of_parityProduct` |
 | 13 | `lagFeedback` | (P n).Splits | `splits_of_lagFeedback`, `splits_of_lagFeedback_sub` |
-| 14 | `subseq` | (P n).Splits or a natural-degree identity, according to the front end. | `productSequence_splits`, `threeTermPos_natDegree`, `productSequence_natDegree_of_constant_degree` |
+| 14 | `subseq` | Splitting, a natural-degree identity, or a positive leading coefficient. | `productSequence_splits`, `threeTermPos_natDegree`, `productSequence_natDegree_of_constant_degree` |
 | 15 | `linearFactors` | (P n).Splits | `productSequence_ne_zero_and_splits` |
 | 16 | `splitFactors` | (P n).Splits | `productSequence_splits` |
 | 17 | `twoStep` | Interlacing, splitting, degree, or positive leading coefficient for P (n + 2) = q * P n. | `twoStepProduct_interlaces`, `twoStepProduct_splits`, `twoStepProduct_natDegree`, `twoStepProduct_leadingCoeff_pos`, `twoStepProduct_leadingCoeff_pos_of_ne_zero` |
@@ -77,7 +77,7 @@ side conditions, implementing modules, and regression examples.
 | 2 | `twoStep` | Interlacing, splitting, degree, or positive leading coefficient for P (n + 2) = q * P n. | `twoStepProduct_interlaces`, `twoStepProduct_splits`, `twoStepProduct_natDegree`, `twoStepProduct_leadingCoeff_pos`, `twoStepProduct_leadingCoeff_pos_of_ne_zero` |
 | 3 | `cone` | HasNonnegCoeffs, degree, nonvanishing, or positive leader. | `LinRec.hasNonnegCoeffs`, `LinRec.natDegree_eq_and_leadingCoeff_pos`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_degreeLaw`, `LinRec.natDegree_eq_and_leadingCoeff_eq_of_coeff` |
 | 4 | `cancel` | The requested degree, nonvanishing, leading-coefficient, or conjunction goal. | `derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos_of_cancel`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_cancel` |
-| 5 | `subseq` | (P n).Splits or a natural-degree identity, according to the front end. | `productSequence_splits`, `threeTermPos_natDegree`, `productSequence_natDegree_of_constant_degree` |
+| 5 | `subseq` | Splitting, a natural-degree identity, or a positive leading coefficient. | `productSequence_splits`, `threeTermPos_natDegree`, `productSequence_natDegree_of_constant_degree` |
 | 6 | `rowModel` (pseudo) | The conclusion advertised by a matching registered row-model theorem. | — |
 
 ## `rr_row_strictInterl`
@@ -99,6 +99,17 @@ side conditions, implementing modules, and regression examples.
 | 4 | `secondOrder` | HasNonnegCoeffs (P n) | `derivRec₂_hasNonnegCoeffs` |
 | 5 | `derivativeMult` | HasNonnegCoeffs (P n) | `derivativeRecurrence_hasNonnegCoeffs_of_mult` |
 
+## `rr_row_leadingCoeff_pos`
+
+| # | route | proves | main theorem(s) |
+|---:|---|---|---|
+| 1 | `scale` | HasPosLeadingCoeff (C a * P n) | `hasPosLeadingCoeff_C_mul` |
+| 2 | `recurrence` | The requested degree, nonvanishing, leader, or ratio goal. | `productSequence_natDegree`, `derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos`, `derivRec₂_natDegree_eq_and_leadingCoeff_pos`, `threeTermPos_natDegree_eq_and_leadingCoeff_pos`, `threeTermRatio_natDegree_eq_and_leadingCoeff_pos`, `threeTermHalf_natDegree` |
+| 3 | `twoStep` | Interlacing, splitting, degree, or positive leading coefficient for P (n + 2) = q * P n. | `twoStepProduct_interlaces`, `twoStepProduct_splits`, `twoStepProduct_natDegree`, `twoStepProduct_leadingCoeff_pos`, `twoStepProduct_leadingCoeff_pos_of_ne_zero` |
+| 4 | `cone` | HasNonnegCoeffs, degree, nonvanishing, or positive leader. | `LinRec.hasNonnegCoeffs`, `LinRec.natDegree_eq_and_leadingCoeff_pos`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_degreeLaw`, `LinRec.natDegree_eq_and_leadingCoeff_eq_of_coeff` |
+| 5 | `cancel` | The requested degree, nonvanishing, leading-coefficient, or conjunction goal. | `derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos_of_cancel`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_cancel` |
+| 6 | `subseq` | Splitting, a natural-degree identity, or a positive leading coefficient. | `productSequence_splits`, `threeTermPos_natDegree`, `productSequence_natDegree_of_constant_degree` |
+
 ## `rowInterlacesCoreAt`
 
 | # | route | proves | main theorem(s) |
@@ -113,16 +124,6 @@ side conditions, implementing modules, and regression examples.
 | 8 | `barrierWindow` | Interlaces (P n) (P (n + 1)) | `threeTerm_interlaces_of_roots_mem_Icc_of_barrier` |
 | 9 | `movingWindow` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_mem_Icc_mono_div` |
 | 10 | `movingUpper` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_le_mono_div` |
-
-## `rr_row_leadingCoeff_pos`
-
-| # | route | proves | main theorem(s) |
-|---:|---|---|---|
-| 1 | `scale` | HasPosLeadingCoeff (C a * P n) | `hasPosLeadingCoeff_C_mul` |
-| 2 | `recurrence` | The requested degree, nonvanishing, leader, or ratio goal. | `productSequence_natDegree`, `derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos`, `derivRec₂_natDegree_eq_and_leadingCoeff_pos`, `threeTermPos_natDegree_eq_and_leadingCoeff_pos`, `threeTermRatio_natDegree_eq_and_leadingCoeff_pos`, `threeTermHalf_natDegree` |
-| 3 | `twoStep` | Interlacing, splitting, degree, or positive leading coefficient for P (n + 2) = q * P n. | `twoStepProduct_interlaces`, `twoStepProduct_splits`, `twoStepProduct_natDegree`, `twoStepProduct_leadingCoeff_pos`, `twoStepProduct_leadingCoeff_pos_of_ne_zero` |
-| 4 | `cone` | HasNonnegCoeffs, degree, nonvanishing, or positive leader. | `LinRec.hasNonnegCoeffs`, `LinRec.natDegree_eq_and_leadingCoeff_pos`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_degreeLaw`, `LinRec.natDegree_eq_and_leadingCoeff_eq_of_coeff` |
-| 5 | `cancel` | The requested degree, nonvanishing, leading-coefficient, or conjunction goal. | `derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos_of_cancel`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_cancel` |
 
 ## `rr_row_ne_zero`
 
@@ -227,7 +228,7 @@ side conditions, implementing modules, and regression examples.
 
 ## `subseq`
 
-- **Summary:** Name clash: residue classes prove splitting or degree laws.
+- **Summary:** Residue classes prove splitting, degree laws, or positive leading coefficients.
 - **Side conditions:** Common-period lags and classified, provable residue recurrences.
 - **Module:** `RealRooted.Tactic.Row.Subseq`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowSubseqDegree`

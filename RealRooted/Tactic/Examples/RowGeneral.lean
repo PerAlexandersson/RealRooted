@@ -280,6 +280,37 @@ example (n : ℕ) : (A321434 n).Splits := by rr_row_splits (via := subseq)
 example (n : ℕ) : (A132812 n).Splits := by rr_row_splits (via := lowerOrder)
 example (n : ℕ) : (A034839 n).Splits := by rr_row_splits (via := halfGrowth) (drop := 0)
 
+/-- A product tail with two vanishing initial rows (OEIS A185778). -/
+def A185778 : ℕ → ℝ[X]
+  | 0 => 2 * X
+  | 1 => 0
+  | 2 => 0
+  | 3 => X ^ 2 + X ^ 3
+  | n + 4 => (1 + X) * A185778 (n + 3)
+
+/-- Nonzero rows have positive leaders despite the exceptional initial window. -/
+theorem A185778_leadingCoeff_pos (n : ℕ) (h : A185778 n ≠ 0) :
+    HasPosLeadingCoeff (A185778 n) := by
+  rr_row_leadingCoeff_pos
+
+example : True := by
+  fail_if_success
+    have : HasPosLeadingCoeff (A185778 1) := by rr_row_leadingCoeff_pos
+  trivial
+
+/-- An unrelated product tail tests rational base coefficients and negative lower terms. -/
+def rationalBaseRows : ℕ → ℝ[X]
+  | 0 => C (7 / 3) * X ^ 5 - X ^ 2
+  | 1 => X ^ 2 + X ^ 3
+  | n + 2 => (1 + X) * rationalBaseRows (n + 1)
+
+example : HasPosLeadingCoeff (rationalBaseRows 0) := by
+  rr_row_side
+
+example (n : ℕ) : 0 < (rationalBaseRows n).leadingCoeff := by
+  rr_row_leadingCoeff_pos
+
+
 end
 
 end RealRooted.Tactic.RowGeneralExamples

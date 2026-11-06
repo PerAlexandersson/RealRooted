@@ -22,6 +22,8 @@ The side-goal engine of the row tactics (`rowSideGoal`, `rr_row_side`, `rr_row_f
 driver that applies the degree theorems of the recurrence shapes (`rowDriver`), and the
 printing of certificates and hinted calls for the `?` variants (`suggestCert`).  The degree
 tactics themselves are in `RealRooted.Tactic.Recurrence.Degree`.
+Explicit rational initial rows are certified by computing their exact degree and
+then checking the corresponding coefficient, including rows with negative lower coefficients.
 -/
 
 public meta section
@@ -277,6 +279,32 @@ private def sideAlternatives (P? : Option Ident) (ty : Expr) :
     ← `(tactic| (norm_num [Polynomial.coeff_X, Polynomial.coeff_one, Polynomial.coeff_X_pow,
       Polynomial.coeff_C]; done))]
 
+/-- Certify the leading coefficient of an explicit rational initial row. -/
+private def explicitRowLeadingCoeff (P : Ident) : TacticM Unit := withMainContext do
+  let target ← instantiateMVars (← getMainTarget)
+  let (``LT.lt, #[_, _, _, rhs]) := target.getAppFnArgs
+    | throwError "not a positivity goal"
+  unless rhs.isAppOf ``Polynomial.leadingCoeff do
+    throwError "not a leading-coefficient goal"
+  let p := rhs.appArg!
+  let index ← mainRowIndex P
+  let some i ← (evalNat index).run | throwError "the row index is not explicit"
+  let some rows ← linRecBaseRows? P.getId | throwError "the initial rows are not explicit"
+  let some q := rows[i]? | throwError "not an initial row"
+  unless q.coeff q.natDegree > 0 do throwError "the leading coefficient is not positive"
+  let row ← Term.exprToSyntax p
+  let d := rowNumLit q.natDegree
+  evalTactic (← `(tactic| (
+    have hd : ($row).natDegree = $d := by
+      simp only [$P:ident]
+      compute_degree!
+    rw [Polynomial.leadingCoeff, hd]
+    simp only [$P:ident, Polynomial.coeff_add, Polynomial.coeff_sub,
+      Polynomial.coeff_C_mul, Polynomial.coeff_ofNat_mul, Polynomial.coeff_X_pow,
+      Polynomial.coeff_X, Polynomial.coeff_C, Polynomial.coeff_one]
+    norm_num
+    done)))
+
 /-- Close the main goal, a side goal of the row degree theorems: a degree bound, a base
 row, a growth ratio or a top-coefficient multiplier. -/
 def rowSideGoal (P? : Option Ident) : TacticM Unit := do
@@ -285,6 +313,8 @@ def rowSideGoal (P? : Option Ident) : TacticM Unit := do
     evalTactic (← `(tactic| unfold RealRooted.HasPosLeadingCoeff))
   unfoldRowCoeffDefs
   if (← getGoals).isEmpty then return
+  if let some P := P? then
+    if ← rowSucceeds (explicitRowLeadingCoeff P) then return
   let ty ← instantiateMVars (← getMainTarget)
   for alt in ← sideAlternatives P? ty do
     if ← rowSucceeds (do

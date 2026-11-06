@@ -174,16 +174,17 @@
       "name": "subseq",
       "frontEnds": [
         {"tactic": "rr_row_splits", "position": 14},
-        {"tactic": "rr_row_natDegree", "position": 5, "selectable": false}
+        {"tactic": "rr_row_natDegree", "position": 5, "selectable": false},
+        {"tactic": "rr_row_leadingCoeff_pos", "position": 6, "selectable": false}
       ],
-      "conclusion": "(P n).Splits or a natural-degree identity, according to the front end.",
+      "conclusion": "Splitting, a natural-degree identity, or a positive leading coefficient.",
       "theorems": [
         "RealRooted.productSequence_splits",
         "RealRooted.threeTermPos_natDegree",
         "RealRooted.productSequence_natDegree_of_constant_degree"
       ],
       "module": "RealRooted.Tactic.Row.Subseq",
-      "summary": "Name clash: residue classes prove splitting or degree laws.",
+      "summary": "Residue classes prove splitting, degree laws, or positive leading coefficients.",
       "requires": "Common-period lags and classified, provable residue recurrences.",
       "examples": ["RealRooted.Tactic.Examples.RowSubseqDegree"],
       "pseudo": false
