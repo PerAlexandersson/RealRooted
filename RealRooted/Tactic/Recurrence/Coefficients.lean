@@ -1,5 +1,6 @@
 module
 
+public import RealRooted.ThreeTermRecurrence.Coefficients
 public import RealRooted.BasisTransform
 public import RealRooted.Hadamard.Basic
 public import RealRooted.DerivativeRecurrence.FiniteLagCoefficients
@@ -113,10 +114,47 @@ private def coefficientRowNonnegTerm : TacticM Term := withMainContext do
     interval_cases j <;> constructor <;>
       simp only [$(mkIdent f.name):ident] <;>
       rr_row_unfold <;> first | compute_degree! | rr_nonneg_coeffs)
-  `((RealRooted.LinRec.natDegree_le_and_hasNonnegCoeffs
+  let direct ← `((RealRooted.LinRec.natDegree_le_and_hasNonnegCoeffs
       (P := $P) (k := $(rowNumLit L.offset)) (D := $degree) (A := $A) (B := $B)
       $recProof (by intro n j hj; lia) $bounds $bounds $constant $multipliers
       $base _).2)
+  unless L.offset == 2 && L.terms.all (fun t => t.2.1 == 0) do return direct
+  let explicitCoefficients ← `(tactic| (
+    intro k
+    ring_nf
+    cases k <;> rr_coeff <;>
+      first
+      | positivity
+      | (split_ifs <;> first | positivity | (exfalso; lia) | rr_row_field)
+      | rr_row_field))
+  let signs ← `(by
+    intro n
+    dsimp only
+    simp only [ite_true, ite_false, Nat.reduceEqDiff, zero_add, add_zero]
+    first | rr_nonneg_coeffs | $explicitCoefficients:tactic)
+  let initial ← `(by
+    simp only [$(mkIdent f.name):ident]
+    rr_row_unfold
+    first | rr_nonneg_coeffs | (ring_nf; rr_nonneg_coeffs) | $explicitCoefficients:tactic)
+  let weighted (R : Term) : TacticM Term :=
+    `((RealRooted.hasNonnegCoeffs_and_sub_mul_of_threeTerm
+      (P := $P) (A := fun n => $B n 1) (B := fun n => $B n 0) (R := $R)
+      $recProof (by rr_nonneg_coeffs) $signs $signs $initial $initial _).1)
+  let ordinary ← weighted (← `(1))
+  let shifted ← weighted (← `(Polynomial.X))
+  for candidate in #[direct, ordinary, shifted] do
+    let saved ← saveState
+    let result ← rowAttempt do
+      let ty ← mkAppM ``RealRooted.HasNonnegCoeffs #[p]
+      let goal ← mkFreshExprMVar ty
+      setGoals [goal.mvarId!]
+      evalTactic (← `(tactic| exact $candidate))
+      evalTactic (← `(tactic| done))
+    saved.restore (restoreInfo := true)
+    match result with
+    | .ok _ => return candidate
+    | .error message => trace[rr.row] "coefficient candidate: {message}"
+  throwError "no finite-lag or weighted-difference coefficient certificate"
 
 /-- Prove coefficient nonnegativity by structural closure, with bounded recursive search. -/
 syntax (name := rrRowCoefficientClosure) "rr_row_coefficient_closure " num : tactic

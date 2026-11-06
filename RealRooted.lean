@@ -1639,6 +1639,7 @@ public import RealRooted.Mathlib.Probability.LocalLimit
 
 public import RealRooted.ToeplitzFin
 public import RealRooted.ThreeTermRecurrence.CoeffMoments
+public import RealRooted.ThreeTermRecurrence.Coefficients
 public import RealRooted.Applications.OEIS.A151775
 public import RealRooted.Applications.OEIS.A056939
 public import RealRooted.Applications.OEIS.A359363

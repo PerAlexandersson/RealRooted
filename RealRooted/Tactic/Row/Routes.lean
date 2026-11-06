@@ -529,6 +529,7 @@ def rowRouteTable : List RowRouteInfo := [
     theorems :=
       [
         `RealRooted.LinRec.natDegree_le_and_hasNonnegCoeffs,
+        `RealRooted.hasNonnegCoeffs_and_sub_mul_of_threeTerm,
         `RealRooted.HasNonnegCoeffs.pos_leadingCoeff
       ]
   },

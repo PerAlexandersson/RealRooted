@@ -42,6 +42,7 @@ RealRooted/Tactic/Examples/WagnerX.lean: RealRooted.Tactic.RowInterlacing
 RealRooted/Tactic/Product/Interlacing.lean: RealRooted.Tactic.Ring
 RealRooted/Tactic/Recurrence/Coefficients.lean: RealRooted.Hadamard.Basic
 RealRooted/Tactic/Recurrence/Coefficients.lean: RealRooted.Tactic.SideGoals
+RealRooted/Tactic/Recurrence/Coefficients.lean: RealRooted.ThreeTermRecurrence.Coefficients
 RealRooted/Tactic/Recurrence/Degree.lean: RealRooted.Tactic.Recurrence.Coefficients
 RealRooted/Tactic/Recurrence/Degree.lean: RealRooted.Tactic.Recurrence.LeadingCoeff
 RealRooted/Tactic/Recurrence/LeadingCoeff.lean: RealRooted.Tactic.Recurrence.RowSide

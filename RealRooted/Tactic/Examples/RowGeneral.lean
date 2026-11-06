@@ -619,6 +619,48 @@ example : True := by
       rr_row_leadingCoeff_pos (via := coefficients)
   trivial
 
+/-- A negative constant lag is controlled by ordinary differences. -/
+def differenceRows (a b : ℝ) : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => C (1 + a) + C b * X
+  | n + 2 => (2 + C b * X) * differenceRows a b (n + 1) - differenceRows a b n
+
+example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) (n : ℕ) :
+    HasNonnegCoeffs (differenceRows a b n) := by
+  rr_row_coefficient_closure 16
+
+/-- Polynomial-weighted differences cancel a negative quadratic lag. -/
+def polynomialDifferenceRows (a b : ℝ) : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => X
+  | n + 2 => (C (1 + a) * X) * polynomialDifferenceRows a b (n + 1) +
+      (C b * X - C a * X ^ 2) * polynomialDifferenceRows a b n
+
+example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) (n : ℕ) :
+    HasNonnegCoeffs (polynomialDifferenceRows a b n) := by
+  rr_row_coefficient_closure 16
+
+example (a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b) (n : ℕ)
+    (hn : hadamardProduct (rows n) (polynomialDifferenceRows a b n) ≠ 0) :
+    HasPosLeadingCoeff (hadamardProduct (rows n) (polynomialDifferenceRows a b n)) := by
+  rr_row_leadingCoeff_pos
+
+example (n : ℕ) : HasNonnegCoeffs (differenceRows 2 1 n) := by
+  rr_row_coefficient_closure 16
+
+/-- Rational index-dependent multipliers use the same polynomial difference invariant. -/
+def rationalDifferenceRows (c b : ℝ) : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => X
+  | n + 2 => (C ((c + 1 + 2 * n) / (c + n)) * X) *
+      rationalDifferenceRows c b (n + 1) +
+      (C (b * (n + 1) / (c + n)) * X - C ((n + 1) / (c + n)) * X ^ 2) *
+        rationalDifferenceRows c b n
+
+example (c b : ℝ) (hc : 0 < c) (hb : 0 ≤ b) (n : ℕ) :
+    HasNonnegCoeffs (rationalDifferenceRows c b n) := by
+  rr_row_coefficient_closure 16
+
 end CoefficientClosureTests
 
 
