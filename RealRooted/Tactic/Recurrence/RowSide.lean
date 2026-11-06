@@ -271,7 +271,8 @@ private def sideAlternatives (P? : Option Ident) (ty : Expr) :
             norm_num [Polynomial.coeff_X, Polynomial.coeff_one, Polynomial.coeff_X_pow] at h'
             done)),
         -- a hypothesis such as `h : n ≠ 0` may exclude the row
-        ← `(tactic| (simp_all; done))]
+        ← `(tactic| (simp_all; done)),
+        ← `(tactic| (simp_all [$P:ident]; done))]
   return [← `(tactic| (norm_num; done)), ← `(tactic| (compute_degree!; done)),
     ← `(tactic| (norm_num [Polynomial.coeff_X, Polynomial.coeff_one, Polynomial.coeff_X_pow,
       Polynomial.coeff_C]; done))]

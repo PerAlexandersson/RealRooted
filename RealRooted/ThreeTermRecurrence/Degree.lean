@@ -473,6 +473,31 @@ theorem twoStepProduct_rows {P : ℕ → ℝ[X]} {q : ℝ[X]} (hrec : ∀ n, P (
       · rw [show 2 * (m + 1) = 2 * m + 2 by ring, hrec, h0]; ring
       · rw [show 2 * (m + 1) + 1 = (2 * m + 1) + 2 by ring, hrec, h1]; ring
 
+/-- Positive leading coefficients propagate along both parities of a two-step product. -/
+theorem twoStepProduct_leadingCoeff_pos {P : ℕ → ℝ[X]} {q : ℝ[X]}
+    (hrec : ∀ n, P (n + 2) = q * P n) (hq : 0 < q.leadingCoeff)
+    (h0 : 0 < (P 0).leadingCoeff) (h1 : 0 < (P 1).leadingCoeff) (n : ℕ) :
+    0 < (P n).leadingCoeff := by
+  induction n using Nat.twoStepInduction with
+  | zero => exact h0
+  | one => exact h1
+  | more n ih _ => simpa only [hrec, leadingCoeff_mul] using mul_pos hq ih
+
+/-- Zero initial rows are allowed when positivity is asserted only for nonzero rows. -/
+theorem twoStepProduct_leadingCoeff_pos_of_ne_zero {P : ℕ → ℝ[X]} {q : ℝ[X]}
+    (hrec : ∀ n, P (n + 2) = q * P n) (hq : 0 < q.leadingCoeff)
+    (h0 : P 0 ≠ 0 → 0 < (P 0).leadingCoeff)
+    (h1 : P 1 ≠ 0 → 0 < (P 1).leadingCoeff) (n : ℕ) (hn : P n ≠ 0) :
+    0 < (P n).leadingCoeff := by
+  induction n using Nat.twoStepInduction with
+  | zero => exact h0 hn
+  | one => exact h1 hn
+  | more n ih _ =>
+    have hp : P n ≠ 0 := by
+      intro hz
+      exact hn (by rw [hrec, hz, mul_zero])
+    simpa only [hrec, leadingCoeff_mul] using mul_pos hq (ih hp)
+
 /-- The degrees of a two-step product `P (n + 2) = q * P n`: the row `P n` is
 `q ^ (n / 2) * P (n % 2)`, so its degree is `n / 2 * deg q + deg P (n % 2)`, or `0` when the
 base row of its parity vanishes. -/

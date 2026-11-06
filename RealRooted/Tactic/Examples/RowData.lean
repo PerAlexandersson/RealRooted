@@ -149,6 +149,9 @@ def A128966 : ℕ → ℝ[X]
 theorem A128966_natDegree (n : ℕ) : (A128966 n).natDegree = n := by rr_row_natDegree
 theorem A128966_ne_zero (n : ℕ) (h : n ≠ 0) : A128966 n ≠ 0 := by rr_row_ne_zero
 
+example (n : ℕ) (h : A128966 n ≠ 0) : HasPosLeadingCoeff (A128966 n) := by
+  rr_row_leadingCoeff_pos
+
 theorem A084534_natDegree (n : ℕ) : (A084534 n).natDegree = n := by rr_row_natDegree
 theorem A084534_ne_zero (n : ℕ) : A084534 n ≠ 0 := by rr_row_ne_zero
 theorem A084534_leadingCoeff_pos (n : ℕ) : 0 < (A084534 n).leadingCoeff := by

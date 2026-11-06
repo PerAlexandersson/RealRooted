@@ -29,7 +29,8 @@ in any order, and the left side may be `P (n + k)` with explicit rows below `k`,
   up to `lia`;
 * `rr_row_ne_zero` closes `P t ≠ 0`;
 * `rr_row_leadingCoeff_pos` closes `0 < (P t).leadingCoeff`, including positive
-  scalar normalizations `C (a t) * P t` exposed through non-recursive definitions;
+  scalar normalizations `C (a t) * P t` exposed through non-recursive definitions
+  and fixed two-step products without a degree law;
 * `rr_row_natDegree_leadingCoeff_pos` closes the conjunction
   `(P t).natDegree = e ∧ 0 < (P t).leadingCoeff`, discharging the shared side goals once;
 * `rr_row_side` closes their side goals.
@@ -170,6 +171,54 @@ private def twoStepDegree : TacticM (TSyntax `tactic) := withMainContext do
       simp [$simpArgs,*] <;> lia))
   evalTactic tac
   return tac
+
+/-- Two-step products need no degree law to propagate positive leading coefficients. -/
+private def twoStepLeadingCoeff : TacticM Cert := withMainContext do
+  let r ← rowRecSetup "rr_row_leadingCoeff_pos"
+  unless r.shape == .lagRight && r.canonical && r.shift == 0 do
+    throwError "not a two-step product"
+  let some qf := r.coeffs[0]? | throwError "missing two-step factor"
+  let qBody := match qf with
+    | .lam _ _ b _ => b
+    | e => e
+  if qBody.hasLooseBVars then throwError "the two-step factor depends on the index"
+  let some q ← evalQPoly? qBody | throwError "the two-step factor is not explicit"
+  unless q.coeff q.natDegree > 0 do throwError "the factor has no positive leader"
+  let P := mkIdent r.P
+  let t ← Term.exprToSyntax (← mainRowIndex P)
+  let qT ← certTerm qBody
+  let hq ← `(tactic|
+    have hq_pos : 0 < ($qT : Polynomial ℝ).leadingCoeff := by
+      rw [Polynomial.leadingCoeff,
+        show ($qT : Polynomial ℝ).natDegree = $(rowNumLit q.natDegree) by compute_degree!]
+      norm_num [Polynomial.coeff_one, Polynomial.coeff_X_pow, Polynomial.coeff_mul])
+  let some L ← linRec? r.P | throwError "no two-step recurrence data"
+  let some rows ← linRecRows? L 1 | throwError "initial rows are not explicit"
+  let hasZero := rows[0]!.isZero || rows[1]!.isZero
+  let mut bases : Array Term := #[]
+  for i in [0:2] do
+    let index := rowNumLit i
+    let row := rows[i]!
+    if row.isZero then
+      bases := bases.push (← `(by intro h; exact (h (by simp [$P:ident])).elim))
+    else
+      unless row.coeff row.natDegree > 0 do throwError "an initial row has a negative leader"
+      let proof ← `(by
+        rw [Polynomial.leadingCoeff,
+          show ($P $index).natDegree = $(rowNumLit row.natDegree) by
+            simp only [$P:ident]; compute_degree!]
+        norm_num [$P:ident, Polynomial.coeff_one, Polynomial.coeff_X_pow, Polynomial.coeff_mul])
+      let proof ← if hasZero then `(by intro _; exact $proof) else pure proof
+      bases := bases.push proof
+  let finish ← if hasZero then
+      `(tactic| exact RealRooted.twoStepProduct_leadingCoeff_pos_of_ne_zero (P := $P) (q := $qT)
+        (fun _ => rfl) hq_pos $(bases[0]!) $(bases[1]!) $t (by assumption))
+    else
+      `(tactic| exact RealRooted.twoStepProduct_leadingCoeff_pos (P := $P) (q := $qT)
+        (fun _ => rfl) hq_pos $(bases[0]!) $(bases[1]!) $t)
+  evalTactic hq
+  evalTactic finish
+  return #[hq, finish]
 
 /-- Whether a registered row-model declaration concludes with a natural-degree identity. -/
 private def isNatDegreeModel (decl : Name) : MetaM Bool := do
@@ -317,6 +366,9 @@ private def rowDegreeCore (log : RowAttemptLog) (kind : String) (hints : RowHint
   if kind == "leadingCoeff_pos" && noShapeHints then
     if let some cert ← s.attempt `scale scaledRowLeadingCoeff then
       return (cert, { via := some `scale })
+  if kind == "leadingCoeff_pos" && noShapeHints && hints.via == some `twoStep then
+    if let some cert ← s.attempt `twoStep twoStepLeadingCoeff then
+      return (cert, { via := some `twoStep })
   if hints.via == some `cancel then
     let cancel ← `(tactic| rr_row_cancel)
     if (← s.attempt `cancel (evalTactic cancel)).isSome then
@@ -335,8 +387,10 @@ private def rowDegreeCore (log : RowAttemptLog) (kind : String) (hints : RowHint
         throwError e
       if kind == "natDegree" then
         if let some tac ← s.attempt `twoStep twoStepDegree then return (#[tac], {})
+      else if kind == "leadingCoeff_pos" then
+        if let some cert ← s.attempt `twoStep twoStepLeadingCoeff then return (cert, {})
       else
-        rowSkip `twoStep m!"only available for natural-degree goals" (some log)
+        rowSkip `twoStep m!"only available for degree or leading-coefficient goals" (some log)
       if let some cert ← s.attempt `cone (linRecRow kind)
           (what := m!"as a general linear recurrence") then
         return (cert, {})
