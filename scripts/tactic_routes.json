@@ -629,11 +629,24 @@
       "pseudo": false
     },
     {
+      "name": "scale",
+      "frontEnds": [
+        {"tactic": "rr_row_leadingCoeff_pos", "position": 1}
+      ],
+      "conclusion": "HasPosLeadingCoeff (C a * P n)",
+      "theorems": ["RealRooted.hasPosLeadingCoeff_C_mul"],
+      "module": "RealRooted.Tactic.Recurrence.Degree",
+      "summary": "Reduce positive scalar normalizations to the underlying row.",
+      "requires": "A positive scalar and a row whose leading coefficient the tactic can prove positive.",
+      "examples": ["RealRooted.Tactic.Examples.RowData"],
+      "pseudo": false
+    },
+    {
       "name": "recurrence",
       "frontEnds": [
         {"tactic": "rr_row_natDegree", "position": 1, "selectable": false},
         {"tactic": "rr_row_ne_zero", "position": 1, "selectable": false},
-        {"tactic": "rr_row_leadingCoeff_pos", "position": 1, "selectable": false},
+        {"tactic": "rr_row_leadingCoeff_pos", "position": 2, "selectable": false},
         {
           "tactic": "rr_row_natDegree_leadingCoeff_pos",
           "position": 1,

@@ -64,6 +64,50 @@ theorem binomialRows_natDegree (n : ℕ) : (binomialRows n).natDegree = n := by
   rr_row_natDegree
 theorem binomialRows_ne_zero (n : ℕ) : binomialRows n ≠ 0 := by rr_row_ne_zero
 
+/-- Factorial normalization leaves the leading coefficient positive. -/
+def factorialRows (n : ℕ) : ℝ[X] := C (n.factorial : ℝ) * binomialRows n
+
+theorem factorialRows_hasPosLeadingCoeff (n : ℕ) :
+    HasPosLeadingCoeff (factorialRows n) := by
+  rr_row_leadingCoeff_pos
+
+example (n : ℕ) : 0 < (factorialRows n).leadingCoeff := by
+  rr_row_leadingCoeff_pos (via := scale)
+
+#guard_msgs (drop info) in
+example (n : ℕ) : HasPosLeadingCoeff (factorialRows n) := by
+  rr_row_leadingCoeff_pos?
+
+example (n : ℕ) (a : ℝ) (ha : 0 < a) :
+    HasPosLeadingCoeff (C a * factorialRows n) := by
+  rr_row_leadingCoeff_pos
+
+-- A zero or negative factor must not be accepted by the scale route.
+example (n : ℕ) : n = n := by
+  fail_if_success
+    have : HasPosLeadingCoeff (C (0 : ℝ) * binomialRows n) := by
+      rr_row_leadingCoeff_pos (via := scale)
+  fail_if_success
+    have : HasPosLeadingCoeff (C (-1 : ℝ) * binomialRows n) := by
+      rr_row_leadingCoeff_pos (via := scale)
+  rfl
+
+/-- A265644 before factorial normalization, with rational recurrence coefficients. -/
+def A265644 : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 =>
+      (C (-4 * (1 / (-1 + -1 * (n : ℝ)))) * X +
+        C (4 * (1 / (-1 + -1 * (n : ℝ)))) * X ^ 2) * (A265644 n).derivative +
+      (C ((n : ℝ) * (1 / (-1 + -1 * (n : ℝ)))) +
+        C ((1 / (-1 + -1 * (n : ℝ))) * (-4 + -5 * (n : ℝ))) * X) * A265644 n
+
+/-- The normalization used in the OEIS A265644 proof. -/
+def A265644Norm (n : ℕ) : ℝ[X] := C (n.factorial : ℝ) * A265644 n
+
+theorem A265644Norm_hasPosLeadingCoeff (n : ℕ) :
+    HasPosLeadingCoeff (A265644Norm n) := by
+  rr_row_leadingCoeff_pos
+
 /-- Half growth: the Fibonacci polynomials of A011973 have degree `n / 2`. -/
 def A011973 : ℕ → ℝ[X]
   | 0 => 1

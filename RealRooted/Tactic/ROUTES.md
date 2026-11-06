@@ -126,7 +126,8 @@ side conditions, implementing modules, and regression examples.
 
 | # | route | proves | main theorem(s) |
 |---:|---|---|---|
-| 1 | `recurrence` | The requested degree, nonvanishing, leader, or ratio goal. | `productSequence_natDegree`, `derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos`, `derivRec₂_natDegree_eq_and_leadingCoeff_pos`, `threeTermPos_natDegree_eq_and_leadingCoeff_pos`, `threeTermRatio_natDegree_eq_and_leadingCoeff_pos`, `threeTermHalf_natDegree` |
+| 1 | `scale` | HasPosLeadingCoeff (C a * P n) | `hasPosLeadingCoeff_C_mul` |
+| 2 | `recurrence` | The requested degree, nonvanishing, leader, or ratio goal. | `productSequence_natDegree`, `derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos`, `derivRec₂_natDegree_eq_and_leadingCoeff_pos`, `threeTermPos_natDegree_eq_and_leadingCoeff_pos`, `threeTermRatio_natDegree_eq_and_leadingCoeff_pos`, `threeTermHalf_natDegree` |
 | 3 | `cone` | HasNonnegCoeffs, degree, nonvanishing, or positive leader. | `LinRec.hasNonnegCoeffs`, `LinRec.natDegree_eq_and_leadingCoeff_pos`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_degreeLaw`, `LinRec.natDegree_eq_and_leadingCoeff_eq_of_coeff` |
 | 4 | `cancel` | The requested degree, nonvanishing, leading-coefficient, or conjunction goal. | `derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos_of_cancel`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_cancel` |
 
@@ -419,6 +420,14 @@ side conditions, implementing modules, and regression examples.
 - **Module:** `RealRooted.Tactic.RowInterlacing`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowNonnegative`,
   `RealRooted.Tactic.Examples.RowRegressions2313`
+
+## `scale`
+
+- **Summary:** Reduce positive scalar normalizations to the underlying row.
+- **Side conditions:** A positive scalar and a row whose leading coefficient the tactic can
+  prove positive.
+- **Module:** `RealRooted.Tactic.Recurrence.Degree`
+- **Regression examples:** `RealRooted.Tactic.Examples.RowData`
 
 ## `recurrence`
 

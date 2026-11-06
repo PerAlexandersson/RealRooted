@@ -489,6 +489,16 @@ def rowRouteTable : List RowRouteInfo := [
         `RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult
       ]
   },
+  { name := `scale
+    frontEnds := [
+      "rr_row_leadingCoeff_pos"
+    ]
+    conclusion := "HasPosLeadingCoeff (C a * P n)"
+    theorems :=
+      [
+        `RealRooted.hasPosLeadingCoeff_C_mul
+      ]
+  },
   { name := `recurrence
     frontEnds := [
       "rr_row_natDegree",
@@ -602,6 +612,7 @@ def rowRoutesOf (frontEnd : String) : List Name :=
       `cancel
     ]
   | "rr_row_leadingCoeff_pos" => [
+      `scale,
       `cone,
       `cancel
     ]

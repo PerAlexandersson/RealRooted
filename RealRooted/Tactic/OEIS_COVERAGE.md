@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **168 IDs**; **17 formalized**, **137 shells**, **1 fragments**, and **13 documented-only**.
+Current totals: **169 IDs**; **17 formalized**, **138 shells**, **1 fragments**, and **13 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -157,6 +157,7 @@ Current totals: **168 IDs**; **17 formalized**, **137 shells**, **1 fragments**,
 | A257620 | `shell` | Scaled Eulerian rows `3ⁿ A(n + 1, k + 1)`: `v_n(t) = 3t(1 - t)` ().<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A259454 | `formalized` | public import RealRooted.Applications.OEIS.<br># Literal downstream regression for OEIS<br>+22 additional test intents | `rr_row_interlaces`, `rr_row_natDegree` | `via` | none |
 | A263789 | `shell` | The downstream recurrence used to regress the remaining degree route.<br>def : ℕ → ℝ[X]<br>+9 additional test intents | `rr_row_natDegree`, `rr_row_splits` | `via` | concrete row definition and proofs of the listed certificates |
+| A265644 | `shell` | before factorial normalization, with rational recurrence coefficients.<br>def : ℕ → ℝ[X]<br>+6 additional test intents | `rr_row_leadingCoeff_pos` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A266326 | `documented` | The two-step monomial model for the recurrence from .<br>The recurrence from .<br>+3 additional test intents | none | not recorded | executable tactic route and its certificates |
 | A268647 | `shell` | The recurrence from .<br>The recurrence equals the consecutive-linear-factor product.<br>+2 additional test intents | `rr_row_derivative_X_mul_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A269945 | `shell` | the general Euler-bidiagonal step. The first six use positive parameters; is the<br>The downstream rows.<br>+11 additional test intents | `rr_row_interlaces` | `thm` | concrete row definition and proofs of the listed certificates |
