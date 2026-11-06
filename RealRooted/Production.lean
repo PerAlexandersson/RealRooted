@@ -1959,6 +1959,8 @@ public import RealRooted.Challenges.Interlacing.RecurrenceSpaceCertificates
 public import RealRooted.Challenges.PolyaFrequency.PolynomialTails
 public import RealRooted.MultiplierSequence.CoefficientRatio
 public import RealRooted.MultiplierSequence.EulerCoefficientRatio
+public import RealRooted.DerivativeRecurrence.FiniteLagCoefficients
+public import RealRooted.Tactic.Recurrence.Coefficients
 
 /-!
 # RealRooted production umbrella

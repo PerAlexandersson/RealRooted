@@ -516,7 +516,20 @@ def rowRouteTable : List RowRouteInfo := [
         `Polynomial.leadingCoeff_mul,
         `Polynomial.leadingCoeff_pow,
         `Polynomial.leadingCoeff_derivative,
-        `Polynomial.leadingCoeff_prod
+        `Polynomial.leadingCoeff_prod,
+        `RealRooted.HasNonnegCoeffs.pos_leadingCoeff,
+        `RealRooted.hasNonnegCoeffs_finsetSum
+      ]
+  },
+  { name := `coefficients
+    frontEnds := [
+      "rr_row_leadingCoeff_pos"
+    ]
+    conclusion := "HasPosLeadingCoeff (P n)"
+    theorems :=
+      [
+        `RealRooted.LinRec.natDegree_le_and_hasNonnegCoeffs,
+        `RealRooted.HasNonnegCoeffs.pos_leadingCoeff
       ]
   },
   { name := `recurrence
@@ -620,7 +633,8 @@ def rowRoutesOf (frontEnd : String) : List Name :=
       `algebra,
       `twoStep,
       `cone,
-      `cancel
+      `cancel,
+      `coefficients
     ]
   | "rowInterlacesCoreAt" => [
       `product,

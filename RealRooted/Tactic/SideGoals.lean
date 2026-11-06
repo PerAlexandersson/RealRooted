@@ -65,7 +65,8 @@ syntax (name := rr_coeff_finish) "rr_coeff_finish" : tactic
 with `rr_coeff_finish`, running the pair a second time. -/
 syntax (name := rr_coeff) "rr_coeff" : tactic
 /-- Closes `HasNonnegCoeffs p` for polynomials built from constants, `X`, sums, products, powers,
-scalar multiples and derivatives, using assumptions and scalar side goals. -/
+scalar multiples, derivatives, monomials and finite sums, using assumptions and scalar
+side goals. -/
 syntax (name := rr_nonneg_coeffs) "rr_nonneg_coeffs" : tactic
 /-- Variant of `rr_nonneg_coeffs` that first adds the given certificate as a hypothesis. -/
 syntax (name := rr_nonneg_coeffs_using_one)
@@ -177,7 +178,8 @@ macro_rules
                 | nlinarith)
           | positivity
           | (norm_num; done)
-          | nlinarith)
+          | nlinarith
+          | solve_by_elim (maxDepth := 2))
   | `(tactic| rr_side_pos) =>
       `(tactic|
         first
@@ -337,6 +339,11 @@ macro_rules
             | apply RealRooted.HasNonnegCoeffs.add <;> rr_nonneg_coeffs
             | apply RealRooted.HasNonnegCoeffs.mul <;> rr_nonneg_coeffs
             | apply RealRooted.HasNonnegCoeffs.pow
+              rr_nonneg_coeffs
+            | apply RealRooted.hasNonnegCoeffs_finsetSum
+              intro i hi
+              rr_nonneg_coeffs
+            | rw [← Polynomial.C_mul_X_pow_eq_monomial]
               rr_nonneg_coeffs)
   | `(tactic| rr_pos_lc using nonneg := $hnn:term, nonzero := $hp0:term) =>
       `(tactic| exact RealRooted.HasNonnegCoeffs.pos_leadingCoeff $hnn $hp0)

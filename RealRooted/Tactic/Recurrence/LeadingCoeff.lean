@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.Tactic.Recurrence.RowSide
+public import RealRooted.Tactic.SideGoals
 public import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 public import Mathlib.Algebra.Polynomial.BigOperators
 public import Mathlib.Algebra.Polynomial.Derivative
@@ -34,6 +35,7 @@ def algebraRowLeadingCoeff (positive : Bool := true) : TacticM Cert := withMainC
           throwError "expected a leading-coefficient sign goal"
         pure rhs.getAppArgs.back!
     | _ => throwError "expected a leading-coefficient sign goal"
+  let original := p
   for _ in [:8] do
     let some unfolded ← unfoldRowCoeff? p | break
     p := unfolded
@@ -51,6 +53,13 @@ def algebraRowLeadingCoeff (positive : Bool := true) : TacticM Cert := withMainC
         rr_row_unfold; first | positivity | norm_num | assumption))
   if ← rowSucceeds (do evalTactic basic; evalTactic (← `(tactic| done))) then
     return #[change, ← `(tactic| ($basic:tactic; done))]
+  let nonneg ← if positive then
+      `(tactic| exact RealRooted.HasNonnegCoeffs.pos_leadingCoeff
+        (by rr_row_unfold; rr_nonneg_coeffs) (by assumption))
+    else
+      `(tactic| exact (show RealRooted.HasNonnegCoeffs $poly from
+        by rr_row_unfold; rr_nonneg_coeffs) _)
+  if ← rowSucceeds (evalTactic nonneg) then return #[change, nonneg]
   let op := p.getAppFn
   let derivative := op.isConstOf ``Polynomial.derivative ||
     (p.isAppOfArity ``DFunLike.coe 6 &&
@@ -94,6 +103,8 @@ def algebraRowLeadingCoeff (positive : Bool := true) : TacticM Cert := withMainC
          apply Finset.prod_nonneg; intro i hi; rr_row_leadingCoeff_nonneg))
     else if !positive then
       `(tactic| exact le_of_lt (by rr_row_leadingCoeff_pos))
+    else if p != original then
+      `(tactic| rr_row_leadingCoeff_pos)
     else throwError "no algebraic leading-coefficient decomposition"
   evalTactic step
   evalTactic (← `(tactic| done))

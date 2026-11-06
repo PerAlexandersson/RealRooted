@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **172 IDs**; **17 formalized**, **141 shells**, **1 fragments**, and **13 documented-only**.
+Current totals: **173 IDs**; **17 formalized**, **142 shells**, **1 fragments**, and **13 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -154,6 +154,7 @@ Current totals: **172 IDs**; **17 formalized**, **141 shells**, **1 fragments**,
 | A199221 | `shell` | The definition and goals below are the literal downstream recurrence.<br>namespace Downstream<br>+9 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A206294 | `documented` | copied from the downstream row recurrence. | none | not recorded | executable tactic route and its certificates |
 | A216182 | `shell` | copied from the downstream row recurrence. | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
+| A219836 | `shell` | The two derivative lags of need compensation from their own row terms. | `rr_row_leadingCoeff_pos` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A236471 | `shell` | The ratio barrier `ρ = 2` beyond the window `[-4, 0]`, after the first row ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A257620 | `shell` | Scaled Eulerian rows `3ⁿ A(n + 1, k + 1)`: `v_n(t) = 3t(1 - t)` ().<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A259454 | `formalized` | public import RealRooted.Applications.OEIS.<br># Literal downstream regression for OEIS<br>+22 additional test intents | `rr_row_interlaces`, `rr_row_natDegree` | `via` | none |

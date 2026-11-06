@@ -654,11 +654,34 @@
       "theorems": ["Polynomial.leadingCoeff_add_pos_of_pos_of_nonneg",
         "Polynomial.leadingCoeff_add_pos_of_nonneg_of_pos",
         "Polynomial.leadingCoeff_mul", "Polynomial.leadingCoeff_pow",
-        "Polynomial.leadingCoeff_derivative", "Polynomial.leadingCoeff_prod"],
+        "Polynomial.leadingCoeff_derivative", "Polynomial.leadingCoeff_prod",
+        "RealRooted.HasNonnegCoeffs.pos_leadingCoeff",
+        "RealRooted.hasNonnegCoeffs_finsetSum"],
       "module": "RealRooted.Tactic.Recurrence.LeadingCoeff",
-      "summary": "Decompose algebraic expressions into leading-coefficient sign goals.",
-      "requires": "Positive or nonnegative component leaders; scalar signs and derivative degrees when needed.",
+      "summary": "Decompose algebraic expressions, normalize shifted wrappers, or prove nonnegative coefficients.",
+      "requires": "Positive or nonnegative component leaders, or nonnegative coefficients plus a nonzero polynomial. Scalar signs and derivative degrees when needed.",
       "examples": ["RealRooted.Tactic.Examples.RowGeneral"],
+      "pseudo": false
+    },
+    {
+      "name": "coefficients",
+      "frontEnds": [
+        {
+          "tactic": "rr_row_leadingCoeff_pos",
+          "position": 8
+        }
+      ],
+      "conclusion": "HasPosLeadingCoeff (P n)",
+      "theorems": [
+        "RealRooted.LinRec.natDegree_le_and_hasNonnegCoeffs",
+        "RealRooted.HasNonnegCoeffs.pos_leadingCoeff"
+      ],
+      "module": "RealRooted.Tactic.Recurrence.Coefficients",
+      "summary": "Propagate nonnegative coefficients and an affine degree envelope through paired finite-lag differential terms.",
+      "requires": "At most first derivatives, certified degree bounds and coefficient multipliers, nonnegative initial rows, and a nonzero target row.",
+      "examples": [
+        "RealRooted.Tactic.Examples.RowGeneral"
+      ],
       "pseudo": false
     },
     {

@@ -104,12 +104,13 @@ side conditions, implementing modules, and regression examples.
 | # | route | proves | main theorem(s) |
 |---:|---|---|---|
 | 1 | `scale` | HasPosLeadingCoeff (C a * P n) | `hasPosLeadingCoeff_C_mul` |
-| 2 | `algebra` | HasPosLeadingCoeff p | `Polynomial.leadingCoeff_add_pos_of_pos_of_nonneg`, `Polynomial.leadingCoeff_add_pos_of_nonneg_of_pos`, `Polynomial.leadingCoeff_mul`, `Polynomial.leadingCoeff_pow`, `Polynomial.leadingCoeff_derivative`, `Polynomial.leadingCoeff_prod` |
+| 2 | `algebra` | HasPosLeadingCoeff p | `Polynomial.leadingCoeff_add_pos_of_pos_of_nonneg`, `Polynomial.leadingCoeff_add_pos_of_nonneg_of_pos`, `Polynomial.leadingCoeff_mul`, `Polynomial.leadingCoeff_pow`, `Polynomial.leadingCoeff_derivative`, `Polynomial.leadingCoeff_prod`, `HasNonnegCoeffs.pos_leadingCoeff`, `hasNonnegCoeffs_finsetSum` |
 | 3 | `recurrence` | The requested degree, nonvanishing, leader, or ratio goal. | `productSequence_natDegree`, `derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos`, `derivRec₂_natDegree_eq_and_leadingCoeff_pos`, `threeTermPos_natDegree_eq_and_leadingCoeff_pos`, `threeTermRatio_natDegree_eq_and_leadingCoeff_pos`, `threeTermHalf_natDegree` |
 | 4 | `twoStep` | Interlacing, splitting, degree, or positive leading coefficient for P (n + 2) = q * P n. | `twoStepProduct_interlaces`, `twoStepProduct_splits`, `twoStepProduct_natDegree`, `twoStepProduct_leadingCoeff_pos`, `twoStepProduct_leadingCoeff_pos_of_ne_zero` |
 | 5 | `cone` | HasNonnegCoeffs, degree, nonvanishing, or positive leader. | `LinRec.hasNonnegCoeffs`, `LinRec.natDegree_eq_and_leadingCoeff_pos`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_degreeLaw`, `LinRec.natDegree_eq_and_leadingCoeff_eq_of_coeff` |
 | 6 | `cancel` | The requested degree, nonvanishing, leading-coefficient, or conjunction goal. | `derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos_of_cancel`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_cancel` |
 | 7 | `subseq` | Splitting, a natural-degree identity, or a positive leading coefficient. | `productSequence_splits`, `threeTermPos_natDegree`, `productSequence_natDegree_of_constant_degree` |
+| 8 | `coefficients` | HasPosLeadingCoeff (P n) | `LinRec.natDegree_le_and_hasNonnegCoeffs`, `HasNonnegCoeffs.pos_leadingCoeff` |
 
 ## `rowInterlacesCoreAt`
 
@@ -437,10 +438,20 @@ side conditions, implementing modules, and regression examples.
 
 ## `algebra`
 
-- **Summary:** Decompose algebraic expressions into leading-coefficient sign goals.
-- **Side conditions:** Positive or nonnegative component leaders; scalar signs and derivative
-  degrees when needed.
+- **Summary:** Decompose algebraic expressions, normalize shifted wrappers, or prove nonnegative
+  coefficients.
+- **Side conditions:** Positive or nonnegative component leaders, or nonnegative coefficients
+  plus a nonzero polynomial. Scalar signs and derivative degrees when needed.
 - **Module:** `RealRooted.Tactic.Recurrence.LeadingCoeff`
+- **Regression examples:** `RealRooted.Tactic.Examples.RowGeneral`
+
+## `coefficients`
+
+- **Summary:** Propagate nonnegative coefficients and an affine degree envelope through paired
+  finite-lag differential terms.
+- **Side conditions:** At most first derivatives, certified degree bounds and coefficient
+  multipliers, nonnegative initial rows, and a nonzero target row.
+- **Module:** `RealRooted.Tactic.Recurrence.Coefficients`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowGeneral`
 
 ## `recurrence`
