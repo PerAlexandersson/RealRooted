@@ -55,6 +55,18 @@ theorem A062196_ne_zero (n : ℕ) : A062196 n ≠ 0 := by rr_row_ne_zero
 theorem A055356_natDegree (n : ℕ) : (A055356 n).natDegree = n - 1 := by rr_row_natDegree
 theorem A055356_ne_zero (n : ℕ) : A055356 n ≠ 0 := by rr_row_ne_zero
 
+-- The degree grows only after the first row; splitting must also unfold the predicate.
+theorem A055356_hasPosLeadingCoeff (n : ℕ) : HasPosLeadingCoeff (A055356 n) := by
+  rr_row_leadingCoeff_pos
+
+example (n : ℕ) : 0 < (A055356 n).leadingCoeff := by
+  rr_row_leadingCoeff_pos
+
+example : HasPosLeadingCoeff (A055356 0) := by rr_row_side
+
+#guard_msgs (drop info) in
+example (n : ℕ) : HasPosLeadingCoeff (A055356 n) := by rr_row_leadingCoeff_pos?
+
 /-- Product sequences are dispatched to `rr_product_natDegree`. -/
 def binomialRows : ℕ → ℝ[X]
   | 0 => 1

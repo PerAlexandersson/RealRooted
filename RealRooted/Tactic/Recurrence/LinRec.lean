@@ -673,7 +673,8 @@ private def linRecAttempt (L : LinRecData) (pr : LinRecProbe) (reg : Regime) (ki
         evalTactic (← `(tactic| refine lt_of_lt_of_eq ?_ (And.right $h).symm))
         evalTactic (← `(tactic| beta_reduce))
         evalTactic posTacR
-    | .cone _ => evalTactic (← `(tactic| rw [And.right $h]; exact h_coeff_pos $t))
+    | .cone _ => evalTactic (← `(tactic|
+        exact lt_of_lt_of_eq (h_coeff_pos $t) (And.right $h).symm))
     | _ => evalTactic (← `(tactic| exact And.right $h))
   let lcNe : TacticM Unit := do
     match reg with

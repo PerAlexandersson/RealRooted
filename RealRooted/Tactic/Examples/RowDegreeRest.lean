@@ -147,6 +147,18 @@ theorem A357613_natDegree (n : ℕ) : (A357613 n).natDegree = n := by
 theorem A110200_natDegree (n : ℕ) : (A110200 n).natDegree = n := by
   rr_row_natDegree (via := cone)
 
+/-- Wrapped positivity must expose the leading coefficient to the cone equality rewrite. -/
+theorem A110200_hasPosLeadingCoeff (n : ℕ) : HasPosLeadingCoeff (A110200 n) := by
+  rr_row_leadingCoeff_pos
+
+example (n : ℕ) : HasPosLeadingCoeff (A110200 n) := by
+  rr_row_leadingCoeff_pos (via := cone)
+
+example (n : ℕ) : 0 < (A110200 n).leadingCoeff := by rr_row_leadingCoeff_pos
+
+#guard_msgs (drop info) in
+example (n : ℕ) : HasPosLeadingCoeff (A110200 n) := by rr_row_leadingCoeff_pos?
+
 /-- The exact degree law for A259454, certified by the row-degree tactic. -/
 theorem A259454_natDegree (n : ℕ) : (A259454 n).natDegree = n := by
   rr_row_natDegree (via := cone)

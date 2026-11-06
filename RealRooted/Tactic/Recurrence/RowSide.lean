@@ -279,6 +279,9 @@ private def sideAlternatives (P? : Option Ident) (ty : Expr) :
 /-- Close the main goal, a side goal of the row degree theorems: a degree bound, a base
 row, a growth ratio or a top-coefficient multiplier. -/
 def rowSideGoal (P? : Option Ident) : TacticM Unit := do
+  -- A dropped initial row may retain the predicate wrapper from the original goal.
+  if (← getMainTarget).getAppFn.isConstOf ``RealRooted.HasPosLeadingCoeff then
+    evalTactic (← `(tactic| unfold RealRooted.HasPosLeadingCoeff))
   unfoldRowCoeffDefs
   if (← getGoals).isEmpty then return
   let ty ← instantiateMVars (← getMainTarget)
