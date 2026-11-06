@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **171 IDs**; **17 formalized**, **140 shells**, **1 fragments**, and **13 documented-only**.
+Current totals: **172 IDs**; **17 formalized**, **141 shells**, **1 fragments**, and **13 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -168,6 +168,7 @@ Current totals: **171 IDs**; **17 formalized**, **140 shells**, **1 fragments**,
 | A272471 | `formalized` | concrete sequence-facing theorem | none | not recorded | none |
 | A272866 | `shell` | A product with a real-rooted quadratic factor ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A277627 | `shell` | copied from the downstream row recurrence.<br>A path-power subsequence with lag two (). | `rr_row_splits` | `via` | concrete row definition and proofs of the listed certificates |
+| A286100 | `shell` | The nonzero rows of the reduced three-term recurrence () have positive leaders. | `rr_row_leadingCoeff_pos` | `leadingCoeff` | concrete row definition and proofs of the listed certificates |
 | A286785 | `formalized` | public import RealRooted.Applications.OEIS.<br>namespace Downstream<br>+12 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | none |
 | A297191 | `formalized` | public import RealRooted.Applications.OEIS.<br>namespace<br>+11 additional test intents | `rr_row_model` | `heq` | none |
 | A304330 | `formalized` | public import RealRooted.Applications.OEIS.<br>Recurrence presentation of the rows.<br>+6 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | none |

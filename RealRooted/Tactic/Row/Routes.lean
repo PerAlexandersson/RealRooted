@@ -151,10 +151,11 @@ def rowRouteTable : List RowRouteInfo := [
   { name := `subseq
     frontEnds := [
       "rr_row_splits",
-      "rr_row_natDegree"
+      "rr_row_natDegree",
+      "rr_row_leadingCoeff_pos"
     ]
-    conclusion := "(P n).Splits or a natural-degree identity, according to the front " ++
-      "end."
+    conclusion := "Splitting, a natural-degree identity, or a positive leading " ++
+      "coefficient."
     theorems :=
       [
         `RealRooted.productSequence_splits,
@@ -599,6 +600,12 @@ def rowRoutesOf (frontEnd : String) : List Name :=
     ]
   | "rr_row_nonneg_coeffs" => [
     ]
+  | "rr_row_leadingCoeff_pos" => [
+      `scale,
+      `twoStep,
+      `cone,
+      `cancel
+    ]
   | "rowInterlacesCoreAt" => [
       `product,
       `eulerStep,
@@ -610,12 +617,6 @@ def rowRoutesOf (frontEnd : String) : List Name :=
       `barrierWindow,
       `movingWindow,
       `movingUpper
-    ]
-  | "rr_row_leadingCoeff_pos" => [
-      `scale,
-      `twoStep,
-      `cone,
-      `cancel
     ]
   | "rr_row_ne_zero" => [
       `cone,

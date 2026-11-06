@@ -56,10 +56,11 @@ For three-term recurrences the top coefficients satisfy a scalar recurrence
 constant, they try half growth, `natDegree (P n) = D₀ + d ⌊(n + e) / 2⌋`
 (`RealRooted.threeTermHalf_*`), which covers Fibonacci-type rows of degree `n / 2`.
 
-As a last degree-only fallback, product and three-term recurrences whose lags have a common
+As a fallback for degrees and positive leaders, recurrences whose lags have a common
 period are reduced to residue subsequences.  Exact probes reject mixed or nonlinear residue
 classes; the accepted zero and affine-degree classes are then proved from their reduced
-recurrences by `rr_row_subseq_natDegree`.
+recurrences by `rr_row_subseq_natDegree` or `rr_row_subseq_leadingCoeff_pos`.
+For positivity, a nonzero-row hypothesis excludes any identically zero residue classes.
 
 The tactics are backed by `RealRooted.derivativeRecurrence_natDegree`,
 `RealRooted.derivRec₂_natDegree`, the three-term theorems, and their `ne_zero` /
@@ -115,6 +116,9 @@ syntax (name := rrRowLeadingCoeffRatio) "rr_row_leadingCoeff_ratio" : tactic
 `RealRooted.Tactic.Row.Subseq`.  It is deliberately tried only after the ordinary recurrence
 and cancellation routes have failed. -/
 syntax (name := rrRowSubseqNatDegree) "rr_row_subseq_natDegree" : tactic
+
+/-- Positive-leading-coefficient backend for recurrences with a common lag period. -/
+syntax (name := rrRowSubseqLeadingCoeffPos) "rr_row_subseq_leadingCoeff_pos" : tactic
 
 /-- Degrees of a two-step product `P (n + 2) = q * P n` with `q` independent of `n`, by parity
 (`RealRooted.twoStepProduct_natDegree`); the base rows may vanish. -/
@@ -399,16 +403,19 @@ private def rowDegreeCore (log : RowAttemptLog) (kind : String) (hints : RowHint
       if (← s.attempt `cancel (evalTactic cancel)
           (what := m!"with cancelling top terms")).isSome then
         return (#[cancel], {})
-      if kind == "natDegree" then
-        let subseq ← `(tactic| rr_row_subseq_natDegree)
+      if kind == "natDegree" || kind == "leadingCoeff_pos" then
+        let subseq ← if kind == "natDegree" then `(tactic| rr_row_subseq_natDegree)
+          else `(tactic| rr_row_subseq_leadingCoeff_pos)
         if (← s.attempt `subseq (evalTactic subseq)
             (what := m!"as residue subsequences")).isSome then
           return (#[subseq], {})
+      else
+        rowSkip `subseq m!"only available for degree or leading-coefficient goals" (some log)
+      if kind == "natDegree" then
         if (← s.attempt `rowModel (degreeModelGoal log)
             (what := m!"as a registered degree model")).isSome then
           return (#[], {})
       else
-        rowSkip `subseq m!"only available for natural-degree goals" (some log)
         rowSkip `rowModel m!"only available for natural-degree goals" (some log)
       s.failWith e
 
