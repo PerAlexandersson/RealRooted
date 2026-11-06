@@ -848,6 +848,22 @@ private theorem A177040_step (n : ℕ) :
   dsimp only [A177040Next]
   ring
 
+/-- The initial window and order-four update uniquely determine A177040. -/
+private theorem A177040_eq_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hinit : ∀ i < 4, P i = A177040 i)
+    (hrec : ∀ n, P (n + 4) =
+      A177040Next n (P (n + 3)) (P (n + 2)) (P (n + 1)) (P n))
+    : ∀ m, P m = A177040 m := by
+  intro m
+  induction m using Nat.strong_induction_on with
+  | h m ih =>
+      by_cases hm : m < 4
+      · exact hinit m hm
+      · obtain ⟨q, rfl⟩ : ∃ q, m = q + 4 := ⟨m - 4, by lia⟩
+        rw [hrec, A177040_step, ih (q + 3) (by lia),
+          ih (q + 2) (by lia), ih (q + 1) (by lia), ih q (by lia)]
+
 /-- Any sequence satisfying the A177040 initial window and update has degree `n / 2`. -/
 @[rr_row_model]
 theorem A177040_natDegree_of_recurrence
@@ -857,17 +873,19 @@ theorem A177040_natDegree_of_recurrence
       A177040Next n (P (n + 3)) (P (n + 2)) (P (n + 1)) (P n))
     (n : ℕ) :
     (P n).natDegree = n / 2 := by
-  have heq : ∀ m, P m = A177040 m := by
-    intro m
-    induction m using Nat.strong_induction_on with
-    | h m ih =>
-        by_cases hm : m < 4
-        · exact hinit m hm
-        · obtain ⟨q, rfl⟩ : ∃ q, m = q + 4 := ⟨m - 4, by lia⟩
-          rw [hrec, A177040_step, ih (q + 3) (by lia),
-            ih (q + 2) (by lia), ih (q + 1) (by lia), ih q (by lia)]
-  rw [heq n]
+  rw [A177040_eq_of_recurrence hinit hrec n]
   exact A177040_natDegree n
+
+/-- Any sequence satisfying the A177040 initial window and update has positive leaders. -/
+@[rr_row_model]
+theorem A177040_leadingCoeff_pos_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hinit : ∀ i < 4, P i = A177040 i)
+    (hrec : ∀ n, P (n + 4) =
+      A177040Next n (P (n + 3)) (P (n + 2)) (P (n + 1)) (P n))
+    (n : ℕ) : 0 < (P n).leadingCoeff := by
+  rw [A177040_eq_of_recurrence hinit hrec n]
+  exact A177040_leadingCoeff_pos n
 
 end
 

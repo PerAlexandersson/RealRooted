@@ -194,6 +194,13 @@ def A177040 : ℕ → ℝ[X]
 theorem A177040_natDegree (n : ℕ) : (A177040 n).natDegree = n / 2 := by
   rr_row_natDegree
 
+/-- The registered recurrence model also certifies a positive leading coefficient. -/
+theorem A177040_leadingCoeff_pos (n : ℕ) : 0 < (A177040 n).leadingCoeff := by
+  rr_row_leadingCoeff_pos
+
+example (n : ℕ) : HasPosLeadingCoeff (A177040 n) := by
+  rr_row_leadingCoeff_pos?
+
 /-- The downstream A110205 recurrence, used to regress the degree-model fallback. -/
 def A110205 : ℕ → ℝ[X]
   | 0 => 1

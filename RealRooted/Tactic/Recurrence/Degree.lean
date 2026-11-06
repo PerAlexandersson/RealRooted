@@ -220,13 +220,11 @@ private def twoStepLeadingCoeff : TacticM Cert := withMainContext do
   evalTactic finish
   return #[hq, finish]
 
-/-- Whether a registered row-model declaration concludes with a natural-degree identity. -/
-private def isNatDegreeModel (decl : Name) : MetaM Bool := do
+/-- Whether a registered row-model declaration concludes with the requested row property. -/
+private def isRowPropertyModel (kind : String) (decl : Name) : MetaM Bool := do
   let type ← inferType (← mkConstWithFreshMVarLevels decl)
   forallTelescopeReducing type fun _ conclusion => do
-    let conclusion := conclusion.consumeMData
-    let some (_, lhs, _) := conclusion.eq? | return false
-    return lhs.isAppOf ``Polynomial.natDegree
+    return rowPropertyGoalKind? conclusion.consumeMData == some kind
 
 /-- Close one base row after checking its exact rational polynomial representation. -/
 private def closeDegreeModelBaseGoal (P : Ident) : TacticM Unit := withMainContext do
@@ -310,9 +308,10 @@ private def applyDegreeModel (P : Ident) (t : Term) (decl : Name) : TacticM Unit
   setGoals [hrec]
   closeDegreeModelRecurrence P
 
-/-- Try registered natural-degree models.  The initial-window check is the fail-fast probe:
-models with different exact base rows are rejected before their recurrence is normalized. -/
-private def degreeModelGoal (log : RowAttemptLog) : TacticM Unit := withMainContext do
+/-- Try registered degree or positive-leading-coefficient models. The initial-window check
+rejects models with different exact base rows before their recurrence is normalized. -/
+private def degreeModelGoal (kind : String) (log : RowAttemptLog) :
+    TacticM Unit := withMainContext do
   let target ← instantiateMVars (← getMainTarget)
   let some PName ← findPolySeqConst? target
     | throwError "degree-model route found no polynomial sequence"
@@ -321,11 +320,11 @@ private def degreeModelGoal (log : RowAttemptLog) : TacticM Unit := withMainCont
   let decls := rrRowModelAttr.getDecls (← getEnv)
   let mut failures : Array (MessageData × MessageData) := #[]
   for decl in decls.qsort Name.quickLt do
-    unless ← isNatDegreeModel decl do continue
+    unless ← isRowPropertyModel kind decl do continue
     match ← rowRoute decl (applyDegreeModel P t decl) (some log) with
     | .ok _ => return
     | .error err => failures := failures.push (m!"{decl}", err)
-  throwRowFailures m!"no structurally matching degree model proves the goal" failures
+  throwRowFailures m!"no structurally matching row model proves the goal" failures
 
 /-- Remove a positive constant-polynomial factor before solving the underlying row goal.
 Only non-recursive wrappers are unfolded, so this does not expand recurrence equations. -/
@@ -404,12 +403,14 @@ private def rowDegreeCore (log : RowAttemptLog) (kind : String) (hints : RowHint
         if (← s.attempt `subseq (evalTactic subseq)
             (what := m!"as residue subsequences")).isSome then
           return (#[subseq], {})
-        if (← s.attempt `rowModel (degreeModelGoal log)
-            (what := m!"as a registered degree model")).isSome then
-          return (#[], {})
       else
         rowSkip `subseq m!"only available for natural-degree goals" (some log)
-        rowSkip `rowModel m!"only available for natural-degree goals" (some log)
+      if kind == "natDegree" || kind == "leadingCoeff_pos" then
+        if (← s.attempt `rowModel (degreeModelGoal kind log)
+            (what := m!"as a registered row model")).isSome then
+          return (#[], {})
+      else
+        rowSkip `rowModel m!"only available for degree or leading-coefficient goals" (some log)
       s.failWith e
 
 /-- Run a degree tactic; with `?`, print the hinted call and the certificate. -/

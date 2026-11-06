@@ -45,7 +45,8 @@ def rowRouteTable : List RowRouteInfo := [
     frontEnds := [
       "rr_row_interlaces",
       "rr_row_splits",
-      "rr_row_natDegree"
+      "rr_row_natDegree",
+      "rr_row_leadingCoeff_pos"
     ]
     conclusion := "The conclusion advertised by a matching registered row-model " ++
       "theorem."
@@ -591,6 +592,12 @@ def rowRoutesOf (frontEnd : String) : List Name :=
       `cone,
       `cancel
     ]
+  | "rr_row_leadingCoeff_pos" => [
+      `scale,
+      `twoStep,
+      `cone,
+      `cancel
+    ]
   | "rr_row_strictInterl" => [
       `variableDelay,
       `halfGrowth,
@@ -610,12 +617,6 @@ def rowRoutesOf (frontEnd : String) : List Name :=
       `barrierWindow,
       `movingWindow,
       `movingUpper
-    ]
-  | "rr_row_leadingCoeff_pos" => [
-      `scale,
-      `twoStep,
-      `cone,
-      `cancel
     ]
   | "rr_row_ne_zero" => [
       `cone,

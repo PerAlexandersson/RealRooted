@@ -33,7 +33,8 @@
       "frontEnds": [
         {"tactic": "rr_row_interlaces", "position": 3},
         {"tactic": "rr_row_splits", "position": 7, "selectable": false},
-        {"tactic": "rr_row_natDegree", "position": 6, "selectable": false}
+        {"tactic": "rr_row_natDegree", "position": 6, "selectable": false},
+        {"tactic": "rr_row_leadingCoeff_pos", "position": 6, "selectable": false}
       ],
       "conclusion": "The conclusion advertised by a matching registered row-model theorem.",
       "theorems": [],
