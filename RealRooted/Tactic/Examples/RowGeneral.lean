@@ -311,6 +311,39 @@ example (n : ℕ) : 0 < (rationalBaseRows n).leadingCoeff := by
   rr_row_leadingCoeff_pos
 
 
+-- Algebraic closure uses arbitrary polynomials, including negative lower coefficients.
+example (p q : ℝ[X]) (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q) :
+    HasPosLeadingCoeff (p + q) := by
+  rr_row_leadingCoeff_pos (via := algebra)
+
+example (p : ℝ[X]) (hp : HasPosLeadingCoeff p) (a : ℝ) :
+    HasPosLeadingCoeff ((X - C a) * p + X * p.derivative) := by
+  rr_row_leadingCoeff_pos
+
+-- No nonzero derivative hypothesis: constant p is allowed.
+example : HasPosLeadingCoeff ((X - C 7) * 1 + X * (1 : ℝ[X]).derivative) := by
+  rr_row_leadingCoeff_pos
+
+example (n : ℕ) (a : ℕ → ℝ) :
+    HasPosLeadingCoeff (∏ i ∈ Finset.range n, (X - C (a i))) := by
+  rr_row_leadingCoeff_pos
+
+example (n : ℕ) : HasPosLeadingCoeff (rationalBaseRows n +
+    X * (rationalBaseRows n).derivative) := by
+  rr_row_leadingCoeff_pos
+
+example (p : ℝ[X]) (hp : HasPosLeadingCoeff p) (n : ℕ) :
+    HasPosLeadingCoeff (p ^ n) := by
+  rr_row_leadingCoeff_pos
+
+example : True := by
+  fail_if_success
+    have : HasPosLeadingCoeff (0 : ℝ[X]) := by rr_row_leadingCoeff_pos
+  fail_if_success
+    have : HasPosLeadingCoeff ((-X : ℝ[X]) * X) := by rr_row_leadingCoeff_pos
+  trivial
+
+
 end
 
 end RealRooted.Tactic.RowGeneralExamples

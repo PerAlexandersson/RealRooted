@@ -1455,6 +1455,7 @@ public import RealRooted.Tactic.ReciprocalShift
 public import RealRooted.Tactic.Recurrence
 public import RealRooted.Tactic.Recurrence.Cancel
 public import RealRooted.Tactic.Recurrence.Degree
+public import RealRooted.Tactic.Recurrence.LeadingCoeff
 public import RealRooted.Tactic.Recurrence.Eval
 public import RealRooted.Tactic.Recurrence.LinRec
 public import RealRooted.Tactic.Recurrence.LinRecProbe

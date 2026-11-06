@@ -7,6 +7,7 @@ module
 
 public import Mathlib.Algebra.Polynomial.Degree.Operations
 public import Mathlib.Algebra.Polynomial.Div
+public import Mathlib.Algebra.Order.Ring.Defs
 import Mathlib.Algebra.Polynomial.Degree.Lemmas
 import Mathlib.Algebra.Polynomial.BigOperators
 
@@ -110,5 +111,45 @@ theorem coeff_mul_add_add_one_eq_of_natDegree_le {R : Type*} [Semiring R] {p q :
         rcases this with rfl | rfl <;> simp_all <;> lia
   · intro h; exact absurd (by simp; lia) h
   · intro h; exact absurd (by simp; lia) h
+
+section Ordered
+
+variable {R : Type*} [Semiring R] [PartialOrder R] [IsStrictOrderedRing R]
+
+/-- A sum of polynomials with positive leading coefficients has a positive leader. -/
+theorem leadingCoeff_add_pos {p q : R[X]}
+    (hp : 0 < p.leadingCoeff) (hq : 0 < q.leadingCoeff) :
+    0 < (p + q).leadingCoeff := by
+  rcases lt_trichotomy p.degree q.degree with h | h | h
+  · simpa only [leadingCoeff_add_of_degree_lt h] using hq
+  · rw [leadingCoeff_add_of_degree_eq h (ne_of_gt (add_pos hp hq))]
+    exact add_pos hp hq
+  · simpa only [leadingCoeff_add_of_degree_lt' h] using hp
+
+/-- A positive leader and a nonnegative leader give a positive leader for the sum. -/
+theorem leadingCoeff_add_pos_of_pos_of_nonneg {p q : R[X]}
+    (hp : 0 < p.leadingCoeff) (hq : 0 ≤ q.leadingCoeff) :
+    0 < (p + q).leadingCoeff := by
+  rcases eq_or_lt_of_le hq with hz | hq
+  · have hzero : q = 0 := leadingCoeff_eq_zero.mp hz.symm
+    simpa only [hzero, add_zero] using hp
+  · exact leadingCoeff_add_pos hp hq
+
+/-- A nonnegative leader and a positive leader give a positive leader for the sum. -/
+theorem leadingCoeff_add_pos_of_nonneg_of_pos {p q : R[X]}
+    (hp : 0 ≤ p.leadingCoeff) (hq : 0 < q.leadingCoeff) :
+    0 < (p + q).leadingCoeff := by
+  simpa only [add_comm] using leadingCoeff_add_pos_of_pos_of_nonneg hq hp
+
+/-- Nonnegative leading coefficients are preserved by addition. -/
+theorem leadingCoeff_add_nonneg {p q : R[X]}
+    (hp : 0 ≤ p.leadingCoeff) (hq : 0 ≤ q.leadingCoeff) :
+    0 ≤ (p + q).leadingCoeff := by
+  rcases eq_or_lt_of_le hp with hz | hp
+  · have hzero : p = 0 := leadingCoeff_eq_zero.mp hz.symm
+    simpa only [hzero, zero_add] using hq
+  · exact le_of_lt (leadingCoeff_add_pos_of_pos_of_nonneg hp hq)
+
+end Ordered
 
 end Polynomial
