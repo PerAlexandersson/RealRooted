@@ -242,23 +242,32 @@ private partial def linRecRowLits (P : Name) (e : Expr) (acc : Array Nat) :
   | .mdata _ b => linRecRowLits P b acc
   | _ => return acc
 
-/-- Close a goal about explicit rows of `P` (a base row, or a row computed by the recurrence,
-where the coefficients are read off the exact row `rows[m]` of the probe): first by the side-goal
-engine, then after rewriting the rows `P m` occurring in the goal to explicit polynomials. -/
+/-- Close a goal about explicit rows of `P`. For rows beyond the initial data, try
+certified expansion before general side-goal search; initial rows keep the reverse order. -/
 private def linRecRowGoal (P : Ident) (rows : Array QPoly) : TacticM Unit := do
   linRecNumerals
   if (← getGoals).isEmpty then return
-  if ← rowSucceeds (rowSideGoal (some P)) then return
-  for m in ← linRecRowLits P.getId (← instantiateMVars (← getMainTarget)) #[] do
-    let some q := rows[m]? | continue
-    let poly ← qpolyTerm q
-    let prove ← `(tactic|
-      first
-        | (simp [$P:ident] <;> rr_row_unfold <;> (try norm_num) <;> ring1)
-        | (simp [$P:ident, map_ofNat] <;> rr_row_unfold <;> (try norm_num) <;> ring1)
-        | (simp only [$P:ident]; simp; rr_row_unfold; try norm_num; ring1))
-    evalTactic (← `(tactic| rw [(show $P $(rowNumLit m) = $poly by $prove:tactic)]))
-  rowSideGoal (some P)
+  let indices ← linRecRowLits P.getId (← instantiateMVars (← getMainTarget)) #[]
+  let computed ← match ← linRecBaseRows? P.getId with
+    | some base => pure (indices.any fun m => base.size ≤ m)
+    | none => pure false
+  let normalizeRows : TacticM Unit := do
+    for m in indices do
+      let some q := rows[m]? | continue
+      let poly ← qpolyTerm q
+      let prove ← `(tactic|
+        first
+          | (simp [$P:ident] <;> rr_row_unfold <;> (try norm_num) <;> ring1)
+          | (simp [$P:ident, map_ofNat] <;> rr_row_unfold <;> (try norm_num) <;> ring1)
+          | (simp only [$P:ident]; simp; rr_row_unfold; try norm_num; ring1))
+      evalTactic (← `(tactic| rw [(show $P $(rowNumLit m) = $poly by $prove:tactic)]))
+    rowSideGoal (some P)
+  if computed then
+    if ← rowSucceeds normalizeRows then return
+    rowSideGoal (some P)
+  else
+    if ← rowSucceeds (rowSideGoal (some P)) then return
+    normalizeRows
 
 /-- Close every goal about explicit rows. -/
 private def linRecRows (P : Ident) (rows : Array QPoly) : TacticM Unit := do

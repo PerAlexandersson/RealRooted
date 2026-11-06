@@ -458,6 +458,21 @@ example (p : ℝ[X]) (hp : HasPosLeadingCoeff p) (hd : p.derivative ≠ 0) :
   exact RealRooted.HasPosLeadingCoeff.derivative
     (by rr_row_leadingCoeff_pos) (Polynomial.derivative_ne_zero.mp hd)
 
+/-- A third-order recurrence whose stable degree law begins after two rows (A144090). -/
+def A144090 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 2
+  | 2 => 3 + 6 * X + 3 * X ^ 2
+  | n + 3 =>
+      (C (-1) * X ^ 2) * (A144090 (n + 2)).derivative +
+        (X ^ 2 - C 2 * X ^ 3) * (A144090 (n + 1)).derivative +
+        (C 2 + C (4 + 2 * (n : ℝ)) * X) * A144090 (n + 2) +
+        (C (-1) + C (-2 * (n : ℝ)) * X + C (7 + 4 * (n : ℝ)) * X ^ 2) *
+          A144090 (n + 1) +
+        (C (-2 - (n : ℝ)) * X ^ 2 + C (2 + (n : ℝ)) * X ^ 3) * A144090 n
+
+example (n : ℕ) : HasPosLeadingCoeff (A144090 n) := by rr_row_leadingCoeff_pos
+
 namespace ExplicitLeadingTests
 
 /-- A product recurrence with a signed explicit initial row. -/
