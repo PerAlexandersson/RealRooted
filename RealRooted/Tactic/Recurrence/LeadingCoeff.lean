@@ -64,6 +64,17 @@ def algebraRowLeadingCoeff (positive : Bool := true) : TacticM Cert := withMainC
   let derivative := op.isConstOf ``Polynomial.derivative ||
     (p.isAppOfArity ``DFunLike.coe 6 &&
       p.getAppArgs[4]!.isAppOf ``Polynomial.derivative)
+  if positive && derivative then
+    let parent ← certTerm p.getAppArgs.back!
+    let nonzeroDerivative ← `(tactic| (
+      have hd : ($parent : ℝ[X]).derivative ≠ 0 := by assumption
+      have hp : ($parent : ℝ[X]) ≠ 0 := by
+        intro h
+        exact hd (by simp [h])
+      exact RealRooted.HasPosLeadingCoeff.derivative
+        (by rr_row_leadingCoeff_pos) (Polynomial.derivative_ne_zero.mp hd)))
+    if ← rowSucceeds (evalTactic nonzeroDerivative) then
+      return #[change, nonzeroDerivative]
   let step ← if op.isConstOf ``HAdd.hAdd then
       if positive then `(tactic|
         first

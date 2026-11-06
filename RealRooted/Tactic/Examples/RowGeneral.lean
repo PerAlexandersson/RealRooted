@@ -424,6 +424,40 @@ example : True := by
   trivial
 
 
+-- Nonzero derivatives supply the missing degree condition, including nested derivatives.
+example (p : ℝ[X]) (hp : HasPosLeadingCoeff p) (hd : p.derivative ≠ 0) :
+    HasPosLeadingCoeff p.derivative := by
+  rr_row_leadingCoeff_pos (via := algebra)
+
+example (p : ℝ[X]) (hp : HasPosLeadingCoeff p) (hd : p.derivative.derivative ≠ 0) :
+    HasPosLeadingCoeff p.derivative.derivative := by
+  rr_row_leadingCoeff_pos
+
+example (n : ℕ) (hd : (rationalBaseRows n).derivative.derivative ≠ 0) :
+    HasPosLeadingCoeff (rationalBaseRows n).derivative.derivative := by
+  rr_row_leadingCoeff_pos
+
+example : True := by
+  fail_if_success
+    have : HasPosLeadingCoeff (1 : ℝ[X]).derivative := by rr_row_leadingCoeff_pos
+  trivial
+
+#guard_msgs (drop info) in
+example (p : ℝ[X]) (hp : HasPosLeadingCoeff p) (hd : p.derivative ≠ 0) :
+    HasPosLeadingCoeff p.derivative := by
+  rr_row_leadingCoeff_pos? (via := algebra)
+
+-- Replay the certificate printed by the question-mark variant.
+example (p : ℝ[X]) (hp : HasPosLeadingCoeff p) (hd : p.derivative ≠ 0) :
+    HasPosLeadingCoeff p.derivative := by
+  change 0 < (derivative p : Polynomial ℝ).leadingCoeff
+  have hd : (p : ℝ[X]).derivative ≠ 0 := by assumption
+  have hp : (p : ℝ[X]) ≠ 0 := by
+    intro h
+    exact hd (by simp [h])
+  exact RealRooted.HasPosLeadingCoeff.derivative
+    (by rr_row_leadingCoeff_pos) (Polynomial.derivative_ne_zero.mp hd)
+
 end
 
 end RealRooted.Tactic.RowGeneralExamples

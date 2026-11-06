@@ -659,7 +659,7 @@
         "RealRooted.hasNonnegCoeffs_finsetSum"],
       "module": "RealRooted.Tactic.Recurrence.LeadingCoeff",
       "summary": "Decompose algebraic expressions, normalize shifted wrappers, or prove nonnegative coefficients.",
-      "requires": "Positive or nonnegative component leaders, or nonnegative coefficients plus a nonzero polynomial. Scalar signs and derivative degrees when needed.",
+      "requires": "Positive or nonnegative component leaders, or nonnegative coefficients plus a nonzero polynomial. Scalar signs and derivative degrees when needed; a nonzero derivative supplies its degree condition.",
       "examples": ["RealRooted.Tactic.Examples.RowGeneral"],
       "pseudo": false
     },
