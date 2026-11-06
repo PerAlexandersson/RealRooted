@@ -458,6 +458,43 @@ example (p : ℝ[X]) (hp : HasPosLeadingCoeff p) (hd : p.derivative ≠ 0) :
   exact RealRooted.HasPosLeadingCoeff.derivative
     (by rr_row_leadingCoeff_pos) (Polynomial.derivative_ne_zero.mp hd)
 
+namespace ExplicitLeadingTests
+
+/-- A product recurrence with a signed explicit initial row. -/
+def signedRows : ℕ → ℝ[X]
+  | 0 => X ^ 2 - X - 1
+  | n + 1 => (X - C (n : ℝ)) * signedRows n
+
+example (n : ℕ) : HasPosLeadingCoeff (signedRows n) := by
+  rr_row_leadingCoeff_pos
+
+
+example : HasPosLeadingCoeff (X ^ 2 - X - 1 : ℝ[X]) := by rr_row_leadingCoeff_pos
+
+example : HasPosLeadingCoeff (X ^ 3 - X ^ 3 + X ^ 2 - X - 1 : ℝ[X]) := by
+  rr_row_leadingCoeff_pos
+
+example : HasPosLeadingCoeff (C (7 / 3) * X ^ 5 - X ^ 2 : ℝ[X]) := by
+  rr_row_leadingCoeff_pos
+
+example (p : ℝ[X]) (hp : HasPosLeadingCoeff p) :
+    HasPosLeadingCoeff (p * (X ^ 2 - X - 1)) := by rr_row_leadingCoeff_pos
+
+example : 0 ≤ (X ^ 2 - X - 1 : ℝ[X]).leadingCoeff := by rr_row_leadingCoeff_nonneg
+
+example : True := by
+  fail_if_success
+    have : HasPosLeadingCoeff (X ^ 3 - X ^ 3 : ℝ[X]) := by rr_row_leadingCoeff_pos
+  fail_if_success
+    have : HasPosLeadingCoeff (-X ^ 2 + X + 1 : ℝ[X]) := by rr_row_leadingCoeff_pos
+  trivial
+
+#guard_msgs (drop info) in
+example : HasPosLeadingCoeff (X ^ 2 - X - 1 : ℝ[X]) := by
+  rr_row_leadingCoeff_pos? (via := algebra)
+
+end ExplicitLeadingTests
+
 namespace GenericCaseTests
 
 /-- Arbitrary real linear factors with an exceptional zero initial row. -/

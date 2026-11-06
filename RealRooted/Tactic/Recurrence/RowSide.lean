@@ -22,8 +22,8 @@ The side-goal engine of the row tactics (`rowSideGoal`, `rr_row_side`, `rr_row_f
 driver that applies the degree theorems of the recurrence shapes (`rowDriver`), and the
 printing of certificates and hinted calls for the `?` variants (`suggestCert`).  The degree
 tactics themselves are in `RealRooted.Tactic.Recurrence.Degree`.
-Explicit rational initial rows are certified by computing their exact degree and
-then checking the corresponding coefficient, including rows with negative lower coefficients.
+Explicit rational polynomials and initial rows are certified by computing their exact degree
+and then checking the corresponding coefficient, including negative lower coefficients.
 -/
 
 public meta section
@@ -279,31 +279,80 @@ private def sideAlternatives (P? : Option Ident) (ty : Expr) :
     ← `(tactic| (norm_num [Polynomial.coeff_X, Polynomial.coeff_one, Polynomial.coeff_X_pow,
       Polynomial.coeff_C]; done))]
 
-/-- Certify the leading coefficient of an explicit rational initial row. -/
-private def explicitRowLeadingCoeff (P : Ident) : TacticM Unit := withMainContext do
+/-- Select a closing tactic for a certificate obligation without retaining trial goals. -/
+private def explicitPolynomialStep (target : Term)
+    (alternatives : Array (TSyntax `tactic)) : TacticM (TSyntax `tactic) := do
+  for alt in alternatives do
+    let saved ← saveState
+    let ok ← rowSucceeds do
+      let ty ← elabTerm target none
+      let g ← mkFreshExprMVar ty
+      setGoals [g.mvarId!]
+      evalTactic alt
+      evalTactic (← `(tactic| done))
+    saved.restore (restoreInfo := true)
+    if ok then return alt
+  throwError "could not certify the explicit polynomial obligation"
+
+/-- Certify a leading-coefficient sign by exact rational polynomial evaluation.
+An optional recurrence name also allows its explicit initial rows. Evaluation only
+proposes a polynomial and its degree; the generated proof checks both in Lean. -/
+def explicitPolynomialLeadingCoeff (P? : Option Ident := none)
+    (positive : Bool := true) : TacticM Cert := withMainContext do
   let target ← instantiateMVars (← getMainTarget)
-  let (``LT.lt, #[_, _, _, rhs]) := target.getAppFnArgs
-    | throwError "not a positivity goal"
-  unless rhs.isAppOf ``Polynomial.leadingCoeff do
-    throwError "not a leading-coefficient goal"
-  let p := rhs.appArg!
-  let index ← mainRowIndex P
-  let some i ← (evalNat index).run | throwError "the row index is not explicit"
-  let some rows ← linRecBaseRows? P.getId | throwError "the initial rows are not explicit"
-  let some q := rows[i]? | throwError "not an initial row"
-  unless q.coeff q.natDegree > 0 do throwError "the leading coefficient is not positive"
-  let row ← Term.exprToSyntax p
+  let p ← match target.getAppFnArgs with
+    | (``RealRooted.HasPosLeadingCoeff, #[p]) => pure p
+    | (op, #[_, _, _, rhs]) =>
+      unless (op == ``LT.lt || op == ``LE.le) && rhs.isAppOf ``Polynomial.leadingCoeff do
+        throwError "not a leading-coefficient sign goal"
+      pure rhs.appArg!
+    | _ => throwError "not a leading-coefficient sign goal"
+  let (q, row?) ← match ← evalQPoly? p with
+    | some q => pure (q, none)
+    | none =>
+      let some P := P? | throwError "not an explicit rational polynomial"
+      let index ← mainRowIndex P
+      let some i ← (evalNat index).run | throwError "the row index is not explicit"
+      let some rows ← linRecBaseRows? P.getId | throwError "the initial rows are not explicit"
+      let some q := rows[i]? | throwError "not an initial row"
+      pure (q, some P)
+  unless if positive then q.lead > 0 else q.lead ≥ 0 do
+    throwError "the leading coefficient has the wrong sign"
+  let source ← certTerm p
+  let canonical ← qpolyTerm q
   let d := rowNumLit q.natDegree
-  evalTactic (← `(tactic| (
-    have hd : ($row).natDegree = $d := by
-      simp only [$P:ident]
-      compute_degree!
+  let equality ← `(($source : ℝ[X]) = $canonical)
+  let closers ← pure #[← `(tactic| rfl), ← `(tactic| ring1), ← `(tactic| norm_num),
+    ← `(tactic| (norm_num; ring1))]
+  let mut normalizers := closers
+  let mut prefixes : Array (TSyntax `tactic) := #[]
+  if let some P := row? then
+    prefixes := prefixes.push (← `(tactic| simp only [$P:ident]))
+  prefixes := prefixes.push (← `(tactic| rr_row_unfold))
+  if let some P := row? then
+    prefixes := prefixes.push (← `(tactic| (simp only [$P:ident]; rr_row_unfold)))
+  for prep in prefixes do
+    normalizers := normalizers.push prep
+    for close in closers do
+      normalizers := normalizers.push (← `(tactic| ($prep:tactic; $close:tactic)))
+  let normalize ← explicitPolynomialStep equality normalizers
+  let degree ← `(($canonical : ℝ[X]).natDegree = $d)
+  let degreeProof ← explicitPolynomialStep degree #[← `(tactic| compute_degree!),
+    ← `(tactic| (compute_degree; norm_num [Polynomial.coeff_one]))]
+  let change ← if positive then `(tactic| change 0 < ($source : ℝ[X]).leadingCoeff)
+    else `(tactic| change 0 ≤ ($source : ℝ[X]).leadingCoeff)
+  let cert ← `(tactic| (
+    $change:tactic
+    have he : ($source : ℝ[X]) = $canonical := by $normalize:tactic
+    rw [he]
+    have hd : ($canonical : ℝ[X]).natDegree = $d := by $degreeProof:tactic
     rw [Polynomial.leadingCoeff, hd]
-    simp only [$P:ident, Polynomial.coeff_add, Polynomial.coeff_sub,
-      Polynomial.coeff_C_mul, Polynomial.coeff_ofNat_mul, Polynomial.coeff_X_pow,
-      Polynomial.coeff_X, Polynomial.coeff_C, Polynomial.coeff_one]
-    norm_num
-    done)))
+    norm_num [Polynomial.coeff_add, Polynomial.coeff_sub, Polynomial.coeff_C_mul,
+      Polynomial.coeff_ofNat_mul, Polynomial.coeff_X_pow, Polynomial.coeff_X,
+      Polynomial.coeff_C, Polynomial.coeff_one]))
+  evalTactic cert
+  evalTactic (← `(tactic| done))
+  return #[cert]
 
 /-- Close the main goal, a side goal of the row degree theorems: a degree bound, a base
 row, a growth ratio or a top-coefficient multiplier. -/
@@ -313,8 +362,7 @@ def rowSideGoal (P? : Option Ident) : TacticM Unit := do
     evalTactic (← `(tactic| unfold RealRooted.HasPosLeadingCoeff))
   unfoldRowCoeffDefs
   if (← getGoals).isEmpty then return
-  if let some P := P? then
-    if ← rowSucceeds (explicitRowLeadingCoeff P) then return
+  if ← rowSucceeds (discard <| explicitPolynomialLeadingCoeff P?) then return
   let ty ← instantiateMVars (← getMainTarget)
   for alt in ← sideAlternatives P? ty do
     if ← rowSucceeds (do

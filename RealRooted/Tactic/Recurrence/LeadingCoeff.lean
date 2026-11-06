@@ -79,6 +79,8 @@ def algebraRowLeadingCoeff (positive : Bool := true) : TacticM Cert := withMainC
       `(tactic| exact (show RealRooted.HasNonnegCoeffs $poly from
         by rr_row_unfold; rr_nonneg_coeffs) _)
   if ← rowSucceeds (evalTactic nonneg) then return #[change, nonneg]
+  if let .ok cert ← rowAttempt (explicitPolynomialLeadingCoeff none positive) then
+    return cert
   let op := p.getAppFn
   let derivative := op.isConstOf ``Polynomial.derivative ||
     (p.isAppOfArity ``DFunLike.coe 6 &&
