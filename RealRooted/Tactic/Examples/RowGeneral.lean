@@ -458,6 +458,112 @@ example (p : ℝ[X]) (hp : HasPosLeadingCoeff p) (hd : p.derivative ≠ 0) :
   exact RealRooted.HasPosLeadingCoeff.derivative
     (by rr_row_leadingCoeff_pos) (Polynomial.derivative_ne_zero.mp hd)
 
+/-- A third-order recurrence whose stable degree law begins after two rows (A144090). -/
+def A144090 : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 2
+  | 2 => 3 + 6 * X + 3 * X ^ 2
+  | n + 3 =>
+      (C (-1) * X ^ 2) * (A144090 (n + 2)).derivative +
+        (X ^ 2 - C 2 * X ^ 3) * (A144090 (n + 1)).derivative +
+        (C 2 + C (4 + 2 * (n : ℝ)) * X) * A144090 (n + 2) +
+        (C (-1) + C (-2 * (n : ℝ)) * X + C (7 + 4 * (n : ℝ)) * X ^ 2) *
+          A144090 (n + 1) +
+        (C (-2 - (n : ℝ)) * X ^ 2 + C (2 + (n : ℝ)) * X ^ 3) * A144090 n
+
+example (n : ℕ) : HasPosLeadingCoeff (A144090 n) := by rr_row_leadingCoeff_pos
+
+namespace ExplicitLeadingTests
+
+/-- A product recurrence with a signed explicit initial row. -/
+def signedRows : ℕ → ℝ[X]
+  | 0 => X ^ 2 - X - 1
+  | n + 1 => (X - C (n : ℝ)) * signedRows n
+
+example (n : ℕ) : HasPosLeadingCoeff (signedRows n) := by
+  rr_row_leadingCoeff_pos
+
+
+example : HasPosLeadingCoeff (X ^ 2 - X - 1 : ℝ[X]) := by rr_row_leadingCoeff_pos
+
+example : HasPosLeadingCoeff (X ^ 3 - X ^ 3 + X ^ 2 - X - 1 : ℝ[X]) := by
+  rr_row_leadingCoeff_pos
+
+example : HasPosLeadingCoeff (C (7 / 3) * X ^ 5 - X ^ 2 : ℝ[X]) := by
+  rr_row_leadingCoeff_pos
+
+example (p : ℝ[X]) (hp : HasPosLeadingCoeff p) :
+    HasPosLeadingCoeff (p * (X ^ 2 - X - 1)) := by rr_row_leadingCoeff_pos
+
+example : 0 ≤ (X ^ 2 - X - 1 : ℝ[X]).leadingCoeff := by rr_row_leadingCoeff_nonneg
+
+example : True := by
+  fail_if_success
+    have : HasPosLeadingCoeff (X ^ 3 - X ^ 3 : ℝ[X]) := by rr_row_leadingCoeff_pos
+  fail_if_success
+    have : HasPosLeadingCoeff (-X ^ 2 + X + 1 : ℝ[X]) := by rr_row_leadingCoeff_pos
+  trivial
+
+#guard_msgs (drop info) in
+example : HasPosLeadingCoeff (X ^ 2 - X - 1 : ℝ[X]) := by
+  rr_row_leadingCoeff_pos? (via := algebra)
+
+end ExplicitLeadingTests
+
+namespace GenericCaseTests
+
+/-- Arbitrary real linear factors with an exceptional zero initial row. -/
+def pieceRows (a b : ℝ) : ℕ → ℝ[X]
+  | 0 => 0
+  | n + 1 => (X - C a) * (X + C b) ^ n
+
+theorem pieceRows_pos (a b : ℝ) (n : ℕ) (hn : pieceRows a b n ≠ 0) :
+    HasPosLeadingCoeff (pieceRows a b n) := by rr_row_leadingCoeff_pos
+
+/-- A conditional choice of two arbitrary polynomials. -/
+def choiceRows (p q : ℝ[X]) (b : Bool) : ℝ[X] := if b then p else q
+
+theorem choiceRows_pos (p q : ℝ[X]) (hp : HasPosLeadingCoeff p)
+    (hq : HasPosLeadingCoeff q) (b : Bool) :
+    HasPosLeadingCoeff (choiceRows p q b) := by rr_row_leadingCoeff_pos
+
+/-- A piecewise scalar formula with a nonnegative parameter. -/
+def pieceCoeff (a : ℝ) : ℕ → ℕ → ℝ
+  | 0, 0 => 1
+  | 0, _ + 1 => 0
+  | _ + 1, 0 => a
+  | n + 1, k + 1 => a * Nat.choose n k / ((k : ℝ) + 1)
+
+/-- Rows assembled from the piecewise scalar formula. -/
+def sumRows (a : ℝ) (n : ℕ) : ℝ[X] :=
+  ∑ k ∈ Finset.range (n + 1), monomial k (pieceCoeff a n k)
+
+theorem sumRows_pos (a : ℝ) (ha : 0 ≤ a) (n : ℕ) (hn : sumRows a n ≠ 0) :
+    HasPosLeadingCoeff (sumRows a n) := by rr_row_leadingCoeff_pos
+
+example : True := by
+  fail_if_success
+    have : HasPosLeadingCoeff (choiceRows X (-X) false) := by rr_row_leadingCoeff_pos
+  fail_if_success
+    have : HasPosLeadingCoeff (pieceRows 2 3 0) := by rr_row_leadingCoeff_pos
+  trivial
+
+example (p q : ℝ[X]) (hp : 0 ≤ p.leadingCoeff) (hq : 0 ≤ q.leadingCoeff)
+    (b : Bool) : 0 ≤ (choiceRows p q b).leadingCoeff := by
+  rr_row_leadingCoeff_nonneg
+
+#guard_msgs (drop info) in
+example (a b : ℝ) (n : ℕ) (hn : pieceRows a b n ≠ 0) :
+    HasPosLeadingCoeff (pieceRows a b n) := by
+  rr_row_leadingCoeff_pos? (via := algebra)
+
+#guard_msgs (drop info) in
+example (p q : ℝ[X]) (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q)
+    (b : Bool) : HasPosLeadingCoeff (choiceRows p q b) := by
+  rr_row_leadingCoeff_pos? (via := algebra)
+
+end GenericCaseTests
+
 end
 
 end RealRooted.Tactic.RowGeneralExamples

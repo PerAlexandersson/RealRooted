@@ -39,6 +39,25 @@ def algebraRowLeadingCoeff (positive : Bool := true) : TacticM Cert := withMainC
   for _ in [:8] do
     let some unfolded ← unfoldRowCoeff? p | break
     p := unfolded
+  if p.isAppOf ``ite || p.isAppOf ``dite ||
+      (← matchMatcherApp? p (alsoCasesOn := true)).isSome then
+    let defs ← rowCoeffDefs target
+    let lctx ← getLCtx
+    let defs := defs.filter fun name =>
+      lctx.any fun decl => decl.type.getUsedConstants.contains name
+    let args : Array (TSyntax ``Lean.Parser.Tactic.simpLemma) ← defs.mapM fun name =>
+      `(Lean.Parser.Tactic.simpLemma| $(mkIdent name):ident)
+    let finish ← if positive then `(tactic| rr_row_leadingCoeff_pos)
+      else `(tactic| rr_row_leadingCoeff_nonneg)
+    let cleanup ← `(tactic| (rr_row_unfold; split <;> simp_all only))
+    if ← rowSucceeds (do evalTactic cleanup; evalTactic (← `(tactic| done))) then
+      return #[cleanup]
+    let simpleCases ← `(tactic|
+      (rr_row_unfold; split <;> simp_all only <;> $finish:tactic))
+    if ← rowSucceeds (evalTactic simpleCases) then return #[simpleCases]
+    let cases ← `(tactic|
+      (rr_row_unfold; split <;> simp_all only [$args,*] <;> $finish:tactic))
+    if ← rowSucceeds (evalTactic cases) then return #[cases]
   let poly ← certTerm p
   let change ← if positive then
     `(tactic| change 0 < ($poly : Polynomial ℝ).leadingCoeff)
@@ -60,6 +79,8 @@ def algebraRowLeadingCoeff (positive : Bool := true) : TacticM Cert := withMainC
       `(tactic| exact (show RealRooted.HasNonnegCoeffs $poly from
         by rr_row_unfold; rr_nonneg_coeffs) _)
   if ← rowSucceeds (evalTactic nonneg) then return #[change, nonneg]
+  if let .ok cert ← rowAttempt (explicitPolynomialLeadingCoeff none positive) then
+    return cert
   let op := p.getAppFn
   let derivative := op.isConstOf ``Polynomial.derivative ||
     (p.isAppOfArity ``DFunLike.coe 6 &&

@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **173 IDs**; **17 formalized**, **142 shells**, **1 fragments**, and **13 documented-only**.
+Current totals: **174 IDs**; **17 formalized**, **143 shells**, **1 fragments**, and **13 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -121,6 +121,7 @@ Current totals: **173 IDs**; **17 formalized**, **142 shells**, **1 fragments**,
 | A136394 | `shell` | (`RealRooted.eval_mul_eval_nonneg_of_natDegree_le_one`) ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A137597 | `shell` | Root window `(-∞, -1]`: `A = X + 1` ().<br>def : ℕ → ℝ[X]<br>+6 additional test intents | `rr_row_eval_zero_pos`, `rr_row_interlaces`, `rr_row_nonneg_coeffs` | `degree`, `thm`, `via` | concrete row definition and proofs of the listed certificates |
 | A142071 | `shell` | A product with the derivative, `P (n + 1) = A * (P n)'` ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
+| A144090 | `shell` | A third-order recurrence whose stable degree law begins after two rows ().<br>def : ℕ → ℝ[X]<br>+6 additional test intents | `rr_row_leadingCoeff_pos` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A144436 | `shell` | `V ≤ 0`, `W < 0` on the negative axis ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A147644 | `shell` | OEIS , whose recurrence is a product only after three exceptional rows.<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | `via` | concrete row definition and proofs of the listed certificates |
 | A151775 | `formalized` | import RealRooted.Applications.OEIS.<br>Regression examples for the transfer and the reflected Euler-bidiagonal families. | `rr_row_interlaces` | implicit/local certificates resolved by the route | none |
