@@ -322,5 +322,14 @@ example (left right nonneg degree recurrence certificate : ℕ) (h : left = righ
       left + nonneg + degree + recurrence + certificate := by
   rw [h]
 
+-- Finite sums may include zero terms; no strict sign or nonempty-set hypothesis is needed.
+example (s : Finset ℕ) (a : ℕ → ℕ) :
+    HasNonnegCoeffs (∑ i ∈ s, monomial i (a i : ℝ)) := by
+  rr_nonneg_coeffs
+
+example (s : Finset ℕ) (a : ℕ → ℝ) (ha : ∀ i, 0 ≤ a i) :
+    HasNonnegCoeffs (∑ i ∈ s, C (a i) * X ^ i) := by
+  rr_nonneg_coeffs
+
 end Tactic
 end RealRooted

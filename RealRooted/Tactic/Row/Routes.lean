@@ -516,7 +516,9 @@ def rowRouteTable : List RowRouteInfo := [
         `Polynomial.leadingCoeff_mul,
         `Polynomial.leadingCoeff_pow,
         `Polynomial.leadingCoeff_derivative,
-        `Polynomial.leadingCoeff_prod
+        `Polynomial.leadingCoeff_prod,
+        `RealRooted.HasNonnegCoeffs.pos_leadingCoeff,
+        `RealRooted.hasNonnegCoeffs_finsetSum
       ]
   },
   { name := `recurrence

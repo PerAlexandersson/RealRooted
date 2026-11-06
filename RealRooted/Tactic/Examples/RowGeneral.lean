@@ -344,6 +344,29 @@ example : True := by
   trivial
 
 
+/-- A nonrecursive shift should expose the existing recurrence without a model lookup. -/
+def shiftedRationalBaseRows (n : ℕ) : ℝ[X] := rationalBaseRows (n + 2)
+
+example (n : ℕ) : HasPosLeadingCoeff (shiftedRationalBaseRows n) := by
+  rr_row_leadingCoeff_pos
+
+example (s : Finset ℕ) (a : ℕ → ℕ)
+    (h : (∑ i ∈ s, monomial i (a i : ℝ)) ≠ 0) :
+    HasPosLeadingCoeff (∑ i ∈ s, monomial i (a i : ℝ)) := by
+  rr_row_leadingCoeff_pos
+
+example : True := by
+  fail_if_success
+    have : HasPosLeadingCoeff (∑ i ∈ (∅ : Finset ℕ), monomial i (1 : ℝ)) := by
+      rr_row_leadingCoeff_pos
+  trivial
+
+
+example (s : Finset ℕ) (a : ℕ → ℕ) :
+    0 ≤ (∑ i ∈ s, monomial i (a i : ℝ)).leadingCoeff := by
+  rr_row_leadingCoeff_nonneg
+
+
 end
 
 end RealRooted.Tactic.RowGeneralExamples
