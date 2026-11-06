@@ -28,7 +28,8 @@ in any order, and the left side may be `P (n + k)` with explicit rows below `k`,
 * `rr_row_natDegree` closes `(P t).natDegree = e` whenever `e` is `D₀ + d * t`
   up to `lia`;
 * `rr_row_ne_zero` closes `P t ≠ 0`;
-* `rr_row_leadingCoeff_pos` closes `0 < (P t).leadingCoeff`;
+* `rr_row_leadingCoeff_pos` closes `0 < (P t).leadingCoeff`, including positive
+  scalar normalizations `C (a t) * P t` exposed through non-recursive definitions;
 * `rr_row_natDegree_leadingCoeff_pos` closes the conjunction
   `(P t).natDegree = e ∧ 0 < (P t).leadingCoeff`, discharging the shared side goals once;
 * `rr_row_side` closes their side goals.
@@ -277,11 +278,45 @@ private def degreeModelGoal (log : RowAttemptLog) : TacticM Unit := withMainCont
     | .error err => failures := failures.push (m!"{decl}", err)
   throwRowFailures m!"no structurally matching degree model proves the goal" failures
 
-/-- The degree tactics, returning a certificate and the hinted call: the recurrence shapes
-of `RecShape` first, then, without hints, general linear recurrences (`linRecRow`). -/
+/-- Remove a positive constant-polynomial factor before solving the underlying row goal.
+Only non-recursive wrappers are unfolded, so this does not expand recurrence equations. -/
+private def scaledRowLeadingCoeff : TacticM Cert := withMainContext do
+  let target ← instantiateMVars (← getMainTarget)
+  let mut p ← match target.getAppFnArgs with
+    | (``RealRooted.HasPosLeadingCoeff, #[p]) => pure p
+    | (``LT.lt, #[_, _, _, rhs]) =>
+        unless rhs.getAppFn.isConstOf ``Polynomial.leadingCoeff do
+          throwError "expected leading-coefficient positivity"
+        pure rhs.getAppArgs.back!
+    | _ => throwError "expected leading-coefficient positivity"
+  for _ in [:8] do
+    if p.getAppFn.isConstOf ``HMul.hMul then break
+    let some unfolded ← unfoldRowCoeff? p | break
+    p := unfolded
+  let (``HMul.hMul, #[_, _, _, _, factor, row]) := p.getAppFnArgs
+    | throwError "expected a scalar multiple of a row"
+  let (``DFunLike.coe, #[_, _, _, _, f, a]) := factor.getAppFnArgs
+    | throwError "expected a constant-polynomial factor"
+  unless f.isAppOf ``Polynomial.C do
+    throwError "expected a constant-polynomial factor"
+  let scalar ← Term.exprToSyntax a
+  let row ← Term.exprToSyntax row
+  let cert ← `(tactic|
+    exact RealRooted.hasPosLeadingCoeff_C_mul (a := $scalar) (p := $row)
+      (by first | assumption | positivity) (by rr_row_leadingCoeff_pos))
+  evalTactic cert
+  return #[cert]
+
+/-- The degree tactics, returning a certificate and the hinted call: positive scalar
+normalizations, the shapes of `RecShape`, then general linear recurrences (`linRecRow`). -/
 private def rowDegreeCore (log : RowAttemptLog) (kind : String) (hints : RowHints) :
     TacticM (Cert × RowHints) := do
   let s ← RouteSearch.new log hints.via
+  let noShapeHints := hints.thm.isNone && hints.degree.isNone && hints.growth.isNone &&
+    hints.drop.isNone && hints.ratio.isNone && hints.half.isNone
+  if kind == "leadingCoeff_pos" && noShapeHints then
+    if let some cert ← s.attempt `scale scaledRowLeadingCoeff then
+      return (cert, { via := some `scale })
   if hints.via == some `cancel then
     let cancel ← `(tactic| rr_row_cancel)
     if (← s.attempt `cancel (evalTactic cancel)).isSome then
