@@ -677,8 +677,8 @@
         "RealRooted.HasNonnegCoeffs.pos_leadingCoeff"
       ],
       "module": "RealRooted.Tactic.Recurrence.Coefficients",
-      "summary": "Propagate nonnegative coefficients and an affine degree envelope through paired finite-lag differential terms.",
-      "requires": "At most first derivatives, certified degree bounds and coefficient multipliers, nonnegative initial rows, and a nonzero target row.",
+      "summary": "Propagate nonnegative coefficients through finite-lag differential recurrences and general polynomial operations, including coefficientwise products and weighted sums.",
+      "requires": "Nonnegative operand coefficients and scalar weights, and a nonzero target. Recurrence leaves require at most first derivatives, certified degree bounds and coefficient multipliers, and nonnegative initial rows.",
       "examples": [
         "RealRooted.Tactic.Examples.RowGeneral"
       ],

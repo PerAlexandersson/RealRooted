@@ -564,6 +564,64 @@ example (p q : ℝ[X]) (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q)
 
 end GenericCaseTests
 
+namespace CoefficientClosureTests
+
+/-- A finite-lag differential recurrence used under coefficientwise operations. -/
+def rows : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => (X + 1) * rows n + X * (rows n).derivative
+
+example (n : ℕ) (hn : rows (n + 1) ≠ 0) :
+    HasPosLeadingCoeff ((fun k => rows (k + 1)) n) := by
+  rr_row_leadingCoeff_pos (via := coefficients)
+
+/-- A coefficient-weighted finite sum with a positive denominator. -/
+def weightedRows (n : ℕ) : ℝ[X] :=
+  ∑ k ∈ Finset.range (n + 1),
+    monomial k ((rows n).coeff k * (Nat.choose (n + 1) k : ℝ) / ((k : ℝ) + 1))
+
+example (n : ℕ) (hn : weightedRows n ≠ 0) :
+    HasPosLeadingCoeff (weightedRows n) := by
+  rr_row_leadingCoeff_pos (via := coefficients)
+
+example (p q : ℝ[X]) (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
+    (hn : hadamardProduct p q ≠ 0) : HasPosLeadingCoeff (hadamardProduct p q) := by
+  rr_row_leadingCoeff_pos (via := coefficients)
+
+example (n : ℕ) (hn : schurSzegoComp n (rows n) (rows n) ≠ 0) :
+    HasPosLeadingCoeff (schurSzegoComp n (rows n) (rows n)) := by
+  rr_row_leadingCoeff_pos (via := coefficients)
+
+example (p : ℝ[X]) (hp : HasNonnegCoeffs p) (n : ℕ)
+    (hn : hadamardProduct p (rows n) ≠ 0) :
+    HasPosLeadingCoeff (hadamardProduct p (rows n)) := by
+  rr_row_leadingCoeff_pos
+
+example (n : ℕ) (hn : (rows n).reverse ≠ 0) :
+    HasPosLeadingCoeff (rows n).reverse := by
+  rr_row_leadingCoeff_pos (via := coefficients)
+
+example (n : ℕ) (hn : (rows n).derivative ≠ 0) :
+    HasPosLeadingCoeff (rows n).derivative := by
+  rr_row_leadingCoeff_pos (via := coefficients)
+
+#guard_msgs (drop info) in
+example (p q : ℝ[X]) (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
+    (hn : hadamardProduct p q ≠ 0) : HasPosLeadingCoeff (hadamardProduct p q) := by
+  rr_row_leadingCoeff_pos? (via := coefficients)
+
+example : True := by
+  fail_if_success
+    have : HasPosLeadingCoeff (hadamardProduct X (-X)) := by
+      rr_row_leadingCoeff_pos (via := coefficients)
+  fail_if_success
+    have : HasPosLeadingCoeff (hadamardProduct X 1) := by
+      rr_row_leadingCoeff_pos (via := coefficients)
+  trivial
+
+end CoefficientClosureTests
+
+
 end
 
 end RealRooted.Tactic.RowGeneralExamples

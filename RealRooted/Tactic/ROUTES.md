@@ -448,10 +448,11 @@ side conditions, implementing modules, and regression examples.
 
 ## `coefficients`
 
-- **Summary:** Propagate nonnegative coefficients and an affine degree envelope through paired
-  finite-lag differential terms.
-- **Side conditions:** At most first derivatives, certified degree bounds and coefficient
-  multipliers, nonnegative initial rows, and a nonzero target row.
+- **Summary:** Propagate nonnegative coefficients through finite-lag differential recurrences
+  and general polynomial operations, including coefficientwise products and weighted sums.
+- **Side conditions:** Nonnegative operand coefficients and scalar weights, and a nonzero
+  target. Recurrence leaves require at most first derivatives, certified degree bounds and
+  coefficient multipliers, and nonnegative initial rows.
 - **Module:** `RealRooted.Tactic.Recurrence.Coefficients`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowGeneral`
 
