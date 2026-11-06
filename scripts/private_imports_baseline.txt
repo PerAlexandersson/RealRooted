@@ -40,6 +40,7 @@ RealRooted/Tactic/Examples/RowParityFactorization.lean: RealRooted.Tactic.RowInt
 RealRooted/Tactic/Examples/SideGoals.lean: RealRooted.Tactic.SideGoals
 RealRooted/Tactic/Examples/WagnerX.lean: RealRooted.Tactic.RowInterlacing
 RealRooted/Tactic/Product/Interlacing.lean: RealRooted.Tactic.Ring
+RealRooted/Tactic/Recurrence/LeadingCoeff.lean: RealRooted.Tactic.Recurrence.RowSide
 RealRooted/Tactic/RecurrenceEval.lean: RealRooted.Tactic.Ring
 RealRooted/Tactic/Sign.lean: RealRooted.Tactic.SideGoals
 RealRooted/Tactic/WagnerX/Frontend.lean: RealRooted.Tactic.Lookup
