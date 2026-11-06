@@ -458,6 +458,60 @@ example (p : ℝ[X]) (hp : HasPosLeadingCoeff p) (hd : p.derivative ≠ 0) :
   exact RealRooted.HasPosLeadingCoeff.derivative
     (by rr_row_leadingCoeff_pos) (Polynomial.derivative_ne_zero.mp hd)
 
+namespace GenericCaseTests
+
+/-- Arbitrary real linear factors with an exceptional zero initial row. -/
+def pieceRows (a b : ℝ) : ℕ → ℝ[X]
+  | 0 => 0
+  | n + 1 => (X - C a) * (X + C b) ^ n
+
+theorem pieceRows_pos (a b : ℝ) (n : ℕ) (hn : pieceRows a b n ≠ 0) :
+    HasPosLeadingCoeff (pieceRows a b n) := by rr_row_leadingCoeff_pos
+
+/-- A conditional choice of two arbitrary polynomials. -/
+def choiceRows (p q : ℝ[X]) (b : Bool) : ℝ[X] := if b then p else q
+
+theorem choiceRows_pos (p q : ℝ[X]) (hp : HasPosLeadingCoeff p)
+    (hq : HasPosLeadingCoeff q) (b : Bool) :
+    HasPosLeadingCoeff (choiceRows p q b) := by rr_row_leadingCoeff_pos
+
+/-- A piecewise scalar formula with a nonnegative parameter. -/
+def pieceCoeff (a : ℝ) : ℕ → ℕ → ℝ
+  | 0, 0 => 1
+  | 0, _ + 1 => 0
+  | _ + 1, 0 => a
+  | n + 1, k + 1 => a * Nat.choose n k / ((k : ℝ) + 1)
+
+/-- Rows assembled from the piecewise scalar formula. -/
+def sumRows (a : ℝ) (n : ℕ) : ℝ[X] :=
+  ∑ k ∈ Finset.range (n + 1), monomial k (pieceCoeff a n k)
+
+theorem sumRows_pos (a : ℝ) (ha : 0 ≤ a) (n : ℕ) (hn : sumRows a n ≠ 0) :
+    HasPosLeadingCoeff (sumRows a n) := by rr_row_leadingCoeff_pos
+
+example : True := by
+  fail_if_success
+    have : HasPosLeadingCoeff (choiceRows X (-X) false) := by rr_row_leadingCoeff_pos
+  fail_if_success
+    have : HasPosLeadingCoeff (pieceRows 2 3 0) := by rr_row_leadingCoeff_pos
+  trivial
+
+example (p q : ℝ[X]) (hp : 0 ≤ p.leadingCoeff) (hq : 0 ≤ q.leadingCoeff)
+    (b : Bool) : 0 ≤ (choiceRows p q b).leadingCoeff := by
+  rr_row_leadingCoeff_nonneg
+
+#guard_msgs (drop info) in
+example (a b : ℝ) (n : ℕ) (hn : pieceRows a b n ≠ 0) :
+    HasPosLeadingCoeff (pieceRows a b n) := by
+  rr_row_leadingCoeff_pos? (via := algebra)
+
+#guard_msgs (drop info) in
+example (p q : ℝ[X]) (hp : HasPosLeadingCoeff p) (hq : HasPosLeadingCoeff q)
+    (b : Bool) : HasPosLeadingCoeff (choiceRows p q b) := by
+  rr_row_leadingCoeff_pos? (via := algebra)
+
+end GenericCaseTests
+
 end
 
 end RealRooted.Tactic.RowGeneralExamples

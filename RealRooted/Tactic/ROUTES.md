@@ -438,8 +438,8 @@ side conditions, implementing modules, and regression examples.
 
 ## `algebra`
 
-- **Summary:** Decompose algebraic expressions, normalize shifted wrappers, or prove nonnegative
-  coefficients.
+- **Summary:** Decompose algebraic expressions, split piecewise definitions, normalize shifted
+  wrappers, or prove nonnegative coefficients.
 - **Side conditions:** Positive or nonnegative component leaders, or nonnegative coefficients
   plus a nonzero polynomial. Scalar signs and derivative degrees when needed; a nonzero
   derivative supplies its degree condition.

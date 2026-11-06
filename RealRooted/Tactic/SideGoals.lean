@@ -179,7 +179,8 @@ macro_rules
           | positivity
           | (norm_num; done)
           | nlinarith
-          | solve_by_elim (maxDepth := 2))
+          | solve_by_elim (maxDepth := 2)
+          | (split <;> rr_side_nonneg))
   | `(tactic| rr_side_pos) =>
       `(tactic|
         first
