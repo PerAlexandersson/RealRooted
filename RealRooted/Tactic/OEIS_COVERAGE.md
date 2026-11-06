@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **170 IDs**; **17 formalized**, **139 shells**, **1 fragments**, and **13 documented-only**.
+Current totals: **171 IDs**; **17 formalized**, **140 shells**, **1 fragments**, and **13 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -113,7 +113,7 @@ Current totals: **170 IDs**; **17 formalized**, **139 shells**, **1 fragments**,
 | A128540 | `shell` | ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A128966 | `shell` | A zero first row is split off; `h` excludes it ().<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_natDegree`, `rr_row_ne_zero` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A131689 | `shell` | Fubini polynomials: `v_n(t) = t(1 + t)` ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
-| A132812 | `shell` | found numerically and certified through its remainder ().<br>def : ℕ → ℝ[X]<br>+6 additional test intents | `rr_row_interlaces`, `rr_row_splits` | `drop`, `via` | concrete row definition and proofs of the listed certificates |
+| A132812 | `shell` | found numerically and certified through its remainder ().<br>def : ℕ → ℝ[X]<br>+6 additional test intents | `rr_row_interlaces`, `rr_row_leadingCoeff_pos`, `rr_row_splits` | `drop`, `via` | concrete row definition and proofs of the listed certificates |
 | A132885 | `formalized` | concrete sequence-facing theorem | none | not recorded | none |
 | A133080 | `shell` | A two-step product with a double root `q = X ^ 2` ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A133109 | `shell` | The downstream recurrence used to regress the remaining degree route.<br>def : ℕ → ℝ[X]<br>+5 additional test intents | `rr_row_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
@@ -146,6 +146,7 @@ Current totals: **170 IDs**; **17 formalized**, **139 shells**, **1 fragments**,
 | A180047 | `shell` | Half growth after the zero row `P 0 = 0` ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A181738 | `fragment` | -style negative-definite quadratic lag. | `rr_sign` | root sign/interval hypotheses | full recurrence shell, base cases, degree, and leading-coefficient data |
 | A184883 | `documented` | copied from the downstream row recurrence.<br>A cubic-parent row whose recurrence is not written in the canonical form (). | none | not recorded | executable tactic route and its certificates |
+| A185778 | `shell` | A product tail with two vanishing initial rows (OEIS ).<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_leadingCoeff_pos`, `rr_row_side` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A186370 | `shell` | namespace Downstream<br>The exact downstream recurrence presentation of .<br>+20 additional test intents | `rr_row_interlaces`, `rr_row_natDegree`, `rr_row_splits` | `via` | concrete row definition and proofs of the listed certificates |
 | A188440 | `shell` | A two-step product `P (n + 2) = (1 + 2 X) P n` ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A191935 | `shell` | Reversed rows again ().<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
