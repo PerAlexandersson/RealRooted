@@ -5,6 +5,7 @@ import RealRooted.Recurrence.RowModel
 public meta import RealRooted.Tactic.Recurrence.LinRec
 public meta import RealRooted.Recurrence.RowModel
 public import RealRooted.Tactic.Recurrence.RowSide
+public meta import RealRooted.Tactic.Recurrence.LeadingCoeff
 
 /-!
 # Degree tactics for recurrences
@@ -30,7 +31,8 @@ in any order, and the left side may be `P (n + k)` with explicit rows below `k`,
 * `rr_row_ne_zero` closes `P t ≠ 0`;
 * `rr_row_leadingCoeff_pos` closes `0 < (P t).leadingCoeff`, including positive
   scalar normalizations `C (a t) * P t` exposed through non-recursive definitions
-  and fixed two-step products without a degree law;
+  and fixed two-step products without a degree law. Algebraic sums, products, powers,
+  derivatives and finite products reduce to component leading-coefficient goals;
 * `rr_row_natDegree_leadingCoeff_pos` closes the conjunction
   `(P t).natDegree = e ∧ 0 < (P t).leadingCoeff`, discharging the shared side goals once;
 * `rr_row_side` closes their side goals.
@@ -370,6 +372,8 @@ private def rowDegreeCore (log : RowAttemptLog) (kind : String) (hints : RowHint
   if kind == "leadingCoeff_pos" && noShapeHints then
     if let some cert ← s.attempt `scale scaledRowLeadingCoeff then
       return (cert, { via := some `scale })
+    if let some cert ← s.attempt `algebra (algebraRowLeadingCoeff true) then
+      return (cert, { via := some `algebra })
   if kind == "leadingCoeff_pos" && noShapeHints && hints.via == some `twoStep then
     if let some cert ← s.attempt `twoStep twoStepLeadingCoeff then
       return (cert, { via := some `twoStep })

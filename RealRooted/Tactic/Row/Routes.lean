@@ -504,6 +504,21 @@ def rowRouteTable : List RowRouteInfo := [
         `RealRooted.hasPosLeadingCoeff_C_mul
       ]
   },
+  { name := `algebra
+    frontEnds := [
+      "rr_row_leadingCoeff_pos"
+    ]
+    conclusion := "HasPosLeadingCoeff p"
+    theorems :=
+      [
+        `Polynomial.leadingCoeff_add_pos_of_pos_of_nonneg,
+        `Polynomial.leadingCoeff_add_pos_of_nonneg_of_pos,
+        `Polynomial.leadingCoeff_mul,
+        `Polynomial.leadingCoeff_pow,
+        `Polynomial.leadingCoeff_derivative,
+        `Polynomial.leadingCoeff_prod
+      ]
+  },
   { name := `recurrence
     frontEnds := [
       "rr_row_natDegree",
@@ -602,6 +617,7 @@ def rowRoutesOf (frontEnd : String) : List Name :=
     ]
   | "rr_row_leadingCoeff_pos" => [
       `scale,
+      `algebra,
       `twoStep,
       `cone,
       `cancel

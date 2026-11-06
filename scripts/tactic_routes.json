@@ -175,7 +175,7 @@
       "frontEnds": [
         {"tactic": "rr_row_splits", "position": 14},
         {"tactic": "rr_row_natDegree", "position": 5, "selectable": false},
-        {"tactic": "rr_row_leadingCoeff_pos", "position": 6, "selectable": false}
+        {"tactic": "rr_row_leadingCoeff_pos", "position": 7, "selectable": false}
       ],
       "conclusion": "Splitting, a natural-degree identity, or a positive leading coefficient.",
       "theorems": [
@@ -222,7 +222,7 @@
         {"tactic": "rowInterlacesCoreAt", "position": 3},
         {"tactic": "rr_row_splits", "position": 17},
         {"tactic": "rr_row_natDegree", "position": 2, "selectable": false},
-        {"tactic": "rr_row_leadingCoeff_pos", "position": 3}
+        {"tactic": "rr_row_leadingCoeff_pos", "position": 4}
       ],
       "conclusion": "Interlacing, splitting, degree, or positive leading coefficient for P (n + 2) = q * P n.",
       "theorems": [
@@ -574,7 +574,7 @@
         {"tactic": "rr_row_nonneg_coeffs", "position": 2, "selectable": false},
         {"tactic": "rr_row_natDegree", "position": 3},
         {"tactic": "rr_row_ne_zero", "position": 3},
-        {"tactic": "rr_row_leadingCoeff_pos", "position": 4},
+        {"tactic": "rr_row_leadingCoeff_pos", "position": 5},
         {"tactic": "rr_row_natDegree_leadingCoeff_pos", "position": 3}
       ],
       "conclusion": "HasNonnegCoeffs, degree, nonvanishing, or positive leader.",
@@ -646,11 +646,27 @@
       "pseudo": false
     },
     {
+      "name": "algebra",
+      "frontEnds": [
+        {"tactic": "rr_row_leadingCoeff_pos", "position": 2}
+      ],
+      "conclusion": "HasPosLeadingCoeff p",
+      "theorems": ["Polynomial.leadingCoeff_add_pos_of_pos_of_nonneg",
+        "Polynomial.leadingCoeff_add_pos_of_nonneg_of_pos",
+        "Polynomial.leadingCoeff_mul", "Polynomial.leadingCoeff_pow",
+        "Polynomial.leadingCoeff_derivative", "Polynomial.leadingCoeff_prod"],
+      "module": "RealRooted.Tactic.Recurrence.LeadingCoeff",
+      "summary": "Decompose algebraic expressions into leading-coefficient sign goals.",
+      "requires": "Positive or nonnegative component leaders; scalar signs and derivative degrees when needed.",
+      "examples": ["RealRooted.Tactic.Examples.RowGeneral"],
+      "pseudo": false
+    },
+    {
       "name": "recurrence",
       "frontEnds": [
         {"tactic": "rr_row_natDegree", "position": 1, "selectable": false},
         {"tactic": "rr_row_ne_zero", "position": 1, "selectable": false},
-        {"tactic": "rr_row_leadingCoeff_pos", "position": 2, "selectable": false},
+        {"tactic": "rr_row_leadingCoeff_pos", "position": 3, "selectable": false},
         {
           "tactic": "rr_row_natDegree_leadingCoeff_pos",
           "position": 1,
@@ -678,7 +694,7 @@
       "frontEnds": [
         {"tactic": "rr_row_natDegree", "position": 4},
         {"tactic": "rr_row_ne_zero", "position": 4},
-        {"tactic": "rr_row_leadingCoeff_pos", "position": 5},
+        {"tactic": "rr_row_leadingCoeff_pos", "position": 6},
         {"tactic": "rr_row_natDegree_leadingCoeff_pos", "position": 4}
       ],
       "conclusion": "The requested degree, nonvanishing, leading-coefficient, or conjunction goal.",
