@@ -241,11 +241,33 @@ theorem A003982_natDegree (n : ℕ) :
     (A003982 n).natDegree = if n % 2 = 1 then 0 else n / 2 := by
   rr_row_natDegree
 
+/-- Positivity holds on the nonzero (even) rows, despite the zero odd rows. -/
+theorem A003982_hasPosLeadingCoeff (n : ℕ) (h : A003982 n ≠ 0) :
+    HasPosLeadingCoeff (A003982 n) := by
+  rr_row_leadingCoeff_pos
+
+#guard_msgs (drop info) in
+example (n : ℕ) (h : A003982 n ≠ 0) : HasPosLeadingCoeff (A003982 n) := by
+  rr_row_leadingCoeff_pos? (via := twoStep)
+
+-- A proposition binder is an implication, not a universally quantified row index.
+example : A003982 0 ≠ 0 → 0 < (A003982 0).leadingCoeff := by rr_row_side
+example : A003982 1 ≠ 0 → 0 < (A003982 1).leadingCoeff := by rr_row_side
+
 /-- A constant factor: the rows alternate between `1` and `1 + X`. -/
 def alternatingParityRows : ℕ → ℝ[X]
   | 0 => 1
   | 1 => 1 + X
   | n + 2 => 1 * alternatingParityRows n
+
+/-- A266178 has alternating degrees, but every leading coefficient is positive. -/
+theorem alternatingParityRows_hasPosLeadingCoeff (n : ℕ) :
+    HasPosLeadingCoeff (alternatingParityRows n) := by
+  rr_row_leadingCoeff_pos
+
+-- Quantification over a finite index type remains a row certificate, not an implication.
+example (n : ℕ) : ∀ i : Fin (n + 1), 0 < (alternatingParityRows i).leadingCoeff := by
+  rr_row_side
 
 theorem alternatingParityRows_natDegree (n : ℕ) :
     (alternatingParityRows n).natDegree = if n % 2 = 1 then 1 else 0 := by

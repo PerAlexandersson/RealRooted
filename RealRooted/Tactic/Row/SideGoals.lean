@@ -257,14 +257,17 @@ def explicitNonnegCoeffs : TacticM Unit := do
 
 /-- Does the goal belong to the interlacing side-goal engine (`interlaceSideGoal`) rather
 than to the degree one (`rowSideGoal`)? -/
-private def isInterlaceGoal (P? : Option Ident) (ty : Expr) : Bool :=
+private def isInterlaceGoal (P? : Option Ident) (ty : Expr) : MetaM Bool := do
   let has (n : Name) : Bool := (ty.find? fun e => e.isConstOf n).isSome
+  let rowBinder ← if ty.isForall then do
+      pure !(← isProp ty.bindingDomain!)
+    else pure false
   let mentionsP := match P? with
     | some P => (ty.find? fun e => e.isConstOf P.getId).isSome
     | none => false
-  has ``RealRooted.Interlaces || has ``Polynomial.roots || has ``Polynomial.eval ||
+  return has ``RealRooted.Interlaces || has ``Polynomial.roots || has ``Polynomial.eval ||
     has ``RealRooted.HasNonnegCoeffs || (!ty.isForall && mentionsP && has ``Polynomial.Splits) ||
-    (ty.isForall && mentionsP && (has ``Polynomial.natDegree || has ``Polynomial.leadingCoeff)) ||
+    (rowBinder && mentionsP && (has ``Polynomial.natDegree || has ``Polynomial.leadingCoeff)) ||
     (ty.isForall && !mentionsP && has ``LE.le && has ``Polynomial.coeff) ||
     (ty.isForall && ty.bindingBody!.isForall && !mentionsP && has ``LE.le && has ``HMul.hMul &&
       has ``Polynomial.coeff)
@@ -273,6 +276,9 @@ private def isInterlaceGoal (P? : Option Ident) (ty : Expr) : Bool :=
 private def interlaceSideGoal (P? : Option Ident) : TacticM Unit := do
   let ty ← instantiateMVars (← getMainTarget)
   let has (n : Name) : Bool := (ty.find? fun e => e.isConstOf n).isSome
+  let rowBinder ← if ty.isForall then do
+      pure !(← isProp ty.bindingDomain!)
+    else pure false
   let mentionsP := match P? with
     | some P => (ty.find? fun e => e.isConstOf P.getId).isSome
     | none => false
@@ -287,7 +293,7 @@ private def interlaceSideGoal (P? : Option Ident) : TacticM Unit := do
     | some P => f P
     | none => []
   let strategies : List (TacticM Unit) :=
-    if ty.isForall && mentionsP && has ``Polynomial.natDegree then
+    if rowBinder && mentionsP && has ``Polynomial.natDegree then
       let eq := do evalTactic (← `(tactic| (intro n; rr_row_natDegree)))
       let le := do evalTactic (← `(tactic| (intro n; apply le_of_eq; rr_row_natDegree)))
       -- a bound `D₀ + d * n` for rows of degree `D₀ + d * n - 1`, which occur when the first
@@ -300,10 +306,10 @@ private def interlaceSideGoal (P? : Option Ident) : TacticM Unit := do
           rr_row_natDegree)))
       -- a failed search for an equality is slow, so try the bound first on `≤` goals
       if ty.getForallBody.isAppOf ``LE.le then [le, leSub, eq] else [eq, le]
-    else if ty.isForall && mentionsP && has ``Polynomial.leadingCoeff &&
+    else if rowBinder && mentionsP && has ``Polynomial.leadingCoeff &&
         ty.getForallBody.isAppOf ``LE.le then
       [do evalTactic (← `(tactic| (intro n; beta_reduce; rr_row_leadingCoeff_ratio)))]
-    else if ty.isForall && mentionsP && has ``Polynomial.leadingCoeff then
+    else if rowBinder && mentionsP && has ``Polynomial.leadingCoeff then
       [do evalTactic (← `(tactic| (intro n; rr_row_leadingCoeff_pos)))]
     else if has ``RealRooted.Interlaces then
       [do
@@ -421,9 +427,9 @@ private def interlaceSideGoal (P? : Option Ident) : TacticM Unit := do
   throwError "rr_row: could not discharge the side goal{indentExpr ty}"
 
 /-- Close the main goal, a side goal of the row theorems. -/
-def rowSideFull (P? : Option Ident) : TacticM Unit := do
+def rowSideFull (P? : Option Ident) : TacticM Unit := withMainContext do
   let ty ← instantiateMVars (← getMainTarget)
-  if isInterlaceGoal P? ty then interlaceSideGoal P? else rowSideGoal P?
+  if ← isInterlaceGoal P? ty then interlaceSideGoal P? else rowSideGoal P?
 
 elab_rules : tactic
   | `(tactic| rr_row_side) => withMainContext do
@@ -431,7 +437,7 @@ elab_rules : tactic
     withMainContext do
     let ty ← instantiateMVars (← getMainTarget)
     let P? := (← findSeqConstDeep? ty).map mkIdent
-    unless isInterlaceGoal P? ty do throwUnsupportedSyntax
+    unless ← isInterlaceGoal P? ty do throwUnsupportedSyntax
     interlaceSideGoal P?
 
 /-- Run `main`, then close every remaining goal with `rr_row_side`. -/

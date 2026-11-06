@@ -33,7 +33,7 @@ side conditions, implementing modules, and regression examples.
 | 13 | `core` (pseudo) | Interlaces (P n) (P (n + 1)) | — |
 | 14 | `product` | Interlaces (P n) (P (n + 1)) | `productSequence_interlaces` |
 | 15 | `eulerStep` | Interlaces (P n) (P (n + 1)) | `EulerBidiagonal.interlaces_of_generalStep_rec`, `EulerBidiagonal.interlaces_of_generalStep_rec_zero` |
-| 16 | `twoStep` | Interlacing, splitting, or degree for P (n + 2) = q * P n. | `twoStepProduct_interlaces`, `twoStepProduct_splits`, `twoStepProduct_natDegree` |
+| 16 | `twoStep` | Interlacing, splitting, degree, or positive leading coefficient for P (n + 2) = q * P n. | `twoStepProduct_interlaces`, `twoStepProduct_splits`, `twoStepProduct_natDegree`, `twoStepProduct_leadingCoeff_pos`, `twoStepProduct_leadingCoeff_pos_of_ne_zero` |
 | 17 | `sign` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_eval_nonpos`, `derivativeRecurrence_interlaces_of_nonnegCoeffs`, `derivativeRecurrence_interlaces_of_splits_of_eval_nonpos`, `derivativeRecurrence_interlaces_of_splits_of_nonnegCoeffs`, `threeTerm_interlaces_of_eval_nonpos`, `threeTerm_interlaces_of_nonnegCoeffs` |
 | 18 | `window` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_mem_Icc`, `derivativeRecurrence_interlaces_of_roots_le`, `derivativeRecurrence_interlaces_of_roots_mem_Icc_of_pos`, `threeTerm_interlaces_of_roots_mem_Icc`, `threeTerm_interlaces_of_roots_le` |
 | 19 | `degreeWindow` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_le_of_degree` |
@@ -63,7 +63,7 @@ side conditions, implementing modules, and regression examples.
 | 14 | `subseq` | (P n).Splits or a natural-degree identity, according to the front end. | `productSequence_splits`, `threeTermPos_natDegree`, `productSequence_natDegree_of_constant_degree` |
 | 15 | `linearFactors` | (P n).Splits | `productSequence_ne_zero_and_splits` |
 | 16 | `splitFactors` | (P n).Splits | `productSequence_splits` |
-| 17 | `twoStep` | Interlacing, splitting, or degree for P (n + 2) = q * P n. | `twoStepProduct_interlaces`, `twoStepProduct_splits`, `twoStepProduct_natDegree` |
+| 17 | `twoStep` | Interlacing, splitting, degree, or positive leading coefficient for P (n + 2) = q * P n. | `twoStepProduct_interlaces`, `twoStepProduct_splits`, `twoStepProduct_natDegree`, `twoStepProduct_leadingCoeff_pos`, `twoStepProduct_leadingCoeff_pos_of_ne_zero` |
 | 18 | `nextRow` | (P n).Splits | `productSequence_interlaces`, `derivativeRecurrence_interlaces_of_eval_nonpos`, `threeTerm_interlaces_of_eval_nonpos` |
 | 19 | `degreePattern` | (P n).Splits or StrictInterl (P n) (P (n + 1)). | `derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs`, `derivativeRecurrence_strictInterl_of_degree_pattern_of_nonnegCoeffs`, `Tactic.derivativeRecurrence_strictInterl_of_half_degree`, `Tactic.derivativeRecurrence_strictInterl_of_floor_half_degree` |
 | 20 | `reversed` | Interlaces (P n) (P (n + 1)) or (P n).Splits after reflection. | `eq_reflect_of_secondOrderDerivativeRecurrence`, `eq_reflect_of_threeTerm`, `interlaces_of_eq_reflect`, `splits_of_eq_reflect` |
@@ -74,7 +74,7 @@ side conditions, implementing modules, and regression examples.
 | # | route | proves | main theorem(s) |
 |---:|---|---|---|
 | 1 | `recurrence` | The requested degree, nonvanishing, leader, or ratio goal. | `productSequence_natDegree`, `derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos`, `derivRec₂_natDegree_eq_and_leadingCoeff_pos`, `threeTermPos_natDegree_eq_and_leadingCoeff_pos`, `threeTermRatio_natDegree_eq_and_leadingCoeff_pos`, `threeTermHalf_natDegree` |
-| 2 | `twoStep` | Interlacing, splitting, or degree for P (n + 2) = q * P n. | `twoStepProduct_interlaces`, `twoStepProduct_splits`, `twoStepProduct_natDegree` |
+| 2 | `twoStep` | Interlacing, splitting, degree, or positive leading coefficient for P (n + 2) = q * P n. | `twoStepProduct_interlaces`, `twoStepProduct_splits`, `twoStepProduct_natDegree`, `twoStepProduct_leadingCoeff_pos`, `twoStepProduct_leadingCoeff_pos_of_ne_zero` |
 | 3 | `cone` | HasNonnegCoeffs, degree, nonvanishing, or positive leader. | `LinRec.hasNonnegCoeffs`, `LinRec.natDegree_eq_and_leadingCoeff_pos`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_degreeLaw`, `LinRec.natDegree_eq_and_leadingCoeff_eq_of_coeff` |
 | 4 | `cancel` | The requested degree, nonvanishing, leading-coefficient, or conjunction goal. | `derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos_of_cancel`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_cancel` |
 | 5 | `subseq` | (P n).Splits or a natural-degree identity, according to the front end. | `productSequence_splits`, `threeTermPos_natDegree`, `productSequence_natDegree_of_constant_degree` |
@@ -105,7 +105,7 @@ side conditions, implementing modules, and regression examples.
 |---:|---|---|---|
 | 1 | `product` | Interlaces (P n) (P (n + 1)) | `productSequence_interlaces` |
 | 2 | `eulerStep` | Interlaces (P n) (P (n + 1)) | `EulerBidiagonal.interlaces_of_generalStep_rec`, `EulerBidiagonal.interlaces_of_generalStep_rec_zero` |
-| 3 | `twoStep` | Interlacing, splitting, or degree for P (n + 2) = q * P n. | `twoStepProduct_interlaces`, `twoStepProduct_splits`, `twoStepProduct_natDegree` |
+| 3 | `twoStep` | Interlacing, splitting, degree, or positive leading coefficient for P (n + 2) = q * P n. | `twoStepProduct_interlaces`, `twoStepProduct_splits`, `twoStepProduct_natDegree`, `twoStepProduct_leadingCoeff_pos`, `twoStepProduct_leadingCoeff_pos_of_ne_zero` |
 | 4 | `sign` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_eval_nonpos`, `derivativeRecurrence_interlaces_of_nonnegCoeffs`, `derivativeRecurrence_interlaces_of_splits_of_eval_nonpos`, `derivativeRecurrence_interlaces_of_splits_of_nonnegCoeffs`, `threeTerm_interlaces_of_eval_nonpos`, `threeTerm_interlaces_of_nonnegCoeffs` |
 | 5 | `window` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_mem_Icc`, `derivativeRecurrence_interlaces_of_roots_le`, `derivativeRecurrence_interlaces_of_roots_mem_Icc_of_pos`, `threeTerm_interlaces_of_roots_mem_Icc`, `threeTerm_interlaces_of_roots_le` |
 | 6 | `degreeWindow` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_le_of_degree` |
@@ -114,20 +114,21 @@ side conditions, implementing modules, and regression examples.
 | 9 | `movingWindow` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_mem_Icc_mono_div` |
 | 10 | `movingUpper` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_le_mono_div` |
 
-## `rr_row_ne_zero`
-
-| # | route | proves | main theorem(s) |
-|---:|---|---|---|
-| 1 | `recurrence` | The requested degree, nonvanishing, leader, or ratio goal. | `productSequence_natDegree`, `derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos`, `derivRec₂_natDegree_eq_and_leadingCoeff_pos`, `threeTermPos_natDegree_eq_and_leadingCoeff_pos`, `threeTermRatio_natDegree_eq_and_leadingCoeff_pos`, `threeTermHalf_natDegree` |
-| 3 | `cone` | HasNonnegCoeffs, degree, nonvanishing, or positive leader. | `LinRec.hasNonnegCoeffs`, `LinRec.natDegree_eq_and_leadingCoeff_pos`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_degreeLaw`, `LinRec.natDegree_eq_and_leadingCoeff_eq_of_coeff` |
-| 4 | `cancel` | The requested degree, nonvanishing, leading-coefficient, or conjunction goal. | `derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos_of_cancel`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_cancel` |
-
 ## `rr_row_leadingCoeff_pos`
 
 | # | route | proves | main theorem(s) |
 |---:|---|---|---|
 | 1 | `scale` | HasPosLeadingCoeff (C a * P n) | `hasPosLeadingCoeff_C_mul` |
 | 2 | `recurrence` | The requested degree, nonvanishing, leader, or ratio goal. | `productSequence_natDegree`, `derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos`, `derivRec₂_natDegree_eq_and_leadingCoeff_pos`, `threeTermPos_natDegree_eq_and_leadingCoeff_pos`, `threeTermRatio_natDegree_eq_and_leadingCoeff_pos`, `threeTermHalf_natDegree` |
+| 3 | `twoStep` | Interlacing, splitting, degree, or positive leading coefficient for P (n + 2) = q * P n. | `twoStepProduct_interlaces`, `twoStepProduct_splits`, `twoStepProduct_natDegree`, `twoStepProduct_leadingCoeff_pos`, `twoStepProduct_leadingCoeff_pos_of_ne_zero` |
+| 4 | `cone` | HasNonnegCoeffs, degree, nonvanishing, or positive leader. | `LinRec.hasNonnegCoeffs`, `LinRec.natDegree_eq_and_leadingCoeff_pos`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_degreeLaw`, `LinRec.natDegree_eq_and_leadingCoeff_eq_of_coeff` |
+| 5 | `cancel` | The requested degree, nonvanishing, leading-coefficient, or conjunction goal. | `derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos_of_cancel`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_cancel` |
+
+## `rr_row_ne_zero`
+
+| # | route | proves | main theorem(s) |
+|---:|---|---|---|
+| 1 | `recurrence` | The requested degree, nonvanishing, leader, or ratio goal. | `productSequence_natDegree`, `derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos`, `derivRec₂_natDegree_eq_and_leadingCoeff_pos`, `threeTermPos_natDegree_eq_and_leadingCoeff_pos`, `threeTermRatio_natDegree_eq_and_leadingCoeff_pos`, `threeTermHalf_natDegree` |
 | 3 | `cone` | HasNonnegCoeffs, degree, nonvanishing, or positive leader. | `LinRec.hasNonnegCoeffs`, `LinRec.natDegree_eq_and_leadingCoeff_pos`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_degreeLaw`, `LinRec.natDegree_eq_and_leadingCoeff_eq_of_coeff` |
 | 4 | `cancel` | The requested degree, nonvanishing, leading-coefficient, or conjunction goal. | `derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos_of_cancel`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_cancel` |
 
@@ -247,10 +248,13 @@ side conditions, implementing modules, and regression examples.
 
 ## `twoStep`
 
-- **Summary:** Name clash: three front ends use distinct two-step theorems.
-- **Side conditions:** Fixed nonzero q, suitable bases, and exact degree data.
+- **Summary:** Front ends use the corresponding two-step theorem, without a degree law for
+  positivity.
+- **Side conditions:** Fixed factor, suitable bases; positivity requires a positive leader and
+  allows zero rows with a nonzero-row hypothesis.
 - **Module:** `RealRooted.Tactic.RowInterlacing`
-- **Regression examples:** `RealRooted.Tactic.Examples.RowInterlacing`
+- **Regression examples:** `RealRooted.Tactic.Examples.RowInterlacing`,
+  `RealRooted.Tactic.Examples.RowGeneral`
 
 ## `nextRow`
 

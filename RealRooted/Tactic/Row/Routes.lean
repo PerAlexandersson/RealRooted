@@ -187,14 +187,18 @@ def rowRouteTable : List RowRouteInfo := [
       "rr_row_interlaces",
       "rowInterlacesCoreAt",
       "rr_row_splits",
-      "rr_row_natDegree"
+      "rr_row_natDegree",
+      "rr_row_leadingCoeff_pos"
     ]
-    conclusion := "Interlacing, splitting, or degree for P (n + 2) = q * P n."
+    conclusion := "Interlacing, splitting, degree, or positive leading coefficient " ++
+      "for P (n + 2) = q * P n."
     theorems :=
       [
         `RealRooted.twoStepProduct_interlaces,
         `RealRooted.twoStepProduct_splits,
-        `RealRooted.twoStepProduct_natDegree
+        `RealRooted.twoStepProduct_natDegree,
+        `RealRooted.twoStepProduct_leadingCoeff_pos,
+        `RealRooted.twoStepProduct_leadingCoeff_pos_of_ne_zero
       ]
   },
   { name := `nextRow
@@ -607,12 +611,13 @@ def rowRoutesOf (frontEnd : String) : List Name :=
       `movingWindow,
       `movingUpper
     ]
-  | "rr_row_ne_zero" => [
+  | "rr_row_leadingCoeff_pos" => [
+      `scale,
+      `twoStep,
       `cone,
       `cancel
     ]
-  | "rr_row_leadingCoeff_pos" => [
-      `scale,
+  | "rr_row_ne_zero" => [
       `cone,
       `cancel
     ]

@@ -220,18 +220,21 @@
         {"tactic": "rr_row_interlaces", "position": 16},
         {"tactic": "rowInterlacesCoreAt", "position": 3},
         {"tactic": "rr_row_splits", "position": 17},
-        {"tactic": "rr_row_natDegree", "position": 2, "selectable": false}
+        {"tactic": "rr_row_natDegree", "position": 2, "selectable": false},
+        {"tactic": "rr_row_leadingCoeff_pos", "position": 3}
       ],
-      "conclusion": "Interlacing, splitting, or degree for P (n + 2) = q * P n.",
+      "conclusion": "Interlacing, splitting, degree, or positive leading coefficient for P (n + 2) = q * P n.",
       "theorems": [
         "RealRooted.twoStepProduct_interlaces",
         "RealRooted.twoStepProduct_splits",
-        "RealRooted.twoStepProduct_natDegree"
+        "RealRooted.twoStepProduct_natDegree",
+        "RealRooted.twoStepProduct_leadingCoeff_pos",
+        "RealRooted.twoStepProduct_leadingCoeff_pos_of_ne_zero"
       ],
       "module": "RealRooted.Tactic.RowInterlacing",
-      "summary": "Name clash: three front ends use distinct two-step theorems.",
-      "requires": "Fixed nonzero q, suitable bases, and exact degree data.",
-      "examples": ["RealRooted.Tactic.Examples.RowInterlacing"],
+      "summary": "Front ends use the corresponding two-step theorem, without a degree law for positivity.",
+      "requires": "Fixed factor, suitable bases; positivity requires a positive leader and allows zero rows with a nonzero-row hypothesis.",
+      "examples": ["RealRooted.Tactic.Examples.RowInterlacing", "RealRooted.Tactic.Examples.RowGeneral"],
       "pseudo": false
     },
     {
@@ -570,7 +573,7 @@
         {"tactic": "rr_row_nonneg_coeffs", "position": 2, "selectable": false},
         {"tactic": "rr_row_natDegree", "position": 3},
         {"tactic": "rr_row_ne_zero", "position": 3},
-        {"tactic": "rr_row_leadingCoeff_pos", "position": 3},
+        {"tactic": "rr_row_leadingCoeff_pos", "position": 4},
         {"tactic": "rr_row_natDegree_leadingCoeff_pos", "position": 3}
       ],
       "conclusion": "HasNonnegCoeffs, degree, nonvanishing, or positive leader.",
@@ -674,7 +677,7 @@
       "frontEnds": [
         {"tactic": "rr_row_natDegree", "position": 4},
         {"tactic": "rr_row_ne_zero", "position": 4},
-        {"tactic": "rr_row_leadingCoeff_pos", "position": 4},
+        {"tactic": "rr_row_leadingCoeff_pos", "position": 5},
         {"tactic": "rr_row_natDegree_leadingCoeff_pos", "position": 4}
       ],
       "conclusion": "The requested degree, nonvanishing, leading-coefficient, or conjunction goal.",
