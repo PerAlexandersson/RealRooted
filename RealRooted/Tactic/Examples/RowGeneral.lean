@@ -663,6 +663,73 @@ example (c b : ℝ) (hc : 0 < c) (hb : 0 ≤ b) (n : ℕ) :
 
 end CoefficientClosureTests
 
+namespace OperationLeadingTests
+
+example (a b c : ℝ) (ha : 0 < a) :
+    0 < (C a * X ^ 3 - C b * X + C c).leadingCoeff := by
+  rr_row_leadingCoeff_pos
+
+example (a b : ℝ) : a = a ∧ b = b := by
+  fail_if_success
+    have h : 0 < (C (a - b) * X + 1).leadingCoeff := by
+      rr_row_leadingCoeff_pos
+  exact ⟨rfl, rfl⟩
+
+example (p : ℝ[X]) (hp : p.Monic) : HasPosLeadingCoeff p := by
+  rr_row_leadingCoeff_pos
+
+/-- Products with arbitrary moving roots need only a positive initial scalar. -/
+def movingRootProducts (a : ℝ) (r : ℕ → ℝ) : ℕ → ℝ[X]
+  | 0 => C a
+  | n + 1 => (X - C (r n)) * movingRootProducts a r n
+
+example (a : ℝ) (r : ℕ → ℝ) (ha : 0 < a) (n : ℕ) :
+    HasPosLeadingCoeff (movingRootProducts a r n) := by
+  rr_row_leadingCoeff_pos
+
+/-- Natural-number expressions retain their casts in the product certificate. -/
+def naturalRootProducts (a : ℝ) (r : ℕ → ℕ) : ℕ → ℝ[X]
+  | 0 => C a
+  | n + 1 => (X - C (((r n) ^ 2 : ℕ) : ℝ)) * naturalRootProducts a r n
+
+example (a : ℝ) (r : ℕ → ℕ) (ha : 0 < a) (n : ℕ) :
+    HasPosLeadingCoeff (naturalRootProducts a r n) := by
+  rr_row_leadingCoeff_pos
+
+/-- Index-dependent factor degrees test positivity independently of affine degree laws. -/
+def nonlinearDegreeProducts (r : ℕ → ℝ) : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => (X ^ (n + 1) - C (r n)) * nonlinearDegreeProducts r n
+
+example (r : ℕ → ℝ) (n : ℕ) :
+    HasPosLeadingCoeff (nonlinearDegreeProducts r n) := by
+  rr_row_leadingCoeff_pos
+
+example (p q : ℝ[X]) (hp : 0 < p.leadingCoeff) (hq : 0 < q.leadingCoeff)
+    (hd : q.natDegree ≠ 0) : 0 < (p.comp q).leadingCoeff := by
+  rr_row_leadingCoeff_pos
+
+example (p : ℝ[X]) (hp : 0 < p.leadingCoeff) (a : ℝ) :
+    0 < (p.comp (X - C a)).leadingCoeff := by
+  rr_row_leadingCoeff_pos
+
+example (p : ℝ[X]) (hp : 0 < p.leadingCoeff) (a b : ℝ) (ha : 0 < a) :
+    0 < (p.comp (C a * X - C b)).leadingCoeff := by
+  rr_row_leadingCoeff_pos
+
+example (p : ℝ[X]) (hp : HasNonnegCoeffs p) (g : ℕ → ℝ)
+    (hg : ∀ k, 0 ≤ g k) (n : ℕ) :
+    HasNonnegCoeffs (gammaTransform n (diagonalOperator g p)) := by
+  rr_row_coefficient_closure 16
+
+example (g : ℕ → ℝ) (hg : ∀ k, 0 ≤ g k) (n : ℕ)
+    (hn : gammaTransform n (diagonalOperator g (CoefficientClosureTests.rows n)) ≠ 0) :
+    HasPosLeadingCoeff
+      (gammaTransform n (diagonalOperator g (CoefficientClosureTests.rows n))) := by
+  rr_row_leadingCoeff_pos
+
+end OperationLeadingTests
+
 
 end
 

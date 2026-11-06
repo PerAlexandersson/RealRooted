@@ -40,13 +40,17 @@ RealRooted/Tactic/Examples/RowParityFactorization.lean: RealRooted.Tactic.RowInt
 RealRooted/Tactic/Examples/SideGoals.lean: RealRooted.Tactic.SideGoals
 RealRooted/Tactic/Examples/WagnerX.lean: RealRooted.Tactic.RowInterlacing
 RealRooted/Tactic/Product/Interlacing.lean: RealRooted.Tactic.Ring
+RealRooted/Tactic/Recurrence/Coefficients.lean: RealRooted.GammaTransform.Basic
 RealRooted/Tactic/Recurrence/Coefficients.lean: RealRooted.Hadamard.Basic
+RealRooted/Tactic/Recurrence/Coefficients.lean: RealRooted.MultiplierSequence
+RealRooted/Tactic/Recurrence/Coefficients.lean: RealRooted.Tactic.Recurrence.RowSide
 RealRooted/Tactic/Recurrence/Coefficients.lean: RealRooted.Tactic.SideGoals
 RealRooted/Tactic/Recurrence/Coefficients.lean: RealRooted.ThreeTermRecurrence.Coefficients
 RealRooted/Tactic/Recurrence/Degree.lean: RealRooted.Tactic.Recurrence.Coefficients
 RealRooted/Tactic/Recurrence/Degree.lean: RealRooted.Tactic.Recurrence.LeadingCoeff
 RealRooted/Tactic/Recurrence/LeadingCoeff.lean: RealRooted.Tactic.Recurrence.RowSide
 RealRooted/Tactic/Recurrence/LeadingCoeff.lean: RealRooted.Tactic.SideGoals
+RealRooted/Tactic/Recurrence/RowSide.lean: RealRooted.Tactic.SideGoals
 RealRooted/Tactic/RecurrenceEval.lean: RealRooted.Tactic.Ring
 RealRooted/Tactic/Sign.lean: RealRooted.Tactic.SideGoals
 RealRooted/Tactic/WagnerX/Frontend.lean: RealRooted.Tactic.Lookup

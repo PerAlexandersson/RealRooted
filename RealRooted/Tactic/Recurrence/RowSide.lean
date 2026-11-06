@@ -7,6 +7,7 @@ public import RealRooted.DerivativeRecurrence.General
 public import RealRooted.Tactic.Recurrence.ODE
 public import RealRooted.Tactic.Recurrence.Shape
 public import RealRooted.Tactic.Recurrence.LinRecProbe
+public import RealRooted.Tactic.SideGoals
 public meta import RealRooted.DerivativeRecurrence.Degree
 public meta import RealRooted.ThreeTermRecurrence.Degree
 public meta import RealRooted.DerivativeRecurrence.SecondOrderODE
@@ -294,9 +295,20 @@ private def explicitPolynomialStep (target : Term)
     if ok then return alt
   throwError "could not certify the explicit polynomial obligation"
 
-/-- Certify a leading-coefficient sign by exact rational polynomial evaluation.
+/-- Sample scalar parameters to propose an explicit degree; callers must prove it symbolically. -/
+def explicitPolynomialDegree? (p : Expr) : MetaM (Option Nat) := do
+  let mut params : Array Expr := #[]
+  for d in ← getLCtx do
+    if d.isImplementationDetail then continue
+    let ty ← whnfR d.type
+    if ty.isConstOf ``Real || ty.isConstOf ``Nat then
+      params := params.push d.toExpr
+  let samples ← rowProbeSamples params
+  return (← evalQPoly? (specializeRowParams params samples p)).map (·.natDegree)
+
+/-- Certify a leading-coefficient sign by exact polynomial evaluation or a symbolic coefficient.
 An optional recurrence name also allows its explicit initial rows. Evaluation only
-proposes a polynomial and its degree; the generated proof checks both in Lean. -/
+proposes a normal form or degree; the generated proof checks the original polynomial in Lean. -/
 def explicitPolynomialLeadingCoeff (P? : Option Ident := none)
     (positive : Bool := true) : TacticM Cert := withMainContext do
   let target ← instantiateMVars (← getMainTarget)
@@ -307,7 +319,25 @@ def explicitPolynomialLeadingCoeff (P? : Option Ident := none)
         throwError "not a leading-coefficient sign goal"
       pure rhs.appArg!
     | _ => throwError "not a leading-coefficient sign goal"
-  let (q, row?) ← match ← evalQPoly? p with
+  let rational? ← evalQPoly? p
+  if rational?.isNone && P?.isNone then
+    if let some family ← findPolySeqApp? p then
+      if p.getAppFn.isConstOf family.name && p.getAppArgs.size == family.params.size + 1 then
+        throwError "use a recurrence certificate for a symbolic row"
+    let some degree ← explicitPolynomialDegree? p
+      | throwError "no explicit degree candidate"
+    let source ← certTerm p
+    let change ← if positive then `(tactic| change 0 < ($source : ℝ[X]).leadingCoeff)
+      else `(tactic| change 0 ≤ ($source : ℝ[X]).leadingCoeff)
+    let cert ← `(tactic| (
+      $change:tactic
+      have hd : ($source : ℝ[X]).natDegree = $(rowNumLit degree) := by
+        compute_degree!; positivity
+      rw [Polynomial.leadingCoeff, hd]
+      rr_coeff; positivity))
+    evalTactic cert
+    return #[cert]
+  let (q, row?) ← match rational? with
     | some q => pure (q, none)
     | none =>
       let some P := P? | throwError "not an explicit rational polynomial"
