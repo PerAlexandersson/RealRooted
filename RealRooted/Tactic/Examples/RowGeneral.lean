@@ -792,6 +792,30 @@ example : True := by
       rr_row_leadingCoeff_pos
   trivial
 
+open Lean Lean.Elab Lean.Elab.Tactic Lean.Meta
+
+/-- Check that a discovered degree certificate survives printing and reparsing. -/
+syntax (name := rrRowDegreeReplayTest) "rr_row_degree_replay_test" : tactic
+
+elab_rules : tactic
+  | `(tactic| rr_row_degree_replay_test) => withMainContext do
+    let saved ← saveState
+    let r ← rowRecSetup "rr_row_degree_replay_test"
+    let (steps, _) ← rowDriver r "natDegree" {} fun Q t degree =>
+      `(tactic| refine (?_ : ($Q $t).natDegree = $degree).trans (by lia))
+    let sequence ← steps.toSeq
+    let printed := (← PrettyPrinter.ppTactic (← `(tactic| ($sequence)))).pretty
+    saved.restore (restoreInfo := true)
+    let .ok reparsed := Parser.runParserCategory (← getEnv) `tactic printed
+      | throwError "printed degree certificate does not parse"
+    evalTactic reparsed
+
+example (a : ℝ) (n : ℕ) : (rows a (n : ℤ)).natDegree = n := by
+  rr_row_degree_replay_test
+
+example (a : ℝ) (n : ℕ) : (rows a ((n : ℤ) + 3)).natDegree = n + 3 := by
+  rr_row_degree_replay_test
+
 end NaturalSliceLeadingTests
 
 

@@ -813,7 +813,7 @@ def RowRec.seqTerm (r : RowRec) : TacticM Term := do
   if dom.isConstOf ``Int then
     let slice ← withLocalDeclD `m (mkConst ``Nat) fun m => do
       mkLambdaFVars #[m] (← applyNaturalRow e m)
-    return ← Term.exprToSyntax slice
+    return ← certTerm slice
   certTerm e
 
 /-- The shifted sequence `m ↦ P (m + k)`. -/

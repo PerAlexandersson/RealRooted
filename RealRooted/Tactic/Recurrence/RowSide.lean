@@ -426,7 +426,10 @@ elab_rules : tactic
   | `(tactic| rr_row_side) => withMainContext do
     betaReduceGoal
     withMainContext do
-    let P? ← findSeqConstDeep? (← instantiateMVars (← getMainTarget))
+    let target ← instantiateMVars (← getMainTarget)
+    let P? ← match ← findPolySeqApp? target with
+      | some family => pure (some family.name)
+      | none => findSeqConstDeep? target
     rowSideGoal (P?.map mkIdent)
 
 /-- The theorems to try for a recurrence shape and a goal kind, each with an
