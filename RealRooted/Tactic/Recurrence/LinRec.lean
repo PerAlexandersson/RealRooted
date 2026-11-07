@@ -589,6 +589,15 @@ private def linRecAttempt (L : LinRecData) (pr : LinRecProbe) (reg : Regime) (ki
     rhs ← `($summand + $rhs)
   let eqnApp ← if s == 0 then `($(mkIdent L.eqn) $n)
     else `($(mkIdent L.eqn) ($n + $(rowNumLit s)))
+  let expand ← if L.expandedDerivatives then
+      `(tactic| simp only [Polynomial.derivative_add, Polynomial.derivative_sub,
+        Polynomial.derivative_mul, Polynomial.derivative_neg, Polynomial.derivative_C,
+        Polynomial.derivative_X, Polynomial.derivative_one, Polynomial.derivative_zero,
+        Polynomial.derivative_X_pow, Polynomial.derivative_ofNat,
+        Function.iterate_zero, Function.iterate_one, Function.iterate_succ_apply', id_eq,
+        zero_mul, mul_zero, zero_add, add_zero, one_mul, mul_one,
+        map_add, map_mul, map_pow, map_ofNat])
+    else `(tactic| skip)
   -- The symbolic `rhs` unfolding handles derivative summands; the pointwise route handles
   -- rational coefficients that `ring` cannot normalize.  Try them in this order.
   let hrec ← `(fun $n:ident => ($eqnApp).trans (by
@@ -596,21 +605,12 @@ private def linRecAttempt (L : LinRecData) (pr : LinRecProbe) (reg : Regime) (ki
     first
       | ((simp only [RealRooted.LinRec.rhs, List.map_cons, List.map_nil, List.sum_cons,
             List.sum_nil, Function.iterate_zero, Function.iterate_one,
-            Function.iterate_succ_apply', id_eq, add_zero, Nat.add_assoc, Nat.reduceAdd,
-            Polynomial.derivative_add, Polynomial.derivative_sub, Polynomial.derivative_mul,
-            Polynomial.derivative_neg, Polynomial.derivative_C, Polynomial.derivative_X,
-            Polynomial.derivative_one, Polynomial.derivative_zero,
-            Polynomial.derivative_X_pow, Polynomial.derivative_ofNat,
-            zero_mul, mul_zero, zero_add, one_mul, mul_one,
-            map_add, map_mul, map_pow, map_ofNat] <;>
+            Function.iterate_succ_apply', id_eq, add_zero, Nat.add_assoc, Nat.reduceAdd] <;>
+          $expand:tactic <;>
           -- not `ring`: its `ring_nf` fallback would print a "Try this" in the user's file
           first | ring1 | (ring_nf; done)) <;> done)
       | (change _ = $rhs
-         simp only [Polynomial.derivative_add, Polynomial.derivative_sub,
-           Polynomial.derivative_mul, Polynomial.derivative_neg, Polynomial.derivative_C,
-           Polynomial.derivative_X, Polynomial.derivative_one, Polynomial.derivative_zero,
-           Polynomial.derivative_X_pow, Polynomial.derivative_ofNat,
-           Function.iterate_zero, Function.iterate_one, Function.iterate_succ_apply', id_eq]
+         $expand:tactic
          apply Polynomial.funext
          intro x
          simp only [RealRooted.div_ofNat_eq_C_mul, Polynomial.eval_add,
