@@ -211,11 +211,11 @@ private def linRecNumerals : TacticM Unit := do
       mul_zero, add_zero, zero_add, mul_one, one_mul])))
 
 /-- The summand coefficient `fun n => A n` shifted by `s`: `fun n => A (n + s)`. -/
-private def linRecShiftCoeff (c : Expr) (s : Nat) : TacticM Term := do
-  -- Normalize only rational-function coefficients: polynomial coefficients keep their syntactic
-  -- form, which the symbolic `rhs` proof of `linRecAttempt` closes with `ring`.
+private def linRecShiftCoeff (c : Expr) (s : Nat) (normalize := false) : TacticM Term := do
+  -- Expanded differential steps and rational functions use the existing coefficient normalizer.
+  -- Other polynomial coefficients retain the form used by the symbolic recurrence certificate.
   let hasDiv := (c.find? fun e => e.isAppOf ``HDiv.hDiv || e.isAppOf ``Inv.inv).isSome
-  if hasDiv then
+  if hasDiv || normalize then
     if let some normalized ← normalizedCoeffTerm? c s then return normalized
   if s == 0 then return ← certTerm c
   let shifted ← lambdaTelescope c fun xs body => do
@@ -575,7 +575,7 @@ private def linRecAttempt (L : LinRecData) (pr : LinRecProbe) (reg : Regime) (ki
   let mut ts : Array Term := #[]
   let mut summands : Array Term := #[]
   for (j, i, c) in L.terms do
-    let coeff ← linRecShiftCoeff c s
+    let coeff ← linRecShiftCoeff c s L.expandedDerivatives
     ts := ts.push (← `(($(rowNumLit j), $(rowNumLit i), $coeff)))
     let row ← if j == 0 then `(($Q) ($nv)) else `(($Q) ($nv + $(rowNumLit j)))
     let deriv ← match i with
@@ -596,10 +596,21 @@ private def linRecAttempt (L : LinRecData) (pr : LinRecProbe) (reg : Regime) (ki
     first
       | ((simp only [RealRooted.LinRec.rhs, List.map_cons, List.map_nil, List.sum_cons,
             List.sum_nil, Function.iterate_zero, Function.iterate_one,
-            Function.iterate_succ_apply', id_eq, add_zero, Nat.add_assoc, Nat.reduceAdd] <;>
+            Function.iterate_succ_apply', id_eq, add_zero, Nat.add_assoc, Nat.reduceAdd,
+            Polynomial.derivative_add, Polynomial.derivative_sub, Polynomial.derivative_mul,
+            Polynomial.derivative_neg, Polynomial.derivative_C, Polynomial.derivative_X,
+            Polynomial.derivative_one, Polynomial.derivative_zero,
+            Polynomial.derivative_X_pow, Polynomial.derivative_ofNat,
+            zero_mul, mul_zero, zero_add, one_mul, mul_one,
+            map_add, map_mul, map_pow, map_ofNat] <;>
           -- not `ring`: its `ring_nf` fallback would print a "Try this" in the user's file
           first | ring1 | (ring_nf; done)) <;> done)
       | (change _ = $rhs
+         simp only [Polynomial.derivative_add, Polynomial.derivative_sub,
+           Polynomial.derivative_mul, Polynomial.derivative_neg, Polynomial.derivative_C,
+           Polynomial.derivative_X, Polynomial.derivative_one, Polynomial.derivative_zero,
+           Polynomial.derivative_X_pow, Polynomial.derivative_ofNat,
+           Function.iterate_zero, Function.iterate_one, Function.iterate_succ_apply', id_eq]
          apply Polynomial.funext
          intro x
          simp only [RealRooted.div_ofNat_eq_C_mul, Polynomial.eval_add,
