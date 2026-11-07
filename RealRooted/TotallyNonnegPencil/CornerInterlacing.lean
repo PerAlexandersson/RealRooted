@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.TotallyNonnegPencil.Checkerboard
+public import RealRooted.PFPolynomial
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Checkerboard
+import RealRooted.TotallyNonnegPencil.Checkerboard
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.CornerPerturbation
 import RealRooted.Compatibility.Three
 import Mathlib.RingTheory.MatrixPolynomialAlgebra

@@ -2,6 +2,7 @@ module
 
 public import RealRooted.Schur.ElementaryToeplitz
 public import RealRooted.TotallyNonnegPencil.CornerInterlacing
+import RealRooted.TotallyNonnegPencil.Checkerboard
 import RealRooted.Schur.Interlacing
 import RealRooted.Schur.ElementaryPositivity
 import RealRooted.Basic.Coefficients

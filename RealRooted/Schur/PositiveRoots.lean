@@ -4,6 +4,7 @@ public import RealRooted.Schur.ElementaryToeplitz
 import RealRooted.Schur.Roots
 import RealRooted.Schur.ElementaryPositivity
 public import RealRooted.TotallyNonnegPencil.CornerInterlacing
+import RealRooted.TotallyNonnegPencil.Checkerboard
 import RealRooted.Basic.Coefficients
 import Mathlib.RingTheory.MatrixPolynomialAlgebra
 
