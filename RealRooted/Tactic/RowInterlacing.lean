@@ -1445,21 +1445,21 @@ sequence, and `none` when no sequence can be recognized.  Every theorem used by
 the half-growth, degree-pattern, and interlacing-fallback routes has the consecutive-row
 conclusion, so the negative result rejects exactly those routes. -/
 private def strictConsecutiveRows? : TacticM (Option Bool) := do
-  let mut target ← instantiateMVars (← getMainTarget)
-  while target.isForall do target := target.bindingBody!
-  unless target.isAppOf ``RealRooted.StrictInterl do return none
-  let args := target.getAppArgs
-  unless args.size ≥ 2 do return none
-  let lhs := args[args.size - 2]!
-  let rhs := args[args.size - 1]!
-  let some _ ← findPolySeqApp? target | return none
-  let (some left, some right) := (← findPolySeqApp? lhs, ← findPolySeqApp? rhs)
-    | return some false
-  unless lhs.isApp && rhs.isApp && left.name == right.name &&
-      lhs.appFn! == rhs.appFn! do return some false
-  let (leftBase, leftOffset) ← natOffsetParts lhs.appArg!
-  let (rightBase, rightOffset) ← natOffsetParts rhs.appArg!
-  return some (leftBase == rightBase && rightOffset == leftOffset + 1)
+  let target ← instantiateMVars (← getMainTarget)
+  forallTelescopeReducing target fun _ target => do
+    unless target.isAppOf ``RealRooted.StrictInterl do return none
+    let args := target.getAppArgs
+    unless args.size ≥ 2 do return none
+    let lhs := args[args.size - 2]!
+    let rhs := args[args.size - 1]!
+    let some _ ← findPolySeqApp? target | return none
+    let (some left, some right) := (← findPolySeqApp? lhs, ← findPolySeqApp? rhs)
+      | return some false
+    unless lhs.isApp && rhs.isApp && left.name == right.name &&
+        lhs.appFn! == rhs.appFn! do return some false
+    let (leftBase, leftOffset) ← natOffsetParts lhs.appArg!
+    let (rightBase, rightOffset) ← natOffsetParts rhs.appArg!
+    return some (leftBase == rightBase && rightOffset == leftOffset + 1)
 
 /-- `rr_row_strictInterl`, using specialized strict routes before falling back to the general
 interlacing machinery. -/
