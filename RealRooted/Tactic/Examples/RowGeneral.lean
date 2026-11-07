@@ -745,6 +745,56 @@ example (g : ℕ → ℝ) (hg : ∀ k, 0 ≤ g k) (n : ℕ)
 end OperationLeadingTests
 
 
+namespace NaturalSliceLeadingTests
+
+/-- A parameterized integer recurrence whose negative rows have negative leaders. -/
+def rows (a : ℝ) : ℤ → ℝ[X]
+  | 0 => 1
+  | 1 => X + C a
+  | (n : ℕ) + 2 => (X + C (a + 1)) * rows a (n + 1) - rows a n
+  | -((n : ℕ) + 1) => -1
+  termination_by n => n.natAbs
+
+example (a : ℝ) (n : ℕ) : 0 < (rows a (n : ℤ)).leadingCoeff := by
+  rr_row_leadingCoeff_pos
+
+example (a : ℝ) (n : ℕ) : 0 < (rows a ((n : ℤ) + 3)).leadingCoeff := by
+  rr_row_leadingCoeff_pos
+
+example (n : ℕ) : 0 < (Polynomial.Chebyshev.S ℝ (n : ℤ)).leadingCoeff := by
+  rr_row_leadingCoeff_pos
+
+example (n : ℕ) : 0 < (Polynomial.Chebyshev.C ℝ ((n : ℤ) + 2)).leadingCoeff := by
+  rr_row_leadingCoeff_pos
+
+example (a : ℝ) (z : ℤ) : a = a ∧ z = z := by
+  fail_if_success
+    have h : 0 < (rows a z).leadingCoeff := by
+      rr_row_leadingCoeff_pos
+  exact ⟨rfl, rfl⟩
+
+example (a : ℝ) : a = a := by
+  fail_if_success
+    have h : 0 < (rows a (-1)).leadingCoeff := by
+      rr_row_leadingCoeff_pos
+  rfl
+
+example (n : ℕ) :
+    0 < ((Polynomial.Chebyshev.S ℝ (n : ℤ)).comp (C 4 * X - C 2)).leadingCoeff := by
+  rr_row_leadingCoeff_pos
+
+example : 0 < (C 4 * X - C 2 : ℝ[X]).leadingCoeff := by
+  rr_row_leadingCoeff_pos
+
+example : True := by
+  fail_if_success
+    have h : 0 < (C (-4) * X - C 2 : ℝ[X]).leadingCoeff := by
+      rr_row_leadingCoeff_pos
+  trivial
+
+end NaturalSliceLeadingTests
+
+
 end
 
 end RealRooted.Tactic.RowGeneralExamples

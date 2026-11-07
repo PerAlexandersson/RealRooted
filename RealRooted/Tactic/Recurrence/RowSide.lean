@@ -353,7 +353,7 @@ def explicitPolynomialLeadingCoeff (P? : Option Ident := none)
   let d := rowNumLit q.natDegree
   let equality ← `(($source : ℝ[X]) = $canonical)
   let closers ← pure #[← `(tactic| rfl), ← `(tactic| ring1), ← `(tactic| norm_num),
-    ← `(tactic| (norm_num; ring1))]
+    ← `(tactic| (norm_num; ring1)), ← `(tactic| (simp only [map_ofNat] <;> ring1))]
   let mut normalizers := closers
   let mut prefixes : Array (TSyntax `tactic) := #[]
   if let some P := row? then
