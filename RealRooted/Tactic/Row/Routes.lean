@@ -64,7 +64,9 @@ def rowRouteTable : List RowRouteInfo := [
       [
         `RealRooted.strictInterl_of_fixedDelay_recurrence,
         `RealRooted.strictInterl_of_scaled_fixedDelay_recurrence,
-        `RealRooted.hasNonnegCoeffs_of_scaled_fixedDelay_recurrence
+        `RealRooted.hasNonnegCoeffs_of_scaled_fixedDelay_recurrence,
+        `RealRooted.strictInterl_of_constant_prefix_fixed_delay_recurrence,
+        `RealRooted.hasNonnegCoeffs_of_constant_prefix_fixed_delay_recurrence
       ]
   },
   { name := `derivativeXMul
@@ -519,6 +521,8 @@ def rowRouteTable : List RowRouteInfo := [
         `Polynomial.leadingCoeff_prod,
         `Polynomial.leadingCoeff_comp,
         `Polynomial.Monic.leadingCoeff,
+        `Polynomial.leadingCoeff_sub_of_degree_lt,
+        `Polynomial.degree_lt_degree,
         `RealRooted.HasNonnegCoeffs.pos_leadingCoeff,
         `RealRooted.hasNonnegCoeffs_finsetSum
       ]

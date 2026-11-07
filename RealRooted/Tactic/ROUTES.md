@@ -18,7 +18,7 @@ side conditions, implementing modules, and regression examples.
 
 | # | route | proves | main theorem(s) |
 |---:|---|---|---|
-| 1 | `variableDelay` | StrictInterl, Interlaces, Splits, or HasNonnegCoeffs. | `strictInterl_of_fixedDelay_recurrence`, `strictInterl_of_scaled_fixedDelay_recurrence`, `hasNonnegCoeffs_of_scaled_fixedDelay_recurrence` |
+| 1 | `variableDelay` | StrictInterl, Interlaces, Splits, or HasNonnegCoeffs. | `strictInterl_of_fixedDelay_recurrence`, `strictInterl_of_scaled_fixedDelay_recurrence`, `hasNonnegCoeffs_of_scaled_fixedDelay_recurrence`, `strictInterl_of_constant_prefix_fixed_delay_recurrence`, `hasNonnegCoeffs_of_constant_prefix_fixed_delay_recurrence` |
 | 2 | `probe` (pseudo) | No conclusion; this is an exact-arithmetic rejection pass. | — |
 | 3 | `rowModel` (pseudo) | The conclusion advertised by a matching registered row-model theorem. | — |
 | 4 | `halfGrowth` | Interlaces, StrictInterl, or Splits for half-growth rows. | `derivLag_strictInterl_of_nonnegCoeffs`, `derivLag_strictInterl_of_nonnegCoeffs_half`, `threeTermHalf_ne_zero_and_splits` |
@@ -47,7 +47,7 @@ side conditions, implementing modules, and regression examples.
 
 | # | route | proves | main theorem(s) |
 |---:|---|---|---|
-| 1 | `variableDelay` | StrictInterl, Interlaces, Splits, or HasNonnegCoeffs. | `strictInterl_of_fixedDelay_recurrence`, `strictInterl_of_scaled_fixedDelay_recurrence`, `hasNonnegCoeffs_of_scaled_fixedDelay_recurrence` |
+| 1 | `variableDelay` | StrictInterl, Interlaces, Splits, or HasNonnegCoeffs. | `strictInterl_of_fixedDelay_recurrence`, `strictInterl_of_scaled_fixedDelay_recurrence`, `hasNonnegCoeffs_of_scaled_fixedDelay_recurrence`, `strictInterl_of_constant_prefix_fixed_delay_recurrence`, `hasNonnegCoeffs_of_constant_prefix_fixed_delay_recurrence` |
 | 2 | `derivativeXMul` | (P n).Splits | `splits_of_mul_derivative_X_mul_sequence` |
 | 3 | `factorPower` | (P n).Splits | `eq_pow_mul_of_factoredThreeTerm` |
 | 4 | `delayedProduct` | (P n).Splits | `productSequence_splits` |
@@ -84,7 +84,7 @@ side conditions, implementing modules, and regression examples.
 
 | # | route | proves | main theorem(s) |
 |---:|---|---|---|
-| 1 | `variableDelay` | StrictInterl, Interlaces, Splits, or HasNonnegCoeffs. | `strictInterl_of_fixedDelay_recurrence`, `strictInterl_of_scaled_fixedDelay_recurrence`, `hasNonnegCoeffs_of_scaled_fixedDelay_recurrence` |
+| 1 | `variableDelay` | StrictInterl, Interlaces, Splits, or HasNonnegCoeffs. | `strictInterl_of_fixedDelay_recurrence`, `strictInterl_of_scaled_fixedDelay_recurrence`, `hasNonnegCoeffs_of_scaled_fixedDelay_recurrence`, `strictInterl_of_constant_prefix_fixed_delay_recurrence`, `hasNonnegCoeffs_of_constant_prefix_fixed_delay_recurrence` |
 | 2 | `halfGrowth` | Interlaces, StrictInterl, or Splits for half-growth rows. | `derivLag_strictInterl_of_nonnegCoeffs`, `derivLag_strictInterl_of_nonnegCoeffs_half`, `threeTermHalf_ne_zero_and_splits` |
 | 3 | `degreePattern` | (P n).Splits or StrictInterl (P n) (P (n + 1)). | `derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs`, `derivativeRecurrence_strictInterl_of_degree_pattern_of_nonnegCoeffs`, `Tactic.derivativeRecurrence_strictInterl_of_half_degree`, `Tactic.derivativeRecurrence_strictInterl_of_floor_half_degree` |
 | 4 | `interlaces` | StrictInterl (P n) (P (n + 1)) | `Interlaces.toStrictInterl` |
@@ -93,7 +93,7 @@ side conditions, implementing modules, and regression examples.
 
 | # | route | proves | main theorem(s) |
 |---:|---|---|---|
-| 1 | `variableDelay` | StrictInterl, Interlaces, Splits, or HasNonnegCoeffs. | `strictInterl_of_fixedDelay_recurrence`, `strictInterl_of_scaled_fixedDelay_recurrence`, `hasNonnegCoeffs_of_scaled_fixedDelay_recurrence` |
+| 1 | `variableDelay` | StrictInterl, Interlaces, Splits, or HasNonnegCoeffs. | `strictInterl_of_fixedDelay_recurrence`, `strictInterl_of_scaled_fixedDelay_recurrence`, `hasNonnegCoeffs_of_scaled_fixedDelay_recurrence`, `strictInterl_of_constant_prefix_fixed_delay_recurrence`, `hasNonnegCoeffs_of_constant_prefix_fixed_delay_recurrence` |
 | 2 | `cone` | HasNonnegCoeffs, degree, nonvanishing, or positive leader. | `LinRec.hasNonnegCoeffs`, `LinRec.natDegree_eq_and_leadingCoeff_pos`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_degreeLaw`, `LinRec.natDegree_eq_and_leadingCoeff_eq_of_coeff` |
 | 3 | `threeTerm` | HasNonnegCoeffs (P n) | `threeTerm_hasNonnegCoeffs` |
 | 4 | `secondOrder` | HasNonnegCoeffs (P n) | `derivRec₂_hasNonnegCoeffs` |
@@ -104,7 +104,7 @@ side conditions, implementing modules, and regression examples.
 | # | route | proves | main theorem(s) |
 |---:|---|---|---|
 | 1 | `scale` | HasPosLeadingCoeff (C a * P n) | `hasPosLeadingCoeff_C_mul` |
-| 2 | `algebra` | HasPosLeadingCoeff p | `Polynomial.leadingCoeff_add_pos_of_pos_of_nonneg`, `Polynomial.leadingCoeff_add_pos_of_nonneg_of_pos`, `Polynomial.leadingCoeff_mul`, `Polynomial.leadingCoeff_pow`, `Polynomial.leadingCoeff_derivative`, `Polynomial.leadingCoeff_prod`, `Polynomial.leadingCoeff_comp`, `Polynomial.Monic.leadingCoeff`, `HasNonnegCoeffs.pos_leadingCoeff`, `hasNonnegCoeffs_finsetSum` |
+| 2 | `algebra` | HasPosLeadingCoeff p | `Polynomial.leadingCoeff_add_pos_of_pos_of_nonneg`, `Polynomial.leadingCoeff_add_pos_of_nonneg_of_pos`, `Polynomial.leadingCoeff_mul`, `Polynomial.leadingCoeff_pow`, `Polynomial.leadingCoeff_derivative`, `Polynomial.leadingCoeff_prod`, `Polynomial.leadingCoeff_comp`, `Polynomial.Monic.leadingCoeff`, `Polynomial.leadingCoeff_sub_of_degree_lt`, `Polynomial.degree_lt_degree`, `HasNonnegCoeffs.pos_leadingCoeff`, `hasNonnegCoeffs_finsetSum` |
 | 3 | `recurrence` | The requested degree, nonvanishing, leader, or ratio goal. | `productSequence_natDegree`, `HasPosLeadingCoeff.mul`, `derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos`, `derivRec₂_natDegree_eq_and_leadingCoeff_pos`, `threeTermPos_natDegree_eq_and_leadingCoeff_pos`, `threeTermRatio_natDegree_eq_and_leadingCoeff_pos`, `threeTermHalf_natDegree` |
 | 4 | `twoStep` | Interlacing, splitting, degree, or positive leading coefficient for P (n + 2) = q * P n. | `twoStepProduct_interlaces`, `twoStepProduct_splits`, `twoStepProduct_natDegree`, `twoStepProduct_leadingCoeff_pos`, `twoStepProduct_leadingCoeff_pos_of_ne_zero` |
 | 5 | `cone` | HasNonnegCoeffs, degree, nonvanishing, or positive leader. | `LinRec.hasNonnegCoeffs`, `LinRec.natDegree_eq_and_leadingCoeff_pos`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_degreeLaw`, `LinRec.natDegree_eq_and_leadingCoeff_eq_of_coeff` |
@@ -174,8 +174,10 @@ side conditions, implementing modules, and regression examples.
 
 ## `variableDelay`
 
-- **Summary:** Fixed or scaled delay transfers strict interlacing along a window.
-- **Side conditions:** Canonical recurrence, split bases, and nonnegative multipliers.
+- **Summary:** Fixed or scaled delay, including a positive constant prefix, transfers strict
+  interlacing along a window.
+- **Side conditions:** Successor recurrence or positive constant prefix with a fixed-delay tail;
+  positive preceding-row and nonnegative delayed multipliers.
 - **Module:** `RealRooted.Tactic.Row.PathPower`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowVariableDelay`
 
@@ -439,10 +441,13 @@ side conditions, implementing modules, and regression examples.
 ## `algebra`
 
 - **Summary:** Decompose algebraic expressions, reuse monicity, certify explicit polynomials,
-  split piecewise definitions, normalize shifted wrappers, or prove nonnegative coefficients.
+  split piecewise definitions, normalize shifted wrappers, infer degree dominance for
+  subtraction, or prove nonnegative coefficients.
 - **Side conditions:** Positive or nonnegative component leaders, or nonnegative coefficients
   plus a nonzero polynomial. Scalar signs and derivative degrees when needed; a nonzero
   derivative supplies its degree condition. Composition requires a nonconstant inner polynomial.
+  Subtraction requires a strictly lower-degree right operand; small predecessor indices can
+  split initial cases.
 - **Module:** `RealRooted.Tactic.Recurrence.LeadingCoeff`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowGeneral`
 

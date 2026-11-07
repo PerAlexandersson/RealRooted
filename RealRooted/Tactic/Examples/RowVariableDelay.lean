@@ -55,6 +55,61 @@ example {a b : ℕ → ℝ} (ha : ∀ n, 0 < a n) (hb : ∀ n, 0 ≤ b n) {A B :
     StrictInterl (scaledDelayRows a b A) (scaledDelayRows a b B) := by
   rr_row_strictInterl
 
+/-! ## Positive constant prefixes -/
+
+/-- A delayed recurrence whose three initial rows are arbitrary positive constants. -/
+def constantPrefixRows (c₀ c₁ c₂ : ℝ) (a b : ℕ → ℝ) : ℕ → ℝ[X]
+  | 0 => C c₀
+  | 1 => C c₁
+  | 2 => C c₂
+  | n + 3 => C (a n) * constantPrefixRows c₀ c₁ c₂ a b (n + 2) +
+      C (b n) * X * constantPrefixRows c₀ c₁ c₂ a b n
+
+example {c₀ c₁ c₂ : ℝ} {a b : ℕ → ℝ}
+    (h₀ : 0 < c₀) (h₁ : 0 < c₁) (h₂ : 0 < c₂)
+    (ha : ∀ n, 0 < a n) (hb : ∀ n, 0 ≤ b n) {A B : ℕ}
+    (hAB : A ≤ B) (hBA : B ≤ A + 3) :
+    StrictInterl (constantPrefixRows c₀ c₁ c₂ a b A)
+      (constantPrefixRows c₀ c₁ c₂ a b B) := by
+  rr_row_window
+
+example {c₀ c₁ c₂ : ℝ} {a b : ℕ → ℝ}
+    (h₀ : 0 < c₀) (h₁ : 0 < c₁) (h₂ : 0 < c₂)
+    (ha : ∀ n, 0 < a n) (hb : ∀ n, 0 ≤ b n) (n : ℕ) :
+    StrictInterl (constantPrefixRows c₀ c₁ c₂ a b n)
+      (constantPrefixRows c₀ c₁ c₂ a b (n + 2)) := by
+  rr_row_strictInterl
+
+example {c₀ c₁ c₂ : ℝ} {a b : ℕ → ℝ}
+    (h₀ : 0 < c₀) (h₁ : 0 < c₁) (h₂ : 0 < c₂)
+    (ha : ∀ n, 0 < a n) (hb : ∀ n, 0 ≤ b n) (n : ℕ) :
+    (constantPrefixRows c₀ c₁ c₂ a b n).Splits := by
+  rr_row_splits
+
+example {c₀ c₁ c₂ : ℝ} {a b : ℕ → ℝ}
+    (h₀ : 0 < c₀) (h₁ : 0 < c₁) (h₂ : 0 < c₂)
+    (ha : ∀ n, 0 < a n) (hb : ∀ n, 0 ≤ b n) (n : ℕ) :
+    HasNonnegCoeffs (constantPrefixRows c₀ c₁ c₂ a b n) := by
+  rr_row_nonneg_coeffs
+
+/-! The prefix and window conditions must not be dropped. -/
+
+example : True := by
+  fail_if_success
+    have n : ℕ := 0
+    have _ : StrictInterl (constantPrefixRows 0 1 1 (fun _ => 1) (fun _ => 1) n)
+        (constantPrefixRows 0 1 1 (fun _ => 1) (fun _ => 1) (n + 1)) := by
+      rr_row_window
+  trivial
+
+example : True := by
+  fail_if_success
+    have n : ℕ := 0
+    have _ : StrictInterl (constantPrefixRows 1 1 1 (fun _ => 1) (fun _ => 1) n)
+        (constantPrefixRows 1 1 1 (fun _ => 1) (fun _ => 1) (n + 4)) := by
+      rr_row_window
+  trivial
+
 /-! ## Canonical path-power models -/
 
 example (k A s : ℕ) (hk : 2 ≤ k) (hs : 1 ≤ s) (hsk : s ≤ k) :

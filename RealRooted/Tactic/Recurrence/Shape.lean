@@ -942,8 +942,15 @@ def splitRows (t : Expr) (k : Nat) (small : TacticM (TSyntax `tactic)) :
     TacticM (Option Cert) := do
   if k == 0 then return some #[]
   let .fvar fv := t | return none
-  let tId := mkIdent (← fv.getUserName)
+  let mut name ← fv.getUserName
   let mut cert : Cert := #[]
+  if name.hasMacroScopes || name.isInaccessibleUserName then
+    -- Splitting an opaque term does not substitute the index in dependent hypotheses.
+    let expose ← `(tactic| expose_names)
+    evalTactic expose
+    cert := cert.push expose
+    name ← withMainContext do fv.getUserName
+  let tId := mkIdent name
   for _ in [0:k] do
     let split ← `(tactic| rcases $tId:ident with _ | $tId:ident)
     evalTactic split
