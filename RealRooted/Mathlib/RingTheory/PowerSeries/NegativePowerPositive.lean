@@ -5,8 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerMul
-public import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialPositive
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.RingTheory.PowerSeries.Substitution
+public import Mathlib.RingTheory.PowerSeries.Binomial
+import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerMul
+import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialPositive
 import Mathlib.Tactic
 
 /-! # Positive coefficients of negative powers of products of linear factors -/

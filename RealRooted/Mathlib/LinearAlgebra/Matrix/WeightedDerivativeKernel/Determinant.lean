@@ -5,7 +5,7 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Hessenberg
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Hessenberg
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel
 import Mathlib.Tactic
 

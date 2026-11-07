@@ -5,8 +5,12 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerDeterminant
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Pencil
+public import Mathlib.RingTheory.PowerSeries.Substitution
+public import Mathlib.RingTheory.PowerSeries.Binomial
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Checkerboard
+import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerDeterminant
+import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Pencil
 
 /-! Polynomial parameter rows of a formal negative power. -/
 

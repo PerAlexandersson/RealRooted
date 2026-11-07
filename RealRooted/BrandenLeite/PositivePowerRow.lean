@@ -1,10 +1,13 @@
 module
 
+import RealRooted.Mathlib.Algebra.Polynomial.LinearFactors
+public import Mathlib.Algebra.Order.Archimedean.Real.Basic
+public import RealRooted.PFPolynomial
 public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePower
-public import RealRooted.BrandenLeite.WeightedDerivativeKernel
-public import RealRooted.BrandenLeite.PositiveLinearFactors
+import RealRooted.BrandenLeite.WeightedDerivativeKernel
+import RealRooted.BrandenLeite.PositiveLinearFactors
 import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerDegree
-public import RealRooted.TotallyNonnegPencil.Checkerboard
+import RealRooted.TotallyNonnegPencil.Checkerboard
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
 import Mathlib.Tactic.Positivity
 

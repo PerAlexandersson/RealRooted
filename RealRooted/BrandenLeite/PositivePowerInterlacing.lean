@@ -1,5 +1,6 @@
 module
 
+import RealRooted.BrandenLeite.WeightedDerivativeKernel
 public import RealRooted.BrandenLeite.PositivePowerRow
 import RealRooted.TotallyNonnegPencil.CheckerboardInterlacing
 import RealRooted.Interlacing.ReversalCommonFactor

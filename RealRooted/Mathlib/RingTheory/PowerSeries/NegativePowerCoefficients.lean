@@ -5,8 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialPositive
-public import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialAffineExpansion
+public import Mathlib.Basic.Real.Basic
+public import Mathlib.RingTheory.PowerSeries.Substitution
+public import Mathlib.RingTheory.PowerSeries.Binomial
+import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialPositive
+import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialAffineExpansion
 import Mathlib.Tactic
 
 /-! Exact parameter coefficients of formal negative powers. -/

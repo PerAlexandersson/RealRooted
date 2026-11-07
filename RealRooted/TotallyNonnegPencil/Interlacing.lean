@@ -1,8 +1,11 @@
 module
 
-public import RealRooted.TotallyNonnegInterlacing
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.LeadingSections
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.DeterminantPencil
+public import Mathlib.LinearAlgebra.Matrix.Block
+public import Mathlib.LinearAlgebra.Matrix.Determinant.TotallyNonneg
+public import RealRooted.Basic.ProperPosition
+import RealRooted.TotallyNonnegInterlacing
+import RealRooted.Mathlib.LinearAlgebra.Matrix.LeadingSections
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.DeterminantPencil
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 import RealRooted.Basic.AffineInterlacing
 import RealRooted.Interlacing.ReversalCommonFactor

@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.TotallyNonnegPencil
+public import RealRooted.PFPolynomial
+import RealRooted.TotallyNonnegPencil
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Checkerboard
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.DeterminantPencil
 import RealRooted.Mathlib.LinearAlgebra.Matrix.JacobiComplementaryMinor

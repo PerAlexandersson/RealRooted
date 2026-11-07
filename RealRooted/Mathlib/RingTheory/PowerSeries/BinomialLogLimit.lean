@@ -5,7 +5,9 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialPositive
+public import Mathlib.Topology.MetricSpace.Pseudo.Defs
+public import Mathlib.RingTheory.Binomial
+import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialPositive
 public import Mathlib.Topology.Algebra.Polynomial
 import Mathlib.Tactic
 

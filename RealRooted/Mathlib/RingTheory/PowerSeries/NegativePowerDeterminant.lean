@@ -5,8 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialDerivative
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Determinant
+public import Mathlib.RingTheory.PowerSeries.Substitution
+public import Mathlib.RingTheory.PowerSeries.Binomial
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel
+import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialDerivative
+import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Determinant
 import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerRecurrence
 
 /-! Determinants of coefficients of canonical formal negative powers. -/

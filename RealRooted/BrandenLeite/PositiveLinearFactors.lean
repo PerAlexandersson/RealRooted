@@ -1,10 +1,11 @@
 module
 
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel
 public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerPositive
-public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerDetPositive
+import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerDetPositive
 public import RealRooted.Basic.Coefficients
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
-public import RealRooted.Mathlib.Algebra.Polynomial.LinearFactors
+import RealRooted.Mathlib.Algebra.Polynomial.LinearFactors
 import Mathlib.Tactic
 
 /-! # Weighted determinants of polynomial products of positive linear factors -/

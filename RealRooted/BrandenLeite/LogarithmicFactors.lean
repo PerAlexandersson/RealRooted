@@ -1,7 +1,11 @@
 module
 
-public import RealRooted.BrandenLeite.LogarithmicInterlacing
-public import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmDegree
+import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerDegree
+import RealRooted.Mathlib.Algebra.Polynomial.LinearFactors
+public import RealRooted.Basic.ProperPosition
+public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineLogarithm
+import RealRooted.BrandenLeite.LogarithmicInterlacing
+import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmDegree
 
 /-! The logarithmic Brändén–Leite theorem for factored data. -/
 

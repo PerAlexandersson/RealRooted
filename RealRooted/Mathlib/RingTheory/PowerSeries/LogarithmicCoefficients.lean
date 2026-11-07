@@ -5,8 +5,10 @@ Authors: Per Alexandersson
 -/
 module
 
+import RealRooted.Mathlib.RingTheory.PowerSeries.FiniteSubstitution
+import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialLogLimit
 public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineLogarithm
-public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerCoefficients
+import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerCoefficients
 import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi
 import Mathlib.Tactic
 

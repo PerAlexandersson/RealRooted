@@ -1,6 +1,9 @@
 module
 
-public import RealRooted.TotallyNonnegPencil.Interlacing
+public import Mathlib.LinearAlgebra.Matrix.Block
+public import Mathlib.LinearAlgebra.Matrix.Determinant.TotallyNonneg
+public import RealRooted.Basic.ProperPosition
+import RealRooted.TotallyNonnegPencil.Interlacing
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Checkerboard
 import RealRooted.Mathlib.LinearAlgebra.Matrix.JacobiComplementaryMinor
 import Mathlib.Tactic

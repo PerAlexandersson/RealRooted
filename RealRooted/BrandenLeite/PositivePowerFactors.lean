@@ -1,7 +1,12 @@
 module
 
-public import RealRooted.BrandenLeite.PositivePowerRegularization
-public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerDegree
+import RealRooted.BrandenLeite.PositivePowerRow
+import RealRooted.Mathlib.Algebra.Polynomial.LinearFactors
+public import Mathlib.Algebra.Order.Archimedean.Real.Basic
+public import RealRooted.Basic.ProperPosition
+public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePower
+import RealRooted.BrandenLeite.PositivePowerRegularization
+import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerDegree
 import Mathlib.Tactic
 
 /-! The positive real-power Brändén–Leite theorem for factored data. -/

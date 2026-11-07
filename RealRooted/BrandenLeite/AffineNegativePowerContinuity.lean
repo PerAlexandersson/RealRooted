@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePowerRecurrence
-public import RealRooted.BrandenLeite.RecurrenceContinuity
+public import Mathlib.Topology.MetricSpace.Pseudo.Defs
+public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePower
+import RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePowerRecurrence
+import RealRooted.BrandenLeite.RecurrenceContinuity
 
 /-! Coefficientwise limits of canonical affine negative powers. -/
 

@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.Mathlib.Topology.Algebra.Polynomial.Recurrence
-public import Mathlib.Topology.Algebra.Ring.Real
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
+public import Mathlib.Topology.MetricSpace.Pseudo.Defs
+import RealRooted.Mathlib.Topology.Algebra.Polynomial.Recurrence
+import Mathlib.Topology.Algebra.Ring.Real
 import Mathlib.Algebra.BigOperators.Ring.Finset
 
 /-! Coefficient limits for formal negative powers. -/

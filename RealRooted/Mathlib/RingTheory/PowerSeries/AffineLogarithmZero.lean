@@ -6,7 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineLogarithm
-public import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmPositive
+import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmPositive
 import Mathlib.Tactic
 
 /-! # Ring maps and constant parameter coefficients of formal logarithms -/

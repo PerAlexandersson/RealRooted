@@ -1,8 +1,9 @@
 module
 
-public import RealRooted.ClassicalHurwitzMatrix.Stability.Lace
+public import RealRooted.VeroneseSection
+import RealRooted.ClassicalHurwitzMatrix.Stability.Lace
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel
-public import RealRooted.Derivative.Interlacing
+import RealRooted.Derivative.Interlacing
 import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Polynomial
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul

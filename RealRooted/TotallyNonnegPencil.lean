@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.PFPolynomial
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Charpoly
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Charpoly
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum
 import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.DeterminantPencil

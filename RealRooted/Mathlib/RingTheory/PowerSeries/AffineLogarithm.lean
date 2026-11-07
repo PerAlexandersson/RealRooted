@@ -5,7 +5,9 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerLogLimit
+public import Mathlib.Topology.MetricSpace.Pseudo.Defs
+public import Mathlib.RingTheory.PowerSeries.Log
+import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerLogLimit
 public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePower
 
 /-! Canonical logarithmic coefficient rows and their positive-power limit. -/

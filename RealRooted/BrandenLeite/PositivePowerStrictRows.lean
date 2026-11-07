@@ -5,6 +5,9 @@ Authors: Per Alexandersson
 -/
 module
 
+import RealRooted.Mathlib.Algebra.Polynomial.LinearFactors
+import RealRooted.BrandenLeite.WeightedDerivativeKernel
+import RealRooted.BrandenLeite.PositiveLinearFactors
 import RealRooted.BrandenLeite.PositivePowerFactors
 import RealRooted.BrandenLeite.PositivePowerInterlacing
 public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePower

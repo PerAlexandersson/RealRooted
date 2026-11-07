@@ -5,7 +5,8 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
+import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
 import Mathlib.LinearAlgebra.Matrix.SchurComplement
 
 /-! # Determinants of positive affine matrix pencils -/

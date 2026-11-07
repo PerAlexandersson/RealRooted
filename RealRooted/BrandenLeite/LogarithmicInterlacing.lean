@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.BrandenLeite.PositivePowerFactors
+public import RealRooted.PFPolynomial
+import RealRooted.BrandenLeite.PositivePowerFactors
 public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineLogarithm
 import RealRooted.PFPolynomial.Closure
 import Mathlib.Analysis.SpecificLimits.Basic

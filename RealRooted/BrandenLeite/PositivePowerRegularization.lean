@@ -1,7 +1,12 @@
 module
 
-public import RealRooted.BrandenLeite.PositivePowerInterlacing
-public import RealRooted.BrandenLeite.AffineNegativePowerContinuity
+import RealRooted.BrandenLeite.PositiveLinearFactors
+import RealRooted.Mathlib.Algebra.Polynomial.LinearFactors
+public import Mathlib.Topology.MetricSpace.Pseudo.Defs
+public import RealRooted.PFPolynomial
+public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePower
+import RealRooted.BrandenLeite.PositivePowerInterlacing
+import RealRooted.BrandenLeite.AffineNegativePowerContinuity
 import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerDegree
 import RealRooted.Mathlib.Topology.Algebra.Polynomial
 import RealRooted.PFPolynomial.Closure

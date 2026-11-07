@@ -6,7 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.LinearAlgebra.Matrix.Adjugate
-public import Mathlib.LinearAlgebra.Matrix.Block
+import Mathlib.LinearAlgebra.Matrix.Block
 import Mathlib.Data.Nat.Factorial.BigOperators
 
 /-! A division-free determinant identity from a sparse matrix-vector product. -/

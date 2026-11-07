@@ -7,8 +7,8 @@ module
 
 public import Mathlib.RingTheory.PowerSeries.Binomial
 public import Mathlib.RingTheory.PowerSeries.Substitution
-public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineSubstitution
-public import RealRooted.Mathlib.RingTheory.PowerSeries.BivariateBinomial
+import RealRooted.Mathlib.RingTheory.PowerSeries.AffineSubstitution
+import RealRooted.Mathlib.RingTheory.PowerSeries.BivariateBinomial
 import Mathlib.Algebra.FiniteSupport.Basic
 import Mathlib.Tactic
 

@@ -5,9 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialLogLimit
-public import RealRooted.Mathlib.RingTheory.PowerSeries.FiniteSubstitution
-public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerCoefficients
+public import Mathlib.Topology.MetricSpace.Pseudo.Defs
+public import Mathlib.RingTheory.PowerSeries.Binomial
+import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialLogLimit
+import RealRooted.Mathlib.RingTheory.PowerSeries.FiniteSubstitution
+import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerCoefficients
 public import Mathlib.RingTheory.PowerSeries.Log
 import Mathlib.Tactic
 

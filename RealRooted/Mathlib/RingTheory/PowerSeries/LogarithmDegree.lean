@@ -5,9 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmicCoefficients
-public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineLogarithmZero
-public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerDegree
+import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerPositive
+public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineLogarithm
+import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmicCoefficients
+import RealRooted.Mathlib.RingTheory.PowerSeries.AffineLogarithmZero
+import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerDegree
 import Mathlib.Tactic
 
 /-! # Exact degrees and positive coefficients of canonical logarithmic rows -/

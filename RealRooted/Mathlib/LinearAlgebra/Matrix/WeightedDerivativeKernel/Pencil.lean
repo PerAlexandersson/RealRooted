@@ -5,7 +5,9 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Algebra
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Checkerboard
+import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Algebra
 import Mathlib.Tactic.Ring
 
 /-! # The affine polynomial pencil of a signed weighted kernel -/

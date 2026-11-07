@@ -5,7 +5,8 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmMul
+public import Mathlib.RingTheory.PowerSeries.Log
+import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmMul
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.Algebra.Algebra.Rat
 import Mathlib.Tactic

@@ -5,9 +5,11 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerCoefficients
+import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialPositive
+public import Mathlib.Algebra.Order.Archimedean.Real.Basic
+import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerCoefficients
 public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePower
-public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerPositive
+import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerPositive
 import Mathlib.Algebra.Polynomial.Degree.Operations
 import Mathlib.Tactic
 

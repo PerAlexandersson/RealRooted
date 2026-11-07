@@ -5,8 +5,10 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerPositive
-public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerDeterminant
+public import Mathlib.RingTheory.PowerSeries.Basic
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel
+import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerPositive
+import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerDeterminant
 import Mathlib.Tactic.Positivity
 
 /-! # Strict positivity of weighted kernels of positive linear products -/

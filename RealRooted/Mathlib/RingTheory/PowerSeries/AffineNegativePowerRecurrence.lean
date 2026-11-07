@@ -5,6 +5,7 @@ Authors: Per Alexandersson
 -/
 module
 
+import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialDerivative
 public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePower
 public import Mathlib.Basic.Real.Basic
 import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerRecurrence
