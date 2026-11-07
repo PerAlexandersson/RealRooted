@@ -2,6 +2,7 @@ module
 
 public import RealRooted.Tactic.RowInterlacing
 public import RealRooted.Tactic.Examples.RowFixtures
+public import Mathlib.RingTheory.Polynomial.Chebyshev
 
 /-!
 # General recurrences and half growth
@@ -664,6 +665,19 @@ example (c b : ℝ) (hc : 0 < c) (hb : 0 ≤ b) (n : ℕ) :
 end CoefficientClosureTests
 
 namespace OperationLeadingTests
+
+-- Imported simp lemmas can discharge leaders without a recurrence-parser extension.
+example (n : ℕ) : HasPosLeadingCoeff (Polynomial.Chebyshev.U ℝ (n : ℤ)) := by
+  rr_row_leadingCoeff_pos
+
+example (n : ℕ) : HasPosLeadingCoeff (Polynomial.Chebyshev.T ℝ (n : ℤ)) := by
+  rr_row_leadingCoeff_pos
+
+example (n : ℕ) : n = n := by
+  fail_if_success
+    have h : HasPosLeadingCoeff (-Polynomial.Chebyshev.U ℝ (n : ℤ)) := by
+      rr_row_leadingCoeff_pos
+  rfl
 
 example (a b c : ℝ) (ha : 0 < a) :
     0 < (C a * X ^ 3 - C b * X + C c).leadingCoeff := by
