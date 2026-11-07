@@ -3200,6 +3200,126 @@
       ],
       "note": "General formal-series and matrix lemmas for positive-power Brändén–Leite (#2441).",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/LinearFactors.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.LinearFactors"
+      ],
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/WeightedDerivativeKernel/Algebra.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Algebra"
+      ],
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/WeightedDerivativeKernel/Pencil.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Pencil"
+      ],
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/AffineNegativePower.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.AffineNegativePower"
+      ],
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/AffineSubstitution.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.AffineSubstitution"
+      ],
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/BinomialAffineExpansion.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.BinomialAffineExpansion"
+      ],
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/BivariateBinomial.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.BivariateBinomial"
+      ],
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/NegativePowerCoefficients.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.NegativePowerCoefficients"
+      ],
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/NegativePowerDetPositive.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.NegativePowerDetPositive"
+      ],
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/NegativePowerMul.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.NegativePowerMul"
+      ],
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/NegativePowerPositive.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.NegativePowerPositive"
+      ],
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Topology/Algebra/Polynomial/Recurrence.lean"
+      ],
+      "modules": [
+        "Mathlib.Topology.Algebra.Polynomial.Recurrence"
+      ],
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "speculative": true
     }
   ]
 }
