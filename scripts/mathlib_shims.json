@@ -3340,6 +3340,56 @@
       ],
       "note": "General positive-power coefficient and recurrence lemmas for Brändén–Leite (#2441).",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/AffineLogarithm.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.AffineLogarithm"
+      ],
+      "note": "Formal logarithmic limits and inverse identities for generalized Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/BinomialLogLimit.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.BinomialLogLimit"
+      ],
+      "note": "Formal logarithmic limits and inverse identities for generalized Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/FiniteSubstitution.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.FiniteSubstitution"
+      ],
+      "note": "Formal logarithmic limits and inverse identities for generalized Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/NegativePowerLogLimit.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.NegativePowerLogLimit"
+      ],
+      "note": "Formal logarithmic limits and inverse identities for generalized Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/NegativePowerOne.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.NegativePowerOne"
+      ],
+      "note": "Formal logarithmic limits and inverse identities for generalized Brändén–Leite (#2441).",
+      "speculative": true
     }
   ]
 }

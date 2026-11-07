@@ -1980,6 +1980,9 @@ public import RealRooted.BrandenLeite.PositivePowerRow
 public import RealRooted.BrandenLeite.RecurrenceContinuity
 public import RealRooted.BrandenLeite.AffineNegativePowerContinuity
 public import RealRooted.BrandenLeite.PositivePowerInterlacing
+public import RealRooted.BrandenLeite.PositivePowerFactors
+public import RealRooted.BrandenLeite.PositivePowerRegularization
+public import RealRooted.BrandenLeite.RationalRodCanonical
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.LeadingSections
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.DeterminantPencil
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Determinant
@@ -2002,6 +2005,11 @@ public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerMul
 public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerPositive
 public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePowerRecurrence
 public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerDegree
+public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineLogarithm
+public import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialLogLimit
+public import RealRooted.Mathlib.RingTheory.PowerSeries.FiniteSubstitution
+public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerLogLimit
+public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerOne
 public import RealRooted.TotallyNonnegPencil.Checkerboard
 public import RealRooted.TotallyNonnegPencil.Interlacing
 public import RealRooted.TotallyNonnegPencil.CheckerboardInterlacing

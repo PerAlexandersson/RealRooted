@@ -47,4 +47,24 @@ theorem splits_prod_one_add_C_mul_X {R ι : Type*} [Field R]
   exact Polynomial.natDegree_add_le_of_degree_le (by simp)
     ((Polynomial.natDegree_C_mul_le _ _).trans Polynomial.natDegree_X_le)
 
+/-- Coercing a product of normalized positive linear polynomial factors
+to formal power series preserves its factor presentation. -/
+theorem coe_prod_one_add_C_mul_X {R ι : Type*} [CommRing R]
+    (s : Finset ι) (β : ι → R) :
+    ((∏ i ∈ s, (1 + C (β i) * X) : Polynomial R) : PowerSeries R) =
+      ∏ i ∈ s, (1 + PowerSeries.C (β i) * PowerSeries.X : PowerSeries R) := by
+  rw [← coeToPowerSeries.ringHom_apply, map_prod]
+  apply Finset.prod_congr rfl
+  intro i _
+  simp
+
+/-- The usual PF numerator factorization is preserved under the
+polynomial-to-formal-series coercion. -/
+theorem coe_C_mul_X_pow_prod_one_add_C_mul_X {R ι : Type*} [CommRing R]
+    (c : R) (r : ℕ) (s : Finset ι) (β : ι → R) :
+    ((C c * X ^ r * ∏ i ∈ s, (1 + C (β i) * X) : Polynomial R) : PowerSeries R) =
+      PowerSeries.C c * PowerSeries.X ^ r *
+        ∏ i ∈ s, (1 + PowerSeries.C (β i) * PowerSeries.X : PowerSeries R) := by
+  rw [coe_mul, coe_mul, coe_C, coe_pow, coe_X, coe_prod_one_add_C_mul_X]
+
 end Polynomial
