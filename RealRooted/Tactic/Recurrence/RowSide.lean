@@ -353,7 +353,7 @@ def explicitPolynomialLeadingCoeff (P? : Option Ident := none)
   let d := rowNumLit q.natDegree
   let equality ← `(($source : ℝ[X]) = $canonical)
   let closers ← pure #[← `(tactic| rfl), ← `(tactic| ring1), ← `(tactic| norm_num),
-    ← `(tactic| (norm_num; ring1))]
+    ← `(tactic| (norm_num; ring1)), ← `(tactic| (simp only [map_ofNat] <;> ring1))]
   let mut normalizers := closers
   let mut prefixes : Array (TSyntax `tactic) := #[]
   if let some P := row? then
@@ -426,7 +426,10 @@ elab_rules : tactic
   | `(tactic| rr_row_side) => withMainContext do
     betaReduceGoal
     withMainContext do
-    let P? ← findSeqConstDeep? (← instantiateMVars (← getMainTarget))
+    let target ← instantiateMVars (← getMainTarget)
+    let P? ← match ← findPolySeqApp? target with
+      | some family => pure (some family.name)
+      | none => findSeqConstDeep? target
     rowSideGoal (P?.map mkIdent)
 
 /-- The theorems to try for a recurrence shape and a goal kind, each with an

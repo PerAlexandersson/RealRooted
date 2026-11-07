@@ -32,6 +32,10 @@ def fibonacciRows : ℕ → ℝ[X]
 example (n : ℕ) : StrictInterl (fibonacciRows n) (fibonacciRows (n + 1)) := by
   rr_row_strictInterl
 
+-- The precheck must open quantified indices before inspecting their types.
+example : ∀ n : ℕ, StrictInterl (fibonacciRows n) (fibonacciRows (n + 1)) := by
+  rr_row_strictInterl
+
 /-! ## Combinatorial families -/
 
 example (n : ℕ) : StrictInterl (motzkin n) (motzkin (n + 1)) := by

@@ -149,9 +149,26 @@ def describe : RecShape → String
 
 end RecShape
 
+/-- Recover a natural index, also from a definitionally nonnegative integer cast. -/
+def naturalRowIndex? (e : Expr) : MetaM (Option Expr) := do
+  let ty ← whnfR (← inferType e)
+  if ty.isConstOf ``Nat then return some e
+  unless ty.isConstOf ``Int do return none
+  let e ← withTransparency .default (whnf e)
+  if e.isAppOfArity ``Int.ofNat 1 then return some e.appArg!
+  return none
+
+/-- Apply a row family to a natural index, inserting its integer cast when required. -/
+private def applyNaturalRow (family index : Expr) : MetaM Expr := do
+  let .forallE _ dom _ _ ← whnfR (← inferType family)
+    | throwError "expected a row family"
+  if dom.isConstOf ``Int then return mkApp family (mkApp (mkConst ``Int.ofNat) index)
+  unless dom.isConstOf ``Nat do throwError "expected a natural or integer row index"
+  return mkApp family index
+
 /-- `j` if `e` is `n + j`, `n.succ` or a nesting of these. -/
 partial def natOffsetOf? (n e : Expr) : MetaM (Option Nat) := do
-  let e := e.consumeMData
+  let some e ← naturalRowIndex? e.consumeMData | return none
   if e == n then return some 0
   if e.isAppOfArity ``HAdd.hAdd 6 then
     let some k ← evalNat e.appArg! | return none
@@ -162,7 +179,8 @@ partial def natOffsetOf? (n e : Expr) : MetaM (Option Nat) := do
 
 /-- `(t, j)` with `e` of the form `t + j`, `t` not of that form. -/
 partial def natOffsetParts (e : Expr) : MetaM (Expr × Nat) := do
-  let e := e.consumeMData
+  let some e ← naturalRowIndex? e.consumeMData
+    | throwError "row index is not a natural number or its integer cast"
   if e.isAppOfArity ``HAdd.hAdd 6 then
     if let some k ← evalNat e.appArg! then
       let (t, j) ← natOffsetParts e.appFn!.appArg!
@@ -205,10 +223,11 @@ structure RowSummand where
 
 private def mentions (P : Name) (e : Expr) : Bool := (e.find? (·.isConstOf P)).isSome
 
-/-- Whether a definition body is recursive.  Structural recursion on `Nat` is compiled
-through `Nat.brecOn`, so the source definition need not occur literally in its body. -/
-private def isRecursiveDef (name : Name) (value : Expr) : Bool :=
-  (value.find? fun e => e.isConstOf name || e.isConstOf ``Nat.brecOn).isSome
+/-- Use Lean's structural and well-founded recursion metadata before inspecting the body.
+The body fallback also recognizes recursion compiled through `Nat.brecOn`. -/
+private def isRecursiveDef (name : Name) (value : Expr) : CoreM Bool := do
+  if ← isRecursiveDefinition name then return true
+  return (value.find? fun e => e.isConstOf name || e.isConstOf ``Nat.brecOn).isSome
 
 /-- Internal recurrence encodings are proof infrastructure, not coefficient blocks. -/
 private def isInternalRowDef (name : Name) : Bool :=
@@ -227,8 +246,8 @@ private def isLibraryDef (name : Name) : MetaM Bool := do
 with values in `ℝ` or `ℝ[X]`: a named coefficient block of a row recurrence. -/
 private def isRowCoeffDef (name : Name) : MetaM Bool := do
   let some (.defnInfo info) := (← getEnv).find? name | return false
-  if !info.levelParams.isEmpty || isInternalRowDef name || isRecursiveDef name info.value then
-    return false
+  if !info.levelParams.isEmpty || isInternalRowDef name then return false
+  if ← isRecursiveDef name info.value then return false
   if ← isLibraryDef name then return false
   forallTelescopeReducing info.type fun _ result => do
     let result ← whnf result
@@ -421,8 +440,9 @@ private def readRec (P : Name) (params : Array Expr) (eqn : Name) (n lhs rhs : E
       | none =>
           plain := false
           let row ← match d with
-            | 0 => pure (mkAppN lhs.getAppFn
-                (params.push (if j == 0 then n else mkNatAdd n (mkNatLit j))))
+            | 0 =>
+                applyNaturalRow (mkAppN lhs.getAppFn params)
+                  (if j == 0 then n else mkNatAdd n (mkNatLit j))
             | _ => match deriv1? with
               | some r => pure r
               | none => throwError "rr_row: missing derivative row"
@@ -433,7 +453,7 @@ private def readRec (P : Name) (params : Array Expr) (eqn : Name) (n lhs rhs : E
       | some acc => mkAppM ``HAdd.hAdd #[acc, term]
       | none => pure term)
   unless order == List.range summands.size do plain := false
-  let lhs' := mkAppN lhs.getAppFn (params.push (mkNatAdd n (mkNatLit k)))
+  let lhs' ← applyNaturalRow (mkAppN lhs.getAppFn params) (mkNatAdd n (mkNatLit k))
   let stmt ← mkForallFVars #[n] (← mkEq lhs' rhs'.get!)
   return .ok ⟨P, params, shape, k, k, eqn, plain, stmt, coeffs⟩
 
@@ -789,6 +809,11 @@ def certTerm (e : Expr) : TacticM Term := do
 /-- The fixed-parameter sequence represented by a recurrence. -/
 def RowRec.seqTerm (r : RowRec) : TacticM Term := do
   let e := mkAppN (← mkConstWithFreshMVarLevels r.P) r.params
+  let .forallE _ dom _ _ ← whnfR (← inferType e) | throwError "expected a row family"
+  if dom.isConstOf ``Int then
+    let slice ← withLocalDeclD `m (mkConst ``Nat) fun m => do
+      mkLambdaFVars #[m] (← applyNaturalRow e m)
+    return ← certTerm slice
   certTerm e
 
 /-- The shifted sequence `m ↦ P (m + k)`. -/
@@ -844,7 +869,9 @@ partial def findPolySeqApp? (e : Expr) : MetaM (Option PolySeqApp) := do
     let f := e.appFn!
     let ty ← whnfR (← inferType f)
     if let .forallE _ dom body _ := ty then
-      if dom.isConstOf ``Nat && !body.hasLooseBVars &&
+      let natural := dom.isConstOf ``Nat ||
+        (dom.isConstOf ``Int && (← naturalRowIndex? e.appArg!).isSome)
+      if natural && !body.hasLooseBVars &&
           (← whnfR body).getAppFn.isConstOf ``Polynomial then
         if let .const name _ := f.getAppFn then
           return some { name, params := f.getAppArgs }
@@ -896,6 +923,7 @@ none. -/
 def mainRowIndex (P : Ident) : TacticM Expr := do
   let tgt ← instantiateMVars (← getMainTarget)
   let some t := rowIndex? P.getId tgt | throwError "rr_row: no row `{P} t` in the goal"
+  let some t ← naturalRowIndex? t | throwError "row index is not a natural slice"
   return t
 
 /-- A certificate: tactics that replay a successful search. -/
