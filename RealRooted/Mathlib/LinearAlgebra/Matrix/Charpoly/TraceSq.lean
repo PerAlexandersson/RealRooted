@@ -9,6 +9,7 @@ public import Mathlib.Basic.Real.Basic
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
 public import Mathlib.Algebra.Polynomial.Expand
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.DeterminantPencil
 
 /-!
 # The trace of the square of a matrix
@@ -39,11 +40,8 @@ theorem trace_mul_self_eq {n R : Type*} [Fintype n] [DecidableEq n] [CommRing R]
     (M : Matrix n n R) :
     trace (M * M) = trace M ^ 2 - 2 * M.charpolyRev.coeff 2 := by
   have hS : det (1 + (X : R[X]) • M.map C) = M.charpolyRev.comp (-X) := by
-    rw [charpolyRev, ← coe_compRingHom_apply, RingHom.map_det]
-    congr 1
-    ext i j
-    simp [Matrix.one_apply]
-    split_ifs <;> simp
+    simpa only [reverse_charpoly] using
+      det_one_add_X_smul_eq_reverse_charpoly_comp_neg_X M
   have hprod : M.charpolyRev * det (1 + (X : R[X]) • M.map C) =
       expand R 2 (M * M).charpolyRev := by
     rw [charpolyRev, charpolyRev, ← det_mul, ← AlgHom.coe_toRingHom, RingHom.map_det]

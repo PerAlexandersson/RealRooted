@@ -253,10 +253,11 @@ private lemma orderEmbOfFin_image {k : ℕ} {r : Fin k → Fin N} (hr : StrictMo
     rw [Finset.card_image_of_injective _ hr.injective]; simp
   exact ⟨h, (Finset.orderEmbOfFin_unique h (fun i => by simp) hr).symm⟩
 
-/-- If `A` is totally nonnegative with `det A = 1` and `A * B = 1`, then the sign-conjugated
+/-- If `A` is totally nonnegative with positive determinant and `A * B = 1`,
+then the sign-conjugated
 inverse `((-1)^(i+j) B i j)` is totally nonnegative. -/
 private lemma tn_inverse_aux (A B : Matrix (Fin N) (Fin N) ℝ) (hAB : A * B = 1)
-    (hdet : A.det = 1)
+    (hdet : 0 < A.det)
     (hA : ∀ (m : ℕ) (f g : Fin m → Fin N), StrictMono f → StrictMono g →
       0 ≤ (A.submatrix f g).det)
     {k : ℕ} (r c : Fin k → Fin N) (hr : StrictMono r) (hc : StrictMono c) :
@@ -265,7 +266,7 @@ private lemma tn_inverse_aux (A B : Matrix (Fin N) (Fin N) ℝ) (hAB : A * B = 1
   obtain ⟨hs, hrs⟩ := orderEmbOfFin_image hr
   obtain ⟨ht, hct⟩ := orderEmbOfFin_image hc
   have hJ := jacobi_minor A B hAB hs ht
-  rw [hdet, mul_one, hrs, hct] at hJ
+  rw [hrs, hct] at hJ
   have e1 : (Matrix.of fun i j => (-1 : ℝ) ^ (r i : ℕ) * ((-1 : ℝ) ^ (c j : ℕ) * B (r i) (c j))).det
       = (∏ i, (-1 : ℝ) ^ (r i : ℕ)) * ((∏ j, (-1 : ℝ) ^ (c j : ℕ)) * (B.submatrix r c).det) := by
     rw [show Matrix.of (fun i j => (-1 : ℝ) ^ (r i : ℕ) *
@@ -277,8 +278,26 @@ private lemma tn_inverse_aux (A B : Matrix (Fin N) (Fin N) ℝ) (hAB : A * B = 1
     rw [Finset.prod_pow_eq_pow_sum, Finset.sum_image (fun x _ y _ h => hr.injective h)]
   have p2 : (∏ j, (-1 : ℝ) ^ (c j : ℕ)) = (-1) ^ (∑ z ∈ Finset.univ.image c, (z : ℕ)) := by
     rw [Finset.prod_pow_eq_pow_sum, Finset.sum_image (fun x _ y _ h => hc.injective h)]
-  rw [e1, p1, p2, ← mul_assoc, ← pow_add, hJ]
-  exact hA _ _ _ (Finset.orderEmbOfFin _ _).strictMono (Finset.orderEmbOfFin _ _).strictMono
+  rw [e1, p1, p2, ← mul_assoc, ← pow_add]
+  apply nonneg_of_mul_nonneg_left _ hdet
+  have hnonneg : 0 ≤
+      (-1 : ℝ) ^ (∑ z ∈ Finset.univ.image r, (z : ℕ) +
+        ∑ z ∈ Finset.univ.image c, (z : ℕ)) * A.det * (B.submatrix r c).det := by
+    rw [hJ]
+    exact hA _ _ _
+      (Finset.orderEmbOfFin _ _).strictMono (Finset.orderEmbOfFin _ _).strictMono
+  convert hnonneg using 1
+  ring
+
+/-- If a totally nonnegative real matrix has positive determinant, then its inverse, conjugated
+by alternating signs, is totally nonnegative. -/
+theorem IsTotallyNonneg.checkerboard_inverse (A B : Matrix (Fin N) (Fin N) ℝ)
+    (hAB : A * B = 1) (hdet : 0 < A.det)
+    (hA : A.IsTotallyNonneg) :
+    (Matrix.of fun (i j : Fin N) =>
+      (-1 : ℝ) ^ (i : ℕ) * ((-1 : ℝ) ^ (j : ℕ) * B i j)).IsTotallyNonneg := by
+  intro k r c hr hc
+  exact tn_inverse_aux A B hAB hdet hA r c hr hc
 
 /-- If a totally nonnegative real matrix has determinant one, then its inverse, conjugated
 by alternating signs, is totally nonnegative. -/
@@ -286,8 +305,8 @@ theorem tn_inverse (A B : Matrix (Fin N) (Fin N) ℝ) (hAB : A * B = 1) (hdet : 
     (hA : A.IsTotallyNonneg) :
     (Matrix.of fun (i j : Fin N) =>
       (-1 : ℝ) ^ (i : ℕ) * ((-1 : ℝ) ^ (j : ℕ) * B i j)).IsTotallyNonneg := by
-  intro k r c hr hc
-  exact tn_inverse_aux A B hAB hdet hA r c hr hc
+  exact IsTotallyNonneg.checkerboard_inverse A B hAB
+    (by rw [hdet]; exact zero_lt_one) hA
 
 end Jacobi
 

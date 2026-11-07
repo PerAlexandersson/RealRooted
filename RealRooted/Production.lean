@@ -1970,3 +1970,11 @@ This entry point imports every production module and excludes tactic regression
 examples. Use `RealRooted` for the historical broad compatibility surface and
 `RealRooted.Tactic.Examples` for the mandatory regression suite.
 -/
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Hessenberg
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel
+public import RealRooted.BrandenLeite.WeightedDerivativeKernel
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.LeadingSections
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.DeterminantPencil
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Determinant
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Polynomial
+public import RealRooted.TotallyNonnegPencil

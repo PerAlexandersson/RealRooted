@@ -10,6 +10,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 public import RealRooted.PFPolynomial
 public import RealRooted.PolyaFrequencyConvolution
 import RealRooted.Mathlib.Algebra.Polynomial.Reverse
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.DeterminantPencil
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Gaussian
 
 @[expose] public section
@@ -283,25 +284,6 @@ private theorem charpoly_splits_of_complex_roots_real
     rwa [Matrix.charpoly_map]
   obtain ⟨r, hrz⟩ := hroots z hz'
   exact ⟨r, hrz⟩
-
-private theorem det_one_add_X_smul_eq_reverse_charpoly_comp_neg_X
-    {n : Type*} [Fintype n] [DecidableEq n] (A : Matrix n n ℝ) :
-    Matrix.det (1 + (Polynomial.X : Polynomial ℝ) • A.map Polynomial.C) =
-      A.charpoly.reverse.comp (-Polynomial.X) := by
-  open Polynomial in
-  rw [Matrix.reverse_charpoly]
-  apply Polynomial.funext
-  intro x
-  rw [Polynomial.eval_comp]
-  simp only [Polynomial.eval_neg, Polynomial.eval_X]
-  rw [Matrix.charpolyRev, ← Polynomial.coe_evalRingHom,
-    RingHom.map_det, ← Polynomial.coe_evalRingHom, RingHom.map_det]
-  congr 1
-  ext i j
-  by_cases hij : i = j
-  · subst j
-    simp
-  · simp [hij]
 
 /-- The normalized determinant polynomial `det (I + X * B⁻¹ S)`. -/
 def arrayDetPolynomialFin (N : ℕ) : Polynomial ℝ :=

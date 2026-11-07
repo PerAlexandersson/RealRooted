@@ -3090,6 +3090,66 @@
       ],
       "note": "Speculative target module (#954 items B1/D1); no upstream PR or attribution has been recorded yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/Determinant/Hessenberg.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.Determinant.Hessenberg"
+      ],
+      "note": "General matrix lemmas supporting the positive-power Brändén–Leite extension (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/WeightedDerivativeKernel.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel"
+      ],
+      "note": "General matrix lemmas supporting the positive-power Brändén–Leite extension (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/LeadingSections.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.Block"
+      ],
+      "note": "Finite leading-section products and inverses for lower triangular matrices (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/WeightedDerivativeKernel/Polynomial.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Polynomial"
+      ],
+      "note": "General algebra and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/WeightedDerivativeKernel/Determinant.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Determinant"
+      ],
+      "note": "General algebra and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/Charpoly/DeterminantPencil.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.Charpoly.DeterminantPencil"
+      ],
+      "note": "General algebra and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "speculative": true
     }
   ]
 }

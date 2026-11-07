@@ -2035,3 +2035,11 @@ public import RealRooted.MultiplierSequence.CoefficientRatio
 public import RealRooted.MultiplierSequence.EulerCoefficientRatio
 public import RealRooted.DerivativeRecurrence.FiniteLagCoefficients
 public import RealRooted.Tactic.Recurrence.Coefficients
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Hessenberg
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel
+public import RealRooted.BrandenLeite.WeightedDerivativeKernel
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.LeadingSections
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.DeterminantPencil
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Determinant
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Polynomial
+public import RealRooted.TotallyNonnegPencil
