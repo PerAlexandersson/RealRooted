@@ -2020,3 +2020,5 @@ public import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmicCoefficients
 public import RealRooted.TotallyNonnegPencil.Checkerboard
 public import RealRooted.TotallyNonnegPencil.Interlacing
 public import RealRooted.TotallyNonnegPencil.CheckerboardInterlacing
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.CheckerboardAdjacent
+public import RealRooted.TotallyNonnegPencil.StrictInterlacing

@@ -3440,6 +3440,16 @@
       ],
       "note": "Logarithmic coefficient identities and positivity for generalized Brändén–Leite (#2441).",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/CheckerboardAdjacent.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.CheckerboardAdjacent"
+      ],
+      "note": "Adjacent-entry positivity for products with checkerboard inverses of lower triangular totally nonnegative matrices.",
+      "speculative": true
     }
   ]
 }
