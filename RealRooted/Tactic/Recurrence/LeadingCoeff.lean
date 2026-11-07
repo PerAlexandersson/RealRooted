@@ -70,6 +70,7 @@ def algebraRowLeadingCoeff (positive : Bool := true) : TacticM Cert := withMainC
   let basic ← `(tactic|
     first
     | assumption
+    | (simp; first | done | positivity)
     | (simp only [Polynomial.leadingCoeff_X, Polynomial.leadingCoeff_one,
         Polynomial.leadingCoeff_zero, Polynomial.leadingCoeff_C, pow_zero,
         Polynomial.leadingCoeff_X_add_C, Polynomial.leadingCoeff_X_sub_C];
