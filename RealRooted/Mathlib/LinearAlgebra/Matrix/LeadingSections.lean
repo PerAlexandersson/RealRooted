@@ -89,4 +89,17 @@ theorem IsLowerTriangular.leading_submatrix_inv_mul [CommRing R]
     Matrix.blockTriangular_inv_of_blockTriangular hA
   rw [hinv.leading_submatrix_mul, ← hA.leading_submatrix_inv hdet]
 
+/-- The leading section of an invertible lower triangular matrix has unit
+determinant. -/
+theorem IsLowerTriangular.isUnit_det_leading_submatrix
+    {R : Type*} [CommRing R]
+    {m : ℕ} {A : Matrix (Fin (m + 1)) (Fin (m + 1)) R}
+    (hA : A.IsLowerTriangular) (hdet : IsUnit A.det) :
+    IsUnit (A.submatrix Fin.castSucc Fin.castSucc).det := by
+  apply Matrix.isUnit_det_of_right_inverse
+    (B := A⁻¹.submatrix Fin.castSucc Fin.castSucc)
+  rw [← hA.leading_submatrix_mul A⁻¹, Matrix.mul_nonsing_inv A hdet,
+    Matrix.submatrix_one Fin.castSucc (Fin.castSucc_injective m)]
+
+
 end Matrix

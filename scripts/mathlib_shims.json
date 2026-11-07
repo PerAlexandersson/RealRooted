@@ -3150,6 +3150,56 @@
       ],
       "note": "General algebra and matrix lemmas for positive-power Brändén–Leite (#2441).",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/Checkerboard.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.Checkerboard"
+      ],
+      "note": "General formal-series and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/BinomialDerivative.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.BinomialDerivative"
+      ],
+      "note": "General formal-series and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/BinomialPositive.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.BinomialPositive"
+      ],
+      "note": "General formal-series and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/NegativePowerDeterminant.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.NegativePowerDeterminant"
+      ],
+      "note": "General formal-series and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/NegativePowerRecurrence.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.NegativePowerRecurrence"
+      ],
+      "note": "General formal-series and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "speculative": true
     }
   ]
 }

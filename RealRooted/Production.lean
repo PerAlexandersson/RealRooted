@@ -1978,3 +1978,10 @@ public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.DeterminantPencil
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Determinant
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Polynomial
 public import RealRooted.TotallyNonnegPencil
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Checkerboard
+public import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialDerivative
+public import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialPositive
+public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerDeterminant
+public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerRecurrence
+public import RealRooted.TotallyNonnegPencil.Checkerboard
+public import RealRooted.TotallyNonnegPencil.Interlacing
