@@ -188,6 +188,7 @@ public import RealRooted.CauchyInterlacing
 public import RealRooted.CauchyInterlacing.Polynomial
 public import RealRooted.CauchyInterlacing.RankOne
 public import RealRooted.CauchyInterlacing.Submatrix
+public import RealRooted.Challenges.Combinatorial.SchurElementarySubstitution
 public import RealRooted.Challenges.PolyaFrequency.AissenSchoenbergWhitney
 public import RealRooted.Challenges.Interlacing.Bezoutian
 public import RealRooted.Challenges.Combinatorial.BigDescents321
@@ -1385,6 +1386,17 @@ public import RealRooted.SamePhaseInterlacing
 public import RealRooted.SamePhaseStability
 public import RealRooted.SamePhaseStability.Nonnegative
 public import RealRooted.ScalarNormalization
+public import RealRooted.Schur.ElementarySubstitution
+public import RealRooted.Schur.ElementaryToeplitz
+public import RealRooted.Schur.MinorPositivity
+public import RealRooted.Schur.ElementaryPositivity
+public import RealRooted.Schur.Roots
+public import RealRooted.Schur.PositiveRoots
+public import RealRooted.Schur.Interlacing
+public import RealRooted.Schur.Rectangular
+public import RealRooted.Schur.Stretching
+public import RealRooted.Schur.ConstantColumns
+public import RealRooted.Schur.Examples
 public import RealRooted.SeparablePermutations.Basic
 public import RealRooted.SeparablePermutations.Cubic
 public import RealRooted.SeparablePermutations.Enumerator
@@ -2010,6 +2022,7 @@ public import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmMul
 public import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmPositive
 public import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmicCoefficients
 public import RealRooted.TotallyNonnegPencil.Checkerboard
+public import RealRooted.TotallyNonnegPencil.CornerInterlacing
 public import RealRooted.TotallyNonnegPencil.Interlacing
 public import RealRooted.TotallyNonnegPencil.CheckerboardInterlacing
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.CheckerboardAdjacent
