@@ -1983,6 +1983,8 @@ public import RealRooted.BrandenLeite.PositivePowerInterlacing
 public import RealRooted.BrandenLeite.PositivePowerFactors
 public import RealRooted.BrandenLeite.PositivePowerRegularization
 public import RealRooted.BrandenLeite.RationalRodCanonical
+public import RealRooted.BrandenLeite.LogarithmicFactors
+public import RealRooted.BrandenLeite.LogarithmicInterlacing
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.LeadingSections
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.DeterminantPencil
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Determinant
@@ -2010,6 +2012,11 @@ public import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialLogLimit
 public import RealRooted.Mathlib.RingTheory.PowerSeries.FiniteSubstitution
 public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerLogLimit
 public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerOne
+public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineLogarithmZero
+public import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmDegree
+public import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmMul
+public import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmPositive
+public import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmicCoefficients
 public import RealRooted.TotallyNonnegPencil.Checkerboard
 public import RealRooted.TotallyNonnegPencil.Interlacing
 public import RealRooted.TotallyNonnegPencil.CheckerboardInterlacing

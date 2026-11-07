@@ -3390,6 +3390,56 @@
       ],
       "note": "Formal logarithmic limits and inverse identities for generalized Brändén–Leite (#2441).",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/AffineLogarithmZero.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.AffineLogarithmZero"
+      ],
+      "note": "Logarithmic coefficient identities and positivity for generalized Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/LogarithmDegree.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.LogarithmDegree"
+      ],
+      "note": "Logarithmic coefficient identities and positivity for generalized Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/LogarithmMul.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.LogarithmMul"
+      ],
+      "note": "Logarithmic coefficient identities and positivity for generalized Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/LogarithmPositive.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.LogarithmPositive"
+      ],
+      "note": "Logarithmic coefficient identities and positivity for generalized Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/LogarithmicCoefficients.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.LogarithmicCoefficients"
+      ],
+      "note": "Logarithmic coefficient identities and positivity for generalized Brändén–Leite (#2441).",
+      "speculative": true
     }
   ]
 }
