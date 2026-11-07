@@ -76,3 +76,4 @@ outside the main `RealRooted.Tactic` import so tactic users do not import test
 examples by default.
 -/
 
+public import RealRooted.Tactic.Examples.RowAffineCoefficient

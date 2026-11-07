@@ -1,5 +1,6 @@
 module
 
+import RealRooted.Tactic.Row.AffineCoefficient
 import RealRooted.Tactic.Row.DerivLag
 public import RealRooted.Tactic.Row.Subseq
 import RealRooted.Tactic.Row.PowerForm
@@ -17,6 +18,7 @@ import RealRooted.Tactic.Row.DelayedProduct
 import RealRooted.Tactic.Row.ThresholdOrbit
 public import RealRooted.DerivativeRecurrence.Nonnegative
 import RealRooted.Recurrence.RowModel
+public meta import RealRooted.Tactic.Row.AffineCoefficient
 public meta import RealRooted.Tactic.Row.DerivLag
 public meta import RealRooted.Tactic.Row.Subseq
 public meta import RealRooted.Tactic.Row.PowerForm
@@ -46,9 +48,11 @@ For a sequence `P : ℕ → ℝ[X]` defined by a recurrence, `rr_row_interlaces`
 `Interlaces (P t) (P (t + 1))`, `rr_row_strictInterl` closes the equal-or-successor-degree
 goal `StrictInterl (P t) (P (t + 1))`, and `rr_row_splits` closes `(P t).Splits`. Summands may come
 in any order, and a recurrence `P (n + k) = …` with explicit rows below `k` is applied to the
-shifted sequence, the first rows being checked one by one.  Before elaborating a theorem,
-every route runs an exact probe on the computed rows (rational arithmetic, `QPoly`), and a
-route that the probe rules out fails without elaborating anything.
+shifted sequence, the first rows being checked one by one. Recurrence routes use exact
+probes on the computed rows (rational arithmetic, `QPoly`) to reject impossible shapes.
+Canonical negative-power and logarithmic coefficient rows have a direct route: their
+factor hypotheses are checked against the general coefficient theorem before recurrence
+search.
 
 Transfer theorems tagged `@[rr_row_model]` provide another automatic route. Before refining
 with one, the tactic checks the theorem's conclusion head and recurrence offset, then compares
@@ -1140,6 +1144,8 @@ private def rowSplitsCoreDirect (log : RowAttemptLog) (hints : RowHints) :
         {routeNamesForError splitsRoutes}"
   let use (route : Name) : Bool := hints.via.isNone || hints.via == some route
   let s ← RouteSearch.new log hints.via
+  if (← s.attempt `affineCoefficient affineCoefficientSplits).isSome then
+    return { via := some `affineCoefficient }
   if (← s.attempt `variableDelay (variableDelayGoal .splits)).isSome then
     return { via := some `variableDelay }
   if (← s.attempt `derivativeXMul derivativeXMulSplits).isSome then

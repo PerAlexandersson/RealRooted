@@ -2088,3 +2088,5 @@ public import RealRooted.TotallyNonnegPencil.CheckerboardInterlacing
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.CheckerboardAdjacent
 public import RealRooted.TotallyNonnegPencil.StrictInterlacing
 public import RealRooted.BrandenLeite.PositivePowerStrictRows
+public import RealRooted.Tactic.Row.AffineCoefficient
+public import RealRooted.Tactic.Examples.RowAffineCoefficient
