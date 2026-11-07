@@ -44,4 +44,23 @@ protected theorem IsTotallyNonneg.mul {R : Type*} [CommRing R] [PartialOrder R]
     (L * A).IsTotallyNonneg :=
   (hL.toRect.mul hA.toRect).toSquare
 
+/-- A positive ordered intermediate minor in each factor makes the product minor positive. -/
+theorem IsTotallyNonnegRect.det_submatrix_mul_pos
+    {R : Type*} [CommRing R] [LinearOrder R] [IsStrictOrderedRing R] {l n m q : ℕ}
+    {L : Matrix (Fin l) (Fin n) R} {A : Matrix (Fin n) (Fin m) R}
+    (hL : L.IsTotallyNonnegRect) (hA : A.IsTotallyNonnegRect)
+    {rows : Fin q → Fin l} {cols : Fin q → Fin m}
+    (hrows : StrictMono rows) (hcols : StrictMono cols)
+    (mid : Fin q ↪o Fin n)
+    (hleft : 0 < (L.submatrix rows mid).det)
+    (hright : 0 < (A.submatrix mid cols).det) :
+    0 < ((L * A).submatrix rows cols).det := by
+  rw [det_submatrix_mul_eq_sum_powersetCard]
+  apply Finset.sum_pos'
+  · intro s _
+    exact mul_nonneg (hL hrows (Set.powersetCard.ofFinEmbEquiv.symm s).strictMono)
+      (hA (Set.powersetCard.ofFinEmbEquiv.symm s).strictMono hcols)
+  · refine ⟨Set.powersetCard.ofFinEmbEquiv mid, Finset.mem_univ _, ?_⟩
+    simpa only [Equiv.symm_apply_apply] using mul_pos hleft hright
+
 end Matrix

@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.Schur.ElementaryToeplitz
+public import RealRooted.Schur.Roots
 public import RealRooted.TotallyNonnegPencil.CornerInterlacing
 
 /-!
@@ -41,16 +41,33 @@ label = "Corner-section interlacing for general totally nonnegative pencils"
 name = "RealRooted.Schur.isPFPolynomial_det_active"
 module = "RealRooted.Schur.ElementarySubstitution"
 label = "Conditional parity criterion for a totally nonnegative determinant pencil"
+
+[[theorems]]
+name = "RealRooted.Schur.det_elementaryMatrix_pos_of_nonneg"
+module = "RealRooted.Schur.ElementaryPositivity"
+label = "Positive constant determinant from the number of positive letters"
+
+[[theorems]]
+name = "RealRooted.Schur.elementarySubstitution_isRealRooted"
+module = "RealRooted.Schur.Roots"
+label = "Real-rooted skew Schur specialization under alphabet-size and parity hypotheses"
 headline = true
+
+[[theorems]]
+name = "RealRooted.Schur.roots_elementarySubstitution_neg"
+module = "RealRooted.Schur.Roots"
+label = "All roots of the parity-compatible specialization are strictly negative"
 -->
 
 <!-- realrooted-catalog-content -->
 # Schur elementary-coordinate substitutions
 
-**Formalization status:** the conditional matrix criterion below is checked.
-The full Schur specialization, stretching corollaries, and consecutive
-interlacing remain open in [issue #2443](https://github.com/PerAlexandersson/RealRooted/issues/2443).
-They are targets here, not claims of completed Lean proofs.
+**Formalization status:** the even-parity skew Schur specialization now has
+a checked real-rootedness proof with strictly negative zeros. Both total
+nonnegativity and strict determinant positivity follow from the alphabet
+and shape hypotheses. Odd-parity positive zeros, stretching corollaries,
+and the Schur application of consecutive interlacing remain open in [issue #2443](https://github.com/PerAlexandersson/RealRooted/issues/2443).
+Those remaining results are targets, not claims of completed Lean proofs.
 
 ## Checked matrix criterion
 
@@ -62,7 +79,7 @@ as an ordered submatrix of the identity and applies the existing
 checkerboard determinant-pencil theorem. The assumptions on $M$ are
 explicit hypotheses of the checked theorem.
 
-## Schur specialization target
+## Checked skew Schur specialization
 
 For column heights $h=\lambda'$ and $k=\mu'$ (padding $k$ with zeros), set
 $a_i=h_i-i$, $b_j=k_j-j$, and
@@ -78,12 +95,14 @@ and $e_m=0$ for negative indices. Substitution is made before alphabet
 specialization: even if $r$ exceeds the alphabet size, the moving
 coordinate becomes $t$, rather than disappearing.
 
-For a positive alphabet of size at least the maximum skew column height,
-total nonnegativity of $M$ is now checked. The remaining positivity obligation
-is $\det M>0$. Under even active-position parity the target conclusion is
-strictly negative real zeros. Odd active-position parity gives positive
-zeros instead. Nonzero constants, repeated roots, and empty shapes must
-be included explicitly.
+For a nonnegative alphabet with at least as many positive letters as the
+maximum skew column height, both total nonnegativity of $M$ and
+$\det M>0$ are checked. Under even active-position parity, the polynomial
+is nonzero, splits over the reals, and has strictly negative roots.
+Nonzero constants, repeated roots, and empty shapes are included.
+The proof of strict positivity uses a positive Cauchy–Binet summand in
+the product of elementary bidiagonal factors. Odd active-position parity
+should give positive zeros instead; that reflection corollary remains open.
 
 Uniform parity of both padded column-height lists should yield the result
 under every simultaneous horizontal stretch: stretching repeats columns,
@@ -106,7 +125,8 @@ checkerboard-signed TN pencil interlace when their constant determinants
 are positive. The proof uses nonnegative northwest-corner perturbations
 of both matrices, followed by the compatibility criterion. No triangularity
 is required of the variable matrix. Applying this theorem to rectangular
-Schur matrices, including discharging determinant positivity, remains open.
+Schur matrices remains open; determinant positivity is now available from
+the alphabet-size theorem.
 
 The unrestricted arbitrary-shape specialization is false. Neither this
 challenge nor its checked conditional criterion proves the conjecture
