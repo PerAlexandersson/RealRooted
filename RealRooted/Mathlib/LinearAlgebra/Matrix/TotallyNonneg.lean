@@ -156,4 +156,14 @@ theorem IsTotallyNonneg.hadamard_det_of_card_le_two {M N : Matrix ι ι R}
   · exact hM.hadamard_det_fin_two hN hrows hcols
   · simp_all
 
+/-- Simultaneously reversing a rectangular matrix's rows and columns preserves
+its total nonnegativity. -/
+theorem IsTotallyNonnegRect.finRev {R : Type*} [CommRing R] [PartialOrder R]
+    {m n : ℕ} {A : Matrix (Fin m) (Fin n) R} (hA : A.IsTotallyNonnegRect) :
+    (A.submatrix Fin.rev Fin.rev).IsTotallyNonnegRect := by
+  intro k rows cols hrows hcols
+  rw [← Matrix.det_submatrix_equiv_self Fin.revPerm]
+  exact hA (fun _ _ h ↦ Fin.rev_lt_rev.2 (hrows (Fin.rev_lt_rev.2 h)))
+    (fun _ _ h ↦ Fin.rev_lt_rev.2 (hcols (Fin.rev_lt_rev.2 h)))
+
 end Matrix

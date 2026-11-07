@@ -24,6 +24,17 @@ structure RowRouteInfo where
 
 /-- Every row route, generated from `scripts/tactic_routes.json`. -/
 def rowRouteTable : List RowRouteInfo := [
+  { name := `affineCoefficient
+    frontEnds := [
+      "rr_row_splits"
+    ]
+    conclusion := "(P n).Splits"
+    theorems :=
+      [
+        `RealRooted.BrandenLeite.affineNegativePowerCoeff_factor_properties,
+        `RealRooted.BrandenLeite.affineLogCoeff_factor_properties
+      ]
+  },
   { name := `probe
     frontEnds := [
       "rr_row_interlaces",
@@ -581,6 +592,28 @@ def rowRouteTable : List RowRouteInfo := [
 /-- The selectable route names of a front end, in dispatch order. -/
 def rowRoutesOf (frontEnd : String) : List Name :=
   match frontEnd with
+  | "rr_row_splits" => [
+      `affineCoefficient,
+      `variableDelay,
+      `derivativeXMul,
+      `factorPower,
+      `delayedProduct,
+      `closedForm,
+      `halfGrowth,
+      `pathPower,
+      `lowerOrder,
+      `thresholdOrbit,
+      `parityProduct,
+      `lagFeedback,
+      `subseq,
+      `linearFactors,
+      `splitFactors,
+      `twoStep,
+      `nextRow,
+      `degreePattern,
+      `reversed,
+      `fTransform
+    ]
   | "rr_row_interlaces" => [
       `variableDelay,
       `rowModel,
@@ -604,27 +637,6 @@ def rowRoutesOf (frontEnd : String) : List Name :=
       `movingWindow,
       `movingUpper,
       `reversed
-    ]
-  | "rr_row_splits" => [
-      `variableDelay,
-      `derivativeXMul,
-      `factorPower,
-      `delayedProduct,
-      `closedForm,
-      `halfGrowth,
-      `pathPower,
-      `lowerOrder,
-      `thresholdOrbit,
-      `parityProduct,
-      `lagFeedback,
-      `subseq,
-      `linearFactors,
-      `splitFactors,
-      `twoStep,
-      `nextRow,
-      `degreePattern,
-      `reversed,
-      `fTransform
     ]
   | "rr_row_natDegree" => [
       `cone,
