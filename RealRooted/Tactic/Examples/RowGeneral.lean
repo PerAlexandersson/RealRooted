@@ -875,6 +875,26 @@ example (a : ℝ) (n : ℕ) : a = a ∧ n = n := by
 
 end NaturalSliceLeadingTests
 
+namespace DelayedLeadingTests
+
+/-- A derivative recurrence with two zero rows before its positive initial row. -/
+private def rows : ℕ → ℝ[X]
+  | 0 => 0
+  | 1 => 0
+  | 2 => 1 + 2 * X + X ^ 2
+  | n + 3 => (X + X ^ 2) * (rows (n + 2)).derivative + (1 + 2 * X) * rows (n + 2)
+
+example (n : ℕ) (h : rows n ≠ 0) : HasPosLeadingCoeff (rows n) := by
+  rr_row_leadingCoeff_pos
+
+-- Anonymous introductions must still substitute the index in the nonzero hypothesis.
+example : ∀ n : ℕ, rows n ≠ 0 → HasPosLeadingCoeff (rows n) := by
+  intros
+  rr_row_leadingCoeff_pos
+
+end DelayedLeadingTests
+
+
 
 end
 
