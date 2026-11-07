@@ -2086,6 +2086,7 @@ public import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmMul
 public import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmPositive
 public import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmicCoefficients
 public import RealRooted.TotallyNonnegPencil.Checkerboard
+public import RealRooted.TotallyNonnegPencil.CornerInterlacing
 public import RealRooted.TotallyNonnegPencil.Interlacing
 public import RealRooted.TotallyNonnegPencil.CheckerboardInterlacing
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.CheckerboardAdjacent

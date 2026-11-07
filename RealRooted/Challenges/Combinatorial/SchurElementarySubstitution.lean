@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.Schur.ElementaryToeplitz
+public import RealRooted.TotallyNonnegPencil.CornerInterlacing
 
 /-!
 # Schur elementary-coordinate substitution challenge
@@ -30,6 +31,11 @@ label = "Elementary skew Jacobi–Trudi matrices are totally nonnegative"
 name = "RealRooted.Schur.elementarySubstitution_isPFPolynomial"
 module = "RealRooted.Schur.ElementaryToeplitz"
 label = "Parity-compatible specialization assuming positive constant determinant"
+
+[[theorems]]
+name = "Matrix.IsTotallyNonneg.strictInterl_checkerboardPencil_succ"
+module = "RealRooted.TotallyNonnegPencil.CornerInterlacing"
+label = "Corner-section interlacing for general totally nonnegative pencils"
 
 [[theorems]]
 name = "RealRooted.Schur.isPFPolynomial_det_active"
@@ -95,10 +101,12 @@ $$
 For every moving coordinate $j\ge1$, the target is negative real zeros
 and oriented weak interlacing $F_{n-1}\preceq F_n$. Equal degrees and
 common roots are allowed; no general strictness is asserted.
-The intended general matrix proof uses nonnegative corner perturbations
-of both matrices in a TN pencil, followed by the existing compatibility
-criterion. This interlacing result requires its own proof; individual
-real-rootedness does not suffice.
+The general matrix step is checked: consecutive southeast sections of a
+checkerboard-signed TN pencil interlace when their constant determinants
+are positive. The proof uses nonnegative northwest-corner perturbations
+of both matrices, followed by the compatibility criterion. No triangularity
+is required of the variable matrix. Applying this theorem to rectangular
+Schur matrices, including discharging determinant positivity, remains open.
 
 The unrestricted arbitrary-shape specialization is false. Neither this
 challenge nor its checked conditional criterion proves the conjecture
