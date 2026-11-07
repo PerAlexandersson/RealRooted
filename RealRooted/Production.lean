@@ -1387,6 +1387,7 @@ public import RealRooted.SamePhaseStability
 public import RealRooted.SamePhaseStability.Nonnegative
 public import RealRooted.ScalarNormalization
 public import RealRooted.Schur.ElementarySubstitution
+public import RealRooted.Schur.ElementaryToeplitz
 public import RealRooted.SeparablePermutations.Basic
 public import RealRooted.SeparablePermutations.Cubic
 public import RealRooted.SeparablePermutations.Enumerator

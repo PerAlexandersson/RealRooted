@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.Schur.ElementarySubstitution
+public import RealRooted.Schur.ElementaryToeplitz
 
 /-!
 # Schur elementary-coordinate substitution challenge
@@ -15,6 +15,21 @@ formalized = "2026-11-07"
 name = "RealRooted.Schur.activeMatrix"
 module = "RealRooted.Schur.ElementarySubstitution"
 label = "Positions affected by an elementary-coordinate substitution"
+
+[[definitions]]
+name = "RealRooted.Schur.elementarySubstitution"
+module = "RealRooted.Schur.ElementaryToeplitz"
+label = "Elementary-coordinate specialization defined by a determinant"
+
+[[theorems]]
+name = "RealRooted.Schur.elementaryMatrix_isTotallyNonneg"
+module = "RealRooted.Schur.ElementaryToeplitz"
+label = "Elementary skew Jacobi–Trudi matrices are totally nonnegative"
+
+[[theorems]]
+name = "RealRooted.Schur.elementarySubstitution_isPFPolynomial"
+module = "RealRooted.Schur.ElementaryToeplitz"
+label = "Parity-compatible specialization assuming positive constant determinant"
 
 [[theorems]]
 name = "RealRooted.Schur.isPFPolynomial_det_active"
@@ -58,8 +73,8 @@ specialization: even if $r$ exceeds the alphabet size, the moving
 coordinate becomes $t$, rather than disappearing.
 
 For a positive alphabet of size at least the maximum skew column height,
-the remaining proof obligations are total nonnegativity of $M$ and
-$\det M>0$. Under even active-position parity the target conclusion is
+total nonnegativity of $M$ is now checked. The remaining positivity obligation
+is $\det M>0$. Under even active-position parity the target conclusion is
 strictly negative real zeros. Odd active-position parity gives positive
 zeros instead. Nonzero constants, repeated roots, and empty shapes must
 be included explicitly.
