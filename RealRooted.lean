@@ -2087,3 +2087,4 @@ public import RealRooted.TotallyNonnegPencil.Interlacing
 public import RealRooted.TotallyNonnegPencil.CheckerboardInterlacing
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.CheckerboardAdjacent
 public import RealRooted.TotallyNonnegPencil.StrictInterlacing
+public import RealRooted.BrandenLeite.PositivePowerStrictRows

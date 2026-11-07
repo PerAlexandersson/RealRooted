@@ -1,5 +1,8 @@
 module
 
+public import RealRooted.BrandenLeite.PositivePowerFactors
+public import RealRooted.BrandenLeite.LogarithmicFactors
+public import RealRooted.BrandenLeite.PositivePowerStrictRows
 public import RealRooted.BrandenLeite.CompositionFamilies
 public import RealRooted.BrandenLeite.ConstantDiagonal
 public import RealRooted.BrandenLeite.NetworkWhitney
@@ -22,6 +25,33 @@ references = [
 ]
 authors = ["Brändén", "Saud Maia Leite"]
 years = [2026]
+
+[[definitions]]
+name = "PowerSeries.affineNegativePowerCoeff"
+module = "RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePower"
+label = "Coefficients of arbitrary negative real powers"
+
+[[definitions]]
+name = "PowerSeries.affineLogCoeff"
+module = "RealRooted.Mathlib.RingTheory.PowerSeries.AffineLogarithm"
+label = "Coefficients of the negative formal logarithm"
+
+[[theorems]]
+name = "RealRooted.BrandenLeite.affineNegativePowerCoeff_factor_properties"
+module = "RealRooted.BrandenLeite.PositivePowerFactors"
+label = "Positive real powers: negative roots, exact degree and consecutive interlacing"
+headline = true
+
+[[theorems]]
+name = "RealRooted.BrandenLeite.affineLogCoeff_factor_properties"
+module = "RealRooted.BrandenLeite.LogarithmicFactors"
+label = "Logarithmic rows: negative roots, exact degree and consecutive interlacing"
+headline = true
+
+[[theorems]]
+name = "RealRooted.BrandenLeite.affineNegativePowerCoeff_factor_simple_and_disjoint"
+module = "RealRooted.BrandenLeite.PositivePowerStrictRows"
+label = "Valuation-one positive-power rows have simple, disjoint roots"
 
 [[definitions]]
 name = "RealRooted.BrandenLeite.chainPolynomial"
@@ -145,6 +175,32 @@ $1/\bigl(1 - xz/(1-z)^e\bigr)$ are PF and interlace. These include OEIS A116088
 The resolution theorem has a network form. Every lower-unitriangular totally
 nonnegative matrix is the path matrix of a triangular planar network whose
 nonnegative weights come from Whitney elimination.
+
+## Positive real powers and logarithmic rows
+
+We also formalize the following extension. Let
+
+$$Q(u)=\prod_{i=1}^{d}(1-\alpha_i u),\qquad
+B(u)=cu^r\prod_j(1+\beta_j u),$$
+
+where $d\ge1$, $\alpha_i>0$, $c>0$, $r\ge1$, and $\beta_j\ge0$.
+For every real $\kappa>0$, the rows
+$q_n(t)=[u^n](Q(u)-tB(u))^{-\kappa}$ have degree $\lfloor n/r\rfloor$,
+strictly positive coefficients through that degree, and only strictly negative
+real roots. Consecutive rows interlace with a fixed orientation, including
+when their degrees agree. Repeated factors and constant rows are allowed.
+
+The same conclusions hold for
+$\ell_n(t)=[u^n](-\log(Q(u)-tB(u)))$ when $n\ge1$.
+The proof uses the coefficient limit $q_n/\kappa\to\ell_n$ as
+$\kappa\to0^+$, together with degree-bounded interlacing closure.
+
+When $r=1$ and either $[u^2]Q>0$ or $[u^2]B>0$, the positive-power rows have
+simple roots, and consecutive rows have no common root. Thus their
+interlacing inequalities are strict. This extra conclusion is not asserted
+for logarithmic rows. If both quadratic coefficients vanish, repeated roots
+can occur: for $Q=1-u$ and $B=u$, every $q_n$ is a positive multiple of
+$(1+t)^n$.
 
 ## Proof idea
 
