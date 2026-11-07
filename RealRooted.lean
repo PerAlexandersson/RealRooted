@@ -189,6 +189,7 @@ public import RealRooted.CauchyInterlacing
 public import RealRooted.CauchyInterlacing.Polynomial
 public import RealRooted.CauchyInterlacing.RankOne
 public import RealRooted.CauchyInterlacing.Submatrix
+public import RealRooted.Challenges.Combinatorial.SchurElementarySubstitution
 public import RealRooted.Challenges.PolyaFrequency.AissenSchoenbergWhitney
 public import RealRooted.Challenges.Interlacing.Bezoutian
 public import RealRooted.Challenges.Combinatorial.BigDescents321
