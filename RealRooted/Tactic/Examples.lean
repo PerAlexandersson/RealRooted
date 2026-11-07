@@ -32,6 +32,7 @@ public import RealRooted.Tactic.Examples.ParametricRows
 public import RealRooted.Tactic.Examples.Product
 public import RealRooted.Tactic.Examples.Product.Interlacing
 public import RealRooted.Tactic.Examples.RecurrenceODE
+public import RealRooted.Tactic.Examples.RowAffineCoefficient
 public import RealRooted.Tactic.Examples.RowCancelRho
 public import RealRooted.Tactic.Examples.RowCubicParent
 public import RealRooted.Tactic.Examples.RowData
@@ -68,6 +69,7 @@ public import RealRooted.Tactic.Examples.ShortlistRoutes
 public import RealRooted.Tactic.Examples.SideGoals
 public import RealRooted.Tactic.Examples.Sign
 public import RealRooted.Tactic.Examples.WagnerX
+
 /-!
 # RealRooted tactic examples
 
@@ -75,5 +77,3 @@ Small regression examples for tactic development.  These modules are kept
 outside the main `RealRooted.Tactic` import so tactic users do not import test
 examples by default.
 -/
-
-public import RealRooted.Tactic.Examples.RowAffineCoefficient
