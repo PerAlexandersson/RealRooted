@@ -942,11 +942,16 @@ def splitRows (t : Expr) (k : Nat) (small : TacticM (TSyntax `tactic)) :
     TacticM (Option Cert) := do
   if k == 0 then return some #[]
   let .fvar fv := t | return none
-  let tId := mkIdent (← fv.getUserName)
+  let name ← fv.getUserName
+  let lctx ← getLCtx
+  let tId := mkIdent (if name.hasMacroScopes || name.isInaccessibleUserName then
+    lctx.getUnusedName `rr_n else name)
+  let mut target ← certTerm t
   let mut cert : Cert := #[]
   for _ in [0:k] do
-    let split ← `(tactic| rcases $tId:ident with _ | $tId:ident)
+    let split ← `(tactic| rcases $target:term with _ | $tId:ident)
     evalTactic split
+    target := tId
     cert := cert.push split
     let gs ← getGoals
     let some main := gs.getLast? | throwError "rr_row: no goals"

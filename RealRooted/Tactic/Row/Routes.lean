@@ -519,6 +519,8 @@ def rowRouteTable : List RowRouteInfo := [
         `Polynomial.leadingCoeff_prod,
         `Polynomial.leadingCoeff_comp,
         `Polynomial.Monic.leadingCoeff,
+        `Polynomial.leadingCoeff_sub_of_degree_lt,
+        `Polynomial.degree_lt_degree,
         `RealRooted.HasNonnegCoeffs.pos_leadingCoeff,
         `RealRooted.hasNonnegCoeffs_finsetSum
       ]

@@ -10,6 +10,7 @@ public import Mathlib.Algebra.Polynomial.Derivative
 # Algebraic leading-coefficient positivity
 
 Decompose polynomial expressions using sum, product, power, composition and derivative laws.
+Degree comparisons also certify subtraction of a lower-degree polynomial.
 Recurrence tactics handle the factors. Nonnegative leaders allow zero derivative
 summands without requiring the entire polynomial to have nonnegative coefficients.
 No named polynomial family is used by this route.
@@ -23,6 +24,90 @@ namespace RealRooted.Tactic
 
 /-- Prove a nonnegative leading coefficient by algebraic closure and row positivity. -/
 syntax (name := rrRowLeadingCoeffNonneg) "rr_row_leadingCoeff_nonneg" : tactic
+
+/-- Prove an explicit degree or infer one through the existing recurrence driver. -/
+private def inferredDegreeFact (p : Expr) (h : Ident) : TacticM (TSyntax `tactic) :=
+    withMainContext do
+  let source ← certTerm p
+  if let some degree ← explicitPolynomialDegree? p then
+    let step ← `(tactic|
+      have $h:ident : ($source : Polynomial ℝ).natDegree = $(rowNumLit degree) := by
+        first | (simp; done) | (compute_degree! <;> positivity))
+    if ← rowSucceeds (evalTactic step) then return step
+  let saved ← saveState
+  let (degree, cert) ← try
+    let d ← mkFreshExprMVar (mkConst ``Nat)
+    let lhs ← mkAppM ``Polynomial.natDegree #[p]
+    let proof ← mkFreshExprMVar (← mkEq lhs d)
+    setGoals [proof.mvarId!]
+    let r ← rowRecSetup "leading-coefficient degree comparison"
+    let (steps, _) ← rowDriver r "natDegree" {} fun Q t deg =>
+      `(tactic| change ($Q $t).natDegree = $deg)
+    let d ← instantiateMVars d
+    let proof ← instantiateMVars proof
+    if d.hasMVar || proof.hasMVar then throwError "incomplete degree certificate"
+    pure (← certTerm d, ← steps.toSeq)
+  finally
+    saved.restore (restoreInfo := true)
+  let step ← `(tactic| have $h:ident : ($source : Polynomial ℝ).natDegree = $degree := by $cert)
+  evalTactic step
+  return step
+
+/-- A small predecessor shift in an integer row index that still needs initial cases. -/
+private def integerRowBoundary? (p : Expr) : MetaM (Option (Expr × Nat)) := do
+  unless p.isApp do return none
+  let .forallE _ domain body _ ← whnfR (← inferType p.appFn!) | return none
+  unless domain.isConstOf ``Int && !body.hasLooseBVars &&
+      (← whnfR body).getAppFn.isConstOf ``Polynomial do return none
+  let index := p.appArg!.consumeMData
+  unless index.isAppOfArity ``HSub.hSub 6 do return none
+  let some left ← naturalRowIndex? index.appFn!.appArg! | return none
+  let some right ← naturalRowIndex? index.appArg! | return none
+  let some k ← getNatValue? right | return none
+  let (n, offset) ← natOffsetParts left
+  unless n.isFVar && offset < k && k - offset ≤ 8 do return none
+  return some (n, k - offset)
+
+/-- Subtracting a lower-degree polynomial preserves the leader, regardless of its sign. -/
+private def subtractRowLeadingCoeff (p : Expr) (positive : Bool) : TacticM Cert := do
+  let left := p.appFn!.appArg!
+  let right := p.appArg!
+  let finish ← if positive then `(tactic| rr_row_leadingCoeff_pos)
+    else `(tactic| rr_row_leadingCoeff_nonneg)
+  let step ← `(tactic|
+    (rw [Polynomial.leadingCoeff_sub_of_degree_lt (by
+       first | assumption | exact Polynomial.degree_lt_degree (by lia))]
+     $finish:tactic))
+  if ← rowSucceeds (evalTactic step) then return #[step]
+  if let .ok cert ← rowAttempt do
+      let hleft := mkIdent (← mkFreshUserName `rr_left_degree)
+      let hright := mkIdent (← mkFreshUserName `rr_right_degree)
+      let leftStep ← inferredDegreeFact left hleft
+      let rightStep ← inferredDegreeFact right hright
+      evalTactic step
+      return #[leftStep, rightStep, step] then
+    return cert
+  for operand in #[left, right] do
+    let some (n, k) ← integerRowBoundary? operand | continue
+    let some split ← splitRows n k (do
+        let small ← match operand.getAppFn.constName? with
+          | some family => `(tactic| first
+              | (norm_num [$(mkIdent family):ident]; done)
+              | (norm_num [$(mkIdent family):ident]; $finish:tactic; done)
+              | (norm_num [$(mkIdent family):ident]
+                 unfold $(mkIdent family):ident
+                 split <;> norm_num at * <;> first | lia | $finish:tactic))
+          | none => `(tactic| (norm_num; $finish:tactic))
+        evalTactic small
+        evalTactic (← `(tactic| done))
+        return small) | continue
+    let normalize ← `(tactic| norm_num only [Nat.cast_succ, add_assoc, add_sub_cancel_right])
+    evalTactic normalize
+    if (← getGoals).isEmpty then return split.push normalize
+    evalTactic finish
+    evalTactic (← `(tactic| done))
+    return split ++ #[normalize, finish]
+  throwError "could not prove that the subtracted polynomial has smaller degree"
 
 /-- Decompose a polynomial expression into smaller leading-coefficient goals.
 Only nonrecursive wrappers are unfolded; opaque rows are left to recurrence routes. -/
@@ -104,6 +189,8 @@ def algebraRowLeadingCoeff (positive : Bool := true) : TacticM Cert := withMainC
         (by rr_row_leadingCoeff_pos) (Polynomial.derivative_ne_zero.mp hd)))
     if ← rowSucceeds (evalTactic nonzeroDerivative) then
       return #[change, nonzeroDerivative]
+  if op.isConstOf ``HSub.hSub then
+    return #[change] ++ (← subtractRowLeadingCoeff p positive)
   let step ← if op.isConstOf ``HAdd.hAdd then
       if positive then `(tactic|
         first

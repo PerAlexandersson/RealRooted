@@ -719,6 +719,12 @@ example (r : ℕ → ℝ) (n : ℕ) :
     HasPosLeadingCoeff (nonlinearDegreeProducts r n) := by
   rr_row_leadingCoeff_pos
 
+-- Anonymous introductions must not become inaccessible names in case patterns.
+example : ∀ n : ℕ, 0 < (Polynomial.Chebyshev.S ℝ (n : ℤ) -
+    Polynomial.Chebyshev.S ℝ ((n : ℤ) - 1)).leadingCoeff := by
+  intros
+  rr_row_leadingCoeff_pos
+
 example (p q : ℝ[X]) (hp : 0 < p.leadingCoeff) (hq : 0 < q.leadingCoeff)
     (hd : q.natDegree ≠ 0) : 0 < (p.comp q).leadingCoeff := by
   rr_row_leadingCoeff_pos
@@ -794,27 +800,78 @@ example : True := by
 
 open Lean Lean.Elab Lean.Elab.Tactic Lean.Meta
 
+/-- Replay a certificate from printed text after discarding its original proof state. -/
+private meta def replayRowCertificate (find : TacticM Cert) : TacticM Unit := do
+  let saved ← saveState
+  let steps ← find
+  let sequence ← steps.toSeq
+  let printed := (← PrettyPrinter.ppTactic (← `(tactic| ($sequence)))).pretty
+  saved.restore (restoreInfo := true)
+  let .ok reparsed := Parser.runParserCategory (← getEnv) `tactic printed
+    | throwError "printed row certificate does not parse"
+  evalTactic reparsed
+
 /-- Check that a discovered degree certificate survives printing and reparsing. -/
 syntax (name := rrRowDegreeReplayTest) "rr_row_degree_replay_test" : tactic
 
 elab_rules : tactic
   | `(tactic| rr_row_degree_replay_test) => withMainContext do
-    let saved ← saveState
-    let r ← rowRecSetup "rr_row_degree_replay_test"
-    let (steps, _) ← rowDriver r "natDegree" {} fun Q t degree =>
-      `(tactic| refine (?_ : ($Q $t).natDegree = $degree).trans (by lia))
-    let sequence ← steps.toSeq
-    let printed := (← PrettyPrinter.ppTactic (← `(tactic| ($sequence)))).pretty
-    saved.restore (restoreInfo := true)
-    let .ok reparsed := Parser.runParserCategory (← getEnv) `tactic printed
-      | throwError "printed degree certificate does not parse"
-    evalTactic reparsed
+    replayRowCertificate do
+      let r ← rowRecSetup "rr_row_degree_replay_test"
+      let (steps, _) ← rowDriver r "natDegree" {} fun Q t degree =>
+        `(tactic| refine (?_ : ($Q $t).natDegree = $degree).trans (by lia))
+      pure steps
+
+/-- Check that an algebraic leader certificate survives printing and reparsing. -/
+syntax (name := rrRowLeaderReplayTest) "rr_row_leader_replay_test" : tactic
+
+elab_rules : tactic
+  | `(tactic| rr_row_leader_replay_test) => withMainContext do
+    replayRowCertificate (algebraRowLeadingCoeff true)
 
 example (a : ℝ) (n : ℕ) : (rows a (n : ℤ)).natDegree = n := by
   rr_row_degree_replay_test
 
 example (a : ℝ) (n : ℕ) : (rows a ((n : ℤ) + 3)).natDegree = n + 3 := by
   rr_row_degree_replay_test
+
+example (a : ℝ) (n : ℕ) :
+    0 < (rows a ((n : ℤ) + 1) - rows a (n : ℤ)).leadingCoeff := by
+  rr_row_leader_replay_test
+
+example (a : ℝ) (n : ℕ) :
+    0 < (rows a (n : ℤ) - rows a ((n : ℤ) - 1)).leadingCoeff := by
+  rr_row_leadingCoeff_pos
+
+example (a b : ℝ) (n : ℕ) :
+    0 < (rows a ((n : ℤ) + 2) - C b).leadingCoeff := by
+  rr_row_leadingCoeff_pos
+
+example (n : ℕ) :
+    0 < (Polynomial.Chebyshev.S ℝ (n : ℤ) -
+      Polynomial.Chebyshev.S ℝ ((n : ℤ) - 1)).leadingCoeff := by
+  rr_row_leader_replay_test
+
+example (n : ℕ) :
+    0 < (Polynomial.Chebyshev.S ℝ (n : ℤ) -
+      Polynomial.Chebyshev.S ℝ ((n : ℤ) - 2)).leadingCoeff := by
+  rr_row_leadingCoeff_pos
+
+example (p q : ℝ[X]) (hp : 0 < p.leadingCoeff) (hd : q.natDegree < p.natDegree) :
+    0 < (p - q).leadingCoeff := by
+  rr_row_leadingCoeff_pos
+
+example (a : ℝ) (n : ℕ) : a = a ∧ n = n := by
+  fail_if_success
+    have h : 0 < (rows a (n : ℤ) - rows a ((n : ℤ) + 1)).leadingCoeff := by
+      rr_row_leadingCoeff_pos
+  exact ⟨rfl, rfl⟩
+
+example (a : ℝ) (n : ℕ) : a = a ∧ n = n := by
+  fail_if_success
+    have h : 0 < (rows a (n : ℤ) - rows a (n : ℤ)).leadingCoeff := by
+      rr_row_leadingCoeff_pos
+  exact ⟨rfl, rfl⟩
 
 end NaturalSliceLeadingTests
 
