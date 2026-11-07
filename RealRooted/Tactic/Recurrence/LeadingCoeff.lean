@@ -9,7 +9,7 @@ public import Mathlib.Algebra.Polynomial.Derivative
 /-!
 # Algebraic leading-coefficient positivity
 
-Decompose polynomial expressions using sum, product, power and derivative laws.
+Decompose polynomial expressions using sum, product, power, composition and derivative laws.
 Recurrence tactics handle the factors. Nonnegative leaders allow zero derivative
 summands without requiring the entire polynomial to have nonnegative coefficients.
 No named polynomial family is used by this route.
@@ -63,13 +63,20 @@ def algebraRowLeadingCoeff (positive : Bool := true) : TacticM Cert := withMainC
     `(tactic| change 0 < ($poly : Polynomial ℝ).leadingCoeff)
     else `(tactic| change 0 ≤ ($poly : Polynomial ℝ).leadingCoeff)
   evalTactic change
+  let monicity ← if [``HAdd.hAdd, ``HSub.hSub, ``HMul.hMul, ``HPow.hPow,
+      ``Neg.neg, ``Polynomial.C, ``Polynomial.X].any p.getAppFn.isConstOf then
+      `(tactic| first | assumption | monicity!)
+    else `(tactic| assumption)
   let basic ← `(tactic|
     first
     | assumption
     | (simp only [Polynomial.leadingCoeff_X, Polynomial.leadingCoeff_one,
         Polynomial.leadingCoeff_zero, Polynomial.leadingCoeff_C, pow_zero,
         Polynomial.leadingCoeff_X_add_C, Polynomial.leadingCoeff_X_sub_C];
-        rr_row_unfold; first | positivity | norm_num | assumption))
+        rr_row_unfold; first | positivity | norm_num | assumption)
+    | (have hm : ($poly : Polynomial ℝ).Monic := by $monicity:tactic
+       rw [hm.leadingCoeff]
+       norm_num))
   if ← rowSucceeds (do evalTactic basic; evalTactic (← `(tactic| done))) then
     return #[change, ← `(tactic| ($basic:tactic; done))]
   let nonneg ← if positive then
@@ -119,6 +126,26 @@ def algebraRowLeadingCoeff (positive : Bool := true) : TacticM Cert := withMainC
       else `(tactic|
         (rw [Polynomial.leadingCoeff_pow]
          exact pow_nonneg (by rr_row_leadingCoeff_nonneg) _))
+    else if op.isConstOf ``Polynomial.comp then
+      let inner ← certTerm p.getAppArgs.back!
+      let nonconstant ← match ← explicitPolynomialDegree? p.getAppArgs.back! with
+        | some degree => `(by
+            first
+            | assumption
+            | (simp; done)
+            | (have hd : ($inner : Polynomial ℝ).natDegree = $(rowNumLit degree) := by
+                 compute_degree!; positivity
+               rw [hd]
+               positivity))
+        | none => `(by first | assumption | (simp; done))
+      if positive then `(tactic|
+        (rw [Polynomial.leadingCoeff_comp $nonconstant]
+         exact mul_pos (by rr_row_leadingCoeff_pos)
+           (pow_pos (by rr_row_leadingCoeff_pos) _)))
+      else `(tactic|
+        (rw [Polynomial.leadingCoeff_comp $nonconstant]
+         exact mul_nonneg (by rr_row_leadingCoeff_nonneg)
+           (pow_nonneg (by rr_row_leadingCoeff_nonneg) _)))
     else if derivative then
       if positive then `(tactic|
         (rw [Polynomial.leadingCoeff_derivative]

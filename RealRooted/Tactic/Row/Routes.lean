@@ -517,6 +517,8 @@ def rowRouteTable : List RowRouteInfo := [
         `Polynomial.leadingCoeff_pow,
         `Polynomial.leadingCoeff_derivative,
         `Polynomial.leadingCoeff_prod,
+        `Polynomial.leadingCoeff_comp,
+        `Polynomial.Monic.leadingCoeff,
         `RealRooted.HasNonnegCoeffs.pos_leadingCoeff,
         `RealRooted.hasNonnegCoeffs_finsetSum
       ]
@@ -530,6 +532,8 @@ def rowRouteTable : List RowRouteInfo := [
       [
         `RealRooted.LinRec.natDegree_le_and_hasNonnegCoeffs,
         `RealRooted.hasNonnegCoeffs_and_sub_mul_of_threeTerm,
+        `RealRooted.hasNonnegCoeffs_gammaTransform,
+        `RealRooted.HasNonnegCoeffs.diagonalOperator,
         `RealRooted.HasNonnegCoeffs.pos_leadingCoeff
       ]
   },
@@ -545,6 +549,7 @@ def rowRouteTable : List RowRouteInfo := [
     theorems :=
       [
         `RealRooted.productSequence_natDegree,
+        `RealRooted.HasPosLeadingCoeff.mul,
         `RealRooted.derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos,
         `RealRooted.derivRec₂_natDegree_eq_and_leadingCoeff_pos,
         `RealRooted.threeTermPos_natDegree_eq_and_leadingCoeff_pos,

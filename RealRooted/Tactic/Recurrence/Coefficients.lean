@@ -3,6 +3,8 @@ module
 public import RealRooted.ThreeTermRecurrence.Coefficients
 public import RealRooted.BasisTransform
 public import RealRooted.Hadamard.Basic
+public import RealRooted.GammaTransform.Basic
+public import RealRooted.MultiplierSequence
 public import RealRooted.DerivativeRecurrence.FiniteLagCoefficients
 public import RealRooted.Tactic.SideGoals
 public import RealRooted.Tactic.Recurrence.RowSide
@@ -14,7 +16,8 @@ Pair the derivative and multiplication summands at each lag, then propagate
 nonnegative coefficients together with an affine degree envelope. Rational probes
 choose the envelope only; every degree and sign obligation is proved symbolically.
 The same certificate feeds structural closure rules for polynomial operations and
-coefficient-weighted finite sums. No named polynomial family is recognized.
+coefficient-weighted finite sums, gamma transforms and diagonal operators.
+No named polynomial family is recognized.
 -/
 
 public meta section
@@ -181,6 +184,13 @@ private partial def coefficientClosure (fuel : Nat) : TacticM Unit := withMainCo
     | throwError "expected nonnegative coefficients"
   let op := if p.isAppOfArity ``DFunLike.coe 6 then p.getAppArgs[4]! else p
   let alternatives ← pure #[
+    (p.isAppOf ``RealRooted.gammaTransform,
+      ← `(tactic| exact RealRooted.hasNonnegCoeffs_gammaTransform
+        (by rr_row_coefficient_closure $f))),
+    (p.isAppOf ``RealRooted.diagonalOperator,
+      ← `(tactic| exact RealRooted.HasNonnegCoeffs.diagonalOperator
+        (by rr_row_coefficient_closure $f)
+        (by intro k; rr_row_scalar_coefficient_closure $f))),
     (op.isAppOf ``Polynomial.C,
       ← `(tactic| (apply RealRooted.hasNonnegCoeffs_C; rr_row_scalar_coefficient_closure $f))),
     (op.isAppOf ``Polynomial.monomial, ← `(tactic| (
@@ -279,7 +289,7 @@ def coefficientRowLeadingCoeff : TacticM Cert := withMainContext do
     return #[cert]
   if let .ok cert := direct then return cert
   let cert ← `(tactic| exact RealRooted.HasNonnegCoeffs.pos_leadingCoeff
-    (by rr_row_coefficient_closure 16) (by assumption))
+    (by rr_row_coefficient_closure 32) (by assumption))
   evalTactic cert
   return #[cert]
 

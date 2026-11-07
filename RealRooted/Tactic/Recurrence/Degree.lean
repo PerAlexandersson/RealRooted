@@ -32,7 +32,7 @@ in any order, and the left side may be `P (n + k)` with explicit rows below `k`,
 * `rr_row_ne_zero` closes `P t ≠ 0`;
 * `rr_row_leadingCoeff_pos` closes `0 < (P t).leadingCoeff`, including positive
   scalar normalizations `C (a t) * P t` exposed through non-recursive definitions
-  and fixed two-step products without a degree law. Algebraic sums, products, powers,
+  and multiplicative recurrences without a degree law. Algebraic sums, products, powers,
   derivatives and finite products reduce to component leading-coefficient goals.
   Finite-lag differential recurrences can instead use nonnegative coefficients and
   an affine degree upper bound, with a nonzero-row premise;
@@ -91,12 +91,37 @@ private def linRecRow (kind : String) (via : Option Name := none) : TacticM Cert
     | "natDegree_leadingCoeff_pos" => `(tactic| rr_row_natDegree_leadingCoeff_pos)
     | _ => `(tactic| rr_row_leadingCoeff_pos)]
 
+/-- Multiplicative recurrences propagate positive leaders without a degree law. -/
+private def productRowLeadingCoeff (r : RowRec) : TacticM Cert := withMainContext do
+  let P := mkIdent r.P
+  let (split, t) ← alignRow r.P r.shift (do
+    evalTactic (← `(tactic| rr_row_leadingCoeff_pos))
+    `(tactic| rr_row_leadingCoeff_pos))
+  let Q ← r.seq 0
+  let hrec ← r.hrecTerm 0
+  let some factor := r.coeffs[0]? | throwError "missing product factor"
+  let L ← Term.exprToSyntax factor
+  let cert ← `(tactic| (
+    have hstep : ∀ m, $Q (m + 1) = $L m * $Q m := $hrec
+    have hall : ∀ m, RealRooted.HasPosLeadingCoeff ($Q m) := by
+      intro m
+      induction m with
+      | zero => simp only [$P:ident]; rr_row_unfold; rr_row_leadingCoeff_pos
+      | succ m ih =>
+          rw [hstep m]
+          exact RealRooted.HasPosLeadingCoeff.mul (by rr_row_leadingCoeff_pos) ih
+    exact hall $t))
+  evalTactic cert
+  return split.push cert
+
 /-- The degree tactics for the recurrence shapes of `RecShape`. -/
 private def rowDegreeShapeCore (kind : String) (hints : RowHints) :
     TacticM (Cert × RowHints) := do
   let who := s!"rr_row_{kind}"
   let r ← rowRecSetup who
   if r.shape == .product then
+    if kind == "leadingCoeff_pos" then
+      return (← productRowLeadingCoeff r, {})
     if r.canonical && r.shift == 0 && kind == "natDegree" then
       evalTactic (← `(tactic| rr_product_natDegree))
       return (#[← `(tactic| rr_product_natDegree)], {})

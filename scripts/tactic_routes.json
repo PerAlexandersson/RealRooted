@@ -655,11 +655,12 @@
         "Polynomial.leadingCoeff_add_pos_of_nonneg_of_pos",
         "Polynomial.leadingCoeff_mul", "Polynomial.leadingCoeff_pow",
         "Polynomial.leadingCoeff_derivative", "Polynomial.leadingCoeff_prod",
+        "Polynomial.leadingCoeff_comp", "Polynomial.Monic.leadingCoeff",
         "RealRooted.HasNonnegCoeffs.pos_leadingCoeff",
         "RealRooted.hasNonnegCoeffs_finsetSum"],
       "module": "RealRooted.Tactic.Recurrence.LeadingCoeff",
-      "summary": "Decompose algebraic expressions, certify explicit polynomials, split piecewise definitions, normalize shifted wrappers, or prove nonnegative coefficients.",
-      "requires": "Positive or nonnegative component leaders, or nonnegative coefficients plus a nonzero polynomial. Scalar signs and derivative degrees when needed; a nonzero derivative supplies its degree condition.",
+      "summary": "Decompose algebraic expressions, reuse monicity, certify explicit polynomials, split piecewise definitions, normalize shifted wrappers, or prove nonnegative coefficients.",
+      "requires": "Positive or nonnegative component leaders, or nonnegative coefficients plus a nonzero polynomial. Scalar signs and derivative degrees when needed; a nonzero derivative supplies its degree condition. Composition requires a nonconstant inner polynomial.",
       "examples": ["RealRooted.Tactic.Examples.RowGeneral"],
       "pseudo": false
     },
@@ -675,6 +676,8 @@
       "theorems": [
         "RealRooted.LinRec.natDegree_le_and_hasNonnegCoeffs",
         "RealRooted.hasNonnegCoeffs_and_sub_mul_of_threeTerm",
+        "RealRooted.hasNonnegCoeffs_gammaTransform",
+        "RealRooted.HasNonnegCoeffs.diagonalOperator",
         "RealRooted.HasNonnegCoeffs.pos_leadingCoeff"
       ],
       "module": "RealRooted.Tactic.Recurrence.Coefficients",
@@ -701,6 +704,7 @@
       "conclusion": "The requested degree, nonvanishing, leader, or ratio goal.",
       "theorems": [
         "RealRooted.productSequence_natDegree",
+        "RealRooted.HasPosLeadingCoeff.mul",
         "RealRooted.derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos",
         "RealRooted.derivRec₂_natDegree_eq_and_leadingCoeff_pos",
         "RealRooted.threeTermPos_natDegree_eq_and_leadingCoeff_pos",
@@ -709,7 +713,7 @@
       ],
       "module": "RealRooted.Tactic.Recurrence.Degree",
       "summary": "Apply the degree theorem specialized to the parsed recurrence shape.",
-      "requires": "Readable recurrence, degree law, top-coefficient bounds, and bases.",
+      "requires": "Readable recurrence, degree law, top-coefficient bounds, and bases. Product recurrences need only positive leaders of the initial row and factors for leading-coefficient positivity.",
       "examples": ["RealRooted.Tactic.Examples.RowDegreeRest"],
       "pseudo": false
     },
