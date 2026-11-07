@@ -3,6 +3,7 @@ module
 public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePower
 public import RealRooted.BrandenLeite.WeightedDerivativeKernel
 public import RealRooted.BrandenLeite.PositiveLinearFactors
+import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerDegree
 public import RealRooted.TotallyNonnegPencil.Checkerboard
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
 import Mathlib.Tactic.Positivity
@@ -88,5 +89,29 @@ theorem isPFPolynomial_affineNegativePowerCoeff_prod_linear
       rw [Polynomial.coeff_comp_neg_X, mul_comm]
     rw [heq] at hd
     exact hd
+
+/-- The canonical positive-power rows are nonzero and split, and every root
+is strictly negative. No valuation bound on the numerator is needed. -/
+theorem affineNegativePowerCoeff_prod_linear_splits_and_roots_neg
+    {ι : Type*} (s : Finset ι) (hs : s.Nonempty) (α : ι → ℝ)
+    (hα : ∀ i ∈ s, 0 < α i) {κ : ℝ} (hκ : 0 < κ)
+    (B : ℝ[X]) (hB : B.coeff 0 = 0) (hBs : B.Splits)
+    (hBnn : HasNonnegCoeffs B) (n : ℕ) :
+    let q := affineNegativePowerCoeff κ
+      ((∏ i ∈ s, (1 - Polynomial.C (α i) * Polynomial.X) : ℝ[X]) : PowerSeries ℝ) B n
+    q ≠ 0 ∧ q.Splits ∧ ∀ x ∈ q.roots, x < 0 := by
+  dsimp
+  have hpf := isPFPolynomial_affineNegativePowerCoeff_prod_linear s hs α hα hκ
+    B hB hBs hBnn n
+  have hc := PowerSeries.coeff_zero_affineNegativePowerCoeff_prod_linear_pos
+    s hs α hα (B : PowerSeries ℝ) (by simpa using hB) hκ n
+  rw [← Polynomial.coe_prod_one_sub_C_mul_X] at hc
+  have hn : affineNegativePowerCoeff κ
+      ((∏ i ∈ s, (1 - Polynomial.C (α i) * Polynomial.X) : ℝ[X]) : PowerSeries ℝ)
+      B n ≠ 0 := by
+    intro hz
+    simp only [hz, Polynomial.coeff_zero, lt_self_iff_false] at hc
+  exact ⟨hn, (hpf.ne_zero_and_splits hn).2,
+    roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne hpf.hasNonnegCoeffs hc.ne'⟩
 
 end RealRooted.BrandenLeite

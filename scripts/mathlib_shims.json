@@ -3320,6 +3320,26 @@
       ],
       "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/AffineNegativePowerRecurrence.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.AffineNegativePowerRecurrence"
+      ],
+      "note": "General positive-power coefficient and recurrence lemmas for Brändén–Leite (#2441).",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/NegativePowerDegree.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.NegativePowerDegree"
+      ],
+      "note": "General positive-power coefficient and recurrence lemmas for Brändén–Leite (#2441).",
+      "speculative": true
     }
   ]
 }
