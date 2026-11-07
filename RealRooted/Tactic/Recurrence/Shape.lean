@@ -346,6 +346,17 @@ def RowRec.shift (r : RowRec) : Nat := r.offset - r.shape.base
 def RowRec.asLagLeft (r : RowRec) : RowRec :=
   if r.shape == .product then { r with shape := .lagLeft, offset := r.offset + 1 } else r
 
+/-- Combine coefficients of repeated rows at the same derivative order. -/
+private def addRowSummand (summands : Array RowSummand) (term : RowSummand) :
+    MetaM (Array RowSummand) := do
+  match summands.findIdx? (fun s => s.index == term.index && s.derivs == term.derivs) with
+  | some i =>
+      let s := summands[i]!
+      let one ← mkNumeral (← inferType term.row) 1
+      let c ← mkAppM ``HAdd.hAdd #[s.coeff.getD one, term.coeff.getD one]
+      return summands.set! i { s with coeff := some c, plain := false }
+  | none => return summands.push term
+
 /-- Read the shape of `rhs` in `P (n + k) = rhs`; on failure, explain why. -/
 private def readRec (P : Name) (params : Array Expr) (eqn : Name) (n lhs rhs : Expr) (k : Nat) :
     MetaM (Except MessageData RowRec) := do
@@ -368,15 +379,10 @@ private def readRec (P : Name) (params : Array Expr) (eqn : Name) (n lhs rhs : E
     let c ← c.mapM fun c => do
       let some c' ← unfoldRowCoeff? c | return c
       return c'
-    match summands.findIdx? (fun s => s.index == j && s.derivs == d) with
-    | some i =>
-        let s := summands[i]!
-        let one ← mkNumeral (← inferType r) 1
-        let c' ← mkAppM ``HAdd.hAdd #[s.coeff.getD one, c.getD one]
-        summands := summands.set! i { s with coeff := some c', plain := false }
-        plain := false
-    | none =>
-        summands := summands.push { index := j, derivs := d, coeff := c, row := r, plain := pl }
+    let grouped ← addRowSummand summands
+      { index := j, derivs := d, coeff := c, row := r, plain := pl }
+    if grouped.size == summands.size then plain := false
+    summands := grouped
     unless pos && pl do plain := false
   let kinds := summands.toList.map fun s => (k - s.index, s.derivs)
   let describe : MessageData := MessageData.joinSep (summands.toList.map fun s =>
@@ -474,6 +480,8 @@ structure LinRecData where
   terms : Array (Nat × Nat × Expr)
   /-- the recurrence terms specialized at `samples`, used only by numeric probes -/
   sampleTerms : Array (Nat × Nat × Expr) := #[]
+  /-- Whether nested derivatives were expanded and their coefficients should be normalized. -/
+  expandedDerivatives : Bool := false
 
 /-- Replace fixed family arguments by their probe values. -/
 def specializeRowParams (params samples : Array Expr) (e : Expr) : Expr :=
@@ -511,12 +519,13 @@ def rowProbeSamples (params : Array Expr) : MetaM (Array Expr) :=
 
 /-- Read the summands of `rhs` in `P (n + k) = rhs` as a general linear recurrence. -/
 private def readLinRec (P : Name) (params samples : Array Expr) (eqn : Name) (n rhs : Expr)
-    (k : Nat) :
+    (k : Nat) (combine : Bool := false) :
     MetaM (Option LinRecData) := do
   let rhs ← whnfR ((← unfoldRowCoeff? rhs).getD rhs)
   let (terms, _) ← (signedSummands P rhs true).run true
   let mut out : Array (Nat × Nat × Expr) := #[]
   let mut sampleOut : Array (Nat × Nat × Expr) := #[]
+  let mut grouped : Array RowSummand := #[]
   for (pos, t) in terms do
     let some (c, r, _) ← factorRow? P params n t | return none
     let some (j, i) ← rowOf? P params n r | return none
@@ -524,10 +533,35 @@ private def readLinRec (P : Name) (params samples : Array Expr) (eqn : Name) (n 
     let c ← c.getDM (mkNumeral (← inferType r) 1)
     let c := (← unfoldRowCoeff? c).getD c
     let c ← if pos then pure c else mkAppM ``Neg.neg #[c]
-    out := out.push (j, i, ← mkLambdaFVars #[n] c)
-    sampleOut := sampleOut.push
-      (j, i, ← mkLambdaFVars #[n] (specializeRowParams params samples c))
-  return some ⟨P, params, samples, k, eqn, out, sampleOut⟩
+    if combine then
+      grouped ← addRowSummand grouped
+        { index := j, derivs := i, coeff := some c, row := r, plain := false }
+    else
+      out := out.push (j, i, ← mkLambdaFVars #[n] c)
+      sampleOut := sampleOut.push
+        (j, i, ← mkLambdaFVars #[n] (specializeRowParams params samples c))
+  for term in grouped do
+    let some c := term.coeff | return none
+    out := out.push (term.index, term.derivs, ← mkLambdaFVars #[n] c)
+    sampleOut := sampleOut.push (term.index, term.derivs,
+      ← mkLambdaFVars #[n] (specializeRowParams params samples c))
+  return some ⟨P, params, samples, k, eqn, out, sampleOut, combine⟩
+
+/-- Expand nested differential steps using the existing sum and product rules.
+This is a parser fallback; recurrence certificates still prove the original equation. -/
+private def normalizeDifferentialRhs (rhs : Expr) : MetaM Expr := do
+  let mut thms : SimpTheorems := {}
+  for name in ← rowCoeffDefs rhs do
+    thms ← thms.addDeclToUnfold name
+  for name in #[``Polynomial.derivative_add, ``Polynomial.derivative_sub,
+      ``Polynomial.derivative_mul, ``Polynomial.derivative_neg,
+      ``Polynomial.derivative_C, ``Polynomial.derivative_X,
+      ``Polynomial.derivative_one, ``Polynomial.derivative_zero,
+      ``Polynomial.derivative_X_pow, ``Polynomial.derivative_ofNat,
+      ``zero_mul, ``mul_zero, ``zero_add, ``add_zero, ``one_mul, ``mul_one] do
+    thms ← thms.addConst name
+  let ctx ← Simp.mkContext (simpTheorems := #[thms])
+  return (← Meta.simp rhs ctx).1.expr
 
 /-- Read the recurrence of `P` off its equation lemmas as a general linear recurrence. -/
 def linRec? (P : Name) (params : Array Expr := #[]) : MetaM (Option LinRecData) := do
@@ -543,7 +577,10 @@ def linRec? (P : Name) (params : Array Expr := #[]) : MetaM (Option LinRecData) 
       unless lhs.isApp && lhs.getAppFn.isConstOf P do return none
       let some k ← natOffsetOf? n lhs.getAppArgs.back! | return none
       if k == 0 then return none
-      readLinRec P params samples eqn n rhs k
+      if let some r ← readLinRec P params samples eqn n rhs k then return some r
+      let normalized ← normalizeDifferentialRhs rhs
+      if normalized == rhs then return none
+      readLinRec P params samples eqn n normalized k true
     if let some r := r then return some r
   return none
 

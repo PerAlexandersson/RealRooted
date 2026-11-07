@@ -56,6 +56,36 @@ example (n : ℕ) : (twoSidedOuterRows n).natDegree = n := by
 example (n : ℕ) : 0 < (twoSidedOuterRows n).leadingCoeff := by
   rr_row_leadingCoeff_pos
 
+/-! ## Nested differential steps -/
+
+/-- A polynomial differential step used to test composition normalization. -/
+def nestedDifferentialStep (a : ℝ) (p : ℝ[X]) : ℝ[X] :=
+  X * p.derivative + (C a + X) * p
+
+/-- Two composed steps require product-rule expansion and grouping by derivative order. -/
+def nestedDifferentialRows : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => nestedDifferentialStep 2 (nestedDifferentialStep 3 (nestedDifferentialRows n))
+
+example (n : ℕ) : 0 < (nestedDifferentialRows n).leadingCoeff := by
+  rr_row_leadingCoeff_pos
+
+example (n : ℕ) : (nestedDifferentialRows n).natDegree = 2 * n := by
+  rr_row_natDegree
+
+/-- An outer negative sign must not disappear during nested-step normalization. -/
+def signedNestedDifferentialRows : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => -(nestedDifferentialStep 2
+      (nestedDifferentialStep 3 (signedNestedDifferentialRows n)))
+
+example : True := by
+  fail_if_success
+    have h : ∀ n, 0 < (signedNestedDifferentialRows n).leadingCoeff := by
+      intro n
+      rr_row_leadingCoeff_pos
+  trivial
+
 /-! ## Named coefficient blocks -/
 
 example (n : ℕ) : (narayanaCoeffA n).natDegree ≤ 1 := by
