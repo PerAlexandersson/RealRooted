@@ -6,7 +6,6 @@ public import Mathlib.Algebra.Polynomial.Basic
 public import Mathlib.Basic.Real.Basic
 import RealRooted.Interlacing.VariableDelay
 import RealRooted.PosCombo.Degree
-import RealRooted.QuadraticInterlacingClosure
 
 /-!
 # Constant-prefix fixed-delay recurrences

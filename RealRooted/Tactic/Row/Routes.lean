@@ -64,7 +64,9 @@ def rowRouteTable : List RowRouteInfo := [
       [
         `RealRooted.strictInterl_of_fixedDelay_recurrence,
         `RealRooted.strictInterl_of_scaled_fixedDelay_recurrence,
-        `RealRooted.hasNonnegCoeffs_of_scaled_fixedDelay_recurrence
+        `RealRooted.hasNonnegCoeffs_of_scaled_fixedDelay_recurrence,
+        `RealRooted.strictInterl_of_constant_prefix_fixed_delay_recurrence,
+        `RealRooted.hasNonnegCoeffs_of_constant_prefix_fixed_delay_recurrence
       ]
   },
   { name := `derivativeXMul

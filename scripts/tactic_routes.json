@@ -55,11 +55,13 @@
       "theorems": [
         "RealRooted.strictInterl_of_fixedDelay_recurrence",
         "RealRooted.strictInterl_of_scaled_fixedDelay_recurrence",
-        "RealRooted.hasNonnegCoeffs_of_scaled_fixedDelay_recurrence"
+        "RealRooted.hasNonnegCoeffs_of_scaled_fixedDelay_recurrence",
+        "RealRooted.strictInterl_of_constant_prefix_fixed_delay_recurrence",
+        "RealRooted.hasNonnegCoeffs_of_constant_prefix_fixed_delay_recurrence"
       ],
       "module": "RealRooted.Tactic.Row.PathPower",
-      "summary": "Fixed or scaled delay transfers strict interlacing along a window.",
-      "requires": "Canonical recurrence, split bases, and nonnegative multipliers.",
+      "summary": "Fixed or scaled delay, including a positive constant prefix, transfers strict interlacing along a window.",
+      "requires": "Successor recurrence or positive constant prefix with a fixed-delay tail; positive preceding-row and nonnegative delayed multipliers.",
       "examples": ["RealRooted.Tactic.Examples.RowVariableDelay"],
       "pseudo": false
     },

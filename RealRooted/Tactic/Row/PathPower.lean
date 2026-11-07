@@ -5,6 +5,7 @@ import RealRooted.Tactic.Row.Support
 public import RealRooted.CombinatorialExamples.PathPowerGap
 public import RealRooted.Graph.IndependencePolynomial.CubicParent
 public import RealRooted.Interlacing.VariableDelay
+public import RealRooted.Interlacing.ConstantPrefixFixedDelay
 public import RealRooted.Linear
 public meta import RealRooted.EulerOperator.Polar
 public meta import RealRooted.Tactic.Row.Support
@@ -879,6 +880,8 @@ structure VariableDelayData where
   b : Expr
   /-- Whether the preceding-row coefficient was written explicitly. -/
   scaled : Bool
+  /-- Whether the recurrence starts after a positive constant prefix of length `delay`. -/
+  constantPrefix : Bool := false
 
 /-- The index of an application of `P params`, if any. -/
 def variableDelayRowIndex? (P : Name) (params : Array Expr) (e : Expr) : Option Expr :=
@@ -938,7 +941,8 @@ def fixedDelayOfIndex? (n e : Expr) : MetaM (Option Nat) := do
   return none
 
 /-- Read one summand as a preceding-row term or a delayed `X`-term. -/
-def readVariableDelaySummand (P : Name) (params : Array Expr) (n term : Expr) :
+def readVariableDelaySummand (P : Name) (params : Array Expr) (n term : Expr)
+    (offset : Nat := 1) :
     MetaM (Option (Bool × Nat × Expr × Bool)) := do
   let factors := variableDelayFactors term
   let mut row? : Option Expr := none
@@ -959,9 +963,12 @@ def readVariableDelaySummand (P : Name) (params : Array Expr) (n term : Expr) :
   let some row := row? | return none
   let scalar ← scalar?.getDM (mkNumeral (mkConst ``Real) 1)
   if hasX then
+    if offset > 1 then
+      unless row == n do return none
+      return some (true, offset, scalar, scalar?.isSome)
     let some L ← fixedDelayOfIndex? n row | return none
     return some (true, L, scalar, scalar?.isSome)
-  unless row == n do return none
+  unless (← natOffsetOf? n row) == some (offset - 1) do return none
   return some (false, 0, scalar, scalar?.isSome)
 
 /-- Recognize a canonical fixed-delay recurrence from the equation lemmas of `P`. -/
@@ -975,14 +982,15 @@ def variableDelay? (P : Name) (params : Array Expr := #[]) : MetaM (Option Varia
       let n := xs.back!
       let some (_, lhs, rhs) := body.eq? | return none
       let some lhsIndex := variableDelayRowIndex? P params lhs | return none
-      unless (← natOffsetOf? n lhsIndex) == some 1 do return none
+      let some offset ← natOffsetOf? n lhsIndex | return none
+      if offset == 0 then return none
       let summands := variableDelaySummands rhs
       unless summands.size == 2 do return none
       let mut current? : Option (Expr × Bool) := none
       let mut delayed? : Option (Nat × Expr) := none
       for summand in summands do
         let some (delayed, L, coeff, explicit) ←
-            readVariableDelaySummand P params n summand
+            readVariableDelaySummand P params n summand offset
           | return none
         if delayed then
           if delayed?.isSome then return none
@@ -993,6 +1001,10 @@ def variableDelay? (P : Name) (params : Array Expr := #[]) : MetaM (Option Varia
       let some (a, scaled) := current? | return none
       let some (L, b) := delayed? | return none
       if L == 0 then return none
+      if offset > 1 then
+        let a ← mkLambdaFVars #[n] a
+        let b ← mkLambdaFVars #[n] b
+        return some { P, params, eqn, delay := L, a, b, scaled, constantPrefix := true }
       let some a ← abstractSuccessorCoeff n a | return none
       let some b ← abstractSuccessorCoeff n b | return none
       return some { P, params, eqn, delay := L, a, b, scaled }
@@ -1035,47 +1047,60 @@ def variableDelayGoal (kind : VariableDelayGoalKind) : TacticM Unit := do
       beta_reduce
       first | solve_by_elim [le_of_lt] | positivity | nlinarith)
     let hP0 ← `(by simp only [$P:ident])
-    let hrec ← `(fun n => by
-      beta_reduce
-      rw [$eqn n] <;> simp only [map_one, mul_one] <;> rr_ring)
-    let strictMain : TacticM (TSyntax `tactic) := do
-      if data.scaled then
-        `(tactic|
-          apply RealRooted.strictInterl_of_scaled_fixedDelay_recurrence
-            (P := $Q) (a := $a) (b := $b) (L := $L) $hL $haPos $hb $hP0 $hrec <;>
-            first | assumption | solve_by_elim | lia | rr_row_side)
+    let c ← `(fun i => ($Q i).coeff 0)
+    let hc ← `(by
+      intro i hi
+      interval_cases i <;> norm_num [$P:ident, map_ofNat] <;>
+        first | assumption | positivity)
+    let hprefix ← `(by
+      intro i hi
+      interval_cases i <;> norm_num [$P:ident, map_ofNat])
+    let hrec ← if data.constantPrefix then
+        `(fun n => by
+          beta_reduce
+          rw [Nat.add_sub_assoc (by norm_num : 1 ≤ $L)]
+          simp only [Nat.reduceSub]
+          rw [$eqn n] <;> simp only [map_one, mul_one] <;> rr_ring)
       else
-        `(tactic|
-          apply RealRooted.strictInterl_of_fixedDelay_recurrence
-            (Q := $Q) (w := $b) (L := $L) $hL $hb $hP0 $hrec <;>
-            first | assumption | solve_by_elim | lia | rr_row_side)
+        `(fun n => by
+          beta_reduce
+          rw [$eqn n] <;> simp only [map_one, mul_one] <;> rr_ring)
+    let strictThm ← if data.constantPrefix then
+        `(RealRooted.strictInterl_of_constant_prefix_fixed_delay_recurrence
+          $Q $c $a $b $L $hL $hc $haPos $hb $hprefix $hrec)
+      else if data.scaled then
+        `(RealRooted.strictInterl_of_scaled_fixedDelay_recurrence
+          (P := $Q) (a := $a) (b := $b) (L := $L) $hL $haPos $hb $hP0 $hrec)
+      else
+        `(RealRooted.strictInterl_of_fixedDelay_recurrence
+          (Q := $Q) (w := $b) (L := $L) $hL $hb $hP0 $hrec)
+    let strictMain ← `(tactic|
+      apply $strictThm <;> first | assumption | solve_by_elim | lia | rr_row_side)
     match kind with
     | .nonneg =>
-        evalTactic (← `(tactic|
-          apply RealRooted.hasNonnegCoeffs_of_scaled_fixedDelay_recurrence
-            (P := $Q) (a := $a) (b := $b) (L := $L) $hL $haNonneg $hb $hP0 $hrec))
-    | .strict => evalTactic (← strictMain)
+        if data.constantPrefix then
+          evalTactic (← `(tactic|
+            apply RealRooted.hasNonnegCoeffs_of_constant_prefix_fixed_delay_recurrence
+              $Q $c $a $b $L $hL $hc $haPos $hb $hprefix $hrec))
+        else
+          evalTactic (← `(tactic|
+            apply RealRooted.hasNonnegCoeffs_of_scaled_fixedDelay_recurrence
+              (P := $Q) (a := $a) (b := $b) (L := $L) $hL $haNonneg $hb $hP0 $hrec))
+    | .strict => evalTactic strictMain
     | .interlaces =>
         evalTactic (← `(tactic| refine RealRooted.StrictInterl.toInterlaces ?_ ?_))
         let [strictGoal, degreeGoal] ← getGoals
           | throwError "rr_row: unexpected interlacing goals"
         setGoals [strictGoal]
-        evalTactic (← strictMain)
+        evalTactic strictMain
         setGoals [degreeGoal]
         rowSideGoal (some P)
         setGoals []
     | .splits =>
         let idx ← certTerm (← mainRowIndex P)
-        if data.scaled then
-          evalTactic (← `(tactic|
-            exact (RealRooted.strictInterl_of_scaled_fixedDelay_recurrence
-              (P := $Q) (a := $a) (b := $b) (L := $L) $hL $haPos $hb $hP0 $hrec
-              (A := $idx) (B := $idx) (by lia) (by lia)).2.1.2))
-        else
-          evalTactic (← `(tactic|
-            exact (RealRooted.strictInterl_of_fixedDelay_recurrence
-              (Q := $Q) (w := $b) (L := $L) $hL $hb $hP0 $hrec
-              (A := $idx) (B := $idx) (by lia) (by lia)).2.1.2))
+        evalTactic (← `(tactic|
+          exact (show RealRooted.StrictInterl ($Q $idx) ($Q $idx) from
+            $strictThm (by lia) (by lia)).2.1.2))
     unless (← getGoals).isEmpty do throwError "rr_row: fixed-delay route left goals"
 
 /-- Apply the path-power window theorem when the target has an explicit additive step. -/
