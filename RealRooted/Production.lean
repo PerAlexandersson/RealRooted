@@ -1391,6 +1391,12 @@ public import RealRooted.Schur.ElementaryToeplitz
 public import RealRooted.Schur.MinorPositivity
 public import RealRooted.Schur.ElementaryPositivity
 public import RealRooted.Schur.Roots
+public import RealRooted.Schur.PositiveRoots
+public import RealRooted.Schur.Interlacing
+public import RealRooted.Schur.Rectangular
+public import RealRooted.Schur.Stretching
+public import RealRooted.Schur.ConstantColumns
+public import RealRooted.Schur.Examples
 public import RealRooted.SeparablePermutations.Basic
 public import RealRooted.SeparablePermutations.Cubic
 public import RealRooted.SeparablePermutations.Enumerator

@@ -32,8 +32,8 @@ theorem checkerboardPencil_add_single_left {n : ℕ}
       A.map C + (X : ℝ[X]) • (checkerboard B).map C + single 0 0 (C c) := by
     apply Matrix.ext
     intro i j
-    by_cases hi : i = 0 <;> by_cases hj : j = 0
-    all_goals simp [hi, hj, eq_comm, add_comm, add_assoc]
+    by_cases hi : i = 0 <;> by_cases hj : j = 0 <;>
+      simp [hi, hj, eq_comm, add_comm, add_assoc]
   unfold checkerboardPencil
   rw [hm, det_add_single_zero_zero]
   congr 2
@@ -51,9 +51,9 @@ theorem checkerboardPencil_add_single_right {n : ℕ}
       A.map C + (X : ℝ[X]) • (checkerboard B).map C + single 0 0 (C c * X) := by
     apply Matrix.ext
     intro i j
-    by_cases hi : i = 0 <;> by_cases hj : j = 0
-    all_goals simp [checkerboard, hi, hj, eq_comm]
-    all_goals ring
+    by_cases hi : i = 0 <;> by_cases hj : j = 0 <;>
+      simp [checkerboard, hi, hj, eq_comm]
+    ring
   unfold checkerboardPencil
   rw [hm, det_add_single_zero_zero]
   congr 2
@@ -144,5 +144,51 @@ theorem IsTotallyNonneg.strictInterl_checkerboardPencil_succ {n : ℕ}
     have hp := hA.isPFPolynomial_checkerboardPencil_add_X_corner hB hdet hc
     simpa only [mul_assoc] using
       hp.eq_zero_or_splits.elim (fun hz => hz ▸ Polynomial.Splits.zero) id
+
+/-- Reversing both index orders preserves a checkerboard pencil determinant. -/
+@[simp] theorem checkerboardPencil_submatrix_rev {n : ℕ}
+    (A B : Matrix (Fin n) (Fin n) ℝ) :
+    checkerboardPencil (A.submatrix Fin.revPerm Fin.revPerm)
+      (B.submatrix Fin.revPerm Fin.revPerm) = checkerboardPencil A B := by
+  have hc : checkerboard (B.submatrix Fin.revPerm Fin.revPerm) =
+      (checkerboard B).submatrix Fin.revPerm Fin.revPerm := by
+    ext i j
+    have hi := i.isLt
+    have hj := j.isLt
+    have hs : (-1 : ℝ) ^ (i.val + j.val) = (-1 : ℝ) ^ ((Fin.rev i).val + (Fin.rev j).val) := by
+      apply neg_one_pow_congr
+      simp only [Nat.even_iff, Fin.val_rev]
+      lia
+    simpa [checkerboard, Fin.revPerm, ← mul_assoc, ← pow_add] using
+      congrArg (fun c : ℝ => c * B (Fin.rev i) (Fin.rev j)) hs
+  unfold checkerboardPencil
+  rw [hc]
+  change det ((A.map C + (X : ℝ[X]) • (checkerboard B).map C).submatrix
+    Fin.revPerm Fin.revPerm) = _
+  exact det_submatrix_equiv_self _ _
+
+/-- Consecutive leading sections of a general TN pencil weakly interlace.
+Positive constant determinants exclude zero polynomials; the variable matrix
+may be singular and need not be triangular. -/
+theorem IsTotallyNonneg.strictInterl_checkerboardPencil_castSucc {n : ℕ}
+    {A B : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ}
+    (hA : A.IsTotallyNonneg) (hB : B.IsTotallyNonneg) (hdet : 0 < A.det)
+    (hminor : 0 < (A.submatrix Fin.castSucc Fin.castSucc).det) :
+    RealRooted.StrictInterl
+      (checkerboardPencil (A.submatrix Fin.castSucc Fin.castSucc)
+        (B.submatrix Fin.castSucc Fin.castSucc)) (checkerboardPencil A B) := by
+  have hAr : (A.submatrix Fin.revPerm Fin.revPerm).IsTotallyNonneg := by
+    simpa [Matrix.reindex] using hA.finRev
+  have hBr : (B.submatrix Fin.revPerm Fin.revPerm).IsTotallyNonneg := by
+    simpa [Matrix.reindex] using hB.finRev
+  have hcut (M : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) :
+      (M.submatrix Fin.revPerm Fin.revPerm).submatrix Fin.succ Fin.succ =
+        (M.submatrix Fin.castSucc Fin.castSucc).submatrix Fin.revPerm Fin.revPerm := by
+    ext i j
+    simp [Fin.revPerm, Fin.rev_succ]
+  have hp := hAr.strictInterl_checkerboardPencil_succ hBr
+    (by simpa only [det_submatrix_equiv_self] using hdet)
+    (by simpa only [hcut, det_submatrix_equiv_self] using hminor)
+  simpa only [hcut, checkerboardPencil_submatrix_rev] using hp
 
 end Matrix
