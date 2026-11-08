@@ -3,10 +3,10 @@ module
 import RealRooted.Mathlib.Algebra.Polynomial.LinearFactors
 public import Mathlib.Algebra.Order.Archimedean.Real.Basic
 public import RealRooted.PFPolynomial
-public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePower
+public import RealRooted.BrandenLeite.AffineNegativePower
 import RealRooted.BrandenLeite.WeightedDerivativeKernel
 import RealRooted.BrandenLeite.PositiveLinearFactors
-import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerDegree
+import RealRooted.BrandenLeite.AffineNegativePowerDegree
 import RealRooted.TotallyNonnegPencil.Checkerboard
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
 import Mathlib.Tactic.Positivity
@@ -113,7 +113,7 @@ theorem affineNegativePowerCoeff_prod_linear_splits_and_roots_neg
   dsimp
   have hpf := isPFPolynomial_affineNegativePowerCoeff_prod_linear s hs α hα hκ
     B hB hBs hBnn n
-  have hc := PowerSeries.coeff_zero_affineNegativePowerCoeff_prod_linear_pos
+  have hc := coeff_zero_affineNegativePowerCoeff_prod_linear_pos
     s hs α hα (B : PowerSeries ℝ) (by simpa using hB) hκ n
   rw [← Polynomial.coe_prod_one_sub_C_mul_X] at hc
   have hn : affineNegativePowerCoeff κ

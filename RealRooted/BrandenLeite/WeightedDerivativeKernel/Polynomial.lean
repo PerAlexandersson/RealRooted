@@ -1,11 +1,6 @@
-/-
-Copyright (c) 2026 Per Alexandersson. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Per Alexandersson
--/
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel
+public import RealRooted.BrandenLeite.WeightedDerivativeKernel.Basic
 public import Mathlib.Algebra.Polynomial.Coeff
 import Mathlib.Tactic
 
@@ -13,7 +8,9 @@ import Mathlib.Tactic
 
 public section
 
-namespace Matrix
+open Matrix
+
+namespace RealRooted.BrandenLeite
 
 /-- A constant-polynomial weighted kernel is a weighted one-step shift. -/
 theorem weightedDerivativeKernel_C_fin (c κ : ℝ) (n : ℕ) :
@@ -52,4 +49,4 @@ theorem weightedDerivativeKernel_C_fin_isTotallyNonneg (c κ : ℝ) (hc : 0 ≤ 
   exact (hinc.submatrix (rows := id) (cols := Fin.castSucc)
     strictMono_id (fun _ _ hij ↦ hij)).toSquare
 
-end Matrix
+end RealRooted.BrandenLeite

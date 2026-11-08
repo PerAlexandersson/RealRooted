@@ -1,22 +1,19 @@
-/-
-Copyright (c) 2026 Per Alexandersson. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Per Alexandersson
--/
 module
 
 public import Mathlib.RingTheory.PowerSeries.Substitution
 public import Mathlib.RingTheory.PowerSeries.Binomial
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel
+public import RealRooted.BrandenLeite.WeightedDerivativeKernel.Basic
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Checkerboard
-import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerDeterminant
-import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Pencil
+import RealRooted.BrandenLeite.NegativePowerDeterminant
+import RealRooted.BrandenLeite.WeightedDerivativeKernel.Pencil
 
 /-! Polynomial parameter rows of a formal negative power. -/
 
 public section
 
-namespace PowerSeries
+open PowerSeries
+
+namespace RealRooted.BrandenLeite
 
 /-- A normalized denominator `Q` and a numerator `B` with zero constant term give the
 affine series `Q - t B` constant coefficient one. -/
@@ -44,10 +41,10 @@ theorem det_weightedDerivativeKernel_affineNegativePowerCoeff
     (κ : R) (Q B : PowerSeries R) (hQ : constantCoeff Q = 1)
     (hB : constantCoeff B = 0) (n : ℕ) :
     Matrix.det
-      ((((Matrix.weightedDerivativeKernel κ (fun k => (-1 : R) ^ k * coeff k Q)).submatrix
+      ((((weightedDerivativeKernel κ (fun k => (-1 : R) ^ k * coeff k Q)).submatrix
         Fin.val Fin.val : Matrix (Fin n) (Fin n) R).map Polynomial.C) +
       (Polynomial.X : Polynomial R) • (Matrix.checkerboard
-        ((Matrix.weightedDerivativeKernel κ (fun k => coeff k B)).submatrix
+        ((weightedDerivativeKernel κ (fun k => coeff k B)).submatrix
           Fin.val Fin.val : Matrix (Fin n) (Fin n) R)).map Polynomial.C) =
       (n.factorial : Polynomial R) * affineNegativePowerCoeff κ Q B n := by
   let H := map Polynomial.C Q - C Polynomial.X * map Polynomial.C B
@@ -58,7 +55,7 @@ theorem det_weightedDerivativeKernel_affineNegativePowerCoeff
       Polynomial.C (coeff k Q) - Polynomial.X * Polynomial.C (coeff k B) := by
     simp [H, coeff_C_mul]
   simp_rw [hcoeff] at hid
-  rw [Matrix.weightedDerivativeKernel_signed_sub_X_mul] at hid
+  rw [weightedDerivativeKernel_signed_sub_X_mul] at hid
   exact hid
 
-end PowerSeries
+end RealRooted.BrandenLeite

@@ -1,8 +1,8 @@
 module
 
 public import Mathlib.Topology.MetricSpace.Pseudo.Defs
-public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePower
-import RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePowerRecurrence
+public import RealRooted.BrandenLeite.AffineNegativePower
+import RealRooted.BrandenLeite.AffineNegativePowerRecurrence
 import RealRooted.BrandenLeite.RecurrenceContinuity
 
 /-! Coefficientwise limits of canonical affine negative powers. -/
@@ -29,11 +29,11 @@ theorem tendsto_coeff_affineNegativePowerCoeff
     (hB : ∀ k, Tendsto (fun t => PowerSeries.coeff k (B t)) l
       (𝓝 (PowerSeries.coeff k B₀)))
     (n i : ℕ) :
-    Tendsto (fun t => (PowerSeries.affineNegativePowerCoeff (κ t) (Q t) (B t) n).coeff i)
-      l (𝓝 ((PowerSeries.affineNegativePowerCoeff κ₀ Q₀ B₀ n).coeff i)) := by
+    Tendsto (fun t => (affineNegativePowerCoeff (κ t) (Q t) (B t) n).coeff i)
+      l (𝓝 ((affineNegativePowerCoeff κ₀ Q₀ B₀ n).coeff i)) := by
   refine tendsto_of_negative_power_coefficient_recurrence
-    (p := fun t n i => (PowerSeries.affineNegativePowerCoeff (κ t) (Q t) (B t) n).coeff i)
-    (p₀ := fun n i => (PowerSeries.affineNegativePowerCoeff κ₀ Q₀ B₀ n).coeff i)
+    (p := fun t n i => (affineNegativePowerCoeff (κ t) (Q t) (B t) n).coeff i)
+    (p₀ := fun n i => (affineNegativePowerCoeff κ₀ Q₀ B₀ n).coeff i)
     (h := fun t k j => (Polynomial.C (PowerSeries.coeff k (Q t)) -
       Polynomial.X * Polynomial.C (PowerSeries.coeff k (B t))).coeff j)
     (h₀ := fun k j => (Polynomial.C (PowerSeries.coeff k Q₀) -
@@ -51,14 +51,14 @@ theorem tendsto_coeff_affineNegativePowerCoeff
     simpa [hj₀, hj₁] using
       (tendsto_const_nhds : Tendsto (fun _ : ι => (0 : ℝ)) l (𝓝 0))
   · intro j
-    simp only [PowerSeries.affineNegativePowerCoeff_zero _ _ _ (hQzero _) (hBzero _),
-      PowerSeries.affineNegativePowerCoeff_zero _ _ _ hQ₀zero hB₀zero]
+    simp only [affineNegativePowerCoeff_zero _ _ _ (hQzero _) (hBzero _),
+      affineNegativePowerCoeff_zero _ _ _ hQ₀zero hB₀zero]
     exact tendsto_const_nhds
   · intro t m j
-    exact PowerSeries.coeff_affineNegativePowerCoeff_recurrence
+    exact coeff_affineNegativePowerCoeff_recurrence
       (κ t) (Q t) (B t) (hQzero t) (hBzero t) m j
   · intro m j
-    exact PowerSeries.coeff_affineNegativePowerCoeff_recurrence
+    exact coeff_affineNegativePowerCoeff_recurrence
       κ₀ Q₀ B₀ hQ₀zero hB₀zero m j
 
 end RealRooted.BrandenLeite

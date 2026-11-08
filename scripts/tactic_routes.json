@@ -2,31 +2,10 @@
   "schemaVersion": 1,
   "routes": [
     {
-      "name": "affineCoefficient",
-      "pseudo": false,
-      "frontEnds": [
-        {
-          "tactic": "rr_row_splits",
-          "position": 1
-        }
-      ],
-      "conclusion": "(P n).Splits",
-      "theorems": [
-        "RealRooted.BrandenLeite.affineNegativePowerCoeff_factor_properties",
-        "RealRooted.BrandenLeite.affineLogCoeff_factor_properties"
-      ],
-      "module": "RealRooted.Tactic.Row.AffineCoefficient",
-      "summary": "Canonical negative-power and logarithmic rows from positive linear factors.",
-      "requires": "Factor hypotheses, positive exponent for powers, and positive row index for logarithms.",
-      "examples": [
-        "RealRooted.Tactic.Examples.RowAffineCoefficient"
-      ]
-    },
-    {
       "name": "probe",
       "frontEnds": [
         {"tactic": "rr_row_interlaces", "position": 2, "selectable": false},
-        {"tactic": "rr_row_splits", "position": 6, "selectable": false}
+        {"tactic": "rr_row_splits", "position": 5, "selectable": false}
       ],
       "conclusion": "No conclusion; this is an exact-arithmetic rejection pass.",
       "theorems": [],
@@ -53,7 +32,7 @@
       "name": "rowModel",
       "frontEnds": [
         {"tactic": "rr_row_interlaces", "position": 3},
-        {"tactic": "rr_row_splits", "position": 8, "selectable": false},
+        {"tactic": "rr_row_splits", "position": 7, "selectable": false},
         {"tactic": "rr_row_natDegree", "position": 6, "selectable": false}
       ],
       "conclusion": "The conclusion advertised by a matching registered row-model theorem.",
@@ -68,7 +47,7 @@
       "name": "variableDelay",
       "frontEnds": [
         {"tactic": "rr_row_interlaces", "position": 1},
-        {"tactic": "rr_row_splits", "position": 2},
+        {"tactic": "rr_row_splits", "position": 1},
         {"tactic": "rr_row_strictInterl", "position": 1},
         {"tactic": "rr_row_nonneg_coeffs", "position": 1, "selectable": false}
       ],
@@ -89,7 +68,7 @@
     {
       "name": "derivativeXMul",
       "frontEnds": [
-        {"tactic": "rr_row_splits", "position": 3}
+        {"tactic": "rr_row_splits", "position": 2}
       ],
       "conclusion": "(P n).Splits",
       "theorems": ["RealRooted.splits_of_mul_derivative_X_mul_sequence"],
@@ -102,7 +81,7 @@
     {
       "name": "factorPower",
       "frontEnds": [
-        {"tactic": "rr_row_splits", "position": 4}
+        {"tactic": "rr_row_splits", "position": 3}
       ],
       "conclusion": "(P n).Splits",
       "theorems": ["RealRooted.eq_pow_mul_of_factoredThreeTerm"],
@@ -115,7 +94,7 @@
     {
       "name": "delayedProduct",
       "frontEnds": [
-        {"tactic": "rr_row_splits", "position": 5}
+        {"tactic": "rr_row_splits", "position": 4}
       ],
       "conclusion": "(P n).Splits",
       "theorems": ["RealRooted.productSequence_splits"],
@@ -129,7 +108,7 @@
       "name": "closedForm",
       "frontEnds": [
         {"tactic": "rr_row_interlaces", "position": 12},
-        {"tactic": "rr_row_splits", "position": 7}
+        {"tactic": "rr_row_splits", "position": 6}
       ],
       "conclusion": "Interlaces (P n) (P (n + 1)) or (P n).Splits, according to the front end.",
       "theorems": [
@@ -148,7 +127,7 @@
       "name": "pathPower",
       "frontEnds": [
         {"tactic": "rr_row_interlaces", "position": 5},
-        {"tactic": "rr_row_splits", "position": 10}
+        {"tactic": "rr_row_splits", "position": 9}
       ],
       "conclusion": "Interlaces consecutive rows or Splits for a path-power model.",
       "theorems": [
@@ -167,7 +146,7 @@
       "name": "lowerOrder",
       "frontEnds": [
         {"tactic": "rr_row_interlaces", "position": 6},
-        {"tactic": "rr_row_splits", "position": 11}
+        {"tactic": "rr_row_splits", "position": 10}
       ],
       "conclusion": "Interlaces consecutive rows, with a splitting projection.",
       "theorems": ["RealRooted.threeTerm_rec_of_remainder"],
@@ -180,7 +159,7 @@
     {
       "name": "thresholdOrbit",
       "frontEnds": [
-        {"tactic": "rr_row_splits", "position": 12}
+        {"tactic": "rr_row_splits", "position": 11}
       ],
       "conclusion": "(P n).Splits",
       "theorems": [
@@ -196,7 +175,7 @@
     {
       "name": "subseq",
       "frontEnds": [
-        {"tactic": "rr_row_splits", "position": 15},
+        {"tactic": "rr_row_splits", "position": 14},
         {"tactic": "rr_row_natDegree", "position": 5, "selectable": false},
         {"tactic": "rr_row_leadingCoeff_pos", "position": 7, "selectable": false}
       ],
@@ -215,7 +194,7 @@
     {
       "name": "linearFactors",
       "frontEnds": [
-        {"tactic": "rr_row_splits", "position": 16}
+        {"tactic": "rr_row_splits", "position": 15}
       ],
       "conclusion": "(P n).Splits",
       "theorems": ["RealRooted.productSequence_ne_zero_and_splits"],
@@ -228,7 +207,7 @@
     {
       "name": "splitFactors",
       "frontEnds": [
-        {"tactic": "rr_row_splits", "position": 17}
+        {"tactic": "rr_row_splits", "position": 16}
       ],
       "conclusion": "(P n).Splits",
       "theorems": ["RealRooted.productSequence_splits"],
@@ -243,7 +222,7 @@
       "frontEnds": [
         {"tactic": "rr_row_interlaces", "position": 16},
         {"tactic": "rowInterlacesCoreAt", "position": 3},
-        {"tactic": "rr_row_splits", "position": 18},
+        {"tactic": "rr_row_splits", "position": 17},
         {"tactic": "rr_row_natDegree", "position": 2, "selectable": false},
         {"tactic": "rr_row_leadingCoeff_pos", "position": 4}
       ],
@@ -264,7 +243,7 @@
     {
       "name": "nextRow",
       "frontEnds": [
-        {"tactic": "rr_row_splits", "position": 19}
+        {"tactic": "rr_row_splits", "position": 18}
       ],
       "conclusion": "(P n).Splits",
       "theorems": [
@@ -282,7 +261,7 @@
       "name": "halfGrowth",
       "frontEnds": [
         {"tactic": "rr_row_interlaces", "position": 4},
-        {"tactic": "rr_row_splits", "position": 9},
+        {"tactic": "rr_row_splits", "position": 8},
         {"tactic": "rr_row_strictInterl", "position": 2}
       ],
       "conclusion": "Interlaces, StrictInterl, or Splits for half-growth rows.",
@@ -300,7 +279,7 @@
     {
       "name": "degreePattern",
       "frontEnds": [
-        {"tactic": "rr_row_splits", "position": 20},
+        {"tactic": "rr_row_splits", "position": 19},
         {"tactic": "rr_row_strictInterl", "position": 3}
       ],
       "conclusion": "(P n).Splits or StrictInterl (P n) (P (n + 1)).",
@@ -320,7 +299,7 @@
       "name": "reversed",
       "frontEnds": [
         {"tactic": "rr_row_interlaces", "position": 24},
-        {"tactic": "rr_row_splits", "position": 21}
+        {"tactic": "rr_row_splits", "position": 20}
       ],
       "conclusion": "Interlaces (P n) (P (n + 1)) or (P n).Splits after reflection.",
       "theorems": [
@@ -339,7 +318,7 @@
       "name": "parityProduct",
       "frontEnds": [
         {"tactic": "rr_row_interlaces", "position": 7},
-        {"tactic": "rr_row_splits", "position": 13}
+        {"tactic": "rr_row_splits", "position": 12}
       ],
       "conclusion": "Interlaces (P n) (P (n + 1)) or (P n).Splits.",
       "theorems": [
@@ -356,7 +335,7 @@
     {
       "name": "lagFeedback",
       "frontEnds": [
-        {"tactic": "rr_row_splits", "position": 14}
+        {"tactic": "rr_row_splits", "position": 13}
       ],
       "conclusion": "(P n).Splits",
       "theorems": [
@@ -373,7 +352,7 @@
       "name": "fTransform",
       "frontEnds": [
         {"tactic": "rr_row_interlaces", "position": 10},
-        {"tactic": "rr_row_splits", "position": 22}
+        {"tactic": "rr_row_splits", "position": 21}
       ],
       "conclusion": "Interlaces (P n) (P (n + 1)) or (P n).Splits for f-polynomial images.",
       "theorems": [

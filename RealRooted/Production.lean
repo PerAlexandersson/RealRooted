@@ -1117,7 +1117,6 @@ public import RealRooted.Mathlib.RingTheory.PowerSeries.ZeroPrefix
 public import RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int
 public import RealRooted.Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Invertible
 public import RealRooted.Mathlib.Topology.Algebra.Polynomial
-public import RealRooted.Mathlib.Topology.Algebra.Polynomial.Recurrence
 public import RealRooted.Mathlib.Topology.Instances.Matrix.Determinant
 public import RealRooted.MatrixInterlacing
 public import RealRooted.MatrixInterlacing.Action
@@ -1977,7 +1976,7 @@ public import RealRooted.MultiplierSequence.EulerCoefficientRatio
 public import RealRooted.DerivativeRecurrence.FiniteLagCoefficients
 public import RealRooted.Tactic.Recurrence.Coefficients
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Hessenberg
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel
+public import RealRooted.BrandenLeite.WeightedDerivativeKernel.Basic
 public import RealRooted.BrandenLeite.WeightedDerivativeKernel
 public import RealRooted.BrandenLeite.PositiveLinearFactors
 public import RealRooted.BrandenLeite.PositivePowerRow
@@ -1991,36 +1990,36 @@ public import RealRooted.BrandenLeite.LogarithmicFactors
 public import RealRooted.BrandenLeite.LogarithmicInterlacing
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.LeadingSections
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.DeterminantPencil
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Determinant
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Polynomial
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Algebra
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Pencil
+public import RealRooted.BrandenLeite.WeightedDerivativeKernel.Determinant
+public import RealRooted.BrandenLeite.WeightedDerivativeKernel.Polynomial
+public import RealRooted.BrandenLeite.WeightedDerivativeKernel.Algebra
+public import RealRooted.BrandenLeite.WeightedDerivativeKernel.Pencil
 public import RealRooted.TotallyNonnegPencil
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Checkerboard
 public import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialDerivative
 public import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialPositive
-public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerDeterminant
+public import RealRooted.BrandenLeite.NegativePowerDeterminant
 public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerRecurrence
-public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePower
+public import RealRooted.BrandenLeite.AffineNegativePower
 public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineSubstitution
 public import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialAffineExpansion
 public import RealRooted.Mathlib.RingTheory.PowerSeries.BivariateBinomial
 public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerCoefficients
-public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerDetPositive
+public import RealRooted.BrandenLeite.NegativePowerDetPositive
 public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerMul
 public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerPositive
-public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePowerRecurrence
+public import RealRooted.BrandenLeite.AffineNegativePowerRecurrence
 public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerDegree
-public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineLogarithm
+public import RealRooted.BrandenLeite.AffineLogarithm
 public import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialLogLimit
 public import RealRooted.Mathlib.RingTheory.PowerSeries.FiniteSubstitution
 public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerLogLimit
 public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerOne
-public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineLogarithmZero
-public import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmDegree
+public import RealRooted.BrandenLeite.AffineLogarithmZero
+public import RealRooted.BrandenLeite.LogarithmDegree
 public import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmMul
 public import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmPositive
-public import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmicCoefficients
+public import RealRooted.BrandenLeite.LogarithmicCoefficients
 public import RealRooted.TotallyNonnegPencil.Checkerboard
 public import RealRooted.TotallyNonnegPencil.CornerInterlacing
 public import RealRooted.TotallyNonnegPencil.Interlacing
@@ -2028,7 +2027,8 @@ public import RealRooted.TotallyNonnegPencil.CheckerboardInterlacing
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.CheckerboardAdjacent
 public import RealRooted.TotallyNonnegPencil.StrictInterlacing
 public import RealRooted.BrandenLeite.PositivePowerStrictRows
-public import RealRooted.Tactic.Row.AffineCoefficient
+public import RealRooted.BrandenLeite.AffineNegativePowerDegree
+public import RealRooted.BrandenLeite.Examples
 
 /-!
 # RealRooted production umbrella

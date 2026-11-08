@@ -1,11 +1,7 @@
-/-
-Copyright (c) 2026 Per Alexandersson. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Per Alexandersson
--/
 module
 
-public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineLogarithm
+public import RealRooted.BrandenLeite.AffineLogarithm
+import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmMul
 import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmPositive
 import Mathlib.Tactic
 
@@ -13,20 +9,9 @@ import Mathlib.Tactic
 
 public section
 
-namespace PowerSeries
+open PowerSeries
 
-/-- Ring maps between rational algebras preserve the formal logarithm of a
-normalized series. -/
-theorem map_logOf {R S : Type*} [CommRing R] [CommRing S]
-    [Algebra ℚ R] [Algebra ℚ S] (φ : R →+* S)
-    (H : PowerSeries R) (hH : constantCoeff H = 1) :
-    map φ (logOf H) = logOf (map φ H) := by
-  have hG : HasSubst (H - 1) := HasSubst.of_constantCoeff_zero' (by simp [hH])
-  rw [logOf_eq, logOf_eq]
-  have hm := map_subst hG (h := φ) (log R)
-  change map φ (subst (H - 1) (log R)) =
-    subst (map φ (H - 1)) (map φ (log R)) at hm
-  rw [hm, map_log, map_sub, map_one]
+namespace RealRooted.BrandenLeite
 
 /-- Setting the affine parameter to zero recovers the negative logarithm of
 its constant denominator series. -/
@@ -56,4 +41,4 @@ theorem coeff_zero_affineLogCoeff_prod_linear_pos {ι : Type*}
   rw [coeff_zero_affineLogCoeff _ _ (by simp) hB]
   exact coeff_neg_logOf_prod_one_sub_C_mul_X_pos s hs α hα hn
 
-end PowerSeries
+end RealRooted.BrandenLeite

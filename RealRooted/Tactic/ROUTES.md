@@ -14,33 +14,6 @@ Set `rr.row.disable` to a comma-separated list of route names to skip, for examp
 Read each row as a goal shape and its main theorem(s). The route sections record
 side conditions, implementing modules, and regression examples.
 
-## `rr_row_splits`
-
-| # | route | proves | main theorem(s) |
-|---:|---|---|---|
-| 1 | `affineCoefficient` | (P n).Splits | `BrandenLeite.affineNegativePowerCoeff_factor_properties`, `BrandenLeite.affineLogCoeff_factor_properties` |
-| 2 | `variableDelay` | StrictInterl, Interlaces, Splits, or HasNonnegCoeffs. | `strictInterl_of_fixedDelay_recurrence`, `strictInterl_of_scaled_fixedDelay_recurrence`, `hasNonnegCoeffs_of_scaled_fixedDelay_recurrence`, `strictInterl_of_constant_prefix_fixed_delay_recurrence`, `hasNonnegCoeffs_of_constant_prefix_fixed_delay_recurrence` |
-| 3 | `derivativeXMul` | (P n).Splits | `splits_of_mul_derivative_X_mul_sequence` |
-| 4 | `factorPower` | (P n).Splits | `eq_pow_mul_of_factoredThreeTerm` |
-| 5 | `delayedProduct` | (P n).Splits | `productSequence_splits` |
-| 6 | `probe` (pseudo) | No conclusion; this is an exact-arithmetic rejection pass. | — |
-| 7 | `closedForm` | Interlaces (P n) (P (n + 1)) or (P n).Splits, according to the front end. | `Interlaces.pow_mul_of_linear_remainder`, `Interlaces.pow_mul_of_quadratic_remainder`, `splits_C_add_C_mul_X_add_C_mul_X_sq`, `splits_palindromic_quartic` |
-| 8 | `rowModel` (pseudo) | The conclusion advertised by a matching registered row-model theorem. | — |
-| 9 | `halfGrowth` | Interlaces, StrictInterl, or Splits for half-growth rows. | `derivLag_strictInterl_of_nonnegCoeffs`, `derivLag_strictInterl_of_nonnegCoeffs_half`, `threeTermHalf_ne_zero_and_splits` |
-| 10 | `pathPower` | Interlaces consecutive rows or Splits for a path-power model. | `strictInterl_pathPowerCliquePolynomial_add`, `strictInterl_reciprocalShift_pathPowerCliquePolynomial`, `splits_pathPowerCliquePolynomial`, `splits_reciprocalShift_pathPowerCliquePolynomial` |
-| 11 | `lowerOrder` | Interlaces consecutive rows, with a splitting projection. | `threeTerm_rec_of_remainder` |
-| 12 | `thresholdOrbit` | (P n).Splits | `HaglundZhang.splits_orbit_sum`, `GustafssonSolus.splits_orbit_sum` |
-| 13 | `parityProduct` | Interlaces (P n) (P (n + 1)) or (P n).Splits. | `eq_parityProduct_of_thirdOrderRecurrence`, `interlaces_of_parityProduct`, `splits_of_parityProduct` |
-| 14 | `lagFeedback` | (P n).Splits | `splits_of_lagFeedback`, `splits_of_lagFeedback_sub` |
-| 15 | `subseq` | Splitting, a natural-degree identity, or a positive leading coefficient. | `productSequence_splits`, `threeTermPos_natDegree`, `productSequence_natDegree_of_constant_degree` |
-| 16 | `linearFactors` | (P n).Splits | `productSequence_ne_zero_and_splits` |
-| 17 | `splitFactors` | (P n).Splits | `productSequence_splits` |
-| 18 | `twoStep` | Interlacing, splitting, degree, or positive leading coefficient for P (n + 2) = q * P n. | `twoStepProduct_interlaces`, `twoStepProduct_splits`, `twoStepProduct_natDegree`, `twoStepProduct_leadingCoeff_pos`, `twoStepProduct_leadingCoeff_pos_of_ne_zero` |
-| 19 | `nextRow` | (P n).Splits | `productSequence_interlaces`, `derivativeRecurrence_interlaces_of_eval_nonpos`, `threeTerm_interlaces_of_eval_nonpos` |
-| 20 | `degreePattern` | (P n).Splits or StrictInterl (P n) (P (n + 1)). | `derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs`, `derivativeRecurrence_strictInterl_of_degree_pattern_of_nonnegCoeffs`, `Tactic.derivativeRecurrence_strictInterl_of_half_degree`, `Tactic.derivativeRecurrence_strictInterl_of_floor_half_degree` |
-| 21 | `reversed` | Interlaces (P n) (P (n + 1)) or (P n).Splits after reflection. | `eq_reflect_of_secondOrderDerivativeRecurrence`, `eq_reflect_of_threeTerm`, `interlaces_of_eq_reflect`, `splits_of_eq_reflect` |
-| 22 | `fTransform` | Interlaces (P n) (P (n + 1)) or (P n).Splits for f-polynomial images. | `Tactic.interlaces_fPolynomial_sequence`, `Tactic.interlaces_fPolynomial_sequence_floor`, `splits_of_eq_fPolynomial` |
-
 ## `rr_row_interlaces`
 
 | # | route | proves | main theorem(s) |
@@ -69,6 +42,32 @@ side conditions, implementing modules, and regression examples.
 | 22 | `movingWindow` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_mem_Icc_mono_div` |
 | 23 | `movingUpper` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_le_mono_div` |
 | 24 | `reversed` | Interlaces (P n) (P (n + 1)) or (P n).Splits after reflection. | `eq_reflect_of_secondOrderDerivativeRecurrence`, `eq_reflect_of_threeTerm`, `interlaces_of_eq_reflect`, `splits_of_eq_reflect` |
+
+## `rr_row_splits`
+
+| # | route | proves | main theorem(s) |
+|---:|---|---|---|
+| 1 | `variableDelay` | StrictInterl, Interlaces, Splits, or HasNonnegCoeffs. | `strictInterl_of_fixedDelay_recurrence`, `strictInterl_of_scaled_fixedDelay_recurrence`, `hasNonnegCoeffs_of_scaled_fixedDelay_recurrence`, `strictInterl_of_constant_prefix_fixed_delay_recurrence`, `hasNonnegCoeffs_of_constant_prefix_fixed_delay_recurrence` |
+| 2 | `derivativeXMul` | (P n).Splits | `splits_of_mul_derivative_X_mul_sequence` |
+| 3 | `factorPower` | (P n).Splits | `eq_pow_mul_of_factoredThreeTerm` |
+| 4 | `delayedProduct` | (P n).Splits | `productSequence_splits` |
+| 5 | `probe` (pseudo) | No conclusion; this is an exact-arithmetic rejection pass. | — |
+| 6 | `closedForm` | Interlaces (P n) (P (n + 1)) or (P n).Splits, according to the front end. | `Interlaces.pow_mul_of_linear_remainder`, `Interlaces.pow_mul_of_quadratic_remainder`, `splits_C_add_C_mul_X_add_C_mul_X_sq`, `splits_palindromic_quartic` |
+| 7 | `rowModel` (pseudo) | The conclusion advertised by a matching registered row-model theorem. | — |
+| 8 | `halfGrowth` | Interlaces, StrictInterl, or Splits for half-growth rows. | `derivLag_strictInterl_of_nonnegCoeffs`, `derivLag_strictInterl_of_nonnegCoeffs_half`, `threeTermHalf_ne_zero_and_splits` |
+| 9 | `pathPower` | Interlaces consecutive rows or Splits for a path-power model. | `strictInterl_pathPowerCliquePolynomial_add`, `strictInterl_reciprocalShift_pathPowerCliquePolynomial`, `splits_pathPowerCliquePolynomial`, `splits_reciprocalShift_pathPowerCliquePolynomial` |
+| 10 | `lowerOrder` | Interlaces consecutive rows, with a splitting projection. | `threeTerm_rec_of_remainder` |
+| 11 | `thresholdOrbit` | (P n).Splits | `HaglundZhang.splits_orbit_sum`, `GustafssonSolus.splits_orbit_sum` |
+| 12 | `parityProduct` | Interlaces (P n) (P (n + 1)) or (P n).Splits. | `eq_parityProduct_of_thirdOrderRecurrence`, `interlaces_of_parityProduct`, `splits_of_parityProduct` |
+| 13 | `lagFeedback` | (P n).Splits | `splits_of_lagFeedback`, `splits_of_lagFeedback_sub` |
+| 14 | `subseq` | Splitting, a natural-degree identity, or a positive leading coefficient. | `productSequence_splits`, `threeTermPos_natDegree`, `productSequence_natDegree_of_constant_degree` |
+| 15 | `linearFactors` | (P n).Splits | `productSequence_ne_zero_and_splits` |
+| 16 | `splitFactors` | (P n).Splits | `productSequence_splits` |
+| 17 | `twoStep` | Interlacing, splitting, degree, or positive leading coefficient for P (n + 2) = q * P n. | `twoStepProduct_interlaces`, `twoStepProduct_splits`, `twoStepProduct_natDegree`, `twoStepProduct_leadingCoeff_pos`, `twoStepProduct_leadingCoeff_pos_of_ne_zero` |
+| 18 | `nextRow` | (P n).Splits | `productSequence_interlaces`, `derivativeRecurrence_interlaces_of_eval_nonpos`, `threeTerm_interlaces_of_eval_nonpos` |
+| 19 | `degreePattern` | (P n).Splits or StrictInterl (P n) (P (n + 1)). | `derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs`, `derivativeRecurrence_strictInterl_of_degree_pattern_of_nonnegCoeffs`, `Tactic.derivativeRecurrence_strictInterl_of_half_degree`, `Tactic.derivativeRecurrence_strictInterl_of_floor_half_degree` |
+| 20 | `reversed` | Interlaces (P n) (P (n + 1)) or (P n).Splits after reflection. | `eq_reflect_of_secondOrderDerivativeRecurrence`, `eq_reflect_of_threeTerm`, `interlaces_of_eq_reflect`, `splits_of_eq_reflect` |
+| 21 | `fTransform` | Interlaces (P n) (P (n + 1)) or (P n).Splits for f-polynomial images. | `Tactic.interlaces_fPolynomial_sequence`, `Tactic.interlaces_fPolynomial_sequence_floor`, `splits_of_eq_fPolynomial` |
 
 ## `rr_row_natDegree`
 
@@ -151,14 +150,6 @@ side conditions, implementing modules, and regression examples.
 | 1 | `recurrence` | The requested degree, nonvanishing, leader, or ratio goal. | `productSequence_natDegree`, `HasPosLeadingCoeff.mul`, `derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos`, `derivRec₂_natDegree_eq_and_leadingCoeff_pos`, `threeTermPos_natDegree_eq_and_leadingCoeff_pos`, `threeTermRatio_natDegree_eq_and_leadingCoeff_pos`, `threeTermHalf_natDegree` |
 
 # Route details
-
-## `affineCoefficient`
-
-- **Summary:** Canonical negative-power and logarithmic rows from positive linear factors.
-- **Side conditions:** Factor hypotheses, positive exponent for powers, and positive row index
-  for logarithms.
-- **Module:** `RealRooted.Tactic.Row.AffineCoefficient`
-- **Regression examples:** `RealRooted.Tactic.Examples.RowAffineCoefficient`
 
 ## `probe` (pseudo)
 

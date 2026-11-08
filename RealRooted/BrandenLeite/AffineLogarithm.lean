@@ -1,14 +1,9 @@
-/-
-Copyright (c) 2026 Per Alexandersson. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Per Alexandersson
--/
 module
 
 public import Mathlib.Topology.MetricSpace.Pseudo.Defs
 public import Mathlib.RingTheory.PowerSeries.Log
 import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerLogLimit
-public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePower
+public import RealRooted.BrandenLeite.AffineNegativePower
 
 /-! Canonical logarithmic coefficient rows and their positive-power limit. -/
 
@@ -16,7 +11,9 @@ public section
 
 open Filter Topology
 
-namespace PowerSeries
+open PowerSeries
+
+namespace RealRooted.BrandenLeite
 
 /-- The coefficient of degree `n` in `-log(Q(u)-t B(u))`, as a polynomial in `t`.
 For the logarithmic interpretation, the denominator must have constant term one. -/
@@ -35,4 +32,4 @@ theorem tendsto_coeff_affineNegativePowerCoeff_div
   have hH : constantCoeff H = 1 := constantCoeff_map_C_sub_C_X_mul_map_C hQ hB
   exact tendsto_coeff_coeff_subst_binomialSeries_neg_div H hH hn k
 
-end PowerSeries
+end RealRooted.BrandenLeite

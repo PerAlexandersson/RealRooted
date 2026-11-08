@@ -32,7 +32,6 @@ public import RealRooted.Tactic.Examples.ParametricRows
 public import RealRooted.Tactic.Examples.Product
 public import RealRooted.Tactic.Examples.Product.Interlacing
 public import RealRooted.Tactic.Examples.RecurrenceODE
-public import RealRooted.Tactic.Examples.RowAffineCoefficient
 public import RealRooted.Tactic.Examples.RowCancelRho
 public import RealRooted.Tactic.Examples.RowCubicParent
 public import RealRooted.Tactic.Examples.RowData
