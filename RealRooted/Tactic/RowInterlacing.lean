@@ -704,6 +704,15 @@ private def linRecNonneg : TacticM Unit := withMainContext do
     let PName := seq.name
     let P := mkIdent PName
     let (_, shift) ← rowIndexParts PName
+    -- every multiplier must have nonnegative coefficients: a negative coefficient in an exact
+    -- sample refutes the hypothesis `hmult` before any side goal is attempted
+    if seq.params.isEmpty then
+      for (_, _, A) in rec.sampleTerms do
+        for m in [0:10] do
+          if let some a ← evalCoeffAt? A (m + shift) then
+            if a.coeffs.any (· < 0) then
+              throwError "rr_row_nonneg_coeffs: a multiplier of the recurrence of {PName} has \
+                a negative coefficient"
     let (_, t) ← alignRow PName shift (smallRow P)
     let base ← certTerm (mkAppN (← mkConstWithFreshMVarLevels PName) seq.params)
     let Q ← shiftedSeq base shift
@@ -947,6 +956,98 @@ elab "rr_row_eval_zero_pos" : tactic => withMainContext do
 
 
 
+/-- A proof of consecutive interlacing of a sequence that is already available: a hypothesis or an
+earlier theorem of the current module. -/
+private structure ReuseSource where
+  /-- the proof (with fresh universe metavariables for a constant) and its statement; the
+  statement of a constant is read from its signature, so that a theorem whose proof is still
+  being elaborated is never waited for -/
+  term : MetaM (Expr × Expr)
+  /-- whether the conclusion is `StrictInterl` rather than `Interlaces` -/
+  strict : Bool
+
+/-- Whether the statement `ty` is `∀ …, Interlaces a b` (`some false`) or
+`∀ …, StrictInterl a b` (`some true`) for rows `a`, `b` mentioning the sequence `P`.  The check is
+purely syntactic, so it is cheap enough to run on every theorem of the module. -/
+private def reuseConclusion? (P : Name) (ty : Expr) : Option Bool :=
+  let body := ty.getForallBody
+  let head := body.getAppFn
+  if body.getAppNumArgs != 2 || (body.find? (·.isConstOf P)).isNone then none
+  else if head.isConstOf ``RealRooted.Interlaces then some false
+  else if head.isConstOf ``RealRooted.StrictInterl then some true
+  else none
+
+/-- The hypotheses and the theorems of the current module (other than the one being proved)
+that conclude `Interlaces` or `StrictInterl` for rows of the sequence `P`. -/
+private def reuseSources (P : Name) : TacticM (Array ReuseSource) := do
+  let mut out : Array ReuseSource := #[]
+  for d in ← getLCtx do
+    if d.isImplementationDetail then continue
+    let ty ← instantiateMVars d.type
+    if let some strict := reuseConclusion? P ty then
+      out := out.push ⟨pure (d.toExpr, ty), strict⟩
+  let self ← Term.getDeclName?
+  for c in ← (← getEnv).getLocalConstantInfos (skipTheoremSubDecls := true) do
+    unless c.kind == .thm && some c.name != self do continue
+    let sig := c.sig.get
+    if let some strict := reuseConclusion? P sig.type then
+      let term := do
+        let lvls ← mkFreshLevelMVars sig.levelParams.length
+        return (mkConst c.name lvls, sig.type.instantiateLevelParams sig.levelParams lvls)
+      out := out.push ⟨term, strict⟩
+  return out
+
+/-- The proof of `target` (`Splits` of the left row, or `StrictInterl` of consecutive rows,
+according to `strict`) obtained from the source `src` by projection, if it matches `target`
+without further hypotheses. -/
+private def reuseProof? (strict : Bool) (src : ReuseSource) (target : Expr) :
+    MetaM (Option Expr) := do
+  let (c, ty) ← src.term
+  let (ms, _, concl) ← forallMetaTelescopeReducing ty
+  let h := mkAppN c ms
+  -- the projection is typed over a local hypothesis, never over the constant itself
+  let proof? ← withLocalDeclD `h concl fun hv => do
+    let body ← if strict then
+        if src.strict then pure hv
+        else mkAppM ``RealRooted.Interlaces.toStrictInterl #[hv]
+      else
+        -- `Interlaces g f` is `(f ≠ 0 ∧ f.Splits) ∧ (g ≠ 0 ∧ g.Splits) ∧ …` and
+        -- `StrictInterl g f` is `(g ≠ 0 ∧ g.Splits) ∧ …`
+        pure <| if src.strict then mkProj ``And 1 (mkProj ``And 0 hv)
+          else mkProj ``And 1 (mkProj ``And 0 (mkProj ``And 1 hv))
+    unless ← isDefEq (← inferType body) target do return none
+    return some (← mkLambdaFVars #[hv] body)
+  let some f := proof? | return none
+  let q ← instantiateMVars (f.beta #[h])
+  return if q.hasExprMVar then none else some q
+
+/-- Close a splitting (`strict = false`) or `StrictInterl` (`strict = true`) goal from one of the
+`sources`. -/
+private def reuseProve (strict : Bool) (sources : Array ReuseSource) : TacticM Unit := do
+  discard introIfForall
+  withMainContext do
+  let goal ← getMainGoal
+  let target ← instantiateMVars (← goal.getType)
+  for src in sources do
+    if let some p ← reuseProof? strict src target then
+      goal.assign p
+      replaceMainGoal []
+      return
+  throwError "no earlier interlacing statement of the current module proves the goal"
+
+/-- The route `reuse`: close the goal from a hypothesis or earlier theorem of the module
+that states consecutive interlacing of the same sequence, at the cost of a projection.  It is
+silent when there is no such statement, so that explain tables only show it when it runs. -/
+private def reuseRoute (s : RouteSearch) (strict : Bool) : TacticM Bool := withMainContext do
+  if let some v := s.via then
+    if v != `reuse then return false
+  let tgt ← instantiateMVars (← getMainTarget)
+  let some P ← findSeqConstDeep? tgt | return false
+  let sources ← reuseSources P
+  if sources.isEmpty && s.via != some `reuse then return false
+  return (← s.attempt `reuse (reuseProve strict sources)
+    (what := m!"an earlier interlacing statement")).isSome
+
 /-- The routes of `rr_row_splits`, in the order of the attempts. -/
 private def splitsRoutes : List Name :=
   rowRoutesOf "rr_row_splits"
@@ -1135,6 +1236,7 @@ private def rowSplitsCoreDirect (log : RowAttemptLog) (hints : RowHints) :
         {routeNamesForError splitsRoutes}"
   let use (route : Name) : Bool := hints.via.isNone || hints.via == some route
   let s ← RouteSearch.new log hints.via
+  if ← reuseRoute s false then return { via := some `reuse }
   if (← s.attempt `variableDelay (variableDelayGoal .splits)).isSome then
     return { via := some `variableDelay }
   if (← s.attempt `derivativeXMul derivativeXMulSplits).isSome then
@@ -1465,6 +1567,7 @@ private def rowStrictInterlCore (log : RowAttemptLog) (hints : RowHints) : Tacti
       throwError "rr_row_strictInterl: unknown route {v}; the routes are\n\
         {routeNamesForError routes}"
   let s ← RouteSearch.new log hints.via
+  if ← reuseRoute s true then return { via := some `reuse }
   if (← s.attempt `variableDelay (variableDelayGoal .strict)
       (what := m!"fixed-delay recurrence")).isSome then
     return { via := some `variableDelay }
