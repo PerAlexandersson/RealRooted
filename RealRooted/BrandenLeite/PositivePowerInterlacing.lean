@@ -1,7 +1,10 @@
 module
 
 import RealRooted.BrandenLeite.WeightedDerivativeKernel
-public import RealRooted.BrandenLeite.PositivePowerRow
+import RealRooted.BrandenLeite.PositivePowerRow
+public import Mathlib.Algebra.Order.Archimedean.Real.Basic
+public import RealRooted.PFPolynomial
+public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePower
 import RealRooted.TotallyNonnegPencil.CheckerboardInterlacing
 import RealRooted.Interlacing.ReversalCommonFactor
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
