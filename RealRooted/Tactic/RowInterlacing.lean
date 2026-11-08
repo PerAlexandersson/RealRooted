@@ -305,14 +305,25 @@ private def rowModelBaseRows? (search : RowModelSearch) (want : RowModelConclusi
 /-- Compare a registered recurrence hypothesis with exact target rows at seven indices.
 A mismatch is a counterexample to the hypothesis of the registered transfer theorem; failure
 to evaluate either side leaves the candidate available. -/
-private def rowModelFingerprintMatches? (P : Name) (candidate : RowModelCandidate) :
-    TacticM (Option Bool) := do
+private def rowModelFingerprintMatches? (P : Name) (candidate : RowModelCandidate)
+    (L? : Option LinRecData := none) : TacticM (Option Bool) := do
   let some recurrence := candidate.recurrence | return none
   let target ← mkConstWithFreshMVarLevels P
+  -- The exact rows of the target, read off its own recurrence, evaluate the rows `P k` that
+  -- occur in the model recurrence.
+  let rows? ← match L? with
+    | some L =>
+        if L.params.isEmpty then linRecRows? L (6 + candidate.offset.getD 2) else pure none
+    | none => pure none
+  let rowValue (e : Expr) : MetaM (Option (Option QPoly)) := do
+    let some rows := rows? | return none
+    unless e.getAppNumArgs == 1 && e.getAppFn.isConstOf P do return none
+    let some k ← evalNat e.appArg! | return some none
+    return some rows[k]?
   for n in [0:7] do
     let statement ← whnfR (mkApp (mkApp recurrence target) (mkNatLit n))
     let some (_, lhs, rhs) := statement.eq? | return none
-    match ← evalQPoly? lhs, ← evalQPoly? rhs with
+    match ← evalQPolyWith rowValue lhs, ← evalQPolyWith rowValue rhs with
     | some left, some right => unless left.eqv right do return some false
     | _, _ =>
         let state ← saveState
@@ -402,7 +413,7 @@ private def matchingRowModels (decls : Array Name) (P : Name)
     if rowModelNameMatches P candidate then
       named := named.push candidate
     else
-      match ← rowModelFingerprintMatches? P candidate with
+      match ← rowModelFingerprintMatches? P candidate recurrence? with
       | some true => exact := exact.push candidate
       | some false => pure ()
       | none => unknown := unknown.push candidate

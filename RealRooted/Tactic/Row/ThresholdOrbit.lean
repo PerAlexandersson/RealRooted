@@ -109,22 +109,30 @@ private def thresholdProbe? (L : LinRecData) : MetaM (Option ThrPlan) := do
       let some a ← evalCoeffAt? A m | return none
       unless a == a₀ do return none
   let some rows ← linRecRows? L 20 | return none
+  -- The first orbit sum is the sum of the input, whatever the threshold rows: only the inputs
+  -- whose sum is one of the rows `0, …, 4` can give a certificate.
+  let mut inputs : Array (Nat × Nat × Nat) := #[]
+  for c₀ in [0:3] do
+    for c₁ in [0:3] do
+      for c₂ in [0:3] do
+        if c₀ + c₁ + c₂ == 0 then continue
+        let sum := [thrInput c₀, thrInput c₁, thrInput c₂].foldl (· + ·) (QPoly.const 0)
+        if (List.range 5).any fun t => sum == rows[t]! then inputs := inputs.push (c₀, c₁, c₂)
   for fam in #[ThrFamily.haglundZhang, .gustafssonSolus] do
     for cand in thrCandidates fam do
-      for c₀ in [0:3] do
-        for c₁ in [0:3] do
-          for c₂ in [0:3] do
-            if c₀ + c₁ + c₂ == 0 then continue
-            let S₀ := #[thrInput c₀, thrInput c₁, thrInput c₂]
-            -- the orbit sums for 14 steps
-            let mut S := S₀
-            let mut sums : Array QPoly := #[]
-            for _ in [0:14] do
-              sums := sums.push (S.foldl (· + ·) (QPoly.const 0))
-              S := thrStep cand S
-            for t in [0:5] do
-              if (List.range 14).all fun m => sums[m]! == rows[t + m]! then
-                return some { fam, rows := cand, input := #[c₀, c₁, c₂], offset := t }
+      for (c₀, c₁, c₂) in inputs do
+        let S₀ := #[thrInput c₀, thrInput c₁, thrInput c₂]
+        -- The orbit sums for 14 steps, compared with rows `t, …, t + 13` one step at a time:
+        -- a candidate is abandoned as soon as no offset `t` is still consistent.
+        let mut S := S₀
+        let mut alive : List Nat := [0, 1, 2, 3, 4]
+        for m in [0:14] do
+          let sum := S.foldl (· + ·) (QPoly.const 0)
+          alive := alive.filter fun t => sum == rows[t + m]!
+          if alive.isEmpty then break
+          S := thrStep cand S
+        if let some t := alive.head? then
+          return some { fam, rows := cand, input := #[c₀, c₁, c₂], offset := t }
   return none
 
 /-- `rr_row_splits` for an order-three sequence whose rows are threshold-matrix orbit sums
