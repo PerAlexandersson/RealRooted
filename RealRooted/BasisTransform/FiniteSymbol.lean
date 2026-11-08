@@ -90,6 +90,6 @@ theorem basisTransform_isPF_of_finiteSymbol_stable
       hP hpdeg hp.hasNonnegCoeffs
   · apply basisTransform_splits_or_zero_of_finiteSymbol_stable
       hSymbol hpdeg
-    exact hp.eq_zero_or_splits.elim (fun h ↦ h ▸ Splits.zero) id
+    exact hp.splits
 
 end RealRooted.BorceaBranden

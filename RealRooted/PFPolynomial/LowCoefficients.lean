@@ -2,6 +2,7 @@ module
 
 public import RealRooted.PFPolynomial
 import RealRooted.Gurvits.Univariate
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 import RealRooted.Mathlib.Algebra.Order.BigOperators.Ring.Multiset
 import RealRooted.RootAmplitude.Polynomial
 import RealRooted.RootAmplitude.SmallestRoot
@@ -39,28 +40,17 @@ section Factorization
 
 variable {p : ℝ[X]}
 
-/-- A PF polynomial with positive constant coefficient splits. -/
-private theorem splits_of_coeff_zero_pos (hp : IsPFPolynomial p) (h0 : 0 < p.coeff 0) :
-    p.Splits :=
-  hp.eq_zero_or_splits.resolve_left fun h => by simp [h] at h0
-
-/-- All roots of a PF polynomial with positive constant coefficient are negative. -/
-private theorem neg_of_mem_roots (hp : IsPFPolynomial p) (h0 : 0 < p.coeff 0) {r : ℝ}
-    (hr : r ∈ p.roots) : r < 0 := by
-  refine lt_of_le_of_ne (hp.roots_nonpos r hr) ?_
-  rintro rfl
-  exact h0.ne' (by simpa [IsRoot, ← coeff_zero_eq_eval_zero] using (mem_roots'.1 hr).2)
-
 /-- The positive reciprocal magnitudes `-1 / r` of the roots. -/
 private theorem neg_inv_pos_of_mem_roots (hp : IsPFPolynomial p) (h0 : 0 < p.coeff 0) {r : ℝ}
     (hr : r ∈ p.roots) : 0 < -r⁻¹ := by
-  simpa using inv_lt_zero.2 (neg_of_mem_roots hp h0 hr)
+  simpa using inv_lt_zero.2
+    (roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne hp.hasNonnegCoeffs h0.ne' r hr)
 
 /-- The factorization `p = c₀ ∏ (1 + λᵢ X)`. -/
 private theorem eq_C_mul_prod_one_add (hp : IsPFPolynomial p) (h0 : 0 < p.coeff 0) :
     p = C (p.coeff 0) *
       ((p.roots.map fun r => -r⁻¹).map fun c => 1 + C c * X).prod :=
-  (Gurvits.eq_C_mul_prod_of_splits (splits_of_coeff_zero_pos hp h0) hp.hasNonnegCoeffs h0).2
+  (Gurvits.eq_C_mul_prod_of_splits (hp.splits) hp.hasNonnegCoeffs h0).2
 
 /-- Evaluation through the factorization `p = c₀ ∏ (1 + λᵢ X)`. -/
 private theorem eval_eq_coeff_zero_mul_prod (hp : IsPFPolynomial p) (h0 : 0 < p.coeff 0)
@@ -116,7 +106,7 @@ theorem eval_neg_pos_of_mul_coeff_one_lt {p : ℝ[X]} (hp : IsPFPolynomial p)
 coefficient satisfies `r c₁ ≤ -c₀`; for `c₁ > 0` this says `r ≤ -c₀ / c₁`. -/
 theorem mul_coeff_one_le_neg_coeff_zero_of_mem_roots {p : ℝ[X]} (hp : IsPFPolynomial p)
     (h0 : 0 < p.coeff 0) {r : ℝ} (hr : r ∈ p.roots) : r * p.coeff 1 ≤ -p.coeff 0 := by
-  have hrneg := neg_of_mem_roots hp h0 hr
+  have hrneg := roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne hp.hasNonnegCoeffs h0.ne' r hr
   have hmem : -r⁻¹ ≤ (p.roots.map fun r => -r⁻¹).sum :=
     Multiset.single_le_sum (fun x hx => by
       obtain ⟨s, hs, rfl⟩ := Multiset.mem_map.1 hx
@@ -129,11 +119,6 @@ theorem mul_coeff_one_le_neg_coeff_zero_of_mem_roots {p : ℝ[X]} (hp : IsPFPoly
   nlinarith
 
 section Coefficients
-
-/-- A coefficient of `(1 + C a * X) * Q` in positive degree. -/
-private theorem coeff_one_add_C_mul_X_mul_succ (a : ℝ) (Q : ℝ[X]) (n : ℕ) :
-    ((1 + C a * X) * Q).coeff (n + 1) = Q.coeff (n + 1) + a * Q.coeff n := by
-  rw [add_mul, one_mul, coeff_add, mul_assoc, coeff_C_mul, coeff_X_mul]
 
 /-- The coefficients of `∏ (1 + λᵢ X)` are nonnegative and satisfy
 `(j + 1) q_{j+1} ≤ (∑ λᵢ) q_j`. -/
@@ -213,7 +198,9 @@ theorem card_filter_roots_lt_pow_mul_sum {p : ℝ[X]} (hp : IsPFPolynomial p)
   have hgt : ∀ r ∈ F, 1 < g r := by
     intro r hr
     rw [hF, Multiset.mem_filter] at hr
-    exact one_lt_pow₀ (one_lt_mul_neg_inv (neg_of_mem_roots hp h0 hr.1) hr.2) hℓ
+    have hrneg :=
+      roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne hp.hasNonnegCoeffs h0.ne' _ hr.1
+    exact one_lt_pow₀ (one_lt_mul_neg_inv hrneg hr.2) hℓ
   have hlt : (F.map fun _ => (1 : ℝ)).sum < (F.map g).sum :=
     Multiset.sum_lt_sum_of_nonempty (Multiset.card_pos.1 hν) hgt
   have hcard : (F.map fun _ => (1 : ℝ)).sum = F.card := by simp
@@ -262,10 +249,11 @@ theorem card_filter_roots_lt_of_sq_mul_le {p : ℝ[X]} (hp : IsPFPolynomial p)
   have hν : 0 < (p.roots.filter fun r => -R < r).card :=
     lt_of_lt_of_le (Nat.pos_of_ne_zero hj) hcard
   have hlt := card_filter_roots_lt_pow_mul_sum hp h0 hR (ℓ := 2) two_ne_zero hν
-  have hs := splits_of_coeff_zero_pos hp h0
+  have hs := hp.splits
   have hp0 : p ≠ 0 := fun h' => by simp [h'] at h0
   have hvieta := RootVieta.poly_sum_sq p hs.natDegree_eq_card_roots.symm
-    (leadingCoeff_ne_zero.2 hp0) fun r hr => (neg_of_mem_roots hp h0 hr).ne
+    (leadingCoeff_ne_zero.2 hp0) fun r hr =>
+      (roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne hp.hasNonnegCoeffs h0.ne' r hr).ne
   have hS : (p.roots.map fun ξ => -(1 / ξ)).sum = (p.roots.map fun r => -r⁻¹).sum := by
     simp
   have hQ : (p.roots.map fun ξ => (1 / ξ) ^ 2).sum = (p.roots.map fun r => (-r⁻¹) ^ 2).sum := by
@@ -316,49 +304,55 @@ end RootCount
 
 section LargestRoot
 
-/-- **Largest root from the three lowest coefficients.**  Let `p` be a PF polynomial with
-`p(0) = 1`, `a = [x] p > 0`, and `2 [x²] p = ε a²` with `ε < 1/2`.  Then `p` has a largest root
-`-v`, which is simple, and `1 ≤ a v ≤ 1 / (1 - ε)`, `|a v - 1| ≤ ε / (1 - ε)`, and
-`(1 - 2 ε) / (1 - ε) ≤ v p'(-v) ≤ 1`. -/
-theorem exists_largest_root_of_coeff_one_pos {p : ℝ[X]} (hp : IsPFPolynomial p)
-    (h0 : p.coeff 0 = 1) (ha : 0 < p.coeff 1) {ε : ℝ}
-    (hε : 2 * p.coeff 2 = ε * p.coeff 1 ^ 2) (hε2 : ε < 1 / 2) :
-    ∃ v : ℝ, 0 < v ∧ -v ∈ p.roots ∧ p.roots.count (-v) = 1 ∧ (∀ r ∈ p.roots, r ≤ -v) ∧
-      1 ≤ p.coeff 1 * v ∧ p.coeff 1 * v ≤ 1 / (1 - ε) ∧
-      |p.coeff 1 * v - 1| ≤ ε / (1 - ε) ∧
-      (1 - 2 * ε) / (1 - ε) ≤ v * p.derivative.eval (-v) ∧ v * p.derivative.eval (-v) ≤ 1 := by
+/-- The sum of the reciprocal magnitudes `λᵢ = -1 / rᵢ` of the roots is `c₁` when `c₀ = 1`. -/
+private theorem sum_neg_inv_roots_eq {p : ℝ[X]} (hp : IsPFPolynomial p) (h0 : p.coeff 0 = 1) :
+    (p.roots.map fun r => -r⁻¹).sum = p.coeff 1 := by
   have h0' : 0 < p.coeff 0 := by rw [h0]; exact one_pos
-  have hs := splits_of_coeff_zero_pos hp h0'
+  rw [coeff_one_eq_coeff_zero_mul_sum hp h0', h0, one_mul]
+
+/-- **Vieta step.**  If `c₀ = 1` and `2 c₂ = ε c₁²`, then `∑ᵢ λᵢ² = (1 - ε) c₁²`. -/
+private theorem sum_sq_neg_inv_roots_eq {p : ℝ[X]} (hp : IsPFPolynomial p) (h0 : p.coeff 0 = 1)
+    {ε : ℝ} (hε : 2 * p.coeff 2 = ε * p.coeff 1 ^ 2) :
+    ((p.roots.map fun r => -r⁻¹).map fun x => x ^ 2).sum = (1 - ε) * p.coeff 1 ^ 2 := by
+  have h0' : 0 < p.coeff 0 := by rw [h0]; exact one_pos
+  have hs := hp.splits
   have hp0 : p ≠ 0 := fun h' => by simp [h'] at h0'
-  have hneg := fun r (hr : r ∈ p.roots) => neg_of_mem_roots hp h0' hr
-  have hzero : p.eval 0 = 1 := by rw [← coeff_zero_eq_eval_zero, h0]
-  have hL : ∀ x ∈ p.roots.map (fun r => -r⁻¹), 0 < x := by
-    intro x hx
-    obtain ⟨r, hr, rfl⟩ := Multiset.mem_map.1 hx
-    exact neg_inv_pos_of_mem_roots hp h0' hr
-  set S := (p.roots.map fun r => -r⁻¹).sum with hSdef
-  have hSa : S = p.coeff 1 := by rw [coeff_one_eq_coeff_zero_mul_sum hp h0', h0, one_mul]
+  have hneg := roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne hp.hasNonnegCoeffs h0'.ne'
   have hvieta := RootVieta.poly_sum_sq p hs.natDegree_eq_card_roots.symm
     (leadingCoeff_ne_zero.2 hp0) fun r hr => (hneg r hr).ne
   have hQ : ((p.roots.map fun r => -r⁻¹).map fun x => x ^ 2).sum =
       (p.roots.map fun ξ => (1 / ξ) ^ 2).sum := by
     simp
-  have hS' : (p.roots.map fun ξ => -(1 / ξ)).sum = S := by simp [hSdef]
-  rw [hS', h0, div_one] at hvieta
-  -- the reciprocal power sum
-  set Q := ((p.roots.map fun r => -r⁻¹).map fun x => x ^ 2).sum with hQdef
-  have hQeq : Q = (1 - ε) * S ^ 2 := by
-    rw [hQ]
-    rw [hSa] at hvieta ⊢
-    linarith
+  have hS : (p.roots.map fun ξ => -(1 / ξ)).sum = p.coeff 1 := by
+    rw [← sum_neg_inv_roots_eq hp h0]
+    simp
+  rw [hS, h0, div_one] at hvieta
+  rw [hQ]
+  linarith
+
+/-- **Largest root and its multiplicity.**  Under the hypotheses of
+`exists_largest_root_of_coeff_one_pos`, the largest root `s` of `p` is simple, and
+`(1 - ε) c₁ ≤ -1 / s ≤ c₁`. -/
+private theorem exists_largest_root_count_eq_one {p : ℝ[X]} (hp : IsPFPolynomial p)
+    (h0 : p.coeff 0 = 1) (ha : 0 < p.coeff 1) {ε : ℝ}
+    (hε : 2 * p.coeff 2 = ε * p.coeff 1 ^ 2) (hε2 : ε < 1 / 2) :
+    ∃ s ∈ p.roots, (∀ r ∈ p.roots, r ≤ s) ∧ p.roots.count s = 1 ∧
+      (1 - ε) * p.coeff 1 ≤ -s⁻¹ ∧ -s⁻¹ ≤ p.coeff 1 := by
+  have h0' : 0 < p.coeff 0 := by rw [h0]; exact one_pos
+  have hneg := roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne hp.hasNonnegCoeffs h0'.ne'
+  have hL : ∀ x ∈ p.roots.map (fun r => -r⁻¹), 0 < x := by
+    intro x hx
+    obtain ⟨r, hr, rfl⟩ := Multiset.mem_map.1 hx
+    exact neg_inv_pos_of_mem_roots hp h0' hr
+  have hSa := sum_neg_inv_roots_eq hp h0
+  have hQeq := sum_sq_neg_inv_roots_eq hp h0 hε
+  rw [← hSa] at hQeq
   have hroots_ne : p.roots ≠ 0 := by
     intro h
-    have : S = 0 := by simp [hSdef, h]
-    rw [hSa] at this
-    exact ha.ne' this
+    simp only [h, Multiset.map_zero, Multiset.sum_zero] at hSa
+    exact ha.ne' hSa.symm
   obtain ⟨s, hsmem, hsmax⟩ := Multiset.exists_max_image id hroots_ne
   simp only [id] at hsmax
-  have hsneg := hneg s hsmem
   have hmmem : -s⁻¹ ∈ p.roots.map (fun r => -r⁻¹) := Multiset.mem_map_of_mem _ hsmem
   have hmmax : ∀ x ∈ p.roots.map (fun r => -r⁻¹), x ≤ -s⁻¹ := by
     intro x hx
@@ -366,22 +360,22 @@ theorem exists_largest_root_of_coeff_one_pos {p : ℝ[X]} (hp : IsPFPolynomial p
     rw [neg_le_neg_iff]
     exact (inv_le_inv_of_neg (hneg s hsmem) (hneg r hr)).2 (hsmax r hr)
   have hc : 1 / 2 < 1 - ε := by linarith
-  have hmge : (1 - ε) * S ≤ -s⁻¹ :=
-    RootAmplitude.mul_sum_le_max_of_sq_sum_ge hL hmmem hmmax (by rw [← hQdef, hQeq])
-  have hmle : -s⁻¹ ≤ S := Multiset.single_le_sum (fun x hx => (hL x hx).le) _ hmmem
-  have hSpos : 0 < S := hSa ▸ ha
+  have hmge : (1 - ε) * (p.roots.map fun r => -r⁻¹).sum ≤ -s⁻¹ :=
+    RootAmplitude.mul_sum_le_max_of_sq_sum_ge hL hmmem hmmax hQeq.ge
+  have hmle : -s⁻¹ ≤ (p.roots.map fun r => -r⁻¹).sum :=
+    Multiset.single_le_sum (fun x hx => (hL x hx).le) _ hmmem
   have hcount : p.roots.count s = 1 := by
     by_contra hne
-    have hpos : 0 < p.roots.count s := Multiset.count_pos.2 hsmem
     obtain ⟨t, ht⟩ := Multiset.exists_cons_of_mem hsmem
     have hst : s ∈ t := by
       rw [← Multiset.count_pos]
       have := Multiset.count_cons_self s t
       rw [← ht] at this
+      have hpos : 0 < p.roots.count s := Multiset.count_pos.2 hsmem
       lia
     obtain ⟨u, hu⟩ := Multiset.exists_cons_of_mem hst
-    have hsum : S = -s⁻¹ + (-s⁻¹ + (u.map fun r => -r⁻¹).sum) := by
-      rw [hSdef, ht, hu]
+    have hsum : (p.roots.map fun r => -r⁻¹).sum = -s⁻¹ + (-s⁻¹ + (u.map fun r => -r⁻¹).sum) := by
+      rw [ht, hu]
       simp
     have hu0 : 0 ≤ (u.map fun r => -r⁻¹).sum := by
       refine Multiset.sum_nonneg fun x hx => ?_
@@ -390,13 +384,41 @@ theorem exists_largest_root_of_coeff_one_pos {p : ℝ[X]} (hp : IsPFPolynomial p
       rw [ht, hu]
       simp [hr]
     nlinarith
-  have hs0 : s ≠ 0 := hsneg.ne
+  rw [hSa] at hmge hmle
+  exact ⟨s, hsmem, hsmax, hcount, hmge, hmle⟩
+
+/-- **Bounds for `c₁ v`.**  If `-1 / s` lies between `(1 - ε) c₁` and `c₁` for a negative `s`,
+then `v = -s` satisfies `1 ≤ c₁ v ≤ 1 / (1 - ε)` and `|c₁ v - 1| ≤ ε / (1 - ε)`. -/
+private theorem coeff_one_mul_neg_bounds {c s ε : ℝ} (hsneg : s < 0) (hε1 : 0 < 1 - ε)
+    (hmge : (1 - ε) * c ≤ -s⁻¹) (hmle : -s⁻¹ ≤ c) :
+    1 ≤ c * -s ∧ c * -s ≤ 1 / (1 - ε) ∧ |c * -s - 1| ≤ ε / (1 - ε) := by
+  have hs0 := hsneg.ne
   have hvm : (-s) * (-s⁻¹) = 1 := by field_simp
-  have hε1 : 0 < 1 - ε := by linarith
-  have hav1 : 1 ≤ p.coeff 1 * -s := by nlinarith
-  have hav2 : p.coeff 1 * -s ≤ 1 / (1 - ε) := by
+  have hpos := (neg_pos.2 hsneg).le
+  have hav1 : 1 ≤ c * -s := by nlinarith [mul_le_mul_of_nonneg_left hmle hpos]
+  have hav2 : c * -s ≤ 1 / (1 - ε) := by
     rw [le_div_iff₀ hε1]
-    nlinarith [mul_le_mul_of_nonneg_left hmge (neg_pos.2 hsneg).le]
+    nlinarith [mul_le_mul_of_nonneg_left hmge hpos]
+  refine ⟨hav1, hav2, ?_⟩
+  rw [abs_of_nonneg (sub_nonneg.2 hav1)]
+  have : ε / (1 - ε) = 1 / (1 - ε) - 1 := by field_simp; ring
+  linarith
+
+/-- **Derivative amplitude at the largest root.**  If `s` is the largest, simple root of `p`
+and `c₀ = 1`, `2 c₂ = ε c₁²` with `ε < 1/2`, then `-s p'(s)` lies in
+`[(1 - 2 ε) / (1 - ε), 1]`. -/
+private theorem neg_mul_derivative_eval_bounds {p : ℝ[X]} (hp : IsPFPolynomial p)
+    (h0 : p.coeff 0 = 1) {ε : ℝ} (hε : 2 * p.coeff 2 = ε * p.coeff 1 ^ 2) (hε2 : ε < 1 / 2)
+    {s : ℝ} (hsmem : s ∈ p.roots) (hsmax : ∀ r ∈ p.roots, r ≤ s) (hcount : p.roots.count s = 1) :
+    (1 - 2 * ε) / (1 - ε) ≤ -s * p.derivative.eval s ∧ -s * p.derivative.eval s ≤ 1 := by
+  have h0' : 0 < p.coeff 0 := by rw [h0]; exact one_pos
+  have hs := hp.splits
+  have hneg := roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne hp.hasNonnegCoeffs h0'.ne'
+  have hzero : p.eval 0 = 1 := by rw [← coeff_zero_eq_eval_zero, h0]
+  have hsneg := hneg s hsmem
+  have hQeq : ((p.roots.map fun r => -r⁻¹).map fun x => x ^ 2).sum =
+      (1 - ε) * (p.roots.map fun r => -r⁻¹).sum ^ 2 := by
+    rw [sum_sq_neg_inv_roots_eq hp h0 hε, sum_neg_inv_roots_eq hp h0]
   have hfac : ∀ x ∈ (p.roots.erase s).map (fun r : ℝ => 1 - s / r), 0 ≤ x ∧ x ≤ 1 := by
     intro x hx
     obtain ⟨r, hr, rfl⟩ := Multiset.mem_map.1 hx
@@ -410,9 +432,7 @@ theorem exists_largest_root_of_coeff_one_pos {p : ℝ[X]} (hp : IsPFPolynomial p
     (by rw [hzero]; exact one_ne_zero)
   rw [hzero, div_one] at hder
   set P := ((p.roots.erase s).map fun r : ℝ => 1 - s / r).prod with hP
-  have hvP : -s * p.derivative.eval (-(-s)) = P := by
-    rw [neg_neg]
-    linarith
+  have hvP : -s * p.derivative.eval s = P := by linarith
   have hP0 : 0 ≤ P := Multiset.prod_nonneg fun x hx => (hfac x hx).1
   have hP1 : P ≤ 1 := by
     have := Multiset.prod_map_le_prod_map₀ (s := p.roots.erase s) (fun r : ℝ => 1 - s / r)
@@ -420,17 +440,33 @@ theorem exists_largest_root_of_coeff_one_pos {p : ℝ[X]} (hp : IsPFPolynomial p
       (fun r hr => (hfac _ (Multiset.mem_map_of_mem _ hr)).2)
     simpa using this
   have hamp := RootAmplitude.amplitude_at_smallest_root_of_sq_ratio hs
-    (by rw [hzero]; exact one_pos) hneg hc (by rw [← hQdef, hQeq]) hsmem hcount
+    (by rw [hzero]; exact one_pos) hneg (show 1 / 2 < 1 - ε by linarith) hQeq.ge hsmem hcount
     fun r hr => neg_le_neg (hsmax r hr)
   rw [hzero, show s * p.derivative.eval s = -P by linarith, abs_neg, abs_of_nonneg hP0,
     show 2 * (1 - ε) - 1 = 1 - 2 * ε by ring, one_mul] at hamp
-  refine ⟨-s, neg_pos.2 hsneg, by rwa [neg_neg], by rwa [neg_neg],
-    fun r hr => by rw [neg_neg]; exact hsmax r hr, hav1, hav2, ?_, ?_, ?_⟩
-  · rw [abs_of_nonneg (sub_nonneg.2 hav1)]
-    have : ε / (1 - ε) = 1 / (1 - ε) - 1 := by field_simp; ring
-    linarith
-  · rwa [hvP]
-  · rwa [hvP]
+  rw [hvP]
+  exact ⟨hamp, hP1⟩
+
+/-- **Largest root from the three lowest coefficients.**  Let `p` be a PF polynomial with
+`p(0) = 1`, `a = [x] p > 0`, and `2 [x²] p = ε a²` with `ε < 1/2`.  Then `p` has a largest root
+`-v`, which is simple, and `1 ≤ a v ≤ 1 / (1 - ε)`, `|a v - 1| ≤ ε / (1 - ε)`, and
+`(1 - 2 ε) / (1 - ε) ≤ v p'(-v) ≤ 1`. -/
+theorem exists_largest_root_of_coeff_one_pos {p : ℝ[X]} (hp : IsPFPolynomial p)
+    (h0 : p.coeff 0 = 1) (ha : 0 < p.coeff 1) {ε : ℝ}
+    (hε : 2 * p.coeff 2 = ε * p.coeff 1 ^ 2) (hε2 : ε < 1 / 2) :
+    ∃ v : ℝ, 0 < v ∧ -v ∈ p.roots ∧ p.roots.count (-v) = 1 ∧ (∀ r ∈ p.roots, r ≤ -v) ∧
+      1 ≤ p.coeff 1 * v ∧ p.coeff 1 * v ≤ 1 / (1 - ε) ∧
+      |p.coeff 1 * v - 1| ≤ ε / (1 - ε) ∧
+      (1 - 2 * ε) / (1 - ε) ≤ v * p.derivative.eval (-v) ∧ v * p.derivative.eval (-v) ≤ 1 := by
+  obtain ⟨s, hsmem, hsmax, hcount, hmge, hmle⟩ :=
+    exists_largest_root_count_eq_one hp h0 ha hε hε2
+  have hsneg := roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne hp.hasNonnegCoeffs
+    (by rw [h0]; exact one_ne_zero) s hsmem
+  obtain ⟨hav1, hav2, hav3⟩ := coeff_one_mul_neg_bounds hsneg (by linarith) hmge hmle
+  obtain ⟨hlo, hhi⟩ := neg_mul_derivative_eval_bounds hp h0 hε hε2 hsmem hsmax hcount
+  exact ⟨-s, neg_pos.2 hsneg, by rwa [neg_neg], by rwa [neg_neg],
+    fun r hr => by rw [neg_neg]; exact hsmax r hr, hav1, hav2, hav3, by rwa [neg_neg],
+    by rwa [neg_neg]⟩
 
 /-- **Largest root, simplified bounds.**  Under the hypotheses of
 `exists_largest_root_of_coeff_one_pos`, the largest root `-v` is simple, `1 / a ≤ v < 2 / a`,

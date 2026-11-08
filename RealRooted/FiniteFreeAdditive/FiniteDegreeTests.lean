@@ -205,8 +205,7 @@ theorem preservesPFUpTo_iff_finiteDifferentialTest
         hF hp.hasNonnegCoeffs hpdeg
     · rw [← finiteFreeAdditiveConvolution_finiteDifferentialTest N h p hpdeg]
       exact Or.inr <| splits_finiteFreeAdditiveConvolution N
-        (hF.eq_zero_or_splits.elim (fun hz ↦ hz ▸ Splits.zero) id)
-        (hp.eq_zero_or_splits.elim (fun hz ↦ hz ▸ Splits.zero) id)
+        hF.splits hp.splits
         (natDegree_finiteDifferentialTest_le N h) hpdeg
 
 /-- Ordered preservation through degree `N` forces the two monomial-test

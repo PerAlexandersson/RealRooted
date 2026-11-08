@@ -283,8 +283,7 @@ private theorem risingFactorialTransform_splits_of_nonposRoots
         ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hpsplits).mpr
           ⟨hlcpos, hproots⟩).1
       exact (generalizedRisingFactorialPreservesPF hh
-        (IsPFPolynomial.of_realRooted_nonneg hpnn hpsplits)).eq_zero_or_splits.elim
-          (fun hp0 => by simp [hp0]) id
+        (IsPFPolynomial.of_realRooted_nonneg hpnn hpsplits)).splits
 
 private theorem newtonBasisTransform_eq_rising_comp
     {c : ℕ → ℝ} {h : ℝ} (hc : ∀ j, c j = c 0 + (j : ℝ) * h)
