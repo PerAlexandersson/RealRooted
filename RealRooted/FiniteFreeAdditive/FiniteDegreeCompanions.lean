@@ -8,6 +8,7 @@ import RealRooted.GarloffWagner.Theorem12
 import RealRooted.GarloffWagner.KreinExpansion
 import RealRooted.Interlacing.QuadraticPFPreservers
 import RealRooted.LinearPowerFamily
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.ElementarySymmetric
 import RealRooted.OperatorMatrix.Directed
 
@@ -278,12 +279,6 @@ private theorem shiftMultiset_cons {r : ℕ} (a : ℝ) (s : Fin r → ℝ) :
     shiftMultiset (Fin.cons a s) = a ::ₘ shiftMultiset s := by
   simp [shiftMultiset, List.ofFn_succ]
 
-private theorem coeff_one_add_C_mul_X_mul (a : ℝ) (q : ℝ[X]) (j : ℕ) :
-    ((1 + C a * X) * q).coeff (j + 1) =
-      q.coeff (j + 1) + a * q.coeff j := by
-  rw [show (1 + C a * X) * q = q + C a * (X * q) by ring]
-  simp [Polynomial.coeff_add, Polynomial.coeff_C_mul]
-
 /-- The coefficient of the multishift Jensen polynomial is the corresponding
 elementary symmetric function of the shifts. -/
 theorem coeff_multishiftJensenPolynomial {r : ℕ} (s : Fin r → ℝ) (j : ℕ) :
@@ -314,7 +309,7 @@ theorem coeff_multishiftJensenPolynomial {r : ℕ} (s : Fin r → ℝ) (j : ℕ)
           Multiset.esymm_zero]
         simpa [Polynomial.coeff_zero_eq_eval_zero] using
           ih (fun i : Fin r ↦ s i.succ) 0
-      · rw [coeff_one_add_C_mul_X_mul, ih, ih, Multiset.esymm_cons]
+      · rw [coeff_one_add_C_mul_X_mul_succ, ih, ih, Multiset.esymm_cons]
 
 /-- The multishift symbol has the advertised elementary-symmetric coefficients. -/
 theorem coeff_multishiftDifferentialSymbol

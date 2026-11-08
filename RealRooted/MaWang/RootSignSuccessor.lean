@@ -25,17 +25,15 @@ noncomputable section
 
 namespace RealRooted
 
-private lemma eval_derivative_ne_zero_of_nodup
-    {p : ℝ[X]} (hp : p ≠ 0) (hnodup : p.roots.Nodup)
-    {r : ℝ} (hr : p.IsRoot r) :
-    p.derivative.eval r ≠ 0 := by
-  intro hder
-  have hle : p.rootMultiplicity r ≤ 1 := by
-    rw [← count_roots]
-    exact Multiset.nodup_iff_count_le_one.mp hnodup r
-  have hlt : 1 < p.rootMultiplicity r :=
-    (one_lt_rootMultiplicity_iff_isRoot hp).mpr ⟨hr, hder⟩
-  lia
+private lemma positive_coeffs_of_splits_of_pos_of_roots_neg
+    {p : ℝ[X]} (hp : p.Splits) (hp_pos : HasPosLeadingCoeff p)
+    (hroots : ∀ r ∈ p.roots, r < 0) :
+    ∀ k ≤ p.natDegree, 0 < p.coeff k := by
+  intro k hk
+  have h := leadingCoeff_mul_coeff_pos_of_roots_neg hp hp_pos.ne_zero hroots hk
+  rcases mul_pos_iff.mp h with ⟨_, hk_pos⟩ | ⟨hp_neg, _⟩
+  · exact hk_pos
+  · exact (not_lt_of_ge hp_pos.le hp_neg).elim
 
 private lemma hasNonnegCoeffs_of_splits_of_pos_of_roots_neg
     {p : ℝ[X]} (hp : p.Splits) (hp_pos : HasPosLeadingCoeff p)
@@ -43,10 +41,7 @@ private lemma hasNonnegCoeffs_of_splits_of_pos_of_roots_neg
     HasNonnegCoeffs p := by
   intro k
   by_cases hk : k ≤ p.natDegree
-  · have h := leadingCoeff_mul_coeff_pos_of_roots_neg hp hp_pos.ne_zero hroots hk
-    rcases mul_pos_iff.mp h with ⟨_, hk_pos⟩ | ⟨hp_neg, _⟩
-    · exact hk_pos.le
-    · exact (not_lt_of_ge hp_pos.le hp_neg).elim
+  · exact (positive_coeffs_of_splits_of_pos_of_roots_neg hp hp_pos hroots k hk).le
   · rw [coeff_eq_zero_of_natDegree_lt (by lia)]
 
 private lemma roots_eq_of_strict_root_list
@@ -160,15 +155,13 @@ private lemma exists_negative_root_list_of_endpoint_sign
       subst r
       exact hu_zero
 
-private lemma positive_coeffs_of_splits_of_pos_of_roots_neg
-    {p : ℝ[X]} (hp : p.Splits) (hp_pos : HasPosLeadingCoeff p)
-    (hroots : ∀ r ∈ p.roots, r < 0) :
-    ∀ k ≤ p.natDegree, 0 < p.coeff k := by
-  intro k hk
-  have h := leadingCoeff_mul_coeff_pos_of_roots_neg hp hp_pos.ne_zero hroots hk
-  rcases mul_pos_iff.mp h with ⟨_, hk_pos⟩ | ⟨hp_neg, _⟩
-  · exact hk_pos
-  · exact (not_lt_of_ge hp_pos.le hp_neg).elim
+private lemma natDegree_le_of_coeff_succ_eq_zero
+    {F : ℝ[X]} {m : ℕ} (hF : F ≠ 0) (hF_degree : F.natDegree ≤ m + 1)
+    (htop : F.coeff (m + 1) = 0) :
+    F.natDegree ≤ m := by
+  by_contra hle
+  have heq : F.natDegree = m + 1 := by lia
+  exact leadingCoeff_ne_zero.mpr hF (by simpa [leadingCoeff, heq] using htop)
 
 /-- A positive prospective coefficient forces the successor-degree branch of
 the root-sign endpoint criterion. -/
@@ -222,13 +215,7 @@ theorem rootSignSameDegree_of_coeff_eq_zero
     intro hzero
     subst F
     simp at hF_zero
-  have hF_le : F.natDegree ≤ m := by
-    by_contra hle
-    have heq : F.natDegree = m + 1 := by lia
-    have : F.coeff (m + 1) ≠ 0 := by
-      rw [← heq]
-      exact leadingCoeff_ne_zero.mpr hF_ne
-    exact this htop
+  have hF_le : F.natDegree ≤ m := natDegree_le_of_coeff_succ_eq_zero hF_ne hF_degree htop
   obtain ⟨rs, hrs_len, hrs_sorted, hrs_root, hrs_neg⟩ :=
     exists_negative_root_list_of_endpoint_sign hf_splits hf_pos hf_degree hf_nodup
       hf_neg hF_zero hsign
@@ -316,6 +303,121 @@ theorem rootSignSuccessor_of_coeff_neg
     HasSimpleRoots.of_roots_nodup hF_ne hF_nodup, rs, u, hrs_len, hrs_sorted,
     hrs_neg, hu_pos, hroots_eq.symm⟩
 
+/-- Subtracting a small positive multiple of the derivative from `F` makes the weak critical
+signs strict while keeping the value at zero positive. -/
+private lemma exists_pos_sub_derivative_sign
+    {f F : ℝ[X]} (hF_zero : 0 < F.eval 0) (hd : 0 ≤ f.derivative.eval 0)
+    (hder_ne : ∀ r, f.IsRoot r → f.derivative.eval r ≠ 0)
+    (hsign : ∀ r, f.IsRoot r → F.eval r * f.derivative.eval r ≤ 0) :
+    ∃ eps : ℝ, 0 < eps ∧ 0 < (F - C eps * f.derivative).eval 0 ∧
+      ∀ r, f.IsRoot r → (F - C eps * f.derivative).eval r * f.derivative.eval r < 0 := by
+  let d := f.derivative.eval 0
+  let eps := F.eval 0 / (2 * (d + 1))
+  have hden : 0 < 2 * (d + 1) := by positivity
+  have heps : 0 < eps := div_pos hF_zero hden
+  have hepsd : eps * d < F.eval 0 := by
+    dsimp only [eps]
+    rw [div_mul_eq_mul_div, div_lt_iff₀ hden]
+    nlinarith
+  refine ⟨eps, heps, ?_, fun r hr ↦ ?_⟩
+  · simp only [eval_sub, eval_mul, eval_C]
+    linarith
+  · have hs := hsign r hr
+    have hd_ne := hder_ne r hr
+    simp only [eval_sub, eval_mul, eval_C]
+    nlinarith [sq_pos_iff.mpr hd_ne]
+
+/-- The vanishing-top-coefficient branch of `rootSign_of_coeff_nonneg`, under weak critical
+signs: perturb `F` by a small multiple of `f'` to reduce to
+`rootSignSameDegree_of_coeff_eq_zero`. -/
+private lemma rootSign_of_coeff_eq_zero_of_nonpos_sign
+    {f F : ℝ[X]} {m : ℕ}
+    (hf_splits : f.Splits) (hf_pos : HasPosLeadingCoeff f)
+    (hf_degree : f.natDegree = m) (hf_nodup : f.roots.Nodup)
+    (hf_neg : ∀ r ∈ f.roots, r < 0) (hF_degree : F.natDegree ≤ m + 1)
+    (hF_zero : 0 < F.eval 0)
+    (hsign : ∀ r, f.IsRoot r → F.eval r * f.derivative.eval r ≤ 0)
+    (htop_zero : F.coeff (m + 1) = 0) :
+    F.natDegree = m ∧ HasPosLeadingCoeff F ∧ StrictInterl f F ∧ F.Splits ∧
+      (∀ r ∈ F.roots, r < 0) ∧ ∀ k ≤ F.natDegree, 0 < F.coeff k := by
+  have hsimple := HasSimpleRoots.of_roots_nodup hf_pos.ne_zero hf_nodup
+  have hF_ne : F ≠ 0 := by
+    rintro rfl
+    simp at hF_zero
+  have hf_nonneg :=
+    hasNonnegCoeffs_of_splits_of_pos_of_roots_neg hf_splits hf_pos hf_neg
+  have hfder_nonneg := hf_nonneg.derivative
+  obtain ⟨eps, heps, hG_zero, hG_sign⟩ := exists_pos_sub_derivative_sign hF_zero
+    (hfder_nonneg.eval_nonneg (x := 0) (le_refl 0))
+    (fun _ hr ↦ hsimple.eval_derivative_ne_zero hr) hsign
+  set G := F - C eps * f.derivative with hG
+  have hG_degree : G.natDegree ≤ m + 1 := by
+    apply (natDegree_sub_le _ _).trans
+    apply max_le hF_degree
+    exact (natDegree_C_mul_le eps f.derivative).trans <|
+      (natDegree_derivative_le f).trans (by lia)
+  have hG_top : G.coeff (m + 1) = 0 := by
+    have hcoeff : f.coeff (m + 2) = 0 :=
+      coeff_eq_zero_of_natDegree_lt (by rw [hf_degree]; lia)
+    simp [G, coeff_sub, coeff_C_mul, coeff_derivative, htop_zero, hcoeff]
+  obtain ⟨hG_deg, hG_pos, _, hG_splits, _, hG_neg, hG_coeff⟩ :=
+    rootSignSameDegree_of_coeff_eq_zero hf_splits hf_pos hf_degree hf_nodup
+      hf_neg hG_degree hG_zero hG_sign hG_top
+  have hder_coeff : (C eps * f.derivative).coeff m = 0 := by
+    have hcoeff : f.coeff (m + 1) = 0 :=
+      coeff_eq_zero_of_natDegree_lt (by rw [hf_degree]; lia)
+    simp [coeff_C_mul, coeff_derivative, hcoeff]
+  have hF_coeff : 0 < F.coeff m := by
+    have h := hG_coeff m (by rw [hG_deg])
+    simpa [G, coeff_sub, hder_coeff] using h
+  have hF_deg : F.natDegree = m :=
+    natDegree_eq_of_le_of_coeff_ne_zero
+      (natDegree_le_of_coeff_succ_eq_zero hF_ne hF_degree htop_zero) hF_coeff.ne'
+  have hF_pos : HasPosLeadingCoeff F := by
+    simpa [HasPosLeadingCoeff, leadingCoeff, hF_deg] using hF_coeff
+  have hstrict : StrictInterl f F :=
+    strictInterl_of_eval_mul_derivative_nonpos hf_pos hf_splits hf_nodup hF_pos
+      (by lia) (by lia) hsign
+  have hF_nonneg : HasNonnegCoeffs F := by
+    have heq : F = G + C eps * f.derivative := by simp [G]
+    rw [heq]
+    exact (hasNonnegCoeffs_of_splits_of_pos_of_roots_neg hG_splits hG_pos hG_neg).add
+      (hasNonnegCoeffs_C_mul heps.le hfder_nonneg)
+  have hF_neg : ∀ r ∈ F.roots, r < 0 := by
+    intro r hr
+    refine lt_of_le_of_ne (roots_nonpos_of_hasNonnegCoeffs hF_nonneg r hr) ?_
+    rintro rfl
+    exact hF_zero.ne' ((mem_roots hF_pos.ne_zero).mp hr).eq_zero
+  exact ⟨hF_deg, hF_pos, hstrict, hstrict.2.1.2, hF_neg,
+    positive_coeffs_of_splits_of_pos_of_roots_neg hstrict.2.1.2 hF_pos hF_neg⟩
+
+/-- The positive-top-coefficient branch of `rootSign_of_coeff_nonneg`, under weak critical
+signs. -/
+private lemma rootSign_of_coeff_pos_of_nonpos_sign
+    {f F : ℝ[X]} {m : ℕ}
+    (hf_splits : f.Splits) (hf_pos : HasPosLeadingCoeff f)
+    (hf_nodup : f.roots.Nodup)
+    (hf_neg : ∀ r ∈ f.roots, r < 0) (hF_degree : F.natDegree ≤ m + 1)
+    (hF_zero : 0 < F.eval 0) (hf_degree : f.natDegree = m)
+    (hsign : ∀ r, f.IsRoot r → F.eval r * f.derivative.eval r ≤ 0)
+    (htop_pos : 0 < F.coeff (m + 1)) :
+    F.natDegree = m + 1 ∧ HasPosLeadingCoeff F ∧ StrictInterl f F ∧ F.Splits ∧
+      (∀ r ∈ F.roots, r < 0) ∧ ∀ k ≤ F.natDegree, 0 < F.coeff k := by
+  have hF_deg : F.natDegree = m + 1 :=
+    natDegree_eq_of_le_of_coeff_ne_zero hF_degree htop_pos.ne'
+  have hF_pos : HasPosLeadingCoeff F := by
+    simpa [HasPosLeadingCoeff, leadingCoeff, hF_deg] using htop_pos
+  have hstrict : StrictInterl f F :=
+    strictInterl_of_eval_mul_derivative_nonpos hf_pos hf_splits hf_nodup hF_pos
+      (by lia) (by lia) hsign
+  have hinter : Interlaces f F := hstrict.toInterlaces (by lia)
+  have hF_neg : ∀ r ∈ F.roots, r < 0 := fun r hr ↦
+    roots_neg_of_interlaces_of_eval_zero_pos hinter hF_pos hF_zero
+      (fun r hr ↦ hf_neg r ((mem_roots hf_pos.ne_zero).mpr hr)) r
+      ((mem_roots hF_pos.ne_zero).mp hr)
+  exact ⟨hF_deg, hF_pos, hstrict, hstrict.2.1.2, hF_neg,
+    positive_coeffs_of_splits_of_pos_of_roots_neg hstrict.2.1.2 hF_pos hF_neg⟩
+
 /-- Weak critical signs and a nonnegative prospective top coefficient force
 the equal- or successor-degree negative-root branch. Repeated roots of the
 output are allowed. -/
@@ -331,101 +433,36 @@ theorem rootSign_of_coeff_nonneg
       HasPosLeadingCoeff F ∧ StrictInterl f F ∧ F.Splits ∧
       (∀ r ∈ F.roots, r < 0) ∧ ∀ k ≤ F.natDegree, 0 < F.coeff k := by
   by_cases htop_zero : F.coeff (m + 1) = 0
-  · have hf_nonneg :=
-      hasNonnegCoeffs_of_splits_of_pos_of_roots_neg hf_splits hf_pos hf_neg
-    have hfder_nonneg := hf_nonneg.derivative
-    let d := f.derivative.eval 0
-    have hd : 0 ≤ d := hfder_nonneg.eval_nonneg (x := 0) (le_refl 0)
-    let eps := F.eval 0 / (2 * (d + 1))
-    have hden : 0 < 2 * (d + 1) := by positivity
-    have heps : 0 < eps := div_pos hF_zero hden
-    have hepsd : eps * d < F.eval 0 := by
-      dsimp only [eps]
-      rw [div_mul_eq_mul_div, div_lt_iff₀ hden]
-      nlinarith
-    let G := F - C eps * f.derivative
-    have hG_zero : 0 < G.eval 0 := by
-      simp only [G, eval_sub, eval_mul, eval_C]
-      linarith
-    have hG_degree : G.natDegree ≤ m + 1 := by
-      apply (natDegree_sub_le _ _).trans
-      apply max_le hF_degree
-      exact (natDegree_C_mul_le eps f.derivative).trans <|
-        (natDegree_derivative_le f).trans (by lia)
-    have hG_top : G.coeff (m + 1) = 0 := by
-      have hcoeff : f.coeff (m + 2) = 0 :=
-        coeff_eq_zero_of_natDegree_lt (by rw [hf_degree]; lia)
-      simp [G, coeff_sub, coeff_C_mul, coeff_derivative, htop_zero, hcoeff]
-    have hder_ne : ∀ r, f.IsRoot r → f.derivative.eval r ≠ 0 :=
-      fun _ hr ↦ eval_derivative_ne_zero_of_nodup hf_pos.ne_zero hf_nodup hr
-    have hG_sign : ∀ r, f.IsRoot r → G.eval r * f.derivative.eval r < 0 := by
-      intro r hr
-      have hs := hsign r hr
-      have hd_ne := hder_ne r hr
-      simp only [G, eval_sub, eval_mul, eval_C]
-      nlinarith [sq_pos_iff.mpr hd_ne]
-    obtain ⟨hG_deg, hG_pos, _, hG_splits, _, hG_neg, hG_coeff⟩ :=
+  · obtain ⟨hdeg, h⟩ := rootSign_of_coeff_eq_zero_of_nonpos_sign hf_splits hf_pos hf_degree
+      hf_nodup hf_neg hF_degree hF_zero hsign htop_zero
+    exact ⟨by simp [htop_zero, hdeg], h⟩
+  · obtain ⟨hdeg, h⟩ := rootSign_of_coeff_pos_of_nonpos_sign hf_splits hf_pos hf_nodup hf_neg
+      hF_degree hF_zero hf_degree hsign (lt_of_le_of_ne htop (Ne.symm htop_zero))
+    exact ⟨by simp [htop_zero, hdeg], h⟩
+
+/-- Strict critical signs and a nonnegative prospective top coefficient force the equal- or
+successor-degree branch of the endpoint criterion, with simple negative roots. -/
+private lemma rootSign_of_strict_sign_of_coeff_nonneg
+    {f F : ℝ[X]} {m : ℕ}
+    (hf_splits : f.Splits) (hf_pos : HasPosLeadingCoeff f)
+    (hf_degree : f.natDegree = m) (hf_nodup : f.roots.Nodup)
+    (hf_neg : ∀ r ∈ f.roots, r < 0) (hF_degree : F.natDegree ≤ m + 1)
+    (hF_zero : 0 < F.eval 0)
+    (hsign : ∀ r, f.IsRoot r → F.eval r * f.derivative.eval r < 0)
+    (htop : 0 ≤ F.coeff (m + 1)) :
+    F.natDegree = (if F.coeff (m + 1) = 0 then m else m + 1) ∧
+      HasPosLeadingCoeff F ∧ StrictInterl f F ∧ F.Splits ∧
+      HasSimpleRoots F ∧ (∀ r ∈ F.roots, r < 0) ∧
+      ∀ k ≤ F.natDegree, 0 < F.coeff k := by
+  by_cases htop_zero : F.coeff (m + 1) = 0
+  · obtain ⟨hdeg, h⟩ :=
       rootSignSameDegree_of_coeff_eq_zero hf_splits hf_pos hf_degree hf_nodup
-        hf_neg hG_degree hG_zero hG_sign hG_top
-    have hder_coeff : (C eps * f.derivative).coeff m = 0 := by
-      have hcoeff : f.coeff (m + 1) = 0 :=
-        coeff_eq_zero_of_natDegree_lt (by rw [hf_degree]; lia)
-      simp [coeff_C_mul, coeff_derivative, hcoeff]
-    have hF_coeff : 0 < F.coeff m := by
-      have h := hG_coeff m (by rw [hG_deg])
-      simpa [G, coeff_sub, hder_coeff] using h
-    have hF_le : F.natDegree ≤ m := by
-      by_contra hle
-      have heq : F.natDegree = m + 1 := by lia
-      have hF_ne : F ≠ 0 := by
-        intro hzero
-        subst F
-        simp at hF_zero
-      have hlead_zero : F.leadingCoeff = 0 := by
-        simpa [leadingCoeff, heq] using htop_zero
-      exact (leadingCoeff_ne_zero.mpr hF_ne) hlead_zero
-    have hF_deg : F.natDegree = m :=
-      natDegree_eq_of_le_of_coeff_ne_zero hF_le hF_coeff.ne'
-    have hF_pos : HasPosLeadingCoeff F := by
-      simpa [HasPosLeadingCoeff, leadingCoeff, hF_deg] using hF_coeff
-    have hstrict : StrictInterl f F :=
-      strictInterl_of_eval_mul_derivative_nonpos hf_pos hf_splits hf_nodup hF_pos
-        (by lia) (by lia) hsign
-    have hF_splits : F.Splits := hstrict.2.1.2
-    have hG_nonneg :=
-      hasNonnegCoeffs_of_splits_of_pos_of_roots_neg hG_splits hG_pos hG_neg
-    have hF_nonneg : HasNonnegCoeffs F := by
-      have heq : F = G + C eps * f.derivative := by simp [G]
-      rw [heq]
-      exact hG_nonneg.add (hasNonnegCoeffs_C_mul heps.le hfder_nonneg)
-    have hF_neg : ∀ r ∈ F.roots, r < 0 := by
-      intro r hr
-      have hr_le := roots_nonpos_of_hasNonnegCoeffs hF_nonneg r hr
-      have hr_ne : r ≠ 0 := by
-        intro hr_zero
-        subst r
-        have := (mem_roots hF_pos.ne_zero).mp hr
-        exact hF_zero.ne' this.eq_zero
-      exact lt_of_le_of_ne hr_le hr_ne
-    refine ⟨by simp [htop_zero, hF_deg], hF_pos, hstrict, hF_splits, hF_neg, ?_⟩
-    exact positive_coeffs_of_splits_of_pos_of_roots_neg hF_splits hF_pos hF_neg
-  · have htop_pos : 0 < F.coeff (m + 1) := lt_of_le_of_ne htop (Ne.symm htop_zero)
-    have hF_deg : F.natDegree = m + 1 :=
-      natDegree_eq_of_le_of_coeff_ne_zero hF_degree htop_pos.ne'
-    have hF_pos : HasPosLeadingCoeff F := by
-      simpa [HasPosLeadingCoeff, leadingCoeff, hF_deg] using htop_pos
-    have hstrict : StrictInterl f F :=
-      strictInterl_of_eval_mul_derivative_nonpos hf_pos hf_splits hf_nodup hF_pos
-        (by lia) (by lia) hsign
-    have hinter : Interlaces f F := hstrict.toInterlaces (by lia)
-    have hF_splits : F.Splits := hstrict.2.1.2
-    have hF_neg_root : ∀ r, F.IsRoot r → r < 0 :=
-      roots_neg_of_interlaces_of_eval_zero_pos hinter hF_pos hF_zero fun r hr ↦
-        hf_neg r ((mem_roots hf_pos.ne_zero).mpr hr)
-    have hF_neg : ∀ r ∈ F.roots, r < 0 := fun r hr ↦
-      hF_neg_root r ((mem_roots hF_pos.ne_zero).mp hr)
-    refine ⟨by simp [htop_zero, hF_deg], hF_pos, hstrict, hF_splits, hF_neg, ?_⟩
-    exact positive_coeffs_of_splits_of_pos_of_roots_neg hF_splits hF_pos hF_neg
+        hf_neg hF_degree hF_zero hsign htop_zero
+    exact ⟨by simp [htop_zero, hdeg], h⟩
+  · obtain ⟨hdeg, h⟩ :=
+      rootSignSuccessor_of_coeff_pos hf_splits hf_pos hf_degree hf_nodup hf_neg
+        hF_degree hF_zero hsign (lt_of_le_of_ne htop (Ne.symm htop_zero))
+    exact ⟨by simp [htop_zero, hdeg], h⟩
 
 /-- A derivative term with a strictly negative multiplier, together with
 nonpositive multipliers of preceding polynomials, supplies the strict critical
@@ -447,8 +484,9 @@ theorem rootSign_derivativeLag
       HasSimpleRoots F ∧ (∀ r ∈ F.roots, r < 0) ∧
       ∀ k ≤ F.natDegree, 0 < F.coeff k := by
   classical
+  have hsimple := HasSimpleRoots.of_roots_nodup hf_pos.ne_zero hf_nodup
   have hder_ne : ∀ r, f.IsRoot r → f.derivative.eval r ≠ 0 :=
-    fun _ hr ↦ eval_derivative_ne_zero_of_nodup hf_pos.ne_zero hf_nodup hr
+    fun _ hr ↦ hsimple.eval_derivative_ne_zero hr
   have hsign : ∀ r, f.IsRoot r → F.eval r * f.derivative.eval r < 0 := by
     intro r hr
     have hv_term : v.eval r * (f.derivative.eval r) ^ 2 < 0 :=
@@ -469,16 +507,87 @@ theorem rootSign_derivativeLag
         simp only [eval_mul]
         ring
       _ < 0 := by linarith
-  by_cases htop_zero : F.coeff (m + 1) = 0
-  · obtain ⟨hdeg, hpos, hinterl, hsplits, hsimple, hneg, hcoeff⟩ :=
-      rootSignSameDegree_of_coeff_eq_zero hf_splits hf_pos hf_degree hf_nodup
-        hf_neg hF_degree hF_zero hsign htop_zero
-    exact ⟨by simp [htop_zero, hdeg], hpos, hinterl, hsplits, hsimple, hneg, hcoeff⟩
-  · have htop_pos : 0 < F.coeff (m + 1) := lt_of_le_of_ne htop (Ne.symm htop_zero)
-    obtain ⟨hdeg, hpos, hinterl, hsplits, hsimple, hneg, hcoeff⟩ :=
-      rootSignSuccessor_of_coeff_pos hf_splits hf_pos hf_degree hf_nodup hf_neg
-        hF_degree hF_zero hsign htop_pos
-    exact ⟨by simp [htop_zero, hdeg], hpos, hinterl, hsplits, hsimple, hneg, hcoeff⟩
+  exact rootSign_of_strict_sign_of_coeff_nonneg hf_splits hf_pos hf_degree hf_nodup hf_neg
+    hF_degree hF_zero hsign htop
+
+/-- The normalized one-lag polynomial
+`((a + b X) f + c X (1 - X) f' - d (1 - X) g) / (a - d)` of the endpoint criterion. -/
+private def normalizedLagPoly (f g : ℝ[X]) (a b c d : ℝ) : ℝ[X] :=
+  C (a - d)⁻¹ *
+    (((C c * X + C (-c) * X ^ 2) * f.derivative + (C a + C b * X) * f) +
+      (C d * X * g - C d * g))
+
+private lemma natDegree_normalizedLagPoly_le {f g : ℝ[X]} {m : ℕ} {a b c d : ℝ}
+    (hf_degree : f.natDegree = m) (hg_degree : g.natDegree ≤ m) :
+    (normalizedLagPoly f g a b c d).natDegree ≤ m + 1 := by
+  have hQ : ((C c * X + C (-c) * X ^ 2) * f.derivative + (C a + C b * X) * f).natDegree ≤
+      m + 1 := by
+    rw [← hf_degree]
+    simpa using Polynomial.natDegree_quadratic_derivative_add_linear_mul_add_le
+      f 0 c (-c) a b (Nat.zero_le _)
+  have hXg : (C d * X * g).natDegree ≤ m + 1 :=
+    natDegree_mul_le.trans <| by
+      have := Nat.add_le_add ((natDegree_C_mul_le d X).trans natDegree_X_le) hg_degree
+      lia
+  have hCg : (C d * g).natDegree ≤ m + 1 :=
+    (natDegree_C_mul_le d g).trans (hg_degree.trans (Nat.le_add_right m 1))
+  exact (natDegree_C_mul_le _ _).trans <| (natDegree_add_le _ _).trans <|
+    max_le hQ ((natDegree_sub_le _ _).trans (max_le hXg hCg))
+
+private lemma coeff_normalizedLagPoly_succ {f g : ℝ[X]} {m : ℕ} {a b c d : ℝ}
+    (hf_degree : f.natDegree = m) (hg_degree : g.natDegree ≤ m) :
+    (normalizedLagPoly f g a b c d).coeff (m + 1) =
+      (a - d)⁻¹ * ((b - c * (m : ℝ)) * f.leadingCoeff + d * g.coeff m) := by
+  have hQ_top : ((C c * X + C (-c) * X ^ 2) * f.derivative + (C a + C b * X) * f).coeff
+      (m + 1) = (b - c * (m : ℝ)) * f.leadingCoeff := by
+    rw [← hf_degree]
+    have h := Polynomial.coeff_quadratic_derivative_add_linear_mul_add_natDegree_succ
+      f 0 c (-c) a b (Nat.zero_le _)
+    convert h using 1 <;> ring_nf
+  have hg_above : g.coeff (m + 1) = 0 :=
+    coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hg_degree (Nat.lt_succ_self m))
+  have hXg_top : (C d * X * g).coeff (m + 1) = d * g.coeff m := by
+    rw [mul_assoc, coeff_C_mul, Polynomial.coeff_X_mul g m]
+  simp only [normalizedLagPoly, coeff_C_mul, coeff_add, hQ_top, coeff_sub, hXg_top,
+    hg_above, mul_zero, sub_zero]
+
+private lemma eval_zero_normalizedLagPoly_pos {f g : ℝ[X]} {a b c d : ℝ}
+    (hf_zero : f.eval 0 = 1) (hg_zero : g.eval 0 = 1) (ha : d < a) :
+    0 < (normalizedLagPoly f g a b c d).eval 0 := by
+  simp only [normalizedLagPoly, eval_mul, eval_C, eval_add, eval_sub, eval_X, eval_pow, hf_zero,
+    hg_zero]
+  norm_num
+  exact mul_pos (inv_pos.mpr (sub_pos.mpr ha)) (sub_pos.mpr ha)
+
+private lemma eval_mul_derivative_normalizedLagPoly_neg {f g : ℝ[X]} {a b c d : ℝ}
+    (hsimple : HasSimpleRoots f) (hf_pos : HasPosLeadingCoeff f)
+    (hf_neg : ∀ r ∈ f.roots, r < 0) (hgf : StrictInterl g f) (hg_pos : HasPosLeadingCoeff g)
+    (hc : 0 < c) (hd : 0 ≤ d) (ha : d < a) {r : ℝ} (hr : f.IsRoot r) :
+    (normalizedLagPoly f g a b c d).eval r * f.derivative.eval r < 0 := by
+  have hinv_pos : 0 < (a - d)⁻¹ := inv_pos.mpr (sub_pos.mpr ha)
+  have hr_neg := hf_neg r ((mem_roots hf_pos.ne_zero).mpr hr)
+  have hder_ne := hsimple.eval_derivative_ne_zero hr
+  have hgf_sign := hgf.eval_mul_eval_derivative_nonneg hg_pos hf_pos hr
+  simp only [normalizedLagPoly, eval_mul, eval_C, eval_add, eval_sub, eval_X, eval_pow,
+    hr.eq_zero, mul_zero, add_zero]
+  rw [mul_assoc]
+  apply mul_neg_of_pos_of_neg hinv_pos
+  calc
+    ((c * r + -c * r ^ 2) * f.derivative.eval r +
+        (d * r * g.eval r - d * g.eval r)) * f.derivative.eval r =
+        c * r * (1 - r) * (f.derivative.eval r) ^ 2 +
+          (-d * (1 - r)) * (g.eval r * f.derivative.eval r) := by ring
+    _ < 0 := by
+      have hder_term : c * r * (1 - r) * (f.derivative.eval r) ^ 2 < 0 := by
+        have hcr : c * r < 0 := mul_neg_of_pos_of_neg hc hr_neg
+        have hone : 0 < 1 - r := by linarith
+        exact mul_neg_of_neg_of_pos (mul_neg_of_neg_of_pos hcr hone)
+          (sq_pos_iff.mpr hder_ne)
+      have hlag_term : (-d * (1 - r)) * (g.eval r * f.derivative.eval r) ≤ 0 := by
+        have hone : 0 ≤ 1 - r := by linarith
+        exact mul_nonpos_of_nonpos_of_nonneg
+          (mul_nonpos_of_nonpos_of_nonneg (neg_nonpos.mpr hd) hone) hgf_sign
+      linarith
 
 /-- The normalized one-lag family from the endpoint criterion has the
 displayed nonnegative prospective coefficient and is simple negative-rooted.
@@ -501,113 +610,29 @@ theorem normalizedDerivativeLag_rootSign
       HasPosLeadingCoeff F ∧ StrictInterl f F ∧ F.Splits ∧
       HasSimpleRoots F ∧ (∀ r ∈ F.roots, r < 0) ∧
       ∀ k ≤ F.natDegree, 0 < F.coeff k := by
-  let Q := (C c * X + C (-c) * X ^ 2) * f.derivative +
-    (C a + C b * X) * f
-  let R := C d * X * g - C d * g
-  let H := Q + R
-  let F := C (a - d)⁻¹ * H
-  change F.coeff (m + 1) = _ ∧ F.natDegree = _ ∧ _
-  have hag_pos : 0 < a - d := sub_pos.mpr ha
-  have hinv_pos : 0 < (a - d)⁻¹ := inv_pos.mpr hag_pos
-  have hg_degree : g.natDegree ≤ m := by
-    rw [← hf_degree]
-    exact hgf.natDegree_le
+  intro F
+  change (normalizedLagPoly f g a b c d).coeff (m + 1) = _ ∧
+    (normalizedLagPoly f g a b c d).natDegree =
+      (if (normalizedLagPoly f g a b c d).coeff (m + 1) = 0 then m else m + 1) ∧ _
+  have hsimple := HasSimpleRoots.of_roots_nodup hf_pos.ne_zero hf_nodup
+  have hg_degree : g.natDegree ≤ m := hf_degree ▸ hgf.natDegree_le
   have hg_top_nonneg : 0 ≤ g.coeff m := by
     by_cases hgm : g.natDegree = m
     · simpa [leadingCoeff, hgm] using hg_pos.le
     · rw [coeff_eq_zero_of_natDegree_lt]
       exact lt_of_le_of_ne hg_degree hgm
-  have hQ_degree : Q.natDegree ≤ m + 1 := by
-    dsimp only [Q]
-    rw [← hf_degree]
-    simpa using Polynomial.natDegree_quadratic_derivative_add_linear_mul_add_le
-      f 0 c (-c) a b (Nat.zero_le _)
-  have hXg_degree : (C d * X * g).natDegree ≤ m + 1 := by
-    calc
-      (C d * X * g).natDegree ≤ (C d * X).natDegree + g.natDegree :=
-        natDegree_mul_le
-      _ ≤ 1 + m := Nat.add_le_add
-        ((natDegree_C_mul_le d X).trans natDegree_X_le) hg_degree
-      _ = m + 1 := by lia
-  have hCg_degree : (C d * g).natDegree ≤ m + 1 :=
-    (natDegree_C_mul_le d g).trans (hg_degree.trans (Nat.le_add_right m 1))
-  have hR_degree : R.natDegree ≤ m + 1 := by
-    exact (natDegree_sub_le _ _).trans (max_le hXg_degree hCg_degree)
-  have hH_degree : H.natDegree ≤ m + 1 := by
-    exact (natDegree_add_le _ _).trans (max_le hQ_degree hR_degree)
-  have hF_degree : F.natDegree ≤ m + 1 := by
-    exact (natDegree_C_mul_le (a - d)⁻¹ H).trans hH_degree
-  have hQ_top : Q.coeff (m + 1) =
-      (b - c * (m : ℝ)) * f.leadingCoeff := by
-    dsimp only [Q]
-    rw [← hf_degree]
-    have h := Polynomial.coeff_quadratic_derivative_add_linear_mul_add_natDegree_succ
-      f 0 c (-c) a b (Nat.zero_le _)
-    convert h using 1 <;> ring_nf
-  have hg_above : g.coeff (m + 1) = 0 :=
-    coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hg_degree (Nat.lt_succ_self m))
-  have hXg_top : (C d * X * g).coeff (m + 1) = d * g.coeff m := by
-    rw [mul_assoc, coeff_C_mul, Polynomial.coeff_X_mul g m]
-  have hR_top : R.coeff (m + 1) = d * g.coeff m := by
-    simp only [R, coeff_sub, hXg_top, coeff_C_mul, hg_above, mul_zero, sub_zero]
-  have htop_formula : F.coeff (m + 1) =
-      (a - d)⁻¹ * ((b - c * (m : ℝ)) * f.leadingCoeff + d * g.coeff m) := by
-    simp only [F, H, coeff_C_mul, coeff_add, hQ_top, hR_top]
-  have htop_nonneg : 0 ≤ F.coeff (m + 1) := by
+  have htop_formula := coeff_normalizedLagPoly_succ (a := a) (b := b) (c := c) (d := d)
+    hf_degree hg_degree
+  have htop_nonneg : 0 ≤ (normalizedLagPoly f g a b c d).coeff (m + 1) := by
     rw [htop_formula]
-    exact mul_nonneg hinv_pos.le <| add_nonneg
+    exact mul_nonneg (inv_pos.mpr (sub_pos.mpr ha)).le <| add_nonneg
       (mul_nonneg (sub_nonneg.mpr hb) hf_pos.le) (mul_nonneg hd hg_top_nonneg)
-  have hF_zero : 0 < F.eval 0 := by
-    simp only [F, H, Q, R, eval_mul, eval_C, eval_add, eval_sub, eval_X,
-      eval_pow, hf_zero, hg_zero]
-    norm_num
-    exact mul_pos hinv_pos hag_pos
-  have hsign : ∀ r, f.IsRoot r → F.eval r * f.derivative.eval r < 0 := by
-    intro r hr
-    have hr_mem := (mem_roots hf_pos.ne_zero).mpr hr
-    have hr_neg := hf_neg r hr_mem
-    have hder_ne := eval_derivative_ne_zero_of_nodup hf_pos.ne_zero hf_nodup hr
-    have hgf_sign := hgf.eval_mul_eval_derivative_nonneg hg_pos hf_pos hr
-    simp only [F, H, Q, R, eval_mul, eval_C, eval_add, eval_sub, eval_X,
-      eval_pow, hr.eq_zero, mul_zero, add_zero]
-    rw [mul_assoc]
-    apply mul_neg_of_pos_of_neg hinv_pos
-    calc
-      ((c * r + -c * r ^ 2) * f.derivative.eval r +
-          (d * r * g.eval r - d * g.eval r)) * f.derivative.eval r =
-          c * r * (1 - r) * (f.derivative.eval r) ^ 2 +
-            (-d * (1 - r)) * (g.eval r * f.derivative.eval r) := by ring
-      _ < 0 := by
-        have hder_term : c * r * (1 - r) * (f.derivative.eval r) ^ 2 < 0 := by
-          have hcr : c * r < 0 := mul_neg_of_pos_of_neg hc hr_neg
-          have hone : 0 < 1 - r := by linarith
-          exact mul_neg_of_neg_of_pos (mul_neg_of_neg_of_pos hcr hone)
-            (sq_pos_iff.mpr hder_ne)
-        have hlag_term :
-            (-d * (1 - r)) * (g.eval r * f.derivative.eval r) ≤ 0 := by
-          have hone : 0 ≤ 1 - r := by linarith
-          exact mul_nonpos_of_nonpos_of_nonneg
-            (mul_nonpos_of_nonpos_of_nonneg (neg_nonpos.mpr hd) hone) hgf_sign
-        linarith
-  by_cases htop_zero : F.coeff (m + 1) = 0
-  · obtain ⟨hdeg, hpos, hinterl, hsplits, hsimple, hneg, hcoeff⟩ :=
-      rootSignSameDegree_of_coeff_eq_zero hf_splits hf_pos hf_degree hf_nodup
-        hf_neg hF_degree hF_zero hsign htop_zero
-    have hdegree_if : F.natDegree =
-        (if F.coeff (m + 1) = 0 then m else m + 1) := by
-      simpa only [htop_zero, ↓reduceIte] using hdeg
-    exact ⟨htop_formula, hdegree_if, hpos, hinterl, hsplits,
-      hsimple, hneg, hcoeff⟩
-  · have htop_pos : 0 < F.coeff (m + 1) :=
-      lt_of_le_of_ne htop_nonneg (Ne.symm htop_zero)
-    obtain ⟨hdeg, hpos, hinterl, hsplits, hsimple, hneg, hcoeff⟩ :=
-      rootSignSuccessor_of_coeff_pos hf_splits hf_pos hf_degree hf_nodup hf_neg
-        hF_degree hF_zero hsign htop_pos
-    have hdegree_if : F.natDegree =
-        (if F.coeff (m + 1) = 0 then m else m + 1) := by
-      simpa only [htop_zero, ↓reduceIte] using hdeg
-    exact ⟨htop_formula, hdegree_if, hpos, hinterl, hsplits,
-      hsimple, hneg, hcoeff⟩
+  refine ⟨htop_formula, ?_⟩
+  exact rootSign_of_strict_sign_of_coeff_nonneg hf_splits hf_pos hf_degree hf_nodup hf_neg
+    (natDegree_normalizedLagPoly_le hf_degree hg_degree)
+    (eval_zero_normalizedLagPoly_pos hf_zero hg_zero ha)
+    (fun r hr ↦ eval_mul_derivative_normalizedLagPoly_neg hsimple hf_pos hf_neg hgf hg_pos
+      hc hd ha hr) htop_nonneg
 
 end RealRooted
 

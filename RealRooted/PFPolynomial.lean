@@ -52,6 +52,10 @@ theorem eq_zero_or_splits {p : ℝ[X]} (hp : IsPFPolynomial p) :
     p = 0 ∨ p.Splits :=
   hp.2.1
 
+/-- A PF polynomial splits over the reals; the zero polynomial splits trivially. -/
+theorem splits {p : ℝ[X]} (hp : IsPFPolynomial p) : p.Splits :=
+  hp.eq_zero_or_splits.elim (fun h => h ▸ Splits.zero) id
+
 theorem roots_nonpos {p : ℝ[X]} (hp : IsPFPolynomial p) :
     ∀ r ∈ p.roots, r ≤ 0 :=
   hp.2.2
@@ -91,7 +95,7 @@ theorem const_mul {a : ℝ} (ha : 0 < a) {p : ℝ[X]}
     IsPFPolynomial (C a * p) :=
   IsPFPolynomial.of_realRooted_nonneg
     (hasNonnegCoeffs_C_mul ha.le hp.hasNonnegCoeffs)
-    ((hp.eq_zero_or_splits.elim (fun h => h ▸ Splits.zero) id).C_mul a)
+    (hp.splits.C_mul a)
 
 /-- A nonnegative constant polynomial is PF. -/
 theorem of_C_nonneg {a : ℝ} (ha : 0 ≤ a) : IsPFPolynomial (Polynomial.C a) :=
@@ -102,8 +106,7 @@ theorem X_mul {p : ℝ[X]} (hp : IsPFPolynomial p) :
     IsPFPolynomial (X * p) :=
   IsPFPolynomial.of_realRooted_nonneg
     (hasNonnegCoeffs_X.mul hp.hasNonnegCoeffs)
-    ((by simp : (X : ℝ[X]).Splits).mul
-      (hp.eq_zero_or_splits.elim (fun h => h ▸ Splits.zero) id))
+    ((by simp : (X : ℝ[X]).Splits).mul hp.splits)
 
 /-- The product of two PF polynomials is PF. -/
 theorem mul {p q : ℝ[X]}
@@ -111,8 +114,7 @@ theorem mul {p q : ℝ[X]}
     IsPFPolynomial (p * q) :=
   IsPFPolynomial.of_realRooted_nonneg
     (hp.hasNonnegCoeffs.mul hq.hasNonnegCoeffs)
-    ((hp.eq_zero_or_splits.elim (fun h => h ▸ Splits.zero) id).mul
-      (hq.eq_zero_or_splits.elim (fun h => h ▸ Splits.zero) id))
+    (hp.splits.mul hq.splits)
 
 /-- If a PF polynomial is factored by a real linear factor, then the quotient
 is again PF. -/
@@ -234,14 +236,14 @@ theorem exists_pos_multiset_prod_one_add_C_mul_X {p : ℝ[X]}
 theorem pow {p : ℝ[X]} (hp : IsPFPolynomial p) (n : ℕ) :
     IsPFPolynomial (p ^ n) :=
   IsPFPolynomial.of_realRooted_nonneg (hp.hasNonnegCoeffs.pow n)
-    ((hp.eq_zero_or_splits.elim (fun h => h ▸ Splits.zero) id).pow n)
+    (hp.splits.pow n)
 
 /-- The derivative of a PF polynomial is PF. -/
 theorem derivative {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
     IsPFPolynomial p.derivative :=
   IsPFPolynomial.of_realRooted_nonneg hp.hasNonnegCoeffs.derivative
-    (hp.eq_zero_or_splits.elim (fun h => h ▸ Splits.zero) id).derivative
+    hp.splits.derivative
 
 /-- Construct a PF polynomial directly from its Pólya-frequency coefficient
 sequence using the proved forward ASW theorem. -/

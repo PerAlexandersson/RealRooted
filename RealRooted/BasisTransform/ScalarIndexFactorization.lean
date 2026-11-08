@@ -1,6 +1,7 @@
 module
 
 public import Mathlib.Algebra.Polynomial.Module.Basic
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 public import RealRooted.NarayanaTransformation.Basis
 
 /-!
@@ -95,5 +96,31 @@ theorem scalarIndexRow_eq_polynomialOrbitMap
       rw [hsucc, ih, risingFactorialPolynomial_succ_mul]
       exact (polynomialOrbitMap_mul_X_add_C
         L g (risingFactorialPolynomial h n) ((n : ℝ) * h)).symm
+
+/-- If `P 0 = g` and `P (n + 1) = (L + n h I) P n`, then its basis map is the
+generalized rising-factorial transform followed by the orbit map of `g`. -/
+theorem basisMap_factorization_of_scalarIndex_recurrence
+    {M : Type*} [AddCommGroup M] [Module ℝ M]
+    (P : ℕ → M) (L : Module.End ℝ M) (h : ℝ) (g : M)
+    (hzero : P 0 = g)
+    (hsucc : ∀ n, P (n + 1) = L (P n) + ((n : ℝ) * h) • P n) :
+    Polynomial.lsum (fun n => LinearMap.toSpanSingleton ℝ M (P n)) =
+      (polynomialOrbitMap L g).comp
+        (Polynomial.basisTransformₗ (risingFactorialPolynomial h)) := by
+  apply Polynomial.lhom_ext'
+  intro n
+  apply LinearMap.ext
+  intro a
+  have hsucc' : ∀ j, P (j + 1) =
+      (L + ((j : ℝ) * h) • (1 : Module.End ℝ M)) (P j) := by
+    intro j
+    simpa only [LinearMap.add_apply, LinearMap.smul_apply, Module.End.one_apply]
+      using hsucc j
+  have hrow := scalarIndexRow_eq_polynomialOrbitMap L g h P hzero hsucc' n
+  simp only [LinearMap.coe_comp, Function.comp_apply, Polynomial.lsum_apply,
+    LinearMap.toSpanSingleton_apply, zero_smul, Polynomial.sum_monomial_index,
+    Polynomial.basisTransformₗ_apply, basisTransform_monomial]
+  rw [hrow]
+  rw [← Polynomial.smul_eq_C_mul, map_smul]
 
 end RealRooted

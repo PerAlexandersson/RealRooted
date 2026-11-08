@@ -84,7 +84,7 @@ theorem cross_identity :
     derivative_ofNat]
   ring
 
-/-- The envelope identity (3) when the equation `R = 0` and the weight identity hold. -/
+/-- The envelope identity when the equation `R = 0` and the weight identity hold. -/
 theorem envelope_identity_of_ode (hR : residual a b c y = 0) (hT : weightDefect a b g h = 0) :
     a * ((g * envelope a b c y).derivative * h * disc a b c -
         g * envelope a b c y * (h * disc a b c).derivative) =
@@ -104,7 +104,7 @@ theorem cross_identity_of_ode (hR : residual a b c y = 0)
 
 variable {j : R[X]}
 
-/-- Division-free envelope identity (4): cancel the nonzero polynomial `a` when `g h = a j`. -/
+/-- Division-free envelope identity: cancel the nonzero polynomial `a` when `g h = a j`. -/
 theorem envelope_derivative_eq_of_ode [IsDomain R] (ha : a ≠ 0) (hgh : g * h = a * j)
     (hR : residual a b c y = 0) (hT : weightDefect a b g h = 0) :
     (g * envelope a b c y).derivative * h * disc a b c -
@@ -137,7 +137,7 @@ namespace Sonin
 
 variable (a b c y g h j : ℝ[X]) {x : ℝ}
 
-/-- Real quotient statement (5) of the Sonin identity: the derivative of `g F / (h Δ)`. -/
+/-- Real quotient statement of the Sonin envelope identity: the derivative of `g F / (h Δ)`. -/
 theorem hasDerivAt_envelope_div (ha : a ≠ 0) (hgh : g * h = a * j)
     (hR : residual a b c y = 0) (hT : weightDefect a b g h = 0)
     (hx : (h * disc a b c).eval x ≠ 0) :
@@ -225,6 +225,20 @@ private theorem exists_pos_hasDerivAt_of_eval_eq_zero (hy : y ≠ 0) (hgh : g * 
 
 variable {a b c y g h j}
 
+/-- Under the sign hypotheses on a convex set `D`, the function `g K / h` is monotone on `D`:
+its derivative is `j (W² - Δ y²) / (2 h²)`, which is nonnegative when `Δ ≤ 0` and `j > 0`. -/
+private theorem monotoneOn_cross_div {D : Set ℝ} (hD : Convex ℝ D) (ha0 : a ≠ 0)
+    (hgh : g * h = a * j) (hR : residual a b c y = 0)
+    (hT : weightDefect a (b - a.derivative) g h = 0) (hh : ∀ x ∈ D, h.eval x ≠ 0)
+    (hj : ∀ x ∈ D, 0 < j.eval x) (hΔ : ∀ x ∈ D, (disc a b c).eval x ≤ 0) :
+    MonotoneOn (fun t => (g * cross a b y).eval t / h.eval t) D := by
+  refine monotoneOn_of_hasDerivAt hD
+    (fun x hx => hasDerivAt_cross_div a b c y g h j ha0 hgh hR hT (hh x hx)) fun x hx => ?_
+  have h1 := mul_nonneg (neg_nonneg.2 (hΔ x hx)) (sq_nonneg (y.eval x))
+  rw [eval_mul, eval_sub, eval_mul, eval_pow, eval_pow]
+  exact div_nonneg (mul_nonneg (hj x hx).le
+    (by nlinarith [sq_nonneg ((lin a b y).eval x)])) (by positivity)
+
 /-- If `y` solves the second-order equation, the weight identities hold and `Δ ≤ 0`, `j > 0`,
 `a ≠ 0`, `h ≠ 0` on `(-∞, L]` while `g K / h → 0` at `-∞`, then `y` has no root in `(-∞, L]`. -/
 theorem eval_ne_zero_of_tendsto_atBot (hy : y ≠ 0) (hgh : g * h = a * j)
@@ -237,16 +251,7 @@ theorem eval_ne_zero_of_tendsto_atBot (hy : y ≠ 0) (hgh : g * h = a * j)
   have ha0 : a ≠ 0 := by
     rintro rfl
     simpa using ha L le_rfl
-  have hderiv := fun x (hx : x ∈ Iic L) =>
-    hasDerivAt_cross_div a b c y g h j ha0 hgh hR hT (hh x hx)
-  have hnn : ∀ x ∈ Iic L, 0 ≤ (j * (lin a b y ^ 2 - disc a b c * y ^ 2)).eval x /
-      (2 * h.eval x ^ 2) := by
-    intro x hx
-    have h1 := mul_nonneg (neg_nonneg.2 (hΔ x hx)) (sq_nonneg (y.eval x))
-    rw [eval_mul, eval_sub, eval_mul, eval_pow, eval_pow]
-    exact div_nonneg (mul_nonneg (hj x hx).le
-      (by nlinarith [sq_nonneg ((lin a b y).eval x)])) (by positivity)
-  have hmono := monotoneOn_of_hasDerivAt (convex_Iic L) hderiv hnn
+  have hmono := monotoneOn_cross_div (D := Iic L) (convex_Iic L) ha0 hgh hR hT hh hj hΔ
   have hE0 : ∀ x ≤ L, 0 ≤ (g * cross a b y).eval x / h.eval x := fun x hx =>
     le_of_tendsto hlim (by
       filter_upwards [eventually_le_atBot x] with t ht
@@ -268,16 +273,7 @@ theorem eval_ne_zero_of_tendsto_atTop (hy : y ≠ 0) (hgh : g * h = a * j)
   have ha0 : a ≠ 0 := by
     rintro rfl
     simpa using ha L le_rfl
-  have hderiv := fun x (hx : x ∈ Ici L) =>
-    hasDerivAt_cross_div a b c y g h j ha0 hgh hR hT (hh x hx)
-  have hnn : ∀ x ∈ Ici L, 0 ≤ (j * (lin a b y ^ 2 - disc a b c * y ^ 2)).eval x /
-      (2 * h.eval x ^ 2) := by
-    intro x hx
-    have h1 := mul_nonneg (neg_nonneg.2 (hΔ x hx)) (sq_nonneg (y.eval x))
-    rw [eval_mul, eval_sub, eval_mul, eval_pow, eval_pow]
-    exact div_nonneg (mul_nonneg (hj x hx).le
-      (by nlinarith [sq_nonneg ((lin a b y).eval x)])) (by positivity)
-  have hmono := monotoneOn_of_hasDerivAt (convex_Ici L) hderiv hnn
+  have hmono := monotoneOn_cross_div (D := Ici L) (convex_Ici L) ha0 hgh hR hT hh hj hΔ
   have hE0 : ∀ x ≥ L, (g * cross a b y).eval x / h.eval x ≤ 0 := fun x hx =>
     ge_of_tendsto hlim (by
       filter_upwards [eventually_ge_atTop x] with t ht
@@ -302,16 +298,7 @@ theorem eval_ne_zero_of_mem_Ioc (hy : y ≠ 0) (hgh : g * h = a * j)
   have ha0 : a ≠ 0 := by
     rintro rfl
     simpa using ha L ⟨le_rfl, hLU⟩
-  have hderiv := fun x (hx : x ∈ Icc L U) =>
-    hasDerivAt_cross_div a b c y g h j ha0 hgh hR hT (hh x hx)
-  have hnn : ∀ x ∈ Icc L U, 0 ≤ (j * (lin a b y ^ 2 - disc a b c * y ^ 2)).eval x /
-      (2 * h.eval x ^ 2) := by
-    intro x hx
-    have h1 := mul_nonneg (neg_nonneg.2 (hΔ x hx)) (sq_nonneg (y.eval x))
-    rw [eval_mul, eval_sub, eval_mul, eval_pow, eval_pow]
-    exact div_nonneg (mul_nonneg (hj x hx).le
-      (by nlinarith [sq_nonneg ((lin a b y).eval x)])) (by positivity)
-  have hmono := monotoneOn_of_hasDerivAt (convex_Icc L U) hderiv hnn
+  have hmono := monotoneOn_cross_div (D := Icc L U) (convex_Icc L U) ha0 hgh hR hT hh hj hΔ
   obtain ⟨d, hd, hdE⟩ := exists_pos_hasDerivAt_of_eval_eq_zero a b c y g h j hy hgh hR hT hr
     (ha r hmem) (hh r hmem) (hj r hmem)
   exact not_eventually_nonneg_nhdsLT hdE hd (by simp [cross, hr]) (by

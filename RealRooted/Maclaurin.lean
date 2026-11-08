@@ -15,6 +15,8 @@ For a multiset `t` of `n` real numbers write `e_k = t.esymm k` and `E k = e_k / 
 * `RealRooted.Maclaurin.rpow_inv_succ_le_of_logConcave`: the abstract telescoping step.
 * `RealRooted.Maclaurin.esymm_div_choose_rpow_le`: **Maclaurin's inequalities**
   `E (k + 1) ^ (1 / (k + 1)) ≤ E k ^ (1 / k)` for nonnegative `t` and `1 ≤ k < n`.
+* `RealRooted.Maclaurin.esymm_div_choose_le_first_pow`: the consequence `E j ≤ (E 1) ^ j`.
+* `RealRooted.Maclaurin.factorial_mul_esymm_le_sum_pow`: `j! * e_j ≤ (∑ t) ^ j`.
 
 ## References
 
@@ -168,5 +170,79 @@ theorem esymm_div_choose_rpow_le (t : Multiset ℝ) {n k : ℕ} (hn : Multiset.c
     exact div_pos (esymm_pos_of_esymm_succ_pos ht h') (by exact_mod_cast Nat.choose_pos hj.le)
   exact rpow_inv_succ_le_of_logConcave h0 hnn hpos
     (fun m hm hmn => newton_normalized t hn hm hmn) hk hkn
+
+/-- For a multiset `t` of `n` nonnegative reals and `E k = e_k(t) / (n choose k)`, we have
+`E j ≤ (E 1) ^ j` for `1 ≤ j ≤ n`: iterate Maclaurin's inequalities. -/
+theorem esymm_div_choose_le_first_pow
+    (t : Multiset ℝ) {n j : ℕ} (hn : t.card = n)
+    (ht : ∀ x ∈ t, 0 ≤ x) (hj : 0 < j) (hjn : j ≤ n) :
+    t.esymm j / (n.choose j : ℝ) ≤
+      (t.esymm 1 / (n.choose 1 : ℝ)) ^ j := by
+  have hnonneg (k : ℕ) : 0 ≤ t.esymm k / (n.choose k : ℝ) :=
+    div_nonneg (Multiset.esymm_nonneg_of_forall_nonneg ht k) (Nat.cast_nonneg _)
+  have hroot :
+      (t.esymm j / (n.choose j : ℝ)) ^ ((j : ℝ)⁻¹) ≤
+        t.esymm 1 / (n.choose 1 : ℝ) := by
+    have haux : ∀ k, 0 < k → k ≤ n →
+        (t.esymm k / (n.choose k : ℝ)) ^ ((k : ℝ)⁻¹) ≤
+          t.esymm 1 / (n.choose 1 : ℝ) := by
+      intro k
+      induction k with
+      | zero => simp
+      | succ k ih =>
+          intro hk hkn
+          by_cases hkzero : k = 0
+          · subst k
+            simp
+          · have hkpos : 0 < k := Nat.pos_of_ne_zero hkzero
+            have hstep := esymm_div_choose_rpow_le t hn ht hkpos (by lia)
+            have hind := ih hkpos (by lia)
+            have hstep' :
+                (t.esymm (k + 1) / (n.choose (k + 1) : ℝ)) ^ (((k + 1 : ℕ) : ℝ)⁻¹) ≤
+                  (t.esymm k / (n.choose k : ℝ)) ^ ((k : ℝ)⁻¹) := by
+              simpa [one_div, Nat.cast_add, Nat.cast_one] using hstep
+            exact hstep'.trans hind
+    exact haux j hj hjn
+  have hpow := pow_le_pow_left₀ (Real.rpow_nonneg (hnonneg j) _) hroot j
+  rw [Real.rpow_inv_natCast_pow (hnonneg j) (Nat.ne_of_gt hj)] at hpow
+  simpa using hpow
+
+/-- For a multiset `t` of nonnegative reals, `j! * e_j(t) ≤ (∑ t) ^ j`. -/
+theorem factorial_mul_esymm_le_sum_pow
+    (t : Multiset ℝ) (ht : ∀ x ∈ t, 0 ≤ x) (j : ℕ) :
+    (j.factorial : ℝ) * t.esymm j ≤ t.sum ^ j := by
+  by_cases hj : j = 0
+  · subst j
+    simp [Multiset.esymm]
+  by_cases hjcard : j ≤ t.card
+  · have hjpos : 0 < j := Nat.pos_of_ne_zero hj
+    have hmac := esymm_div_choose_le_first_pow t rfl ht hjpos hjcard
+    have he1 : t.esymm 1 = t.sum := by
+      simp [Multiset.esymm, Multiset.powersetCard_one, Multiset.map_map]
+    rw [Nat.choose_one_right, he1] at hmac
+    have hcardpos : (0 : ℝ) < t.card := by exact_mod_cast hjpos.trans_le hjcard
+    have hchoosepos : (0 : ℝ) < t.card.choose j := by
+      exact_mod_cast Nat.choose_pos hjcard
+    have hsum : 0 ≤ t.sum := Multiset.sum_nonneg ht
+    have hchoose := Nat.choose_le_pow_div (α := ℝ) j t.card
+    rw [div_pow] at hmac
+    have hmac' : t.esymm j * (t.card : ℝ) ^ j ≤
+        t.sum ^ j * (t.card.choose j : ℝ) :=
+      (div_le_div_iff₀ hchoosepos (pow_pos hcardpos j)).mp hmac
+    have hfactorial : (0 : ℝ) < j.factorial := by positivity
+    have hchoose' : (t.card.choose j : ℝ) * j.factorial ≤
+        (t.card : ℝ) ^ j := (le_div_iff₀ hfactorial).mp hchoose
+    apply le_of_mul_le_mul_right _ (pow_pos hcardpos j)
+    calc
+      (j.factorial : ℝ) * t.esymm j * (t.card : ℝ) ^ j ≤
+          j.factorial * (t.sum ^ j * (t.card.choose j : ℝ)) :=
+        by simpa [mul_assoc] using mul_le_mul_of_nonneg_left hmac' hfactorial.le
+      _ = t.sum ^ j * ((t.card.choose j : ℝ) * j.factorial) := by ring
+      _ ≤ t.sum ^ j * (t.card : ℝ) ^ j :=
+        mul_le_mul_of_nonneg_left hchoose' (pow_nonneg hsum j)
+  · have hesymm : t.esymm j = 0 :=
+      Multiset.esymm_of_card_lt (lt_of_not_ge hjcard)
+    rw [hesymm, mul_zero]
+    exact pow_nonneg (Multiset.sum_nonneg ht) j
 
 end RealRooted.Maclaurin

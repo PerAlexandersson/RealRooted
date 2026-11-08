@@ -4,6 +4,7 @@ public import RealRooted.BasisTransform.AppellRigidity
 
 import RealRooted.BasisTransform.AppellTranslationRigidity
 import RealRooted.RootContinuity
+import RealRooted.LaguerreSamuelson
 import RealRooted.Linear
 import RealRooted.Hadamard.Newton
 import RealRooted.Maclaurin
@@ -734,77 +735,6 @@ private theorem esymm_roots_limitingAppellSquarePolynomial
             ((2 * n).descFactorial (2 * j) : ℝ) * d j := by ring
         _ = _ := by rw [← pow_add]; norm_num
 
-private theorem esymm_div_choose_le_first_pow
-    (t : Multiset ℝ) {n j : ℕ} (hn : t.card = n)
-    (ht : ∀ x ∈ t, 0 ≤ x) (hj : 0 < j) (hjn : j ≤ n) :
-    t.esymm j / (n.choose j : ℝ) ≤
-      (t.esymm 1 / (n.choose 1 : ℝ)) ^ j := by
-  have hnonneg (k : ℕ) : 0 ≤ t.esymm k / (n.choose k : ℝ) :=
-    div_nonneg (Multiset.esymm_nonneg_of_forall_nonneg ht k) (Nat.cast_nonneg _)
-  have hroot :
-      (t.esymm j / (n.choose j : ℝ)) ^ ((j : ℝ)⁻¹) ≤
-        t.esymm 1 / (n.choose 1 : ℝ) := by
-    have haux : ∀ k, 0 < k → k ≤ n →
-        (t.esymm k / (n.choose k : ℝ)) ^ ((k : ℝ)⁻¹) ≤
-          t.esymm 1 / (n.choose 1 : ℝ) := by
-      intro k
-      induction k with
-      | zero => simp
-      | succ k ih =>
-          intro hk hkn
-          by_cases hkzero : k = 0
-          · subst k
-            simp
-          · have hkpos : 0 < k := Nat.pos_of_ne_zero hkzero
-            have hstep := Maclaurin.esymm_div_choose_rpow_le t hn ht hkpos (by lia)
-            have hind := ih hkpos (by lia)
-            have hstep' :
-                (t.esymm (k + 1) / (n.choose (k + 1) : ℝ)) ^ (((k + 1 : ℕ) : ℝ)⁻¹) ≤
-                  (t.esymm k / (n.choose k : ℝ)) ^ ((k : ℝ)⁻¹) := by
-              simpa [one_div, Nat.cast_add, Nat.cast_one] using hstep
-            exact hstep'.trans hind
-    exact haux j hj hjn
-  have hpow := pow_le_pow_left₀ (Real.rpow_nonneg (hnonneg j) _) hroot j
-  rw [Real.rpow_inv_natCast_pow (hnonneg j) (Nat.ne_of_gt hj)] at hpow
-  simpa using hpow
-
-private theorem factorial_mul_esymm_le_sum_pow
-    (t : Multiset ℝ) (ht : ∀ x ∈ t, 0 ≤ x) (j : ℕ) :
-    (j.factorial : ℝ) * t.esymm j ≤ t.sum ^ j := by
-  by_cases hj : j = 0
-  · subst j
-    simp [Multiset.esymm]
-  by_cases hjcard : j ≤ t.card
-  · have hjpos : 0 < j := Nat.pos_of_ne_zero hj
-    have hmac := esymm_div_choose_le_first_pow t rfl ht hjpos hjcard
-    have hesymm_one : t.esymm 1 = t.sum := by
-      simp [Multiset.esymm, Multiset.powersetCard_one, Multiset.map_map]
-    rw [Nat.choose_one_right, hesymm_one] at hmac
-    have hcardpos : (0 : ℝ) < t.card := by exact_mod_cast hjpos.trans_le hjcard
-    have hchoosepos : (0 : ℝ) < t.card.choose j := by
-      exact_mod_cast Nat.choose_pos hjcard
-    have hsum : 0 ≤ t.sum := Multiset.sum_nonneg ht
-    have hchoose := Nat.choose_le_pow_div (α := ℝ) j t.card
-    rw [div_pow] at hmac
-    have hmac' : t.esymm j * (t.card : ℝ) ^ j ≤
-        t.sum ^ j * (t.card.choose j : ℝ) :=
-      (div_le_div_iff₀ hchoosepos (pow_pos hcardpos j)).mp hmac
-    have hfactorial : (0 : ℝ) < j.factorial := by positivity
-    have hchoose' : (t.card.choose j : ℝ) * j.factorial ≤
-        (t.card : ℝ) ^ j := (le_div_iff₀ hfactorial).mp hchoose
-    apply le_of_mul_le_mul_right _ (pow_pos hcardpos j)
-    calc
-      (j.factorial : ℝ) * t.esymm j * (t.card : ℝ) ^ j ≤
-          j.factorial * (t.sum ^ j * (t.card.choose j : ℝ)) :=
-        by simpa [mul_assoc] using mul_le_mul_of_nonneg_left hmac' hfactorial.le
-      _ = t.sum ^ j * ((t.card.choose j : ℝ) * j.factorial) := by ring
-      _ ≤ t.sum ^ j * (t.card : ℝ) ^ j :=
-        mul_le_mul_of_nonneg_left hchoose' (pow_nonneg hsum j)
-  · have hesymm : t.esymm j = 0 :=
-      Multiset.esymm_of_card_lt (lt_of_not_ge hjcard)
-    rw [hesymm, mul_zero]
-    exact pow_nonneg (Multiset.sum_nonneg ht) j
-
 private theorem limitingAppellCoefficient_finite_factorial_bound
     {d : ℕ → ℝ} (hd₀ : d 0 = 1) {n j : ℕ} (hn : 1 ≤ n) (hj : j ≤ n)
     (hsplits : (limitingAppellPolynomial d (2 * n)).Splits) :
@@ -812,12 +742,10 @@ private theorem limitingAppellCoefficient_finite_factorial_bound
       (((2 * n).descFactorial 2 : ℝ) * d 1) ^ j := by
   let p := limitingAppellSquarePolynomial d n
   have hroot := limitingAppellSquarePolynomial_splits_and_roots_nonneg hsplits
-  have hmac := factorial_mul_esymm_le_sum_pow p.roots hroot.2 j
+  have hmac := Maclaurin.factorial_mul_esymm_le_sum_pow p.roots hroot.2 j
   have hjcoeff := esymm_roots_limitingAppellSquarePolynomial hd₀ hj hsplits
   have honecoeff := esymm_roots_limitingAppellSquarePolynomial hd₀ hn hsplits
-  have hesymm_one : p.roots.esymm 1 = p.roots.sum := by
-    simp [Multiset.esymm, Multiset.powersetCard_one, Multiset.map_map]
-  rw [hjcoeff, ← hesymm_one, honecoeff] at hmac
+  rw [hjcoeff, ← Samuelson.esymm_one, honecoeff] at hmac
   simpa [mul_assoc] using hmac
 
 private theorem tendsto_descFactorial_two_ratio (j : ℕ) :

@@ -111,48 +111,25 @@ theorem isPFPolynomial_of_euler_pochhammer_coeff_ratio
           eulerWeight d rising falling k * p.coeff (k + 1) =
         ((d : ℝ) - k) * (upper.map (fun b : ℝ => b + d - k - 1)).prod *
           eulerWeight d rising falling (k + 1) * p.coeff k) : IsPFPolynomial p := by
-  let q := eulerPochhammerPolynomial d lower upper rising falling
-  have hqzero : 0 < q.coeff 0 := by
+  have hqd := natDegree_twoSidedJensenPolynomial
+    (fun k => mul_pos (eulerProduct_pos hr k) (invPochhammerProduct_pos hl k))
+    (fun k => mul_pos (eulerProduct_pos hs k) (invPochhammerProduct_pos hu k)) d
+  have hqzero : 0 < (eulerPochhammerPolynomial d lower upper rising falling).coeff 0 := by
     rw [eulerPochhammerPolynomial_coeff hu hs]
     exact mul_pos (eulerWeight_pos hr hs d 0)
       (pochhammerJensenPolynomial_coeff_pos hl hu (Nat.zero_le d))
-  let c := p.coeff 0 / q.coeff 0
-  have hc : 0 < c := div_pos hzero hqzero
-  have heq : ∀ k ≤ d, p.coeff k = c * q.coeff k := by
-    intro k hk
-    induction k with
-    | zero => exact (div_mul_cancel₀ _ hqzero.ne').symm
-    | succ k ih =>
-        have hprev := ih (by lia)
-        have hp := hratio k (by lia)
-        have hq := eulerPochhammerPolynomial_coeff_ratio hl hu hs
-          (rising := rising) (d := d) (k := k) (by lia)
-        have hprod : 0 < (lower.map (fun a : ℝ => a + k)).prod := by
-          apply List.prod_pos
-          intro x hx
-          obtain ⟨a, ha, rfl⟩ := List.mem_map.mp hx
-          have := hl a ha
-          positivity
-        have hw := eulerWeight_pos hr hs d k
-        have hnonzero : ((k : ℝ) + 1) * (lower.map (fun a : ℝ => a + k)).prod *
-            eulerWeight d rising falling k ≠ 0 := by positivity
-        apply mul_left_cancel₀ hnonzero
-        rw [hp, hprev]
-        change _ = ((k : ℝ) + 1) * (lower.map (fun a : ℝ => a + k)).prod *
-          eulerWeight d rising falling k *
-          (c * (eulerPochhammerPolynomial d lower upper rising falling).coeff (k + 1))
-        linear_combination -c * hq
-  have hpq : p = C c * q := by
-    ext k
-    rw [coeff_C_mul]
-    by_cases hk : k ≤ d
-    · exact heq k hk
-    · have hqd : q.natDegree = d := natDegree_twoSidedJensenPolynomial
-        (fun k => mul_pos (eulerProduct_pos hr k) (invPochhammerProduct_pos hl k))
-        (fun k => mul_pos (eulerProduct_pos hs k) (invPochhammerProduct_pos hu k)) d
-      rw [coeff_eq_zero_of_natDegree_lt (by lia : p.natDegree < k),
-        coeff_eq_zero_of_natDegree_lt (by lia : q.natDegree < k), mul_zero]
+  have hpq := eq_C_mul_of_coeff_ratio (d := d)
+    (A := fun k => ((k : ℝ) + 1) * (lower.map (fun a : ℝ => a + k)).prod *
+      eulerWeight d rising falling k)
+    (B := fun k => ((d : ℝ) - k) * (upper.map (fun b : ℝ => b + d - k - 1)).prod *
+      eulerWeight d rising falling (k + 1))
+    (fun k _ => by
+      have := prod_map_add_natCast_pos hl k
+      have := eulerWeight_pos hr hs d k
+      positivity) hdegree hqd.le hqzero.ne' hratio
+    fun k hk => eulerPochhammerPolynomial_coeff_ratio hl hu hs hk
   rw [hpq]
-  exact IsPFPolynomial.const_mul hc (eulerPochhammerPolynomial_isPF hl hu hr hs d)
+  exact IsPFPolynomial.const_mul (div_pos hzero hqzero)
+    (eulerPochhammerPolynomial_isPF hl hu hr hs d)
 
 end RealRooted

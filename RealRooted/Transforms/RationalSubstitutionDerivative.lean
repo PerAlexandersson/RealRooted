@@ -479,13 +479,13 @@ theorem dickson_hasNonconstantRatio (a : ℝ) :
 
 /-- The Dickson substitution splits exactly when every source root lies
 outside the open discriminant interval. -/
-theorem dicksonSubstitution_splits_iff {a : ℝ} (ha : 0 < a)
+theorem dicksonSubstitution_splits_iff {a : ℝ} (ha : a ≠ 0)
     {p : ℝ[X]} (hp : p ≠ 0) :
     (dicksonSubstitution a p).Splits ↔
       p.Splits ∧ ∀ r ∈ p.roots, 4 * a ≤ r ^ 2 := by
   rw [dicksonSubstitution,
     rationalSubstitution_splits_iff hp Polynomial.X_ne_zero
-      (dickson_isCoprime a ha.ne') (dickson_hasNonconstantRatio a)]
+      (dickson_isCoprime a ha) (dickson_hasNonconstantRatio a)]
   apply and_congr_right
   intro hpSplits
   apply forall_congr'
@@ -497,7 +497,7 @@ theorem dicksonSubstitution_splits_iff {a : ℝ} (ha : 0 < a)
 /-- The Dickson root criterion remains valid at every larger ambient degree;
 the extra factor is a power of `X`. -/
 theorem homogenizedSubstitution_dickson_splits_iff {N : ℕ} {a : ℝ}
-    (ha : 0 < a) {p : ℝ[X]} (hp : p ≠ 0) (hdeg : p.natDegree ≤ N) :
+    (ha : a ≠ 0) {p : ℝ[X]} (hp : p ≠ 0) (hdeg : p.natDegree ≤ N) :
     (homogenizedSubstitution N (X ^ 2 + C a) X p).Splits ↔
       p.Splits ∧ ∀ r ∈ p.roots, 4 * a ≤ r ^ 2 := by
   rw [homogenizedSubstitution_eq_pow_mul hdeg]

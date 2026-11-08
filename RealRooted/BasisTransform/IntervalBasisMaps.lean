@@ -5,11 +5,7 @@ public import RealRooted.MaWang.EndpointMultiplicity
 public import RealRooted.Basic.Coefficients
 public import RealRooted.BasisTransform.DifferentialOperatorMaps
 import RealRooted.MaWang.EndpointRecurrence
-import RealRooted.DerivativeRecurrence.Degree
-import RealRooted.DerivativeRecurrence.EndpointWindow
 import RealRooted.Linear
-import RealRooted.MaWang.DerivativeStep
-import RealRooted.WagnerRightSum.Sign
 import Mathlib.FieldTheory.RatFunc.AsPolynomial
 public import Mathlib.RingTheory.PowerSeries.Inverse
 
@@ -29,465 +25,6 @@ open Polynomial Set
 noncomputable section
 
 namespace RealRooted
-
-/-- The scaled interval differential operator
-`f ↦ ρ ((α X + β) f + κ (X - L) (X - U) f')`. -/
-@[expose] def intervalDifferentialOperator
-    (alpha beta rho kappa L U : ℝ) : Module.End ℝ ℝ[X] where
-  toFun p := C rho *
-    ((C alpha * X + C beta) * p +
-      C kappa * (X - C L) * (X - C U) * p.derivative)
-  map_add' p q := by simp only [derivative_add, mul_add]; ring
-  map_smul' c p := by
-    simp only [smul_eq_C_mul, derivative_C_mul, RingHom.id_apply]
-    ring
-
-/-- The interval differential operator has its advertised pointwise formula. -/
-@[simp] theorem intervalDifferentialOperator_apply
-    (alpha beta rho kappa L U : ℝ) (p : ℝ[X]) :
-    intervalDifferentialOperator alpha beta rho kappa L U p =
-      C rho * ((C alpha * X + C beta) * p +
-        C kappa * (X - C L) * (X - C U) * p.derivative) := rfl
-
-/-- One shifted factor of a scaled interval differential operator. -/
-@[expose] def intervalDifferentialStep
-    (alpha beta rho kappa L U xi : ℝ) (p : ℝ[X]) : ℝ[X] :=
-  (C (rho * alpha) * X + C (rho * beta - xi)) * p +
-    C (rho * kappa) * (X - C L) * (X - C U) * p.derivative
-
-/-- Algebraic normalization of a shifted interval differential operator. -/
-private lemma intervalDifferentialOperator_sub_apply_algebra
-    (alpha beta rho kappa L U xi : ℝ) (p : ℝ[X]) :
-    intervalDifferentialOperator alpha beta rho kappa L U p - C xi * p =
-      intervalDifferentialStep alpha beta rho kappa L U xi p := by
-  simp only [intervalDifferentialOperator_apply, intervalDifferentialStep,
-    map_mul, map_sub]
-  ring
-
-/-- Subtracting `xi` times the identity gives the shifted interval step. -/
-theorem intervalDifferentialOperator_sub_apply
-    (alpha beta rho kappa L U xi : ℝ) (p : ℝ[X]) :
-    intervalDifferentialOperator alpha beta rho kappa L U p - C xi * p =
-      intervalDifferentialStep alpha beta rho kappa L U xi p :=
-  intervalDifferentialOperator_sub_apply_algebra alpha beta rho kappa L U xi p
-
-private lemma intervalDerivativeCoeff_natDegree_le (k L U : ℝ) :
-    (C k * (X - C L) * (X - C U) : ℝ[X]).natDegree ≤ 2 := by
-  calc
-    (C k * (X - C L) * (X - C U) : ℝ[X]).natDegree ≤
-        (C k * (X - C L)).natDegree + (X - C U).natDegree := natDegree_mul_le
-    _ ≤ ((C k).natDegree + (X - C L).natDegree) + 1 := by
-      gcongr
-      · exact natDegree_mul_le
-      · simp
-    _ ≤ (0 + 1) + 1 := by simp
-    _ = 2 := by simp
-
-private lemma intervalStep_degree_le (a b k L U : ℝ) (p : ℝ[X]) :
-    (((C a * X + C b) * p +
-      C k * (X - C L) * (X - C U) * p.derivative)).natDegree ≤
-        p.natDegree + 1 := by
-  apply natDegree_add_le_of_degree_le
-  · exact natDegree_mul_iterate_derivative_le (d := 1) (j := 0)
-      (natDegree_linear_le (a := a) (b := b)) le_rfl
-  · exact natDegree_mul_iterate_derivative_le (d := 1) (j := 1)
-      (intervalDerivativeCoeff_natDegree_le k L U) le_rfl
-
-private lemma intervalStep_coeff_succ (a b k L U : ℝ) (p : ℝ[X]) :
-    ((C a * X + C b) * p +
-      C k * (X - C L) * (X - C U) * p.derivative).coeff
-        (p.natDegree + 1) = (a + k * p.natDegree) * p.leadingCoeff := by
-  have h0 := coeff_mul_iterate_derivative_of_natDegree_le
-    (A := C a * X + C b) (p := p) (d := 1) (j := 0)
-    (D := p.natDegree) (natDegree_linear_le (a := a) (b := b)) le_rfl
-  have h1 := coeff_mul_iterate_derivative_of_natDegree_le
-    (A := C k * (X - C L) * (X - C U)) (p := p) (d := 1) (j := 1)
-    (D := p.natDegree) (intervalDerivativeCoeff_natDegree_le k L U) le_rfl
-  simp only [Function.iterate_zero, id_eq, Nat.descFactorial_zero, Nat.cast_one,
-    mul_one, Function.iterate_one, Nat.descFactorial_one] at h0 h1
-  have hquad :
-      (C k * (X - C L) * (X - C U) : ℝ[X]).coeff 2 = k := by
-    rw [show C k * (X - C L) * (X - C U) =
-      C k * X ^ 2 - C (k * (L + U)) * X + C (k * L * U) by
-        simp only [map_add, map_mul]
-        ring]
-    simp
-  have hlinear : (C a * X + C b : ℝ[X]).coeff 1 = a := by simp
-  rw [coeff_add, h0, h1, leadingCoeff]
-  rw [hquad, hlinear]
-  ring
-
-private lemma intervalStep_degree_eq_and_leadingCoeff_pos
-    {a b k L U : ℝ} {p : ℝ[X]} (htop : 0 < a + k * p.natDegree)
-    (hp : HasPosLeadingCoeff p) :
-    ((C a * X + C b) * p +
-        C k * (X - C L) * (X - C U) * p.derivative).natDegree =
-        p.natDegree + 1 ∧
-      HasPosLeadingCoeff ((C a * X + C b) * p +
-        C k * (X - C L) * (X - C U) * p.derivative) := by
-  let F := (C a * X + C b) * p +
-    C k * (X - C L) * (X - C U) * p.derivative
-  have hcoeff : 0 < F.coeff (p.natDegree + 1) := by
-    dsimp [F]
-    rw [intervalStep_coeff_succ]
-    exact mul_pos htop hp
-  have hdeg : F.natDegree = p.natDegree + 1 :=
-    natDegree_eq_of_le_of_coeff_ne_zero
-      (intervalStep_degree_le a b k L U p) hcoeff.ne'
-  refine ⟨hdeg, ?_⟩
-  rw [HasPosLeadingCoeff, leadingCoeff, hdeg]
-  exact hcoeff
-
-private def intervalRawStep (a b k L U : ℝ) (p : ℝ[X]) : ℝ[X] :=
-  (C a * X + C b) * p +
-    C k * (X - C L) * (X - C U) * p.derivative
-
-private lemma intervalRawStep_degree_eq_and_leadingCoeff_pos
-    {a b k L U : ℝ} {p : ℝ[X]} (htop : 0 < a + k * p.natDegree)
-    (hp : HasPosLeadingCoeff p) :
-    (intervalRawStep a b k L U p).natDegree = p.natDegree + 1 ∧
-      HasPosLeadingCoeff (intervalRawStep a b k L U p) := by
-  exact intervalStep_degree_eq_and_leadingCoeff_pos htop hp
-
-private theorem intervalRawStep_strictInterl
-    {a b k L U : ℝ} {p : ℝ[X]} (hk : 0 < k)
-    (htop : 0 < a + k * p.natDegree) (hp : HasPosLeadingCoeff p)
-    (hs : p.Splits) (hroots : ∀ r ∈ p.roots, r ∈ Icc L U) :
-    StrictInterl p (intervalRawStep a b k L U p) := by
-  have hpack := intervalRawStep_degree_eq_and_leadingCoeff_pos
-    (b := b) (L := L) (U := U) htop hp
-  apply MaWang.strictInterl_derivative_of_nonpos_of_splits hs
-  · change p.natDegree ≤ (intervalRawStep a b k L U p).natDegree
-    rw [hpack.1]
-    lia
-  · change (intervalRawStep a b k L U p).natDegree ≤ p.natDegree + 1
-    rw [hpack.1]
-  · change HasPosLeadingCoeff (intervalRawStep a b k L U p)
-    exact hpack.2
-  · exact hp
-  · intro r hr
-    have hrmem : r ∈ p.roots := (mem_roots hp.ne_zero).mpr hr
-    have hrange := hroots r hrmem
-    simp only [eval_mul, eval_C, eval_sub, eval_X]
-    exact mul_nonpos_of_nonneg_of_nonpos
-      (mul_nonneg hk.le (sub_nonneg.mpr hrange.1))
-      (sub_nonpos.mpr hrange.2)
-
-private lemma intervalRawStep_endpoint_factorization
-    (a b k e o : ℝ) (p q : ℝ[X]) (m : ℕ)
-    (hpq : (X - C e) ^ m * q = p) :
-    intervalRawStep a b k e o p = (X - C e) ^ m *
-      intervalRawStep (a + k * m) (b - k * m * o) k e o q := by
-  dsimp [intervalRawStep]
-  rw [← hpq]
-  cases m with
-  | zero => simp
-  | succ m =>
-      rw [derivative_mul, derivative_X_sub_C_pow]
-      simp only [Nat.succ_sub_one, Nat.cast_succ, map_add, map_sub, map_mul,
-        map_one]
-      ring
-
-private lemma intervalRawStep_swap (a b k L U : ℝ) (p : ℝ[X]) :
-    intervalRawStep a b k L U p = intervalRawStep a b k U L p := by
-  dsimp [intervalRawStep]
-  ring
-
-private lemma endpointCofactor_roots
-    {L U e : ℝ} {p q : ℝ[X]} {m : ℕ} (hq : q ≠ 0)
-    (hfactor : (X - C e) ^ m * q = p) (hqeval : q.eval e ≠ 0)
-    (hroots : ∀ r ∈ p.roots, r ∈ Icc L U) :
-    ∀ r ∈ q.roots, r ∈ Icc L U ∧ r ≠ e := by
-  intro r hr
-  have hrq : q.IsRoot r := (mem_roots hq).mp hr
-  have hrp : r ∈ p.roots := by
-    rw [← hfactor, roots_mul
-      (mul_ne_zero (pow_ne_zero _ (X_sub_C_ne_zero e)) hq), Multiset.mem_add]
-    exact Or.inr hr
-  exact ⟨hroots r hrp, fun hre => hqeval (by simpa [hre] using hrq)⟩
-
-private lemma endpointCofactor_top
-    {a k e : ℝ} {p q : ℝ[X]} {m : ℕ} (hq : q ≠ 0)
-    (hfactor : (X - C e) ^ m * q = p) (htop : 0 < a + k * p.natDegree) :
-    0 < (a + k * m) + k * q.natDegree := by
-  have hpow : ((X - C e) ^ m : ℝ[X]) ≠ 0 :=
-    pow_ne_zero _ (X_sub_C_ne_zero e)
-  have hdeg := natDegree_mul hpow hq
-  rw [hfactor] at hdeg
-  simp only [natDegree_pow, natDegree_X_sub_C, mul_one] at hdeg
-  rw [hdeg] at htop
-  push_cast at htop ⊢
-  linarith
-
-private lemma lower_endpoint_sign
-    {q : ℝ[X]} {L : ℝ} (hs : q.Splits)
-    (hpos : HasPosLeadingCoeff q) (hroots : ∀ r ∈ q.roots, L < r) :
-    0 < (-1 : ℝ) ^ q.natDegree * q.eval L := by
-  have hcard : q.roots.card = (q.roots.map (L - ·)).card := by simp
-  rw [Polynomial.Splits.eval_eq_prod_roots hs L,
-    ← Polynomial.splits_iff_card_roots.mp hs, mul_left_comm, hcard,
-    ← Multiset.prod_map_neg]
-  refine mul_pos hpos (Multiset.prod_pos fun y hy => ?_)
-  obtain ⟨s, hs, rfl⟩ := Multiset.mem_map.mp hy
-  obtain ⟨r, hr, rfl⟩ := Multiset.mem_map.mp hs
-  linarith [hroots r hr]
-
-/-- Removing a lower-endpoint power preserves the assertion that all roots lie
-weakly above that endpoint. -/
-private lemma roots_ge_endpoint_factor_iff
-    {e : ℝ} {m : ℕ} {F H : ℝ[X]} (hH : H ≠ 0)
-    (hfactor : F = (X - C e) ^ m * H) :
-    (∀ r ∈ F.roots, e ≤ r) ↔ ∀ r ∈ H.roots, e ≤ r := by
-  have hprod : (X - C e) ^ m * H ≠ 0 :=
-    mul_ne_zero (pow_ne_zero _ (X_sub_C_ne_zero e)) hH
-  constructor
-  · intro hall r hr
-    apply hall r
-    rw [hfactor, roots_mul hprod, Multiset.mem_add]
-    exact Or.inr hr
-  · intro hall r hr
-    rw [hfactor, roots_mul hprod, Multiset.mem_add] at hr
-    rcases hr with hr | hr
-    · have hre : r = e := by
-        have hm : m ≠ 0 ∧ r = e := by
-          simpa only [roots_pow, roots_X_sub_C, Multiset.mem_nsmul,
-            Multiset.mem_singleton] using hr
-        exact hm.2
-      rw [hre]
-    · exact hall r hr
-
-/-- Removing an upper-endpoint power preserves the assertion that all roots lie
-weakly below that endpoint. -/
-private lemma roots_le_endpoint_factor_iff
-    {e : ℝ} {m : ℕ} {F H : ℝ[X]} (hH : H ≠ 0)
-    (hfactor : F = (X - C e) ^ m * H) :
-    (∀ r ∈ F.roots, r ≤ e) ↔ ∀ r ∈ H.roots, r ≤ e := by
-  have hprod : (X - C e) ^ m * H ≠ 0 :=
-    mul_ne_zero (pow_ne_zero _ (X_sub_C_ne_zero e)) hH
-  constructor
-  · intro hall r hr
-    apply hall r
-    rw [hfactor, roots_mul hprod, Multiset.mem_add]
-    exact Or.inr hr
-  · intro hall r hr
-    rw [hfactor, roots_mul hprod, Multiset.mem_add] at hr
-    rcases hr with hr | hr
-    · have hre : r = e := by
-        have hm : m ≠ 0 ∧ r = e := by
-          simpa only [roots_pow, roots_X_sub_C, Multiset.mem_nsmul,
-            Multiset.mem_singleton] using hr
-        exact hm.2
-      rw [hre]
-    · exact hall r hr
-
-private theorem intervalRawStep_roots_ge_iff
-    {a b k L U : ℝ} {p : ℝ[X]} (hk : 0 < k)
-    (htop : 0 < a + k * p.natDegree) (hp : HasPosLeadingCoeff p)
-    (hs : p.Splits) (hroots : ∀ r ∈ p.roots, r ∈ Icc L U) :
-    (∀ r ∈ (intervalRawStep a b k L U p).roots, L ≤ r) ↔
-      0 ≤ -a * L - b + k * (U - L) * p.rootMultiplicity L := by
-  let m := p.rootMultiplicity L
-  let q := p /ₘ (X - C L) ^ m
-  let H := intervalRawStep (a + k * m) (b - k * m * U) k L U q
-  have hfactor : (X - C L) ^ m * q = p := by
-    dsimp [q, m]
-    exact p.pow_mul_divByMonic_rootMultiplicity_eq L
-  have hqeval : q.eval L ≠ 0 := by
-    dsimp [q, m]
-    exact eval_divByMonic_pow_rootMultiplicity_ne_zero L hp.ne_zero
-  have hq : q ≠ 0 := fun hzero => hqeval (by rw [hzero, eval_zero])
-  have hqpos : HasPosLeadingCoeff q := by
-    apply hasPosLeadingCoeff_of_pow_X_sub_C_mul (r := L) (m := m)
-    rw [hfactor]
-    exact hp
-  have hqs : q.Splits :=
-    (isRealRooted_of_dvd hp.ne_zero hs hq
-      ⟨(X - C L) ^ m, by rw [mul_comm, hfactor]⟩).2
-  have hqrootsFull : ∀ r ∈ q.roots, r ∈ Icc L U ∧ r ≠ L :=
-    endpointCofactor_roots hq hfactor hqeval hroots
-  have hqroots : ∀ r ∈ q.roots, L < r := by
-    intro r hr
-    exact lt_of_le_of_ne (hqrootsFull r hr).1.1
-      (fun hre => (hqrootsFull r hr).2 hre.symm)
-  have hqtop : 0 < (a + k * m) + k * q.natDegree :=
-    endpointCofactor_top hq hfactor htop
-  have hHpack := intervalRawStep_degree_eq_and_leadingCoeff_pos
-    (b := b - k * m * U) (L := L) (U := U) hqtop hqpos
-  have hqHstrict : StrictInterl q H := by
-    dsimp [H]
-    exact intervalRawStep_strictInterl hk hqtop hqpos hqs
-      (fun r hr => (hqrootsFull r hr).1)
-  have hqH : Interlaces q H := hqHstrict.toInterlaces hHpack.1.symm
-  have hFfactor : intervalRawStep a b k L U p = (X - C L) ^ m * H := by
-    dsimp [H]
-    exact intervalRawStep_endpoint_factorization a b k L U p q m hfactor
-  have htransfer := roots_ge_endpoint_factor_iff hHpack.2.ne_zero hFfactor
-  rw [htransfer,
-    roots_ge_iff_neg_one_pow_mul_eval_nonneg_of_interlaces hqH hHpack.2 hqroots]
-  have hHeval : H.eval L =
-      (a * L + b - k * (U - L) * m) * q.eval L := by
-    dsimp [H, intervalRawStep]
-    simp only [eval_add, eval_mul, eval_C, eval_X, eval_sub, sub_self,
-      zero_mul, mul_zero, add_zero]
-    ring
-  have hsign := lower_endpoint_sign hqs hqpos hqroots
-  have hsignEq : (-1 : ℝ) ^ H.natDegree * H.eval L =
-      (-a * L - b + k * (U - L) * m) *
-        ((-1 : ℝ) ^ q.natDegree * q.eval L) := by
-    rw [hHpack.1, pow_succ, hHeval]
-    ring
-  rw [hsignEq, mul_nonneg_iff_of_pos_right hsign]
-
-private theorem intervalRawStep_roots_le_iff
-    {a b k L U : ℝ} {p : ℝ[X]} (hk : 0 < k)
-    (htop : 0 < a + k * p.natDegree) (hp : HasPosLeadingCoeff p)
-    (hs : p.Splits) (hroots : ∀ r ∈ p.roots, r ∈ Icc L U) :
-    (∀ r ∈ (intervalRawStep a b k L U p).roots, r ≤ U) ↔
-      0 ≤ a * U + b + k * (U - L) * p.rootMultiplicity U := by
-  let m := p.rootMultiplicity U
-  let q := p /ₘ (X - C U) ^ m
-  let H := intervalRawStep (a + k * m) (b - k * m * L) k L U q
-  have hfactor : (X - C U) ^ m * q = p := by
-    dsimp [q, m]
-    exact p.pow_mul_divByMonic_rootMultiplicity_eq U
-  have hqeval : q.eval U ≠ 0 := by
-    dsimp [q, m]
-    exact eval_divByMonic_pow_rootMultiplicity_ne_zero U hp.ne_zero
-  have hq : q ≠ 0 := fun hzero => hqeval (by rw [hzero, eval_zero])
-  have hqpos : HasPosLeadingCoeff q := by
-    apply hasPosLeadingCoeff_of_pow_X_sub_C_mul (r := U) (m := m)
-    rw [hfactor]
-    exact hp
-  have hqs : q.Splits :=
-    (isRealRooted_of_dvd hp.ne_zero hs hq
-      ⟨(X - C U) ^ m, by rw [mul_comm, hfactor]⟩).2
-  have hqrootsFull : ∀ r ∈ q.roots, r ∈ Icc L U ∧ r ≠ U :=
-    endpointCofactor_roots hq hfactor hqeval hroots
-  have hqroots : ∀ r ∈ q.roots, r < U := by
-    intro r hr
-    exact lt_of_le_of_ne (hqrootsFull r hr).1.2 (hqrootsFull r hr).2
-  have hqtop : 0 < (a + k * m) + k * q.natDegree :=
-    endpointCofactor_top hq hfactor htop
-  have hHpack := intervalRawStep_degree_eq_and_leadingCoeff_pos
-    (b := b - k * m * L) (L := L) (U := U) hqtop hqpos
-  have hqHstrict : StrictInterl q H := by
-    dsimp [H]
-    exact intervalRawStep_strictInterl hk hqtop hqpos hqs
-      (fun r hr => (hqrootsFull r hr).1)
-  have hqH : Interlaces q H := hqHstrict.toInterlaces hHpack.1.symm
-  have hFfactor : intervalRawStep a b k L U p = (X - C U) ^ m * H := by
-    calc
-      intervalRawStep a b k L U p = intervalRawStep a b k U L p :=
-        intervalRawStep_swap a b k L U p
-      _ = (X - C U) ^ m *
-          intervalRawStep (a + k * m) (b - k * m * L) k U L q :=
-        intervalRawStep_endpoint_factorization a b k U L p q m hfactor
-      _ = (X - C U) ^ m * H := by
-        rw [intervalRawStep_swap]
-  have htransfer := roots_le_endpoint_factor_iff hHpack.2.ne_zero hFfactor
-  rw [htransfer, roots_le_iff_eval_nonneg_of_interlaces hqH hHpack.2 hqroots]
-  have hHeval : H.eval U =
-      (a * U + b + k * (U - L) * m) * q.eval U := by
-    dsimp [H, intervalRawStep]
-    simp only [eval_add, eval_mul, eval_C, eval_X, eval_sub, sub_self,
-      zero_mul, mul_zero, add_zero]
-    ring
-  have hqevalpos : 0 < q.eval U :=
-    eval_pos_of_all_roots_lt hq hqs hqpos hqroots
-  rw [hHeval, mul_nonneg_iff_of_pos_right hqevalpos]
-
-private lemma intervalRawStep_rootMultiplicity_le
-    {a b k e o : ℝ} {p : ℝ[X]} (htop : 0 < a + k * p.natDegree)
-    (hp : HasPosLeadingCoeff p) :
-    p.rootMultiplicity e ≤ (intervalRawStep a b k e o p).rootMultiplicity e := by
-  let m := p.rootMultiplicity e
-  let q := p /ₘ (X - C e) ^ m
-  let H := intervalRawStep (a + k * m) (b - k * m * o) k e o q
-  have hfactor : (X - C e) ^ m * q = p := by
-    dsimp [q, m]
-    exact p.pow_mul_divByMonic_rootMultiplicity_eq e
-  have hqeval : q.eval e ≠ 0 := by
-    dsimp [q, m]
-    exact eval_divByMonic_pow_rootMultiplicity_ne_zero e hp.ne_zero
-  have hq : q ≠ 0 := fun hzero => hqeval (by rw [hzero, eval_zero])
-  have hqpos : HasPosLeadingCoeff q := by
-    apply hasPosLeadingCoeff_of_pow_X_sub_C_mul (r := e) (m := m)
-    rw [hfactor]
-    exact hp
-  have hqtop : 0 < (a + k * m) + k * q.natDegree :=
-    endpointCofactor_top hq hfactor htop
-  have hHpos : HasPosLeadingCoeff H := by
-    dsimp [H]
-    exact (intervalRawStep_degree_eq_and_leadingCoeff_pos
-      (b := b - k * m * o) (L := e) (U := o) hqtop hqpos).2
-  have hFfactor : intervalRawStep a b k e o p = (X - C e) ^ m * H := by
-    dsimp [H]
-    exact intervalRawStep_endpoint_factorization a b k e o p q m hfactor
-  rw [hFfactor, rootMultiplicity_mul
-    (mul_ne_zero (pow_ne_zero _ (X_sub_C_ne_zero e)) hHpos.ne_zero),
-    rootMultiplicity_X_sub_C_pow]
-  exact Nat.le_add_right m _
-
-/-- The complete scaled interval step under the exact top-coefficient
-hypothesis.  It gives degree growth, interlacing, the sharp closed-window
-criterion, and monotonicity of both endpoint multiplicities. -/
-theorem intervalDifferentialStep_closed
-    {alpha beta rho kappa L U xi : ℝ} {p : ℝ[X]}
-    (hLU : L < U) (hrho : 0 < rho) (hkappa : 0 < kappa)
-    (htop : 0 < alpha + kappa * p.natDegree)
-    (hp : HasPosLeadingCoeff p) (hs : p.Splits)
-    (hroots : ∀ r ∈ p.roots, r ∈ Icc L U) :
-    (intervalDifferentialStep alpha beta rho kappa L U xi p).natDegree =
-        p.natDegree + 1 ∧
-      HasPosLeadingCoeff
-        (intervalDifferentialStep alpha beta rho kappa L U xi p) ∧
-      (intervalDifferentialStep alpha beta rho kappa L U xi p).Splits ∧
-      Interlaces p (intervalDifferentialStep alpha beta rho kappa L U xi p) ∧
-      ((∀ r ∈ (intervalDifferentialStep alpha beta rho kappa L U xi p).roots,
-          r ∈ Icc L U) ↔
-        rho * (alpha * L + beta - kappa * (U - L) * p.rootMultiplicity L) ≤ xi ∧
-          xi ≤ rho *
-            (alpha * U + beta + kappa * (U - L) * p.rootMultiplicity U)) ∧
-      p.rootMultiplicity L ≤
-        (intervalDifferentialStep alpha beta rho kappa L U xi p).rootMultiplicity L ∧
-      p.rootMultiplicity U ≤
-        (intervalDifferentialStep alpha beta rho kappa L U xi p).rootMultiplicity U := by
-  let a := rho * alpha
-  let b := rho * beta - xi
-  let k := rho * kappa
-  have hdelta : 0 < U - L := sub_pos.mpr hLU
-  have hk : 0 < k := mul_pos hrho hkappa
-  have htop' : 0 < a + k * p.natDegree := by
-    dsimp [a, k]
-    nlinarith [hdelta]
-  have hstep : intervalDifferentialStep alpha beta rho kappa L U xi p =
-      intervalRawStep a b k L U p := rfl
-  have hpack := intervalRawStep_degree_eq_and_leadingCoeff_pos
-    (b := b) (L := L) (U := U) htop' hp
-  have hinterStrict := intervalRawStep_strictInterl (b := b) hk htop' hp hs hroots
-  have hinter : Interlaces p (intervalRawStep a b k L U p) :=
-    hinterStrict.toInterlaces hpack.1.symm
-  have hlower := intervalRawStep_roots_ge_iff (b := b) hk htop' hp hs hroots
-  have hupper := intervalRawStep_roots_le_iff (b := b) hk htop' hp hs hroots
-  rw [hstep]
-  refine ⟨hpack.1, hpack.2, hinterStrict.2.1.2, hinter, ?_, ?_, ?_⟩
-  · constructor
-    · intro hall
-      have hlo := hlower.mp (fun r hr => (hall r hr).1)
-      have hup := hupper.mp (fun r hr => (hall r hr).2)
-      dsimp [a, b, k] at hlo hup
-      constructor <;> nlinarith
-    · rintro ⟨hlo, hup⟩ r hr
-      have hlo' : 0 ≤ -a * L - b + k * (U - L) * p.rootMultiplicity L := by
-        dsimp [a, b, k]
-        nlinarith
-      have hup' : 0 ≤ a * U + b + k * (U - L) * p.rootMultiplicity U := by
-        dsimp [a, b, k]
-        nlinarith
-      exact ⟨hlower.mpr hlo' r hr, hupper.mpr hup' r hr⟩
-  · exact intervalRawStep_rootMultiplicity_le htop' hp
-  · rw [intervalRawStep_swap]
-    exact intervalRawStep_rootMultiplicity_le htop' hp
 
 /-- The basis map whose `n`th basis element is the `n`th iterate of the scaled
 interval differential operator applied to `g`. -/
@@ -588,7 +125,7 @@ private theorem intervalDifferentialStep_package
         add_le_add le_rfl hmul
       _ = rho * (alpha * U + beta +
           kappa * (U - L) * q.rootMultiplicity U) := by ring
-  have hpack := intervalDifferentialStep_closed (beta := beta) hLU hrho
+  have hpack := intervalDifferentialStep_closed (beta := beta) hrho
     hkappa hqtop hq.2.1 hq.1.2.1 (fun r hr => hq.1.2.2 r hr) (xi := xi)
   have hstepRoots := hpack.2.2.2.2.1.mpr ⟨hxiL, hxiU⟩
   exact ⟨⟨hpack.2.1.ne_zero, hpack.2.2.1, hstepRoots⟩, hpack.2.1,
@@ -681,7 +218,7 @@ theorem intervalBasisMap_maps_realRootedIn_iff
       dsimp [p]
       simpa only [mul_one, intervalBasisMap_one] using
         intervalBasisMap_linear_mul alpha beta rho kappa L U xi g 1
-    have hpack := intervalDifferentialStep_closed (beta := beta) hLU hrho
+    have hpack := intervalDifferentialStep_closed (beta := beta) hrho
       hkappa htop hgpos hg.2.1 (fun r hr => hg.2.2 r hr) (xi := xi)
     have hroot :
         ∀ r ∈ (intervalDifferentialStep alpha beta rho kappa L U xi g).roots,
@@ -1038,63 +575,52 @@ endpoint family. -/
   rw [coeff_zero_eq_eval_zero]
   simp [endpointNegativeDenominator, endpointNegativeBinomial]
 
+/-- The closed-form series of a normalized denominator `D` and numerator `N` satisfies
+`D * series = N`. -/
+private lemma mul_mk_invOfUnit_mul_eq {K : Type*} [Field K] (D N : K[X]) (hD0 : D.coeff 0 = 1) :
+    (D : PowerSeries K) * PowerSeries.mk (fun n => PowerSeries.coeff n
+      (PowerSeries.invOfUnit (D : PowerSeries K) 1 * (N : PowerSeries K))) = N := by
+  have hmk : (PowerSeries.mk fun n => PowerSeries.coeff n
+      (PowerSeries.invOfUnit (D : PowerSeries K) 1 * (N : PowerSeries K))) =
+      PowerSeries.invOfUnit (D : PowerSeries K) 1 * (N : PowerSeries K) :=
+    PowerSeries.ext fun n => by simp
+  rw [hmk, ← mul_assoc, PowerSeries.mul_invOfUnit _ 1 (by simpa using hD0), one_mul]
+
 /-- The positive closed form has exactly the advertised polynomial-denominator
 generating-function identity. -/
 theorem endpointPositiveRationalSequence_generatingFunction (r s k : ℕ) :
     (endpointPositiveDenominator r k : PowerSeries (RatFunc ℝ)) *
         PowerSeries.mk (endpointPositiveRationalSequence r s k) =
-      (endpointPositiveNumerator r s : PowerSeries (RatFunc ℝ)) := by
-  let D := (endpointPositiveDenominator r k : PowerSeries (RatFunc ℝ))
-  let N := (endpointPositiveNumerator r s : PowerSeries (RatFunc ℝ))
-  have hD0 : PowerSeries.constantCoeff D = 1 := by
-    simp [D]
-  have hmk : PowerSeries.mk (endpointPositiveRationalSequence r s k) =
-      PowerSeries.invOfUnit D 1 * N := by
-    apply PowerSeries.ext
-    intro n
-    simp [endpointPositiveRationalSequence, D, N]
-  rw [hmk, ← mul_assoc, PowerSeries.mul_invOfUnit D 1 hD0]
-  simp [N]
+      (endpointPositiveNumerator r s : PowerSeries (RatFunc ℝ)) :=
+  mul_mk_invOfUnit_mul_eq _ _ (endpointPositiveDenominator_coeff_zero r k)
 
 /-- The negative closed form has exactly the advertised polynomial-denominator
 generating-function identity. -/
 theorem endpointNegativeRationalSequence_generatingFunction (r s k : ℕ) :
     (endpointNegativeDenominator r k : PowerSeries (RatFunc ℝ)) *
         PowerSeries.mk (endpointNegativeRationalSequence r s k) =
-      (endpointNegativeNumerator r s : PowerSeries (RatFunc ℝ)) := by
-  let D := (endpointNegativeDenominator r k : PowerSeries (RatFunc ℝ))
-  let N := (endpointNegativeNumerator r s : PowerSeries (RatFunc ℝ))
-  have hD0 : PowerSeries.constantCoeff D = 1 := by
-    simp [D]
-  have hmk : PowerSeries.mk (endpointNegativeRationalSequence r s k) =
-      PowerSeries.invOfUnit D 1 * N := by
-    apply PowerSeries.ext
-    intro n
-    simp [endpointNegativeRationalSequence, D, N]
-  rw [hmk, ← mul_assoc, PowerSeries.mul_invOfUnit D 1 hD0]
-  simp [N]
+      (endpointNegativeNumerator r s : PowerSeries (RatFunc ℝ)) :=
+  mul_mk_invOfUnit_mul_eq _ _ (endpointNegativeDenominator_coeff_zero r k)
+
+/-- The inverse of `r` in `ℝ(x)` is nonzero for positive `r`. -/
+private lemma ratFuncC_natCast_inv_ne_zero {r : ℕ} (hr : 0 < r) :
+    (RatFunc.C (r : ℝ))⁻¹ ≠ 0 := by
+  have hr0 : (r : ℝ) ≠ 0 := by exact_mod_cast hr.ne'
+  exact inv_ne_zero (by simpa using RatFunc.C_injective.ne hr0)
 
 /-- The positive binomial has degree one when `r` is positive. -/
 private lemma endpointPositiveBinomial_natDegree (r : ℕ) (hr : 0 < r) :
     (endpointPositiveBinomial r).natDegree = 1 := by
-  have hr0 : (r : ℝ) ≠ 0 := by exact_mod_cast hr.ne'
-  have hcC : RatFunc.C (r : ℝ) ≠ 0 := by
-    simpa using RatFunc.C_injective.ne hr0
-  have hc : (RatFunc.C (r : ℝ))⁻¹ ≠ 0 := inv_ne_zero hcC
   rw [endpointPositiveBinomial]
   compute_degree
-  simpa using hc
+  simpa using ratFuncC_natCast_inv_ne_zero hr
 
 /-- The negative binomial has degree one when `r` is positive. -/
 private lemma endpointNegativeBinomial_natDegree (r : ℕ) (hr : 0 < r) :
     (endpointNegativeBinomial r).natDegree = 1 := by
-  have hr0 : (r : ℝ) ≠ 0 := by exact_mod_cast hr.ne'
-  have hcC : RatFunc.C (r : ℝ) ≠ 0 := by
-    simpa using RatFunc.C_injective.ne hr0
-  have hc : (RatFunc.C (r : ℝ))⁻¹ ≠ 0 := inv_ne_zero hcC
   rw [endpointNegativeBinomial]
   compute_degree
-  simpa using neg_ne_zero.mpr hc
+  simpa using ratFuncC_natCast_inv_ne_zero hr
 
 /-- The unpowered positive-slope denominator has degree `r`. -/
 private lemma endpointPositiveDenominatorBase_natDegree (r : ℕ) (hr : 0 < r) :
@@ -1358,25 +884,17 @@ theorem endpointNegativeRational_minimalEventualOrder
 coefficient. -/
 private lemma endpointPositiveNumerator_leadingCoeff_ne_zero
     (r s : ℕ) (hr : 0 < r) :
-    (endpointPositiveNumerator r s).leadingCoeff ≠ 0 := by
-  apply leadingCoeff_ne_zero.mpr
-  apply pow_ne_zero
-  intro hzero
-  have hdeg := endpointPositiveBinomial_natDegree r hr
-  rw [hzero, natDegree_zero] at hdeg
-  norm_num at hdeg
+    (endpointPositiveNumerator r s).leadingCoeff ≠ 0 :=
+  leadingCoeff_ne_zero.mpr <| pow_ne_zero _ <|
+    ne_zero_of_natDegree_gt (n := 0) (by simp [endpointPositiveBinomial_natDegree r hr])
 
 /-- A negative-slope numerator is nonzero, hence has nonzero leading
 coefficient. -/
 private lemma endpointNegativeNumerator_leadingCoeff_ne_zero
     (r s : ℕ) (hr : 0 < r) :
-    (endpointNegativeNumerator r s).leadingCoeff ≠ 0 := by
-  apply leadingCoeff_ne_zero.mpr
-  apply pow_ne_zero
-  intro hzero
-  have hdeg := endpointNegativeBinomial_natDegree r hr
-  rw [hzero, natDegree_zero] at hdeg
-  norm_num at hdeg
+    (endpointNegativeNumerator r s).leadingCoeff ≠ 0 :=
+  leadingCoeff_ne_zero.mpr <| pow_ne_zero _ <|
+    ne_zero_of_natDegree_gt (n := 0) (by simp [endpointNegativeBinomial_natDegree r hr])
 
 /-- At the boundary `s=k*r`, the positive-slope order-`k*r` recurrence starts
 at row one and fails at row zero; the shortest all-index order is `k*r+1`. -/

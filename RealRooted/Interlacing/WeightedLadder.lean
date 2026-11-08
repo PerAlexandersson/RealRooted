@@ -3,6 +3,7 @@ module
 public import RealRooted.BinaryRunTransformation.CriticalValue
 public import RealRooted.Interlacing.CoupledQuadraticRecurrence
 import RealRooted.BalancedRunTransformation.Preservation
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
 # Weighted ladder polynomials
@@ -136,10 +137,6 @@ theorem coeff_zero_ladderC_succ (u v : ℝ) (n : ℕ) : (ladderC u v (n + 1)).co
   rw [ladderC_succ, coeff_zero_eq_eval_zero]
   simpa [coeff_zero_eq_eval_zero] using coeff_zero_ladderL u v n
 
-private lemma coeff_one_add_C_mul_X_mul (q : ℝ[X]) (k : ℕ) :
-    ((1 + C u * X) * q).coeff (k + 1) = q.coeff (k + 1) + u * q.coeff k := by
-  rw [add_mul, one_mul, mul_assoc, coeff_add, coeff_C_mul, coeff_X_mul]
-
 /-- The nonnegativity, leading-coefficient and constant-term invariants of the ladder. -/
 private lemma hasNonnegCoeffs_ladder (hu : 0 < u) (hv : 0 ≤ v) (n : ℕ) :
     HasNonnegCoeffs (ladderL u v n) ∧ HasNonnegCoeffs (ladderL u v (n + 1)) ∧
@@ -173,7 +170,7 @@ private lemma hasNonnegCoeffs_ladder (hu : 0 < u) (hv : 0 ≤ v) (n : ℕ) :
       rw [ladderL_add_two]
       exact (hT1.add hT2).add hT3
     refine ⟨hL1, hL2, hC2, hp1, ?_⟩
-    rw [ladderL_add_two, coeff_add, coeff_add, coeff_one_add_C_mul_X_mul]
+    rw [ladderL_add_two, coeff_add, coeff_add, coeff_one_add_C_mul_X_mul_succ]
     have := hT2 (n + 1 + 1)
     have := hT3 (n + 1 + 1)
     have := hL1 (n + 1 + 1)
@@ -211,13 +208,9 @@ theorem lt_zero_of_mem_roots_ladderL (hu : 0 < u) (hv : 0 ≤ v) (n : ℕ) :
 /-! ### Signed parity lifts -/
 
 private lemma eq_of_forall_eval_eq_of_ne_zero {p q : ℝ[X]}
-    (h : ∀ r : ℝ, r ≠ 0 → p.eval r = q.eval r) : p = q := by
-  have hX : (X : ℝ[X]) * p = X * q := by
-    refine Polynomial.funext fun r => ?_
-    by_cases hr : r = 0
-    · simp [hr]
-    · simp [h r hr]
-  exact mul_left_cancel₀ X_ne_zero hX
+    (h : ∀ r : ℝ, r ≠ 0 → p.eval r = q.eval r) : p = q :=
+  eq_of_infinite_eval_eq p q
+    ((Set.Ioi_infinite (0 : ℝ)).mono fun r hr => h r (Set.mem_Ioi.1 hr).ne')
 
 private lemma eval_signedParityLift_ladderL (u v : ℝ) (n : ℕ) {r : ℝ} (hr : r ≠ 0) :
     (signedParityLift (2 * n) (ladderL u v n)).eval r =

@@ -12,6 +12,7 @@ public import Mathlib.Logic.Function.Iterate
 public import Mathlib.Algebra.Polynomial.Basic
 public import Mathlib.Basic.Real.Basic
 import RealRooted.Derivative.Interlacing
+import RealRooted.Mathlib.Algebra.Polynomial.Eval.NatWindow
 import RealRooted.Mathlib.RingTheory.Polynomial.Pochhammer
 import RealRooted.Interlacing.Multiplicity
 import RealRooted.Derivative.RootCounting
@@ -31,7 +32,7 @@ public section
 open scoped BigOperators
 open Polynomial
 
-namespace Polynomial
+namespace RealRooted
 
 /-- A multiple root of the derivative of a split real polynomial comes from a
 root of the original polynomial with multiplicity one larger. -/
@@ -76,68 +77,6 @@ theorem rootMultiplicity_eq_add_of_iterate_derivative_ge_two
         lia
       rw [ih hp hmn, hstep]
       lia
-
-/-- A polynomial of degree below `k` which vanishes at `k` consecutive
-integers is zero. -/
-theorem eq_zero_of_natDegree_lt_of_eval_nat_add_eq_zero
-    {q : ℝ[X]} {k N₀ : ℕ} (hdeg : q.natDegree < k)
-    (h : ∀ t < k, q.eval (N₀ + t : ℝ) = 0) : q = 0 := by
-  apply eq_zero_of_natDegree_lt_card_of_eval_eq_zero q
-    (f := fun i : Fin k ↦ (N₀ + i : ℝ))
-  · intro i j hij
-    apply Fin.ext
-    norm_num at hij ⊢
-    exact hij
-  · intro i
-    exact h i i.2
-  · simpa using hdeg
-
-/-- Consecutive values determine a linear combination of the first `k`
-binomial-coefficient functions. -/
-theorem eq_zero_of_sum_choose_eq_zero_on_window
-    (v : ℕ → ℝ) {k N₀ : ℕ}
-    (h : ∀ t < k,
-      ∑ j ∈ Finset.range k, ((N₀ + t).choose j : ℝ) * v j = 0) :
-    ∀ j < k, v j = 0 := by
-  by_cases hk0 : k = 0
-  · subst k
-    simp
-  let q : ℝ[X] := ∑ j ∈ Finset.range k,
-    (v j / (j.factorial : ℝ)) • descPochhammerBasis ℝ j
-  have hdeg : q.natDegree < k := by
-    refine lt_of_le_of_lt
-      (natDegree_sum_le_of_forall_le _ _ fun j hj ↦ ?_) (Nat.pred_lt hk0)
-    refine (natDegree_smul_le _ _).trans ?_
-    rw [descPochhammerBasis_apply, descPochhammer_natDegree]
-    exact Nat.le_pred_of_lt (Finset.mem_range.mp hj)
-  have hq : q = 0 := by
-    refine eq_zero_of_natDegree_lt_of_eval_nat_add_eq_zero
-      (N₀ := N₀) hdeg ?_
-    intro t ht
-    rw [show q.eval (N₀ + t : ℝ) =
-        ∑ j ∈ Finset.range k, ((N₀ + t).choose j : ℝ) * v j by
-      simp only [q, eval_finsetSum, eval_smul, descPochhammerBasis_apply]
-      apply Finset.sum_congr rfl
-      intro j _
-      change (v j / (j.factorial : ℝ)) *
-        (descPochhammer ℝ j).eval (N₀ + t : ℝ) = _
-      rw [← Nat.cast_add]
-      rw [descPochhammer_eval_eq_descFactorial]
-      rw [Nat.descFactorial_eq_factorial_mul_choose]
-      field_simp [Nat.factorial_ne_zero]
-      rw [Nat.cast_mul]
-      ring]
-    exact h t ht
-  intro j hj
-  have hre := congrArg (fun p : ℝ[X] ↦ (descPochhammerBasis ℝ).repr p j) hq
-  simp only [q, map_sum, Finsupp.coe_finsetSum, Finset.sum_apply,
-    map_smul, Module.Basis.repr_self, Finsupp.smul_single,
-    Finsupp.single_apply] at hre
-  simpa [Finset.mem_range.mpr hj, Nat.factorial_ne_zero] using hre
-
-end Polynomial
-
-namespace RealRooted
 
 noncomputable section
 
@@ -323,12 +262,12 @@ theorem eq_zero_of_add_scaled_linear_pow_splits
 to be geometric from its zeroth row onward. -/
 theorem eq_mul_pow_of_eventually_geometric_of_discrepancy_eq_zero
     {P : ℕ → ℝ[X]} {y : ℝ[X]} {k : ℕ}
-    (hk : 1 ≤ k) (hy : y ≠ 0)
+    (hk : k ≠ 0) (hy : y ≠ 0)
     (htail : ∀ n, k ≤ n → P n = P k * y ^ (n - k))
     (hdiscrepancy : ∀ j < k, geometricDiscrepancy P y k j = 0) :
     ∀ n, P n = P 0 * y ^ n := by
   have hkrow : P k = P 0 * y ^ k := by
-    have h := hdiscrepancy 0 hk
+    have h := hdiscrepancy 0 (Nat.pos_of_ne_zero hk)
     rw [geometricDiscrepancy, pow_zero, mul_one, sub_eq_zero] at h
     simpa [mul_comm] using h.symm
   intro n
@@ -363,7 +302,7 @@ induced formula for its linear map. -/
 theorem linearMap_eq_mul_comp_of_eventually_geometric
     (T : ℝ[X] →ₗ[ℝ] ℝ[X]) (P : ℕ → ℝ[X])
     {y : ℝ[X]} {k : ℕ} (hT : ∀ n, T (X ^ n) = P n)
-    (hk : 1 ≤ k) (hy : y ≠ 0)
+    (hk : k ≠ 0) (hy : y ≠ 0)
     (htail : ∀ n, k ≤ n → P n = P k * y ^ (n - k))
     (hdiscrepancy : ∀ j < k, geometricDiscrepancy P y k j = 0) :
     ∀ p, T p = P 0 * p.comp y :=
@@ -387,7 +326,7 @@ theorem forall_mem_splits_mul_comp_iff
 the explicit window from `max k (D + 3)` through `k - 1` degrees later. -/
 theorem exists_not_splits_binomialShiftImage_of_eventually_geometric
     {P : ℕ → ℝ[X]} {a d r : ℝ} {k : ℕ}
-    (hk : 1 ≤ k) (hd : d ≠ 0) (hPk : P k ≠ 0)
+    (hd : d ≠ 0) (hPk : P k ≠ 0)
     (htail : ∀ n, k ≤ n →
       P n = P k * (C a + C d * X) ^ (n - k))
     (hexists : ∃ j < k,
@@ -483,7 +422,7 @@ the row-defined linear map is not split. -/
 theorem exists_not_splits_linearMap_shiftedPower_of_eventually_geometric
     (T : ℝ[X] →ₗ[ℝ] ℝ[X]) {P : ℕ → ℝ[X]} {a d r : ℝ} {k : ℕ}
     (hT : ∀ n, T (X ^ n) = P n)
-    (hk : 1 ≤ k) (hd : d ≠ 0) (hPk : P k ≠ 0)
+    (hd : d ≠ 0) (hPk : P k ≠ 0)
     (htail : ∀ n, k ≤ n →
       P n = P k * (C a + C d * X) ^ (n - k))
     (hexists : ∃ j < k,
@@ -495,7 +434,7 @@ theorem exists_not_splits_linearMap_shiftedPower_of_eventually_geometric
       ¬(T ((X + C r) ^ N)).Splits := by
   obtain ⟨N, hlow, hhigh, hN⟩ :=
     exists_not_splits_binomialShiftImage_of_eventually_geometric
-      hk hd hPk htail hexists hr
+      hd hPk htail hexists hr
   refine ⟨N, hlow, hhigh, ?_⟩
   rwa [linearMap_add_C_pow_eq_binomialShiftImage T P hT r N]
 

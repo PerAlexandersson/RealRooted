@@ -525,7 +525,7 @@ theorem polynomial_interlaces (n : ℕ) :
 
 /-- Every A056939 model row splits over the reals. -/
 theorem polynomial_splits (n : ℕ) : (polynomial n).Splits :=
-  (polynomial_isPF n).eq_zero_or_splits.elim (fun h => h ▸ Splits.zero) id
+  (polynomial_isPF n).splits
 
 /-- A sequence with the A056939 initial rows and update has split rows. -/
 @[rr_row_model]
