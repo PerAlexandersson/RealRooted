@@ -145,19 +145,6 @@ theorem powerDerivativeShift_roots_nonpos {f : ℝ[X]}
   exact Polynomial.roots_nonpos_of_coeff_nonneg
     (powerDerivativeShift_hasNonnegCoeffs hf m hc) hr
 
-private lemma StrictInterl.iterate_derivative_of_le_natDegree
-    {f g : ℝ[X]} (hfg : StrictInterl f g) (m : ℕ)
-    (hm : m ≤ f.natDegree) :
-    StrictInterl (Polynomial.derivative^[m] f)
-      (Polynomial.derivative^[m] g) := by
-  induction m generalizing f g with
-  | zero => simpa
-  | succ m ih =>
-      rw [Function.iterate_succ_apply', Function.iterate_succ_apply']
-      apply StrictInterl.derivative (ih hfg (by lia))
-      rw [natDegree_iterate_derivative_eq_sub hfg.1.1 (by lia)]
-      lia
-
 /-- Applying the same power derivative shift to both members of an oriented
 interlacing pair preserves the orientation. -/
 theorem StrictInterl.powerDerivativeShift {f g : ℝ[X]}

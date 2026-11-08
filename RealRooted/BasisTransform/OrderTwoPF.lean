@@ -739,8 +739,10 @@ theorem forall_orderTwoBasis_eval_zero_nonneg_iff
       0 ≤ a ^ 2 + 4 * c ∧ (2 * s ≥ a ∨ c ≥ s ^ 2 - a * s) := by
   simpa [orderTwoBasis_eval_zero] using orderTwoConstants_nonneg_iff ha hs
 
-/-- The four formulations in Issue 2186 are equivalent: PF preservation,
-PF basis rows, nonnegative constant terms, and the two scalar inequalities. -/
+/-- For the order-two basis, the following four conditions are equivalent: preservation of
+Pólya frequency polynomials by the basis transform, all basis rows being Pólya frequency
+polynomials, all constant terms of the rows being nonnegative, and the two scalar inequalities
+`0 ≤ a ^ 2 + 4 * c` and `2 * s ≥ a ∨ c ≥ s ^ 2 - a * s`. -/
 theorem orderTwoBasis_pf_equivalences
     {a b c s : ℝ} (ha : 0 ≤ a) (hb : 0 < b) (hs : 0 ≤ s) :
     ((∀ p : ℝ[X], IsPFPolynomial p →
