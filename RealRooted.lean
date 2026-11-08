@@ -2125,3 +2125,4 @@ public import RealRooted.Challenges.Roots.ChebyshevLevels
 public import RealRooted.Challenges.Roots.OdeRootBounds
 public import RealRooted.Challenges.Stability.BivariateDeterminantalReduction
 public import RealRooted.Challenges.Combinatorial.NarayanaGammaPolynomials
+public import RealRooted.DerivativeRecurrence.HalfStepLag
