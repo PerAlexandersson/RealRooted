@@ -116,7 +116,7 @@ theorem natDegree_binomialLift_apolarTwist (n : Nat) (z : ℂ) {F₀ f : ℂ[X]}
 theorem pf_complex_root_nonpos_real {f : ℝ[X]} (hf : IsPFPolynomial f) (hf0 : f ≠ 0)
     {μ : ℂ} (hμ : (f.map Complex.ofRealHom).IsRoot μ) :
     μ.im = 0 ∧ μ.re ≤ 0 := by
-  have hsplits : f.Splits := hf.eq_zero_or_splits.resolve_left hf0
+  have hsplits : f.Splits := hf.splits
   obtain ⟨r, rfl⟩ : μ ∈ Complex.ofRealHom.range := hsplits.mem_range_of_isRoot hf0 hμ
   have hr_root : f.IsRoot r := hμ.of_map Complex.ofReal_injective
   have : r ≤ 0 := hf.roots_nonpos r ((Polynomial.mem_roots hf0).mpr hr_root)
@@ -280,7 +280,7 @@ theorem isPFPolynomial_of_X_mul {f₁ : ℝ[X]} (hp : IsPFPolynomial (X * f₁))
   have hX₁ : X * f₁ ≠ 0 := mul_ne_zero X_ne_zero hf₁
   exact IsPFPolynomial.of_realRooted_nonneg
     (fun k => by simpa using hp.hasNonnegCoeffs (k + 1))
-    (isRealRooted_of_X_mul hX₁ (hp.eq_zero_or_splits.resolve_left hX₁)).2
+    (isRealRooted_of_X_mul hX₁ hp.splits).2
 
 theorem schurSzegoComp_X_mul_right (n : Nat) (hn : 1 ≤ n) (f p₁ : ℝ[X]) :
     schurSzegoComp n f (X * p₁) =
@@ -352,8 +352,7 @@ theorem splits_schurSzegoComp_of_isPF (n : Nat) :
       have hderiv_pf : IsPFPolynomial (C (n : ℝ)⁻¹ * derivative f) :=
         (hf.derivative).const_mul (by positivity)
       have hderiv_split : (C (n : ℝ)⁻¹ * derivative f).Splits :=
-        (Polynomial.Splits.C (R := ℝ) _).mul (Polynomial.Splits.derivative
-          (hf.eq_zero_or_splits.resolve_left hf0))
+        (Polynomial.Splits.C (R := ℝ) _).mul (Polynomial.Splits.derivative hf.splits)
       have hinner : (schurSzegoComp (n - 1) (C (n : ℝ)⁻¹ * derivative f) p.divX).Splits := by
         by_cases hq0 : C (n : ℝ)⁻¹ * derivative f = 0
         · simp [hq0]
@@ -449,9 +448,7 @@ theorem IsPFPolynomial.schurSzegoComp
     IsPFPolynomial (schurSzegoComp n f p) := by
   refine IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
     (hf.hasNonnegCoeffs.schurSzegoComp hp.hasNonnegCoeffs) ?_
-  rcases eq_or_ne p 0 with rfl | hp0
-  · simp
-  exact finiteSchurSzegoComposition hf hfdeg hpdeg (hp.eq_zero_or_splits.resolve_left hp0)
+  exact finiteSchurSzegoComposition hf hfdeg hpdeg hp.splits
 
 /-- The backward direction of the finite Pólya--Schur theorem, obtained from the
 finite Schur--Szegő composition theorem: the diagonal operator attached to

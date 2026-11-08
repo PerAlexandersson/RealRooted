@@ -240,7 +240,7 @@ private theorem compatible_jensen_output_of_translate_core
   · left
     simpa [out] using hzero
   · right
-    refine ⟨?_, hout_pf.eq_zero_or_splits.resolve_left hzero⟩
+    refine ⟨?_, hout_pf.splits⟩
     simpa [out] using hzero
 
 /-- Simultaneous Schur--Szegő composition by a PF polynomial preserves

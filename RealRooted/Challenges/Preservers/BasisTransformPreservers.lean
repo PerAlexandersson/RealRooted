@@ -6,6 +6,11 @@ import RealRooted.BasisTransform.SemigroupClassification
 import RealRooted.BasisTransform.AppellTranslationRigidity
 import RealRooted.BasisTransform.LimitingAppell
 import RealRooted.BasisTransform.IntervalBasisMaps
+import RealRooted.BasisTransform.PolynomialSemigroups
+import RealRooted.BasisTransform.TranslationLahPositiveMeasure
+import RealRooted.BasisTransform.EventuallyGeometric
+import RealRooted.BasisTransform.ScalarIndexFactorization
+import RealRooted.BasisTransform.FiniteSymbol
 
 /-!
 # Basis transforms preserving real-rootedness and PF
@@ -119,6 +124,107 @@ label = "Exact source interval for an interval-operator basis map"
 name = "RealRooted.rayBasisMap_maps_realRootedIn_iff"
 module = "RealRooted.BasisTransform.DifferentialOperatorMaps"
 label = "Exact source ray for a ray-operator basis map"
+
+[[definitions]]
+name = "RealRooted.raySemigroupBasis"
+module = "RealRooted.BasisTransform.PolynomialSemigroups"
+label = "The monomial images of the ray semigroup"
+
+[[definitions]]
+name = "RealRooted.TranslationLahGenerator"
+module = "RealRooted.BasisTransform.TranslationLahPositiveMeasure"
+label = "Translation and Lah generators"
+
+[[definitions]]
+name = "RealRooted.HasTranslationLahEGF"
+module = "RealRooted.BasisTransform.TranslationLahPositiveMeasure"
+label = "Rows with a translation–Lah exponential generating function"
+
+[[definitions]]
+name = "RealRooted.geometricDiscrepancy"
+module = "RealRooted.BasisTransform.EventuallyGeometric"
+label = "Discrepancy of a prefix row from the geometric tail"
+
+[[definitions]]
+name = "RealRooted.polynomialOrbitMap"
+module = "RealRooted.BasisTransform.ScalarIndexFactorization"
+label = "The linear map sending X^n to L^n g"
+
+[[theorems]]
+name = "RealRooted.raySemigroupTransform_isPFPolynomial"
+module = "RealRooted.BasisTransform.PolynomialSemigroups"
+label = "For a, b, t ≥ 0 the ray semigroup maps PF polynomials to PF polynomials"
+
+[[theorems]]
+name = "RealRooted.fallingFactorialTransform_raySemigroupTransform"
+module = "RealRooted.BasisTransform.PolynomialSemigroups"
+label = "The ray semigroup is conjugate to the rising factorial transform up to a translation"
+
+[[theorems]]
+name = "RealRooted.rayApplicationSequence_isPFPolynomial"
+module = "RealRooted.BasisTransform.PolynomialSemigroups"
+label = "Second-order application sequences from the time-one ray semigroup are PF"
+
+[[theorems]]
+name = "RealRooted.translationLahWordTransform_isPFPolynomial"
+module = "RealRooted.BasisTransform.TranslationLahPositiveMeasure"
+label = "Finite words of translations and Lah flows with nonnegative parameters preserve PF"
+headline = true
+
+[[theorems]]
+name = "RealRooted.hasTranslationLahEGF_word"
+module = "RealRooted.BasisTransform.TranslationLahPositiveMeasure"
+label = "The exponential generating function of a translation–Lah word"
+
+[[theorems]]
+name = "RealRooted.TranslationLahParameters.exists_word"
+module = "RealRooted.BasisTransform.TranslationLahPositiveMeasure"
+label = "Every reachable parameter pair (total Lah time, atoms) comes from a valid word"
+
+[[theorems]]
+name = "RealRooted.IsTranslationLahWordClosure.isPFPolynomial_basisTransform"
+module = "RealRooted.BasisTransform.TranslationLahPositiveMeasure"
+label = "Coefficientwise limits of valid translation–Lah words preserve PF"
+
+[[theorems]]
+name = "RealRooted.sum_alternating_choose_mul_integral_pow_nonneg"
+module = "RealRooted.BasisTransform.TranslationLahPositiveMeasure"
+label = "Hausdorff inequalities for finite positive measures on [0, β]"
+
+[[theorems]]
+name = "RealRooted.sq_integral_pow_one_le_mul_zero_two"
+module = "RealRooted.BasisTransform.TranslationLahPositiveMeasure"
+label = "Hankel (Cauchy–Schwarz) inequality for the first three moments"
+
+[[theorems]]
+name = "RealRooted.linearMap_eq_mul_comp_of_eventually_geometric"
+module = "RealRooted.BasisTransform.EventuallyGeometric"
+label = "An eventually geometric basis with vanishing discrepancies is p ↦ P₀ · p(y)"
+
+[[theorems]]
+name = "RealRooted.exists_not_splits_linearMap_shiftedPower_of_eventually_geometric"
+module = "RealRooted.BasisTransform.EventuallyGeometric"
+label = "A nonzero prefix discrepancy gives a shifted power with non-real-rooted image"
+
+[[theorems]]
+name = "RealRooted.basisMap_factorization_of_scalarIndex_recurrence"
+module = "RealRooted.BasisTransform.ScalarIndexFactorization"
+label = "A scalar-index recurrence factors through the rising factorial transform"
+
+[[theorems]]
+name = "RealRooted.BorceaBranden.finiteAlgebraicSymbol_basisTransformₗ"
+module = "RealRooted.BasisTransform.FiniteSymbol"
+label = "The finite Borcea–Brändén symbol of a basis transform"
+
+[[theorems]]
+name = "RealRooted.BorceaBranden.basisTransform_splits_or_zero_of_finiteSymbol_stable"
+module = "RealRooted.BasisTransform.FiniteSymbol"
+label = "A stable finite symbol gives degree-bounded real-rootedness preservation"
+
+[[theorems]]
+name = "RealRooted.BorceaBranden.basisTransform_isPF_of_finiteSymbol_stable"
+module = "RealRooted.BasisTransform.FiniteSymbol"
+label = "A stable finite symbol and nonnegative rows give degree-bounded PF preservation"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -246,6 +352,57 @@ $$
 0\le[x^j]A_{2j}\le\frac{\bigl([x^1]A_2\bigr)^j}{j!},
 $$
 which are attained by exponential coefficient data $[x^j]A_{2j}=c^j/j!$.
+
+## Sufficiency for the ray semigroup, and translation--Lah words
+
+The semigroup $T_t=\exp\bigl(t(aD+bxD^2)\bigr)$ above preserves PF polynomials
+whenever $a,b,t\ge0$. In the other direction, its monomial images are monic of degree $n$ and
+conjugate to the generalized rising factorial transform: with $\mathrm{ff}$ the
+step-$bt$ falling factorial transform,
+$\mathrm{ff}(T_tp)=\bigl(\text{rising factorial transform of }p\bigr)(x+ta)$.
+Applying the time-one semigroup to each row of the sequence
+$S_0=1$, $S_{n+1}=(x+c_n)S_n+\kappa xS_n'$ with $\kappa,c_n\ge0$ again yields PF
+polynomials, monic of degree $n$.
+
+Two special cases of $T_t$ are the translation $p(x)\mapsto p(x+a)$ (take $b=0$,
+$t=1$) and the *Lah flow* (take $a=0$, $t=1$). A *translation--Lah word* is a
+finite composition of translations by amounts $a\ge0$ and Lah flows of times
+$b\ge0$. Every valid word preserves PF polynomials, and so does every
+coefficientwise limit of valid words. The monomial images $P_n$ of a word have a
+formal exponential generating function
+$$
+\sum_{n\ge0}P_n\frac{z^n}{n!}
+=\exp\Bigl(\sum_{(u,a)}\frac{a\,z}{1-uz}\Bigr)\exp\Bigl(\frac{xz}{1-\beta z}\Bigr),
+$$
+where $\beta$ is the total Lah time and the finite list of atoms $(u,a)$ records
+each translation $a$ together with the Lah time $u$ at which it is inserted. Every
+reachable pair $(\beta,\text{atoms})$ satisfies $0\le u\le\beta$ and $a\ge0$
+for each atom, and every list with these bounds in which $u$ weakly decreases
+along the list is reachable. For a finite positive measure supported on
+$[0,\beta]$, and in particular for atomic measures, the moments
+$m_j=\int u^j$ satisfy the Hausdorff inequalities
+$\sum_{i=0}^k(-1)^i\binom ki\beta^{k-i}m_{j+i}=\int u^j(\beta-u)^k\ge0$ and the
+Hankel inequality $m_1^2\le m_0m_2$.
+
+## Eventually geometric bases and finite symbols
+
+Let $T$ be a linear map with $T(x^n)=P_n$ and suppose $P_n=P_ky^{\,n-k}$ for $n\ge k$.
+Define the discrepancies $y^kP_j-P_ky^j$ for $j<k$. If they all vanish, then
+$P_n=P_0y^n$ and $T(p)=P_0\cdot p(y)$. If instead $y=a+dx$ with $d\ne0$ and some
+discrepancy is nonzero, then for every $r\ne0$ there is an exponent $N$ in an
+explicit window of length $k$ such that $T\bigl((x+r)^N\bigr)$ is not real-rooted.
+
+If $P_0=g$ and $P_{n+1}=(L+nh)P_n$ for an endomorphism $L$, then
+$P_n$ is the image of the generalized rising factorial of step $h$ under
+the orbit map $x^n\mapsto L^ng$, so the basis map factors through the rising
+factorial transform.
+
+Finally, for a basis $(P_k)$ and a degree bound $d$, the finite
+Borcea--Brändén symbol of the transform is
+$\sum_{k\le d}\binom dk P_k(x)\,w^{d-k}$. If this symbol is stable, then the
+transform maps real-rooted polynomials of degree at most $d$ to real-rooted ones
+(or zero), and PF polynomials of degree at most $d$ to PF polynomials when the
+rows $P_k$, $k\le d$, have nonnegative coefficients.
 
 ## What is new
 

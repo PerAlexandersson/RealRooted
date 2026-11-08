@@ -237,11 +237,9 @@ theorem isPFPolynomial_X_mul_add_C_mul {f g : ℝ[X]}
     hf.X_mul.hasNonnegCoeffs.add (hasNonnegCoeffs_C_mul ha hg.hasNonnegCoeffs)
   by_cases hf0 : f = 0
   · rw [hf0, mul_zero, zero_add]
-    rcases hg.eq_zero_or_splits with hg0 | hgs
-    · simpa [hg0] using IsPFPolynomial.zero
-    · exact IsPFPolynomial.of_realRooted_nonneg
-        (hasNonnegCoeffs_C_mul ha hg.hasNonnegCoeffs)
-        ((Polynomial.Splits.C a).mul hgs)
+    exact IsPFPolynomial.of_realRooted_nonneg
+      (hasNonnegCoeffs_C_mul ha hg.hasNonnegCoeffs)
+      ((Polynomial.Splits.C a).mul hg.splits)
   rcases hinterl with hleft0 | hright0 | hstrict
   · exact False.elim (hf0 hleft0)
   · simpa [hright0] using IsPFPolynomial.zero

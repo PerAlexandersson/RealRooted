@@ -2,6 +2,7 @@ module
 
 import RealRooted.Transforms.BrandenE
 import RealRooted.Transforms.BrandenE.IntervalPreserver
+import RealRooted.Transforms.BrandenE.Interlacing
 
 /-!
 # Brändén E transform challenge entry point
@@ -58,6 +59,17 @@ label = "Ordered Bell polynomials are PF polynomials"
 name = "RealRooted.brandenE_descPochhammer"
 module = "RealRooted.Transforms.BrandenE.Inverse"
 label = "E sends x(x − 1)⋯(x − n + 1) to n! xⁿ"
+
+[[theorems]]
+name = "RealRooted.brandenE_strictInterl_of_rootwiseLE"
+module = "RealRooted.Transforms.BrandenE.Interlacing"
+label = "Rootwise order of polynomials with roots in [-1, 0] gives interlacing E-images"
+headline = true
+
+[[theorems]]
+name = "RealRooted.brandenE_strictInterl_one_root_replacement"
+module = "RealRooted.Transforms.BrandenE.Interlacing"
+label = "Moving one root to the right gives interlacing images"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -85,6 +97,18 @@ and lie in $[-1, 0]$.
 $b_{n,k} = E\bigl(x^k (x + 1)^{n-k}\bigr)$. Then $b_{n,i} \ll b_{n,j}$ for all
 $i \le j \le n$. In particular every ordered Bell polynomial
 $F_n = b_{n,n}$ is a PF polynomial.
+
+## Rootwise order and interlacing of images
+
+Let $f$ and $g$ be monic of the same positive degree $n$, split, with all roots in
+$[-1,0]$, and suppose the sorted roots satisfy $f\le g$ coordinatewise. Then $E(f)$
+interlaces $E(g)$, as in Theorem 4.6 of [@Branden2006]. The proof moves one root at a time:
+for $u\le v$ and monic split $h$ with roots in $[-1,0]$, $E\bigl((x-u)h\bigr)$
+interlaces $E\bigl((x-v)h\bigr)$, using
+$E\bigl((x-\beta)h\bigr)=E\bigl((x-\alpha)h\bigr)-(\beta-\alpha)E(h)$; this step needs no
+interval hypothesis on the moved root. Applying it along a chain of root multisets from all
+roots $-1$ through $f$ and $g$ to all roots $0$, and closing with the endpoint relation, gives
+the result.
 
 ## Proof idea
 

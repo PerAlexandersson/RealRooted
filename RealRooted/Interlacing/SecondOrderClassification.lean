@@ -93,7 +93,7 @@ def secondOrderMonomialDiscrim (a b c d f : ℝ) (m : ℕ) : ℝ :=
   (a + d * m) ^ 2 - 4 * b * m * (c + f * (m - 1))
 
 /-- Universal preservation of the PF cone by the second-order ray operator. -/
-def SecondOrderRayPreserving (a b c d f : ℝ) : Prop :=
+@[expose] def SecondOrderRayPreserving (a b c d f : ℝ) : Prop :=
   ∀ p : ℝ[X], IsPFPolynomial p →
     IsPFPolynomial (secondOrderRayOperator a b c d f p)
 
@@ -165,9 +165,7 @@ theorem not_secondOrderRayPreserving_of_discrim_neg
   have hout := hpres (X ^ m) (isPFPolynomial_X.pow m)
   have hnot := not_splits_secondOrderRayOperator_X_pow_of_discrim_neg
     hm hb.ne' hdisc
-  rcases hout.eq_zero_or_splits with hzero | hsplits
-  · exact hnot (hzero.symm ▸ Splits.zero)
-  · exact hnot hsplits
+  exact hnot hout.splits
 
 /-- The existing factored quadratic-operator theorem gives the `c = 0`
 sufficiency slice of the ray family. -/
