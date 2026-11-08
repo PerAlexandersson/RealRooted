@@ -379,8 +379,8 @@ theorem differentialTests_ordered_of_preservesOrderedPFUpTo
     {N : ℕ} {h k : ℝ[X]} (hpres : PreservesOrderedPFUpTo N h k) :
     IsPFPolynomial (finiteDifferentialTest N h) ∧
       IsPFPolynomial (finiteDifferentialTest N k) ∧
-        Interl (finiteDifferentialTest N h) (finiteDifferentialTest N k) := by
-  exact hpres (isPFPolynomial_X_pow N) (by simp)
+        Interl (finiteDifferentialTest N h) (finiteDifferentialTest N k) :=
+  finiteDifferentialTest_ordered_of_preservesOrderedPFUpTo hpres
 
 /-- Two constant-coefficient differential operators preserve the ordered PF
 pair through degree `N` exactly when their images of `X ^ N` are PF and have

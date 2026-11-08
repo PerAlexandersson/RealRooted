@@ -513,25 +513,6 @@ theorem rankOne_or_algebraicSymbol_stable_of_preserves_of_perturbations
       (hasStableRankOneRepresentation_of_preserves_of_shiftedBox_eq_zero
         hT (hperturb W hW) hzero)
 
-/-- Source-faithful necessity wrapper for the literal “all sufficiently small
-positive perturbations” conclusion of Borcea--Brändén Lemma 3.1. -/
-theorem rankOne_or_algebraicSymbol_stable_of_preserves_of_robust_perturbations
-    {σ : Type*} [Fintype σ] {κ : σ → ℕ}
-    {T : MvPolynomial.degreeOfLE σ ℂ κ →ₗ[ℂ] MvPolynomial σ ℂ}
-    (hT : PreservesComplexStabilityOnDegreeBox κ T)
-    (hrobust : ∀ W, (∀ i, 0 < (W i).im) → ∀ f,
-      ∃ ε₀ : ℝ, 0 < ε₀ ∧ ∀ ε : ℝ, 0 < ε → ε < ε₀ →
-        MvUpperHalfPlaneStable
-          (shiftedBoxPolynomial κ W + (ε : ℂ) • f).1) :
-    HasStableRankOneRepresentation κ T ∨
-      MvUpperHalfPlaneStable (MvPolynomial.algebraicSymbol κ T) := by
-  apply rankOne_or_algebraicSymbol_stable_of_preserves_of_perturbations hT
-  intro W hW f
-  obtain ⟨ε₀, hε₀, hstable⟩ := hrobust W hW f
-  refine ⟨(ε₀ / 2 : ℝ), ?_, ?_⟩
-  · exact_mod_cast (half_pos hε₀).ne'
-  · exact hstable (ε₀ / 2) (half_pos hε₀) (half_lt_self hε₀)
-
 /-- Necessity in the complex finite-symbol classification: every stability
 preserver either has stable rank at most one or has a stable algebraic symbol.
 
