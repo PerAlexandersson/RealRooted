@@ -8,7 +8,7 @@ module
 public import Mathlib.Algebra.Polynomial.Degree.Defs
 public import Mathlib.Algebra.Polynomial.Eval.Defs
 public import Mathlib.Basic.Real.Basic
-public import RealRooted.Mathlib.RingTheory.Polynomial.Pochhammer
+import RealRooted.Mathlib.RingTheory.Polynomial.Pochhammer
 
 import Mathlib.Algebra.Polynomial.Eval.SMul
 import Mathlib.Algebra.Polynomial.Roots
