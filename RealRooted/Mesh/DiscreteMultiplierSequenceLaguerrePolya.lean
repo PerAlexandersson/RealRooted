@@ -74,7 +74,7 @@ theorem isDiscreteMultiplierSequence_of_isLaguerrePolyaTypeI {f : ℂ → ℂ}
       rw [this]
       exact ⟨Polynomial.MeshGE.of_natDegree_le_one (by simp) (by simp) zero_le_one, Or.inl rfl⟩
     · have hpf := hφ k
-      exact isDiscreteMultiplierSequence_eval h0 (hpf.2.1.resolve_left h0) hpf.2.2 _ (hTk k) p
+      exact isDiscreteMultiplierSequence_eval h0 hpf.splits hpf.2.2 _ (hTk k) p
         hp hpnn
   have hdeg : ∀ k, (Tk k p).natDegree ≤ N := by
     intro k

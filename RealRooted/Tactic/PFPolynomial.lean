@@ -41,10 +41,8 @@ namespace Tactic
 theorem pf_splits
     {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
-    p.Splits := by
-  rcases RealRooted.IsPFPolynomial.eq_zero_or_splits hp with rfl | hsplits
-  · simp
-  · exact hsplits
+    p.Splits :=
+  hp.splits
 
 /-- A pointwise PF family has nonnegative coefficients at every index. -/
 theorem pf_sequence_has_nonneg

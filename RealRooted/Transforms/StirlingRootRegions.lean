@@ -219,10 +219,6 @@ theorem isPFPolynomial_monic_cubic_iff (A B C₀ : ℝ) :
         0 ≤ A ^ 2 * B ^ 2 - 4 * B ^ 3 - 4 * A ^ 3 * C₀ -
           27 * C₀ ^ 2 + 18 * A * B * C₀ := by
   let p : ℝ[X] := X ^ 3 + C A * X ^ 2 + C B * X + C C₀
-  have hp0 : p ≠ 0 := by
-    intro hp
-    have := congrArg (fun q : ℝ[X] ↦ q.coeff 3) hp
-    simp [p] at this
   have hpdeg : p.natDegree ≤ 3 := by
     dsimp [p]
     compute_degree
@@ -239,7 +235,7 @@ theorem isPFPolynomial_monic_cubic_iff (A B C₀ : ℝ) :
     have hA : 0 ≤ A := by simpa [p] using hp.hasNonnegCoeffs 2
     have hB : 0 ≤ B := by simpa [p] using hp.hasNonnegCoeffs 1
     have hC : 0 ≤ C₀ := by simpa [p] using hp.hasNonnegCoeffs 0
-    have hsplits : p.Splits := hp.eq_zero_or_splits.resolve_left hp0
+    have hsplits : p.Splits := hp.splits
     have hd := cubicDiscr_nonneg_of_splits_natDegree_le_three hpdeg hsplits
     rw [hdisc] at hd
     exact ⟨hA, hB, hC, hd⟩
@@ -309,7 +305,7 @@ theorem isPFPolynomial_touchard_half_shifted_cubic_iff
       rw [show X - C (-(b + 1 / 2)) = X + C (b + 1 / 2) by
         simp only [map_neg, map_add]
         ring]
-    have hqsplit : q.Splits := hqpf.eq_zero_or_splits.resolve_left hq0
+    have hqsplit : q.Splits := hqpf.splits
     have hdisc : 0 ≤ (2 * b + 3) ^ 2 - 4 * (b ^ 2 + w) := by
       apply monicQuadraticPoly_splits_iff_discrim_nonneg.mp
       exact hqsplit

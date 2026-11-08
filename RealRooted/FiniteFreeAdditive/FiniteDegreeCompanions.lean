@@ -422,17 +422,6 @@ theorem differentialTest_multishiftDifferentialSymbol
       rw [reflect_multishiftJensenPolynomial, Polynomial.reflect_one]
       ring
 
-private theorem isPFPolynomial_one_add_C_mul_X {a : ℝ} (ha : 0 ≤ a) :
-    IsPFPolynomial (1 + C a * X : ℝ[X]) := by
-  rcases ha.eq_or_lt with rfl | ha
-  · simpa using IsPFPolynomial.one
-  have hfactor : (1 + C a * X : ℝ[X]) = C a * (X + C a⁻¹) := by
-    rw [mul_add, ← C_mul]
-    simp [ha.ne']
-    ring
-  rw [hfactor]
-  exact (isPFPolynomial_X_add_C (inv_nonneg.mpr ha.le)).const_mul ha
-
 /-- A multishift Jensen polynomial with nonnegative shifts is PF. -/
 theorem isPFPolynomial_multishiftJensenPolynomial
     {r : ℕ} {s : Fin r → ℝ} (hs : ∀ i, 0 ≤ s i) :
@@ -442,7 +431,8 @@ theorem isPFPolynomial_multishiftJensenPolynomial
   | empty => simpa using IsPFPolynomial.one
   | @insert i t hi ih =>
       rw [Finset.prod_insert hi]
-      exact (isPFPolynomial_one_add_C_mul_X (hs i)).mul ih
+      exact (show IsPFPolynomial (1 + C (s i) * X) by
+        rw [add_comm]; exact isPFPolynomial_C_mul_X_add_one (hs i)).mul ih
 
 /-- The full multishift Jensen polynomial is the deleted product times its
 indexed affine factor. -/
@@ -473,7 +463,7 @@ theorem interl_multishiftJensenPolynomial_removeNth
       rw [coeff_multishiftJensenPolynomial, Polynomial.coeff_zero] at hcoeff
       simp [shiftMultiset] at hcoeff
     have hstep := interlaces_self_mul_C_add_C_mul_X_of_nonnegCoeffs
-      hq0 (hqpf.eq_zero_or_splits.resolve_left hq0) hqpf.hasNonnegCoeffs
+      hq0 hqpf.splits hqpf.hasNonnegCoeffs
       zero_le_one hpos
     rw [multishiftJensenPolynomial_eq_factor_mul_removeNth (s := s) i]
     simpa [q, add_comm] using hstep.toStrictInterl.toInterl

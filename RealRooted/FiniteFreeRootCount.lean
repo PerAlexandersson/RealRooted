@@ -729,9 +729,7 @@ theorem card_roots_signedReciprocal_filter_ge
     {s : ℝ} (hs : 0 < s) :
     ((signedReciprocal d F).roots.filter (s ≤ ·)).card =
       (F.roots.filter (-s⁻¹ ≤ ·)).card := by
-  have hFne : F ≠ 0 := fun h ↦ hF0 (by simp [h])
-  rw [card_filter_roots_signedReciprocal
-    (hF.eq_zero_or_splits.resolve_left hFne)
+  rw [card_filter_roots_signedReciprocal hF.splits
     hFdeg hF0 (s ≤ ·) (not_le_of_gt hs)]
   apply congrArg Multiset.card
   refine Multiset.filter_congr fun x hx ↦ ?_
@@ -749,9 +747,7 @@ theorem card_roots_signedReciprocal_filter_gt
     {s : ℝ} (hs : 0 < s) :
     ((signedReciprocal d F).roots.filter (s < ·)).card =
       (F.roots.filter (-s⁻¹ < ·)).card := by
-  have hFne : F ≠ 0 := fun h ↦ hF0 (by simp [h])
-  rw [card_filter_roots_signedReciprocal
-    (hF.eq_zero_or_splits.resolve_left hFne) hFdeg hF0 (s < ·)
+  rw [card_filter_roots_signedReciprocal hF.splits hFdeg hF0 (s < ·)
     (not_lt_of_ge hs.le)]
   apply congrArg Multiset.card
   refine Multiset.filter_congr fun x hx ↦ ?_

@@ -692,10 +692,7 @@ private theorem isPFPolynomial_binaryRunTransform_of_le_three
   · subst n
     have hqdeg : q.natDegree ≤ 2 :=
       natDegree_binaryRunTransform_le hpdeg
-    have hpSplit : p.Splits := by
-      rcases hp.eq_zero_or_splits with hpzero | hsplit
-      · simp [hpzero]
-      · exact hsplit
+    have hpSplit : p.Splits := hp.splits
     have hnewton :=
       two_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_of_splits_of_natDegree_le
         (n := 3) (by norm_num) hpdeg hpSplit

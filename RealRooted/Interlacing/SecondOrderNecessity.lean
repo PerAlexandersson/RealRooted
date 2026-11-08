@@ -2,7 +2,7 @@ module
 
 public import RealRooted.PFPolynomial
 public import RealRooted.Interlacing.QuadraticPFPreservers
-import RealRooted.Interlacing.SecondOrderClassification
+public import RealRooted.Interlacing.SecondOrderClassification
 import RealRooted.Interlacing.SecondOrderIff
 public import RealRooted.CubicDiscriminant
 public import RealRooted.RootCounting.Descartes
@@ -312,8 +312,7 @@ counterexample to universal preservation. -/
 theorem not_secondOrderRayPreserving_of_upper_limit
     {a b c d f t : ℝ} {m : ℕ} (hm : 1 ≤ m) (ht : 0 < t)
     (hlimit : ¬(secondOrderUpperLimit a b c d f t m).Splits) :
-    ¬(∀ p, IsPFPolynomial p →
-      IsPFPolynomial (secondOrderRayOperator a b c d f p)) := by
+    ¬SecondOrderRayPreserving a b c d f := by
   obtain ⟨n, hn⟩ :=
     exists_not_splits_secondOrderUpperResidual_of_limit hlimit
   intro hpres
@@ -357,8 +356,7 @@ theorem not_secondOrderRayPreserving_of_upper_obstruction
         2 * d * m * (c + f * (m - 1)) < 0)
     (hupper : 0 < b * c ^ 2 - a * d * c +
       f * (a ^ 2 - m * (d ^ 2 - 4 * b * f))) :
-    ¬(∀ p, IsPFPolynomial p →
-      IsPFPolynomial (secondOrderRayOperator a b c d f p)) := by
+    ¬SecondOrderRayPreserving a b c d f := by
   let B := (a + d * m) * (c + 2 * f * m) -
     2 * d * m * (c + f * (m - 1))
   let C₀ := (a + d * m) ^ 2 - 4 * b * m * (c + f * (m - 1))
@@ -490,8 +488,7 @@ theorem not_secondOrderRayPreserving_of_upper_branch
     (hupperBranch : a ^ 2 + 4 * b * f * m < (m : ℝ) ^ 2 * delta)
     (habove : (a * d + Real.sqrt
       (delta * (a ^ 2 + 4 * b * f * m))) / (2 * b) < c) :
-    ¬(∀ p, IsPFPolynomial p →
-      IsPFPolynomial (secondOrderRayOperator a b c d f p)) := by
+    ¬SecondOrderRayPreserving a b c d f := by
   obtain ⟨hconstant, hlinear, hupper⟩ :=
     secondOrder_upper_obstruction_signs ha hb hd hf hdelta hdisc hm
       hupperBranch habove
@@ -508,8 +505,7 @@ theorem secondOrderRayPreserving_iff_upper_bound_at_index
     (hmlo : delta * (m : ℝ) * ((m : ℝ) - 1) ≤ a ^ 2)
     (hmhi : a ^ 2 ≤ delta * (m : ℝ) * ((m : ℝ) + 1))
     (hupperBranch : a ^ 2 + 4 * b * f * m < (m : ℝ) ^ 2 * delta) :
-    (∀ p, IsPFPolynomial p →
-      IsPFPolynomial (secondOrderRayOperator a b c d f p)) ↔
+    SecondOrderRayPreserving a b c d f ↔
       c ≤ (a * d + Real.sqrt
         (delta * (a ^ 2 + 4 * b * f * m))) / (2 * b) := by
   constructor
@@ -568,8 +564,7 @@ theorem secondOrderRayPreserving_iff_middle_discrim_at_index
     (hmlo : delta * (m : ℝ) * ((m : ℝ) - 1) ≤ a ^ 2)
     (hmhi : a ^ 2 ≤ delta * (m : ℝ) * ((m : ℝ) + 1))
     (hmiddle : |(m : ℝ) ^ 2 * delta - a ^ 2| ≤ 4 * b * f * m) :
-    (∀ p, IsPFPolynomial p →
-      IsPFPolynomial (secondOrderRayOperator a b c d f p)) ↔
+    SecondOrderRayPreserving a b c d f ↔
       0 ≤ (a + d * m) ^ 2 - 4 * b * m * (c + f * (m - 1)) := by
   constructor
   · intro hpres
@@ -1027,8 +1022,7 @@ private theorem not_secondOrderRayPreserving_of_lower_branch_one
     (hdisc : delta = d ^ 2 - 4 * b * f)
     (hlower : d ^ 2 < a ^ 2)
     (habove : a * (d + Real.sqrt (delta + 4 * b * f)) / (2 * b) < c) :
-    ¬(∀ p, IsPFPolynomial p →
-      IsPFPolynomial (secondOrderRayOperator a b c d f p)) := by
+    ¬SecondOrderRayPreserving a b c d f := by
   have hsqrt : Real.sqrt (delta + 4 * b * f) = d := by
     rw [hdisc]
     simp [Real.sqrt_sq_eq_abs, abs_of_nonneg hd]
@@ -1081,8 +1075,7 @@ theorem not_secondOrderRayPreserving_of_lower_branch
     (hmhi : a ^ 2 ≤ delta * (m : ℝ) * ((m : ℝ) + 1))
     (hlower : (m : ℝ) ^ 2 * delta + 4 * b * f * m < a ^ 2)
     (habove : a * (d + Real.sqrt (delta + 4 * b * f / m)) / (2 * b) < c) :
-    ¬(∀ p, IsPFPolynomial p →
-      IsPFPolynomial (secondOrderRayOperator a b c d f p)) := by
+    ¬SecondOrderRayPreserving a b c d f := by
   by_cases hmone : m = 1
   · subst m
     apply not_secondOrderRayPreserving_of_lower_branch_one ha hb hd hdisc
@@ -1119,8 +1112,7 @@ theorem secondOrderRayPreserving_iff_lower_bound_at_index
     (hmlo : delta * (m : ℝ) * ((m : ℝ) - 1) ≤ a ^ 2)
     (hmhi : a ^ 2 ≤ delta * (m : ℝ) * ((m : ℝ) + 1))
     (hlower : (m : ℝ) ^ 2 * delta + 4 * b * f * m < a ^ 2) :
-    (∀ p, IsPFPolynomial p →
-      IsPFPolynomial (secondOrderRayOperator a b c d f p)) ↔
+    SecondOrderRayPreserving a b c d f ↔
       c ≤ a * (d + Real.sqrt (delta + 4 * b * f / m)) / (2 * b) := by
   constructor
   · intro hpres
@@ -1178,8 +1170,7 @@ theorem secondOrderRayPreserving_iff_three_branch_at_index
     (hm : 1 ≤ m)
     (hmlo : delta * (m : ℝ) * ((m : ℝ) - 1) ≤ a ^ 2)
     (hmhi : a ^ 2 ≤ delta * (m : ℝ) * ((m : ℝ) + 1)) :
-    (∀ p, IsPFPolynomial p →
-      IsPFPolynomial (secondOrderRayOperator a b c d f p)) ↔
+    SecondOrderRayPreserving a b c d f ↔
       ((a ^ 2 > (m : ℝ) ^ 2 * delta + 4 * b * f * m ∧
         c ≤ a * (d + Real.sqrt (delta + 4 * b * f / m)) / (2 * b)) ∨
       (¬a ^ 2 > (m : ℝ) ^ 2 * delta + 4 * b * f * m ∧

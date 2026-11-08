@@ -222,9 +222,7 @@ private theorem derangementDescentPolynomial_splits_of_reciprocal_eq
     (n r : ℕ) (heq : reciprocalDerangementPolynomial n = deletionPolynomial 1 r) :
     (derangementDescentPolynomial n).Splits := by
   have hdeg := derangementDescentPolynomial_natDegree_le n
-  have hpos := (deletionPolynomial_degree_nonneg 1 r).2.1
-  have hsplit : (deletionPolynomial 1 r).Splits :=
-    (deletionPolynomial_isPF 1 r).eq_zero_or_splits.resolve_left hpos.ne_zero
+  have hsplit : (deletionPolynomial 1 r).Splits := (deletionPolynomial_isPF 1 r).splits
   have hsplitQ : (reciprocalDerangementPolynomial n).Splits := heq.symm ▸ hsplit
   exact (Polynomial.splits_reflect_iff hdeg).mp (by
     simpa only [reciprocalDerangementPolynomial] using hsplitQ)
