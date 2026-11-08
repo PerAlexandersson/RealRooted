@@ -49,7 +49,7 @@ theorem isHurwitzStable_oddEvenPolynomial_zero_left_iff {q : ℝ[X]} :
   · rintro ⟨hq, hpf⟩
     refine ⟨hasNonnegCoeffs_oddEvenPolynomial (fun _ ↦ by simp) hpf.hasNonnegCoeffs,
       hermiteBiehlerStableToHurwitzOddEven (fun _ ↦ by simp) hpf.hasNonnegCoeffs ?_⟩
-    have hs : q.Splits := hpf.eq_zero_or_splits.resolve_left hq
+    have hs : q.Splits := hpf.splits
     simpa [hermiteBiehlerPolynomial, complexify] using
       Polynomial.Splits.isUpperHalfPlaneStable_complexify hs hq
 
@@ -72,7 +72,7 @@ theorem isHurwitzStable_oddEvenPolynomial_zero_right_iff {p : ℝ[X]} :
   · rintro ⟨hp, hpf⟩
     refine ⟨hasNonnegCoeffs_oddEvenPolynomial hpf.hasNonnegCoeffs (fun _ ↦ by simp),
       hermiteBiehlerStableToHurwitzOddEven hpf.hasNonnegCoeffs (fun _ ↦ by simp) ?_⟩
-    have hs : p.Splits := hpf.eq_zero_or_splits.resolve_left hp
+    have hs : p.Splits := hpf.splits
     simpa [hermiteBiehlerPolynomial, complexify, hI] using
       Polynomial.Splits.isUpperHalfPlaneStable_complexify hs hp
 

@@ -407,17 +407,8 @@ theorem crossedEulerCompletion_commonLeftInterleaver
     · exact hpdeg
     · rw [natDegree_one, hpdeg]
       lia
-  have hp_ne : p ≠ 0 := by
-    rintro rfl
-    simp at hpdeg
-    lia
-  have hp1_ne : p + 1 ≠ 0 := by
-    intro h
-    rw [h] at hp1deg
-    simp at hp1deg
-    lia
-  have hp_splits : p.Splits := hp.eq_zero_or_splits.resolve_left hp_ne
-  have hp1_splits : (p + 1).Splits := hp1.eq_zero_or_splits.resolve_left hp1_ne
+  have hp_splits : p.Splits := hp.splits
+  have hp1_splits : (p + 1).Splits := hp1.splits
   have hderPF : IsPFPolynomial p.derivative := hp.derivative
   have hder_p : StrictInterl p.derivative p :=
     (derivative_interlaces_of_natDegree_ne_zero hp_splits

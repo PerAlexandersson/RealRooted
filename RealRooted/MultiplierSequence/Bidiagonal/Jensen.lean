@@ -207,7 +207,7 @@ theorem BidiagonalJensenPencilCertificate.compatible
     · exact Or.inl (by simpa using hzero)
     · right
       simpa using
-        (And.intro hzero (hpf.eq_zero_or_splits.resolve_left hzero))
+        (And.intro hzero hpf.splits)
   · have ha_pos : 0 < a := lt_of_le_of_ne ha (Ne.symm ha0)
     let lam : ℝ := b / a
     have hlam : 0 ≤ lam := div_nonneg hb ha
@@ -229,7 +229,7 @@ theorem BidiagonalJensenPencilCertificate.compatible
     rw [← hpoly]
     by_cases hzero : C a * bidiagonalJensenPencil alpha beta d lam = 0
     · exact Or.inl hzero
-    · exact Or.inr ⟨hzero, hpf.eq_zero_or_splits.resolve_left hzero⟩
+    · exact Or.inr ⟨hzero, hpf.splits⟩
 
 /-- A Jensen-pencil certificate makes the diagonal coefficients nonnegative
 through the certified degree bound. -/

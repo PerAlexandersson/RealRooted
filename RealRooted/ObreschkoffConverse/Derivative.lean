@@ -153,16 +153,12 @@ theorem derivative_interl_of_strictInterl_sameDegree_monic {f g : ℝ[X]}
         hf_monic hg_monic hfg hdeg htwo hrev.2.1.2 hrev.1.2
     exact (hrev.of_reverse_of_roots_sum_le hdeg_der hsum_der).toInterl
 
-/-- Positive-leading-coefficient degree-at-least-two same-degree branch,
-obtained from the monic branch by normalizing both polynomials by their leading
-coefficients. -/
-theorem derivative_interl_of_strictInterl_sameDegree_posLeading {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hfg : StrictInterl f g) (hdeg : f.natDegree = g.natDegree)
-    (htwo : 2 ≤ f.natDegree) :
+/-- Nonzero-leading-coefficient degree-at-least-two same-degree branch, obtained from the monic
+branch by normalizing both polynomials by their leading coefficients. -/
+private lemma derivative_interl_of_strictInterl_sameDegree_of_leadingCoeff_ne_zero {f g : ℝ[X]}
+    (hf_lc_ne : f.leadingCoeff ≠ 0) (hg_lc_ne : g.leadingCoeff ≠ 0)
+    (hfg : StrictInterl f g) (hdeg : f.natDegree = g.natDegree) (htwo : 2 ≤ f.natDegree) :
     Interl f.derivative g.derivative := by
-  have hf_lc_ne : f.leadingCoeff ≠ 0 := ne_of_gt hf_pos
-  have hg_lc_ne : g.leadingCoeff ≠ 0 := ne_of_gt hg_pos
   let f₀ : ℝ[X] := C f.leadingCoeff⁻¹ * f
   let g₀ : ℝ[X] := C g.leadingCoeff⁻¹ * g
   have hf₀_monic : f₀.Monic := by
@@ -187,48 +183,23 @@ theorem derivative_interl_of_strictInterl_sameDegree_posLeading {f g : ℝ[X]}
   simpa [← mul_assoc, ← C_mul, hf_lc_ne, hg_lc_ne] using
     interl_C_mul_left_right hf_lc_ne hg_lc_ne hscaled'
 
-/-- Degree-at-least-two same-degree branch, obtained from the
-positive-leading-coefficient form by scaling both polynomials by signs. -/
+/-- Positive-leading-coefficient degree-at-least-two same-degree branch. -/
+theorem derivative_interl_of_strictInterl_sameDegree_posLeading {f g : ℝ[X]}
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hfg : StrictInterl f g) (hdeg : f.natDegree = g.natDegree)
+    (htwo : 2 ≤ f.natDegree) :
+    Interl f.derivative g.derivative :=
+  derivative_interl_of_strictInterl_sameDegree_of_leadingCoeff_ne_zero
+    (ne_of_gt hf_pos) (ne_of_gt hg_pos) hfg hdeg htwo
+
+/-- Degree-at-least-two same-degree branch: the leading coefficients of a
+`StrictInterl` pair are nonzero. -/
 theorem derivative_interl_of_strictInterl_sameDegree_two_le {f g : ℝ[X]}
     (hfg : StrictInterl f g) (hdeg : f.natDegree = g.natDegree)
     (htwo : 2 ≤ f.natDegree) :
-    Interl f.derivative g.derivative := by
-  have hf_lc_ne : f.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hfg.1.1
-  have hg_lc_ne : g.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hfg.2.1.1
-  let sf : ℝ := if 0 < f.leadingCoeff then 1 else -1
-  let sg : ℝ := if 0 < g.leadingCoeff then 1 else -1
-  have hsf_ne : sf ≠ 0 := by grind
-  have hsg_ne : sg ≠ 0 := by grind
-  have hsf_pos : 0 < sf * f.leadingCoeff := by
-    dsimp [sf]
-    split_ifs with hposf
-    · lia
-    · grind
-  have hsg_pos : 0 < sg * g.leadingCoeff := by
-    dsimp [sg]
-    split_ifs with hposg
-    · lia
-    · grind
-  let f₀ : ℝ[X] := C sf * f
-  let g₀ : ℝ[X] := C sg * g
-  have hf₀_pos : HasPosLeadingCoeff f₀ := by
-    unfold HasPosLeadingCoeff f₀
-    simp_all
-  have hg₀_pos : HasPosLeadingCoeff g₀ := by
-    unfold HasPosLeadingCoeff g₀
-    simp_all
-  have hfg₀ : StrictInterl f₀ g₀ :=
-    StrictInterl.C_mul_right (StrictInterl.C_mul_left hfg hsf_ne) hsg_ne
-  have hdeg₀ : f₀.natDegree = g₀.natDegree := by
-    simpa [f₀, g₀, natDegree_C_mul hsf_ne, natDegree_C_mul hsg_ne] using hdeg
-  have htwo₀ : 2 ≤ f₀.natDegree := by simpa [f₀, natDegree_C_mul hsf_ne] using htwo
-  have hscaled : Interl f₀.derivative g₀.derivative :=
-    derivative_interl_of_strictInterl_sameDegree_posLeading
-      hf₀_pos hg₀_pos hfg₀ hdeg₀ htwo₀
-  have hscaled' : Interl (C sf * f.derivative) (C sg * g.derivative) := by
-    simpa [f₀, g₀, derivative_C_mul] using hscaled
-  simpa [← mul_assoc, ← C_mul, hsf_ne, hsg_ne] using
-    interl_C_mul_left_right (inv_ne_zero hsf_ne) (inv_ne_zero hsg_ne) hscaled'
+    Interl f.derivative g.derivative :=
+  derivative_interl_of_strictInterl_sameDegree_of_leadingCoeff_ne_zero
+    (leadingCoeff_ne_zero.mpr hfg.1.1) (leadingCoeff_ne_zero.mpr hfg.2.1.1) hfg hdeg htwo
 
 /-- Same-degree branch of differentiation preserving weak interlacing.
 Degrees zero and one are elementary because the derivatives are zero or nonzero

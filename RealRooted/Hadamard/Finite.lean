@@ -69,9 +69,7 @@ theorem four_mul_coeff_zero_mul_coeff_two_le_coeff_one_sq_schurSzegoComp
   have h0n : 0 ≤ n := Nat.zero_le n
   have h1n : 1 ≤ n := le_trans (by norm_num) hn
   have hfd : 4 * (f.coeff 0 * f.coeff 2) ≤ f.coeff 1 ^ 2 := by
-    rcases hf.eq_zero_or_splits with h | h
-    · simp [h]
-    · exact quadratic_disc_coeff_le_of_splits_natDegree_le_two hfdeg h
+    exact quadratic_disc_coeff_le_of_splits_natDegree_le_two hfdeg hf.splits
   have hpd : 4 * (p.coeff 0 * p.coeff 2) ≤ p.coeff 1 ^ 2 :=
     quadratic_disc_coeff_le_of_splits_natDegree_le_two hpdeg hsplit
   have hf0 : 0 ≤ f.coeff 0 := hf.hasNonnegCoeffs 0

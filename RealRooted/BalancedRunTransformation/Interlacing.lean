@@ -43,8 +43,7 @@ theorem strictInterl_balancedRunTransform
     · simpa [T] using balancedRunTransform_ne_zero
         hp.hasNonnegCoeffs hp0 hpdegN
     · simpa [T] using
-        (IsPFPolynomial.balancedRunTransform hn hp (by simpa [D] using hpdeg)).2.1.resolve_left
-          (balancedRunTransform_ne_zero hp.hasNonnegCoeffs hp0 hpdegN)
+        (IsPFPolynomial.balancedRunTransform hn hp (by simpa [D] using hpdeg)).splits
   have hmono : ∀ m : ℕ, m + 1 ≤ D →
       StrictInterl (T (X ^ m)) (T (X ^ (m + 1))) := by
     intro m hm

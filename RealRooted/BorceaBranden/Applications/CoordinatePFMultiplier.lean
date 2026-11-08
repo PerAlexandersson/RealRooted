@@ -352,8 +352,7 @@ theorem coordinateDiagonalOperatorDegreeBox_preserves_stability
       simp
     · have hcoeff : p.1.coeff m = 0 := Finsupp.notMem_support_iff.mp hm
       simp [hcoeff]
-  · have hsplit : (jensenPolynomial d gamma).Splits :=
-      hJ.eq_zero_or_splits.resolve_left hzero
+  · have hsplit : (jensenPolynomial d gamma).Splits := hJ.splits
     have hhom : MvUpperHalfPlaneStable
         (complexifyMv ((jensenPolynomial d gamma).homogenize d)) :=
       homogenize_stable_of_splits_nonpos_of_natDegree_le

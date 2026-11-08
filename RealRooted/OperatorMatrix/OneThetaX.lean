@@ -135,17 +135,9 @@ private theorem not_interl_square_P_X_mul_X_add_two :
     (by norm_num) (by norm_num) roots_square_P roots_X_mul_X_add_two
     (by norm_num [ListInterlaces, ListAlternates])
 
-private theorem not_isPFPolynomial_of_not_splits {p : ℝ[X]}
-    (hp0 : p ≠ 0) (hnot : ¬ p.Splits) :
-    ¬ IsPFPolynomial p := by
-  intro hp
-  rcases hp.eq_zero_or_splits with hzero | hsplits
-  · exact hp0 hzero
-  · exact hnot hsplits
-
 private theorem not_isPFPolynomial_one_add_X_sq :
     ¬ IsPFPolynomial (1 + X ^ 2 : ℝ[X]) := by
-  apply not_isPFPolynomial_of_not_splits (ne_zero_of_eval_one_ne (by norm_num))
+  apply mt IsPFPolynomial.splits
   convert (quadraticPoly_not_splits_of_discrim_neg one_ne_zero
     (by norm_num [discrim]) :
       ¬ ((C 1 * X ^ 2 + C 0 * X + C 1) : ℝ[X]).Splits) using 1
@@ -154,7 +146,7 @@ private theorem not_isPFPolynomial_one_add_X_sq :
 
 private theorem not_isPFPolynomial_one_add_two_X_add_two_X_sq :
     ¬ IsPFPolynomial (1 + 2 * X + 2 * X ^ 2 : ℝ[X]) := by
-  apply not_isPFPolynomial_of_not_splits (ne_zero_of_eval_one_ne (by norm_num))
+  apply mt IsPFPolynomial.splits
   convert (quadraticPoly_not_splits_of_discrim_neg (by norm_num : (2 : ℝ) ≠ 0)
     (by norm_num [discrim]) :
       ¬ ((C 2 * X ^ 2 + C 2 * X + C 1) : ℝ[X]).Splits) using 1
@@ -163,7 +155,7 @@ private theorem not_isPFPolynomial_one_add_two_X_add_two_X_sq :
 
 private theorem not_isPFPolynomial_X_add_X_sq_add_X_cu :
     ¬ IsPFPolynomial (X + X ^ 2 + X ^ 3 : ℝ[X]) := by
-  apply not_isPFPolynomial_of_not_splits (ne_zero_of_eval_one_ne (by norm_num))
+  apply mt IsPFPolynomial.splits
   intro hsplits
   have hquadratic : ¬ (X ^ 2 + X + 1 : ℝ[X]).Splits := by
     simpa only [map_one, one_mul] using
@@ -355,7 +347,7 @@ private theorem not_preservesOrderedPFPair_one_one_theta_one :
     ring
 
 private theorem interl_P_P : Interl (X + 1 : ℝ[X]) (X + 1) :=
-  Interl.refl fun hne => isPFPolynomial_X_add_one.eq_zero_or_splits.resolve_left hne
+  Interl.refl fun _ => isPFPolynomial_X_add_one.splits
 
 private theorem interl_X_add_ten_X_add_eleven_mul_X_add_one :
     Interl (X + 10 : ℝ[X]) ((X + 11) * (X + 1)) := by

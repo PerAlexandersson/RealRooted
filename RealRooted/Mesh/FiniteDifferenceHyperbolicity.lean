@@ -129,20 +129,6 @@ theorem preserves_iff_of_support_subsingleton
     exact hone.resolve_left hj
   · exact preserves_of_support_subsingleton hsupport
 
-/-- BKS (2016), Lemma 8 after the analytic pointwise-support step: preservation is equivalent
-to having at most one nonzero coefficient, which must itself be real-rooted. -/
-theorem preserves_iff_of_eval
-    {n : ℕ} {q : Fin n → ℝ[X]}
-    (hpoint : ∀ x : ℝ, Set.Subsingleton {j | (q j).eval x ≠ 0}) :
-    PreservesRealRootedOrZero (polyFiniteDifferenceOp q) ↔
-      Set.Subsingleton {j | q j ≠ 0} ∧ ∀ j, q j ≠ 0 → (q j).Splits := by
-  have hsupport := support_subsingleton_of_eval hpoint
-  constructor
-  · intro hpres
-    exact ⟨hsupport, (preserves_iff_of_support_subsingleton hsupport).1 hpres⟩
-  · rintro ⟨_, hsplits⟩
-    exact preserves_of_support_subsingleton hsupport hsplits
-
 /-- A family supported at one shift satisfies the BKS criterion. -/
 theorem preserves_single
     {n : ℕ} (i : Fin n) {q : ℝ[X]} (hq : q.Splits) :

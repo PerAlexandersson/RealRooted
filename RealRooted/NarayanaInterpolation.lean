@@ -446,10 +446,8 @@ theorem narayanaInterpolation_isPF {θ : ℝ} (hθ : -1 < θ) (n : ℕ) :
 
 /-- The continuous Narayana polynomial splits over `ℝ` for `θ > -1`. -/
 theorem narayanaInterpolation_splits {θ : ℝ} (hθ : -1 < θ) (n : ℕ) :
-    (narayanaInterpolation θ n).Splits := by
-  refine (narayanaInterpolation_isPF hθ n).eq_zero_or_splits.resolve_left fun hzero ↦ ?_
-  have hcoeff := congrArg (fun p : ℝ[X] ↦ p.coeff 0) hzero
-  simp [coeff_zero_narayanaInterpolation hθ n] at hcoeff
+    (narayanaInterpolation θ n).Splits :=
+  (narayanaInterpolation_isPF hθ n).splits
 
 /-- Every real root of the continuous Narayana polynomial is strictly negative. -/
 theorem narayanaInterpolation_roots_neg {θ : ℝ} (hθ : -1 < θ) (n : ℕ) :

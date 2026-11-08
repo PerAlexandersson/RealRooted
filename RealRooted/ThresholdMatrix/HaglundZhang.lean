@@ -769,7 +769,7 @@ theorem binomialEulerianPolynomial_ne_zero (n : ℕ) :
   rw [h] at hcoeff
   norm_num at hcoeff
 
-theorem binomialEulerianPolynomial_realRooted_of_ne
+private theorem binomialEulerianPolynomial_realRooted_of_ne
     (n : ℕ) (hne : binomialEulerianPolynomial n ≠ 0) :
     binomialEulerianPolynomial n ≠ 0 ∧
       (binomialEulerianPolynomial n).Splits := by

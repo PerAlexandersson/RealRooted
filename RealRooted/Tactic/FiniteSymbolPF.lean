@@ -271,10 +271,7 @@ theorem finiteSymbol_stable_of_residual_certificate
     have h_deg := cert.residual_cubic
     rw [h_eq] at h_deg
     simp at h_deg
-  have h_splits : cert.residual.Splits := by
-    rcases cert.residual_pf.eq_zero_or_splits with h_eq | hsp
-    · contradiction
-    · exact hsp
+  have h_splits : cert.residual.Splits := cert.residual_pf.splits
   exact finiteSymbol_stable_of_residual_factor cert.symbol_factor
     (RealRooted.BorceaBranden.homogenizeBivariate_stable_of_splits_nonpos
       h_ne h_splits cert.residual_pf.roots_nonpos)
