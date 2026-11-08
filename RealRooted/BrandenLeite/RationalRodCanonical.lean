@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.BrandenLeite.StationaryTiling
-public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePower
+public import RealRooted.BrandenLeite.AffineNegativePower
 import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerOne
 import Mathlib.Tactic.Ring
 
@@ -17,7 +17,7 @@ theorem rationalRodRow_eq_affineNegativePowerCoeff
     (ys : List ℝ) (c : ℝ) {r : ℕ} (hr : r ≠ 0)
     (xs : List ℝ) (n : ℕ) :
     rationalRodRow ys c r xs n =
-      PowerSeries.affineNegativePowerCoeff 1 (rationalBackgroundDenominator ys)
+      affineNegativePowerCoeff 1 (rationalBackgroundDenominator ys)
         (markedFactorSeries c r xs) n := by
   let H := rationalRodDenominatorSeries ys c r xs
   have hQ : PowerSeries.constantCoeff (rationalBackgroundDenominator ys) = 1 :=
@@ -45,7 +45,7 @@ theorem rationalRodRow_eq_affineNegativePowerCoeff
             (PowerSeries.binomialSeries (Polynomial ℝ) (-1 : Polynomial ℝ)) := by ring
       _ = _ := by rw [hold, one_mul]
   rw [← coeff_rationalRodGeneratingSeries, heq]
-  simp only [PowerSeries.affineNegativePowerCoeff, H,
+  simp only [affineNegativePowerCoeff, H,
     rationalRodDenominatorSeries, hlift, map_one]
 
 end RealRooted.BrandenLeite

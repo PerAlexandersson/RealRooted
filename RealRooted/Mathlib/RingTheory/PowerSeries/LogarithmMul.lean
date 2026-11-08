@@ -73,4 +73,16 @@ theorem logOf_prod [HasUniqueDiv R] {ι : Type*} (s : Finset ι)
       exact hH j (Finset.mem_insert_of_mem hj)), Finset.sum_insert hi]
     rw [ih (fun j hj ↦ hH j (Finset.mem_insert_of_mem hj))]
 
+/-- Ring maps between rational algebras preserve the formal logarithm of a
+normalized series. -/
+theorem map_logOf {S : Type*} [CommRing S] [Algebra ℚ S] (φ : R →+* S)
+    (H : PowerSeries R) (hH : constantCoeff H = 1) :
+    map φ (logOf H) = logOf (map φ H) := by
+  have hG : HasSubst (H - 1) := HasSubst.of_constantCoeff_zero' (by simp [hH])
+  rw [logOf_eq, logOf_eq]
+  have hm := map_subst hG (h := φ) (log R)
+  change map φ (subst (H - 1) (log R)) =
+    subst (map φ (H - 1)) (map φ (log R)) at hm
+  rw [hm, map_log, map_sub, map_one]
+
 end PowerSeries

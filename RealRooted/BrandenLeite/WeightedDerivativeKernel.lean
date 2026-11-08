@@ -2,9 +2,9 @@ module
 
 public import RealRooted.VeroneseSection
 import RealRooted.ClassicalHurwitzMatrix.Stability.Lace
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel
+public import RealRooted.BrandenLeite.WeightedDerivativeKernel.Basic
 import RealRooted.Derivative.Interlacing
-import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Polynomial
+import RealRooted.BrandenLeite.WeightedDerivativeKernel.Polynomial
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 import Mathlib.Tactic
@@ -12,14 +12,14 @@ import Mathlib.Tactic
 /-! # Total nonnegativity of weighted derivative kernels
 
 For a real-rooted polynomial `F` with nonnegative coefficients, the weighted derivative
-kernel `Matrix.weightedDerivativeKernel κ F.coeff` is totally nonnegative for `κ ≥ 0`.
+kernel `weightedDerivativeKernel κ F.coeff` is totally nonnegative for `κ ≥ 0`.
 The proof factors its finite sections as the product of the derivative/value matrix
 `derivativeValueMatrix F n`, built from the interlacing pair `(F', F)` as an upper Lace
 matrix (`upperLacePair`), and the sparse derivative contraction. -/
 
 @[expose] public section
 
-open Polynomial Matrix
+open Polynomial Matrix RealRooted.BrandenLeite
 
 namespace RealRooted
 
@@ -85,25 +85,25 @@ theorem upperLacePair_two_mul_add_one (a b : ℕ → ℝ) (i j : ℕ) :
 /-- Multiplying the derivative/value column family by the sparse contraction
 recovers the leading weighted differential kernel. -/
 theorem derivativeValueMatrix_mul_derivativeContraction (F : ℝ[X]) (n : ℕ) (κ : ℝ) :
-    derivativeValueMatrix F n * Matrix.derivativeContraction n κ =
-      (Matrix.weightedDerivativeKernel κ F.coeff).submatrix
+    derivativeValueMatrix F n * derivativeContraction n κ =
+      (weightedDerivativeKernel κ F.coeff).submatrix
         (Fin.val : Fin (n + 1) → ℕ) (Fin.val : Fin (n + 1) → ℕ) := by
   ext i j
-  rw [Matrix.mul_derivativeContraction_apply]
+  rw [mul_derivativeContraction_apply]
   change upperLacePair F.derivative.coeff F.coeff i.val (2 * j.val) * κ +
     (if hj : j.val = 0 then 0
       else upperLacePair F.derivative.coeff F.coeff i.val (2 * j.val - 1) * (j.val : ℝ)) =
-    Matrix.weightedDerivativeKernel κ F.coeff i.val j.val
+    weightedDerivativeKernel κ F.coeff i.val j.val
   rw [upperLacePair_two_mul]
   rcases Nat.eq_zero_or_pos j.val with hj | hj
   · simp only [hj, dite_true, add_zero, Nat.zero_le, ite_true, Nat.sub_zero,
-      Polynomial.coeff_derivative, Matrix.weightedDerivativeKernel, Nat.cast_zero, zero_add]
+      Polynomial.coeff_derivative, weightedDerivativeKernel, Nat.cast_zero, zero_add]
     push_cast
     ring
   · obtain ⟨k, hk⟩ : ∃ k, j.val = k + 1 := ⟨j.val - 1, by lia⟩
     rw [dite_eq_right hj.ne', show 2 * j.val - 1 = 2 * k + 1 by lia,
       upperLacePair_two_mul_add_one]
-    simp only [Matrix.weightedDerivativeKernel, hk, Nat.add_le_add_iff_right]
+    simp only [weightedDerivativeKernel, hk, Nat.add_le_add_iff_right]
     rcases lt_trichotomy k i.val with hki | hki | hki
     · obtain ⟨m, hm⟩ : ∃ m, i.val = k + 1 + m := ⟨i.val - (k + 1), by lia⟩
       have e1 : i.val - (k + 1) = m := by lia
@@ -141,24 +141,24 @@ theorem derivativeValueMatrix_isTotallyNonnegRect {F : ℝ[X]}
 with nonnegative coefficients is totally nonnegative. -/
 theorem weightedDerivativeKernel_fin_isTotallyNonneg {F : ℝ[X]} (hF : F.Splits)
     (hnn : HasNonnegCoeffs F) {κ : ℝ} (hκ : 0 ≤ κ) (n : ℕ) :
-    ((Matrix.weightedDerivativeKernel κ F.coeff).submatrix
+    ((weightedDerivativeKernel κ F.coeff).submatrix
       (Fin.val : Fin (n + 1) → ℕ) (Fin.val : Fin (n + 1) → ℕ)).IsTotallyNonneg := by
   by_cases hdeg : F.natDegree = 0
   · have hconst := Polynomial.eq_C_of_natDegree_eq_zero hdeg
     rw [hconst]
-    exact Matrix.weightedDerivativeKernel_C_fin_isTotallyNonneg _ _ (hnn 0) n
+    exact weightedDerivativeKernel_C_fin_isTotallyNonneg _ _ (hnn 0) n
   · rw [← derivativeValueMatrix_mul_derivativeContraction]
     exact ((derivativeValueMatrix_isTotallyNonnegRect hF hnn hdeg n).mul
-      (Matrix.derivativeContraction_isTotallyNonnegRect n hκ)).toSquare
+      (derivativeContraction_isTotallyNonnegRect n hκ)).toSquare
 
 /-- The weighted differential kernel of a real-rooted polynomial with
 nonnegative coefficients is totally nonnegative for every nonnegative weight. -/
 theorem weightedDerivativeKernel_isTotallyNonneg {F : ℝ[X]} (hF : F.Splits)
     (hnn : HasNonnegCoeffs F) {κ : ℝ} (hκ : 0 ≤ κ) :
-    (Matrix.weightedDerivativeKernel κ F.coeff).IsTotallyNonneg := by
+    (weightedDerivativeKernel κ F.coeff).IsTotallyNonneg := by
   apply Matrix.IsTotallyNonneg.of_fin_truncations
-    (Matrix.weightedDerivativeKernel κ F.coeff)
-    (fun n ↦ (Matrix.weightedDerivativeKernel κ F.coeff).submatrix
+    (weightedDerivativeKernel κ F.coeff)
+    (fun n ↦ (weightedDerivativeKernel κ F.coeff).submatrix
       (Fin.val : Fin (n + 1) → ℕ) (Fin.val : Fin (n + 1) → ℕ))
     (fun _ _ _ ↦ rfl)
   exact fun n ↦ weightedDerivativeKernel_fin_isTotallyNonneg hF hnn hκ n

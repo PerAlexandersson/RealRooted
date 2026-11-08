@@ -1,13 +1,8 @@
-/-
-Copyright (c) 2026 Per Alexandersson. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Per Alexandersson
--/
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel
+public import RealRooted.BrandenLeite.WeightedDerivativeKernel.Basic
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Checkerboard
-import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel.Algebra
+import RealRooted.BrandenLeite.WeightedDerivativeKernel.Algebra
 import Mathlib.Tactic.Ring
 
 /-! # The affine polynomial pencil of a signed weighted kernel -/
@@ -16,7 +11,9 @@ public section
 
 open Polynomial
 
-namespace Matrix
+open Matrix
+
+namespace RealRooted.BrandenLeite
 
 /-- The signed weighted kernel of the formal denominator `q - X b` is an
 affine pencil with checkerboard signs on its variable part. -/
@@ -65,4 +62,4 @@ theorem weightedDerivativeKernel_signed_sub_X_mul (R : Type*) [CommRing R]
   intro i j
   simp
 
-end Matrix
+end RealRooted.BrandenLeite

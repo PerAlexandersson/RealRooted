@@ -1,14 +1,9 @@
-/-
-Copyright (c) 2026 Per Alexandersson. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Per Alexandersson
--/
 module
 
 import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerPositive
-public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineLogarithm
-import RealRooted.Mathlib.RingTheory.PowerSeries.LogarithmicCoefficients
-import RealRooted.Mathlib.RingTheory.PowerSeries.AffineLogarithmZero
+public import RealRooted.BrandenLeite.AffineLogarithm
+import RealRooted.BrandenLeite.LogarithmicCoefficients
+import RealRooted.BrandenLeite.AffineLogarithmZero
 import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerDegree
 import Mathlib.Tactic
 
@@ -16,12 +11,14 @@ import Mathlib.Tactic
 
 public section
 
-namespace PowerSeries
+open PowerSeries
+
+namespace RealRooted.BrandenLeite
 
 /-- The logarithmic row's nonconstant parameter coefficients inherit the
 exact support shift from powers of the numerator series. -/
 theorem coeff_affineLogCoeff_zero_and_pos
-    (Q B : PowerSeries ℝ) (r : ℕ) (hQ : constantCoeff Q = 1) (hr : 0 < r)
+    (Q B : PowerSeries ℝ) (r : ℕ) (hQ : constantCoeff Q = 1) (hr : r ≠ 0)
     (hB : ∀ n, 0 ≤ coeff n B) (hBzero : ∀ n < r, coeff n B = 0)
     (hBpos : 0 < coeff r B)
     (hQpos : ∀ (k : ℕ), k ≠ 0 → ∀ m, 0 < coeff m
@@ -31,7 +28,7 @@ theorem coeff_affineLogCoeff_zero_and_pos
       (r * k ≤ n → 0 < (affineLogCoeff Q B n).coeff k) := by
   have hB0 : constantCoeff B = 0 := by
     rw [← coeff_zero_eq_constantCoeff_apply]
-    exact hBzero 0 hr
+    exact hBzero 0 (Nat.pos_of_ne_zero hr)
   rw [coeff_affineLogCoeff_of_ne_zero Q B hQ hB0 hn hk]
   exact const_mul_coeff_pow_mul_zero_and_pos
     (one_div_pos.mpr (by exact_mod_cast Nat.pos_of_ne_zero hk)) B _ r hB hBzero hBpos
@@ -40,7 +37,7 @@ theorem coeff_affineLogCoeff_zero_and_pos
 /-- A positive logarithmic constant coefficient and positive integer negative
 powers of the denominator give the exact degree and all coefficient signs. -/
 theorem natDegree_affineLogCoeff_and_coeff_pos
-    (Q B : PowerSeries ℝ) (r : ℕ) (hQ : constantCoeff Q = 1) (hr : 0 < r)
+    (Q B : PowerSeries ℝ) (r : ℕ) (hQ : constantCoeff Q = 1) (hr : r ≠ 0)
     (hB : ∀ n, 0 ≤ coeff n B) (hBzero : ∀ n < r, coeff n B = 0)
     (hBpos : 0 < coeff r B)
     (hQpos : ∀ (k : ℕ), k ≠ 0 → ∀ m, 0 < coeff m
@@ -58,7 +55,7 @@ theorem natDegree_affineLogCoeff_and_coeff_pos
 degree `n/r`, with every coefficient through that degree strictly positive. -/
 theorem affineLogCoeff_prod_linear_degree_and_pos {ι : Type*}
     (s : Finset ι) (hs : s.Nonempty) (α : ι → ℝ)
-    (hα : ∀ i ∈ s, 0 < α i) (B : PowerSeries ℝ) (r : ℕ) (hr : 0 < r)
+    (hα : ∀ i ∈ s, 0 < α i) (B : PowerSeries ℝ) (r : ℕ) (hr : r ≠ 0)
     (hB : ∀ n, 0 ≤ coeff n B) (hBzero : ∀ n < r, coeff n B = 0)
     (hBpos : 0 < coeff r B) {n : ℕ} (hn : n ≠ 0) :
     let Q := ∏ i ∈ s, (1 - C (α i) * X : PowerSeries ℝ)
@@ -72,7 +69,7 @@ theorem affineLogCoeff_prod_linear_degree_and_pos {ι : Type*}
   · exact hn
   · apply coeff_zero_affineLogCoeff_prod_linear_pos s hs α hα B
     · rw [← coeff_zero_eq_constantCoeff_apply]
-      exact hBzero 0 hr
+      exact hBzero 0 (Nat.pos_of_ne_zero hr)
     · exact hn
 
-end PowerSeries
+end RealRooted.BrandenLeite
