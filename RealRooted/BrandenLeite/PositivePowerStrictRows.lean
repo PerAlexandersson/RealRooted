@@ -11,8 +11,8 @@ import RealRooted.BrandenLeite.WeightedDerivativeKernel
 import RealRooted.BrandenLeite.PositiveLinearFactors
 import RealRooted.BrandenLeite.PositivePowerFactors
 import RealRooted.BrandenLeite.PositivePowerInterlacing
-public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePower
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel
+public import RealRooted.BrandenLeite.AffineNegativePower
+public import RealRooted.BrandenLeite.WeightedDerivativeKernel.Basic
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Checkerboard
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
 public import Mathlib.Basic.Real.Basic

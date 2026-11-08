@@ -203,4 +203,27 @@ theorem splits_of_eq_reflect {P R : ℕ → ℝ[X]} {D₀ : ℕ}
   rw [hPR]
   exact Polynomial.Splits.reflect (hR n) (hdeg n)
 
+/-- Transfer consecutive interlacing through reflection when the reflected
+rows have positive constant coefficient.  This variant derives negativity of
+their roots directly and does not ask for degree data about the target rows. -/
+theorem interlaces_of_eq_reflect_of_coeff_zero_pos
+    {P R : ℕ → ℝ[X]} {D₀ : ℕ}
+    (hPR : ∀ n, P n = reflect (D₀ + n) (R n))
+    (hdeg : ∀ n, (R n).natDegree = D₀ + n)
+    (hnn : ∀ n, HasNonnegCoeffs (R n))
+    (hzero : ∀ n, 0 < (R n).coeff 0)
+    (hR : ∀ n, Interlaces (R n) (R (n + 1))) :
+    ∀ n, Interlaces (P n) (P (n + 1)) := by
+  have hneg : ∀ m, ∀ t ∈ (R m).roots, t < 0 := by
+    intro m t ht
+    refine lt_of_le_of_ne (roots_nonpos_of_hasNonnegCoeffs (hnn m) t ht) ?_
+    intro h
+    have hroot := isRoot_of_mem_roots ht
+    rw [h, IsRoot.def, ← coeff_zero_eq_eval_zero] at hroot
+    exact (hzero m).ne' hroot
+  intro n
+  rw [hPR n, hPR (n + 1)]
+  simpa only [reverse, hdeg] using
+    interlaces_reverse_of_roots_neg (hR n) (hneg (n + 1)) (hneg n)
+
 end RealRooted

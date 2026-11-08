@@ -7,6 +7,10 @@ module
 
 public import Mathlib.Topology.MetricSpace.Pseudo.Defs
 public import Mathlib.RingTheory.Binomial
+public import Mathlib.RingTheory.PowerSeries.Substitution
+public import Mathlib.RingTheory.PowerSeries.Binomial
+import RealRooted.Mathlib.RingTheory.PowerSeries.FiniteSubstitution
+import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi
 import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialPositive
 public import Mathlib.Topology.Algebra.Polynomial
 import Mathlib.Tactic
@@ -83,3 +87,20 @@ theorem tendsto_sum_multichoose_div_nhdsGT (s : Finset ℕ)
   simpa only [one_div, div_eq_mul_inv, mul_comm, mul_one] using h
 
 end Ring
+
+namespace PowerSeries
+
+/-- A fixed coefficient of a substituted binomial series, multiplied by a
+fixed series, depends continuously on its real exponent. -/
+theorem continuous_coeff_mul_subst_binomialSeries
+    (P G : PowerSeries ℝ) (hG : constantCoeff G = 0) (n : ℕ) :
+    Continuous (fun r : ℝ ↦ coeff n (P * subst G (binomialSeries ℝ r))) := by
+  have heq (r : ℝ) : coeff n (P * subst G (binomialSeries ℝ r)) =
+      ∑ p ∈ Finset.antidiagonal n, coeff p.1 P *
+        ∑ j ∈ Finset.range (p.2 + 1), Ring.choose r j * coeff p.2 (G ^ j) := by
+    simp only [coeff_mul, coeff_subst_eq_sum_range G _ hG,
+      binomialSeries_coeff, smul_eq_mul, mul_one]
+  simp_rw [heq]
+  fun_prop
+
+end PowerSeries

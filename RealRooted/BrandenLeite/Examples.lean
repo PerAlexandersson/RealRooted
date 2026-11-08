@@ -1,110 +1,31 @@
 module
 
-import RealRooted.Tactic.RowInterlacing
-import RealRooted.Tactic.Row.AffineCoefficient
-public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineLogarithm
-import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialPositive
 import RealRooted.BrandenLeite.PositivePowerFactors
 import RealRooted.BrandenLeite.LogarithmicFactors
-import Mathlib.Tactic
 public import Mathlib.Basic.Real.Basic
-public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+public import Mathlib.Algebra.Polynomial.Basic
+public import RealRooted.BrandenLeite.AffineNegativePower
+import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialPositive
+import Mathlib.Tactic
 
-/-! # Generic canonical coefficient row tactic regressions -/
+/-! # Regression examples for the Brändén–Leite factor theorems
 
-@[expose] public section
+Concrete instances of `affineNegativePowerCoeff_factor_properties` and
+`affineLogCoeff_factor_properties`: a nonintegral exponent with a nonmonomial numerator,
+degree loss at valuation three, repeated factors, the logarithmic limit, and the exceptional
+linear/linear family, which is a scalar multiple of a repeated linear factor.
+-/
 
-open Polynomial RealRooted
+public section
 
-noncomputable section
+open Polynomial
 
-namespace RealRooted.Tactic.Examples.RowAffineCoefficient
-
-/-- Generic canonical negative-power rows, with no sequence-specific data. -/
-def powerRows {ι ν : Type*} (s : Finset ι) (α : ι → ℝ) (t : Finset ν) (β : ν → ℝ)
-    (c κ : ℝ) (r n : ℕ) : ℝ[X] :=
-  PowerSeries.affineNegativePowerCoeff κ
-    ((∏ i ∈ s, (1 - C (α i) * X) : ℝ[X]) : PowerSeries ℝ)
-    ((C c * X ^ r * ∏ j ∈ t, (1 + C (β j) * X) : ℝ[X]) : PowerSeries ℝ) n
-
-/-- Generic canonical logarithmic rows, with no sequence-specific data. -/
-def logRows {ι ν : Type*} (s : Finset ι) (α : ι → ℝ) (t : Finset ν) (β : ν → ℝ)
-    (c : ℝ) (r n : ℕ) : ℝ[X] :=
-  PowerSeries.affineLogCoeff
-    ((∏ i ∈ s, (1 - C (α i) * X) : ℝ[X]) : PowerSeries ℝ)
-    ((C c * X ^ r * ∏ j ∈ t, (1 + C (β j) * X) : ℝ[X]) : PowerSeries ℝ) n
-
-example {ι ν : Type*} (s : Finset ι) (hs : s.Nonempty) (α : ι → ℝ)
-    (hα : ∀ i ∈ s, 0 < α i) (t : Finset ν) (β : ν → ℝ)
-    (hβ : ∀ j ∈ t, 0 ≤ β j) (c κ : ℝ) (hc : 0 < c) (hκ : 0 < κ)
-    (r n : ℕ) (hr : 0 < r) :
-    (powerRows s α t β c κ r n).Splits := by
-  rr_row_splits (via := affineCoefficient)
-
-example {ι ν : Type*} (s : Finset ι) (hs : s.Nonempty) (α : ι → ℝ)
-    (hα : ∀ i ∈ s, 0 < α i) (t : Finset ν) (β : ν → ℝ)
-    (hβ : ∀ j ∈ t, 0 ≤ β j) (c : ℝ) (hc : 0 < c)
-    (r n : ℕ) (hr : 0 < r) (hn : n ≠ 0) :
-    (logRows s α t β c r n).Splits := by
-  rr_row_splits (via := affineCoefficient)
-
-section
-
-variable {ι ν : Type*} (s : Finset ι) (hs : s.Nonempty) (α : ι → ℝ)
-  (hα : ∀ i ∈ s, 0 < α i) (t : Finset ν) (β : ν → ℝ)
-  (hβ : ∀ j ∈ t, 0 ≤ β j) (c κ : ℝ) (hc : 0 < c) (hκ : 0 < κ)
-  (r n : ℕ) (hr : 0 < r) (hn : n ≠ 0)
-
-include hs hα hβ hc hκ hr in
-example : (powerRows s α t β c κ r n).Splits := by
-  rr_row_splits
-
-include hs hα hβ hc hr hn in
-example : (logRows s α t β c r n).Splits := by
-  rr_row_splits?
-
--- The route must not invent a positive exponent or a nonzero logarithmic index.
-include hs hα hβ hc hr in
-example (h : (powerRows s α t β c κ r n).Splits) :
-    (powerRows s α t β c κ r n).Splits := by
-  fail_if_success (clear h hκ; rr_row_splits (via := affineCoefficient))
-  exact h
-
-include hs hα hβ hc hr in
-example (h : (logRows s α t β c r n).Splits) :
-    (logRows s α t β c r n).Splits := by
-  fail_if_success (clear h hn; rr_row_splits (via := affineCoefficient))
-  exact h
-
-example (p : ℝ[X]) (h : p.Splits) : p.Splits := by
-  fail_if_success (clear h; rr_row_splits (via := affineCoefficient))
-  exact h
-
-end
-
--- An arbitrary series presentation is rejected before formal-series elaboration.
-example (κ : ℝ) (Q B : PowerSeries ℝ) (n : ℕ)
-    (h : (PowerSeries.affineNegativePowerCoeff κ Q B n).Splits) :
-    (PowerSeries.affineNegativePowerCoeff κ Q B n).Splits := by
-  fail_if_success (clear h; rr_row_splits (via := affineCoefficient))
-  exact h
-
--- Products of separately coerced factors require algebraic normalization first.
-example {ι : Type*} (s : Finset ι) (α : ι → ℝ) (κ : ℝ) (B : PowerSeries ℝ)
-    (n : ℕ)
-    (h : (PowerSeries.affineNegativePowerCoeff κ
-      (∏ i ∈ s, ((1 - C (α i) * X : ℝ[X]) : PowerSeries ℝ)) B n).Splits) :
-    (PowerSeries.affineNegativePowerCoeff κ
-      (∏ i ∈ s, ((1 - C (α i) * X : ℝ[X]) : PowerSeries ℝ)) B n).Splits := by
-  fail_if_success (clear h; rr_row_splits (via := affineCoefficient))
-  exact h
-
-open RealRooted.BrandenLeite
+namespace RealRooted.BrandenLeite
 
 /-- Nonintegral exponent and genuinely nonmonomial numerator, matching the
 example in the source note. -/
 example (n : ℕ) :
-    let q := fun m => PowerSeries.affineNegativePowerCoeff (1 / 2 : ℝ)
+    let q := fun m => affineNegativePowerCoeff (1 / 2 : ℝ)
       (((1 - X) * (1 - C 2 * X) : Polynomial ℝ) : PowerSeries ℝ)
       ((X * (1 + C 3 * X) : Polynomial ℝ) : PowerSeries ℝ) m
     (q n).Splits ∧ (q n).natDegree = n ∧ Interl (q n) (q (n + 1)) := by
@@ -121,7 +42,7 @@ example (n : ℕ) :
 /-- Valuation three exercises degree loss and the equal-degree interlacing
 steps of the regularization limit. -/
 example (n : ℕ) :
-    let q := fun m => PowerSeries.affineNegativePowerCoeff (1 / 2 : ℝ)
+    let q := fun m => affineNegativePowerCoeff (1 / 2 : ℝ)
       (((1 - X) * (1 - C 2 * X) : Polynomial ℝ) : PowerSeries ℝ)
       ((C 2 * X ^ 3 * (1 + C 3 * X) : Polynomial ℝ) : PowerSeries ℝ) m
     (q n).natDegree = n / 3 ∧ Interl (q n) (q (n + 1)) := by
@@ -137,7 +58,7 @@ example (n : ℕ) :
 
 /-- Repeated denominator and numerator factors remain allowed. -/
 example (n : ℕ) :
-    let q := fun m => PowerSeries.affineNegativePowerCoeff (1 / 2 : ℝ)
+    let q := fun m => affineNegativePowerCoeff (1 / 2 : ℝ)
       (((1 - X) ^ 2 : Polynomial ℝ) : PowerSeries ℝ)
       ((X ^ 2 * (1 + X) ^ 2 : Polynomial ℝ) : PowerSeries ℝ) m
     (q n).Splits ∧ (q n).natDegree = n / 2 ∧ Interl (q n) (q (n + 1)) := by
@@ -153,7 +74,7 @@ example (n : ℕ) :
 /-- The logarithmic limit retains the same higher-valuation degree and
 orientation, starting at positive row index. -/
 example (n : ℕ) :
-    let ℓ := fun m => PowerSeries.affineLogCoeff
+    let ℓ := fun m => affineLogCoeff
       (((1 - X) ^ 2 : Polynomial ℝ) : PowerSeries ℝ)
       ((X ^ 2 * (1 + X) ^ 2 : Polynomial ℝ) : PowerSeries ℝ) m
     (ℓ (n + 1)).Splits ∧ (ℓ (n + 1)).natDegree = (n + 1) / 2 ∧
@@ -169,10 +90,10 @@ example (n : ℕ) :
 
 /-- The linear/linear exceptional case is exactly a positive scalar times
 a repeated linear factor. It provides an exact regression for the exceptional family. -/
-private theorem affineNegativePowerCoeff_one_sub_X (κ : ℝ) (n : ℕ) :
-    PowerSeries.affineNegativePowerCoeff κ (1 - PowerSeries.X) PowerSeries.X n =
+theorem affineNegativePowerCoeff_one_sub_X (κ : ℝ) (n : ℕ) :
+    affineNegativePowerCoeff κ (1 - PowerSeries.X) PowerSeries.X n =
       C (Ring.multichoose κ n) * (1 + X) ^ n := by
-  unfold PowerSeries.affineNegativePowerCoeff
+  unfold affineNegativePowerCoeff
   have harg : PowerSeries.map Polynomial.C (1 - PowerSeries.X : PowerSeries ℝ) -
       PowerSeries.C Polynomial.X * PowerSeries.map Polynomial.C PowerSeries.X - 1 =
       PowerSeries.C (-(1 + Polynomial.X) : Polynomial ℝ) *
@@ -205,7 +126,7 @@ private theorem affineNegativePowerCoeff_one_sub_X (κ : ℝ) (n : ℕ) :
 
 /-- A nonintegral exponent does not remove the repeated-root exception. -/
 example (n : ℕ) :
-    PowerSeries.affineNegativePowerCoeff (1 / 2 : ℝ)
+    affineNegativePowerCoeff (1 / 2 : ℝ)
       (1 - PowerSeries.X) PowerSeries.X (n + 2) =
         C (Ring.multichoose (1 / 2 : ℝ) (n + 2)) * (1 + X) ^ (n + 2) :=
   affineNegativePowerCoeff_one_sub_X (1 / 2) (n + 2)
@@ -213,11 +134,11 @@ example (n : ℕ) :
 /-- In the exceptional family, `-1` is simultaneously a root of every
 row of degree at least two and of its derivative. -/
 example (n : ℕ) :
-    let p := PowerSeries.affineNegativePowerCoeff (1 / 2 : ℝ)
+    let p := affineNegativePowerCoeff (1 / 2 : ℝ)
       (1 - PowerSeries.X) PowerSeries.X (n + 2)
     p.eval (-1) = 0 ∧ p.derivative.eval (-1) = 0 := by
   dsimp
   rw [affineNegativePowerCoeff_one_sub_X]
   constructor <;> simp [Polynomial.derivative_mul, Polynomial.derivative_pow]
 
-end RealRooted.Tactic.Examples.RowAffineCoefficient
+end RealRooted.BrandenLeite

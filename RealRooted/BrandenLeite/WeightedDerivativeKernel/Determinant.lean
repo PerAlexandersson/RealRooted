@@ -1,19 +1,16 @@
-/-
-Copyright (c) 2026 Per Alexandersson. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Per Alexandersson
--/
 module
 
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Hessenberg
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel
+public import RealRooted.BrandenLeite.WeightedDerivativeKernel.Basic
 import Mathlib.Tactic
 
 /-! Weighted kernel determinants from formal coefficient recurrences. -/
 
 public section
 
-namespace Matrix
+open Matrix
+
+namespace RealRooted.BrandenLeite
 
 variable {R : Type*} [CommRing R]
 
@@ -94,4 +91,4 @@ theorem det_weightedDerivativeKernel_signed_of_recurrence
     _ = ((-1 : R) ^ n * (-1 : R) ^ n) * ((n.factorial : R) * q n) := by ring
     _ = _ := by rw [← mul_pow]; simp
 
-end Matrix
+end RealRooted.BrandenLeite

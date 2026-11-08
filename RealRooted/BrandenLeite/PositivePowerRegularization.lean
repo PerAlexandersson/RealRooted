@@ -5,10 +5,10 @@ import RealRooted.BrandenLeite.PositiveLinearFactors
 import RealRooted.Mathlib.Algebra.Polynomial.LinearFactors
 public import Mathlib.Topology.MetricSpace.Pseudo.Defs
 public import RealRooted.PFPolynomial
-public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePower
+public import RealRooted.BrandenLeite.AffineNegativePower
 import RealRooted.BrandenLeite.PositivePowerInterlacing
 import RealRooted.BrandenLeite.AffineNegativePowerContinuity
-import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerDegree
+import RealRooted.BrandenLeite.AffineNegativePowerDegree
 import RealRooted.Mathlib.Topology.Algebra.Polynomial
 import RealRooted.PFPolynomial.Closure
 import RealRooted.Linear
@@ -77,15 +77,15 @@ private theorem natDegree_affineNegativePowerCoeff_of_coeff_one_pos
     (hα : ∀ i ∈ s, 0 < α i) {κ : ℝ} (hκ : 0 < κ)
     (B : ℝ[X]) (hB0 : B.coeff 0 = 0) (hB1 : 0 < B.coeff 1)
     (hBnn : HasNonnegCoeffs B) (n : ℕ) :
-    (PowerSeries.affineNegativePowerCoeff κ
+    (affineNegativePowerCoeff κ
       ((∏ i ∈ s, (1 - C (α i) * X) : ℝ[X]) : PowerSeries ℝ) B n).natDegree = n := by
   have hzero : ∀ j < 1, PowerSeries.coeff j (B : PowerSeries ℝ) = 0 := by
     intro j hj
     have hj0 : j = 0 := by lia
     subst j
     simpa only [Polynomial.coeff_coe] using hB0
-  have hdegree := PowerSeries.affineNegativePowerCoeff_prod_linear_degree_and_pos
-    s hs α hα (B : PowerSeries ℝ) 1 zero_lt_one hκ
+  have hdegree := affineNegativePowerCoeff_prod_linear_degree_and_pos
+    s hs α hα (B : PowerSeries ℝ) 1 one_ne_zero hκ
     (fun j => by simpa only [Polynomial.coeff_coe] using hBnn j) hzero
     (by simpa only [Polynomial.coeff_coe] using hB1) n
   simpa only [Nat.div_one, ← Polynomial.coe_prod_one_sub_C_mul_X] using hdegree.1
@@ -98,9 +98,9 @@ theorem interl_affineNegativePowerCoeff_prod_linear_succ
     (hα : ∀ i ∈ s, 0 < α i) {κ : ℝ} (hκ : 0 < κ)
     (B : ℝ[X]) (hBne : B ≠ 0) (hB0 : B.coeff 0 = 0)
     (hBs : B.Splits) (hBnn : HasNonnegCoeffs B) (n : ℕ) :
-    Interl (PowerSeries.affineNegativePowerCoeff κ
+    Interl (affineNegativePowerCoeff κ
       ((∏ i ∈ s, (1 - C (α i) * X) : ℝ[X]) : PowerSeries ℝ) B n)
-      (PowerSeries.affineNegativePowerCoeff κ
+      (affineNegativePowerCoeff κ
         ((∏ i ∈ s, (1 - C (α i) * X) : ℝ[X]) : PowerSeries ℝ) B (n + 1)) := by
   obtain ⟨P, hPpf, hP0, hP1, hPlim⟩ :=
     exists_pf_coeff_one_pos_approximation B hBne hB0 hBs hBnn
@@ -114,13 +114,13 @@ theorem interl_affineNegativePowerCoeff_prod_linear_succ
     simp only [hz, Polynomial.coeff_zero, lt_self_iff_false] at this
   have hPs (m : ℕ) : (P m).Splits := ((hPpf m).ne_zero_and_splits (hPne m)).2
   have hdeg (m j : ℕ) :
-      (PowerSeries.affineNegativePowerCoeff κ (Q : PowerSeries ℝ) (P m) j).natDegree = j :=
+      (affineNegativePowerCoeff κ (Q : PowerSeries ℝ) (P m) j).natDegree = j :=
     natDegree_affineNegativePowerCoeff_of_coeff_one_pos
       s hs α hα hκ (P m) (hP0 m) (hP1 m) (hPpf m).hasNonnegCoeffs j
   have hlim (j i : ℕ) : Tendsto
-      (fun m => (PowerSeries.affineNegativePowerCoeff κ
+      (fun m => (affineNegativePowerCoeff κ
         (Q : PowerSeries ℝ) (P m) j).coeff i) atTop
-      (𝓝 ((PowerSeries.affineNegativePowerCoeff κ (Q : PowerSeries ℝ) B j).coeff i)) := by
+      (𝓝 ((affineNegativePowerCoeff κ (Q : PowerSeries ℝ) B j).coeff i)) := by
     apply tendsto_coeff_affineNegativePowerCoeff
       (κ := fun _ : ℕ => κ) (Q := fun _ : ℕ => (Q : PowerSeries ℝ))
       (B := fun m => (P m : PowerSeries ℝ))

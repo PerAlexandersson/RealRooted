@@ -80,9 +80,8 @@ example (n : ℕ) : (productRows n).Splits := by
 
 /--
 info: rr.row explain:
-route           outcome  reason
-(other routes)  skipped  not selected by the via hint
-variableDelay   failed   rr_row: no canonical fixed-delay recurrence
+route          outcome  reason
+variableDelay  failed   rr_row: no canonical fixed-delay recurrence
 ---
 error: rr_row: no canonical fixed-delay recurrence
 -/

@@ -1,12 +1,7 @@
-/-
-Copyright (c) 2026 Per Alexandersson. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Per Alexandersson
--/
 module
 
 import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialDerivative
-public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePower
+public import RealRooted.BrandenLeite.AffineNegativePower
 public import Mathlib.Basic.Real.Basic
 import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerRecurrence
 import Mathlib.Tactic
@@ -15,10 +10,11 @@ import Mathlib.Tactic
 
 public section
 
-open Polynomial
 open scoped BigOperators
 
-namespace PowerSeries
+open PowerSeries
+
+namespace RealRooted.BrandenLeite
 
 /-- The initial row of a normalized affine negative power is one. -/
 theorem affineNegativePowerCoeff_zero (κ : ℝ) (Q B : PowerSeries ℝ)
@@ -85,4 +81,4 @@ theorem coeff_affineNegativePowerCoeff_recurrence
   rw [hi]
   field_simp
 
-end PowerSeries
+end RealRooted.BrandenLeite

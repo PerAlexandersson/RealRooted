@@ -24,17 +24,6 @@ structure RowRouteInfo where
 
 /-- Every row route, generated from `scripts/tactic_routes.json`. -/
 def rowRouteTable : List RowRouteInfo := [
-  { name := `affineCoefficient
-    frontEnds := [
-      "rr_row_splits"
-    ]
-    conclusion := "(P n).Splits"
-    theorems :=
-      [
-        `RealRooted.BrandenLeite.affineNegativePowerCoeff_factor_properties,
-        `RealRooted.BrandenLeite.affineLogCoeff_factor_properties
-      ]
-  },
   { name := `probe
     frontEnds := [
       "rr_row_interlaces",
@@ -305,17 +294,6 @@ def rowRouteTable : List RowRouteInfo := [
         `RealRooted.Tactic.interlaces_fPolynomial_sequence,
         `RealRooted.Tactic.interlaces_fPolynomial_sequence_floor,
         `RealRooted.splits_of_eq_fPolynomial
-      ]
-  },
-  { name := `rationalReverse
-    frontEnds := [
-      "rr_row_interlaces"
-    ]
-    conclusion := "Interlaces (P n) (P (n + 1))"
-    theorems :=
-      [
-        `RealRooted.eq_reflect_of_secondOrderDerivativeRecurrence_of_left_degree,
-        `RealRooted.interlaces_of_eq_reflect_of_coeff_zero_pos
       ]
   },
   { name := `endpointWindow
@@ -592,8 +570,30 @@ def rowRouteTable : List RowRouteInfo := [
 /-- The selectable route names of a front end, in dispatch order. -/
 def rowRoutesOf (frontEnd : String) : List Name :=
   match frontEnd with
+  | "rr_row_interlaces" => [
+      `variableDelay,
+      `rowModel,
+      `halfGrowth,
+      `pathPower,
+      `lowerOrder,
+      `parityProduct,
+      `endpointWindow,
+      `fTransform,
+      `powerForm,
+      `closedForm,
+      `product,
+      `eulerStep,
+      `twoStep,
+      `sign,
+      `window,
+      `degreeWindow,
+      `ratioWindow,
+      `barrierWindow,
+      `movingWindow,
+      `movingUpper,
+      `reversed
+    ]
   | "rr_row_splits" => [
-      `affineCoefficient,
       `variableDelay,
       `derivativeXMul,
       `factorPower,
@@ -613,30 +613,6 @@ def rowRoutesOf (frontEnd : String) : List Name :=
       `degreePattern,
       `reversed,
       `fTransform
-    ]
-  | "rr_row_interlaces" => [
-      `variableDelay,
-      `rowModel,
-      `halfGrowth,
-      `pathPower,
-      `lowerOrder,
-      `parityProduct,
-      `rationalReverse,
-      `endpointWindow,
-      `fTransform,
-      `powerForm,
-      `closedForm,
-      `product,
-      `eulerStep,
-      `twoStep,
-      `sign,
-      `window,
-      `degreeWindow,
-      `ratioWindow,
-      `barrierWindow,
-      `movingWindow,
-      `movingUpper,
-      `reversed
     ]
   | "rr_row_natDegree" => [
       `cone,

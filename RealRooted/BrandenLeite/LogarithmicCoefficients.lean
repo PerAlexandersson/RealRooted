@@ -1,13 +1,8 @@
-/-
-Copyright (c) 2026 Per Alexandersson. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Per Alexandersson
--/
 module
 
 import RealRooted.Mathlib.RingTheory.PowerSeries.FiniteSubstitution
 import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialLogLimit
-public import RealRooted.Mathlib.RingTheory.PowerSeries.AffineLogarithm
+public import RealRooted.BrandenLeite.AffineLogarithm
 import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerCoefficients
 import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi
 import Mathlib.Tactic
@@ -18,20 +13,9 @@ public section
 
 open Filter Topology
 
-namespace PowerSeries
+open PowerSeries
 
-/-- A fixed coefficient of a substituted binomial series, multiplied by a
-fixed series, depends continuously on its real exponent. -/
-theorem continuous_coeff_mul_subst_binomialSeries
-    (P G : PowerSeries ℝ) (hG : constantCoeff G = 0) (n : ℕ) :
-    Continuous (fun r : ℝ ↦ coeff n (P * subst G (binomialSeries ℝ r))) := by
-  have heq (r : ℝ) : coeff n (P * subst G (binomialSeries ℝ r)) =
-      ∑ p ∈ Finset.antidiagonal n, coeff p.1 P *
-        ∑ j ∈ Finset.range (p.2 + 1), Ring.choose r j * coeff p.2 (G ^ j) := by
-    simp only [coeff_mul, coeff_subst_eq_sum_range G _ hG,
-      binomialSeries_coeff, smul_eq_mul, mul_one]
-  simp_rw [heq]
-  fun_prop
+namespace RealRooted.BrandenLeite
 
 /-- Every positive parameter coefficient of the canonical logarithmic row
 is the corresponding integer negative-power coefficient divided by the parameter degree. -/
@@ -65,4 +49,4 @@ theorem coeff_affineLogCoeff_of_ne_zero
   exact tendsto_nhds_unique
     (tendsto_coeff_affineNegativePowerCoeff_div Q B hQ hB hn k) hlim'
 
-end PowerSeries
+end RealRooted.BrandenLeite

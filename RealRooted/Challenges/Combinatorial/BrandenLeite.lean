@@ -27,13 +27,13 @@ authors = ["Brändén", "Saud Maia Leite"]
 years = [2026]
 
 [[definitions]]
-name = "PowerSeries.affineNegativePowerCoeff"
-module = "RealRooted.Mathlib.RingTheory.PowerSeries.AffineNegativePower"
+name = "RealRooted.BrandenLeite.affineNegativePowerCoeff"
+module = "RealRooted.BrandenLeite.AffineNegativePower"
 label = "Coefficients of arbitrary negative real powers"
 
 [[definitions]]
-name = "PowerSeries.affineLogCoeff"
-module = "RealRooted.Mathlib.RingTheory.PowerSeries.AffineLogarithm"
+name = "RealRooted.BrandenLeite.affineLogCoeff"
+module = "RealRooted.BrandenLeite.AffineLogarithm"
 label = "Coefficients of the negative formal logarithm"
 
 [[theorems]]

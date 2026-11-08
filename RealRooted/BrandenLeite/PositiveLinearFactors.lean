@@ -1,8 +1,8 @@
 module
 
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.WeightedDerivativeKernel
+public import RealRooted.BrandenLeite.WeightedDerivativeKernel.Basic
 public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerPositive
-import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerDetPositive
+import RealRooted.BrandenLeite.NegativePowerDetPositive
 public import RealRooted.Basic.Coefficients
 import RealRooted.Mathlib.Algebra.Polynomial.LinearFactors
 import Mathlib.Tactic
@@ -11,7 +11,7 @@ import Mathlib.Tactic
 
 public section
 
-open Polynomial
+open Polynomial RealRooted.BrandenLeite
 
 namespace RealRooted
 
@@ -36,7 +36,7 @@ negative linear factors has strictly positive leading determinants. -/
 theorem det_weightedDerivativeKernel_prod_linear_comp_neg_X_pos {ι : Type*}
     (s : Finset ι) (hs : s.Nonempty) (α : ι → ℝ)
     (hα : ∀ i ∈ s, 0 < α i) {κ : ℝ} (hκ : 0 < κ) (n : ℕ) :
-    ((Matrix.weightedDerivativeKernel κ
+    ((weightedDerivativeKernel κ
       ((∏ i ∈ s, (1 - C (α i) * X : ℝ[X])).comp (-X)).coeff).submatrix
       Fin.val Fin.val : Matrix (Fin n) (Fin n) ℝ).det > 0 := by
   have hseq :
@@ -47,6 +47,6 @@ theorem det_weightedDerivativeKernel_prod_linear_comp_neg_X_pos {ι : Type*}
     rw [← Polynomial.coe_prod_one_sub_C_mul_X, Polynomial.coeff_coe]
     exact congrFun (Polynomial.coeff_comp_neg_X_eq_neg_one_pow_mul _) k
   rw [hseq]
-  exact PowerSeries.det_weightedDerivativeKernel_signed_prod_linear_pos s hs α hα hκ n
+  exact det_weightedDerivativeKernel_signed_prod_linear_pos s hs α hα hκ n
 
 end RealRooted

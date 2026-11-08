@@ -1,8 +1,3 @@
-/-
-Copyright (c) 2026 Per Alexandersson. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Per Alexandersson
--/
 module
 
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
@@ -13,7 +8,9 @@ import Mathlib.Tactic
 
 @[expose] public section
 
-namespace Matrix
+open Matrix
+
+namespace RealRooted.BrandenLeite
 
 /-- The differential coefficient kernel with coefficients extended by zero
 below index zero. -/
@@ -131,4 +128,4 @@ theorem mul_derivativeContraction_apply {m n : ℕ}
     simp only [Finset.sum_pair hoe, weightedIncidence_apply, he, ho, ite_true, hwe, hwo]
     exact add_comm _ _
 
-end Matrix
+end RealRooted.BrandenLeite
