@@ -192,12 +192,8 @@ exponent. -/
 theorem wordWeight_X_eq_monomial {n m : ℕ} (w : Fin n → Fin m) :
     BrandenVecchi.wordWeight
         (R := MvPolynomial (Fin m) ℤ) MvPolynomial.X w =
-      MvPolynomial.monomial (wordExponent w) 1 := by
-  classical
-  unfold BrandenVecchi.wordWeight wordExponent
-  simpa [MvPolynomial.X] using
-    (MvPolynomial.monomial_sum_prod (R := ℤ) Finset.univ
-      (fun i => Finsupp.single (w i) 1) (fun _ => 1)).symm
+      MvPolynomial.monomial (wordExponent w) 1 :=
+  smirnovWordWeight_X_eq_monomial w
 
 /-- A labeled-content descent coefficient is the corresponding multivariate
 coefficient of the universal weighted ordinary-word polynomial. -/
