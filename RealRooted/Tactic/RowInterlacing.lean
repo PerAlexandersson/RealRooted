@@ -6,7 +6,7 @@ import RealRooted.Tactic.Row.PowerForm
 import RealRooted.Tactic.Row.ClosedFormInterlaces
 import RealRooted.Tactic.Row.ParityProduct
 import RealRooted.Tactic.Row.LagFeedback
-public import RealRooted.Tactic.Row.Reverse
+import RealRooted.Tactic.Row.Reverse
 public import RealRooted.Tactic.Row.FTransform
 import RealRooted.Tactic.Row.EndpointWindow
 public import RealRooted.Tactic.Row.PathPower
