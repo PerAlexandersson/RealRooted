@@ -149,12 +149,11 @@ theorem IsTotallyNonneg.strictInterl_checkerboardPencil_succ {n : ℕ}
   · apply compatible_of_split_ray hfs
     intro c hc
     have hp := hA.isPFPolynomial_checkerboardPencil_add_corner hB hdet hc
-    exact hp.eq_zero_or_splits.elim (fun hz => hz ▸ Polynomial.Splits.zero) id
+    exact hp.splits
   · apply compatible_of_split_ray ((by simp : (X : ℝ[X]).Splits).mul hfs)
     intro c hc
     have hp := hA.isPFPolynomial_checkerboardPencil_add_X_corner hB hdet hc
-    simpa only [mul_assoc] using
-      hp.eq_zero_or_splits.elim (fun hz => hz ▸ Polynomial.Splits.zero) id
+    simpa only [mul_assoc] using hp.splits
 
 /-- Reversing both index orders preserves a checkerboard pencil determinant. -/
 @[simp] theorem checkerboardPencil_submatrix_rev {n : ℕ}

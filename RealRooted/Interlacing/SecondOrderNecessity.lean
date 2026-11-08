@@ -318,9 +318,7 @@ theorem not_secondOrderRayPreserving_of_upper_limit
     exists_not_splits_secondOrderUpperResidual_of_limit hlimit
   intro hpres
   have hout := hpres _ (isPFPolynomial_secondOrder_upper_test ht m n)
-  have houtsplit := hout.eq_zero_or_splits.elim
-    (fun hzero ↦ hzero ▸ Polynomial.Splits.zero) id
-  exact not_splits_secondOrderRayOperator_upper_test_of_residual hm hn houtsplit
+  exact not_splits_secondOrderRayOperator_upper_test_of_residual hm hn hout.splits
 
 /-- A negative discriminant makes the explicit upper quadratic limit
 nonsplitting. -/
@@ -579,8 +577,7 @@ theorem secondOrderRayPreserving_iff_middle_discrim_at_index
     have hnot := not_splits_secondOrderRayOperator_X_pow_of_explicit_discrim_neg
       hm hb.ne' (lt_of_not_ge hnonneg)
     have hout := hpres _ (isPFPolynomial_X_pow m)
-    exact hnot (hout.eq_zero_or_splits.elim
-      (fun hzero ↦ hzero ▸ Polynomial.Splits.zero) id)
+    exact hnot hout.splits
   · intro hmonomial
     apply secondOrderRayPreserving_of_three_branch_at_index
       ha hb hc hd hf hdelta hdisc hm hmlo hmhi
@@ -1110,8 +1107,7 @@ theorem not_secondOrderRayPreserving_of_lower_branch
   intro hpres
   have hout := hpres _ ((isPFPolynomial_X_add_C hr.le).pow (n + 2))
   apply hnot
-  exact hout.eq_zero_or_splits.elim
-    (fun hzero ↦ hzero ▸ Polynomial.Splits.zero) id
+  exact hout.splits
 
 /-- In the lower branch at the minimizing index, universal preservation is
 equivalent to the explicit lower threshold. -/

@@ -1530,7 +1530,7 @@ theorem polynomial_interlaces (n : ℕ) :
 
 /-- Every A119308 model row splits over the reals. -/
 theorem polynomial_splits (n : ℕ) : (polynomial n).Splits :=
-  (polynomial_isPF n).eq_zero_or_splits.elim (fun h => h ▸ Splits.zero) id
+  (polynomial_isPF n).splits
 
 /-- The A119308 model satisfies the downstream lag-three recurrence. -/
 theorem polynomial_recurrence (n : ℕ) :

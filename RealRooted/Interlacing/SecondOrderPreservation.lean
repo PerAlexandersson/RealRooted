@@ -61,6 +61,64 @@ private theorem countP_lt_getElem_of_listAlternates_strict :
       simp only [List.length_cons]
       lia
 
+/-- For a split polynomial `p` with positive leading coefficient, `C v * p + p'` strictly
+interlaces `p` for `v > 0`. -/
+private theorem strictInterl_C_mul_add_derivative {p : ℝ[X]}
+    (hp : p.Splits) (hp_pos : HasPosLeadingCoeff p) (hpdeg : p.natDegree ≠ 0)
+    {v : ℝ} (hv : 0 < v) :
+    StrictInterl (C v * p + p.derivative) p := by
+  have hder : StrictInterl p.derivative p :=
+    (derivative_interlaces_of_natDegree_ne_zero hp hpdeg).toStrictInterl
+  have hself : StrictInterl (C v * p) p :=
+    (StrictInterl.refl hp_pos.ne_zero hp).C_mul_left hv.ne'
+  have hself_pos : HasPosLeadingCoeff (C v * p) := by
+    unfold HasPosLeadingCoeff at hp_pos ⊢
+    simpa using mul_pos hv hp_pos
+  exact StrictInterl.add_of_right_of_posLeadingCoeff hself hder hself_pos
+    (hp_pos.derivative hpdeg)
+
+/-- A simple polynomial `p` has no common root with `C v * p + p'`. -/
+private theorem not_isRoot_C_mul_add_derivative_and_isRoot {p : ℝ[X]}
+    (hp_simple : HasSimpleRoots p) (v : ℝ) (r : ℝ) :
+    ¬((C v * p + p.derivative).IsRoot r ∧ p.IsRoot r) := by
+  intro hr
+  have hq0 := hr.1.eq_zero
+  simp only [eval_add, eval_mul, eval_C, hr.2.eq_zero, mul_zero, zero_add] at hq0
+  exact hp_simple.eval_derivative_ne_zero hr.2 hq0
+
+/-- The root lists of a strictly interlacing same-degree pair `q`, `p` with simple roots
+alternate strictly. -/
+private theorem exists_strict_alternating_root_lists {q p : ℝ[X]}
+    (hp : p.Splits) (hp_simple : HasSimpleRoots p) (hqp : StrictInterl q p)
+    (hno : ∀ r : ℝ, ¬(q.IsRoot r ∧ p.IsRoot r)) (hqdeg : q.natDegree = p.natDegree) :
+    ∃ ss rs : List ℝ, ListAlternates ss rs ∧ ss.Pairwise (· < ·) ∧ rs.Pairwise (· < ·) ∧
+      (∀ s ∈ ss, s ∉ rs) ∧ ss.length = p.natDegree ∧ rs.length = p.natDegree ∧
+      (↑ss : Multiset ℝ) = q.roots ∧ (↑rs : Multiset ℝ) = p.roots := by
+  have hsimple := hqp.hasSimpleRoots_of_no_common_root hno
+  obtain ⟨ss, rs, hss_le, hrs_le, hss_roots, hrs_roots, halt⟩ :=
+    hqp.exists_listAlternates_of_natDegree_eq hqdeg
+  have hss_lt : ss.Pairwise (· < ·) := by
+    exact (hss_le.sortedLE.sortedLT_of_nodup (by
+      rw [← Multiset.coe_nodup, hss_roots]
+      exact hsimple.1.roots_nodup)).pairwise
+  have hrs_lt : rs.Pairwise (· < ·) := by
+    exact (hrs_le.sortedLE.sortedLT_of_nodup (by
+      rw [← Multiset.coe_nodup, hrs_roots]
+      exact hp_simple.roots_nodup)).pairwise
+  refine ⟨ss, rs, halt, hss_lt, hrs_lt, ?_, ?_, ?_, hss_roots, hrs_roots⟩
+  · intro s hs hsr
+    apply hno s
+    constructor
+    · apply (mem_roots hqp.1.1).mp
+      rw [← hss_roots]
+      exact Multiset.mem_coe.mpr hs
+    · apply (mem_roots hp_simple.ne_zero).mp
+      rw [← hrs_roots]
+      exact Multiset.mem_coe.mpr hsr
+  · rw [← Multiset.coe_card, hss_roots,
+      Polynomial.splits_iff_card_roots.mp hqp.1.2, hqdeg]
+  · rw [← Multiset.coe_card, hrs_roots, Polynomial.splits_iff_card_roots.mp hp]
+
 /-- For a simple split polynomial with negative roots and every `v > 0`,
 there is a point in the gap having exactly `j` input roots to its right where
 the logarithmic derivative equals `-v`. -/
@@ -76,60 +134,16 @@ theorem secondOrder_exists_gapPoint {p : ℝ[X]}
       ¬p.IsRoot x ∧
       p.roots.countP (fun r ↦ x < r) = j ∧
       p.derivative.eval x / p.eval x = -v := by
-  have hpdeg : 1 ≤ p.natDegree := by lia
   let q : ℝ[X] := C v * p + p.derivative
   have htop : (v + 0 * (p.natDegree : ℝ)) * p.leadingCoeff ≠ 0 := by
     simpa using mul_ne_zero hv.ne' hp_pos.ne'
-  have hqdata := Polynomial.natDegree_and_leadingCoeff_C_mul_add_affine_mul_derivative
-    p v 1 0 htop
   have hqdeg : q.natDegree = p.natDegree := by
-    simpa [q] using hqdata.1
-  have hder : StrictInterl p.derivative p :=
-    (derivative_interlaces_of_natDegree_ne_zero hp (by lia)).toStrictInterl
-  have hself : StrictInterl (C v * p) p :=
-    (StrictInterl.refl hp_pos.ne_zero hp).C_mul_left hv.ne'
-  have hself_pos : HasPosLeadingCoeff (C v * p) := by
-    unfold HasPosLeadingCoeff at hp_pos ⊢
-    simpa using mul_pos hv hp_pos
-  have hder_pos : HasPosLeadingCoeff p.derivative :=
-    hp_pos.derivative (by lia)
-  have hqp : StrictInterl q p := by
-    simpa [q] using StrictInterl.add_of_right_of_posLeadingCoeff
-      hself hder hself_pos hder_pos
-  have hno : ∀ r : ℝ, ¬(q.IsRoot r ∧ p.IsRoot r) := by
-    intro r hr
-    have hder_ne := hp_simple.eval_derivative_ne_zero hr.2
-    have hq0 := hr.1.eq_zero
-    dsimp [q] at hq0
-    simp only [eval_add, eval_mul, eval_C, hr.2.eq_zero, mul_zero, zero_add] at hq0
-    exact hder_ne hq0
-  have hsimple := hqp.hasSimpleRoots_of_no_common_root hno
-  obtain ⟨ss, rs, hss_le, hrs_le, hss_roots, hrs_roots, halt⟩ :=
-    hqp.exists_listAlternates_of_natDegree_eq hqdeg
-  have hss_lt : ss.Pairwise (· < ·) := by
-    exact (hss_le.sortedLE.sortedLT_of_nodup (by
-      rw [← Multiset.coe_nodup, hss_roots]
-      exact hsimple.1.roots_nodup)).pairwise
-  have hrs_lt : rs.Pairwise (· < ·) := by
-    exact (hrs_le.sortedLE.sortedLT_of_nodup (by
-      rw [← Multiset.coe_nodup, hrs_roots]
-      exact hp_simple.roots_nodup)).pairwise
-  have hdisj : ∀ s ∈ ss, s ∉ rs := by
-    intro s hs hsr
-    apply hno s
-    constructor
-    · apply (mem_roots hqp.1.1).mp
-      rw [← hss_roots]
-      exact Multiset.mem_coe.mpr hs
-    · apply (mem_roots hp_pos.ne_zero).mp
-      rw [← hrs_roots]
-      exact Multiset.mem_coe.mpr hsr
-  have hss_len : ss.length = p.natDegree := by
-    rw [← Multiset.coe_card, hss_roots,
-      Polynomial.splits_iff_card_roots.mp hqp.1.2, hqdeg]
-  have hrs_len : rs.length = p.natDegree := by
-    rw [← Multiset.coe_card, hrs_roots,
-      Polynomial.splits_iff_card_roots.mp hp]
+    simpa [q] using
+      (Polynomial.natDegree_and_leadingCoeff_C_mul_add_affine_mul_derivative p v 1 0 htop).1
+  have hqp : StrictInterl q p := strictInterl_C_mul_add_derivative hp hp_pos (by lia) hv
+  have hno := not_isRoot_C_mul_add_derivative_and_isRoot hp_simple v
+  obtain ⟨ss, rs, halt, hss_lt, hrs_lt, hdisj, hss_len, hrs_len, hss_roots, hrs_roots⟩ :=
+    exists_strict_alternating_root_lists hp hp_simple hqp hno hqdeg
   let i := p.natDegree - j
   have hi : i < ss.length := by
     dsimp [i]
@@ -161,6 +175,35 @@ theorem secondOrder_exists_gapPoint {p : ℝ[X]}
     linarith
   exact ⟨x, hxneg, by simpa [q] using hxq, hxnotp, hcount, hratio⟩
 
+/-- A root `r < 0` of `p` to the right of `x` contributes at least `1` to the root sum. -/
+private theorem one_le_div_sub_of_lt {x r : ℝ} (hrneg : r < 0) (hxr : x < r) :
+    1 ≤ x / (x - r) := by
+  have hden : x - r < 0 := sub_neg.mpr hxr
+  have hquot : 0 ≤ r / (x - r) := div_nonneg_iff.mpr (Or.inr ⟨hrneg.le, hden.le⟩)
+  have hid : x / (x - r) = 1 + r / (x - r) := by
+    apply (div_eq_iff hden.ne).2
+    rw [add_mul, one_mul, div_mul_cancel₀ _ hden.ne]
+    ring
+  rw [hid]
+  linarith
+
+/-- If the logarithmic derivative at `x` is `-v`, the terms `x / (x - r)` over the roots add
+up to `-v * x`. -/
+private theorem sum_filter_div_sub_eq {x v : ℝ} {roots : List ℝ} {m : Multiset ℝ}
+    (hroots : (↑roots : Multiset ℝ) = m)
+    (hlog : (m.map fun r ↦ 1 / (x - r)).sum = -v) :
+    ((roots.filter fun r ↦ x < r).map fun r ↦ x / (x - r)).sum +
+      ((roots.filter fun r ↦ ¬x < r).map fun r ↦ x / (x - r)).sum = -v * x := by
+  rw [List.sum_map_filter_add_sum_map_filter_not]
+  have hall : (roots.map fun r ↦ x / (x - r)).sum = (m.map fun r ↦ x / (x - r)).sum := by
+    simpa using congrArg (fun s : Multiset ℝ ↦ (s.map fun r ↦ x / (x - r)).sum) hroots
+  rw [hall]
+  simp only [div_eq_mul_inv, Multiset.sum_map_mul_left]
+  have hlog' : (m.map fun r ↦ (x - r)⁻¹).sum = -v := by
+    simpa only [one_div] using hlog
+  rw [hlog']
+  ring
+
 /-- At a gap point with `j` roots to the right, the actual root-sum terms
 satisfy the two sharp square-sum bounds `j ≤ q` and `s² ≤ jq`.
 
@@ -191,26 +234,14 @@ theorem secondOrder_gap_squareSum_bound {p : ℝ[X]} {x v : ℝ} {j : ℕ}
       (positive.sum + negative.sum) ^ 2 ≤
         (j : ℝ) * ((positive.map fun y ↦ y ^ 2).sum +
           (negative.map fun y ↦ y ^ 2).sum)
-  have hroots : (↑roots : Multiset ℝ) = p.roots := by
-    exact Multiset.sort_eq ..
+  have hroots : (↑roots : Multiset ℝ) = p.roots := Multiset.sort_eq ..
   have hpositive : ∀ y ∈ positive, 1 ≤ y := by
     intro y hy
     obtain ⟨r, hr, rfl⟩ := List.mem_map.mp hy
-    have hxr : x < r := by simpa using (List.mem_filter.mp hr).2
     have hrmem : r ∈ p.roots := by
       rw [← hroots]
       exact Multiset.mem_coe.mpr (List.mem_of_mem_filter hr)
-    have hrneg := hp_neg r hrmem
-    have hden : x - r < 0 := sub_neg.mpr hxr
-    have hquot : 0 ≤ r / (x - r) :=
-      (div_nonneg_iff.mpr (Or.inr ⟨hrneg.le, hden.le⟩))
-    have hid : x / (x - r) = 1 + r / (x - r) := by
-      have hden0 : x - r ≠ 0 := hden.ne
-      apply (div_eq_iff hden0).2
-      rw [add_mul, one_mul, div_mul_cancel₀ _ hden0]
-      ring
-    rw [hid]
-    linarith
+    exact one_le_div_sub_of_lt (hp_neg r hrmem) (by simpa using (List.mem_filter.mp hr).2)
   have hnegative : ∀ y ∈ negative, y ≤ 0 := by
     intro y hy
     obtain ⟨r, hr, rfl⟩ := List.mem_map.mp hy
@@ -220,40 +251,18 @@ theorem secondOrder_gap_squareSum_bound {p : ℝ[X]} {x v : ℝ} {j : ℕ}
     dsimp only [positive]
     rw [List.length_map, ← List.countP_eq_length_filter, ← Multiset.coe_countP,
       hroots, hcount]
-  have heval : p.eval x ≠ 0 := by
-    simpa [Polynomial.IsRoot.def] using hxroot
   have hlog : (p.roots.map fun r ↦ 1 / (x - r)).sum = -v := by
     have hder := hp.eval_derivative_eq_eval_mul_sum hxroot
-    have heq : p.derivative.eval x / p.eval x =
-        (p.roots.map fun r ↦ 1 / (x - r)).sum := by
+    have heval : p.eval x ≠ 0 := by simpa [Polynomial.IsRoot.def] using hxroot
+    have heq : p.derivative.eval x / p.eval x = (p.roots.map fun r ↦ 1 / (x - r)).sum := by
       rw [hder]
       field_simp
     linarith
-  have hsum : positive.sum + negative.sum = -v * x := by
-    change ((roots.filter fun r ↦ x < r).map fun r ↦ x / (x - r)).sum +
-        ((roots.filter fun r ↦ ¬x < r).map fun r ↦ x / (x - r)).sum = _
-    rw [List.sum_map_filter_add_sum_map_filter_not]
-    have hall : (roots.map fun r ↦ x / (x - r)).sum =
-        (p.roots.map fun r ↦ x / (x - r)).sum := by
-      have h := congrArg
-        (fun s : Multiset ℝ ↦ (s.map fun r ↦ x / (x - r)).sum) hroots
-      simpa using h
-    rw [hall]
-    simp only [div_eq_mul_inv, Multiset.sum_map_mul_left]
-    have hlog' : (p.roots.map fun r ↦ (x - r)⁻¹).sum = -v := by
-      simpa only [one_div] using hlog
-    rw [hlog']
-    ring
-  have hsum_pos : 0 < positive.sum + negative.sum := by
-    rw [hsum]
-    exact mul_pos_of_neg_of_neg (neg_neg_of_pos hv) hx
-  obtain ⟨hcard, hsquare⟩ :=
-    sum_sq_ge_card_and_sum_sq positive negative hpositive hnegative hsum_pos
-  refine ⟨hpos_len, hsum, ?_, ?_⟩
-  · rw [hpos_len] at hcard
-    exact hcard
-  · rw [hpos_len] at hsquare
-    exact hsquare
+  have hsum : positive.sum + negative.sum = -v * x := sum_filter_div_sub_eq hroots hlog
+  obtain ⟨hcard, hsquare⟩ := sum_sq_ge_card_and_sum_sq positive negative hpositive hnegative
+    (by rw [hsum]; exact mul_pos_of_neg_of_neg (neg_neg_of_pos hv) hx)
+  rw [hpos_len] at hcard hsquare
+  exact ⟨hpos_len, hsum, hcard, hsquare⟩
 
 /-! ## Evaluation of the operator at a selected point -/
 

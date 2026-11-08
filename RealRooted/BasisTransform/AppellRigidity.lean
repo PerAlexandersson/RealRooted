@@ -637,32 +637,34 @@ private theorem multiset_prod_le_sum_pow_card
         _ = (a ::ₘ s).sum ^ (a ::ₘ s).card := by
           simp [pow_succ']
 
+/-- For a monic split polynomial of degree `k ≥ 2`, the sum of the squared roots is
+`coeff (k - 1) ^ 2 - 2 * coeff (k - 2)`. -/
+theorem sum_map_sq_roots_eq_coeff_sq_sub_two_mul
+    {p : ℝ[X]} {k : ℕ} (hp : p.Monic) (hdeg : p.natDegree = k)
+    (hk : 2 ≤ k) (hsplits : p.Splits) :
+    (p.roots.map (· ^ 2)).sum = p.coeff (k - 1) ^ 2 - 2 * p.coeff (k - 2) := by
+  have hcard : p.roots.card = p.natDegree := splits_iff_card_roots.mp hsplits
+  have hsum : p.roots.sum = -p.coeff (k - 1) := by
+    rw [coeff_eq_esymm_roots_of_card hcard (by lia), hp.leadingCoeff, hdeg,
+      show k - (k - 1) = 1 by lia, Samuelson.esymm_one]
+    ring
+  have hesymm : p.roots.esymm 2 = p.coeff (k - 2) := by
+    rw [coeff_eq_esymm_roots_of_card hcard (by lia), hp.leadingCoeff, hdeg,
+      show k - (k - 2) = 2 by lia]
+    ring
+  rw [Samuelson.sum_map_sq_eq, hsum, hesymm]
+  ring
+
 /-- The sum-of-squared-roots expression from the first two lower
 coefficients of a monic split polynomial is nonnegative. -/
 theorem coeff_sq_sub_two_mul_nonneg
     {p : ℝ[X]} {k : ℕ} (hp : p.Monic) (hdeg : p.natDegree = k)
     (hk : 2 ≤ k) (hsplits : p.Splits) :
     0 ≤ p.coeff (k - 1) ^ 2 - 2 * p.coeff (k - 2) := by
-  have hcard : p.roots.card = k := (splits_iff_card_roots.mp hsplits).trans hdeg
-  have hsum : p.roots.sum = -p.coeff (k - 1) := by
-    rw [coeff_eq_esymm_roots_of_card (hcard.trans hdeg.symm) (by
-      rw [hdeg]
-      lia), hp.leadingCoeff, hdeg, show k - (k - 1) = 1 by lia,
-      Samuelson.esymm_one]
-    ring
-  have hesymm : p.roots.esymm 2 = p.coeff (k - 2) := by
-    rw [coeff_eq_esymm_roots_of_card (hcard.trans hdeg.symm) (by
-      rw [hdeg]
-      lia), hp.leadingCoeff, hdeg, show k - (k - 2) = 2 by lia]
-    ring
-  calc
-    0 ≤ (p.roots.map (· ^ 2)).sum := Multiset.sum_nonneg fun x hx => by
-      obtain ⟨r, _, rfl⟩ := Multiset.mem_map.mp hx
-      positivity
-    _ = p.roots.sum ^ 2 - 2 * p.roots.esymm 2 := Samuelson.sum_map_sq_eq _
-    _ = p.coeff (k - 1) ^ 2 - 2 * p.coeff (k - 2) := by
-      rw [hsum, hesymm]
-      ring
+  rw [← sum_map_sq_roots_eq_coeff_sq_sub_two_mul hp hdeg hk hsplits]
+  exact Multiset.sum_nonneg fun x hx => by
+    obtain ⟨r, _, rfl⟩ := Multiset.mem_map.mp hx
+    positivity
 
 /-- For a monic split polynomial, the square of the constant term is bounded
 by the appropriate power of the sum of the squared roots, written using the
@@ -673,26 +675,12 @@ theorem eval_zero_sq_le_coeff_sq_sub_two_mul_pow
     p.eval 0 ^ 2 ≤
       (p.coeff (k - 1) ^ 2 - 2 * p.coeff (k - 2)) ^ k := by
   have hcard : p.roots.card = k := (splits_iff_card_roots.mp hsplits).trans hdeg
-  have hsum : p.roots.sum = -p.coeff (k - 1) := by
-    rw [coeff_eq_esymm_roots_of_card (hcard.trans hdeg.symm) (by
-      rw [hdeg]
-      lia), hp.leadingCoeff, hdeg, show k - (k - 1) = 1 by lia,
-      Samuelson.esymm_one]
-    ring
-  have hesymm : p.roots.esymm 2 = p.coeff (k - 2) := by
-    rw [coeff_eq_esymm_roots_of_card (hcard.trans hdeg.symm) (by
-      rw [hdeg]
-      lia), hp.leadingCoeff, hdeg, show k - (k - 2) = 2 by lia]
-    ring
-  have hsqsum : (p.roots.map (· ^ 2)).sum =
-      p.coeff (k - 1) ^ 2 - 2 * p.coeff (k - 2) := by
-    rw [Samuelson.sum_map_sq_eq, hsum, hesymm]
-    ring
   have hprod := multiset_prod_le_sum_pow_card (p.roots.map (· ^ 2)) (by
     intro x hx
     obtain ⟨r, _, rfl⟩ := Multiset.mem_map.mp hx
     positivity)
-  rw [Multiset.card_map, hcard, hsqsum] at hprod
+  rw [Multiset.card_map, hcard,
+    sum_map_sq_roots_eq_coeff_sq_sub_two_mul hp hdeg hk hsplits] at hprod
   rw [hsplits.eval_eq_prod_roots, hp.leadingCoeff]
   simp only [one_mul, zero_sub]
   calc
@@ -734,6 +722,29 @@ theorem appellCoefficient_natDegree_le_of_shiftedPower_splits
   have hfactorial : (k.factorial : ℝ) ≠ 0 := by positivity
   simpa only [q, natDegree_C_mul hfactorial] using hdegree
 
+/-- A degree-triangular monic basis transform preserving every polynomial with nonpositive
+real roots has split shifted repeated-root images. -/
+theorem splits_shiftedPowerImage_of_preserves
+    {P : ℕ → ℝ[X]} (hPdeg : ∀ n, (P n).natDegree = n)
+    (hPmonic : ∀ n, (P n).Monic)
+    (hpres : ∀ p : ℝ[X], p.Splits →
+      (∀ r ∈ p.roots, r ≤ 0) → (basisTransform P p).Splits)
+    (k : ℕ) {r : ℝ} (hr : 0 ≤ r) : (shiftedPowerImage P k r).Splits := by
+  have hinput : ((X + C r) ^ k : ℝ[X]).Splits :=
+    (Polynomial.Splits.X_add_C r).pow k
+  have hroots : ∀ x ∈ ((X + C r) ^ k : ℝ[X]).roots, x ≤ 0 := by
+    intro x hx
+    rw [roots_pow, roots_X_add_C] at hx
+    have hx' : x = -r := Multiset.mem_singleton.mp (Multiset.mem_nsmul.mp hx).2
+    rw [hx']
+    exact neg_nonpos.mpr hr
+  have himage := hpres ((X + C r) ^ k) hinput hroots
+  have hnonzero : basisTransform P ((X + C r) ^ k) ≠ 0 :=
+    (basisTransform_monic_of_monic hPdeg hPmonic
+      ((monic_X_add_C r).pow k)).ne_zero
+  rw [shiftedPowerImage, show X - C r = X + C (-r) by rw [C_neg]; ring]
+  exact (isRealRooted_comp_X_add_C hnonzero himage (-r)).2
+
 /-- A degree-triangular monic basis transform preserving every polynomial with
 nonpositive real roots satisfies the half-degree bound on its differential
 coefficients. -/
@@ -744,23 +755,8 @@ theorem appellCoefficient_natDegree_le
       (∀ r ∈ p.roots, r ≤ 0) → (basisTransform P p).Splits) (k : ℕ) :
     (appellCoefficient P k).natDegree ≤ k / 2 := by
   by_cases hk : 2 ≤ k
-  · apply appellCoefficient_natDegree_le_of_shiftedPower_splits
-      hPdeg hPmonic hk
-    intro r hr
-    have hinput : ((X + C r) ^ k : ℝ[X]).Splits :=
-      (Polynomial.Splits.X_add_C r).pow k
-    have hroots : ∀ x ∈ ((X + C r) ^ k : ℝ[X]).roots, x ≤ 0 := by
-      intro x hx
-      rw [roots_pow, roots_X_add_C] at hx
-      have hx' : x = -r := Multiset.mem_singleton.mp (Multiset.mem_nsmul.mp hx).2
-      rw [hx']
-      exact neg_nonpos.mpr hr
-    have himage := hpres ((X + C r) ^ k) hinput hroots
-    have hnonzero : basisTransform P ((X + C r) ^ k) ≠ 0 :=
-      (basisTransform_monic_of_monic hPdeg hPmonic
-        ((monic_X_add_C r).pow k)).ne_zero
-    rw [shiftedPowerImage, show X - C r = X + C (-r) by rw [C_neg]; ring]
-    exact (isRealRooted_comp_X_add_C hnonzero himage (-r)).2
+  · exact appellCoefficient_natDegree_le_of_shiftedPower_splits hPdeg hPmonic hk
+      fun r hr => splits_shiftedPowerImage_of_preserves hPdeg hPmonic hpres k hr
   · have hk' : k ≤ 1 := by lia
     interval_cases k
     · have hPzero : P 0 = 1 :=
@@ -805,29 +801,13 @@ theorem exists_diagonalPolynomial
     (isAppellExpansion_appellCoefficient P)
     (appellCoefficient_natDegree_le hPdeg hPmonic hpres) j
 
-/-- Root preservation forces the quadratic coefficient governing the first
-lower basis diagonal to be nonnegative. -/
-theorem two_mul_coeff_one_appellCoefficient_two_nonneg
+/-- Repeated-root preservation at degree two forces the quadratic coefficient governing
+the first lower basis diagonal to be nonnegative. -/
+theorem two_mul_coeff_one_appellCoefficient_two_nonneg_of_shiftedPower_splits
     {P : ℕ → ℝ[X]} (hPdeg : ∀ n, (P n).natDegree = n)
     (hPmonic : ∀ n, (P n).Monic)
-    (hpres : ∀ p : ℝ[X], p.Splits →
-      (∀ r ∈ p.roots, r ≤ 0) → (basisTransform P p).Splits) :
+    (hsplits : ∀ r : ℝ, 0 ≤ r → (shiftedPowerImage P 2 r).Splits) :
     0 ≤ 2 * (appellCoefficient P 2).coeff 1 := by
-  have hsplits (r : ℝ) (hr : 0 ≤ r) : (shiftedPowerImage P 2 r).Splits := by
-    have hinput : ((X + C r) ^ 2 : ℝ[X]).Splits :=
-      (Polynomial.Splits.X_add_C r).pow 2
-    have hroots : ∀ x ∈ ((X + C r) ^ 2 : ℝ[X]).roots, x ≤ 0 := by
-      intro x hx
-      rw [roots_pow, roots_X_add_C] at hx
-      have hx' : x = -r := Multiset.mem_singleton.mp (Multiset.mem_nsmul.mp hx).2
-      rw [hx']
-      exact neg_nonpos.mpr hr
-    have himage := hpres ((X + C r) ^ 2) hinput hroots
-    have hnonzero : basisTransform P ((X + C r) ^ 2) ≠ 0 :=
-      (basisTransform_monic_of_monic hPdeg hPmonic
-        ((monic_X_add_C r).pow 2)).ne_zero
-    rw [shiftedPowerImage, show X - C r = X + C (-r) by rw [C_neg]; ring]
-    exact (isRealRooted_comp_X_add_C hnonzero himage (-r)).2
   have hslope : 0 ≤ -2 *
       (2 * (P 1).coeff 0 - (P 2).coeff 1) := by
     apply nonneg_of_affine_nonneg_on_nonneg
@@ -840,10 +820,20 @@ theorem two_mul_coeff_one_appellCoefficient_two_nonneg
       coeff_shiftedPowerImage_sub_two hPdeg hPmonic (by norm_num) r] at h
     norm_num at h
     nlinarith [h]
-  have hPzero : P 0 = 1 :=
-    eq_one_of_monic_natDegree_zero (hPmonic 0) (hPdeg 0)
-  rw [two_mul_coeff_one_appellCoefficient_two hPzero]
+  rw [two_mul_coeff_one_appellCoefficient_two
+    (eq_one_of_monic_natDegree_zero (hPmonic 0) (hPdeg 0))]
   linarith
+
+/-- Root preservation forces the quadratic coefficient governing the first
+lower basis diagonal to be nonnegative. -/
+theorem two_mul_coeff_one_appellCoefficient_two_nonneg
+    {P : ℕ → ℝ[X]} (hPdeg : ∀ n, (P n).natDegree = n)
+    (hPmonic : ∀ n, (P n).Monic)
+    (hpres : ∀ p : ℝ[X], p.Splits →
+      (∀ r ∈ p.roots, r ≤ 0) → (basisTransform P p).Splits) :
+    0 ≤ 2 * (appellCoefficient P 2).coeff 1 := by
+  exact two_mul_coeff_one_appellCoefficient_two_nonneg_of_shiftedPower_splits hPdeg hPmonic
+    fun r hr => splits_shiftedPowerImage_of_preserves hPdeg hPmonic hpres 2 hr
 
 /-- Under the explicit Appell expansion, root preservation makes the first
 lower coefficient diagonal `α n + β * choose n 2` with `β ≥ 0`. -/

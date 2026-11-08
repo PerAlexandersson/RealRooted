@@ -66,6 +66,11 @@ theorem coeff_one_sub_X_mul_succ {R : Type*} [Ring R] (p : R[X]) (k : ℕ) :
     ((1 - X) * p).coeff (k + 1) = p.coeff (k + 1) - p.coeff k := by
   rw [sub_mul, one_mul, coeff_sub, coeff_X_mul]
 
+/-- The coefficient of `(1 + C a * X) * q` in positive degree. -/
+theorem coeff_one_add_C_mul_X_mul_succ {R : Type*} [Semiring R] (a : R) (q : R[X]) (n : ℕ) :
+    ((1 + C a * X) * q).coeff (n + 1) = q.coeff (n + 1) + a * q.coeff n := by
+  rw [add_mul, one_mul, mul_assoc, coeff_add, coeff_C_mul, coeff_X_mul]
+
 /-- The coefficient of `(1 - X) ^ n` is the signed binomial coefficient. -/
 theorem coeff_one_sub_X_pow {R : Type*} [CommRing R] (n k : ℕ) :
     ((1 - X : R[X]) ^ n).coeff k = (-1 : R) ^ k * (n.choose k : R) := by

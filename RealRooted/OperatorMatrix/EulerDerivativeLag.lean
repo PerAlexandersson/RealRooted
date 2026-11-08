@@ -642,8 +642,7 @@ theorem isPFPolynomial_of_recurrence (P : ℕ → ℝ[X])
 theorem splits_of_recurrence (P : ℕ → ℝ[X])
     (hrec : ∀ k, P (k + 2) = RealRooted.theta (P (k + 1)) + X * RealRooted.theta (P k))
     (hseed : IsOrderedPF ![P 0, P 1]) (n : ℕ) : (P n).Splits :=
-  (isPFPolynomial_of_recurrence P hrec hseed n).eq_zero_or_splits.elim
-    (fun h => h ▸ Splits.zero) id
+  (isPFPolynomial_of_recurrence P hrec hseed n).splits
 
 /-- Every recurrence family with initial values `(1,X)` splits in every row. -/
 theorem splits_of_recurrence_one_X (P : ℕ → ℝ[X])

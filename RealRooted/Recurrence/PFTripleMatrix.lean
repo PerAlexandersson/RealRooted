@@ -333,7 +333,7 @@ theorem isPFPolynomial_of_recurrence
     (hrec : ∀ s, P (s + 2) = (C (a s) + C (b s) * X) * P (s + 1) + C (e s) * X * P s +
       C (d s) * X ^ 2 * P (s - 1))
     (h0 : P 0 = 0) (h1 : P 1 = 1) (s : ℕ) : IsPFPolynomial (P s) :=
-  (isOrderedPFTriple_of_recurrence ha hb hd he hrec h0 h1 s).1
+  isPFPolynomial_of_recurrence_scaled one_pos ha hb hd (fun s ↦ by linarith [he s]) hrec h0 h1 s
 
 /-- Under the hypotheses of `isOrderedPFTriple_of_recurrence`, consecutive rows weakly
 interlace. -/
@@ -343,7 +343,7 @@ theorem interl_of_recurrence
     (hrec : ∀ s, P (s + 2) = (C (a s) + C (b s) * X) * P (s + 1) + C (e s) * X * P s +
       C (d s) * X ^ 2 * P (s - 1))
     (h0 : P 0 = 0) (h1 : P 1 = 1) (s : ℕ) : Interl (P s) (P (s + 1)) :=
-  (isOrderedPFTriple_of_recurrence ha hb hd he hrec h0 h1 s).2.2.2.2.1
+  interl_of_recurrence_scaled one_pos ha hb hd (fun s ↦ by linarith [he s]) hrec h0 h1 s
 
 end Recurrence
 

@@ -124,7 +124,7 @@ theorem rowPoly_isPF (d : ℕ) : IsPFPolynomial (rowPoly d) := by
 
 /-- Every A286785 row splits over the reals. -/
 theorem rowPoly_splits (d : ℕ) : (rowPoly d).Splits :=
-  (rowPoly_isPF d).eq_zero_or_splits.elim (fun h => h ▸ (by simp)) id
+  (rowPoly_isPF d).splits
 
 /-- The second-order ODE satisfied by every row. -/
 theorem rowPoly_ode (d : ℕ) :
@@ -181,12 +181,12 @@ private lemma discriminant_pos (d : ℕ) {x : ℝ}
     mul_le_mul_of_nonneg_right hq (by positivity)
   nlinarith
 
-/-- Every real root of a splitting A286785 row lies strictly below `-1/8`. -/
-theorem isRoot_lt_neg_one_eighth_of_splits (d : ℕ) (hs : (rowPoly d).Splits)
-    {r : ℝ} (hr : (rowPoly d).IsRoot r) : r < -1 / 8 := by
+/-- Every real root of an A286785 row lies strictly below `-1/8`. -/
+theorem isRoot_lt_neg_one_eighth (d : ℕ) {r : ℝ}
+    (hr : (rowPoly d).IsRoot r) : r < -1 / 8 := by
   let a : ℝ[X] := X * (1 - X)
   let b : ℝ[X] := C ((d : ℝ) + 4) + C (2 * (d : ℝ)) * X
-  apply roots_lt_of_second_order_ode hs (rowPoly_leadingCoeff_pos d)
+  apply roots_lt_of_second_order_ode (rowPoly_splits d) (rowPoly_leadingCoeff_pos d)
     (a := a) (b := b) (lam := (d : ℝ) * (d + 1)) (U := 0)
   · simpa only [a, b] using rowPoly_ode d
   · intro x hx
@@ -461,8 +461,8 @@ theorem rowPoly_succ (d : ℕ) :
       rw [rowPoly_transition]
       ring
 
-/-- A splitting row strictly interlaces the next row. -/
-theorem rowPoly_strictInterl_succ_of_splits (d : ℕ) (hs : (rowPoly d).Splits) :
+/-- Consecutive A286785 rows strictly interlace. -/
+theorem rowPoly_strictInterl_succ (d : ℕ) :
     StrictInterl (rowPoly d) (rowPoly (d + 1)) := by
   let u : ℝ[X] := C ((transitionScale d)⁻¹) * rowCoeffPoly d
   let v : ℝ[X] := C ((transitionScale d)⁻¹) * derivativeCoeff d
@@ -472,7 +472,7 @@ theorem rowPoly_strictInterl_succ_of_splits (d : ℕ) (hs : (rowPoly d).Splits) 
     ring
   have hv : ∀ r, (rowPoly d).IsRoot r → v.eval r ≤ 0 := by
     intro r hr
-    have hr_bound := isRoot_lt_neg_one_eighth_of_splits d hs hr
+    have hr_bound := isRoot_lt_neg_one_eighth d hr
     have hscale_pos : 0 < transitionScale d := by
       unfold transitionScale
       positivity
@@ -485,7 +485,7 @@ theorem rowPoly_strictInterl_succ_of_splits (d : ℕ) (hs : (rowPoly d).Splits) 
       nlinarith
     exact (mul_nonpos_of_nonneg_of_nonpos (inv_nonneg.mpr hscale_pos.le)
       (mul_nonpos_of_nonneg_of_nonpos hfirst.le hsecond.le))
-  have hstrict := MaWang.strictInterl_derivative_of_nonpos_of_splits hs
+  have hstrict := MaWang.strictInterl_derivative_of_nonpos_of_splits (rowPoly_splits d)
     (u := u) (v := v)
     (by rw [← hrec, rowPoly_natDegree, rowPoly_natDegree]; lia)
     (by rw [← hrec, rowPoly_natDegree, rowPoly_natDegree])
@@ -493,16 +493,6 @@ theorem rowPoly_strictInterl_succ_of_splits (d : ℕ) (hs : (rowPoly d).Splits) 
     (rowPoly_leadingCoeff_pos d) hv
   rw [← hrec] at hstrict
   exact hstrict
-
-/-- Every real root of an A286785 row lies strictly below `-1/8`. -/
-theorem isRoot_lt_neg_one_eighth (d : ℕ) {r : ℝ}
-    (hr : (rowPoly d).IsRoot r) : r < -1 / 8 :=
-  isRoot_lt_neg_one_eighth_of_splits d (rowPoly_splits d) hr
-
-/-- Consecutive A286785 rows strictly interlace. -/
-theorem rowPoly_strictInterl_succ (d : ℕ) :
-    StrictInterl (rowPoly d) (rowPoly (d + 1)) :=
-  rowPoly_strictInterl_succ_of_splits d (rowPoly_splits d)
 
 private lemma rowPoly_two :
     rowPoly 2 = 14 + 14 * X + 2 * X ^ 2 := by

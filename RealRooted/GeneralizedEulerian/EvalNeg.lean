@@ -33,10 +33,7 @@ theorem eval_neg_generalizedEulerian_one_pos {n : ℕ} {q : ℝ} (hq : 0 < q)
 theorem eval_neg_generalizedEulerian_one_pos_of_pow_mul_pow_le {n : ℕ} {q : ℝ} (hq : 0 < q)
     (h : ∀ k : ℕ, (k : ℝ) ^ (n + 1) * q ^ k ≤ q) :
     0 < (generalizedEulerian 1 n).eval (-q) := by
-  refine eval_neg_generalizedEulerian_one_pos hq ?_
-  have h2 := h 2
-  norm_num at h2
-  by_contra! hh
-  nlinarith [mul_pos (sub_pos.2 hh) hq]
+  refine eval_neg_generalizedEulerian_one_pos hq (le_of_mul_le_mul_right ?_ hq)
+  simpa [sq, mul_assoc, mul_comm, mul_left_comm] using h 2
 
 end RealRooted

@@ -24,25 +24,6 @@ noncomputable section
 
 namespace RealRooted
 
-private lemma HasPosLeadingCoeff.iterate_derivative_of_le_natDegree
-    {p : ℝ[X]} (hp : HasPosLeadingCoeff p) :
-    ∀ {r : ℕ}, r ≤ p.natDegree → HasPosLeadingCoeff (derivative^[r] p) := by
-  intro r hr
-  induction r generalizing p with
-  | zero => simpa
-  | succ r ih =>
-      rw [Function.iterate_succ_apply']
-      apply (ih hp (by lia)).derivative
-      rw [natDegree_iterate_derivative_eq_sub hp.ne_zero (by lia)]
-      lia
-
-private lemma Interl.iterate_derivative {f g : ℝ[X]} (h : Interl f g) :
-    ∀ r : ℕ, Interl (derivative^[r] f) (derivative^[r] g)
-  | 0 => by simpa
-  | r + 1 => by
-      simpa [Function.iterate_succ_apply'] using
-        derivativePreservesInterl (h.iterate_derivative r)
-
 private lemma roots_iterate_derivative_mem_Icc {p : ℝ[X]} {u v : ℝ}
     (hp : p.Splits) (hroots : ∀ x ∈ p.roots, x ∈ Set.Icc u v) :
     ∀ {r : ℕ}, r ≤ p.natDegree →

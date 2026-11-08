@@ -133,6 +133,40 @@ theorem pochhammerJensenPolynomial_coeff_ratio {lower upper : List ℝ}
       invPochhammerProduct upper (d - (k + 1))) * hleft -
     ((d.choose k : ℝ) * ((d : ℝ) - k) * invPochhammerProduct lower k) * hright
 
+/-- Shifting every positive parameter by a natural number keeps the product positive. -/
+theorem prod_map_add_natCast_pos {parameters : List ℝ} (h : ∀ a ∈ parameters, 0 < a) (k : ℕ) :
+    0 < (parameters.map fun a : ℝ => a + k).prod := by
+  apply List.prod_pos
+  intro x hx
+  obtain ⟨a, ha, rfl⟩ := List.mem_map.mp hx
+  have := h a ha
+  positivity
+
+/-- **Proportionality from a coefficient ratio.**  Let `p` and `q` have degree at most `d`, let
+`q` have nonzero constant coefficient, and suppose both satisfy the division-free recurrence
+`A k * c_{k+1} = B k * c_k` for `k < d` with `A k ≠ 0`.  Then `p = (p₀ / q₀) q`. -/
+theorem eq_C_mul_of_coeff_ratio {p q : ℝ[X]} {d : ℕ} {A B : ℕ → ℝ}
+    (hA : ∀ k < d, A k ≠ 0) (hp : p.natDegree ≤ d) (hq : q.natDegree ≤ d)
+    (hq0 : q.coeff 0 ≠ 0)
+    (hpr : ∀ k < d, A k * p.coeff (k + 1) = B k * p.coeff k)
+    (hqr : ∀ k < d, A k * q.coeff (k + 1) = B k * q.coeff k) :
+    p = C (p.coeff 0 / q.coeff 0) * q := by
+  set c := p.coeff 0 / q.coeff 0
+  have heq : ∀ k ≤ d, p.coeff k = c * q.coeff k := by
+    intro k hk
+    induction k with
+    | zero => exact (div_mul_cancel₀ _ hq0).symm
+    | succ k ih =>
+        refine mul_left_cancel₀ (hA k (by lia)) ?_
+        rw [hpr k (by lia), ih (by lia)]
+        linear_combination -c * hqr k (by lia)
+  ext k
+  rw [coeff_C_mul]
+  by_cases hk : k ≤ d
+  · exact heq k hk
+  · rw [coeff_eq_zero_of_natDegree_lt (by lia : p.natDegree < k),
+      coeff_eq_zero_of_natDegree_lt (by lia : q.natDegree < k), mul_zero]
+
 /-- A positive constant coefficient and the hypergeometric coefficient ratio
 with positive parameters certify the polynomial PF property. The degree bound
 and ratio are all-index certificates, not a fit to finitely many rows. -/
@@ -144,42 +178,17 @@ theorem isPFPolynomial_of_pochhammer_list_coeff_ratio
       ((k : ℝ) + 1) * (lower.map (fun a : ℝ => a + k)).prod * p.coeff (k + 1) =
         ((d : ℝ) - k) * (upper.map (fun b : ℝ => b + d - k - 1)).prod * p.coeff k) :
     IsPFPolynomial p := by
-  let q := pochhammerJensenPolynomial d lower upper
-  have hqzero : 0 < q.coeff 0 := pochhammerJensenPolynomial_coeff_pos hl hr (Nat.zero_le d)
-  let c := p.coeff 0 / q.coeff 0
-  have hc : 0 < c := div_pos hzero hqzero
-  have heq : ∀ k ≤ d, p.coeff k = c * q.coeff k := by
-    intro k hk
-    induction k with
-    | zero => exact (div_mul_cancel₀ _ hqzero.ne').symm
-    | succ k ih =>
-        have hprev := ih (by lia)
-        have hp := hratio k (by lia)
-        have hq := pochhammerJensenPolynomial_coeff_ratio hl hr (d := d) (k := k) (by lia)
-        have hprod : 0 < (lower.map (fun a : ℝ => a + k)).prod := by
-          apply List.prod_pos
-          intro x hx
-          obtain ⟨a, ha, rfl⟩ := List.mem_map.mp hx
-          have := hl a ha
-          positivity
-        have hnonzero : ((k : ℝ) + 1) *
-            (lower.map (fun a : ℝ => a + k)).prod ≠ 0 := by positivity
-        apply mul_left_cancel₀ hnonzero
-        rw [hp, hprev]
-        change _ = ((k : ℝ) + 1) * (lower.map (fun a : ℝ => a + k)).prod *
-          (c * (pochhammerJensenPolynomial d lower upper).coeff (k + 1))
-        linear_combination -c * hq
-  have hpq : p = C c * q := by
-    ext k
-    rw [coeff_C_mul]
-    by_cases hk : k ≤ d
-    · exact heq k hk
-    · have hqd : q.natDegree = d := natDegree_twoSidedJensenPolynomial
-        (invPochhammerProduct_pos hl) (invPochhammerProduct_pos hr) d
-      rw [coeff_eq_zero_of_natDegree_lt (by lia : p.natDegree < k),
-        coeff_eq_zero_of_natDegree_lt (by lia : q.natDegree < k), mul_zero]
+  have hqd := natDegree_twoSidedJensenPolynomial (invPochhammerProduct_pos hl)
+    (invPochhammerProduct_pos hr) d
+  have hqzero := pochhammerJensenPolynomial_coeff_pos hl hr (Nat.zero_le d)
+  have hpq := eq_C_mul_of_coeff_ratio (d := d)
+    (A := fun k => ((k : ℝ) + 1) * (lower.map (fun a : ℝ => a + k)).prod)
+    (B := fun k => ((d : ℝ) - k) * (upper.map (fun b : ℝ => b + d - k - 1)).prod)
+    (fun k _ => by have := prod_map_add_natCast_pos hl k; positivity) hdegree hqd.le
+    hqzero.ne' hratio fun k hk => pochhammerJensenPolynomial_coeff_ratio hl hr hk
   rw [hpq]
-  exact IsPFPolynomial.const_mul hc (pochhammerJensenPolynomial_isPF hl hr d)
+  exact IsPFPolynomial.const_mul (div_pos hzero hqzero)
+    (pochhammerJensenPolynomial_isPF hl hr d)
 
 /-- The one-element-list specialization of the Pochhammer coefficient-ratio criterion. -/
 theorem isPFPolynomial_of_pochhammer_coeff_ratio

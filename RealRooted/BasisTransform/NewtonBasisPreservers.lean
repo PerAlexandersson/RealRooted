@@ -1,16 +1,17 @@
 module
 
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+public import RealRooted.NarayanaTransformation.RootGeometry
+
 import RealRooted.BasisTransform.AppellRigidity
-public import RealRooted.BasisTransform.ScalarIndexFactorization
 import RealRooted.NarayanaTransformation.Rising
 import RealRooted.Linear
 
 /-!
-# Newton-basis preservers and scalar-index factorization
+# Newton-basis preservers
 
 This file records the algebra of Newton bases with arithmetic-progression
-parameters and factors recurrences whose scalar term is affine in the row
-index.  The real-rootedness direction reuses the generalized rising-factorial
+parameters.  The real-rootedness direction reuses the generalized rising-factorial
 preserver theorem.
 -/
 
@@ -115,32 +116,11 @@ private theorem two_mul_appellCoefficient_two_nonneg_of_repeatedRootTestsUpTo
     {N : ℕ} {c : ℕ → ℝ} (hN : 2 ≤ N)
     (htest : NewtonRepeatedRootTestsUpTo N c) :
     0 ≤ 2 * (appellCoefficient (newtonBasisPolynomial c) 2).coeff 1 := by
-  let P := newtonBasisPolynomial c
-  have hsplits (r : ℝ) (hr : 0 ≤ r) : (shiftedPowerImage P 2 r).Splits := by
-    rw [splits_shiftedPowerImage_iff]
-    simpa only [P, newtonBasisTransform, Polynomial.basisTransformₗ_apply] using
-      htest 2 hN r hr
-  have hslope : 0 ≤ -2 * (2 * (P 1).coeff 0 - (P 2).coeff 1) := by
-    apply nonneg_of_affine_nonneg_on_nonneg
-      (A := (P 2).coeff 1 ^ 2 - 2 * (P 2).coeff 0)
-    intro r hr
-    have h := coeff_sq_sub_two_mul_nonneg
-      (shiftedPowerImage_monic
-        (newtonBasisPolynomial_natDegree c) (newtonBasisPolynomial_monic c) 2 r)
-      (shiftedPowerImage_natDegree
-        (newtonBasisPolynomial_natDegree c) (newtonBasisPolynomial_monic c) 2 r)
-      (by norm_num) (hsplits r hr)
-    rw [coeff_shiftedPowerImage_sub_one
-        (newtonBasisPolynomial_natDegree c) (newtonBasisPolynomial_monic c)
-        (by norm_num) r,
-      coeff_shiftedPowerImage_sub_two
-        (newtonBasisPolynomial_natDegree c) (newtonBasisPolynomial_monic c)
-        (by norm_num) r] at h
-    norm_num at h
-    nlinarith
-  have hPzero : P 0 = 1 := by simp [P]
-  rw [two_mul_coeff_one_appellCoefficient_two hPzero]
-  linarith
+  apply two_mul_coeff_one_appellCoefficient_two_nonneg_of_shiftedPower_splits
+    (newtonBasisPolynomial_natDegree c) (newtonBasisPolynomial_monic c)
+  intro r hr
+  rw [splits_shiftedPowerImage_iff]
+  simpa only [newtonBasisTransform, Polynomial.basisTransformₗ_apply] using htest 2 hN r hr
 
 private theorem newtonBasisPolynomial_coeff_sub_one_eq_appell_of_le
     {N : ℕ} {c : ℕ → ℝ} (htest : NewtonRepeatedRootTestsUpTo N c)
@@ -283,8 +263,7 @@ private theorem risingFactorialTransform_splits_of_nonposRoots
         ((hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos hpsplits).mpr
           ⟨hlcpos, hproots⟩).1
       exact (generalizedRisingFactorialPreservesPF hh
-        (IsPFPolynomial.of_realRooted_nonneg hpnn hpsplits)).eq_zero_or_splits.elim
-          (fun hp0 => by simp [hp0]) id
+        (IsPFPolynomial.of_realRooted_nonneg hpnn hpsplits)).splits
 
 private theorem newtonBasisTransform_eq_rising_comp
     {c : ℕ → ℝ} {h : ℝ} (hc : ∀ j, c j = c 0 + (j : ℝ) * h)
@@ -349,37 +328,8 @@ theorem newtonRepeatedRootTests_iff_parametersAffine (c : ℕ → ℝ) :
 /-- Preservation of nonpositive-rooted inputs forces the Newton parameters
 to form a nondecreasing arithmetic progression. -/
 theorem NewtonPreservesNonposRooted.parametersAffine {c : ℕ → ℝ}
-    (hc : NewtonPreservesNonposRooted c) : NewtonParametersAffine c := by
-  have hpres : ∀ p : ℝ[X], p.Splits →
-      (∀ r ∈ p.roots, r ≤ 0) →
-      (basisTransform (newtonBasisPolynomial c) p).Splits := by
-    intro p hsplits hroots
-    exact hc p (Or.inr ⟨hsplits, hroots⟩)
-  obtain ⟨alpha, beta, hbeta, hdiag⟩ :=
-    exists_coeff_sub_one_eq_linear_add_choose
-      (newtonBasisPolynomial_natDegree c) (newtonBasisPolynomial_monic c) hpres
-  have halpha : alpha = c 0 := by
-    have h := hdiag 1 (by norm_num)
-    rw [newtonBasisPolynomial_coeff_sub_one c (by norm_num)] at h
-    norm_num [Finset.sum_range_succ] at h
-    linarith
-  refine ⟨beta, hbeta, ?_⟩
-  intro j
-  by_cases hj : j = 0
-  · subst j
-    simp
-  have hjpos : 1 ≤ j := Nat.one_le_iff_ne_zero.mpr hj
-  have hnext := hdiag (j + 1) (by lia)
-  have hcurrent := hdiag j hjpos
-  rw [newtonBasisPolynomial_coeff_sub_one c (by lia), halpha] at hnext
-  rw [newtonBasisPolynomial_coeff_sub_one c hjpos, halpha] at hcurrent
-  rw [Finset.sum_range_succ, hcurrent] at hnext
-  have hchoose : (j + 1).choose 2 = j.choose 2 + j := by
-    rw [show (2 : ℕ) = 1 + 1 by norm_num, Nat.choose_succ_succ',
-      Nat.choose_one_right]
-    exact Nat.add_comm _ _
-  push_cast [hchoose] at hnext
-  nlinarith
+    (hc : NewtonPreservesNonposRooted c) : NewtonParametersAffine c :=
+  hc.repeatedRootTests.parametersAffine
 
 /-- Preservation of nonpositive-rooted inputs is equivalent to arithmetic
 progression Newton parameters. -/
@@ -393,11 +343,9 @@ are equivalent for a Newton basis. -/
 theorem newtonBasis_preserver_equivalences (c : ℕ → ℝ) :
     (NewtonPreservesNonposRooted c ↔ NewtonRepeatedRootTests c) ∧
       (NewtonRepeatedRootTests c ↔ NewtonParametersAffine c) := by
-  refine ⟨?_, newtonRepeatedRootTests_iff_parametersAffine c⟩
-  constructor
-  · exact NewtonPreservesNonposRooted.repeatedRootTests
-  · intro htest
-    exact htest.parametersAffine.preservesNonposRooted
+  exact ⟨⟨NewtonPreservesNonposRooted.repeatedRootTests,
+    fun htest => htest.parametersAffine.preservesNonposRooted⟩,
+    newtonRepeatedRootTests_iff_parametersAffine c⟩
 
 /-- The finite preservation property implies the finite repeated-root tests. -/
 theorem NewtonPreservesNonposRootedUpTo.repeatedRootTestsUpTo
@@ -468,36 +416,8 @@ theorem newtonBasis_preserver_equivalencesUpTo
     {N : ℕ} (hN : 2 ≤ N) (c : ℕ → ℝ) :
     (NewtonPreservesNonposRootedUpTo N c ↔ NewtonRepeatedRootTestsUpTo N c) ∧
       (NewtonRepeatedRootTestsUpTo N c ↔ NewtonParametersAffineUpTo N c) := by
-  refine ⟨?_, newtonRepeatedRootTestsUpTo_iff_parametersAffineUpTo hN c⟩
-  constructor
-  · exact NewtonPreservesNonposRootedUpTo.repeatedRootTestsUpTo
-  · intro htest
-    exact (htest.parametersAffineUpTo hN).preservesNonposRootedUpTo
-
-/-- If `P 0 = g` and `P (n + 1) = (L + n h I) P n`, then its basis map is the
-generalized rising-factorial transform followed by the orbit map of `g`. -/
-theorem basisMap_factorization_of_scalarIndex_recurrence
-    {M : Type*} [AddCommGroup M] [Module ℝ M]
-    (P : ℕ → M) (L : Module.End ℝ M) (h : ℝ) (g : M)
-    (hzero : P 0 = g)
-    (hsucc : ∀ n, P (n + 1) = L (P n) + ((n : ℝ) * h) • P n) :
-    Polynomial.lsum (fun n => LinearMap.toSpanSingleton ℝ M (P n)) =
-      (polynomialOrbitMap L g).comp
-        (Polynomial.basisTransformₗ (risingFactorialPolynomial h)) := by
-  apply Polynomial.lhom_ext'
-  intro n
-  apply LinearMap.ext
-  intro a
-  have hsucc' : ∀ j, P (j + 1) =
-      (L + ((j : ℝ) * h) • (1 : Module.End ℝ M)) (P j) := by
-    intro j
-    simpa only [LinearMap.add_apply, LinearMap.smul_apply, Module.End.one_apply]
-      using hsucc j
-  have hrow := scalarIndexRow_eq_polynomialOrbitMap L g h P hzero hsucc' n
-  simp only [LinearMap.coe_comp, Function.comp_apply, Polynomial.lsum_apply,
-    LinearMap.toSpanSingleton_apply, zero_smul, Polynomial.sum_monomial_index,
-    Polynomial.basisTransformₗ_apply, basisTransform_monomial]
-  rw [hrow]
-  rw [← Polynomial.smul_eq_C_mul, map_smul]
+  exact ⟨⟨NewtonPreservesNonposRootedUpTo.repeatedRootTestsUpTo,
+    fun htest => (htest.parametersAffineUpTo hN).preservesNonposRootedUpTo⟩,
+    newtonRepeatedRootTestsUpTo_iff_parametersAffineUpTo hN c⟩
 
 end RealRooted
