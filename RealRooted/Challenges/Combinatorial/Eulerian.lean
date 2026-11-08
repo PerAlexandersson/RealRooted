@@ -5,6 +5,7 @@ public import RealRooted.CombinatorialExamples.EulerianStatistic
 public import RealRooted.CombinatorialExamples.TypeBEulerian
 public import RealRooted.GeneralizedEulerian.GeneratingFunction
 public import RealRooted.MaWang.DerivativeStep
+import RealRooted.GeneralizedEulerian.EvalNeg
 
 public section
 
@@ -96,6 +97,11 @@ label = "The descent generating polynomial of permutations is the Eulerian polyn
 name = "RealRooted.isRealRooted_genPoly_univ_descentCount"
 module = "RealRooted.CombinatorialExamples.EulerianStatistic"
 label = "Permutations counted by descents give a real-rooted polynomial"
+
+[[theorems]]
+name = "RealRooted.eval_neg_generalizedEulerian_one_pos"
+module = "RealRooted.GeneralizedEulerian.EvalNeg"
+label = "The Eulerian polynomial A_n is positive at -q whenever q 2^(n+1) ≤ 1"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -129,6 +135,12 @@ $$
 This is the classical formula for the Eulerian numbers; by
 `genPoly_univ_descentCount`, $[t^j]E_k^{(1)}$ is the number of permutations of
 $k+1$ letters with $j$ descents.
+
+## Positivity near zero
+
+The Eulerian polynomial $A_n=\mathrm{generalizedEulerian}\,1\,n$ is PF with constant
+coefficient $1$ and linear coefficient $2^{n+1}-n-2$. A linear lower bound for PF polynomials
+then shows $A_n(-q)>0$ for every $q>0$ with $q\,2^{n+1}\le1$.
 
 ## References
 

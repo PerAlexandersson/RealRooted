@@ -2,6 +2,7 @@ module
 
 import RealRooted.SymmetricDecomposition.FPolynomialRecurrence
 import RealRooted.SymmetricDecomposition.FPolynomialSequence
+import RealRooted.SymmetricDecomposition.EulerFPolynomial
 
 /-!
 # The `f`-polynomial transform of derivative recurrences
@@ -85,6 +86,32 @@ label = "Padding an f-transform by powers of X + 1"
 name = "RealRooted.StrictInterl.fPolynomial_sequence"
 module = "RealRooted.SymmetricDecomposition.FPolynomialSequence"
 label = "Half-growth sequences transfer consecutive interlacing"
+
+[[theorems]]
+name = "RealRooted.splits_fPolynomial_iff"
+module = "RealRooted.SymmetricDecomposition.EulerFPolynomial"
+label = "For deg p ≤ d the f-transform splits exactly when p splits"
+
+[[theorems]]
+name = "RealRooted.fPolynomial_theta_add_C_mul"
+module = "RealRooted.SymmetricDecomposition.EulerFPolynomial"
+label = "The Euler shift θ + a becomes (a - nX) F + X (1 + X) F' under the f-transform"
+
+[[theorems]]
+name = "RealRooted.intervalEulerOperator_splits"
+module = "RealRooted.SymmetricDecomposition.EulerFPolynomial"
+label = "The interval Euler operator preserves splitting for roots in [-1, 0]"
+
+[[theorems]]
+name = "RealRooted.intervalEulerOperator_degree_pos_strictInterl"
+module = "RealRooted.SymmetricDecomposition.EulerFPolynomial"
+label = "For a > 0 the image keeps the degree n and the input interlaces it"
+
+[[theorems]]
+name = "RealRooted.forall_intervalEulerOperator_roots_mem_Icc_iff"
+module = "RealRooted.SymmetricDecomposition.EulerFPolynomial"
+label = "The window [-1, 0] is preserved exactly when a ≥ 0 or a ≤ -n"
+headline = true
 -->
 
 <!-- realrooted-catalog-content -->
@@ -150,6 +177,20 @@ give a common example. Their rows are f-transforms of peak polynomials, and
 the peak rows have the half-growth degree pattern. The `rr_row_splits` tactic
 has an `fTransform` route built on this recurrence and the splitting-transfer
 theorem.
+
+## Euler shifts and the interval Euler operator
+
+Under the $f$-transform $F=f_n(q)=\sum_kq_kx^k(1+x)^{n-k}$, the shifted Euler operator
+$q\mapsto xq'+aq$ becomes
+$$
+F\longmapsto(a-nx)F+x(1+x)F'.
+$$
+Every real-rooted polynomial $F$ of degree $n$ with positive leading coefficient and all
+roots in $[-1,0]$ is the $f$-transform of a PF polynomial $q$ of degree at most $n$. Since
+$q\mapsto xq'+aq$ preserves splitting of PF polynomials, the *interval Euler operator* above
+preserves splitting on such $F$. For $a>0$ it keeps the degree $n$ and the leading sign and $F$
+interlaces its image. The root window $[-1,0]$ is preserved for all such $F$ of degree
+$n\ge1$ if and only if $a\ge0$ or $a\le-n$.
 
 ## References
 
