@@ -1611,6 +1611,7 @@ public import RealRooted.BorceaBranden.Applications.QuadraticExponentialMultipli
 public import RealRooted.BorceaBranden.Applications.RealCoordinatePFMultiplier
 
 public import RealRooted.EulerBidiagonal.Preservation
+public import RealRooted.EulerBidiagonal.BoundaryPreservation
 
 public import RealRooted.LiuWang.FiniteFamily
 
