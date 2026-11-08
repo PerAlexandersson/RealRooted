@@ -6,6 +6,8 @@ import RealRooted.ProductSequence.FactorFamilies
 import RealRooted.ProductSequence.Lifts
 import RealRooted.ProductSequence.ScalarFamilies
 import RealRooted.ProductSequence.EndpointPair
+import RealRooted.ProductSequence.FixedDerivative
+import RealRooted.ProductSequence.BinomialDerivativeFamily
 
 /-!
 # Product sequences
@@ -91,6 +93,53 @@ label = "Finite products of linear factors"
 name = "RealRooted.finiteLinearProductSequence_realRooted"
 module = "RealRooted.ProductSequence.Core"
 label = "Finite linear product sequences"
+
+[[definitions]]
+name = "RealRooted.binomialDerivativeRow"
+module = "RealRooted.ProductSequence.BinomialDerivativeFamily"
+label = "The normalized fixed derivatives (r!)⁻¹ D^r (X^r (1 + X)^n)"
+
+[[theorems]]
+name = "RealRooted.strictInterl_iterate_derivative_mul_X_sub_C_pow_succ"
+module = "RealRooted.ProductSequence.FixedDerivative"
+label = "Fixed derivatives of q (X - a)^n and q (X - a)^(n+1) interlace"
+headline = true
+
+[[theorems]]
+name = "RealRooted.iterate_derivative_mul_X_sub_C_pow_standard"
+module = "RealRooted.ProductSequence.FixedDerivative"
+label = "Fixed derivatives of q (X - a)^n are real-rooted with positive leading coefficient"
+
+[[theorems]]
+name = "RealRooted.roots_iterate_derivative_mul_X_sub_C_pow_mem_Icc"
+module = "RealRooted.ProductSequence.FixedDerivative"
+label = "The roots stay in any interval containing a and the roots of q"
+
+[[theorems]]
+name = "RealRooted.sum_pow_mul_iterate_derivative_mul_X_sub_C_pow_eq_zero"
+module = "RealRooted.ProductSequence.FixedDerivative"
+label = "A pure-lag recurrence for fixed derivatives of q (X - a)^n"
+
+[[theorems]]
+name = "RealRooted.coeff_binomialDerivativeRow"
+module = "RealRooted.ProductSequence.BinomialDerivativeFamily"
+label = "The coefficients are C(n, k) C(k + r, r)"
+
+[[theorems]]
+name = "RealRooted.binomialDerivativeRow_add_two"
+module = "RealRooted.ProductSequence.BinomialDerivativeFamily"
+label = "A three-term recurrence in n"
+
+[[theorems]]
+name = "RealRooted.strictInterl_binomialDerivativeRow_succ"
+module = "RealRooted.ProductSequence.BinomialDerivativeFamily"
+label = "Consecutive binomial derivative rows interlace"
+headline = true
+
+[[theorems]]
+name = "RealRooted.roots_binomialDerivativeRow_mem_Icc"
+module = "RealRooted.ProductSequence.BinomialDerivativeFamily"
+label = "The roots lie in [-1, 0]"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -127,6 +176,26 @@ nonzero splitting of both rows. The endpoint-power lift then proves
 real-rootedness for a sequence with
 $P_{2n}=(X+t)^{m_A(n)}A_n$ and
 $P_{2n+1}=(X+t)^{m_B(n)}B_n$.
+
+## Fixed derivatives of products
+
+Fix a real-rooted polynomial $q$ with positive leading coefficient, $r\le\deg q$, and
+$a\in\mathbb R$. Then $D^r\bigl(q\,(x-a)^n\bigr)$ is nonzero, real-rooted, with positive
+leading coefficient, and it interlaces $D^r\bigl(q\,(x-a)^{n+1}\bigr)$. If $a$ and all roots
+of $q$ lie in an interval $[u,v]$, then all roots of these derivatives lie in $[u,v]$. The
+rows also satisfy a pure-lag recurrence
+$$
+\sum_{i=0}^{r+1}(-1)^i\binom{r+1}{i}(x-a)^iD^r\bigl(q\,(x-a)^{n+r+1-i}\bigr)=0 .
+$$
+
+For $q=x^r$ and $a=-1$ the normalized rows
+$B_n^{(r)}=\frac1{r!}D^r\bigl(x^r(1+x)^n\bigr)$ have coefficients
+$\binom nk\binom{k+r}r$, satisfy the three-term recurrence
+$$
+(n+2)B_{n+2}=\bigl(2n+3+(n+r+2)x\bigr)B_{n+1}-(n+1)(1+x)B_n,
+$$
+are real-rooted of degree $n$ with all roots in $[-1,0]$ and constant term $1$, and
+consecutive rows interlace.
 
 ## References
 

@@ -3,6 +3,7 @@ module
 public import RealRooted.Schur.ConstantColumns
 public import RealRooted.Schur.Rectangular
 public import RealRooted.TotallyNonnegPencil.CornerInterlacing
+import RealRooted.Schur.MinorPositivity
 
 /-!
 # Schur elementary-coordinate substitution challenge
@@ -153,6 +154,16 @@ label = "Every signed rectangular specialization has negative roots"
 name = "RealRooted.Schur.strictInterl_rectangularElementarySubstitution"
 module = "RealRooted.Schur.Rectangular"
 label = "Consecutive rectangular widths interlace for every moving coordinate"
+
+[[theorems]]
+name = "RealRooted.Schur.det_toeplitz_prod_linear_pos"
+module = "RealRooted.Schur.MinorPositivity"
+label = "Supported minors of Toeplitz matrices of positive linear-factor products are positive"
+
+[[theorems]]
+name = "RealRooted.Schur.det_bidiagonal_submatrix_pos"
+module = "RealRooted.Schur.MinorPositivity"
+label = "Supported minors of a bidiagonal Toeplitz matrix are strictly positive"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -234,6 +245,16 @@ stretches of an arbitrary shape: their degrees can differ by more than one.
 
 This challenge does not prove the conjecture relating a real limiting Toeplitz
 spectrum to finite real-rootedness.
+
+## Positive supported minors
+
+For positive $a_i$, the infinite Toeplitz matrix of the coefficient sequence of
+$\prod_{i\in s}(x+a_i)$ has a band of width $|s|$ below the diagonal. Every minor whose
+rows and columns are strictly increasing and lie in that band, that is, with
+$\mathrm{col}_i\le\mathrm{row}_i\le\mathrm{col}_i+|s|$, is strictly positive. The proof starts
+with the bidiagonal matrix of a single factor, whose supported minors are positive for
+$a>0$, and multiplies one linear factor at a time, since Toeplitz matrices of coefficient
+sequences multiply with the polynomials.
 
 ## References
 
