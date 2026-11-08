@@ -89,6 +89,20 @@ lemma iterate_derivative_ne_zero_of_le_natDegree
     simp_all
   simp [hk0] at hcoeff
 
+/-- Differentiating a polynomial with positive leading coefficient at most `natDegree` times
+keeps the leading coefficient positive. -/
+lemma HasPosLeadingCoeff.iterate_derivative_of_le_natDegree
+    {p : ℝ[X]} (hp : HasPosLeadingCoeff p) :
+    ∀ {r : ℕ}, r ≤ p.natDegree → HasPosLeadingCoeff (derivative^[r] p) := by
+  intro r hr
+  induction r generalizing p with
+  | zero => simpa
+  | succ r ih =>
+      rw [Function.iterate_succ_apply']
+      apply (ih hp (by lia)).derivative
+      rw [natDegree_iterate_derivative_eq_sub hp.ne_zero (by lia)]
+      lia
+
 /-- A positive-leading real-rooted polynomial of degree at least `2` is
 nonpositive at its rightmost critical point. The point is chosen as the
 rightmost root of `p'`; to the right of it the derivative is strictly

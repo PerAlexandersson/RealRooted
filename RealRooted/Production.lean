@@ -938,6 +938,7 @@ public import RealRooted.Mathlib.Algebra.Polynomial.DividedDifference
 public import RealRooted.Mathlib.Algebra.Polynomial.Dominance
 public import RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs
 public import RealRooted.Mathlib.Algebra.Polynomial.Eval.Degree
+public import RealRooted.Mathlib.Algebra.Polynomial.Eval.NatWindow
 public import RealRooted.Mathlib.Algebra.Polynomial.Eval.ShiftedChoose
 public import RealRooted.Mathlib.Algebra.Polynomial.Expand.Splits
 public import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision

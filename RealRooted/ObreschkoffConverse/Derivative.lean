@@ -1,6 +1,7 @@
 module
 
 import RealRooted.ObreschkoffConverse.Converse
+import RealRooted.ObreschkoffConverse.DegreeGap
 import RealRooted.ObreschkoffConverse.Forward
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 import RealRooted.Derivative.FamilyClosure
@@ -305,6 +306,28 @@ theorem StrictInterl.derivative {f g : ℝ[X]} (h : StrictInterl f g)
     rcases h.natDegree_eq_or_eq_succ with hfg | hfg <;> lia
   exact (derivativePreservesInterl h.toInterl).toStrictInterl_of_ne
     (derivative_ne_zero.mpr hf) (derivative_ne_zero.mpr hg)
+
+/-- Iterated differentiation preserves zero-aware weak interlacing. -/
+theorem Interl.iterate_derivative {f g : ℝ[X]} (h : Interl f g) :
+    ∀ r : ℕ, Interl (Polynomial.derivative^[r] f) (Polynomial.derivative^[r] g)
+  | 0 => by simpa
+  | r + 1 => by
+      simpa [Function.iterate_succ_apply'] using
+        derivativePreservesInterl (h.iterate_derivative r)
+
+/-- Differentiating an interlacing pair at most `natDegree f` times preserves proper
+position. -/
+theorem StrictInterl.iterate_derivative_of_le_natDegree
+    {f g : ℝ[X]} (hfg : StrictInterl f g) (m : ℕ)
+    (hm : m ≤ f.natDegree) :
+    StrictInterl (Polynomial.derivative^[m] f) (Polynomial.derivative^[m] g) := by
+  induction m generalizing f g with
+  | zero => simpa
+  | succ m ih =>
+      rw [Function.iterate_succ_apply', Function.iterate_succ_apply']
+      apply StrictInterl.derivative (ih hfg (by lia))
+      rw [natDegree_iterate_derivative_eq_sub hfg.1.1 (by lia)]
+      lia
 
 end
 end RealRooted
