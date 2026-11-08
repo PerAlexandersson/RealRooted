@@ -2029,6 +2029,29 @@ public import RealRooted.TotallyNonnegPencil.StrictInterlacing
 public import RealRooted.BrandenLeite.PositivePowerStrictRows
 public import RealRooted.BrandenLeite.AffineNegativePowerDegree
 public import RealRooted.BrandenLeite.Examples
+public import RealRooted.Challenges.Graphs.PathSquareMatching
+public import RealRooted.Challenges.Interlacing.CoupledEulerRecurrences
+public import RealRooted.Challenges.Interlacing.DerivativeLagFamily
+public import RealRooted.Challenges.Interlacing.MaWangEndpointSteps
+public import RealRooted.Challenges.Interlacing.PositiveAffineLagRecurrences
+public import RealRooted.Challenges.Interlacing.QuadraticInterlacingCriterion
+public import RealRooted.Challenges.Interlacing.ShiftedChebyshevFamilies
+public import RealRooted.Challenges.Interlacing.VariableDelayRecurrences
+public import RealRooted.Challenges.Matrices.SeparatedCharacteristicRecurrence
+public import RealRooted.Challenges.Matrices.TotallyNonnegativePencils
+public import RealRooted.Challenges.Matrices.WeightedThreeStateRecurrence
+public import RealRooted.Challenges.Preservers.FiniteDegreeDifferentialTests
+public import RealRooted.Challenges.Preservers.HypergeometricCoefficientRatios
+public import RealRooted.Challenges.Preservers.PowerDerivativeShift
+public import RealRooted.Challenges.Preservers.RationalSubstitution
+public import RealRooted.Challenges.Preservers.SecondOrderRayOperators
+public import RealRooted.Challenges.Preservers.TouchardTransform
+public import RealRooted.Challenges.Roots.BesselOperators
+public import RealRooted.Challenges.Roots.BinomialPerturbation
+public import RealRooted.Challenges.Roots.ChebyshevLevels
+public import RealRooted.Challenges.Roots.OdeRootBounds
+public import RealRooted.Challenges.Stability.BivariateDeterminantalReduction
+public import RealRooted.Challenges.Combinatorial.NarayanaGammaPolynomials
 
 /-!
 # RealRooted production umbrella

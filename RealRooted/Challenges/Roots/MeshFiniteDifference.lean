@@ -9,6 +9,7 @@ import RealRooted.Mesh.DiscreteMultiplierSequencePolyaSchur
 import RealRooted.Mesh.Limit
 import RealRooted.Mesh.FallingFactorial
 import RealRooted.Mesh.FiniteDifferenceHyperbolicity
+import RealRooted.Mesh.HermitePoulain
 
 /-!
 # Mesh and finite differences
@@ -110,6 +111,16 @@ label = "φ(0), φ(1), … is a discrete multiplier sequence for φ in the Lague
 name = "RealRooted.PolyFiniteDifferenceOp.preserves_iff"
 module = "RealRooted.Mesh.FiniteDifferenceHyperbolicity"
 label = "Lemma 8: ∑ q_j(x) p(x − j) preserves real-rootedness iff at most one q_j is nonzero"
+
+[[theorems]]
+name = "RealRooted.finiteDifferenceOp_meshGE"
+module = "RealRooted.Mesh.HermitePoulain"
+label = "Theorem 3, sufficiency: symbols with nonnegative real zeros preserve Mesh ≥ β for β ≥ α"
+
+[[theorems]]
+name = "RealRooted.HasOnlyNonnegRoots.of_tendsto_coeff"
+module = "RealRooted.Mesh.Limit"
+label = "Only nonnegative roots is closed under coefficientwise limits of bounded degree"
 -->
 
 <!-- realrooted-catalog-content -->

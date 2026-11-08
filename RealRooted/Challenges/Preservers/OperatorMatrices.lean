@@ -8,6 +8,7 @@ import RealRooted.OperatorMatrix.OneThetaX
 import RealRooted.OperatorMatrix.OneThetaXBoards
 import RealRooted.OperatorMatrix.OneThetaXBoardsExtra
 import RealRooted.OperatorMatrix.EulerDerivativeLag
+import RealRooted.OperatorMatrix.CouplingThresholds
 
 /-!
 # Operator matrices preserving ordered PF vectors
@@ -131,6 +132,31 @@ label = "Exactly the two alternating identity/Euler transitions preserve ordered
 name = "RealRooted.OperatorMatrix.EulerDerivativeLag.splits_of_recurrence_one_X"
 module = "RealRooted.OperatorMatrix.EulerDerivativeLag"
 label = "Every row of P(n+2) = θP(n+1) + Xθ P(n) with P(0) = 1, P(1) = X splits"
+
+[[definitions]]
+name = "RealRooted.OperatorMatrix.CouplingRayCriterion"
+module = "RealRooted.OperatorMatrix.CouplingThresholds"
+label = "The scalar ray predicate for a coupling of two first-order operator blocks"
+
+[[theorems]]
+name = "RealRooted.OperatorMatrix.couplingRayCriterion_iff_sqrt_bounds"
+module = "RealRooted.OperatorMatrix.CouplingThresholds"
+label = "The ray predicate is equivalent to -2√(wtJ) ≤ S ≤ J + 2√(wtJ) for all t > 0"
+
+[[theorems]]
+name = "RealRooted.OperatorMatrix.couplingRayCriterion_quadratic_iff_of_boundary"
+module = "RealRooted.OperatorMatrix.CouplingThresholds"
+label = "For quadratic data on the boundary of the parameter cone the ray quantifier is eliminated"
+
+[[theorems]]
+name = "RealRooted.OperatorMatrix.couplingRayCriterion_cap_add_of_proportional"
+module = "RealRooted.OperatorMatrix.CouplingThresholds"
+label = "Raising the degree cap does not change the criterion for proportional blocks"
+
+[[theorems]]
+name = "RealRooted.OperatorMatrix.rayCriterion_theta_polar_iff"
+module = "RealRooted.OperatorMatrix.CouplingThresholds"
+label = "The (θ, polar) coupling holds exactly when N² ≤ 4w"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -223,6 +249,20 @@ dense matrix does too. Among the nine mixed transitions between the lag factors
 $1$, $\theta$ and $x$, exactly the two alternating identity/Euler edges preserve
 ordered PF vectors. With $P_0=1$ and $P_1=x$, the orbit stays ordered PF, so
 every $P_n$ is PF and in particular splits over $\mathbb R$.
+
+## Coupling thresholds for first-order blocks (algebraic core)
+
+For two first-order operator blocks with diagonal data $a+b\theta+cx+ex(N-\theta)$, put
+$k_i(t)=b_i+e_it$ on the negative ray $x=-t$, $J=k_1k_2$ and
+$S=\ell_2k_1-\ell_1k_2$, with $\ell_i$ the diagonal evaluations. For a parameter $w\ge0$
+the *ray criterion* asks, for every $t>0$, that either $S\ge0$ or $S^2\le4wtJ$, and either
+$S\le J$ or $(J-S)^2\le4wtJ$. When $wtJ\ge0$ this is equivalent to
+$-2\sqrt{wtJ}\le S\le J+2\sqrt{wtJ}$. For quadratic $J,S$ on the boundary of the
+parameter cone ($j_0j_2=0$) the quantifier over the ray is eliminated, leaving an explicit
+inequality in the coefficients; for the pairs $(\theta,\text{polar})$ one obtains
+$N^2\le4w$ and $(N-1)^2\le4w$, and raising the degree cap changes nothing for proportional
+blocks. We stress that this is the unconditional algebraic core only: the bridge identifying
+the scalar criterion with bounded ordered-PF preservation is not formalized here.
 
 ## What is new
 

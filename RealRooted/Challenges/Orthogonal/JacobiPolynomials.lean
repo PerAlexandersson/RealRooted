@@ -7,6 +7,9 @@ import RealRooted.Jacobi.Orthogonality.Integral
 import RealRooted.Jacobi.ParameterInterlacing
 import RealRooted.Legendre.Basic
 import RealRooted.Legendre.Roots
+import RealRooted.Jacobi.CoefficientFamily
+import RealRooted.Jacobi.NegativeIntegerEndpoint
+import RealRooted.Jacobi.ParameterShifts
 
 /-!
 # Shifted Jacobi polynomial challenge entry point
@@ -103,6 +106,100 @@ label = "Shifted Legendre polynomials are real-rooted"
 name = "RealRooted.shiftedLegendreReal_strictInterl_succ"
 module = "RealRooted.Legendre.Roots"
 label = "Consecutive shifted Legendre polynomials interlace"
+
+[[definitions]]
+name = "RealRooted.jacobiCoefficientPolynomial"
+module = "RealRooted.Jacobi.CoefficientFamily"
+label = "The positive-coefficient Jacobi family Σ C(n,k) C(n+b,k) / C(a+k,k) X^k"
+
+[[definitions]]
+name = "RealRooted.reflectedJacobiOperator"
+module = "RealRooted.Jacobi.NegativeIntegerEndpoint"
+label = "The reflected shifted-Jacobi differential operator"
+
+[[theorems]]
+name = "RealRooted.jacobiCoefficientPolynomial_isPFPolynomial"
+module = "RealRooted.Jacobi.CoefficientFamily"
+label = "For a, b > -1 the positive-coefficient Jacobi polynomials are PF"
+headline = true
+
+[[theorems]]
+name = "RealRooted.jacobiCoefficientPolynomial_strictInterl_succ"
+module = "RealRooted.Jacobi.CoefficientFamily"
+label = "Consecutive polynomials of the family interlace"
+headline = true
+
+[[theorems]]
+name = "RealRooted.jacobiCoefficientPolynomial_hasSimpleRoots"
+module = "RealRooted.Jacobi.CoefficientFamily"
+label = "The family has simple, negative roots"
+
+[[theorems]]
+name = "RealRooted.jacobiCoefficientPolynomial_nat_diagonal"
+module = "RealRooted.Jacobi.CoefficientFamily"
+label = "On the diagonal a = b = m the family is the Narayana polynomial"
+
+[[theorems]]
+name = "RealRooted.derivative_jacobiCoefficientPolynomial"
+module = "RealRooted.Jacobi.CoefficientFamily"
+label = "Differentiation shifts the parameter a to a + 1"
+
+[[theorems]]
+name = "RealRooted.jacobiCoefficientPolynomial_derivative_recurrence"
+module = "RealRooted.Jacobi.CoefficientFamily"
+label = "A first-order derivative recurrence in the degree"
+
+[[theorems]]
+name = "RealRooted.eq_jacobiCoefficientPolynomial_of_derivative_recurrence"
+module = "RealRooted.Jacobi.CoefficientFamily"
+label = "The derivative recurrence with two initial values determines the family"
+
+[[theorems]]
+name = "RealRooted.eq_C_mul_endpoint_factor_of_reflectedJacobiOperator_eq_zero"
+module = "RealRooted.Jacobi.NegativeIntegerEndpoint"
+label = "For β = -m the polynomial solutions are multiples of (1 + X)^m times a Jacobi polynomial"
+headline = true
+
+[[theorems]]
+name = "RealRooted.eq_of_reflectedJacobiOperator_eq_zero"
+module = "RealRooted.Jacobi.NegativeIntegerEndpoint"
+label = "Degree-free uniqueness of polynomial solutions with given constant term"
+
+[[theorems]]
+name = "RealRooted.splits_of_reflectedJacobiOperator_eq_zero"
+module = "RealRooted.Jacobi.NegativeIntegerEndpoint"
+label = "Polynomial solutions at a negative integer endpoint are real-rooted"
+
+[[theorems]]
+name = "RealRooted.rootMultiplicity_neg_one_of_reflectedJacobiOperator_eq_zero"
+module = "RealRooted.Jacobi.NegativeIntegerEndpoint"
+label = "The root -1 has multiplicity exactly m"
+
+[[theorems]]
+name = "RealRooted.isPolyaFreqSeq_coeff_of_reflectedJacobiOperator_eq_zero"
+module = "RealRooted.Jacobi.NegativeIntegerEndpoint"
+label = "The coefficients of a solution with p(0) ≥ 0 form a Pólya frequency sequence"
+
+[[theorems]]
+name = "RealRooted.jacobiCoefficientPolynomial_eq_C_mul_eulerShiftRange"
+module = "RealRooted.Jacobi.ParameterShifts"
+label = "Shifting b = a to b = a + r is a product of r consecutive Euler operators"
+
+[[theorems]]
+name = "RealRooted.iterate_derivative_jacobiCoefficientPolynomial"
+module = "RealRooted.Jacobi.ParameterShifts"
+label = "The r-th derivative shifts the parameter a to a + r"
+
+[[theorems]]
+name = "RealRooted.exists_diagonalOperator_jacobiCoefficientPolynomial_iff"
+module = "RealRooted.Jacobi.ParameterShifts"
+label = "A polynomial Euler multiplier maps the diagonal family to (a, b) iff b - a is natural"
+headline = true
+
+[[theorems]]
+name = "RealRooted.IsPFPolynomial.eulerShiftRange"
+module = "RealRooted.Jacobi.ParameterShifts"
+label = "Consecutive Euler operators preserve PF polynomials"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -143,6 +240,48 @@ formalized.
 The shifted Legendre polynomials of Mathlib, mapped to $\mathbb{R}$, are the
 case $\alpha=\beta=0$; for them real-rootedness and interlacing of consecutive
 polynomials are also proved directly.
+
+## A positive-coefficient Jacobi family
+
+For $n\ge0$ and real $a,b$ put
+$$
+H_n^{(a,b)}(x)=\sum_{k=0}^n\frac{\binom nk\binom{n+b}{k}}{\binom{a+k}{k}}\,x^k .
+$$
+For $a,b>-1$ all coefficients are positive, $H_n^{(a,b)}$ has degree $n$ and
+constant term $1$, it is a PF polynomial with simple negative roots, and
+consecutive polynomials interlace (and share no root). Differentiation shifts the
+parameter: $\bigl(H_{n+1}^{(a,b)}\bigr)'=\frac{(n+1)(n+b+1)}{a+1}H_n^{(a+1,b)}$,
+and iterating gives the $r$-th derivative shifting $a$ to $a+r$. A first-order
+derivative recurrence in $n$, together with $H_0$ and $H_1$, determines the family.
+On the diagonal $a=b=m$ the polynomial $H_n^{(m,m)}$ is the Narayana polynomial
+(see the [Narayana polynomials](/RealRooted/families/narayana/) page).
+
+## Integral parameter shifts
+
+Let $\theta=x\,d/dx$. The product $\prod_{j<r}(\theta+a+j)$ multiplies the coefficient of
+$x^k$ by $(k+a)(k+a+1)\cdots(k+a+r-1)$; it preserves PF polynomials for
+$a\ge0$. For $a>-1$ and $r\in\mathbb N$, the off-diagonal polynomial
+$H_n^{(a,a+r)}$ is a constant multiple of this operator with parameter $a+1$
+applied to the diagonal polynomial $H_n^{(a+r,a+r)}$. Conversely, there is a
+polynomial $p$ with $H_n^{(a,b)}=\sum_kp(k)\,[x^k]H_n^{(b,b)}\,x^k$ for all $n$
+if and only if $b=a+r$ for some natural number $r$, and then $p$ is the
+explicit multiplier $x\mapsto(x+a+1)_r/(a+1)_r$.
+
+## The reflected equation at a negative integer parameter
+
+Let $L_{n,\alpha,\beta}$ be the differential operator whose coefficient recurrence is
+$$
+(k+1)(k+\alpha+1)\,p_{k+1}+\bigl(k(k+\alpha+\beta+1)-n(n+\alpha+\beta+1)\bigr)p_k=0 ,
+$$
+the equation satisfied by $P_n^{(\alpha,\beta)}(-x)$. For $\alpha>-1$ its polynomial
+solutions are determined by the constant term. If $\beta=-m$ with $m\le n$, then every
+polynomial solution is a multiple of
+$$
+(1+x)^m\,P_{n-m}^{(\alpha,m)}(-x),
+$$
+which has degree $n$, only real roots lying in $\{-1\}\cup(-1,0)$, the root $-1$
+with multiplicity exactly $m$ and all other roots simple. A solution with
+nonnegative constant term has a Pólya frequency sequence of coefficients.
 
 ## References
 

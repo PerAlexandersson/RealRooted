@@ -4,6 +4,9 @@ import RealRooted.AffineDerivative
 public import RealRooted.AffineFamily
 public import RealRooted.FolkloreLemma
 public import RealRooted.HlavacekSolus.Shelling
+import RealRooted.HlavacekSolus.PolytopalShelling
+import RealRooted.HlavacekSolus.HalfOpenCube
+import RealRooted.HlavacekSolus.CubicalShelling
 public import RealRooted.Interlacing.ConeBounds
 public import RealRooted.ShiftLemma
 public import RealRooted.Basic.Coefficients
@@ -55,6 +58,43 @@ label = "Subtracting x g: g ≪ f − x g ≪ f"
 name = "RealRooted.HlavacekSolus.isRealRooted_hPolynomial_of_perm_isInterlacingSeqNonneg"
 module = "RealRooted.HlavacekSolus.Shelling"
 label = "Hlavacek–Solus: interlacing shelling pieces give a real-rooted h-polynomial"
+
+[[definitions]]
+name = "RealRooted.HlavacekSolus.cubeColoredEulerian"
+module = "RealRooted.HlavacekSolus.HalfOpenCube"
+label = "The refined type-B Eulerian polynomial A_{d,l}^(2) as an Euler numerator"
+
+[[definitions]]
+name = "RealRooted.HlavacekSolus.cubeRelativeHRow"
+module = "RealRooted.HlavacekSolus.HalfOpenCube"
+label = "The 2d + 1 relative h-polynomials of the half-open d-cubes"
+
+[[theorems]]
+name = "RealRooted.HlavacekSolus.polytopalHPolynomial_eq_sum_relativePieces"
+module = "RealRooted.HlavacekSolus.PolytopalShelling"
+label = "The h-polynomial of a polytopal shelling is the sum of the relative h-polynomials"
+
+[[theorems]]
+name = "RealRooted.HlavacekSolus.isRealRooted_polytopalHPolynomial_of_perm_interlacingNonneg"
+module = "RealRooted.HlavacekSolus.PolytopalShelling"
+label = "Polytopal shellings with interlacing relative pieces have real-rooted h-polynomial"
+
+[[theorems]]
+name = "RealRooted.HlavacekSolus.cubeColoredEulerian_strictInterl_succ"
+module = "RealRooted.HlavacekSolus.HalfOpenCube"
+label = "A_{d,l}^(2) interlaces A_{d,l+1}^(2) for l < d"
+
+[[theorems]]
+name = "RealRooted.HlavacekSolus.cubeRelativeHRow_isInterlacingSeqNonneg"
+module = "RealRooted.HlavacekSolus.CubicalShelling"
+label = "Relative h-polynomials of half-open d-cubes form a nonnegative interlacing sequence"
+headline = true
+
+[[theorems]]
+name = "RealRooted.isRealRooted_sum_of_mem_isInterlacingSeqNonneg"
+module = "RealRooted.HlavacekSolus.CubicalShelling"
+label = "A sum of members of a nonnegative interlacing sequence, with repetitions, is real-rooted"
+
 -->
 
 <!-- realrooted-catalog-content -->
@@ -96,6 +136,21 @@ interlacing sequence of real-rooted polynomials with nonnegative coefficients,
 and that the h-polynomial of the subdivision is nonzero. Then the latter
 h-polynomial is real-rooted. Only the finite combinatorial content of the
 subdivision axioms is formalized.
+
+**Cubical shellings.** In the abstract polytopal setting, a shelling is an ordered list of
+pairwise disjoint relative face sets covering all faces of the subdivision, and the
+h-polynomial of the subdivision is the sum of the relative h-polynomials of the pieces.
+If the pieces, in some order, form a nonnegative interlacing sequence, the sum is
+real-rooted. In a stable shelling of a cubical complex every relative piece is a
+half-open cube $[-1,1]^d_l$ with $0\le l\le 2d$, whose h-polynomial is the refined
+type-B Eulerian polynomial $A_{d,l}^{(2)}$ for $l\le d$ and
+$x\cdot I_dA^{(2)}_{d,2d-l}$ (a reflection) for $d<l$, with $A_{d,l}^{(2)}$ the Euler
+numerator of $t\mapsto(2t)^l(2t+1)^{d-l}$. All these polynomials are real-rooted with
+nonnegative coefficients, $A_{d,l}^{(2)}$ interlaces $A_{d,l+1}^{(2)}$ for $l<d$, and the
+whole row of $2d+1$ relative h-polynomials is a nonnegative interlacing sequence.
+Hence a shelling all of whose relative pieces are half-open cubes has a real-rooted
+h-polynomial; the identification of the pieces with half-open cubes (their Lemma 3.2) is
+the hypothesis that the geometric argument supplies.
 
 ## Proof idea
 
