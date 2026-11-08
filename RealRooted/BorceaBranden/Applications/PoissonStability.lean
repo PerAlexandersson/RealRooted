@@ -313,14 +313,6 @@ private theorem shiftDeriv_eq_add_remainder {σ : Type*}
   rw [add_comm]
   rfl
 
-private theorem shiftRemainder_nonneg {σ : Type*} (q : σ) (n : ℕ)
-    {P : MvPolynomial σ ℝ} (hP : P.HasNonnegCoeffs) :
-    (shiftRemainder q n P).HasNonnegCoeffs := by
-  unfold shiftRemainder
-  exact MvPolynomial.HasNonnegCoeffs.sum fun j _ =>
-    (MvPolynomial.HasNonnegCoeffs.C (Nat.cast_nonneg _)).mul
-      (iteratedPDerivAt_nonneg hP q (j + 1))
-
 /-- The part of the Poisson action containing at least one derivative. -/
 def actionRemainder {σ : Type*} (ι : Bool → σ)
     (f : MvPolynomial Bool ℝ) (P : MvPolynomial σ ℝ) :
@@ -344,59 +336,6 @@ private theorem actionAlong_eq_mul_add_remainder {σ : Type*}
   rw [← Finset.sum_mul]
   congr 1
   rw [← map_sum, MvPolynomial.support_sum_monomial_coeff]
-
-private theorem actionRemainder_nonneg {σ : Type*} (ι : Bool → σ)
-    (hι : Function.Injective ι) {f : MvPolynomial Bool ℝ}
-    (hf : f.HasNonnegCoeffs) {P : MvPolynomial σ ℝ}
-    (hP : P.HasNonnegCoeffs) :
-    (actionRemainder ι f P).HasNonnegCoeffs := by
-  classical
-  unfold actionRemainder
-  rw [MvPolynomial.sum_def]
-  exact MvPolynomial.HasNonnegCoeffs.sum fun d _ =>
-    ((hasNonnegCoeffs_monomial d (hf d)).rename_of_injective hι).mul
-      (shiftRemainder_nonneg (ι true) (d false + d true) hP)
-
-private theorem add_ne_zero_of_nonnegative {σ : Type*}
-    {P Q : MvPolynomial σ ℝ} (hP : P.HasNonnegCoeffs)
-    (hP0 : P ≠ 0) (hQ : Q.HasNonnegCoeffs) : P + Q ≠ 0 := by
-  intro hzero
-  have heval := congrArg (MvPolynomial.eval fun _ => 1) hzero
-  simp only [map_add, map_zero] at heval
-  linarith [hP.eval_pos hP0 (fun _ => zero_lt_one),
-    hQ.eval_nonneg (fun _ => zero_le_one)]
-
-/-- If the right input also has nonnegative coefficients, Poisson left
-multiplication is nonzero and real stable. -/
-theorem spectatorAction_stable_of_nonneg {τ : Type*} [Finite τ]
-    {f : MvPolynomial Bool ℝ} (hf : MvRealStable f)
-    (hfnn : f.HasNonnegCoeffs) {P : MvPolynomial (Bool ⊕ τ) ℝ}
-    (hP : MvRealStable P) (hPnn : P.HasNonnegCoeffs) :
-    MvRealStable (spectatorAction f P) := by
-  rcases spectatorAction_stableOrZero hf hfnn hP with hzero | hstable
-  · exfalso
-    have hfrename : MvPolynomial.rename (Sum.inl : Bool → Bool ⊕ τ) f ≠ 0 :=
-      fun hz => hf.ne_zero (MvPolynomial.rename_injective _ Sum.inl_injective hz)
-    have hprod0 :
-        MvPolynomial.rename (Sum.inl : Bool → Bool ⊕ τ) f * P ≠ 0 :=
-      mul_ne_zero hfrename hP.ne_zero
-    apply add_ne_zero_of_nonnegative
-      (hfnn.rename_of_injective Sum.inl_injective |>.mul hPnn) hprod0
-      (actionRemainder_nonneg Sum.inl Sum.inl_injective hfnn hPnn)
-    rw [spectatorAction, actionAlong_eq_mul_add_remainder] at hzero
-    exact hzero
-  · exact hstable
-
-/-- With nonnegative inputs, Poisson left multiplication retains
-nonnegative coefficients as well as real stability. -/
-theorem spectatorAction_closed {τ : Type*} [Finite τ]
-    {f : MvPolynomial Bool ℝ} (hf : MvRealStable f)
-    (hfnn : f.HasNonnegCoeffs) {P : MvPolynomial (Bool ⊕ τ) ℝ}
-    (hP : MvRealStable P) (hPnn : P.HasNonnegCoeffs) :
-    MvRealStable (spectatorAction f P) ∧
-      (spectatorAction f P).HasNonnegCoeffs :=
-  ⟨spectatorAction_stable_of_nonneg hf hfnn hP hPnn,
-    actionAlong_nonneg Sum.inl Sum.inl_injective hfnn hPnn⟩
 
 private theorem totalDegree_pderiv_add_one_le {σ : Type*}
     {P : MvPolynomial σ ℝ} (q : σ)
@@ -571,6 +510,17 @@ theorem spectatorAction_stable {τ : Type*} [Finite τ]
     MvRealStable (spectatorAction f P) :=
   (spectatorAction_stableOrZero hf hfnn hP).resolve_left
     (spectatorAction_ne_zero hf.ne_zero hP.ne_zero)
+
+/-- With nonnegative inputs, Poisson left multiplication retains
+nonnegative coefficients as well as real stability. -/
+theorem spectatorAction_closed {τ : Type*} [Finite τ]
+    {f : MvPolynomial Bool ℝ} (hf : MvRealStable f)
+    (hfnn : f.HasNonnegCoeffs) {P : MvPolynomial (Bool ⊕ τ) ℝ}
+    (hP : MvRealStable P) (hPnn : P.HasNonnegCoeffs) :
+    MvRealStable (spectatorAction f P) ∧
+      (spectatorAction f P).HasNonnegCoeffs :=
+  ⟨spectatorAction_stable hf hfnn hP,
+    actionAlong_nonneg Sum.inl Sum.inl_injective hfnn hPnn⟩
 
 private theorem shiftDeriv_add {R σ : Type*} [CommSemiring R]
     (q : σ) (n : ℕ) (P Q : MvPolynomial σ R) :

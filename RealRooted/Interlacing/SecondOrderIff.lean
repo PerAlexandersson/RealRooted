@@ -5,7 +5,7 @@ public import RealRooted.Basic.Coefficients
 public import Mathlib.Algebra.Polynomial.Basic
 public import RealRooted.SimpleRoots
 public import RealRooted.Interlacing.QuadraticPFPreservers
-import RealRooted.Interlacing.SecondOrderClassification
+public import RealRooted.Interlacing.SecondOrderClassification
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.Analysis.Real.Sqrt
 public import Mathlib.Algebra.Order.Group.Unbundled.Abs
@@ -186,8 +186,8 @@ theorem secondOrder_upper_scalar_lower_bound
 
 /-! ## The minimizing integer -/
 
-/-- The issue's index condition selects the integer minimum of
-`j * delta + a^2 / j`. -/
+/-- If `delta * m * (m - 1) ≤ a ^ 2 ≤ delta * m * (m + 1)`, then `m` minimizes
+`j * delta + a ^ 2 / j` over the positive integers `j`. -/
 theorem secondOrder_index_minimizes_delta_mul_add_div
     {a delta : ℝ} {m j : ℕ}
     (hdelta : 0 < delta) (hm : 1 ≤ m) (hj : 1 ≤ j)
@@ -373,8 +373,8 @@ private theorem secondOrderGapThreshold_datum
         rw [Real.sq_sqrt hrad]
         ring
 
-/-- The issue's index inequalities make the threshold at `m` no larger than
-the threshold at any positive integer `j`. -/
+/-- If `delta * m * (m - 1) ≤ a ^ 2 ≤ delta * m * (m + 1)`, then the threshold at `m` is no
+larger than the threshold at any positive integer `j`. -/
 theorem secondOrderGapThreshold_minimized_at_index
     {a b d f delta : ℝ} {m j : ℕ}
     (ha : 0 ≤ a) (hb : 0 < b) (hf : 0 < f) (hdelta : 0 < delta)
@@ -996,8 +996,7 @@ theorem secondOrderRayPreserving_of_forall_le_gapThreshold
     (hdelta : 0 < delta) (hdisc : delta = d ^ 2 - 4 * b * f)
     (hthreshold : ∀ j, 1 ≤ j →
       c ≤ secondOrderGapThreshold a b d f delta j) :
-    ∀ p, IsPFPolynomial p →
-      IsPFPolynomial (secondOrderRayOperator a b c d f p) := by
+    SecondOrderRayPreserving a b c d f := by
   intro p hp
   have hout := isPFPolynomial_map_of_isNegativeSimple
     (secondOrderRayOperatorₗ a b c d f) (p := p) (hp := hp) (fun {q} hq ↦ by
@@ -1006,8 +1005,8 @@ theorem secondOrderRayPreserving_of_forall_le_gapThreshold
           ha hb hc hd hf hdelta hdisc hq fun j hj hjdeg ↦ hthreshold j hj)
   simpa only [secondOrderRayOperatorₗ_apply] using hout
 
-/-- It suffices to check the indexed threshold only at an integer selected by
-the issue's two neighboring-product inequalities. -/
+/-- It suffices to check the indexed threshold only at an integer `m` selected by the two
+neighboring-product inequalities `delta * m * (m - 1) ≤ a ^ 2 ≤ delta * m * (m + 1)`. -/
 theorem secondOrderRayPreserving_of_le_gapThreshold_at_index
     {a b c d f delta : ℝ} {m : ℕ}
     (ha : 0 ≤ a) (hb : 0 < b) (hc : 0 ≤ c) (hd : 0 ≤ d) (hf : 0 < f)
@@ -1016,8 +1015,7 @@ theorem secondOrderRayPreserving_of_le_gapThreshold_at_index
     (hmlo : delta * (m : ℝ) * ((m : ℝ) - 1) ≤ a ^ 2)
     (hmhi : a ^ 2 ≤ delta * (m : ℝ) * ((m : ℝ) + 1))
     (hcm : c ≤ secondOrderGapThreshold a b d f delta m) :
-    ∀ p, IsPFPolynomial p →
-      IsPFPolynomial (secondOrderRayOperator a b c d f p) := by
+    SecondOrderRayPreserving a b c d f := by
   apply secondOrderRayPreserving_of_forall_le_gapThreshold
     ha hb hc hd hf hdelta hdisc
   intro j hj
@@ -1045,8 +1043,7 @@ theorem secondOrderRayPreserving_of_three_branch_at_index
         ¬|(m : ℝ) ^ 2 * delta - a ^ 2| ≤ 4 * b * f * m ∧
         c ≤ (a * d + Real.sqrt (delta * (a ^ 2 + 4 * b * f * m))) /
           (2 * b))) :
-    ∀ p, IsPFPolynomial p →
-      IsPFPolynomial (secondOrderRayOperator a b c d f p) := by
+    SecondOrderRayPreserving a b c d f := by
   apply secondOrderRayPreserving_of_le_gapThreshold_at_index
     ha hb hc hd hf hdelta hdisc hm hmlo hmhi
   rcases hbranch with ⟨hlower, hbound⟩ | ⟨hlower, hmiddle, hbound⟩ |

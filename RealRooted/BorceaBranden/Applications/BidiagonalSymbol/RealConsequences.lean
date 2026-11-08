@@ -42,14 +42,9 @@ theorem bidiagonalOperator_isPF_of_affineSymbol_stable
     (halpha : ∀ k, 0 ≤ alpha k) (hbeta : ∀ k, 0 ≤ beta k)
     (hpdeg : p.natDegree ≤ d) (hp : IsPFPolynomial p) :
     IsPFPolynomial (bidiagonalOperator alpha beta p) := by
-  by_cases hp0 : p = 0
-  · simpa [hp0] using IsPFPolynomial.zero
-  apply IsPFPolynomial.of_realRooted_nonneg
-  · exact hp.hasNonnegCoeffs.bidiagonalOperator halpha hbeta
-  · rcases bidiagonalOperator_splits_of_affineSymbol_stable
-        hSymbol hpdeg (hp.eq_zero_or_splits.resolve_left hp0) with hzero | hsplits
-    · simp [hzero]
-    · exact hsplits
+  exact IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
+    (hp.hasNonnegCoeffs.bidiagonalOperator halpha hbeta)
+    (bidiagonalOperator_splits_of_affineSymbol_stable hSymbol hpdeg hp.splits)
 
 /-- A stable affine symbol provides a degree-bounded PF preserver when the
 relevant bidiagonal weights are nonnegative on that degree box. -/
@@ -63,14 +58,9 @@ theorem bidiagonalPFPreserver_of_affineSymbol
     (hbeta : ∀ k, k ≤ d → 0 ≤ beta k) :
     BidiagonalPFPreserver alpha beta d := by
   intro p hp hdeg
-  by_cases hp0 : p = 0
-  · simpa [hp0] using IsPFPolynomial.zero
-  apply IsPFPolynomial.of_realRooted_nonneg
-  · exact hp.hasNonnegCoeffs.bidiagonalOperator_of_degree_le hdeg halpha hbeta
-  · rcases bidiagonalOperator_splits_of_affineSymbol_stable
-        hSymbol hdeg (hp.eq_zero_or_splits.resolve_left hp0) with hzero | hsplits
-    · simp [hzero]
-    · exact hsplits
+  exact IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
+    (hp.hasNonnegCoeffs.bidiagonalOperator_of_degree_le hdeg halpha hbeta)
+    (bidiagonalOperator_splits_of_affineSymbol_stable hSymbol hdeg hp.splits)
 
 /-- A genuine stable affine symbol preserves an oriented interlacing pair when
 the two nonzero outputs have positive leading coefficients. -/

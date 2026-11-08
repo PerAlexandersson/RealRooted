@@ -60,15 +60,6 @@ theorem brandenEvenBinomialImage_ne_zero_and_splits (n : ℕ) :
   · refine ⟨0, zero_mem_evenBinomialIndices n, ?_⟩
     simp
 
-/-- Differentiating an f-polynomial can be expressed through the transform of
-the derivative of its input. -/
-theorem fPolynomial_derivative_identity {d : ℕ} {p : ℝ[X]}
-    (hp : p.natDegree ≤ d) :
-    (X + 1) ^ 2 * (fPolynomial d p).derivative =
-      C (d : ℝ) * (X + 1) * fPolynomial d p +
-        fPolynomial d p.derivative :=
-  fPolynomial_derivative hp
-
 private theorem fPolynomial_generalizedEulerian_two_succ (n : ℕ) :
     fPolynomial (n + 1) (generalizedEulerian 2 (n + 1)) =
       (1 + C 2 * X) * fPolynomial n (generalizedEulerian 2 n) +
@@ -110,7 +101,7 @@ private theorem fPolynomial_generalizedEulerian_two_succ (n : ℕ) :
           fPolynomial (n + 1) p.derivative =
             (X + 1) * fPolynomial n p.derivative :=
         fPolynomial_succ_of_natDegree_le hpderdeg
-      have hder := fPolynomial_derivative_identity
+      have hder := fPolynomial_derivative
         (d := n + 1) (p := p) hpdeg.le
       rw [hpad] at hder
       rw [hpad]

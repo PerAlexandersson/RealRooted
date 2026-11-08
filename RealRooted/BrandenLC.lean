@@ -1110,7 +1110,7 @@ theorem IsPFPolynomial.logConcavityTransform {p : ℝ[X]}
   · subst hp0
     simpa [RealRooted.Branden.logConcavityTransform] using
       (IsPFPolynomial.zero : IsPFPolynomial (0 : ℝ[X]))
-  have hsplits : p.Splits := hp.eq_zero_or_splits.resolve_left hp0
+  have hsplits : p.Splits := hp.splits
   have hroot := logConcavityTransform_splits_and_nonpos p hp0 hsplits hp.roots_nonpos
   apply IsPFPolynomial.of_realRooted_nonneg
   · intro k

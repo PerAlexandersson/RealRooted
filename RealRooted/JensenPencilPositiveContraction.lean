@@ -86,8 +86,7 @@ private theorem roots_signedReciprocal_nonneg {d : ℕ} {F : ℝ[X]}
     (hF : IsPFPolynomial F) (hFdeg : F.natDegree ≤ d)
     (hF0 : F.coeff 0 ≠ 0) :
     ∀ r ∈ (signedReciprocal d F).roots, 0 ≤ r := by
-  have hFne : F ≠ 0 := fun h ↦ hF0 (by simp [h])
-  have hFs : F.Splits := hF.2.1.resolve_left hFne
+  have hFs : F.Splits := hF.splits
   let q := F.comp (-X)
   have hqdeg : q.natDegree ≤ d := by
     dsimp [q]
@@ -121,11 +120,7 @@ private theorem card_roots_monicSignedReciprocal_filter_ge_of_nonpos
     ((monicSignedReciprocal d F).roots.filter (s ≤ ·)).card = d := by
   rw [roots_monicSignedReciprocal hF0, Multiset.filter_eq_self.mpr]
   · rw [Polynomial.splits_iff_card_roots.mp
-      (signedReciprocal_splits_of_splits hFdeg
-        (hF.2.1.resolve_left (by
-          intro h
-          subst F
-          simp at hF0))),
+      (signedReciprocal_splits_of_splits hFdeg hF.splits),
       natDegree_signedReciprocal_eq_of_coeff_zero_ne hFdeg hF0]
   · intro r hr
     exact hs.trans (roots_signedReciprocal_nonneg hF hFdeg hF0 r hr)
@@ -161,11 +156,7 @@ private theorem rootCount_band_monicSignedReciprocal
       · have hPAcard :
             (A.roots.filter (-s⁻¹ ≤ ·)).card ≤ d :=
           (Multiset.card_le_card (Multiset.filter_le _ _)).trans (by
-            rw [Polynomial.splits_iff_card_roots.mp
-              (hA.2.1.resolve_left (by
-                intro h
-                subst A
-                simp at hA0))]
+            rw [Polynomial.splits_iff_card_roots.mp hA.splits]
             exact hAdeg)
         have hdmin : d = min 2 d := by rw [min_eq_right (Nat.le_of_not_ge hd2)]
         rw [← hdmin]
@@ -219,10 +210,8 @@ private theorem rootCount_band_signedReciprocal_schurSzegoComp
     (Q := monicSignedReciprocal d B) (p := p) hd
     (monicSignedReciprocal_monic hAdeg hA0.ne')
     (monicSignedReciprocal_monic hBdeg hB0.ne')
-    (monicSignedReciprocal_splits hAdeg
-      (hA.eq_zero_or_splits.resolve_left hAne))
-    (monicSignedReciprocal_splits hBdeg
-      (hB.eq_zero_or_splits.resolve_left hBne))
+    (monicSignedReciprocal_splits hAdeg hA.splits)
+    (monicSignedReciprocal_splits hBdeg hB.splits)
     (natDegree_monicSignedReciprocal_eq hAdeg hA0.ne')
     (natDegree_monicSignedReciprocal_eq hBdeg hB0.ne')
     (Nat.zero_le d) hp hpdeg hp0 hp1 (fun x => by simpa using (hband x).1)
@@ -231,10 +220,8 @@ private theorem rootCount_band_signedReciprocal_schurSzegoComp
     (Q := monicSignedReciprocal d A) (p := p) hd
     (monicSignedReciprocal_monic hBdeg hB0.ne')
     (monicSignedReciprocal_monic hAdeg hA0.ne')
-    (monicSignedReciprocal_splits hBdeg
-      (hB.eq_zero_or_splits.resolve_left hBne))
-    (monicSignedReciprocal_splits hAdeg
-      (hA.eq_zero_or_splits.resolve_left hAne))
+    (monicSignedReciprocal_splits hBdeg hB.splits)
+    (monicSignedReciprocal_splits hAdeg hA.splits)
     (natDegree_monicSignedReciprocal_eq hBdeg hB0.ne')
     (natDegree_monicSignedReciprocal_eq hAdeg hA0.ne')
     (min_le_right 2 d) hp hpdeg hp0 hp1 (fun x => (hband x).2)
@@ -353,8 +340,7 @@ theorem compatible_schurSzego_jensen_of_pos_coeff_zero
     have hXVdeg : (X * V).natDegree ≤ 1 := by rw [Polynomial.natDegree_X_mul hVne, hVdeg]
     have hcount :=
       LiuOppositeSigns.RootCountCompatible.of_left_natDegree_zero_right_natDegree_le_one
-        (hU.eq_zero_or_splits.resolve_left hUne)
-        (hXV.eq_zero_or_splits.resolve_left hXVne) hUdeg hXVdeg
+        hU.splits hXV.splits hUdeg hXVdeg
     exact hcount.compatible_of_pf hU hXV hUne hXVne
   · exact compatible_schurSzego_jensen_of_pos_coeff_zero_of_nonconstant
       hA hB hp hAdeg hBdeg hpdeg hA0 hB0 hp0 hpdeg0 hcompat
