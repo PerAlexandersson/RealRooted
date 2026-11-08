@@ -177,9 +177,11 @@ private def multiplierGoal : TacticM Unit := do
     intro n i j hj
     have hj' : ((j : ℕ) : ℝ) ≤ _ := Nat.cast_le.mpr hj
     push_cast at hj'
+    -- `finish` first: the `ring_nf` variant costs a full normalization and, when it fails, is
+    -- as slow as the plain attempt it was meant to improve on
     first
-    | (ring_nf; $finish:tactic)
     | $finish:tactic
+    | (ring_nf; $finish:tactic)
     | $sharedNegativeDenominator:tactic)))
 
 /-- Close `A.coeff 0 ≥ 0` after a product in the coefficient has been normalized. -/

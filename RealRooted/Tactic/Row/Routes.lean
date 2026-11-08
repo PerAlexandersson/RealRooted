@@ -24,6 +24,17 @@ structure RowRouteInfo where
 
 /-- Every row route, generated from `scripts/tactic_routes.json`. -/
 def rowRouteTable : List RowRouteInfo := [
+  { name := `reuse
+    frontEnds := [
+      "rr_row_splits",
+      "rr_row_strictInterl"
+    ]
+    conclusion := "(P n).Splits or StrictInterl (P n) (P (n + 1))"
+    theorems :=
+      [
+        `RealRooted.Interlaces.toStrictInterl
+      ]
+  },
   { name := `probe
     frontEnds := [
       "rr_row_interlaces",
@@ -570,6 +581,35 @@ def rowRouteTable : List RowRouteInfo := [
 /-- The selectable route names of a front end, in dispatch order. -/
 def rowRoutesOf (frontEnd : String) : List Name :=
   match frontEnd with
+  | "rr_row_splits" => [
+      `reuse,
+      `variableDelay,
+      `derivativeXMul,
+      `factorPower,
+      `delayedProduct,
+      `closedForm,
+      `halfGrowth,
+      `pathPower,
+      `lowerOrder,
+      `thresholdOrbit,
+      `parityProduct,
+      `lagFeedback,
+      `subseq,
+      `linearFactors,
+      `splitFactors,
+      `twoStep,
+      `nextRow,
+      `degreePattern,
+      `reversed,
+      `fTransform
+    ]
+  | "rr_row_strictInterl" => [
+      `reuse,
+      `variableDelay,
+      `halfGrowth,
+      `degreePattern,
+      `interlaces
+    ]
   | "rr_row_interlaces" => [
       `variableDelay,
       `rowModel,
@@ -593,36 +633,9 @@ def rowRoutesOf (frontEnd : String) : List Name :=
       `movingUpper,
       `reversed
     ]
-  | "rr_row_splits" => [
-      `variableDelay,
-      `derivativeXMul,
-      `factorPower,
-      `delayedProduct,
-      `closedForm,
-      `halfGrowth,
-      `pathPower,
-      `lowerOrder,
-      `thresholdOrbit,
-      `parityProduct,
-      `lagFeedback,
-      `subseq,
-      `linearFactors,
-      `splitFactors,
-      `twoStep,
-      `nextRow,
-      `degreePattern,
-      `reversed,
-      `fTransform
-    ]
   | "rr_row_natDegree" => [
       `cone,
       `cancel
-    ]
-  | "rr_row_strictInterl" => [
-      `variableDelay,
-      `halfGrowth,
-      `degreePattern,
-      `interlaces
     ]
   | "rr_row_nonneg_coeffs" => [
     ]

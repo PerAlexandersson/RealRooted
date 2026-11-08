@@ -29,6 +29,35 @@ noncomputable section
 
 /-! ### `rr_row_splits` -/
 
+/-- Rows `(1 + X) * P n`: their interlacing is proved once and reused by `reuse`. -/
+def reuseRows : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => (1 + X) * reuseRows n
+
+theorem reuseRows_interlaces (n : ℕ) : Interlaces (reuseRows n) (reuseRows (n + 1)) := by
+  rr_row_interlaces
+
+example (n : ℕ) : (reuseRows n).Splits := by
+  rr_row_splits (via := reuse)
+
+example (n : ℕ) : StrictInterl (reuseRows n) (reuseRows (n + 1)) := by
+  rr_row_strictInterl (via := reuse)
+
+example (h : ∀ n, StrictInterl (reuseRows n) (reuseRows (n + 1))) (n : ℕ) :
+    (reuseRows n).Splits := by
+  rr_row_splits (via := reuse)
+
+/-- `reuse` only closes goals about a sequence with a statement in scope. -/
+def reuseOtherRows : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 => (2 + X) * reuseOtherRows n
+
+example : True := by
+  fail_if_success
+    have : ∀ n, (reuseOtherRows n).Splits := by
+      rr_row_splits (via := reuse)
+  trivial
+
 /-- A fixed split factor times `(X * P n)'` (A094262). -/
 def derivativeXMulRows : ℕ → ℝ[X]
   | 0 => 1

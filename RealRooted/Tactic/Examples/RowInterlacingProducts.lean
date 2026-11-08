@@ -220,7 +220,7 @@ example (n : ℕ) : (swappedProduct n).Splits := by rr_row_splits (via := splitF
 
 /--
 error: rr_row_splits: unknown route foo; the routes are
-variableDelay, derivativeXMul, factorPower, delayedProduct, closedForm, halfGrowth,
+reuse, variableDelay, derivativeXMul, factorPower, delayedProduct, closedForm, halfGrowth,
 pathPower, lowerOrder, thresholdOrbit, parityProduct, lagFeedback, subseq, linearFactors,
 splitFactors, twoStep, nextRow, degreePattern, reversed, fTransform
 -/
