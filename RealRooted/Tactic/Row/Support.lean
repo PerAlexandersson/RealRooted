@@ -84,7 +84,11 @@ def xPolyTerm (cs : Array (Array Rat)) (N : Term) : TacticM Term := do
 def elabAuxCommand (stx : Syntax) : TacticM Unit := do
   let cmdCtx : Command.Context :=
     { fileName := ← getFileName, fileMap := ← getFileMap, snap? := none, cancelTk? := none }
-  let st : Command.State := Command.mkState (← getEnv) {} (← getOptions)
+  -- Elaborate synchronously: with `Elab.async`, errors of the auxiliary command's proofs are
+  -- reported through snapshot tasks rather than `messages`, so a failed nested proof would
+  -- silently become `sorryAx`.
+  let opts := Elab.async.set (← getOptions) false
+  let st : Command.State := Command.mkState (← getEnv) {} opts
   match ← (((Command.elabCommand stx).run cmdCtx).run st).toBaseIO with
   | .ok ((), st') =>
       if st'.messages.hasErrors then

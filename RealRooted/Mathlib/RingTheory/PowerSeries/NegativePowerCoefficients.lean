@@ -30,7 +30,7 @@ theorem binomialSeries_algebraMap {R A : Type*} [CommRing R] [CommRing A]
 
 /-- The exact parameter coefficient of the canonical negative power of
 `Q-tB`. Its scalar factor is the rising factorial divided by the factorial,
-expressed as `Ring.multichoose`. This is expansion (2.1). -/
+expressed as `Ring.multichoose`. -/
 theorem coeff_coeff_subst_binomialSeries_neg
     (Q B : PowerSeries ℝ) (hQ : constantCoeff Q = 1) (hB : constantCoeff B = 0)
     (κ : ℝ) (n k : ℕ) :

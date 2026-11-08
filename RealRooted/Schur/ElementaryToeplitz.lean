@@ -4,7 +4,15 @@ public import RealRooted.Schur.ElementarySubstitution
 import RealRooted.BrandenLeite.PositiveLinearFactors
 import RealRooted.Mathlib.Algebra.Polynomial.LinearFactors
 
-/-! # Elementary Toeplitz minors for skew Schur determinants -/
+/-!
+# Elementary Toeplitz minors and dual Jacobi–Trudi determinants
+
+For a finite alphabet `s` with weights `α`, `elementaryPolynomial s α = ∏ (1 + α i X)` has the
+elementary symmetric polynomials of the weights as coefficients. For column heights `h` and `k`,
+`elementaryMatrix s α h k` is the determinant matrix of the dual Jacobi–Trudi formula for the
+skew shape, and `elementarySubstitution` varies one elementary coordinate in its determinant.
+No independent definition of Schur functions is used here.
+-/
 
 @[expose] public section
 
@@ -37,6 +45,19 @@ theorem columnIndex_strictAnti {n : ℕ} {h : Fin n → ℕ} (hh : Antitone h) :
   dsimp [columnIndex]
   lia
 
+/-- Strictly decreasing boundary indices stay strictly decreasing in `ℤ`. -/
+theorem columnIndex_natCast_strictAnti {n : ℕ} {h : Fin n → ℕ} (hh : Antitone h) :
+    StrictAnti (fun i => (columnIndex h i : ℤ)) :=
+  fun _ _ hij => Int.ofNat_lt.mpr (columnIndex_strictAnti hh hij)
+
+/-- The active matrix of two weakly decreasing column-height lists is totally nonnegative. -/
+theorem activeMatrix_columnIndex_isTotallyNonneg {n : ℕ} {h k : Fin n → ℕ}
+    (hh : Antitone h) (hk : Antitone k) (r : ℤ) :
+    (activeMatrix (fun i => (columnIndex h i : ℤ))
+      (fun j => (columnIndex k j : ℤ)) r).IsTotallyNonneg :=
+  activeMatrix_isTotallyNonneg (columnIndex_natCast_strictAnti hh)
+    (columnIndex_natCast_strictAnti hk) r
+
 /-- Elementary dual Jacobi–Trudi matrix, with zero extension at negative indices. -/
 noncomputable def elementaryMatrix {ι : Type*} {n : ℕ} (s : Finset ι) (α : ι → ℝ)
     (h k : Fin n → ℕ) : Matrix (Fin n) (Fin n) ℝ :=
@@ -65,20 +86,18 @@ noncomputable def elementarySubstitution {ι : Type*} {n : ℕ}
     (activeMatrix (fun i => (columnIndex h i : ℤ))
       (fun j => (columnIndex k j : ℤ)) r).map C)
 
-/-- Parity-compatible skew elementary determinants are PF once their constant
-term is positive. Total nonnegativity is discharged from the alphabet here;
-the alphabet-size criterion for determinant positivity remains a separate step. -/
+/-- Dual Jacobi–Trudi determinants of elementary coefficients, with one moving coordinate
+and parity-compatible active positions, are PF once their constant term is positive.
+Total nonnegativity is discharged from the alphabet; the alphabet-size criterion for
+determinant positivity is `det_elementaryMatrix_pos_of_nonneg`. -/
 theorem elementarySubstitution_isPFPolynomial {ι : Type*} {n : ℕ}
     (s : Finset ι) (α : ι → ℝ) (hα : ∀ i ∈ s, 0 ≤ α i)
     {h k : Fin n → ℕ} (hh : Antitone h) (hk : Antitone k) (r : ℤ)
     (hdet : 0 < (elementaryMatrix s α h k).det)
     (hpar : ∀ i j, (columnIndex h i : ℤ) = columnIndex k j + r →
       Even (i.val + j.val)) :
-    IsPFPolynomial (elementarySubstitution s α h k r) := by
-  apply isPFPolynomial_det_active
-    (elementaryMatrix_isTotallyNonneg s α hα hh hk) hdet
-  · exact fun i j hij => Int.ofNat_lt.mpr (columnIndex_strictAnti hh hij)
-  · exact fun i j hij => Int.ofNat_lt.mpr (columnIndex_strictAnti hk hij)
-  · exact hpar
+    IsPFPolynomial (elementarySubstitution s α h k r) :=
+  isPFPolynomial_det_active (elementaryMatrix_isTotallyNonneg s α hα hh hk) hdet
+    (columnIndex_natCast_strictAnti hh) (columnIndex_natCast_strictAnti hk) hpar
 
 end RealRooted.Schur

@@ -5,6 +5,7 @@ Authors: Per Alexandersson
 -/
 module
 
+import RealRooted.BrandenLeite.PositivePowerRow
 import RealRooted.Mathlib.Algebra.Polynomial.LinearFactors
 import RealRooted.BrandenLeite.WeightedDerivativeKernel
 import RealRooted.BrandenLeite.PositiveLinearFactors
@@ -16,6 +17,7 @@ public import RealRooted.Mathlib.LinearAlgebra.Matrix.Checkerboard
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
 public import Mathlib.Basic.Real.Basic
 import RealRooted.TotallyNonnegPencil.StrictInterlacing
+import RealRooted.Mathlib.LinearAlgebra.Matrix.CheckerboardAdjacent
 import RealRooted.Mathlib.Algebra.Polynomial.Roots
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.DeterminantPencil
@@ -26,7 +28,8 @@ import Mathlib.Tactic
 
 For valuation-one numerators, a positive quadratic coefficient in the
 denominator or numerator gives simple roots and disjoint consecutive rows.
-Combined with oriented interlacing, these conclusions imply strict separation.
+These conclusions are stated separately from the (weak) oriented interlacing;
+together they separate the roots of consecutive rows.
 The logarithmic limit is not covered by this strengthening.
 -/
 
@@ -61,10 +64,7 @@ theorem affineNegativePowerCoeff_charpoly_root_data
   let H := A⁻¹ * M
   have hLdet : 0 < L.det :=
     det_weightedDerivativeKernel_fin_pos_of_coeff_one_pos hκ B hB hB₁ n
-  have hLI : L * L⁻¹ = 1 := L.mul_nonsing_inv (isUnit_iff_ne_zero.mpr hLdet.ne')
-  have hAI : A * checkerboard L⁻¹ = 1 := by
-    rw [show A = checkerboard L from rfl, ← checkerboard_mul, hLI, checkerboard_one]
-  have hAunit : IsUnit A.det := Matrix.isUnit_det_of_right_inverse hAI
+  have hAunit : IsUnit A.det := isUnit_det_checkerboard L hLdet.ne'.isUnit
   have hdet := det_weightedDerivativeKernel_affineNegativePowerCoeff κ Q B hQ hB n
   change det (M.map Polynomial.C + (Polynomial.X : ℝ[X]) • A.map Polynomial.C) =
     (n.factorial : ℝ[X]) * affineNegativePowerCoeff κ Q B n at hdet
@@ -92,6 +92,57 @@ theorem affineNegativePowerCoeff_charpoly_root_data
     apply hm.trans
     simpa using Polynomial.rootMultiplicity_comp_C_mul_X_add_C
       H.charpoly (-1) 0 x (isUnit_iff_ne_zero.mpr (by norm_num))
+
+/-- The first superdiagonal of the signed denominator kernel is positive when `Q(0) = 1`. -/
+private theorem signedKernel_superdiagonal_pos {κ : ℝ} {Q : PowerSeries ℝ}
+    (hQ : PowerSeries.constantCoeff Q = 1) {n : ℕ} (i : Fin n) :
+    0 < ((weightedDerivativeKernel κ
+      (fun k => (-1 : ℝ) ^ k * PowerSeries.coeff k Q)).submatrix Fin.val Fin.val :
+        Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) i.castSucc i.succ := by
+  have hQ₀ : PowerSeries.coeff 0 Q = 1 := by
+    simpa only [PowerSeries.coeff_zero_eq_constantCoeff_apply] using hQ
+  have hi : i.val + 1 - (i.val + 1) = 0 := by lia
+  simp only [Matrix.submatrix_apply, weightedDerivativeKernel,
+    Fin.val_castSucc, Fin.val_succ, le_refl, ite_true, hi,
+    Nat.cast_zero, mul_zero, add_zero, pow_zero, hQ₀, mul_one]
+  positivity
+
+/-- A positive quadratic coefficient of `Q` makes the first subdiagonal of the signed
+denominator kernel positive. -/
+private theorem signedKernel_subdiagonal_pos {κ : ℝ} (hκ : 0 < κ) {Q : PowerSeries ℝ}
+    (hQ₂ : 0 < PowerSeries.coeff 2 Q) {n : ℕ} (i : Fin n) :
+    0 < ((weightedDerivativeKernel κ
+      (fun k => (-1 : ℝ) ^ k * PowerSeries.coeff k Q)).submatrix Fin.val Fin.val :
+        Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) i.succ i.castSucc := by
+  have hi : i.val + 1 + 1 - i.val = 2 := by lia
+  simp only [Matrix.submatrix_apply, weightedDerivativeKernel,
+    Fin.val_castSucc, Fin.val_succ, show i.val ≤ i.val + 1 + 1 by lia, ite_true, hi,
+    pow_two, neg_one_mul, neg_neg, one_mul]
+  exact mul_pos (by positivity) hQ₂
+
+/-- A positive quadratic coefficient of `B` makes the first subdiagonal of the numerator
+kernel positive. -/
+private theorem numeratorKernel_subdiagonal_pos {κ : ℝ} (hκ : 0 < κ) {B : PowerSeries ℝ}
+    (hB₂ : 0 < PowerSeries.coeff 2 B) {n : ℕ} (i : Fin n) :
+    0 < ((weightedDerivativeKernel κ (fun k => PowerSeries.coeff k B)).submatrix
+      Fin.val Fin.val : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) i.succ i.castSucc := by
+  have hi : i.val + 1 + 1 - i.val = 2 := by lia
+  simp only [Matrix.submatrix_apply, weightedDerivativeKernel,
+    Fin.val_castSucc, Fin.val_succ, show i.val ≤ i.val + 1 + 1 by lia, ite_true, hi]
+  exact mul_pos (by positivity) hB₂
+
+/-- A negative linear coefficient of `Q` and `κ > 0` make the diagonal of the signed
+denominator kernel positive. -/
+private theorem signedKernel_diagonal_pos {κ : ℝ} (hκ : 0 < κ) {Q : PowerSeries ℝ}
+    (hQ₁ : 0 < -PowerSeries.coeff 1 Q) {n : ℕ} (i : Fin n) :
+    0 < ((weightedDerivativeKernel κ
+      (fun k => (-1 : ℝ) ^ k * PowerSeries.coeff k Q)).submatrix Fin.val Fin.val :
+        Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) i.castSucc i.castSucc := by
+  have hi : i.val + 1 - i.val = 1 := by lia
+  simp only [Matrix.submatrix_apply, weightedDerivativeKernel,
+    Fin.val_castSucc, show i.val ≤ i.val + 1 by lia, ite_true,
+    hi, pow_one, neg_one_mul, Nat.cast_one, mul_one]
+  exact mul_pos (add_pos_of_nonneg_of_pos (Nat.cast_nonneg _) hκ) hQ₁
 
 /-- Under the elementary second-coefficient strictness condition, TN kernel
 models give simple roots and disjoint consecutive canonical rows. -/
@@ -126,52 +177,23 @@ theorem affineNegativePowerCoeff_simple_and_disjoint_of_kernels
     weightedDerivativeKernel_isLowerTriangular_fin κ B hB (n + 1)
   have hLdet : 0 < L.det :=
     det_weightedDerivativeKernel_fin_pos_of_coeff_one_pos hκ B hB hB₁ (n + 1)
-  have hQ₀ : PowerSeries.coeff 0 Q = 1 := by
-    simpa only [PowerSeries.coeff_zero_eq_constantCoeff_apply] using hQ
-  have hsuper : ∀ i : Fin n, 0 < M i.castSucc i.succ := by
-    intro i
-    have hi : i.val + 1 - (i.val + 1) = 0 := by lia
-    simp only [M, Matrix.submatrix_apply, weightedDerivativeKernel,
-      Fin.val_castSucc, Fin.val_succ, le_refl, ite_true, hi,
-      Nat.cast_zero, mul_zero, add_zero, pow_zero, hQ₀, mul_one]
-    positivity
+  have hsuper : ∀ i : Fin n, 0 < M i.castSucc i.succ := fun i =>
+    signedKernel_superdiagonal_pos hQ i
   have hsub : ∀ i : Fin n, 0 < M i.succ i.castSucc ∨
-      (0 < L i.succ i.castSucc ∧ 0 < M i.castSucc i.castSucc) := by
-    intro i
-    have hi : i.val + 1 + 1 - i.val = 2 := by lia
-    have hi' : i.val + 1 - i.val = 1 := by lia
-    rcases hsecond with hQ₂ | hB₂
-    · left
-      simp only [M, Matrix.submatrix_apply, weightedDerivativeKernel,
-        Fin.val_castSucc, Fin.val_succ,
-        show i.val ≤ i.val + 1 + 1 by lia, ite_true, hi, pow_two,
-        neg_one_mul, neg_neg, one_mul]
-      exact mul_pos (by positivity) hQ₂
-    · right
-      constructor
-      · simp only [L, Matrix.submatrix_apply, weightedDerivativeKernel,
-          Fin.val_castSucc, Fin.val_succ,
-          show i.val ≤ i.val + 1 + 1 by lia, ite_true, hi]
-        exact mul_pos (by positivity) hB₂
-      · simp only [M, Matrix.submatrix_apply, weightedDerivativeKernel,
-          Fin.val_castSucc, show i.val ≤ i.val + 1 by lia, ite_true,
-          hi', pow_one, neg_one_mul, Nat.cast_one, mul_one]
-        exact mul_pos (add_pos_of_nonneg_of_pos (Nat.cast_nonneg _) hκ) hQ₁
+      (0 < L i.succ i.castSucc ∧ 0 < M i.castSucc i.castSucc) := fun i =>
+    hsecond.imp (fun hQ₂ => signedKernel_subdiagonal_pos hκ hQ₂ i)
+      fun hB₂ =>
+        ⟨numeratorKernel_subdiagonal_pos hκ hB₂ i, signedKernel_diagonal_pos hκ hQ₁ i⟩
   obtain ⟨-, hfull, hsmall, hdisjoint, -⟩ :=
     hLtri.checkerboard_inv_mul_leading_charpoly_strictInterlaces
       hL hLdet hM hMdet hsuper hsub
-  have hLI : L * L⁻¹ = 1 := L.mul_nonsing_inv (isUnit_iff_ne_zero.mpr hLdet.ne')
-  have hAI : checkerboard L * checkerboard L⁻¹ = 1 := by
-    rw [← checkerboard_mul, hLI, checkerboard_one]
-  have hAunit : IsUnit (checkerboard L).det := Matrix.isUnit_det_of_right_inverse hAI
-  have hAtri : (checkerboard L).IsLowerTriangular := by
-    intro i j hij
-    simp [checkerboard, hLtri hij]
+  have hAunit := isUnit_det_checkerboard L hLdet.ne'.isUnit
   have hlead : H.submatrix Fin.castSucc Fin.castSucc =
       (checkerboard (L.submatrix Fin.castSucc Fin.castSucc))⁻¹ *
         M.submatrix Fin.castSucc Fin.castSucc := by
     dsimp only [H]
-    rw [hAtri.leading_submatrix_inv_mul hAunit, checkerboard_submatrix_castSucc]
+    rw [(isLowerTriangular_checkerboard hLtri).leading_submatrix_inv_mul hAunit,
+      checkerboard_submatrix_castSucc]
   have hrowFull (x : ℝ) :=
     affineNegativePowerCoeff_charpoly_root_data hκ Q B hQ hB hB₁ (n + 1) x
   constructor
@@ -231,8 +253,7 @@ theorem affineNegativePowerCoeff_factor_simple_and_disjoint
     ∏ j ∈ t, (1 + Polynomial.C (β j) * Polynomial.X)
   dsimp only
   intro hsecond
-  have hQ0 : Q.coeff 0 = 1 := by
-    simp [Q, Polynomial.coeff_zero_eq_eval_zero, Polynomial.eval_prod]
+  have hQ0 : Q.coeff 0 = 1 := Polynomial.coeff_zero_prod_one_sub_C_mul_X s α
   have hB0 : B.coeff 0 = 0 := by
     simp [B, Polynomial.coeff_zero_eq_eval_zero, Polynomial.eval_prod]
   have hB1 : B.coeff 1 = c := by
@@ -244,41 +265,23 @@ theorem affineNegativePowerCoeff_factor_simple_and_disjoint
     have hpos := coeff_one_prod_one_add_C_mul_X_pos s hs α hα
     rw [← Polynomial.prod_one_sub_C_mul_X_comp_neg_X s α] at hpos
     simpa [Q, Polynomial.coeff_comp_neg_X] using hpos
-  have hQs : (Q.comp (-Polynomial.X)).Splits := by
-    dsimp only [Q]
-    rw [Polynomial.prod_one_sub_C_mul_X_comp_neg_X]
-    exact Polynomial.splits_prod_one_add_C_mul_X s α
-  have hQnn : HasNonnegCoeffs (Q.comp (-Polynomial.X)) := by
-    dsimp only [Q]
-    rw [Polynomial.prod_one_sub_C_mul_X_comp_neg_X]
-    exact hasNonnegCoeffs_prod_one_add_C_mul_X s α (fun i hi => (hα i hi).le)
+  obtain ⟨hQs, hQnn⟩ :=
+    splits_and_hasNonnegCoeffs_prod_one_sub_C_mul_X_comp_neg_X s α fun i hi => (hα i hi).le
   have hBs : B.Splits := by
     simpa [B] using (Polynomial.Splits.C_mul_X_pow c 1).mul
       (Polynomial.splits_prod_one_add_C_mul_X t β)
   have hBnn : HasNonnegCoeffs B := by
     exact (hasNonnegCoeffs_C_mul hc.le hasNonnegCoeffs_X).mul
       (hasNonnegCoeffs_prod_one_add_C_mul_X t β hβ)
-  have hq := weightedDerivativeKernel_isTotallyNonneg hQs hQnn hκ.le
-  have hb := weightedDerivativeKernel_isTotallyNonneg hBs hBnn hκ.le
-  have hsign : (Q.comp (-Polynomial.X)).coeff = fun k => (-1 : ℝ) ^ k * Q.coeff k := by
-    funext k
-    rw [Polynomial.coeff_comp_neg_X, mul_comm]
-  rw [hsign] at hq
   apply affineNegativePowerCoeff_simple_and_disjoint_of_kernels hκ
     (Q : PowerSeries ℝ) B (by simpa using hQ0) (by simpa using hB0)
     (by simpa [hB1] using hc) (by simpa using hQ1)
     (by simpa only [Polynomial.coeff_coe] using hsecond) n
-  · simpa only [Polynomial.coeff_coe] using
-      (hq.toRect.submatrix (rows := (Fin.val : Fin (n + 1) → ℕ)) (cols := Fin.val)
-        (fun _ _ h => h) (fun _ _ h => h)).toSquare
-  · simpa only [Polynomial.coeff_coe] using
-      (hb.toRect.submatrix (rows := (Fin.val : Fin (n + 1) → ℕ)) (cols := Fin.val)
-        (fun _ _ h => h) (fun _ _ h => h)).toSquare
+  · exact weightedDerivativeKernel_submatrix_signed_isTotallyNonneg hQs hQnn hκ.le _
+  · exact weightedDerivativeKernel_submatrix_isTotallyNonneg hBs hBnn hκ.le _
   · have hd := det_weightedDerivativeKernel_prod_linear_comp_neg_X_pos
       s hs α hα hκ (n + 1)
-    change 0 < ((weightedDerivativeKernel κ (Q.comp (-Polynomial.X)).coeff).submatrix
-      Fin.val Fin.val : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ).det at hd
-    rw [hsign] at hd
+    rw [Polynomial.coeff_comp_neg_X_eq_neg_one_pow_mul] at hd
     simpa only [Polynomial.coeff_coe] using hd.ne'
 
 end RealRooted.BrandenLeite

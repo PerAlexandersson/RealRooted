@@ -60,6 +60,42 @@ theorem IsLowerTriangular.mul_apply_succ_castSucc
       ring
     _ = _ := by rw [hi, one_mul]
 
+/-- Checkerboard signs preserve lower triangularity. -/
+theorem isLowerTriangular_checkerboard {R : Type*} [CommRing R] {n : ℕ}
+    {A : Matrix (Fin n) (Fin n) R} (hA : A.IsLowerTriangular) :
+    (checkerboard A).IsLowerTriangular := by
+  intro i j hij
+  simp [checkerboard, hA hij]
+
+/-- The checkerboard of the inverse is a right inverse of the checkerboard. -/
+theorem checkerboard_mul_checkerboard_nonsing_inv {R : Type*} [CommRing R] {n : ℕ}
+    (A : Matrix (Fin n) (Fin n) R) (hA : IsUnit A.det) :
+    checkerboard A * checkerboard A⁻¹ = 1 := by
+  rw [← checkerboard_mul, A.mul_nonsing_inv hA, checkerboard_one]
+
+/-- The checkerboard of an invertible matrix is invertible. -/
+theorem isUnit_det_checkerboard {R : Type*} [CommRing R] {n : ℕ}
+    (A : Matrix (Fin n) (Fin n) R) (hA : IsUnit A.det) : IsUnit (checkerboard A).det :=
+  isUnit_det_of_right_inverse (checkerboard_mul_checkerboard_nonsing_inv A hA)
+
+/-- The inverse of the checkerboard is the checkerboard of the inverse. -/
+theorem checkerboard_nonsing_inv {R : Type*} [CommRing R] {n : ℕ}
+    (A : Matrix (Fin n) (Fin n) R) (hA : IsUnit A.det) :
+    (checkerboard A)⁻¹ = checkerboard A⁻¹ :=
+  inv_eq_right_inv (checkerboard_mul_checkerboard_nonsing_inv A hA)
+
+/-- The inverse of the checkerboard of an invertible matrix has nonzero determinant. -/
+theorem det_checkerboard_nonsing_inv_ne_zero {R : Type*} [CommRing R] [Nontrivial R] {n : ℕ}
+    (A : Matrix (Fin n) (Fin n) R) (hA : IsUnit A.det) : ((checkerboard A)⁻¹).det ≠ 0 :=
+  det_ne_zero_of_left_inverse
+    ((checkerboard A).mul_nonsing_inv (isUnit_det_checkerboard A hA))
+
+/-- The inverse of the checkerboard of a TN matrix with positive determinant is TN. -/
+theorem IsTotallyNonneg.checkerboard_nonsing_inv {n : ℕ} {L : Matrix (Fin n) (Fin n) ℝ}
+    (hL : L.IsTotallyNonneg) (hdet : 0 < L.det) : (checkerboard L)⁻¹.IsTotallyNonneg := by
+  rw [Matrix.checkerboard_nonsing_inv L hdet.ne'.isUnit]
+  exact IsTotallyNonneg.checkerboard_inverse L L⁻¹ (L.mul_nonsing_inv hdet.ne'.isUnit) hdet hL
+
 /-- A positive summand in a product of nonnegative matrices gives a positive
 entry of the product. -/
 theorem mul_apply_pos_of_pos_summand
@@ -79,24 +115,16 @@ theorem IsLowerTriangular.checkerboard_inv_subdiag_pos
     (hLtri : L.IsLowerTriangular) (hL : L.IsTotallyNonneg)
     (hdet : 0 < L.det) (i : Fin n) (hsub : 0 < L i.succ i.castSucc) :
     0 < (checkerboard L)⁻¹ i.succ i.castSucc := by
-  have hunit : IsUnit L.det := isUnit_iff_ne_zero.mpr hdet.ne'
-  have hLI : L * L⁻¹ = 1 := L.mul_nonsing_inv hunit
-  have hAI : checkerboard L * checkerboard L⁻¹ = 1 := by
-    rw [← checkerboard_mul, hLI, checkerboard_one]
-  have hAunit : IsUnit (checkerboard L).det := isUnit_det_of_right_inverse hAI
-  have hAtri : (checkerboard L).IsLowerTriangular := by
-    intro a b hab
-    simp [checkerboard, hLtri hab]
-  have hR : (checkerboard L)⁻¹ = checkerboard L⁻¹ := inv_eq_right_inv hAI
-  have hRTN : (checkerboard L)⁻¹.IsTotallyNonneg := by
-    rw [hR]
-    exact IsTotallyNonneg.checkerboard_inverse L L⁻¹ hLI hdet hL
-  let : Invertible (checkerboard L) := (checkerboard L).invertibleOfIsUnitDet hAunit
+  have hunit : IsUnit L.det := hdet.ne'.isUnit
+  have hAtri := isLowerTriangular_checkerboard hLtri
+  have hRTN := hL.checkerboard_nonsing_inv hdet
+  let : Invertible (checkerboard L) := (checkerboard L).invertibleOfIsUnitDet
+    (isUnit_det_checkerboard L hunit)
   have hRtri : (checkerboard L)⁻¹.IsLowerTriangular :=
     blockTriangular_inv_of_blockTriangular hAtri
   have hAR : checkerboard L * (checkerboard L)⁻¹ = 1 :=
-    (checkerboard L).mul_nonsing_inv hAunit
-  have hRdet : ((checkerboard L)⁻¹).det ≠ 0 := det_ne_zero_of_left_inverse hAR
+    (checkerboard L).mul_nonsing_inv (isUnit_det_checkerboard L hunit)
+  have hRdet := det_checkerboard_nonsing_inv_ne_zero L hunit
   have hRdiag := hRTN.diagonal_pos_of_det_ne_zero hRdet i.castSucc
   have hLdiag := hL.diagonal_pos_of_det_ne_zero hdet.ne' i.succ
   have heq := congrArg (fun A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ =>
@@ -122,18 +150,8 @@ theorem IsLowerTriangular.checkerboard_inv_mul_adjacent_pos
       (0 < L i.succ i.castSucc ∧ 0 < M i.castSucc i.castSucc)) :
     (∀ i : Fin n, 0 < ((checkerboard L)⁻¹ * M) i.castSucc i.succ) ∧
       ∀ i : Fin n, 0 < ((checkerboard L)⁻¹ * M) i.succ i.castSucc := by
-  have hunit : IsUnit L.det := isUnit_iff_ne_zero.mpr hdet.ne'
-  have hLI : L * L⁻¹ = 1 := L.mul_nonsing_inv hunit
-  have hAI : checkerboard L * checkerboard L⁻¹ = 1 := by
-    rw [← checkerboard_mul, hLI, checkerboard_one]
-  have hAunit : IsUnit (checkerboard L).det := isUnit_det_of_right_inverse hAI
-  have hR : (checkerboard L)⁻¹ = checkerboard L⁻¹ := inv_eq_right_inv hAI
-  have hRTN : (checkerboard L)⁻¹.IsTotallyNonneg := by
-    rw [hR]
-    exact IsTotallyNonneg.checkerboard_inverse L L⁻¹ hLI hdet hL
-  have hAR : checkerboard L * (checkerboard L)⁻¹ = 1 :=
-    (checkerboard L).mul_nonsing_inv hAunit
-  have hRdet : ((checkerboard L)⁻¹).det ≠ 0 := det_ne_zero_of_left_inverse hAR
+  have hRTN := hL.checkerboard_nonsing_inv hdet
+  have hRdet := det_checkerboard_nonsing_inv_ne_zero L hdet.ne'.isUnit
   have hRdiag := hRTN.diagonal_pos_of_det_ne_zero hRdet
   constructor
   · intro i

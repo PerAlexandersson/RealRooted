@@ -74,6 +74,16 @@ theorem cayleyTransform_eq_rootFactorProduct_mul
   change cayleyTransform p.natDegree p * (1 - X) ^ (n - p.natDegree) = _
   rw [cayleyTransform_eq_rootFactorProduct hp rfl]
 
+/-- The Cayley transform of a split polynomial splits in every degree box containing it. -/
+theorem Splits.cayleyTransform {K : Type*} [Field K] {p : K[X]} {n : ℕ}
+    (hp : p.Splits) (hdeg : p.natDegree ≤ n) :
+    (cayleyTransform n p).Splits := by
+  rw [cayleyTransform_eq_rootFactorProduct_mul hp hdeg]
+  refine ((Splits.C _).mul (Splits.multisetProd fun f hf => ?_)).mul
+    ((Splits.of_natDegree_le_one (by compute_degree!)).pow _)
+  obtain ⟨r, _, rfl⟩ := Multiset.mem_map.mp hf
+  exact Splits.of_natDegree_le_one (by compute_degree!)
+
 theorem cayleyTransform_ne_zero
     {K : Type*} [Field K] [IsAlgClosed K]
     {p : K[X]} {n : ℕ} (hp0 : p ≠ 0) (hdeg : p.natDegree ≤ n) :

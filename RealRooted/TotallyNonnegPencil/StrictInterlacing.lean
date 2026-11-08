@@ -12,7 +12,6 @@ public import Mathlib.LinearAlgebra.Matrix.Block
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
 import RealRooted.OscillatoryInterlacing
 import RealRooted.Mathlib.LinearAlgebra.Matrix.CheckerboardAdjacent
-import RealRooted.Mathlib.LinearAlgebra.Matrix.JacobiComplementaryMinor
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 import Mathlib.Tactic
 
@@ -40,18 +39,8 @@ theorem IsLowerTriangular.checkerboard_inv_mul_leading_charpoly_strictInterlaces
       (∀ x : ℝ, ¬(H.charpoly.IsRoot x ∧
         (H.submatrix Fin.castSucc Fin.castSucc).charpoly.IsRoot x)) ∧
       ∀ x ∈ H.charpoly.roots, 0 < x := by
-  have hunit : IsUnit L.det := isUnit_iff_ne_zero.mpr hdet.ne'
-  have hLI : L * L⁻¹ = 1 := L.mul_nonsing_inv hunit
-  have hAI : checkerboard L * checkerboard L⁻¹ = 1 := by
-    rw [← checkerboard_mul, hLI, checkerboard_one]
-  have hAunit : IsUnit (checkerboard L).det := isUnit_det_of_right_inverse hAI
-  have hR : (checkerboard L)⁻¹ = checkerboard L⁻¹ := inv_eq_right_inv hAI
-  have hRTN : (checkerboard L)⁻¹.IsTotallyNonneg := by
-    rw [hR]
-    exact IsTotallyNonneg.checkerboard_inverse L L⁻¹ hLI hdet hL
-  have hAR : checkerboard L * (checkerboard L)⁻¹ = 1 :=
-    (checkerboard L).mul_nonsing_inv hAunit
-  have hRdet : ((checkerboard L)⁻¹).det ≠ 0 := det_ne_zero_of_left_inverse hAR
+  have hRTN := hL.checkerboard_nonsing_inv hdet
+  have hRdet := det_checkerboard_nonsing_inv_ne_zero L hdet.ne'.isUnit
   have hHdet : ((checkerboard L)⁻¹ * M).det ≠ 0 := by
     rw [Matrix.det_mul]
     exact mul_ne_zero hRdet hMdet

@@ -11,7 +11,7 @@ public import Mathlib.RingTheory.MvPowerSeries.Equiv
 import Mathlib.Tactic
 
 /-! The universal bivariate Taylor coefficients of a generalized binomial
-series. This is the coefficient identity underlying expansion (2.1). -/
+series: the coefficient of `x ^ k * y ^ m` in `(1 + x + y) ^ r`. -/
 
 public section
 

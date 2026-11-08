@@ -33,15 +33,9 @@ theorem coeff_affineLogCoeff_zero_and_pos
     rw [← coeff_zero_eq_constantCoeff_apply]
     exact hBzero 0 hr
   rw [coeff_affineLogCoeff_of_ne_zero Q B hQ hB0 hn hk]
-  have hsupport := coeff_pow_mul_zero_and_pos B
-    (subst (Q - 1) (binomialSeries ℝ (-(k : ℝ)))) r
-    hB hBzero hBpos (hQpos k hk) k
-  constructor
-  · intro h
-    rw [hsupport.1 n h, mul_zero]
-  · intro h
-    exact mul_pos (one_div_pos.mpr (by exact_mod_cast Nat.pos_of_ne_zero hk))
-      (hsupport.2 n h)
+  exact const_mul_coeff_pow_mul_zero_and_pos
+    (one_div_pos.mpr (by exact_mod_cast Nat.pos_of_ne_zero hk)) B _ r hB hBzero hBpos
+    (hQpos k hk) k n
 
 /-- A positive logarithmic constant coefficient and positive integer negative
 powers of the denominator give the exact degree and all coefficient signs. -/
@@ -54,27 +48,11 @@ theorem natDegree_affineLogCoeff_and_coeff_pos
     {n : ℕ} (hn : n ≠ 0) (hzero : 0 < (affineLogCoeff Q B n).coeff 0) :
     (affineLogCoeff Q B n).natDegree = n / r ∧
       ∀ k ≤ n / r, 0 < (affineLogCoeff Q B n).coeff k := by
-  have hsupport (k : ℕ) (hk : k ≠ 0) :=
-    coeff_affineLogCoeff_zero_and_pos Q B r hQ hr hB hBzero hBpos hQpos hn hk
-  have hpositive (k : ℕ) (hk : k ≤ n / r) : 0 < (affineLogCoeff Q B n).coeff k := by
-    by_cases hk0 : k = 0
-    · simpa only [hk0] using hzero
-    · apply (hsupport k hk0).2
-      have hk' : k * r ≤ n := (Nat.le_div_iff_mul_le hr).mp hk
-      simpa only [Nat.mul_comm] using hk'
-  constructor
-  · apply Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
-    · apply Polynomial.natDegree_le_iff_coeff_eq_zero.mpr
-      intro k hk
-      have hk0 : k ≠ 0 := by lia
-      apply (hsupport k hk0).1
-      have hnot : ¬ k * r ≤ n := by
-        intro h
-        have := (Nat.le_div_iff_mul_le hr).mpr h
-        lia
-      simpa only [Nat.mul_comm] using Nat.lt_of_not_ge hnot
-    · exact (hpositive (n / r) le_rfl).ne'
-  · exact hpositive
+  refine Polynomial.natDegree_eq_div_and_coeff_pos_of_support hr fun k => ?_
+  by_cases hk : k = 0
+  · subst hk
+    exact ⟨fun h => absurd h (by simp), fun _ => hzero⟩
+  · exact coeff_affineLogCoeff_zero_and_pos Q B r hQ hr hB hBzero hBpos hQpos hn hk
 
 /-- Positive linear-factor denominators give logarithmic rows of exact
 degree `n/r`, with every coefficient through that degree strictly positive. -/

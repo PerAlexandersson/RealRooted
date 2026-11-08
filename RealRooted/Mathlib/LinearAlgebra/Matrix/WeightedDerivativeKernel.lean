@@ -62,6 +62,14 @@ theorem derivativeContraction_isTotallyNonnegRect (n : ℕ) {κ : ℝ} (hκ : 0 
   · exact hκ
   · positivity
 
+/-- The contraction maps source column `k` to target column `j` exactly for the two
+columns `2 * j - 1` and `2 * j`. -/
+theorem derivativeContractionBlock_eq_iff {n : ℕ} (k : Fin (2 * n + 1)) (j : Fin (n + 1)) :
+    derivativeContractionBlock n k = j ↔ k.val = 2 * j.val ∨ k.val + 1 = 2 * j.val := by
+  rw [Fin.ext_iff]
+  change (k.val + 1) / 2 = j.val ↔ _
+  lia
+
 /-- Each column of the weighted derivative contraction uses the indicated
 one or two source columns. -/
 theorem mul_derivativeContraction_apply {m n : ℕ}
@@ -73,39 +81,28 @@ theorem mul_derivativeContraction_apply {m n : ℕ}
       else U i ⟨2 * j.val - 1, by have := j.isLt; lia⟩ * (j.val : ℝ) := by
   classical
   let e : Fin (2 * n + 1) := ⟨2 * j.val, by have := j.isLt; lia⟩
-  have he : derivativeContractionBlock n e = j := by
-    apply Fin.ext
-    simp only [derivativeContractionBlock, e]
-    lia
+  have he : derivativeContractionBlock n e = j :=
+    (derivativeContractionBlock_eq_iff e j).mpr (Or.inl rfl)
   have hwe : derivativeContractionWeight κ e = κ := by
     simp [derivativeContractionWeight, e]
   rw [Matrix.mul_apply]
   change (∑ k, U i k * weightedIncidence (derivativeContractionBlock n)
     (derivativeContractionWeight κ) k j) = _
   by_cases hj : j.val = 0
-  · rw [dite_eq_left hj]
-    rw [Finset.sum_eq_single e]
+  · rw [dite_eq_left hj, Finset.sum_eq_single e]
     · simp only [weightedIncidence_apply, he, ite_true, hwe, add_zero]
       rfl
     · intro k _ hke
-      have hk : derivativeContractionBlock n k ≠ j := by
-        intro h
-        have hv := congrArg Fin.val h
-        have hkv : k.val = 0 := by
-          change (k.val + 1) / 2 = j.val at hv
-          lia
-        apply hke
-        apply Fin.ext
+      have hk : derivativeContractionBlock n k ≠ j := fun h => hke (Fin.ext (by
+        have := (derivativeContractionBlock_eq_iff k j).mp h
         simp only [e]
-        lia
+        lia))
       simp [weightedIncidence_apply, hk]
     · simp
   · rw [dite_eq_right hj]
     let o : Fin (2 * n + 1) := ⟨2 * j.val - 1, by have := j.isLt; lia⟩
-    have ho : derivativeContractionBlock n o = j := by
-      apply Fin.ext
-      simp only [derivativeContractionBlock, o]
-      lia
+    have ho : derivativeContractionBlock n o = j :=
+      (derivativeContractionBlock_eq_iff o j).mpr (Or.inr (by simp only [o]; lia))
     have hwo : derivativeContractionWeight κ o = (j.val : ℝ) := by
       have hp : (2 * j.val - 1) % 2 ≠ 0 := by lia
       have hq : (2 * j.val - 1 + 1) / 2 = j.val := by lia
@@ -123,20 +120,15 @@ theorem mul_derivativeContraction_apply {m n : ℕ}
       symm
       apply Finset.sum_subset (Finset.subset_univ _)
       intro k _ hk
-      have hkblock : derivativeContractionBlock n k ≠ j := by
-        intro h
-        have hv := congrArg Fin.val h
-        change (k.val + 1) / 2 = j.val at hv
-        have hcases : k = o ∨ k = e := by
-          have hkv : k.val = 2 * j.val - 1 ∨ k.val = 2 * j.val := by lia
-          rcases hkv with hkv | hkv
-          · exact Or.inl (Fin.ext hkv)
-          · exact Or.inr (Fin.ext hkv)
-        exact hk (by simpa only [Finset.mem_insert, Finset.mem_singleton] using hcases)
+      have hkblock : derivativeContractionBlock n k ≠ j := fun h => hk (by
+        have hkv := (derivativeContractionBlock_eq_iff k j).mp h
+        simp only [Finset.mem_insert, Finset.mem_singleton]
+        rcases hkv with hkv | hkv
+        · exact Or.inr (Fin.ext hkv)
+        · exact Or.inl (Fin.ext (by simp only [o]; lia)))
       simp [weightedIncidence_apply, hkblock]
     rw [hsum]
     simp only [Finset.sum_pair hoe, weightedIncidence_apply, he, ho, ite_true, hwe, hwo]
     exact add_comm _ _
-
 
 end Matrix

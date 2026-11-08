@@ -3,7 +3,7 @@ module
 import RealRooted.Schur.Rectangular
 import RealRooted.Schur.ConstantColumns
 
-/-! # Regression examples for signed Schur substitutions
+/-! # Regression examples for signed elementary substitutions
 
 The two-column example checks the sign for a moving coordinate of parity opposite
 to the rectangle height. The empty-width case checks the determinant convention.

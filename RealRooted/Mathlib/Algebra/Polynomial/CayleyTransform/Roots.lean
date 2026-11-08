@@ -74,13 +74,8 @@ theorem cayleyTransform_root_norm_eq_one
 
 theorem cayleyTransform_splits
     {p : ℂ[X]} {n : ℕ} (hp : p.Splits) (hdeg : p.natDegree = n) :
-    (cayleyTransform n p).Splits := by
-  rw [cayleyTransform_eq_rootFactorProduct hp hdeg]
-  apply (Polynomial.Splits.C _).mul
-  apply Polynomial.Splits.multisetProd
-  intro f hf
-  rcases Multiset.mem_map.mp hf with ⟨r, _, rfl⟩
-  exact Polynomial.Splits.of_natDegree_le_one (by compute_degree!)
+    (cayleyTransform n p).Splits :=
+  hp.cayleyTransform hdeg.le
 
 theorem cayleyTransform_coeff_zero
     {p : ℂ[X]} {n : ℕ} (hp : p.Splits) (hdeg : p.natDegree = n) :

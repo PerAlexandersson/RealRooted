@@ -38,7 +38,7 @@ theorem det_toeplitz_elementary_pos {ι : Type*} (s : Finset ι)
     (fun i hi => inv_pos.mpr (ha i hi)) rows cols hrows hcols hlo hhi
 
 /-- A positive alphabet at least as large as every skew column gives a positive
-constant Schur determinant. The two column boundaries may have repeated heights. -/
+constant dual Jacobi–Trudi determinant. The two column boundaries may have repeated heights. -/
 theorem det_elementaryMatrix_pos {ι : Type*} {n : ℕ} (s : Finset ι)
     (a : ι → ℝ) (ha : ∀ i ∈ s, 0 < a i)
     {h k : Fin n → ℕ} (hh : Antitone h) (hk : Antitone k)

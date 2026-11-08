@@ -49,26 +49,6 @@
  ],
  [
   "defsWithUnderscore",
-  "A104978Downstream.A104978_interlaces.fAuxInterlaces"
- ],
- [
-  "defsWithUnderscore",
-  "A104978Downstream.A104978_interlaces.fAuxInterlacesShift"
- ],
- [
-  "defsWithUnderscore",
-  "A108426Downstream.A108426_interlaces.fAuxInterlaces"
- ],
- [
-  "defsWithUnderscore",
-  "A108426Downstream.A108426_interlaces.fAuxInterlacesShift"
- ],
- [
-  "defsWithUnderscore",
-  "A108426Downstream.A108426_interlaces.ratRevAux"
- ],
- [
-  "defsWithUnderscore",
   "A186370Downstream.A186370_interlaces.fAuxInterlaces"
  ],
  [
@@ -553,31 +533,11 @@
  ],
  [
   "docBlame",
-  "A104978Downstream.A104978_interlaces.fAuxInterlaces"
- ],
- [
-  "docBlame",
-  "A104978Downstream.A104978_interlaces.fAuxInterlacesShift"
- ],
- [
-  "docBlame",
-  "A108426Downstream.A108426_interlaces.fAuxInterlaces"
- ],
- [
-  "docBlame",
-  "A108426Downstream.A108426_interlaces.fAuxInterlacesShift"
- ],
- [
-  "docBlame",
   "RealRooted.Tactic.instInhabitedClassKind.default"
  ],
  [
   "docBlame",
   "RealRooted.Tactic.instInhabitedDegreeClassKind.default"
- ],
- [
-  "docBlame",
-  "A108426Downstream.A108426_interlaces.ratRevAux"
  ],
  [
   "docBlame",
@@ -792,4 +752,3 @@
   "RealRooted.Tactic.rr_lookup_typeclass_smoke"
  ]
 ]
-

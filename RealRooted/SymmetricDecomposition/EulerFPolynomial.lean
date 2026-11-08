@@ -42,13 +42,18 @@ theorem fPolynomial_eq_bernsteinExpansion (n : ℕ) (p : ℝ[X]) :
 over the reals. -/
 theorem cayleyTransform_splits_real {p : ℝ[X]} {n : ℕ}
     (hp : p.Splits) (hdeg : p.natDegree = n) :
-    (p.cayleyTransform n).Splits := by
-  rw [Polynomial.cayleyTransform_eq_rootFactorProduct hp hdeg]
-  apply (Polynomial.Splits.C _).mul
-  apply Polynomial.Splits.multisetProd
-  intro q hq
-  obtain ⟨r, _, rfl⟩ := Multiset.mem_map.mp hq
-  exact Polynomial.Splits.of_natDegree_le_one (by compute_degree!)
+    (p.cayleyTransform n).Splits :=
+  hp.cayleyTransform hdeg.le
+
+/-- The `f`-polynomial transform reflects splitting as well as preserving it: the Cayley
+transform inverts it in the same degree box.  No sign condition on the coefficients is
+needed. -/
+theorem splits_fPolynomial_iff {d : ℕ} {p : ℝ[X]} (hdeg : p.natDegree ≤ d) :
+    (fPolynomial d p).Splits ↔ p.Splits := by
+  refine ⟨fun h => ?_, splits_fPolynomial hdeg⟩
+  have := h.cayleyTransform (fPolynomial_natDegree_le d p)
+  rwa [fPolynomial_eq_bernsteinExpansion, Polynomial.cayleyTransform_bernsteinExpansion hdeg]
+    at this
 
 /-- Every positive-leading exact-degree polynomial with roots in `[-1, 0]`
 is an `fPolynomial` transform of a PF polynomial. -/

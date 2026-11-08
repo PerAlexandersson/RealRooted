@@ -18,6 +18,17 @@ public section
 
 namespace PowerSeries
 
+/-- A normalized denominator `Q` and a numerator `B` with zero constant term give the
+affine series `Q - t B` constant coefficient one. -/
+theorem constantCoeff_map_C_sub_C_X_mul_map_C {R : Type*} [CommRing R]
+    {Q B : PowerSeries R} (hQ : constantCoeff Q = 1) (hB : constantCoeff B = 0) :
+    constantCoeff (map Polynomial.C Q - C Polynomial.X * map Polynomial.C B) = 1 := by
+  have hmap (F : PowerSeries R) :
+      constantCoeff (map Polynomial.C F) = Polynomial.C (constantCoeff F) := by
+    rw [← coeff_zero_eq_constantCoeff_apply, coeff_map, coeff_zero_eq_constantCoeff_apply]
+  simp only [map_sub, map_mul, constantCoeff_C, hmap, hQ, hB]
+  simp
+
 variable {R : Type*} [CommRing R] [BinomialRing (Polynomial R)]
 
 /-- The coefficient of degree `n` in `(Q(u)-t B(u))^(-κ)`, as a polynomial in `t`.
@@ -40,12 +51,7 @@ theorem det_weightedDerivativeKernel_affineNegativePowerCoeff
           Fin.val Fin.val : Matrix (Fin n) (Fin n) R)).map Polynomial.C) =
       (n.factorial : Polynomial R) * affineNegativePowerCoeff κ Q B n := by
   let H := map Polynomial.C Q - C Polynomial.X * map Polynomial.C B
-  have hH : constantCoeff H = 1 := by
-    simp only [H, map_sub, map_mul, constantCoeff_C]
-    rw [← coeff_zero_eq_constantCoeff_apply, coeff_map,
-      coeff_zero_eq_constantCoeff_apply, hQ, map_one,
-      ← coeff_zero_eq_constantCoeff_apply, coeff_map,
-      coeff_zero_eq_constantCoeff_apply, hB, map_zero, mul_zero, sub_zero]
+  have hH : constantCoeff H = 1 := constantCoeff_map_C_sub_C_X_mul_map_C hQ hB
   have hid := det_weightedDerivativeKernel_subst_binomialSeries_neg
     (Polynomial.C κ) H hH n
   have hcoeff (k : ℕ) : coeff k H =
