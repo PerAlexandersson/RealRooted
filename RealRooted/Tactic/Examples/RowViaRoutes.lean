@@ -14,6 +14,9 @@ still prove the goal without the hint (`RealRooted/Tactic/ROUTES.md`).
 Not covered, because `via` is not accepted by these front ends: the `recurrence` route of the
 degree tactics (`rr_row_natDegree` selects only `cone` and `cancel`) and the `threeTerm`,
 `secondOrder` and `derivativeMult` routes of `rr_row_nonneg_coeffs`, which takes no hints.
+The `rationalReverse` route has no working example: its former example only passed through a
+hidden `sorryAx`.  Its auxiliary theorem embeds `Term.exprToSyntax` holes, which are unassigned
+in the fresh command context, and the side goals of that example fail as well.
 -/
 
 @[expose] public section
@@ -141,17 +144,6 @@ example (n : ℕ) : Interlaces (parityProductRows n) (parityProductRows (n + 1))
 example (n : ℕ) : (parityProductRows n).Splits := by
   rr_row_splits (via := parityProduct)
 
-/-- The reversal of rows `R n = fPolynomial n (Q n)`, whose recurrence
-`R (n + 1) = (2 X + 2 X ^ 2) R n' + (2 + (2 - n) X) R n` has an `f`-transform with half-growth
-rows `Q n`: the multipliers of the reversed rows are rational in `n`. -/
-def rationalReverseRows : ℕ → ℝ[X]
-  | 0 => 1
-  | n + 1 => (C (-2) * X + C (-2) * X ^ 2) * (rationalReverseRows n).derivative +
-      (C (2 + (n : ℝ)) + C (2 + 2 * (n : ℝ)) * X) * rationalReverseRows n
-
-example (n : ℕ) : Interlaces (rationalReverseRows n) (rationalReverseRows (n + 1)) := by
-  rr_row_interlaces (via := rationalReverse)
-
 /-- Roots in the window `[-1, 0]`: `X * (X + 1)` is nonpositive only there (A019538). -/
 def endpointWindowRows : ℕ → ℝ[X]
   | 0 => 1
@@ -259,6 +251,29 @@ def alternatingRunsInterlacesRows : ℕ → ℝ[X]
 example (n : ℕ) :
     Interlaces (alternatingRunsInterlacesRows n) (alternatingRunsInterlacesRows (n + 1)) := by
   rr_row_interlaces (via := fTransform)
+
+/-- A first-order recurrence whose f-transformed auxiliary rows the nested interlacing search
+cannot handle (A104978).  The route must fail visibly: an error inside its auxiliary command once
+became a hidden `sorryAx` under asynchronous elaboration. -/
+def fTransformFailingRows : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 =>
+      ((C (((1 / 2) * (n : ℝ) * (1 / ((-5 + (-3 * (n : ℝ)) + (2 * ((2 + (n : ℝ))) ^ (2))))))) +
+        C (((1 / ((-5 + (-3 * (n : ℝ)) + (2 * ((2 + (n : ℝ))) ^ (2))))) * (3 + (5 * (n : ℝ))))) *
+          X +
+        C (((1 / ((-5 + (-3 * (n : ℝ)) + (2 * ((2 + (n : ℝ))) ^ (2))))) *
+          (3 + ((9 / 2) * (n : ℝ))))) * X ^ 2)) * (fTransformFailingRows n).derivative +
+      ((C (((1 / ((-5 + (-3 * (n : ℝ)) + (2 * ((2 + (n : ℝ))) ^ (2))))) *
+          (-25 + (7 * ((2 + (n : ℝ))) ^ (2)) + ((-37 / 2) * (n : ℝ))))) +
+        C (((1 / ((-5 + (-3 * (n : ℝ)) + (2 * ((2 + (n : ℝ))) ^ (2))))) *
+          (-33 + (9 * ((2 + (n : ℝ))) ^ (2)) + ((-51 / 2) * (n : ℝ))))) * X)) *
+        fTransformFailingRows n
+
+example : True := by
+  fail_if_success
+    have : ∀ n, Interlaces (fTransformFailingRows n) (fTransformFailingRows (n + 1)) := by
+      rr_row_interlaces (via := fTransform)
+  trivial
 
 /-! ### `rr_row_strictInterl` -/
 
