@@ -3,7 +3,7 @@ module
 public import RealRooted.Schur.Stretching
 import RealRooted.Schur.Roots
 
-/-! # Constant-height skew columns and duplicated-row families -/
+/-! # Constant-height columns and duplicated-row families for elementary determinants -/
 
 public section
 
@@ -47,6 +47,21 @@ private theorem even_active_of_constant_height {n : ℕ} {h k : Fin n → ℕ}
   subst j
   exact ⟨i.val, rfl⟩
 
+/-- Constant column height `r ≤ #positive letters` satisfies the shape hypotheses of every
+horizontal stretch. -/
+private theorem repeatColumns_constant_height_bounds {ι : Type*} {n : ℕ}
+    (s : Finset ι) (a : ι → ℝ) {h k : Fin n → ℕ} (r : ℕ)
+    (hheight : ∀ i, h i = k i + r) (hsize : r ≤ (s.filter fun i => 0 < a i).card) (m : ℕ) :
+    (∀ i, repeatColumns k m i ≤ repeatColumns h m i) ∧
+      ∀ i, repeatColumns h m i ≤ repeatColumns k m i + (s.filter fun i => 0 < a i).card := by
+  refine ⟨fun i => ?_, fun i => ?_⟩
+  · have hi := hheight (unstretchColumn m i)
+    change k (unstretchColumn m i) ≤ h (unstretchColumn m i)
+    lia
+  · have hi := hheight (unstretchColumn m i)
+    change h (unstretchColumn m i) ≤ k (unstretchColumn m i) + _
+    lia
+
 /-- Every stretched constant-height skew specialization is nonzero and real-rooted. -/
 theorem repeatColumns_isRealRooted_of_constant_height {ι : Type*} {n : ℕ}
     (s : Finset ι) (a : ι → ℝ) (ha : ∀ i ∈ s, 0 ≤ a i)
@@ -54,19 +69,12 @@ theorem repeatColumns_isRealRooted_of_constant_height {ι : Type*} {n : ℕ}
     (r : ℕ) (hheight : ∀ i, h i = k i + r)
     (hsize : r ≤ (s.filter fun i => 0 < a i).card) (m : ℕ) :
     elementarySubstitution s a (repeatColumns h m) (repeatColumns k m) r ≠ 0 ∧
-      (elementarySubstitution s a (repeatColumns h m) (repeatColumns k m) r).Splits := by
-  apply elementarySubstitution_isRealRooted s a ha
-    (repeatColumns_antitone hh m) (repeatColumns_antitone hk m)
-  · intro i
-    have hi := hheight (unstretchColumn m i)
-    change k (unstretchColumn m i) ≤ h (unstretchColumn m i)
-    lia
-  · intro i
-    have hi := hheight (unstretchColumn m i)
-    change h (unstretchColumn m i) ≤ k (unstretchColumn m i) + _
-    lia
-  · exact even_active_of_constant_height (repeatColumns_antitone hk m) r
-      (fun i => hheight (unstretchColumn m i))
+      (elementarySubstitution s a (repeatColumns h m) (repeatColumns k m) r).Splits :=
+  have hb := repeatColumns_constant_height_bounds s a r hheight hsize m
+  elementarySubstitution_isRealRooted s a ha
+    (repeatColumns_antitone hh m) (repeatColumns_antitone hk m) hb.1 hb.2 r
+    (even_active_of_constant_height (repeatColumns_antitone hk m) r
+      (fun i => hheight (unstretchColumn m i)))
 
 /-- Every stretched constant-height skew specialization has strictly negative roots. -/
 theorem roots_repeatColumns_neg_of_constant_height {ι : Type*} {n : ℕ}
@@ -75,19 +83,12 @@ theorem roots_repeatColumns_neg_of_constant_height {ι : Type*} {n : ℕ}
     (r : ℕ) (hheight : ∀ i, h i = k i + r)
     (hsize : r ≤ (s.filter fun i => 0 < a i).card) (m : ℕ) :
     ∀ x ∈ (elementarySubstitution s a (repeatColumns h m) (repeatColumns k m) r).roots,
-      x < 0 := by
-  apply roots_elementarySubstitution_neg s a ha
-    (repeatColumns_antitone hh m) (repeatColumns_antitone hk m)
-  · intro i
-    have hi := hheight (unstretchColumn m i)
-    change k (unstretchColumn m i) ≤ h (unstretchColumn m i)
-    lia
-  · intro i
-    have hi := hheight (unstretchColumn m i)
-    change h (unstretchColumn m i) ≤ k (unstretchColumn m i) + _
-    lia
-  · exact even_active_of_constant_height (repeatColumns_antitone hk m) r
-      (fun i => hheight (unstretchColumn m i))
+      x < 0 :=
+  have hb := repeatColumns_constant_height_bounds s a r hheight hsize m
+  roots_elementarySubstitution_neg s a ha
+    (repeatColumns_antitone hh m) (repeatColumns_antitone hk m) hb.1 hb.2 r
+    (even_active_of_constant_height (repeatColumns_antitone hk m) r
+      (fun i => hheight (unstretchColumn m i)))
 
 /-- Duplicated-row skew shapes give real-rooted families for every even moving coordinate. -/
 theorem repeatColumns_double_isRealRooted {ι : Type*} {n : ℕ}

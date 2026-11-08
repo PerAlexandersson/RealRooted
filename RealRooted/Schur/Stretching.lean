@@ -4,7 +4,7 @@ public import RealRooted.Schur.ElementaryToeplitz
 import RealRooted.Schur.PositiveRoots
 import RealRooted.Schur.Roots
 
-/-! # Horizontal stretching and boundary parity for skew Schur determinants -/
+/-! # Horizontal stretching and boundary parity for elementary determinants -/
 
 @[expose] public section
 
@@ -65,37 +65,41 @@ include ha hh hk hkh hsize
 has a nonzero, real-rooted elementary-coordinate specialization. -/
 theorem repeatColumns_isRealRooted (hpar : ∀ i j, Even (h i + k j + r)) (m : ℕ) :
     elementarySubstitution s a (repeatColumns h m) (repeatColumns k m) r ≠ 0 ∧
-      (elementarySubstitution s a (repeatColumns h m) (repeatColumns k m) r).Splits := by
-  apply elementarySubstitution_isRealRooted s a ha
+      (elementarySubstitution s a (repeatColumns h m) (repeatColumns k m) r).Splits :=
+  elementarySubstitution_isRealRooted s a ha
     (repeatColumns_antitone hh m) (repeatColumns_antitone hk m)
     (fun i => hkh (unstretchColumn m i)) (fun i => hsize (unstretchColumn m i))
-  exact even_active_of_even_boundary (fun i j => hpar (unstretchColumn m i) (unstretchColumn m j))
+    r (even_active_of_even_boundary fun i j =>
+      hpar (unstretchColumn m i) (unstretchColumn m j))
 
 /-- All roots remain strictly negative under every horizontal stretch. -/
 theorem roots_repeatColumns_neg (hpar : ∀ i j, Even (h i + k j + r)) (m : ℕ) :
     ∀ x ∈ (elementarySubstitution s a (repeatColumns h m) (repeatColumns k m) r).roots,
-      x < 0 := by
-  apply roots_elementarySubstitution_neg s a ha
+      x < 0 :=
+  roots_elementarySubstitution_neg s a ha
     (repeatColumns_antitone hh m) (repeatColumns_antitone hk m)
     (fun i => hkh (unstretchColumn m i)) (fun i => hsize (unstretchColumn m i))
-  exact even_active_of_even_boundary (fun i j => hpar (unstretchColumn m i) (unstretchColumn m j))
+    r (even_active_of_even_boundary fun i j =>
+      hpar (unstretchColumn m i) (unstretchColumn m j))
 
 /-- Odd-boundary-parity skew shapes stay real-rooted under every horizontal stretch. -/
 theorem repeatColumns_isRealRooted_of_odd (hpar : ∀ i j, Odd (h i + k j + r)) (m : ℕ) :
     elementarySubstitution s a (repeatColumns h m) (repeatColumns k m) r ≠ 0 ∧
-      (elementarySubstitution s a (repeatColumns h m) (repeatColumns k m) r).Splits := by
-  apply elementarySubstitution_isRealRooted_of_odd s a ha
+      (elementarySubstitution s a (repeatColumns h m) (repeatColumns k m) r).Splits :=
+  elementarySubstitution_isRealRooted_of_odd s a ha
     (repeatColumns_antitone hh m) (repeatColumns_antitone hk m)
     (fun i => hkh (unstretchColumn m i)) (fun i => hsize (unstretchColumn m i))
-  exact odd_active_of_odd_boundary (fun i j => hpar (unstretchColumn m i) (unstretchColumn m j))
+    r (odd_active_of_odd_boundary fun i j =>
+      hpar (unstretchColumn m i) (unstretchColumn m j))
 
 /-- All roots remain strictly positive in the odd-boundary-parity case. -/
 theorem roots_repeatColumns_pos (hpar : ∀ i j, Odd (h i + k j + r)) (m : ℕ) :
     ∀ x ∈ (elementarySubstitution s a (repeatColumns h m) (repeatColumns k m) r).roots,
-      0 < x := by
-  apply roots_elementarySubstitution_pos_of_odd s a ha
+      0 < x :=
+  roots_elementarySubstitution_pos_of_odd s a ha
     (repeatColumns_antitone hh m) (repeatColumns_antitone hk m)
     (fun i => hkh (unstretchColumn m i)) (fun i => hsize (unstretchColumn m i))
-  exact odd_active_of_odd_boundary (fun i j => hpar (unstretchColumn m i) (unstretchColumn m j))
+    r (odd_active_of_odd_boundary fun i j =>
+      hpar (unstretchColumn m i) (unstretchColumn m j))
 
 end RealRooted.Schur

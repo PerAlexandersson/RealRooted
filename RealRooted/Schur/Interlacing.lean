@@ -4,7 +4,7 @@ public import RealRooted.Schur.ElementaryToeplitz
 import RealRooted.Schur.ElementaryPositivity
 public import RealRooted.TotallyNonnegPencil.CornerInterlacing
 
-/-! # Consecutive interlacing of parity-compatible skew Schur determinants -/
+/-! # Consecutive interlacing of parity-compatible elementary determinants -/
 
 public section
 
@@ -76,9 +76,7 @@ theorem strictInterl_elementarySubstitution_succ {ι : Type*} {n : ℕ}
   rw [elementarySubstitution_eq_checkerboardPencil s a h k r hpar,
     elementarySubstitution_eq_checkerboardPencil s a _ _ r (even_active_succ hpar)]
   have hM := elementaryMatrix_isTotallyNonneg s a ha hh hk
-  have hV := activeMatrix_isTotallyNonneg
-    (fun i j hij => Int.ofNat_lt.mpr (columnIndex_strictAnti hh hij))
-    (fun i j hij => Int.ofNat_lt.mpr (columnIndex_strictAnti hk hij)) r
+  have hV := activeMatrix_columnIndex_isTotallyNonneg hh hk r
   have hdet := det_elementaryMatrix_pos_of_nonneg s a ha hh hk hkh hsize
   have hminor := det_elementaryMatrix_pos_of_nonneg s a ha hhs hks
     (fun i => hkh i.succ) (fun i => hsize i.succ)

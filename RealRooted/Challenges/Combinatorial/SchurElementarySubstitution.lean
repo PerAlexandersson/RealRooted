@@ -51,7 +51,7 @@ label = "Positive constant determinant from the number of positive letters"
 [[theorems]]
 name = "RealRooted.Schur.elementarySubstitution_isRealRooted"
 module = "RealRooted.Schur.Roots"
-label = "Real-rooted skew Schur specialization under alphabet-size and parity hypotheses"
+label = "Real-rooted dual Jacobi–Trudi specialization under alphabet-size and parity hypotheses"
 headline = true
 
 [[theorems]]
@@ -161,8 +161,9 @@ label = "Consecutive rectangular widths interlace for every moving coordinate"
 **Formalization status:** checked Lean proofs cover both parity cases,
 horizontal stretching, duplicated rows, constant skew column height,
 compatible nested skew truncations, and signed rectangular consecutive
-interlacing. The development is tracked in
-[issue #2443](https://github.com/PerAlexandersson/RealRooted/issues/2443).
+interlacing. Schur functions themselves are not defined here: the objects are
+determinants of elementary coefficients (dual Jacobi–Trudi matrices), and no
+bridge to an independent definition of skew Schur functions is formalized.
 
 ## Checked matrix criterion
 
@@ -174,7 +175,7 @@ as an ordered submatrix of the identity and applies the existing
 checkerboard determinant-pencil theorem. The assumptions on $M$ are
 explicit hypotheses of the checked theorem.
 
-## Checked skew Schur specialization
+## Checked dual Jacobi–Trudi specialization
 
 For column heights $h=\lambda'$ and $k=\mu'$ (padding $k$ with zeros), set
 $a_i=h_i-i$, $b_j=k_j-j$, and
@@ -184,8 +185,8 @@ M_{ij}=e_{a_i-b_j}(\alpha),\qquad
 \Phi_{\lambda/\mu,r}(t;\alpha)=\det(M+tV).
 $$
 
-We use this dual Jacobi–Trudi determinant as the definition; a bridge to
-an independent symmetric-function definition is not required. Here $e_0=1$
+We use this dual Jacobi–Trudi determinant of elementary coefficients as the
+definition, with `elementaryPolynomial` equal to $\prod_i(1+\alpha_i x)$. Here $e_0=1$
 and $e_m=0$ for negative indices. Substitution is made before alphabet
 specialization: even if $r$ exceeds the alphabet size, the moving
 coordinate becomes $t$, rather than disappearing.
@@ -204,7 +205,8 @@ every simultaneous horizontal stretch: stretching repeats columns, not
 their heights. Both signs are checked, including empty stretches. Duplicating
 every row doubles both column-height lists, so every even moving coordinate
 gives negative roots after any stretch. Constant skew column height $r$
-gives $V=I$ and negative roots after every stretch without uniform boundary parity.
+gives $V=I$ and negative roots after every stretch without uniform boundary parity,
+provided the alphabet has at least $r$ positive letters.
 
 ## Consecutive rectangular and skew interlacing
 
@@ -230,9 +232,8 @@ For even-parity skew shapes, consecutive suffixes of the two boundary lists
 also interlace. This does not assert interlacing between successive horizontal
 stretches of an arbitrary shape: their degrees can differ by more than one.
 
-The unrestricted arbitrary-shape specialization is false. Neither this
-challenge nor its checked conditional criterion proves the conjecture
-relating a real limiting Toeplitz spectrum to finite real-rootedness.
+This challenge does not prove the conjecture relating a real limiting Toeplitz
+spectrum to finite real-rootedness.
 
 ## References
 

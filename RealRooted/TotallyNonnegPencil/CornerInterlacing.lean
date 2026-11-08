@@ -13,6 +13,21 @@ import Mathlib.RingTheory.MatrixPolynomialAlgebra
 
 open Polynomial
 
+namespace RealRooted.IsPFPolynomial
+
+/-- A PF polynomial with nonzero constant term is nonzero and splits over the reals. -/
+theorem ne_zero_and_splits_of_eval_zero_ne_zero {p : ℝ[X]} (hp : IsPFPolynomial p)
+    (h0 : p.eval 0 ≠ 0) : p ≠ 0 ∧ p.Splits :=
+  hp.ne_zero_and_splits fun hz => h0 (by simp [hz])
+
+/-- Every root of a PF polynomial with nonzero constant term is strictly negative. -/
+theorem roots_neg_of_eval_zero_ne_zero {p : ℝ[X]} (hp : IsPFPolynomial p)
+    (h0 : p.eval 0 ≠ 0) : ∀ x ∈ p.roots, x < 0 :=
+  roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne hp.hasNonnegCoeffs
+    (by rwa [coeff_zero_eq_eval_zero])
+
+end RealRooted.IsPFPolynomial
+
 namespace Matrix
 
 /-- The polynomial determinant of a checkerboard-signed matrix pencil. -/
@@ -124,17 +139,11 @@ theorem IsTotallyNonneg.strictInterl_checkerboardPencil_succ {n : ℕ}
       (hB.submatrix Fin.strictMono_succ Fin.strictMono_succ) hminor
   have hg : RealRooted.IsPFPolynomial g :=
     hA.isPFPolynomial_det_map_add_X_smul_checkerboard hB hdet
-  have hf0 : f ≠ 0 := by
-    intro hz
-    have he := congrArg (fun p : ℝ[X] => p.eval 0) hz
-    simp only [f, checkerboardPencil_eval_zero, eval_zero] at he
-    exact hminor.ne' he
-  have hg0 : g ≠ 0 := by
-    intro hz
-    have he := congrArg (fun p : ℝ[X] => p.eval 0) hz
-    simp only [g, checkerboardPencil_eval_zero, eval_zero] at he
-    exact hdet.ne' he
-  have hfs := (hf.ne_zero_and_splits hf0).2
+  obtain ⟨hf0, hfs⟩ := hf.ne_zero_and_splits_of_eval_zero_ne_zero
+    (by simpa only [f, checkerboardPencil_eval_zero] using hminor.ne')
+  have hg0 : g ≠ 0 :=
+    (hg.ne_zero_and_splits_of_eval_zero_ne_zero
+      (by simpa only [g, checkerboardPencil_eval_zero] using hdet.ne')).1
   apply RealRooted.strictInterl_of_compatible_and_X_mul_left
     hf0 hg0 hf.hasNonnegCoeffs hg.hasNonnegCoeffs
   · apply compatible_of_split_ray hfs
