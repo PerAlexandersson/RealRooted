@@ -2102,3 +2102,4 @@ public import RealRooted.TotallyNonnegPencil.StrictInterlacing
 public import RealRooted.BrandenLeite.PositivePowerStrictRows
 public import RealRooted.BrandenLeite.AffineNegativePowerDegree
 public import RealRooted.BrandenLeite.Examples
+public import RealRooted.DerivativeRecurrence.HalfStepLag

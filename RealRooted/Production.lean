@@ -2037,3 +2037,4 @@ This entry point imports every production module and excludes tactic regression
 examples. Use `RealRooted` for the historical broad compatibility surface and
 `RealRooted.Tactic.Examples` for the mandatory regression suite.
 -/
+public import RealRooted.DerivativeRecurrence.HalfStepLag
