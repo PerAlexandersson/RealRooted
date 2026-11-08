@@ -1577,6 +1577,7 @@ public import RealRooted.BorceaBranden.Applications.QuadraticExponentialMultipli
 public import RealRooted.BorceaBranden.Applications.RealCoordinatePFMultiplier
 
 public import RealRooted.EulerBidiagonal.Preservation
+public import RealRooted.EulerBidiagonal.BoundaryPreservation
 
 public import RealRooted.LiuWang.FiniteFamily
 
@@ -2029,6 +2030,7 @@ public import RealRooted.TotallyNonnegPencil.StrictInterlacing
 public import RealRooted.BrandenLeite.PositivePowerStrictRows
 public import RealRooted.BrandenLeite.AffineNegativePowerDegree
 public import RealRooted.BrandenLeite.Examples
+public import RealRooted.DerivativeRecurrence.HalfStepLag
 
 /-!
 # RealRooted production umbrella
