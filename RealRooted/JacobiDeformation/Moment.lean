@@ -170,17 +170,6 @@ theorem normalizedJacobiFunctional_normalizedShiftedJacobi_one_sub_X_pow_eq_zero
       (shiftedJacobi j (c - 1) (d - 1)) ((1 - X) ^ k) / _ = 0
   rw [horth, mul_zero, zero_div]
 
-/-- The moment identity in the `j > k` boundary case. -/
-theorem normalizedJacobiFunctional_normalizedShiftedJacobi_one_sub_X_pow_of_lt
-    {c d : ℝ} (hc : 0 < c) (hd : 0 < d) {j k : ℕ} (hkj : k < j) :
-    normalizedJacobiFunctional c d
-        (normalizedShiftedJacobi j c d * (1 - X) ^ k) =
-      fallingFactorial (k : ℝ) j * risingFactorial d k /
-        risingFactorial (c + d) (k + j) := by
-  rw [normalizedJacobiFunctional_normalizedShiftedJacobi_one_sub_X_pow_eq_zero
-    hc hd hkj, fallingFactorial_natCast_eq_zero_of_lt hkj]
-  ring
-
 /-! ## Coefficients of normalized shifted Jacobi polynomials
 
 The first lemma is the denominator-cleared generalized-binomial identity used

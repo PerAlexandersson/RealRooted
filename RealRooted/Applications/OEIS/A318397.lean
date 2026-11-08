@@ -52,12 +52,6 @@ theorem polynomial_interlaces (n : ℕ) :
 
 /-- Every A318397 model row splits over the reals. -/
 theorem polynomial_splits (n : ℕ) : (polynomial n).Splits :=
-  (doubleNarayanaPolynomial_isPF n).eq_zero_or_splits.resolve_left (by
-    intro hzero
-    have h := congrArg (fun p : ℝ[X] => p.coeff 0) hzero
-    change (polynomial n).coeff 0 = 0 at h
-    rw [coeff_polynomial] at h
-    norm_num at h
-    exact (Nat.choose_pos (by lia : n ≤ 2 * n)).ne' h)
+  (doubleNarayanaPolynomial_isPF n).splits
 
 end RealRooted.Applications.OEIS.A318397

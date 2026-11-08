@@ -133,42 +133,6 @@ theorem posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered_via
     posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered
       (N := N) hterminal hf'_pos hg'_pos hfnn hgnn hfg' hfdeg' hgdeg'
 
-/-- Positive-combination degree-`≤ 2` pair endpoint.  Translate both
-polynomials far enough to make the shifted roots nonpositive, apply the
-nonnegative-coefficient degree-`≤ 2` endpoint, and translate the common right
-interleaver back. -/
-theorem posComboPairHasCommonInterleaver_of_natDegree_le_two
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hf_splits : f.Splits)
-    (hg_splits : g.Splits)
-    (hfg : PosComboRealRooted f g)
-    (hfdeg : f.natDegree ≤ 2)
-    (hgdeg : g.natDegree ≤ 2) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered_via_nonnegShift
-    (N := 2)
-    (fun {_f _g} hf_pos hg_pos _ _ hfg hdeg_lo hdeg_hi _ hgdeg =>
-      posComboPairHasCommonInterleaver_of_adjacent_natDegree_le_two
-        hf_pos hg_pos hfg hdeg_lo hdeg_hi hgdeg)
-    hf_pos hg_pos hf_splits hg_splits hfg hfdeg hgdeg
-
-/-- Compatibility-level degree-`≤ 2` two-polynomial Chudnovsky--Seymour
-endpoint. -/
-theorem compatiblePairHasCommonInterleaver_of_natDegree_le_two
-    {f g : ℝ[X]}
-    (hf_pos : HasPosLeadingCoeff f)
-    (hg_pos : HasPosLeadingCoeff g)
-    (hfg : Compatible f g)
-    (hfdeg : f.natDegree ≤ 2)
-    (hgdeg : g.natDegree ≤ 2) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  posComboPairHasCommonInterleaver_of_natDegree_le_two hf_pos hg_pos
-    (hfg.isRealRooted_left hf_pos).2
-    (hfg.isRealRooted_right hg_pos).2
-    (hfg.toPosComboRealRooted hf_pos hg_pos) hfdeg hgdeg
-
 /-- Two split polynomials with positive leading coefficients whose positive
 combinations are real-rooted have a common interleaver.  Translating both far
 enough makes their coefficients nonnegative, where

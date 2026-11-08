@@ -335,9 +335,7 @@ theorem polynomial_splits (n : ℕ) : (polynomial n).Splits := by
   | zero => simp [polynomial]
   | succ n =>
       rw [polynomial]
-      exact Polynomial.Splits.X.mul
-        ((qPolynomial_isPF n).eq_zero_or_splits.resolve_left
-          (qPolynomial_invariants n).2.2.ne_zero)
+      exact Polynomial.Splits.X.mul (qPolynomial_isPF n).splits
 
 /-- Consecutive A304330 model rows interlace. -/
 theorem polynomial_interlaces (n : ℕ) :

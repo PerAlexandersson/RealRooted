@@ -73,8 +73,7 @@ theorem strictInterl_narayanaTransform {f g : ℝ[X]} (hfg : StrictInterl f g)
     (D := g.natDegree) hfg hf hg le_rfl
     (fun p hp => by simpa using hp.narayanaTransform)
     (fun p hp hp0 _ => ⟨by simpa using narayanaTransform_ne_zero hp.hasNonnegCoeffs hp0,
-      by simpa using ((narayanaTransformPreservesPF m hp).eq_zero_or_splits.resolve_left
-        (narayanaTransform_ne_zero hp.hasNonnegCoeffs hp0))⟩)
+      by simpa using (narayanaTransformPreservesPF m hp).splits⟩)
     (fun n _ => by simpa using strictInterl_narayanaTransform_X_pow_succ m n)
 
 /-- Composing two Narayana transforms preserves oriented interlacing of nonnegative-coefficient

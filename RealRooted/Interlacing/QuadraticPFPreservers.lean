@@ -259,15 +259,8 @@ theorem not_isPFPolynomial_rhoGammaOperator_zero_one :
     dsimp [q]
     rw [cubicDiscr_of_coeffs]
     norm_num
-  have hq0 : q ≠ 0 := by
-    intro hzero
-    rw [hzero] at hdeg_eq
-    simp at hdeg_eq
   intro hpf
-  have hsplit : q.Splits := by
-    rcases hpf.eq_zero_or_splits with hzero | hsplit
-    · exact (hq0 (hout.symm.trans hzero)).elim
-    · simpa [hout] using hsplit
+  have hsplit : q.Splits := by simpa [hout] using hpf.splits
   exact (not_splits_of_cubicDiscr_neg_of_natDegree_le_three hdeg_eq.le hdisc) hsplit
 
 /-- A concrete failure below the threshold: `(X + 1)²` is PF, but its

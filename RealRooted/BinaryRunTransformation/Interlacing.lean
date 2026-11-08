@@ -64,7 +64,7 @@ theorem strictInterl_binaryRunTransform
       (by dsimp [D] at hpdeg; lia)
     exact ⟨by simpa [T] using hne, by
       simpa [T] using (hp.binaryRunTransform
-        (hpdeg.trans (by dsimp [D]; lia))).2.1.resolve_left hne⟩
+        (hpdeg.trans (by dsimp [D]; lia))).splits⟩
   have hmono : ∀ m : ℕ, m + 1 ≤ D →
       StrictInterl (T (X ^ m)) (T (X ^ (m + 1))) := by
     intro m hm

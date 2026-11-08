@@ -210,15 +210,13 @@ private theorem capPencil_eq_zero_pair_or_stable
     · right
       apply mvUpperHalfPlaneStable_bivariatePencil_iff.mpr
       simpa [hh0] using
-        isUpperHalfPlaneStablePencil_zero_right hkzero
-          (hk.eq_zero_or_splits.resolve_left hkzero)
+        isUpperHalfPlaneStablePencil_zero_right hkzero hk.splits
   · by_cases hhzero : finiteDifferentialTest N h = 0
     · exact Or.inl ⟨hhzero, hk0⟩
     · right
       apply mvUpperHalfPlaneStable_bivariatePencil_iff.mpr
       simpa [hk0] using
-        isUpperHalfPlaneStablePencil_zero_left hhzero
-          (hh.eq_zero_or_splits.resolve_left hhzero)
+        isUpperHalfPlaneStablePencil_zero_left hhzero hh.splits
   · right
     apply mvUpperHalfPlaneStable_bivariatePencil_iff.mpr
     exact isUpperHalfPlaneStablePencil_of_strictInterl
@@ -355,8 +353,7 @@ theorem preservesOrderedPFUpTo_of_differentialTests
     have hfstable : MvUpperHalfPlaneStable f.1 := by
       simpa [f, fmv] using
         (isUpperHalfPlaneStable_iff_mvUpperHalfPlaneStable (complexify p)).mp
-          (Polynomial.Splits.isUpperHalfPlaneStable_complexify
-            (hp.eq_zero_or_splits.resolve_left hp0) hp0)
+          (Polynomial.Splits.isUpperHalfPlaneStable_complexify hp.splits hp0)
     have hsymbol :=
       algebraicSymbol_differentialPencilDegreeBoxMap_stable hcap
     have hout := finiteSymbol_preserves_stability_general
@@ -379,8 +376,8 @@ theorem differentialTests_ordered_of_preservesOrderedPFUpTo
     {N : ℕ} {h k : ℝ[X]} (hpres : PreservesOrderedPFUpTo N h k) :
     IsPFPolynomial (finiteDifferentialTest N h) ∧
       IsPFPolynomial (finiteDifferentialTest N k) ∧
-        Interl (finiteDifferentialTest N h) (finiteDifferentialTest N k) := by
-  exact hpres (isPFPolynomial_X_pow N) (by simp)
+        Interl (finiteDifferentialTest N h) (finiteDifferentialTest N k) :=
+  finiteDifferentialTest_ordered_of_preservesOrderedPFUpTo hpres
 
 /-- Two constant-coefficient differential operators preserve the ordered PF
 pair through degree `N` exactly when their images of `X ^ N` are PF and have
@@ -616,7 +613,9 @@ theorem differentialTest_binomialDifferentialSymbol
   simpa only [jensenDifferentialTest, Polynomial.reflect_reflect,
     reflect_C_mul_X_add_one_pow_at_cap s hrN] using h
 
-private theorem isPFPolynomial_C_mul_X_add_one {s : ℝ} (hs : 0 ≤ s) :
+/-- `C s * X + 1` with `0 ≤ s` is a Pólya-frequency polynomial: it is `C s * (X + C s⁻¹)` for
+`s ≠ 0` and `1` for `s = 0`. -/
+theorem isPFPolynomial_C_mul_X_add_one {s : ℝ} (hs : 0 ≤ s) :
     IsPFPolynomial (C s * X + 1) := by
   rcases hs.eq_or_lt with rfl | hs
   · simpa using IsPFPolynomial.one
@@ -627,17 +626,17 @@ private theorem isPFPolynomial_C_mul_X_add_one {s : ℝ} (hs : 0 ≤ s) :
   exact (isPFPolynomial_X_add_C (inv_nonneg.mpr hs.le)).const_mul hs
 
 private theorem interl_binomialJensen_consecutive
-    {r : ℕ} {s : ℝ} (hr : 1 ≤ r) (hs : 0 ≤ s) :
+    {r : ℕ} {s : ℝ} (hr : r ≠ 0) (hs : 0 ≤ s) :
     Interl ((C s * X + 1) ^ (r - 1)) ((C s * X + 1) ^ r) := by
   rcases hs.eq_or_lt with rfl | hs
   · simpa using IsPFPolynomial.one.interl_self
   have hstep := (interlaces_linear_pow 1 s hs (r - 1)).toStrictInterl.toInterl
-  simpa [Nat.sub_add_cancel hr, add_comm] using hstep
+  simpa [Nat.sub_add_cancel (by lia : 1 ≤ r), add_comm] using hstep
 
 /-- Consecutive members of the explicit higher-order family give ordered PF
 images of every PF input in the degree-`N` box. -/
 theorem preservesOrderedPFUpTo_binomialDifferentialSymbol
-    {N r : ℕ} {s : ℝ} (hr : 1 ≤ r) (hrN : r ≤ N) (hs : 0 ≤ s) :
+    {N r : ℕ} {s : ℝ} (hr : r ≠ 0) (hrN : r ≤ N) (hs : 0 ≤ s) :
     PreservesOrderedPFUpTo N (binomialDifferentialSymbol N r s)
       (binomialDifferentialSymbol N (r - 1) s) := by
   apply (preservesOrderedPFUpTo_iff_jensenDifferentialTests N _ _).mpr
@@ -650,7 +649,7 @@ theorem preservesOrderedPFUpTo_binomialDifferentialSymbol
 /-- The explicit higher-order recurrence row is PF and is preceded by its
 order-`r` differential image on every input in the cap. -/
 theorem binomialDifferentialRecurrence_pf_and_interl
-    {N r : ℕ} {s a : ℝ} (hr : 1 ≤ r) (hrN : r ≤ N)
+    {N r : ℕ} {s a : ℝ} (hr : r ≠ 0) (hrN : r ≤ N)
     (hs : 0 ≤ s) (ha : 0 ≤ a) {p : ℝ[X]}
     (hp : IsPFPolynomial p) (hpdeg : p.natDegree ≤ N) :
     IsPFPolynomial

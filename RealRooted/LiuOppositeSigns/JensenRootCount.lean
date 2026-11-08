@@ -103,7 +103,7 @@ theorem RootCountCompatible.compatible_of_pf {p q : ℝ[X]}
   exact
     ⟨hp.hasNonnegCoeffs.pos_leadingCoeff hp0,
       hq.hasNonnegCoeffs.pos_leadingCoeff hq0,
-      hp.2.1.resolve_left hp0, hq.2.1.resolve_left hq0, hcount⟩
+      hp.splits, hq.splits, hcount⟩
 
 /-- Adjoining a factor `X` adds exactly one root to the closed upper tail when
 the threshold is nonpositive, and adds none when it is positive. -/
