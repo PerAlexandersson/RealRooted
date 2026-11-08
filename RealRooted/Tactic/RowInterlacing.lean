@@ -10,7 +10,6 @@ import RealRooted.Tactic.Row.LagFeedback
 public import RealRooted.Tactic.Row.Reverse
 public import RealRooted.Tactic.Row.FTransform
 import RealRooted.Tactic.Row.EndpointWindow
-import RealRooted.Tactic.Row.RationalReverse
 public import RealRooted.Tactic.Row.PathPower
 import RealRooted.Tactic.Row.DerivativeXMul
 import RealRooted.Tactic.Row.FactorPower
@@ -28,7 +27,6 @@ public meta import RealRooted.Tactic.Row.LagFeedback
 public meta import RealRooted.Tactic.Row.Reverse
 public meta import RealRooted.Tactic.Row.FTransform
 public meta import RealRooted.Tactic.Row.EndpointWindow
-public meta import RealRooted.Tactic.Row.RationalReverse
 public meta import RealRooted.Tactic.Row.PathPower
 public meta import RealRooted.Tactic.Row.DerivativeXMul
 public meta import RealRooted.Tactic.Row.FactorPower
@@ -658,9 +656,6 @@ private def rowInterlacesTop (log : RowAttemptLog) (hints : RowHints) :
   -- rows `c m · F · q ^ (m + e)` of a recurrence whose multipliers are powers of `q`, gated
   -- by an exact probe, before the more expensive core
   if unrestricted then
-    -- inverse rational reflection, rejected by coefficient shape before row computation
-    if (← s.attempt `rationalReverse rationalReverseInterlacesGoal).isSome then
-      return (#[], hints)
     -- moving rational endpoint windows fitted from exact rows and certified symbolically
     if (← s.attempt `endpointWindow rationalEndpointWindowGoal).isSome then
       return (#[], hints)

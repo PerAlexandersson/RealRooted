@@ -1733,7 +1733,6 @@ public import RealRooted.ParityFactorization
 public import RealRooted.MultiplierSequence.TwoSidedJensen
 public import RealRooted.Interlacing.ReversalLeftDegree
 public import RealRooted.Tactic.Row.EndpointWindow
-public import RealRooted.Tactic.Row.RationalReverse
 public import RealRooted.Applications.OEIS.ReflectedEulerRows
 public import RealRooted.Interlacing.ReversalCommonFactor
 public import RealRooted.Applications.OEIS.A394813

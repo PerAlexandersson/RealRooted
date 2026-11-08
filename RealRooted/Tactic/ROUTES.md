@@ -52,23 +52,22 @@ side conditions, implementing modules, and regression examples.
 | 5 | `pathPower` | Interlaces consecutive rows or Splits for a path-power model. | `strictInterl_pathPowerCliquePolynomial_add`, `strictInterl_reciprocalShift_pathPowerCliquePolynomial`, `splits_pathPowerCliquePolynomial`, `splits_reciprocalShift_pathPowerCliquePolynomial` |
 | 6 | `lowerOrder` | Interlaces consecutive rows, with a splitting projection. | `threeTerm_rec_of_remainder` |
 | 7 | `parityProduct` | Interlaces (P n) (P (n + 1)) or (P n).Splits. | `eq_parityProduct_of_thirdOrderRecurrence`, `interlaces_of_parityProduct`, `splits_of_parityProduct` |
-| 8 | `rationalReverse` | Interlaces (P n) (P (n + 1)) | `eq_reflect_of_secondOrderDerivativeRecurrence_of_left_degree`, `interlaces_of_eq_reflect_of_coeff_zero_pos` |
-| 9 | `endpointWindow` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_endpoint_evaluations` |
-| 10 | `fTransform` | Interlaces (P n) (P (n + 1)) or (P n).Splits for f-polynomial images. | `Tactic.interlaces_fPolynomial_sequence`, `Tactic.interlaces_fPolynomial_sequence_floor`, `splits_of_eq_fPolynomial` |
-| 11 | `powerForm` | Interlaces (P n) (P (n + 1)) | `interlaces_of_forall_eq_C_mul_pow`, `interlaces_of_forall_eq_C_mul_pow_of_pos`, `forall_eq_C_mul_pow_of_rec2`, `forall_eq_C_mul_pow_of_rec3` |
-| 12 | `closedForm` | Interlaces (P n) (P (n + 1)) or (P n).Splits, according to the front end. | `Interlaces.pow_mul_of_linear_remainder`, `Interlaces.pow_mul_of_quadratic_remainder`, `splits_C_add_C_mul_X_add_C_mul_X_sq`, `splits_palindromic_quartic` |
-| 13 | `core` (pseudo) | Interlaces (P n) (P (n + 1)) | — |
-| 14 | `product` | Interlaces (P n) (P (n + 1)) | `productSequence_interlaces` |
-| 15 | `eulerStep` | Interlaces (P n) (P (n + 1)) | `EulerBidiagonal.interlaces_of_generalStep_rec`, `EulerBidiagonal.interlaces_of_generalStep_rec_zero` |
-| 16 | `twoStep` | Interlacing, splitting, degree, or positive leading coefficient for P (n + 2) = q * P n. | `twoStepProduct_interlaces`, `twoStepProduct_splits`, `twoStepProduct_natDegree`, `twoStepProduct_leadingCoeff_pos`, `twoStepProduct_leadingCoeff_pos_of_ne_zero` |
-| 17 | `sign` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_eval_nonpos`, `derivativeRecurrence_interlaces_of_nonnegCoeffs`, `derivativeRecurrence_interlaces_of_splits_of_eval_nonpos`, `derivativeRecurrence_interlaces_of_splits_of_nonnegCoeffs`, `threeTerm_interlaces_of_eval_nonpos`, `threeTerm_interlaces_of_nonnegCoeffs` |
-| 18 | `window` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_mem_Icc`, `derivativeRecurrence_interlaces_of_roots_le`, `derivativeRecurrence_interlaces_of_roots_mem_Icc_of_pos`, `threeTerm_interlaces_of_roots_mem_Icc`, `threeTerm_interlaces_of_roots_le` |
-| 19 | `degreeWindow` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_le_of_degree` |
-| 20 | `ratioWindow` | Interlaces (P n) (P (n + 1)) | `threeTerm_interlaces_of_roots_le_of_ratio` |
-| 21 | `barrierWindow` | Interlaces (P n) (P (n + 1)) | `threeTerm_interlaces_of_roots_mem_Icc_of_barrier` |
-| 22 | `movingWindow` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_mem_Icc_mono_div` |
-| 23 | `movingUpper` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_le_mono_div` |
-| 24 | `reversed` | Interlaces (P n) (P (n + 1)) or (P n).Splits after reflection. | `eq_reflect_of_secondOrderDerivativeRecurrence`, `eq_reflect_of_threeTerm`, `interlaces_of_eq_reflect`, `splits_of_eq_reflect` |
+| 8 | `endpointWindow` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_endpoint_evaluations` |
+| 9 | `fTransform` | Interlaces (P n) (P (n + 1)) or (P n).Splits for f-polynomial images. | `Tactic.interlaces_fPolynomial_sequence`, `Tactic.interlaces_fPolynomial_sequence_floor`, `splits_of_eq_fPolynomial` |
+| 10 | `powerForm` | Interlaces (P n) (P (n + 1)) | `interlaces_of_forall_eq_C_mul_pow`, `interlaces_of_forall_eq_C_mul_pow_of_pos`, `forall_eq_C_mul_pow_of_rec2`, `forall_eq_C_mul_pow_of_rec3` |
+| 11 | `closedForm` | Interlaces (P n) (P (n + 1)) or (P n).Splits, according to the front end. | `Interlaces.pow_mul_of_linear_remainder`, `Interlaces.pow_mul_of_quadratic_remainder`, `splits_C_add_C_mul_X_add_C_mul_X_sq`, `splits_palindromic_quartic` |
+| 12 | `core` (pseudo) | Interlaces (P n) (P (n + 1)) | — |
+| 13 | `product` | Interlaces (P n) (P (n + 1)) | `productSequence_interlaces` |
+| 14 | `eulerStep` | Interlaces (P n) (P (n + 1)) | `EulerBidiagonal.interlaces_of_generalStep_rec`, `EulerBidiagonal.interlaces_of_generalStep_rec_zero` |
+| 15 | `twoStep` | Interlacing, splitting, degree, or positive leading coefficient for P (n + 2) = q * P n. | `twoStepProduct_interlaces`, `twoStepProduct_splits`, `twoStepProduct_natDegree`, `twoStepProduct_leadingCoeff_pos`, `twoStepProduct_leadingCoeff_pos_of_ne_zero` |
+| 16 | `sign` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_eval_nonpos`, `derivativeRecurrence_interlaces_of_nonnegCoeffs`, `derivativeRecurrence_interlaces_of_splits_of_eval_nonpos`, `derivativeRecurrence_interlaces_of_splits_of_nonnegCoeffs`, `threeTerm_interlaces_of_eval_nonpos`, `threeTerm_interlaces_of_nonnegCoeffs` |
+| 17 | `window` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_mem_Icc`, `derivativeRecurrence_interlaces_of_roots_le`, `derivativeRecurrence_interlaces_of_roots_mem_Icc_of_pos`, `threeTerm_interlaces_of_roots_mem_Icc`, `threeTerm_interlaces_of_roots_le` |
+| 18 | `degreeWindow` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_le_of_degree` |
+| 19 | `ratioWindow` | Interlaces (P n) (P (n + 1)) | `threeTerm_interlaces_of_roots_le_of_ratio` |
+| 20 | `barrierWindow` | Interlaces (P n) (P (n + 1)) | `threeTerm_interlaces_of_roots_mem_Icc_of_barrier` |
+| 21 | `movingWindow` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_mem_Icc_mono_div` |
+| 22 | `movingUpper` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_le_mono_div` |
+| 23 | `reversed` | Interlaces (P n) (P (n + 1)) or (P n).Splits after reflection. | `eq_reflect_of_secondOrderDerivativeRecurrence`, `eq_reflect_of_threeTerm`, `interlaces_of_eq_reflect`, `splits_of_eq_reflect` |
 
 ## `rr_row_natDegree`
 
@@ -318,13 +317,6 @@ side conditions, implementing modules, and regression examples.
 - **Side conditions:** Auxiliary recurrence, transform, degree, root bound, and bases.
 - **Module:** `RealRooted.Tactic.Row.FTransform`
 - **Regression examples:** `RealRooted.Tactic.Examples.FTransformInterlaces`
-
-## `rationalReverse`
-
-- **Summary:** Invert rational reflection, interlace the auxiliary rows, and return.
-- **Side conditions:** Rational fit, reflection link, auxiliary signs, and interlacing.
-- **Module:** `RealRooted.Tactic.Row.RationalReverse`
-- **Regression examples:** `RealRooted.Tactic.Examples.RowInterlacing`
 
 ## `endpointWindow`
 
