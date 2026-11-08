@@ -1,5 +1,6 @@
 module
 
+import RealRooted.BrandenLeite.PositivePowerRow
 import RealRooted.BrandenLeite.PositiveLinearFactors
 import RealRooted.Mathlib.Algebra.Polynomial.LinearFactors
 public import Mathlib.Topology.MetricSpace.Pseudo.Defs
