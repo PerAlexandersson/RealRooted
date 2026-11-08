@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.EulerBidiagonal.Preservation
+import RealRooted.EulerBidiagonal.Preservation
+public import RealRooted.EulerBidiagonal.General
 import RealRooted.PFPolynomial.Closure
 
 /-!
