@@ -103,7 +103,7 @@ Euler-factor extension was developed in this library.
 
 A. Martínez-Finkelshtein, J. Morales and D. Perales, *Real roots of hypergeometric
 polynomials via finite free convolution*, Theorem 4.6. For multiplier sequences, see the
-[multiplier sequences](/RealRooted/theorems/multiplier-sequences/) page.
+[multiplier sequences](/RealRooted/concepts/multiplier-sequences/) page.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in
