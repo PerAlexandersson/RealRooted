@@ -9,7 +9,13 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 import Mathlib.Tactic
 
-/-! Finite reversal of interleaved coefficient matrices. -/
+/-! # Total nonnegativity of weighted derivative kernels
+
+For a real-rooted polynomial `F` with nonnegative coefficients, the weighted derivative
+kernel `Matrix.weightedDerivativeKernel κ F.coeff` is totally nonnegative for `κ ≥ 0`.
+The proof factors its finite sections as the product of the derivative/value matrix
+`derivativeValueMatrix F n`, built from the interlacing pair `(F', F)` as an upper Lace
+matrix (`upperLacePair`), and the sparse derivative contraction. -/
 
 @[expose] public section
 
@@ -62,6 +68,20 @@ noncomputable def derivativeValueMatrix (F : ℝ[X]) (n : ℕ) :
     Matrix (Fin (n + 1)) (Fin (2 * n + 1)) ℝ :=
   (upperLacePair F.derivative.coeff F.coeff).submatrix Fin.val Fin.val
 
+/-- Even columns of an upper Lace pair come from the first coefficient family. -/
+theorem upperLacePair_two_mul (a b : ℕ → ℝ) (i j : ℕ) :
+    upperLacePair a b i (2 * j) = if j ≤ i then a (i - j) else 0 := by
+  have h1 : 2 * j / 2 = j := by lia
+  have h2 : 2 * j % 2 = 0 := by lia
+  simp [upperLacePair, h1, h2]
+
+/-- Odd columns of an upper Lace pair come from the second coefficient family. -/
+theorem upperLacePair_two_mul_add_one (a b : ℕ → ℝ) (i j : ℕ) :
+    upperLacePair a b i (2 * j + 1) = if j ≤ i then b (i - j) else 0 := by
+  have h1 : (2 * j + 1) / 2 = j := by lia
+  have h2 : (2 * j + 1) % 2 = 1 := by lia
+  simp [upperLacePair, h1, h2]
+
 /-- Multiplying the derivative/value column family by the sparse contraction
 recovers the leading weighted differential kernel. -/
 theorem derivativeValueMatrix_mul_derivativeContraction (F : ℝ[X]) (n : ℕ) (κ : ℝ) :
@@ -70,46 +90,37 @@ theorem derivativeValueMatrix_mul_derivativeContraction (F : ℝ[X]) (n : ℕ) (
         (Fin.val : Fin (n + 1) → ℕ) (Fin.val : Fin (n + 1) → ℕ) := by
   ext i j
   rw [Matrix.mul_derivativeContraction_apply]
-  change
-    (if 2 * j.val / 2 ≤ i.val then
-      if (2 * j.val) % 2 = 0 then F.derivative.coeff (i.val - 2 * j.val / 2)
-        else F.coeff (i.val - 2 * j.val / 2) else 0) * κ + _ = _
-  simp only [Nat.mul_div_cancel_left _ two_pos, Nat.mul_mod_right, ite_true]
-  by_cases hj : j.val = 0
-  · rw [dite_eq_left hj]
-    simp only [hj, Nat.zero_le, ite_true, Nat.sub_zero, add_zero]
-    simp only [Matrix.submatrix_apply, hj, Matrix.weightedDerivativeKernel_apply_zero,
-      Polynomial.coeff_derivative]
+  change upperLacePair F.derivative.coeff F.coeff i.val (2 * j.val) * κ +
+    (if hj : j.val = 0 then 0
+      else upperLacePair F.derivative.coeff F.coeff i.val (2 * j.val - 1) * (j.val : ℝ)) =
+    Matrix.weightedDerivativeKernel κ F.coeff i.val j.val
+  rw [upperLacePair_two_mul]
+  rcases Nat.eq_zero_or_pos j.val with hj | hj
+  · simp only [hj, dite_true, add_zero, Nat.zero_le, ite_true, Nat.sub_zero,
+      Polynomial.coeff_derivative, Matrix.weightedDerivativeKernel, Nat.cast_zero, zero_add]
     push_cast
     ring
-  · rw [dite_eq_right hj]
-    have hq : (2 * j.val - 1) / 2 = j.val - 1 := by lia
-    have hp : (2 * j.val - 1) % 2 ≠ 0 := by lia
-    change (if j.val ≤ i.val then F.derivative.coeff (i.val - j.val) else 0) * κ +
-      (if (2 * j.val - 1) / 2 ≤ i.val then
-        if (2 * j.val - 1) % 2 = 0 then
-          F.derivative.coeff (i.val - (2 * j.val - 1) / 2)
-        else F.coeff (i.val - (2 * j.val - 1) / 2) else 0) * (j.val : ℝ) = _
-    simp only [hq, hp, ite_false, Matrix.submatrix_apply,
-      Matrix.weightedDerivativeKernel]
-    by_cases hji : j.val ≤ i.val
-    · rw [ite_eq_left hji, ite_eq_left (show j.val - 1 ≤ i.val by lia),
-        ite_eq_left (show j.val ≤ i.val + 1 by lia), Polynomial.coeff_derivative]
-      have hidx : i.val - j.val + 1 = i.val + 1 - j.val := by lia
-      have hidx' : i.val - (j.val - 1) = i.val + 1 - j.val := by lia
-      rw [hidx', ← hidx]
+  · obtain ⟨k, hk⟩ : ∃ k, j.val = k + 1 := ⟨j.val - 1, by lia⟩
+    rw [dite_eq_right hj.ne', show 2 * j.val - 1 = 2 * k + 1 by lia,
+      upperLacePair_two_mul_add_one]
+    simp only [Matrix.weightedDerivativeKernel, hk, Nat.add_le_add_iff_right]
+    rcases lt_trichotomy k i.val with hki | hki | hki
+    · obtain ⟨m, hm⟩ : ∃ m, i.val = k + 1 + m := ⟨i.val - (k + 1), by lia⟩
+      have e1 : i.val - (k + 1) = m := by lia
+      have e2 : i.val - k = m + 1 := by lia
+      have e3 : i.val + 1 - (k + 1) = m + 1 := by lia
+      rw [ite_eq_left (by lia : k + 1 ≤ i.val), ite_eq_left hki.le, ite_eq_left hki.le,
+        e1, e2, e3, Polynomial.coeff_derivative]
       push_cast
       ring
-    · rw [ite_eq_right hji]
-      by_cases hnext : j.val ≤ i.val + 1
-      · have heq : j.val = i.val + 1 := by lia
-        rw [ite_eq_left (show j.val - 1 ≤ i.val by lia), ite_eq_left hnext]
-        have hidx : i.val - (j.val - 1) = 0 := by lia
-        have hidx' : i.val + 1 - j.val = 0 := by lia
-        simp only [hidx, hidx', Nat.cast_zero, mul_zero, add_zero, zero_mul, zero_add]
-        exact mul_comm _ _
-      · rw [ite_eq_right (show ¬j.val - 1 ≤ i.val by lia), ite_eq_right hnext]
-        simp
+    · have e : i.val - k = 0 := by lia
+      have e' : i.val + 1 - (k + 1) = 0 := by lia
+      rw [ite_eq_right (by lia : ¬ k + 1 ≤ i.val), ite_eq_left hki.le, ite_eq_left hki.le, e, e']
+      push_cast
+      ring
+    · rw [ite_eq_right (by lia : ¬ k + 1 ≤ i.val), ite_eq_right (by lia : ¬ k ≤ i.val),
+        ite_eq_right (by lia : ¬ k ≤ i.val)]
+      simp
 
 /-- A nonconstant real-rooted polynomial with nonnegative coefficients has a
 TN derivative/value coefficient matrix. -/

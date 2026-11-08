@@ -196,11 +196,13 @@ The proof uses the coefficient limit $q_n/\kappa\to\ell_n$ as
 $\kappa\to0^+$, together with degree-bounded interlacing closure.
 
 When $r=1$ and either $[u^2]Q>0$ or $[u^2]B>0$, the positive-power rows have
-simple roots, and consecutive rows have no common root. Thus their
-interlacing inequalities are strict. This extra conclusion is not asserted
-for logarithmic rows. If both quadratic coefficients vanish, repeated roots
-can occur: for $Q=1-u$ and $B=u$, every $q_n$ is a positive multiple of
-$(1+t)^n$.
+only simple roots, and consecutive rows have no common root. Together with the
+interlacing above, this separates the roots of consecutive rows. The
+formalization states the simple-root and no-common-root conclusions separately
+from the weak interlacing; it does not prove a strict-interlacing predicate.
+These extra conclusions are not asserted for logarithmic rows. If both quadratic
+coefficients vanish, repeated roots can occur: for $Q=1-u$ and $B=u$, every $q_n$ is a
+positive multiple of $(1+t)^n$.
 
 ## Proof idea
 

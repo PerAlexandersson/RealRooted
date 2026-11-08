@@ -69,6 +69,39 @@ theorem finsum_fin_two_ite (k : ℕ) (f : (Fin 2 →₀ ℕ) → R) :
       simp [hrange, Set.indicator]
     _ = _ := finsum_mem_range hg
 
+/-- Substituting `tV(u)` for the first variable and `U(u)` for the second variable is a
+valid substitution when both series have zero constant coefficient. -/
+private theorem hasSubst_affine
+    (U V : PowerSeries R) (hU : constantCoeff U = 0) (hV : constantCoeff V = 0) :
+    MvPowerSeries.HasSubst (fun s : Fin 2 =>
+      if s = 0 then C Polynomial.X * map Polynomial.C V else map Polynomial.C U) := by
+  apply MvPowerSeries.hasSubst_of_constantCoeff_zero
+  intro s
+  change constantCoeff
+    (if s = 0 then C Polynomial.X * map Polynomial.C V else map Polynomial.C U) = 0
+  rw [← coeff_zero_eq_constantCoeff_apply]
+  fin_cases s
+  · change coeff 0 (C Polynomial.X * map Polynomial.C V) = 0
+    rw [coeff_C_mul, coeff_map, coeff_zero_eq_constantCoeff_apply, hV, map_zero, mul_zero]
+  · change coeff 0 (map Polynomial.C U) = 0
+    rw [coeff_map, coeff_zero_eq_constantCoeff_apply, hU, map_zero]
+
+/-- The `t ^ k` coefficient of one monomial term of the affine substitution. -/
+private theorem lcoeff_smul_coeff_prod_pow
+    (U V : PowerSeries R) (a : Fin 2 → PowerSeries (Polynomial R))
+    (ha₀ : a 0 = C Polynomial.X * map Polynomial.C V) (ha₁ : a 1 = map Polynomial.C U)
+    (c : R) (e : Fin 2 →₀ ℕ) (n k : ℕ) :
+    (Polynomial.lcoeff R k) (c • coeff n (e.prod fun s d => (a s) ^ d)) =
+      if e 0 = k then c * coeff n (V ^ (e 0) * U ^ (e 1)) else 0 := by
+  have hp : (e.prod fun s d => (a s) ^ d) =
+      (C Polynomial.X * map Polynomial.C V) ^ (e 0) * (map Polynomial.C U) ^ (e 1) := by
+    rw [e.prod_fintype _ (fun s => pow_zero _), Fin.prod_univ_two, ha₀, ha₁]
+  rw [LinearMap.map_smul, Polynomial.lcoeff_apply, hp, coeff_coeff_affine_monomial]
+  simp only [smul_eq_mul]
+  by_cases he : e 0 = k
+  · rw [ite_eq_left he.symm, ite_eq_left he]
+  · rw [ite_eq_right (Ne.symm he), ite_eq_right he, mul_zero]
+
 /-- Substituting `tV(u)` for the first variable and `U(u)` for the
 second variable extracts the first-variable exponent exactly. The
 constant-term assumptions make both substitutions valid in the `u`-adic
@@ -84,34 +117,7 @@ theorem coeff_coeff_subst_affine
   classical
   let a : Fin 2 → PowerSeries (Polynomial R) := fun s =>
     if s = 0 then C Polynomial.X * map Polynomial.C V else map Polynomial.C U
-  have ha : MvPowerSeries.HasSubst a := by
-    apply MvPowerSeries.hasSubst_of_constantCoeff_zero
-    intro s
-    change constantCoeff (a s) = 0
-    rw [← coeff_zero_eq_constantCoeff_apply]
-    fin_cases s
-    · change coeff 0 (C Polynomial.X * map Polynomial.C V) = 0
-      rw [coeff_C_mul, coeff_map, coeff_zero_eq_constantCoeff_apply,
-        hV, map_zero, mul_zero]
-    · change coeff 0 (map Polynomial.C U) = 0
-      rw [coeff_map, coeff_zero_eq_constantCoeff_apply, hU, map_zero]
-  have hterm (e : Fin 2 →₀ ℕ) :
-      (Polynomial.lcoeff R k)
-        (MvPowerSeries.coeff e F •
-          coeff n (e.prod fun s d => (a s) ^ d)) =
-        if e 0 = k then MvPowerSeries.coeff e F *
-          coeff n (V ^ (e 0) * U ^ (e 1)) else 0 := by
-    have hp : (e.prod fun s d => (a s) ^ d) =
-        (C Polynomial.X * map Polynomial.C V) ^ (e 0) *
-          (map Polynomial.C U) ^ (e 1) := by
-      rw [e.prod_fintype _ (fun s => pow_zero _), Fin.prod_univ_two]
-      simp [a]
-    rw [LinearMap.map_smul, Polynomial.lcoeff_apply, hp,
-      coeff_coeff_affine_monomial]
-    simp only [smul_eq_mul]
-    by_cases he : e 0 = k
-    · rw [ite_eq_left he.symm, ite_eq_left he]
-    · rw [ite_eq_right (Ne.symm he), ite_eq_right he, mul_zero]
+  have ha : MvPowerSeries.HasSubst a := hasSubst_affine U V hU hV
   change (Polynomial.lcoeff R k)
     (MvPowerSeries.coeff (Finsupp.single () n) (MvPowerSeries.subst a F)) = _
   rw [MvPowerSeries.coeff_subst ha]
@@ -121,7 +127,7 @@ theorem coeff_coeff_subst_affine
   rw [hmap]
   change (∑ᶠ e, (Polynomial.lcoeff R k)
     (MvPowerSeries.coeff e F • coeff n (e.prod fun s d => (a s) ^ d))) = _
-  simp_rw [hterm]
+  simp_rw [lcoeff_smul_coeff_prod_pow U V a (by simp [a]) (by simp [a])]
   rw [finsum_fin_two_ite]
   apply finsum_congr
   intro m

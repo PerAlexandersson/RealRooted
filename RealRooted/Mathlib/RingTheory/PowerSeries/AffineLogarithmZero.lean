@@ -35,12 +35,7 @@ theorem coeff_zero_affineLogCoeff (Q B : PowerSeries ℝ)
     (affineLogCoeff Q B n).coeff 0 = coeff n (-logOf Q) := by
   let H := map Polynomial.C Q - C Polynomial.X * map Polynomial.C B
   let φ : Polynomial ℝ →+* ℝ := Polynomial.evalRingHom 0
-  have hH : constantCoeff H = 1 := by
-    simp only [H, map_sub, map_mul, constantCoeff_C]
-    rw [← coeff_zero_eq_constantCoeff_apply, coeff_map,
-      coeff_zero_eq_constantCoeff_apply, hQ, map_one,
-      ← coeff_zero_eq_constantCoeff_apply, coeff_map,
-      coeff_zero_eq_constantCoeff_apply, hB, map_zero, mul_zero, sub_zero]
+  have hH : constantCoeff H = 1 := constantCoeff_map_C_sub_C_X_mul_map_C hQ hB
   have hmap : map φ H = Q := by
     ext m
     simp [H, φ, coeff_map]

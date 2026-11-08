@@ -40,6 +40,32 @@ theorem isPFPolynomial_affineNegativePowerCoeff_of_kernels
   simpa only [← map_natCast Polynomial.C, ← mul_assoc, ← map_mul,
     inv_mul_cancel₀ hf.ne', map_one, one_mul] using hp'
 
+/-- Finite sections of the weighted kernel of a split polynomial with nonnegative
+coefficients are totally nonnegative, written for the formal series of the polynomial. -/
+theorem weightedDerivativeKernel_submatrix_isTotallyNonneg
+    {B : ℝ[X]} (hBs : B.Splits) (hBnn : HasNonnegCoeffs B) {κ : ℝ} (hκ : 0 ≤ κ) (n : ℕ) :
+    ((weightedDerivativeKernel κ (fun k => PowerSeries.coeff k (B : PowerSeries ℝ))).submatrix
+      Fin.val Fin.val : Matrix (Fin n) (Fin n) ℝ).IsTotallyNonneg := by
+  simpa only [Polynomial.coeff_coe] using
+    ((weightedDerivativeKernel_isTotallyNonneg hBs hBnn hκ).toRect.submatrix
+      (rows := (Fin.val : Fin n → ℕ)) (cols := Fin.val)
+      (fun _ _ h => h) (fun _ _ h => h)).toSquare
+
+/-- Finite sections of the signed weighted kernel of `Q`, whose reflection `Q(-X)` splits
+with nonnegative coefficients, are totally nonnegative. -/
+theorem weightedDerivativeKernel_submatrix_signed_isTotallyNonneg
+    {Q : ℝ[X]} (hQs : (Q.comp (-Polynomial.X)).Splits)
+    (hQnn : HasNonnegCoeffs (Q.comp (-Polynomial.X))) {κ : ℝ} (hκ : 0 ≤ κ) (n : ℕ) :
+    ((weightedDerivativeKernel κ
+      (fun k => (-1 : ℝ) ^ k * PowerSeries.coeff k (Q : PowerSeries ℝ))).submatrix
+      Fin.val Fin.val : Matrix (Fin n) (Fin n) ℝ).IsTotallyNonneg := by
+  have hfun : (fun k => PowerSeries.coeff k ((Q.comp (-Polynomial.X) : ℝ[X]) : PowerSeries ℝ)) =
+      fun k => (-1 : ℝ) ^ k * PowerSeries.coeff k (Q : PowerSeries ℝ) := by
+    funext k
+    rw [Polynomial.coeff_coe, Polynomial.coeff_coe]
+    exact congrFun (Polynomial.coeff_comp_neg_X_eq_neg_one_pow_mul Q) k
+  simpa only [hfun] using weightedDerivativeKernel_submatrix_isTotallyNonneg hQs hQnn hκ n
+
 /-- Split signed-denominator and numerator polynomials give the required
 kernel total nonnegativity for the negative-power coefficient rows. -/
 theorem isPFPolynomial_affineNegativePowerCoeff
@@ -51,20 +77,10 @@ theorem isPFPolynomial_affineNegativePowerCoeff
       (fun k => (-1 : ℝ) ^ k * Q.coeff k)).submatrix Fin.val Fin.val :
         Matrix (Fin n) (Fin n) ℝ).det) :
     IsPFPolynomial (affineNegativePowerCoeff κ (Q : PowerSeries ℝ) B n) := by
-  have hq := weightedDerivativeKernel_isTotallyNonneg hQs hQnn hκ
-  have hb := weightedDerivativeKernel_isTotallyNonneg hBs hBnn hκ
-  have hsign : (Q.comp (-Polynomial.X)).coeff = fun k => (-1 : ℝ) ^ k * Q.coeff k := by
-    funext k
-    rw [Polynomial.coeff_comp_neg_X, mul_comm]
-  rw [hsign] at hq
   apply isPFPolynomial_affineNegativePowerCoeff_of_kernels κ Q B
     (by simpa using hQ) (by simpa using hB) n
-  · simpa only [Polynomial.coeff_coe] using
-      (hq.toRect.submatrix (rows := (Fin.val : Fin n → ℕ)) (cols := Fin.val)
-        (fun _ _ h => h) (fun _ _ h => h)).toSquare
-  · simpa only [Polynomial.coeff_coe] using
-      (hb.toRect.submatrix (rows := (Fin.val : Fin n → ℕ)) (cols := Fin.val)
-        (fun _ _ h => h) (fun _ _ h => h)).toSquare
+  · exact weightedDerivativeKernel_submatrix_signed_isTotallyNonneg hQs hQnn hκ n
+  · exact weightedDerivativeKernel_submatrix_isTotallyNonneg hBs hBnn hκ n
   · simpa only [Polynomial.coeff_coe] using hdet
 
 /-- Positive real powers of a product denominator give PF coefficient rows for
@@ -77,21 +93,12 @@ theorem isPFPolynomial_affineNegativePowerCoeff_prod_linear
     IsPFPolynomial (affineNegativePowerCoeff κ
       ((∏ i ∈ s, (1 - Polynomial.C (α i) * Polynomial.X) : ℝ[X]) : PowerSeries ℝ)
       B n) := by
-  refine isPFPolynomial_affineNegativePowerCoeff hκ.le _ B ?_ hB ?_ ?_ hBs hBnn n ?_
-  · simp [Polynomial.coeff_zero_eq_eval_zero, Polynomial.eval_prod]
-  · rw [Polynomial.prod_one_sub_C_mul_X_comp_neg_X]
-    exact Polynomial.splits_prod_one_add_C_mul_X s α
-  · rw [Polynomial.prod_one_sub_C_mul_X_comp_neg_X]
-    exact hasNonnegCoeffs_prod_one_add_C_mul_X s α (fun i hi => (hα i hi).le)
-  · have hd := det_weightedDerivativeKernel_prod_linear_comp_neg_X_pos s hs α hα hκ n
-    have heq :
-        ((∏ i ∈ s, (1 - Polynomial.C (α i) * Polynomial.X) : ℝ[X]).comp
-          (-Polynomial.X)).coeff = fun k => (-1 : ℝ) ^ k *
-            (∏ i ∈ s, (1 - Polynomial.C (α i) * Polynomial.X) : ℝ[X]).coeff k := by
-      funext k
-      rw [Polynomial.coeff_comp_neg_X, mul_comm]
-    rw [heq] at hd
-    exact hd
+  obtain ⟨hQs, hQnn⟩ :=
+    splits_and_hasNonnegCoeffs_prod_one_sub_C_mul_X_comp_neg_X s α fun i hi => (hα i hi).le
+  refine isPFPolynomial_affineNegativePowerCoeff hκ.le _ B
+    (Polynomial.coeff_zero_prod_one_sub_C_mul_X s α) hB hQs hQnn hBs hBnn n ?_
+  rw [← Polynomial.coeff_comp_neg_X_eq_neg_one_pow_mul]
+  exact det_weightedDerivativeKernel_prod_linear_comp_neg_X_pos s hs α hα hκ n
 
 /-- The canonical positive-power rows are nonzero and split, and every root
 is strictly negative. No valuation bound on the numerator is needed. -/

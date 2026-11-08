@@ -5,6 +5,7 @@ Authors: Per Alexandersson
 -/
 module
 
+import RealRooted.Mathlib.Algebra.Polynomial.LinearFactors
 import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialPositive
 public import Mathlib.Algebra.Order.Archimedean.Real.Basic
 import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerCoefficients
@@ -30,22 +31,11 @@ theorem coeff_C_mul_X_pow_prod_linear
   classical
   let P : PowerSeries ℝ := ∏ i ∈ s, (1 + C (β i) * X : PowerSeries ℝ)
   have hP : ∀ n, 0 ≤ coeff n P := by
-    dsimp [P]
-    induction s using Finset.induction_on with
-    | empty =>
-      intro n
-      by_cases hn : n = 0 <;> simp [coeff_one, hn]
-    | @insert a s ha ih =>
-      have hβa : 0 ≤ β a := hβ a (Finset.mem_insert_self _ _)
-      have hβs : ∀ i ∈ s, 0 ≤ β i := fun i hi => hβ i (Finset.mem_insert_of_mem hi)
-      intro n
-      rw [Finset.prod_insert ha, coeff_mul]
-      apply Finset.sum_nonneg
-      intro p _
-      apply mul_nonneg
-      · simp only [map_add, coeff_one, coeff_C_mul, coeff_X]
-        split_ifs <;> positivity
-      · exact ih hβs p.2
+    intro n
+    rw [show P = ((∏ i ∈ s, (1 + Polynomial.C (β i) * Polynomial.X : Polynomial ℝ) :
+      Polynomial ℝ) : PowerSeries ℝ) from (Polynomial.coe_prod_one_add_C_mul_X s β).symm,
+      Polynomial.coeff_coe]
+    exact Polynomial.coeff_prod_one_add_C_mul_X_nonneg s β hβ n
   have hP0 : coeff 0 P = 1 := by
     rw [coeff_zero_eq_constantCoeff_apply]
     simp [P]
@@ -116,6 +106,32 @@ theorem coeff_pow_mul_zero_and_pos
           rw [Nat.mul_succ] at hn
           lia
 
+/-- A positive constant times `B ^ k * F` has the same support shift as `B ^ k * F`. -/
+theorem const_mul_coeff_pow_mul_zero_and_pos
+    {c : ℝ} (hc : 0 < c) (B F : PowerSeries ℝ) (r : ℕ)
+    (hB : ∀ n, 0 ≤ coeff n B)
+    (hzero : ∀ n < r, coeff n B = 0) (hpos : 0 < coeff r B)
+    (hF : ∀ n, 0 < coeff n F) (k n : ℕ) :
+    (n < r * k → c * coeff n (B ^ k * F) = 0) ∧
+      (r * k ≤ n → 0 < c * coeff n (B ^ k * F)) := by
+  have hsupport := coeff_pow_mul_zero_and_pos B F r hB hzero hpos hF k
+  exact ⟨fun h => by rw [hsupport.1 n h, mul_zero], fun h => mul_pos hc (hsupport.2 n h)⟩
+
+/-- A real polynomial whose coefficient `k` vanishes for `n < r * k` and is positive for
+`r * k ≤ n` has degree `n / r` and positive coefficients through that degree. -/
+theorem _root_.Polynomial.natDegree_eq_div_and_coeff_pos_of_support
+    {p : Polynomial ℝ} {r n : ℕ} (hr : 0 < r)
+    (hsupport : ∀ k, (n < r * k → p.coeff k = 0) ∧ (r * k ≤ n → 0 < p.coeff k)) :
+    p.natDegree = n / r ∧ ∀ k ≤ n / r, 0 < p.coeff k := by
+  have hiff (k : ℕ) : k ≤ n / r ↔ r * k ≤ n := by
+    rw [Nat.le_div_iff_mul_le hr, Nat.mul_comm]
+  have hpositive (k : ℕ) (hk : k ≤ n / r) : 0 < p.coeff k :=
+    (hsupport k).2 ((hiff k).mp hk)
+  refine ⟨Polynomial.natDegree_eq_of_le_of_coeff_ne_zero ?_ (hpositive _ le_rfl).ne',
+    hpositive⟩
+  refine Polynomial.natDegree_le_iff_coeff_eq_zero.mpr fun k hk => (hsupport k).1 ?_
+  exact not_le.mp fun h => absurd ((hiff k).mpr h) (not_le.mpr hk)
+
 /-- The exact coefficient support of an affine negative-power row follows
 from the first nonzero coefficient of `B` and positivity of the shifted
 negative powers of `Q`. -/
@@ -135,15 +151,9 @@ theorem coeff_affineNegativePowerCoeff_zero_and_pos
       Ring.multichoose κ k * coeff n
         (B ^ k * subst (Q - 1) (binomialSeries ℝ (-κ - (k : ℝ)))) :=
     coeff_coeff_subst_binomialSeries_neg Q B hQ hB0 κ n k
-  have hsupport := coeff_pow_mul_zero_and_pos B
-    (subst (Q - 1) (binomialSeries ℝ (-κ - (k : ℝ)))) r
-    hB hBzero hBpos (hQpos k) k
-  constructor
-  · intro hn
-    rw [hexp, hsupport.1 n hn, mul_zero]
-  · intro hn
-    rw [hexp]
-    exact mul_pos (Ring.multichoose_pos hκ k) (hsupport.2 n hn)
+  rw [hexp]
+  exact const_mul_coeff_pow_mul_zero_and_pos (Ring.multichoose_pos hκ k) B _ r hB hBzero
+    hBpos (hQpos k) k n
 
 /-- Under coefficient positivity of the shifted negative powers of `Q`,
 the affine negative-power row has exact degree `n/r` and positive
@@ -157,26 +167,9 @@ theorem natDegree_affineNegativePowerCoeff_and_coeff_pos
       (subst (Q - 1) (binomialSeries ℝ (-κ - (k : ℝ))))) (n : ℕ) :
     (affineNegativePowerCoeff κ Q B n).natDegree = n / r ∧
       ∀ k ≤ n / r, 0 < (affineNegativePowerCoeff κ Q B n).coeff k := by
-  have hsupport := coeff_affineNegativePowerCoeff_zero_and_pos
-    Q B κ r hQ hr hκ hB hBzero hBpos hQpos n
-  have hpositive (k : ℕ) (hk : k ≤ n / r) :
-      0 < (affineNegativePowerCoeff κ Q B n).coeff k := by
-    apply (hsupport k).2
-    have hk' : k * r ≤ n := (Nat.le_div_iff_mul_le hr).mp hk
-    simpa only [Nat.mul_comm] using hk'
-  constructor
-  · apply Polynomial.natDegree_eq_of_le_of_coeff_ne_zero
-    · apply Polynomial.natDegree_le_iff_coeff_eq_zero.mpr
-      intro k hk
-      apply (hsupport k).1
-      have hk' : ¬k * r ≤ n := by
-        intro h
-        have := (Nat.le_div_iff_mul_le hr).mpr h
-        lia
-      have : n < k * r := Nat.lt_of_not_ge hk'
-      simpa only [Nat.mul_comm] using this
-    · exact (hpositive (n / r) le_rfl).ne'
-  · exact hpositive
+  exact Polynomial.natDegree_eq_div_and_coeff_pos_of_support hr fun k =>
+    coeff_affineNegativePowerCoeff_zero_and_pos
+      Q B κ r hQ hr hκ hB hBzero hBpos hQpos n k
 
 /-- The constant parameter coefficient is strictly positive for every row
 with a nonempty product denominator and positive real exponent. -/

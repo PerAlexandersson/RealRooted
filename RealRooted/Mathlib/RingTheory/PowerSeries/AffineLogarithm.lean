@@ -32,12 +32,7 @@ theorem tendsto_coeff_affineNegativePowerCoeff_div
     Tendsto (fun a : ℝ => (affineNegativePowerCoeff a Q B n).coeff k / a)
       (𝓝[>] 0) (𝓝 ((affineLogCoeff Q B n).coeff k)) := by
   let H := map Polynomial.C Q - C Polynomial.X * map Polynomial.C B
-  have hH : constantCoeff H = 1 := by
-    simp only [H, map_sub, map_mul, constantCoeff_C]
-    rw [← coeff_zero_eq_constantCoeff_apply, coeff_map,
-      coeff_zero_eq_constantCoeff_apply, hQ, map_one,
-      ← coeff_zero_eq_constantCoeff_apply, coeff_map,
-      coeff_zero_eq_constantCoeff_apply, hB, map_zero, mul_zero, sub_zero]
+  have hH : constantCoeff H = 1 := constantCoeff_map_C_sub_C_X_mul_map_C hQ hB
   exact tendsto_coeff_coeff_subst_binomialSeries_neg_div H hH hn k
 
 end PowerSeries

@@ -114,19 +114,9 @@ theorem interlaces_affineNegativePowerCoeff_succ
     (hBs : B.Splits) (hBnn : HasNonnegCoeffs B) (n : ℕ) :
     Interlaces (affineNegativePowerCoeff κ (Q : PowerSeries ℝ) B n)
       (affineNegativePowerCoeff κ (Q : PowerSeries ℝ) B (n + 1)) := by
-  have hq := weightedDerivativeKernel_isTotallyNonneg hQs hQnn hκ.le
-  have hb := weightedDerivativeKernel_isTotallyNonneg hBs hBnn hκ.le
-  have hsign : (Q.comp (-Polynomial.X)).coeff = fun k => (-1 : ℝ) ^ k * Q.coeff k := by
-    funext k
-    rw [Polynomial.coeff_comp_neg_X, mul_comm]
-  rw [hsign] at hq
-  apply interlaces_affineNegativePowerCoeff_succ_of_kernels hκ Q B
+  exact interlaces_affineNegativePowerCoeff_succ_of_kernels hκ Q B
     (by simpa using hQ) (by simpa using hB) (by simpa using hB₁) n
-  · simpa only [Polynomial.coeff_coe] using
-      (hq.toRect.submatrix (rows := (Fin.val : Fin (n + 1) → ℕ)) (cols := Fin.val)
-        (fun _ _ h => h) (fun _ _ h => h)).toSquare
-  · simpa only [Polynomial.coeff_coe] using
-      (hb.toRect.submatrix (rows := (Fin.val : Fin (n + 1) → ℕ)) (cols := Fin.val)
-        (fun _ _ h => h) (fun _ _ h => h)).toSquare
+    (weightedDerivativeKernel_submatrix_signed_isTotallyNonneg hQs hQnn hκ.le _)
+    (weightedDerivativeKernel_submatrix_isTotallyNonneg hBs hBnn hκ.le _)
 
 end RealRooted.BrandenLeite

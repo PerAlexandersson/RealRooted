@@ -25,12 +25,7 @@ theorem affineNegativePowerCoeff_zero (κ : ℝ) (Q B : PowerSeries ℝ)
     (hQ : constantCoeff Q = 1) (hB : constantCoeff B = 0) :
     affineNegativePowerCoeff κ Q B 0 = 1 := by
   let H := map Polynomial.C Q - C Polynomial.X * map Polynomial.C B
-  have hH : constantCoeff H = 1 := by
-    simp only [H, map_sub, map_mul, constantCoeff_C]
-    rw [← coeff_zero_eq_constantCoeff_apply, coeff_map,
-      coeff_zero_eq_constantCoeff_apply, hQ, map_one,
-      ← coeff_zero_eq_constantCoeff_apply, coeff_map,
-      coeff_zero_eq_constantCoeff_apply, hB, map_zero, mul_zero, sub_zero]
+  have hH : constantCoeff H = 1 := constantCoeff_map_C_sub_C_X_mul_map_C hQ hB
   exact (show coeff 0 (subst (H - 1)
       (binomialSeries (Polynomial ℝ) (-Polynomial.C κ))) = 1 by
     simpa only [coeff_zero_eq_constantCoeff_apply] using
@@ -51,12 +46,7 @@ theorem coeff_affineNegativePowerCoeff_recurrence
                 Polynomial.X * Polynomial.C (coeff (k + 1) B)).coeff j *
                 (affineNegativePowerCoeff κ Q B (n - k)).coeff (i - j) := by
   let H := map Polynomial.C Q - C Polynomial.X * map Polynomial.C B
-  have hH : constantCoeff H = 1 := by
-    simp only [H, map_sub, map_mul, constantCoeff_C]
-    rw [← coeff_zero_eq_constantCoeff_apply, coeff_map,
-      coeff_zero_eq_constantCoeff_apply, hQ, map_one,
-      ← coeff_zero_eq_constantCoeff_apply, coeff_map,
-      coeff_zero_eq_constantCoeff_apply, hB, map_zero, mul_zero, sub_zero]
+  have hH : constantCoeff H = 1 := constantCoeff_map_C_sub_C_X_mul_map_C hQ hB
   have hr := coeff_recurrence_of_negPower_ode (Polynomial.C κ) H _
     (by simpa only [coeff_zero_eq_constantCoeff_apply] using hH)
     (subst_binomialSeries_neg_ode (Polynomial.C κ) H hH) n
