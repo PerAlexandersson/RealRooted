@@ -296,17 +296,6 @@ def rowRouteTable : List RowRouteInfo := [
         `RealRooted.splits_of_eq_fPolynomial
       ]
   },
-  { name := `rationalReverse
-    frontEnds := [
-      "rr_row_interlaces"
-    ]
-    conclusion := "Interlaces (P n) (P (n + 1))"
-    theorems :=
-      [
-        `RealRooted.eq_reflect_of_secondOrderDerivativeRecurrence_of_left_degree,
-        `RealRooted.interlaces_of_eq_reflect_of_coeff_zero_pos
-      ]
-  },
   { name := `endpointWindow
     frontEnds := [
       "rr_row_interlaces"
@@ -588,7 +577,6 @@ def rowRoutesOf (frontEnd : String) : List Name :=
       `pathPower,
       `lowerOrder,
       `parityProduct,
-      `rationalReverse,
       `endpointWindow,
       `fTransform,
       `powerForm,

@@ -14,9 +14,9 @@ still prove the goal without the hint (`RealRooted/Tactic/ROUTES.md`).
 Not covered, because `via` is not accepted by these front ends: the `recurrence` route of the
 degree tactics (`rr_row_natDegree` selects only `cone` and `cancel`) and the `threeTerm`,
 `secondOrder` and `derivativeMult` routes of `rr_row_nonneg_coeffs`, which takes no hints.
-The `rationalReverse` route has no working example: its former example only passed through a
-hidden `sorryAx`.  Its auxiliary theorem embeds `Term.exprToSyntax` holes, which are unassigned
-in the fresh command context, and the side goals of that example fail as well.
+The former `rationalReverse` route was removed: it never elaborated its auxiliary theorem
+(`Term.exprToSyntax` holes are unassigned in a fresh command context), and its only example had
+passed through a hidden `sorryAx`.
 -/
 
 @[expose] public section
