@@ -1,5 +1,7 @@
 module
 
+public import RealRooted.DerivativeProduct.Associative
+public import RealRooted.RootLocation.Basic
 import RealRooted.DerivativeProduct.KernelNecessity
 import RealRooted.DerivativeProduct.KernelSufficiency
 import Mathlib.Tactic
