@@ -110,10 +110,8 @@ theorem isRealRootedIn_Ici_signedComp_hessenbergVector {A : Matrix (Fin (n + 1))
   have hroot : IsRealRootedIn (Set.Iic 0) (hessenbergVector A k j) :=
     ⟨(hf.realRooted _ hmem).1, (hf.realRooted _ hmem).2,
       roots_nonpos_of_hasNonnegCoeffs (hf.nonnegCoeffs _ hmem)⟩
-  have hcomp := hroot.comp_C_mul_X_add_C (a := -1) 0 (by norm_num)
+  have hcomp := hroot.comp_neg_X
   have hne : ((-1 : ℝ) ^ k) ≠ 0 := pow_ne_zero _ (by norm_num)
-  have hneg : (-X : ℝ[X]) = C (-1) * X + C 0 := by simp
-  rw [hneg]
   refine IsRealRootedIn.C_mul hne (hcomp.mono fun x hx => ?_)
   simp only [Set.mem_preimage, Set.mem_Iic, Set.mem_Ici] at hx ⊢
   linarith

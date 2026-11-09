@@ -3,6 +3,7 @@ module
 public import Mathlib.Algebra.BigOperators.Group.Finset.Sigma
 public import RealRooted.JacobiDeformation.Basic
 public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.DifferentialOperator
+import RealRooted.Mathlib.Algebra.BigOperators.Group.Finset.Shift
 
 /-!
 # The finite Appell kernel and its Jacobi transport
@@ -299,23 +300,13 @@ theorem appellKernelCoefficient_eq_zero_of_lt {m i j : ℕ} {b c d : ℝ}
     (hm : m < i + j) : appellKernelCoefficient m b c d i j = 0 := by
   simp [appellKernelCoefficient, Nat.not_le_of_lt hm]
 
-private theorem sum_range_shift_aux (f : ℕ → ℝ) (n : ℕ) :
-    (∑ i ∈ Finset.range (n + 1), f i) =
-      f 0 + ∑ i ∈ Finset.range n, f (i + 1) := by
-  induction n with
-  | zero => simp
-  | succ n ih =>
-      rw [Finset.sum_range_succ, ih, Finset.sum_range_succ]
-      ring
-
 /-- A finite sum can be shifted when its first and next-after-last terms
 vanish.  This is the reindexing form needed for Appell lowering terms. -/
 theorem sum_range_shift_of_boundary_zero (f : ℕ → ℝ) (n : ℕ)
     (hzero : f 0 = 0) (htop : f (n + 1) = 0) :
     (∑ i ∈ Finset.range (n + 1), f i) =
       ∑ i ∈ Finset.range (n + 1), f (i + 1) := by
-  rw [sum_range_shift_aux, hzero, zero_add, Finset.sum_range_succ, htop,
-    add_zero]
+  exact Finset.sum_range_shift n hzero htop fun _ ↦ rfl
 
 private theorem jacobiDifferentialOperator_finset_sum (a s : ℝ)
     (u : Finset ℕ) (f : ℕ → ℝ[X]) :
