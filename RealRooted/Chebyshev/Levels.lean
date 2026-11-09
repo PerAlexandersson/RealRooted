@@ -86,6 +86,26 @@ theorem derivative_interlaces_sub_C_of_mem_Icc {f : ℝ[X]} {a b s : ℝ}
     exact hdeg)
   simpa only [hlevel, Polynomial.derivative_sub, Polynomial.derivative_C, sub_zero] using hinter
 
+/-- If two constant levels of a nonconstant real polynomial split, then every intermediate
+constant level splits. -/
+theorem splits_sub_C_of_mem_Icc {f : ℝ[X]} {a b s : ℝ} (hdeg : f.natDegree ≠ 0)
+    (hs : s ∈ Icc a b) (ha_splits : (f - C a).Splits) (hb_splits : (f - C b).Splits) :
+    (f - C s).Splits := by
+  have hf0 : f.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr (ne_zero_of_natDegree_gt
+    (Nat.pos_of_ne_zero hdeg))
+  rcases hf0.lt_or_gt with hneg | hpos
+  · have hf_pos : HasPosLeadingCoeff (-f) := by
+      simpa [HasPosLeadingCoeff, leadingCoeff_neg] using hneg
+    have hs' : -s ∈ Icc (-b) (-a) := ⟨by linarith [hs.2], by linarith [hs.1]⟩
+    have hlevel : ∀ t : ℝ, -f - C (-t) = -(f - C t) := fun t ↦ by rw [map_neg]; ring
+    have h := (derivative_interlaces_sub_C_of_mem_Icc hf_pos (by simpa using hdeg)
+      (by linarith [hs.1, hs.2]) hs' (by rw [hlevel]; exact hb_splits.neg)
+      (by rw [hlevel]; exact ha_splits.neg)).1.2
+    rw [hlevel] at h
+    exact splits_neg_iff.mp h
+  · exact (derivative_interlaces_sub_C_of_mem_Icc hpos hdeg (hs.1.trans hs.2) hs ha_splits
+      hb_splits).1.2
+
 /-- If two split constant levels have all roots in a closed interval, then every
 intermediate level has all roots in the same interval. -/
 theorem roots_sub_C_mem_Icc_of_endpoint_roots_mem_Icc {f : ℝ[X]} {a b s L U : ℝ}

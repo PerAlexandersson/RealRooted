@@ -255,6 +255,7 @@ public import RealRooted.Challenges.Roots.NewtonMaclaurin
 public import RealRooted.Challenges.PolyaFrequency.Nijenhuis
 public import RealRooted.Challenges.Interlacing.Obreschkoff
 public import RealRooted.Challenges.Preservers.OperatorPreservers
+public import RealRooted.Challenges.Preservers.ProductPowerMaps
 public import RealRooted.Challenges.Combinatorial.ParkingFunctions
 public import RealRooted.Challenges.Combinatorial.PeakPolynomials
 public import RealRooted.Challenges.Matrices.PerronFrobenius
@@ -2150,4 +2151,8 @@ public import RealRooted.DerivativeProduct.KernelNecessity
 public import RealRooted.DerivativeProduct.KernelSufficiency
 public import RealRooted.DerivativeProduct.KernelWeyl
 public import RealRooted.DerivativeProduct.Poisson
+public import RealRooted.DerivativeProduct.PoissonPower
+public import RealRooted.DerivativeProduct.ProductPower
+public import RealRooted.DerivativeProduct.ProductPowerCriteria
+public import RealRooted.DerivativeProduct.ProductPowerRoots
 public import RealRooted.DerivativeProduct.Transform
