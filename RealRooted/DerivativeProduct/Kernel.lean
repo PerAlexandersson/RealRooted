@@ -1,7 +1,7 @@
 module
 
-public import RealRooted.DerivativeProduct.KernelNecessity
-public import RealRooted.DerivativeProduct.KernelSufficiency
+import RealRooted.DerivativeProduct.KernelNecessity
+import RealRooted.DerivativeProduct.KernelSufficiency
 import Mathlib.Tactic
 
 /-!
