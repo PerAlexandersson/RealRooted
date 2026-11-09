@@ -811,6 +811,11 @@ public import RealRooted.Laguerre.Favard
 public import RealRooted.Laguerre.Orthogonality
 public import RealRooted.Laguerre.Orthogonality.Integral
 public import RealRooted.Laguerre.Roots
+public import RealRooted.LaguerreInequalities
+public import RealRooted.LaguerreInequalities.CriticalPoint
+public import RealRooted.LaguerreInequalities.Forms
+public import RealRooted.LaguerreInequalities.Rows
+public import RealRooted.LaguerreInequalities.SignAlternation
 public import RealRooted.LaguerreSamuelson
 public import RealRooted.LeeYang
 public import RealRooted.Legendre
@@ -1370,6 +1375,7 @@ public import RealRooted.RootCounting.Threshold.LogConcavity
 public import RealRooted.RootCounting.Threshold.Signs
 public import RealRooted.RootCounting.Threshold.Sorted
 public import RealRooted.RootLocation.Basic
+public import RealRooted.RootLocation.CommonInterlacer
 public import RealRooted.RootLocation.BernsteinDiagonal
 public import RealRooted.RootLocation.Mobius
 public import RealRooted.RootMatchingSort
@@ -1785,6 +1791,7 @@ public import RealRooted.OperatorMatrix.OneThetaXBoards
 public import RealRooted.OperatorMatrix.OneThetaXBoardsExtra
 public import RealRooted.GraceWalshSzego
 public import RealRooted.Challenges.Matrices.CourantFischer
+public import RealRooted.Challenges.Roots.LaguerreInequalities
 public import RealRooted.Challenges.Roots.LaguerrePolarDerivative
 public import RealRooted.Challenges.Preservers.LaguerrePolya
 public import RealRooted.Challenges.Stability.MorrisFlow
