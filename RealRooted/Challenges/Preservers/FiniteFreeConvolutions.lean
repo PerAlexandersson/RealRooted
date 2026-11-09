@@ -2,6 +2,7 @@ module
 
 import RealRooted.FiniteFreeAdditive.HalfIntegerPreservation
 public import RealRooted.FiniteFreeAdditive.Preservation
+public import RealRooted.FiniteFreeAdditive.RootWindow
 public import RealRooted.FiniteFreeMultiplicative
 public import RealRooted.FiniteFreeRootCount
 public import RealRooted.Hadamard.Grace
@@ -70,6 +71,16 @@ name = "RealRooted.splits_finiteFreeAdditiveConvolution"
 module = "RealRooted.FiniteFreeAdditive.Preservation"
 label = "Marcus–Spielman–Srivastava: ⊞_d preserves real-rootedness"
 headline = true
+
+[[theorems]]
+name = "RealRooted.IsRealRootedIn.finiteFreeAdditiveConvolution_Icc"
+module = "RealRooted.FiniteFreeAdditive.RootWindow"
+label = "Walsh–Leake–Ryder: ⊞_d sends roots in [A, B] and [a, b] into [A + a, B + b]"
+
+[[theorems]]
+name = "RealRooted.finiteFreeAdditiveConvolution_comp_X_add_C"
+module = "RealRooted.FiniteFreeAdditive.RootWindow"
+label = "Translating the arguments of ⊞_d by s and t translates the output by s + t"
 
 [[theorems]]
 name = """RealRooted.Challenges.FiniteFreeConvolutions.\
@@ -160,6 +171,13 @@ lists $p_k$, $q_k$.
 
 - If $p$ and $q$ are real-rooted of degree at most $d$, then $p \boxplus_d q$ is
   real-rooted [@MarcusSpielmanSrivastava2022].
+- If $p$ and $q$ have degree exactly $d$, the roots of $p$ lie in $[A, B]$ and
+  the roots of $q$ lie in $[a, b]$, then all roots of $p \boxplus_d q$ lie in
+  $[A + a, B + b]$ (Walsh's location theorem in the finite free setting; Leake and
+  Ryder, *On the further structure of the finite free convolutions*, Proposition 1.1).
+  The proof shifts both inputs so that their roots are nonpositive, which makes
+  their coefficients nonnegative; the convolution is translation covariant and
+  preserves nonnegative coefficients, so it has no positive root.
 - If $f$ and $g$ have degree exactly $n$, positive leading coefficients, and
   only nonnegative real roots, then $f \boxplus_{m,n} g$ is zero or has only
   nonnegative real roots [@GribinskiMarcus2022].
@@ -217,7 +235,8 @@ the Narayana transformation, see [symmetricfunctions.com][mao-wang].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in
-`RealRooted.FiniteFreeAdditive`, `RealRooted.RectangularConvolution`,
+`RealRooted.FiniteFreeAdditive`, `RealRooted.FiniteFreeAdditive.RootWindow`,
+`RealRooted.RectangularConvolution`,
 `RealRooted.NarayanaTransformation.Rectangular` and
 `RealRooted.FiniteFreeMultiplicative`.
 -/
