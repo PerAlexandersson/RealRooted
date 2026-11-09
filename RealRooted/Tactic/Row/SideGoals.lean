@@ -114,8 +114,9 @@ private def addNatRealSignProducts : TacticM Unit := withMainContext do
               mul_nonneg (Nat.cast_nonneg $ns) (by first | positivity | nlinarith)))
 
 /-- Close a polynomial sign goal such as `∀ n x, L ≤ x → x ≤ U → (A n).eval x ≤ 0`:
-evaluate and first try the direct sign machinery.  Only if that fails, add the available
-products of parameter and variable signs needed by rational-coefficient goals. -/
+evaluate and try the direct sign machinery, with the available products of parameter and
+variable signs needed by rational-coefficient goals added first when the goal has both a natural
+number and a real variable, and only after a failure otherwise. -/
 elab "rr_row_eval_sign" : tactic => withMainContext do
   evalTactic (← `(tactic| (
     intros
@@ -123,12 +124,28 @@ elab "rr_row_eval_sign" : tactic => withMainContext do
       Polynomial.eval_C, Polynomial.eval_X, Polynomial.eval_pow, Polynomial.eval_neg,
       Polynomial.eval_one, Polynomial.eval_zero, Polynomial.eval_ofNat] at *
     push_cast at *)))
-  if ← rowSucceeds (do
-      evalTactic (← `(tactic| first | positivity | nlinarith | rr_row_field | fail))
-      unless (← getGoals).isEmpty do throwError "rr_row_eval_sign: goals remain") then
-    return
-  addNatRealSignProducts
-  evalTactic (← `(tactic| first | positivity | nlinarith | rr_row_field | fail))
+  let close : TacticM Unit := do
+    evalTactic (← `(tactic| first | rr_row_close | fail))
+    unless (← getGoals).isEmpty do throwError "rr_row_eval_sign: goals remain"
+  -- a goal in a natural number and a real variable usually needs their sign products, and the
+  -- attempt without them is a slow failure
+  let mut hasNat := false
+  let mut hasReal := false
+  for decl in ← getLCtx do
+    if decl.isImplementationDetail then continue
+    let ty ← instantiateMVars decl.type
+    if ty.isConstOf ``Nat then hasNat := true
+    if ty.isConstOf ``Real then hasReal := true
+  if hasNat && hasReal then
+    let s ← saveState
+    addNatRealSignProducts
+    if ← rowSucceeds close then return
+    s.restore
+    close
+  else
+    if ← rowSucceeds close then return
+    addNatRealSignProducts
+    close
 
 /-- The multiplier goal `∀ n i j, j ≤ D → 0 ≤ (A n).coeff (i + 1) * j + (B n).coeff i`
 of `RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult`, for `A n`, `B n` of degree at most
@@ -146,7 +163,7 @@ private def multiplierGoal : TacticM Unit := do
       $coeffs:tactic
       push_cast
       try norm_num
-      first | done | positivity | nlinarith | rr_row_field | (ring_nf; rr_row_field))))
+      first | done | rr_row_close | (ring_nf; rr_row_field))))
   let sharedNegativeDenominator ← `(tactic| (
     rcases i with _ | _ | _ | i
     · apply add_nonneg
@@ -196,7 +213,7 @@ private def constantCoeffGoal : TacticM Unit := do
       Polynomial.coeff_ofNat_succ, Polynomial.coeff_zero, neg_mul, one_mul]
     push_cast
     try norm_num
-    first | done | positivity | nlinarith | rr_row_field)))
+    first | done | rr_row_close)))
 
 /-- The multiplier goal of
 `RealRooted.derivativeRecurrence_hasNonnegCoeffs_of_mult_le` for the half-growth
@@ -218,7 +235,7 @@ def halfMultiplierGoal (D₀ e : Nat) : TacticM Unit := do
         Polynomial.coeff_ofNat_succ, Polynomial.coeff_zero, neg_mul, one_mul]
       push_cast
       try norm_num
-      first | done | positivity | nlinarith | rr_row_field))))
+      first | done | rr_row_close))))
 
 /-- Close `HasNonnegCoeffs p` for an explicit `p`, whose coefficients may depend on a
 natural number: bound the degree by `compute_degree!` and check each coefficient. -/
@@ -251,7 +268,7 @@ def explicitNonnegCoeffs : TacticM Unit := do
               Polynomial.coeff_ofNat_succ, Polynomial.coeff_zero, neg_mul, one_mul]
             push_cast
             try norm_num
-            first | done | positivity | nlinarith | rr_row_field))))
+            first | done | rr_row_close))))
       unless (← getGoals).isEmpty do throwError "goals remain"
     if ok then return
   s.restore
@@ -274,6 +291,19 @@ private def isInterlaceGoal (P? : Option Ident) (ty : Expr) : MetaM Bool := do
     (ty.isForall && ty.bindingBody!.isForall && !mentionsP && has ``LE.le && has ``HMul.hMul &&
       has ``Polynomial.coeff)
 
+/-- The local hypotheses `h : ∀ n, … (P n) …` whose statement mentions the constant `c`, such as
+the shared `hdeg_row` and `hpos_row` of `rr_row_interlaces`.  A degree or leading-coefficient
+side goal is tried against them first: proving it again costs a full degree search. -/
+private def reusableRowHyps (P : Name) (c : Name) : TacticM (Array Ident) := withMainContext do
+  let mut out : Array Ident := #[]
+  for decl in ← getLCtx do
+    if decl.isImplementationDetail || decl.userName.hasMacroScopes then continue
+    let ty ← instantiateMVars decl.type
+    if ty.isForall && (ty.find? fun e => e.isConstOf P).isSome &&
+        (ty.find? fun e => e.isConstOf c).isSome then
+      out := out.push (mkIdent decl.userName)
+  return out
+
 /-- Close one side goal of the interlacing theorems. -/
 private def interlaceSideGoal (P? : Option Ident) : TacticM Unit := do
   let ty ← instantiateMVars (← getMainTarget)
@@ -294,8 +324,23 @@ private def interlaceSideGoal (P? : Option Ident) : TacticM Unit := do
     match P? with
     | some P => f P
     | none => []
+  let reusable (c : Name) : TacticM (Array Ident) :=
+    match P? with
+    | some P => if rowBinder && mentionsP && has c then reusableRowHyps P.getId c else pure #[]
+    | none => pure #[]
+  let degreeHyps ← reusable ``Polynomial.natDegree
+  let leadingHyps ← reusable ``Polynomial.leadingCoeff
+  let reuseDegree : List (TacticM Unit) := degreeHyps.toList.map fun h => do
+    if ty.getForallBody.isAppOf ``LE.le then
+      evalTactic (← `(tactic| (intro n; first
+        | exact le_of_eq ($h _) | exact (($h _).le.trans (by lia)))))
+    else
+      evalTactic (← `(tactic| (intro n; first | exact $h _ | exact (($h _).trans (by lia)))))
+  let reuseLeading : List (TacticM Unit) := leadingHyps.toList.map fun h => do
+    evalTactic (← `(tactic| (intro n; exact $h _)))
   let strategies : List (TacticM Unit) :=
     if rowBinder && mentionsP && has ``Polynomial.natDegree then
+      reuseDegree ++ (
       let eq := do evalTactic (← `(tactic| (intro n; rr_row_natDegree)))
       let le := do evalTactic (← `(tactic| (intro n; apply le_of_eq; rr_row_natDegree)))
       -- a bound `D₀ + d * n` for rows of degree `D₀ + d * n - 1`, which occur when the first
@@ -307,12 +352,12 @@ private def interlaceSideGoal (P? : Option Ident) : TacticM Unit := do
           apply le_of_eq
           rr_row_natDegree)))
       -- a failed search for an equality is slow, so try the bound first on `≤` goals
-      if ty.getForallBody.isAppOf ``LE.le then [le, leSub, eq] else [eq, le]
+      if ty.getForallBody.isAppOf ``LE.le then [le, leSub, eq] else [eq, le])
     else if rowBinder && mentionsP && has ``Polynomial.leadingCoeff &&
         ty.getForallBody.isAppOf ``LE.le then
       [do evalTactic (← `(tactic| (intro n; beta_reduce; rr_row_leadingCoeff_ratio)))]
     else if rowBinder && mentionsP && has ``Polynomial.leadingCoeff then
-      [do evalTactic (← `(tactic| (intro n; rr_row_leadingCoeff_pos)))]
+      reuseLeading ++ [do evalTactic (← `(tactic| (intro n; rr_row_leadingCoeff_pos)))]
     else if has ``RealRooted.Interlaces then
       [do
         evalTactic (← `(tactic|

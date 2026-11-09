@@ -4,6 +4,7 @@ public import RealRooted.Compatibility.Basic
 public import RealRooted.CommonInterleaver.RootDesc
 public import RealRooted.RootLocation.Basic
 import RealRooted.ChudnovskySeymour.Core
+import RealRooted.WagnerRightSum.Sign
 import RealRooted.CommonInterleaver.PairwiseUpgrade.FamilyCompatibility
 import RealRooted.CommonInterleaver.SuccDegreeLowDegree
 
@@ -54,16 +55,6 @@ private theorem prod_map_sub_eq (s : Multiset ℝ) :
   | cons a s ih =>
     simp only [Multiset.map_cons, Multiset.prod_cons, Multiset.card_cons, ih, pow_succ]
     ring
-
-/-- A positive-leading split polynomial of degree `n` has `eval x` of sign `1` to the right of all
-its roots. -/
-private theorem eval_pos_of_forall_roots_lt {f : ℝ[X]} (hs : f.Splits)
-    (hpos : HasPosLeadingCoeff f) (hx : ∀ r ∈ f.roots, r < x) : 0 < f.eval x := by
-  rw [hs.eval_eq_prod_roots]
-  refine mul_pos hpos (Multiset.prod_pos ?_)
-  intro a ha
-  obtain ⟨r, hr, rfl⟩ := Multiset.mem_map.1 ha
-  linarith [hx r hr]
 
 /-- A positive-leading split polynomial of degree `n` has `eval x` of sign `(-1)^n` to the left
 of all its roots. -/
@@ -125,7 +116,8 @@ theorem isRealRootedIn_weightedSum_of_splits (hJ : J.OrdConnected) {n : ℕ}
     hxJ (hrx ▸ (hrr ap hap).mem_of_mem_roots hr)
   by_cases hA : ∀ ap ∈ l, ∀ r ∈ ap.2.roots, r < x
   · have hsg : ∀ ap ∈ l, 0 < (1 : ℝ) * ap.2.eval x := fun ap hap => by
-      simpa using eval_pos_of_forall_roots_lt (hrr ap hap).splits (hpos ap hap) (hA ap hap)
+      simpa using eval_pos_of_all_roots_lt (hrr ap hap).ne_zero (hrr ap hap).splits (hpos ap hap)
+        (hA ap hap)
     have := (eval_weightedSum_sign 1 l hnn hsg).2 hex
     simp [hroot] at this
   · push Not at hA

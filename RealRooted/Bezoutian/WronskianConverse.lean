@@ -180,9 +180,10 @@ lemma prod_sub_eq_neg_one_pow_mul_prod_abs {m : ℕ}
   rw [Finset.sum_boole, this, Fin.card_Ioi]
   rfl
 
-lemma sign_p_at_root_of_wronskian_pos {n : ℕ}
+/-- The sign of `p` at the `k`-th root of `q`, when `q' p > 0` at the roots of `q`. -/
+lemma sign_p_at_root_of_derivative_mul_pos {n : ℕ}
     {p q : ℝ[X]} (hq_pos : HasPosLeadingCoeff q) (hq_deg : q.natDegree = n + 1)
-    (hW : ∀ t : ℝ, 0 < q.derivative.eval t * p.eval t - q.eval t * p.derivative.eval t)
+    (hW : ∀ t : ℝ, q.IsRoot t → 0 < q.derivative.eval t * p.eval t)
     (r : Fin (n + 1) → ℝ) (hr_mono : StrictMono r) (hr_roots : ∀ k, q.IsRoot (r k))
     (k : Fin (n + 1)) : 0 < p.eval (r k) * (-1) ^ (n - k.val) := by
   have hq_eq : q = C q.leadingCoeff * ∏ j : Fin (n + 1), (X - C (r j)) :=
@@ -196,9 +197,8 @@ lemma sign_p_at_root_of_wronskian_pos {n : ℕ}
       q.leadingCoeff r k
   have h_sign_change_prod :
       0 < p.eval (r k) * ∏ j ∈ Finset.erase Finset.univ k, (r k - r j) := by
-    have := hW (r k)
-    have hq_eval : q.eval (r k) = 0 := hr_roots k
-    rw [hq_eval, zero_mul, sub_zero, h_eval_deriv, mul_assoc] at this
+    have := hW (r k) (hr_roots k)
+    rw [h_eval_deriv, mul_assoc] at this
     have h_prod := pos_of_mul_pos_right this hq_pos.le
     rwa [mul_comm] at h_prod
   have h_prod_sign := prod_sub_eq_neg_one_pow_mul_prod_abs r hr_mono k
@@ -208,6 +208,14 @@ lemma sign_p_at_root_of_wronskian_pos {n : ℕ}
   nlinarith [show 0 < ∏ j ∈ Finset.univ.erase k, |r k - r j| from
     Finset.prod_pos fun j hj ↦ abs_pos.mpr <| sub_ne_zero.mpr <|
       hr_mono.injective.ne (Finset.ne_of_mem_erase hj).symm]
+
+lemma sign_p_at_root_of_wronskian_pos {n : ℕ}
+    {p q : ℝ[X]} (hq_pos : HasPosLeadingCoeff q) (hq_deg : q.natDegree = n + 1)
+    (hW : ∀ t : ℝ, 0 < q.derivative.eval t * p.eval t - q.eval t * p.derivative.eval t)
+    (r : Fin (n + 1) → ℝ) (hr_mono : StrictMono r) (hr_roots : ∀ k, q.IsRoot (r k))
+    (k : Fin (n + 1)) : 0 < p.eval (r k) * (-1) ^ (n - k.val) :=
+  sign_p_at_root_of_derivative_mul_pos hq_pos hq_deg
+    (fun t ht ↦ by simpa [ht.eq_zero] using hW t) r hr_mono hr_roots k
 
 lemma sign_change_p_of_wronskian_pos {n : ℕ}
     {p q : ℝ[X]} (hq_pos : HasPosLeadingCoeff q) (hq_deg : q.natDegree = n + 1)

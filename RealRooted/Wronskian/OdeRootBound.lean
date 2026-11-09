@@ -3,7 +3,7 @@ module
 public import Mathlib.Algebra.Polynomial.Splits
 public import Mathlib.Basic.Real.Basic
 import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
-import RealRooted.Wronskian.Algebra
+import RealRooted.LaguerreInequalities.Forms
 
 /-!
 # Root bounds from second-order polynomial differential equations
@@ -78,33 +78,9 @@ theorem three_mul_sq_eval_derivative_derivative_sub_four_mul_nonneg
     {p : ℝ[X]} (hp : p.Splits) {z : ℝ} (hz : p.IsRoot z) :
     0 ≤ 3 * p.derivative.derivative.eval z ^ 2 -
       4 * p.derivative.eval z * p.derivative.derivative.derivative.eval z := by
-  by_cases hp0 : p = 0
-  · simp [hp0]
-  let q := p /ₘ (X - C z)
-  have hfactor : (X - C z) * q = p := by
-    exact mul_divByMonic_eq_iff_isRoot.mpr hz
-  have hq0 : q ≠ 0 := by
-    intro hzero
-    rw [hzero, mul_zero] at hfactor
-    exact hp0 hfactor.symm
-  have hq_dvd : q ∣ p := by
-    refine ⟨X - C z, ?_⟩
-    rw [mul_comm, hfactor]
-  have hq_splits : q.Splits := hp.of_dvd hp0 hq_dvd
-  have hlag := laguerre_form_nonneg hq_splits z
-  have hfirst : p.derivative.eval z = q.eval z := by
-    simpa [q] using (Polynomial.eval_divByMonic_at_root hz).symm
-  have hsecond : p.derivative.derivative.eval z = 2 * q.derivative.eval z := by
-    simpa [q] using Polynomial.eval_derivative_derivative_of_isRoot hz
-  have hthird : p.derivative.derivative.derivative.eval z =
-      3 * q.derivative.derivative.eval z := by
-    nth_rw 1 [← hfactor]
-    simp only [derivative_mul, derivative_sub, derivative_X, derivative_C,
-      sub_zero, one_mul, derivative_add, zero_mul, eval_add, eval_mul,
-      eval_sub, eval_X, eval_C, sub_self]
-    ring
-  rw [hfirst, hsecond, hthird]
-  nlinarith
+  have h := secondLaguerreForm_eval_nonneg hp z
+  rw [eval_secondLaguerreForm, hz.eq_zero] at h
+  linarith
 
 /-- At a nonsingular root of a splitting solution to a second-order polynomial ODE,
 the ODE discriminant expression is nonpositive. -/

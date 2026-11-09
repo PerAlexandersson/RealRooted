@@ -18,6 +18,18 @@ open Polynomial
 
 namespace RealRooted
 
+/-- A negative derivative-times-value product at the roots of `f` determines the alternating
+signs of `g` at the simple, ordered roots of `f`. -/
+lemma eval_mul_neg_one_pow_neg_of_derivative_mul_neg {n : ℕ}
+    {f g : ℝ[X]} (hf_pos : HasPosLeadingCoeff f)
+    (hf_deg : f.natDegree = n + 1)
+    (hW : ∀ t : ℝ, f.IsRoot t → f.derivative.eval t * g.eval t < 0)
+    (s : Fin (n + 1) → ℝ) (hs_mono : StrictMono s)
+    (hs_roots : ∀ k, f.IsRoot (s k)) :
+    ∀ k : Fin (n + 1), g.eval (s k) * (-1) ^ (n - k.val) < 0 := fun k ↦ by
+  simpa using sign_p_at_root_of_derivative_mul_pos (p := -g) hf_pos hf_deg
+    (fun t ht ↦ by simpa using hW t ht) s hs_mono hs_roots k
+
 /-- A negative Wronskian determines the alternating signs of the
 higher-degree polynomial at the simple, ordered roots of its companion. -/
 lemma wronskian_sign_at_roots_of_neg_succ {n : ℕ}
@@ -26,60 +38,9 @@ lemma wronskian_sign_at_roots_of_neg_succ {n : ℕ}
     (hW : ∀ t : ℝ, f.derivative.eval t * g.eval t - f.eval t * g.derivative.eval t < 0)
     (s : Fin (n + 1) → ℝ) (hs_mono : StrictMono s)
     (hs_roots : ∀ k, f.IsRoot (s k)) :
-    ∀ k : Fin (n + 1), g.eval (s k) * (-1) ^ (n - k.val) < 0 := by
-  have hf_ne : f ≠ 0 := leadingCoeff_ne_zero.mp hf_pos.ne'
-  have h_eval_deriv : ∀ k : Fin (n + 1),
-      f.derivative.eval (s k) =
-        f.leadingCoeff * ∏ j ∈ Finset.erase Finset.univ k, (s k - s j) := by
-    intro k
-    have h_eq : f = Polynomial.C f.leadingCoeff * ∏ j : Fin (n + 1),
-        (Polynomial.X - Polynomial.C (s j)) := by
-      convert Polynomial.splits_eq_C_mul_prod _ _ _ _ _
-      · simp_all
-      · simp_all
-      · simp_all
-      · exact hs_mono.injective
-    conv_lhs => rw [h_eq]
-    exact Polynomial.eval_derivative_C_mul_prod_X_sub_C_univ_at_root
-      f.leadingCoeff s k
-  have h_prod_sign : ∀ k : Fin (n + 1),
-      f.derivative.eval (s k) * (-1) ^ (n - k.val) > 0 := by
-    intro k
-    rw [h_eval_deriv k]
-    have h_prod_sign : ∏ j ∈ Finset.erase (Finset.univ : Finset (Fin (n + 1))) k,
-        (s k - s j) = (-1) ^ (n - k.val) *
-          (∏ j ∈ Finset.erase (Finset.univ : Finset (Fin (n + 1))) k,
-            |s k - s j|) := by
-      have h_prod_sign_abs : ∏ j ∈ Finset.erase (Finset.univ : Finset (Fin (n + 1))) k,
-          (s k - s j) = ∏ j ∈ Finset.erase (Finset.univ : Finset (Fin (n + 1))) k,
-            (-1) ^ (if k < j then 1 else 0) * |s k - s j| := by
-        refine Finset.prod_congr rfl fun j hj ↦ ?_
-        split_ifs with hjk
-        · simp_all only [pow_one, neg_mul, one_mul]
-          rw [abs_of_neg] <;> linarith [hs_mono hjk]
-        · simp_all only [pow_zero, one_mul]
-          rw [abs_of_nonneg (sub_nonneg.mpr (hs_mono.monotone (not_lt.mp hjk)))]
-      rw [h_prod_sign_abs, Finset.prod_mul_distrib, Finset.prod_pow_eq_pow_sum]
-      simp only [Finset.sum_boole, Nat.cast_id, mul_eq_mul_right_iff]
-      have hfilter : (Finset.univ.erase k).filter (fun x ↦ k < x) = Finset.Ioi k := by
-        grind
-      simp_all
-    rw [h_prod_sign, mul_comm f.leadingCoeff, mul_assoc]
-    have habs : 0 < ∏ j ∈ Finset.univ.erase k, |s k - s j| :=
-      Finset.prod_pos fun j hj ↦ abs_pos.mpr <| sub_ne_zero.mpr <|
-        hs_mono.injective.ne (Finset.ne_of_mem_erase hj).symm
-    have hpow : (0 : ℝ) < ((-1) ^ (n - k.val)) ^ 2 := by
-      positivity
-    nlinarith [mul_pos habs hf_pos, sq_nonneg ((-1 : ℝ) ^ (n - k.val))]
-  intro k
-  have hWk := hW (s k)
-  have hfr : f.eval (s k) = 0 := hs_roots k
-  rw [hfr, zero_mul, sub_zero] at hWk
-  have hpe := h_prod_sign k
-  have hane : f.derivative.eval (s k) ≠ 0 := by
-    intro hzero
-    simp_all
-  nlinarith [mul_pos hpe (neg_pos.mpr hWk), mul_self_pos.mpr hane]
+    ∀ k : Fin (n + 1), g.eval (s k) * (-1) ^ (n - k.val) < 0 :=
+  eval_mul_neg_one_pow_neg_of_derivative_mul_neg hf_pos hf_deg
+    (fun t ht ↦ by simpa [ht.eq_zero] using hW t) s hs_mono hs_roots
 
 /-- A positive-leading polynomial of degree `n + 2` has a root below `s₀`
 when its signed value there is negative. -/

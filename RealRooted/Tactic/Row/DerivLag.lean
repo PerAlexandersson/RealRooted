@@ -141,7 +141,7 @@ private def coeffZeroGoal : TacticM Unit := do
       Polynomial.coeff_ofNat_succ, Polynomial.coeff_zero, neg_mul, one_mul]
     push_cast
     try norm_num
-    first | done | positivity | nlinarith | rr_row_field)))
+    first | done | rr_row_close)))
 
 /-- Rows `P 0, …, P M` as rational polynomials: the explicit rows by their equations, the
 others by the recurrence. -/

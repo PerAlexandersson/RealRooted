@@ -1,5 +1,6 @@
 module
 
+import RealRooted.Tactic.RowInterlacing
 public import RealRooted.CombinatorialExamples.Common
 public import RealRooted.MaWang
 public import Mathlib.Tactic
@@ -89,10 +90,7 @@ lemma coeff_coloredSetPartitions_top_and_above :
 
 lemma natDegree_coloredSetPartitions (c m n : Nat) :
     (coloredSetPartitions c m n).natDegree = n := by
-  rcases coeff_coloredSetPartitions_top_and_above c m n with ⟨htop, habove⟩
-  exact natDegree_eq_of_le_of_coeff_ne_zero
-    (natDegree_le_iff_coeff_eq_zero.mpr (fun k hk => habove k hk))
-    (by simp [htop])
+  rr_row_natDegree
 
 lemma monic_coloredSetPartitions (c m n : Nat) :
     (coloredSetPartitions c m n).Monic := by
@@ -109,22 +107,9 @@ lemma coloredSetPartitions_posLeadingCoeff (c m n : Nat) :
   hasPosLeadingCoeff_of_monic (monic_coloredSetPartitions c m n)
 
 lemma coloredSetPartitions_nonnegCoeffs :
-    ∀ c m n : Nat, HasNonnegCoeffs (coloredSetPartitions c m n)
-  | c, m, 0 => by
-      intro k
-      cases k <;> simp [coloredSetPartitions_zero, coeff_one]
-  | c, m, n + 1 => by
-      rintro (_ | j)
-      · simpa [coloredSetPartitions_succ, coloredSetPartitionsCoeffA, coloredSetPartitionsCoeffB,
-          add_mul] using
-          mul_nonneg (by positivity : 0 ≤ (c : ℝ))
-            (coloredSetPartitions_nonnegCoeffs c m n 0)
-      · rw [coeff_coloredSetPartitions_succ]
-        exact add_nonneg
-          (coloredSetPartitions_nonnegCoeffs c m n j)
-          (mul_nonneg
-            (by positivity)
-            (coloredSetPartitions_nonnegCoeffs c m n (j + 1)))
+    ∀ c m n : Nat, HasNonnegCoeffs (coloredSetPartitions c m n) := by
+  intros
+  rr_row_nonneg_coeffs
 
 lemma roots_nonpos_coloredSetPartitions_of_isRealRooted {c m n : Nat} :
     ∀ r ∈ (coloredSetPartitions c m n).roots, r ≤ 0 :=
@@ -132,121 +117,23 @@ lemma roots_nonpos_coloredSetPartitions_of_isRealRooted {c m n : Nat} :
 
 lemma interlaces_coloredSetPartitions_zero_one (c m : Nat) :
     Interlaces (coloredSetPartitions c m 0) (coloredSetPartitions c m 1) := by
-  simpa [coloredSetPartitions_zero, coloredSetPartitions_one] using
-    interlaces_one_linear (p := coloredSetPartitions c m 1)
-      (natDegree_coloredSetPartitions c m 1)
+  rr_row_interlaces
 
 lemma eval_coloredSetPartitionsCoeffB_nonpos_of_nonpos (m : Nat) {r : ℝ} (hr : r ≤ 0) :
     (coloredSetPartitionsCoeffB m).eval r ≤ 0 := by
   simpa only [coloredSetPartitionsCoeffB, eval_mul, eval_C, eval_X] using
     mul_nonpos_of_nonneg_of_nonpos (by positivity : 0 ≤ (m : ℝ)) hr
 
-lemma strictInterl_coloredSetPartitions_one_two (c m : Nat) :
-    StrictInterl (coloredSetPartitions c m 1) (coloredSetPartitions c m 2) := by
-  have hdeg : (coloredSetPartitions c m 1).natDegree = 1 :=
-    natDegree_coloredSetPartitions c m 1
-  have hInter :
-      Interlaces (coloredSetPartitions c m 1).derivative (coloredSetPartitions c m 1) := by
-    simpa [coloredSetPartitions_one] using
-      interlaces_one_linear (p := coloredSetPartitions c m 1) hdeg
-  have hg_pos : HasPosLeadingCoeff (coloredSetPartitions c m 1).derivative :=
-    (coloredSetPartitions_posLeadingCoeff c m 1).derivative
-      (by simp [natDegree_coloredSetPartitions])
-  have hNext_eq :
-      coloredSetPartitionsCoeffA c * coloredSetPartitions c m 1 +
-          coloredSetPartitionsCoeffB m * (coloredSetPartitions c m 1).derivative =
-        coloredSetPartitions c m 2 :=
-    (coloredSetPartitions_succ c m 1).symm
-  have hF_pos :
-      HasPosLeadingCoeff
-        (coloredSetPartitionsCoeffA c * coloredSetPartitions c m 1 +
-          coloredSetPartitionsCoeffB m * (coloredSetPartitions c m 1).derivative) := by
-    simpa [hNext_eq] using coloredSetPartitions_posLeadingCoeff c m 2
-  have hdeg_lo :
-      (coloredSetPartitions c m 1).natDegree ≤
-        (coloredSetPartitionsCoeffA c * coloredSetPartitions c m 1 +
-          coloredSetPartitionsCoeffB m * (coloredSetPartitions c m 1).derivative).natDegree := by
-    rw [hNext_eq, natDegree_coloredSetPartitions, natDegree_coloredSetPartitions]
-    lia
-  have hdeg_hi :
-      (coloredSetPartitionsCoeffA c * coloredSetPartitions c m 1 +
-          coloredSetPartitionsCoeffB m * (coloredSetPartitions c m 1).derivative).natDegree ≤
-        (coloredSetPartitions c m 1).natDegree + 1 := by
-    rw [hNext_eq, natDegree_coloredSetPartitions, natDegree_coloredSetPartitions]
-  have hb_nonpos :
-      ∀ r, (coloredSetPartitions c m 1).IsRoot r →
-        (coloredSetPartitionsCoeffB m).eval r ≤ 0 := by
-    intro r hr
-    have hr_nonpos :
-        r ≤ 0 :=
-      roots_nonpos_coloredSetPartitions_of_isRealRooted r
-        ((mem_roots <| by rintro h; simp [h] at hdeg).mpr hr)
-    exact eval_coloredSetPartitionsCoeffB_nonpos_of_nonpos m hr_nonpos
-  simpa [hNext_eq] using
-    strictInterl_of_interlaces_evalCoeff_nonpos
-      (f := coloredSetPartitions c m 1)
-      (g := (coloredSetPartitions c m 1).derivative)
-      (a := coloredSetPartitionsCoeffA c)
-      (b := coloredSetPartitionsCoeffB m)
-      hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
-
 /-- Consecutive colored set-partition polynomials satisfy `StrictInterl`, hence form a
 Sturm sequence. -/
 theorem strictInterl_coloredSetPartitions_succ (c m : Nat) :
-    ∀ n : Nat, StrictInterl (coloredSetPartitions c m n) (coloredSetPartitions c m (n + 1))
-  | 0 => (interlaces_coloredSetPartitions_zero_one c m).toStrictInterl
-  | 1 => strictInterl_coloredSetPartitions_one_two c m
-  | n + 2 => by
-      have hprev : StrictInterl (coloredSetPartitions c m (n + 1))
-          (coloredSetPartitions c m (n + 2)) :=
-        strictInterl_coloredSetPartitions_succ c m (n + 1)
-      have hInter :
-          Interlaces (coloredSetPartitions c m (n + 2)).derivative
-            (coloredSetPartitions c m (n + 2)) :=
-        derivative_interlaces_of_natDegree_ne_zero hprev.2.1.2
-          (by simp [natDegree_coloredSetPartitions])
-      have hg_pos :
-          HasPosLeadingCoeff (coloredSetPartitions c m (n + 2)).derivative :=
-        (coloredSetPartitions_posLeadingCoeff c m (n + 2)).derivative
-          (by simp [natDegree_coloredSetPartitions])
-      have hNext_eq :
-          coloredSetPartitionsCoeffA c * coloredSetPartitions c m (n + 2) +
-              coloredSetPartitionsCoeffB m * (coloredSetPartitions c m (n + 2)).derivative =
-            coloredSetPartitions c m (n + 3) :=
-        (coloredSetPartitions_succ c m (n + 2)).symm
-      have hF_pos :
-          HasPosLeadingCoeff
-            (coloredSetPartitionsCoeffA c * coloredSetPartitions c m (n + 2) +
-              coloredSetPartitionsCoeffB m * (coloredSetPartitions c m (n + 2)).derivative) := by
-        simpa [hNext_eq] using coloredSetPartitions_posLeadingCoeff c m (n + 3)
-      have hdeg_lo :
-          (coloredSetPartitions c m (n + 2)).natDegree ≤
-            (coloredSetPartitionsCoeffA c * coloredSetPartitions c m (n + 2) +
-              coloredSetPartitionsCoeffB m *
-                (coloredSetPartitions c m (n + 2)).derivative).natDegree := by
-        rw [hNext_eq, natDegree_coloredSetPartitions, natDegree_coloredSetPartitions]
-        lia
-      have hdeg_hi :
-          (coloredSetPartitionsCoeffA c * coloredSetPartitions c m (n + 2) +
-              coloredSetPartitionsCoeffB m *
-                (coloredSetPartitions c m (n + 2)).derivative).natDegree ≤
-            (coloredSetPartitions c m (n + 2)).natDegree + 1 := by
-        rw [hNext_eq, natDegree_coloredSetPartitions, natDegree_coloredSetPartitions]
-      have hb_nonpos :
-          ∀ r, (coloredSetPartitions c m (n + 2)).IsRoot r →
-            (coloredSetPartitionsCoeffB m).eval r ≤ 0 := by
-        intro r hr
-        have hr_nonpos : r ≤ 0 :=
-          roots_nonpos_coloredSetPartitions_of_isRealRooted r
-            ((mem_roots hprev.2.1.1).mpr hr)
-        exact eval_coloredSetPartitionsCoeffB_nonpos_of_nonpos m hr_nonpos
-      simpa [hNext_eq] using
-        strictInterl_of_interlaces_evalCoeff_nonpos
-          (f := coloredSetPartitions c m (n + 2))
-          (g := (coloredSetPartitions c m (n + 2)).derivative)
-          (a := coloredSetPartitionsCoeffA c)
-          (b := coloredSetPartitionsCoeffB m)
-          hInter hg_pos hF_pos hdeg_lo hdeg_hi hb_nonpos
+    ∀ n : Nat, StrictInterl (coloredSetPartitions c m n) (coloredSetPartitions c m (n + 1)) := by
+  intros
+  rr_row_strictInterl
+
+lemma strictInterl_coloredSetPartitions_one_two (c m : Nat) :
+    StrictInterl (coloredSetPartitions c m 1) (coloredSetPartitions c m 2) :=
+  strictInterl_coloredSetPartitions_succ c m 1
 
 theorem interlaces_coloredSetPartitions_succ (c m n : Nat) :
     Interlaces (coloredSetPartitions c m n) (coloredSetPartitions c m (n + 1)) :=

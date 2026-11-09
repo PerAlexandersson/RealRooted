@@ -78,20 +78,84 @@ where
     | .mdata _ b => go b acc
     | _ => acc
 
-/-- Record `0 ≤ (m : ℝ)` for every local `m : ℕ`. -/
+/-- Is `ty` a fact `0 ≤ (m : ℝ)` for a natural number `m`, as recorded by `addNatCastNonneg`? -/
+private def isNatCastNonneg (ty : Expr) : Bool :=
+  match ty.le? with
+  | some (_, l, r) => l.isAppOf ``OfNat.ofNat && r.isAppOf ``Nat.cast
+  | none => false
+
+/-- Record `0 ≤ (m : ℝ)` for every local `m : ℕ` that occurs in the goal or in a hypothesis.
+A variable that occurs nowhere else cannot help `nlinarith`, and each further hypothesis makes
+its products more expensive. -/
 def addNatCastNonneg : TacticM Unit := withMainContext do
+  let target ← instantiateMVars (← getMainTarget)
+  let mut types : Array Expr := #[target]
+  for decl in ← getLCtx do
+    if decl.isImplementationDetail then continue
+    let ty ← instantiateMVars decl.type
+    if !isNatCastNonneg ty then types := types.push ty
   for decl in ← getLCtx do
     if decl.isImplementationDetail then continue
     if (← instantiateMVars decl.type).isConstOf ``Nat then
-      let m ← Term.exprToSyntax decl.toExpr
-      evalTactic (← `(tactic| have := (Nat.cast_nonneg $m : (0 : ℝ) ≤ ($m : ℝ))))
+      if types.any (·.containsFVar decl.fvarId) then
+        let m ← Term.exprToSyntax decl.toExpr
+        evalTactic (← `(tactic| have := (Nat.cast_nonneg $m : (0 : ℝ) ≤ ($m : ℝ))))
 
-/-- Up to three rounds of clearing denominators from the main goal: `prove x` is the tactic
-proving the denominator `x` nonzero or positive, and `fieldSimp` clears the denominators.
+/-- How a denominator `x` of a row recurrence is shown to be nonzero. -/
+inductive DenomStrategy where
+  /-- `0 < x` by `positivity` or `nlinarith`. -/
+  | positive
+  /-- `x ≠ 0` by `positivity`. -/
+  | positivityNe
+  /-- `x ≠ 0` from `x < 0` by `nlinarith`. -/
+  | negative
+  /-- `x ≠ 0` from `0 < x` by `nlinarith`. -/
+  | positiveNe
+  deriving BEq
+
+/-- Which `DenomStrategy` succeeded last for a denominator, up to renaming the natural-number
+and real variables.  The side goals of one row repeat the same few denominators, and a failed
+`nlinarith` costs as much as a successful one, so the successful strategy is tried first.  Only
+the order of the attempts depends on this table, never which goals are provable. -/
+initialize denomStrategyCache : IO.Ref (Std.HashMap Expr DenomStrategy) ← IO.mkRef {}
+
+/-- The tactic proving the denominator `xs` nonzero (or positive) by the strategy `s`. -/
+def DenomStrategy.tactic (s : DenomStrategy) (xs : Term) : TacticM (TSyntax `tactic) :=
+  match s with
+  | .positive => `(tactic| have : 0 < $xs := by first | positivity | nlinarith | fail)
+  | .positivityNe => `(tactic| have : $xs ≠ 0 := by positivity)
+  | .negative => `(tactic| have : $xs ≠ 0 := by (apply ne_of_lt; nlinarith))
+  | .positiveNe => `(tactic| have : $xs ≠ 0 := by (apply ne_of_gt; nlinarith))
+
+/-- The strategy that last proved the denominator `x`, if any, and the key to record it under:
+`x` with its local variables replaced by one placeholder, since the variables differ between the
+side goals of a row. -/
+def denomStrategyHint (x : Expr) : TacticM (Expr × Option DenomStrategy) := do
+  let key := (← instantiateMVars x).replace fun e =>
+    if e.isFVar then some (mkConst `rrDenomVar) else none
+  return (key, (← denomStrategyCache.get)[key]?)
+
+/-- Prove the denominator `x` nonzero (or positive) by the first of `strategies` that works, but
+try the strategy that worked last time for this denominator first. -/
+def proveDenominator (strategies : List DenomStrategy) (x : Expr) : TacticM Unit := do
+  let (key, hint?) ← denomStrategyHint x
+  let strategies := match hint? with
+    | some s => if strategies.contains s then s :: strategies.erase s else strategies
+    | none => strategies
+  let xs ← Term.exprToSyntax x
+  for s in strategies do
+    if ← rowSucceeds (evalTactic (← s.tactic xs)) then
+      denomStrategyCache.modify fun m =>
+        (if m.size < 4096 then m else {}).insert key s
+      return
+  throwError "rr_row: could not prove a denominator nonzero"
+
+/-- Up to three rounds of clearing denominators from the main goal: `prove x` proves the
+denominator `x` nonzero or positive, and `fieldSimp` clears the denominators.
 `field_simp` may renormalize denominators, hence the rounds.  With `untilClosed`, the rounds
 end when `fieldSimp` closes the goal (and the result is `true`); otherwise they end when
 `fieldSimp` leaves the goal unchanged. -/
-def clearDenominatorRounds (prove : Term → TacticM (TSyntax `tactic))
+def clearDenominatorRounds (prove : Expr → TacticM Unit)
     (fieldSimp : TSyntax `tactic) (untilClosed : Bool) : TacticM Bool := do
   for _ in [0:3] do
     let dens ← withMainContext do
@@ -100,9 +164,10 @@ def clearDenominatorRounds (prove : Term → TacticM (TSyntax `tactic))
     withMainContext do
       let mut seen : Array Expr := #[]
       for x in dens do
-        if seen.contains x then continue
+        -- numeric denominators are cleared by `field_simp` itself
+        if seen.contains x || !x.hasFVar then continue
         seen := seen.push x
-        evalTactic (← prove (← Term.exprToSyntax x))
+        prove x
     if untilClosed then
       evalTactic fieldSimp
       if (← getGoals).isEmpty then return true
@@ -119,14 +184,7 @@ variables: record `0 ≤ (m : ℝ)` for every `m : ℕ`, prove every denominator
 elab "rr_row_field" : tactic => withMainContext do
   addNatCastNonneg
   discard <| clearDenominatorRounds
-    (fun xs => `(tactic| first
-      | have : 0 < $xs := by first | positivity | nlinarith | fail
-      | have : $xs ≠ 0 := by
-          first
-            | (apply ne_of_lt; nlinarith)
-            | (apply ne_of_gt; nlinarith)
-            | fail
-      | fail))
+    (proveDenominator [.positive, .negative, .positiveNe])
     (← `(tactic| try field_simp)) false
   -- an inequality with a single fraction left: multiply out by a denominator of known sign
   let dens ← withMainContext do return denominators (← instantiateMVars (← getMainTarget))
@@ -159,6 +217,20 @@ elab "rr_row_field" : tactic => withMainContext do
     | (apply sub_nonneg.mp; ring_nf; positivity)
     | (apply sub_pos.mp; ring_nf; positivity)
     | fail))
+
+/-- Does `e` have a denominator that depends on a local variable? -/
+def hasVariableDenominator (e : Expr) : Bool :=
+  (denominators e).any (·.hasFVar)
+
+/-- Closes an arithmetic goal by `positivity`, `nlinarith` and `rr_row_field`.  A goal with a
+variable denominator is out of reach of `nlinarith` until `rr_row_field` has cleared the
+denominator, and the failed `nlinarith` costs as much as a successful one, so `rr_row_field`
+comes first for such goals. -/
+elab (name := rrRowClose) "rr_row_close" : tactic => withMainContext do
+  if hasVariableDenominator (← instantiateMVars (← getMainTarget)) then
+    evalTactic (← `(tactic| first | positivity | rr_row_field | nlinarith))
+  else
+    evalTactic (← `(tactic| first | positivity | nlinarith | rr_row_field))
 
 /-- Finishers for a top-coefficient multiplier goal, after the coefficients have
 been computed. -/

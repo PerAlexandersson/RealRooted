@@ -9,6 +9,16 @@
     },
     {
       "sources": [
+        "RealRooted/Mathlib/Algebra/MvPolynomial/PDeriv/ToMvPolynomial.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.MvPolynomial.PDeriv.ToMvPolynomial"
+      ],
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
         "RealRooted/Mathlib/Algebra/MvPolynomial/PDeriv.lean"
       ],
       "note": "The local `MvPolynomial.pderiv_comm` copy was removed in the v4.35 bump (upstream has it); the remaining lemmas are not upstream yet."

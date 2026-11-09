@@ -87,6 +87,15 @@ theorem diagonalOperator_C_mul (gamma : ℕ → ℝ) (a : ℝ) (p : ℝ[X]) :
   ext n
   simp [mul_comm, mul_left_comm]
 
+/-- The coefficientwise multiplier `∑ a_k X ^ k ↦ ∑ γ_k a_k X ^ k` as a linear map. -/
+def diagonalLinearMap (γ : ℕ → ℝ) : ℝ[X] →ₗ[ℝ] ℝ[X] where
+  toFun := diagonalOperator γ
+  map_add' p q := by ext n; simp [mul_add]
+  map_smul' c p := by ext n; simp [mul_left_comm]
+
+@[simp] theorem diagonalLinearMap_apply (γ : ℕ → ℝ) (p : ℝ[X]) :
+    diagonalLinearMap γ p = diagonalOperator γ p := rfl
+
 @[simp] theorem diagonalOperator_C (gamma : ℕ → ℝ) (a : ℝ) :
     diagonalOperator gamma (C a) = C (gamma 0 * a) := by
   ext n

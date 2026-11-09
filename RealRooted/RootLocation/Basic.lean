@@ -185,6 +185,12 @@ protected theorem comp_C_mul_X_add_C {a : ℝ} (b : ℝ) (ha : a ≠ 0) (h : IsR
     exact h.mem_of_mem_roots this
 
 
+/-- Substituting `-X` into a polynomial rooted in `S` gives a polynomial rooted in the preimage
+of `S` under negation. -/
+protected theorem comp_neg_X (h : IsRealRootedIn S p) :
+    IsRealRootedIn ((fun x => -x) ⁻¹' S) (p.comp (-X)) := by
+  simpa using h.comp_C_mul_X_add_C 0 (neg_ne_zero.2 one_ne_zero)
+
 /-- Substituting `a X + b` with `a ≠ 0` has the same root location: the composite is rooted in
 the preimage of `S` iff `p` is rooted in `S`. -/
 theorem comp_C_mul_X_add_C_iff {a : ℝ} (b : ℝ) (ha : a ≠ 0) :

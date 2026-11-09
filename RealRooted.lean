@@ -197,6 +197,7 @@ public import RealRooted.Challenges.Preservers.BinaryRunTransformation
 public import RealRooted.Challenges.Stability.BorceaBranden
 public import RealRooted.Challenges.Combinatorial.BorosMoll
 public import RealRooted.Challenges.Preservers.BrandenETransform
+public import RealRooted.Challenges.Preservers.DerivativeProductKernel
 public import RealRooted.Challenges.Combinatorial.BrandenLeite
 public import RealRooted.Challenges.Combinatorial.BrandenSolus
 public import RealRooted.Challenges.Combinatorial.BrandenVecchi
@@ -254,6 +255,7 @@ public import RealRooted.Challenges.Roots.NewtonMaclaurin
 public import RealRooted.Challenges.PolyaFrequency.Nijenhuis
 public import RealRooted.Challenges.Interlacing.Obreschkoff
 public import RealRooted.Challenges.Preservers.OperatorPreservers
+public import RealRooted.Challenges.Preservers.ProductPowerMaps
 public import RealRooted.Challenges.Combinatorial.ParkingFunctions
 public import RealRooted.Challenges.Combinatorial.PeakPolynomials
 public import RealRooted.Challenges.Matrices.PerronFrobenius
@@ -917,6 +919,7 @@ public import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
 public import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
+public import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv.ToMvPolynomial
 public import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivSpecialize
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
@@ -1142,6 +1145,7 @@ public import RealRooted.MatrixInterlacing.SeparatedCharacteristicExamples
 public import RealRooted.MatrixInterlacing.SeparatedCharacteristicRows
 public import RealRooted.MatrixInterlacing.SeparatedCharacteristicRecurrence
 public import RealRooted.MatrixInterlacing.SparseTests
+public import RealRooted.MatrixInterlacing.TP2Step
 public import RealRooted.MatrixInterlacing.TotallyNonnegative
 public import RealRooted.MatrixInterlacing.TotallyNonnegativeExamples
 public import RealRooted.Multiaffine
@@ -1386,9 +1390,10 @@ public import RealRooted.RootCounting.Threshold.LogConcavity
 public import RealRooted.RootCounting.Threshold.Signs
 public import RealRooted.RootCounting.Threshold.Sorted
 public import RealRooted.RootLocation.Basic
-public import RealRooted.RootLocation.CommonInterlacer
 public import RealRooted.RootLocation.BernsteinDiagonal
+public import RealRooted.RootLocation.CommonInterlacer
 public import RealRooted.RootLocation.Mobius
+public import RealRooted.RootLocation.PreservesBridge
 public import RealRooted.RootMatchingSort
 public import RealRooted.RootMultiplicityMatching
 public import RealRooted.RootOrderBridge
@@ -1567,6 +1572,15 @@ public import RealRooted.ThresholdMatrix
 public import RealRooted.ThresholdMatrix.Basic
 public import RealRooted.ThresholdMatrix.GustafssonSolus
 public import RealRooted.ThresholdMatrix.HaglundZhang
+public import RealRooted.Toeplitz.SignedPerturbation
+public import RealRooted.Toeplitz.SignedPerturbation.AlternatingRoots
+public import RealRooted.Toeplitz.SignedPerturbation.Chebyshev
+public import RealRooted.Toeplitz.SignedPerturbation.CofactorBounds
+public import RealRooted.Toeplitz.SignedPerturbation.Curve
+public import RealRooted.Toeplitz.SignedPerturbation.Factorization
+public import RealRooted.Toeplitz.SignedPerturbation.Interlacing
+public import RealRooted.Toeplitz.SignedPerturbation.Rows
+public import RealRooted.Toeplitz.SignedPerturbation.TrigFamily
 public import RealRooted.TotallyNonnegInterlacing
 public import RealRooted.Touchard
 public import RealRooted.Transforms.BrandenE
@@ -1663,6 +1677,10 @@ public import RealRooted.DerivativeRecurrence.ScalarRecInvariantCone
 public import RealRooted.CoefficientShape.LocalLimit
 public import RealRooted.Mathlib.Probability.LocalLimit
 
+public import RealRooted.Toeplitz.HessenbergDeterminant
+public import RealRooted.Toeplitz.HessenbergRows
+public import RealRooted.Toeplitz.TP2Hessenberg
+public import RealRooted.Toeplitz.TP2HessenbergExamples
 public import RealRooted.ToeplitzFin
 public import RealRooted.ThreeTermRecurrence.CoeffMoments
 public import RealRooted.ThreeTermRecurrence.Coefficients
@@ -2123,8 +2141,10 @@ public import RealRooted.Challenges.Interlacing.MaWangEndpointSteps
 public import RealRooted.Challenges.Interlacing.PositiveAffineLagRecurrences
 public import RealRooted.Challenges.Interlacing.QuadraticInterlacingCriterion
 public import RealRooted.Challenges.Interlacing.ShiftedChebyshevFamilies
+public import RealRooted.Challenges.Interlacing.SignedToeplitzPerturbations
 public import RealRooted.Challenges.Interlacing.VariableDelayRecurrences
 public import RealRooted.Challenges.Matrices.SeparatedCharacteristicRecurrence
+public import RealRooted.Challenges.Matrices.TP2HessenbergCertificate
 public import RealRooted.Challenges.Matrices.TotallyNonnegativePencils
 public import RealRooted.Challenges.Matrices.WeightedThreeStateRecurrence
 public import RealRooted.Challenges.Preservers.FiniteDegreeDifferentialTests
@@ -2140,3 +2160,16 @@ public import RealRooted.Challenges.Roots.OdeRootBounds
 public import RealRooted.Challenges.Stability.BivariateDeterminantalReduction
 public import RealRooted.Challenges.Combinatorial.NarayanaGammaPolynomials
 public import RealRooted.DerivativeRecurrence.HalfStepLag
+public import RealRooted.DerivativeProduct.Associative
+public import RealRooted.DerivativeProduct.Basic
+public import RealRooted.DerivativeProduct.Diamond
+public import RealRooted.DerivativeProduct.Kernel
+public import RealRooted.DerivativeProduct.KernelNecessity
+public import RealRooted.DerivativeProduct.KernelSufficiency
+public import RealRooted.DerivativeProduct.KernelWeyl
+public import RealRooted.DerivativeProduct.Poisson
+public import RealRooted.DerivativeProduct.PoissonPower
+public import RealRooted.DerivativeProduct.ProductPower
+public import RealRooted.DerivativeProduct.ProductPowerCriteria
+public import RealRooted.DerivativeProduct.ProductPowerRoots
+public import RealRooted.DerivativeProduct.Transform

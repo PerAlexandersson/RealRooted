@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.Hadamard.Kostov.Bernstein
+public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Bernstein
 
 @[expose] public section
 
@@ -573,26 +574,30 @@ lemma bbsum_eq_zero : ∀ (n : ℕ) (c : ℕ → ℝ),
 /-- `Ψ_n T = ∑_k T_k X^k (1-X)^(n-k)`, i.e. `(1-y)^n T(y/(1-y))`. -/
 def Psi (n : ℕ) (T : ℝ[X]) : ℝ[X] := ∑ k ∈ Finset.range (n + 1), C (T.coeff k) * bb n k
 
+/-- `Ψ_n` is the degree-`n` Cayley transform. -/
+lemma Psi_eq_cayleyTransform (n : ℕ) (T : ℝ[X]) (hT : T.natDegree ≤ n) :
+    Psi n T = cayleyTransform n T := by
+  rw [cayleyTransform_eq_sum hT, Psi]
+  exact Finset.sum_congr rfl fun k _ => by simp [bb, mul_assoc]
+
 lemma Psi_eval (n : ℕ) (T : ℝ[X]) (hT : T.natDegree ≤ n) (y : ℝ) (hy : y ≠ 1) :
     (Psi n T).eval y = (1 - y) ^ n * T.eval (y / (1 - y)) := by
-  rw [Psi, sum_bb_eval n _ y hy, eval_eq_sum_range' (n := n + 1) (by lia)]
+  rw [Psi_eq_cayleyTransform n T hT, eval_cayleyTransform n hT (sub_ne_zero.2 hy.symm)]
 
 /-- `Φ_d H = ∑_i H_i X^i (X+1)^(d-i)`, i.e. `(1+x)^d H(x/(1+x))`. -/
 def Phi (d : ℕ) (H : ℝ[X]) : ℝ[X] :=
   ∑ i ∈ Finset.range (d + 1), C (H.coeff i) * (X ^ i * (X + 1) ^ (d - i))
 
+/-- `Φ_d` is the Bernstein expansion of degree `d`. -/
+lemma Phi_eq_bernsteinExpansion (d : ℕ) (H : ℝ[X]) : Phi d H = bernsteinExpansion d H := by
+  simp [Phi, bernsteinExpansion, add_comm]
+
 lemma Phi_eval (d : ℕ) (H : ℝ[X]) (hH : H.natDegree ≤ d) (x : ℝ) (hx : x ≠ -1) :
     (Phi d H).eval x = (1 + x) ^ d * H.eval (x / (1 + x)) := by
-  have hx' : 1 + x ≠ 0 := by
-    intro h; apply hx; linarith
-  rw [Phi, eval_finsetSum, eval_eq_sum_range' (n := d + 1) (by lia), Finset.mul_sum]
-  refine Finset.sum_congr rfl fun k hk => ?_
-  rw [Finset.mem_range] at hk
-  simp only [eval_mul, eval_C, eval_pow, eval_X, eval_add, eval_one]
-  rw [show (1 + x) ^ d = (1 + x) ^ (d - k) * (1 + x) ^ k by
-    rw [← pow_add, Nat.sub_add_cancel (by lia)], div_pow]
-  field_simp
-  ring
+  have hx' : 1 * x + 1 ≠ 0 := by
+    rw [one_mul, add_comm]; exact fun h => hx (by linarith)
+  rw [Phi_eq_bernsteinExpansion, bernsteinExpansion_eq_mobiusTransform hH,
+    eval_mobiusTransform d 1 0 1 1 hH hx', one_mul, add_zero, add_comm x 1]
 
 lemma monic_X_pow_mul_X_add_one_pow (i d : ℕ) (hi : i ≤ d) :
     (X ^ i * (X + 1) ^ (d - i) : ℝ[X]).Monic ∧
@@ -604,20 +609,13 @@ lemma monic_X_pow_mul_X_add_one_pow (i d : ℕ) (hi : i ≤ d) :
   lia
 
 lemma Phi_natDegree_le (d : ℕ) (H : ℝ[X]) : (Phi d H).natDegree ≤ d := by
-  refine natDegree_sum_le_of_forall_le _ _ fun i hi => ?_
-  rw [Finset.mem_range] at hi
-  exact (natDegree_C_mul_le _ _).trans (monic_X_pow_mul_X_add_one_pow i d (by lia)).2.le
+  rw [Phi_eq_bernsteinExpansion]
+  exact natDegree_bernsteinExpansion_le d H
 
 lemma Phi_coeff_top (d : ℕ) (H : ℝ[X]) (hH : H.natDegree ≤ d) :
     (Phi d H).coeff d = H.eval 1 := by
-  rw [Phi, finsetSum_coeff, eval_eq_sum_range' (n := d + 1) (by lia)]
-  refine Finset.sum_congr rfl fun i hi => ?_
-  rw [Finset.mem_range] at hi
-  obtain ⟨hm, hd⟩ := monic_X_pow_mul_X_add_one_pow i d (by lia)
-  have hc := hm.coeff_natDegree
-  rw [hd] at hc
-  rw [coeff_C_mul, hc]
-  simp
+  rw [Phi_eq_bernsteinExpansion, bernsteinExpansion_eq_mobiusTransform hH,
+    coeff_mobiusTransform_one_zero_one_one d hH]
 
 lemma eval_reflect_eq (f : ℝ[X]) (N : ℕ) (hf : f.natDegree ≤ N) (w : ℝ) (hw : w ≠ 0) :
     (reflect N f).eval w = w ^ N * f.eval (1 / w) := by
