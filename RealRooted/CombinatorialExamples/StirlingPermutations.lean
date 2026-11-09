@@ -143,8 +143,7 @@ lemma roots_nonpos_stirlingPermutations_of_isRealRooted {n : Nat} :
 
 lemma interlaces_stirlingPermutations_zero_one :
     Interlaces (stirlingPermutations 0) (stirlingPermutations 1) := by
-  simpa [stirlingPermutations_zero, stirlingPermutations_one] using
-    interlaces_one_linear (p := X) (by simp)
+  rr_row_interlaces
 
 lemma eval_stirlingPermutationsCoeffB_nonpos_of_nonpos {r : ℝ} (hr : r ≤ 0) :
     stirlingPermutationsCoeffB.eval r ≤ 0 := by

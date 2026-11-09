@@ -99,8 +99,8 @@ lemma monic_coloredSetPartitions (c m n : Nat) :
   lia
 
 lemma coloredSetPartitions_ne_zero (c m n : Nat) :
-    coloredSetPartitions c m n ≠ 0 :=
-  (monic_coloredSetPartitions c m n).ne_zero
+    coloredSetPartitions c m n ≠ 0 := by
+  rr_row_ne_zero
 
 lemma coloredSetPartitions_posLeadingCoeff (c m n : Nat) :
     HasPosLeadingCoeff (coloredSetPartitions c m n) :=
@@ -136,9 +136,8 @@ lemma strictInterl_coloredSetPartitions_one_two (c m : Nat) :
   strictInterl_coloredSetPartitions_succ c m 1
 
 theorem interlaces_coloredSetPartitions_succ (c m n : Nat) :
-    Interlaces (coloredSetPartitions c m n) (coloredSetPartitions c m (n + 1)) :=
-  (strictInterl_coloredSetPartitions_succ c m n).toInterlaces
-    (by simp [natDegree_coloredSetPartitions])
+    Interlaces (coloredSetPartitions c m n) (coloredSetPartitions c m (n + 1)) := by
+  rr_row_interlaces
 
 theorem isRealRooted_coloredSetPartitions (c m : Nat) :
     ∀ n : Nat, ((coloredSetPartitions c m n) ≠ 0 ∧ (coloredSetPartitions c m n).Splits)

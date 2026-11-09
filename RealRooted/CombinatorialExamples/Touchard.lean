@@ -90,8 +90,8 @@ lemma roots_nonpos_touchard_of_isRealRooted {n : Nat} :
   roots_nonpos_of_hasNonnegCoeffs (touchard_nonnegCoeffs n)
 
 lemma interlaces_touchard_zero_one :
-    Interlaces (touchard 0) (touchard 1) :=
-  by simpa [touchard_zero, touchard_one] using interlaces_one_linear (p := X) (by simp)
+    Interlaces (touchard 0) (touchard 1) := by
+  rr_row_interlaces
 
 lemma strictInterl_touchard_one_two :
     StrictInterl (touchard 1) (touchard 2) := by
