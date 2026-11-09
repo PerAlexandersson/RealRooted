@@ -1377,6 +1377,7 @@ public import RealRooted.RootCounting.Threshold.DominanceFamily
 public import RealRooted.RootCounting.Threshold.LogConcavity
 public import RealRooted.RootCounting.Threshold.Signs
 public import RealRooted.RootCounting.Threshold.Sorted
+public import RealRooted.RootLocation.Basic
 public import RealRooted.RootMatchingSort
 public import RealRooted.RootMultiplicityMatching
 public import RealRooted.RootOrderBridge

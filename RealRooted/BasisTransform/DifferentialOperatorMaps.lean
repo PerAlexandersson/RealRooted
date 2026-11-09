@@ -2,6 +2,7 @@ module
 
 public import RealRooted.Basic.ProperPosition
 public import RealRooted.Basic.Coefficients
+public import RealRooted.RootLocation.Basic
 public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 import RealRooted.DerivativeRecurrence.EndpointWindow
 public import Mathlib.Algebra.Polynomial.Module.AEval
@@ -29,10 +30,6 @@ open Polynomial Set
 noncomputable section
 
 namespace RealRooted
-
-/-- A nonzero real polynomial which splits and whose roots all belong to `S`. -/
-@[expose] def IsRealRootedIn (S : Set ℝ) (p : ℝ[X]) : Prop :=
-  p ≠ 0 ∧ p.Splits ∧ ∀ r ∈ p.roots, r ∈ S
 
 /-- The ray differential operator `f ↦ (a + bX)f + κ(X-h)f'`. -/
 @[expose] def rayDifferentialOperator (a b kappa h : ℝ) : Module.End ℝ ℝ[X] where
