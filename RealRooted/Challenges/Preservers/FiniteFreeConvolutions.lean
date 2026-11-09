@@ -1,6 +1,7 @@
 module
 
 import RealRooted.FiniteFreeAdditive.HalfIntegerPreservation
+import RealRooted.FiniteFreeAdditive.OrderedRoots
 public import RealRooted.FiniteFreeAdditive.Preservation
 public import RealRooted.FiniteFreeAdditive.RootWindow
 public import RealRooted.FiniteFreeMultiplicative
@@ -76,6 +77,11 @@ headline = true
 name = "RealRooted.IsRealRootedIn.finiteFreeAdditiveConvolution_Icc"
 module = "RealRooted.FiniteFreeAdditive.RootWindow"
 label = "Walsh–Leake–Ryder: ⊞_d sends roots in [A, B] and [a, b] into [A + a, B + b]"
+
+[[theorems]]
+name = "RealRooted.orderedRoot_finiteFreeAdditiveConvolution_bounds"
+module = "RealRooted.FiniteFreeAdditive.OrderedRoots"
+label = "Weyl bounds: the ith root of p ⊞_d q lies between α_i + a and α_i + b"
 
 [[theorems]]
 name = "RealRooted.finiteFreeAdditiveConvolution_comp_X_add_C"
@@ -175,9 +181,14 @@ lists $p_k$, $q_k$.
   the roots of $q$ lie in $[a, b]$, then all roots of $p \boxplus_d q$ lie in
   $[A + a, B + b]$ (Walsh's location theorem in the finite free setting; Leake and
   Ryder, *On the further structure of the finite free convolutions*, Proposition 1.1).
-  The proof shifts both inputs so that their roots are nonpositive, which makes
-  their coefficients nonnegative; the convolution is translation covariant and
-  preserves nonnegative coefficients, so it has no positive root.
+  The interval-window proof shifts both inputs so that their roots are nonpositive,
+  which makes their coefficients nonnegative; the convolution is translation
+  covariant and preserves nonnegative coefficients, so it has no positive root.
+- More sharply, if $\alpha_i$ is the $i$th ordered root of $p$ and $\rho_i$ is
+  the $i$th ordered root of $p \boxplus_d q$, then
+  $\alpha_i + a \leq \rho_i \leq \alpha_i + b$ whenever the roots of $q$ lie
+  in $[a,b]$. The proof moves the roots of $q$ one at a time and orients each
+  interlacing comparison through the additive formula for the sum of the roots.
 - If $f$ and $g$ have degree exactly $n$, positive leading coefficients, and
   only nonnegative real roots, then $f \boxplus_{m,n} g$ is zero or has only
   nonnegative real roots [@GribinskiMarcus2022].
@@ -236,6 +247,7 @@ the Narayana transformation, see [symmetricfunctions.com][mao-wang].
 
 This module is a catalog facade. The proofs live in
 `RealRooted.FiniteFreeAdditive`, `RealRooted.FiniteFreeAdditive.RootWindow`,
+`RealRooted.FiniteFreeAdditive.OrderedRoots`,
 `RealRooted.RectangularConvolution`,
 `RealRooted.NarayanaTransformation.Rectangular` and
 `RealRooted.FiniteFreeMultiplicative`.
