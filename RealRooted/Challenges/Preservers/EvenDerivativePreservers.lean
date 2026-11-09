@@ -115,7 +115,7 @@ label = "For c = (1, 1, 1, 0, …) T_c(u⁵) is not real-rooted: preservation fa
 [[theorems]]
 name = "RealRooted.isPFPolynomial_evenDerivativeOperator_square"
 module = "RealRooted.EvenDerivative.Examples"
-label = "For c = (1, 2, 1, 0, …), f + 2x f'' + x² f⁗ preserves PF polynomials in every degree"
+label = "For c = (1, 2, 1, 0, …), f + 2x f'' + x² f^(4) preserves PF polynomials in every degree"
 
 [[theorems]]
 name = "RealRooted.strictInterl_evenDerivativeOperator_square_X_add_one_pow"

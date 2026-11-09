@@ -98,7 +98,7 @@ theorem splits_evenDerivativeTest_square (N : ℕ) :
     simp; ring]
   exact ((Splits.X_sub_C _).mul (Splits.X_sub_C _)).pow 2
 
-/-- For `c = (1, 2, 1, 0, …)`, that is `T f = f + 2x f'' + x² f⁗`, the operator preserves PF
+/-- For `c = (1, 2, 1, 0, …)`, that is `T f = f + 2x f'' + x² f^(4)`, the operator preserves PF
 polynomials in every degree. -/
 theorem isPFPolynomial_evenDerivativeOperator_square {f : ℝ[X]} (hf : IsPFPolynomial f) :
     IsPFPolynomial (evenDerivativeOperator evenDerivativeSquare f) :=
