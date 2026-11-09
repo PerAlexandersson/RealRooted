@@ -153,16 +153,33 @@ def rationalEndpointWindowGoal : TacticM Unit := do
   let t ← Term.exprToSyntax (← mainRowIndex Pi)
   let degreeName ← freshAuxName "endpointWindowDegree"
   let degreeLemma := mkIdent degreeName
-  elabAuxCommand (← `(command|
-    theorem $(mkIdent (`_root_ ++ degreeName)) (m : ℕ) :
-        ($Pi m).natDegree = $Dq + m := by
-      rr_row_natDegree))
   let posName ← freshAuxName "endpointWindowLeadingCoeffPos"
   let posLemma := mkIdent posName
-  elabAuxCommand (← `(command|
-    theorem $(mkIdent (`_root_ ++ posName)) (m : ℕ) :
-        0 < ($Pi m).leadingCoeff := by
-      rr_row_leadingCoeff_pos))
+  -- One cancellation certificate gives the degree and the positive leader together, at about a
+  -- quarter of the cost of the two separate row tactics, which first try (and fail) the
+  -- non-cancelling theorems.
+  let bothName ← freshAuxName "endpointWindowDegreeLeadingCoeff"
+  let both := mkIdent bothName
+  let combined ← rowSucceeds <| elabAuxCommand (← `(command|
+    theorem $(mkIdent (`_root_ ++ bothName)) (m : ℕ) :
+        ($Pi m).natDegree = $Dq + m ∧ 0 < ($Pi m).leadingCoeff := by
+      rr_row_cancel))
+  if combined then
+    elabAuxCommand (← `(command|
+      theorem $(mkIdent (`_root_ ++ degreeName)) (m : ℕ) :
+          ($Pi m).natDegree = $Dq + m := ($both m).1))
+    elabAuxCommand (← `(command|
+      theorem $(mkIdent (`_root_ ++ posName)) (m : ℕ) :
+          0 < ($Pi m).leadingCoeff := ($both m).2))
+  else
+    elabAuxCommand (← `(command|
+      theorem $(mkIdent (`_root_ ++ degreeName)) (m : ℕ) :
+          ($Pi m).natDegree = $Dq + m := by
+        rr_row_natDegree))
+    elabAuxCommand (← `(command|
+      theorem $(mkIdent (`_root_ ++ posName)) (m : ℕ) :
+          0 < ($Pi m).leadingCoeff := by
+        rr_row_leadingCoeff_pos))
   let n := mkIdent `n
   let L ← `(fun $n:ident : ℕ => $(← endpointRatFunTerm fit.lower n))
   let U ← `(fun $n:ident : ℕ => $(← endpointRatFunTerm fit.upper n))

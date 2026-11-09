@@ -185,6 +185,34 @@ example (n : ℕ) : Interlaces (endpointWindowRows n) (endpointWindowRows (n + 1
 example (n : ℕ) : Interlaces (endpointWindowRows n) (endpointWindowRows (n + 1)) := by
   rr_row_interlaces (via := window)
 
+/-- A357613 in its downstream form, with the rational coefficients written as products with
+`1 / (-7 / 3 - 5 / 3 * n + 2 / 3 * (2 + n) ^ 2)`.  The top terms of the recurrence cancel, and
+the auxiliary degree and leading-coefficient theorems of the `endpointWindow` route took about
+`390000` heartbeats when they were proved by the two separate degree tactics, which exceeds the
+default limit.  The route now proves both by one cancellation certificate, so the plain call
+below stays within the default budget. -/
+def endpointWindowRationalRows : ℕ → ℝ[X]
+  | 0 => 1
+  | n + 1 =>
+    ((C ((1 / ((-7 / 3) + ((-5 / 3) * (n : ℝ)) + ((2 / 3) * ((2 + (n : ℝ))) ^ (2)))) *
+          (-1 + ((-3 / 2) * (n : ℝ)))) * X +
+      C ((1 / ((-7 / 3) + ((-5 / 3) * (n : ℝ)) + ((2 / 3) * ((2 + (n : ℝ))) ^ (2)))) *
+          ((-7 / 6) + ((-5 / 3) * (n : ℝ)))) * X ^ 2 +
+      C ((1 / ((-7 / 3) + ((-5 / 3) * (n : ℝ)) + ((2 / 3) * ((2 + (n : ℝ))) ^ (2)))) *
+          ((-1 / 6) + ((-1 / 6) * (n : ℝ)))) * X ^ 3)) *
+        (endpointWindowRationalRows n).derivative +
+    ((C ((1 / ((-7 / 3) + ((-5 / 3) * (n : ℝ)) + ((2 / 3) * ((2 + (n : ℝ))) ^ (2)))) *
+          (-17 + ((-27 / 2) * (n : ℝ)) + ((9 / 2) * ((2 + (n : ℝ))) ^ (2)))) +
+      C ((1 / ((-7 / 3) + ((-5 / 3) * (n : ℝ)) + ((2 / 3) * ((2 + (n : ℝ))) ^ (2)))) *
+          ((-46 / 3) + (4 * ((2 + (n : ℝ))) ^ (2)) + ((-37 / 3) * (n : ℝ)))) * X +
+      C ((1 / ((-7 / 3) + ((-5 / 3) * (n : ℝ)) + ((2 / 3) * ((2 + (n : ℝ))) ^ (2)))) *
+          ((-2 / 3) + ((-1 / 2) * (n : ℝ)) + ((1 / 6) * ((2 + (n : ℝ))) ^ (2)))) * X ^ 2)) *
+      endpointWindowRationalRows n
+
+example (n : ℕ) :
+    Interlaces (endpointWindowRationalRows n) (endpointWindowRationalRows (n + 1)) := by
+  rr_row_interlaces
+
 /-- Multipliers that are powers of the single linear factor `X`:
 `P (n + 2) = X P (n + 1) + X ^ 2 P n` (A127647). -/
 def powerFormRows : ℕ → ℝ[X]
