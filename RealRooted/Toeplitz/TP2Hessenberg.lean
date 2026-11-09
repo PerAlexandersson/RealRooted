@@ -3,6 +3,7 @@ module
 import RealRooted.Basic.AffineInterlacing
 import RealRooted.WagnerX.NonnegativeRoots
 public import RealRooted.RootLocation.Basic
+public import RealRooted.Toeplitz.AffineVector
 public import RealRooted.Toeplitz.HessenbergRows
 
 /-!
@@ -39,78 +40,44 @@ variable {n : ℕ}
 
 /-! ### The vector recursion preserves monic degree and interlacing -/
 
+/-- The Hessenberg vector is the vector recursion for the constant matrix sequence `A, A, …`. -/
+lemma hessenbergVector_eq_affineVector (A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) :
+    hessenbergVector A = affineVector fun _ => A := by
+  funext k
+  induction k with
+  | zero => rfl
+  | succ k ih => simp only [hessenbergVector, affineVector, ih]
+
 /-- Every coordinate of `f_k = (A + X J)ᵏ 𝟙` is monic of degree `k`. -/
 lemma hessenbergVector_monic_natDegree (A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) (k : ℕ)
     (i : Fin (n + 1)) :
     (hessenbergVector A k i).Monic ∧ (hessenbergVector A k i).natDegree = k := by
-  induction k generalizing i with
-  | zero => simp [hessenbergVector]
-  | succ k ih =>
-    have hX : (X * hessenbergVector A k 0).Monic := monic_X.mul (ih 0).1
-    have hXdeg : (X * hessenbergVector A k 0).natDegree = k + 1 := by
-      rw [natDegree_mul' (by simp [(ih 0).1.leadingCoeff]), natDegree_X, (ih 0).2]
-      lia
-    have hsum : (∑ j, A i j • hessenbergVector A k j).natDegree ≤ k :=
-      natDegree_sum_le_of_forall_le _ _ fun j _ =>
-        (natDegree_smul_le _ _).trans (ih j).2.le
-    have hlt : (∑ j, A i j • hessenbergVector A k j).degree <
-        (X * hessenbergVector A k 0).degree :=
-      degree_lt_degree (by lia)
-    have hstep : hessenbergVector A (k + 1) i =
-        ∑ j, A i j • hessenbergVector A k j + X * hessenbergVector A k 0 := by
-      simp [hessenbergVector, tp2AffineStep]
-    rw [hstep]
-    exact ⟨hX.add_of_right hlt, by rw [natDegree_add_eq_right_of_degree_lt hlt, hXdeg]⟩
+  rw [hessenbergVector_eq_affineVector]
+  exact affineVector_monic_natDegree _ k i
 
 lemma hessenbergVector_ne_zero (A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) (k : ℕ)
     (i : Fin (n + 1)) : hessenbergVector A k i ≠ 0 :=
   (hessenbergVector_monic_natDegree A k i).1.ne_zero
 
-/-- The invariant of the vector recursion: the stage-`k` vector is an interlacing sequence with
-nonnegative coefficients, and its first coordinate is interlaced by every coordinate of the
-stage-`k + 1` vector. -/
-lemma hessenbergVector_invariant {A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ} (hA : A.IsTP2)
-    (hcol : ∀ ⦃i k j : Fin (n + 1)⦄, i ≤ k → A k j ≤ A i j) (k : ℕ) :
-    IsInterlacingSeqNonneg (List.ofFn (hessenbergVector A k)) ∧
-      IsInterlacingSeqNonneg
-        (hessenbergVector A k 0 :: List.ofFn (hessenbergVector A (k + 1))) := by
-  have hstep : ∀ k, IsInterlacingSeqNonneg (List.ofFn (hessenbergVector A k)) →
-      IsInterlacingSeqNonneg
-        (hessenbergVector A k 0 :: List.ofFn (hessenbergVector A (k + 1))) := fun k hk =>
-    hA.interlacingSeqNonneg_cons_tp2AffineStep hcol zero_le_one hk fun i => by
-      simpa [hessenbergVector] using hessenbergVector_ne_zero A (k + 1) i
-  induction k with
-  | zero =>
-    have h0 : IsInterlacingSeqNonneg (List.ofFn (hessenbergVector A 0)) := by
-      refine ⟨fun p hp => ?_, isInterlacingSeq_iff_pairwise.mpr (List.pairwise_ofFn.mpr ?_)⟩
-      · obtain ⟨j, rfl⟩ := List.mem_ofFn.mp hp
-        exact ⟨⟨one_ne_zero, Splits.one⟩, hasNonnegCoeffs_one⟩
-      · intro i j _
-        exact StrictInterl.refl one_ne_zero Splits.one
-    exact ⟨h0, hstep 0 h0⟩
-  | succ k ih =>
-    have h1 : IsInterlacingSeqNonneg (List.ofFn (hessenbergVector A (k + 1))) :=
-      ih.2.sublist (List.sublist_cons_self _ _)
-    exact ⟨h1, hstep (k + 1) h1⟩
-
 /-- **The vector recursion preserves ordered interlacing**: every stage `(A + X J)ᵏ 𝟙` is an
 interlacing sequence with nonnegative coefficients. -/
 theorem isInterlacingSeqNonneg_hessenbergVector {A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ}
     (hA : A.IsTP2) (hcol : ∀ ⦃i k j : Fin (n + 1)⦄, i ≤ k → A k j ≤ A i j) (k : ℕ) :
-    IsInterlacingSeqNonneg (List.ofFn (hessenbergVector A k)) :=
-  (hessenbergVector_invariant hA hcol k).1
+    IsInterlacingSeqNonneg (List.ofFn (hessenbergVector A k)) := by
+  rw [hessenbergVector_eq_affineVector]
+  exact isInterlacingSeqNonneg_affineVector (fun _ => hA) (fun _ => hcol) k
 
 /-- The first coordinates of consecutive stages interlace: `f_{k,1} ≪ f_{k+1,1}`. -/
 theorem strictInterl_hessenbergVector_zero {A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ}
     (hA : A.IsTP2) (hcol : ∀ ⦃i k j : Fin (n + 1)⦄, i ≤ k → A k j ≤ A i j) (k : ℕ) :
     StrictInterl (hessenbergVector A k 0) (hessenbergVector A (k + 1) 0) := by
-  have h := (hessenbergVector_invariant hA hcol k).2.2
-  rw [isInterlacingSeq_iff_pairwise, List.pairwise_cons] at h
-  exact h.1 _ (List.mem_ofFn.mpr ⟨0, rfl⟩)
+  rw [hessenbergVector_eq_affineVector]
+  exact strictInterl_affineVector_zero (fun _ => hA) (fun _ => hcol) k
 
 /-! ### Transport to the rows `P_k(t) = (-1)ᵏ f_{k,1}(-t)` -/
 
-private lemma signedComp_monic_natDegree {f : ℝ[X]} {k : ℕ} (hf : f.Monic)
+/-- `(-1)ᵏ f(-t)` is monic of degree `k` for a monic `f` of degree `k`. -/
+lemma monic_natDegree_signedComp {f : ℝ[X]} {k : ℕ} (hf : f.Monic)
     (hdeg : f.natDegree = k) :
     (C ((-1 : ℝ) ^ k) * f.comp (-X)).Monic ∧ (C ((-1 : ℝ) ^ k) * f.comp (-X)).natDegree = k := by
   have hq : (-X : ℝ[X]).natDegree ≠ 0 := by simp
@@ -128,30 +95,39 @@ theorem monic_natDegree_hessenbergRow (A : Matrix (Fin (n + 1)) (Fin (n + 1)) �
     (hrow : ∀ ⦃i j : Fin (n + 1)⦄, i ≤ j → A i j = A j j) (k : ℕ) :
     (hessenbergRow A k).Monic ∧ (hessenbergRow A k).natDegree = k := by
   rw [hessenbergRow_eq A hrow k]
-  exact signedComp_monic_natDegree (hessenbergVector_monic_natDegree A k 0).1
+  exact monic_natDegree_signedComp (hessenbergVector_monic_natDegree A k 0).1
     (hessenbergVector_monic_natDegree A k 0).2
 
-/-- **Nonnegative real roots.** `P_k` is real-rooted with all roots in `[0, ∞)`. -/
-theorem isRealRootedIn_Ici_hessenbergRow {A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ}
-    (hA : A.IsTP2) (hcol : ∀ ⦃i k j : Fin (n + 1)⦄, i ≤ k → A k j ≤ A i j)
-    (hrow : ∀ ⦃i j : Fin (n + 1)⦄, i ≤ j → A i j = A j j) (k : ℕ) :
-    IsRealRootedIn (Set.Ici 0) (hessenbergRow A k) := by
+/-- **Nonnegative real roots, every coordinate.** `(-1)ᵏ f_{k,j}(-t)` is real-rooted with all
+roots in `[0, ∞)`. -/
+theorem isRealRootedIn_Ici_signedComp_hessenbergVector {A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ}
+    (hA : A.IsTP2) (hcol : ∀ ⦃i k j : Fin (n + 1)⦄, i ≤ k → A k j ≤ A i j) (k : ℕ)
+    (j : Fin (n + 1)) :
+    IsRealRootedIn (Set.Ici 0) (C ((-1 : ℝ) ^ k) * (hessenbergVector A k j).comp (-X)) := by
   have hf := isInterlacingSeqNonneg_hessenbergVector hA hcol k
-  have hmem : hessenbergVector A k 0 ∈ List.ofFn (hessenbergVector A k) :=
-    List.mem_ofFn.mpr ⟨0, rfl⟩
-  have hroot : IsRealRootedIn (Set.Iic 0) (hessenbergVector A k 0) :=
+  have hmem : hessenbergVector A k j ∈ List.ofFn (hessenbergVector A k) :=
+    List.mem_ofFn.mpr ⟨j, rfl⟩
+  have hroot : IsRealRootedIn (Set.Iic 0) (hessenbergVector A k j) :=
     ⟨(hf.realRooted _ hmem).1, (hf.realRooted _ hmem).2,
       roots_nonpos_of_hasNonnegCoeffs (hf.nonnegCoeffs _ hmem)⟩
   have hcomp := hroot.comp_C_mul_X_add_C (a := -1) 0 (by norm_num)
   have hne : ((-1 : ℝ) ^ k) ≠ 0 := pow_ne_zero _ (by norm_num)
-  rw [hessenbergRow_eq A hrow k]
   have hneg : (-X : ℝ[X]) = C (-1) * X + C 0 := by simp
   rw [hneg]
   refine IsRealRootedIn.C_mul hne (hcomp.mono fun x hx => ?_)
   simp only [Set.mem_preimage, Set.mem_Iic, Set.mem_Ici] at hx ⊢
   linarith
 
-private lemma interlaces_signedComp {f g : ℝ[X]} {k : ℕ} (h : StrictInterl f g)
+/-- **Nonnegative real roots.** `P_k` is real-rooted with all roots in `[0, ∞)`. -/
+theorem isRealRootedIn_Ici_hessenbergRow {A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ}
+    (hA : A.IsTP2) (hcol : ∀ ⦃i k j : Fin (n + 1)⦄, i ≤ k → A k j ≤ A i j)
+    (hrow : ∀ ⦃i j : Fin (n + 1)⦄, i ≤ j → A i j = A j j) (k : ℕ) :
+    IsRealRootedIn (Set.Ici 0) (hessenbergRow A k) := by
+  rw [hessenbergRow_eq A hrow k]
+  exact isRealRootedIn_Ici_signedComp_hessenbergVector hA hcol k 0
+
+/-- Reflection and signs transport interlacing of consecutive degrees. -/
+lemma interlaces_signedComp {f g : ℝ[X]} {k : ℕ} (h : StrictInterl f g)
     (hdeg : f.natDegree + 1 = g.natDegree) :
     Interlaces (C ((-1 : ℝ) ^ k) * f.comp (-X)) (C ((-1 : ℝ) ^ (k + 1)) * g.comp (-X)) := by
   have hne : ∀ m : ℕ, ((-1 : ℝ) ^ m) ≠ 0 := fun m => pow_ne_zero _ (by norm_num)

@@ -176,13 +176,14 @@ lemma hessenbergSeries_mulVec (A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)
   rw [hsum]
   linear_combination hi - h0
 
-/-- **Generating function of the signed vector.** For a matrix whose entries satisfy
-`A_{ij} = A_{jj}` for `i ≤ j`, the first coordinate series `G_0` of the signed vector
-`(-1)ᵏ f_k(-t)` is `1 / (det (I + z A) - t z)`. -/
-theorem hessenbergDenominator_mul_hessenbergSeries_zero
-    (A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)
-    (hrow : ∀ ⦃i j : Fin (n + 1)⦄, i ≤ j → A i j = A j j) :
-    hessenbergDenominator A * hessenbergSeries A 0 = 1 := by
+/-- **Resolvent identity for the triangular system.** If a family `S` of power series satisfies
+`S_i + z ∑ⱼ (A_{ij} - A_{jj}) S_j = S_0` for all `i`, where `A_{ij} = A_{jj}` for `i ≤ j`, then
+`z ∑ⱼ A_{jj} S_j = S_0 (det (I + z A) - 1)`. -/
+theorem X_mul_sum_diag_mul_eq (A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)
+    (hrow : ∀ ⦃i j : Fin (n + 1)⦄, i ≤ j → A i j = A j j) (S : Fin (n + 1) → PowerSeries ℝ[X])
+    (hS : ∀ i, S i + PowerSeries.X * ∑ j, hessenbergEmbed (A i j - A j j) * S j = S 0) :
+    PowerSeries.X * ∑ j, hessenbergEmbed (A j j) * S j =
+      S 0 * (hessenbergCoeffs (hessenbergDet A) - 1) := by
   set L : Matrix (Fin (n + 1)) (Fin (n + 1)) (PowerSeries ℝ[X]) :=
     Matrix.of fun i j => hessenbergEmbed (A i j - A j j) with hL
   set c : Fin (n + 1) → PowerSeries ℝ[X] := fun j => hessenbergEmbed (A j j) with hc
@@ -197,32 +198,56 @@ theorem hessenbergDenominator_mul_hessenbergSeries_zero
       simp only [hc, hL, Matrix.map_apply, Matrix.of_apply, ← map_add]
       congr 1
       ring
-  have hmul : B *ᵥ hessenbergSeries A = fun _ => hessenbergSeries A 0 := by
+  have hmul : B *ᵥ S = fun _ => S 0 := by
     rw [hBdef, Matrix.add_mulVec, Matrix.one_mulVec, Matrix.smul_mulVec]
     funext i
     simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
-    exact hessenbergSeries_mulVec A hrow i
-  have hsol : hessenbergSeries A = hessenbergSeries A 0 • (B⁻¹ *ᵥ fun _ => 1) := by
+    exact hS i
+  have hsol : S = S 0 • (B⁻¹ *ᵥ fun _ => 1) := by
     have hinv := Matrix.nonsing_inv_mul B (by rw [hB]; exact isUnit_one)
-    have hconst : (fun _ : Fin (n + 1) => hessenbergSeries A 0) =
-        hessenbergSeries A 0 • fun _ => (1 : PowerSeries ℝ[X]) := by
+    have hconst : (fun _ : Fin (n + 1) => S 0) = S 0 • fun _ => (1 : PowerSeries ℝ[X]) := by
       funext j; simp
-    calc hessenbergSeries A = (B⁻¹ * B) *ᵥ hessenbergSeries A := by
-          rw [hinv, Matrix.one_mulVec]
-      _ = B⁻¹ *ᵥ (B *ᵥ hessenbergSeries A) := by rw [Matrix.mulVec_mulVec]
-      _ = B⁻¹ *ᵥ (hessenbergSeries A 0 • fun _ => 1) := by rw [hmul, hconst]
-      _ = hessenbergSeries A 0 • (B⁻¹ *ᵥ fun _ => 1) := by rw [Matrix.mulVec_smul]
-  have hsum : ∑ j, hessenbergEmbed (A 0 j) * hessenbergSeries A j =
-      hessenbergSeries A 0 * (c ⬝ᵥ (B⁻¹ *ᵥ fun _ => 1)) := by
-    have h1 : ∑ j, hessenbergEmbed (A 0 j) * hessenbergSeries A j = c ⬝ᵥ hessenbergSeries A :=
-      Finset.sum_congr rfl fun j _ => by rw [hrow (Fin.zero_le j)]
+    calc S = (B⁻¹ * B) *ᵥ S := by rw [hinv, Matrix.one_mulVec]
+      _ = B⁻¹ *ᵥ (B *ᵥ S) := by rw [Matrix.mulVec_mulVec]
+      _ = B⁻¹ *ᵥ (S 0 • fun _ => 1) := by rw [hmul, hconst]
+      _ = S 0 • (B⁻¹ *ᵥ fun _ => 1) := by rw [Matrix.mulVec_smul]
+  have hsum : ∑ j, hessenbergEmbed (A j j) * S j = S 0 * (c ⬝ᵥ (B⁻¹ *ᵥ fun _ => 1)) := by
     have h2 := congrArg (fun v => c ⬝ᵥ v) hsol
     simp only [dotProduct_smul, smul_eq_mul] at h2
-    rw [h1, h2, mul_comm]
+    rw [show ∑ j, hessenbergEmbed (A j j) * S j = c ⬝ᵥ S from rfl, h2, mul_comm]
+  rw [hsum, hdet]
+  ring
+
+/-- **Generating function of the signed vector.** For a matrix whose entries satisfy
+`A_{ij} = A_{jj}` for `i ≤ j`, the first coordinate series `G_0` of the signed vector
+`(-1)ᵏ f_k(-t)` is `1 / (det (I + z A) - t z)`. -/
+theorem hessenbergDenominator_mul_hessenbergSeries_zero
+    (A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)
+    (hrow : ∀ ⦃i j : Fin (n + 1)⦄, i ≤ j → A i j = A j j) :
+    hessenbergDenominator A * hessenbergSeries A 0 = 1 := by
+  have hkey := X_mul_sum_diag_mul_eq A hrow (hessenbergSeries A)
+    (hessenbergSeries_mulVec A hrow)
   have h0 := hessenbergSeries_eq A 0
+  have hsum : ∑ j, hessenbergEmbed (A 0 j) * hessenbergSeries A j =
+      ∑ j, hessenbergEmbed (A j j) * hessenbergSeries A j :=
+    Finset.sum_congr rfl fun j _ => by rw [hrow (Fin.zero_le j)]
   rw [hsum] at h0
-  rw [hessenbergDenominator, hdet]
-  linear_combination h0
+  rw [hessenbergDenominator]
+  linear_combination h0 - hkey
+
+/-- The row series `1 / (det (I + z A) - t z)` is the first coordinate series of the signed
+vector. -/
+theorem hessenbergRowSeries_eq_hessenbergSeries_zero (A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)
+    (hrow : ∀ ⦃i j : Fin (n + 1)⦄, i ≤ j → A i j = A j j) :
+    hessenbergRowSeries A = hessenbergSeries A 0 := by
+  have h := hessenbergDenominator_mul_hessenbergSeries_zero A hrow
+  have h1 := PowerSeries.mul_invOfUnit (hessenbergDenominator A) 1
+    (by simpa using constantCoeff_hessenbergDenominator A)
+  calc hessenbergRowSeries A
+      = (hessenbergDenominator A * hessenbergSeries A 0) * hessenbergRowSeries A := by
+        rw [h, one_mul]
+    _ = hessenbergSeries A 0 * (hessenbergDenominator A * hessenbergRowSeries A) := by ring
+    _ = hessenbergSeries A 0 := by rw [hessenbergRowSeries, h1, mul_one]
 
 /-- **The rows are the signed first coordinate of the vector recursion.** If `A_{ij} = A_{jj}`
 for `i ≤ j`, the coefficient of `zᵏ` in `1 / (det (I + z A) - t z)` is
@@ -230,15 +255,7 @@ for `i ≤ j`, the coefficient of `zᵏ` in `1 / (det (I + z A) - t z)` is
 theorem hessenbergRow_eq (A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)
     (hrow : ∀ ⦃i j : Fin (n + 1)⦄, i ≤ j → A i j = A j j) (k : ℕ) :
     hessenbergRow A k = C ((-1 : ℝ) ^ k) * (hessenbergVector A k 0).comp (-X) := by
-  have h := hessenbergDenominator_mul_hessenbergSeries_zero A hrow
-  have hinv : hessenbergRowSeries A = hessenbergSeries A 0 := by
-    have h1 := PowerSeries.mul_invOfUnit (hessenbergDenominator A) 1
-      (by simpa using constantCoeff_hessenbergDenominator A)
-    calc hessenbergRowSeries A
-        = (hessenbergDenominator A * hessenbergSeries A 0) * hessenbergRowSeries A := by
-          rw [h, one_mul]
-      _ = hessenbergSeries A 0 * (hessenbergDenominator A * hessenbergRowSeries A) := by ring
-      _ = hessenbergSeries A 0 := by rw [hessenbergRowSeries, h1, mul_one]
-  simp [hessenbergRow, hinv, hessenbergSeries, hessenbergSignedVector]
+  simp [hessenbergRow, hessenbergRowSeries_eq_hessenbergSeries_zero A hrow, hessenbergSeries,
+    hessenbergSignedVector]
 
 end RealRooted
