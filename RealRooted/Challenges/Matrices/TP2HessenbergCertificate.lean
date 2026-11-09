@@ -129,8 +129,11 @@ The proof is new, developed for RealRooted (issue #2482), and is of independent 
 interest: the identification of the Hessenberg generating function with the first coordinate
 of an interlacing-preserving vector recursion is not taken from the literature, and the
 classical constant-matrix theorem is used only as the preservation input. The strict version
-(simple positive roots and strict interlacing when $d\ge 2$ and $\det A>0$) is not part of this
-page.
+(simple positive roots and strict interlacing when $d\ge 2$ and $\det A>0$) is on the
+[strict certificate](/RealRooted/theorems/tp2-hessenberg-strictness/) page; the weighted
+renewal and parity-lift consequences are on the
+[site-weighted run polynomials](/RealRooted/theorems/site-weighted-run-polynomials/) and
+[parity lift](/RealRooted/theorems/parity-lift-tp2-kernels/) pages.
 
 ## References
 

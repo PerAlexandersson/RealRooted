@@ -1604,6 +1604,7 @@ public import RealRooted.WangYeh.TriangularMatrix
 public import RealRooted.WeightedSum
 public import RealRooted.Wronskian
 public import RealRooted.Wronskian.Algebra
+public import RealRooted.Wronskian.CauchyBinet
 public import RealRooted.Wronskian.Converse
 public import RealRooted.Wronskian.Forward
 public import RealRooted.Wronskian.PolarLaguerre
@@ -1658,10 +1659,21 @@ public import RealRooted.DerivativeRecurrence.ScalarRecInvariantCone
 public import RealRooted.CoefficientShape.LocalLimit
 public import RealRooted.Mathlib.Probability.LocalLimit
 
+public import RealRooted.Toeplitz.AffineVector
 public import RealRooted.Toeplitz.HessenbergDeterminant
 public import RealRooted.Toeplitz.HessenbergRows
+public import RealRooted.Toeplitz.HessenbergWronskian
+public import RealRooted.Toeplitz.ParityBlock
+public import RealRooted.Toeplitz.ParityRows
+public import RealRooted.Toeplitz.ParityStrict
+public import RealRooted.Toeplitz.ParityVector
+public import RealRooted.Toeplitz.RowDifferenceDeterminant
+public import RealRooted.Toeplitz.RunExamples
+public import RealRooted.Toeplitz.SiteWeightedRunRoots
+public import RealRooted.Toeplitz.SiteWeightedRuns
 public import RealRooted.Toeplitz.TP2Hessenberg
 public import RealRooted.Toeplitz.TP2HessenbergExamples
+public import RealRooted.Toeplitz.TP2HessenbergStrict
 public import RealRooted.ToeplitzFin
 public import RealRooted.ThreeTermRecurrence.CoeffMoments
 public import RealRooted.ThreeTermRecurrence.Coefficients
@@ -2123,7 +2135,10 @@ public import RealRooted.Challenges.Interlacing.QuadraticInterlacingCriterion
 public import RealRooted.Challenges.Interlacing.ShiftedChebyshevFamilies
 public import RealRooted.Challenges.Interlacing.VariableDelayRecurrences
 public import RealRooted.Challenges.Matrices.SeparatedCharacteristicRecurrence
+public import RealRooted.Challenges.Matrices.ParityLiftTP2Kernels
+public import RealRooted.Challenges.Matrices.SiteWeightedRunPolynomials
 public import RealRooted.Challenges.Matrices.TP2HessenbergCertificate
+public import RealRooted.Challenges.Matrices.TP2HessenbergStrictness
 public import RealRooted.Challenges.Matrices.TotallyNonnegativePencils
 public import RealRooted.Challenges.Matrices.WeightedThreeStateRecurrence
 public import RealRooted.Challenges.Preservers.FiniteDegreeDifferentialTests
