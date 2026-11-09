@@ -692,6 +692,7 @@ public import RealRooted.Hadamard.Hurwitz
 public import RealRooted.Hadamard.KostovMap
 public import RealRooted.Hadamard.Newton
 public import RealRooted.Hadamard.Product
+public import RealRooted.Hadamard.RootIntervals
 public import RealRooted.Hadamard.SchurSzegoExamples
 public import RealRooted.Hadamard.SchurSzegoMultiplicity
 public import RealRooted.Hadamard.SchurSzegoSigns
