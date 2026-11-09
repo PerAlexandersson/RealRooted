@@ -1,7 +1,7 @@
 module
 
 import Mathlib.LinearAlgebra.Matrix.Block
-public import Mathlib.LinearAlgebra.Matrix.SchurComplement
+import Mathlib.LinearAlgebra.Matrix.SchurComplement
 
 /-!
 # The determinant of a rank-one perturbation of a unipotent lower-triangular pencil
