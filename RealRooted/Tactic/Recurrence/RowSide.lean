@@ -226,7 +226,7 @@ def hasVariableDenominator (e : Expr) : Bool :=
 variable denominator is out of reach of `nlinarith` until `rr_row_field` has cleared the
 denominator, and the failed `nlinarith` costs as much as a successful one, so `rr_row_field`
 comes first for such goals. -/
-elab "rr_row_close" : tactic => withMainContext do
+elab (name := rrRowClose) "rr_row_close" : tactic => withMainContext do
   if hasVariableDenominator (← instantiateMVars (← getMainTarget)) then
     evalTactic (← `(tactic| first | positivity | rr_row_field | nlinarith))
   else
