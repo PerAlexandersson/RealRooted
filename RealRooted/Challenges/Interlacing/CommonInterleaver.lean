@@ -10,6 +10,7 @@ public import RealRooted.Compatibility.InterleaverBridge
 public import RealRooted.Compatibility.Leander
 import RealRooted.CommonInterleaver.PairBridge.Compatibility.NonnegativeShift
 public import RealRooted.Compatibility.Pair
+public import RealRooted.RootLocation.CommonInterlacer
 public import RealRooted.Basic.ProperPosition
 import RealRooted.CommonInterleaverSeq
 import RealRooted.DegreeDropDivXPrec
@@ -144,6 +145,16 @@ module = "RealRooted.Compatibility.Leander"
 label = "Leander: the transform preserves ordered compatibility"
 
 [[theorems]]
+name = "RealRooted.isRealRootedIn_weightedSum_of_splits"
+module = "RealRooted.RootLocation.CommonInterlacer"
+label = "A split nonnegative combination of polynomials rooted in an interval is rooted there"
+
+[[theorems]]
+name = "RealRooted.HasCommonInterleaver.map"
+module = "RealRooted.RootLocation.CommonInterlacer"
+label = "Linear maps preserving real-rootedness on an interval transport common interleavers"
+
+[[theorems]]
 name = "RealRooted.exists_mem_largestRoot_le_sum"
 module = "RealRooted.CommonInterleaver.RootSelection"
 label = "Marcus–Spielman–Srivastava: some member's largest root is at most that of the sum"
@@ -208,6 +219,19 @@ $f \ll g$ holds if and only if $g/x \ll f$.
 This is the interlacing input for the real-rootedness of independence
 polynomials of claw-free graphs; see the
 [Chudnovsky–Seymour page](/RealRooted/theorems/chudnovsky-seymour/).
+
+**Transport along linear maps.** Let $T$ be a linear map on real polynomials, $J$ an interval
+and $n$ a degree, and suppose $T$ sends every polynomial of degree $n$ with positive leading
+coefficient whose roots lie in $J$ to a real-rooted polynomial with positive leading coefficient.
+Then $T$ sends a finite family of such polynomials with a common interleaver to a family with a
+common interleaver. Indeed, every nonnegative combination of the inputs is real-rooted by
+Chudnovsky–Seymour, hence has all its roots in $J$ because outside the convex hull of the roots
+all members have the same strict sign. Its image is therefore real-rooted, and the image of a
+combination is the combination of the images. The images are thus a compatible family and have a
+common interleaver; this is the criterion of Marcus–Spielman–Srivastava
+(*Interlacing families I*, Lemma 4.5, arXiv:1304.4132). The output degree need not be
+constant. For two polynomials, `Compatible.hasCommonInterleaver_map` and
+`StrictInterl.hasCommonInterleaver_map` give the pair versions.
 
 **Theorem (Leander).** [@Leander2016x, Thm. 2.3] Let $f_0, \dotsc, f_{n-1}$ have positive leading
 coefficients, and suppose that $f_i$ and $f_j$ are compatible and $x f_i$ and
