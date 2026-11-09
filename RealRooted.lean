@@ -694,6 +694,7 @@ public import RealRooted.Hadamard.Grace
 public import RealRooted.Hadamard.Hurwitz
 public import RealRooted.Hadamard.KostovMap
 public import RealRooted.Hadamard.Newton
+public import RealRooted.Hadamard.OrderedRoots
 public import RealRooted.Hadamard.Product
 public import RealRooted.Hadamard.RootIntervals
 public import RealRooted.Hadamard.SchurSzegoExamples
@@ -701,6 +702,8 @@ public import RealRooted.Hadamard.SchurSzegoMultiplicity
 public import RealRooted.Hadamard.SchurSzegoSigns
 public import RealRooted.Hadamard.SchurSzegoSimple
 public import RealRooted.Hadamard.SchurSzegoStrict
+public import RealRooted.Hadamard.SequenceCounterexamples
+public import RealRooted.Hadamard.SequenceOperators
 public import RealRooted.HeilmannLieb
 public import RealRooted.Hermite
 public import RealRooted.Hermite.Basic

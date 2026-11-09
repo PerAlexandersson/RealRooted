@@ -5,10 +5,13 @@ public import RealRooted.GarloffWagner.Theorem12
 public import RealRooted.Hadamard
 import RealRooted.Hadamard.FiniteReflection
 public import RealRooted.Hadamard.KostovMap
+public import RealRooted.Hadamard.OrderedRoots
 public import RealRooted.Hadamard.RootIntervals
 public import RealRooted.Hadamard.SchurSzegoMultiplicity
 public import RealRooted.Hadamard.SchurSzegoSimple
 public import RealRooted.Hadamard.SchurSzegoSigns
+public import RealRooted.Hadamard.SequenceCounterexamples
+public import RealRooted.Hadamard.SequenceOperators
 public import RealRooted.CoefficientShape.LiuMao
 import RealRooted.MultiplierSequence.PolyaSchur.Schur
 import RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal
@@ -122,6 +125,42 @@ module = "RealRooted.Hadamard.RootIntervals"
 label = "Fixed Schur–Szegő composition maps root rays, allowing zero output"
 
 [[theorems]]
+name = "RealRooted.IsRealRootedIn.orderedRoot_schurSzegoComp_bounds"
+module = "RealRooted.Hadamard.OrderedRoots"
+label = "Coordinatewise bounds for the ordered roots of a Schur–Szegő composition"
+headline = true
+
+[[theorems]]
+name = "RealRooted.basisTransformₗ_schurSzegoComp"
+module = "RealRooted.Hadamard.SequenceOperators"
+label = "Fixed Schur–Szegő composition postcomposes a polynomial-sequence operator"
+
+[[theorems]]
+name = "RealRooted.basisTransformₗ_C_mul"
+module = "RealRooted.Hadamard.SequenceOperators"
+label = "Termwise sequence scaling precomposes by a diagonal operator"
+
+[[theorems]]
+name = "RealRooted.basisTransformₗ_schurSzegoComp_C_mul"
+module = "RealRooted.Hadamard.SequenceOperators"
+label = "Combined diagonal precomposition and Schur–Szegő postcomposition"
+
+[[theorems]]
+name = "RealRooted.MapsRealRootedIn.basisTransform_schurSzegoComp_C_mul"
+module = "RealRooted.Hadamard.SequenceOperators"
+label = "Root-location preservation for the combined sequence operation"
+
+[[theorems]]
+name = "RealRooted.rowwiseHadamardProduct_counterexample"
+module = "RealRooted.Hadamard.SequenceCounterexamples"
+label = "Two preserving sequence maps can have a non-real-rooted rowwise Hadamard product"
+
+[[theorems]]
+name = "RealRooted.rowwiseNormalizedSchurProduct_counterexample"
+module = "RealRooted.Hadamard.SequenceCounterexamples"
+label = "Identical invertible maps can have non-real-rooted rowwise Schur squares"
+
+[[theorems]]
 name = "RealRooted.Kostov.interiorCoeff_composition"
 module = "RealRooted.Hadamard.KostovMap"
 label = "Kostov: Schur–Szegő factorizations have coefficients affine in σ(a)"
@@ -221,6 +260,16 @@ $[-v,-u]$, where $0\le u\le v$. Then $f*_ng$ has all roots in $[-bv,-au]$. The u
 bound $bv$ on the absolute values of the roots is Szegő's disk theorem, a consequence of Grace's
 apolarity theorem, and the lower bound $au$ follows by reflecting both factors. If the roots of $f$
 and $g$ only lie in $[-v,0]$ and $[-b,0]$, then those of $f*_ng$ lie in $[-bv,0]$.
+
+For an input of degree $m\le n$, reduce $g$ to its degree-$m$ Schur–Szegő factor and write its
+increasing roots as $\beta_i$. If $\rho_i$ are the increasing roots of $f*_ng$, the sharper
+coordinatewise inequalities are $v\beta_i\le\rho_i\le u\beta_i$. At the operator level,
+applying a fixed Schur–Szegő factor to every row of a polynomial sequence postcomposes its
+basis transform, while scaling row $k$ by $\gamma_k$ precomposes by the diagonal multiplier
+$\gamma$. These operations therefore inherit root-location results under composition.
+Rowwise products do not inherit preservation merely from the two original sequence maps:
+the formal counterexamples give outputs $1+3x+4x^2$ and $(9x^2+24x+17)/8$, with
+discriminants $-7$ and $-9/16$ respectively.
 
 Kostov's coefficient map makes the factorizations explicit. Write a monic $P$ of degree $n$
 with $P(-1) = 0$ as $(x+1)(x^{n-1} + c_1 x^{n-2} + \dots + c_{n-1})$. If $P = K_{a_1} *_n
