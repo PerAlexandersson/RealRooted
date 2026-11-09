@@ -35,6 +35,7 @@ version = 1
 section = "theorems"
 slug = "branden-leite"
 formalized = "2026-09-24"
+tags = ["realrooted-original"]
 references = [
   "BrandenLeite2024x",
 ]
@@ -278,6 +279,14 @@ length.
 **Theorem (Brändén–Saud Leite).** [@BrandenLeite2024x] If $A$ is lower unitriangular
 and totally nonnegative, then every $P_n$ has nonnegative coefficients and
 only real zeros in $[-1, 0]$, and $P_n$ interlaces $P_{n+1}$.
+
+**Provenance.** The theorem above is from [@BrandenLeite2024x]. The extensions
+on this page are new results whose proofs were developed for RealRooted and are
+of independent research interest: rows for arbitrary real positive powers of
+affine kernels and their logarithmic limits (negative roots, exact degree
+$\lfloor n/r\rfloor$, positive coefficients and consecutive interlacing), numerators
+of PF polynomial factors, and delayed renewal rows within each residue class
+(issue #2441).
 
 The matrices covered are exactly the resolvable ones: a lower-unitriangular
 matrix admits a resolution by nonnegative weights and monic polynomials if and
