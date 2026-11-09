@@ -555,6 +555,7 @@ public import RealRooted.FiniteFreeAdditive.HalfInteger
 public import RealRooted.FiniteFreeAdditive.HalfIntegerConvolution
 public import RealRooted.FiniteFreeAdditive.HalfIntegerPreservation
 public import RealRooted.FiniteFreeAdditive.Identity
+public import RealRooted.FiniteFreeAdditive.OrderedRoots
 public import RealRooted.FiniteFreeAdditive.Preservation
 public import RealRooted.FiniteFreeAdditive.RootWindow
 public import RealRooted.FiniteFreeMultiplicative
