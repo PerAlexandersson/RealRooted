@@ -725,6 +725,15 @@
     },
     {
       "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Splits/FinRoots.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Splits"
+      ],
+      "note": "A splitting polynomial as its leading coefficient times a product over a Fin-indexed vector of its roots."
+    },
+    {
+      "sources": [
         "RealRooted/Mathlib/Algebra/Polynomial/Splits/Derivative.lean"
       ],
       "modules": [
@@ -2770,7 +2779,7 @@
       "modules": [
         "Mathlib.Algebra.Polynomial.Derivative"
       ],
-      "note": "Multinomial Leibniz rule for iterated derivatives of products of powers of linear factors (issue #1917); would sit next to Polynomial.iterate_derivative_X_add_pow. Proof found by Aristotle."
+      "note": "Multinomial Leibniz rule for iterated derivatives of products of powers of linear factors (issue #1917); would sit next to Polynomial.iterate_derivative_X_add_pow. Proof found by Aristotle. Also the value of the m-th derivative of a product of linear factors as m! times an elementary symmetric function (Taylor shift and Vieta)."
     },
     {
       "sources": [

@@ -7,6 +7,9 @@ module
 
 public import Mathlib.Algebra.Order.Antidiag.Pi
 public import Mathlib.Algebra.Polynomial.Derivative
+public import Mathlib.Algebra.Polynomial.HasseDeriv
+public import Mathlib.Algebra.Polynomial.Taylor
+import Mathlib.RingTheory.Polynomial.Vieta
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.LinearCombination
 
@@ -23,6 +26,12 @@ its `k`-th derivative is `k! ∑_{|α| = k} ∏ i, (n i).choose (α i) * (X + C 
 the sum running over `s.piAntidiag k`.  When every `n i ≥ m ≥ k`, the common factor
 `∏ i, (X + C (a i)) ^ (n i - m)` can be pulled out; this is the cluster derivative identity of
 RealRooted issue #1917.  The proofs were found by Aristotle (Harmonic).
+
+## Values of iterated derivatives of a product of linear factors
+
+The `m`-th derivative of `∏ i ∈ s, (X + C (a i))` at `x` is `m!` times the elementary symmetric
+function of degree `#s - m` in the values `x + a i`
+(`Polynomial.eval_iterate_derivative_prod_X_add_C`).
 -/
 
 public section
@@ -99,6 +108,23 @@ theorem iterate_derivative_prod_X_add_C_pow_of_le [Fintype ι] (a : ι → R) (n
   refine prod_congr rfl fun i _ => ?_
   rw [show n i - α i = (n i - m) + (m - α i) by have := hle i; have := hn i; lia, pow_add]
   ring
+
+omit [DecidableEq ι] in
+/-- The value at `x` of the `m`-th derivative of `∏ i ∈ s, (X + C (a i))` is `m!` times the
+elementary symmetric function of degree `#s - m` in the values `x + a i`. -/
+theorem eval_iterate_derivative_prod_X_add_C (s : Finset ι) (a : ι → R) {m : ℕ}
+    (hm : m ≤ #s) (x : R) :
+    (derivative^[m] (∏ i ∈ s, (X + C (a i)))).eval x =
+      (m.factorial : R) * ∑ t ∈ s.powersetCard (#s - m), ∏ i ∈ t, (x + a i) := by
+  have h1 : derivative^[m] (∏ i ∈ s, (X + C (a i))) =
+      m.factorial • hasseDeriv m (∏ i ∈ s, (X + C (a i))) := by
+    rw [← factorial_smul_hasseDeriv]; rfl
+  have h2 : taylor x (∏ i ∈ s, (X + C (a i))) = ∏ i ∈ s, (X + C (x + a i)) := by
+    rw [taylor_apply, Polynomial.prod_comp]
+    refine Finset.prod_congr rfl fun i _ => ?_
+    simp only [add_comp, X_comp, C_comp, C_add]
+    ring
+  rw [h1, eval_smul, nsmul_eq_mul, ← taylor_coeff, h2, Finset.prod_X_add_C_coeff s _ hm]
 
 section Field
 

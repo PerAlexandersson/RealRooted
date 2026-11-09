@@ -126,6 +126,35 @@ theorem roots_nonpos_of_splits_comp_neg_X_sq {p : ℝ[X]}
     (Polynomial.Splits.isUpperHalfPlaneStable_complexify h
       (comp_neg_X_sq_ne_zero hp0)) w hwim hwroot
 
+/-- If `p` splits over the reals and all its roots are nonpositive, then `p(-X²)` splits. -/
+theorem Polynomial.Splits.comp_neg_X_sq_of_roots_nonpos {p : ℝ[X]} (hp : p.Splits)
+    (hr : ∀ r ∈ p.roots, r ≤ 0) : (p.comp (-(X ^ 2))).Splits := by
+  have h : p.comp (-(X ^ 2)) = C p.leadingCoeff *
+      (p.roots.map fun a => (X - C a).comp (-(X ^ 2))).prod := by
+    conv_lhs => rw [hp.eq_prod_roots]
+    rw [mul_comp, C_comp, multiset_prod_comp, Multiset.map_map]
+    rfl
+  rw [h]
+  refine Polynomial.Splits.C_mul (Polynomial.Splits.multisetProd fun f hf => ?_) _
+  obtain ⟨a, ha, rfl⟩ := Multiset.mem_map.1 hf
+  have hb : (Real.sqrt (-a)) ^ 2 = -a := Real.sq_sqrt (by linarith [hr a ha])
+  have : ((X - C a).comp (-(X ^ 2)) : ℝ[X]) =
+      (-(X - C (Real.sqrt (-a)))) * (X - C (-Real.sqrt (-a))) := by
+    simp only [sub_comp, X_comp, C_comp, C_neg]
+    have hC : (C a : ℝ[X]) = -(C (Real.sqrt (-a)) ^ 2) := by
+      rw [← C_pow, hb]; simp
+    rw [hC]
+    ring
+  rw [this]
+  exact (Polynomial.Splits.X_sub_C (Real.sqrt (-a))).neg.mul
+    (Polynomial.Splits.X_sub_C (-Real.sqrt (-a)))
+
+/-- `p(-X²)` splits over the reals exactly when `p` splits and has only nonpositive roots. -/
+theorem Polynomial.Splits.comp_neg_X_sq_iff {p : ℝ[X]} :
+    (p.comp (-(X ^ 2))).Splits ↔ p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0 :=
+  ⟨fun h => ⟨Polynomial.Splits.of_comp_neg_X_sq h, roots_nonpos_of_splits_comp_neg_X_sq h⟩,
+    fun h => Polynomial.Splits.comp_neg_X_sq_of_roots_nonpos h.1 h.2⟩
+
 /-- Splitness of a rotated even part descends to the original polynomial. -/
 theorem Polynomial.Splits.of_hurwitzRotatedEvenPart {p : ℝ[X]}
     (h : (hurwitzRotatedEvenPart p).Splits) : p.Splits :=
