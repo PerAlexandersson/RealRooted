@@ -187,7 +187,8 @@ theorem isPFPolynomial_touchard_fallingFactorial_C_mul_prod
 
 /-! ## Exact grouped cubics -/
 
-private theorem basisTransform_touchard_X_add_C (r : ℝ) :
+/-- The Touchard transform of a linear factor is the linear factor itself. -/
+theorem basisTransform_touchard_X_add_C (r : ℝ) :
     basisTransform touchard (X + C r) = X + C r := by
   rw [Polynomial.basisTransform_add]
   rw [show (X : ℝ[X]) = X ^ 1 by simp, Polynomial.basisTransform_X_pow]
