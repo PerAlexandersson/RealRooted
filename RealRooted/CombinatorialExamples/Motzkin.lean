@@ -183,50 +183,11 @@ lemma strictInterl_motzkin_shifted_succ {n : Nat}
     StrictInterl.add_of_right_of_posLeadingCoeff hleft hright hleft_pos hright_pos
   simpa [motzkin_succ_succ, add_comm, add_left_comm, add_assoc, mul_assoc] using hsum
 
-lemma strictInterl_motzkin_succ_of_shifted_even {n : Nat} (heven : n % 2 = 0)
-    (hshift : StrictInterl (motzkin (n + 1)) ((X - C motzkinShift) * motzkin n))
-    (hle_n : ∀ r ∈ (motzkin n).roots, r ≤ motzkinShift)
-    (hle_succ : ∀ r ∈ (motzkin (n + 1)).roots, r ≤ motzkinShift) :
-    StrictInterl (motzkin n) (motzkin (n + 1)) := by
-  have hf : ((motzkin n) ≠ 0 ∧ (motzkin n).Splits) :=
-    isRealRooted_of_dvd hshift.2.1.1 hshift.2.1.2 (motzkin_nonzero n)
-      ⟨X - C motzkinShift, by grind⟩
-  have hdeg : (motzkin n).natDegree + 1 = (motzkin (n + 1)).natDegree := by
-    rw [natDegree_motzkin, natDegree_motzkin]
-    lia
-  exact
-    (strictInterl_iff_strictInterl_mul_X_sub_C_of_roots_le motzkinShift
-      hf.2 hshift.1.2 (motzkin_posLeadingCoeff n) (motzkin_posLeadingCoeff (n + 1))
-      hle_n hle_succ hdeg).mpr hshift
-
-lemma strictInterl_motzkin_succ_of_shifted_odd {n : Nat} (hodd : n % 2 = 1)
-    (hshift : StrictInterl (motzkin (n + 1)) ((X - C motzkinShift) * motzkin n))
-    (hle_n : ∀ r ∈ (motzkin n).roots, r ≤ motzkinShift) :
-    StrictInterl (motzkin n) (motzkin (n + 1)) := by
-  set f' := (motzkin n).comp (X + C motzkinShift)
-  set g' := (motzkin (n + 1)).comp (X + C motzkinShift)
-  have hshift' : StrictInterl g' (X * f') := by
-    have htmp := hshift.comp_X_add_C motzkinShift
-    simpa [f', g', mul_comp, sub_comp, X_comp, C_comp, sub_eq_add_neg, comp_assoc,
-      add_assoc, add_left_comm, add_comm, mul_assoc] using htmp
-  have hf'_nonpos : ∀ s ∈ f'.roots, s ≤ 0 := by
-    intro s hs
-    simp only [f', roots_comp_X_add_C motzkinShift] at hs
-    rcases Multiset.mem_map.mp hs with ⟨t, ht, rfl⟩
-    simp_all
-  have hdeg' : f'.natDegree = g'.natDegree := by
-    rw [show f' = (motzkin n).comp (X + C motzkinShift) by lia,
-      show g' = (motzkin (n + 1)).comp (X + C motzkinShift) by lia]
-    simp [natDegree_comp, natDegree_motzkin]
-    lia
-  have hstrictInterl' :
-      StrictInterl f' g' :=
-    strictInterl_of_strictInterl_mul_X_of_sameDegree_of_roots_nonpos hshift' hdeg' hf'_nonpos
-  exact
-    (StrictInterl.comp_X_add_C_iff (f := motzkin n) (g := motzkin (n + 1))
-      motzkinShift).1 hstrictInterl'
-
 /-- Consecutive Motzkin polynomials satisfy the generalized interlacing relation `StrictInterl`. -/
+theorem strictInterl_motzkin_succ (n : Nat) :
+    StrictInterl (motzkin n) (motzkin (n + 1)) := by
+  rr_row_strictInterl
+
 theorem strictInterl_motzkin_succ_and_roots_le :
     ∀ n : Nat,
       StrictInterl (motzkin n) (motzkin (n + 1)) ∧
@@ -234,7 +195,8 @@ theorem strictInterl_motzkin_succ_and_roots_le :
       (∀ r ∈ (motzkin (n + 1)).roots, r ≤ motzkinShift)
   | 0 => ⟨strictInterl_motzkin_zero_one, motzkin_bound_zero, motzkin_bound_one⟩
   | n + 1 => by
-      rcases strictInterl_motzkin_succ_and_roots_le n with ⟨hprev, hle_n, hle_succ⟩
+      rcases strictInterl_motzkin_succ_and_roots_le n with ⟨_, _, hle_succ⟩
+      have hprev := strictInterl_motzkin_succ n
       have hshift :
           StrictInterl (motzkin (n + 2)) ((X - C motzkinShift) * motzkin (n + 1)) :=
         strictInterl_motzkin_shifted_succ hprev hle_succ
@@ -244,15 +206,7 @@ theorem strictInterl_motzkin_succ_and_roots_le :
       have hle_next :
           ∀ r ∈ (motzkin (n + 2)).roots, r ≤ motzkinShift :=
         hshift.roots_le_of_right hright_le
-      have hnext : StrictInterl (motzkin (n + 1)) (motzkin (n + 2)) :=
-        (Nat.mod_two_eq_zero_or_one (n + 1)).elim
-          (fun hpar => strictInterl_motzkin_succ_of_shifted_even hpar hshift hle_succ hle_next)
-          (fun hpar => strictInterl_motzkin_succ_of_shifted_odd hpar hshift hle_succ)
-      lia
-
-theorem strictInterl_motzkin_succ (n : Nat) :
-    StrictInterl (motzkin n) (motzkin (n + 1)) :=
-  (strictInterl_motzkin_succ_and_roots_le n).1
+      exact ⟨strictInterl_motzkin_succ (n + 1), hle_succ, hle_next⟩
 
 theorem roots_le_motzkinShift_motzkin (n : Nat) :
     ∀ r ∈ (motzkin n).roots, r ≤ motzkinShift :=
