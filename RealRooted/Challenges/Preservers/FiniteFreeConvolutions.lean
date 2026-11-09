@@ -4,6 +4,7 @@ import RealRooted.FiniteFreeAdditive.HalfIntegerPreservation
 import RealRooted.FiniteFreeAdditive.OrderedRoots
 public import RealRooted.FiniteFreeAdditive.Preservation
 public import RealRooted.FiniteFreeAdditive.RootWindow
+import RealRooted.FiniteFreeAdditive.Stability
 public import RealRooted.FiniteFreeMultiplicative
 public import RealRooted.FiniteFreeRootCount
 public import RealRooted.Hadamard.Grace
@@ -23,9 +24,10 @@ formalized = "2026-09-11"
 references = [
   "MarcusSpielmanSrivastava2022",
   "GribinskiMarcus2022",
+  "LeakeRyder2018",
 ]
-authors = ["Marcus", "Spielman", "Srivastava", "Gribinski"]
-years = [2022]
+authors = ["Marcus", "Spielman", "Srivastava", "Gribinski", "Leake", "Ryder"]
+years = [2018, 2022]
 
 [[definitions]]
 name = "RealRooted.finiteFreeAdditiveConvolution"
@@ -87,6 +89,26 @@ label = "Weyl bounds: the ith root of p ⊞_d q lies between α_i + a and α_i +
 name = "RealRooted.finiteFreeAdditiveConvolution_comp_X_add_C"
 module = "RealRooted.FiniteFreeAdditive.RootWindow"
 label = "Translating the arguments of ⊞_d by s and t translates the output by s + t"
+
+[[theorems]]
+name = "RealRooted.finiteFreeAdditiveConvolution_eq_lowerDegree"
+module = "RealRooted.FiniteFreeAdditive.Stability"
+label = "Lower-degree normalization of finite free additive convolution"
+
+[[theorems]]
+name = "RealRooted.algebraicSymbol_finiteFreeAdditiveConvolutionDegreeBox"
+module = "RealRooted.FiniteFreeAdditive.Stability"
+label = "The coordinate convolution symbol is g(x_q + y_q) times spectator factors"
+
+[[theorems]]
+name = "RealRooted.finiteFreeAdditiveConvolutionAt_realStableOrZero"
+module = "RealRooted.FiniteFreeAdditive.Stability"
+label = "Finite free additive convolution preserves multivariate real stability"
+
+[[theorems]]
+name = "RealRooted.interl_finiteFreeAdditiveConvolution_right"
+module = "RealRooted.FiniteFreeAdditive.Stability"
+label = "Convolution by a fixed monic split factor preserves directed interlacing"
 
 [[theorems]]
 name = """RealRooted.Challenges.FiniteFreeConvolutions.\
@@ -189,6 +211,15 @@ lists $p_k$, $q_k$.
   $\alpha_i + a \leq \rho_i \leq \alpha_i + b$ whenever the roots of $q$ lie
   in $[a,b]$. The proof moves the roots of $q$ one at a time and orients each
   interlacing comparison through the additive formula for the sum of the roots.
+- If $f$ has degree at most $m\le d$, then $f\boxplus_d g$ is the degree-$m$
+  convolution of $f$ with the normalized derivative
+  $(m!/d!)g^{(d-m)}$. For monic $g$ of degree $d$, this preserves the degree and
+  leading coefficient of every nonzero $f$ in the degree box.
+- Acting in one coordinate, convolution by a nonzero split $g$ preserves
+  multivariate real stability, with arbitrary spectator variables and a possible
+  zero output. Its algebraic symbol is $g(x_q+y_q)$ times the spectator factors.
+  If $g$ is monic of degree $d$, it also preserves directed interlacing for
+  positive-leading-coefficient inputs of degree at most $d$.
 - If $f$ and $g$ have degree exactly $n$, positive leading coefficients, and
   only nonnegative real roots, then $f \boxplus_{m,n} g$ is zero or has only
   nonnegative real roots [@GribinskiMarcus2022].
@@ -239,7 +270,7 @@ composition theorem on the Hadamard page applies.
 
 ## References
 
-See [@MarcusSpielmanSrivastava2022; @GribinskiMarcus2022]. For the application to
+See [@MarcusSpielmanSrivastava2022; @GribinskiMarcus2022; @LeakeRyder2018]. For the application to
 the Narayana transformation, see [symmetricfunctions.com][mao-wang].
 
 [mao-wang]: sf:thm:narayanaTransformationMaoWang
@@ -248,6 +279,7 @@ the Narayana transformation, see [symmetricfunctions.com][mao-wang].
 This module is a catalog facade. The proofs live in
 `RealRooted.FiniteFreeAdditive`, `RealRooted.FiniteFreeAdditive.RootWindow`,
 `RealRooted.FiniteFreeAdditive.OrderedRoots`,
+`RealRooted.FiniteFreeAdditive.Stability`,
 `RealRooted.RectangularConvolution`,
 `RealRooted.NarayanaTransformation.Rectangular` and
 `RealRooted.FiniteFreeMultiplicative`.

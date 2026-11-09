@@ -564,6 +564,7 @@ public import RealRooted.FiniteFreeAdditive.Identity
 public import RealRooted.FiniteFreeAdditive.OrderedRoots
 public import RealRooted.FiniteFreeAdditive.Preservation
 public import RealRooted.FiniteFreeAdditive.RootWindow
+public import RealRooted.FiniteFreeAdditive.Stability
 public import RealRooted.FiniteFreeMultiplicative
 public import RealRooted.FiniteFreeRootCount
 public import RealRooted.FolkloreLemma
