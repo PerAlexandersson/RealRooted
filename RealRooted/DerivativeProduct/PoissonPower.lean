@@ -1,7 +1,9 @@
 module
 
 public import RealRooted.DerivativeProduct.Poisson
-public import RealRooted.DerivativeProduct.ProductPowerRoots
+public import RealRooted.DerivativeProduct.ProductPower
+public import RealRooted.RootLocation.Basic
+import RealRooted.DerivativeProduct.ProductPowerRoots
 import RealRooted.BorceaBranden.Applications.PoissonStarGeneral
 import RealRooted.BorceaBranden.Applications.PoissonStarTransport
 import RealRooted.Chebyshev.Levels

@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.DerivativeProduct.ProductPowerRoots
+public import RealRooted.DerivativeProduct.ProductPower
+public import RealRooted.RootLocation.Basic
+import RealRooted.DerivativeProduct.ProductPowerRoots
 import RealRooted.DerivativeProduct.KernelSufficiency
 import Mathlib.Tactic
 
