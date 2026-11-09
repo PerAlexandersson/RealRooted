@@ -536,6 +536,12 @@ public import RealRooted.EulerianCompletion
 public import RealRooted.EulerianCompletion.ProperPosition
 public import RealRooted.EulerianMixedCompatibility
 public import RealRooted.EulerianMixedCompatibility.Insertion
+public import RealRooted.EvenDerivative.Basic
+public import RealRooted.EvenDerivative.Examples
+public import RealRooted.EvenDerivative.Interlacing
+public import RealRooted.EvenDerivative.Preserver
+public import RealRooted.EvenDerivative.Stability
+public import RealRooted.EvenDerivative.Symbol
 public import RealRooted.FactorialCompression.Basic
 public import RealRooted.FactorialCompression.CommonKernel
 public import RealRooted.FactorialCompression.Compression
@@ -968,6 +974,7 @@ public import RealRooted.Mathlib.Algebra.Polynomial.RuleOfSigns
 public import RealRooted.Mathlib.Algebra.Polynomial.Splits
 public import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
 public import RealRooted.Mathlib.Algebra.Polynomial.Splits.Derivative
+public import RealRooted.Mathlib.Algebra.Polynomial.Splits.FinRoots
 public import RealRooted.Mathlib.Algebra.Polynomial.Sturm
 public import RealRooted.Mathlib.Algebra.Polynomial.Taylor
 public import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
@@ -2166,6 +2173,7 @@ public import RealRooted.Challenges.Matrices.TP2HessenbergCertificate
 public import RealRooted.Challenges.Matrices.TP2HessenbergStrictness
 public import RealRooted.Challenges.Matrices.TotallyNonnegativePencils
 public import RealRooted.Challenges.Matrices.WeightedThreeStateRecurrence
+public import RealRooted.Challenges.Preservers.EvenDerivativePreservers
 public import RealRooted.Challenges.Preservers.FiniteDegreeDifferentialTests
 public import RealRooted.Challenges.Preservers.HypergeometricCoefficientRatios
 public import RealRooted.Challenges.Preservers.PowerDerivativeShift
