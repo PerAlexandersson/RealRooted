@@ -6,6 +6,7 @@ public import RealRooted.RootLocation.Basic
 import RealRooted.FiniteFreeAdditive.Preservation
 import RealRooted.Linear
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+import RealRooted.Mathlib.Algebra.Polynomial.Taylor
 import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
@@ -118,12 +119,6 @@ theorem finiteFreeAdditiveConvolution_eq_sum_iterate_derivative (d : ℕ) (p : �
     rw [coeff_eq_zero_of_natDegree_lt (p := q) (n := j + i) (by lia)]
     simp
 
-private theorem iterate_derivative_comp_X_add_C (q : ℝ[X]) (t : ℝ) (i : ℕ) :
-    derivative^[i] (q.comp (X + C t)) = (derivative^[i] q).comp (X + C t) := by
-  induction i with
-  | zero => rfl
-  | succ i ih => simp [Function.iterate_succ_apply', ih, derivative_comp]
-
 private theorem natDegree_comp_X_add_C_le {q : ℝ[X]} {d : ℕ} (hq : q.natDegree ≤ d) (t : ℝ) :
     (q.comp (X + C t)).natDegree ≤ d := by
   simpa [natDegree_comp] using hq
@@ -137,7 +132,9 @@ theorem finiteFreeAdditiveConvolution_comp_X_add_C_right (d : ℕ) (p : ℝ[X]) 
     finiteFreeAdditiveConvolution_eq_sum_iterate_derivative d p (natDegree_comp_X_add_C_le hq t),
     Polynomial.sum_comp]
   refine Finset.sum_congr rfl fun i _ => ?_
-  rw [C_mul_comp, iterate_derivative_comp_X_add_C]
+  have h := taylor_iterate_derivative t q i
+  simp only [taylor_apply] at h
+  rw [C_mul_comp, ← h]
 
 /-- Translating the first argument translates the convolution. -/
 theorem finiteFreeAdditiveConvolution_comp_X_add_C_left (d : ℕ) {p : ℝ[X]} (q : ℝ[X])
@@ -265,12 +262,8 @@ theorem IsRealRootedIn.finiteFreeAdditiveConvolution_Iic {d : ℕ} {p q : ℝ[X]
       hq.splits (fun _ hr => hp.mem_of_mem_roots hr) (fun _ hr => hq.mem_of_mem_roots hr)⟩
 
 private theorem IsRealRootedIn.comp_neg_X_Ici {A : ℝ} {p : ℝ[X]} (h : IsRealRootedIn (Ici A) p) :
-    IsRealRootedIn (Iic (-A)) (p.comp (-X)) := by
-  have := h.comp_C_mul_X_add_C 0 (neg_ne_zero.2 one_ne_zero)
-  simp only [map_neg, map_one, neg_mul, one_mul, map_zero, add_zero] at this
-  refine this.mono fun x hx => ?_
-  simp only [mem_preimage, mem_Ici, mem_Iic] at hx ⊢
-  linarith
+    IsRealRootedIn (Iic (-A)) (p.comp (-X)) :=
+  h.comp_neg_X.mono fun x hx => by simp only [mem_preimage, mem_Ici, mem_Iic] at hx ⊢; linarith
 
 /-- **Walsh's lower ray bound for the finite-free additive convolution.**  If `p` and `q` have
 degree `d` and are rooted in `[A, ∞)` and `[a, ∞)`, then `p ⊞_d q` is rooted in `[A + a, ∞)`.

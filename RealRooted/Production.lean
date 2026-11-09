@@ -1380,7 +1380,9 @@ public import RealRooted.RootCounting.Threshold.Signs
 public import RealRooted.RootCounting.Threshold.Sorted
 public import RealRooted.RootLocation.Basic
 public import RealRooted.RootLocation.BernsteinDiagonal
+public import RealRooted.RootLocation.CommonInterlacer
 public import RealRooted.RootLocation.Mobius
+public import RealRooted.RootLocation.PreservesBridge
 public import RealRooted.RootMatchingSort
 public import RealRooted.RootMultiplicityMatching
 public import RealRooted.RootOrderBridge

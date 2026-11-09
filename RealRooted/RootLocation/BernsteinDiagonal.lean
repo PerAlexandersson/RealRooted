@@ -6,6 +6,7 @@ import RealRooted.BernsteinCone
 import RealRooted.Hadamard.Grace
 import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Algebra
 import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.MultiplierSequence.ProperPositionPF
 
 /-!
 # Bernstein-diagonal interval preservers
@@ -50,15 +51,6 @@ noncomputable section
 namespace RealRooted
 
 /-! ### The map and its symbol -/
-
-/-- The coefficientwise multiplier `∑ a_k X ^ k ↦ ∑ γ_k a_k X ^ k` as a linear map. -/
-def diagonalLinearMap (γ : ℕ → ℝ) : ℝ[X] →ₗ[ℝ] ℝ[X] where
-  toFun := diagonalOperator γ
-  map_add' p q := by ext n; simp [mul_add]
-  map_smul' c p := by ext n; simp [mul_left_comm]
-
-@[simp] theorem diagonalLinearMap_apply (γ : ℕ → ℝ) (p : ℝ[X]) :
-    diagonalLinearMap γ p = diagonalOperator γ p := rfl
 
 /-- The binomial-normalized Bernstein basis element `B_k = choose D k * X ^ k * (1 + X) ^ (D - k)`
 of the polynomials of degree at most `D`. -/
@@ -181,14 +173,6 @@ protected theorem isPFPolynomial_cayleyTransform (h : IsBernsteinRooted D p) :
   refine ⟨hasNonnegCoeffs_cayleyTransform_of_roots_mem_Icc h.2.2.splits h.1 h.2.1.le
     h.2.2.2.2, Or.inr hI.splits, fun r hr => hI.mem_of_mem_roots hr⟩
 
-/-- A PF polynomial of degree at most `D` is nonzero at `1`. -/
-private theorem eval_one_pos_of_isPFPolynomial {q : ℝ[X]} (hq : IsPFPolynomial q) (hq0 : q ≠ 0) :
-    0 < q.eval 1 := by
-  rw [eval_eq_sum_range]
-  refine Finset.sum_pos' (fun k _ => by simpa using hq.hasNonnegCoeffs k) ⟨q.natDegree, ?_, ?_⟩
-  · simp
-  · simpa using lt_of_le_of_ne (hq.hasNonnegCoeffs _) (Ne.symm (leadingCoeff_ne_zero.2 hq0))
-
 /-- `K_D` sends a nonzero PF polynomial of degree at most `D` to a member of the class. -/
 protected theorem mobiusTransform_of_isPFPolynomial {q : ℝ[X]} (hq : IsPFPolynomial q)
     (hq0 : q ≠ 0) (hdeg : q.natDegree ≤ D) :
@@ -197,7 +181,7 @@ protected theorem mobiusTransform_of_isPFPolynomial {q : ℝ[X]} (hq : IsPFPolyn
     ⟨hq0, hq.splits, fun r hr => hq.roots_nonpos r hr⟩
   refine ⟨hD, ?_, hI⟩
   rw [leadingCoeff, hD, coeff_mobiusTransform_one_zero_one_one D hdeg]
-  exact eval_one_pos_of_isPFPolynomial hq hq0
+  exact eval_pos_of_hasNonnegCoeffs hq.hasNonnegCoeffs hq0 one_pos
 
 end IsBernsteinRooted
 
@@ -286,42 +270,11 @@ theorem bernsteinDiagonal_maps_iff (D : ℕ) (γ : ℕ → ℝ) :
 
 /-! #### Positive coefficients of PF polynomials -/
 
-/-- Coefficients of a product `∏ (1 + a X)` with all `a > 0`: nonnegative, and positive up to the
-degree. -/
-private theorem coeff_prod_one_add_C_mul_X (s : Multiset ℝ) (hs : ∀ a ∈ s, 0 < a) (k : ℕ) :
-    0 ≤ (s.map fun a => 1 + C a * X).prod.coeff k ∧
-      (k ≤ Multiset.card s → 0 < (s.map fun a => 1 + C a * X).prod.coeff k) := by
-  induction s using Multiset.induction_on generalizing k with
-  | empty =>
-    rcases k with _ | k <;> simp [coeff_one]
-  | cons a s ih =>
-    have ha : 0 < a := hs a (Multiset.mem_cons_self a s)
-    have ih' := ih (fun b hb => hs b (Multiset.mem_cons_of_mem hb))
-    rw [Multiset.map_cons, Multiset.prod_cons]
-    rcases k with _ | k
-    · have := (ih' 0).2 (Nat.zero_le _)
-      simp only [mul_coeff_zero, coeff_add, coeff_one_zero, coeff_X_zero, mul_zero,
-        add_zero, one_mul, Multiset.card_cons]
-      exact ⟨(ih' 0).1, fun _ => this⟩
-    · rw [coeff_one_add_C_mul_X_mul_succ]
-      refine ⟨add_nonneg (ih' _).1 (mul_nonneg ha.le (ih' _).1), fun hk => ?_⟩
-      rw [Multiset.card_cons] at hk
-      exact add_pos_of_nonneg_of_pos (ih' _).1 (mul_pos ha ((ih' k).2 (by lia)))
-
 /-- A PF polynomial with nonzero constant coefficient has positive coefficients up to its
 degree: it has no internal zero coefficients. -/
 theorem IsPFPolynomial.coeff_pos {j : ℝ[X]} (hj : IsPFPolynomial j) (h0 : j.coeff 0 ≠ 0)
-    {k : ℕ} (hk : k ≤ j.natDegree) : 0 < j.coeff k := by
-  have hc : 0 < j.coeff 0 := lt_of_le_of_ne (hj.hasNonnegCoeffs 0) (Ne.symm h0)
-  have hj' : IsPFPolynomial (C (j.coeff 0)⁻¹ * j) := hj.const_mul (inv_pos.2 hc)
-  have hconst : (C (j.coeff 0)⁻¹ * j).coeff 0 = 1 := by
-    rw [coeff_C_mul, inv_mul_cancel₀ h0]
-  obtain ⟨s, hs, hcard, hprod⟩ := hj'.exists_pos_multiset_prod_one_add_C_mul_X hconst
-  have hdeg : (C (j.coeff 0)⁻¹ * j).natDegree = j.natDegree :=
-    natDegree_C_mul (inv_ne_zero h0)
-  have := ((coeff_prod_one_add_C_mul_X s hs k).2 (by rw [hcard, hdeg]; exact hk))
-  rw [← hprod, coeff_C_mul] at this
-  exact (mul_pos_iff_of_pos_left (inv_pos.2 hc)).1 this
+    {k : ℕ} (hk : k ≤ j.natDegree) : 0 < j.coeff k :=
+  hj.coeff_pos_of_coeff_zero_pos (lt_of_le_of_ne (hj.hasNonnegCoeffs 0) (Ne.symm h0)) hk
 
 /-- **Injectivity of the Bernstein-diagonal map.**  Assume the symbol `g` is `0` or a member of the
 class (the condition of `bernsteinDiagonal_maps_iff`).  Then `L f ≠ 0` for every positive-leading

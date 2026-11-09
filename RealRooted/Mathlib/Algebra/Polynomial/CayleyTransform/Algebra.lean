@@ -7,7 +7,8 @@ module
 
 public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
-public import Mathlib.Tactic.ComputeDegree
+import RealRooted.Mathlib.Algebra.Polynomial.MobiusTransform
+import Mathlib.Tactic.ComputeDegree
 public import Mathlib.Tactic.Ring
 import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
 
@@ -25,6 +26,18 @@ noncomputable section
 
 namespace Polynomial
 
+/-- The Möbius root factor `(1 - r * -1) X + (0 - r * 1)` is the Cayley root factor. -/
+private theorem mobius_rootFactor_eq {K : Type*} [Field K] (r : K) :
+    C (1 - r * -1) * X + C (0 - r * 1) = (1 + C r) * X - C r := by
+  simp only [map_sub, map_mul, map_one, map_neg, map_zero]
+  ring
+
+/-- The Möbius root factor `(-1) X + 1` of the line at infinity is `1 - X`. -/
+private theorem mobius_infinityFactor_eq {K : Type*} [Field K] :
+    C (-1 : K) * X + C 1 = 1 - X := by
+  simp only [map_neg, map_one]
+  ring
+
 /-- Root-factor form of the Cayley homogenization. -/
 theorem cayleyTransform_eq_rootFactorProduct
     {K : Type*} [Field K] {p : K[X]} {n : ℕ}
@@ -32,27 +45,9 @@ theorem cayleyTransform_eq_rootFactorProduct
     cayleyTransform n p =
       C p.leadingCoeff *
         (p.roots.map (fun r => (1 + C r) * X - C r)).prod := by
-  have hcard : p.roots.card = n := by
-    rw [← hp.natDegree_eq_card_roots, hdeg]
-  have hhom := congrArg (fun q : K[X] => q.homogenize n)
-    hp.eq_prod_roots
-  rw [Polynomial.homogenize_C_mul, ← hcard,
-    Polynomial.homogenize_rootFactorProduct] at hhom
-  have hhom' : p.homogenize n =
-      MvPolynomial.C p.leadingCoeff *
-        (p.roots.map (fun r ↦
-          MvPolynomial.X 0 - MvPolynomial.C r * MvPolynomial.X 1)).prod := by simp_all
-  rw [cayleyTransform, hhom']
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, map_mul,
-    MvPolynomial.algHom_C, algebraMap_eq, mul_eq_mul_left_iff, map_eq_zero,
-    leadingCoeff_eq_zero]
-  left
-  rw [map_multiset_prod, Multiset.map_map]
-  congr 1
-  apply Multiset.map_congr rfl
-  intro r hr
-  simp
-  ring
+  rw [cayleyTransform_eq_mobiusTransform,
+    mobiusTransform_eq_rootFactorProduct n 1 0 (-1) 1 hp hdeg]
+  simp only [mobius_rootFactor_eq]
 
 /-- Root-factor form in an ambient degree box.  The extra power records the
 roots at infinity introduced when `natDegree p < n`. -/
@@ -63,52 +58,27 @@ theorem cayleyTransform_eq_rootFactorProduct_mul
       C p.leadingCoeff *
           (p.roots.map (fun r => (1 + C r) * X - C r)).prod *
         (1 - X) ^ (n - p.natDegree) := by
-  rw [cayleyTransform,
-    homogenize_eq_homogenize_natDegree_mul_X_one_pow hdeg, map_mul,
-    map_pow]
-  have hx1 : MvPolynomial.aeval
-      (![(X : K[X]), (1 - X : K[X])] : Fin 2 → K[X])
-      (MvPolynomial.X (1 : Fin 2) : MvPolynomial (Fin 2) K) =
-        (1 - X : K[X]) := by simp
-  rw [hx1]
-  change cayleyTransform p.natDegree p * (1 - X) ^ (n - p.natDegree) = _
-  rw [cayleyTransform_eq_rootFactorProduct hp rfl]
+  rw [cayleyTransform_eq_mobiusTransform,
+    mobiusTransform_eq_rootFactorProduct_mul n 1 0 (-1) 1 hp hdeg]
+  simp only [mobius_rootFactor_eq, mobius_infinityFactor_eq]
 
 /-- The Cayley transform of a split polynomial splits in every degree box containing it. -/
 theorem Splits.cayleyTransform {K : Type*} [Field K] {p : K[X]} {n : ℕ}
     (hp : p.Splits) (hdeg : p.natDegree ≤ n) :
     (cayleyTransform n p).Splits := by
-  rw [cayleyTransform_eq_rootFactorProduct_mul hp hdeg]
-  refine ((Splits.C _).mul (Splits.multisetProd fun f hf => ?_)).mul
-    ((Splits.of_natDegree_le_one (by compute_degree!)).pow _)
-  obtain ⟨r, _, rfl⟩ := Multiset.mem_map.mp hf
-  exact Splits.of_natDegree_le_one (by compute_degree!)
+  rw [cayleyTransform_eq_mobiusTransform]
+  exact Splits.mobiusTransform 1 0 (-1) 1 hp hdeg
 
 theorem cayleyTransform_ne_zero
-    {K : Type*} [Field K] [IsAlgClosed K]
+    {K : Type*} [Field K]
     {p : K[X]} {n : ℕ} (hp0 : p ≠ 0) (hdeg : p.natDegree ≤ n) :
     cayleyTransform n p ≠ 0 := by
-  rw [cayleyTransform_eq_rootFactorProduct_mul
-    (IsAlgClosed.splits p) hdeg]
-  apply mul_ne_zero
-  · apply mul_ne_zero
-    · simp_all
-    · apply Multiset.prod_ne_zero
-      intro hf
-      rcases Multiset.mem_map.mp hf with ⟨r, _, hr⟩
-      have hzero : (1 + C r) * X - C r = 0 := by assumption
-      have hcoeff0 := congrArg (fun q : K[X] ↦ q.coeff 0) hzero
-      have hcoeff1 := congrArg (fun q : K[X] ↦ q.coeff 1) hzero
-      simp at hcoeff0 hcoeff1
-      simp_all
-  · apply pow_ne_zero
-    intro hzero
-    have hcoeff := congrArg (fun q : K[X] ↦ q.coeff 1) hzero
-    simp [coeff_one, coeff_X] at hcoeff
+  rw [cayleyTransform_eq_mobiusTransform]
+  exact mobiusTransform_ne_zero n 1 0 (-1) 1 hp0 hdeg (by simp)
 
 /-- The Cayley substitution is injective on every finite degree box. -/
 theorem cayleyTransform_injective_on_natDegree_le (n : ℕ)
-    {K : Type*} [Field K] [IsAlgClosed K]
+    {K : Type*} [Field K]
     {p q : K[X]} (hpdeg : p.natDegree ≤ n) (hqdeg : q.natDegree ≤ n)
     (heq : cayleyTransform n p = cayleyTransform n q) : p = q := by
   apply sub_eq_zero.mp

@@ -5,8 +5,8 @@ Authors: Per Alexandersson
 -/
 module
 
-import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Algebra
 public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic
+public import RealRooted.Mathlib.Algebra.Polynomial.MobiusTransform
 
 /-!
 # Bernstein expansion through the finite-degree Cayley transform
@@ -51,21 +51,20 @@ theorem natDegree_bernsteinExpansion_le {R : Type*} [Semiring R] [Nontrivial R]
           natDegree_pow_X_add_C]
     _ = n := Nat.add_sub_of_le hkn
 
+/-- The Bernstein expansion of a polynomial of degree at most `n` is its Möbius transform with
+matrix `(1, 0; 1, 1)`. -/
+theorem bernsteinExpansion_eq_mobiusTransform {R : Type*} [CommRing R] {n : ℕ} {q : R[X]}
+    (hq : q.natDegree ≤ n) : bernsteinExpansion n q = mobiusTransform n 1 0 1 1 q := by
+  rw [mobiusTransform_eq_sum n _ _ _ _ hq, bernsteinExpansion]
+  refine Finset.sum_congr rfl fun k _ => ?_
+  simp [add_comm]
+
 /-- The Cayley transform reads a degree-`n` Bernstein expansion as an
 ordinary coefficient expansion. -/
 theorem cayleyTransform_bernsteinExpansion
     {K : Type*} [Field K] {n : ℕ} {q : K[X]} (hq : q.natDegree ≤ n) :
     cayleyTransform n (bernsteinExpansion n q) = q := by
-  rw [bernsteinExpansion, cayleyTransform_finset_sum]
-  rw [q.as_sum_range_C_mul_X_pow' (n := n + 1) (by lia)]
-  apply Finset.sum_congr rfl
-  intro k hk
-  have hkcoeff :
-      (∑ i ∈ Finset.range (n + 1), C (q.coeff i) * X ^ i).coeff k =
-        q.coeff k := by
-    simp [Finset.mem_range.mp hk]
-  rw [hkcoeff, cayleyTransform_C_mul,
-    cayleyTransform_binomialBasisRaw
-      (Nat.lt_succ_iff.mp (Finset.mem_range.mp hk))]
+  rw [bernsteinExpansion_eq_mobiusTransform hq,
+    cayleyTransform_mobiusTransform_one_zero_one_one n hq]
 
 end Polynomial
