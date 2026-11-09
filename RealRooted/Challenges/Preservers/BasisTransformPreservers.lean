@@ -44,7 +44,7 @@ label = "The differential (Appell) coefficients of a basis"
 
 [[definitions]]
 name = "RealRooted.IsRealRootedIn"
-module = "RealRooted.BasisTransform.DifferentialOperatorMaps"
+module = "RealRooted.RootLocation.Basic"
 label = "Nonzero, real-rooted, with all roots in a set"
 
 [[definitions]]
