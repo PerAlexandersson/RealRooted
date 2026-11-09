@@ -131,11 +131,7 @@ lemma coeff_singletonFreeSetPartitions_succ_succ (n m : Nat) :
 
 lemma singletonFreeSetPartitions_nonnegCoeffs :
     ∀ n : Nat, HasNonnegCoeffs (singletonFreeSetPartitions n) := by
-  rintro (_ | _ | n)
-  · exact hasNonnegCoeffs_one
-  · exact hasNonnegCoeffs_zero
-  · rw [← singletonFreeSetPartitionsTail_eq]
-    exact singletonFreeSetPartitionsTail_nonnegCoeffs n
+  rr_row_nonneg_coeffs
 
 lemma coeff_singletonFreeSetPartitions_top_pos_and_above :
     ∀ n : Nat, 2 ≤ n →
@@ -153,10 +149,7 @@ lemma coeff_singletonFreeSetPartitions_top_pos_and_above :
 
 lemma natDegree_singletonFreeSetPartitions (n : Nat) (hn : 2 ≤ n) :
     (singletonFreeSetPartitions n).natDegree = n / 2 := by
-  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hn
-  rw [show 2 + k = k + 2 by lia, ← singletonFreeSetPartitionsTail_eq,
-    singletonFreeSetPartitionsTail_natDegree]
-  lia
+  rr_row_natDegree
 
 lemma singletonFreeSetPartitions_nonzero (n : Nat) (hn : 2 ≤ n) :
     singletonFreeSetPartitions n ≠ 0 := by
@@ -249,12 +242,8 @@ lemma strictInterl_singletonFreeSetPartitions_succ_of_strictInterl_core {n : Nat
 theorem strictInterl_singletonFreeSetPartitions_succ :
     ∀ n : Nat, 2 ≤ n →
       StrictInterl (singletonFreeSetPartitions n) (singletonFreeSetPartitions (n + 1)) := by
-  intro n hn
-  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hn
-  have h := singletonFreeSetPartitionsTail_strictInterl k
-  rw [singletonFreeSetPartitionsTail_eq k,
-    singletonFreeSetPartitionsTail_eq (k + 1)] at h
-  convert h using 1 <;> lia
+  intros
+  rr_row_strictInterl
 
 theorem isRealRooted_singletonFreeSetPartitions :
     ∀ n : Nat, 2 ≤ n → (singletonFreeSetPartitions n).Splits := by

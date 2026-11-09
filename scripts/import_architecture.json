@@ -1625,7 +1625,9 @@
         "RealRooted",
         "RealRooted.Production",
         "RealRooted.Applications.OEIS.ClosedFormRows",
-        "RealRooted.Applications.OEIS.HarmonicDerivativeRows"
+        "RealRooted.Applications.OEIS.HarmonicDerivativeRows",
+        "RealRooted.Applications.OEIS.A271697",
+        "RealRooted.Applications.OEIS.PathPowerRows"
       ],
       "allowed_source_prefixes": [
         "RealRooted.Challenges.",
