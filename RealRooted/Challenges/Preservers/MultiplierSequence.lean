@@ -13,6 +13,7 @@ import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.HeatFlow
 import RealRooted.MultiplierSequence.Sign
 import RealRooted.MultiplierSequence.ProperPosition
+import RealRooted.RootLocation.BernsteinDiagonal
 
 /-!
 # Multiplier sequence challenge entry point
@@ -24,8 +25,9 @@ slug = "multiplier-sequences"
 formalized = "2026-09-07"
 references = [
   "SchurPolya1914",
+  "KostovShapiro2006",
 ]
-authors = ["Pólya", "Schur"]
+authors = ["Pólya", "Schur", "Kostov", "Shapiro"]
 years = [1914]
 
 [[definitions]]
@@ -190,6 +192,24 @@ name = "RealRooted.schurSzegoPreservesJensenPencilCompatibility"
 module = "RealRooted.JensenPencilContraction"
 label = "Schur–Szegő composition by a PF polynomial preserves Jensen-pencil compatibility"
 tags = ["realrooted-original"]
+
+[[definitions]]
+name = "RealRooted.bernsteinDiagonal"
+module = "RealRooted.RootLocation.BernsteinDiagonal"
+label = "The Bernstein-diagonal map L(B_k) = γ_k B_k on [−1, 0]"
+tags = ["realrooted-original"]
+
+[[theorems]]
+name = "RealRooted.bernsteinDiagonal_maps_iff"
+module = "RealRooted.RootLocation.BernsteinDiagonal"
+label = "A Bernstein-diagonal map preserves [−1, 0]-rooted polynomials iff its symbol does"
+tags = ["realrooted-original"]
+
+[[theorems]]
+name = "RealRooted.bernsteinDiagonal_ne_zero_iff"
+module = "RealRooted.RootLocation.BernsteinDiagonal"
+label = "A Bernstein-diagonal preserver is injective iff the symbol has roots in (−1, 0)"
+tags = ["realrooted-original"]
 -->
 
 <!-- realrooted-catalog-content -->
@@ -280,9 +300,29 @@ real polynomials, then $\varphi(D) = \sum_k \frac{\varphi^{(k)}(0)}{k!} D^k$ map
 real-rooted polynomials to real-rooted polynomials or zero. Hermite–Poulain gives this for
 each approximating polynomial, and the Taylor coefficients converge.
 
+**Bernstein-diagonal interval preservers.** Fix $D\ge1$ and the Bernstein basis
+$B_k=\binom Dk x^k(1+x)^{D-k}$ of the polynomials of degree at most $D$. For a real
+sequence $\gamma$ let $L$ be the linear map with $L B_k=\gamma_kB_k$, and put
+$g=L\bigl((1+2x)^D\bigr)=\sum_k\gamma_kB_k$. Write $\mathcal C_D$ for the class of polynomials of
+degree exactly $D$ with positive leading coefficient and all roots in $[-1,0]$. Then
+$$
+L(\mathcal C_D)\subseteq\mathcal C_D\cup\{0\}
+\iff g\in\mathcal C_D\cup\{0\}.
+$$
+Necessity tests $(1+2x)^D$. For sufficiency, the Cayley change of variable
+$J_Df(z)=(1-z)^Df\bigl(z/(1-z)\bigr)$ turns $B_k$ into $\binom Dk z^k$, so that
+$Lf=K_D\bigl(J_Dg\ast_DJ_Df\bigr)$ with $K_Df(x)=(1+x)^Df\bigl(x/(1+x)\bigr)$ the inverse of
+$J_D$, and $\ast_D$ the Schur–Szegő composition (see the
+[Hadamard products page](/RealRooted/theorems/hadamard-products/)). The polynomials $J_Df$
+and $J_Dg$ are PF, hence so is their composition [@KostovShapiro2006, Proposition 1.2 and
+Theorem 1.3], and $K_D$ carries PF polynomials of degree at most $D$ back to $\mathcal C_D$;
+a degree deficit becomes a root at $-1$. Under these equivalent conditions, $L f\neq0$ for every
+$f\in\mathcal C_D$ if and only if $g$ has all its roots in the open interval $(-1,0)$. The
+degree must be exactly $D$: a root of $f$ at infinity becomes the root $1$ of $J_Df$.
+
 ## References
 
-See [@SchurPolya1914]. The finite Pólya–Schur theorem through the
+See [@SchurPolya1914] and [@KostovShapiro2006]. The finite Pólya–Schur theorem through the
 Schur–Szegő composition is on the
 [Hadamard products page](/RealRooted/theorems/hadamard-products/).
 <!-- /realrooted-catalog-content -->
