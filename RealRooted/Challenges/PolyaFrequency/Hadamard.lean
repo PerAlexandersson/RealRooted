@@ -102,6 +102,26 @@ module = "RealRooted.Hadamard.RootIntervals"
 label = "Kostov–Shapiro: roots in [−b, 0] and [−v, 0] give roots in [−bv, 0]"
 
 [[theorems]]
+name = "RealRooted.IsRealRootedIn.schurSzegoComp_Icc_of_natDegree_le"
+module = "RealRooted.Hadamard.RootIntervals"
+label = "Kostov–Shapiro intervals for inputs below the ambient degree"
+
+[[theorems]]
+name = "RealRooted.IsRealRootedIn.schurSzegoComp_Icc_zero_of_natDegree_le"
+module = "RealRooted.Hadamard.RootIntervals"
+label = "Ray intervals for lower-degree inputs, allowing zero output"
+
+[[theorems]]
+name = "RealRooted.IsRealRootedIn.maps_schurSzegoComp_Icc"
+module = "RealRooted.Hadamard.RootIntervals"
+label = "Fixed Schur–Szegő composition maps strict root intervals"
+
+[[theorems]]
+name = "RealRooted.IsRealRootedIn.maps_schurSzegoComp_Icc_zero"
+module = "RealRooted.Hadamard.RootIntervals"
+label = "Fixed Schur–Szegő composition maps root rays, allowing zero output"
+
+[[theorems]]
 name = "RealRooted.Kostov.interiorCoeff_composition"
 module = "RealRooted.Hadamard.KostovMap"
 label = "Kostov: Schur–Szegő factorizations have coefficients affine in σ(a)"
