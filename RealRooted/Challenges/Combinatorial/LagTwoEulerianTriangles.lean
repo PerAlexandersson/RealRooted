@@ -70,6 +70,12 @@ theta-form row recurrence are both checked.
 The negative-sign family is deliberately excluded.  For `m=1` (A157152) it
 already fails at `n=8`: the reciprocal row satisfies `P_8(-1)=-96`.  The
 negative-sign cases `m\ge2` remain open.
+## References
+
+The triangles are OEIS [A157147](https://oeis.org/A157147)–[A157151](https://oeis.org/A157151) and
+[A157637](https://oeis.org/A157637); the negative-sign family with m = 1 is
+[A157152](https://oeis.org/A157152), and A157153–A157156 are the open negative-sign cases. See
+also the [derivative interlacing](/RealRooted/theorems/derivative-interlacing/) page.
 <!-- /realrooted-catalog-content -->
 -/
 
