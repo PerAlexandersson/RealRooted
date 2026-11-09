@@ -521,6 +521,50 @@ private def degreeFits (Q : Term) (apply : TSyntax `tactic) (nDeg : Nat) : Tacti
   s.restore
   return ok
 
+/-- Whether the exact top coefficients of the first eight sampled recurrence steps violate a
+hypothesis of the three-term theorem for the shifted sequence `Q m = P (m + shift + k)`, with
+growth `d` and base degree `D₀`: `ρ = none` is `threeTermPos_*` (`0 ≤ α n`, `0 ≤ β n`,
+`0 < α n + β n`, and positive leading coefficients of the first two rows), `ρ = some ρ` is
+`threeTermRatio_*` (`β n ≤ 0`, `ρ ^ 2 ≤ ρ * α n + β n`, `ρ * c₀ ≤ c₁`).  Here `α n` and `β n`
+are the coefficients of `X ^ d` in the multiplier of `Q (n + 1)` and of `X ^ (2 * d)` in that
+of `Q n`.  Each of these hypotheses is universally quantified (or concerns the first two rows),
+so a violation proves that the side goals of the theorem cannot all be discharged.  Whenever
+the exact values are not available the answer is `false`. -/
+private def lagThmVetoed (r : RowRec) (k d D₀ : Nat) (ρ : Option Rat) (pos : Bool) :
+    MetaM Bool := do
+  unless r.params.isEmpty && r.shape.isLag do return false
+  let some L ← linRec? r.P | return false
+  let s := r.shift + k
+  let some rows ← linRecRows? L (s + 1) | return false
+  let (some p₀, some p₁) := (rows[s]?, rows[s + 1]?) | return false
+  let c₀ := p₀.coeff D₀
+  let c₁ := p₁.coeff (D₀ + d)
+  if c₀ ≤ 0 then return true
+  if pos then
+    if c₁ ≤ 0 then return true
+  else
+    let some ρ := ρ | return false
+    if ρ ≤ 0 || c₁ < ρ * c₀ then return true
+  let extra := r.offset - r.stmtOffset + k
+  let zero : QPoly := ⟨#[]⟩
+  for n in [0:8] do
+    let coeffAt (i : Nat) : MetaM (Option QPoly) := do
+      let some f := r.coeffs[i]? | return none
+      evalCoeffAt? f (n + extra)
+    let (a?, b?) ← match r.shape with
+      | .lag => pure (← coeffAt 0, ← coeffAt 1)
+      | .lagLeft => pure (← coeffAt 0, some zero)
+      | .lagRight => pure (some zero, ← coeffAt 0)
+      | _ => return false
+    let (some a, some b) := (a?, b?) | return false
+    let α := a.coeff d
+    let β := b.coeff (2 * d)
+    if pos then
+      if α < 0 || β < 0 || α + β ≤ 0 then return true
+    else if let some ρ := ρ then
+      if β > 0 || ρ ^ 2 > ρ * α + β then return true
+  return false
+
 /-- Shared driver of the degree tactics.  `finish Q t deg` is the tactic that states the
 main goal for the shifted sequence `Q`, with `Q t` of degree `deg`.  Returns the
 certificate and the hints that reproduce the search. -/
@@ -574,6 +618,15 @@ def rowDriver (r : RowRec) (kind : String) (hints : RowHints)
         unless ← degreeFits Q (← rowThmApply r k probeThm none d D₀) nDeg do continue
         fitted := true
         for (thm, ρ) in thms do
+          if kind != "leadingCoeff_ratio" then
+            let ρ? ← match ρ with
+              | some ρ => pure (← evalRat? (← elabTermEnsuringType ρ (mkConst ``Real)))
+              | none => pure none
+            if (ρ.isNone || ρ?.isSome) &&
+                (← lagThmVetoed r k d D₀ ρ? ρ.isNone) then
+              failures := failures.push (m!"{thm} with growth {d} after dropping {k} rows",
+                m!"the exact top coefficients violate a hypothesis of the theorem")
+              continue
           match ← attempt k (fun t => `($(rowNumLit D₀) + $(rowNumLit d) * $t))
               (← rowThmApply r k thm ρ d D₀) with
           | .ok cert =>

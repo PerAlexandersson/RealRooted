@@ -248,12 +248,16 @@ partial def evalRat? (e : Expr) : MetaM (Option Rat) := do
       evalRat? e'
 
 /-- Evaluate a polynomial-valued expression (see `evalRat?` for the scalars), with `X`,
-`C r` and quotients by nonzero constants. -/
-partial def evalQPoly? (e : Expr) : MetaM (Option QPoly) := do
+`C r`, derivatives and quotients by nonzero constants.  The hook `row` is consulted first at
+every subterm: `some r` is the value of that subterm (`r = none` when it cannot be
+evaluated).  It lets a caller supply the exact values of the rows `P k` of a sequence. -/
+partial def evalQPolyWith (row : Expr → MetaM (Option (Option QPoly))) (e : Expr) :
+    MetaM (Option QPoly) := do
   let e := e.consumeMData
+  if let some value ← row e then return value
   let bin (a b : Expr) (f : QPoly → QPoly → Option QPoly) : MetaM (Option QPoly) := do
-    let some x ← evalQPoly? a | return none
-    let some y ← evalQPoly? b | return none
+    let some x ← evalQPolyWith row a | return none
+    let some y ← evalQPolyWith row b | return none
     return f x y
   match e.getAppFnArgs with
   | (``HAdd.hAdd, #[_, _, _, _, a, b]) => bin a b fun x y => some (x + y)
@@ -262,20 +266,27 @@ partial def evalQPoly? (e : Expr) : MetaM (Option QPoly) := do
   | (``HDiv.hDiv, #[_, _, _, _, a, b]) =>
       bin a b fun x y =>
         if y.isZero || y.natDegree != 0 then none else some (QPoly.smul (y.lead)⁻¹ x)
-  | (``Neg.neg, #[_, _, a]) => return (← evalQPoly? a).map (- ·)
+  | (``Neg.neg, #[_, _, a]) => return (← evalQPolyWith row a).map (- ·)
   | (``HPow.hPow, #[_, _, _, _, a, k]) =>
       let some k ← evalNat k | return none
-      return (← evalQPoly? a).map (·.pow k)
+      return (← evalQPolyWith row a).map (·.pow k)
   | (``Polynomial.X, _) => return some QPoly.X
   | (``DFunLike.coe, #[_, _, _, _, f, r]) =>
       if f.isAppOf ``Polynomial.C then return (← evalRat? r).map QPoly.const
+      else if f.isAppOf ``Polynomial.derivative then
+        return (← evalQPolyWith row r).map (·.derivative)
       else return none
   | (``OfNat.ofNat, #[_, lit, _]) => return (← evalNat lit).map fun k => QPoly.const k
   | (``Zero.zero, _) => return some ⟨#[]⟩
   | (``One.one, _) => return some (QPoly.const 1)
   | _ =>
       let some e' ← unfoldRowCoeff? e | return none
-      evalQPoly? e'
+      evalQPolyWith row e'
+
+/-- Evaluate a polynomial-valued expression (see `evalRat?` for the scalars), with `X`,
+`C r`, derivatives and quotients by nonzero constants. -/
+def evalQPoly? (e : Expr) : MetaM (Option QPoly) :=
+  evalQPolyWith (fun _ => pure none) e
 
 /-- For `P (n + s + 1) = A * (P (n + s))'' + B * (P (n + s))' + C * P (n + s)`, the base row
 `P s` and the coefficients `A`, `B`, `C` as functions of `n`. -/

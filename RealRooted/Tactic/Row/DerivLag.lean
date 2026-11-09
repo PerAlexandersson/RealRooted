@@ -425,6 +425,22 @@ private def closeEach (gs : List MVarId) (closers : List (TacticM Unit)) : Tacti
       withMainContext c
     unless (← getGoals).isEmpty do throwError "rr_row_deriv_lag: a side goal remains"
 
+/-- Whether the exact rows `P (S + m)`, `m < 8`, violate the degree law of an attempt: degree
+`D₀ + m` (growth one, `e? = none`) or `D₀ + (m + e) / 2` (half growth), with a positive leading
+coefficient.  The attempt states this law for all rows, so a violation proves that its degree
+stage cannot succeed; unavailable rows give `false`. -/
+private def derivLagDegreeLawFails (d : DerivLagRec) (S D₀ : Nat) (e? : Option Nat) :
+    MetaM Bool := do
+  let some L ← linRec? d.P | return false
+  let some rows ← linRecRows? L (S + 7) | return false
+  for m in [0:8] do
+    let some row := rows[S + m]? | return false
+    let deg := match e? with
+      | none => D₀ + m
+      | some e => D₀ + (m + e) / 2
+    if row.isZero || row.natDegree != deg || row.lead ≤ 0 then return true
+  return false
+
 /-- One attempt of the derivative-lag Liu–Wang argument: `s` rows are dropped after the
 `k - 2` explicit ones, `e?` is the parity of half growth (`none` for growth one). -/
 private def derivLagAttempt (d : DerivLagRec) (wantSplits wantStrict : Bool) (hints : RowHints)
@@ -509,6 +525,9 @@ private def derivLagAttempt (d : DerivLagRec) (wantSplits wantStrict : Bool) (hi
             ∀ $n:ident, 0 < ($Q $n).leadingCoeff :=
           ⟨fun $n:ident => by rr_row_natDegree,
             fun $n:ident => by rr_row_leadingCoeff_pos⟩)
+  unless hPo.isSome && hLo.isSome do
+    if ← derivLagDegreeLawFails d S D₀ e? then
+      throwError "degrees: the exact rows violate the degree law of the attempt"
   stage "degrees" <| evalTactic degTac
   -- A fixed positive affine lag may become a nonnegative `X`-lag after translation.
   -- This route covers plateau families such as Motzkin without requiring the original
