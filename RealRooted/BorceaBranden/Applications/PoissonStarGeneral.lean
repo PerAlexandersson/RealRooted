@@ -1,9 +1,9 @@
 module
 
 public import RealRooted.BorceaBranden.Applications.UnivariatePoissonStar
-import RealRooted.BorceaBranden.FiniteOrderWeylPreserver
 public import Mathlib.Algebra.Polynomial.HasseDeriv
 public import Mathlib.Algebra.Polynomial.Taylor
+import RealRooted.DerivativeProduct.KernelWeyl
 
 /-!
 # General-factor consequences for the univariate Poisson product
@@ -14,7 +14,7 @@ root-sign condition and derives the PF-preserver classification for every real p
 (`preservesPF_iff`): PF left factors for `c ≥ 0`, nonnegative constants for `c < 0` (issue #1494).
 -/
 
-@[expose] public section
+public section
 
 open Polynomial
 open scoped BigOperators
@@ -22,100 +22,6 @@ open scoped BigOperators
 namespace RealRooted.Poisson
 
 noncomputable section
-
-private def polynomialToMv (p : ℂ[X]) : MvPolynomial Unit ℂ :=
-  p.eval₂ (MvPolynomial.C : ℂ →+* MvPolynomial Unit ℂ) (MvPolynomial.X ())
-
-private theorem polynomialToMv_add (p q : ℂ[X]) :
-    polynomialToMv (p + q) = polynomialToMv p + polynomialToMv q := by
-  simp [polynomialToMv]
-
-private theorem polynomialToMv_mul (p q : ℂ[X]) :
-    polynomialToMv (p * q) = polynomialToMv p * polynomialToMv q := by
-  simp [polynomialToMv]
-
-private theorem polynomialToMv_finset_sum {ι : Type*} (s : Finset ι)
-    (p : ι → ℂ[X]) :
-    polynomialToMv (∑ i ∈ s, p i) =
-      ∑ i ∈ s, polynomialToMv (p i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp [polynomialToMv]
-  | insert a s ha ih =>
-      rw [Finset.sum_insert ha, Finset.sum_insert ha,
-        polynomialToMv_add, ih]
-
-private theorem polynomialToMv_C (a : ℂ) :
-    polynomialToMv (C a) = MvPolynomial.C a := by
-  simp [polynomialToMv]
-
-private theorem polynomialToMv_X :
-    polynomialToMv (X : ℂ[X]) = MvPolynomial.X () := by
-  simp [polynomialToMv]
-
-private theorem pderiv_polynomialToMv (p : ℂ[X]) :
-    MvPolynomial.pderiv () (polynomialToMv p) =
-      polynomialToMv p.derivative := by
-  induction p using Polynomial.induction_on' with
-  | add p q hp hq =>
-      rw [derivative_add, polynomialToMv_add, polynomialToMv_add, map_add, hp, hq]
-  | monomial n a =>
-      cases n with
-      | zero => simp [polynomialToMv]
-      | succ n =>
-          rw [show monomial (n + 1) a = C a * X ^ (n + 1) by
-            simp [C_mul_X_pow_eq_monomial]]
-          rw [derivative_C_mul, polynomialToMv_mul,
-            polynomialToMv_C, MvPolynomial.pderiv_C_mul]
-          simp [polynomialToMv]
-
-private theorem iteratedPDerivAt_polynomialToMv (j : ℕ) (p : ℂ[X]) :
-    iteratedPDerivAt () j (polynomialToMv p) =
-      polynomialToMv ((derivative^[j]) p) := by
-  induction j with
-  | zero => rfl
-  | succ j ih =>
-      rw [iteratedPDerivAt, ih, pderiv_polynomialToMv]
-      rw [Function.iterate_succ_apply']
-
-private theorem eval_polynomialToMv (p : ℂ[X]) (z : Unit → ℂ) :
-    MvPolynomial.eval z (polynomialToMv p) = p.eval (z ()) := by
-  have hC :
-      (MvPolynomial.eval z).comp
-          (MvPolynomial.C : ℂ →+* MvPolynomial Unit ℂ) = RingHom.id ℂ := by
-    ext a
-    simp
-  simp [polynomialToMv, Polynomial.hom_eval₂, hC]
-
-private theorem polynomialToMv_injective : Function.Injective polynomialToMv := by
-  intro p q hpq
-  have hleft (r : ℂ[X]) :
-      MvPolynomial.eval₂ C (fun _ : Unit => X) (polynomialToMv r) = r := by
-    induction r using Polynomial.induction_on' with
-    | add p q hp hq =>
-        rw [polynomialToMv_add, MvPolynomial.eval₂_add, hp, hq]
-    | monomial n a =>
-        rw [show monomial n a = C a * X ^ n by
-          simp [C_mul_X_pow_eq_monomial]]
-        simp [polynomialToMv]
-  have := congrArg (MvPolynomial.eval₂ C (fun _ : Unit => X)) hpq
-  simpa only [hleft] using this
-
-private theorem complexify_finset_sum {ι : Type*} (s : Finset ι)
-    (p : ι → ℝ[X]) :
-    complexify (∑ i ∈ s, p i) = ∑ i ∈ s, complexify (p i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp [complexify]
-  | insert a s ha ih =>
-      rw [Finset.sum_insert ha, Finset.sum_insert ha]
-      change Polynomial.map Complex.ofRealHom
-          (p a + ∑ i ∈ s, p i) =
-        complexify (p a) + ∑ i ∈ s, complexify (p i)
-      rw [Polynomial.map_add]
-      change complexify (p a) + complexify (∑ i ∈ s, p i) =
-        complexify (p a) + ∑ i ∈ s, complexify (p i)
-      rw [ih]
 
 private theorem C_pow_mul_hasseDeriv_eq (c : ℝ) (j : ℕ) (f : ℝ[X]) :
     C ((c : ℂ) ^ j) * X ^ j * hasseDeriv j (complexify f) =
@@ -149,12 +55,6 @@ private theorem C_pow_mul_hasseDeriv_eq (c : ℝ) (j : ℕ) (f : ℝ[X]) :
   rw [hscalar, map_mul]
   ring
 
-private def poissonWeylFamily (c : ℝ) (f : ℝ[X]) :
-    Fin (f.natDegree + 1) → MvPolynomial Unit ℂ := fun j =>
-  polynomialToMv
-    (C ((c : ℂ) ^ (j : ℕ)) * X ^ (j : ℕ) *
-      hasseDeriv (j : ℕ) (complexify f))
-
 private theorem sum_hasseDeriv_scale (p : ℂ[X]) (c x y : ℂ) :
     (∑ j ∈ Finset.range (p.natDegree + 1),
         c ^ j * x ^ j * (hasseDeriv j p).eval x * (-1) ^ j * y ^ j) =
@@ -175,70 +75,21 @@ private theorem sum_hasseDeriv_scale (p : ℂ[X]) (c x y : ℂ) :
       congr 1
       ring
 
-private theorem eval_signedWeylSymbol_poissonWeylFamily
-    (c : ℝ) (f : ℝ[X]) (z : Option Unit → ℂ) :
-    MvPolynomial.eval z
-        (BorceaBranden.signedWeylSymbol f.natDegree
-          (poissonWeylFamily c f)) =
-      (complexify f).eval
-        (z (some ()) * (1 - (c : ℂ) * z none)) := by
-  rw [BorceaBranden.signedWeylSymbol]
-  simp only [map_sum, MvPolynomial.eval_mul, MvPolynomial.eval_rename,
-    Function.comp_apply, MvPolynomial.eval_C, MvPolynomial.eval_pow,
-    MvPolynomial.eval_X, poissonWeylFamily, eval_polynomialToMv,
-    Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_pow,
-    Polynomial.eval_X]
-  rw [Fin.sum_univ_eq_sum_range (fun j : ℕ =>
-    (c : ℂ) ^ j * z (some ()) ^ j *
-      (hasseDeriv j (complexify f)).eval (z (some ())) *
-        (-1) ^ j * z none ^ j) (f.natDegree + 1)]
+private theorem sum_eval_poisson_symbol (c : ℝ) (f : ℝ[X]) (x y : ℂ) :
+    ∑ j : Fin (f.natDegree + 1),
+        (complexify (C (c ^ (j : ℕ) / ((j : ℕ).factorial : ℝ)) * X ^ (j : ℕ) *
+          (derivative^[j]) f)).eval x * (-y) ^ (j : ℕ) =
+      (complexify f).eval (x * (1 - (c : ℂ) * y)) := by
   have hdegree : (complexify f).natDegree = f.natDegree := by
     unfold complexify
     exact Polynomial.natDegree_map_eq_of_injective Complex.ofRealHom.injective f
-  simpa only [hdegree] using
-    sum_hasseDeriv_scale (complexify f) (c : ℂ) (z (some ())) (z none)
-
-private theorem signedWeylSymbol_poissonWeylFamily_stable
-    {c : ℝ} {f : ℝ[X]} (hf : IsAdmissible c f) :
-    MvUpperHalfPlaneStable
-      (BorceaBranden.signedWeylSymbol f.natDegree
-        (poissonWeylFamily c f)) := by
-  intro z hz
-  rw [eval_signedWeylSymbol_poissonWeylFamily]
-  let w : Fin 2 → ℂ := ![z (some ()), z none]
-  have hw : ∀ i, 0 < (w i).im := by
-    intro i
-    fin_cases i
-    · exact hz (some ())
-    · exact hz none
-  have hstable := hf.poissonSignedSymbol_stable w hw
-  rw [eval_poissonSignedSymbol] at hstable
-  exact hstable
-
-private theorem finiteOrderWeylOperator_poissonWeylFamily
-    (c : ℝ) (f g : ℝ[X]) :
-    BorceaBranden.finiteOrderWeylOperator () f.natDegree
-        (poissonWeylFamily c f) (polynomialToMv (complexify g)) =
-      polynomialToMv (complexify (starC c f g)) := by
-  rw [BorceaBranden.finiteOrderWeylOperator]
-  change (∑ j : Fin (f.natDegree + 1),
-      poissonWeylFamily c f j *
-        iteratedPDerivAt () (j : ℕ) (polynomialToMv (complexify g))) = _
-  simp only [poissonWeylFamily, iteratedPDerivAt_polynomialToMv]
-  rw [Fin.sum_univ_eq_sum_range (fun j : ℕ =>
-    polynomialToMv
-        (C ((c : ℂ) ^ j) * X ^ j * hasseDeriv j (complexify f)) *
-      polynomialToMv ((derivative^[j]) (complexify g)))
-      (f.natDegree + 1)]
-  rw [starC]
-  rw [complexify_finset_sum]
-  rw [polynomialToMv_finset_sum]
-  apply Finset.sum_congr rfl
-  intro j hj
-  rw [C_pow_mul_hasseDeriv_eq, ← polynomialToMv_mul]
-  congr 1
-  rw [← complexify_iterate_derivative]
-  exact (Polynomial.map_mul Complex.ofRealHom).symm
+  rw [Fin.sum_univ_eq_sum_range (fun j : ℕ ↦
+    (complexify (C (c ^ j / (j.factorial : ℝ)) * X ^ j * (derivative^[j]) f)).eval x *
+      (-y) ^ j) (f.natDegree + 1), ← sum_hasseDeriv_scale (complexify f) (c : ℂ) x y, hdegree]
+  refine Finset.sum_congr rfl fun j _ ↦ ?_
+  rw [← C_pow_mul_hasseDeriv_eq]
+  simp only [eval_mul, eval_C, eval_pow, eval_X]
+  ring
 
 /-- An admissible fixed left factor sends every nonzero split polynomial to
 a split polynomial or zero under the Poisson product. -/
@@ -246,30 +97,29 @@ theorem IsAdmissible.preservesRealRootedOrZero {c : ℝ} {f : ℝ[X]}
     (hf : IsAdmissible c f) :
     PreservesRealRootedOrZero (starCLinearMap c f) := by
   intro g hg
-  have hgStable : MvUpperHalfPlaneStable
-      (polynomialToMv (complexify g)) := by
-    intro z hz
-    rw [eval_polynomialToMv]
-    exact Polynomial.Splits.isUpperHalfPlaneStable_complexify hg.2 hg.1
-      (z ()) (hz ())
-  have hout := BorceaBranden.finiteOrderWeylOperator_preserves_stability
-    () f.natDegree (poissonWeylFamily c f)
-    (signedWeylSymbol_poissonWeylFamily_stable hf) hgStable
-  rw [finiteOrderWeylOperator_poissonWeylFamily] at hout
-  rcases hout with hzero | hstable
-  · left
-    rw [starCLinearMap_apply]
-    have hcomplex : complexify (starC c f g) = 0 := by
-      apply polynomialToMv_injective
-      rw [hzero]
-      simp [polynomialToMv]
-    exact (Polynomial.map_eq_zero_iff Complex.ofReal_injective).mp hcomplex
-  · right
-    rw [starCLinearMap_apply]
-    apply IsUpperHalfPlaneStable.splits_complexify
-    intro z hz
-    have heval := hstable (fun _ : Unit => z) (fun _ => hz)
-    simpa only [eval_polynomialToMv] using heval
+  have hsym : ∀ x y : ℂ, 0 < x.im → 0 < y.im →
+      ∑ j : Fin (f.natDegree + 1),
+        (complexify (C (c ^ (j : ℕ) / ((j : ℕ).factorial : ℝ)) * X ^ (j : ℕ) *
+          (derivative^[j]) f)).eval x * (-y) ^ (j : ℕ) ≠ 0 := by
+    intro x y hx hy
+    rw [sum_eval_poisson_symbol]
+    have hstable := hf.poissonSignedSymbol_stable ![x, y] (by
+      intro i
+      fin_cases i
+      · exact hx
+      · exact hy)
+    rwa [eval_poissonSignedSymbol] at hstable
+  have hout := sum_mul_iterate_derivative_eq_zero_or_splits (m := f.natDegree)
+    (fun j ↦ C (c ^ (j : ℕ) / ((j : ℕ).factorial : ℝ)) * X ^ (j : ℕ) * (derivative^[j]) f)
+    hsym hg.1 hg.2
+  have hsum : ∑ j : Fin (f.natDegree + 1),
+      C (c ^ (j : ℕ) / ((j : ℕ).factorial : ℝ)) * X ^ (j : ℕ) * (derivative^[j]) f *
+        (derivative^[j]) g = starC c f g := by
+    rw [starC]
+    exact Fin.sum_univ_eq_sum_range (fun j ↦ C (c ^ j / (j.factorial : ℝ)) * X ^ j *
+      (derivative^[j]) f * (derivative^[j]) g) (f.natDegree + 1)
+  rw [hsum] at hout
+  simpa only [starCLinearMap_apply] using hout
 
 /-- For a nonnegative parameter, every PF polynomial is an admissible fixed
 left factor. -/

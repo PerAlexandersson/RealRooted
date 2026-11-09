@@ -368,10 +368,12 @@ theorem betaCoeff_one_param (k : ℕ) : betaCoeff 1 k = 1 / (k.factorial : ℝ) 
   rw [ascPochhammer_eval_one]
   ring
 
-private theorem natDegree_X_mul_X_add_one_le : (X * (X + 1) : ℝ[X]).natDegree ≤ 2 := by
+/-- The diamond weight `X * (X + 1)` has degree at most `2`. -/
+theorem natDegree_X_mul_X_add_one_le : (X * (X + 1) : ℝ[X]).natDegree ≤ 2 := by
   compute_degree
 
-private theorem coeff_two_X_mul_X_add_one : (X * (X + 1) : ℝ[X]).coeff 2 = 1 := by
+/-- The `X ^ 2`-coefficient of the diamond weight `X * (X + 1)` is `1`. -/
+theorem coeff_two_X_mul_X_add_one : (X * (X + 1) : ℝ[X]).coeff 2 = 1 := by
   have h : (X * (X + 1) : ℝ[X]) = X ^ 2 + X := by ring
   rw [h]
   simp [coeff_X_pow, coeff_X]
