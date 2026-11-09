@@ -493,7 +493,7 @@ def fTransformInterlacesGoal : TacticM Unit := do
           | (norm_num [Polynomial.coeff_add, Polynomial.coeff_C_mul,
               Polynomial.coeff_X_pow, Polynomial.coeff_X,
               Polynomial.coeff_C] <;>
-              first | done | positivity | nlinarith | rr_row_field)
+              first | done | rr_row_close)
           | rr_row_field
       · $multiplierTac:tactic
       · rw [$Q:ident]

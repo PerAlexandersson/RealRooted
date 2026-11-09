@@ -114,12 +114,7 @@ which also normalizes the bodies of products). -/
 elab "rr_linrec_field" : tactic => withMainContext do
   addNatCastNonneg
   discard <| clearDenominatorRounds
-    (fun xs => `(tactic| have : $xs ≠ 0 := by
-      first
-        | positivity
-        | (apply ne_of_gt; nlinarith)
-        | (apply ne_of_lt; nlinarith)
-        | fail))
+    (proveDenominator [.positivityNe, .positiveNe, .negative])
     (← `(tactic| field_simp)) false
   evalTactic (← `(tactic| first | ring1 | (ring_nf; done)))
 
@@ -128,8 +123,7 @@ inequality and leaves the polynomial inequality to `nlinarith`. -/
 elab "rr_linrec_cone_field" : tactic => withMainContext do
   addNatCastNonneg
   if ← clearDenominatorRounds
-      (fun xs => `(tactic| have : 0 < $xs := by first | positivity | nlinarith | fail))
-      (← `(tactic| field_simp)) true then
+      (proveDenominator [.positive]) (← `(tactic| field_simp)) true then
     return
   evalTactic (← `(tactic| nlinarith))
 
