@@ -1570,6 +1570,15 @@ public import RealRooted.ThresholdMatrix
 public import RealRooted.ThresholdMatrix.Basic
 public import RealRooted.ThresholdMatrix.GustafssonSolus
 public import RealRooted.ThresholdMatrix.HaglundZhang
+public import RealRooted.Toeplitz.SignedPerturbation
+public import RealRooted.Toeplitz.SignedPerturbation.AlternatingRoots
+public import RealRooted.Toeplitz.SignedPerturbation.Chebyshev
+public import RealRooted.Toeplitz.SignedPerturbation.CofactorBounds
+public import RealRooted.Toeplitz.SignedPerturbation.Curve
+public import RealRooted.Toeplitz.SignedPerturbation.Factorization
+public import RealRooted.Toeplitz.SignedPerturbation.Interlacing
+public import RealRooted.Toeplitz.SignedPerturbation.Rows
+public import RealRooted.Toeplitz.SignedPerturbation.TrigFamily
 public import RealRooted.TotallyNonnegInterlacing
 public import RealRooted.Touchard
 public import RealRooted.Transforms.BrandenE
@@ -2130,6 +2139,7 @@ public import RealRooted.Challenges.Interlacing.MaWangEndpointSteps
 public import RealRooted.Challenges.Interlacing.PositiveAffineLagRecurrences
 public import RealRooted.Challenges.Interlacing.QuadraticInterlacingCriterion
 public import RealRooted.Challenges.Interlacing.ShiftedChebyshevFamilies
+public import RealRooted.Challenges.Interlacing.SignedToeplitzPerturbations
 public import RealRooted.Challenges.Interlacing.VariableDelayRecurrences
 public import RealRooted.Challenges.Matrices.SeparatedCharacteristicRecurrence
 public import RealRooted.Challenges.Matrices.TP2HessenbergCertificate
