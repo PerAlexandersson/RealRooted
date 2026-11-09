@@ -1394,7 +1394,9 @@ public import RealRooted.RootCounting.Threshold.Sorted
 public import RealRooted.RootLocation.Basic
 public import RealRooted.RootLocation.BernsteinDiagonal
 public import RealRooted.RootLocation.CommonInterlacer
+public import RealRooted.RootLocation.DerivativeSigns
 public import RealRooted.RootLocation.Mobius
+public import RealRooted.RootLocation.Pairing
 public import RealRooted.RootLocation.PreservesBridge
 public import RealRooted.RootMatchingSort
 public import RealRooted.RootMultiplicityMatching
@@ -1570,12 +1572,14 @@ public import RealRooted.Transforms.BrandenE.IntervalPreserver
 public import RealRooted.Transforms.BrandenE.Inverse
 public import RealRooted.Transforms.BrandenE.OrderedBell
 public import RealRooted.Transforms.BrandenE.ProperPosition
+public import RealRooted.Transforms.BrandenE.RootDomain
 public import RealRooted.Transforms.BrandenE.WeightedSum
 public import RealRooted.Transforms.ReverseHermite
 public import RealRooted.Transforms.ReverseHermite.Basic
 public import RealRooted.Transforms.ReverseHermite.Derivative
 public import RealRooted.Transforms.ReverseHermite.Preservation
 public import RealRooted.Transforms.StirlingRootRegions
+public import RealRooted.Transforms.TouchardRootDomain
 public import RealRooted.UnitIntervalGraph.AcyclicSink
 public import RealRooted.UpperDerivativeInterlace
 public import RealRooted.VeroneseMatrix
@@ -1652,6 +1656,8 @@ public import RealRooted.DerivativeRecurrence.ScalarRecInvariantCone
 public import RealRooted.CoefficientShape.LocalLimit
 public import RealRooted.Mathlib.Probability.LocalLimit
 
+public import RealRooted.Challenges.Preservers.TouchardOrderedBellDomains
+public import RealRooted.DerivativeProduct.DiamondIntervals
 public import RealRooted.Toeplitz.AffineVector
 public import RealRooted.Toeplitz.HessenbergDeterminant
 public import RealRooted.Toeplitz.HessenbergRows

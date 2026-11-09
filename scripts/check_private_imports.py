@@ -39,7 +39,7 @@ def module_names(only=None, exclude=None):
     if NON_MODULES.exists():
         skip = {l.strip() for l in NON_MODULES.read_text().splitlines()
                 if l.strip() and not l.startswith('#')}
-    files = subprocess.run(['git', 'ls-files', 'RealRooted/*.lean'], cwd=ROOT,
+    files = subprocess.run(['git', 'ls-files', '--cached', '--others', '--exclude-standard', 'RealRooted/*.lean'], cwd=ROOT,
                            capture_output=True, text=True, check=True).stdout.split()
     mods = []
     for f in files:
