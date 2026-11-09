@@ -2132,3 +2132,8 @@ public import RealRooted.Challenges.Roots.OdeRootBounds
 public import RealRooted.Challenges.Stability.BivariateDeterminantalReduction
 public import RealRooted.Challenges.Combinatorial.NarayanaGammaPolynomials
 public import RealRooted.DerivativeRecurrence.HalfStepLag
+public import RealRooted.DerivativeProduct.Associative
+public import RealRooted.DerivativeProduct.Basic
+public import RealRooted.DerivativeProduct.Diamond
+public import RealRooted.DerivativeProduct.Poisson
+public import RealRooted.DerivativeProduct.Transform
