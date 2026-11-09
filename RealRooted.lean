@@ -1137,6 +1137,7 @@ public import RealRooted.MatrixInterlacing.SeparatedCharacteristicExamples
 public import RealRooted.MatrixInterlacing.SeparatedCharacteristicRows
 public import RealRooted.MatrixInterlacing.SeparatedCharacteristicRecurrence
 public import RealRooted.MatrixInterlacing.SparseTests
+public import RealRooted.MatrixInterlacing.TP2Step
 public import RealRooted.MatrixInterlacing.TotallyNonnegative
 public import RealRooted.MatrixInterlacing.TotallyNonnegativeExamples
 public import RealRooted.Multiaffine
@@ -1657,6 +1658,10 @@ public import RealRooted.DerivativeRecurrence.ScalarRecInvariantCone
 public import RealRooted.CoefficientShape.LocalLimit
 public import RealRooted.Mathlib.Probability.LocalLimit
 
+public import RealRooted.Toeplitz.HessenbergDeterminant
+public import RealRooted.Toeplitz.HessenbergRows
+public import RealRooted.Toeplitz.TP2Hessenberg
+public import RealRooted.Toeplitz.TP2HessenbergExamples
 public import RealRooted.ToeplitzFin
 public import RealRooted.ThreeTermRecurrence.CoeffMoments
 public import RealRooted.ThreeTermRecurrence.Coefficients
@@ -2118,6 +2123,7 @@ public import RealRooted.Challenges.Interlacing.QuadraticInterlacingCriterion
 public import RealRooted.Challenges.Interlacing.ShiftedChebyshevFamilies
 public import RealRooted.Challenges.Interlacing.VariableDelayRecurrences
 public import RealRooted.Challenges.Matrices.SeparatedCharacteristicRecurrence
+public import RealRooted.Challenges.Matrices.TP2HessenbergCertificate
 public import RealRooted.Challenges.Matrices.TotallyNonnegativePencils
 public import RealRooted.Challenges.Matrices.WeightedThreeStateRecurrence
 public import RealRooted.Challenges.Preservers.FiniteDegreeDifferentialTests
