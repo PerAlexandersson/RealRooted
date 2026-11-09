@@ -197,6 +197,7 @@ public import RealRooted.Challenges.Preservers.BinaryRunTransformation
 public import RealRooted.Challenges.Stability.BorceaBranden
 public import RealRooted.Challenges.Combinatorial.BorosMoll
 public import RealRooted.Challenges.Preservers.BrandenETransform
+public import RealRooted.Challenges.Preservers.DerivativeProductKernel
 public import RealRooted.Challenges.Combinatorial.BrandenLeite
 public import RealRooted.Challenges.Combinatorial.BrandenSolus
 public import RealRooted.Challenges.Combinatorial.BrandenVecchi
@@ -917,6 +918,7 @@ public import RealRooted.Mathlib.Algebra.MvPolynomial.EvalOnVars
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
 public import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv
+public import RealRooted.Mathlib.Algebra.MvPolynomial.PDeriv.ToMvPolynomial
 public import RealRooted.Mathlib.Algebra.MvPolynomial.PDerivSpecialize
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Specialize
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox
@@ -2140,3 +2142,12 @@ public import RealRooted.Challenges.Roots.OdeRootBounds
 public import RealRooted.Challenges.Stability.BivariateDeterminantalReduction
 public import RealRooted.Challenges.Combinatorial.NarayanaGammaPolynomials
 public import RealRooted.DerivativeRecurrence.HalfStepLag
+public import RealRooted.DerivativeProduct.Associative
+public import RealRooted.DerivativeProduct.Basic
+public import RealRooted.DerivativeProduct.Diamond
+public import RealRooted.DerivativeProduct.Kernel
+public import RealRooted.DerivativeProduct.KernelNecessity
+public import RealRooted.DerivativeProduct.KernelSufficiency
+public import RealRooted.DerivativeProduct.KernelWeyl
+public import RealRooted.DerivativeProduct.Poisson
+public import RealRooted.DerivativeProduct.Transform
