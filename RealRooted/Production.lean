@@ -944,6 +944,7 @@ public import RealRooted.Mathlib.Algebra.Polynomial.Expand.Splits
 public import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
 public import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
 public import RealRooted.Mathlib.Algebra.Polynomial.MeanMode
+public import RealRooted.Mathlib.Algebra.Polynomial.MobiusTransform
 public import RealRooted.Mathlib.Algebra.Polynomial.Moment
 public import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 public import RealRooted.Mathlib.Algebra.Polynomial.Roots
@@ -1367,6 +1368,7 @@ public import RealRooted.RootCounting.Threshold.LogConcavity
 public import RealRooted.RootCounting.Threshold.Signs
 public import RealRooted.RootCounting.Threshold.Sorted
 public import RealRooted.RootLocation.Basic
+public import RealRooted.RootLocation.Mobius
 public import RealRooted.RootMatchingSort
 public import RealRooted.RootMultiplicityMatching
 public import RealRooted.RootOrderBridge
