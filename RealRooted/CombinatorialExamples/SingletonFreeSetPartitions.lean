@@ -153,8 +153,7 @@ lemma natDegree_singletonFreeSetPartitions (n : Nat) (hn : 2 ≤ n) :
 
 lemma singletonFreeSetPartitions_nonzero (n : Nat) (hn : 2 ≤ n) :
     singletonFreeSetPartitions n ≠ 0 := by
-  rcases coeff_singletonFreeSetPartitions_top_pos_and_above n hn with ⟨htop, _⟩
-  exact fun h0 => by simp [h0] at htop
+  rr_row_ne_zero
 
 lemma singletonFreeSetPartitions_posLeadingCoeff (n : Nat) (hn : 2 ≤ n) :
     HasPosLeadingCoeff (singletonFreeSetPartitions n) := by

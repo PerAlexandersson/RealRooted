@@ -610,25 +610,21 @@ theorem a277627_eq_reciprocalShift (n : ℕ) :
 
 /-- Every A109955 row is real-rooted. -/
 theorem splits_a109955 (n : ℕ) : (a109955 n).Splits := by
-  rw [a109955_eq_reciprocalShift]
-  exact splits_subsequence 3 3 0 n (by norm_num) (by norm_num) (by norm_num) Q_zero
+  rr_row_splits
 
 /-- Consecutive A109955 rows are in strict interlacing position. -/
 theorem strictInterl_a109955 (n : ℕ) :
     RealRooted.StrictInterl (a109955 n) (a109955 (n + 1)) := by
-  rw [a109955_eq_reciprocalShift, a109955_eq_reciprocalShift]
-  exact strictInterl_subsequence 3 3 0 n (by norm_num) (by norm_num) (by norm_num) Q_zero
+  rr_row_strictInterl
 
 /-- Every A127893 row is real-rooted. -/
 theorem splits_a127893 (n : ℕ) : (a127893 n).Splits := by
-  rw [a127893_eq_reciprocalShift]
-  exact splits_subsequence 3 3 2 n (by norm_num) (by norm_num) (by norm_num) Q_two
+  rr_row_splits
 
 /-- Consecutive A127893 rows are in strict interlacing position. -/
 theorem strictInterl_a127893 (n : ℕ) :
     RealRooted.StrictInterl (a127893 n) (a127893 (n + 1)) := by
-  rw [a127893_eq_reciprocalShift, a127893_eq_reciprocalShift]
-  exact strictInterl_subsequence 3 3 2 n (by norm_num) (by norm_num) (by norm_num) Q_two
+  rr_row_strictInterl
 
 /-- Every A206294 row is real-rooted. -/
 theorem splits_a206294 (n : ℕ) : (a206294 n).Splits := by
@@ -641,36 +637,30 @@ theorem strictInterl_a206294 (n : ℕ) :
 
 /-- Every A109960 row is real-rooted. -/
 theorem splits_a109960 (n : ℕ) : (a109960 n).Splits := by
-  rw [a109960_eq_reciprocalShift]
-  exact splits_subsequence 4 4 0 n (by norm_num) (by norm_num) (by norm_num) Q_four_zero
+  rr_row_splits
 
 /-- Consecutive A109960 rows are in strict interlacing position. -/
 theorem strictInterl_a109960 (n : ℕ) :
     RealRooted.StrictInterl (a109960 n) (a109960 (n + 1)) := by
-  rw [a109960_eq_reciprocalShift, a109960_eq_reciprocalShift]
-  exact strictInterl_subsequence 4 4 0 n (by norm_num) (by norm_num) (by norm_num) Q_four_zero
+  rr_row_strictInterl
 
 /-- Every A116088 row is real-rooted. -/
 theorem splits_a116088 (n : ℕ) : (a116088 n).Splits := by
-  rw [a116088_eq_reciprocalShift]
-  exact splits_subsequence 3 2 0 n (by norm_num) (by norm_num) (by norm_num) Q_zero
+  rr_row_splits
 
 /-- Consecutive A116088 rows are in strict interlacing position. -/
 theorem strictInterl_a116088 (n : ℕ) :
     RealRooted.StrictInterl (a116088 n) (a116088 (n + 1)) := by
-  rw [a116088_eq_reciprocalShift, a116088_eq_reciprocalShift]
-  exact strictInterl_subsequence 3 2 0 n (by norm_num) (by norm_num) (by norm_num) Q_zero
+  rr_row_strictInterl
 
 /-- Every A116089 row is real-rooted. -/
 theorem splits_a116089 (n : ℕ) : (a116089 n).Splits := by
-  rw [a116089_eq_reciprocalShift]
-  exact splits_subsequence 4 3 0 n (by norm_num) (by norm_num) (by norm_num) Q_four_zero
+  rr_row_splits
 
 /-- Consecutive A116089 rows are in strict interlacing position. -/
 theorem strictInterl_a116089 (n : ℕ) :
     RealRooted.StrictInterl (a116089 n) (a116089 (n + 1)) := by
-  rw [a116089_eq_reciprocalShift, a116089_eq_reciprocalShift]
-  exact strictInterl_subsequence 4 3 0 n (by norm_num) (by norm_num) (by norm_num) Q_four_zero
+  rr_row_strictInterl
 
 /-- Every A277627 row is real-rooted. -/
 theorem splits_a277627 (n : ℕ) : (a277627 n).Splits := by
