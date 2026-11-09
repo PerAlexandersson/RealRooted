@@ -125,14 +125,6 @@ theorem abs_le_mul_of_mem_roots_schurSzegoComp {D : ℕ} {f g : ℝ[X]} {v b : �
       simpa using hg r hr) (z := (x : ℂ)) hxroot
   simpa using this
 
-/-- Reflection at the degree inverts the roots: for `x ≠ 0`, `x⁻¹` is a root of `reflect D p`
-exactly when `x` is a root of `p`. -/
-private theorem isRoot_reflect_inv_iff {D : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ D) {x : ℝ}
-    (hx : x ≠ 0) : (reflect D p).IsRoot x⁻¹ ↔ p.IsRoot x := by
-  have : Invertible x := invertibleOfNonzero hx
-  have h := eval₂_reflect_eq_zero_iff (RingHom.id ℝ) x D p hp
-  simpa [IsRoot.def, eval₂_id] using h
-
 /-- The roots of the reflection of a splitting polynomial of exact degree `D` are the inverses
 of its roots. -/
 private theorem mem_roots_reflect_iff {D : ℕ} {p : ℝ[X]} (hp0 : p ≠ 0) (hps : p.Splits)
@@ -176,7 +168,7 @@ theorem le_abs_mul_of_mem_roots_schurSzegoComp {D : ℕ} {f g : ℝ[X]} {u a : �
     rw [coeff_reflect, revAt_zero]
     exact hgdeg ▸ hgn
   have hroot : (reflect D (schurSzegoComp D f g)).IsRoot x⁻¹ :=
-    (isRoot_reflect_inv_iff (natDegree_schurSzegoComp_le D f g) hxne).2 hxroot
+    (DegreeDropReversal.isRoot_reflect_inv_iff hxne (natDegree_schurSzegoComp_le D f g)).2 hxroot
   rw [reflect_schurSzegoComp] at hroot
   have hS' : schurSzegoComp D (reflect D f) (reflect D g) ≠ 0 := fun h => by
     have hc := congrArg (fun q => q.coeff D) h

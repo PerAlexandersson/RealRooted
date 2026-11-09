@@ -99,6 +99,23 @@ theorem mobiusTransform_eq_sum {p : R[X]} (hdeg : p.natDegree ≤ n) :
     Matrix.cons_val_zero, Matrix.cons_val_one]
   rfl
 
+/-- Evaluation of the Möbius transform: for `natDegree p ≤ n` and `c x + d ≠ 0`, the transform at
+`x` is `(c x + d)^n * p ((a x + b) / (c x + d))`. -/
+theorem eval_mobiusTransform {K : Type*} [Field K] (a b c d : K) {p : K[X]}
+    (hp : p.natDegree ≤ n) {x : K} (hx : c * x + d ≠ 0) :
+    (mobiusTransform n a b c d p).eval x =
+      (c * x + d) ^ n * p.eval ((a * x + b) / (c * x + d)) := by
+  rw [mobiusTransform_eq_sum n a b c d hp, eval_finsetSum,
+    eval_eq_sum_range' (n := n + 1) (by lia), Finset.mul_sum]
+  refine Finset.sum_congr rfl fun k hk => ?_
+  have hk' : k ≤ n := Nat.lt_succ_iff.1 (Finset.mem_range.1 hk)
+  simp only [eval_mul, eval_C, eval_pow, eval_add, eval_X]
+  rw [show (c * x + d) ^ n = (c * x + d) ^ (n - k) * (c * x + d) ^ k by
+    rw [← pow_add, Nat.sub_add_cancel hk'], div_pow]
+  have hxk : (c * x + d) ^ k ≠ 0 := pow_ne_zero _ hx
+  rw [mul_comm c x] at hxk ⊢
+  field_simp
+
 /-- The transform of the monomial `X^k` in degree `n ≥ k`. -/
 theorem mobiusTransform_X_pow {k : ℕ} (hk : k ≤ n) :
     mobiusTransform n a b c d (X ^ k : R[X]) = (C a * X + C b) ^ k * (C c * X + C d) ^ (n - k) := by
@@ -210,6 +227,14 @@ theorem cayleyTransform_eq_mobiusTransform (p : R[X]) :
   have : (![X, 1 - X] : Fin 2 → R[X]) = ![C 1 * X + C 0, C (-1) * X + C 1] := by
     funext i; fin_cases i <;> simp [sub_eq_add_neg, add_comm]
   simp only [cayleyTransform, mobiusTransform, this]
+
+/-- Evaluation of the Cayley transform: `(1 - x)^n * p (x / (1 - x))` for `natDegree p ≤ n`. -/
+theorem eval_cayleyTransform {K : Type*} [Field K] {p : K[X]} (hp : p.natDegree ≤ n) {x : K}
+    (hx : 1 - x ≠ 0) :
+    (cayleyTransform n p).eval x = (1 - x) ^ n * p.eval (x / (1 - x)) := by
+  have h : -1 * x + 1 = 1 - x := by ring
+  rw [cayleyTransform_eq_mobiusTransform, eval_mobiusTransform n 1 0 (-1) 1 hp (by rwa [h]), h,
+    one_mul, add_zero]
 
 /-- Root-factor form of the Möbius transform of a split polynomial of exact degree `n`: the root
 `r` becomes the linear factor `(a - r c) X + (b - r d)`. -/
