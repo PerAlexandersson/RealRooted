@@ -40,7 +40,6 @@ noncomputable section
 
 namespace DerivativeProduct
 
-set_option linter.flexible false in
 /-- The root location behind the sufficiency criterion: if `w r ≤ 0` for a real `r`, `w` is a
 quadratic with nonnegative leading coefficient, `x` lies in the open upper half-plane and
 `w x * z = r - x`, then `z` lies in the closed upper half-plane. -/
@@ -55,9 +54,18 @@ private theorem im_nonneg_of_weight_mul_eq {W : ℝ[X]} (hW : W.natDegree ≤ 2)
     rw [eval_eq_sum_range' (show W.natDegree < 3 by lia)]
     simp [Finset.sum_range_succ]
   rw [hWx] at hz
-  have hre := congrArg Complex.re hz
-  have him := congrArg Complex.im hz
-  simp [pow_two] at hre him
+  have hre : (W.coeff 0 + W.coeff 1 * x.re + W.coeff 2 * (x.re * x.re - x.im * x.im)) * z.re -
+      (W.coeff 1 * x.im + W.coeff 2 * (x.re * x.im + x.im * x.re)) * z.im = r - x.re := by
+    have h := congrArg Complex.re hz
+    simp only [Complex.mul_re, Complex.add_re, Complex.add_im, Complex.mul_im, Complex.ofReal_re,
+      Complex.ofReal_im, Complex.sub_re, pow_two] at h
+    linear_combination h
+  have him : (W.coeff 0 + W.coeff 1 * x.re + W.coeff 2 * (x.re * x.re - x.im * x.im)) * z.im +
+      (W.coeff 1 * x.im + W.coeff 2 * (x.re * x.im + x.im * x.re)) * z.re = -x.im := by
+    have h := congrArg Complex.im hz
+    simp only [Complex.mul_re, Complex.add_re, Complex.add_im, Complex.mul_im, Complex.ofReal_re,
+      Complex.ofReal_im, Complex.sub_im, pow_two] at h
+    linear_combination h
   set a := x.re
   set b := x.im
   set c0 := W.coeff 0
