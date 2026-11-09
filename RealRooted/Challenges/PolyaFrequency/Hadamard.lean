@@ -5,6 +5,7 @@ public import RealRooted.GarloffWagner.Theorem12
 public import RealRooted.Hadamard
 import RealRooted.Hadamard.FiniteReflection
 public import RealRooted.Hadamard.KostovMap
+public import RealRooted.Hadamard.RootIntervals
 public import RealRooted.Hadamard.SchurSzegoMultiplicity
 public import RealRooted.Hadamard.SchurSzegoSimple
 public import RealRooted.Hadamard.SchurSzegoSigns
@@ -88,6 +89,17 @@ label = "Kostov–Shapiro: composition with a negative-rooted polynomial preserv
 name = "RealRooted.splits_schurSzegoComp_of_roots_neg"
 module = "RealRooted.Hadamard.SchurSzegoSigns"
 label = "Composition with a negative-rooted polynomial preserves real-rootedness"
+
+[[theorems]]
+name = "RealRooted.IsRealRootedIn.schurSzegoComp_Icc"
+module = "RealRooted.Hadamard.RootIntervals"
+label = "Kostov–Shapiro: roots in [−b, −a] and [−v, −u] give roots in [−bv, −au]"
+headline = true
+
+[[theorems]]
+name = "RealRooted.IsRealRootedIn.schurSzegoComp_Icc_zero"
+module = "RealRooted.Hadamard.RootIntervals"
+label = "Kostov–Shapiro: roots in [−b, 0] and [−v, 0] give roots in [−bv, 0]"
 
 [[theorems]]
 name = "RealRooted.Kostov.interiorCoeff_composition"
@@ -182,6 +194,13 @@ If moreover $f$ is real-rooted and $g$ has only negative roots, then $f *_n g$ i
 real-rooted with as many positive, zero and negative roots as $f$. Conversely, every
 nonzero root of multiplicity at least two is such a forced product $-ab$, so all other
 nonzero roots are simple.
+
+**Theorem** (Kostov–Shapiro, root intervals). [@KostovShapiro2006] Let $g$ have degree $n$
+with all roots in $[-b,-a]$, where $0<a\le b$, and let $f$ have degree $n$ with all roots in
+$[-v,-u]$, where $0\le u\le v$. Then $f*_ng$ has all roots in $[-bv,-au]$. The upper
+bound $bv$ on the absolute values of the roots is Szegő's disk theorem, a consequence of Grace's
+apolarity theorem, and the lower bound $au$ follows by reflecting both factors. If the roots of $f$
+and $g$ only lie in $[-v,0]$ and $[-b,0]$, then those of $f*_ng$ lie in $[-bv,0]$.
 
 Kostov's coefficient map makes the factorizations explicit. Write a monic $P$ of degree $n$
 with $P(-1) = 0$ as $(x+1)(x^{n-1} + c_1 x^{n-2} + \dots + c_{n-1})$. If $P = K_{a_1} *_n
