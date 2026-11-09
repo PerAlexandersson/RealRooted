@@ -127,10 +127,8 @@ lemma roots_nonpos_typeBEulerian_of_isRealRooted {n : Nat} :
   roots_nonpos_of_hasNonnegCoeffs (typeBEulerian_nonnegCoeffs n)
 
 lemma interlaces_typeBEulerian_zero_one :
-    Interlaces (typeBEulerian 0) (typeBEulerian 1) :=
-  by simpa [typeBEulerian_zero, typeBEulerian_one, add_comm] using
-    interlaces_one_linear (p := X + C (1 : ℝ))
-      (Polynomial.natDegree_X_add_C (x := (1 : ℝ)))
+    Interlaces (typeBEulerian 0) (typeBEulerian 1) := by
+  rr_row_interlaces
 
 lemma interlaces_derivative_typeBEulerian :
     ∀ n : Nat, 1 ≤ n → (typeBEulerian n).Splits →

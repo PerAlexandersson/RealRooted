@@ -1,5 +1,6 @@
 module
 
+import RealRooted.Tactic.RowInterlacing
 public import RealRooted.CombinatorialExamples.PathPowerClique
 import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 import RealRooted.WagnerX.AffineFactors
@@ -214,8 +215,6 @@ private theorem reflect_four_X_cube : reflect 3 (4 * X ^ 3 : ℝ[X]) = 4 := by
   rw [show (4 : ℝ[X]) = C 4 from (map_ofNat C 4).symm,
     reflect_C_mul_X_pow]
   simp
-
-private theorem reflect_X_sq : reflect 2 (X ^ 2 : ℝ[X]) = 1 := by simp
 
 private theorem reflect_X_cube : reflect 3 (X ^ 3 : ℝ[X]) = 1 := by simp
 
@@ -633,20 +632,12 @@ theorem strictInterl_a127893 (n : ℕ) :
 
 /-- Every A206294 row is real-rooted. -/
 theorem splits_a206294 (n : ℕ) : (a206294 n).Splits := by
-  rcases n with _ | n
-  · simp [a206294]
-  · rw [a206294_succ_eq_X_mul_a127893]
-    exact Polynomial.Splits.X.mul (splits_a127893 n)
+  rr_row_splits
 
 /-- Consecutive A206294 rows are in strict interlacing position. -/
 theorem strictInterl_a206294 (n : ℕ) :
     RealRooted.StrictInterl (a206294 n) (a206294 (n + 1)) := by
-  rcases n with _ | n
-  · rw [show a206294 0 = 1 from rfl, show a206294 1 = X from rfl]
-    exact (RealRooted.interlaces_one_linear (p := (X : ℝ[X])) (by simp)).toStrictInterl
-  · rw [a206294_succ_eq_X_mul_a127893, a206294_succ_eq_X_mul_a127893]
-    exact RealRooted.StrictInterl.mul_common_factor
-      (strictInterl_a127893 n) X_ne_zero Polynomial.Splits.X
+  rr_row_strictInterl
 
 /-- Every A109960 row is real-rooted. -/
 theorem splits_a109960 (n : ℕ) : (a109960 n).Splits := by
@@ -681,28 +672,13 @@ theorem strictInterl_a116089 (n : ℕ) :
   rw [a116089_eq_reciprocalShift, a116089_eq_reciprocalShift]
   exact strictInterl_subsequence 4 3 0 n (by norm_num) (by norm_num) (by norm_num) Q_four_zero
 
-private theorem a277627_eq_X_mul_reciprocalShift (n : ℕ) :
-    a277627 n = X * RealRooted.reciprocalShift n (Q 3 n) := by
-  rw [a277627_eq_reciprocalShift]
-  change reflect (n + 1) (Q 3 n) = X * reflect n (Q 3 n)
-  rw [Polynomial.reflect_succ _ (degree_Q_three_one_le n)]
-  ring
-
 /-- Every A277627 row is real-rooted. -/
 theorem splits_a277627 (n : ℕ) : (a277627 n).Splits := by
-  rw [a277627_eq_X_mul_reciprocalShift]
-  have h := RealRooted.splits_reciprocalShift_pathPowerCliquePolynomial
-    3 1 0 n (by norm_num) (by norm_num) (by norm_num)
-  exact Polynomial.Splits.X.mul (by simpa [Q_zero] using h)
+  rr_row_splits
 
 /-- Consecutive A277627 rows are in strict interlacing position. -/
 theorem strictInterl_a277627 (n : ℕ) :
     RealRooted.StrictInterl (a277627 n) (a277627 (n + 1)) := by
-  rw [a277627_eq_X_mul_reciprocalShift, a277627_eq_X_mul_reciprocalShift]
-  have h := RealRooted.strictInterl_reciprocalShift_pathPowerCliquePolynomial
-    3 1 0 n (by norm_num) (by norm_num) (by norm_num)
-  exact RealRooted.StrictInterl.mul_common_factor
-    (by simpa [Q_zero] using h)
-    X_ne_zero Polynomial.Splits.X
+  rr_row_strictInterl
 
 end RealRooted.PathPowerRows

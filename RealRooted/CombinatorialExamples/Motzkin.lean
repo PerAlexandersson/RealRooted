@@ -1,5 +1,6 @@
 module
 
+import RealRooted.Tactic.RowInterlacing
 public import RealRooted.CombinatorialExamples.Common
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
 import RealRooted.Tactic.Recurrence.RowSide
@@ -97,10 +98,7 @@ lemma coeff_motzkin_top_pos_and_above :
 
 lemma natDegree_motzkin (n : Nat) :
     (motzkin n).natDegree = (n + 1) / 2 := by
-  rcases coeff_motzkin_top_pos_and_above n with ⟨htop, habove⟩
-  exact natDegree_eq_of_le_of_coeff_ne_zero
-    (natDegree_le_iff_coeff_eq_zero.mpr (fun m hm => habove m hm))
-    htop.ne'
+  rr_row_natDegree
 
 lemma motzkin_nonzero (n : Nat) :
     motzkin n ≠ 0 := by
