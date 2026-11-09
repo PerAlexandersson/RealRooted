@@ -6,8 +6,9 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic
-public import RealRooted.Mathlib.Algebra.Polynomial.MobiusTransform
-public import Mathlib.Tactic.ComputeDegree
+public import Mathlib.FieldTheory.IsAlgClosed.Basic
+import RealRooted.Mathlib.Algebra.Polynomial.MobiusTransform
+import Mathlib.Tactic.ComputeDegree
 public import Mathlib.Tactic.Ring
 import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
 
