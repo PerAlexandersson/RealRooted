@@ -2375,6 +2375,34 @@
       },
       "label": "Kur92"
     },
+    "LeakeRyder2018": {
+      "bibtex": "@article{LeakeRyder2018,\n  author = {Leake, Jonathan and Ryder, Nick},\n  title = {On the Further Structure of the Finite Free Convolutions},\n  year = {2018},\n  journal = {arXiv e-prints},\n  eprint = {1811.06382},\n  archiveprefix = {arXiv},\n  primaryclass = {math.CO},\n  doi = {10.48550/arXiv.1811.06382},\n  url = {https://arxiv.org/abs/1811.06382}\n}\n",
+      "csl": {
+        "DOI": "10.48550/arXiv.1811.06382",
+        "URL": "https://arxiv.org/abs/1811.06382",
+        "author": [
+          {
+            "family": "Leake",
+            "given": "Jonathan"
+          },
+          {
+            "family": "Ryder",
+            "given": "Nick"
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2018
+            ]
+          ]
+        },
+        "title": "On the further structure of the finite free convolutions",
+        "type": "article-journal"
+      },
+      "label": "LR18"
+    },
     "LeakeRyder2019": {
       "bibtex": "@article{LeakeRyder2019,\n\tauthor = {Leake, Jonathan D. and Ryder, Nick R.},\n\ttitle = {Generalizations of the Matching Polynomial to the Multivariate Independence Polynomial},\n\tjournal = {Algebraic Combinatorics},\n\tpublisher = {MathOA foundation},\n\tvolume = {2},\n\tnumber = {5},\n\tyear = {2019},\n\tpages = {781-802},\n\tdoi = {10.5802/alco.63},\n\tlanguage = {en},\n\turl={alco.centre-mersenne.org/item/ALCO_2019__2_5_781_0/}\n}\n",
       "csl": {
