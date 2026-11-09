@@ -18,12 +18,6 @@ open Polynomial
 
 namespace RealRooted.Poisson
 
-/-- The Poisson product is the derivative product with weight `X` and coefficients
-`c ^ k / k!`. -/
-theorem starC_eq_derivProduct (c : ℝ) (f g : ℝ[X]) :
-    starC c f g = derivProduct X (fun k ↦ c ^ k / (k.factorial : ℝ)) f g :=
-  rfl
-
 /-- The Poisson product is the member `assocProduct c X` of the associative family. -/
 theorem starC_eq_assocProduct (c : ℝ) (f g : ℝ[X]) : starC c f g = assocProduct c X f g := by
   have h : assocCoeff c ((X : ℝ[X]).coeff 2) = fun k ↦ c ^ k / (k.factorial : ℝ) := by
