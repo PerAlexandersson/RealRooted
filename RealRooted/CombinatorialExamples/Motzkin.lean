@@ -102,8 +102,7 @@ lemma natDegree_motzkin (n : Nat) :
 
 lemma motzkin_nonzero (n : Nat) :
     motzkin n ≠ 0 := by
-  rcases coeff_motzkin_top_pos_and_above n with ⟨htop, _⟩
-  exact fun h0 => by simp [h0] at htop
+  rr_row_ne_zero
 
 lemma motzkin_posLeadingCoeff (n : Nat) :
     HasPosLeadingCoeff (motzkin n) := by
