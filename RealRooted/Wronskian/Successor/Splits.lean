@@ -103,24 +103,22 @@ private lemma splits_of_roots_around_strictMono {n : ℕ} {g : ℝ[X]}
   rw [hg_deg]
   exact hcard.trans (Multiset.toFinset_card_le _)
 
-/-- A strict negative Wronskian transfers splitness from `f` to its
-positive-leading one-degree-higher companion `g`. -/
-theorem splits_of_wronskian_neg_succ {n : ℕ}
+/-- Splitness transfers from `f` to its positive-leading one-degree-higher companion `g` when
+`f' g < 0` at every root of `f` (the Wronskian of `f` and `g` is negative there). -/
+theorem splits_of_wronskian_neg_succ_of_isRoot {n : ℕ}
     {f g : ℝ[X]} (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
     (hf_deg : f.natDegree = n + 1) (hg_deg : g.natDegree = n + 2)
     (hf_splits : f.Splits)
-    (hW : ∀ t : ℝ, f.derivative.eval t * g.eval t - f.eval t * g.derivative.eval t < 0) :
+    (hW : ∀ t : ℝ, f.IsRoot t → f.derivative.eval t * g.eval t < 0) :
     g.Splits := by
-  have hf_ne : f ≠ 0 := leadingCoeff_ne_zero.mp hf_pos.ne'
   have hf_nodup : f.roots.Nodup := by
     apply Polynomial.roots_nodup_of_splits_and_simple
     intro r hr hd
-    have hsign := hW r
-    simp_all
+    simpa [hd.eq_zero] using hW r hr
   obtain ⟨s, hs_mono, hs_roots⟩ :
       ∃ s : Fin (n + 1) → ℝ, StrictMono s ∧ ∀ k, f.IsRoot (s k) :=
     Polynomial.exists_strictMono_roots hf_splits hf_deg hf_nodup
-  have hgsign := wronskian_sign_at_roots_of_neg_succ
+  have hgsign := eval_mul_neg_one_pow_neg_of_derivative_mul_neg
     (f := f) (g := g) hf_pos hf_deg hW s hs_mono hs_roots
   have hbelow : ∃ x, x < s 0 ∧ g.IsRoot x :=
     exists_root_lt_of_posLeadingCoeff_eval_mul_negOnePow_neg hg_pos hg_deg (s 0)
@@ -134,5 +132,16 @@ theorem splits_of_wronskian_neg_succ {n : ℕ}
       ∃ x, s k.castSucc < x ∧ x < s k.succ ∧ g.IsRoot x :=
     exists_root_between_of_alternating_signs s hs_mono hgsign
   exact splits_of_roots_around_strictMono hg_deg s hs_mono hbelow habove hinternal
+
+/-- A strict negative Wronskian transfers splitness from `f` to its
+positive-leading one-degree-higher companion `g`. -/
+theorem splits_of_wronskian_neg_succ {n : ℕ}
+    {f g : ℝ[X]} (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hf_deg : f.natDegree = n + 1) (hg_deg : g.natDegree = n + 2)
+    (hf_splits : f.Splits)
+    (hW : ∀ t : ℝ, f.derivative.eval t * g.eval t - f.eval t * g.derivative.eval t < 0) :
+    g.Splits :=
+  splits_of_wronskian_neg_succ_of_isRoot hf_pos hg_pos hf_deg hg_deg hf_splits
+    fun t ht ↦ by simpa [ht.eq_zero] using hW t
 
 end RealRooted
