@@ -902,6 +902,7 @@ public import RealRooted.Maclaurin
 public import RealRooted.MagnitudeDominated
 public import RealRooted.MaoWangMatrixProduct
 public import RealRooted.Mathlib.Algebra.BigOperators.Finset.Unique
+public import RealRooted.Mathlib.Algebra.BigOperators.Group.Finset.Shift
 public import RealRooted.Mathlib.Algebra.BigOperators.Group.List
 public import RealRooted.Mathlib.Algebra.Group.ForwardDiff
 public import RealRooted.Mathlib.Algebra.LinearRecurrence.Annihilator
@@ -2107,6 +2108,7 @@ public import RealRooted.BrandenLeite.PositivePowerInterlacing
 public import RealRooted.BrandenLeite.PositivePowerFactors
 public import RealRooted.BrandenLeite.PositivePowerRegularization
 public import RealRooted.BrandenLeite.RationalRodCanonical
+public import RealRooted.BrandenLeite.HessenbergCanonical
 public import RealRooted.BrandenLeite.LogarithmicFactors
 public import RealRooted.BrandenLeite.LogarithmicInterlacing
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.LeadingSections
