@@ -16,6 +16,11 @@ This file bridges rectangular total nonnegativity to the existing polynomial
 matrix preservation theorem. It first proves the zero-aware algebraic core for
 nonnegative-coefficient inputs, then obtains Fisk's positive-leading-
 coefficient formulation by translating a finite input family simultaneously.
+
+The preservation proof only uses the entries and the ordered `2 × 2` minors of the
+matrix, so it is carried out for matrices with nonnegative entries and nonnegative ordered
+`2 × 2` minors (`Matrix.IsTP2`, after Brändén, arXiv:1410.6601, Corollary 8.6), and the
+totally nonnegative statements are specializations.
 -/
 
 @[expose] public section
@@ -48,11 +53,16 @@ lemma constantPolynomialMatrix_rect {m n : ℕ}
     ∀ row ∈ constantPolynomialMatrix A, row.length = n := by
   simp [constantPolynomialMatrix]
 
-lemma constantPolynomialMatrix_nonneg {m n : ℕ}
-    {A : Matrix (Fin m) (Fin n) ℝ} (hA : A.IsTotallyNonnegRect) :
+lemma constantPolynomialMatrix_nonneg_of_nonneg {m n : ℕ}
+    {A : Matrix (Fin m) (Fin n) ℝ} (hA : ∀ i j, 0 ≤ A i j) :
     ∀ row ∈ constantPolynomialMatrix A, ∀ p ∈ row, HasNonnegCoeffs p := by
   simp only [constantPolynomialMatrix, List.forall_mem_ofFn_iff]
-  exact fun i j => hasNonnegCoeffs_C (hA.nonneg i j)
+  exact fun i j => hasNonnegCoeffs_C (hA i j)
+
+lemma constantPolynomialMatrix_nonneg {m n : ℕ}
+    {A : Matrix (Fin m) (Fin n) ℝ} (hA : A.IsTotallyNonnegRect) :
+    ∀ row ∈ constantPolynomialMatrix A, ∀ p ∈ row, HasNonnegCoeffs p :=
+  constantPolynomialMatrix_nonneg_of_nonneg hA.nonneg
 
 /-- Row-ordered action of a finite constant real matrix on a polynomial list. -/
 def tnnMatrixAction {m n : ℕ} (A : Matrix (Fin m) (Fin n) ℝ)
@@ -95,12 +105,46 @@ namespace Matrix
 
 open RealRooted
 
-/-- Every ordered `2 × 2` selection from a rectangular totally nonnegative
-constant matrix satisfies the weak affine condition used by the polynomial
-matrix preservation theorem. Repeated rows or columns are allowed. -/
-theorem IsTotallyNonnegRect.has2x2InterlacingProperty0
+/-- A real matrix with nonnegative entries and nonnegative ordered `2 × 2` minors
+(a `TP2` matrix, in the terminology of total positivity). Minors of larger size are not
+constrained. -/
+def IsTP2 {ι κ : Type*} [PartialOrder ι] [PartialOrder κ] (M : Matrix ι κ ℝ) : Prop :=
+  (∀ i j, 0 ≤ M i j) ∧
+    ∀ ⦃i₁ i₂ : ι⦄ ⦃j₁ j₂ : κ⦄, i₁ < i₂ → j₁ < j₂ →
+      0 ≤ M i₁ j₁ * M i₂ j₂ - M i₁ j₂ * M i₂ j₁
+
+namespace IsTP2
+
+variable {ι κ : Type*} [PartialOrder ι] [PartialOrder κ] {M : Matrix ι κ ℝ}
+
+lemma nonneg (hM : M.IsTP2) (i : ι) (j : κ) : 0 ≤ M i j := hM.1 i j
+
+lemma minor_nonneg (hM : M.IsTP2) {i₁ i₂ : ι} {j₁ j₂ : κ} (hi : i₁ < i₂) (hj : j₁ < j₂) :
+    0 ≤ M i₁ j₁ * M i₂ j₂ - M i₁ j₂ * M i₂ j₁ := hM.2 hi hj
+
+end IsTP2
+
+/-- Total nonnegativity implies `TP2`. -/
+lemma IsTotallyNonnegRect.isTP2 {ι κ : Type*} [PartialOrder ι] [PartialOrder κ]
+    {M : Matrix ι κ ℝ} (hM : M.IsTotallyNonnegRect) : M.IsTP2 := by
+  refine ⟨hM.nonneg, fun i₁ i₂ j₁ j₂ hi hj => ?_⟩
+  have hrows : StrictMono ![i₁, i₂] := by
+    intro a b hab
+    fin_cases a <;> fin_cases b <;> simp_all
+  have hcols : StrictMono ![j₁, j₂] := by
+    intro a b hab
+    fin_cases a <;> fin_cases b <;> simp_all
+  have hminor := hM hrows hcols
+  simp only [Matrix.det_fin_two, Matrix.submatrix_apply, Matrix.cons_val_zero,
+    Matrix.cons_val_one] at hminor
+  linarith
+
+/-- Every ordered `2 × 2` selection from a `TP2` constant matrix satisfies the weak affine
+condition used by the polynomial matrix preservation theorem. Repeated rows or columns are
+allowed. -/
+theorem IsTP2.has2x2InterlacingProperty0
     {m n : ℕ} {A : Matrix (Fin m) (Fin n) ℝ}
-    (hA : A.IsTotallyNonnegRect) (i₁ i₂ : Fin m) (j₁ j₂ : Fin n)
+    (hA : A.IsTP2) (i₁ i₂ : Fin m) (j₁ j₂ : Fin n)
     (hi : i₁ ≤ i₂) (hj : j₁ ≤ j₂) :
     Has2x2InterlacingProperty0
       (C (A i₁ j₁)) (C (A i₁ j₂)) (C (A i₂ j₁)) (C (A i₂ j₂)) := by
@@ -117,24 +161,23 @@ theorem IsTotallyNonnegRect.has2x2InterlacingProperty0
     by_cases hj_eq : j₁ = j₂
     · subst j₂
       simp
-    have hi_lt : i₁ < i₂ := lt_of_le_of_ne hi hi_eq
-    have hj_lt : j₁ < j₂ := lt_of_le_of_ne hj hj_eq
-    let rows : Fin 2 → Fin m := ![i₁, i₂]
-    let cols : Fin 2 → Fin n := ![j₁, j₂]
-    have hrows : StrictMono rows := by
-      intro a b hab
-      fin_cases a <;> fin_cases b <;> simp_all [rows]
-    have hcols : StrictMono cols := by
-      intro a b hab
-      fin_cases a <;> fin_cases b <;> simp_all [cols]
-    have hminor := hA hrows hcols
-    simp only [Matrix.det_fin_two, Matrix.submatrix_apply, rows, cols,
-      Matrix.cons_val_zero, Matrix.cons_val_one] at hminor
+    have := hA.minor_nonneg (lt_of_le_of_ne hi hi_eq) (lt_of_le_of_ne hj hj_eq)
     linarith
 
-private lemma IsTotallyNonnegRect.constantPolynomialMatrix_has2x2
+/-- Every ordered `2 × 2` selection from a rectangular totally nonnegative
+constant matrix satisfies the weak affine condition used by the polynomial
+matrix preservation theorem. Repeated rows or columns are allowed. -/
+theorem IsTotallyNonnegRect.has2x2InterlacingProperty0
     {m n : ℕ} {A : Matrix (Fin m) (Fin n) ℝ}
-    (hA : A.IsTotallyNonnegRect) :
+    (hA : A.IsTotallyNonnegRect) (i₁ i₂ : Fin m) (j₁ j₂ : Fin n)
+    (hi : i₁ ≤ i₂) (hj : j₁ ≤ j₂) :
+    Has2x2InterlacingProperty0
+      (C (A i₁ j₁)) (C (A i₁ j₂)) (C (A i₂ j₁)) (C (A i₂ j₂)) :=
+  hA.isTP2.has2x2InterlacingProperty0 i₁ i₂ j₁ j₂ hi hj
+
+private lemma IsTP2.constantPolynomialMatrix_has2x2
+    {m n : ℕ} {A : Matrix (Fin m) (Fin n) ℝ}
+    (hA : A.IsTP2) :
     ∀ (i₁ i₂ : Fin (constantPolynomialMatrix A).length) (j₁ j₂ : Fin n),
       i₁ ≤ i₂ → j₁ ≤ j₂ →
       Has2x2InterlacingProperty0
@@ -166,27 +209,36 @@ private lemma IsTotallyNonnegRect.constantPolynomialMatrix_has2x2
   simp only [List.get_eq_getElem, List.getElem_ofFn]
   exact hA.has2x2InterlacingProperty0 i₁' i₂' j₁ j₂ hi' hj
 
-/-- A rectangular totally nonnegative constant matrix sends a strict
-nonnegative interlacing sequence to a weak zero-aware one, in row order. -/
-theorem IsTotallyNonnegRect.map_interlacingSeq0
+/-- A `TP2` constant matrix sends a strict nonnegative interlacing sequence to a weak
+zero-aware one, in row order, and every nonzero output is real-rooted. -/
+theorem IsTP2.map_interlacingSeq0_realRooted
     {m n : ℕ} {A : Matrix (Fin m) (Fin n) ℝ}
-    (hA : A.IsTotallyNonnegRect) (fs : List ℝ[X])
+    (hA : A.IsTP2) (fs : List ℝ[X])
     (hfs_len : fs.length = n) (hfs : IsInterlacingSeqNonneg fs) :
-    IsInterlacingSeq0Nonneg (tnnMatrixAction A fs) := by
-  change IsInterlacingSeq0Nonneg
-    (matPolyAction (constantPolynomialMatrix A) fs)
-  exact matrix_preserves_interlacing_seq0_of_2x2
+    IsInterlacingSeq0NonnegRealRooted (tnnMatrixAction A fs) :=
+  matrix_preserves_interlacing_seq0_of_2x2_realRooted
     (n := n) (G := constantPolynomialMatrix A)
     (hG_rect := constantPolynomialMatrix_rect A)
-    (hG_nonneg := constantPolynomialMatrix_nonneg hA)
+    (hG_nonneg := constantPolynomialMatrix_nonneg_of_nonneg hA.nonneg)
     (hG_affine := hA.constantPolynomialMatrix_has2x2)
     fs hfs_len hfs
 
-/-- Fisk's row-ordered list conclusion in the repository's nonnegative-
-coefficient setting: discard precisely the zero output rows after TNN mixing. -/
-theorem IsTotallyNonnegRect.map_interlacingSeq
+/-- Brändén's constant-matrix theorem (arXiv:1410.6601, Corollary 8.6), zero-aware form: a
+`TP2` constant matrix sends a strict nonnegative interlacing sequence to a weak zero-aware
+one, in row order. -/
+theorem IsTP2.map_interlacingSeq0
     {m n : ℕ} {A : Matrix (Fin m) (Fin n) ℝ}
-    (hA : A.IsTotallyNonnegRect) (fs : List ℝ[X])
+    (hA : A.IsTP2) (fs : List ℝ[X])
+    (hfs_len : fs.length = n) (hfs : IsInterlacingSeqNonneg fs) :
+    IsInterlacingSeq0Nonneg (tnnMatrixAction A fs) :=
+  (hA.map_interlacingSeq0_realRooted fs hfs_len hfs).1
+
+/-- Brändén's constant-matrix theorem (arXiv:1410.6601, Corollary 8.6): a `TP2` constant
+matrix sends an interlacing sequence with nonnegative coefficients to one of the same kind,
+after the zero output rows are discarded. -/
+theorem IsTP2.map_interlacingSeq
+    {m n : ℕ} {A : Matrix (Fin m) (Fin n) ℝ}
+    (hA : A.IsTP2) (fs : List ℝ[X])
     (hfs_len : fs.length = n) (hfs : IsInterlacingSeqNonneg fs) :
     IsInterlacingSeqNonneg ((tnnMatrixAction A fs).filter (· ≠ 0)) := by
   change IsInterlacingSeqNonneg
@@ -194,9 +246,27 @@ theorem IsTotallyNonnegRect.map_interlacingSeq
   exact matrix_preserves_interlacing_seq0_filter_ne_zero_of_2x2
     (n := n) (G := constantPolynomialMatrix A)
     (hG_rect := constantPolynomialMatrix_rect A)
-    (hG_nonneg := constantPolynomialMatrix_nonneg hA)
+    (hG_nonneg := constantPolynomialMatrix_nonneg_of_nonneg hA.nonneg)
     (hG_affine := hA.constantPolynomialMatrix_has2x2)
     fs hfs_len hfs
+
+/-- A rectangular totally nonnegative constant matrix sends a strict
+nonnegative interlacing sequence to a weak zero-aware one, in row order. -/
+theorem IsTotallyNonnegRect.map_interlacingSeq0
+    {m n : ℕ} {A : Matrix (Fin m) (Fin n) ℝ}
+    (hA : A.IsTotallyNonnegRect) (fs : List ℝ[X])
+    (hfs_len : fs.length = n) (hfs : IsInterlacingSeqNonneg fs) :
+    IsInterlacingSeq0Nonneg (tnnMatrixAction A fs) :=
+  hA.isTP2.map_interlacingSeq0 fs hfs_len hfs
+
+/-- Fisk's row-ordered list conclusion in the repository's nonnegative-
+coefficient setting: discard precisely the zero output rows after TNN mixing. -/
+theorem IsTotallyNonnegRect.map_interlacingSeq
+    {m n : ℕ} {A : Matrix (Fin m) (Fin n) ℝ}
+    (hA : A.IsTotallyNonnegRect) (fs : List ℝ[X])
+    (hfs_len : fs.length = n) (hfs : IsInterlacingSeqNonneg fs) :
+    IsInterlacingSeqNonneg ((tnnMatrixAction A fs).filter (· ≠ 0)) :=
+  hA.isTP2.map_interlacingSeq fs hfs_len hfs
 
 /-- Full positive-leading-coefficient form of Fisk's constant-matrix theorem.
 Every input is assumed split explicitly, because pairwise interlacing is

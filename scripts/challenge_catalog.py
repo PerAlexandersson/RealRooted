@@ -763,6 +763,8 @@ def _module_in_import_closure(
 
 
 def _qualified_name(namespace: list[str], name: str) -> str:
+    if name.startswith("_root_."):
+        return name.removeprefix("_root_.")
     prefix = ".".join(namespace)
     if not prefix or name.startswith("RealRooted.") or name.startswith(prefix + "."):
         return name
