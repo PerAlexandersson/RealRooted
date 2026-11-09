@@ -2,6 +2,7 @@ module
 
 public import RealRooted.DerivativeProduct.Basic
 public import Mathlib.RingTheory.Polynomial.Pochhammer
+import RealRooted.Mathlib.Algebra.BigOperators.Group.Finset.Shift
 import Mathlib.Tactic
 
 /-!
@@ -112,14 +113,6 @@ private theorem associator_term (a A : ℝ) (f g : ℝ[X]) (k : ℕ) :
   linear_combination
     (-(C a * C (c k) * derivative w * (derivative^[k]) f * (derivative^[k]) g)) * lem
 
-private theorem sum_range_shift {U V : ℕ → ℝ[X]} (M : ℕ) (hU0 : U 0 = 0) (hVM : V M = 0)
-    (h : ∀ j, U (j + 1) = V j) :
-    ∑ k ∈ range (M + 1), U k = ∑ k ∈ range (M + 1), V k := by
-  conv_lhs => rw [Finset.sum_range_succ']
-  conv_rhs => rw [Finset.sum_range_succ]
-  rw [hU0, hVM, add_zero, add_zero]
-  exact Finset.sum_congr rfl fun j _ ↦ h j
-
 private theorem sum_associator_defect (a A : ℝ)
     (hrec : ∀ j : ℕ, ((j : ℝ) + 1) * (1 + a * A * j) * c (j + 1) = a * c j)
     (f g : ℝ[X]) {M : ℕ} (hM : f.natDegree < M) :
@@ -128,7 +121,7 @@ private theorem sum_associator_defect (a A : ℝ)
           (derivative^[k]) g =
       ∑ k ∈ range (M + 1),
         C (a * c k) * w ^ (k + 1) * (derivative^[k]) f * (derivative^[k + 1]) g := by
-  refine sum_range_shift M (by simp) ?_ fun j ↦ ?_
+  refine Finset.sum_range_shift M (by simp) ?_ fun j ↦ ?_
   · rw [iterate_derivative_eq_zero hM, mul_zero, zero_mul]
   · have hcoef : c (j + 1) * ((j + 1 : ℕ) : ℝ) * (1 + a * (((j + 1 : ℕ) : ℝ) - 1) * A) =
         a * c j := by

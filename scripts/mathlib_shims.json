@@ -45,6 +45,16 @@
     },
     {
       "sources": [
+        "RealRooted/Mathlib/Algebra/BigOperators/Group/Finset/Shift.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.BigOperators.Group.Finset.Shift"
+      ],
+      "note": "Speculative target module; finite-sum reindexing with vanishing boundary terms, no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
         "RealRooted/Mathlib/Algebra/BigOperators/Group/List.lean"
       ],
       "modules": [
