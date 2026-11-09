@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 import Mathlib.LinearAlgebra.Matrix.Block
 import Mathlib.LinearAlgebra.Matrix.SchurComplement
 
