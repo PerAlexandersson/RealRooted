@@ -3,7 +3,9 @@ module
 public import Mathlib.RingTheory.Polynomial.Wronskian
 import RealRooted.Wronskian.CauchyBinet
 import RealRooted.Wronskian.WeakForward
-public import RealRooted.Toeplitz.TP2Hessenberg
+public import RealRooted.Toeplitz.HessenbergRows
+public import RealRooted.Toeplitz.AffineVector
+import RealRooted.Toeplitz.TP2Hessenberg
 
 /-!
 # Wronskians of the Hessenberg vector recursion

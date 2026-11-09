@@ -4,7 +4,7 @@ import Mathlib.Tactic.Ring
 public import Mathlib.Algebra.BigOperators.Fin
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.RingTheory.Polynomial.Wronskian
-public import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
+import RealRooted.Mathlib.RingTheory.Polynomial.Wronskian
 
 /-!
 # Cauchy--Binet expansion of the Wronskian of two linear combinations

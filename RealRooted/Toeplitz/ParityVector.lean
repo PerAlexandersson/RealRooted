@@ -1,5 +1,6 @@
 module
 
+import RealRooted.Toeplitz.TP2Hessenberg
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
 public import Mathlib.RingTheory.Polynomial.Wronskian

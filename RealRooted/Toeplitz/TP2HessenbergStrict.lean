@@ -3,7 +3,9 @@ module
 public import RealRooted.SimpleRoots
 import RealRooted.Toeplitz.RowDifferenceDeterminant
 public import RealRooted.Toeplitz.SiteWeightedRuns
-public import RealRooted.Toeplitz.TP2Hessenberg
+public import RealRooted.Toeplitz.HessenbergRows
+public import RealRooted.Toeplitz.AffineVector
+import RealRooted.Toeplitz.TP2Hessenberg
 import RealRooted.Interlacing.OuterDifference
 
 /-!

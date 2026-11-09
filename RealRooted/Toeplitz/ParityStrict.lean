@@ -5,7 +5,9 @@ import Mathlib.Tactic.Linarith
 public import RealRooted.RootLocation.Basic
 public import RealRooted.SimpleRoots
 public import RealRooted.Toeplitz.ParityRows
-public import RealRooted.Toeplitz.TP2Hessenberg
+public import RealRooted.Toeplitz.HessenbergRows
+public import RealRooted.Toeplitz.AffineVector
+import RealRooted.Toeplitz.TP2Hessenberg
 import RealRooted.Toeplitz.AffineVector
 import RealRooted.Toeplitz.ParityVector
 import RealRooted.Basic.AffineInterlacing

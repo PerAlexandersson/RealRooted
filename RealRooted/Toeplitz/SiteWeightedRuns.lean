@@ -1,8 +1,10 @@
 module
 
 import Mathlib.Tactic.Ring
-public import Mathlib.Data.Matrix.Basic
-public import Mathlib.Algebra.BigOperators.Fin
+public import Mathlib.Data.Matrix.Mul
+import Mathlib.Data.Matrix.Basic
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
+import Mathlib.Algebra.BigOperators.Fin
 
 /-!
 # Site-weighted run sums and their transfer-matrix form
