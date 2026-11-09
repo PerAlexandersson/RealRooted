@@ -3,6 +3,7 @@ module
 public import RealRooted.HermiteBiehler.Basic
 public import RealRooted.OperatorPreservesInterlacing
 public import RealRooted.PFPolynomial
+public import RealRooted.DerivativeProduct.Basic
 import RealRooted.QuadraticRoot
 import RealRooted.Derivative.Algebra
 import RealRooted.Linear
@@ -39,6 +40,12 @@ def starC (c : ℝ) (f g : ℝ[X]) : ℝ[X] :=
     C (c ^ j / (j.factorial : ℝ)) * X ^ j *
       (derivative^[j]) f * (derivative^[j]) g
 
+/-- The Poisson product is the derivative product with weight `X` and coefficients
+`c ^ k / k!`. -/
+theorem starC_eq_derivProduct (c : ℝ) (f g : ℝ[X]) :
+    starC c f g = derivProduct X (fun k ↦ c ^ k / (k.factorial : ℝ)) f g :=
+  rfl
+
 /-- The defining sum for `starC` may be enlarged beyond the degree of its left input. -/
 theorem starC_eq_sum_range {c : ℝ} {f : ℝ[X]} {N : ℕ}
     (hfN : f.natDegree < N) (g : ℝ[X]) :
@@ -57,72 +64,65 @@ theorem starC_eq_sum_range {c : ℝ} {f : ℝ[X]} {N : ℕ}
 /-- The univariate Poisson product is symmetric. -/
 theorem starC_comm (c : ℝ) (f g : ℝ[X]) :
     starC c f g = starC c g f := by
-  let N := max (f.natDegree + 1) (g.natDegree + 1)
-  rw [starC_eq_sum_range (N := N)
-      ((Nat.lt_succ_self f.natDegree).trans_le (le_max_left _ _)),
-    starC_eq_sum_range (N := N)
-      ((Nat.lt_succ_self g.natDegree).trans_le (le_max_right _ _))]
-  apply Finset.sum_congr rfl
-  intro j hj
-  ring
+  simpa only [starC_eq_derivProduct] using
+    derivProduct_comm X (fun k ↦ c ^ k / (k.factorial : ℝ)) f g
 
 /-- `starC` is additive in its right input. -/
 theorem starC_add_right (c : ℝ) (f g h : ℝ[X]) :
     starC c f (g + h) = starC c f g + starC c f h := by
-  simp only [starC, iterate_map_add, mul_add, Finset.sum_add_distrib]
+  simpa only [starC_eq_derivProduct] using
+    derivProduct_add_right X (fun k ↦ c ^ k / (k.factorial : ℝ)) f g h
 
 /-- `starC` is additive in its left input. -/
 theorem starC_add_left (c : ℝ) (f g h : ℝ[X]) :
     starC c (f + g) h = starC c f h + starC c g h := by
-  rw [starC_comm, starC_add_right, starC_comm c h f, starC_comm c h g]
+  simpa only [starC_eq_derivProduct] using
+    derivProduct_add_left X (fun k ↦ c ^ k / (k.factorial : ℝ)) f g h
 
 /-- `starC` commutes with multiplication of its right input by a real constant. -/
 theorem starC_C_mul_right (c a : ℝ) (f g : ℝ[X]) :
     starC c f (C a * g) = C a * starC c f g := by
-  rw [starC, starC, Finset.mul_sum]
-  apply Finset.sum_congr rfl
-  intro j hj
-  rw [iterate_derivative_C_mul]
-  ring
+  simpa only [starC_eq_derivProduct] using
+    derivProduct_C_mul_right X (fun k ↦ c ^ k / (k.factorial : ℝ)) a f g
 
 /-- `starC` commutes with multiplication of its left input by a real constant. -/
 theorem starC_C_mul_left (c a : ℝ) (f g : ℝ[X]) :
     starC c (C a * f) g = C a * starC c f g := by
-  rw [starC_comm, starC_C_mul_right, starC_comm c g f]
+  simpa only [starC_eq_derivProduct] using
+    derivProduct_C_mul_left X (fun k ↦ c ^ k / (k.factorial : ℝ)) a f g
 
 /-- The zero polynomial is a right annihilator for `starC`. -/
 @[simp] theorem starC_zero_right (c : ℝ) (f : ℝ[X]) :
     starC c f 0 = 0 := by
-  simp only [starC, iterate_map_zero, mul_zero, Finset.sum_const_zero]
+  simpa only [starC_eq_derivProduct] using
+    derivProduct_zero_right X (fun k ↦ c ^ k / (k.factorial : ℝ)) f
 
 /-- The zero polynomial is a left annihilator for `starC`. -/
 @[simp] theorem starC_zero_left (c : ℝ) (g : ℝ[X]) :
     starC c 0 g = 0 := by
-  rw [starC_comm, starC_zero_right]
+  simpa only [starC_eq_derivProduct] using
+    derivProduct_zero_left X (fun k ↦ c ^ k / (k.factorial : ℝ)) g
 
 /-- The constant polynomial `1` is a right unit for `starC`. -/
 @[simp] theorem starC_one_right (c : ℝ) (f : ℝ[X]) :
     starC c f 1 = f := by
-  rw [starC, Finset.sum_range_succ']
-  simp only [pow_zero, Nat.factorial_zero, Nat.cast_one, div_one,
-    map_one, pow_zero, Function.iterate_zero_apply, one_mul]
-  rw [Finset.sum_eq_zero]
-  · simp
-  · intro j hj
-    rw [iterate_derivative_eq_zero (p := (1 : ℝ[X])) (by simp), mul_zero]
+  simpa only [starC_eq_derivProduct] using
+    derivProduct_one_right_of_zero_eq_one (w := X)
+      (c := fun k ↦ c ^ k / (k.factorial : ℝ)) (by simp) f
 
 /-- The constant polynomial `1` is a left unit for `starC`. -/
 @[simp] theorem starC_one_left (c : ℝ) (g : ℝ[X]) :
     starC c 1 g = g := by
-  rw [starC_comm, starC_one_right]
+  simpa only [starC_eq_derivProduct] using
+    derivProduct_one_left_of_zero_eq_one (w := X)
+      (c := fun k ↦ c ^ k / (k.factorial : ℝ)) (by simp) g
 
 /-- Left Poisson multiplication is a real-linear operator. -/
 def starCLinearMap (c : ℝ) (f : ℝ[X]) : ℝ[X] →ₗ[ℝ] ℝ[X] where
-  toFun := starC c f
-  map_add' := starC_add_right c f
-  map_smul' a g := by
-    rw [smul_eq_C_mul, smul_eq_C_mul, starC_C_mul_right]
-    simp only [RingHom.id_apply]
+  toFun := derivProduct X (fun k ↦ c ^ k / (k.factorial : ℝ)) f
+  map_add' := derivProduct_add_right X (fun k ↦ c ^ k / (k.factorial : ℝ)) f
+  map_smul' := (derivProductLinearMap X
+    (fun k ↦ c ^ k / (k.factorial : ℝ)) f).map_smul
 
 /-- Evaluation of the bundled left-multiplication map is `starC`. -/
 @[simp] theorem starCLinearMap_apply (c : ℝ) (f g : ℝ[X]) :

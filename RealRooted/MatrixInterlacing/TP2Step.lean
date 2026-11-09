@@ -139,7 +139,9 @@ private lemma tnnMatrixAction_ofFn {m k : ℕ} (A : Matrix (Fin m) (Fin k) ℝ)
     tnnMatrixAction A (List.ofFn f) = List.ofFn ((A.map C).mulVec f) :=
   matPolyAction_ofFn (A.map C) f
 
-private lemma tp2StepMatrix_mulVec (A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) (b : ℝ)
+/-- The step matrix applied to the augmented vector is the first coordinate followed by the
+affine step. -/
+lemma tp2StepMatrix_mulVec (A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) (b : ℝ)
     (f : Fin (n + 1) → ℝ[X]) :
     ((tp2StepMatrix A b).map C).mulVec (tp2AugmentedVector f) =
       Fin.cons (f 0) (tp2AffineStep A b f) := by
