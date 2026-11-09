@@ -8,7 +8,7 @@ module
 public import Mathlib.Algebra.Polynomial.Homogenize
 public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
-public import Mathlib.Tactic.ComputeDegree
+import Mathlib.Tactic.ComputeDegree
 import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
 import Mathlib.Tactic.Ring
 
