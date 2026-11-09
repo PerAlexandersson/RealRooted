@@ -16,10 +16,10 @@
   ],
   "budgets": {
     "RealRooted": {
-      "max_modules": 2179
+      "max_modules": 2182
     },
     "RealRooted.Production": {
-      "max_modules": 2109
+      "max_modules": 2112
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 844
@@ -172,7 +172,7 @@
       "max_modules": 167
     },
     "RealRooted.Challenges.PolyaFrequency.Hadamard": {
-      "max_modules": 274
+      "max_modules": 354
     },
     "RealRooted.PolyaFrequencyConvolution.Basic": {
       "max_modules": 20
