@@ -3362,6 +3362,16 @@
     },
     {
       "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Trigonometric/ChebyshevExpansion.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Trigonometric.ChebyshevExpansion"
+      ],
+      "note": "Speculative target module: finite Chebyshev and cosine expansions with a zero-count corollary; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
         "RealRooted/Mathlib/Analysis/SpecialFunctions/Trigonometric/PolynomialZeros.lean"
       ],
       "modules": [
