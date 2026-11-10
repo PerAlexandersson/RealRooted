@@ -181,16 +181,16 @@ theorem strictMonoOn_or_strictAntiOn_of_derivative_ne_zero {p : ℝ[X]} {u v : �
     rw [interior_Icc] at hx
     simpa [Polynomial.deriv] using h x hx
 
-/-- Alternation points: `-1 = C 0 < C 1 < ⋯ < C n = 1` with `|p (C k)| ≥ 1`, consecutive values of
-opposite sign, and no zero of `p'` strictly between consecutive points. -/
-theorem exists_alternation_points {p : ℝ[X]} {n : ℕ}
+/-- Sign alternation points: `-1 = C 0 < C 1 < ⋯ < C n = 1`, where the interior points are the
+critical points of `p`, consecutive values of `p` have opposite signs, and no zero of `p'` lies
+strictly between consecutive points. -/
+theorem exists_sign_alternation_points {p : ℝ[X]} {n : ℕ}
     (hn : 0 < n) (hdeg : p.natDegree = n)
     (hroots : (p.roots.filter (· ∈ Ioo (-1 : ℝ) 1)).card = n)
-    (hsimple : p.roots.Nodup)
-    (hone : p.eval 1 = 1) (hmone : p.eval (-1) = (-1) ^ n)
-    (hcrit : ∀ c ∈ Ioo (-1 : ℝ) 1, p.derivative.eval c = 0 → 1 ≤ |p.eval c|) :
+    (hsimple : p.roots.Nodup) :
     ∃ C : ℕ → ℝ, C 0 = -1 ∧ C n = 1 ∧ (∀ k < n, C k < C (k + 1)) ∧
-      (∀ k ≤ n, 1 ≤ |p.eval (C k)|) ∧ (∀ k < n, p.eval (C k) * p.eval (C (k + 1)) < 0) ∧
+      (∀ k, 0 < k → k < n → C k ∈ Ioo (-1 : ℝ) 1 ∧ p.derivative.eval (C k) = 0) ∧
+      (∀ k < n, p.eval (C k) * p.eval (C (k + 1)) < 0) ∧
       (∀ k < n, ∀ x ∈ Ioo (C k) (C (k + 1)), p.derivative.eval x ≠ 0) := by
   obtain ⟨r, c, hr, hrc, hcz⟩ := exists_roots_critical_points hn hdeg hroots hsimple
   let C : ℕ → ℝ := fun k ↦ if k = 0 then -1 else if k < n then c (k - 1) else 1
@@ -218,16 +218,12 @@ theorem exists_alternation_points {p : ℝ[X]} {n : ℕ}
     induction b, hab using Nat.le_induction with
     | base => exact le_rfl
     | succ b hab ih => exact (ih (by lia)).trans (hstep b (by lia)).le
-  have hcrit_C : ∀ k ≤ n, 1 ≤ |p.eval (C k)| := by
-    intro k hk
-    rcases Nat.eq_zero_or_pos k with rfl | hk0
-    · rw [hC0, hmone, abs_pow, abs_neg, abs_one, one_pow]
-    by_cases hkn : k < n
-    · rw [hCmid k hk0 hkn]
-      have hj := hrc (k - 1) (by lia)
-      rw [show k - 1 + 1 = k by lia] at hj
-      refine hcrit _ ⟨(hr (k - 1) (by lia)).1.1.trans hj.1, hj.2.1.trans (hr k hkn).1.2⟩ hj.2.2
-    · rw [show k = n by lia, hCn, hone, abs_one]
+  have hmid : ∀ k, 0 < k → k < n → C k ∈ Ioo (-1 : ℝ) 1 ∧ p.derivative.eval (C k) = 0 := by
+    intro k hk0 hkn
+    rw [hCmid k hk0 hkn]
+    have hj := hrc (k - 1) (by lia)
+    rw [show k - 1 + 1 = k by lia] at hj
+    exact ⟨⟨(hr (k - 1) (by lia)).1.1.trans hj.1, hj.2.1.trans (hr k hkn).1.2⟩, hj.2.2⟩
   have hnoz : ∀ k < n, ∀ x ∈ Ioo (C k) (C (k + 1)), p.derivative.eval x ≠ 0 := by
     intro k hk x hx hx0
     obtain ⟨j, hj, rfl⟩ := hcz x hx0
@@ -235,7 +231,7 @@ theorem exists_alternation_points {p : ℝ[X]} {n : ℕ}
     rcases Nat.lt_or_ge (j + 1) (k + 1) with h | h
     · exact (hx.1.trans_le' (hmono _ _ (by lia) (by lia))).false
     · exact (hx.2.trans_le (hmono _ _ h (by lia))).false
-  refine ⟨C, hC0, hCn, hstep, hcrit_C, fun k hk ↦ ?_, hnoz⟩
+  refine ⟨C, hC0, hCn, hstep, hmid, fun k hk ↦ ?_, hnoz⟩
   have hroot : p.eval (r k) = 0 := (hr k hk).2
   have hlo := hC_lt_r k hk
   have hhi := hr_lt_C k hk
@@ -255,6 +251,26 @@ theorem exists_alternation_points {p : ℝ[X]} {n : ℕ}
     simp only [hroot] at h1 h2
     nlinarith
 
+
+/-- Alternation points: `-1 = C 0 < C 1 < ⋯ < C n = 1` with `|p (C k)| ≥ 1`, consecutive values of
+opposite sign, and no zero of `p'` strictly between consecutive points. -/
+theorem exists_alternation_points {p : ℝ[X]} {n : ℕ}
+    (hn : 0 < n) (hdeg : p.natDegree = n)
+    (hroots : (p.roots.filter (· ∈ Ioo (-1 : ℝ) 1)).card = n)
+    (hsimple : p.roots.Nodup)
+    (hone : p.eval 1 = 1) (hmone : p.eval (-1) = (-1) ^ n)
+    (hcrit : ∀ c ∈ Ioo (-1 : ℝ) 1, p.derivative.eval c = 0 → 1 ≤ |p.eval c|) :
+    ∃ C : ℕ → ℝ, C 0 = -1 ∧ C n = 1 ∧ (∀ k < n, C k < C (k + 1)) ∧
+      (∀ k ≤ n, 1 ≤ |p.eval (C k)|) ∧ (∀ k < n, p.eval (C k) * p.eval (C (k + 1)) < 0) ∧
+      (∀ k < n, ∀ x ∈ Ioo (C k) (C (k + 1)), p.derivative.eval x ≠ 0) := by
+  obtain ⟨C, hC0, hCn, hstep, hmid, hprod, hnoz⟩ :=
+    exists_sign_alternation_points hn hdeg hroots hsimple
+  refine ⟨C, hC0, hCn, hstep, fun k hk ↦ ?_, hprod, hnoz⟩
+  rcases Nat.eq_zero_or_pos k with rfl | hk0
+  · rw [hC0, hmone, abs_pow, abs_neg, abs_one, one_pow]
+  by_cases hkn : k < n
+  · exact hcrit _ (hmid k hk0 hkn).1 (hmid k hk0 hkn).2
+  · rw [show k = n by lia, hCn, hone, abs_one]
 /-- A negative derivative at `x` gives a larger value somewhere in any interval `(a, x)`. -/
 theorem _root_.HasDerivAt.exists_Ioo_lt_of_neg {f : ℝ → ℝ} {f' x a : ℝ} (hf : HasDerivAt f f' x)
     (hf' : f' < 0) (ha : a < x) : ∃ y ∈ Ioo a x, f x < f y := by
