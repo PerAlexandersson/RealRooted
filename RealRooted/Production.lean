@@ -525,6 +525,7 @@ public import RealRooted.EulerOperator.Darboux.Basic
 public import RealRooted.EulerOperator.Darboux.Interlacing
 public import RealRooted.EulerOperator.Darboux.NegativeRoots
 public import RealRooted.EulerOperator.EulerMultiplier
+public import RealRooted.EulerOperator.OrbitPerturbation
 public import RealRooted.EulerOperator.OrderNumerator.Basic
 public import RealRooted.EulerOperator.OrderNumerator.Preservation
 public import RealRooted.EulerOperator.Pencil
