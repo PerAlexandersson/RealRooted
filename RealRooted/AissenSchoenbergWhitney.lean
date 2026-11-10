@@ -65,6 +65,22 @@ protected theorem IsPolyaFreqSeq.tail_of_zeros {a : ℕ → ℝ}
       simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using
         ih htail htail_zero
 
+/-- Toeplitz formation commutes with scalar multiplication of a sequence. -/
+theorem toeplitz_const_mul_sequence (C : ℝ) (a : ℕ → ℝ) :
+    toeplitz (fun d => C * a d) = C • toeplitz a := by
+  ext i j
+  by_cases hji : j ≤ i
+  · simp [toeplitz_apply, hji]
+  · simp [toeplitz_apply, hji]
+
+/-- Nonnegative scalar multiplication preserves the PF property for arbitrary
+sequences, not only polynomial coefficient sequences. -/
+theorem IsPolyaFreqSeq.const_mul_sequence
+    {a : ℕ → ℝ} (ha : IsPolyaFreqSeq a) (C : ℝ) (hC : 0 ≤ C) :
+    IsPolyaFreqSeq (fun d => C * a d) := by
+  rw [IsPolyaFreqSeq, toeplitz_const_mul_sequence]
+  exact ha.smul hC
+
 /-- Inserting a finite prefix of zeroes preserves the Pólya-frequency
 property. -/
 protected theorem IsPolyaFreqSeq.prefix_zeros {a : ℕ → ℝ}

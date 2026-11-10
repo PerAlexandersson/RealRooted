@@ -68,23 +68,6 @@ theorem scaledZeroPrefix_self
     scaledZeroPrefix C N a N = C * a 0 := by
   simp [scaledZeroPrefix]
 
-/-- Toeplitz formation commutes with nonnegative-independent scalar
-multiplication of a sequence. -/
-theorem toeplitz_const_mul_sequence (C : ℝ) (a : ℕ → ℝ) :
-    toeplitz (fun d => C * a d) = C • toeplitz a := by
-  ext i j
-  by_cases hji : j ≤ i
-  · simp [toeplitz_apply, hji]
-  · simp [toeplitz_apply, hji]
-
-/-- Nonnegative scalar multiplication preserves the PF property for arbitrary
-sequences, not only polynomial coefficient sequences. -/
-theorem IsPolyaFreqSeq.const_mul_sequence
-    {a : ℕ → ℝ} (ha : IsPolyaFreqSeq a) (C : ℝ) (hC : 0 ≤ C) :
-    IsPolyaFreqSeq (fun d => C * a d) := by
-  rw [IsPolyaFreqSeq, toeplitz_const_mul_sequence]
-  exact ha.smul hC
-
 /-- A nonnegative scalar multiple of a finite zero prefix remains PF. -/
 theorem IsPolyaFreqSeq.scaledZeroPrefix
     {a : ℕ → ℝ} (ha : IsPolyaFreqSeq a) {C : ℝ} (hC : 0 ≤ C)

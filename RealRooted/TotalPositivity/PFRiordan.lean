@@ -7,7 +7,6 @@ import RealRooted.PolyaFrequencyConvolution.Basic
 import RealRooted.AissenSchoenbergWhitney
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 import RealRooted.BrandenLeite.CompositionRow
-import RealRooted.BrandenVecchi.ChowZeroPrefix
 
 /-!
 # Pólya-frequency Riordan arrays
@@ -408,7 +407,7 @@ theorem rationalPFCoeff_isPolyaFreqSeq
     BrandenVecchi.finiteSupersymmetricCoeff_isPolyaFreqSeq
       halphas hbetas
   have hshift := hbase.prefix_zeros r
-  exact BrandenVecchi.IsPolyaFreqSeq.const_mul_sequence hshift c hc
+  exact hshift.const_mul_sequence c hc
 
 /-! ## Coefficient-recurrence interface -/
 
