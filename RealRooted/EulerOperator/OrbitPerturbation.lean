@@ -163,6 +163,70 @@ theorem centeredEulerStep_roots
   | zero => simp
   | succ n ih => simp [pow_succ, ih]
 
+/-- The first centered Euler orbit polynomial. -/
+private theorem centeredEulerOrbit_one (α : ℝ) :
+    centeredEulerOrbit α 1 = X := by
+  simp [centeredEulerOrbit, centeredEulerStep]
+
+/-- The second centered Euler orbit polynomial. -/
+private theorem centeredEulerOrbit_two (α : ℝ) :
+    centeredEulerOrbit α 2 = C (α + 1) * X ^ 2 - C α := by
+  rw [show centeredEulerOrbit α 2 = centeredEulerStep α (centeredEulerOrbit α 1) by rfl,
+    centeredEulerOrbit_one]
+  simp [centeredEulerStep]
+  ring
+
+/-- The third centered Euler orbit polynomial. -/
+private theorem centeredEulerOrbit_three (α : ℝ) :
+    centeredEulerOrbit α 3 = C (2 * α ^ 2 + 3 * α + 1) * X ^ 3 -
+      C (2 * α ^ 2 + 3 * α) * X := by
+  rw [show centeredEulerOrbit α 3 = centeredEulerStep α (centeredEulerOrbit α 2) by rfl,
+    centeredEulerOrbit_two]
+  simp [centeredEulerStep, derivative_sub, derivative_mul, derivative_pow, map_ofNat]
+  ring
+
+/-- The fourth centered Euler orbit polynomial. -/
+private theorem centeredEulerOrbit_four (α : ℝ) :
+    centeredEulerOrbit α 4 =
+      C (6 * α ^ 3 + 11 * α ^ 2 + 6 * α + 1) * X ^ 4 -
+      C (8 * α ^ 3 + 14 * α ^ 2 + 6 * α) * X ^ 2 +
+      C (2 * α ^ 3 + 3 * α ^ 2) := by
+  rw [show centeredEulerOrbit α 4 = centeredEulerStep α (centeredEulerOrbit α 3) by rfl,
+    centeredEulerOrbit_three]
+  simp [centeredEulerStep, derivative_sub, derivative_mul, derivative_pow, map_ofNat]
+  ring
+
+/-- The explicit degree-five polynomial in the centered Euler orbit. -/
+theorem centeredEulerOrbit_five (α : ℝ) :
+    centeredEulerOrbit α 5 =
+      C (24 * α ^ 4 + 50 * α ^ 3 + 35 * α ^ 2 + 10 * α + 1) * X ^ 5 -
+      C (40 * α ^ 4 + 80 * α ^ 3 + 50 * α ^ 2 + 10 * α) * X ^ 3 +
+      C (16 * α ^ 4 + 30 * α ^ 3 + 15 * α ^ 2) * X := by
+  rw [show centeredEulerOrbit α 5 = centeredEulerStep α (centeredEulerOrbit α 4) by rfl,
+    centeredEulerOrbit_four]
+  simp [centeredEulerStep, derivative_add, derivative_sub, derivative_mul, derivative_pow,
+    map_ofNat]
+  ring
+
+/-- At six fixed points, the degree-five centered Euler orbit has alternating
+values of absolute value at least one. -/
+theorem centeredEulerOrbit_five_alternation {α : ℝ} (hα : 1 / 2 ≤ α) (i : Fin 6) :
+    1 ≤ (-1 : ℝ) ^ (5 - (i : ℕ)) * (centeredEulerOrbit α 5).eval
+      (![-1, -5 / 6, -1 / 3, 1 / 3, 5 / 6, 1] i) := by
+  let β := α - 1 / 2
+  have hβ : 0 ≤ β := by
+    dsimp [β]
+    linarith
+  have hβ_two : 0 ≤ β ^ 2 := pow_nonneg hβ 2
+  have hβ_three : 0 ≤ β ^ 3 := pow_nonneg hβ 3
+  have hβ_four : 0 ≤ β ^ 4 := pow_nonneg hβ 4
+  have hα_eq : α = 1 / 2 + β := by
+    dsimp [β]
+    ring
+  rw [centeredEulerOrbit_five]
+  fin_cases i <;> norm_num [hα_eq] <;>
+    nlinarith [hβ_two, hβ_three, hβ_four]
+
 /-- Every row of the centered Euler orbit has positive leading coefficient. -/
 theorem centeredEulerOrbit_hasPosLeadingCoeff {α : ℝ} (hα : 0 < α) (n : ℕ) :
     HasPosLeadingCoeff (centeredEulerOrbit α n) := by
