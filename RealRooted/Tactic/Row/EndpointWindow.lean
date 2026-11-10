@@ -1,5 +1,7 @@
 module
 
+public import RealRooted.Tactic.Row.Registry
+public meta import RealRooted.Tactic.Row.Registry
 public import RealRooted.DerivativeRecurrence.EndpointWindow
 public import RealRooted.Tactic.Row.PowerForm
 public import RealRooted.Tactic.Row.SideGoals
@@ -292,5 +294,9 @@ def rationalEndpointWindowGoal : TacticM Unit := do
         (by simpa using $degreeLemma 1)))
   else
     evalTactic (← `(tactic| norm_num at *))
+
+/-- The `endpointWindow` row route, registered for the row front ends (`runRowRoute`). -/
+@[rr_row_route_impl endpointWindow]
+def endpointWindowRoute : RowRouteImpl := fun _ => rationalEndpointWindowGoal
 
 end RealRooted.Tactic

@@ -158,14 +158,14 @@ side conditions, implementing modules, and regression examples.
 - **Side conditions:** A hypothesis or earlier theorem of the current module concluding
   Interlaces or StrictInterl for rows of the same sequence, with no further hypotheses; silent
   when there is none.
-- **Module:** `RealRooted.Tactic.RowInterlacing`
+- **Module:** `RealRooted.Tactic.Row.Frontend`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowViaRoutes`
 
 ## `probe` (pseudo)
 
 - **Summary:** Pseudo-route rejecting impossible shapes before elaboration.
 - **Side conditions:** Computable rational rows; unavailable data does not veto.
-- **Module:** `RealRooted.Tactic.RowInterlacing`
+- **Module:** `RealRooted.Tactic.Row.Frontend`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowExplain`
 
 ## `core` (pseudo)
@@ -179,7 +179,7 @@ side conditions, implementing modules, and regression examples.
 
 - **Summary:** Pseudo-route applying an exact-filtered rr_row_model declaration.
 - **Side conditions:** A compatible model, offset, exact base rows, and transfer proof.
-- **Module:** `RealRooted.Tactic.RowInterlacing`
+- **Module:** `RealRooted.Tactic.Row.Frontend`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowModelFamilies`
 
 ## `variableDelay`
@@ -216,7 +216,7 @@ side conditions, implementing modules, and regression examples.
 
 - **Summary:** Name clash: interlacing and splitting use distinct closed forms.
 - **Side conditions:** An exact closed form, induction identity, and residual certificate.
-- **Module:** `RealRooted.Tactic.RowInterlacing`
+- **Module:** `RealRooted.Tactic.Row.Frontend`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowGeneral`
 
 ## `pathPower`
@@ -251,14 +251,14 @@ side conditions, implementing modules, and regression examples.
 
 - **Summary:** Degree-one product factors preserve nonvanishing and splitting.
 - **Side conditions:** Linear positive-leading factors and a nonzero split base.
-- **Module:** `RealRooted.Tactic.RowInterlacing`
+- **Module:** `RealRooted.Tactic.Row.Frontend`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowInterlacing`
 
 ## `splitFactors`
 
 - **Summary:** Arbitrary split product factors preserve splitting.
 - **Side conditions:** Split factors, a split base, and explicit exceptional rows.
-- **Module:** `RealRooted.Tactic.RowInterlacing`
+- **Module:** `RealRooted.Tactic.Row.Frontend`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowInterlacing`
 
 ## `twoStep`
@@ -267,7 +267,7 @@ side conditions, implementing modules, and regression examples.
   positivity.
 - **Side conditions:** Fixed factor, suitable bases; positivity requires a positive leader and
   allows zero rows with a nonzero-row hypothesis.
-- **Module:** `RealRooted.Tactic.RowInterlacing`
+- **Module:** `RealRooted.Tactic.Row.Frontend`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowInterlacing`,
   `RealRooted.Tactic.Examples.RowGeneral`
 
@@ -275,7 +275,7 @@ side conditions, implementing modules, and regression examples.
 
 - **Summary:** Core interlacing of P t and P (t + 1) splits the left row.
 - **Side conditions:** A core route at the selected drop and split earlier rows.
-- **Module:** `RealRooted.Tactic.RowInterlacing`
+- **Module:** `RealRooted.Tactic.Row.Frontend`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowInterlacing`
 
 ## `halfGrowth`
@@ -289,7 +289,7 @@ side conditions, implementing modules, and regression examples.
 
 - **Summary:** A fitted half-degree law yields splitting or strict interlacing.
 - **Side conditions:** Degree law, positive leaders, nonnegative rows, bounds, and bases.
-- **Module:** `RealRooted.Tactic.RowInterlacing`
+- **Module:** `RealRooted.Tactic.Row.Frontend`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowStrictInterl`
 
 ## `reversed`
@@ -401,7 +401,7 @@ side conditions, implementing modules, and regression examples.
 
 - **Summary:** Fall back to Interlaces and project it to StrictInterl.
 - **Side conditions:** Any successful rr_row_interlaces route on the same pair of rows.
-- **Module:** `RealRooted.Tactic.RowInterlacing`
+- **Module:** `RealRooted.Tactic.Row.Frontend`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowStrictInterl`
 
 ## `cone`
@@ -415,21 +415,21 @@ side conditions, implementing modules, and regression examples.
 
 - **Summary:** Three-term induction preserves coefficient nonnegativity.
 - **Side conditions:** The recurrence, nonnegative multipliers, and two nonnegative bases.
-- **Module:** `RealRooted.Tactic.RowInterlacing`
+- **Module:** `RealRooted.Tactic.Row.Frontend`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowRegressions2313`
 
 ## `secondOrder`
 
 - **Summary:** A second-order derivative recurrence preserves nonnegativity.
 - **Side conditions:** The recurrence, nonnegative multipliers, and a nonnegative base.
-- **Module:** `RealRooted.Tactic.RowInterlacing`
+- **Module:** `RealRooted.Tactic.Row.Frontend`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowNonnegative`
 
 ## `derivativeMult`
 
 - **Summary:** A degree-aware multiplier inequality proves nonnegativity.
 - **Side conditions:** First-order recurrence, base degree, multiplier bound, and base.
-- **Module:** `RealRooted.Tactic.RowInterlacing`
+- **Module:** `RealRooted.Tactic.Row.Frontend`
 - **Regression examples:** `RealRooted.Tactic.Examples.RowNonnegative`,
   `RealRooted.Tactic.Examples.RowRegressions2313`
 

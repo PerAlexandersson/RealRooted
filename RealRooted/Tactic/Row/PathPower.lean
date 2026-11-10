@@ -1,5 +1,7 @@
 module
 
+public import RealRooted.Tactic.Row.Registry
+public meta import RealRooted.Tactic.Row.Registry
 public import RealRooted.EulerOperator.Polar
 import RealRooted.Tactic.Row.Support
 public import RealRooted.CombinatorialExamples.PathPowerGap
@@ -1148,5 +1150,21 @@ def rowWindowGoal : TacticM Unit := do
           throwRowFailures m!"rr_row_window: no fixed-delay route proves the goal"
             #[(m!"variable-delay recurrence", variableError),
               (m!"path-power model", pathError)]
+
+/-- The `pathPower` row route, registered for the row front ends (`runRowRoute`). -/
+@[rr_row_route_impl pathPower]
+def pathPowerRoute : RowRouteImpl := fun goal => pathPowerGoal (goal == .splits)
+
+/-- The `variableDelay` row route, registered for the row front ends (`runRowRoute`). -/
+@[rr_row_route_impl variableDelay]
+def variableDelayRoute : RowRouteImpl := fun
+  | .interlaces => variableDelayGoal .interlaces
+  | .strict => variableDelayGoal .strict
+  | .splits => variableDelayGoal .splits
+  | .nonneg => variableDelayGoal .nonneg
+
+/-- The `rowWindow` row route, registered for the row front ends (`runRowRoute`). -/
+@[rr_row_route_impl rowWindow]
+def rowWindowRoute : RowRouteImpl := fun _ => rowWindowGoal
 
 end RealRooted.Tactic

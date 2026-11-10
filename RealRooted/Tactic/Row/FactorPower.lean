@@ -1,5 +1,7 @@
 module
 
+public import RealRooted.Tactic.Row.Registry
+public meta import RealRooted.Tactic.Row.Registry
 public import RealRooted.Recurrence.FactorPower
 public import RealRooted.Tactic.Row.Core
 import RealRooted.Tactic.Row.PowerForm
@@ -193,5 +195,9 @@ def factorPowerSplits : TacticM Unit := do
     refine (hq.pow _).mul ?_
     refine (?_ : RealRooted.Interlaces ($Q $targetIndex) ($Q ($targetIndex + 1))).2.1.2)))
   discard <| rowInterlacesCore {}
+
+/-- The `factorPower` row route, registered for the row front ends (`runRowRoute`). -/
+@[rr_row_route_impl factorPower]
+def factorPowerRoute : RowRouteImpl := fun _ => factorPowerSplits
 
 end RealRooted.Tactic

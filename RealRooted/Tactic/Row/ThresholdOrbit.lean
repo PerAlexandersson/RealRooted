@@ -1,5 +1,7 @@
 module
 
+public import RealRooted.Tactic.Row.Registry
+public meta import RealRooted.Tactic.Row.Registry
 public import RealRooted.ThresholdMatrix.Orbit
 public import RealRooted.Tactic.Row.Core
 public import RealRooted.Tactic.Recurrence.RowSide
@@ -253,5 +255,9 @@ def thresholdOrbitSplits : TacticM Unit := do
           rr_ring
     $finish:tactic))
   evalTactic rr_script
+
+/-- The `thresholdOrbit` row route, registered for the row front ends (`runRowRoute`). -/
+@[rr_row_route_impl thresholdOrbit]
+def thresholdOrbitRoute : RowRouteImpl := fun _ => thresholdOrbitSplits
 
 end RealRooted.Tactic

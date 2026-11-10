@@ -1,5 +1,7 @@
 module
 
+public import RealRooted.Tactic.Row.Registry
+public meta import RealRooted.Tactic.Row.Registry
 import RealRooted.ProductSequence.Interlacing
 public import RealRooted.Tactic.Row.Support
 public meta import RealRooted.ProductSequence.Interlacing
@@ -222,5 +224,16 @@ def powerFormInterlaces (L : LinRecData) (pf : PowerForm) : TacticM Unit := with
       | exact Polynomial.Splits.of_natDegree_le_one (by compute_degree!)
       | rr_splits_explicit))
   closeFresh hq do evalTactic (← `(tactic| compute_degree!))
+
+/-- The `powerForm` row route, registered for the row front ends (`runRowRoute`). -/
+@[rr_row_route_impl powerForm]
+def powerFormRoute : RowRouteImpl := fun _ => do
+  discard introIfForall
+  withMainContext do
+  let some P ← findPolySeqConst? (← instantiateMVars (← getMainTarget))
+    | throwError "rr_row_interlaces: no sequence"
+  let some L ← linRec? P | throwError "rr_row_interlaces: not a linear recurrence"
+  let some pf ← powerForm? L | throwError "rr_row_interlaces: no power form"
+  powerFormInterlaces L pf
 
 end RealRooted.Tactic

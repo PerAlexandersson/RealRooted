@@ -1,5 +1,7 @@
 module
 
+public import RealRooted.Tactic.Row.Registry
+public meta import RealRooted.Tactic.Row.Registry
 public import RealRooted.Derivative.XMulSequence
 public import RealRooted.Tactic.Row.Support
 public import RealRooted.Tactic.Row.Subseq
@@ -69,5 +71,9 @@ def derivativeXMulSplits : TacticM Unit := withMainContext do
 
 /-- Invoke the fixed multiplier / differentiated `X` splitting route directly. -/
 elab "rr_row_derivative_X_mul_splits" : tactic => derivativeXMulSplits
+
+/-- The `derivativeXMul` row route, registered for the row front ends (`runRowRoute`). -/
+@[rr_row_route_impl derivativeXMul]
+def derivativeXMulRoute : RowRouteImpl := fun _ => derivativeXMulSplits
 
 end RealRooted.Tactic
