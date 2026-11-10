@@ -286,6 +286,136 @@ theorem _root_.exists_Ioo_eq_zero_of_mul_neg {f : ℝ → ℝ} (hf : Continuous 
   · obtain ⟨y, hy, hy0⟩ := intermediate_value_Ioo hab.le hf.continuousOn ⟨ha, hb⟩
     exact ⟨y, hy, hy0⟩
 
+/-- The value at the unique critical point between two roots dominates every value between
+the roots in absolute value. -/
+private theorem abs_eval_le_abs_eval_critical_of_unique {p : ℝ[X]} {a b c x : ℝ}
+    (ha : p.eval a = 0) (hb : p.eval b = 0) (hc : c ∈ Ioo a b) (hx : x ∈ Icc a b)
+    (hunique : ∀ y ∈ Ioo a b, p.derivative.eval y = 0 → y = c) :
+    |p.eval x| ≤ |p.eval c| := by
+  rcases lt_trichotomy x c with hxc | rfl | hcx
+  · by_cases hxa : x = a
+    · simp [hxa, ha]
+    have hax : a < x := lt_of_le_of_ne hx.1 (Ne.symm hxa)
+    have hne : ∀ y ∈ Ioo a c, p.derivative.eval y ≠ 0 := by
+      intro y hy hy0
+      exact hy.2.ne (hunique y ⟨hy.1, hy.2.trans hc.2⟩ hy0)
+    have ha_mem : a ∈ Icc a c := ⟨le_rfl, hc.1.le⟩
+    have hx_mem : x ∈ Icc a c := ⟨hax.le, hxc.le⟩
+    have hc_mem : c ∈ Icc a c := ⟨hc.1.le, le_rfl⟩
+    rcases strictMonoOn_or_strictAntiOn_of_derivative_ne_zero hne with hmono | hanti
+    · have hpx : 0 < p.eval x := by simpa [ha] using hmono ha_mem hx_mem hax
+      have hpc : p.eval x < p.eval c := hmono hx_mem hc_mem hxc
+      rw [abs_of_pos hpx, abs_of_pos (hpx.trans hpc)]
+      exact hpc.le
+    · have hpx : p.eval x < 0 := by simpa [ha] using hanti ha_mem hx_mem hax
+      have hpc : p.eval c < p.eval x := hanti hx_mem hc_mem hxc
+      rw [abs_of_neg hpx, abs_of_neg (hpc.trans hpx)]
+      linarith
+  · exact le_rfl
+  · by_cases hxb : x = b
+    · simp [hxb, hb]
+    have hxb' : x < b := lt_of_le_of_ne hx.2 hxb
+    have hne : ∀ y ∈ Ioo c b, p.derivative.eval y ≠ 0 := by
+      intro y hy hy0
+      exact hy.1.ne' (hunique y ⟨hc.1.trans hy.1, hy.2⟩ hy0)
+    have hc_mem : c ∈ Icc c b := ⟨le_rfl, hc.2.le⟩
+    have hx_mem : x ∈ Icc c b := ⟨hcx.le, hxb'.le⟩
+    have hb_mem : b ∈ Icc c b := ⟨hc.2.le, le_rfl⟩
+    rcases strictMonoOn_or_strictAntiOn_of_derivative_ne_zero hne with hmono | hanti
+    · have hpx : p.eval x < 0 := by simpa [hb] using hmono hx_mem hb_mem hxb'
+      have hpc : p.eval c < p.eval x := hmono hc_mem hx_mem hcx
+      rw [abs_of_neg hpx, abs_of_neg (hpc.trans hpx)]
+      linarith
+    · have hpx : 0 < p.eval x := by simpa [hb] using hanti hx_mem hb_mem hxb'
+      have hpc : p.eval x < p.eval c := hanti hc_mem hx_mem hcx
+      rw [abs_of_pos hpx, abs_of_pos (hpx.trans hpc)]
+      exact hpc.le
+
+/-- Alternating values of size at least one force every interior critical value to have size at
+least one. -/
+theorem one_le_abs_eval_critical_of_alternation {q : ℝ[X]} {N : ℕ} (hN : 0 < N)
+    (hdeg : q.natDegree = N) (hroots : (q.roots.filter (· ∈ Ioo (-1 : ℝ) 1)).card = N)
+    (hsimple : q.roots.Nodup) {ξ : ℕ → ℝ} (hξ0 : ξ 0 = -1) (hξN : ξ N = 1)
+    (hξinc : ∀ i < N, ξ i < ξ (i + 1)) (halt : ∀ i ≤ N, 1 ≤ |q.eval (ξ i)|)
+    (hprod : ∀ i < N, q.eval (ξ i) * q.eval (ξ (i + 1)) < 0) :
+    ∀ c ∈ Ioo (-1 : ℝ) 1, q.derivative.eval c = 0 → 1 ≤ |q.eval c| := by
+  have hN_endpoints : 0 < N := by
+    by_contra h
+    have hN0 : N = 0 := Nat.eq_zero_of_not_pos h
+    have heq : ξ 0 = ξ N := by rw [hN0]
+    rw [hξ0, hξN] at heq
+    norm_num at heq
+  have hξmono : ∀ a b, a ≤ b → b ≤ N → ξ a ≤ ξ b := by
+    intro a b hab hbN
+    induction b, hab using Nat.le_induction with
+    | base => exact le_rfl
+    | succ b hab ih => exact (ih (by lia)).trans (hξinc b (by lia)).le
+  have hex : ∀ i < N, ∃ y ∈ Ioo (ξ i) (ξ (i + 1)), q.eval y = 0 :=
+    fun i hi ↦ exists_Ioo_eq_zero_of_mul_neg q.continuous (hξinc i hi) (hprod i hi)
+  choose! z hz hz0 using hex
+  let zF : Fin N → ℝ := fun i ↦ z i
+  have hzF_gap (i : Fin N) : zF i ∈ Ioo (ξ i) (ξ (i + 1)) := by
+    simpa only [zF] using hz i i.isLt
+  have hzF_zero (i : Fin N) : q.eval (zF i) = 0 := by
+    simpa only [zF] using hz0 i i.isLt
+  have hzF_mono : StrictMono zF := by
+    intro i j hij
+    have hmid : ξ (i.val + 1) ≤ ξ j.val :=
+      hξmono _ _ (Nat.succ_le_of_lt hij) j.isLt.le
+    exact (hzF_gap i).2.trans_le hmid |>.trans (hzF_gap j).1
+  let lo : Fin (N - 1) → Fin N := fun j ↦
+    ⟨j.val, j.isLt.trans_le (Nat.sub_le N 1)⟩
+  let hi : Fin (N - 1) → Fin N := fun j ↦ ⟨j.val + 1, by lia⟩
+  have hgap (j : Fin (N - 1)) :
+      ∃ c ∈ Ioo (zF (lo j)) (zF (hi j)), q.derivative.eval c = 0 := by
+    have hlohi : lo j < hi j := by simp [lo, hi]
+    have hlt : zF (lo j) < zF (hi j) := hzF_mono hlohi
+    exact exists_hasDerivAt_eq_zero hlt q.continuousOn
+      ((hzF_zero (lo j)).trans (hzF_zero (hi j)).symm)
+      (fun x _ ↦ q.hasDerivAt x)
+  let d : Fin (N - 1) → ℝ := fun j ↦ (hgap j).choose
+  have hd_gap (j : Fin (N - 1)) : d j ∈ Ioo (zF (lo j)) (zF (hi j)) :=
+    (hgap j).choose_spec.1
+  have hd_zero (j : Fin (N - 1)) : q.derivative.eval (d j) = 0 :=
+    (hgap j).choose_spec.2
+  have hd_mono : StrictMono d := by
+    intro i j hij
+    have hle : hi i ≤ lo j := by
+      change i.val + 1 ≤ j.val
+      exact Nat.succ_le_of_lt hij
+    exact (hd_gap i).2.trans_le (hzF_mono.monotone hle) |>.trans (hd_gap j).1
+  have hd_unique (j : Fin (N - 1)) :
+      ∀ y ∈ Ioo (zF (lo j)) (zF (hi j)), q.derivative.eval y = 0 → y = d j := by
+    intro y hy hy0
+    obtain ⟨k, rfl⟩ := eq_of_derivative_eval_eq_zero hN hdeg hd_mono hd_zero hy0
+    have hkj : k = j := by
+      by_contra hne
+      rcases lt_or_gt_of_ne hne with h | h
+      · have hle : hi k ≤ lo j := by
+          change k.val + 1 ≤ j.val
+          exact Nat.succ_le_of_lt h
+        exact ((hd_gap k).2.trans_le (hzF_mono.monotone hle)).asymm hy.1
+      · have hle : hi j ≤ lo k := by
+          change j.val + 1 ≤ k.val
+          exact Nat.succ_le_of_lt h
+        exact ((hzF_mono.monotone hle).trans_lt (hd_gap k).1).asymm hy.2
+    exact congrArg d hkj
+  obtain ⟨_, e, _, he_gap, he_zero⟩ :=
+    exists_roots_critical_points hN_endpoints hdeg hroots hsimple
+  intro c _ hc0
+  obtain ⟨k, hk, hce⟩ := he_zero c hc0
+  obtain ⟨j, hej⟩ := eq_of_derivative_eval_eq_zero hN hdeg hd_mono hd_zero
+    (he_gap k hk).2.2
+  rw [hce, hej]
+  have hξ_gap : ξ (j.val + 1) ∈ Ioo (zF (lo j)) (zF (hi j)) := by
+    constructor
+    · simpa only [lo, zF] using (hzF_gap (lo j)).2
+    · simpa only [hi, zF] using (hzF_gap (hi j)).1
+  have hbound : |q.eval (ξ (j.val + 1))| ≤ |q.eval (d j)| :=
+    abs_eval_le_abs_eval_critical_of_unique (hzF_zero (lo j)) (hzF_zero (hi j))
+      (hd_gap j) ⟨hξ_gap.1.le, hξ_gap.2.le⟩ (hd_unique j)
+  exact (halt (j.val + 1) (by have := j.isLt; lia)).trans hbound
+
 /-- Sign changes across `N` consecutive intervals give `N` zeros; if one interval carries three
 zeros, the function has `N + 2` distinct zeros between the first and the last point. -/
 theorem _root_.exists_finset_zeros_of_sign_changes {D : ℝ → ℝ} (hD : Continuous D) {τ : ℕ → ℝ}
