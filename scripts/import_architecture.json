@@ -16,10 +16,10 @@
   ],
   "budgets": {
     "RealRooted": {
-      "max_modules": 2214
+      "max_modules": 2217
     },
     "RealRooted.Production": {
-      "max_modules": 2144
+      "max_modules": 2147
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 844
@@ -1245,6 +1245,9 @@
     "RealRooted.Mathlib.Analysis.Polynomial.Basic": {
       "max_modules": 1
     },
+    "RealRooted.Mathlib.Analysis.Polynomial.InverseBernstein": {
+      "max_modules": 3
+    },
     "RealRooted.Wronskian.Successor": {
       "max_modules": 25
     },
@@ -1805,6 +1808,7 @@
     "RealRooted.Mathlib.RingTheory.PowerSeries.CatalanQuadratic",
     "RealRooted.Mathlib.RingTheory.PowerSeries.CausalFwdDiff",
     "RealRooted.Mathlib.Analysis.Polynomial.MahlerMeasure",
+    "RealRooted.Mathlib.Analysis.Polynomial.InverseBernstein",
     "RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.ColumnDifference",
     "RealRooted.Mathlib.Topology.Algebra.InfiniteSum.Int",
     "RealRooted.Mathlib.Topology.Instances.Matrix.Determinant",

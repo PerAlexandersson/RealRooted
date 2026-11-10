@@ -3359,6 +3359,36 @@
       ],
       "note": "Adjacent-entry positivity for products with checkerboard inverses of lower triangular totally nonnegative matrices.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Polynomial/InverseBernstein.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Polynomial.InverseBernstein"
+      ],
+      "note": "Speculative target module: critical-point preparation for the inverse Bernstein inequality; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Trigonometric/ChebyshevExpansion.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Trigonometric.ChebyshevExpansion"
+      ],
+      "note": "Speculative target module: finite Chebyshev and cosine expansions with a zero-count corollary; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Trigonometric/PolynomialZeros.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Trigonometric.PolynomialZeros"
+      ],
+      "note": "Speculative target module: zero count of real trigonometric polynomials via the unit-circle polynomial lift; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }
