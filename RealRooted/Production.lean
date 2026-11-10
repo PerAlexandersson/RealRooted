@@ -211,6 +211,7 @@ public import RealRooted.Challenges.Roots.Descartes
 public import RealRooted.Challenges.PolyaFrequency.EdreiThoma
 public import RealRooted.Challenges.Roots.EnestromKakeya
 public import RealRooted.Challenges.Combinatorial.EulerBidiagonal
+public import RealRooted.Challenges.Combinatorial.EulerMultiplier
 public import RealRooted.Challenges.Combinatorial.Eulerian
 public import RealRooted.Challenges.Combinatorial.EulerianVariations
 public import RealRooted.Challenges.Combinatorial.LagTwoEulerianTriangles
@@ -521,6 +522,7 @@ public import RealRooted.EulerOperator.Darboux
 public import RealRooted.EulerOperator.Darboux.Basic
 public import RealRooted.EulerOperator.Darboux.Interlacing
 public import RealRooted.EulerOperator.Darboux.NegativeRoots
+public import RealRooted.EulerOperator.EulerMultiplier
 public import RealRooted.EulerOperator.OrderNumerator.Basic
 public import RealRooted.EulerOperator.OrderNumerator.Preservation
 public import RealRooted.EulerOperator.Pencil
