@@ -48,9 +48,14 @@ label = "A three-term θ-recurrence family has interlacing rows"
 headline = true
 
 [[theorems]]
-name = "RealRooted.splits_C_mul_add_C_mul_one_add_X_pow_of_recurrence"
+name = "RealRooted.strictInterl_C_mul_add_C_mul_one_add_X_pow_of_recurrence"
 module = "RealRooted.EulerOperator.OrbitPerturbationCayley"
-label = "Eulerian form: perturbed Eulerian-type rows are real-rooted"
+label = "Eulerian form: perturbed Eulerian-type rows interlace strictly"
+
+[[theorems]]
+name = "RealRooted.strictInterl_cayleyTransform_succ_of_roots_mem_Icc"
+module = "RealRooted.PolynomialValueEulerNumerator.Interlacing"
+label = "The Cayley transform preserves degree-raising interlacing on [-1, 0]"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -90,8 +95,10 @@ and is of independent research interest.
 $T_nf=(1-x)^nf\bigl(x/(1-x)\bigr)$ maps $Q_n$ to $c\,E_n+(1-c)(1+x)^n$,
 where $c=r$, $E_0=1$ and
 $E_{n+1}=\bigl(1+(1+sn)x\bigr)E_n+s\,x(1-x)E_n'$.  For $s=1$ the $E_n$ are
-the Eulerian polynomials.  So for $s\ge1$ and $c\ge1/2$ every row
-$c\,E_n+(1-c)(1+x)^n$ is real-rooted.
+the Eulerian polynomials.  So for $s\ge1$ and $c\ge1/2$ the rows
+$A_n=c\,E_n+(1-c)(1+x)^n$ are real-rooted and $A_n$ strictly interlaces
+$A_{n+1}$, because the Cayley transform preserves interlacing of polynomials
+with roots in $[-1,0]$.
 
 **Applications.**  The parameters $s=1$ with $c=1/2$, $2$, $3$, $7$ and
 $s=2$ with $c=1/2$ give the OEIS triangles A141689, A141690, A141696, A141697

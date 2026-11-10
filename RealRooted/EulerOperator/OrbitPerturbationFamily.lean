@@ -4,6 +4,7 @@ public import RealRooted.EulerOperator.OrbitPerturbation
 import RealRooted.EulerOperator.OrbitPerturbationInterlacing
 import RealRooted.Linear
 import RealRooted.MaWang.Weak.DerivativeSign
+import Mathlib.Tactic.ComputeDegree
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.LinearCombination
 import Mathlib.Tactic.Positivity
@@ -95,11 +96,12 @@ theorem orbitPerturbationRow_one (α r : ℝ) : orbitPerturbationRow α r 1 = C 
   simp [orbitPerturbationRow, centeredEulerStep]
   ring
 
-/-- For `α ≥ 1 / 2` and `r ≥ 1 / 2`, the perturbed rows have simple roots in `(-1, 0)` and
-consecutive rows interlace strictly. -/
+/-- For `α ≥ 1 / 2` and `r ≥ 1 / 2`, the perturbed rows have degree `n` and simple roots in
+`(-1, 0)`, and consecutive rows interlace strictly. -/
 theorem orbitPerturbationRow_package {α r : ℝ} (hαhalf : 1 / 2 ≤ α) (hrhalf : 1 / 2 ≤ r)
     (n : ℕ) :
-    IsRealRootedIn (Ioo (-1 : ℝ) 0) (orbitPerturbationRow α r n) ∧
+    (orbitPerturbationRow α r n).natDegree = n ∧
+      IsRealRootedIn (Ioo (-1 : ℝ) 0) (orbitPerturbationRow α r n) ∧
       HasSimpleRoots (orbitPerturbationRow α r n) ∧
       StrictInterl (orbitPerturbationRow α r n) (orbitPerturbationRow α r (n + 1)) := by
   have hrpos : 0 < r := by linarith
@@ -117,7 +119,8 @@ theorem orbitPerturbationRow_package {α r : ℝ} (hαhalf : 1 / 2 ≤ α) (hrha
     norm_num
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · rw [orbitPerturbationRow_zero α r]
-    refine ⟨IsRealRootedIn.one, hasSimpleRoots_of_natDegree_le_one one_ne_zero (by simp), ?_⟩
+    refine ⟨natDegree_one, IsRealRootedIn.one,
+      hasSimpleRoots_of_natDegree_le_one one_ne_zero (by simp), ?_⟩
     rw [zero_add, orbitPerturbationRow_one α r]
     exact StrictInterl.of_natDegree_eq_zero_left one_ne_zero (by simp)
       (by
@@ -131,9 +134,12 @@ theorem orbitPerturbationRow_package {α r : ℝ} (hαhalf : 1 / 2 ≤ α) (hrha
   have hb1 : (1 - r) / r ≤ 1 := by
     rw [div_le_iff₀ hrpos]
     linarith
-  obtain ⟨-, -, hroot, hsimple, hint⟩ := centeredEulerOrbit_add_monomial hαhalf hb hb1 hn
+  obtain ⟨hdeg, -, hroot, hsimple, hint⟩ := centeredEulerOrbit_add_monomial hαhalf hb hb1 hn
   rw [orbitPerturbationRow_eq_C_mul hrpos.ne', orbitPerturbationRow_eq_C_mul hrpos.ne']
-  refine ⟨?_, ?_, ?_⟩
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · rw [natDegree_C_mul hrpos.ne', natDegree_comp, hdeg]
+    have : (C 2 * X + C 1 : ℝ[X]).natDegree = 1 := by compute_degree!
+    rw [this, mul_one]
   · refine IsRealRootedIn.C_mul hrpos.ne' ?_
     rw [← hloc]
     exact hroot.comp_C_mul_X_add_C 1 two_ne_zero
@@ -188,6 +194,6 @@ theorem strictInterl_of_orbitPerturbation_recurrence {s κ : ℝ} (hs : 1 ≤ s)
         change ((m : ℝ[X]) + 1) * Q (m + 3) = ((m : ℝ[X]) + 1) * orbitPerturbationRow α r (m + 3)
         rw [hrec m, orbitPerturbationRow_recurrence, ih.2.1, ih.2.2, hs2]
   rw [(hQ n).1, (hQ (n + 1)).1]
-  exact orbitPerturbationRow_package hαhalf hrhalf n
+  exact (orbitPerturbationRow_package hαhalf hrhalf n).2
 
 end RealRooted
