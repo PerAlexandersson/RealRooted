@@ -3362,6 +3362,16 @@
     },
     {
       "sources": [
+        "RealRooted/Mathlib/Analysis/Polynomial/InverseBernstein.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Polynomial.InverseBernstein"
+      ],
+      "note": "Speculative target module: critical-point preparation for the inverse Bernstein inequality; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
         "RealRooted/Mathlib/Analysis/SpecialFunctions/Trigonometric/ChebyshevExpansion.lean"
       ],
       "modules": [
