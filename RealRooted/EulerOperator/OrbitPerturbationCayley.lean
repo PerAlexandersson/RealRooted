@@ -2,7 +2,9 @@ module
 
 public import RealRooted.EulerOperator.OrbitPerturbationFamily
 public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Basic
+public import RealRooted.GeneralizedEulerian
 import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Algebra
+import RealRooted.PolynomialValueEulerNumerator.Interlacing
 import Mathlib.Tactic.ComputeDegree
 import Mathlib.Tactic.Ring
 
@@ -81,30 +83,62 @@ theorem cayleyTransform_orbitPerturbationRow (α c : ℝ) (n : ℕ) :
   rw [orbitPerturbationRow_eq, cayleyTransform_add, cayleyTransform_C_mul, cayleyTransform_C_mul,
     hY, cayleyEulerOrbit]
 
+/-- A sequence with the seed and recurrence of the transformed orbit is the transformed orbit. -/
+private theorem eq_cayleyEulerOrbit_of_recurrence {s : ℝ} (hs : 0 < s) {E : ℕ → ℝ[X]}
+    (h0 : E 0 = 1)
+    (hrec : ∀ n : ℕ, E (n + 1) =
+      (1 + C (1 + s * n) * X) * E n + C s * X * (1 - X) * (E n).derivative) (n : ℕ) :
+    E n = cayleyEulerOrbit (s / 2) n := by
+  induction n with
+  | zero => rw [h0, cayleyEulerOrbit_zero]
+  | succ m ih =>
+      rw [hrec m, cayleyEulerOrbit_succ (by linarith), ih, show 2 * (s / 2) = s by ring]
+
 /-- **Eulerian form of RealRooted #2513, Theorem 1.**  Let `s ≥ 1` and `c ≥ 1 / 2`, and let
-`E 0 = 1` and `E (n + 1) = (1 + (1 + s n) X) E n + s X (1 - X) E n'`.  Then
-`c E n + (1 - c) (1 + X) ^ n` is real-rooted for every `n`. -/
+`E 0 = 1` and `E (n + 1) = (1 + (1 + s n) X) E n + s X (1 - X) E n'`.  Then the rows
+`A n = c E n + (1 - c) (1 + X) ^ n` are real-rooted, with roots `≤ 0`, and `A n` strictly
+interlaces `A (n + 1)`. -/
+theorem strictInterl_C_mul_add_C_mul_one_add_X_pow_of_recurrence {s c : ℝ} (hs : 1 ≤ s)
+    (hc : 1 / 2 ≤ c) {E : ℕ → ℝ[X]} (h0 : E 0 = 1)
+    (hrec : ∀ n : ℕ, E (n + 1) =
+      (1 + C (1 + s * n) * X) * E n + C s * X * (1 - X) * (E n).derivative) (n : ℕ) :
+    StrictInterl (C c * E n + C (1 - c) * (1 + X) ^ n)
+      (C c * E (n + 1) + C (1 - c) * (1 + X) ^ (n + 1)) := by
+  have hE := eq_cayleyEulerOrbit_of_recurrence (by linarith) h0 hrec
+  rw [hE n, hE (n + 1), ← cayleyTransform_orbitPerturbationRow,
+    ← cayleyTransform_orbitPerturbationRow]
+  obtain ⟨hdeg, hroot, -, hint⟩ := orbitPerturbationRow_package (α := s / 2) (by linarith) hc n
+  obtain ⟨hdeg1, hroot1, -⟩ := orbitPerturbationRow_package (α := s / 2) (by linarith) hc (n + 1)
+  exact strictInterl_cayleyTransform_succ_of_roots_mem_Icc hdeg hdeg1 hint
+    (fun r hr ↦ ⟨(hroot.2.2 r hr).1.le, (hroot.2.2 r hr).2.le⟩)
+    (fun r hr ↦ ⟨(hroot1.2.2 r hr).1.le, (hroot1.2.2 r hr).2.le⟩)
+
+/-- Real-rootedness in the Eulerian form of RealRooted #2513, Theorem 1: for `s ≥ 1` and
+`c ≥ 1 / 2`, every row `c E n + (1 - c) (1 + X) ^ n` splits. -/
 theorem splits_C_mul_add_C_mul_one_add_X_pow_of_recurrence {s c : ℝ} (hs : 1 ≤ s)
     (hc : 1 / 2 ≤ c) {E : ℕ → ℝ[X]} (h0 : E 0 = 1)
     (hrec : ∀ n : ℕ, E (n + 1) =
       (1 + C (1 + s * n) * X) * E n + C s * X * (1 - X) * (E n).derivative) (n : ℕ) :
-    (C c * E n + C (1 - c) * (1 + X) ^ n).Splits := by
-  have hα : 0 < s / 2 := by linarith
-  have hE : ∀ m, E m = cayleyEulerOrbit (s / 2) m := by
-    intro m
-    induction m with
-    | zero => rw [h0, cayleyEulerOrbit_zero]
-    | succ m ih =>
-        rw [hrec m, cayleyEulerOrbit_succ hα, ih,
-          show 2 * (s / 2) = s by ring]
-  rw [hE n, ← cayleyTransform_orbitPerturbationRow]
-  have hroot := (orbitPerturbationRow_package (α := s / 2) (by linarith) hc n).1
-  refine hroot.splits.cayleyTransform ?_
-  rw [orbitPerturbationRow_eq]
-  refine natDegree_add_le_of_degree_le ((natDegree_C_mul_le _ _).trans
-    (natDegree_centeredEulerOrbit_comp_le hα n)) ((natDegree_C_mul_le _ _).trans ?_)
-  refine natDegree_pow_le.trans ?_
-  have h1 : (C 2 * X + C 1 : ℝ[X]).natDegree ≤ 1 := by compute_degree
-  nlinarith
+    (C c * E n + C (1 - c) * (1 + X) ^ n).Splits :=
+  (strictInterl_C_mul_add_C_mul_one_add_X_pow_of_recurrence hs hc h0 hrec n).1.2
+
+
+/-- The transformed orbit is the generalized Eulerian polynomial with parameter `2 α`. -/
+theorem cayleyEulerOrbit_eq_generalizedEulerian {α : ℝ} (hα : 0 < α) (n : ℕ) :
+    cayleyEulerOrbit α n = generalizedEulerian (2 * α) n := by
+  induction n with
+  | zero => rw [cayleyEulerOrbit_zero]; rfl
+  | succ n ih =>
+      rw [cayleyEulerOrbit_succ hα, ih, generalizedEulerian_succ, add_comm (1 : ℝ),
+        mul_assoc]
+
+/-- Perturbed generalized Eulerian polynomials: for `s ≥ 1` and `c ≥ 1 / 2`, the rows
+`c A_n^{(s)} + (1 - c) (1 + X) ^ n` interlace strictly (RealRooted #2513, Theorem 1). -/
+theorem strictInterl_C_mul_generalizedEulerian_add {s c : ℝ} (hs : 1 ≤ s) (hc : 1 / 2 ≤ c)
+    (n : ℕ) :
+    StrictInterl (C c * generalizedEulerian s n + C (1 - c) * (1 + X) ^ n)
+      (C c * generalizedEulerian s (n + 1) + C (1 - c) * (1 + X) ^ (n + 1)) :=
+  strictInterl_C_mul_add_C_mul_one_add_X_pow_of_recurrence hs hc rfl
+    (fun n ↦ by rw [generalizedEulerian_succ, add_comm (s * n)]) n
 
 end RealRooted

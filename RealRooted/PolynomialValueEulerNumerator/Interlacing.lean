@@ -385,6 +385,62 @@ theorem strictInterl_cayleyTransform_of_roots_mem_Icc
       (hss_len.trans hrs_len.symm) halt
       (fun r hr => (hss_box r hr).1) (fun r hr => (hrs_box r hr).1)
 
+/-- Degree-raising form of `strictInterl_cayleyTransform_of_roots_mem_Icc`: if `p ≪ q` with
+`deg p = n`, `deg q = n + 1` and all roots in `[-1, 0]`, then the Cayley transforms of degrees
+`n` and `n + 1` interlace.  We adjoin the root `-1` to `p`, which does not change its degree-`(n+1)`
+transform. -/
+theorem strictInterl_cayleyTransform_succ_of_roots_mem_Icc
+    {p q : ℝ[X]} {n : ℕ}
+    (hpdeg : p.natDegree = n) (hqdeg : q.natDegree = n + 1)
+    (h : StrictInterl p q)
+    (hp_roots : ∀ r ∈ p.roots, (-1 : ℝ) ≤ r ∧ r ≤ 0)
+    (hq_roots : ∀ r ∈ q.roots, (-1 : ℝ) ≤ r ∧ r ≤ 0) :
+    StrictInterl (Polynomial.cayleyTransform n p)
+      (Polynomial.cayleyTransform (n + 1) q) := by
+  have hX : (X + 1 : ℝ[X]) = X - C (-1) := by simp
+  rcases h with ⟨hp_rr, hq_rr, ss, rs, hss, hrs, hss_eq, hrs_eq, hshape⟩
+  have hp0 : p ≠ 0 := hp_rr.1
+  have hprod_ne : (X + 1) * p ≠ 0 := by
+    rw [hX]
+    exact mul_ne_zero (X_sub_C_ne_zero _) hp0
+  have hroots : ((X + 1) * p).roots = (-1 : ℝ) ::ₘ p.roots := by
+    rw [hX, roots_mul (hX ▸ hprod_ne), roots_X_sub_C, Multiset.singleton_add]
+  have hdeg' : ((X + 1) * p).natDegree = n + 1 := by
+    rw [hX, natDegree_mul (X_sub_C_ne_zero _) hp0, natDegree_X_sub_C, hpdeg, add_comm]
+  have hsplit : ((X + 1) * p).Splits := by
+    rw [hX]
+    exact (Splits.X_sub_C _).mul hp_rr.2
+  have hss_len : ss.length = n := by
+    rw [← Multiset.coe_card, hss_eq, Polynomial.splits_iff_card_roots.mp hp_rr.2, hpdeg]
+  have hrs_len : rs.length = n + 1 := by
+    rw [← Multiset.coe_card, hrs_eq, Polynomial.splits_iff_card_roots.mp hq_rr.2, hqdeg]
+  have hint : ListInterlaces ss rs := by
+    rcases hshape with hdiff | hsame
+    · exact hdiff.2
+    · lia
+  have hss_box : ∀ r ∈ ss, (-1 : ℝ) ≤ r ∧ r ≤ 0 := fun r hr ↦
+    hp_roots r (by simpa [hss_eq] using Multiset.mem_coe.mpr hr)
+  have hrs_box : ∀ r ∈ rs, (-1 : ℝ) ≤ r ∧ r ≤ 0 := fun r hr ↦
+    hq_roots r (by simpa [hrs_eq] using Multiset.mem_coe.mpr hr)
+  have hpq : StrictInterl ((X + 1) * p) q := by
+    obtain ⟨r, rs', rfl⟩ : ∃ r rs', rs = r :: rs' :=
+      List.exists_cons_of_length_pos (by lia)
+    refine ⟨⟨hprod_ne, hsplit⟩, hq_rr, -1 :: ss, r :: rs', ?_, hrs, ?_, hrs_eq,
+      Or.inr ⟨by simp [hss_len, hrs_len], (hrs_box r (by simp)).1, hint⟩⟩
+    · exact List.pairwise_cons.mpr ⟨fun s hs ↦ (hss_box s hs).1, hss⟩
+    · rw [hroots, ← hss_eq, Multiset.cons_coe]
+  have hmain := strictInterl_cayleyTransform_of_roots_mem_Icc hdeg' hqdeg hpq (by
+    intro r hr
+    rw [hroots, Multiset.mem_cons] at hr
+    rcases hr with rfl | hr
+    · norm_num
+    · exact hp_roots r hr) hq_roots
+  rwa [show Polynomial.cayleyTransform (n + 1) ((X + 1) * p) =
+      Polynomial.cayleyTransform n p by
+    rw [add_mul, one_mul, cayleyTransform_add, cayleyTransform_succ_X_mul hpdeg.le,
+      cayleyTransform_succ hpdeg.le]
+    ring] at hmain
+
 /-- A monic split interval-rooted input has its `E`-image rooted in the same
 closed interval. -/
 lemma brandenE_roots_mem_Icc_of_monic {p : ℝ[X]}
