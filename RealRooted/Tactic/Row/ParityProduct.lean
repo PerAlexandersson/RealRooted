@@ -1,5 +1,7 @@
 module
 
+public import RealRooted.Tactic.Row.Registry
+public meta import RealRooted.Tactic.Row.Registry
 public import RealRooted.ThreeTermRecurrence.ParityProduct
 public import RealRooted.Tactic.Row.Support
 public meta import RealRooted.ThreeTermRecurrence.ParityProduct
@@ -132,5 +134,9 @@ def parityProductGoal (splits : Bool) : TacticM Unit := do
     evalTactic (← `(tactic|
       exact RealRooted.interlaces_of_parityProduct $link (fun m => by rr_row_interlaces)
         (fun m => by rr_row_interlaces) $idx))
+
+/-- The `parityProduct` row route, registered for the row front ends (`runRowRoute`). -/
+@[rr_row_route_impl parityProduct]
+def parityProductRoute : RowRouteImpl := fun goal => parityProductGoal (goal == .splits)
 
 end RealRooted.Tactic

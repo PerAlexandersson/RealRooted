@@ -1,5 +1,7 @@
 module
 
+public import RealRooted.Tactic.Row.Registry
+public meta import RealRooted.Tactic.Row.Registry
 public import RealRooted.Interlacing.Reversal
 public import RealRooted.Tactic.Row.Support
 public meta import RealRooted.Interlacing.Reversal
@@ -224,5 +226,9 @@ def reverseRowGoal (splits : Bool) : TacticM Unit := do
         (fun n => by rr_row_natDegree) (fun n => by rr_row_nonneg_coeffs)
         (fun n => by rr_row_natDegree) (fun n => by rr_row_leadingCoeff_pos)
         (fun n => by rr_row_interlaces) $t))
+
+/-- The `reversed` row route, registered for the row front ends (`runRowRoute`). -/
+@[rr_row_route_impl reversed]
+def reversedRoute : RowRouteImpl := fun goal => reverseRowGoal (goal == .splits)
 
 end RealRooted.Tactic

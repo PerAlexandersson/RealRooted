@@ -1,5 +1,7 @@
 module
 
+public import RealRooted.Tactic.Row.Registry
+public meta import RealRooted.Tactic.Row.Registry
 public import RealRooted.Tactic.RowClosedForm
 public import RealRooted.Interlacing.RemainderCertificate
 import RealRooted.Tactic.InterlacesExplicit
@@ -646,5 +648,9 @@ def closedFormInterlacesGoal : TacticM Unit := do
     cfiKey cp.plan cp.degree
     cfiProof cp
   | .error msg => throwError "rr_row (closedForm): {msg}"
+
+/-- The `closedFormInterlaces` row route, registered for the row front ends (`runRowRoute`). -/
+@[rr_row_route_impl closedFormInterlaces]
+def closedFormInterlacesRoute : RowRouteImpl := fun _ => closedFormInterlacesGoal
 
 end RealRooted.Tactic.CFI

@@ -244,7 +244,7 @@ def render(decls) -> tuple[str, str]:
           "```", "",
           "For goals about rows of a recurrence, try the row tactics first (`rr_row_interlaces`, "
           "`rr_row_splits`, `rr_row_natDegree` and their `?` variants, see "
-          "`RealRooted/Tactic/RowInterlacing.lean`).", ""]
+          "`RealRooted/Tactic/Row/Frontend.lean`).", ""]
     order = [k for k, _ in KEYS] + ["other"]
     for key in order:
         items = sorted(by_key.get(key, []), key=lambda d: (-d["uses"], d["name"]))

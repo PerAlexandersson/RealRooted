@@ -2213,3 +2213,6 @@ public import RealRooted.DerivativeProduct.ProductPower
 public import RealRooted.DerivativeProduct.ProductPowerCriteria
 public import RealRooted.DerivativeProduct.ProductPowerRoots
 public import RealRooted.DerivativeProduct.Transform
+public import RealRooted.Tactic.Row.Frontend
+public import RealRooted.Tactic.Row.HalfDegree
+public import RealRooted.Tactic.Row.Registry

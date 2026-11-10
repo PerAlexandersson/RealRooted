@@ -1,5 +1,7 @@
 module
 
+public import RealRooted.Tactic.Row.Registry
+public meta import RealRooted.Tactic.Row.Registry
 public import RealRooted.CubicDiscriminant
 public import RealRooted.Tactic.Row.Subseq
 public meta import RealRooted.CubicDiscriminant
@@ -80,5 +82,9 @@ def delayedProductSplits : TacticM Unit := do
   setGoals [hq]
   evalTactic (← factorSplitsTac)
   unless (← getGoals).isEmpty do throwError "rr_row_delayed_product_splits: goals remain"
+
+/-- The `delayedProduct` row route, registered for the row front ends (`runRowRoute`). -/
+@[rr_row_route_impl delayedProduct]
+def delayedProductRoute : RowRouteImpl := fun _ => delayedProductSplits
 
 end RealRooted.Tactic

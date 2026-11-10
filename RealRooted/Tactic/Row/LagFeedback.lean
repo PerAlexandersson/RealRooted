@@ -1,5 +1,7 @@
 module
 
+public import RealRooted.Tactic.Row.Registry
+public meta import RealRooted.Tactic.Row.Registry
 import RealRooted.ThreeTermRecurrence.LagFeedback
 public import RealRooted.Tactic.Row.Support
 public meta import RealRooted.ThreeTermRecurrence.LagFeedback
@@ -109,5 +111,9 @@ def lagFeedbackSplits : TacticM Unit := do
     evalTactic (← `(tactic|
       exact ⟨$(← ratTerm a), by norm_num, by norm_num [$Pi:ident, map_ofNat, map_div₀]⟩))
   unless (← getGoals).isEmpty do throwError "rr_row_splits: goals remain"
+
+/-- The `lagFeedback` row route, registered for the row front ends (`runRowRoute`). -/
+@[rr_row_route_impl lagFeedback]
+def lagFeedbackRoute : RowRouteImpl := fun _ => lagFeedbackSplits
 
 end RealRooted.Tactic
