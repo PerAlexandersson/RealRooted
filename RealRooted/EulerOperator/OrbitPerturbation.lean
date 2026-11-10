@@ -484,4 +484,42 @@ theorem centeredEulerStep_critical_values {α : ℝ} (hα : 0 < α) {p : ℝ[X]}
     (by rw [card_roots_filter_Ioo_of_isRealRootedIn hqroots.1, hqdeg]) hqroots.2.roots_nodup
     (by simp [hη]) (by simp [hη]) hηinc halt hprodq
 
+/-- The alternation points `-1, -5/6, -1/3, 1/3, 5/6, 1` of the degree-five row. -/
+private def fiveAlternationPoint : ℕ → ℝ
+  | 0 => -1
+  | 1 => -5 / 6
+  | 2 => -1 / 3
+  | 3 => 1 / 3
+  | 4 => 5 / 6
+  | _ => 1
+
+private theorem fiveAlternationPoint_eq {i : ℕ} (hi : i ≤ 5) :
+    fiveAlternationPoint i = ![(-1 : ℝ), -5 / 6, -1 / 3, 1 / 3, 5 / 6, 1] ⟨i, by lia⟩ := by
+  interval_cases i <;> rfl
+
+/-- For `α ≥ 1 / 2`, every row `p n` of the centered Euler orbit with `n ≥ 5` has all critical
+values in `(-1, 1)` of absolute value at least one. -/
+theorem centeredEulerOrbit_critical_values {α : ℝ} (hα : 1 / 2 ≤ α) {n : ℕ} (hn : 5 ≤ n) :
+    ∀ c ∈ Ioo (-1 : ℝ) 1, (centeredEulerOrbit α n).derivative.eval c = 0 →
+      1 ≤ |(centeredEulerOrbit α n).eval c| := by
+  induction n, hn using Nat.le_induction with
+  | base =>
+      obtain ⟨hdeg, -, hroot, hsimple, -, -⟩ := centeredEulerOrbit_package hα 5
+      have hs : ∀ i ≤ 5, 1 ≤ (-1 : ℝ) ^ (5 - i) *
+          (centeredEulerOrbit α 5).eval (fiveAlternationPoint i) := by
+        intro i hi
+        have h := centeredEulerOrbit_five_alternation hα ⟨i, by lia⟩
+        rw [fiveAlternationPoint_eq hi]
+        exact h
+      obtain ⟨halt, hprod⟩ := alternation_of_signed hs
+      exact Polynomial.one_le_abs_eval_critical_of_alternation (by norm_num) hdeg
+        (by rw [card_roots_filter_Ioo_of_isRealRootedIn hroot, hdeg]) hsimple.roots_nodup
+        rfl rfl (fun i hi ↦ by interval_cases i <;> norm_num [fiveAlternationPoint]) halt hprod
+  | succ n hn ih =>
+      obtain ⟨hdeg, hpos, hroot, hsimple, hone, hmone⟩ := centeredEulerOrbit_package hα n
+      have h5 : (5 : ℝ) ≤ n := by exact_mod_cast hn
+      rw [centeredEulerOrbit_succ]
+      exact centeredEulerStep_critical_values (by linarith) (by lia) hroot hsimple hdeg hpos hone
+        hmone ih (by nlinarith)
+
 end RealRooted
