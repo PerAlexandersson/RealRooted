@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Row.Frontend
+public import RealRooted.Tactic.Row.DerivativeXMul
 public import RealRooted.PoweredEulerian
 public import RealRooted.Recurrence.RowModel
 public import RealRooted.Recurrence.Uniqueness

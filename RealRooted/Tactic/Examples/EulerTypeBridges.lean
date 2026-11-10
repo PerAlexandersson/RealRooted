@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.Applications.OEIS.A286785
-public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Row.Frontend
+public import RealRooted.Tactic.Row.FTransform
 
 /-!
 # Exact downstream presentations of Euler-type bridges

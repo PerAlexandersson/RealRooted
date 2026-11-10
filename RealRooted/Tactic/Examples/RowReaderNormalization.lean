@@ -5,7 +5,7 @@ public import RealRooted.CombinatorialExamples.Narayana
 public import RealRooted.CombinatorialExamples.Simsun
 public import RealRooted.CombinatorialExamples.StirlingPermutations
 public import RealRooted.CombinatorialExamples.TypeBEulerian
-public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Row.Frontend
 
 /-!
 # Row-reader normalization regressions

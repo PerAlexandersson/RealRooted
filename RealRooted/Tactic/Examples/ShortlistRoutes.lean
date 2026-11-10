@@ -3,7 +3,7 @@ module
 import RealRooted.Applications.OEIS.A151775
 import RealRooted.Applications.OEIS.ReflectedEulerRows
 import RealRooted.Interlacing.ReversalCommonFactor
-import RealRooted.Tactic.RowInterlacing
+import RealRooted.Tactic.Row.Frontend
 
 set_option linter.privateModule false
 

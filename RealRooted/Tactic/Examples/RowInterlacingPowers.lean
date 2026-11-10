@@ -1,6 +1,14 @@
 module
 
-public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Row.Frontend
+public import RealRooted.Tactic.Row.ClosedFormInterlaces
+public import RealRooted.Tactic.Row.FTransform
+public import RealRooted.Tactic.Row.LagFeedback
+public import RealRooted.Tactic.Row.ParityProduct
+public import RealRooted.Tactic.Row.PathPower
+public import RealRooted.Tactic.Row.PowerForm
+public import RealRooted.Tactic.Row.Reverse
+public import RealRooted.Tactic.Row.ThresholdOrbit
 public import RealRooted.Tactic.Examples.RowFixtures
 
 /-!

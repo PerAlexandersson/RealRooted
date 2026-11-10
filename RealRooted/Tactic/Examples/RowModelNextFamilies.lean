@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.Applications.OEIS.A304330
-public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Row.Frontend
 
 /-!
 # Regression examples for the next row-model families

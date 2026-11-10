@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.Applications.OEIS.HarmonicDerivativeRows
-public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Row.Frontend
 
 /-!
 # Harmonic derivative-row model regression

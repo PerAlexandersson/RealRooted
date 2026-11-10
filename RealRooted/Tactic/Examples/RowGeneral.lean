@@ -1,6 +1,9 @@
 module
 
-public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Row.Frontend
+public import RealRooted.Tactic.Row.ClosedFormInterlaces
+public import RealRooted.Tactic.Row.PathPower
+public import RealRooted.Tactic.Row.Subseq
 public import RealRooted.Tactic.Examples.RowFixtures
 public import Mathlib.RingTheory.Polynomial.Chebyshev
 

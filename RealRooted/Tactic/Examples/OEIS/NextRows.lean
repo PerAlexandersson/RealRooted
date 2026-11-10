@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.Applications.OEIS.A046802
-public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Row.Frontend
 
 /-!
 # An exact downstream presentation for a recurrence-model bridge

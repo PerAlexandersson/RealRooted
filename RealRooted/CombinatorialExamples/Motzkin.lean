@@ -1,6 +1,6 @@
 module
 
-import RealRooted.Tactic.RowInterlacing
+import RealRooted.Tactic.Row.Frontend
 public import RealRooted.CombinatorialExamples.Common
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
 import RealRooted.Tactic.Recurrence.RowSide

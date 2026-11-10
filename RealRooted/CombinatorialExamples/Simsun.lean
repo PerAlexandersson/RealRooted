@@ -4,7 +4,7 @@ public import RealRooted.CombinatorialExamples.Common
 public import RealRooted.MaWang
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
 public import Mathlib.Tactic
-import RealRooted.Tactic.RowInterlacing
+import RealRooted.Tactic.Row.Frontend
 import RealRooted.Tactic.Row.ThresholdOrbit
 import RealRooted.Tactic.Row.FTransform
 import RealRooted.Tactic.Recurrence.Cancel

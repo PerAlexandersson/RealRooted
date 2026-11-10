@@ -2,7 +2,7 @@ module
 
 public import RealRooted.CombinatorialExamples.Common
 public import RealRooted.Tactic.WagnerX
-import RealRooted.Tactic.RowInterlacing
+import RealRooted.Tactic.Row.Frontend
 public import Mathlib.Tactic
 import RealRooted.DerivativeRecurrence.Nonnegative
 import RealRooted.Tactic.Row.ThresholdOrbit
