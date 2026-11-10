@@ -191,6 +191,7 @@ public import RealRooted.CauchyInterlacing.RankOne
 public import RealRooted.CauchyInterlacing.Submatrix
 public import RealRooted.Challenges.Combinatorial.SchurElementarySubstitution
 public import RealRooted.Challenges.PolyaFrequency.AissenSchoenbergWhitney
+public import RealRooted.Challenges.PolyaFrequency.LeftProductionMatrix
 public import RealRooted.Challenges.Interlacing.Bezoutian
 public import RealRooted.Challenges.Combinatorial.BigDescents321
 public import RealRooted.Challenges.Preservers.BinaryRunTransformation
@@ -2136,6 +2137,7 @@ public import RealRooted.BrandenLeite.WeightedDerivativeKernel.Polynomial
 public import RealRooted.BrandenLeite.WeightedDerivativeKernel.Algebra
 public import RealRooted.BrandenLeite.WeightedDerivativeKernel.Pencil
 public import RealRooted.TotallyNonnegPencil
+public import RealRooted.TotalPositivity.LeftProductionMatrix
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Checkerboard
 public import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialDerivative
 public import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialPositive
