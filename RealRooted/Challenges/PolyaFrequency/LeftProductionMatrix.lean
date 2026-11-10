@@ -1,6 +1,6 @@
 module
 
-import RealRooted.TotalPositivity.LeftProductionMatrix
+import RealRooted.TotalPositivity.PFRiordan
 
 /-!
 # Totally nonnegative left production matrices
@@ -10,8 +10,9 @@ version = 1
 section = "theorems"
 slug = "left-production-matrices"
 formalized = "2026-11-10"
-authors = ["Chen", "Fu", "Ruan"]
+authors = ["X. Chen", "L. Fu", "J. Ruan"]
 years = [2025]
+tags = ["realrooted-original"]
 
 [[definitions]]
 name = "RealRooted.IsLeftProductionArray"
@@ -44,6 +45,41 @@ rowPolynomial_splits_and_roots_nonpos_of_isLeftProductionArray"""
 module = "RealRooted.TotalPositivity.LeftProductionMatrix"
 label = "Row polynomials split with nonpositive roots"
 headline = true
+
+[[definitions]]
+name = "RealRooted.PFRiordan.rowPolynomial"
+module = "RealRooted.TotalPositivity.PFRiordan"
+label = "PF Riordan row polynomial"
+
+[[theorems]]
+name = "RealRooted.PFRiordan.production_eq_toeplitz_mul_oneToeplitz"
+module = "RealRooted.TotalPositivity.PFRiordan"
+label = "Riordan left production matrix factorization"
+
+[[theorems]]
+name = "RealRooted.PFRiordan.rowPolynomial_splits_and_roots_nonpos"
+module = "RealRooted.TotalPositivity.PFRiordan"
+label = "PF Riordan rows split with nonpositive roots"
+
+[[theorems]]
+name = "RealRooted.PFRiordan.rationalPFCoeff_isPolyaFreqSeq"
+module = "RealRooted.TotalPositivity.PFRiordan"
+label = "Finite rational products have PF coefficients"
+
+[[theorems]]
+name = "RealRooted.PFRiordan.recurrence_splits_and_roots_nonpos"
+module = "RealRooted.TotalPositivity.PFRiordan"
+label = "Recurrence-family PF Riordan criterion"
+
+[[theorems]]
+name = "RealRooted.PFRiordan.a114123Row_splits_and_roots_nonpos"
+module = "RealRooted.TotalPositivity.PFRiordan"
+label = "A114123 rows split with nonpositive roots"
+
+[[theorems]]
+name = "RealRooted.PFRiordan.evenBinomialRow_splits_and_roots_nonpos"
+module = "RealRooted.TotalPositivity.PFRiordan"
+label = "Even-binomial Riordan rows split with nonpositive roots"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -69,6 +105,43 @@ of the leading truncation $Q_n$. Total nonnegativity is preserved by these ident
 extensions, finite products, submatrices, and transpose. The Pólya-frequency conclusion
 is their Theorem 1.3(3), completed with the Aissen--Schoenberg--Whitney theorem.
 
+## PF Riordan and recurrence families
+
+For coefficient series $d(z)$ and $K(z)$, consider the ordinary Riordan array
+whose $k$th column is
+\[
+d(z)\bigl(z d(z)K(z)\bigr)^k.
+\]
+Its left production matrix has the checked factorization
+$Q=T(d)\operatorname{diag}(1,T(K))$.  Hence, if $d$ and $K$ are PF, every
+row polynomial splits and has only nonpositive roots.  The finite factor
+certificate
+\[
+c z^r\frac{\prod_i(1+\alpha_i z)}{\prod_j(1-\beta_jz)},
+\qquad c,\alpha_i,\beta_j\geq0,
+\]
+supplies PF hypotheses directly.
+
+The recurrence theorem applies this to an arbitrary polynomial sequence $P_n$.
+If its coefficient recurrence is the coefficientwise identity
+\[
+\bigl(D_0(z)-xL(z)\bigr)\sum_{n\geq0}P_n(x)z^n=N(z),
+\]
+and the checked scalar identities give $d=N/D_0$ and $K=L/(zN)$ with PF
+coefficient sequences, then every $P_n$ splits with roots at most zero.  The
+formalized examples include the A114123 family and the rows
+$R_m(x)=\sum_j\binom{m-j}{2j}x^j$.
+
+The hypothesis really belongs on the left production matrix.  Total
+nonnegativity of the Riordan array alone does not suffice: $d=1/(1-z)$ and
+$h=z$ give a totally nonnegative array with row polynomial $1+x+x^2$, which
+does not split over $\mathbb R$.
+
+The proof of the left-production Toeplitz identity and its PF Riordan
+specialization is new, developed for RealRooted (issue #2516), and is of
+independent research interest.  The classical PF-to-real-rooted step is the
+Aissen--Schoenberg--Whitney theorem.
+
 ## References
 
 - X. Chen, L. Fu, and J. Ruan,
@@ -77,5 +150,6 @@ is their Theorem 1.3(3), completed with the Aissen--Schoenberg--Whitney theorem.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in
-`RealRooted.TotalPositivity.LeftProductionMatrix`.
+`RealRooted.TotalPositivity.LeftProductionMatrix` and
+`RealRooted.TotalPositivity.PFRiordan`.
 -/

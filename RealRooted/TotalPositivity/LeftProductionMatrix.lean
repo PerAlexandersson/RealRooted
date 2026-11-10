@@ -247,7 +247,7 @@ theorem product_isLowerTriangular
 
 /-- Finite leading truncation commutes with the finite multiplication of
 lower-triangular matrices. -/
-private theorem truncation_mul {A B : LowerTriangularMatrix ℝ}
+theorem truncation_mul {A B : LowerTriangularMatrix ℝ}
     (hA : LowerTriangularMatrix.IsLowerTriangular A)
     (hB : LowerTriangularMatrix.IsLowerTriangular B) (N : ℕ) :
     Matrix.submatrix (Matrix.of (LowerTriangularMatrix.mul A B)) (Fin.val : Fin N → ℕ)

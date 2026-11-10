@@ -2138,6 +2138,7 @@ public import RealRooted.BrandenLeite.WeightedDerivativeKernel.Algebra
 public import RealRooted.BrandenLeite.WeightedDerivativeKernel.Pencil
 public import RealRooted.TotallyNonnegPencil
 public import RealRooted.TotalPositivity.LeftProductionMatrix
+public import RealRooted.TotalPositivity.PFRiordan
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Checkerboard
 public import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialDerivative
 public import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialPositive
