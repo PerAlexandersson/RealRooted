@@ -791,4 +791,88 @@ theorem sq_mul_one_sub_sq_le_of_abs_eval_critical
   · rw [hcosx, mul_pow, neg_sq, hsin2]
     linarith
 
+/-- A real polynomial of degree `n` whose values change sign across `n` consecutive intervals
+`(C k, C (k + 1))` has simple roots, exactly one in each interval and no others, and at the root
+in `(C k, C (k + 1))` its derivative has the sign of `h (C (k + 1))`. -/
+theorem roots_of_sign_changes {h : ℝ[X]} {n : ℕ} (hn : 0 < n) (hdeg : h.natDegree = n)
+    {C : ℕ → ℝ} (hC : ∀ k < n, C k < C (k + 1))
+    (hsign : ∀ k < n, h.eval (C k) * h.eval (C (k + 1)) < 0) :
+    h.roots.Nodup ∧ h.roots.card = n ∧
+      (∀ r, h.IsRoot r → ∃ k < n, r ∈ Ioo (C k) (C (k + 1))) ∧
+      (∀ k < n, ∀ r ∈ Ioo (C k) (C (k + 1)), h.IsRoot r →
+        0 < h.derivative.eval r * h.eval (C (k + 1))) := by
+  have hmono : ∀ a b, a ≤ b → b ≤ n → C a ≤ C b := by
+    intro a b hab hbn
+    induction b, hab using Nat.le_induction with
+    | base => exact le_rfl
+    | succ b hab ih => exact (ih (by lia)).trans (hC b (by lia)).le
+  have hne : h ≠ 0 := by
+    rintro rfl
+    simp at hdeg
+    lia
+  have hex : ∀ k < n, ∃ y ∈ Ioo (C k) (C (k + 1)), h.eval y = 0 := fun k hk ↦
+    exists_Ioo_eq_zero_of_mul_neg (f := fun x ↦ h.eval x) h.continuous (hC k hk) (hsign k hk)
+  choose! z hz hz0 using hex
+  have hdisj : ∀ i < n, ∀ j < n, ∀ y, y ∈ Ioo (C i) (C (i + 1)) →
+      y ∈ Ioo (C j) (C (j + 1)) → i = j := by
+    intro i hi j hj y hyi hyj
+    by_contra hij
+    rcases Nat.lt_or_gt_of_ne hij with hlt | hlt
+    · linarith [hyi.2, hyj.1, hmono (i + 1) j hlt hj.le]
+    · linarith [hyj.2, hyi.1, hmono (j + 1) i hlt hi.le]
+  have hinj : Set.InjOn z (Finset.range n) := by
+    intro i hi j hj hij
+    have hi' : i < n := by simpa using hi
+    have hj' : j < n := by simpa using hj
+    exact hdisj i hi' j hj' (z i) (hz i hi') (hij ▸ hz j hj')
+  let Z := (Finset.range n).image z
+  have hZcard : Z.card = n := by rw [Finset.card_image_of_injOn hinj, Finset.card_range]
+  have hZle : Z.val ≤ h.roots := by
+    rw [Multiset.le_iff_subset Z.nodup]
+    intro y hy
+    obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp (Finset.mem_val.mp hy)
+    exact (mem_roots hne).mpr (hz0 i (Finset.mem_range.mp hi))
+  have hroots : h.roots = Z.val := (Multiset.eq_of_le_of_card_le hZle (by
+    rw [Finset.card_val, hZcard, ← hdeg]
+    exact card_roots' h)).symm
+  have hroot_mem : ∀ r, h.IsRoot r → ∃ k < n, r = z k := by
+    intro r hr
+    have hr' : r ∈ Z := by
+      rw [← Finset.mem_val, ← hroots]
+      exact (mem_roots hne).mpr hr
+    obtain ⟨k, hk, rfl⟩ := Finset.mem_image.mp hr'
+    exact ⟨k, Finset.mem_range.mp hk, rfl⟩
+  have hnodup : h.roots.Nodup := hroots ▸ Z.nodup
+  refine ⟨hnodup, by rw [hroots, Finset.card_val, hZcard], fun r hr ↦ ?_, ?_⟩
+  · obtain ⟨k, hk, rfl⟩ := hroot_mem r hr
+    exact ⟨k, hk, hz k hk⟩
+  intro k hk r hr hroot
+  have huniq : ∀ y ∈ Ioo (C k) (C (k + 1)), h.IsRoot y → y = z k := by
+    intro y hy hyr
+    obtain ⟨j, hj, rfl⟩ := hroot_mem y hyr
+    rw [hdisj j hj k hk (z j) (hz j hj) hy]
+  have hd : h.derivative.eval r ≠ 0 := by
+    intro hd0
+    have h1 : 1 < h.rootMultiplicity r :=
+      (one_lt_rootMultiplicity_iff_isRoot hne).mpr ⟨hroot, hd0⟩
+    have h2 := Multiset.nodup_iff_count_le_one.mp hnodup r
+    rw [count_roots] at h2
+    lia
+  have hc : h.eval (C (k + 1)) ≠ 0 := right_ne_zero_of_mul (hsign k hk).ne
+  by_contra hpos
+  have hneg : h.eval (C (k + 1)) * h.derivative.eval r < 0 := by
+    rw [mul_comm]
+    exact lt_of_le_of_ne (not_lt.mp hpos) (mul_ne_zero hd hc)
+  have hder : HasDerivAt (fun x ↦ h.eval (C (k + 1)) * h.eval x)
+      (h.eval (C (k + 1)) * h.derivative.eval r) r := (h.hasDerivAt r).const_mul _
+  obtain ⟨y, hy, hgy⟩ := hder.exists_Ioo_gt_of_neg hneg hr.2
+  replace hgy : h.eval (C (k + 1)) * h.eval y < 0 := by simpa [hroot.eq_zero] using hgy
+  obtain ⟨w, hw, hw0⟩ := exists_Ioo_eq_zero_of_mul_neg
+    (f := fun x ↦ h.eval (C (k + 1)) * h.eval x) (continuous_const.mul h.continuous) hy.2
+    (mul_neg_of_neg_of_pos hgy (mul_self_pos.mpr hc))
+  have hw' : h.IsRoot w := (mul_eq_zero.mp hw0).resolve_left hc
+  have := (huniq w ⟨hr.1.trans (hy.1.trans hw.1), hw.2⟩ hw').trans
+    (huniq r hr hroot).symm
+  linarith [hy.1, hw.1]
+
 end Polynomial

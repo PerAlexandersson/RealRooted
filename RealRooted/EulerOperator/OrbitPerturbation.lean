@@ -173,7 +173,7 @@ private theorem centeredEulerOrbit_one (α : ℝ) :
 
 /-- The second centered Euler orbit polynomial. -/
 private theorem centeredEulerOrbit_two (α : ℝ) :
-    centeredEulerOrbit α 2 = C (α + 1) * X ^ 2 - C α := by
+    centeredEulerOrbit α 2 = C (1 + α) * X ^ 2 - C α := by
   rw [show centeredEulerOrbit α 2 = centeredEulerStep α (centeredEulerOrbit α 1) by rfl,
     centeredEulerOrbit_one]
   simp [centeredEulerStep]
@@ -181,8 +181,8 @@ private theorem centeredEulerOrbit_two (α : ℝ) :
 
 /-- The third centered Euler orbit polynomial. -/
 private theorem centeredEulerOrbit_three (α : ℝ) :
-    centeredEulerOrbit α 3 = C (2 * α ^ 2 + 3 * α + 1) * X ^ 3 -
-      C (2 * α ^ 2 + 3 * α) * X := by
+    centeredEulerOrbit α 3 =
+      C ((1 + α) * (1 + 2 * α)) * X ^ 3 - C (α * (3 + 2 * α)) * X := by
   rw [show centeredEulerOrbit α 3 = centeredEulerStep α (centeredEulerOrbit α 2) by rfl,
     centeredEulerOrbit_two]
   simp [centeredEulerStep, derivative_sub, derivative_mul, derivative_pow, map_ofNat]
@@ -191,12 +191,13 @@ private theorem centeredEulerOrbit_three (α : ℝ) :
 /-- The fourth centered Euler orbit polynomial. -/
 private theorem centeredEulerOrbit_four (α : ℝ) :
     centeredEulerOrbit α 4 =
-      C (6 * α ^ 3 + 11 * α ^ 2 + 6 * α + 1) * X ^ 4 -
-      C (8 * α ^ 3 + 14 * α ^ 2 + 6 * α) * X ^ 2 +
-      C (2 * α ^ 3 + 3 * α ^ 2) := by
+      C ((1 + α) * (1 + 2 * α) * (1 + 3 * α)) * X ^ 4 -
+      C (2 * α * (1 + α) * (3 + 4 * α)) * X ^ 2 +
+      C (α ^ 2 * (3 + 2 * α)) := by
   rw [show centeredEulerOrbit α 4 = centeredEulerStep α (centeredEulerOrbit α 3) by rfl,
     centeredEulerOrbit_three]
-  simp [centeredEulerStep, derivative_sub, derivative_mul, derivative_pow, map_ofNat]
+  simp [centeredEulerStep, derivative_add, derivative_sub, derivative_mul, derivative_pow,
+    map_ofNat]
   ring
 
 /-- The explicit degree-five polynomial in the centered Euler orbit. -/
@@ -521,5 +522,142 @@ theorem centeredEulerOrbit_critical_values {α : ℝ} (hα : 1 / 2 ≤ α) {n : 
       rw [centeredEulerOrbit_succ]
       exact centeredEulerStep_critical_values (by linarith) (by lia) hroot hsimple hdeg hpos hone
         hmone ih (by nlinarith)
+
+/-! ### Small degrees -/
+
+/-- For the first four nonconstant centered Euler rows, the value at an interior critical
+point strictly dominates every perturbation `b * X ^ n` with `|b| ≤ 1`. -/
+theorem centeredEulerOrbit_small_critical {α b : ℝ} (hα : 1 / 2 ≤ α)
+    (hb : |b| ≤ 1) {n : ℕ} (hn1 : 1 ≤ n) (hn4 : n ≤ 4) {c : ℝ}
+    (hc : c ∈ Ioo (-1) 1) (hcrit : (centeredEulerOrbit α n).derivative.eval c = 0) :
+    |b * c ^ n| < |(centeredEulerOrbit α n).eval c| := by
+  have hαpos : 0 < α := by linarith
+  interval_cases n
+  · rw [centeredEulerOrbit_one] at hcrit
+    simp at hcrit
+  · have hc0 : c = 0 := by
+      have hcritical : 1 + α = 0 ∨ c = 0 := by
+        rw [centeredEulerOrbit_two] at hcrit
+        simpa [derivative_sub, derivative_mul, derivative_pow, map_ofNat] using hcrit
+      rcases hcritical with hbad | hc0
+      · linarith
+      · exact hc0
+    subst c
+    rw [centeredEulerOrbit_two]
+    simpa [abs_of_pos hαpos] using hαpos
+  · let A := (1 + α) * (1 + 2 * α)
+    let D := α * (3 + 2 * α)
+    have hApos : 0 < A := by
+      dsimp [A]
+      positivity
+    have hAge : 3 ≤ A := by
+      have hfactor : 0 ≤ (2 * α - 1) * (α + 2) :=
+        mul_nonneg (by linarith) (by linarith)
+      dsimp [A]
+      nlinarith
+    have hDpos : 0 < D := by
+      dsimp [D]
+      positivity
+    have hcritical : 3 * A * c ^ 2 = D := by
+      rw [centeredEulerOrbit_three] at hcrit
+      simp [derivative_sub, derivative_mul, derivative_pow, map_ofNat] at hcrit
+      dsimp [A, D]
+      nlinarith
+    have hcne : c ≠ 0 := by
+      intro hc0
+      subst c
+      norm_num at hcritical
+      linarith
+    have hcritical_mul : D * c = 3 * A * c ^ 3 := by
+      rw [← hcritical]
+      ring
+    have hvalue : (centeredEulerOrbit α 3).eval c = -(2 * A) * c ^ 3 := by
+      rw [centeredEulerOrbit_three]
+      simp [A]
+      nlinarith [hcritical_mul]
+    calc
+      |b * c ^ 3| ≤ |c ^ 3| := by
+        rw [abs_mul]
+        nlinarith [abs_nonneg (c ^ 3)]
+      _ < |(centeredEulerOrbit α 3).eval c| := by
+        rw [hvalue, abs_mul, abs_neg, abs_of_pos (by positivity : 0 < 2 * A)]
+        have hcabs : 0 < |c ^ 3| := abs_pos.mpr (pow_ne_zero 3 hcne)
+        nlinarith
+  · let A := (1 + α) * (1 + 2 * α) * (1 + 3 * α)
+    let B := 2 * α * (1 + α) * (3 + 4 * α)
+    let C₀ := α ^ 2 * (3 + 2 * α)
+    have hApos : 0 < A := by
+      dsimp [A]
+      positivity
+    have hBpos : 0 < B := by
+      dsimp [B]
+      positivity
+    have hCpos : 0 < C₀ := by
+      dsimp [C₀]
+      positivity
+    have hP : 0 < 24 * α ^ 5 + 92 * α ^ 4 + 160 * α ^ 3 + 112 * α ^ 2 +
+        22 * α - 3 := by
+      nlinarith [pow_nonneg hαpos.le 2, pow_nonneg hαpos.le 3,
+        pow_nonneg hαpos.le 4, pow_nonneg hαpos.le 5]
+    have hcertificate : 0 < A * (B ^ 2 - 4 * A * C₀) - B ^ 2 := by
+      have hfactor : 0 < 4 * α ^ 2 * (1 + α) ^ 2 *
+          (24 * α ^ 5 + 92 * α ^ 4 + 160 * α ^ 3 + 112 * α ^ 2 +
+            22 * α - 3) := by positivity
+      calc
+        0 < 4 * α ^ 2 * (1 + α) ^ 2 *
+            (24 * α ^ 5 + 92 * α ^ 4 + 160 * α ^ 3 + 112 * α ^ 2 +
+              22 * α - 3) := hfactor
+        _ = A * (B ^ 2 - 4 * A * C₀) - B ^ 2 := by
+          dsimp [A, B, C₀]
+          ring
+    rw [centeredEulerOrbit_four] at hcrit
+    have hcritical : 2 * c * (2 * A * c ^ 2 - B) = 0 := by
+      simp [derivative_add, derivative_sub, derivative_mul, derivative_pow, map_ofNat]
+        at hcrit
+      dsimp [A, B]
+      nlinarith
+    rcases mul_eq_zero.mp hcritical with hc0 | hrelation
+    · have hc0 : c = 0 := by simpa using hc0
+      subst c
+      rw [centeredEulerOrbit_four]
+      norm_num [abs_of_pos (by positivity : 0 < α ^ 2 * (3 + 2 * α))]
+      positivity
+    · have hrelation : 2 * A * c ^ 2 = B := by nlinarith
+      have hcne : c ≠ 0 := by
+        intro hc0
+        subst c
+        norm_num at hrelation
+        linarith
+      have hBsq : B ^ 2 = 4 * A ^ 2 * c ^ 4 := by
+        rw [← hrelation]
+        ring
+      have hproduct : 0 < 4 * A ^ 2 * ((A - 1) * c ^ 4 - C₀) := by
+        calc
+          0 < A * (B ^ 2 - 4 * A * C₀) - B ^ 2 := hcertificate
+          _ = 4 * A ^ 2 * ((A - 1) * c ^ 4 - C₀) := by rw [hBsq]; ring
+      have hgap : C₀ < (A - 1) * c ^ 4 := by
+        rcases (mul_pos_iff.mp hproduct) with hpositive | hnegative
+        · linarith
+        · exact False.elim ((not_lt_of_ge (sq_nonneg A)) (by nlinarith [hnegative.1]))
+      have hrelation_mul : B * c ^ 2 = 2 * A * c ^ 4 := by
+        rw [← hrelation]
+        ring
+      have hvalue : (centeredEulerOrbit α 4).eval c = C₀ - A * c ^ 4 := by
+        rw [centeredEulerOrbit_four]
+        simp [A, C₀]
+        nlinarith
+      have hvalue_neg : C₀ - A * c ^ 4 < 0 := by
+        nlinarith [pow_pos (show 0 < c ^ 2 by positivity) 2]
+      calc
+        |b * c ^ 4| = |b| * c ^ 4 := by
+          have hc4 : 0 ≤ c ^ 4 := by positivity
+          rw [abs_mul, abs_of_nonneg hc4]
+        _ ≤ c ^ 4 := by
+          have hc4 : 0 ≤ c ^ 4 := by positivity
+          nlinarith
+        _ < A * c ^ 4 - C₀ := by nlinarith
+        _ = |(centeredEulerOrbit α 4).eval c| := by
+          rw [hvalue, abs_of_neg hvalue_neg]
+          ring
 
 end RealRooted
