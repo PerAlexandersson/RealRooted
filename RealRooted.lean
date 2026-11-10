@@ -215,6 +215,7 @@ public import RealRooted.Challenges.Combinatorial.EulerBidiagonal
 public import RealRooted.Challenges.Combinatorial.Eulerian
 public import RealRooted.Challenges.Combinatorial.EulerianVariations
 public import RealRooted.Challenges.Combinatorial.LagTwoEulerianTriangles
+public import RealRooted.Challenges.Combinatorial.NegativeLagEulerianTriangles
 public import RealRooted.Challenges.Interlacing.FPolynomialRecurrences
 public import RealRooted.Challenges.Interlacing.FactorialCompression
 public import RealRooted.Challenges.Interlacing.Favard
@@ -540,6 +541,7 @@ public import RealRooted.EulerianMixedCompatibility.Insertion
 public import RealRooted.EulerianTriangles.LagTwoOperators
 public import RealRooted.EulerianTriangles.LagTwoRecurrence
 public import RealRooted.EulerianTriangles.LagTwoTriangle
+public import RealRooted.EulerianTriangles.NegativeLagCone
 public import RealRooted.EvenDerivative.Basic
 public import RealRooted.EvenDerivative.Examples
 public import RealRooted.EvenDerivative.Interlacing
