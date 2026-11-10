@@ -1,7 +1,9 @@
 module
 
 public import RealRooted.Basic
-import RealRooted.Tactic.RowInterlacing
+import RealRooted.Tactic.Row.Frontend
+import RealRooted.Tactic.Row.PathPower
+import RealRooted.Tactic.Row.Subseq
 
 /-!
 # Lost row-route regressions

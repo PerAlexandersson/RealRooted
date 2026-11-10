@@ -1,6 +1,6 @@
 module
 
-import RealRooted.Tactic.RowInterlacing
+import RealRooted.Tactic.Row.Frontend
 import RealRooted.LiuWang.FiniteFamily
 import RealRooted.WagnerX.AffineFactors
 import RealRooted.Linear

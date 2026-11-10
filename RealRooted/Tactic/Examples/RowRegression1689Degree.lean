@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Row.Frontend
 
 /-!
 # Degree-pattern regression examples for PR #1689

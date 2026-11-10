@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Row.Frontend
+public import RealRooted.Tactic.Row.ClosedFormInterlaces
+public import RealRooted.Tactic.Row.EndpointWindow
 public import RealRooted.Tactic.Examples.RowFixtures
 
 /-!

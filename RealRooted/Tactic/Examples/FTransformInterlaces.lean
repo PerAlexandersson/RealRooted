@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Row.Frontend
+public import RealRooted.Tactic.Row.FTransform
 
 /-!
 # Regression examples for the `f`-polynomial interlacing route

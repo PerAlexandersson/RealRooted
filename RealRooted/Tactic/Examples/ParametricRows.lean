@@ -3,7 +3,7 @@ module
 public import RealRooted.Applications.BinderVecchi.UniformChow
 public import RealRooted.Applications.BinderVecchi.UniformMatroid
 public import RealRooted.Applications.OEIS.QuarticGamma
-public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Row.Frontend
 
 /-!
 # Parametric row tactics

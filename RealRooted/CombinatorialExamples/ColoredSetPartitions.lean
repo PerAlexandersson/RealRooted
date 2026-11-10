@@ -1,6 +1,6 @@
 module
 
-import RealRooted.Tactic.RowInterlacing
+import RealRooted.Tactic.Row.Frontend
 public import RealRooted.CombinatorialExamples.Common
 public import RealRooted.MaWang
 public import Mathlib.Tactic

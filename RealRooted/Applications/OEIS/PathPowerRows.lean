@@ -1,6 +1,7 @@
 module
 
-import RealRooted.Tactic.RowInterlacing
+import RealRooted.Tactic.Row.Frontend
+import RealRooted.Tactic.Row.PathPower
 public import RealRooted.CombinatorialExamples.PathPowerClique
 import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 import RealRooted.WagnerX.AffineFactors

@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.Applications.OEIS.A119308
-public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Row.Frontend
 
 @[expose] public section
 

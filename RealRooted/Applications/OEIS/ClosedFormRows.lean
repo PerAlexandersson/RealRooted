@@ -3,8 +3,8 @@ module
 public import RealRooted.Basic
 import RealRooted.QuadraticRoot
 public import RealRooted.HeilmannLieb
-import RealRooted.Tactic.RowInterlacing
-import RealRooted.Tactic.Row.ThresholdOrbit
+import RealRooted.Tactic.Row.Frontend
+import RealRooted.Tactic.Row.ClosedFormInterlaces
 import RealRooted.Tactic.RowClosedForm
 import RealRooted.Tactic.InterlacesExplicit
 import RealRooted.Graph.MatchingPolynomial

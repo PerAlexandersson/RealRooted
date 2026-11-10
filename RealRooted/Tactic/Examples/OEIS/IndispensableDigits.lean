@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.Applications.OEIS.IndispensableDigits
-public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Row.Frontend
 
 /-!
 # Row-tactic regressions for indispensable-digit models

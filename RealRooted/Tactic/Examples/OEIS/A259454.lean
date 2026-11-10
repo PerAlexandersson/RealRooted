@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.Applications.OEIS.A259454
-public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Row.Frontend
 
 /-!
 # Literal downstream regression for OEIS A259454

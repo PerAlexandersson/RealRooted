@@ -2,7 +2,7 @@ module
 
 import RealRooted.Applications.OEIS.A394813
 import RealRooted.Applications.OEIS.A395326
-import RealRooted.Tactic.RowInterlacing
+import RealRooted.Tactic.Row.Frontend
 
 set_option linter.privateModule false
 

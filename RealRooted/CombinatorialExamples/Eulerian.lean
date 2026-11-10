@@ -8,8 +8,7 @@ public import RealRooted.Tactic.WagnerX
 public import RealRooted.Wagner
 public import Mathlib.Analysis.Calculus.Deriv.Polynomial
 public import Mathlib.Tactic
-import RealRooted.Tactic.RowInterlacing
-import RealRooted.Tactic.Row.ThresholdOrbit
+import RealRooted.Tactic.Row.Frontend
 import RealRooted.Tactic.Recurrence.Cancel
 import RealRooted.Tactic.Recurrence.Degree
 import RealRooted.DerivativeRecurrence.General

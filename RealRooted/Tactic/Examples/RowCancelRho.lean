@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Row.Frontend
 
 /-!
 # Cancellation with a nonzero coefficient-ratio bound

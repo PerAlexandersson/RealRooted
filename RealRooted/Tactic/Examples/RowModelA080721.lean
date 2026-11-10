@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.Applications.OEIS.A080721
-public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Row.Frontend
 
 /-!
 # Regression examples for OEIS A080721

@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.CombinatorialExamples.WeightedRenewal
-public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Row.Frontend
+public import RealRooted.Tactic.Row.PathPower
 
 /-!
 # Fixed-delay row-tactic regressions

@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Row.Frontend
+public import RealRooted.Tactic.Row.ClosedFormInterlaces
+public import RealRooted.Tactic.Row.Subseq
 
 /-!
 # Degree laws with zero residue classes

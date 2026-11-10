@@ -5,9 +5,8 @@ import RealRooted.Interlacing.OuterDifference
 import RealRooted.MaWang.StrictStep
 import RealRooted.Recurrence.RowModel
 import RealRooted.Recurrence.Uniqueness
-import RealRooted.Tactic.RowInterlacing
+import RealRooted.Tactic.Row.Frontend
 import RealRooted.DerivativeRecurrence.Nonnegative
-import RealRooted.Tactic.Row.ThresholdOrbit
 import RealRooted.Tactic.Recurrence.Degree
 import RealRooted.Interlacing.Euclid
 import RealRooted.ThreeTermRecurrence.Interlacing

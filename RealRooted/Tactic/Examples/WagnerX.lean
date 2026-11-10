@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.Tactic.WagnerX
-public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Row.Frontend
 
 /-!
 # Wagner `X`-shift tactic examples

@@ -2,7 +2,8 @@ module
 
 public import Mathlib.Algebra.Polynomial.Basic
 public import Mathlib.Basic.Real.Basic
-import RealRooted.Tactic.RowInterlacing
+import RealRooted.Tactic.Row.Frontend
+import RealRooted.Tactic.Row.PathPower
 
 open Polynomial
 

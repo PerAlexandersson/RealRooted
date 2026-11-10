@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Row.Frontend
 public import RealRooted.Applications.OEIS.PeriodicTopRows
 public import RealRooted.Applications.OEIS.HigherOrderDegreeModels
 

@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.Tactic.RowInterlacing
+public import RealRooted.Tactic.Row.Frontend
+public import RealRooted.Tactic.Row.Reverse
 
 /-!
 # Interlacing-search regression examples for PR #1689
