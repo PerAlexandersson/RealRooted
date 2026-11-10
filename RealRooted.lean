@@ -2223,3 +2223,4 @@ public import RealRooted.DerivativeProduct.Transform
 public import RealRooted.Tactic.Row.Frontend
 public import RealRooted.Tactic.Row.HalfDegree
 public import RealRooted.Tactic.Row.Registry
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.PolynomialZeros

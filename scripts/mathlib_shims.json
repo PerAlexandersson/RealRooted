@@ -3359,6 +3359,16 @@
       ],
       "note": "Adjacent-entry positivity for products with checkerboard inverses of lower triangular totally nonnegative matrices.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Trigonometric/PolynomialZeros.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Trigonometric.PolynomialZeros"
+      ],
+      "note": "Speculative target module: zero count of real trigonometric polynomials via the unit-circle polynomial lift; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }
