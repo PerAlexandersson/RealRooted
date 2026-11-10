@@ -48,6 +48,12 @@ by a monomial, in the variable `u`. -/
 def orbitPerturbationRow (α r : ℝ) (n : ℕ) : ℝ[X] :=
   (C r * centeredEulerOrbit α n + (1 - C r) * X ^ n).comp (C 2 * X + C 1)
 
+/-- The perturbed rows expanded: `Q n = r p n (2 u + 1) + (1 - r) (2 u + 1) ^ n`. -/
+theorem orbitPerturbationRow_eq (α r : ℝ) (n : ℕ) :
+    orbitPerturbationRow α r n = C r * (centeredEulerOrbit α n).comp (C 2 * X + C 1) +
+      C (1 - r) * (C 2 * X + C 1) ^ n := by
+  simp [orbitPerturbationRow]
+
 /-- The perturbed rows as a multiple of `h n = p n + b X ^ n` with `b = (1 - r) / r`. -/
 theorem orbitPerturbationRow_eq_C_mul {α r : ℝ} (hr : r ≠ 0) (n : ℕ) :
     orbitPerturbationRow α r n =
@@ -81,6 +87,60 @@ theorem orbitPerturbationRow_recurrence (α r : ℝ) (n : ℕ) :
   simp only [map_add, map_natCast, map_ofNat, map_one] at h2 h3 ⊢
   linear_combination ((n : ℝ[X]) + 1) * C r * h3 - ((n : ℝ[X]) + 2) * (2 * X + 1) * C r * h2
 
+@[simp] theorem orbitPerturbationRow_zero (α r : ℝ) : orbitPerturbationRow α r 0 = 1 := by
+  simp [orbitPerturbationRow]
+
+theorem orbitPerturbationRow_one (α r : ℝ) : orbitPerturbationRow α r 1 = C 2 * X + 1 := by
+  simp [orbitPerturbationRow, centeredEulerStep]
+  ring
+
+/-- For `α ≥ 1 / 2` and `r ≥ 1 / 2`, the perturbed rows have simple roots in `(-1, 0)` and
+consecutive rows interlace strictly. -/
+theorem orbitPerturbationRow_package {α r : ℝ} (hαhalf : 1 / 2 ≤ α) (hrhalf : 1 / 2 ≤ r)
+    (n : ℕ) :
+    IsRealRootedIn (Ioo (-1 : ℝ) 0) (orbitPerturbationRow α r n) ∧
+      HasSimpleRoots (orbitPerturbationRow α r n) ∧
+      StrictInterl (orbitPerturbationRow α r n) (orbitPerturbationRow α r (n + 1)) := by
+  have hrpos : 0 < r := by linarith
+  -- Transfer from the centered coordinates.
+  have hloc : (fun x : ℝ ↦ 2 * x + 1) ⁻¹' Ioo (-1 : ℝ) 1 = Ioo (-1 : ℝ) 0 := by
+    ext x
+    simp only [mem_preimage, mem_Ioo]
+    constructor <;> rintro ⟨h₁, h₂⟩ <;> constructor <;> linarith
+  have hcomp : ∀ f : ℝ[X], f.comp (C 2 * X + C 1) = (f.comp (C 2 * X)).comp (X + C (1 / 2)) := by
+    intro f
+    rw [comp_assoc]
+    congr 1
+    simp only [mul_comp, C_comp, X_comp]
+    rw [mul_add, ← C_mul]
+    norm_num
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · rw [orbitPerturbationRow_zero α r]
+    refine ⟨IsRealRootedIn.one, hasSimpleRoots_of_natDegree_le_one one_ne_zero (by simp), ?_⟩
+    rw [zero_add, orbitPerturbationRow_one α r]
+    exact StrictInterl.of_natDegree_eq_zero_left one_ne_zero (by simp)
+      (by
+        intro h
+        have h' := congrArg (fun p ↦ p.coeff 1) h
+        simp [coeff_one, coeff_C] at h')
+      (by compute_degree!)
+  have hb : -1 < (1 - r) / r := by
+    rw [lt_div_iff₀ hrpos]
+    linarith
+  have hb1 : (1 - r) / r ≤ 1 := by
+    rw [div_le_iff₀ hrpos]
+    linarith
+  obtain ⟨-, -, hroot, hsimple, hint⟩ := centeredEulerOrbit_add_monomial hαhalf hb hb1 hn
+  rw [orbitPerturbationRow_eq_C_mul hrpos.ne', orbitPerturbationRow_eq_C_mul hrpos.ne']
+  refine ⟨?_, ?_, ?_⟩
+  · refine IsRealRootedIn.C_mul hrpos.ne' ?_
+    rw [← hloc]
+    exact hroot.comp_C_mul_X_add_C 1 two_ne_zero
+  · exact (hsimple.comp_C_mul_X_add_C two_ne_zero).C_mul hrpos.ne'
+  · rw [hcomp, hcomp]
+    exact (((hint.comp_C_mul_X two_pos).comp_X_add_C _).C_mul_left hrpos.ne').C_mul_right
+      hrpos.ne'
+
 /-- **A θ-recurrence family with interlacing rows** (RealRooted #2513, Theorem 1).  Let `s ≥ 1`
 and `κ ≥ s + 4`, and let `Q` satisfy `Q 0 = 1`, `Q 1 = 2 u + 1`, `Q 2 = κ u² + κ u + 1` and
 `(n + 1) Q (n + 3) = (2 n + 3) (2 u + 1) Q (n + 2) + (n + 1) s (u + 1) θ Q (n + 2)
@@ -110,11 +170,8 @@ theorem strictInterl_of_orbitPerturbation_recurrence {s κ : ℝ} (hs : 1 ≤ s)
     field_simp
     ring
   -- The sequence is the perturbed orbit.
-  have hR0 : orbitPerturbationRow α r 0 = 1 := by
-    simp [orbitPerturbationRow]
-  have hR1 : orbitPerturbationRow α r 1 = C 2 * X + 1 := by
-    simp [orbitPerturbationRow, centeredEulerStep]
-    ring
+  have hR0 := orbitPerturbationRow_zero α r
+  have hR1 := orbitPerturbationRow_one α r
   have hR2 : orbitPerturbationRow α r 2 = C κ * X ^ 2 + C κ * X + 1 := by
     simp [orbitPerturbationRow, centeredEulerStep, hκr, map_ofNat]
     ring
@@ -130,43 +187,6 @@ theorem strictInterl_of_orbitPerturbation_recurrence {s κ : ℝ} (hs : 1 ≤ s)
         change ((m : ℝ[X]) + 1) * Q (m + 3) = ((m : ℝ[X]) + 1) * orbitPerturbationRow α r (m + 3)
         rw [hrec m, orbitPerturbationRow_recurrence, ih.2.1, ih.2.2, hs2]
   rw [(hQ n).1, (hQ (n + 1)).1]
-  -- Transfer from the centered coordinates.
-  have hloc : (fun x : ℝ ↦ 2 * x + 1) ⁻¹' Ioo (-1 : ℝ) 1 = Ioo (-1 : ℝ) 0 := by
-    ext x
-    simp only [mem_preimage, mem_Ioo]
-    constructor <;> rintro ⟨h₁, h₂⟩ <;> constructor <;> linarith
-  have hcomp : ∀ f : ℝ[X], f.comp (C 2 * X + C 1) = (f.comp (C 2 * X)).comp (X + C (1 / 2)) := by
-    intro f
-    rw [comp_assoc]
-    congr 1
-    simp only [mul_comp, C_comp, X_comp]
-    rw [mul_add, ← C_mul]
-    norm_num
-  rcases Nat.eq_zero_or_pos n with rfl | hn
-  · refine ⟨by rw [hR0]; exact IsRealRootedIn.one, by
-      rw [hR0]; exact hasSimpleRoots_of_natDegree_le_one one_ne_zero (by simp), ?_⟩
-    rw [hR0, zero_add, hR1]
-    exact StrictInterl.of_natDegree_eq_zero_left one_ne_zero (by simp)
-      (by
-        intro h
-        have h' := congrArg (fun p ↦ p.coeff 1) h
-        simp [coeff_one, coeff_C] at h')
-      (by compute_degree!)
-  have hb : -1 < (1 - r) / r := by
-    rw [lt_div_iff₀ hrpos]
-    linarith
-  have hb1 : (1 - r) / r ≤ 1 := by
-    rw [div_le_iff₀ hrpos]
-    linarith
-  obtain ⟨-, -, hroot, hsimple, hint⟩ := centeredEulerOrbit_add_monomial hαhalf hb hb1 hn
-  rw [orbitPerturbationRow_eq_C_mul hrpos.ne', orbitPerturbationRow_eq_C_mul hrpos.ne']
-  refine ⟨?_, ?_, ?_⟩
-  · refine IsRealRootedIn.C_mul hrpos.ne' ?_
-    rw [← hloc]
-    exact hroot.comp_C_mul_X_add_C 1 two_ne_zero
-  · exact (hsimple.comp_C_mul_X_add_C two_ne_zero).C_mul hrpos.ne'
-  · rw [hcomp, hcomp]
-    exact (((hint.comp_C_mul_X two_pos).comp_X_add_C _).C_mul_left hrpos.ne').C_mul_right
-      hrpos.ne'
+  exact orbitPerturbationRow_package hαhalf hrhalf n
 
 end RealRooted

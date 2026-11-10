@@ -528,6 +528,7 @@ public import RealRooted.EulerOperator.Darboux.Interlacing
 public import RealRooted.EulerOperator.Darboux.NegativeRoots
 public import RealRooted.EulerOperator.EulerMultiplier
 public import RealRooted.EulerOperator.OrbitPerturbation
+public import RealRooted.EulerOperator.OrbitPerturbationCayley
 public import RealRooted.EulerOperator.OrbitPerturbationFamily
 public import RealRooted.EulerOperator.OrbitPerturbationInterlacing
 public import RealRooted.EulerOperator.OrderNumerator.Basic

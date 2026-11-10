@@ -8,6 +8,7 @@ module
 public import Mathlib.Algebra.Polynomial.Homogenize
 import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
 public import Mathlib.Tactic.FinCases
+public import Mathlib.Algebra.Polynomial.Derivative
 import Mathlib.Tactic.Ring
 
 /-!
@@ -85,6 +86,76 @@ theorem cayleyTransform_eq_sum {p : R[X]} {n : ℕ} (hdeg : p.natDegree ≤ n) :
   simp only [MvPolynomial.eval₂_X, Fin.isValue, Matrix.cons_val_zero,
     Matrix.cons_val_one]
   rw [← Polynomial.C_eq_algebraMap]
+  ring
+
+/-- The Cayley transform of a monomial of degree at most `n`. -/
+theorem cayleyTransform_X_pow {n k : ℕ} (hk : k ≤ n) :
+    cayleyTransform n (X ^ k : R[X]) = X ^ k * (1 - X) ^ (n - k) := by
+  rw [cayleyTransform_eq_sum ((natDegree_X_pow_le k).trans hk), Finset.sum_eq_single k]
+  · simp
+  · intro j _ hj
+    simp [coeff_X_pow, hj]
+  · intro hk'
+    exact absurd (Finset.mem_range.mpr (Nat.lt_succ_of_le hk)) hk'
+
+/-- A polynomial of degree at most `n` as a sum of monomials. -/
+private theorem eq_sum_C_mul_X_pow {p : R[X]} {n : ℕ} (hp : p.natDegree ≤ n) :
+    p = ∑ k ∈ Finset.range (n + 1), C (p.coeff k) * X ^ k := by
+  conv_lhs => rw [as_sum_range' p (n + 1) (Nat.lt_succ_of_le hp)]
+  simp only [C_mul_X_pow_eq_monomial]
+
+/-- Raising the transform degree multiplies the Cayley transform by `1 - X`. -/
+theorem cayleyTransform_succ {p : R[X]} {n : ℕ} (hp : p.natDegree ≤ n) :
+    cayleyTransform (n + 1) p = (1 - X) * cayleyTransform n p := by
+  rw [eq_sum_C_mul_X_pow hp]
+  simp only [cayleyTransform_finset_sum, cayleyTransform_C_mul, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun k hk ↦ ?_
+  have hk : k ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
+  rw [cayleyTransform_X_pow (by lia), cayleyTransform_X_pow hk,
+    show n + 1 - k = n - k + 1 by lia, pow_succ]
+  ring
+
+/-- Multiplication by `X` commutes with the Cayley transform when the degree goes up by one. -/
+theorem cayleyTransform_succ_X_mul {p : R[X]} {n : ℕ} (hp : p.natDegree ≤ n) :
+    cayleyTransform (n + 1) (X * p) = X * cayleyTransform n p := by
+  rw [eq_sum_C_mul_X_pow hp]
+  simp only [Finset.mul_sum, cayleyTransform_finset_sum, cayleyTransform_C_mul]
+  refine Finset.sum_congr rfl fun k hk ↦ ?_
+  have hk : k ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
+  rw [mul_left_comm, ← pow_succ', cayleyTransform_C_mul, cayleyTransform_X_pow (by lia),
+    cayleyTransform_X_pow hk, show n + 1 - (k + 1) = n - k by lia]
+  ring
+
+/-- `θ = X d/dX` on a monomial. -/
+private theorem X_mul_derivative_X_pow (k : ℕ) :
+    (X : R[X]) * (X ^ k).derivative = C (k : R) * X ^ k := by
+  rcases k with _ | k
+  · simp
+  · rw [derivative_X_pow, Nat.add_sub_cancel, ← mul_assoc, mul_comm X, mul_assoc, ← pow_succ']
+
+/-- The Euler operator on the Cayley transform of a monomial. -/
+private theorem cayleyTransform_X_pow_euler {n k : ℕ} (hk : k ≤ n) :
+    X * (1 - X) * (X ^ k * (1 - X) ^ (n - k) : R[X]).derivative +
+        C (n : R) * X * (X ^ k * (1 - X) ^ (n - k)) =
+      C (k : R) * (X ^ k * (1 - X) ^ (n - k)) := by
+  obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hk
+  rw [Nat.add_sub_cancel_left]
+  rcases k with _ | k <;> rcases m with _ | m <;>
+    simp [derivative_mul, derivative_pow] <;> ring
+
+/-- The Euler operator `θ = X d/dX` under the Cayley transform:
+`T (θ p) = X (1 - X) (T p)' + n X (T p)` for `p` of degree at most `n`. -/
+theorem cayleyTransform_X_mul_derivative {p : R[X]} {n : ℕ} (hp : p.natDegree ≤ n) :
+    cayleyTransform n (X * p.derivative) =
+      X * (1 - X) * (cayleyTransform n p).derivative + C (n : R) * X * cayleyTransform n p := by
+  rw [eq_sum_C_mul_X_pow hp]
+  simp only [derivative_sum, Finset.mul_sum, cayleyTransform_finset_sum, cayleyTransform_C_mul,
+    derivative_C_mul, ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun k hk ↦ ?_
+  have hk : k ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
+  rw [mul_left_comm, X_mul_derivative_X_pow]
+  simp only [cayleyTransform_C_mul, cayleyTransform_X_pow hk]
+  rw [← cayleyTransform_X_pow_euler hk]
   ring
 
 end Polynomial

@@ -1,5 +1,6 @@
 module
 
+import RealRooted.EulerOperator.OrbitPerturbationCayley
 import RealRooted.EulerOperator.OrbitPerturbationFamily
 
 /-!
@@ -45,6 +46,11 @@ name = "RealRooted.strictInterl_of_orbitPerturbation_recurrence"
 module = "RealRooted.EulerOperator.OrbitPerturbationFamily"
 label = "A three-term θ-recurrence family has interlacing rows"
 headline = true
+
+[[theorems]]
+name = "RealRooted.splits_C_mul_add_C_mul_one_add_X_pow_of_recurrence"
+module = "RealRooted.EulerOperator.OrbitPerturbationCayley"
+label = "Eulerian form: perturbed Eulerian-type rows are real-rooted"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -80,9 +86,16 @@ root-sign criterion of Ma and Wang [@MaWang2008, Thm. 2].
 **Provenance.** The proof is new, developed for RealRooted (issue #2513),
 and is of independent research interest.
 
-**Applications.**  After the Eulerian Möbius substitution, the parameters
-$(s,\kappa)=(1,5)$, $(1,8)$, $(1,10)$, $(1,18)$ and $(2,6)$ give the OEIS
-triangles A141689, A141690, A141696, A141697 and A147565.
+**Eulerian form.**  The Cayley transform
+$T_nf=(1-x)^nf\bigl(x/(1-x)\bigr)$ maps $Q_n$ to $c\,E_n+(1-c)(1+x)^n$,
+where $c=r$, $E_0=1$ and
+$E_{n+1}=\bigl(1+(1+sn)x\bigr)E_n+s\,x(1-x)E_n'$.  For $s=1$ the $E_n$ are
+the Eulerian polynomials.  So for $s\ge1$ and $c\ge1/2$ every row
+$c\,E_n+(1-c)(1+x)^n$ is real-rooted.
+
+**Applications.**  The parameters $s=1$ with $c=1/2$, $2$, $3$, $7$ and
+$s=2$ with $c=1/2$ give the OEIS triangles A141689, A141690, A141696, A141697
+and A147565.
 
 ## References
 
@@ -95,6 +108,7 @@ root-sign criterion.  The theorem was developed for
 
 This module is a catalog facade.  The proofs live in
 `RealRooted.EulerOperator.OrbitPerturbation`,
-`RealRooted.EulerOperator.OrbitPerturbationInterlacing` and
-`RealRooted.EulerOperator.OrbitPerturbationFamily`.
+`RealRooted.EulerOperator.OrbitPerturbationInterlacing`,
+`RealRooted.EulerOperator.OrbitPerturbationFamily` and
+`RealRooted.EulerOperator.OrbitPerturbationCayley`.
 -/
