@@ -7,7 +7,6 @@ public import RealRooted.CombinatorialExamples.Common
 public import RealRooted.Tactic.WagnerX
 public import Mathlib.Tactic
 import RealRooted.Tactic.Row.Frontend
-import RealRooted.Tactic.Row.ThresholdOrbit
 import RealRooted.Tactic.Recurrence.Degree
 import RealRooted.Tactic.Recurrence.LinRec
 import RealRooted.DerivativeRecurrence.General

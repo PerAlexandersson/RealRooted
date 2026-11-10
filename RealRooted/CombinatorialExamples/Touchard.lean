@@ -8,7 +8,6 @@ public import Mathlib.Combinatorics.Enumerative.Stirling
 public import Mathlib.Tactic
 import RealRooted.Tactic.Row.Frontend
 import RealRooted.DerivativeRecurrence.Nonnegative
-import RealRooted.Tactic.Row.ThresholdOrbit
 import RealRooted.Tactic.Recurrence.Degree
 import RealRooted.DerivativeRecurrence.Degree
 import RealRooted.DerivativeRecurrence.Interlacing
