@@ -390,6 +390,37 @@ private def scaledRowLeadingCoeff : TacticM Cert := withMainContext do
   evalTactic cert
   return #[cert]
 
+/-- Whether an exact rational sample has cancelling top terms in a first-order derivative
+recurrence.  This only chooses the route order; `rr_row_cancel` still certifies the result, and
+failure falls back to every route in the ordinary order. -/
+private def hasSampledTopCancellation (r : RowRec) : MetaM Bool := do
+  unless r.shape == .deriv₁ do return false
+  let (some Af, some Bf) := (r.coeffs[0]?, r.coeffs[1]?) | return false
+  let some recurrence ← linRec? r.P | return false
+  let samples := 4
+  let some rows ← linRecRows? recurrence (r.shift + samples) | return false
+  for n in [0:samples] do
+    let some row := rows[r.shift + n]? | return false
+    if row.isZero then continue
+    let (some a, some b) :=
+        (← r.evalSampleCoeffAt? Af n, ← r.evalSampleCoeffAt? Bf n) | return false
+    let aGrowth := if a.isZero then 0 else a.natDegree - 1
+    let bGrowth := if b.isZero then 0 else b.natDegree
+    let growth := max aGrowth bGrowth
+    let aTop := a.coeff (growth + 1)
+    let bTop := b.coeff growth
+    if aTop == 0 && bTop == 0 then continue
+    let top := aTop * (row.natDegree : Rat) + bTop
+    if top == 0 then return true
+  return false
+
+/-- Read a recurrence without turning an unsupported shape into a route failure. -/
+private def goalHasSampledTopCancellation : TacticM Bool := withMainContext do
+  let some P ← findPolySeqConst? (← instantiateMVars (← getMainTarget)) | return false
+  match ← rowRec? P with
+  | .ok r => hasSampledTopCancellation r
+  | .error _ => return false
+
 /-- The degree tactics, returning a certificate and the hinted call: positive scalar
 normalizations, the shapes of `RecShape`, then general linear recurrences (`linRecRow`). -/
 private def rowDegreeCore (log : RowAttemptLog) (kind : String) (hints : RowHints) :
@@ -434,11 +465,19 @@ private def rowDegreeCore (log : RowAttemptLog) (kind : String) (hints : RowHint
   if hints.via == some `cone then
     if let some cert ← s.attempt `cone (linRecRow kind (some `cone)) then
       return (cert, { via := some `cone })
+  let noHints := hints.thm.isNone && hints.degree.isNone && hints.growth.isNone &&
+    hints.drop.isNone && hints.ratio.isNone && hints.half.isNone && hints.via.isNone
+  let cancelFirst ← if noHints && kind != "leadingCoeff_ratio" then
+      goalHasSampledTopCancellation
+    else pure false
+  if cancelFirst then
+    let cancel ← `(tactic| rr_row_cancel)
+    if (← s.attempt `cancel (evalTactic cancel)
+        (what := m!"with sampled cancelling top terms")).isSome then
+      return (#[cancel], {})
   match ← rowRoute `recurrence (rowDegreeShapeCore kind hints) (some log) with
   | .ok r => return r
   | .error e =>
-      let noHints := hints.thm.isNone && hints.degree.isNone && hints.growth.isNone &&
-        hints.drop.isNone && hints.ratio.isNone && hints.half.isNone && hints.via.isNone
       unless noHints && kind != "leadingCoeff_ratio" do
         for route in [`twoStep, `coefficients, `cone, `cancel, `subseq, `rowModel] do
           rowSkip route m!"disabled by hints" (some log)
@@ -452,11 +491,12 @@ private def rowDegreeCore (log : RowAttemptLog) (kind : String) (hints : RowHint
       if let some cert ← s.attempt `cone (linRecRow kind)
           (what := m!"as a general linear recurrence") then
         return (cert, {})
-      -- first-order derivative recurrences whose top terms cancel
-      let cancel ← `(tactic| rr_row_cancel)
-      if (← s.attempt `cancel (evalTactic cancel)
-          (what := m!"with cancelling top terms")).isSome then
-        return (#[cancel], {})
+      unless cancelFirst do
+        -- first-order derivative recurrences whose top terms cancel
+        let cancel ← `(tactic| rr_row_cancel)
+        if (← s.attempt `cancel (evalTactic cancel)
+            (what := m!"with cancelling top terms")).isSome then
+          return (#[cancel], {})
       if kind == "natDegree" || kind == "leadingCoeff_pos" then
         let subseq ← if kind == "natDegree" then `(tactic| rr_row_subseq_natDegree)
           else `(tactic| rr_row_subseq_leadingCoeff_pos)
