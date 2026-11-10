@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.EulerOperator.OrbitPerturbationInterlacing
+public import RealRooted.EulerOperator.OrbitPerturbation
+import RealRooted.EulerOperator.OrbitPerturbationInterlacing
 import RealRooted.Linear
 import RealRooted.MaWang.Weak.DerivativeSign
 import Mathlib.Tactic.FieldSimp
