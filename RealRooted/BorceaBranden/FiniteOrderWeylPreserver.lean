@@ -264,16 +264,6 @@ private theorem pderiv_spectatorProduct_zero {σ : Type*} [Fintype σ]
   intro i hi
   exact (Finset.mem_erase.mp hi).1
 
-private theorem iteratedPDerivAt_mul_of_pderiv_zero {σ : Type*}
-    (q : σ) (j : ℕ) (a b : MvPolynomial σ ℂ)
-    (hb : MvPolynomial.pderiv q b = 0) :
-    iteratedPDerivAt q j (a * b) = iteratedPDerivAt q j a * b := by
-  induction j with
-  | zero => rfl
-  | succ j ih =>
-      rw [iteratedPDerivAt, ih, MvPolynomial.pderiv_mul, hb, mul_zero,
-        add_zero, iteratedPDerivAt]
-
 private theorem algebraicSymbol_iteratedPDerivAtDegreeBox_explicit
     {σ : Type*} [Fintype σ] [DecidableEq σ]
     (q : σ) (j n : ℕ) (κ : σ → ℕ)

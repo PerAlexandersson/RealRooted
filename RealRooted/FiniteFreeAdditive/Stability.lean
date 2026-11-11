@@ -396,16 +396,6 @@ private theorem pderiv_spectatorProduct_zero_real
         simp
   exact hprod (Finset.univ.erase q) fun i hi => (Finset.mem_erase.mp hi).1
 
-private theorem iteratedPDerivAt_mul_of_pderiv_zero_real {σ : Type*}
-    (q : σ) (j : ℕ) (a b : MvPolynomial σ ℝ)
-    (hb : MvPolynomial.pderiv q b = 0) :
-    iteratedPDerivAt q j (a * b) = iteratedPDerivAt q j a * b := by
-  induction j with
-  | zero => rfl
-  | succ j ih =>
-      rw [iteratedPDerivAt, ih, MvPolynomial.pderiv_mul, hb, mul_zero,
-        add_zero, iteratedPDerivAt]
-
 private theorem algebraicSymbol_iteratedPDerivAtDegreeBoxReal_explicit
     {σ : Type*} [Fintype σ] [DecidableEq σ]
     (q : σ) (j D : ℕ) (κ : σ → ℕ) (hκ : κ q = D) :
@@ -417,7 +407,7 @@ private theorem algebraicSymbol_iteratedPDerivAtDegreeBoxReal_explicit
           (MvPolynomial.X (Sum.inl i) + MvPolynomial.X (Sum.inr i)) ^ κ i := by
   rw [algebraicSymbol_iteratedPDerivAtDegreeBoxReal,
     algebraicSymbol_realDegreeBoxInclusion q D κ hκ,
-    iteratedPDerivAt_mul_of_pderiv_zero_real]
+    iteratedPDerivAt_mul_of_pderiv_zero]
   · rw [iteratedPDerivAt_linearForm_pow_real (Sum.inl q) (Sum.inr q)
       Sum.inl_ne_inr j D]
   · exact pderiv_spectatorProduct_zero_real q κ

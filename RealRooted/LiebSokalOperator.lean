@@ -38,6 +38,16 @@ theorem iteratedPDerivAt_eq_pow
     change MvPolynomial.pderiv i (((MvPolynomial.pderiv i).toLinearMap ^ n) P) = _
     simp only [ih, iteratedPDerivAt]
 
+/-- Iterated partial derivatives in `i` commute with multiplication by a factor that is constant
+in `i`. -/
+theorem iteratedPDerivAt_mul_of_pderiv_zero {R sigma : Type*} [CommSemiring R]
+    (i : sigma) (n : ℕ) (a b : MvPolynomial sigma R) (hb : MvPolynomial.pderiv i b = 0) :
+    iteratedPDerivAt i n (a * b) = iteratedPDerivAt i n a * b := by
+  induction n with
+  | zero => rfl
+  | succ n ih =>
+      rw [iteratedPDerivAt, ih, MvPolynomial.pderiv_mul, hb, mul_zero, add_zero, iteratedPDerivAt]
+
 /-- A fixed enumeration of a finite variable type, used to define iterated
 partial differentiation without imposing an order on the variable type. -/
 def differentialVariableOrder (sigma : Type*) [Fintype sigma] : List sigma :=

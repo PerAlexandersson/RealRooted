@@ -39,6 +39,15 @@ def ListAlternates : List ℝ → List ℝ → Prop
   | s :: ss, r :: rs => s ≤ r ∧ ListInterlaces ss (r :: rs)
   | _, _ => False
 
+/-- Differ-by-one interleaving with the first right root dropped is same-degree interleaving. -/
+lemma listAlternates_of_listInterlaces_cons :
+    ∀ {ss rs : List ℝ} {r : ℝ}, ListInterlaces ss (r :: rs) → ListAlternates ss rs
+  | [], [], _, _ => by simp [ListAlternates]
+  | s :: ss, r₂ :: rs, r, h => by
+      simpa [ListInterlaces, ListAlternates] using h.2
+  | [], _ :: _, _, h => by simp [ListInterlaces] at h
+  | _ :: _, [], _, h => by simp [ListInterlaces] at h
+
 /-- If a list is sorted, then its tail interlaces into it. -/
 lemma listInterlaces_tail_of_pairwise :
     ∀ rs : List ℝ, rs.Pairwise (· ≤ ·) → ListInterlaces rs.tail rs
