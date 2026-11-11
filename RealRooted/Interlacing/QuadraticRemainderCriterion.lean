@@ -819,15 +819,6 @@ theorem normalizedQuadraticFamily_interlaces_mul_X_add_one_of_le
     simp [normalizedQuadraticFamily_natDegree]
   simpa only [map_neg, map_one, neg_neg, sub_neg_eq_add] using hfactor.toInterlaces hdeg
 
-private lemma listAlternates_of_listInterlaces_cons :
-    ∀ {ss rs : List ℝ} {r : ℝ},
-      ListInterlaces ss (r :: rs) → ListAlternates ss rs
-  | [], [], _, _ => by simp [ListAlternates]
-  | s :: ss, r₂ :: rs, r, h => by
-      simpa [ListInterlaces, ListAlternates] using h.2
-  | [], _ :: _, _, h => by simp [ListInterlaces] at h
-  | _ :: _, [], _, h => by simp [ListInterlaces] at h
-
 private lemma strictInterl_of_interlaces_mul_X_add_one
     {f g : ℝ[X]} (h : Interlaces f ((X + C 1) * g))
     (hg₀ : g ≠ 0) (hgs : g.Splits)

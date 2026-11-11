@@ -164,15 +164,6 @@ private lemma listAlternates_map_cayleyRoot :
   | [], _ :: _, h, _, _ => by simp [ListAlternates] at h
   | _ :: _, [], h, _, _ => by simp [ListAlternates] at h
 
-private lemma listAlternates_of_listInterlaces_cons :
-    ∀ {ss rs : List ℝ} {r : ℝ},
-      ListInterlaces ss (r :: rs) → ListAlternates ss rs
-  | [], [], _, _ => by simp [ListAlternates]
-  | s :: ss, r₂ :: rs, r, h => by
-      simpa [ListInterlaces, ListAlternates] using h.2
-  | [], _ :: _, _, h => by simp [ListInterlaces] at h
-  | _ :: _, [], _, h => by simp [ListInterlaces] at h
-
 private lemma all_ge_head_of_pairwise {r : ℝ} {rs : List ℝ}
     (h : (r :: rs).Pairwise (· ≤ ·)) :
     ∀ x ∈ r :: rs, r ≤ x := by
