@@ -178,14 +178,14 @@ theorem orderedOptionalRiseCoefficient_eq_zero_of_lt
 /-- Positive-lag coefficients vanish when every optional-rise weight is zero. -/
 theorem orderedOptionalRiseCoefficient_eq_zero_of_weights
     (as : List (ℕ → ℝ))
-    (has : ∀ a ∈ as, ∀ n, a n = 0) {n j : ℕ} (hj : 0 < j) :
+    (has : ∀ a ∈ as, ∀ n, a n = 0) {n j : ℕ} (hj : j ≠ 0) :
     orderedOptionalRiseCoefficient as n j = 0 := by
   induction as generalizing n j with
   | nil =>
-      obtain ⟨j, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hj.ne'
+      obtain ⟨j, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hj
       rfl
   | cons a as ih =>
-      obtain ⟨j, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hj.ne'
+      obtain ⟨j, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hj
       rw [orderedOptionalRiseCoefficient,
         ih (fun b hb m => has b (by simp [hb]) m) (by simp),
         has a (by simp) n]

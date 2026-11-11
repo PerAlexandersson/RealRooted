@@ -141,7 +141,7 @@ theorem markedShiftKernel_apply_eq_zero_of_lt_add
 
 /-- Positive mark order makes the limiting marked kernel strictly lower. -/
 theorem markedShiftKernel_apply_eq_zero_of_le
-    (as : List (ℕ → ℝ)) (N : ℕ) {r : ℕ} (hr : 0 < r)
+    (as : List (ℕ → ℝ)) (N : ℕ) {r : ℕ} (hr : r ≠ 0)
     {i j : Fin (N + 1)} (h : i.val ≤ j.val) :
     markedShiftKernel as N r i j = 0 :=
   markedShiftKernel_apply_eq_zero_of_lt_add as N r (by lia)
@@ -248,7 +248,7 @@ rows are in zero-aware interlacing. -/
 theorem weightedGreenKernel_markedShiftKernel_pf_and_interl
     {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n)
     {as : List (ℕ → ℝ)} (has : ∀ a ∈ as, ∀ n, 0 ≤ a n)
-    (N : ℕ) {r : ℕ} (hr : 0 < r) :
+    (N : ℕ) {r : ℕ} (hr : r ≠ 0) :
     (∀ i, IsPFPolynomial
       (kernelRow (weightedGreenKernel b N) (markedShiftKernel as N r) i)) ∧
     ∀ i : Fin N,

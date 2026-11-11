@@ -102,7 +102,7 @@ def weightedShiftTilingRow
 theorem weightedShiftTilingRow_isPFPolynomial
     {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n)
     {as : List (ℕ → ℝ)} (has : ∀ a ∈ as, ∀ n, 0 ≤ a n)
-    (N : ℕ) {r : ℕ} (hr : 0 < r) (i : Fin (N + 1)) :
+    (N : ℕ) {r : ℕ} (hr : r ≠ 0) (i : Fin (N + 1)) :
     IsPFPolynomial (weightedShiftTilingRow b as N r i) :=
   (weightedGreenKernel_markedShiftKernel_pf_and_interl
     hb has N hr).1 i
@@ -111,7 +111,7 @@ theorem weightedShiftTilingRow_isPFPolynomial
 theorem interl_weightedShiftTilingRow_succ
     {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n)
     {as : List (ℕ → ℝ)} (has : ∀ a ∈ as, ∀ n, 0 ≤ a n)
-    (N : ℕ) {r : ℕ} (hr : 0 < r) (i : Fin N) :
+    (N : ℕ) {r : ℕ} (hr : r ≠ 0) (i : Fin N) :
     Interl (weightedShiftTilingRow b as N r i.castSucc)
       (weightedShiftTilingRow b as N r i.succ) :=
   (weightedGreenKernel_markedShiftKernel_pf_and_interl
@@ -140,7 +140,7 @@ theorem coeff_zero_weightedShiftTilingRow_pos
 row recurrence. -/
 theorem weightedShiftTilingRow_eq_global
     (b : ℕ → ℝ) (as : List (ℕ → ℝ)) (N : ℕ)
-    {r : ℕ} (hr : 0 < r) (i : Fin (N + 1)) :
+    {r : ℕ} (hr : r ≠ 0) (i : Fin (N + 1)) :
     weightedShiftTilingRow b as N r i =
       C (weightedGreenKernel b N i 0) +
         X * ∑ j : Fin (N + 1),
@@ -180,7 +180,7 @@ theorem weightedShiftTilingRow_eq_global
 vector recurrence. -/
 theorem weightedShiftTilingRow_succ_eq
     (b : ℕ → ℝ) (as : List (ℕ → ℝ)) {N : ℕ}
-    (s : Fin N) {r : ℕ} (hr : 0 < r) :
+    (s : Fin N) {r : ℕ} (hr : r ≠ 0) :
     weightedShiftTilingRow b as N r s.succ =
       C (b (s.val + 1)) * weightedShiftTilingRow b as N r s.castSucc +
         X * ∑ j : Fin (N + 1),
@@ -207,7 +207,7 @@ theorem weightedShiftTilingRow_succ_eq
 ordered strict-selection coefficients. -/
 theorem weightedShiftTilingRow_succ_eq_orderedOptionalRiseCoefficient
     (b : ℕ → ℝ) (as : List (ℕ → ℝ)) {N : ℕ}
-    (s : Fin N) {r : ℕ} (hr : 0 < r) :
+    (s : Fin N) {r : ℕ} (hr : r ≠ 0) :
     weightedShiftTilingRow b as N r s.succ =
       C (b (s.val + 1)) * weightedShiftTilingRow b as N r s.castSucc +
         X * ∑ j : Fin (N + 1),
@@ -323,7 +323,7 @@ theorem orderedOptionalRiseCoefficient_map_mul
 `a * w n`. -/
 theorem weightedShiftTilingRow_succ_eq_separated
     (b : ℕ → ℝ) (alphas : List ℝ) (w : ℕ → ℝ) {N : ℕ}
-    (s : Fin N) {r : ℕ} (hr : 0 < r) :
+    (s : Fin N) {r : ℕ} (hr : r ≠ 0) :
     weightedShiftTilingRow b (alphas.map fun a n => a * w n) N r s.succ =
       C (b (s.val + 1)) *
           weightedShiftTilingRow b (alphas.map fun a n => a * w n)
@@ -353,7 +353,7 @@ theorem weightedShiftTilingRow_separated_isPFPolynomial
     {b : ℕ → ℝ} (hb : ∀ n, 0 ≤ b n)
     {alphas : List ℝ} (halphas : ∀ a ∈ alphas, 0 ≤ a)
     {w : ℕ → ℝ} (hw : ∀ n, 0 ≤ w n)
-    (N : ℕ) {r : ℕ} (hr : 0 < r) (i : Fin (N + 1)) :
+    (N : ℕ) {r : ℕ} (hr : r ≠ 0) (i : Fin (N + 1)) :
     IsPFPolynomial
       (weightedShiftTilingRow b (alphas.map fun a n => a * w n) N r i) := by
   refine weightedShiftTilingRow_isPFPolynomial hb ?_ N hr i
@@ -419,7 +419,7 @@ theorem markedShiftKernel_eq_lowerShift_pow_of_weights_eq_zero
       by_cases hji : j.val ≤ i.val
       · rw [ite_eq_left hji,
           orderedOptionalRiseCoefficient_eq_zero_of_weights as has
-            (show 0 < i.val - j.val by lia)]
+            (show i.val - j.val ≠ 0 by lia)]
         simp [hij]
       · simp [hji, hij]
   rw [markedShiftKernel, hoptional, Matrix.one_mul]
@@ -492,7 +492,7 @@ theorem sum_markedShiftKernel_pair
 /-- Exact three-term marked part of the two-factor nonstationary recurrence. -/
 theorem weightedShiftTilingRow_pair_succ_eq
     (b u v : ℕ → ℝ) {N : ℕ} (s : Fin N) {r : ℕ}
-    (hr : 0 < r) (hri : r + 2 ≤ s.succ.val) :
+    (hr : r ≠ 0) (hri : r + 2 ≤ s.succ.val) :
     weightedShiftTilingRow b [u, v] N r s.succ =
       C (b (s.val + 1)) * weightedShiftTilingRow b [u, v] N r s.castSucc +
         X * (weightedShiftTilingRow b [u, v] N r
@@ -520,7 +520,7 @@ theorem coeff_zero_weightedShiftTilingRow_eq_prod_range
 @[simp]
 theorem weightedShiftTilingRow_zero
     (b : ℕ → ℝ) (as : List (ℕ → ℝ)) (N : ℕ)
-    {r : ℕ} (hr : 0 < r) :
+    {r : ℕ} (hr : r ≠ 0) :
     weightedShiftTilingRow b as N r 0 = 1 := by
   have hdegree : (weightedShiftTilingRow b as N r 0).natDegree ≤ 0 :=
     natDegree_kernelRow_le_row (weightedGreenKernel b N)
