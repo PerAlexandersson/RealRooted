@@ -211,13 +211,9 @@ public import RealRooted.Challenges.Interlacing.DerivativeInterlacing
 public import RealRooted.Challenges.Roots.Descartes
 public import RealRooted.Challenges.PolyaFrequency.EdreiThoma
 public import RealRooted.Challenges.Roots.EnestromKakeya
-public import RealRooted.Challenges.Combinatorial.EulerBidiagonal
-public import RealRooted.Challenges.Combinatorial.EulerMultiplier
-public import RealRooted.Challenges.Combinatorial.OrbitPerturbation
 public import RealRooted.Challenges.Combinatorial.Eulerian
+public import RealRooted.Challenges.Combinatorial.EulerianOperators
 public import RealRooted.Challenges.Combinatorial.EulerianVariations
-public import RealRooted.Challenges.Combinatorial.LagTwoEulerianTriangles
-public import RealRooted.Challenges.Combinatorial.NegativeLagEulerianTriangles
 public import RealRooted.Challenges.Interlacing.FPolynomialRecurrences
 public import RealRooted.Challenges.Interlacing.FactorialCompression
 public import RealRooted.Challenges.Interlacing.Favard
@@ -1733,7 +1729,6 @@ public import RealRooted.DerivativeRecurrence.MultiLagCancel
 public import RealRooted.Applications.OEIS.CubicParentRows
 public import RealRooted.Graph.IndependencePolynomial.CubicParent
 public import RealRooted.Challenges.Roots.KostovEigenpolynomials
-public import RealRooted.Challenges.Graphs.PathPowerCliques
 public import RealRooted.BorceaBranden.MultivariateHKO
 public import RealRooted.BorceaBranden.RealFiniteClassification
 public import RealRooted.Mathlib.Analysis.Complex.Hurwitz
@@ -2110,7 +2105,6 @@ public import RealRooted.BrandenLeite.PositivePowerStrictRows
 public import RealRooted.BrandenLeite.AffineNegativePowerDegree
 public import RealRooted.BrandenLeite.Examples
 public import RealRooted.Challenges.Graphs.PathSquareMatching
-public import RealRooted.Challenges.Interlacing.CoupledEulerRecurrences
 public import RealRooted.Challenges.Interlacing.DerivativeLagFamily
 public import RealRooted.Challenges.Interlacing.MaWangEndpointSteps
 public import RealRooted.Challenges.Interlacing.PositiveAffineLagRecurrences
