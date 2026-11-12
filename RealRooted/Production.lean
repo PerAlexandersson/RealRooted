@@ -2152,6 +2152,9 @@ public import RealRooted.Tactic.Row.Registry
 public import RealRooted.Mathlib.Analysis.Polynomial.InverseBernstein
 public import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.ChebyshevExpansion
 public import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.PolynomialZeros
+public import RealRooted.CombinatorialExamples.HigherLah
+public import RealRooted.EulerBidiagonal.Basic
+public import RealRooted.EulerBidiagonal.VaryingRows
 
 /-!
 # RealRooted production umbrella
