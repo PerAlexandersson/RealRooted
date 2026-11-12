@@ -263,9 +263,9 @@ $r\in\mathbb N$; then $p(x)=(x+a+1)_r/(a+1)_r$, with $(y)_r$ the rising factoria
 
 Let $L_{n,\alpha,\beta}$ be the differential operator whose coefficient recurrence is
 $$
-(k+1)(k+\alpha+1)\,p_{k+1}+\bigl(k(k+\alpha+\beta+1)-n(n+\alpha+\beta+1)\bigr)p_k=0 ;
+(k+1)(k+\alpha+1)\,p_{k+1}+\bigl(k(k+\alpha+\beta+1)-n(n+\alpha+\beta+1)\bigr)p_k=0.
 $$
-$P_n^{(\alpha,\beta)}(-x)$ satisfies it. For $\alpha>-1$ a polynomial solution is determined by
+The polynomial $P_n^{(\alpha,\beta)}(-x)$ satisfies it. For $\alpha>-1$ a polynomial solution is determined by
 its constant term. If $\beta=-m$ with $m\le n$, every polynomial solution is a multiple of
 $$
 (1+x)^m\,P_{n-m}^{(\alpha,m)}(-x).
