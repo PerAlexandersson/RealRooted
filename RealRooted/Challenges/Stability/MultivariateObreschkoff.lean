@@ -56,55 +56,50 @@ label = "Proper position is stability of the affine pencil G + wF"
 <!-- realrooted-catalog-content -->
 # Multivariate Hermite–Kakeya–Obreschkoff theorem
 
-A polynomial $P \in \mathbb C[z_i : i \in \sigma]$ is **stable** if
-$P(z) \neq 0$ whenever every $z_i$ lies in the open upper half-plane. A polynomial
-with real coefficients is **real stable** if it is stable when regarded as a complex
-polynomial; in particular it is nonzero.
+Two real multivariate polynomials are in proper position if and only if all their real linear
+combinations are real stable or zero.
 
-For $F, G \in \mathbb R[z_i : i \in \sigma]$ we say that $F$ and $G$ are in
-**proper position**, written $F \ll G$, if the complex polynomial $G + iF$ is stable.
+## Results
 
-**Theorem** (Hermite–Kakeya–Obreschkoff, converse). [@Obreschkoff1963] Let
-$\sigma$ be any index type and
-$F, G \in \mathbb R[z_i : i \in \sigma]$. Suppose that for all real $\alpha, \beta$ the
-polynomial $\alpha F + \beta G$ is zero or real stable. Then $F = G = 0$, or
-$F \ll G$, or $G \ll F$.
+A polynomial $P\in\mathbb C[z_i:i\in\sigma]$ is *stable* if $P(z)\ne0$ whenever every $z_i$ lies
+in the open upper half-plane. A polynomial with real coefficients is *real stable* if it is stable
+as a complex polynomial; in particular it is nonzero. For $F,G\in\mathbb R[z_i:i\in\sigma]$ we
+say that $F$ and $G$ are in *proper position*, written $F\ll G$, if $G+iF$ is stable.
 
-**Theorem** (Hermite–Kakeya–Obreschkoff). Let $\sigma$ be finite and
-$F, G \in \mathbb R[z_i : i \in \sigma]$ with $F \ll G$. Then for all real
-$\alpha, \beta$ the polynomial $\alpha F + \beta G$ is zero or real stable.
+**Theorem (Hermite–Kakeya–Obreschkoff).** Let $\sigma$ be finite and $F\ll G$. Then for all
+real $\alpha,\beta$ the polynomial $\alpha F+\beta G$ is zero or real stable.
 
-The forward direction goes through the affine pencil. Adjoin a new variable $w$.
+**Theorem (converse)** [@Obreschkoff1963]. Let $\sigma$ be any index type, and suppose
+$\alpha F+\beta G$ is zero or real stable for all real $\alpha,\beta$. Then $F=G=0$, or $F\ll G$,
+or $G\ll F$.
 
-**Theorem.** For $\sigma$ arbitrary, $F \ll G$ if and only if the polynomial $G + wF$,
-in the variables $z_i$ and $w$, is real stable.
+**Theorem (affine pencil).** For arbitrary $\sigma$, $F\ll G$ if and only if the polynomial
+$G+wF$, in the variables $z_i$ and a new variable $w$, is real stable.
 
-The theorems are the multivariate analogues of the classical Hermite–Kakeya–Obreschkoff
-theorem for interlacing polynomials; see the [univariate Obreschkoff
-page](/RealRooted/theorems/obreschkoff/). Proper position is the multivariate counterpart of
-interlacing through the Hermite–Biehler theorem; see the
-[Hermite–Biehler page](/RealRooted/theorems/hermite-biehler-hurwitz/).
+## Use
 
-## Proof idea
+These are the multivariate analogues of the classical Hermite–Kakeya–Obreschkoff theorem for
+interlacing polynomials; see the [univariate Obreschkoff page](/RealRooted/theorems/obreschkoff/).
+Proper position is the multivariate counterpart of interlacing through the Hermite–Biehler
+theorem; see the [Hermite–Biehler page](/RealRooted/theorems/hermite-biehler-hurwitz/).
 
-For the equivalence with the pencil, restrict $G + iF$ to a line $z_i = a_i + b_i t$ with
-$b_i > 0$, which turns proper position into a univariate Hermite–Biehler statement in $t$.
-A norm comparison between a point and its complex conjugate then shows that the pencil
-$G + wF$ is stable. Conversely, substituting $w = i$ gives $G + iF$. A stable pencil
-yields the combinations $\alpha F + \beta G$ by specializing $w$ and, for the
-direction polynomial $F$, differentiating in $w$; this is where finiteness of $\sigma$ is used.
+## Proof
 
-For the converse, the cases $G = 0$ and $F = cG$ are direct. Otherwise, for every point $z$
-with all $\operatorname{Im} z_i > 0$, the quotient $F(z)/G(z)$ is not real, since a real
-value $c$ would make $F - cG$, which is real stable, vanish at $z$. The set of such points
-is connected, so $\operatorname{Im}(F/G)$ has constant sign. A negative sign
-makes $G+iF$ stable, that is, $F\ll G$, and a positive sign makes $F+iG$
-stable, that is, $G\ll F$.
+For the affine pencil, restrict $G+iF$ to a line $z_i=a_i+b_it$ with $b_i>0$, which gives a
+univariate Hermite–Biehler statement in $t$. A norm comparison between a point and its complex
+conjugate then shows that $G+wF$ is stable. Conversely, $w=i$ gives $G+iF$. A stable pencil
+yields the combinations $\alpha F+\beta G$ by specializing $w$ and, for the direction
+polynomial $F$, differentiating in $w$; this is where finiteness of $\sigma$ is used.
+
+For the converse, the cases $G=0$ and $F=cG$ are direct. Otherwise, for every $z$ with all
+$\operatorname{Im}z_i>0$, the quotient $F(z)/G(z)$ is not real, since a real value $c$ would make
+$F-cG$, which is real stable, vanish at $z$. The set of such points is connected, so
+$\operatorname{Im}(F/G)$ has constant sign. A negative sign makes $G+iF$ stable, and a positive
+sign makes $F+iG$ stable.
 
 ## References
 
-See [@BorceaBranden2009I, Lemma 1.8 and Thm. 1.9],
-[@BorceaBranden2010], and [@Obreschkoff1963].
+See [@BorceaBranden2009I, Lemma 1.8 and Thm. 1.9], [@BorceaBranden2010] and [@Obreschkoff1963].
 <!-- /realrooted-catalog-content -->
 
 This module exposes the two directions of the multivariate Hermite–Kakeya–Obreschkoff

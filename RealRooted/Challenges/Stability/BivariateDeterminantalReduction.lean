@@ -34,7 +34,7 @@ label = "Back substitution recovers p up to the boundary constant"
 [[theorems]]
 name = "RealRooted.BivariateDetRep.eq_C_mul_realDetPencil_of_normalizedExactReduction_eq"
 module = "RealRooted.DeterminantalStability.ExactReduction"
-label = "A symmetric ternary determinantal form gives p = c det(N + z (I+M)/2 + w (I-M)/2)"
+label = "A form q = det(T I + X M + Y N) gives p = c det(N + z (I+M)/2 + w (I-M)/2)"
 headline = true
 
 [[theorems]]
@@ -46,38 +46,36 @@ label = "The set of evaluation arrays of symmetric characteristic pencils is clo
 <!-- realrooted-catalog-content -->
 # Exact reduction of bivariate determinantal representations
 
-A real polynomial $p(z,w)$ is *real stable* if it has no zero with both coordinates in the
-upper half-plane. We formalize the exact coordinate reduction from the bivariate
-determinantal representation problem to the normalized ternary hyperbolic statement
-(the Helton--Vinnikov form).
+A real stable bivariate polynomial reduces, by an exact linear change of coordinates, to a
+homogeneous ternary polynomial that is hyperbolic at $(0,1,0)$ (the normalized form in the
+Helton–Vinnikov theorem), and determinantal forms of the
+ternary polynomial give determinantal forms of $p$.
 
-Let $H$ be the ordinary homogenization of $p$ in variables $(Y,T,Z)$ and let
-$c=H(0,1,1)$, assumed nonzero. The substitution $(Y,T,X)\mapsto(Y,T+X,T-X)$ turns $H$
-into a homogeneous ternary polynomial $q=c^{-1}H(Y,T+X,T-X)$ with $q(0,1,0)=1$.
+## Results
 
-**Reduction.** If $p$ is real stable, then $q$ is hyperbolic at $(0,1,0)$. Conversely,
-back substitution $Y=1$, $T=(z+w)/2$, $X=(z-w)/2$ returns $c^{-1}p$, and if
-$q=\det(TI+XM+YN)$ for real matrices $M,N$, then
-$$
-p=c\,\det\bigl(N+z\,(I+M)/2+w\,(I-M)/2\bigr).
-$$
+A real polynomial $p(z,w)$ is *real stable* if it has no zero with both coordinates in the upper
+half-plane. Let $H$ be the ordinary homogenization of $p$ in variables $(Y,T,Z)$ and let
+$c=H(0,1,1)$. For $c\ne0$ the substitution $(Y,T,X)\mapsto(Y,T+X,T-X)$ turns $H$ into the
+ternary polynomial
+$$q=c^{-1}H(Y,T+X,T-X),\qquad q(0,1,0)=1.$$
 
-## Related facts
+**Theorem (reduction).** Let $p$ be real stable with $c\ne0$. Then $q$ is hyperbolic at
+$(0,1,0)$. The back substitution $Y=1$, $T=(z+w)/2$, $X=(z-w)/2$ returns $c^{-1}p$ from $q$.
 
-The empty determinantal pencil is $1$, so constant polynomials such as $2$ and $-2$ are
-nonunit scalar multiples of degree-zero pencils. The polynomial $\det(TI-XU-V)$ is
-encoded by the coefficients in $T$ after evaluating $X$ at $0,1,\dots,d$, and the set of
-arrays arising from symmetric real matrices $U,V$ is closed.
+**Theorem (determinantal forms).** Let $c\ne0$ and let $M,N$ be real $d\times d$ matrices with
+$q=\det(TI+XM+YN)$. Then
+$$p=c\,\det\bigl(N+z\,(I+M)/2+w\,(I-M)/2\bigr).$$
 
-## What is new
+**Proposition (closure).** For each $d$, the evaluations of $\det(TI-XU-V)$ at
+$X=0,1,\dots,d$, recorded as arrays of coefficients in $T$, form a closed set as $U,V$ range over
+symmetric real $d\times d$ matrices.
 
-These reductions were developed in this library; no published
-source is cited, and we attribute none.
+The empty determinantal pencil is $1$, so constant polynomials such as $2$ and $-2$ are nonunit
+scalar multiples of degree-zero pencils.
 
 ## References
 
-No published source is cited for these results in the formalization. See also the
-[real stability page](/RealRooted/theorems/real-stability/).
+See also the [real stability page](/RealRooted/theorems/real-stability/).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in the `RealRooted.DeterminantalStability`

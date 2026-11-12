@@ -49,30 +49,35 @@ label = "Asano contraction"
 <!-- realrooted-catalog-content -->
 # The Lee–Yang circle theorem
 
-Let $a = (a_{ij})$ be a real symmetric matrix with $|a_{ij}| \le 1$, indexed by a finite
-set $V$. The multiaffine polynomial
-$$
-P(z) = \sum_{S \subseteq V} \Bigl(\prod_{i \in S} \prod_{j \notin S} a_{ij}\Bigr)
-  \prod_{i \in S} z_i
-$$
-has no zeros when every $|z_i| < 1$, and none when every $|z_i| > 1$.
+The zeros of the partition function of a ferromagnetic Ising model in the fugacity lie on the
+unit circle.
 
-**Theorem (Lee–Yang).** [@LeeYang1952] All zeros of $P(z, z, \dotsc, z)$ lie on
-the unit circle $|z| = 1$.
+## Results
 
-For the ferromagnetic Ising model, $a_{ij} = e^{-2\beta J_{ij}}$ with $J_{ij} \ge 0$, so the
-zeros of the partition function in the fugacity lie on the unit circle.
+Let $a=(a_{ij})$ be a real symmetric matrix with $|a_{ij}|\le1$, indexed by a finite set $V$.
+Define the multiaffine polynomial
+$$P(z)=\sum_{S\subseteq V}\Bigl(\prod_{i\in S}\prod_{j\notin S}a_{ij}\Bigr)\prod_{i\in S}z_i.$$
 
-The proof uses Asano contractions [@Asano1970]. The two-site polynomial $1 + c(z_1 + z_2) + z_1 z_2$
-with $|c| \le 1$ has no zeros in the open bidisc. If
-$\alpha + \beta u + \gamma v + \delta u v$ has no zeros there, then neither does
-$\alpha + \delta z$. Building $P$ edge by edge as a product of two-site factors in separate
-variables, and contracting the copies of each variable, gives the polydisc statement. The
-exterior statement follows from the identity $P(z) = (\prod_i z_i)\, P(1/z)$.
+**Theorem (Lee–Yang)** [@LeeYang1952]. All zeros of $P(z,z,\dotsc,z)$ lie on the unit circle
+$|z|=1$. More precisely, $P(z)\ne0$ whenever every $|z_i|<1$, and whenever every $|z_i|>1$.
+
+**Corollary (Ising model).** For $a_{ij}=e^{-2\beta J_{ij}}$ with $\beta\ge0$ and symmetric
+$J_{ij}\ge0$, the zeros of the ferromagnetic Ising partition function in the fugacity lie on the
+unit circle.
+
+**Lemma (Asano contraction)** [@Asano1970]. If $\alpha+\beta u+\gamma v+\delta uv\ne0$ for all
+$|u|,|v|<1$, then $\alpha+\delta z\ne0$ for all $|z|<1$.
+
+## Proof
+
+The two-site polynomial $1+c(z_1+z_2)+z_1z_2$ with $|c|\le1$ has no zeros in the open bidisc.
+Building $P$ edge by edge as a product of two-site factors in separate variables, and contracting
+the copies of each variable by the Asano lemma, gives the polydisc statement. The exterior
+statement follows from $P(z)=(\prod_iz_i)\,P(1/z)$.
 
 ## References
 
-See [@LeeYang1952; @Asano1970; @Ruelle2010].
+[@LeeYang1952; @Asano1970; @Ruelle2010].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proof lives in `RealRooted.LeeYang`.

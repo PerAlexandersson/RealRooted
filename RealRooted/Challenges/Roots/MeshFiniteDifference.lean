@@ -112,12 +112,12 @@ label = "φ(0), φ(1), … is a discrete multiplier sequence for φ in the Lague
 [[theorems]]
 name = "RealRooted.PolyFiniteDifferenceOp.preserves_iff"
 module = "RealRooted.Mesh.FiniteDifferenceHyperbolicity"
-label = "Lemma 8: ∑ q_j(x) p(x − j) preserves real-rootedness iff at most one q_j is nonzero"
+label = "p ↦ ∑ q_j(x) p(x − j) preserves real-rootedness iff at most one q_j is nonzero"
 
 [[theorems]]
 name = "RealRooted.finiteDifferenceOp_meshGE"
 module = "RealRooted.Mesh.HermitePoulain"
-label = "Theorem 3, sufficiency: symbols with nonnegative real zeros preserve Mesh ≥ β for β ≥ α"
+label = "Symbols with nonnegative real zeros preserve Mesh ≥ β for every β ≥ α"
 
 [[theorems]]
 name = "RealRooted.HasOnlyNonnegRoots.of_tendsto_coeff"
@@ -128,74 +128,76 @@ label = "Only nonnegative roots is closed under coefficientwise limits of bounde
 <!-- realrooted-catalog-content -->
 # Mesh and finite differences
 
-For a real-rooted polynomial $p$, the *mesh* of $p$ is the smallest distance between
-consecutive roots, counted with multiplicity. We write $p \in \mathrm{Mesh}_{\geq \alpha}$
-(`Polynomial.MeshGE p α`) if $p$ is real-rooted and consecutive roots, listed increasingly
-with multiplicity, differ by at least $\alpha \geq 0$. The results below are from
-Brändén, Krasikov, and Shapiro, *Elements of Pólya–Schur theory in the finite difference
-setting*, Proc. Amer. Math. Soc. 144 (2016).
+Operators built from derivatives and finite differences preserve a lower bound on the distance
+between consecutive roots of a real-rooted polynomial.
 
-**Theorem 1 (Riesz).** If $p \in \mathrm{Mesh}_{\geq \alpha}$ and $c \in \mathbb{R}$, then
-$p - c\,p' \in \mathrm{Mesh}_{\geq \alpha}$.
+## Results
 
-**Theorem 2.** Let $\alpha, \lambda > 0$ and $\beta \geq \alpha$. If
-$p \in \mathrm{Mesh}_{\geq \beta}$, then the finite difference
-$p(x) - \lambda\, p(x - \alpha)$ lies in $\mathrm{Mesh}_{\geq \beta}$.
+We write $p\in\mathrm{Mesh}_{\ge\alpha}$ (`Polynomial.MeshGE p α`) if $p$ is real-rooted and
+consecutive roots, listed increasingly with multiplicity, differ by at least $\alpha\ge0$.
+Numbering follows Brändén, Krasikov and Shapiro (see References).
 
-**Theorem 3 (discrete Hermite–Poulain).** Let $\alpha > 0$ and let
-$Q(t) = \sum_{k} a_k t^k$ be a real polynomial. The operator
-$$p(x) \longmapsto \sum_k a_k\, p(x - k\alpha)$$
-maps $\mathrm{Mesh}_{\geq \alpha}$ into $\mathrm{Mesh}_{\geq \alpha}$ if and only if
-$Q$ is zero or has only real nonnegative zeros. Sufficiency holds for every mesh bound
-$\beta \geq \alpha$, and it is deduced from Theorem 2. The necessity proof was found by
-Aristotle (Harmonic).
+**Theorem 1 (Riesz).** If $p\in\mathrm{Mesh}_{\ge\alpha}$ and $c\in\mathbb R$, then
+$p-c\,p'\in\mathrm{Mesh}_{\ge\alpha}$.
 
-**Theorem 5.** If $a, b \geq 0$, $p \in \mathrm{Mesh}_{\geq 1}$, and $p$ has only
-nonnegative zeros, then
-$$a\,p(x) + b\,x\,\bigl(p(x) - p(x - 1)\bigr)$$
-lies in $\mathrm{Mesh}_{\geq 1}$ and has only nonnegative zeros.
+**Theorem 2.** Let $\alpha,\lambda>0$ and $\beta\ge\alpha$. If $p\in\mathrm{Mesh}_{\ge\beta}$,
+then $p(x)-\lambda\,p(x-\alpha)\in\mathrm{Mesh}_{\ge\beta}$.
 
-**Lemma 8.** Let $q_0, \dots, q_k$ be real polynomials. The operator
-$$p(x) \longmapsto \sum_{j} q_j(x)\, p(x - j)$$
-maps real-rooted polynomials to real-rooted polynomials (or zero) if and only if at most one
-$q_j$ is not identically zero, and that $q_j$ is real-rooted. The paper deduces this from the
-Borcea–Brändén classification; the formal proof applies the operator to $x^m$ and uses the
-Beraha–Kahane–Weiss limit-of-zeros theorem: two nonzero extreme shifts produce nonreal limits of
-zeros.
+**Theorem 3 (discrete Hermite–Poulain).** Let $\alpha>0$ and let $Q(t)=\sum_k a_kt^k$ be a real
+polynomial. The operator
+$$p(x)\longmapsto\sum_ka_k\,p(x-k\alpha)$$
+maps $\mathrm{Mesh}_{\ge\alpha}$ into $\mathrm{Mesh}_{\ge\alpha}$ if and only if $Q$ is zero or
+has only real nonnegative zeros. For such $Q$ it maps $\mathrm{Mesh}_{\ge\beta}$ into itself for
+every $\beta\ge\alpha$.
+
+**Theorem 5.** If $a,b\ge0$, $p\in\mathrm{Mesh}_{\ge1}$ and $p$ has only nonnegative zeros, then
+$$a\,p(x)+b\,x\,\bigl(p(x)-p(x-1)\bigr)$$
+lies in $\mathrm{Mesh}_{\ge1}$ and has only nonnegative zeros.
+
+**Lemma 8.** Let $q_0,\dots,q_k$ be real polynomials. The operator
+$$p(x)\longmapsto\sum_jq_j(x)\,p(x-j)$$
+maps real-rooted polynomials to real-rooted polynomials or zero if and only if at most one $q_j$
+is nonzero, and that $q_j$ is real-rooted.
 
 A sequence $(a_i)$ is a *discrete multiplier sequence* if the linear operator with
-$[x]_i \mapsto a_i [x]_i$ on the falling factorials $[x]_i = x(x-1)\cdots(x-i+1)$ maps every
-polynomial in $\mathrm{Mesh}_{\geq 1}$ with only nonnegative zeros to such a polynomial.
+$[x]_i\mapsto a_i[x]_i$ on the falling factorials $[x]_i=x(x-1)\cdots(x-i+1)$ maps every
+$p\in\mathrm{Mesh}_{\ge1}$ with only nonnegative zeros to such a polynomial.
 
-**Corollary 2.** If $\varphi \neq 0$ is real-rooted with only nonpositive
-zeros, then $(\varphi(i))_{i \geq 0}$ is a discrete multiplier sequence. The operator is
-$\varphi(x\Delta)$, a composition of the operators of Theorem 5. More generally this holds for
-every $\varphi$ in the Laguerre–Pólya class $\mathcal{L}\text{-}\mathcal{P}^+$ (locally uniform
-limits of polynomials with nonnegative coefficients and only real zeros), because
-$\mathrm{Mesh}_{\geq \alpha}$ is closed under coefficientwise limits of bounded degree.
+**Corollary 2.** If $\varphi\ne0$ is real-rooted with only nonpositive zeros, then
+$(\varphi(i))_{i\ge0}$ is a discrete multiplier sequence. The same holds for $(\operatorname{Re}
+\varphi(i))_{i\ge0}$ when $\varphi$ is a locally uniform limit of real-rooted polynomials with
+nonnegative coefficients.
 
-**Lemma 10 (Brenti).** The linear map $x^i \mapsto [x]_i$ sends every real-rooted polynomial
-with only nonnegative zeros into $\mathrm{Mesh}_{\geq 1}$, with only nonnegative zeros.
+**Lemma 10 (Brenti).** The linear map $x^i\mapsto[x]_i$ sends every real-rooted polynomial with
+only nonnegative zeros into $\mathrm{Mesh}_{\ge1}$, with only nonnegative zeros.
 
-**Lemma 11 and Corollary 3.** If $p = \sum_{i \leq n} a_i [x]_i$ lies in $\mathrm{Mesh}_{\geq 1}$,
-has only nonnegative zeros and $a_n > 0$, then $(-1)^{n-i} a_i \geq 0$ for all $i$. Consequently
-the nonzero entries of a discrete multiplier sequence all have the same sign.
-
-**Proposition 7.** A sequence with at most two nonzero entries is a discrete multiplier sequence
-if and only if its nonzero entries sit at adjacent indices $m, m+1$ and $a_m a_{m+1} \geq 0$.
+**Lemma 11 and Corollary 3.** If $p=\sum_{i\le n}a_i[x]_i$ lies in $\mathrm{Mesh}_{\ge1}$, has
+only nonnegative zeros and positive leading coefficient, then $(-1)^{n-i}a_i\ge0$ for
+$i\le n$. Consequently the entries of a discrete multiplier sequence are all nonnegative or all
+nonpositive.
 
 **Proposition 6.** Every discrete multiplier sequence is a multiplier sequence in the classical
-sense. The converse fails: $(\rho^i)$ with $0 < \rho < 1$ is not a discrete multiplier sequence
+sense. The converse fails: $(\rho^i)$ with $0<\rho<1$ is not a discrete multiplier sequence
 (Remark 2).
 
-**Proposition 12.** If $(a_i)$ is a discrete multiplier sequence and $a_{m+2} > 0$, then
-$a_m \leq a_{m+1}$.
+**Proposition 7.** A sequence with at most two nonzero entries is a discrete multiplier sequence
+if and only if its nonzero entries sit at adjacent indices $m,m+1$ and $a_ma_{m+1}\ge0$.
+
+**Proposition 12.** If $(a_i)$ is a discrete multiplier sequence and $a_{m+2}>0$, then
+$a_m\le a_{m+1}$.
+
+## Proof
+
+For Lemma 8, the source uses the Borcea–Brändén classification; we apply the
+operator to $x^m$ and use the Beraha–Kahane–Weiss limit-of-zeros theorem, since two nonzero
+extreme shifts produce nonreal limits of zeros. The closure property used for Corollary 2 is
+that $\mathrm{Mesh}_{\ge\alpha}$ is closed under coefficientwise limits of bounded degree.
 
 ## References
 
 Brändén, Krasikov, and Shapiro, *Elements of Pólya–Schur theory in the finite difference
-setting*, Proc. Amer. Math. Soc. 144 (2016), Theorems 1, 2, 3, and 5, Lemmas 10 and 11,
-Lemma 8, Corollaries 2 and 3, Propositions 6, 7 and 12, and Remark 2. Theorem 1 is due to Riesz.
+setting*, Proc. Amer. Math. Soc. 144 (2016): Theorems 1, 2, 3 and 5, Lemmas 8, 10 and 11,
+Corollaries 2 and 3, Propositions 6, 7 and 12, and Remark 2. Theorem 1 is due to Riesz.
 <!-- /realrooted-catalog-content -->
 
 The definitions and theorems live in `RealRooted.Mesh.Basic`, `RealRooted.Mesh.Derivative`,

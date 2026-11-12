@@ -38,31 +38,35 @@ headline = true
 <!-- realrooted-catalog-content -->
 # The Schur–Cohn criterion
 
-Let $p(z) = a_0 + a_1 z + \dotsb + a_n z^n$ be a complex polynomial of degree
-$n \geq 1$ and let $p^*(z) = z^n \overline{p(1/\bar z)}$ be its conjugate
-reciprocal. The **Schur transform** is
-$$
-T p(z) = \frac{\overline{a_n}\, p(z) - a_0\, p^*(z)}{z},
-$$
-a polynomial of degree at most $n - 1$.
+A complex polynomial has all zeros in the open unit disk if and only if $|a_0|<|a_n|$ and its
+Schur transform has all zeros in the open unit disk.
 
-**Theorem** (Schur–Cohn). [@Schur1917; @Cohn1922] All zeros of $p$ lie in the open unit disk if and
-only if $|a_0| < |a_n|$ and all zeros of $T p$ lie in the open unit disk.
+## Results
 
-Iterating the transform decides disk stability in $n$ steps; this is the
-disk analogue of the Routh–Hurwitz reduction for the half-plane.
+Let $p(z)=a_0+a_1z+\dotsb+a_nz^n$ be a complex polynomial of degree $n\ge1$ and let
+$p^*(z)=z^n\overline{p(1/\bar z)}$ be its conjugate reciprocal. The *Schur transform* is
+$$Tp(z)=\frac{\overline{a_n}\,p(z)-a_0\,p^*(z)}{z},$$
+a polynomial of degree at most $n-1$. We call $p$ *Schur stable* if $p\ne0$ and all its zeros
+lie in the open unit disk.
 
-## Proof idea
+**Theorem (Schur–Cohn)** [@Schur1917; @Cohn1922]. The polynomial $p$ is Schur stable if and only
+if $|a_0|<|a_n|$ and $Tp$ is Schur stable.
 
-Write $p = a_n \prod (z - r_i)$. For $|r| < 1$ and $|z| \geq 1$, the Blaschke
-inequality $|1 - \bar z r| \leq |z - r|$ gives $|p^*(z)| \leq |p(z)|$ outside
-the disk, and $|a_0| = |a_n| \prod |r_i| < |a_n|$. Conversely, the identity
-$(|a_n|^2 - |a_0|^2)\, p(z) = a_n z\, T p(z) + a_0\, (Tp)^*(z)$ shows that $p$
-has no zero with $|z| \geq 1$ when $T p$ is stable.
+## Use
+
+Iterating the transform decides disk stability in $n$ steps; this is the disk analogue of the
+Routh–Hurwitz reduction for the half-plane.
+
+## Proof
+
+Write $p=a_n\prod(z-r_i)$. For $|r|<1$ and $|z|\ge1$ the inequality $|1-\bar zr|\le|z-r|$ gives
+$|p^*(z)|\le|p(z)|$ outside the disk, and $|a_0|=|a_n|\prod|r_i|<|a_n|$. Conversely, the identity
+$(|a_n|^2-|a_0|^2)\,p(z)=a_n z\,Tp(z)+a_0\,(Tp)^*(z)$ shows that $p$ has no zero with $|z|\ge1$
+when $Tp$ is stable.
 
 ## References
 
-See [@Schur1917; @Cohn1922].
+[@Schur1917; @Cohn1922].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in
