@@ -13,6 +13,7 @@ version = 1
 section = "theorems"
 slug = "higher-order-recurrence-states"
 formalized = "2026-11-03"
+authors = []
 tags = ["realrooted-original"]
 references = [
   "Wagner1992",
@@ -62,36 +63,32 @@ label = "The row sequence of an iterated quartic state"
 name = "RealRooted.preservesCubicTransition_iff_nonneg"
 module = "RealRooted.Recurrence.CubicTransition"
 label = "The cubic transition preserves ordered PF triples iff its three parameters are nonnegative"
-headline = true
 
 [[theorems]]
 name = "RealRooted.cubicTransitionFamily_interl_add_one"
 module = "RealRooted.Recurrence.CubicTransition"
 label = "Consecutive rows of the cubic family interlace"
-headline = true
 
 [[theorems]]
 name = "RealRooted.interl_quarticInterlacingRow_succ"
 module = "RealRooted.Recurrence.QuarticInterlacing"
 label = "Consecutive rows of an admissible quartic state interlace"
-headline = true
 
 [[theorems]]
 name = "RealRooted.preservesPFTriple_iff"
 module = "RealRooted.Recurrence.PFTripleMatrix"
 label = "The three-coordinate matrix preserves ordered PF triples iff a, b, d ≥ 0 and c ≥ a"
-headline = true
 
 [[theorems]]
 name = "RealRooted.preservesScaledPFTriple_iff"
 module = "RealRooted.Recurrence.PFTripleMatrix"
 label = "The scaled matrix preserves ordered PF triples iff a, b, d ≥ 0 and c ≥ a l"
+headline = true
 
 [[theorems]]
 name = "RealRooted.isOrderedPFTriple_of_recurrence"
 module = "RealRooted.Recurrence.PFTripleMatrix"
 label = "Third-order recurrences with a, b, d ≥ 0 and e ≥ a + d have PF rows and ordered states"
-headline = true
 
 [[theorems]]
 name = "RealRooted.interl_of_recurrence"

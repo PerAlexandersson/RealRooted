@@ -14,6 +14,7 @@ version = 1
 section = "theorems"
 slug = "univariate-poisson-star-c"
 formalized = "2026-10-12"
+tags = []
 references = [
   "Branden2006",
 ]
@@ -75,7 +76,6 @@ headline = true
 name = "RealRooted.Poisson.preservesRealRootedOrZero_iff_isUpperHalfPlaneStablePencil_euler"
 module = "RealRooted.BorceaBranden.Applications.PoissonStarFinal"
 label = "Real-rootedness preservation is equivalent to Euler-pencil stability"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Poisson.preservesAffineRealRooted_iff_isUpperHalfPlaneStablePencil_euler"
@@ -96,19 +96,16 @@ label = "Euler-pencil stability is equivalent to signed-symbol stability"
 name = "RealRooted.Poisson.poisson_affine_recurrence_strict"
 module = "RealRooted.BorceaBranden.Applications.PoissonStarTransport"
 label = "Five-way classification for positive affine Poisson recurrences"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Poisson.fallingFactorialTransform_starC"
 module = "RealRooted.BorceaBranden.Applications.PoissonStarFallingFactorial"
 label = "The falling-factorial transform is multiplicative for the Poisson product"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Poisson.starC_assoc"
 module = "RealRooted.BorceaBranden.Applications.PoissonStarFallingFactorial"
 label = "Associativity of the univariate Poisson product"
-headline = true
 -->
 
 <!-- realrooted-catalog-content -->

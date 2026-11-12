@@ -17,6 +17,7 @@ version = 1
 section = "theorems"
 slug = "chudnovsky-seymour"
 formalized = "2026-07-09"
+tags = []
 references = [
   "ChudnovskySeymour2007",
 ]
@@ -36,12 +37,13 @@ label = "Independence polynomial"
 [[theorems]]
 name = "RealRooted.Challenges.ChudnovskySeymour.clawFree_indepPoly_splits"
 label = "Chudnovsky–Seymour: claw-free graphs have real-rooted independence polynomials"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Graph.clawFree_weightedIndepPoly_splits"
 module = "RealRooted.Graph.IndependencePolynomial.ClawFree"
 label = "Weighted independence polynomials of claw-free graphs are real-rooted"
+headline = true
+symcat = "weightedIndependencePolynomial"
 -->
 
 <!-- realrooted-catalog-content -->

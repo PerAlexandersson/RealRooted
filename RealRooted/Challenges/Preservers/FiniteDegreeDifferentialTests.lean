@@ -13,6 +13,8 @@ version = 1
 section = "theorems"
 slug = "finite-degree-differential-tests"
 formalized = "2026-11-01"
+authors = []
+references = []
 tags = ["realrooted-original"]
 
 [[definitions]]
@@ -34,7 +36,6 @@ label = "A nonnegative expansion in one-root-deleted summands of the parent"
 name = "RealRooted.preservesPFUpTo_iff_finiteDifferentialTest"
 module = "RealRooted.FiniteFreeAdditive.FiniteDegreeTests"
 label = "h(D) preserves PF polynomials of degree at most N exactly when h(D) X^N is PF"
-headline = true
 
 [[theorems]]
 name = "RealRooted.finiteFreeAdditiveConvolution_finiteDifferentialTest"
@@ -45,7 +46,6 @@ label = "The finite free additive convolution with the test is the differential 
 name = "RealRooted.FiniteDegreeOrdered.preservesOrderedPFUpTo_iff_differentialTests"
 module = "RealRooted.FiniteFreeAdditive.FiniteDegreeOrderedTests"
 label = "Ordered PF images through degree N are detected by the two degree-N tests"
-headline = true
 
 [[theorems]]
 name = "RealRooted.FiniteDegreeOrdered.preservesOrderedPFUpTo_iff_jensenDifferentialTests"
@@ -71,7 +71,6 @@ label = "An ordered PF pair of images gives a PF row X h(D)p + a k(D)p preceded 
 name = "RealRooted.multishiftDifferentialRecurrence_pf_and_interl"
 module = "RealRooted.FiniteFreeAdditive.FiniteDegreeCompanions"
 label = "Multishift recurrence rows are PF and preceded by the full-symbol image"
-headline = true
 
 [[theorems]]
 name = "RealRooted.multishiftDifferentialRecurrence_induction"

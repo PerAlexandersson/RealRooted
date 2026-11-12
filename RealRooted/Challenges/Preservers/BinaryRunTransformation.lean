@@ -14,6 +14,8 @@ version = 1
 section = "theorems"
 slug = "binary-run-transformation"
 formalized = "2026-09-28"
+authors = []
+tags = []
 references = [
   "BorceaBranden2009I",
   "MaoWang2026x",
@@ -43,7 +45,6 @@ label = "Balanced run transformation"
 name = "RealRooted.IsPFPolynomial.binaryRunTransform"
 module = "RealRooted.BinaryRunTransformation.Continuation"
 label = "The transformation preserves PF polynomials"
-headline = true
 
 [[theorems]]
 name = "RealRooted.binaryRunTransform_splits_and_roots_neg"

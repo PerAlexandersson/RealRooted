@@ -19,6 +19,7 @@ version = 1
 section = "families"
 slug = "eulerian"
 formalized = "2026-07-10"
+tags = []
 references = [
   "Brenti1994",
 ]
@@ -44,7 +45,6 @@ label = "Generalized Eulerian polynomials"
 name = "RealRooted.isRealRooted_eulerianTilde"
 module = "RealRooted.CombinatorialExamples.Eulerian"
 label = "Eulerian polynomials are real-rooted"
-headline = true
 
 [[theorems]]
 name = "RealRooted.interlaces_eulerianTilde_succ"
@@ -55,7 +55,6 @@ label = "Consecutive Eulerian polynomials interlace"
 name = "RealRooted.isRealRooted_typeBEulerian"
 module = "RealRooted.CombinatorialExamples.TypeBEulerian"
 label = "Type B Eulerian polynomials are real-rooted"
-headline = true
 
 [[theorems]]
 name = "RealRooted.interlaces_typeBEulerian_succ"
@@ -66,12 +65,12 @@ label = "Consecutive type B Eulerian polynomials interlace"
 name = "RealRooted.generalizedEulerian_splits"
 module = "RealRooted.GeneralizedEulerian"
 label = "Generalized Eulerian polynomials are real-rooted for c > 0"
-headline = true
 
 [[theorems]]
 name = "RealRooted.interlaces_generalizedEulerian_succ"
 module = "RealRooted.GeneralizedEulerian.GeneratingFunction"
 label = "Consecutive generalized Eulerian polynomials interlace for c > 0"
+headline = true
 
 [[theorems]]
 name = "RealRooted.eulerianTilde_eq_X_mul_generalizedEulerian_one"

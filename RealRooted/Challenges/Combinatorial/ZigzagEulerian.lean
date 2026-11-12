@@ -82,7 +82,6 @@ tags = []
 name = "RealRooted.CenteredEulerian.polynomial_root_normSq_lt"
 module = "RealRooted.CenteredEulerian.ColumnBound"
 label = "Complex zeros of the centered polynomials satisfy |c|² < 13/3"
-headline = true
 
 [[theorems]]
 name = "RealRooted.CenteredEulerian.root_bound_of_columnBound"
@@ -175,6 +174,11 @@ $H_4=1+3t+t^2$.
 
 **Theorem.** For every $n\geq 1$, $H_n$ has degree $\max(n-2,0)$,
 splits over the real numbers, and has distinct strictly negative roots.
+
+**Conjecture locator.** We settle Conjecture 6.1(a) of T. K. Petersen and
+Y. Zhuang, *Zig-zag Eulerian polynomials* (arXiv:2403.07181): their
+$Z_n(t)=tH_n(t)$ is real-rooted. The checked theorem proves that $H_n$
+has distinct strictly negative roots and degree $\max(n-2,0)$ for $n\geq1$.
 
 The same family has a definition by recurrences alone. Put $w_{0,k}=1$ and
 $w_{n,0}=0$ for $n>0$, and define, for $n>0$,

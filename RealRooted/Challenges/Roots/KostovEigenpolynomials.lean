@@ -12,6 +12,7 @@ version = 1
 section = "theorems"
 slug = "kostov-eigenpolynomials"
 formalized = "2026-10-12"
+tags = []
 references = [
   "Kostov2010",
 ]
@@ -57,7 +58,6 @@ label = "The reduced eigenpolynomial has its indexed degree"
 name = "RealRooted.Kostov.eigenpolynomial_roots_simple_pos"
 module = "RealRooted.Hadamard.Kostov.Roots"
 label = "Kostov: eigenpolynomials have simple positive roots"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Kostov.eigenpolynomial_splits"
@@ -74,7 +74,6 @@ headline = true
 name = "RealRooted.Kostov.eigenpolynomial_two_step"
 module = "RealRooted.Hadamard.Kostov.TwoStep"
 label = "Kostov, Theorem 4: the two-step root comparison"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Kostov.reverse_eigenpolynomial"

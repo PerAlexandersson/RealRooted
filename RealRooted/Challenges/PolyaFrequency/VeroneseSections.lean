@@ -11,6 +11,8 @@ version = 1
 section = "theorems"
 slug = "veronese-sections"
 formalized = "2026-10-05"
+authors = ["Athanasiadis", "Wagner"]
+tags = []
 references = [
   "AthanasiadisWagner2024x",
 ]
@@ -45,6 +47,7 @@ name = "RealRooted.veroneseSectionPolynomial_eq_zero_or_splits"
 module = "RealRooted.VeroneseMatrix"
 label = "Veronese sections preserve real-rootedness"
 headline = true
+symcat = "veroneseSectionsRealRooted"
 
 [[theorems]]
 name = "RealRooted.iterate_sequenceDelta_eq_X_mul_iff_existsUnique_seed"

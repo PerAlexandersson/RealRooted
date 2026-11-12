@@ -10,6 +10,7 @@ version = 1
 section = "theorems"
 slug = "liggett-ultra-log-concavity"
 formalized = "2026-10-07"
+tags = []
 references = [
   "Gurvits2009",
 ]

@@ -10,6 +10,7 @@ version = 1
 section = "theorems"
 slug = "nijenhuis-rook-polynomials"
 formalized = "2026-09-26"
+tags = []
 references = [
   "Nijenhuis1976",
 ]
@@ -45,6 +46,7 @@ label = "Rook polynomials are bipartite matching polynomials"
 name = "RealRooted.Rook.weightedRookPolynomial_splits"
 module = "RealRooted.RookPolynomial"
 label = "Weighted rook polynomials are real-rooted"
+headline = true
 
 [[theorems]]
 name = "RealRooted.Rook.nijenhuisRookPolynomial_roots_nonneg"
@@ -55,7 +57,6 @@ label = "The signed rook polynomial has nonnegative roots"
 name = "RealRooted.Rook.rookPolynomial_splits"
 module = "RealRooted.RookPolynomial"
 label = "Rook polynomials of boards are real-rooted"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Rook.weightedRookPolynomial_isPFPolynomial"

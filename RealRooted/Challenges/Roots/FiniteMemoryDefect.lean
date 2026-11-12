@@ -10,6 +10,8 @@ version = 1
 section = "theorems"
 slug = "finite-memory-defect-bridges"
 formalized = "2026-10-11"
+authors = ["Bøgvad", "Hägg", "Nyandwi", "Kurujyibwami", "Uwimbabazi"]
+tags = []
 references = [
   "BogvadHagg2017",
   "NyandwiHaggKurujyibwamiUwimbabazi2026x",

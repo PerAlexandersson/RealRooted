@@ -12,6 +12,7 @@ version = 1
 section = "theorems"
 slug = "sturm-root-counting"
 formalized = "2026-09-27"
+tags = []
 references = [
   "Sylvester1853",
 ]
@@ -63,6 +64,7 @@ name = "Polynomial.splits_iff_hermiteMatrix_posSemidef"
 module = "RealRooted.RootVieta.Newton"
 label = "Hermite–Sylvester: real-rooted iff the Hermite matrix is PSD"
 headline = true
+symcat = "hermiteSylvesterTheorem"
 
 [[theorems]]
 name = "RealRooted.cubicDiscr_nonneg_iff_splits_of_natDegree_le_three"

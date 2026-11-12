@@ -147,7 +147,7 @@ $G=1+8w+16w^2+10w^3+2w^4$, which is not real-rooted, and the theorem applies.
 
 ## What is new
 
-The proof is new, developed for RealRooted (issue #2484), and is of independent research
+The proof is new, developed for RealRooted, and is of independent research
 interest: the block-matrix reduction, the Wronskian expansion for constant matrices, and the
 parity extraction are not taken from the literature. The classical constant-matrix theorem of
 Brändén [@Branden2015, Corollary 8.6] enters only through the weak certificate and the TP2 affine

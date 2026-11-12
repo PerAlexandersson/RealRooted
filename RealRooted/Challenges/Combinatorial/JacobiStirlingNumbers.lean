@@ -12,6 +12,7 @@ version = 1
 section = "families"
 slug = "jacobi-stirling-numbers"
 formalized = "2026-09-13"
+tags = []
 references = [
   "GelineauZeng2010",
   "Mongelli2012",

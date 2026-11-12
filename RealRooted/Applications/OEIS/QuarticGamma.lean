@@ -517,6 +517,129 @@ private lemma allComboRealRooted_gammaPolynomial_add_four
     linarith
   positivity
 
+/-- The initial quadratic transition in the gamma family. -/
+private theorem gamma_strictInterl_three {a b : ℝ}
+    (ha : 0 ≤ a) (hb : 0 ≤ b) (hab : 2 * b ≤ a ^ 2) :
+    StrictInterl (gammaPolynomial a b 3) (gammaPolynomial a b 4) := by
+  by_cases hb0 : b = 0
+  · by_cases ha0 : a = 0
+    · subst a
+      subst b
+      simpa [gammaPolynomial] using
+        (StrictInterl.refl one_ne_zero Polynomial.Splits.one)
+    · have ha_pos : 0 < a := lt_of_le_of_ne ha (Ne.symm ha0)
+      subst b
+      have h := strictInterl_affine_linear_affine_linear_of_cross
+        (u := 2 * a) (v := 1) (U := 3 * a) (V := 1)
+        (by positivity) (by positivity) (by nlinarith)
+      have hg3 : gammaPolynomial a 0 3 = C (2 * a) * X + C 1 := by
+        simp [gammaPolynomial]
+      have hg4 : gammaPolynomial a 0 4 = C (3 * a) * X + C 1 := by
+        simp only [gammaPolynomial]
+        norm_num
+        ring
+      rw [hg3, hg4]
+      exact h
+  · have hb_pos : 0 < b := lt_of_le_of_ne hb (Ne.symm hb0)
+    have ha_pos : 0 < a := by nlinarith
+    let f : ℝ[X] := C (2 * a) * X + C 1
+    let F : ℝ[X] := C b * X ^ 2 + C (3 * a) * X + C 1
+    have hfdeg : f.natDegree = 1 := by
+      simp only [f]
+      compute_degree!
+      positivity
+    have hFdeg : F.natDegree = 2 := by
+      simp only [F]
+      exact natDegree_quadratic hb_pos.ne'
+    have hFsplits : F.Splits := by
+      simp only [F]
+      apply quadraticPoly_splits_of_le hb_pos
+      nlinarith
+    have hFpos : HasPosLeadingCoeff F := by
+      simp only [HasPosLeadingCoeff, F]
+      rw [leadingCoeff_quadratic hb_pos.ne']
+      exact hb_pos
+    have hroot : ∀ r, f.IsRoot r → F.eval r ≤ 0 := by
+      intro r hr
+      simp only [f, F, Polynomial.IsRoot, eval_add, eval_mul, eval_C, eval_X,
+        eval_pow] at hr ⊢
+      have hmul := mul_nonneg (sub_nonneg.mpr hab) (sq_nonneg r)
+      nlinarith
+    have hint := interl_linear_quadratic_of_eval_nonpos
+      hfdeg hFdeg hFsplits hFpos hroot
+    have hstrict := hint.toStrictInterl_of_ne
+      (ne_zero_of_natDegree_gt (p := f) (n := 0) (by rw [hfdeg]; norm_num))
+      (ne_zero_of_natDegree_gt (p := F) (n := 0) (by rw [hFdeg]; norm_num))
+    have hg3 : gammaPolynomial a b 3 = C (2 * a) * X + C 1 := by
+      simp [gammaPolynomial]
+    have hg4 : gammaPolynomial a b 4 =
+        C b * X ^ 2 + C (3 * a) * X + C 1 := by
+      simp only [gammaPolynomial]
+      norm_num
+      ring
+    rw [hg3, hg4]
+    dsimp only [f, F] at hstrict
+    exact hstrict
+
+/-- The quadratic gamma transitions from index four onward. -/
+private theorem gamma_strictInterl_add_four {a b : ℝ}
+    (ha : 0 ≤ a) (hb : 0 ≤ b) (hab : 2 * b ≤ a ^ 2) (k : ℕ) :
+    StrictInterl (gammaPolynomial a b (k + 4)) (gammaPolynomial a b (k + 5)) := by
+  by_cases hb0 : b = 0
+  · by_cases ha0 : a = 0
+    · subst a
+      subst b
+      simpa [gammaPolynomial] using
+        (StrictInterl.refl one_ne_zero Polynomial.Splits.one)
+    · have ha_pos : 0 < a := lt_of_le_of_ne ha (Ne.symm ha0)
+      subst b
+      have h := strictInterl_affine_linear_affine_linear_of_cross
+        (u := a * ((k : ℝ) + 3)) (v := 1)
+        (U := a * ((k : ℝ) + 4)) (V := 1)
+        (by positivity) (by positivity) (by nlinarith)
+      have hkcast :
+          ((k + 1 : ℕ) : ℝ) + 3 = (k : ℝ) + 4 := by
+        push_cast
+        ring
+      have hleft : gammaPolynomial a 0 (k + 4) =
+          C (a * ((k : ℝ) + 3)) * X + C 1 := by
+        simp [gammaPolynomial]
+      have hright : gammaPolynomial a 0 (k + 5) =
+          C (a * ((k : ℝ) + 4)) * X + C 1 := by
+        simp only [gammaPolynomial]
+        rw [hkcast]
+        simp
+      rw [hleft, hright]
+      exact h
+  · have hb_pos : 0 < b := lt_of_le_of_ne hb (Ne.symm hb0)
+    let A : ℝ := a * ((k : ℝ) + 3)
+    let A' : ℝ := a * ((k : ℝ) + 4)
+    let B : ℝ := b / 2 * ((k : ℝ) + 2) * ((k : ℝ) + 1)
+    let B' : ℝ := b / 2 * ((k : ℝ) + 3) * ((k : ℝ) + 2)
+    have hleft : gammaPolynomial a b (k + 4) =
+        C B * X ^ 2 + C A * X + C 1 := by
+      simp only [gammaPolynomial, A, B, map_one]
+    have hright : gammaPolynomial a b (k + 5) =
+        C B' * X ^ 2 + C A' * X + C 1 := by
+      simp only [gammaPolynomial, A', B', map_one]
+      push_cast
+      congr 4 <;> ring
+    have hB : 0 < B := by positivity
+    have hB' : 0 < B' := by positivity
+    apply strictInterl_of_allComboRealRooted_of_sameDegree_of_nonneg_of_eval_cross_gt
+      (gammaPolynomial_ne_zero a b (k + 4))
+      (gammaPolynomial_ne_zero a b (k + 5))
+      (hasNonnegCoeffs_gammaPolynomial ha hb (k + 4))
+      (hasNonnegCoeffs_gammaPolynomial ha hb (k + 5))
+      (allComboRealRooted_gammaPolynomial_add_four hb hab k)
+    · rw [hleft, hright, natDegree_quadratic hB.ne', natDegree_quadratic hB'.ne']
+    · rw [hleft, hright]
+      simp only [eval_add, eval_mul, eval_C, eval_X, eval_pow, OfNat.ofNat]
+      rw [leadingCoeff_quadratic hB.ne', leadingCoeff_quadratic hB'.ne']
+      dsimp only [B, B']
+      have hdiff : 0 < b * ((k : ℝ) + 2) := by positivity
+      nlinarith
+
 /-- Consecutive gamma polynomials are in directed strict interlacing throughout
 the sharp nonnegative parameter range. -/
 theorem gammaPolynomial_strictInterl_succ {a b : ℝ}
@@ -546,121 +669,8 @@ theorem gammaPolynomial_strictInterl_succ {a b : ℝ}
           (strictInterl_affine_linear_affine_linear_of_cross
             (u := a) (v := 1) (U := 2 * a) (V := 1)
             ha_pos (by positivity) (by nlinarith))
-  | 3 =>
-      by_cases hb0 : b = 0
-      · by_cases ha0 : a = 0
-        · subst a
-          subst b
-          simpa [gammaPolynomial] using
-            (StrictInterl.refl one_ne_zero Polynomial.Splits.one)
-        · have ha_pos : 0 < a := lt_of_le_of_ne ha (Ne.symm ha0)
-          subst b
-          have h := strictInterl_affine_linear_affine_linear_of_cross
-            (u := 2 * a) (v := 1) (U := 3 * a) (V := 1)
-            (by positivity) (by positivity) (by nlinarith)
-          have hg3 : gammaPolynomial a 0 3 = C (2 * a) * X + C 1 := by
-            simp [gammaPolynomial]
-          have hg4 : gammaPolynomial a 0 4 = C (3 * a) * X + C 1 := by
-            simp only [gammaPolynomial]
-            norm_num
-            ring
-          rw [hg3, hg4]
-          exact h
-      · have hb_pos : 0 < b := lt_of_le_of_ne hb (Ne.symm hb0)
-        have ha_pos : 0 < a := by nlinarith
-        let f : ℝ[X] := C (2 * a) * X + C 1
-        let F : ℝ[X] := C b * X ^ 2 + C (3 * a) * X + C 1
-        have hfdeg : f.natDegree = 1 := by
-          simp only [f]
-          compute_degree!
-          positivity
-        have hFdeg : F.natDegree = 2 := by
-          simp only [F]
-          exact natDegree_quadratic hb_pos.ne'
-        have hFsplits : F.Splits := by
-          simp only [F]
-          apply quadraticPoly_splits_of_le hb_pos
-          nlinarith
-        have hFpos : HasPosLeadingCoeff F := by
-          simp only [HasPosLeadingCoeff, F]
-          rw [leadingCoeff_quadratic hb_pos.ne']
-          exact hb_pos
-        have hroot : ∀ r, f.IsRoot r → F.eval r ≤ 0 := by
-          intro r hr
-          simp only [f, F, Polynomial.IsRoot, eval_add, eval_mul, eval_C, eval_X,
-            eval_pow] at hr ⊢
-          have hmul := mul_nonneg (sub_nonneg.mpr hab) (sq_nonneg r)
-          nlinarith
-        have hint := interl_linear_quadratic_of_eval_nonpos
-          hfdeg hFdeg hFsplits hFpos hroot
-        have hstrict := hint.toStrictInterl_of_ne
-          (ne_zero_of_natDegree_gt (p := f) (n := 0) (by rw [hfdeg]; norm_num))
-          (ne_zero_of_natDegree_gt (p := F) (n := 0) (by rw [hFdeg]; norm_num))
-        have hg3 : gammaPolynomial a b 3 = C (2 * a) * X + C 1 := by
-          simp [gammaPolynomial]
-        have hg4 : gammaPolynomial a b 4 =
-            C b * X ^ 2 + C (3 * a) * X + C 1 := by
-          simp only [gammaPolynomial]
-          norm_num
-          ring
-        rw [hg3, hg4]
-        dsimp only [f, F] at hstrict
-        exact hstrict
-  | k + 4 =>
-      by_cases hb0 : b = 0
-      · by_cases ha0 : a = 0
-        · subst a
-          subst b
-          simpa [gammaPolynomial] using
-            (StrictInterl.refl one_ne_zero Polynomial.Splits.one)
-        · have ha_pos : 0 < a := lt_of_le_of_ne ha (Ne.symm ha0)
-          subst b
-          have h := strictInterl_affine_linear_affine_linear_of_cross
-            (u := a * ((k : ℝ) + 3)) (v := 1)
-            (U := a * ((k : ℝ) + 4)) (V := 1)
-            (by positivity) (by positivity) (by nlinarith)
-          have hkcast :
-              ((k + 1 : ℕ) : ℝ) + 3 = (k : ℝ) + 4 := by
-            push_cast
-            ring
-          have hleft : gammaPolynomial a 0 (k + 4) =
-              C (a * ((k : ℝ) + 3)) * X + C 1 := by
-            simp [gammaPolynomial]
-          have hright : gammaPolynomial a 0 (k + 5) =
-              C (a * ((k : ℝ) + 4)) * X + C 1 := by
-            simp only [gammaPolynomial]
-            rw [hkcast]
-            simp
-          rw [hleft, hright]
-          exact h
-      · have hb_pos : 0 < b := lt_of_le_of_ne hb (Ne.symm hb0)
-        let A : ℝ := a * ((k : ℝ) + 3)
-        let A' : ℝ := a * ((k : ℝ) + 4)
-        let B : ℝ := b / 2 * ((k : ℝ) + 2) * ((k : ℝ) + 1)
-        let B' : ℝ := b / 2 * ((k : ℝ) + 3) * ((k : ℝ) + 2)
-        have hleft : gammaPolynomial a b (k + 4) =
-            C B * X ^ 2 + C A * X + C 1 := by
-          simp only [gammaPolynomial, A, B, map_one]
-        have hright : gammaPolynomial a b (k + 5) =
-            C B' * X ^ 2 + C A' * X + C 1 := by
-          simp only [gammaPolynomial, A', B', map_one]
-          push_cast
-          congr 4 <;> ring
-        have hB : 0 < B := by positivity
-        have hB' : 0 < B' := by positivity
-        apply strictInterl_of_allComboRealRooted_of_sameDegree_of_nonneg_of_eval_cross_gt
-          (gammaPolynomial_ne_zero a b (k + 4))
-          (gammaPolynomial_ne_zero a b (k + 5))
-          (hasNonnegCoeffs_gammaPolynomial ha hb (k + 4))
-          (hasNonnegCoeffs_gammaPolynomial ha hb (k + 5))
-          (allComboRealRooted_gammaPolynomial_add_four hb hab k)
-        · rw [hleft, hright, natDegree_quadratic hB.ne', natDegree_quadratic hB'.ne']
-        · rw [hleft, hright]
-          simp only [eval_add, eval_mul, eval_C, eval_X, eval_pow, OfNat.ofNat]
-          rw [leadingCoeff_quadratic hB.ne', leadingCoeff_quadratic hB'.ne']
-          dsimp only [B, B']
-          have hdiff : 0 < b * ((k : ℝ) + 2) := by positivity
-          nlinarith
+  | 3 => exact gamma_strictInterl_three ha hb hab
+  | k + 4 => exact gamma_strictInterl_add_four ha hb hab k
 
 /-- Consecutive recurrence-defined rows are in directed strict interlacing
 throughout the sharp nonnegative parameter range. -/

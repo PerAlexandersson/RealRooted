@@ -10,6 +10,7 @@ version = 1
 section = "theorems"
 slug = "hutchinson"
 formalized = "2026-10-07"
+tags = []
 references = [
   "Hutchinson1923",
   "Kurtz1992",

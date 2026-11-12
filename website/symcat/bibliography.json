@@ -70,9 +70,9 @@
       "label": "AGS17"
     },
     "Alexandersson2026Eulerian": {
-      "bibtex": "@article{Alexandersson2026Eulerian,\n  author = {Per Alexandersson},\n  title = {Real-rooted {E}ulerian polynomials from permutations, words, and\n    paths},\n  year = {2026},\n  eprint = {2609.07325v1},\n  url = {https://arxiv.org/abs/2609.07325v1},\n  journal = {arXiv e-prints}\n}\n",
+      "bibtex": "@article{Alexandersson2026Eulerian,\n  author = {Per Alexandersson},\n  title = {Real-rooted {E}ulerian polynomials from permutations, words, and\n    paths},\n  year = {2026},\n  eprint = {2609.07325v2},\n  url = {https://arxiv.org/abs/2609.07325v2},\n  journal = {arXiv e-prints}\n}\n",
       "csl": {
-        "URL": "https://arxiv.org/abs/2609.07325v1",
+        "URL": "https://arxiv.org/abs/2609.07325v2",
         "author": [
           {
             "family": "Alexandersson",
@@ -80,6 +80,7 @@
           }
         ],
         "container-title": "arXiv e-prints",
+        "id": "Alexandersson2026Eulerian",
         "issued": {
           "date-parts": [
             [

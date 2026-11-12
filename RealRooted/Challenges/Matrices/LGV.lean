@@ -13,6 +13,7 @@ version = 1
 section = "theorems"
 slug = "lindstrom-gessel-viennot"
 formalized = "2026-09-17"
+tags = []
 references = [
   "Lindstrom1973",
   "GesselViennot1985",
@@ -50,7 +51,6 @@ headline = true
 name = "RealRooted.isPolyaFreqSeq_of_minorOrderedCertificates"
 module = "RealRooted.LGV.PolyaFrequency"
 label = "Path networks give Pólya frequency sequences"
-headline = true
 
 [[theorems]]
 name = "RealRooted.LGV.RepeatedChip.kernelSequence_isPolyaFreqSeq"

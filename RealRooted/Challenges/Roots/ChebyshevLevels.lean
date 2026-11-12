@@ -10,6 +10,8 @@ version = 1
 section = "theorems"
 slug = "chebyshev-level-polynomials"
 formalized = "2026-11-01"
+authors = []
+references = []
 tags = ["realrooted-original"]
 
 [[definitions]]
@@ -42,7 +44,6 @@ label = "For |h| < 1 the roots of T_n - h are simple and lie in (-1, 1)"
 name = "RealRooted.Chebyshev.forall_pos_T_sub_C_splits_iff_abs_le_one"
 module = "RealRooted.Chebyshev.Levels"
 label = "All levels T_n - h split exactly when |h| ≤ 1"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Chebyshev.not_splits_T_add_C_of_one_lt"
@@ -58,7 +59,6 @@ label = "The affine level family satisfies an order-three recurrence"
 name = "RealRooted.Chebyshev.affineLevel_isPFPolynomial"
 module = "RealRooted.Chebyshev.Levels"
 label = "For α, λ > 0 and |h| ≤ 1 the affine level polynomials are PF"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Chebyshev.affineLevel_splits_simple_roots_mem_Ioo"

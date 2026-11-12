@@ -18,6 +18,7 @@ version = 1
 section = "theorems"
 slug = "grace-apolarity"
 formalized = "2026-10-06"
+tags = []
 references = [
   "Grace1902",
   "Walsh1922",
@@ -69,19 +70,16 @@ headline = true
 [[theorems]]
 name = "RealRooted.Challenges.GraceApolarity.mvUpperHalfPlaneStable_polarization"
 label = "Polarization preserves stability"
-headline = true
 
 [[theorems]]
 name = """RealRooted.Challenges.GraceApolarity.\
 mvUpperHalfPlaneStable_iff_eval_diagonalProjection_ne_zero"""
 label = "Grace–Walsh–Szegő: a symmetric multiaffine polynomial is stable iff its diagonal is"
-headline = true
 
 [[theorems]]
 name = "RealRooted.exists_eval_const_eq_of_mem_closedBall"
 module = "RealRooted.GraceWalshSzego"
 label = "Grace–Walsh–Szegő coincidence theorem for closed disks"
-headline = true
 
 [[theorems]]
 name = "RealRooted.exists_eval_const_eq_of_mem_ball"
@@ -92,7 +90,6 @@ label = "Coincidence theorem for open disks"
 name = "RealRooted.exists_eval_const_eq_of_im_div_pos"
 module = "RealRooted.GraceWalshSzego"
 label = "Coincidence theorem for open half-planes"
-headline = true
 
 [[theorems]]
 name = "RealRooted.exists_eval_const_eq_of_im_div_nonneg"
@@ -103,7 +100,6 @@ label = "Coincidence theorem for closed half-planes"
 name = "RealRooted.exists_eval_const_eq_of_lt_dist"
 module = "RealRooted.GraceWalshSzego"
 label = "Coincidence theorem for the exterior of a disk, when the diagonal has degree n"
-headline = true
 
 [[theorems]]
 name = "RealRooted.exists_eval_const_eq_of_le_dist"
@@ -136,7 +132,6 @@ label = "Lieb–Sokal theorem for multiaffine polynomials"
 name = "RealRooted.MvUpperHalfPlaneStable.liebSokal"
 module = "RealRooted.LiebSokalGeneral"
 label = "Lieb–Sokal theorem without the multiaffine hypothesis"
-headline = true
 -->
 
 <!-- realrooted-catalog-content -->
@@ -186,7 +181,7 @@ exterior of a disk. In the last case, assume that $P(z, \dotsc, z)$ has
 degree $n$. Then for all $\zeta_1, \dotsc, \zeta_n \in C$ there is
 $\zeta \in C$ with
 $$
-P(\zeta_1, \dotsc, \zeta_n) = P(\zeta, \dotsc, \zeta) .
+P(\zeta_1, \dotsc, \zeta_n) = P(\zeta, \dotsc, \zeta).
 $$
 
 More generally, let $P \in \mathbb{C}[z_i : i \in \sigma]$, with $\sigma$

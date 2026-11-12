@@ -10,6 +10,8 @@ version = 1
 section = "theorems"
 slug = "binomial-perturbations"
 formalized = "2026-11-01"
+authors = []
+references = []
 tags = ["realrooted-original"]
 
 [[definitions]]
@@ -26,7 +28,6 @@ label = "The even-binomial section with γ-basis perturbations"
 name = "RealRooted.binomialCoefficientPerturbation_isRightHalfPlaneStable"
 module = "RealRooted.ClassicalHurwitzMatrix.Stability.BinomialPerturbation"
 label = "Weighted coefficient bounds give right-half-plane stability of perturbations of (1 + X)^n"
-headline = true
 
 [[theorems]]
 name = "RealRooted.binomialCoefficientPerturbation_boundary"

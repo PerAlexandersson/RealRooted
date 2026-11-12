@@ -11,6 +11,8 @@ version = 1
 section = "theorems"
 slug = "bessel-operators"
 formalized = "2026-11-01"
+authors = []
+references = []
 tags = ["realrooted-original"]
 
 [[definitions]]
@@ -53,7 +55,6 @@ label = "The central difference is (p(z + ih) - p(z - ih)) / (2ih)"
 name = "RealRooted.imaginaryCentralDifference_splits_and_hasSimpleRoots"
 module = "RealRooted.Hermite.ImaginaryCentralDifference"
 label = "The imaginary central difference of a real-rooted polynomial has simple real roots"
-headline = true
 -->
 
 <!-- realrooted-catalog-content -->

@@ -12,6 +12,8 @@ version = 1
 section = "theorems"
 slug = "derivative-lag-family"
 formalized = "2026-11-01"
+authors = []
+references = []
 tags = ["realrooted-original"]
 
 [[definitions]]
@@ -28,7 +30,6 @@ label = "For β, a ≥ 0 every row is real-rooted"
 name = "RealRooted.strictInterl_derivativeLagFamily_add_one"
 module = "RealRooted.DerivativeRecurrence.LagParameterFamily"
 label = "The row with parameter a + 1 interlaces the row with parameter a"
-headline = true
 
 [[theorems]]
 name = "RealRooted.strictInterl_derivativeLagFamily_succ"

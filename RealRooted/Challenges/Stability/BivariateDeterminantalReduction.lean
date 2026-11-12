@@ -12,6 +12,8 @@ version = 1
 section = "theorems"
 slug = "bivariate-determinantal-reduction"
 formalized = "2026-10-29"
+authors = []
+references = []
 tags = ["realrooted-original"]
 
 [[definitions]]
@@ -69,7 +71,7 @@ arrays arising from symmetric real matrices $U,V$ is closed.
 
 ## What is new
 
-These reductions were developed in this library (RealRooted issue #954); no published
+These reductions were developed in this library; no published
 source is cited, and we attribute none.
 
 ## References

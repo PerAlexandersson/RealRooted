@@ -13,6 +13,7 @@ version = 1
 section = "theorems"
 slug = "matrix-interlacing"
 formalized = "2026-10-06"
+tags = []
 references = [
   "Fisk2006x",
   "Branden2015",
@@ -54,6 +55,7 @@ label = "Interlacing sequence of real-rooted polynomials with nonnegative coeffi
 name = "RealRooted.Challenges.MatrixInterlacing.preservesInterlacingSeq0_iff"
 label = "A matrix preserves interlacing sequences exactly when its 2 × 2 submatrices do"
 headline = true
+symcat = "matrixPreservesInterlacingSequences"
 
 [[theorems]]
 name = "RealRooted.Challenges.MatrixInterlacing.preserves_interlacing_sequences"

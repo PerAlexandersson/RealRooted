@@ -51,6 +51,40 @@ theorem mOperator_eq_bidiagonalOperator (p : ℝ[X]) :
   rw [map_one]
   ring
 
+/-- Differentiate a term of the binomial symbol with respect to its first variable. -/
+private theorem symbol_term_derivative (d : ℕ) (x y : MvPolynomial (Fin 2) ℝ)
+    (hdx : MvPolynomial.pderiv 0 x = 1) (hdy : MvPolynomial.pderiv 0 y = 0)
+    (k : ℕ) :
+      x * MvPolynomial.pderiv 0
+          (MvPolynomial.C (d.choose k : ℝ) * x ^ k * y ^ (d - k)) =
+        MvPolynomial.C (k : ℝ) *
+          (MvPolynomial.C (d.choose k : ℝ) * x ^ k * y ^ (d - k)) := by
+  rw [MvPolynomial.pderiv_mul, MvPolynomial.pderiv_mul,
+    MvPolynomial.pderiv_C, MvPolynomial.pderiv_pow,
+    MvPolynomial.pderiv_pow, hdx, hdy]
+  cases k with
+  | zero => simp
+  | succ k =>
+      rw [show k + 1 - 1 = k by lia, pow_succ]
+      push_cast
+      rw [show MvPolynomial.C ((k : ℝ) + 1) =
+        MvPolynomial.C (k : ℝ) + (1 : MvPolynomial (Fin 2) ℝ) by
+          rw [map_add, map_one]]
+      rw [map_natCast]
+      rw [show MvPolynomial.C (k : ℝ) =
+        (k : MvPolynomial (Fin 2) ℝ) by exact map_natCast _ k]
+      ring
+
+/-- Expand the binomial part of the symbol. -/
+private theorem symbol_binomial_sum (d : ℕ) (x y : MvPolynomial (Fin 2) ℝ) :
+    (x + y) ^ d = ∑ k ∈ Finset.range (d + 1),
+      MvPolynomial.C (d.choose k : ℝ) * x ^ k * y ^ (d - k) := by
+  rw [add_pow]
+  apply Finset.sum_congr rfl
+  intro k hk
+  simp
+  ring
+
 /-- Closed form of the finite algebraic symbol of `mOperator`. -/
 theorem affineBidiagonalSymbol_eq (d : ℕ) (hd : 1 ≤ d) :
     RealRooted.BorceaBranden.affineBidiagonalSymbol alpha beta d =
@@ -64,34 +98,10 @@ theorem affineBidiagonalSymbol_eq (d : ℕ) (hd : 1 ≤ d) :
   let S : MvPolynomial (Fin 2) ℝ := (x + y) ^ d
   have hdx : MvPolynomial.pderiv 0 x = 1 := by simp [x]
   have hdy : MvPolynomial.pderiv 0 y = 0 := by simp [y]
-  have htermder (k : ℕ) :
-      x * MvPolynomial.pderiv 0
-          (MvPolynomial.C (d.choose k : ℝ) * x ^ k * y ^ (d - k)) =
-        MvPolynomial.C (k : ℝ) *
-          (MvPolynomial.C (d.choose k : ℝ) * x ^ k * y ^ (d - k)) := by
-    rw [MvPolynomial.pderiv_mul, MvPolynomial.pderiv_mul,
-      MvPolynomial.pderiv_C, MvPolynomial.pderiv_pow,
-      MvPolynomial.pderiv_pow, hdx, hdy]
-    cases k with
-    | zero => simp
-    | succ k =>
-        rw [show k + 1 - 1 = k by lia, pow_succ]
-        push_cast
-        rw [show MvPolynomial.C ((k : ℝ) + 1) =
-          MvPolynomial.C (k : ℝ) + (1 : MvPolynomial (Fin 2) ℝ) by
-            rw [map_add, map_one]]
-        rw [map_natCast]
-        rw [show MvPolynomial.C (k : ℝ) =
-          (k : MvPolynomial (Fin 2) ℝ) by exact map_natCast _ k]
-        ring
+  have htermder := symbol_term_derivative d x y hdx hdy
   have hS : S = ∑ k ∈ Finset.range (d + 1),
-      MvPolynomial.C (d.choose k : ℝ) * x ^ k * y ^ (d - k) := by
-    dsimp [S]
-    rw [add_pow]
-    apply Finset.sum_congr rfl
-    intro k hk
-    simp
-    ring
+      MvPolynomial.C (d.choose k : ℝ) * x ^ k * y ^ (d - k) :=
+    symbol_binomial_sum d x y
   have hder : MvPolynomial.pderiv 0 S =
       MvPolynomial.C (d : ℝ) * (x + y) ^ (d - 1) := by
     dsimp [S]

@@ -12,6 +12,7 @@ version = 1
 section = "theorems"
 slug = "separable-permutations"
 formalized = "2026-10-09"
+tags = []
 references = [
   "Zhang2026SeparableInterlacing",
   "FuLinZeng2018",
@@ -48,7 +49,6 @@ label = "Descent enumerator of the separable permutations"
 name = "RealRooted.SeparablePermutations.strictInterl_descentPolynomial"
 module = "RealRooted.SeparablePermutations.Interlacing"
 label = "Consecutive descent polynomials S_n, S_{n+1} strictly interlace without common root"
-headline = true
 
 [[theorems]]
 name = "RealRooted.SeparablePermutations.strictInterl_gammaPolynomial"
@@ -130,10 +130,16 @@ interlacing to $S_n$ and $S_{n+1}$: the two inverse branches of $\rho \mapsto \r
 carry a common root of the descent polynomials to a common root of the gamma-polynomials, and
 the central root $-1$ is excluded by the evaluation formula for the gamma transform.
 
+## Relation to SymCat
+
+We formalize the actual-enumerator interlacing assertion in the
+[separable-descent example](sf:separableDescentRealRooted). The recurrence-defined
+root-location and gamma-polynomial results are published separately below.
+
 ## References
 
 See [@Zhang2026SeparableInterlacing; @FuLinZeng2018]. The Lean development
-follows the draft formalization of PR #1132 by yyou59548-design. See also the
+follows a formalization by yyou59548-design. See also the
 [separable-permutation descent theorem on symmetricfunctions.com](sf:separableDescentRealRooted).
 <!-- /realrooted-catalog-content -->
 

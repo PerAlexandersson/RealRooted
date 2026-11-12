@@ -147,6 +147,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--labels-source", help="override the labels JSON path or URL")
     parser.add_argument("--bibliography-source", help="override the bibliography JSON path or URL")
+    parser.add_argument("--check", action="store_true", help="report live labels missing from the snapshot; tolerate offline access")
     parser.add_argument("--keep", action="append", default=[], metavar="KEY")
     return parser.parse_args()
 
@@ -157,6 +158,26 @@ def main() -> int:
     bibliography_source = args.bibliography_source or _source_at(
         args.source, "bibliography.json"
     )
+    if args.check:
+        try:
+            live = _read_json(labels_source)
+        except CatalogError as error:
+            if (urlsplit(labels_source).scheme in {"http", "https"}
+                    and isinstance(error.__cause__, OSError)):
+                print(f"offline: label freshness unavailable: {error}")
+                return 0
+            print(f"error: {error}", file=sys.stderr)
+            return 1
+        try:
+            snapshot = json.loads((args.repo_root / "website/symcat/labels.json").read_text(encoding="utf-8"))
+            if not isinstance(live, dict) or not isinstance(snapshot, dict):
+                raise ValueError("label exports must be objects")
+            missing = sorted(set(live) - set(snapshot))
+            print(f"live labels missing from snapshot: {len(missing)}")
+            return 0
+        except (OSError, ValueError) as error:
+            print(f"error: {error}", file=sys.stderr)
+            return 1
     try:
         labels, bibliography = build_snapshots(
             args.repo_root.resolve(),

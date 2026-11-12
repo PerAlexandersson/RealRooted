@@ -12,6 +12,7 @@ version = 1
 section = "theorems"
 slug = "liu-opposite-signs"
 formalized = "2026-10-02"
+tags = []
 references = [
   "Liu2012CompatibleSequences",
 ]

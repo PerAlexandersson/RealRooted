@@ -10,6 +10,7 @@ version = 1
 section = "concepts"
 slug = "interlacing"
 formalized = "2026-10-05"
+tags = []
 references = [
   "Fisk2006x",
 ]

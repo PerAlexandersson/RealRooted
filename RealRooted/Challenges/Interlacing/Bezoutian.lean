@@ -15,6 +15,7 @@ version = 1
 section = "theorems"
 slug = "bezoutian"
 formalized = "2026-10-06"
+tags = []
 references = [
   "Fisk2006x",
 ]
@@ -39,7 +40,6 @@ headline = true
 [[theorems]]
 name = "RealRooted.Challenges.Bezoutian.posDef_iff_interlaces_succ"
 label = "Successor-degree interlacing is positive definiteness of the Bézout matrix"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.Bezoutian.splits_of_posDef"

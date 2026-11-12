@@ -10,6 +10,7 @@ version = 1
 section = "theorems"
 slug = "schur-cohn"
 formalized = "2026-10-07"
+tags = []
 references = [
   "Schur1917",
   "Cohn1922",

@@ -11,6 +11,8 @@ version = 1
 section = "theorems"
 slug = "ode-root-bounds"
 formalized = "2026-11-01"
+authors = []
+references = []
 tags = ["realrooted-original"]
 
 [[theorems]]
@@ -22,13 +24,11 @@ label = "Laguerre's inequality at a root: 3 p''² - 4 p' p''' ≥ 0"
 name = "RealRooted.ode_discriminant_eval_nonpos_of_isRoot"
 module = "RealRooted.Wronskian.OdeRootBound"
 label = "At a root z with A(z) ≠ 0 of a split solution, the ODE discriminant is nonpositive"
-headline = true
 
 [[theorems]]
 name = "RealRooted.not_isRoot_of_ode_discriminant_eval_pos"
 module = "RealRooted.Wronskian.OdeRootBound"
 label = "A point where the ODE discriminant is positive is not a root"
-headline = true
 
 [[theorems]]
 name = "RealRooted.eval_derivative_ne_zero_of_ode"

@@ -571,8 +571,9 @@ end RealRooted.Challenges.Sample
         pages = load_catalog(self.root)
         output = render_site(self.root, pages, validate_sources(self.root, pages), REVISION)
         home = output["index.html"]
-        self.assertIn("Main results:</span> A second main result</span>", home)
-        self.assertNotIn("Main results:</span> Sample", home)
+        self.assertIn('<span class="card-headlines">Sample</span>', home)
+        self.assertNotIn("A second main result", home)
+        self.assertEqual(home.count("catalog-card catalog-card--"), 1)
 
     def test_family_page_shows_counts_and_headline_theorems(self) -> None:
         self.write(
@@ -603,12 +604,12 @@ end RealRooted.Challenges.Sample
         self.assertIn('href="families/sample/"', topics)
         self.assertIn('title="1 definition"', topics)
         self.assertIn('title="2 theorems"', topics)
-        self.assertIn("Main results:</span> Sample family is real-rooted", topics)
+        self.assertIn("Sample family is real-rooted", topics)
+        self.assertIn("RealRooted.Challenges.Sample.proven", topics)
         self.assertNotIn("≔</span><span>Definition", home)
-        # the headline theorem also appears among the theorems, linked to its declaration
+        # The family appears only once on the landing page.
         anchor = "decl-RealRooted-Challenges-Sample-proven"
-        self.assertIn(f'href="families/sample/#{anchor}"', theorems)
-        self.assertIn('class="catalog-card catalog-card--theorem catalog-card--headline"', theorems)
+        self.assertNotIn('href="families/sample/', theorems)
         self.assertNotIn("minor", theorems)
         page = output["families/sample/index.html"]
         self.assertIn(f'<li id="{anchor}">', page)
@@ -618,11 +619,20 @@ end RealRooted.Challenges.Sample
         self.assertEqual(results.count('data-headline="true"'), 1)
         self.assertIn('value="headline"', results)
         self.assertIn('<tr data-kind="definition"', results)
-        self.assertIn('including <a href="results/#main-results">1 main result</a>', home)
+        self.assertIn("including 1 main result", home)
         self.assertIn(f'href="../families/sample/#{anchor}"', results)
         self.assertIn("All 1 definition and 2 theorems in the catalog.", results)
         manifest = json.loads(output["catalog-manifest.json"])
         self.assertEqual(manifest["pages"][0]["headlines"], ["RealRooted.Challenges.Sample.proven"])
+
+    def test_sequence_metadata_requires_locator(self) -> None:
+        from challenge_catalog import parse_challenge_source
+        block = catalog_block().replace('version = 1', 'version = 1\nkind = "sequence"')
+        with self.assertRaisesRegex(CatalogError, "sequence pages require"):
+            parse_challenge_source("sample.lean", block)
+        page = parse_challenge_source("sample.lean", block.replace(
+            'kind = "sequence"', 'kind = "sequence"\nconjecture = "Conjecture 3"'))
+        self.assertEqual(page.conjecture, "Conjecture 3")
 
     def test_markdown_subset(self) -> None:
         from challenge_catalog import render_markdown

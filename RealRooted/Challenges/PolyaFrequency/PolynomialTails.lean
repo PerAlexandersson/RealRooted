@@ -48,7 +48,6 @@ headline = true
 name = "Polynomial.forall_nat_eval_nonneg_iff_fwdDiff_iter"
 module = "RealRooted.Mathlib.Algebra.Group.ForwardDiff"
 label = "Newton's forward-difference test for nonnegativity on the natural numbers"
-headline = true
 
 [[theorems]]
 name = "RealRooted.causalFwdDiff_iter_polynomialValueSeq_eq_eulerNumerator_coeff"
@@ -59,7 +58,6 @@ label = "Iterated causal differences of polynomial values are the Euler numerato
 name = "RealRooted.isPFPolynomial_polynomialValueEulerNumerator_of_polyaFreqSeq"
 module = "RealRooted.PolynomialValueEulerNumerator.PF.Causal"
 label = "A PF polynomial-value sequence has a PF Euler numerator"
-headline = true
 
 [[theorems]]
 name = "RealRooted.isPolyaFreqSeq_polynomialValueSeq_of_eulerNumerator"
@@ -141,7 +139,7 @@ F. Brenti, *Unimodal, log-concave and Pólya frequency sequences in combinatoric
 Mem. Amer. Math. Soc. 81 (1989), no. 413, Theorem 4.4.4 [@Brenti1989]; P. Brändén, “On
 linear transformations preserving the Pólya frequency property,” *Trans. Amer. Math. Soc.* 358
 (2006), 3697–3716 [@Branden2006]. The results on polynomial tails and Newton's
-forward-difference test (RealRooted issue #1955, with the proof found by the Aristotle prover)
+forward-difference test
 have no source in the literature that we are aware of.
 <!-- /realrooted-catalog-content -->
 

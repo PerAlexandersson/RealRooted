@@ -12,6 +12,7 @@ version = 1
 section = "theorems"
 slug = "morris-flow"
 formalized = "2026-10-16"
+tags = []
 references = [
   "LiuZhang2026bx",
 ]
@@ -52,7 +53,6 @@ label = "The normalized flow exp(−t ε_λ) exp(t D_q) E_λ"
 name = "RealRooted.LiuZhang.MvRealStable.morrisDExp"
 module = "RealRooted.MultivariateStability.MorrisDFlow"
 label = "Liu–Zhang, Theorem 4.9: exp(t D_q) preserves real stability for t ≥ 0"
-headline = true
 
 [[theorems]]
 name = "RealRooted.LiuZhang.MvRealStable.morrisDExp_of_symmetric"
@@ -78,7 +78,6 @@ label = "A nonzero coefficientwise limit of the normalized flow is real stable"
 name = "RealRooted.LiuZhang.existsUnique_morrisEigenfunction"
 module = "RealRooted.MultivariateStability.MorrisEigenfunction"
 label = "Liu–Zhang, Theorem 4.12: a unique normalized eigenfunction of D_q"
-headline = true
 
 [[theorems]]
 name = "RealRooted.LiuZhang.MvRealStable.morrisEigenfunction"

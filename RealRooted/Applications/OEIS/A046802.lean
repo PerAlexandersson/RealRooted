@@ -106,27 +106,27 @@ theorem A046802_one :
     HaglundZhang.row, HaglundZhang.matrix, thresholdMatrix,
     thresholdRow, thresholdEntry, matPolyAction, List.range_succ]
 
+/-- The second and third rows share the same finite matrix calculation. -/
+private theorem A046802_initial_rows :
+    A046802 2 = 1 + 3 * X + X ^ 2 ∧
+    A046802 3 = 1 + 7 * X + 7 * X ^ 2 + X ^ 3 := by
+  constructor <;>
+    norm_num [A046802, HaglundZhang.binomialEulerianPolynomial,
+      HaglundZhang.terminalPolynomial, HaglundZhang.binomialRefined,
+      HaglundZhang.binomialMatrix, HaglundZhang.binomialThresholds,
+      HaglundZhang.binomialRows, HaglundZhang.binomialMarker,
+      HaglundZhang.row, HaglundZhang.matrix, thresholdMatrix,
+      thresholdRow, thresholdEntry, matPolyAction, List.range_succ] <;> ring_nf
+
 /-- The second A046802 row. -/
 theorem A046802_two :
-    A046802 2 = 1 + 3 * X + X ^ 2 := by
-  norm_num [A046802, HaglundZhang.binomialEulerianPolynomial,
-    HaglundZhang.terminalPolynomial, HaglundZhang.binomialRefined,
-    HaglundZhang.binomialMatrix, HaglundZhang.binomialThresholds,
-    HaglundZhang.binomialRows, HaglundZhang.binomialMarker,
-    HaglundZhang.row, HaglundZhang.matrix, thresholdMatrix,
-    thresholdRow, thresholdEntry, matPolyAction, List.range_succ]
-  ring
+    A046802 2 = 1 + 3 * X + X ^ 2 :=
+  A046802_initial_rows.1
 
 /-- The third A046802 row. -/
 theorem A046802_three :
-    A046802 3 = 1 + 7 * X + 7 * X ^ 2 + X ^ 3 := by
-  norm_num [A046802, HaglundZhang.binomialEulerianPolynomial,
-    HaglundZhang.terminalPolynomial, HaglundZhang.binomialRefined,
-    HaglundZhang.binomialMatrix, HaglundZhang.binomialThresholds,
-    HaglundZhang.binomialRows, HaglundZhang.binomialMarker,
-    HaglundZhang.row, HaglundZhang.matrix, thresholdMatrix,
-    thresholdRow, thresholdEntry, matPolyAction, List.range_succ]
-  ring
+    A046802 3 = 1 + 7 * X + 7 * X ^ 2 + X ^ 3 :=
+  A046802_initial_rows.2
 
 /-- Consecutive A046802 rows strictly interlace. -/
 theorem A046802_strictInterl_succ (n : ℕ) :
@@ -244,7 +244,7 @@ theorem binomial_strictInterl_succ (n : ℕ) :
     convert h using 1
     unfold wronskian
     simp only [derivative_sub]
-    ring
+    ring_nf
   have hstrict :=
     strictInterl_of_allComboRealRooted_of_wronskian_nonneg
       hp_pos hg_pos hall_pg hW
@@ -262,7 +262,7 @@ private theorem binomial_step (n : ℕ) :
   unfold nextRow
   push_cast
   norm_num [map_add, map_mul, map_ofNat]
-  ring
+  ring_nf
 
 /-- Every sequence with the A046802 initial rows and classical terminal
 recurrence has strict adjacent interlacing.  The third advertised row keeps the registry

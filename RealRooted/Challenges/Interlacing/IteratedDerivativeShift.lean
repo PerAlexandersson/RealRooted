@@ -12,6 +12,8 @@ version = 1
 section = "theorems"
 slug = "iterated-derivative-shift"
 formalized = "2026-10-05"
+authors = ["Schur", "Pólya", "Obreschkoff"]
+tags = []
 references = [
   "SchurPolya1914",
   "Obreschkoff1963",
@@ -32,7 +34,6 @@ headline = true
 name = "RealRooted.strictInterl_tDeriv"
 module = "RealRooted.IteratedDerivativeShift"
 label = "Positive shifts give interlacing"
-headline = true
 
 [[theorems]]
 name = "RealRooted.derivative_strictInterl_tDeriv_of_nonpos"

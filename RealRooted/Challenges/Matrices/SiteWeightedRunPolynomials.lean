@@ -115,7 +115,7 @@ Edrei–Thoma products and then needs a limiting argument.
 
 ## What is new
 
-The proof is new, developed for RealRooted (issue #2485), and is of independent research
+The proof is new, developed for RealRooted, and is of independent research
 interest: the transfer identity for site-weighted run sums and the reflection of the Hessenberg
 vector recursion are not taken from the literature, and the classical constant-matrix theorem is
 used only as the preservation input.

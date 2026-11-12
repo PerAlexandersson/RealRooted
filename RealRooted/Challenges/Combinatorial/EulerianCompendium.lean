@@ -102,6 +102,7 @@ name = "RealRooted.EulerianCompendium.PaperChallenges.peakValue_stability_and_we
 module = "RealRooted.Challenges.Combinatorial.EulerianCompendium"
 label = "Peak-value stability and weighted interlacing"
 tags = ["coauthored-paper"]
+headline = true
 
 [[theorems]]
 name = "RealRooted.EulerianCompendium.PaperChallenges.zigzagEulerian_roots"

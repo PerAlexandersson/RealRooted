@@ -10,6 +10,7 @@ version = 1
 section = "theorems"
 slug = "euler-multipliers"
 formalized = "2026-11-10"
+authors = []
 tags = ["realrooted-original"]
 references = [
   "LiuWang2007",
@@ -73,7 +74,7 @@ $G_n\ll G_{n+1}$.  The canonical source sequence above and the identity
 $G_n=c(\theta+\sigma)F_n$ establish this result without source hypotheses
 in the theorem interface.
 
-**Provenance.** The proof is new, developed for RealRooted (issue #2512),
+**Provenance.** The proof is new, developed for RealRooted,
 and is of independent research interest.  The critical root-sign criteria
 used in the formalization are classical results of Liu--Wang and Ma--Wang
 [@LiuWang2007, Thm. 2.1; @MaWang2008, Thm. 2].
@@ -86,8 +87,7 @@ this supplies the Eulerian-polynomial applications A065826 and A348576.
 ## References
 
 See [@LiuWang2007] and [@MaWang2008] for the classical interlacing
-criteria.  The Euler-multiplier theorem and its applications were developed
-for [RealRooted issue #2512](https://github.com/PerAlexandersson/RealRooted/issues/2512).
+criteria.  The Euler-multiplier theorem and its applications were developed in this library.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proof lives in

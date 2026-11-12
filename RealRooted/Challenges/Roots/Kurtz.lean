@@ -10,6 +10,7 @@ version = 1
 section = "theorems"
 slug = "kurtz"
 formalized = "2026-07-18"
+tags = []
 references = [
   "Kurtz1992",
 ]

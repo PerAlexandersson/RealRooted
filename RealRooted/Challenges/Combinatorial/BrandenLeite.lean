@@ -56,13 +56,11 @@ label = "Coefficients of the negative formal logarithm"
 name = "RealRooted.BrandenLeite.affineNegativePowerCoeff_factor_properties"
 module = "RealRooted.BrandenLeite.PositivePowerFactors"
 label = "Positive real powers: negative roots, exact degree and consecutive interlacing"
-headline = true
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.affineLogCoeff_factor_properties"
 module = "RealRooted.BrandenLeite.LogarithmicFactors"
 label = "Logarithmic rows: negative roots, exact degree and consecutive interlacing"
-headline = true
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.affineNegativePowerCoeff_factor_simple_and_disjoint"
@@ -99,7 +97,6 @@ headline = true
 name = "RealRooted.BrandenLeite.chainPolynomial_eq_zero_or_splits_of_isTotallyNonneg"
 module = "RealRooted.BrandenLeite.Theorem37"
 label = "Chain polynomials are real-rooted"
-headline = true
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.roots_chainPolynomial_mem_Icc_of_isTotallyNonneg"
@@ -115,7 +112,6 @@ label = "Chain polynomials have nonnegative coefficients"
 name = "RealRooted.BrandenLeite.isResolvable_iff_lowerUnitriangular_and_isTotallyNonneg"
 module = "RealRooted.BrandenLeite.ResolvableTotallyNonneg"
 label = "Resolvable if and only if totally nonnegative"
-headline = true
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.chainPolynomial_isPFPolynomial_of_pos_constantDiagonal"
@@ -166,7 +162,6 @@ label = "Numerators of g / (1 - x (g h - g(0) h(0)))"
 name = "RealRooted.weightedDerivativeKernel_isTotallyNonneg"
 module = "RealRooted.BrandenLeite.WeightedDerivativeKernel"
 label = "Weighted derivative kernels of real-rooted nonnegative polynomials are TNN"
-headline = true
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.det_weightedDerivativeKernel_affineNegativePowerCoeff"
@@ -237,7 +232,6 @@ label = "Rational rod rows are the exponent-one negative-power rows"
 name = "RealRooted.BrandenLeite.pfFactorNumerators_pf_and_interl"
 module = "RealRooted.BrandenLeite.PFFactorNumerators"
 label = "Numerators of two PF factors are PF polynomials and consecutive rows interlace"
-headline = true
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.roots_pfFactorNumerator_mem_Icc_of_pos"
@@ -263,7 +257,6 @@ label = "Delayed renewal rows of a PF polynomial are PF"
 name = "RealRooted.strictInterl_renewalPolynomial_residue_succ"
 module = "RealRooted.BrandenLeite.PFFactorRenewal"
 label = "Delayed renewal rows interlace within each residue class modulo the delay"
-headline = true
 -->
 
 <!-- realrooted-catalog-content -->
@@ -285,8 +278,7 @@ on this page are new results whose proofs were developed for RealRooted and are
 of independent research interest: rows for arbitrary real positive powers of
 affine kernels and their logarithmic limits (negative roots, exact degree
 $\lfloor n/r\rfloor$, positive coefficients and consecutive interlacing), numerators
-of PF polynomial factors, and delayed renewal rows within each residue class
-(issue #2441).
+of PF polynomial factors, and delayed renewal rows within each residue class.
 
 The matrices covered are exactly the resolvable ones: a lower-unitriangular
 matrix admits a resolution by nonnegative weights and monic polynomials if and
@@ -398,6 +390,12 @@ Whitney elimination factors a totally nonnegative unitriangular matrix into
 nonnegative resolution data. The subdivision operator $X^n \mapsto P_n$ sends each
 row of the resolution to an interlacing sequence, and interlacing is preserved
 under the nonnegative combinations that assemble the chain polynomials.
+
+## Relation to SymCat
+
+We formalize the infinite lower-unitriangular resolvability criterion. The
+[site’s labelled characterization](sf:tnnLowerUnitriangularMatrix) is stated for
+a finite weighted network.
 
 ## References
 

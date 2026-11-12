@@ -45,7 +45,6 @@ headline = true
 [[theorems]]
 name = "RealRooted.Challenges.JacobiDeformation.interlaces_derivative_polynomial_zero"
 label = "For 0 < δ < 1 the roots are simple and strictly interlace J′_{m,0}"
-headline = true
 
 [[theorems]]
 name = "RealRooted.JacobiDeformation.isPFPolynomial_polynomial"
@@ -56,7 +55,6 @@ label = "For every δ ≥ 0 the deformation is a PF polynomial"
 name = "RealRooted.Applications.OEIS.A132885.splits_simple_roots_neg"
 module = "RealRooted.Applications.OEIS.A132885"
 label = "Rows of A132885 have simple negative roots"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Applications.OEIS.A132885.isPFPolynomial_polynomial"

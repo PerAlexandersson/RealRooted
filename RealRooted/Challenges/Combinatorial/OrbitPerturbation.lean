@@ -11,6 +11,7 @@ version = 1
 section = "theorems"
 slug = "centered-euler-orbit-perturbation"
 formalized = "2026-11-10"
+authors = []
 tags = ["realrooted-original"]
 references = [
   "MaWang2008",
@@ -93,7 +94,7 @@ $p_n$ at the critical points of $p_n$.  The identity
 $h_{n+1}=x\,h_n+\alpha(x^2-1)p_n'$ then gives $h_n\ll h_{n+1}$ by the
 root-sign criterion of Ma and Wang [@MaWang2008, Thm. 2].
 
-**Provenance.** The proof is new, developed for RealRooted (issue #2513),
+**Provenance.** The proof is new, developed for RealRooted,
 and is of independent research interest.
 
 **Eulerian form.**  The Cayley transform
@@ -115,8 +116,7 @@ and A147565.
 The inverse Bernstein inequality follows T. Erdélyi, D. P. Hardin and
 E. B. Saff, *Inverse Bernstein inequalities and min-max-min problems on the
 unit circle*, Mathematika 61, 581–590.  See [@MaWang2008] for the
-root-sign criterion.  The theorem was developed for
-[RealRooted issue #2513](https://github.com/PerAlexandersson/RealRooted/issues/2513).
+root-sign criterion.  The theorem was developed in this library.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

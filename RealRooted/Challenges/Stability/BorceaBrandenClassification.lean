@@ -14,6 +14,7 @@ version = 1
 section = "theorems"
 slug = "borcea-branden-classification"
 formalized = "2026-10-13"
+tags = []
 references = [
   "BorceaBranden2009I",
 ]
@@ -80,14 +81,13 @@ name = """RealRooted.BorceaBranden.\
 preservesRealStabilityOnDegreeBox_iff_rankTwo_or_symbol_or_negRight"""
 module = "RealRooted.BorceaBranden.RealFiniteClassificationIff"
 label = "Real finite classification (Theorem 1.2)"
-headline = true
+symcat = "borceaBrandenFiniteSymbol"
 
 [[theorems]]
 name = """RealRooted.BorceaBranden.\
 preservesComplexStability_iff_rankOne_or_transcendentalSymbol_stableLimit"""
 module = "RealRooted.BorceaBranden.Transcendental.ComplexClassification"
 label = "Complex classification (Theorem 1.3)"
-headline = true
 
 [[theorems]]
 name = """RealRooted.BorceaBranden.\
@@ -95,18 +95,17 @@ preservesRealStability_iff_rankTwo_or_signedTranscendentalSymbol_stableLimit"""
 module = "RealRooted.BorceaBranden.Transcendental.RealClassification"
 label = "Real classification (Theorem 1.4)"
 headline = true
+symcat = "borceaBrandenTranscendentalSymbol"
 
 [[theorems]]
 name = "RealRooted.BorceaBranden.isComplexStableLimit_iff_forall_fallingFactorial_glue_stableOrZero"
 module = "RealRooted.BorceaBranden.Transcendental.PivotForward"
 label = "Complex stable-limit criterion (Theorem 5.1)"
-headline = true
 
 [[theorems]]
 name = "RealRooted.BorceaBranden.isRealStableLimit_iff_forall_realGlue_stableOrZero"
 module = "RealRooted.BorceaBranden.Transcendental.RealTheoremFiveOne"
 label = "Real stable-limit criterion (Theorem 5.1)"
-headline = true
 -->
 
 <!-- realrooted-catalog-content -->

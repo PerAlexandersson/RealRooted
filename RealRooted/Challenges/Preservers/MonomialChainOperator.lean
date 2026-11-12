@@ -15,6 +15,8 @@ version = 1
 section = "theorems"
 slug = "monomial-chain-operator"
 formalized = "2026-05-12"
+authors = []
+tags = []
 references = [
   "Branden2011b",
 ]
@@ -48,7 +50,6 @@ label = "Output roots are bounded by the images of (x + a)^D and (x + b)^D"
 name = "RealRooted.strictInterl_narayanaTransform"
 module = "RealRooted.NarayanaTransformation.Interlacing"
 label = "The Mao–Wang Narayana transform preserves interlacing"
-headline = true
 
 [[theorems]]
 name = "RealRooted.exists_hasDerivAt_finRootPolynomial_shift"

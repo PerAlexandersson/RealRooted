@@ -12,6 +12,7 @@ version = 1
 section = "theorems"
 slug = "szasz-growth"
 formalized = "2026-10-13"
+tags = []
 references = [
   "BorceaBranden2009I",
 ]
@@ -47,7 +48,6 @@ label = "Univariate Szász estimate"
 name = "MvPolynomial.norm_coeff_le_of_forall_jensenOp_stable"
 module = "RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate"
 label = "Szász coefficient bound (Borcea–Brändén, Lemma 5.4)"
-headline = true
 
 [[theorems]]
 name = "MvPolynomial.norm_eval_le_of_forall_jensenOp_stable"
@@ -59,7 +59,6 @@ headline = true
 name = "RealRooted.BorceaBranden.exists_norm_eval_le_exp_sq"
 module = "RealRooted.BorceaBranden.Transcendental.UniformSzasz"
 label = "Uniform Szász growth bound for stable polynomials with convergent coefficients"
-headline = true
 -->
 
 <!-- realrooted-catalog-content -->

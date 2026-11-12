@@ -11,6 +11,7 @@ version = 1
 section = "theorems"
 slug = "boros-moll-log-concavity-transform"
 formalized = "2026-10-08"
+tags = []
 references = [
   "XieZhang2026InfiniteLogConcavity",
   "Branden2011b",
@@ -33,12 +34,12 @@ label = "Generating polynomial of the log-concavity transform of a Boros–Moll 
 name = "RealRooted.BorosMoll.bmM_roots"
 module = "RealRooted.CombinatorialExamples.BorosMoll"
 label = "Xie–Zhang: the transform has n simple negative zeros"
-headline = true
 
 [[theorems]]
 name = "RealRooted.BorosMoll.bmM_strictInterlaces_narayanaN"
 module = "RealRooted.CombinatorialExamples.BorosMoll"
 label = "Xie–Zhang: its zeros strictly interlace those of the Narayana polynomial"
+headline = true
 
 [[definitions]]
 name = "RealRooted.Branden.IsInfinitelyLogConcave"
@@ -59,7 +60,6 @@ label = "Pólya-frequency polynomials are infinitely log-concave"
 name = "RealRooted.BorosMoll.borosMollRow_isInfinitelyLogConcave"
 module = "RealRooted.CombinatorialExamples.BorosMoll.Infinite"
 label = "The Boros–Moll rows are infinitely log-concave"
-headline = true
 -->
 
 <!-- realrooted-catalog-content -->

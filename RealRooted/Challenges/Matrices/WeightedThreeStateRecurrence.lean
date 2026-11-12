@@ -45,13 +45,11 @@ headline = true
 name = "RealRooted.weightedThreeStateRow_interl_succ"
 module = "RealRooted.MatrixInterlacing.WeightedThreeStateRows"
 label = "Consecutive rows interlace"
-headline = true
 
 [[theorems]]
 name = "RealRooted.weightedThreeStateRow_isRealRooted"
 module = "RealRooted.MatrixInterlacing.WeightedThreeStateRows"
 label = "Every row is real-rooted"
-headline = true
 
 [[theorems]]
 name = "RealRooted.weightedThreeStateRow_roots_neg"
@@ -155,8 +153,8 @@ is the inverse-function parametrization.
 ## What is new
 
 The matrix criterion is from [@Branden2015]; the three-state family, its rows and
-the characteristic analysis were developed in this library (RealRooted issues
-#2088 and #2089). The proof that every normalized row splits in the half-height
+the characteristic analysis were developed in this library. The proof that every normalized row
+splits in the half-height
 range is not part of this page.
 
 ## References

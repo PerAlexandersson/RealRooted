@@ -11,6 +11,8 @@ version = 1
 section = "theorems"
 slug = "shifted-chebyshev-families"
 formalized = "2026-11-01"
+authors = []
+references = []
 tags = ["realrooted-original"]
 
 [[definitions]]
@@ -32,7 +34,6 @@ label = "The coefficient reflection of the shifted Chebyshev family"
 name = "RealRooted.constantLagFamily_strictInterl"
 module = "RealRooted.ThreeTermRecurrence.ShiftedChebyshevFamily"
 label = "Consecutive rows of the constant-lag family interlace"
-headline = true
 
 [[theorems]]
 name = "RealRooted.constantLagFamily_hasSimpleRoots"
@@ -48,7 +49,6 @@ label = "Explicit binomial coefficients of the shifted Chebyshev family"
 name = "RealRooted.shiftedChebyshevFamily_isRoot_nonpos_iff"
 module = "RealRooted.ThreeTermRecurrence.ShiftedChebyshevRootRegions"
 label = "Row n has only nonpositive roots exactly when c ≥ -1 - 1/n"
-headline = true
 
 [[theorems]]
 name = "RealRooted.shiftedChebyshevFamily_isRoot_mem_Icc_iff"
@@ -118,8 +118,8 @@ $\binom{2n-k}{k}+(1+c)\binom{2n-k}{k-1}$.
 
 ## What is new
 
-These families arose from RealRooted issues #2290 and #2294; no published source is
-cited, and we attribute none.
+These families were developed in this library; no published source is cited,
+and we attribute none.
 
 ## References
 

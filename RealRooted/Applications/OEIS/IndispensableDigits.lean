@@ -49,29 +49,17 @@ private lemma rows_marker (i : Fin rows.length) :
     (rows.get i).2 = 1 + X := by
   fin_cases i <;> rfl
 
-private lemma threshold_row_zero :
-    RealRooted.thresholdRow 3 0 (1 + X) = [1 + X, 1, 1] := by
-  apply List.ext_get
-  · simp
-  · intro k hk₁ hk₂
-    have hk : k < 3 := by simpa using hk₂
-    interval_cases k <;> simp [RealRooted.thresholdRow, RealRooted.thresholdEntry]
-
-private lemma threshold_row_one :
-    RealRooted.thresholdRow 3 1 (1 + X) = [X, 1 + X, 1] := by
-  apply List.ext_get
-  · simp
-  · intro k hk₁ hk₂
-    have hk : k < 3 := by simpa using hk₂
-    interval_cases k <;> simp [RealRooted.thresholdRow, RealRooted.thresholdEntry]
-
-private lemma threshold_row_two :
+/-- The three threshold rows for the digit transition matrix. -/
+private lemma threshold_rows :
+    RealRooted.thresholdRow 3 0 (1 + X) = [1 + X, 1, 1] ∧
+    RealRooted.thresholdRow 3 1 (1 + X) = [X, 1 + X, 1] ∧
     RealRooted.thresholdRow 3 2 (1 + X) = [X, X, 1 + X] := by
-  apply List.ext_get
-  · simp
-  · intro k hk₁ hk₂
-    have hk : k < 3 := by simpa using hk₂
-    interval_cases k <;> simp [RealRooted.thresholdRow, RealRooted.thresholdEntry]
+  refine ⟨?_, ?_, ?_⟩ <;> apply List.ext_get <;>
+    first
+    | solve | simp
+    | intro k hk₁ hk₂
+      have hk : k < 3 := by simpa using hk₂
+      interval_cases k <;> simp [RealRooted.thresholdRow, RealRooted.thresholdEntry]
 
 private lemma rows_data : RealRooted.HaglundZhang.RowData rows := by
   constructor
@@ -95,7 +83,7 @@ private lemma matrix_action (v : State) :
       [[1 + X, 1, 1], [X, 1 + X, 1], [X, X, 1 + X]] := by
     simp only [RealRooted.HaglundZhang.matrix, RealRooted.thresholdMatrix, rows,
       List.map_cons, List.map_nil]
-    rw [threshold_row_zero, threshold_row_one, threshold_row_two]
+    rw [threshold_rows.1, threshold_rows.2.1, threshold_rows.2.2]
   rw [hm]
   simp [RealRooted.matPolyAction, vec, step, add_assoc]
 

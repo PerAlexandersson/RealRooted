@@ -11,6 +11,7 @@ version = 1
 section = "theorems"
 slug = "variable-delay-recurrences"
 formalized = "2026-11-01"
+tags = []
 references = [
   "Fisk2006x",
   "Wagner1992",
@@ -22,13 +23,11 @@ years = [1992, 2006]
 name = "RealRooted.splits_of_variableDelay_recurrence"
 module = "RealRooted.Interlacing.VariableDelay"
 label = "Variable-delay recurrences have real-rooted rows"
-headline = true
 
 [[theorems]]
 name = "RealRooted.strictInterl_of_variableDelay_recurrence"
 module = "RealRooted.Interlacing.VariableDelay"
 label = "Row i interlaces row n whenever p(n) ≤ i ≤ n"
-headline = true
 
 [[theorems]]
 name = "RealRooted.hasNonnegCoeffs_of_variableDelay_recurrence"
@@ -39,6 +38,7 @@ label = "Variable-delay rows have nonnegative coefficients"
 name = "RealRooted.strictInterl_of_scaled_variableDelay_recurrence"
 module = "RealRooted.Interlacing.VariableDelay"
 label = "The same interlacing for the scaled recurrence a(n+1) F(n) + b(n+1) X F(p(n+1))"
+headline = true
 
 [[theorems]]
 name = "RealRooted.strictInterl_of_fixedDelay_recurrence"
@@ -54,7 +54,6 @@ label = "Scaled fixed delay L: rows A and B interlace when A ≤ B ≤ A + L"
 name = "RealRooted.strictInterl_of_constant_prefix_fixed_delay_recurrence"
 module = "RealRooted.Interlacing.ConstantPrefixFixedDelay"
 label = "Fixed-delay recurrences started from a constant prefix: interlacing of rows"
-headline = true
 
 [[theorems]]
 name = "RealRooted.roots_neg_of_constant_prefix_fixed_delay_recurrence"

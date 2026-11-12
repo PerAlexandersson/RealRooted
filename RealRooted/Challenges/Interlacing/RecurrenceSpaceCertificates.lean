@@ -12,6 +12,7 @@ version = 1
 section = "theorems"
 slug = "recurrence-space-certificates"
 formalized = "2026-10-21"
+references = []
 authors = ["Alexandersson"]
 years = [2026]
 tags = ["realrooted-original"]
@@ -40,7 +41,6 @@ label = "Filtered operator built from shift, index multiplication and differenti
 name = "RealRooted.lagDefect_liftDefect"
 module = "RealRooted.RecurrenceSpace.Defect"
 label = "Universal source-and-lift defect identity"
-headline = true
 
 [[theorems]]
 name = "RealRooted.liftDefect_eq_zero_of_lagDefect_eq_zero"
@@ -72,6 +72,7 @@ name = "RealRooted.FilteredOperator.apply_eq_zero_iff"
 module = "RealRooted.RecurrenceSpace.Filtered"
 label = "Filtered finite check: vanishing of the first h·k terms suffices"
 headline = true
+symcat = "recurrenceFiniteVerification"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -134,8 +135,7 @@ Two facts reduce vanishing to a finite check.
 $(L f)_n = 0$ for all $n < h k$.
 
 The proofs are algebraic and, as far as we know, new in this packaging, although the closure
-properties resemble standard arguments for holonomic and Ore-algebra recurrences; the
-statements were proposed in RealRooted issue #1978.
+properties resemble standard arguments for holonomic and Ore-algebra recurrences.
 
 ## References
 

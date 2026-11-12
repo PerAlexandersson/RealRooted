@@ -10,6 +10,8 @@ version = 1
 section = "theorems"
 slug = "lag-two-eulerian-triangles"
 formalized = "2026-11-09"
+authors = []
+references = []
 tags = ["realrooted-original"]
 years = [2026]
 
@@ -48,8 +50,8 @@ label = "A157637 rows have simple negative roots and strictly interlace"
 <!-- realrooted-catalog-content -->
 # Positive lag-two Eulerian triangles
 
-**Provenance.** This proof is new, was developed for RealRooted (issue
-#2506), and is of independent research interest.  It gives a simultaneous
+**Provenance.** This proof is new, was developed for RealRooted, and is of independent research
+interest.  It gives a simultaneous
 strict-interlacing induction for a general Euler operator recurrence with a
 nonnegative lag-two correction.
 

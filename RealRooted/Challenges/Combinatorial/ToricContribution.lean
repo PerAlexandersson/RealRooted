@@ -11,6 +11,7 @@ version = 1
 section = "theorems"
 slug = "toric-g-contributions"
 formalized = "2026-09-02"
+tags = []
 references = [
   "Xiao2026x",
 ]
@@ -77,7 +78,8 @@ label = "Positive weighted sums are real-rooted"
 
 Xiao studies the toric $g$-contribution polynomials $g_{n,j}(x)$, whose
 coefficients are built from binomial coefficients and Catalan numbers.
-Xiao conjectured in Conjecture 4.2 that, for each
+In *The real-rootedness of the toric $g$-contribution polynomials*,
+Xiao conjectured in Conjecture 4.2 [@Xiao2026x, Conj. 4.2] that, for each
 $n = 2m + \varepsilon$ with $\varepsilon \in \{0, 1\}$,
 the row $(g_{n,0}, g_{n,1}, \dotsc, g_{n,\lfloor n/2\rfloor})$ is an interlacing sequence.
 
@@ -95,6 +97,13 @@ family. Here $R_d$ is the terminating ${}_3F_2$-type polynomial with
 coefficients `rCoeff m ε d k`; these polynomials share a Jacobi-type
 interlacer. Every weighted sum with $w_d>0$ for $0\le d\le m$ of the
 normalized reversed contributions splits over $\mathbb R$.
+
+## Relation to SymCat
+
+We formalize the row-wise interlacing assertion in the
+[toric contribution discussion](sf:toricGContributionPolynomial), corresponding to
+Xiao’s Conjecture 4.2. Xiao’s cross-size interlacing theorem in that discussion
+is a different statement.
 
 ## References
 

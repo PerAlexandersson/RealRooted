@@ -18,6 +18,7 @@ version = 1
 section = "families"
 slug = "generalized-snake-posets"
 formalized = "2026-10-05"
+tags = []
 references = [
   "BraunJal2026x",
   "AlexanderssonJal2024x",
@@ -102,7 +103,6 @@ name = """RealRooted.Challenges.GeneralizedSnakePosets.\
 rookPolynomial_generalizedSnakeBoard_recurrence"""
 module = "RealRooted.Challenges.Combinatorial.GeneralizedSnakePosets"
 label = "Recurrence for the snake polynomials"
-headline = true
 
 [[theorems]]
 name = """RealRooted.Challenges.GeneralizedSnakePosets.\
@@ -151,6 +151,12 @@ polynomials.
 - **Auxiliary interlacing.** For $n \geq 1$, $G_n \ll P_n$.
 
 Induction on the length of $w$ along the recurrence then gives the theorem.
+
+## Relation to SymCat
+
+We formalize the generalized-snake real-rootedness and interlacing result discussed
+in the [rook-matroid section](sf:rookMatroidPolynomials); the section also treats
+other rook-matroid properties.
 
 ## References
 

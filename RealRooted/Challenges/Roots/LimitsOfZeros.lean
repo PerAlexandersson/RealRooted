@@ -13,6 +13,8 @@ version = 1
 section = "theorems"
 slug = "limits-of-zeros"
 formalized = "2026-10-27"
+references = []
+tags = []
 authors = ["Beraha", "Kahane", "Weiss", "Sokal", "Wang", "Zhang"]
 years = [2004, 2017]
 

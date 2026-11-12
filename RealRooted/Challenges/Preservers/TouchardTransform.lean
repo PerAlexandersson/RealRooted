@@ -10,6 +10,8 @@ version = 1
 section = "theorems"
 slug = "touchard-transform"
 formalized = "2026-10-28"
+authors = []
+references = []
 tags = ["realrooted-original"]
 
 [[theorems]]
@@ -21,13 +23,11 @@ label = "The Touchard transform is inverse to the step-one falling factorial tra
 name = "RealRooted.basisTransform_touchard_mul"
 module = "RealRooted.Transforms.StirlingRootRegions"
 label = "The Touchard transform turns products into the parameter-one Poisson product"
-headline = true
 
 [[theorems]]
 name = "RealRooted.isPFPolynomial_basisTransform_touchard_prod"
 module = "RealRooted.Transforms.StirlingRootRegions"
 label = "Products of polynomials with PF Touchard transforms again have PF Touchard transforms"
-headline = true
 
 [[theorems]]
 name = "RealRooted.basisTransform_touchard_fallingFactorialPolynomial_mul"
@@ -54,7 +54,6 @@ headline = true
 name = "RealRooted.isPFPolynomial_touchard_half_shifted_cubic_iff"
 module = "RealRooted.Transforms.StirlingRootRegions"
 label = "Sharp region b ≥ -1/2 and w ≤ 3b + 9/4 for the half-shifted grouped cubic"
-headline = true
 
 [[theorems]]
 name = "RealRooted.not_splits_basisTransform_touchard_y_sq_add_half"
@@ -110,7 +109,7 @@ The transform identities are implicit in the inverse falling factorial transform
 and the Poisson product developed in this library. The root criterion follows the
 spirit of Brenti, Royle and Wagner, *Location of zeros of chromatic and related
 polynomials of graphs* (1994), Theorem 4.7; the grouped cubic extension was proved
-here directly (RealRooted issue #2134).
+here directly.
 
 ## References
 

@@ -10,6 +10,7 @@ version = 1
 section = "theorems"
 slug = "peak-polynomials"
 formalized = "2026-07-01"
+references = []
 tags = ["coauthored-paper"]
 authors = ["Alexandersson", "Jal", "Quemener"]
 

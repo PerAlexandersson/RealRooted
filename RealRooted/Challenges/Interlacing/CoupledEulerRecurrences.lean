@@ -11,6 +11,8 @@ version = 1
 section = "theorems"
 slug = "coupled-euler-recurrences"
 formalized = "2026-11-01"
+authors = []
+references = []
 tags = ["realrooted-original"]
 
 [[definitions]]

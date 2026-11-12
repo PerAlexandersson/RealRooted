@@ -10,6 +10,8 @@ version = 1
 section = "theorems"
 slug = "hermite-poulain"
 formalized = "2026-07-18"
+references = []
+tags = []
 authors = ["Hermite", "Poulain"]
 
 [[definitions]]
@@ -22,6 +24,7 @@ name = "RealRooted.HermitePoulain.differential_operator_preserves_real_rooted"
 module = "RealRooted.Hermite.Poulain"
 label = "Hermite–Poulain theorem"
 headline = true
+symcat = "hermitePoulainTheorem"
 
 [[theorems]]
 name = "RealRooted.HermitePoulain.interl_or_interl_applyAsDifferentialOperator"

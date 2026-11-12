@@ -494,23 +494,15 @@ theorem rowPoly_strictInterl_succ (d : ℕ) :
   rw [← hrec] at hstrict
   exact hstrict
 
-private lemma rowPoly_two :
-    rowPoly 2 = 14 + 14 * X + 2 * X ^ 2 := by
-  apply Polynomial.funext
-  intro x
-  norm_num [rowPoly, rowCoeff, Nat.choose,
-    Finset.sum_range_succ, Polynomial.eval_finsetSum,
-    Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C,
-    Polynomial.eval_X, Polynomial.eval_pow]
-
-private lemma rowPoly_three :
+/-- The first two rows in the degree-two tail. -/
+private lemma rowPoly_initial :
+    rowPoly 2 = 14 + 14 * X + 2 * X ^ 2 ∧
     rowPoly 3 = 42 + 72 * X + 27 * X ^ 2 + 2 * X ^ 3 := by
-  apply Polynomial.funext
-  intro x
-  norm_num [rowPoly, rowCoeff, Nat.choose,
-    Finset.sum_range_succ, Polynomial.eval_finsetSum,
-    Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C,
-    Polynomial.eval_X, Polynomial.eval_pow]
+  constructor <;> apply Polynomial.funext <;> intro x <;>
+    norm_num [rowPoly, rowCoeff, Nat.choose,
+      Finset.sum_range_succ, Polynomial.eval_finsetSum,
+      Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C,
+      Polynomial.eval_X, Polynomial.eval_pow]
 
 /-- The first-order update for the model beginning at degree two. -/
 def nextRow (n : ℕ) (p : ℝ[X]) : ℝ[X] :=
@@ -563,13 +555,13 @@ theorem interlaces_of_recurrence
   have heq : ∀ m : ℕ, P (m + 1) = rowPoly (m + 3) := by
     intro m
     induction m with
-    | zero => rw [hone, rowPoly_three]
+    | zero => rw [hone, rowPoly_initial.2]
     | succ m ih =>
         rw [hrec m, ih]
         rw [tailUpdate_eq_nextRow, ← rowPoly_nextRow (m + 1)]
   cases n with
   | zero =>
-      rw [hzero, hone, ← rowPoly_two, ← rowPoly_three]
+      rw [hzero, hone, ← rowPoly_initial.1, ← rowPoly_initial.2]
       exact (rowPoly_strictInterl_succ 2).toInterlaces (by
         rw [rowPoly_natDegree, rowPoly_natDegree])
   | succ n =>
