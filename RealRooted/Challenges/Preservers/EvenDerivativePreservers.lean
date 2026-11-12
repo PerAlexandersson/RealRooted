@@ -15,6 +15,7 @@ version = 1
 section = "theorems"
 slug = "even-derivative-preservers"
 formalized = "2026-11-09"
+authors = []
 tags = ["realrooted-original"]
 references = [
   "BorceaBranden2009I",
@@ -75,7 +76,6 @@ label = "Consecutive monomial images T_c(uᵐ) and T_c(uᵐ⁺¹) interlace"
 name = "RealRooted.strictInterl_evenDerivativeOperator"
 module = "RealRooted.EvenDerivative.Interlacing"
 label = "T_c preserves directed interlacing of nonnegative-coefficient pairs through degree N"
-headline = true
 
 [[theorems]]
 name = "RealRooted.interl_evenDerivativeOperator"
@@ -205,7 +205,7 @@ constructions are not formalized here.
 
 ## What is new
 
-The proof is new, developed for RealRooted (issue #2380), and is of independent research
+The proof is new, developed for RealRooted, and is of independent research
 interest. The classical inputs are the Grace–Walsh–Szegő polarization of real-rooted symmetric
 polynomials to real stable multiaffine polynomials, the Hermite–Biehler theorem and the
 Hermite–Poulain theorem; the folding, the half-plane maps $z\mapsto z-r/z$, the lower-degree

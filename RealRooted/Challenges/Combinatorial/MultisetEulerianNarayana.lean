@@ -13,6 +13,7 @@ version = 1
 section = "families"
 slug = "multiset-eulerian-narayana"
 formalized = "2026-10-07"
+tags = []
 references = [
   "ZhangZhao2026x",
   "LinMaMaZhou2021",

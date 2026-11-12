@@ -11,6 +11,8 @@ version = 1
 section = "theorems"
 slug = "path-power-cliques-and-rows"
 formalized = "2026-10-13"
+authors = ["Chudnovsky", "Seymour"]
+tags = []
 references = [
   "ChudnovskySeymour2007",
 ]
@@ -59,7 +61,6 @@ label = "The OEIS A277627 row family"
 name = "RealRooted.splits_pathPowerCliquePolynomial"
 module = "RealRooted.CombinatorialExamples.PathPowerClique"
 label = "Path-power clique polynomials are real-rooted"
-headline = true
 
 [[theorems]]
 name = "RealRooted.strictInterl_pathPowerCliquePolynomial_add"
@@ -86,7 +87,6 @@ label = "Row recurrence of OEIS A193636 for the trisection rows Q(3, 3n)"
 name = "RealRooted.PathPowerRows.splits_a109955"
 module = "RealRooted.Applications.OEIS.PathPowerRows"
 label = "OEIS A109955 rows are real-rooted"
-headline = true
 
 [[theorems]]
 name = "RealRooted.PathPowerRows.strictInterl_a109955"

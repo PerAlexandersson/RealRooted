@@ -12,6 +12,8 @@ version = 1
 section = "theorems"
 slug = "signed-toeplitz-perturbations"
 formalized = "2026-11-09"
+authors = []
+references = []
 tags = ["realrooted-original"]
 
 [[definitions]]
@@ -44,7 +46,6 @@ headline = true
 name = "RealRooted.ToeplitzPerturbation.hasSimpleRoots_row"
 module = "RealRooted.Toeplitz.SignedPerturbation"
 label = "Every row has only simple roots"
-headline = true
 
 [[theorems]]
 name = "RealRooted.ToeplitzPerturbation.splits_row"
@@ -60,7 +61,6 @@ label = "Consecutive rows have no common root"
 name = "RealRooted.ToeplitzPerturbation.strictInterl_row_succ_of_sum_le"
 module = "RealRooted.Toeplitz.SignedPerturbation"
 label = "The bandwidth criterion ∑ j |c_j| ≤ (1/s)(1 - 1/s)^((s-1)/2) suffices"
-headline = true
 
 [[theorems]]
 name = "RealRooted.ToeplitzPerturbation.isMonicOfDegree_row"
@@ -111,7 +111,7 @@ finite verified prefix are used.
 
 ## What is new
 
-The proof is new, developed for RealRooted (issue #2486), and is of independent research
+The proof is new, developed for RealRooted, and is of independent research
 interest; no published source is cited, and we attribute none. The only external inputs are
 classical: the Chebyshev polynomials of the second kind and the implicit function theorem.
 

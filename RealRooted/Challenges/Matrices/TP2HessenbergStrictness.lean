@@ -84,7 +84,7 @@ hypothesis $d\ge2$ is needed.
 
 ## What is new
 
-The proof is new, developed for RealRooted (issue #2482), and is of independent research
+The proof is new, developed for RealRooted, and is of independent research
 interest; the classical constant-matrix theorem of Brändén [@Branden2015, Corollary 8.6] enters
 only through the weak certificate on which this page builds.
 

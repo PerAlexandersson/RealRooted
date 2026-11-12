@@ -62,7 +62,8 @@ simple and strictly negative, $M_{n-2}$ interlaces $A_n$, and the two polynomial
 root.
 
 Together with the recurrence identification of Elizalde, Rivera and Zhuang,
-this proves the case $\Pi = \{321\}$ of their Conjecture 4.4
+this proves the case $\Pi = \{321\}$ of Conjecture 4.4 in
+*Counting Pattern-Avoiding Permutations by Big Descents*
 [@ElizaldeRiveraZhuang2026, Conj. 4.4]. Lean verifies the recurrence-defined
 polynomials; the identification with the permutation enumerator is taken from
 their paper. See also

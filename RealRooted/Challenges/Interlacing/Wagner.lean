@@ -17,6 +17,7 @@ version = 1
 section = "theorems"
 slug = "wagner"
 formalized = "2026-07-10"
+tags = []
 references = [
   "Wagner1992",
 ]
@@ -114,6 +115,12 @@ if and only if $(x-r)f\ll(x-r)g$.
 Interlacing is not transitive, but a chain can be closed up. If
 $F_a \ll F_{a+1} \ll \dots \ll F_b$ and also $F_a \ll F_b$, then
 $F_i \ll F_j$ for all $a \le i \le j \le b$.
+
+## Relation to SymCat
+
+The headline formalizes the common-right addition clause of
+[Wagner’s lemma](sf:wagnerLemma). The common-left addition and multiplication-by-$x$
+clauses are published separately below.
 
 ## References
 

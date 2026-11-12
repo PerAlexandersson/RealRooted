@@ -13,6 +13,8 @@ version = 1
 section = "theorems"
 slug = "laguerre-inequalities"
 formalized = "2026-11-09"
+authors = []
+references = []
 tags = ["realrooted-original"]
 
 [[definitions]]
@@ -73,7 +75,6 @@ label = "The t-derivative of a coefficient row is κ times a row"
 name = "RealRooted.BrandenLeite.splits_affineNegativePowerRow_of_inequalities"
 module = "RealRooted.LaguerreInequalities.Rows"
 label = "Coefficient-row induction: the two Laguerre inequalities force every row to split"
-headline = true
 -->
 
 <!-- realrooted-catalog-content -->
@@ -149,7 +150,7 @@ derivative descent theorem shows that $F_n^\alpha$ splits.
 ## What is new
 
 The proof of the converse direction and of the coefficient-row induction is new: it was
-developed for RealRooted (issue #2481) and is of independent research interest. We make no
+developed for RealRooted and is of independent research interest. We make no
 claim of historical priority for the statement. Classical inputs are Laguerre's inequality
 and the product formula for $f(t+iy)f(t-iy)$ in the forward direction, and Rolle's theorem.
 

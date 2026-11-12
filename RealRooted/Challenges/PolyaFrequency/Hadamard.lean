@@ -28,6 +28,7 @@ version = 1
 section = "theorems"
 slug = "hadamard-products"
 formalized = "2026-07-03"
+tags = []
 references = [
   "SchurPolya1914",
   "Wagner1992",
@@ -70,13 +71,11 @@ label = "Factorial Hadamard product"
 [[theorems]]
 name = "RealRooted.Challenges.Hadamard.schurSzegoComp_eq_zero_or_splits"
 label = "Schur–Szegő composition preserves real-rootedness"
-headline = true
 
 [[theorems]]
 name = "RealRooted.rootMultiplicity_schurSzegoComp"
 module = "RealRooted.Hadamard.SchurSzegoMultiplicity"
 label = "Kostov–Shapiro: exact multiplicity of the root −ab of a Schur–Szegő composition"
-headline = true
 
 [[theorems]]
 name = "RealRooted.exists_forced_factors_of_rootMultiplicity_schurSzegoComp"
@@ -97,7 +96,6 @@ label = "Composition with a negative-rooted polynomial preserves real-rootedness
 name = "RealRooted.IsRealRootedIn.schurSzegoComp_Icc"
 module = "RealRooted.Hadamard.RootIntervals"
 label = "Kostov–Shapiro: roots in [−b, −a] and [−v, −u] give roots in [−bv, −au]"
-headline = true
 
 [[theorems]]
 name = "RealRooted.IsRealRootedIn.schurSzegoComp_Icc_zero"
@@ -128,7 +126,6 @@ label = "Fixed Schur–Szegő composition maps root rays, allowing zero output"
 name = "RealRooted.IsRealRootedIn.orderedRoot_schurSzegoComp_bounds"
 module = "RealRooted.Hadamard.OrderedRoots"
 label = "Coordinatewise bounds for the ordered roots of a Schur–Szegő composition"
-headline = true
 
 [[theorems]]
 name = "RealRooted.basisTransformₗ_schurSzegoComp"
@@ -164,7 +161,6 @@ label = "Identical invertible maps can have non-real-rooted rowwise Schur square
 name = "RealRooted.Kostov.interiorCoeff_composition"
 module = "RealRooted.Hadamard.KostovMap"
 label = "Kostov: Schur–Szegő factorizations have coefficients affine in σ(a)"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Kostov.coeffMap_eq_sigma"
@@ -175,7 +171,6 @@ label = "Kostov's coefficient map recovers the symmetric functions of a factoriz
 name = """RealRooted.Challenges.Hadamard.\
 isFiniteMultiplierSequence_iff_isPFPolynomial_jensenPolynomial"""
 label = "Finite Pólya–Schur theorem"
-headline = true
 
 [[theorems]]
 name = """RealRooted.Challenges.Hadamard.\
@@ -191,7 +186,6 @@ headline = true
 name = "RealRooted.IsPolyaFreqSeq.mul_coeff"
 module = "RealRooted.Hadamard.Consequences"
 label = "Maló: termwise products of finite PF sequences are PF"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.Hadamard.isPolyaFreqSeq_polynomialValueSeq_mul"
@@ -201,7 +195,6 @@ label = "Products of polynomial value sequences are PF"
 name = "RealRooted.IsPFPolynomial.polynomialValueEulerNumerator_of_roots_mem_Icc"
 module = "RealRooted.PolynomialValueEulerNumerator.Product.Brenti"
 label = "Brenti: zeros in [−1, 0] give a PF Euler numerator"
-headline = true
 
 [[theorems]]
 name = "RealRooted.IsPFPolynomial.hadamardProduct"
@@ -216,13 +209,11 @@ label = "Garloff–Wagner: the factorial Hadamard product preserves interlacing"
 [[theorems]]
 name = "RealRooted.Challenges.Hadamard.factorialHadamardProduct_eq_zero_or_splits"
 label = "Schur: the factorial product preserves real-rootedness"
-headline = true
 
 [[theorems]]
 name = "RealRooted.LiuMao.coeffLCNIZ_polynomialValueEulerNumerator_mul"
 module = "RealRooted.CoefficientShape.LiuMao"
 label = "Liu–Mao: log-concave Euler numerators without internal zeros are closed under products"
-headline = true
 -->
 
 <!-- realrooted-catalog-content -->
@@ -321,6 +312,12 @@ numerator, $\sum_{n \geq 0} p(n) x^n = W(p)(x) / (1-x)^{d+1}$. If the coefficien
 $W(p)$ and $W(q)$ are nonnegative, log-concave and without internal zeros, then so are
 the coefficients of $W(pq)$. The no-internal-zeros hypothesis cannot be dropped:
 $W(p) = 1 + x^3$ and $W(q) = x$ give $W(pq) = 4x + 3x^3 + x^4$.
+
+## Relation to SymCat
+
+For the [finite multiplier criterion](sf:finiteMultiplierSequenceCriterion), the selected
+Lean witness treats nonnegative multiplier sequences. The labelled site statement also
+allows the signed case.
 
 ## References
 

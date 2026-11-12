@@ -14,6 +14,7 @@ version = 1
 section = "theorems"
 slug = "wang-yeh"
 formalized = "2026-10-06"
+tags = []
 references = [
   "WangYeh2005",
 ]
@@ -29,16 +30,16 @@ label = "Coefficient-bidiagonal operator"
 name = "RealRooted.Challenges.WangYeh.eq_zero_or_splits_affine_add"
 label = "(bx + a) f + (dx + c) g is real-rooted or zero when ad ≥ bc"
 headline = true
+symcat = "wangYehAffineCriterion"
 
 [[theorems]]
 name = "RealRooted.Challenges.WangYeh.isPFPolynomial_bidiagonalOperator"
 label = "Affine bidiagonal transforms preserve Pólya-frequency polynomials"
-headline = true
+symcat = "wangYehPfPreserver"
 
 [[theorems]]
 name = "RealRooted.Challenges.WangYeh.isPolyaFreqSeq_row_of_bilinear_recurrence"
 label = "Rows of a bilinear triangular recurrence are Pólya-frequency sequences"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.WangYeh.isPFPolynomial_rows_of_bilinear_recurrence"

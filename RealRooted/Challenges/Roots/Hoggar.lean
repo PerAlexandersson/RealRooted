@@ -10,6 +10,8 @@ version = 1
 section = "theorems"
 slug = "hoggar-log-concavity"
 formalized = "2026-10-07"
+references = []
+tags = []
 authors = ["Hoggar"]
 years = [1974]
 

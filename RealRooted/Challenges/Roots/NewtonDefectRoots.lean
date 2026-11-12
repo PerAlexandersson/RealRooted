@@ -10,6 +10,8 @@ version = 1
 section = "theorems"
 slug = "local-newton-defect-roots"
 formalized = "2026-10-11"
+authors = ["Karpenko", "Vishnyakova", "Akian", "Gaubert", "Sharify"]
+tags = []
 references = [
   "KarpenkoVishnyakova2017",
   "AkianGaubertSharify2017",

@@ -11,6 +11,8 @@ version = 1
 section = "theorems"
 slug = "edrei-thoma"
 formalized = "2026-10-13"
+authors = ["Aissen", "Schoenberg", "Whitney", "Edrei"]
+tags = []
 references = [
   "AissenSchoenbergWhitney1952",
   "Edrei1953",
@@ -26,7 +28,6 @@ headline = true
 name = "RealRooted.EdreiThoma.isPolyaFreqSeries_canonicalProduct"
 module = "RealRooted.EdreiThoma.Easy"
 label = "Aissen–Schoenberg–Whitney: canonical products are Pólya-frequency"
-headline = true
 
 [[theorems]]
 name = "RealRooted.EdreiThoma.isPolyaFreqSeq_coeff_canonicalProduct"
@@ -137,6 +138,12 @@ follows Edrei's determinant identities [@Edrei1953] and monotone limits, but rep
 use of Nevanlinna's second main theorem by an elementary growth argument
 (Jensen's formula and a Borel-type lemma). Together the two directions give the
 classification of all one-sided Pólya-frequency sequences.
+
+## Relation to SymCat
+
+The headline formalizes the normalized necessity direction of the
+[Edrei–Thoma theorem](sf:edreiThomaTheorem). The canonical-product sufficiency
+direction is published separately below.
 
 ## References
 

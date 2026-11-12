@@ -10,6 +10,8 @@ version = 1
 section = "theorems"
 slug = "quadratic-interlacing-criterion"
 formalized = "2026-11-01"
+authors = []
+references = []
 tags = ["realrooted-original"]
 
 [[definitions]]
@@ -52,7 +54,6 @@ label = "H_y interlaces (X + 1) H_z exactly when z ≤ y"
 name = "RealRooted.normalizedQuadraticRows_interlaces_iff"
 module = "RealRooted.Interlacing.QuadraticRemainderCriterion"
 label = "Consecutive rows (X + 1)^n H_{y_n} interlace exactly when y_{n+1} ≤ y_n"
-headline = true
 
 [[theorems]]
 name = "RealRooted.normalizedQuadraticRow_degree_coeff_roots"

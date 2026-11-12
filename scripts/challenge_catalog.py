@@ -126,6 +126,8 @@ class CatalogPage:
     theorems: tuple[CatalogItem, ...]
     content: str
     title: str
+    kind: str | None = None
+    conjecture: str | None = None
 
     @property
     def items(self) -> tuple[CatalogItem, ...]:
@@ -493,6 +495,8 @@ def parse_challenge_source(
         "formalized",
         "tags",
         "references",
+        "kind",
+        "conjecture",
         "definitions",
         "theorems",
     }
@@ -516,7 +520,17 @@ def parse_challenge_source(
     if not definitions and not theorems:
         raise _source_error(source_path, "requires at least one definition or theorem")
     content = content_match.group(1).strip()
+    kind = metadata.get("kind")
+    conjecture = metadata.get("conjecture")
+    if kind is not None and kind != "sequence":
+        raise _source_error(source_path, "kind must be sequence when specified")
+    if conjecture is not None and (not isinstance(conjecture, str) or not conjecture.strip()):
+        raise _source_error(source_path, "conjecture must be a nonempty locator")
+    if kind == "sequence" and not conjecture:
+        raise _source_error(source_path, "sequence pages require a conjecture locator")
     return CatalogPage(
+        kind=kind,
+        conjecture=conjecture,
         source_path=source_path,
         section=section,
         slug=slug,
@@ -1534,19 +1548,12 @@ def _page_card(page: CatalogPage, href: str) -> str:
     kind = "theorem" if page.section == "theorems" else "definition"
     label = SECTION_LABELS[page.section]
     year = page.years[0] if page.years else ""
-    headlines = [
-        item.label
-        for item in page.theorems
-        if item.headline and item.label and item.label.casefold() != page.title.casefold()
-    ]
-    headline_html = ""
-    if headlines:
-        shown = "; ".join(headlines[:2]) + ("; …" if len(headlines) > 2 else "")
-        headline_html = (
-            '<span class="card-headlines"><span>Main results:</span> '
-            + html.escape(shown)
-            + "</span>"
-        )
+    selected = next((item for item in page.theorems if item.headline), None)
+    if selected is None:
+        selected = next(iter(page.theorems), None)
+    headline_html = (f'<span class="card-headlines">{html.escape(selected.label or "")}</span>'
+                     f'<span class="card-context"><code>{html.escape(selected.name)}</code></span>'
+                     if selected else "")
     return (
         f'<li class="catalog-card catalog-card--{kind} catalog-card--{page.section}" '
         f'data-title="{html.escape(page.title.casefold(), quote=True)}" data-year="{year}" '
@@ -1559,27 +1566,6 @@ def _page_card(page: CatalogPage, href: str) -> str:
         + _tag_badges(page.tags)
         + f'<span class="card-attribution">{html.escape(_attribution(page))}</span>'
         + f'<span class="card-formalized">{_formalized_label(page)}</span>'
-        '<span class="card-arrow" aria-hidden="true">→</span></a></li>'
-    )
-
-
-def _headline_card(page: CatalogPage, item: CatalogItem, href: str) -> str:
-    """A headline theorem stated on a concept or family page."""
-    year = page.years[0] if page.years else ""
-    title = item.label or item.name
-    tags = _effective_tags(page, item)
-    return (
-        '<li class="catalog-card catalog-card--theorem catalog-card--headline" '
-        f'data-title="{html.escape(title.casefold(), quote=True)}" data-year="{year}" '
-        f'data-formalized="{page.formalized}" data-tags="{html.escape(" ".join(tags))}">'
-        f'<a href="{html.escape(href, quote=True)}">'
-        '<span class="card-top"><span class="kind-badge kind-badge--theorem">'
-        '<span aria-hidden="true">⊢</span> Theorem</span></span>'
-        f'<strong class="card-title">{html.escape(title)}</strong>'
-        f'<span class="card-context">from <em>{html.escape(page.title)}</em></span>'
-        + _tag_badges(tags)
-        + f'<span class="card-attribution">{html.escape(_attribution(page))}</span>'
-        f'<span class="card-formalized">{_formalized_label(page)}</span>'
         '<span class="card-arrow" aria-hidden="true">→</span></a></li>'
     )
 
@@ -1696,7 +1682,8 @@ def _authors_page(
 
 
 def _results_page(
-    pages: Iterable[CatalogPage], resolved: dict[str, SourceDeclaration], revision: str
+    pages: Iterable[CatalogPage], resolved: dict[str, SourceDeclaration], revision: str,
+    offset: int = 0, limit: int = 200
 ) -> str:
     """Every selected declaration, filterable by text and kind."""
     rows: list[str] = []
@@ -1704,7 +1691,8 @@ def _results_page(
         (page, item) for page in pages for item in page.items
     ]
     entries.sort(key=lambda entry: ((entry[1].label or entry[1].name).casefold(), entry[1].name))
-    for page, item in entries:
+    total_entries = len(entries)
+    for page, item in entries[offset:offset + limit]:
         kind = item.expected_kind
         symbol = "⊢" if kind == "theorem" else "≔"
         title = item.label or ""
@@ -1739,6 +1727,10 @@ def _results_page(
         f"<p class=\"lede\">All {_plural(definitions, 'definition')} and "
         f"{_plural(theorems, 'theorem')} in the catalog.</p>"
         + _tag_legend()
+        + '<p>Filters apply to this page. ' + " ".join(
+            f'<a href="{("../results/" if n == 0 else f"../results-{n + 1}/")}">{n + 1}</a>'
+            for n in range((total_entries + limit - 1) // limit)
+        ) + '</p>'
         + '<div class="results-toolbar" data-results-filter>'
         '<label class="results-search"><span class="visually-hidden">Filter results</span>'
         '<input type="search" placeholder="Filter by name, page, author or tag" data-results-query></label>'
@@ -1838,19 +1830,8 @@ def render_site(
     topic_pages = [page for page in index_pages if page.section != "theorems"]
     theorem_cards = [
         ((page.title.casefold(), page.slug), _page_card(page, f"{page.section}/{page.slug}/"))
-        for page in index_pages
-        if page.section == "theorems"
-    ] + [
-        (
-            ((item.label or item.name).casefold(), item.name),
-            _headline_card(page, item, f"{page.section}/{page.slug}/#{item.anchor}"),
-        )
-        for page in index_pages
-        if page.section != "theorems"
-        for item in page.theorems
-        if item.headline
+        for page in index_pages if page.section == "theorems"
     ]
-    theorem_cards.sort(key=lambda entry: entry[0])
     total_definitions = sum(len(page.definitions) for page in pages)
     total_theorems = sum(len(page.theorems) for page in pages)
     total_headlines = sum(item.headline for page in pages for item in page.theorems)
@@ -1863,8 +1844,7 @@ def render_site(
         f"<p class=\"hero-stats\"><a href=\"results/\">{_plural(total_definitions, 'definition')} and "
         f"{_plural(total_theorems, 'theorem')}</a>"
         + (
-            f", including <a href=\"results/#main-results\">"
-            f"{_plural(total_headlines, 'main result')}</a>"
+            f", including {_plural(total_headlines, 'main result')}"
             if total_headlines
             else ""
         )
@@ -1882,7 +1862,7 @@ def render_site(
         + _catalog_group(
             "theorems",
             "Theorems",
-            "Theorem pages, and the main results from the concept and family pages. "
+            "Theorem pages. "
             "The complete list is under <a href=\"results/\">All results</a>.",
             "".join(card for _, card in theorem_cards),
         )
@@ -1967,6 +1947,12 @@ def render_site(
         f"{base_path}results/",
         base_path,
     )
+    result_count = sum(len(page.items) for page in pages)
+    for number in range(1, (result_count + 199) // 200):
+        files[f"results-{number + 1}/index.html"] = _template(
+            repo_root, _results_page(pages, resolved, revision, number * 200),
+            "All results", f"{base_path}results-{number + 1}/", base_path,
+        )
     files["authors/index.html"] = _template(
         repo_root,
         _authors_page(author_entries, base_path),

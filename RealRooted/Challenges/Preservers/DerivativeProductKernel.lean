@@ -10,6 +10,7 @@ version = 1
 section = "theorems"
 slug = "derivative-product-kernel"
 formalized = "2026-11-09"
+tags = []
 references = [
   "Branden2006",
   "BorceaBranden2009I",
@@ -46,7 +47,6 @@ label = "Real-rooted outputs on affine inputs force the roots into the set where
 name = "RealRooted.betaProduct_kernel_tfae"
 module = "RealRooted.DerivativeProduct.Kernel"
 label = "Kernel characterization of the diamond family: roots in [−1, 0]"
-headline = true
 
 [[theorems]]
 name = "RealRooted.assocProduct_kernel_tfae"

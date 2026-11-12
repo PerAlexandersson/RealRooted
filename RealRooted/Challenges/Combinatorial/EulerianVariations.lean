@@ -76,7 +76,6 @@ label = "Consecutive ternary run polynomials interlace"
 name = "RealRooted.SuperEulerian.isRealRooted_superEulerian"
 module = "RealRooted.CombinatorialExamples.SuperEulerian"
 label = "Super-Eulerian polynomials are real-rooted"
-headline = true
 
 [[theorems]]
 name = "RealRooted.SuperEulerian.strictInterl_superEulerian_succ"

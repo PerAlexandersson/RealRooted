@@ -10,6 +10,7 @@ version = 1
 section = "theorems"
 slug = "lee-yang"
 formalized = "2026-10-07"
+tags = []
 references = [
   "LeeYang1952",
   "Asano1970",

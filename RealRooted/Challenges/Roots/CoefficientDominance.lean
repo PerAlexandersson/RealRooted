@@ -16,6 +16,8 @@ version = 1
 section = "theorems"
 slug = "coefficient-dominance"
 formalized = "2026-09-01"
+authors = []
+tags = []
 references = [
   "Kozlov2022",
 ]

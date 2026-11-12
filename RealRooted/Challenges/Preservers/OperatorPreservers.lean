@@ -20,6 +20,7 @@ version = 1
 section = "theorems"
 slug = "operator-preservers"
 formalized = "2026-10-05"
+tags = []
 references = [
   "Branden2004operators",
   "Branden2006",
@@ -52,6 +53,7 @@ name = """RealRooted.Challenges.OperatorPreservers.\
 preservesInterlacing_of_preservesRealRootedOrZero"""
 label = "Real-rootedness preservers preserve interlacing"
 headline = true
+symcat = "operatorPreservesInterlacing"
 
 [[theorems]]
 name = "RealRooted.Challenges.OperatorPreservers.Interl.theta"

@@ -17,6 +17,7 @@ version = 1
 section = "theorems"
 slug = "euler-bidiagonal-interlacing"
 formalized = "2026-10-09"
+authors = []
 tags = ["realrooted-original"]
 references = [
   "AndrewsGawronskiLittlejohn2011",

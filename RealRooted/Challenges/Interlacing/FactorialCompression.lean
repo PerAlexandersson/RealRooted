@@ -11,6 +11,7 @@ version = 1
 section = "theorems"
 slug = "factorial-compression"
 formalized = "2026-10-09"
+tags = []
 references = [
   "Zhang2026SeparableInterlacing",
 ]
@@ -42,7 +43,6 @@ headline = true
 name = "RealRooted.strictInterl_schurSzegoComp_of_roots_neg"
 module = "RealRooted.Hadamard.SchurSzegoStrict"
 label = "Strict Schur–Szegő endpoint: strict interlacing is preserved"
-headline = true
 
 [[theorems]]
 name = "RealRooted.FactorialCompression.compression_one_nextPolynomial_strictInterl"
@@ -83,8 +83,8 @@ separable permutations in Zhang's argument [@Zhang2026SeparableInterlacing].
 
 ## References
 
-See [@Zhang2026SeparableInterlacing]. The Lean development follows the draft
-formalization of PR #1132 by yyou59548-design.
+See [@Zhang2026SeparableInterlacing]. The Lean development follows a
+formalization by yyou59548-design.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in `RealRooted.FactorialCompression` and

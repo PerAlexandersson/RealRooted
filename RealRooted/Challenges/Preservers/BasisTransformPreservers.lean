@@ -20,6 +20,8 @@ version = 1
 section = "theorems"
 slug = "basis-transform-preservers"
 formalized = "2026-11-03"
+authors = []
+references = []
 tags = ["realrooted-original"]
 
 [[definitions]]
@@ -67,7 +69,6 @@ label = "The degree-N version of the Newton-basis classification"
 name = "RealRooted.orderTwoBasis_pf_equivalences"
 module = "RealRooted.BasisTransform.OrderTwoPF"
 label = "PF preservation for an order-two basis: four equivalent conditions"
-headline = true
 
 [[theorems]]
 name = "RealRooted.basisTransform_orderTwoBasis_preserves_bounded_pf_iff"
@@ -83,7 +84,6 @@ label = "No degree cap detects PF preservation for order-two bases"
 name = "RealRooted.raySemigroupTransform_preservesPF_iff"
 module = "RealRooted.BasisTransform.SemigroupClassification"
 label = "The ray semigroup preserves PF polynomials exactly when a, b ≥ 0"
-headline = true
 
 [[theorems]]
 name = "RealRooted.raySemigroupTransform_add_time"
@@ -169,7 +169,6 @@ label = "Second-order application sequences from the time-one ray semigroup are 
 name = "RealRooted.translationLahWordTransform_isPFPolynomial"
 module = "RealRooted.BasisTransform.TranslationLahPositiveMeasure"
 label = "Finite words of translations and Lah flows with nonnegative parameters preserve PF"
-headline = true
 
 [[theorems]]
 name = "RealRooted.hasTranslationLahEGF_word"
@@ -407,8 +406,7 @@ rows $P_k$, $k\le d$, have nonnegative coefficients.
 ## What is new
 
 The statements on this page were developed in this library; the formalization
-cites no source for them, so we attribute none. In particular the order-two criterion is tracked in
-Issue 2186 of the repository. The classical background is the study of
+cites no source for them, so we attribute none. The classical background is the study of
 real-rootedness preservers and multiplier sequences (see the
 [multiplier sequences](/RealRooted/concepts/multiplier-sequences/) page), and the
 [Narayana polynomials](/RealRooted/families/narayana/) page uses the basis-transform

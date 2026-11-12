@@ -10,6 +10,7 @@ version = 1
 section = "theorems"
 slug = "left-production-matrices"
 formalized = "2026-11-10"
+references = []
 authors = ["X. Chen", "L. Fu", "J. Ruan"]
 years = [2025]
 tags = ["realrooted-original"]
@@ -138,7 +139,7 @@ $h=z$ give a totally nonnegative array with row polynomial $1+x+x^2$, which
 does not split over $\mathbb R$.
 
 The proof of the left-production Toeplitz identity and its PF Riordan
-specialization is new, developed for RealRooted (issue #2516), and is of
+specialization is new, developed for RealRooted, and is of
 independent research interest.  The classical PF-to-real-rooted step is the
 Aissen--Schoenberg--Whitney theorem.
 

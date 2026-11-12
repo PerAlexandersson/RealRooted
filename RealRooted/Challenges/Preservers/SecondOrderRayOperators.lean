@@ -14,6 +14,8 @@ version = 1
 section = "theorems"
 slug = "second-order-ray-operators"
 formalized = "2026-11-01"
+authors = []
+references = []
 tags = ["realrooted-original"]
 
 [[definitions]]
@@ -168,9 +170,8 @@ for every sufficiently large $n$.
 
 ## What is new
 
-The statements on this page were developed in this library; the quadratic
-case is tracked in RealRooted issue #2108. No published source is cited, and we
-attribute none.
+The statements on this page were developed in this library. No published source is cited,
+and we attribute none.
 
 ## References
 

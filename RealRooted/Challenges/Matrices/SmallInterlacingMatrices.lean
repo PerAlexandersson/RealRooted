@@ -10,6 +10,7 @@ version = 1
 section = "theorems"
 slug = "small-interlacing-matrices"
 formalized = "2026-10-06"
+tags = []
 references = [
   "Fisk2006x",
   "Branden2015",
@@ -41,12 +42,12 @@ label = "The 18 listed matrices"
 name = "RealRooted.Challenges.SmallInterlacingMatrices.nondegenerate_preservesInterlacing_iff"
 label = "A nondegenerate matrix preserves interlacing exactly when it is one of the 18"
 headline = true
+symcat = "smallInterlacingMatrices"
 
 [[theorems]]
 name = "RealRooted.Atomic2x2Matrix.ncard_isNondegenerate_and_preservesInterlacing"
 module = "RealRooted.MatrixInterlacing"
 label = "Exactly 18 nondegenerate matrices preserve interlacing"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Atomic2x2Matrix.card"

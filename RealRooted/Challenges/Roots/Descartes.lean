@@ -11,6 +11,8 @@ version = 1
 section = "theorems"
 slug = "descartes-rule-of-signs"
 formalized = "2026-09-27"
+references = []
+tags = []
 authors = ["Descartes", "Budan", "Fourier"]
 years = [1637, 1807, 1820]
 
@@ -29,6 +31,7 @@ name = "Polynomial.descartes_rule_of_signs"
 module = "RealRooted.RootCounting.Descartes"
 label = "Descartes' rule of signs"
 headline = true
+symcat = "descartesRuleOfSigns"
 
 [[theorems]]
 name = "Polynomial.descartes_rule_of_signs_negative"
@@ -39,7 +42,6 @@ label = "Descartes' rule of signs for negative roots"
 name = "Polynomial.budan_fourier"
 module = "RealRooted.Mathlib.Algebra.Polynomial.BudanFourier"
 label = "Budan–Fourier theorem"
-headline = true
 -->
 
 <!-- realrooted-catalog-content -->

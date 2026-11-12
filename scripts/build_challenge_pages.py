@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import pathlib
+import re
 import sys
 import tempfile
 
@@ -62,6 +63,21 @@ def main() -> int:
     root = args.repo_root.resolve()
     try:
         pages = load_catalog(root)
+        offenders = {page.source_path for page in pages
+                     if sum(item.headline for item in page.theorems) != 1}
+        for page in pages:
+            headlines = [item.name for item in page.theorems if item.headline]
+            if len(headlines) > 1:
+                print(f"warning: {page.source_path}: multiple headlines: {', '.join(headlines)}; using first", file=sys.stderr)
+            if re.search(r"\b(?:OEIS\s*)?A[0-9]{6}\b", page.title, re.I) and not page.conjecture:
+                raise CatalogError(f"{page.source_path}: sequence page requires a conjecture locator")
+        if args.check:
+            baseline_path = root / "scripts/headline_baseline.txt"
+            baseline = set(baseline_path.read_text(encoding="utf-8").splitlines())
+            errors = ([f"{path}: expected exactly one headline (new offender)" for path in sorted(offenders - baseline)]
+                      + [f"{path}: stale headline baseline entry" for path in sorted(baseline - offenders)])
+            if errors:
+                raise CatalogError("\n".join(errors))
         resolved = validate_sources(root, pages)
         revision = revision_at(root)
         if args.audit_report is not None:

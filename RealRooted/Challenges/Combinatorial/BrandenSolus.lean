@@ -19,6 +19,7 @@ version = 1
 section = "theorems"
 slug = "branden-solus"
 formalized = "2026-10-02"
+tags = []
 references = [
   "BrandenSolus2019",
 ]
@@ -59,7 +60,6 @@ label = "Derangements counted by excedances give the derangement polynomials d_n
 name = "RealRooted.DerangementStatistic.derangementExcGenPoly_isRealRooted"
 module = "RealRooted.CombinatorialExamples.DerangementStatistic"
 label = "The excedance polynomial of derangements is real-rooted for n ≥ 2"
-headline = true
 -->
 
 <!-- realrooted-catalog-content -->
@@ -89,6 +89,11 @@ formalized: $d_n(x) = \sum_{\sigma} x^{\operatorname{exc}(\sigma)}$, summed over
 derangements of $n$ letters, where $\operatorname{exc}$ counts excedances $i < \sigma(i)$.
 The proof establishes the excedance recurrence by removing the letter $0$ from a derangement.
 Moreover, $d_n$ is real-rooted for $n\ge2$.
+
+## Relation to SymCat
+
+We formalize the [symmetric-decomposition equivalences](sf:symmetricIDecomposition)
+when both symmetric pieces are nonzero, as required in the selected Lean statement.
 
 ## References
 

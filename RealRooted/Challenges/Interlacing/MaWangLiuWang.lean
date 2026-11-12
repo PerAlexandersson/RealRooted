@@ -19,6 +19,7 @@ version = 1
 section = "theorems"
 slug = "ma-wang-liu-wang"
 formalized = "2026-10-06"
+tags = []
 references = [
   "LiuWang2007",
   "MaWang2008",
@@ -41,18 +42,16 @@ label = "f ≪ F when g interlaces f without common zeros and F g ≤ 0 at the z
 name = "RealRooted.LiuWang.strictInterl_mul_add_mul_of_eval_nonpos"
 module = "RealRooted.LiuWang.General"
 label = "Liu–Wang criterion: f ≪ af + bg when b ≤ 0 at the zeros of f"
-headline = true
 
 [[theorems]]
 name = "RealRooted.strictInterl_of_eval_mul_derivative_nonpos"
 module = "RealRooted.MaWang.Weak.DerivativeSign"
 label = "f ≪ F when F f' ≤ 0 at the simple zeros of f"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.MaWangLiuWang.strictInterl_mul_add_mul_derivative_of_eval_nonpos"
 label = "Ma–Wang criterion: f ≪ uf + vf' when v ≤ 0 at the zeros of f"
-headline = true
+symcat = "maWangDerivativeCriterion"
 
 [[theorems]]
 name = "RealRooted.StrictInterl.eval_mul_eval_derivative_nonneg"

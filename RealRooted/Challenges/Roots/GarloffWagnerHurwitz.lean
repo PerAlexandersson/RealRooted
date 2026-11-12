@@ -10,6 +10,7 @@ version = 1
 section = "theorems"
 slug = "garloff-wagner-hurwitz"
 formalized = "2026-06-10"
+tags = []
 references = [
   "GarloffWagner1996",
 ]

@@ -16,6 +16,7 @@ version = 1
 section = "theorems"
 slug = "harper-clt"
 formalized = "2026-10-12"
+tags = []
 references = [
   "Bender1973",
   "Bona2009",
@@ -38,7 +39,6 @@ label = "Variance of a real-rooted coefficient distribution is Σᵢ qᵢ(1 − 
 name = "Polynomial.tendsto_standardizedCoeffDistribution"
 module = "RealRooted.Mathlib.Probability.CoeffDistribution"
 label = "Harper: real-rooted coefficient distributions are asymptotically normal"
-headline = true
 
 [[theorems]]
 name = "Polynomial.tendsto_localLimit_of_splits"

@@ -18,6 +18,8 @@ version = 1
 section = "theorems"
 slug = "operator-matrices-ordered-pf"
 formalized = "2026-11-03"
+authors = []
+references = []
 tags = ["realrooted-original"]
 
 [[definitions]]
@@ -49,13 +51,11 @@ label = "The thirteen allowed two-by-two blocks over {1, θ, X}"
 name = "RealRooted.OperatorMatrix.preservesOrderedPF_iff_preservesBlock_of_two_le"
 module = "RealRooted.OperatorMatrix.LocalToGlobal"
 label = "Local-to-global: ordered-PF preservation reduces to two-by-two blocks"
-headline = true
 
 [[theorems]]
 name = "RealRooted.OperatorMatrix.preservesOrderedPFPair_iff_isAllowedBlock"
 module = "RealRooted.OperatorMatrix.OneThetaX"
 label = "A two-by-two block over {1, θ, X} preserves ordered PF pairs iff it is one of thirteen"
-headline = true
 
 [[theorems]]
 name = "RealRooted.OperatorMatrix.preservesOrderedPF_letters_iff"
@@ -267,9 +267,9 @@ the scalar criterion with bounded ordered-PF preservation is not formalized here
 ## What is new
 
 The classification and the supporting differential lemmas were developed in this
-library, in Issue #1741 (the $\{1,\theta,x\}$ blocks and the mixed differential
-lemma) and Issue #1990 (the endpoint criterion behind $p\ll q\Rightarrow
-p+q\ll xp+q$). The formalization cites no external source for them, so we
+library, for the $\{1,\theta,x\}$ blocks, the mixed differential lemma, and the
+endpoint criterion behind $p\ll q\Rightarrow p+q\ll xp+q$. The formalization cites no
+external source for them, so we
 attribute none. The local-to-global principle has the same $2\times2$ shape as
 the criterion on the matrix interlacing page, which is the classical background
 for polynomial-matrix entries.

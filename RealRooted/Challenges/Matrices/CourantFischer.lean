@@ -10,6 +10,7 @@ version = 1
 section = "theorems"
 slug = "courant-fischer"
 formalized = "2026-07-01"
+tags = []
 references = [
   "Courant1920",
   "Fischer1905",

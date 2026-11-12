@@ -10,6 +10,7 @@ version = 1
 section = "theorems"
 slug = "van-der-waerden"
 formalized = "2026-10-07"
+tags = []
 references = [
   "Gurvits2008",
   "Egorychev1981",

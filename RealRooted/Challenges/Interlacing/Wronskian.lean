@@ -12,6 +12,8 @@ version = 1
 section = "theorems"
 slug = "wronskian-criterion"
 formalized = "2026-10-06"
+authors = ["Fisk"]
+tags = []
 references = [
   "Fisk2006x",
 ]
@@ -21,12 +23,12 @@ name = "RealRooted.strictInterl_iff_wronskian_eval_nonneg"
 module = "RealRooted.Wronskian.Converse"
 label = "Interlacing is a nonnegative Wronskian plus a multiplicity bound"
 headline = true
+symcat = "wronskianCriterion"
 
 [[theorems]]
 name = "RealRooted.strictInterl_of_wronskian_eval_nonneg"
 module = "RealRooted.Wronskian.Converse"
 label = "A nonnegative Wronskian and the multiplicity bound give interlacing"
-headline = true
 
 [[theorems]]
 name = "RealRooted.wronskian_eval_nonneg_of_strictInterl"

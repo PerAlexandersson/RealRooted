@@ -12,6 +12,8 @@ version = 1
 section = "theorems"
 slug = "f-transform-recurrences"
 formalized = "2026-10-11"
+authors = ["Brändén", "Solus"]
+tags = []
 references = [
   "BrandenSolus2019",
 ]
@@ -45,7 +47,6 @@ label = "A constant initial row gives the transformed recurrence identity"
 name = "RealRooted.splits_fPolynomial"
 module = "RealRooted.SymmetricDecomposition.FPolynomial"
 label = "The f-polynomial transform preserves splitting"
-headline = true
 
 [[theorems]]
 name = "RealRooted.roots_fPolynomial_natDegree_eq_map"
@@ -91,6 +92,7 @@ label = "Half-growth sequences transfer consecutive interlacing"
 name = "RealRooted.splits_fPolynomial_iff"
 module = "RealRooted.SymmetricDecomposition.EulerFPolynomial"
 label = "For deg p ≤ d the f-transform splits exactly when p splits"
+headline = true
 
 [[theorems]]
 name = "RealRooted.fPolynomial_theta_add_C_mul"
@@ -111,7 +113,6 @@ label = "For a > 0 the image keeps the degree n and the input interlaces it"
 name = "RealRooted.forall_intervalEulerOperator_roots_mem_Icc_iff"
 module = "RealRooted.SymmetricDecomposition.EulerFPolynomial"
 label = "The window [-1, 0] is preserved exactly when a ≥ 0 or a ≤ -n"
-headline = true
 -->
 
 <!-- realrooted-catalog-content -->

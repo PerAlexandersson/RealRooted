@@ -25,13 +25,11 @@ years = [2006]
 name = "RealRooted.forall_splits_basisTransform_touchard_iff"
 module = "RealRooted.Transforms.TouchardRootDomain"
 label = "The Touchard transform of every polynomial rooted in J is real-rooted iff J ⊆ (−∞, 1/4]"
-headline = true
 
 [[theorems]]
 name = "RealRooted.forall_isRealRootedIn_Iic_basisTransform_touchard_iff"
 module = "RealRooted.Transforms.TouchardRootDomain"
 label = "The upper ray (−∞, c] is invariant under the Touchard transform iff 0 ≤ c ≤ 1/4"
-headline = true
 
 [[theorems]]
 name = "RealRooted.forall_splits_brandenE_iff"
@@ -43,13 +41,11 @@ headline = true
 name = "RealRooted.forall_isRealRootedIn_Icc_brandenE_iff"
 module = "RealRooted.Transforms.BrandenE.RootDomain"
 label = "The interval [A, B] is invariant under the E transform iff L ≤ A ≤ −1 and 0 ≤ B ≤ U"
-headline = true
 
 [[theorems]]
 name = "RealRooted.betaProduct_one_isRealRootedIn_Icc"
 module = "RealRooted.DerivativeProduct.DiamondIntervals"
 label = "The diamond product of a [−1, 0]-rooted and a [A, B]-rooted polynomial is [A, B]-rooted"
-headline = true
 
 [[theorems]]
 name = "RealRooted.IsRealRootedIn.basisTransform_touchard"
@@ -178,7 +174,7 @@ comes from $T\bigl((t-c)^2\bigr)$ and $E\bigl((t-c)^2\bigr)$, whose roots are ex
 
 ## What is new
 
-The proofs are new, developed for RealRooted (issue #2365), and are of independent research
+The proofs are new, developed for RealRooted, and are of independent research
 interest; we are not aware of a published statement of these sharp domains, and we make no
 priority claim. The classical inputs are cited as classical: Brändén's theorem that fixed
 Poisson and diamond multiplication by a PF, respectively $[-1,0]$-rooted, kernel preserves

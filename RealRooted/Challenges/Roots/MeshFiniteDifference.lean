@@ -19,6 +19,8 @@ version = 1
 section = "theorems"
 slug = "mesh-finite-difference"
 formalized = "2026-10-27"
+references = []
+tags = []
 authors = ["Brändén", "Krasikov", "Shapiro"]
 years = [2016]
 

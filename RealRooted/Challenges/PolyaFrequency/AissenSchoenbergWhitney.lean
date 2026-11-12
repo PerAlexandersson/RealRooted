@@ -14,6 +14,7 @@ version = 1
 section = "theorems"
 slug = "aissen-schoenberg-whitney"
 formalized = "2026-10-05"
+tags = []
 references = [
   "AissenSchoenbergWhitney1952",
 ]
@@ -59,6 +60,7 @@ label = "Sampled sine vector of the argument of a root"
 name = "RealRooted.Challenges.AissenSchoenbergWhitney.isPolyaFreqSeq_coeff_iff_isPFPolynomial"
 label = "PF coefficients if and only if a PF polynomial"
 headline = true
+symcat = "aissenSchoenbergWhitney"
 
 [[theorems]]
 name = "RealRooted.Challenges.AissenSchoenbergWhitney.IsPolyaFreqSeq.splits_and_roots_nonpos"

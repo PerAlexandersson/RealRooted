@@ -14,6 +14,8 @@ version = 1
 section = "families"
 slug = "laguerre-polynomials"
 formalized = "2026-09-07"
+authors = ["Szegő", "Durán"]
+tags = []
 references = [
   "Szego1939",
 ]
@@ -27,7 +29,6 @@ label = "Generalized Laguerre polynomials"
 name = "RealRooted.generalizedLaguerre_splits"
 module = "RealRooted.Laguerre.Roots"
 label = "Generalized Laguerre polynomials are real-rooted"
-headline = true
 
 [[theorems]]
 name = "RealRooted.generalizedLaguerre_roots_neg"
@@ -43,6 +44,7 @@ label = "Generalized Laguerre polynomials have simple roots"
 name = "RealRooted.generalizedLaguerre_strictInterl_succ"
 module = "RealRooted.Laguerre.Roots"
 label = "Consecutive generalized Laguerre polynomials interlace"
+headline = true
 
 [[theorems]]
 name = "RealRooted.generalizedLaguerre_satisfiesFavardRecurrence"
@@ -68,7 +70,6 @@ label = "The auxiliary polynomial Σ (-1)^j γ_j (X)_{K-j}"
 name = "RealRooted.laguerreCombination_splits_simple_roots_pos_of_auxiliary"
 module = "RealRooted.Laguerre.GeneralizedBell"
 label = "Auxiliary roots below α + 1 give a combination with simple positive roots"
-headline = true
 
 [[theorems]]
 name = "RealRooted.laguerreRaisingSteps_splits_simple_roots_neg"
@@ -84,7 +85,6 @@ label = "A raising step interlaces its input and has simple roots"
 name = "RealRooted.laguerreCombinationOne_splits_simple_roots_pos"
 module = "RealRooted.Laguerre.FiniteCombinations"
 label = "For γ < α + 1, L_n + γ L_{n-1} has simple positive roots"
-headline = true
 
 [[theorems]]
 name = "RealRooted.laguerreCombinationOne_one_splits_simple_roots_pos"

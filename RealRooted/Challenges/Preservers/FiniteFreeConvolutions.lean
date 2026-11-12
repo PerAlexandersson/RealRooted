@@ -21,6 +21,7 @@ version = 1
 section = "theorems"
 slug = "finite-free-convolutions"
 formalized = "2026-09-11"
+tags = []
 references = [
   "MarcusSpielmanSrivastava2022",
   "GribinskiMarcus2022",
@@ -114,7 +115,6 @@ label = "Convolution by a fixed monic split factor preserves directed interlacin
 name = """RealRooted.Challenges.FiniteFreeConvolutions.\
 hasOnlyNonnegRoots_rectangularAdditiveConvolution"""
 label = "Gribinski–Marcus: the rectangular convolution preserves nonnegative roots"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.FiniteFreeConvolutions.splits_and_roots_nonneg_rectangular_neg_half"
@@ -128,7 +128,6 @@ label = "The parameter 1/2 preserves nonnegative roots"
 name = "RealRooted.splits_finiteFreeMultiplicativeConvolution"
 module = "RealRooted.FiniteFreeRootCount"
 label = "Marcus–Spielman–Srivastava: ⊠_d preserves real-rootedness"
-headline = true
 
 [[theorems]]
 name = "RealRooted.signedReciprocal_schurSzegoComp"
@@ -270,10 +269,8 @@ composition theorem on the Hadamard page applies.
 
 ## References
 
-See [@MarcusSpielmanSrivastava2022; @GribinskiMarcus2022; @LeakeRyder2018]. For the application to
-the Narayana transformation, see [symmetricfunctions.com][mao-wang].
-
-[mao-wang]: sf:thm:narayanaTransformationMaoWang
+See [@MarcusSpielmanSrivastava2022; @GribinskiMarcus2022; @LeakeRyder2018]. For the Narayana
+transformation itself, see the [Narayana page](/RealRooted/families/narayana/).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in

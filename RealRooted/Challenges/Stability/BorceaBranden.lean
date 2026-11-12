@@ -15,6 +15,7 @@ version = 1
 section = "theorems"
 slug = "borcea-branden"
 formalized = "2026-08-09"
+tags = []
 references = [
   "BorceaBranden2009I",
 ]
@@ -51,7 +52,6 @@ headline = true
 name = "RealRooted.BorceaBranden.finiteSymbol_preservesRealRootedUpTo"
 module = "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol"
 label = "Finite-symbol theorem: a stable symbol gives a real-rootedness preserver"
-headline = true
 
 [[theorems]]
 name = "RealRooted.BorceaBranden.coordinateDiagonalOperator_preserves_stability"
@@ -101,6 +101,13 @@ $f \star g = \sum_{a,b} f_{a,b} z^a v^b (1 + \partial_v)^{a+b} g$. It is associa
 multiplication by a nonzero real stable $f(z, v)$ with nonnegative coefficients preserves real
 stability of any right input, spectator variables included. The signed Weyl symbol of this
 operator is $f(z(1-w), v(1-w))$.
+
+## Relation to SymCat
+
+The headline gives the complex finite-symbol classification. The
+[site’s labelled finite-symbol theorem](sf:borceaBrandenFiniteSymbol) states the real
+classification, which is published on the
+[classification page](/RealRooted/theorems/borcea-branden-classification/).
 
 ## References
 

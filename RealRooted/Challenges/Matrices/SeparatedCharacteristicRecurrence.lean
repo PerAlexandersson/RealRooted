@@ -13,6 +13,8 @@ version = 1
 section = "theorems"
 slug = "separated-characteristic-recurrence"
 formalized = "2026-11-01"
+authors = []
+references = []
 tags = ["realrooted-original"]
 
 [[definitions]]
@@ -29,7 +31,6 @@ label = "Iterated rows of the matrix from a seed vector"
 name = "RealRooted.separatedCharacteristicMatrix_preservesInterlacingSeq0"
 module = "RealRooted.MatrixInterlacing.SeparatedCharacteristic"
 label = "The matrix preserves interlacing sequences when a_i ≥ 0 and b_j ≤ 0"
-headline = true
 
 [[theorems]]
 name = "RealRooted.separatedCharacteristicMatrix_preservesInterlacingSeq0_shift"
@@ -40,7 +41,6 @@ label = "The shifted form: a_i ≥ ρ and b_j ≤ ρ"
 name = "RealRooted.separatedCharacteristicRows_isPFPolynomial"
 module = "RealRooted.MatrixInterlacing.SeparatedCharacteristicRows"
 label = "Every coordinate of every iterate of an ordered PF seed is a PF polynomial"
-headline = true
 
 [[theorems]]
 name = "RealRooted.separatedCharacteristicRows_interl_succ"
@@ -57,7 +57,6 @@ label = "Iterates of an interlacing seed remain interlacing sequences"
 name = "RealRooted.separatedCharacteristicFinMatrix_charpoly"
 module = "RealRooted.MatrixInterlacing.SeparatedCharacteristicDeterminant"
 label = "The characteristic polynomial is ∏(T - a_i) - X ∏(T - b_j)"
-headline = true
 
 [[theorems]]
 name = "RealRooted.eq_separatedCharacteristicRows_coordinate_from"

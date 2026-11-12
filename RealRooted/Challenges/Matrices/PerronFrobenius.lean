@@ -13,6 +13,7 @@ version = 1
 section = "theorems"
 slug = "perron-frobenius"
 formalized = "2026-08-21"
+tags = []
 references = [
   "Perron1907",
 ]
@@ -39,13 +40,11 @@ headline = true
 name = "Matrix.pft_primitive"
 module = "RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Irreducible"
 label = "Primitive matrices: uniqueness of the eigenvector"
-headline = true
 
 [[theorems]]
 name = "Matrix.perron_root_is_spectral_radius"
 module = "RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Dominance"
 label = "The Perron root is the spectral radius"
-headline = true
 
 [[theorems]]
 name = "Matrix.CollatzWielandt.eq_perron_root_of_positive_eigenvector"

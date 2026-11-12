@@ -14,6 +14,8 @@ version = 1
 section = "theorems"
 slug = "reciprocal-shift"
 formalized = "2026-09-26"
+authors = ["Fisk"]
+tags = []
 references = [
   "Fisk2006x",
 ]
@@ -94,7 +96,6 @@ $\operatorname{StrictInterl}(\operatorname{reciprocalShift}(D,q),
 
 ## References
 
-These results were promoted from proofs in the companion OEIS formalization
-project. For background on interlacing and polynomial reversal, see [@Fisk2006x].
+For background on interlacing and polynomial reversal, see [@Fisk2006x].
 <!-- /realrooted-catalog-content -->
 -/

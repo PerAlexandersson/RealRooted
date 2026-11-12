@@ -17,6 +17,7 @@ version = 1
 section = "theorems"
 slug = "derivative-interlacing"
 formalized = "2026-05-12"
+tags = []
 references = [
   "Fisk2006x",
   "Obreschkoff1963",
@@ -33,7 +34,6 @@ headline = true
 [[theorems]]
 name = "RealRooted.Challenges.DerivativeInterlacing.interl_derivative"
 label = "Differentiation preserves interlacing"
-headline = true
 
 [[theorems]]
 name = "RealRooted.exists_mem_Ioo_isRoot_derivative"

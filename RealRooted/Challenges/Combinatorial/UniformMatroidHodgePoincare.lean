@@ -11,6 +11,7 @@ version = 1
 section = "theorems"
 slug = "uniform-matroid-hodge-poincare"
 formalized = "2026-10-09"
+tags = []
 references = [
   "BinderVecchi2026x",
   "Athanasiadis2025EulerianTransformation",

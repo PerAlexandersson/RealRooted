@@ -20,6 +20,7 @@ version = 1
 section = "theorems"
 slug = "interlacing-closure"
 formalized = "2026-10-06"
+tags = []
 references = [
   "Fisk2006x",
   "Branden2015",
@@ -32,7 +33,6 @@ years = [2006, 2015, 2021, 2024]
 name = "RealRooted.strictInterl_of_forall_affine_mul_add_splits"
 module = "RealRooted.AffineFamily"
 label = "Brändén: real-rooted affine combinations force interlacing"
-headline = true
 
 [[theorems]]
 name = "RealRooted.interl_weightedSum_cone"
@@ -88,7 +88,6 @@ label = "A_{d,l}^(2) interlaces A_{d,l+1}^(2) for l < d"
 name = "RealRooted.HlavacekSolus.cubeRelativeHRow_isInterlacingSeqNonneg"
 module = "RealRooted.HlavacekSolus.CubicalShelling"
 label = "Relative h-polynomials of half-open d-cubes form a nonnegative interlacing sequence"
-headline = true
 
 [[theorems]]
 name = "RealRooted.isRealRooted_sum_of_mem_isInterlacingSeqNonneg"
