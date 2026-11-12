@@ -64,47 +64,43 @@ label = "The polar derivative drops the degree by exactly one (closed half-plane
 <!-- realrooted-catalog-content -->
 # Laguerre's theorem on polar derivatives
 
-Let $A \in \mathbb C[z]$ and $n \geq 1$. The **polar derivative** of $A$ of order $n$
-with pole $\zeta \in \mathbb C$ is
+The polar derivative of a degree-$n$ polynomial with respect to a pole outside a closed disk or
+half-plane containing all its zeros has degree $n-1$ and all its zeros in the same set.
+
+## Results
+
+For $A\in\mathbb C[z]$, $n\ge1$ and $\zeta\in\mathbb C$, the *polar derivative* of order $n$ with
+pole $\zeta$ is
 $$
-D_\zeta A(z) = n\,A(z) + (\zeta - z)\,A'(z).
+D_\zeta A(z)=n\,A(z)+(\zeta-z)\,A'(z).
 $$
-When $n = \deg A$ this lowers the degree by at most one. In the real setting, for
-$f \in \mathbb R[z]$ and $a \in \mathbb R$, the polar derivative of $f$ with respect to $a$
-is $n f + (a - z) f'$ with $n = \deg f$.
+For $n=\deg A$ it has degree at most $n-1$. For a real polynomial $f$ and $a\in\mathbb R$ we
+write $D_af=n f+(a-z)f'$ with $n=\deg f$.
 
-**Theorem** (Laguerre, closed disk). Let $A$ have degree exactly $n \geq 1$, and let
-$D = \{z : |z - c| \leq r\}$ with $r \geq 0$. If all zeros of $A$ lie in $D$ and
-$\zeta \notin D$, then all zeros of $D_\zeta A$ lie in $D$. Moreover,
-$\deg D_\zeta A = n - 1$.
+**Theorem (Laguerre, closed disk).** Let $\deg A=n\ge1$ and let $D=\{z:|z-c|\le r\}$ with
+$r\ge0$. If all zeros of $A$ lie in $D$ and $\zeta\notin D$, then all zeros of $D_\zeta A$ lie in
+$D$, and $\deg D_\zeta A=n-1$.
 
-**Theorem** (Laguerre, closed half-plane). Let $A$ have degree exactly $n \geq 1$, let
-$b \in \mathbb R$ and $H = \{z : \operatorname{Im} z \leq b\}$. If all zeros of $A$ lie in
-$H$ and $\zeta \notin H$, then all zeros of $D_\zeta A$ lie in $H$. Moreover,
-$\deg D_\zeta A = n - 1$.
+**Theorem (Laguerre, closed half-plane).** Let $\deg A=n\ge1$, let $b\in\mathbb R$ and
+$H=\{z:\operatorname{Im}z\le b\}$. If all zeros of $A$ lie in $H$ and $\zeta\notin H$, then all
+zeros of $D_\zeta A$ lie in $H$, and $\deg D_\zeta A=n-1$.
 
-**Theorem** (Laguerre, real line). If $f \in \mathbb R[z]$ splits over $\mathbb R$, that is,
-$f$ is zero or real-rooted, then so does the polar derivative $n f + (a - z) f'$ with
-respect to every real $a$, where $n = \deg f$.
+**Theorem (Laguerre, real line).** If $f\in\mathbb R[z]$ is zero or real-rooted, then so is
+$D_af$ for every real $a$.
 
-These statements are the engine of [Grace's apolarity
-theorem](/RealRooted/theorems/grace-apolarity/): there the polar derivative with a pole
-outside the disk or half-plane keeps all zeros in the region while lowering the degree by
-one.
+## Use
 
-## Proof idea
+These statements drive [Grace's apolarity theorem](/RealRooted/theorems/grace-apolarity/): the
+polar derivative with a pole outside the disk or half-plane keeps all zeros in the region while
+lowering the degree by one.
 
-For the disk and the half-plane, suppose $w$ lies outside the region and
-$D_\zeta A(w) = 0$. Then $A(w) \neq 0$, and the identity
-$n A(w) + (\zeta - w) A'(w) = 0$ together with the logarithmic derivative
-$A'(w)/A(w) = \sum_j 1/(w - z_j)$ over the zeros $z_j$ of $A$ says that
-$n/(w - \zeta)$ equals $\sum_j 1/(w - z_j)$. The map $z \mapsto 1/(w - z)$ sends the region
-to a convex set, which then contains the average of the $1/(w - z_j)$, so $\zeta$ lies in the
-region, a contradiction. The degree statement computes the coefficient of $z^{n-1}$ in
-$D_\zeta A$ as the leading coefficient of $A$ times $n\zeta - \sum_j z_j$, which is
-nonzero because the average of the zeros lies in the region but $\zeta$ does not. For the real
-line, translate $a$ to $0$. Then the polar derivative becomes $n g - z g'$, which is the
-reflection of the derivative of the reflection of $g$. Reflection preserves splitting, and
+## Proof
+
+For the disk and the half-plane, let $w$ outside the region be a zero of $D_\zeta A$. Then
+$n/(w-\zeta)=\sum_j1/(w-z_j)$ over the zeros $z_j$ of $A$. The map $z\mapsto1/(w-z)$ sends the
+region to a convex set, which then contains the average of the $1/(w-z_j)$, forcing $\zeta$ into
+the region. For the real line, translating $a$ to $0$ turns $D_af$ into $ng-zg'$, which is the
+reflection of the derivative of the reflection of $g$; reflection preserves real-rootedness, and
 the derivative of a real-rooted polynomial is real-rooted by Rolle's theorem.
 
 ## References

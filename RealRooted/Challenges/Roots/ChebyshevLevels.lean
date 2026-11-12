@@ -74,42 +74,47 @@ label = "All affine levels are PF exactly when |h| ≤ 1"
 <!-- realrooted-catalog-content -->
 # Chebyshev level polynomials and critical values
 
-**Critical-value criterion.** Let $f$ have positive leading coefficient and degree at
-least two, and suppose $f'$ splits with simple roots. Then $f-s$ splits if and only if
+A polynomial $f$ whose derivative has simple real roots has a real-rooted level $f-s$ exactly
+when $f''\,(f-s)\le0$ at the critical points; for Chebyshev polynomials $T_n$ this gives
+real-rooted levels $T_n-h$ for $|h|\le1$.
+
+## Results
+
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+
+**Theorem (critical-value criterion).** Let $f\in\mathbb R[x]$ have positive leading
+coefficient and degree at least $2$, and let $f'$ be real-rooted with simple roots. Then
+$f-s$ is real-rooted if and only if
 $$
-f''(r)\,\bigl(f(r)-s\bigr)\le0\quad\text{at every root }r\text{ of }f' ,
+f''(r)\,\bigl(f(r)-s\bigr)\le0\quad\text{for every root }r\text{ of }f' .
 $$
-and if the inequalities are strict, the roots of $f-s$ are moreover simple. If
-$s\in[a,b]$ and both $f-a$ and $f-b$ split, then $f'$ interlaces $f-s$, and the roots of
-$f-s$ lie in any interval containing the roots of $f-a$ and $f-b$.
+If $f'$ is real-rooted and all these inequalities are strict, then $f-s$ is real-rooted with
+simple roots.
 
-## Chebyshev levels
+**Proposition (intermediate levels).** Let $f$ have positive leading coefficient and degree at
+least $1$, let $a\le s\le b$, and let $f-a$ and $f-b$ be real-rooted. Then $f'\ll f-s$, and
+$f-s$ is real-rooted. If all roots of $f-a$ and of $f-b$ lie in $[L,U]$, then so do all roots of
+$f-s$.
 
-Let $T_n$ be the Chebyshev polynomial of the first kind. For $n\ne0$ and $|h|\le1$ the
-level polynomial $T_n-h$ splits with all roots in $[-1,1]$, and for $|h|<1$ its roots are
-simple and lie in $(-1,1)$. For a fixed height $h$, all levels $T_n-h$, $n\ge1$, split if
-and only if $|h|\le1$. Moreover $T_d+c$ does not split for $d\ge2$ and $c>1$.
+**Theorem (Chebyshev levels).** Let $T_n$ be the Chebyshev polynomial of the first kind and
+$n\ge1$. If $|h|\le1$, then $T_n-h$ is real-rooted with all roots in $[-1,1]$; if $|h|<1$, its
+roots are simple and lie in $(-1,1)$. For fixed $h$, the polynomial $T_n-h$ is real-rooted for
+all $n\ge1$ if and only if $|h|\le1$. For $d\ge2$ and $c>1$, the polynomial $T_d+c$ is not
+real-rooted.
 
-## Affine levels
-
-For $\alpha,\lambda,h\in\mathbb R$ let
+**Theorem (affine levels).** For real $\alpha,\lambda,h$ put
 $$
-L_n(x)=\alpha\bigl(T_n(1+\lambda x)-h\bigr),
+L_n(x)=\alpha\bigl(T_n(1+\lambda x)-h\bigr).
 $$
-which satisfies the order-three recurrence
-$L_{n+3}=(3+2\lambda x)(L_{n+2}-L_{n+1})+L_n$. For $\alpha,\lambda>0$ and $|h|\le1$,
-each $L_n$ ($n\ge1$) has degree $n$, leading coefficient $\alpha2^{n-1}\lambda^n$, and is a PF
-polynomial with all roots in $[-2/\lambda,0]$; for $|h|<1$ its roots are simple and lie
-in $(-2/\lambda,0)$. All $L_n$ ($n\ge1$) are PF if and only if $|h|\le1$.
-
-## What is new
-
-These results were developed in this library; no published source is cited, and we
-attribute none.
+Then $L_{n+3}=(3+2\lambda x)(L_{n+2}-L_{n+1})+L_n$ for all $n\ge0$. For $\alpha,\lambda>0$,
+$|h|\le1$ and $n\ge1$, the polynomial $L_n$ has degree $n$, leading coefficient
+$\alpha2^{n-1}\lambda^n$ and is a Pólya frequency polynomial with all roots in
+$[-2/\lambda,0]$; if $|h|<1$, its roots are simple and lie in $(-2/\lambda,0)$. All $L_n$ with
+$n\ge1$ are Pólya frequency polynomials if and only if $|h|\le1$.
 
 ## References
 
-No published source is cited for these results in the formalization.
+No published source is cited for these results.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in `RealRooted.Chebyshev.Levels`.

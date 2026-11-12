@@ -3,7 +3,7 @@ module
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.EnestromKakeya
 
 /-!
-# Eneström–Kakeya challenge entry point
+# Eneström–Kakeya theorem
 
 <!-- realrooted-catalog
 version = 1
@@ -30,21 +30,24 @@ label = "Eneström–Kakeya annulus for positive coefficients"
 <!-- realrooted-catalog-content -->
 # Eneström–Kakeya theorem
 
-**Theorem.** If $0 < a_0 \leq a_1 \leq \dotsb \leq a_n$, then every complex
-zero $z$ of $a_0 + a_1 z + \dotsb + a_n z^n$ satisfies $|z| \leq 1$.
+If the coefficients of a real polynomial are positive and nondecreasing, all its complex zeros
+lie in the closed unit disk.
 
-More generally, if every coefficient is positive and
-$m \leq a_i / a_{i+1} \leq M$ for all $i$, then every zero lies in the
-annulus $m \leq |z| \leq M$.
+## Results
 
-## Proof idea
+**Theorem (Eneström–Kakeya).** If $0<a_0\le a_1\le\dotsb\le a_n$, then every complex zero $z$
+of $a_0+a_1z+\dotsb+a_nz^n$ satisfies $|z|\le1$.
 
-Multiply by $z - 1$. The product is
-$a_n z^{n+1} - \sum_k (a_k - a_{k-1}) z^k - a_0$, whose middle coefficients
-are nonnegative and sum, together with $a_0$, to $a_n$. For $|z| > 1$ the
-triangle inequality bounds the lower terms by $a_n |z|^n < a_n |z|^{n+1}$.
-The annulus form follows by rescaling $z \mapsto Mz$ and by reversing the
-coefficients.
+**Theorem (annulus form).** If $a_0,\dots,a_n>0$ and $m\,a_{i+1}\le a_i\le M\,a_{i+1}$ for
+$0\le i<n$, then every complex zero $z$ of $a_0+a_1z+\dotsb+a_nz^n$ satisfies
+$m\le|z|\le M$. The upper bound $|z|\le M$ needs only $a_0>0$, $M>0$ and
+$a_i\le M\,a_{i+1}$.
+
+## Proof
+
+We multiply by $z-1$: the product is $a_nz^{n+1}-\sum_{k=1}^n(a_k-a_{k-1})z^k-a_0$, and the
+coefficients $a_k-a_{k-1}$ and $a_0$ are nonnegative with sum $a_n$. For $|z|>1$ the triangle
+inequality bounds the lower terms by $a_n|z|^n<a_n|z|^{n+1}$.
 
 ## References
 

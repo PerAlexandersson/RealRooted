@@ -80,83 +80,66 @@ label = "Coefficient-row induction: the two Laguerre inequalities force every ro
 <!-- realrooted-catalog-content -->
 # Two Laguerre inequalities and derivative descent
 
-For a real polynomial $f$ we write
+A real polynomial is real-rooted if and only if its derivative is real-rooted and its two
+Laguerre forms are nonnegative.
+
+## Results
+
+For a real polynomial $f$ let
 $$
 L_1(f)=(f')^2-ff'',\qquad
 L_2(f)=\frac{3(f'')^2-4f'f'''+ff^{(4)}}{12}.
 $$
-By Laguerre's classical inequality, $L_1(f)\ge 0$ on $\mathbb R$ when $f$ splits over
-$\mathbb R$; $L_1$ and $L_2$ are the coefficients of $y^2$ and $y^4$ in
-$f(t+iy)f(t-iy)$.
+These are the coefficients of $y^2$ and of $y^4$ in $f(t+iy)f(t-iy)$.
 
-**Theorem** (derivative descent). A real polynomial $f$ splits over $\mathbb R$ if and only if
-$f'$ splits over $\mathbb R$ and $L_1(f)(t)\ge 0$ and $L_2(f)(t)\ge 0$ for every real $t$.
-Repeated roots are allowed; zero, constants and linear polynomials are the base cases.
+**Theorem (derivative descent).** A real polynomial $f$ is real-rooted if and only if $f'$ is
+real-rooted and $L_1(f)(t)\ge0$ and $L_2(f)(t)\ge0$ for every real $t$. Repeated roots are
+allowed, and constants, linear polynomials and $0$ are included.
 
-**The second inequality is needed.** For $f=t^4-1$ the derivative $4t^3$ splits and
-$L_1(f)=4t^6+12t^2\ge 0$, but $L_2(f)(0)=-2$, and $f$ does not split. Checking the second
-inequality only at the critical points of $f$ would not suffice: at a critical point of
-multiplicity at least five of $f'$ the form $L_2$ vanishes but is negative nearby.
+**Example (the second inequality is needed).** For $f=t^4-1$ the derivative $4t^3$ is real-rooted
+and $L_1(f)=4t^6+12t^2\ge0$, but $L_2(f)(0)=-2$ and $f$ is not real-rooted.
 
-**Theorem** (coefficient rows). Let $Q$ be a power series with $Q(0)=1$ (for example a real
-polynomial) and
+**Proposition (sign at critical points).** Let $f'\ne0$ and let both forms be nonnegative on
+$\mathbb R$. If $f'(\rho)=0$ and $f(\rho)\ne0$, then $f(\rho)f''(\rho)<0$, so $\rho$ is a simple
+root of $f'$.
+
+**Proposition (sign alternation).** Let $G$ be real-rooted, let $F$ be real with
+$\deg F=\deg G+1$ and leading coefficients of the same sign. If $F(\rho)G'(\rho)<0$ at every
+root $\rho$ of $G$, then $F$ is real-rooted.
+
+**Theorem (coefficient rows).** Let $Q$ be a real power series with $Q(0)=1$, for example a
+polynomial, and let
 $$
-F_n^\alpha(t)=[z^n]\,(Q(z)-tz)^{-\alpha},\qquad n\ge 0,\ \alpha\in\mathbb Z_{>0},
+F_n^\alpha(t)=[z^n]\,(Q(z)-tz)^{-\alpha},
 $$
-with $F_n^\alpha=0$ for $n<0$. Then $\partial_tF_n^\alpha=\alpha F_{n-1}^{\alpha+1}$. If
+for $n\ge0$ and $\alpha>0$, with $F_n^\alpha=0$ for $n<0$. Then
+$\partial_tF_n^\alpha=\alpha F_{n-1}^{\alpha+1}$. Let $(\alpha)_k$ be the rising factorial. If
 $$
-\alpha^2(F_{n-1}^{\alpha+1})^2-\alpha(\alpha+1)F_n^\alpha F_{n-2}^{\alpha+2}\ge 0
+\alpha^2(F_{n-1}^{\alpha+1})^2-\alpha(\alpha+1)F_n^\alpha F_{n-2}^{\alpha+2}\ge0
 $$
 and
 $$
-3(\alpha)_2^2(F_{n-2}^{\alpha+2})^2
--4\alpha(\alpha)_3F_{n-1}^{\alpha+1}F_{n-3}^{\alpha+3}
-+(\alpha)_4F_n^\alpha F_{n-4}^{\alpha+4}\ge 0
+3(\alpha)_2^2(F_{n-2}^{\alpha+2})^2-4\alpha(\alpha)_3F_{n-1}^{\alpha+1}F_{n-3}^{\alpha+3}
++(\alpha)_4F_n^\alpha F_{n-4}^{\alpha+4}\ge0
 $$
-hold on $\mathbb R$ for every $n$ and every positive integer $\alpha$, where $(\alpha)_k$ is
-the rising factorial, then every row $F_n^\alpha$ splits. No factorization hypothesis on $Q$
-is imposed.
+on $\mathbb R$ for every integer $n$ and every positive integer $\alpha$, then every row
+$F_n^\alpha$ with $n\ge0$ and positive integer $\alpha$ is real-rooted. No factorization
+hypothesis on $Q$ is needed.
 
-## Proof idea
+## Proof
 
-*Forward.* Adjoining a factor $t-a$ to $g$ changes the two forms as follows:
-$L_1((t-a)g)=g^2+(t-a)^2L_1(g)$ and
-$L_2((t-a)g)=L_1(g)+(t-a)^2L_2(g)$. Induction on the roots shows that both forms are
-nonnegative; the derivative splits by Rolle's theorem.
-
-*Converse.* Put $d=\gcd(f,f')$, $f=dF$, $f'=dG$. Then $G$ splits and $F,G$ are coprime. At a
-root $\rho$ of $G$ the polynomial $d$ does not vanish, since a common root of $d$ and $G$ would
-make the multiplicity of $\rho$ in $f'$ larger than its multiplicity in $f$ minus one. So $\rho$
-is a critical point of $f$ with $f(\rho)\neq 0$. Write $f'=(t-\rho)^{j+1}h$ with
-$h(\rho)\neq 0$. Then $L_1(f)=(t-\rho)^jK_1$ with $K_1(\rho)=-(j+1)f(\rho)h(\rho)\neq 0$, and a
-polynomial $(t-\rho)^jK$ with $K(\rho)\ne 0$ that is nonnegative on $\mathbb R$ has even $j$ and
-$K(\rho)>0$. Hence $f(\rho)h(\rho)<0$. If $j=k+2\ge 2$, then
-$12L_2(f)=(t-\rho)^kK_2$ with $K_2(\rho)=(k+1)(k+2)(k+3)f(\rho)h(\rho)<0$, and $k$ is even, so
-$L_2(f)$ is negative near $\rho$, a contradiction. Thus $j=0$: the roots of $G$ are simple and
-$f(\rho)f''(\rho)<0$, that is $F(\rho)G'(\rho)<0$. Consequently $F$ has alternating signs at the
-roots of $G$, which has degree $\deg F-1$ and a leading coefficient of the same sign as that of
-$F$. By the intermediate value theorem $F$ has a root in each gap between consecutive roots of
-$G$, one below the smallest root and one above the largest: $\deg F$ distinct real roots.
-So $F$ and $f=dF$ split.
-
-*Rows.* The coefficient of $t^k$ in $F_n^\alpha$ is
-$\mathrm{multichoose}(\alpha,k)\,[z^{n-k}]\,Q^{-\alpha-k}$, which gives
-$\partial_tF_n^\alpha=\alpha F_{n-1}^{\alpha+1}$. The two displayed inequalities are exactly
-$L_1(F_n^\alpha)\ge 0$ and $12L_2(F_n^\alpha)\ge 0$, because the $j$th derivative of
-$F_n^\alpha$ is $(\alpha)_jF_{n-j}^{\alpha+j}$. Induction on $n$, for all positive integers
-$\alpha$ at once: the derivative $\alpha F_{n-1}^{\alpha+1}$ of $F_n^\alpha$ splits, so the
-derivative descent theorem shows that $F_n^\alpha$ splits.
-
-## What is new
-
-The proof of the converse direction and of the coefficient-row induction is new: it was
-developed for RealRooted and is of independent research interest. We make no
-claim of historical priority for the statement. Classical inputs are Laguerre's inequality
-and the product formula for $f(t+iy)f(t-iy)$ in the forward direction, and Rolle's theorem.
+For the forward direction, $L_1((t-a)g)=g^2+(t-a)^2L_1(g)$ and
+$L_2((t-a)g)=L_1(g)+(t-a)^2L_2(g)$; induction on the roots gives nonnegativity, and $f'$ is
+real-rooted by Rolle's theorem. For the converse, write $f=dF$ and $f'=dG$ with $d=\gcd(f,f')$.
+Then $G$ is real-rooted, $d$ does not vanish at its roots, and the critical-point proposition
+gives $F(\rho)G'(\rho)<0$ at each root $\rho$ of $G$, so $F$ and $f$ are real-rooted by sign
+alternation. For the rows, the $j$th derivative of $F_n^\alpha$ is $(\alpha)_jF_{n-j}^{\alpha+j}$,
+so the two displayed inequalities say $L_1(F_n^\alpha)\ge0$ and $L_2(F_n^\alpha)\ge0$; we conclude
+by induction on $n$, for all $\alpha$ at once.
 
 ## References
 
-No published source is cited for the converse direction.
+No published source is cited for these results.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in `RealRooted.LaguerreInequalities`,

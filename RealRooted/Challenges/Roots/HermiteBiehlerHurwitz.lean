@@ -20,7 +20,7 @@ public section
 open Polynomial
 
 /-!
-# Hermite--Biehler and Hurwitz challenge entry point
+# Hermite–Biehler and Hurwitz stability criteria
 
 <!-- realrooted-catalog
 version = 1
@@ -47,7 +47,7 @@ label = "No zeros in the open upper half-plane"
 [[definitions]]
 name = "RealRooted.IsHurwitzStable"
 module = "RealRooted.HermiteBiehler.Basic"
-label = "Weak Hurwitz stability with nonnegative coefficients"
+label = "Hurwitz stable: nonnegative coefficients and no zeros with positive real part"
 
 [[definitions]]
 name = "RealRooted.oddEvenPolynomial"
@@ -61,90 +61,93 @@ label = "The classical Hurwitz matrix"
 
 [[theorems]]
 name = "RealRooted.Challenges.HermiteBiehlerHurwitz.hermiteBiehler_forward"
-label = "Hermite–Biehler: interlacing gives stability"
+label = "Hermite–Biehler: g ≪ f implies f + ig has no zeros with positive imaginary part"
 
 [[theorems]]
 name = "RealRooted.Challenges.HermiteBiehlerHurwitz.hermiteBiehler_converse"
-label = "Hermite–Biehler: stability gives interlacing"
+label = "Hermite–Biehler, converse: f + ig without such zeros implies g ≪ f"
 
 [[theorems]]
 name = "RealRooted.Challenges.HermiteBiehlerHurwitz.isHurwitzStable_oddEvenPolynomial_iff"
-label = "Hermite–Biehler for odd and even parts"
+label = "q(x²) + x p(x²) is Hurwitz stable iff p ≪ q with nonnegative coefficients"
 headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.HermiteBiehlerHurwitz.classicalHurwitzCriterion"
-label = "Hurwitz criterion via total nonnegativity"
+label = "Hurwitz criterion: stable iff the Hurwitz matrix is totally nonnegative"
 
 [[theorems]]
 name = "RealRooted.Challenges.HermiteBiehlerHurwitz.hasNonnegCoeffs_of_isRightHalfPlaneStable"
-label = "Weak Hurwitz stability gives nonnegative coefficients"
+label = "No zeros with positive real part implies nonnegative coefficients"
 
 [[theorems]]
 name = "RealRooted.Challenges.HermiteBiehlerHurwitz.coeff_pos_of_isStrictlyHurwitzStable"
-label = "Strict Hurwitz stability gives positive coefficients"
+label = "All zeros with negative real part implies positive coefficients"
 
 [[theorems]]
 name = "RealRooted.fullyInterlacingPair_of_isHurwitzStable_oddEvenPolynomial"
 module = "RealRooted.ClassicalHurwitzMatrix.Stability.Lace"
-label = "Hurwitz stability gives a totally nonnegative Lace matrix"
+label = "If q(x²) + x p(x²) is Hurwitz stable, the Lace matrix of (q, p) is totally nonnegative"
 
 [[theorems]]
 name = "RealRooted.StrictInterl.fullyInterlacingPair"
 module = "RealRooted.ClassicalHurwitzMatrix.Stability.Lace"
-label = "Hermite–Biehler in Lace form"
+label = "If p ≪ q have nonnegative coefficients, the Lace matrix of (q, p) is totally nonnegative"
 
 [[theorems]]
 name = "Matrix.strictlyHurwitzStable_iff_hurwitzLeadingPrincipal_det_pos"
 module = "RealRooted.ClassicalHurwitzMatrix.Stability.Converse"
-label = "Routh–Hurwitz: strict stability iff all leading Hurwitz minors are positive"
+label = "Routh–Hurwitz: all zeros in the open left half-plane iff leading minors are positive"
 -->
 
 <!-- realrooted-catalog-content -->
-# Hermite–Biehler and Hurwitz criteria
+# Hermite–Biehler and Hurwitz stability criteria
 
-The Hermite–Biehler theorem characterizes half-plane stability through
-interlacing of the even and odd parts. The Hurwitz criterion characterizes
-weak Hurwitz stability by total nonnegativity of the classical Hurwitz matrix.
-Reversing the polynomial turns the Hurwitz matrix into the two-row Lace matrix of the
-even and odd parts: if $q(x^2) + x\,p(x^2)$ is Hurwitz stable, then the matrix whose even
-rows are shifts of the coefficients of $q$ and whose odd rows are shifts of those of $p$ is
-totally nonnegative. In particular this holds when $p \ll q$ have nonnegative coefficients.
+A real polynomial is Hurwitz stable if and only if its even and odd parts interlace, and if and
+only if its Hurwitz matrix is totally nonnegative.
 
-**Theorem (Hermite–Biehler).** Let $f$ and $g$ be real polynomials with
-positive leading coefficients. If $g \ll f$ (see
-[interlacing](/RealRooted/concepts/interlacing/)), then $f + ig$ has no zeros
-in the open upper half-plane. Conversely, if $f + ig$ has no zeros there, then
-$g \ll f$.
+## Results
 
-**Corollary (odd and even parts).** Let $p$ and $q$ be nonzero real
-polynomials. Then $q(x^2) + x\,p(x^2)$ has nonnegative coefficients and no
-zeros with positive real part if and only if $p$ and $q$ have nonnegative
-coefficients and $p \ll q$.
+We write $f\ll g$ if $f$ interlaces $g$ (see [interlacing](/RealRooted/concepts/interlacing/)).
+A real polynomial is *Hurwitz stable* if it has nonnegative coefficients and no zeros with
+positive real part. Let $p=\sum_k a_kx^k$ with $a_k=0$ for $k<0$. The *Hurwitz matrix* of $p$ is
+$(a_{2j-i})_{i,j\ge0}$.
 
-**Theorem (Hurwitz).** A nonzero real polynomial $p = \sum_k a_k x^k$ has
-nonnegative coefficients and no zeros with positive real part if and only if its
-classical Hurwitz matrix $(a_{2j-i})_{i,j \geq 0}$, with $a_k = 0$ for $k < 0$,
-is totally nonnegative.
+**Theorem (Hermite–Biehler).** Let $f$ and $g$ be real polynomials with positive leading
+coefficients. Then $g\ll f$ if and only if $f+ig$ has no zeros with positive imaginary part.
 
-**Proposition (coefficient signs).** Let $p$ be a real polynomial with
-positive leading coefficient. If $p$ has no zeros with positive real part, then
-all coefficients of $p$ are nonnegative. If all zeros of $p$ have negative real
-part, then all coefficients $a_0, \dotsc, a_{\deg p}$ are positive.
+**Corollary (odd and even parts).** For nonzero real polynomials $p$ and $q$, the polynomial
+$q(x^2)+x\,p(x^2)$ is Hurwitz stable if and only if $p$ and $q$ have nonnegative coefficients
+and $p\ll q$.
 
-**Theorem** (Routh–Hurwitz). A real polynomial with positive leading
-coefficient is strictly Hurwitz stable if and only if all leading principal
-minors of its Hurwitz matrix are positive. The library uses the
-constant-term-first convention for the Hurwitz matrix, and the proof propagates
-the minors along the Routh reduction.
+**Theorem (Hurwitz).** A nonzero real polynomial is Hurwitz stable if and only if its Hurwitz
+matrix is totally nonnegative.
+
+**Theorem (Routh–Hurwitz).** A real polynomial $p$ with positive leading coefficient has all
+zeros in the open left half-plane if and only if the leading principal minors of its Hurwitz
+matrix of orders $1,\dots,\deg p$ are positive.
+
+**Proposition (coefficient signs).** Let $p$ be a real polynomial with positive leading
+coefficient. If $p$ has no zeros with positive real part, its coefficients are nonnegative. If all
+its zeros have negative real part, then $a_0,\dots,a_{\deg p}$ are positive.
+
+**Proposition (Lace form).** If $q(x^2)+x\,p(x^2)$ is Hurwitz stable, then the two-row Lace matrix
+of $(q,p)$ is totally nonnegative. Its even rows are shifts of the coefficient sequence of $q$
+and its odd rows are shifts of that of $p$. In particular this holds whenever $p\ll q$ and $p,q$
+have nonnegative coefficients.
+
+## Use
+
+The Corollary reduces stability of a polynomial to interlacing of two polynomials in $x^2$.
+By the Lace form, interlacing pairs with nonnegative coefficients have a totally nonnegative Lace
+matrix.
 
 ## References
 
-See [@Holtz2003], the
-[Hermite–Biehler theorem](sf:hermiteBiehlerTheorem), and the
+See [@Holtz2003], the [Hermite–Biehler theorem](sf:hermiteBiehlerTheorem), and the
 [coefficient signs of Hurwitz-stable polynomials](sf:hurwitzImpliesCoefficientPositivity).
-The related [Hurwitz–Lace criterion](sf:hurwitzLaceCriterion) is stated for a
-different matrix, built from two polynomials, and is not formalized here.
+The related [Hurwitz–Lace criterion](sf:hurwitzLaceCriterion) is stated for a different matrix,
+built from two polynomials.
 <!-- /realrooted-catalog-content -->
 
 Human statements:

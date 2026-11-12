@@ -4,7 +4,7 @@ import RealRooted.RootCounting.Descartes
 import RealRooted.Mathlib.Algebra.Polynomial.BudanFourier
 
 /-!
-# Descartes' rule of signs challenge entry point
+# Descartes' rule of signs
 
 <!-- realrooted-catalog
 version = 1
@@ -47,17 +47,24 @@ label = "Budan–Fourier theorem"
 <!-- realrooted-catalog-content -->
 # Descartes' rule of signs
 
-The number of positive real roots of a polynomial, counted with multiplicity,
-is at most the number of sign changes in its nonzero coefficients. The
-difference is even. Replacing $X$ by $-X$ gives the corresponding statement
-for negative roots.
+The number of positive roots of a real polynomial, counted with multiplicity, is at most the
+number of sign changes in its coefficients, and the difference is even.
 
-**Budan–Fourier theorem.** For a nonzero real polynomial $p$ of degree $n$ and
-a real $x$, let $V(x)$ be the number of sign changes in
-$p(x), p'(x), \dotsc, p^{(n)}(x)$, ignoring zeros. If $a < b$, the number of
-roots of $p$ in $(a, b]$, counted with multiplicity, is at most
-$V(a) - V(b)$, and the difference is even. Letting $a = 0$ and $b \to \infty$
-recovers Descartes' rule.
+## Results
+
+**Theorem (Descartes' rule of signs).** For a real polynomial $p$, let $V(p)$ be the number of
+sign changes in the sequence of its coefficients, ignoring zeros. Then the number of positive
+roots of $p$ is at most $V(p)$, and $V(p)$ minus this number is even. Applying this to $p(-x)$
+gives the same statement for negative roots.
+
+**Theorem (Budan–Fourier).** Let $p\ne0$ be a real polynomial of degree $n$ and let $V(x)$ be
+the number of sign changes in $p(x),p'(x),\dotsc,p^{(n)}(x)$, ignoring zeros. For $a<b$, the
+number of roots of $p$ in $(a,b]$, counted with multiplicity, is at most $V(a)-V(b)$, and
+$V(a)-V(b)$ minus this number is even.
+
+## Use
+
+Taking $a=0$ and $b$ large recovers Descartes' rule.
 
 ## References
 
