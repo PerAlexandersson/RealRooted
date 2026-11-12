@@ -52,7 +52,7 @@ label = "The centered Euler orbit of the constant polynomial 1"
 
 [[definitions]]
 name = "RealRooted.EulerBidiagonal.step"
-module = "RealRooted.EulerBidiagonal"
+module = "RealRooted.EulerBidiagonal.Basic"
 label = "The second-order step X + (θ + a)(θ + b)"
 
 [[definitions]]
@@ -108,7 +108,7 @@ label = "Perturbed generalized Eulerian polynomials interlace"
 
 [[theorems]]
 name = "RealRooted.EulerBidiagonal.strictInterl_step_of_strictInterl"
-module = "RealRooted.EulerBidiagonal"
+module = "RealRooted.EulerBidiagonal.Basic"
 label = "The step X + (θ + a)(θ + b) preserves interlacing of negative-simple pairs"
 
 [[theorems]]
