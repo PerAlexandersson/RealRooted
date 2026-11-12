@@ -68,6 +68,7 @@ public import RealRooted.Tactic.Examples.SequenceSurvey
 public import RealRooted.Tactic.Examples.ShortlistRoutes
 public import RealRooted.Tactic.Examples.SideGoals
 public import RealRooted.Tactic.Examples.Sign
+public import RealRooted.Tactic.Examples.VeroneseRecurrence
 public import RealRooted.Tactic.Examples.WagnerX
 
 /-!
