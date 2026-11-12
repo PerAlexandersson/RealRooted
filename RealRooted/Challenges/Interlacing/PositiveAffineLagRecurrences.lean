@@ -40,34 +40,43 @@ headline = true
 <!-- realrooted-catalog-content -->
 # Positive affine-lag recurrences
 
-We study polynomial sequences with
+Three-term recurrences with a constant leading coefficient and an affine lag term, started from
+positive constants, have rows with nonnegative coefficients, simple negative roots and
+interlacing consecutive terms.
+
+## Results
+
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+
+**Theorem.** Let $P_0=p$ and $P_1=q$ be constants with $0<p\le q$, let $b_n,c_n\ge0$ and
+$d_n>0$, and put
 $$
-P_{n+2}=(1+b_n+c_n)\,P_{n+1}+(d_nx-b_n)\,P_n,
+P_{n+2}=(1+b_n+c_n)\,P_{n+1}+(d_nx-b_n)\,P_n .
 $$
-where $P_0=p$ and $P_1=q$ are constants with $0<p\le q$, $b_n,c_n\ge0$ and $d_n>0$.
+Then for every $n$ the polynomials $P_n$ and $P_{n+1}-P_n$ have nonnegative coefficients,
+$P_n(0)>0$, $\deg P_n=\lfloor n/2\rfloor$, $P_n$ has simple negative roots, $P_n\ll P_{n+1}$,
+and $P_n$ and $P_{n+1}$ have no common root.
 
-**Coefficient positivity without parity expansion.** For a general three-term
-recurrence $P_{n+2}=A_nP_{n+1}+B_nP_n$ and a polynomial $R$ with nonnegative
-coefficients, track $P_n$ together with $P_{n+1}-RP_n$. If the entries
-$A_n-R$ and $R(A_n-R)+B_n$ have nonnegative coefficients, if $P_0$ has nonnegative
-coefficients and $P_1-RP_0$ does too, then all $P_n$ and all $P_{n+1}-RP_n$ have
-nonnegative coefficients, even though the recurrence itself contains a subtraction.
+**Theorem (ratio form).** The same conclusions hold, with $P_{n+1}-\rho P_n$ in place of
+$P_{n+1}-P_n$, if the coefficient $1+b_n+c_n$ is replaced by any $a_n$ with
+$\rho+b_n/\rho\le a_n$, where $\rho>0$ and $\rho p\le q$.
 
-**Theorem.** For the affine-lag recurrence above, with $R=1$, every $P_n$ and every
-successive difference $P_{n+1}-P_n$ has nonnegative coefficients, $\deg P_n=\lfloor n/2\rfloor$,
-consecutive rows interlace, every row has simple negative roots, and consecutive rows
-share no root. The same conclusions hold if the coefficient $1+b_n+c_n$ is replaced by any
-$a_n$ with $\rho+b_n/\rho\le a_n$ and $\rho p\le q$ for some $\rho>0$.
+**Proposition (coefficient positivity).** Let $P_{n+2}=A_nP_{n+1}+B_nP_n$ and let $R$ be a
+polynomial with nonnegative coefficients. Suppose $P_0$ and $P_1-RP_0$ have nonnegative
+coefficients, and that $A_n-R$ and $R(A_n-R)+B_n$ have nonnegative coefficients for all $n$.
+Then $P_n$ and $P_{n+1}-RP_n$ have nonnegative coefficients for all $n$, although the
+recurrence contains a subtraction.
 
-## What is new
+## Proof
 
-The results were developed in this library; no published source is cited. The directed
-interlacing step uses the plateau-capable Liu–Wang criterion; see the
-[Ma–Wang and Liu–Wang page](/RealRooted/theorems/ma-wang-liu-wang/).
+The proposition, with $R=1$ or $R=\rho$, gives the coefficient statements. The interlacing then
+follows from the Liu--Wang criterion for three-term recurrences, which allows equal degrees in
+consecutive rows; see the
+[Ma--Wang and Liu--Wang page](/RealRooted/theorems/ma-wang-liu-wang/).
 
 ## References
 
-No published source is cited for these results in the formalization.
+The interlacing step is the criterion of [@LiuWang2007].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in

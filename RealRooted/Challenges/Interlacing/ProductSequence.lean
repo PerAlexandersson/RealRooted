@@ -146,64 +146,69 @@ label = "The roots lie in [-1, 0]"
 <!-- realrooted-catalog-content -->
 # Product sequences
 
-We begin with the generic closure step. If the base row `P 0` is nonzero and
-splits, every factor `F n` is nonzero and splits, and
-`P (n + 1) = F n * P n`, then every row is nonzero and splits. When each factor
-`L n` has natural degree one, the product-sequence results additionally give
-`(P n).natDegree = (P 0).natDegree + n` and interlacing of consecutive rows.
+Sequences built by multiplying by real-rooted factors stay real-rooted, and multiplying by a
+linear factor gives an interlacing consecutive row.
 
-The interlacing statement rests on a one-step theorem: a nonzero splitting
-polynomial `f` interlaces `L * f` when `L` has natural degree one.
-Independently, a finite product of factors `X - C (root j)` is nonzero and
-splits. If each row has the form
-`P n = ∏ j ∈ Finset.range n, (X - C (root n j))`, the finite linear product
-sequence theorem supplies the row certificates without extra base hypotheses.
-The affine family assumes a nonzero splitting base row and uses factors
-`C (s n) * X + C (t n)` with `s n ≠ 0`; the powered affine family uses
-`(X + C (t n)) ^ (m n)` in the same product recurrence.
+## Results
 
-We can also lift certificates row-wise. If `P n = F n * Q n`, both the model
-rows `Q n` and the factors `F n` being nonzero and splitting imply the same for
-`P n`. The scalar-monomial lift allows
-`P n = C (c n) * (X ^ (m n) * Q n)` when every `c n` is nonzero. Alternating
-families cover scalar steps followed by `(X + C (b n))` or its variable power,
-with the scalar multiplier required to be nonzero.
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+Real-rooted polynomials are nonzero here.
 
-For endpoint pairs, we assume a strictly interlacing initial pair with
-nonnegative coefficients. The sum-then-`X` recurrences
-`A (n + 1) = A n + B n` and
-`B (n + 1) = B n + X * A (n + 1)` preserve strict interlacing and hence
-nonzero splitting of both rows. The endpoint-power lift then proves
-real-rootedness for a sequence with
-$P_{2n}=(X+t)^{m_A(n)}A_n$ and
-$P_{2n+1}=(X+t)^{m_B(n)}B_n$.
+**Theorem (product factors).** Let $P_0$ and all $F_n$ be real-rooted, and
+$P_{n+1}=F_nP_n$. Then every $P_n$ is real-rooted. If every $F_n$ has degree one, then
+$\deg P_n=\deg P_0+n$ and $P_n\ll P_{n+1}$.
+
+The interlacing rests on the one-step statement: if $f$ is real-rooted and $L$ has degree
+one, then $f\ll Lf$. A finite product $\prod_{j\in S}(x-r_j)$ of linear factors is real-rooted;
+hence if $P_n=\prod_{j<n}(x-r_{n,j})$ for all $n$, every $P_n$ is real-rooted.
+
+**Theorem (factor families).** Let $P_0$ be real-rooted and $P_{n+1}=F_nP_n$, where $F_n$ is
+either
+
+- $s_nx+t_n$ with $s_n\ne0$, or
+- $(x+t_n)^{m_n}$ with $m_n\ge0$.
+
+Then every $P_n$ is real-rooted. The same holds for alternating steps
+$P_{2n+1}=a_nP_{2n}$ with $a_n\ne0$ and $P_{2n+2}=F_nP_{2n+1}$ with $F_n=x+b_n$ or
+$F_n=(x+b_n)^{m_n}$.
+
+**Theorem (lifts).** If $Q_n$ and $F_n$ are real-rooted and $P_n=F_nQ_n$, then $P_n$ is
+real-rooted. If $Q_n$ is real-rooted, $c_n\ne0$ and $P_n=c_n\,x^{m_n}Q_n$, then $P_n$ is
+real-rooted.
+
+**Theorem (endpoint pairs).** Let $A_0\ll B_0$ with nonnegative coefficients, and let
+$$
+A_{n+1}=A_n+B_n,\qquad B_{n+1}=B_n+x\,A_{n+1}.
+$$
+Then $A_n\ll B_n$ for all $n$, and $A_n$ and $B_n$ are real-rooted. Moreover, if
+$P_{2n}=(x+t)^{m_A(n)}A_n$ and $P_{2n+1}=(x+t)^{m_B(n)}B_n$, then every $P_n$ is real-rooted.
 
 ## Fixed derivatives of products
 
-Fix a real-rooted polynomial $q$ with positive leading coefficient, $r\le\deg q$, and
-$a\in\mathbb R$. Then $D^r\bigl(q\,(x-a)^n\bigr)$ is nonzero, real-rooted, with positive
-leading coefficient, and it interlaces $D^r\bigl(q\,(x-a)^{n+1}\bigr)$. If $a$ and all roots
-of $q$ lie in an interval $[u,v]$, then all roots of these derivatives lie in $[u,v]$. The
-rows also satisfy a pure-lag recurrence
+**Theorem.** Let $q$ be real-rooted with positive leading coefficient, $r\le\deg q$ and
+$a\in\mathbb R$. Then $D^r\bigl(q\,(x-a)^n\bigr)$ is real-rooted of degree $\deg q+n-r$ with
+positive leading coefficient, and
+$$
+D^r\bigl(q\,(x-a)^n\bigr)\ll D^r\bigl(q\,(x-a)^{n+1}\bigr).
+$$
+If $a$ and all roots of $q$ lie in an interval $[u,v]$, then all roots of these derivatives lie
+in $[u,v]$. The rows satisfy the pure-lag recurrence
 $$
 \sum_{i=0}^{r+1}(-1)^i\binom{r+1}{i}(x-a)^iD^r\bigl(q\,(x-a)^{n+r+1-i}\bigr)=0 .
 $$
 
-For $q=x^r$ and $a=-1$ the normalized rows
-$B_n^{(r)}=\frac1{r!}D^r\bigl(x^r(1+x)^n\bigr)$ have coefficients
-$\binom nk\binom{k+r}r$, satisfy the three-term recurrence
+**Theorem (binomial derivative rows).** For $r\ge0$ let
+$B_n^{(r)}=\frac1{r!}D^r\bigl(x^r(1+x)^n\bigr)$. Its coefficient of $x^k$ is
+$\binom nk\binom{k+r}r$, and
 $$
-(n+2)B_{n+2}=\bigl(2n+3+(n+r+2)x\bigr)B_{n+1}-(n+1)(1+x)B_n,
+(n+2)B_{n+2}^{(r)}=\bigl(2n+3+(n+r+2)x\bigr)B_{n+1}^{(r)}-(n+1)(1+x)B_n^{(r)}.
 $$
-are real-rooted of degree $n$ with all roots in $[-1,0]$ and constant term $1$, and
-consecutive rows interlace.
+Every $B_n^{(r)}$ is real-rooted with all roots in $[-1,0]$, and
+$B_n^{(r)}\ll B_{n+1}^{(r)}$.
 
 ## References
 
-[OEIS A060523](https://oeis.org/A060523), the motivating example named in
-`RealRooted.ProductSequence.ScalarFamilies`.
-
-[OEIS A137477](https://oeis.org/A137477), the motivating endpoint-pair example
-named in `RealRooted.ProductSequence.EndpointPair`.
+The alternating families are motivated by [OEIS A060523](https://oeis.org/A060523) and the
+endpoint pairs by [OEIS A137477](https://oeis.org/A137477).
 <!-- /realrooted-catalog-content -->
 -/

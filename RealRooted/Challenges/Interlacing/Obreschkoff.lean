@@ -56,27 +56,39 @@ label = "Interlacing as stability of the bivariate pencil f(z) + w g(z)"
 <!-- realrooted-catalog-content -->
 # Obreschkoff’s theorem
 
-Obreschkoff's theorem [@Obreschkoff1963; @Dedieu1992] says that two interlacing
-polynomials generate a real-rooted pencil: every real linear
-combination $\alpha f + \beta g$ splits over $\mathbb R$. Conversely, if
-every real linear combination of $f$ and $g$ splits, then $f$ and $g$
-interlace in one of the two orientations, where either polynomial may be zero.
-In fact, if every real combination of nonzero $f,g$ splits, then
-$|\deg f-\deg g|\le1$.
+Two real-rooted polynomials interlace in one of the two orientations if and only if every real
+linear combination of them is real-rooted.
 
-Hence, for real polynomials $f$ and $g$ that are zero or real-rooted, every
-real linear combination of $f$ and $g$ splits if and only if $f$ and $g$
-interlace in one of the two orientations.
+## Results
 
-The pencil also has a stable form. Let $f \ne 0$ and $g \ne 0$ have
-nonnegative coefficients, with $f$ nonconstant. Then the bivariate polynomial
-$f(z) + w\,g(z)$ has no zero with $z$ and $w$ both in the open upper half-plane
-if and only if $g\ll f$, that is, $f$ has the largest zero. One direction specializes at
-$w = i$ and uses the Hermite–Biehler theorem.
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+A polynomial is *real-rooted* if it splits over $\mathbb R$; the zero polynomial counts as
+real-rooted in this statement.
+
+**Theorem (Obreschkoff).** [@Obreschkoff1963; @Dedieu1992] Let $f$ and $g$ be real polynomials.
+
+- If $f\ll g$, then $\alpha f+\beta g$ is real-rooted or zero for all real $\alpha,\beta$.
+- Conversely, if $\alpha f+\beta g$ is real-rooted for all real $\alpha,\beta$, then $f\ll g$ or
+  $g\ll f$, where either polynomial may be zero.
+
+Hence for real-rooted $f$ and $g$, every real linear combination is real-rooted if and only if
+$f\ll g$ or $g\ll f$.
+
+**Proposition (degrees).** If $f,g\ne0$ and every real combination of $f$ and $g$ is
+real-rooted, then $|\deg f-\deg g|\le1$.
+
+**Theorem (stable pencil).** Let $f\ne0$ and $g\ne0$ have nonnegative coefficients, with $f$
+nonconstant. Then $f(z)+w\,g(z)$ has no zero with $z$ and $w$ both in the open upper half-plane
+if and only if $g\ll f$, that is, $f$ has the largest root.
+
+## Proof
+
+One direction of the stable-pencil theorem specializes to $w=i$ and uses the Hermite–Biehler
+theorem.
 
 ## References
 
-See [@Obreschkoff1963; @Dedieu1992] and the
+[@Obreschkoff1963; @Dedieu1992]; see also the
 [contextual statement on symmetricfunctions.com](sf:obreschkoffDedieu).
 <!-- /realrooted-catalog-content -->
 

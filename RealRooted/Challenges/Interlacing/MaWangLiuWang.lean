@@ -96,114 +96,89 @@ label = "Liu–Wang criterion for derivative–lag recurrences"
 <!-- realrooted-catalog-content -->
 # The Liu–Wang and Ma–Wang interlacing criteria
 
-For nonzero real-rooted polynomials $f$ and $F$ we write $f \ll F$
-(`StrictInterl f F`) as on the [interlacing page](/RealRooted/concepts/interlacing/):
-the zeros interlace weakly and $F$ has the largest zero, so that
-$\deg F - \deg f \in \{0, 1\}$. Shared and repeated zeros are allowed. In
-particular, $f \ll F$ includes the statement that $F$ is real-rooted.
+If an interlacer of $f$ is added to $af$ with a coefficient that is nonpositive at the roots of
+$f$, the sum is again interlaced by $f$; the same holds for $uf+vf'$ with $v\le0$ at the roots.
 
-**Theorem (general form).** Let $f, a \in \mathbb{R}[x]$ and, for a finite index set
-$s$, let $g_i, b_i \in \mathbb{R}[x]$ ($i \in s$). Put
-$F = a f + \sum_{i \in s} b_i g_i$. Suppose that $f$ is real-rooted with a positive
-leading coefficient (repeated zeros are allowed), that $g_i \ll f$ and $g_i$ has a
-positive leading coefficient for each $i$, that $F$ has a positive leading coefficient,
-and that $\deg f \leq \deg F \leq \deg f + 1$. If the combined flux satisfies
-$$\Bigl(\sum_{i \in s} b_i(r)\, g_i(r)\Bigr) f'(r) \leq 0$$
-at every real zero $r$ of $f$, and $b_i(r) \leq 0$ for every $i$ at every repeated
-zero $r$ of $f$, then $f \ll F$.
+## Results
 
-In RealRooted the derivative-sign criterion below, a simple-zero case of the
-combined flux condition, is the ingredient from which the general theorem is
-proved. The Liu–Wang theorem for one interlacer $g\ll f$, the Ma–Wang theorem
-for $g=f'$, and the finite-sum form are then corollaries of it.
+For nonzero real-rooted polynomials $f$ and $F$ we write $f\ll F$ if $f$ interlaces $F$ (see
+the [interlacing page](/RealRooted/concepts/interlacing/)): the roots interlace weakly,
+$F$ has the largest root, and $\deg F-\deg f\in\{0,1\}$. Shared and repeated roots are allowed.
+The statement $f\ll F$ includes that $F$ is real-rooted. Throughout, "positive" for a
+polynomial refers to its leading coefficient.
 
-**Theorem (weak signs).** If $g\ll f$ with $\deg g+1=\deg f$, the two have no
-common zeros, $g$ and $F$ have positive leading coefficients,
-$\deg f \leq \deg F \leq \deg f + 1$, and
-$F(r)\, g(r) \leq 0$ at every zero $r$ of $f$, then $f \ll F$. The derivative-sign
-criterion below is the case $g = f'$.
+**Theorem (Liu–Wang).** [@LiuWang2007, Thm. 2.1] Let $f,g,a,b\in\mathbb R[x]$ and $F=af+bg$.
+Suppose that $g\ll f$, that $g$ and $F$ are positive, and that
+$\deg f\le\deg F\le\deg f+1$. If $b(r)\le0$ at every real root $r$ of $f$, then $f\ll F$.
+Both shapes $\deg g=\deg f$ and $\deg g+1=\deg f$ are allowed, $f$ and $g$ may have common and
+repeated roots, and the leading coefficient of $f$ may have either sign.
 
-**Theorem (Liu–Wang).** [@LiuWang2007, Thm. 2.1] Let
-$f, g, a, b \in \mathbb{R}[x]$ and
-$F = a f + b g$. Suppose that $g \ll f$, that $g$ and $F$ have positive leading
-coefficients, and that $\deg f \leq \deg F \leq \deg f + 1$. If $b(r) \leq 0$
-at every real zero $r$ of $f$, then $f \ll F$.
+**Theorem (Ma–Wang).** [@MaWang2008, Thm. 2] Let $f,u,v\in\mathbb R[x]$ and $F=uf+vf'$. Suppose
+that $f$ is real-rooted, that $f$ and $F$ are positive, and that
+$\deg f\le\deg F\le\deg f+1$. If $v(r)\le0$ at every root $r$ of $f$, then $f\ll F$. There is no
+degree hypothesis on $f$.
 
-Both shapes $\deg g = \deg f$ and $\deg g + 1 = \deg f$ are allowed, $f$ and $g$
-may have common and repeated zeros, and the leading coefficient of $f$ may have
-either sign.
+**Theorem (Ma–Wang, strict form).** Suppose in addition that $\deg f\ne0$, that $f$ has simple
+roots, that $\deg F=\deg f+1$, and that $v(r)<0$ at every root $r$ of $f$. Then $f\ll F$ and
+$F$ has simple roots.
 
-**Theorem (derivative signs).** Let $f$ be real-rooted with simple zeros and a
-positive leading coefficient, and let $F$ have a positive leading coefficient
-and $\deg f \leq \deg F \leq \deg f + 1$. If $F(r) f'(r) \leq 0$ at every zero
-$r$ of $f$, then $f \ll F$. Common zeros of $f$ and $F$ are allowed.
-
-Conversely, if $g \ll f$ and both have positive leading coefficients, then
-$g(r) f'(r) \geq 0$ at every zero $r$ of $f$.
-
-**Theorem (Ma–Wang).** [@MaWang2008, Thm. 2] Let $f, u, v \in \mathbb{R}[x]$ and
-$F = u f + v f'$. Suppose that $f$ is real-rooted, that $f$ and $F$ have
-positive leading coefficients, and that $\deg f \leq \deg F \leq \deg f + 1$.
-If $v(r) \leq 0$ at every zero $r$ of $f$, then $f \ll F$.
-
-There is no degree hypothesis on $f$. For the strict form, suppose in addition
-that $\deg f \neq 0$, that $f$ has simple zeros, that $\deg F = \deg f + 1$, and
-that $v(r) < 0$ at every zero $r$ of $f$. Then $f \ll F$ and $F$ has simple
-zeros.
-
-**Theorem (finite sums).** Let $f$ be nonzero and real-rooted; its leading
-coefficient may have either sign, and repeated zeros are allowed. Let
-$F = a f + \sum_{i \in s} b_i g_i$ for a finite index set $s$. Suppose that
-$g_i \ll f$ and $g_i$ has a positive leading
-coefficient for each $i \in s$, that $F$ has a positive leading coefficient, and
-that $\deg f \leq \deg F \leq \deg f + 1$. If $b_i(r) \leq 0$ at every zero $r$
-of $f$ for each $i \in s$, then $f \ll F$. At repeated zeros the termwise conditions
-cannot be replaced by the combined condition $F(r) f'(r) \leq 0$, which is vacuous there.
-
-**Theorem (strict critical signs).** If $f$ is nonconstant and split, $f$ and $F$ have
-positive leading coefficients, $\deg f \leq \deg F \leq \deg f + 1$, and
-$F(r) f'(r) < 0$ at every zero $r$ of $f$, then $f \ll F$.
-
-**Sequence forms.** Let $(P_n)_{n \geq 0}$ have positive leading coefficients,
-with $P_0 \ll P_1$ and $\deg P_{n+1} \leq \deg P_{n+2} \leq \deg P_{n+1} + 1$
-for all $n$.
-
-- If $P_{n+2} = A_n P_{n+1} + B_n P_n$ and $B_n(r) \leq 0$ at every zero $r$ of
-  $P_{n+1}$, then $P_n \ll P_{n+1}$ for all $n$.
-- If $P_{n+2} = U_n P_{n+1} + V_n P_{n+1}'$ and $V_n(r) \leq 0$ at every zero
-  $r$ of $P_{n+1}$, then $P_n \ll P_{n+1}$ for all $n$.
-
-In both cases every $P_n$ is real-rooted, and consecutive polynomials may share
-zeros.
-
-**Theorem (derivative–lag step).** Let $f$ be nonzero and real-rooted with a
-positive leading coefficient, let $g \ll f$ have a positive leading coefficient,
-and put $F = u f + v f' + w g$. Suppose that $F$ has a positive leading
-coefficient and $\deg f \leq \deg F \leq \deg f + 1$. If $v(r) \leq 0$ and
-$w(r) \leq 0$ at every zero $r$ of $f$, then $f \ll F$. Common zeros of $f$ and
-$g$ are allowed. The derivative term is treated as one more interlacer of $f$,
-alongside the distinguished interlacer $g$.
-
-**Theorem (derivative–lag recurrences).** Let $(P_n)_{n \geq 0}$ have positive
-leading coefficients, with $P_0 \ll P_1$ and
-$\deg P_{n+1} \leq \deg P_{n+2} \leq \deg P_{n+1} + 1$ for all $n$. If
+**Theorem (general form).** Let $f,a\in\mathbb R[x]$ and, for a finite index set $s$, let
+$g_i,b_i\in\mathbb R[x]$. Put $F=af+\sum_{i\in s}b_ig_i$. Suppose that $f$ is real-rooted and
+positive, that $g_i\ll f$ and $g_i$ is positive for each $i$, that $F$ is positive, and that
+$\deg f\le\deg F\le\deg f+1$. If
 $$
-P_{n+2} = U_n P_{n+1} + V_n P_{n+1}' + W_n P_n
+\Bigl(\sum_{i\in s}b_i(r)\,g_i(r)\Bigr)f'(r)\le0
 $$
-and $V_n(r) \leq 0$ and $W_n(r) \leq 0$ at every zero $r$ of $P_{n+1}$, then
-$P_n \ll P_{n+1}$ for all $n$. The proof is the induction of the sequence forms
-above, applying the derivative–lag step at each stage.
+at every real root $r$ of $f$, and $b_i(r)\le0$ for every $i$ at every repeated root $r$ of
+$f$, then $f\ll F$. The Liu–Wang theorem, the Ma–Wang theorem and the finite-sum form below are
+special cases.
 
-The site states the Liu–Wang theorem with $F$ and $g$ having leading
-coefficients of the same sign; the negative case follows by replacing $F$ and
-$g$ with $-F$ and $-g$. The site also gives a strict form of the Liu–Wang
-theorem, with strict inequalities between the zeros. That strict form is not
-stated here.
+**Theorem (finite sums).** Let $f\ne0$ be real-rooted, with leading coefficient of either sign,
+and let $F=af+\sum_{i\in s}b_ig_i$ with $g_i\ll f$ and $g_i$ positive, $F$ positive and
+$\deg f\le\deg F\le\deg f+1$. If $b_i(r)\le0$ at every root $r$ of $f$ for each $i$, then
+$f\ll F$. At repeated roots the termwise conditions cannot be replaced by the combined
+condition $F(r)f'(r)\le0$, which is vacuous there.
+
+**Theorem (weak signs).** Let $g\ll f$ with $\deg g+1=\deg f$, with no common roots, let $g$ and
+$F$ be positive, and $\deg f\le\deg F\le\deg f+1$. If $F(r)g(r)\le0$ at every root $r$ of $f$,
+then $f\ll F$.
+
+**Theorem (derivative signs).** Let $f$ be real-rooted with simple roots and positive, let $F$
+be positive with $\deg f\le\deg F\le\deg f+1$. If $F(r)f'(r)\le0$ at every root $r$ of $f$,
+then $f\ll F$. Common roots of $f$ and $F$ are allowed. Conversely, if $g\ll f$ and both are
+positive, then $g(r)f'(r)\ge0$ at every root $r$ of $f$.
+
+**Theorem (strict critical signs).** If $f$ is nonconstant and real-rooted, $f$ and $F$ are
+positive, $\deg f\le\deg F\le\deg f+1$, and $F(r)f'(r)<0$ at every root $r$ of $f$, then
+$f\ll F$.
+
+**Theorem (sequences).** Let $(P_n)_{n\ge0}$ be positive with $P_0\ll P_1$ and
+$\deg P_{n+1}\le\deg P_{n+2}\le\deg P_{n+1}+1$ for all $n$. Then $P_n\ll P_{n+1}$ for all $n$
+in each of the following cases; in particular every $P_n$ is real-rooted, and consecutive
+polynomials may share roots.
+
+- $P_{n+2}=A_nP_{n+1}+B_nP_n$ with $B_n(r)\le0$ at every root $r$ of $P_{n+1}$.
+- $P_{n+2}=U_nP_{n+1}+V_nP_{n+1}'$ with $V_n(r)\le0$ at every root $r$ of $P_{n+1}$.
+- $P_{n+2}=U_nP_{n+1}+V_nP_{n+1}'+W_nP_n$ with $V_n(r)\le0$ and $W_n(r)\le0$ at every root $r$
+  of $P_{n+1}$.
+
+**Theorem (derivative–lag step).** Let $f\ne0$ be real-rooted and positive, let $g\ll f$ be
+positive, and put $F=uf+vf'+wg$. Suppose that $F$ is positive and
+$\deg f\le\deg F\le\deg f+1$. If $v(r)\le0$ and $w(r)\le0$ at every root $r$ of $f$, then
+$f\ll F$. Common roots of $f$ and $g$ are allowed.
+
+## Use
+
+The criteria give the interlacing of consecutive rows of polynomial families defined by
+recurrences or by first-order differential operators.
 
 ## References
 
-See [@LiuWang2007, Thm. 2.1] and [@MaWang2008, Thm. 2]. See also the
-[Ma–Wang and Liu–Wang criteria on symmetricfunctions.com](sf:maWangDerivativeCriterion).
+[@LiuWang2007, Thm. 2.1]; [@MaWang2008, Thm. 2]; see also the
+[Ma–Wang and Liu–Wang criteria on symmetricfunctions.com](sf:maWangDerivativeCriterion). That
+site states the Liu–Wang theorem for $F$ and $g$ with leading coefficients of the same sign, the
+negative case following by replacing $F,g$ with $-F,-g$, and also gives a strict form of the
+theorem, which is not included here.
 <!-- /realrooted-catalog-content -->
 
 The general form (combined flux) lives in `RealRooted.LiuWang.CombinedFlux`; the

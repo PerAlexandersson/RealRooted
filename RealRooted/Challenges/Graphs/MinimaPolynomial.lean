@@ -60,46 +60,52 @@ label = "Line graphs of forests have real-rooted acyclic sink polynomials"
 <!-- realrooted-catalog-content -->
 # The minima polynomial of local edge orders
 
-A **local order** of a finite graph $G$ chooses, at every vertex $v$, a linear
-order of the $\deg v$ edges at $v$. An edge is a **mutual minimum** if it comes
-first at both of its endpoints. The minima polynomial is
+The number of local edge orders of a finite graph, counted by mutual minima, is a real-rooted
+polynomial.
 
-$$
-M_G(t) = \sum_{L} t^{\operatorname{mm}(L)}
-$$
-summed over the $\prod_v \deg v!$ local orders $L$, where $\operatorname{mm}(L)$
-counts the mutual minima.
+## Results
 
-The edges at a vertex form a clique of the line graph $L(G)$, so local orders are
-the orientations of $L(G)$ that are acyclic on each of these cliques, and the
-mutual minima are their sinks.
-
-**Identity.** The mutual minima of a local order form a matching. For a matching
-$S$, every edge $uv \in S$ comes first at $u$ and at $v$ in exactly a
-$\prod_{uv \in S} 1/(\deg u \deg v)$ fraction of the local orders. Hence
+A *local order* of a finite graph $G$ chooses, at every vertex $v$, a linear order of the
+$\deg v$ edges at $v$. An edge is a *mutual minimum* if it comes first at both endpoints. The
+minima polynomial is
 $$
-M_G(t + 1) = \prod_v \deg v! \sum_{S} \prod_{uv \in S}
-  \frac{1}{\deg u \deg v}\, t^{|S|},
+M_G(t)=\sum_{L}t^{\operatorname{mm}(L)},
+$$
+summed over the $\prod_v\deg v!$ local orders $L$, where $\operatorname{mm}(L)$ is the number of
+mutual minima.
+
+**Identity.** For every finite graph $G$,
+$$
+M_G(t+1)=\prod_v\deg v!\ \sum_{S}\ \prod_{uv\in S}\frac{1}{\deg u\,\deg v}\,t^{|S|},
 $$
 summed over the matchings $S$ of $G$.
 
 **Theorem.** For every finite graph $G$, $M_G(t)$ is real-rooted.
 
-The right-hand side of the identity is a matching polynomial with positive edge
-weights, so it is real-rooted by the Heilmann–Lieb theorem. It is also a weighted
-independence polynomial of the claw-free line graph $L(G)$; see the
-[Chudnovsky–Seymour](/RealRooted/theorems/chudnovsky-seymour/) and
-[Leake–Ryder](/RealRooted/theorems/leake-ryder/) pages.
+**Theorem (forests).** If $F$ is a finite forest, then $M_F(t)$ is the acyclic sink polynomial
+of the line graph $L(F)$. In particular that polynomial is real-rooted.
 
-**Forests.** If $F$ is a forest, every orientation of $L(F)$ that is acyclic on
-the vertex cliques is acyclic, and every acyclic orientation of $L(F)$ arises
-from exactly one local order. Hence $M_F(t)$ is the acyclic sink polynomial of
-the line graph $L(F)$, and the acyclic sink polynomial of the line graph of a
-forest is real-rooted.
+## Proof
 
-For sinks of acyclic orientations, see the pages on
-[chordal claw-free graphs](/RealRooted/families/chordal-claw-free-acyclic-sinks/) and
-[all orientations of claw-free graphs](/RealRooted/families/claw-free-orientation-sinks/).
+The mutual minima of a local order form a matching. For a matching $S$, a fraction
+$\prod_{uv\in S}1/(\deg u\deg v)$ of the local orders has every edge of $S$ first at both of
+its endpoints. Summing over the subsets of the mutual minima gives the identity. The right-hand
+side is a matching polynomial with positive edge weights, hence real-rooted by the
+[Heilmann--Lieb theorem](/RealRooted/theorems/heilmann-lieb/); equivalently, a weighted
+independence polynomial of the claw-free line graph $L(G)$ (see the
+[Chudnovsky--Seymour](/RealRooted/theorems/chudnovsky-seymour/) and
+[Leake--Ryder](/RealRooted/theorems/leake-ryder/) pages).
+
+For a forest, the edges at a vertex form a clique of $L(F)$, so local orders are the
+orientations of $L(F)$ that are acyclic on these cliques, and every cycle of $L(F)$ lies in such
+a clique. Hence local orders are exactly the acyclic orientations of $L(F)$, and the mutual
+minima are the sinks.
+
+## Use
+
+For sinks of acyclic orientations see [chordal claw-free
+graphs](/RealRooted/families/chordal-claw-free-acyclic-sinks/) and [all orientations of
+claw-free graphs](/RealRooted/families/claw-free-orientation-sinks/).
 
 ## References
 

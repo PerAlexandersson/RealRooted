@@ -105,92 +105,80 @@ label = "Rank-two weighted matching numbers of a complete graph"
 <!-- realrooted-catalog-content -->
 # The Heilmann–Lieb theorem
 
-Let $G$ be a finite simple graph. Its **matching-generating polynomial** is
+Matching polynomials are real-rooted, and deleting a vertex gives an interlacing polynomial; the
+same holds for weighted matching polynomials and for weighted independence polynomials of
+claw-free graphs.
+
+## Results
+
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+Let $G$ be a finite simple graph. Its *matching-generating polynomial* is
 $$
-m_G(x) = \sum_{M} x^{|M|},
+m_G(x)=\sum_{M}x^{|M|},
 $$
-where $M$ ranges over the matchings of $G$, that is, the sets of pairwise
-disjoint edges. Given edge weights $w \colon E(G) \to \mathbb{R}$, the
-weighted version replaces $x^{|M|}$ by $\prod_{e \in M} w(e)\, x^{|M|}$.
-
-**Theorem** (Heilmann–Lieb). [@HeilmannLieb1972, Thm. 4.2] The polynomial
-$m_G(x)$ is real-rooted. More
-generally, if all edge weights are nonnegative, then the weighted
-matching-generating polynomial is real-rooted with nonnegative coefficients
-and nonpositive zeros, so its coefficients form a Pólya frequency sequence.
-
-We formalize the generating form $m_G(x)$ used on symmetricfunctions.com,
-and also the signed form
+where $M$ ranges over the matchings of $G$, that is, the sets of pairwise disjoint edges. For
+edge weights $w\colon E(G)\to\mathbb R$, the weighted version replaces $x^{|M|}$ by
+$x^{|M|}\prod_{e\in M}w(e)$. The signed form is
 $$
-\mu_G(x) = \sum_k (-1)^k m_k x^{n-2k}
+\mu_G(x)=\sum_k(-1)^k m_k\,x^{n-2k},
 $$
-of Heilmann and Lieb, where $m_k$ is the number of $k$-matchings and
-$n = |V(G)|$.
+where $m_k$ is the number of $k$-matchings and $n=|V(G)|$; for a vertex set $S$ we write
+$\mu_S$ for the polynomial of the induced subgraph $G[S]$.
+The generating form $m_G$ is the one used on symmetricfunctions.com; the signed form $\mu_G$ is
+the one of Heilmann and Lieb.
 
-**Theorem** (Heilmann–Lieb, Godsil). For every vertex $v$, the polynomial
-$\mu_{G - v}$ interlaces $\mu_G$. In particular $\mu_G$ is real-rooted.
-The Lean statements use induced subgraphs on a vertex set $S$, with $G-v$
-represented by $S\setminus\{v\}$.
+**Theorem (Heilmann--Lieb).** [@HeilmannLieb1972, Thm. 4.2] The polynomial $m_G(x)$ is
+real-rooted. If all edge weights are nonnegative, the weighted polynomial is real-rooted with
+nonnegative coefficients and nonpositive roots, that is, it is a Pólya frequency polynomial.
 
-**Theorem** (Heilmann–Lieb root bound). If every vertex of $G$ has degree at
-most $\Delta \geq 2$, every zero $x$ of $\mu_G$ satisfies
-$|x| \leq 2\sqrt{\Delta - 1}$. Heilmann and Lieb prove the strict inequality;
-the Lean statement records the weak form.
+**Theorem (vertex deletion; Heilmann--Lieb, Godsil).** For every $S$ and $v\in S$,
+$\mu_{S\setminus\{v\}}\ll\mu_S$. In particular $\mu_S$ is real-rooted.
 
-**Theorem** (Engström). [@Engstrom2007, Thm. 2.5] Let $G$ be a finite claw-free graph and let
-$w \colon V(G) \to \mathbb{R}$ be nonnegative vertex weights. Then the
-weighted independence polynomial
+**Theorem (root bound).** Let $\Delta\ge2$ and suppose every vertex of $G[S]$ has degree at most
+$\Delta$. Then every root $r$ of $\mu_S$ satisfies $|r|\le2\sqrt{\Delta-1}$.
+Heilmann and Lieb prove the strict inequality; the library states the weak form.
+
+**Theorem (Engström).** [@Engstrom2007, Thm. 2.5] Let $G$ be a finite claw-free graph and let
+$w\colon V(G)\to\mathbb R$ be nonnegative. Then
 $$
-I(G, w, x) = \sum_{A} x^{|A|} \prod_{v \in A} w(v),
+I(G,w,x)=\sum_{A}x^{|A|}\prod_{v\in A}w(v),
 $$
-where $A$ ranges over the independent sets of $G$, is real-rooted.
+summed over the independent sets $A$ of $G$, is real-rooted.
 
-**Theorem** (rank-two binomial transform). Let $p$ be a polynomial with
-nonnegative coefficients, nonpositive real zeros, and $p(0) = 1$, and let
-$M \geq \deg p$. Then the rank-two binomial transform
+**Theorem (rank-two binomial transform).** Let $p$ be a Pólya frequency polynomial with
+$p(0)=1$, and let $M\ge\deg p$. Then
 $$
-\sum_{k=0}^{M} k! \left( \sum_{j=0}^{\deg p} p_j \binom{j}{k} \binom{M-j}{k}
-\right) x^k
+\sum_{k=0}^{M}k!\Bigl(\sum_{j=0}^{\deg p}p_j\binom jk\binom{M-j}k\Bigr)x^k
 $$
-also has nonnegative coefficients and nonpositive real zeros. Equivalently,
-it equals $p(1)$ times the matching-generating polynomial of the complete
-graph $K_M$ with edge weights $a_i b_j + a_j b_i \geq 0$ for suitable
-nonnegative vectors $a$ and $b$ determined by $p$.
+is a Pólya frequency polynomial. Its coefficient of $x^k$ is $p(1)$ times the weighted number
+of $k$-matchings of the complete graph $K_M$ with edge weights $a_ib_j+a_jb_i\ge0$, for suitable
+nonnegative vectors $a,b$ determined by $p$.
 
-## Proof idea
+## Proof
 
-Engström's theorem is the weighted form of the
-[Chudnovsky–Seymour theorem](/RealRooted/theorems/chudnovsky-seymour/), and we
-prove it by the same induction on vertex subsets, which shows that the
-polynomials obtained by deleting closed neighborhoods are compatible. The
-matchings of $G$ are exactly the independent sets of the line graph $L(G)$,
-which is claw-free, so the weighted matching polynomial of $G$ is the
-weighted independence polynomial of $L(G)$. Nonnegative coefficients then
-force the zeros to be nonpositive. For the rank-two theorem, we first show
-that the coefficients of $p$ can be written through nonnegative vectors $a$
-and $b$ in terms of ordered pairs of disjoint $k$-subsets, and then that the
-weighted $k$-matching number of $K_M$ with weights $a_i b_j + a_j b_i$ equals
-$k!$ times the same sum, by orienting every edge of a matching. The transform
-is therefore $p(1)$ times the weighted matching polynomial of $K_M$, which has
-nonnegative coefficients and real zeros by the weighted Heilmann--Lieb theorem
-above.
+The matchings of $G$ are the independent sets of the claw-free line graph $L(G)$, so the
+weighted matching polynomial of $G$ is a weighted independence polynomial of $L(G)$ and
+Engström's theorem applies. Engström's theorem is the weighted form of the
+[Chudnovsky--Seymour theorem](/RealRooted/theorems/chudnovsky-seymour/), proved by the same
+induction on vertex subsets.
 
-The vertex-deletion theorem follows from the recurrence
-$\mu_G = x\,\mu_{G-v} - \sum_{u \sim v} \mu_{G-v-u}$. By induction every
-$\mu_{G-v-u}$ interlaces $\mu_{G-v}$, so their sum does too, and the
-three-term step gives $\mu_{G-v} \ll \mu_G$.
-For the root bound, the same recurrence and induction show
-$\mu_G(x) \geq \sqrt{\Delta - 1}\, \mu_{G-v}(x) > 0$ for $x > 2\sqrt{\Delta - 1}$
-whenever $v$ has at most $\Delta - 1$ neighbours, and $\mu_G$ is even or odd.
+For vertex deletion, use $\mu_S=x\mu_{S\setminus v}-\sum_{u\sim v}\mu_{S\setminus\{v,u\}}$.
+By induction each $\mu_{S\setminus\{v,u\}}$ interlaces $\mu_{S\setminus v}$, hence so does
+their sum, and the three-term step gives $\mu_{S\setminus v}\ll\mu_S$. The same recurrence
+gives the root bound.
+
+For the transform, orienting each edge of a matching of $K_M$ shows that the weighted
+$k$-matching number with weights $a_ib_j+a_jb_i$ is $k!$ times a sum over pairs of disjoint
+$k$-subsets. Writing the coefficients of $p$ in this form with nonnegative $a,b$ gives that
+the transform is $p(1)$ times a weighted matching polynomial of $K_M$.
 
 ## References
 
-See [@HeilmannLieb1972, Thm. 4.2]. C. D. Godsil, “Matchings and walks in
-graphs,” *J. Graph Theory* 5 (1981), 285–297. The claw-free specialization is
-[@Engstrom2007, Thm. 2.5]; see also [@ChudnovskySeymour2007], the
-[matching polynomial](sf:matchingPolynomial), and the
-[weighted independence polynomial](sf:weightedIndependencePolynomial)
-on symmetricfunctions.com.
+[@HeilmannLieb1972, Thm. 4.2]; C. D. Godsil, "Matchings and walks in graphs," *J. Graph
+Theory* 5 (1981), 285–297; [@Engstrom2007, Thm. 2.5]; [@ChudnovskySeymour2007]. Background on
+the [matching polynomial](sf:matchingPolynomial) and the
+[weighted independence polynomial](sf:weightedIndependencePolynomial) is on
+symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 
 This module exposes the plain and weighted Heilmann–Lieb theorems, Engström's

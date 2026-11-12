@@ -50,43 +50,44 @@ headline = true
 <!-- realrooted-catalog-content -->
 # Acyclic sink polynomials of natural unit interval graphs
 
-A natural unit interval graph on the vertices $1, \dotsc, n$ is given by left
-endpoints $\ell(1) \leq \dotsb \leq \ell(n)$ with $\ell(i) \leq i$: two vertices
-$i < j$ are adjacent when $\ell(j) \leq i$. For such a graph $G$ and a real
-parameter $q$, the ascent-refined acyclic sink polynomial is
+The acyclic sink polynomial of a natural unit interval graph, refined by ascents, is
+real-rooted.
 
-$$S_G(t; q) = \sum_{O} q^{\operatorname{asc}(O)}\, t^{\operatorname{sink}(O)},$$
+## Results
 
-summed over the acyclic orientations $O$ of $G$. Here $\operatorname{sink}(O)$
-counts the vertices with no outgoing edge, and $\operatorname{asc}(O)$ counts
-the edges directed from a smaller to a larger vertex in the natural order.
+A natural unit interval graph on the vertices $0,\dots,n-1$ is given by left endpoints
+$\ell(0)\le\dots\le\ell(n-1)$ with $\ell(i)\le i$: two vertices $i<j$ are adjacent when
+$\ell(j)\le i$. For such a graph $G$ and a real number $q$, the ascent-refined acyclic sink
+polynomial is
+$$
+S_G(t;q)=\sum_{O}q^{\operatorname{asc}(O)}\,t^{\operatorname{sink}(O)},
+$$
+summed over the acyclic orientations $O$ of $G$. Here $\operatorname{sink}(O)$ is the number of
+vertices with no outgoing edge and $\operatorname{asc}(O)$ is the number of edges directed from
+a smaller to a larger vertex.
 
-**Theorem.** For every natural unit interval graph and every real $q \geq 0$,
-the polynomial $S_G(t; q)$ is real-rooted.
+**Theorem.** For every natural unit interval graph $G$ and every real $q\ge0$, the polynomial
+$S_G(t;q)$ is real-rooted.
 
-The case $q = 1$ is the ordinary acyclic sink polynomial, which counts acyclic
-orientations by sinks alone. The theorem includes $q = 0$, disconnected graphs
-and the empty graph. The ascent statistic depends on the natural vertex order,
-and the theorem is about that labelling; it is not claimed for other labellings.
+## Use
 
-The proof identifies $S_G(t + 1; q)$, after a positive normalization, with a
-weighted independence polynomial of $G$ with nonnegative vertex weights. Natural
-unit interval graphs are claw-free, so that polynomial is real-rooted by the
-weighted form of the [Chudnovsky–Seymour theorem](/RealRooted/theorems/chudnovsky-seymour/).
+The statistic $\operatorname{asc}$ depends on the natural vertex order. At $q=1$ we obtain the
+ordinary acyclic sink polynomial. There the theorem is a special case of the result for
+[chordal claw-free graphs](/RealRooted/families/chordal-claw-free-acyclic-sinks/), since the
+natural order is a reverse perfect elimination order and natural unit interval graphs are
+claw-free. See also the [minima polynomial](/RealRooted/families/minima-polynomial/) page.
 
-Natural unit interval graphs are chordal, and the natural order is a reverse
-perfect elimination order. At $q = 1$ the theorem is therefore a special case
-of the result for
-[chordal claw-free graphs](/RealRooted/families/chordal-claw-free-acyclic-sinks/),
-which also covers line graphs of trees; see also the
-[minima polynomial](/RealRooted/families/minima-polynomial/) page.
+## Proof
+
+After a positive normalization, $S_G(t+1;q)$ is a weighted independence polynomial of $G$ with
+nonnegative vertex weights. It is real-rooted by the weighted form of the
+[Chudnovsky--Seymour theorem](/RealRooted/theorems/chudnovsky-seymour/).
 
 ## References
 
-P. Alexandersson and L. Saud Maia Leite, unpublished manuscript (2026).
-For the claw-free background, see the
-[Chudnovsky–Seymour](/RealRooted/theorems/chudnovsky-seymour/) and
-[Leake–Ryder](/RealRooted/theorems/leake-ryder/) pages.
+P. Alexandersson and L. Saud Maia Leite, unpublished manuscript (2026). Background on claw-free
+graphs is on the [Chudnovsky--Seymour](/RealRooted/theorems/chudnovsky-seymour/) and
+[Leake--Ryder](/RealRooted/theorems/leake-ryder/) pages.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in
