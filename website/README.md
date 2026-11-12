@@ -76,20 +76,31 @@ record supplies `tags`; any item can use `tags = []` to clear the page default.
 Tags are editorial metadata: they are displayed on cards, declaration pages,
 and the all-results table, but do not enter the selected-declaration digest.
 
-Headlines mark a page's main results; give every page at least one.  They are
-named on the page's overview card (on a theorem page, unless the label repeats
-the page title), and the headlines of a concept or family page are listed
-alongside the theorem pages in the overview's Theorems group, linking to the
-declaration on its page.  `results/` can be filtered to the main results, and
-`results/#main-results` opens it filtered that way.  Mark the main theorem of
-a paper, and every named theorem, as a headline.  Labels and
-headlines are presentation only and do not enter the selected-declaration
-digest below.
+Mark exactly one theorem per page with `headline = true` and a one-line label.
+The landing page displays one card per page, using the first headline; a warning
+lists multiple headlines. A page with no headline temporarily falls back to its
+first theorem. `scripts/headline_baseline.txt` lists existing exceptions: source
+checks reject new exceptions and stale entries, so remove an entry when fixed.
+Labels and headlines do not enter the selected-declaration digest.
 
-The overview cards show what each page contains (its numbers of definitions
-and theorems), and `results/` lists every selected declaration with a text and
-kind filter.  The displayed Markdown must have one H1 and a nonempty
+Use `kind = "sequence"` and a nonempty `conjecture = "..."` locator for a
+per-sequence page. A title naming an OEIS A-number also requires a locator.
+The catalog validates all citation keys and SymCat labels against the snapshots.
+`python3 scripts/symcat_sync.py --check` reports the number of live labels absent
+from the snapshot, or reports that freshness is unavailable when offline.
+
+The complete `results/` index is paginated; text and kind filters apply to the
+current page. The machine-readable `catalog-manifest.json` retains all selected
+declarations. The displayed Markdown must have one H1 and a nonempty
 `## References` section.
+
+`python3 scripts/check_declaration_names.py` checks published names against the
+sorted `scripts/declaration_names_baseline.txt`, rejecting new and stale findings.
+Use `--self-test` for its tests and `--update` after reviewing changes to the
+baseline. `--family` enables a provisional family-namespace rule: a namespace
+segment must match the page slug after removing punctuation and case. It is off
+by default pending a decision on the naming scheme; use `--family --update` to
+baseline that rule before checking it.
 
 ## Author credits
 
