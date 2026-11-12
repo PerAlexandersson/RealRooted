@@ -4,6 +4,7 @@ public import RealRooted.Tactic.Examples.A049325RecurrenceSpace
 public import RealRooted.Tactic.Examples.Attr
 public import RealRooted.Tactic.Examples.Combinatorial
 public import RealRooted.Tactic.Examples.EulerBidiagonalOeis
+public import RealRooted.Tactic.Examples.EulerBidiagonalVarying
 public import RealRooted.Tactic.Examples.EulerTypeBridges
 public import RealRooted.Tactic.Examples.FTransformInterlaces
 public import RealRooted.Tactic.Examples.Finish
