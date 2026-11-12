@@ -58,33 +58,31 @@ theorem rename_swap_finsetMonomial {σ R : Type*} [CommSemiring R]
       finsetMonomial (swapFinset x y A) :=
   rename_finsetMonomial (Equiv.swap x y) (Equiv.swap x y).injective A
 
-/-- A swap fixes a support containing neither endpoint. -/
-theorem swapFinset_eq_self_of_not_mem {σ : Type*} [DecidableEq σ]
-    (A : Finset σ) (x y : σ) (hx : x ∉ A) (hy : y ∉ A) :
+/-- Shared core: a swap fixes a support that contains both endpoints or neither. -/
+private theorem swapFinset_eq_self_of_iff {σ : Type*} [DecidableEq σ]
+    (A : Finset σ) (x y : σ) (hxy : x ∈ A ↔ y ∈ A) :
     swapFinset x y A = A := by
   ext z
   simp only [swapFinset, Finset.mem_map_equiv, Equiv.symm_swap]
   by_cases hzx : z = x
   · subst z
-    simp [hx, hy]
+    simp [hxy]
   · by_cases hzy : z = y
     · subst z
-      simp [hx, hy]
+      simp [hxy]
     · rw [Equiv.swap_apply_of_ne_of_ne hzx hzy]
+
+/-- A swap fixes a support containing neither endpoint. -/
+theorem swapFinset_eq_self_of_not_mem {σ : Type*} [DecidableEq σ]
+    (A : Finset σ) (x y : σ) (hx : x ∉ A) (hy : y ∉ A) :
+    swapFinset x y A = A :=
+  swapFinset_eq_self_of_iff A x y (iff_of_false hx hy)
 
 /-- A swap fixes a support containing both endpoints. -/
 theorem swapFinset_eq_self_of_mem {σ : Type*} [DecidableEq σ]
     (A : Finset σ) (x y : σ) (hx : x ∈ A) (hy : y ∈ A) :
-    swapFinset x y A = A := by
-  ext z
-  simp only [swapFinset, Finset.mem_map_equiv, Equiv.symm_swap]
-  by_cases hzx : z = x
-  · subst z
-    simp [hx, hy]
-  · by_cases hzy : z = y
-    · subst z
-      simp [hx, hy]
-    · rw [Equiv.swap_apply_of_ne_of_ne hzx hzy]
+    swapFinset x y A = A :=
+  swapFinset_eq_self_of_iff A x y (iff_of_true hx hy)
 
 /-- If a support contains only the left endpoint, swapping replaces it by the
 right endpoint. -/
