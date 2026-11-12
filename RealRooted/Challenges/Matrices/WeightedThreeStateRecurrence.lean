@@ -36,7 +36,7 @@ module = "RealRooted.MatrixInterlacing.WeightedThreeStateStrip"
 label = "The normalized rows Q_n with parameters (ρ, e)"
 
 [[theorems]]
-name = "RealRooted.weightedThreeStateMatrix_preserves_iff"
+name = "RealRooted.PreservesInterlacingSeq0.weightedThreeStateMatrix_iff"
 module = "RealRooted.MatrixInterlacing.WeightedThreeStateRows"
 label = "The three-state matrix preserves interlacing sequences exactly in an explicit region"
 headline = true

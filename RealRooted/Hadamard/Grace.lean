@@ -481,3 +481,15 @@ theorem isFinitePFMultiplierSequence_iff_jensenPolynomial {n : ℕ} {gamma : ℕ
       (isFiniteMultiplierSequence_of_isPFPolynomial_jensenPolynomial hjensen)⟩
 
 end RealRooted
+
+open Polynomial
+
+namespace RealRooted
+
+/-- Finite Polya--Schur theorem in the nonnegative-coefficient convention. -/
+theorem Hadamard.finiteMultiplierSequence_iff_jensen_isPFPolynomial {n : ℕ}
+    {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k) :
+    IsFiniteMultiplierSequence n gamma ↔ IsPFPolynomial (jensenPolynomial n gamma) :=
+  finitePolyaSchur_nonneg hgamma
+
+end RealRooted

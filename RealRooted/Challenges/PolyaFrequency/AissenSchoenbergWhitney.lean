@@ -1,10 +1,16 @@
 module
 
 public import RealRooted.ASWKarlinKernel
-import RealRooted.AissenSchoenbergWhitney
-public import RealRooted.PFPolynomial
-import RealRooted.PolyaFrequencyConvolution.Basic
+public import RealRooted.ASWKarlinMatrix
+public import RealRooted.ASWKarlinSineBounds
+public import RealRooted.ASWKarlinThreshold
+public import RealRooted.ASWKarlinVariation
+public import RealRooted.ASWKarlinVectors
+public import RealRooted.AissenSchoenbergWhitney
+public import RealRooted.AissenSchoenbergWhitneyBase
 public import RealRooted.NatCauchyConvolution
+public import RealRooted.PFPolynomial
+public import RealRooted.PolyaFrequencyConvolution.Basic
 
 /-!
 # Pólya frequency sequences and real-rooted polynomials (Aissen–Schoenberg–Whitney)
@@ -57,22 +63,25 @@ module = "RealRooted.ASWKarlinVectors"
 label = "Sampled sine vector of the argument of a root"
 
 [[theorems]]
-name = "RealRooted.Challenges.AissenSchoenbergWhitney.isPolyaFreqSeq_coeff_iff_isPFPolynomial"
+name = "RealRooted.isPolyaFreqSeq_coeff_iff_isPFPolynomial"
+module = "RealRooted.PFPolynomial"
 label = "Pólya frequency coefficients if and only if a PF polynomial"
 headline = true
 symcat = "aissenSchoenbergWhitney"
 
 [[theorems]]
-name = "RealRooted.Challenges.AissenSchoenbergWhitney.IsPolyaFreqSeq.splits_and_roots_nonpos"
+name = "RealRooted.aissenSchoenbergWhitneyForward"
+module = "RealRooted.AissenSchoenbergWhitney"
 label = "Pólya frequency coefficients give real nonpositive zeros"
 
 [[theorems]]
-name = """RealRooted.Challenges.AissenSchoenbergWhitney.\
-isPolyaFreqSeq_coeff_of_splits_of_roots_nonpos"""
+name = "RealRooted.aissenSchoenbergWhitney_reverse"
+module = "RealRooted.AissenSchoenbergWhitney"
 label = "Nonnegative coefficients and real nonpositive zeros give PF coefficients"
 
 [[theorems]]
-name = "RealRooted.Challenges.AissenSchoenbergWhitney.IsPolyaFreqSeq.natCauchyConvolution"
+name = "RealRooted.IsPolyaFreqSeq.natCauchyConvolution"
+module = "RealRooted.PolyaFrequencyConvolution.Basic"
 label = "Pólya frequency sequences are closed under convolution"
 
 [[theorems]]
@@ -116,14 +125,12 @@ module = "RealRooted.ASWKarlinVectors"
 label = "The root vector and the sampled sine vector have the same sign variations"
 
 [[theorems]]
-name = """RealRooted.signVariations_aswKarlinSineVector_\
-le_floor_div_pi_abs"""
+name = "RealRooted.signVariations_aswKarlinSineVector_le_floor_div_pi_abs"
 module = "RealRooted.ASWKarlinSineBounds"
 label = "A sampled sine vector has at most ⌊N|θ|/π⌋ sign variations"
 
 [[theorems]]
-name = """RealRooted.signVariations_aswKarlinSineVector_\
-lt_of_lt_threshold"""
+name = "RealRooted.signVariations_aswKarlinSineVector_lt_of_lt_threshold"
 module = "RealRooted.ASWKarlinSineBounds"
 label = "Below the threshold the sine vector has fewer than m sign variations"
 
@@ -211,41 +218,3 @@ forward and reverse directions, and closure of Pólya frequency sequences under
 convolution.  The Toeplitz/PF infrastructure remains in
 `RealRooted.AissenSchoenbergWhitney`.
 -/
-
-public section
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace AissenSchoenbergWhitney
-
-/-- Aissen--Schoenberg--Whitney: the coefficient sequence of `p` is a
-Pólya-frequency sequence exactly when `p` is a PF polynomial. -/
-theorem isPolyaFreqSeq_coeff_iff_isPFPolynomial {p : ℝ[X]} :
-    IsPolyaFreqSeq p.coeff ↔ IsPFPolynomial p :=
-  ⟨fun h => RealRooted.IsPFPolynomial.of_polyaFreqSeq h, fun h => h.to_sequence⟩
-
-/-- Forward ASW theorem: PF coefficients imply real nonpositive roots. -/
-theorem IsPolyaFreqSeq.splits_and_roots_nonpos {p : ℝ[X]}
-    (hp : IsPolyaFreqSeq p.coeff) :
-    p.Splits ∧ ∀ r ∈ p.roots, r ≤ 0 :=
-  RealRooted.aissenSchoenbergWhitneyForward hp
-
-/-- Reverse ASW theorem: nonnegative coefficients and real nonpositive roots
-imply PF coefficients. -/
-theorem isPolyaFreqSeq_coeff_of_splits_of_roots_nonpos {p : ℝ[X]}
-    (hp : HasNonnegCoeffs p) (hsplits : p.Splits) (hroots : ∀ r ∈ p.roots, r ≤ 0) :
-    IsPolyaFreqSeq p.coeff :=
-  RealRooted.aissenSchoenbergWhitney_reverse hp hsplits hroots
-
-/-- Pólya frequency sequences, finite or infinite, are closed under Cauchy
-convolution. -/
-theorem IsPolyaFreqSeq.natCauchyConvolution {a b : ℕ → ℝ} (ha : IsPolyaFreqSeq a)
-    (hb : IsPolyaFreqSeq b) :
-    IsPolyaFreqSeq (natCauchyConvolution a b) :=
-  ha.natCauchyConvolution hb
-
-end AissenSchoenbergWhitney
-end Challenges
-end RealRooted

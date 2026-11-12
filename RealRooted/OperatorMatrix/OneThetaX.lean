@@ -14,8 +14,9 @@ import RealRooted.AffineProperPosition
 
 A two-by-two block of operators from the alphabet `{1, θ, X}` (with `θ = X d/dX`) preserves
 ordered PF pairs if and only if it is one of thirteen blocks
-(`preservesOrderedPFPair_iff_isAllowedBlock`).  With the local-to-global theorem this
-classifies rectangular matrices (`preservesOrderedPF_letters_iff`).  Necessity uses explicit
+(`RealRooted.OperatorMatrix.PreservesOrderedPFPair.iff_isAllowedBlock`). With the local-to-global
+theorem this classifies rectangular matrices
+(`RealRooted.OperatorMatrix.PreservesOrderedPF.letters_iff`). Necessity uses explicit
 counterexamples; the block `(θ, 1) / (θ, θ)` uses the mixed differential lemma
 `p' + q' ≤ q + X p'`.
 -/
@@ -859,7 +860,7 @@ theorem preservesOrderedPFPair_theta_one_theta_theta :
 
 /-- **Classification.** A two-by-two block over `{1, θ, X}` preserves ordered PF pairs if and only
 if it is one of the thirteen blocks of `Letter.IsAllowedBlock`. -/
-theorem preservesOrderedPFPair_iff_isAllowedBlock (a b c d : Letter) :
+theorem PreservesOrderedPFPair.iff_isAllowedBlock (a b c d : Letter) :
     PreservesOrderedPFPair a.linearMap b.linearMap c.linearMap d.linearMap ↔
       a.IsAllowedBlock b c d := by
   refine ⟨fun h => by_contra fun hn => not_preservesOrderedPFPair_of_not_isAllowedBlock
@@ -882,12 +883,12 @@ theorem preservesOrderedPFPair_iff_isAllowedBlock (a b c d : Letter) :
 /-- **Rectangular classification.** A matrix with at least two rows and columns over
 `{1, θ, X}` preserves ordered PF vectors if and only if every ordered two-by-two submatrix, on
 rows `i < k` and columns `j < l`, is one of the thirteen allowed blocks. -/
-theorem preservesOrderedPF_letters_iff {m n : ℕ} (L : Fin m → Fin n → Letter)
+theorem PreservesOrderedPF.letters_iff {m n : ℕ} (L : Fin m → Fin n → Letter)
     (hm : 2 ≤ m) (hn : 2 ≤ n) :
     PreservesOrderedPF (fun i j => (L i j).linearMap) ↔
       ∀ i k j l, i < k → j < l → (L i j).IsAllowedBlock (L i l) (L k j) (L k l) := by
-  rw [preservesOrderedPF_iff_preservesBlock_of_two_le _ hm hn]
-  simp only [PreservesBlock, preservesOrderedPFPair_iff_isAllowedBlock]
+  rw [PreservesOrderedPF.iff_forall_blocks_of_two_le _ hm hn]
+  simp only [PreservesBlock, PreservesOrderedPFPair.iff_isAllowedBlock]
 
 end RealRooted.OperatorMatrix
 

@@ -132,3 +132,19 @@ theorem strictInterl_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ {f F u v
   · simp
 
 end RealRooted
+
+open Polynomial
+
+namespace RealRooted
+
+/-- **Strict Ma–Wang step.**  If moreover `f` is nonconstant with simple roots, `F` has degree
+`deg f + 1`, and `v` is negative at every root of `f`, then `F` also has simple roots. -/
+theorem MaWang.strictInterl_and_hasSimpleRoots_of_eval_neg {f F u v : ℝ[X]} (hf : f.Splits)
+    (hf_pos : HasPosLeadingCoeff f) (hF_pos : HasPosLeadingCoeff F) (hdegf : f.natDegree ≠ 0)
+    (hdeg : F.natDegree = f.natDegree + 1) (hsimple : HasSimpleRoots f)
+    (hrec : F = u * f + v * f.derivative) (hv : ∀ r, f.IsRoot r → v.eval r < 0) :
+    StrictInterl f F ∧ HasSimpleRoots F :=
+  strictInterl_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ hf hf_pos hF_pos
+    (Nat.one_le_iff_ne_zero.mpr hdegf) hdeg hsimple hrec hv
+
+end RealRooted

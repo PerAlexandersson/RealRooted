@@ -50,6 +50,6 @@ theorem narayanaTransform_fallingSchur_monomial (m n : ℕ) (c : ℝ) :
 theorem narayanaTransform_fallingSchur_preservesPF {p : ℝ[X]}
     (hp : IsPFPolynomial p) (m n : ℕ) :
     IsPFPolynomial (narayanaTransform m (fallingSchur n p)) :=
-  narayanaTransformPreservesPF m (isPFPolynomial_fallingSchur hp n)
+  IsPFPolynomial.narayanaTransform m (isPFPolynomial_fallingSchur hp n)
 
 end RealRooted

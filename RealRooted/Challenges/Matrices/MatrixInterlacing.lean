@@ -1,9 +1,13 @@
 module
 
+public import RealRooted.AffineFamily.Basic
+public import RealRooted.InterlacingSequenceBasic
 public import RealRooted.MatrixInterlacing
+public import RealRooted.MatrixInterlacing.Action
 public import RealRooted.MatrixInterlacing.Composition
 public import RealRooted.MatrixInterlacing.Converse
-import RealRooted.MatrixInterlacing.Preservation
+public import RealRooted.MatrixInterlacing.Preservation
+public import RealRooted.ProductFamily
 
 /-!
 # Matrix interlacing challenge entry point
@@ -52,21 +56,24 @@ module = "RealRooted.InterlacingSequenceBasic"
 label = "Interlacing sequence of real-rooted polynomials with nonnegative coefficients"
 
 [[theorems]]
-name = "RealRooted.Challenges.MatrixInterlacing.preservesInterlacingSeq0_iff"
+name = "RealRooted.PreservesInterlacingSeq0.iff_nonneg_and_2x2"
+module = "RealRooted.MatrixInterlacing.Converse"
 label = "A matrix preserves interlacing sequences exactly when its 2 × 2 submatrices do"
 headline = true
 symcat = "matrixPreservesInterlacingSequences"
 
 [[theorems]]
-name = "RealRooted.Challenges.MatrixInterlacing.preserves_interlacing_sequences"
+name = "RealRooted.IsInterlacingSeqNonneg.matPolyAction_of_2x2"
+module = "RealRooted.MatrixInterlacing.Preservation"
 label = "Strict form: the strict condition preserves strict interlacing sequences"
 
 [[theorems]]
-name = "RealRooted.Challenges.MatrixInterlacing.preserves_interlacing_sequences_zeroAware"
+name = "RealRooted.IsInterlacingSeq0Nonneg.matPolyAction_of_2x2"
+module = "RealRooted.MatrixInterlacing.Preservation"
 label = "Strict input, zero-aware output"
 
 [[theorems]]
-name = "RealRooted.matPolyMul_preservesInterlacingSeq0"
+name = "RealRooted.PreservesInterlacingSeq0.matPolyMul"
 module = "RealRooted.MatrixInterlacing.Composition"
 label = "Products of interlacing-preserving matrices preserve interlacing"
 
@@ -162,67 +169,3 @@ family, together with the strict forward theorem and its zero-aware-output
 variant.  The sparse test families and the 2-by-2 reduction machinery live in
 `RealRooted.MatrixInterlacing`.
 -/
-
-public section
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace MatrixInterlacing
-
-/-- **The matrix criterion** (Brändén, Theorem 7.8.5, zero-aware form).  A
-polynomial matrix `G` with `n` columns maps the zero-aware nonnegative
-real-rooted interlacing family into itself if and only if its entries have
-nonnegative coefficients and every ordered 2-by-2 submatrix, repeated indices
-allowed, satisfies the weak affine condition. -/
-theorem preservesInterlacingSeq0_iff {n : ℕ} (G : List (List ℝ[X]))
-    (hG_rect : ∀ row ∈ G, row.length = n) :
-    PreservesInterlacingSeq0 n G ↔
-      (∀ row ∈ G, ∀ p ∈ row, HasNonnegCoeffs p) ∧
-      ∀ (i₁ i₂ : Fin G.length) (j₁ j₂ : Fin n), i₁ ≤ i₂ → j₁ ≤ j₂ →
-        Has2x2InterlacingProperty0
-          ((G.get i₁).get ⟨j₁, by simp_all⟩)
-          ((G.get i₁).get ⟨j₂, by simp_all⟩)
-          ((G.get i₂).get ⟨j₁, by simp_all⟩)
-          ((G.get i₂).get ⟨j₂, by simp_all⟩) :=
-  RealRooted.preservesInterlacingSeq0_iff G hG_rect
-
-/-- The matrix criterion, strict forward direction: the affine 2-by-2
-conditions imply preservation of nonnegative interlacing sequences. -/
-theorem preserves_interlacing_sequences {n : ℕ} (hn : n ≠ 0) (G : List (List ℝ[X]))
-    (hG_rect : ∀ row ∈ G, row.length = n)
-    (hG_nonneg : ∀ row ∈ G, ∀ p ∈ row, HasNonnegCoeffs p)
-    (hG_affine : ∀ (i₁ i₂ : Fin G.length) (j₁ j₂ : Fin n),
-      i₁ ≤ i₂ → j₁ ≤ j₂ →
-      Has2x2InterlacingProperty
-        ((G.get i₁).get ⟨j₁, by simp_all⟩)
-        ((G.get i₁).get ⟨j₂, by simp_all⟩)
-        ((G.get i₂).get ⟨j₁, by simp_all⟩)
-        ((G.get i₂).get ⟨j₂, by simp_all⟩))
-    (fs : List ℝ[X]) (hfs_len : fs.length = n) (hfs : IsInterlacingSeqNonneg fs) :
-    IsInterlacingSeqNonneg (matPolyAction G fs) :=
-  RealRooted.matrix_preserves_interlacing_seq (Nat.pos_of_ne_zero hn) G hG_rect hG_nonneg
-    hG_affine fs hfs_len hfs
-
-/-- Forward direction with strict input and zero-aware output: the weak affine
-2-by-2 conditions map strict nonnegative interlacing sequences into the
-zero-aware family, so some output rows may vanish. -/
-theorem preserves_interlacing_sequences_zeroAware {n : ℕ} (G : List (List ℝ[X]))
-    (hG_rect : ∀ row ∈ G, row.length = n)
-    (hG_nonneg : ∀ row ∈ G, ∀ p ∈ row, HasNonnegCoeffs p)
-    (hG_affine : ∀ (i₁ i₂ : Fin G.length) (j₁ j₂ : Fin n),
-      i₁ ≤ i₂ → j₁ ≤ j₂ →
-      Has2x2InterlacingProperty0
-        ((G.get i₁).get ⟨j₁, by simp_all⟩)
-        ((G.get i₁).get ⟨j₂, by simp_all⟩)
-        ((G.get i₂).get ⟨j₁, by simp_all⟩)
-        ((G.get i₂).get ⟨j₂, by simp_all⟩))
-    (fs : List ℝ[X]) (hfs_len : fs.length = n) (hfs : IsInterlacingSeqNonneg fs) :
-    IsInterlacingSeq0Nonneg (matPolyAction G fs) :=
-  RealRooted.matrix_preserves_interlacing_seq0_of_2x2 G hG_rect hG_nonneg hG_affine fs
-    hfs_len hfs
-
-end MatrixInterlacing
-end Challenges
-end RealRooted

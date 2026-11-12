@@ -11,7 +11,8 @@ import RealRooted.DerivativeProduct.KernelWeyl
 This file specializes the finite-order Weyl-symbol preserver theorem to the
 univariate Poisson product.  It proves real-rootedness preservation from the
 root-sign condition and derives the PF-preserver classification for every real parameter
-(`preservesPF_iff`): PF left factors for `c ≥ 0`, nonnegative constants for `c < 0` (issue #1494).
+(`RealRooted.Poisson.PreservesPF.iff`): PF left factors for `c ≥ 0`, nonnegative constants for `c <
+0` (issue #1494).
 -/
 
 public section
@@ -158,7 +159,7 @@ theorem preservesPF_iff_of_nonneg {c : ℝ} (hc : 0 ≤ c) (f : ℝ[X]) :
     exact IsPFPolynomial.preservesPF hc hf
 
 /-- Complete fixed-left-factor PF classification for every real parameter. -/
-theorem preservesPF_iff (c : ℝ) (f : ℝ[X]) :
+theorem PreservesPF.iff (c : ℝ) (f : ℝ[X]) :
     PreservesPF c f ↔
       if 0 ≤ c then IsPFPolynomial f
       else ∃ a : ℝ, 0 ≤ a ∧ f = C a := by
@@ -166,7 +167,7 @@ theorem preservesPF_iff (c : ℝ) (f : ℝ[X]) :
   next hc =>
     exact preservesPF_iff_of_nonneg hc f
   next hc =>
-    exact preservesPF_of_neg_iff (lt_of_not_ge hc) f
+    exact PreservesPF.iff_of_neg (lt_of_not_ge hc) f
 
 end
 

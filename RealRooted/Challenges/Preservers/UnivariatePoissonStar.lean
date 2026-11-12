@@ -37,7 +37,7 @@ module = "RealRooted.BorceaBranden.Applications.UnivariatePoissonStar"
 label = "Nonnegative inputs give nonnegative coefficients"
 
 [[theorems]]
-name = "RealRooted.Poisson.preservesAffineRealRooted_linear_iff"
+name = "RealRooted.Poisson.PreservesAffineRealRooted.linear_iff"
 module = "RealRooted.BorceaBranden.Applications.UnivariatePoissonStar"
 label = "Affine test for a single linear factor"
 
@@ -52,22 +52,22 @@ module = "RealRooted.BorceaBranden.Applications.UnivariatePoissonStar"
 label = "Signed-symbol stability from the root-sign condition"
 
 [[theorems]]
-name = "RealRooted.Poisson.preservesPF_of_neg_iff"
+name = "RealRooted.Poisson.PreservesPF.iff_of_neg"
 module = "RealRooted.BorceaBranden.Applications.UnivariatePoissonStar"
 label = "PF preservers at a negative parameter"
 
 [[theorems]]
-name = "RealRooted.Poisson.preservesRealRootedOrZero_zero_iff"
+name = "RealRooted.PreservesRealRootedOrZero.poissonStar_zero_iff"
 module = "RealRooted.BorceaBranden.Applications.UnivariatePoissonStar"
 label = "Real-rootedness preservers at parameter zero"
 
 [[theorems]]
-name = "RealRooted.Poisson.preservesPF_zero_iff"
+name = "RealRooted.Poisson.PreservesPF.zero_iff"
 module = "RealRooted.BorceaBranden.Applications.UnivariatePoissonStar"
 label = "PF preservers at parameter zero"
 
 [[theorems]]
-name = "RealRooted.Poisson.preservesPF_iff"
+name = "RealRooted.Poisson.PreservesPF.iff"
 module = "RealRooted.BorceaBranden.Applications.PoissonStarGeneral"
 label = "Complete PF-preserver classification for every parameter"
 headline = true

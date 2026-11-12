@@ -346,7 +346,7 @@ theorem RowGeneratingFunctionsPF.mul_narayanaMatrix
     RowGeneratingFunctionsPF (mul M (narayanaMatrix m)) := by
   simpa [narayanaMatrix, narayanaTransform] using
     hM.mul_basisCoefficientMatrix (natDegree_narayanaPolynomial_le m)
-      (fun p hp => narayanaTransformPreservesPF m hp)
+      (fun p hp => RealRooted.IsPFPolynomial.narayanaTransform m hp)
 
 theorem narayanaMatrix_rightPreservesRowGeneratingFunctionsPF (m : ℕ) :
     RightPreservesRowGeneratingFunctionsPF (narayanaMatrix m) := by
@@ -472,5 +472,34 @@ theorem RowGeneratingFunctionsHaveOnlyNonposRoots.of_mul_fallingFactorialMatrix
 end LowerTriangularMatrix
 
 end
+
+end RealRooted
+
+open Polynomial
+
+namespace RealRooted
+
+open LowerTriangularMatrix
+/-- **Mao–Wang matrix-product theorem** (Mao–Wang 2026, Theorem 1.3).  Right multiplication
+by a finite product of admissible factors keeps every row-generating polynomial PF. -/
+theorem LowerTriangularMatrix.RowGeneratingFunctionsPF.mul_listProduct {M : LowerTriangularMatrix ℝ}
+    {Bs : List (LowerTriangularMatrix ℝ)} (hBs : ∀ B ∈ Bs, MaoWangAdmissibleMatrix B)
+    (hM : RowGeneratingFunctionsPF M) :
+    RowGeneratingFunctionsPF (LowerTriangularMatrix.mul M (listProduct Bs)) :=
+  maoWang_matrixListProduct_rowGeneratingFunctions_pf hBs hM
+
+end RealRooted
+
+open Polynomial
+
+namespace RealRooted
+
+open LowerTriangularMatrix
+/-- **Mao–Wang matrix-product theorem, powers.**  Right multiplication by a power of one
+admissible factor keeps every row-generating polynomial PF. -/
+theorem LowerTriangularMatrix.RowGeneratingFunctionsPF.mul_pow {M B : LowerTriangularMatrix ℝ}
+    (hB : MaoWangAdmissibleMatrix B) (r : ℕ) (hM : RowGeneratingFunctionsPF M) :
+    RowGeneratingFunctionsPF (LowerTriangularMatrix.mul M (LowerTriangularMatrix.pow B r)) :=
+  maoWang_matrixProduct_rowGeneratingFunctions_pf hB r hM
 
 end RealRooted

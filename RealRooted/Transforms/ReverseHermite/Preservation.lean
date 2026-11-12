@@ -212,14 +212,14 @@ private theorem reverseHermiteTransform_preserves_pf_and_interl :
     exact (hP g.natDegree).2 hf hg hfg rfl
 
 /-- The reverse-Hermite transform preserves the polynomial PF cone. -/
-theorem reverseHermiteTransform_preserves_pf {p : ℝ[X]}
+theorem IsPFPolynomial.reverseHermiteTransform {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
     IsPFPolynomial (reverseHermiteTransform p) :=
   reverseHermiteTransform_preserves_pf_and_interl.1 hp
 
 /-- The reverse-Hermite transform preserves zero-aware interlacing between
 PF polynomials. -/
-theorem reverseHermiteTransform_preserves_interl {f g : ℝ[X]}
+theorem Interl.reverseHermiteTransform {f g : ℝ[X]}
     (hf : IsPFPolynomial f) (hg : IsPFPolynomial g)
     (hfg : Interl f g) :
     Interl (reverseHermiteTransform f) (reverseHermiteTransform g) :=
@@ -231,6 +231,10 @@ theorem reverseHermiteTransform_strictInterl_to_interl {f g : ℝ[X]}
     (hf : IsPFPolynomial f) (hg : IsPFPolynomial g)
     (hfg : StrictInterl f g) :
     Interl (reverseHermiteTransform f) (reverseHermiteTransform g) :=
-  reverseHermiteTransform_preserves_interl hf hg hfg.toInterl
+  Interl.reverseHermiteTransform hf hg hfg.toInterl
 
 end RealRooted
+
+@[deprecated (since := "2026-11-12")]
+alias RealRooted.reverseHermiteTransform_preserves_pf :=
+  RealRooted.IsPFPolynomial.reverseHermiteTransform

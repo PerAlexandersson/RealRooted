@@ -28,12 +28,12 @@ module = "RealRooted.MatrixInterlacing.SeparatedCharacteristicRows"
 label = "Iterated rows of the matrix from a seed vector"
 
 [[theorems]]
-name = "RealRooted.separatedCharacteristicMatrix_preservesInterlacingSeq0"
+name = "RealRooted.PreservesInterlacingSeq0.separatedCharacteristicMatrix"
 module = "RealRooted.MatrixInterlacing.SeparatedCharacteristic"
 label = "The matrix preserves interlacing sequences when a_i ≥ 0 and b_j ≤ 0"
 
 [[theorems]]
-name = "RealRooted.separatedCharacteristicMatrix_preservesInterlacingSeq0_shift"
+name = "RealRooted.PreservesInterlacingSeq0.separatedCharacteristicMatrix_shift"
 module = "RealRooted.MatrixInterlacing.SeparatedCharacteristic"
 label = "The shifted form: a_i ≥ ρ and b_j ≤ ρ"
 

@@ -1,10 +1,10 @@
 module
 
-import RealRooted.WangYeh.TriangularMatrix
-import RealRooted.WangYeh.TriangularArray
-import RealRooted.WangYeh.PF
-import RealRooted.WangYeh.Affine
 public import RealRooted.MultiplierSequence.Bidiagonal
+public import RealRooted.WangYeh.Affine
+public import RealRooted.WangYeh.PF
+public import RealRooted.WangYeh.TriangularArray
+public import RealRooted.WangYeh.TriangularMatrix
 
 /-!
 # Wang–Yeh criterion for affine combinations of interlacing polynomials
@@ -27,22 +27,26 @@ module = "RealRooted.MultiplierSequence.Bidiagonal"
 label = "Coefficient-bidiagonal operator"
 
 [[theorems]]
-name = "RealRooted.Challenges.WangYeh.eq_zero_or_splits_affine_add"
+name = "RealRooted.wangYehAffine_eq_zero_or_splits"
+module = "RealRooted.WangYeh.Affine"
 label = "(bx + a) f + (dx + c) g is real-rooted or zero when ad ≥ bc"
 headline = true
 symcat = "wangYehAffineCriterion"
 
 [[theorems]]
-name = "RealRooted.Challenges.WangYeh.isPFPolynomial_bidiagonalOperator"
+name = "RealRooted.IsPFPolynomial.wangYeh_bidiagonal"
+module = "RealRooted.WangYeh.PF"
 label = "Affine bidiagonal transforms preserve Pólya-frequency polynomials"
 symcat = "wangYehPfPreserver"
 
 [[theorems]]
-name = "RealRooted.Challenges.WangYeh.isPolyaFreqSeq_row_of_bilinear_recurrence"
+name = "RealRooted.IsPolyaFreqSeq.row_of_bilinear_recurrence"
+module = "RealRooted.WangYeh.TriangularMatrix"
 label = "Rows of a bilinear triangular recurrence are Pólya-frequency sequences"
 
 [[theorems]]
-name = "RealRooted.Challenges.WangYeh.isPFPolynomial_rows_of_bilinear_recurrence"
+name = "RealRooted.wangYeh_triangularRows_pf"
+module = "RealRooted.WangYeh.TriangularArray"
 label = "Row polynomials of a bilinear triangular recurrence are Pólya-frequency"
 -->
 
@@ -111,63 +115,3 @@ The affine criterion lives in `RealRooted.WangYeh.Affine`, the PF preserver in
 `RealRooted.WangYeh.PF`, and the triangular-array corollaries in
 `RealRooted.WangYeh.TriangularArray` and `RealRooted.WangYeh.TriangularMatrix`.
 -/
-
-public section
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace WangYeh
-
-/-- **Wang–Yeh affine criterion** (Wang–Yeh 2005, Theorem 1).  If `g ≪ f`, both with positive
-leading coefficient, and `b * c ≤ a * d`, then `(bX + a) f + (dX + c) g` is zero or splits. -/
-theorem eq_zero_or_splits_affine_add {f g : ℝ[X]} {a b c d : ℝ} (hgf : StrictInterl g f)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g) (hdet : b * c ≤ a * d) :
-    (C b * X + C a) * f + (C d * X + C c) * g = 0 ∨
-      ((C b * X + C a) * f + (C d * X + C c) * g).Splits :=
-  wangYehAffine_eq_zero_or_splits hgf hf_pos hg_pos hdet
-
-/-- **Wang–Yeh PF preserver** (Wang–Yeh 2005, Corollary 2).  The coefficient-bidiagonal
-operator `y_k = (b + d k) x_k + (a + c (k - 1)) x_{k-1}` maps a PF polynomial to a PF
-polynomial when `b * c ≤ a * d` and the output has nonnegative coefficients. -/
-theorem isPFPolynomial_bidiagonalOperator {p : ℝ[X]} {a b c d : ℝ} (hp : IsPFPolynomial p)
-    (hdet : b * c ≤ a * d)
-    (hout : HasNonnegCoeffs
-      (bidiagonalOperator (fun k ↦ b + d * (k : ℝ)) (fun k ↦ a + c * (k : ℝ)) p)) :
-    IsPFPolynomial
-      (bidiagonalOperator (fun k ↦ b + d * (k : ℝ)) (fun k ↦ a + c * (k : ℝ)) p) :=
-  hp.wangYeh_bidiagonal hdet hout
-
-/-- **Wang–Yeh triangular arrays** (Wang–Yeh 2005, Corollary 3).  A nonnegative
-lower-triangular array with `A 0 0 = 1` and the bilinear row recurrence has a PF sequence in
-every row, provided `a * s ≤ r * b` and `(a + c) * s ≤ (r + s + t) * b`. -/
-theorem isPolyaFreqSeq_row_of_bilinear_recurrence (A : ℕ → ℕ → ℝ) (r s t a b c : ℝ)
-    (hlower : ∀ i j, i < j → A i j = 0) (hbase : A 0 0 = 1)
-    (hzero : ∀ n, A (n + 1) 0 = (a * (n + 1 : ℝ) + c) * A n 0)
-    (hsucc : ∀ n k, A (n + 1) (k + 1) =
-      (r * (n + 1 : ℝ) + s * (k + 1 : ℝ) + t) * A n k +
-        (a * (n + 1 : ℝ) + b * (k + 1 : ℝ) + c) * A n (k + 1))
-    (hnonneg : ∀ n k, 0 ≤ A n k) (hrb : a * s ≤ r * b)
-    (hboundary : (a + c) * s ≤ (r + s + t) * b) (n : ℕ) :
-    IsPolyaFreqSeq (A n) :=
-  wangYeh_triangularMatrix_rows_pf A r s t a b c (fun h ↦ hlower _ _ h) hbase hzero hsucc
-    hnonneg hrb hboundary n
-
-/-- **Wang–Yeh triangular arrays, row polynomials.**  If `P 0 = 1`, the coefficients of
-consecutive rows satisfy the bilinear recurrence, every row has nonnegative coefficients, and
-`a * s ≤ r * b` and `(a + c) * s ≤ (r + s + t) * b`, then every row polynomial is PF. -/
-theorem isPFPolynomial_rows_of_bilinear_recurrence (P : ℕ → ℝ[X]) (r s t a b c : ℝ)
-    (hbase : P 0 = 1)
-    (hzero : ∀ n, (P (n + 1)).coeff 0 = (a * (n + 1 : ℝ) + c) * (P n).coeff 0)
-    (hsucc : ∀ n k, (P (n + 1)).coeff (k + 1) =
-      (r * (n + 1 : ℝ) + s * (k + 1 : ℝ) + t) * (P n).coeff k +
-        (a * (n + 1 : ℝ) + b * (k + 1 : ℝ) + c) * (P n).coeff (k + 1))
-    (hnonneg : ∀ n, HasNonnegCoeffs (P n)) (hrb : a * s ≤ r * b)
-    (hboundary : (a + c) * s ≤ (r + s + t) * b) (n : ℕ) :
-    IsPFPolynomial (P n) :=
-  wangYeh_triangularRows_pf P r s t a b c hbase hzero hsucc hnonneg hrb hboundary n
-
-end WangYeh
-end Challenges
-end RealRooted

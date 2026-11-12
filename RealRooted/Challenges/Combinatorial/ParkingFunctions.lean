@@ -46,8 +46,7 @@ headline = true
 symcat = "parkingFunctionDescentsRealRooted"
 
 [[theorems]]
-name = """RealRooted.ParkingFunctions.\
-parkingDescentPolynomialInt_succ_nsmul"""
+name = "RealRooted.ParkingFunctions.parkingDescentPolynomialInt_succ_nsmul"
 module = "RealRooted.ParkingFunctions.Descents.OrdinaryTransfer"
 label = "Pollak's cyclic action: descents of parking functions and of words"
 

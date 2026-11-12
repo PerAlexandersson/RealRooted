@@ -1,17 +1,22 @@
 module
 
-import RealRooted.FiniteFreeAdditive.HalfIntegerPreservation
-import RealRooted.FiniteFreeAdditive.OrderedRoots
+public import RealRooted.FiniteFreeAdditive
+public import RealRooted.FiniteFreeAdditive.HalfIntegerConvolution
+public import RealRooted.FiniteFreeAdditive.HalfIntegerPreservation
+public import RealRooted.FiniteFreeAdditive.OrderedRoots
 public import RealRooted.FiniteFreeAdditive.Preservation
 public import RealRooted.FiniteFreeAdditive.RootWindow
-import RealRooted.FiniteFreeAdditive.Stability
+public import RealRooted.FiniteFreeAdditive.Stability
 public import RealRooted.FiniteFreeMultiplicative
 public import RealRooted.FiniteFreeRootCount
 public import RealRooted.Hadamard.Grace
-import RealRooted.NarayanaTransformation.Rectangular.Preservation
-public import RealRooted.WagnerX.NonnegativeRoots
-public import RealRooted.FiniteFreeAdditive.HalfIntegerConvolution
+public import RealRooted.NarayanaTransformation.Rectangular.Preservation
 public import RealRooted.NarayanaTransformation.RootGeometry
+public import RealRooted.RectangularConvolution
+public import RealRooted.RectangularConvolutionIdentity
+public import RealRooted.RectangularPolarization
+public import RealRooted.RectangularPolarizationComplement
+public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
 # Real-rootedness and root locations under finite free convolutions
@@ -112,16 +117,18 @@ module = "RealRooted.FiniteFreeAdditive.Stability"
 label = "Convolution by a fixed monic split factor preserves directed interlacing"
 
 [[theorems]]
-name = """RealRooted.Challenges.FiniteFreeConvolutions.\
-hasOnlyNonnegRoots_rectangularAdditiveConvolution"""
+name = "RealRooted.HasOnlyNonnegRoots.rectangularAdditiveConvolution"
+module = "RealRooted.NarayanaTransformation.Rectangular.Preservation"
 label = "Gribinski–Marcus: the rectangular convolution preserves nonnegative roots"
 
 [[theorems]]
-name = "RealRooted.Challenges.FiniteFreeConvolutions.splits_and_roots_nonneg_rectangular_neg_half"
+name = "RealRooted.splits_and_roots_nonneg_rectangular_neg_half"
+module = "RealRooted.FiniteFreeAdditive.HalfIntegerPreservation"
 label = "The parameter −1/2 preserves nonnegative roots"
 
 [[theorems]]
-name = "RealRooted.Challenges.FiniteFreeConvolutions.splits_and_roots_nonneg_rectangular_pos_half"
+name = "RealRooted.splits_and_roots_nonneg_rectangular_pos_half"
+module = "RealRooted.FiniteFreeAdditive.HalfIntegerPreservation"
 label = "The parameter 1/2 preserves nonnegative roots"
 
 [[theorems]]
@@ -155,8 +162,7 @@ module = "RealRooted.RectangularPolarization"
 label = "Rectangular polarization preserves upper-half-plane stability"
 
 [[theorems]]
-name = """RealRooted.\
-mvUpperHalfPlaneStable_reciprocalRectangularPolarization"""
+name = "RealRooted.mvUpperHalfPlaneStable_reciprocalRectangularPolarization"
 module = "RealRooted.RectangularPolarizationComplement"
 label = "The signed reciprocal polarization is also stable"
 
@@ -266,49 +272,3 @@ This module is a catalog facade. The proofs live in
 `RealRooted.NarayanaTransformation.Rectangular` and
 `RealRooted.FiniteFreeMultiplicative`.
 -/
-
-public section
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace FiniteFreeConvolutions
-
-/-- **Gribinski–Marcus.** The rectangular additive convolution of two
-polynomials of degree `n` with positive leading coefficients and only
-nonnegative roots has only nonnegative roots. -/
-theorem hasOnlyNonnegRoots_rectangularAdditiveConvolution {m n : ℕ} {f g : ℝ[X]}
-    (hfdeg : f.natDegree = n) (hgdeg : g.natDegree = n)
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hf : HasOnlyNonnegRoots f) (hg : HasOnlyNonnegRoots g) :
-    HasOnlyNonnegRoots (rectangularAdditiveConvolution m n f g) :=
-  rectangularAdditiveConvolutionPreservesNonnegRoots hfdeg hgdeg hf_pos hg_pos hf hg
-
-/-- The generalized rectangular convolution with parameter `-1 / 2` preserves
-real-rootedness with nonnegative roots in degree at most `n`. -/
-theorem splits_and_roots_nonneg_rectangular_neg_half (n : ℕ) (p q : ℝ[X])
-    (hp : p.Splits) (hq : q.Splits)
-    (hproots : ∀ r ∈ p.roots, 0 ≤ r) (hqroots : ∀ r ∈ q.roots, 0 ≤ r)
-    (hpdeg : p.natDegree ≤ n) (hqdeg : q.natDegree ≤ n) :
-    (generalizedRectangularAdditiveConvolution (-(1 / 2 : ℝ)) n p q).Splits ∧
-      ∀ r ∈ (generalizedRectangularAdditiveConvolution (-(1 / 2 : ℝ)) n p q).roots,
-        0 ≤ r :=
-  splits_and_forall_roots_nonneg_generalizedRectangularAdditiveConvolution_neg_half n p q
-    hp hq hproots hqroots hpdeg hqdeg
-
-/-- The generalized rectangular convolution with parameter `1 / 2` preserves
-real-rootedness with nonnegative roots in degree at most `n`. -/
-theorem splits_and_roots_nonneg_rectangular_pos_half (n : ℕ) (p q : ℝ[X])
-    (hp : p.Splits) (hq : q.Splits)
-    (hproots : ∀ r ∈ p.roots, 0 ≤ r) (hqroots : ∀ r ∈ q.roots, 0 ≤ r)
-    (hpdeg : p.natDegree ≤ n) (hqdeg : q.natDegree ≤ n) :
-    (generalizedRectangularAdditiveConvolution (1 / 2 : ℝ) n p q).Splits ∧
-      ∀ r ∈ (generalizedRectangularAdditiveConvolution (1 / 2 : ℝ) n p q).roots,
-        0 ≤ r :=
-  splits_and_forall_roots_nonneg_generalizedRectangularAdditiveConvolution_pos_half n p q
-    hp hq hproots hqroots hpdeg hqdeg
-
-end FiniteFreeConvolutions
-end Challenges
-end RealRooted

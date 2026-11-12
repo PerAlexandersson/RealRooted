@@ -152,7 +152,7 @@ theorem doubleNarayanaPolynomial_hasNonnegCoeffs (n : ℕ) :
 /-- Double Narayana rows are PF polynomials. -/
 theorem doubleNarayanaPolynomial_isPF (n : ℕ) :
     IsPFPolynomial (doubleNarayanaPolynomial n) := by
-  exact narayanaTransformPreservesPF 0 (narayanaPolynomialRootLocation 0 n)
+  exact IsPFPolynomial.narayanaTransform 0 (narayanaPolynomialRootLocation 0 n)
 
 /-- A double Narayana row has degree at most its row index. -/
 theorem natDegree_doubleNarayanaPolynomial_le (n : ℕ) :

@@ -80,3 +80,19 @@ theorem zigzagEulerianPolynomial_roots (n : ℕ) (hn : 1 ≤ n) :
     exact (zigzagCenteredQuotient_root_normSq_lt n (by lia) c hc).le
 
 end RealRooted.ZigzagEulerian
+
+open Polynomial
+
+namespace RealRooted
+
+open ZigzagEulerian
+/-- Exact degree and distinct negative roots of the zig-zag swap enumerator. -/
+theorem ZigzagEulerian.isRealRooted_and_roots_neg (n : ℕ) (hn : 1 ≤ n) :
+    zigzagEulerianPolynomial n ≠ 0 ∧
+      (zigzagEulerianPolynomial n).natDegree = n - 2 ∧
+      (zigzagEulerianPolynomial n).Splits ∧
+      (zigzagEulerianPolynomial n).roots.Nodup ∧
+      ∀ r ∈ (zigzagEulerianPolynomial n).roots, r < 0 := by
+  exact ⟨zigzagEulerianPolynomial_ne_zero n, zigzagEulerianPolynomial_roots n hn⟩
+
+end RealRooted

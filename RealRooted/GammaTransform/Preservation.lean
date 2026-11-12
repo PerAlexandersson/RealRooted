@@ -388,3 +388,37 @@ theorem IsGammaExpansion.isRealRooted_and_hasRootsNonpos_iff {d : ℕ} {p γ : �
       (d := d) (γ := γ) hγdeg hp.1.1 hp.1.2 hp.2
 
 end RealRooted
+
+open Polynomial
+
+namespace RealRooted
+
+/-- **Gamma real-rootedness criterion**: for `γ` of degree at most `d / 2`,
+`γ` is real-rooted with nonpositive roots if and only if its gamma transform
+is. -/
+theorem GammaTransform.isRealRooted_and_roots_nonpos_iff {d : ℕ} {γ : ℝ[X]}
+    (hγdeg : γ.natDegree ≤ d / 2) :
+    ((γ ≠ 0 ∧ γ.Splits) ∧ ∀ r ∈ γ.roots, r ≤ 0) ↔
+      ((gammaTransform d γ ≠ 0 ∧ (gammaTransform d γ).Splits) ∧
+        ∀ r ∈ (gammaTransform d γ).roots, r ≤ 0) :=
+  ⟨fun h ↦ isRealRooted_and_hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasRootsNonpos
+      hγdeg h.1.1 h.1.2 h.2,
+    fun h ↦ isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_of_natDegree_le
+      hγdeg h.1.1 h.1.2 h.2⟩
+
+end RealRooted
+
+open Polynomial
+
+namespace RealRooted
+
+/-- The gamma transform of a nonzero real-rooted polynomial with nonnegative
+coefficients is real-rooted. -/
+theorem GammaTransform.isRealRooted_gammaTransform_of_hasNonnegCoeffs {d : ℕ} {γ : ℝ[X]}
+    (hγdeg : γ.natDegree ≤ d / 2) (hγ_ne : γ ≠ 0) (hγ_splits : γ.Splits)
+    (hγ_nonneg : HasNonnegCoeffs γ) :
+    gammaTransform d γ ≠ 0 ∧ (gammaTransform d γ).Splits :=
+  isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs hγdeg hγ_ne hγ_splits
+    hγ_nonneg
+
+end RealRooted

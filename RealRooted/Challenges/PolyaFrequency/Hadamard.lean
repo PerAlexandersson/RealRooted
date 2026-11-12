@@ -1,24 +1,28 @@
 module
 
-import RealRooted.GarloffWagner.Hadamard
+public import RealRooted.AissenSchoenbergWhitneyBase
+public import RealRooted.CoefficientShape.LiuMao
+public import RealRooted.GarloffWagner.Algebra
+public import RealRooted.GarloffWagner.Hadamard
 public import RealRooted.GarloffWagner.Theorem12
 public import RealRooted.Hadamard
-import RealRooted.Hadamard.FiniteReflection
+public import RealRooted.Hadamard.Basic
+public import RealRooted.Hadamard.Consequences
+public import RealRooted.Hadamard.FiniteReflection
+public import RealRooted.Hadamard.Grace
 public import RealRooted.Hadamard.KostovMap
 public import RealRooted.Hadamard.OrderedRoots
+public import RealRooted.Hadamard.Product
 public import RealRooted.Hadamard.RootIntervals
 public import RealRooted.Hadamard.SchurSzegoMultiplicity
-public import RealRooted.Hadamard.SchurSzegoSimple
 public import RealRooted.Hadamard.SchurSzegoSigns
+public import RealRooted.Hadamard.SchurSzegoSimple
 public import RealRooted.Hadamard.SequenceCounterexamples
 public import RealRooted.Hadamard.SequenceOperators
-public import RealRooted.CoefficientShape.LiuMao
-import RealRooted.MultiplierSequence.PolyaSchur.Schur
-import RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal
+public import RealRooted.MultiplierSequence.PolyaSchur.Schur
+public import RealRooted.PFPolynomial
 public import RealRooted.PolynomialValueEulerNumerator.Product.Brenti
-import RealRooted.Hadamard.Grace
-public import RealRooted.Hadamard.Basic
-public import RealRooted.GarloffWagner.Algebra
+public import RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal
 
 /-!
 # Hadamard products and Schur–Szegő composition preserve real roots and interlacing
@@ -69,7 +73,8 @@ module = "RealRooted.GarloffWagner.Algebra"
 label = "Factorial Hadamard product"
 
 [[theorems]]
-name = "RealRooted.Challenges.Hadamard.schurSzegoComp_eq_zero_or_splits"
+name = "RealRooted.finiteSchurSzegoComposition"
+module = "RealRooted.Hadamard.Grace"
 label = "Schur–Szegő composition preserves real-rootedness"
 
 [[theorems]]
@@ -169,15 +174,17 @@ label = "Kostov's coefficient map recovers the symmetric functions of a factoriz
 
 [[theorems]]
 name = "RealRooted.Hadamard.finiteMultiplierSequence_iff_jensen_isPFPolynomial"
+module = "RealRooted.Hadamard.Grace"
 label = "Finite Pólya–Schur theorem"
 
 [[theorems]]
-name = """RealRooted.Challenges.Hadamard.\
-isFiniteMultiplierSequence_iff_jensenPolynomial_roots_nonneg"""
+name = "RealRooted.isFiniteMultiplierSequence_iff_jensenPolynomial_roots_nonneg"
+module = "RealRooted.Hadamard.FiniteReflection"
 label = "Finite Pólya–Schur theorem, alternating signs"
 
 [[theorems]]
-name = "RealRooted.Challenges.Hadamard.interl_hadamardProduct_of_strictInterl"
+name = "RealRooted.StrictInterl.interl_hadamardProduct"
+module = "RealRooted.GarloffWagner.Hadamard"
 label = "Garloff–Wagner: Hadamard products preserve interlacing"
 headline = true
 
@@ -187,7 +194,8 @@ module = "RealRooted.Hadamard.Consequences"
 label = "Maló: termwise products of Pólya frequency coefficient sequences are PF"
 
 [[theorems]]
-name = "RealRooted.Challenges.Hadamard.isPolyaFreqSeq_polynomialValueSeq_mul"
+name = "RealRooted.isPolyaFreqSeq_polynomialValueSeq_mul_of_polyaFreqSeq"
+module = "RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal"
 label = "Products of polynomial value sequences are PF"
 
 [[theorems]]
@@ -206,7 +214,8 @@ module = "RealRooted.GarloffWagner.Theorem12"
 label = "Garloff–Wagner: the factorial Hadamard product preserves interlacing"
 
 [[theorems]]
-name = "RealRooted.Challenges.Hadamard.factorialHadamardProduct_eq_zero_or_splits"
+name = "RealRooted.factorialHadamardProduct_eq_zero_or_splits"
+module = "RealRooted.MultiplierSequence.PolyaSchur.Schur"
 label = "Schur: the factorial product preserves real-rootedness"
 
 [[theorems]]
@@ -357,62 +366,3 @@ the form `n ↦ p(n)`; it is not a closure theorem for arbitrary PF sequences.
 Its PF convention includes the zero polynomial and permits nonpositive, rather
 than strictly negative, roots.
 -/
-
-public section
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace Hadamard
-
-/-- Fixed-degree Schur--Szego composition theorem. -/
-theorem schurSzegoComp_eq_zero_or_splits {n : ℕ} {f p : ℝ[X]}
-    (hf : IsPFPolynomial f) (hfdeg : f.natDegree ≤ n) (hpdeg : p.natDegree ≤ n)
-    (hsplits : p.Splits) :
-    schurSzegoComp n f p = 0 ∨ (schurSzegoComp n f p).Splits :=
-  RealRooted.finiteSchurSzegoComposition hf hfdeg hpdeg hsplits
-
-/-- Finite Polya--Schur theorem in the nonnegative-coefficient convention. -/
-theorem _root_.RealRooted.Hadamard.finiteMultiplierSequence_iff_jensen_isPFPolynomial {n : ℕ}
-    {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k) :
-    IsFiniteMultiplierSequence n gamma ↔ IsPFPolynomial (jensenPolynomial n gamma) :=
-  RealRooted.finitePolyaSchur_nonneg hgamma
-
-/-- Finite Pólya--Schur theorem for sequences with `(-1)^k γ_k ≥ 0`: the
-Jensen polynomial is zero or real-rooted with all zeros in `[0, ∞)`. -/
-theorem isFiniteMultiplierSequence_iff_jensenPolynomial_roots_nonneg {n : ℕ}
-    {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ (-1) ^ k * gamma k) :
-    IsFiniteMultiplierSequence n gamma ↔
-      (jensenPolynomial n gamma = 0 ∨ (jensenPolynomial n gamma).Splits) ∧
-        ∀ r ∈ (jensenPolynomial n gamma).roots, 0 ≤ r :=
-  RealRooted.isFiniteMultiplierSequence_iff_jensenPolynomial_roots_nonneg hgamma
-
-/-- Schur's factorial product theorem: if `f` is real-rooted and `g` is
-real-rooted with all zeros of one sign, then `∑ k! aₖ bₖ xᵏ` is zero or
-real-rooted. -/
-theorem factorialHadamardProduct_eq_zero_or_splits {f g : ℝ[X]} (hf : f.Splits)
-    (hg : g.Splits) (hsign : (∀ r ∈ g.roots, r ≤ 0) ∨ ∀ r ∈ g.roots, 0 ≤ r) :
-    factorialHadamardProduct f g = 0 ∨ (factorialHadamardProduct f g).Splits :=
-  RealRooted.factorialHadamardProduct_eq_zero_or_splits hf hg hsign
-
-/-- Garloff--Wagner interlacing theorem for coefficientwise products. -/
-theorem interl_hadamardProduct_of_strictInterl {f g p q : ℝ[X]}
-    (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
-    (hp : HasNonnegCoeffs p) (hq : HasNonnegCoeffs q)
-    (hfg : StrictInterl f g) (hpq : StrictInterl p q) :
-    Interl (hadamardProduct f p) (hadamardProduct g q) :=
-  RealRooted.StrictInterl.interl_hadamardProduct hf hg hp hq hfg hpq
-
-/-- Polynomial-value PF sequences are closed under polynomial multiplication.
-This includes zero inputs; for nonzero inputs the proof derives the canonical
-Euler-numerator certificates through causal differences. -/
-theorem isPolyaFreqSeq_polynomialValueSeq_mul {f g : ℝ[X]}
-    (hf : IsPolyaFreqSeq (polynomialValueSeq f))
-    (hg : IsPolyaFreqSeq (polynomialValueSeq g)) :
-    IsPolyaFreqSeq (polynomialValueSeq (f * g)) :=
-  RealRooted.isPolyaFreqSeq_polynomialValueSeq_mul_of_polyaFreqSeq hf hg
-
-end Hadamard
-end Challenges
-end RealRooted

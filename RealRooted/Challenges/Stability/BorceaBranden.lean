@@ -49,17 +49,17 @@ label = "Classification of stability preservers on a degree box"
 headline = true
 
 [[theorems]]
-name = "RealRooted.BorceaBranden.finiteSymbol_preservesRealRootedUpTo"
+name = "RealRooted.BorceaBranden.PreservesRealRootedUpTo.of_finiteSymbol"
 module = "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol"
 label = "Finite-symbol theorem: a stable symbol gives a real-rootedness preserver"
 
 [[theorems]]
-name = "RealRooted.BorceaBranden.coordinateDiagonalOperator_preserves_stability"
+name = "RealRooted.MvUpperHalfPlaneStable.coordinateDiagonalOperator"
 module = "RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier"
 label = "Coordinate PF multipliers preserve multivariate stability"
 
 [[theorems]]
-name = "RealRooted.BorceaBranden.finiteOrderWeylOperator_preserves_stability"
+name = "RealRooted.MvUpperHalfPlaneStable.finiteOrderWeylOperator"
 module = "RealRooted.BorceaBranden.FiniteOrderWeylPreserver"
 label = "A stable signed Weyl symbol gives a stability preserver of any degree"
 

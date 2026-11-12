@@ -1,13 +1,9 @@
 module
 
-public import RealRooted.HeilmannLieb
-import RealRooted.Graph.IndependencePolynomial.ClawFree
-public import RealRooted.Graph.IndependencePolynomial.Basic
 public import RealRooted.Graph.ClawFree
-
-public section
-
-open Polynomial
+public import RealRooted.Graph.IndependencePolynomial.Basic
+public import RealRooted.Graph.IndependencePolynomial.ClawFree
+public import RealRooted.HeilmannLieb
 
 /-!
 # Chudnovsky--Seymour challenge entry point
@@ -35,7 +31,8 @@ module = "RealRooted.Graph.IndependencePolynomial.Basic"
 label = "Independence polynomial"
 
 [[theorems]]
-name = "RealRooted.Challenges.ChudnovskySeymour.clawFree_indepPoly_splits"
+name = "RealRooted.Graph.clawFree_indepPoly_splits"
+module = "RealRooted.Graph.IndependencePolynomial.ClawFree"
 label = "Chudnovsky–Seymour: claw-free graphs have real-rooted independence polynomials"
 
 [[theorems]]
@@ -84,19 +81,3 @@ independence polynomial of a clawfree graph", J. Combin. Theory Ser. B 97
 
 This module states the Chudnovsky--Seymour theorem for finite graphs.
 -/
-
-namespace RealRooted
-namespace Challenges
-namespace ChudnovskySeymour
-
-universe u
-
-/-- Finite claw-free graph independence polynomials are real-rooted. -/
-theorem clawFree_indepPoly_splits {V : Type u} [Fintype V] [DecidableEq V]
-    (G : _root_.SimpleGraph V) (hG : RealRooted.Graph.ClawFree G) :
-    (RealRooted.Graph.indepPoly G).Splits :=
-  RealRooted.Graph.clawFree_indepPoly_splits G hG
-
-end ChudnovskySeymour
-end Challenges
-end RealRooted

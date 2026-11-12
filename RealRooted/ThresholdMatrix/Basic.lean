@@ -160,7 +160,7 @@ theorem thresholdMatrix_preserves_interlacing_seq0_of_entry
     (fs : List ℝ[X]) (hfs_len : fs.length = q)
     (hfs : IsInterlacingSeqNonneg fs) :
     IsInterlacingSeq0Nonneg (matPolyAction (thresholdMatrix q rows) fs) :=
-  matrix_preserves_interlacing_seq0_of_2x2
+  IsInterlacingSeq0Nonneg.matPolyAction_of_2x2
     (thresholdMatrix q rows)
     (fun row hrow => mem_thresholdMatrix_length row hrow)
     (thresholdMatrix_nonneg hα)

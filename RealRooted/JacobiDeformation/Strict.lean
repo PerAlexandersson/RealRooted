@@ -212,3 +212,23 @@ theorem isPFPolynomial_polynomial (m : ℕ) {δ c d U V : ℝ} (hδ : 0 ≤ δ)
         (polynomial_all_rank_nonneg_parameter (m + 1) hδ hc hd hU hV).1
 
 end RealRooted.JacobiDeformation
+
+open Polynomial
+
+namespace RealRooted
+
+/-- For `m ≠ 0` and `0 < δ < 1`, the derivative of `J_{m,0}` interlaces
+`J_{m,δ}`, the deformation has simple roots, and the two polynomials have no
+common root. -/
+theorem JacobiDeformation.interlaces_derivative_polynomial_zero {m : ℕ} (hm : m ≠ 0) {δ c d U V : ℝ}
+    (hc : 0 < c) (hd : 0 < d) (hU : 0 < U) (hV : 0 < V) (hδ : 0 < δ) (hδ1 : δ < 1) :
+    Interlaces (JacobiDeformation.polynomial m 0 c d U V).derivative
+        (JacobiDeformation.polynomial m δ c d U V) ∧
+      HasSimpleRoots (JacobiDeformation.polynomial m δ c d U V) ∧
+      ∀ r, (JacobiDeformation.polynomial m 0 c d U V).derivative.IsRoot r →
+        ¬(JacobiDeformation.polynomial m δ c d U V).IsRoot r :=
+  have h := JacobiDeformation.polynomial_strict_package
+    (Nat.one_le_iff_ne_zero.mpr hm) hc hd hU hV hδ hδ1
+  ⟨h.2.1, h.2.2.2.2.1, h.2.2.2.2.2⟩
+
+end RealRooted

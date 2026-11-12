@@ -158,7 +158,7 @@ theorem strictInterl_polarTheta_adjacent
   have hPder0 : P.derivative ≠ 0 := by simp_all
   have hQder0 : Q.derivative ≠ 0 := by simp_all
   have hder0 : Interl P.derivative Q.derivative :=
-    derivativePreservesInterl hXrev.toInterl
+    Interl.derivative hXrev.toInterl
   have hder : StrictInterl P.derivative Q.derivative := by
     rcases hder0 with hzero | hzero | hstrict
     · simp_all

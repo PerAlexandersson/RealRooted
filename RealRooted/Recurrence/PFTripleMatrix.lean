@@ -14,7 +14,8 @@ The multiplication-operator matrix
 `[[0, 0, 1], [l X, 0, 1], [c X, d X, a + b X]]` sends an input triple `(p, u, r)` to
 `(r, r + l X p, c X p + d X u + (a + b X) r)`.  For `l > 0` it preserves every ordered
 Pólya-frequency triple exactly when `a, b, d ≥ 0` and `a l ≤ c`
-(`preservesScaledPFTriple_iff`); `l = 1` is `preservesPFTriple_iff`.  No degree or
+(`RealRooted.PreservesScaledPFTriple.iff`); `l = 1` is `RealRooted.PreservesPFTriple.iff`.  No
+degree or
 nonzero hypotheses are needed: the zero-`r` branch of the proof establishes the output
 comparison `X p ≼ X (c p + d u)` directly.
 
@@ -231,7 +232,7 @@ theorem nonneg_of_preservesScaledPFTriple {l a b c d : ℝ} (hl : 0 < l)
 /-- **The scaled criterion.**  For `l > 0`, the matrix `[[0, 0, 1], [l X, 0, 1],
 [c X, d X, a + b X]]` preserves every ordered Pólya-frequency triple if and only if
 `a, b, d ≥ 0` and `a l ≤ c`.  There are no degree or nonzero-coordinate hypotheses. -/
-theorem preservesScaledPFTriple_iff {l : ℝ} (hl : 0 < l) (a b c d : ℝ) :
+theorem PreservesScaledPFTriple.iff {l : ℝ} (hl : 0 < l) (a b c d : ℝ) :
     PreservesScaledPFTriple l a b c d ↔ 0 ≤ a ∧ 0 ≤ b ∧ 0 ≤ d ∧ a * l ≤ c :=
   ⟨nonneg_of_preservesScaledPFTriple hl, fun ⟨ha, hb, hd, hc⟩ ↦
     preservesScaledPFTriple_of_nonneg hl ha hb hd hc⟩
@@ -239,10 +240,10 @@ theorem preservesScaledPFTriple_iff {l : ℝ} (hl : 0 < l) (a b c d : ℝ) :
 /-- **The sharp criterion.**  The matrix `[[0, 0, 1], [X, 0, 1], [c X, d X, a + b X]]`
 preserves every ordered Pólya-frequency triple if and only if `a, b, d ≥ 0` and `a ≤ c`.
 There are no degree or nonzero-coordinate hypotheses. -/
-theorem preservesPFTriple_iff (a b c d : ℝ) :
+theorem PreservesPFTriple.iff (a b c d : ℝ) :
     PreservesPFTriple a b c d ↔ 0 ≤ a ∧ 0 ≤ b ∧ 0 ≤ d ∧ a ≤ c := by
   rw [preservesPFTriple_iff_preservesScaledPFTriple,
-    preservesScaledPFTriple_iff one_pos]
+    PreservesScaledPFTriple.iff one_pos]
   simp
 
 /-! ### Third-order recurrences -/

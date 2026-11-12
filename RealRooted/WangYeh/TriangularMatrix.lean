@@ -68,3 +68,24 @@ theorem wangYeh_triangularMatrix_rows_pf
     (hPpf n).to_sequence
 
 end RealRooted
+
+open Polynomial
+
+namespace RealRooted
+
+/-- **Wang–Yeh triangular arrays** (Wang–Yeh 2005, Corollary 3).  A nonnegative
+lower-triangular array with `A 0 0 = 1` and the bilinear row recurrence has a PF sequence in
+every row, provided `a * s ≤ r * b` and `(a + c) * s ≤ (r + s + t) * b`. -/
+theorem IsPolyaFreqSeq.row_of_bilinear_recurrence (A : ℕ → ℕ → ℝ) (r s t a b c : ℝ)
+    (hlower : ∀ i j, i < j → A i j = 0) (hbase : A 0 0 = 1)
+    (hzero : ∀ n, A (n + 1) 0 = (a * (n + 1 : ℝ) + c) * A n 0)
+    (hsucc : ∀ n k, A (n + 1) (k + 1) =
+      (r * (n + 1 : ℝ) + s * (k + 1 : ℝ) + t) * A n k +
+        (a * (n + 1 : ℝ) + b * (k + 1 : ℝ) + c) * A n (k + 1))
+    (hnonneg : ∀ n k, 0 ≤ A n k) (hrb : a * s ≤ r * b)
+    (hboundary : (a + c) * s ≤ (r + s + t) * b) (n : ℕ) :
+    IsPolyaFreqSeq (A n) :=
+  wangYeh_triangularMatrix_rows_pf A r s t a b c (fun h ↦ hlower _ _ h) hbase hzero hsucc
+    hnonneg hrb hboundary n
+
+end RealRooted

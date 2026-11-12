@@ -77,7 +77,8 @@ theorem splits_evenDerivativeTest_of_splits_symbol (hc0 : c 0 = 1) (hM : ∀ k, 
     simp only [evenDerivativeSymbol, finsetSum_coeff, coeff_C_mul, coeff_X_pow, coeff_zero] at this
     rw [Finset.sum_eq_single 0 (fun k _ hk => by simp [hk]) (by simp)] at this
     simp [hc0] at this
-  rcases HermitePoulain.differential_operator_preserves_real_rooted (f := evenDerivativeSymbol c M)
+  rcases HermitePoulain.applyAsDifferentialOperator_eq_zero_or_splits (f := evenDerivativeSymbol c
+    M)
     (g := X ^ N) ⟨hsymm, hs⟩ ⟨pow_ne_zero N X_ne_zero, by simp⟩ with h | h
   · exact absurd ((evenDerivativeTest_eq_applyAsDifferentialOperator hM N).trans h)
       (evenDerivativeTest_ne_zero hc0 N)

@@ -58,7 +58,7 @@ theorem separatedCharacteristicRows_interlacing {h m : ℕ}
   | zero => simpa using hseed
   | succ n ih =>
       rw [separatedCharacteristicRows_succ, ← separatedCharacteristicMatrix_action]
-      exact separatedCharacteristicMatrix_preservesInterlacingSeq0 ha hb
+      exact PreservesInterlacingSeq0.separatedCharacteristicMatrix ha hb
         _ (by simp) ih
 
 /-- Every coordinate of every separated-characteristic matrix iterate is a

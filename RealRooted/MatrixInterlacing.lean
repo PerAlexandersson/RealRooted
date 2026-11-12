@@ -897,3 +897,17 @@ theorem ncard_isNondegenerate_and_preservesInterlacing :
 end Atomic2x2Matrix
 
 end RealRooted
+
+open Polynomial
+
+namespace RealRooted
+
+open Atomic2x2Matrix
+/-- **The 18 small preservers.** A nondegenerate matrix with entries in
+`{0, 1, x}` preserves interlacing if and only if it is one of the 18 matrices
+of `nondegeneratePreservingMatrices`. -/
+theorem Atomic2x2Matrix.isNondegenerate_and_interlacing_iff_mem (M : Atomic2x2Matrix) :
+    M.IsNondegenerate ∧ M.PreservesInterlacing ↔ M ∈ nondegeneratePreservingMatrices :=
+  (mem_nondegeneratePreservingMatrices_iff M).symm
+
+end RealRooted

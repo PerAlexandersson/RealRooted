@@ -245,7 +245,7 @@ private theorem compatible_jensen_output_of_translate_core
 
 /-- Simultaneous Schur--Szegő composition by a PF polynomial preserves
 Jensen-pencil compatibility. -/
-theorem schurSzegoPreservesJensenPencilCompatibility
+theorem Compatible.schurSzegoComp_jensenPencil
     {d : ℕ} {A B p : ℝ[X]}
     (hA : IsPFPolynomial A) (hXB : IsPFPolynomial (X * B))
     (hp : IsPFPolynomial p)

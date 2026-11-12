@@ -20,7 +20,7 @@ noncomputable section
 namespace RealRooted
 
 /-- The two endpoint compositions in the Jensen-pencil contraction are
-individually PF.  Thus the content of `schurSzegoPreservesJensenPencilCompatibility`
+individually PF.  Thus the content of `Compatible.schurSzegoComp_jensenPencil`
 is their compatibility, not endpoint real-rootedness or root location. -/
 theorem schurSzegoJensenEndpoints_pf
     {d : ℕ} {A B p : ℝ[X]}
@@ -34,7 +34,7 @@ theorem schurSzegoJensenEndpoints_pf
 
 /-- A Jensen-pencil certificate gives a coefficient-bidiagonal PF preserver,
 from the Schur--Szegő compatibility contraction
-`schurSzegoPreservesJensenPencilCompatibility`. -/
+`Compatible.schurSzegoComp_jensenPencil`. -/
 theorem BidiagonalJensenPencilCertificate.toPFPreserver
     {alpha beta : ℕ → ℝ} {d : ℕ}
     (hcert : BidiagonalJensenPencilCertificate alpha beta d) :
@@ -44,7 +44,7 @@ theorem BidiagonalJensenPencilCertificate.toPFPreserver
       Compatible
         (schurSzegoComp d (jensenPolynomial d alpha) p)
         (X * schurSzegoComp d (jensenPolynomial d beta) p) :=
-    schurSzegoPreservesJensenPencilCompatibility hcert.1 hcert.2.1 hp
+    Compatible.schurSzegoComp_jensenPencil hcert.1 hcert.2.1 hp
       (natDegree_jensenPolynomial_le d alpha)
       (natDegree_jensenPolynomial_le d beta) hdeg hcert.compatible
   have hout_nonneg : HasNonnegCoeffs (bidiagonalOperator alpha beta p) :=

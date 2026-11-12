@@ -37,7 +37,7 @@ theorem strictInterl_polarTheta_self {N : ℕ} {p : ℝ[X]} (hp : IsPFPolynomial
     (hshift : 2 ≤ (reciprocalShift N p).natDegree) :
     StrictInterl (polarTheta N p) p := by
   set q := reciprocalShift N p with hq
-  have hqpf : IsPFPolynomial q := reciprocalShift_preserves_pf hp hpdeg
+  have hqpf : IsPFPolynomial q := IsPFPolynomial.reciprocalShift hp hpdeg
   have hqdeg : q.natDegree ≤ N := by
     rw [hq]
     unfold reciprocalShift

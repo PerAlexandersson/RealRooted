@@ -89,19 +89,19 @@ theorem narayanaPolynomialRootLocation :
 
 /-- The Narayana transform preserves PF polynomials, reduced to the
 Gribinski--Marcus rectangular additive convolution theorem. -/
-theorem narayanaTransformPreservesPF :
+theorem IsPFPolynomial.narayanaTransform :
     ∀ (m : ℕ) {p : ℝ[X]},
-      IsPFPolynomial p → IsPFPolynomial (narayanaTransform m p) := by
+      IsPFPolynomial p → IsPFPolynomial (RealRooted.narayanaTransform m p) := by
   intro m p hp
   refine IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits
     hp.hasNonnegCoeffs.narayanaTransform ?_
   by_cases hp0 : p = 0
   · left
-    simp [hp0, narayanaTransform]
+    simp [hp0, RealRooted.narayanaTransform]
   · right
     set n := p.natDegree with hn
     have hpdeg : p.natDegree ≤ n := by rw [hn]
-    have hqdeg : (narayanaTransform m p).natDegree ≤ n := by
+    have hqdeg : (RealRooted.narayanaTransform m p).natDegree ≤ n := by
       simpa [hn] using natDegree_narayanaTransform_le m p
     have hpcoeff : p.coeff n ≠ 0 := by
       rw [hn, Polynomial.coeff_natDegree]
@@ -137,11 +137,11 @@ theorem narayanaTransformPreservesPF :
     have hconv_eq :
         rectangularAdditiveConvolution m n (degreeSignFlip n p)
             (degreeSignFlip n (narayanaPolynomial m n)) =
-          degreeSignFlip n (narayanaTransform m p) :=
+          degreeSignFlip n (RealRooted.narayanaTransform m p) :=
       rectangularAdditiveConvolution_degreeSignFlip_narayanaPolynomial_eq m n p hpdeg
-    have hsign : HasOnlyNonnegRoots (degreeSignFlip n (narayanaTransform m p)) := by
+    have hsign : HasOnlyNonnegRoots (degreeSignFlip n (RealRooted.narayanaTransform m p)) := by
       simpa [hconv_eq] using hconv
-    have hsign_splits : (degreeSignFlip n (narayanaTransform m p)).Splits := by
+    have hsign_splits : (degreeSignFlip n (RealRooted.narayanaTransform m p)).Splits := by
       rcases hsign with hzero | ⟨hsplits, _⟩
       · simp [hzero]
       · exact hsplits
@@ -151,9 +151,13 @@ theorem narayanaTransformPreservesPF :
 theorem narayanaTransformPreservesNonposRoots :
     ∀ (m : ℕ) {p : ℝ[X]},
       HasNonnegCoeffs p → p.Splits →
-        HasOnlyNonposRoots (narayanaTransform m p) := by
+        HasOnlyNonposRoots (RealRooted.narayanaTransform m p) := by
   intro m p hpnn hpsplits
-  exact (narayanaTransformPreservesPF m
+  exact (IsPFPolynomial.narayanaTransform m
     (IsPFPolynomial.of_realRooted_nonneg hpnn hpsplits)).hasOnlyNonposRoots
 
 end RealRooted
+
+@[deprecated (since := "2026-11-12")]
+alias RealRooted.narayanaTransformPreservesPF :=
+  RealRooted.IsPFPolynomial.narayanaTransform

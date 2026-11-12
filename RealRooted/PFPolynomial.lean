@@ -478,7 +478,7 @@ theorem reciprocalShift_eq_X_pow_mul_reverse {D : ℕ} {p : ℝ[X]}
 
 /-- Shifted reciprocals preserve the PF cone when the shift bounds the
 degree. -/
-theorem reciprocalShift_preserves_pf {D : ℕ} {p : ℝ[X]}
+theorem IsPFPolynomial.reciprocalShift {D : ℕ} {p : ℝ[X]}
     (hp : IsPFPolynomial p) (hdeg : p.natDegree ≤ D) :
     IsPFPolynomial (reciprocalShift D p) := by
   rw [reciprocalShift_eq_X_pow_mul_reverse hdeg]
@@ -512,3 +512,19 @@ theorem isPFPolynomial_mul_X_add_one {p : ℝ[X]}
   isPFPolynomial_X_add_one.mul hp
 
 end RealRooted
+
+open Polynomial
+
+namespace RealRooted
+
+/-- Aissen--Schoenberg--Whitney: the coefficient sequence of `p` is a
+Pólya-frequency sequence exactly when `p` is a PF polynomial. -/
+theorem isPolyaFreqSeq_coeff_iff_isPFPolynomial {p : ℝ[X]} :
+    IsPolyaFreqSeq p.coeff ↔ IsPFPolynomial p :=
+  ⟨fun h => IsPFPolynomial.of_polyaFreqSeq h, fun h => h.to_sequence⟩
+
+end RealRooted
+
+@[deprecated (since := "2026-11-12")]
+alias RealRooted.reciprocalShift_preserves_pf :=
+  RealRooted.IsPFPolynomial.reciprocalShift

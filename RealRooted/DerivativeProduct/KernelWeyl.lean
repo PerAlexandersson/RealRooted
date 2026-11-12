@@ -12,7 +12,7 @@ A finite-order differential operator `g ↦ ∑ j ≤ m, a j * g ^ (j)` with rea
 coefficients `a j` sends every nonzero real-rooted polynomial to zero or to a real-rooted
 polynomial as soon as its signed Weyl symbol `∑ j, a j (x) * (-y) ^ j` does not vanish for `x`
 and `y` in the open upper half-plane.  This is the univariate case of the finite-order Weyl-symbol
-theorem `RealRooted.BorceaBranden.finiteOrderWeylOperator_preserves_stability` (Borcea–Brändén,
+theorem `RealRooted.MvUpperHalfPlaneStable.finiteOrderWeylOperator` (Borcea–Brändén,
 *The Lee–Yang and Pólya–Schur programs. I*, Invent. Math. 177 (2009), Theorems 1.3–1.4), and it is
 the engine behind the fixed-factor criterion for derivative products.
 -/
@@ -56,7 +56,7 @@ theorem sum_mul_iterate_derivative_eq_zero_or_splits {m : ℕ} (a : Fin (m + 1) 
     intro z hz
     rw [MvPolynomial.eval_toMvPolynomial]
     exact Polynomial.Splits.isUpperHalfPlaneStable_complexify hgs hg0 (z ()) (hz ())
-  have hout := BorceaBranden.finiteOrderWeylOperator_preserves_stability () m _ hW hgStable
+  have hout := MvUpperHalfPlaneStable.finiteOrderWeylOperator () m _ hW hgStable
   have hop : BorceaBranden.finiteOrderWeylOperator () m
       (fun j ↦ (complexify (a j)).toMvPolynomial ()) ((complexify g).toMvPolynomial ()) =
         (complexify (∑ j : Fin (m + 1), a j * (derivative^[j]) g)).toMvPolynomial () := by

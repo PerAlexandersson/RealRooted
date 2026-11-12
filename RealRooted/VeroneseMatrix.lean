@@ -562,7 +562,7 @@ theorem isInterlacingSeq0Nonneg_veroneseSectionPolynomialListDesc_X_add_C_mul
       (veroneseSectionPolynomialListDesc r ((X + C a) * p)) := by
   rw [← matPolyAction_veroneseLinearFactorMatrixDesc (r := r) hr a p]
   refine
-    matrix_preserves_interlacing_seq0_of_2x2
+    IsInterlacingSeq0Nonneg.matPolyAction_of_2x2
       (n := r) (G := veroneseLinearFactorMatrixDesc r a)
       ?hrect ?hnonneg ?haff
       (veroneseSectionPolynomialListDesc r p)

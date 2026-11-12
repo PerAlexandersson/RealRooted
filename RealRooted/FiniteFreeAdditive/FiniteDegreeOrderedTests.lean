@@ -382,7 +382,7 @@ theorem differentialTests_ordered_of_preservesOrderedPFUpTo
 /-- Two constant-coefficient differential operators preserve the ordered PF
 pair through degree `N` exactly when their images of `X ^ N` are PF and have
 the same order. -/
-theorem preservesOrderedPFUpTo_iff_differentialTests
+theorem _root_.RealRooted.PreservesOrderedPFUpTo.iff_differentialTests
     (N : ℕ) (h k : ℝ[X]) :
     PreservesOrderedPFUpTo N h k ↔
       IsPFPolynomial (finiteDifferentialTest N h) ∧
@@ -440,14 +440,14 @@ theorem differentialTests_ordered_iff_jensenDifferentialTests
 
 /-- Ordered PF preservation through degree `N` is equivalent to the two Jensen
 tests being PF in the reversed interlacing order. -/
-theorem preservesOrderedPFUpTo_iff_jensenDifferentialTests
+theorem _root_.RealRooted.PreservesOrderedPFUpTo.iff_jensenDifferentialTests
     (N : ℕ) (h k : ℝ[X]) :
     PreservesOrderedPFUpTo N h k ↔
       IsPFPolynomial (jensenDifferentialTest N h) ∧
         IsPFPolynomial (jensenDifferentialTest N k) ∧
           Interl (jensenDifferentialTest N k)
             (jensenDifferentialTest N h) := by
-  rw [preservesOrderedPFUpTo_iff_differentialTests,
+  rw [RealRooted.PreservesOrderedPFUpTo.iff_differentialTests,
     differentialTests_ordered_iff_jensenDifferentialTests]
 
 /-- Divide the `j`th coefficient by `(N)_j`; on polynomials of degree at
@@ -490,7 +490,7 @@ theorem preservesOrderedPFUpTo_capNormalizedDifferentialSymbol
     PreservesOrderedPFUpTo N
       (capNormalizedDifferentialSymbol N q)
       (capNormalizedDifferentialSymbol N r) := by
-  apply (preservesOrderedPFUpTo_iff_jensenDifferentialTests N _ _).mpr
+  apply (RealRooted.PreservesOrderedPFUpTo.iff_jensenDifferentialTests N _ _).mpr
   rw [jensenDifferentialTest_capNormalizedDifferentialSymbol N q hqdeg,
     jensenDifferentialTest_capNormalizedDifferentialSymbol N r hrdeg]
   exact ⟨hq, hr, horder⟩
@@ -635,11 +635,11 @@ private theorem interl_binomialJensen_consecutive
 
 /-- Consecutive members of the explicit higher-order family give ordered PF
 images of every PF input in the degree-`N` box. -/
-theorem preservesOrderedPFUpTo_binomialDifferentialSymbol
+theorem _root_.RealRooted.PreservesOrderedPFUpTo.binomialDifferentialSymbol
     {N r : ℕ} {s : ℝ} (hr : r ≠ 0) (hrN : r ≤ N) (hs : 0 ≤ s) :
     PreservesOrderedPFUpTo N (binomialDifferentialSymbol N r s)
       (binomialDifferentialSymbol N (r - 1) s) := by
-  apply (preservesOrderedPFUpTo_iff_jensenDifferentialTests N _ _).mpr
+  apply (RealRooted.PreservesOrderedPFUpTo.iff_jensenDifferentialTests N _ _).mpr
   rw [jensenDifferentialTest_binomialDifferentialSymbol s hrN,
     jensenDifferentialTest_binomialDifferentialSymbol s (by lia : r - 1 ≤ N)]
   exact ⟨(isPFPolynomial_C_mul_X_add_one hs).pow r,
@@ -664,7 +664,7 @@ theorem binomialDifferentialRecurrence_pf_and_interl
           C a * applyAsDifferentialOperator
             (binomialDifferentialSymbol N (r - 1) s) p) := by
   obtain ⟨hh, hk, horder⟩ :=
-    preservesOrderedPFUpTo_binomialDifferentialSymbol hr hrN hs hp hpdeg
+    RealRooted.PreservesOrderedPFUpTo.binomialDifferentialSymbol hr hrN hs hp hpdeg
   exact ⟨isPFPolynomial_X_mul_add_C_mul hh hk horder ha,
     interl_X_mul_add_C_mul hh hk horder ha⟩
 

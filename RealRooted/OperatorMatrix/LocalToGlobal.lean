@@ -275,7 +275,7 @@ private lemma compatible_affine_columns_of_blocks {m n : ℕ}
 
 /-- For at least two rows and columns, ordered-PF preservation is equivalent to preservation by
 every ordered two-by-two block, including nonadjacent blocks. -/
-theorem preservesOrderedPF_iff_preservesBlock_of_two_le {m n : ℕ}
+theorem PreservesOrderedPF.iff_forall_blocks_of_two_le {m n : ℕ}
     (M : Fin m → Fin n → ℝ[X] →ₗ[ℝ] ℝ[X]) (hm : 2 ≤ m) (hn : 2 ≤ n) :
     PreservesOrderedPF M ↔
       ∀ i k j l, i < k → j < l → PreservesBlock M i k j l := by

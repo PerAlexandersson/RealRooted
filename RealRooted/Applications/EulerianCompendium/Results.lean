@@ -187,3 +187,37 @@ theorem zigzagEulerian_roots (n : ℕ) (hn : 1 ≤ n) :
   exact ⟨zigzagEulerianPolynomial_ne_zero n, zigzagEulerianPolynomial_roots n hn⟩
 
 end RealRooted.EulerianCompendium.Challenges
+
+open Polynomial
+
+namespace RealRooted
+
+open EulerianCompendium
+/-- Paper `thm:peakValueStability`. Both conclusions verified for actual permutations. -/
+theorem EulerianCompendium.peakValue_stability_and_weightedInterlacing :
+    (∀ n : ℕ, MvRealStable (peakValuePolynomial n)) ∧
+    (∀ (n : ℕ), 1 ≤ n → ∀ (wt : Fin (n + 1) → ℝ), (∀ j, 0 < wt j) →
+      StrictInterl (weightedPeakPolynomial (fun j : Fin n => wt j.castSucc))
+        (weightedPeakPolynomial wt)) := by
+  exact ⟨Challenges.peakValue_realStable, Challenges.weightedPeak_interlaces⟩
+
+end RealRooted
+
+open Polynomial
+
+namespace RealRooted
+
+open EulerianCompendium
+/-- Paper `thm:superEulerian`. All conclusions verified; the row is n+1. -/
+theorem EulerianCompendium.superEulerian_roots_interlacing_gamma (l n : ℕ) (hl : 0 < l) :
+    (superEulerianPolynomial l (n + 1) ≠ 0 ∧
+      (superEulerianPolynomial l (n + 1)).Splits ∧
+      ∀ r ∈ (superEulerianPolynomial l (n + 1)).roots, r ≤ 0) ∧
+    Interl (superEulerianPolynomial l (n + 1)) (superEulerianPolynomial l (n + 2)) ∧
+    ∃ γ : ℝ[X], γ.natDegree ≤ n / 2 ∧
+      IsGammaExpansion n (superEulerianPolynomial l (n + 1)) γ ∧
+      (γ ≠ 0 ∧ γ.Splits) ∧ HasRootsNonpos γ ∧ HasNonnegCoeffs γ := by
+  exact ⟨Challenges.superEulerian_realRooted l n hl,
+    Challenges.superEulerian_interlaces l n hl, Challenges.superEulerian_gamma l n hl⟩
+
+end RealRooted

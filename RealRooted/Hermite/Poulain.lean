@@ -240,7 +240,7 @@ theorem applyAsDifferentialOperator_X_add_C_eq_zero_or_splits {a : ℝ} {g : ℝ
 
 /-- Hermite--Poulain theorem target, zero-aware because a differential operator
 can annihilate a lower-degree polynomial. -/
-theorem differential_operator_preserves_real_rooted {f g : ℝ[X]}
+theorem applyAsDifferentialOperator_eq_zero_or_splits {f g : ℝ[X]}
     (hf : f ≠ 0 ∧ f.Splits)
     (hg : g ≠ 0 ∧ g.Splits) :
     applyAsDifferentialOperator f g = 0 ∨

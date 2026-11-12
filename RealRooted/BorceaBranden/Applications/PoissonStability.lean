@@ -11,7 +11,7 @@ Left Poisson multiplication by a nonzero real stable `f(z, v)` with nonnegative 
 preserves real stability of every right input `g(z, v, x)`, of any degree and with any spectator
 block `x` (`spectatorAction_stable`), and transports stable pencils (`spectatorAction_pencil`).  The
 signed Weyl symbol of the action is `f(z(1 - w), v(1 - w))`, which is stable by homogenization, so
-the finite-order Weyl-symbol theorem `BorceaBranden.finiteOrderWeylOperator_preserves_stability`
+the finite-order Weyl-symbol theorem `RealRooted.MvUpperHalfPlaneStable.finiteOrderWeylOperator`
 applies (Borcea--Brändén, *The Lee--Yang and Pólya--Schur programs. I*, Invent. Math. 177 (2009),
 Theorems 1.3--1.4).  The left symbol must not contain unscaled stable parameters:
 `not_stable_leftParameterBadSymbol` checks that `a + z(1 - w)` is not stable.
@@ -292,7 +292,7 @@ theorem spectatorAction_stableOrZero {τ : Type*} [Finite τ]
     MvRealStableOrZero (spectatorAction f P) := by
   rw [mvRealStableOrZero_iff_complexifyMv, complexify_spectatorAction,
     ← finiteOrderWeylOperator_eq_action]
-  apply finiteOrderWeylOperator_preserves_stability
+  apply RealRooted.MvUpperHalfPlaneStable.finiteOrderWeylOperator
   · rw [signedWeylSymbol_poissonWeylFamilyC]
     exact poissonSymbolC_stable hf hnn
   · exact hP

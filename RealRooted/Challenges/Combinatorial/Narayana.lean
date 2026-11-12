@@ -2,11 +2,17 @@ module
 
 public import RealRooted.CombinatorialExamples.Avoid132Descents
 public import RealRooted.CombinatorialExamples.DyckNarayana
+public import RealRooted.LowerTriangularMatrix
 public import RealRooted.MaoWangMatrixProduct
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+public import RealRooted.Mathlib.Combinatorics.Enumerative.DyckStatistics
 public import RealRooted.NarayanaInterpolation
+public import RealRooted.NarayanaTransformation.Basis
+public import RealRooted.NarayanaTransformation.Coefficients
 public import RealRooted.NarayanaTransformation.Endpoints
-import RealRooted.NarayanaTransformation.Falling
-import RealRooted.NarayanaTransformation.Rising
+public import RealRooted.NarayanaTransformation.Falling
+public import RealRooted.NarayanaTransformation.Rising
+public import RealRooted.NarayanaTransformation.RootGeometry
 
 /-!
 # Narayana polynomial challenge entry point
@@ -77,31 +83,36 @@ module = "RealRooted.NarayanaTransformation.Endpoints"
 label = "Generalized Narayana polynomials are Pólya-frequency"
 
 [[theorems]]
-name = "RealRooted.narayanaTransformPreservesPF"
+name = "RealRooted.IsPFPolynomial.narayanaTransform"
 module = "RealRooted.NarayanaTransformation.Endpoints"
 label = "The Narayana transform preserves Pólya-frequency polynomials"
 headline = true
 symcat = "thm:narayanaTransformationMaoWang"
 
 [[theorems]]
-name = "RealRooted.Challenges.Narayana.HasOnlyNonposRoots.of_basisTransform_fallingFactorial"
+name = "RealRooted.HasOnlyNonposRoots.of_basisTransform_fallingFactorial"
+module = "RealRooted.NarayanaTransformation.Falling"
 label = "Brenti: nonpositive zeros in the falling-factorial basis pull back"
 symcat = "thm:brentiFallingFactorialBasis"
 
 [[theorems]]
-name = "RealRooted.Challenges.Narayana.isPFPolynomial_basisTransform_touchard"
+name = "RealRooted.IsPFPolynomial.basisTransform_touchard"
+module = "RealRooted.NarayanaTransformation.Basis"
 label = "The Touchard transform preserves Pólya-frequency polynomials"
 
 [[theorems]]
-name = "RealRooted.Challenges.Narayana.isPFPolynomial_basisTransform_risingFactorial"
+name = "RealRooted.IsPFPolynomial.basisTransform_risingFactorial"
+module = "RealRooted.NarayanaTransformation.Rising"
 label = "Rising-factorial transforms preserve Pólya-frequency polynomials"
 
 [[theorems]]
-name = "RealRooted.Challenges.Narayana.rowGeneratingFunctionsPF_mul_listProduct"
+name = "RealRooted.LowerTriangularMatrix.RowGeneratingFunctionsPF.mul_listProduct"
+module = "RealRooted.MaoWangMatrixProduct"
 label = "Mao–Wang: products with admissible factors keep Pólya-frequency rows"
 
 [[theorems]]
-name = "RealRooted.Challenges.Narayana.rowGeneratingFunctionsPF_mul_pow"
+name = "RealRooted.LowerTriangularMatrix.RowGeneratingFunctionsPF.mul_pow"
+module = "RealRooted.MaoWangMatrixProduct"
 label = "Mao–Wang: powers of an admissible factor keep Pólya-frequency rows"
 
 [[theorems]]
@@ -239,50 +250,3 @@ continuous interpolation is [@Zeng2026x, (1.1)–(1.3) and Cor. 3.5]. See also t
 [Mao–Wang row-generating functions](sf:rowGeneratingFunction).
 <!-- /realrooted-catalog-content -->
 -/
-
-public section
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace Narayana
-
-/-- **Brenti's falling-factorial theorem** (Brenti 1989, Theorem 2.4.2).  If the
-falling-factorial transform of `p` has only nonpositive roots, then so does `p`. -/
-theorem HasOnlyNonposRoots.of_basisTransform_fallingFactorial {p : ℝ[X]}
-    (h : HasOnlyNonposRoots (basisTransform fallingFactorialPolynomial p)) :
-    HasOnlyNonposRoots p :=
-  brentiFallingFactorial h
-
-/-- The Touchard transform `x ^ n ↦ touchard n` preserves PF polynomials. -/
-theorem isPFPolynomial_basisTransform_touchard {p : ℝ[X]} (hp : IsPFPolynomial p) :
-    IsPFPolynomial (basisTransform touchard p) :=
-  touchardTransformPreservesPF hp
-
-/-- For `μ > 0`, the generalized rising-factorial transform preserves PF polynomials. -/
-theorem isPFPolynomial_basisTransform_risingFactorial {μ : ℝ} (hμ : 0 < μ) {p : ℝ[X]}
-    (hp : IsPFPolynomial p) :
-    IsPFPolynomial (basisTransform (risingFactorialPolynomial μ) p) :=
-  generalizedRisingFactorialPreservesPF hμ hp
-
-open LowerTriangularMatrix
-
-/-- **Mao–Wang matrix-product theorem** (Mao–Wang 2026, Theorem 1.3).  Right multiplication
-by a finite product of admissible factors keeps every row-generating polynomial PF. -/
-theorem rowGeneratingFunctionsPF_mul_listProduct {M : LowerTriangularMatrix ℝ}
-    {Bs : List (LowerTriangularMatrix ℝ)} (hBs : ∀ B ∈ Bs, MaoWangAdmissibleMatrix B)
-    (hM : RowGeneratingFunctionsPF M) :
-    RowGeneratingFunctionsPF (LowerTriangularMatrix.mul M (listProduct Bs)) :=
-  maoWang_matrixListProduct_rowGeneratingFunctions_pf hBs hM
-
-/-- **Mao–Wang matrix-product theorem, powers.**  Right multiplication by a power of one
-admissible factor keeps every row-generating polynomial PF. -/
-theorem rowGeneratingFunctionsPF_mul_pow {M B : LowerTriangularMatrix ℝ}
-    (hB : MaoWangAdmissibleMatrix B) (r : ℕ) (hM : RowGeneratingFunctionsPF M) :
-    RowGeneratingFunctionsPF (LowerTriangularMatrix.mul M (LowerTriangularMatrix.pow B r)) :=
-  maoWang_matrixProduct_rowGeneratingFunctions_pf hB r hM
-
-end Narayana
-end Challenges
-end RealRooted

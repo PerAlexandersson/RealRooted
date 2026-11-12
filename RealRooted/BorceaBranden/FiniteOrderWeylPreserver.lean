@@ -697,7 +697,7 @@ private theorem descFactorialTransform_zero_or_invert_bind_stable
             (coordinateDiagonalOperator (fun k => (n.descFactorial k : ℝ)) none
               (signedWeylSymbol m Q)))) := by
   have := Fintype.ofFinite σ
-  rcases coordinateDiagonalOperator_preserves_stability m
+  rcases RealRooted.MvUpperHalfPlaneStable.coordinateDiagonalOperator m
       (fun k => (n.descFactorial k : ℝ)) none
       (isPFPolynomial_jensenPolynomial_of_PFMultiplierSequence
         (isPFMultiplierSequence_descFactorial n) m)
@@ -791,7 +791,7 @@ theorem finiteOrderWeylOperatorDegreeBox_preserves_stability
 
 /-- A finite-order differential operator with stable signed Weyl symbol sends
 every upper-half-plane stable polynomial to a stable polynomial or zero. -/
-theorem finiteOrderWeylOperator_preserves_stability
+theorem _root_.RealRooted.MvUpperHalfPlaneStable.finiteOrderWeylOperator
     {σ : Type*} [Finite σ] (q : σ) (m : ℕ)
     (Q : Fin (m + 1) → MvPolynomial σ ℂ)
     (hW : MvUpperHalfPlaneStable (signedWeylSymbol m Q))

@@ -43,7 +43,7 @@ up to zero. -/
 theorem preservesRealRootedOrZero_differentialOperator {f : ℝ[X]}
     (hf : f ≠ 0 ∧ f.Splits) :
     PreservesRealRootedOrZero (differentialOperator f) :=
-  fun _ hg ↦ differential_operator_preserves_real_rooted hf hg
+  fun _ hg ↦ applyAsDifferentialOperator_eq_zero_or_splits hf hg
 
 /-- Hermite--Poulain operators preserve interlacing: if `f` is nonzero and
 real-rooted and `g` and `h` interlace, then `f(D) g` and `f(D) h` interlace in
@@ -52,7 +52,7 @@ theorem interl_or_interl_applyAsDifferentialOperator {f g h : ℝ[X]}
     (hf : f ≠ 0 ∧ f.Splits) (hgh : StrictInterl g h) :
     Interl (applyAsDifferentialOperator f g) (applyAsDifferentialOperator f h) ∨
       Interl (applyAsDifferentialOperator f h) (applyAsDifferentialOperator f g) :=
-  operatorPreservesInterlacingPairsUpToOrder _
+  RealRooted.PreservesRealRootedOrZero.interl_or_reverse _
     (preservesRealRootedOrZero_differentialOperator hf) hgh
 
 end HermitePoulain

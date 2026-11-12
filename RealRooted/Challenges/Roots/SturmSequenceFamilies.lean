@@ -8,6 +8,7 @@ public import RealRooted.CombinatorialExamples.SingletonFreeSetPartitions
 public import RealRooted.CombinatorialExamples.StirlingPermutations
 public import RealRooted.CombinatorialExamples.SturmDerangementsExc
 public import RealRooted.CombinatorialExamples.Touchard
+public import RealRooted.Touchard
 
 /-!
 # Sturm sequences from derivative recurrences
@@ -89,7 +90,8 @@ module = "RealRooted.CombinatorialExamples.Simsun"
 label = "Consecutive simsun polynomials interlace"
 
 [[theorems]]
-name = "RealRooted.Challenges.SturmSequenceFamilies.strictInterl_singletonFreeSetPartitions_succ"
+name = "RealRooted.strictInterl_singletonFreeSetPartitions_succ"
+module = "RealRooted.CombinatorialExamples.SingletonFreeSetPartitions"
 label = "Consecutive singleton-free set-partition polynomials interlace"
 
 [[theorems]]
@@ -196,21 +198,3 @@ See [@GesselStanley1978; @MantaciRakotondrajao2003; @Bona2009; @ChowShiu2011; @W
 The families and their interlacing proofs live in
 `RealRooted.CombinatorialExamples`.
 -/
-
-public section
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace SturmSequenceFamilies
-
-/-- Consecutive singleton-free set-partition polynomials satisfy `D n ≪ D (n + 1)` for
-`n ≥ 2`. -/
-theorem strictInterl_singletonFreeSetPartitions_succ {n : ℕ} (hn : 2 ≤ n) :
-    StrictInterl (singletonFreeSetPartitions n) (singletonFreeSetPartitions (n + 1)) :=
-  RealRooted.strictInterl_singletonFreeSetPartitions_succ n hn
-
-end SturmSequenceFamilies
-end Challenges
-end RealRooted

@@ -167,7 +167,7 @@ theorem pf_sequence_reciprocal_shift
     (hP : ∀ i : Nat, IsPFPolynomial (P i))
     (hdeg : ∀ i : Nat, (P i).natDegree ≤ D i) :
     ∀ i : Nat, IsPFPolynomial (reciprocalShift (D i) (P i)) := fun i =>
-  RealRooted.reciprocalShift_preserves_pf (hP i) (hdeg i)
+  RealRooted.IsPFPolynomial.reciprocalShift (hP i) (hdeg i)
 
 /-- Pointwise multiplication by `X + 1` preserves a PF family. -/
 theorem pf_sequence_mul_X_add_one

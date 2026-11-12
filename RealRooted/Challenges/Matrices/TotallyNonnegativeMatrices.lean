@@ -1,19 +1,20 @@
 module
 
-import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.Gaussian
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Closure
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum
-public import RealRooted.MatrixInterlacing.TotallyNonnegative
-import RealRooted.OscillatoryInterlacing
-import RealRooted.TetradiagonalFactorization
-import RealRooted.TotallyNonnegInterlacing
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer
-import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.Compound
-import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularRankDeficient
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
 public import RealRooted.Basic.ProperPosition
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Compound
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Gaussian
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularRankDeficient
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.SignVariation
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Closure
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum
+public import RealRooted.MatrixInterlacing.TotallyNonnegative
+public import RealRooted.OscillatoryInterlacing
+public import RealRooted.TetradiagonalFactorization
+public import RealRooted.TotallyNonnegInterlacing
 
 /-!
 # Totally nonnegative matrices challenge entry point
@@ -64,11 +65,13 @@ module = "RealRooted.TetradiagonalFactorization"
 label = "Tetradiagonal lower-Hessenberg matrix"
 
 [[theorems]]
-name = "RealRooted.Challenges.TotallyNonnegativeMatrices.exists_charpoly_eq_prod_nonneg"
+name = "Matrix.IsTotallyNonneg.charpoly_factorization_nonneg"
+module = "RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum"
 label = "A totally nonnegative matrix has real nonnegative eigenvalues"
 
 [[theorems]]
-name = "RealRooted.Challenges.TotallyNonnegativeMatrices.leading_charpoly_interlaces"
+name = "Matrix.IsTotallyNonneg.leading_charpoly_interlaces"
+module = "RealRooted.TotallyNonnegInterlacing"
 label = "Leading principal submatrices interlace"
 headline = true
 
@@ -79,32 +82,39 @@ label = "Totally nonnegative matrices mix interlacing sequences"
 symcat = "tnnMixingInterlacing"
 
 [[theorems]]
-name = "RealRooted.Challenges.TotallyNonnegativeMatrices.trailing_charpoly_interlaces"
+name = "Matrix.IsTotallyNonneg.trailing_charpoly_interlaces"
+module = "RealRooted.TotallyNonnegInterlacing"
 label = "Trailing principal submatrices interlace"
 
 [[theorems]]
-name = "RealRooted.Challenges.TotallyNonnegativeMatrices.exists_ofReal_eq_of_mem_spectrum"
+name = "Matrix.IsTotallyNonneg.complex_spectrum_nonneg"
+module = "RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum"
 label = "The complex spectrum lies on the nonnegative real axis"
 
 [[theorems]]
-name = "RealRooted.Challenges.TotallyNonnegativeMatrices.exists_charpoly_eq_prod_pos"
+name = "Matrix.IsTotallyNonneg.charpoly_factorization_pos_of_pow_compound_pos"
+module = "RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein"
 label = "Oscillatory matrices have real positive eigenvalues"
 
 [[theorems]]
-name = "RealRooted.Challenges.TotallyNonnegativeMatrices.leading_charpoly_strictInterlaces"
+name = "Matrix.IsTotallyNonneg.leading_charpoly_strictInterlaces"
+module = "RealRooted.OscillatoryInterlacing"
 label = "Oscillatory matrices: principal interlacing with simple roots and no common root"
 
 [[theorems]]
-name = "RealRooted.Challenges.TotallyNonnegativeMatrices.isTotallyNonnegRect_mul"
+name = "Matrix.IsTotallyNonnegRect.mul"
+module = "RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul"
 label = "Products of totally nonnegative matrices"
 
 [[theorems]]
-name = "RealRooted.Challenges.TotallyNonnegativeMatrices.signVariations_mulVec_le"
+name = "Matrix.IsTotallyNonnegRect.signVariations_mulVec_le"
+module = "RealRooted.Mathlib.LinearAlgebra.Matrix.SignRegularRankDeficient"
 label = "Variation-diminishing property"
 symcat = "variationDiminishingProperty"
 
 [[theorems]]
-name = "RealRooted.Challenges.TotallyNonnegativeMatrices.isTotallyNonneg_of_initialColumnMinors"
+name = "Matrix.HasNonnegInitialColumnMinors.isTotallyNonneg_of_upper_zero_of_det_ne_zero"
+module = "RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Cryer.Closure"
 label = "Cryer's criterion for lower-triangular matrices"
 
 [[theorems]]
@@ -249,97 +259,3 @@ Cryer theorems for totally nonnegative matrices.  The matrix theory lives in
 `RealRooted.TotallyNonnegInterlacing` and `RealRooted.OscillatoryInterlacing`,
 and mixing in `RealRooted.MatrixInterlacing.TotallyNonnegative`.
 -/
-
-public section
-
-open Matrix Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace TotallyNonnegativeMatrices
-
-/-- Total nonnegativity is closed under products (Cauchy–Binet). -/
-theorem isTotallyNonnegRect_mul {l n m : ℕ} {L : Matrix (Fin l) (Fin n) ℝ}
-    {A : Matrix (Fin n) (Fin m) ℝ} (hL : L.IsTotallyNonnegRect)
-    (hA : A.IsTotallyNonnegRect) :
-    (L * A).IsTotallyNonnegRect :=
-  hL.mul hA
-
-/-- **Gantmacher–Krein**: the characteristic polynomial of a totally
-nonnegative real matrix factors into linear factors with nonnegative real
-roots. -/
-theorem exists_charpoly_eq_prod_nonneg {n : ℕ} {A : Matrix (Fin n) (Fin n) ℝ}
-    (hA : A.IsTotallyNonneg) :
-    ∃ μ : Fin n → ℝ, (∀ i, 0 ≤ μ i) ∧ A.charpoly = ∏ i, (X - C (μ i)) :=
-  hA.charpoly_factorization_nonneg
-
-/-- Every complex eigenvalue of a totally nonnegative real matrix is a
-nonnegative real number. -/
-theorem exists_ofReal_eq_of_mem_spectrum {n : ℕ} {A : Matrix (Fin n) (Fin n) ℝ}
-    (hA : A.IsTotallyNonneg) {z : ℂ} (hz : z ∈ spectrum ℂ (A.map (algebraMap ℝ ℂ))) :
-    ∃ r : ℝ, 0 ≤ r ∧ (r : ℂ) = z :=
-  hA.complex_spectrum_nonneg hz
-
-/-- **Gantmacher–Krein**, oscillatory case: if all compounds of a positive
-power of a totally nonnegative matrix have positive entries, then its
-eigenvalues are real and positive. -/
-theorem exists_charpoly_eq_prod_pos {n : ℕ}
-    {A : Matrix (Fin n) (Fin n) ℝ} (hA : A.IsTotallyNonneg) {k : ℕ} (hk : k ≠ 0)
-    (hpos : ∀ q, 1 ≤ q → q ≤ n → ∀ s t, 0 < compound q (A ^ k) s t) :
-    ∃ μ : Fin n → ℝ, (∀ i, 0 < μ i) ∧ A.charpoly = ∏ i, (X - C (μ i)) :=
-  exists_charpoly_eq_prod_of_pow_compound_pos hA (Nat.pos_of_ne_zero hk) hpos
-
-/-- **Principal interlacing**: deleting the last row and column of a totally
-nonnegative matrix gives a characteristic polynomial interlacing the original
-one. -/
-theorem leading_charpoly_interlaces {N : ℕ} {A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ}
-    (hA : A.IsTotallyNonneg) :
-    Interlaces (A.submatrix Fin.castSucc Fin.castSucc).charpoly A.charpoly :=
-  hA.leading_charpoly_interlaces
-
-/-- **Principal interlacing**: deleting the first row and column of a totally
-nonnegative matrix gives a characteristic polynomial interlacing the original
-one. -/
-theorem trailing_charpoly_interlaces {N : ℕ} {A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ}
-    (hA : A.IsTotallyNonneg) :
-    Interlaces (A.submatrix Fin.succ Fin.succ).charpoly A.charpoly :=
-  hA.trailing_charpoly_interlaces
-
-/-- **Strict principal interlacing** for oscillatory matrices: a nonsingular
-totally nonnegative matrix with positive super- and subdiagonal has simple
-eigenvalues, all positive, which strictly interlace those of its leading
-principal submatrix. -/
-theorem leading_charpoly_strictInterlaces {N : ℕ}
-    {A : Matrix (Fin (N + 1)) (Fin (N + 1)) ℝ}
-    (hA : A.IsTotallyNonneg) (hdet : A.det ≠ 0)
-    (hsuper : ∀ i : Fin N, 0 < A i.castSucc i.succ)
-    (hsub : ∀ i : Fin N, 0 < A i.succ i.castSucc) :
-    Interlaces (A.submatrix Fin.castSucc Fin.castSucc).charpoly A.charpoly ∧
-      (∀ x : ℝ, A.charpoly.IsRoot x → A.charpoly.rootMultiplicity x = 1) ∧
-      (∀ x : ℝ, (A.submatrix Fin.castSucc Fin.castSucc).charpoly.IsRoot x →
-        (A.submatrix Fin.castSucc Fin.castSucc).charpoly.rootMultiplicity x = 1) ∧
-      (∀ x : ℝ, ¬(A.charpoly.IsRoot x ∧
-        (A.submatrix Fin.castSucc Fin.castSucc).charpoly.IsRoot x)) ∧
-      ∀ x ∈ A.charpoly.roots, 0 < x :=
-  hA.leading_charpoly_strictInterlaces hdet hsuper hsub
-
-/-- **Variation diminishing** (Karlin): multiplication by a totally
-nonnegative matrix does not increase the number of sign changes. -/
-theorem signVariations_mulVec_le {l n : ℕ} {A : Matrix (Fin l) (Fin n) ℝ}
-    (hA : A.IsTotallyNonnegRect) (c : Fin n → ℝ) :
-    Fin.signVariations (A *ᵥ c) ≤ Fin.signVariations c :=
-  hA.signVariations_mulVec_le c
-
-/-- **Cryer's criterion**: a nonsingular lower-triangular real matrix whose
-minors on arbitrary rows and initial columns are nonnegative is totally
-nonnegative. -/
-theorem isTotallyNonneg_of_initialColumnMinors {N : ℕ} {A : Matrix (Fin N) (Fin N) ℝ}
-    (hA : A.HasNonnegInitialColumnMinors) (hupper : ∀ i j, i < j → A i j = 0)
-    (hdet : A.det ≠ 0) :
-    A.IsTotallyNonneg :=
-  HasNonnegInitialColumnMinors.isTotallyNonneg_of_upper_zero_of_det_ne_zero A hA hupper
-    hdet
-
-end TotallyNonnegativeMatrices
-end Challenges
-end RealRooted

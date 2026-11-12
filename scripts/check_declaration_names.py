@@ -56,7 +56,10 @@ def findings(pages, family=False):
             if len(leaf) > 60: rules.append("length")
             if has_workflow_segment(name):
                 rules.append("workflow")
-            if "preserves" in name.lower(): rules.append("preserves")
+            # Predicate namespaces are the intended home of closure lemmas and criteria.
+            # Their leaf names should describe the operation, even when the predicate
+            # itself starts with Preserves. Predicate definitions remain in the ratchet.
+            if "preserves" in leaf.lower(): rules.append("preserves")
             if item.expected_kind == "theorem" and name.startswith("RealRooted.Challenges."):
                 rules.append("challenges")
             if family and page.section == "families" and item.headline:
@@ -109,6 +112,22 @@ def main():
                         item = CatalogItem(name, "theorem", module)
                         page = SimpleNamespace(items=[item], source_path=source_path)
                         self.assertEqual(f"oeis\t{name}" in findings([page]), expected)
+
+            def test_preserves_predicate_namespace(self):
+                from types import SimpleNamespace
+                cases = (
+                    ("PreservesOrderedPF", True),
+                    ("PreservesOrderedPF.mul", False),
+                    ("PreservesOrderedPF.iff_differentialTests", False),
+                    ("IsPFPolynomial.narayanaTransform", False),
+                    ("foo_preserves_pf", True),
+                )
+                for suffix, expected in cases:
+                    with self.subTest(suffix=suffix):
+                        name = "RealRooted." + suffix
+                        item = CatalogItem(name, "theorem", None)
+                        page = SimpleNamespace(items=[item], source_path="Sample.lean")
+                        self.assertEqual(f"preserves\t{name}" in findings([page]), expected)
 
             def test_workflow_segments(self):
                 from types import SimpleNamespace

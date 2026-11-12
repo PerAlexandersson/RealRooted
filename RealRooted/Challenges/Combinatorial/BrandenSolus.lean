@@ -1,15 +1,11 @@
 module
 
-public import RealRooted.SymmetricDecomposition
 public import RealRooted.CombinatorialExamples.DerangementStatistic
-public import RealRooted.SymmetricDecomposition.DerangementTransform
-import RealRooted.SymmetricDecomposition.Theorem26
-public import RealRooted.SymmetricDecomposition.FPolynomial
+public import RealRooted.SymmetricDecomposition
 public import RealRooted.SymmetricDecomposition.Definitions
-
-public section
-
-open Polynomial
+public import RealRooted.SymmetricDecomposition.DerangementTransform
+public import RealRooted.SymmetricDecomposition.FPolynomial
+public import RealRooted.SymmetricDecomposition.Theorem26
 
 /-!
 # Interlacing and real roots under symmetric decompositions
@@ -32,7 +28,8 @@ module = "RealRooted.SymmetricDecomposition.Definitions"
 label = "Symmetric I_d-decomposition"
 
 [[theorems]]
-name = "RealRooted.Challenges.BrandenSolus.interlacing_equivalences"
+name = "RealRooted.BrandenSolus.strictInterl_iff_of_isIdDecomposition"
+module = "RealRooted.SymmetricDecomposition.Theorem26"
 label = "Five interlacing conditions on p = a + xb are equivalent"
 headline = true
 
@@ -123,22 +120,3 @@ This module exposes the completed nondegenerate `StrictInterl` form of the
 Branden--Solus symmetric-decomposition theorem.  The decomposition API and
 boundary-case proof remain in `RealRooted.SymmetricDecomposition`.
 -/
-
-namespace RealRooted
-namespace Challenges
-namespace BrandenSolus
-
-/-- Interlacing equivalences for the symmetric `I_d`-decomposition `p = a + X b`. -/
-theorem interlacing_equivalences {d : ℕ} {p a b : ℝ[X]} (hd : p.natDegree ≤ d)
-    (hid : IsIdDecomposition d p a b) (ha : HasNonnegCoeffs a) (hb : HasNonnegCoeffs b)
-    (ha0 : a ≠ 0) (hb0 : b ≠ 0) :
-    (StrictInterl b a ↔ StrictInterl a p) ∧
-      (StrictInterl a p ↔ StrictInterl b p) ∧
-      (StrictInterl b p ↔ StrictInterl (idTransform d p) p) ∧
-      (StrictInterl (idTransform d p) p ↔
-        StrictInterl (rdTransform d (fPolynomial d p)) (fPolynomial d p)) :=
-  RealRooted.BrandenSolus.strictInterl_iff_of_isIdDecomposition hd hid ha hb ha0 hb0
-
-end BrandenSolus
-end Challenges
-end RealRooted

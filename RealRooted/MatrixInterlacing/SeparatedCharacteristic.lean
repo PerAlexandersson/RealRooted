@@ -450,37 +450,37 @@ def separatedCharacteristicMatrix {h m : ℕ}
 
 @[simp] theorem separatedCharacteristicMatrix_length {h m : ℕ}
     (a : Fin (h + m) → ℝ) (b : Fin m → ℝ) :
-    (separatedCharacteristicMatrix a b).length = h + m := by
-  simp [separatedCharacteristicMatrix]
+    (RealRooted.separatedCharacteristicMatrix a b).length = h + m := by
+  simp [RealRooted.separatedCharacteristicMatrix]
 
 /-- Every row of a separated-characteristic matrix has the expected length. -/
 theorem separatedCharacteristicMatrix_rect {h m : ℕ}
     (a : Fin (h + m) → ℝ) (b : Fin m → ℝ) :
-    ∀ row ∈ separatedCharacteristicMatrix a b, row.length = h + m := by
+    ∀ row ∈ RealRooted.separatedCharacteristicMatrix a b, row.length = h + m := by
   intro row hrow
-  simp only [separatedCharacteristicMatrix, List.mem_ofFn] at hrow
+  simp only [RealRooted.separatedCharacteristicMatrix, List.mem_ofFn] at hrow
   obtain ⟨i, rfl⟩ := hrow
   simp
 
 @[simp] theorem getElem_getElem_separatedCharacteristicMatrix {h m : ℕ}
     (a : Fin (h + m) → ℝ) (b : Fin m → ℝ)
     (i j : Fin (h + m)) :
-    (separatedCharacteristicMatrix a b)[i.1][j.1]'(by
-      simp [separatedCharacteristicMatrix]) =
+    (RealRooted.separatedCharacteristicMatrix a b)[i.1][j.1]'(by
+      simp [RealRooted.separatedCharacteristicMatrix]) =
       separatedCharacteristicFinMatrix a b i j := by
-  simp [separatedCharacteristicMatrix]
+  simp [RealRooted.separatedCharacteristicMatrix]
 
 /-- Separated parameters give a matrix preserving zero-aware nonnegative
 real-rooted interlacing vectors. -/
-theorem separatedCharacteristicMatrix_preservesInterlacingSeq0 {h m : ℕ}
+theorem PreservesInterlacingSeq0.separatedCharacteristicMatrix {h m : ℕ}
     {a : Fin (h + m) → ℝ} {b : Fin m → ℝ}
     (ha : ∀ i, 0 ≤ a i) (hb : ∀ j, b j ≤ 0) :
-    PreservesInterlacingSeq0 (h + m) (separatedCharacteristicMatrix a b) := by
-  apply (preservesInterlacingSeq0_iff (separatedCharacteristicMatrix a b)
+    PreservesInterlacingSeq0 (h + m) (RealRooted.separatedCharacteristicMatrix a b) := by
+  apply (PreservesInterlacingSeq0.iff_nonneg_and_2x2 (RealRooted.separatedCharacteristicMatrix a b)
     (separatedCharacteristicMatrix_rect a b)).2
   constructor
   · intro row hrow p hp
-    simp only [separatedCharacteristicMatrix, List.mem_ofFn] at hrow
+    simp only [RealRooted.separatedCharacteristicMatrix, List.mem_ofFn] at hrow
     obtain ⟨i, rfl⟩ := hrow
     simp only [List.mem_ofFn] at hp
     obtain ⟨j, rfl⟩ := hp
@@ -489,22 +489,22 @@ theorem separatedCharacteristicMatrix_preservesInterlacingSeq0 {h m : ℕ}
     let i₁' : Fin (h + m) := ⟨i₁, by simpa using i₁.isLt⟩
     let i₂' : Fin (h + m) := ⟨i₂, by simpa using i₂.isLt⟩
     have hi' : i₁' ≤ i₂' := hi
-    have hi₁ : i₁ = ⟨i₁', by simp [separatedCharacteristicMatrix]⟩ := Fin.ext rfl
-    have hi₂ : i₂ = ⟨i₂', by simp [separatedCharacteristicMatrix]⟩ := Fin.ext rfl
+    have hi₁ : i₁ = ⟨i₁', by simp [RealRooted.separatedCharacteristicMatrix]⟩ := Fin.ext rfl
+    have hi₂ : i₂ = ⟨i₂', by simp [RealRooted.separatedCharacteristicMatrix]⟩ := Fin.ext rfl
     rw [hi₁, hi₂]
     simp only [List.get_eq_getElem]
-    simp only [separatedCharacteristicMatrix, List.getElem_ofFn]
+    simp only [RealRooted.separatedCharacteristicMatrix, List.getElem_ofFn]
     exact separatedCharacteristicFinMatrix_has2x2 ha hb i₁' i₂' j₁ j₂ hi' hj
 
 /-- Shifted form of the preservation theorem.  The displayed matrix is the
 parameter form of `M - ρ I`; its upper-triangular differences are unchanged by
 the common shift. -/
-theorem separatedCharacteristicMatrix_preservesInterlacingSeq0_shift
+theorem PreservesInterlacingSeq0.separatedCharacteristicMatrix_shift
     {h m : ℕ} {a : Fin (h + m) → ℝ} {b : Fin m → ℝ} {ρ : ℝ}
     (ha : ∀ i, ρ ≤ a i) (hb : ∀ j, b j ≤ ρ) :
     PreservesInterlacingSeq0 (h + m)
-      (separatedCharacteristicMatrix (fun i ↦ a i - ρ) (fun j ↦ b j - ρ)) := by
-  apply separatedCharacteristicMatrix_preservesInterlacingSeq0
+      (RealRooted.separatedCharacteristicMatrix (fun i ↦ a i - ρ) (fun j ↦ b j - ρ)) := by
+  apply PreservesInterlacingSeq0.separatedCharacteristicMatrix
   · intro i
     exact sub_nonneg.mpr (ha i)
   · intro j
@@ -515,7 +515,7 @@ ordinary matrix-vector multiplication. -/
 theorem separatedCharacteristicMatrix_action {h m : ℕ}
     (a : Fin (h + m) → ℝ) (b : Fin m → ℝ)
     (f : Fin (h + m) → ℝ[X]) :
-    matPolyAction (separatedCharacteristicMatrix a b) (List.ofFn f) =
+    matPolyAction (RealRooted.separatedCharacteristicMatrix a b) (List.ofFn f) =
       List.ofFn (separatedCharacteristicFinMatrix a b |>.mulVec f) := by
   exact matPolyAction_ofFn _ _
 

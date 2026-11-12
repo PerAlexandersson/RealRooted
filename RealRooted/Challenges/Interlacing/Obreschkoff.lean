@@ -1,10 +1,10 @@
 module
 
+public import RealRooted.AllCombo
 public import RealRooted.HermiteBiehler.StablePencil
 public import RealRooted.ObreschkoffConverse.DegreeGap
-import RealRooted.OperatorPreservesInterlacing
-import RealRooted.ObreschkoffConverse.Forward
-public import RealRooted.AllCombo
+public import RealRooted.ObreschkoffConverse.Forward
+public import RealRooted.OperatorPreservesInterlacing
 
 /-!
 # Obreschkoff challenge entry point
@@ -28,11 +28,13 @@ module = "RealRooted.AllCombo"
 label = "Every real combination is real-rooted or zero"
 
 [[theorems]]
-name = "RealRooted.Challenges.Obreschkoff.allCombinationsRealRooted_of_interlaces"
+name = "RealRooted.allComboRealRooted_of_strictInterl"
+module = "RealRooted.ObreschkoffConverse.Forward"
 label = "Interlacing gives a real-rooted pencil"
 
 [[theorems]]
-name = "RealRooted.Challenges.Obreschkoff.interlaces_or_reverse_of_allCombinationsRealRooted"
+name = "RealRooted.interl_or_reverse_of_allComboRealRooted"
+module = "RealRooted.OperatorPreservesInterlacing"
 label = "A real-rooted pencil gives interlacing"
 
 [[theorems]]
@@ -104,29 +106,3 @@ This module exposes the checked forward and converse Obreschkoff directions
 and their combination as an equivalence. The continuity and common-root
 analysis remains in `RealRooted.ObreschkoffConverse`.
 -/
-
-public section
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace Obreschkoff
-
-/-- If `f` interlaces `g`, then every real linear combination is real-rooted
-or zero. -/
-theorem allCombinationsRealRooted_of_interlaces {f g : ℝ[X]} (hfg : StrictInterl f g) :
-    AllComboRealRooted f g :=
-  RealRooted.allComboRealRooted_of_strictInterl hfg
-
-/-- Converse Obreschkoff theorem: if every real linear combination of `f` and
-`g` is real-rooted, then `f` and `g` interlace in one of the two orientations,
-where either polynomial may be zero. -/
-theorem interlaces_or_reverse_of_allCombinationsRealRooted {f g : ℝ[X]}
-    (hall : AllComboRealRooted f g) :
-    Interl f g ∨ Interl g f :=
-  RealRooted.interl_or_reverse_of_allComboRealRooted hall
-
-end Obreschkoff
-end Challenges
-end RealRooted

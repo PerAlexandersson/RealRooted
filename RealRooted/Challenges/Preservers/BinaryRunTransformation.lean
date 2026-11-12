@@ -162,15 +162,3 @@ preservation theorem `RealRooted.IsPFPolynomial.binaryRunTransform`. The
 stability, contraction, anchor, and continuation arguments remain in
 `RealRooted.BinaryRunTransformation`.
 -/
-
-public section
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace BinaryRunTransformation
-
-end BinaryRunTransformation
-end Challenges
-end RealRooted

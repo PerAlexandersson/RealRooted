@@ -175,7 +175,7 @@ theorem renewalPolynomial_isPF_of_isPFPolynomial
     IsPFPolynomial (renewalPolynomial R m (m * q + r)) := by
   rw [BrandenLeite.renewalPolynomial_eq_reciprocalShift_pfFactorNumerator
     R hrm q]
-  apply reciprocalShift_preserves_pf
+  apply IsPFPolynomial.reciprocalShift
   · exact BrandenLeite.pfFactorNumerator_isPFPolynomial
       (hR.pow r).to_sequence ((hR.pow (m - r)).X_mul).to_sequence q
   · exact BrandenLeite.natDegree_pfFactorNumerator_le _ _ q

@@ -41,8 +41,7 @@ module = "RealRooted.TotalPositivity.LeftProductionMatrix"
 label = "Rows from a totally nonnegative left production matrix are Pólya frequency"
 
 [[theorems]]
-name = """RealRooted.LeftProductionMatrix.\
-rowPolynomial_splits_roots_nonpos"""
+name = "RealRooted.LeftProductionMatrix.rowPolynomial_splits_roots_nonpos"
 module = "RealRooted.TotalPositivity.LeftProductionMatrix"
 label = "Row polynomials split with nonpositive roots"
 headline = true

@@ -186,7 +186,7 @@ label = "A coefficientwise continuous curve of PF sequences has a PF endpoint"
 tags = ["realrooted-original"]
 
 [[theorems]]
-name = "RealRooted.schurSzegoPreservesJensenPencilCompatibility"
+name = "RealRooted.Compatible.schurSzegoComp_jensenPencil"
 module = "RealRooted.JensenPencilContraction"
 label = "Schur–Szegő composition by a PF polynomial preserves Jensen-pencil compatibility"
 tags = ["realrooted-original"]

@@ -35,8 +35,8 @@ private theorem reflectionInterlacing_pair_of_relations
     (hqpref : Interl q (p.reflect n))
     (hqrefpref : Interl (q.reflect n) (p.reflect n)) :
     IsReflectionInterlacingSeq n [p, q] := by
-  have hpref_pf := reciprocalShift_preserves_pf hp hpdeg
-  have hqref_pf := reciprocalShift_preserves_pf hq hqdeg
+  have hpref_pf := RealRooted.IsPFPolynomial.reciprocalShift hp hpdeg
+  have hqref_pf := RealRooted.IsPFPolynomial.reciprocalShift hq hqdeg
   refine ⟨by simp [hpdeg, hqdeg], ?_⟩
   refine ⟨⟨?_, ?_⟩, ?_⟩
   · rw [isInterlacingSeq0_iff_pairwise]

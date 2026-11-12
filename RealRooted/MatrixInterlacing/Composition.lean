@@ -163,7 +163,7 @@ theorem matPolyAction_matPolyMul (n : ℕ) (H G : List (List ℝ[X])) (fs : List
       simp [mul_assoc]
 
 /-- A composite of preserving matrices preserves the zero-aware interlacing cone. -/
-theorem matPolyMul_preservesInterlacingSeq0 (n : ℕ) (H G : List (List ℝ[X]))
+theorem PreservesInterlacingSeq0.matPolyMul (n : ℕ) (H G : List (List ℝ[X]))
     (hH_rect : ∀ row ∈ H, row.length = G.length)
     (hG_rect : ∀ row ∈ G, row.length = n)
     (hG : PreservesInterlacingSeq0 n G)
@@ -180,9 +180,9 @@ theorem matPolyMul_hasNonnegCoeffs (n : ℕ) (H G : List (List ℝ[X]))
     (hG : PreservesInterlacingSeq0 n G)
     (hH : PreservesInterlacingSeq0 G.length H) :
     ∀ row ∈ matPolyMul n H G, ∀ p ∈ row, HasNonnegCoeffs p := by
-  exact (preservesInterlacingSeq0_iff (matPolyMul n H G)
+  exact (PreservesInterlacingSeq0.iff_nonneg_and_2x2 (matPolyMul n H G)
     (fun row hrow => matPolyMul_row_length n H G row hrow)).mp
-    (matPolyMul_preservesInterlacingSeq0 n H G hH_rect hG_rect hG hH) |>.1
+    (PreservesInterlacingSeq0.matPolyMul n H G hH_rect hG_rect hG hH) |>.1
 
 /-- The product of two rectangular preservers satisfies every ordered pencil test. -/
 theorem matPolyMul_has2x2InterlacingProperty0 (n : ℕ) (H G : List (List ℝ[X]))
@@ -213,9 +213,9 @@ theorem matPolyMul_has2x2InterlacingProperty0 (n : ℕ) (H G : List (List ℝ[X]
             ((matPolyMul n H G).get i₂) (List.get_mem _ _)
           rw [hrow]
           exact j₂.isLt⟩) := by
-  exact (preservesInterlacingSeq0_iff (matPolyMul n H G)
+  exact (PreservesInterlacingSeq0.iff_nonneg_and_2x2 (matPolyMul n H G)
     (fun row hrow => matPolyMul_row_length n H G row hrow)).mp
-    (matPolyMul_preservesInterlacingSeq0 n H G hH_rect hG_rect hG hH) |>.2
+    (PreservesInterlacingSeq0.matPolyMul n H G hH_rect hG_rect hG hH) |>.2
 
 example :
     matPolyMul 2

@@ -190,8 +190,8 @@ theorem coeff_completeMatchingPolynomial (n m : ℕ) :
 
 theorem completeMatchingPolynomial_isPFPolynomial (n : ℕ) :
     IsPFPolynomial (completeMatchingPolynomial n) := by
-  exact reciprocalShift_preserves_pf
-    (by simpa using reverseHermiteTransform_preserves_pf (isPFPolynomial_X_pow n))
+  exact IsPFPolynomial.reciprocalShift
+    (by simpa using IsPFPolynomial.reverseHermiteTransform (isPFPolynomial_X_pow n))
     (natDegree_reverseHermiteBasis_le n)
 
 /-- The polar relation `(N - 2m) · #M_m(K_N) = N · #M_m(K_n)` with `N = n + 1`. -/

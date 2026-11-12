@@ -95,7 +95,7 @@ directly from the existing `matrix_preserves_interlacing_seq` theorem.
 The rook matrix does not satisfy the strict 2x2 condition because of zero
 entries above the diagonal; it needs a zero-aware row-threshold corollary with
 extra nonvanishing hypotheses. -/
-theorem rowThreshold_matrix_preserves_interlacing_seq_of_2x2
+theorem IsInterlacingSeqNonneg.matPolyAction_of_rowThreshold
     (hn : 0 < n)
     (G : List (List ℝ[X]))
     (hG_rect : ∀ row ∈ G, row.length = n)
@@ -117,7 +117,7 @@ theorem rowThreshold_matrix_preserves_interlacing_seq_of_2x2
 /-- Public weak zero-aware row-threshold wrapper. The row-threshold structure
 supplies entrywise nonnegative coefficients, and the weak 2×2 affine-minor
 condition is enough to preserve interlacing into the zero-aware target family. -/
-theorem rowThreshold_matrix_preserves_interlacing_seq0_of_2x2
+theorem IsInterlacingSeq0Nonneg.matPolyAction_of_rowThreshold
     (G : List (List ℝ[X]))
     (hG_rect : ∀ row ∈ G, row.length = n)
     (hG_threshold : HasRowThresholdLinearStructure G)
@@ -131,7 +131,7 @@ theorem rowThreshold_matrix_preserves_interlacing_seq0_of_2x2
     (fs : List ℝ[X]) (hfs_len : fs.length = n)
     (hfs : IsInterlacingSeqNonneg fs) :
     IsInterlacingSeq0Nonneg (matPolyAction G fs) :=
-  matrix_preserves_interlacing_seq0_of_2x2 G hG_rect
+  IsInterlacingSeq0Nonneg.matPolyAction_of_2x2 G hG_rect
     (hasRowThresholdLinearStructure_nonneg hG_threshold)
     hG_affine fs hfs_len hfs
 

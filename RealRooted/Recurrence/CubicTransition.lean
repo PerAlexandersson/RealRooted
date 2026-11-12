@@ -36,7 +36,7 @@ namespace RealRooted
 
 /-- Nonnegative parameters make the three-coordinate cubic transition preserve
 ordered Pólya-frequency triples, including triples and outputs with zero coordinates. -/
-theorem preservesCubicTransition_of_nonneg {α γ w : ℝ}
+theorem PreservesCubicTransition.of_nonneg {α γ w : ℝ}
     (hα : 0 ≤ α) (hγ : 0 ≤ γ) (hw : 0 ≤ w) :
     PreservesCubicTransition α γ w := by
   intro q p r h
@@ -76,7 +76,7 @@ theorem preservesCubicTransition_of_nonneg {α γ w : ℝ}
 
 /-- The three-coordinate cubic transition preserves all ordered PF triples
 exactly when all three scalar parameters are nonnegative. -/
-theorem preservesCubicTransition_iff_nonneg (α γ w : ℝ) :
+theorem PreservesCubicTransition.iff_nonneg (α γ w : ℝ) :
     PreservesCubicTransition α γ w ↔ 0 ≤ α ∧ 0 ≤ γ ∧ 0 ≤ w := by
   constructor
   · intro h
@@ -93,7 +93,7 @@ theorem preservesCubicTransition_iff_nonneg (α γ w : ℝ) :
     · simpa [IsOrderedPFTriple] using hout001.2.2.1.hasNonnegCoeffs 0
     · simpa [IsOrderedPFTriple] using hout100.2.2.1.hasNonnegCoeffs 1
   · rintro ⟨hα, hγ, hw⟩
-    exact preservesCubicTransition_of_nonneg hα hγ hw
+    exact PreservesCubicTransition.of_nonneg hα hγ hw
 
 /-- A state for the three-coordinate cubic transition. -/
 structure CubicTransitionState where
@@ -176,7 +176,7 @@ theorem cubicTransitionIterate_isOrderedPFTriple {α γ w : ℝ}
         interl_C_C 1 (γ ^ 2), interl_C_C γ (γ ^ 2)⟩
   | succ n ih =>
       simpa [cubicTransitionIterate, cubicTransitionStep] using
-        preservesCubicTransition_of_nonneg hα hγ hw _ _ _ ih
+        PreservesCubicTransition.of_nonneg hα hγ hw _ _ _ ih
 
 /-- The projected family has the initial values `1`, `γ`, and `γ²`. -/
 theorem cubicTransitionFamily_initial (α γ w : ℝ) :

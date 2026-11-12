@@ -275,7 +275,7 @@ theorem weightedThreeStateMatrix_preserves
     {b alpha d : ℝ} (hb : 0 ≤ b) (ha : 0 ≤ alpha) (hd : 0 ≤ d)
     (hbd : d ≤ b) (hba : alpha ≤ b) :
     PreservesInterlacingSeq0 3 (weightedThreeStateMatrix b alpha d) := by
-  rw [preservesInterlacingSeq0_iff]
+  rw [PreservesInterlacingSeq0.iff_nonneg_and_2x2]
   · exact ⟨weightedThreeStateMatrix_nonneg hb ha hd,
       weightedThreeStateMatrix_affine hb ha hd hbd hba⟩
   · exact weightedThreeStateMatrix_rect b alpha d

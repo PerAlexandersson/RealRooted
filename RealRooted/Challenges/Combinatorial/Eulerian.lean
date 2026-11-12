@@ -3,13 +3,10 @@ module
 public import RealRooted.CombinatorialExamples.Eulerian
 public import RealRooted.CombinatorialExamples.EulerianStatistic
 public import RealRooted.CombinatorialExamples.TypeBEulerian
+public import RealRooted.GeneralizedEulerian
+public import RealRooted.GeneralizedEulerian.EvalNeg
 public import RealRooted.GeneralizedEulerian.GeneratingFunction
 public import RealRooted.MaWang.DerivativeStep
-import RealRooted.GeneralizedEulerian.EvalNeg
-
-public section
-
-open Polynomial
 
 /-!
 # Real-rooted Eulerian polynomials
@@ -160,36 +157,3 @@ Wissenschaften (1910), 809--847.
 This module exposes the checked ordinary and type `B` Eulerian real-rootedness
 and interlacing statements, together with the corresponding Sturm-prefix API.
 -/
-
-namespace RealRooted
-namespace Challenges
-namespace Eulerian
-
-/-- Ordinary Eulerian tilde polynomials are real-rooted. -/
-theorem realRooted (n : ℕ) : eulerianTilde n ≠ 0 ∧ (eulerianTilde n).Splits :=
-  RealRooted.isRealRooted_eulerianTilde n
-
-/-- Consecutive ordinary Eulerian tilde polynomials interlace. -/
-theorem interlaces_succ (n : ℕ) : Interlaces (eulerianTilde n) (eulerianTilde (n + 1)) :=
-  RealRooted.interlaces_eulerianTilde_succ n
-
-/-- Descending ordinary Eulerian prefixes form Sturm sequences. -/
-theorem sturmPrefix (n : ℕ) : IsSturmSeq (eulerianTildePrefix n) :=
-  RealRooted.isSturmSeq_eulerianTildePrefix n
-
-/-- Type `B` Eulerian polynomials are real-rooted. -/
-theorem typeB_realRooted (n : ℕ) : typeBEulerian n ≠ 0 ∧ (typeBEulerian n).Splits :=
-  RealRooted.isRealRooted_typeBEulerian n
-
-/-- Consecutive type `B` Eulerian polynomials interlace. -/
-theorem typeB_interlaces_succ (n : ℕ) :
-    Interlaces (typeBEulerian n) (typeBEulerian (n + 1)) :=
-  RealRooted.interlaces_typeBEulerian_succ n
-
-/-- Descending type `B` Eulerian prefixes form Sturm sequences. -/
-theorem typeB_sturmPrefix (n : ℕ) : IsSturmSeq (typeBEulerianPrefix n) :=
-  RealRooted.isSturmSeq_typeBEulerianPrefix n
-
-end Eulerian
-end Challenges
-end RealRooted

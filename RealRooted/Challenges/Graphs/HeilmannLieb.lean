@@ -1,11 +1,14 @@
 module
 
-import RealRooted.HeilmannLieb
-import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatchingPolyOn
-public import RealRooted.RankTwoMatching.Transform
-public import RealRooted.Graph.MatchingVertexInterlacing
+public import RealRooted.Graph.IndependencePolynomial.Basic
+public import RealRooted.Graph.IndependencePolynomial.ClawFree
 public import RealRooted.Graph.MatchingPolynomial
-import RealRooted.Graph.IndependencePolynomial.ClawFree
+public import RealRooted.Graph.MatchingVertexInterlacing
+public import RealRooted.HeilmannLieb
+public import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatchingPolyOn
+public import RealRooted.RankTwoMatching.Basic
+public import RealRooted.RankTwoMatching.Endpoint
+public import RealRooted.RankTwoMatching.Transform
 
 /-!
 # Heilmann–Lieb challenge entry point
@@ -55,7 +58,8 @@ module = "RealRooted.RankTwoMatching.Basic"
 label = "Rank-two edge weights a_i b_j + a_j b_i on a complete graph"
 
 [[theorems]]
-name = "RealRooted.Challenges.HeilmannLieb.matchingPolynomial_splits"
+name = "RealRooted.Graph.matchingPolynomialByEdges_splits"
+module = "RealRooted.HeilmannLieb"
 label = "Heilmann–Lieb: the matching polynomial is real-rooted"
 
 [[theorems]]
@@ -74,21 +78,25 @@ module = "RealRooted.Graph.MatchingVertexInterlacing"
 label = "Heilmann–Lieb root bound |x| ≤ 2√(Δ − 1)"
 
 [[theorems]]
-name = "RealRooted.Challenges.HeilmannLieb.clawFree_weightedIndepPoly_splits"
+name = "RealRooted.Graph.weightedIndepPoly_splits_of_clawFree"
+module = "RealRooted.Graph.IndependencePolynomial.ClawFree"
 label = "Engström: weighted independence polynomials of claw-free graphs are real-rooted"
 symcat = "weightedIndependencePolynomial"
 
 [[theorems]]
-name = "RealRooted.Challenges.HeilmannLieb.weightedMatchingPolynomial_splits"
+name = "RealRooted.Graph.weightedMatchingPolynomialByEdges_splits"
+module = "RealRooted.HeilmannLieb"
 label = "Weighted matching polynomials are real-rooted"
 headline = true
 
 [[theorems]]
-name = "RealRooted.Challenges.HeilmannLieb.weightedMatchingPolynomial_isPFPolynomial"
+name = "RealRooted.Graph.weightedMatchingPolynomialByEdges_isPFPolynomial"
+module = "RealRooted.HeilmannLieb"
 label = "Weighted matching polynomials are PF polynomials"
 
 [[theorems]]
-name = "RealRooted.Challenges.HeilmannLieb.rankTwoBinomialTransform_isPFPolynomial"
+name = "RealRooted.Graph.rankTwoBinomialTransform_isPF"
+module = "RealRooted.RankTwoMatching.Transform"
 label = "The rank-two binomial transform preserves PF polynomials"
 
 [[theorems]]
@@ -186,51 +194,3 @@ weighted claw-free theorem, and the rank-two binomial transform.  The proofs
 live in `RealRooted.HeilmannLieb`, `RealRooted.Graph.IndependencePolynomial.ClawFree`
 and `RealRooted.RankTwoMatching`.
 -/
-
-public section
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace HeilmannLieb
-
-/-- **Heilmann–Lieb**: the matching-generating polynomial of a finite graph is
-real-rooted. -/
-theorem matchingPolynomial_splits {V : Type*} [Fintype V]
-    (G : SimpleGraph V) :
-    (Graph.matchingPolynomialByEdges G).Splits :=
-  Graph.matchingPolynomialByEdges_splits G
-
-/-- **Weighted Heilmann–Lieb**: the edge-weighted matching-generating
-polynomial is real-rooted for nonnegative weights. -/
-theorem weightedMatchingPolynomial_splits {V : Type*} [Fintype V]
-    (G : SimpleGraph V) (wt : G.edgeSet → ℝ) (hwt : ∀ e, 0 ≤ wt e) :
-    (Graph.weightedMatchingPolynomialByEdges G wt).Splits :=
-  Graph.weightedMatchingPolynomialByEdges_splits G wt hwt
-
-/-- For nonnegative edge weights, the weighted matching-generating polynomial
-has nonnegative coefficients and only real nonpositive roots. -/
-theorem weightedMatchingPolynomial_isPFPolynomial {V : Type*} [Fintype V]
-    (G : SimpleGraph V) (wt : G.edgeSet → ℝ) (hwt : ∀ e, 0 ≤ wt e) :
-    IsPFPolynomial (Graph.weightedMatchingPolynomialByEdges G wt) :=
-  Graph.weightedMatchingPolynomialByEdges_isPFPolynomial G wt hwt
-
-/-- **Engström**: the vertex-weighted independence polynomial of a finite
-claw-free graph is real-rooted for nonnegative weights. -/
-theorem clawFree_weightedIndepPoly_splits {V : Type*} [Fintype V] [DecidableEq V]
-    {G : SimpleGraph V} [DecidableRel G.Adj] (hG : Graph.ClawFree G) (wt : V → ℝ)
-    (hwt : ∀ v, 0 ≤ wt v) :
-    (Graph.weightedIndepPoly G wt).Splits :=
-  Graph.clawFree_weightedIndepPoly_splits hG wt hwt
-
-/-- The rank-two binomial transform maps a PF polynomial with constant term
-one to a PF polynomial, provided the ambient size bounds the degree. -/
-theorem rankTwoBinomialTransform_isPFPolynomial {p : ℝ[X]} (hp : IsPFPolynomial p)
-    (hconst : p.coeff 0 = 1) {M : ℕ} (hdeg : p.natDegree ≤ M) :
-    IsPFPolynomial (Graph.rankTwoBinomialTransform p M) :=
-  Graph.rankTwoBinomialTransform_isPF hp hconst hdeg
-
-end HeilmannLieb
-end Challenges
-end RealRooted

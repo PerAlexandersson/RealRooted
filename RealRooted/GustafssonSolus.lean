@@ -206,7 +206,7 @@ theorem isInterlacingSeq0Nonneg_gustafssonSolusAction_of_has2x2 {m n : ℕ}
     (hfs : IsInterlacingSeqNonneg fs) :
     IsInterlacingSeq0Nonneg (gustafssonSolusAction phi dropPivot fs) := by
   exact
-    rowThreshold_matrix_preserves_interlacing_seq0_of_2x2
+    IsInterlacingSeq0Nonneg.matPolyAction_of_rowThreshold
       (G := gustafssonSolusMatrix phi dropPivot)
       (hG_rect := gustafssonSolusMatrix_rect phi dropPivot)
       (hG_threshold := hasRowThresholdLinearStructure_gustafssonSolusMatrix hphi)

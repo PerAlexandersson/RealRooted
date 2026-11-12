@@ -1,11 +1,13 @@
 module
 
 public import RealRooted.Bezoutian
-import RealRooted.Bezoutian.Successor
-import RealRooted.Bezoutian.LowDegree
-import RealRooted.Bezoutian.ComplexRoots
-import RealRooted.Bezoutian.RootEvaluation
+public import RealRooted.Bezoutian.ComplexRoots
+public import RealRooted.Bezoutian.LowDegree
 public import RealRooted.Bezoutian.MatrixBasics
+public import RealRooted.Bezoutian.RootEvaluation
+public import RealRooted.Bezoutian.StrictInterleaving
+public import RealRooted.Bezoutian.Successor
+public import RealRooted.Mathlib.Algebra.Polynomial.Bezoutian
 
 /-!
 # Bézout matrices and interlacing
@@ -33,20 +35,24 @@ module = "RealRooted.Bezoutian.StrictInterleaving"
 label = "Strict interlacing of equal-degree polynomials"
 
 [[theorems]]
-name = "RealRooted.Challenges.Bezoutian.strictInterlSameDegree_iff_posDef"
+name = "RealRooted.strictInterlSameDegree_iff_bezoutMatrix_posDef"
+module = "RealRooted.Bezoutian.LowDegree"
 label = "Strict interlacing is positive definiteness of the Bézout matrix"
 headline = true
 
 [[theorems]]
-name = "RealRooted.Challenges.Bezoutian.posDef_iff_interlaces_succ"
+name = "RealRooted.bezoutMatrix_posDef_iff_interlaces_succ"
+module = "RealRooted.Bezoutian.Successor"
 label = "Successor-degree interlacing is positive definiteness of the Bézout matrix"
 
 [[theorems]]
-name = "RealRooted.Challenges.Bezoutian.splits_of_posDef"
+name = "RealRooted.bezoutMatrix.splits_of_posDef"
+module = "RealRooted.Bezoutian.ComplexRoots"
 label = "A positive definite Bézout matrix forces real roots"
 
 [[theorems]]
-name = "RealRooted.Challenges.Bezoutian.wronskian_pos_of_posDef"
+name = "RealRooted.bezoutMatrix.wronskian_pos_of_posDef"
+module = "RealRooted.Bezoutian.RootEvaluation"
 label = "A positive definite Bézout matrix gives a positive Wronskian"
 -->
 
@@ -109,52 +115,3 @@ criteria. The matrix algebra, root evaluation, complex-root, and low-degree
 layers live in `RealRooted.Bezoutian`; the successor-degree proof lives in
 `RealRooted.Bezoutian.Successor`.
 -/
-
-public section
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace Bezoutian
-
-/-- **Bézout's criterion** for equal degrees: two real polynomials of degree
-`n` with positive leading coefficients strictly interlace if and only if their
-Bézout matrix is positive definite. -/
-theorem strictInterlSameDegree_iff_posDef {p q : ℝ[X]} {n : ℕ}
-    (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
-    (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n) :
-    StrictInterlSameDegree p q ↔ (bezoutMatrix n q p).PosDef :=
-  strictInterlSameDegree_iff_bezoutMatrix_posDef hp_pos hq_pos hp_deg hq_deg
-
-/-- **Bézout's criterion** in successor degree (Fisk, Cor. 9.145): for `f` of
-degree `d + 1` and `g` of degree `d` with positive leading coefficients, the
-Bézout matrix `B_{d+1}(f, g)` is positive definite if and only if `g`
-interlaces `f` with no common root. -/
-theorem posDef_iff_interlaces_succ {f g : ℝ[X]} {d : ℕ}
-    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
-    (hf_deg : f.natDegree = d + 1) (hg_deg : g.natDegree = d) :
-    (bezoutMatrix (d + 1) f g).PosDef ↔
-      Interlaces g f ∧ ∀ x, f.IsRoot x → ¬ g.IsRoot x :=
-  bezoutMatrix_posDef_iff_interlaces_succ hf_pos hg_pos hf_deg hg_deg
-
-/-- A positive definite Bézout matrix forces both polynomials to split over
-`ℝ`. -/
-theorem splits_of_posDef {p q : ℝ[X]} {n : ℕ}
-    (hp_pos : HasPosLeadingCoeff p) (hq_pos : HasPosLeadingCoeff q)
-    (hp_deg : p.natDegree = n) (hq_deg : q.natDegree = n)
-    (hB : (bezoutMatrix n q p).PosDef) :
-    p.Splits ∧ q.Splits :=
-  bezoutMatrix.splits_of_posDef hp_pos hq_pos hp_deg hq_deg hB
-
-/-- A positive definite Bézout matrix makes the Wronskian `q' p - q p'`
-positive everywhere. -/
-theorem wronskian_pos_of_posDef {p q : ℝ[X]} {n : ℕ}
-    (hq_deg : q.natDegree ≤ n + 1) (hp_deg : p.natDegree ≤ n + 1)
-    (hB : (bezoutMatrix (n + 1) q p).PosDef) (t : ℝ) :
-    0 < q.derivative.eval t * p.eval t - q.eval t * p.derivative.eval t :=
-  bezoutMatrix.wronskian_pos_of_posDef hq_deg hp_deg hB t
-
-end Bezoutian
-end Challenges
-end RealRooted

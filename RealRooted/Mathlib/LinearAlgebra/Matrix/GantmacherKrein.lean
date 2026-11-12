@@ -728,3 +728,18 @@ theorem charpoly_splits_of_forall_compound_primitive
     exact hμ_pos i
 
 end Matrix
+
+open Polynomial
+
+namespace Matrix
+
+/-- **Gantmacher–Krein**, oscillatory case: if all compounds of a positive
+power of a totally nonnegative matrix have positive entries, then its
+eigenvalues are real and positive. -/
+theorem IsTotallyNonneg.charpoly_factorization_pos_of_pow_compound_pos {n : ℕ}
+    {A : Matrix (Fin n) (Fin n) ℝ} (hA : A.IsTotallyNonneg) {k : ℕ} (hk : k ≠ 0)
+    (hpos : ∀ q, 1 ≤ q → q ≤ n → ∀ s t, 0 < compound q (A ^ k) s t) :
+    ∃ μ : Fin n → ℝ, (∀ i, 0 < μ i) ∧ A.charpoly = ∏ i, (X - C (μ i)) :=
+  exists_charpoly_eq_prod_of_pow_compound_pos hA (Nat.pos_of_ne_zero hk) hpos
+
+end Matrix
