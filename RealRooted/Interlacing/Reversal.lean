@@ -17,6 +17,10 @@ order, so consecutive reversed rows interlace exactly when the rows do
 
 The reversed rows of a recurrence satisfy a recurrence of the same shape:
 
+* `reflect_linearRecurrence` transports any finite-order recurrence, with coefficients
+  depending on `n`, under the degree bound `D + c * n`. The multiplier at lag `j` is reflected
+  at `c * j`. `eq_reflect_of_linearRecurrence` identifies a separately defined reflected family
+  from its initial rows;
 * `eq_reflect_of_threeTerm`: `P (n + 2) = a n P (n + 1) + b n P n` reverses to the multipliers
   `reflect 1 (a n)` and `reflect 2 (b n)`;
 * `eq_reflect_of_secondOrderDerivativeRecurrence`:
@@ -24,8 +28,8 @@ The reversed rows of a recurrence satisfy a recurrence of the same shape:
   `Polynomial.derivative_reflect`, with `θ_N r = X (N r - X r')`, `θ_N r = X u₁` and
   `θ_N (θ_N r) = X ^ 2 u₂`.
 
-Both are stated as the link `P n = reflect (D₀ + n) (R n)` for a sequence `R` given by its own
-recurrence, so that `R` can be an ordinary recursive definition.
+The identification theorems let `R` be given by its own recurrence, so that it can be an
+ordinary recursive definition. The three-term result is the order-two, slope-one specialization.
 -/
 
 public section
@@ -152,6 +156,62 @@ theorem eq_reflect_of_secondOrderDerivativeRecurrence
       exact natDegree_mul_le.trans
         (add_le_add (natDegree_reflect_le.trans (max_le le_rfl (hA₂ n))) hθθ)
 
+/-- Reflection transports a recurrence of any finite order and any natural degree slope.
+The summand indexed by `i < k` has lag `k - i`, hence reflection bound `c * (k - i)`.
+Coefficients may depend on the row index. No positivity or nonvanishing is needed. -/
+theorem reflect_linearRecurrence {S : Type*} [Semiring S]
+    {R : ℕ → S[X]} {a : ℕ → ℕ → S[X]} {k D c : ℕ}
+    (hR : ∀ n, R (n + k) = ∑ i ∈ Finset.range k, a n i * R (n + i))
+    (ha : ∀ n i, i < k → (a n i).natDegree ≤ c * (k - i))
+    (hdeg : ∀ n, (R n).natDegree ≤ D + c * n) :
+    ∀ n, reflect (D + c * (n + k)) (R (n + k)) =
+      ∑ i ∈ Finset.range k,
+        reflect (c * (k - i)) (a n i) * reflect (D + c * (n + i)) (R (n + i)) := by
+  intro n
+  rw [hR n]
+  have hsum (s : Finset ℕ) :
+      reflect (D + c * (n + k)) (∑ i ∈ s, a n i * R (n + i)) =
+        ∑ i ∈ s, reflect (D + c * (n + k)) (a n i * R (n + i)) := by
+    induction s using Finset.induction with
+    | empty => simp
+    | @insert i s hi ih =>
+      rw [Finset.sum_insert hi, Finset.sum_insert hi, reflect_add, ih]
+  rw [hsum]
+  apply Finset.sum_congr rfl
+  intro i hi
+  have hik : i ≤ k := (Finset.mem_range.mp hi).le
+  have hindex : D + c * (n + k) = c * (k - i) + (D + c * (n + i)) := by
+    rw [Nat.mul_add, Nat.mul_add, Nat.mul_sub_left_distrib]
+    have := Nat.mul_le_mul_left c hik
+    lia
+  rw [hindex, reflect_mul _ _ (ha n i (Finset.mem_range.mp hi)) (hdeg (n + i))]
+
+/-- Matching initial rows and reflected finite-order recurrences identify two families.
+This includes every positive order and slope; order or slope zero is also allowed. -/
+theorem eq_reflect_of_linearRecurrence {S : Type*} [Semiring S]
+    {P R : ℕ → S[X]} {a : ℕ → ℕ → S[X]} {k D c : ℕ}
+    (hP : ∀ n, P (n + k) = ∑ i ∈ Finset.range k, a n i * P (n + i))
+    (hR : ∀ n, R (n + k) =
+      ∑ i ∈ Finset.range k, reflect (c * (k - i)) (a n i) * R (n + i))
+    (ha : ∀ n i, i < k → (a n i).natDegree ≤ c * (k - i))
+    (hdeg : ∀ n, (R n).natDegree ≤ D + c * n)
+    (hinit : ∀ i, i < k → P i = reflect (D + c * i) (R i)) :
+    ∀ n, P n = reflect (D + c * n) (R n) := by
+  have hr := reflect_linearRecurrence hR
+    (fun n i hi => natDegree_reflect_le.trans (max_le le_rfl (ha n i hi))) hdeg
+  simp only [reflect_reflect] at hr
+  intro n
+  induction n using Nat.strong_induction_on with
+  | h n ih =>
+    by_cases hn : n < k
+    · exact hinit n hn
+    · have hkn : k ≤ n := Nat.le_of_not_gt hn
+      obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hkn
+      rw [Nat.add_comm k m, hP m, hr m]
+      apply Finset.sum_congr rfl
+      intro i hi
+      rw [ih (m + i) (by have := Finset.mem_range.mp hi; lia)]
+
 /-- Reversed rows of a three-term recurrence: if `P (n + 2) = a n P (n + 1) + b n P n` with
 `a n`, `b n` of degree at most one and two, and `R` satisfies the recurrence with multipliers
 `reflect 1 (a n)` and `reflect 2 (b n)`, then `P n = reflect (D₀ + n) (R n)` for all `n`. -/
@@ -163,18 +223,18 @@ theorem eq_reflect_of_threeTerm {P R a b a' b' : ℕ → ℝ[X]} {D₀ : ℕ}
     (hRdeg : ∀ n, (R n).natDegree ≤ D₀ + n) (h0 : P 0 = reflect D₀ (R 0))
     (h1 : P 1 = reflect (D₀ + 1) (R 1)) :
     ∀ n, P n = reflect (D₀ + n) (R n) := by
-  have key : ∀ n, P n = reflect (D₀ + n) (R n) ∧
-      P (n + 1) = reflect (D₀ + (n + 1)) (R (n + 1)) := by
-    intro n
-    induction n with
-    | zero => exact ⟨by simpa using h0, h1⟩
-    | succ n ih =>
-      refine ⟨ih.2, ?_⟩
-      rw [hP, ih.1, ih.2, mul_reflect_eq_reflect_mul (k := 1) (ha n) (hRdeg (n + 1)),
-        mul_reflect_eq_reflect_mul (k := 2) (hb n) (hRdeg n),
-        show 1 + (D₀ + (n + 1)) = D₀ + (n + 1 + 1) by lia,
-        show 2 + (D₀ + n) = D₀ + (n + 1 + 1) by lia, ← reflect_add, hR, ha', hb']
-  exact fun n => (key n).1
+  suffices h : ∀ n, P n = reflect (D₀ + 1 * n) (R n) by simpa using h
+  apply eq_reflect_of_linearRecurrence (k := 2) (c := 1)
+    (a := fun n i => if i = 0 then b n else a n)
+  · simpa [Finset.sum_range_succ, add_comm] using hP
+  · simpa [Finset.sum_range_succ, ha', hb', add_comm] using hR
+  · intro n i hi
+    interval_cases i <;> simp_all
+  · simpa using hRdeg
+  · intro i hi
+    interval_cases i
+    · simpa using h0
+    · simpa using h1
 
 /-- Interlacing of rows `P n` of degree `D₀ + n` with positive leading coefficients from the
 interlacing of their reversals `R n`, of degree `D₀ + n` with nonnegative coefficients. -/

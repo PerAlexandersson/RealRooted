@@ -9,6 +9,7 @@ public import RealRooted.Graph.IndependencePolynomial.CubicParent
 public import RealRooted.Interlacing.VariableDelay
 public import RealRooted.Interlacing.ConstantPrefixFixedDelay
 public import RealRooted.Linear
+import RealRooted.Interlacing.Reversal
 public meta import RealRooted.EulerOperator.Polar
 public meta import RealRooted.Tactic.Row.Support
 public meta import RealRooted.CombinatorialExamples.PathPowerGap
@@ -80,19 +81,17 @@ theorem reflectedRecurrence_isSolution {E : LinearRecurrence ℝ[X]}
     (hcoeff : ∀ i, (E.coeffs i).natDegree ≤ E.order - i)
     (hdegree : ∀ n, (u n).natDegree ≤ D + n) :
     (reflectedRecurrence E).IsSolution fun n ↦ reflect (D + n) (u n) := by
+  let a (_n i : ℕ) : ℝ[X] := if hi : i < E.order then E.coeffs ⟨i, hi⟩ else 0
+  have hrec : ∀ n, u (n + E.order) = ∑ i ∈ range E.order, a n i * u (n + i) := by
+    intro n
+    rw [← Fin.sum_univ_eq_sum_range]
+    simpa [a] using hu n
+  have ha : ∀ n i, i < E.order → (a n i).natDegree ≤ 1 * (E.order - i) := by
+    intro n i hi
+    simpa [a, hi] using hcoeff ⟨i, hi⟩
   intro n
-  change reflect (D + (n + E.order)) (u (n + E.order)) =
-    ∑ i : Fin E.order,
-      reflect (E.order - i) (E.coeffs i) * reflect (D + (n + i)) (u (n + i))
-  rw [hu n]
-  induction (Finset.univ : Finset (Fin E.order)) using Finset.induction with
-  | empty => simp
-  | @insert i s hi ih =>
-      rw [Finset.sum_insert hi, Finset.sum_insert hi, reflect_add, ih]
-      have hindex : D + (n + E.order) = (E.order - i) + (D + (n + i)) := by
-        have := i.isLt
-        lia
-      rw [hindex, reflect_mul _ _ (hcoeff i) (hdegree (n + i))]
+  have h := reflect_linearRecurrence hrec ha (by simpa using hdegree) n
+  simpa [reflectedRecurrence, ← Fin.sum_univ_eq_sum_range, a] using h
 
 /-- The sequence `u` with the term `a` prepended at index `0`. -/
 @[expose] def prepend (a : ℝ[X]) (u : ℕ → ℝ[X]) : ℕ → ℝ[X]

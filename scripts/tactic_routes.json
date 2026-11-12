@@ -318,14 +318,14 @@
       "conclusion": "Interlaces (P n) (P (n + 1)) or (P n).Splits after reflection.",
       "theorems": [
         "RealRooted.eq_reflect_of_secondOrderDerivativeRecurrence",
-        "RealRooted.eq_reflect_of_threeTerm",
+        "RealRooted.eq_reflect_of_linearRecurrence",
         "RealRooted.interlaces_of_eq_reflect",
         "RealRooted.splits_of_eq_reflect"
       ],
       "module": "RealRooted.Tactic.Row.Reverse",
       "summary": "Prove reflected auxiliary rows and transfer their conclusion back.",
-      "requires": "Degree law, nonzero constants, reflected recurrence, and proof.",
-      "examples": ["RealRooted.Tactic.Examples.RowInterlacing"],
+      "requires": "Degree D + n, nonzero constants, nonnegative rows, reflected recurrence, and proof. Ordinary recurrences allow every finite order; derivative recurrences have lag one and derivative order at most two.",
+      "examples": ["RealRooted.Tactic.Examples.RowInterlacing", "RealRooted.Tactic.Examples.RowInterlacingPowers"],
       "pseudo": false
     },
     {
