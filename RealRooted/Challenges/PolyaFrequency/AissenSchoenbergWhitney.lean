@@ -7,7 +7,7 @@ import RealRooted.PolyaFrequencyConvolution.Basic
 public import RealRooted.NatCauchyConvolution
 
 /-!
-# Aissen--Schoenberg--Whitney challenge entry point
+# Pólya frequency sequences and real-rooted polynomials (Aissen–Schoenberg–Whitney)
 
 <!-- realrooted-catalog
 version = 1
@@ -58,22 +58,22 @@ label = "Sampled sine vector of the argument of a root"
 
 [[theorems]]
 name = "RealRooted.Challenges.AissenSchoenbergWhitney.isPolyaFreqSeq_coeff_iff_isPFPolynomial"
-label = "PF coefficients if and only if a PF polynomial"
+label = "Pólya frequency coefficients if and only if a PF polynomial"
 headline = true
 symcat = "aissenSchoenbergWhitney"
 
 [[theorems]]
 name = "RealRooted.Challenges.AissenSchoenbergWhitney.IsPolyaFreqSeq.splits_and_roots_nonpos"
-label = "PF coefficients give real nonpositive zeros"
+label = "Pólya frequency coefficients give real nonpositive zeros"
 
 [[theorems]]
 name = """RealRooted.Challenges.AissenSchoenbergWhitney.\
 isPolyaFreqSeq_coeff_of_splits_of_roots_nonpos"""
-label = "Real nonpositive zeros give PF coefficients"
+label = "Nonnegative coefficients and real nonpositive zeros give PF coefficients"
 
 [[theorems]]
 name = "RealRooted.Challenges.AissenSchoenbergWhitney.IsPolyaFreqSeq.natCauchyConvolution"
-label = "PF sequences are closed under convolution"
+label = "Pólya frequency sequences are closed under convolution"
 
 [[theorems]]
 name = "RealRooted.IsPolyaFreqSeq.coeff_mul"
@@ -88,7 +88,7 @@ label = "Karlin: PF zeros satisfy |arg z| ≥ mπ/(m+d−1) for every m ≥ 1"
 [[theorems]]
 name = "RealRooted.IsPolyaFreqSeq.of_forall_pos_add_C_mul_splits"
 module = "RealRooted.AissenSchoenbergWhitney"
-label = "PF coefficients if every positive perturbation p + μq splits"
+label = "PF coefficients if p + μq splits for every μ > 0"
 
 [[theorems]]
 name = "RealRooted.tendsto_aswSectorThreshold"
@@ -98,7 +98,7 @@ label = "The sector threshold tends to π as the order grows"
 [[theorems]]
 name = "RealRooted.IsPolyaFreqSeq.aswKarlinMatrix_isTotallyNonnegRect"
 module = "RealRooted.ASWKarlinMatrix"
-label = "PF sequences have totally nonnegative Karlin window matrices"
+label = "Karlin window matrices of PF sequences are totally nonnegative"
 
 [[theorems]]
 name = "RealRooted.aswKarlinMatrix_mulVec_surjective"
@@ -139,82 +139,59 @@ label = "The sector inequality follows from the two sign-variation bounds"
 -->
 
 <!-- realrooted-catalog-content -->
-# Aissen–Schoenberg–Whitney
+# Pólya frequency sequences and real-rooted polynomials (Aissen–Schoenberg–Whitney)
 
-[@AissenSchoenbergWhitney1952]
+The coefficients of a real polynomial form a Pólya frequency sequence if and only if
+the polynomial has nonnegative coefficients and only real nonpositive zeros.
 
-A real sequence $(a_k)_{k \geq 0}$ is a Pólya frequency sequence if its
-lower-triangular Toeplitz matrix, whose $(i, j)$ entry is $a_{i-j}$ for
-$j \leq i$ and $0$ otherwise, is totally nonnegative. The coefficient sequence
-of a real polynomial $p$ is a Pólya frequency sequence if and only if $p$ is a
-PF polynomial: $p$ has nonnegative coefficients and is either zero or splits
-over $\mathbb R$ with only nonpositive zeros. The two directions are also
-listed separately.
+A real sequence $(a_k)_{k \geq 0}$ is a *Pólya frequency sequence* if its lower-triangular
+Toeplitz matrix, with $(i, j)$ entry $a_{i-j}$ for $j \leq i$ and $0$ otherwise, is totally
+nonnegative. A real polynomial $p$ is a *PF polynomial* if it has nonnegative coefficients and
+either $p=0$ or $p$ splits over $\mathbb R$ with only nonpositive zeros.
 
-**Theorem.** If $(a_k)$ and $(b_k)$ are Pólya frequency sequences, then so is
-their Cauchy convolution $c_n = \sum_{k=0}^n a_k b_{n-k}$. The sequences may be
-infinite. Equivalently, if the formal power series $F$ and $G$ have Pólya
-frequency coefficient sequences, then so does $FG$.
+## Results
 
-**Karlin's sector estimate.** Let $p$ be a real polynomial of degree $d\geq1$
-with $p(0)>0$ whose coefficient sequence is a Pólya frequency sequence. For
-every integer $m\geq1$, each complex zero $z$ of $p$ satisfies
+**Theorem (Aissen–Schoenberg–Whitney).** The coefficient sequence of a real polynomial $p$ is a
+Pólya frequency sequence if and only if $p$ is a PF polynomial. In particular, if the
+coefficients of $p$ form a Pólya frequency sequence, then $p$ splits over $\mathbb R$ and all
+its zeros are nonpositive; conversely, nonnegative coefficients, splitting and nonpositive
+zeros give a Pólya frequency sequence.
+
+**Theorem (convolution).** If $(a_k)$ and $(b_k)$ are Pólya frequency sequences, finite or
+infinite, then so is their Cauchy convolution $c_n = \sum_{k=0}^n a_k b_{n-k}$. Equivalently,
+if formal power series $F$ and $G$ have Pólya frequency coefficient sequences, so does $FG$.
+
+**Theorem (perturbation criterion).** If $p$ and $q$ have nonnegative coefficients and
+$p+\mu q$ splits over $\mathbb R$ for every $\mu>0$, then the coefficients of $p$ form a Pólya
+frequency sequence.
+
+**Theorem (Karlin's sector estimate).** Let $p$ be a real polynomial of degree $d\geq1$ with
+$p(0)>0$ whose coefficients form a Pólya frequency sequence. For every integer $m\geq1$,
+each complex zero $z$ of $p$ satisfies
 $$
 |\arg z|\geq \frac{m\pi}{m+d-1}.
 $$
-Thus the zeros avoid the sector
-$|\arg z|<m\pi/(m+d-1)$ around the positive real axis. The proof uses the
-variation-diminishing property of the totally nonnegative coefficient-window
-matrices of $p$.
+The threshold $m\pi/(m+d-1)$ tends to $\pi$ as $m\to\infty$, so every zero lies on the
+negative real axis; this gives the forward direction of the equivalence.
 
-## Perturbation criterion
+## Proof
 
-If $p$ and $q$ have nonnegative coefficients and $p+\mu q$ splits over $\mathbb R$
-for every $\mu>0$, then the coefficient sequence of $p$ is a Pólya frequency
-sequence. Each $p+\mu q$ has nonnegative coefficients, so its coefficient sequence
-is a Pólya frequency sequence by the reverse direction above, and the Toeplitz
-minors of the sequence of $p$ are limits of those minors as $\mu\to0^+$.
+For the sector estimate, fix $m$ and $b\geq1$. Karlin's window matrix $K_b$ has $bm$ rows
+and $b(d+m-1)+1$ columns; its row $i$ is the Toeplitz row at position
+$i+\lfloor i/m\rfloor(d-1)$. It is totally nonnegative, and surjective when the constant
+coefficient is positive. For a complex zero $z$, the vector $(\operatorname{Im} z^j)_j$ lies in
+its kernel and has the same sign variations as the sampled sine vector $(\sin j\theta)_j$,
+$\theta=\arg z$. For nonreal $z$ this gives $bm-1\leq\mathrm{var}+2$ for the sine vector,
+while a sampled sine vector with $N+1$ entries has at most $\lfloor N|\theta|/\pi\rfloor$ sign
+variations; letting $b\to\infty$ yields the bound. A single-block variant combines the same
+kernel vector with the fact that below the threshold the sine vector has fewer than $m$ sign
+variations.
 
-## Structure of Karlin's argument
-
-Let $p$ have degree $d\geq1$ and $p(0)>0$, with Pólya frequency coefficient
-sequence $u$, and fix $m\geq1$. For $b\geq1$ blocks, Karlin's window matrix
-$K_{b}$ has $bm$ rows and $b(d+m-1)+1$ columns. Its entries are entries of the
-Toeplitz matrix of $u$: row $i$ is the Toeplitz row at position
-$i+\lfloor i/m\rfloor(d-1)$, so each further block of $m$ rows is shifted by
-$d-1$. The formalization follows these steps.
-
-1. **Total nonnegativity.** $K_b$ is a transposed ordered submatrix of the Toeplitz
-   matrix of $u$, hence totally nonnegative. Since $u_0>0$, it is also surjective
-   as a map on column vectors, because a triangular pivot block has diagonal
-   $u_0$.
-2. **A kernel vector from a root.** If $z$ is a complex zero of $p$, the vector
-   $(\operatorname{Im} z^j)_j$ lies in the kernel of $K_b$: the coefficients of $p$
-   annihilate every shifted window of powers of $z$.
-3. **Sign variations.** The signs of $\operatorname{Im} z^j$ agree with those of
-   $\sin(j\theta)$ for $\theta=\arg z$, so the two vectors have the same number of
-   sign variations. For a nonreal root, the variation count of a kernel vector of a
-   totally nonnegative surjective matrix gives the lower bound
-   $bm-1\leq \mathrm{var}+2$ for the sampled sine vector.
-4. **Upper bound and contradiction.** A sampled sine vector with $N+1$ entries has at
-   most $\lfloor N|\theta|/\pi\rfloor$ sign variations. With $N=b(d+m-1)$ this
-   contradicts the lower bound for large $b$ unless
-   $|\theta|\geq m\pi/(m+d-1)$; a real zero of $p$ lies on the negative axis and
-   has $|\arg z|=\pi$.
-
-The same file develops an alternative single-block route: when $|\theta|$ is below
-the threshold the sampled sine vector has fewer than $m$ sign variations, and a
-kernel vector with at least $m$ variations then gives the sector inequality. The
-threshold $m\pi/(m+d-1)$ increases to $\pi$ as $m\to\infty$, so every zero $z$
-of $p$ has $|\arg z|=\pi$, that is, lies on the negative real axis. This is how the
-forward Aissen--Schoenberg--Whitney theorem follows from the sector estimate.
-
-## Proof idea
-
-The Toeplitz matrix of the convolution is the product of the two Toeplitz
-matrices. Each finite truncation of this product is the product of the
-truncations, because the matrices are lower triangular, and a product of
-totally nonnegative matrices is totally nonnegative.
+For the convolution, the Toeplitz matrix of $c$ is the product of those of $a$ and $b$; each
+finite truncation is the product of the truncations, since the matrices are lower triangular,
+and a product of totally nonnegative matrices is totally nonnegative. For the perturbation
+criterion, each $p+\mu q$ has Pólya frequency coefficients by the reverse direction, and the
+Toeplitz minors of $p$ are the limits of those of $p+\mu q$ as $\mu\to0^+$.
 
 ## References
 

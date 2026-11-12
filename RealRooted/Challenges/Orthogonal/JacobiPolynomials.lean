@@ -12,7 +12,7 @@ import RealRooted.Jacobi.NegativeIntegerEndpoint
 import RealRooted.Jacobi.ParameterShifts
 
 /-!
-# Shifted Jacobi polynomial challenge entry point
+# Shifted Jacobi polynomials: real roots, interlacing and parameter shifts
 
 <!-- realrooted-catalog
 version = 1
@@ -44,7 +44,7 @@ label = "The weight x^α (1 - x)^β"
 [[definitions]]
 name = "RealRooted.shiftedJacobiMonicRoot"
 module = "RealRooted.Jacobi.Markoff"
-label = "The i-th smallest root"
+label = "The i-th smallest root of the monic polynomial"
 
 [[theorems]]
 name = "RealRooted.shiftedJacobi_interlaces_succ"
@@ -85,12 +85,12 @@ label = "P_n^(α+1,β+1) interlaces P_{n+1}^(α,β)"
 [[theorems]]
 name = "RealRooted.shiftedJacobiMonic_strictInterl_alpha_add_one"
 module = "RealRooted.Jacobi.ParameterInterlacing"
-label = "Raising α by one moves the roots to the right, interlacing"
+label = "Raising α by one: roots alternate and move right"
 
 [[theorems]]
 name = "RealRooted.strictMonoOn_shiftedJacobiMonicRoot_alpha"
 module = "RealRooted.Jacobi.Markoff"
-label = "Markoff monotonicity in α, proved for β = 1"
+label = "Roots increase strictly with α for β = 1"
 
 [[theorems]]
 name = "RealRooted.shiftedLegendreReal_eq_shiftedJacobi"
@@ -120,7 +120,7 @@ label = "The reflected shifted-Jacobi differential operator"
 [[theorems]]
 name = "RealRooted.jacobiCoefficientPolynomial_isPFPolynomial"
 module = "RealRooted.Jacobi.CoefficientFamily"
-label = "For a, b > -1 the positive-coefficient Jacobi polynomials are PF"
+label = "For a, b > -1 the family is Pólya frequency"
 
 [[theorems]]
 name = "RealRooted.jacobiCoefficientPolynomial_strictInterl_succ"
@@ -160,7 +160,7 @@ label = "For β = -m the polynomial solutions are multiples of (1 + X)^m times a
 [[theorems]]
 name = "RealRooted.eq_of_reflectedJacobiOperator_eq_zero"
 module = "RealRooted.Jacobi.NegativeIntegerEndpoint"
-label = "Degree-free uniqueness of polynomial solutions with given constant term"
+label = "Polynomial solutions are determined by their constant term"
 
 [[theorems]]
 name = "RealRooted.splits_of_reflectedJacobiOperator_eq_zero"
@@ -195,89 +195,84 @@ label = "A polynomial Euler multiplier maps the diagonal family to (a, b) iff b 
 [[theorems]]
 name = "RealRooted.IsPFPolynomial.eulerShiftRange"
 module = "RealRooted.Jacobi.ParameterShifts"
-label = "Consecutive Euler operators preserve PF polynomials"
+label = "Consecutive Euler operators preserve Pólya frequency polynomials"
 -->
 
 <!-- realrooted-catalog-content -->
-# Shifted Jacobi polynomials
+# Shifted Jacobi polynomials: real roots, interlacing and parameter shifts
 
-The library works on the interval $(0, 1)$. For real $\alpha, \beta$, the
-shifted Jacobi polynomial is
+The shifted Jacobi polynomials are real-rooted with simple roots in $(0,1)$, and consecutive
+ones interlace.
+
+We write $f\ll g$ if $f$ interlaces $g$; common roots are allowed unless stated. For real
+$\alpha,\beta$ the shifted Jacobi polynomial is
 $$
 P_n^{(\alpha,\beta)}(x) = \sum_{k=0}^{n} (-1)^k
   \binom{n + \alpha}{n - k} \binom{n + \alpha + \beta + k}{k} x^k,
 $$
-with generalized binomial coefficients. It is the classical Jacobi polynomial
-evaluated at $1 - 2x$. The monic shifted Jacobi polynomial is $P_n^{(\alpha,\beta)}$
-divided by its leading coefficient $(-1)^n \binom{2n + \alpha + \beta}{n}$.
+with generalized binomial coefficients; it is the classical Jacobi polynomial at $1 - 2x$.
+The monic version divides by the leading coefficient $(-1)^n \binom{2n + \alpha + \beta}{n}$.
 
-**Theorem.** Let $\alpha, \beta > -1$ and $n \ge 0$.
+## Results
 
-- $P_n^{(\alpha,\beta)}$ is real-rooted with simple roots, and every root lies
-  in the open interval $(0, 1)$.
-- Consecutive polynomials interlace: $P_n^{(\alpha,\beta)} \ll P_{n+1}^{(\alpha,\beta)}$.
-- For every real polynomial $q$ with $\deg q < n$,
-  $$\int_0^1 P_n^{(\alpha,\beta)}(x)\, q(x)\, x^\alpha (1 - x)^\beta \, dx = 0.$$
-- The monic polynomials satisfy a Favard three-term recurrence with explicit
-  coefficients.
-- Raising both parameters gives the derivative family:
-  $P_n^{(\alpha+1,\beta+1)} \ll P_{n+1}^{(\alpha,\beta)}$.
-- Raising $\alpha$ alone moves the roots to the right while keeping them
-  interlaced: the monic polynomial with parameters $(\alpha, \beta)$ is
-  interlaced by the one with parameters $(\alpha + 1, \beta)$, both of degree $n$.
+**Theorem (roots and interlacing).** Let $\alpha, \beta > -1$ and $n \ge 0$.
 
-**Markoff monotonicity, for $\beta = 1$.** For each $i < n$, the $i$-th
-smallest root of the monic shifted Jacobi polynomial with parameters
-$(\alpha, 1)$ is strictly increasing in $\alpha$ on $(-1, \infty)$. The root
-is read off the sorted root list; outside the admissible range the default
-value $0$ of that lookup is irrelevant. The case of general $\beta$ is not
-formalized.
+- $P_n^{(\alpha,\beta)}$ is real-rooted with simple roots, all in $(0, 1)$.
+- $P_n^{(\alpha,\beta)} \ll P_{n+1}^{(\alpha,\beta)}$.
+- $P_n^{(\alpha+1,\beta+1)} \ll P_{n+1}^{(\alpha,\beta)}$.
+- For the monic polynomials of degree $n$, the roots with parameters $(\alpha,\beta)$ and
+  $(\alpha+1,\beta)$ alternate, each root for $(\alpha,\beta)$ lying at most as far right as the
+  corresponding one for $(\alpha+1,\beta)$.
 
-The shifted Legendre polynomials of Mathlib, mapped to $\mathbb{R}$, are the
-case $\alpha=\beta=0$; for them real-rootedness and interlacing of consecutive
-polynomials are also proved directly.
+**Theorem (orthogonality).** For $\alpha,\beta>-1$ and every real polynomial $q$ with
+$\deg q < n$,
+$$\int_0^1 P_n^{(\alpha,\beta)}(x)\, q(x)\, x^\alpha (1 - x)^\beta \, dx = 0.$$
+The monic polynomials satisfy a Favard three-term recurrence with explicit coefficients.
 
-## A positive-coefficient Jacobi family
+**Theorem (Markoff monotonicity, $\beta=1$).** For $i<n$, the $i$-th smallest root of the monic
+polynomial with parameters $(\alpha, 1)$ is strictly increasing in $\alpha\in(-1,\infty)$.
 
-For $n\ge0$ and real $a,b$ put
+The shifted Legendre polynomials are the case $\alpha=\beta=0$; they are real-rooted and
+consecutive ones interlace.
+
+### A positive-coefficient Jacobi family
+
+For $n\ge0$ and real $a,b$ let
 $$
 H_n^{(a,b)}(x)=\sum_{k=0}^n\frac{\binom nk\binom{n+b}{k}}{\binom{a+k}{k}}\,x^k .
 $$
-For $a,b>-1$ all coefficients are positive, $H_n^{(a,b)}$ has degree $n$ and
-constant term $1$, it is a PF polynomial with simple negative roots, and
-consecutive polynomials interlace (and share no root). Differentiation shifts the
-parameter: $\bigl(H_{n+1}^{(a,b)}\bigr)'=\frac{(n+1)(n+b+1)}{a+1}H_n^{(a+1,b)}$,
-and iterating gives the $r$-th derivative shifting $a$ to $a+r$. A first-order
-derivative recurrence in $n$, together with $H_0$ and $H_1$, determines the family.
-On the diagonal $a=b=m$ the polynomial $H_n^{(m,m)}$ is the Narayana polynomial
-(see the [Narayana polynomials](/RealRooted/families/narayana/) page).
+For $a,b>-1$ the polynomial $H_n^{(a,b)}$ has positive coefficients, degree $n$ and constant
+term $1$. It is a Pólya frequency polynomial with simple negative roots, and
+$H_n^{(a,b)}\ll H_{n+1}^{(a,b)}$ with no common root. Differentiation shifts the parameter:
+$\bigl(H_{n+1}^{(a,b)}\bigr)'=\frac{(n+1)(n+b+1)}{a+1}H_n^{(a+1,b)}$ for $a>-1$, and the
+$r$-th derivative shifts $a$ to $a+r$. A first-order derivative recurrence in $n$, together
+with $H_0$ and $H_1$, determines the family. On the diagonal $a=b=m$ the polynomial
+$H_n^{(m,m)}$ is the Narayana polynomial; see the
+[Narayana polynomials](/RealRooted/families/narayana/) page.
 
-## Integral parameter shifts
+### Integral parameter shifts
 
-Let $\theta=x\,d/dx$. The product $\prod_{j<r}(\theta+a+j)$ multiplies the coefficient of
-$x^k$ by $(k+a)(k+a+1)\cdots(k+a+r-1)$; it preserves PF polynomials for
-$a\ge0$. For $a>-1$ and $r\in\mathbb N$, the off-diagonal polynomial
-$H_n^{(a,a+r)}$ is a constant multiple of this operator with parameter $a+1$
-applied to the diagonal polynomial $H_n^{(a+r,a+r)}$. Conversely, there is a
-polynomial $p$ with $H_n^{(a,b)}=\sum_kp(k)\,[x^k]H_n^{(b,b)}\,x^k$ for all $n$
-if and only if $b=a+r$ for some natural number $r$, and then $p$ is the
-explicit multiplier $x\mapsto(x+a+1)_r/(a+1)_r$.
+Let $\theta=x\,d/dx$. The operator $\prod_{j<r}(\theta+a+j)$ multiplies the coefficient of
+$x^k$ by $(k+a)(k+a+1)\cdots(k+a+r-1)$ and preserves Pólya frequency polynomials for $a\ge0$.
+For $a>-1$ and $r\in\mathbb N$, $H_n^{(a,a+r)}$ is a constant multiple of this operator with
+parameter $a+1$ applied to $H_n^{(a+r,a+r)}$. For $a,b>-1$ there is a polynomial $p$ with
+$H_n^{(a,b)}=\sum_kp(k)\,[x^k]H_n^{(b,b)}\,x^k$ for all $n$ if and only if $b=a+r$ with
+$r\in\mathbb N$; then $p(x)=(x+a+1)_r/(a+1)_r$, with $(y)_r$ the rising factorial.
 
-## The reflected equation at a negative integer parameter
+### The reflected equation at a negative integer parameter
 
 Let $L_{n,\alpha,\beta}$ be the differential operator whose coefficient recurrence is
 $$
-(k+1)(k+\alpha+1)\,p_{k+1}+\bigl(k(k+\alpha+\beta+1)-n(n+\alpha+\beta+1)\bigr)p_k=0 ,
+(k+1)(k+\alpha+1)\,p_{k+1}+\bigl(k(k+\alpha+\beta+1)-n(n+\alpha+\beta+1)\bigr)p_k=0 ;
 $$
-the equation satisfied by $P_n^{(\alpha,\beta)}(-x)$. For $\alpha>-1$ its polynomial
-solutions are determined by the constant term. If $\beta=-m$ with $m\le n$, then every
-polynomial solution is a multiple of
+$P_n^{(\alpha,\beta)}(-x)$ satisfies it. For $\alpha>-1$ a polynomial solution is determined by
+its constant term. If $\beta=-m$ with $m\le n$, every polynomial solution is a multiple of
 $$
-(1+x)^m\,P_{n-m}^{(\alpha,m)}(-x),
+(1+x)^m\,P_{n-m}^{(\alpha,m)}(-x).
 $$
-which has degree $n$, only real roots lying in $\{-1\}\cup(-1,0)$, the root $-1$
-with multiplicity exactly $m$ and all other roots simple. A solution with
-nonnegative constant term has a Pólya frequency sequence of coefficients.
+A nonzero solution therefore has degree $n$, real roots, and the root $-1$ with multiplicity
+exactly $m$. If its constant term is nonnegative, its coefficients form a Pólya frequency
+sequence.
 
 ## References
 

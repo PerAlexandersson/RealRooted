@@ -4,7 +4,7 @@ import RealRooted.VeroneseRecognition.Affine
 public import RealRooted.VeroneseMatrix
 
 /-!
-# Veronese sections challenge entry point
+# Veronese sections of real-rooted polynomials and recognition of product parents
 
 <!-- realrooted-catalog
 version = 1
@@ -52,7 +52,7 @@ symcat = "veroneseSectionsRealRooted"
 [[theorems]]
 name = "RealRooted.iterate_sequenceDelta_eq_X_mul_iff_existsUnique_seed"
 module = "RealRooted.VeroneseRecognition"
-label = "Recognition of Veronese product parents: Δ^r P = X P"
+label = "Δ^r P = X P holds exactly for rows of Veronese product parents"
 
 [[theorems]]
 name = "RealRooted.iterate_sequenceDelta_eq_affine_mul_iff_existsUnique_seed"
@@ -62,7 +62,7 @@ label = "Affine recognition of Veronese product parents"
 [[theorems]]
 name = "RealRooted.sequenceDelta_row_eq_zero_or_splits"
 module = "RealRooted.VeroneseRecognition"
-label = "Recognized rows are zero or real-rooted for a nonnegative splitting seed"
+label = "Recognized rows are zero or real-rooted when the seed is nonnegative and splits"
 
 [[theorems]]
 name = "RealRooted.existsUnique_affineVeroneseProductRow_of_orderTwo_recurrence"
@@ -71,65 +71,60 @@ label = "Constant second-order recurrences have a unique affine Veronese parent"
 -->
 
 <!-- realrooted-catalog-content -->
-# Veronese sections
+# Veronese sections of real-rooted polynomials and recognition of product parents
 
-The $k$th $r$-Veronese section of $p=\sum_i p_i x^i$ is
-$\sum_{n\geq0}p_{rn+k}x^n$: it keeps the coefficients whose indices are
-congruent to $k$ modulo $r$ and re-indexes them by $n=(i-k)/r$. Let
-$0 \leq k < r$. If a polynomial with nonnegative coefficients splits over
-$\mathbb R$, then its $k$th $r$-Veronese section is zero or splits over
-$\mathbb R$.
-This follows from the Pólya frequency characterization and total
-nonnegativity.
+Veronese sections of a real-rooted polynomial with nonnegative coefficients are real-rooted
+or zero, and a recurrence of a prescribed shape forces a polynomial sequence to be a Veronese
+section of a product of linear factors.
 
-## Recognition of product parents
+The $k$th $r$-Veronese section of $p=\sum_i p_i x^i$ is $\sum_{n\geq0}p_{k+rn}x^n$: it keeps
+the coefficients whose indices are congruent to $k$ modulo $r$ and re-indexes them by
+$n=(i-k)/r$.
 
-The Veronese-section convention and its linear-factor recurrences are those of
-[@AthanasiadisWagner2024x]. Here we record the converse: a recurrence of
-a prescribed shape forces a row sequence to arise from a unique scalar seed.
+## Results
 
-Fix $r \geq 1$ and real sequences $a_n$, $b_n$ with every $b_n \neq 0$. For
-a polynomial sequence $P = (P_n)$ put
+**Theorem (Veronese sections).** Let $0 \leq k < r$. If a polynomial with nonnegative
+coefficients splits over $\mathbb R$, then its $k$th $r$-Veronese section is zero or splits
+over $\mathbb R$.
+
+**Recognition of product parents.** Fix $r \geq 1$ and real sequences $a_n$, $b_n$ with every
+$b_n \neq 0$. For a polynomial sequence $P = (P_n)$ put
 $$
 (\Delta P)_n = \frac{P_{n+1} - a_n P_n}{b_n},
 $$
-and for a polynomial $H$ (the **seed**) let
+and for a polynomial $H$, the *seed*, let
 $$
 Q_n(H) = H(x)\prod_{i<n}\bigl(a_i + b_i x\bigr)
 $$
-be the **product parent**. Its $(r-1)$st $r$-Veronese section, as a sequence in
-$n$, is a row family $R_n(H)$.
+be the *product parent*. Its $(r-1)$st $r$-Veronese section, as a sequence in $n$, is a row
+family $R_n(H)$.
 
-**Theorem** (recognition). $\Delta^r P = x P$ if and only if there is a
-unique polynomial $H$ with $R_n(H) = P_n$ for all $n$. The seed is
-reconstructed explicitly from the first $r$ differences at index zero: its
-$i$th $r$-Veronese section is $(\Delta^{r-1-i} P)_0$, for $0 \leq i < r$.
+**Theorem (recognition).** $\Delta^r P = x P$ if and only if there is a unique polynomial $H$
+with $R_n(H) = P_n$ for all $n$. The seed is reconstructed from the differences at index zero:
+its $i$th $r$-Veronese section is $(\Delta^{r-1-i} P)_0$, for $0 \leq i < r$.
 
-**Theorem** (affine recognition). For $\beta \neq 0$,
-$\Delta^r P = (\alpha + \beta x) P$ if and only if there is a unique seed $H$
-with $P_n(x) = R_n(H)(\alpha + \beta x)$ for all $n$.
+**Theorem (affine recognition).** For $\beta \neq 0$, $\Delta^r P = (\alpha + \beta x) P$ if and
+only if there is a unique seed $H$ with $P_n(x) = R_n(H)(\alpha + \beta x)$ for all $n$.
 
-**Theorem** (real-rootedness of recognized rows). Suppose $a_n \geq 0$ and
-$b_n > 0$, $\Delta^r P = x P$, and the reconstructed seed has nonnegative
-coefficients and splits over $\mathbb R$. Then every $P_n$ is zero or splits
-over $\mathbb R$. The affine version holds for $\beta > 0$.
+**Theorem (real-rootedness of recognized rows).** Suppose $a_n \geq 0$, $b_n > 0$ and
+$\Delta^r P = x P$, and the reconstructed seed has nonnegative coefficients and splits over
+$\mathbb R$. Then every $P_n$ is zero or splits over $\mathbb R$. The same holds for
+$\Delta^r P = (\alpha + \beta x) P$ with $\beta > 0$ and the reconstructed affine seed.
 
-**Example** (second-order recurrences). Let $B \neq 0$ and suppose
-$P_{n+2} = A P_{n+1} + (Bx + c) P_n$ for all $n$. Then there is a unique seed
-$H$ such that $P_n$ is the odd Veronese section ($r = 2$) of
-$H\,(x + A/2)^n$, evaluated at $c + A^2/4 + Bx$.
+**Example (second-order recurrences).** Let $B \neq 0$ and suppose
+$P_{n+2} = A P_{n+1} + (Bx + c) P_n$ for all $n$. Then there is a unique seed $H$ such that
+$P_n$ is the odd Veronese section ($r = 2$) of $H\,(x + A/2)^n$, evaluated at
+$c + A^2/4 + Bx$.
 
-The recognition criterion is proved by solving the difference equation for the
-next term, which expresses $P$ through its first $r$ differences, and then
-comparing Veronese sections. The affine statements follow by the substitution
-$t \mapsto (t-\alpha)/\beta$, which commutes with $\Delta$. The real-rootedness
-statement then follows from the Veronese-section theorem above, since products of linear factors
-preserve nonnegativity and splitting.
+## Proof
+
+The Veronese-section theorem uses the Pólya frequency characterization of real-rooted
+polynomials with nonnegative coefficients and total nonnegativity of an associated matrix.
 
 ## References
 
-A stronger fully interlacing statement appears in [@AthanasiadisWagner2024x].
-See also the
+The Veronese-section convention and its linear-factor recurrences are those of
+[@AthanasiadisWagner2024x], where a stronger fully interlacing statement appears. See also the
 [Veronese sections on symmetricfunctions.com](sf:veroneseSectionsRealRooted).
 <!-- /realrooted-catalog-content -->
 

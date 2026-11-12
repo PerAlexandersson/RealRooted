@@ -4,7 +4,7 @@ import RealRooted.EdreiThoma.Converse
 import RealRooted.EdreiThoma.Easy
 
 /-!
-# The Edrei--Thoma theorem
+# Edrei–Thoma theorem: Pólya frequency sequences as canonical products
 
 <!-- realrooted-catalog
 version = 1
@@ -21,23 +21,23 @@ references = [
 [[theorems]]
 name = "RealRooted.EdreiThoma.exists_canonicalProduct_representation"
 module = "RealRooted.EdreiThoma.Converse"
-label = "Edrei: normalized Pólya-frequency sequences are canonical products"
+label = "Edrei: a Pólya frequency sequence with a₀ = 1 has a canonical product representation"
 headline = true
 
 [[theorems]]
 name = "RealRooted.EdreiThoma.isPolyaFreqSeries_canonicalProduct"
 module = "RealRooted.EdreiThoma.Easy"
-label = "Aissen–Schoenberg–Whitney: canonical products are Pólya-frequency"
+label = "Canonical products with nonnegative parameters are Pólya frequency"
 
 [[theorems]]
 name = "RealRooted.EdreiThoma.isPolyaFreqSeq_coeff_canonicalProduct"
 module = "RealRooted.EdreiThoma.Easy"
-label = "Coefficient sequence is Pólya-frequency"
+label = "The coefficient sequence of a canonical product is Pólya frequency"
 
 [[theorems]]
 name = "RealRooted.EdreiThoma.canonicalProduct_eq_C_mul_X_pow_mul_aswEdreiSymbol"
 module = "RealRooted.EdreiThoma.Easy"
-label = "Compatibility with the ASW--Edrei symbol"
+label = "A canonical product is c X^m times the Aissen–Schoenberg–Whitney–Edrei symbol"
 
 [[theorems]]
 name = "RealRooted.EdreiThoma.tendsto_canonicalPrefixProduct"
@@ -96,59 +96,56 @@ label = "Closure under a zero prefix"
 -->
 
 <!-- realrooted-catalog-content -->
-# The Edrei--Thoma theorem
+# Edrei–Thoma theorem: Pólya frequency sequences as canonical products
 
-We work with formal power series over $\mathbb{R}$, equipped with the
-coefficientwise topology. We use `IsPolyaFreqSeries` to say that the
-coefficient sequence is Pólya-frequency, or equivalently that its lower
-triangular Toeplitz matrix is totally nonnegative. We show that the canonical
-product
+A one-sided Pólya frequency sequence with $a_0=1$ is given near $0$ by a canonical product
+$e^{\gamma z}\prod_i(1+\alpha_iz)/\prod_i(1-\beta_iz)$ with nonnegative parameters, and
+conversely every such product has Pólya frequency coefficients.
+
+We work with formal power series over $\mathbb R$ in the coefficientwise topology. A series
+is *Pólya frequency* if its coefficient sequence is, that is, if its lower-triangular Toeplitz
+matrix is totally nonnegative.
+
+## Results
+
+**Theorem (canonical products).** Let $c,\gamma\ge0$, $m\in\mathbb N$, and let
+$\alpha_i,\beta_i\ge0$
+with $\sum_i(\alpha_i+\beta_i)<\infty$. Then the series
 $$
-C X^m e^{\gamma X}\prod_i(1+\alpha_iX)\,
-  \left(\prod_i(1-\beta_iX)\right)^{-1}
+c\,X^m e^{\gamma X}\prod_i(1+\alpha_iX)\,\Bigl(\prod_i(1-\beta_iX)\Bigr)^{-1}
 $$
-has this property when all parameters are nonnegative and
-$\sum_i(\alpha_i+\beta_i)$ is summable. We also record the coefficientwise
-formulation directly as an `IsPolyaFreqSeq` statement.
+is Pólya frequency. It equals $c\,X^m$ times the infinite Aissen–Schoenberg–Whitney–Edrei
+symbol of $(\gamma,\alpha,\beta)$, and it is the coefficientwise limit of its finite prefixes
+(exponential replaced by $(1+\gamma X/N)^N$, products truncated at $N$ factors), each of
+which is Pólya frequency.
 
-We use the supporting factor theorems for the nonnegative linear factor, the
-geometric factor $1/(1-bX)$, and the rescaled exponential
-$e^{\gamma X}$. We also use closure under multiplication, powers,
-multiplication by a nonnegative scalar, and multiplication by a power of
-$X$ for the finite-factor arguments.
+**Theorem (Edrei).** Let $(a_n)$ be a Pólya frequency sequence with $a_0=1$. There are
+$\gamma\ge0$ and $\alpha_i,\beta_i\ge0$ with $\sum_i(\alpha_i+\beta_i)<\infty$ such that the
+canonical product with $c=1$, $m=0$ has Pólya frequency coefficients and, for $z$ near $0$,
+$$
+\sum_n a_nz^n=e^{\gamma z}\,\frac{\prod_i(1+\alpha_iz)}{\prod_i(1-\beta_iz)} .
+$$
 
-For nonnegative $\alpha_i$ and $\beta_i$, we show that the finite
-numerator and denominator products are Pólya-frequency. From summability, we
-obtain the corresponding absolute summability hypotheses, so the infinite
-numerator product and the formal inverse of the denominator product are
-coefficientwise limits of Pólya-frequency series. We combine coefficientwise
-closure with convergence of the canonical prefixes to obtain the main
-canonical-product result.
+Together the two theorems classify the one-sided Pólya frequency sequences.
 
-Finally, we identify this power-series expression with the infinite
-ASW--Edrei symbol from `RealRooted.BrandenVecchi` using
-`canonicalProduct_eq_C_mul_X_pow_mul_aswEdreiSymbol`.
+## Use
 
-Conversely, `exists_canonicalProduct_representation` shows that every
-Pólya-frequency sequence with $a_0 = 1$ arises this way: there are
-$\gamma \ge 0$ and nonnegative $\alpha_i, \beta_i$ with
-$\sum_i(\alpha_i+\beta_i) < \infty$ such that the generating function equals
-$e^{\gamma z}\prod_i(1+\alpha_i z)/\prod_i(1-\beta_i z)$ near $0$. The proof
-follows Edrei's determinant identities [@Edrei1953] and monotone limits, but replaces his
-use of Nevanlinna's second main theorem by an elementary growth argument
-(Jensen's formula and a Borel-type lemma). Together the two directions give the
-classification of all one-sided Pólya-frequency sequences.
+The ingredients are Pólya frequency series closed under products and coefficientwise
+limits, and the series $1+aX$, $1/(1-bX)$ and $e^{\gamma X}$ for $a,b,\gamma\ge0$, together
+with $c\,X^m$ for $c\ge0$. The infinite numerator product and the formal inverse of the
+denominator product are Pólya frequency under absolute summability of $\alpha$ and $\beta$.
 
-## Relation to SymCat
+## Proof
 
-The headline formalizes the normalized necessity direction of the
-[Edrei–Thoma theorem](sf:edreiThomaTheorem). The canonical-product sufficiency
-direction is published separately below.
+The converse follows Edrei's determinant identities and monotone limits, but replaces his
+use of Nevanlinna's theorem by an elementary growth argument based on Jensen's formula and a
+Borel-type lemma.
 
 ## References
 
-The easy direction is [@AissenSchoenbergWhitney1952]. The converse is due to Edrei;
-we follow [@Edrei1953]. See the
-[Edrei–Thoma theorem on symmetricfunctions.com](sf:edreiThomaTheorem).
+The easy direction is [@AissenSchoenbergWhitney1952]. The converse is due to Edrei; we follow
+[@Edrei1953]. The headline theorem is the normalized necessity direction of the
+[Edrei–Thoma theorem](sf:edreiThomaTheorem); the canonical-product sufficiency direction is
+listed separately.
 <!-- /realrooted-catalog-content -->
 -/

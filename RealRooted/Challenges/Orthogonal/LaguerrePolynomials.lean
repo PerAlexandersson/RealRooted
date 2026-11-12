@@ -7,7 +7,7 @@ import RealRooted.Laguerre.FiniteCombinations
 import RealRooted.Laguerre.GeneralizedBell
 
 /-!
-# Generalized Laguerre polynomial challenge entry point
+# Generalized Laguerre polynomials: real roots, interlacing and finite combinations
 
 <!-- realrooted-catalog
 version = 1
@@ -33,7 +33,7 @@ label = "Generalized Laguerre polynomials are real-rooted"
 [[theorems]]
 name = "RealRooted.generalizedLaguerre_roots_neg"
 module = "RealRooted.Laguerre.Roots"
-label = "Generalized Laguerre polynomials have negative roots for α > -1"
+label = "Roots are negative for α > -1"
 
 [[theorems]]
 name = "RealRooted.generalizedLaguerre_hasSimpleRoots"
@@ -49,7 +49,7 @@ headline = true
 [[theorems]]
 name = "RealRooted.generalizedLaguerre_satisfiesFavardRecurrence"
 module = "RealRooted.Laguerre.Favard"
-label = "Generalized Laguerre polynomials satisfy a Favard recurrence"
+label = "Monic Laguerre polynomials satisfy a Favard recurrence"
 
 [[theorems]]
 name = "RealRooted.generalizedLaguerre_integral_orthogonal"
@@ -93,53 +93,54 @@ label = "The case γ = 1 for α > 0"
 -->
 
 <!-- realrooted-catalog-content -->
-# Generalized Laguerre polynomials
+# Generalized Laguerre polynomials: real roots, interlacing and finite combinations
 
-The library uses the monic, sign-reversed normalization
+The generalized Laguerre polynomials are real-rooted with simple roots, and consecutive ones
+interlace.
 
+We write $f\ll g$ if $f$ interlaces $g$; common roots are allowed unless stated. The library
+uses the monic, sign-reversed normalization
 $$
 P_n^{(\alpha)}(x) = n!\, L_n^{(\alpha)}(-x)
-= \sum_k \binom{n}{k} (\alpha+k+1)_{n-k}\, x^k,
+= \sum_k \binom{n}{k} (\alpha+k+1)_{n-k}\, x^k ,
+$$
+with $(y)_m$ the rising factorial, so that the roots are nonpositive.
+
+## Results
+
+**Theorem (roots and interlacing).** For $\alpha \ge -1$ and $n\ge0$, $P_n^{(\alpha)}$ is
+real-rooted with simple roots and $P_n^{(\alpha)} \ll P_{n+1}^{(\alpha)}$. For $\alpha > -1$ all
+roots are strictly negative.
+
+**Theorem (recurrence and orthogonality).** For every real $\alpha$ the family satisfies a
+Favard three-term recurrence. For $\alpha > -1$ and $m \neq n$,
+$$
+\int_0^\infty P_m^{(\alpha)}(-x)\, P_n^{(\alpha)}(-x)\, x^\alpha e^{-x}\, dx = 0.
 $$
 
-so that the zeros are nonpositive. For $\alpha \geq -1$:
-
-- every $P_n^{(\alpha)}$ has only real, simple zeros, and they are strictly negative
-  when $\alpha > -1$;
-- consecutive polynomials interlace;
-- the family satisfies a Favard three-term recurrence.
-
-For $\alpha > -1$ the family is also orthogonal on the positive half-line:
-
+**Theorem (finite combinations).** Let $\ell_n^{(\alpha)}=(-1)^nn!\,L_n^{(\alpha)}$ be the
+classical monic Laguerre polynomial, with positive roots. Let $K\le n$, $\gamma_0=1$,
+$\gamma_1,\dots,\gamma_K$ real, and
 $$
-\int_0^\infty P_m^{(\alpha)}(-x)\, P_n^{(\alpha)}(-x)\, x^\alpha e^{-x}\, dx = 0
-  \qquad (m \neq n).
+Q(x)=\sum_{j=0}^K(-1)^j\gamma_j\,(x)_{K-j}.
 $$
+If $\alpha>-1$, $Q$ is real-rooted and all its roots are below $\alpha+1$, then
+$\sum_{j=0}^K\gamma_j\,\ell_{n-j}^{(\alpha)}$ is real-rooted with simple positive roots.
 
-## Finite combinations of monic Laguerre polynomials
+For $K=1$ and $n\ge1$: if $\alpha>-1$ and $\gamma<\alpha+1$, then
+$\ell_n^{(\alpha)}+\gamma\,\ell_{n-1}^{(\alpha)}$ has simple positive roots. This includes
+$\gamma=-1$ and, for $\alpha>0$, $\gamma=1$.
 
-Let $\ell_n^{(\alpha)}$ denote the classical monic Laguerre polynomial,
-$(-1)^nn!\,L_n^{(\alpha)}$, whose roots are positive. For a fixed bandwidth $K$ and
-coefficients $\gamma_0=1,\gamma_1,\dots,\gamma_K$, consider the combination
-$$
-\sum_{j=0}^K\gamma_j\,\ell_{n-j}^{(\alpha)} \qquad(K\le n)
-$$
-and the auxiliary polynomial $\sum_{j=0}^K(-1)^j\gamma_j\,(x)_{K-j}$, with $(x)_m$ the rising
-factorial. If $\alpha>-1$, the auxiliary polynomial splits and all its roots are below
-$\alpha+1$, then the combination has only simple, positive roots. The proof iterates the
-first-order Laguerre raising step $p\mapsto(x+a)p+xp'$, which preserves simple real roots and
-interlaces its input (a generalized Bell iteration).
-
-In bandwidth one, $\ell_n^{(\alpha)}+\gamma\,\ell_{n-1}^{(\alpha)}$ has simple positive
-roots whenever $\alpha>-1$ and $\gamma<\alpha+1$, which includes $\gamma=-1$ and, for
-$\alpha>0$, $\gamma=1$. This is the bandwidth-one case of Theorem 1.3 of A. J. Durán, *Zeros
-of linear combinations of Laguerre polynomials* (arXiv:2507.22425).
+**Proposition (raising step).** For $a>0$ let $p\mapsto(x+a)p+xp'$. Applied to a monic
+real-rooted polynomial $p$ of degree at least $1$ with simple roots, nonnegative coefficients
+and $p(0)\ne0$, it gives a polynomial with simple roots that $p$ interlaces. Iterating steps
+with positive parameters preserves simple negative roots.
 
 ## References
 
 See [@Szego1939, Ch. V]. The general three-term theory is on the
-[Favard page](/RealRooted/theorems/favard/). The combination theorem is
-A. J. Durán, *Zeros of linear combinations of Laguerre polynomials*, Theorem 1.3,
+[Favard page](/RealRooted/theorems/favard/). The combination theorem is the case $K=1$ of
+Theorem 1.3 in A. J. Durán, *Zeros of linear combinations of Laguerre polynomials*,
 [arXiv:2507.22425](https://arxiv.org/abs/2507.22425).
 <!-- /realrooted-catalog-content -->
 
