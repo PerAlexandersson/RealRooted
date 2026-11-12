@@ -44,27 +44,31 @@ label = "Gurvits' univariate coefficient inequality"
 <!-- realrooted-catalog-content -->
 # The van der Waerden permanent bound
 
-**Theorem (Egorychev, Falikman).** [@Egorychev1981; @Falikman1981]
-If $A$ is an $n \times n$ doubly stochastic matrix, then
+The permanent of an $n\times n$ doubly stochastic matrix is at least $n!/n^n$.
+
+## Results
+
+**Theorem (Egorychev, Falikman).** [@Egorychev1981; @Falikman1981] If $A$ is an $n\times n$
+doubly stochastic matrix, then
 $$
-\operatorname{per} A \ge \frac{n!}{n^n}.
+\operatorname{per}A\ge\frac{n!}{n^n}.
 $$
 
-The formal proof follows Gurvits [@Gurvits2008]. The *capacity* of a polynomial
-$p(x_1, \dotsc, x_n)$ with
-nonnegative coefficients is $\inf_{x > 0} p(x) / (x_1 \cdots x_n)$. For a real stable
-polynomial $p$ of total degree at most $k$ in $k$ variables, differentiating in one variable
-and setting it to zero gives a real stable polynomial whose capacity is at least
-$((k-1)/k)^{k-1}$ times that of $p$. The key input is a univariate inequality: if $q$ is
-real-rooted with nonnegative coefficients and degree at most $d$, and $c\,t \le q(t)$ for all
-$t > 0$, then $c\,((d-1)/d)^{d-1} \le q'(0)$. Applied to $\prod_i \sum_j a_{ij} x_j$, which is
-real stable with capacity at least $1$, the $n$ steps extract the coefficient of
-$x_1 \cdots x_n$, which is $\operatorname{per} A$, and the factors multiply to $n!/n^n$.
+## Proof
+
+The proof follows Gurvits [@Gurvits2008]. The *capacity* of a polynomial $p(x_1,\dots,x_n)$
+with nonnegative coefficients is $\inf_{x>0}p(x)/(x_1\cdots x_n)$. Let $p$ be a real stable
+polynomial in $k$ variables of total degree at most $k$. Differentiating in one variable and
+setting it to zero gives a real stable polynomial whose capacity is at least $((k-1)/k)^{k-1}$
+times that of $p$. This rests on a univariate inequality: if $q$ is real-rooted with
+nonnegative coefficients and degree at most $d$, and $c\,t\le q(t)$ for all $t>0$, then
+$c\,((d-1)/d)^{d-1}\le q'(0)$. The polynomial $\prod_i\sum_ja_{ij}x_j$ is real stable with
+capacity at least $1$ and coefficient $\operatorname{per}A$ at $x_1\cdots x_n$; the $n$ steps
+extract this coefficient and the factors multiply to $n!/n^n$.
 
 ## References
 
-The classical proofs are [@Egorychev1981; @Falikman1981]. The formal proof
-follows [@Gurvits2008].
+[@Egorychev1981; @Falikman1981]; the proof above is that of [@Gurvits2008].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proof lives in `RealRooted.Gurvits`.

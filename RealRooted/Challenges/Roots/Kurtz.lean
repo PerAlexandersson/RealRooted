@@ -3,7 +3,7 @@ module
 import RealRooted.Kurtz
 
 /-!
-# Kurtz challenge entry point
+# Kurtz's coefficient criterion
 
 <!-- realrooted-catalog
 version = 1
@@ -35,12 +35,14 @@ headline = true
 -->
 
 <!-- realrooted-catalog-content -->
-# Kurtz’s coefficient criterion
+# Kurtz's coefficient criterion
 
-If a polynomial $\sum_{k=0}^n a_k x^k$ of degree $n \geq 2$ has positive
-coefficients and $a_k^2 > 4a_{k-1}a_{k+1}$ for $0 < k < n$, then all its roots
-are real. Kurtz also shows that the roots are distinct; the Lean statement
-records real-rootedness only.
+A polynomial with positive coefficients that satisfy $a_k^2>4a_{k-1}a_{k+1}$ is real-rooted.
+
+## Results
+
+**Theorem (Kurtz).** Let $\sum_{k=0}^na_kx^k$ be a real polynomial of degree $n\ge2$ with
+$a_k>0$ for $0\le k\le n$ and $a_k^2>4a_{k-1}a_{k+1}$ for $0<k<n$. Then all its roots are real.
 
 ## References
 

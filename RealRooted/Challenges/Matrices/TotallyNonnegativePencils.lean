@@ -47,46 +47,45 @@ label = "Leading sections of checkerboard-signed determinant pencils interlace"
 [[theorems]]
 name = "Matrix.IsLowerTriangular.checkerboard_inv_mul_leading_charpoly_strictInterlaces"
 module = "RealRooted.TotallyNonnegPencil.StrictInterlacing"
-label = "Strict interlacing of principal-section characteristic polynomials of (checkerboard L)⁻¹ M"
+label = "Principal sections of (checkerboard L)⁻¹ M interlace, with simple roots and no common root"
 -->
 
 <!-- realrooted-catalog-content -->
 # Pólya-frequency determinant pencils of totally nonnegative matrices
 
-A real matrix is *totally nonnegative* if all its minors are nonnegative.
+Determinants $\det(I+xA)$ of totally nonnegative matrices, and their checkerboard-signed
+generalizations, are Pólya frequency polynomials, and their leading sections interlace.
 
-**Pencils.** If $A$ is totally nonnegative, then $\det(I+xA)$ is a PF polynomial: it has
-nonnegative coefficients and only real, nonpositive roots. More generally, for totally
-nonnegative $M$ and $L$ with $\det M>0$, the checkerboard-signed pencil
-$\det\bigl(M+x\cdot\mathrm{checkerboard}(L)\bigr)$ is a PF polynomial, where the
-checkerboard matrix has entries $(-1)^{i+j}L_{ij}$.
+## Results
 
-**Interlacing of leading sections.** If $H$ is an $(n+1)\times(n+1)$ totally nonnegative
-matrix, then $\det(xI_n+H_n)$ interlaces $\det(xI_{n+1}+H)$, where $H_n$ is the leading
-principal $n\times n$ section; no Hessenberg assumption is needed. In the pencil form, let
-$A$ be lower triangular with invertible determinant and totally nonnegative inverse, and let
-$M$ be totally nonnegative. Then the leading section of $\det(M+xA)$ interlaces the full
-$\det(M+xA)$. Taking $A=\mathrm{checkerboard}(L)$ for a lower-triangular totally
-nonnegative $L$ with $\det L>0$ gives the same conclusion for checkerboard-signed
-pencils.
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+A real matrix is *totally nonnegative* (TNN) if all its minors are nonnegative. For a matrix $L$
+the checkerboard matrix has entries $(-1)^{i+j}L_{ij}$.
 
-**Strict principal interlacing.** For lower-triangular totally nonnegative $L$ with
-$\det L>0$ and totally nonnegative $M$ with $\det M\ne0$, positive superdiagonal entries of
-$M$ and a positivity condition on the subdiagonal, the matrix
-$H=(\mathrm{checkerboard}\,L)^{-1}M$ has a characteristic polynomial with only simple
-positive roots, its leading principal section has simple roots, the two characteristic
-polynomials interlace and share no root.
+**Theorem (pencils).** If $A$ is TNN, then $\det(I+xA)$ is a Pólya frequency polynomial. More
+generally, if $M$ and $L$ are TNN with $\det M>0$, then
+$\det\bigl(M+x\cdot\mathrm{checkerboard}(L)\bigr)$ is a Pólya frequency polynomial.
 
-## What is new
+**Theorem (interlacing of leading sections).** Let $H$ be a TNN $(n+1)\times(n+1)$ matrix and
+$H_n$ its leading principal $n\times n$ section. Then $\det(xI_n+H_n)\ll\det(xI_{n+1}+H)$.
 
-These results were developed in this library; no published source is cited, and we
-attribute none. See the [totally nonnegative
-matrices](/RealRooted/theorems/totally-nonnegative-matrices/)
-page for the background.
+More generally, let $A$ be lower triangular with $\det A\ne0$ and TNN inverse, and let $M$ be
+TNN. Then the leading $n\times n$ section of $\det(M+xA)$ interlaces $\det(M+xA)$. For
+$A=\mathrm{checkerboard}(L)$ with $L$ lower triangular, TNN and $\det L>0$, this gives the same
+conclusion for the pencil $\det(M+x\cdot\mathrm{checkerboard}(L))$.
+
+**Theorem (principal interlacing).** Let $L$ be lower triangular and TNN with $\det L>0$, let $M$
+be TNN with $\det M\ne0$ and positive superdiagonal entries, and suppose that for each $i$
+either $M_{i+1,i}>0$, or $L_{i+1,i}>0$ and $M_{ii}>0$. Put $H=(\mathrm{checkerboard}\,L)^{-1}M$
+and let $H'$ be $H$ without its last row and column. Then
+$\chi_{H'}\ll\chi_H$, both $\chi_H$ and $\chi_{H'}$ have simple roots, they have no common
+root, and all roots of $\chi_H$ are positive.
 
 ## References
 
-No published source is cited for these results in the formalization.
+The oscillatory case of [totally nonnegative
+matrices](/RealRooted/theorems/totally-nonnegative-matrices/) is the criterion used in the last
+theorem.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in the `RealRooted.TotallyNonnegPencil`

@@ -48,12 +48,12 @@ label = "Descent enumerator of the separable permutations"
 [[theorems]]
 name = "RealRooted.SeparablePermutations.strictInterl_descentPolynomial"
 module = "RealRooted.SeparablePermutations.Interlacing"
-label = "Consecutive descent polynomials S_n, S_{n+1} strictly interlace without common root"
+label = "Consecutive descent polynomials S_n, S_{n+1} interlace without common root"
 
 [[theorems]]
 name = "RealRooted.SeparablePermutations.strictInterl_gammaPolynomial"
 module = "RealRooted.SeparablePermutations.Interlacing"
-label = "Consecutive gamma-polynomials Γ_n, Γ_{n+1} strictly interlace without common root"
+label = "Consecutive gamma-polynomials Γ_n, Γ_{n+1} interlace without common root"
 
 [[theorems]]
 name = "RealRooted.SeparablePermutations.strictInterl_compressionSourcePolynomial"
@@ -78,7 +78,7 @@ label = "S_n has degree n − 1 for n ≥ 1"
 [[theorems]]
 name = "RealRooted.SeparablePermutations.strictInterl_descentEnumerator"
 module = "RealRooted.SeparablePermutations.Identification"
-label = "Zhang: descent polynomials of separable permutations strictly interlace"
+label = "Zhang: descent polynomials of separable permutations interlace"
 headline = true
 
 [[theorems]]
@@ -95,52 +95,56 @@ label = "Fu–Lin–Zeng's cubic for the gamma-polynomials (via Lagrange inversi
 <!-- realrooted-catalog-content -->
 # Descent polynomials of separable permutations
 
-A permutation is *separable* if it avoids the patterns $2413$ and $3142$.  Let
-$S_n(t) = \sum_\pi t^{\operatorname{des}\pi}$ be the descent enumerator of the separable
-permutations of $[n]$. Its gamma-vector is given by a convolution recurrence of Fu, Lin
-and Zeng [@FuLinZeng2018], and
-$S_n(t) = (1+t)^{n-1}\,\Gamma_n\bigl(t/(1+t)^2\bigr)$ for the gamma-polynomial
-$\Gamma_n$. Zhang [@Zhang2026SeparableInterlacing] represents $\Gamma_{N+2}$ as a
-factorial compression of the polynomial
-$B_N$, where $B_0 = 1$ and $B_{N+1} = (x + \tfrac{N+2}{2})B_N + x B_N'$.
+For $n\ge2$ the descent polynomials of the separable permutations of $[n]$ and $[n+1]$ interlace
+and have no common root; the same holds for their gamma-polynomials.
 
-**Theorem.** For $n \ge 2$, the polynomials $\Gamma_n$ and $\Gamma_{n+1}$ strictly interlace
-and have no common root, and so do $S_n$ and $S_{n+1}$.  All roots of $S_n$ are simple and
-negative, and $S_n$ has degree $n-1$.
+## Results
 
-We also prove the identification of $S_n$ with the descent enumerator of the
-separable permutations (`descentEnumerator_eq_descentPolynomial`). The
-separable permutations decompose uniquely into direct and skew sums, which
-gives the cubic recurrence
-$S = z + (1+t)zS + tzS^2 + tS^3$ for the enumerator, while Zhang's closed form satisfies Fu, Lin
-and Zeng's cubic $G = w + wG + xwG^2 + xG^3$ for the gamma-polynomials (proved with a general
-Lagrange–Bürmann inversion theorem), which the gamma substitution carries to the same recurrence.
-This proves Zhang's strict-interlacing theorem for the permutation statistic
-(`strictInterl_descentEnumerator`). In Lean, `descentEnumerator n` is the
-enumerator for $n+1$ letters, namely $S_{n+1}$, so that theorem assumes
-$n\ge1$.
+We write $f\ll g$ if $f$ interlaces $g$. A permutation is *separable* if it avoids $2413$ and
+$3142$. Let $S_n(t)=\sum_\pi t^{\operatorname{des}\pi}$ over the separable permutations $\pi$
+of $[n]$. Fu, Lin and Zeng [@FuLinZeng2018] give the gamma-polynomials $\Gamma_n$ of $S_n$:
+$$
+S_n(t)=(1+t)^{n-1}\,\Gamma_n\bigl(t/(1+t)^2\bigr).
+$$
+Zhang [@Zhang2026SeparableInterlacing] represents $\Gamma_{N+2}$ as a factorial compression of
+$B_N$, where $B_0=1$ and $B_{N+1}=(x+\tfrac{N+2}{2})B_N+xB_N'$; here $\Gamma_0=0$, $\Gamma_1=1$,
+$\Gamma_2=1$ and $\Gamma_3=1+2x$.
 
-## Proof idea
+**Theorem (Zhang).** For $n\ge2$:
 
-The polynomials $B_N$ form a strict interlacing family by the strict derivative-lag recurrence.
-The level-one factorial compression theorem applies to the pair $B_N$, $B_{N+1}$ and gives
-strict interlacing of $\Gamma_{N+2}$ and $\Gamma_{N+3}$ (the pair $\Gamma_2 = 1$,
-$\Gamma_3 = 1 + 2x$ is explicit).  The adjacent-degree gamma lifting then transfers strict
-interlacing to $S_n$ and $S_{n+1}$: the two inverse branches of $\rho \mapsto \rho/(1+\rho)^2$
-carry a common root of the descent polynomials to a common root of the gamma-polynomials, and
-the central root $-1$ is excluded by the evaluation formula for the gamma transform.
+- $S_n\ll S_{n+1}$ without a common root;
+- $\Gamma_n\ll\Gamma_{n+1}$ without a common root;
+- $S_n$ has only simple negative roots, and $\deg S_n=n-1$.
 
-## Relation to SymCat
+Also $B_N\ll B_{N+1}$ without a common root, for $N\ge0$.
 
-We formalize the actual-enumerator interlacing assertion in the
-[separable-descent example](sf:separableDescentRealRooted). The recurrence-defined
-root-location and gamma-polynomial results are published separately below.
+**Theorem (identification).** The descent enumerator of the separable permutations of $[n+1]$
+equals $S_{n+1}$ as defined through $\Gamma_{n+1}$, for $n\ge0$. Hence $S_n\ll S_{n+1}$ for the
+permutation statistic. The gamma-polynomials satisfy, for $n\ge2$ and $\Gamma_0=0$,
+$$
+\Gamma_n=\Gamma_{n-1}+x\sum_{i+j=n-1}\Gamma_i\Gamma_j+x\sum_{i+j+l=n}\Gamma_i\Gamma_j\Gamma_l ,
+$$
+that is, $G=\sum_n\Gamma_nw^n$ satisfies $G=w+wG+xwG^2+xG^3$ [@FuLinZeng2018].
+
+## Proof
+
+The enumerators $S_n$ satisfy the analogous cubic recurrence
+$S_n=(1+t)S_{n-1}+t\sum_{i+j=n-1}S_iS_j+t\sum_{i+j+l=n}S_iS_jS_l$, from the decomposition of a
+separable permutation into direct and skew sums. The gamma substitution carries the cubic for
+$\Gamma_n$ to this one, and the cubic determines the sequence from $S_1=1$. The cubic for
+$\Gamma_n$ is proved by Lagrange inversion.
+
+Interlacing is proved first for $B_N$, from the derivative-lag recurrence. The factorial
+compression transfers it to $\Gamma_{N+2},\Gamma_{N+3}$, and the gamma lifting to $S_n,S_{n+1}$:
+the two branches of $\rho\mapsto\rho/(1+\rho)^2$ carry a common root of the descent polynomials
+to a common root of the gamma-polynomials, and the root $-1$ is excluded by the evaluation
+formula of the gamma transform.
 
 ## References
 
-See [@Zhang2026SeparableInterlacing; @FuLinZeng2018]. The Lean development
-follows a formalization by yyou59548-design. See also the
-[separable-permutation descent theorem on symmetricfunctions.com](sf:separableDescentRealRooted).
+[@Zhang2026SeparableInterlacing; @FuLinZeng2018]. The Lean development follows a formalization
+by yyou59548-design. See also the
+[separable-descent example on symmetricfunctions.com](sf:separableDescentRealRooted).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in `RealRooted.SeparablePermutations` and

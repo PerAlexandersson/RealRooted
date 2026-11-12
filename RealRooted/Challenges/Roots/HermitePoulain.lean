@@ -3,7 +3,7 @@ module
 public import RealRooted.Hermite.PoulainInterlacing
 
 /-!
-# Hermite--Poulain challenge entry point
+# Hermite–Poulain theorem
 
 <!-- realrooted-catalog
 version = 1
@@ -35,13 +35,19 @@ label = "Hermite–Poulain operators preserve interlacing"
 <!-- realrooted-catalog-content -->
 # Hermite–Poulain theorem
 
-For a polynomial $f(x) = \sum_k a_k x^k$, write $f(D) = \sum_k a_k D^k$, where
-$D = d/dx$. If $f$ and $p$ are real-rooted, then $f(D)\,p$ is zero or
-real-rooted.
+A constant-coefficient differential operator $f(D)$ with real-rooted symbol $f$ maps real-rooted
+polynomials to zero or real-rooted polynomials, and preserves interlacing.
 
-Consequently, $f(D)$ preserves interlacing: if $f$ is nonzero and real-rooted
-and $g$ and $h$ interlace, then $f(D)\,g$ and $f(D)\,h$ interlace in one of
-the two orientations, where either image may be zero.
+## Results
+
+We write $g\ll h$ if $g$ interlaces $h$; repeated and common roots are allowed unless stated.
+For $f(x)=\sum_ka_kx^k$ let $f(D)=\sum_ka_kD^k$ with $D=d/dx$.
+
+**Theorem (Hermite–Poulain).** If $f$ and $p$ are nonzero and real-rooted, then $f(D)\,p$ is
+zero or real-rooted.
+
+**Corollary (interlacing).** Let $f$ be nonzero and real-rooted and let $g\ll h$. Then
+$f(D)g\ll f(D)h$ or $f(D)h\ll f(D)g$, where we regard $0$ as interlacing every polynomial.
 
 ## References
 

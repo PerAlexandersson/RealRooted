@@ -3,7 +3,7 @@ module
 import RealRooted.CombinatorialExamples.BigDescents321
 
 /-!
-# 321-avoiding permutations by big descents challenge entry point
+# Real roots of big-descent polynomials of 321-avoiding permutations
 
 <!-- realrooted-catalog
 version = 1
@@ -30,67 +30,57 @@ label = "Reference Motzkin polynomial"
 [[theorems]]
 name = "RealRooted.BigDescents321.motzkinRef_interl_bigDescentPoly_and_noCommonRoots"
 module = "RealRooted.CombinatorialExamples.BigDescents321"
-label = "Motzkin interlacing, simple roots and no common roots"
+label = "For n ≥ 3, M_{n-2} interlaces A_n; both have simple roots and no common root"
 headline = true
 
 [[theorems]]
 name = "RealRooted.BigDescents321.bigDescentPoly_splits"
 module = "RealRooted.CombinatorialExamples.BigDescents321"
-label = "The big-descent polynomials are real-rooted"
+label = "A_n is real-rooted for every n"
 
 [[theorems]]
 name = "RealRooted.BigDescents321.neg_of_isRoot_bigDescentPoly"
 module = "RealRooted.CombinatorialExamples.BigDescents321"
-label = "All roots are negative"
+label = "Every root of A_n is negative"
 -->
 
 <!-- realrooted-catalog-content -->
-# 321-avoiding permutations by big descents
+# Real roots of big-descent polynomials of 321-avoiding permutations
 
-A *big descent* of a permutation $\pi$ is an index $i$ with $\pi(i) > \pi(i+1) + 1$. Let
-$A_n(t) = \sum_{\pi} t^{\operatorname{bdes}(\pi)}$, summed over 321-avoiding permutations of
-length $n$. Its generating function is
+The big-descent polynomials of 321-avoiding permutations are real-rooted with negative roots, and
+the Motzkin reference polynomials interlace them.
+
+## Results
+
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+A *big descent* of a permutation $\pi$ is an index $i$ with $\pi(i)>\pi(i+1)+1$. Let $A_n(t)$
+be the big-descent polynomial of the 321-avoiding permutations of length $n$. We define it by
+the first-return recurrence $A_0=1$, $A_n=\sum_{j=1}^n I_jA_{n-j}$, where $I_1=I_2=1$ and
+$I_j=t\,M_{j-2}$ for $j\ge3$. The reference Motzkin polynomials are $M_0=1$, $M_1=2$ and
 $$
-\sum_{n \ge 0} A_n(t)\, x^n = \frac{2}{1 - 2(1-t)x^2 + \sqrt{1 - 4x + 4(1-t)x^2}},
+M_{k+2}=2M_{k+1}+t\sum_{i=0}^{k}M_iM_{k-i},\qquad
+M_k=\sum_a\binom{k}{2a}\mathrm{Cat}_a\,2^{k-2a}t^a.
 $$
-and in Lean $A_n$ is defined by the equivalent first-return recurrence. Let
-$M_k(t) = \sum_a \binom{k}{2a} \mathrm{Cat}_a\, 2^{k-2a} t^a$ be the reference Motzkin
-polynomials.
 
-**Theorem.** For every $n \ge 0$, $A_n$ is real-rooted. For $n \ge 3$, all roots of $A_n$ are
-simple and strictly negative, $M_{n-2}$ interlaces $A_n$, and the two polynomials have no common
-root.
+**Theorem.** For every $n\ge0$, $A_n$ is real-rooted and all its roots are negative. For $n\ge3$,
+$M_{n-2}\ll A_n$, both polynomials have simple roots, and they have no common root.
 
-Together with the recurrence identification of Elizalde, Rivera and Zhuang,
-this proves the case $\Pi = \{321\}$ of Conjecture 4.4 in
-*Counting Pattern-Avoiding Permutations by Big Descents*
-[@ElizaldeRiveraZhuang2026, Conj. 4.4]. Lean verifies the recurrence-defined
-polynomials; the identification with the permutation enumerator is taken from
-their paper. See also
+## Use
+
+By [@ElizaldeRiveraZhuang2026], the recurrence-defined $A_n$ is the big-descent enumerator of
+321-avoiding permutations of length $n$. Together with that identification the theorem proves
+the case $\Pi=\{321\}$ of [@ElizaldeRiveraZhuang2026, Conj. 4.4]. See also
 [big descents on symmetricfunctions.com](sf:bigDescent).
 
-## Proof idea
+## Proof
 
-Put $Q_n(c) = (c/2)^n A_n(1 - c^{-2})$ and expand it in the Gegenbauer polynomials
-$G_j = C_j^{(3/2)}$. A kernel formula writes the coordinates $q_{n,j}$ through moments of
-$\sqrt{1 - v(2-v)y + (v/4)y^2}$.
-
-1. A universal polynomial certificate with natural-number Bernstein coefficients, checked by
-   kernel reduction, proves $(J+1)q_{J+2r,J} > J\,q_{J+2r,J-2}$ for $r \ge 6$.
-2. The residual $R_n = ((\alpha_n c^2 + \beta_n)G_{n-2} - Q_n)/c$ then has negative coordinates
-   in its tail, using Lucas closed forms for the bottom coordinates.
-3. A moving interval for $z_n = \beta_n/\alpha_n$, from exact bases $25 \le n \le 70$ and a
-   scalar recurrence, controls the top coordinates.
-4. A weighted-path envelope for the backward Gegenbauer recurrence turns these signs into the
-   positivity of $-Q_n(a)/(a\,G_{n-3}(a))$ at every zero $a$ of $G_{n-2}$.
-5. The substitution $\rho = 1 - a^{-2}$ gives $A_n(\rho) M_{n-2}'(\rho) < 0$ at every zero of
-   $M_{n-2}$, which yields interlacing.
-
-The cases $n \le 24$ are exact interlacing and Bezout certificates.
+For $n\ge25$ we expand $(c/2)^nA_n(1-c^{-2})$ in Gegenbauer polynomials and show
+$A_n(\rho)M_{n-2}'(\rho)<0$ at every zero $\rho$ of $M_{n-2}$, which gives interlacing. The cases
+$3\le n\le24$ are exact certificates.
 
 ## References
 
-See [@ElizaldeRiveraZhuang2026].
+- [@ElizaldeRiveraZhuang2026]
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

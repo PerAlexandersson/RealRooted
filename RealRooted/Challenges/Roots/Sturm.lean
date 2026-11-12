@@ -75,24 +75,30 @@ label = "A real polynomial of degree at most three splits iff its discriminant i
 <!-- realrooted-catalog-content -->
 # Sturm root counting
 
-Evaluate the signed Euclidean remainder sequence of a polynomial and its
-derivative at the two endpoints of an interval, omit zero values, and count
-sign changes. When the left endpoint is smaller than the right and the right
-endpoint is not a root, the drop in sign changes is exactly the number of
-distinct real roots in the open interval.
+Sign changes of the signed Euclidean remainder sequence count the distinct real roots of a
+polynomial in an interval, and a Hermite matrix test decides real-rootedness.
 
-Repeated factors are removed by a canonical squarefree normalization. If the
-interval contains every root, the same count tests whether all roots are real.
+## Results
 
-**Hermite–Sylvester criterion.** [@Sylvester1853] Let $f$ be a monic real polynomial of degree
-$n$, and let $s_k = \sum_z z^k$ be the Newton power sums of its complex roots,
-counted with multiplicity. The Hermite matrix is
-$H_f = (s_{i+j})_{0 \le i, j \le n-1}$. Then $f$ is real-rooted if and only if
-$H_f$ is positive semidefinite.
+For a real polynomial $p$, the *Sturm sequence* is the signed Euclidean remainder sequence of $p$
+and $p'$; its *sign variation* at $x$ is the number of sign changes of its values at $x$, zero
+values omitted. For arbitrary $p$ we apply it to its radical (the
+squarefree part, with the repeated factors removed), and write $V_p(x)$ for the resulting variation.
 
-For degree at most three the Hermite matrix test reduces to a single
-inequality: a real polynomial of degree at most three is real-rooted if and only
-if its cubic discriminant is nonnegative.
+**Theorem (Sturm).** Let $p\ne0$ and $a<b$ with $p(b)\ne0$. Then the number of distinct real
+roots of $p$ in the open interval $(a,b)$ is $V_p(a)-V_p(b)$.
+
+**Theorem (real-rootedness by sign changes).** Let $p\ne0$ and $a<b$, and suppose every real
+root of $p$ lies in $(a,b)$. Then $p$ is real-rooted if and only if $V_p(a)-V_p(b)$ equals the
+degree of the squarefree part of $p$.
+
+**Hermite–Sylvester criterion** [@Sylvester1853]. Let $f$ be a monic real polynomial of degree
+$n$ and $s_k=\sum_zz^k$ the power sums of its complex roots, counted with multiplicity. Put
+$H_f=(s_{i+j})_{0\le i,j\le n-1}$. Then $f$ is real-rooted if and only if $H_f$ is positive
+semidefinite.
+
+**Proposition (degree at most three).** A real polynomial of degree at most three is real-rooted
+if and only if its cubic discriminant is nonnegative.
 
 ## References
 

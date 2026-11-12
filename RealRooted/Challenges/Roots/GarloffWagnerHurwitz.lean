@@ -3,7 +3,7 @@ module
 import RealRooted.GarloffWagner.HurwitzStable
 
 /-!
-# Garloff–Wagner Hurwitz-stability challenge entry point
+# Hadamard products of Hurwitz-stable polynomials
 
 <!-- realrooted-catalog
 version = 1
@@ -37,22 +37,32 @@ label = "Both parts of a Hurwitz-stable polynomial are PF"
 <!-- realrooted-catalog-content -->
 # Hadamard products of Hurwitz-stable polynomials
 
-A real polynomial is *Hurwitz stable* if its coefficients are nonnegative and it has no
-zero with positive real part. The Hadamard product of $a = \sum_k a_k x^k$ and
-$b = \sum_k b_k x^k$ is $a \ast b = \sum_k a_k b_k x^k$.
+The coefficientwise product of two Hurwitz-stable real polynomials is Hurwitz stable unless it
+vanishes.
 
-**Theorem (Garloff–Wagner).** [@GarloffWagner1996, Thm. 1] If $a$ and $b$ are
-Hurwitz stable and $a \ast b \neq 0$,
-then $a \ast b$ is Hurwitz stable.
+## Results
 
-The proof writes $a = q(x^2) + x\,p(x^2)$. By the Hermite–Biehler theorem, $a$ is Hurwitz
-stable exactly when the odd and even parts interlace, $p \ll q$, or one of them vanishes
-and the other is a PF polynomial (real-rooted with nonnegative coefficients). The
-Hadamard product acts on the two parts separately, and both alternatives are preserved:
-interlacing by Garloff and Wagner's theorem on Hadamard products of interlacing pairs
-[@GarloffWagner1996], and
-PF polynomials by Maló's theorem. The coefficient condition $a \ast b \neq 0$ excludes
-products of polynomials with disjoint supports, which vanish.
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+A real polynomial is *Hurwitz stable* if its coefficients are nonnegative and it has no zero with
+positive real part. The Hadamard product of $a=\sum_k a_kx^k$ and $b=\sum_k b_kx^k$ is
+$a\ast b=\sum_k a_kb_kx^k$.
+
+**Theorem (Garloff–Wagner).** [@GarloffWagner1996, Thm. 1] If $a$ and $b$ are Hurwitz stable
+and $a\ast b\ne0$, then $a\ast b$ is Hurwitz stable.
+
+**Proposition (even and odd parts).** Write $a=q(x^2)+x\,p(x^2)$. If $a$ is Hurwitz stable,
+then $p$ and $q$ are Pólya frequency polynomials (real-rooted with nonnegative coefficients).
+For real $q$, the polynomial $q(x^2)$ is Hurwitz stable if and only if $q\ne0$ and $q$ is a
+Pólya frequency polynomial.
+
+## Proof
+
+By the Hermite–Biehler theorem, $a$ is Hurwitz stable exactly when $p\ll q$ with both nonzero
+and nonnegative coefficients, or one of $p,q$ vanishes and the other is a Pólya frequency
+polynomial. The Hadamard product acts on the two parts separately, and both alternatives are
+preserved: interlacing by [@GarloffWagner1996, Thm. 4(b)], and Pólya frequency polynomials by
+the Schur–Malo theorem. The condition $a\ast b\ne0$ excludes products of polynomials with
+disjoint supports.
 
 ## References
 

@@ -70,60 +70,41 @@ headline = true
 <!-- realrooted-catalog-content -->
 # Site-weighted run polynomials of a TP2 kernel
 
-Let $u_0=1$, $u_k\ge 0$, and for site weights $z_1,\dots,z_N$ put
+Run polynomials built from a finite TP2 kernel and nonnegative site weights have negative real
+roots, and consecutive ones interlace.
+
+## Results
+
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+For run weights $u_k$ and site weights $z_1,\dots,z_N$ put
 $$Z_N(z_1,\dots,z_N)=\sum_{S\subseteq[N]}
 \Bigl(\prod_{R\in\mathrm{Runs}(S)}u_{|R|}\Bigr)\prod_{i\in S}z_i,$$
-where $\mathrm{Runs}(S)$ are the maximal nonempty intervals of consecutive selected sites. For
-fixed nonnegative site weights $a_i$ let $B_N(t)=Z_N(a_1t,\dots,a_Nt)$. With all
-$u_k=1$ one gets $B_N(t)=\prod_i(1+a_it)$.
+where $\mathrm{Runs}(S)$ are the maximal intervals of consecutive elements of $S$. For site
+weights $a_i$ let $B_N(t)=Z_N(a_1t,\dots,a_Nt)$. For $u_k=1$ one gets $B_N(t)=\prod_i(1+a_it)$.
 
-**Transfer identity.** If $u_k=e_1^{\mathsf T}A^k\mathbf 1$ for a finite nonempty matrix $A$ and
-$J=\mathbf 1e_1^{\mathsf T}$, then
-$$Z_N(z_1,\dots,z_N)=e_1^{\mathsf T}(J+z_NA)\cdots(J+z_1A)\mathbf 1,$$
-because $J^2=J$, $J\mathbf 1=\mathbf 1$ and $e_1^{\mathsf T}J=e_1^{\mathsf T}$; each maximal run of
-$A$'s contributes $u_k$. (In the formalization the run sum is the sum over indicator functions
-$S\colon\mathrm{Fin}\,N\to\mathrm{Bool}$ of a run weight read from the last site, and the
-identity is proved by recursion on the last site.)
+**Proposition (transfer identity).** Let $A$ be a square matrix with
+$u_k=e_1^{\mathsf T}A^k\mathbf 1$ and $J=\mathbf 1e_1^{\mathsf T}$. Then
+$$Z_N(z_1,\dots,z_N)=e_1^{\mathsf T}(J+z_NA)\cdots(J+z_1A)\mathbf 1.$$
 
-**Theorem.** Let $A$ have nonnegative entries and nonnegative ordered $2\times2$ minors (TP2),
-with weakly decreasing columns, let $u_k=e_1^{\mathsf T}A^k\mathbf 1$, and let $a_i\ge 0$ be
-arbitrary (zero weights allowed). Then every $B_N$ has $B_N(0)=1$, nonnegative coefficients and
-degree at most $N$; all its roots are real and negative; and consecutive polynomials
-$B_N,B_{N+1}$ are in oriented weak interlacing position (`StrictInterl`: the roots of $B_{N+1}$
-are separated by, and enclose, those of $B_N$; roots may coincide, and degrees may agree when a
-weight vanishes).
+**Theorem.** Let $A$ be TP2 (nonnegative entries and nonnegative ordered $2\times2$ minors) with
+weakly decreasing columns, let $u_k=e_1^{\mathsf T}A^k\mathbf 1$, and let $a_i\ge0$, with zeros
+allowed. Then $B_N(0)=1$, $B_N$ has nonnegative coefficients and degree at most $N$, and all
+roots of $B_N$ are real and negative. Moreover $B_N\ll B_{N+1}$: the roots of $B_{N+1}$ are
+separated by, and enclose, those of $B_N$. Roots may coincide, and the degrees agree when a site
+weight vanishes.
 
-**Proof idea.** Reflect the transfer vector: with $\mathbf h_0=\mathbf 1$ and
-$\mathbf h_{N+1}=(a_NA+xJ)\mathbf h_N$ one has $Y_N=\mathrm{reflect}_N\mathbf h_N$ for the
-transfer vector $Y_N$ in the variable $t$, so
-$B_N=\mathrm{reflect}_N h_{N,1}=h_{N,1}^{\mathrm{rev}}$.
-The matrices $a_kA$ are again TP2 with decreasing columns, and the vector recursion with
-these matrices is an interlacing sequence with nonnegative coefficients by the affine-step form of
-Brändén's constant-matrix theorem. Hence $h_{N,1}$ has only real nonpositive roots, and
-$h_{N,1}\ll h_{N+1,1}$. Reversal of polynomials with nonpositive roots reverses the interlacing
-(`reciprocalShift_reverses_strictInterl`), and Wagner's $x$-multiplication equivalence
-($f\ll g\iff g\ll xf$) turns the reversed relation into $B_N\ll B_{N+1}$. Absorbing $a_N$ into the
-matrix instead of dividing by it means that zero site weights need no limiting argument.
+## Proof
 
-**Classical input.** The constant-matrix theorem of Brändén [@Branden2015, Corollary 8.6,
-arXiv:1410.6601] is used only as the preservation input (through the TP2 affine step); the
-reversal and the transfer identity are specific to this page.
-
-**Not covered.** The second sufficient hypothesis of the weighted-run problem, that the sequence
-$u$ is PF-infinity, is not formalized here: it reduces to the matrix case for finite
-Edrei–Thoma products and then needs a limiting argument.
-
-## What is new
-
-The proof is new, developed for RealRooted, and is of independent research
-interest: the transfer identity for site-weighted run sums and the reflection of the Hessenberg
-vector recursion are not taken from the literature, and the classical constant-matrix theorem is
-used only as the preservation input.
+With $\mathbf h_0=\mathbf 1$ and $\mathbf h_{N+1}=(a_NA+xJ)\mathbf h_N$, the polynomial $B_N$ is
+the reversal of $h_{N,1}$. The matrices $a_kA$ are TP2 with decreasing columns, so Brändén's
+constant-matrix theorem [@Branden2015, Corollary 8.6] gives $h_{N,1}\ll h_{N+1,1}$ with
+nonpositive roots. Reversal reverses interlacing of such polynomials, and $f\ll g\iff g\ll xf$
+gives $B_N\ll B_{N+1}$. Zero site weights need no limiting argument.
 
 ## References
 
-See [@Branden2015]. See also the [finite TP2 Hessenberg
-certificate](/RealRooted/theorems/tp2-hessenberg-certificate/) page.
+[@Branden2015]. Related page: the [finite TP2 Hessenberg
+certificate](/RealRooted/theorems/tp2-hessenberg-certificate/).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in the `RealRooted.Toeplitz` modules named in

@@ -67,28 +67,42 @@ headline = true
 <!-- realrooted-catalog-content -->
 # Local Newton defects and positive root parameters
 
-We consider positive, antitone reciprocal parameters $x_i$ and their elementary
-symmetric sums $e_k$.  The off-diagonal estimate bounds $e_k^2$ minus the sum
-of squared subset products by $2e_{k-1}e_{k+1}$.  Consequently, the ratio of
-the leading subset product to $e_k$ lies between $1-2\delta_k$ and $1$, where
-$\delta_k=e_{k-1}e_{k+1}/e_k^2$ with the endpoint convention in the module.
+The roots of $a_0\prod_{i<n}(1+x_iX)$ with decreasing positive $x_i$ are bounded
+two-sidedly by ratios of consecutive coefficients, with error controlled by local Newton defects.
 
-Writing $\eta_i=x_i^{-1}$ and $\rho_i=e_i/e_{i+1}$, we prove two-sided
-local bounds for each $\eta_i$.  The linear result gives
-$(1-2\delta_i)\rho_i\leq\eta_i\leq\rho_i/(1-2\delta_{i+1})$ when the
-displayed upper denominator is positive.  If the two relevant defects are at
-most $1/4$, the quadratic constant
-$C(u)=(1+\sqrt{1-4u})/2$ gives the sharper corresponding bounds.
+## Results
 
-We also prove an adjacent-parameter separation estimate under the quadratic
-hypothesis.  For $a_0\prod_{i<n}(1+x_iX)$ with $a_0>0$, the same linear and
-quadratic bounds are expressed directly through coefficient ratios and local
-defects.  Finally, if the two adjacent defects tend to zero along a filter,
-then the fixed root parameter is asymptotic to its consecutive-coefficient
-ratio; no bound on the ambient degrees is assumed.
+Let $x_0\ge x_1\ge\dots>0$, let $e_k$ be the $k$-th elementary symmetric polynomial of
+$x_0,\dots,x_{n-1}$, and let $L_k=x_0\cdots x_{k-1}$. Put $\eta_i=x_i^{-1}$ and
+$\rho_i=e_i/e_{i+1}$. The *local Newton defect* is
+$\delta_k=e_{k-1}e_{k+1}/e_k^2$ for $0<k<n$ and $\delta_k=0$ otherwise. Put
+$C(u)=(1+\sqrt{1-4u})/2$.
+
+**Theorem (off-diagonal estimate).** For nonnegative $x_i$ and all $n,k$,
+$$e_k^2-\sum_{|S|=k}\prod_{i\in S}x_i^2\le2\,e_{k-1}e_{k+1}.$$
+
+**Theorem (leading subset).** For $k\le n$,
+$$1-2\delta_k\le\frac{L_k}{e_k}\le1.$$
+If $\delta_k\le\frac14$, then $C(\delta_k)\le L_k/e_k$.
+
+**Theorem (root parameters).** Let $i<n$. If $1-2\delta_{i+1}>0$, then
+$$(1-2\delta_i)\,\rho_i\le\eta_i\le\frac{\rho_i}{1-2\delta_{i+1}}.$$
+If $\delta_i,\delta_{i+1}\le\frac14$, then
+$$C(\delta_i)\,\rho_i\le\eta_i\le\frac{\rho_i}{C(\delta_{i+1})}.$$
+If $i+1<n$ and $\delta_{i+1}\le\frac14$, then
+$$\frac{\eta_i}{\eta_{i+1}}\le\frac{1-C(\delta_{i+1})}{C(\delta_{i+1})}.$$
+
+**Theorem (polynomial form).** Let $a_0>0$ and $p=a_0\prod_{i<n}(1+x_iX)$ with coefficients
+$a_k$. The two-sided bounds for $\eta_i$ above hold with $\rho_i$ replaced by $a_i/a_{i+1}$ and
+$\delta_k$ by $a_{k-1}a_{k+1}/a_k^2$ (and $0$ for $k=0$ or $k\ge n$).
+
+**Theorem (asymptotics).** Fix $i$. Let $p^{(a)}=a_0^{(a)}\prod_{j<n_a}(1+x^{(a)}_jX)$ be a
+family indexed along a filter $l$, with $a_0^{(a)}>0$, each $x^{(a)}$ positive and decreasing,
+and $i<n_a$ eventually. If the defects of $p^{(a)}$ at $i$ and $i+1$ tend to $0$ along $l$,
+then $\eta^{(a)}_i\sim a^{(a)}_i/a^{(a)}_{i+1}$ along $l$. No bound on $n_a$ is assumed.
 
 ## References
 
-See [@KarpenkoVishnyakova2017; @AkianGaubertSharify2017].
+[@KarpenkoVishnyakova2017; @AkianGaubertSharify2017].
 <!-- /realrooted-catalog-content -->
 -/

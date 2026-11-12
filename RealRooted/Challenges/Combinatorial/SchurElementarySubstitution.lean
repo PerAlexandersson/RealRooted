@@ -172,101 +172,91 @@ label = "Supported minors of a bidiagonal Toeplitz matrix are strictly positive"
 <!-- realrooted-catalog-content -->
 # Schur elementary-coordinate substitutions
 
-**Provenance.** The parity-compatible specialization theorem, its stretching
-and truncation variants, and the checkerboard pencil interlacing behind them
-are new results; their proofs were developed for RealRooted and are of independent research
-interest.
+Replacing one elementary coordinate $e_r$ by $e_r+t$ in a dual Jacobi–Trudi determinant of a
+nonnegative alphabet gives a polynomial in $t$ with only real negative zeros, under a parity
+condition on the active positions.
 
-**Formalization status:** checked Lean proofs cover both parity cases,
-horizontal stretching, duplicated rows, constant skew column height,
-compatible nested skew truncations, and signed rectangular consecutive
-interlacing. Schur functions themselves are not defined here: the objects are
-determinants of elementary coefficients (dual Jacobi–Trudi matrices), and no
-bridge to an independent definition of skew Schur functions is formalized.
+## Results
 
-## Checked matrix criterion
-
-Let $a_i$ and $b_j$ be strictly decreasing integer lists and let
-$V_{ij}=\mathbf1_{a_i=b_j+r}$. If $M$ is totally nonnegative with
-$\det M>0$, and $i+j$ is even at every active position, then
-$\det(M+tV)$ is a Pólya-frequency polynomial. The proof identifies $V$
-as an ordered submatrix of the identity and applies the existing
-checkerboard determinant-pencil theorem. The assumptions on $M$ are
-explicit hypotheses of the checked theorem.
-
-## Checked dual Jacobi–Trudi specialization
-
-For column heights $h=\lambda'$ and $k=\mu'$ (padding $k$ with zeros), set
-$a_i=h_i-i$, $b_j=k_j-j$, and
-
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+For a finite alphabet $\alpha$ let $e_m(\alpha)$ be the coefficient of $x^m$ in
+$\prod_i(1+\alpha_i x)$, with $e_m=0$ for $m<0$. For weakly decreasing column heights
+$h=\lambda'$ and $k=\mu'$ (the shorter list padded with zeros to a common length $n$), set
+$a_i=h_i-i$, $b_j=k_j-j$, and for $r\in\mathbb Z$
 $$
-M_{ij}=e_{a_i-b_j}(\alpha),\qquad
+M_{ij}=e_{a_i-b_j}(\alpha),\qquad V_{ij}=\mathbf 1_{a_i=b_j+r},\qquad
 \Phi_{\lambda/\mu,r}(t;\alpha)=\det(M+tV).
 $$
+The determinant $\det M$ is the dual Jacobi–Trudi form of the skew Schur function
+$s_{\lambda/\mu}(\alpha)$. The statements below concern this determinant. The coordinate $e_r$
+becomes $e_r+t$ in every position with $a_i=b_j+r$, also when $r$ exceeds the number of
+letters. Indices $i,j$ start at $0$.
 
-We use this dual Jacobi–Trudi determinant of elementary coefficients as the
-definition, with `elementaryPolynomial` equal to $\prod_i(1+\alpha_i x)$. Here $e_0=1$
-and $e_m=0$ for negative indices. Substitution is made before alphabet
-specialization: even if $r$ exceeds the alphabet size, the moving
-coordinate becomes $t$, rather than disappearing.
+**Theorem (matrix criterion).** Let $a_i$ and $b_j$ be strictly decreasing integer lists and
+$V_{ij}=\mathbf1_{a_i=b_j+r}$. If $M$ is totally nonnegative with $\det M>0$ and $i+j$ is even
+whenever $a_i=b_j+r$, then $\det(M+tV)$ is a Pólya-frequency polynomial.
 
-For a nonnegative alphabet with at least as many positive letters as the
-maximum skew column height, both total nonnegativity of $M$ and
-$\det M>0$ are checked. Under even active-position parity, the polynomial
-is nonzero, splits over the reals, and has strictly negative roots.
-Nonzero constants, repeated roots, and empty shapes are included.
-The proof of strict positivity uses a positive Cauchy–Binet summand in
-the product of elementary bidiagonal factors. Odd active-position parity
-gives strictly positive zeros by reflecting the parameter; this is also checked.
+**Theorem (elementary specialization).** Let $\alpha$ be a finite alphabet of nonnegative
+reals with $p$ positive letters, let $h,k$ be weakly decreasing with $k_i\le h_i\le k_i+p$,
+and let $r\in\mathbb Z$. Then $M$ is totally nonnegative and $\det M>0$. If $i+j$ is even
+whenever $a_i=b_j+r$, then $\Phi_{\lambda/\mu,r}$ is a nonzero Pólya-frequency polynomial
+with only real, strictly negative zeros (constants and empty shapes included). If $i+j$ is odd
+whenever $a_i=b_j+r$, then $\Phi_{\lambda/\mu,r}$ is nonzero and real-rooted with only strictly
+positive zeros.
 
-Uniform parity of both padded column-height lists gives the result under
-every simultaneous horizontal stretch: stretching repeats columns, not
-their heights. Both signs are checked, including empty stretches. Duplicating
-every row doubles both column-height lists, so every even moving coordinate
-gives negative roots after any stretch. Constant skew column height $r$
-gives $V=I$ and negative roots after every stretch without uniform boundary parity,
-provided the alphabet has at least $r$ positive letters.
+**Theorem (stretching).** Let $\alpha,h,k$ be as above, $r\in\mathbb N$, $m\ge0$, and let
+$\lambda^{(m)}/\mu^{(m)}$ be the shape with each column repeated $m$ times. If $h_i+k_j+r$ is
+even for all $i,j$, then $\Phi_{\lambda^{(m)}/\mu^{(m)},r}$ is nonzero and real-rooted with
+strictly negative zeros. If $h_i+k_j+r$ is odd for all $i,j$, it is nonzero and real-rooted
+with strictly positive zeros.
 
-## Consecutive rectangular and skew interlacing
+**Theorem (constant skew height, duplicated rows).** Let $\alpha$ have $p$ positive letters.
+If $h_i=k_i+r$ for all $i$ and $r\le p$, then $V=I$, so $\Phi=\det(M+tI)$, and for every
+$m\ge0$ the stretched polynomial is nonzero and real-rooted with strictly negative zeros, with
+no parity condition. For $k_i\le h_i$ and $2h_i\le 2k_i+p$, doubling both height lists gives
+nonzero real-rooted polynomials with strictly negative zeros for the moving coordinate $2r$,
+every $r,m\ge0$.
 
-For a nonnegative alphabet with at least $r$ positive letters, define
+**Theorem (consecutive shapes).** Let $\alpha,h,k$ be as in the specialization theorem with
+$n+1$ columns, and let $i+j$ be even whenever $a_i=b_j+r$. Then
+$\Phi_{\lambda/\mu,r}$ of the shape with its first column removed satisfies
+$\Phi_{(\lambda/\mu)^-,r}\ll\Phi_{\lambda/\mu,r}$.
 
+For a rectangle, let $\alpha$ have at least $r$ positive letters, let $j\ge0$, and put
 $$
-F_n(t)=\det\left(e_{r-p+q}(\alpha)
- +(-1)^{j-r}t\,\mathbf1_{r-p+q=j}\right)_{p,q=0}^{n-1},\qquad F_0=1.
+F_n(t)=\det\Bigl(e_{r-u+v}(\alpha)+(-1)^{r+j}\,t\,\mathbf 1_{r-u+v=j}\Bigr)_{u,v=0}^{n-1},
+\qquad F_0=1.
 $$
+Then every $F_n$ is nonzero and real-rooted with strictly negative zeros, and
+$F_n\ll F_{n+1}$ for all $n\ge0$, with no parity condition on $r$ or $j$.
 
-For every moving coordinate $j\ge1$, the checked conclusions are negative real zeros
-and oriented weak interlacing $F_{n-1}\preceq F_n$. Equal degrees and
-common roots are allowed; no general strictness is asserted.
-The general matrix step is checked: consecutive southeast sections of a
-checkerboard-signed TN pencil interlace when their constant determinants
-are positive. The proof uses nonnegative northwest-corner perturbations
-of both matrices, followed by the compatibility criterion. No triangularity
-is required of the variable matrix. Its rectangular application is checked
-for every height and moving coordinate. The sign uses $(-1)^{r+j}$ in Lean,
-which has the same parity as the integer exponent $j-r$.
+**Theorem (totally nonnegative pencils).** Let $A,B$ be totally nonnegative matrices of size
+$n+1$ with $\det A>0$, and let $\mathrm{cb}(B)_{ij}=(-1)^{i+j}B_{ij}$. Let $A',B'$ be obtained by
+removing the first row and column and suppose $\det A'>0$. Then
+$$
+\det(A'+t\,\mathrm{cb}(B'))\ll\det(A+t\,\mathrm{cb}(B)).
+$$
+The same holds when the last row and column are removed instead, if the resulting section of
+$A$ has positive determinant. The matrix $B$ need be neither triangular nor invertible.
 
-For even-parity skew shapes, consecutive suffixes of the two boundary lists
-also interlace. This does not assert interlacing between successive horizontal
-stretches of an arbitrary shape: their degrees can differ by more than one.
+**Theorem (positive supported minors).** Let $a_i>0$ for $i\in s$. The infinite Toeplitz matrix
+of the coefficients of $\prod_{i\in s}(x+a_i)$ has nonzero entries only in the band
+$0\le\text{row}-\text{column}\le|s|$. Every minor with strictly increasing rows and columns
+satisfying $\mathrm{col}_i\le\mathrm{row}_i\le\mathrm{col}_i+|s|$ is strictly positive.
 
-This challenge does not prove the conjecture relating a real limiting Toeplitz
-spectrum to finite real-rootedness.
+## Proof
 
-## Positive supported minors
-
-For positive $a_i$, the infinite Toeplitz matrix of the coefficient sequence of
-$\prod_{i\in s}(x+a_i)$ has a band of width $|s|$ below the diagonal. Every minor whose
-rows and columns are strictly increasing and lie in that band, that is, with
-$\mathrm{col}_i\le\mathrm{row}_i\le\mathrm{col}_i+|s|$, is strictly positive. The proof starts
-with the bidiagonal matrix of a single factor, whose supported minors are positive for
-$a>0$, and multiplies one linear factor at a time, since Toeplitz matrices of coefficient
-sequences multiply with the polynomials.
+The active matrix $V$ is an ordered submatrix of the identity, hence totally nonnegative, and
+even parity makes it invariant under the checkerboard sign change. The matrix criterion follows
+from the pencil theorem for totally nonnegative matrices. Positivity of $\det M$ follows from the
+positive supported minors, since $\prod(1+\alpha_ix)$ is a positive multiple of a product of
+factors $x+a_i$ with $a_i>0$. For odd parity we reflect
+$t\mapsto-t$.
 
 ## References
 
-- Chi-Kwong Li and Roy Mathias,
-  [Interlacing Inequalities for Totally Nonnegative Matrices](https://cklixx.people.wm.edu/tpinter.pdf).
+C.-K. Li and R. Mathias,
+[Interlacing Inequalities for
+Totally Nonnegative Matrices](https://cklixx.people.wm.edu/tpinter.pdf).
 <!-- /realrooted-catalog-content -->
 -/

@@ -49,18 +49,30 @@ symcat = "weightedIndependencePolynomial"
 <!-- realrooted-catalog-content -->
 # Claw-free independence polynomials
 
-The independence polynomial counts independent vertex sets by cardinality.
-Chudnovsky and Seymour proved that it is real-rooted for every finite
-claw-free graph [@ChudnovskySeymour2007].
+The independence polynomial of a finite claw-free graph is real-rooted, also with nonnegative
+vertex weights.
 
-The same holds for the weighted independence polynomial
-$\sum_A x^{|A|}\prod_{v\in A}w(v)$ when all $w(v)\ge0$ (Engström; see the
-[Heilmann–Lieb page](/RealRooted/theorems/heilmann-lieb/)).
+## Results
+
+A graph is *claw-free* if no vertex has three pairwise non-adjacent neighbors. The independence
+polynomial of a finite graph $G$ is $\sum_A x^{|A|}$, summed over the independent sets $A$ of
+$G$.
+
+**Theorem (Chudnovsky--Seymour).** If $G$ is a finite claw-free graph, then its independence
+polynomial is real-rooted [@ChudnovskySeymour2007].
+
+**Theorem (weighted form).** Let $G$ be a finite claw-free graph and let $w(v)\ge0$ for every
+vertex $v$. Then
+$$
+\sum_A x^{|A|}\prod_{v\in A}w(v)
+$$
+is real-rooted. This is due to Engstr\"om; see the
+[Heilmann--Lieb page](/RealRooted/theorems/heilmann-lieb/).
 
 ## References
 
-See [@ChudnovskySeymour2007] and the
-[graph-polynomial context on symmetricfunctions.com](sf:clawFreeGraph).
+[@ChudnovskySeymour2007]. Background on claw-free graphs is on
+[symmetricfunctions.com](sf:clawFreeGraph).
 <!-- /realrooted-catalog-content -->
 
 Human statement:

@@ -100,66 +100,67 @@ label = "All rows of the growing-zero family are PF exactly for integer paramete
 <!-- realrooted-catalog-content -->
 # Ma–Wang endpoint steps and their multiplicities
 
+A differential step keeps all roots in a window exactly when a threshold on the multiplicity of
+the endpoint root holds, and the affine step sequences with confined roots are classified.
+
+## Results
+
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 Ma and Wang [@MaWang2008, Theorem 2 and Corollary 3] study sequences of real-rooted
-polynomials obtained by differential steps whose roots stay in a window. We
-formalize the endpoint version.
-
-## Confinement at the left endpoint
-
-For $c,a,b\in\mathbb R$ let
+polynomials obtained by differential steps whose roots stay in a window. For $c,a,b\in\mathbb R$
+let
 $$
-E_{c,a,b}(p)=(ax+b)\,p+x(x+c)\,p' .
+E_{c,a,b}(p)=(ax+b)\,p+x(x+c)\,p'.
 $$
-Let $a>0$ and let $p$ have positive leading coefficient, split, and have all roots in
-$[-c,0)$. Then $E_{c,a,b}(p)$ has degree $\deg p+1$, positive leading coefficient, and
-interlaces $p$. If $m$ is the multiplicity of $-c$ as a root of $p$, then the
-multiplicity of $-c$ in $E_{c,a,b}(p)$ is $m+1$ when $b=c(a+m)$ and $m$ otherwise.
-If $b>0$, the roots of $E_{c,a,b}(p)$ again lie in $[-c,0)$ if and only if
+
+**Theorem (step at the left endpoint).** Let $a>0$, and let $p$ be real-rooted with positive
+leading coefficient and all roots in $[-c,0)$. Then $E_{c,a,b}(p)$ has degree $\deg p+1$,
+positive leading coefficient, and $p\ll E_{c,a,b}(p)$. Let $m$ be the multiplicity of $-c$ as a
+root of $p$. The multiplicity of $-c$ in $E_{c,a,b}(p)$ is $m+1$ if $b=c(a+m)$ and $m$
+otherwise. If also $b>0$, all roots of $E_{c,a,b}(p)$ lie in $[-c,0)$ if and only if
 $$
 b\le c\,(a+m).
 $$
 
-For iterated steps with slope $1/L$ and intercept $r/L$,
-$P_{n+1}=\rho_nE_{c,a,\,c(a+n/L-r/L)}(P_n)$ with $\rho_n>0$, $a>r/L$ and a starting row
-with roots in $(-c,0)$, every row is real-rooted with roots in $[-c,0)$, consecutive
-rows interlace, and the multiplicity of $-c$ in $P_n$ is $\lceil(n-r)/L\rceil$ (the
-number of thresholds $r+jL$ below $n$). Conversely, if every row of an affine sequence
-with slope $\lambda>0$ and intercept $\mu\ge0$, $\mu<a$, has its roots in $[-c,0)$,
-then $\lambda=1/L$ and $\mu=r/L$ for natural numbers $L>0$ and $r$. Together these
-classify the affine endpoint sequences.
-
-## Closed window
-
-For $a>0$ and $c\in\mathbb R$ the step $(ax+c)f+x(x+1)f'$ maps a split polynomial with
-positive leading coefficient and roots in $[-1,0]$ to a polynomial of one higher
-degree that interlaces it. Its roots stay in $[-1,0]$ if and only if
-$0\le c+m_0$ and $0\le a+m_{-1}-c$, where $m_0$ and $m_{-1}$ are the multiplicities
-of $0$ and $-1$ in $f$, and the multiplicities at both endpoints are determined
-explicitly.
-
-## Growing zero multiplicity
-
-For the step $f\mapsto(a+bx)f+x(u-vx)f'$ with $u,v\ge0$ on a nonzero PF polynomial
-$f$ of degree $d$ with $vd<b$, the image has degree $d+1$, interlaces $f$, and is PF
-if and only if
+**Theorem (affine sequences).** Let $c>0$ and let $L\ge1$ and $r\ge0$ be integers with
+$a>r/L$. Let $P_0$ be real-rooted with positive leading coefficient and roots in $(-c,0)$, and
 $$
-0\le a+u\cdot\operatorname{mult}_0(f),
+P_{n+1}=\rho_n\,E_{c,a,\,c(a+n/L-r/L)}(P_n)\qquad(\rho_n>0).
 $$
-so the threshold depends on the multiplicity of the root $0$ rather than on the
-constant coefficient. Consider the family $P_0=1$ and
+Then every $P_n$ is real-rooted with positive leading coefficient and roots in $[-c,0)$,
+$P_n\ll P_{n+1}$, and the multiplicity of $-c$ in $P_n$ is $\lceil\max(n-r,0)/L\rceil$. For
+$L=2$ and $r=1$ this is $\lceil(n-1)/2\rceil$.
+
+**Theorem (classification).** Let $c>0$, $\lambda>0$ and $0\le\mu<a$, let $P_0$ be as above, and
+$P_{n+1}=\rho_n\,E_{c,a,\,c(a+\lambda n-\mu)}(P_n)$ with $\rho_n>0$. Then all rows have their
+roots in $[-c,0)$ if and only if $\lambda=1/L$ and $\mu=r/L$ for integers $L\ge1$ and $r\ge0$.
+
+**Theorem (closed window).** Let $a>0$, $c\in\mathbb R$, and let $f$ be real-rooted with positive
+leading coefficient and roots in $[-1,0]$. Then $g=(ax+c)f+x(x+1)f'$ has degree $\deg f+1$,
+positive leading coefficient, and $f\ll g$. Let $m_0$ and $m_{-1}$ be the multiplicities of $0$
+and $-1$ in $f$. All roots of $g$ lie in $[-1,0]$ if and only if $0\le c+m_0$ and
+$0\le a+m_{-1}-c$. The multiplicity of $0$ in $g$ is $m_0+1$ if $c+m_0=0$ and $m_0$ otherwise;
+that of $-1$ is $m_{-1}+1$ if $c=a+m_{-1}$ and $m_{-1}$ otherwise.
+
+**Theorem (growing zero multiplicity).** Let $u,v\ge0$ and let $f\ne0$ be a Pólya frequency
+polynomial with $v\deg f<b$. Then $(a+bx)f+x(u-vx)f'$ has degree $\deg f+1$, interlaces $f$,
+and is a Pólya frequency polynomial if and only if
 $$
-P_{n+1}=\bigl((a-n)+(bn+c)x\bigr)P_n+r\,x(1-x)P_n' .
+0\le a+u\cdot\operatorname{mult}_0(f).
 $$
-For natural numbers $a=A$ and $r=R>0$, with $b\ge R$ and $c>0$, every row is PF of degree
-$n$, consecutive rows interlace, and the multiplicity of the root $0$ of $P_n$ is the
-endpoint multiplicity $\lceil(n-A)/R\rceil$. Conversely, with $0<r\le b$ and $c>0$, all
-rows are PF if and only if $a$ and $r$ are natural numbers.
+Consider $P_0=1$ and
+$$
+P_{n+1}=\bigl((a-n)+(bn+c)x\bigr)P_n+r\,x(1-x)P_n'.
+$$
+If $a=A$ and $r=R$ are natural numbers with $R>0$, and $b\ge R$ and $c>0$, then every $P_n$ is
+a Pólya frequency polynomial of degree $n$, $P_n\ll P_{n+1}$, and the multiplicity of the root
+$0$ of $P_n$ is $\lceil\max(n-A,0)/R\rceil$. Conversely, if $0<r\le b$ and $c>0$, all rows are
+Pólya frequency polynomials if and only if $a$ and $r$ are natural numbers.
 
 ## References
 
-See [@MaWang2008]. The closed-window step is an instance of the interval
-differential steps in the basis-transform page on
-[basis transforms preserving real-rootedness and
+[@MaWang2008]. The closed-window step is an instance of the interval differential steps on the
+page on [basis transforms preserving real-rootedness and
 PF](/RealRooted/theorems/basis-transform-preservers/).
 <!-- /realrooted-catalog-content -->
 

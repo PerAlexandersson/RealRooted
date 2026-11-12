@@ -104,45 +104,50 @@ label = "Right-factor product recurrence"
 <!-- realrooted-catalog-content -->
 # Iterated derivative shifts
 
-We study the derivative-shift operator $T_\varepsilon p = p - \varepsilon p'$
-and its iterates. If $p$ is split, then a positive shift preserves splitness,
-and the same is true for every real shift. For a positive shift and a nonzero
-split polynomial, $p\ll T_\varepsilon p$.
+The shift $p\mapsto p-\varepsilon p'$ preserves real-rootedness for every real $\varepsilon$ and,
+for $\varepsilon>0$, produces an interlacing polynomial and, after $\deg p$ iterations, simple
+roots.
 
-We also record the two interlacing directions used by derivative arguments. For
-a split polynomial with positive leading coefficient and positive degree, a
-nonpositive shift places $p'$ before $T_\varepsilon p$. A common-factor
-version says that if $p=dq$ and $p'=dr$, where $d$ is nonzero and split,
-$r\ll q$, and $q,r$ have positive leading coefficients, then
-$p'\ll T_\varepsilon p$ for $\varepsilon\le0$ without assuming that $p$ has
-positive leading coefficient.
+## Results
 
-We obtain split polynomials for positive or arbitrary real shifts, and
-successive positive iterates satisfy $P_n\ll P_{n+1}$ when the starting polynomial is
-nonzero and split. If $f$ is nonzero and split with degree $n$, then
-$T_\varepsilon^n f$ has simple roots for $\varepsilon > 0$. The analogous
-negative-shift statement holds after at least $\deg p$ iterations.
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+For real $\varepsilon$ let $T_\varepsilon p=p-\varepsilon p'$.
 
-We use the continuity results to make the regularization usable near a
-prescribed root. For a monic split polynomial $p$, a root $a$ of $p$, and any
-tolerance $\eta>0$, there is $\delta>0$ such that every shift
-$0<\varepsilon<\delta$ gives a real root $b$ of $T_\varepsilon^n p$ with
+**Theorem (real-rootedness).** If $p$ is real-rooted, then $T_\varepsilon p$ is real-rooted for
+every real $\varepsilon$, and so is every iterate $T_\varepsilon^kp$. If $p\ne0$, then
+$T_\varepsilon^kp\ne0$.
+
+**Theorem (interlacing).** If $p\ne0$ is real-rooted and $\varepsilon>0$, then
+$p\ll T_\varepsilon p$.
+
+**Theorem (derivative).** Let $p$ be real-rooted with positive leading coefficient and
+$\deg p\ge1$. If $\varepsilon\le0$, then $p'\ll T_\varepsilon p$. The same holds without the
+assumption on the leading coefficient of $p$ if $p=dq$ and $p'=dr$, where $d\ne0$ is
+real-rooted, $r\ll q$, and $q,r$ have positive leading coefficients.
+
+**Theorem (simple roots).** Let $f\ne0$ be real-rooted and $\varepsilon>0$. If $\deg f=n$, then
+$T_\varepsilon^nf$ has simple roots. If $\deg f\le k$, then $T_{-\varepsilon}^kf$ has simple
+roots.
+
+**Theorem (nearby roots).** Let $p$ be real-rooted, $a$ a root of $p$, $n\ge0$ and $\eta>0$.
+Then there is $\delta>0$ such that for every $0<\varepsilon<\delta$ the polynomial
+$T_\varepsilon^np$ has a real root $b$ with
 $$
-|a-b|<((\deg p+1)\eta)^{1/\deg p}\max(|a|,1).
+|a-b|<\bigl((\deg p+1)\eta\bigr)^{1/\deg p}\max(|a|,1).
 $$
-A
-nonzero split polynomial is reduced to the monic case by scaling; the same
-argument applies to roots in an iterated derivative, and hence to any root
-whose multiplicity is larger than the derivative order.
+The same holds for the roots of the $k$-th derivative of $p$, and for $a$ with
+$k<\operatorname{mult}_a(p)$ it gives a root of $(T_\varepsilon^np)^{(k)}$ near $a$, with
+$\deg p$ replaced by $\deg p^{(k)}$ in the bound.
 
-Finally, the sequence adapters apply the preservation and strict-interlacing
-results pointwise to varying shifts and iteration depths. The product results
-show that a recurrence $P_{n+1}=F_n T_{\varepsilon_n}^{k_n}P_n$, with a
-nonzero split base and nonzero split factors, keeps every row nonzero and
-split; the factor may occur on either side of the iterate.
+**Theorem (sequences).** Let $P_i\ne0$ be real-rooted, $\varepsilon_i>0$ and $k_i\in\mathbb N$.
+Then $T_{\varepsilon_i}^{k_i}P_i$ is real-rooted and
+$T_{\varepsilon_i}^{k_i}P_i\ll T_{\varepsilon_i}^{k_i+1}P_i$. Moreover, let $P_0\ne0$ and
+$F_n\ne0$ be real-rooted, and let $\varepsilon_n$ be real. If
+$P_{n+1}=F_n\,T_{\varepsilon_n}^{k_n}P_n$, or $P_{n+1}=T_{\varepsilon_n}^{k_n}P_n\,F_n$, then
+every $P_n$ is nonzero and real-rooted.
 
 ## References
 
-See [@SchurPolya1914; @Obreschkoff1963].
+[@SchurPolya1914; @Obreschkoff1963].
 <!-- /realrooted-catalog-content -->
 -/

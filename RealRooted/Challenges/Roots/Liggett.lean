@@ -37,38 +37,39 @@ label = "Convolution of ULC(m) and ULC(n) sequences is ULC(m + n)"
 <!-- realrooted-catalog-content -->
 # Liggett's theorem
 
-A nonnegative sequence $a_0, \dotsc, a_d$ is *ultra-log-concave of order $d$*,
-written ULC($d$), if $a_k / \binom{d}{k}$ is log-concave without internal zeros:
+We call a nonnegative sequence $a_0,\dotsc,a_d$ *ultra-log-concave of order $d$*,
+written ULC($d$), if $a_k/\binom{d}{k}$ is log-concave:
 $$
 k(d-k)\, a_k^2 \geq (k+1)(d-k+1)\, a_{k-1} a_{k+1} \qquad (0 < k < d).
 $$
-By Newton's inequalities, the coefficients of a real-rooted polynomial of
-degree $d$ with nonnegative coefficients are ULC($d$).
+Convolution of ultra-log-concave sequences without internal zeros is again ultra-log-concave.
 
-**Theorem** (Liggett). If $a$ is ULC($m$) and $b$ is ULC($n$), then their
-convolution $c_k = \sum_i a_i b_{k-i}$ is ULC($m+n$). Equivalently,
-ultra-log-concave coefficient sequences are closed under multiplication of
-polynomials.
+## Results
+
+**Theorem (Liggett).** Let $a$ be ULC($m$) and $b$ be ULC($n$), both nonnegative, vanishing
+beyond their order and without internal zeros. Then the convolution
+$c_k=\sum_i a_ib_{k-i}$ is ULC($m+n$) and has no internal zeros. Equivalently, for polynomials
+with nonnegative, ultra-log-concave coefficients without internal zeros, the product has
+ultra-log-concave coefficients of order its degree.
+
+By Newton's inequalities, the coefficients of a real-rooted polynomial of degree $d$ with
+nonnegative coefficients are ULC($d$).
+
+## Use
 
 This is the ultra-log-concave analogue of
-[Hoggar's theorem](/RealRooted/theorems/hoggar-log-concavity/), which is the
-same statement for ordinary log-concavity. The hypothesis on
-internal zeros cannot be dropped. The sequence $1, 0, 0, 1$ satisfies the
-displayed inequalities for $d = 3$, but its product with $1 + x$ does not
-satisfy them for $d = 4$.
+[Hoggar's theorem](/RealRooted/theorems/hoggar-log-concavity/). The hypothesis on internal
+zeros cannot be dropped: the sequence $1,0,0,1$ satisfies the displayed inequalities for
+$d=3$, but its product with $1+x$ does not satisfy them for $d=4$.
 
-## Proof idea
+## Proof
 
-The proof is by induction on $n$. Split the order-$(n+1)$ factor $b$ as
-$(n+1) b_j = (n+1-j) b_j + j b_j$. Both parts are ULC($n$), so the induction
-hypothesis applies to their convolutions with $a$. The two parts are
-likelihood-ratio ordered, which is checked through the log-concave sequence
-$b_j \, j! \, (n+1-j)!$. Convolution with the log-concave sequence $a$ preserves
-this ordering, by a $2 \times 2$ Cauchy–Binet argument as in Hoggar's theorem.
-A real-number inequality then combines the two induction hypotheses.
-
-This elementary argument is not Liggett's original proof. Other known proofs use
-mixed volumes [@Gurvits2009], the Johnson scheme (Kahn–Neiman) or Lorentzian polynomials
+We argue by induction on $n$, splitting $(n+1)b_j=(n+1-j)b_j+jb_j$ into two ULC($n$)
+sequences. These are likelihood-ratio ordered, which follows from log-concavity of
+$b_j\,j!\,(n+1-j)!$. Convolution with the log-concave sequence $a$ preserves the ordering,
+by a $2\times2$ Cauchy–Binet argument as for Hoggar's theorem, and a real-number inequality
+combines the two induction hypotheses. This is not Liggett's original proof; others use mixed
+volumes [@Gurvits2009], the Johnson scheme (Kahn–Neiman) and Lorentzian polynomials
 (Brändén–Huh).
 
 ## References

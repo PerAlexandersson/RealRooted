@@ -17,7 +17,7 @@ import RealRooted.DegreeDropDivXPrec
 import RealRooted.SameDegreeCountFromAnalytic
 
 /-!
-# Common interleaver challenge entry point
+# Common interleavers and compatible families
 
 <!-- realrooted-catalog
 version = 1
@@ -112,22 +112,22 @@ label = "Split polynomials with real-rooted positive combinations have a common 
 [[theorems]]
 name = "RealRooted.pairHasCommonInterleaver_of_posCombo_sameDegree"
 module = "RealRooted.SameDegreeCountFromAnalytic"
-label = "Chudnovsky–Seymour for two polynomials of the same degree without common roots"
+label = "Equal degrees, no common root, real-rooted positive combinations: common interleaver"
 
 [[theorems]]
 name = "RealRooted.pairHasCommonInterleaver_of_posCombo_succDegree"
 module = "RealRooted.CommonInterleaver.PairBridge.SuccDegree.SlotData"
-label = "Chudnovsky–Seymour for two polynomials whose degrees differ by one"
+label = "Degrees differing by one, real-rooted positive combinations: common interleaver"
 
 [[theorems]]
 name = "RealRooted.pairHasCommonInterleaver_of_posCombo_noCommon_of_natDegree_close"
 module = "RealRooted.CommonInterleaver.PairBridge.Reduction.CommonInterleaver"
-label = "Chudnovsky–Seymour for two polynomials of close degrees without common roots"
+label = "Degrees differing by at most one, no common root: common interleaver"
 
 [[theorems]]
 name = "RealRooted.sameDegree_rootCountAbove_bounds_of_posCombo_noCommon"
 module = "RealRooted.SameDegreeCountFromAnalytic"
-label = "Same-degree positive-combination pairs have upper root counts differing by at most one"
+label = "Equal-degree positive-combination pairs: root counts above x differ by at most 1"
 
 [[theorems]]
 name = "RealRooted.pairHasCommonLeftInterleaver_of_commonInterleaver"
@@ -137,7 +137,7 @@ label = "A common right interleaver of a close-degree pair gives a common left i
 [[theorems]]
 name = "RealRooted.strictInterl_iff_strictInterl_divX_left_of_hasNonnegCoeffs_coeff_zero"
 module = "RealRooted.DegreeDropDivXPrec"
-label = "Degree drop at a zero constant coefficient: f ≪ g iff g/X ≪ f"
+label = "For g(0) = 0 and deg g = deg f + 1 with nonnegative coefficients: f ≪ g iff g/X ≪ f"
 
 [[theorems]]
 name = "RealRooted.leanderTransform_preserves_compatibility"
@@ -147,7 +147,7 @@ label = "Leander: the transform preserves ordered compatibility"
 [[theorems]]
 name = "RealRooted.isRealRootedIn_weightedSum_of_splits"
 module = "RealRooted.RootLocation.CommonInterlacer"
-label = "A split nonnegative combination of polynomials rooted in an interval is rooted there"
+label = "A split nonnegative combination of same-degree polynomials rooted in J is rooted in J"
 
 [[theorems]]
 name = "RealRooted.HasCommonInterleaver.map"
@@ -157,7 +157,7 @@ label = "Linear maps preserving real-rootedness on an interval transport common 
 [[theorems]]
 name = "RealRooted.exists_mem_largestRoot_le_sum"
 module = "RealRooted.CommonInterleaver.RootSelection"
-label = "Marcus–Spielman–Srivastava: some member's largest root is at most that of the sum"
+label = "A common left interlacer gives a member whose largest root is at most that of the sum"
 
 [[theorems]]
 name = "RealRooted.RootSelectionTree.Valid.exists_leaf_largestRoot_le"
@@ -166,99 +166,95 @@ label = "Interlacing families: some leaf's largest root is at most the root node
 -->
 
 <!-- realrooted-catalog-content -->
-# Common interleavers
+# Common interleavers and compatible families
 
-A finite family of real-rooted polynomials $f_1, \dotsc, f_m$ has a **common
-interleaver** if a single real-rooted $h$ satisfies $f_i \ll h$ for every $i$.
-Here $f\ll h$ means that $f$ interlaces $h$; see the
-[interlacing page](/RealRooted/concepts/interlacing/).
-The family is **compatible** if every nonnegative combination
-$c_1 f_1 + \dotsb + c_m f_m$ is zero or real-rooted.
+A finite family of real-rooted polynomials with positive leading coefficients has a common
+interleaver if and only if every nonnegative combination of its members is real-rooted or zero.
 
-**Theorem (Chudnovsky–Seymour).** [@ChudnovskySeymour2007] For real-rooted
-polynomials with positive
-leading coefficients, the following are equivalent:
+## Results
 
-1. every pair is compatible;
+We write $f\ll g$ if $f$ interlaces $g$; see the
+[interlacing page](/RealRooted/concepts/interlacing/). A family $f_1,\dotsc,f_m$ has a
+**common interleaver** if a single real-rooted $h$ satisfies $f_i\ll h$ for all $i$. It is
+**compatible** if every nonnegative combination
+$c_1f_1+\dotsb+c_mf_m$ is zero or real-rooted, and **pairwise compatible** if every pair is.
+
+**Theorem (Chudnovsky–Seymour).** [@ChudnovskySeymour2007] For real-rooted polynomials with
+positive leading coefficients, the following are equivalent:
+
+1. the family is pairwise compatible;
 2. every pair has a common interleaver;
-3. the whole family has a common interleaver;
-4. the whole family is compatible.
+3. the family has a common interleaver;
+4. the family is compatible.
 
-The library proves each implication:
+Let a nonempty family have positive leading coefficients. If it has a common interleaver, or if
+all its members are real-rooted and every pair has a common interleaver, then its sum is
+real-rooted.
 
-- **Compatible pairs have common interleavers:** the two-polynomial case of
-  1 ⇒ 2.
-- **Pairwise compatibility and common interleavers:** 1 ⇔ 3.
-- **Pairwise and family compatibility:** 1 ⇔ 4.
-- **Pairwise to global:** 2 ⇒ 3.
-- **Common interleavers give compatibility:** 3 ⇒ 4. In particular, the sum of
-  a family with a common interleaver is real-rooted.
+**Theorem (pairs).** Let $f,g$ have positive leading coefficients. If $f,g$ are compatible,
+then $f,g$ have a common interleaver. More precisely, suppose that $\lambda f+\mu g$ is
+real-rooted for all $\lambda,\mu>0$. Then $f,g$ have a common interleaver in each of these cases:
 
-The two-polynomial theorem is proved by cases on the degrees. For a pair
-$f, g$ of positive leading coefficients such that every positive combination
-$\lambda f + \mu g$ is nonzero and real-rooted, the library has a common
-interleaver in each of the following situations:
+- $\deg g=\deg f$ and $f,g$ have no common root; moreover, for every real $x$ that is not a
+  root of $f$ or $g$, the numbers of roots of $f$ and of $g$ larger than $x$ differ by at
+  most one;
+- $\deg g=\deg f+1$;
+- $\deg f\le\deg g\le\deg f+1$ and $f,g$ have no common root;
+- $f$ and $g$ split, with no restriction on the degrees.
 
-- $\deg g = \deg f$ and $f, g$ have no common root. Then for every real $x$ that
-  is not a root of $f$ or $g$, the numbers of roots of $f$ and of $g$ larger
-  than $x$ differ by at most one;
-- $\deg g = \deg f + 1$;
-- $\deg f \leq \deg g \leq \deg f + 1$ and $f, g$ have no common root, as a
-  combination of the two cases above;
-- $f$ and $g$ split, with no restriction on the degrees. This is the
-  positive-combination form of the theorem for compatible pairs; the proof
-  translates both polynomials far enough to make their coefficients
-  nonnegative, applies the nonnegative case, and translates back.
+**Proposition (left interleavers).** Let $\deg f\le\deg g\le\deg f+1$ and suppose that
+$f\ll h$ and $g\ll h$ for some $h$. Then $\ell\ll f$ and $\ell\ll g$ for some $\ell$.
 
-If $f, g$ have degrees $d$ and $d$ or $d + 1$, and $h$ is a common right
-interleaver, then there is also a common left interleaver $\ell$ with
-$\ell \ll f$ and $\ell \ll g$. In the degree-drop situation $\deg g = \deg f + 1$
-with $g$ divisible by $x$ and both polynomials having nonnegative coefficients,
-$f \ll g$ holds if and only if $g/x \ll f$.
+**Proposition (degree drop).** Let $f,g$ have nonnegative coefficients, $\deg g=\deg f+1$
+and $g(0)=0$. Then $f\ll g$ if and only if $g/x\ll f$.
 
-This is the interlacing input for the real-rootedness of independence
-polynomials of claw-free graphs; see the
-[Chudnovsky–Seymour page](/RealRooted/theorems/chudnovsky-seymour/).
+**Theorem (transport along linear maps).** Let $T$ be a linear map on real polynomials, $J$ an
+interval and $n$ a degree. Suppose that $T$ maps every real-rooted polynomial of degree $n$ with
+positive leading coefficient and all roots in $J$ to a real-rooted polynomial with positive
+leading coefficient. If $f_1,\dotsc,f_m$ are such polynomials with a common interleaver,
+then $Tf_1,\dotsc,Tf_m$ have a common interleaver. The same holds for a compatible or
+interlacing pair $f,g$ of such polynomials.
 
-**Transport along linear maps.** Let $T$ be a linear map on real polynomials, $J$ an interval
-and $n$ a degree, and suppose $T$ sends every polynomial of degree $n$ with positive leading
-coefficient whose roots lie in $J$ to a real-rooted polynomial with positive leading coefficient.
-Then $T$ sends a finite family of such polynomials with a common interleaver to a family with a
-common interleaver. Indeed, every nonnegative combination of the inputs is real-rooted by
-Chudnovsky–Seymour, hence has all its roots in $J$ because outside the convex hull of the roots
-all members have the same strict sign. Its image is therefore real-rooted, and the image of a
-combination is the combination of the images. The images are thus a compatible family and have a
-common interleaver; this is the criterion of Marcus–Spielman–Srivastava
-(*Interlacing families I*, Lemma 4.5, arXiv:1304.4132). The output degree need not be
-constant. For two polynomials, `Compatible.hasCommonInterleaver_map` and
-`StrictInterl.hasCommonInterleaver_map` give the pair versions.
+**Proposition (hull).** Let $J$ be an interval and let $g_1,\dotsc,g_k$ be polynomials of the
+same degree with positive leading coefficients, real-rooted with all roots in $J$. A nonnegative
+combination of the $g_i$ with some positive weight that is real-rooted has all its roots in $J$.
 
-**Theorem (Leander).** [@Leander2016x, Thm. 2.3] Let $f_0, \dotsc, f_{n-1}$ have positive leading
-coefficients, and suppose that $f_i$ and $f_j$ are compatible and $x f_i$ and
-$f_j$ are compatible whenever $i \le j$. Define
+**Theorem (Leander).** [@Leander2016x, Thm. 2.3] Let $f_0,\dotsc,f_{n-1}$ have positive leading
+coefficients, and suppose that $f_i,f_j$ and $xf_i,f_j$ are compatible whenever $i\le j$.
+Define
 $$
 L(f)_k = x \sum_{h < k} f_h + \sum_{h > k} f_h .
 $$
-Then the family $L(f)_0, \dotsc, L(f)_{n-1}$ satisfies the same two
-conditions.
+Then $L(f)_i,L(f)_j$ and $xL(f)_i,L(f)_j$ are compatible whenever $i\le j$.
 
-**Interlacing families** (Marcus–Spielman–Srivastava). If polynomials
-$p_1,\dotsc,p_m$ of the same degree $d\ge1$ with positive leading
-coefficients have a common **left** interlacer—a polynomial $h$ of degree
-$d-1$ with $h\ll p_i$ for every $i$—then some $p_i$ has largest root at most
-the largest root of $\sum_i p_i$. Iterating along a tree of degree-$d$
-polynomials whose sibling polynomials have such common left interlacers, some
-leaf has largest root at most that of the root polynomial.
+**Theorem (interlacing families).** Let $p_1,\dotsc,p_m$ be polynomials of degree $d$ with
+positive leading coefficients, $m\ge1$, and suppose that some polynomial $h$ of degree $d-1$
+satisfies $h\ll p_i$ for all $i$. Then some $p_i$ has largest root at most the largest root of
+$\sum_ip_i$. Consequently, let $t$ be a finite rooted tree whose leaves are labelled by
+real-rooted polynomials of degree $d\ge1$ with positive leading coefficients, in which every
+internal node carries the sum of its children's polynomials, and in which the children of each
+internal node have a common left interlacer of degree $d-1$. Then some leaf has largest root at
+most that of the polynomial at the root.
 
-## Relation to SymCat
+## Use
 
-We formalize the equivalence between pairwise compatibility and a common interleaver
-from the [Chudnovsky–Seymour compatibility theorem](sf:commonInterlacingCompatibilityTheorem).
-The other equivalence with family compatibility is published below as a separate result.
+The Chudnovsky–Seymour theorem is the interlacing input for the real-rootedness of independence
+polynomials of claw-free graphs; see the
+[Chudnovsky–Seymour page](/RealRooted/theorems/chudnovsky-seymour/). The transport theorem is
+the criterion for common interleavers of Marcus–Spielman–Srivastava (*Interlacing families I*,
+Lemma 4.5, arXiv:1304.4132), and the last theorem is their selection principle for roots.
+
+## Proof
+
+For pairs, we treat the degree cases separately. For split polynomials of arbitrary degrees, we
+translate both polynomials far enough that their coefficients become nonnegative, apply the
+nonnegative case, and translate the interleaver back.
 
 ## References
 
-See [@ChudnovskySeymour2007; @Branden2015, Sec. 7.8; @Leander2016x, Thm. 2.3].
+The equivalence of pairwise compatibility and a common interleaver is the
+[Chudnovsky–Seymour compatibility theorem](sf:commonInterlacingCompatibilityTheorem). See
+[@ChudnovskySeymour2007; @Branden2015, Sec. 7.8; @Leander2016x, Thm. 2.3].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

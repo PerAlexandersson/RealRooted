@@ -70,27 +70,34 @@ label = "Parking function weak left peak polynomials are real-rooted"
 <!-- realrooted-catalog-content -->
 # Parking functions
 
-A [parking function](sf:parkingFunctionDefinition)
-of length $n$ [@DiaconisHicks2017] is a word $w$ with letters in
-$\{0, \dotsc, n-1\}$ such that, for every $k \leq n$, at least $k$ of its letters are
-smaller than $k$. The following generating polynomials over parking functions
-of length $n$ are real-rooted:
+The descent polynomial, the tieless descent polynomial and the weak left peak polynomial of
+parking functions of length $n$ are real-rooted.
 
-- **Descents:** $\sum_w x^{\operatorname{des}(w)}$. The proof passes through Pollak's cyclic
-  action: $(n+1)$ times this polynomial equals the descent polynomial of all
-  words of length $n$ over an alphabet of size $n+1$.
-- **Tieless descents:** the same count over parking functions with no two
-  equal adjacent entries. $(n+1)$ times this polynomial equals a
-  Brändén–Vecchi Chow polynomial of an elementary Toeplitz matrix.
-- **Weak left peaks:** $\sum_w x^{\operatorname{wlpk}(w)}$.
+## Results
 
-Here $\operatorname{des}(w)=\#\{i:w_i>w_{i+1}\}$ and
-$\operatorname{wlpk}(w)=\#\{i\ge1:w_{i-1}\le w_i>w_{i+1}\}$, with positions
-numbered from $0$.
+A [parking function](sf:parkingFunctionDefinition) of length $n$ [@DiaconisHicks2017] is a word
+$w=w_0\dotsm w_{n-1}$ with letters in $\{0,\dots,n-1\}$ such that for every $k\le n$ at least
+$k$ letters are smaller than $k$. We set
+$\operatorname{des}(w)=\#\{i:w_i>w_{i+1}\}$ and
+$\operatorname{wlpk}(w)=\#\{i\ge1:w_{i-1}\le w_i>w_{i+1}\}$, with positions numbered from $0$.
+A parking function is *tieless* if no two adjacent letters are equal.
+
+**Theorem.** For every $n\ge0$, each of the following polynomials over parking functions $w$ of
+length $n$ is real-rooted:
+
+- $\sum_w x^{\operatorname{des}(w)}$;
+- $\sum_w x^{\operatorname{des}(w)}$ over tieless parking functions;
+- $\sum_w x^{\operatorname{wlpk}(w)}$.
+
+**Proposition.** For $n\ge0$, $(n+1)$ times the descent polynomial of the parking functions of
+length $n$ equals the descent polynomial of all words of length $n$ over an alphabet of size
+$n+1$ (Pollak's cyclic action). Also, $(n+1)$ times the tieless descent polynomial equals the
+Brändén–Vecchi Chow polynomial of degree $n$ of the elementary Toeplitz matrix with $n+1$
+entries equal to $1$.
 
 ## References
 
-See [@DiaconisHicks2017]. The Chow polynomials appear on the
+[@DiaconisHicks2017]. The Chow polynomials appear on the
 [Brändén–Vecchi page](/RealRooted/theorems/branden-vecchi/).
 <!-- /realrooted-catalog-content -->
 

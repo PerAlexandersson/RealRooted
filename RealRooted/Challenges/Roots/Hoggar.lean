@@ -3,7 +3,7 @@ module
 import RealRooted.CoefficientShape.Hoggar
 
 /-!
-# Hoggar's theorem challenge entry point
+# Hoggar's theorem
 
 <!-- realrooted-catalog
 version = 1
@@ -30,28 +30,32 @@ label = "Products have no internal zeros"
 <!-- realrooted-catalog-content -->
 # Hoggar's theorem
 
-A sequence $a_0, a_1, \dotsc, a_n$ of nonnegative reals is *log-concave* if
-$a_{k-1} a_{k+1} \leq a_k^2$ for $0 < k < n$, and has *no internal zeros* if
-$a_i a_k \neq 0$ and $i < j < k$ imply $a_j \neq 0$.
+Products of polynomials with nonnegative, log-concave coefficients without internal zeros again
+have these properties.
 
-**Theorem** (Hoggar). If two polynomials with nonnegative coefficients have
-log-concave coefficient sequences without internal zeros, then so does their
-product.
+## Results
 
-Real-rooted polynomials with nonnegative coefficients have this property by
-Newton's inequalities, but the class is much larger.  The hypothesis on
-internal zeros cannot be dropped: $1 + x^3$ (coefficients $1, 0, 0, 1$) and
-$1 + x$ are log-concave, but their product $1 + x + x^3 + x^4$ is not, since
-$a_1 a_3 = 1 > 0 = a_2^2$.
+A sequence $a_0,\dots,a_n$ of nonnegative reals is *log-concave* if $a_{k-1}a_{k+1}\le a_k^2$ for
+$0<k<n$, and has *no internal zeros* if $a_ia_k\ne0$ and $i<j<k$ imply $a_j\ne0$.
 
-## Proof idea
+**Theorem (Hoggar).** Let $p$ and $q$ be polynomials with nonnegative coefficients whose
+coefficient sequences are log-concave and have no internal zeros. Then the coefficient sequence of
+$pq$ is log-concave and has no internal zeros.
 
-A nonnegative log-concave sequence without internal zeros is a Pólya
-frequency sequence of order two: $a_i a_{j+1} \leq a_{i+1} a_j$ for
-$i \leq j$.  The coefficients of the product are given by a product of two
-Toeplitz matrices, and the Cauchy–Binet formula writes each $2 \times 2$
-minor of the product as a sum of products of nonnegative minors of the
-factors.
+The hypothesis on internal zeros is needed: $1+x^3$ and $1+x$ have log-concave coefficient
+sequences, but $(1+x^3)(1+x)=1+x+x^3+x^4$ does not, since $a_1a_3=1>0=a_2^2$.
+
+## Use
+
+Real-rooted polynomials with nonnegative coefficients satisfy the hypotheses by Newton's
+inequalities.
+
+## Proof
+
+A nonnegative log-concave sequence without internal zeros satisfies $a_ia_{j+1}\le a_{i+1}a_j$
+for $i\le j$. The $2\times2$ Cauchy–Binet identity for the product of two Toeplitz matrices then
+gives log-concavity of the product. The product has no internal zeros because the supports of
+both factors are intervals.
 
 ## References
 

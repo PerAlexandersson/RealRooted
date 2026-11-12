@@ -50,17 +50,29 @@ label = "Weyl: characteristic polynomials of A and A + vvᵀ interlace"
 <!-- realrooted-catalog-content -->
 # Cauchy interlacing
 
-List the eigenvalues of a Hermitian $(n+1) \times (n+1)$ matrix as
-$\lambda_0 \geq \dotsb \geq \lambda_n$, and those of a principal submatrix of size
-$n$ as $\mu_0 \geq \dotsb \geq \mu_{n-1}$. Then the eigenvalues interlace:
-$\lambda_{k+1} \leq \mu_k \leq \lambda_k$ for every $k$. For real symmetric
-matrices, the corresponding characteristic polynomials also interlace.
+The eigenvalues of a Hermitian matrix and of any principal submatrix of one smaller size
+interlace, and so do the characteristic polynomials in the real symmetric case.
 
-Weyl's companion result concerns rank-one updates: the eigenvalues of
-$A+vv^*$ satisfy $\lambda_k(A)\leq\lambda_k(A+vv^*)$, and for $k\ge1$ also
-$\lambda_k(A+vv^*)\leq\lambda_{k-1}(A)$. Thus the characteristic polynomials
-of $A$ and $A+vv^{T}$ interlace. Both results follow
-from the Courant–Fischer min-max principle.
+## Results
+
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+
+**Theorem (Cauchy).** Let $A$ be a Hermitian $(n+1)\times(n+1)$ matrix over $\mathbb R$ or
+$\mathbb C$ with eigenvalues $\lambda_0\ge\dots\ge\lambda_n$. Let $A'$ be obtained by deleting
+the $i$-th row and column, with eigenvalues $\mu_0\ge\dots\ge\mu_{n-1}$. Then
+$$
+\lambda_{k+1}\le\mu_k\le\lambda_k\qquad(0\le k<n).
+$$
+If $A$ is real symmetric, then $\chi_{A'}\ll\chi_A$ for the characteristic polynomials.
+
+**Theorem (Weyl, rank-one update).** Let $A$ be an $N\times N$ Hermitian matrix and $v$ a vector,
+with eigenvalues of $A$ and $B=A+vv^*$ listed in decreasing order. Then
+$\lambda_k(A)\le\lambda_k(B)$ for all $k$, and $\lambda_k(B)\le\lambda_{k-1}(A)$ for $k\ge1$. If
+$A$ is real symmetric and $v$ is real, then $\chi_A\ll\chi_{A+vv^T}$.
+
+## Proof
+
+Both statements follow from the [Courant–Fischer theorem](/RealRooted/theorems/courant-fischer/).
 
 ## References
 

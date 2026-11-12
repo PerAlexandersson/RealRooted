@@ -10,7 +10,7 @@ public import RealRooted.GammaPencil.Basic
 public import RealRooted.GammaTransform.Basic
 
 /-!
-# Gamma transform challenge entry point
+# Real-rootedness and interlacing of the gamma transform
 
 <!-- realrooted-catalog
 version = 1
@@ -100,104 +100,69 @@ label = "Two successive gamma-transform steps preserve proper position"
 -->
 
 <!-- realrooted-catalog-content -->
-# The gamma transform
+# Real-rootedness and interlacing of the gamma transform
 
-For $d \geq 0$ and a polynomial $\gamma(x) = \sum_i \gamma_i x^i$, the
-**gamma transform** in ambient degree $d$ is
+The gamma transform $\Gamma_d$ sends a real-rooted polynomial with nonpositive roots to a
+real-rooted polynomial with nonpositive roots, and conversely; adjacent transforms interlace
+exactly when the gamma polynomials do.
+
+## Results
+
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+For $d\ge0$ and $\gamma=\sum_i\gamma_ix^i$, the *gamma transform* in ambient degree $d$ is
 $$
-\Gamma_d(\gamma)(x) = \sum_{i=0}^{\lfloor d/2 \rfloor}
-  \gamma_i\, x^i (1+x)^{d-2i}.
+\Gamma_d(\gamma)(x)=\sum_{i=0}^{\lfloor d/2\rfloor}\gamma_i\,x^i(1+x)^{d-2i}.
 $$
-Every palindromic polynomial $p$ with center of symmetry $d/2$ has the form
-$p = \Gamma_d(\gamma_p)$ for a unique **gamma polynomial** $\gamma_p$ of degree
-at most $d/2$, and $p$ is gamma-positive when $\gamma_p$ has nonnegative
-coefficients.
+A palindromic polynomial $p$ with center of symmetry $d/2$ is $\Gamma_d(\gamma_p)$ for a unique
+*gamma polynomial* $\gamma_p$ of degree at most $d/2$; $p$ is *gamma-positive* if
+$\gamma_p$ has nonnegative coefficients.
 
-**Theorem.** Let $\deg \gamma \leq d/2$. Then $\gamma$ is nonzero and
-real-rooted with only nonpositive zeros if and only if $\Gamma_d(\gamma)$ is
-nonzero and real-rooted with only nonpositive zeros. In particular, if
-$\gamma \neq 0$ is real-rooted with nonnegative coefficients, then
-$\Gamma_d(\gamma)$ is real-rooted.
+**Theorem (real roots).** Let $\deg\gamma\le d/2$. Then $\gamma$ is nonzero and real-rooted with
+only nonpositive roots if and only if $\Gamma_d(\gamma)$ is. If $\gamma\ne0$ is real-rooted with
+nonnegative coefficients, then $\Gamma_d(\gamma)$ is nonzero and real-rooted.
 
-**Theorem** (Hoster–Stump). [@HosterStump2025x, Prop. 2.5] Let
-$\deg \gamma \leq d/2$ and
-$\deg \delta \leq (d+1)/2$, and let $\gamma$ and $\delta$ have nonnegative
-coefficients and nonzero constant terms. Then
-$\Gamma_d(\gamma) \ll \Gamma_{d+1}(\delta)$ if and only if
-$\gamma \ll \delta$.
+**Theorem (Hoster--Stump [@HosterStump2025x, Prop. 2.5]).** Let $\deg\gamma\le d/2$ and
+$\deg\delta\le(d+1)/2$, where $\gamma,\delta$ have nonnegative coefficients and nonzero constant
+terms. Then $\Gamma_d(\gamma)\ll\Gamma_{d+1}(\delta)$ if and only if $\gamma\ll\delta$.
 
-## The gamma pencil
+**Theorem (roots).** Let $\deg\gamma\le d/2$ with $\gamma\ne0$, and suppose all roots of
+$\Gamma_d(\gamma)$ are negative. Then the roots of $\Gamma_d(\gamma)$, with multiplicity, are
+the roots $x\in(-1,0)$, their reciprocals $1/x$, and $-1$ with multiplicity $d-2\deg\gamma$.
 
-For $n \geq 2$, let $T_n$ be the operator
+**Theorem (strict lifting).** Let $n\ge2$, and let $A,B$ have positive leading coefficients,
+only negative roots, and degrees $\lfloor(n-1)/2\rfloor$ and $\lfloor n/2\rfloor$. If $A\ll B$
+and $A,B$ have no common root, then $\Gamma_{n-1}(A)$ and $\Gamma_n(B)$ have degrees $n-1$ and
+$n$, simple negative roots and no common root, and $\Gamma_{n-1}(A)\ll\Gamma_n(B)$. The argument
+follows [@Zhang2026SeparableInterlacing].
+
+**Theorem (two steps).** Let $\gamma\ll\delta$ have nonnegative coefficients and nonzero
+constant terms, with $\deg\gamma\le n$ and $\deg\delta\le n+1$. Then
 $$
-T_n f = (1 + 2nx)\, f + x (1 - 4x)\, f'.
+\Gamma_{2n}(\gamma)\ \ll\ (x+1)\,\Gamma_{2n}(\gamma)\ \ll\ \Gamma_{2n+2}(\delta).
 $$
-Define $U_2 = 1$, $V_2 = x$, and $U_{n+1} = T_n U_n$,
-$V_{n+1} = T_n V_n$; these are `gammaU` and `gammaV`, defined by this
-recurrence.
 
-**Theorem.** For $n \geq 2$, the operator $T_n$ maps every real-rooted
-polynomial of degree at most $n/2$ to zero or a real-rooted polynomial. For
-every $n \geq 2$ and all real $a$ and $b$, the polynomial $a U_n + b V_n$ is
-real-rooted (we count the zero polynomial as real-rooted here), and
-$U_n \ll V_n$.
-
-## Proof idea
-
-The map $x \mapsto x/(1+x)^2$ sends $(-\infty, 0]\setminus\{-1\}$ onto
-$(-\infty,0]$, and
-$\Gamma_d(\gamma)(x) = (1+x)^d \gamma(x/(1+x)^2)$. Each nonpositive zero $y$
-of $\gamma$ therefore pulls back to two nonpositive zeros of
-$\Gamma_d(\gamma)$, which are real since $y \leq 0 < 1/4$, and the factor
-$(1+x)^{d - 2\deg\gamma}$ supplies the remaining zeros. We prove both
-directions by induction on $\deg \gamma$, splitting off one quadratic factor
-at a time. The Hoster–Stump equivalence follows by comparing the sorted root
-lists through the same monotone root map.
-
-For the pencil, the operator $T_n$ has a stable algebraic symbol, so the
-finite Borcea–Brändén theorem [@Branden2015] shows that it preserves
-real-rootedness on its
-degree box. It therefore maps the real pencil spanned by $U_n$ and $V_n$ into
-the next one, starting from the linear pencil $a + bx$. By Obreschkoff's
-theorem, the pencil property makes $U_n$ and $V_n$ interlace, and the
-constant terms $U_n(0) = 1$ and $V_n(0) = 0$ fix the orientation.
-
-## Root structure, strict lifting and two steps
-
-The gamma transform is determined by the root map $y=x/(1+x)^2$. If $\gamma\ne0$
-and every root of $\Gamma_d(\gamma)$ is negative, then the roots of
-$\Gamma_d(\gamma)$ are the reciprocal pairs $\{x,1/x\}$ with $x\in(-1,0)$, together
-with $d-2\deg\gamma$ roots at $-1$. In the Hoster–Stump description this is the
-exact root multiset of the transform [@HosterStump2025x, Prop. 2.5]. For an
-arbitrary polynomial $p=\Gamma_d(\gamma)$ with $\deg\gamma\le d/2$, the real-rootedness
-criterion above applies without any symmetry assumption on $p$.
-
-The interlacing equivalence has a strict form. Let $A$ and $B$ have positive
-leading coefficients, negative roots, degrees $\lfloor (n-1)/2\rfloor$ and
-$\lfloor n/2\rfloor$ with $n\ge2$, and suppose $A\ll B$ with no common root. Then
-$\Gamma_{n-1}(A)$ and $\Gamma_n(B)$ again have degrees $n-1$ and $n$, simple negative
-roots, no common root, and $\Gamma_{n-1}(A)\ll\Gamma_n(B)$. The argument is the one
-used by Zhang for the descent polynomials of separable permutations
-[@Zhang2026SeparableInterlacing].
-
-Finally, if $\gamma\ll\delta$ have nonnegative coefficients and nonzero constant
-terms with $\deg\gamma\le n$ and $\deg\delta\le n+1$, then
+**The gamma pencil.** For $n\ge2$ let
 $$
-\Gamma_{2n}(\gamma)\ \ll\ (x+1)\,\Gamma_{2n}(\gamma)\ \ll\ \Gamma_{2n+2}(\delta),
+T_nf=(1+2nx)\,f+x(1-4x)\,f'.
 $$
-so two successive gamma-transform steps preserve proper position.
+Put $U_2=1$, $V_2=x$, $U_{n+1}=T_nU_n$ and $V_{n+1}=T_nV_n$.
 
-## Relation to SymCat
+**Theorem (pencil).** For $n\ge2$, $T_n$ maps every real-rooted polynomial of degree at most
+$n/2$ to zero or a real-rooted polynomial. For all real $a,b$, $aU_n+bV_n$ is zero or
+real-rooted, and $U_n\ll V_n$.
 
-We formalize the nonpositive-root transfer criterion in the
-[gamma-polynomial discussion](sf:gammaPolynomial). The discussion also gives the
-more general root bound $1/4$ without coefficient-sign hypotheses.
+## Proof
+
+Since $\Gamma_d(\gamma)(x)=(1+x)^d\gamma\bigl(x/(1+x)^2\bigr)$ and $x/(1+x)^2$ maps
+$(-\infty,0]\setminus\{-1\}$ onto $(-\infty,0]$, each nonpositive root $y$ of $\gamma$ pulls
+back to two real roots, which are nonpositive because $y\le0<1/4$. For the pencil, $T_n$ has a
+stable algebraic symbol, so the finite Borcea--Brändén theorem [@Branden2015] applies.
 
 ## References
 
-See [@Petersen2015EulerianNumbers, Sec. 4.6],
-[@HosterStump2025x, Prop. 2.5], and [@Branden2015]. See also the
-[gamma polynomial on symmetricfunctions.com](sf:gammaPolynomial).
+[@Petersen2015EulerianNumbers, Sec. 4.6], [@HosterStump2025x, Prop. 2.5], [@Branden2015]. The
+[gamma polynomial on symmetricfunctions.com](sf:gammaPolynomial) gives the discussion of
+gamma-positivity.
 <!-- /realrooted-catalog-content -->
 
 This module exposes the real-rootedness transfer for the gamma transform, the

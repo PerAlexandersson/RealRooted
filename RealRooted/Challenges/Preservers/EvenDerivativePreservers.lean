@@ -8,7 +8,7 @@ import RealRooted.EvenDerivative.Stability
 import RealRooted.EvenDerivative.Symbol
 
 /-!
-# Even-derivative preservers: the finite-degree criterion
+# Even-derivative operators preserving Pólya frequency polynomials
 
 <!-- realrooted-catalog
 version = 1
@@ -60,12 +60,12 @@ label = "The polarization of p_n is real stable (Grace–Walsh–Szegő)"
 [[theorems]]
 name = "RealRooted.evenDerivativeOperator_X_pow_comp"
 module = "RealRooted.EvenDerivative.Basic"
-label = "Folding: T_c(uᴺ)(-z²) = (-1)ᴺ zᴺ p_N(z)"
+label = "Composition with −z²: T_c(uᴺ)(−z²) = (−1)ᴺ zᴺ p_N(z)"
 
 [[theorems]]
 name = "RealRooted.splits_evenDerivativeTest_of_le"
 module = "RealRooted.EvenDerivative.Preserver"
-label = "Lower caps: if p_N is real-rooted so is p_n for n ≤ N"
+label = "If p_N is real-rooted, then p_n is real-rooted for all n ≤ N"
 
 [[theorems]]
 name = "RealRooted.strictInterl_evenDerivativeOperator_X_pow_succ"
@@ -124,98 +124,63 @@ label = "For c = (1, 2, 1, 0, …) the images of (u+1)³ and (u+1)⁴ interlace"
 -->
 
 <!-- realrooted-catalog-content -->
-# Even-derivative preservers: the finite-degree criterion
+# Even-derivative operators preserving Pólya frequency polynomials
 
-For a coefficient sequence $c=(c_k)_{k\ge0}$ with $c_0=1$ and $c_k\ge0$, let
+The operator $f\mapsto\sum_kc_kx^kf^{(2k)}$ preserves PF polynomials of degree at most $N$ if and
+only if a single explicit polynomial $p_N$ is real-rooted.
+
+## Results
+
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+A polynomial is *PF* (Pólya frequency) if it is zero or has nonnegative coefficients and only
+real, nonpositive roots. For $c=(c_k)_{k\ge0}$ with $c_0=1$ and $c_k\ge0$ let
 $$
-T_cf(x)=\sum_{k\ge0}c_k\,x^k f^{(2k)}(x),
+T_cf=\sum_{k\ge0}c_k\,x^kf^{(2k)},\qquad
+p_N(z)=\sum_{k\le N/2}(-1)^kc_k\,(N)_{2k}\,z^{N-2k},
 $$
-so that multiplication by $x^k$ is applied after differentiation. A polynomial is *PF* if it
-is zero or has a positive leading coefficient and only real nonpositive roots; this includes
-constants, repeated roots and the root zero. For $N\ge0$ write $(N)_{j}=N(N-1)\cdots(N-j+1)$
-and
-$$
-p_N(z)=\sum_{k\le N/2}(-1)^k c_k\,(N)_{2k}\,z^{N-2k}.
-$$
+where $(N)_j=N(N-1)\cdots(N-j+1)$. Then $T_c(u^N)=\sum_kc_k(N)_{2k}u^{N-k}$ and
+$T_c(u^N)(-z^2)=(-1)^Nz^Np_N(z)$.
 
 **Theorem (finite-degree criterion).** For every $N\ge0$ the following are equivalent.
 
 1. $T_c$ maps every PF polynomial of degree at most $N$ to a PF polynomial.
-2. The single image $T_c(u^N)$ is real-rooted.
-3. The polynomial $p_N$ is real-rooted.
+2. $T_c(u^N)$ is real-rooted.
+3. $p_N$ is real-rooted.
 
-When they hold, $T_c$ also preserves directed (weak) interlacing of PF pairs of degree at most
-$N$: $f\ll g$ implies $T_cf\ll T_cg$. Moreover $T_c((u+a)h)$ is real-rooted for every PF
-polynomial $h$ with $\deg h<N$ and every real $a$, so $T_c$ also maps a real-rooted input with a
-single positive root to a real-rooted output. No simplicity conclusion is claimed.
+If $p_N$ is real-rooted, then $p_n$ is real-rooted for all $n\le N$.
+
+**Theorem (consequences).** Suppose $p_N$ is real-rooted.
+
+- $T_c(u^m)\ll T_c(u^{m+1})$ for $m+1\le N$.
+- If $f\ll g$ have nonnegative coefficients and $\deg g\le N$, then $T_cf\ll T_cg$.
+- If $h$ is PF with $\deg h<N$ and $a\in\mathbb R$, then $T_c\bigl((u+a)h\bigr)$ is real-rooted.
+- If $r_1,\dots,r_n\ge0$ and $n\le N$, then $T_c\prod_{i\le n}(u+r_i)$ is real-rooted.
+
+**Theorem (finitely supported coefficients).** Suppose $c_k=0$ for $k>M$ and the signed symbol
+$h(w)=\sum_{k\le M}(-1)^kc_kw^{2k}$ is real-rooted. Then $p_N$ is real-rooted for every $N$, and
+$p_N=h(D)\,u^N$ with $D=d/du$. Consequently $T_c$ preserves PF polynomials of every degree.
+
+**Theorem (polarization).** If $p_n$ is real-rooted, its multiaffine symmetric polarization is
+real stable.
+
+**Examples.**
+
+- For $c=(1,1,1,0,0,\dots)$, that is $T_cf=f+xf''+x^2f^{(4)}$, we have
+  $T_c(u^4)=x^2(x^2+12x+24)$ and $T_c(u^5)=x^3(x^2+20x+120)$. The operator preserves PF
+  polynomials of degree at most four, and $T_c(u^5)$ is not real-rooted.
+- For $c=(1,2,1,0,\dots)$, that is $T_cf=f+2xf''+x^2f^{(4)}$, the operator preserves PF
+  polynomials of every degree. The polynomials $x^3+15x^2+15x+1$ and
+  $x^4+28x^3+78x^2+28x+1$, the images of $(u+1)^3$ and $(u+1)^4$, interlace.
 
 ## Proof
 
-*Folding.* Since $T_c(u^N)=\sum_kc_k(N)_{2k}u^{N-k}$ we have
-$T_c(u^N)(-z^2)=(-1)^Nz^Np_N(z)$. A real polynomial is real-rooted with only nonpositive roots if
-and only if its composition with $-z^2$ is real-rooted, and $T_c(u^N)$ has nonnegative
-coefficients, which gives (2)$\Leftrightarrow$(3). Differentiating,
-$p_N^{(N-n)}=(N)_{N-n}\,p_n$, so real-rootedness of $p_N$ passes to every $p_n$, $n\le N$
-(Rolle).
-
-*Polarization.* Let $M_n(\mathbf z)=\sum_{k\le n/2}(-1)^kc_k(2k)!\,e_{n-2k}(\mathbf z)$ in $n$
-variables. It is symmetric and multiaffine with diagonal $p_n$, so by Grace–Walsh–Szegő it is
-real stable once $p_n$ is real-rooted ([@BorceaBranden2009I], Proposition 2.4). For
-$f=\prod_{i\le n}(u+r_i)$ with $r_i\ge0$ the maps $s_i(z)=z-r_i/z$ send the upper half-plane into
-itself, and
-$$
-(-1)^nT_cf(-z^2)=z^n\,M_n\bigl(s_1(z),\dots,s_n(z)\bigr).
-$$
-Thus $T_cf(-z^2)$ has no zero in the upper half-plane, so it is real-rooted, and folding shows
-that $T_cf$ is real-rooted with nonpositive roots. The leading coefficient is preserved and the
-coefficients stay nonnegative, so $T_cf$ is PF. This proves (3)$\Rightarrow$(1); the implication
-(1)$\Rightarrow$(2) is the special case $f=u^N$.
-
-*Interlacing.* The images of consecutive monomials interlace,
-$T_c(u^m)\ll T_c(u^{m+1})$ for $m<N$. Indeed $p_{m+1}'=(m+1)p_m$, and the logarithmic derivative
-of the real-rooted $p_{m+1}$ has negative imaginary part in the upper half-plane, so
-$p_{m+1}+i\,p_m$ is upper-half-plane stable. After folding and rotation,
-$T_c(u^{m+1})(s^2)+s\,T_c(u^m)(s^2)$ is Hurwitz stable, and the converse odd/even
-Hermite–Biehler theorem gives the interlacing. The monomial-chain upgrade for linear maps that
-preserve PF polynomials then yields preservation of directed interlacing, and for a PF polynomial
-$h$ the combination $T_c((u+a)h)=a\,T_ch+T_c(uh)$ of the interlacing pair $T_ch\ll T_c(uh)$ is
-real-rooted for every real $a$.
-
-*Finitely supported $c$.* If $c_k=0$ for $k>M$, then $p_N=h(D)\,u^N$ with the signed symbol
-$h(w)=\sum_{k\le M}(-1)^kc_kw^{2k}=C(-w^2)$, where $C(t)=\sum_kc_kt^k$. By the Hermite–Poulain
-theorem, if $h$ is real-rooted then every $p_N$ is real-rooted, so $T_c$ preserves PF
-polynomials and directed interlacing in all degrees.
-
-## Examples
-
-* $c=(1,1,1,0,0,\dots)$, that is $T_cf=f+xf''+x^2f^{(4)}$. Here
-  $T_c(u^4)=x^2(x^2+12x+24)$ is real-rooted, so $T_c$ preserves PF polynomials through degree
-  four, but $T_c(u^5)=x^3(x^2+20x+120)$ is not real-rooted (the quadratic has discriminant
-  $-80$), so preservation fails in degree five. Both statements are formalized.
-* $c=(1,2,1,0,\dots)$, that is $T_cf=f+2xf''+x^2f^{(4)}$. The signed symbol is $(1-w^2)^2$, so
-  $T_c$ preserves PF polynomials and directed interlacing in every degree. The images of
-  $(u+1)^3$ and $(u+1)^4$ are $x^3+15x^2+15x+1$ and $x^4+28x^3+78x^2+28x+1$, and they interlace.
-  These statements are formalized.
-
-The scope is the finite-degree criterion with its interlacing and one-extra-root consequences and
-the finitely supported symbol criterion. The classification of all-degree preservers (the
-Pólya–Schur type description of $C(t)=\sum c_kt^k$), the sharp output intervals, the
-characterization of source intervals containing positive points, and the coefficient-convolution
-constructions are not formalized here.
-
-## What is new
-
-The proof is new, developed for RealRooted, and is of independent research
-interest. The classical inputs are the Grace–Walsh–Szegő polarization of real-rooted symmetric
-polynomials to real stable multiaffine polynomials, the Hermite–Biehler theorem and the
-Hermite–Poulain theorem; the folding, the half-plane maps $z\mapsto z-r/z$, the lower-degree
-caps and the monomial-chain interlacing argument are specific to this family of operators. This
-extends the matching-type operators with coefficients $b^k/k!$.
+Composing $T_c(u^N)$ with $u=-z^2$ gives $(-1)^Nz^Np_N(z)$, which relates (2) and (3). The
+implication from (3) to (1) uses the Grace--Walsh--Szegő polarization of $p_n$
+[@BorceaBranden2009I, Prop. 2.4].
 
 ## References
 
-See [@BorceaBranden2009I], Proposition 2.4 (polarization) and Theorem 2.3
-(Grace–Walsh–Szegő).
+[@BorceaBranden2009I, Thm. 2.3] is the Grace--Walsh--Szegő theorem.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in the `RealRooted.EvenDerivative` modules

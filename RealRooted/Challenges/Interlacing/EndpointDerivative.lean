@@ -4,7 +4,7 @@ import RealRooted.EndpointDerivative.Basic
 import RealRooted.EndpointDerivative.Sequence
 
 /-!
-# Endpoint derivative sequences
+# Interlacing and root intervals of endpoint-derivative sequences
 
 <!-- realrooted-catalog
 version = 1
@@ -20,114 +20,113 @@ references = [
 [[theorems]]
 name = "RealRooted.strictInterl_endpointDerivative"
 module = "RealRooted.EndpointDerivative.Basic"
-label = "Interlacing after endpoint differentiation"
+label = "f interlaces (x-a)(x-b)f' when its roots lie in [a,b]"
 headline = true
 
 [[theorems]]
 name = "RealRooted.roots_endpointDerivative_mem_Icc"
 module = "RealRooted.EndpointDerivative.Basic"
-label = "Root interval after endpoint differentiation"
+label = "The roots of (x-a)(x-b)f' lie in [a,b]"
 
 [[theorems]]
 name = "RealRooted.strictInterl_derivative_endpointProduct"
 module = "RealRooted.EndpointDerivative.Basic"
-label = "Interlacing after differentiating the endpoint product"
+label = "f interlaces ((x-a)(x-b)f)' when its roots lie in [a,b]"
 
 [[theorems]]
 name = "RealRooted.roots_derivative_endpointProduct_mem_Icc"
 module = "RealRooted.EndpointDerivative.Basic"
-label = "Root interval after differentiating the endpoint product"
+label = "The roots of ((x-a)(x-b)f)' lie in [a,b]"
 
 [[theorems]]
 name = "RealRooted.strictInterl_endpointDerivative_sequence"
 module = "RealRooted.EndpointDerivative.Sequence"
-label = "Interlacing sequence for endpoint differentiation"
+label = "Iterating (x-a)(x-b)f' gives a chain P_n ≪ P_{n+1}"
 
 [[theorems]]
 name = "RealRooted.strictInterl_derivative_endpointProduct_sequence"
 module = "RealRooted.EndpointDerivative.Sequence"
-label = "Interlacing sequence for product differentiation"
+label = "Iterating ((x-a)(x-b)f)' gives a chain P_n ≪ P_{n+1}"
 
 [[theorems]]
 name = "RealRooted.interlaces_endpointDerivative_sequence"
 module = "RealRooted.EndpointDerivative.Sequence"
-label = "Interlacing sequence for endpoint differentiation"
+label = "Iterating (x-a)(x-b)f' with degrees rising by one: differ-by-one interlacing"
 
 [[theorems]]
 name = "RealRooted.interlaces_derivative_endpointProduct_sequence"
 module = "RealRooted.EndpointDerivative.Sequence"
-label = "Interlacing sequence for product differentiation"
+label = "Iterating ((x-a)(x-b)f)' with degrees rising by one: differ-by-one interlacing"
 
 [[theorems]]
 name = "RealRooted.isRealRooted_endpointDerivative_sequence"
 module = "RealRooted.EndpointDerivative.Sequence"
-label = "Real-rooted endpoint-derivative sequence"
+label = "Iterating (x-a)(x-b)f' gives nonzero real-rooted rows"
 
 [[theorems]]
 name = "RealRooted.isRealRooted_derivative_endpointProduct_sequence"
 module = "RealRooted.EndpointDerivative.Sequence"
-label = "Real-rooted product-derivative sequence"
+label = "Iterating ((x-a)(x-b)f)' gives nonzero real-rooted rows"
 
 [[theorems]]
 name = "RealRooted.natDegree_endpointDerivative"
 module = "RealRooted.EndpointDerivative.Basic"
-label = "Degree of endpoint differentiation"
+label = "(x-a)(x-b)f' has degree deg f + 1"
 
 [[theorems]]
 name = "RealRooted.hasPosLeadingCoeff_endpointDerivative"
 module = "RealRooted.EndpointDerivative.Basic"
-label = "Positive leading coefficient after endpoint differentiation"
+label = "(x-a)(x-b)f' has positive leading coefficient"
 
 [[theorems]]
 name = "RealRooted.natDegree_derivative_endpointProduct"
 module = "RealRooted.EndpointDerivative.Basic"
-label = "Degree of product differentiation"
+label = "((x-a)(x-b)f)' has degree deg f + 1"
 
 [[theorems]]
 name = "RealRooted.hasPosLeadingCoeff_derivative_endpointProduct"
 module = "RealRooted.EndpointDerivative.Basic"
-label = "Positive leading coefficient after product differentiation"
+label = "((x-a)(x-b)f)' has positive leading coefficient"
 -->
 
 <!-- realrooted-catalog-content -->
-# Endpoint derivative sequences
+# Interlacing and root intervals of endpoint-derivative sequences
 
-We fix $a \leq b$ and write $q=(X-a)(X-b)$. If a split polynomial $f$
-has positive leading coefficient, positive degree, and all roots in $[a,b]$,
-then `strictInterl_endpointDerivative` puts $f$ to the left of $qf'$ in
-interlacing position. Here `StrictInterl` means that both polynomials are
-nonzero and real-rooted; coinciding roots, for example at $a$ or $b$, are not
-excluded. The roots of $qf'$ remain in the same interval, as recorded by
-`roots_endpointDerivative_mem_Icc`.
+Applying $f\mapsto(x-a)(x-b)f'$ or $f\mapsto((x-a)(x-b)f)'$ to a real-rooted polynomial with all
+roots in $[a,b]$ gives a polynomial of one higher degree that is real-rooted, interlaced by $f$,
+and has all roots in $[a,b]$.
 
-We also apply the same argument to $(qf)'$. The product first adds the two
-endpoint roots, and differentiation then gives the second pair of one-step
-theorems. Thus `strictInterl_derivative_endpointProduct` gives strict
-interlacing with $f$, while `roots_derivative_endpointProduct_mem_Icc`
-preserves the root interval.
+## Results
 
-We use these one-step results inductively for a sequence $P$. Under the
-corresponding recurrence, base splitting and root-window hypotheses, positive
-leading coefficients, and positive degrees, the two sequence theorems give a
-chain in this `StrictInterl` sense. Here $P(n+1)=qP(n)'$ for the first pair of
-sequence theorems, while $P(n+1)=(qP(n))'$ for the second. In both cases
-$a\le b$, $P(0)$ splits with all roots in $[a,b]$, and every $P(n)$ has
-positive leading coefficient and degree at least $1$. With the additional
-identity $\deg P(n)+1=\deg P(n+1)$, the
-next two theorems convert that chain to `Interlaces`; the final two sequence
-theorems state that every row is nonzero and split.
+We write $f\ll g$ if $f$ interlaces $g$; common roots, for example at $a$ or $b$, are allowed
+unless stated. Fix real numbers $a\le b$ and put $q=(x-a)(x-b)$.
 
-We keep the degree and leading-coefficient facts available as separate
-supporting results. The first operator raises the degree by one under a
-positive-degree hypothesis, and the second does so from positive leading
-coefficient alone; the paired leading-coefficient theorems preserve positivity
-for both operators.
+**Theorem (one step).** Let $f$ be real-rooted with positive leading coefficient, degree at
+least $1$, and all roots in $[a,b]$. Then
+$$
+f\ll qf'\qquad\text{and}\qquad f\ll(qf)',
+$$
+and all roots of $qf'$ and of $(qf)'$ lie in $[a,b]$. Moreover $qf'$ and $(qf)'$ have degree
+$\deg f+1$ and positive leading coefficient.
+
+**Theorem (sequences).** Let $P_0$ be real-rooted with all roots in $[a,b]$, and suppose that
+every $P_n$ has positive leading coefficient and degree at least $1$. Suppose that
+$P_{n+1}=qP_n'$ for all $n$, or that $P_{n+1}=(qP_n)'$ for all $n$. Then every $P_n$ is nonzero
+and real-rooted and $P_n\ll P_{n+1}$ for all $n$. If moreover $\deg P_{n+1}=\deg P_n+1$ for all
+$n$, then $P_n$ interlaces $P_{n+1}$ in the differ-by-one sense.
+
+## Proof
+
+Both maps have the form $f\mapsto uf+qf'$, with $u=0$ or $u=q'$. The derivative step of
+Ma–Wang and Liu–Wang gives $f\ll uf+qf'$ when $q\le0$ at the roots of $f$ and $uf+qf'$ has
+positive leading coefficient and degree $\deg f+1$; here $q\le0$ on $[a,b]$. The sequence
+theorem follows by induction on $n$, since the one-step theorem preserves the hypotheses.
 
 ## References
 
-For derivative interlacing, see [@Fisk2006x, Ch. 1]. The first applications
-are the rows of [OEIS A142071](https://oeis.org/A142071),
-[OEIS A172106](https://oeis.org/A172106), [OEIS A172107](https://oeis.org/A172107),
-and [OEIS A172108](https://oeis.org/A172108).
+For derivative interlacing, see [@Fisk2006x, Ch. 1]. The derivative step is on the
+[Ma–Wang and Liu–Wang page](/RealRooted/theorems/ma-wang-liu-wang/). Examples are the rows of
+[OEIS A142071](https://oeis.org/A142071), [OEIS A172106](https://oeis.org/A172106),
+[OEIS A172107](https://oeis.org/A172107) and [OEIS A172108](https://oeis.org/A172108).
 <!-- /realrooted-catalog-content -->
 -/

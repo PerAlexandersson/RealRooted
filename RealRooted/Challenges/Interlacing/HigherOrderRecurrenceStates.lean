@@ -6,7 +6,7 @@ import RealRooted.Recurrence.QuarticInterlacing
 import RealRooted.Recurrence.ResidueSubsequence
 
 /-!
-# Cubic and quartic recurrences from ordered PF states
+# Interlacing rows of cubic and quartic recurrences from ordered PF states
 
 <!-- realrooted-catalog
 version = 1
@@ -128,17 +128,17 @@ label = "Rows of the cubic family at distance three interlace"
 [[theorems]]
 name = "RealRooted.cubicTransitionFamily_natDegree"
 module = "RealRooted.Recurrence.CubicTransition"
-label = "The nth row of the cubic family has degree ⌊n/3⌋"
+label = "For γ, w > 0 the nth row of the cubic family has degree ⌊n/3⌋"
 
 [[theorems]]
 name = "RealRooted.cubicTransitionFamily_roots_neg"
 module = "RealRooted.Recurrence.CubicTransition"
-label = "All roots of the cubic family are negative"
+label = "For γ > 0 all roots of the cubic family are negative"
 
 [[theorems]]
 name = "RealRooted.cubicTransitionFamily_residue_interlaces"
 module = "RealRooted.Recurrence.CubicTransition"
-label = "Consecutive rows in each residue class modulo three interlace"
+label = "For γ, w > 0 consecutive rows in each residue class modulo three interlace"
 
 [[theorems]]
 name = "RealRooted.cubicTransitionFamily_residue_recurrence"
@@ -172,107 +172,67 @@ label = "The rows of a quartic state satisfy a fourth-order recurrence"
 -->
 
 <!-- realrooted-catalog-content -->
-# Cubic and quartic recurrences from ordered PF states
+# Interlacing rows of cubic and quartic recurrences from ordered PF states
 
-Write $p\ll q$ for the directed, zero-aware interlacing of the
-[interlacing page](/RealRooted/concepts/interlacing/), and call a polynomial PF if
-it is zero or has nonnegative coefficients and only real, nonpositive roots. A
-recurrence for a polynomial sequence $(P_n)$ can be proved to keep every row PF
-and every consecutive pair interlacing by realizing it as a *closed transition*
-on a short state of polynomials: if the transition preserves a class of
-ordered PF tuples and $P_n$ is a coordinate of the iterated state, then all rows
-inherit the property. This page records two such transitions, with a cubic and a
-quartic recurrence, and the algebra of recurrence subsequences. The standard
-tools are the cone lemmas for directed interlacing, as in Wagner [@Wagner1992] (see
-the [Wagner page](/RealRooted/theorems/wagner/)): if $h\ll f_i$ for summands $f_i$
-with nonnegative coefficients then $h\ll\sum f_i$, if $f_i\ll h$ then
-$\sum f_i\ll h$, and $f\ll g$ implies $g\ll xf$. In addition, the sum of an
-interlacing pair of PF polynomials is PF.
+Cubic and quartic recurrences with parameters in explicit ranges have rows that are
+Pólya frequency polynomials and that interlace consecutively; for the cubic transitions the
+parameter ranges are sharp.
 
-## The cubic transition
+## Results
 
-A triple $(q,p,r)$ is an **ordered PF triple** if $q,p,r$ are PF and
-$q\ll p$, $q\ll r$, $p\ll r$. For real parameters $\alpha,\gamma,w$ consider
+We write $p\ll q$ if $p=0$, $q=0$, or $p$ interlaces $q$; common roots are allowed. A polynomial
+is *PF* if it is zero or has nonnegative coefficients and only real, nonpositive roots. A triple
+$(q,p,r)$ is an *ordered PF triple* if $q,p,r$ are PF and $q\ll p$, $q\ll r$, $p\ll r$.
+
+**Theorem (cubic transition).** For real $\alpha,\gamma,w$, the map
 $$
-(q,p,r)\ \longmapsto\ \bigl(\alpha q+p,\ r,\ \gamma r+w\,x\,q\bigr).
+(q,p,r)\ \longmapsto\ \bigl(\alpha q+p,\ r,\ \gamma r+w\,x\,q\bigr)
 $$
+sends every ordered PF triple to an ordered PF triple if and only if
+$\alpha\ge0$, $\gamma\ge0$ and $w\ge0$.
 
-**Theorem.** The transition maps every ordered PF triple to an ordered PF triple
-if and only if $\alpha\ge0$, $\gamma\ge0$ and $w\ge0$.
-
-For sufficiency, all outputs are positive combinations of the inputs and of
-$xq$, and the cone lemmas above give the six required facts; $q\ll xq$, $p\ll xq$
-and $r\ll xq$ come from $f\ll g\Rightarrow g\ll xf$. Necessity is read off from the
-triples $(1,0,0)$ and $(0,0,1)$, which are mapped to $(\alpha,0,wx)$ and
-$(0,1,\gamma)$, so the nonnegative-coefficient condition forces the signs.
-
-Start from $(1,\gamma,\gamma^2)$ and let $P_0=1$, and let $P_{n+1}$ be the middle
-coordinate after $n$ steps. Then $P_0=1$, $P_1=\gamma$, $P_2=\gamma^2$ and
+**Proposition (cubic family).** Let $P_0=1$ and let $P_{n+1}$ be the middle coordinate after
+$n$ steps of the cubic transition, started from $(1,\gamma,\gamma^2)$. Then $P_1=\gamma$,
+$P_2=\gamma^2$ and
 $$
 P_{n+3}=(\alpha+\gamma)P_{n+2}-\alpha\gamma P_{n+1}+w\,x\,P_n .
 $$
-For $\alpha,\gamma,w\ge0$:
+The constant term of $P_n$ is $\gamma^n$, and $P_n=\gamma^n$ if $w=0$. Let $\alpha,\gamma,w\ge0$.
+Then every $P_n$ is PF and
+$$
+P_n\ll P_{n+1},\qquad P_n\ll P_{n+2},\qquad P_n\ll P_{n+3}.
+$$
+If $\gamma>0$, all roots of every $P_n$ are negative. If $\gamma,w>0$, then
+$\deg P_n=\lfloor n/3\rfloor$, and $P_{3n+j}$ interlaces $P_{3(n+1)+j}$ with degree gap one for
+$j=0,1,2$.
 
-- every $P_n$ is PF, and consecutive rows interlace, $P_n\ll P_{n+1}$; rows at
-  distance two and three interlace as well, $P_n\ll P_{n+2}$ and $P_n\ll P_{n+3}$;
-- the constant term of $P_n$ is $\gamma^n$; for $\gamma>0$ all roots are negative,
-  and if moreover $w>0$ then $\deg P_n=\lfloor n/3\rfloor$;
-- for $\gamma,w>0$, the subsequences in each residue class modulo three
-  interlace in the ordinary one-degree-gap sense:
-  $P_{3n+j}$ and $P_{3(n+1)+j}$ interlace for $j=0,1,2$.
-
-At $w=0$ the family is the geometric sequence $\gamma^n$ of constants.
-
-## Subsequences of a cubic recurrence
-
-Let $H$ satisfy $H_{n+3}=pH_{n+2}-qH_{n+1}+uH_n$ in a commutative ring. Then each
-fixed-residue subsequence modulo three satisfies
+**Theorem (every-third subsequences).** Let $H$ satisfy $H_{n+3}=pH_{n+2}-qH_{n+1}+uH_n$
+in a commutative ring. Then for all $j$ and $n$,
 $$
 H_{3(n+3)+j}=(p^3-3pq+3u)H_{3(n+2)+j}-(q^3-3pqu+3u^2)H_{3(n+1)+j}+u^3H_{3n+j}.
 $$
-These coefficients are the elementary symmetric functions of the cubes of the
-characteristic roots. The proof is division free: with
-$c(z)=z^3-pz^2+qz-u$, the identity
-$$
-c(z)\,\bigl(z^6+pz^5+(p^2-q)z^4+(pq-2u)z^3+(q^2-pu)z^2+quz+u^2\bigr)
-=z^9-(p^3-3pq+3u)z^6+(q^3-3pqu+3u^2)z^3-u^3
-$$
-turns the residual of the new recurrence into a combination of seven shifted
-residuals of the old one. Applied with $p=\alpha+\gamma$, $q=\alpha\gamma$ and
-$u=wx$, it gives the recurrence of the residue-class subsequences of the cubic
-family.
+The coefficients are the elementary symmetric functions of the cubes of the characteristic roots.
+With $p=\alpha+\gamma$, $q=\alpha\gamma$ and $u=wx$, this is the recurrence of the residue-class
+subsequences of the cubic family.
 
-## A sharp three-coordinate matrix and third-order recurrences
-
-For real $a,b,c,d$ and $\lambda>0$ consider the transition
+**Theorem (matrix criterion).** Let $\lambda>0$ and let $a,b,c,d$ be real. The map
 $$
 (p,u,r)\ \longmapsto\ \bigl(r,\ r+\lambda x\,p,\ c\,x\,p+d\,x\,u+(a+bx)\,r\bigr),
 $$
-that is, the matrix $\begin{pmatrix}0&0&1\\\lambda x&0&1\\cx&dx&a+bx\end{pmatrix}$.
+given by the matrix $\begin{pmatrix}0&0&1\\\lambda x&0&1\\cx&dx&a+bx\end{pmatrix}$, sends every
+ordered PF triple to an ordered PF triple if and only if $a,b,d\ge0$ and $c\ge a\lambda$.
 
-**Theorem.** The transition maps every ordered PF triple to an ordered PF triple if
-and only if $a,b,d\ge0$ and $c\ge a\lambda$. There are no degree or nonzero-coordinate
-hypotheses.
-
-For sufficiency write $L=r+\lambda xp$ and $N=aL+bxr+(c-a\lambda)xp+dxu$: every
-scalar is nonnegative, $r$ and $L$ precede every summand, and the cone lemmas
-give $r\ll L$, $r\ll N$ and $L\ll N$; the case $r=0$ is handled separately. For
-necessity the triples $(0,0,1)$, $(0,1,0)$, $(1,0,0)$ force the signs, and the
-triples $(K,0,1)$ with $K$ large force $c\ge a\lambda$.
-
-**Corollary.** Let $a_s,b_s,d_s\ge0$, start from $P_{-1}=P_0=0$, $P_1=1$, and let
+**Corollary (third-order recurrences).** Let $a_s,b_s,d_s\ge0$ and $e_s$ be real, and let
+$P_{-1}=P_0=0$, $P_1=1$ and
 $$
 P_{s+2}=(a_s+b_sx)P_{s+1}+e_s\,x\,P_s+d_s\,x^2P_{s-1}.
 $$
-If $a_s\kappa^2-e_s\kappa+d_s\le0$ for some $\kappa>0$ and all $s$ (for $\kappa=1$:
-$e_s\ge a_s+d_s$), then $(P_s,\ P_s+\kappa xP_{s-1},\ P_{s+1})$ is an ordered PF
-triple for every $s$. In particular every $P_s$ is PF and consecutive rows
-interlace, $P_s\ll P_{s+1}$.
+Suppose that $a_s\kappa^2-e_s\kappa+d_s\le0$ for all $s$, for a fixed $\kappa>0$; for $\kappa=1$
+this reads $e_s\ge a_s+d_s$. Then $(P_s,\ P_s+\kappa xP_{s-1},\ P_{s+1})$ is an ordered PF triple
+for every $s$. In particular every $P_s$ is PF and $P_s\ll P_{s+1}$.
 
-## The quartic transition
-
-For parameters $u,v,w$ consider a state $S=(f_0,f_1,f_2,d,s)$ of five polynomials
-and the transition
+**Theorem (quartic transition).** For real $u,v,w$, consider the state
+$S=(f_0,f_1,f_2,d,s)$ of five polynomials and the transition
 $$
 \begin{aligned}
 f_0&\mapsto f_1, & f_1&\mapsto f_2,\\
@@ -280,43 +240,60 @@ f_2&\mapsto f_2+u\,s+(u+v-w)\,x\,f_1+w\,x\,f_0, & &\\
 d&\mapsto d+s+x f_1, & s&\mapsto s+x f_1 .
 \end{aligned}
 $$
-Call $S$ **admissible** if all five coordinates are nonzero PF polynomials, the
-seven comparisons
+Call $S$ *admissible* if all five coordinates are nonzero PF polynomials, the comparisons
 $$
 f_0\ll f_1,\quad f_0\ll f_2,\quad f_1\ll f_2,\quad f_1\ll d,\quad f_1\ll s,\quad
 f_2\ll s,\quad d\ll s
 $$
-hold, and the balance identity $f_2=u\,d+v\,s-w\,x\,f_0$ holds.
+hold, and $f_2=u\,d+v\,s-w\,x\,f_0$. If $0\le w\le v\le u$ and $u>0$, the transition maps
+admissible states to admissible states. Hence, for an admissible initial state, the rows
+$R_n=f_0^{(n)}$ of the iterated state are nonzero PF polynomials and $R_n\ll R_{n+1}$.
 
-**Theorem.** If $0\le w\le v\le u$ and $u>0$, the transition maps admissible
-states to admissible states. Consequently, for an admissible initial state, the
-rows $R_n=f_0^{(n)}$ of the iterated state are nonzero PF polynomials and
-consecutive rows interlace, $R_n\ll R_{n+1}$.
-
-The rows satisfy, for every initial state and all parameters, the fourth-order
-recurrence
+**Proposition (quartic recurrence).** For every initial state and all $u,v,w$,
 $$
 R_{n+4}=2R_{n+3}+\bigl((u+v-w)x-1\bigr)R_{n+2}+(2w-v)\,x\,R_{n+1}-w\,x\,R_n .
 $$
-The state is closed by the cone lemmas above: the seven comparisons are
-exactly the ones the transition needs, and the balance identity makes the first
-auxiliary update a positive cone sum. The theorem is stated for an arbitrary admissible
-initial state; it does not depend on any particular combinatorial sequence.
 
-## What is new
+## Use
 
-These transitions and the subsequence algebra were developed in this library. The
-formalization cites no source for the results themselves, and its docstrings say
-that the quartic theorem is independent of any particular combinatorial sequence.
-Only the cone lemmas used in the proofs are attributed (to Wagner), following the
-docstrings; we attribute nothing further.
+A recurrence for a sequence $(P_n)$ keeps every row PF and every consecutive pair interlacing if
+it is realized as a transition on a short state of polynomials that preserves a class of
+ordered PF tuples and $P_n$ is a coordinate of the iterated state. The cubic and quartic
+transitions are two instances.
+
+## Proof
+
+We use the cone lemmas of Wagner [@Wagner1992] (see the [Wagner page](/RealRooted/theorems/wagner/))
+for polynomials with nonnegative coefficients: if $h\ll f_i$ for all $i$, then
+$h\ll\sum_ic_if_i$ for $c_i\ge0$; if $f_i\ll h$ for all $i$, then $\sum_ic_if_i\ll h$; and
+$f\ll g$ implies $g\ll xf$. The sum of an interlacing pair of PF polynomials is PF.
+
+For the cubic transition, the cone lemmas with $q\ll xq$, $p\ll xq$ and $r\ll xq$ give
+sufficiency. Necessity follows from the triples $(1,0,0)$ and $(0,0,1)$, which are mapped to
+$(\alpha,0,wx)$ and $(0,1,\gamma)$.
+
+For the matrix criterion, let $L=r+\lambda xp$ and $N=aL+bxr+(c-a\lambda)xp+dxu$. For $r\ne0$,
+every scalar in $N$ is nonnegative and $r$ and $L$ precede each summand, so the cone lemmas give
+$r\ll L$, $r\ll N$ and $L\ll N$; the case $r=0$ is separate. Necessity follows from the triples
+$(0,0,1)$, $(0,1,0)$ and $(1,0,0)$, which force $a,b,d\ge0$, and from $(K,0,1)$ with $K$
+large, which forces $c\ge a\lambda$.
+
+For the subsequences, let $c(z)=z^3-pz^2+qz-u$. Then
+$$
+c(z)\,\bigl(z^6+pz^5+(p^2-q)z^4+(pq-2u)z^3+(q^2-pu)z^2+quz+u^2\bigr)
+=z^9-(p^3-3pq+3u)z^6+(q^3-3pqu+3u^2)z^3-u^3,
+$$
+so the residual of the new recurrence is a combination of seven shifted residuals of the
+old one, and the argument is division free.
+
+For the quartic transition, the seven comparisons are those that the cone lemmas need, and the
+balance identity makes the update of the first auxiliary coordinate a nonnegative cone sum.
 
 ## References
 
 The cone lemmas for directed interlacing are due to Wagner [@Wagner1992]; see the
-[Wagner page](/RealRooted/theorems/wagner/). For the interlacing convention, see
-the [interlacing page](/RealRooted/concepts/interlacing/). The transitions on
-this page are not attributed to a published source.
+[Wagner page](/RealRooted/theorems/wagner/). For the interlacing convention, see the
+[interlacing page](/RealRooted/concepts/interlacing/).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in `RealRooted.Recurrence.CubicTransition`,

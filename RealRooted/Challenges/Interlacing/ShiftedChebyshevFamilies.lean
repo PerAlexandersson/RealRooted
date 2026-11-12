@@ -80,51 +80,48 @@ label = "The reflected row has all roots ≤ -1/4 exactly when |c| ≤ 1 + 1/n"
 <!-- realrooted-catalog-content -->
 # Shifted Chebyshev families with a perturbed first row
 
-For real $b,d,c$ let $P_0=1$, $P_1=x+d+c$ and
+Rows of a constant-lag three-term recurrence with a perturbed first row interlace, and for the
+shifted Chebyshev case the root windows are exact in the perturbation.
+
+## Results
+
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+
+**Theorem (constant-lag family).** For real $b,d,c$ let $P_0=1$, $P_1=x+d+c$ and
 $$
 P_{n+2}=(x+d)\,P_{n+1}-b^2P_n .
 $$
-This is a Favard-type three-term recurrence with a perturbed first row. Each
-$P_n$ is monic of degree $n$, and for $b\ne0$ every $P_n$ has simple roots and
-consecutive rows interlace.
+Each $P_n$ is monic of degree $n$. If $b\ne0$, then every $P_n$ has simple real roots and
+$P_n\ll P_{n+1}$ for all $n$.
 
-## The shifted Chebyshev case
-
-For $(b,d)=(1,2)$ we obtain the shifted Chebyshev family $S_n^{(c)}$, with
-$S_n^{(c)}(0)=n+1+nc$ and coefficients
+**Theorem (shifted Chebyshev case).** Let $S_n^{(c)}$ be the family with $(b,d)=(1,2)$. Then
+$S_n^{(c)}(0)=n+1+nc$ and
 $$
 [x^k]S_n^{(c)}=\binom{n+k}{2k}+(1+c)\binom{n+k}{2k+1}.
 $$
-For $n\ge1$ the exact root windows are
+For $n\ge1$,
 $$
-\text{all roots }\le0\iff c\ge-1-\tfrac1n,\qquad
+\text{all roots of }S_n^{(c)}\le0\iff c\ge-1-\tfrac1n,\qquad
 \text{all roots in }[-4,0]\iff|c|\le1+\tfrac1n .
 $$
-For $c<d$ the row $S_{n+1}^{(d)}$ interlaces $S_{n+1}^{(c)}$, so the rows are
-ordered in the parameter.
+For $c<d$ and $n\ge1$ we have $S_n^{(d)}\ll S_n^{(c)}$.
 
-## The reflected family
-
-The coefficient reflection $x^nS_n^{(c)}(1/x)$ satisfies the quadratic-lag
-recurrence $Q_0=1$, $Q_1=1+(2+c)x$,
+**Theorem (reflected family).** Let $Q_n^{(c)}=x^nS_n^{(c)}(1/x)$. Then $Q_0=1$,
+$Q_1=1+(2+c)x$ and
 $$
-Q_{n+2}=(1+2x)\,Q_{n+1}-x^2Q_n,
+Q_{n+2}=(1+2x)\,Q_{n+1}-x^2Q_n .
 $$
-has constant term $1$, is real-rooted, and has degree $n$ unless $n+1+nc=0$, when it
-has degree $n-1$. Its roots are all negative exactly when $c\ge-1-1/n$, and all
-roots are $\le-\tfrac14$ exactly when $|c|\le1+1/n$. The coefficients of $Q_n$ in
-degree $1\le k\le n$ are
-$\binom{2n-k}{k}+(1+c)\binom{2n-k}{k-1}$.
-
-## What is new
-
-These families were developed in this library; no published source is cited,
-and we attribute none.
+Each $Q_n$ has constant term $1$ and is real-rooted. It has degree $n$ unless $n+1+nc=0$, and
+then, for $n\ge1$, it has degree $n-1$. For $1\le k\le n$,
+$$
+[x^k]Q_n^{(c)}=\binom{2n-k}{k}+(1+c)\binom{2n-k}{k-1}.
+$$
+For $n\ge1$, all roots of $Q_n^{(c)}$ are negative if and only if $c\ge-1-1/n$, and all are
+at most $-\tfrac14$ if and only if $|c|\le1+1/n$.
 
 ## References
 
-No published source is cited for these results in the formalization. For the
-Favard recurrence, see the [Favard page](/RealRooted/theorems/favard/).
+The three-term recurrence is of Favard type; see the [Favard page](/RealRooted/theorems/favard/).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in

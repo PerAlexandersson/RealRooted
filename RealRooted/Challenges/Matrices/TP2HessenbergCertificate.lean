@@ -76,67 +76,60 @@ label = "The rows of [[1, 1], [0, 1]] begin 1, t - 2, (t - 1)(t - 3)"
 <!-- realrooted-catalog-content -->
 # The finite TP2 Hessenberg certificate
 
-Call a real matrix $A$ *TP2* if all its entries and all its ordered $2\times 2$ minors
-$A_{i_1 j_1}A_{i_2 j_2}-A_{i_1 j_2}A_{i_2 j_1}$, $i_1<i_2$, $j_1<j_2$, are nonnegative;
-minors of larger size are not constrained.
+For a finite TP2 matrix with decreasing columns and constant upper triangles, the rows
+$1/(\det(I+zA)-tz)$ are monic, have nonnegative real roots, and consecutive rows interlace.
 
-**Theorem.** Let $A$ be a real $d\times d$ matrix, $d\ge 1$, such that
+## Results
+
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+A real matrix $A$ is *TP2* if all its entries and all its ordered $2\times2$ minors
+$A_{i_1j_1}A_{i_2j_2}-A_{i_1j_2}A_{i_2j_1}$, $i_1<i_2$, $j_1<j_2$, are nonnegative.
+
+**Theorem.** Let $A$ be a real $d\times d$ matrix, $d\ge1$, such that
 
 1. $A$ is TP2,
 2. every column of $A$ is weakly decreasing down the rows, and
-3. $A_{ij}=A_{jj}$ whenever $i\le j$ (so $A_{ij}=c_j$ in the upper triangle).
+3. $A_{ij}=A_{jj}$ whenever $i\le j$.
 
-Put $F(z)=\det(I+zA)$ and define polynomials $P_k(t)$ by
-$$\sum_{k\ge 0}P_k(t)\,z^k=\frac{1}{F(z)-t\,z}.$$
-Then every $P_k$ is monic of degree $k$ and has only real, nonnegative roots, and consecutive
-rows interlace: the roots of $P_{k+1}$ are separated by, and enclose, the roots of $P_k$.
-The matrix may be singular, and may be larger than the degree of $F$.
+Put $F(z)=\det(I+zA)$ and define $P_k(t)$ by
+$$\sum_{k\ge0}P_k(t)\,z^k=\frac{1}{F(z)-t\,z}.$$
+Then $P_k$ is monic of degree $k$, has only real nonnegative roots, and $P_k\ll P_{k+1}$. The
+matrix may be singular and may be larger than $\deg F$.
 
-**The vector recursion.** Let $J=\mathbf 1e_1^{\mathsf T}$ and define
-$\mathbf f_0=\mathbf 1$, $\mathbf f_{k+1}(x)=(A+xJ)\,\mathbf f_k(x)$. Under conditions 1 and 2
-alone, each $\mathbf f_k$ is an interlacing sequence of polynomials with nonnegative
-coefficients, in the order of the rows. More generally, for $b\ge 0$ the vector
-$(A+bxJ)\mathbf f$ is again such a sequence whenever $\mathbf f$ is, and the first coordinate
-$f_1$ of $\mathbf f$ is interlaced by every coordinate of the output. This is the form needed
-for weighted renewal problems; it does not use condition 3.
+**Proposition (vector recursion).** Let $J=\mathbf 1e_1^{\mathsf T}$, $\mathbf f_0=\mathbf 1$ and
+$\mathbf f_{k+1}(x)=(A+xJ)\,\mathbf f_k(x)$. Under conditions 1 and 2, each $\mathbf f_k$ is an
+interlacing sequence of polynomials with nonnegative coefficients, in the order of the rows.
+More generally, for $b\ge0$ and an interlacing sequence $\mathbf f$ with nonnegative
+coefficients, if all coordinates of $(A+bxJ)\mathbf f$ are nonzero, then the first coordinate
+$f_1$ followed by the coordinates of $(A+bxJ)\mathbf f$ is again such a sequence.
 
-**Identification of the first coordinate.** Condition 3 says that $A=\mathbf 1c^{\mathsf T}-L$
-with $L$ strictly lower triangular. Solving the triangular system for the generating series of
-$(-1)^k\mathbf f_k(-t)$, and comparing with the matrix determinant lemma for
-$\det(I+zA)=1+z\,c^{\mathsf T}(I-zL)^{-1}\mathbf 1$, gives
+**Proposition (first coordinate).** Under condition 3,
 $$P_k(t)=(-1)^k f_{k,1}(-t).$$
-Hence the roots of $P_k$ are the negatives of those of $f_{k,1}$, which are nonpositive because
-$f_{k,1}$ has nonnegative coefficients. Each $f_{k,1}$ is interlaced by the first coordinate of
-the next vector, which gives the interlacing of consecutive rows.
 
-**Classical input.** The vector recursion rests on Brändén's constant-matrix theorem
-[@Branden2015, Corollary 8.6, arXiv:1410.6601]: a constant matrix with nonnegative entries and
-nonnegative ordered $2\times 2$ minors maps an interlacing sequence with nonnegative
-coefficients to one of the same kind. It is formalized here in this TP2 form
-(`Matrix.IsTP2.map_interlacingSeq`), from which the totally nonnegative statement
-(Fisk's theorem, see the [matrix interlacing](/RealRooted/theorems/matrix-interlacing/) page)
-is a special case. The augmented vector $(f_1,\dots,f_d,xf_1)$ is interlacing by Wagner's
-$x$-multiplication transport, and the new $2\times 2$ minors of the augmented constant matrix
-$[A\mid b\mathbf 1]$ are $b\,(A_{ij}-A_{kj})\ge 0$ because the columns of $A$ decrease.
-
-**Example.** For $A=\begin{pmatrix}1&1\\0&1\end{pmatrix}$ we have $\det(I+zA)=(1+z)^2$ and the
+**Example.** For $A=\begin{pmatrix}1&1\\0&1\end{pmatrix}$ we have $\det(I+zA)=(1+z)^2$, and the
 rows begin $1,\ t-2,\ (t-1)(t-3)$.
 
-## What is new
+## Use
 
-The proof is new, developed for RealRooted, and is of independent research
-interest: the identification of the Hessenberg generating function with the first coordinate
-of an interlacing-preserving vector recursion is not taken from the literature, and the
-classical constant-matrix theorem is used only as the preservation input. The strict version
-(simple positive roots and strict interlacing when $d\ge 2$ and $\det A>0$) is on the
-[strict certificate](/RealRooted/theorems/tp2-hessenberg-strictness/) page; the weighted
-renewal and parity-lift consequences are on the
+The strict version (simple positive roots and strict interlacing when $d\ge2$ and $\det A>0$)
+is on the [strict certificate](/RealRooted/theorems/tp2-hessenberg-strictness/) page. The
+weighted-run and parity-lift consequences are on the
 [site-weighted run polynomials](/RealRooted/theorems/site-weighted-run-polynomials/) and
 [parity lift](/RealRooted/theorems/parity-lift-tp2-kernels/) pages.
 
+## Proof
+
+Brändén's constant-matrix theorem [@Branden2015, Corollary 8.6] says that a TP2 constant matrix
+maps an interlacing sequence with nonnegative coefficients to one of the same kind. It gives
+the vector recursion, since $(f_1,\dots,f_d,xf_1)$ is interlacing and the new $2\times2$ minors
+of $[A\mid b\mathbf 1]$ are $b(A_{ij}-A_{kj})\ge0$. Fisk's theorem for totally nonnegative
+matrices (see the [matrix interlacing](/RealRooted/theorems/matrix-interlacing/) page) is a
+special case. Condition 3 gives $A=\mathbf 1c^{\mathsf T}-L$ with $L$ strictly lower
+triangular, and the matrix determinant lemma identifies $P_k$ with $f_{k,1}$ as displayed.
+
 ## References
 
-See [@Branden2015]. See also the [totally nonnegative
+[@Branden2015]. See also the [totally nonnegative
 matrices](/RealRooted/theorems/totally-nonnegative-matrices/) page.
 <!-- /realrooted-catalog-content -->
 

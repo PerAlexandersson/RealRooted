@@ -92,7 +92,7 @@ label = "Oscillatory matrices have real positive eigenvalues"
 
 [[theorems]]
 name = "RealRooted.Challenges.TotallyNonnegativeMatrices.leading_charpoly_strictInterlaces"
-label = "Strict principal interlacing for oscillatory matrices"
+label = "Oscillatory matrices: principal interlacing with simple roots and no common root"
 
 [[theorems]]
 name = "RealRooted.Challenges.TotallyNonnegativeMatrices.isTotallyNonnegRect_mul"
@@ -151,124 +151,96 @@ label = "Karlin: Gaussian matrices are strictly totally positive"
 <!-- realrooted-catalog-content -->
 # Totally nonnegative matrices
 
-A real matrix is **totally nonnegative** (TNN) if every square minor is
-nonnegative. By the Cauchy–Binet formula, products of TNN matrices are TNN.
+Totally nonnegative matrices have real nonnegative eigenvalues, their principal submatrices have
+interlacing characteristic polynomials, and they map interlacing sequences to interlacing
+sequences.
 
-**Theorem** (Gantmacher–Krein). Let $A$ be a TNN $n \times n$ matrix. Then
+## Results
+
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+A real matrix is **totally nonnegative** (TNN) if every square minor is nonnegative. Products of
+TNN matrices are TNN, by the Cauchy–Binet formula.
+
+**Theorem (Gantmacher–Krein).** Let $A$ be a TNN $n\times n$ matrix. Then
+$\det(xI-A)=\prod_{i=1}^n(x-\mu_i)$ with all $\mu_i\ge0$; equivalently, every complex eigenvalue
+of $A$ is a nonnegative real number. If moreover all compound matrices of some power $A^k$,
+$k\ge1$, have positive entries, then all $\mu_i>0$.
+
+**Theorem (primitive compounds).** If every compound matrix of a real square matrix $A$ is
+primitive, then $\det(xI-A)=\prod_i(x-\mu_i)$ with $\mu_1>\dots>\mu_n>0$, so the eigenvalues are
+real, positive and simple.
+
+**Theorem (principal interlacing).** Let $A$ be a TNN $(N+1)\times(N+1)$ matrix, and let $A'$
+and $A''$ be obtained by deleting the last, respectively the first, row and column. Then the
+characteristic polynomials of $A'$ and of $A''$ both interlace that of $A$. If moreover
+$\det A\ne0$ and the super- and subdiagonal entries of $A$ are positive (the oscillatory case),
+then the characteristic polynomials of $A$ and $A'$ have simple roots and no common root, and
+all eigenvalues of $A$ are positive.
+
+**Theorem (TNN mixing, Fisk).** [@Fisk2006x, Thm. 3.7] Let $f_1,\dots,f_n$ be real-rooted
+polynomials with positive leading coefficients and $f_i\ll f_j$ for $i<j$, and let $A$ be a TNN
+$m\times n$ matrix. Then the nonzero entries of $A(f_1,\dots,f_n)^{\mathsf T}$ are real-rooted
+with positive leading coefficients and form an interlacing sequence in row order.
+
+**Theorem (variation diminishing).** If $A$ is a TNN $m\times n$ matrix and $c\in\mathbb R^n$,
+then $\operatorname{var}(Ac)\le\operatorname{var}(c)$, where $\operatorname{var}$ counts sign
+changes after deleting zero entries.
+
+**Theorem (Cryer).** [@Cryer1976] A nonsingular lower-triangular real matrix is TNN as soon as
+every minor formed from arbitrary rows and an initial segment of the columns is nonnegative.
+
+**Theorem (Karlin).** [@Karlin1968] For $a>0$ the Gaussian matrix $\bigl(e^{-a(i-j)^2}\bigr)$ is
+strictly totally positive: every minor with strictly increasing rows and columns is positive.
+
+**Theorem (tetradiagonal factorization).** Index rows and columns from $0$. Let $T$ be the
+lower-Hessenberg matrix with diagonal entries $d_i$, superdiagonal entries $1$, and, in row $i$,
+subdiagonal entry $s_i$ and second subdiagonal entry $t_i$. The characteristic polynomial $p_N$
+of the leading $N\times N$ section satisfies
 $$
-\det(xI - A) = \prod_{i=1}^{n} (x - \mu_i)
+p_N=(x-d_{N-1})\,p_{N-1}-s_{N-1}\,p_{N-2}-t_{N-1}\,p_{N-3}\qquad(N\ge3),
 $$
-with $\mu_1, \dotsc, \mu_n \geq 0$. Equivalently, every complex eigenvalue of
-$A$ is a nonnegative real number. If moreover all compound matrices of some
-power $A^k$, $k \geq 1$, have positive entries, then all $\mu_i$ are positive.
+with $p_0=1$, $p_1=x-d_0$ and $p_2=(x-d_1)(x-d_0)-s_1$, for all signs of the coefficients.
 
-**Theorem** (principal interlacing). Let $A$ be a TNN
-$(N+1) \times (N+1)$ matrix, and let $A'$ and $A''$ be the submatrices
-obtained by deleting the last, respectively the first, row and column. Then
-the characteristic polynomials of $A'$ and of $A''$ both interlace that of
-$A$. If in addition $A$ is nonsingular and its super- and subdiagonal entries
-are positive (the oscillatory case), then both characteristic polynomials of
-$A$ and $A'$ have simple roots, they have no common root, the interlacing is
-strict, and all eigenvalues of $A$ are positive.
+Write $T$ as a product of a unit lower matrix with subdiagonal $\ell$ and second subdiagonal $m$,
+and an upper-bidiagonal matrix with diagonal entries $u_n>0$ and superdiagonal entries $1$.
+Then $d_0=u_0$, $d_{n+1}=u_{n+1}+\ell_n$, $s_{n+1}=\ell_nu_n+m_n$ and $t_{n+2}=m_{n+1}u_n$,
+and these equations determine $u$, $\ell$ and $m$ uniquely.
 
-**Theorem** (TNN mixing, Fisk). [@Fisk2006x, Thm. 3.7] Let
-$f_1, \dotsc, f_n$ be real-rooted
-polynomials with positive leading coefficients that form an interlacing
-sequence, so $f_i \ll f_j$ for $i < j$, and let $A$ be a TNN $m \times n$
-matrix. Then the nonzero entries of $A (f_1, \dotsc, f_n)^{\mathsf T}$ are
-real-rooted with positive leading coefficients and form an interlacing
-sequence in row order.
-
-**Theorem** (variation diminishing). If $A$ is a TNN $m \times n$ matrix and
-$c \in \mathbb{R}^n$, then $\operatorname{var}(Ac) \leq \operatorname{var}(c)$,
-where $\operatorname{var}$ counts sign changes after deleting zero entries.
-
-**Theorem** (Cryer). [@Cryer1976] A nonsingular lower-triangular real matrix is TNN as soon
-as every minor formed from arbitrary rows and an initial segment of the
-columns is nonnegative.
-
-**Theorem** (Gantmacher–Krein). If every compound matrix of a real square
-matrix $A$ is primitive, then the eigenvalues of $A$ are real, positive and
-simple. Karlin's Gaussian matrices $\bigl(e^{-a(i-j)^2}\bigr)$ with $a > 0$ are
-strictly totally positive: every minor with strictly increasing rows and
-columns is positive [@Karlin1968].
-
-**Theorem** (tetradiagonal factorization). Index rows and columns from $0$. A
-tetradiagonal lower-Hessenberg matrix $T$ has diagonal entries $d_i$,
-superdiagonal entries $1$, subdiagonal entries $s_i$ in row $i$, and second
-subdiagonal entries $t_i$ in row $i$. The characteristic polynomial $p_N$ of the
-leading $N \times N$ section satisfies the four-term recurrence
+Let $(\ell_n)$ and $(m_n)$ be sequences with $m_n\ge0$. A *nonnegative split* consists of
+sequences $a_n,b_n\ge0$ with $a_n+b_n=\ell_n$ and $a_{n+1}b_n=m_{n+1}$; it factors the lower
+factor into two unit lower-bidiagonal matrices with nonnegative entries. The *canonical pivots*
+are $u_0=\ell_0$ and
 $$
-p_N = (x - d_{N-1})\, p_{N-1} - s_{N-1}\, p_{N-2} - t_{N-1}\, p_{N-3}
-\qquad (N \geq 3),
-$$
-with $p_0 = 1$, $p_1 = x - d_0$ and $p_2 = (x - d_1)(x - d_0) - s_1$. Write $T$
-as a product of a unit lower matrix with subdiagonal $\ell$ and second
-subdiagonal $m$, and an upper-bidiagonal matrix with diagonal entries
-$u_n > 0$ (the pivots) and superdiagonal entries $1$. Comparing entries gives
-$d_0 = u_0$, $d_{n+1} = u_{n+1} + \ell_n$, $s_{n+1} = \ell_n u_n + m_n$ and
-$t_{n+2} = m_{n+1} u_n$, and these equations determine the pivots, $\ell$ and
-$m$ uniquely. The lower factor splits further into two unit lower-bidiagonal
-matrices with nonnegative entries exactly when the following scalar problem has
-a solution. Let $(\ell_n)$ and $(m_n)$ be sequences with $m_n \geq 0$. A
-*nonnegative split* consists of sequences $a_n, b_n \geq 0$ with
-$a_n + b_n = \ell_n$ and $a_{n+1} b_n = m_{n+1}$. The
-*canonical pivots* are $u_0 = \ell_0$ and
-$$
-u_{n+1} = \begin{cases}
-\ell_{n+1} & \text{if } u_n = 0, \\
-\ell_{n+1} - m_{n+1} / u_n & \text{otherwise,}
+u_{n+1}=\begin{cases}
+\ell_{n+1}&\text{if }u_n=0,\\
+\ell_{n+1}-m_{n+1}/u_n&\text{otherwise.}
 \end{cases}
 $$
-and the canonical split uses $b_n = u_n$ and $a_{n+1} = m_{n+1} / u_n$ (or $0$
-if $u_n = 0$). The canonical split *succeeds* if every $u_n \geq 0$ and
-$u_n = 0$ implies $m_{n+1} = 0$. Then a nonnegative split exists if and only
-if the canonical split succeeds, and in that case $b_n \leq u_n$ for every
-nonnegative split. In particular, the canonical split succeeds if there are
-positive numbers $v_n$ with $v_0 \leq \ell_0$ and
-$v_{n+1} + m_{n+1} / v_n \leq \ell_{n+1}$. The criterion follows Branquinho,
-Foulquié-Moreno and Mañas, with the zero branches, where a pivot vanishes and
-the construction restarts, made explicit.
+The canonical split $b_n=u_n$, $a_{n+1}=m_{n+1}/u_n$ (or $0$ if $u_n=0$) *succeeds* if every
+$u_n\ge0$ and $u_n=0$ implies $m_{n+1}=0$. A nonnegative split exists if and only if the
+canonical split succeeds, and then $b_n\le u_n$ for every nonnegative split. The canonical split
+succeeds if there are positive numbers $v_n$ with $v_0\le\ell_0$ and
+$v_{n+1}+m_{n+1}/v_n\le\ell_{n+1}$. The criterion follows Branquinho, Foulquié-Moreno and
+Mañas, with the cases of a vanishing pivot made explicit.
 
-## Proof idea
+## Proof
 
-For the spectrum, the eigenvalues of the $q$-th compound matrix are the
-$q$-fold products of eigenvalues of $A$. When all compounds are primitive,
-Perron–Frobenius theory makes each top product real and positive, which
-forces every eigenvalue to be real and positive. A general TNN matrix is a
-limit of nonsingular TNN matrices with this property (Whitney density), and
-real nonnegative roots survive the limit.
-
-For principal interlacing, Whitney reduction and a diagonal similarity turn a
-nonsingular TNN matrix into a symmetric matrix with the same characteristic
-polynomial and the same principal sections, so Cauchy interlacing applies.
-The singular case follows by approximation. Strictness in the oscillatory
-case comes from simplicity of the spectrum of every principal section.
-
-Mixing reduces to the matrix criterion for interlacing preservers: after a
-common translation all inputs have nonnegative coefficients, and the
-$2 \times 2$ minors of a TNN matrix satisfy the affine interlacing condition.
-The variation-diminishing property holds for sign-regular matrices, and Cryer's
-criterion follows by strictifying consecutive minors with a Gaussian kernel
-and passing to the limit.
-
-For the split criterion, an induction on $n$ shows that for every nonnegative
-split the canonical pivot $u_n$ is nonnegative, dominates $b_n$, and vanishes
-only if $m_{n+1} = 0$; the zero pivot, where the division is undefined, is
-treated as a separate branch. Conversely, when the canonical split succeeds,
-its entries satisfy the defining equations. The recurrence for the
-characteristic polynomials is the expansion of the determinant of
-$xI - T$ along the band structure, and it holds for all coefficient signs.
+The eigenvalues of the $q$-th compound matrix are the $q$-fold products of eigenvalues of $A$.
+Perron–Frobenius theory for primitive compounds makes each top product real and positive, and a
+TNN matrix is a limit of nonsingular TNN matrices (Whitney density). Principal interlacing is
+reduced to Cauchy interlacing for a symmetric matrix with the same characteristic polynomial and
+principal sections, again followed by approximation. Mixing reduces to the matrix criterion for
+interlacing preservers, since the $2\times2$ minors of a TNN matrix satisfy the affine
+interlacing condition. Cryer's criterion follows from the Gaussian kernel by a limit.
 
 ## References
 
-F. R. Gantmacher and M. G. Krein, *Oscillation Matrices and Kernels and Small
-Vibrations of Mechanical Systems*, 1937; revised English edition, AMS Chelsea,
-2002. See [@Karlin1968; @Cryer1976; @FallatJohnson2011]. TNN mixing appears
-in [@Fisk2006x, Thm. 3.7]. See the
-[TNN matrices](sf:totallyNonnegativeMatrix),
-[variation-diminishing property](sf:variationDiminishingProperty), and
-[TNN mixing](sf:tnnMixingInterlacing) entries on symmetricfunctions.com.
+F. R. Gantmacher and M. G. Krein, *Oscillation Matrices and Kernels and Small Vibrations of
+Mechanical Systems*, 1937; revised English edition, AMS Chelsea, 2002. See also [@Karlin1968;
+@Cryer1976; @FallatJohnson2011] and [@Fisk2006x, Thm. 3.7]. The entries on symmetricfunctions.com
+are [TNN matrices](sf:totallyNonnegativeMatrix),
+[variation-diminishing property](sf:variationDiminishingProperty) and
+[TNN mixing](sf:tnnMixingInterlacing).
 <!-- /realrooted-catalog-content -->
 
 This module exposes the spectral, interlacing, mixing, sign-variation and

@@ -95,65 +95,59 @@ label = "The reversed product-sum theorem allowing zero terms in both sequences"
 <!-- realrooted-catalog-content -->
 # Matrices preserving interlacing sequences
 
-Let $G = (G_{ij})$ be an $m \times n$ matrix of real polynomials. It acts on a
-sequence $F = (f_1, \dots, f_n)$ by $(G F)_i = \sum_j G_{ij} f_j$. For
-polynomials $f, g$ we write $f \ll g$ when $f$ and $g$ interlace weakly: either
-one of them is zero, or both are nonzero, real-rooted and interlacing. Thus,
-unlike elsewhere in the catalog, either side of $f\ll g$ may be zero. Let
-$\mathcal{F}_n^{0}$ be the set of sequences $(f_1, \dots, f_n)$ of polynomials
-with nonnegative coefficients such that every nonzero $f_i$ is real-rooted and
-$f_i \ll f_j$ whenever $i < j$.
+A matrix of polynomials with nonnegative coefficients maps interlacing sequences to interlacing
+sequences if and only if every ordered $2\times2$ submatrix satisfies an affine interlacing
+condition.
 
-**Theorem.** The matrix $G$ maps $\mathcal{F}_n^{0}$ into $\mathcal{F}_m^{0}$
-if and only if
+## Results
+
+Let $G=(G_{ij})$ be an $m\times n$ matrix of real polynomials. It acts on a sequence
+$F=(f_1,\dots,f_n)$ by $(GF)_i=\sum_jG_{ij}f_j$. For polynomials $f,g$ we write $f\ll g$ if
+either one of them is zero, or both are nonzero, real-rooted and interlace weakly. Thus, unlike
+elsewhere in the catalog, either side of $f\ll g$ may be zero. Let $\mathcal F_n^{0}$ be the set
+of sequences $(f_1,\dots,f_n)$ of polynomials with nonnegative coefficients such that every
+nonzero $f_i$ is real-rooted and $f_i\ll f_j$ whenever $i<j$.
+
+**Theorem (matrix criterion).** The matrix $G$ maps $\mathcal F_n^{0}$ into $\mathcal F_m^{0}$ if
+and only if
 
 1. every entry $G_{ij}$ has nonnegative coefficients, and
-2. for all rows $i_1 \le i_2$ and columns $j_1 \le j_2$, the submatrix
-   $\begin{pmatrix} a & b \\ c & d \end{pmatrix} =
-   \begin{pmatrix} G_{i_1 j_1} & G_{i_1 j_2} \\ G_{i_2 j_1} & G_{i_2 j_2}
-   \end{pmatrix}$ satisfies
+2. for all rows $i_1\le i_2$ and columns $j_1\le j_2$, the submatrix
+   $\begin{pmatrix}a&b\\c&d\end{pmatrix}=
+   \begin{pmatrix}G_{i_1j_1}&G_{i_1j_2}\\G_{i_2j_1}&G_{i_2j_2}\end{pmatrix}$ satisfies
    $$
-   (s x + t)\, b + d \ \ll\ (s x + t)\, a + c
-   \qquad \text{for all } s, t > 0.
+   (sx+t)\,b+d\ \ll\ (sx+t)\,a+c\qquad\text{for all }s,t>0.
    $$
 
-Repeated indices $i_1 = i_2$ or $j_1 = j_2$ are allowed in condition 2.
+Repeated indices $i_1=i_2$ or $j_1=j_2$ are allowed in condition 2.
 
-The page also records two forward statements for strict input. Call
-$(f_1, \dots, f_n)$ strict if every $f_i$ is nonzero and real-rooted with
-nonnegative coefficients, and $f_i \ll f_j$ whenever $i < j$. Suppose that $G$
-satisfies condition 1, that $n \ge 1$, and that condition 2 holds with both
-sides of $\ll$ required to be nonzero. Then $G$ maps strict sequences to strict
-sequences. Under conditions 1 and 2 as stated, $G$ maps a strict sequence to a
-sequence $(g_1, \dots, g_m)$ of polynomials with nonnegative coefficients and
-$g_i \ll g_j$ whenever $i < j$, where some $g_i$ may vanish.
+**Theorem (strict input).** Call $(f_1,\dots,f_n)$ *strict* if every $f_i$ is nonzero and
+real-rooted with nonnegative coefficients, and $f_i\ll f_j$ for $i<j$. Let $n\ge1$ and let $G$
+satisfy condition 1.
 
-## Interlacing sequences and the product-sum theorem
+- If condition 2 holds with both sides of $\ll$ nonzero, then $G$ maps strict sequences to strict
+  sequences.
+- Under condition 2 as stated, $G$ maps a strict sequence to a sequence $(g_1,\dots,g_m)$ of
+  polynomials with nonnegative coefficients and $g_i\ll g_j$ for $i<j$, where some $g_i$ may
+  vanish.
 
-A list $(f_1, \dots, f_n)$ of polynomials is an *interlacing sequence* if
-$f_i \ll f_j$ whenever $i < j$; with nonnegative coefficients and real-rooted
-terms we speak of an interlacing sequence in $\mathcal F_n^{+}$. In Lean this is
-recorded as a pairwise condition: a list is an interlacing sequence if and only if
-it is pairwise interlacing, and likewise for the zero-aware version, where the
-relation is weak interlacing.
+**Proposition (products).** If an $m\times k$ matrix $H$ and a $k\times n$ matrix $G$ both map
+$\mathcal F^0$ into itself, so does $HG$.
 
-**Theorem** (Brändén, [@Branden2015, §7.8]). Let $(f_1, \dots, f_n)$ and
-$(g_1, \dots, g_n)$ be interlacing sequences of real-rooted polynomials with
-nonnegative coefficients, $n \ge 1$. Then
+**Theorem (product-sum).** [@Branden2015, §7.8] Let $(f_1,\dots,f_n)$ and $(g_1,\dots,g_n)$,
+$n\ge1$, be interlacing sequences of real-rooted polynomials with nonnegative coefficients. Then
 $$
-\sum_{i=1}^n f_i\, g_{n+1-i}
+\sum_{i=1}^nf_i\,g_{n+1-i}
 $$
-is nonzero and real-rooted. The proof shows that the products
-$f_i g_{n+1-i}$ have pairwise common interleavers, upgrades this to a common
-interleaver for the whole family by the Chudnovsky--Seymour theorem, and sums.
-A two-sided version allows zero terms in both sequences: if the terms of
-each sequence interlace weakly, every nonzero term is real-rooted, and the sum is
+is nonzero and real-rooted. The products $f_ig_{n+1-i}$ have pairwise common interleavers, which
+by the Chudnovsky–Seymour theorem gives a common interleaver of the whole family. If instead
+the terms of each sequence interlace weakly, every nonzero term is real-rooted and the sum is
 nonzero, then the sum is real-rooted.
 
 ## References
 
-Matrices preserving interlacing are treated in [@Fisk2006x, Ch. 3]. The exact
-nonnegative polynomial characterization is [@Branden2015, Thm. 7.8.5]. See the
+Matrices preserving interlacing are treated in [@Fisk2006x, Ch. 3]. The exact nonnegative
+polynomial characterization is [@Branden2015, Thm. 7.8.5]. See the
 [matrix criterion on symmetricfunctions.com](sf:matrixPreservesInterlacingSequences).
 <!-- /realrooted-catalog-content -->
 

@@ -10,7 +10,7 @@ import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
 public import RealRooted.Basic.ProperPosition
 
 /-!
-# Derivative interlacing challenge entry point
+# Interlacing of derivatives of real-rooted polynomials
 
 <!-- realrooted-catalog
 version = 1
@@ -28,12 +28,12 @@ years = [1691, 1882, 1913, 1963, 2006]
 
 [[theorems]]
 name = "RealRooted.Challenges.DerivativeInterlacing.derivative_interlaces"
-label = "The derivative of a real-rooted polynomial interlaces it"
+label = "The derivative of a nonconstant real-rooted polynomial interlaces it"
 headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.DerivativeInterlacing.interl_derivative"
-label = "Differentiation preserves interlacing"
+label = "Differentiation preserves interlacing, allowing zero polynomials"
 
 [[theorems]]
 name = "RealRooted.exists_mem_Ioo_isRoot_derivative"
@@ -47,7 +47,7 @@ label = "The derivative of a real-rooted polynomial is real-rooted"
 [[theorems]]
 name = "RealRooted.StrictInterl.derivative"
 module = "RealRooted.ObreschkoffConverse.Derivative"
-label = "Differentiation preserves interlacing of nonconstant polynomials"
+label = "Differentiation preserves interlacing when the left polynomial is nonconstant"
 
 [[theorems]]
 name = "Polynomial.exists_mem_jensenDisk_of_isRoot_derivative"
@@ -61,61 +61,62 @@ label = "Laguerre: polar derivatives of real-rooted polynomials are real-rooted"
 -->
 
 <!-- realrooted-catalog-content -->
-# Derivative interlacing
+# Interlacing of derivatives of real-rooted polynomials
 
-**Rolle's theorem.** If $a < b$ are zeros of a real polynomial $p$, then
-$p'(c) = 0$ for some $c$ with $a < c < b$.
+The derivative of a real-rooted polynomial is real-rooted and interlaces it, and
+differentiation preserves interlacing.
 
-**Theorem.** Let $f$ be a real-rooted polynomial of degree $d \geq 1$, with
-zeros $r_1 \leq \dotsb \leq r_d$ listed with multiplicity. Then $f'$ is
-real-rooted of degree $d - 1$, and its zeros $s_1 \leq \dotsb \leq s_{d-1}$
-interlace those of $f$:
+## Results
+
+We write $f\ll g$ if $f$ interlaces $g$; see the
+[interlacing page](/RealRooted/concepts/interlacing/). Common roots are allowed unless stated.
+
+**Theorem (Rolle).** If $a<b$ are real zeros of a real polynomial $p$, then $p'(c)=0$ for some
+$c$ with $a<c<b$.
+
+**Theorem (derivative interlacing).** Let $f$ be a real-rooted polynomial of degree $d\ge1$ with
+zeros $r_1\le\dotsb\le r_d$, listed with multiplicity. Then $f'$ is real-rooted of degree $d-1$,
+and its zeros $s_1\le\dotsb\le s_{d-1}$ satisfy
 $$
-r_1 \leq s_1 \leq r_2 \leq s_2 \leq \dotsb \leq s_{d-1} \leq r_d .
+r_1\le s_1\le r_2\le s_2\le\dotsb\le s_{d-1}\le r_d,
 $$
-In the notation of the [interlacing page](/RealRooted/concepts/interlacing/), this is
-`Interlaces f' f`. In particular, the derivative of every real-rooted
-polynomial, including a constant one, is again real-rooted.
+that is, $f'\ll f$. The derivative of every real-rooted polynomial is real-rooted.
 
-**Theorem** (differentiation preserves interlacing). If $f \ll g$, then
-$f' \ll g'$. Here we use the zero-aware relation `Interl`, which holds
-whenever one side vanishes; if $f$ is nonconstant, both derivatives are
-nonzero and $f' \ll g'$ holds in the strict sense `StrictInterl`.
+**Theorem (differentiation preserves interlacing).** Let $f,g$ be real polynomials such that
+$f=0$, $g=0$ or $f\ll g$. Then $f'=0$, $g'=0$ or $f'\ll g'$. If $f\ll g$ and $f$ is nonconstant,
+then $f'$ and $g'$ are nonzero and $f'\ll g'$.
 
-**Theorem** (Jensen). [@Jensen1913] Let $p$ be a nonconstant real polynomial. Every
-non-real zero of $p'$ lies in a *Jensen disk* of $p$: the closed disk whose
-diameter is the segment from a non-real zero $z$ of $p$ to $\bar z$.  In
-particular, if $p$ is real-rooted then so is $p'$.
+**Theorem (Jensen).** [@Jensen1913] Let $p$ be a nonconstant real polynomial. Every non-real
+zero $w$ of $p'$ lies in a *Jensen disk* of $p$, that is, in the closed disk whose diameter is
+the segment from a non-real zero $z$ of $p$ to $\bar z$.
 
-**Theorem** (Laguerre). If $f$ is real-rooted of degree $n$ and $a \in \mathbb{R}$,
-the polar derivative $n f + (a - x) f'$ is real-rooted. After shifting $a$ to
-$0$, it is the reversal of the derivative of the reversal of $f$, and reversal
-preserves real-rootedness.
+**Theorem (Laguerre).** Let $f$ be real-rooted of degree $n$ and let $a\in\mathbb R$. Then the
+polar derivative $nf+(a-x)f'$ is real-rooted.
 
-## Proof idea
+## Proof
 
-For the first theorem, we sort the zeros of $f$. A zero of multiplicity $m$
-is a zero of $f'$ of multiplicity $m - 1$, and Rolle's theorem places one
-further zero of $f'$ strictly between any two consecutive distinct zeros of
-$f$. This gives $d - 1$ zeros of $f'$, counted with multiplicity, in the
-required positions, and $f'$ has no others since its degree is $d - 1$.
+For derivative interlacing, we sort the zeros of $f$. A zero of multiplicity $m$ is a zero of
+$f'$ of multiplicity $m-1$, and Rolle's theorem places one further zero of $f'$ strictly between
+any two consecutive distinct zeros of $f$. This gives $d-1$ zeros of $f'$, counted with
+multiplicity, in the required positions, and $f'$ has no others since its degree is $d-1$.
 
-For the second theorem, we use Obreschkoff's theorem [@Obreschkoff1963]:
-$f \ll g$ implies that
-every real linear combination $\lambda f + \mu g$ is zero or real-rooted.
-Differentiating the combinations shows that the same holds for $f'$ and
-$g'$, and the converse direction of Obreschkoff's theorem returns
-interlacing. A degree count fixes the orientation.
+For preservation, we use Obreschkoff's theorem [@Obreschkoff1963]: $f\ll g$ implies that every
+real linear combination $\lambda f+\mu g$ is zero or real-rooted. Differentiating the
+combinations shows that the same holds for $f'$ and $g'$, and the converse direction of
+Obreschkoff's theorem returns interlacing. A degree count fixes the orientation.
 
-For Jensen's theorem, if $p'(w) = 0 \neq p(w)$ then
-$\sum_k 1/(w - z_k) = 0$ over the zeros of $p$. Pairing each zero with its
-conjugate, a point $w$ outside every Jensen disk makes every term have
-imaginary part of sign opposite to $\operatorname{Im} w$, which is impossible.
+For Jensen's theorem, if $p'(w)=0\ne p(w)$ then $\sum_k1/(w-z_k)=0$ over the zeros $z_k$ of $p$.
+Pairing each zero with its conjugate, a point $w$ outside every Jensen disk makes every term
+have imaginary part of sign opposite to $\operatorname{Im}w$, which is impossible. If $p$ is
+real-rooted, it has no Jensen disks, so $p'$ is real-rooted.
+
+For Laguerre's theorem, after shifting $a$ to $0$ the polar derivative is the reversal of the
+derivative of the reversal of $f$, and reversal preserves real-rootedness.
 
 ## References
 
-For derivative interlacing, see [@Fisk2006x, Ch. 1] and [@Obreschkoff1963].
-Jensen's theorem is [@Jensen1913]. The statement $f' \ll f$ is the remark after
+For derivative interlacing, see [@Fisk2006x, Ch. 1] and [@Obreschkoff1963]. Jensen's theorem is
+[@Jensen1913]. The statement $f'\ll f$ is the remark after
 [Wagner's lemma on symmetricfunctions.com](sf:wagnerLemma).
 <!-- /realrooted-catalog-content -->
 

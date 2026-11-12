@@ -63,35 +63,34 @@ label = "Darroch: the mode is within one of the mean"
 <!-- realrooted-catalog-content -->
 # Newton, Maclaurin and Laguerre–Samuelson inequalities
 
-For real numbers $x_1, \dotsc, x_n$ let $e_k$ be their elementary symmetric functions and
-$E_k = e_k / \binom{n}{k}$.
+The elementary symmetric means of real numbers, and the coefficients of a real-rooted
+polynomial, satisfy Newton's and Maclaurin's inequalities, and the roots satisfy Laguerre's
+bound.
 
-**Newton's inequalities.** $E_{k-1} E_{k+1} \le E_k^2$ for $0 < k < n$; equivalently, the
-coefficients of a real-rooted polynomial, divided by binomial coefficients, form a
-log-concave sequence. In polynomial form: for every real-rooted polynomial $p$ of degree $d$,
-with no sign condition on its coefficients, $(k+1)(d-k+1)\, p_{k-1} p_{k+1} \le
-k(d-k)\, p_k^2$ for $0 < k < d$ (the coefficient sequence is ultra-log-concave).
-The same holds at any level $n \ge d$, viewing $p$ as a polynomial of degree at most $n$, and
-in particular the coefficients of $p$ are log-concave.
+## Results
 
-**Maclaurin's inequalities.** If all $x_i \ge 0$, then
-$$
-E_1 \ge E_2^{1/2} \ge E_3^{1/3} \ge \dotsb \ge E_n^{1/n}.
-$$
+For real numbers $x_1,\dotsc,x_n$ let $e_k$ be their elementary symmetric functions and
+$E_k=e_k/\binom nk$.
 
-**Samuelson's inequality.** Every $x_j$ lies within $\sqrt{n-1}\, s$ of the mean $\mu$, where
-$s^2 = \frac1n \sum_i (x_i - \mu)^2$.
+**Newton's inequalities.** $E_{k-1}E_{k+1}\le E_k^2$ for $0<k<n$. In polynomial form, for every
+real-rooted polynomial $p$ of degree $d$, with no sign condition on its coefficients,
+$$(k+1)(d-k+1)\,p_{k-1}p_{k+1}\le k(d-k)\,p_k^2\qquad(0<k<d).$$
+The same inequality holds with $d$ replaced by any $n\ge d$. The coefficients of $p$ are also
+log-concave: $p_{k-1}p_{k+1}\le p_k^2$.
 
-**Laguerre's root bound.** If $n\geq2$ and
-$x^n+ax^{n-1}+bx^{n-2}+\dotsb$ is real-rooted, every root $r$ satisfies
-$$
-\Bigl(r + \frac{a}{n}\Bigr)^2 \le \frac{n-1}{n}\Bigl(\frac{n-1}{n} a^2 - 2b\Bigr).
-$$
+**Maclaurin's inequalities.** If all $x_i\ge0$, then
+$$E_1\ge E_2^{1/2}\ge E_3^{1/3}\ge\dotsb\ge E_n^{1/n}.$$
 
-**Darroch's theorem.** Let $p$ be a nonzero real-rooted polynomial with
-nonnegative coefficients, and let $\mu = p'(1)/p(1)$ be the mean of the
-distribution $k \mapsto p_k / p(1)$. Every mode $k$ (an index with $p_k$
-maximal) satisfies $|k - \mu| < 1$.
+**Samuelson's inequality.** Every $x_j$ lies within $\sqrt{n-1}\,s$ of the mean $\mu$, where
+$s^2=\frac1n\sum_i(x_i-\mu)^2$.
+
+**Laguerre's root bound.** If $n\ge2$ and $x^n+ax^{n-1}+bx^{n-2}+\dotsb$ is real-rooted, every
+root $r$ satisfies
+$$\Bigl(r+\frac an\Bigr)^2\le\frac{n-1}n\Bigl(\frac{n-1}na^2-2b\Bigr).$$
+
+**Darroch's theorem.** Let $p$ be a nonzero real-rooted polynomial with nonnegative
+coefficients and $\mu=p'(1)/p(1)$ the mean of the distribution $k\mapsto p_k/p(1)$. Every mode
+$k$ (an index with $p_k$ maximal) satisfies $|k-\mu|<1$.
 
 ## References
 

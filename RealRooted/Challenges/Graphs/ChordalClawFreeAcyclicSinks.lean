@@ -35,50 +35,50 @@ headline = true
 [[theorems]]
 name = "RealRooted.Graph.acyclicSinkPolynomial_one_eq_ordinary"
 module = "RealRooted.Graph.ChordalAcyclicSink"
-label = "The ascent-refined polynomial at q = 1"
+label = "At q = 1 the ascent-refined sink polynomial is the ordinary one"
 -->
 
 <!-- realrooted-catalog-content -->
 # Acyclic sink polynomials of chordal claw-free graphs
 
+A claw-free graph with a reverse perfect elimination order has a real-rooted acyclic sink
+polynomial.
+
+## Results
+
 For a finite graph $G$, the acyclic sink polynomial is
+$$
+S_G(t)=\sum_{O}t^{\operatorname{sink}(O)},
+$$
+summed over the acyclic orientations $O$ of $G$, where $\operatorname{sink}(O)$ is the number of
+vertices with no outgoing edge. A *reverse perfect elimination order* is a linear order of the
+vertices in which the earlier neighbors of every vertex form a clique. A graph has such an order
+exactly when it is [chordal](sf:chordalGraph).
 
-$$S_G(t) = \sum_{O} t^{\operatorname{sink}(O)},$$
+**Theorem.** If a finite claw-free graph $G$ has a reverse perfect elimination order, then
+$S_G(t)$ is real-rooted.
 
-summed over the acyclic orientations $O$ of $G$, where $\operatorname{sink}(O)$
-counts the vertices with no outgoing edge. It does not depend on a labelling of
-the vertices.
+The ascent-refined polynomial $S_G(t;q)$ of [acyclic sinks of natural unit interval
+graphs](/RealRooted/families/unit-interval-acyclic-sinks/) depends on a vertex labelling, and
+$S_G(t;1)=S_G(t)$.
 
-A **reverse perfect elimination order** is a linear order of the vertices in
-which the earlier neighbors of every vertex form a clique. A finite graph has
-such an order exactly when it is [chordal](sf:chordalGraph);
-here the order is part of the hypothesis.
+## Use
 
-**Theorem.** If a finite claw-free graph $G$ has a reverse perfect elimination
-order, then $S_G(t)$ is real-rooted.
+Line graphs of forests are chordal and claw-free. For them $S_{L(F)}$ is the
+[minima polynomial](/RealRooted/families/minima-polynomial/) of the forest $F$.
 
-The proof inserts the vertices along the order. Since the earlier neighbors of
-each vertex form a clique, the shifted polynomial $S_G(t + 1)$ is, up to a
-positive factor, a weighted independence polynomial of $G$ with nonnegative
-weights. For claw-free graphs that polynomial is real-rooted by the weighted form
-of the [Chudnovsky–Seymour theorem](/RealRooted/theorems/chudnovsky-seymour/).
+## Proof
 
-The theorem is about the ordinary sink polynomial only. The ascent-refined
-version $S_G(t; q)$ depends on a vertex labelling; at $q = 1$ it equals $S_G(t)$.
-For the refined polynomial of natural unit interval graphs, see
-[acyclic sinks of natural unit interval graphs](/RealRooted/families/unit-interval-acyclic-sinks/).
-
-Line graphs of forests are also chordal and claw-free. For them the library
-proves real-rootedness by a separate route: the acyclic sink polynomial of
-$L(F)$ is the [minima polynomial](/RealRooted/families/minima-polynomial/) of
-the forest $F$.
+Insert the vertices along the order. Since the earlier neighbors of each vertex form a clique,
+$S_G(t+1)$ is a positive multiple of a weighted independence polynomial of $G$ with nonnegative
+weights. This is real-rooted for claw-free $G$ by the weighted form of the
+[Chudnovsky--Seymour theorem](/RealRooted/theorems/chudnovsky-seymour/).
 
 ## References
 
-P. Alexandersson and L. Saud Maia Leite, unpublished manuscript (2026).
-For the claw-free background, see the
-[Chudnovsky–Seymour](/RealRooted/theorems/chudnovsky-seymour/) and
-[Leake–Ryder](/RealRooted/theorems/leake-ryder/) pages.
+P. Alexandersson and L. Saud Maia Leite, unpublished manuscript (2026). Background on claw-free
+graphs is on the [Chudnovsky--Seymour](/RealRooted/theorems/chudnovsky-seymour/) and
+[Leake--Ryder](/RealRooted/theorems/leake-ryder/) pages.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

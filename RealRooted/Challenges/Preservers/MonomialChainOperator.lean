@@ -8,7 +8,7 @@ public import RealRooted.PFPolynomial
 import RealRooted.QuadraticInterlacingClosure
 
 /-!
-# Monomial-chain operator challenge entry point
+# Interlacing from a monomial chain
 
 <!-- realrooted-catalog
 version = 1
@@ -83,67 +83,78 @@ tags = ["realrooted-original"]
 <!-- realrooted-catalog-content -->
 # Interlacing from a monomial chain
 
-Let $T$ be a real-linear operator on $\mathbb R[x]$ and let $D\in\mathbb N$.
-Suppose that $T$ maps polynomials with nonnegative coefficients to polynomials
-with nonnegative coefficients, sends every nonzero PF polynomial of degree at
-most $D$ to a nonzero real-rooted polynomial, and its monomial images form the
-oriented chain
+A linear operator that preserves nonnegative coefficients and real-rootedness of PF inputs, and
+maps the monomials $1,x,\dots,x^D$ to an interlacing chain, preserves interlacing of
+nonnegative pairs of degree at most $D$.
 
+## Results
+
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+A polynomial is *PF* (Pólya frequency) if it is zero or has nonnegative coefficients and only
+real, nonpositive roots.
+
+**Theorem (monomial chain).** Let $T$ be a real-linear operator on $\mathbb R[x]$ and
+$D\in\mathbb N$. Suppose that
+
+1. $T$ maps polynomials with nonnegative coefficients to polynomials with nonnegative
+   coefficients;
+2. $T$ maps every nonzero PF polynomial of degree at most $D$ to a nonzero real-rooted
+   polynomial;
+3. $T(1)\ll T(x)\ll\dotsb\ll T(x^D)$.
+
+If $f\ll g$ have nonnegative coefficients and $\deg g\le D$, then $Tf\ll Tg$.
+
+**Theorem (rootwise order).** Let $T$ satisfy (1)--(3), and in addition $\deg Tp=D$ whenever
+$\deg p=D$. Let $r_1,\dots,r_D\le0$ be the roots of a monic polynomial $p$ of degree $D$.
+
+- If one root $r_i$ is replaced by some $b$ with $r_i\le b\le0$, then each root of the image
+  $T p$, in increasing order, does not decrease.
+- If $0\le a\le b$ and all roots of $p$ lie in $[-b,-a]$, then each root of
+  $T\bigl((x+b)^D\bigr)$ is at most the corresponding root of $Tp$, which is at most the
+  corresponding root of $T\bigl((x+a)^D\bigr)$.
+
+**Theorem (root derivative).** Let $T$ be linear, $p=\prod_i(x-r_i)$, and let $\rho$ be a simple
+root of $Tp$. Then for each $i$ there is a function $\rho(s)$, differentiable at $0$, with
+$\rho(0)=\rho$ and $\rho(s)$ a root of $T\bigl((x-r_i-s)\prod_{j\ne i}(x-r_j)\bigr)$ for
+all small $s$, and
 $$
-T(1) \ll T(X) \ll \dotsb \ll T(X^D).
+\rho'(0)=\frac{T\bigl(p/(x-r_i)\bigr)(\rho)}{(Tp)'(\rho)} .
 $$
 
-Then $f\ll g$ with nonnegative coefficients and $\deg g\leq D$ implies
-$Tf\ll Tg$. The quadratic interlacing closure lemma propagates the monomial
-chain through each nonpositive linear factor.
+**Theorem (stable pencils).** Let $T$ satisfy (1)--(3), and let $f,g\ne0$ have nonnegative
+coefficients with $1\le\deg f\le D$ and $\deg Tf\ge1$. If $f(z)+w\,g(z)$ is
+upper-half-plane stable, then so is $(Tf)(z)+w\,(Tg)(z)$.
 
-The proof first propagates the monomial chain through all PF factors, and then
-uses the Garloff–Wagner Krein expansion to pass from one-root deletions to every
-oriented interlacing pair.
-
-## The quadratic interlacing closure
-
-The step that passes the chain through one nonpositive linear factor is the following
-statement about three polynomials with nonnegative coefficients and $F \ll G \ll H$. For
-$b \ge 0$ put
-$$
-Q_b = H + 2bG + b^2 F, \qquad A_b = G + bF, \qquad B_b = H + bG,
-$$
-so that $Q_b = B_b + b A_b$ and $A_b$ is half the derivative of $Q_b$ in the parameter.
-
-**Theorem.** If $Q_b$ is real-rooted for every $b \ge 0$, then $A_a \ll Q_a$ for every
-$a \ge 0$, and consequently $A_a \ll B_a$, that is,
-$$
-G + aF \;\ll\; H + aG .
-$$
-
-The second conclusion is purely algebraic: the pairs $(A_a, Q_a)$ and $(A_a, B_a)$ span the same
-real pencil and have the same oriented Wronskian, so interlacing transfers. The first conclusion
-is the analytic heart. It follows root-count budgets from Descartes' rule of signs: for a fixed
-point $r$, the quadratic $b \mapsto Q_b(r)$ has at most as many positive roots as the number of
-roots of $H$ above $r$ minus the number of roots of $F$ above $r$. Together with the signs of the
-residues of $A_a / Q_a$ at the roots of $Q_a$, this shows that the roots of $Q_b$ move
-monotonically in $b$. Repeated and common roots are removed by a common derivative
-regularization, and coefficientwise closure then recovers the general case.
-
-## Consequences
-
-Under the corresponding degree and nonvanishing hypotheses, moving one
-nonpositive input root to the right moves every output root weakly to the
-right. If $\rho$ is a simple root of $Tp$ and $r_i$ is the input root being
-moved, the derivative of the resulting root branch is
-$$
-\frac{T(p/(x-r_i))(\rho)}{(Tp)'(\rho)}.
-$$
-The operator also preserves stability of nonnegative bivariate pencils
-$f(z)+wg(z)$ under the hypotheses of the listed stable-pencil theorem. The
-Mao–Wang Narayana transform is an instance; see the
+**Theorem (Narayana transform).** The Mao--Wang Narayana transform $N_m$ satisfies
+$N_mf\ll N_mg$ whenever $f\ll g$ have nonnegative coefficients; see the
 [Narayana page](/RealRooted/families/narayana/).
+
+## The quadratic closure
+
+Let $F\ll G\ll H$ have nonnegative coefficients. For $b\ge0$ put
+$$
+Q_b=H+2bG+b^2F,\qquad A_b=G+bF,\qquad B_b=H+bG .
+$$
+
+**Theorem.** If $Q_b$ is real-rooted for every $b\ge0$, then $A_a\ll Q_a$ and $A_a\ll B_a$
+for every $a\ge0$. That is,
+$$
+G+aF\ \ll\ H+aG .
+$$
+
+If $F,G,H$ have positive leading coefficients and $r$ is a root of none of them, then the
+quadratic $b\mapsto Q_b(r)$ has at most as many positive roots as the number of roots of $H$
+above $r$ minus the number of roots of $F$ above $r$.
+
+## Proof
+
+The chain is first propagated through all PF factors by the quadratic closure, one nonpositive
+linear factor at a time. The Garloff--Wagner Krein expansion then passes from one-root
+deletions to every oriented interlacing pair.
 
 ## References
 
-The decomposition step uses the Krein expansion for interlacing polynomials;
-the operator perspective is related to [@Branden2011b].
+The operator viewpoint is related to [@Branden2011b].
 <!-- /realrooted-catalog-content -->
 
 This module exposes the fully checked monomial-chain upgrade.

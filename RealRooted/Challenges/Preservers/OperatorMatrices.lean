@@ -121,7 +121,7 @@ label = "There are exactly m + n boards over {θ, X}"
 [[theorems]]
 name = "RealRooted.OperatorMatrix.EulerDerivativeLag.preservesOrderedPF_twoStep"
 module = "RealRooted.OperatorMatrix.EulerDerivativeLag"
-label = "The dense two-step matrix of P(n+2) = θP(n+1) + Xθ P(n) preserves ordered PF vectors"
+label = "The matrix of P(n+2) = θP(n+1) + Xθ P(n) preserves ordered PF vectors"
 
 [[theorems]]
 name = "RealRooted.OperatorMatrix.EulerDerivativeLag.preservesOrderedPF_transition_iff"
@@ -141,7 +141,7 @@ label = "The scalar ray predicate for a coupling of two first-order operator blo
 [[theorems]]
 name = "RealRooted.OperatorMatrix.couplingRayCriterion_iff_sqrt_bounds"
 module = "RealRooted.OperatorMatrix.CouplingThresholds"
-label = "The ray predicate is equivalent to -2√(wtJ) ≤ S ≤ J + 2√(wtJ) for all t > 0"
+label = "The ray criterion is equivalent to -2√(wtJ) ≤ S ≤ J + 2√(wtJ) for all t > 0"
 
 [[theorems]]
 name = "RealRooted.OperatorMatrix.couplingRayCriterion_quadratic_iff_of_boundary"
@@ -162,124 +162,101 @@ label = "The (θ, polar) coupling holds exactly when N² ≤ 4w"
 <!-- realrooted-catalog-content -->
 # Operator matrices preserving ordered PF vectors
 
-Throughout, a polynomial is **PF** if it is zero or has nonnegative coefficients
-and only real, nonpositive roots, and $p\ll q$ is the directed, zero-aware
-interlacing of the [interlacing page](/RealRooted/concepts/interlacing/): either
-polynomial may be zero, and otherwise $q$ carries the rightmost root. A vector
-$(f_1,\dots,f_n)$ of polynomials is an **ordered PF vector** if every $f_i$ is
-PF and $f_i\ll f_k$ whenever $i<k$.
+A matrix of linear operators on polynomials preserves ordered Pólya frequency vectors if and
+only if every $2\times2$ submatrix does; for entries among $1$, $\theta=x\,d/dx$ and $x$ the
+$2\times2$ blocks that do are exactly thirteen.
 
-An $m\times n$ **operator matrix** $M=(M_{ij})$ has real-linear operators
-$M_{ij}$ on $\mathbb R[x]$ as entries and acts by
-$(Mf)_i=\sum_j M_{ij}f_j$. It **preserves ordered PF vectors** if $Mf$ is an
-ordered PF vector whenever $f$ is. A $2\times2$ block
-$\begin{pmatrix}a&b\\c&d\end{pmatrix}$ **preserves ordered PF pairs** if, for all
-PF $f\ll g$, the polynomials $af+bg$ and $cf+dg$ are PF and
-$af+bg\ll cf+dg$. If the entries are multiplications by polynomials, this is the
-setting of the [matrix interlacing](/RealRooted/theorems/matrix-interlacing/) page; here
-the entries may also be differential operators.
+## Results
 
-## Local-to-global principle
+A polynomial is *PF* if it has nonnegative coefficients and is zero or has only real,
+nonpositive roots. We write $p\ll q$ for the directed interlacing of the
+[interlacing page](/RealRooted/concepts/interlacing/): either polynomial may be zero,
+and repeated and common roots are allowed. A vector $(f_1,\dots,f_n)$ is an *ordered PF
+vector* if every $f_i$ is PF and $f_i\ll f_k$ for $i<k$.
 
-**Theorem.** Let $m,n\ge2$. Then $M$ preserves ordered PF vectors if and only if
-every $2\times2$ submatrix on rows $i<k$ and columns $j<l$, adjacent or not,
-preserves ordered PF pairs.
+An $m\times n$ *operator matrix* $M=(M_{ij})$ has real-linear operators on $\mathbb R[x]$
+as entries and acts by $(Mf)_i=\sum_j M_{ij}f_j$. It *preserves ordered PF vectors* if $Mf$
+is an ordered PF vector whenever $f$ is. A block $\begin{pmatrix}a&b\\c&d\end{pmatrix}$
+*preserves ordered PF pairs* if, for all PF $f\ll g$, the polynomials $af+bg$ and $cf+dg$
+are PF and $af+bg\ll cf+dg$. For entries that are multiplications by polynomials, see the
+[matrix interlacing](/RealRooted/theorems/matrix-interlacing/) page.
 
-Consequently a $2\times2$ matrix preserves ordered PF vectors exactly when its
-four entries form a block preserving ordered PF pairs, and the property is closed
-under matrix products and powers.
+**Theorem (local to global).** Let $m,n\ge2$. Then $M$ preserves ordered PF vectors if and
+only if every $2\times2$ submatrix on rows $i<k$ and columns $j<l$, adjacent or not,
+preserves ordered PF pairs. A $2\times2$ matrix preserves ordered PF vectors if and only if
+its four entries form a block preserving ordered PF pairs, and products of matrices that
+preserve ordered PF vectors preserve them.
 
-## The alphabet $\{1,\theta,x\}$
-
-Let $\theta=x\,d/dx$ be the Euler operator. We classify matrices whose entries lie
-in the alphabet $\{1,\theta,x\}$, meaning the identity, $\theta$, and
-multiplication by $x$. Three facts about PF polynomials $p\ll q$ drive the
-classification:
-
-- $p\ll\theta p\ll xp$ for every PF polynomial $p$;
-- ($x$-duality) $p\ll q$ if and only if $q\ll xp$;
-- (mixed differential lemma) $p'+q'\ \ll\ q+xp'$.
-
-The mixed differential lemma is the delicate input. It is proved first for
-coprime, strictly interlacing inputs by a Lagrange-interpolation residue
-computation and then extended to all PF pairs, zeros and repeated roots
-included, by separating the merged ordered root lists and passing to a
-coefficientwise limit.
-
-**Theorem (blocks).** A $2\times2$ block over $\{1,\theta,x\}$ preserves
-ordered PF pairs if and only if it is one of the following thirteen blocks,
-written as (top row)/(bottom row):
+**Theorem (blocks over $\{1,\theta,x\}$).** Entries are the identity $1$, the operator
+$\theta=x\,d/dx$ and multiplication by $x$. A $2\times2$ block over this alphabet preserves
+ordered PF pairs if and only if it is one of the following thirteen, written as
+(top row)/(bottom row):
 
 - $(1,1)/(1,1)$, $(1,1)/(\theta,\theta)$, $(1,1)/(x,1)$, $(1,1)/(x,x)$;
 - $(\theta,1)/(\theta,1)$, $(\theta,1)/(\theta,\theta)$, $(\theta,1)/(x,\theta)$;
 - $(\theta,\theta)/(\theta,\theta)$, $(\theta,\theta)/(x,x)$;
 - $(x,1)/(x,1)$, $(x,1)/(x,x)$, $(x,\theta)/(x,\theta)$, $(x,x)/(x,x)$.
 
-Necessity uses explicit counterexamples; the block $(\theta,1)/(\theta,\theta)$
-rests on the mixed differential lemma.
+**Theorem (rectangular matrices).** Let $L$ be an $m\times n$ matrix over $\{1,\theta,x\}$
+with $m,n\ge2$. Then $L$ preserves ordered PF vectors if and only if every $2\times2$
+submatrix on rows $i<k$ and columns $j<l$ is one of the thirteen blocks. A one-row matrix
+preserves ordered PF vectors if and only if its entries weakly decrease from left to right
+in the order $1<\theta<x$; a one-column matrix does if and only if its entries weakly
+increase from top to bottom.
 
-**Theorem (rectangular matrices).** Let $L$ be an $m\times n$ matrix over
-$\{1,\theta,x\}$ with $m,n\ge2$. Then $L$ preserves ordered PF vectors if and only
-if every $2\times2$ submatrix on rows $i<k$ and columns $j<l$ is one of the
-thirteen allowed blocks.
+**Theorem (two-letter alphabets).** Let $m,n\ge2$.
 
-The singleton shapes complete the picture: a one-row matrix preserves ordered PF
-vectors exactly when its entries weakly decrease from left to right in the order
-$1<\theta<x$, and a one-column matrix exactly when its entries weakly increase
-from top to bottom.
+- A matrix over $\{1,\theta\}$ preserves ordered PF vectors if and only if its entries
+  equal to $1$ form an upper-right rectangle, possibly empty. There are $mn+1$ such
+  matrices.
+- A matrix over $\{\theta,x\}$ preserves ordered PF vectors if and only if either all rows
+  are equal, with $x$ columns followed by $\theta$ columns, or all columns are equal, with
+  $\theta$ rows followed by $x$ rows. There are $m+n$ such matrices.
 
-For two-letter alphabets the classification becomes explicit boards (for
-$m,n\ge2$):
+**Lemmas.** For PF polynomials $p$ and $q$:
 
-- over $\{1,\theta\}$, the entries equal to $1$ must form an upper-right
-  rectangle, possibly empty, so there are exactly $mn+1$ such matrices;
-- over $\{\theta,x\}$, either all rows are equal ($x$ columns followed by
-  $\theta$ columns) or all columns are equal ($\theta$ rows followed by $x$
-  rows), so there are exactly $m+n$ such matrices.
+- (mixed differential lemma) if $p\ll q$, then $p'+q'\ll q+xp'$;
+- ($x$-duality) $p\ll q$ if and only if $q\ll xp$;
+- if $p\ll q$, then $p+q\ll xp+q$.
 
-## An application: the Euler-derivative lag recurrence
-
-Consider $P_{n+2}=\theta P_{n+1}+x\,\theta P_n$. The dense matrix
+**Theorem (Euler-derivative lag recurrence).** Let $P_{n+2}=\theta P_{n+1}+x\,\theta P_n$.
+The matrix
 $$
 \begin{pmatrix}x\theta&\theta\\ x(\theta^2+\theta)&x\theta+\theta^2\end{pmatrix}
 $$
-sends $(P_n,P_{n+1})$ to $(P_{n+2},P_{n+3})$. It factors as a product of two
-matrices with a zero entry, each of which preserves ordered PF vectors, so the
-dense matrix does too. Among the nine mixed transitions between the lag factors
-$1$, $\theta$ and $x$, exactly the two alternating identity/Euler edges preserve
-ordered PF vectors. With $P_0=1$ and $P_1=x$, the orbit stays ordered PF, so
-every $P_n$ is PF and in particular splits over $\mathbb R$.
+sends $(P_n,P_{n+1})$ to $(P_{n+2},P_{n+3})$ and preserves ordered PF vectors. Among the
+nine transitions between the lag factors $1$, $\theta$ and $x$, exactly the two alternating
+identity/Euler transitions preserve ordered PF vectors. If $P_0=1$ and $P_1=x$, then every
+$P_n$ splits over $\mathbb R$.
 
-## Coupling thresholds for first-order blocks (algebraic core)
+**Theorem (coupling thresholds).** Let two first-order operator blocks have diagonal data
+$a+b\theta+cx+e\,x(N-\theta)$. On the negative ray $x=-t$ put $k_i(t)=b_i+e_it$,
+$J=k_1k_2$ and $S=\ell_2k_1-\ell_1k_2$, where $\ell_i$ is the diagonal evaluation. For
+$w\ge0$ the *ray criterion* asks that for every $t>0$ either $S\ge0$ or $S^2\le4wtJ$, and
+either $S\le J$ or $(J-S)^2\le4wtJ$.
 
-For two first-order operator blocks with diagonal data $a+b\theta+cx+ex(N-\theta)$, put
-$k_i(t)=b_i+e_it$ on the negative ray $x=-t$, $J=k_1k_2$ and
-$S=\ell_2k_1-\ell_1k_2$, with $\ell_i$ the diagonal evaluations. For a parameter $w\ge0$
-the *ray criterion* asks, for every $t>0$, that either $S\ge0$ or $S^2\le4wtJ$, and either
-$S\le J$ or $(J-S)^2\le4wtJ$. When $wtJ\ge0$ this is equivalent to
-$-2\sqrt{wtJ}\le S\le J+2\sqrt{wtJ}$. For quadratic $J,S$ on the boundary of the
-parameter cone ($j_0j_2=0$) the quantifier over the ray is eliminated, leaving an explicit
-inequality in the coefficients; for the pairs $(\theta,\text{polar})$ one obtains
-$N^2\le4w$ and $(N-1)^2\le4w$, and raising the degree cap changes nothing for proportional
-blocks. We stress that this is the unconditional algebraic core only: the bridge identifying
-the scalar criterion with bounded ordered-PF preservation is not formalized here.
+- If $wtJ\ge0$ for all $t>0$, the ray criterion is equivalent to
+  $-2\sqrt{wtJ}\le S\le J+2\sqrt{wtJ}$ for all $t>0$.
+- Let $J$ and $S$ be quadratic in $t$ with coefficients $j_0,j_1,j_2$ and $s_0,s_1,s_2$ such
+  that $j_0,j_2,s_0,s_2\ge0$, $s_0\le j_0$, $s_2\le j_2$ and $j_0j_2=0$. Then the ray
+  criterion is equivalent to the two conditions
+  ($s_1\ge0$ or $s_1^2\le4wj_1$) and ($s_1\le j_1$ or $(j_1-s_1)^2\le4wj_1$).
+- Raising the degree cap $N$ by any amount does not change the criterion when $b_2e_1=b_1e_2$.
+- For $J(t)=t$ and $S(t)=-Nt$, the data of the pair $(\theta,\ x(N-\theta))$, the criterion
+  holds if and only if $N^2\le4w$. For $J(t)=t$ and $S(t)=Nt$ with $N\ge1$, the data of the
+  reversed pair, it holds if and only if $(N-1)^2\le4w$.
 
-## What is new
+## Use
 
-The classification and the supporting differential lemmas were developed in this
-library, for the $\{1,\theta,x\}$ blocks, the mixed differential lemma, and the
-endpoint criterion behind $p\ll q\Rightarrow p+q\ll xp+q$. The formalization cites no
-external source for them, so we
-attribute none. The local-to-global principle has the same $2\times2$ shape as
-the criterion on the matrix interlacing page, which is the classical background
-for polynomial-matrix entries.
+The local-to-global theorem reduces ordered-PF preservation to $2\times2$ blocks, in the same
+shape as the criterion on the matrix interlacing page. With it, the thirteen blocks decide
+which operator recurrences have interlacing PF rows; the lag recurrence above is one case.
 
 ## References
 
-No published source is cited for these results in the formalization. See the
-[matrix interlacing](/RealRooted/theorems/matrix-interlacing/) and
-[operator preservers](/RealRooted/theorems/operator-preservers/) pages for the
-classical background on matrices and operators preserving interlacing.
+See the [matrix interlacing](/RealRooted/theorems/matrix-interlacing/) and
+[operator preservers](/RealRooted/theorems/operator-preservers/) pages for classical results
+on matrices and operators preserving interlacing.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in the `RealRooted.OperatorMatrix`

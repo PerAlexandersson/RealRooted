@@ -5,7 +5,7 @@ import RealRooted.SymmetricDecomposition.FPolynomialSequence
 import RealRooted.SymmetricDecomposition.EulerFPolynomial
 
 /-!
-# The `f`-polynomial transform of derivative recurrences
+# The f-polynomial transform: derivative recurrences, real roots and interlacing
 
 <!-- realrooted-catalog
 version = 1
@@ -51,37 +51,37 @@ label = "The f-polynomial transform preserves splitting"
 [[theorems]]
 name = "RealRooted.roots_fPolynomial_natDegree_eq_map"
 module = "RealRooted.SymmetricDecomposition.FPolynomial"
-label = "The roots move by r ↦ r / (1 - r)"
+label = "The f-transform maps the roots r to r / (1 - r)"
 
 [[theorems]]
 name = "RealRooted.StrictInterl.fPolynomial_natDegree_of_roots_lt_one"
 module = "RealRooted.SymmetricDecomposition.FPolynomial"
-label = "Interlacing is preserved for roots below one"
+label = "The f-transform preserves interlacing of polynomials with roots below one"
 
 [[theorems]]
 name = "RealRooted.StrictInterl.fPolynomial_natDegree_of_one_lt_roots"
 module = "RealRooted.SymmetricDecomposition.FPolynomial"
-label = "Interlacing is preserved for roots above one"
+label = "The f-transform preserves interlacing of polynomials with roots above one"
 
 [[theorems]]
 name = "RealRooted.splits_of_eq_fPolynomial"
 module = "RealRooted.SymmetricDecomposition.FPolynomialRecurrence"
-label = "Splitting transfers through the f-polynomial transform"
+label = "Rows that are f-transforms of real-rooted rows are real-rooted"
 
 [[theorems]]
 name = "RealRooted.StrictInterl.of_mul_X_sub_C_left_of_roots_gt"
 module = "RealRooted.SymmetricDecomposition.FPolynomialSequence"
-label = "Peeling a left linear factor from strict interlacing"
+label = "(x - r)f ≪ g gives f ≪ g if the roots of f exceed r and deg g = deg f + 1"
 
 [[theorems]]
 name = "RealRooted.StrictInterl.of_mul_X_sub_C_right_of_roots_ge"
 module = "RealRooted.SymmetricDecomposition.FPolynomialSequence"
-label = "Adding a right linear factor to strict interlacing"
+label = "f ≪ g gives f ≪ (x - r)g for equal degrees and all roots at least r"
 
 [[theorems]]
 name = "RealRooted.StrictInterl.fPolynomial_pad_of_mul_X_add_one"
 module = "RealRooted.SymmetricDecomposition.FPolynomialSequence"
-label = "Padding an f-transform by powers of X + 1"
+label = "f_m(u) ≪ (x + 1) f_m(v) gives f_k(u) ≪ f_{k+1}(v) for k ≥ m"
 
 [[theorems]]
 name = "RealRooted.StrictInterl.fPolynomial_sequence"
@@ -116,89 +116,79 @@ label = "The window [-1, 0] is preserved exactly when a ≥ 0 or a ≤ -n"
 -->
 
 <!-- realrooted-catalog-content -->
-# The f-polynomial transform of derivative recurrences
+# The f-polynomial transform: derivative recurrences, real roots and interlacing
 
-For a polynomial $h$ of degree at most $d$, we use the
-**f-polynomial transform**
+The f-polynomial transform converts derivative recurrences into derivative recurrences, preserves
+and reflects real-rootedness, and transfers interlacing of rows with half-growth degrees.
 
+## Results
+
+We write $f\ll g$ if $f$ interlaces $g$; common roots are allowed unless stated. For $d\ge0$ and
+a polynomial $h$ of degree at most $d$ with coefficients $h_k$, the *f-polynomial transform* is
 $$
-\operatorname{fPolynomial}(d,h)=\sum_{k=0}^{d}h_kX^k(X+1)^{d-k},
+f_d(h)=\sum_{k=0}^{d}h_k\,x^k(x+1)^{d-k}.
 $$
+It is the substitution $x\mapsto x/(x+1)$ homogenized to degree $d$.
 
-where $h_k$ is the coefficient of $X^k$ in $h$. We write $f_j(c)$ for
-`fPolynomial j c` when the degree bound is small. The derivative identity gives
-the basic reason that this transform is useful: it converts a derivative
-recurrence into another derivative recurrence.
-
-We suppose that
-
+**Theorem (derivative rule).** If $\deg p\le d$, then
 $$
-Q(n+1)=a(n)Q'(n)+b(n)Q(n),
-$$
-
-with $\deg a(n)\leq 2$ and $\deg b(n)\leq 1$. If the degrees of the rows of
-$Q$ are bounded by their indices, then the transformed rows
-$P(n)=\operatorname{fPolynomial}(n,Q(n))$ satisfy
-
-$$
-P(n+1)=(X+1)f_2(a(n))P'(n)
-       +\bigl(f_1(b(n))-n f_2(a(n))\bigr)P(n).
+(x+1)^2\,f_d(p)'=d\,(x+1)\,f_d(p)+f_d(p').
 $$
 
-The one-step identity and induction theorem record this calculation in Lean.
-The degree lemma supplies the required bound from a constant initial row, so
-the recurrence identity can be applied directly to the usual recursively
-defined sequence.
-
-The transform also transfers the root properties needed in applications. It is
-the substitution $X \mapsto X/(X+1)$ homogenized to degree $d$, so a root $r$ of
-$h$ becomes the root $r/(1-r)$, and the degree drops when $r = 1$. Hence
-$\operatorname{fPolynomial}(d,h)$ splits whenever $h$ splits, with no sign condition on
-the coefficients, and split rows $Q(n)$ give split rows $P(n)$. When $h$ has no
-root at $1$, the roots of $\operatorname{fPolynomial}(\deg h,h)$ are exactly the images
-$r/(1-r)$. This map is increasing on $(-\infty, 1)$ and on $(1, \infty)$, so
-interlacing transfers whenever all roots of both polynomials lie on one
-side of $1$. For a
-sequence with half-growth degrees $\deg Q(j)=\lfloor(j+1)/2\rfloor$, nonnegative
-coefficients, split nonzero rows, and
-consecutive interlacing, the padding and peeling lemmas give
-
+**Theorem (recurrences).** Let $a,b,q$ be polynomials with $\deg a\le2$, $\deg b\le1$,
+$\deg q\le d$ and $\deg(aq'+bq)\le d+1$. Then
 $$
-P(n) \mathrel{\ll} P(n+1) \qquad (n\geq 1).
+f_{d+1}(aq'+bq)=(x+1)\,f_2(a)\,f_d(q)'+\bigl(f_1(b)-d\,f_2(a)\bigr)f_d(q).
 $$
-
-Here the peeling lemmas remove or add a factor $X-C(r)$ under the indicated
-root inequalities, while the padding lemma restores the common powers of
-$X+1$ required by the degree box. Thus real-rootedness and, in the half-growth
-case, interlacing pass from $Q$ to its $f$-transform.
-
-The alternating-runs polynomials in OEIS sequences [A008970](https://oeis.org/A008970),
-[A059427](https://oeis.org/A059427), and [A186370](https://oeis.org/A186370)
-give a common example. Their rows are f-transforms of peak polynomials, and
-the peak rows have the half-growth degree pattern. The `rr_row_splits` tactic
-has an `fTransform` route built on this recurrence and the splitting-transfer
-theorem.
-
-## Euler shifts and the interval Euler operator
-
-Under the $f$-transform $F=f_n(q)=\sum_kq_kx^k(1+x)^{n-k}$, the shifted Euler operator
-$q\mapsto xq'+aq$ becomes
+Consequently, let $Q_{n+1}=a_nQ_n'+b_nQ_n$ with $\deg a_n\le2$, $\deg b_n\le1$ and $\deg Q_n\le n$,
+and let $P_0=f_0(Q_0)$ and
 $$
-F\longmapsto(a-nx)F+x(1+x)F'.
+P_{n+1}=(x+1)\,f_2(a_n)\,P_n'+\bigl(f_1(b_n)-n\,f_2(a_n)\bigr)P_n.
 $$
-Every real-rooted polynomial $F$ of degree $n$ with positive leading coefficient and all
-roots in $[-1,0]$ is the $f$-transform of a PF polynomial $q$ of degree at most $n$. Since
-$q\mapsto xq'+aq$ preserves splitting of PF polynomials, the *interval Euler operator* above
-preserves splitting on such $F$. For $a>0$ it keeps the degree $n$ and the leading sign and $F$
-interlaces its image. The root window $[-1,0]$ is preserved for all such $F$ of degree
-$n\ge1$ if and only if $a\ge0$ or $a\le-n$.
+Then $P_n=f_n(Q_n)$ for all $n$. The degree bound $\deg Q_n\le n$ holds if $Q_0$ is constant.
+
+**Theorem (real roots).** Let $\deg p\le d$. Then $f_d(p)$ is real-rooted if and only if $p$ is
+real-rooted. In particular, if $P_n=f_n(Q_n)$ with $\deg Q_n\le n$ and every $Q_n$ real-rooted,
+then every $P_n$ is real-rooted.
+
+**Theorem (roots and interlacing).** Let $p\ne0$ be real-rooted with $p(1)\ne0$. Then the roots
+of $f_{\deg p}(p)$ are the numbers $r/(1-r)$ for the roots $r$ of $p$. If $f\ll g$ and all roots
+of $f$ and $g$ are below $1$, or all are above $1$, then
+$f_{\deg f}(f)\ll f_{\deg g}(g)$.
+
+**Theorem (half-growth sequences).** Let $Q_j$ be nonzero real-rooted polynomials with
+nonnegative coefficients, $\deg Q_j=\lfloor (j+1)/2\rfloor$ and $Q_j\ll Q_{j+1}$ for all $j$.
+Then $f_n(Q_n)\ll f_{n+1}(Q_{n+1})$ for all $n\ge1$.
+
+## Euler shifts
+
+Let $\theta=x\,d/dx$. If $\deg p\le n$ and $a\in\mathbb R$, then
+$$
+f_n\bigl(\theta p+ap\bigr)=(a-nx)\,f_n(p)+x(1+x)\,f_n(p)'.
+$$
+Let $F$ be real-rooted of degree $n$ with positive leading coefficient and all roots in
+$[-1,0]$, and let $a\in\mathbb R$. Then $(a-nx)F+x(1+x)F'$ is real-rooted. If $a>0$, it has
+degree $n$ and positive leading coefficient, and $F\ll(a-nx)F+x(1+x)F'$. For $n\ge1$, all
+real-rooted $F$ of degree $n$ with positive leading coefficient and roots in $[-1,0]$ are mapped
+to polynomials with roots in $[-1,0]$ if and only if $a\ge0$ or $a\le-n$.
+
+## Use
+
+The alternating-runs polynomials of OEIS [A008970](https://oeis.org/A008970),
+[A059427](https://oeis.org/A059427) and [A186370](https://oeis.org/A186370) are f-transforms of
+peak polynomials, and the peak rows have the half-growth degree pattern. Real-rootedness and
+interlacing of the peak rows therefore pass to the alternating-runs rows.
+
+## Proof
+
+The derivative rule is a direct computation. For the Euler shifts, every real-rooted $F$ of degree
+$n$ with positive leading coefficient and roots in $[-1,0]$ is $f_n(q)$ for a Pólya frequency
+polynomial $q$ of degree at most $n$, and $q\mapsto\theta q+aq$ preserves real-rootedness of such
+polynomials.
 
 ## References
 
 See [@BrandenSolus2019] and the
 [symmetric-decomposition overview on symmetricfunctions.com](sf:symmetricIDecomposition).
-For the alternating-runs families and their references, see OEIS
-[A008970](https://oeis.org/A008970), [A059427](https://oeis.org/A059427), and
-[A186370](https://oeis.org/A186370).
 <!-- /realrooted-catalog-content -->
 -/

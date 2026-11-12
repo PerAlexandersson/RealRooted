@@ -11,7 +11,7 @@ public import RealRooted.LiebSokalOperator
 import RealRooted.LiebSokalGeneral
 
 /-!
-# Grace apolarity challenge entry point
+# Grace's apolarity theorem
 
 <!-- realrooted-catalog
 version = 1
@@ -137,105 +137,73 @@ label = "Lieb–Sokal theorem without the multiaffine hypothesis"
 <!-- realrooted-catalog-content -->
 # Grace's apolarity theorem
 
-Fix $n \geq 0$. For coefficient sequences $a = (a_k)$ and $b = (b_k)$, put
+If two polynomials of degree $n$ are apolar and all zeros of one lie in a closed disk or closed
+half-plane, then the other has a zero there; polarization turns this into the
+Grace–Walsh–Szegő description of stable symmetric multiaffine polynomials and the Lieb–Sokal
+theorem.
+
+## Results
+
+For coefficient sequences $a=(a_k)$ and $b=(b_k)$ and $n\ge0$ put
 $$
-F(z) = \sum_{k=0}^n \binom{n}{k} a_k z^k
-\quad\text{and}\quad
-G(z) = \sum_{k=0}^n \binom{n}{k} b_k z^k .
+F(z)=\sum_{k=0}^n\binom nk a_kz^k,\qquad G(z)=\sum_{k=0}^n\binom nk b_kz^k ,
 $$
-In Lean, $F$ is `binomialLift n f`, where $f = \sum_k a_k z^k$. The
-polynomials $F$ and $G$ are **apolar** if
+so that $F$ is the binomial lift of $f=\sum_ka_kz^k$. We call $F$ and $G$ *apolar* if
 $$
-\sum_{k=0}^n (-1)^k \binom{n}{k} a_k b_{n-k} = 0 .
+\sum_{k=0}^n(-1)^k\binom nk a_kb_{n-k}=0 .
 $$
+A polynomial in several variables is *stable* if it does not vanish when all variables lie in
+the open upper half-plane, and *real stable* if it has real coefficients and is stable.
 
-**Theorem** (Grace). [@Grace1902] Let $F$ and $G$ be apolar polynomials of degree exactly
-$n$. If all zeros of $F$ lie in a closed disk $\{z : |z - c| \leq r\}$ with
-$r \geq 0$, or in a closed half-plane $\{z : \operatorname{Im} z \geq b\}$,
-then $G$ has a zero in the same set.
+**Theorem (Grace).** [@Grace1902] Let $F$ and $G$ be apolar polynomials of degree exactly $n$.
+If all zeros of $F$ lie in a closed disk $\{z:|z-c|\le r\}$ with $r\ge0$, or in a closed
+half-plane $\{z:\operatorname{Im}z\ge b\}$, then $G$ has a zero in the same set.
 
-The **polarization** of a polynomial $p(z) = \sum_{k \leq n} p_k z^k$ of
-degree at most $n$ is the symmetric multiaffine polynomial
+The *polarization* of a polynomial $p(z)=\sum_{k\le n}p_kz^k$ of degree at most $n$ is the
+symmetric multiaffine polynomial
 $$
-\operatorname{Pol}_n(p)(z_1, \dotsc, z_n) =
-\sum_{k=0}^n \binom{n}{k}^{-1} p_k\, e_k(z_1, \dotsc, z_n),
+\operatorname{Pol}_n(p)(z_1,\dots,z_n)=\sum_{k=0}^n\binom nk^{-1}p_k\,e_k(z_1,\dots,z_n),
 $$
-where $e_k$ is the elementary symmetric polynomial; its diagonal
-specialization $z_1 = \dotsb = z_n = z$ is $p(z)$.
+where $e_k$ is the elementary symmetric polynomial; its diagonal $z_1=\dots=z_n=z$ is $p(z)$.
 
-**Theorem** (polarization). Let $p \in \mathbb{C}[z]$ have degree at most $n$
-and no zeros in the open upper half-plane. Then $\operatorname{Pol}_n(p)$ is
-stable: it does not vanish when all $z_i$ lie in the open upper half-plane.
+**Theorem (polarization).** If $\deg p\le n$ and $p$ has no zero in the open upper half-plane,
+then $\operatorname{Pol}_n(p)$ is stable.
 
-**Theorem** (Grace–Walsh–Szegő). [@Walsh1922; @Szego1922] Let
-$P \in \mathbb{C}[z_1, \dotsc, z_n]$ be
-symmetric and multiaffine. Then $P = \operatorname{Pol}_n(p)$ for its diagonal
-$p(z) = P(z, \dotsc, z)$, and $P$ is stable if and only if $p$ has no zeros
-in the open upper half-plane. If $P$ has real coefficients, then $P$ is real
-stable if and only if $p$ is nonzero and has only real zeros.
+**Theorem (Grace–Walsh–Szegő).** [@Walsh1922; @Szego1922] Let $P\in\mathbb C[z_1,\dots,z_n]$
+be symmetric and multiaffine, with diagonal $p(z)=P(z,\dots,z)$. Then
+$P=\operatorname{Pol}_n(p)$, and $P$ is stable if and only if $p$ has no zero in the open upper
+half-plane. If $P$ has real coefficients, then $P$ is real stable if and only if $p$ is nonzero
+and real-rooted.
 
-**Theorem** (Grace–Walsh–Szegő coincidence theorem). Let
-$P \in \mathbb{C}[z_1, \dotsc, z_n]$ be symmetric and multiaffine, and let $C$
-be an open or closed disk, an open or closed half-plane, or the open or closed
-exterior of a disk. In the last case, assume that $P(z, \dotsc, z)$ has
-degree $n$. Then for all $\zeta_1, \dotsc, \zeta_n \in C$ there is
-$\zeta \in C$ with
+**Theorem (coincidence).** Let $P\in\mathbb C[z_1,\dots,z_n]$ be symmetric and multiaffine, and
+let $C$ be one of the following: an open disk, a closed disk, an open half-plane, a closed
+half-plane, or the open or closed exterior of a disk, of radius $r>0$ (for a closed disk,
+$r\ge0$). For an exterior we assume that $P(z,\dots,z)$ has degree $n$. Then for all
+$\zeta_1,\dots,\zeta_n\in C$ there is $\zeta\in C$ with
 $$
-P(\zeta_1, \dotsc, \zeta_n) = P(\zeta, \dotsc, \zeta).
+P(\zeta_1,\dots,\zeta_n)=P(\zeta,\dots,\zeta).
 $$
 
-More generally, let $P \in \mathbb{C}[z_i : i \in \sigma]$, with $\sigma$
-finite, have degree at most $\kappa_i$ in $z_i$. Replacing each $z_i$ by a
-block of $\kappa_i$ new variables and polarizing $P$ in each block gives a
-multiaffine polynomial.
+**Theorem (blockwise polarization).** Let $\sigma$ be finite and let $P\in\mathbb C[z_i:i\in\sigma]$
+have degree at most $\kappa_i$ in $z_i$. Replace each $z_i$ by a block of $\kappa_i$ new
+variables and polarize $P$ in each block. The resulting multiaffine polynomial is stable if and
+only if $P$ is stable.
 
-**Theorem.** The blockwise polarization of $P$ is stable if and only if $P$
-is stable.
+**Theorem (Lieb–Sokal).** [@LiebSokal1981] Let $F$ and $G$ be stable polynomials in
+$\mathbb C[z_1,\dots,z_m]$. Then $F(-\partial)\,G$, obtained by substituting $-\partial/\partial
+z_i$ for $z_i$ in $F$ and applying the result to $G$, is zero or stable. This holds for
+multiaffine $F,G$ and, with the blockwise polarization above, for arbitrary degrees.
 
-**Theorem** (Lieb–Sokal, multiaffine case). [@LiebSokal1981] Let $F$ and $G$ be stable
-multiaffine polynomials in $\mathbb{C}[z_1, \dotsc, z_m]$. Then
-$F(-\partial)\, G$, the result of substituting $-\partial/\partial z_i$ for
-$z_i$ in $F$ and applying it to $G$, is zero or stable.
+## Proof
 
-The multiaffine hypothesis can be removed.
-
-**Theorem** (Lieb–Sokal). [@LiebSokal1981] Let $F$ and $G$ be stable polynomials
-in $\mathbb{C}[z_1, \dotsc, z_m]$, of arbitrary degrees. Then $F(-\partial)\, G$
-is zero or stable.
-
-## Proof idea
-
-Grace's theorem is proved by induction on $n$. Apolarity is invariant under
-the polar derivative of $F$ with a pole $\zeta$ outside the disk, which lowers
-the degree by one and, by Laguerre's theorem, keeps the zeros in the disk. The
-half-plane case uses the same induction, with Laguerre's theorem for closed
-lower half-planes, followed by the reflection $z \mapsto -z$. For
-polarization, we fix a point $z$ in the product of open upper half-planes. The
-equation $\operatorname{Pol}_n(p)(z) = 0$ says that $p$ is apolar to
-$\prod_i (w - z_i)$. All zeros of $p$ lie in the closed lower half-plane, so
-Grace's theorem would put some $z_i$ there, which is impossible. A symmetric
-multiaffine polynomial is a linear combination of elementary symmetric
-polynomials, so it is the polarization of its diagonal; this gives the
-Grace–Walsh–Szegő theorem. For the coincidence theorem in the upper
-half-plane, $P - P(\zeta)$ is symmetric, multiaffine and vanishes at a point
-of the product of upper half-planes, so it is not stable and its diagonal
-vanishes in the upper half-plane. Replacing each monomial
-$\prod_{i \in S} z_i$ by $\prod_{i \in S} (a z_i + b) \prod_{i \notin S} (c z_i + d)$
-transports this along Möbius maps to the other open regions; for exteriors,
-the degree condition rules out the pole of the map. The closed regions follow
-by shrinking open regions onto them, since $P(z, \dotsc, z) = P(\zeta)$ has
-finitely many solutions unless the diagonal is constant.
-For the real form, a real polynomial without zeros
-in the open upper half-plane has no nonreal zeros, since these come in
-conjugate pairs. Identifying the variables of each block recovers $P$ from its
-blockwise polarization, and identifying variables preserves stability. The
-Lieb–Sokal theorem
-follows by pairing the variables of $F$ and $G$ and contracting each pair, an
-operation that preserves stability of multiaffine polynomials.
-For arbitrary degrees, we rescale the coefficients by descending factorials,
-which preserves stability up to zero, polarize $F$ and $G$ in a common degree
-box, apply the multiaffine theorem, and identify the polarized differential
-action with $F(-\partial)\, G$ on the diagonal.
+We prove Grace's theorem by induction on $n$, using that the polar derivative of $F$ lowers the
+degree by one and, by Laguerre's theorem, keeps the zeros in the disk or half-plane.
+For polarization, $\operatorname{Pol}_n(p)(z)=0$ says that $p$ is apolar to
+$\prod_i(w-z_i)$. If all $z_i$ lie in the open upper half-plane, Grace's theorem gives a $z_i$ in
+the
+closed lower half-plane, a contradiction. The
+coincidence theorem for the upper half-plane follows by applying this to $P-P(\zeta)$, and the
+other regions by Möbius maps.
 
 ## References
 

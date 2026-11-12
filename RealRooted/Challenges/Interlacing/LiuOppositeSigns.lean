@@ -74,53 +74,46 @@ label = "Degrees of compatible pairs differ by at most two"
 <!-- realrooted-catalog-content -->
 # Liu's opposite-sign compatibility theorem
 
-Two real polynomials $f$ and $g$ are **compatible** if every combination
-$\alpha f + \beta g$ with $\alpha, \beta \geq 0$ is real-rooted or zero. When
-$f$ and $g$ have leading coefficients of the same sign, compatibility is governed by common
-interleavers (Chudnovsky–Seymour). Liu treats the case of **opposite leading
-signs**, where the answer is a root-count condition.
+For real-rooted polynomials with opposite leading signs, compatibility is a root-count
+condition, with an extra branch for common roots.
 
-Write $n_p(x)$ for the number of roots of $p$ in $[x, \infty)$, counted with
-multiplicity.
+## Results
 
-**Theorem (Liu, corrected).** [@Liu2012CompatibleSequences] Let $f$ and $g$ be nonconstant
-real-rooted polynomials with opposite leading signs. Then $f$ and $g$ are
-compatible if and only if one of the following holds:
+Two real polynomials $f$ and $g$ are *compatible* if every combination $\alpha f+\beta g$ with
+$\alpha,\beta\ge0$ is zero or real-rooted. For leading coefficients of the same sign,
+compatibility is governed by common interleavers (Chudnovsky--Seymour). Liu treats the case of
+opposite leading signs. Write $n_p(x)$ for the number of roots of $p$ in $[x,\infty)$, counted
+with multiplicity.
 
-- after deleting the largest root from whichever of $f$ and $g$ has the
-  larger largest root (from $f$ in case of a tie), the root counts of the
-  resulting pair differ by at most one at every point, that is,
-  $|n_{p'}(x)-n_q(x)|\le1$ for every real $x$, where $(p',q)$ is the pair
-  after the indicated deletion;
-- $f$ and $g$ share a root $r$, and the cofactors $f/(x-r)$ and
-  $g/(x-r)$ are compatible.
+**Theorem (Liu).** [@Liu2012CompatibleSequences] Let $f$ and $g$ be nonconstant real-rooted
+polynomials with opposite leading signs. Then $f$ and $g$ are compatible if and only if one of
+the following holds.
 
-The second branch is missing from the published statement, and it is
-necessary. The forward direction of the published version, which asserts the
-first branch alone, is false: for $x$ and $-x^2$, which share their largest
-root $0$, the pair is compatible but the first branch fails, because the
-right branch requires a strict largest-root inequality, while deleting the
-largest root from only one endpoint can leave a root-count gap of two. The
-statement above, with the common-root branch, is the one proved in this
-library, and the headline theorem on this page is that corrected form.
+- Delete the largest root from the polynomial with the larger largest root (from $f$ in case of
+  a tie), and call the resulting pair $(p,q)$. Then $|n_p(x)-n_q(x)|\le1$ for every real $x$.
+- $f$ and $g$ share a root $r$, and the cofactors $f/(x-r)$ and $g/(x-r)$ are compatible.
 
-If $f$ and $g$ have no common root, then they are compatible if and only if
-the first branch holds.
+If $f$ and $g$ have no common root, they are compatible if and only if the first condition
+holds.
 
-**Corollary (Liu).** Compatible real-rooted polynomials with
-opposite leading signs have degrees differing by at most two.
+**Corollary.** Compatible real-rooted polynomials with opposite leading signs have degrees
+differing by at most two.
 
-For pairs without common roots, the forward direction is first proved for
-polynomials with simple roots. Liu's source proof reduces to endpoints with no
-common zeros and then treats those endpoints as if all of their zeros were
-simple; that implication is false for individual endpoints. We replace it by
-small derivative-shift regularizations, which preserve compatibility and
-reduce the general case to the simple-root one, and root matching passes back
-to the limit.
+The published statement has the first condition alone, and its forward direction fails: $x$ and
+$-x^2$ are compatible, but deleting the largest root $0$ from $x$ leaves a root-count gap of two
+at every $x\le0$. The common-root condition above is the correction. Liu's proof for pairs with
+no common root also treats such endpoints as if all of their roots were simple, which fails
+for individual endpoints.
+
+## Proof
+
+For pairs with simple roots we prove the root-count criterion directly. The general case follows
+by small derivative-shift regularizations, which preserve compatibility and reduce to the
+simple-root case, and a limit of root matchings.
 
 ## References
 
-See [@Liu2012CompatibleSequences].
+[@Liu2012CompatibleSequences].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

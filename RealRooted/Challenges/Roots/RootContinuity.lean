@@ -127,62 +127,63 @@ tags = ["realrooted-original"]
 <!-- realrooted-catalog-content -->
 # Root continuity and root-count stability
 
-We study how real roots behave under coefficient perturbations and along
-continuous polynomial families. A monic polynomial remains split when it is
-approximated coefficientwise by monic split polynomials of the same degree,
-and the sequential form applies to coefficientwise limits. For a monic split
-polynomial close to another one, the complex-root estimate gives a root within
-an explicit distance of each prescribed root.
+Splitting over $\mathbb R$ is closed under coefficientwise limits and is transported along
+continuous squarefree families, and root counts are constant across intervals without roots.
 
-For the normalized left pencil
+## Results
 
-$$
-\frac{t f+g}{t+1},
-$$
+We write $\lVert p\rVert_1$ for the sum of the absolute values of the coefficients of $p$
+(`coeffSumRange`). A polynomial *splits* if it is real-rooted. Roots are counted with multiplicity.
 
-the coefficient error from $f$ is bounded by
-$(t+1)^{-1}(\lVert f\rVert_1+\lVert g\rVert_1)$, where $\lVert p\rVert_1$ is
-the sum of the absolute values of the coefficients (`coeffSumRange`).
-We can choose a positive $t$ making this bound smaller than any prescribed
-positive precision. If $f$ and $g$ are monic of the same degree and the pencil
-is split, the nearby-root results produce either a real root near a real root
-of $f$, or a complex algebraic root near any complex root of $f$. Reciprocal
-scaling exchanges $f+\mu g$ with $g+\mu^{-1}f$, preserving both its root
-multiset and its upper-threshold root count. A symmetric substitution gives
-another route from a nonzero split polynomial to a split polynomial.
+**Theorem (closure).** Let $f$ be monic. If for every $\varepsilon>0$ there is a monic split
+polynomial $g$ of degree $\deg f$ with all coefficients within $\varepsilon$ of those of $f$, then
+$f$ splits. In particular a monic $f$ is split if it is the coefficientwise limit of a sequence of
+monic split polynomials of degree $\deg f$.
 
-The path theorems transport splitting across a preconnected parameter set when
-the coefficients vary continuously, the degree is constant, and every fibre
-is squarefree. Their unit-interval form applies on $[0,1]$; the separable form
-replaces squarefreeness by fibrewise separability. The proof combines the
-openness of strict sign alternations between ordered roots with the closedness
-of the coefficientwise splitting condition.
+**Theorem (nearby roots).** Let $f,g$ be monic of the same degree $m$, let $g$ split, and let all
+coefficients of $g$ be within $\varepsilon>0$ of those of $f$. For every complex root $z$ of $f$
+there is a complex root $w$ of $g$ with
+$$|z-w|<\bigl((m+1)\varepsilon\bigr)^{1/m}\max(|z|,1).$$
 
-Finally, if $t \mapsto P_t(a)$ is continuous and never vanishes on a closed
-parameter interval, then its two endpoint values have the same sign. For a
-fixed polynomial with no root in a closed interval, the lower and upper root
-counts are constant as the threshold moves across that interval. The bundled
-count theorem records both threshold equalities and the absence of roots in
-the window. For two polynomials, the corresponding integer differences are
-also constant, and the open-interval forms allow any two interior sample
-points; the final theorem records the resulting parity invariance.
+**Theorem (left pencil).** Let $f,g$ be monic of the same degree $m$, let $t>0$ and
+$\varepsilon>0$ with $(t+1)^{-1}(\lVert f\rVert_1+\lVert g\rVert_1)<\varepsilon$, and let $tf+g$
+be nonzero and split. For every real root $a$ of $f$ there is a real root $b$ of $tf+g$, and for
+every complex root $z$ of $f$ there is a complex root $w$ of $tf+g$, within
+$((m+1)\varepsilon)^{1/m}\max(|a|,1)$, respectively $((m+1)\varepsilon)^{1/m}\max(|z|,1)$.
+Such $t>0$ exists for every $\varepsilon>0$.
 
-When the perturbing polynomial has larger degree, the normalized pencil above is
-not available, since the leading coefficient of $f+\mu g$ tends to zero with
-$\mu$. In this degree-increasing case we still have a lower bound for the roots
-near each root of $f$. Let $f$ split over $\mathbb R$ with
-$\deg f<\deg g$, and let $\rho>0$. Then there is $\delta>0$ such that for all
-$0<\mu<\delta$ for which $f+\mu g$ splits, every root $a$ of $f$ of multiplicity
-$k$ has at least $k$ roots of $f+\mu g$, counted with multiplicity, within
-distance $\rho$ of $a$. The proof factors out the roots that escape to infinity as
-$\mu\to0^+$. Their product has a large constant term, so the low coefficients of
-the remaining monic factor, which come from the Taylor expansion of $g$ at $a$,
-force enough of its roots to lie near $a$.
+**Theorem (reciprocal scaling).** For real $\mu\ne0$, the polynomials $f+\mu g$ and
+$g+\mu^{-1}f$ have the same roots with multiplicity, hence the same number of roots larger than
+any given $x$.
+
+**Theorem (symmetric substitution).** Let $h\ne0$ be split and $n\in\mathbb N$ with
+$f(-u^2)=u^n\,h\bigl((1-u^2)/u\bigr)$ for all nonzero $u\in\mathbb C$. Then $f$ splits.
+
+**Theorem (continuous families).** Let $P_t$ be real polynomials of constant degree $d$ for $t$
+in a preconnected set $S$, with each coefficient continuous in $t$ and each $P_t$ squarefree. If
+$P_a$ splits for some $a\in S$, then $P_b$ splits for all $b\in S$. For $S=[0,1]$ the same holds
+if each $P_t$ is separable instead of squarefree.
+
+**Theorem (root counts).** Let $a\le b$ and let $p$ have no root in $[a,b]$. Then $p$ has equally
+many roots $\le a$ and $\le b$, equally many roots $>a$ and $>b$, and no root in $(a,b]$. If
+$f,g$ both have no root in $[a,b]$, then the differences $\#\{\text{roots}\le t\}$ of $f$ minus
+that of $g$, and likewise for $\#\{\text{roots}>t\}$, agree at $t=a$ and $t=b$. If $f,g$ have no
+root in the open interval $(a,b)$, the difference of the counts of roots $>t$ takes the same
+value at all $t\in(a,b)$, and its parity is the same for all such $t$.
+
+**Proposition (sign).** If $t\mapsto P_t(a)$ is continuous and nonvanishing on $[t_0,t_1]$, then
+$P_{t_0}(a)\,P_{t_1}(a)>0$.
+
+**Theorem (degree-increasing perturbation).** Let $f$ split, $\deg f<\deg g$ and $\rho>0$. There
+is $\delta>0$ such that for all $0<\mu<\delta$ with $f+\mu g$ split, every root $a$ of $f$ of
+multiplicity $k$ has at least $k$ roots of $f+\mu g$, counted with multiplicity, within distance
+$\rho$ of $a$. Here the normalized left pencil is not available, since the leading coefficient
+of $f+\mu g$ tends to zero with $\mu$.
 
 ## References
 
-The path-transport and root-count results were promoted from the formal proofs for
-[OEIS A358628](https://oeis.org/A358628), [OEIS A355144](https://oeis.org/A355144), and
+The continuity and root-count results come from the formal proofs for
+[OEIS A358628](https://oeis.org/A358628), [OEIS A355144](https://oeis.org/A355144) and
 [OEIS A176331](https://oeis.org/A176331).
 <!-- /realrooted-catalog-content -->
 -/

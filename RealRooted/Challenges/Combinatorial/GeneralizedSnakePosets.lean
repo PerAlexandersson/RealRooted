@@ -11,7 +11,7 @@ import RealRooted.GeneralizedSnakePosets.SnakeConstant
 public import RealRooted.GeneralizedSnakePosets.Narayana.Modified
 
 /-!
-# Generalized snake poset challenge entry point
+# Real-rooted rook polynomials of generalized snake posets
 
 <!-- realrooted-catalog
 version = 1
@@ -113,55 +113,52 @@ headline = true
 -->
 
 <!-- realrooted-catalog-content -->
-# Generalized snake posets
+# Real-rooted rook polynomials of generalized snake posets
 
-A generalized snake poset $P(w)$ is a width-two poset built from a word $w$ in
-the letters $L$ and $R$. Braun and Jal show that the $h^*$-polynomial of its
-order polytope is the non-nesting rook polynomial $M_w$ of a skew board whose
-cells are the incomparable cross-chain pairs of $P(w)$. The board comes from
-the Alexandersson–Jal correspondence [@AlexanderssonJal2024x] between
-naturally labeled width-two posets
-and skew shapes, under which the $P$-Eulerian polynomial is the non-nesting rook
-polynomial. The identification with the $h^*$-polynomial is
-cited from Braun–Jal [@BraunJal2026x] and is not formalized. Lean formalizes
-the rook model:
-the board, its non-nesting rook polynomial $M_w$, and the recurrence below.
+The non-nesting rook polynomial of a generalized snake word is real-rooted, and deleting the last
+letter gives an interlacing polynomial.
 
-**Theorem (Braun–Jal).** [@BraunJal2026x] If $w$ is nonempty, then $M_w$ is
-real-rooted, and
-deleting the last letter of $w$ gives a polynomial interlacing $M_w$.
+## Results
 
-The proof uses the **modified Narayana polynomials** $P_n=t^{-1}N_{n+1}$,
-where
-$N_n(t)=\sum_k\frac1n\binom nk\binom n{k-1}t^k$,
-which are the rook polynomials of the full truncated staircase boards, and
-auxiliary polynomials $G_n$, which are sums of truncated-staircase rook
-polynomials.
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated. A
+polynomial is a *Pólya frequency (PF) polynomial* if it has nonnegative coefficients and only real
+nonpositive roots.
 
-- **Recurrence.** If $k$ is the last position where $w$ differs from its final
-  letter, with positions numbered from $0$, and $s = |w| - k - 1$, then
-  $M_w = M_{w[:k+1]}\, P_s + x\, M_{w[:k]}\, G_s$. Constant words give
-  $M_w = P_{|w|+1}$.
-- **Narayana input.** Every $P_n$ is a PF polynomial, $P_n \ll P_{n+1}$, and
-  for $m \geq 2$, $\lambda \geq 0$ and $\nu \geq -1$,
-  $(\lambda x+\nu) P_{m-1} + P_m \ll (\lambda x+\nu) P_m + P_{m+1}$.
-- **Staircase input.** For $n\ge1$,
-  $x\,G_{n-1}=P_n-(1+x)P_{n-1}$, and $G_n-G_{n-1}$ has nonnegative
-  coefficients.
-- **Auxiliary interlacing.** For $n \geq 1$, $G_n \ll P_n$.
+A generalized snake poset $P(w)$ is a width-two poset built from a word $w$ in the letters $L$ and
+$R$. Let $M_w$ be the non-nesting rook polynomial $\sum_Px^{|P|}$ of the board of incomparable
+cross-chain pairs of $P(w)$, with column order reversed. Here $P$ runs over sets of cells of the
+board, no two in a row, with columns strictly decreasing as rows increase. By Braun and Jal,
+$M_w$ is the $h^*$-polynomial of the order polytope of $P(w)$ [@BraunJal2026x]. The board comes from
+the Alexandersson–Jal correspondence between naturally labeled width-two posets and skew shapes,
+under which the $P$-Eulerian polynomial is the non-nesting rook polynomial
+[@AlexanderssonJal2024x].
 
-Induction on the length of $w$ along the recurrence then gives the theorem.
+**Theorem (Braun–Jal).** If $w$ is nonempty, then $M_w$ is nonzero and real-rooted, and
+$M_{w'}\ll M_w$, where $w'$ is $w$ with its last letter deleted [@BraunJal2026x].
 
-## Relation to SymCat
+The proof uses the *modified Narayana polynomials* $P_n=t^{-1}N_{n+1}$, where
+$N_n(t)=\sum_k\frac1n\binom nk\binom n{k-1}t^k$ is the Narayana polynomial, and auxiliary
+polynomials $G_n$, which are sums of rook polynomials of truncated staircase boards.
 
-We formalize the generalized-snake real-rootedness and interlacing result discussed
-in the [rook-matroid section](sf:rookMatroidPolynomials); the section also treats
-other rook-matroid properties.
+- **Narayana polynomials.** $P_n$ is the rook polynomial of the full truncated staircase board
+  of size $n$. Each $P_n$ is a PF polynomial, and $P_n\ll P_{n+1}$. For $m\ge2$, $\lambda\ge0$ and
+  $\nu\ge-1$,
+  $$(\lambda x+\nu)P_{m-1}+P_m\ \ll\ (\lambda x+\nu)P_m+P_{m+1}.$$
+- **Auxiliary polynomials.** For $n\ge1$, $x\,G_{n-1}=P_n-(1+x)P_{n-1}$, the polynomial
+  $G_n-G_{n-1}$ has nonnegative coefficients, and $G_n\ll P_n$.
+- **Recurrence.** Number the positions of $w$ from $0$, let $k$ be the last position where $w$
+  differs from its final letter, and put $s=|w|-k-1$. Then
+  $$M_w=M_{w[:k+1]}\,P_s+x\,M_{w[:k]}\,G_s,$$
+  where $w[:j]$ is the prefix of length $j$. For a constant word $w$, $M_w=P_{|w|+1}$.
+
+Induction on the length of $w$ along the recurrence gives the theorem.
 
 ## References
 
-See [@BraunJal2026x] and [@AlexanderssonJal2024x, Art. 59]. See also the
-[rook matroid section](sf:rookMatroidPolynomials) on symmetricfunctions.com.
+- [@BraunJal2026x]
+- [@AlexanderssonJal2024x, Art. 59]
+
+See also the [rook matroid section](sf:rookMatroidPolynomials) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

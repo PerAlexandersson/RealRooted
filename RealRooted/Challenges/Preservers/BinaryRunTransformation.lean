@@ -7,7 +7,7 @@ public import RealRooted.BinaryRunTransformation.MultiplierMotzkin
 public import RealRooted.BinaryRunTransformation.SymbolCounterexample
 
 /-!
-# Binary-run transformation challenge entry point
+# Binary-run transformation preserving PF polynomials and interlacing
 
 <!-- realrooted-catalog
 version = 1
@@ -44,23 +44,23 @@ label = "Balanced run transformation"
 [[theorems]]
 name = "RealRooted.IsPFPolynomial.binaryRunTransform"
 module = "RealRooted.BinaryRunTransformation.Continuation"
-label = "The transformation preserves PF polynomials"
+label = "J_n maps PF polynomials of degree at most n to PF polynomials"
 
 [[theorems]]
 name = "RealRooted.binaryRunTransform_splits_and_roots_neg"
 module = "RealRooted.BinaryRunTransformation.Continuation"
-label = "Positive constant term gives strictly negative zeros"
+label = "A PF input with positive constant term has an image with only negative roots"
 
 [[theorems]]
 name = "RealRooted.strictInterl_binaryRunTransform"
 module = "RealRooted.BinaryRunTransformation.Interlacing"
-label = "The transformation preserves interlacing"
+label = "J_n preserves interlacing on inputs of degree at most (n+1)/2"
 headline = true
 
 [[theorems]]
 name = "RealRooted.strictInterl_binaryRunTransform_succ"
 module = "RealRooted.BinaryRunTransformation.CrossLength"
-label = "Interlacing across lengths"
+label = "J_n of (n+1)g - 2Θg interlaces J_{n+1} g"
 
 [[theorems]]
 name = "RealRooted.motzkinWeightedRow_strictInterl_succ"
@@ -85,87 +85,76 @@ label = "The rows with weights 1/(m+1)! form a Sturm chain"
 [[theorems]]
 name = "RealRooted.IsPFPolynomial.balancedRunTransform"
 module = "RealRooted.BalancedRunTransformation.Preservation"
-label = "The balanced transformation preserves PF polynomials"
+label = "The balanced run transformation maps PF polynomials of low degree to PF polynomials"
 
 [[theorems]]
 name = "RealRooted.strictInterl_balancedRunTransform"
 module = "RealRooted.BalancedRunTransformation.Interlacing"
-label = "The balanced transformation preserves interlacing"
+label = "The balanced run transformation preserves interlacing on low-degree inputs"
 -->
 
 <!-- realrooted-catalog-content -->
-# The binary-run transformation
+# Binary-run transformation preserving PF polynomials and interlacing
 
-For fixed $n$, the linear map `binaryRunTransform n` sends $1$ to $1$ and
-sends $X^m$, for $1 \leq m \leq n$, to
+For each $n$, the binary-run transformation $J_n$ maps PF polynomials of degree at most $n$ to
+PF polynomials, and preserves interlacing on inputs of degree at most $(n+1)/2$.
 
-$$\frac{1}{\binom{n}{m}} \sum_k \binom{m-1}{k-1}\binom{n+1-m}{k} X^k.$$
+## Results
 
-We write $J_n$ for the linear map `binaryRunTransform n`.
-
-By the algebraic-symbol method [@BorceaBranden2009I], if the input has degree
-at most $n$, nonnegative coefficients, and only real
-nonpositive zeros, then its image has the same properties. If the input has
-positive constant coefficient, every zero of the image is strictly negative.
-
-The fixed-sum Narayana-type transform is the reweighted version with basis
-images
-
-$$T_n(X^m) = \frac{\binom{n}{m}}{m+1}\, \mathtt{binaryRunPolynomial}\ n\ m.$$
-
-Equivalently, it is `binaryRunTransform n` after the standard finite
-Narayana/Schur–Szegő diagonal multiplier. Combined with preservation by that
-multiplier, this preservation theorem yields the corresponding
-[Narayana transformation theorem](/RealRooted/families/narayana/)
-[@MaoWang2026x]; that
-deduction is cited, and Lean does not connect `binaryRunTransform` to
-`narayanaTransform`.
-
-## Interlacing
-
-On inputs of degree at most $(n+1)/2$, the transform also preserves
-interlacing. With $N = n + 1$ and $\Theta = x\, d/dx$, it transports interlacing
-across lengths: for a PF polynomial $g$ with $g(0) \neq 0$ and
-$2 \leq \deg g \leq N/2$,
-
-$$J_n\bigl((N - 2\Theta)\, g\bigr) \ll J_{n+1}(g).$$
-
-For a PF multiplier sequence $\gamma$ with positive entries, put
-$G_n^{\gamma}(t) = \sum_m \frac{n!\,\gamma_m}{m!\,(n-2m)!}\, t^m$, a weighted matching polynomial of
-the complete graph. These satisfy $(N-2\Theta)\, G_N^{\gamma} = N G_n^{\gamma}$, so the rows
-$R_n^{\gamma} = J_n(G_n^{\gamma})$ form a Sturm chain: $R_n^{\gamma} \ll R_{n+1}^{\gamma}$ for all
-$n$. This holds in particular for $\gamma_m = 1/(\alpha)_m$ with $\alpha > 0$. The case
-$\alpha = 2$, where $\gamma_m = 1/(m+1)!$, gives rows that are classically the Motzkin-ascent
-polynomials (OEIS A114580); that identification is cited, not formalized.
-
-The rows also move monotonically in $\alpha$. Write $P_n^{(\alpha)}$ for the row with
-$\gamma_m = 1/(\alpha)_m$. Then $P_n^{(\alpha+1)} \ll P_n^{(\alpha)}$ for every $n$ and every
-$\alpha > 0$. The proof uses the shift identity
-$\alpha\, G_n^{(\alpha)} = (\Theta + \alpha)\, G_n^{(\alpha+1)}$, which follows from
-$\alpha\, (\alpha+1)_m = (\alpha+m)(\alpha)_m$. A PF polynomial $g$ of degree at least 2 satisfies
-$g \ll (\Theta + \alpha)\, g$, and the transform preserves interlacing.
-
-## The balanced run transformation
-
-The companion map `balancedRunTransform n` sends $X^m$ to
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+A polynomial is *PF* (Pólya frequency) if it is zero or has nonnegative coefficients and only
+real, nonpositive roots. Let $J_n$ be the linear map with $J_n(1)=1$ and, for $1\le m\le n$,
 $$
-U_{n,m} = \frac{1}{\binom{n}{m}} \sum_k \binom{m}{k}\binom{n-m}{k} X^k .
+J_n(x^m)=\frac1{\binom nm}\sum_k\binom{m-1}{k-1}\binom{n+1-m}{k}x^k .
 $$
-Let $n \ge 2$. If $p$ is a PF polynomial of degree at most $(n+1)/2$, then its
-image is a PF polynomial. If $f \ll g$, both have nonnegative coefficients,
-and $\deg g \le (n+1)/2$, then the images satisfy the same interlacing.
 
-## Proof idea
+**Theorem (preservation).** If $p$ is PF with $\deg p\le n$, then $J_np$ is PF. If moreover
+$p(0)>0$, then $J_np$ is real-rooted and all its roots are negative [@BorceaBranden2009I].
 
-After scaling the input factors, a stable pointing construction controls the
-motion of every critical value of the output. A polarized path-matching
-polynomial supplies the small-parameter anchor, and the critical-value sign
-prevents collisions throughout the deformation.
+**Theorem (interlacing).** If $f\ll g$ have nonnegative coefficients and
+$\deg g\le\lfloor(n+1)/2\rfloor$, then $J_nf\ll J_ng$.
+
+**Theorem (interlacing across lengths).** Let $\Theta=x\,d/dx$. If $g$ is PF with $g(0)\ne0$
+and $2\le\deg g$ and $2\deg g\le n+1$, then
+$$
+J_n\bigl((n+1)g-2\Theta g\bigr)\ll J_{n+1}(g).
+$$
+
+**Theorem (Motzkin-type rows).** Let $\gamma$ be a PF multiplier sequence with $\gamma_m>0$
+for all $m$. Put
+$$
+G_n^\gamma(t)=\sum_{0\le m\le n/2}\frac{n!\,\gamma_m}{m!\,(n-2m)!}\,t^m,\qquad
+R_n^\gamma=J_n\bigl(G_n^\gamma\bigr).
+$$
+Then $R_n^\gamma\ll R_{n+1}^\gamma$ for all $n$. This applies to $\gamma_m=1/(\alpha)_m$ for
+every $\alpha>0$, where $(\alpha)_m=\alpha(\alpha+1)\cdots(\alpha+m-1)$. Writing
+$R_n^{(\alpha)}$ for these rows, $R_n^{(\alpha+1)}\ll R_n^{(\alpha)}$ for all $n$ and
+$\alpha>0$. The case $\alpha=2$, $\gamma_m=1/(m+1)!$, gives the Motzkin ascent polynomials.
+
+**Theorem (balanced run transformation).** Let $n\ge2$, and let $K_n$ be the linear map with
+$$
+K_n(x^m)=\frac1{\binom nm}\sum_k\binom mk\binom{n-m}{k}x^k .
+$$
+If $p$ is PF and $\deg p\le\lfloor(n+1)/2\rfloor$, then $K_np$ is PF. If $f\ll g$ have
+nonnegative coefficients and $\deg g\le\lfloor(n+1)/2\rfloor$, then $K_nf\ll K_ng$.
+
+## Use
+
+The map $x^m\mapsto\frac1{m+1}\binom nm J_n(x^m)$ is $J_n$ composed with a diagonal multiplier
+sequence. Combined with the preservation of PF polynomials by that multiplier, the preservation
+theorem gives the [Narayana transformation theorem](/RealRooted/families/narayana/)
+[@MaoWang2026x]. The rows $R_n^\gamma$ for $\gamma_m=1/(m+1)!$ are the Motzkin ascent polynomials
+(OEIS A114580).
+
+## Proof
+
+After scaling the input factors, a stable pointing construction controls the motion of every
+critical value of the output. A polarized path-matching polynomial gives the small-parameter
+anchor, and the sign of the critical value prevents collisions along the deformation.
 
 ## References
 
-The stability-preserving contraction uses the algebraic-symbol machinery
-[@BorceaBranden2009I]. For the related Narayana transform, see [@MaoWang2026x].
+The preservation theorem is proved with the algebraic-symbol method of [@BorceaBranden2009I].
 <!-- /realrooted-catalog-content -->
 
 This module exposes the strictly negative root corollary of the checked

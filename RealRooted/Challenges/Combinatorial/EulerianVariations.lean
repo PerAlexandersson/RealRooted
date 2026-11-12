@@ -23,12 +23,12 @@ years = [2026]
 [[definitions]]
 name = "RealRooted.Applications.EulerianVariations.cyclicPathDescentPolynomial"
 module = "RealRooted.Applications.EulerianVariations.CyclicPathDescents"
-label = "Cyclic path descent polynomial"
+label = "Cyclic path descent polynomial Σ 2 C(n,k) C(n-1,k-1) x^k"
 
 [[definitions]]
 name = "RealRooted.Applications.EulerianVariations.ternaryRunPolynomial"
 module = "RealRooted.Applications.EulerianVariations.TernaryRuns.Recurrence"
-label = "Ternary run polynomial"
+label = "Ternary run polynomials, defined by a first-order differential recurrence"
 
 [[definitions]]
 name = "RealRooted.peakValuePolynomial"
@@ -44,28 +44,28 @@ label = "Super-Eulerian polynomial"
 name = """RealRooted.Applications.EulerianVariations.\
 cyclicPathDescentPolynomial_roots"""
 module = "RealRooted.Applications.EulerianVariations.CyclicPathDescents"
-label = "Zeros of the cyclic path descent polynomial"
+label = "Simple roots of the cyclic path descent polynomial: 0 and n - 1 negative"
 
 [[theorems]]
 name = "RealRooted.Applications.EulerianVariations.cyclicPathDescentPolynomial_eq_derivative"
 module = "RealRooted.Applications.EulerianVariations.CyclicPathDescents"
-label = "Cyclic path descents via the Narayana derivative"
+label = "The cyclic path descent polynomial is (2/n) x B_n'(x) for the type B Narayana B_n"
 
 [[theorems]]
 name = "RealRooted.peakValuePolynomial_mvRealStable"
 module = "RealRooted.CombinatorialExamples.PeakValues.Stability"
-label = "The peak-value polynomial is real stable"
+label = "The peak-value polynomial K_n is real stable"
 headline = true
 
 [[theorems]]
 name = "RealRooted.peakValueWeightedDiagonal_consecutive_strictInterl"
 module = "RealRooted.CombinatorialExamples.PeakValues.WeightedInterleaving"
-label = "Weighted peak-value diagonals interlace"
+label = "Positive weighted diagonals of K_n and K_{n+1} interlace"
 
 [[theorems]]
 name = "RealRooted.Applications.EulerianVariations.ternaryRunPolynomial_isPF"
 module = "RealRooted.Applications.EulerianVariations.TernaryRuns"
-label = "Ternary run polynomials are PF"
+label = "Ternary run polynomials are Pólya frequency polynomials"
 
 [[theorems]]
 name = "RealRooted.Applications.EulerianVariations.ternaryRunPolynomial_strictInterl"
@@ -75,50 +75,72 @@ label = "Consecutive ternary run polynomials interlace"
 [[theorems]]
 name = "RealRooted.SuperEulerian.isRealRooted_superEulerian"
 module = "RealRooted.CombinatorialExamples.SuperEulerian"
-label = "Super-Eulerian polynomials are real-rooted"
+label = "For ℓ ≥ 1, super-Eulerian polynomials are nonzero and real-rooted"
 
 [[theorems]]
 name = "RealRooted.SuperEulerian.strictInterl_superEulerian_succ"
 module = "RealRooted.CombinatorialExamples.SuperEulerian"
-label = "Consecutive super-Eulerian polynomials interlace"
+label = "For ℓ ≥ 1, consecutive super-Eulerian polynomials interlace, without common roots"
 
 [[theorems]]
 name = "RealRooted.SuperEulerian.exists_gamma_superEulerian"
 module = "RealRooted.CombinatorialExamples.SuperEulerian"
-label = "Super-Eulerian gamma-polynomials are real-rooted and nonnegative"
+label = "Super-Eulerian gamma-polynomials are real-rooted with nonnegative coefficients"
 -->
 
 <!-- realrooted-catalog-content -->
 # Real-rooted Eulerian variations
 
-Four Eulerian-type families, coming from permutations, words and paths, are
-real-rooted.
+Cyclic path descent polynomials, ternary-run polynomials and super-Eulerian polynomials are
+real-rooted, the peak-value polynomial is real stable, and consecutive members of the families
+interlace.
 
-- **Cyclic path descents:** the polynomial with coefficients
-  $2\binom{n}{k}\binom{n-1}{k-1}$ equals $\tfrac{2}{n}\, x B_n'(x)$, where
-  $B_n(x) = \sum_k \binom{n}{k}^2 x^k$ is the type-B Narayana polynomial
-  (`narayanaPolynomial 0 n`). Its zeros are simple: $0$, together with $n - 1$
-  negative zeros.
-- **Peak values:**
-  $K_n(\mathbf x)=\sum_{\pi\in\mathfrak S_n}\prod_{v\in\operatorname{PeakVal}(\pi)}x_v$
-  is real stable. For every choice of positive weights, consecutive weighted
-  diagonals interlace.
-- **Ternary runs:** $T_n(x)=\sum_{w\in\{0,1,2\}^n}x^{\operatorname{runs}(w)}$,
-  where runs are maximal strictly increasing factors, is a PF polynomial, and
-  consecutive $T_n$ interlace.
-- **Super-Eulerian polynomials:** let
-  $E_n^{(\ell)}(x)=\sum_{k<n}E_{n,k}x^k$, where
-  $E_{n,k}=(k+1)^\ell E_{n-1,k}+(n-k)^\ell E_{n-1,k-1}$. For $\ell\ge1$ these
-  polynomials are real-rooted, consecutive ones interlace, and their
-  gamma-polynomials are real-rooted with nonnegative coefficients.
+## Results
 
-The [Eulerian compendium](/RealRooted/theorems/eulerian-compendium/) records
-the corresponding enumerative statements and the identifications of the
-cyclic and ternary polynomials with their word models.
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+A polynomial is a *Pólya frequency (PF) polynomial* if it has nonnegative coefficients and only
+real nonpositive roots.
+
+**Cyclic path descents.** For $n\ge1$ let
+$$
+C_n(x)=\sum_{k=1}^{n}2\binom nk\binom{n-1}{k-1}x^k=\frac2n\,x\,B_n'(x),\qquad
+B_n(x)=\sum_k\binom nk^2x^k,
+$$
+where $B_n$ is the type $B$ Narayana polynomial. Then $C_n$ has simple roots: $0$ and $n-1$
+negative roots.
+
+**Peak values.** For a permutation $\pi$, let $\operatorname{PeakVal}(\pi)$ be the set of values
+at its interior peaks, and put
+$K_n(\mathbf x)=\sum_{\pi\in\mathfrak S_n}\prod_{v\in\operatorname{PeakVal}(\pi)}x_v$. Then $K_n$
+is real stable for every $n$. For $n\ge1$ and positive weights $w_1,\dots,w_{n+1}$,
+$$
+K_n(w_1x,\dots,w_nx)\ \ll\ K_{n+1}(w_1x,\dots,w_{n+1}x).
+$$
+
+**Ternary runs.** Let $T_0=1$ and
+$$
+(n+1)\,T_{n+1}=3x(1-x)\,T_n'+\bigl(-n+(4n+3)x\bigr)\,T_n .
+$$
+Then every $T_n$ is a PF polynomial and $T_n\ll T_{n+1}$. The polynomial $T_n$ is
+$\sum_{w\in\{0,1,2\}^n}x^{\operatorname{runs}(w)}$, where $\operatorname{runs}(w)$ is the number of
+maximal strictly increasing runs of $w$; see the
+[Eulerian compendium](/RealRooted/theorems/eulerian-compendium/).
+
+**Super-Eulerian polynomials.** For an integer $\ell\ge1$ let $E_{1,0}=1$ and
+$E_{n,k}=(k+1)^\ell E_{n-1,k}+(n-k)^\ell E_{n-1,k-1}$, with entries outside $0\le k\le n-1$
+equal to zero, and put $E_n^{(\ell)}(x)=\sum_{k<n}E_{n,k}x^k$. For $n\ge1$, $E^{(\ell)}_n$ is
+nonzero and real-rooted, $E^{(\ell)}_n\ll E^{(\ell)}_{n+1}$, and the two have no common root.
+Moreover $E^{(\ell)}_{n+1}$ has a gamma-polynomial $\gamma$ with $\deg\gamma\le n/2$ that is
+nonzero and real-rooted, with nonpositive roots and nonnegative coefficients.
+
+## Use
+
+The [Eulerian compendium](/RealRooted/theorems/eulerian-compendium/) identifies $C_n$ with the
+balanced cyclic-word polynomial and $T_n$ with the run enumerator of ternary words.
 
 ## References
 
-See [@Alexandersson2026Eulerian].
+- [@Alexandersson2026Eulerian]
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

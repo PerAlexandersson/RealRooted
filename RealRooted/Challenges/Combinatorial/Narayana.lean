@@ -142,100 +142,98 @@ label = "The continuous Narayana interpolation is Pólya-frequency for θ > −1
 [[theorems]]
 name = "RealRooted.narayanaInterpolation_roots_neg"
 module = "RealRooted.NarayanaInterpolation"
-label = "Its zeros are real and negative"
+label = "The zeros of the continuous Narayana interpolation are real and negative"
 -->
 
 <!-- realrooted-catalog-content -->
 # Generalized Narayana polynomials and basis transforms
 
-For $m, n \geq 0$, the generalized Narayana polynomial is
+The generalized Narayana polynomials are Pólya-frequency, and the Narayana transform
+$x^n\mapsto N_{n,m}(x)$ preserves Pólya-frequency polynomials.
 
+## Results
+
+A real polynomial is *Pólya-frequency* (`IsPFPolynomial`) if its coefficients are nonnegative
+and it is zero or real-rooted with all zeros $\le0$. We write $f\ll g$ if $f$ interlaces $g$;
+common roots are allowed. For $m,n\ge0$ the generalized Narayana polynomial is
 $$
 N_{n,m}(x) =
-\sum_{k=0}^{n} \frac{\binom{n}{k}\binom{n+m}{k}}{\binom{m+k}{k}}\, x^k.
+\sum_{k=0}^{n} \frac{\binom{n}{k}\binom{n+m}{k}}{\binom{m+k}{k}}\, x^k .
 $$
+For $m=1$ the coefficients are Narayana numbers; for example $N_{2,1}(x)=1+3x+x^2$.
 
-For $m = 1$ the coefficients are Narayana numbers; for example
-$N_{2,1}(x) = 1 + 3x + x^2$. Combinatorially, the Dyck paths of semilength
-$n + 1$ counted by peaks have generating polynomial $x\, N_{n,1}(x)$, and the 132-avoiding
-permutations of $n + 1$ letters counted by descents have generating polynomial $N_{n,1}(x)$; both
-are formalized. These polynomials are Pólya-frequency, and the Narayana transform
-$x^n \mapsto N_{n,m}(x)$ preserves Pólya-frequency polynomials. Here a
-polynomial is Pólya-frequency (`IsPFPolynomial`) if it has nonnegative
-coefficients and is either zero or real-rooted with nonpositive zeros.
+**Theorem (Narayana transform).** For all $m,n\ge0$, $N_{n,m}$ is real-rooted and
+Pólya-frequency. If $p$ is Pólya-frequency, so is its Narayana transform, the image of $p$
+under the linear map $x^n\mapsto N_{n,m}(x)$.
 
-## Basis transforms
+**Proposition (Dyck paths and 132-avoiders).** For $n\ge0$, the generating polynomial of Dyck
+paths of semilength $n+1$ by peaks is $x\,N_{n,1}(x)$, and that of the 132-avoiding
+permutations of $n+1$ letters by descents is $N_{n,1}(x)$. The number of Dyck paths of semilength
+$n$ with $k$ peaks is the Narayana number for $(n,k)\ne(1,0)$. The descent polynomials of the
+132-avoiders of $n+2$ and $n+3$ letters satisfy $f\ll g$.
 
-For a sequence of polynomials $B_0, B_1, \dotsc$, the basis transform
-$T_B$ (`basisTransform B`) is the linear map with $T_B(x^n) = B_n(x)$. We
-say that $p$ has only nonpositive zeros (`HasOnlyNonposRoots p`) if $p = 0$ or
-$p$ is real-rooted with all zeros $\leq 0$. Write
+### Basis transforms
+
+For polynomials $B_0,B_1,\dots$ the basis transform $T_B$ is the linear map with
+$T_B(x^n)=B_n(x)$. A polynomial has *only nonpositive zeros* if it is $0$ or real-rooted with all
+zeros $\le0$. Put
 $$
 \langle x\rangle_k = x(x-1)\dotsm(x-k+1), \qquad
 (x \mid \mu)_k = x(x+\mu)\dotsm(x+(k-1)\mu),
 $$
-for the falling factorials and the generalized rising factorials, and $T_n(x)$
-for the Touchard polynomials, $T_0 = 1$ and $T_{n+1} = x T_n + x T_n'$.
+and let $T_n$ be the Touchard polynomials, $T_0=1$ and $T_{n+1}=xT_n+xT_n'$.
 
-**Theorem (Brenti).** [@Brenti1989, Thm. 2.4.2] If
-$\sum_k a_k \langle x\rangle_k$ has only nonpositive zeros, then so does
-$\sum_k a_k x^k$.
+**Theorem (Brenti).** [@Brenti1989, Thm. 2.4.2] If $\sum_k a_k\langle x\rangle_k$ has only
+nonpositive zeros, then so does $\sum_k a_kx^k$.
 
-**Theorem.** The Touchard transform $x^n \mapsto T_n(x)$ maps
-Pólya-frequency polynomials to Pólya-frequency polynomials. For every
-$\mu > 0$, so does the rising-factorial transform
-$x^n \mapsto (x \mid \mu)_n$.
+**Theorem.** The Touchard transform $x^n\mapsto T_n(x)$ maps Pólya-frequency polynomials to
+Pólya-frequency polynomials. So does the transform $x^n\mapsto(x\mid\mu)_n$ for every
+$\mu>0$.
 
-## Matrix products
+### Matrix products
 
-For a lower-triangular array $M = (M(n,k))_{n,k \geq 0}$, the row-generating
-polynomial of row $n$ is $M_n(x) = \sum_{k=0}^n M(n,k) x^k$, and
-`RowGeneratingFunctionsPF M` says that every $M_n$ is Pólya-frequency. The
-Mao–Wang admissible factors (`MaoWangAdmissibleMatrix`) are the coefficient
-matrices of the bases
-$(ax + d)^n$ with $a > 0$ and $d \geq 0$, $T_n(x)$, $(x \mid \mu)_n$ with
-$\mu > 0$, and $N_{n,m}(x)$; row $n$ of the coefficient matrix of a basis
-$(B_n)$ lists the coefficients of $B_n$.
+For a lower-triangular array $M=(M(n,k))_{n,k\ge0}$ the row polynomials are
+$M_n(x)=\sum_{k\le n}M(n,k)x^k$; we say $M$ has *Pólya-frequency rows* if every $M_n$ is
+Pólya-frequency. A matrix is a *Mao–Wang factor* if its row $n$ lists the coefficients of
+$B_n$, where $(B_n)$ is one of $(ax+d)^n$ with $a>0$, $d\ge0$; $T_n(x)$; $(x\mid\mu)_n$ with
+$\mu>0$; or $N_{n,m}(x)$ with $m\ge0$.
 
-**Theorem (Mao–Wang).** [@MaoWang2026x, Thm. 1.3] Let $M$ be lower-triangular
-with Pólya-frequency
-row-generating polynomials, and let $B_1, \dotsc, B_r$ be admissible factors.
-Then $M B_1 \dotsm B_r$ has Pólya-frequency row-generating polynomials. In
-particular this holds for $M B^r$ with $B$ admissible and $r \geq 0$.
+**Theorem (Mao–Wang).** [@MaoWang2026x, Thm. 1.3] Let $M$ be lower-triangular with
+Pólya-frequency rows and let $B_1,\dots,B_r$ be Mao–Wang factors. Then $MB_1\dotsm B_r$ has
+Pólya-frequency rows. In particular $MB^r$ has Pólya-frequency rows for every factor $B$ and
+$r\ge0$.
 
-## Continuous interpolation
+### Continuous interpolation
 
-For real $\theta > -1$ put
+For real $\theta>-1$ put
 $$
 N_\theta(n, k) = \binom{n}{k} \frac{(\theta + 1)_n}{(\theta + 1)_k\,(\theta + 1)_{n-k}},
 \qquad
 P_n^{(\theta)}(t) = \sum_{k=0}^{n} N_\theta(n, k)\, t^k ,
 $$
-where $(a)_n$ is the rising factorial. At $\theta = 0$ these are the type B Narayana
-polynomials $\sum_k \binom{n}{k}^2 t^k$, and at $\theta = 1$ the shifted type A
-Narayana polynomials.
+where $(a)_n=a(a+1)\dotsm(a+n-1)$. For $\theta=0$ these are the type B Narayana polynomials
+$\sum_k\binom nk^2t^k$; for $\theta=1$ they are the shifted type A Narayana polynomials.
 
-**Theorem.** For every real $\theta > -1$,
+**Theorem.** For every real $\theta>-1$ and $n\ge0$,
 $$
 P_n^{(\theta)}(t) = \sum_{j \le n/2} \frac{n!}{j!\,(n - 2j)!\,(\theta + 1)_j}\,
   t^j (1 + t)^{n - 2j},
 $$
-so $P_n^{(\theta)}$ is $\gamma$-positive, and $P_n^{(\theta)}$ is a Pólya-frequency
-polynomial: all its zeros are real and negative.
+so $P_n^{(\theta)}$ is $\gamma$-positive. Moreover $P_n^{(\theta)}$ is Pólya-frequency, and its
+zeros are real and negative.
 
-We prove the root statement as a Schur–Szegő composition. $P_n^{(\theta)}$ is a positive
-multiple of the composition of the Jensen polynomial of $1 / (\theta + 1)_k$ with its
-reversal; the Jensen polynomial is Pólya-frequency because $1 / (\theta + 1)_k$ is a
-multiplier sequence. This covers the range $\theta > -1$; the paper proves
-real-rootedness for $\theta \ge 0$ through Jacobi polynomials.
+## Proof
+
+The root statement is a Schur–Szegő composition: $P_n^{(\theta)}$ is a positive multiple of the
+composition of the Jensen polynomial of $1/(\theta+1)_k$ with its reversal, and that Jensen
+polynomial is Pólya-frequency because $1/(\theta+1)_k$ is a multiplier sequence. The source
+[@Zeng2026x] proves real-rootedness for $\theta\ge0$ through Jacobi polynomials.
 
 ## References
 
-The coefficient normalization is from [@MaoWang2026x], and the root-location input
-is [@DominiciJohnstonJordaan2013x]. The falling-factorial theorem is
-[@Brenti1989, Thm. 2.4.2]; Mao and Wang use it as Lemma 3.2, and the
-matrix-product theorem is [@MaoWang2026x, Thm. 1.3]. The continuous interpolation
-is [@Zeng2026x, (1.1)–(1.3) and Cor. 3.5]. See also the
+The coefficient normalization is from [@MaoWang2026x] and the root-location input from
+[@DominiciJohnstonJordaan2013x]. The Brenti theorem is Lemma 3.2 of [@MaoWang2026x]. The
+continuous interpolation is [@Zeng2026x, (1.1)–(1.3) and Cor. 3.5]. See also the
 [Narayana real-rootedness examples on symmetricfunctions.com](sf:ex:narayanaSturm),
 [Brenti's falling-factorial theorem](sf:thm:brentiFallingFactorialBasis), and the
 [Mao–Wang row-generating functions](sf:rowGeneratingFunction).

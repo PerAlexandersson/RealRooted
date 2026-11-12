@@ -103,43 +103,59 @@ label = "Strict increase from separation"
 <!-- realrooted-catalog-content -->
 # Root amplitudes and separated roots
 
-The normalized amplitude of a finite positive sequence $(g_j)_{j<n}$ at the
-index $k$ is
-$\operatorname{amp}_k=\prod_{j\neq k}\lvert1-g_k/g_j\rvert$. For a positive
-strictly increasing sequence, `amplitude_le_amplitude_of_convex` proves
-$\operatorname{amp}_k \leq \operatorname{amp}_{k+1}$ when $n \leq 2k+2$ and
-the consecutive gaps are nondecreasing.
-The stronger `amplitude_zero_le` iterates this comparison when the corresponding
-tail estimates hold, while
-`amplitude_le_amplitude_of_sum` uses reciprocal-distance sums instead of convexity.
+If the negative roots of a real-rooted polynomial are multiplicatively separated, then
+$|s\,p'(s)|/p(0)$ is bounded below at every root $s$.
 
-We give two ways to verify the gap hypothesis. If the sequence is positive and
-the first logarithmic gap is nonnegative, the inequality in
-`gap_le_gap_of_criterion` implies convexity at the next index. The simpler
-`gap_le_gap_of_two_le` applies when the upper logarithmic gap is at least two.
-For a multiplicatively separated sequence, we iterate
-$q g_i \le g_{i+1}$ to obtain a power bound on any later-to-earlier ratio
-and strict increase when $q > 1$. The factorization
-`amplitude_eq_lower_mul_upper` then separates an amplitude into its lower and upper
-products, which leads to the Euler bounds in the catalog. For $q = \exp d$
-with $d > 0$, `exp_gain_le_amplitude_of_separation` keeps the
-triangular index-dependent gain, and its uniform version discards that gain.
+## Results
 
-We connect these finite products to split real polynomials. If the roots are
-simple and the constant term is nonzero, the absolute normalized derivative at
-the root indexed by the sorted magnitude sequence equals the corresponding
-amplitude. Consequently, negative roots with multiplicative separation satisfy
-the same uniform lower bound for the normalized derivative. At a root of
-smallest magnitude, a reciprocal-square proportion $c>1/2$ gives the factor
-$(2c-1)/c$. If $\tfrac92a_0a_2\leq a_1^2$ for the first three coefficients,
-which is the case $c=\tfrac59$, the bound is
-$|s\,p'(s)|\geq p(0)/5$. The abstract square-sum result gives the related
-estimate for any finite family of negative factors.
+For a finite positive sequence $(g_j)_{j<n}$, the *amplitude* at $k$ is
+$$\operatorname{amp}_k=\prod_{j\ne k}\Bigl|1-\frac{g_k}{g_j}\Bigr|.$$
+The sequence is *$q$-separated* if $qg_i\le g_{i+1}$ for $i+1<n$. The $j$-th smallest
+magnitude of a root of $p$ is $\mu_j$, counted with multiplicity.
+
+**Theorem (separated roots).** Let $p$ be real-rooted with $p(0)\ne0$ and all roots negative,
+let $d>0$, and suppose $(\mu_j)$ is $e^d$-separated. Then for every root index $k$
+$$\Bigl|\frac{\mu_k\,p'(-\mu_k)}{p(0)}\Bigr|\ \ge\ e^{-\pi^2/(3d)}.$$
+For a positive $e^d$-separated sequence $(g_j)_{j<n}$ and $k<n$,
+$$\operatorname{amp}_k\ \ge\ e^{\,dk(k+1)/2-\pi^2/(3d)}\ \ge\ e^{-\pi^2/(3d)}.$$
+For real-rooted $p$ with simple roots and $p(0)\ne0$, the left side of the first display
+equals $\operatorname{amp}_k$ for $g_j=\mu_j$.
+
+**Theorem (smallest root).** Let $p$ be real-rooted with $p(0)>0$ and all roots negative, and let
+$s$ be a simple root of smallest magnitude. If $c>\tfrac12$ and
+$$c\Bigl(\sum_r\frac1r\Bigr)^2\le\sum_r\frac1{r^2}$$
+over the roots $r$ of $p$, then $|s\,p'(s)|\ge p(0)\,(2c-1)/c$. If
+$\tfrac92a_0a_2\le a_1^2$ for the first three coefficients, which is the case $c=\tfrac59$,
+then $|s\,p'(s)|\ge p(0)/5$.
+
+**Theorem (square sums).** Let $\xi_j<0$ and $w_j$ be reals with $\xi_jw_j\ne0$ over a finite
+index set, and let $N>0$ with $\sum_j(\xi_jw_j)^{-2}<N^{-2}$. Then
+$N<|\xi_k(1-\xi_k)w_k|$ for every $k$.
+
+**Theorem (monotone amplitudes).** Let $g$ be positive and strictly increasing.
+
+- If $k+1<n$, $n\le2k+2$ and the consecutive gaps $g_{i+1}-g_i$ are nondecreasing, then
+  $\operatorname{amp}_k\le\operatorname{amp}_{k+1}$.
+- If $k+1<n$ and
+  $\sum_{j=k+2}^{n-1}\frac1{g_j-g_{k+1}}\le\frac1{g_{k+1}}+\sum_{j<k}\frac1{g_{k+1}-g_j}$,
+  then $\operatorname{amp}_k\le\operatorname{amp}_{k+1}$.
+- If the gaps are nondecreasing and the tail products
+  $\prod_{j=2k+2}^{n-1}\bigl(1+\frac{g_{k+1}-g_k}{g_j-g_{k+1}}\bigr)\le1+\frac{g_{k+1}-g_k}{g_k}$
+  hold whenever $k+1<n$, then $\operatorname{amp}_0\le\operatorname{amp}_k$ for all $k<n$.
+
+**Proposition (gap convexity).** Let $g$ be positive and $\ell_k=\log(g_{k+1}/g_k)$. Then
+$g_{k+1}-g_k\le g_{k+2}-g_{k+1}$ if either $\ell_k\ge0$ and
+$\ell_{k+1}\ge2\ell_k/(2+\ell_k)$, or $\ell_k>0$ and $\ell_{k+1}\ge2$.
+
+**Proposition (factorization and separation).** For a positive strictly increasing sequence,
+$$\operatorname{amp}_k=\prod_{i<k}\Bigl(\frac{g_k}{g_i}-1\Bigr)\prod_{j=k+1}^{n-1}
+\Bigl(1-\frac{g_k}{g_j}\Bigr).$$
+If $(g_j)$ is positive and $q$-separated with $q\ge0$, then $g_k/g_i\ge q^{k-i}$ for
+$i\le k<n$, and $g$ is strictly increasing if $q>1$.
 
 ## References
 
-These results were extracted from a formal proof that the rows of
-[OEIS A366159](https://oeis.org/A366159) are real-rooted and interlace. The
-motivating combinatorial objects are the Stirling complexes [@Kozlov2022].
+These results arose in a proof that the rows of [OEIS A366159](https://oeis.org/A366159) are
+real-rooted and interlace. The combinatorial objects are the Stirling complexes [@Kozlov2022].
 <!-- /realrooted-catalog-content -->
 -/

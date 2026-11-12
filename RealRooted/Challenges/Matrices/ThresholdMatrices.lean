@@ -77,67 +77,58 @@ label = "Gustafsson–Solus Lemma 3.4: row-threshold matrices preserve interlaci
 <!-- realrooted-catalog-content -->
 # Threshold matrices
 
-A *threshold row* with threshold $t$ has entry $x$ in the columns before $t$,
-a marker entry at column $t$, and $1$ after it. Applied to a sequence
-$(f_j)$ of polynomials, it gives $x \sum_{j<t} f_j + \alpha f_t + \sum_{j>t} f_j$.
-A matrix of such rows with weakly increasing thresholds maps interlacing
-sequences of polynomials with nonnegative coefficients to interlacing
-sequences, provided the rows satisfy a compatibility condition on rows with
-equal thresholds. This condition on $2 \times 2$ minors is made explicit in
-the two theorems below.
+Matrices whose rows have entries $x$ before a threshold and $1$ after it, with weakly increasing
+thresholds and a compatibility condition on the markers, preserve interlacing sequences.
 
-**Theorem** (row-threshold matrices). Let $G$ be an $m \times n$ matrix whose
-entries are linear forms $a + bX$ with $a, b \geq 0$, and such that row $i$ has
-a threshold $p_i$: the coefficient of $X$ is positive only in columns before
-$p_i$, and the constant coefficient is positive only from column $p_i$ on.
-Assume that the thresholds $p_1 \leq \dotsb \leq p_m$ weakly increase down the
-rows, and that Brändén's $2 \times 2$ affine-minor condition holds: for rows
-$i_1 \leq i_2$ and columns $j_1 \leq j_2$, with entries $a = G_{i_1 j_1}$,
-$b = G_{i_1 j_2}$, $c = G_{i_2 j_1}$, $d = G_{i_2 j_2}$, the polynomial
-$(sX + t) b + d$ interlaces $(sX + t) a + c$ for all $s, t > 0$. Then $G$ maps
-an interlacing sequence of real-rooted polynomials with nonnegative
-coefficients to an interlacing sequence. If the weaker condition with zero
-polynomials allowed holds, the image is an interlacing sequence in which some
-polynomials may vanish; discarding the zero polynomials leaves a strict
-interlacing sequence. This is the specialization of the general matrix
-criterion [@Branden2015, Thm. 7.8.5], see the
-[matrix interlacing page](/RealRooted/theorems/matrix-interlacing/), to
-matrices of linear forms with a threshold structure.
+## Results
 
-**Theorem** (Haglund–Zhang). [@HaglundZhang2019] Threshold matrices whose
-markers are $1$ or $1+x$, whose thresholds weakly increase down the rows, and
-in which, among rows with the same threshold, a marker $1+x$ is never followed
-by a marker $1$, map interlacing sequences of polynomials with nonnegative
-coefficients to interlacing sequences; zero polynomials may occur in the
-output. As a consequence, the binomial Eulerian polynomials are real-rooted,
-confirming a conjecture of Ma, Ma and Yeh [@MaMaYeh2017x].
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+An *interlacing sequence* is a list of nonzero real-rooted polynomials with nonnegative
+coefficients in which each polynomial interlaces every later one. In a *weak* interlacing
+sequence zero polynomials are allowed.
 
-Here the binomial Eulerian polynomials are defined by the Haglund–Zhang
-recursion on refined vectors, with marker $1 + x$ at threshold zero and $1$ at
-every later threshold. Prepending the row $1$ gives the row polynomials
-$\sum_k T(n,k)\,x^k$ of [OEIS A046802](https://oeis.org/A046802), the
-$h$-polynomials of the stellohedra; the first four rows are checked in Lean,
-but the identification with the closed formula for all $n$ is not formalized.
+A *threshold row* with threshold $t$ and marker $\alpha$ has entry $x$ in the columns before $t$,
+the marker $\alpha$ in column $t$, and $1$ after it. Applied to $(f_j)$ it gives
+$x\sum_{j<t}f_j+\alpha f_t+\sum_{j>t}f_j$.
 
-**Theorem** (Gustafsson–Solus, Lemma 3.4). [@GustafssonSolus2020, Lemma 3.4]
-Row-threshold matrices, in which
-some rows drop their pivot entry, preserve interlacing sequences when the
-thresholds increase weakly and no switch follows a dropped pivot.
-Gustafsson and Solus use this to prove that the box polynomials of
-$s$-lecture hall simplices, which generalize the derangement polynomials, are
-real-rooted.
+**Theorem (row-threshold matrices).** Let $G$ be an $m\times n$ matrix whose entries are linear
+forms $a+bx$ with $a,b\ge0$. Assume that row $i$ has a threshold $p_i$: the coefficient of $x$ is
+positive only in columns before $p_i$, and the constant coefficient is positive only from column
+$p_i$ on. Assume $p_1\le\dots\le p_m$, and that for rows $i_1\le i_2$ and columns $j_1\le j_2$,
+with $a=G_{i_1j_1}$, $b=G_{i_1j_2}$, $c=G_{i_2j_1}$, $d=G_{i_2j_2}$, the polynomial
+$(sx+t)b+d$ interlaces $(sx+t)a+c$ for all $s,t>0$. Then $G$ maps an interlacing sequence of
+length $n$ to an interlacing sequence. If this condition holds with zero polynomials allowed,
+$G$ maps an interlacing sequence to a weak interlacing sequence of nonnegative polynomials, and
+discarding the zero polynomials leaves an interlacing sequence. This specializes the matrix
+criterion [@Branden2015, Thm. 7.8.5] of the
+[matrix interlacing page](/RealRooted/theorems/matrix-interlacing/).
 
-## Relation to SymCat
+**Theorem (Haglund–Zhang).** [@HaglundZhang2019] Let $G$ be a threshold matrix whose markers
+are $1$ or $1+x$, whose thresholds weakly increase down the rows, and in which, among rows with
+equal threshold, a marker $1+x$ is never followed by the marker $1$. Then $G$ maps an interlacing
+sequence to a weak interlacing sequence of nonnegative polynomials. Consequently the binomial
+Eulerian polynomials, defined by the Haglund–Zhang recursion on refined vectors (marker $1+x$ at
+threshold $0$ and $1$ at every later threshold), are real-rooted, which confirms a conjecture of
+Ma, Ma and Yeh [@MaMaYeh2017x].
 
-We formalize the [binomial Eulerian real-rootedness assertion](sf:binomialEulerianPolynomial)
-as an application. The headline is the general row-threshold preservation theorem;
-the selected application does not assert consecutive binomial Eulerian interlacing.
+**Theorem (Gustafsson–Solus, Lemma 3.4).** [@GustafssonSolus2020, Lemma 3.4] Let each row have
+entries $x$ before its threshold $\varphi_i$, entry $1$ or $0$ in column $\varphi_i$ (a dropped
+pivot), and $1$ after it. If the thresholds weakly increase and, among rows with equal
+threshold, a dropped pivot is never followed by a row with an undropped pivot, then the matrix
+maps an interlacing sequence to a weak interlacing sequence of nonnegative polynomials.
+
+## Use
+
+Gustafsson and Solus use the last theorem to prove that the box polynomials of $s$-lecture hall
+simplices, which generalize the derangement polynomials, are real-rooted. The binomial Eulerian
+polynomials, with the row $1$ prepended, are the rows of
+[OEIS A046802](https://oeis.org/A046802), the $h$-polynomials of the stellohedra. The
+[binomial Eulerian real-rootedness assertion](sf:binomialEulerianPolynomial) on
+symmetricfunctions.com is an application of the Haglund–Zhang theorem.
 
 ## References
 
-See [@Branden2015, Thm. 7.8.5; @HaglundZhang2019; @GustafssonSolus2020;
-@MaMaYeh2017x]. See also the
-[binomial Eulerian polynomial on symmetricfunctions.com](sf:binomialEulerianPolynomial).
+[@Branden2015, Thm. 7.8.5]; [@HaglundZhang2019]; [@GustafssonSolus2020]; [@MaMaYeh2017x].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

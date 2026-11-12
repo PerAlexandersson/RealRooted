@@ -70,32 +70,37 @@ label = "Antitonicity of inversion on negative numbers"
 <!-- realrooted-catalog-content -->
 # Reciprocal shifts and interlacing
 
-We write the degree-padded reciprocal shift as $t^D p(1/t)$. When
-$\operatorname{natDegree}(p) \leq D$, the factorization theorem expresses it as
-$X^{D-\operatorname{natDegree}(p)}p^{\mathrm{reverse}}$. A PF polynomial has
-nonnegative coefficients and is either zero or split with all roots
-nonpositive; this property is preserved by the transformation.
+The reciprocal shift $x^Dp(1/x)$ inverts the nonzero roots of $p$, and it reverses interlacing of
+Pólya frequency polynomials.
 
-For a nonzero split polynomial, the roots theorem describes the new multiset:
-we discard the zero roots, invert the remaining roots, and add
-$D-\operatorname{natDegree}(p)$ zeros. The list-model theorems show that, when
-the original roots are sorted and nonpositive, this construction is sorted and
-has exactly the roots of the reciprocal shift.
+## Results
 
-We use the interleaving lemmas to handle the order reversal behind this
-description. If two lists contain only strictly negative numbers and interleave,
-then reversing and inverting them swaps the two lists when their lengths are
-equal and keeps their order when the right list has one additional entry. The
-antitonicity lemma for $x \mapsto 1/x$ supplies the order step.
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated. A
+real polynomial $p$ is *PF* if it has nonnegative coefficients and is either zero or splits over
+$\mathbb R$ with all roots at most $0$. For $D\ge\deg p$ the *reciprocal shift* is
+$p_D(x)=x^Dp(1/x)$, the polynomial with coefficients reversed within degree $D$.
 
-Finally, we show that if $p$ and $q$ are PF polynomials with degrees at most the
-same bound $D$ and $p\ll q$, the reciprocal shift
-reverses the pair: $\operatorname{StrictInterl}(p,q)$ becomes
-$\operatorname{StrictInterl}(\operatorname{reciprocalShift}(D,q),
-\operatorname{reciprocalShift}(D,p))$.
+**Theorem (reversal).** Let $p,q$ be PF polynomials of degree at most $D$ with $p\ll q$. Then
+$q_D\ll p_D$.
+
+**Proposition (factorization and roots).** For $\deg p\le D$,
+$$
+p_D=x^{D-\deg p}\,p^{\mathrm{rev}},
+$$
+where $p^{\mathrm{rev}}$ is the reversed polynomial. If $p\ne0$ splits, then the roots of $p_D$,
+with multiplicity, are $D-\deg p$ zeros together with the inverses of the nonzero roots of $p$.
+If $p$ is PF, so is $p_D$.
+
+**Lemma (root lists).** Let $\ell$ be a sorted list of the roots of a nonzero split polynomial
+$p$ of degree at most $D$, all at most $0$. Remove the zeros from $\ell$, reverse it, invert each
+entry, and append $D-\deg p$ zeros. The result is a sorted list of the roots of $p_D$.
+
+**Lemma (interleaving lists).** Let $A,B$ be lists of negative reals that interleave. Inverting
+and reversing both lists swaps them if $|A|=|B|$, and keeps their order if $|A|+1=|B|$. The step
+uses that $t\mapsto 1/t$ is order-reversing on negative reals.
 
 ## References
 
-For background on interlacing and polynomial reversal, see [@Fisk2006x].
+Background on interlacing and polynomial reversal: [@Fisk2006x].
 <!-- /realrooted-catalog-content -->
 -/

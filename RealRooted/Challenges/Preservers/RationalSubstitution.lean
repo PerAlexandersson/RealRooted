@@ -4,7 +4,7 @@ import RealRooted.Transforms.RationalSubstitution
 import RealRooted.Transforms.RationalSubstitutionDerivative
 
 /-!
-# Denominator-cleared rational substitution
+# Real roots of denominator-cleared rational substitutions
 
 <!-- realrooted-catalog
 version = 1
@@ -88,59 +88,56 @@ label = "Iterated derivatives of the substitution in terms of derivatives of p"
 -->
 
 <!-- realrooted-catalog-content -->
-# Denominator-cleared rational substitution
+# Real roots of denominator-cleared rational substitutions
 
-For polynomials $A,B$ and $p=\sum_kp_kx^k$ of degree $d$ we put
+The substitution $x\mapsto A/B$ in $p$, with denominators cleared, splits exactly when $p$
+splits and every fiber $A-rB$ over a root $r$ of $p$ splits; this gives exact criteria for the
+quadratic and Dickson substitutions.
+
+## Results
+
+For polynomials $A,B$ and $p=\sum_kp_kx^k$ of degree $d$ put
 $$
-(A,B)\ast p=\sum_{k=0}^dp_k\,A^kB^{d-k}=B^d\,p(A/B),
+(A,B)\ast p=\sum_{k=0}^dp_k\,A^kB^{d-k}=B^d\,p(A/B).
 $$
-the substitution $x\mapsto A/B$ cleared of denominators, and we also use the
-version $H_N[p]$ in a fixed ambient degree $N\ge d$, which equals $B^{N-d}(A,B)\ast p$.
-The ambient version is additive in $p$ and satisfies
-$H_{M+N}[pq]=H_M[p]\,H_N[q]$ when $\deg p\le M$ and $\deg q\le N$.
+For $N\ge d$ let $H_N[p]=B^{N-d}\,(A,B)\ast p$ be the version in ambient degree $N$. It is
+additive in $p$ for $\deg p\le N$, and $H_{M+N}[pq]=H_M[p]\,H_N[q]$ when $\deg p\le M$ and
+$\deg q\le N$.
 
-## Real-rootedness of substitutions
+**Theorem (factorization).** If $p$ splits over $\mathbb R$, then
+$(A,B)\ast p=\operatorname{lc}(p)\prod_r(A-rB)$ over the roots $r$ of $p$ with multiplicity.
 
-If $p$ splits, then $(A,B)\ast p=\mathrm{lc}(p)\prod_r(A-rB)$ over the roots $r$
-of $p$ with multiplicity. Suppose that $p\ne0$, $B\ne0$, that $A,B$ are coprime and
-that the quotient $A/B$ is nonconstant. Then
+**Theorem (root descent).** Let $p\ne0$ and $B\ne0$ be real polynomials, $A$ and $B$ coprime,
+and $A,B$ not proportional over $\mathbb C$, so that $A/B$ is nonconstant. Then
 $$
-(A,B)\ast p\text{ splits}\iff p\text{ splits and }A-rB\text{ splits for every root }r\text{ of }p .
+(A,B)\ast p\text{ splits}\iff p\text{ splits and }A-rB\text{ splits for every root }r\text{ of }p.
 $$
-Moreover, if all roots of the substitution lie in a set $I$ and the fiber
-$A-rB$ is nonconstant, then each root $r$ of $p$ equals $A(x)/B(x)$ for some
-$x\in I$ with $B(x)\ne0$.
+If moreover $(A,B)\ast p$ splits with all roots in a set $I$, then every root $r$ of $p$ whose
+fiber $A-rB$ is nonconstant equals $A(x)/B(x)$ for some $x\in I$ with $B(x)\ne0$.
 
-**Quadratic substitution.** For $A=x$ and $B=(1+sx)^2$ the fiber $x-r(1+sx)^2$ has
-discriminant $1-4sr$, so
+**Theorem (quadratic substitution).** Let $p\ne0$, $s\in\mathbb R$, $A=x$ and
+$B=(1+sx)^2$. The fiber $x-r(1+sx)^2$ has discriminant $1-4sr$, and
 $$
-(A,B)\ast p\text{ splits}\iff p\text{ splits and }1-4sr\ge0\text{ for every root }r .
+(A,B)\ast p\text{ splits}\iff p\text{ splits and }1-4sr\ge0\text{ for every root }r\text{ of }p .
 $$
-For $s\ge0$ the substitution splits with nonpositive roots exactly when $p$ does.
-For $s<0$ it splits with nonpositive roots exactly when $p$ splits and all its roots
-lie in $[1/(4s),0]$.
+For $s\ge0$, the substitution splits with only nonpositive roots if and only if $p$ splits
+with only nonpositive roots. For $s<0$, it splits with only nonpositive roots if and only if
+$p$ splits and all its roots lie in $[1/(4s),0]$.
 
-**Dickson substitution.** For $A=x^2+a$ and $B=x$ with $a\ne0$, the substitution
-splits if and only if $p$ splits and $4a\le r^2$ for every root $r$ of $p$.
+**Theorem (Dickson substitution).** Let $p\ne0$, $a\ne0$, $A=x^2+a$ and $B=x$. Then
+$(A,B)\ast p$ splits if and only if $p$ splits and $4a\le r^2$ for every root $r$ of $p$.
 
-## Derivative transport
-
-Write $H=H_N[p]$ for $\deg p\le N$ and $W=A'B-AB'$. Then
+**Theorem (derivative transport).** Let $\deg p\le N$, let $H=H_N[p]$ and let
+$W=A'B-AB'$. These hold over any commutative ring:
 $$
 B^2H'=N\,BB'\,H+W\,H_N[p'] ,
 $$
-and for every $r$ the product $B^{2r}H^{(r)}$ is a combination of the
-substitutions $H_N[p^{(j)}]$, $j\le r$, with explicit polynomial coefficients defined
-by a recursion; the coefficient of the top term $j=r$ is $W^r$.
-
-## What is new
-
-The substitution lemmas were developed in this library; no published source is
-cited, and we attribute none.
+and for every $r$ the product $B^{2r}H^{(r)}$ equals $\sum_{j\le r}c_{r,j}\,H_N[p^{(j)}]$ with
+polynomials $c_{r,j}$ defined by an explicit recursion in $A,B,N$ and $c_{r,r}=W^r$.
 
 ## References
 
-No published source is cited for these results in the formalization.
+The quadratic and Dickson substitutions are the case studies for the root-descent theorem.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in `RealRooted.Transforms.RationalSubstitution`

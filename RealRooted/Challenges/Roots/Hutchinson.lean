@@ -3,7 +3,7 @@ module
 import RealRooted.Hutchinson
 
 /-!
-# Hutchinson's theorem challenge entry point
+# Hutchinson's theorem
 
 <!-- realrooted-catalog
 version = 1
@@ -33,22 +33,28 @@ label = "The Laguerre–Pólya class is closed under locally uniform limits"
 <!-- realrooted-catalog-content -->
 # Hutchinson's theorem
 
-**Theorem** (Hutchinson). [@Hutchinson1923] If $a_k > 0$ and
-$a_{k+1}^2 \geq 4 a_k a_{k+2}$ for
-all $k$, then $\sum_k a_k z^k$ is an entire function in the Laguerre–Pólya
-class: a locally uniform limit of real-rooted real polynomials.
+If $a_k>0$ and $a_{k+1}^2\ge4a_ka_{k+2}$ for all $k$, then $\sum_ka_kz^k$ is a locally uniform
+limit of real-rooted polynomials.
 
-This is the entire-function form of [Kurtz's criterion](/RealRooted/theorems/kurtz/),
-which needs strict inequalities and concerns polynomials.
+## Results
 
-## Proof idea
+**Theorem (Hutchinson).** [@Hutchinson1923] If $a_k>0$ and $a_{k+1}^2\ge4a_ka_{k+2}$ for all
+$k\ge0$, then $\sum_ka_kz^k$ is an entire function in the Laguerre–Pólya class: a locally
+uniform limit of real polynomials, each zero or real-rooted.
 
-The coefficients decay like $4^{-k^2/2}$, so the series is entire and its
-partial sums converge locally uniformly. On a disc we first approximate by a
-partial sum, and then that partial sum by $\sum_{k<N} a_k q^{k^2} z^k$ with
-$q < 1$ close to $1$. The perturbed coefficients satisfy Kurtz's strict
-inequalities, so these polynomials are real-rooted. We also show that the
-Laguerre–Pólya class is closed under locally uniform limits.
+**Proposition (closure).** The Laguerre–Pólya class is closed under locally uniform limits of
+sequences.
+
+## Use
+
+This is the entire-function form of [Kurtz's criterion](/RealRooted/theorems/kurtz/), which
+requires strict inequalities and concerns polynomials.
+
+## Proof
+
+The coefficients decay like $4^{-k^2/2}$, so the series is entire. On a disc we approximate by a
+partial sum, and then by $\sum_{k<N}a_kq^{k^2}z^k$ with $q<1$ close to $1$; these polynomials
+satisfy Kurtz's strict inequalities and so are real-rooted.
 
 ## References
 

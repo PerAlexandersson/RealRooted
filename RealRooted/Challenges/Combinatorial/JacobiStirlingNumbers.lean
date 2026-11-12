@@ -61,39 +61,48 @@ label = "The signed first-kind and second-kind triangles are mutually inverse"
 <!-- realrooted-catalog-content -->
 # Jacobi–Stirling numbers
 
-The Jacobi–Stirling numbers of the first and second kind,
-$\mathrm{Jc}(n,k;z)$ and $\mathrm{JS}(n,k;z)$, satisfy
+The first-kind Jacobi–Stirling triangle is totally nonnegative for $z\ge-1$, and its rows are
+Pólya-frequency polynomials with an explicit linear factorization.
+
+## Results
+
+The Jacobi–Stirling numbers of the first and second kind, $\mathrm{Jc}(n,k;z)$ and
+$\mathrm{JS}(n,k;z)$, satisfy $\mathrm{Jc}(0,0)=\mathrm{JS}(0,0)=1$; both vanish if exactly
+one index is $0$; and, for $n,k\ge1$,
 $$
 \mathrm{Jc}(n,k) = \mathrm{Jc}(n-1,k-1) + (n-1)(n-1+z)\,\mathrm{Jc}(n-1,k),
-\qquad
-\mathrm{JS}(n,k) = \mathrm{JS}(n-1,k-1) + k(k+z)\,\mathrm{JS}(n-1,k),
 $$
-with $\mathrm{Jc}(0,0) = \mathrm{JS}(0,0) = 1$. The case $z = 1$ gives the
-Legendre–Stirling numbers. Equivalently, $\mathrm{Jc}(n,k)$ is an elementary
-symmetric function and $\mathrm{JS}(n,k)$ a complete homogeneous symmetric
-function of the weights $i(i+z)$. The signed first-kind triangle and the
-second-kind triangle are mutually inverse.
-
-**Theorem** (Mongelli). [@Mongelli2012] For $z \geq -1$ the first-kind triangle
-$(\mathrm{Jc}(n,k;z))_{n,k}$ is totally nonnegative, and every row is a
-Pólya-frequency sequence. For $n\ge1$, its row polynomial factors as
 $$
-\sum_k \mathrm{Jc}(n,k;z)x^k
-=x\prod_{i=1}^{n-1}\bigl(x+i(i+z)\bigr),
+\mathrm{JS}(n,k) = \mathrm{JS}(n-1,k-1) + k(k+z)\,\mathrm{JS}(n-1,k).
 $$
-with nonnegative constants in the nontrivial linear factors.
+The case $z=1$ gives the Legendre–Stirling numbers. For $k\le n$, $\mathrm{Jc}(n,k)$ is the
+elementary symmetric function $e_{n-k}$ in the weights $w_i=i(i+z)$, $1\le i\le n-1$, and
+$\mathrm{JS}(n,k)$ is the complete homogeneous symmetric function $h_{n-k}$ in
+$w_1,\dots,w_k$.
 
-## Proof idea
+**Theorem (Mongelli).** [@Mongelli2012] For $z\ge-1$ the triangle
+$(\mathrm{Jc}(n,k;z))_{n,k\ge0}$ is totally nonnegative, including the Legendre–Stirling
+case $z=1$. For $n\ge1$ and $z\ge-1$,
+$$
+\sum_k \mathrm{Jc}(n,k;z)\,x^k = x\prod_{i=1}^{n-1}\bigl(x+i(i+z)\bigr),
+$$
+so every row is a Pólya-frequency polynomial.
 
-The first-kind triangle is the elementary-symmetric triangle of the weights
-$i(i+z)$, which are nonnegative for $z \geq -1$. Such a triangle factors into
-nonnegative bidiagonal matrices, so it is totally nonnegative; no planar
-network is needed.
+**Proposition (inversion).** For all $n,j\ge0$ and every $z$,
+$$
+\sum_{k=0}^{n}(-1)^{n+k}\,\mathrm{Jc}(n,k;z)\,\mathrm{JS}(k,j;z)=\delta_{n,j}.
+$$
+
+## Proof
+
+The triangle is the elementary-symmetric triangle of the weights $w_i$, which are nonnegative
+for $z\ge-1$. Such a triangle is a product of nonnegative bidiagonal matrices, hence totally
+nonnegative.
 
 ## References
 
-See [@GelineauZeng2010; @Mongelli2012; @AndrewsEggeGawronskiLittlejohn2013].
-The descent polynomials of Jacobi–Stirling permutations are on the
+[@GelineauZeng2010; @AndrewsEggeGawronskiLittlejohn2013]. The descent polynomials of
+Jacobi–Stirling permutations are on the
 [Jacobi–Stirling descent page](/RealRooted/families/jacobi-stirling-descent/).
 <!-- /realrooted-catalog-content -->
 

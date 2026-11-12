@@ -67,48 +67,45 @@ label = "A scalar solution with matching initial rows is a coordinate of the mat
 <!-- realrooted-catalog-content -->
 # Separated-characteristic recurrences and interlacing matrices
 
-We consider polynomial sequences $(P_n)$ satisfying a linear recurrence with
-polynomial coefficient
+A recurrence whose characteristic parameters $a_i\ge0\ge b_j$ are separated is the orbit of a
+polynomial matrix that preserves interlacing sequences, so its rows are Pólya frequency
+polynomials and consecutive rows interlace.
+
+## Results
+
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+Let $h\ge1$, $m\ge0$, $a\in\mathbb R^{h+m}$, $b\in\mathbb R^m$, and let $S$ be the shift
+$(SP)_n=P_{n+1}$. Consider the recurrence
 $$
-\prod_{i=1}^{h+m}(S-a_i)\,P\;=\;x\prod_{j=1}^{m}(S-b_j)\,P,
+\prod_{i=1}^{h+m}(S-a_i)\,P\;=\;x\prod_{j=1}^{m}(S-b_j)\,P.
 $$
-where $S$ is the shift $(SP)_n=P_{n+1}$, $h\ge1$ and $m\ge0$. The two families of
-characteristic parameters $a$ and $b$ are *separated* when all $a_i\ge0$ and all
-$b_j\le0$ (or, after a common shift by $\rho$, when $a_i\ge\rho\ge b_j$).
+Let $M=M(a,b)$ be the $(h+m)\times(h+m)$ matrix over $\mathbb R[x]$ whose first $h-1$ rows are
+bidiagonal (diagonal entry $a_i$, entry $1$ above it), and whose remaining rows have $x$ in
+column $0$, diagonal entry $a_i$, and entry $a_j-b_{j-h}$ in each column $j>i$, with $b_{j-h}$
+read as $0$ for $j<h$.
 
-We attach to the recurrence a square polynomial matrix of size $h+m$ whose first
-$h-1$ rows are bidiagonal and whose remaining rows have a common entry $x$ in
-column zero, the diagonal parameters $a_i$ and constant entries above the
-diagonal. Its characteristic polynomial in a variable $T$ is
+**Theorem (characteristic polynomial).** For $h\ge1$,
 $$
-\prod_i(T-a_i)-x\prod_j(T-b_j),
+\det(T-M)=\prod_i(T-a_i)-x\prod_j(T-b_j).
 $$
-so by the Cayley–Hamilton theorem every coordinate of its orbit solves the
-recurrence, and a scalar sequence solving the recurrence from some starting
-index and agreeing with a coordinate on the first $h+m$ rows from that index
-coincides with that coordinate from there on. This permits finitely many
-exceptional initial rows.
+Hence, by Cayley–Hamilton, every coordinate of $M^nv$ solves the recurrence. Conversely, let
+$(P_{s+n})_{n\ge0}$ solve it and let $P_{s+r}=(M^rv)_i$ for $0\le r<h+m$. Then
+$P_{s+n}=(M^nv)_i$ for all $n\ge0$.
 
-## Interlacing
-
-In the separated case the matrix has nonnegative polynomial coefficients and
-preserves interlacing sequences of nonnegative real-rooted polynomials (zero terms allowed),
-by the criterion of Brändén on matrices preserving interlacing sequences (see the
-[matrix interlacing page](/RealRooted/theorems/matrix-interlacing/)). Consequently, if the seed
-is an ordered vector of PF polynomials, so is every iterate, every
-coordinate of every iterate is a PF polynomial, and each coordinate interlaces the
-same coordinate one step later.
-
-## What is new
-
-The matrix, its iteration and the characteristic-polynomial computation were
-developed in this library; no published source is cited for them, and we
-attribute none.
+**Theorem (interlacing).** Assume $a_i\ge0\ge b_j$ for all $i,j$, or $a_i\ge\rho\ge b_j$ with
+$M$ built from $a_i-\rho$ and $b_j-\rho$. Then $M$ has nonnegative polynomial coefficients and
+preserves interlacing sequences of nonnegative real-rooted polynomials, zero entries allowed
+(Brändén's criterion on the
+[matrix interlacing page](/RealRooted/theorems/matrix-interlacing/)).
+Let the seed $v$ be such a sequence. Then every $M^nv$ is again one, every coordinate of every
+$M^nv$ is a Pólya frequency polynomial (possibly $0$), and
+$$
+(M^nv)_i\ll(M^{n+1}v)_i\qquad\text{for all }n\ge0\text{ and all }i.
+$$
 
 ## References
 
-No published source is cited for these results in the formalization. For the
-criterion on matrices preserving interlacing sequences, see the
+The preservation criterion is on the
 [matrix interlacing page](/RealRooted/theorems/matrix-interlacing/).
 <!-- /realrooted-catalog-content -->
 

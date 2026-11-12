@@ -50,44 +50,45 @@ headline = true
 <!-- realrooted-catalog-content -->
 # Laguerre's inequality and second-order ODE propagation
 
+A second-order ODE for a real-rooted polynomial restricts its roots, and an ODE that is
+preserved along a differential recurrence gives real-rooted rows with interlacing.
+
+## Results
+
 **Laguerre's inequality.** If $p$ is a real-rooted polynomial and $z$ is a root of $p$, then
-$$
-3\,p''(z)^2-4\,p'(z)\,p'''(z)\ge0 .
-$$
+$$3\,p''(z)^2-4\,p'(z)\,p'''(z)\ge0.$$
 
-**ODE root exclusion.** Let $p\ne0$ split over $\mathbb R$ and satisfy
-$A\,p''+B\,p'+C\,p=0$ for polynomials $A,B,C$. If $z$ is a root and $A(z)\ne0$, then
-$p'(z)\ne0$, so the root is simple, and the ODE discriminant
-$$
-\Delta=B^2+4A'B-4A\,(B'+C)
-$$
-satisfies $\Delta(z)\le0$. Equivalently, $p$ has no root at a point $z$ with $A(z)\ne0$ and
-$\Delta(z)>0$.
+**ODE root exclusion.** Let $p\ne0$ and $A\,p''+B\,p'+C\,p=0$ for polynomials $A,B,C$. If $z$
+is a root of $p$ and $A(z)\ne0$, then $p'(z)\ne0$, so the root is simple. If moreover $p$ is
+real-rooted, then the ODE discriminant
+$$\Delta=B^2+4A'B-4A\,(B'+C)$$
+satisfies $\Delta(z)\le0$. Equivalently, a real-rooted solution has no root at a point $z$ with
+$A(z)\ne0$ and $\Delta(z)>0$.
 
-## Propagation along a recurrence
+**Propagation of the ODE.** Let $F_n$ satisfy $K_nF_{n+1}=p_nF_n+q_nF_n'$ with $K_n\ne0$, and
+let $F_0$ satisfy $a_0F_0''+b_0F_0'+c_0F_0=0$. Suppose that, for a linear map $U_n$ on
+polynomials and every polynomial $g$, the $(n+1)$-st ODE operator applied to
+$p_ng+q_ng'$ equals $U_n$ applied to the $n$-th ODE operator applied to $g$. Then every $F_n$
+satisfies $a_nF_n''+b_nF_n'+c_nF_n=0$.
 
-Let $F_n$ satisfy a first-order differential recurrence $K_nF_{n+1}=p_nF_n+q_nF_n'$ with
-$K_n>0$, and suppose $F_0$ satisfies a second-order ODE $a_0F_0''+b_0F_0'+c_0F_0=0$. If an
-intertwining identity holds, in which applying the $(n+1)$-st ODE operator to
-$p_ng+q_ng'$ equals a linear map applied to the $n$-th ODE operator applied to $g$, then every
-$F_n$ satisfies the ODE with coefficients $(a_n,b_n,c_n)$.
+**Theorem (real roots and interlacing).** In this setting, let moreover $K_n>0$ and let
+$\deg F_n=d+n$, with each $F_n$ having positive leading coefficient, nonnegative coefficients
+and positive constant term, and $F_0$ real-rooted. Suppose that $a_n(x)\ne0$ and that
+$q_n(x)\ge0$ implies $\Delta_n(x)>0$ for all $x<0$ and all $n$. Then every $F_n$ is real-rooted
+with simple negative roots, and $F_n$ interlaces $F_{n+1}$ for all $n$ (the library predicate
+`StrictInterl`, which allows common roots).
 
-Suppose moreover that $\deg F_n=d+n$, each $F_n$ has positive leading coefficient, nonnegative
-coefficients and positive constant term, $F_0$ splits, $a_n$ has no negative zero, and
-$q_n(x)\ge0$ at a negative $x$ forces $\Delta_n(x)>0$. Then every $F_n$ splits with simple
-negative roots, and $F_n$ interlaces $F_{n+1}$: the ODE discriminant forces the derivative
-coefficient of the recurrence to be negative at every root, so the strict Ma–Wang criterion
-propagates simple negative roots and interlacing.
+## Proof
 
-## What is new
-
-These results were developed in this library; no published source is cited, and we
-attribute none. See also the [Sonin envelope page](/RealRooted/theorems/sonin-envelope/) and the
-[Ma–Wang and Liu–Wang page](/RealRooted/theorems/ma-wang-liu-wang/).
+At a negative root $x$ of $F_n$ the exclusion theorem gives $\Delta_n(x)\le0$, hence
+$q_n(x)<0$. The critical-sign criterion of the [Ma–Wang and Liu–Wang
+page](/RealRooted/theorems/ma-wang-liu-wang/)
+then propagates simple negative roots and interlacing.
 
 ## References
 
-No published source is cited for these results in the formalization.
+See also the [Sonin envelope page](/RealRooted/theorems/sonin-envelope/) and the
+[Ma–Wang and Liu–Wang page](/RealRooted/theorems/ma-wang-liu-wang/).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in `RealRooted.Wronskian.OdeRootBound`

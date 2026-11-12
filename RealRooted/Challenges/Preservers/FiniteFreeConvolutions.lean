@@ -14,7 +14,7 @@ public import RealRooted.FiniteFreeAdditive.HalfIntegerConvolution
 public import RealRooted.NarayanaTransformation.RootGeometry
 
 /-!
-# Finite free convolutions challenge entry point
+# Real-rootedness and root locations under finite free convolutions
 
 <!-- realrooted-catalog
 version = 1
@@ -94,7 +94,7 @@ label = "Translating the arguments of ⊞_d by s and t translates the output by 
 [[theorems]]
 name = "RealRooted.finiteFreeAdditiveConvolution_eq_lowerDegree"
 module = "RealRooted.FiniteFreeAdditive.Stability"
-label = "Lower-degree normalization of finite free additive convolution"
+label = "For deg f ≤ m: f ⊞_D g = f ⊞_m (m!/D!) g^(D−m)"
 
 [[theorems]]
 name = "RealRooted.algebraicSymbol_finiteFreeAdditiveConvolutionDegreeBox"
@@ -167,110 +167,95 @@ label = "The differential pairing of the two polarizations is the rectangular co
 -->
 
 <!-- realrooted-catalog-content -->
-# Finite free convolutions
+# Real-rootedness and root locations under finite free convolutions
 
-Write $p(x) = \sum_{i=0}^{d} a_i x^{d-i}$ and $q(x) = \sum_{j=0}^{d} b_j x^{d-j}$
-in a degree box of size $d$. The **finite free additive convolution** is
+The finite free additive and multiplicative convolutions preserve real-rootedness, the additive
+one moves roots by at most the root range of the second factor, and the rectangular additive
+convolution preserves nonnegative roots.
+
+## Results
+
+We write $f\ll g$ if $f=0$, $g=0$ or $f$ interlaces $g$; common roots are allowed. Write
+$p(x)=\sum_{i=0}^{d}a_ix^{d-i}$ and $q(x)=\sum_{j=0}^{d}b_jx^{d-j}$ in a degree box of size $d$.
+The *finite free additive convolution* is
 $$
-(p \boxplus_d q)(x) = \sum_{k=0}^{d} x^{d-k} \sum_{i + j = k}
-  \frac{(d - i)!\,(d - j)!}{d!\,(d - k)!}\, a_i b_j .
+(p\boxplus_dq)(x)=\sum_{k=0}^{d}x^{d-k}\sum_{i+j=k}
+  \frac{(d-i)!\,(d-j)!}{d!\,(d-k)!}\,a_ib_j .
 $$
-The **rectangular additive convolution** $p \boxplus_{m,n} q$ in a degree box of
-size $n$ multiplies each term by the second factor
-$\frac{(n + m - i)!\,(n + m - j)!}{(n + m)!\,(n + m - k)!}$. More generally, for
-real $\alpha$ the term weight is
+The *rectangular additive convolution* $p\boxplus_{m,n}q$ in a degree box of size $n$ multiplies
+each term by the further factor $\frac{(n+m-i)!\,(n+m-j)!}{(n+m)!\,(n+m-k)!}$. More generally,
+for real $\alpha$ the weight of $a_ib_j$ in the box of size $n$ is
 $$
-\frac{(n)^{\underline{k}}}{(n)^{\underline{i}}\,(n)^{\underline{j}}}
-\cdot \frac{(n + \alpha)^{\underline{k}}}
-  {(n + \alpha)^{\underline{i}}\,(n + \alpha)^{\underline{j}}},
+\frac{(n)^{\underline{k}}}{(n)^{\underline{i}}\,(n)^{\underline{j}}}\cdot
+\frac{(n+\alpha)^{\underline{k}}}{(n+\alpha)^{\underline{i}}\,(n+\alpha)^{\underline{j}}},
+\qquad k=i+j,
 $$
-with falling factorials $(x)^{\underline{k}}$; $\alpha = m$ is the rectangular
-case. The **finite free multiplicative convolution** is
+with falling factorials $(x)^{\underline{k}}$; $\alpha=m$ is the rectangular case. The
+*finite free multiplicative convolution* is
 $$
-(p \boxtimes_d q)(x) = \sum_{k=0}^{d} (-1)^{k} \binom{d}{k}^{-1}
-  a_k b_k\, x^{d-k}
+(p\boxtimes_dq)(x)=\sum_{k=0}^{d}(-1)^k\binom dk^{-1}a_kb_k\,x^{d-k},
 $$
-in the same box, that is, $(-1)^d\, (p *_d q)(-x)$ for the Schur–Szegő
-composition $p *_d q = \sum_k \binom{d}{k}^{-1} p_k q_k x^k$ of the coefficient
-lists $p_k$, $q_k$.
+that is, $(-1)^d(p*_dq)(-x)$ for the Schur--Szegő composition
+$p*_dq=\sum_k\binom dk^{-1}p_kq_kx^k$ of the coefficients $p_k,q_k$ of $x^k$.
 
-**Theorem.**
+**Theorem (real-rootedness).**
 
-- If $p$ and $q$ are real-rooted of degree at most $d$, then $p \boxplus_d q$ is
-  real-rooted [@MarcusSpielmanSrivastava2022].
-- If $p$ and $q$ have degree exactly $d$, the roots of $p$ lie in $[A, B]$ and
-  the roots of $q$ lie in $[a, b]$, then all roots of $p \boxplus_d q$ lie in
-  $[A + a, B + b]$ (Walsh's location theorem in the finite free setting; Leake and
-  Ryder, *On the further structure of the finite free convolutions*, Proposition 1.1).
-  The interval-window proof shifts both inputs so that their roots are nonpositive,
-  which makes their coefficients nonnegative; the convolution is translation
-  covariant and preserves nonnegative coefficients, so it has no positive root.
-- More sharply, if $\alpha_i$ is the $i$th ordered root of $p$ and $\rho_i$ is
-  the $i$th ordered root of $p \boxplus_d q$, then
-  $\alpha_i + a \leq \rho_i \leq \alpha_i + b$ whenever the roots of $q$ lie
-  in $[a,b]$. The proof moves the roots of $q$ one at a time and orients each
-  interlacing comparison through the additive formula for the sum of the roots.
-- If $f$ has degree at most $m\le d$, then $f\boxplus_d g$ is the degree-$m$
-  convolution of $f$ with the normalized derivative
-  $(m!/d!)g^{(d-m)}$. For monic $g$ of degree $d$, this preserves the degree and
-  leading coefficient of every nonzero $f$ in the degree box.
-- Acting in one coordinate, convolution by a nonzero split $g$ preserves
-  multivariate real stability, with arbitrary spectator variables and a possible
-  zero output. Its algebraic symbol is $g(x_q+y_q)$ times the spectator factors.
-  If $g$ is monic of degree $d$, it also preserves directed interlacing for
-  positive-leading-coefficient inputs of degree at most $d$.
-- If $f$ and $g$ have degree exactly $n$, positive leading coefficients, and
-  only nonnegative real roots, then $f \boxplus_{m,n} g$ is zero or has only
-  nonnegative real roots [@GribinskiMarcus2022].
-- The same holds for the parameters $\alpha = -\tfrac12$ and
-  $\alpha = \tfrac12$, for inputs of degree at most $n$ that are real-rooted with
-  nonnegative roots.
-- If $p$ is real-rooted, $q$ is real-rooted with nonnegative roots, and both
-  have degree at most $d$, then $p \boxtimes_d q$ is real-rooted
-  (Marcus, Spielman, Srivastava).
-- The signed reciprocal $p \mapsto x^d\, p(-1/x)$ carries Schur–Szegő
-  composition to multiplicative convolution:
-  $\widehat{p *_d q} = \widehat{p} \boxtimes_d \widehat{q}$.
+- If $p,q$ are real-rooted of degree at most $d$, then $p\boxplus_dq$ is real-rooted
+  [@MarcusSpielmanSrivastava2022].
+- If $p,q$ are real-rooted of degree at most $d$ and $q$ has only nonnegative roots, then
+  $p\boxtimes_dq$ is real-rooted [@MarcusSpielmanSrivastava2022].
+- The signed reciprocal $\hat p=x^dp(-1/x)$ satisfies
+  $\widehat{p*_dq}=\hat p\boxtimes_d\hat q$.
 
-## Rectangular convolution through polarization
+**Theorem (root location).** Let $p,q$ have degree exactly $d$ and be real-rooted.
 
-For $f$ of degree at most $n$, write $f_k$ for its coefficient of $x^k$. The
-coefficient of $x^j$ in $f \boxplus_{m,n} g$, for $j\le n$, is the sum, over
-$0\le i\le n-j$, of the weight above times $f_{n-i}\,g_{j+i}$; the
-coefficients above degree $n$ vanish, so the degree is at most $n$.
+- If the roots of $p$ lie in $[A,B]$ and the roots of $q$ lie in $[a,b]$, then the roots of
+  $p\boxplus_dq$ lie in $[A+a,B+b]$ (Walsh's theorem in the finite free setting; see
+  [@LeakeRyder2018, Prop. 1.1]).
+- If $\alpha_i$ and $\rho_i$ are the $i$th smallest roots of $p$ and of $p\boxplus_dq$, and the
+  roots of $q$ lie in $[a,b]$, then $\alpha_i+a\le\rho_i\le\alpha_i+b$.
+- $p(x+s)\boxplus_dq(x+t)=(p\boxplus_dq)(x+s+t)$ for all real $s,t$ and $\deg p,\deg q\le d$.
 
-The **rectangular polarization** of a complex polynomial $p$ of degree $n$ is
+**Theorem (stability and interlacing).** Let $g\ne0$ be real-rooted with $\deg g\le D$.
+
+- If $\deg f\le m\le D$, then $f\boxplus_Dg=f\boxplus_m\tfrac{m!}{D!}g^{(D-m)}$.
+- Convolution by $g$ in a single variable $x_q$, namely
+  $p\mapsto\sum_{i\le D}\frac{(D-i)!}{D!}\,[x^{D-i}]g\;\partial_q^{\,i}p$, maps multivariate
+  real stable polynomials of degree at most $D$ in $x_q$ to real stable polynomials or zero.
+  In the degree box $\kappa$ with $\kappa_q=D$, its algebraic symbol is
+  $g(x_q+y_q)\prod_{i\ne q}(x_i+y_i)^{\kappa_i}$.
+- If $g$ is monic of degree $D$, $\deg f,\deg h\le D$, both have positive leading coefficient and
+  $h\ll f$ with both nonzero, then $h\boxplus_Dg\ll f\boxplus_Dg$.
+
+**Theorem (rectangular convolution).** The polynomial $f\boxplus_{m,n}g$ has degree at most $n$.
+If $f,g$ have degree exactly $n$, positive leading coefficients and only nonnegative roots, then
+$f\boxplus_{m,n}g$ is zero or real-rooted with only nonnegative roots [@GribinskiMarcus2022].
+The same holds for the parameters $\alpha=\pm\tfrac12$, for real-rooted $f,g$ of degree at most
+$n$ with only nonnegative roots.
+
+**Theorem (rectangular polarization).** For a complex polynomial $p$ of degree $n$ let
 $$
-\sum_{k=0}^{n} \frac{p_k}{\binom{n}{k}\binom{m+n}{m+k}}\,
-  e_k(x_1,\dots,x_n)\, e_{m+k}(y_1,\dots,y_{m+n}),
+P(x,y)=\sum_{k=0}^{n}\frac{p_k}{\binom nk\binom{m+n}{m+k}}\,
+  e_k(x_1,\dots,x_n)\,e_{m+k}(y_1,\dots,y_{m+n}).
 $$
-a polynomial in $n$ variables $x_i$ and $m+n$ variables $y_j$ that restricts to
-$y^m p(xy)$ when all $x_i$ equal $x$ and all $y_j$ equal $y$. It is multiaffine. If
-the bivariate polynomial $p(xy)$ is upper-half-plane stable and $p$ has degree
-exactly $n$, then the polarization is upper-half-plane stable: one polarizes the
-right slice first and then the left slice. Its signed reciprocal
-$(-1)^m \prod z_i\, P(-1/z)$ is again multiaffine and stable.
+Then $P$ is multiaffine and specializes to $y^mp(xy)$ when all $x_i=x$ and all $y_j=y$. If the
+bivariate polynomial $p(xy)$ is upper-half-plane stable, then $P$ is upper-half-plane stable,
+and so is its signed reciprocal $\tilde P$, defined by
+$\tilde P(z)=(-1)^m\prod_iz_i\,P(-1/z)$. For real $f,g$, let $P_f$ be the polarization of $f$
+and $\tilde P_g$ the reciprocal polarization of $g$. Applying $\tilde P_g(-\partial)$ to $P_f$
+and then setting all $x_i=x$ and all $y_j=y$ gives $y^m\,(f\boxplus_{m,n}g)(xy)$.
 
-For real $f$ and $g$, apply the reciprocal polarization of $g$ as a differential
-operator $F(-\partial)$ to the polarization of $f$, then set all $x_i$ equal and all
-$y_j$ equal. The result is $y^m\,(f \boxplus_{m,n} g)(xy)$. This is the algebraic identity
-used in [@GribinskiMarcus2022] to realize the rectangular convolution through the
-Lieb–Sokal differential action.
+## Proof
 
-## Proof idea
-
-The additive theorem follows from the Lieb–Sokal lemma: the convolution is a
-differential operator in $q$ applied to $p$, and real stability is preserved.
-The half-integer cases reduce to $\boxplus_{2n}$ and $\boxplus_{2n+1}$ through
-the even and odd lifts $p(x^2)$ and $x\,p(x^2)$. The rectangular case uses a
-real-stable lift of $f(xy)$. For the multiplicative theorem, substituting
-$-x$ in $q$ turns $q$ into a PF polynomial up to sign, and the Schur–Szegő
-composition theorem on the Hadamard page applies.
+The additive theorem follows from the Lieb--Sokal lemma: the convolution is a differential
+operator in $q$ applied to $p$. The parameters $\pm\tfrac12$ reduce to $\boxplus_{2n}$ and
+$\boxplus_{2n+1}$ through the lifts $p(x^2)$ and $x\,p(x^2)$. The rectangular case uses the
+polarization above [@GribinskiMarcus2022].
 
 ## References
 
-See [@MarcusSpielmanSrivastava2022; @GribinskiMarcus2022; @LeakeRyder2018]. For the Narayana
-transformation itself, see the [Narayana page](/RealRooted/families/narayana/).
+[@MarcusSpielmanSrivastava2022; @GribinskiMarcus2022; @LeakeRyder2018]. The
+[Narayana page](/RealRooted/families/narayana/) treats the Narayana transformation.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in

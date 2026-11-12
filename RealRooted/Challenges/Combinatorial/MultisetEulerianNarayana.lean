@@ -40,7 +40,7 @@ headline = true
 [[theorems]]
 name = "RealRooted.MultisetEulerianNarayana.strictInterl_partialPoly"
 module = "RealRooted.CombinatorialExamples.MultisetEulerianNarayana"
-label = "Consecutive partial products strictly interlace"
+label = "Consecutive partial products interlace without common zeros"
 
 [[theorems]]
 name = "RealRooted.MultisetEulerianNarayana.coeff_multisetEulerianNarayana_symm"
@@ -76,64 +76,67 @@ label = "Zhang–Zhao: the closed transition matrices are totally nonnegative"
 <!-- realrooted-catalog-content -->
 # Multiset Eulerian–Narayana polynomials
 
-Let $M = \{1^{p_1}, \dotsc, m^{p_m}\}$ be a multiset of size $N$. A weakly
-increasing tree on $M$ is a plane tree on $M \cup \{0\}$, rooted at $0$, whose
-labels weakly increase along every root-to-leaf path and from left to right
-among siblings. Lin, Ma, Ma and Zhou [@LinMaMaZhou2021] studied the normalized leaf enumerator
-$P_M(t)$ of these trees. It interpolates between the Eulerian polynomials
-($p_i = 1$) and the Narayana polynomials ($m = 1$). They conjectured that it is
-real-rooted.
+The multiset Eulerian–Narayana polynomial of a composition of $N$ has degree $N-1$, only simple
+negative zeros, and palindromic coefficients; it is built from $N-1$ first-order steps whose
+consecutive partial products interlace.
 
-Zhang and Zhao factor it into first-order steps. Write
+## Results
+
+We write $f\ll g$ if $f$ interlaces $g$; common roots are excluded where stated. Call a real
+polynomial $f$ *admissible of degree $m$* if it has degree $m$, positive leading coefficient,
+nonnegative coefficients, positive constant term and only simple real zeros; then all zeros
+are negative. For $d\in\mathbb N$ and $a>0$ let
 $$
 E_{d,a} f = \frac1a\Bigl(t(1-t) f' + \bigl(a + (d+a)t\bigr) f\Bigr).
 $$
-and, for the composition $\alpha = (p_1, \dotsc, p_m)$ with partial sums $N_j$,
-let $a_d(\alpha) = N_j - d$ for the least $j$ with $N_j > d$. Then
+For a composition $\alpha=(p_1,\dots,p_m)$ of $N\ge1$ with partial sums $N_j=p_1+\dots+p_j$, put
+$a_d(\alpha)=N_j-d$ for the least $j$ with $N_j>d$. The multiset Eulerian–Narayana polynomial is
 $$
-P_\alpha = E_{N-2, a_{N-2}(\alpha)} \circ \dotsb \circ E_{0, a_0(\alpha)}(1).
+P_\alpha = E_{N-2,\,a_{N-2}(\alpha)} \circ \dotsb \circ E_{0,\,a_0(\alpha)}(1).
 $$
-Here this factorization defines $P_\alpha$. The tree model and the
-Lagrange–Bürmann argument behind the factorization are not formalized.
+Zhang and Zhao [@ZhangZhao2026x] obtain this formula for the leaf enumerator $P_M$ of weakly
+increasing trees on a multiset $M$ with multiplicities $\alpha$ (the identification is
+[@ZhangZhao2026x, Prop. 2.9]); here the formula is the definition of $P_\alpha$.
 
-**Theorem** (Zhang–Zhao). [@ZhangZhao2026x] For every composition $\alpha$ of
-$N \ge 1$, the
-polynomial $P_\alpha$ has degree $N - 1$, nonnegative coefficients and only
-simple negative zeros. Consecutive partial products of the factorization strictly
-interlace, and $P_\alpha$ is palindromic.
+**Theorem (Zhang–Zhao).** [@ZhangZhao2026x] For a composition $\alpha$ of $N\ge1$, $P_\alpha$
+is admissible of degree $N-1$ and $P_\alpha$ is palindromic: its coefficients of $t^k$ and
+$t^{N-1-k}$ agree for $0\le k\le N-1$. Let $Q_0=1$ and $Q_{d+1}=E_{d,a_d(\alpha)}Q_d$. Then
+$Q_d\ll Q_{d+1}$ and $Q_d,Q_{d+1}$ have no common zero, for $0\le d\le N-2$.
 
-**Theorem** (Zhang–Zhao, Lemma 3.2 and Proposition 3.4). For $a>0$ and
-$d\in\{2m,2m+1\}$, where $m=\deg\Gamma$, the gamma operator
+**Theorem (Zhang–Zhao, Lemma 3.2).** For $a>0$ and a polynomial $\Gamma$ admissible of degree
+$m$, put
 $$
-\Phi_{d,a}\Gamma
-=\Gamma+\frac{z(1-4z)\Gamma'+2dz\Gamma}{a}
+\Phi_{d,a}\Gamma=\Gamma+\frac{t(1-4t)\Gamma'+2dt\Gamma}{a},\qquad d\in\{2m,2m+1\}.
 $$
-maps polynomials with simple negative zeros to polynomials of the same type.
-Moreover, each zero of the output moves strictly right when an input zero
-moves right.
+If $d=2m$ then $\Phi_{d,a}\Gamma$ is admissible of degree $m$; if $d=2m+1$ it is admissible of
+degree $m+1$.
 
-**Theorem** (Zhang–Zhao, Theorem 1.3). [@ZhangZhao2026x, Thm. 1.3] The
-matrices $K^{(p,r)}$ that send the
-coefficients of an input polynomial to those of its image under $r$ consecutive steps
-have an explicit binomial closed form. They are products of positive bidiagonal
-matrices, hence totally nonnegative.
+**Theorem (Zhang–Zhao, Proposition 3.4).** Let $a>0$, let $p=\prod_{j=1}^n(t-r_j)$ with
+distinct negative $r_j$, and let $d\in\{2n,2n+1\}$. If $\rho$ is a zero of $\Phi_{d,a}p$ and
+$r_i$ is replaced by $r_i+s$, then $\rho$ moves along a differentiable branch $\rho(s)$ of
+zeros of the new polynomial with $\rho'(0)>0$.
 
-The conjecture itself also needs the identification of $P_\alpha$ with the leaf
-enumerator $P_M$ [@ZhangZhao2026x, Prop. 2.9]. That identification is cited
-from the paper, not formalized.
+**Theorem (Zhang–Zhao, Theorem 1.3).** [@ZhangZhao2026x, Thm. 1.3] Let $p,r\ge1$. Let $K_{p,r}$
+be the $(p+r)\times p$ matrix whose entry in row $k$ and column $\ell$ (from $0$) is $0$ unless
+$\ell\le k\le\ell+r$, and then
+$$
+\binom{p-\ell+r}{k-\ell}\binom{\ell+1+r}{r-k+\ell}
+\frac{(\ell+1)(p+r-k)+(p-\ell)(k-\ell)}{(\ell+1+r)(p-\ell+r)}.
+$$
+Then $K_{p,r}$ is totally nonnegative. It is the product of the coefficient matrices of the
+steps $E_{p+s-1,a_s}$, $0\le s<r$, with $a_0=1$ and $a_s=r-s+1$ for $s\ge1$, each a
+nonnegative lower bidiagonal matrix, restricted to the first $p$ columns.
 
-## Proof idea
+## Proof
 
-Each factor is a Darboux operator
-$x(1-x) f' + (a + bx) f$ with $a > 0$ and $b > \deg f$. Such an operator raises
-the degree by one. At each zero $r$ of $f$ its value is $r(1-r) f'(r)$, which
-alternates in sign, so the new zeros interlace the old ones. All parameters
-$a_d(\alpha)$ are positive.
+Each step is a Darboux operator $t(1-t)f'+(a+bt)f$ with $a>0$ and $b>\deg f$. It raises the
+degree by one; at a zero $r$ of $f$ its value is $r(1-r)f'(r)$, which alternates in sign, so the
+new zeros interlace the old ones. The parameters $a_d(\alpha)$ are positive for $d<N$.
 
 ## References
 
-For the tree model, see [@LinMaMaZhou2021]. For the interlacing result, see
-[@ZhangZhao2026x].
+For the tree model and the conjecture that $P_M$ is real-rooted, see [@LinMaMaZhou2021]; the
+interlacing result is [@ZhangZhao2026x].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

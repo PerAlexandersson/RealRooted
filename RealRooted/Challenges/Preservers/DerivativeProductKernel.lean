@@ -3,7 +3,7 @@ module
 import RealRooted.DerivativeProduct.Kernel
 
 /-!
-# The fixed-factor criterion for associative derivative products
+# Real-rootedness of associative derivative products with a fixed factor
 
 <!-- realrooted-catalog
 version = 1
@@ -36,7 +36,7 @@ label = "The diamond family with a kernel rooted in [−1, 0] preserves real-roo
 [[theorems]]
 name = "RealRooted.assocProduct_isRealRootedIn_univ"
 module = "RealRooted.DerivativeProduct.KernelSufficiency"
-label = "Sufficiency in the fixed-factor criterion for the associative family"
+label = "Associative product with a kernel having w ≤ 0 at its roots preserves real-rootedness"
 
 [[theorems]]
 name = "RealRooted.isRealRootedIn_of_splits_derivProduct_affine"
@@ -51,53 +51,65 @@ label = "Kernel characterization of the diamond family: roots in [−1, 0]"
 [[theorems]]
 name = "RealRooted.assocProduct_kernel_tfae"
 module = "RealRooted.DerivativeProduct.Kernel"
-label = "Complete fixed-factor criterion for the associative family"
+label = "Fixed-factor criterion: preservation holds iff g is real-rooted with w ≤ 0 on its roots"
 headline = true
 -->
 
 <!-- realrooted-catalog-content -->
-# The fixed-factor criterion for associative derivative products
+# Real-rootedness of associative derivative products with a fixed factor
 
-For a weight $w$ and coefficients $c_k$, the derivative product is
-$f\ast g=\sum_k c_k\,w^k f^{(k)}g^{(k)}$.  We take $w=AX^2+BX+C$ with $A\geq 0$ and
-$c_k=a^k/\bigl(k!\prod_{j<k}(1+aAj)\bigr)$ with $a>0$; this is the associative family,
-which contains the Poisson product ($A=0$, $w=X$) and the diamond family
-$f\ast_\beta g=\sum_k [X(X+1)]^k f^{(k)}g^{(k)}/(k!\,(\beta)_k)$, where the diamond product is
-$\beta=1$.
+A fixed polynomial $g$ gives a real-rootedness preserver $f\mapsto f\ast g$ for the associative
+derivative product exactly when $g$ is real-rooted and $w\le0$ at its roots.
 
-**Theorem.** For a nonzero real polynomial $g$, the following are equivalent.
+## Results
 
-1. The map $f\mapsto f\ast g$ sends every nonzero real-rooted polynomial to a nonzero
-   real-rooted polynomial.
-2. It does so for every nonzero polynomial of degree at most one.
-3. $g$ is real-rooted and $w(r)\leq 0$ at every root $r$ of $g$.
+For a weight $w$ and coefficients $c_k$, the *derivative product* is
+$$
+f\ast g=\sum_k c_k\,w^kf^{(k)}g^{(k)}.
+$$
+The *associative family* has $w=Ax^2+Bx+C$ with $A\ge0$ and
+$c_k=a^k/\bigl(k!\prod_{j<k}(1+aAj)\bigr)$ with $a>0$. It contains the Poisson product
+($A=0$, $w=x$) and the *diamond family*
+$$
+f\ast_\beta g=\sum_k\frac{[x(x+1)]^k}{k!\,(\beta)_k}\,f^{(k)}g^{(k)},\qquad
+(\beta)_k=\beta(\beta+1)\cdots(\beta+k-1),
+$$
+for $\beta>0$; the diamond product is $\beta=1$.
 
-For the diamond family (3) says that all roots of $g$ lie in $[-1,0]$.  No restriction on
-the roots of $w$ is needed: the proof covers distinct real roots, a double root, complex roots,
-a linear or constant weight (a ray, the whole line, or no admissible root), and
-$w=0$.
+**Theorem (fixed-factor criterion).** Let $g\ne0$ be a real polynomial. The following are
+equivalent.
 
-**Sufficiency.** Write $c_k=\gamma_k/k!$.  The sequence $\gamma_k=1/(\beta)_k$ is a PF
-multiplier sequence, since its Jensen polynomials are Laguerre polynomials.  The signed Weyl
-symbol of $g\mapsto f\ast g$ is $\sum_j \gamma_j\,\mathrm{hasse}_j f(x)\,(-w(x)y)^j$, which is
-the multiplier $\gamma$ applied to the Taylor polynomial $s\mapsto f(x+w(x)s)$.  Its roots
-$s=(r-x)/w(x)$, for $r$ a root of $f$, lie in the closed upper half-plane when
-$\operatorname{Im}x>0$ and $w(r)\leq 0$, because
-$w(x)/(x-r)=w(r)/(x-r)+w'(r)+A(x-r)$ has nonnegative imaginary part.  A PF multiplier preserves
-this root location, so the symbol is stable, and the finite-order Weyl-symbol theorem of
-Borcea–Brändén gives preservation of real-rootedness.
+1. For every real-rooted polynomial $f\ne0$, $f\ast g=0$ or $f\ast g$ is real-rooted.
+2. The same holds for every $f\ne0$ of degree at most one.
+3. $g$ is real-rooted and $w(r)\le0$ at every root $r$ of $g$.
 
-**Necessity.** The inputs $1$ and $X$ give the pencil $g,\ F=Xg+a\,w\,g'$, and the affine
-inputs give all its real combinations.  Deleting all but one copy of a root $r$ of $g$ keeps
-the pencil real-rooted; its degrees differ by one and the leading coefficients are positive
-multiples of each other, so the pencil is in directed proper position.  The sign rule at a
-root of the left polynomial then gives $a\,m\,w(r)\,h(r)^2\leq 0$, where $m$ is the multiplicity
-of $r$ and $g=(X-r)^m h$.
+When (3) holds and $f\ne0$ is real-rooted, $f\ast g\ne0$. For the diamond family, (3) says that
+all roots of $g$ lie in $[-1,0]$. The weight $w$ is any real polynomial of degree at most two
+with $A\ge0$, including constant, linear and zero weights.
 
-The Poisson case $A=0$, $w=X$ is the classification of
-`RealRooted.Poisson.preservesRealRootedOrZero_iff_isAdmissible`.  The diamond family follows
-Theorem 3.11 of [@Branden2006]; the Weyl-symbol criterion is Theorems 1.3 and 1.4 of
-[@BorceaBranden2009I].
+**Theorem (sufficiency).** Let $\gamma$ be a PF multiplier sequence with $\gamma_0=1$ and
+$\gamma_k>0$, let $w$ have degree at most two with $A\ge0$, let $f\ne0$ be real-rooted with
+$w\le0$ at its roots, and let $g\ne0$ be real-rooted. Then
+$\sum_k\frac{\gamma_k}{k!}\,w^kf^{(k)}g^{(k)}$ is nonzero and real-rooted. The same holds for
+$f\ast g$ in the associative family with $a>0$, and for $f\ast_\beta g$ with $\beta>0$ and $f$
+real-rooted with all roots in $[-1,0]$.
+
+**Theorem (necessity).** Let $c_0=1$, $c_k\ge0$ and $c_1>0$, let $w$ have degree at most two
+and $A\ge0$, and let $g\ne0$. If $g\ast(\alpha+\beta x)$ is zero or real-rooted for all real
+$\alpha,\beta$, then $g$ is real-rooted and $w\le0$ at its roots.
+
+**Theorem (Weyl symbols).** Let $a_0,\dots,a_m$ be real polynomials such that
+$\sum_j a_j(x)(-y)^j\ne0$ whenever $\operatorname{Im}x>0$ and $\operatorname{Im}y>0$. For every
+real-rooted $g\ne0$, the polynomial $\sum_j a_jg^{(j)}$ is zero or real-rooted.
+
+## Proof
+
+For sufficiency, the sequence $1/(\beta)_k$ is a PF multiplier sequence, which makes the Weyl
+symbol of $g\mapsto f\ast g$ stable when $w\le0$ at the roots of $f$. Necessity uses the pencil
+spanned by $g$ and $xg+a\,w\,g'$, which arises from the inputs $1$ and $x$.
+
+The diamond family follows Theorem 3.11 of [@Branden2006]; the Weyl-symbol criterion is
+Theorems 1.3 and 1.4 of [@BorceaBranden2009I].
 
 ## References
 
