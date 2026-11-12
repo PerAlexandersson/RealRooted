@@ -730,6 +730,7 @@ public import RealRooted.Hermite.Orthogonality.Integral
 public import RealRooted.Hermite.Poulain
 public import RealRooted.Hermite.Bessel
 public import RealRooted.Hermite.PoulainInterlacing
+public import RealRooted.Hermite.PoulainSymbolDerivative
 public import RealRooted.Hermite.Roots
 public import RealRooted.HermiteBiehler
 public import RealRooted.HermiteBiehler.Basic
