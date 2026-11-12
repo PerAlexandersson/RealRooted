@@ -28,7 +28,7 @@ def IsLaguerrePolyaTypeISigned (f : ℂ → ℂ) : Prop :=
 
 /-- Full signed Pólya--Schur classification for an exponential generating
 series with a positive radius of convergence. -/
-theorem isMultiplierSequence_iff_isLaguerrePolyaTypeISigned_complexExpGeneratingFunction
+theorem IsMultiplierSequence.iff_signedLaguerrePolya_egf
     {gamma : ℕ → ℝ}
     (hpositive : ∃ R : NNReal, 0 < R ∧
       Summable (fun k => ‖gamma k‖ * (R : ℝ) ^ k / k.factorial)) :
@@ -71,41 +71,41 @@ theorem isMultiplierSequence_iff_isLaguerrePolyaTypeISigned_complexExpGenerating
     rcases hgamma.exists_pf_sign_normalization with hpf | hpf
     · rcases hpf with hpf | hpf
       · exact Or.inl (Or.inl
-          ((isPFMultiplierSequence_iff_isLaguerrePolyaTypeI_complexExpGeneratingFunction
+          ((IsPFMultiplierSequence.iff_laguerrePolya_egf
             hpositive).mp hpf))
       · left
         right
         rw [← hegfNeg]
         exact
-          (isPFMultiplierSequence_iff_isLaguerrePolyaTypeI_complexExpGeneratingFunction
+          (IsPFMultiplierSequence.iff_laguerrePolya_egf
             hpositiveNeg).mp hpf
     · rcases hpf with hpf | hpf
       · right
         left
         rw [← hegfAlt]
         exact
-          (isPFMultiplierSequence_iff_isLaguerrePolyaTypeI_complexExpGeneratingFunction
+          (IsPFMultiplierSequence.iff_laguerrePolya_egf
             hpositiveAlt).mp hpf
       · right
         right
         rw [← hegfNegAlt]
         exact
-          (isPFMultiplierSequence_iff_isLaguerrePolyaTypeI_complexExpGeneratingFunction
+          (IsPFMultiplierSequence.iff_laguerrePolya_egf
             hpositiveNegAlt).mp hpf
   · intro hsigned
     unfold IsLaguerrePolyaTypeISigned at hsigned
     rcases hsigned with (htype | htype) | htype | htype
     · have hpf :=
-        (isPFMultiplierSequence_iff_isLaguerrePolyaTypeI_complexExpGeneratingFunction
+        (IsPFMultiplierSequence.iff_laguerrePolya_egf
           hpositive).mpr htype
       exact (isPFMultiplierSequence_iff_multiplierSequence_and_nonneg.mp hpf).1
     · have hpf : IsPFMultiplierSequence gammaNeg :=
-        (isPFMultiplierSequence_iff_isLaguerrePolyaTypeI_complexExpGeneratingFunction
+        (IsPFMultiplierSequence.iff_laguerrePolya_egf
           hpositiveNeg).mpr (by rw [hegfNeg]; exact htype)
       have hmult := (isPFMultiplierSequence_iff_multiplierSequence_and_nonneg.mp hpf).1
       simpa [gammaNeg] using hmult.const_mul (-1)
     · have hpf : IsPFMultiplierSequence gammaAlt :=
-        (isPFMultiplierSequence_iff_isLaguerrePolyaTypeI_complexExpGeneratingFunction
+        (IsPFMultiplierSequence.iff_laguerrePolya_egf
           hpositiveAlt).mpr (by rw [hegfAlt]; exact htype)
       have hmult := (isPFMultiplierSequence_iff_multiplierSequence_and_nonneg.mp hpf).1
       have halt := hmult.alternating
@@ -119,7 +119,7 @@ theorem isMultiplierSequence_iff_isLaguerrePolyaTypeISigned_complexExpGenerating
       rw [hseq] at halt
       exact halt
     · have hpf : IsPFMultiplierSequence gammaNegAlt :=
-        (isPFMultiplierSequence_iff_isLaguerrePolyaTypeI_complexExpGeneratingFunction
+        (IsPFMultiplierSequence.iff_laguerrePolya_egf
           hpositiveNegAlt).mpr (by rw [hegfNegAlt]; exact htype)
       have hmult := (isPFMultiplierSequence_iff_multiplierSequence_and_nonneg.mp hpf).1
       have hmultAlt : IsMultiplierSequence gammaAlt := by

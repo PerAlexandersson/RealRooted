@@ -65,7 +65,7 @@ module = "RealRooted.Graph.IndependencePolynomial.SimplicialCliqueDeletion"
 label = "Deleting a simplicial clique interlaces the weighted independence polynomial"
 
 [[theorems]]
-name = "RealRooted.Graph.strictInterl_weightedMatchingGeneratingPolynomial_deleteVertex"
+name = "RealRooted.Graph.matchingPolynomial_strictInterl_deleteVertex"
 module = "RealRooted.Graph.IndependencePolynomial.SimplicialCliqueDeletion"
 label = "Deleting a vertex: the weighted matching polynomial of G - v interlaces that of G"
 -->

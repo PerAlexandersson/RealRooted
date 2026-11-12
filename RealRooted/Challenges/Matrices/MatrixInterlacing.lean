@@ -86,8 +86,7 @@ module = "RealRooted.ProductFamily"
 label = "The reversed product-sum of two interlacing nonnegative sequences is real-rooted"
 
 [[theorems]]
-name = """RealRooted.isRealRooted_zipWith_mul_sum_reverse_of_\
-interlacingSeq0Nonneg_both"""
+name = "RealRooted.zipWith_mul_sum_reverse_isRealRooted"
 module = "RealRooted.ProductFamily"
 label = "The reversed product-sum theorem allowing zero terms in both sequences"
 -->

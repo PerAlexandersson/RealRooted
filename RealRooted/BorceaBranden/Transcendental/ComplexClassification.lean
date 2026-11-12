@@ -258,7 +258,7 @@ theorem rankOne_or_transcendentalSymbol_stableLimit_of_preservesComplexStability
 A complex linear operator on a multivariate polynomial ring preserves
 upper-half-plane stability exactly when it has the stable rank-at-most-one form,
 or its transcendental symbol belongs to the complex stable-limit class. -/
-theorem preservesComplexStability_iff_rankOne_or_transcendentalSymbol_stableLimit
+theorem complexStability_iff_rankOne_or_stableLimit_symbol
     (T : MvPolynomial σ ℂ →ₗ[ℂ] MvPolynomial σ ℂ) :
     PreservesComplexStability T ↔
       HasGlobalStableRankOneRepresentation T ∨

@@ -227,7 +227,7 @@ theorem parkingWordDescentSum_succ_eq_parkingDescentPolynomialInt (n : ℕ) :
     rw [descentCount_parkingWordEmbed]
 
 /-- Exact integral ordinary parking-to-all-words transfer. -/
-theorem succ_nsmul_parkingDescentPolynomialInt_eq_literalWordDescentPolynomialInt
+theorem parkingDescentPolynomialInt_succ_nsmul
     (n : ℕ) :
     (n + 1) • parkingDescentPolynomialInt n =
       literalWordDescentPolynomialInt (n + 1) n := by
@@ -261,7 +261,7 @@ theorem succ_nsmul_map_parkingDescentPolynomialInt_eq_literalWord (n : ℕ) :
     (n + 1) • (parkingDescentPolynomialInt n).map (Int.castRingHom ℝ) =
       literalWordDescentPolynomial (n + 1) n := by
   have h := congrArg (fun p : ℤ[X] => p.map (Int.castRingHom ℝ))
-    (succ_nsmul_parkingDescentPolynomialInt_eq_literalWordDescentPolynomialInt n)
+    (parkingDescentPolynomialInt_succ_nsmul n)
   simpa [map_literalWordDescentPolynomialInt] using h
 
 /-- The existing real parking enumerator satisfies the same exact transfer. -/

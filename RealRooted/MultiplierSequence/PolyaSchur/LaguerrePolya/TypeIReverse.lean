@@ -125,7 +125,7 @@ theorem IsLaguerrePolyaTypeI.isPFMultiplierSequence_of_eq_complexExpGeneratingFu
 
 /-- Pólya--Schur classification for an exponential generating series with a
 positive radius of convergence. -/
-theorem isPFMultiplierSequence_iff_isLaguerrePolyaTypeI_complexExpGeneratingFunction
+theorem IsPFMultiplierSequence.iff_laguerrePolya_egf
     {gamma : ℕ → ℝ}
     (hpositive : ∃ R : NNReal, 0 < R ∧
       Summable (fun k => ‖gamma k‖ * (R : ℝ) ^ k / k.factorial)) :

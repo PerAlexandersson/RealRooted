@@ -61,17 +61,17 @@ module = "RealRooted.IteratedDerivativeShift"
 label = "Nearby roots for monic regularizations"
 
 [[theorems]]
-name = "RealRooted.exists_delta_and_real_root_near_iterateTDeriv_of_isRealRooted"
+name = "RealRooted.exists_root_near_iterateTDeriv"
 module = "RealRooted.IteratedDerivativeShift"
 label = "Nearby roots after normalization"
 
 [[theorems]]
-name = "RealRooted.exists_delta_and_real_root_near_iterateTDeriv_of_isRealRooted_iterate_derivative"
+name = "RealRooted.exists_root_near_derivative_iterateTDeriv"
 module = "RealRooted.IteratedDerivativeShift"
 label = "Nearby roots in a derivative tower"
 
 [[theorems]]
-name = "RealRooted.exists_delta_and_real_root_near_iterateTDeriv_of_lt_rootMultiplicity"
+name = "RealRooted.exists_root_near_iterateTDeriv_of_lt_multiplicity"
 module = "RealRooted.IteratedDerivativeShift"
 label = "Nearby roots from multiplicity"
 

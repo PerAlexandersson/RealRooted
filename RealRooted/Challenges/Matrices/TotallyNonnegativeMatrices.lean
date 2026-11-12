@@ -108,7 +108,7 @@ name = "RealRooted.Challenges.TotallyNonnegativeMatrices.isTotallyNonneg_of_init
 label = "Cryer's criterion for lower-triangular matrices"
 
 [[theorems]]
-name = "Matrix.exists_charpoly_eq_prod_strictAnti_of_forall_compound_primitive"
+name = "Matrix.exists_charpoly_eq_prod_strictAnti_of_compounds_primitive"
 module = "RealRooted.Mathlib.LinearAlgebra.Matrix.GantmacherKrein"
 label = "Gantmacher–Krein: primitive compounds give a simple positive spectrum"
 

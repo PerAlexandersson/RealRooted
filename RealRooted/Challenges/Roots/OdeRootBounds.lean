@@ -41,7 +41,7 @@ module = "RealRooted.Wronskian.OdePropagation"
 label = "An intertwining identity propagates the second-order ODE along a differential recurrence"
 
 [[theorems]]
-name = "RealRooted.splits_simple_roots_neg_and_strictInterl_succ_of_ode_recurrence"
+name = "RealRooted.splits_simple_roots_neg_strictInterl_of_ode"
 module = "RealRooted.Wronskian.OdePropagation"
 label = "ODE propagation gives real-rooted rows with simple negative roots and interlacing"
 headline = true

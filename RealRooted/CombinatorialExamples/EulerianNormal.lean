@@ -153,7 +153,7 @@ theorem coeffVariance_generalizedEulerian_two {n : ℕ} (hn : 2 ≤ n) :
   ring
 
 /-- **The type `B` Eulerian numbers are asymptotically normal.** -/
-theorem tendsto_standardizedCoeffDistribution_generalizedEulerian_two :
+theorem GeneralizedEulerian.tendsto_standardizedCoeffDistribution_two :
     Tendsto (fun n => (generalizedEulerian 2 n).standardizedCoeffDistribution) atTop
       (𝓝 ⟨gaussianReal 0 1, inferInstance⟩) := by
   have h := Polynomial.tendsto_standardizedCoeffDistribution

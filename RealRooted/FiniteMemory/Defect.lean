@@ -173,7 +173,7 @@ def IsLagWord (r : ℕ) (active : Set ℕ) (w : List ℕ) : Prop :=
 The bridge for a residue modulo the chosen critical lag `p` realizes the globally minimal
 cost of its residue modulo `q`.  The last field is exactly the numerical estimate supplied
 by a simple path in the residue graph. -/
-structure SharpDefectBridges (r p q : ℕ) (active : Set ℕ) (δ K : ℕ → ℕ) where
+structure SharpResidueMinimizers (r p q : ℕ) (active : Set ℕ) (δ K : ℕ → ℕ) where
   p_pos : 0 < p
   critical_active : p ∈ active
   critical_le : p ≤ r
@@ -189,9 +189,9 @@ structure SharpDefectBridges (r p q : ℕ) (active : Set ℕ) (δ K : ℕ → �
 
 /-- A sharp bridge can be padded by the critical lag to give an exact-length minimum-cost
 word at every index beyond `(r - 1) * (r - 2)`. -/
-theorem SharpDefectBridges.exists_exact_minimizer
+theorem SharpResidueMinimizers.exists_exact_minimizer
     {r p q : ℕ} {active : Set ℕ} {δ K : ℕ → ℕ}
-    (h : SharpDefectBridges r p q active δ K) {n : ℕ}
+    (h : SharpResidueMinimizers r p q active δ K) {n : ℕ}
     (hn : (r - 1) * (r - 2) ≤ n) :
     ∃ w, IsLagWord r active w ∧ wordLag w = n ∧
       wordCost δ w = K (n % q) ∧
@@ -483,12 +483,12 @@ theorem exists_bounded_residue_minimizer {r p q : ℕ} {active : Set ℕ}
 
 
 /-- Coprime active lags and a chosen zero-cost lag produce sharp residue bridges. -/
-def sharpDefectBridges_residueDefect_of_setGcd_eq_one
+def sharpResidueMinimizers_of_setGcd_eq_one
     {r p : ℕ} {active : Set ℕ} {δ : ℕ → ℕ}
     (hp : 0 < p) (hp_active : p ∈ active) (hp_le : p ≤ r)
     (hp_cost : δ p = 0) (hsetGcd : Nat.setGcd active = 1)
     (hpos : ∀ l ∈ active, 1 ≤ l) (hle : ∀ l ∈ active, l ≤ r) :
-    SharpDefectBridges r p (Nat.setGcd (criticalLags active δ)) active δ
+    SharpResidueMinimizers r p (Nat.setGcd (criticalLags active δ)) active δ
       (residueDefect r (Nat.setGcd (criticalLags active δ)) active δ) := by
   let q := Nat.setGcd (criticalLags active δ)
   have hp_critical : p ∈ criticalLags active δ := ⟨hp_active, hp_cost⟩
@@ -592,9 +592,9 @@ theorem wordCost_add_scaledTrailingDegree_eq
 
 /-- The upper bridge theorem in the subtraction-free scaled form
 `B * degree + K = A * n`. -/
-theorem SharpDefectBridges.exists_upper_degree_word
+theorem SharpResidueMinimizers.exists_upper_degree_word
     {r p q A B : ℕ} {active : Set ℕ} {degree δ K : ℕ → ℕ}
-    (h : SharpDefectBridges r p q active δ K)
+    (h : SharpResidueMinimizers r p q active δ K)
     (hδ : ∀ l ∈ active, δ l + B * degree l = A * l) {n : ℕ}
     (hn : (r - 1) * (r - 2) ≤ n) :
     ∃ w, IsLagWord r active w ∧ wordLag w = n ∧
@@ -608,9 +608,9 @@ theorem SharpDefectBridges.exists_upper_degree_word
 
 /-- The lower bridge theorem in the scaled form
 `D * trailingDegree = C * n + K`. -/
-theorem SharpDefectBridges.exists_lower_degree_word
+theorem SharpResidueMinimizers.exists_lower_degree_word
     {r p q C D : ℕ} {active : Set ℕ} {trailingDegree excess K : ℕ → ℕ}
-    (h : SharpDefectBridges r p q active excess K)
+    (h : SharpResidueMinimizers r p q active excess K)
     (hexcess : ∀ l ∈ active, excess l + C * l = D * trailingDegree l) {n : ℕ}
     (hn : (r - 1) * (r - 2) ≤ n) :
     ∃ w, IsLagWord r active w ∧ wordLag w = n ∧
@@ -664,7 +664,7 @@ theorem fractionalUpperResidueDefect_le_wordCost (w : List ℕ)
 /-- The bridges `[]`, `[2,2]`, and `[2]` certify the sharp upper defect formula for
 the fractional example. -/
 def fractionalUpperBridges :
-    SharpDefectBridges 3 3 3 fractionalActiveLags fractionalUpperDefect
+    SharpResidueMinimizers 3 3 3 fractionalActiveLags fractionalUpperDefect
       fractionalUpperResidueDefect := by
   refine
     { p_pos := by norm_num

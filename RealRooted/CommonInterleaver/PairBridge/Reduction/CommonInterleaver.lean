@@ -28,7 +28,7 @@ If every positive combination of `f` and `g` is real-rooted, `f` and `g` have
 positive leading coefficients and no common roots, and
 `f.natDegree ≤ g.natDegree ≤ f.natDegree + 1`, then they have a common
 interleaver. -/
-theorem pairHasCommonInterleaver_of_posCombo_noCommon_of_natDegree_close
+theorem exists_commonInterleaver_of_posCombo_of_no_common_roots
     {f g : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f)
     (hg_pos : HasPosLeadingCoeff g)
@@ -170,7 +170,7 @@ theorem posComboPairHasCommonInterleaver_of_natDegree_le_reduction_unordered
 
 /-- Ordered common-interleaver theorem for nonnegative positive-combination
 pairs: shared roots are factored out recursively, and the no-common case is
-`pairHasCommonInterleaver_of_posCombo_noCommon_of_natDegree_close`. -/
+`exists_commonInterleaver_of_posCombo_of_no_common_roots`. -/
 protected theorem
     CommonInterleaver.PairBridge.pairDegreeSplit_ordered
     {f g : ℝ[X]}
@@ -184,7 +184,7 @@ protected theorem
     ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
   posComboPairHasCommonInterleaver_of_noCommonPairBridge_and_nonnegCoeffs_ordered
     (fun {_ _} hf_pos hg_pos _ _ hfg hdeg_lo hdeg_hi hno =>
-      pairHasCommonInterleaver_of_posCombo_noCommon_of_natDegree_close
+      exists_commonInterleaver_of_posCombo_of_no_common_roots
         hf_pos hg_pos hfg hdeg_lo hdeg_hi hno)
     hf_pos hg_pos hfnn hgnn hfg hdeg_lo hdeg_hi
 

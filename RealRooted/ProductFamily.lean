@@ -547,7 +547,7 @@ theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg
 
 /-- Two-sided weak zero-aware product-sum theorem. Zero factors on either side
 are removed pairwise before applying Brändén's strict product-sum theorem. -/
-theorem isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg_both
+theorem zipWith_mul_sum_reverse_isRealRooted
     {fs gs : List ℝ[X]}
     (hfs : IsInterlacingSeq0Nonneg fs)
     (hfs_real : ∀ f ∈ fs, f ≠ 0 → (f ≠ 0 ∧ f.Splits))

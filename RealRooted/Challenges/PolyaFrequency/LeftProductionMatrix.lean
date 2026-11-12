@@ -42,7 +42,7 @@ label = "Rows from a totally nonnegative left production matrix are Pólya frequ
 
 [[theorems]]
 name = """RealRooted.LeftProductionMatrix.\
-rowPolynomial_splits_and_roots_nonpos_of_isLeftProductionArray"""
+rowPolynomial_splits_roots_nonpos"""
 module = "RealRooted.TotalPositivity.LeftProductionMatrix"
 label = "Row polynomials split with nonpositive roots"
 headline = true

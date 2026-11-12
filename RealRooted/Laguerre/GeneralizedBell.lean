@@ -31,7 +31,7 @@ namespace RealRooted
 
 /-- The fixed auxiliary polynomial
 `∑ j, (-1)^j γ_j (X)_(K-j)` in Durán's monic Laguerre criterion. -/
-@[expose] noncomputable def laguerreAuxiliary (K : ℕ) (gamma : ℕ → ℝ) : ℝ[X] :=
+@[expose] noncomputable def laguerrePochhammerSum (K : ℕ) (gamma : ℕ → ℝ) : ℝ[X] :=
   ∑ j ∈ Finset.range (K + 1),
     C ((-1 : ℝ) ^ j * gamma j) * ascPochhammer ℝ (K - j)
 
@@ -42,15 +42,15 @@ namespace RealRooted
 
 /-- The auxiliary polynomial is monic when its leading coordinate is normalized by `γ₀ = 1`. -/
 theorem laguerreAuxiliary_monic {K : ℕ} {gamma : ℕ → ℝ} (hgamma : gamma 0 = 1) :
-    (laguerreAuxiliary K gamma).Monic := by
+    (laguerrePochhammerSum K gamma).Monic := by
   apply monic_of_natDegree_le_of_coeff_eq_one K
-  · rw [laguerreAuxiliary]
+  · rw [laguerrePochhammerSum]
     refine natDegree_sum_le_of_forall_le _ _ ?_
     intro j hj
     exact (natDegree_C_mul_le _ _).trans (by
       rw [ascPochhammer_natDegree]
       exact Nat.sub_le K j)
-  · rw [laguerreAuxiliary]
+  · rw [laguerrePochhammerSum]
     rw [finsetSum_coeff]
     simp only [coeff_C_mul]
     rw [Finset.sum_eq_single 0]
@@ -246,11 +246,11 @@ private theorem aeval_ascPochhammer_laguerreRaisingEndomorphism
 private theorem aeval_laguerreAuxiliary_eq_sum
     {K n : ℕ} (hKn : K ≤ n) (gamma : ℕ → ℝ) (alpha : ℝ) :
     (aeval (laguerreRaisingEndomorphism (alpha + (n - K : ℕ) + 1))
-        (laguerreAuxiliary K gamma) : Module.End ℝ ℝ[X])
+        (laguerrePochhammerSum K gamma) : Module.End ℝ ℝ[X])
         (generalizedLaguerre (n - K) alpha) =
       ∑ j ∈ Finset.range (K + 1),
         C ((-1 : ℝ) ^ j * gamma j) * generalizedLaguerre (n - j) alpha := by
-  rw [laguerreAuxiliary, map_sum, LinearMap.sum_apply]
+  rw [laguerrePochhammerSum, map_sum, LinearMap.sum_apply]
   apply Finset.sum_congr rfl
   intro j hj
   simp only [Finset.mem_range] at hj
@@ -329,13 +329,13 @@ when the auxiliary polynomial splits below `α + 1`. -/
 theorem generalizedLaguerreSum_splits_simple_roots_neg_of_auxiliary
     {K n : ℕ} (hKn : K ≤ n) {gamma : ℕ → ℝ} {alpha : ℝ}
     (hgamma : gamma 0 = 1) (halpha : -1 < alpha)
-    (hQsplits : (laguerreAuxiliary K gamma).Splits)
-    (hQroots : ∀ r ∈ (laguerreAuxiliary K gamma).roots, r < alpha + 1) :
+    (hQsplits : (laguerrePochhammerSum K gamma).Splits)
+    (hQroots : ∀ r ∈ (laguerrePochhammerSum K gamma).roots, r < alpha + 1) :
     let F := ∑ j ∈ Finset.range (K + 1),
       C ((-1 : ℝ) ^ j * gamma j) * generalizedLaguerre (n - j) alpha
     F.Splits ∧ HasSimpleRoots F ∧ ∀ r ∈ F.roots, r < 0 := by
   dsimp
-  let Q := laguerreAuxiliary K gamma
+  let Q := laguerrePochhammerSum K gamma
   let s := alpha + (n - K : ℕ) + 1
   let p := generalizedLaguerre (n - K) alpha
   let parameters := Q.roots.toList.map fun r ↦ s - r
@@ -369,11 +369,11 @@ theorem generalizedLaguerreSum_splits_simple_roots_neg_of_auxiliary
 /-- Durán's general fixed-bandwidth criterion: a normalized auxiliary polynomial whose roots
 are real and lie below `α + 1` gives a classical Laguerre combination with positive simple
 roots. -/
-theorem laguerreCombination_splits_simple_roots_pos_of_auxiliary
+theorem laguerreCombination_splits_simple_roots_pos
     {K n : ℕ} (hKn : K ≤ n) {gamma : ℕ → ℝ} {alpha : ℝ}
     (hgamma : gamma 0 = 1) (halpha : -1 < alpha)
-    (hQsplits : (laguerreAuxiliary K gamma).Splits)
-    (hQroots : ∀ r ∈ (laguerreAuxiliary K gamma).roots, r < alpha + 1) :
+    (hQsplits : (laguerrePochhammerSum K gamma).Splits)
+    (hQroots : ∀ r ∈ (laguerrePochhammerSum K gamma).roots, r < alpha + 1) :
     (laguerreCombination K gamma n alpha).Splits ∧
       HasSimpleRoots (laguerreCombination K gamma n alpha) ∧
       ∀ r ∈ (laguerreCombination K gamma n alpha).roots, 0 < r := by

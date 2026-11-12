@@ -386,7 +386,7 @@ theorem preservesRealStabilityOnDegreeBox_of_algebraicSymbolNegRight_realStable
 
 /-- Borcea--Brändén, arXiv:0809.0401, Theorem 1.2: the unconditional real
 finite classification on a coordinate-wise degree box. -/
-theorem preservesRealStabilityOnDegreeBox_iff_rankTwo_or_symbol_or_negRight
+theorem realStabilityOnDegreeBox_iff_rankTwo_or_stable_symbol
     {σ : Type*} [Fintype σ] (κ : σ → ℕ)
     (T : MvPolynomial.degreeOfLE σ ℝ κ →ₗ[ℝ] MvPolynomial σ ℝ) :
     PreservesRealStabilityOnDegreeBox κ T ↔

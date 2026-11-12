@@ -123,7 +123,7 @@ module = "RealRooted.DerivativeProduct.ProductPowerCriteria"
 label = "A singleton source root is tested by g − r and (g − r) ⋆ (g − r)"
 
 [[theorems]]
-name = "RealRooted.forall_isRealRootedIn_derivProductPowMap_iff_of_forall_nonpos"
+name = "RealRooted.derivProductPowMap_realRooted_iff_of_nonpos"
 module = "RealRooted.DerivativeProduct.ProductPowerCriteria"
 label = "Weights with W = ℝ: one-factor tests suffice on every source set"
 -->

@@ -1102,7 +1102,7 @@ interlacing.  If their sum is zero, all three evaluations have the same sign
 and there is no positive crossing.  If it is one, the endpoint coefficients
 of the parameter quadratic have opposite signs, so Descartes' rule gives one
 crossing at most.  The remaining sum-two case follows from its degree. -/
-theorem positiveRootCount_quadraticParameterEvaluation_le_rootCountDrop
+theorem quadraticParameterEvaluation_positiveRootCount_le
     {F G H : ℝ[X]} {r : ℝ}
     (hFpos : HasPosLeadingCoeff F) (hGpos : HasPosLeadingCoeff G)
     (hHpos : HasPosLeadingCoeff H) (hFG : StrictInterl F G)
@@ -1258,7 +1258,7 @@ theorem quadraticInterlacingPencil_one_positive_crossing_exact_drop
   rw [hrs] at hsum
   simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil,
     add_zero] at hsum
-  have hbudget0 := positiveRootCount_quadraticParameterEvaluation_le_rootCountDrop
+  have hbudget0 := quadraticParameterEvaluation_positiveRootCount_le
     hFpos hGpos hHpos hFG hGH hrF hrG hrH
   have hbudget : q.roots.count a ≤
       (H.roots.filter (r < ·)).card - (F.roots.filter (r < ·)).card := by
@@ -1377,7 +1377,7 @@ theorem quadraticInterlacingPencil_two_positive_crossings_exact_drop
   rw [hrs] at hsum
   simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil,
     add_zero] at hsum
-  have hbudget0 := positiveRootCount_quadraticParameterEvaluation_le_rootCountDrop
+  have hbudget0 := quadraticParameterEvaluation_positiveRootCount_le
     hFpos hGpos hHpos hFG hGH hrF hrG hrH
   have hbudget : q.roots.count a + q.roots.count b ≤
       (H.roots.filter (r < ·)).card - (F.roots.filter (r < ·)).card := by

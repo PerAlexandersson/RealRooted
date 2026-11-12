@@ -201,7 +201,7 @@ module = "RealRooted.BasisTransform.EventuallyGeometric"
 label = "An eventually geometric basis with vanishing discrepancies is p ↦ P₀ · p(y)"
 
 [[theorems]]
-name = "RealRooted.exists_not_splits_linearMap_shiftedPower_of_eventually_geometric"
+name = "RealRooted.exists_not_splits_shiftedPower_of_eventually_geometric"
 module = "RealRooted.BasisTransform.EventuallyGeometric"
 label = "A nonzero prefix discrepancy gives a shifted power with non-real-rooted image"
 

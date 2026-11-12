@@ -111,7 +111,7 @@ curated list. Some representative checked theorems:
   (`aissenSchoenbergWhitney_reverse`), Veronese sections
   (`isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg_matrix`),
   and the Type-I Pólya–Schur classification
-  (`isPFMultiplierSequence_iff_isLaguerrePolyaTypeI_complexExpGeneratingFunction`).
+  (`IsPFMultiplierSequence.iff_laguerrePolya_egf`).
 - **Compatibility.** Liu's opposite-leading-sign theorem
   (`compatible_iff_rootCountBranchesWithCommon`) and the Chudnovsky–Seymour
   common-interleaver theory (`Challenges.ChudnovskySeymour`).

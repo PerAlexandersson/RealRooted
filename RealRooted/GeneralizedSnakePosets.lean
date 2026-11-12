@@ -795,7 +795,7 @@ end FiniteSkewBoard
 /-- The auxiliary polynomial `G_n` is the sum of the non-nesting rook
 polynomials of the truncated staircases `mu_{n,i}` for `i = 0, ..., n - 1`. -/
 theorem FiniteSkewBoard.auxiliaryG_matchesTruncatedStaircases (n : ℕ) :
-    FiniteSkewBoard.auxiliaryG n =
+    FiniteSkewBoard.rookSum n =
       ((List.range n).map fun i => FiniteSkewBoard.truncatedStaircaseRookPolynomial n i).sum :=
   rfl
 

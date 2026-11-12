@@ -23,7 +23,7 @@ namespace RealRooted.BorceaBranden
 /-- Blockwise polarization **reflects** stability: the polarization of `p` in
 the degree box `κ` is stable if and only if `p` is. The converse direction
 renames each polarized block back to its coordinate. -/
-theorem mvUpperHalfPlaneStable_blockwisePolarizationDegreeBoxGeneral_iff
+theorem blockwisePolarization_stable_iff
     {σ : Type*} [Fintype σ] (κ : σ → ℕ) (p : MvPolynomial.degreeOfLE σ ℂ κ) :
     MvUpperHalfPlaneStable (blockwisePolarizationDegreeBoxGeneral κ p).1 ↔
       MvUpperHalfPlaneStable p.1 := by

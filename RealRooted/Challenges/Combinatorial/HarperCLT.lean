@@ -72,7 +72,7 @@ module = "RealRooted.CombinatorialExamples.EulerianNormal"
 label = "The Eulerian numbers are asymptotically normal"
 
 [[theorems]]
-name = "RealRooted.tendsto_standardizedCoeffDistribution_generalizedEulerian_two"
+name = "RealRooted.GeneralizedEulerian.tendsto_standardizedCoeffDistribution_two"
 module = "RealRooted.CombinatorialExamples.EulerianNormal"
 label = "The type B Eulerian numbers are asymptotically normal"
 

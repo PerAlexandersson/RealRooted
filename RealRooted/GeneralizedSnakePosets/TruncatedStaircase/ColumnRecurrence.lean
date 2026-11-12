@@ -41,8 +41,8 @@ namespace FiniteSkewBoard
 
 /-- `G_n = sum_{i < n} R(n, i)` as a `Finset` sum. -/
 theorem auxiliaryG_eq_sum_range (n : ℕ) :
-    auxiliaryG n = ∑ i ∈ Finset.range n, truncatedStaircaseRookPolynomial n i := by
-  rw [auxiliaryG, List.sum_map_range]
+    rookSum n = ∑ i ∈ Finset.range n, truncatedStaircaseRookPolynomial n i := by
+  rw [rookSum, List.sum_map_range]
 
 /-- The bottom-row expansion with a `Finset` sum. -/
 private theorem bottomRow (n i : ℕ) :
@@ -80,31 +80,31 @@ theorem truncatedStaircaseRookPolynomial_succ_cols (n : ℕ) :
 /-- **The auxiliary recurrence** for every `n`:
 `X G_{n-1} = P_n - (1 + X) P_{n-1}`. -/
 theorem narayanaAuxiliaryGRecurrence_modified :
-    NarayanaAuxiliaryGRecurrence modifiedNarayanaPolynomial auxiliaryG := by
+    NarayanaAuxiliaryGRecurrence modifiedNarayanaPolynomial rookSum := by
   intro n hn
   obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by lia⟩
   rw [Nat.add_sub_cancel,
-    ← truncatedStaircaseRookPolynomial_full_eq_modifiedNarayanaPolynomial (m + 1),
-    ← truncatedStaircaseRookPolynomial_full_eq_modifiedNarayanaPolynomial m,
+    ← rookPolynomial_full_eq_modifiedNarayana (m + 1),
+    ← rookPolynomial_full_eq_modifiedNarayana m,
     truncatedStaircaseRookPolynomial_succ_cols m (m + 1) le_rfl,
-    truncatedStaircaseRookPolynomial_succ_self, Finset.sum_range_succ, auxiliaryG,
+    truncatedStaircaseRookPolynomial_succ_self, Finset.sum_range_succ, rookSum,
     List.sum_map_range]
   ring
 
 /-- **Braun–Jal: `G_n - G_{n-1}` has nonnegative coefficients** for `n ≥ 1`. -/
 theorem auxiliaryG_sub_hasNonnegCoeffs {n : ℕ} (hn : 1 ≤ n) :
-    HasNonnegCoeffs (auxiliaryG n - auxiliaryG (n - 1)) := by
+    HasNonnegCoeffs (rookSum n - rookSum (n - 1)) := by
   obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by lia⟩
   have hcol : ∀ i ∈ Finset.range m,
       truncatedStaircaseRookPolynomial (m + 1) i =
         truncatedStaircaseRookPolynomial m i +
           X * ∑ j ∈ Finset.range i, truncatedStaircaseRookPolynomial m j := fun i hi =>
     truncatedStaircaseRookPolynomial_succ_cols m i (by simp at hi; lia)
-  have heq : auxiliaryG (m + 1) - auxiliaryG (m + 1 - 1) =
+  have heq : rookSum (m + 1) - rookSum (m + 1 - 1) =
       truncatedStaircaseRookPolynomial (m + 1) m +
         X * ∑ i ∈ Finset.range m, ∑ j ∈ Finset.range i,
           truncatedStaircaseRookPolynomial m j := by
-    rw [Nat.add_sub_cancel, auxiliaryG, auxiliaryG, List.sum_map_range,
+    rw [Nat.add_sub_cancel, rookSum, rookSum, List.sum_map_range,
       List.sum_map_range, Finset.sum_range_succ, Finset.sum_congr rfl hcol,
       Finset.sum_add_distrib, ← Finset.mul_sum]
     ring

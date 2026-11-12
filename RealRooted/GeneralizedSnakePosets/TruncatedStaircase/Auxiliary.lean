@@ -24,23 +24,23 @@ namespace FiniteSkewBoard
 
 /-- The auxiliary polynomial `G_n` as a finite sum over truncated staircase
 rook polynomials. -/
-def auxiliaryG : ℕ → ℝ[X] :=
+def rookSum : ℕ → ℝ[X] :=
   fun n => ((List.range n).map fun i => truncatedStaircaseRookPolynomial n i).sum
 
 /-- The finite-board auxiliary polynomial `G_0` is zero. -/
 @[simp] theorem auxiliaryG_zero :
-    auxiliaryG 0 = 0 := by
-  simp [auxiliaryG]
+    rookSum 0 = 0 := by
+  simp [rookSum]
 
 /-- The finite-board auxiliary polynomial `G_1` is one. -/
 @[simp] theorem auxiliaryG_one :
-    auxiliaryG 1 = 1 := by
-  simp [auxiliaryG]
+    rookSum 1 = 1 := by
+  simp [rookSum]
 
 /-- The finite-board auxiliary polynomial `G_2` is `2 + 2X`. -/
 @[simp] theorem auxiliaryG_two :
-    auxiliaryG 2 = 2 + C (2 : ℝ) * X := by
-  rw [auxiliaryG, show List.range 2 = [0, 1] by rfl]
+    rookSum 2 = 2 + C (2 : ℝ) * X := by
+  rw [rookSum, show List.range 2 = [0, 1] by rfl]
   simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, add_zero]
   rw [truncatedStaircaseRookPolynomial_zero_rows, truncatedStaircaseRookPolynomial_one_row]
   push_cast
@@ -48,8 +48,8 @@ def auxiliaryG : ℕ → ℝ[X] :=
 
 /-- The finite-board auxiliary polynomial `G_3` is `3 + 8X + 3X^2`. -/
 @[simp] theorem auxiliaryG_three :
-    auxiliaryG 3 = 3 + C (8 : ℝ) * X + C (3 : ℝ) * X ^ 2 := by
-  rw [auxiliaryG, show List.range 3 = [0, 1, 2] by rfl]
+    rookSum 3 = 3 + C (8 : ℝ) * X + C (3 : ℝ) * X ^ 2 := by
+  rw [rookSum, show List.range 3 = [0, 1, 2] by rfl]
   simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, add_zero]
   rw [truncatedStaircaseRookPolynomial_zero_rows,
     truncatedStaircaseRookPolynomial_three_one,
@@ -62,9 +62,9 @@ def auxiliaryG : ℕ → ℝ[X] :=
 
 /-- The finite-board auxiliary polynomial `G_4` is `4 + 20X + 20X^2 + 4X^3`. -/
 @[simp] theorem auxiliaryG_four :
-    auxiliaryG 4 = 4 + C (20 : ℝ) * X + C (20 : ℝ) * X ^ 2 +
+    rookSum 4 = 4 + C (20 : ℝ) * X + C (20 : ℝ) * X ^ 2 +
       C (4 : ℝ) * X ^ 3 := by
-  rw [auxiliaryG, show List.range 4 = [0, 1, 2, 3] by rfl]
+  rw [rookSum, show List.range 4 = [0, 1, 2, 3] by rfl]
   simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, add_zero]
   rw [truncatedStaircaseRookPolynomial_zero_rows,
     truncatedStaircaseRookPolynomial_four_one,
@@ -97,10 +97,10 @@ def auxiliaryG : ℕ → ℝ[X] :=
 /-- The finite-board auxiliary polynomial `G_5` is
 `5 + 40X + 75X^2 + 40X^3 + 5X^4`. -/
 @[simp] theorem auxiliaryG_five :
-    auxiliaryG 5 =
+    rookSum 5 =
       5 + C (40 : ℝ) * X + C (75 : ℝ) * X ^ 2 +
         C (40 : ℝ) * X ^ 3 + C (5 : ℝ) * X ^ 4 := by
-  rw [auxiliaryG, show List.range 5 = [0, 1, 2, 3, 4] by rfl]
+  rw [rookSum, show List.range 5 = [0, 1, 2, 3, 4] by rfl]
   simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, add_zero]
   rw [truncatedStaircaseRookPolynomial_zero_rows,
     truncatedStaircaseRookPolynomial_five_one,
@@ -194,11 +194,11 @@ and one has rook polynomial
 /-- The finite-board auxiliary polynomial `G_6` is
 `6 + 70X + 210X^2 + 210X^3 + 70X^4 + 6X^5`. -/
 @[simp] theorem auxiliaryG_six :
-    auxiliaryG 6 =
+    rookSum 6 =
       6 + C (70 : ℝ) * X + C (210 : ℝ) * X ^ 2 +
         C (210 : ℝ) * X ^ 3 + C (70 : ℝ) * X ^ 4 +
           C (6 : ℝ) * X ^ 5 := by
-  rw [auxiliaryG, show List.range 6 = [0, 1, 2, 3, 4, 5] by rfl]
+  rw [rookSum, show List.range 6 = [0, 1, 2, 3, 4, 5] by rfl]
   simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, add_zero]
   rw [truncatedStaircaseRookPolynomial_zero_rows,
     truncatedStaircaseRookPolynomial_six_one,
@@ -283,11 +283,11 @@ three, and two has rook polynomial
 /-- The finite-board auxiliary polynomial `G_7` is
 `7 + 112X + 490X^2 + 784X^3 + 490X^4 + 112X^5 + 7X^6`. -/
 @[simp] theorem auxiliaryG_seven :
-    auxiliaryG 7 =
+    rookSum 7 =
       7 + C (112 : ℝ) * X + C (490 : ℝ) * X ^ 2 +
         C (784 : ℝ) * X ^ 3 + C (490 : ℝ) * X ^ 4 +
           C (112 : ℝ) * X ^ 5 + C (7 : ℝ) * X ^ 6 := by
-  rw [auxiliaryG, show List.range 7 = [0, 1, 2, 3, 4, 5, 6] by rfl]
+  rw [rookSum, show List.range 7 = [0, 1, 2, 3, 4, 5, 6] by rfl]
   simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, add_zero]
   rw [truncatedStaircaseRookPolynomial_zero_rows,
     truncatedStaircaseRookPolynomial_seven_one,
@@ -322,7 +322,7 @@ three, and two has rook polynomial
 
 /-- The finite-board version of `G_n` has nonnegative coefficients. -/
 theorem auxiliaryG_hasNonnegCoeffs (n : ℕ) :
-    HasNonnegCoeffs (auxiliaryG n) := by
+    HasNonnegCoeffs (rookSum n) := by
   refine hasNonnegCoeffs_sum _ ?_
   intro p hp
   rcases List.mem_map.mp hp with ⟨i, _hi, rfl⟩

@@ -238,7 +238,7 @@ theorem fallingFactorial_glue_stableOrZero_of_isComplexStableLimit
 /-- **Borcea--Brändén, arXiv:0809.0401, Theorem 5.1 (complex case).**
 The explicit series belongs to the complex stable-limit class if and only if every
 falling-factorial truncation is upper-half-plane stable or zero. -/
-theorem isComplexStableLimit_iff_forall_fallingFactorial_glue_stableOrZero
+theorem isComplexStableLimit_iff_fallingFactorial_glue_stable
     (P : (σ →₀ ℕ) → MvPolynomial τ ℂ) :
     IsComplexStableLimit P ↔
       ∀ β : σ →₀ ℕ,

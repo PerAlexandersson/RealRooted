@@ -43,7 +43,7 @@ label = "Closure under coefficientwise limits"
 headline = true
 
 [[theorems]]
-name = "RealRooted.exists_complex_aroot_near_of_isRealRooted_of_monic_of_coeff_close"
+name = "RealRooted.exists_aroot_near_of_monic_of_coeff_close"
 module = "RealRooted.RootContinuity"
 label = "A nearby root under coefficient control"
 

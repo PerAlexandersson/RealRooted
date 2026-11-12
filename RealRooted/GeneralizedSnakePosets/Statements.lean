@@ -16,7 +16,7 @@ and snake-word models `M` used by the snake-interlacing induction of
 Braun--Jal, *Order polytopes of generalized snake posets are
 h^*-real-rooted*, arXiv:2607.00922v1, together with the generic assembly of
 the shifted difference interlacing claim.  The concrete instances are proved
-for `modifiedNarayanaPolynomial`, `FiniteSkewBoard.auxiliaryG`, and
+for `modifiedNarayanaPolynomial`, `FiniteSkewBoard.rookSum`, and
 `generalizedSnakeRookModel`.
 -/
 

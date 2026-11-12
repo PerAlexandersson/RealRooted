@@ -115,8 +115,7 @@ name = "RealRooted.Challenges.GraceApolarity.polarization_diagonalProjection"
 label = "A symmetric multiaffine polynomial is the polarization of its diagonal"
 
 [[theorems]]
-name = """RealRooted.Challenges.GraceApolarity.\
-mvUpperHalfPlaneStable_blockwisePolarizationDegreeBoxGeneral_iff"""
+name = "RealRooted.GraceApolarity.polarization_stable_iff"
 label = "Blockwise polarization preserves and reflects stability"
 
 [[theorems]]
@@ -263,11 +262,11 @@ theorem mvRealStable_iff_aeval_X_ne_zero_and_splits {n : ℕ} {P : MvPolynomial 
 
 /-- Blockwise polarization in the degree box `κ` preserves and reflects
 stability. -/
-theorem mvUpperHalfPlaneStable_blockwisePolarizationDegreeBoxGeneral_iff {σ : Type*}
+theorem _root_.RealRooted.GraceApolarity.polarization_stable_iff {σ : Type*}
     [Fintype σ] (κ : σ → ℕ) (p : MvPolynomial.degreeOfLE σ ℂ κ) :
     MvUpperHalfPlaneStable (BorceaBranden.blockwisePolarizationDegreeBoxGeneral κ p).1 ↔
       MvUpperHalfPlaneStable p.1 :=
-  BorceaBranden.mvUpperHalfPlaneStable_blockwisePolarizationDegreeBoxGeneral_iff κ p
+  BorceaBranden.blockwisePolarization_stable_iff κ p
 
 /-- **Lieb–Sokal**, multiaffine case: for stable multiaffine `F` and `G`, the
 polynomial `F(-∂) G` is zero or stable. -/

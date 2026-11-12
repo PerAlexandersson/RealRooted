@@ -104,7 +104,7 @@ incident to a specified vertex. -/
 /-- Removing all edges incident to a vertex puts the restricted weighted
 matching-generating polynomial below the original polynomial in directed
 proper position. -/
-theorem strictInterl_weightedMatchingGeneratingPolynomial_deleteVertex
+theorem matchingPolynomial_strictInterl_deleteVertex
     {V : Type u} [Fintype V] [DecidableEq V]
     (G : _root_.SimpleGraph V) (wt : G.edgeSet → ℝ)
     (hwt : ∀ e, 0 ≤ wt e) (v : V) :

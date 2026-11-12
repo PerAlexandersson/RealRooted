@@ -198,7 +198,7 @@ theorem isUpperHalfPlaneStablePencil_euler_iff_isAdmissible
 
 /-- For a nonzero factor, preservation on all split inputs is equivalent to
 stability of the explicit Euler pencil. -/
-theorem preservesRealRootedOrZero_iff_isUpperHalfPlaneStablePencil_euler
+theorem realRootedOrZero_iff_eulerPencil_stable
     {c : ℝ} {f : ℝ[X]} (hf0 : f ≠ 0) :
     PreservesRealRootedOrZero (starCLinearMap c f) ↔
       IsUpperHalfPlaneStablePencil (X * (f + C c * f.derivative)) f := by
@@ -207,7 +207,7 @@ theorem preservesRealRootedOrZero_iff_isUpperHalfPlaneStablePencil_euler
 
 /-- For a nonzero factor, preservation on affine inputs is equivalent to
 stability of the explicit Euler pencil. -/
-theorem preservesAffineRealRooted_iff_isUpperHalfPlaneStablePencil_euler
+theorem affineRealRooted_iff_eulerPencil_stable
     {c : ℝ} {f : ℝ[X]} (hf0 : f ≠ 0) :
     PreservesAffineRealRooted c f ↔
       IsUpperHalfPlaneStablePencil (X * (f + C c * f.derivative)) f := by
@@ -216,7 +216,7 @@ theorem preservesAffineRealRooted_iff_isUpperHalfPlaneStablePencil_euler
 
 /-- For a nonzero factor, stability of the Euler pencil is equivalent to
 stability of the signed Weyl symbol. -/
-theorem isUpperHalfPlaneStablePencil_euler_iff_poissonSignedSymbol_stable
+theorem eulerPencil_stable_iff_signedSymbol_stable
     {c : ℝ} {f : ℝ[X]} (hf0 : f ≠ 0) :
     IsUpperHalfPlaneStablePencil (X * (f + C c * f.derivative)) f ↔
       MvUpperHalfPlaneStable (poissonSignedSymbol c f) := by

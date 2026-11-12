@@ -66,7 +66,7 @@ positive leading coefficients and negative roots, degrees `(n - 1) / 2` and
 with degrees `n - 1` and `n`, and are simple-rooted.  The proof follows Zhang
 (SSRN 7510941, Section 4), where the same lifting is used for the descent
 polynomials of separable permutations. -/
-theorem strictInterl_gammaTransform_succ_of_strictInterl_of_no_common {n : ℕ} {A B : ℝ[X]}
+theorem GammaTransform.strictInterl_succ_of_no_common {n : ℕ} {A B : ℝ[X]}
     (hn : 2 ≤ n) (hA : A.natDegree = (n - 1) / 2) (hB : B.natDegree = n / 2)
     (hApos : HasPosLeadingCoeff A) (hBpos : HasPosLeadingCoeff B)
     (hAneg : ∀ r ∈ A.roots, r < 0) (hBneg : ∀ r ∈ B.roots, r < 0)
