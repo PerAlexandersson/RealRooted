@@ -13,7 +13,7 @@ public section
 open Polynomial
 
 /-!
-# Operator preservers challenge entry point
+# Operators preserving interlacing
 
 <!-- realrooted-catalog
 version = 1
@@ -96,44 +96,56 @@ label = "Euler bidiagonal steps preserve PF polynomials"
 <!-- realrooted-catalog-content -->
 # Operators preserving interlacing
 
-Let $T$ be a real-linear operator that sends every nonzero real-rooted
-polynomial to zero or to a real-rooted polynomial. If $f$ and $g$ interlace,
-then $T f$ and $T g$ interlace in one of the two orientations, where the
-images may vanish.
+Every linear operator that maps nonzero real-rooted polynomials to zero or to real-rooted
+polynomials preserves interlacing up to orientation; $\theta=x\,d/dx$, $N-\theta$ and the
+reverse-Hermite transform preserve it exactly.
 
-For PF polynomials (nonnegative coefficients and only real, nonpositive roots)
-three concrete operators preserve the orientation. Here $p \ll q$ allows
-either polynomial to be zero, except in the last statement.
+## Results
 
-- The Euler operator $\theta = x\, d/dx$: if $p \ll q$, then
-  $\theta p \ll \theta q$.
-- The polar operator $N - \theta$, that is, $p \mapsto N p - x p'$: if
-  $p \ll q$ and both have degree at most $N$, then
-  $(N - \theta) p \ll (N - \theta) q$.
-- The reciprocal $p \mapsto x^D p(1/x)$ reverses the orientation: if
-  $p \ll q$ are nonzero and both have degree at most $D$, then
-  $x^D q(1/x) \ll x^D p(1/x)$.
+A polynomial is *PF* if it has nonnegative coefficients and is zero or has only real,
+nonpositive roots. We write $p\ll q$ for the weak interlacing of the
+[interlacing page](/RealRooted/concepts/interlacing/): either polynomial may be zero, and
+repeated and common roots are allowed unless stated.
 
-The reverse-Hermite transform is the linear map sending $x^n$ to $B_n$, where
-$B_0=1$, $B_1=x$, and
-$B_{n+2}=x(B_{n+1}+(n+1)B_n)$. It preserves the cone of Pólya-frequency
-polynomials and preserves interlacing of PF pairs.
+**Theorem (real-rootedness preservers).** Let $T$ be a real-linear operator on $\mathbb R[x]$
+such that $Tp$ is zero or real-rooted for every nonzero real-rooted $p$. If $f\ll g$ in the
+library's `StrictInterl` sense, which requires $f$ and $g$ to be nonzero and real-rooted,
+then $Tf\ll Tg$ or $Tg\ll Tf$; the images may vanish.
 
-To show that a linear operator preserves PF polynomials, it suffices to check
-inputs with simple, strictly negative roots and positive leading coefficient.
-Every PF polynomial $p$ of degree $d$ is the coefficientwise limit of
-$(1 + \varepsilon D)^d p$ as $\varepsilon \to 0^+$; these polynomials have simple
-negative roots, and the PF cone is closed under coefficientwise limits of
-bounded degree. The regularization keeps the degree, so the transfer also holds degree by
-degree: strict preservation up to degree $d$ gives PF preservation up to degree
-$d$. One consumer is the Euler bidiagonal step
-$p\mapsto xp+(\theta+a)(\theta+b)p$, which preserves PF polynomials for
-$a,b\geq0$ with $ab>0$.
+**Theorem (concrete operators).**
+
+- For all polynomials $p\ll q$, we have $\theta p\ll\theta q$.
+- For PF polynomials $p\ll q$ of degree at most $N$, we have
+  $(N-\theta)p\ll(N-\theta)q$, where $(N-\theta)p=Np-xp'$.
+- For PF polynomials $p$, $q$ of degree at most $D$ with $p\ll q$ in the `StrictInterl`
+  sense, the reciprocals $x^Dp(1/x)$ reverse the order:
+  $x^Dq(1/x)\ll x^Dp(1/x)$, again in the `StrictInterl` sense.
+
+**Theorem (reverse-Hermite transform).** Let $B_0=1$, $B_1=x$ and
+$B_{n+2}=x\bigl(B_{n+1}+(n+1)B_n\bigr)$, and let $R$ be the linear map with $R(x^n)=B_n$.
+Then $R$ maps PF polynomials to PF polynomials, and $p\ll q$ implies $Rp\ll Rq$ for PF
+$p,q$.
+
+**Theorem (from simple roots to PF).** Let $T$ be a real-linear operator, and suppose
+$Tq$ is PF for every $q$ with positive leading coefficient and simple, negative roots.
+Then $Tp$ is PF for every PF polynomial $p$. The degree-local version holds as well: if
+this is assumed only for $q$ of degree at most $d$, then $Tp$ is PF for every PF
+polynomial $p$ of degree at most $d$.
+
+**Corollary (Euler bidiagonal step).** If $a,b\ge0$, $ab>0$ and $p$ is PF, then
+$xp+(\theta+a)(\theta+b)p$ is PF.
+
+## Proof
+
+A PF polynomial $p$ of degree $d$ is the coefficientwise limit as $\varepsilon\to0^+$ of
+$(1+\varepsilon D)^dp$, $D=d/dx$. These polynomials have positive leading coefficient and
+simple negative roots and keep the degree, and the PF cone is closed under coefficientwise
+limits of bounded degree.
 
 ## References
 
-The finite-degree criterion is [@Branden2004operators, Thm. 8 in the arXiv
-version]. The strict-to-weak transfer is [@Branden2006, Cor. 3.5]. See also the
+The finite-degree criterion is [@Branden2004operators, Thm. 8 in the arXiv version]. The
+strict-to-weak transfer is [@Branden2006, Cor. 3.5]. See also the
 [operator-preserver overview on symmetricfunctions.com](sf:operatorPreservesInterlacing).
 <!-- /realrooted-catalog-content -->
 

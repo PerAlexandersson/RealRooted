@@ -3,7 +3,7 @@ module
 import RealRooted.MultiplierSequence.ProperPositionPF
 
 /-!
-# PF multipliers and proper position
+# Diagonal operators of PF multiplier sequences and interlacing
 
 <!-- realrooted-catalog
 version = 1
@@ -61,26 +61,47 @@ label = "Finite PF multipliers preserve ordered PF lists"
 -->
 
 <!-- realrooted-catalog-content -->
-# PF multipliers and proper position
+# Diagonal operators of PF multiplier sequences and interlacing
 
-For a finite PF multiplier sequence on a degree box, we prove that its diagonal
-operator preserves zero-aware directed interlacing of two PF polynomials in
-that box.  This conclusion permits degree drops and zero outputs: it requires
-neither nonzero top multipliers nor nonzero images.
+A diagonal operator $x^n\mapsto\gamma_nx^n$ coming from a finite PF multiplier sequence
+preserves interlacing of PF polynomials, with zero outputs and degree drops allowed.
 
-For a finite multiplier sequence and a strictly interlacing pair, we also
-record orientation criteria in the equal-degree case.  A nonpositive product
-of the top adjacent multipliers reverses the strict orientation.  Equivalently,
-a nonnegative adjacent ratio preserves the forward orientation, a nonpositive
-ratio yields the reverse orientation, and a zero ratio yields both conclusions,
-provided the indicated top multipliers are nonzero.
+## Results
 
-For a strictly positive multiplier sequence, we transport strict interlacing
-through nontrivial nonnegative weighted sums of a common-left or common-right
-family with positive leading coefficients.  Finally, a finite PF multiplier
-sequence maps a bounded-degree `IsInterlacingSeq0NonnegRealRooted` list to a
-list with the same zero-aware interlacing, nonnegative-coefficient, and
-nonzero splitness properties.
+For $\gamma:\mathbb N\to\mathbb R$ let $\Gamma\bigl(\sum a_nx^n\bigr)=\sum\gamma_na_nx^n$. A
+polynomial is *PF* if it has nonnegative coefficients and is zero or has only real,
+nonpositive roots. We say $\gamma$ is a *finite PF multiplier sequence of degree $N$* if
+$\Gamma$ maps PF polynomials of degree at most $N$ to PF polynomials, and a *finite
+multiplier sequence of degree $N$* if $\Gamma$ maps real-rooted polynomials of degree at most
+$N$ to zero or to real-rooted polynomials. We write $f\ll g$ for weak interlacing: either
+polynomial may be zero, and repeated and common roots are allowed. `StrictInterl` is the
+library predicate for nonzero real-rooted pairs; it allows repeated and common roots.
+
+**Theorem (PF multipliers).** Let $\gamma$ be a finite PF multiplier sequence of degree $N$,
+and let $f,g$ be PF polynomials of degree at most $N$ with $f\ll g$. Then
+$\Gamma f\ll\Gamma g$. No top multiplier is assumed to be nonzero, and $\Gamma f$ or
+$\Gamma g$ may vanish.
+
+**Theorem (orientation).** Let $\gamma$ be a finite multiplier sequence of degree $N$, let
+$f\ll g$ in the `StrictInterl` sense with $\deg f,\deg g\le N$, and suppose
+$\gamma_{\deg f}\ne0$ and $\gamma_{\deg g}\ne0$. Put $d=\deg f$ and $\rho=\gamma_{d-1}/\gamma_d$,
+reading $d-1$ as $0$ when $d=0$.
+
+- If $\rho\ge0$, then $\Gamma f\ll\Gamma g$ in the `StrictInterl` sense.
+- If $\deg g=d$ and $\rho\le0$, equivalently $\gamma_{d-1}\gamma_d\le0$, then
+  $\Gamma g\ll\Gamma f$ in the `StrictInterl` sense.
+- If $\deg g=d$ and $\rho=0$, both orientations hold.
+
+**Theorem (weighted sums).** Let $\gamma$ be a multiplier sequence with $\gamma_k>0$ for all
+$k$, let $h$ be a polynomial, and let $a_1,\dots,a_r\ge0$ with some $a_i>0$. Let
+$p_1,\dots,p_r$ have positive leading coefficients. If $h\ll p_i$ for all $i$ in the
+`StrictInterl` sense, then $\Gamma h\ll\sum_ia_i\,\Gamma p_i$ in the same sense. If
+$p_i\ll h$ for all $i$, then $\sum_ia_i\,\Gamma p_i\ll\Gamma h$.
+
+**Theorem (lists).** Let $\gamma$ be a finite PF multiplier sequence of degree $N$ and let
+$f_1,\dots,f_r$ be polynomials of degree at most $N$ such that $f_i\ll f_j$ for $i<j$, every
+$f_i$ has nonnegative coefficients, and every nonzero $f_i$ splits. Then
+$\Gamma f_1,\dots,\Gamma f_r$ has the same three properties.
 
 ## References
 

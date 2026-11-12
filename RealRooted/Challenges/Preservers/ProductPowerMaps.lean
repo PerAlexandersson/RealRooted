@@ -7,7 +7,7 @@ import RealRooted.DerivativeProduct.ProductPowerCriteria
 import RealRooted.DerivativeProduct.ProductPowerRoots
 
 /-!
-# Sequence maps defined by powers of an associative derivative product
+# Real roots of sequence maps t^n ↦ g^{⋆n} for derivative products
 
 <!-- realrooted-catalog
 version = 1
@@ -84,7 +84,7 @@ label = "Two endpoint levels rooted in (−∞, 0] give all intermediate levels"
 [[theorems]]
 name = "RealRooted.Poisson.forall_isRealRootedIn_starCPowMap_Icc_iff"
 module = "RealRooted.DerivativeProduct.PoissonPower"
-label = "Poisson powers map [a, b]-rooted inputs to (−∞, 0]-rooted outputs iff both endpoints do"
+label = "Poisson powers map [a, b]-rooted inputs to (−∞, 0]-rooted outputs iff both ends do"
 
 [[theorems]]
 name = "RealRooted.Poisson.forall_mapsRealRootedIn_starCPowMap_Icc_iff"
@@ -129,54 +129,75 @@ label = "Weights with W = ℝ: one-factor tests suffice on every source set"
 -->
 
 <!-- realrooted-catalog-content -->
-# Sequence maps defined by powers of an associative derivative product
+# Real roots of sequence maps t^n ↦ g^{⋆n} for derivative products
 
-Let $\star$ be an associative derivative product
-$f\star g=\sum_k c_k\,w^k f^{(k)}g^{(k)}$ with $w=AX^2+BX+C$, $A\ge0$ and
-$c_k=a^k/(k!\prod_{j<k}(1+aAj))$, $a>0$ (the fixed-factor criterion of
-`RealRooted.assocProduct_kernel_tfae`; the Poisson product is $A=0$, $w=X$).  For a polynomial $g$
-write $g^{\star0}=1$, $g^{\star(n+1)}=g\star g^{\star n}$, and let $S_g$ be the linear map with
-$S_g(t^n)=g^{\star n}$.  Put $W=\{r: w(r)\le0\}$.
+For an associative derivative product $\star$, the map $t^n\mapsto g^{\star n}$ sends
+polynomials rooted in $J$ to real-rooted polynomials if and only if every level $g-r$,
+$r\in J$, is real-rooted; for the Poisson product and an interval $J$, the two endpoint levels
+suffice.
 
-**Functional calculus.** $S_g((t-r)\,p)=(g-r)\star S_g(p)$, and for an associative product $S_g$
-is multiplicative, $S_g(pq)=S_g(p)\star S_g(q)$.  Hence
-$S_g\bigl(A\prod_i(t-r_i)\bigr)=A\,\bigl((g-r_1)\star\cdots\star(g-r_m)\bigr)$.  If a class $T$ of
-root locations is closed under $\star$, then $S_g$ sends polynomials rooted in a source set $J$ to
-polynomials rooted in $T$ if and only if every level $g-r$, $r\in J$, is rooted in $T$.  For
-real-rooted inputs of degree $m$ and nonconstant $g$, the image is nonzero of degree $m\deg g$,
-with leading coefficient $\operatorname{lc}(p)\operatorname{lc}(g)^m$ for a weight with $A=0$.
+## Results
 
-**Poisson powers on a source interval.** For the Poisson product and a nonconstant $g$, $a\le b$:
-$S_g$ sends every nonzero polynomial rooted in $[a,b]$ to a nonzero polynomial rooted in
-$(-\infty,0]$ if and only if $g-a$ and $g-b$ have only nonpositive real roots.  Necessity uses the
-two affine inputs $t-a$ and $t-b$.  For sufficiency, the levels $g-a$ and $g-b$ have the common
-derivative $g'$, so real-rootedness of every intermediate level $g-r$ follows from the
-constant-level argument for common derivatives
-(`RealRooted.splits_sub_C_of_mem_Icc`); a positive point $x$ is not a root of $g-r$ because
-$g(x)-a$ and $g(x)-b$ have the sign of $\operatorname{lc}(g)$ there.  The class of polynomials
-rooted in $(-\infty,0]$ is closed under the Poisson product, since after normalising the leading
-coefficients the product of two PF polynomials is PF.  The functional calculus finishes the proof.
+Let $\star$ be the associative derivative product
+$f\star g=\sum_k c_k\,w^k f^{(k)}g^{(k)}$ with $w=Ax^2+Bx+C$, $A\ge0$ and
+$c_k=a^k/(k!\prod_{j<k}(1+aAj))$, $a>0$; this is the fixed-factor family of
+`RealRooted.assocProduct_kernel_tfae`, and the Poisson product is $A=0$, $w=x$. For a
+polynomial $g$ put $g^{\star0}=1$ and $g^{\star(n+1)}=g\star g^{\star n}$, and let $S_g$ be
+the linear map with $S_g(t^n)=g^{\star n}$. Let $W=\{r: w(r)\le0\}$. A polynomial is *rooted
+in* a set $T$ if it is nonzero, real-rooted and has all roots in $T$.
 
-**Squares and all powers.** For $q\ne0$ and $w(x)>0$,
-$(q\star q)(x)=\sum_k c_k\,w(x)^k\,(q^{(k)}(x))^2>0$, since all terms are nonnegative and the top
-one is positive.  So if $q\star q$ is real-rooted, its roots lie in $W$.  Consequently the following
-are equivalent: the square of left multiplication, $f\mapsto q\star(q\star f)=(q\star q)\star f$,
-preserves real-rootedness; $q\star q$ is real-rooted.  Moreover every product power
-$q^{\star n}$ is real-rooted if and only if both $q$ and $q\star q$ are, because
-$q^{\star 2m}=(q\star q)^{\star m}$ and $q^{\star(2m+1)}=(q\star q)^{\star m}\star q$.  For a
-singleton source $\{r\}$, $S_g$ sends every polynomial rooted in $\{r\}$ to a real-rooted polynomial
-if and only if $g-r$ and $(g-r)\star(g-r)$ are real-rooted.  If $w\le0$ on all of $\mathbb R$, the
-one-factor tests $g-r$, $r\in J$, suffice for every source set $J$.
+**Theorem (functional calculus).** $S_g((t-r)\,p)=(g-r)\star S_g(p)$. If $\star$ is
+associative, then $S_g(pq)=S_g(p)\star S_g(q)$. Hence
+$S_g\bigl(A\prod_i(t-r_i)\bigr)=A\,\bigl((g-r_1)\star\cdots\star(g-r_m)\bigr)$.
 
-**Provenance.** The proofs on this page are new, developed for RealRooted, and are of
-independent research interest.  The classical input is Brändén's theorem that
-Poisson multiplication by a PF polynomial preserves PF polynomials and, more generally, the
-fixed-factor sufficiency for associative derivative products [@Branden2006, Thm 3.11].  The
-degree-three source-interval tests for a general weight, which require continuity of ordered
-roots, are not part of this page.
+**Theorem (source-interval reduction).** Let $T$ be a set of real numbers such that
+$f\star q$ is rooted in $T$ whenever $f,q$ are. For any set $J$, the map $S_g$ sends every
+polynomial rooted in $J$ to a polynomial rooted in $T$ if and only if $g-r$ is rooted in $T$
+for every $r\in J$.
+
+**Theorem (degree and leading coefficient).** Let $g$ be nonconstant and let $p$ be
+rooted in some set. Then $S_g(p)\ne0$ and $\deg S_g(p)=\deg p\cdot\deg g$.
+If $A=0$, then $\operatorname{lc}(S_g(p))=\operatorname{lc}(p)\operatorname{lc}(g)^{\deg p}$.
+
+**Theorem (Poisson powers on an interval).** Let $f\star g=\sum_k\lambda^kx^kf^{(k)}g^{(k)}/k!$
+with $\lambda\ge0$. Let $g$ be nonconstant and $a\le b$. Then $S_g$ sends every polynomial
+rooted in $[a,b]$ to a polynomial rooted in $(-\infty,0]$ if and only if $g-a$ and $g-b$ are
+rooted in $(-\infty,0]$. Equivalently, for every $n$, $S_g$ sends each polynomial of degree at
+most $n$ rooted in $[a,b]$ to zero or to a polynomial rooted in $(-\infty,0]$. The class of
+polynomials rooted in $(-\infty,0]$ is closed under the Poisson product.
+
+**Lemma (intermediate levels).** Let $g$ be nonconstant. If $g-a$ and $g-b$ split, then
+$g-s$ splits for every $s\in[a,b]$. If moreover $g-a$ and $g-b$ are rooted in
+$(-\infty,0]$ and $r\in[a,b]$, then $g-r$ is rooted in $(-\infty,0]$.
+
+**Theorem (squares and all powers).** Let $a>0$, let $w$ have degree at most $2$ with
+$A\ge0$, and let $q\ne0$.
+
+- If $w(x)>0$, then $(q\star q)(x)=\sum_k c_k\,w(x)^k\,(q^{(k)}(x))^2>0$. So if $q\star q$ is
+  real-rooted, all its roots lie in $W$.
+- The map $f\mapsto q\star(q\star f)$ sends real-rooted polynomials to real-rooted polynomials
+  if and only if $q\star q$ splits.
+- Every power $q^{\star n}$, $n\ge0$, is real-rooted if and only if $q$ and $q\star q$ both
+  split.
+- For $g-r\ne0$, the map $S_g$ sends every polynomial rooted in $\{r\}$ to a real-rooted
+  polynomial if and only if $g-r$ and $(g-r)\star(g-r)$ split.
+- If $w(x)\le0$ for all real $x$, then $S_g$ sends every polynomial rooted in a set $J$ to a
+  real-rooted polynomial if and only if $g-r$ is real-rooted for every $r\in J$.
+
+## Proof
+
+For the Poisson interval theorem, necessity uses the inputs $t-a$ and $t-b$. For sufficiency,
+the levels $g-a$ and $g-b$ have the same derivative $g'$, which gives real-rootedness of every
+level $g-r$ with $r\in[a,b]$; a positive point $x$ is not a root of $g-r$ because $g(x)-a$
+and $g(x)-b$ have the sign of $\operatorname{lc}(g)$ there. Closure under the Poisson
+product follows from the fact that, after normalizing leading coefficients, the product of two
+PF polynomials is PF. The functional calculus finishes the proof. For all powers,
+$q^{\star2m}=(q\star q)^{\star m}$ and $q^{\star(2m+1)}=(q\star q)^{\star m}\star q$.
 
 ## References
 
-See [@Branden2006].
+Brändén's theorem that Poisson multiplication by a PF polynomial preserves PF polynomials,
+and the fixed-factor sufficiency for associative derivative products, are in
+[@Branden2006, Thm 3.11].
 <!-- /realrooted-catalog-content -->
 -/

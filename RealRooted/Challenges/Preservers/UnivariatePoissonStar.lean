@@ -7,7 +7,7 @@ import RealRooted.BorceaBranden.Applications.PoissonStarFinal
 import RealRooted.BorceaBranden.Applications.PoissonStarTransport
 
 /-!
-# The univariate Poisson star product
+# Fixed-factor preservers of the univariate Poisson star product
 
 <!-- realrooted-catalog
 version = 1
@@ -109,39 +109,55 @@ label = "Associativity of the univariate Poisson product"
 -->
 
 <!-- realrooted-catalog-content -->
-# The univariate Poisson star product
+# Fixed-factor preservers of the univariate Poisson star product
 
-We define the symmetric product $f\star_c g$ by the finite derivative sum
-$\sum_j c^jX^j f^{(j)}g^{(j)}/j!$.  It is additive in each input, compatible
-with real scalar multiplication, has $1$ as a unit, and specializes at $c=0$
-to ordinary multiplication.  For an affine right input $a+bX$, we prove
-$f\star_c(a+bX)=af+bX(f+cf')$.  If $c\geq0$ and both inputs have nonnegative
-coefficients, then so does $f\star_c g$.
+Multiplication by a fixed polynomial $f$ in the Poisson star product $\star_c$ preserves PF
+polynomials exactly when $f$ is PF for $c\ge0$ and exactly when $f$ is a nonnegative constant
+for $c<0$.
 
-For a linear fixed factor $X-r$, the affine-input test is exact:
-$X-r$ maps every affine input to a split polynomial if and only if $cr\leq0$.
-When $cr>0$, we prove that
-$(X-r)\star_c(X-r-c)=(X-r)^2+cr$ is not split.  More generally, if a nonzero
-split $f$ has $cr\leq0$ at every root $r$ of $f$, then its signed Weyl symbol
-$f(z(1-cw))$ is stable.
+## Results
 
-We also prove the parameter-boundary PF results.  Multiplication by a
-nonnegative constant preserves finite PF polynomials for every $c$.  For
-$c<0$, a fixed left factor preserves every finite PF polynomial exactly when
-it is a nonnegative constant.  At $c=0$, fixed left multiplication preserves
-real-rootedness or zero exactly when its nonzero factor splits, and it
-preserves finite PF polynomials exactly when that factor is PF.
+For $c\in\mathbb R$ let
+$$
+f\star_c g=\sum_{j\ge0}\frac{c^j}{j!}\,x^jf^{(j)}g^{(j)}.
+$$
+A polynomial is *PF* if it has nonnegative coefficients and is zero or has only real,
+nonpositive roots. The product is symmetric, associative, bilinear, has unit $1$, and equals
+the ordinary product at $c=0$.
 
-For every real parameter, `preservesPF_iff` gives the complete fixed-factor
-classification: PF factors when $c \geq 0$, and exactly the nonnegative
-constants when $c < 0$. For a nonzero fixed factor, we identify five equivalent
-conditions: preservation of all split inputs, preservation of
-affine inputs, root-sign admissibility, stability of the Euler pencil, and
-stability of the signed Poisson symbol. We also prove five conclusions for
-every positive affine-recurrence row: Pólya frequency, simple roots, strictly
-negative roots, strict interlacing with the next row, and no common roots. The
-step-$c$ falling-factorial transform conjugates the Poisson product to ordinary
-multiplication, proving both multiplicativity and associativity of $\star_c$.
+**Theorem (basic properties).** For an affine right input,
+$f\star_c(a+bx)=af+bx\,(f+cf')$. If $c\ge0$ and $f,g$ have nonnegative coefficients, so does
+$f\star_cg$. Let $\Phi_c$ be the falling-factorial transform with step $c$. Then
+$\Phi_c(f\star_cg)=\Phi_c(f)\,\Phi_c(g)$, and associativity of $\star_c$ follows.
+
+**Theorem (linear factors).** The polynomial $f\star_c(a+bx)$ splits for all real $a,b$ if and
+only if $f=x-r$ satisfies $cr\le0$. If $cr>0$, then $(x-r)\star_c(x-r-c)=(x-r)^2+cr$ does not
+split.
+
+**Theorem (fixed PF factors).** Let $\mathrm{Pres}_c(f)$ mean that $f\star_cg$ is PF for every
+PF polynomial $g$. For every real $c$,
+$$
+\mathrm{Pres}_c(f)\iff\begin{cases}f\text{ is PF}&\text{if }c\ge0,\\
+f=a\text{ for a constant }a\ge0&\text{if }c<0.\end{cases}
+$$
+For $c=0$ this shows that $f\star_0g=fg$ preserves PF polynomials exactly when $f$ is PF, and
+that it maps real-rooted $g$ to zero or to a real-rooted polynomial exactly when the nonzero
+factor $f$ splits.
+
+**Theorem (equivalent conditions).** Let $f\ne0$. The following are equivalent:
+
+1. $f\star_cg$ is zero or real-rooted for every real-rooted $g$;
+2. $f\star_c(a+bx)$ splits for all real $a,b$;
+3. $f$ splits and $cr\le0$ for every root $r$ of $f$;
+4. the Euler pencil $x\,(f+cf')+yf$ is stable in the upper half-plane;
+5. the signed Weyl symbol $f\bigl(z(1-cw)\bigr)$ is stable.
+
+**Theorem (affine recurrences).** Let $c>0$, let $a_n,b_n>0$ for all $n$, and let $P_0=1$ and
+$$
+P_{n+1}=(a_n+b_nx)\,P_n+c\,b_n\,x\,P_n'.
+$$
+Then $P_n$ is PF with simple, strictly negative roots, $P_n\ll P_{n+1}$ in the library's
+`StrictInterl` sense, and $P_n$ and $P_{n+1}$ have no common root.
 
 ## References
 

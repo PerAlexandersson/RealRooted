@@ -4,7 +4,7 @@ import RealRooted.Hermite.BesselOperatorFamily
 import RealRooted.Hermite.ImaginaryCentralDifference
 
 /-!
-# Bessel operators and imaginary central differences
+# Real roots of Bessel operators and imaginary central differences
 
 <!-- realrooted-catalog
 version = 1
@@ -58,47 +58,42 @@ label = "The imaginary central difference of a real-rooted polynomial has simple
 -->
 
 <!-- realrooted-catalog-content -->
-# Bessel operators and imaginary central differences
+# Real roots of Bessel operators and imaginary central differences
 
-## The finite Bessel operator family
+The finite Bessel operators map real-rooted polynomials to real-rooted polynomials exactly
+when $\lambda\ge0$, and the imaginary central difference of a real-rooted polynomial has only
+simple real roots.
 
-For $\lambda\in\mathbb R$ and $r\in\mathbb N$ let
+## Results
+
+**Theorem (Bessel operators).** For $\lambda\in\mathbb R$ and $r\in\mathbb N$ let $D=d/dx$ and
 $$
-B_{\lambda,r}=\sum_{k\ge0}\frac{(-\lambda)^k}{k!\,(k+r)!}\,D^{2k+r},\qquad D=\frac d{dx},
+B_{\lambda,r}=\sum_{k\ge0}\frac{(-\lambda)^k}{k!\,(k+r)!}\,D^{2k+r},
 $$
-a finite sum on each polynomial. For a polynomial $f$ of degree at least $r$ the
-image $B_{\lambda,r}f$ has degree $\deg f-r$ and leading coefficient
-$\binom{\deg f}{r}\operatorname{lc}(f)$, and it vanishes if $\deg f<r$.
+a finite sum on each polynomial. For a nonzero polynomial $f$ with $\deg f\ge r$, the image
+$B_{\lambda,r}f$ has degree $\deg f-r$ and leading coefficient
+$\binom{\deg f}{r}\operatorname{lc}(f)$. For every $r$, the operator $B_{\lambda,r}$ maps every
+real-rooted polynomial to a real-rooted polynomial, with $0$ counted as real-rooted, if and
+only if $\lambda\ge0$.
 
-**Theorem.** The operator $B_{\lambda,r}$ maps every real-rooted polynomial to a
-real-rooted polynomial if and only if $\lambda\ge0$.
-
-For $\lambda\ge0$ the proof builds, for each degree bound $N$, the auxiliary
-bivariate polynomial
-$\sum_mf_m\,z_0^{N-m}(z_1z_0+z_0^2-\lambda)^m$, shows that it is stable in the upper
-half-plane because $f$ splits, and reads off $B_{\lambda,r}f$ as a coefficient.
-
-## Imaginary central differences
-
-For $h\in\mathbb R$ let
+**Theorem (imaginary central difference).** For $h\in\mathbb R$ let $p^{[j]}=p^{(j)}/j!$ be
+the Hasse derivative and
 $$
-\delta_hp(x)=\sum_{k\ge0}(-1)^kh^{2k}\,p^{[2k+1]}(x)=\frac{p(x+ih)-p(x-ih)}{2ih},
+\delta_hp=\sum_{k\ge0}(-1)^kh^{2k}\,p^{[2k+1]}
+=\sum_{k\ge0}\frac{(-1)^kh^{2k}}{(2k+1)!}\,p^{(2k+1)} .
 $$
-where $p^{[j]}=p^{(j)}/j!$ is the Hasse derivative; equivalently it is the sum of odd
-derivatives $\sum_k\frac{(-1)^kh^{2k}}{(2k+1)!}p^{(2k+1)}$. If $h>0$ and $p$ is a real-rooted
-polynomial of degree at least one, then $\delta_hp$ has degree $\deg p-1$, leading
-coefficient $\deg p\cdot\operatorname{lc}(p)$, only real roots, and all roots simple;
-the proof uses the Hermite--Biehler theorem.
+If $h\ne0$, then $\delta_hp(z)=\dfrac{p(z+ih)-p(z-ih)}{2ih}$ for every complex $z$. If $h>0$
+and $p$ is a nonzero real-rooted polynomial of degree at least one, then $\delta_hp$ is
+real-rooted with only simple roots. If $\deg p\ge1$, then $\delta_hp$ has degree $\deg p-1$
+and leading coefficient $\deg p\cdot\operatorname{lc}(p)$.
 
-## What is new
+## Proof
 
-These results were developed in this library; no published source is cited, and we
-attribute none.
+The statement on $\delta_hp$ uses the Hermite–Biehler theorem.
 
 ## References
 
-No published source is cited for these results in the formalization. For the
-Hermite--Biehler theorem, see the
+For the Hermite–Biehler theorem, see the
 [Hermite–Biehler page](/RealRooted/theorems/hermite-biehler-hurwitz/).
 <!-- /realrooted-catalog-content -->
 

@@ -7,7 +7,7 @@ import RealRooted.WangYeh.Affine
 public import RealRooted.MultiplierSequence.Bidiagonal
 
 /-!
-# The Wang–Yeh affine criterion
+# Wang–Yeh criterion for affine combinations of interlacing polynomials
 
 <!-- realrooted-catalog
 version = 1
@@ -47,70 +47,63 @@ label = "Row polynomials of a bilinear triangular recurrence are Pólya-frequenc
 -->
 
 <!-- realrooted-catalog-content -->
-# The Wang–Yeh affine criterion
+# Wang–Yeh criterion for affine combinations of interlacing polynomials
 
-For real-rooted polynomials $g$ and $f$ we write $g \ll f$ (`StrictInterl g f`)
-as on the [interlacing page](/RealRooted/concepts/interlacing/). A polynomial
-is Pólya-frequency (`IsPFPolynomial`) if it has nonnegative coefficients and is
-either zero or real-rooted with nonpositive zeros. A sequence is
-Pólya-frequency (`IsPolyaFreqSeq`) if its Toeplitz matrix is totally
+If $g\ll f$ have positive leading coefficients and $bc\le ad$, then $(bx+a)f+(dx+c)g$ is zero
+or real-rooted; this implies a PF-preserver and PF rows for bilinear triangular arrays.
+
+## Results
+
+We write $g\ll f$ for `StrictInterl g f`, as on the
+[interlacing page](/RealRooted/concepts/interlacing/); it requires $f$ and $g$ to be nonzero
+and real-rooted. A polynomial is *PF* if it has nonnegative coefficients and is zero or
+real-rooted with only nonpositive roots. A sequence is PF if its Toeplitz matrix is totally
 nonnegative.
 
-**Theorem (Wang–Yeh).** [@WangYeh2005, Thm. 1] Let $f, g \in \mathbb{R}[x]$
-have positive leading
-coefficients and satisfy $g \ll f$. If $a, b, c, d \in \mathbb{R}$ satisfy
-$bc \leq ad$, then
+**Theorem (Wang–Yeh).** Let $f,g\in\mathbb R[x]$ have positive leading coefficients with
+$g\ll f$, and let $a,b,c,d\in\mathbb R$ satisfy $bc\le ad$. Then
 $$
-(bx + a) f(x) + (dx + c) g(x)
+(bx+a)\,f(x)+(dx+c)\,g(x)
 $$
-is zero or real-rooted.
+is zero or real-rooted. The four coefficients have no sign assumptions.
 
-The four coefficients have no sign assumptions.
+**Theorem (PF preserver).** Let $p=\sum_kx_kx^k$ be PF and let $a,b,c,d\in\mathbb R$ satisfy
+$bc\le ad$. Put
+$$
+y_k=(a+c(k-1))\,x_{k-1}+(b+dk)\,x_k,\qquad x_{-1}=0.
+$$
+If every $y_k$ is nonnegative, then $\sum_ky_kx^k$ is PF. In Lean this is the
+coefficient-bidiagonal operator `bidiagonalOperator (fun k ↦ b + d * k) (fun k ↦ a + c * k)`.
 
-**Theorem (PF preserver).** Let $p(x) = \sum_k x_k x^k$ be a Pólya-frequency
-polynomial, and let $a, b, c, d \in \mathbb{R}$ satisfy $bc \leq ad$. Define
+**Theorem (bilinear triangular arrays).** Let $A(n,k)$ be a nonnegative lower-triangular array
+with $A(0,0)=1$, $A(n+1,0)=(a(n+1)+c)A(n,0)$ and
 $$
-y_k = (a + c(k-1))\, x_{k-1} + (b + dk)\, x_k, \qquad x_{-1} = 0.
+A(n+1,k+1)=(r(n+1)+s(k+1)+t)\,A(n,k)+(a(n+1)+b(k+1)+c)\,A(n,k+1)
 $$
-If every $y_k$ is nonnegative, then $\sum_k y_k x^k$ is Pólya-frequency. In
-Lean the map $p \mapsto \sum_k y_k x^k$ is the coefficient-bidiagonal operator
-`bidiagonalOperator (fun k ↦ b + d * k) (fun k ↦ a + c * k)`.
+for all $n,k\ge0$. If
+$$
+as\le rb\qquad\text{and}\qquad(a+c)s\le(r+s+t)b,
+$$
+then every row $(A(n,0),A(n,1),\dots)$ is a PF sequence. Equivalently, every row polynomial
+$\sum_kA(n,k)x^k$ is PF.
 
-**Theorem (bilinear triangular arrays).** Let $A(n, k)$ be a nonnegative
-lower-triangular array with $A(0, 0) = 1$, and suppose that
-$$
-A(n+1, k) = (r(n+1) + sk + t)\, A(n, k-1) + (a(n+1) + bk + c)\, A(n, k)
-$$
-for all $n, k \geq 0$, with $A(n, -1) = 0$. If
-$$
-as \leq rb \qquad\text{and}\qquad (a + c)s \leq (r + s + t)b,
-$$
-then every row $(A(n, 0), A(n, 1), \dotsc)$ is a Pólya-frequency sequence.
-Equivalently, every row-generating polynomial $\sum_k A(n, k) x^k$ is
-Pólya-frequency.
+## Proof
 
-## Proof idea
+Put $H=(bx+a)f+(dx+c)g$ and $K=(bx+a)g-(dx+c)f$. By the Hermite–Biehler theorem, $g\ll f$
+makes $f+ig$ stable in the upper half-plane. The complex combination $H+iK$ is $f+ig$ times
+the linear factor $(b-id)x+(a-ic)$, whose zero lies in the closed lower half-plane exactly
+when $bc\le ad$. Hence $H+iK$ is stable and its real part $H$ is zero or real-rooted. If
+$b=d=0$, the claim is the classical fact that every real combination $af+cg$ is real-rooted.
 
-Put $H = (bx + a) f + (dx + c) g$ and $K = (bx + a) g - (dx + c) f$. By the
-Hermite–Biehler theorem, $g \ll f$ makes $f + ig$ stable in the upper half
-plane. The complex combination $H + iK$ is $f + ig$ times the linear factor
-$(b - id)x + (a - ic)$, whose zero lies in the closed lower half plane exactly
-when $bc \leq ad$. Hence $H + iK$ is stable, and its real part $H$ is zero or
-real-rooted. If $b = d = 0$, the claim is the classical fact that every real
-combination $af + cg$ is real-rooted.
-
-For the PF preserver, a nonconstant Pólya-frequency polynomial $p$ satisfies
-$p \ll xp'$. The bidiagonal image of $p$ equals
-$(cx+d)f+(ax+b)g$ with $g=p$ and $f=xp'$. This is of Wang–Yeh form with
-coefficient pair $(c,d)$ for $f$ and $(a,b)$ for $g$; its condition reads
-$bc\leq ad$, as assumed. Each row of the triangular array is the bidiagonal
-image of the previous row, and the two inequalities give the determinant
-condition at every step.
+For the PF preserver, a nonconstant PF polynomial $p$ satisfies $p\ll xp'$, and the
+bidiagonal image of $p$ is $(cx+d)\,xp'+(ax+b)\,p$, which has Wang–Yeh form with $f=xp'$,
+$g=p$ and the condition $bc\le ad$. Each row of the triangular array is the bidiagonal image of
+the previous row.
 
 ## References
 
-The affine criterion and PF preserver are [@WangYeh2005, Thm. 1 and Cors. 2–3].
-See also the [Wang–Yeh criterion](sf:wangYehAffineCriterion) and the
+The affine criterion and PF preserver are [@WangYeh2005, Thm. 1 and Cors. 2–3]. See also the
+[Wang–Yeh criterion](sf:wangYehAffineCriterion) and the
 [Wang–Yeh PF preserver](sf:wangYehPfPreserver) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 
