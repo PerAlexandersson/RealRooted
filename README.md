@@ -183,6 +183,9 @@ python3 scripts/check_proof_status.py --self-test
 python3 scripts/check_proof_status.py              # sorry/axiom/tactic rules, open statements
 python3 scripts/check_upstream_headers.py          # Mathlib file headers in RealRooted/Mathlib
 python3 scripts/check_module_system.py             # every file is a Lean module (allowlist shrinks)
+python3 scripts/check_declaration_names.py         # naming ratchet for published names (baseline only shrinks)
+python3 scripts/check_example_namespaces.py        # regression examples declare nothing public in the root namespace
+python3 scripts/build_challenge_pages.py --check   # validate the catalog sources
 lake exe lint-style                                # Mathlib text style: whitespace, `;`, unicode
 lake exe runLinter RealRooted                      # Mathlib environment linters (after `lake build`)
 ```
