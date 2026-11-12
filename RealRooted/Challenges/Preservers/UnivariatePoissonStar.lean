@@ -73,12 +73,12 @@ label = "Complete PF-preserver classification for every parameter"
 headline = true
 
 [[theorems]]
-name = "RealRooted.Poisson.preservesRealRootedOrZero_iff_isUpperHalfPlaneStablePencil_euler"
+name = "RealRooted.Poisson.realRootedOrZero_iff_eulerPencil_stable"
 module = "RealRooted.BorceaBranden.Applications.PoissonStarFinal"
 label = "Real-rootedness preservation is equivalent to Euler-pencil stability"
 
 [[theorems]]
-name = "RealRooted.Poisson.preservesAffineRealRooted_iff_isUpperHalfPlaneStablePencil_euler"
+name = "RealRooted.Poisson.affineRealRooted_iff_eulerPencil_stable"
 module = "RealRooted.BorceaBranden.Applications.PoissonStarFinal"
 label = "Affine preservation is equivalent to Euler-pencil stability"
 
@@ -88,7 +88,7 @@ module = "RealRooted.BorceaBranden.Applications.PoissonStarFinal"
 label = "Euler-pencil stability is equivalent to root-sign admissibility"
 
 [[theorems]]
-name = "RealRooted.Poisson.isUpperHalfPlaneStablePencil_euler_iff_poissonSignedSymbol_stable"
+name = "RealRooted.Poisson.eulerPencil_stable_iff_signedSymbol_stable"
 module = "RealRooted.BorceaBranden.Applications.PoissonStarFinal"
 label = "Euler-pencil stability is equivalent to signed-symbol stability"
 

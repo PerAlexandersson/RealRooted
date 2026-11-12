@@ -53,7 +53,7 @@ theorem strictInterl_derivative_lag_of_nonpos {f g u v w : ℝ[X]}
 
 /-- General sequence criterion for derivative--lag recurrences.  The degree may
 stay fixed or rise by one, and consecutive rows may share roots. -/
-theorem strictInterl_derivative_lag_sequence_of_eval_nonpos_of_splits
+theorem strictInterl_sequence_of_derivative_lag
     {P : Nat → ℝ[X]} {U V W : Nat → ℝ[X]}
     (hbase : StrictInterl (P 0) (P 1))
     (hpos : ∀ n : Nat, HasPosLeadingCoeff (P n))
@@ -99,7 +99,7 @@ theorem strictInterl_derivative_lag_sequence_of_root_signs
     (hno : ∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) :
     ∀ n : Nat, StrictInterl (P n) (P (n + 1)) := by
   exact (fun _ : (∀ n : Nat, ∀ r, (P (n + 1)).IsRoot r → ¬ (P n).IsRoot r) ↦
-    strictInterl_derivative_lag_sequence_of_eval_nonpos_of_splits
+    strictInterl_sequence_of_derivative_lag
       hbase hpos hrec hV_nonpos hW_nonpos
       (fun n ↦ by rw [← hdeg_succ (n + 1)]; lia)
       (fun n ↦ by rw [← hdeg_succ (n + 1)])) hno

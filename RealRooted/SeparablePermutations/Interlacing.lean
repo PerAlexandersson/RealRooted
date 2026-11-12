@@ -20,7 +20,7 @@ algebraically defined families `gammaPolynomial` and `descentPolynomial` of
   auxiliary polynomial `B_{n-2}`.
 * `strictInterl_descentPolynomial`: for `n ≥ 2`, `S_n` and `S_{n+1}` have simple negative roots,
   strictly interlace and have no common root; this is the strict lifting
-  `strictInterl_gammaTransform_succ_of_strictInterl_of_no_common` applied to `Γ_n`, `Γ_{n+1}`.
+  `GammaTransform.strictInterl_succ_of_no_common` applied to `Γ_n`, `Γ_{n+1}`.
 
 The transfer to the descent enumerators of the separable permutations,
 `strictInterl_descentEnumerator`, is in `RealRooted/SeparablePermutations/Identification.lean`.
@@ -100,7 +100,7 @@ private theorem lifting_descentPolynomial {n : ℕ} (hn : 2 ≤ n) :
     (∀ r ∈ (descentPolynomial (n + 1)).roots, r < 0) ∧
     RealRooted.StrictInterl (descentPolynomial n) (descentPolynomial (n + 1)) ∧
     ∀ r : ℝ, ¬ ((descentPolynomial n).IsRoot r ∧ (descentPolynomial (n + 1)).IsRoot r) := by
-  have h := RealRooted.strictInterl_gammaTransform_succ_of_strictInterl_of_no_common hn
+  have h := RealRooted.GammaTransform.strictInterl_succ_of_no_common hn
     (A := gammaPolynomial n) (B := gammaPolynomial (n + 1))
     (by rw [natDegree_gammaPolynomial hn])
     (by rw [natDegree_gammaPolynomial (by lia)]; rfl)

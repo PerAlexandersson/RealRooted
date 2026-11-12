@@ -78,27 +78,27 @@ label = "Right-sign reversal of a coefficient family"
 
 [[theorems]]
 name = """RealRooted.BorceaBranden.\
-preservesRealStabilityOnDegreeBox_iff_rankTwo_or_symbol_or_negRight"""
+realStabilityOnDegreeBox_iff_rankTwo_or_stable_symbol"""
 module = "RealRooted.BorceaBranden.RealFiniteClassificationIff"
 label = "Real finite classification (Theorem 1.2)"
 symcat = "borceaBrandenFiniteSymbol"
 
 [[theorems]]
 name = """RealRooted.BorceaBranden.\
-preservesComplexStability_iff_rankOne_or_transcendentalSymbol_stableLimit"""
+complexStability_iff_rankOne_or_stableLimit_symbol"""
 module = "RealRooted.BorceaBranden.Transcendental.ComplexClassification"
 label = "Complex classification (Theorem 1.3)"
 
 [[theorems]]
 name = """RealRooted.BorceaBranden.\
-preservesRealStability_iff_rankTwo_or_signedTranscendentalSymbol_stableLimit"""
+realStability_iff_rankTwo_or_stableLimit_signedSymbol"""
 module = "RealRooted.BorceaBranden.Transcendental.RealClassification"
 label = "Real classification (Theorem 1.4)"
 headline = true
 symcat = "borceaBrandenTranscendentalSymbol"
 
 [[theorems]]
-name = "RealRooted.BorceaBranden.isComplexStableLimit_iff_forall_fallingFactorial_glue_stableOrZero"
+name = "RealRooted.BorceaBranden.isComplexStableLimit_iff_fallingFactorial_glue_stable"
 module = "RealRooted.BorceaBranden.Transcendental.PivotForward"
 label = "Complex stable-limit criterion (Theorem 5.1)"
 
@@ -146,22 +146,22 @@ A polynomial is *stable* if it has no zero with every variable in the open upper
   stable-or-zero complex polynomials; `IsRealStableLimit` is the real version, with real stable
   polynomials.
 
-**Theorem 1.2** (`preservesRealStabilityOnDegreeBox_iff_rankTwo_or_symbol_or_negRight`). A
+**Theorem 1.2** (`realStabilityOnDegreeBox_iff_rankTwo_or_stable_symbol`). A
 real-linear operator on a coordinatewise degree box preserves real stability if and only if it
 has the stable rank-two form, its algebraic symbol is real stable, or its right-sign-reversed
 algebraic symbol is real stable.
 
-**Theorem 1.3** (`preservesComplexStability_iff_rankOne_or_transcendentalSymbol_stableLimit`). A
+**Theorem 1.3** (`complexStability_iff_rankOne_or_stableLimit_symbol`). A
 complex-linear operator on the full polynomial ring preserves stability if and only if it has the
 stable rank-one form or its transcendental symbol belongs to `IsComplexStableLimit`.
 
 **Theorem 1.4**
-(`preservesRealStability_iff_rankTwo_or_signedTranscendentalSymbol_stableLimit`). A real-linear
+(`realStability_iff_rankTwo_or_stableLimit_signedSymbol`). A real-linear
 operator on the full polynomial ring preserves real stability if and only if it has the stable
 rank-two form, its transcendental symbol belongs to `IsRealStableLimit`, or its
 right-sign-reversed transcendental symbol does.
 
-**Theorem 5.1** (`isComplexStableLimit_iff_forall_fallingFactorial_glue_stableOrZero`,
+**Theorem 5.1** (`isComplexStableLimit_iff_fallingFactorial_glue_stable`,
 `isRealStableLimit_iff_forall_realGlue_stableOrZero`). A coefficient family $(P_\alpha)$ belongs to
 `IsComplexStableLimit` if and only if every falling-factorial truncation
 $\sum_{\alpha\le\beta}\prod_i\binom{\beta_i}{\alpha_i}\alpha_i!\,P_\alpha(z)\,w^\alpha$ is stable or

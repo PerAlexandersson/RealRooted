@@ -970,7 +970,7 @@ root persists under sufficiently small positive `iterateTDeriv` regularization.
 This repackages the monic theorem above so the Obreschkoff converse can use it
 after a single sign-normalization step, without having to rebuild the monic
 scaling argument at each call site. -/
-theorem exists_delta_and_real_root_near_iterateTDeriv_of_isRealRooted
+theorem exists_root_near_iterateTDeriv
     (n : ℕ) {p : ℝ[X]} {a ε : ℝ}
     (ha : p.IsRoot a)
     (hp_ne : p ≠ 0) (hp_splits : p.Splits)
@@ -1007,7 +1007,7 @@ theorem exists_delta_and_real_root_near_iterateTDeriv_of_isRealRooted
 because `iterateTDeriv` commutes with the derivative tower. This is the form
 needed for multiplicity-cluster arguments: every original derivative root of
 order `k` persists as a nearby derivative root of the regularized family. -/
-theorem exists_delta_and_real_root_near_iterateTDeriv_of_isRealRooted_iterate_derivative
+theorem exists_root_near_derivative_iterateTDeriv
     (n k : ℕ) {p : ℝ[X]} {a ε : ℝ}
     (ha : ((derivative^[k]) p).IsRoot a)
     (hp_ne : ((derivative^[k]) p) ≠ 0) (hp_splits : ((derivative^[k]) p).Splits)
@@ -1018,7 +1018,7 @@ theorem exists_delta_and_real_root_near_iterateTDeriv_of_isRealRooted_iterate_de
           ((((derivative^[k]) p).natDegree + 1) * ε) ^
             ((((derivative^[k]) p).natDegree : ℝ)⁻¹) * max ‖a‖ 1 := by
   obtain ⟨δ, hδ, hnear⟩ :=
-    exists_delta_and_real_root_near_iterateTDeriv_of_isRealRooted
+    exists_root_near_iterateTDeriv
       (n := n) (p := (derivative^[k]) p) ha hp_ne hp_splits hε
   refine ⟨δ, hδ, ?_⟩
   intro eps heps_pos heps_small
@@ -1029,7 +1029,7 @@ theorem exists_delta_and_real_root_near_iterateTDeriv_of_isRealRooted_iterate_de
 /-- Root-multiplicity wrapper for the iterated-derivative nearby-root theorem.
 If `k < rootMultiplicity a p`, then the `k`-th derivative already vanishes at
 `a`, so the regularized family has a nearby root in the same derivative level. -/
-theorem exists_delta_and_real_root_near_iterateTDeriv_of_lt_rootMultiplicity
+theorem exists_root_near_iterateTDeriv_of_lt_multiplicity
     (n k : ℕ) {p : ℝ[X]} {a ε : ℝ}
     (ha : k < p.rootMultiplicity a)
     (hp_ne : ((derivative^[k]) p) ≠ 0) (hp_splits : ((derivative^[k]) p).Splits)
@@ -1039,7 +1039,7 @@ theorem exists_delta_and_real_root_near_iterateTDeriv_of_lt_rootMultiplicity
         ‖a - b‖ <
           ((((derivative^[k]) p).natDegree + 1) * ε) ^
             ((((derivative^[k]) p).natDegree : ℝ)⁻¹) * max ‖a‖ 1 := by
-  apply exists_delta_and_real_root_near_iterateTDeriv_of_isRealRooted_iterate_derivative
+  apply exists_root_near_derivative_iterateTDeriv
     (n := n) (k := k) (p := p) (a := a) (ε := ε)
   · exact isRoot_iterate_derivative_of_lt_rootMultiplicity ha
   · simp_all

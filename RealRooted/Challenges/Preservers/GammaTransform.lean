@@ -88,8 +88,7 @@ module = "RealRooted.GammaTransform.RootLists"
 label = "The roots of a gamma transform are reciprocal pairs together with roots at −1"
 
 [[theorems]]
-name = """RealRooted.strictInterl_gammaTransform_succ_of_\
-strictInterl_of_no_common"""
+name = "RealRooted.GammaTransform.strictInterl_succ_of_no_common"
 module = "RealRooted.GammaTransform.StrictLifting"
 label = "Strict interlacing of gamma polynomials lifts to simple-rooted gamma transforms"
 

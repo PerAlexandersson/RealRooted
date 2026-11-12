@@ -235,7 +235,7 @@ theorem preserves_iff_rankTwo_or_signedSymbol (T : ℝ[X] →ₗ[ℝ] ℝ[X]) :
         IsRealStableLimit
           (negRightFamily (realTranscendentalSymbolPolynomial (univariateOperator T))) := by
   rw [← preservesRealStability_univariateOperator_iff]
-  exact preservesRealStability_iff_rankTwo_or_signedTranscendentalSymbol_stableLimit _
+  exact realStability_iff_rankTwo_or_stableLimit_signedSymbol _
 
 end BorceaBranden
 

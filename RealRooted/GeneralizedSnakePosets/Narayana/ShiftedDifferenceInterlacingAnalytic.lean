@@ -29,40 +29,40 @@ namespace GeneralizedSnakePosets
 
 theorem shiftedDifferenceInterlacing_modified_u_v_roots_sum_of_combinatorial_concrete_u_degree
     (hrec2 : NarayanaAuxiliaryGRecurrence
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+      modifiedNarayanaPolynomial FiniteSkewBoard.rookSum)
     (h34 : AffineModifiedNarayanaInterlacing modifiedNarayanaPolynomial)
     (hV_split : ∀ {m : ℕ} {lam nu : ℝ},
       2 ≤ m → 0 ≤ lam → -1 ≤ nu →
-        ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-          FiniteSkewBoard.auxiliaryG m).Splits)
+        ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+          FiniteSkewBoard.rookSum m).Splits)
     (hdeg_VU : ∀ {m : ℕ} {lam nu : ℝ},
       2 ≤ m → 0 ≤ lam → -1 ≤ nu →
-        ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-            FiniteSkewBoard.auxiliaryG m).natDegree + 1 =
+        ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+            FiniteSkewBoard.rookSum m).natDegree + 1 =
           ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
             modifiedNarayanaPolynomial m).natDegree)
     {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam) (hnu : -1 ≤ nu) :
     ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
         modifiedNarayanaPolynomial m).roots.sum ≤
-      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-        FiniteSkewBoard.auxiliaryG m).roots.sum := by
+      ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+        FiniteSkewBoard.rookSum m).roots.sum := by
   apply shiftedDifferenceInterlacing_modified_u_v_roots_sum_of_combinatorial hrec2 h34 hV_split
     (fun hm' hlam' _ => modifiedNarayanaPencil_natDegree (by lia) hlam') hdeg_VU
     hm hlam hnu
 
 theorem shiftedDifferenceInterlacing_modified_u_v_roots_sum_of_combinatorial_concrete_degrees
     (hrec2 : NarayanaAuxiliaryGRecurrence
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+      modifiedNarayanaPolynomial FiniteSkewBoard.rookSum)
     (h34 : AffineModifiedNarayanaInterlacing modifiedNarayanaPolynomial)
     (hV_split : ∀ {m : ℕ} {lam nu : ℝ},
       2 ≤ m → 0 ≤ lam → -1 ≤ nu →
-        ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-          FiniteSkewBoard.auxiliaryG m).Splits)
+        ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+          FiniteSkewBoard.rookSum m).Splits)
     {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam) (hnu : -1 ≤ nu) :
     ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
         modifiedNarayanaPolynomial m).roots.sum ≤
-      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-        FiniteSkewBoard.auxiliaryG m).roots.sum := by
+      ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+        FiniteSkewBoard.rookSum m).roots.sum := by
   apply shiftedDifferenceInterlacing_modified_u_v_roots_sum_of_combinatorial_concrete_u_degree
     hrec2 h34 hV_split
   · intro m' lam' nu' hm' hlam' _
@@ -77,11 +77,11 @@ theorem shiftedDifferenceInterlacing_modified_u_v_roots_sum_of_combinatorial_con
 leading coefficient throughout the parameter range used in section 4. -/
 theorem auxiliaryGPencil_hasPosLeadingCoeff_of_narayanaRecurrence
     (hrec2 : NarayanaAuxiliaryGRecurrence
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+      modifiedNarayanaPolynomial FiniteSkewBoard.rookSum)
     {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam) :
     HasPosLeadingCoeff
-      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-        FiniteSkewBoard.auxiliaryG m) := by
+      ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+        FiniteSkewBoard.rookSum m) := by
   unfold HasPosLeadingCoeff
   rw [auxiliaryGPencil_leadingCoeff_of_narayanaRecurrence hrec2 hm hlam]
   positivity
@@ -90,13 +90,13 @@ theorem auxiliaryGPencil_hasPosLeadingCoeff_of_narayanaRecurrence
 the same degree and positive leading coefficient. -/
 theorem shiftedDifferenceInterlacing_modified_middle_hasPosLeadingCoeff
     (hrec2 : NarayanaAuxiliaryGRecurrence
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+      modifiedNarayanaPolynomial FiniteSkewBoard.rookSum)
     {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam) :
     HasPosLeadingCoeff
       (((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
           modifiedNarayanaPolynomial m) +
-        X * ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-          FiniteSkewBoard.auxiliaryG m)) := by
+        X * ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+          FiniteSkewBoard.rookSum m)) := by
   have hV_pos :=
     auxiliaryGPencil_hasPosLeadingCoeff_of_narayanaRecurrence
       (nu := nu) hrec2 hm hlam
@@ -118,19 +118,19 @@ the later Turan module, where
 statement. -/
 theorem auxiliaryGPencil_splits_of_combinatorial
     (hrec2 : NarayanaAuxiliaryGRecurrence
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+      modifiedNarayanaPolynomial FiniteSkewBoard.rookSum)
     (h34 : AffineModifiedNarayanaInterlacing
       modifiedNarayanaPolynomial)
     {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam)
     (hnu : -1 ≤ nu) :
-    ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-      FiniteSkewBoard.auxiliaryG m).Splits := by
+    ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+      FiniteSkewBoard.rookSum m).Splits := by
   let U : ℝ[X] :=
     (C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
       modifiedNarayanaPolynomial m
   let V : ℝ[X] :=
-    (C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-      FiniteSkewBoard.auxiliaryG m
+    (C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+      FiniteSkewBoard.rookSum m
   let W : ℝ[X] :=
     (C lam * X + C nu) * modifiedNarayanaPolynomial m +
       modifiedNarayanaPolynomial (m + 1)
@@ -200,29 +200,29 @@ model or claim that input has been proved in Lean. -/
 theorem auxiliaryGPencil_hasNonnegCoeffs_of_difference
     (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
       HasNonnegCoeffs
-        (FiniteSkewBoard.auxiliaryG n - FiniteSkewBoard.auxiliaryG (n - 1)))
+        (FiniteSkewBoard.rookSum n - FiniteSkewBoard.rookSum (n - 1)))
     {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam) (hnu : -1 ≤ nu) :
     HasNonnegCoeffs
-      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-        FiniteSkewBoard.auxiliaryG m) := by
+      ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+        FiniteSkewBoard.rookSum m) := by
   have hnu_one : 0 ≤ nu + 1 := by linarith
   have hlam_term :
       HasNonnegCoeffs
-        (C lam * (X * FiniteSkewBoard.auxiliaryG (m - 1))) :=
+        (C lam * (X * FiniteSkewBoard.rookSum (m - 1))) :=
     hasNonnegCoeffs_C_mul hlam
       (FiniteSkewBoard.auxiliaryG_hasNonnegCoeffs (m - 1)).X_mul
   have hnu_term :
       HasNonnegCoeffs
-        (C (nu + 1) * FiniteSkewBoard.auxiliaryG (m - 1)) :=
+        (C (nu + 1) * FiniteSkewBoard.rookSum (m - 1)) :=
     hasNonnegCoeffs_C_mul hnu_one
       (FiniteSkewBoard.auxiliaryG_hasNonnegCoeffs (m - 1))
   rw [show
-      (C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-          FiniteSkewBoard.auxiliaryG m =
-        C lam * (X * FiniteSkewBoard.auxiliaryG (m - 1)) +
-          C (nu + 1) * FiniteSkewBoard.auxiliaryG (m - 1) +
-            (FiniteSkewBoard.auxiliaryG m -
-              FiniteSkewBoard.auxiliaryG (m - 1)) by
+      (C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+          FiniteSkewBoard.rookSum m =
+        C lam * (X * FiniteSkewBoard.rookSum (m - 1)) +
+          C (nu + 1) * FiniteSkewBoard.rookSum (m - 1) +
+            (FiniteSkewBoard.rookSum m -
+              FiniteSkewBoard.rookSum (m - 1)) by
           simp only [map_add, map_one]
           ring]
   exact (hlam_term.add hnu_term).add (hH_nonneg m (by lia))
@@ -232,10 +232,10 @@ of the auxiliary Braun--Jal pencil. -/
 theorem auxiliaryGPencil_roots_nonpos_of_difference
     (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
       HasNonnegCoeffs
-        (FiniteSkewBoard.auxiliaryG n - FiniteSkewBoard.auxiliaryG (n - 1)))
+        (FiniteSkewBoard.rookSum n - FiniteSkewBoard.rookSum (n - 1)))
     {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam) (hnu : -1 ≤ nu) :
-    ∀ r ∈ (((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-      FiniteSkewBoard.auxiliaryG m).roots), r ≤ 0 :=
+    ∀ r ∈ (((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+      FiniteSkewBoard.rookSum m).roots), r ≤ 0 :=
   roots_nonpos_of_hasNonnegCoeffs
     (auxiliaryGPencil_hasNonnegCoeffs_of_difference hH_nonneg hm hlam hnu)
 
@@ -250,19 +250,19 @@ combinatorial input from the non-nesting-rook interpretation, whose full model
 is intentionally outside the scope of this formalization. -/
 theorem shiftedDifferenceInterlacing_modified_of_combinatorial
     (hrec2 : NarayanaAuxiliaryGRecurrence
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+      modifiedNarayanaPolynomial FiniteSkewBoard.rookSum)
     (h34 : AffineModifiedNarayanaInterlacing
       modifiedNarayanaPolynomial)
     (hH_nonneg : ∀ n : ℕ, 1 ≤ n →
       HasNonnegCoeffs
-        (FiniteSkewBoard.auxiliaryG n -
-          FiniteSkewBoard.auxiliaryG (n - 1))) :
+        (FiniteSkewBoard.rookSum n -
+          FiniteSkewBoard.rookSum (n - 1))) :
     ShiftedDifferenceInterlacing
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG := by
+      modifiedNarayanaPolynomial FiniteSkewBoard.rookSum := by
   have hV_split :
       ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
-        ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-          FiniteSkewBoard.auxiliaryG m).Splits := by
+        ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+          FiniteSkewBoard.rookSum m).Splits := by
     intro m lam nu hm hlam hnu
     exact auxiliaryGPencil_splits_of_combinatorial hrec2 h34 hm hlam hnu
   apply shiftedDifferenceInterlacing_of_combinatorial_rootSumSideConditions hrec2 h34

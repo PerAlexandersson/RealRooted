@@ -202,7 +202,7 @@ theorem rowThreshold_matrix_preserves_interlacing_seq0_of_2x2_realRooted
 
 /-- Strict-output row-threshold route obtained by discarding zero output
 entries. -/
-theorem rowThreshold_matrix_preserves_interlacing_seq0_filter_ne_zero_of_2x2
+theorem rowThreshold_interlacingSeq_filter_ne_zero_of_2x2
     (G : List (List ℝ[X]))
     (hG_rect : ∀ row ∈ G, row.length = n)
     (hG_threshold : HasRowThresholdLinearStructure G)

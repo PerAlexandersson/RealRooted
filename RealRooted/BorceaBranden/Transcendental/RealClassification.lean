@@ -82,7 +82,7 @@ theorem rankTwo_or_signedTranscendentalSymbol_stableLimit_of_preservesRealStabil
           (T.comp (MvPolynomial.degreeOfLE σ ℝ (fun i => β i)).subtype) :=
         not_hasStableRankTwoRepresentation_of_bad_polynomial T p hp _ hpβ
       have hfinite :=
-        (preservesRealStabilityOnDegreeBox_iff_rankTwo_or_symbol_or_negRight
+        (realStabilityOnDegreeBox_iff_rankTwo_or_stable_symbol
           (fun i => β i)
           (T.comp (MvPolynomial.degreeOfLE σ ℝ (fun i => β i)).subtype)).1
           hpreserves
@@ -129,7 +129,7 @@ theorem rankTwo_or_signedTranscendentalSymbol_stableLimit_of_preservesRealStabil
 A real linear operator preserves multivariate real stability exactly when it
 has the stable rank-at-most-two form, or one of its two signed
 transcendental symbols belongs to the real stable-limit class. -/
-theorem preservesRealStability_iff_rankTwo_or_signedTranscendentalSymbol_stableLimit
+theorem realStability_iff_rankTwo_or_stableLimit_signedSymbol
     (T : MvPolynomial σ ℝ →ₗ[ℝ] MvPolynomial σ ℝ) :
     PreservesRealStability T ↔
       HasGlobalStableRankTwoRepresentation T ∨

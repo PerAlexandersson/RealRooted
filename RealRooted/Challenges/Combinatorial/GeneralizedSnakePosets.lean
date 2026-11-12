@@ -57,7 +57,7 @@ module = "RealRooted.GeneralizedSnakePosets.Narayana.Modified"
 label = "Modified Narayana polynomials Pₙ"
 
 [[definitions]]
-name = "RealRooted.GeneralizedSnakePosets.FiniteSkewBoard.auxiliaryG"
+name = "RealRooted.GeneralizedSnakePosets.FiniteSkewBoard.rookSum"
 module = "RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Auxiliary"
 label = "Auxiliary polynomials Gₙ"
 
@@ -78,17 +78,17 @@ label = "Affine combinations of consecutive modified Narayana polynomials interl
 
 [[theorems]]
 name = """RealRooted.GeneralizedSnakePosets.FiniteSkewBoard.\
-truncatedStaircaseRookPolynomial_full_eq_modifiedNarayanaPolynomial"""
+rookPolynomial_full_eq_modifiedNarayana"""
 module = "RealRooted.GeneralizedSnakePosets.Narayana.Recurrence"
 label = "Full truncated staircases have rook polynomial Pₙ"
 
 [[theorems]]
-name = "RealRooted.Challenges.GeneralizedSnakePosets.auxiliaryG_recurrence"
+name = "RealRooted.GeneralizedSnakePosets.rookSum_recurrence"
 module = "RealRooted.Challenges.Combinatorial.GeneralizedSnakePosets"
 label = "The auxiliary polynomials Gₙ in terms of Pₙ"
 
 [[theorems]]
-name = "RealRooted.GeneralizedSnakePosets.auxiliaryG_strictInterl_modifiedNarayana"
+name = "RealRooted.GeneralizedSnakePosets.rookSum_strictInterl_modifiedNarayana"
 module = "RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacing"
 label = "The auxiliary polynomial Gₙ interlaces Pₙ"
 
@@ -194,7 +194,7 @@ theorem rookPolynomial_generalizedSnakeBoard_recurrence {w : SnakeWord} {k : ℕ
       (generalizedSnakeBoard (w.take (k + 1))).rookPolynomial *
           modifiedNarayanaPolynomial (w.length - (k + 1)) +
         X * (generalizedSnakeBoard (w.take k)).rookPolynomial *
-          FiniteSkewBoard.auxiliaryG (w.length - (k + 1)) :=
+          FiniteSkewBoard.rookSum (w.length - (k + 1)) :=
   generalizedSnakeRecurrence hk.not_isConstant hk
 
 /-- A constant word `w` has snake polynomial `M_w = P_{|w|+1}`. -/
@@ -213,8 +213,8 @@ theorem modifiedNarayana_affine_strictInterl {m : ℕ} {lam nu : ℝ} (hm : 2 �
   affineModifiedNarayanaInterlacing_modified hm hlam hnu
 
 /-- `X G_{n-1} = P_n - (1 + X) P_{n-1}`. -/
-theorem auxiliaryG_recurrence {n : ℕ} (hn : n ≠ 0) :
-    X * FiniteSkewBoard.auxiliaryG (n - 1) =
+theorem _root_.RealRooted.GeneralizedSnakePosets.rookSum_recurrence {n : ℕ} (hn : n ≠ 0) :
+    X * FiniteSkewBoard.rookSum (n - 1) =
       modifiedNarayanaPolynomial n - (1 + X) * modifiedNarayanaPolynomial (n - 1) :=
   FiniteSkewBoard.narayanaAuxiliaryGRecurrence_modified (Nat.one_le_iff_ne_zero.mpr hn)
 

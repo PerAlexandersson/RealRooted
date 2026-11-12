@@ -168,8 +168,7 @@ module = "RealRooted.Hadamard.KostovMap"
 label = "Kostov's coefficient map recovers the symmetric functions of a factorization"
 
 [[theorems]]
-name = """RealRooted.Challenges.Hadamard.\
-isFiniteMultiplierSequence_iff_isPFPolynomial_jensenPolynomial"""
+name = "RealRooted.Hadamard.finiteMultiplierSequence_iff_jensen_isPFPolynomial"
 label = "Finite Pólya–Schur theorem"
 
 [[theorems]]
@@ -375,7 +374,7 @@ theorem schurSzegoComp_eq_zero_or_splits {n : ℕ} {f p : ℝ[X]}
   RealRooted.finiteSchurSzegoComposition hf hfdeg hpdeg hsplits
 
 /-- Finite Polya--Schur theorem in the nonnegative-coefficient convention. -/
-theorem isFiniteMultiplierSequence_iff_isPFPolynomial_jensenPolynomial {n : ℕ}
+theorem _root_.RealRooted.Hadamard.finiteMultiplierSequence_iff_jensen_isPFPolynomial {n : ℕ}
     {gamma : ℕ → ℝ} (hgamma : ∀ k, 0 ≤ gamma k) :
     IsFiniteMultiplierSequence n gamma ↔ IsPFPolynomial (jensenPolynomial n gamma) :=
   RealRooted.finitePolyaSchur_nonneg hgamma

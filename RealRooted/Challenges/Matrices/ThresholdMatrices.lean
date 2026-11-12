@@ -64,7 +64,7 @@ label = "Zero-aware row-threshold preservation of interlacing sequences"
 headline = true
 
 [[theorems]]
-name = "RealRooted.rowThreshold_matrix_preserves_interlacing_seq0_filter_ne_zero_of_2x2"
+name = "RealRooted.rowThreshold_interlacingSeq_filter_ne_zero_of_2x2"
 module = "RealRooted.RowThreshold"
 label = "Row-threshold matrices give a strict interlacing sequence after discarding zeros"
 

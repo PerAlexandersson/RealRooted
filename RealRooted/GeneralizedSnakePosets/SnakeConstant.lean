@@ -150,7 +150,7 @@ theorem generalizedSnakeRookModel_snakePolynomial_of_isConstant {w : SnakeWord}
     generalizedSnakeRookModel.snakePolynomial w = modifiedNarayanaPolynomial (w.length + 1) := by
   have hstair : (truncatedStaircase (w.length + 1) (w.length + 1)).rookPolynomial =
       modifiedNarayanaPolynomial (w.length + 1) :=
-    truncatedStaircaseRookPolynomial_full_eq_modifiedNarayanaPolynomial (w.length + 1)
+    rookPolynomial_full_eq_modifiedNarayana (w.length + 1)
   set n := w.length with hn
   have hrep : w = List.replicate n (w.headD SnakeLetter.R) := by
     rcases w with _ | ⟨a, t⟩

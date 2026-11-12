@@ -112,7 +112,7 @@ theorem modifiedNarayanaPolynomial_zero_strictInterl_one :
 /-- The `n = 1` base case of the auxiliary interlacing lemma, for the concrete modified
 Narayana family and the finite-board auxiliary `G`. -/
 theorem auxiliaryGInterlaces_modified_base :
-    StrictInterl (FiniteSkewBoard.auxiliaryG 1) (modifiedNarayanaPolynomial 1) := by
+    StrictInterl (FiniteSkewBoard.rookSum 1) (modifiedNarayanaPolynomial 1) := by
   simpa [FiniteSkewBoard.auxiliaryG_one] using
     modifiedNarayanaPolynomial_zero_strictInterl_one
 

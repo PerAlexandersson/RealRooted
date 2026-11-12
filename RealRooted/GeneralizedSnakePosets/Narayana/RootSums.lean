@@ -130,18 +130,18 @@ theorem modifiedNarayanaPencil_leadingCoeff {m : ℕ} {lam nu : ℝ}
 /-- The leading coefficient of the auxiliary-G pencil. -/
 theorem auxiliaryGPencil_leadingCoeff_of_narayanaRecurrence
     (hrec2 : NarayanaAuxiliaryGRecurrence
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+      modifiedNarayanaPolynomial FiniteSkewBoard.rookSum)
     {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam) :
-    ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-      FiniteSkewBoard.auxiliaryG m).leadingCoeff =
+    ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+      FiniteSkewBoard.rookSum m).leadingCoeff =
         lam * ((m - 1 : ℕ) : ℝ) + (m : ℝ) := by
   rw [← coeff_natDegree,
     auxiliaryGPencil_natDegree_of_narayanaRecurrence hrec2 hm hlam]
-  rw [show (C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) =
-      C lam * (X * FiniteSkewBoard.auxiliaryG (m - 1)) +
-        C nu * FiniteSkewBoard.auxiliaryG (m - 1) by ring]
+  rw [show (C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) =
+      C lam * (X * FiniteSkewBoard.rookSum (m - 1)) +
+        C nu * FiniteSkewBoard.rookSum (m - 1) by ring]
   simp only [coeff_add, coeff_C_mul]
-  have hXGprevLead : (X * FiniteSkewBoard.auxiliaryG (m - 1)).coeff (m - 1) =
+  have hXGprevLead : (X * FiniteSkewBoard.rookSum (m - 1)).coeff (m - 1) =
       ((m - 1 : ℕ) : ℝ) := by
     rw [show m - 1 = (m - 2) + 1 by lia, coeff_X_mul]
     rw [show m - 2 + 1 = m - 1 by lia]
@@ -158,30 +158,30 @@ identify the two root sums with the Vieta expressions compared by
 theorem shiftedDifferenceInterlacing_modified_roots_sum_le_of_recurrence_of_three_le
     (hrec2 :
       NarayanaAuxiliaryGRecurrence
-        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+        modifiedNarayanaPolynomial FiniteSkewBoard.rookSum)
     {m : ℕ} {lam nu : ℝ} (hm : 3 ≤ m) (hlam : 0 ≤ lam) (hnu : -1 ≤ nu)
     (hU_split :
       ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
         modifiedNarayanaPolynomial m).Splits)
     (hV_split :
-      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-        FiniteSkewBoard.auxiliaryG m).Splits)
+      ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+        FiniteSkewBoard.rookSum m).Splits)
     (hUdeg :
       ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
         modifiedNarayanaPolynomial m).natDegree = m)
     (hVdeg :
-      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-        FiniteSkewBoard.auxiliaryG m).natDegree = m - 1) :
+      ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+        FiniteSkewBoard.rookSum m).natDegree = m - 1) :
     ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
         modifiedNarayanaPolynomial m).roots.sum ≤
-      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-        FiniteSkewBoard.auxiliaryG m).roots.sum := by
+      ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+        FiniteSkewBoard.rookSum m).roots.sum := by
   let U :=
     (C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
       modifiedNarayanaPolynomial m
   let V :=
-    (C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-      FiniteSkewBoard.auxiliaryG m
+    (C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+      FiniteSkewBoard.rookSum m
   change U.Splits at hU_split
   change V.Splits at hV_split
   change U.natDegree = m at hUdeg
@@ -220,13 +220,13 @@ theorem shiftedDifferenceInterlacing_modified_roots_sum_le_of_recurrence_of_thre
           (fun k => (X * modifiedNarayanaPolynomial (m - 1)).coeff k) (by lia)
       _ = _ := coeff_X_mul (modifiedNarayanaPolynomial (m - 1)) (m - 2)
   have hXGprevNext :
-      (X * FiniteSkewBoard.auxiliaryG (m - 1)).coeff (m - 2) =
-        (FiniteSkewBoard.auxiliaryG (m - 1)).coeff (m - 3) := by
+      (X * FiniteSkewBoard.rookSum (m - 1)).coeff (m - 2) =
+        (FiniteSkewBoard.rookSum (m - 1)).coeff (m - 3) := by
     calc
-      _ = (X * FiniteSkewBoard.auxiliaryG (m - 1)).coeff ((m - 3) + 1) :=
+      _ = (X * FiniteSkewBoard.rookSum (m - 1)).coeff ((m - 3) + 1) :=
         congr_arg
-          (fun k => (X * FiniteSkewBoard.auxiliaryG (m - 1)).coeff k) (by lia)
-      _ = _ := coeff_X_mul (FiniteSkewBoard.auxiliaryG (m - 1)) (m - 3)
+          (fun k => (X * FiniteSkewBoard.rookSum (m - 1)).coeff k) (by lia)
+      _ = _ := coeff_X_mul (FiniteSkewBoard.rookSum (m - 1)) (m - 3)
   have hUlc : U.leadingCoeff = lam + 1 := by
     change ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
       modifiedNarayanaPolynomial m).leadingCoeff = lam + 1
@@ -244,8 +244,8 @@ theorem shiftedDifferenceInterlacing_modified_roots_sum_le_of_recurrence_of_thre
     rw [hXPprevNext, hPprevNext, hPprevLead, hPmNext, hcast1]
     ring
   have hVlc : V.leadingCoeff = (m : ℝ) + lam * (m - 1) := by
-    change ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-      FiniteSkewBoard.auxiliaryG m).leadingCoeff = (m : ℝ) + lam * (m - 1)
+    change ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+      FiniteSkewBoard.rookSum m).leadingCoeff = (m : ℝ) + lam * (m - 1)
     rw [auxiliaryGPencil_leadingCoeff_of_narayanaRecurrence hrec2 (by lia) hlam,
       hcast1]
     ring
@@ -257,9 +257,9 @@ theorem shiftedDifferenceInterlacing_modified_roots_sum_le_of_recurrence_of_thre
     rw [show m - 1 - 1 = m - 2 by lia]
     dsimp [V]
     rw [show
-        (C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) =
-          C lam * (X * FiniteSkewBoard.auxiliaryG (m - 1)) +
-            C nu * FiniteSkewBoard.auxiliaryG (m - 1) by ring]
+        (C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) =
+          C lam * (X * FiniteSkewBoard.rookSum (m - 1)) +
+            C nu * FiniteSkewBoard.rookSum (m - 1) by ring]
     simp only [coeff_add, coeff_C_mul]
     rw [hXGprevNext, hGprevNext, hGprevLead, hGmNext, hcast1]
     ring
@@ -285,24 +285,24 @@ theorem shiftedDifferenceInterlacing_modified_roots_sum_le_two
       ((C lam * X + C nu) * modifiedNarayanaPolynomial (2 - 1) +
         modifiedNarayanaPolynomial 2).Splits)
     (hV_split :
-      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (2 - 1) +
-        FiniteSkewBoard.auxiliaryG 2).Splits)
+      ((C lam * X + C nu) * FiniteSkewBoard.rookSum (2 - 1) +
+        FiniteSkewBoard.rookSum 2).Splits)
     (hUdeg :
       ((C lam * X + C nu) * modifiedNarayanaPolynomial (2 - 1) +
         modifiedNarayanaPolynomial 2).natDegree = 2)
     (hVdeg :
-      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (2 - 1) +
-        FiniteSkewBoard.auxiliaryG 2).natDegree = 1) :
+      ((C lam * X + C nu) * FiniteSkewBoard.rookSum (2 - 1) +
+        FiniteSkewBoard.rookSum 2).natDegree = 1) :
     ((C lam * X + C nu) * modifiedNarayanaPolynomial (2 - 1) +
         modifiedNarayanaPolynomial 2).roots.sum ≤
-      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (2 - 1) +
-        FiniteSkewBoard.auxiliaryG 2).roots.sum := by
+      ((C lam * X + C nu) * FiniteSkewBoard.rookSum (2 - 1) +
+        FiniteSkewBoard.rookSum 2).roots.sum := by
   let U :=
     (C lam * X + C nu) * modifiedNarayanaPolynomial (2 - 1) +
       modifiedNarayanaPolynomial 2
   let V :=
-    (C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (2 - 1) +
-      FiniteSkewBoard.auxiliaryG 2
+    (C lam * X + C nu) * FiniteSkewBoard.rookSum (2 - 1) +
+      FiniteSkewBoard.rookSum 2
   change U.Splits at hU_split
   change V.Splits at hV_split
   change U.natDegree = 2 at hUdeg
@@ -353,24 +353,24 @@ expected window degrees, and splitting. -/
 theorem shiftedDifferenceInterlacing_modified_roots_sum_le_of_recurrence
     (hrec2 :
       NarayanaAuxiliaryGRecurrence
-        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+        modifiedNarayanaPolynomial FiniteSkewBoard.rookSum)
     {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam) (hnu : -1 ≤ nu)
     (hU_split :
       ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
         modifiedNarayanaPolynomial m).Splits)
     (hV_split :
-      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-        FiniteSkewBoard.auxiliaryG m).Splits)
+      ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+        FiniteSkewBoard.rookSum m).Splits)
     (hUdeg :
       ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
         modifiedNarayanaPolynomial m).natDegree = m)
     (hVdeg :
-      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-        FiniteSkewBoard.auxiliaryG m).natDegree = m - 1) :
+      ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+        FiniteSkewBoard.rookSum m).natDegree = m - 1) :
     ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
         modifiedNarayanaPolynomial m).roots.sum ≤
-      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-        FiniteSkewBoard.auxiliaryG m).roots.sum := by
+      ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+        FiniteSkewBoard.rookSum m).roots.sum := by
   by_cases hm2 : m = 2
   · subst m
     exact shiftedDifferenceInterlacing_modified_roots_sum_le_two hlam hnu
@@ -381,28 +381,28 @@ theorem shiftedDifferenceInterlacing_modified_roots_sum_le_of_recurrence
 theorem shiftedDifferenceInterlacing_modified_u_v_roots_sum_of_combinatorial
     (hrec2 :
       NarayanaAuxiliaryGRecurrence
-        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+        modifiedNarayanaPolynomial FiniteSkewBoard.rookSum)
     (h34 : AffineModifiedNarayanaInterlacing
       modifiedNarayanaPolynomial)
     (hV_split :
       ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
-        ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-          FiniteSkewBoard.auxiliaryG m).Splits)
+        ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+          FiniteSkewBoard.rookSum m).Splits)
     (hUdeg :
       ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
         ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
           modifiedNarayanaPolynomial m).natDegree = m)
     (hdeg_VU :
       ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
-        ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-          FiniteSkewBoard.auxiliaryG m).natDegree + 1 =
+        ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+          FiniteSkewBoard.rookSum m).natDegree + 1 =
             ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
               modifiedNarayanaPolynomial m).natDegree) :
     ∀ {m : ℕ} {lam nu : ℝ}, 2 ≤ m → 0 ≤ lam → -1 ≤ nu →
       ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
           modifiedNarayanaPolynomial m).roots.sum ≤
-        ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-          FiniteSkewBoard.auxiliaryG m).roots.sum := by
+        ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+          FiniteSkewBoard.rookSum m).roots.sum := by
   intro m lam nu hm hlam hnu
   have hU_split :
       ((C lam * X + C nu) * modifiedNarayanaPolynomial (m - 1) +
@@ -410,8 +410,8 @@ theorem shiftedDifferenceInterlacing_modified_u_v_roots_sum_of_combinatorial
     (h34 (m := m) (lam := lam) (nu := nu) hm hlam hnu).1.2
   have hUdeg' := hUdeg hm hlam hnu
   have hVdeg' :
-      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-        FiniteSkewBoard.auxiliaryG m).natDegree = m - 1 := by
+      ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+        FiniteSkewBoard.rookSum m).natDegree = m - 1 := by
     have hgap := hdeg_VU hm hlam hnu
     lia
   exact shiftedDifferenceInterlacing_modified_roots_sum_le_of_recurrence hrec2

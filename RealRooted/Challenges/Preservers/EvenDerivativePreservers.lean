@@ -103,7 +103,7 @@ module = "RealRooted.EvenDerivative.Examples"
 label = "For c = (1, 1, 1, 0, …): T_c(u⁵) = x³(x² + 20x + 120)"
 
 [[theorems]]
-name = "RealRooted.isPFPolynomial_evenDerivativeOperator_capTwo_of_natDegree_le_four"
+name = "RealRooted.IsPFPolynomial.evenDerivativeCapTwo_of_natDegree_le_four"
 module = "RealRooted.EvenDerivative.Examples"
 label = "For c = (1, 1, 1, 0, …) the operator preserves PF polynomials through degree four"
 

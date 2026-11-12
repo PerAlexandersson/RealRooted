@@ -597,7 +597,7 @@ private theorem injective_real_eigenvalues_of_simple_perron
 /-- **Gantmacher-Krein for matrices with primitive compounds.**  If every
 compound of `A` is primitive, the characteristic polynomial of `A` splits over
 `ℝ` with positive roots in strictly decreasing order. -/
-theorem exists_charpoly_eq_prod_strictAnti_of_forall_compound_primitive
+theorem exists_charpoly_eq_prod_strictAnti_of_compounds_primitive
     {A : Matrix (Fin n) (Fin n) ℝ}
     (hprim : ∀ q, 1 ≤ q → q ≤ n → (compound q A).IsPrimitive) :
     ∃ μ : Fin n → ℝ, StrictAnti μ ∧ (∀ i, 0 < μ i) ∧
@@ -630,7 +630,7 @@ theorem exists_charpoly_eq_prod_antitone_of_forall_compound_primitive
     ∃ μ : Fin n → ℝ, Antitone μ ∧ (∀ i, 0 < μ i) ∧
       A.charpoly = ∏ i, (X - C (μ i)) := by
   obtain ⟨μ, hμ_strict, hμ_pos, hchar⟩ :=
-    exists_charpoly_eq_prod_strictAnti_of_forall_compound_primitive hprim
+    exists_charpoly_eq_prod_strictAnti_of_compounds_primitive hprim
   exact ⟨μ, hμ_strict.antitone, hμ_pos, hchar⟩
 
 /-- If every compound of `A` is primitive, the characteristic polynomial of

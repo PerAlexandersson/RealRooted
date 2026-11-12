@@ -130,7 +130,7 @@ private lemma strictInterl_of_ode_step {f g a b c p q : ℝ[X]} {K : ℝ} (hK : 
 /-- A positive-coefficient family satisfying an intertwined second-order ODE
 and a degree-raising first-order recurrence has simple negative roots, and each
 row strictly interlaces its successor. -/
-theorem splits_simple_roots_neg_and_strictInterl_succ_of_ode_recurrence
+theorem splits_simple_roots_neg_strictInterl_of_ode
     (F : ℕ → ℝ[X]) (a b c p q : ℕ → ℝ[X]) (K : ℕ → ℝ) (d : ℕ)
     (U : ℕ → ℝ[X] →ₗ[ℝ] ℝ[X])
     (hdegree : ∀ n, (F n).natDegree = d + n)

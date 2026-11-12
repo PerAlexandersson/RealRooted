@@ -50,7 +50,7 @@ module = "RealRooted.Mathlib.Algebra.Group.ForwardDiff"
 label = "Newton's forward-difference test for nonnegativity on the natural numbers"
 
 [[theorems]]
-name = "RealRooted.causalFwdDiff_iter_polynomialValueSeq_eq_eulerNumerator_coeff"
+name = "RealRooted.polynomialValueSeq_causalFwdDiff_iter"
 module = "RealRooted.PolynomialValueEulerNumerator"
 label = "Iterated causal differences of polynomial values are the Euler numerator"
 

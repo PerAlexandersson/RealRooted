@@ -368,7 +368,7 @@ theorem rowPolynomial_splits_and_roots_nonpos
     (rowPolynomial d K n).Splits ∧
       ∀ r ∈ (rowPolynomial d K n).roots, r ≤ 0 := by
   exact
-    LeftProductionMatrix.rowPolynomial_splits_and_roots_nonpos_of_isLeftProductionArray
+    LeftProductionMatrix.rowPolynomial_splits_roots_nonpos
       (isLeftProductionArray d K) (production_isLowerTriangular d K)
       (production_hasTotallyNonnegativeLeadingTruncations hd hK) n
 

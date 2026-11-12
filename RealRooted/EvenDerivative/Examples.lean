@@ -63,7 +63,7 @@ private theorem splits_quadratic_twelve_twentyfour :
   exact (Splits.X_sub_C _).mul (Splits.X_sub_C _)
 
 /-- For `c = (1, 1, 1, 0, …)` the operator preserves PF polynomials through degree four. -/
-theorem isPFPolynomial_evenDerivativeOperator_capTwo_of_natDegree_le_four {f : ℝ[X]}
+theorem IsPFPolynomial.evenDerivativeCapTwo_of_natDegree_le_four {f : ℝ[X]}
     (hf : IsPFPolynomial f) (hdeg : f.natDegree ≤ 4) :
     IsPFPolynomial (evenDerivativeOperator evenDerivativeCapTwo f) := by
   have hc0 : evenDerivativeCapTwo 0 = 1 := by simp [evenDerivativeCapTwo]

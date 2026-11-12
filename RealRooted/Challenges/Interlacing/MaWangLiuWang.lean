@@ -88,7 +88,7 @@ module = "RealRooted.LiuWang.FiniteFamily"
 label = "Liu–Wang step with an additional derivative term"
 
 [[theorems]]
-name = "RealRooted.LiuWang.strictInterl_derivative_lag_sequence_of_eval_nonpos_of_splits"
+name = "RealRooted.LiuWang.strictInterl_sequence_of_derivative_lag"
 module = "RealRooted.LiuWangRecursion"
 label = "Liu–Wang criterion for derivative–lag recurrences"
 -->

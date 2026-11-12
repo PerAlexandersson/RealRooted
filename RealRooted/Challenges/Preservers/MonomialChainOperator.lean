@@ -62,7 +62,7 @@ module = "RealRooted.OperatorInterlacingUpgrade.StablePencil"
 label = "Monomial-chain operators preserve nonnegative stable pencils"
 
 [[theorems]]
-name = "RealRooted.positiveRootCount_quadraticParameterEvaluation_le_rootCountDrop"
+name = "RealRooted.quadraticParameterEvaluation_positiveRootCount_le"
 module = "RealRooted.QuadraticInterlacingClosure"
 label = "Descartes budget for the quadratic parameter evaluation of an interlacing chain"
 tags = ["realrooted-original"]

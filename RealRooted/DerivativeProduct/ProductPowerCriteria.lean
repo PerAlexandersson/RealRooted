@@ -184,7 +184,7 @@ theorem forall_isRealRootedIn_derivProductPowMap_singleton_iff (ha : 0 < a)
 /-- **Weights with `W = ℝ`.**  If the weight is nonpositive everywhere, then `S_g` sends the
 polynomials rooted in `J` to real-rooted polynomials if and only if every level `g - r`, `r ∈ J`,
 is real-rooted. -/
-theorem forall_isRealRootedIn_derivProductPowMap_iff_of_forall_nonpos (ha : 0 < a)
+theorem derivProductPowMap_realRooted_iff_of_nonpos (ha : 0 < a)
     (hw : w.natDegree ≤ 2) (hA : 0 ≤ w.coeff 2) (hW : ∀ x : ℝ, w.eval x ≤ 0) {J : Set ℝ}
     {g : ℝ[X]} :
     (∀ p : ℝ[X], IsRealRootedIn J p →

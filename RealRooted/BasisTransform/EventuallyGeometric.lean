@@ -419,7 +419,7 @@ theorem linearMap_add_C_pow_eq_binomialShiftImage
 
 /-- A nonzero discrepancy gives an explicit shifted power whose image under
 the row-defined linear map is not split. -/
-theorem exists_not_splits_linearMap_shiftedPower_of_eventually_geometric
+theorem exists_not_splits_shiftedPower_of_eventually_geometric
     (T : ℝ[X] →ₗ[ℝ] ℝ[X]) {P : ℕ → ℝ[X]} {a d r : ℝ} {k : ℕ}
     (hT : ∀ n, T (X ^ n) = P n)
     (hd : d ≠ 0) (hPk : P k ≠ 0)

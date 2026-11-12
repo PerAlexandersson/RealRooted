@@ -61,7 +61,7 @@ theorem FiniteSkewBoard.coeff_truncatedStaircaseRookPolynomial_full_eq_modifiedN
 
 /-- The full truncated-staircase rook polynomial is the modified Narayana
 polynomial. -/
-theorem FiniteSkewBoard.truncatedStaircaseRookPolynomial_full_eq_modifiedNarayanaPolynomial
+theorem FiniteSkewBoard.rookPolynomial_full_eq_modifiedNarayana
     (n : ℕ) :
     FiniteSkewBoard.truncatedStaircaseRookPolynomial n n =
       modifiedNarayanaPolynomial n := by
@@ -76,9 +76,9 @@ auxiliary polynomial `G_n`. -/
 theorem auxiliaryG_coeff_sub_one_of_narayanaRecurrence
     (hrec2 :
       NarayanaAuxiliaryGRecurrence
-        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+        modifiedNarayanaPolynomial FiniteSkewBoard.rookSum)
     (n : ℕ) (hn : 1 ≤ n) :
-    (FiniteSkewBoard.auxiliaryG n).coeff (n - 1) = (n : ℝ) := by
+    (FiniteSkewBoard.rookSum n).coeff (n - 1) = (n : ℝ) := by
   have hrec := hrec2 (n := n + 1) (by lia)
   simp only [Nat.add_sub_cancel] at hrec
   rw [show
@@ -108,9 +108,9 @@ leading candidate coefficient of `G_n`. -/
 theorem auxiliaryG_coeff_sub_two_of_narayanaRecurrence
     (hrec2 :
       NarayanaAuxiliaryGRecurrence
-        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+        modifiedNarayanaPolynomial FiniteSkewBoard.rookSum)
     (n : ℕ) (hn : 2 ≤ n) :
-    (FiniteSkewBoard.auxiliaryG n).coeff (n - 2) =
+    (FiniteSkewBoard.rookSum n).coeff (n - 2) =
       (n + 1 : ℝ) * n * (n - 1) / 3 := by
   have hrec := hrec2 (n := n + 1) (by lia)
   simp only [Nat.add_sub_cancel] at hrec
@@ -135,9 +135,9 @@ candidate coefficient of `G_n` to vanish. -/
 theorem auxiliaryG_coeff_self_of_narayanaRecurrence
     (hrec2 :
       NarayanaAuxiliaryGRecurrence
-        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+        modifiedNarayanaPolynomial FiniteSkewBoard.rookSum)
     (n : ℕ) :
-    (FiniteSkewBoard.auxiliaryG n).coeff n = 0 := by
+    (FiniteSkewBoard.rookSum n).coeff n = 0 := by
   have hrec := hrec2 (n := n + 1) (by lia)
   simp only [Nat.add_sub_cancel] at hrec
   rw [show
@@ -172,15 +172,15 @@ the auxiliary polynomial `G_n`. -/
 theorem auxiliaryG_natDegree_of_narayanaRecurrence
     (hrec2 :
       NarayanaAuxiliaryGRecurrence
-        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+        modifiedNarayanaPolynomial FiniteSkewBoard.rookSum)
     (n : ℕ) (hn : 1 ≤ n) :
-    (FiniteSkewBoard.auxiliaryG n).natDegree = n - 1 := by
+    (FiniteSkewBoard.rookSum n).natDegree = n - 1 := by
   have hcoeff :=
     auxiliaryG_coeff_sub_one_of_narayanaRecurrence hrec2 n hn
-  have hcoeff_ne : (FiniteSkewBoard.auxiliaryG n).coeff (n - 1) ≠ 0 := by
+  have hcoeff_ne : (FiniteSkewBoard.rookSum n).coeff (n - 1) ≠ 0 := by
     rw [hcoeff]
     positivity
-  have hG_ne : FiniteSkewBoard.auxiliaryG n ≠ 0 := by
+  have hG_ne : FiniteSkewBoard.rookSum n ≠ 0 := by
     intro hzero
     apply hcoeff_ne
     rw [hzero]
@@ -199,14 +199,14 @@ theorem auxiliaryG_natDegree_of_narayanaRecurrence
         · exact hlin
         · rw [modifiedNarayanaPolynomial_natDegree]
       _ = n + 1 := by lia
-  have hXG_le : (X * FiniteSkewBoard.auxiliaryG n).natDegree ≤ n + 1 := by
+  have hXG_le : (X * FiniteSkewBoard.rookSum n).natDegree ≤ n + 1 := by
     rw [hrec]
     exact (natDegree_sub_le _ _).trans
       (max_le (by rw [modifiedNarayanaPolynomial_natDegree]) hprod_le)
-  have hG_le_n : (FiniteSkewBoard.auxiliaryG n).natDegree ≤ n := by
+  have hG_le_n : (FiniteSkewBoard.rookSum n).natDegree ≤ n := by
     rw [natDegree_X_mul hG_ne] at hXG_le
     lia
-  have hG_le : (FiniteSkewBoard.auxiliaryG n).natDegree ≤ n - 1 := by
+  have hG_le : (FiniteSkewBoard.rookSum n).natDegree ≤ n - 1 := by
     rw [natDegree_le_iff_coeff_eq_zero]
     intro N hN
     by_cases hNn : N = n
@@ -219,10 +219,10 @@ theorem auxiliaryG_natDegree_of_narayanaRecurrence
 theorem auxiliaryGPencil_natDegree_of_narayanaRecurrence
     (hrec2 :
       NarayanaAuxiliaryGRecurrence
-        modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+        modifiedNarayanaPolynomial FiniteSkewBoard.rookSum)
     {m : ℕ} {lam nu : ℝ} (hm : 2 ≤ m) (hlam : 0 ≤ lam) :
-    ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-      FiniteSkewBoard.auxiliaryG m).natDegree = m - 1 := by
+    ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+      FiniteSkewBoard.rookSum m).natDegree = m - 1 := by
   have hfac : (C lam * X + C nu : ℝ[X]).natDegree ≤ 1 := by
     have hlin : (C lam * X : ℝ[X]).natDegree ≤ 1 := by
       calc
@@ -230,51 +230,51 @@ theorem auxiliaryGPencil_natDegree_of_narayanaRecurrence
         _ ≤ 1 := by simp
     exact (natDegree_add_le _ _).trans (max_le hlin (by simp))
   have hGprev_deg :
-      (FiniteSkewBoard.auxiliaryG (m - 1)).natDegree = m - 2 := by
+      (FiniteSkewBoard.rookSum (m - 1)).natDegree = m - 2 := by
     simpa only [show m - 1 - 1 = m - 2 by lia] using
       auxiliaryG_natDegree_of_narayanaRecurrence hrec2 (m - 1) (by lia)
-  have hGm_deg : (FiniteSkewBoard.auxiliaryG m).natDegree = m - 1 :=
+  have hGm_deg : (FiniteSkewBoard.rookSum m).natDegree = m - 1 :=
     auxiliaryG_natDegree_of_narayanaRecurrence hrec2 m (by lia)
   have hprod :
-      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1)).natDegree ≤
+      ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1)).natDegree ≤
         m - 1 := by
     calc
       _ ≤ (C lam * X + C nu : ℝ[X]).natDegree +
-          (FiniteSkewBoard.auxiliaryG (m - 1)).natDegree := natDegree_mul_le
+          (FiniteSkewBoard.rookSum (m - 1)).natDegree := natDegree_mul_le
       _ ≤ 1 + (m - 2) := Nat.add_le_add hfac (by rw [hGprev_deg])
       _ = m - 1 := by lia
   have hle :
-      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-        FiniteSkewBoard.auxiliaryG m).natDegree ≤ m - 1 :=
+      ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+        FiniteSkewBoard.rookSum m).natDegree ≤ m - 1 :=
     (natDegree_add_le _ _).trans (max_le hprod (by rw [hGm_deg]))
   have hGprev_top :
-      (FiniteSkewBoard.auxiliaryG (m - 1)).coeff (m - 2) =
+      (FiniteSkewBoard.rookSum (m - 1)).coeff (m - 2) =
         ((m - 1 : ℕ) : ℝ) := by
     simpa only [show m - 1 - 1 = m - 2 by lia] using
       auxiliaryG_coeff_sub_one_of_narayanaRecurrence hrec2 (m - 1) (by lia)
   have hXGprev_top :
-      (X * FiniteSkewBoard.auxiliaryG (m - 1)).coeff (m - 1) =
+      (X * FiniteSkewBoard.rookSum (m - 1)).coeff (m - 1) =
         ((m - 1 : ℕ) : ℝ) := by
     have hindex : (m - 2) + 1 = m - 1 := by lia
     calc
-      _ = (FiniteSkewBoard.auxiliaryG (m - 1)).coeff (m - 2) := by
+      _ = (FiniteSkewBoard.rookSum (m - 1)).coeff (m - 2) := by
         simpa only [hindex] using
-          (coeff_X_mul (p := FiniteSkewBoard.auxiliaryG (m - 1)) (n := m - 2))
+          (coeff_X_mul (p := FiniteSkewBoard.rookSum (m - 1)) (n := m - 2))
       _ = ((m - 1 : ℕ) : ℝ) := hGprev_top
   have hGprev_above :
-      (FiniteSkewBoard.auxiliaryG (m - 1)).coeff (m - 1) = 0 :=
+      (FiniteSkewBoard.rookSum (m - 1)).coeff (m - 1) = 0 :=
     auxiliaryG_coeff_self_of_narayanaRecurrence hrec2 (m - 1)
   have hGm_top :
-      (FiniteSkewBoard.auxiliaryG m).coeff (m - 1) = m :=
+      (FiniteSkewBoard.rookSum m).coeff (m - 1) = m :=
     auxiliaryG_coeff_sub_one_of_narayanaRecurrence hrec2 m (by lia)
   have hcoeff :
-      ((C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-        FiniteSkewBoard.auxiliaryG m).coeff (m - 1) =
+      ((C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) +
+        FiniteSkewBoard.rookSum m).coeff (m - 1) =
           lam * ((m - 1 : ℕ) : ℝ) + (m : ℝ) := by
     rw [show
-      (C lam * X + C nu) * FiniteSkewBoard.auxiliaryG (m - 1) =
-        C lam * (X * FiniteSkewBoard.auxiliaryG (m - 1)) +
-          C nu * FiniteSkewBoard.auxiliaryG (m - 1) by ring]
+      (C lam * X + C nu) * FiniteSkewBoard.rookSum (m - 1) =
+        C lam * (X * FiniteSkewBoard.rookSum (m - 1)) +
+          C nu * FiniteSkewBoard.rookSum (m - 1) by ring]
     simp only [coeff_add, coeff_C_mul]
     rw [hXGprev_top, hGprev_above, hGm_top]
     ring

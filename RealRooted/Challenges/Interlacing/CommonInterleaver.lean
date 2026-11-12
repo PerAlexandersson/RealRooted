@@ -120,7 +120,7 @@ module = "RealRooted.CommonInterleaver.PairBridge.SuccDegree.SlotData"
 label = "Degrees differing by one, real-rooted positive combinations: common interleaver"
 
 [[theorems]]
-name = "RealRooted.pairHasCommonInterleaver_of_posCombo_noCommon_of_natDegree_close"
+name = "RealRooted.exists_commonInterleaver_of_posCombo_of_no_common_roots"
 module = "RealRooted.CommonInterleaver.PairBridge.Reduction.CommonInterleaver"
 label = "Degrees differing by at most one, no common root: common interleaver"
 
@@ -135,7 +135,7 @@ module = "RealRooted.CommonInterleaverSeq"
 label = "A common right interleaver of a close-degree pair gives a common left interleaver"
 
 [[theorems]]
-name = "RealRooted.strictInterl_iff_strictInterl_divX_left_of_hasNonnegCoeffs_coeff_zero"
+name = "RealRooted.strictInterl_iff_divX_strictInterl_of_coeff_zero"
 module = "RealRooted.DegreeDropDivXPrec"
 label = "For g(0) = 0 and deg g = deg f + 1 with nonnegative coefficients: f ≪ g iff g/X ≪ f"
 

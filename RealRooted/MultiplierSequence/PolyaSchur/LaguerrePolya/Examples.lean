@@ -52,7 +52,7 @@ theorem isPFMultiplierSequence_one_iff_isLaguerrePolyaTypeI_exp :
     IsPFMultiplierSequence (fun _ => (1 : ℝ)) ↔
       IsLaguerrePolyaTypeI Complex.exp := by
   rw [← complexExpGeneratingFunction_one]
-  apply isPFMultiplierSequence_iff_isLaguerrePolyaTypeI_complexExpGeneratingFunction
+  apply IsPFMultiplierSequence.iff_laguerrePolya_egf
   refine ⟨1, zero_lt_one, ?_⟩
   simpa using Real.summable_pow_div_factorial (1 : ℝ)
 
@@ -71,7 +71,7 @@ theorem isLaguerrePolyaTypeISigned_neg_exp :
     IsLaguerrePolyaTypeISigned (fun z => -Complex.exp z) := by
   rw [← complexExpGeneratingFunction_neg_one]
   apply
-    (isMultiplierSequence_iff_isLaguerrePolyaTypeISigned_complexExpGeneratingFunction
+    (IsMultiplierSequence.iff_signedLaguerrePolya_egf
       (gamma := fun _ => (-1 : ℝ)) ?_).mp
   · exact isMultiplierSequence_const_sequence (-1)
   · refine ⟨1, zero_lt_one, ?_⟩

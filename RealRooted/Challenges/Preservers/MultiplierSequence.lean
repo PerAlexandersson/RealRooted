@@ -92,12 +92,12 @@ module = "RealRooted.MultiplierSequence.PolyaSchur"
 label = "Pólya–Schur: multiplier sequences via Jensen polynomials"
 
 [[theorems]]
-name = "RealRooted.isPFMultiplierSequence_iff_isLaguerrePolyaTypeI_complexExpGeneratingFunction"
+name = "RealRooted.IsPFMultiplierSequence.iff_laguerrePolya_egf"
 module = "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIReverse"
 label = "Pólya–Schur: PF multiplier sequences are the Laguerre–Pólya type I class"
 
 [[theorems]]
-name = "RealRooted.isMultiplierSequence_iff_isLaguerrePolyaTypeISigned_complexExpGeneratingFunction"
+name = "RealRooted.IsMultiplierSequence.iff_signedLaguerrePolya_egf"
 module = "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeISigned"
 label = "Pólya–Schur: classification of all multiplier sequences"
 headline = true

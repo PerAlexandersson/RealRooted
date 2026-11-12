@@ -92,7 +92,7 @@ lemma norm_coeff_sub_add_C_mul_le
 coefficientwise close to monic `f`, then each complex root of `f` has a nearby
 complex root of `g`. This is the `aroots`-valued form used in limit arguments
 where the target root may not yet be known real. -/
-theorem exists_complex_aroot_near_of_isRealRooted_of_monic_of_coeff_close
+theorem exists_aroot_near_of_monic_of_coeff_close
     {f g : ℝ[X]} {z : ℂ} {ε : ℝ}
     (hε : 0 < ε)
     (hz : f.aeval z = 0)
@@ -230,7 +230,7 @@ theorem exists_complex_aroot_near_in_left_family
     normalized_left_family_monic_natDegree hf_monic hg_monic hdeg ht
   have hq_rr : q ≠ 0 ∧ q.Splits := by simp_all [q]
   obtain ⟨w, hw_qroot, hw_dist⟩ :=
-    exists_complex_aroot_near_of_isRealRooted_of_monic_of_coeff_close
+    exists_aroot_near_of_monic_of_coeff_close
       (f := f) (g := q) (z := z) (ε := ε) hε hz hf_monic hq_monic hq_deg
       (norm_coeff_sub_normalized_left_family_lt f g ht hcoeff_bound) hq_rr.2
   have hw_sum_mem : w ∈ (C t * f + g).aroots ℂ := by
@@ -319,7 +319,7 @@ theorem splits_of_monic_of_coeff_approx {f : ℝ[X]} (hf : f.Monic)
     positivity
   obtain ⟨g, hgmonic, hgdeg, hgsplits, hgcoeff⟩ := happrox ε hε
   obtain ⟨w, hwmem, hwdist⟩ :=
-    exists_complex_aroot_near_of_isRealRooted_of_monic_of_coeff_close
+    exists_aroot_near_of_monic_of_coeff_close
       hε hzeval hf hgmonic hgdeg hgcoeff hgsplits
   have hwroot : (g.map (algebraMap ℝ ℂ)).IsRoot w := by simp_all
   have hwim : w.im = 0 := by

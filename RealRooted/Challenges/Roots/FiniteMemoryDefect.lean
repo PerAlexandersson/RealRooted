@@ -18,7 +18,7 @@ references = [
 ]
 
 [[definitions]]
-name = "RealRooted.FiniteMemory.sharpDefectBridges_residueDefect_of_setGcd_eq_one"
+name = "RealRooted.FiniteMemory.sharpResidueMinimizers_of_setGcd_eq_one"
 module = "RealRooted.FiniteMemory.Defect"
 label = "Coprime active lags produce sharp residue-defect bridges"
 
@@ -48,18 +48,18 @@ module = "RealRooted.FiniteMemory.Defect"
 label = "Fundamental rows have nonnegative coefficients"
 
 [[theorems]]
-name = "RealRooted.FiniteMemory.SharpDefectBridges.exists_exact_minimizer"
+name = "RealRooted.FiniteMemory.SharpResidueMinimizers.exists_exact_minimizer"
 module = "RealRooted.FiniteMemory.Defect"
 label = "Sharp bridges give eventual minimum-cost words"
 headline = true
 
 [[theorems]]
-name = "RealRooted.FiniteMemory.SharpDefectBridges.exists_upper_degree_word"
+name = "RealRooted.FiniteMemory.SharpResidueMinimizers.exists_upper_degree_word"
 module = "RealRooted.FiniteMemory.Defect"
 label = "Sharp bridges give scaled upper-degree words"
 
 [[theorems]]
-name = "RealRooted.FiniteMemory.SharpDefectBridges.exists_lower_degree_word"
+name = "RealRooted.FiniteMemory.SharpResidueMinimizers.exists_lower_degree_word"
 module = "RealRooted.FiniteMemory.Defect"
 label = "Sharp bridges give scaled lower-degree words"
 

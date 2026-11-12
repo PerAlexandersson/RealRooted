@@ -104,7 +104,7 @@ theorem chainPolynomial_bandCells_split_R {m : ℕ} (htail : ∀ g < s, ℓ g = 
     chainPolynomial incRel (bandCells (m + 1 + s) ℓ) =
       chainPolynomial incRel (bandCells (m + 1) fun g => ℓ (g + s)) *
           truncatedStaircaseRookPolynomial s s +
-        X * chainPolynomial incRel (bandCells m fun g => ℓ (g + (s + 1))) * auxiliaryG s := by
+        X * chainPolynomial incRel (bandCells m fun g => ℓ (g + (s + 1))) * rookSum s := by
   classical
   have hsn : s < m + 1 + s := by lia
   set D := bandCells (m + 1 + s) ℓ with hD
@@ -208,7 +208,7 @@ theorem chainPolynomial_bandCells_split {m : ℕ} {b : SnakeLetter}
     chainPolynomial incRel (bandCells (m + 1 + s) ℓ) =
       chainPolynomial incRel (bandCells (m + 1) fun g => ℓ (g + s)) *
           truncatedStaircaseRookPolynomial s s +
-        X * chainPolynomial incRel (bandCells m fun g => ℓ (g + (s + 1))) * auxiliaryG s := by
+        X * chainPolynomial incRel (bandCells m fun g => ℓ (g + (s + 1))) * rookSum s := by
   cases b with
   | R =>
       refine chainPolynomial_bandCells_split_R htail ?_
@@ -225,7 +225,7 @@ end Split
 /-- **The snake recurrence for the concrete snake board.** -/
 theorem generalizedSnakeRecurrence :
     GeneralizedSnakeRecurrence generalizedSnakeRookModel.snakePolynomial
-      modifiedNarayanaPolynomial auxiliaryG := by
+      modifiedNarayanaPolynomial rookSum := by
   intro w k _ hk
   have hk1 := hk.succ_lt_length
   obtain ⟨s, hs⟩ : ∃ s, w.length = k + 1 + s := ⟨w.length - (k + 1), by lia⟩
@@ -234,7 +234,7 @@ theorem generalizedSnakeRecurrence :
     generalizedSnakeRookModel_snakePolynomial_eq_chainPolynomial,
     generalizedSnakeRookModel_snakePolynomial_eq_chainPolynomial,
     hk.takePrefix_succ_length, hk.takePrefix_length,
-    ← truncatedStaircaseRookPolynomial_full_eq_modifiedNarayanaPolynomial s]
+    ← rookPolynomial_full_eq_modifiedNarayana s]
   have hpre1 : bandCells (k + 1) (gapLetter (w.takePrefix (k + 1))) =
       bandCells (k + 1) fun g => gapLetter w (g + s) := by
     refine bandCells_congr fun g hg => ?_
@@ -287,7 +287,7 @@ theorem generalizedSnakeRookModel_natDegree_eq (w : SnakeWord) :
             modifiedNarayanaPolynomial s).natDegree = n + 1 := by
           rw [natDegree_mul hu0 hP0, hu, hP]; lia
         have hdeg2 : (X * generalizedSnakeRookModel.snakePolynomial (w.takePrefix k) *
-            auxiliaryG s).natDegree ≤ n := by
+            rookSum s).natDegree ≤ n := by
           refine (natDegree_mul_le).trans ?_
           rw [hG]
           refine (Nat.add_le_add_right natDegree_mul_le _).trans ?_

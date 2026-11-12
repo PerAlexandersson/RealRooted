@@ -122,7 +122,7 @@ theorem polynomialValueSeries_eq_eulerNumerator_mul_invOneSubPow (p : ℝ[X]) :
 /-- Iterating causal forward differences through the actual degree of a
 polynomial-value sequence gives the coefficients of its canonical Euler
 numerator. -/
-theorem causalFwdDiff_iter_polynomialValueSeq_eq_eulerNumerator_coeff (p : ℝ[X]) :
+theorem polynomialValueSeq_causalFwdDiff_iter (p : ℝ[X]) :
     (Function.causalFwdDiff^[p.natDegree + 1]) (polynomialValueSeq p) =
       fun n => (polynomialValueEulerNumerator p).coeff n := by
   have hseries :

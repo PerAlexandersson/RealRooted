@@ -33,23 +33,23 @@ open FiniteSkewBoard (narayanaAuxiliaryGRecurrence_modified auxiliaryG_sub_hasNo
 
 /-- Root sum of the auxiliary polynomial `G_n`. -/
 theorem auxiliaryG_roots_sum {n : ℕ} (hn : 2 ≤ n) :
-    (FiniteSkewBoard.auxiliaryG n).roots.sum =
+    (FiniteSkewBoard.rookSum n).roots.sum =
       -(((n : ℝ) + 1) * ((n : ℝ) - 1) / 3) := by
-  have hsplit : (FiniteSkewBoard.auxiliaryG n).Splits := by
+  have hsplit : (FiniteSkewBoard.rookSum n).Splits := by
     simpa using auxiliaryGPencil_splits_of_combinatorial
       narayanaAuxiliaryGRecurrence_modified affineModifiedNarayanaInterlacing_modified
       (m := n) (lam := 0) (nu := 0) hn (by norm_num) (by norm_num)
   have hdeg :=
     auxiliaryG_natDegree_of_narayanaRecurrence narayanaAuxiliaryGRecurrence_modified n (by lia)
-  have hdegpos : 0 < (FiniteSkewBoard.auxiliaryG n).natDegree := by
+  have hdegpos : 0 < (FiniteSkewBoard.rookSum n).natDegree := by
     rw [hdeg]
     lia
-  have hlead : (FiniteSkewBoard.auxiliaryG n).leadingCoeff = (n : ℝ) := by
+  have hlead : (FiniteSkewBoard.rookSum n).leadingCoeff = (n : ℝ) := by
     rw [← Polynomial.coeff_natDegree, hdeg]
     exact auxiliaryG_coeff_sub_one_of_narayanaRecurrence
       narayanaAuxiliaryGRecurrence_modified n (by lia)
   have hnext :
-      (FiniteSkewBoard.auxiliaryG n).nextCoeff =
+      (FiniteSkewBoard.rookSum n).nextCoeff =
         ((n : ℝ) + 1) * (n : ℝ) * ((n : ℝ) - 1) / 3 := by
     rw [Polynomial.nextCoeff_of_natDegree_pos hdegpos, hdeg]
     simpa [Nat.sub_sub] using
@@ -64,7 +64,7 @@ family: for `m ≥ 2`, `λ ≥ 0` and `ν ≥ -1`,
 `(λX + ν) G_{m-1} + G_m` strictly interlaces `(λX + ν) P_{m-1} + P_m`. -/
 theorem shiftedDifferenceInterlacing_modified :
     ShiftedDifferenceInterlacing
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG :=
+      modifiedNarayanaPolynomial FiniteSkewBoard.rookSum :=
   shiftedDifferenceInterlacing_modified_of_combinatorial
     narayanaAuxiliaryGRecurrence_modified affineModifiedNarayanaInterlacing_modified
     fun _ hn => auxiliaryG_sub_hasNonnegCoeffs hn
@@ -73,8 +73,8 @@ theorem shiftedDifferenceInterlacing_modified :
 `G_n` strictly interlaces the modified Narayana polynomial `P_n`.  The case
 `n = 1` is the base case; for `n ≥ 2` it is the shifted difference interlacing
 claim at `λ = ν = 0`. -/
-theorem auxiliaryG_strictInterl_modifiedNarayana {n : ℕ} (hn : n ≠ 0) :
-    StrictInterl (FiniteSkewBoard.auxiliaryG n) (modifiedNarayanaPolynomial n) := by
+theorem rookSum_strictInterl_modifiedNarayana {n : ℕ} (hn : n ≠ 0) :
+    StrictInterl (FiniteSkewBoard.rookSum n) (modifiedNarayanaPolynomial n) := by
   rcases eq_or_ne n 1 with rfl | hn1
   · exact auxiliaryGInterlaces_modified_base
   · simpa using shiftedDifferenceInterlacing_modified
@@ -85,14 +85,14 @@ combinations. This is the part of adjacent `G` interlacing supplied
 directly by the auxiliary recurrence and the affine Narayana interlacing lemma; orienting the
 pencil remains a separate analytic step. -/
 theorem auxiliaryG_posComboRealRooted {m : ℕ} (hm : 2 ≤ m) :
-    PosComboRealRooted (FiniteSkewBoard.auxiliaryG (m - 1))
-      (FiniteSkewBoard.auxiliaryG m) := by
+    PosComboRealRooted (FiniteSkewBoard.rookSum (m - 1))
+      (FiniteSkewBoard.rookSum m) := by
   intro lam mu hlam hmu
   have hmu_ne : mu ≠ 0 := ne_of_gt hmu
   have hratio : 0 < lam / mu := div_pos hlam hmu
   let V : ℝ[X] :=
-    C (lam / mu) * FiniteSkewBoard.auxiliaryG (m - 1) +
-      FiniteSkewBoard.auxiliaryG m
+    C (lam / mu) * FiniteSkewBoard.rookSum (m - 1) +
+      FiniteSkewBoard.rookSum m
   have hV_split : V.Splits := by
     simpa [V] using auxiliaryGPencil_splits_of_combinatorial (lam := 0)
       narayanaAuxiliaryGRecurrence_modified affineModifiedNarayanaInterlacing_modified hm
@@ -103,8 +103,8 @@ theorem auxiliaryG_posComboRealRooted {m : ℕ} (hm : 2 ≤ m) :
       (lam := 0) (nu := lam / mu) narayanaAuxiliaryGRecurrence_modified hm (by positivity)
   have hscale :
       C mu * V =
-        C lam * FiniteSkewBoard.auxiliaryG (m - 1) +
-          C mu * FiniteSkewBoard.auxiliaryG m := by
+        C lam * FiniteSkewBoard.rookSum (m - 1) +
+          C mu * FiniteSkewBoard.rookSum m := by
     dsimp [V]
     rw [mul_add, ← mul_assoc, ← map_mul]
     field_simp
@@ -123,7 +123,7 @@ non-nesting-rook model in `snakeInterlacing_generalizedSnakeRookModel`
 theorem nonNestingRookInterlacing_modified_of_sourceInputs
     {M : SnakeWord → ℝ[X]}
     (hrec : GeneralizedSnakeRecurrence M
-      modifiedNarayanaPolynomial FiniteSkewBoard.auxiliaryG)
+      modifiedNarayanaPolynomial FiniteSkewBoard.rookSum)
     (hM_nonneg : ∀ w : SnakeWord, HasNonnegCoeffs (M w))
     (hdeg : ∀ {w : SnakeWord}, 1 ≤ w.length →
       (M w.deleteFinal).natDegree + 1 = (M w).natDegree)
@@ -132,7 +132,7 @@ theorem nonNestingRookInterlacing_modified_of_sourceInputs
     NonNestingRookInterlacing M :=
   snakeInterlacing_of_differenceInterlacing_of_constant_matches_succ_length
     (M := M) (P := modifiedNarayanaPolynomial)
-    (G := FiniteSkewBoard.auxiliaryG)
+    (G := FiniteSkewBoard.rookSum)
     hrec
     ((snakeDifferenceInterlacing_iff_shiftedDifferenceInterlacing _ _).mpr
       shiftedDifferenceInterlacing_modified)

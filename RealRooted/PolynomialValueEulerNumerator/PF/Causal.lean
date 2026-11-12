@@ -45,7 +45,7 @@ theorem isPFPolynomial_polynomialValueEulerNumerator_of_polyaFreqSeq
         (Polynomial.eventually_eq_eval_causalFwdDiff_iter
           (Filter.Eventually.of_forall fun n => rfl) k)
   apply IsPFPolynomial.of_polyaFreqSeq
-  rw [← causalFwdDiff_iter_polynomialValueSeq_eq_eulerNumerator_coeff]
+  rw [← polynomialValueSeq_causalFwdDiff_iter]
   exact hiter _ le_rfl
 
 end RealRooted

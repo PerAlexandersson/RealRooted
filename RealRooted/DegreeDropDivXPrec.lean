@@ -390,7 +390,7 @@ orientation target `StrictInterl (g.divX) f` are equivalent.
 This is the form easiest for the right-zero lead branch challenge wrappers to
 consume: either orientation can be discharged from the other with a single
 `.mp`/`.mpr`. -/
-theorem strictInterl_iff_strictInterl_divX_left_of_hasNonnegCoeffs_coeff_zero
+theorem strictInterl_iff_divX_strictInterl_of_coeff_zero
     {f g : ℝ[X]}
     (hfnn : HasNonnegCoeffs f)
     (hgnn : HasNonnegCoeffs g)
@@ -404,6 +404,10 @@ theorem strictInterl_iff_strictInterl_divX_left_of_hasNonnegCoeffs_coeff_zero
       strictInterl_of_strictInterl_divX_left_of_hasNonnegCoeffs_coeff_zero
         hstrictInterl hfnn hgnn hg0 hdeg⟩
 
+@[deprecated (since := "2026-11-12")]
+alias strictInterl_iff_strictInterl_divX_left_of_hasNonnegCoeffs_coeff_zero :=
+  strictInterl_iff_divX_strictInterl_of_coeff_zero
+
 /-- Bundle the same-degree data for the right-zero succ-degree divX reduction. -/
 lemma sameDegreePair_divX_data_of_succDegree_of_coeff_zero
     {f g : ℝ[X]}
@@ -414,7 +418,7 @@ lemma sameDegreePair_divX_data_of_succDegree_of_coeff_zero
       ∧ (StrictInterl f g ↔ StrictInterl (g.divX) f) :=
   ⟨natDegree_and_card_divX_roots_eq_natDegree_of_succDegree_of_coeff_zero
       hg hg0 hg_split hdeg,
-   strictInterl_iff_strictInterl_divX_left_of_hasNonnegCoeffs_coeff_zero hfnn hgnn hg0 hdeg⟩
+   strictInterl_iff_divX_strictInterl_of_coeff_zero hfnn hgnn hg0 hdeg⟩
 
 /-- Orientation projection from the bundled right-zero succ-degree divX data. -/
 lemma sameDegreePair_divX_strictInterl_iff_of_succDegree_of_coeff_zero

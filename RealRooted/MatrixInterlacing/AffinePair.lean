@@ -577,7 +577,7 @@ theorem interl_zipWith_sum_pair_of_2x2_weak
     have hrr_rev :
         (((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum) ≠ 0 ∧
           ((((auxRow s t).reverse).zipWith (· * ·) fs.reverse).sum).Splits) :=
-      isRealRooted_zipWith_mul_sum_reverse_of_interlacingSeq0Nonneg_both
+      zipWith_mul_sum_reverse_isRealRooted
         (fs := (auxRow s t).reverse) (gs := fs)
         haux0 haux_real hfs hfs_real hsum_ne_rev
     simpa [zipWith_mul_sum_reverse_reverse (row := auxRow s t) (fs := fs)

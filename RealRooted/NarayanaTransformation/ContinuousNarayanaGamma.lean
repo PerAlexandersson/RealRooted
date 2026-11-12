@@ -495,7 +495,7 @@ private theorem narayanaInterpolation_root_package {theta : ℝ}
       exact ⟨hsimple.1, hsimple.2, hstrict,
         fun r hr hnext ↦ hno r ⟨hr, hnext⟩⟩
   | succ n =>
-      have hlift := strictInterl_gammaTransform_succ_of_strictInterl_of_no_common
+      have hlift := GammaTransform.strictInterl_succ_of_no_common
         (n := n + 2) (A := continuousNarayanaGamma theta (n + 1))
         (B := continuousNarayanaGamma theta (n + 2)) (by lia)
         (by rw [natDegree_continuousNarayanaGamma htheta]; lia)
