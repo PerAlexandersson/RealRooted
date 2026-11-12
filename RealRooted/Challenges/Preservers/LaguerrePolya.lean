@@ -19,6 +19,7 @@ version = 1
 section = "concepts"
 slug = "laguerre-polya-class"
 formalized = "2026-09-11"
+tags = []
 references = [
   "SchurPolya1914",
   "Levin1964",
@@ -86,19 +87,16 @@ label = "The zeros of a nonzero Laguerre–Pólya function are closed and discre
 name = "RealRooted.IsLaguerrePolya.deriv"
 module = "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative"
 label = "The Laguerre–Pólya class is closed under differentiation"
-headline = true
 
 [[theorems]]
 name = "RealRooted.IsLaguerrePolya.im_eq_zero_of_eq_zero"
 module = "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Zeros"
 label = "A nonzero Laguerre–Pólya function has only real zeros"
-headline = true
 
 [[theorems]]
 name = "RealRooted.IsLaguerrePolya.laguerre_form_nonneg"
 module = "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Inequality"
 label = "Laguerre's inequality for Laguerre–Pólya functions"
-headline = true
 
 [[theorems]]
 name = "RealRooted.IsLaguerrePolyaTypeI.toLaguerrePolya"

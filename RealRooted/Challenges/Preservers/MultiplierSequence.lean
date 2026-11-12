@@ -23,6 +23,7 @@ version = 1
 section = "concepts"
 slug = "multiplier-sequences"
 formalized = "2026-09-07"
+tags = []
 references = [
   "SchurPolya1914",
   "KostovShapiro2006",
@@ -89,13 +90,11 @@ label = "Jensen-pencil certificate"
 name = "RealRooted.isMultiplierSequence_iff_jensenPolynomial_isPF"
 module = "RealRooted.MultiplierSequence.PolyaSchur"
 label = "Pólya–Schur: multiplier sequences via Jensen polynomials"
-headline = true
 
 [[theorems]]
 name = "RealRooted.isPFMultiplierSequence_iff_isLaguerrePolyaTypeI_complexExpGeneratingFunction"
 module = "RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIReverse"
 label = "Pólya–Schur: PF multiplier sequences are the Laguerre–Pólya type I class"
-headline = true
 
 [[theorems]]
 name = "RealRooted.isMultiplierSequence_iff_isLaguerrePolyaTypeISigned_complexExpGeneratingFunction"
@@ -127,7 +126,6 @@ label = "1/k! is a PF multiplier sequence"
 name = "RealRooted.isMultiplierSequence_eval_of_roots_nonpos"
 module = "RealRooted.MultiplierSequence.Laguerre"
 label = "Laguerre's theorem: φ(0), φ(1), … is a multiplier sequence"
-headline = true
 
 [[theorems]]
 name = "RealRooted.isPFMultiplierSequence_eval_of_roots_nonpos"

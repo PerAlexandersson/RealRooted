@@ -14,13 +14,14 @@ version = 1
 section = "theorems"
 slug = "totally-nonnegative-pencils"
 formalized = "2026-11-07"
+authors = []
+references = []
 tags = ["realrooted-original"]
 
 [[theorems]]
 name = "Matrix.IsTotallyNonneg.isPFPolynomial_det_one_add_X_smul"
 module = "RealRooted.TotallyNonnegPencil"
 label = "det(I + X A) is a PF polynomial for a totally nonnegative matrix A"
-headline = true
 
 [[theorems]]
 name = "Matrix.IsTotallyNonneg.isPFPolynomial_det_map_add_X_smul_checkerboard"
@@ -32,7 +33,6 @@ headline = true
 name = "Matrix.IsTotallyNonneg.leading_det_X_smul_one_add_map_interlaces"
 module = "RealRooted.TotallyNonnegPencil.Interlacing"
 label = "The leading section interlaces the full determinant pencil det(X I + H)"
-headline = true
 
 [[theorems]]
 name = "Matrix.IsLowerTriangular.leading_det_map_add_X_smul_interlaces"

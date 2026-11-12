@@ -10,6 +10,8 @@ version = 1
 section = "theorems"
 slug = "sonin-envelope"
 formalized = "2026-11-03"
+references = []
+tags = []
 authors = ["Sonin", "Krasikov"]
 years = [1880, 2014]
 
@@ -67,7 +69,6 @@ label = "Derivative of the weighted cross-product quotient"
 name = "Polynomial.Sonin.eval_ne_zero_of_tendsto_atBot"
 module = "RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.Sonin"
 label = "No roots on a left half-line"
-headline = true
 
 [[theorems]]
 name = "Polynomial.Sonin.eval_ne_zero_of_mem_Ioc"

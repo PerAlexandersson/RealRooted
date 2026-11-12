@@ -15,6 +15,7 @@ version = 1
 section = "theorems"
 slug = "heilmann-lieb"
 formalized = "2026-10-06"
+tags = []
 references = [
   "HeilmannLieb1972",
   "Engstrom2007",
@@ -56,7 +57,6 @@ label = "Rank-two edge weights a_i b_j + a_j b_i on a complete graph"
 [[theorems]]
 name = "RealRooted.Challenges.HeilmannLieb.matchingPolynomial_splits"
 label = "Heilmann–Lieb: the matching polynomial is real-rooted"
-headline = true
 
 [[theorems]]
 name = "RealRooted.interlaces_matchingPolyOn_erase"
@@ -76,11 +76,12 @@ label = "Heilmann–Lieb root bound |x| ≤ 2√(Δ − 1)"
 [[theorems]]
 name = "RealRooted.Challenges.HeilmannLieb.clawFree_weightedIndepPoly_splits"
 label = "Engström: weighted independence polynomials of claw-free graphs are real-rooted"
-headline = true
+symcat = "weightedIndependencePolynomial"
 
 [[theorems]]
 name = "RealRooted.Challenges.HeilmannLieb.weightedMatchingPolynomial_splits"
 label = "Weighted matching polynomials are real-rooted"
+headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.HeilmannLieb.weightedMatchingPolynomial_isPFPolynomial"

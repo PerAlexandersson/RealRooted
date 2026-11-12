@@ -11,6 +11,8 @@ version = 1
 section = "theorems"
 slug = "endpoint-derivative"
 formalized = "2026-09-26"
+authors = ["Fisk"]
+tags = []
 references = [
   "Fisk2006x",
 ]

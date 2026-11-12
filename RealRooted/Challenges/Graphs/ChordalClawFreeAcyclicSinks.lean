@@ -10,6 +10,7 @@ version = 1
 section = "families"
 slug = "chordal-claw-free-acyclic-sinks"
 formalized = "2026-09-13"
+references = []
 tags = ["coauthored-paper"]
 authors = ["Alexandersson", "Leite"]
 years = [2026]

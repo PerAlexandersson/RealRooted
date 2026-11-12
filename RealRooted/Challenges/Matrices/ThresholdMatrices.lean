@@ -12,6 +12,7 @@ version = 1
 section = "theorems"
 slug = "threshold-matrices"
 formalized = "2026-10-06"
+tags = []
 references = [
   "Branden2015",
   "HaglundZhang2019",
@@ -45,7 +46,6 @@ label = "Haglund–Zhang threshold matrices preserve interlacing sequences"
 name = "RealRooted.HaglundZhang.binomialEulerianPolynomial_splits"
 module = "RealRooted.ThresholdMatrix.HaglundZhang"
 label = "Haglund–Zhang: binomial Eulerian polynomials are real-rooted"
-headline = true
 
 [[theorems]]
 name = "RealRooted.HaglundZhang.binomialRefined_interlaces"
@@ -56,12 +56,12 @@ label = "The refined binomial Eulerian vectors form interlacing sequences"
 name = "RealRooted.rowThreshold_matrix_preserves_interlacing_seq_of_2x2"
 module = "RealRooted.RowThreshold"
 label = "Brändén: row-threshold matrices of linear forms preserve interlacing sequences"
-headline = true
 
 [[theorems]]
 name = "RealRooted.rowThreshold_matrix_preserves_interlacing_seq0_of_2x2"
 module = "RealRooted.RowThreshold"
 label = "Zero-aware row-threshold preservation of interlacing sequences"
+headline = true
 
 [[theorems]]
 name = "RealRooted.rowThreshold_matrix_preserves_interlacing_seq0_filter_ne_zero_of_2x2"
@@ -126,6 +126,12 @@ thresholds increase weakly and no switch follows a dropped pivot.
 Gustafsson and Solus use this to prove that the box polynomials of
 $s$-lecture hall simplices, which generalize the derangement polynomials, are
 real-rooted.
+
+## Relation to SymCat
+
+We formalize the [binomial Eulerian real-rootedness assertion](sf:binomialEulerianPolynomial)
+as an application. The headline is the general row-threshold preservation theorem;
+the selected application does not assert consecutive binomial Eulerian interlacing.
 
 ## References
 

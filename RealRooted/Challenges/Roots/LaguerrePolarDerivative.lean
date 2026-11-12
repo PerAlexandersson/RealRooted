@@ -12,6 +12,7 @@ version = 1
 section = "theorems"
 slug = "laguerre-polar-derivative"
 formalized = "2026-07-01"
+tags = []
 references = [
   "RahmanSchmeisser2002",
 ]
@@ -48,7 +49,6 @@ headline = true
 name = "RealRooted.polarDeriv_rootsIn_lowerHalf"
 module = "RealRooted.GraceHalfPlane"
 label = "Laguerre's theorem for a closed half-plane"
-headline = true
 
 [[theorems]]
 name = "RealRooted.polarDeriv_natDegree"

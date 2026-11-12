@@ -15,6 +15,7 @@ version = 1
 section = "theorems"
 slug = "recurrence-root-windows"
 formalized = "2026-10-01"
+tags = []
 references = [
   "LiuWang2007",
   "Branden2006",
@@ -26,7 +27,6 @@ years = [2006, 2007]
 name = "RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc"
 module = "RealRooted.DerivativeRecurrence.RootWindow"
 label = "Interlacing from a fixed root window"
-headline = true
 
 [[theorems]]
 name = "RealRooted.derivativeRecurrence_interlaces_of_roots_le"
@@ -57,7 +57,6 @@ label = "Two-sided moving windows, either condition on each side"
 name = "RealRooted.threeTerm_interlaces_of_roots_mem_Icc"
 module = "RealRooted.DerivativeRecurrence.RootWindow"
 label = "Three-term interlacing in a fixed root window"
-headline = true
 
 [[theorems]]
 name = "RealRooted.threeTerm_interlaces_of_roots_le_of_ratio"
@@ -133,6 +132,7 @@ label = "Power-factor rows from a linear remainder certificate"
 name = "RealRooted.derivativeRecurrence_interlaces_of_endpoint_windows"
 module = "RealRooted.DerivativeRecurrence.EndpointWindow"
 label = "Root windows from endpoint signs only"
+headline = true
 -->
 
 <!-- realrooted-catalog-content -->

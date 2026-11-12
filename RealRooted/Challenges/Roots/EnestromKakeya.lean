@@ -10,6 +10,8 @@ version = 1
 section = "theorems"
 slug = "enestrom-kakeya"
 formalized = "2026-10-07"
+references = []
+tags = []
 authors = ["Eneström", "Kakeya"]
 years = [1893, 1912]
 

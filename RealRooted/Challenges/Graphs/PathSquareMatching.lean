@@ -32,13 +32,11 @@ label = "The weighted matching polynomial after deleting a vertex"
 name = "RealRooted.PathSquareEdge.polynomial_add_four"
 module = "RealRooted.Graph.IndependencePolynomial.PathSquareMatching"
 label = "A four-term recurrence for the matching polynomials of path squares"
-headline = true
 
 [[theorems]]
 name = "RealRooted.PathSquareEdge.polynomial_splits"
 module = "RealRooted.Graph.IndependencePolynomial.PathSquareMatching"
 label = "The weighted matching polynomials of path squares are real-rooted"
-headline = true
 
 [[theorems]]
 name = "RealRooted.PathSquareEdge.polynomial_strictInterl_succ"
@@ -65,7 +63,6 @@ label = "The four-term recurrence with its initial rows characterizes the family
 name = "RealRooted.Graph.strictInterl_weightedIndepPolyOn_sdiff_of_simplicialClique"
 module = "RealRooted.Graph.IndependencePolynomial.SimplicialCliqueDeletion"
 label = "Deleting a simplicial clique of a claw-free graph interlaces weighted independence polys"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Graph.strictInterl_weightedMatchingGeneratingPolynomial_deleteVertex"

@@ -24,6 +24,7 @@ version = 1
 section = "concepts"
 slug = "common-interleavers"
 formalized = "2026-07-03"
+tags = []
 references = [
   "ChudnovskySeymour2007",
   "Branden2015",
@@ -102,7 +103,6 @@ headline = true
 name = "RealRooted.chudnovskySeymour_pairwiseCompatible_iff_familyCompatible"
 module = "RealRooted.ChudnovskySeymour.Core"
 label = "Chudnovsky–Seymour: pairwise compatible ⇔ compatible family"
-headline = true
 
 [[theorems]]
 name = "RealRooted.posComboPairHasCommonInterleaver_of_splits"
@@ -249,6 +249,12 @@ $d-1$ with $h\ll p_i$ for every $i$—then some $p_i$ has largest root at most
 the largest root of $\sum_i p_i$. Iterating along a tree of degree-$d$
 polynomials whose sibling polynomials have such common left interlacers, some
 leaf has largest root at most that of the root polynomial.
+
+## Relation to SymCat
+
+We formalize the equivalence between pairwise compatibility and a common interleaver
+from the [Chudnovsky–Seymour compatibility theorem](sf:commonInterlacingCompatibilityTheorem).
+The other equivalence with family compatibility is published below as a separate result.
 
 ## References
 

@@ -45,7 +45,6 @@ label = "A TP2 constant matrix preserves interlacing sequences with nonnegative 
 name = "Matrix.IsTP2.interlacingSeqNonneg_cons_tp2AffineStep"
 module = "RealRooted.MatrixInterlacing.TP2Step"
 label = "The affine step (A + b X J) f preserves ordered interlacing"
-headline = true
 
 [[theorems]]
 name = "RealRooted.hessenbergDenominator_mul_mk_hessenbergRow"
@@ -125,7 +124,7 @@ rows begin $1,\ t-2,\ (t-1)(t-3)$.
 
 ## What is new
 
-The proof is new, developed for RealRooted (issue #2482), and is of independent research
+The proof is new, developed for RealRooted, and is of independent research
 interest: the identification of the Hessenberg generating function with the first coordinate
 of an interlacing-preserving vector recursion is not taken from the literature, and the
 classical constant-matrix theorem is used only as the preservation input. The strict version

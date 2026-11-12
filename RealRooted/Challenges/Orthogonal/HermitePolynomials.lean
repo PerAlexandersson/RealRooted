@@ -11,6 +11,8 @@ version = 1
 section = "families"
 slug = "hermite-polynomials"
 formalized = "2026-09-07"
+authors = ["Szegő"]
+tags = []
 references = [
   "Szego1939",
 ]
@@ -29,7 +31,6 @@ label = "Gaussian weight"
 name = "RealRooted.hermiteReal_isRealRooted"
 module = "RealRooted.Hermite.Roots"
 label = "Hermite polynomials are real-rooted"
-headline = true
 
 [[theorems]]
 name = "RealRooted.hermiteReal_hasSimpleRoots"
@@ -40,6 +41,7 @@ label = "Hermite polynomials have simple roots"
 name = "RealRooted.hermiteReal_strictInterl_succ"
 module = "RealRooted.Hermite.Roots"
 label = "Consecutive Hermite polynomials interlace"
+headline = true
 
 [[theorems]]
 name = "RealRooted.hermiteReal_isSturmSeq"

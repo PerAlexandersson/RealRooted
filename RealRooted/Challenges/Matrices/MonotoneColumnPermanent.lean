@@ -11,6 +11,7 @@ version = 1
 section = "theorems"
 slug = "monotone-column-permanent"
 formalized = "2026-10-13"
+tags = []
 references = [
   "HaglundOnoWagner1999",
   "BrandenHaglundVisontaiWagner2011",
@@ -68,7 +69,6 @@ headline = true
 name = "RealRooted.Permanent.columnPermanent_mvRealStable_of_increasingColumns"
 module = "RealRooted.Permanent.MonotoneColumn"
 label = "Increasing-column permanent is real stable"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Permanent.diagonalPermanent_ne_zero_and_splits_of_decreasingColumns"
@@ -79,7 +79,6 @@ label = "Decreasing-column univariate permanent is real-rooted"
 name = "RealRooted.Permanent.diagonalPermanent_ne_zero_and_splits_of_increasingColumns"
 module = "RealRooted.Permanent.MonotoneColumn"
 label = "Monotone column permanent theorem"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Permanent.diagonalPermanent_coeff_card"

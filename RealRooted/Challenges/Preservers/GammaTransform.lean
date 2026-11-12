@@ -17,6 +17,7 @@ version = 1
 section = "theorems"
 slug = "gamma-transform"
 formalized = "2026-10-06"
+tags = []
 references = [
   "Petersen2015EulerianNumbers",
   "HosterStump2025x",
@@ -54,7 +55,6 @@ headline = true
 [[theorems]]
 name = "RealRooted.Challenges.GammaTransform.gammaU_strictInterl_gammaV"
 label = "The gamma-pencil components interlace"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.GammaTransform.isRealRooted_gammaTransform_of_hasNonnegCoeffs"
@@ -186,6 +186,12 @@ $$
 \Gamma_{2n}(\gamma)\ \ll\ (x+1)\,\Gamma_{2n}(\gamma)\ \ll\ \Gamma_{2n+2}(\delta),
 $$
 so two successive gamma-transform steps preserve proper position.
+
+## Relation to SymCat
+
+We formalize the nonpositive-root transfer criterion in the
+[gamma-polynomial discussion](sf:gammaPolynomial). The discussion also gives the
+more general root bound $1/4$ without coefficient-sign hypotheses.
 
 ## References
 

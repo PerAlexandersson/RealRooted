@@ -17,6 +17,7 @@ version = 1
 section = "families"
 slug = "sturm-sequence-families"
 formalized = "2026-05-12"
+tags = []
 references = [
   "GesselStanley1978",
   "MantaciRakotondrajao2003",
@@ -64,6 +65,7 @@ name = "RealRooted.interlaces_touchard_succ"
 module = "RealRooted.CombinatorialExamples.Touchard"
 label = "Consecutive Touchard polynomials interlace"
 headline = true
+symcat = "touchardPolynomial"
 
 [[theorems]]
 name = "RealRooted.coeff_touchard_eq_stirlingSecond"
@@ -74,12 +76,12 @@ label = "Touchard coefficients are Stirling numbers of the second kind"
 name = "RealRooted.interlaces_stirlingPermutations_succ"
 module = "RealRooted.CombinatorialExamples.StirlingPermutations"
 label = "Consecutive Stirling-permutation descent polynomials interlace"
-headline = true
 
 [[theorems]]
 name = "RealRooted.interlaces_sturmDerangementsExc_succ"
 module = "RealRooted.CombinatorialExamples.SturmDerangementsExc"
 label = "Consecutive derangement polynomials interlace"
+symcat = "derangementPolynomial"
 
 [[theorems]]
 name = "RealRooted.strictInterl_simsun_succ"

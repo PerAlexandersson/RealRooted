@@ -23,6 +23,7 @@ version = 1
 section = "theorems"
 slug = "totally-nonnegative-matrices"
 formalized = "2026-09-05"
+tags = []
 references = [
   "Fisk2006x",
   "Cryer1976",
@@ -65,7 +66,6 @@ label = "Tetradiagonal lower-Hessenberg matrix"
 [[theorems]]
 name = "RealRooted.Challenges.TotallyNonnegativeMatrices.exists_charpoly_eq_prod_nonneg"
 label = "A totally nonnegative matrix has real nonnegative eigenvalues"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.TotallyNonnegativeMatrices.leading_charpoly_interlaces"
@@ -76,7 +76,7 @@ headline = true
 name = "Matrix.IsTotallyNonnegRect.isInterlacingSeq_filter_mulVec"
 module = "RealRooted.MatrixInterlacing.TotallyNonnegative"
 label = "Totally nonnegative matrices mix interlacing sequences"
-headline = true
+symcat = "tnnMixingInterlacing"
 
 [[theorems]]
 name = "RealRooted.Challenges.TotallyNonnegativeMatrices.trailing_charpoly_interlaces"
@@ -101,6 +101,7 @@ label = "Products of totally nonnegative matrices"
 [[theorems]]
 name = "RealRooted.Challenges.TotallyNonnegativeMatrices.signVariations_mulVec_le"
 label = "Variation-diminishing property"
+symcat = "variationDiminishingProperty"
 
 [[theorems]]
 name = "RealRooted.Challenges.TotallyNonnegativeMatrices.isTotallyNonneg_of_initialColumnMinors"

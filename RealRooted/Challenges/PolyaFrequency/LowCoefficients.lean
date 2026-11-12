@@ -10,6 +10,8 @@ version = 1
 section = "theorems"
 slug = "pf-low-coefficients"
 formalized = "2026-11-03"
+authors = []
+tags = []
 references = [
   "AissenSchoenbergWhitney1952",
 ]
@@ -24,7 +26,6 @@ headline = true
 name = "RealRooted.IsPFPolynomial.card_filter_roots_lt_of_mul_coeff_one_le"
 module = "RealRooted.PFPolynomial.LowCoefficients"
 label = "Number of roots near zero from the two lowest coefficients"
-headline = true
 
 [[theorems]]
 name = "RealRooted.IsPFPolynomial.coeff_zero_sub_mul_coeff_one_le_eval_neg"

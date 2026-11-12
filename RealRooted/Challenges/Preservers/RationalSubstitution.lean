@@ -11,6 +11,8 @@ version = 1
 section = "theorems"
 slug = "rational-substitution"
 formalized = "2026-11-01"
+authors = []
+references = []
 tags = ["realrooted-original"]
 
 [[definitions]]
@@ -58,7 +60,6 @@ label = "Every root of p is a value A(x) / B(x) at a root x of the substitution"
 name = "RealRooted.quadraticSubstitution_splits_iff"
 module = "RealRooted.Transforms.RationalSubstitution"
 label = "The quadratic substitution splits iff p splits and 1 - 4 s r ≥ 0 at every root r"
-headline = true
 
 [[theorems]]
 name = "RealRooted.quadraticSubstitution_splits_and_roots_nonpos_iff_of_nonneg"

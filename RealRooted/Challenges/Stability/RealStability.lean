@@ -34,6 +34,7 @@ version = 1
 section = "theorems"
 slug = "real-stability"
 formalized = "2026-10-12"
+tags = []
 references = [
   "ChoeOxleySokalWagner2004",
   "Branden2007",
@@ -110,7 +111,6 @@ label = "Strongly Rayleigh measures are negatively correlated"
 [[theorems]]
 name = "RealRooted.Challenges.RealStability.detPencil_eq_zero_or_stable"
 label = "Determinantal pencils are stable or zero"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.RealStability.mvRealStable_iff_forall_hyperbolicAt"
@@ -120,7 +120,6 @@ label = "A homogeneous polynomial is real stable iff it is hyperbolic in every p
 name = "RealRooted.convex_hyperbolicityCone"
 module = "RealRooted.HyperbolicityCone"
 label = "Gårding: hyperbolicity cones are convex"
-headline = true
 
 [[theorems]]
 name = "RealRooted.mvRealStable_realDetPencil_of_ne"
@@ -195,13 +194,11 @@ label = "Marcus–Spielman–Srivastava: mixed characteristic polynomials are re
 name = "RealRooted.MixedCharacteristic.mixedCharacteristic_roots_le_one_add_sqrt_sq"
 module = "RealRooted.MultivariateStability.MSSBound"
 label = "Marcus–Spielman–Srivastava: the roots of μ[A] are at most (1 + √ε)²"
-headline = true
 
 [[theorems]]
 name = "RealRooted.MixedCharacteristic.expectedCharpoly_eq_mixedCharacteristic"
 module = "RealRooted.MultivariateStability.ExpectedCharpoly"
 label = "MSS: expected characteristic polynomials are mixed characteristic"
-headline = true
 
 [[theorems]]
 name = "RealRooted.MvPolynomial.HyperbolicAt.of_joinedIn"

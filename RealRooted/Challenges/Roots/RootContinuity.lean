@@ -12,6 +12,9 @@ version = 1
 section = "theorems"
 slug = "root-continuity"
 formalized = "2026-10-06"
+authors = []
+references = []
+tags = []
 
 [[theorems]]
 name = "RealRooted.splits_of_isPreconnected"
@@ -93,7 +96,6 @@ label = "Constancy of upper root counts"
 name = "RealRooted.card_roots_filter_all_eq_of_no_isRoot_Icc"
 module = "RealRooted.RootContinuity"
 label = "Bundled root-count constancy"
-headline = true
 
 [[theorems]]
 name = "RealRooted.card_roots_filter_le_sub_eq_of_no_isRoot_Icc"
@@ -181,6 +183,6 @@ force enough of its roots to lie near $a$.
 
 The path-transport and root-count results were promoted from the formal proofs for
 [OEIS A358628](https://oeis.org/A358628), [OEIS A355144](https://oeis.org/A355144), and
-[OEIS A176331](https://oeis.org/A176331) in the companion OEIS formalization project.
+[OEIS A176331](https://oeis.org/A176331).
 <!-- /realrooted-catalog-content -->
 -/

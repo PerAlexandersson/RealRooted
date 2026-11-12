@@ -16,6 +16,7 @@ version = 1
 section = "families"
 slug = "narayana"
 formalized = "2026-07-18"
+tags = []
 references = [
   "MaoWang2026x",
   "Brenti1989",
@@ -69,7 +70,6 @@ label = "The Mao–Wang one-step factors"
 name = "RealRooted.splits_narayanaPolynomial"
 module = "RealRooted.NarayanaTransformation.Endpoints"
 label = "Generalized Narayana polynomials are real-rooted"
-headline = true
 
 [[theorems]]
 name = "RealRooted.narayanaPolynomialRootLocation"
@@ -81,11 +81,12 @@ name = "RealRooted.narayanaTransformPreservesPF"
 module = "RealRooted.NarayanaTransformation.Endpoints"
 label = "The Narayana transform preserves Pólya-frequency polynomials"
 headline = true
+symcat = "thm:narayanaTransformationMaoWang"
 
 [[theorems]]
 name = "RealRooted.Challenges.Narayana.HasOnlyNonposRoots.of_basisTransform_fallingFactorial"
 label = "Brenti: nonpositive zeros in the falling-factorial basis pull back"
-headline = true
+symcat = "thm:brentiFallingFactorialBasis"
 
 [[theorems]]
 name = "RealRooted.Challenges.Narayana.isPFPolynomial_basisTransform_touchard"
@@ -98,7 +99,6 @@ label = "Rising-factorial transforms preserve Pólya-frequency polynomials"
 [[theorems]]
 name = "RealRooted.Challenges.Narayana.rowGeneratingFunctionsPF_mul_listProduct"
 label = "Mao–Wang: products with admissible factors keep Pólya-frequency rows"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.Narayana.rowGeneratingFunctionsPF_mul_pow"
@@ -138,7 +138,6 @@ label = "γ-expansion of the continuous Narayana interpolation"
 name = "RealRooted.narayanaInterpolation_isPF"
 module = "RealRooted.NarayanaInterpolation"
 label = "The continuous Narayana interpolation is Pólya-frequency for θ > −1"
-headline = true
 
 [[theorems]]
 name = "RealRooted.narayanaInterpolation_roots_neg"

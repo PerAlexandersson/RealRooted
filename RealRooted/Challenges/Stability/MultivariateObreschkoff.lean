@@ -12,6 +12,7 @@ version = 1
 section = "theorems"
 slug = "multivariate-obreschkoff"
 formalized = "2026-10-13"
+tags = []
 references = [
   "BorceaBranden2009I",
   "BorceaBranden2010",
@@ -45,7 +46,6 @@ headline = true
 name = "RealRooted.MvProperPosition.allComboMvRealStableOrZero"
 module = "RealRooted.BorceaBranden.MultivariateHKO"
 label = "Hermite–Kakeya–Obreschkoff: proper position gives a stable real span"
-headline = true
 
 [[theorems]]
 name = "RealRooted.mvProperPosition_iff_mvStablePencil"

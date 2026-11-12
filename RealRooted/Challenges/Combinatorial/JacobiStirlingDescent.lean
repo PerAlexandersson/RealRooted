@@ -10,6 +10,7 @@ version = 1
 section = "families"
 slug = "jacobi-stirling-descent"
 formalized = "2026-10-07"
+tags = []
 references = [
   "GesselLinZeng2012",
   "MaWang2026x",

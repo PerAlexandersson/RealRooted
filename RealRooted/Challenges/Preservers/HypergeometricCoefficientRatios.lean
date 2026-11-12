@@ -11,6 +11,9 @@ version = 1
 section = "theorems"
 slug = "hypergeometric-coefficient-ratios"
 formalized = "2026-10-27"
+authors = ["Martínez-Finkelshtein", "Morales", "Perales"]
+references = []
+tags = []
 
 [[definitions]]
 name = "RealRooted.pochhammerJensenPolynomial"
@@ -36,13 +39,11 @@ label = "Pochhammer Jensen polynomials with positive parameters are PF"
 name = "RealRooted.isPFPolynomial_of_pochhammer_coeff_ratio"
 module = "RealRooted.MultiplierSequence.CoefficientRatio"
 label = "A polynomial with coefficient ratio (d-k)(b+d-k-1) / ((k+1)(a+k)), a, b > 0, is PF"
-headline = true
 
 [[theorems]]
 name = "RealRooted.isPFPolynomial_of_pochhammer_list_coeff_ratio"
 module = "RealRooted.MultiplierSequence.CoefficientRatio"
 label = "The coefficient-ratio criterion with arbitrary lists of upper and lower parameters"
-headline = true
 
 [[theorems]]
 name = "RealRooted.eq_C_mul_of_coeff_ratio"

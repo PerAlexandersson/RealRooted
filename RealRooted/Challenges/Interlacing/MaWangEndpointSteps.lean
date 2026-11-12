@@ -13,6 +13,7 @@ version = 1
 section = "theorems"
 slug = "ma-wang-endpoint-steps"
 formalized = "2026-11-01"
+tags = []
 references = [
   "MaWang2008",
 ]
@@ -38,13 +39,11 @@ label = "The step f ↦ (a + bX) f + X (u - vX) f'"
 name = "RealRooted.MaWang.endpointStep_rootMultiplicity"
 module = "RealRooted.MaWang.EndpointMultiplicity"
 label = "The multiplicity of the endpoint -c after one step"
-headline = true
 
 [[theorems]]
 name = "RealRooted.MaWang.endpointStep_roots_mem_Ico_iff"
 module = "RealRooted.MaWang.EndpointMultiplicity"
 label = "The roots stay in [-c, 0) exactly when b ≤ c (a + multiplicity of -c)"
-headline = true
 
 [[theorems]]
 name = "RealRooted.MaWang.endpointStep_strictInterl"
@@ -55,18 +54,17 @@ label = "The step interlaces its input"
 name = "RealRooted.MaWang.affineEndpointSequence"
 module = "RealRooted.MaWang.EndpointMultiplicity"
 label = "Slope 1/L, intercept r/L: roots in [-c, 0), interlacing, multiplicity ⌈(n - r)/L⌉"
-headline = true
 
 [[theorems]]
 name = "RealRooted.MaWang.affineEndpointParameters_of_roots_mem_Ico"
 module = "RealRooted.MaWang.EndpointClassification"
 label = "Converse: confinement of all rows forces slope 1/L and intercept r/L"
-headline = true
 
 [[theorems]]
 name = "RealRooted.MaWang.affineEndpointSequence_roots_mem_Ico_iff"
 module = "RealRooted.MaWang.EndpointClassification"
 label = "Classification of the affine endpoint sequences with confined roots"
+headline = true
 
 [[theorems]]
 name = "RealRooted.MaWang.halfSlopeEndpointSequence"
@@ -87,7 +85,6 @@ label = "Roots stay in [-1, 0] iff 0 ≤ c + m₀ and 0 ≤ a + m₋₁ - c"
 name = "RealRooted.growingZeroStep_isPFPolynomial_iff"
 module = "RealRooted.MaWang.GrowingZeroMultiplicity"
 label = "The PF threshold depends on the multiplicity of the root zero: 0 ≤ a + u m₀"
-headline = true
 
 [[theorems]]
 name = "RealRooted.growingZeroFamily_pf_degree_multiplicity_interlacing"

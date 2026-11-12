@@ -11,6 +11,8 @@ version = 1
 section = "theorems"
 slug = "positive-affine-lag-recurrences"
 formalized = "2026-11-01"
+authors = []
+references = []
 tags = ["realrooted-original"]
 
 [[theorems]]
@@ -27,12 +29,12 @@ label = "Rows have nonnegative coefficients and nonnegative successive differenc
 name = "RealRooted.PositiveAffineLag.interlacing_and_roots"
 module = "RealRooted.ThreeTermRecurrence.PositiveAffineLag"
 label = "Consecutive rows interlace, have simple negative roots and no common roots"
-headline = true
 
 [[theorems]]
 name = "RealRooted.PositiveAffineLag.ratio_interlacing_and_roots"
 module = "RealRooted.ThreeTermRecurrence.PositiveAffineLag"
 label = "The same conclusions under the weaker ratio hypotheses"
+headline = true
 -->
 
 <!-- realrooted-catalog-content -->

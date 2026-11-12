@@ -17,6 +17,9 @@ version = 1
 section = "theorems"
 slug = "product-sequences"
 formalized = "2026-07-08"
+authors = []
+references = []
+tags = []
 
 [[theorems]]
 name = "RealRooted.isRealRooted_of_product_factor_sequence"
@@ -103,7 +106,6 @@ label = "The normalized fixed derivatives (r!)⁻¹ D^r (X^r (1 + X)^n)"
 name = "RealRooted.strictInterl_iterate_derivative_mul_X_sub_C_pow_succ"
 module = "RealRooted.ProductSequence.FixedDerivative"
 label = "Fixed derivatives of q (X - a)^n and q (X - a)^(n+1) interlace"
-headline = true
 
 [[theorems]]
 name = "RealRooted.iterate_derivative_mul_X_sub_C_pow_standard"
@@ -134,7 +136,6 @@ label = "A three-term recurrence in n"
 name = "RealRooted.strictInterl_binomialDerivativeRow_succ"
 module = "RealRooted.ProductSequence.BinomialDerivativeFamily"
 label = "Consecutive binomial derivative rows interlace"
-headline = true
 
 [[theorems]]
 name = "RealRooted.roots_binomialDerivativeRow_mem_Icc"

@@ -13,6 +13,7 @@ version = 1
 section = "theorems"
 slug = "favard"
 formalized = "2026-09-07"
+tags = []
 references = [
   "Favard1935",
 ]
@@ -37,6 +38,7 @@ label = "The pairing ⟨p, q⟩ = L(pq)"
 [[theorems]]
 name = "RealRooted.Challenges.Favard.SatisfiesFavardRecurrence.strictInterl_succ"
 label = "Consecutive polynomials interlace"
+symcat = "favardInterlacing"
 
 [[theorems]]
 name = "RealRooted.Challenges.Favard.SatisfiesFavardRecurrence.ne_zero_and_splits"

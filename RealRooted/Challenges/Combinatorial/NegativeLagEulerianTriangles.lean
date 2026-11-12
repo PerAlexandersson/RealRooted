@@ -10,6 +10,8 @@ version = 1
 section = "theorems"
 slug = "negative-lag-eulerian-recurrences"
 formalized = "2026-11-10"
+authors = []
+references = ["Branden2006"]
 tags = ["realrooted-original"]
 years = [2026]
 
@@ -43,7 +45,7 @@ label = "A371898 is rooted in [−1, 0]"
 <!-- realrooted-catalog-content -->
 # Negative-lag Eulerian recurrences
 
-**Provenance.** This proof is new, developed for RealRooted (issue #2511),
+**Provenance.** This proof is new, developed for RealRooted,
 and is of independent research interest. It uses a nonnegative Bernstein-cone
 certificate for Brändén's ordered-Bell transform.
 

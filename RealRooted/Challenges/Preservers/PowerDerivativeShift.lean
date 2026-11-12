@@ -10,6 +10,8 @@ version = 1
 section = "theorems"
 slug = "power-derivative-shift"
 formalized = "2026-11-01"
+authors = []
+references = []
 tags = ["realrooted-original"]
 
 [[definitions]]
@@ -21,7 +23,6 @@ label = "The operator f ↦ D^m ((D + c)(X^m f))"
 name = "RealRooted.powerDerivativeShift_splits"
 module = "RealRooted.Derivative.PowerShift"
 label = "The operator preserves splitting for c ≠ 0"
-headline = true
 
 [[theorems]]
 name = "RealRooted.powerDerivativeShift_hasNonnegCoeffs"

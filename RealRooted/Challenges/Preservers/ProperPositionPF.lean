@@ -10,6 +10,8 @@ version = 1
 section = "theorems"
 slug = "pf-multiplier-proper-position"
 formalized = "2026-10-11"
+authors = ["Borcea", "Brändén"]
+tags = []
 references = [
   "BorceaBranden2009I",
   "BorceaBranden2010",

@@ -10,6 +10,7 @@ version = 1
 section = "theorems"
 slug = "chow-polynomials-simplicial-posets"
 formalized = "2026-10-08"
+tags = []
 references = [
   "HosterStump2025x",
 ]

@@ -19,6 +19,7 @@ version = 1
 section = "families"
 slug = "jacobi-polynomials"
 formalized = "2026-09-07"
+tags = []
 references = [
   "Szego1939",
 ]
@@ -75,7 +76,6 @@ label = "Monic shifted Jacobi polynomials satisfy a Favard recurrence"
 name = "RealRooted.shiftedJacobi_integral_orthogonal"
 module = "RealRooted.Jacobi.Orthogonality.Integral"
 label = "Orthogonality on (0, 1) for the weight x^α (1 - x)^β"
-headline = true
 
 [[theorems]]
 name = "RealRooted.shiftedJacobi_interlaces_shift_both"
@@ -121,13 +121,11 @@ label = "The reflected shifted-Jacobi differential operator"
 name = "RealRooted.jacobiCoefficientPolynomial_isPFPolynomial"
 module = "RealRooted.Jacobi.CoefficientFamily"
 label = "For a, b > -1 the positive-coefficient Jacobi polynomials are PF"
-headline = true
 
 [[theorems]]
 name = "RealRooted.jacobiCoefficientPolynomial_strictInterl_succ"
 module = "RealRooted.Jacobi.CoefficientFamily"
 label = "Consecutive polynomials of the family interlace"
-headline = true
 
 [[theorems]]
 name = "RealRooted.jacobiCoefficientPolynomial_hasSimpleRoots"
@@ -158,7 +156,6 @@ label = "The derivative recurrence with two initial values determines the family
 name = "RealRooted.eq_C_mul_endpoint_factor_of_reflectedJacobiOperator_eq_zero"
 module = "RealRooted.Jacobi.NegativeIntegerEndpoint"
 label = "For β = -m the polynomial solutions are multiples of (1 + X)^m times a Jacobi polynomial"
-headline = true
 
 [[theorems]]
 name = "RealRooted.eq_of_reflectedJacobiOperator_eq_zero"
@@ -194,7 +191,6 @@ label = "The r-th derivative shifts the parameter a to a + r"
 name = "RealRooted.exists_diagonalOperator_jacobiCoefficientPolynomial_iff"
 module = "RealRooted.Jacobi.ParameterShifts"
 label = "A polynomial Euler multiplier maps the diagonal family to (a, b) iff b - a is natural"
-headline = true
 
 [[theorems]]
 name = "RealRooted.IsPFPolynomial.eulerShiftRange"

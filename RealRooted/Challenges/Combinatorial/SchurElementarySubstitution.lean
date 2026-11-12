@@ -13,6 +13,8 @@ version = 1
 section = "theorems"
 slug = "schur-elementary-substitution"
 formalized = "2026-11-07"
+authors = []
+references = []
 tags = ["realrooted-original"]
 
 [[definitions]]
@@ -172,8 +174,8 @@ label = "Supported minors of a bidiagonal Toeplitz matrix are strictly positive"
 
 **Provenance.** The parity-compatible specialization theorem, its stretching
 and truncation variants, and the checkerboard pencil interlacing behind them
-are new results; their proofs were developed for RealRooted (issues #2443 and
-#2483) and are of independent research interest.
+are new results; their proofs were developed for RealRooted and are of independent research
+interest.
 
 **Formalization status:** checked Lean proofs cover both parity cases,
 horizontal stretching, duplicated rows, constant skew column height,
@@ -264,7 +266,6 @@ sequences multiply with the polynomials.
 
 ## References
 
-- [Supplied proof note and implementation plan](https://github.com/PerAlexandersson/RealRooted/issues/2443).
 - Chi-Kwong Li and Roy Mathias,
   [Interlacing Inequalities for Totally Nonnegative Matrices](https://cklixx.people.wm.edu/tpinter.pdf).
 <!-- /realrooted-catalog-content -->

@@ -11,6 +11,8 @@ version = 1
 section = "theorems"
 slug = "coupled-quadratic-recurrence"
 formalized = "2026-11-03"
+authors = []
+references = []
 tags = ["realrooted-original"]
 
 [[definitions]]
@@ -38,7 +40,6 @@ headline = true
 name = "RealRooted.CoupledQuadraticRecurrence.strictInterl_A_succ_B_succ"
 module = "RealRooted.Interlacing.CoupledQuadraticRecurrence"
 label = "A_n strictly interlaces B_{n+1}"
-headline = true
 
 [[theorems]]
 name = "RealRooted.CoupledQuadraticRecurrence.hasSimpleRoots_A_succ"
@@ -59,7 +60,6 @@ label = "deg A_n = 2n"
 name = "RealRooted.hasSimpleRoots_ladderL"
 module = "RealRooted.Interlacing.WeightedLadder"
 label = "Weighted ladder polynomials have simple real roots"
-headline = true
 
 [[theorems]]
 name = "RealRooted.lt_zero_of_mem_roots_ladderL"
@@ -128,7 +128,7 @@ root of $L_1$.
 ## What is new
 
 The coupled recurrence, its varying-coefficient form and the weighted ladder family were
-developed in this library (RealRooted issue #2392); no published source is cited.
+developed in this library; no published source is cited.
 
 ## References
 

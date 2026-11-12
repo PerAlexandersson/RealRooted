@@ -12,6 +12,7 @@ version = 1
 section = "theorems"
 slug = "branden-e-transform"
 formalized = "2026-09-14"
+tags = []
 references = [
   "Branden2006",
 ]
@@ -37,7 +38,6 @@ label = "Images E(x^k (x + 1)^(n − k))"
 name = "RealRooted.brandenE_isPFPolynomial_of_roots_mem_Icc"
 module = "RealRooted.Transforms.BrandenE.IntervalPreserver"
 label = "Roots in [−1, 0] give a PF image"
-headline = true
 
 [[theorems]]
 name = "RealRooted.brandenE_eq_zero_or_splits_and_roots_nonpos"
@@ -48,7 +48,6 @@ label = "Roots in [−1, 0] give a real-rooted image, for either sign"
 name = "RealRooted.brandenBasisImage_strictInterl"
 module = "RealRooted.Transforms.BrandenE.ProperPosition"
 label = "The images of the binomial basis form an interlacing sequence"
-headline = true
 
 [[theorems]]
 name = "RealRooted.orderedBellPolynomial_isPFPolynomial"

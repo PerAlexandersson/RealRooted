@@ -11,6 +11,7 @@ version = 1
 section = "theorems"
 slug = "continuous-narayana-gamma"
 formalized = "2026-11-01"
+tags = []
 references = [
   "Zeng2026x",
   "MaoWang2026x",
@@ -58,7 +59,6 @@ label = "A three-term recurrence for the γ-polynomials"
 name = "RealRooted.strictInterl_narayanaInterpolation_succ"
 module = "RealRooted.NarayanaTransformation.ContinuousNarayanaGamma"
 label = "Consecutive continuous Narayana interpolations interlace"
-headline = true
 
 [[theorems]]
 name = "RealRooted.narayanaInterpolation_hasSimpleRoots"

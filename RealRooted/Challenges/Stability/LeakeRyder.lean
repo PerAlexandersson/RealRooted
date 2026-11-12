@@ -11,6 +11,7 @@ version = 1
 section = "theorems"
 slug = "leake-ryder"
 formalized = "2026-09-06"
+tags = []
 references = [
   "LeakeRyder2019",
 ]

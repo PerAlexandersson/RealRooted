@@ -14,6 +14,7 @@ version = 1
 section = "theorems"
 slug = "obreschkoff"
 formalized = "2026-07-10"
+tags = []
 references = [
   "Dedieu1992",
   "Obreschkoff1963",
@@ -39,6 +40,7 @@ name = "RealRooted.allComboRealRooted_iff_interl_or_reverse"
 module = "RealRooted.OperatorPreservesInterlacing"
 label = "Obreschkoff’s theorem as an equivalence"
 headline = true
+symcat = "obreschkoffDedieu"
 
 [[theorems]]
 name = "RealRooted.natDegree_close_of_allComboRealRooted"

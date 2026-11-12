@@ -13,6 +13,7 @@ version = 1
 section = "theorems"
 slug = "cauchy-interlacing"
 formalized = "2026-07-10"
+tags = []
 references = [
   "Godsil2017",
   "Fisk2005x",
@@ -24,6 +25,7 @@ years = [2005]
 name = "RealRooted.Challenges.CauchyInterlacing.principalSubmatrix_eigenvalues_interlace"
 label = "Eigenvalues of a principal submatrix interlace"
 headline = true
+symcat = "cauchyInterlacingTheorem"
 
 [[theorems]]
 name = "RealRooted.Challenges.CauchyInterlacing.principalSubmatrix_charpoly_interlaces"
@@ -33,7 +35,6 @@ label = "Characteristic polynomials of a principal submatrix interlace"
 name = "RealRooted.sortedEigenvalues_add_vecMulVec_succ_le"
 module = "RealRooted.CauchyInterlacing.RankOne"
 label = "Weyl: eigenvalues of A + vv* are at most the previous eigenvalues of A"
-headline = true
 
 [[theorems]]
 name = "RealRooted.sortedEigenvalues_le_add_vecMulVec"

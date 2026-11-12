@@ -17,6 +17,8 @@ version = 1
 section = "theorems"
 slug = "root-amplitude"
 formalized = "2026-09-08"
+authors = []
+tags = []
 references = [
   "Kozlov2022",
 ]
@@ -41,7 +43,6 @@ label = "Index-dependent bound for separated sequences"
 name = "RealRooted.RootAmplitude.exp_neg_pi_sq_div_three_le_amplitude_of_separation"
 module = "RealRooted.RootAmplitude.Separation.Euler"
 label = "Uniform bound for separated sequences"
-headline = true
 
 [[theorems]]
 name = "RealRooted.RootAmplitude.amplitude_zero_le"

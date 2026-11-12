@@ -85,7 +85,6 @@ label = "Two endpoint levels rooted in (−∞, 0] give all intermediate levels"
 name = "RealRooted.Poisson.forall_isRealRootedIn_starCPowMap_Icc_iff"
 module = "RealRooted.DerivativeProduct.PoissonPower"
 label = "Poisson powers map [a, b]-rooted inputs to (−∞, 0]-rooted outputs iff both endpoints do"
-headline = true
 
 [[theorems]]
 name = "RealRooted.Poisson.forall_mapsRealRootedIn_starCPowMap_Icc_iff"
@@ -111,7 +110,6 @@ label = "A real-rooted self-product has all its roots in {w ≤ 0}"
 name = "RealRooted.assocProduct_self_splits_iff"
 module = "RealRooted.DerivativeProduct.ProductPowerCriteria"
 label = "The square of left multiplication preserves real-rootedness iff q ⋆ q is real-rooted"
-headline = true
 
 [[theorems]]
 name = "RealRooted.forall_isRealRootedIn_derivProductPow_iff"
@@ -170,8 +168,8 @@ singleton source $\{r\}$, $S_g$ sends every polynomial rooted in $\{r\}$ to a re
 if and only if $g-r$ and $(g-r)\star(g-r)$ are real-rooted.  If $w\le0$ on all of $\mathbb R$, the
 one-factor tests $g-r$, $r\in J$, suffice for every source set $J$.
 
-**Provenance.** The proofs on this page are new, developed for RealRooted (issues #2364, #2371 and
-#2372), and are of independent research interest.  The classical input is Brändén's theorem that
+**Provenance.** The proofs on this page are new, developed for RealRooted, and are of
+independent research interest.  The classical input is Brändén's theorem that
 Poisson multiplication by a PF polynomial preserves PF polynomials and, more generally, the
 fixed-factor sufficiency for associative derivative products [@Branden2006, Thm 3.11].  The
 degree-three source-interval tests for a general weight, which require continuity of ordered
