@@ -12,7 +12,7 @@ public section
 open Polynomial
 
 /-!
-# Eulerian polynomial challenge entry point
+# Real-rooted Eulerian polynomials
 
 <!-- realrooted-catalog
 version = 1
@@ -29,7 +29,7 @@ years = [1910, 1994]
 [[definitions]]
 name = "RealRooted.eulerianTilde"
 module = "RealRooted.CombinatorialExamples.Eulerian"
-label = "Eulerian polynomials"
+label = "Shifted Eulerian polynomials P_n = t A_{n+1}"
 
 [[definitions]]
 name = "RealRooted.typeBEulerian"
@@ -64,89 +64,83 @@ label = "Consecutive type B Eulerian polynomials interlace"
 [[theorems]]
 name = "RealRooted.generalizedEulerian_splits"
 module = "RealRooted.GeneralizedEulerian"
-label = "Generalized Eulerian polynomials are real-rooted for c > 0"
+label = "For c > 0, E_n^{(c)} is real-rooted"
 
 [[theorems]]
 name = "RealRooted.interlaces_generalizedEulerian_succ"
 module = "RealRooted.GeneralizedEulerian.GeneratingFunction"
-label = "Consecutive generalized Eulerian polynomials interlace for c > 0"
+label = "For c > 0, E_n^{(c)} interlaces E_{n+1}^{(c)}"
 headline = true
 
 [[theorems]]
 name = "RealRooted.eulerianTilde_eq_X_mul_generalizedEulerian_one"
 module = "RealRooted.GeneralizedEulerian.GeneratingFunction"
-label = "The Eulerian polynomials are x times the case c = 1"
+label = "The shifted Eulerian polynomial P_n equals t E_n^{(1)}"
 
 [[theorems]]
 name = "RealRooted.typeBEulerian_eq_generalizedEulerian_two"
 module = "RealRooted.CombinatorialExamples.TypeBEulerian"
-label = "The type B Eulerian polynomials are the case c = 2"
+label = "The type B Eulerian polynomial B_n equals E_n^{(2)}"
 
 [[theorems]]
 name = "RealRooted.GeneralizedEulerian.coeff_generalizedEulerian_one_eq_sum"
 module = "RealRooted.GeneralizedEulerian.GeneratingFunction"
-label = "Alternating-sum formula for the Eulerian coefficients"
+label = "Alternating-sum formula for the coefficients of E_n^{(1)}"
 
 [[theorems]]
 name = "RealRooted.genPoly_univ_descentCount"
 module = "RealRooted.CombinatorialExamples.EulerianStatistic"
-label = "The descent generating polynomial of permutations is the Eulerian polynomial"
+label = "The descent polynomial of permutations of n+1 letters is E_n^{(1)}"
 
 [[theorems]]
 name = "RealRooted.isRealRooted_genPoly_univ_descentCount"
 module = "RealRooted.CombinatorialExamples.EulerianStatistic"
-label = "Permutations counted by descents give a real-rooted polynomial"
+label = "The descent polynomial of permutations of n+1 letters is real-rooted"
 
 [[theorems]]
 name = "RealRooted.eval_neg_generalizedEulerian_one_pos"
 module = "RealRooted.GeneralizedEulerian.EvalNeg"
-label = "The Eulerian polynomial A_n is positive at -q whenever q 2^(n+1) ≤ 1"
+label = "E_n^{(1)}(-q) > 0 whenever q > 0 and q 2^(n+1) ≤ 1"
 -->
 
 <!-- realrooted-catalog-content -->
-# Eulerian polynomials
+# Real-rooted Eulerian polynomials
 
-The library defines the shifted Eulerian polynomials `eulerianTilde n` by the recurrence
-$P_0 = t$ and $P_{n+1} = t\bigl((n+2) P_n + (1-t) P_n'\bigr)$. Classically, $P_n = t A_{n+1}(t)$,
-where $A_n(t) = \sum_{\sigma \in \mathfrak{S}_n} t^{\operatorname{des}(\sigma)}$ counts
-permutations by descents. This identification is formalized: the descent generating
-polynomial of $\mathfrak S_{n+1}$ equals $E_n^{(1)}$ (`genPoly_univ_descentCount`) and is
-real-rooted. The type $B$ Eulerian polynomials are likewise defined by the recurrence
-$B_0 = 1$ and
-$B_{n+1} = \bigl(1 + (2n+1)t\bigr) B_n + 2t(1-t) B_n'$.
+The Eulerian polynomials, the type $B$ Eulerian polynomials and a one-parameter family containing
+both are real-rooted, and consecutive members interlace.
 
-Both families are real-rooted, and consecutive polynomials interlace.
+## Results
 
-For a real parameter $c$, the generalized Eulerian polynomials
-`generalizedEulerian c n` are defined by $E_0^{(c)} = 1$ and
+We write $f\ll g$ if $f$ interlaces $g$; common roots are allowed unless stated. For real $c$,
+the *generalized Eulerian polynomials* are $E^{(c)}_0=1$ and
 $$
-E_{n+1}^{(c)} = \bigl(1 + (cn + 1)t\bigr) E_n^{(c)} + c\,t(1-t) \bigl(E_n^{(c)}\bigr)'.
+E^{(c)}_{n+1}=\bigl(1+(cn+1)t\bigr)E^{(c)}_n+c\,t(1-t)\bigl(E^{(c)}_n\bigr)'.
 $$
-For $c > 0$ every $E_n^{(c)}$ is real-rooted, and consecutive members
-interlace. Both families above are special cases:
-$$
-P_n = t\,E_n^{(1)}, \qquad B_n = E_n^{(2)}.
-$$
-The coefficients of $E_k^{(1)}$ are given by the alternating sum
-$$
-[t^j]\, E_k^{(1)} = \sum_{i=0}^{j+1} (-1)^{j+1-i} \binom{k+2}{j+1-i}\, i^{k+1}.
-$$
-This is the classical formula for the Eulerian numbers; by
-`genPoly_univ_descentCount`, $[t^j]E_k^{(1)}$ is the number of permutations of
-$k+1$ letters with $j$ descents.
 
-## Positivity near zero
+**Theorem (generalized Eulerian polynomials).** For $c>0$ and $n\ge0$, $E^{(c)}_n$ is nonzero
+and real-rooted, and $E^{(c)}_n\ll E^{(c)}_{n+1}$.
 
-The Eulerian polynomial $A_n=\mathrm{generalizedEulerian}\,1\,n$ is PF with constant
-coefficient $1$ and linear coefficient $2^{n+1}-n-2$. A linear lower bound for PF polynomials
-then shows $A_n(-q)>0$ for every $q>0$ with $q\,2^{n+1}\le1$.
+**Eulerian polynomials ($c=1$).** Let $A_n(t)=\sum_{\sigma\in\mathfrak
+S_n}t^{\operatorname{des}\sigma}$. Then $E^{(1)}_n=A_{n+1}$. Hence $A_{n+1}$ is real-rooted and
+$A_{n+1}\ll A_{n+2}$. The shifted polynomials $P_n=tE^{(1)}_n$ satisfy $P_0=t$ and
+$P_{n+1}=t\bigl((n+2)P_n+(1-t)P_n'\bigr)$, and are real-rooted with $P_n\ll P_{n+1}$. For $j\ge0$,
+$$
+[t^j]\,E^{(1)}_n=\sum_{i=0}^{j+1}(-1)^{j+1-i}\binom{n+2}{j+1-i}\,i^{\,n+1}.
+$$
+
+**Type $B$ Eulerian polynomials ($c=2$).** The polynomials $B_n=E^{(2)}_n$ are given by
+$B_0=1$ and $B_{n+1}=\bigl(1+(2n+1)t\bigr)B_n+2t(1-t)B_n'$. They are real-rooted, and
+$B_n\ll B_{n+1}$.
+
+**Proposition (positivity near zero).** For $n\ge0$ and $q>0$ with $q\,2^{n+1}\le1$,
+$E^{(1)}_n(-q)>0$. Indeed $E^{(1)}_n$ is a Pólya frequency polynomial with constant coefficient
+$1$ and linear coefficient $2^{n+1}-n-2$.
 
 ## References
 
-The ordinary Eulerian recurrence and its real-rootedness go back to F. G. Frobenius,
-“Über die Bernoullischen Zahlen und die Eulerschen Polynome,” *Sitzungsberichte der
-Königlich Preussischen Akademie der Wissenschaften* (1910), 809–847. For type $B$,
-see [@Brenti1994]. See also the
+The Eulerian recurrence and its real-rootedness go back to F. G. Frobenius, “Über die
+Bernoullischen Zahlen und die Eulerschen Polynome,” *Sitzungsberichte der Königlich Preussischen
+Akademie der Wissenschaften* (1910), 809–847. For type $B$, see [@Brenti1994]. See also the
 [Eulerian polynomials on symmetricfunctions.com](sf:eulerianPolynomial).
 <!-- /realrooted-catalog-content -->
 

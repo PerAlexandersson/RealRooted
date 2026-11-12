@@ -16,7 +16,7 @@ import RealRooted.MultiplierSequence.ProperPosition
 import RealRooted.RootLocation.BernsteinDiagonal
 
 /-!
-# Multiplier sequence challenge entry point
+# Multiplier sequences
 
 <!-- realrooted-catalog
 version = 1
@@ -165,7 +165,7 @@ label = "Bidiagonal PF preservers from a Jensen-pencil certificate"
 [[theorems]]
 name = "RealRooted.IsMultiplierSequence.strictInterl_diagonalOperator_of_pos"
 module = "RealRooted.MultiplierSequence.ProperPosition"
-label = "Positive multiplier sequences preserve directed proper position"
+label = "A positive multiplier sequence preserves interlacing"
 
 [[theorems]]
 name = "RealRooted.compatible_schurSzego_jensen_of_pos_coeff_zero"
@@ -213,116 +213,100 @@ tags = ["realrooted-original"]
 <!-- realrooted-catalog-content -->
 # Multiplier sequences
 
-A real sequence $\gamma = (\gamma_0, \gamma_1, \dotsc)$ is a **multiplier sequence** if the
-diagonal operator
+A real sequence is a multiplier sequence if the diagonal operator it defines preserves
+real-rootedness; these are classified by Jensen polynomials and by the Laguerre–Pólya class.
 
+## Results
+
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+A polynomial is *real-rooted* if it is zero or splits over $\mathbb R$, and *PF* (Pólya
+frequency) if it is zero or has nonnegative coefficients and only real, nonpositive roots. For a
+real sequence $\gamma=(\gamma_0,\gamma_1,\dots)$ the *diagonal operator* is
 $$
-a_0 + a_1 x + \dotsb + a_n x^n \;\mapsto\;
-  \gamma_0 a_0 + \gamma_1 a_1 x + \dotsb + \gamma_n a_n x^n.
+a_0+a_1x+\dots+a_nx^n\ \mapsto\ \gamma_0a_0+\gamma_1a_1x+\dots+\gamma_na_nx^n .
 $$
+The sequence $\gamma$ is a *multiplier sequence* if this operator maps every real-rooted
+polynomial to a real-rooted polynomial, and a *PF multiplier sequence* if it maps every PF
+polynomial to a PF polynomial. The *finite* versions restrict to inputs of degree at most $n$.
+The *Jensen polynomial* of $\gamma$ is $g_n(x)=\sum_k\binom nk\gamma_kx^k$.
 
-sends every real-rooted polynomial to a real-rooted polynomial (or zero). It is
-a **PF multiplier sequence** if it preserves real-rootedness with nonnegative
-coefficients. The finite version restricts to inputs of degree at most $n$.
+**Theorem (Pólya--Schur).** Let $\gamma_k\ge0$ for all $k$. Then $\gamma$ is a multiplier
+sequence if and only if every Jensen polynomial $g_n$ is PF.
 
-The following hold:
+**Theorem (Laguerre--Pólya classification).** Assume $\sum_k|\gamma_k|R^k/k!<\infty$ for some
+$R>0$, and let $f(z)=\sum_k\gamma_kz^k/k!$.
 
-- **Jensen polynomials** (Pólya–Schur): a nonnegative sequence is a multiplier
-  sequence if and only if every Jensen polynomial
-  $g_n(x) = \sum_k \binom{n}{k} \gamma_k x^k$ has only real nonpositive zeros.
-- **Laguerre–Pólya classification** (Pólya–Schur): under a growth condition,
-  $\gamma$ is a PF multiplier sequence if and only if its exponential generating
-  function $\sum_k \gamma_k z^k/k!$ is a locally uniform limit of PF polynomials,
-  that is, lies in the Laguerre–Pólya class of type I. Without the sign
-  condition, $\gamma$ is a multiplier sequence if and only if one of $\pm f(\pm z)$ is of
-  type I, where $f$ is the generating function; in particular, one of
-  $\pm\gamma_k$ and $\pm(-1)^k \gamma_k$ is then a PF multiplier sequence.
-- **Log-concavity:** PF multiplier sequences are log-concave.
-- **Laguerre's theorem:** if a polynomial $\varphi$ has only real nonpositive
-  zeros, then $\varphi(0), \varphi(1), \varphi(2), \dotsc$ is a multiplier sequence. It is a PF
-  multiplier sequence when the leading coefficient is nonnegative. The basic
-  case $k + r$, for real $r \geq 0$, has Jensen polynomials
-  $(1+x)^{n-1}\bigl((n+r)x+r\bigr)$.
-  More generally, if $f$ is a locally uniform limit of PF polynomials (type I
-  in the Laguerre–Pólya class), then $f(0), f(1), f(2), \dotsc$ is a PF
-  multiplier sequence.
-- **Examples:** for real $\alpha > 0$, the reciprocal rising factorials
-  $1/(\alpha)_k$ form a PF multiplier sequence, and so in particular do $1/k!$.
-  After clearing denominators, their Jensen polynomials are generalized
-  Laguerre polynomials.
-- **Heat operator:** for $a\geq0$, the operator $e^{-aD^2}$ maps real-rooted
-  polynomials to zero or real-rooted polynomials.
-- **Interlacing:** if $\gamma$ is a multiplier sequence with
-  $\gamma_k>0$ for every $k$ and $f\ll g$, then
-  $\sum_k\gamma_kf_kx^k\ll\sum_k\gamma_kg_kx^k$.
+- $\gamma$ is a PF multiplier sequence if and only if $f$ is in the
+  [Laguerre--Pólya class](/RealRooted/concepts/laguerre-polya-class/) of type I, that is, a
+  locally uniform limit of PF polynomials.
+- $\gamma$ is a multiplier sequence if and only if one of $f(z)$, $-f(z)$, $f(-z)$, $-f(-z)$ is
+  of type I.
 
-**Bidiagonal PF preservers.** For sequences $\alpha, \beta$, the bidiagonal
-operator sends $\sum_k a_k x^k$ to
-$\sum_k (\alpha_k a_k + \beta_{k-1} a_{k-1}) x^k$, with the second term omitted
-for $k = 0$. Each of the following makes it map PF polynomials (nonnegative
-coefficients, only real nonpositive zeros) of degree at most $d$ to PF
-polynomials:
+Every multiplier sequence $\gamma$ satisfies one of the following: $\gamma$, $-\gamma$,
+$\bigl((-1)^k\gamma_k\bigr)$ or $\bigl(-(-1)^k\gamma_k\bigr)$ is a PF multiplier sequence.
 
-- its degree-$d$ Borcea–Brändén algebraic symbol is stable, and
-  $\alpha_k, \beta_k \ge 0$ for all $k \le d$;
-- a Jensen-pencil certificate: with $J_\alpha = \sum_k \binom{d}{k} \alpha_k x^k$
-  and $J_\beta$ defined likewise, the polynomials $J_\alpha$, $x J_\beta$ and
-  $J_\alpha + \lambda x J_\beta$ are PF for every $\lambda \ge 0$.
+**Theorem (log-concavity).** If $\gamma$ is a PF multiplier sequence, then
+$\gamma_k\gamma_{k+2}\le\gamma_{k+1}^2$ for all $k$.
 
-The second criterion goes through Schur–Szegő composition and
-Chudnovsky–Seymour compatibility rather than the symbol.
+**Theorem (Laguerre).** Let $\varphi$ be a real-rooted polynomial with only nonpositive roots.
+Then $\varphi(0),\varphi(1),\varphi(2),\dots$ is a multiplier sequence, and a PF multiplier
+sequence if $\varphi$ has nonnegative leading coefficient. In particular $k+r$ is a PF
+multiplier sequence for every real $r\ge0$. More generally, if $f$ is of type I, then
+$\bigl(\operatorname{Re}f(k)\bigr)_{k\ge0}$ is a PF multiplier sequence.
 
-**Jensen-pencil contraction.** Here $A$, $B$ and $p$ are PF polynomials of degree at most $d$,
-and the pair $(A, xB)$ is *compatible*: every nonnegative linear combination of $A$ and $xB$ is
-zero or real-rooted. Let $*_d$ denote Schur–Szegő composition, see the page on Hadamard
-products. The key fact is that simultaneous composition with a PF polynomial keeps the pair
-compatible,
-$$
-(A, xB) \text{ compatible} \;\Longrightarrow\; (A *_d p,\; x\,(B *_d p)) \text{ compatible},
-$$
-which is exactly what the Jensen-pencil certificate needs. The proof has two steps.
+**Theorem (examples).** For real $\alpha>0$, the sequence $1/(\alpha)_k$, with
+$(\alpha)_k=\alpha(\alpha+1)\cdots(\alpha+k-1)$, is a PF multiplier sequence. In particular
+$1/k!$ is one.
 
-* If $A$, $B$ and $p$ have positive constant coefficients, a signed reciprocal reversal turns
-  compatibility into two finite-free upper-root-count contractions, and the claim follows
-  from the root-count form of compatibility.
-* In general, the translation $x \mapsto x + \varepsilon$ with $\varepsilon > 0$ preserves PF
-  polynomials and makes all constant coefficients positive; it also preserves the Jensen-pencil
-  compatibility of $(A, xB)$. Applying the positive case to the translates and letting
-  $\varepsilon \to 0$ is justified by the closure of the PF cone: a coefficientwise
-  continuous curve of PF sequences has a PF endpoint, since every minor of the Toeplitz
-  matrix is a continuous function of the parameter.
+**Theorem (operators).** If $\varphi$ is Laguerre--Pólya and $g$ is real-rooted, then
+$\varphi(D)\,g=\sum_k\operatorname{Re}\bigl(\varphi^{(k)}(0)/k!\bigr)\,g^{(k)}$ is real-rooted.
+In particular, for $a\ge0$ the operator $e^{-aD^2}$ maps real-rooted polynomials to
+real-rooted polynomials.
 
+**Theorem (interlacing).** If $\gamma$ is a multiplier sequence with $\gamma_k>0$ for all $k$
+and $f\ll g$, then $\sum_k\gamma_kf_kx^k\ll\sum_k\gamma_kg_kx^k$.
 
-**Laguerre–Pólya operator theorem.** If $\varphi$ is a locally uniform limit of real-rooted
-real polynomials, then $\varphi(D) = \sum_k \frac{\varphi^{(k)}(0)}{k!} D^k$ maps
-real-rooted polynomials to real-rooted polynomials or zero. Hermite–Poulain gives this for
-each approximating polynomial, and the Taylor coefficients converge.
+**Theorem (bidiagonal preservers).** For sequences $\alpha,\beta$, the bidiagonal operator
+sends $\sum_ka_kx^k$ to $\sum_k(\alpha_ka_k+\beta_{k-1}a_{k-1})x^k$, with the second term omitted
+for $k=0$. It maps PF polynomials of degree at most $d$ to PF polynomials in each of the
+following cases:
 
-**Bernstein-diagonal interval preservers.** Fix $D\ge1$ and the Bernstein basis
-$B_k=\binom Dk x^k(1+x)^{D-k}$ of the polynomials of degree at most $D$. For a real
-sequence $\gamma$ let $L$ be the linear map with $L B_k=\gamma_kB_k$, and put
-$g=L\bigl((1+2x)^D\bigr)=\sum_k\gamma_kB_k$. Write $\mathcal C_D$ for the class of polynomials of
+- its degree-$d$ Borcea--Brändén algebraic symbol is stable, and $\alpha_k,\beta_k\ge0$ for
+  $k\le d$;
+- with $J_\alpha=\sum_k\binom dk\alpha_kx^k$ and $J_\beta$ defined likewise, the polynomials
+  $J_\alpha$, $xJ_\beta$ and $J_\alpha+\lambda xJ_\beta$ are PF for every $\lambda\ge0$.
+
+**Theorem (Jensen-pencil contraction).** Call $(A,B)$ *compatible* if every nonnegative linear
+combination of $A$ and $B$ is zero or real-rooted. Let $*_d$ be Schur--Szegő composition (see the
+[Hadamard products](/RealRooted/theorems/hadamard-products/) page). Let $A$, $xB$ and $p$ be PF
+of degree at most $d$ with $\deg B\le d$, and suppose $(A,xB)$ is compatible. Then
+$(A*_dp,\ x\,(B*_dp))$ is compatible. Two ingredients are available separately.
+
+- If $A,B\ne0$ are PF, $(A,xB)$ is compatible and $\varepsilon>0$, then
+  $\bigl(A(x+\varepsilon),\ x\,B(x+\varepsilon)\bigr)$ is compatible.
+- A coefficientwise continuous curve of PF sequences has a PF endpoint.
+
+**Theorem (Bernstein-diagonal preservers).** Fix $D\ge1$, let $B_k=\binom Dk x^k(1+x)^{D-k}$,
+let $\gamma$ be a real sequence, let $L$ be the linear map with $LB_k=\gamma_kB_k$, and put
+$g=L\bigl((1+2x)^D\bigr)=\sum_k\gamma_kB_k$. Let $\mathcal C_D$ be the set of polynomials of
 degree exactly $D$ with positive leading coefficient and all roots in $[-1,0]$. Then
 $$
-L(\mathcal C_D)\subseteq\mathcal C_D\cup\{0\}
-\iff g\in\mathcal C_D\cup\{0\}.
+L(\mathcal C_D)\subseteq\mathcal C_D\cup\{0\}\iff g\in\mathcal C_D\cup\{0\}.
 $$
-Necessity tests $(1+2x)^D$. For sufficiency, the Cayley change of variable
-$J_Df(z)=(1-z)^Df\bigl(z/(1-z)\bigr)$ turns $B_k$ into $\binom Dk z^k$, so that
-$Lf=K_D\bigl(J_Dg\ast_DJ_Df\bigr)$ with $K_Df(x)=(1+x)^Df\bigl(x/(1+x)\bigr)$ the inverse of
-$J_D$, and $\ast_D$ the Schur–Szegő composition (see the
-[Hadamard products page](/RealRooted/theorems/hadamard-products/)). The polynomials $J_Df$
-and $J_Dg$ are PF, hence so is their composition [@KostovShapiro2006, Proposition 1.2 and
-Theorem 1.3], and $K_D$ carries PF polynomials of degree at most $D$ back to $\mathcal C_D$;
-a degree deficit becomes a root at $-1$. Under these equivalent conditions, $L f\neq0$ for every
-$f\in\mathcal C_D$ if and only if $g$ has all its roots in the open interval $(-1,0)$. The
-degree must be exactly $D$: a root of $f$ at infinity becomes the root $1$ of $J_Df$.
+If these hold, then $Lf\ne0$ for all $f\in\mathcal C_D$ if and only if $g$ is real-rooted with
+all roots in $(-1,0)$.
+
+## Proof
+
+The Bernstein-diagonal map is conjugate by the Cayley change of variable
+$J_Df(z)=(1-z)^Df\bigl(z/(1-z)\bigr)$ to the diagonal operator of $\gamma$, which turns
+$B_k$ into $\binom Dkz^k$ and $L$ into Schur--Szegő composition with $J_Dg$, so the statement
+follows from [@KostovShapiro2006, Prop. 1.2 and Thm. 1.3].
 
 ## References
 
-See [@SchurPolya1914] and [@KostovShapiro2006]. The finite Pólya–Schur theorem through the
-Schur–Szegő composition is on the
-[Hadamard products page](/RealRooted/theorems/hadamard-products/).
+[@SchurPolya1914], [@KostovShapiro2006]. The finite Pólya--Schur theorem through Schur--Szegő
+composition is on the [Hadamard products](/RealRooted/theorems/hadamard-products/) page.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

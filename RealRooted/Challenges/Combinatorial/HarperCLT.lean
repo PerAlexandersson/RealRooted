@@ -9,7 +9,7 @@ import RealRooted.CoefficientShape.LocalLimit
 import RealRooted.ThreeTermRecurrence.Moments
 
 /-!
-# Harper's central limit theorem challenge entry point
+# Central limit theorems for real-rooted coefficient distributions
 
 <!-- realrooted-catalog
 version = 1
@@ -49,7 +49,7 @@ headline = true
 [[theorems]]
 name = "Polynomial.tendsto_localLimit_of_logConcave"
 module = "RealRooted.Mathlib.Probability.LocalLimit"
-label = "Bender: log-concave rows satisfying a central limit theorem satisfy a local limit theorem"
+label = "Bender: log-concave rows satisfying a CLT satisfy a local limit theorem"
 
 [[theorems]]
 name = "Polynomial.tendsto_standardizedCoeffDistribution_one_add_X_pow"
@@ -103,112 +103,94 @@ label = "Three-term recurrences: the variance grows linearly"
 -->
 
 <!-- realrooted-catalog-content -->
-# Harper's central limit theorem
+# Central limit theorems for real-rooted coefficient distributions
 
-For a polynomial $p$ with nonnegative coefficients, its **coefficient
-distribution** puts mass $p_k / p(1)$ at $k$. Its mean and variance are
+The coefficients of a real-rooted polynomial with nonnegative coefficients are asymptotically
+normal as soon as their variance diverges; the Eulerian, type $B$ Eulerian, Narayana,
+second-order Eulerian and derangement excedance numbers and the Stirling numbers of the first
+kind are examples.
+
+## Results
+
+For a polynomial $p$ with nonnegative coefficients and $p(1)\ne0$, the *coefficient distribution*
+puts mass $p_k/p(1)$ at $k$. Its mean and variance are
 $$
-\mu(p) = \frac{p'(1)}{p(1)}, \qquad
-\sigma^2(p) = \frac{p''(1)}{p(1)} + \mu(p) - \mu(p)^2 .
+\mu(p)=\frac{p'(1)}{p(1)},\qquad
+\sigma^2(p)=\frac{p''(1)}{p(1)}+\mu(p)-\mu(p)^2 .
 $$
+If $p$ is real-rooted with roots $-r_i\le0$, then $p(x)/p(1)=\prod_i(1-q_i+q_ix)$ with
+$q_i=1/(1+r_i)$. The coefficient distribution is that of a sum of independent Bernoulli
+variables, with $\mu=\sum_iq_i$ and $\sigma^2=\sum_iq_i(1-q_i)$.
 
-If $p$ is real-rooted, its roots $-r_i$ are nonpositive and
-$p(x)/p(1) = \prod_i (1 - q_i + q_i x)$ with $q_i = 1/(1 + r_i)$. So the
-coefficient distribution is that of a sum of independent Bernoulli variables,
-with $\mu = \sum_i q_i$ and $\sigma^2 = \sum_i q_i (1 - q_i)$.
+**Theorem (Harper; Bender).** Let $P_n$ be real-rooted polynomials with nonnegative coefficients
+and $\sigma^2(P_n)\to\infty$. Then the laws of $(K_n-\mu_n)/\sigma_n$, where $K_n$ has the
+coefficient distribution of $P_n$, converge weakly to the standard normal distribution
+[@Harper1967; @Bender1973].
 
-For three-term recurrences $P_{n+2} = a(x) P_{n+1} + b(x) P_n$ with $a, b$ independent of
-$n$, let $\lambda > |\nu|$ be the roots of $t^2 = a(1) t + b(1)$, with $\nu \neq 0$, and let
-$\lambda(x)$ be the root branch through $\lambda$. If the $\lambda$-component of $P_n(1)$ is
-nonzero, then $\mu(P_n)/n \to \lambda'(1)/\lambda(1)$ and
-$\sigma^2(P_n)/n \to \lambda''/\lambda + \lambda'/\lambda - (\lambda'/\lambda)^2$ at
-$x = 1$ (Bender's formulas). The formalization derives closed forms for $P_n(1)$, $P_n'(1)$
-and $P_n''(1)$ from forced scalar recurrences and writes the limits algebraically in $a(1)$,
-$b(1)$ and their derivatives. With real-rootedness of the rows and $\sigma^2(P_n) \to \infty$,
-Harper's theorem then gives asymptotic normality.
-
-**Theorem** (Harper; Bender). [@Harper1967; @Bender1973] Let $P_n$ be real-rooted polynomials with
-nonnegative coefficients and $\sigma^2(P_n) \to \infty$. Then the standardized
-coefficient distributions, the laws of $(K_n - \mu_n)/\sigma_n$, converge weakly
-to the standard normal distribution.
-
-Bender's local refinement is uniform at lattice points: after multiplying the
-coefficient mass by its standard deviation, the result converges to the Gaussian
-density at the corresponding standardized location. The formalized theorem
-`tendsto_localLimit_of_splits` obtains this from log-concavity, the absence of
-internal coefficient zeros, and Harper's central limit theorem.
-
-**Theorem** (Bender, local limit theorem). [@Bender1973, Thm. 2] Let $P_n$ be
-polynomials with nonnegative, log-concave coefficients and no internal zeros.
-Suppose that $\sigma^2(P_n) \to \infty$ and that the standardized coefficient
-distributions converge weakly to the standard normal distribution. Then, with
-$\mu_n$ and $\sigma_n$ the mean and standard deviation of the coefficient
-distribution, and $\varphi$ the standard Gaussian density,
+**Theorem (Bender, local limit).** Let $P_n$ be nonzero real-rooted polynomials with nonnegative
+coefficients and $\sigma^2(P_n)\to\infty$. Let $\mu_n,\sigma_n$ be the mean and standard
+deviation of the coefficient distribution, and $\varphi$ the standard Gaussian density. Then
 $$
-\sup_{k \geq 0} \left| \sigma_n \frac{[x^k] P_n(x)}{P_n(1)}
-- \varphi\!\left(\frac{k - \mu_n}{\sigma_n}\right) \right| \longrightarrow 0
-\quad (n \to \infty).
+\sup_{k\ge0}\left|\sigma_n\,\frac{[x^k]P_n(x)}{P_n(1)}
+-\varphi\!\left(\frac{k-\mu_n}{\sigma_n}\right)\right|\longrightarrow0
+\qquad(n\to\infty).
 $$
-For real-rooted $P_n$ the log-concavity and the absence of internal zeros are
-automatic, and Harper's theorem supplies the weak convergence, which gives the
-statement `tendsto_localLimit_of_splits` above. The general statement lives in
-`RealRooted.Mathlib.Probability.LocalLimit`.
+More generally, the same holds for nonzero polynomials $P_n$ with nonnegative log-concave
+coefficients without internal zeros, with $\sigma^2(P_n)\to\infty$, whose standardized coefficient
+distributions converge weakly to the standard normal distribution [@Bender1973, Thm. 2].
 
-For example, $(1 + x)^n$ has variance $n/4$, which recovers the de
-Moivre–Laplace theorem for the binomial distribution.
+**Theorem (products).** Let $L_i$ be real-rooted with nonnegative coefficients and $L_i(1)\ne0$.
+If $\sum_{i<n}\sigma^2(L_i)\to\infty$, the standardized coefficient distributions of
+$\prod_{i<n}L_i$ converge weakly to the standard normal distribution. For $(1+x)^n$ this is the
+de Moivre–Laplace theorem. For $\prod_{i<n}(x+i)$, whose coefficients are the unsigned Stirling
+numbers of the first kind, the factor $x+i$ has variance $i/(i+1)^2\ge1/(2(i+1))$ for $i\ge1$, and
+the harmonic series diverges; this is Goncharov's theorem.
 
-The Eulerian polynomials, with coefficients $A(n+1, k)$, have mean
-$(n+2)/2$ and, for $n\ge1$, variance $(n+2)/12$, so the Eulerian numbers are
-asymptotically normal (David–Barton; Bender). Both moments follow from scalar
-recurrences at $x=1$. The type $B$ Eulerian numbers have mean $n/2$ and, for
-$n\ge2$, variance $(n+1)/12$, so they are asymptotically normal as well.
+**Theorem (three-term recurrences).** Let $P_{n+2}=a\,P_{n+1}+b\,P_n$ with polynomials $a,b$
+independent of $n$. Let $\lambda\ne\nu$ be the roots of $t^2=a(1)t+b(1)$ with $\lambda>|\nu|$ and
+$\nu\ne0$, and assume that $\bigl(P_1(1)-\nu P_0(1)\bigr)/(\lambda-\nu)\ne0$. Let $\lambda(x)$ be
+the root branch of $t^2=a(x)t+b(x)$ through $\lambda$. Then
+$$
+\frac{\mu(P_n)}n\to\frac{\lambda'(1)}{\lambda(1)},\qquad
+\frac{\sigma^2(P_n)}n\to\frac{\lambda''}{\lambda}+\frac{\lambda'}{\lambda}-
+\Bigl(\frac{\lambda'}{\lambda}\Bigr)^2\quad\text{at }x=1,
+$$
+where the limits are expressed algebraically in $a(1)$, $b(1)$ and their derivatives (Bender's
+formulas).
 
-Let $Q_n(x)=\sum_{k=0}^{n-1}N(n,k+1)x^k$, where
-$N(n,k)=\frac1n\binom nk\binom n{k-1}$. Thus $Q_n=N_{n-1,1}$ in the notation
-of the [Narayana page](/RealRooted/families/narayana/). These polynomials
-satisfy
-$(n+3) Q_{n+2} = (2n+3)(1+x) Q_{n+1} - n(1-x)^2 Q_n$. The last term vanishes to
-second order at $x = 1$, so the same method gives mean $(n-1)/2$ and variance
-$(n^2-1)/(4(2n-1))$ for $n\ge1$. Hence the Narayana numbers are asymptotically
-normal.
+**Examples.** Each family below has nonnegative real-rooted rows with variance tending to infinity,
+so its coefficients are asymptotically normal.
 
-The descent polynomials of Stirling permutations satisfy
-$P_{n+1} = (2n+1) x P_n + x(1-x) P_n'$. Their coefficients, the second-order
-Eulerian numbers, have mean $(2n+1)/3$ and variance $2(n^2-1)/(9(2n-1))$ for
-$n \ge 1$, so they are asymptotically normal too, as Bóna showed.
+- The Eulerian polynomials $P_n$ with coefficients $A(n+1,k)$ have mean $(n+2)/2$ and, for
+  $n\ge1$, variance $(n+2)/12$ [David–Barton; Bender]. The type $B$ Eulerian polynomials have
+  mean $n/2$ and, for $n\ge2$, variance $(n+1)/12$.
+- Let $Q_n(x)=\sum_{k=0}^{n-1}N(n,k+1)x^k$, where $N(n,k)=\frac1n\binom nk\binom n{k-1}$. Thus
+  $Q_n=N_{n-1,1}$ in the notation of the [Narayana page](/RealRooted/families/narayana/), and
+  $(n+3)Q_{n+2}=(2n+3)(1+x)Q_{n+1}-n(1-x)^2Q_n$. For $n\ge1$, $Q_n$ has mean $(n-1)/2$ and
+  variance $(n^2-1)/(4(2n-1))$.
+- The descent polynomials of Stirling permutations satisfy $P_{n+1}=(2n+1)xP_n+x(1-x)P_n'$. Their
+  coefficients, the second-order Eulerian numbers, have mean $(2n+1)/3$ and variance
+  $2(n^2-1)/(9(2n-1))$ for $n\ge1$ [@Bona2009].
+- The derangement excedance polynomials $d_n(x)=\sum_\sigma x^{\operatorname{exc}\sigma}$ have
+  $d_n(1)=D_n$, the derangement number. For $n\ge2$ they have mean $n/2$ and variance
+  $\frac{n-1}{12}\bigl(1-(-1)^n/D_n\bigr)$.
 
-The derangement excedance polynomials $d_n(x)$ have $d_n(1) = D_n$, the
-derangement numbers. Their mean is $n/2$, and their variance is
-$\frac{n-1}{12}\bigl(1 - (-1)^n / D_n\bigr)$ for $n \ge 2$. So the number of
-excedances of a random derangement is asymptotically normal.
+## Proof
 
-Variances add under multiplication, so a product $\prod_{i<n} L_i$ of
-real-rooted factors with nonnegative coefficients is asymptotically normal as
-soon as $\sum_i \sigma^2(L_i) \to \infty$. For $L_i = x + i$ the variance is
-$i/(i+1)^2 \ge 1/(2(i+1))$ for $i \ge 1$, and the harmonic series diverges. This
-gives Goncharov's theorem: the unsigned Stirling numbers of the first kind, which
-count permutations of $[n]$ by number of cycles, are asymptotically normal.
-
-## Proof idea
-
-The characteristic function of the standardized distribution is a product of
-centred Bernoulli factors. Each factor differs from
-$\exp(-q_i(1-q_i)t^2/2\sigma^2)$ by at most $2q_i(1-q_i)|t|^3/\sigma^3$, so the
-product is within $2|t|^3/\sigma$ of $e^{-t^2/2}$. Lévy's continuity theorem
-turns pointwise convergence of characteristic functions into weak convergence.
-
-The local limit theorem follows from deterministic window estimates. Log-concavity
-without internal zeros makes the coefficient sequence quasi-concave, and
-weak convergence gives, via Pólya's theorem, uniform convergence of the
-standardized distribution functions. The window sums of the coefficients are then
-uniformly close to Gaussian integrals, which pins down each coefficient.
+The characteristic function of the standardized distribution is a product of centred Bernoulli
+factors, and the product is within $2|t|^3/\sigma$ of $e^{-t^2/2}$; Lévy's continuity theorem gives
+weak convergence. For the local limit theorem, log-concavity without internal zeros makes the
+coefficients quasi-concave, and weak convergence with Pólya's theorem makes window sums of
+coefficients uniformly close to Gaussian integrals.
 
 ## References
 
-See [@Harper1967; @Bender1973]. V. L. Goncharov, “Some facts from combinatorics,”
-*Izv. Akad. Nauk SSSR Ser. Mat.* 8 (1944), 3–48. F. N. David and D. E. Barton,
-*Combinatorial Chance*, Griffin, London, 1962. For Stirling permutations,
-see [@Bona2009].
+- [@Harper1967]
+- [@Bender1973]
+- [@Bona2009]
+- V. L. Goncharov, “Some facts from combinatorics,” *Izv. Akad. Nauk SSSR Ser. Mat.* 8 (1944),
+  3–48.
+- F. N. David and D. E. Barton, *Combinatorial Chance*, Griffin, London, 1962.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

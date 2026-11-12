@@ -13,7 +13,7 @@ public import RealRooted.Basic.Coefficients
 public import RealRooted.Basic.ProperPosition
 
 /-!
-# Interlacing closure challenge entry point
+# Closure of interlacing under cones, affine combinations and shifts
 
 <!-- realrooted-catalog
 version = 1
@@ -42,12 +42,12 @@ headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.InterlacingClosure.strictInterl_affine_derivative"
-label = "c f + (1 − x) f′ interlaces f"
+label = "c f + (1 − x) f′ ≪ f for c > deg f"
 
 [[theorems]]
 name = "RealRooted.strictInterl_add_X_sub_one_mul"
 module = "RealRooted.ShiftLemma"
-label = "Shift lemma: f is interlaced by f + (x − 1) h"
+label = "Shift lemma: h ≪ f and h(0) ≤ f(0) give f ≪ f + (x − 1) h"
 
 [[theorems]]
 name = "RealRooted.strictInterl_sub_X_mul_pair_of_posLeadingCoeff"
@@ -92,75 +92,68 @@ label = "Relative h-polynomials of half-open d-cubes form a nonnegative interlac
 [[theorems]]
 name = "RealRooted.isRealRooted_sum_of_mem_isInterlacingSeqNonneg"
 module = "RealRooted.HlavacekSolus.CubicalShelling"
-label = "A sum of members of a nonnegative interlacing sequence, with repetitions, is real-rooted"
+label = "A nonzero sum of members of a nonnegative interlacing sequence is real-rooted"
 
 -->
 
 <!-- realrooted-catalog-content -->
-# Closure properties of interlacing
+# Closure of interlacing under cones, affine combinations and shifts
 
-Here $f \ll g$ means that $f$ and $g$ are nonzero and real-rooted, $g$ has the
-rightmost root, and the roots alternate, with $\deg g = \deg f$ or
-$\deg g = \deg f + 1$. Roots are compared weakly. In the cone lemma, either
-side is also allowed to be zero.
+Interlacing is preserved by nonnegative combinations of an interlacing sequence and by several
+affine and shift operations, and it gives real-rooted h-polynomials of shellings.
 
-**Affine combinations (Brändén).** Let $f, g$ be nonzero with nonnegative
-coefficients. If $(sx + t) f + g$ is real-rooted for all $s, t > 0$, then
-$f \ll g$.
+## Results
 
-**Cone lemma (Brändén, Saud Leite).** [@BrandenLeite2024x, Lemma 3.1] Let
-$f_0, \dots, f_n$ be real-rooted with
-nonnegative coefficients, and suppose $f_i \ll f_j$ for all $i < j \le n$.
-Then for all $\lambda_0, \dots, \lambda_n \ge 0$ the combination
-$F = \sum_i \lambda_i f_i$ satisfies $f_0 \ll F \ll f_n$, where either side
-may be zero.
+We write $f\ll g$ if $f$ and $g$ are nonzero and real-rooted, $g$ has the rightmost root, and the
+roots alternate, with $\deg g=\deg f$ or $\deg g=\deg f+1$. Roots are compared weakly. In the
+cone lemma, either side may also be zero.
 
-**Affine derivative.** Let $f$ be real-rooted of degree $d \ge 1$ with
-positive leading coefficient and only nonpositive roots. If $c > d$, then
-$c f + (1 - x) f' \ll f$.
+**Theorem (affine combinations, Brändén).** Let $f,g$ be nonzero with nonnegative coefficients.
+If $(sx+t)f+g$ is real-rooted for all $s,t>0$, then $f\ll g$.
 
-**Shift lemma.** Let $h \ll f$, where both have positive leading coefficients
-and only nonpositive roots, and suppose $h(0) \le f(0)$. Then
-$f \ll f + (x - 1) h$.
+**Theorem (cone lemma, Brändén and Saud Leite).** [@BrandenLeite2024x, Lemma 3.1] Let
+$f_0,\dots,f_n$ be real-rooted with nonnegative coefficients, and suppose that $f_i\ll f_j$ for
+all $i<j\le n$. Then for all $\lambda_0,\dots,\lambda_n\ge0$ the combination
+$F=\sum_i\lambda_if_i$ satisfies $f_0\ll F\ll f_n$, where either side may be zero.
 
-**Subtracting $x g$.** Let $f, g$ be monic with $\deg f = \deg g + 1$, only
-nonpositive roots, and $g \ll f$. If $f - x g$ has positive leading
-coefficient, then $g \ll f - x g \ll f$. The positivity hypothesis is not
-automatic, since the leading terms of $f$ and $x g$ cancel.
+**Theorem (affine derivative).** Let $f$ be real-rooted of degree $d\ge1$ with positive leading
+coefficient and only nonpositive roots. If $c>d$, then $cf+(1-x)f'\ll f$.
 
-**Shellings (Hlavacek–Solus).** Let a finite simplicial subdivision of a
-shellable complex be given, together with a shelling of the base complex.
-Suppose that, in some order, the h-polynomials of the relative pieces form an
-interlacing sequence of real-rooted polynomials with nonnegative coefficients,
-and that the h-polynomial of the subdivision is nonzero. Then the latter
-h-polynomial is real-rooted. Only the finite combinatorial content of the
-subdivision axioms is formalized.
+**Theorem (shift lemma).** Let $h\ll f$, where both have positive leading coefficients and only
+nonpositive roots, and suppose that $h(0)\le f(0)$. Then $f\ll f+(x-1)h$.
 
-**Cubical shellings.** In the abstract polytopal setting, a shelling is an ordered list of
-pairwise disjoint relative face sets covering all faces of the subdivision, and the
-h-polynomial of the subdivision is the sum of the relative h-polynomials of the pieces.
-If the pieces, in some order, form a nonnegative interlacing sequence, the sum is
-real-rooted. In a stable shelling of a cubical complex every relative piece is a
-half-open cube $[-1,1]^d_l$ with $0\le l\le 2d$, whose h-polynomial is the refined
-type-B Eulerian polynomial $A_{d,l}^{(2)}$ for $l\le d$ and
-$x\cdot I_dA^{(2)}_{d,2d-l}$ (a reflection) for $d<l$, with $A_{d,l}^{(2)}$ the Euler
-numerator of $t\mapsto(2t)^l(2t+1)^{d-l}$. All these polynomials are real-rooted with
-nonnegative coefficients, $A_{d,l}^{(2)}$ interlaces $A_{d,l+1}^{(2)}$ for $l<d$, and the
-whole row of $2d+1$ relative h-polynomials is a nonnegative interlacing sequence.
-Hence a shelling all of whose relative pieces are half-open cubes has a real-rooted
-h-polynomial; the identification of the pieces with half-open cubes (their Lemma 3.2) is
-the hypothesis that the geometric argument supplies.
+**Theorem (subtracting $xg$).** Let $f,g$ be monic with $\deg f=\deg g+1$ and only nonpositive
+roots, and let $g\ll f$. If $f-xg$ has positive leading coefficient, then
+$g\ll f-xg\ll f$. The positivity hypothesis is not automatic, since the leading terms of $f$
+and $xg$ cancel.
 
-## Proof idea
+**Theorem (shellings, Hlavacek and Solus).** We use finite abstract simplicial complexes, a
+subdivision given by a carrier map with facet coverage, and a shelling of the base complex.
+Suppose that, in some order, the h-polynomials of the relative pieces form an interlacing
+sequence of real-rooted polynomials with nonnegative coefficients, and that the h-polynomial of
+the subdivision is nonzero. Then the h-polynomial of the subdivision is real-rooted.
 
-The last three statements are sign arguments at the roots of $f$: at such a
-root $r \le 0$, the new polynomial takes the value $(1 - r) f'(r)$, $(r - 1) h(r)$
-or $-r\, g(r)$, so it alternates in sign and the intermediate value theorem
-places its roots. The cone lemma combines the common-interleaver theory with
-the two endpoint relations. For the affine criterion, the hypothesis first
-forces $\deg g \in \{\deg f, \deg f + 1\}$ and the real-rootedness of $x f$.
-For $\deg f \ge 2$ it then gives $g \ll x f$, and nonnegative coefficients
-turn this into $f \ll g$ by Wagner's lemma.
+**Proposition (polytopal shellings).** Let a shelling of a graded face set be given by ordered,
+pairwise disjoint relative pieces that cover all faces. The h-polynomial is the sum of the
+h-polynomials of the relative pieces. If these, in some order, form a nonnegative interlacing
+sequence and the sum is nonzero, then the h-polynomial is real-rooted.
+
+**Theorem (half-open cubes).** For $0\le l\le 2d$, let $h_{d,l}=A^{(2)}_{d,l}$ if $l\le d$ and
+$h_{d,l}=x\cdot I_dA^{(2)}_{d,2d-l}$ if $d<l$, where $I_d$ is reflection in degree $d$ and
+$A^{(2)}_{d,l}$ is the refined type-B Eulerian polynomial, defined as the Euler numerator of
+$t\mapsto(2t)^l(2t+1)^{d-l}$. These are the relative h-polynomials of half-open $d$-cubes.
+Then $A^{(2)}_{d,l}\ll A^{(2)}_{d,l+1}$ for $l<d$, and $h_{d,0},\dots,h_{d,2d}$ is a nonnegative
+interlacing sequence. Every sum, with repetitions, of members of a nonnegative interlacing
+sequence is real-rooted when it is nonzero. Consequently, if the h-polynomial of a polytopal
+shelling is nonzero and every relative h-polynomial is some $h_{d,l}$, then it is real-rooted.
+
+## Proof
+
+The affine derivative, shift and subtraction statements are sign arguments at the roots of $f$:
+at such a root $r\le0$, the new polynomial takes the value $(1-r)f'(r)$, $(r-1)h(r)$ or
+$-r\,g(r)$ respectively, so it alternates in sign and the intermediate value theorem places its
+roots. The cone lemma follows by applying one-sided cone lemmas for finite sums to the two
+endpoint relations.
 
 ## References
 

@@ -4,7 +4,7 @@ import RealRooted.MultiplierSequence.CoefficientRatio
 import RealRooted.MultiplierSequence.EulerCoefficientRatio
 
 /-!
-# Real-rootedness from a hypergeometric coefficient ratio
+# Pólya frequency polynomials from a hypergeometric coefficient ratio
 
 <!-- realrooted-catalog
 version = 1
@@ -63,48 +63,51 @@ headline = true
 -->
 
 <!-- realrooted-catalog-content -->
-# Real-rootedness from a hypergeometric coefficient ratio
+# Pólya frequency polynomials from a hypergeometric coefficient ratio
 
-Let $p$ be a real polynomial of degree at most $d$ with $p(0)>0$ whose coefficients
-satisfy a hypergeometric ratio. The simplest case is
+A real polynomial with positive constant term whose coefficients satisfy a hypergeometric
+ratio with positive parameters is PF.
+
+## Results
+
+A polynomial is *PF* (Pólya frequency) if it is zero or has nonnegative coefficients and only
+real, nonpositive roots.
+
+**Theorem (coefficient ratio).** Let $a,b>0$, let $p$ be a real polynomial of degree at most $d$
+with $p(0)>0$, and suppose
 $$
-(k+1)(a+k)\,p_{k+1}=(d-k)(b+d-k-1)\,p_k\qquad(0\le k<d),
+(k+1)(a+k)\,p_{k+1}=(d-k)(b+d-k-1)\,p_k\qquad(0\le k<d).
 $$
-with $a,b>0$. Then $p$ is a PF polynomial: it has nonnegative coefficients and only
-real, nonpositive roots. The proof shows that such a polynomial is a positive multiple
-of the two-sided Jensen polynomial with weights $1/(a)_k$ and $1/(b)_k$; the Jensen
-polynomial is PF because reciprocal Pochhammer products with positive parameters
-are PF multiplier sequences.
+Then $p$ is PF.
 
-## Lists of parameters
-
-The criterion extends to arbitrary finite lists of lower parameters $a_i>0$ and upper
-parameters $b_j>0$, which may be empty, repeated, and of different lengths:
+**Theorem (lists of parameters).** Let $a_1,\dots,a_s>0$ and $b_1,\dots,b_t>0$, with $s,t\ge0$
+arbitrary and repetitions allowed. If $p$ has degree at most $d$, $p(0)>0$ and
 $$
-(k+1)\prod_i(a_i+k)\,p_{k+1}=(d-k)\prod_j(b_j+d-k-1)\,p_k\qquad(0\le k<d).
+(k+1)\prod_i(a_i+k)\,p_{k+1}=(d-k)\prod_j(b_j+d-k-1)\,p_k\qquad(0\le k<d),
 $$
-An upper parameter $b>0$ corresponds to a falling-factorial parameter $A=d+b-1>d-1$.
-A coefficient ratio determines the polynomial up to a scalar.
+then $p$ is PF. Two polynomials of degree at most $d$ satisfying the same ratio differ by a
+scalar factor, provided one of them has nonzero constant term.
 
-## Euler factors
+**Theorem (Euler factors).** Let moreover $r_1,\dots,r_u>0$ and $s_1,\dots,s_v>0$, and put
+$h(k)=\prod_i(r_i+k)\prod_j(s_j+d-k)$. If $p$ has degree at most $d$, $p(0)>0$ and
+$$
+(k+1)\prod_i(a_i+k)\,h(k)\,p_{k+1}=(d-k)\prod_j(b_j+d-k-1)\,h(k+1)\,p_k\qquad(0\le k<d),
+$$
+then $p$ is PF.
 
-We also allow an extra weight $h(k)=\prod_i(r_i+k)\prod_j(s_j+d-k)$ with positive
-parameters $r_i$ and $s_j$, so that the descending factors have their zeros strictly above
-the ambient degree. The ratio then acquires $h(k)$ on the left and $h(k+1)$ on the right,
-and the resulting polynomial is again PF. The proof uses shifted Euler PF multipliers
-and two-sided Jensen polynomials.
+## Proof
 
-## What is new
-
-The parameter region implements Theorem 4.6 of Martínez-Finkelshtein, Morales and
-Perales, *Real roots of hypergeometric polynomials via finite free convolution*; the
-Euler-factor extension was developed in this library.
+The two-sided Jensen polynomial with weights $1/(a)_k$ and $1/(b)_k$, where $(a)_k$ is the
+rising factorial, is PF, because reciprocal Pochhammer products with positive parameters are PF
+multiplier sequences. A polynomial with the given coefficient ratio is a positive multiple of
+it. The Euler factors are handled with shifted Euler PF multipliers.
 
 ## References
 
-A. Martínez-Finkelshtein, J. Morales and D. Perales, *Real roots of hypergeometric
-polynomials via finite free convolution*, Theorem 4.6. For multiplier sequences, see the
-[multiplier sequences](/RealRooted/concepts/multiplier-sequences/) page.
+The parameter region of the first theorem is that of Theorem 4.6 of A. Martínez-Finkelshtein,
+J. Morales and D. Perales,
+*Real roots of hypergeometric polynomials via finite free convolution*. For multiplier
+sequences, see the [multiplier sequences](/RealRooted/concepts/multiplier-sequences/) page.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in

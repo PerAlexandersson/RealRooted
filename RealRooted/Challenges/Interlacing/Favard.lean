@@ -6,7 +6,7 @@ public import RealRooted.Favard.Recurrence
 public import RealRooted.Basic.ProperPosition
 
 /-!
-# Favard challenge entry point
+# Favard recurrences: real roots, interlacing and orthogonality
 
 <!-- realrooted-catalog
 version = 1
@@ -37,23 +37,23 @@ label = "The pairing ⟨p, q⟩ = L(pq)"
 
 [[theorems]]
 name = "RealRooted.Challenges.Favard.SatisfiesFavardRecurrence.strictInterl_succ"
-label = "Consecutive polynomials interlace"
+label = "For positive β, consecutive Favard polynomials interlace"
 symcat = "favardInterlacing"
 
 [[theorems]]
 name = "RealRooted.Challenges.Favard.SatisfiesFavardRecurrence.ne_zero_and_splits"
-label = "Favard polynomials are real-rooted"
+label = "For positive β, Favard polynomials are nonzero and real-rooted"
 
 [[theorems]]
 name = "RealRooted.SatisfiesFavardRecurrence.pairing_iIsOrtho"
 module = "RealRooted.Favard.Orthogonality"
-label = "Orthogonality of the Favard polynomials (algebraic part of Favard’s theorem)"
+label = "The Favard polynomials are orthogonal for the pairing ⟨p, q⟩ = L(pq)"
 headline = true
 
 [[theorems]]
 name = "RealRooted.SatisfiesFavardRecurrence.pairing_posDef"
 module = "RealRooted.Favard.Orthogonality"
-label = "Positive coefficients make the pairing positive definite"
+label = "For positive β, the pairing is positive definite"
 
 [[theorems]]
 name = "RealRooted.SatisfiesFavardRecurrence.linearMap_eq_smul_functional"
@@ -62,28 +62,32 @@ label = "The orthogonalizing functional is unique up to scaling"
 -->
 
 <!-- realrooted-catalog-content -->
-# Favard recurrences
+# Favard recurrences: real roots, interlacing and orthogonality
 
-Let $P_0 = 1$, $P_1 = x - \alpha_0$ and
+A monic three-term recurrence with positive subdiagonal coefficients produces real-rooted
+polynomials with consecutive interlacing, and orthogonal polynomials for a normalized linear
+functional.
+
+## Results
+
+We write $f\ll g$ if $f$ interlaces $g$; common roots are allowed unless stated. Let
+$P_0=1$, $P_1=x-\alpha_0$ and
 $$
-P_{n+2} = (x - \alpha_{n+1}) P_{n+1} - \beta_{n+1} P_n .
+P_{n+2}=(x-\alpha_{n+1})P_{n+1}-\beta_{n+1}P_n .
 $$
-If every $\beta_{n+1}$ is positive, the real polynomials $P_n$ are nonzero and
-real-rooted, and consecutive polynomials interlace.
 
-**Favard’s theorem.** [@Favard1935] Over an integral domain $R$, the monic polynomials $P_n$
-form a basis of $R[x]$. Let $L$ be the linear functional that extracts the
-coefficient of $P_0$ in this basis, and let $\langle p, q \rangle = L(pq)$.
+**Theorem (interlacing).** [@Favard1935] Let $\alpha_n,\beta_n$ be real and $\beta_{n+1}>0$ for
+all $n$. Then every $P_n$ is nonzero and real-rooted, and $P_n\ll P_{n+1}$.
 
-- The family is orthogonal: $\langle P_m, P_n \rangle = 0$ for $m \ne n$.
-- A linear functional $L'$ with $L'(P_n) = 0$ for all $n \ne 0$ equals
-  $L'(1) \cdot L$, so $L$ is unique up to scaling.
-- Over an ordered ring, if every $\beta_{n+1}$ is positive, the pairing is
-  positive definite: $\langle p, p \rangle > 0$ for all $p \ne 0$.
+**Theorem (orthogonality).** Let $R$ be an integral domain. The monic polynomials $P_n$ form a
+basis of $R[x]$. Let $L$ be the linear functional that extracts the coefficient of $P_0$ in this
+basis, and let $\langle p,q\rangle=L(pq)$.
 
-This is the algebraic part of Favard's theorem. We do not prove here that $L$
-is integration against a positive measure on $\mathbb R$; concrete integral
-realizations appear in the Hermite, Laguerre and Jacobi modules.
+- The family is orthogonal, and $\langle P_n,P_n\rangle=\beta_1\cdots\beta_n$.
+- If a linear functional $L'$ satisfies $L'(P_n)=0$ for all $n\ne0$, then $L'=L'(1)\cdot L$.
+  In particular, $L$ is unique up to scaling.
+- Let $R$ be an ordered ring and $\beta_{n+1}>0$ for all $n$. Then the pairing is positive
+  definite: $\langle p,p\rangle>0$ for all $p\ne0$.
 
 ## References
 

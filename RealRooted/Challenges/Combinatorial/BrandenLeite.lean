@@ -28,7 +28,7 @@ import RealRooted.BrandenLeite.LogarithmicCoefficients
 import RealRooted.BrandenLeite.RationalRodCanonical
 
 /-!
-# Brändén–Saud Leite challenge entry point
+# Real-rooted chain polynomials of totally nonnegative matrices
 
 <!-- realrooted-catalog
 version = 1
@@ -45,12 +45,12 @@ years = [2026]
 [[definitions]]
 name = "RealRooted.BrandenLeite.affineNegativePowerCoeff"
 module = "RealRooted.BrandenLeite.AffineNegativePower"
-label = "Coefficients of arbitrary negative real powers"
+label = "Coefficients of (Q(u) - tB(u))^(-κ) as polynomials in t"
 
 [[definitions]]
 name = "RealRooted.BrandenLeite.affineLogCoeff"
 module = "RealRooted.BrandenLeite.AffineLogarithm"
-label = "Coefficients of the negative formal logarithm"
+label = "Coefficients of -log(Q(u) - tB(u)) as polynomials in t"
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.affineNegativePowerCoeff_factor_properties"
@@ -65,7 +65,7 @@ label = "Logarithmic rows: negative roots, exact degree and consecutive interlac
 [[theorems]]
 name = "RealRooted.BrandenLeite.affineNegativePowerCoeff_factor_simple_and_disjoint"
 module = "RealRooted.BrandenLeite.PositivePowerStrictRows"
-label = "Valuation-one positive-power rows have simple, disjoint roots"
+label = "For r = 1 and positive [u²]Q or [u²]B: simple roots, no common roots in consecutive rows"
 
 [[definitions]]
 name = "RealRooted.BrandenLeite.chainPolynomial"
@@ -121,7 +121,7 @@ label = "Chain polynomials with positive constant diagonal are PF"
 [[theorems]]
 name = "RealRooted.BrandenLeite.compositionRows_isPFPolynomial_and_interl_of_zero"
 module = "RealRooted.BrandenLeite.ZeroConstant"
-label = "Rows of 1 / (1 - x h(z)) are PF and interlace"
+label = "Rows of 1 / (1 - x h(z)) with h(0) = 0 are PF and interlace"
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.twoKernelRows_pf_and_interl"
@@ -131,12 +131,12 @@ label = "Rows of g / (1 - x g h) are PF and interlace"
 [[theorems]]
 name = "RealRooted.BrandenLeite.binomialCompositionRows_pf_and_interl"
 module = "RealRooted.BrandenLeite.CompositionFamilies"
-label = "Rows of 1 / (1 - x z (1+z)^d)"
+label = "Rows of 1 / (1 - x z (1+z)^d) are PF and interlace"
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.inversePowerCompositionRows_pf_and_interl"
 module = "RealRooted.BrandenLeite.CompositionFamilies"
-label = "Rows of 1 / (1 - x z / (1-z)^e)"
+label = "Rows of 1 / (1 - x z / (1-z)^e) are PF and interlace"
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.networkMatrix_resolutionLambda_eq"
@@ -176,7 +176,7 @@ label = "Determinants of signed weighted kernels are coefficients of negative po
 [[theorems]]
 name = "RealRooted.BrandenLeite.det_weightedDerivativeKernel_signed_prod_linear_pos"
 module = "RealRooted.BrandenLeite.NegativePowerDetPositive"
-label = "These determinants are strictly positive for products of positive linear factors"
+label = "Signed kernel determinants are positive for products of factors 1 - αu, α > 0"
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.coeff_affineNegativePowerCoeff_recurrence"
@@ -196,7 +196,7 @@ label = "Consecutive negative-power rows interlace when the linear coefficient o
 [[theorems]]
 name = "RealRooted.BrandenLeite.interl_affineNegativePowerCoeff_prod_linear_succ"
 module = "RealRooted.BrandenLeite.PositivePowerRegularization"
-label = "Interlacing of consecutive rows for every valuation of B, by regularization"
+label = "Consecutive rows interlace for every nonzero split numerator B with B(0) = 0"
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.isPFPolynomial_affineNegativePowerCoeff_prod_linear"
@@ -256,150 +256,129 @@ label = "Delayed renewal rows of a PF polynomial are PF"
 [[theorems]]
 name = "RealRooted.strictInterl_renewalPolynomial_residue_succ"
 module = "RealRooted.BrandenLeite.PFFactorRenewal"
-label = "Delayed renewal rows interlace within each residue class modulo the delay"
+label = "For R(0) > 0, consecutive renewal rows in a residue class are nonzero and interlace"
 -->
 
 <!-- realrooted-catalog-content -->
-# Totally nonnegative matrices and chain polynomials
+# Real-rooted chain polynomials of totally nonnegative matrices
 
-A lower-triangular matrix $A$ defines chain polynomials by $P_0 = 1$ and
+Chain polynomials of a lower-unitriangular totally nonnegative matrix are real-rooted with zeros
+in $[-1,0]$, and consecutive ones interlace; the same holds for several families of rows of
+power series.
 
-$$P_{n+1}(x) = x \sum_{k \leq n} A(n+1,k)\, P_k(x).$$
+## Results
 
-When $A$ counts weighted chains in a poset, $P_n$ enumerates the chains by
-length.
+We write $f\ll g$ if $f$ interlaces $g$: both are real-rooted, $\deg g-\deg f\in\{0,1\}$, and
+their roots alternate weakly, the largest root belonging to $g$. Common roots are allowed unless
+stated. We also write $f\ll g$ when $f$ or $g$ is zero. A polynomial is a *Pólya frequency (PF)
+polynomial* if it has nonnegative coefficients and only real nonpositive roots.
 
-**Theorem (Brändén–Saud Leite).** [@BrandenLeite2024x] If $A$ is lower unitriangular
-and totally nonnegative, then every $P_n$ has nonnegative coefficients and
-only real zeros in $[-1, 0]$, and $P_n$ interlaces $P_{n+1}$.
+For a lower-triangular matrix $A$, the *chain polynomials* are $P_0=1$ and
+$$
+P_{n+1}(x)=x\sum_{k\le n}A(n+1,k)\,P_k(x).
+$$
 
-**Provenance.** The theorem above is from [@BrandenLeite2024x]. The extensions
-on this page are new results whose proofs were developed for RealRooted and are
-of independent research interest: rows for arbitrary real positive powers of
-affine kernels and their logarithmic limits (negative roots, exact degree
-$\lfloor n/r\rfloor$, positive coefficients and consecutive interlacing), numerators
-of PF polynomial factors, and delayed renewal rows within each residue class.
+**Theorem (Brändén–Saud Leite).** Let $A$ be lower unitriangular and totally nonnegative.
+Then every $P_n$ has nonnegative coefficients, and is zero or has only real roots, all in
+$[-1,0]$. Moreover $P_n\ll P_{n+1}$ for all $n$ [@BrandenLeite2024x].
 
-The matrices covered are exactly the resolvable ones: a lower-unitriangular
-matrix admits a resolution by nonnegative weights and monic polynomials if and
-only if it is totally nonnegative. For a lower-triangular totally nonnegative
-matrix with constant diagonal $\delta>0$, every $P_n$ is a Pólya frequency
-polynomial: it has nonnegative coefficients and only real nonpositive zeros.
-Moreover, it is the rescaling
-$P_n^A(x)=P_n^{A/\delta}(\delta x)$ of the unitriangular case. See also the
+**Proposition (constant diagonal).** Let $A$ be lower triangular and totally nonnegative with
+$A(n,n)=\delta>0$ for all $n$. Then $P_n$ is a PF polynomial and $P_n\ll P_{n+1}$. Indeed
+$P^A_n(x)=P^{A/\delta}_n(\delta x)$, so this reduces to the unitriangular case.
+
+**Proposition (resolvable matrices).** A real lower-triangular matrix $A$ admits a resolution,
+that is, nonnegative weights $\lambda_{n,k}$ and monic polynomials $p_{n,k}$ with
+$p_{n,0}=P_n$, $p_{n,n}=x^n$, $x^k\mid p_{n,k}$ and
+$p_{n+1,k}=p_{n+1,k+1}+\lambda_{n,k}\,p_{n,k}$ for $k\le n$, if and only if $A$ is lower
+unitriangular and totally nonnegative. Then $A$ is the path matrix of a triangular network whose
+weights are the Whitney elimination weights. See also the
 [lower-unitriangular characterization on symmetricfunctions.com](sf:tnnLowerUnitriangularMatrix).
 
-Applied to power-series kernels built from Pólya frequency sequences, the
-theorem gives PF polynomials whose consecutive rows interlace, for two row
-families:
+### Rows of power series
 
-- the rows of $1/\bigl(1 - x\,h(z)\bigr)$ when $h(0) = 0$;
-- the rows of $g/(1-xgh)$ when $g,h$ are Pólya frequency sequences with
-  $g(0)>0$ and $h(0)=0$.
+Let $g,h$ be Pólya frequency sequences, that is, sequences whose Toeplitz matrices are totally
+nonnegative. Write $[z^n]F$ for the coefficient of $z^n$ in a power series $F$.
 
-In particular, the rows of $1/\bigl(1 - xz(1+z)^d\bigr)$ and of
-$1/\bigl(1 - xz/(1-z)^e\bigr)$ are PF and interlace. These include OEIS A116088
-($d = 2$), A116089 ($d = 3$) and A206294 ($e = 3$).
+- If $h(0)=0$, the polynomials $\sum_k\bigl([z^n]\,h(z)^k\bigr)x^k$, the coefficients of
+  $1/(1-x\,h(z))$, are PF polynomials in $x$, and consecutive ones satisfy $\ll$.
+- If $g(0)>0$ and $h(0)=0$, the polynomials $\sum_k\bigl([z^n]\,g^{k+1}h^k\bigr)x^k$, the
+  coefficients of $g/(1-x\,g\,h)$, are PF polynomials and consecutive ones satisfy $\ll$.
+- For every $d,e\ge0$, the first statement applies to $h=z(1+z)^d$ and to $h=z/(1-z)^e$.
+- For arbitrary $g,h$, let $p_n$ be the coefficient of $z^n$ in
+  $g(z)/\bigl(1-x\,(g(z)h(z)-g(0)h(0))\bigr)$. Then every $p_n$ is a PF polynomial and
+  $p_n\ll p_{n+1}$. If $g(0),h(0)>0$, the roots of $p_n$ lie in $[-1/(g(0)h(0)),0]$. The $p_n$
+  are the rows of the regularized kernel of the finite Toeplitz matrices of $g$ and $h$.
+- For a PF polynomial $R$ and $m\ge1$, let
+  $\rho_n=\sum_j\bigl([z^j]R(z)^{\max(n-mj,0)}\bigr)x^j$ be the coefficient polynomials of
+  $1/(1-xR(zx^m))$. Every $\rho_n$ is a PF polynomial. For $n=mq+r$ with $0\le r<m$, $\rho_n$ is the
+  reciprocal $x^q p_q(1/x)$ of the numerator $p_q$ for $g=R^r$ and $h=zR^{m-r}$, hence
+  $\rho_{mq+r}\ll\rho_{m(q+1)+r}$. If $R(0)>0$, all $\rho_n$ are nonzero.
+- For nonnegative weights $b_n$, $w_n$, nonnegative scalars $a_1,\dots,a_s$ and $r\ge1$, let $G$
+  be the sum $I+B+\dots+B^N$ for the lower shift $B$ with weights $b_n$, and let
+  $K=\prod_j(I+B_j)\,S^r$, where $B_j$ is the lower shift with weights $a_jw_n$ and $S$ is the
+  unweighted lower shift. Row $i$ of $\sum_q (G(KG)^q)_{i,0}\,x^q$ is a PF polynomial.
 
-The resolution theorem has a network form. Every lower-unitriangular totally
-nonnegative matrix is the path matrix of a triangular planar network whose
-nonnegative weights come from Whitney elimination.
+### Powers and logarithms of an affine pencil
 
-## Positive real powers and logarithmic rows
-
-We also formalize the following extension. Let
-
-$$Q(u)=\prod_{i=1}^{d}(1-\alpha_i u),\qquad
-B(u)=cu^r\prod_j(1+\beta_j u),$$
-
-where $d\ge1$, $\alpha_i>0$, $c>0$, $r\ge1$, and $\beta_j\ge0$.
-For every real $\kappa>0$, the rows
-$q_n(t)=[u^n](Q(u)-tB(u))^{-\kappa}$ have degree $\lfloor n/r\rfloor$,
-strictly positive coefficients through that degree, and only strictly negative
-real roots. Consecutive rows interlace with a fixed orientation, including
-when their degrees agree. Repeated factors and constant rows are allowed.
-
-The same conclusions hold for
-$\ell_n(t)=[u^n](-\log(Q(u)-tB(u)))$ when $n\ge1$.
-The proof uses the coefficient limit $q_n/\kappa\to\ell_n$ as
-$\kappa\to0^+$, together with degree-bounded interlacing closure.
-
-When $r=1$ and either $[u^2]Q>0$ or $[u^2]B>0$, the positive-power rows have
-only simple roots, and consecutive rows have no common root. Together with the
-interlacing above, this separates the roots of consecutive rows. The
-formalization states the simple-root and no-common-root conclusions separately
-from the weak interlacing; it does not prove a strict-interlacing predicate.
-These extra conclusions are not asserted for logarithmic rows. If both quadratic
-coefficients vanish, repeated roots can occur: for $Q=1-u$ and $B=u$, every $q_n$ is a
-positive multiple of $(1+t)^n$.
-
-## Weighted derivative kernels and the determinant formula
-
-For a coefficient sequence $f$ and a parameter $\kappa$, the weighted derivative
-kernel is the lower-Hessenberg matrix
+Let
 $$
-K_\kappa(f)_{ij}=\bigl(j+\kappa\,(i+1-j)\bigr)\,f_{i+1-j}\qquad(0\le j\le i+1).
+Q(u)=\prod_{i=1}^{d}(1-\alpha_iu),\qquad B(u)=c\,u^r\prod_j(1+\beta_ju),
 $$
-If $F$ is a real-rooted polynomial with nonnegative coefficients and $\kappa\ge0$,
-then $K_\kappa(F)$ is totally nonnegative. The proof factors each finite
-section as the product of a matrix built from the interlacing pair $(F',F)$ and a
-sparse derivative contraction, both totally nonnegative.
+with $d\ge1$, $\alpha_i>0$, $c>0$, $r\ge1$ and $\beta_j\ge0$, and put
+$q_n(t)=[u^n]\,(Q(u)-tB(u))^{-\kappa}$ for real $\kappa>0$. Then $q_n$ is nonzero with degree
+$\lfloor n/r\rfloor$, has positive coefficients up to that degree and only negative roots, and
+$q_n\ll q_{n+1}$. Repeated factors and constant rows are allowed.
 
-The kernels compute the rows of negative powers. For $Q(0)=1$ and $B(0)=0$, the
-row $q_n(t)=[u^n](Q(u)-tB(u))^{-\kappa}$ satisfies
+For $n\ge1$ the same holds for $\ell_n(t)=[u^n]\bigl(-\log(Q(u)-tB(u))\bigr)$, which is the limit
+of $q_n/\kappa$ as $\kappa\to0^+$; here $\ell_n$ is a PF polynomial. For $k\ge1$,
 $$
-n!\,q_n(t)=\det\bigl(K_\kappa((-1)^kQ_k)+t\cdot\mathrm{checkerboard}\,K_\kappa(B_k)\bigr)_{n\times
-n},
+[t^k]\,\ell_n=\frac1k\,[u^n]\bigl(B(u)^k\,Q(u)^{-k}\bigr).
 $$
-an affine pencil of two kernels, and at $t=0$ the signed kernel has determinant
-$n!\,[u^n]Q(u)^{-\kappa}$. For a product of positive linear factors $Q$ the signed
-determinants are strictly positive. These identities, together with a finite
-recurrence for the rows, are the algebraic input for the positive-power and
-logarithmic results above. Under the same hypotheses the rows have exact degree
-$\lfloor n/r\rfloor$ and positive coefficients up to that degree. When the
-coefficient of $u$ in $B$ is positive, consecutive positive-power rows
-interlace, and a regularization argument removes this positivity assumption.
-The logarithmic rows are the limits $q_n/\kappa\to\ell_n$ as $\kappa\to0^+$, and
-for $n\ge1$, $k\ge1$ their coefficients are
-$[t^k]\ell_n=\frac1k\,[u^n]\bigl(B(u)^k\,Q(u)^{-k}\bigr)$. The rows of a rational
-rod are the case $\kappa=1$, where $Q$ is the denominator of the rational
-background and $B$ is the marked factor series.
 
-## Numerators of two PF factors and delayed renewals
+For $B$ any nonzero real-rooted polynomial with nonnegative coefficients and $B(0)=0$, the rows
+$q_n$ are PF polynomials and $q_n\ll q_{n+1}$.
 
-Let $g,h$ be coefficient sequences and let $p_n(x)$ be the coefficient of $z^n$ in
+If $r=1$, and $[u^2]Q>0$ or $[u^2]B>0$, then every $q_n$ has only simple roots and $q_n$,
+$q_{n+1}$ have no common root, so the roots of consecutive rows interlace strictly. If both
+coefficients vanish, roots may repeat: for $Q=1-u$ and $B=u$, every $q_n$ is a positive multiple
+of $(1+t)^n$.
+
+### Weighted derivative kernels
+
+For a sequence $f$ and a parameter $\kappa$, the *weighted derivative kernel* is
 $$
-\frac{g(z)}{1-x\bigl(g(z)h(z)-g(0)h(0)\bigr)} .
+K_\kappa(f)_{ij}=\bigl(j+\kappa\,(i+1-j)\bigr)\,f_{i+1-j}\qquad(0\le j\le i+1),
 $$
-If $g$ and $h$ are Pólya frequency sequences, then every $p_n$ is a PF polynomial
-and $p_n$ interlaces $p_{n+1}$. When $g(0),h(0)>0$, the zeros of $p_n$ lie in
-$[-1/(g(0)h(0)),0]$. These rows coincide with the regularized kernel rows of the
-finite Toeplitz matrices of $g$ and $h$, to which the theorem on totally
-nonnegative source borders applies.
+and zero for $j>i+1$. If $F$ is real-rooted with nonnegative coefficients and $\kappa\ge0$, then
+$K_\kappa(F)$, built from the coefficients of $F$, is totally nonnegative.
 
-For a PF polynomial $R$ and a delay $m\ge1$, the renewal polynomial
-$\sum_j\bigl([z^j]R(z)^{n-mj}\bigr)x^j$ is the coefficient polynomial of
-$1/(1-xR(zx^m))$. In the residue class $n=mq+r$ with $r<m$ it is the reciprocal
-shift of the PF-factor numerator with $g=R^r$ and $h=xR^{m-r}$. Hence the
-renewal rows are PF, and rows $q$ and $q+1$ of each residue class interlace
-(and, for $R(0)>0$, in the strict-interlacing predicate of the library).
+Let $Q(0)=1$, $B(0)=0$ and $q_n(t)=[u^n]\,(Q(u)-tB(u))^{-\kappa}$. Then
+$$
+n!\,q_n(t)=\det\Bigl(K_\kappa\bigl((-1)^kQ_k\bigr)+t\,\mathrm{checkerboard}\,K_\kappa(B_k)
+\Bigr)_{n\times n},
+$$
+where $Q_k,B_k$ are the coefficients of $u^k$ and $\mathrm{checkerboard}$ multiplies the
+$(i,j)$ entry by $(-1)^{i+j}$. For $H(0)=1$, the determinant of $K_\kappa((-1)^kH_k)$ is $n!$
+times the coefficient of $u^n$ in $H^{-\kappa}$. If $Q$ is a nonempty product of factors
+$1-\alpha_iu$ with $\alpha_i>0$ and $\kappa>0$, these determinants are positive. The coefficients
+of $q_n$ satisfy a finite recurrence in $n$ with coefficients from $Q$ and $B$.
 
-## Proof idea
+The case $\kappa=1$ gives the coefficients of the rational function $1/(Q(u)-tB(u))$.
 
-Whitney elimination factors a totally nonnegative unitriangular matrix into
-nonnegative resolution data. The subdivision operator $X^n \mapsto P_n$ sends each
-row of the resolution to an interlacing sequence, and interlacing is preserved
-under the nonnegative combinations that assemble the chain polynomials.
+## Use
 
-## Relation to SymCat
+The rows of $1/(1-xz(1+z)^d)$ and $1/(1-xz/(1-z)^e)$ include OEIS A116088 ($d=2$), A116089
+($d=3$) and A206294 ($e=3$).
 
-We formalize the infinite lower-unitriangular resolvability criterion. The
-[site’s labelled characterization](sf:tnnLowerUnitriangularMatrix) is stated for
-a finite weighted network.
+## Proof
+
+Whitney elimination produces the resolution of a totally nonnegative unitriangular matrix. The
+recurrence of the resolution assembles each $P_n$ from lower rows by nonnegative combinations,
+which preserve interlacing.
 
 ## References
 
-See [@BrandenLeite2024x].
+- [@BrandenLeite2024x]
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

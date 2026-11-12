@@ -4,7 +4,7 @@ import RealRooted.CombinatorialExamples.BorosMoll
 import RealRooted.CombinatorialExamples.BorosMoll.Infinite
 
 /-!
-# Boros–Moll challenge entry point
+# Log-concavity transform of the Boros–Moll rows
 
 <!-- realrooted-catalog
 version = 1
@@ -33,12 +33,12 @@ label = "Generating polynomial of the log-concavity transform of a Boros–Moll 
 [[theorems]]
 name = "RealRooted.BorosMoll.bmM_roots"
 module = "RealRooted.CombinatorialExamples.BorosMoll"
-label = "Xie–Zhang: the transform has n simple negative zeros"
+label = "For n ≥ 1, M_n has degree n and n simple negative roots"
 
 [[theorems]]
 name = "RealRooted.BorosMoll.bmM_strictInterlaces_narayanaN"
 module = "RealRooted.CombinatorialExamples.BorosMoll"
-label = "Xie–Zhang: its zeros strictly interlace those of the Narayana polynomial"
+label = "The roots of M_n strictly interlace those of the Narayana polynomial N_n"
 headline = true
 
 [[definitions]]
@@ -49,62 +49,63 @@ label = "Infinitely log-concave: every iterate of the transform is nonnegative"
 [[theorems]]
 name = "RealRooted.Branden.IsPFPolynomial.logConcavityTransform"
 module = "RealRooted.BrandenLC"
-label = "Brändén: the log-concavity transform preserves Pólya-frequency polynomials"
+label = "The log-concavity transform preserves Pólya frequency polynomials"
 
 [[theorems]]
 name = "RealRooted.Branden.IsPFPolynomial.isInfinitelyLogConcave"
 module = "RealRooted.BrandenLC.Infinite"
-label = "Pólya-frequency polynomials are infinitely log-concave"
+label = "Pólya frequency polynomials are infinitely log-concave"
 
 [[theorems]]
 name = "RealRooted.BorosMoll.borosMollRow_isInfinitelyLogConcave"
 module = "RealRooted.CombinatorialExamples.BorosMoll.Infinite"
-label = "The Boros–Moll rows are infinitely log-concave"
+label = "For n ≥ 1, the Boros–Moll row d(n) is infinitely log-concave"
 -->
 
 <!-- realrooted-catalog-content -->
-# The log-concavity transform of the Boros–Moll rows
+# Log-concavity transform of the Boros–Moll rows
 
-The Boros–Moll coefficients
+The log-concavity transform of a Boros–Moll row has simple negative roots that interlace those of
+the Narayana polynomial, and every Boros–Moll row is infinitely log-concave.
+
+## Results
+
+The Boros–Moll coefficients are
 $$
-d_i(n) = 2^{-2n} \sum_{k=i}^{n} 2^k \binom{2n-2k}{n-k} \binom{n+k}{n} \binom{k}{i}
+d_i(n)=2^{-2n}\sum_{k=i}^{n}2^k\binom{2n-2k}{n-k}\binom{n+k}{n}\binom{k}{i}.
 $$
-arise in the Taylor expansion of a quartic integral. The *log-concavity transform*
-of a row is $L(d(n))_i = d_i(n)^2 - d_{i-1}(n)\, d_{i+1}(n)$; write
-$M_n(x) = \sum_i L(d(n))_i x^i$, and let
-$N_n(x) = \sum_{i=0}^n \frac{1}{i+1} \binom{n}{i} \binom{n+1}{i} x^i$ be the
-Narayana polynomial.
+The *log-concavity transform* of a sequence $a$ is $L(a)_i=a_i^2-a_{i-1}a_{i+1}$ with $a_{-1}=0$.
+Put $M_n(x)=\sum_{i=0}^nL(d(n))_i\,x^i$ and let
+$N_n(x)=\sum_{i=0}^n\frac1{i+1}\binom ni\binom{n+1}ix^i$ be the Narayana polynomial. A polynomial
+is a *Pólya frequency polynomial* if it has nonnegative coefficients and only real roots, all
+nonpositive. A polynomial is *infinitely log-concave* if all iterates of $L$ applied to its
+coefficient sequence are nonnegative.
 
-**Theorem** (Xie–Zhang). [@XieZhang2026InfiniteLogConcavity] For $n \geq 1$,
-$M_n$ has $n$ simple negative zeros, and they
-strictly interlace the zeros of $N_n$, those of $M_n$ being the leftmost.
+**Theorem (Xie–Zhang).** For $n\ge1$, $M_n$ has degree $n$ and $n$ simple negative roots. They
+strictly interlace the $n$ roots of $N_n$, with the roots of $M_n$ leftmost: if
+$a_0<\dots<a_{n-1}$ are the roots of $M_n$ and $b_0<\dots<b_{n-1}$ those of $N_n$, then
+$a_0<b_0<a_1<b_1<\dots<a_{n-1}<b_{n-1}$ [@XieZhang2026InfiniteLogConcavity].
 
-**Theorem** (Brändén). [@Branden2011b] If $p$ has nonnegative coefficients and
-only real, nonpositive zeros, then so does its log-concavity transform. Hence every
-Pólya-frequency polynomial is
-*infinitely log-concave*: all iterates of the transform have nonnegative coefficients.
+**Theorem (Brändén).** The log-concavity transform of a Pólya frequency polynomial is a Pólya
+frequency polynomial [@Branden2011b]. Hence every Pólya frequency polynomial is infinitely
+log-concave.
 
-Since $M_n$ is the transform of the row $d(n)$ and is Pólya-frequency, the Boros–Moll rows
-are infinitely log-concave, as conjectured by Boros and Moll [@BorosMoll1999].
-All three statements are
-formalized. The formal proof of Brändén's theorem is not Brändén's: it uses moment
-functionals that do not vanish on polynomials whose zeros lie in a half-plane, together
-with Laguerre-type approximations.
+**Corollary.** For $n\ge1$, the Boros–Moll row $\sum_i d_i(n)x^i$ is infinitely log-concave, as
+conjectured by Boros and Moll [@BorosMoll1999]. Its transform $M_n$ is a Pólya frequency
+polynomial. See also [infinite log-concavity on symmetricfunctions.com](sf:infinitelyLogConcave).
 
-See also [infinite log-concavity on symmetricfunctions.com](sf:infinitelyLogConcave).
+## Proof
 
-## Proof idea
-
-The interlacing reduces to the sign of $M_n$ at the zeros of $N_n$. For $n \geq 36$ the
-paper writes these values through moment and coefficient identities, bounds partial sums
-with a boundary recurrence, and controls the remaining weighted sums by Gaussian
-quadrature at the zeros of Jacobi polynomials. The cases $n \leq 35$ are checked by exact
-certificates evaluated in the kernel. The formal proof follows the paper.
+For $n\ge36$ the interlacing reduces to the sign of $M_n$ at the zeros of $N_n$, which we bound
+using Gaussian quadrature at the zeros of Jacobi polynomials; the cases $1\le n\le35$ are exact
+certificates. Our proof of Brändén's theorem is not his: it uses moment functionals that do
+not vanish on polynomials with roots in a half-plane, together with Laguerre-type approximations.
 
 ## References
 
-See [@Branden2011b; @BorosMoll1999]. For the infinite log-concavity result,
-see [@XieZhang2026InfiniteLogConcavity].
+- [@XieZhang2026InfiniteLogConcavity]
+- [@Branden2011b]
+- [@BorosMoll1999]
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

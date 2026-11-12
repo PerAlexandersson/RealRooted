@@ -5,7 +5,7 @@ import RealRooted.Transforms.BrandenE.IntervalPreserver
 import RealRooted.Transforms.BrandenE.Interlacing
 
 /-!
-# Brändén E transform challenge entry point
+# Brändén's E transform on polynomials with roots in $[-1,0]$
 
 <!-- realrooted-catalog
 version = 1
@@ -37,12 +37,12 @@ label = "Images E(x^k (x + 1)^(n − k))"
 [[theorems]]
 name = "RealRooted.brandenE_isPFPolynomial_of_roots_mem_Icc"
 module = "RealRooted.Transforms.BrandenE.IntervalPreserver"
-label = "Roots in [−1, 0] give a PF image"
+label = "Positive leading coefficient and roots in [−1, 0] give a PF image"
 
 [[theorems]]
 name = "RealRooted.brandenE_eq_zero_or_splits_and_roots_nonpos"
 module = "RealRooted.Transforms.BrandenE.IntervalPreserver"
-label = "Roots in [−1, 0] give a real-rooted image, for either sign"
+label = "Roots in [−1, 0] give zero or a real-rooted image with nonpositive roots"
 
 [[theorems]]
 name = "RealRooted.brandenBasisImage_strictInterl"
@@ -72,56 +72,56 @@ label = "Moving one root to the right gives interlacing images"
 -->
 
 <!-- realrooted-catalog-content -->
-# Brändén’s E transform
+# Brändén's E transform on polynomials with roots in $[-1,0]$
 
-The ordered Bell polynomials are defined by
+The E transform sends a real-rooted polynomial with all roots in $[-1,0]$ and positive leading
+coefficient to a PF polynomial, and respects the rootwise order on such polynomials.
+
+## Results
+
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+A polynomial is *PF* (Pólya frequency) if it is zero or has nonnegative coefficients and only
+real, nonpositive roots. The ordered Bell polynomials are
 $$
-F_0(x) = 1, \qquad F_{n+1}(x) = x F_n(x) + x(1 + x) F_n'(x),
+F_0=1,\qquad F_{n+1}=x\,F_n+x(1+x)\,F_n',
 $$
-so that $F_n(x) = \sum_k k!\, S(n, k)\, x^k$, where $S(n, k)$ are the Stirling
-numbers of the second kind. The **E transform** is the linear map with
-$E(x^n) = F_n(x)$. Equivalently,
-$E\bigl(x(x - 1) \cdots (x - n + 1)\bigr) = n!\, x^n$, that is,
-$E\binom{x}{n} = x^n$.
+so that $F_n=\sum_k k!\,S(n,k)\,x^k$ with $S(n,k)$ the Stirling numbers of the second kind. The
+*E transform* is the linear map with $E(x^n)=F_n$. It satisfies
+$E\bigl(x(x-1)\cdots(x-n+1)\bigr)=n!\,x^n$.
 
-**Theorem (Brändén).** [@Branden2006] Let $p$ be a real polynomial whose roots are all real
-and lie in $[-1, 0]$.
+**Theorem (Brändén [@Branden2006]).** Let $p$ be a real polynomial with only real roots, all in
+$[-1,0]$.
 
-- If $p$ has positive leading coefficient, then $E(p)$ is a PF polynomial: it
-  has nonnegative coefficients and only real, nonpositive roots.
-- Without a sign condition, $E(p)$ is either zero, or nonzero and real-rooted
-  with only nonpositive roots.
+- If $p$ has positive leading coefficient, then $E(p)$ is PF.
+- In general, $E(p)=0$, or $E(p)\ne0$ is real-rooted with only nonpositive roots.
 
-**Interlacing basis.** For $0 \le k \le n$ let
-$b_{n,k} = E\bigl(x^k (x + 1)^{n-k}\bigr)$. Then $b_{n,i} \ll b_{n,j}$ for all
-$i \le j \le n$. In particular every ordered Bell polynomial
-$F_n = b_{n,n}$ is a PF polynomial.
+**Theorem (interlacing basis).** For $0\le k\le n$ let $b_{n,k}=E\bigl(x^k(x+1)^{n-k}\bigr)$.
+Then $b_{n,i}\ll b_{n,j}$ for all $0\le i\le j\le n$. In particular $F_n=b_{n,n}$ is PF.
 
-## Rootwise order and interlacing of images
+**Theorem (rootwise order).** Let $f,g$ be monic, real-rooted of the same degree $n\ge1$ with
+all roots in $[-1,0]$, and suppose that their roots, sorted increasingly, satisfy $f\le g$
+coordinatewise. Then $E(f)\ll E(g)$, as in Theorem 4.6 of [@Branden2006]. More precisely, for
+$u\le v$ and monic real-rooted $h$ with roots in $[-1,0]$,
+$$
+E\bigl((x-u)h\bigr)\ll E\bigl((x-v)h\bigr),
+$$
+with no condition on $u,v$ beyond $u\le v$.
 
-Let $f$ and $g$ be monic of the same positive degree $n$, split, with all roots in
-$[-1,0]$, and suppose the sorted roots satisfy $f\le g$ coordinatewise. Then $E(f)$
-interlaces $E(g)$, as in Theorem 4.6 of [@Branden2006]. The proof moves one root at a time:
-for $u\le v$ and monic split $h$ with roots in $[-1,0]$, $E\bigl((x-u)h\bigr)$
-interlaces $E\bigl((x-v)h\bigr)$, using
-$E\bigl((x-\beta)h\bigr)=E\bigl((x-\alpha)h\bigr)-(\beta-\alpha)E(h)$; this step needs no
-interval hypothesis on the moved root. Applying it along a chain of root multisets from all
-roots $-1$ through $f$ and $g$ to all roots $0$, and closing with the endpoint relation, gives
-the result.
+## Use
 
-## Proof idea
+The ordered Bell numbers are [OEIS A000670](https://oeis.org/A000670).
 
-The polynomials $x^k (x + 1)^{n - k}$ form a basis of the polynomials of degree
-at most $n$, and a polynomial with all roots in $[-1, 0]$ has nonnegative
-coordinates in it. Each image $b_{n,k}$ is obtained from a lower-degree one by
-an Euler differential step $(x + r) f + x(1 + x) f'$, which preserves
-interlacing. The images thus form an interlacing sequence, and a nonnegative
-combination of an interlacing sequence is real-rooted.
+## Proof
+
+A polynomial with all roots in $[-1,0]$ is a nonnegative combination of the polynomials
+$x^k(x+1)^{n-k}$. The images $b_{n,k}$ arise by Euler steps $f\mapsto(x+r)f+x(1+x)f'$, which
+preserve interlacing, and a nonnegative combination of an interlacing sequence is real-rooted.
+The rootwise statement follows by moving one root at a time, from all roots $-1$ through $f$
+and $g$ to all roots $0$.
 
 ## References
 
-See [@Branden2006]. The ordered Bell numbers are
-[OEIS A000670](https://oeis.org/A000670).
+The results are from [@Branden2006].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in

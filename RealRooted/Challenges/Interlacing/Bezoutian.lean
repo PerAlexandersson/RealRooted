@@ -53,46 +53,45 @@ label = "A positive definite Bézout matrix gives a positive Wronskian"
 <!-- realrooted-catalog-content -->
 # Bézout matrices and interlacing
 
+Two real polynomials of equal degree have strictly interlacing real roots if and only if their
+Bézout matrix is positive definite.
+
+## Results
+
 For real polynomials $p$ and $q$ of degree at most $n$, the Bézoutian
 $$
 \frac{q(x)\,p(y) - q(y)\,p(x)}{x - y} = \sum_{i,j=0}^{n-1} b_{ij}\, x^i y^j
 $$
-is a polynomial, and its coefficient matrix $B_n(q,p) = (b_{ij})$ is the
-symmetric $n \times n$ **Bézout matrix**.
+is a polynomial. Its coefficient matrix $B_n(q,p) = (b_{ij})$ is the symmetric $n \times n$
+*Bézout matrix*.
 
-**Theorem.** Let $p$ and $q$ have degree $n$ and positive leading
-coefficients. Then $p$ and $q$ are both real-rooted with strictly interlacing
-zeros,
+**Theorem (equal degree).** Let $p$ and $q$ have degree $n$ and positive leading coefficients.
+Then $p$ and $q$ are real-rooted with strictly interlacing roots,
 $$
 \alpha_1 < \beta_1 < \alpha_2 < \beta_2 < \dots < \alpha_n < \beta_n,
 $$
-where $\alpha_i$ and $\beta_i$ are the zeros of $p$ and $q$, if and only if
-$B_n(q,p)$ is positive definite.
+where $\alpha_i$ and $\beta_i$ are the roots of $p$ and $q$, if and only if $B_n(q,p)$ is
+positive definite. If $B_n(q,p)$ is positive definite, then $p$ and $q$ are real-rooted.
 
-Positive definiteness of $B_n(q,p)$ already forces $p,q$ of degree $n$ with
-positive leading coefficients to split over $\mathbb R$. For $p,q$ of degree
-at most $n$, it also makes the Wronskian $q'p-qp'$ positive on all of
-$\mathbb R$.
-
-**Theorem** (successor degree). [@Fisk2006x, Cor. 9.145] Let $f$ have degree
-$d+1$ and $g$ degree $d$,
-both with positive leading coefficients. Then $g$ interlaces $f$ and the two
-polynomials have no common zero, that is
+**Theorem (successor degree).** [@Fisk2006x, Cor. 9.145] Let $f$ have degree $d+1$ and $g$
+degree $d$, both with positive leading coefficients. Then $B_{d+1}(f,g)$ is positive definite
+if and only if $g$ interlaces $f$ and the two polynomials have no common root, that is,
 $$
 \alpha_1 < \beta_1 < \alpha_2 < \dots < \beta_d < \alpha_{d+1}
 $$
-for the zeros $\alpha_i$ of $f$ and $\beta_i$ of $g$, if and only if the
-$(d+1) \times (d+1)$ Bézout matrix $B_{d+1}(f,g)$ is positive definite.
+for the roots $\alpha_i$ of $f$ and $\beta_i$ of $g$.
 
-## Proof idea
+**Proposition (Wronskian).** Let $p$ and $q$ have degree at most $n$. If $B_n(q,p)$ is positive
+definite, then $q'(t)\,p(t) - q(t)\,p'(t) > 0$ for all real $t$.
 
-Both theorems use the same mechanism. Evaluating the Bézoutian at the roots of
-one polynomial gives Wronskian values, so congruence with a Vandermonde matrix
-turns the Bézout matrix into a diagonal matrix whose entries have the signs of
-the Wronskian at those roots. These signs are positive exactly when the zeros
-interlace. Conversely, a positive definite Bézout matrix makes the Wronskian
-positive, which excludes common real roots, and it rules out non-real roots,
-because its Hermitian form would vanish on a conjugate pair.
+## Proof
+
+Evaluating the Bézoutian at the roots of one polynomial gives Wronskian values. Congruence
+with a Vandermonde matrix therefore turns the Bézout matrix into a diagonal matrix whose
+entries have the signs of the Wronskian at those roots, and these are positive exactly when the
+roots interlace. Conversely, a positive definite Bézout matrix makes the Wronskian positive,
+which excludes common real roots, and it excludes non-real roots because its Hermitian form
+would vanish on a conjugate pair.
 
 ## References
 

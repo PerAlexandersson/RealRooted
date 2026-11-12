@@ -30,7 +30,7 @@ label = "Two symbols give ordered PF images through degree N"
 [[definitions]]
 name = "RealRooted.HasKreinCompanionExpansion"
 module = "RealRooted.FiniteFreeAdditive.FiniteDegreeCompanions"
-label = "A nonnegative expansion in one-root-deleted summands of the parent"
+label = "A nonnegative combination of h and quotients h/(x − u)"
 
 [[theorems]]
 name = "RealRooted.preservesPFUpTo_iff_finiteDifferentialTest"
@@ -80,7 +80,7 @@ label = "Induction along a multishift recurrence from a PF seed"
 [[theorems]]
 name = "RealRooted.isPFPolynomial_and_interl_iff_hasKreinCompanionExpansion"
 module = "RealRooted.FiniteFreeAdditive.FiniteDegreeCompanions"
-label = "For a PF parent h, the pairs (k PF, k ≪ h) are exactly the Krein companion expansions"
+label = "For PF h ≠ 0: k is PF with k ≪ h iff k is a nonnegative sum of h and h/(x − u)"
 
 [[theorems]]
 name = "RealRooted.forall_differential_images_iff_isPFPolynomial_and_interl"
@@ -92,61 +92,66 @@ headline = true
 <!-- realrooted-catalog-content -->
 # Finite-degree tests for constant-coefficient differential operators
 
-For a real polynomial $h=\sum_jh_jx^j$ let $h(D)=\sum_jh_jD^j$ with $D=d/dx$. The
-degree-$N$ test of $h$ is the polynomial
+An operator $h(D)$ with $D=d/dx$ preserves PF polynomials of degree at most $N$ if and only if
+the single polynomial $h(D)\,x^N$ is PF, and the same holds for pairs of operators with
+interlacing images.
+
+## Results
+
+A polynomial is *PF* (Pólya frequency) if it is zero or has nonnegative coefficients and only
+real, nonpositive roots. We write $f\ll g$ if $f=0$, $g=0$ or $f$ interlaces $g$; common roots
+are allowed. For a real polynomial $h=\sum_jh_jx^j$ let $h(D)=\sum_jh_jD^j$. The *degree-$N$
+test* of $h$ and its reversal, the *Jensen test*, are
 $$
-T_N(h)=h(D)\,x^N=\sum_{j\le N}N(N-1)\cdots(N-j+1)\,h_j\,x^{N-j}.
+T_N(h)=h(D)\,x^N=\sum_{j\le N}\frac{N!}{(N-j)!}\,h_j\,x^{N-j},\qquad
+J_N(h)=\sum_{j\le N}\frac{N!}{(N-j)!}\,h_j\,x^{j}.
 $$
-For $\deg p\le N$ the finite free additive convolution of the test with $p$ is
+For $\deg p\le N$, the finite free additive convolution of the test with $p$ is
 $T_N(h)\boxplus_Np=h(D)p$.
 
-## Scalar and ordered tests
+**Theorem (scalar test).** $h(D)$ maps every PF polynomial of degree at most $N$ to a PF
+polynomial if and only if $T_N(h)$ is PF.
 
-**Theorem.** The operator $h(D)$ maps every PF polynomial of degree at most $N$ to a
-PF polynomial if and only if $T_N(h)$ is a PF polynomial.
+**Theorem (ordered tests).** For real polynomials $h,k$ the following are equivalent.
 
-For two symbols $h,k$, the operators $h(D),k(D)$ give PF images with $h(D)p\ll k(D)p$
-for every PF polynomial $p$ of degree at most $N$ if and only if $T_N(h)$ and $T_N(k)$ are
-PF and $T_N(h)\ll T_N(k)$. Equivalently, in terms of the reversed (Jensen) tests with
-coefficients $N(N-1)\cdots(N-j+1)h_j$ in degree $j$, the Jensen tests are PF and
-interlace in the reverse order. For the binomial symbols with Jensen tests
-$(sx+1)^r$ and $(sx+1)^{r-1}$, $s\ge0$, $1\le r\le N$, the ordered preservation holds.
+1. For every PF polynomial $p$ of degree at most $N$, the polynomials $h(D)p$ and $k(D)p$ are
+   PF and $h(D)p\ll k(D)p$.
+2. $T_N(h)$ and $T_N(k)$ are PF and $T_N(h)\ll T_N(k)$.
+3. $J_N(h)$ and $J_N(k)$ are PF and $J_N(k)\ll J_N(h)$.
 
-As a consequence, whenever $h(D)p$ and $k(D)p$ are PF with $h(D)p\ll k(D)p$ and
-$a\ge0$, the row
-$$
-x\,h(D)p+a\,k(D)p
-$$
-is PF and is preceded by $h(D)p$. The same holds for the binomial symbols of degree
-$r\le N$ and for the multishift symbols: for shifts $s_0,\dots,s_r\ge0$ with
-$r+1\le N$, let $h_s$ be the symbol whose Jensen test is $\prod_i(1+s_ix)$ and
-$h_{s\setminus i}$ the one with the $i$-th shift deleted. Then for every PF polynomial
-$p$ of degree at most $N$ and all $a_i\ge0$,
-$$
-x\,h_s(D)p+\sum_ia_i\,h_{s\setminus i}(D)p
-$$
-is PF and is preceded by $h_s(D)p$, and such rows can be iterated from a PF seed.
+**Theorem (binomial symbols).** Let $s\ge0$ and $1\le r\le N$. Let $h$ and $k$ be the symbols
+with $J_N(h)=(sx+1)^r$ and $J_N(k)=(sx+1)^{r-1}$. Then (1) holds for $h,k$.
 
-## Companion cones
+**Theorem (recurrence rows).** Let $p$ be PF with $\deg p\le N$ and let $a\ge0$.
 
-For a nonzero PF polynomial $h$, a polynomial $k$ is PF with $k\ll h$ if and only if
-it is a nonnegative combination of the one-root-deleted Krein summands of $h$. Passing
-to coefficientwise limits of the finite-degree tests, the all-degree statement
-follows: for PF $h\ne0$,
-$$
-\bigl(\forall p\text{ PF}:\;h(D)p,\;k(D)p\text{ PF and }h(D)p\ll k(D)p\bigr)
-\iff k\text{ is PF and }k\ll h .
-$$
+- If $h(D)p$ and $k(D)p$ are PF with $h(D)p\ll k(D)p$, then
+  $x\,h(D)p+a\,k(D)p$ is PF and $h(D)p\ll x\,h(D)p+a\,k(D)p$.
+- For $h,k$ as in the binomial theorem, the same holds with these $h$ and $k$.
+- Let $s_0,\dots,s_r\ge0$ with $r+1\le N$ and $a_0,\dots,a_r\ge0$. Let $h_s$ be the symbol with
+  $J_N(h_s)=\prod_i(1+s_ix)$, and $h_{s\setminus i}$ the symbol with the factor $1+s_ix$
+  removed. Then
+  $$
+  x\,h_s(D)p+\sum_ia_i\,h_{s\setminus i}(D)p
+  $$
+  is PF and is preceded by $h_s(D)p$.
 
-## What is new
+**Theorem (iteration).** Let $P_m$ be PF with $\deg P_m\le m$. For $n\ge m$ let $r_n+1\le n$,
+let $s^{(n)}_i,a^{(n)}_i\ge0$ for $0\le i\le r_n$, and let $P_{n+1}$ be the row of the previous
+theorem for $p=P_n$, $N=n$, $s=s^{(n)}$ and $a=a^{(n)}$. Then $P_n$ is PF with $\deg P_n\le n$ for
+all $n\ge m$.
 
-These finite-degree tests were developed in this library; no published source is
-cited, and we attribute none. The finite free additive convolution is discussed on the
-[finite free convolutions](/RealRooted/theorems/finite-free-convolutions/) page.
+**Theorem (companion cone).** Let $h\ne0$ be PF. Then $k$ is PF with $k\ll h$ if and only if
+$k$ is a nonnegative combination of $h$ and of quotients $h/(x-u)$ with $h(u)=0$. Moreover, the
+following are equivalent:
+
+1. for every PF polynomial $p$, the polynomials $h(D)p$ and $k(D)p$ are PF and
+   $h(D)p\ll k(D)p$;
+2. $k$ is PF and $k\ll h$.
 
 ## References
 
-No published source is cited for these results in the formalization.
+The finite free additive convolution is treated on the
+[finite free convolutions](/RealRooted/theorems/finite-free-convolutions/) page.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in the `RealRooted.FiniteFreeAdditive`
