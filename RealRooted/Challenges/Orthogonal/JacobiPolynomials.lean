@@ -265,8 +265,8 @@ Let $L_{n,\alpha,\beta}$ be the differential operator whose coefficient recurren
 $$
 (k+1)(k+\alpha+1)\,p_{k+1}+\bigl(k(k+\alpha+\beta+1)-n(n+\alpha+\beta+1)\bigr)p_k=0.
 $$
-The polynomial $P_n^{(\alpha,\beta)}(-x)$ satisfies it. For $\alpha>-1$ a polynomial solution is determined by
-its constant term. If $\beta=-m$ with $m\le n$, every polynomial solution is a multiple of
+The polynomial $P_n^{(\alpha,\beta)}(-x)$ satisfies it. For $\alpha>-1$ a polynomial solution
+is determined by its constant term. If $\beta=-m$ with $m\le n$, every polynomial solution is a multiple of
 $$
 (1+x)^m\,P_{n-m}^{(\alpha,m)}(-x).
 $$
