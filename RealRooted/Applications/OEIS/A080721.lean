@@ -472,42 +472,17 @@ theorem polynomial_recurrence (n : ℕ) :
   field_simp
   ring
 
-private theorem polynomial_two :
-    polynomial 2 = 1 + 4 * X + 4 * X ^ 2 := by
-  apply Polynomial.funext
-  intro r
-  simp only [polynomial, legendre, eval_add, eval_sub, eval_mul, eval_C,
-    eval_X, eval_one, eval_pow, eval_ofNat]
-  norm_num [legendre]
-  ring
-
-private theorem polynomial_three :
-    polynomial 3 = 1 + 9 * X + 21 * X ^ 2 + 14 * X ^ 3 := by
-  apply Polynomial.funext
-  intro r
-  simp only [polynomial, legendre, eval_add, eval_sub, eval_mul, eval_C,
-    eval_X, eval_one, eval_pow, eval_ofNat]
-  norm_num [legendre]
-  ring
-
-private theorem polynomial_four :
-    polynomial 4 = 1 + 16 * X + 66 * X ^ 2 + 100 * X ^ 3 + 50 * X ^ 4 := by
-  apply Polynomial.funext
-  intro r
-  simp only [polynomial, legendre, eval_add, eval_sub, eval_mul, eval_C,
-    eval_X, eval_one, eval_pow, eval_ofNat]
-  norm_num [legendre]
-  ring
-
-private theorem polynomial_five :
+/-- The four initial Legendre-model rows used by the recurrence. -/
+private theorem polynomial_initial :
+    polynomial 2 = 1 + 4 * X + 4 * X ^ 2 ∧
+    polynomial 3 = 1 + 9 * X + 21 * X ^ 2 + 14 * X ^ 3 ∧
+    polynomial 4 = 1 + 16 * X + 66 * X ^ 2 + 100 * X ^ 3 + 50 * X ^ 4 ∧
     polynomial 5 =
       1 + 25 * X + 160 * X ^ 2 + 410 * X ^ 3 + 455 * X ^ 4 + 182 * X ^ 5 := by
-  apply Polynomial.funext
-  intro r
-  simp only [polynomial, legendre, eval_add, eval_sub, eval_mul, eval_C,
-    eval_X, eval_one, eval_pow, eval_ofNat]
-  norm_num [legendre]
-  ring
+  refine ⟨?_, ?_, ?_, ?_⟩ <;> apply Polynomial.funext <;> intro r <;>
+    simp only [polynomial, legendre, eval_add, eval_sub, eval_mul, eval_C,
+      eval_X, eval_one, eval_pow, eval_ofNat] <;>
+    norm_num [legendre] <;> ring
 
 /-- A sequence with the generated A080721 initial rows and order-four update
 has split rows. -/
@@ -525,8 +500,8 @@ theorem splits_of_recurrence
     (P n).Splits := by
   have heq := sequence_eq_of_same_lag_four_recurrence
     (P := P) (Q := fun m => polynomial (m + 2)) nextRow
-    (hzero.trans polynomial_two.symm) (hone.trans polynomial_three.symm)
-    (htwo.trans polynomial_four.symm) (hthree.trans polynomial_five.symm)
+    (hzero.trans polynomial_initial.1.symm) (hone.trans polynomial_initial.2.1.symm)
+    (htwo.trans polynomial_initial.2.2.1.symm) (hthree.trans polynomial_initial.2.2.2.symm)
     hrec (fun m => by simpa only [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using
       polynomial_recurrence m)
   rw [heq n]
@@ -548,8 +523,8 @@ theorem interlaces_of_recurrence
     Interlaces (P n) (P (n + 1)) := by
   have heq := sequence_eq_of_same_lag_four_recurrence
     (P := P) (Q := fun m => polynomial (m + 2)) nextRow
-    (hzero.trans polynomial_two.symm) (hone.trans polynomial_three.symm)
-    (htwo.trans polynomial_four.symm) (hthree.trans polynomial_five.symm)
+    (hzero.trans polynomial_initial.1.symm) (hone.trans polynomial_initial.2.1.symm)
+    (htwo.trans polynomial_initial.2.2.1.symm) (hthree.trans polynomial_initial.2.2.2.symm)
     hrec (fun m => by simpa only [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using
       polynomial_recurrence m)
   rw [heq n, heq (n + 1)]

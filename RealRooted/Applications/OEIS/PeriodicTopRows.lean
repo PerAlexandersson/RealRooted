@@ -699,99 +699,27 @@ private lemma A177040_coeff (n i : ℕ) :
       · rw [ite_eq_right (by lia)]
         simp [A177040, coeff_add, coeff_X]
     | (m + 4) =>
-      -- change goal to Bcoef form
       change Polynomial.coeff (A177040 (m + 4)) i = Bcoef (m + 4) i
+      have hprev (t : ℕ) (ht : t < m + 4) (j : ℕ) :
+          Bcoef t j = Polynomial.coeff (A177040 t) j := (ih t ht j).symm
       rcases i with _ | _ | k
-      · -- i = 0
-        rw [A177040_coeff_zero m, i0_step m]
-        have e3 := ih (m + 3) (by lia) 0
-        have e2 := ih (m + 2) (by lia) 0
-        have e1 := ih (m + 1) (by lia) 0
-        have e0 := ih m (by lia) 0
-        rw [show Bcoef (m + 3) 0 = Polynomial.coeff (A177040 (m + 3)) 0 from by rw [e3]; rfl,
-            show Bcoef (m + 2) 0 = Polynomial.coeff (A177040 (m + 2)) 0 from by rw [e2]; rfl,
-            show Bcoef (m + 1) 0 = Polynomial.coeff (A177040 (m + 1)) 0 from by rw [e1]; rfl,
-            show Bcoef m 0 = Polynomial.coeff (A177040 m) 0 from by rw [e0]; rfl]
-      · -- i = 1
-        rw [A177040_coeff_one m, i1_step m]
-        have e3a := ih (m + 3) (by lia) 1
-        have e3b := ih (m + 3) (by lia) 0
-        have e2a := ih (m + 2) (by lia) 1
-        have e2b := ih (m + 2) (by lia) 0
-        have e1a := ih (m + 1) (by lia) 1
-        have e1b := ih (m + 1) (by lia) 0
-        have e0a := ih m (by lia) 1
-        have e0b := ih m (by lia) 0
-        rw [show Bcoef (m + 3) 1 = Polynomial.coeff (A177040 (m + 3)) 1 from by rw [e3a]; rfl,
-            show Bcoef (m + 3) 0 = Polynomial.coeff (A177040 (m + 3)) 0 from by rw [e3b]; rfl,
-            show Bcoef (m + 2) 1 = Polynomial.coeff (A177040 (m + 2)) 1 from by rw [e2a]; rfl,
-            show Bcoef (m + 2) 0 = Polynomial.coeff (A177040 (m + 2)) 0 from by rw [e2b]; rfl,
-            show Bcoef (m + 1) 1 = Polynomial.coeff (A177040 (m + 1)) 1 from by rw [e1a]; rfl,
-            show Bcoef (m + 1) 0 = Polynomial.coeff (A177040 (m + 1)) 0 from by rw [e1b]; rfl,
-            show Bcoef m 1 = Polynomial.coeff (A177040 m) 1 from by rw [e0a]; rfl,
-            show Bcoef m 0 = Polynomial.coeff (A177040 m) 0 from by rw [e0b]; rfl]
+      · rw [A177040_coeff_zero m, i0_step m]
+        simp only [hprev (m + 3) (by lia), hprev (m + 2) (by lia),
+          hprev (m + 1) (by lia), hprev m (by lia)]
+      · rw [A177040_coeff_one m, i1_step m]
+        simp only [hprev (m + 3) (by lia), hprev (m + 2) (by lia),
+          hprev (m + 1) (by lia), hprev m (by lia)]
         ring_nf
-      · -- i = k+2
-        rcases Nat.even_or_odd m with ⟨j0, hj0⟩ | ⟨j0, hj0⟩
-        · obtain rfl : m = 2 * j0 := by lia
-          rw [A177040_coeff_succ (2 * j0) k, even_step j0 k]
-          have e3a := ih (2 * j0 + 3) (by lia) (k + 2)
-          have e3b := ih (2 * j0 + 3) (by lia) (k + 1)
-          have e2a := ih (2 * j0 + 2) (by lia) (k + 2)
-          have e2b := ih (2 * j0 + 2) (by lia) (k + 1)
-          have e1a := ih (2 * j0 + 1) (by lia) (k + 2)
-          have e1b := ih (2 * j0 + 1) (by lia) (k + 1)
-          have e0a := ih (2 * j0) (by lia) (k + 2)
-          have e0b := ih (2 * j0) (by lia) (k + 1)
-          rw [show Bcoef (2 * j0 + 3) (k + 2) = Polynomial.coeff (A177040 (2 * j0 + 3)) (k + 2)
-            from by rw [e3a]; rfl,
-              show Bcoef (2 * j0 + 3) (k + 1) = Polynomial.coeff (A177040 (2 * j0 + 3)) (k + 1)
-                from by rw [e3b]; rfl,
-              show Bcoef (2 * j0 + 2) (k + 2) = Polynomial.coeff (A177040 (2 * j0 + 2)) (k + 2)
-                from by rw [e2a]; rfl,
-              show Bcoef (2 * j0 + 2) (k + 1) = Polynomial.coeff (A177040 (2 * j0 + 2)) (k + 1)
-                from by rw [e2b]; rfl,
-              show Bcoef (2 * j0 + 1) (k + 2) = Polynomial.coeff (A177040 (2 * j0 + 1)) (k + 2)
-                from by rw [e1a]; rfl,
-              show Bcoef (2 * j0 + 1) (k + 1) = Polynomial.coeff (A177040 (2 * j0 + 1)) (k + 1)
-                from by rw [e1b]; rfl,
-              show Bcoef (2 * j0) (k + 2) = Polynomial.coeff (A177040 (2 * j0)) (k + 2)
-                from by rw [e0a]; rfl,
-              show Bcoef (2 * j0) (k + 1) = Polynomial.coeff (A177040 (2 * j0)) (k + 1)
-                from by rw [e0b]; rfl]
+      · rcases Nat.even_or_odd m with ⟨j, hj⟩ | ⟨j, hj⟩
+        · obtain rfl : m = 2 * j := by lia
+          rw [A177040_coeff_succ (2 * j) k, even_step j k]
+          simp only [hprev (2 * j + 3) (by lia), hprev (2 * j + 2) (by lia),
+            hprev (2 * j + 1) (by lia), hprev (2 * j) (by lia)]
           grind
-        · obtain rfl : m = 2 * j0 + 1 := by assumption
-          rw [A177040_coeff_succ (2 * j0 + 1) k, odd_step j0 k]
-          have e3a := ih (2 * j0 + 1 + 3) (by lia) (k + 2)
-          have e3b := ih (2 * j0 + 1 + 3) (by lia) (k + 1)
-          have e2a := ih (2 * j0 + 1 + 2) (by lia) (k + 2)
-          have e2b := ih (2 * j0 + 1 + 2) (by lia) (k + 1)
-          have e1a := ih (2 * j0 + 1 + 1) (by lia) (k + 2)
-          have e1b := ih (2 * j0 + 1 + 1) (by lia) (k + 1)
-          have e0a := ih (2 * j0 + 1) (by lia) (k + 2)
-          have e0b := ih (2 * j0 + 1) (by lia) (k + 1)
-          rw [show Bcoef (2 * j0 + 1 + 3) (k + 2) = Polynomial.coeff (A177040 (2 * j0 + 1
-            + 3)) (k + 2)
-            from by rw [e3a]; rfl,
-              show Bcoef (2 * j0 + 1 + 3) (k + 1) = Polynomial.coeff (A177040 (2 * j0 + 1
-                + 3)) (k + 1)
-                from by rw [e3b]; rfl,
-              show Bcoef (2 * j0 + 1 + 2) (k + 2) = Polynomial.coeff (A177040 (2 * j0 + 1
-                + 2)) (k + 2)
-                from by rw [e2a]; rfl,
-              show Bcoef (2 * j0 + 1 + 2) (k + 1) = Polynomial.coeff (A177040 (2 * j0 + 1
-                + 2)) (k + 1)
-                from by rw [e2b]; rfl,
-              show Bcoef (2 * j0 + 1 + 1) (k + 2) = Polynomial.coeff (A177040 (2 * j0 + 1
-                + 1)) (k + 2)
-                from by rw [e1a]; rfl,
-              show Bcoef (2 * j0 + 1 + 1) (k + 1) = Polynomial.coeff (A177040 (2 * j0 + 1
-                + 1)) (k + 1)
-                from by rw [e1b]; rfl,
-              show Bcoef (2 * j0 + 1) (k + 2) = Polynomial.coeff (A177040 (2 * j0 + 1)) (k + 2)
-                from by rw [e0a]; rfl,
-              show Bcoef (2 * j0 + 1) (k + 1) = Polynomial.coeff (A177040 (2 * j0 + 1)) (k + 1)
-                from by rw [e0b]; rfl]
+        · obtain rfl : m = 2 * j + 1 := by assumption
+          rw [A177040_coeff_succ (2 * j + 1) k, odd_step j k]
+          simp only [hprev (2 * j + 1 + 3) (by lia), hprev (2 * j + 1 + 2) (by lia),
+            hprev (2 * j + 1 + 1) (by lia), hprev (2 * j + 1) (by lia)]
           grind
 
 private lemma A177040_natDegree_raw (n : ℕ) : (A177040 n).natDegree = n / 2 := by
@@ -846,7 +774,7 @@ private theorem A177040_step (n : ℕ) :
       (A177040 (n + 2)) (A177040 (n + 1)) (A177040 n) := by
   rw [A177040]
   dsimp only [A177040Next]
-  ring
+  ring_nf
 
 /-- Any sequence satisfying the A177040 initial window and update has degree `n / 2`. -/
 @[rr_row_model]

@@ -188,17 +188,11 @@ private theorem degree_Q_three_one_le (n : ℕ) : (Q 3 n).natDegree ≤ n := by
     (RealRooted.pathPowerCliquePolynomial_subsequence_natDegree_le
       3 1 0 n (by norm_num) (by norm_num) (by norm_num))
 
-private theorem reflect_linear_three :
-    reflect 1 (1 + 3 * X : ℝ[X]) = 3 + X := by
-  ext i
-  rcases i with _ | _ | i <;>
-    simp [Polynomial.coeff_reflect, Polynomial.revAt_le,
-      Polynomial.revAt_eq_self_of_lt, coeff_add, coeff_X]
-
-private theorem reflect_linear_four :
+/-- Reflection of the two linear initial rows. -/
+private theorem reflect_linear_rows :
+    reflect 1 (1 + 3 * X : ℝ[X]) = 3 + X ∧
     reflect 1 (1 + 4 * X : ℝ[X]) = 4 + X := by
-  ext i
-  rcases i with _ | _ | i <;>
+  constructor <;> ext i <;> rcases i with _ | _ | i <;>
     simp [Polynomial.coeff_reflect, Polynomial.revAt_le,
       Polynomial.revAt_eq_self_of_lt, coeff_add, coeff_X]
 
@@ -221,15 +215,11 @@ private theorem reflect_X_cube : reflect 3 (X ^ 3 : ℝ[X]) = 1 := by simp
 
 private theorem reflect_X_four : reflect 4 (X ^ 4 : ℝ[X]) = 1 := by simp
 
-private theorem reflect_two_X : reflect 2 (2 * X : ℝ[X]) = 2 * X := by
-  ext i
-  rcases i with _ | _ | _ | i <;>
-    simp [Polynomial.coeff_reflect, Polynomial.revAt_le,
-      Polynomial.revAt_eq_self_of_lt, coeff_X]
-
-private theorem reflect_three_X : reflect 2 (3 * X : ℝ[X]) = 3 * X := by
-  ext i
-  rcases i with _ | _ | _ | i <;>
+/-- Reflection fixes these scalar multiples of the linear monomial. -/
+private theorem reflect_linear_monomials :
+    reflect 2 (2 * X : ℝ[X]) = 2 * X ∧
+    reflect 2 (3 * X : ℝ[X]) = 3 * X := by
+  constructor <;> ext i <;> rcases i with _ | _ | _ | i <;>
     simp [Polynomial.coeff_reflect, Polynomial.revAt_le,
       Polynomial.revAt_eq_self_of_lt, coeff_X]
 
@@ -270,15 +260,11 @@ private theorem reflect_two_X_five : reflect 2 (5 * X : ℝ[X]) = 5 * X := by
   rcases i with _ | _ | _ | i <;>
     simp [Polynomial.revAt_le, Polynomial.revAt_eq_self_of_lt, coeff_X]
 
-private theorem reflect_three_X_nine : reflect 3 (9 * X : ℝ[X]) = 9 * X ^ 2 := by
-  ext i
-  rcases i with _ | _ | _ | _ | i <;>
-    simp [Polynomial.revAt_le, Polynomial.revAt_eq_self_of_lt, coeff_X, coeff_X_pow]
-
-private theorem reflect_three_X_sq_fifteen :
+/-- Reflections of the two monomials in the cubic shift. -/
+private theorem reflect_cubic_monomials :
+    reflect 3 (9 * X : ℝ[X]) = 9 * X ^ 2 ∧
     reflect 3 (15 * X ^ 2 : ℝ[X]) = 15 * X := by
-  ext i
-  rcases i with _ | _ | _ | _ | i <;>
+  constructor <;> ext i <;> rcases i with _ | _ | _ | _ | i <;>
     simp [Polynomial.revAt_le, Polynomial.revAt_eq_self_of_lt, coeff_X, coeff_X_pow]
 
 private theorem reflected_three_gap_three (c n : ℕ) (hc : c = 0 ∨ c = 2) :
@@ -298,7 +284,7 @@ private theorem reflected_three_gap_three (c n : ℕ) (hc : c = 0 ∨ c = 2) :
     reflect_mul _ _ (by compute_degree!) (degree_Q_three_three_le c (n + 1) hc)]
   rw [show 2 + (n + 1) = 3 + n by lia,
     reflect_mul _ _ (by compute_degree!) (degree_Q_three_three_le c n hc)]
-  rw [reflect_linear_three, reflect_three_X_sq, reflect_X_cube]
+  rw [reflect_linear_rows.1, reflect_three_X_sq, reflect_X_cube]
   simp only [RealRooted.reciprocalShift]
   ring
 
@@ -319,7 +305,7 @@ private theorem reflected_three_gap_two (n : ℕ) :
     reflect_mul _ _ (by compute_degree!) (degree_Q_three_two_le (n + 1))]
   rw [show 2 + (n + 1) = 3 + n by lia,
     reflect_mul _ _ (by compute_degree!) (degree_Q_three_two_le n)]
-  rw [reflect_two_X, reflect_X_sq_padded]
+  rw [reflect_linear_monomials.1, reflect_X_sq_padded]
   simp only [RealRooted.reciprocalShift]
   ring
 
@@ -346,7 +332,7 @@ private theorem reflected_four_gap_three (n : ℕ) :
     reflect_mul _ _ (by compute_degree!) (degree_Q_four_three_le (n + 1))]
   rw [show 3 + (n + 1) = 4 + n by lia,
     reflect_mul _ _ (by compute_degree!) (degree_Q_four_three_le n)]
-  rw [reflect_three_X, reflect_three_X_sq_padded, reflect_X_cube_padded]
+  rw [reflect_linear_monomials.2, reflect_three_X_sq_padded, reflect_X_cube_padded]
   simp only [RealRooted.reciprocalShift]
   ring
 
@@ -373,7 +359,7 @@ private theorem reflected_four_gap_four (n : ℕ) :
     reflect_mul _ _ (by compute_degree!) (degree_Q_four_four_le (n + 1))]
   rw [show 3 + (n + 1) = 4 + n by lia,
     reflect_mul _ _ (by compute_degree!) (degree_Q_four_four_le n)]
-  rw [reflect_linear_four, reflect_six_X_sq, reflect_four_X_cube, reflect_X_four]
+  rw [reflect_linear_rows.2, reflect_six_X_sq, reflect_four_X_cube, reflect_X_four]
   simp only [RealRooted.reciprocalShift]
   ring
 
@@ -538,9 +524,9 @@ theorem a109960_eq_reciprocalShift (n : ℕ) :
         ring
       · norm_num [a109960, Q, RealRooted.pathPowerCliquePolynomial,
           RealRooted.reciprocalShift, Finset.sum_range_succ]
-        rw [reflect_three_X_nine,
+        rw [reflect_cubic_monomials.1,
           show ((Nat.choose 6 2 : ℕ) : ℝ[X]) = 15 by norm_num [Nat.choose],
-          reflect_three_X_sq_fifteen]
+          reflect_cubic_monomials.2]
         ring
       · rw [a109960, ih (n + 3) (by lia), ih (n + 2) (by lia),
           ih (n + 1) (by lia), ih n (by lia)]
