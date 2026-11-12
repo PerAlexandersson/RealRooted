@@ -3,6 +3,26 @@
   "entries": [
     {
       "sources": [
+        "RealRooted/Mathlib/Algebra/LinearRecurrence/Veronese.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.LinearRecurrence.Veronese"
+      ],
+      "note": "Veronese-section transport of constant-coefficient polynomial recurrences via the explicit determinant norm, including eventual-start recurrences (RealRooted#2533). No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Veronese.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Veronese"
+      ],
+      "note": "Generic Veronese sections, reconstruction, explicit multiplication matrices and inner-variable determinant norm for RealRooted#2533. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
         "RealRooted/Mathlib/Data/List/Interleave.lean"
       ],
       "note": "mathlib4#39870 (Yaël Dillies; merged, in Mathlib v4.35.0): List interleaving API. The shim now keeps only `Interleaves.map`, `Interleaves.map_of_mem` and one deprecated alias."

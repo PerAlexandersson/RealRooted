@@ -1,6 +1,7 @@
 module
 
 import RealRooted.VeroneseRecognition.Affine
+import RealRooted.Mathlib.Algebra.LinearRecurrence.Veronese
 public import RealRooted.VeroneseMatrix
 
 /-!
@@ -21,6 +22,16 @@ references = [
 name = "RealRooted.veroneseSectionPolynomial"
 module = "RealRooted.VeroneseSection"
 label = "Veronese section"
+
+[[definitions]]
+name = "Polynomial.veroneseNorm"
+module = "RealRooted.Mathlib.Algebra.Polynomial.Veronese"
+label = "Explicit section-matrix determinant in the coefficient variable"
+
+[[definitions]]
+name = "LinearRecurrence.veronese"
+module = "RealRooted.Mathlib.Algebra.LinearRecurrence.Veronese"
+label = "Common recurrence for all Veronese sections of a polynomial sequence"
 
 [[definitions]]
 name = "RealRooted.sequenceDelta"
@@ -68,6 +79,21 @@ label = "Recognized rows are zero or real-rooted when the seed is nonnegative an
 name = "RealRooted.existsUnique_affineVeroneseProductRow_of_orderTwo_recurrence"
 module = "RealRooted.VeroneseRecognition.Affine"
 label = "Constant second-order recurrences have a unique affine Veronese parent"
+
+[[theorems]]
+name = "LinearRecurrence.exists_veroneseSection"
+module = "RealRooted.Mathlib.Algebra.LinearRecurrence.Veronese"
+label = "Sections of an order-d recurrence share a recurrence of order rd"
+
+[[theorems]]
+name = "LinearRecurrence.veronese_recurrence_of_eventually"
+module = "RealRooted.Mathlib.Algebra.LinearRecurrence.Veronese"
+label = "Eventual recurrences pass to every Veronese section"
+
+[[theorems]]
+name = "RealRooted.isSolution_and_eq_zero_or_splits_veroneseSectionPolynomial"
+module = "RealRooted.VeroneseSection"
+label = "Nonnegative real-rooted solutions give real-rooted section solutions"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -116,10 +142,30 @@ $P_{n+2} = A P_{n+1} + (Bx + c) P_n$ for all $n$. Then there is a unique seed $H
 $P_n$ is the odd Veronese section ($r = 2$) of $H\,(x + A/2)^n$, evaluated at
 $c + A^2/4 + Bx$.
 
+**Theorem (transport of constant-coefficient recurrences).** Let $A$ be a commutative ring
+and let $r \geq 1$. Suppose $(R_n(x))_{n\geq0}$ satisfies a linear recurrence of order $d$
+over $A[x]$, with coefficients independent of $n$. We construct a single recurrence of
+order $rd$ over $A[y]$ satisfied by every residue section of every solution.
+If $P(x,t)$ is the monic forward characteristic polynomial, the new characteristic
+polynomial is the determinant of multiplication by $P(x,t)$ over $A[y,t]$, where $y=x^r$,
+in the basis $1,x,\dotsc,x^{r-1}$. This determinant is monic in $t$ and has degree $rd$
+when $A$ is nontrivial. If the source recurrence first determines row $N \geq d$,
+the section recurrence first determines row $N+(r-1)d$.
+
+Over $\mathbb R$, if every source row has nonnegative coefficients and splits,
+each section sequence satisfies this common recurrence and every row is zero or splits.
+For binomial rows with $r=2$, Fibonacci tiling rows with $r=3$, and Delannoy triangle rows
+with $r=2$, the resulting recurrence orders are two, six and four, respectively.
+
 ## Proof
 
 The Veronese-section theorem uses the Pólya frequency characterization of real-rooted
 polynomials with nonnegative coefficients and total nonnegativity of an associated matrix.
+
+For recurrence transport, we use the explicit section multiplication matrix. Its adjugate
+expresses the expanded determinant as a multiple of the source characteristic polynomial.
+Evaluation at the forward shift annihilates every source solution; taking a section then
+gives the determinant recurrence.
 
 ## References
 

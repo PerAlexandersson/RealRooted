@@ -2229,3 +2229,6 @@ public import RealRooted.CombinatorialExamples.HigherLah
 public import RealRooted.EulerBidiagonal.Basic
 public import RealRooted.EulerBidiagonal.VaryingRows
 public import RealRooted.Tactic.Examples.EulerBidiagonalVarying
+public import RealRooted.Mathlib.Algebra.Polynomial.Veronese
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Veronese
+public import RealRooted.Tactic.Examples.VeroneseRecurrence

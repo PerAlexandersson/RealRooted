@@ -2155,6 +2155,8 @@ public import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Polynom
 public import RealRooted.CombinatorialExamples.HigherLah
 public import RealRooted.EulerBidiagonal.Basic
 public import RealRooted.EulerBidiagonal.VaryingRows
+public import RealRooted.Mathlib.Algebra.Polynomial.Veronese
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Veronese
 
 /-!
 # RealRooted production umbrella

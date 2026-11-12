@@ -12,6 +12,7 @@ import RealRooted.WagnerX.NonnegativeRoots
 import RealRooted.Linear
 public import RealRooted.AissenSchoenbergWhitneyBase
 public import RealRooted.Basic.ProperPosition
+public import RealRooted.Mathlib.Algebra.LinearRecurrence.Veronese
 
 /-!
 # Veronese sections
@@ -26,6 +27,8 @@ This file formalizes the Veronese-section results of Athanasiadis--Wagner.
   `splits_veroneseSectionPolynomial_of_splits_nonneg` proves that every Veronese
   section of a real-rooted polynomial with nonnegative coefficients is zero or
   real-rooted, with no further hypotheses.
+* Constant-coefficient recurrences: the same sections satisfy the common determinant-norm
+  recurrence, by `isSolution_and_eq_zero_or_splits_veroneseSectionPolynomial`.
 * Two-row Lace matrices: `FullyInterlacingPair` is preserved by single and
   paired Veronese sections (`fullyInterlacingPair_veroneseSectionPair`,
   `fullyInterlacingPair_veroneseSectionPairwise`).  For odd/even polynomials,
@@ -90,6 +93,16 @@ def veroneseSectionPolynomial (r k : ℕ) (p : ℝ[X]) : ℝ[X] :=
     (hr : 0 < r) :
     (veroneseSectionPolynomial r k p).coeff n = p.coeff (k + r * n) := by
   simp [veroneseSectionPolynomial, Nat.ne_of_gt hr]
+
+/-- The established real section API agrees with the generic polynomial section,
+including the modulus-zero convention. Existing declarations retain their original types. -/
+theorem veroneseSectionPolynomial_eq_veroneseSection (r k : ℕ) (p : ℝ[X]) :
+    veroneseSectionPolynomial r k p = p.veroneseSection r k := by
+  by_cases hr : r = 0
+  · simp [hr, veroneseSectionPolynomial]
+  · ext n
+    simp [coeff_veroneseSectionPolynomial (Nat.pos_of_ne_zero hr),
+      coeff_veroneseSection (Nat.pos_of_ne_zero hr)]
 
 theorem hasNonnegCoeffs_veroneseSectionPolynomial {r k : ℕ} {p : ℝ[X]}
     (hr : 0 < r) (hp : HasNonnegCoeffs p) :
@@ -712,5 +725,17 @@ theorem splits_veroneseSectionPolynomial_of_splits_nonneg {p : ℝ[X]}
   Or.inr
     (aissenSchoenbergWhitneyForward
       (isPolyaFreqSeq_veroneseSectionPolynomial_of_splits_of_hasNonnegCoeffs hpnn hprr hr hk)).1
+
+/-- Sections of a nonnegative real-rooted recurrence solution satisfy the common
+determinant-norm recurrence, and each row is zero or real-rooted. -/
+theorem isSolution_and_eq_zero_or_splits_veroneseSectionPolynomial
+    (E : LinearRecurrence ℝ[X]) {R : ℕ → ℝ[X]} (hR : E.IsSolution R)
+    (hnn : ∀ n, HasNonnegCoeffs (R n)) (hs : ∀ n, (R n).Splits)
+    {r i : ℕ} (hr : 0 < r) (hi : i < r) :
+    (E.veronese r).IsSolution (fun n => veroneseSectionPolynomial r i (R n)) ∧
+      ∀ n, veroneseSectionPolynomial r i (R n) = 0 ∨
+        (veroneseSectionPolynomial r i (R n)).Splits := by
+  refine ⟨?_, fun n => splits_veroneseSectionPolynomial_of_splits_nonneg (hnn n) (hs n) hr hi⟩
+  simpa only [veroneseSectionPolynomial_eq_veroneseSection] using hR.veronese hr hi
 
 end RealRooted
