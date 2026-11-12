@@ -189,7 +189,7 @@ theorem thetaPreservesRealRootedOrZero {p : ℝ[X]} (hp : IsPFPolynomial p) :
 from the derivative preservation theorem and multiplication by `X`. -/
 theorem Interl.theta {p q : ℝ[X]} (hpq : Interl p q) :
     Interl (theta p) (theta q) := by
-  simpa [theta] using (Interl.derivative hpq).mul_X_both
+  simpa [RealRooted.theta] using (Interl.derivative hpq).mul_X_both
 
 /-- `theta + 1` preserves the polynomial PF cone. -/
 theorem thetaPlusOne_preserves_pf {p : ℝ[X]} (hp : IsPFPolynomial p) :
