@@ -364,8 +364,9 @@ private theorem triple_sublist_ofFn {n : ℕ} (f : Fin n → ℕ) (a b c : ℕ) 
     intro x
     fin_cases x <;> simp
 
-private theorem avoids132_iff {n : ℕ} (σ : Equiv.Perm (Fin n)) :
-    Avoids132 σ ↔ LAvoids R132 (toL σ) := by
+/-- Shared core of `avoids132_iff` and `avoids123_iff`, for an arbitrary pattern `R`. -/
+private theorem avoids_pattern_iff {n : ℕ} (σ : Equiv.Perm (Fin n)) (R : ℕ → ℕ → ℕ → Prop) :
+    (∀ i j k : Fin n, i < j → j < k → ¬ R (σ i) (σ j) (σ k)) ↔ LAvoids R (toL σ) := by
   constructor
   · intro h a b c hs
     obtain ⟨i, j, k, hij, hjk, rfl, rfl, rfl⟩ := (triple_sublist_ofFn _ a b c).mp hs
@@ -373,14 +374,13 @@ private theorem avoids132_iff {n : ℕ} (σ : Equiv.Perm (Fin n)) :
   · exact fun h i j k hij hjk ↦ h _ _ _ <|
       (triple_sublist_ofFn _ _ _ _).mpr ⟨i, j, k, hij, hjk, rfl, rfl, rfl⟩
 
+private theorem avoids132_iff {n : ℕ} (σ : Equiv.Perm (Fin n)) :
+    Avoids132 σ ↔ LAvoids R132 (toL σ) :=
+  avoids_pattern_iff σ R132
+
 private theorem avoids123_iff {n : ℕ} (σ : Equiv.Perm (Fin n)) :
-    Avoids123 σ ↔ LAvoids R123 (toL σ) := by
-  constructor
-  · intro h a b c hs
-    obtain ⟨i, j, k, hij, hjk, rfl, rfl, rfl⟩ := (triple_sublist_ofFn _ a b c).mp hs
-    exact h i j k hij hjk
-  · exact fun h i j k hij hjk ↦ h _ _ _ <|
-      (triple_sublist_ofFn _ _ _ _).mpr ⟨i, j, k, hij, hjk, rfl, rfl, rfl⟩
+    Avoids123 σ ↔ LAvoids R123 (toL σ) :=
+  avoids_pattern_iff σ R123
 
 private lemma toL_perm {n : ℕ} (σ : Equiv.Perm (Fin n)) : toL σ ~ List.range n := by
   rw [List.perm_ext_iff_of_nodup]

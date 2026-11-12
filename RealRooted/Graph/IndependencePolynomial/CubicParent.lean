@@ -129,55 +129,25 @@ private lemma intervalGraph_clawFree : Graph.ClawFree intervalGraph := by
         (intervalGraph_adj_of_neighbors_same_side hva hvb hab
           (Or.inr ⟨hva', hvb'⟩))
 
+/-- Shared core of the even and odd cases: the non-neighbours below `N` form `range m`. -/
+private lemma intervalGraph_filter_eq_range (N m : ℕ)
+    (hm : ∀ w, w < m ↔ w < N ∧ ¬ (N ≤ w + 3 ∨ (N = w + 4 ∧ w % 2 = 1))) :
+    (Finset.range N).filter (fun w => ¬ intervalGraph.Adj N w) = Finset.range m := by
+  classical
+  ext w
+  simp only [Finset.mem_filter, Finset.mem_range, hm]
+  refine and_congr_right fun hwN => ?_
+  rw [SimpleGraph.adj_comm, intervalGraph_adj_of_lt hwN]
+
 private lemma intervalGraph_filter_even (N : ℕ) (hN : N % 2 = 0) :
     (Finset.range N).filter (fun w => ¬ intervalGraph.Adj N w) =
-      Finset.range (N - 3) := by
-  classical
-  rw [Finset.ext_iff]
-  intro w
-  rw [Finset.mem_filter]
-  simp only [Finset.mem_range]
-  constructor
-  · rintro ⟨hwN, hnot⟩
-    have hadjIff :
-        intervalGraph.Adj N w ↔
-          N ≤ w + 3 ∨ (N = w + 4 ∧ w % 2 = 1) := by
-      rw [SimpleGraph.adj_comm]
-      exact intervalGraph_adj_of_lt hwN
-    grind
-  · intro hw
-    have hwN : w < N := by lia
-    refine ⟨hwN, ?_⟩
-    rw [SimpleGraph.adj_comm]
-    intro hadj
-    rcases (intervalGraph_adj_of_lt hwN).1 hadj with hclose | ⟨hfour, hodd⟩
-    · lia
-    · lia
+      Finset.range (N - 3) :=
+  intervalGraph_filter_eq_range N _ fun w => by grind
 
 private lemma intervalGraph_filter_odd (N : ℕ) (hN : N % 2 = 1) :
     (Finset.range N).filter (fun w => ¬ intervalGraph.Adj N w) =
-      Finset.range (N - 4) := by
-  classical
-  rw [Finset.ext_iff]
-  intro w
-  rw [Finset.mem_filter]
-  simp only [Finset.mem_range]
-  constructor
-  · rintro ⟨hwN, hnot⟩
-    have hadjIff :
-        intervalGraph.Adj N w ↔
-          N ≤ w + 3 ∨ (N = w + 4 ∧ w % 2 = 1) := by
-      rw [SimpleGraph.adj_comm]
-      exact intervalGraph_adj_of_lt hwN
-    grind
-  · intro hw
-    have hwN : w < N := by lia
-    refine ⟨hwN, ?_⟩
-    rw [SimpleGraph.adj_comm]
-    intro hadj
-    rcases (intervalGraph_adj_of_lt hwN).1 hadj with hclose | ⟨hfour, hodd⟩
-    · lia
-    · lia
+      Finset.range (N - 4) :=
+  intervalGraph_filter_eq_range N _ fun w => by grind
 
 private lemma prefixPolynomial_succ_even (N : ℕ) (hN : N % 2 = 0) :
     prefixPolynomial (N + 1) =
