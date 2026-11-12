@@ -14,12 +14,28 @@ import Mathlib.Analysis.Matrix.Order
 /-!
 # Positive unimodular polynomial Gram matrices
 
-This file proves that an everywhere positive-definite symmetric matrix over `ℝ[X]` whose
-determinant is a unit is polynomially congruent to the identity.  The proof is by descent on the
-sum of the degrees of the diagonal entries.
+We prove that an everywhere positive-definite symmetric matrix over `ℝ[X]` whose determinant
+is a unit is polynomially congruent to the identity. We descend on the sum of the degrees of
+the diagonal entries, using a kernel vector of the weighted leading-coefficient matrix.
+
+## Main statements
+
+* `Matrix.exists_transpose_mul_mul_eq_one_of_posDef_eval`: polynomial congruence to the identity.
+* `Matrix.exists_transpose_mul_mul_eq_one_of_posSemidef_eval`: the semidefinite version.
+* `Matrix.exists_transpose_mul_mul_eq_one_of_posDef_eval_at`: positivity at one point suffices.
+* `Matrix.exists_eq_transpose_mul_self_of_posDef_eval`: a square unimodular Gram factorization.
+* `Matrix.coeff_det_eq_det_coeff_of_natDegree_le`: the weighted determinant coefficient identity.
+
+All statements allow an empty index type.
+
+## References
+
+The positive real case of Christoph Hanselka, *Definite Determinantal Representations of Ternary
+Hyperbolic Forms*, [arXiv:1411.1661v2](https://arxiv.org/abs/1411.1661v2), Theorem 14.
+The degree-descent proof here does not use the general classification of polynomial forms.
 -/
 
-@[expose] public section
+public section
 
 noncomputable section
 
@@ -111,11 +127,7 @@ theorem two_mul_natDegree_le_of_sq_eval_le_mul_eval {f g h : ℝ[X]}
   rw [hcoeff] at hq_lc
   exact (not_lt_of_ge hq_lc) (neg_neg_of_pos (sq_pos_of_ne_zero (leadingCoeff_ne_zero.mpr hg)))
 
-end Polynomial
-
-namespace Polynomial
-
-private theorem coeff_prod_at_sum_of_natDegree_le {R ι : Type*} [CommRing R]
+private theorem coeff_prod_at_sum_of_natDegree_le {R ι : Type*} [CommSemiring R]
     (s : Finset ι) (f : ι → R[X]) (d : ι → ℕ)
     (h : ∀ i ∈ s, (f i).natDegree ≤ d i) :
     (s.prod f).coeff (s.sum d) = s.prod fun i => (f i).coeff (d i) := by
@@ -143,15 +155,9 @@ theorem coeff_det_eq_det_coeff_of_natDegree_le {R n : Type*} [CommRing R]
     M.det.coeff ((∑ i, r i) + ∑ j, c j) =
       (of fun i j => (M i j).coeff (r i + c j)).det := by
   classical
-  rw [det_apply' M, det_apply' (of fun i j => (M i j).coeff (r i + c j))]
-  change Polynomial.lcoeff R ((∑ i, r i) + ∑ j, c j)
-      (∑ σ : Equiv.Perm n,
-        ((Equiv.Perm.sign σ : ℤ) : R[X]) * ∏ i, M (σ i) i) = _
-  rw [map_sum]
-  simp only [Polynomial.lcoeff_apply, coeff_intCast_mul]
+  simp only [det_apply', finsetSum_coeff, coeff_intCast_mul, of_apply]
   apply Finset.sum_congr rfl
   intro σ _
-  simp only [of_apply]
   congr 1
   have hsum : (∑ i : n, (r (σ i) + c i)) =
       (∑ i : n, r i) + (∑ i : n, c i) := by
@@ -159,29 +165,12 @@ theorem coeff_det_eq_det_coeff_of_natDegree_le {R n : Type*} [CommRing R]
   rw [← hsum, Polynomial.coeff_prod_at_sum_of_natDegree_le]
   exact fun i _ => hM (σ i) i
 
-end Matrix
-
-namespace Matrix
-
-private theorem PosDef.apply_sq_le_mul_apply_diag {n : Type*}
+private theorem PosDef.apply_sq_le_mul_apply_diag {n : Type*} [Finite n]
     {A : Matrix n n ℝ} (hA : A.PosDef) (i j : n) :
     (A i j) ^ 2 ≤ A i i * A j j := by
   classical
-  by_cases hij : i = j
-  · subst j
-    simp only [pow_two, le_refl]
-  let e : Fin 2 → n := ![i, j]
-  have he : Function.Injective e := by
-    intro a b hab
-    fin_cases a <;> fin_cases b <;> simp_all [e]
-  have hdet := (hA.submatrix he).posSemidef.det_nonneg
-  rw [det_fin_two] at hdet
-  simp only [submatrix_apply, e, Matrix.cons_val_zero, Matrix.cons_val_one] at hdet
-  have hji : A j i = A i j := by
-    simpa only [conjTranspose_eq_transpose_of_trivial, transpose_apply] using
-      (congrFun (congrFun hA.isHermitian.eq j) i).symm
-  rw [hji, sub_nonneg] at hdet
-  simpa only [pow_two] using hdet
+  let := Fintype.ofFinite n
+  simpa [pow_two] using hA.star_dotProduct_mulVec_mul_le (Pi.single i 1) (Pi.single j 1)
 
 private theorem eval_congr_posDef {n : Type*} [Fintype n] [DecidableEq n]
     {G E : Matrix n n ℝ[X]} (hG : ∀ x : ℝ, (G.map (evalRingHom x)).PosDef)
@@ -201,7 +190,10 @@ private theorem transpose_mul_mul_self_isSymm {R n : Type*} [CommRing R]
     (Eᵀ * G * E)ᵀ = Eᵀ * G * E := by
   rw [transpose_mul, transpose_mul, transpose_transpose, hG, Matrix.mul_assoc]
 
--- Ported from Tau Ceti's Apache-2.0-licensed matrix positive-definiteness utilities.
+/-- Positivity of the quadratic form is open, without a symmetry requirement.
+
+Adapted from the Apache-2.0-licensed `TauCeti.isOpen_setOfPred_re_dotProduct_pos` in
+`TauCeti/Analysis/Matrix/PosDef.lean` at commit `396c3bd971e9722aa8656231760e710fe641d8cf`. -/
 private theorem isOpen_setOf_forall_dotProduct_mulVec_pos {n : Type*} [Fintype n] :
     IsOpen {M : Matrix n n ℝ | ∀ x : n → ℝ, x ≠ 0 → 0 < x ⬝ᵥ M *ᵥ x} := by
   rw [isOpen_iff_mem_nhds]
@@ -216,16 +208,11 @@ private theorem isOpen_setOf_forall_dotProduct_mulVec_pos {n : Type*} [Fintype n
         z.2 ⬝ᵥ z.1 *ᵥ z.2 := by fun_prop
     exact (isOpen_lt continuous_const hcont).mem_nhds (hM y hy0)
   filter_upwards [key] with N hN x hx
-  have hx0 : ‖x‖ ≠ 0 := norm_ne_zero_iff.2 hx
-  have hmem : ‖x‖⁻¹ • x ∈ Metric.sphere (0 : n → ℝ) 1 := by
-    rw [mem_sphere_zero_iff_norm, norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hx0]
-  have hscale : x ⬝ᵥ N *ᵥ x =
-      ‖x‖ ^ 2 * ((‖x‖⁻¹ • x) ⬝ᵥ N *ᵥ (‖x‖⁻¹ • x)) := by
-    rw [Matrix.mulVec_smul, smul_dotProduct, dotProduct_smul, smul_eq_mul, smul_eq_mul,
-      ← mul_assoc, sq]
-    field_simp
-  rw [hscale]
-  exact mul_pos (pow_pos (norm_pos_iff.2 hx) 2) (hN _ hmem)
+  have hx0 : 0 < ‖x‖ := norm_pos_iff.2 hx
+  have h := hN (‖x‖⁻¹ • x) (by simp [norm_smul, hx0.ne'])
+  simp only [Matrix.mulVec_smul, smul_dotProduct, dotProduct_smul, smul_eq_mul] at h
+  exact (mul_pos_iff_of_pos_left (inv_pos.mpr hx0)).mp
+    ((mul_pos_iff_of_pos_left (inv_pos.mpr hx0)).mp h)
 
 /-- A continuous nonsingular symmetric family of real matrices which is positive definite at one
 point is positive definite everywhere on the real line. -/
@@ -306,17 +293,8 @@ private theorem exists_transpose_mul_mul_eq_one_of_diagDegreeSum_eq_zero {n : Ty
   · change IsUnit (C.mapMatrix R).det
     simpa only [RingHom.map_det] using hRdet.map C
   · rw [hGH]
-    have hmap := congrArg C.mapMatrix hR
-    change (C.mapMatrix R)ᵀ * C.mapMatrix H * C.mapMatrix R = 1
-    convert hmap using 1
-    · ext i j
-      simp [Matrix.mul_apply]
-    · apply Matrix.ext
-      intro i j
-      by_cases hij : i = j
-      · subst j
-        simp
-      · simp [hij]
+    simpa only [Matrix.map_mul, transpose_map, Matrix.map_one, map_zero, map_one] using
+      congrArg (fun M => M.map (C : ℝ →+* ℝ[X])) hR
 
 /-- Updating one identity column by the weighted monomial vector has determinant `C (a j)`. -/
 private theorem det_updateCol_one_weightedMonomial {n : Type*} [Fintype n] [DecidableEq n]
@@ -373,21 +351,14 @@ private theorem natDegree_weightedMonomial_mul_le {n : Type*}
   · simp only [hak, map_zero, zero_mul, mul_zero, natDegree_zero, zero_le]
   have hi := hmax i hai
   have hk := hmax k hak
-  have hvi := (natDegree_C_mul_X_pow (d j - d i) (a i) hai).le
-  have hvk := (natDegree_C_mul_X_pow (d j - d k) (a k) hak).le
-  calc
-    (C (a i) * X ^ (d j - d i) * G i k *
-        (C (a k) * X ^ (d j - d k))).natDegree
-        ≤ (C (a i) * X ^ (d j - d i) * G i k).natDegree +
-          (C (a k) * X ^ (d j - d k)).natDegree := natDegree_mul_le
-    _ ≤ ((C (a i) * X ^ (d j - d i)).natDegree + (G i k).natDegree) +
-          (C (a k) * X ^ (d j - d k)).natDegree :=
-      Nat.add_le_add_right natDegree_mul_le _
-    _ ≤ ((d j - d i) + (d i + d k)) + (d j - d k) :=
-      Nat.add_le_add (Nat.add_le_add hvi (hentry i k)) hvk
-    _ = ((d j - d i) + d i) + ((d j - d k) + d k) := by ac_rfl
-    _ = d j + d j := by rw [Nat.sub_add_cancel hi, Nat.sub_add_cancel hk]
-    _ = 2 * d j := by rw [two_mul]
+  have hvi := natDegree_C_mul_X_pow (d j - d i) (a i) hai
+  have hvk := natDegree_C_mul_X_pow (d j - d k) (a k) hak
+  have hmul := natDegree_mul_le
+    (p := C (a i) * X ^ (d j - d i) * G i k)
+    (q := C (a k) * X ^ (d j - d k))
+  have hleft := natDegree_mul_le (p := C (a i) * X ^ (d j - d i)) (q := G i k)
+  have hbound := hentry i k
+  lia
 
 /-- The top coefficient of a weighted matrix entry is its scalar kernel summand. -/
 private theorem coeff_weightedMonomial_mul {n : Type*}
@@ -445,7 +416,7 @@ private theorem sum_diag_natDegree_lt {n : Type*} [Fintype n]
   · exact ⟨j, Finset.mem_univ j, by rw [hdegree j]; exact hlt⟩
 
 /-- Positivity bounds every entry degree by half the degrees of its two diagonal entries. -/
-private theorem posDef_eval_degree_bounds {n : Type*}
+private theorem posDef_eval_degree_bounds {n : Type*} [Finite n]
     {G : Matrix n n ℝ[X]} (hGpos : ∀ x : ℝ, (G.map (evalRingHom x)).PosDef) :
     let d : n → ℕ := fun i ↦ (G i i).natDegree / 2
     (∀ i, (G i i).natDegree = 2 * d i) ∧
@@ -471,10 +442,9 @@ private theorem exists_congr_diagDegreeSum_lt {n : Type*} [Fintype n] [Decidable
     ∃ E : Matrix n n ℝ[X], IsUnit E.det ∧
       diagDegreeSum (Eᵀ * G * E) < diagDegreeSum G := by
   let d : n → ℕ := fun i => (G i i).natDegree / 2
-  have hbounds : (∀ i, (G i i).natDegree = 2 * d i) ∧
-      ∀ i j, (G i j).natDegree ≤ d i + d j :=
-    posDef_eval_degree_bounds hGpos
-  obtain ⟨hdiag_degree, hentry_degree⟩ := hbounds
+  obtain ⟨hdiag_degree, hentry_degree⟩ :
+      (∀ i, (G i i).natDegree = 2 * d i) ∧
+        ∀ i j, (G i j).natDegree ≤ d i + d j := posDef_eval_degree_bounds hGpos
   let D : ℕ := ∑ i, d i
   have hmu_eq : diagDegreeSum G = 2 * D := by
     simp only [diagDegreeSum, hdiag_degree, D, Finset.mul_sum]
@@ -498,41 +468,33 @@ private theorem exists_congr_diagDegreeSum_lt {n : Type*} [Fintype n] [Decidable
     exact hjmax i (by simpa only [s, Finset.mem_filter, Finset.mem_univ, true_and])
   let v : n → ℝ[X] := fun i => C (a i) * X ^ (d j - d i)
   let E : Matrix n n ℝ[X] := (1 : Matrix n n ℝ[X]).updateCol j v
-  have hEdet : E.det = C (a j) := by
-    simpa only [E, v] using det_updateCol_one_weightedMonomial a d j
   have hEunit : IsUnit E.det := by
-    rw [hEdet]
+    change IsUnit ((1 : Matrix n n ℝ[X]).updateCol j v).det
+    rw [det_updateCol_one_weightedMonomial a d j]
     exact Polynomial.isUnit_C.mpr (isUnit_iff_ne_zero.mpr haj)
   refine ⟨E, hEunit, ?_⟩
   let G' : Matrix n n ℝ[X] := Eᵀ * G * E
-  have hdiag_data := congr_updateCol_one_diagonal G j v
-  have hdiag_same (i : n) (hij : i ≠ j) : G' i i = G i i := by
-    simpa only [G', E] using hdiag_data.1 i hij
-  have hdiag_changed : G' j j = ∑ i, ∑ k, v i * G i k * v k := by
-    simpa only [G', E] using hdiag_data.2
-  have hterm_degree (i k : n) :
-      (v i * G i k * v k).natDegree ≤ 2 * d j := by
-    simpa only [v] using
-      natDegree_weightedMonomial_mul_le G a d j i k hmax hentry_degree
+  obtain ⟨hdiag_same, hdiag_changed⟩ := congr_updateCol_one_diagonal G j v
+  change (∀ i, i ≠ j → G' i i = G i i) at hdiag_same
+  change G' j j = ∑ i, ∑ k, v i * G i k * v k at hdiag_changed
   have hchanged_degree : (G' j j).natDegree ≤ 2 * d j := by
     rw [hdiag_changed]
     apply Polynomial.natDegree_sum_le_of_forall_le
     intro i _
     apply Polynomial.natDegree_sum_le_of_forall_le
     intro k _
-    exact hterm_degree i k
+    exact natDegree_weightedMonomial_mul_le G a d j i k hmax hentry_degree
   have hterm_coeff (i k : n) :
       (v i * G i k * v k).coeff (2 * d j) = a i * L i k * a k := by
-    simpa only [v] using
-      coeff_weightedMonomial_mul G L a d j i k hmax (fun _ _ => rfl)
+    exact coeff_weightedMonomial_mul G L a d j i k hmax (fun _ _ => rfl)
   have hkernel (i : n) : ∑ k, L i k * a k = 0 := by
     have hi := congrFun haL i
     simpa only [mulVec, dotProduct, Pi.zero_apply] using hi
   have hchanged_coeff : (G' j j).coeff (2 * d j) = 0 := by
     rw [hdiag_changed]
     exact coeff_quadratic_sum_eq_zero G L v a (2 * d j) hterm_coeff hkernel
-  have hG'pos : ∀ x : ℝ, (G'.map (evalRingHom x)).PosDef := by
-    simpa only [G'] using eval_congr_posDef hGpos hEunit
+  have hG'pos : ∀ x : ℝ, (G'.map (evalRingHom x)).PosDef :=
+    eval_congr_posDef hGpos hEunit
   have hchanged_ne : G' j j ≠ 0 := by
     intro hzero
     simpa only [map_apply, coe_evalRingHom, hzero, eval_zero, lt_self_iff_false] using
@@ -626,14 +588,8 @@ example :
   · norm_num [det_fin_two]
     ring
   · ext i j
-    fin_cases i
-    · fin_cases j
-      · norm_num [Matrix.mul_apply, Fin.sum_univ_two]
-      · norm_num [Matrix.mul_apply, Fin.sum_univ_two]
-    · fin_cases j
-      · norm_num [Matrix.mul_apply, Fin.sum_univ_two]
-      · norm_num [Matrix.mul_apply, Fin.sum_univ_two]
-        ring_nf
-        simp
+    fin_cases i <;> fin_cases j <;> norm_num [Matrix.mul_apply, Fin.sum_univ_two]
+    ring_nf
+    simp
 
 end Matrix
