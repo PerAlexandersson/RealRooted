@@ -68,22 +68,24 @@ label = "40 of them preserve interlacing"
 <!-- realrooted-catalog-content -->
 # Small matrices preserving interlacing sequences
 
-There are $3^4 = 81$ matrices $M = \begin{pmatrix} a & b \\ c & d \end{pmatrix}$
-with entries in $\{0, 1, x\}$. Such a matrix acts on a pair of polynomials by
-$$
-M \cdot (f_1, f_2) = (a f_1 + b f_2,\ c f_1 + d f_2).
-$$
-We say that $M$ **preserves interlacing** if, whenever $f_1, f_2$ have
-nonnegative coefficients, every nonzero one of them is real-rooted, and
-$f_1 \ll f_2$, the image pair has the same three properties. Here $\ll$ is weak
-interlacing, in which either polynomial may be zero.
+Of the $3^4=81$ matrices with entries in $\{0,1,x\}$, exactly 18 nondegenerate ones preserve
+interlacing of pairs.
 
-We call $M$ **nondegenerate** if neither row is $(0, 0)$ and the two rows are
-distinct. Exactly 56 of the 81 matrices are nondegenerate.
+## Results
 
-**Theorem.** Exactly 40 of the 81 matrices preserve interlacing. A
-nondegenerate matrix preserves interlacing if and only if it is one of the
-following 18 matrices, written as lists of rows:
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+A matrix $M=\begin{pmatrix}a&b\\c&d\end{pmatrix}$ with entries in $\{0,1,x\}$ acts on pairs by
+$$
+M\cdot(f_1,f_2)=(af_1+bf_2,\ cf_1+df_2).
+$$
+We say $M$ **preserves interlacing** if, whenever $f_1,f_2$ have nonnegative coefficients, every
+nonzero one of them is real-rooted, and $f_1\ll f_2$ (either polynomial may be zero), the image
+pair has the same three properties. We call $M$ **nondegenerate** if neither row is $(0,0)$ and
+the two rows are distinct. Exactly 56 of the 81 matrices are nondegenerate.
+
+**Theorem.** Exactly 40 of the 81 matrices preserve interlacing. A nondegenerate matrix
+preserves interlacing if and only if it is one of the following 18 matrices, written as lists of
+rows:
 $$
 \begin{gathered}
 [[0, 1], [0, x]],\ [[0, 1], [x, 0]],\ [[1, 0], [0, 1]],\ [[1, 0], [x, 0]],\
@@ -94,22 +96,18 @@ $$
 [[1, 1], [x, x]],\ [[x, 1], [x, x]].
 \end{gathered}
 $$
-In particular, exactly 18 nondegenerate matrices preserve interlacing.
 
-## Proof idea
+## Proof
 
-By the matrix criterion of Brändén [@Branden2015, Thm. 7.8.5], a nonnegative polynomial
-matrix preserves interlacing sequences exactly when each ordered
-$2 \times 2$ submatrix, repeated indices allowed, satisfies an affine
-interlacing condition. For entries in $\{0, 1, x\}$ these nine conditions
-reduce to a finite table of admissible matrices. A matrix in the table preserves
-interlacing by the forward criterion. For a matrix outside it, an explicit
-sparse test pair is mapped to a pair that does not interlace. The counts then
-follow by deciding the finite table.
+By the matrix criterion of Brändén [@Branden2015, Thm. 7.8.5], a nonnegative polynomial matrix
+preserves interlacing sequences exactly when each ordered $2\times2$ submatrix, repeated indices
+allowed, satisfies an affine interlacing condition. For entries in $\{0,1,x\}$ this leaves a
+finite table of admissible matrices. For a matrix outside it, an explicit sparse pair is mapped
+to a pair that does not interlace.
 
 ## References
 
-See [@Fisk2006x, Ch. 3] and [@Branden2015, Thm. 7.8.5]. See the
+[@Fisk2006x, Ch. 3]; [@Branden2015, Thm. 7.8.5]. See the
 [table on symmetricfunctions.com](sf:smallInterlacingMatrices).
 <!-- /realrooted-catalog-content -->
 

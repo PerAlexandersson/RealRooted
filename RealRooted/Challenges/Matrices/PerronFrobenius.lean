@@ -55,35 +55,36 @@ label = "A positive eigenvector belongs to the Perron root"
 <!-- realrooted-catalog-content -->
 # Perron–Frobenius theorem
 
-For a square matrix $A$ with nonnegative real entries, the **Perron root** is
-the Collatz–Wielandt value
+A nonnegative square matrix has its Collatz–Wielandt value as an eigenvalue with a nonnegative
+eigenvector, and for irreducible matrices this eigenvector is positive and the eigenvalue is the
+spectral radius.
 
+## Results
+
+Let $A$ be a nonnegative real $n\times n$ matrix, $n\ge1$. The *Perron root* is
 $$
 r(A) = \sup_{v \geq 0,\ v \neq 0}\ \min_{i\,:\,v_i > 0} \frac{(Av)_i}{v_i}.
 $$
 
 **Theorem (Perron–Frobenius).** [@Perron1907]
 
-- Every nonnegative matrix has $r(A)$ as an eigenvalue, with a nonnegative
-  eigenvector.
-- If $A$ is irreducible, the eigenvalue $r(A)$ is positive and has a strictly
-  positive eigenvector. Moreover $r(A)$ is the spectral radius: every real
-  eigenvalue $\mu$ satisfies $|\mu| \leq r(A)$.
-- If $A$ is primitive (some power is entrywise positive), a nonnegative
-  eigenvector with positive eigenvalue is unique up to scaling.
-- A strictly positive eigenvector with positive eigenvalue $r$ forces
-  $r=r(A)$.
+- $r(A)$ is an eigenvalue of $A$ with a nonnegative eigenvector.
+- If $A$ is irreducible, then $A$ has an eigenvector with positive entries and a positive
+  eigenvalue. Moreover $r(A)\in\operatorname{spec}(A)$ and $|\mu|\le r(A)$ for every real
+  eigenvalue $\mu$.
+- If $A$ is primitive (some power is entrywise positive), then there is exactly one
+  nonnegative eigenvector of sum $1$ with positive eigenvalue.
+- If $Av=rv$ with $v$ entrywise positive and $r>0$, then $r=r(A)$.
 
-The proofs go through the Collatz–Wielandt function on the standard simplex,
-upper semicontinuity and compactness for existence, and a triangle-equality
-phase argument for dominance. The irreducible case is reduced to the primitive
-one through $1 + A$.
+## Proof
+
+Existence comes from upper semicontinuity of the Collatz–Wielandt function on the standard
+simplex. The irreducible case reduces to the primitive case through $1+A$.
 
 ## References
 
-See [@Perron1907]. G. Frobenius, “Über Matrizen aus nicht negativen Elementen,”
-*Sitzungsberichte der Königlich Preussischen Akademie der Wissenschaften* (1912),
-456–477.
+[@Perron1907]; G. Frobenius, “Über Matrizen aus nicht negativen Elementen,”
+*Sitzungsberichte der Königlich Preussischen Akademie der Wissenschaften* (1912), 456–477.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

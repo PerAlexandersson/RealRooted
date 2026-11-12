@@ -62,28 +62,31 @@ label = "Hermite polynomials are orthogonal for the Gaussian weight"
 <!-- realrooted-catalog-content -->
 # Hermite polynomials
 
-The probabilists' Hermite polynomials satisfy $H_0 = 1$, $H_1 = x$ and
+The probabilists' Hermite polynomials are real-rooted with simple roots, consecutive ones
+interlace, and they are orthogonal for the Gaussian weight.
 
-$$H_{n+2}(x) = x\, H_{n+1}(x) - (n+1)\, H_n(x).$$
+## Results
 
-The following hold:
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+The probabilists' Hermite polynomials satisfy $H_0=1$, $H_1=x$ and
+$$H_{n+2}(x)=x\,H_{n+1}(x)-(n+1)\,H_n(x).$$
 
-- each $H_n$ is monic of degree $n$, with only real and simple zeros;
-- consecutive polynomials strictly interlace, and $H_n, H_{n-1}, \dotsc, H_0$ is a
-  Sturm sequence;
-- the recurrence is a Favard recurrence with diagonal $0$ and subdiagonal
-  $n$;
-- the polynomials are orthogonal for the Gaussian weight:
+**Theorem.** For all $n$:
 
-  $$\int_{-\infty}^{\infty} H_i(x) H_j(x)\, e^{-x^2/2}\, dx = \delta_{ij} \sqrt{2\pi}\, i!.$$
+- $H_n$ is monic of degree $n$ and has only real, simple roots;
+- $H_n\ll H_{n+1}$, and $H_n,H_{n-1},\dots,H_0$ is a Sturm sequence, that is, each consecutive
+  pair interlaces;
+- the recurrence is a Favard recurrence with diagonal $0$ and subdiagonal $n$;
+- $\displaystyle\int_{-\infty}^{\infty}H_i(x)H_j(x)\,e^{-x^2/2}\,dx=\delta_{ij}\sqrt{2\pi}\,i!$.
+
+## Proof
 
 The root and interlacing statements follow from the general
-[Favard theory](/RealRooted/theorems/favard/), because the subdiagonal is
-positive.
+[Favard theory](/RealRooted/theorems/favard/), because the subdiagonal is positive.
 
 ## References
 
-See [@Szego1939].
+[@Szego1939].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in `RealRooted.Hermite`.

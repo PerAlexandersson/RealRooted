@@ -38,7 +38,7 @@ headline = true
 
 [[theorems]]
 name = "RealRooted.Challenges.JacobiDeformation.interlaces_derivative_polynomial_zero"
-label = "For 0 < δ < 1 the roots are simple and strictly interlace J′_{m,0}"
+label = "For 0 < δ < 1 the roots are simple, interlace J′_{m,0} and share no root with it"
 
 [[theorems]]
 name = "RealRooted.JacobiDeformation.isPFPolynomial_polynomial"
@@ -54,61 +54,49 @@ label = "Micchelli–Willoughby: initial spectral products are entrywise nonnega
 <!-- realrooted-catalog-content -->
 # The Jacobi deformation
 
-For $m \in \mathbb{N}$ and real $\delta, c, d, U, V$, the Jacobi deformation is
-the monic polynomial of degree $m$
+The Jacobi deformation $J_{m,\delta}$ has only negative real roots for every $\delta\ge0$, and for
+$0<\delta<1$ its roots are simple and interlace the roots of $J_{m,0}'$.
+
+## Results
+
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+For $m\in\mathbb N$ and real $\delta,c,d,U,V$, the Jacobi deformation is the monic polynomial of
+degree $m$
 $$
-J_{m,\delta}^{c,d}(x; U, V) = \sum_{i + j \le m}
-  \frac{m!}{(m - i - j)!\, i!\, j!}
-  \frac{(m + c + d - 1 + \delta)_{i + j}}{(c)_i\, (d)_j}\,
-  U^i V^j x^{m - i - j},
+J_{m,\delta}^{c,d}(x;U,V)=\sum_{i+j\le m}
+  \frac{m!}{(m-i-j)!\,i!\,j!}
+  \frac{(m+c+d-1+\delta)_{i+j}}{(c)_i\,(d)_j}\,
+  U^iV^j x^{m-i-j},
 $$
-where $(a)_n = a(a + 1) \cdots (a + n - 1)$ is the rising factorial.
+where $(a)_n=a(a+1)\cdots(a+n-1)$ is the rising factorial.
 
-**Theorem.** Let $c, d, U, V > 0$.
+**Theorem.** Let $c,d,U,V>0$.
 
-- For every $\delta \ge 0$, all roots of $J_{m,\delta}^{c,d}$ are real and
-  strictly negative. Hence $J_{m,\delta}^{c,d}$ is a PF polynomial.
-- If $m \ge 1$ and $0 < \delta < 1$, the roots of $J_{m,\delta}^{c,d}$ are
-  simple and interlace the roots of the derivative of $J_{m,0}^{c,d}$:
-  $(J_{m,0}^{c,d})' \ll J_{m,\delta}^{c,d}$, and the two polynomials have no
-  common root.
+- For every $\delta\ge0$, all roots of $J_{m,\delta}^{c,d}$ are real and negative, and
+  $J_{m,\delta}^{c,d}$ is a Pólya frequency polynomial.
+- If $m\ge1$ and $0<\delta<1$, then $J_{m,\delta}^{c,d}$ has simple roots,
+  $(J_{m,0}^{c,d})'\ll J_{m,\delta}^{c,d}$, and the two polynomials have no common root.
 
-## Proof idea
+**Theorem (Micchelli–Willoughby).** [@MicchelliWilloughby1979] Let $A$ be a real symmetric
+matrix with nonnegative entries and simple spectrum $\mu_1<\dots<\mu_N$. Then
+$(A-\mu_1)\cdots(A-\mu_k)$ is entrywise nonnegative for every $k<N$.
 
-The argument is finite and algebraic. With $s = c + d$, let $p_j$ be the
-monic shifted Jacobi polynomials, orthogonal for the moment functional
-$\ell(t^k) = (c)_k / (s)_k$, and let $\lambda_j = j(j + s - 1)$ be the
-eigenvalues of the Jacobi operator.
+## Proof
 
-1. A finite Appell kernel $K_\delta(r, z)$ is diagonal in the Jacobi basis,
-   with positive weights that have a positive Newton expansion in the
-   $\lambda_j$. Evaluated at $rz = -U/\xi$ and $(1 - r)(1 - z) = -V/\xi$, it
-   recovers $J_{m,\delta}(\xi)$ up to the positive factor $(-\xi)^m$.
-2. At the roots of a quasi-Jacobi polynomial $p_q - \tau p_{q-1}$, exact
-   quadrature symmetrizes the collocation matrix of the Jacobi operator, and
-   all its entries are strictly positive.
-3. The **Micchelli–Willoughby theorem** [@MicchelliWilloughby1979] makes the initial
-   spectral products of
-   that matrix entrywise nonnegative: if $A$ is a real symmetric matrix with
-   nonnegative entries and, in the simple-spectrum case formalized here,
-   eigenvalues $\mu_1 < \dots < \mu_N$, then
-   $(A - \mu_1) \cdots (A - \mu_k)$ is entrywise nonnegative for every $k < N$.
-   This gives strict signs of the kernel at pairs of quasi-Jacobi roots.
-4. At $\delta = 0$ only the top weight survives, and $J_{m,0}$ is an explicit
-   product over the roots of $p_m$, whose derivative has $m - 1$ simple roots.
-   At each critical point $\xi$ of $J_{m,0}$, one shows
-   $J_{m,\delta}(\xi)\, J_{m,0}''(\xi) < 0$ for $0 < \delta < 1$.
-5. The unit shift $b J_{m,\delta+1} = (b + m) J_{m,\delta} - x J_{m,\delta}'$
-   with $b = m + s - 1 + \delta$ transports negative real-rootedness from
-   $[0, 1)$ to every $\delta \ge 0$.
+Let $s=c+d$ and let $p_j$ be the monic shifted Jacobi polynomials, orthogonal for the moment
+functional $\ell(t^k)=(c)_k/(s)_k$, with eigenvalues $\lambda_j=j(j+s-1)$ of the Jacobi operator.
+A finite Appell kernel is diagonal in the Jacobi basis with positive weights, and evaluating it
+at suitable points recovers $J_{m,\delta}$. The Micchelli–Willoughby theorem, applied to the
+collocation matrix of the Jacobi operator at the roots of a quasi-Jacobi polynomial
+$p_q-\tau p_{q-1}$, gives strict signs of the kernel there. This settles $0<\delta<1$, and the
+shift $bJ_{m,\delta+1}=(b+m)J_{m,\delta}-xJ_{m,\delta}'$ with $b=m+s-1+\delta$ extends
+real-rootedness with negative roots to all $\delta\ge0$.
 
 ## References
 
-The theorem and its proof are original to this library (P. Alexandersson, 2026);
-there is no preprint yet. For Stieltjes matrices, see [@MicchelliWilloughby1979].
-The Jacobi polynomials
-used in the proof are on the
-[Jacobi polynomials page](/RealRooted/families/jacobi-polynomials/).
+The theorem on the Jacobi deformation is due to P. Alexandersson (2026). For the
+Micchelli–Willoughby theorem see [@MicchelliWilloughby1979]. The Jacobi polynomials used in the
+proof are on the [Jacobi polynomials page](/RealRooted/families/jacobi-polynomials/).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in

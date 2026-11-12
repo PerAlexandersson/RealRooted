@@ -59,38 +59,36 @@ label = "The rows of [[1, 1], [0, 1]] are strictly interlacing"
 <!-- realrooted-catalog-content -->
 # Strict TP2 Hessenberg certificate
 
-Let $A$ be a real $d\times d$ matrix with $d\ge 2$ satisfying the hypotheses of the
+If $\det A>0$ and $d\ge2$, the rows of the finite TP2 Hessenberg certificate have simple
+positive roots and consecutive rows have no common root.
+
+## Results
+
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+Let $A$ be a real $d\times d$ matrix with $d\ge2$ satisfying the hypotheses of the
 [finite TP2 Hessenberg certificate](/RealRooted/theorems/tp2-hessenberg-certificate/)
-(nonnegative entries and ordered $2\times2$ minors, weakly decreasing columns,
-$A_{ij}=A_{jj}=c_j$ for $i\le j$) and, in addition, $\det A>0$. Let $P_k(t)$ be the coefficients of
-$1/(\det(I+zA)-tz)$.
+(TP2, weakly decreasing columns, $A_{ij}=A_{jj}=c_j$ for $i\le j$) and $\det A>0$. Let $P_k(t)$
+be the coefficients of $1/(\det(I+zA)-tz)$.
 
-**Theorem.** Every row $P_k$ has only simple, strictly positive real roots, and consecutive rows
-$P_k,P_{k+1}$ have no common root. Together with the weak interlacing of the certificate this is
-strict interlacing.
+**Theorem.** Every $P_k$ has only simple, strictly positive real roots, and $P_k$ and $P_{k+1}$
+have no common root. Together with $P_k\ll P_{k+1}$ from the certificate, consecutive rows
+interlace strictly.
 
-**Proof.** Subtracting each row of $A+rJ$ from the one above it gives a lower triangular matrix with
-diagonal $c_i-A_{i+1,i}$ and $c_d$; hence
-$\det A=c_d\prod_{i<d}(c_i-A_{i+1,i})$, every $c_j>0$, and, for $d\ge2$, $\det(A+rJ)=\det A$
-for every real $r$ ($r$ only enters the lower-left corner, off the diagonal). So $A+rJ$ is
-invertible and $\mathbf f_k(r)=(A+rJ)^k\mathbf 1\ne0$. If $r$ is a simple root of $f_{k,1}$ then by
-weak interlacing all $f_{k,j}(r)$ have the sign opposite to $f_{k,1}'(r)$, and
-$f_{k+1,1}(r)=\sum_jc_jf_{k,j}(r)$ can vanish only if the whole vector $\mathbf f_k(r)$ vanishes,
-a contradiction. A weakly interlacing pair with no common root has simple roots, so simplicity
-passes from $f_{k,1}$ to $f_{k+1,1}$. Finally $f_{k,1}(0)>0$ excludes the root $0$.
-
-**Remark.** For $d=1$ and $A=(c)$, $\mathbf f_k=(x+c)^k$ has a root of multiplicity $k$; the
+For $d=1$ and $A=(c)$ one has $\mathbf f_k=(x+c)^k$, which has a root of multiplicity $k$; the
 hypothesis $d\ge2$ is needed.
 
-## What is new
+## Proof
 
-The proof is new, developed for RealRooted, and is of independent research
-interest; the classical constant-matrix theorem of Brändén [@Branden2015, Corollary 8.6] enters
-only through the weak certificate on which this page builds.
+Subtracting each row of $A+rJ$ from the one above gives
+$\det A=c_d\prod_{i<d}(c_i-A_{i+1,i})$, so every $c_j>0$, and $\det(A+rJ)=\det A$ for all real
+$r$. Hence $\mathbf f_k(r)=(A+rJ)^k\mathbf 1\ne0$. At a simple root $r$ of $f_{k,1}$ the values
+$f_{k,j}(r)$ all have the sign opposite to $f_{k,1}'(r)$, so $f_{k+1,1}(r)=\sum_jc_jf_{k,j}(r)$
+does not vanish. Interlacing pairs without common root have simple roots, which gives
+simplicity of every $f_{k,1}$.
 
 ## References
 
-See [@Branden2015].
+[@Branden2015, Corollary 8.6] gives the weak certificate on which this page builds.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in the `RealRooted.Toeplitz` modules named in
