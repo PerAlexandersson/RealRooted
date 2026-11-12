@@ -85,42 +85,41 @@ label = "Multiplying both sides by a common linear factor preserves interlacing,
 <!-- realrooted-catalog-content -->
 # Wagner’s lemma
 
-We write $f\ll g$ (`StrictInterl f g`) as on the
-[interlacing page](/RealRooted/concepts/interlacing/).
+Interlacing is preserved by sums of polynomials with a common interlacing partner, and
+multiplication by $x$ reverses it for polynomials with nonpositive roots.
 
-If $f$ and $g$ have positive leading coefficients and both interlace $h$,
-then $f + g$ interlaces $h$. Likewise, if $f$ and $g$ have positive leading
-coefficients and $h$ interlaces both, then $h$ interlaces $f + g$. If every
-real root of $f$ and of $g$ is nonpositive, then $f$ interlaces $g$ if and only
-if $g$ interlaces $Xf$. No degree condition is needed: both $\deg g = \deg f + 1$
-and $\deg g = \deg f$ are covered.
+## Results
 
-Two consequences for nonnegative combinations: if $f$ interlaces $g$, both
-have positive leading coefficients, and $a, b \ge 0$ are not both zero, then
-$f$ interlaces $af + bg$, and $af + bg$ interlaces $g$.
+We write $f\ll g$ if $f$ interlaces $g$ as on the
+[interlacing page](/RealRooted/concepts/interlacing/); common roots are allowed unless stated.
+Polynomials $f,g$ below have positive leading coefficients where stated.
 
-**Finite sums.** Wagner's lemma extends by induction to finitely many summands.
-If $f_1,\dots,f_k$ all interlace $h$ and have positive leading coefficients, and
-$a_1,\dots,a_k\ge0$ are weights, not all zero, then the weighted sum
-$\sum_i a_i f_i$ interlaces $h$; in particular $\sum_i f_i \ll h$ for $k\ge1$.
-The two-summand case needs no coprimeness hypothesis. It is proved by induction
-on $\deg h$: a root shared by $h$ and $f+g$ is cancelled, and when there is no
-shared root, the claim follows from the signs of $f+g$ at the roots of $h$.
+**Theorem (Wagner's lemma).** Let $f,g$ have positive leading coefficients.
 
-**Multiplication by $x$ and by a linear factor.** If $f\ll g$ and both have
-nonnegative coefficients, then $g\ll xf$. Multiplying both polynomials by a common
-factor $x-r$ preserves interlacing, and cancelling such a factor reverses this: $f\ll g$
-if and only if $(x-r)f\ll(x-r)g$.
+1. If $f\ll h$ and $g\ll h$, then $f+g\ll h$.
+2. If $h\ll f$ and $h\ll g$, then $h\ll f+g$.
+3. If all real roots of $f$ and $g$ are nonpositive, then $f\ll g$ if and only if $g\ll xf$.
 
-Interlacing is not transitive, but a chain can be closed up. If
-$F_a \ll F_{a+1} \ll \dots \ll F_b$ and also $F_a \ll F_b$, then
-$F_i \ll F_j$ for all $a \le i \le j \le b$.
+No degree condition is needed in (3): both $\deg g=\deg f$ and $\deg g=\deg f+1$ occur. If
+$f\ll g$ and both have nonnegative coefficients, then $g\ll xf$.
+
+**Proposition (finite sums).** Let $f_1,\dots,f_k$ have positive leading coefficients with
+$f_i\ll h$ for all $i$, and let $a_1,\dots,a_k\ge0$, not all zero. Then $\sum_ia_if_i\ll h$. In
+particular $\sum_if_i\ll h$ for $k\ge1$. If $f+g$ has no root in common with $h$, part (1) holds
+under the same hypotheses.
+
+**Proposition (nonnegative combinations).** Let $f\ll g$ have positive leading coefficients and
+let $a,b\ge0$ be not both zero. Then $f\ll af+bg$ and $af+bg\ll g$.
+
+**Proposition (common factor).** For $r\in\mathbb R$, $f\ll g$ if and only if
+$(x-r)f\ll(x-r)g$.
+
+**Proposition (chains).** If $F_a\ll F_{a+1}\ll\dots\ll F_b$ and $F_a\ll F_b$, then
+$F_i\ll F_j$ for all $a\le i\le j\le b$.
 
 ## Relation to SymCat
 
-The headline formalizes the common-right addition clause of
-[Wagner’s lemma](sf:wagnerLemma). The common-left addition and multiplication-by-$x$
-clauses are published separately below.
+The common-right addition clause is [Wagner’s lemma](sf:wagnerLemma) on symmetricfunctions.com.
 
 ## References
 

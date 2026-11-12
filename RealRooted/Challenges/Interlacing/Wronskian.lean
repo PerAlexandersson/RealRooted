@@ -74,80 +74,52 @@ label = "The multiplicity condition cannot be dropped: (x − 1)³ and x³"
 <!-- realrooted-catalog-content -->
 # Wronskian criterion for interlacing
 
-For nonzero real-rooted polynomials $g$ and $f$ we write $g \ll f$
-(`StrictInterl g f`) as on the [interlacing page](/RealRooted/concepts/interlacing/):
-the zeros interlace weakly and $f$ has the largest zero, so that
-$\deg f - \deg g \in \{0, 1\}$. Shared and repeated zeros are allowed. The
-Wronskian of the pair is
+For real-rooted polynomials with positive leading coefficients and degrees differing by at most
+one, $g$ interlaces $f$ if and only if the Wronskian $f'g-fg'$ is nonnegative on $\mathbb R$ and
+no zero of $f$ has multiplicity more than one above its multiplicity in $g$.
+
+## Results
+
+For nonzero real-rooted polynomials we write $g\ll f$ if $g$ interlaces $f$, as on the
+[interlacing page](/RealRooted/concepts/interlacing/): the zeros interlace weakly and $f$ has the
+largest zero, so $\deg f-\deg g\in\{0,1\}$. Shared and repeated zeros are allowed. Let
+$W(g,f)=f'g-fg'$, and let $\mathrm{mult}_r(p)$ be the multiplicity of $r$ as a zero of $p$, which
+is $0$ if $p(r)\ne0$.
+
+**Theorem (Wronskian criterion).** Let $f,g$ be real-rooted with positive leading coefficients
+and $\deg g\le\deg f\le\deg g+1$. Then $g\ll f$ if and only if
 $$
-W(g, f) = f' g - f g' .
+W(g,f)(x)\ge0\ \text{ for all }x\in\mathbb R\quad\text{and}\quad
+\mathrm{mult}_r(f)\le\mathrm{mult}_r(g)+1\ \text{ for all }r\in\mathbb R .
 $$
-We write $\mathrm{mult}_r(p)$ for the multiplicity of $r$ as a zero of $p$,
-which is $0$ when $p(r) \neq 0$.
+The forward direction holds for every pair with $g\ll f$ and positive leading coefficients. The
+converse also holds when all zeros of $f$ are simple, without the multiplicity condition.
 
-**Theorem.** Let $f$ and $g$ have positive leading coefficients. If
-$g \ll f$, then $f'(x) g(x) - f(x) g'(x) \geq 0$ for all $x \in \mathbb R$.
+**Example.** The multiplicity condition cannot be dropped: for $f=(x-1)^3$ and $g=x^3$ we have
+$W(g,f)=3x^2(x-1)^2\ge0$, but $g\ll f$ fails.
 
-**Theorem** (weak converse). Let $f$ and $g$ be real-rooted with positive
-leading coefficients and $\deg g \leq \deg f \leq \deg g + 1$. Suppose that
-$f'(x) g(x) - f(x) g'(x) \geq 0$ for all $x \in \mathbb R$ and that
-$\mathrm{mult}_r(f) \leq \mathrm{mult}_r(g) + 1$ for every $r \in \mathbb R$.
-Then $g \ll f$. In particular, this holds when all zeros of $f$ are simple.
+**Theorem (strict converses).** Let $f,g$ be real-rooted with positive leading coefficients and
+$W(g,f)(x)>0$ for all $x\in\mathbb R$.
 
-Together with the bound $\mathrm{mult}_r(f) \leq \mathrm{mult}_r(g) + 1$,
-which every pair with $g \ll f$ satisfies, this gives a characterization.
+- If $\deg f=\deg g=n$, the zeros $\beta_1\le\dots\le\beta_n$ of $g$ and
+  $\alpha_1\le\dots\le\alpha_n$ of $f$ satisfy $\beta_1<\alpha_1<\beta_2<\dots<\beta_n<\alpha_n$.
+- If $\deg f=\deg g+1$, then $g\ll f$.
 
-**Theorem.** Let $f$ and $g$ be real-rooted with positive leading
-coefficients and $\deg g \leq \deg f \leq \deg g + 1$. Then $g \ll f$ if and
-only if $f'(x) g(x) - f(x) g'(x) \geq 0$ for all $x \in \mathbb R$ and
-$\mathrm{mult}_r(f) \leq \mathrm{mult}_r(g) + 1$ for every $r \in \mathbb R$.
+**Theorem (Laguerre's inequality).** If $p$ is real-rooted, then for all $t\in\mathbb R$,
+$$
+p'(t)^2-p(t)\,p''(t)\ge0 ,
+$$
+that is, $W(p,p')\le0$. Moreover
+$$
+p'(t)^2\le\deg(p)\,\bigl(p'(t)^2-p(t)\,p''(t)\bigr),
+$$
+and $(M-1)\,p'(t)^2\ge M\,p(t)\,p''(t)$ for every $M\ge\deg p$.
 
-**The multiplicity condition is needed.** The polynomials $f = (x-1)^3$ and
-$g = x^3$ are real-rooted with positive leading coefficients and equal
-degree, and $f' g - f g' = 3x^2(x-1)^2 \geq 0$, but $g \ll f$ fails.
+## Proof
 
-**Theorem** (strict converses). Let $f$ and $g$ be real-rooted with positive
-leading coefficients, and suppose that $f'(x) g(x) - f(x) g'(x) > 0$ for all
-$x \in \mathbb R$.
-
-- If $\deg f = \deg g$, then the zeros $\beta_1 \le \dotsb \le \beta_n$ of
-  $g$ and $\alpha_1 \le \dotsb \le \alpha_n$ of $f$ interlace strictly:
-  $\beta_1 < \alpha_1 < \beta_2 < \dotsb < \beta_n < \alpha_n$.
-- If $\deg f = \deg g + 1$, then $g \ll f$.
-
-**Theorem** (Laguerre's inequality). If $p$ is zero or real-rooted, then
-$p'(x)^2 - p(x) p''(x) \geq 0$ for all $x \in \mathbb R$, that is,
-$W(p, p') \leq 0$.
-
-The Laguerre form $p'^2 - p\,p''$ of a real-rooted polynomial satisfies the
-degree-weighted inequality $p'(t)^2 \leq \deg(p)\,\bigl(p'(t)^2 - p(t)\,p''(t)\bigr)$.
-Equivalently, $(M-1)\,p'(t)^2 \geq M\,p(t)\,p''(t)$ for every $M \geq \deg p$.
-
-## Proof idea
-
-The forward direction removes common zeros one at a time, since
-$W(hg, hf) = h^2 W(g, f)$. Without common zeros, the strict forward
-theorems apply: positive definiteness of the Bézout matrix in equal degree,
-and a padding argument in successor degree.
-
-For the weak converse we again strip common zeros. The identity
-$W(hg, hf) = h^2 W(g, f)$ with $h = x - r$ keeps the reduced Wronskian
-nonnegative away from $r$, and continuity covers $r$ itself. Once no common
-zero is left, the multiplicity bound makes every zero of $f$ simple. At a
-zero $r$ of $f$ we have $W(g, f)(r) = g(r) f'(r) \neq 0$, so the Wronskian is
-positive at every zero of $f$. Through the Vandermonde matrix of these zeros,
-the Bézout matrix is congruent to a positive diagonal matrix, hence positive
-definite, and the Wronskian is positive on all of $\mathbb R$. The strict
-converses then give $g \ll f$.
-
-The strict converses use signs at zeros. A positive Wronskian forces all
-zeros to be simple. At a zero $r$ of $f$ we have $W(g, f)(r) = g(r) f'(r) > 0$,
-and $f'$ alternates in sign along the zeros of $f$, so $g$ does as well. The
-intermediate value theorem then places a zero of $g$ between consecutive
-zeros of $f$, and the behaviour at $\pm\infty$ locates the remaining zeros.
-Laguerre's inequality follows by induction on the zeros, since adjoining a
-factor $x - a$ to $q$ turns $q'^2 - q q''$ into
-$q^2 + (x - a)^2 (q'^2 - q q'')$.
+Common zeros are removed one at a time, using $W(hg,hf)=h^2W(g,f)$. Without common zeros, a
+positive Wronskian is handled by the Bézout matrix in equal degree and by padding in successor
+degree.
 
 ## References
 

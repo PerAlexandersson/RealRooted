@@ -131,74 +131,124 @@ label = "Power-factor rows from a linear remainder certificate"
 [[theorems]]
 name = "RealRooted.derivativeRecurrence_interlaces_of_endpoint_windows"
 module = "RealRooted.DerivativeRecurrence.EndpointWindow"
-label = "Root windows from endpoint signs only"
+label = "Interlacing when each next row has its roots in the next window"
 headline = true
 -->
 
 <!-- realrooted-catalog-content -->
 # Recurrence root windows and interlacing
 
-We study polynomial sequences whose recurrences provide a one-step route to
-`Interlaces (P n) (P (n + 1))`. For a first-order derivative recurrence
-`P (n + 1) = A n * (P n)' + B n * P n`, we keep the roots in a prescribed
-window. On the window containing the roots, the condition `A n ≤ 0` gives the
-interlacing step. Sign conditions outside the window move the roots of the next
-row into the next window: above an upper bound we use `A n ≥ 0` and `B n > 0`,
-and below a lower bound we use `A n ≥ 0` and `B n < 0`. The degree-bounded
-variants replace these outside signs with the corresponding logarithmic
-derivative inequalities.
+If the roots of the rows of a derivative or three-term recurrence stay in a window where the
+leading multiplier is nonpositive, and sign conditions hold outside the window, then consecutive
+rows interlace.
 
-Throughout, $\deg P_n=D_0+n$ and the leading coefficients are positive. The
-rows $P_0,P_1$ interlace when $D_0=0$; this initial interlacing is required
-for every three-term recurrence.
+## Results
 
-We also allow the window to move with `n`. The lower-bound results use a
-nonincreasing bound, including the quotient form `p n / q n`; the upper-bound
-results use a nondecreasing bound, including the quotient form that covers the
-root pattern of A110608. The hypotheses are multiplied through by positive
-denominators, so the applications need no quotient inequalities. The most general
-form lets both ends move, and at each point beyond either end it accepts either
-the sign conditions or the degree-bounded inequality.
-In the most flexible derivative-recurrence form, the window $W_n$ may depend
-on the row, and the proof that the roots of $P_{n+1}$ lie in $W_{n+1}$ may use
-the interlacing of $P_n$ and $P_{n+1}$ just established. Hence endpoint signs
-alone suffice to place the next row in its window, as in Ma–Wang, Theorem 2.
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+Throughout, $P_n$ are real polynomials with $\deg P_n=D_0+n$ and positive leading coefficient,
+and $A_n,B_n,a_n,b_n$ are real polynomials; inequalities such as $A_n\le0$ on a set mean
+$A_n(x)\le0$ at each $x$ of the set. When $D_0=0$ we assume $P_0\ll P_1$.
 
-For a three-term recurrence
-`P (n + 2) = a n * P (n + 1) + b n * P n`, we apply the same window induction
-with the sign of `b` on the window and the signs of `a` and `b` outside it. A
-ratio barrier handles the case where `b` can have the wrong sign: a sequence
-`ρ n` satisfying the required leading-coefficient comparison and the inequality
-`a n (x) * ρ n * (x - U) + b n (x) > 0` propagates positivity beyond the upper
-root bound. A separate barrier theorem uses a positive function
-$\rho(x)\le a_n(x)$ satisfying
-$\rho(x)^2\le a_n(x)\rho(x)+b_n(x)$ above the upper bound, initialized by
-$\rho(x)P_0(x)\le P_1(x)$ there.
+**Theorem (root window).** Let $P_{n+1}=A_nP_n'+B_nP_n$ and let $L,U\in\mathbb R$. Suppose $P_0$
+splits with all roots in $[L,U]$, and for all $n$:
 
-The lag-feedback results treat
-`P (n + p) = α P (n + p - 1) + c n X P n`, with `α > 0` and `c n > 0`.
-Here $p\ge2$. Splitting follows when the first $p$ rows are positive
-constants; pairwise interlacing instead assumes a pairwise-interlacing
-starting window with nonnegative coefficients. For
-parity products, we combine two solutions of a three-term recurrence in the
-alternating rows `s m * t m` and `s (m + 1) * t m`. A Casoratian compatibility
-condition identifies these products with a sequence satisfying an order-three
-recurrence, after which interlacing follows from the two input sequences.
+- $A_n\le0$ on $[L,U]$;
+- $A_n\ge0$ on $(-\infty,L)\cup(U,\infty)$, with $B_n>0$ on $(U,\infty)$ and $B_n<0$ on
+  $(-\infty,L)$.
 
-For order-three recurrences whose characteristic polynomial is
-$(\lambda-q)^3$, the remainder criterion compares $q^mR$ and $q^{m+1}S$, with
-$q$ nonzero and split. Dividing $qS$ by $R$ leaves a remainder
-$\alpha X+\beta$. When $R=aX^2+bX+c$ with $a>0$, the
-quotient has positive leading coefficient, $\alpha < 0$, and
-$a\beta^2 - b\alpha\beta + c\alpha^2 < 0$, the root of the remainder lies between the roots of
-$R$, and consecutive rows interlace. For $R=aX+b$ with $a>0$ and quotient of
-positive leading coefficient, $\beta<0$ alone suffices.
+Then $P_n\ll P_{n+1}$ for all $n$. The same holds when there is no lower bound: all roots of $P_0$
+are at most $U$, $A_n\le0$ on $(-\infty,U]$, and $A_n\ge0$, $B_n>0$ on $(U,\infty)$.
 
-Finally, reversal transfers these arguments through
-`X ^ (D₀ + n) * P n (1 / X)`. The reflection link theorems cover both
-second-order derivative and three-term recurrences, while the transfer
-theorems carry interlacing and splitting back to the original rows. The row
-tactics `rr_row_interlaces` and `rr_row_splits` use these routes.
+**Theorem (degree-bounded window).** In the setting of the root window theorem, the conclusion
+$P_n\ll P_{n+1}$ holds if the outside conditions are replaced by
+$$
+B_n(x)\,(x-U)+\min(A_n(x),0)\,(D_0+n)>0\quad\text{for }x>U,
+$$
+and the same inequality with $U$ replaced by $L$ for $x<L$.
+
+**Theorem (moving windows).** Let $P_{n+1}=A_nP_n'+B_nP_n$ with real numbers $L_n$ nonincreasing and
+$U_n$ nondecreasing, all roots of $P_0$ in $[L_0,U_0]$, and $A_n\le0$ on $[L_n,U_n]$. Suppose
+that for $x>U_{n+1}$ either $A_n(x)\ge0$ and $B_n(x)>0$, or the degree-bounded inequality at
+$U_{n+1}$
+holds, and that for $x<L_{n+1}$ either $A_n(x)\ge0$ and $B_n(x)<0$, or the degree-bounded
+inequality at $L_{n+1}$ holds. Then $P_n\ll P_{n+1}$ for all $n$.
+
+Two quotient forms clear denominators $q_n>0$ from all hypotheses. For a fixed $U$ and a
+nonincreasing lower bound $L_n=p_n/q_n$, the outside conditions are the plain sign conditions.
+For a nondecreasing upper bound $U_n=p_n/q_n$ with no lower bound, $A_n\le0$ on $(-\infty,U_n]$;
+for a point $r$ we ask $A_n\ge0$ and $B_n>0$ on $U_{n+1}<x\le r$, and $A_n\le0$ together with the
+degree-bounded inequality on $x>r$.
+
+**Theorem (endpoint windows).** Let $P_{n+1}=A_nP_n'+B_nP_n$ and let $W_n\subseteq\mathbb R$ with
+$A_n\le0$ on $W_n$. Suppose $P_0$ splits with all roots in $W_0$, and for every $n$: if $P_n$
+splits, all its roots lie in $W_n$ and $P_n\ll P_{n+1}$, then all roots of $P_{n+1}$ lie in
+$W_{n+1}$. Then $P_n\ll P_{n+1}$ for all $n$.
+
+**Theorem (three-term recurrences).** Let $P_{n+2}=a_nP_{n+1}+b_nP_n$ with $P_0\ll P_1$, and let
+all roots of $P_0$ and $P_1$ lie in $[L,U]$. Suppose that for all $n$, $b_n\le0$ on $[L,U]$,
+$a_n>0$ and $b_n\ge0$ on $(U,\infty)$, and $a_n<0$ and $b_n\ge0$ on $(-\infty,L)$. Then
+$P_n\ll P_{n+1}$ for all $n$.
+
+Two variants allow $b_n<0$ beyond $U$.
+
+- *Ratio.* Let all roots of $P_0,P_1$ be at most $U$, let $b_n\le0$ on $(-\infty,U]$, and let
+  $\rho_n$ be reals with $\rho_n\,\mathrm{lc}(P_n)\le\mathrm{lc}(P_{n+1})$. If $a_n\ge0$ and
+  $a_n\rho_n(x-U)+b_n>0$ on $(U,\infty)$, then $P_n\ll P_{n+1}$.
+- *Barrier.* Keep the hypotheses of the three-term theorem on $[L,U]$ and $(-\infty,L)$, and
+  replace those on $(U,\infty)$ by a function $\rho>0$ on $(U,\infty)$ with $\rho\le a_n$,
+  $\rho^2\le a_n\rho+b_n$ and $\rho P_0\le P_1$ there. Then $P_n\ll P_{n+1}$.
+
+**Theorem (lag feedback).** Let $p\ge2$, $\alpha>0$, $c_n>0$ and
+$$
+P_{n+p}=\alpha P_{n+p-1}+c_n\,x\,P_n .
+$$
+If $P_0,\dots,P_{p-1}$ are positive constants, every $P_n$ splits. If instead
+$P_0,\dots,P_{p-1}$ have nonnegative coefficients and $P_i\ll P_j$ for $i<j<p$, then
+$P_{n+i}\ll P_{n+j}$ for all $n$ and $i<j<p$.
+
+**Theorem (parity products).** Let $\beta,\mu$ be polynomials and let $s_m,t_m$ satisfy
+$x_{m+2}=\beta x_{m+1}-\mu^2x_m$. Let $P_n$ satisfy
+$$
+P_{n+3}=(\beta+\mu)P_{n+2}-(\mu^2+\mu\beta)P_{n+1}+\mu^3P_n,
+$$
+with $P_0=s_0t_0$, $P_1=s_1t_0$, $P_2=s_1t_1$ and
+$s_1t_1-s_2t_0=\mu\,(s_1t_0-s_0t_1)$. Then $P_{2m}=s_mt_m$ and $P_{2m+1}=s_{m+1}t_m$. If
+$s_m\ll s_{m+1}$ and $t_m\ll t_{m+1}$ for all $m$, then $P_n\ll P_{n+1}$ for all $n$.
+
+**Theorem (remainder certificate).** Let $R=ax^2+bx+c$ with $a>0$, let $p>0$, and let
+$S_0=R\,(px+d)+\alpha x+\beta$. If $\alpha<0$ and $a\beta^2-b\alpha\beta+c\alpha^2<0$, then
+$R\ll S_0$. If $R=ax+b$ with $a>0$ and $S_0=R\,(px+d)+\beta$, then $\beta<0$ suffices. Moreover, if
+$q$ is a nonzero split polynomial and $qS=R\,(px+d)+\alpha x+\beta$, with the same conditions on
+$a,p,\alpha,\beta$, then $q^mR\ll q^{m+1}S$ for all $m$; likewise for $R=ax+b$ and
+$qS=R\,(px+d)+\beta$ with $\beta<0$.
+
+**Theorem (reversal).** Let $P_n=\operatorname{reflect}_{D_0+n}R_n$, that is,
+$P_n=x^{D_0+n}R_n(1/x)$.
+
+- If $R_n$ splits for all $n$ and $\deg R_n\le D_0+n$, then every $P_n$ splits.
+- If $\deg R_n=D_0+n$, each $R_n$ has nonnegative coefficients, $P_n$ has degree $D_0+n$ and
+  positive leading coefficient, and $R_n\ll R_{n+1}$ for all $n$, then $P_n\ll P_{n+1}$.
+- Suppose $\deg R_n\le D_0+n$ and $P_0=\operatorname{reflect}_{D_0}R_0$. If
+  $P_{n+2}=a_nP_{n+1}+b_nP_n$ with $\deg a_n\le1$, $\deg b_n\le2$,
+  $P_1=\operatorname{reflect}_{D_0+1}R_1$, and $R_{n+2}=a_n'R_{n+1}+b_n'R_n$ with
+  $a_n'=\operatorname{reflect}_1a_n$ and $b_n'=\operatorname{reflect}_2b_n$, then
+  $P_n=\operatorname{reflect}_{D_0+n}R_n$ for all $n$.
+- Suppose $P_{n+1}=A_{2,n}P_n''+A_{1,n}P_n'+A_{0,n}P_n$ with $\deg A_{i,n}\le i+1$, and that
+  $R_n$ satisfies the recurrence with coefficients $B_{2,n}=x^2\operatorname{reflect}_3A_{2,n}$,
+  $B_{1,n}=-x\bigl((2(D_0+n)-2)\operatorname{reflect}_3A_{2,n}
+  +\operatorname{reflect}_2A_{1,n}\bigr)$ and
+  $$
+  B_{0,n}=(D_0+n)(D_0+n-1)\operatorname{reflect}_3A_{2,n}+(D_0+n)\operatorname{reflect}_2A_{1,n}
+  +\operatorname{reflect}_1A_{0,n}.
+  $$
+  If $\deg R_n\le D_0+n$ and $P_0=\operatorname{reflect}_{D_0}R_0$,
+  then $P_n=\operatorname{reflect}_{D_0+n}R_n$ for all $n$.
+
+## Use
+
+The endpoint window theorem is the form of Ma–Wang, Theorem 2, in which endpoint signs place
+the next row in its window. The tactics `rr_row_interlaces` and `rr_row_splits` select these
+routes. The moving upper bound with a split point covers the root pattern of OEIS A110608.
 
 ## References
 

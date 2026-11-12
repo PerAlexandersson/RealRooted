@@ -69,41 +69,40 @@ label = "Constant-prefix rows have degree n / L"
 <!-- realrooted-catalog-content -->
 # Variable-delay and fixed-delay interlacing recurrences
 
-We study polynomial sequences in which each row is obtained from the previous
-row and from an earlier row. The proof is the variable-predecessor induction
-behind Fisk's example [@Fisk2006x, Example 16.10], using the interlacing cone
-rules of Wagner [@Wagner1992, Section 3].
+If each row equals the previous row plus $x$ times an earlier row, with nonnegative weights, then
+the rows are real-rooted and rows within the delay window interlace.
 
-## Variable delay
+## Results
 
-Let $p:\mathbb N\to\mathbb N$ be monotone on positive indices with $p(n)<n$ for
-$n\ge1$, let $w(n)\ge0$, and let $Q_0=1$ and
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+
+**Theorem (variable delay).** Let $p:\mathbb N\to\mathbb N$ satisfy $p(i)\le p(j)$ for
+$1\le i\le j$ and $p(n)<n$ for $n\ge1$. Let $w(n)\ge0$, $Q_0=1$ and
 $$
 Q_{n+1}=Q_n+w(n+1)\,x\,Q_{p(n+1)}.
 $$
-Then every $Q_n$ has nonnegative coefficients, constant term $1$, and only real
-zeros, and $Q_i$ interlaces $Q_n$ whenever $p(n)\le i\le n$. The same
-interlacing holds for the scaled recurrence
-$F_{n+1}=a(n+1)F_n+b(n+1)\,x\,F_{p(n+1)}$ with $a(n)>0$ and $b(n)\ge0$.
+Then every $Q_n$ has nonnegative coefficients and is real-rooted, and $Q_i\ll Q_n$ whenever
+$p(n)\le i\le n$. The same interlacing holds for the scaled recurrence
+$$
+F_{n+1}=a(n+1)\,F_n+b(n+1)\,x\,F_{p(n+1)},\qquad F_0=1,\ a(n)>0,\ b(n)\ge0 .
+$$
 
-## Fixed delay
+**Theorem (fixed delay).** Let $L\ge1$ and let $Q_{n+1}=Q_n+w(n+1)\,x\,Q_{\max(n+1-L,0)}$ with
+$Q_0=1$ and $w(n)\ge0$; the weights may vanish. Then $Q_A\ll Q_B$ whenever $A\le B\le A+L$. The same
+holds for the scaled recurrence
+$P_{n+1}=a(n+1)P_n+b(n+1)\,x\,P_{\max(n+1-L,0)}$ with $P_0=1$, $a(n)>0$, $b(n)\ge0$.
 
-For the fixed delay $p(n+1)=n+1-L$ with $L\ge1$ we obtain that $Q_A$ interlaces
-$Q_B$ whenever $A\le B\le A+L$. The same holds for the scaled recurrence.
-
-## A constant prefix
-
-Let $c_i>0$ for $i<L$, let $P_i=c_i$ for $i<L$ and
+**Theorem (constant prefix).** Let $L\ge1$, $c_i>0$ and $P_i=c_i$ for $i<L$, and
 $$
 P_{n+L}=a_n\,P_{n+L-1}+b_n\,x\,P_n,\qquad a_n>0,\ b_n\ge0 .
 $$
-Then every $P_n$ has nonnegative coefficients, positive constant term and only
-negative roots, and $P_A$ interlaces $P_B$ whenever $A\le B\le A+L$. If all
+Then every root of every $P_n$ is negative, and $P_A\ll P_B$ whenever $A\le B\le A+L$. If all
 $b_n>0$, then $\deg P_n=\lfloor n/L\rfloor$.
 
 ## References
 
-See [@Fisk2006x] and [@Wagner1992].
+The induction on the predecessor follows [@Fisk2006x, Example 16.10], using the interlacing cone
+rules of [@Wagner1992, Section 3].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in `RealRooted.Interlacing.VariableDelay`

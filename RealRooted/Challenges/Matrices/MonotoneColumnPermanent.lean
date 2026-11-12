@@ -89,51 +89,41 @@ label = "The leading coefficient of per(zJ + A) is n!"
 <!-- realrooted-catalog-content -->
 # Monotone column permanent theorem
 
-Let $A=(a_{ij})$ be a real $n\times n$ matrix. We say that its columns are
-weakly decreasing if $a_{ij}\geq a_{i+1,j}$ whenever both entries exist. The
-definition `HasWeaklyIncreasingColumns` reverses this inequality.
+If the columns of a real matrix $A$ are monotone, then $\operatorname{per}(zJ+A)$ is real-rooted
+with leading coefficient $n!$, and the multivariate column permanent is real stable.
 
-The multivariate column permanent is
+## Results
+
+Let $A=(a_{ij})$ be a real $n\times n$ matrix and $J_n$ the all-ones matrix. The columns of $A$
+are *weakly decreasing* if $a_{kj}\le a_{ij}$ for $i\le k$, and *weakly increasing* if
+$a_{ij}\le a_{kj}$ for $i\le k$. The *column permanent* of $A$ is
 $$
 \operatorname{per}(z_j+a_{ij})
-=\operatorname{per}(J_n\operatorname{diag}(z_1,\dotsc,z_n)+A),
+=\operatorname{per}\bigl(J_n\operatorname{diag}(z_1,\dots,z_n)+A\bigr).
 $$
-where $J_n$ is the all-ones matrix. The theorem
-`columnPermanent_mvRealStable_of_decreasingColumns` proves that this polynomial
-is real stable: it does not vanish when every $z_j$ lies in the open upper
-half-plane.
 
-Reversing the rows preserves the permanent and changes decreasing columns into
-increasing columns. Thus
-`columnPermanent_mvRealStable_of_increasingColumns` gives the convention used
-in the original Haglund–Ono–Wagner conjecture [@HaglundOnoWagner1999].
+**Theorem (monotone column permanent).** If the columns of $A$ are weakly decreasing or weakly
+increasing, then $\operatorname{per}(z_j+a_{ij})$ is real stable: it has no zero with every $z_j$
+in the open upper half-plane. Consequently $\operatorname{per}(zJ_n+A)$ is nonzero and splits over
+$\mathbb R$. Its coefficient of $z^n$ is $n!$ for every $A$.
 
-A **Ferrers matrix** is a zero-one matrix with weakly decreasing columns and
-weakly increasing rows. Its two-alphabet permanent
+The decreasing case is [@BrandenHaglundVisontaiWagner2011]; the increasing case is the
+convention of the conjecture of Haglund, Ono and Wagner [@HaglundOnoWagner1999], to which the
+decreasing case reduces by reversing the rows.
+
+**Proposition (Ferrers matrices).** A *Ferrers matrix* is a zero-one matrix with weakly
+decreasing columns and weakly increasing rows. For such $A$ the two-alphabet permanent
 $$
 \operatorname{per}\bigl(a_{ij}y_j+(1-a_{ij})x_i\bigr)
 $$
-is real stable.
+is real stable. If $A$ is a Ferrers matrix of size $n+1$ with $a_{n+1,n+1}=0$, this polynomial
+satisfies a deletion recurrence in terms of the polynomials of smaller Ferrers matrices.
 
-Setting every $z_j$ equal to one variable $z$ gives
-$$
-\operatorname{per}(zJ_n+A).
-$$
-The theorem
-`diagonalPermanent_ne_zero_and_splits_of_increasingColumns` proves that this
-polynomial is nonzero and splits over the reals. Its leading coefficient is
-$n!$.
+## Proof
 
-For the proof, we first reduce decreasing columns to decreasing zero-one
-columns. We then sort the columns into a Ferrers matrix and use a deletion
-recurrence for the two-alphabet polynomial
-$$
-\operatorname{per}\bigl(a_{ij}y_j+(1-a_{ij})x_i\bigr).
-$$
-The five finite Ferrers identities used in this formalization were proved by
-the Aristotle automated theorem prover and checked in Lean. Stability of the
-recurrence, specialization of the $x_i$, and a
-fractional substitution yield the multivariate theorem.
+Decreasing columns reduce to zero-one columns, which sort into a Ferrers matrix. Real stability
+of the Ferrers permanents follows by induction using the deletion recurrence. A specialization
+of the $x_i$ and a fractional substitution give the multivariate theorem.
 
 ## References
 

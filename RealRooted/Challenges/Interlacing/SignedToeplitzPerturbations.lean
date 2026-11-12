@@ -76,48 +76,41 @@ label = "The real values of b along the curve Im b = 0 are strictly decreasing i
 <!-- realrooted-catalog-content -->
 # Signed Toeplitz perturbations of the Chebyshev rows
 
-For real $c_2,\dots,c_s$ with $s\ge2$ define monic polynomials $P_n(t)$ by
+Rows of a Chebyshev-type generating function with a small signed perturbation of the
+denominator are real-rooted and interlace.
+
+## Results
+
+We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
+For real $c_2,\dots,c_s$ define monic polynomials $P_n(t)$ of degree $n$ by
 $$
 \sum_{n\ge0}P_n(t)\,z^n=\frac1{1-tz+z^2+\sum_{j=2}^sc_jz^{j+1}} .
 $$
-For $c=0$ these are the Chebyshev polynomials of the second kind (in the variable
-$t=2\cos\theta$). For $R>1$ put
+For $c=0$ these are the Chebyshev polynomials of the second kind in the variable $t=2\cos\theta$.
+For $R>0$ put
 $$
 A(R)=\sum_{j=2}^s j\,|c_j|\,R^{j+1},\qquad B(R)=\sum_{j=2}^s j(j-1)\,|c_j|\,R^{j+1}.
 $$
 
-**Theorem.** If $A(R)\le R^2-1$ and $B(R)\le1$, then every row $P_n$ has only real
-roots, all simple, and consecutive rows $P_n,P_{n+1}$ strictly interlace and have no common
-root. The coefficients may have either sign, and equality in the hypotheses is allowed. In
-particular this holds whenever
+**Theorem.** Let $R>0$ with $A(R)\le R^2-1$ and $B(R)\le1$. Then every $P_n$ is real-rooted with
+simple roots, $P_n\ll P_{n+1}$, and $P_n,P_{n+1}$ have no common root. The $c_j$ may have either
+sign.
+
+**Corollary (bandwidth criterion).** Let $s\ge2$. If
 $$
-\sum_{j=2}^s j\,|c_j|\le\frac1s\Bigl(1-\frac1s\Bigr)^{(s-1)/2}.
+\sum_{j=2}^s j\,|c_j|\le\frac1s\Bigl(1-\frac1s\Bigr)^{(s-1)/2},
 $$
+then $P_n\ll P_{n+1}$ for all $n$.
 
-**Proof idea.** Put $b(z)=z^{-1}+z+\sum_jc_jz^j$. Under the two hypotheses, for every angle
-$\theta\in(0,\pi)$ there is a unique $\rho(\theta)\in(0,R]$ with
-$\operatorname{Im}b(\rho e^{i\theta})=0$,
-and $\lambda(\theta)=b(\rho(\theta)e^{i\theta})$ is real and strictly decreasing in $\theta$
-(an implicit-function computation, $\lambda'=-\rho(a^2+b_1^2)/b_1<0$). At such a point the
-rescaled denominator factors exactly as $(1-2\cos\theta\,z+z^2)\,C_\theta(z)$, where
-$C_\theta-1$ has coefficient $\ell^1$-norm at most $1/2$ because $B(R)\le1$. The reciprocal
-of $C_\theta$ then has $\sum_{k=1}^n|g_k|\le1-2^{-n}$, so
-$\rho^nP_n(\lambda(\theta))=\sum_k g_k\,U_{n-k}(\cos\theta)$ has the sign pattern of
-$\sin((n+1)\theta)$ at the grid angles $(2j+1)\pi/(2(n+1))$; this is where equality in the
-hypotheses is harmless, since the finite sums are strictly positive. The intermediate value
-theorem gives $n$ simple real roots, one in each grid interval, and at these roots
-$P_{n-1}$ alternates in sign, which gives strict interlacing. No limiting spectrum and no
-finite verified prefix are used.
+## Proof
 
-## What is new
-
-The proof is new, developed for RealRooted, and is of independent research
-interest; no published source is cited, and we attribute none. The only external inputs are
-classical: the Chebyshev polynomials of the second kind and the implicit function theorem.
+With $b(z)=z^{-1}+z+\sum_jc_jz^j$, the real values of $b$ along the curve
+$\operatorname{Im}b(\rho e^{i\theta})=0$ are strictly decreasing in the angle $\theta\in(0,\pi)$
+under the two hypotheses.
 
 ## References
 
-No published source is cited for these results in the formalization.
+No published source.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in the `RealRooted.Toeplitz.SignedPerturbation`

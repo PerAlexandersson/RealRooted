@@ -71,25 +71,32 @@ label = "Paths of length n and powers of the edge matrix"
 <!-- realrooted-catalog-content -->
 # Lindström–Gessel–Viennot and total positivity
 
-The [Lindström–Gessel–Viennot lemma](sf:lindstromGesselViennotLemma)
-expresses a path-matrix minor as a signed sum over vertex-disjoint path
-families. The formalization uses ordered cancellation certificates to show
-that the surviving terms have nonnegative weights.
+Path networks with nonnegative weights and ordered cancellation certificates give totally
+nonnegative matrices and Pólya frequency sequences.
 
-Building on the path-cancellation proof in the LeanLGV library:
+## Results
 
-- **Total nonnegativity:** a finite path network with nonnegative weights
-  and ordered cancellation certificates for every pair of increasing row and
-  column selections has a totally nonnegative matrix.
-- **Pólya frequency sequences:** if every strictly increasing Toeplitz minor
-  of a sequence is realized by such a network, then the sequence is a Pólya
-  frequency sequence.
-- **Chip networks:** for words of nonnegative lower-bidiagonal chips $G$ and
-  $K$, with $K$ strictly lower triangular, the repeated-chip kernel sequence
-  is a Pólya frequency sequence. The associated kernel row, in the sense of
-  Brändén and Saud Leite, is a PF polynomial.
-- **Path counting:** weighted paths of exact length $n$ are counted by the
-  $n$-th power of the edge-sum matrix.
+The [Lindström–Gessel–Viennot lemma](sf:lindstromGesselViennotLemma) expresses a minor of a
+path matrix as a signed sum over vertex-disjoint path families. Here the surviving terms are
+shown to have nonnegative weights using ordered cancellation certificates, building on the
+path-cancellation proof in the LeanLGV library.
+
+**Theorem (total nonnegativity).** Let $N$ be a finite path network over an ordered ring with
+nonnegative path weights. If every minor with strictly increasing row and column selections has
+an ordered cancellation certificate, then the path matrix of $N$ is totally nonnegative.
+
+**Theorem (Pólya frequency sequences).** Let $a=(a_k)$ be a real sequence. If every strictly
+increasing Toeplitz minor of $a$ is the path matrix of a network with nonnegative weights and an
+ordered cancellation certificate, then $a$ is a Pólya frequency sequence.
+
+**Theorem (chip networks).** A *chip* is a lower-bidiagonal matrix on levels $0,\dots,N$. Let
+$G,K$ be words of chips with nonnegative weights such that the product matrix of $K$ is
+strictly lower triangular. Then the repeated-chip kernel sequence of $(G,K)$ is a Pólya frequency
+sequence, and the kernel row of Brändén and Saud Leite at the last level is a PF polynomial.
+
+**Proposition (path counting).** For a weighted quiver with finitely many vertices, the sum of
+the weights of the paths of length $n$ from $a$ to $b$ is the $(a,b)$ entry of the $n$-th power
+of the edge-sum matrix.
 
 ## References
 
