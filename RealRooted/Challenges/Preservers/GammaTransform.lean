@@ -1,13 +1,14 @@
 module
 
-import RealRooted.GammaPencil.Theorem
-import RealRooted.GammaTransform.Preservation
-import RealRooted.GammaTransform.ProperPosition
-import RealRooted.GammaTransform.StrictLifting
-import RealRooted.GammaTransform.TwoStep
-import RealRooted.GammaPencil.Preserver
 public import RealRooted.GammaPencil.Basic
+public import RealRooted.GammaPencil.Preserver
+public import RealRooted.GammaPencil.Theorem
 public import RealRooted.GammaTransform.Basic
+public import RealRooted.GammaTransform.Preservation
+public import RealRooted.GammaTransform.ProperPosition
+public import RealRooted.GammaTransform.RootLists
+public import RealRooted.GammaTransform.StrictLifting
+public import RealRooted.GammaTransform.TwoStep
 
 /-!
 # Real-rootedness and interlacing of the gamma transform
@@ -48,28 +49,34 @@ module = "RealRooted.GammaPencil.Basic"
 label = "Parameter component of the gamma pencil"
 
 [[theorems]]
-name = "RealRooted.Challenges.GammaTransform.isRealRooted_and_roots_nonpos_gammaTransform_iff"
+name = "RealRooted.GammaTransform.isRealRooted_and_roots_nonpos_iff"
+module = "RealRooted.GammaTransform.Preservation"
 label = "Real roots transfer through the gamma transform"
 headline = true
 
 [[theorems]]
-name = "RealRooted.Challenges.GammaTransform.gammaU_strictInterl_gammaV"
+name = "RealRooted.gammaU_strictInterl_gammaV"
+module = "RealRooted.GammaPencil.Theorem"
 label = "The gamma-pencil components interlace"
 
 [[theorems]]
-name = "RealRooted.Challenges.GammaTransform.isRealRooted_gammaTransform_of_hasNonnegCoeffs"
+name = "RealRooted.GammaTransform.isRealRooted_gammaTransform_of_hasNonnegCoeffs"
+module = "RealRooted.GammaTransform.Preservation"
 label = "Gamma transforms of real-rooted nonnegative polynomials"
 
 [[theorems]]
-name = "RealRooted.Challenges.GammaTransform.strictInterl_gammaTransform_succ_iff"
+name = "RealRooted.strictInterl_gammaTransform_succ_iff"
+module = "RealRooted.GammaTransform.ProperPosition"
 label = "Gamma transforms of adjacent degree preserve interlacing"
 
 [[theorems]]
-name = "RealRooted.Challenges.GammaTransform.splits_C_mul_gammaU_add_C_mul_gammaV"
+name = "RealRooted.gammaUV_allComboRealRooted"
+module = "RealRooted.GammaPencil.Theorem"
 label = "Every real combination of the gamma-pencil components is real-rooted"
 
 [[theorems]]
-name = "RealRooted.Challenges.GammaTransform.gammaOperator_eq_zero_or_splits"
+name = "RealRooted.gammaOperator_splits_or_zero"
+module = "RealRooted.GammaPencil.Preserver"
 label = "The gamma-pencil operator preserves real-rootedness"
 
 [[definitions]]
@@ -171,65 +178,3 @@ The gamma transform lives in `RealRooted.GammaTransform`; the pencil lives in
 `RealRooted.gammaUV_allComboRealRooted` and `RealRooted.gammaU_strictInterl_gammaV`
 from `RealRooted.GammaPencil.Theorem`.
 -/
-
-public section
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace GammaTransform
-
-/-- **Gamma real-rootedness criterion**: for `γ` of degree at most `d / 2`,
-`γ` is real-rooted with nonpositive roots if and only if its gamma transform
-is. -/
-theorem isRealRooted_and_roots_nonpos_gammaTransform_iff {d : ℕ} {γ : ℝ[X]}
-    (hγdeg : γ.natDegree ≤ d / 2) :
-    ((γ ≠ 0 ∧ γ.Splits) ∧ ∀ r ∈ γ.roots, r ≤ 0) ↔
-      ((gammaTransform d γ ≠ 0 ∧ (gammaTransform d γ).Splits) ∧
-        ∀ r ∈ (gammaTransform d γ).roots, r ≤ 0) :=
-  ⟨fun h ↦ isRealRooted_and_hasRootsNonpos_gammaTransform_of_isRealRooted_of_hasRootsNonpos
-      hγdeg h.1.1 h.1.2 h.2,
-    fun h ↦ isRealRooted_and_hasRootsNonpos_of_isRealRooted_gammaTransform_of_natDegree_le
-      hγdeg h.1.1 h.1.2 h.2⟩
-
-/-- The gamma transform of a nonzero real-rooted polynomial with nonnegative
-coefficients is real-rooted. -/
-theorem isRealRooted_gammaTransform_of_hasNonnegCoeffs {d : ℕ} {γ : ℝ[X]}
-    (hγdeg : γ.natDegree ≤ d / 2) (hγ_ne : γ ≠ 0) (hγ_splits : γ.Splits)
-    (hγ_nonneg : HasNonnegCoeffs γ) :
-    gammaTransform d γ ≠ 0 ∧ (gammaTransform d γ).Splits :=
-  isRealRooted_gammaTransform_of_isRealRooted_of_hasNonnegCoeffs hγdeg hγ_ne hγ_splits
-    hγ_nonneg
-
-/-- **Hoster–Stump**, Proposition 2.5: gamma transforms of adjacent ambient
-degrees interlace exactly when the gamma polynomials do. -/
-theorem strictInterl_gammaTransform_succ_iff {d : ℕ} {γ δ : ℝ[X]}
-    (hγdeg : γ.natDegree ≤ d / 2) (hδdeg : δ.natDegree ≤ (d + 1) / 2)
-    (hγ_nonneg : HasNonnegCoeffs γ) (hδ_nonneg : HasNonnegCoeffs δ)
-    (hγ0 : γ.coeff 0 ≠ 0) (hδ0 : δ.coeff 0 ≠ 0) :
-    StrictInterl (gammaTransform d γ) (gammaTransform (d + 1) δ) ↔ StrictInterl γ δ :=
-  RealRooted.strictInterl_gammaTransform_succ_iff hγdeg hδdeg hγ_nonneg hδ_nonneg hγ0 hδ0
-
-/-- The rank-`n` gamma-pencil operator maps every real-rooted polynomial of
-degree at most `n / 2` to zero or a real-rooted polynomial. -/
-theorem gammaOperator_eq_zero_or_splits {n : ℕ} (hn : 2 ≤ n) {p : ℝ[X]}
-    (hdeg : p.natDegree ≤ n / 2) (hp : p.Splits) :
-    gammaOperator n p = 0 ∨ (gammaOperator n p).Splits :=
-  gammaOperator_splits_or_zero hn hdeg hp
-
-/-- Every real linear combination of the rank-`n` gamma-pencil components
-splits. -/
-theorem splits_C_mul_gammaU_add_C_mul_gammaV {n : ℕ} (hn : 2 ≤ n) (a b : ℝ) :
-    (C a * gammaU n + C b * gammaV n).Splits :=
-  gammaUV_allComboRealRooted n hn a b
-
-/-- **Gamma pencil**: the two components of the rank-`n` gamma pencil
-interlace. -/
-theorem gammaU_strictInterl_gammaV {n : ℕ} (hn : 2 ≤ n) :
-    StrictInterl (gammaU n) (gammaV n) :=
-  RealRooted.gammaU_strictInterl_gammaV n hn
-
-end GammaTransform
-end Challenges
-end RealRooted

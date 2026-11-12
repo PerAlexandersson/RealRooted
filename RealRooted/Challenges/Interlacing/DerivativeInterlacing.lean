@@ -1,13 +1,13 @@
 module
 
-public import RealRooted.Derivative.FamilyClosure
-public import RealRooted.Mathlib.Analysis.Complex.Polynomial.JensenDisks
-public import RealRooted.PolarDerivative
-import RealRooted.Derivative.Interlacing
-public import RealRooted.Derivative.RootCounting
-import RealRooted.ObreschkoffConverse.Derivative
-import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
 public import RealRooted.Basic.ProperPosition
+public import RealRooted.Derivative.FamilyClosure
+public import RealRooted.Derivative.Interlacing
+public import RealRooted.Derivative.RootCounting
+public import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
+public import RealRooted.Mathlib.Analysis.Complex.Polynomial.JensenDisks
+public import RealRooted.ObreschkoffConverse.Derivative
+public import RealRooted.PolarDerivative
 
 /-!
 # Interlacing of derivatives of real-rooted polynomials
@@ -27,12 +27,14 @@ authors = ["Rolle", "Laguerre", "Jensen", "Obreschkoff", "Fisk"]
 years = [1691, 1882, 1913, 1963, 2006]
 
 [[theorems]]
-name = "RealRooted.Challenges.DerivativeInterlacing.derivative_interlaces"
+name = "RealRooted.derivative_interlaces_of_natDegree_ne_zero"
+module = "RealRooted.Derivative.Interlacing"
 label = "The derivative of a nonconstant real-rooted polynomial interlaces it"
 headline = true
 
 [[theorems]]
-name = "RealRooted.Challenges.DerivativeInterlacing.interl_derivative"
+name = "RealRooted.Interl.derivative"
+module = "RealRooted.ObreschkoffConverse.Derivative"
 label = "Differentiation preserves interlacing, allowing zero polynomials"
 
 [[theorems]]
@@ -41,7 +43,8 @@ module = "RealRooted.Derivative.RootCounting"
 label = "Rolle's theorem for polynomials"
 
 [[theorems]]
-name = "RealRooted.Challenges.DerivativeInterlacing.splits_derivative"
+name = "Polynomial.Splits.derivative"
+module = "RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial"
 label = "The derivative of a real-rooted polynomial is real-rooted"
 
 [[theorems]]
@@ -125,30 +128,3 @@ degrees, and the preservation of interlacing under differentiation.  The
 root-list construction lives in `RealRooted.Derivative.Interlacing`; the
 preservation theorem is proved in `RealRooted.ObreschkoffConverse.Derivative`.
 -/
-
-public section
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace DerivativeInterlacing
-
-/-- **Derivative interlacing**: the derivative of a nonconstant real-rooted
-polynomial interlaces it. -/
-theorem derivative_interlaces {f : ℝ[X]} (hf : f.Splits) (hdeg : f.natDegree ≠ 0) :
-    Interlaces f.derivative f :=
-  derivative_interlaces_of_natDegree_ne_zero hf hdeg
-
-/-- The derivative of a real-rooted polynomial is real-rooted. -/
-theorem splits_derivative {p : ℝ[X]} (hp : p.Splits) : p.derivative.Splits :=
-  hp.derivative
-
-/-- Differentiation preserves zero-aware interlacing (Rolle–Obreschkoff). -/
-theorem interl_derivative {f g : ℝ[X]} (h : Interl f g) :
-    Interl f.derivative g.derivative :=
-  derivativePreservesInterl h
-
-end DerivativeInterlacing
-end Challenges
-end RealRooted

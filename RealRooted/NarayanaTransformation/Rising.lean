@@ -63,3 +63,15 @@ theorem generalizedRisingFactorialPreservesPF :
 
 
 end RealRooted
+
+open Polynomial
+
+namespace RealRooted
+
+/-- For `μ > 0`, the generalized rising-factorial transform preserves PF polynomials. -/
+theorem IsPFPolynomial.basisTransform_risingFactorial {μ : ℝ} (hμ : 0 < μ) {p : ℝ[X]}
+    (hp : IsPFPolynomial p) :
+    IsPFPolynomial (basisTransform (risingFactorialPolynomial μ) p) :=
+  generalizedRisingFactorialPreservesPF hμ hp
+
+end RealRooted

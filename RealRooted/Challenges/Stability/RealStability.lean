@@ -1,30 +1,34 @@
 module
 
 public import RealRooted.AffineLineRestriction
+public import RealRooted.BoundarySpecializationGeneral
 public import RealRooted.DeterminantalStability
-import RealRooted.HomogeneousComponentStability
-import RealRooted.Hyperbolicity
-import RealRooted.Hyperbolicity.SignFree
-import RealRooted.BoundarySpecializationGeneral
-import RealRooted.HomogeneousStability
+public import RealRooted.HomogeneousComponentStability
+public import RealRooted.HomogeneousStability
+public import RealRooted.Hyperbolicity
+public import RealRooted.Hyperbolicity.SignFree
 public import RealRooted.HyperbolicityCone
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
+public import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatrixTree
+public import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
+public import RealRooted.Multiaffine
+public import RealRooted.Multiaffine.AffineCoordinateCriterion
+public import RealRooted.Multiaffine.AffineLineRestriction
+public import RealRooted.Multiaffine.CoordinateWronskian
+public import RealRooted.Multiaffine.Rayleigh
+public import RealRooted.Multiaffine.Reciprocal
+public import RealRooted.MultivariateStability
+public import RealRooted.MultivariateStability.ExpectedCharpoly
 public import RealRooted.MultivariateStability.Inversion
 public import RealRooted.MultivariateStability.JumpSystem
 public import RealRooted.MultivariateStability.Lorentzian
-public import RealRooted.MultivariateStability.MixedCharacteristic
-public import RealRooted.MultivariateStability.ExpectedCharpoly
 public import RealRooted.MultivariateStability.MSSBound
+public import RealRooted.MultivariateStability.MixedCharacteristic
 public import RealRooted.MultivariateStability.NegativeCorrelation
-import RealRooted.MultivariateStability.RayleighConverse
-import RealRooted.MultivariateStability.SamePhase
-public import RealRooted.SpanningTreeStability
+public import RealRooted.MultivariateStability.RayleighConverse
+public import RealRooted.MultivariateStability.SamePhase
 public import RealRooted.SamePhaseStability
-public import RealRooted.Multiaffine.Rayleigh
-import RealRooted.Multiaffine.AffineCoordinateCriterion
-import RealRooted.Multiaffine.CoordinateWronskian
-import RealRooted.Multiaffine.Reciprocal
-public import RealRooted.Mathlib.Algebra.MvPolynomial.Homogenize
-public import RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic
+public import RealRooted.SpanningTreeStability
 
 /-!
 # Real stability challenge entry point
@@ -99,7 +103,8 @@ module = "RealRooted.HomogeneousStability"
 label = "Common-rotation stability"
 
 [[theorems]]
-name = "RealRooted.Challenges.RealStability.mvRealStable_iff_isRayleigh"
+name = "RealRooted.MvPolynomial.IsMultiaffine.mvRealStable_iff_isRayleigh_and_ne_zero"
+module = "RealRooted.MultivariateStability.RayleighConverse"
 label = "A multiaffine polynomial is real stable iff it is Rayleigh"
 headline = true
 
@@ -109,11 +114,13 @@ module = "RealRooted.MultivariateStability.NegativeCorrelation"
 label = "Strongly Rayleigh measures are negatively correlated"
 
 [[theorems]]
-name = "RealRooted.Challenges.RealStability.detPencil_eq_zero_or_stable"
+name = "RealRooted.mvUpperHalfPlaneStableOrZero_detPencil"
+module = "RealRooted.DeterminantalStability"
 label = "Determinantal pencils are stable or zero"
 
 [[theorems]]
-name = "RealRooted.Challenges.RealStability.mvRealStable_iff_forall_hyperbolicAt"
+name = "RealRooted.MvPolynomial.IsHomogeneous.mvRealStable_iff_forall_hyperbolicAt_pos"
+module = "RealRooted.Hyperbolicity"
 label = "A homogeneous polynomial is real stable iff it is hyperbolic in every positive direction"
 
 [[theorems]]
@@ -137,27 +144,33 @@ module = "RealRooted.Mathlib.Combinatorics.SimpleGraph.MatrixTree"
 label = "Kirchhoff's weighted matrix-tree theorem"
 
 [[theorems]]
-name = "RealRooted.Challenges.RealStability.mvRealStable_ordinaryHomogenization"
+name = "RealRooted.MvRealStable.ordinaryHomogenization"
+module = "RealRooted.Hyperbolicity"
 label = "Homogenization preserves real stability"
 
 [[theorems]]
-name = "RealRooted.Challenges.RealStability.mvRealStable_homogeneousComponent_totalDegree"
+name = "RealRooted.MvRealStable.homogeneousComponent_totalDegree_of_hasNonnegCoeffs"
+module = "RealRooted.HomogeneousComponentStability"
 label = "The top homogeneous component of a real stable polynomial is real stable"
 
 [[theorems]]
-name = "RealRooted.Challenges.RealStability.samePhaseStable"
+name = "RealRooted.MvRealStable.samePhaseStable"
+module = "RealRooted.MultivariateStability.SamePhase"
 label = "Real stable polynomials are same-phase stable"
 
 [[theorems]]
-name = "RealRooted.Challenges.RealStability.isUpperHalfPlaneStable_reflect_comp_neg_X"
+name = "RealRooted.IsUpperHalfPlaneStable.reflect_comp_neg_X"
+module = "RealRooted.MultivariateStability.Inversion"
 label = "Inversion preserves stability of univariate polynomials"
 
 [[theorems]]
-name = "RealRooted.Challenges.RealStability.mvUpperHalfPlaneStable_invertVariable"
+name = "RealRooted.MvUpperHalfPlaneStable.invertVariable"
+module = "RealRooted.MultivariateStability.Inversion"
 label = "Inversion in one variable preserves stability"
 
 [[theorems]]
-name = "RealRooted.Challenges.RealStability.mvRealStable_invertVariable"
+name = "RealRooted.MvRealStable.invertVariable"
+module = "RealRooted.MultivariateStability.Inversion"
 label = "Inversion in one variable preserves real stability"
 
 [[theorems]]
@@ -431,79 +444,3 @@ stability, hyperbolicity of homogeneous real stable polynomials, the
 homogenization, top-component and same-phase consequences, and inversion in
 one variable.
 -/
-
-public section
-
-open Polynomial
-open scoped ComplexOrder
-
-namespace RealRooted
-namespace Challenges
-namespace RealStability
-
-/-- **Brändén's Rayleigh criterion**: a multiaffine real polynomial is real
-stable if and only if it is nonzero and Rayleigh. -/
-theorem mvRealStable_iff_isRayleigh {σ : Type*} {P : MvPolynomial σ ℝ}
-    (hma : P.IsMultiaffine) :
-    MvRealStable P ↔ P.IsRayleigh ∧ P ≠ 0 :=
-  MvPolynomial.IsMultiaffine.mvRealStable_iff_isRayleigh_and_ne_zero hma
-
-/-- **Borcea–Brändén determinantal stability**: for Hermitian `A` and positive
-semidefinite `B k`, the pencil determinant `det (A + ∑ k, z k • B k)` is zero
-or stable. -/
-theorem detPencil_eq_zero_or_stable {m σ : Type*} [Fintype m] [DecidableEq m]
-    [Fintype σ] (A : Matrix m m ℂ) (B : σ → Matrix m m ℂ) (hA : A.IsHermitian)
-    (hB : ∀ k, (B k).PosSemidef) :
-    detPencil A B = 0 ∨ MvUpperHalfPlaneStable (detPencil A B) :=
-  mvUpperHalfPlaneStableOrZero_detPencil A B hA hB
-
-/-- A homogeneous real polynomial is real stable exactly when it is hyperbolic
-in every strictly positive direction. -/
-theorem mvRealStable_iff_forall_hyperbolicAt {σ : Type*} {P : MvPolynomial σ ℝ} {d : ℕ}
-    (hhom : P.IsHomogeneous d) :
-    MvRealStable P ↔ ∀ e : σ → ℝ, (∀ i, 0 < e i) → P.HyperbolicAt e :=
-  MvPolynomial.IsHomogeneous.mvRealStable_iff_forall_hyperbolicAt_pos hhom
-
-/-- The total-degree homogenization of a nonzero real stable polynomial with
-nonnegative coefficients is real stable. -/
-theorem mvRealStable_ordinaryHomogenization {σ : Type*} {P : MvPolynomial σ ℝ}
-    (hst : MvRealStable P) (hnn : MvPolynomial.HasNonnegCoeffs P) (hP : P ≠ 0) :
-    MvRealStable (MvPolynomial.ordinaryHomogenization P P.totalDegree) :=
-  hst.ordinaryHomogenization hnn hP
-
-/-- The top homogeneous component of a nonzero real stable polynomial with
-nonnegative coefficients is real stable. -/
-theorem mvRealStable_homogeneousComponent_totalDegree {σ : Type*}
-    {P : MvPolynomial σ ℝ} (hst : MvRealStable P) (hnn : MvPolynomial.HasNonnegCoeffs P)
-    (hP : P ≠ 0) :
-    MvRealStable (MvPolynomial.homogeneousComponent P.totalDegree P) :=
-  hst.homogeneousComponent_totalDegree_of_hasNonnegCoeffs hnn hP
-
-/-- Every real stable polynomial is same-phase stable. -/
-theorem samePhaseStable {σ : Type*} {P : MvPolynomial σ ℝ} (hP : MvRealStable P) :
-    SamePhaseStable P :=
-  hP.samePhaseStable
-
-/-- Inversion `p(z) ↦ z^d p(-1/z)` preserves upper-half-plane stability when
-`p` has degree at most `d`. -/
-theorem isUpperHalfPlaneStable_reflect_comp_neg_X {p : ℂ[X]} {d : ℕ} (hd : p.natDegree ≤ d)
-    (hp : IsUpperHalfPlaneStable p) :
-    IsUpperHalfPlaneStable (reflect d (p.comp (-X))) :=
-  hp.reflect_comp_neg_X hd
-
-/-- Inversion `P ↦ z^d P(-1/z, …)` in the variable `none` preserves stability
-when `P` has degree at most `d` in that variable. -/
-theorem mvUpperHalfPlaneStable_invertVariable {τ : Type*} {P : MvPolynomial (Option τ) ℂ}
-    {d : ℕ} (hd : P.degreeOf none ≤ d) (hP : MvUpperHalfPlaneStable P) :
-    MvUpperHalfPlaneStable (invertVariable d P) :=
-  hP.invertVariable hd
-
-/-- Inversion in the variable `none` preserves real stability. -/
-theorem mvRealStable_invertVariable {τ : Type*} {P : MvPolynomial (Option τ) ℝ} {d : ℕ}
-    (hd : P.degreeOf none ≤ d) (hP : MvRealStable P) :
-    MvRealStable (invertVariable d P) :=
-  hP.invertVariable hd
-
-end RealStability
-end Challenges
-end RealRooted

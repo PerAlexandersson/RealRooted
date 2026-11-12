@@ -579,7 +579,7 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_eq_zero
       · rcases List.mem_map.mp (by simpa [refs] using hp) with ⟨q, hq, rfl⟩
         have hqdeg : q.natDegree ≤ n + 1 := (houtdeg q hq).trans (by lia)
         have hpf : IsPFPolynomial (q.reflect (n + 1)) :=
-          reciprocalShift_preserves_pf (D := n + 1) (p := q)
+          RealRooted.IsPFPolynomial.reciprocalShift (D := n + 1) (p := q)
             (houtpf q hq) hqdeg
         exact ⟨hp_ne, (hpf.ne_zero_and_splits hp_ne).2⟩
 
@@ -693,7 +693,7 @@ private theorem interl_get_reflectedReverse {n : ℕ} {out : List ℝ[X]}
         simpa [refs] using List.get_mem refs a
       rcases List.mem_map.mp ha_out with ⟨r, hr, hr_eq⟩
       rw [← hr_eq]
-      have hpf := reciprocalShift_preserves_pf (hout_pf r hr) (hout_deg r hr)
+      have hpf := RealRooted.IsPFPolynomial.reciprocalShift (hout_pf r hr) (hout_deg r hr)
       exact StrictInterl.refl
         (fun hz => (hout_ne r hr) (reflect_eq_zero_iff.mp hz))
         (hpf.ne_zero_and_splits
@@ -815,7 +815,7 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_ne_zero
     rcases List.mem_append.mp hp with hp | hp
     · exact ⟨hp_ne, (hout_pf p hp).ne_zero_and_splits hp_ne |>.2⟩
     · rcases List.mem_map.mp (by simpa [refs] using hp) with ⟨q, hq, rfl⟩
-      have hpf := reciprocalShift_preserves_pf (hout_pf q hq) (hout_deg q hq)
+      have hpf := RealRooted.IsPFPolynomial.reciprocalShift (hout_pf q hq) (hout_deg q hq)
       exact ⟨hp_ne, (hpf.ne_zero_and_splits hp_ne).2⟩
 
 /-- Branden--Vecchi, Theorem 4.13: the Chow row transform preserves reflection

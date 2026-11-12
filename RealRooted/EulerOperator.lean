@@ -29,7 +29,7 @@ Eulerian-row arguments:
 The coefficient, nonnegative-coefficient, PF-preservation, and interlacing
 preservation lemmas below reduce to the existing derivative/PF API.  The
 bounded-degree polar-theta interlacing theorem is
-`polarTheta_preserves_interl` in `RealRooted.EulerOperator.Polar.ProperPosition`.
+`Interl.polarTheta` in `EulerOperator.Polar.ProperPosition`.
 -/
 
 /-- Euler operator `theta = X d/dX`. -/
@@ -189,7 +189,7 @@ theorem thetaPreservesRealRootedOrZero {p : ℝ[X]} (hp : IsPFPolynomial p) :
 from the derivative preservation theorem and multiplication by `X`. -/
 theorem Interl.theta {p q : ℝ[X]} (hpq : Interl p q) :
     Interl (theta p) (theta q) := by
-  simpa [RealRooted.theta] using (derivativePreservesInterl hpq).mul_X_both
+  simpa [RealRooted.theta] using (Interl.derivative hpq).mul_X_both
 
 /-- `theta + 1` preserves the polynomial PF cone. -/
 theorem thetaPlusOne_preserves_pf {p : ℝ[X]} (hp : IsPFPolynomial p) :
@@ -201,7 +201,7 @@ from the derivative preservation theorem. -/
 theorem Interl.thetaPlusOne {p q : ℝ[X]} (hpq : Interl p q) :
     Interl (thetaPlusOne p) (thetaPlusOne q) := by
   simpa [thetaPlusOne_eq_derivative_X_mul] using
-    derivativePreservesInterl hpq.mul_X_both
+    Interl.derivative hpq.mul_X_both
 
 /-- A PF polynomial need not interlace its iterates under `theta + 1`: for
 `p = (X + 2) (X + 3)`, `(theta + 1)^2 p = 9X² + 20X + 6` has both roots in `(-2, 0)`, to the
@@ -289,7 +289,7 @@ theorem polarTheta_preserves_pf {N : ℕ} {p : ℝ[X]}
     IsPFPolynomial (polarTheta N p) := by
   rw [polarTheta_eq_reciprocalShift_derivative_reciprocalShift N p hdeg]
   have hshift : IsPFPolynomial (reciprocalShift N p) :=
-    reciprocalShift_preserves_pf hp hdeg
+    IsPFPolynomial.reciprocalShift hp hdeg
   have hdeg_shift : (reciprocalShift N p).natDegree ≤ N := by
     unfold reciprocalShift
     exact (Polynomial.natDegree_reflect_le (N := N) (p := p)).trans
@@ -297,7 +297,7 @@ theorem polarTheta_preserves_pf {N : ℕ} {p : ℝ[X]}
   have hder_deg : (reciprocalShift N p).derivative.natDegree ≤ N - 1 := by
     rw [(reciprocalShift N p).natDegree_derivative]
     exact Nat.sub_le_sub_right hdeg_shift 1
-  exact reciprocalShift_preserves_pf hshift.derivative hder_deg
+  exact IsPFPolynomial.reciprocalShift hshift.derivative hder_deg
 
 /-- The composite `(N - theta) (theta + 1)` preserves the polynomial PF cone
 under the original polynomial's degree bound. -/

@@ -1,9 +1,9 @@
 module
 
-import RealRooted.Favard
+public import RealRooted.Basic.ProperPosition
+public import RealRooted.Favard
 public import RealRooted.Favard.Orthogonality
 public import RealRooted.Favard.Recurrence
-public import RealRooted.Basic.ProperPosition
 
 /-!
 # Favard recurrences: real roots, interlacing and orthogonality
@@ -36,12 +36,14 @@ module = "RealRooted.Favard.Orthogonality"
 label = "The pairing ⟨p, q⟩ = L(pq)"
 
 [[theorems]]
-name = "RealRooted.Challenges.Favard.SatisfiesFavardRecurrence.strictInterl_succ"
+name = "RealRooted.favardInterlacing"
+module = "RealRooted.Favard"
 label = "For positive β, consecutive Favard polynomials interlace"
 symcat = "favardInterlacing"
 
 [[theorems]]
-name = "RealRooted.Challenges.Favard.SatisfiesFavardRecurrence.ne_zero_and_splits"
+name = "RealRooted.isRealRooted_of_favard"
+module = "RealRooted.Favard"
 label = "For positive β, Favard polynomials are nonzero and real-rooted"
 
 [[theorems]]
@@ -106,28 +108,3 @@ ring-generic normalized functional and orthogonality theory live in
 `RealRooted.Favard.Orthogonality`; concrete integral realizations remain in
 analytic classical-family child modules.
 -/
-
-public section
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace Favard
-
-/-- Favard recurrence coefficients force consecutive interlacing. -/
-theorem SatisfiesFavardRecurrence.strictInterl_succ {P : ℕ → ℝ[X]} {α β : ℕ → ℝ}
-    (hrec : SatisfiesFavardRecurrence P α β) (hβ : ∀ n, 0 < β (n + 1)) (n : ℕ) :
-    StrictInterl (P n) (P (n + 1)) :=
-  RealRooted.favardInterlacing hrec hβ n
-
-/-- Favard recurrence coefficients force real-rootedness of every polynomial
-in the sequence. -/
-theorem SatisfiesFavardRecurrence.ne_zero_and_splits {P : ℕ → ℝ[X]} {α β : ℕ → ℝ}
-    (hrec : SatisfiesFavardRecurrence P α β) (hβ : ∀ n, 0 < β (n + 1)) (n : ℕ) :
-    P n ≠ 0 ∧ (P n).Splits :=
-  RealRooted.isRealRooted_of_favard hrec hβ n
-
-end Favard
-end Challenges
-end RealRooted

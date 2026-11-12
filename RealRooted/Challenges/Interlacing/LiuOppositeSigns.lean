@@ -1,8 +1,10 @@
 module
 
-import RealRooted.LiuOppositeSigns.CompatibilityCriterion
-import RealRooted.LiuOppositeSigns.RootCountBranches.Interfaces
+public import RealRooted.LiuOppositeSigns
+public import RealRooted.LiuOppositeSigns.CompatibilityCriterion
+public import RealRooted.LiuOppositeSigns.RootCount
 public import RealRooted.LiuOppositeSigns.RootCountBranches.CommonRootDeletion
+public import RealRooted.LiuOppositeSigns.RootCountBranches.Interfaces
 
 /-!
 # Liu's opposite-sign compatibility theorem
@@ -50,24 +52,24 @@ module = "RealRooted.LiuOppositeSigns.RootCountBranches.CommonRootDeletion"
 label = "Common root with compatible cofactors"
 
 [[theorems]]
-name = "RealRooted.Challenges.LiuOppositeSigns.compatible_iff_rootCount"
-module = "RealRooted.Challenges.Interlacing.LiuOppositeSigns"
+name = "RealRooted.LiuOppositeSigns.compatible_iff_rootCountBranchesWithCommon"
+module = "RealRooted.LiuOppositeSigns.CompatibilityCriterion"
 label = "Compatibility with opposite leading signs (corrected)"
 headline = true
 
 [[theorems]]
-name = "RealRooted.Challenges.LiuOppositeSigns.compatible_iff_rootCount_of_noCommonRoots"
-module = "RealRooted.Challenges.Interlacing.LiuOppositeSigns"
+name = "RealRooted.LiuOppositeSigns.compatible_iff_rootCountBranches_of_noCommonRoots"
+module = "RealRooted.LiuOppositeSigns.CompatibilityCriterion"
 label = "Compatibility for pairs without common roots"
 
 [[theorems]]
-name = "RealRooted.Challenges.LiuOppositeSigns.rootCountBranches_forward_fails_with_commonRoots"
-module = "RealRooted.Challenges.Interlacing.LiuOppositeSigns"
+name = "RealRooted.LiuOppositeSigns.not_forall_rootCountBranches_of_compatible"
+module = "RealRooted.LiuOppositeSigns.RootCountBranches.Interfaces"
 label = "Without the common-root branch the statement fails"
 
 [[theorems]]
-name = "RealRooted.Challenges.LiuOppositeSigns.natDegree_diff_le_two"
-module = "RealRooted.Challenges.Interlacing.LiuOppositeSigns"
+name = "RealRooted.LiuOppositeSigns.natDegree_abs_sub_le_two_of_compatible"
+module = "RealRooted.LiuOppositeSigns.CompatibilityCriterion"
 label = "Degrees of compatible pairs differ by at most two"
 -->
 
@@ -125,51 +127,3 @@ This module is a catalog facade.  The proofs live in
 `RealRooted.LiuOppositeSigns.CompatibilityCriterion` and
 `RealRooted.LiuOppositeSigns.RootCountBranches.Interfaces`.
 -/
-
-public section
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace LiuOppositeSigns
-
-open RealRooted.LiuOppositeSigns
-
-/-- Nonconstant real-rooted polynomials with opposite leading signs are compatible
-if and only if, after deleting the larger largest root, the root counts differ by
-at most one everywhere, or the two polynomials share a root with compatible
-cofactors. -/
-theorem compatible_iff_rootCount {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g) (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0) :
-    Compatible f g ↔
-      (∃ r s, LeftRootCountBranch f g r s ∨ RightRootCountBranch f g r s) ∨
-        CommonRootDeletionCompatibleBranch f g :=
-  compatible_iff_rootCountBranchesWithCommon hf hg hsgn hf_deg hg_deg
-
-/-- Without common roots, compatibility is the root-count condition alone. -/
-theorem compatible_iff_rootCount_of_noCommonRoots {f g : ℝ[X]} (hf : f.Splits)
-    (hg : g.Splits) (hsgn : OppositeLeadingSigns f g) (hno : NoCommonRoots f g)
-    (hf_deg : f.natDegree ≠ 0) (hg_deg : g.natDegree ≠ 0) :
-    Compatible f g ↔
-      ∃ r s, LeftRootCountBranch f g r s ∨ RightRootCountBranch f g r s :=
-  compatible_iff_rootCountBranches_of_noCommonRoots hf hg hsgn hno hf_deg hg_deg
-
-/-- Without the common-root branch, the forward direction fails (for `X` and
-`-X ^ 2`). -/
-theorem rootCountBranches_forward_fails_with_commonRoots :
-    ¬ ∀ {f g : ℝ[X]}, f.Splits → g.Splits → OppositeLeadingSigns f g →
-      f.natDegree ≠ 0 → g.natDegree ≠ 0 → Compatible f g →
-        ∃ r s, LeftRootCountBranch f g r s ∨ RightRootCountBranch f g r s :=
-  not_forall_rootCountBranches_of_compatible
-
-/-- Compatible real-rooted polynomials with opposite leading signs have degrees
-differing by at most two. -/
-theorem natDegree_diff_le_two {f g : ℝ[X]} (hf : f.Splits) (hg : g.Splits)
-    (hsgn : OppositeLeadingSigns f g) (hcompat : Compatible f g) :
-    |((f.natDegree : ℤ) - (g.natDegree : ℤ))| ≤ 2 :=
-  natDegree_abs_sub_le_two_of_compatible hf hg hsgn hcompat
-
-end LiuOppositeSigns
-end Challenges
-end RealRooted

@@ -34,10 +34,10 @@ theorem isOrderedPF_pair_iff (p q : ℝ[X]) :
 
 /-- A two-by-two operator matrix preserves ordered PF vectors exactly when its four entries
 preserve ordered PF pairs. -/
-theorem preservesOrderedPF_two_two_iff
+theorem PreservesOrderedPF.two_two_iff
     (M : Matrix (Fin 2) (Fin 2) (Module.End ℝ ℝ[X])) :
     PreservesOrderedPF M ↔ PreservesOrderedPFPair (M 0 0) (M 0 1) (M 1 0) (M 1 1) := by
-  rw [preservesOrderedPF_iff_preservesBlock_of_two_le M (by decide) (by decide)]
+  rw [PreservesOrderedPF.iff_forall_blocks_of_two_le M (by decide) (by decide)]
   constructor
   · intro h
     exact h 0 1 0 1 (by decide) (by decide)

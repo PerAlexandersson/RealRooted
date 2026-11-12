@@ -388,3 +388,14 @@ theorem risingFactorialStep_pf_shiftStrictInterl
   exact ⟨hgpf, strictInterl_comp_X_add_C_of_two_interlacings hμ hfg hfμg (by lia)⟩
 
 end RealRooted
+
+open Polynomial
+
+namespace RealRooted
+
+/-- The Touchard transform `x ^ n ↦ touchard n` preserves PF polynomials. -/
+theorem IsPFPolynomial.basisTransform_touchard {p : ℝ[X]} (hp : IsPFPolynomial p) :
+    IsPFPolynomial (basisTransform touchard p) :=
+  touchardTransformPreservesPF hp
+
+end RealRooted

@@ -246,7 +246,7 @@ def PreservesAffineRealRooted (c : ℝ) (f : ℝ[X]) : Prop :=
 
 /-- Exact affine-test classification for a single linear factor: the factor
 `X - r` passes every affine input exactly when `c * r ≤ 0`. -/
-theorem preservesAffineRealRooted_linear_iff (c r : ℝ) :
+theorem PreservesAffineRealRooted.linear_iff (c r : ℝ) :
     PreservesAffineRealRooted c (X - C r) ↔ c * r ≤ 0 := by
   constructor
   · intro hpres
@@ -499,7 +499,7 @@ theorem not_preservesPF_affine_of_neg {c b : ℝ} (hc : c < 0) (hb : 0 < b)
 
 /-- Exact negative-parameter PF classification: only nonnegative constants
 can be fixed left factors preserving every finite PF polynomial. -/
-theorem preservesPF_of_neg_iff {c : ℝ} (hc : c < 0) (f : ℝ[X]) :
+theorem PreservesPF.iff_of_neg {c : ℝ} (hc : c < 0) (f : ℝ[X]) :
     PreservesPF c f ↔ ∃ a : ℝ, 0 ≤ a ∧ f = C a := by
   constructor
   · intro hpres
@@ -548,7 +548,7 @@ theorem preservesPF_of_neg_iff {c : ℝ} (hc : c < 0) (f : ℝ[X]) :
 
 /-- At the boundary parameter `c = 0`, fixed left multiplication preserves
 real-rootedness exactly when its nonzero factor splits. -/
-theorem preservesRealRootedOrZero_zero_iff {f : ℝ[X]} (hf : f ≠ 0) :
+theorem _root_.RealRooted.PreservesRealRootedOrZero.poissonStar_zero_iff {f : ℝ[X]} (hf : f ≠ 0) :
     PreservesRealRootedOrZero (starCLinearMap 0 f) ↔ f.Splits := by
   constructor
   · intro hpres
@@ -563,7 +563,7 @@ theorem preservesRealRootedOrZero_zero_iff {f : ℝ[X]} (hf : f ≠ 0) :
 
 /-- At `c = 0`, the exact PF-preserver condition is that the fixed factor is
 itself PF. -/
-theorem preservesPF_zero_iff (f : ℝ[X]) :
+theorem PreservesPF.zero_iff (f : ℝ[X]) :
     PreservesPF 0 f ↔ IsPFPolynomial f := by
   constructor
   · exact isPFPolynomial_of_preservesPF

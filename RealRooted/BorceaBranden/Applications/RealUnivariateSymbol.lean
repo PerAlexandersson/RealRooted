@@ -211,7 +211,7 @@ theorem finiteSymbolTheorem :
     simpa using hstable
 
 /-- Direct application form of `finiteSymbolTheorem`. -/
-theorem finiteSymbol_preservesRealRootedUpTo
+theorem PreservesRealRootedUpTo.of_finiteSymbol
     {d : ℕ} {T : ℝ[X] →ₗ[ℝ] ℝ[X]}
     (hSymbol : MvUpperHalfPlaneStable
       (complexifyMv

@@ -23,24 +23,24 @@ namespace RealRooted
 
 /-- The polar-theta operator preserves weak interlacing on the bounded
 degree PF cone. -/
-theorem polarTheta_preserves_interl {N : ℕ} {p q : ℝ[X]}
+theorem Interl.polarTheta {N : ℕ} {p q : ℝ[X]}
     (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpd : p.natDegree ≤ N) (hqd : q.natDegree ≤ N) (hpq : Interl p q) :
     Interl (polarTheta N p) (polarTheta N q) := by
   rcases hpq with hpzero | hqzero | hpq
   · left
     rw [hpzero]
-    simp [polarTheta, theta]
+    simp [RealRooted.polarTheta, RealRooted.theta]
   · right
     left
     rw [hqzero]
-    simp [polarTheta, theta]
+    simp [RealRooted.polarTheta, RealRooted.theta]
   · have hstep₁ : StrictInterl (reciprocalShift N q) (reciprocalShift N p) :=
       reciprocalShift_reverses_strictInterl hp hq hpd hqd hpq
     have hsp : IsPFPolynomial (reciprocalShift N p) :=
-      reciprocalShift_preserves_pf hp hpd
+      IsPFPolynomial.reciprocalShift hp hpd
     have hsq : IsPFPolynomial (reciprocalShift N q) :=
-      reciprocalShift_preserves_pf hq hqd
+      IsPFPolynomial.reciprocalShift hq hqd
     have hspd : (reciprocalShift N p).natDegree ≤ N := by
       unfold reciprocalShift
       exact (Polynomial.natDegree_reflect_le).trans (max_le le_rfl hpd)
@@ -48,7 +48,7 @@ theorem polarTheta_preserves_interl {N : ℕ} {p q : ℝ[X]}
       unfold reciprocalShift
       exact (Polynomial.natDegree_reflect_le).trans (max_le le_rfl hqd)
     have hstep₂ : Interl (reciprocalShift N q).derivative (reciprocalShift N p).derivative :=
-      derivativePreservesInterl hstep₁.toInterl
+      Interl.derivative hstep₁.toInterl
     have hdq : IsPFPolynomial (reciprocalShift N q).derivative := hsq.derivative
     have hdp : IsPFPolynomial (reciprocalShift N p).derivative := hsp.derivative
     have hdqd : (reciprocalShift N q).derivative.natDegree ≤ N - 1 :=
@@ -71,3 +71,7 @@ theorem polarTheta_preserves_interl {N : ℕ} {p q : ℝ[X]}
       exact hstep₃.toInterl
 
 end RealRooted
+
+@[deprecated (since := "2026-11-12")]
+alias RealRooted.polarTheta_preserves_interl :=
+  RealRooted.Interl.polarTheta

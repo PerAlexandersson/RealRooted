@@ -1,14 +1,14 @@
 module
 
 public import RealRooted.Apolarity
-import RealRooted.BorceaBranden.Applications.PolarizationIff
+public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
+public import RealRooted.BorceaBranden.Applications.PolarizationIff
 public import RealRooted.GraceHalfPlane
 public import RealRooted.GraceWalshSzego
-import RealRooted.LiebSokal
-public import RealRooted.Polarization
-public import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
+public import RealRooted.LiebSokal
+public import RealRooted.LiebSokalGeneral
 public import RealRooted.LiebSokalOperator
-import RealRooted.LiebSokalGeneral
+public import RealRooted.Polarization
 
 /-!
 # Grace's apolarity theorem
@@ -68,12 +68,13 @@ label = "Grace's apolarity theorem for closed disks"
 headline = true
 
 [[theorems]]
-name = "RealRooted.Challenges.GraceApolarity.mvUpperHalfPlaneStable_polarization"
+name = "RealRooted.mvUpperHalfPlaneStable_polarization"
+module = "RealRooted.Polarization"
 label = "Polarization preserves stability"
 
 [[theorems]]
-name = """RealRooted.Challenges.GraceApolarity.\
-mvUpperHalfPlaneStable_iff_eval_diagonalProjection_ne_zero"""
+name = "RealRooted.mvUpperHalfPlaneStable_iff_eval_diagonalProjection_ne_zero"
+module = "RealRooted.Polarization"
 label = "Grace–Walsh–Szegő: a symmetric multiaffine polynomial is stable iff its diagonal is"
 
 [[theorems]]
@@ -107,15 +108,18 @@ module = "RealRooted.GraceWalshSzego"
 label = "Coincidence theorem for the closed exterior of a disk"
 
 [[theorems]]
-name = "RealRooted.Challenges.GraceApolarity.mvRealStable_iff_aeval_X_ne_zero_and_splits"
+name = "RealRooted.mvRealStable_iff_aeval_X_ne_zero_and_splits"
+module = "RealRooted.BorceaBranden.Applications.PolarizationIff"
 label = "Grace–Walsh–Szegő, real form: real stable iff the diagonal is real-rooted"
 
 [[theorems]]
-name = "RealRooted.Challenges.GraceApolarity.polarization_diagonalProjection"
+name = "RealRooted.polarization_diagonalProjection"
+module = "RealRooted.Polarization"
 label = "A symmetric multiaffine polynomial is the polarization of its diagonal"
 
 [[theorems]]
 name = "RealRooted.GraceApolarity.polarization_stable_iff"
+module = "RealRooted.BorceaBranden.Applications.PolarizationIff"
 label = "Blockwise polarization preserves and reflects stability"
 
 [[theorems]]
@@ -124,7 +128,8 @@ module = "RealRooted.GraceHalfPlane"
 label = "Grace's apolarity theorem for closed half-planes"
 
 [[theorems]]
-name = "RealRooted.Challenges.GraceApolarity.applyNegDifferential_eq_zero_or_stable"
+name = "RealRooted.MvUpperHalfPlaneStable.liebSokal_multiaffine"
+module = "RealRooted.LiebSokal"
 label = "Lieb–Sokal theorem for multiaffine polynomials"
 
 [[theorems]]
@@ -221,61 +226,3 @@ multiaffine and general Lieb–Sokal theorems. The proofs live in `RealRooted.Ap
 `RealRooted.BorceaBranden.Applications.PolarizationIff` and
 `RealRooted.LiebSokal`.
 -/
-
-public section
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace GraceApolarity
-
-/-- **Polarization preserves stability**: the degree-`n` polarization of a
-polynomial of degree at most `n` without zeros in the open upper half-plane
-is stable. -/
-theorem mvUpperHalfPlaneStable_polarization {n : ℕ} {p : ℂ[X]} (hdeg : p.natDegree ≤ n)
-    (hstable : ∀ w : ℂ, 0 < w.im → p.eval w ≠ 0) :
-    MvUpperHalfPlaneStable (polarization n p) :=
-  RealRooted.mvUpperHalfPlaneStable_polarization hdeg hstable
-
-/-- A symmetric multiaffine polynomial is the polarization of its diagonal. -/
-theorem polarization_diagonalProjection {n : ℕ} {P : MvPolynomial (Fin n) ℂ}
-    (hsym : P.IsSymmetric) (hma : MvPolynomial.IsMultiaffine P) :
-    polarization n (diagonalProjection n P) = P :=
-  RealRooted.polarization_diagonalProjection hsym hma
-
-/-- **Grace–Walsh–Szegő**: a symmetric multiaffine polynomial is stable if and
-only if its diagonal has no zeros in the open upper half-plane. -/
-theorem mvUpperHalfPlaneStable_iff_eval_diagonalProjection_ne_zero {n : ℕ}
-    {P : MvPolynomial (Fin n) ℂ} (hsym : P.IsSymmetric) (hma : MvPolynomial.IsMultiaffine P) :
-    MvUpperHalfPlaneStable P ↔ ∀ w : ℂ, 0 < w.im → (diagonalProjection n P).eval w ≠ 0 :=
-  RealRooted.mvUpperHalfPlaneStable_iff_eval_diagonalProjection_ne_zero hsym hma
-
-/-- **Grace–Walsh–Szegő**, real form: a real symmetric multiaffine polynomial
-is real stable if and only if its diagonal is nonzero and splits over `ℝ`. -/
-theorem mvRealStable_iff_aeval_X_ne_zero_and_splits {n : ℕ} {P : MvPolynomial (Fin n) ℝ}
-    (hsym : P.IsSymmetric) (hma : MvPolynomial.IsMultiaffine P) :
-    MvRealStable P ↔
-      MvPolynomial.aeval (fun _ => (X : ℝ[X])) P ≠ 0 ∧
-        (MvPolynomial.aeval (fun _ => (X : ℝ[X])) P).Splits :=
-  RealRooted.mvRealStable_iff_aeval_X_ne_zero_and_splits hsym hma
-
-/-- Blockwise polarization in the degree box `κ` preserves and reflects
-stability. -/
-theorem _root_.RealRooted.GraceApolarity.polarization_stable_iff {σ : Type*}
-    [Fintype σ] (κ : σ → ℕ) (p : MvPolynomial.degreeOfLE σ ℂ κ) :
-    MvUpperHalfPlaneStable (BorceaBranden.blockwisePolarizationDegreeBoxGeneral κ p).1 ↔
-      MvUpperHalfPlaneStable p.1 :=
-  BorceaBranden.blockwisePolarization_stable_iff κ p
-
-/-- **Lieb–Sokal**, multiaffine case: for stable multiaffine `F` and `G`, the
-polynomial `F(-∂) G` is zero or stable. -/
-theorem applyNegDifferential_eq_zero_or_stable {σ : Type*} [Fintype σ]
-    {F G : MvPolynomial σ ℂ} (hF : MvUpperHalfPlaneStable F) (hG : MvUpperHalfPlaneStable G)
-    (hF_ma : MvPolynomial.IsMultiaffine F) (hG_ma : MvPolynomial.IsMultiaffine G) :
-    applyNegDifferential F G = 0 ∨ MvUpperHalfPlaneStable (applyNegDifferential F G) :=
-  hF.liebSokal_multiaffine hG hF_ma hG_ma
-
-end GraceApolarity
-end Challenges
-end RealRooted

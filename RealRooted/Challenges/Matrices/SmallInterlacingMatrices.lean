@@ -39,7 +39,8 @@ module = "RealRooted.MatrixInterlacing"
 label = "The 18 listed matrices"
 
 [[theorems]]
-name = "RealRooted.Challenges.SmallInterlacingMatrices.nondegenerate_preservesInterlacing_iff"
+name = "RealRooted.Atomic2x2Matrix.isNondegenerate_and_interlacing_iff_mem"
+module = "RealRooted.MatrixInterlacing"
 label = "A nondegenerate matrix preserves interlacing exactly when it is one of the 18"
 headline = true
 symcat = "smallInterlacingMatrices"
@@ -115,24 +116,3 @@ This module exposes the checked classification of the atomic `2 × 2`
 matrices. The affine certificates, the sparse obstruction families and the
 decided tables live in `RealRooted.MatrixInterlacing`.
 -/
-
-public section
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace SmallInterlacingMatrices
-
-open Atomic2x2Matrix
-
-/-- **The 18 small preservers.** A nondegenerate matrix with entries in
-`{0, 1, x}` preserves interlacing if and only if it is one of the 18 matrices
-of `nondegeneratePreservingMatrices`. -/
-theorem nondegenerate_preservesInterlacing_iff (M : Atomic2x2Matrix) :
-    M.IsNondegenerate ∧ M.PreservesInterlacing ↔ M ∈ nondegeneratePreservingMatrices :=
-  (mem_nondegeneratePreservingMatrices_iff M).symm
-
-end SmallInterlacingMatrices
-end Challenges
-end RealRooted

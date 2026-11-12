@@ -8,10 +8,11 @@ public import RealRooted.OperatorMatrix.OneThetaX
 For matrices with at least two rows and columns:
 
 * over `{1, θ}`, ordered PF vectors are preserved exactly when the `1` entries form an upper-right
-  rectangle, possibly empty (`preservesOrderedPF_one_theta_iff_upperRightRectangle`);
+  rectangle, possibly empty
+  (`RealRooted.OperatorMatrix.PreservesOrderedPF.one_theta_iff_upperRightRectangle`);
 * over `{θ, X}`, exactly when either all rows are equal (`X` columns, then `θ` columns) or all
   columns are equal (`θ` rows, then `X` rows)
-  (`preservesOrderedPF_theta_x_iff_rowCut_or_columnCut`).
+  (`RealRooted.OperatorMatrix.PreservesOrderedPF.theta_x_iff_rowCut_or_columnCut`).
 -/
 
 @[expose] public section
@@ -97,13 +98,13 @@ private theorem bottom_left_one_of_allowed_blocks {m n : ℕ}
 
 /-- For matrices with at least two rows and columns over `{1, θ}`, ordered-PF
 preservation is equivalent to the `1` entries forming an upper-right rectangle. -/
-theorem preservesOrderedPF_one_theta_iff_upperRightRectangle
+theorem PreservesOrderedPF.one_theta_iff_upperRightRectangle
     {m n : ℕ} (L : Fin m → Fin n → Letter)
     (hm : 2 ≤ m) (hn : 2 ≤ n) (halpha : IsOneThetaMatrix L) :
     PreservesOrderedPF (fun i j ↦ (L i j).linearMap) ↔
       OnesFormUpperRightRectangle L := by
   classical
-  rw [preservesOrderedPF_letters_iff L hm hn]
+  rw [PreservesOrderedPF.letters_iff L hm hn]
   constructor
   · intro hblocks
     by_cases hone : ∃ i j, L i j = .one
@@ -381,13 +382,13 @@ private theorem row_eq_of_mixed_row {m n : ℕ}
 /-- For matrices with at least two rows and columns over `{θ, X}`, ordered-PF
 preservation is equivalent to having either identical threshold rows or
 identical threshold columns. -/
-theorem preservesOrderedPF_theta_x_iff_rowCut_or_columnCut
+theorem PreservesOrderedPF.theta_x_iff_rowCut_or_columnCut
     {m n : ℕ} (L : Fin m → Fin n → Letter)
     (hm : 2 ≤ m) (hn : 2 ≤ n) (halpha : IsThetaXMatrix L) :
     PreservesOrderedPF (fun i j ↦ (L i j).linearMap) ↔
       XsFormLeftColumns L ∨ XsFormBottomRows L := by
   classical
-  rw [preservesOrderedPF_letters_iff L hm hn]
+  rw [PreservesOrderedPF.letters_iff L hm hn]
   constructor
   · intro hblocks
     have hxleft : ∀ i, ∀ {j l : Fin n}, j < l → L i l = .x → L i j = .x :=

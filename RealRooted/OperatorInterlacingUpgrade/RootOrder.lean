@@ -17,7 +17,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.Splits
 # Root-order preservation for monomial-chain operators
 
 Let `T` be a linear operator satisfying the hypotheses of the monomial-chain interlacing
-upgrade (`RealRooted.Challenges.MonomialChainOperator.preservesInterlacing`).  This module shows
+upgrade (`RealRooted.strictInterl_map_of_monomialChain`).  This module shows
 that moving one nonpositive input root to the right moves every ordered output root weakly to
 the right (`rootwiseLE_monomialChain_rootPolynomial_list_set`), and derives componentwise bounds
 for inputs whose roots lie in `[-b, -a]` from the extremal inputs `(X + b) ^ D` and `(X + a) ^ D`

@@ -30,7 +30,7 @@ namespace RealRooted
 output, throughout its canonical degree box. -/
 theorem gammaOperator_preservesRealRootedUpTo (n : ℕ) (hn : 2 ≤ n) :
     BorceaBranden.PreservesRealRootedUpTo (n / 2) (gammaOperator n) := by
-  apply BorceaBranden.finiteSymbol_preservesRealRootedUpTo
+  apply BorceaBranden.PreservesRealRootedUpTo.of_finiteSymbol
   exact finiteAlgebraicSymbol_gammaOperator_stable n hn
 
 /-- Direct split-or-zero form of the gamma-operator preserver. -/

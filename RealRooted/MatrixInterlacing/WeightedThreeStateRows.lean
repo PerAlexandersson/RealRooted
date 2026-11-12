@@ -67,7 +67,7 @@ theorem weightedThreeState_P_coeff_zero (b alpha d eta : ℝ) (n : ℕ) :
 /-- The weighted three-state matrix preserves all zero-aware nonnegative
 interlacing triples exactly in the parameter region stated in issue #2088.
 The criterion is Brändén's Theorem 8.5. -/
-theorem weightedThreeStateMatrix_preserves_iff (b alpha d : ℝ) :
+theorem PreservesInterlacingSeq0.weightedThreeStateMatrix_iff (b alpha d : ℝ) :
     PreservesInterlacingSeq0 3 (weightedThreeStateMatrix b alpha d) ↔
       0 ≤ b ∧ 0 ≤ alpha ∧ 0 ≤ d ∧ d ≤ b ∧ alpha ≤ b := by
   constructor

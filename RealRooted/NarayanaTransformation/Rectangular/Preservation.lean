@@ -145,3 +145,19 @@ theorem rectangularAdditiveConvolutionPreservesNonnegRoots :
 
 
 end RealRooted
+
+open Polynomial
+
+namespace RealRooted
+
+/-- **Gribinski–Marcus.** The rectangular additive convolution of two
+polynomials of degree `n` with positive leading coefficients and only
+nonnegative roots has only nonnegative roots. -/
+theorem HasOnlyNonnegRoots.rectangularAdditiveConvolution {m n : ℕ} {f g : ℝ[X]}
+    (hfdeg : f.natDegree = n) (hgdeg : g.natDegree = n)
+    (hf_pos : HasPosLeadingCoeff f) (hg_pos : HasPosLeadingCoeff g)
+    (hf : HasOnlyNonnegRoots f) (hg : HasOnlyNonnegRoots g) :
+    HasOnlyNonnegRoots (rectangularAdditiveConvolution m n f g) :=
+  rectangularAdditiveConvolutionPreservesNonnegRoots hfdeg hgdeg hf_pos hg_pos hf hg
+
+end RealRooted

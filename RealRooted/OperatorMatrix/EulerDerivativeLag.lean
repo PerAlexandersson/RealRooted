@@ -309,7 +309,7 @@ theorem preservesOrderedPFPair_identityTop :
 
 /-- The matrix `identityTop` preserves ordered PF vectors. -/
 theorem preservesOrderedPF_identityTop : PreservesOrderedPF identityTop := by
-  rw [preservesOrderedPF_two_two_iff]
+  rw [RealRooted.OperatorMatrix.PreservesOrderedPF.two_two_iff]
   simpa [identityTop] using preservesOrderedPFPair_identityTop
 
 /-- The theta-top factor preserves every zero-aware ordered PF pair. -/
@@ -319,7 +319,7 @@ theorem preservesOrderedPFPair_thetaTop :
   intro p q hp hq hpq
   have hpder : IsPFPolynomial p.derivative := hp.derivative
   have hqder : IsPFPolynomial q.derivative := hq.derivative
-  have hder : Interl p.derivative q.derivative := derivativePreservesInterl hpq
+  have hder : Interl p.derivative q.derivative := RealRooted.Interl.derivative hpq
   have hqderThetaP : Interl q.derivative (X * p.derivative) :=
     (interl_iff_interl_X_mul hpder hqder).mp hder
   have hbaseBottom : IsPFPolynomial (X * p.derivative + q.derivative) := by
@@ -339,7 +339,7 @@ theorem preservesOrderedPFPair_thetaTop :
 
 /-- The matrix `thetaTop` preserves ordered PF vectors. -/
 theorem preservesOrderedPF_thetaTop : PreservesOrderedPF thetaTop := by
-  rw [preservesOrderedPF_two_two_iff]
+  rw [RealRooted.OperatorMatrix.PreservesOrderedPF.two_two_iff]
   simpa [thetaTop] using preservesOrderedPFPair_thetaTop
 
 /-- The phase-shifted two-step product preserves ordered PF vectors. -/
@@ -504,7 +504,8 @@ theorem not_preservesOrderedPF_transition_euler_euler :
 
 /-- Among the nine mixed transitions, exactly the two alternating identity/Euler edges
 preserve ordered PF vectors. -/
-theorem preservesOrderedPF_transition_iff (source target : FactorLabel) :
+theorem _root_.RealRooted.OperatorMatrix.PreservesOrderedPF.eulerDerivativeLag_transition_iff
+    (source target : FactorLabel) :
     PreservesOrderedPF (transition source target) ↔
       (source = .euler ∧ target = .identity) ∨
         (source = .identity ∧ target = .euler) := by
@@ -528,7 +529,8 @@ theorem preservesOrderedPF_transition_iff (source target : FactorLabel) :
     · exact preservesOrderedPF_transition_identity_euler
 
 /-- The dense two-step matrix preserves ordered PF vectors by its exact factorization. -/
-theorem preservesOrderedPF_twoStep : PreservesOrderedPF twoStep :=
+theorem _root_.RealRooted.OperatorMatrix.PreservesOrderedPF.eulerDerivativeLag_twoStep
+    : PreservesOrderedPF twoStep :=
   twoStep_eq_mul ▸ preservesOrderedPF_identityTop.mul preservesOrderedPF_thetaTop
 
 /-- The initial pair `(1,X)` is an ordered PF vector. -/
@@ -558,7 +560,9 @@ theorem isOrderedPF_even_odd_of_recurrence (P : ℕ → ℝ[X])
     (hrec : ∀ k, P (k + 2) = RealRooted.theta (P (k + 1)) + X * RealRooted.theta (P k))
     (hseed : IsOrderedPF ![P 0, P 1]) (m : ℕ) :
     IsOrderedPF ![P (2 * m), P (2 * m + 1)] := by
-  have hpres := (preservesOrderedPF_twoStep.pow m) ![P 0, P 1] hseed
+  have hpres :=
+    (RealRooted.OperatorMatrix.PreservesOrderedPF.eulerDerivativeLag_twoStep.pow m)
+      ![P 0, P 1] hseed
   rw [apply_twoStep_pow_pair_of_recurrence P hrec m 0] at hpres
   simpa using hpres
 

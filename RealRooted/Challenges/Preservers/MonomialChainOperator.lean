@@ -2,10 +2,10 @@ module
 
 public import RealRooted.NarayanaTransformation.Interlacing
 public import RealRooted.OperatorInterlacingUpgrade.ImplicitRoot
-import RealRooted.OperatorInterlacingUpgrade.RootOrder
+public import RealRooted.OperatorInterlacingUpgrade.RootOrder
 public import RealRooted.OperatorInterlacingUpgrade.StablePencil
 public import RealRooted.PFPolynomial
-import RealRooted.QuadraticInterlacingClosure
+public import RealRooted.QuadraticInterlacingClosure
 
 /-!
 # Interlacing from a monomial chain
@@ -32,7 +32,8 @@ module = "RealRooted.QuadraticInterlacingClosure"
 label = "Tangent of the quadratic interlacing pencil"
 
 [[theorems]]
-name = "RealRooted.Challenges.MonomialChainOperator.preservesInterlacing"
+name = "RealRooted.strictInterl_map_of_monomialChain"
+module = "RealRooted.OperatorInterlacingUpgrade.RootOrder"
 label = "The monomial chain gives interlacing preservation"
 headline = true
 
@@ -159,30 +160,3 @@ The operator viewpoint is related to [@Branden2011b].
 
 This module exposes the fully checked monomial-chain upgrade.
 -/
-
-public section
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace MonomialChainOperator
-
-/-- A PF-preserving linear operator whose consecutive monomial images form an
-oriented interlacing chain preserves every oriented PF interlacing pair. -/
-theorem preservesInterlacing
-    {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {D : ℕ} {f g : ℝ[X]}
-    (hfg : StrictInterl f g)
-    (hf : HasNonnegCoeffs f) (hg : HasNonnegCoeffs g)
-    (hgdeg : g.natDegree ≤ D)
-    (hTnn : ∀ ⦃p : ℝ[X]⦄, HasNonnegCoeffs p → HasNonnegCoeffs (T p))
-    (hTrr : ∀ ⦃p : ℝ[X]⦄, IsPFPolynomial p → p ≠ 0 →
-      p.natDegree ≤ D → T p ≠ 0 ∧ (T p).Splits)
-    (hmono : ∀ m : ℕ, m + 1 ≤ D →
-      StrictInterl (T (X ^ m)) (T (X ^ (m + 1)))) :
-    StrictInterl (T f) (T g) :=
-  strictInterl_map_of_monomialChain hfg hf hg hgdeg hTnn hTrr hmono
-
-end MonomialChainOperator
-end Challenges
-end RealRooted

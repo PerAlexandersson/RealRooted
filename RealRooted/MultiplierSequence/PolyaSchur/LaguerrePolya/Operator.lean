@@ -51,7 +51,7 @@ theorem taylorDifferentialOperator_eq_zero_or_splits_of_tendsto_coeff {φ : ℂ 
     · left; simp [applyAsDifferentialOperator, h]
     · by_cases hpn : p n = 0
       · left; simp [applyAsDifferentialOperator, hpn]
-      exact differential_operator_preserves_real_rooted ⟨hpn, h⟩ ⟨hg0, hg⟩
+      exact HermitePoulain.applyAsDifferentialOperator_eq_zero_or_splits ⟨hpn, h⟩ ⟨hg0, hg⟩
   · simp only [applyAsDifferentialOperator_eq_sum_range_right, taylorDifferentialOperator,
       Polynomial.map_sum, Polynomial.map_mul, map_C, eval_finsetSum, eval_mul, eval_C]
     refine tendsto_finsetSum _ fun k _ => ?_

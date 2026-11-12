@@ -121,7 +121,7 @@ and satisfies the weak affine 2×2 condition `Has2x2InterlacingProperty0`, then
 it maps strict nonnegative interlacing input sequences to weak zero-aware
 nonnegative interlacing output sequences. The weak codomain is what makes zero
 output rows harmless. -/
-theorem matrix_preserves_interlacing_seq0_of_2x2
+theorem IsInterlacingSeq0Nonneg.matPolyAction_of_2x2
     (G : List (List ℝ[X]))
     (hG_rect : ∀ row ∈ G, row.length = n)
     (hG_nonneg : ∀ row ∈ G, ∀ p ∈ row, HasNonnegCoeffs p)
@@ -301,5 +301,28 @@ theorem matrix_preserves_interlacing_seq0_filter_ne_zero_of_2x2
     G hG_rect hG_nonneg hG_affine fs hfs_len hfs
   exact h.1.filter_ne_zero_of_realRooted h.2
 
+
+end RealRooted
+
+open Polynomial
+
+namespace RealRooted
+
+/-- The matrix criterion, strict forward direction: the affine 2-by-2
+conditions imply preservation of nonnegative interlacing sequences. -/
+theorem IsInterlacingSeqNonneg.matPolyAction_of_2x2 {n : ℕ} (hn : n ≠ 0) (G : List (List ℝ[X]))
+    (hG_rect : ∀ row ∈ G, row.length = n)
+    (hG_nonneg : ∀ row ∈ G, ∀ p ∈ row, HasNonnegCoeffs p)
+    (hG_affine : ∀ (i₁ i₂ : Fin G.length) (j₁ j₂ : Fin n),
+      i₁ ≤ i₂ → j₁ ≤ j₂ →
+      Has2x2InterlacingProperty
+        ((G.get i₁).get ⟨j₁, by simp_all⟩)
+        ((G.get i₁).get ⟨j₂, by simp_all⟩)
+        ((G.get i₂).get ⟨j₁, by simp_all⟩)
+        ((G.get i₂).get ⟨j₂, by simp_all⟩))
+    (fs : List ℝ[X]) (hfs_len : fs.length = n) (hfs : IsInterlacingSeqNonneg fs) :
+    IsInterlacingSeqNonneg (matPolyAction G fs) :=
+  matrix_preserves_interlacing_seq (Nat.pos_of_ne_zero hn) G hG_rect hG_nonneg
+    hG_affine fs hfs_len hfs
 
 end RealRooted

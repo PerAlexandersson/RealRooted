@@ -77,21 +77,18 @@ module = "RealRooted.BorceaBranden.Transcendental.RealTheoremFiveOne"
 label = "Right-sign reversal of a coefficient family"
 
 [[theorems]]
-name = """RealRooted.BorceaBranden.\
-realStabilityOnDegreeBox_iff_rankTwo_or_stable_symbol"""
+name = "RealRooted.BorceaBranden.realStabilityOnDegreeBox_iff_rankTwo_or_stable_symbol"
 module = "RealRooted.BorceaBranden.RealFiniteClassificationIff"
 label = "Real finite classification (Theorem 1.2)"
 symcat = "borceaBrandenFiniteSymbol"
 
 [[theorems]]
-name = """RealRooted.BorceaBranden.\
-complexStability_iff_rankOne_or_stableLimit_symbol"""
+name = "RealRooted.BorceaBranden.complexStability_iff_rankOne_or_stableLimit_symbol"
 module = "RealRooted.BorceaBranden.Transcendental.ComplexClassification"
 label = "Complex classification (Theorem 1.3)"
 
 [[theorems]]
-name = """RealRooted.BorceaBranden.\
-realStability_iff_rankTwo_or_stableLimit_signedSymbol"""
+name = "RealRooted.BorceaBranden.realStability_iff_rankTwo_or_stableLimit_signedSymbol"
 module = "RealRooted.BorceaBranden.Transcendental.RealClassification"
 label = "Real classification (Theorem 1.4)"
 headline = true

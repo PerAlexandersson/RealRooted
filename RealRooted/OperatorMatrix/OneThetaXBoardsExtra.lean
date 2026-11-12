@@ -58,11 +58,11 @@ private theorem row_sum_preserves_pf_iff_rank (a b : Letter) :
       have hout := hsum f g hf hg hfg
       exact ⟨hout, hout, hout.interl_self⟩
     exact (repeated_row_allowed_iff_rank a b).mp
-      ((preservesOrderedPFPair_iff_isAllowedBlock a b a b).mp hpair)
+      ((PreservesOrderedPFPair.iff_isAllowedBlock a b a b).mp hpair)
   · intro hrank f g hf hg hfg
     have hallowed : a.IsAllowedBlock b a b :=
       (repeated_row_allowed_iff_rank a b).mpr hrank
-    exact ((preservesOrderedPFPair_iff_isAllowedBlock a b a b).mpr hallowed
+    exact ((PreservesOrderedPFPair.iff_isAllowedBlock a b a b).mpr hallowed
       f g hf hg hfg).1
 
 private theorem column_comparison_preserves_iff_rank (a c : Letter) :
@@ -80,17 +80,17 @@ private theorem column_comparison_preserves_iff_rank (a c : Letter) :
         by simpa only [map_add] using hbottom,
         by simpa only [map_add] using hinterl⟩
     exact (repeated_column_allowed_iff_rank a c).mp
-      ((preservesOrderedPFPair_iff_isAllowedBlock a a c c).mp hpair)
+      ((PreservesOrderedPFPair.iff_isAllowedBlock a a c c).mp hpair)
   · intro hrank p hp
     have hallowed : a.IsAllowedBlock a c c :=
       (repeated_column_allowed_iff_rank a c).mpr hrank
-    have hout := (preservesOrderedPFPair_iff_isAllowedBlock a a c c).mpr hallowed
+    have hout := (PreservesOrderedPFPair.iff_isAllowedBlock a a c c).mpr hallowed
       p 0 hp IsPFPolynomial.zero (interl_zero_right p)
     simpa only [map_zero, add_zero] using hout.2.2
 
 /-- A one-row `{1, θ, X}` matrix preserves ordered PF vectors exactly when its entries weakly
 decrease from left to right in the order `1 < θ < X`. -/
-theorem preservesOrderedPF_one_row_letters_iff {n : ℕ}
+theorem PreservesOrderedPF.one_row_letters_iff {n : ℕ}
     (L : Fin 1 → Fin n → Letter) :
     PreservesOrderedPF (fun i j => (L i j).linearMap) ↔
       IsWeaklyDecreasingLetterRow L := by
@@ -107,7 +107,7 @@ theorem preservesOrderedPF_one_row_letters_iff {n : ℕ}
 
 /-- A one-column `{1, θ, X}` matrix preserves ordered PF vectors exactly when its entries weakly
 increase from top to bottom in the order `1 < θ < X`. -/
-theorem preservesOrderedPF_one_column_letters_iff {m : ℕ}
+theorem PreservesOrderedPF.one_column_letters_iff {m : ℕ}
     (L : Fin m → Fin 1 → Letter) :
     PreservesOrderedPF (fun i j => (L i j).linearMap) ↔
       IsWeaklyIncreasingLetterColumn L := by
@@ -207,7 +207,7 @@ theorem mem_oneThetaRectangleBoards_iff {m n : ℕ} (L : Fin m → Fin n → Let
           rcases p with ⟨a, c⟩
           simp only [oneThetaBoardOf]
           split <;> simp_all
-    refine ⟨halpha, (preservesOrderedPF_one_theta_iff_upperRightRectangle
+    refine ⟨halpha, (PreservesOrderedPF.one_theta_iff_upperRightRectangle
       (oneThetaBoardOf p) hm hn halpha).mpr ?_⟩
     cases p with
       | none =>
@@ -224,7 +224,7 @@ theorem mem_oneThetaRectangleBoards_iff {m n : ℕ} (L : Fin m → Fin n → Let
               ((ite_eq_right h).symm.trans hone)), fun hregion => False.elim (h hregion)⟩
   · rintro ⟨halpha, hpres⟩
     obtain ⟨r, hr, c, hc, hrect⟩ :=
-      (preservesOrderedPF_one_theta_iff_upperRightRectangle L hm hn halpha).mp hpres
+      (PreservesOrderedPF.one_theta_iff_upperRightRectangle L hm hn halpha).mp hpres
     rw [oneThetaRectangleBoards, Finset.mem_image]
     by_cases hr0 : r = 0
     · refine ⟨none, Finset.mem_univ none, ?_⟩
@@ -348,7 +348,7 @@ theorem mem_thetaXCutBoards_iff {m n : ℕ} (L : Fin m → Fin n → Letter)
     have halpha : IsThetaXMatrix (thetaXBoardOf p) := by
       intro i j
       cases p <;> simp only [thetaXBoardOf] <;> split <;> simp_all
-    refine ⟨halpha, (preservesOrderedPF_theta_x_iff_rowCut_or_columnCut
+    refine ⟨halpha, (PreservesOrderedPF.theta_x_iff_rowCut_or_columnCut
       (thetaXBoardOf p) hm hn halpha).mpr ?_⟩
     cases p with
     | inl c =>
@@ -368,7 +368,7 @@ theorem mem_thetaXCutBoards_iff {m n : ℕ} (L : Fin m → Fin n → Letter)
         · exact ⟨fun hx => False.elim (Letter.noConfusion
             ((ite_eq_right h).symm.trans hx)), fun hsi => False.elim (h hsi)⟩
   · rintro ⟨halpha, hpres⟩
-    have hshape := (preservesOrderedPF_theta_x_iff_rowCut_or_columnCut
+    have hshape := (PreservesOrderedPF.theta_x_iff_rowCut_or_columnCut
       L hm hn halpha).mp hpres
     rw [thetaXCutBoards, Finset.mem_image]
     rcases hshape with ⟨c, hc, hcut⟩ | ⟨r, hr, hcut⟩

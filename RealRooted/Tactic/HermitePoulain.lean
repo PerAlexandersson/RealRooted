@@ -27,7 +27,7 @@ theorem splits_of_nonzero {f g : ℝ[X]}
       RealRooted.HermitePoulain.applyAsDifferentialOperator f g ≠ 0) :
     (RealRooted.HermitePoulain.applyAsDifferentialOperator f g).Splits := by
   rcases
-    RealRooted.HermitePoulain.differential_operator_preserves_real_rooted
+    RealRooted.HermitePoulain.applyAsDifferentialOperator_eq_zero_or_splits
       hf hg with hzero | hsplits
   · exact (hout hzero).elim
   · exact hsplits
@@ -42,7 +42,7 @@ theorem sequence_zero_or_splits {F G : Nat → ℝ[X]}
           = 0 ∨
         (RealRooted.HermitePoulain.applyAsDifferentialOperator
           (F n) (G n)).Splits := fun n =>
-  RealRooted.HermitePoulain.differential_operator_preserves_real_rooted
+  RealRooted.HermitePoulain.applyAsDifferentialOperator_eq_zero_or_splits
     (hF n) (hG n)
 
 /-- Under the hypotheses of `sequence_zero_or_splits`, pointwise nonvanishing of the images

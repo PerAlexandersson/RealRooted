@@ -60,7 +60,7 @@ module = "RealRooted.Recurrence.QuarticInterlacing"
 label = "The row sequence of an iterated quartic state"
 
 [[theorems]]
-name = "RealRooted.preservesCubicTransition_iff_nonneg"
+name = "RealRooted.PreservesCubicTransition.iff_nonneg"
 module = "RealRooted.Recurrence.CubicTransition"
 label = "The cubic transition preserves ordered PF triples iff its three parameters are nonnegative"
 
@@ -75,12 +75,12 @@ module = "RealRooted.Recurrence.QuarticInterlacing"
 label = "Consecutive rows of an admissible quartic state interlace"
 
 [[theorems]]
-name = "RealRooted.preservesPFTriple_iff"
+name = "RealRooted.PreservesPFTriple.iff"
 module = "RealRooted.Recurrence.PFTripleMatrix"
 label = "The three-coordinate matrix preserves ordered PF triples iff a, b, d ≥ 0 and c ≥ a"
 
 [[theorems]]
-name = "RealRooted.preservesScaledPFTriple_iff"
+name = "RealRooted.PreservesScaledPFTriple.iff"
 module = "RealRooted.Recurrence.PFTripleMatrix"
 label = "The scaled matrix preserves ordered PF triples iff a, b, d ≥ 0 and c ≥ a l"
 headline = true
@@ -101,7 +101,7 @@ module = "RealRooted.Recurrence.PFTripleMatrix"
 label = "The scaled state: a κ² − e κ + d ≤ 0 for some κ > 0 suffices"
 
 [[theorems]]
-name = "RealRooted.preservesCubicTransition_of_nonneg"
+name = "RealRooted.PreservesCubicTransition.of_nonneg"
 module = "RealRooted.Recurrence.CubicTransition"
 label = "Nonnegative parameters make the cubic transition preserve ordered PF triples"
 

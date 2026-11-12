@@ -1,15 +1,17 @@
 module
 
-public import RealRooted.LiuWang.CombinedFlux
-public import RealRooted.LiuWang.SequenceCore
-public import RealRooted.LiuWang.FiniteFamily
-public import RealRooted.MaWang.CriticalSign
-import RealRooted.LiuWangRecursion
-import RealRooted.MaWang.DerivativeStep
-public import RealRooted.MaWang.DerivativeSequence
-import RealRooted.MaWang.StrictStep
-public import RealRooted.SimpleRoots
 public import RealRooted.Basic.Coefficients
+public import RealRooted.LiuWang.CombinedFlux
+public import RealRooted.LiuWang.FiniteFamily
+public import RealRooted.LiuWang.General
+public import RealRooted.LiuWang.SequenceCore
+public import RealRooted.LiuWangRecursion
+public import RealRooted.MaWang.CriticalSign
+public import RealRooted.MaWang.DerivativeSequence
+public import RealRooted.MaWang.DerivativeStep
+public import RealRooted.MaWang.StrictStep
+public import RealRooted.MaWang.Weak.DerivativeSign
+public import RealRooted.SimpleRoots
 
 /-!
 # The Liu–Wang and Ma–Wang interlacing criteria
@@ -49,7 +51,8 @@ module = "RealRooted.MaWang.Weak.DerivativeSign"
 label = "f ≪ F when F f' ≤ 0 at the simple zeros of f"
 
 [[theorems]]
-name = "RealRooted.Challenges.MaWangLiuWang.strictInterl_mul_add_mul_derivative_of_eval_nonpos"
+name = "RealRooted.MaWang.strictInterl_derivative_of_nonpos_of_splits"
+module = "RealRooted.MaWang.DerivativeStep"
 label = "Ma–Wang criterion: f ≪ uf + vf' when v ≤ 0 at the zeros of f"
 symcat = "maWangDerivativeCriterion"
 
@@ -59,7 +62,8 @@ module = "RealRooted.MaWang.Weak.DerivativeSign"
 label = "An interlacer g ≪ f has the sign of f' at the zeros of f"
 
 [[theorems]]
-name = "RealRooted.Challenges.MaWangLiuWang.strictInterl_and_hasSimpleRoots_of_eval_neg"
+name = "RealRooted.MaWang.strictInterl_and_hasSimpleRoots_of_eval_neg"
+module = "RealRooted.MaWang.StrictStep"
 label = "Strict Ma–Wang step: simple zeros propagate when v < 0"
 
 [[theorems]]
@@ -188,36 +192,3 @@ derivative-sign criteria live in `RealRooted.MaWang.Weak.DerivativeSign`, and th
 derivative steps in `RealRooted.MaWang.DerivativeStep` and
 `RealRooted.MaWang.StrictStep`.
 -/
-
-public section
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace MaWangLiuWang
-
-/-- **Ma–Wang derivative criterion** (Ma–Wang 2008, Theorem 2).  Let `f` be real-rooted, and
-let `F = u f + v f'` have degree `deg f` or `deg f + 1`, with `f` and `F` of positive leading
-coefficient.  If `v` is nonpositive at every root of `f`, then `f ≪ F`. -/
-theorem strictInterl_mul_add_mul_derivative_of_eval_nonpos {f u v : ℝ[X]} (hf : f.Splits)
-    (hf_pos : HasPosLeadingCoeff f) (hF_pos : HasPosLeadingCoeff (u * f + v * f.derivative))
-    (hdeg_lo : f.natDegree ≤ (u * f + v * f.derivative).natDegree)
-    (hdeg_hi : (u * f + v * f.derivative).natDegree ≤ f.natDegree + 1)
-    (hv : ∀ r, f.IsRoot r → v.eval r ≤ 0) :
-    StrictInterl f (u * f + v * f.derivative) :=
-  MaWang.strictInterl_derivative_of_nonpos_of_splits hf hdeg_lo hdeg_hi hF_pos hf_pos hv
-
-/-- **Strict Ma–Wang step.**  If moreover `f` is nonconstant with simple roots, `F` has degree
-`deg f + 1`, and `v` is negative at every root of `f`, then `F` also has simple roots. -/
-theorem strictInterl_and_hasSimpleRoots_of_eval_neg {f F u v : ℝ[X]} (hf : f.Splits)
-    (hf_pos : HasPosLeadingCoeff f) (hF_pos : HasPosLeadingCoeff F) (hdegf : f.natDegree ≠ 0)
-    (hdeg : F.natDegree = f.natDegree + 1) (hsimple : HasSimpleRoots f)
-    (hrec : F = u * f + v * f.derivative) (hv : ∀ r, f.IsRoot r → v.eval r < 0) :
-    StrictInterl f F ∧ HasSimpleRoots F :=
-  strictInterl_and_hasSimpleRoots_of_interlaces_eval_mul_neg_succ hf hf_pos hF_pos
-    (Nat.one_le_iff_ne_zero.mpr hdegf) hdeg hsimple hrec hv
-
-end MaWangLiuWang
-end Challenges
-end RealRooted

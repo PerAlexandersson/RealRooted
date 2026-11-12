@@ -190,7 +190,7 @@ private theorem padded_inverse_shape_of_alternates
 private theorem reciprocalShift_ne_zero_and_splits {D : ℕ} {p : ℝ[X]}
     (hp : IsPFPolynomial p) (hp0 : p ≠ 0) (hdeg : p.natDegree ≤ D) :
     reciprocalShift D p ≠ 0 ∧ (reciprocalShift D p).Splits := by
-  have hpf := reciprocalShift_preserves_pf hp hdeg
+  have hpf := IsPFPolynomial.reciprocalShift hp hdeg
   refine ⟨fun hzero ↦ hp0 (Polynomial.reflect_eq_zero_iff.mp hzero), ?_⟩
   rcases hpf.2.1 with hzero | hsplits
   · simp_all
@@ -248,5 +248,19 @@ theorem reciprocalShift_reverses_interl
   · subst q
     simpa using interl_zero_left (p.reflect n)
   · exact (reciprocalShift_reverses_strictInterl hp hq hpdeg hqdeg hpq).toInterl
+
+end RealRooted
+
+open Polynomial
+
+namespace RealRooted
+
+/-- The reciprocal `X ^ D p(1 / X)` reverses interlacing of PF polynomials of
+degree at most `D`. -/
+theorem StrictInterl.reciprocalShift {D : ℕ} {p q : ℝ[X]} (hp : IsPFPolynomial p)
+    (hq : IsPFPolynomial q) (hpd : p.natDegree ≤ D) (hqd : q.natDegree ≤ D)
+    (hpq : StrictInterl p q) :
+    StrictInterl (reciprocalShift D q) (reciprocalShift D p) :=
+  reciprocalShift_reverses_strictInterl hp hq hpd hqd hpq
 
 end RealRooted

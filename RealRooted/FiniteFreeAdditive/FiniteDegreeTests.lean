@@ -193,7 +193,7 @@ theorem finiteFreeAdditiveConvolution_finiteDifferentialTest
 
 /-- A constant-coefficient differential operator preserves PF polynomials
 through degree `N` exactly when its image of `X ^ N` is PF. -/
-theorem preservesPFUpTo_iff_finiteDifferentialTest
+theorem PreservesPFUpTo.iff_finiteDifferentialTest
     (N : ℕ) (h : ℝ[X]) :
     PreservesPFUpTo N h ↔ IsPFPolynomial (finiteDifferentialTest N h) := by
   constructor

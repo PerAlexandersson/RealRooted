@@ -60,3 +60,16 @@ theorem brentiFallingFactorial :
 
 
 end RealRooted
+
+open Polynomial
+
+namespace RealRooted
+
+/-- **Brenti's falling-factorial theorem** (Brenti 1989, Theorem 2.4.2).  If the
+falling-factorial transform of `p` has only nonpositive roots, then so does `p`. -/
+theorem HasOnlyNonposRoots.of_basisTransform_fallingFactorial {p : ℝ[X]}
+    (h : HasOnlyNonposRoots (basisTransform fallingFactorialPolynomial p)) :
+    HasOnlyNonposRoots p :=
+  brentiFallingFactorial h
+
+end RealRooted

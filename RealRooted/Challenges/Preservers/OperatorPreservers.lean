@@ -1,16 +1,13 @@
 module
 
-public import RealRooted.EulerOperator
-import RealRooted.EulerOperator.Polar.ProperPosition
-public import RealRooted.OperatorPreservesInterlacing
-public import RealRooted.PFPolynomial.PreserverClosure
 public import RealRooted.EulerBidiagonal.Preservation
-import RealRooted.ReciprocalShift.ProperPosition
+public import RealRooted.EulerOperator
+public import RealRooted.EulerOperator.Polar.ProperPosition
+public import RealRooted.OperatorPreservesInterlacing
+public import RealRooted.PFPolynomial
+public import RealRooted.PFPolynomial.PreserverClosure
+public import RealRooted.ReciprocalShift.ProperPosition
 public import RealRooted.Transforms.ReverseHermite.Preservation
-
-public section
-
-open Polynomial
 
 /-!
 # Operators preserving interlacing
@@ -49,31 +46,34 @@ module = "RealRooted.PFPolynomial"
 label = "The reciprocal x^D p(1/x)"
 
 [[theorems]]
-name = """RealRooted.Challenges.OperatorPreservers.\
-preservesInterlacing_of_preservesRealRootedOrZero"""
+name = "RealRooted.PreservesRealRootedOrZero.interl_or_reverse"
+module = "RealRooted.OperatorPreservesInterlacing"
 label = "Real-rootedness preservers preserve interlacing"
 headline = true
 symcat = "operatorPreservesInterlacing"
 
 [[theorems]]
-name = "RealRooted.Challenges.OperatorPreservers.Interl.theta"
+name = "RealRooted.Interl.theta"
+module = "RealRooted.EulerOperator"
 label = "θ preserves interlacing"
 
 [[theorems]]
-name = "RealRooted.Challenges.OperatorPreservers.Interl.polarTheta"
+name = "RealRooted.Interl.polarTheta"
+module = "RealRooted.EulerOperator.Polar.ProperPosition"
 label = "N − θ preserves interlacing of PF polynomials of degree at most N"
 
 [[theorems]]
-name = "RealRooted.Challenges.OperatorPreservers.StrictInterl.reciprocalShift"
+name = "RealRooted.StrictInterl.reciprocalShift"
+module = "RealRooted.ReciprocalShift.ProperPosition"
 label = "The reciprocal reverses interlacing of PF polynomials"
 
 [[theorems]]
-name = "RealRooted.reverseHermiteTransform_preserves_pf"
+name = "RealRooted.IsPFPolynomial.reverseHermiteTransform"
 module = "RealRooted.Transforms.ReverseHermite.Preservation"
 label = "The reverse-Hermite transform preserves PF polynomials"
 
 [[theorems]]
-name = "RealRooted.reverseHermiteTransform_preserves_interl"
+name = "RealRooted.Interl.reverseHermiteTransform"
 module = "RealRooted.Transforms.ReverseHermite.Preservation"
 label = "The reverse-Hermite transform preserves interlacing"
 
@@ -159,39 +159,3 @@ This module exposes the checked Obreschkoff-level theorem: a linear operator
 that preserves real-rootedness up to zero preserves interlacing pairs up to the
 orientation ambiguity of the current `StrictInterl` convention.
 -/
-
-namespace RealRooted
-namespace Challenges
-namespace OperatorPreservers
-
-/-- Real-rootedness-preserving linear operators preserve interlacing pairs up
-to order and zero images. -/
-theorem preservesInterlacing_of_preservesRealRootedOrZero (T : ℝ[X] →ₗ[ℝ] ℝ[X])
-    (hT : PreservesRealRootedOrZero T) ⦃f g : ℝ[X]⦄ (hfg : StrictInterl f g) :
-    Interl (T f) (T g) ∨ Interl (T g) (T f) :=
-  RealRooted.operatorPreservesInterlacingPairsUpToOrder T hT hfg
-
-/-- The Euler operator `θ = X d/dX` preserves interlacing. -/
-theorem Interl.theta {p q : ℝ[X]} (hpq : Interl p q) :
-    Interl (RealRooted.theta p) (RealRooted.theta q) :=
-  hpq.theta
-
-/-- The polar Euler operator `N - θ` preserves interlacing of PF polynomials of
-degree at most `N`. -/
-theorem Interl.polarTheta {N : ℕ} {p q : ℝ[X]} (hp : IsPFPolynomial p)
-    (hq : IsPFPolynomial q) (hpd : p.natDegree ≤ N) (hqd : q.natDegree ≤ N)
-    (hpq : Interl p q) :
-    Interl (RealRooted.polarTheta N p) (RealRooted.polarTheta N q) :=
-  polarTheta_preserves_interl hp hq hpd hqd hpq
-
-/-- The reciprocal `X ^ D p(1 / X)` reverses interlacing of PF polynomials of
-degree at most `D`. -/
-theorem StrictInterl.reciprocalShift {D : ℕ} {p q : ℝ[X]} (hp : IsPFPolynomial p)
-    (hq : IsPFPolynomial q) (hpd : p.natDegree ≤ D) (hqd : q.natDegree ≤ D)
-    (hpq : StrictInterl p q) :
-    StrictInterl (RealRooted.reciprocalShift D q) (RealRooted.reciprocalShift D p) :=
-  reciprocalShift_reverses_strictInterl hp hq hpd hqd hpq
-
-end OperatorPreservers
-end Challenges
-end RealRooted

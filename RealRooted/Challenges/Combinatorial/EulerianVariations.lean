@@ -41,8 +41,7 @@ module = "RealRooted.CombinatorialExamples.SuperEulerian"
 label = "Super-Eulerian polynomial"
 
 [[theorems]]
-name = """RealRooted.Applications.EulerianVariations.\
-cyclicPathDescentPolynomial_roots"""
+name = "RealRooted.Applications.EulerianVariations.cyclicPathDescentPolynomial_roots"
 module = "RealRooted.Applications.EulerianVariations.CyclicPathDescents"
 label = "Simple roots of the cyclic path descent polynomial: 0 and n - 1 negative"
 

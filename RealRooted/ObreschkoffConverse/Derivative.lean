@@ -230,7 +230,7 @@ theorem derivative_interl_of_strictInterl_sameDegree {f g : ℝ[X]}
 The same-degree branch is `derivative_interl_of_strictInterl_sameDegree`; the
 differ-by-one branch is `derivative_interl_of_strictInterl_succDegree`, proved
 above from the forward and converse Obreschkoff theorems. -/
-theorem derivativePreservesInterl {p q : ℝ[X]} (hfg : Interl p q) :
+theorem Interl.derivative {p q : ℝ[X]} (hfg : Interl p q) :
     Interl p.derivative q.derivative := by
   rcases hfg with hfzero | hgzero | hfg'
   · rw [hfzero, derivative_zero]
@@ -246,7 +246,7 @@ theorem derivativePreservesInterl {p q : ℝ[X]} (hfg : Interl p q) :
 /-- A `StrictInterl` input yields zero-aware derivative preservation. -/
 theorem derivative_interl_of_strictInterl {f g : ℝ[X]} (h : StrictInterl f g) :
     Interl f.derivative g.derivative :=
-  derivativePreservesInterl h.toInterl
+  Interl.derivative h.toInterl
 
 /-- Strict `StrictInterl` output in the same-degree case. -/
 theorem derivative_strictInterl_of_strictInterl_sameDegree
@@ -275,7 +275,7 @@ theorem StrictInterl.derivative {f g : ℝ[X]} (h : StrictInterl f g)
     StrictInterl f.derivative g.derivative := by
   have hg : g.natDegree ≠ 0 := by
     rcases h.natDegree_eq_or_eq_succ with hfg | hfg <;> lia
-  exact (derivativePreservesInterl h.toInterl).toStrictInterl_of_ne
+  exact (Interl.derivative h.toInterl).toStrictInterl_of_ne
     (derivative_ne_zero.mpr hf) (derivative_ne_zero.mpr hg)
 
 /-- Iterated differentiation preserves zero-aware weak interlacing. -/
@@ -284,7 +284,7 @@ theorem Interl.iterate_derivative {f g : ℝ[X]} (h : Interl f g) :
   | 0 => by simpa
   | r + 1 => by
       simpa [Function.iterate_succ_apply'] using
-        derivativePreservesInterl (h.iterate_derivative r)
+        Interl.derivative (h.iterate_derivative r)
 
 /-- Differentiating an interlacing pair at most `natDegree f` times preserves proper
 position. -/
@@ -302,3 +302,7 @@ theorem StrictInterl.iterate_derivative_of_le_natDegree
 
 end
 end RealRooted
+
+@[deprecated (since := "2026-11-12")]
+alias RealRooted.derivativePreservesInterl :=
+  RealRooted.Interl.derivative

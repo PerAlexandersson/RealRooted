@@ -249,7 +249,7 @@ matrix `G` with `n` columns maps the zero-aware nonnegative real-rooted
 interlacing family of length `n` into itself if and only if its entries have
 nonnegative coefficients and every ordered 2×2 submatrix, rows `i₁ ≤ i₂` and
 columns `j₁ ≤ j₂`, satisfies `Has2x2InterlacingProperty0`. -/
-theorem preservesInterlacingSeq0_iff {n : ℕ} (G : List (List ℝ[X]))
+theorem PreservesInterlacingSeq0.iff_nonneg_and_2x2 {n : ℕ} (G : List (List ℝ[X]))
     (hG_rect : ∀ row ∈ G, row.length = n) :
     PreservesInterlacingSeq0 n G ↔
       (∀ row ∈ G, ∀ p ∈ row, HasNonnegCoeffs p) ∧

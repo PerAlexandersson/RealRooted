@@ -320,3 +320,39 @@ theorem snakeInterlacing_generalizedSnakeRookModel {w : SnakeWord} (hw : 1 ≤ w
 
 end GeneralizedSnakePosets
 end RealRooted
+
+open Polynomial
+
+namespace RealRooted
+
+open GeneralizedSnakePosets
+/-- If `w` is nonempty, then the snake polynomial `M_w` is real-rooted, and
+deleting the last letter of `w` gives a polynomial interlacing it. -/
+theorem GeneralizedSnakePosets.rookPolynomial_splits_and_interlaces {w : SnakeWord}
+    (hw : w ≠ []) :
+    ((generalizedSnakeBoard w).rookPolynomial ≠ 0 ∧
+        (generalizedSnakeBoard w).rookPolynomial.Splits) ∧
+      Interlaces (generalizedSnakeBoard w.dropLast).rookPolynomial
+        (generalizedSnakeBoard w).rookPolynomial := by
+  rw [List.dropLast_eq_take]
+  exact snakeInterlacing_generalizedSnakeRookModel (List.length_pos_iff.mpr hw)
+
+end RealRooted
+
+open Polynomial
+
+namespace RealRooted
+
+open GeneralizedSnakePosets
+/-- If `k` is the last position where `w` differs from its final letter, then
+`M_w = M_{w[:k+1]} P_s + X M_{w[:k]} G_s` with `s = |w| - k - 1`. -/
+theorem GeneralizedSnakePosets.rookPolynomial_recurrence {w : SnakeWord} {k : ℕ}
+    (hk : w.IsLastChangeIndex k) :
+    (generalizedSnakeBoard w).rookPolynomial =
+      (generalizedSnakeBoard (w.take (k + 1))).rookPolynomial *
+          modifiedNarayanaPolynomial (w.length - (k + 1)) +
+        X * (generalizedSnakeBoard (w.take k)).rookPolynomial *
+          FiniteSkewBoard.rookSum (w.length - (k + 1)) :=
+  generalizedSnakeRecurrence hk.not_isConstant hk
+
+end RealRooted

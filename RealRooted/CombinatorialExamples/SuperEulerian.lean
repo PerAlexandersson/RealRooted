@@ -836,7 +836,7 @@ private lemma interl_superEulerian_iterateThetaPlusOne (l m : ℕ) :
 private lemma isPFPolynomial_reciprocalShift_iterateThetaPlusOne (l m : ℕ) :
     IsPFPolynomial
       (reciprocalShift (m + 1) (iterateThetaPlusOne (l + 1) (superEulerian (l + 1) (m + 1)))) :=
-  reciprocalShift_preserves_pf (isPFPolynomial_iterateThetaPlusOne_superEulerian l m)
+  RealRooted.IsPFPolynomial.reciprocalShift (isPFPolynomial_iterateThetaPlusOne_superEulerian l m)
     ((natDegree_iterateThetaPlusOne_superEulerian l m).trans (Nat.le_succ m))
 
 /-- `E_{m+1} ≼ t^{m+1} ((θ+1)^l E_{m+1})(1/t)`, by reversing the previous interlacing. -/

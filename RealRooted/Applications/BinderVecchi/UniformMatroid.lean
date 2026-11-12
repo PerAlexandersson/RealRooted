@@ -324,7 +324,8 @@ theorem isPFPolynomial_refinedHodgePoincare {r n i : ℕ} (hr : 1 ≤ r) (hi : 1
     (c := magicCoeff r n i) (fun k _ => magicCoeff_nonneg r n i k)
   rw [← hmagic] at hpf
   rw [refinedHodgePoincare_eq_reflect]
-  exact reciprocalShift_preserves_pf hpf (natDegree_transform_weightPolynomial_le r n i)
+  exact RealRooted.IsPFPolynomial.reciprocalShift hpf (natDegree_transform_weightPolynomial_le r n
+    i)
 
 /-- The refined Hodge--Poincaré polynomial is nonzero. -/
 theorem refinedHodgePoincare_ne_zero {r n i : ℕ} (hr : 1 ≤ r) (hi : 1 ≤ i)
@@ -427,7 +428,7 @@ theorem isPFPolynomial_modifiedAugmentedHodgePoincare {r n i : ℕ} (hr : 1 ≤ 
     (c := magicCoeff r n i) (fun k _ => magicCoeff_nonneg r n i k)
   rw [← hmagic] at hpf
   rw [modifiedAugmentedHodgePoincare_eq_reflect]
-  exact reciprocalShift_preserves_pf hpf
+  exact RealRooted.IsPFPolynomial.reciprocalShift hpf
     (natDegree_eulerianTransform_weightPolynomial_le r n i)
 
 /-- The modified augmented refined Hodge--Poincaré polynomial is nonzero. -/

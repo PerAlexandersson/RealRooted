@@ -53,12 +53,12 @@ module = "RealRooted.ThresholdMatrix.HaglundZhang"
 label = "The refined binomial Eulerian vectors form interlacing sequences"
 
 [[theorems]]
-name = "RealRooted.rowThreshold_matrix_preserves_interlacing_seq_of_2x2"
+name = "RealRooted.IsInterlacingSeqNonneg.matPolyAction_of_rowThreshold"
 module = "RealRooted.RowThreshold"
 label = "Brändén: row-threshold matrices of linear forms preserve interlacing sequences"
 
 [[theorems]]
-name = "RealRooted.rowThreshold_matrix_preserves_interlacing_seq0_of_2x2"
+name = "RealRooted.IsInterlacingSeq0Nonneg.matPolyAction_of_rowThreshold"
 module = "RealRooted.RowThreshold"
 label = "Zero-aware row-threshold preservation of interlacing sequences"
 headline = true

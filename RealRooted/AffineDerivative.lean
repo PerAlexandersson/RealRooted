@@ -1137,3 +1137,19 @@ theorem strictInterl_one_sub_X_mul_derivative_right_of_nonnegCoeffs {f : ℝ[X]}
   grind
 
 end RealRooted
+
+open Polynomial
+
+namespace RealRooted
+
+/-- **Affine derivative.** If `f` is real-rooted of degree `d ≠ 0` with
+positive leading coefficient and nonpositive roots, and `c > d`, then
+`c f + (1 - X) f'` interlaces `f`. -/
+theorem strictInterl_affine_derivative_of_natDegree_ne_zero
+    {f : ℝ[X]} (hf : f.Splits) (hdeg : f.natDegree ≠ 0)
+    (hf_pos : HasPosLeadingCoeff f) (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0)
+    {c : ℝ} (hc : (f.natDegree : ℝ) < c) :
+    StrictInterl (C c * f + (1 - X) * f.derivative) f :=
+  strictInterl_affine_derivative' hf (Nat.one_le_iff_ne_zero.mpr hdeg) hf_pos hroots_nonpos hc
+
+end RealRooted

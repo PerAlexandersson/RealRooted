@@ -48,17 +48,17 @@ module = "RealRooted.OperatorMatrix.OneThetaX"
 label = "The thirteen allowed two-by-two blocks over {1, θ, X}"
 
 [[theorems]]
-name = "RealRooted.OperatorMatrix.preservesOrderedPF_iff_preservesBlock_of_two_le"
+name = "RealRooted.OperatorMatrix.PreservesOrderedPF.iff_forall_blocks_of_two_le"
 module = "RealRooted.OperatorMatrix.LocalToGlobal"
 label = "Local-to-global: ordered-PF preservation reduces to two-by-two blocks"
 
 [[theorems]]
-name = "RealRooted.OperatorMatrix.preservesOrderedPFPair_iff_isAllowedBlock"
+name = "RealRooted.OperatorMatrix.PreservesOrderedPFPair.iff_isAllowedBlock"
 module = "RealRooted.OperatorMatrix.OneThetaX"
 label = "A two-by-two block over {1, θ, X} preserves ordered PF pairs iff it is one of thirteen"
 
 [[theorems]]
-name = "RealRooted.OperatorMatrix.preservesOrderedPF_letters_iff"
+name = "RealRooted.OperatorMatrix.PreservesOrderedPF.letters_iff"
 module = "RealRooted.OperatorMatrix.OneThetaX"
 label = "Classification of ordered-PF preserving matrices over {1, θ, X}"
 headline = true
@@ -79,7 +79,7 @@ module = "RealRooted.OperatorMatrix.Directed"
 label = "p ≪ q gives p + q ≪ X p + q for PF p and q"
 
 [[theorems]]
-name = "RealRooted.OperatorMatrix.preservesOrderedPF_two_two_iff"
+name = "RealRooted.OperatorMatrix.PreservesOrderedPF.two_two_iff"
 module = "RealRooted.OperatorMatrix.Composition"
 label = "A two-by-two operator matrix preserves ordered PF vectors iff its block does"
 
@@ -89,22 +89,22 @@ module = "RealRooted.OperatorMatrix.Composition"
 label = "Products of ordered-PF preserving matrices preserve ordered PF vectors"
 
 [[theorems]]
-name = "RealRooted.OperatorMatrix.preservesOrderedPF_one_theta_iff_upperRightRectangle"
+name = "RealRooted.OperatorMatrix.PreservesOrderedPF.one_theta_iff_upperRightRectangle"
 module = "RealRooted.OperatorMatrix.OneThetaXBoards"
 label = "Boards over {1, θ}: the 1 entries form an upper-right rectangle"
 
 [[theorems]]
-name = "RealRooted.OperatorMatrix.preservesOrderedPF_theta_x_iff_rowCut_or_columnCut"
+name = "RealRooted.OperatorMatrix.PreservesOrderedPF.theta_x_iff_rowCut_or_columnCut"
 module = "RealRooted.OperatorMatrix.OneThetaXBoards"
 label = "Boards over {θ, X}: a row cut or a column cut"
 
 [[theorems]]
-name = "RealRooted.OperatorMatrix.preservesOrderedPF_one_row_letters_iff"
+name = "RealRooted.OperatorMatrix.PreservesOrderedPF.one_row_letters_iff"
 module = "RealRooted.OperatorMatrix.OneThetaXBoardsExtra"
 label = "One-row matrices over {1, θ, X}: entries weakly decrease from left to right"
 
 [[theorems]]
-name = "RealRooted.OperatorMatrix.preservesOrderedPF_one_column_letters_iff"
+name = "RealRooted.OperatorMatrix.PreservesOrderedPF.one_column_letters_iff"
 module = "RealRooted.OperatorMatrix.OneThetaXBoardsExtra"
 label = "One-column matrices over {1, θ, X}: entries weakly increase from top to bottom"
 
@@ -119,12 +119,12 @@ module = "RealRooted.OperatorMatrix.OneThetaXBoardsExtra"
 label = "There are exactly m + n boards over {θ, X}"
 
 [[theorems]]
-name = "RealRooted.OperatorMatrix.EulerDerivativeLag.preservesOrderedPF_twoStep"
+name = "RealRooted.OperatorMatrix.PreservesOrderedPF.eulerDerivativeLag_twoStep"
 module = "RealRooted.OperatorMatrix.EulerDerivativeLag"
 label = "The matrix of P(n+2) = θP(n+1) + Xθ P(n) preserves ordered PF vectors"
 
 [[theorems]]
-name = "RealRooted.OperatorMatrix.EulerDerivativeLag.preservesOrderedPF_transition_iff"
+name = "RealRooted.OperatorMatrix.PreservesOrderedPF.eulerDerivativeLag_transition_iff"
 module = "RealRooted.OperatorMatrix.EulerDerivativeLag"
 label = "Exactly the two alternating identity/Euler transitions preserve ordered PF vectors"
 

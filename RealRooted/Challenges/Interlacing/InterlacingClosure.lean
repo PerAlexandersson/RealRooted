@@ -1,16 +1,16 @@
 module
 
-import RealRooted.AffineDerivative
+public import RealRooted.AffineDerivative
 public import RealRooted.AffineFamily
-public import RealRooted.FolkloreLemma
-public import RealRooted.HlavacekSolus.Shelling
-import RealRooted.HlavacekSolus.PolytopalShelling
-import RealRooted.HlavacekSolus.HalfOpenCube
-import RealRooted.HlavacekSolus.CubicalShelling
-public import RealRooted.Interlacing.ConeBounds
-public import RealRooted.ShiftLemma
 public import RealRooted.Basic.Coefficients
 public import RealRooted.Basic.ProperPosition
+public import RealRooted.FolkloreLemma
+public import RealRooted.HlavacekSolus.CubicalShelling
+public import RealRooted.HlavacekSolus.HalfOpenCube
+public import RealRooted.HlavacekSolus.PolytopalShelling
+public import RealRooted.HlavacekSolus.Shelling
+public import RealRooted.Interlacing.ConeBounds
+public import RealRooted.ShiftLemma
 
 /-!
 # Closure of interlacing under cones, affine combinations and shifts
@@ -41,7 +41,8 @@ label = "A nonnegative combination of an interlacing sequence lies between its e
 headline = true
 
 [[theorems]]
-name = "RealRooted.Challenges.InterlacingClosure.strictInterl_affine_derivative"
+name = "RealRooted.strictInterl_affine_derivative_of_natDegree_ne_zero"
+module = "RealRooted.AffineDerivative"
 label = "c f + (1 − x) f′ ≪ f for c > deg f"
 
 [[theorems]]
@@ -169,24 +170,3 @@ This module is a catalog facade. The proofs live in `RealRooted.AffineFamily`,
 `RealRooted.Interlacing.ConeBounds`, `RealRooted.AffineDerivative`,
 `RealRooted.ShiftLemma` and `RealRooted.FolkloreLemma`.
 -/
-
-public section
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace InterlacingClosure
-
-/-- **Affine derivative.** If `f` is real-rooted of degree `d ≠ 0` with
-positive leading coefficient and nonpositive roots, and `c > d`, then
-`c f + (1 - X) f'` interlaces `f`. -/
-theorem strictInterl_affine_derivative {f : ℝ[X]} (hf : f.Splits) (hdeg : f.natDegree ≠ 0)
-    (hf_pos : HasPosLeadingCoeff f) (hroots_nonpos : ∀ r ∈ f.roots, r ≤ 0)
-    {c : ℝ} (hc : (f.natDegree : ℝ) < c) :
-    StrictInterl (C c * f + (1 - X) * f.derivative) f :=
-  strictInterl_affine_derivative' hf (Nat.one_le_iff_ne_zero.mpr hdeg) hf_pos hroots_nonpos hc
-
-end InterlacingClosure
-end Challenges
-end RealRooted

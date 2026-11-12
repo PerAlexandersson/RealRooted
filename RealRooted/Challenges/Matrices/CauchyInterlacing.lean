@@ -1,9 +1,9 @@
 module
 
-import RealRooted.CauchyInterlacing.Polynomial
-public import RealRooted.CauchyInterlacing.RankOne
-public import RealRooted.CauchyInterlacing
 public import RealRooted.Basic.ProperPosition
+public import RealRooted.CauchyInterlacing
+public import RealRooted.CauchyInterlacing.Polynomial
+public import RealRooted.CauchyInterlacing.RankOne
 
 /-!
 # Cauchy interlacing challenge entry point
@@ -22,13 +22,15 @@ authors = ["Fisk"]
 years = [2005]
 
 [[theorems]]
-name = "RealRooted.Challenges.CauchyInterlacing.principalSubmatrix_eigenvalues_interlace"
+name = "RealRooted.cauchy_interlacing"
+module = "RealRooted.CauchyInterlacing"
 label = "Eigenvalues of a principal submatrix interlace"
 headline = true
 symcat = "cauchyInterlacingTheorem"
 
 [[theorems]]
-name = "RealRooted.Challenges.CauchyInterlacing.principalSubmatrix_charpoly_interlaces"
+name = "RealRooted.principalSubmatrix_charpoly_interlaces"
+module = "RealRooted.CauchyInterlacing.Polynomial"
 label = "Characteristic polynomials of a principal submatrix interlace"
 
 [[theorems]]
@@ -92,35 +94,3 @@ References used by the catalog:
 This module records the eigenvalue and characteristic-polynomial forms; Weyl's
 rank-one interlacing is in `RealRooted.CauchyInterlacing.RankOne`.
 -/
-
-public section
-
-open Matrix Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace CauchyInterlacing
-
-/-- Cauchy's interlacing theorem in principal-submatrix form: the eigenvalues
-of the one-index principal submatrix interlace the eigenvalues of the original
-Hermitian matrix. -/
-theorem principalSubmatrix_eigenvalues_interlace
-    {𝕜 : Type*} [RCLike 𝕜] {n : ℕ}
-    (A : Matrix (Fin (n + 1)) (Fin (n + 1)) 𝕜)
-    (hA : A.IsHermitian) (i : Fin (n + 1)) :
-    RealRooted.Interlace
-      (RealRooted.sortedEigenvalues
-        (A.submatrix i.succAbove i.succAbove) (hA.submatrix i.succAbove))
-      (RealRooted.sortedEigenvalues A hA) :=
-  RealRooted.cauchy_interlacing 𝕜 A hA i
-
-/-- Cauchy interlacing for characteristic polynomials. -/
-theorem principalSubmatrix_charpoly_interlaces {n : ℕ}
-    (A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ)
-    (hA : A.IsHermitian) (i : Fin (n + 1)) :
-    Interlaces (A.submatrix i.succAbove i.succAbove).charpoly A.charpoly :=
-  RealRooted.principalSubmatrix_charpoly_interlaces A hA i
-
-end CauchyInterlacing
-end Challenges
-end RealRooted

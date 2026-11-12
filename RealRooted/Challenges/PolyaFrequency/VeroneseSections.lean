@@ -139,15 +139,3 @@ zero.  The cyclic matrix construction remains in `RealRooted.VeroneseMatrix`;
 the recognition theorems are cited from `RealRooted.VeroneseRecognition` and
 `RealRooted.VeroneseRecognition.Affine`.
 -/
-
-public section
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace VeroneseSections
-
-end VeroneseSections
-end Challenges
-end RealRooted

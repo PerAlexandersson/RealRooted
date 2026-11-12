@@ -32,7 +32,7 @@ private theorem splits_derivative_sub {p : ℝ[X]} (hp : p.Splits) (r : ℝ) :
     (derivative p - C r * p).Splits := by
   by_cases hp0 : p = 0
   · simp [hp0]
-  have hs := differential_operator_preserves_real_rooted
+  have hs := applyAsDifferentialOperator_eq_zero_or_splits
     (f := X + C (-r)) (g := p)
     ⟨(monic_X_add_C (-r)).ne_zero, Splits.X_add_C (-r)⟩ ⟨hp0, hp⟩
   rw [applyAsDifferentialOperator_X_add_C] at hs
@@ -116,7 +116,7 @@ private theorem laguerreApproximation_splits (M : ℕ) :
   have hdeg : ((X - C (1 : ℝ)) ^ M).natDegree < M + 1 := by
     rw [natDegree_pow, natDegree_X_sub_C]
     lia
-  have hpres := differential_operator_preserves_real_rooted
+  have hpres := applyAsDifferentialOperator_eq_zero_or_splits
     ⟨((monic_X_sub_C 1).pow M).ne_zero, (Splits.X_sub_C 1).pow M⟩
     ⟨by simp, Splits.X_pow M⟩
   have haeval :

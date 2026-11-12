@@ -87,3 +87,39 @@ theorem splits_and_forall_roots_nonneg_generalizedRectangularAdditiveConvolution
 end
 
 end RealRooted
+
+open Polynomial
+
+namespace RealRooted
+
+/-- The generalized rectangular convolution with parameter `-1 / 2` preserves
+real-rootedness with nonnegative roots in degree at most `n`. -/
+theorem splits_and_roots_nonneg_rectangular_neg_half (n : ℕ) (p q : ℝ[X])
+    (hp : p.Splits) (hq : q.Splits)
+    (hproots : ∀ r ∈ p.roots, 0 ≤ r) (hqroots : ∀ r ∈ q.roots, 0 ≤ r)
+    (hpdeg : p.natDegree ≤ n) (hqdeg : q.natDegree ≤ n) :
+    (generalizedRectangularAdditiveConvolution (-(1 / 2 : ℝ)) n p q).Splits ∧
+      ∀ r ∈ (generalizedRectangularAdditiveConvolution (-(1 / 2 : ℝ)) n p q).roots,
+        0 ≤ r :=
+  splits_and_forall_roots_nonneg_generalizedRectangularAdditiveConvolution_neg_half n p q
+    hp hq hproots hqroots hpdeg hqdeg
+
+end RealRooted
+
+open Polynomial
+
+namespace RealRooted
+
+/-- The generalized rectangular convolution with parameter `1 / 2` preserves
+real-rootedness with nonnegative roots in degree at most `n`. -/
+theorem splits_and_roots_nonneg_rectangular_pos_half (n : ℕ) (p q : ℝ[X])
+    (hp : p.Splits) (hq : q.Splits)
+    (hproots : ∀ r ∈ p.roots, 0 ≤ r) (hqroots : ∀ r ∈ q.roots, 0 ≤ r)
+    (hpdeg : p.natDegree ≤ n) (hqdeg : q.natDegree ≤ n) :
+    (generalizedRectangularAdditiveConvolution (1 / 2 : ℝ) n p q).Splits ∧
+      ∀ r ∈ (generalizedRectangularAdditiveConvolution (1 / 2 : ℝ) n p q).roots,
+        0 ≤ r :=
+  splits_and_forall_roots_nonneg_generalizedRectangularAdditiveConvolution_pos_half n p q
+    hp hq hproots hqroots hpdeg hqdeg
+
+end RealRooted

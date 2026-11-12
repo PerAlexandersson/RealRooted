@@ -1,10 +1,10 @@
 module
 
 public import RealRooted.JacobiDeformation
-public import RealRooted.SpectralProduct
-import RealRooted.JacobiDeformation.Strict
 public import RealRooted.JacobiDeformation.Basic
+public import RealRooted.JacobiDeformation.Strict
 public import RealRooted.SimpleRoots
+public import RealRooted.SpectralProduct
 
 /-!
 # Jacobi deformation challenge entry point
@@ -32,12 +32,14 @@ module = "RealRooted.SpectralProduct"
 label = "Eigenvalues of a symmetric matrix in increasing order"
 
 [[theorems]]
-name = "RealRooted.Challenges.JacobiDeformation.polynomial_splits_and_roots_neg"
+name = "RealRooted.JacobiDeformation.polynomial_all_rank_nonneg_parameter"
+module = "RealRooted.JacobiDeformation.Strict"
 label = "For every δ ≥ 0 all roots are real and negative"
 headline = true
 
 [[theorems]]
-name = "RealRooted.Challenges.JacobiDeformation.interlaces_derivative_polynomial_zero"
+name = "RealRooted.JacobiDeformation.interlaces_derivative_polynomial_zero"
+module = "RealRooted.JacobiDeformation.Strict"
 label = "For 0 < δ < 1 the roots are simple, interlace J′_{m,0} and share no root with it"
 
 [[theorems]]
@@ -102,37 +104,3 @@ proof are on the [Jacobi polynomials page](/RealRooted/families/jacobi-polynomia
 This module is a catalog facade. The proofs live in
 `RealRooted.JacobiDeformation` and `RealRooted.SpectralProduct`.
 -/
-
-public section
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace JacobiDeformation
-
-/-- For every `δ ≥ 0`, the Jacobi deformation splits and all its roots are
-strictly negative. -/
-theorem polynomial_splits_and_roots_neg (m : ℕ) {δ c d U V : ℝ} (hδ : 0 ≤ δ)
-    (hc : 0 < c) (hd : 0 < d) (hU : 0 < U) (hV : 0 < V) :
-    (RealRooted.JacobiDeformation.polynomial m δ c d U V).Splits ∧
-      ∀ r ∈ (RealRooted.JacobiDeformation.polynomial m δ c d U V).roots, r < 0 :=
-  RealRooted.JacobiDeformation.polynomial_all_rank_nonneg_parameter m hδ hc hd hU hV
-
-/-- For `m ≠ 0` and `0 < δ < 1`, the derivative of `J_{m,0}` interlaces
-`J_{m,δ}`, the deformation has simple roots, and the two polynomials have no
-common root. -/
-theorem interlaces_derivative_polynomial_zero {m : ℕ} (hm : m ≠ 0) {δ c d U V : ℝ}
-    (hc : 0 < c) (hd : 0 < d) (hU : 0 < U) (hV : 0 < V) (hδ : 0 < δ) (hδ1 : δ < 1) :
-    Interlaces (RealRooted.JacobiDeformation.polynomial m 0 c d U V).derivative
-        (RealRooted.JacobiDeformation.polynomial m δ c d U V) ∧
-      HasSimpleRoots (RealRooted.JacobiDeformation.polynomial m δ c d U V) ∧
-      ∀ r, (RealRooted.JacobiDeformation.polynomial m 0 c d U V).derivative.IsRoot r →
-        ¬(RealRooted.JacobiDeformation.polynomial m δ c d U V).IsRoot r :=
-  have h := RealRooted.JacobiDeformation.polynomial_strict_package
-    (Nat.one_le_iff_ne_zero.mpr hm) hc hd hU hV hδ hδ1
-  ⟨h.2.1, h.2.2.2.2.1, h.2.2.2.2.2⟩
-
-end JacobiDeformation
-end Challenges
-end RealRooted

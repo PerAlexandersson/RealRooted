@@ -778,3 +778,18 @@ theorem clawFree_indepPoly_splits :
 
 end Graph
 end RealRooted
+
+open Polynomial
+
+namespace RealRooted
+
+/-- **Engström**: the vertex-weighted independence polynomial of a finite
+claw-free graph is real-rooted for nonnegative weights. -/
+theorem _root_.RealRooted.Graph.weightedIndepPoly_splits_of_clawFree
+    {V : Type*} [Fintype V] [DecidableEq V]
+    {G : SimpleGraph V} [DecidableRel G.Adj] (hG : Graph.ClawFree G) (wt : V → ℝ)
+    (hwt : ∀ v, 0 ≤ wt v) :
+    (Graph.weightedIndepPoly G wt).Splits :=
+  Graph.clawFree_weightedIndepPoly_splits hG wt hwt
+
+end RealRooted

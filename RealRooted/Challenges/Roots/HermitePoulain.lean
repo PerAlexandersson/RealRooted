@@ -1,5 +1,6 @@
 module
 
+public import RealRooted.Hermite.Poulain
 public import RealRooted.Hermite.PoulainInterlacing
 
 /-!
@@ -20,7 +21,7 @@ module = "RealRooted.Hermite.Poulain"
 label = "The operator f(D)"
 
 [[theorems]]
-name = "RealRooted.HermitePoulain.differential_operator_preserves_real_rooted"
+name = "RealRooted.HermitePoulain.applyAsDifferentialOperator_eq_zero_or_splits"
 module = "RealRooted.Hermite.Poulain"
 label = "Hermite–Poulain theorem"
 headline = true
@@ -69,36 +70,12 @@ The proof is in `RealRooted.Hermite.Poulain`; the interlacing consequence is in
 
 public section
 
-namespace RealRooted
-namespace Challenges
-namespace HermitePoulain
+namespace RealRooted.Challenges.HermitePoulain
 
-export RealRooted.HermitePoulain
-  (applyAsDifferentialOperator
-    applyAsDifferentialOperator_eq_sum_range
-    applyAsDifferentialOperator_eq_sum_range_right
-    coeff_applyAsDifferentialOperator_natDegree
-    applyAsDifferentialOperator_monic
-    natDegree_applyAsDifferentialOperator
-    applyAsDifferentialOperator_ne_zero
-    applyAsDifferentialOperator_zero_right
-    applyAsDifferentialOperator_C
-    applyAsDifferentialOperator_one
-    applyAsDifferentialOperator_X_add_C
-    applyAsDifferentialOperator_add
-    applyAsDifferentialOperator_C_mul
-    applyAsDifferentialOperator_X_mul
-    applyAsDifferentialOperator_monomial
-    applyAsDifferentialOperator_X_pow_mul
-    applyAsDifferentialOperator_mul
-    applyAsDifferentialOperator_C_eq_zero_or_splits
-    applyAsDifferentialOperator_X_add_C_eq_zero_or_splits
-    differential_operator_preserves_real_rooted
-    differentialOperator
-    differentialOperator_apply
-    preservesRealRootedOrZero_differentialOperator
-    interl_or_interl_applyAsDifferentialOperator)
+export RealRooted.HermitePoulain (applyAsDifferentialOperator)
 
-end HermitePoulain
-end Challenges
-end RealRooted
+end RealRooted.Challenges.HermitePoulain
+
+@[deprecated (since := "2026-11-12")]
+alias RealRooted.Challenges.HermitePoulain.differential_operator_preserves_real_rooted :=
+  RealRooted.HermitePoulain.applyAsDifferentialOperator_eq_zero_or_splits

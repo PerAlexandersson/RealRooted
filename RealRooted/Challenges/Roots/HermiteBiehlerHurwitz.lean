@@ -1,23 +1,20 @@
 module
 
+public import RealRooted.Basic.ProperPosition
 public import RealRooted.ClassicalHurwitzMatrix
-import RealRooted.ClassicalHurwitzMatrix.Stability.CoefficientSigns
+public import RealRooted.ClassicalHurwitzMatrix.Stability
+public import RealRooted.ClassicalHurwitzMatrix.Stability.CoefficientSigns
 public import RealRooted.ClassicalHurwitzMatrix.Stability.Converse
 public import RealRooted.ClassicalHurwitzMatrix.Stability.Lace
-import RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse
-import RealRooted.ClassicalHurwitzMatrix.Stability.WeakConverse
-public import RealRooted.HurwitzMatrix
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz.Determinant
-public import RealRooted.ClassicalHurwitzMatrix.Stability
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz
-import RealRooted.SamePhaseInterlacing
+public import RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse
+public import RealRooted.ClassicalHurwitzMatrix.Stability.WeakConverse
+public import RealRooted.HermiteBiehler.Basic
+public import RealRooted.HermiteBiehler.Forward
 public import RealRooted.HermiteBiehler.OddEven
-import RealRooted.HermiteBiehler.Forward
-public import RealRooted.Basic.ProperPosition
-
-public section
-
-open Polynomial
+public import RealRooted.HurwitzMatrix
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz.Determinant
+public import RealRooted.SamePhaseInterlacing
 
 /-!
 # Hermite–Biehler and Hurwitz stability criteria
@@ -60,28 +57,34 @@ module = "RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz"
 label = "The classical Hurwitz matrix"
 
 [[theorems]]
-name = "RealRooted.Challenges.HermiteBiehlerHurwitz.hermiteBiehler_forward"
+name = "RealRooted.hermiteBiehlerForwardPos"
+module = "RealRooted.HermiteBiehler.Forward"
 label = "Hermite–Biehler: g ≪ f implies f + ig has no zeros with positive imaginary part"
 
 [[theorems]]
-name = "RealRooted.Challenges.HermiteBiehlerHurwitz.hermiteBiehler_converse"
+name = "RealRooted.strictInterl_of_upperHalfPlaneStable_hermiteBiehler"
+module = "RealRooted.SamePhaseInterlacing"
 label = "Hermite–Biehler, converse: f + ig without such zeros implies g ≪ f"
 
 [[theorems]]
-name = "RealRooted.Challenges.HermiteBiehlerHurwitz.isHurwitzStable_oddEvenPolynomial_iff"
+name = "RealRooted.isHurwitzStable_oddEvenPolynomial_iff"
+module = "RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse"
 label = "q(x²) + x p(x²) is Hurwitz stable iff p ≪ q with nonnegative coefficients"
 headline = true
 
 [[theorems]]
-name = "RealRooted.Challenges.HermiteBiehlerHurwitz.classicalHurwitzCriterion"
+name = "RealRooted.isHurwitzStable_iff_hurwitz_isTotallyNonneg"
+module = "RealRooted.ClassicalHurwitzMatrix.Stability.WeakConverse"
 label = "Hurwitz criterion: stable iff the Hurwitz matrix is totally nonnegative"
 
 [[theorems]]
-name = "RealRooted.Challenges.HermiteBiehlerHurwitz.hasNonnegCoeffs_of_isRightHalfPlaneStable"
+name = "RealRooted.hasNonnegCoeffs_of_isRightHalfPlaneStable"
+module = "RealRooted.ClassicalHurwitzMatrix.Stability.CoefficientSigns"
 label = "No zeros with positive real part implies nonnegative coefficients"
 
 [[theorems]]
-name = "RealRooted.Challenges.HermiteBiehlerHurwitz.coeff_pos_of_isStrictlyHurwitzStable"
+name = "RealRooted.IsStrictlyHurwitzStable.coeff_pos"
+module = "RealRooted.ClassicalHurwitzMatrix.Stability.CoefficientSigns"
 label = "All zeros with negative real part implies positive coefficients"
 
 [[theorems]]
@@ -169,58 +172,3 @@ the criterion for the row-oriented matrix and the finite regressions for the cla
 convention are in `RealRooted.ClassicalHurwitzMatrix.Examples`; the analytic stability bridges
 and finite-minor plumbing remain in `RealRooted.HermiteBiehler` and `RealRooted.HurwitzMatrix`.
 -/
-
-namespace RealRooted
-namespace Challenges
-namespace HermiteBiehlerHurwitz
-
-
-/-- Forward Hermite--Biehler theorem, sign-normalized: if `f` and `g` have
-positive leading coefficients and `g` interlaces `f`, then `f + i g` has no
-zeros in the open upper half-plane. -/
-theorem hermiteBiehler_forward {f g : ℝ[X]}
-    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
-    (h : StrictInterl g f) :
-    IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g) :=
-  RealRooted.hermiteBiehlerForwardPos hf hg h
-
-/-- Converse Hermite--Biehler theorem: if `f` and `g` have positive leading
-coefficients and `f + i g` has no zeros in the open upper half-plane, then `g`
-interlaces `f`. -/
-theorem hermiteBiehler_converse {f g : ℝ[X]}
-    (hf : HasPosLeadingCoeff f) (hg : HasPosLeadingCoeff g)
-    (h : IsUpperHalfPlaneStable (hermiteBiehlerPolynomial f g)) :
-    StrictInterl g f :=
-  RealRooted.strictInterl_of_upperHalfPlaneStable_hermiteBiehler hf hg h
-
-/-- Hermite--Biehler theorem for odd and even parts: for nonzero `p` and `q`,
-the polynomial `q(x²) + x p(x²)` is Hurwitz stable exactly when `p` and `q`
-have nonnegative coefficients and `p` interlaces `q`. -/
-theorem isHurwitzStable_oddEvenPolynomial_iff {p q : ℝ[X]} (hp : p ≠ 0) (hq : q ≠ 0) :
-    IsHurwitzStable (RealRooted.oddEvenPolynomial p q) ↔
-      HasNonnegCoeffs p ∧ HasNonnegCoeffs q ∧ StrictInterl p q :=
-  RealRooted.isHurwitzStable_oddEvenPolynomial_iff hp hq
-
-/-- A real polynomial with positive leading coefficient and no zeros in the
-open right half-plane has nonnegative coefficients. -/
-theorem hasNonnegCoeffs_of_isRightHalfPlaneStable {p : ℝ[X]}
-    (hp : HasPosLeadingCoeff p) (h : IsRightHalfPlaneStable (complexify p)) :
-    HasNonnegCoeffs p :=
-  RealRooted.hasNonnegCoeffs_of_isRightHalfPlaneStable hp h
-
-/-- A real polynomial with positive leading coefficient and all zeros in the
-open left half-plane has every coefficient up to its degree positive. -/
-theorem coeff_pos_of_isStrictlyHurwitzStable {p : ℝ[X]}
-    (h : RealRooted.IsStrictlyHurwitzStable p) (hp : HasPosLeadingCoeff p) {k : ℕ}
-    (hk : k ≤ p.natDegree) : 0 < p.coeff k :=
-  h.coeff_pos hp hk
-
-/-- The classical Hurwitz criterion for nonzero real polynomials. -/
-theorem classicalHurwitzCriterion {p : ℝ[X]} (hp : p ≠ 0) :
-    RealRooted.IsHurwitzStable p ↔
-      (Matrix.hurwitz p.coeff).IsTotallyNonneg :=
-  RealRooted.isHurwitzStable_iff_hurwitz_isTotallyNonneg hp
-
-end HermiteBiehlerHurwitz
-end Challenges
-end RealRooted

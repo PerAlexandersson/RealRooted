@@ -117,3 +117,16 @@ theorem auxiliaryG_sub_hasNonnegCoeffs {n : ℕ} (hn : 1 ≤ n) :
 end FiniteSkewBoard
 end GeneralizedSnakePosets
 end RealRooted
+
+open Polynomial
+
+namespace RealRooted
+
+open GeneralizedSnakePosets
+/-- `X G_{n-1} = P_n - (1 + X) P_{n-1}`. -/
+theorem GeneralizedSnakePosets.rookSum_recurrence {n : ℕ} (hn : n ≠ 0) :
+    X * FiniteSkewBoard.rookSum (n - 1) =
+      modifiedNarayanaPolynomial n - (1 + X) * modifiedNarayanaPolynomial (n - 1) :=
+  FiniteSkewBoard.narayanaAuxiliaryGRecurrence_modified (Nat.one_le_iff_ne_zero.mpr hn)
+
+end RealRooted

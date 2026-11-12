@@ -49,8 +49,7 @@ module = "RealRooted.CommonInterleaver.RootDesc"
 label = "Common left interleaver"
 
 [[definitions]]
-name = """RealRooted.ParkingFunctions.ToricContribution.\
-weightedNormalizedReversedContributionFamily"""
+name = "RealRooted.ParkingFunctions.ToricContribution.weightedNormalizedReversedContributionFamily"
 module = "RealRooted.ParkingFunctions.ToricContribution.ContributionReversal"
 label = "Weighted normalized reversed contributions"
 
@@ -61,8 +60,8 @@ label = "Xiao's conjecture: toric contribution rows are interlacing sequences"
 headline = true
 
 [[theorems]]
-name = """RealRooted.ParkingFunctions.ToricContribution.\
-normalizedRPolynomialFamily_hasCommonLeftInterleaver"""
+name = """RealRooted.ParkingFunctions.ToricContribution.normalizedRPolynomialFamily_\
+hasCommonLeftInterleaver"""
 module = "RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer"
 label = "The R_d have a common interleaver"
 

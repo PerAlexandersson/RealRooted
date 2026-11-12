@@ -1,20 +1,25 @@
 module
 
+public import RealRooted.Basic.ProperPosition
 public import RealRooted.ChudnovskySeymour.Core
 public import RealRooted.CommonInterleaver.FamilySum
 public import RealRooted.CommonInterleaver.FamilyUpgrade
+public import RealRooted.CommonInterleaver.PairBridge.Compatibility.NonnegativeShift
+public import RealRooted.CommonInterleaver.PairBridge.Reduction.CommonInterleaver
+public import RealRooted.CommonInterleaver.PairBridge.SuccDegree.SlotData
 public import RealRooted.CommonInterleaver.PairwiseUpgrade.FamilyCompatibility
+public import RealRooted.CommonInterleaver.RootDesc
 public import RealRooted.CommonInterleaver.RootSelection
 public import RealRooted.CommonInterleaver.RootSelectionTree
+public import RealRooted.CommonInterleaverSeq
+public import RealRooted.Compatibility.Basic
 public import RealRooted.Compatibility.InterleaverBridge
 public import RealRooted.Compatibility.Leander
-import RealRooted.CommonInterleaver.PairBridge.Compatibility.NonnegativeShift
+public import RealRooted.Compatibility.LeanderTransform
 public import RealRooted.Compatibility.Pair
+public import RealRooted.DegreeDropDivXPrec
 public import RealRooted.RootLocation.CommonInterlacer
-public import RealRooted.Basic.ProperPosition
-import RealRooted.CommonInterleaverSeq
-import RealRooted.DegreeDropDivXPrec
-import RealRooted.SameDegreeCountFromAnalytic
+public import RealRooted.SameDegreeCountFromAnalytic
 
 /-!
 # Common interleavers and compatible families
@@ -89,8 +94,8 @@ module = "RealRooted.Compatibility.InterleaverBridge"
 label = "Pairwise common interleavers give pairwise compatibility"
 
 [[theorems]]
-name = "RealRooted.Challenges.CommonInterleaver.compatiblePair_hasCommonInterleaver"
-module = "RealRooted.Challenges.Interlacing.CommonInterleaver"
+name = "RealRooted.chudnovskySeymour_compatiblePairHasCommonInterleaver"
+module = "RealRooted.CommonInterleaver.PairBridge.Compatibility.NonnegativeShift"
 label = "Chudnovsky–Seymour: a compatible pair has a common interleaver"
 
 [[theorems]]
@@ -260,22 +265,3 @@ The equivalence of pairwise compatibility and a common interleaver is the
 This module is a catalog facade.  The proofs live in
 `RealRooted.CommonInterleaver` and `RealRooted.Compatibility`.
 -/
-
-public section
-
-open Polynomial
-
-namespace RealRooted
-namespace Challenges
-namespace CommonInterleaver
-
-/-- Two compatible real polynomials with positive leading coefficients have a
-common interleaver. -/
-theorem compatiblePair_hasCommonInterleaver {f g : ℝ[X]} (hf : HasPosLeadingCoeff f)
-    (hg : HasPosLeadingCoeff g) (hfg : Compatible f g) :
-    ∃ h : ℝ[X], StrictInterl f h ∧ StrictInterl g h :=
-  RealRooted.chudnovskySeymour_compatiblePairHasCommonInterleaver hf hg hfg
-
-end CommonInterleaver
-end Challenges
-end RealRooted

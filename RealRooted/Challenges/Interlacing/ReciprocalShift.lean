@@ -32,7 +32,7 @@ module = "RealRooted.ReciprocalShift.Roots"
 label = "Roots of a reciprocal shift"
 
 [[theorems]]
-name = "RealRooted.reciprocalShift_preserves_pf"
+name = "RealRooted.IsPFPolynomial.reciprocalShift"
 module = "RealRooted.PFPolynomial"
 label = "PF preservation under reciprocal shifts"
 

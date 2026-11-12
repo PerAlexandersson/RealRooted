@@ -98,7 +98,7 @@ theorem isPFPolynomial_and_interl_of_forall_differential_images
         IsPFPolynomial (jensenDifferentialTest (cap n) k) ∧
           Interl (jensenDifferentialTest (cap n) k)
             (jensenDifferentialTest (cap n) h) := by
-    apply (preservesOrderedPFUpTo_iff_jensenDifferentialTests
+    apply (PreservesOrderedPFUpTo.iff_jensenDifferentialTests
       (cap n) h k).mp
     intro p hp _
     exact hpres p hp
@@ -164,7 +164,7 @@ in the finite-cap companion cone. -/
 theorem preservesOrderedPFUpTo_iff_hasFiniteCapCompanionCone
     (N : ℕ) (h k : ℝ[X]) :
     PreservesOrderedPFUpTo N h k ↔ HasFiniteCapCompanionCone N h k := by
-  rw [preservesOrderedPFUpTo_iff_jensenDifferentialTests]
+  rw [PreservesOrderedPFUpTo.iff_jensenDifferentialTests]
   let H := jensenDifferentialTest N h
   let K := jensenDifferentialTest N k
   change

@@ -19,7 +19,8 @@ We formalize Lemma 8 in Brändén, Krasikov, and Shapiro,
 
 In `PolyFiniteDifferenceOp.support_subsingleton_of_preserves` we prove the hard direction
 unconditionally, using the two-dominant-term limit-of-zeros theorem on the images of `X ^ m`.
-The full criterion is `PolyFiniteDifferenceOp.preserves_iff`: at most one coefficient is
+The full criterion is `RealRooted.PreservesRealRootedOrZero.polyFiniteDifferenceOp_iff`: at most one
+coefficient is
 nonzero, and every surviving coefficient splits over the reals.
 
 We also provide the univariate real Borcea--Brändén bridge, real boundary slices of stable
@@ -658,7 +659,8 @@ theorem support_subsingleton_of_preserves {n : ℕ} {q : Fin n → ℝ[X]}
 
 /-- BKS (2016), Lemma 8: exactly one split coefficient may survive; the zero
 operator is included by allowing empty support. -/
-theorem preserves_iff {n : ℕ} {q : Fin n → ℝ[X]} :
+theorem _root_.RealRooted.PreservesRealRootedOrZero.polyFiniteDifferenceOp_iff
+    {n : ℕ} {q : Fin n → ℝ[X]} :
     PreservesRealRootedOrZero (polyFiniteDifferenceOp q) ↔
       Set.Subsingleton {j | q j ≠ 0} ∧ ∀ j, q j ≠ 0 → (q j).Splits := by
   constructor

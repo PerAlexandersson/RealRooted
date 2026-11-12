@@ -55,8 +55,9 @@ replace it.
   is meant for Mathlib's `Mathlib.X`.
 - `RealRooted/Challenges/` holds short entry points, one per completed result,
   in topical subfolders (`Interlacing`, `Roots`, `Preservers`, `Stability`,
-  `PolyaFrequency`, `Matrices`, `Orthogonal`, `Graphs`, `Combinatorial`). The Lean
-  namespace stays `RealRooted.Challenges.<Name>`. They feed the public catalog (see
+  `PolyaFrequency`, `Matrices`, `Orthogonal`, `Graphs`, `Combinatorial`). These
+  importable entry points select library declarations from their proof modules;
+  theorems live in their subjects' namespaces. They feed the public catalog (see
   [Documentation](#documentation)).
 - `RealRooted/Tactic/` holds the real-rootedness and interlacing tactics.
   [`RealRooted/Tactic/ROUTES.md`](RealRooted/Tactic/ROUTES.md) lists the row-tactic routes,
@@ -102,11 +103,11 @@ curated list. Some representative checked theorems:
   interlacing for totally nonnegative matrices
   (`Matrix.IsTotallyNonneg.leading_charpoly_interlaces`), and the Bezoutian
   criterion (`strictInterlSameDegree_iff_bezoutMatrix_posDef`).
-- **Preservers.** Interlacing preservers (`operatorPreservesInterlacingPairsUpToOrder`),
+- **Preservers.** Interlacing preservers (`RealRooted.PreservesRealRootedOrZero.interl_or_reverse`),
   matrix preservers (`matrix_preserves_interlacing_seq`), the finite
   Borcea–Brändén classification (`Challenges.BorceaBranden`), Garloff–Wagner
-  Hadamard products (`Challenges.Hadamard.interl_hadamardProduct_of_strictInterl`), and the
-  Mao–Wang Narayana transformation (`narayanaTransformPreservesPF`).
+  Hadamard products (`RealRooted.StrictInterl.interl_hadamardProduct`), and the
+  Mao–Wang Narayana transformation (`RealRooted.IsPFPolynomial.narayanaTransform`).
 - **Pólya frequency.** The reverse Aissen–Schoenberg–Whitney theorem
   (`aissenSchoenbergWhitney_reverse`), Veronese sections
   (`isRealRootedOrZero_veroneseSectionPolynomial_of_realRooted_nonneg_matrix`),

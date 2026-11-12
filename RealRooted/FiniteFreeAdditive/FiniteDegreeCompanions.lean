@@ -43,7 +43,7 @@ private theorem isPFPolynomial_applyAsDifferentialOperator
     · simp [hh0, applyAsDifferentialOperator]
     by_cases hp0 : p = 0
     · simp [hp0, applyAsDifferentialOperator]
-    exact differential_operator_preserves_real_rooted
+    exact HermitePoulain.applyAsDifferentialOperator_eq_zero_or_splits
       (hh.ne_zero_and_splits hh0) (hp.ne_zero_and_splits hp0)
 
 /-- A nonnegative expansion in the parent polynomial and its one-root-deleted
@@ -475,7 +475,7 @@ theorem preservesOrderedPFUpTo_multishift_removeNth
     (hs : ∀ i, 0 ≤ s i) (i : Fin (r + 1)) :
     PreservesOrderedPFUpTo N (multishiftDifferentialSymbol N s)
       (multishiftDifferentialSymbol N (Fin.removeNth i s)) := by
-  apply (preservesOrderedPFUpTo_iff_jensenDifferentialTests N _ _).mpr
+  apply (PreservesOrderedPFUpTo.iff_jensenDifferentialTests N _ _).mpr
   rw [jensenDifferentialTest_multishiftDifferentialSymbol s hrN,
     jensenDifferentialTest_multishiftDifferentialSymbol (Fin.removeNth i s) (by lia)]
   exact ⟨isPFPolynomial_multishiftJensenPolynomial hs,

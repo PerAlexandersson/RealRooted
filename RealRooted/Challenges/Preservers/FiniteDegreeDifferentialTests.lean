@@ -33,7 +33,7 @@ module = "RealRooted.FiniteFreeAdditive.FiniteDegreeCompanions"
 label = "A nonnegative combination of h and quotients h/(x − u)"
 
 [[theorems]]
-name = "RealRooted.preservesPFUpTo_iff_finiteDifferentialTest"
+name = "RealRooted.PreservesPFUpTo.iff_finiteDifferentialTest"
 module = "RealRooted.FiniteFreeAdditive.FiniteDegreeTests"
 label = "h(D) preserves PF polynomials of degree at most N exactly when h(D) X^N is PF"
 
@@ -43,17 +43,17 @@ module = "RealRooted.FiniteFreeAdditive.FiniteDegreeTests"
 label = "The finite free additive convolution with the test is the differential operator"
 
 [[theorems]]
-name = "RealRooted.FiniteDegreeOrdered.preservesOrderedPFUpTo_iff_differentialTests"
+name = "RealRooted.PreservesOrderedPFUpTo.iff_differentialTests"
 module = "RealRooted.FiniteFreeAdditive.FiniteDegreeOrderedTests"
 label = "Ordered PF images through degree N are detected by the two degree-N tests"
 
 [[theorems]]
-name = "RealRooted.FiniteDegreeOrdered.preservesOrderedPFUpTo_iff_jensenDifferentialTests"
+name = "RealRooted.PreservesOrderedPFUpTo.iff_jensenDifferentialTests"
 module = "RealRooted.FiniteFreeAdditive.FiniteDegreeOrderedTests"
 label = "The same criterion through the reversed (Jensen) tests"
 
 [[theorems]]
-name = "RealRooted.FiniteDegreeOrdered.preservesOrderedPFUpTo_binomialDifferentialSymbol"
+name = "RealRooted.PreservesOrderedPFUpTo.binomialDifferentialSymbol"
 module = "RealRooted.FiniteFreeAdditive.FiniteDegreeOrderedTests"
 label = "Binomial symbols with Jensen tests (sX + 1)^r, (sX + 1)^(r-1): ordered PF images"
 

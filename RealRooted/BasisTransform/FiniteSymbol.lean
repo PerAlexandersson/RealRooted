@@ -69,7 +69,7 @@ theorem basisTransform_splits_or_zero_of_finiteSymbol_stable
     rw [finiteAlgebraicSymbol_basisTransformₗ]
     exact hSymbol
   simpa using
-    (finiteSymbol_preservesRealRootedUpTo hfinite hpdeg hp)
+    (PreservesRealRootedUpTo.of_finiteSymbol hfinite hpdeg hp)
 
 /-- If the explicit finite symbol is stable and the basis images in its degree
 box have nonnegative coefficients, the basis transform sends every PF

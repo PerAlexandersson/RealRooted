@@ -1,12 +1,14 @@
 module
 
-import RealRooted.Applications.EulerianCompendium.Results
-import RealRooted.EulerianMixedCompatibility
-import RealRooted.EulerianCompletion
-public import RealRooted.Applications.EulerianCompendium.TernaryWords
 public import RealRooted.Applications.EulerianCompendium.CyclicWords
-import RealRooted.CombinatorialExamples.ZigzagEulerian.RealRooted
+public import RealRooted.Applications.EulerianCompendium.Definitions
+public import RealRooted.Applications.EulerianCompendium.Results
+public import RealRooted.Applications.EulerianCompendium.TernaryWords
 public import RealRooted.CombinatorialExamples.ZigzagEulerian.Definitions
+public import RealRooted.CombinatorialExamples.ZigzagEulerian.RealRooted
+public import RealRooted.EulerianCompletion
+public import RealRooted.EulerianMixedCompatibility
+public import RealRooted.EulerianMixedCompatibility.Insertion
 
 /-!
 # Eulerian-type polynomials with real roots
@@ -62,51 +64,51 @@ module = "RealRooted.EulerianCompletion"
 label = "Lowering Euler operator p ↦ Mp + (1 - x)p'"
 
 [[theorems]]
-name = "RealRooted.EulerianCompendium.PaperChallenges.derangementDescent_realRooted"
-module = "RealRooted.Challenges.Combinatorial.EulerianCompendium"
+name = "RealRooted.EulerianCompendium.Challenges.derangementDescent_realRooted"
+module = "RealRooted.Applications.EulerianCompendium.Results"
 label = "Derangement polynomials are real-rooted"
 tags = ["coauthored-paper"]
 
 [[theorems]]
-name = "RealRooted.EulerianCompendium.PaperChallenges.cyclicWordDescent_roots"
-module = "RealRooted.Challenges.Combinatorial.EulerianCompendium"
+name = "RealRooted.EulerianCompendium.Challenges.cyclicWordDescent_roots"
+module = "RealRooted.Applications.EulerianCompendium.Results"
 label = "Balanced cyclic-word polynomials: simple roots, one at 0, the rest negative"
 tags = ["coauthored-paper"]
 
 [[theorems]]
-name = "RealRooted.EulerianCompendium.PaperChallenges.evenTopDescent_strictAlternation"
-module = "RealRooted.Challenges.Combinatorial.EulerianCompendium"
+name = "RealRooted.EulerianCompendium.Challenges.evenTopDescent_strictAlternation"
+module = "RealRooted.Applications.EulerianCompendium.Results"
 label = "Even-top descent polynomials have negative roots that strictly alternate"
 tags = ["coauthored-paper"]
 
 [[theorems]]
-name = "RealRooted.EulerianCompendium.PaperChallenges.superEulerian_roots_interlacing_gamma"
-module = "RealRooted.Challenges.Combinatorial.EulerianCompendium"
+name = "RealRooted.EulerianCompendium.superEulerian_roots_interlacing_gamma"
+module = "RealRooted.Applications.EulerianCompendium.Results"
 label = "Super-Eulerian polynomials: real roots, interlacing and gamma-expansion"
 tags = ["coauthored-paper"]
 
 [[theorems]]
-name = "RealRooted.EulerianCompendium.PaperChallenges.ternaryWordRun_realRooted_interlaces"
-module = "RealRooted.Challenges.Combinatorial.EulerianCompendium"
+name = "RealRooted.EulerianCompendium.Challenges.ternaryWordRun_realRooted_interlaces"
+module = "RealRooted.Applications.EulerianCompendium.Results"
 label = "Ternary-word run polynomials are real-rooted and interlace"
 tags = ["coauthored-paper"]
 
 [[theorems]]
-name = "RealRooted.EulerianCompendium.PaperChallenges.peakPolynomial_roots"
-module = "RealRooted.Challenges.Combinatorial.EulerianCompendium"
+name = "RealRooted.EulerianCompendium.Challenges.peakPolynomial_roots"
+module = "RealRooted.Applications.EulerianCompendium.Results"
 label = "Peak polynomials have negative roots that strictly alternate"
 tags = ["coauthored-paper"]
 
 [[theorems]]
-name = "RealRooted.EulerianCompendium.PaperChallenges.peakValue_stability_and_weightedInterlacing"
-module = "RealRooted.Challenges.Combinatorial.EulerianCompendium"
+name = "RealRooted.EulerianCompendium.peakValue_stability_and_weightedInterlacing"
+module = "RealRooted.Applications.EulerianCompendium.Results"
 label = "Peak-value polynomials are real stable; weighted diagonals interlace"
 tags = ["coauthored-paper"]
 headline = true
 
 [[theorems]]
-name = "RealRooted.EulerianCompendium.PaperChallenges.zigzagEulerian_roots"
-module = "RealRooted.Challenges.Combinatorial.EulerianCompendium"
+name = "RealRooted.ZigzagEulerian.isRealRooted_and_roots_neg"
+module = "RealRooted.CombinatorialExamples.ZigzagEulerian.RealRooted"
 label = "Zig-zag Eulerian polynomials have simple negative roots"
 tags = ["realrooted-original"]
 
@@ -210,80 +212,3 @@ The two operator theorems drive the proof for derangement descents.
 - [@Alexandersson2026Eulerian]
 <!-- /realrooted-catalog-content -->
 -/
-
-public section
-
-open Polynomial RealRooted
-
-open RealRooted.ZigzagEulerian
-
-namespace RealRooted.EulerianCompendium.PaperChallenges
-
-/-- Paper `thm:derangementRealRooted`. Verified for actual derangement descents. -/
-theorem derangementDescent_realRooted (n : ℕ) (hn : 2 ≤ n) :
-    derangementDescentPolynomial n ≠ 0 ∧
-      (derangementDescentPolynomial n).Splits ∧
-      ∀ r ∈ (derangementDescentPolynomial n).roots, r ≤ 0 := by
-  exact Challenges.derangementDescent_realRooted n hn
-
-/-- Paper `thm:cyclicDescents`. Verified for the actual balanced cyclic-word sum. -/
-theorem cyclicWordDescent_roots (n : ℕ) (hn : 0 < n) :
-    (BalancedCyclic.balancedWordSum n).Splits ∧
-      HasSimpleRoots (BalancedCyclic.balancedWordSum n) ∧
-      (BalancedCyclic.balancedWordSum n).IsRoot 0 ∧
-      (∀ r ∈ (BalancedCyclic.balancedWordSum n).roots.erase 0, r < 0) ∧
-      ((BalancedCyclic.balancedWordSum n).roots.erase 0).card = n - 1 := by
-  exact Challenges.cyclicWordDescent_roots n hn
-
-/-- Paper `thm:evenTopInterlacing`. Verified: actual sums and strict root alternation. -/
-theorem evenTopDescent_strictAlternation (n : ℕ) (hn : 2 ≤ n) :
-    (evenTopDescentPolynomial n).Splits ∧
-      (∀ r ∈ (evenTopDescentPolynomial n).roots, r < 0) ∧
-      StrictlyAlternatingRoots
-        (evenTopDescentPolynomial n) (evenTopDescentPolynomial (n + 1)) := by
-  exact Challenges.evenTopDescent_strictAlternation n hn
-
-/-- Paper `thm:superEulerian`. All conclusions verified; the row is n+1. -/
-theorem superEulerian_roots_interlacing_gamma (l n : ℕ) (hl : 0 < l) :
-    (superEulerianPolynomial l (n + 1) ≠ 0 ∧
-      (superEulerianPolynomial l (n + 1)).Splits ∧
-      ∀ r ∈ (superEulerianPolynomial l (n + 1)).roots, r ≤ 0) ∧
-    Interl (superEulerianPolynomial l (n + 1)) (superEulerianPolynomial l (n + 2)) ∧
-    ∃ γ : ℝ[X], γ.natDegree ≤ n / 2 ∧
-      IsGammaExpansion n (superEulerianPolynomial l (n + 1)) γ ∧
-      (γ ≠ 0 ∧ γ.Splits) ∧ HasRootsNonpos γ ∧ HasNonnegCoeffs γ := by
-  exact ⟨Challenges.superEulerian_realRooted l n hl,
-    Challenges.superEulerian_interlaces l n hl, Challenges.superEulerian_gamma l n hl⟩
-
-/-- Paper `thm:ternaryRuns`: real-rootedness and interlacing for actual ternary words. -/
-theorem ternaryWordRun_realRooted_interlaces (n : ℕ) :
-    (ternaryWordRunEnumerator n ≠ 0 ∧ (ternaryWordRunEnumerator n).Splits) ∧
-      StrictInterl (ternaryWordRunEnumerator n) (ternaryWordRunEnumerator (n + 1)) := by
-  exact Challenges.ternaryWordRun_realRooted_interlaces n
-
-/-- Paper `thm:permutationPeaks`. Verified: degree, simplicity and strict alternation. -/
-theorem peakPolynomial_roots (n : ℕ) (hn : 1 ≤ n) :
-    (peakPolynomial n ≠ 0 ∧ (peakPolynomial n).Splits) ∧
-    (3 ≤ n → (peakPolynomial n).natDegree = (n - 1) / 2 ∧
-      (∀ r ∈ (peakPolynomial n).roots, r < 0) ∧
-      StrictlyAlternatingRoots (peakPolynomial n) (peakPolynomial (n + 1))) := by
-  exact Challenges.peakPolynomial_roots n hn
-
-/-- Paper `thm:peakValueStability`. Both conclusions verified for actual permutations. -/
-theorem peakValue_stability_and_weightedInterlacing :
-    (∀ n : ℕ, MvRealStable (peakValuePolynomial n)) ∧
-    (∀ (n : ℕ), 1 ≤ n → ∀ (wt : Fin (n + 1) → ℝ), (∀ j, 0 < wt j) →
-      StrictInterl (weightedPeakPolynomial (fun j : Fin n => wt j.castSucc))
-        (weightedPeakPolynomial wt)) := by
-  exact ⟨Challenges.peakValue_realStable, Challenges.weightedPeak_interlaces⟩
-
-/-- Exact degree and distinct negative roots of the zig-zag swap enumerator. -/
-theorem zigzagEulerian_roots (n : ℕ) (hn : 1 ≤ n) :
-    zigzagEulerianPolynomial n ≠ 0 ∧
-      (zigzagEulerianPolynomial n).natDegree = n - 2 ∧
-      (zigzagEulerianPolynomial n).Splits ∧
-      (zigzagEulerianPolynomial n).roots.Nodup ∧
-      ∀ r ∈ (zigzagEulerianPolynomial n).roots, r < 0 := by
-  exact ⟨zigzagEulerianPolynomial_ne_zero n, zigzagEulerianPolynomial_roots n hn⟩
-
-end RealRooted.EulerianCompendium.PaperChallenges

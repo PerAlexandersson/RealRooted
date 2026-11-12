@@ -72,3 +72,17 @@ theorem mvRealStable_iff_aeval_X_ne_zero_and_splits {n : ℕ}
     exact Polynomial.Splits.isUpperHalfPlaneStable_complexify hs h0
 
 end RealRooted
+
+open Polynomial
+
+namespace RealRooted
+
+/-- Blockwise polarization in the degree box `κ` preserves and reflects
+stability. -/
+theorem GraceApolarity.polarization_stable_iff {σ : Type*}
+    [Fintype σ] (κ : σ → ℕ) (p : MvPolynomial.degreeOfLE σ ℂ κ) :
+    MvUpperHalfPlaneStable (BorceaBranden.blockwisePolarizationDegreeBoxGeneral κ p).1 ↔
+      MvUpperHalfPlaneStable p.1 :=
+  BorceaBranden.blockwisePolarization_stable_iff κ p
+
+end RealRooted

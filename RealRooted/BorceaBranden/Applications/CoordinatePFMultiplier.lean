@@ -394,7 +394,7 @@ theorem coordinateDiagonalOperatorDegreeBox_preserves_stability
 
 /-- A PF Jensen polynomial makes the coordinate diagonal action preserve
 upper-half-plane stability without any degree bounds on spectator variables. -/
-theorem coordinateDiagonalOperator_preserves_stability
+theorem _root_.RealRooted.MvUpperHalfPlaneStable.coordinateDiagonalOperator
     {σ : Type*} [Finite σ] (d : ℕ) (gamma : ℕ → ℝ) (q : σ)
     (hJ : IsPFPolynomial (jensenPolynomial d gamma))
     {p : _root_.MvPolynomial σ ℂ} (hpq : p.degreeOf q ≤ d)
@@ -426,7 +426,7 @@ theorem IsPFMultiplierSequence.coordinateDiagonalOperator_preserves_stability
     {p : _root_.MvPolynomial σ ℂ} (hpq : p.degreeOf q ≤ d)
     (hp : MvUpperHalfPlaneStable p) :
     MvUpperHalfPlaneStableOrZero (coordinateDiagonalOperator gamma q p) :=
-  RealRooted.BorceaBranden.coordinateDiagonalOperator_preserves_stability d gamma q
+  RealRooted.MvUpperHalfPlaneStable.coordinateDiagonalOperator d gamma q
     (isPFPolynomial_jensenPolynomial_of_PFMultiplierSequence hgamma d) hpq hp
 
 /-- The descending-factorial sequence is a PF multiplier sequence. -/

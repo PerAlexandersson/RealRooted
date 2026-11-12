@@ -110,7 +110,7 @@ name = "RealRooted.isDiscreteMultiplierSequence_of_isLaguerrePolyaTypeI"
 module = "RealRooted.Mesh.DiscreteMultiplierSequenceLaguerrePolya"
 label = "φ(0), φ(1), … is a discrete multiplier sequence for φ in the Laguerre–Pólya class"
 [[theorems]]
-name = "RealRooted.PolyFiniteDifferenceOp.preserves_iff"
+name = "RealRooted.PreservesRealRootedOrZero.polyFiniteDifferenceOp_iff"
 module = "RealRooted.Mesh.FiniteDifferenceHyperbolicity"
 label = "p ↦ ∑ q_j(x) p(x − j) preserves real-rootedness iff at most one q_j is nonzero"
 

@@ -127,7 +127,7 @@ theorem preservesInterlacingPairsUpToOrder0_of_preservesRealRootedOrZero
   interl_or_reverse_map_of_pencil (allComboRealRooted_of_strictInterl hfg) fun α β hrr =>
     hT (C α * f + C β * g) hrr
 
-theorem operatorPreservesInterlacingPairsUpToOrder :
+theorem PreservesRealRootedOrZero.interl_or_reverse :
     ∀ T : ℝ[X] →ₗ[ℝ] ℝ[X],
       PreservesRealRootedOrZero T →
       PreservesInterlacingPairsUpToOrder0 T :=
