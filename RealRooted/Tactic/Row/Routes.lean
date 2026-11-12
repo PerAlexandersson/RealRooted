@@ -264,7 +264,7 @@ def rowRouteTable : List RowRouteInfo := [
     theorems :=
       [
         `RealRooted.eq_reflect_of_secondOrderDerivativeRecurrence,
-        `RealRooted.eq_reflect_of_threeTerm,
+        `RealRooted.eq_reflect_of_linearRecurrence,
         `RealRooted.interlaces_of_eq_reflect,
         `RealRooted.splits_of_eq_reflect
       ]

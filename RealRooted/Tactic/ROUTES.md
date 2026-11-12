@@ -38,7 +38,7 @@ side conditions, implementing modules, and regression examples.
 | 18 | `twoStep` | Interlacing, splitting, degree, or positive leading coefficient for P (n + 2) = q * P n. | `twoStepProduct_interlaces`, `twoStepProduct_splits`, `twoStepProduct_natDegree`, `twoStepProduct_leadingCoeff_pos`, `twoStepProduct_leadingCoeff_pos_of_ne_zero` |
 | 19 | `nextRow` | (P n).Splits | `productSequence_interlaces`, `derivativeRecurrence_interlaces_of_eval_nonpos`, `threeTerm_interlaces_of_eval_nonpos` |
 | 20 | `degreePattern` | (P n).Splits or StrictInterl (P n) (P (n + 1)). | `derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs`, `derivativeRecurrence_strictInterl_of_degree_pattern_of_nonnegCoeffs`, `Tactic.derivativeRecurrence_strictInterl_of_half_degree`, `Tactic.derivativeRecurrence_strictInterl_of_floor_half_degree` |
-| 21 | `reversed` | Interlaces (P n) (P (n + 1)) or (P n).Splits after reflection. | `eq_reflect_of_secondOrderDerivativeRecurrence`, `eq_reflect_of_threeTerm`, `interlaces_of_eq_reflect`, `splits_of_eq_reflect` |
+| 21 | `reversed` | Interlaces (P n) (P (n + 1)) or (P n).Splits after reflection. | `eq_reflect_of_secondOrderDerivativeRecurrence`, `eq_reflect_of_linearRecurrence`, `interlaces_of_eq_reflect`, `splits_of_eq_reflect` |
 | 22 | `fTransform` | Interlaces (P n) (P (n + 1)) or (P n).Splits for f-polynomial images. | `Tactic.interlaces_fPolynomial_sequence`, `Tactic.interlaces_fPolynomial_sequence_floor`, `splits_of_eq_fPolynomial` |
 
 ## `rr_row_strictInterl`
@@ -77,7 +77,7 @@ side conditions, implementing modules, and regression examples.
 | 20 | `barrierWindow` | Interlaces (P n) (P (n + 1)) | `threeTerm_interlaces_of_roots_mem_Icc_of_barrier` |
 | 21 | `movingWindow` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_mem_Icc_mono_div` |
 | 22 | `movingUpper` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_le_mono_div` |
-| 23 | `reversed` | Interlaces (P n) (P (n + 1)) or (P n).Splits after reflection. | `eq_reflect_of_secondOrderDerivativeRecurrence`, `eq_reflect_of_threeTerm`, `interlaces_of_eq_reflect`, `splits_of_eq_reflect` |
+| 23 | `reversed` | Interlaces (P n) (P (n + 1)) or (P n).Splits after reflection. | `eq_reflect_of_secondOrderDerivativeRecurrence`, `eq_reflect_of_linearRecurrence`, `interlaces_of_eq_reflect`, `splits_of_eq_reflect` |
 
 ## `rr_row_natDegree`
 
@@ -295,9 +295,12 @@ side conditions, implementing modules, and regression examples.
 ## `reversed`
 
 - **Summary:** Prove reflected auxiliary rows and transfer their conclusion back.
-- **Side conditions:** Degree law, nonzero constants, reflected recurrence, and proof.
+- **Side conditions:** Degree D + n, nonzero constants, nonnegative rows, reflected recurrence,
+  and proof. Ordinary recurrences allow every finite order; derivative recurrences have lag one
+  and derivative order at most two.
 - **Module:** `RealRooted.Tactic.Row.Reverse`
-- **Regression examples:** `RealRooted.Tactic.Examples.RowInterlacing`
+- **Regression examples:** `RealRooted.Tactic.Examples.RowInterlacing`,
+  `RealRooted.Tactic.Examples.RowInterlacingPowers`
 
 ## `parityProduct`
 

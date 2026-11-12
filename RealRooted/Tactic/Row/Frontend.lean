@@ -1299,6 +1299,9 @@ private def rowSplitsCoreDirect (log : RowAttemptLog) (hints : RowHints) :
     if use `lagFeedback then
       if (← s.attempt `lagFeedback (runRowRoute `lagFeedback .splits)).isSome then
         return { via := some `lagFeedback }
+    if use `reversed then
+      if (← s.attempt `reversed (runRowRoute `reversed .splits)).isSome then
+        return { via := some `reversed }
     if let some v := hints.via then
       unless v == `subseq do
         throwError "rr_row_splits: the route {v} needs a recurrence that \

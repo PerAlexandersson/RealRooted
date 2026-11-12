@@ -15,7 +15,7 @@ Many OEIS triangles come in pairs read in both directions.  When the rows `P n` 
 `D₀ + n`, nonzero constant terms and nonnegative coefficients, the reversed rows
 `R n = X ^ (D₀ + n) P n (1 / X)` satisfy a recurrence of the same shape
 (`RealRooted.eq_reflect_of_secondOrderDerivativeRecurrence`,
-`RealRooted.eq_reflect_of_threeTerm`), and interlacing
+`RealRooted.eq_reflect_of_linearRecurrence`), and interlacing
 and splitting transfer back (`RealRooted.interlaces_of_eq_reflect`,
 `RealRooted.splits_of_eq_reflect`).
 
@@ -28,6 +28,7 @@ on the reversed sequence.  The route never reverses an auxiliary sequence again.
 public meta section
 
 open Lean Elab Tactic Meta Polynomial
+open Lean.Parser.Term
 
 namespace RealRooted.Tactic
 
@@ -50,20 +51,22 @@ def QPoly.reflect (N : Nat) (p : QPoly) : QPoly :=
   QPoly.norm ((Array.range (N + 1)).map fun i => p.coeff (N - i))
 
 /-- The reversed recurrence of `P`, for a first- or second-order derivative recurrence
-`P (n + 1) = A₂ P'' + A₁ P' + A₀ P` or a three-term recurrence, whose computed rows have degree
+`P (n + 1) = A₂ P'' + A₁ P' + A₀ P` or an ordinary recurrence of any finite order,
+whose computed rows have degree
 `D₀ + n`, nonzero constant terms and nonnegative coefficients, and are not palindromic. -/
 def reversal? (P : Name) : MetaM (Option Reversal) := do
   let some L ← linRec? P | return none
   let k := L.offset
   let deriv := k == 1 && L.terms.all (fun (j, i, _) => j == 0 && i ≤ 2) &&
     L.terms.any (·.2.1 ≥ 1)
-  let lag := k == 2 && L.terms.all (fun (j, i, _) => j ≤ 1 && i == 0)
+  let lag := k ≥ 1 && L.terms.all (fun (j, i, _) => j < k && i == 0)
   unless deriv || lag do return none
-  let some rows ← linRecRows? L 12 | return none
+  let sampleCount := max 12 (k + 1)
+  let some rows ← linRecRows? L sampleCount | return none
   let some r0 := rows[0]? | return none
   let D₀ := r0.natDegree
   let mut palindromic := true
-  for m in [0:12] do
+  for m in [0:sampleCount] do
     let some p := rows[m]? | return none
     if p.isZero || p.natDegree != D₀ + m || p.coeff 0 == 0 || p.lead ≤ 0 then return none
     unless p.coeffs.all (0 ≤ ·) do return none
@@ -86,14 +89,13 @@ def reversal? (P : Name) : MetaM (Option Reversal) := do
       b₀ := b₀.push (QPoly.smul (N * (N - 1)) r₂ + QPoly.smul N r₁ + r₀)
     outs := #[(0, 2, b₂), (0, 1, b₁), (0, 0, b₀)]
   else
-    let mut a' : Array QPoly := #[]
-    let mut b' : Array QPoly := #[]
-    for n in [0:12] do
-      let (some a, some b) := (← L.coeffAt? 1 0 n, ← L.coeffAt? 0 0 n) | return none
-      unless a.natDegree ≤ 1 && b.natDegree ≤ 2 do return none
-      a' := a'.push (a.reflect 1)
-      b' := b'.push (b.reflect 2)
-    outs := #[(1, 0, a'), (0, 0, b')]
+    for j in [0:k] do
+      let mut reflected : Array QPoly := #[]
+      for n in [0:12] do
+        let some a ← L.coeffAt? j 0 n | return none
+        unless a.natDegree ≤ k - j do return none
+        reflected := reflected.push (a.reflect (k - j))
+      outs := outs.push (j, 0, reflected)
   let mut terms := #[]
   for (j, i, ps) in outs do
     let some cs := fitXPoly? ps | return none
@@ -123,7 +125,7 @@ def lrCoeffFun (L : LinRecData) (j i : Nat) : TacticM Term := do
 /-- The `simp only` call reflecting explicit multipliers, for the reversal links. -/
 def reflectSimp : TacticM (TSyntax `tactic) :=
   `(tactic|
-    simp only [reflect_add, reflect_neg, reflect_C_mul, reflect_C_mul_X_pow, reflect_C,
+    simp only [← C_ofNat, reflect_add, reflect_neg, reflect_C_mul, reflect_C_mul_X_pow, reflect_C,
       reflect_monomial, reflect_X, reflect_one, reflect_ofNat_mul, reflect_zero,
       revAt_eq_ite, neg_mul, one_mul, mul_one, zero_mul, mul_zero, add_zero, zero_add])
 
@@ -152,15 +154,13 @@ def reversalLink (P : Name) (rv : Reversal) : TacticM (Ident × Ident) := do
   for t in summands.extract 1 summands.size do
     body ← `($body + $t)
   let k := rv.L.offset
-  let defStx ← if k == 1 then
-      `(command| noncomputable def $(mkIdent (`_root_ ++ nm)) : ℕ → ℝ[X]
-        | 0 => $(← qpolyTerm rv.base[0]!)
-        | $n:ident + 1 => $body)
-    else
-      `(command| noncomputable def $(mkIdent (`_root_ ++ nm)) : ℕ → ℝ[X]
-        | 0 => $(← qpolyTerm rv.base[0]!)
-        | 1 => $(← qpolyTerm rv.base[1]!)
-        | $n:ident + 2 => $body)
+  let mut alts : Array (TSyntax ``Parser.Term.matchAlt) := #[]
+  for m in [0:k] do
+    alts := alts.push (← `(matchAltExpr| | $(rowNumLit m) => $(← qpolyTerm rv.base[m]!)))
+  alts := alts.push (← `(matchAltExpr| | $n:ident + $(rowNumLit k) => $body))
+  let rhs ← `(fun $alts:matchAlt*)
+  let defStx ← `(command|
+    noncomputable def $(mkIdent (`_root_ ++ nm)) : ℕ → ℝ[X] := $rhs)
   elabAuxCommand defStx
   -- the link
   let Pi := mkIdent P
@@ -183,13 +183,15 @@ def reversalLink (P : Name) (rv : Reversal) : TacticM (Ident × Ident) := do
   let deg ← `(fun $n:ident => by beta_reduce; first | compute_degree | simp)
   let hB : TacticM Term := `(fun $n:ident => by beta_reduce; $identity:tactic)
   let hRdeg ← `(fun $n:ident => le_of_eq (by rr_row_natDegree))
-  let base ← `(by
+  let baseTac ← `(tactic| (
     simp only [$Pi:ident, $R:ident]
     first
       | done
       | ($simpReflect:tactic <;> norm_num <;> done)
-      | ($simpReflect:tactic <;> rr_poly_identity))
-  let proof ← if k == 1 then
+      | ($simpReflect:tactic <;> rr_poly_identity)))
+  let base ← `(by $baseTac:tactic)
+  let deriv := rv.L.terms.any (·.2.1 ≥ 1)
+  let proof ← if deriv then
       `(RealRooted.eq_reflect_of_secondOrderDerivativeRecurrence
           (P := $Pi) (R := $R) (D₀ := $D₀)
           (A₂ := $(← lrCoeffFun rv.L 0 2)) (A₁ := $(← lrCoeffFun rv.L 0 1))
@@ -197,11 +199,50 @@ def reversalLink (P : Name) (rv : Reversal) : TacticM (Ident × Ident) := do
           (B₂ := $(← coeffFun 0 2)) (B₁ := $(← coeffFun 0 1)) (B₀ := $(← coeffFun 0 0))
           $hP $hR $deg $deg $deg $(← hB) $(← hB) $(← hB) $hRdeg
           $base)
-    else
-      `(RealRooted.eq_reflect_of_threeTerm (P := $Pi) (R := $R) (D₀ := $D₀)
-          (a := $(← lrCoeffFun rv.L 1 0)) (b := $(← lrCoeffFun rv.L 0 0))
-          (a' := $(← coeffFun 1 0)) (b' := $(← coeffFun 0 0))
-          $hP $hR $deg $deg $(← hB) $(← hB) $hRdeg $base $base)
+    else do
+      let i := mkIdent `i
+      let mut coeff ← `((0 : ℝ[X]))
+      for j in (List.range k).reverse do
+        let f ← lrCoeffFun rv.L j 0
+        coeff ← `(if $i:ident = $(rowNumLit j) then $f $n:ident else $coeff)
+      let a ← `(fun $n:ident $i:ident : ℕ => $coeff)
+      let mut reflected ← `((0 : ℝ[X]))
+      for j in (List.range k).reverse do
+        let f ← coeffFun j 0
+        reflected ← `(if $i:ident = $(rowNumLit j) then $f $n:ident else $reflected)
+      let b ← `(fun $n:ident $i:ident : ℕ => $reflected)
+      let expand ← `(tactic| simp only [Finset.sum_range_succ, Finset.sum_range_zero,
+        Nat.reduceSub, ↓reduceIte, Nat.one_mul, Nat.add_zero, zero_add])
+      let hPk ← `(fun $n:ident => by
+        beta_reduce
+        $expand:tactic
+        norm_num
+        rw [$eqn:ident $n:ident] <;> rr_ring <;> simp)
+      let hRk ← `(fun $n:ident => by
+        have hcoeff : ∀ n i, i < $(rowNumLit k) →
+            $b n i = reflect ($(rowNumLit k) - i) ($a n i) := by
+          intro n i hi
+          interval_cases i <;> beta_reduce <;> norm_num <;> $identity:tactic
+        calc
+          $R ($n + $(rowNumLit k)) =
+              ∑ i ∈ Finset.range $(rowNumLit k), $b $n i * $R ($n + i) := by
+            beta_reduce
+            $expand:tactic
+            rw [$R:ident] <;> norm_num <;> rr_ring
+          _ = _ := by
+            apply Finset.sum_congr rfl
+            intro i hi
+            rw [Nat.one_mul, ← hcoeff $n i (Finset.mem_range.mp hi)])
+      let hak ← `(fun $n:ident $i:ident hi => by
+        beta_reduce
+        interval_cases $i:ident <;> norm_num <;> first | compute_degree | simp)
+      let hinit ← `(fun $i:ident hi => by
+        interval_cases $i:ident <;> $baseTac:tactic)
+      `(by
+        simpa only [Nat.one_mul] using
+          (RealRooted.eq_reflect_of_linearRecurrence
+            (P := $Pi) (R := $R) (D := $D₀) (c := 1) (k := $(rowNumLit k)) (a := $a)
+            $hPk $hRk $hak $hRdeg $hinit))
   evalTactic (← `(tactic| have $link:ident := $proof))
   return (R, link)
 

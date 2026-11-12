@@ -27,6 +27,29 @@ namespace RealRooted.Tactic.RowInterlacingExamples
 
 noncomputable section
 
+/-- An order-three recurrence with every lag present; its reflection has power-form rows. -/
+def lagCubicRows : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 1 + 2 * X
+  | 2 => 1 + 4 * X + 4 * X ^ 2
+  | n + 3 => (1 + 2 * X) * lagCubicRows (n + 2) +
+      (1 + 4 * X + 4 * X ^ 2) * lagCubicRows (n + 1) +
+      (1 + 6 * X + 12 * X ^ 2 + 8 * X ^ 3) * lagCubicRows n
+
+example (n : ℕ) : Interlaces (lagCubicRows n) (lagCubicRows (n + 1)) := by
+  rr_row_interlaces (via := reversed)
+
+/-- Four independent residue classes with a split quartic multiplier. -/
+def residueQuarticRows : ℕ → ℝ[X]
+  | 0 => 1
+  | 1 => 2 + 4 * X
+  | 2 => 3 + 12 * X + 12 * X ^ 2
+  | 3 => 5 + 30 * X + 60 * X ^ 2 + 40 * X ^ 3
+  | n + 4 => (1 + 8 * X + 24 * X ^ 2 + 32 * X ^ 3 + 16 * X ^ 4) * residueQuarticRows n
+
+example (n : ℕ) : (residueQuarticRows n).Splits := by
+  rr_row_splits (via := reversed)
+
 /-! ### Rows `c m · q ^ m`
 
 Recurrences whose multipliers are powers of one linear `q`
