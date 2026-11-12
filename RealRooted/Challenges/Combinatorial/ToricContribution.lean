@@ -70,47 +70,58 @@ label = "The R_d have a common interleaver"
 name = """RealRooted.ParkingFunctions.ToricContribution.\
 weightedNormalizedReversedContributionFamily_sum_splits"""
 module = "RealRooted.ParkingFunctions.ToricContribution.ContributionReversal"
-label = "Positive weighted sums are real-rooted"
+label = "Positive weighted sums of normalized reversed contributions are real-rooted"
 -->
 
 <!-- realrooted-catalog-content -->
 # Toric g-contribution polynomials
 
-Xiao studies the toric $g$-contribution polynomials $g_{n,j}(x)$, whose
-coefficients are built from binomial coefficients and Catalan numbers.
-In *The real-rootedness of the toric $g$-contribution polynomials*,
-Xiao conjectured in Conjecture 4.2 [@Xiao2026x, Conj. 4.2] that, for each
-$n = 2m + \varepsilon$ with $\varepsilon \in \{0, 1\}$,
-the row $(g_{n,0}, g_{n,1}, \dotsc, g_{n,\lfloor n/2\rfloor})$ is an interlacing sequence.
+Each row of the toric $g$-contribution polynomials is an interlacing sequence, as conjectured by
+Xiao.
 
-**Theorem (Xiao's conjecture).** [@Xiao2026x] For all $m$ and
-$\varepsilon \leq 1$, the toric
-contribution row is an interlacing sequence.
-Here a list $(f_0,\dotsc,f_k)$ is an interlacing sequence if $f_i\ll f_j$ for
-every $i<j$, not merely for consecutive indices.
+## Results
 
-The library indexes by the offset from the middle of the row:
-`toricContribution m ε d` is $g_{2m+\varepsilon,\,m-d}$ for $0 \leq d \leq m$.
+We write $f\ll g$ if $f$ interlaces $g$; common roots are allowed unless stated. A list
+$(f_0,\dots,f_k)$ is an *interlacing sequence* if $f_i\ll f_j$ for all $i<j$, not only for
+consecutive indices. For $n=2m+\varepsilon$ with $\varepsilon\in\{0,1\}$ and $0\le j\le m$, the
+toric $g$-contribution polynomial is
+$$
+g_{n,j}(x)=\sum_{k=0}^{m}\binom{n-k}{k}\,C_{n-j-k}\,(x-1)^k,
+$$
+where $C_i$ is the Catalan number. In the library, `toricContribution m ε d` is
+$g_{2m+\varepsilon,\,m-d}$.
 
-For $m\ge1$, the proof finds a common left interleaver for the normalized
-family. Here $R_d$ is the terminating ${}_3F_2$-type polynomial with
-coefficients `rCoeff m ε d k`; these polynomials share a Jacobi-type
-interlacer. Every weighted sum with $w_d>0$ for $0\le d\le m$ of the
-normalized reversed contributions splits over $\mathbb R$.
+**Theorem (Xiao's conjecture).** [@Xiao2026x, Conj. 4.2] For all $m\ge0$ and
+$\varepsilon\in\{0,1\}$, the row $(g_{n,0},g_{n,1},\dots,g_{n,m})$ is an interlacing sequence.
 
-## Relation to SymCat
+**Theorem (common interleaver).** Let $m\ge1$ and $\varepsilon\in\{0,1\}$, and let
+$(a)_k=a(a+1)\dotsm(a+k-1)$. For $0\le d\le m$ let
+$$
+\rho_d(x)=\sum_{k=0}^{m}(-1)^k\binom{m+\varepsilon+k}{m-k}\,C_{d+\varepsilon+k}\,x^k
+=\binom{m+\varepsilon}{m}C_{d+\varepsilon}\,R_d(x),
+$$
+where $R_d(x)=\sum_{k\le m}r_kx^k$ is the terminating ${}_3F_2$-type polynomial with
+$$
+r_k=\frac{(-m)_k\,(m+1+\varepsilon)_k\,(\varepsilon+\tfrac12+d)_k}
+{(\varepsilon+\tfrac12)_k\,(\varepsilon+\tfrac52+d)_k\,k!}.
+$$
+The polynomials $(-1)^mR_d$, $0\le d\le m$, have a common left interleaver, a Jacobi-type
+polynomial of degree $m-1$. For all weights $w_d>0$, $0\le d\le m$, the polynomial
+$\sum_d w_d\,(-1)^m\rho_d$ is real-rooted.
 
-We formalize the row-wise interlacing assertion in the
-[toric contribution discussion](sf:toricGContributionPolynomial), corresponding to
-Xiao’s Conjecture 4.2. Xiao’s cross-size interlacing theorem in that discussion
-is a different statement.
+## Proof
+
+The reversal $y^m\,g_{n,m-d}(1+1/y)$ is $\rho_d(-y)$.
+The polynomials $(-1)^mR_d$ interlace pairwise, larger $d$ first, and this interlacing is carried
+to the $g_{n,j}$ by the reversal and the shift $x\mapsto x-1$. A common left interleaver makes
+every positive combination real-rooted.
 
 ## References
 
-See [@Xiao2026x]. Common interleavers are described on the
-[common interleaver page](/RealRooted/concepts/common-interleavers/). See also
-the [toric $g$-contribution polynomial](sf:toricGContributionPolynomial)
-on symmetricfunctions.com.
+[@Xiao2026x]. Common interleavers are described on the
+[common interleaver page](/RealRooted/concepts/common-interleavers/). See also the
+[toric $g$-contribution polynomial](sf:toricGContributionPolynomial) on symmetricfunctions.com;
+Xiao's cross-size interlacing theorem there is a different statement.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

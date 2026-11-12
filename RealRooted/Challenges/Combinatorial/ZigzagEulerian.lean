@@ -53,7 +53,7 @@ label = "Centered polynomial p_n(c)"
 [[definitions]]
 name = "RealRooted.CenteredEulerian.ColumnBound"
 module = "RealRooted.CenteredEulerian.RootCriterion"
-label = "Weighted column bound (B.1)"
+label = "Weighted column bound for multiplication by c² on the centered basis"
 
 [[theorems]]
 name = "RealRooted.ZigzagEulerian.polynomial_roots"
@@ -96,7 +96,7 @@ label = "The weighted column bound holds"
 [[theorems]]
 name = "RealRooted.CenteredEulerian.rMat_decomp"
 module = "RealRooted.CenteredEulerian.ChangeBasis"
-label = "Exact change-of-basis formula (B.6)"
+label = "Exact entries of the matrix of multiplication by c² on the centered basis"
 
 [[theorems]]
 name = "RealRooted.CenteredEulerian.riccati_unique"
@@ -167,129 +167,109 @@ label = "The centered zigzag transform Q(L)1"
 <!-- realrooted-catalog-content -->
 # Zig-zag Eulerian polynomials
 
-Let $H_n(t)$ count permutations $\pi_1<\pi_2>\pi_3<\dotsb$ by swaps.
-A swap is a value $i$ for which $\pi^{-1}(i)+1<\pi^{-1}(i+1)$.
-The initial polynomials are $H_1=H_2=1$, $H_3=1+t$, and
-$H_4=1+3t+t^2$.
+The zig-zag Eulerian polynomial $H_n$ has degree $\max(n-2,0)$, only distinct negative roots,
+and an alternative definition by a recurrence for weak alternating words.
 
-**Theorem.** For every $n\geq 1$, $H_n$ has degree $\max(n-2,0)$,
-splits over the real numbers, and has distinct strictly negative roots.
+## Results
 
-**Conjecture locator.** We settle Conjecture 6.1(a) of T. K. Petersen and
-Y. Zhuang, *Zig-zag Eulerian polynomials* (arXiv:2403.07181): their
-$Z_n(t)=tH_n(t)$ is real-rooted. The checked theorem proves that $H_n$
-has distinct strictly negative roots and degree $\max(n-2,0)$ for $n\geq1$.
+Let $H_n(t)=\sum_\pi t^{\operatorname{sw}(\pi)}$ over the permutations $\pi$ of $[n]$ with
+$\pi_1<\pi_2>\pi_3<\dotsb$, where a *swap* of $\pi$ is a value $i$ with
+$\pi^{-1}(i)+1<\pi^{-1}(i+1)$ and $\operatorname{sw}(\pi)$ is the number of swaps. Then
+$H_0=H_1=H_2=1$, $H_3=1+t$ and $H_4=1+3t+t^2$.
 
-The same family has a definition by recurrences alone. Put $w_{0,k}=1$ and
-$w_{n,0}=0$ for $n>0$, and define, for $n>0$,
+**Theorem.** For every $n\ge1$, $H_n$ has degree $\max(n-2,0)$, splits over $\mathbb R$, and
+has distinct strictly negative roots.
 
+This settles Conjecture 6.1(a) of T. K. Petersen and Y. Zhuang, *Zig-zag Eulerian polynomials*
+(arXiv:2403.07181): their $Z_n(t)=tH_n(t)$ is real-rooted.
+
+**Proposition (recurrence).** Let $w_{n,k}$ be the number of words $u_1\le u_2\ge u_3\le\dotsb$
+of length $n$ over the alphabet $[k]$. Then $w_{0,k}=1$, $w_{n,0}=0$ for $n>0$ and, for $n>0$,
 $$
 2w_{n,k+1}=2w_{n,k}
  +\sum_{p=0}^{n-1}w_{p,k}w_{n-1-p,k+1}
  +\mathbf{1}_{n=1}+\mathbf{1}_{n\geq2}w_{n-2,k+1}.
 $$
-
-The final summand is omitted when $n=1$. This recursion decreases length first,
-then alphabet size. Recover coefficients by
-
+The recursion decreases length first, then alphabet size. For $n\ge1$ the coefficients of $H_n$
+are recovered by
 $$
 a_{n,j}=w_{n,j+1}-\sum_{i=0}^{j-1}a_{n,i}\binom{n+j-i}{n},
-\qquad H_n(t)=\sum_{j=0}^{n}a_{n,j}t^j\quad(n\geq1).
+\qquad H_n(t)=\sum_{j=0}^{n}a_{n,j}t^j ,
 $$
+and $a_{n,j}=0$ for $j>\max(n-2,0)$. In particular $H_n$ is determined by the recurrence.
 
-The equality with the swap enumerator, including the vanishing of coefficients
-above degree $\max(n-2,0)$, is proved. The empty row is defined separately as $H_0=1$.
+### The centered disk bound
 
-The proof identifies a centered polynomial through weak alternating words,
-bounds its complex roots in a fixed disk, and applies a differential-operator
-transfer followed by a fractional linear substitution. The combinatorial
-identification, analytic bound and transfer are all proved in this library.
-
-## The centered disk bound
-
-The analytic input is a bound on the complex zeros of the centered
-polynomials. For $n \geq 0$ let $p_n(c)$ be the coefficients of the formal
-series
+For $n\ge0$ let $p_n(c)$ be the coefficients of the formal series
 $$
 \sum_{n\geq 0} p_n(c)\, s^n = \sqrt{1-s^2}\,
   (\sec + \tan)\bigl(c \arcsin s\bigr),
 $$
 so that $p_n(c) = \sum_k e_k\, \alpha_{n,k}\, c^k$ with
-$e_k = [z^k](\sec z + \tan z)$ and $\alpha_{n,k} = [s^n]\sqrt{1-s^2}\,
-(\arcsin s)^k$.
+$e_k = [z^k](\sec z + \tan z)$ and $\alpha_{n,k} = [s^n]\sqrt{1-s^2}\,(\arcsin s)^k$.
 
-**Theorem.** For $n \geq 2$, every complex zero $c$ of $p_n$ satisfies
-$|c|^2 < 13/3$.
+**Theorem.** For $n \geq 2$, every complex zero $c$ of $p_n$ satisfies $|c|^2 < 13/3$.
 
-This disk is the analytic input to the transfer step described above. The
-proof follows the zig-zag argument of [@Alexandersson2026Eulerian], Appendices A and B, and
-has three ingredients, proved as formal power series identities or explicit
-real estimates.
+### The centered differential operator
 
-1. *A Riccati equation.* For real $c$, the series
-   $G_c(s) = \sqrt{1-s^2}\,(\sec+\tan)(c \arcsin s)$ satisfies
-   $(1-s^2)G' + sG = \tfrac{c}{2}\,(G^2 + 1 - s^2)$, and this equation with
-   $G(0)=1$ determines $G_c$ uniquely. The map
-   $G \mapsto (1-s^2)(G+s)/(1-s^2-sG)$ sends solutions for $c$ to solutions
-   for $c+2$, which identifies the whole odd family $G_{2k+1}$ starting from
-   $G_1 = 1+s$.
-2. *An exact change of basis.* Multiplication by $c^2$ acts on the basis
-   $p_2, p_3, \dots$ by a matrix $R$. Its entries are written exactly (formula
-   (B.6)) in terms of the series of $\arcsin$ and of $(s/\arcsin s)^2$, and of
-   the Euler ratios $e_k/e_{k+2}$. The latter are controlled through the
-   partial fraction expansion of $\cot(\pi/4 - z/2)$, which gives the Taylor
-   coefficients of the Euler numbers analytically.
-3. *A weighted column-sum criterion.* With weights $\omega_0=\omega_1=1$ and
-   $\omega_j=2$ for $j\geq 2$, the estimates above show
-   $\sum_i \omega_i |R_{ij}| < \tfrac{13}{3}\,\omega_j$ for all $j$. If
-   $p_n(c)=0$, then $c^2$ is an eigenvalue of a truncation of $R$ (after
-   restricting to one parity class), so $|c|^2 < 13/3$.
+Let $L F = (x^2-1)\,F' + 3x\,F$ on $\mathbb R[x]$, and for a real polynomial $Q$ let
+$Q(L)\,1$ be the result of substituting $L$ into $Q$ and applying it to $1$. We call a
+polynomial *interval-simple* if it splits over $\mathbb R$ and has only simple roots, all in
+$(-1,1)$.
 
-The supporting analysis occupies the modules under
-`RealRooted.CenteredEulerian`.
+**Theorem.** (a) For nonzero $F$, $\deg LF=\deg F+1$, with the leading coefficient multiplied by
+$\deg F+3$. Hence $Q(L)\,1$ has the degree of $Q$.
 
-## The centered differential operator
+(b) If $F$ is nonzero and interval-simple and $-3<a<3$, then $(L-a)F$ is interval-simple.
 
-The root-location transfer uses the differential operator
-$$
-L F = (x^2-1)\,F' + 3x\,F
-$$
-on $\mathbb R[x]$. For a real polynomial $Q$, its transform is $Q(L)\,1$, obtained by
-substituting the operator $L$ into $Q$ and applying the result to the constant
-polynomial $1$. The operator raises the degree of a nonzero polynomial by exactly
-one, with leading coefficient multiplied by $\deg F + 3$, so the transform of $Q$
-has the same degree as $Q$.
+(c) If $F$ is interval-simple of degree at least $4$ and $a^2+b^2\le 13/3$, then
+$\bigl((L-a)^2+b^2\bigr)F$ is interval-simple.
 
-Call a polynomial *interval-simple* if it splits over $\mathbb R$ and has only
-simple roots, all in $(-1,1)$. The transform of a product is built one factor at a
-time, and each step preserves interval-simplicity.
+(d) Let $Q$ be a nonzero real polynomial of degree at least $3$ with $Q(-x)=\pm Q(x)$, all of
+whose complex roots $c$ satisfy $|c|^2\le 13/3$. Then $Q(L)\,1$ is interval-simple.
 
-- A real factor $x-a$ with $-3<a<3$ becomes the operator $L-a$. If $F$ is nonzero
-  and interval-simple, then $(L-a)F$ is interval-simple: it has one simple root
-  between each pair of consecutive roots of $F$ and one on each side of the
-  extreme roots, by a sign comparison at the roots of $F$.
-- A conjugate pair $(x-a)^2+b^2$ with $a^2+b^2\le 13/3$ becomes
-  $(L-a)^2+b^2$. If $F$ is interval-simple of degree at least four, then so is the
-  result. The sign at the roots of $(L-a)F$ comes from a
-  polynomial identity (the quadratic certificate), root-sum inequalities for the
-  split polynomial $F$ proved by Cauchy--Schwarz, and the disk bound.
-- The seeds start the induction. The cubic $x^3+kx$ transforms to
-  $3x\,(20x^2+k-11)$ and the even quartic $x^4+kx^2+p$ to
-  $360x^4+(12k-312)x^2+(33-3k+p)$. When all complex roots lie in the disk
-  $|c|^2\le 13/3$, these have three, respectively four, simple roots in $(-1,1)$.
+(e) If $G$ is interval-simple and $H\ne0$ has $\deg H\le\deg G$ and vanishes at
+$(z-1)/(z+1)$ for every root $z$ of $G$, then $H$ has the degree of $G$ and only simple
+negative roots.
 
-**Theorem.** Let $Q$ be a nonzero real polynomial of degree at least $3$ with
-$Q(-x)=\pm Q(x)$, all of whose complex roots $c$ satisfy $|c|^2\le 13/3$. Then the
-transform $Q(L)\,1$ splits over $\mathbb R$ and has only simple roots, all in
-$(-1,1)$. The proof peels off an even quartic divisor of the parity polynomial
-(or the cubic shape when the degree is three) to obtain a seed, then inserts the
-remaining real and conjugate-pair factors as above.
+## Proof
 
-The Möbius map $z\mapsto(z-1)/(z+1)$ sends $(-1,1)$ onto the negative real axis.
-If $G$ has simple roots in $(-1,1)$ and a nonzero polynomial $H$ of no larger degree
-vanishes at the image of every root of $G$, then $H$ has the same degree as $G$
-and simple negative roots. This is the substitution that turns the interval
-statement into the negativity of the roots of $H_n$.
+We identify a centered polynomial built from $p_n$ with the swap enumerator through weak
+alternating words, bound its complex roots in the disk $|c|^2\le13/3$, apply the transfer (d) to
+get roots in $(-1,1)$, and finish with the substitution (e).
+
+The disk bound follows the zig-zag argument of [@Alexandersson2026Eulerian], Appendices A and B,
+in three steps, proved as formal power series identities or explicit real estimates.
+
+1. *A Riccati equation.* For real $c$, $G_c(s)=\sqrt{1-s^2}\,(\sec+\tan)(c\arcsin s)$ satisfies
+   $(1-s^2)G'+sG=\tfrac c2\,(G^2+1-s^2)$, and this equation with $G(0)=1$ determines $G_c$
+   uniquely. The map $G\mapsto(1-s^2)(G+s)/(1-s^2-sG)$ sends solutions for $c$ to solutions for
+   $c+2$, which identifies the odd family $G_{2k+1}$ starting from $G_1=1+s$.
+2. *An exact change of basis.* Multiplication by $c^2$ acts on $p_2,p_3,\dots$ by a matrix $R$.
+   Its entries are given exactly (formula (B.6)) in terms of the series of $\arcsin$ and
+   $(s/\arcsin s)^2$ and of the Euler ratios $e_k/e_{k+2}$. The ratios are controlled through the
+   expansion of $\cot(\pi/4-z/2)$, which gives the Taylor coefficients of the Euler numbers
+   analytically.
+3. *A weighted column-sum criterion.* With weights $\omega_0=\omega_1=1$ and $\omega_j=2$ for
+   $j\ge2$, the estimates give $\sum_i\omega_i|R_{ij}|<\tfrac{13}3\,\omega_j$ for all $j$. If
+   $p_n(c)=0$, then $c^2$ is an eigenvalue of a truncation of $R$ after restricting to one
+   parity class, so $|c|^2<13/3$.
+
+The transfer (b)–(d) builds $Q(L)\,1$ one factor of $Q$ at a time.
+
+- A real factor $x-a$ becomes $L-a$. It places one simple root between each pair of consecutive
+  roots of $F$ and one outside each extreme root, by a sign comparison at the roots of $F$.
+- A conjugate pair $(x-a)^2+b^2$ becomes $(L-a)^2+b^2$. The sign at the roots of $(L-a)F$ comes
+  from a polynomial identity, root-sum inequalities for $F$ proved by Cauchy–Schwarz, and the
+  disk bound.
+- The seeds start the induction. The cubic $x^3+kx$ transforms to $3x\,(20x^2+k-11)$ and the
+  even quartic $x^4+kx^2+p$ to $360x^4+(12k-312)x^2+(33-3k+p)$. When all complex roots lie in the
+  disk $|c|^2\le13/3$, these have three, respectively four, simple roots in $(-1,1)$.
+  For (d), an even quartic divisor of the parity polynomial (the cubic shape when the degree is
+  three) gives a seed, and the remaining real and conjugate-pair factors are inserted.
+
+The map $z\mapsto(z-1)/(z+1)$ sends $(-1,1)$ onto the negative real axis, which turns the
+interval statement into the negativity of the roots of $H_n$.
 
 ## References
 
