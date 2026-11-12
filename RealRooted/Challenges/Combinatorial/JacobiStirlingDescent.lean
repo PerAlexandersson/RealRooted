@@ -67,8 +67,9 @@ Gessel, Lin and Zeng studied Jacobi–Stirling permutations: permutations of the
 multiset $M_k = \{\bar 1, 1, 1, \bar 2, 2, 2, \dotsc, \bar k, k, k\}$ with a
 Stirling-type pattern condition. For $S \subseteq [k]$, let $A_{k,S}(x)$ count
 the Jacobi–Stirling permutations of $M_k \setminus \{\bar s : s \in S\}$ by
-descents, and let $A_{k,i} = \sum_{|S| = i} A_{k,S}$. They conjectured that
-every $A_{k,i}$ is real-rooted.
+descents, and let $A_{k,i} = \sum_{|S| = i} A_{k,S}$. They conjectured that every $A_{k,i}$ is
+real-rooted [@GesselLinZeng2012, Conj. 15]. The theorem below, due to Ma and Wang
+[@MaWang2026x, Thm. 2], proves this for $i\in\{1,2,3,k-2,k-1\}$.
 
 Inserting the letters one at a time gives the recurrences
 $$A_{k,S} = D_L A_{k-1,S \setminus \{k\}} \quad (k \in S), \qquad
@@ -78,7 +79,7 @@ $$D_L f = (1 + Lx) f + x(1 - x) f'.$$
 Here these recurrences define the polynomials. The permutation model is not
 formalized.
 
-**Theorem** (Ma–Wang). [@MaWang2026x, Sec. 4] Let $1 \le i \le k$ with
+**Theorem** (Ma–Wang). [@MaWang2026x, Thm. 2] Let $1 \le i \le k$ with
 $i \in \{1, 2, 3, k-2, k-1\}$.
 Every nonzero nonnegative combination $\sum_{|S| = i} c_S A_{k,S}$ has only
 simple negative zeros. In particular, $A_{k,i}$ is real-rooted.
@@ -103,7 +104,7 @@ all strictly interlace a common polynomial keep that property.
 
 ## References
 
-See [@GesselLinZeng2012] and [@MaWang2026x, Sec. 4].
+See [@GesselLinZeng2012, Conj. 15] and [@MaWang2026x, Thm. 2].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

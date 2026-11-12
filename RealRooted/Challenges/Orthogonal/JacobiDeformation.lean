@@ -1,7 +1,6 @@
 module
 
 public import RealRooted.JacobiDeformation
-public import RealRooted.Applications.OEIS.A132885
 public import RealRooted.SpectralProduct
 import RealRooted.JacobiDeformation.Strict
 public import RealRooted.JacobiDeformation.Basic
@@ -28,11 +27,6 @@ module = "RealRooted.JacobiDeformation.Basic"
 label = "The Jacobi deformation J_{m,δ}"
 
 [[definitions]]
-name = "RealRooted.Applications.OEIS.A132885.polynomial"
-module = "RealRooted.Applications.OEIS.A132885"
-label = "Row polynomials of OEIS A132885"
-
-[[definitions]]
 name = "RealRooted.increasingEigenvalues"
 module = "RealRooted.SpectralProduct"
 label = "Eigenvalues of a symmetric matrix in increasing order"
@@ -50,16 +44,6 @@ label = "For 0 < δ < 1 the roots are simple and strictly interlace J′_{m,0}"
 name = "RealRooted.JacobiDeformation.isPFPolynomial_polynomial"
 module = "RealRooted.JacobiDeformation.Strict"
 label = "For every δ ≥ 0 the deformation is a PF polynomial"
-
-[[theorems]]
-name = "RealRooted.Applications.OEIS.A132885.splits_simple_roots_neg"
-module = "RealRooted.Applications.OEIS.A132885"
-label = "Rows of A132885 have simple negative roots"
-
-[[theorems]]
-name = "RealRooted.Applications.OEIS.A132885.isPFPolynomial_polynomial"
-module = "RealRooted.Applications.OEIS.A132885"
-label = "Rows of A132885 are PF polynomials"
 
 [[theorems]]
 name = "RealRooted.aeval_prod_sub_increasingEigenvalues_nonneg"
@@ -88,17 +72,6 @@ where $(a)_n = a(a + 1) \cdots (a + n - 1)$ is the rising factorial.
   simple and interlace the roots of the derivative of $J_{m,0}^{c,d}$:
   $(J_{m,0}^{c,d})' \ll J_{m,\delta}^{c,d}$, and the two polynomials have no
   common root.
-
-The rows of the triangle OEIS A132885,
-$$
-A_n(x) = \sum_{k \le n/2} \binom{n - k}{k}\, T_{n - 2k}\, x^k,
-$$
-where $T_j$ is the central trinomial coefficient, are half-integer
-specializations:
-$A_{2m} = J_{m,1/2}^{1,1/2}(x; 1, 1/4)$ and
-$A_{2m+1} = (m + 1)\, J_{m,1/2}^{1,3/2}(x; 1, 1/4)$. So for $n \ge 2$ the row
-$A_n$ has simple, strictly negative roots, and every row is a PF polynomial.
-The rows $A_0 = A_1 = 1$ are constant.
 
 ## Proof idea
 
@@ -133,15 +106,13 @@ eigenvalues of the Jacobi operator.
 
 The theorem and its proof are original to this library (P. Alexandersson, 2026);
 there is no preprint yet. For Stieltjes matrices, see [@MicchelliWilloughby1979].
-The triangle is [OEIS A132885](https://oeis.org/A132885); the central trinomial
-coefficients are [OEIS A002426](https://oeis.org/A002426). The Jacobi polynomials
+The Jacobi polynomials
 used in the proof are on the
 [Jacobi polynomials page](/RealRooted/families/jacobi-polynomials/).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in
-`RealRooted.JacobiDeformation`, `RealRooted.Applications.OEIS.A132885`, and
-`RealRooted.SpectralProduct`.
+`RealRooted.JacobiDeformation` and `RealRooted.SpectralProduct`.
 -/
 
 public section
