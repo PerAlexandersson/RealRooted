@@ -3,7 +3,7 @@ module
 public import RealRooted.Toeplitz.CircleCriterion
 
 /-!
-# The circle criterion for Hessenberg Toeplitz matrices
+# Circle criterion for Hessenberg Toeplitz matrices
 
 <!-- realrooted-catalog
 version = 1
@@ -38,7 +38,13 @@ label = "The exact correlation energy identity at a row root"
 -->
 
 <!-- realrooted-catalog-content -->
-# The circle criterion for Hessenberg Toeplitz matrices
+# Circle criterion for Hessenberg Toeplitz matrices
+
+If the symbol of a lower Hessenberg Toeplitz matrix has nonnegative imaginary part on an upper
+half-circle, then the characteristic polynomials of its sections have simple real roots and
+consecutive ones strictly interlace.
+
+## Results
 
 Let $b(z)=z^{-1}+b_0+\sum_{k\ge1}b_kz^k$ with finitely many real coefficients. The
 characteristic polynomials $P_n(t)=\det(tI-T_n)$ of the Toeplitz sections
@@ -47,16 +53,13 @@ $$
 P_{n+1}(t)=(t-b_0)P_n(t)-\sum_{k=1}^n b_kP_{n-k}(t).
 $$
 
-## Results
-
 **Theorem (circle criterion).** If $\operatorname{Im}b(Re^{i\theta})\ge0$ for $0<\theta<\pi$
 and some $R>0$, then every $P_n$ has $n$ simple real zeros and $P_n$ and $P_{n+1}$ strictly
 interlace. Equivalently, the hypothesis says that
 $$
 Q_R(u)=-R^{-1}+\sum_{k\ge1}b_kR^kU_{k-1}(u)\ge0\qquad(-1\le u\le1),
 $$
-since $Q_R(\cos\theta)\sin\theta=\operatorname{Im}b(Re^{i\theta})$. The theorem is stated
-for the recurrence.
+since $Q_R(\cos\theta)\sin\theta=\operatorname{Im}b(Re^{i\theta})$.
 
 ## Proof
 

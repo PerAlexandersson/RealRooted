@@ -162,7 +162,7 @@ formulas).
 so its coefficients are asymptotically normal.
 
 - The Eulerian polynomials $P_n$ with coefficients $A(n+1,k)$ have mean $(n+2)/2$ and, for
-  $n\ge1$, variance $(n+2)/12$ [David–Barton; Bender]. The type $B$ Eulerian polynomials have
+  $n\ge1$, variance $(n+2)/12$ (David and Barton; Bender). The type $B$ Eulerian polynomials have
   mean $n/2$ and, for $n\ge2$, variance $(n+1)/12$.
 - Let $Q_n(x)=\sum_{k=0}^{n-1}N(n,k+1)x^k$, where $N(n,k)=\frac1n\binom nk\binom n{k-1}$. Thus
   $Q_n=N_{n-1,1}$ in the notation of the [Narayana page](rr:narayana), and

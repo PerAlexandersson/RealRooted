@@ -92,20 +92,22 @@ log-concave.
 
 **Corollary.** For $n\ge1$, the Boros–Moll row $\sum_i d_i(n)x^i$ is infinitely log-concave, as
 conjectured by Boros and Moll [@BorosMoll1999]. Its transform $M_n$ is a Pólya frequency
-polynomial. See also [infinite log-concavity on symmetricfunctions.com](sf:infinitelyLogConcave).
+polynomial.
 
 ## Proof
 
 For $n\ge36$ the interlacing reduces to the sign of $M_n$ at the zeros of $N_n$, which we bound
-using Gaussian quadrature at the zeros of Jacobi polynomials; the cases $1\le n\le35$ are exact
-certificates. Our proof of Brändén's theorem is not his: it uses moment functionals that do
-not vanish on polynomials with roots in a half-plane, together with Laguerre-type approximations.
+using Gaussian quadrature at the zeros of Jacobi polynomials; the cases $1\le n\le35$ are checked
+by exact computation. Brändén's theorem follows from moment functionals that do not vanish on
+polynomials with roots in a half-plane, together with Laguerre-type approximations.
 
 ## References
 
 - [@XieZhang2026InfiniteLogConcavity]
 - [@Branden2011b]
 - [@BorosMoll1999]
+
+See also [infinite log-concavity](sf:infinitelyLogConcave) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

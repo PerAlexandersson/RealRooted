@@ -59,6 +59,12 @@ summed over the independent sets $S$ of $G$.
 
 **Theorem.** If $G$ is a finite claw-free graph, then $S_G(t)$ is real-rooted.
 
+## Use
+
+For acyclic orientations see [natural unit interval
+graphs](rr:unit-interval-acyclic-sinks) and [chordal claw-free
+graphs](rr:chordal-claw-free-acyclic-sinks).
+
 ## Proof
 
 Expand $(t+1)^{\operatorname{sink}(O)}$ over the subsets of sinks. The orientations in which
@@ -66,12 +72,6 @@ every vertex of $S$ is a sink exist only if $S$ is independent, and then there a
 $2^{|E(G)|-\sum_{v\in S}\deg v}$ of them. This gives the identity. Its right-hand side is a
 weighted independence polynomial with positive weights, hence real-rooted for claw-free $G$ by
 the weighted form of the [Chudnovsky--Seymour theorem](rr:chudnovsky-seymour).
-
-## Use
-
-For acyclic orientations see [natural unit interval
-graphs](rr:unit-interval-acyclic-sinks) and [chordal claw-free
-graphs](rr:chordal-claw-free-acyclic-sinks).
 
 ## References
 

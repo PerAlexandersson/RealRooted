@@ -10,7 +10,7 @@ public import RealRooted.MatrixInterlacing.Preservation
 public import RealRooted.ProductFamily
 
 /-!
-# Matrix interlacing challenge entry point
+# Matrices preserving interlacing sequences
 
 <!-- realrooted-catalog
 version = 1
@@ -109,8 +109,8 @@ condition.
 
 Let $G=(G_{ij})$ be an $m\times n$ matrix of real polynomials. It acts on a sequence
 $F=(f_1,\dots,f_n)$ by $(GF)_i=\sum_jG_{ij}f_j$. For polynomials $f,g$ we write $f\ll g$ if
-either one of them is zero, or both are nonzero, real-rooted and interlace weakly. Thus, unlike
-elsewhere in the catalog, either side of $f\ll g$ may be zero. Let $\mathcal F_n^{0}$ be the set
+either one of them is zero, or both are nonzero, real-rooted and interlace weakly, as in the
+zero-aware convention of [Conventions](rr:about). Let $\mathcal F_n^{0}$ be the set
 of sequences $(f_1,\dots,f_n)$ of polynomials with nonnegative coefficients such that every
 nonzero $f_i$ is real-rooted and $f_i\ll f_j$ whenever $i<j$.
 
@@ -145,10 +145,14 @@ $n\ge1$, be interlacing sequences of real-rooted polynomials with nonnegative co
 $$
 \sum_{i=1}^nf_i\,g_{n+1-i}
 $$
-is nonzero and real-rooted. The products $f_ig_{n+1-i}$ have pairwise common interleavers, which
-by the Chudnovsky–Seymour theorem gives a common interleaver of the whole family. If instead
-the terms of each sequence interlace weakly, every nonzero term is real-rooted and the sum is
-nonzero, then the sum is real-rooted.
+is nonzero and real-rooted. If instead the terms of each sequence interlace weakly, every
+nonzero term is real-rooted and the sum is nonzero, then the sum is real-rooted.
+
+## Proof
+
+For the product-sum theorem, the products $f_ig_{n+1-i}$ have pairwise common interleavers, and
+by the Chudnovsky–Seymour theorem on [common interleavers](rr:common-interleavers) this gives a
+common interleaver of the whole family.
 
 ## References
 

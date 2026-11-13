@@ -25,7 +25,7 @@ public import RealRooted.PolynomialValueEulerNumerator.Product.Brenti
 public import RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal
 
 /-!
-# Hadamard products and Schur–Szegő composition preserve real roots and interlacing
+# Hadamard products and Schur–Szegő composition
 
 <!-- realrooted-catalog
 version = 1
@@ -225,115 +225,90 @@ label = "Liu–Mao: log-concave Euler numerators without internal zeros are clos
 -->
 
 <!-- realrooted-catalog-content -->
-# Hadamard products and Schur–Szegő composition preserve real roots and interlacing
+# Hadamard products and Schur–Szegő composition
 
-Schur–Szegő composition and coefficientwise products of polynomials preserve real-rootedness,
-root locations, interlacing and Pólya frequency sequences, and the finite Pólya–Schur theorem
-characterizes the diagonal operators that preserve real-rootedness.
-
-We use the [nonzero interlacing convention](rr:about). A PF polynomial is a real
-polynomial with nonnegative coefficients that is zero or real-rooted.
+Coefficientwise products of polynomials preserve Pólya frequency polynomials and interlacing.
+The same holds for the Schur–Szegő composition, which also controls root locations, and the
+finite Pólya–Schur theorem characterizes the diagonal operators that preserve real-rootedness.
 
 ## Results
 
-The *Schur–Szegő composition* of $f=\sum_k f_kx^k$ and $g=\sum_k g_kx^k$, both of degree at
-most $n$, is
+A *PF polynomial* is a real polynomial with nonnegative coefficients that is zero or
+real-rooted. For $f=\sum_kf_kx^k$ and $p=\sum_kp_kx^k$, the *Hadamard product* is
+$f\ast p=\sum_kf_kp_kx^k$ and the *factorial Hadamard product* is
+$f\circledast p=\sum_kk!\,f_kp_kx^k$. For $f$ and $g$ of degree at most $n$, the *Schur–Szegő
+composition* is
 $$
 f*_ng=\sum_{k=0}^n\binom nk^{-1}f_kg_kx^k.
 $$
 
-**Theorem (Schur–Szegő).** If $f$ is a PF polynomial of degree at most $n$ and $g$ is
-real-rooted of degree at most $n$, then $f*_ng$ is zero or real-rooted.
+**Theorem (Garloff–Wagner).** [@GarloffWagner1996] For PF polynomials $p,q$ the Hadamard
+product $p\ast q$ is PF. If $f \ll g$ and $p \ll q$ have nonnegative coefficients, then
+$f\ast p \ll g\ast q$ or one of $f\ast p$ and $g\ast q$ is zero. If $f,g,p$ are PF and $f\ll g$
+(or one of $f,g$ is zero), then $f\circledast p\ll g\circledast p$ or one of them is zero.
 
-**Theorem (Kostov–Shapiro; Kostov).** [@KostovShapiro2006; @Kostov2010] Let $f$ and $g$ have
-degree $n$, let $a \neq 0$ be a root of $f$ of multiplicity $m$ and $b \neq 0$ a root of $g$
-of multiplicity $l$, with $m + l \geq n$. Then $-ab$ is a root of $f *_n g$ of multiplicity
-exactly $m + l - n$; in particular it is not a root when $m + l = n$. The roots must be
-nonzero, as Kostov (2010) points out. Suppose moreover that $f$ is real-rooted and $g$ has
-only negative roots. Then $f *_n g$ is real-rooted with as many positive, zero and negative
-roots as $f$, and every nonzero root of multiplicity at least two is such a product $-ab$ with
-$m+l>n$; all other nonzero roots are simple. If $f$ and $g$ only have degree at most $n$, then
-$f*_ng$ is still real-rooted when $f$ is
-real-rooted and $g$ has only negative roots.
+**Theorem (Schur; Maló).** [@SchurPolya1914] If $f$ and $g$ are real-rooted and the roots of
+$g$ are all nonpositive or all nonnegative, then $f\circledast g$ is zero or real-rooted. The
+termwise product of two Pólya frequency coefficient sequences of polynomials is a Pólya
+frequency sequence; equivalently, the entrywise product of their totally nonnegative Toeplitz
+matrices is totally nonnegative.
 
-**Theorem (Kostov–Shapiro, root intervals).** [@KostovShapiro2006] Let $g$ have degree $n$ with
-all roots in $[-b,-a]$, where $0<a\le b$, and let $f$ have degree at most $n$ with all roots in
-$[-v,-u]$, where $0\le u\le v$. Then $f*_ng$ has all roots in $[-bv,-au]$. If instead the
-roots of $f$ lie in $[-v,0]$ and those of $g$ in $[-b,0]$ with $b,v\ge0$, then $f*_ng$ is zero
-or has all roots in $[-bv,0]$; it is nonzero when $\deg f=n$.
+**Theorem (Schur–Szegő; Kostov–Shapiro).** [@KostovShapiro2006; @Kostov2010] If $f$ is a PF
+polynomial of degree at most $n$ and $g$ is real-rooted of degree at most $n$, then $f*_ng$ is
+zero or real-rooted. Now let $f$ and $g$ have degree $n$, let $a \neq 0$ be a root of $f$ of
+multiplicity $m$ and $b \neq 0$ a root of $g$ of multiplicity $l$, with $m + l \geq n$. Then
+$-ab$ is a root of $f *_n g$ of multiplicity exactly $m + l - n$. If moreover $f$ is
+real-rooted and $g$ has only negative roots, then $f *_n g$ is real-rooted with as many
+positive, zero and negative roots as $f$, every nonzero root of multiplicity at least two is
+such a product $-ab$ with $m+l>n$, and all other nonzero roots are simple. Real-rootedness
+still holds when $f$ and $g$ only have degree at most $n$.
 
-For $\deg f=m\le n$, let $\beta_1\le\dots\le\beta_m$ be the roots of the degree-$m$ reduction of
-$g$ and $\rho_1\le\dots\le\rho_m$ the roots of $f*_ng$, with $0<a\le b$ and $0\le u\le v$ as
-above. Then $v\beta_i\le\rho_i\le u\beta_i$ for every $i$.
+Root intervals are mapped to root intervals [@KostovShapiro2006]. If $g$ has degree $n$ with all
+roots in $[-b,-a]$, where $0<a\le b$, and $f$ has degree at most $n$ with all roots in
+$[-v,-u]$, where $0\le u\le v$, then $f*_ng$ has all roots in $[-bv,-au]$. If instead the roots
+of $f$ lie in $[-v,0]$ and those of $g$ in $[-b,0]$ with $b,v\ge0$, then $f*_ng$ is zero or has
+all roots in $[-bv,0]$, and it is nonzero when $\deg f=n$. Under the first hypotheses, with
+$\deg f=m$, let $\beta_1\le\dots\le\beta_m$ be the roots of the degree-$m$ reduction of $g$ and
+$\rho_1\le\dots\le\rho_m$ those of $f*_ng$; then $v\beta_i\le\rho_i\le u\beta_i$ for every $i$.
 
-**Proposition (sequence operators).** Applying a fixed Schur–Szegő factor $G$ to each row of
-a polynomial sequence $P$ postcomposes its basis transform with $f\mapsto f*_nG$, and scaling
-row $k$ by $\gamma_k$ precomposes it with the diagonal operator $x^k\mapsto\gamma_kx^k$.
-Root-location preservation therefore passes to the combined operation. This does not extend to
-rowwise products of two sequence maps: the real-rooted input $(1+2x)^2$ is sent to $1+3x+4x^2$
-by a rowwise Hadamard product, with discriminant $-7$, and $1+2x$ is sent to
-$(9x^2+24x+17)/8$ by a rowwise normalized Schur square of one invertible
-real-rootedness-preserving sequence, with discriminant $-9/16$.
-
-**Theorem (Kostov's coefficient map).** Let $n\ge2$ and let $P$ be monic of degree $n$ with
-$P(-1) = 0$, written as $(x+1)(x^{n-1} + c_1 x^{n-2} + \dots + c_{n-1})$. If
-$P = K_{a_1} *_n \dots *_n K_{a_{n-1}}$ with $K_a = (x+1)^{n-1}(x+a)$, then the interior
-coefficients of $P$
-are an affine function of $\sigma_j(a_1, \dots, a_{n-1})$ whose linear part is a scaled
-Vandermonde matrix in the ratios $(n-k)/k$. This matrix is invertible, so $c$ determines
-$\sigma(a)$.
-
-**Theorem (finite Pólya–Schur).** Let $n \ge 0$, let $\gamma_0,\dots,\gamma_n$ be real and let
-$T_\gamma(x^k) = \gamma_k x^k$. Let $J(x)=\sum_{k=0}^n \binom{n}{k} \gamma_k x^k$. If every
+**Theorem (finite Pólya–Schur).** Let $\gamma_0,\dots,\gamma_n$ be real, let
+$T_\gamma(x^k) = \gamma_k x^k$ and $J(x)=\sum_{k=0}^n \binom{n}{k} \gamma_k x^k$. If every
 $\gamma_k \geq 0$, then $T_\gamma$ maps each real-rooted polynomial of degree at most $n$ to
 zero or a real-rooted polynomial if and only if $J$ is a PF polynomial. If every
 $(-1)^k\gamma_k \geq 0$, it does so if and only if $J$ is zero or real-rooted with all roots
 in $[0,\infty)$.
 
-**Theorem (Wagner).** [@Wagner1992; @BrandenFerroniJochemko2024x] If the value sequences $f(0),
-f(1), f(2), \dotsc$ and
-$g(0), g(1), g(2), \dotsc$ of real polynomials $f,g$ are Pólya frequency sequences, then so is
-the value sequence of $fg$. This is not a statement about arbitrary Pólya frequency
-sequences.
+For value sequences, Wagner's theorem says: if $f(0),f(1),f(2),\dotsc$ and
+$g(0),g(1),g(2),\dotsc$ are Pólya frequency sequences for real polynomials $f,g$, then so is
+the value sequence of $fg$ [@Wagner1992; @BrandenFerroniJochemko2024x]. Write
+$\sum_{n \ge 0} p(n)\, x^n = W(p)(x)/(1-x)^{\deg p + 1}$. By Brenti, if $p$ is real-rooted with
+all roots in $[-1, 0]$ and nonnegative leading coefficient, then $W(p)$ is PF; for $p = x + a$
+with $0\le a\le1$ it is $a + (1-a)x$. By Liu and Mao [@LiuMao2026Hadamard], if the coefficients
+of $W(p)$ and $W(q)$ are nonnegative, log-concave and without internal zeros (up to $\deg p$
+and $\deg q$), then so are those of $W(pq)$ (up to $\deg pq$); the example $W(p) = 1 + x^3$,
+$W(q) = x$, $W(pq) = 4x + 3x^3 + x^4$ shows that internal zeros must be excluded.
 
-**Theorem (Maló).** The termwise product of the coefficient sequences of two real polynomials
-that are Pólya frequency sequences is again a Pólya frequency sequence. Equivalently, the
-entrywise product of their totally nonnegative Toeplitz matrices is totally nonnegative.
-
-**Theorem (Brenti).** If $p$ is real-rooted with all roots in $[-1, 0]$ and leading coefficient
-$\ge0$, then the numerator $W$ in $\sum_{n \ge 0} p(n)\, x^n = W(x)/(1-x)^{\deg p + 1}$ is a
-PF polynomial. For $p = x + a$ with $0\le a\le1$ the numerator is $a + (1-a)x$.
-
-**Theorem (Garloff–Wagner).** For PF polynomials $p,q$ the Hadamard product
-$\sum_k p_k q_k x^k$ is PF. If $f \ll g$ and $p \ll q$ have nonnegative coefficients, then
-$f\ast p \ll g\ast q$ or one of $f\ast p$ and $g\ast q$ is zero, where $\ast$ is the Hadamard
-product. The factorial Hadamard product, with coefficients $k!\, p_k q_k$, satisfies: if $f,g,p$
-are PF and $f\ll g$ (or one of $f,g$ is zero), then $f\circledast p\ll g\circledast p$ or one is
-zero, where $\circledast$ is the factorial product.
-
-**Theorem (Schur).** [@SchurPolya1914] If $f = \sum_k a_k x^k$ and $g = \sum_k b_k x^k$ are
-real-rooted and the roots of $g$ are all nonpositive or all nonnegative, then the factorial
-Hadamard product $\sum_k k!\, a_k b_k x^k$ is zero or real-rooted.
-
-**Theorem (Liu–Mao).** [@LiuMao2026Hadamard] For a polynomial $p$ let $W(p)$ be its Euler
-numerator, $\sum_{n \geq 0} p(n) x^n = W(p)(x) / (1-x)^{\deg p+1}$. If the coefficients of
-$W(p)$ and $W(q)$ are nonnegative, log-concave and without internal zeros (up to $\deg p$ and
-$\deg q$), then so are those of $W(pq)$ (up to $\deg pq$). The no-internal-zeros hypothesis
-cannot be dropped: $W(p) = 1 + x^3$ and $W(q) = x$ give $W(pq) = 4x + 3x^3 + x^4$.
+Further results: Kostov's coefficient map, which shows that a monic $P$ with $P(-1)=0$ written
+as $K_{a_1}*_n\dots*_nK_{a_{n-1}}$, $K_a=(x+1)^{n-1}(x+a)$, has interior coefficients affine
+in $\sigma_j(a_1,\dots,a_{n-1})$ with an invertible scaled Vandermonde linear part, so its
+coefficients determine $\sigma(a)$; and the fact that root-location preservation passes to
+rowwise Schur–Szegő and diagonal scaling of a polynomial sequence, but not to rowwise Hadamard
+products of two preserving sequence maps (one sends $(1+2x)^2$ to $1+3x+4x^2$) or to rowwise
+normalized Schur squares of one invertible preserving sequence (one sends $1+2x$ to
+$(9x^2+24x+17)/8$).
 
 ## References
 
-E. Maló, “Note sur les équations algébriques dont toutes les racines sont
-réelles,” *Journal de Mathématiques Spéciales* 4 (1895), 7–10. The matched
-sources are [@SchurPolya1914; @Wagner1992; @GarloffWagner1996;
-@BrandenFerroniJochemko2024x; @LiuMao2026Hadamard; @KostovShapiro2006;
-@Kostov2010]. V. P. Kostov, “Eigenvectors in the context of the Schur–Szegő
-composition of polynomials,” *Mathematica Balkanica* 22 (2008), 155–173. See the
-[Hadamard-product overview](sf:hadamardProductTheorems),
-[Schur–Szegő composition](sf:schurSzegoComposition), and the
-[finite multiplier criterion](sf:finiteMultiplierSequenceCriterion)
-on symmetricfunctions.com. The finite multiplier criterion on the site also covers the signed
-case; the library states it for the two sign patterns above.
+- E. Maló, “Note sur les équations algébriques dont toutes les racines sont réelles,”
+  *Journal de Mathématiques Spéciales* 4 (1895), 7–10.
+- [@SchurPolya1914; @Wagner1992; @GarloffWagner1996; @KostovShapiro2006; @Kostov2010].
+- [@BrandenFerroniJochemko2024x; @LiuMao2026Hadamard].
+- V. P. Kostov, “Eigenvectors in the context of the Schur–Szegő composition of polynomials,”
+  *Mathematica Balkanica* 22 (2008), 155–173.
+
+See also [Hadamard products](sf:hadamardProductTheorems),
+[Schur–Szegő composition](sf:schurSzegoComposition) and the
+[finite multiplier criterion](sf:finiteMultiplierSequenceCriterion) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 
 Human statements:

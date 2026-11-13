@@ -73,9 +73,9 @@ label = "Deleting a vertex: the weighted matching polynomial of G - v interlaces
 <!-- realrooted-catalog-content -->
 # Weighted matchings of the square of a path and simplicial-clique deletion
 
-Weighted matching polynomials of path squares are real-rooted with interlacing consecutive
-terms, and deleting a simplicial clique from a claw-free graph interlaces its weighted
-independence polynomial.
+Deleting a simplicial clique from a claw-free graph gives an interlacing weighted independence
+polynomial. For line graphs this is vertex deletion for weighted matching polynomials, and for
+the square of a path it makes consecutive weighted matching polynomials interlace.
 
 ## Results
 

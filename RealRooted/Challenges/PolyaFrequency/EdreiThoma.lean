@@ -4,7 +4,7 @@ import RealRooted.EdreiThoma.Converse
 import RealRooted.EdreiThoma.Easy
 
 /-!
-# Edrei–Thoma theorem: Pólya frequency sequences as canonical products
+# Edrei–Thoma theorem
 
 <!-- realrooted-catalog
 version = 1
@@ -96,28 +96,27 @@ label = "Closure under a zero prefix"
 -->
 
 <!-- realrooted-catalog-content -->
-# Edrei–Thoma theorem: Pólya frequency sequences as canonical products
+# Edrei–Thoma theorem
 
 A one-sided Pólya frequency sequence with $a_0=1$ is given near $0$ by a canonical product
 $e^{\gamma z}\prod_i(1+\alpha_iz)/\prod_i(1-\beta_iz)$ with nonnegative parameters, and
-conversely every such product has Pólya frequency coefficients.
+conversely every such product has Pólya frequency coefficients. Together the two directions
+classify the one-sided Pólya frequency sequences.
+
+## Results
 
 We work with formal power series over $\mathbb R$ in the coefficientwise topology. A series
 is *Pólya frequency* if its coefficient sequence is, that is, if its lower-triangular Toeplitz
 matrix is totally nonnegative.
 
-## Results
-
 **Theorem (canonical products).** Let $c,\gamma\ge0$, $m\in\mathbb N$, and let
-$\alpha_i,\beta_i\ge0$
-with $\sum_i(\alpha_i+\beta_i)<\infty$. Then the series
+$\alpha_i,\beta_i\ge0$ with $\sum_i(\alpha_i+\beta_i)<\infty$. Then the series
 $$
 c\,X^m e^{\gamma X}\prod_i(1+\alpha_iX)\,\Bigl(\prod_i(1-\beta_iX)\Bigr)^{-1}
 $$
-is Pólya frequency. It equals $c\,X^m$ times the infinite Aissen–Schoenberg–Whitney–Edrei
-symbol of $(\gamma,\alpha,\beta)$, and it is the coefficientwise limit of its finite prefixes
-(exponential replaced by $(1+\gamma X/N)^N$, products truncated at $N$ factors), each of
-which is Pólya frequency.
+is Pólya frequency. It is the coefficientwise limit of its finite prefixes, in which the
+exponential is replaced by $(1+\gamma X/N)^N$ and the products are truncated at $N$ factors,
+and each prefix is Pólya frequency.
 
 **Theorem (Edrei).** Let $(a_n)$ be a Pólya frequency sequence with $a_0=1$. There are
 $\gamma\ge0$ and $\alpha_i,\beta_i\ge0$ with $\sum_i(\alpha_i+\beta_i)<\infty$ such that the
@@ -126,26 +125,20 @@ $$
 \sum_n a_nz^n=e^{\gamma z}\,\frac{\prod_i(1+\alpha_iz)}{\prod_i(1-\beta_iz)} .
 $$
 
-Together the two theorems classify the one-sided Pólya frequency sequences.
-
-## Use
-
-The ingredients are Pólya frequency series closed under products and coefficientwise
-limits, and the series $1+aX$, $1/(1-bX)$ and $e^{\gamma X}$ for $a,b,\gamma\ge0$, together
-with $c\,X^m$ for $c\ge0$. The infinite numerator product and the formal inverse of the
-denominator product are Pólya frequency under absolute summability of $\alpha$ and $\beta$.
-
 ## Proof
 
-The converse follows Edrei's determinant identities and monotone limits, but replaces his
-use of Nevanlinna's theorem by an elementary growth argument based on Jensen's formula and a
+The series $1+aX$, $1/(1-bX)$, $e^{\gamma X}$ and $c\,X^m$ are Pólya frequency for
+$a,b,c,\gamma\ge0$, and Pólya frequency series are closed under products and coefficientwise
+limits; absolute summability of $\alpha$ and $\beta$ makes the infinite products converge.
+Edrei's theorem follows his determinant identities and monotone limits, with his use of
+Nevanlinna's theorem replaced by an elementary growth argument based on Jensen's formula and a
 Borel-type lemma.
 
 ## References
 
-The easy direction is [@AissenSchoenbergWhitney1952]. The converse is due to Edrei; we follow
-[@Edrei1953]. The headline theorem is the normalized necessity direction of the
-[Edrei–Thoma theorem](sf:edreiThomaTheorem); the canonical-product sufficiency direction is
-listed separately.
+- [@AissenSchoenbergWhitney1952], for canonical products.
+- [@Edrei1953], for the converse.
+
+See also the [Edrei–Thoma theorem](sf:edreiThomaTheorem) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 -/

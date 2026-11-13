@@ -3,7 +3,7 @@ module
 import RealRooted.HosterStump.PosetChow
 
 /-!
-# Real-rooted Chow polynomials of simplicial posets
+# Chow polynomials of simplicial posets
 
 <!-- realrooted-catalog
 version = 1
@@ -70,7 +70,7 @@ label = "For n ≥ 2, the refined descent polynomials form interlacing diagrams"
 -->
 
 <!-- realrooted-catalog-content -->
-# Real-rooted Chow polynomials of simplicial posets
+# Chow polynomials of simplicial posets
 
 The Chow, dual Chow and augmented Chow polynomials of a graded simplicial poset with nonnegative
 $h$-vector are real-rooted, and the dual Chow polynomial interlaces the augmented one.
@@ -103,8 +103,8 @@ $$
 
 ## Use
 
-The paper notes that the theorem covers Cohen–Macaulay simplicial posets and the lattices of
-flats of uniform matroids.
+The theorem applies to Cohen–Macaulay simplicial posets and to the lattices of flats of uniform
+matroids [@HosterStump2025x].
 
 ## Proof
 
@@ -113,10 +113,6 @@ $\sum_kh_k\,p^{T}_{n,k}$ for refined descent polynomials $p^{S\subseteq T}_{n,k}
 these polynomials form interlacing diagrams: every path through the diagram is an interlacing
 sequence. Induction on $n$ proves this, and real-rootedness and interlacing pass from the
 $\gamma$-polynomials to the Chow polynomials.
-
-The paper's convention that any two polynomials of degree at most one interlace would make its
-Lemma 2.3 false, with a counterexample among linear and quadratic polynomials; we use weak
-interlacing without that convention.
 
 ## References
 

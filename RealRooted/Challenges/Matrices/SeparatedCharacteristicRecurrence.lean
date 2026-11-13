@@ -6,7 +6,7 @@ import RealRooted.MatrixInterlacing.SeparatedCharacteristicRecurrence
 import RealRooted.MatrixInterlacing.SeparatedCharacteristicDeterminant
 
 /-!
-# Separated-characteristic recurrences and interlacing matrices
+# Recurrences with separated characteristic parameters
 
 <!-- realrooted-catalog
 version = 1
@@ -65,11 +65,12 @@ label = "A scalar solution with matching initial rows is a coordinate of the mat
 -->
 
 <!-- realrooted-catalog-content -->
-# Separated-characteristic recurrences and interlacing matrices
+# Recurrences with separated characteristic parameters
 
-A recurrence whose characteristic parameters $a_i\ge0\ge b_j$ are separated is the orbit of a
-polynomial matrix that preserves interlacing sequences, so its rows are Pólya frequency
-polynomials and consecutive rows interlace.
+If a constant-coefficient recurrence has characteristic polynomial
+$\prod_i(T-a_i)-x\prod_j(T-b_j)$ with $a_i\ge0\ge b_j$, then its solutions from suitable
+initial rows are Pólya frequency polynomials and consecutive terms interlace. The criterion can
+be read off from the recurrence alone.
 
 ## Results
 
@@ -81,31 +82,31 @@ $$
 Let $M=M(a,b)$ be the $(h+m)\times(h+m)$ matrix over $\mathbb R[x]$ whose first $h-1$ rows are
 bidiagonal (diagonal entry $a_i$, entry $1$ above it), and whose remaining rows have $x$ in
 column $0$, diagonal entry $a_i$, and entry $a_j-b_{j-h}$ in each column $j>i$, with $b_{j-h}$
-read as $0$ for $j<h$.
-
-**Theorem (characteristic polynomial).** For $h\ge1$,
+read as $0$ for $j<h$. Then
 $$
-\det(T-M)=\prod_i(T-a_i)-x\prod_j(T-b_j).
+\det(T-M)=\prod_i(T-a_i)-x\prod_j(T-b_j),
 $$
-Hence, by Cayley–Hamilton, every coordinate of $M^nv$ solves the recurrence. Conversely, let
-$(P_{s+n})_{n\ge0}$ solve it and let $P_{s+r}=(M^rv)_i$ for $0\le r<h+m$. Then
-$P_{s+n}=(M^nv)_i$ for all $n\ge0$.
+so every coordinate of $M^nv$ solves the recurrence. Conversely, if $(P_{s+n})_{n\ge0}$ solves
+it and $P_{s+r}=(M^rv)_i$ for $0\le r<h+m$, then $P_{s+n}=(M^nv)_i$ for all $n\ge0$.
 
-**Theorem (interlacing).** Assume $a_i\ge0\ge b_j$ for all $i,j$, or $a_i\ge\rho\ge b_j$ with
-$M$ built from $a_i-\rho$ and $b_j-\rho$. Then $M$ has nonnegative polynomial coefficients and
-preserves interlacing sequences of nonnegative real-rooted polynomials, zero entries allowed
-(Brändén's criterion on the
-[matrix interlacing page](rr:matrix-interlacing)).
-Let the seed $v$ be such a sequence. Then every $M^nv$ is again one, every coordinate of every
-$M^nv$ is a Pólya frequency polynomial (possibly $0$), and
+**Theorem.** Assume $a_i\ge0\ge b_j$ for all $i,j$, or $a_i\ge\rho\ge b_j$ with $M$ built from
+$a_i-\rho$ and $b_j-\rho$. Then $M$ maps interlacing sequences of nonnegative real-rooted
+polynomials, zero entries allowed, to such sequences. If the seed $v$ is such a sequence, then
+every coordinate of every $M^nv$ is a Pólya frequency polynomial or zero, and
 $$
 (M^nv)_i\ll(M^{n+1}v)_i\qquad\text{for all }n\ge0\text{ and all }i.
 $$
 
+## Proof
+
+The determinant formula and the Cayley–Hamilton theorem give the recurrence. Under the sign
+conditions, $M$ has nonnegative polynomial coefficients and satisfies Brändén's criterion on the
+[matrix interlacing](rr:matrix-interlacing) page.
+
 ## References
 
-The preservation criterion is on the
-[matrix interlacing page](rr:matrix-interlacing).
+The preservation criterion is [@Branden2015, Thm. 7.8.5]; see the
+[matrix interlacing](rr:matrix-interlacing) page.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in the

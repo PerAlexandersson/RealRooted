@@ -6,7 +6,7 @@ public import RealRooted.CauchyInterlacing.Polynomial
 public import RealRooted.CauchyInterlacing.RankOne
 
 /-!
-# Cauchy interlacing challenge entry point
+# Cauchy interlacing
 
 <!-- realrooted-catalog
 version = 1

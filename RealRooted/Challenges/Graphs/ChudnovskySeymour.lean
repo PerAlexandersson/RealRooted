@@ -6,7 +6,7 @@ public import RealRooted.Graph.IndependencePolynomial.ClawFree
 public import RealRooted.HeilmannLieb
 
 /-!
-# Chudnovsky--Seymour challenge entry point
+# Claw-free independence polynomials
 
 <!-- realrooted-catalog
 version = 1
@@ -63,7 +63,7 @@ vertex $v$. Then
 $$
 \sum_A x^{|A|}\prod_{v\in A}w(v)
 $$
-is real-rooted. This is due to Engstr\"om; see the
+is real-rooted. This form is due to Engström; see the
 [Heilmann--Lieb page](rr:heilmann-lieb).
 
 ## References

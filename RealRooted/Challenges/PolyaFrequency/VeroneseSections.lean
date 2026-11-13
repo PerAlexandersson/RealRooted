@@ -5,7 +5,7 @@ import RealRooted.Mathlib.Algebra.LinearRecurrence.Veronese
 public import RealRooted.VeroneseMatrix
 
 /-!
-# Veronese sections of real-rooted polynomials and recognition of product parents
+# Veronese sections
 
 <!-- realrooted-catalog
 version = 1
@@ -97,81 +97,66 @@ label = "Nonnegative real-rooted solutions give real-rooted section solutions"
 -->
 
 <!-- realrooted-catalog-content -->
-# Veronese sections of real-rooted polynomials and recognition of product parents
+# Veronese sections
 
-Veronese sections of a real-rooted polynomial with nonnegative coefficients are real-rooted
-or zero, and a recurrence of a prescribed shape forces a polynomial sequence to be a Veronese
-section of a product of linear factors.
+Veronese sections of a real-rooted polynomial with nonnegative coefficients are real-rooted or
+zero. A difference equation recognizes the polynomial sequences that are Veronese sections of
+products of linear factors, so their rows are real-rooted, and Veronese sections of
+constant-coefficient recurrences again satisfy a constant-coefficient recurrence.
+
+## Results
 
 The $k$th $r$-Veronese section of $p=\sum_i p_i x^i$ is $\sum_{n\geq0}p_{k+rn}x^n$: it keeps
 the coefficients whose indices are congruent to $k$ modulo $r$ and re-indexes them by
 $n=(i-k)/r$.
 
-## Results
-
 **Theorem (Veronese sections).** Let $0 \leq k < r$. If a polynomial with nonnegative
 coefficients splits over $\mathbb R$, then its $k$th $r$-Veronese section is zero or splits
 over $\mathbb R$.
 
-**Recognition of product parents.** Fix $r \geq 1$ and real sequences $a_n$, $b_n$ with every
-$b_n \neq 0$. For a polynomial sequence $P = (P_n)$ put
-$$
-(\Delta P)_n = \frac{P_{n+1} - a_n P_n}{b_n},
-$$
-and for a polynomial $H$, the *seed*, let
-$$
-Q_n(H) = H(x)\prod_{i<n}\bigl(a_i + b_i x\bigr)
-$$
-be the *product parent*. Its $(r-1)$st $r$-Veronese section, as a sequence in $n$, is a row
-family $R_n(H)$.
+Fix $r \geq 1$ and real sequences $a_n$, $b_n$ with every $b_n \neq 0$. For a polynomial
+sequence $P = (P_n)$ put $(\Delta P)_n = (P_{n+1} - a_n P_n)/b_n$. For a polynomial $H$, the
+*seed*, the *product parent* is $Q_n(H) = H(x)\prod_{i<n}(a_i + b_i x)$, and $R_n(H)$ denotes
+its $(r-1)$st $r$-Veronese section.
 
 **Theorem (recognition).** $\Delta^r P = x P$ if and only if there is a unique polynomial $H$
-with $R_n(H) = P_n$ for all $n$. The seed is reconstructed from the differences at index zero:
-its $i$th $r$-Veronese section is $(\Delta^{r-1-i} P)_0$, for $0 \leq i < r$.
+with $R_n(H) = P_n$ for all $n$; the $i$th $r$-Veronese section of $H$ is
+$(\Delta^{r-1-i} P)_0$ for $0 \leq i < r$. For $\beta \neq 0$, $\Delta^r P = (\alpha + \beta x) P$
+if and only if there is a unique seed $H$ with $P_n(x) = R_n(H)(\alpha + \beta x)$ for all $n$.
+If $a_n \geq 0$, $b_n > 0$, and the seed has nonnegative coefficients and splits over
+$\mathbb R$, then every $P_n$ is zero or splits over $\mathbb R$, in the affine case for
+$\beta>0$.
 
-**Theorem (affine recognition).** For $\beta \neq 0$, $\Delta^r P = (\alpha + \beta x) P$ if and
-only if there is a unique seed $H$ with $P_n(x) = R_n(H)(\alpha + \beta x)$ for all $n$.
+For example, if $B \neq 0$ and $P_{n+2} = A P_{n+1} + (Bx + c) P_n$ for all $n$, then there is a
+unique seed $H$ such that $P_n$ is the odd Veronese section ($r = 2$) of $H\,(x + A/2)^n$,
+evaluated at $c + A^2/4 + Bx$.
 
-**Theorem (real-rootedness of recognized rows).** Suppose $a_n \geq 0$, $b_n > 0$ and
-$\Delta^r P = x P$, and the reconstructed seed has nonnegative coefficients and splits over
-$\mathbb R$. Then every $P_n$ is zero or splits over $\mathbb R$. The same holds for
-$\Delta^r P = (\alpha + \beta x) P$ with $\beta > 0$ and the reconstructed affine seed.
+**Theorem (sections of recurrences).** Let $A$ be a commutative ring, $r \geq 1$, and let
+$P(x,t)$ be monic in $t$ of degree $d$ with coefficients in $A[x]$. Put $y=x^r$ and let
+$D(y,t)$ be the determinant of multiplication by $P(x,t)$ on $A[y,t]$ in the basis
+$1,x,\dotsc,x^{r-1}$. If a sequence of polynomials in $A[x]$ satisfies the recurrence with
+characteristic polynomial $P$, then every residue section of every solution satisfies the
+recurrence with characteristic polynomial $D$, which is monic in $t$ of degree $rd$ when $A$
+is nontrivial. If the source recurrence first determines row $N \geq d$, the section
+recurrence first determines row $N+(r-1)d$. Over $\mathbb R$, if every source row has
+nonnegative coefficients and splits, then every section row is zero or splits.
 
-**Example (second-order recurrences).** Let $B \neq 0$ and suppose
-$P_{n+2} = A P_{n+1} + (Bx + c) P_n$ for all $n$. Then there is a unique seed $H$ such that
-$P_n$ is the odd Veronese section ($r = 2$) of $H\,(x + A/2)^n$, evaluated at
-$c + A^2/4 + Bx$.
-
-**Theorem (transport of constant-coefficient recurrences).** Let $A$ be a commutative ring
-and let $r \geq 1$. Suppose $(R_n(x))_{n\geq0}$ satisfies a linear recurrence of order $d$
-over $A[x]$, with coefficients independent of $n$. We construct a single recurrence of
-order $rd$ over $A[y]$ satisfied by every residue section of every solution.
-If $P(x,t)$ is the monic forward characteristic polynomial, the new characteristic
-polynomial is the determinant of multiplication by $P(x,t)$ over $A[y,t]$, where $y=x^r$,
-in the basis $1,x,\dotsc,x^{r-1}$. This determinant is monic in $t$ and has degree $rd$
-when $A$ is nontrivial. If the source recurrence first determines row $N \geq d$,
-the section recurrence first determines row $N+(r-1)d$.
-
-Over $\mathbb R$, if every source row has nonnegative coefficients and splits,
-each section sequence satisfies this common recurrence and every row is zero or splits.
 For binomial rows with $r=2$, Fibonacci tiling rows with $r=3$, and Delannoy triangle rows
-with $r=2$, the resulting recurrence orders are two, six and four, respectively.
+with $r=2$, the section recurrences have orders two, six and four.
 
 ## Proof
 
-The Veronese-section theorem uses the Pólya frequency characterization of real-rooted
-polynomials with nonnegative coefficients and total nonnegativity of an associated matrix.
-
-For recurrence transport, we use the explicit section multiplication matrix. Its adjugate
-expresses the expanded determinant as a multiple of the source characteristic polynomial.
-Evaluation at the forward shift annihilates every source solution; taking a section then
-gives the determinant recurrence.
+Real-rootedness of Veronese sections follows from the Pólya frequency characterization of
+real-rooted polynomials with nonnegative coefficients and total nonnegativity of an associated
+matrix. For recurrences, the adjugate of the section multiplication matrix writes $D$ as a
+multiple of $P$, so the shift operator $D$ annihilates every source solution, and taking a
+section gives the section recurrence.
 
 ## References
 
-The Veronese-section convention and its linear-factor recurrences are those of
-[@AthanasiadisWagner2024x], where a stronger fully interlacing statement appears. See also the
-[Veronese sections on symmetricfunctions.com](sf:veroneseSectionsRealRooted).
+[@AthanasiadisWagner2024x], where the Veronese-section convention and its linear-factor
+recurrences appear together with a stronger interlacing statement. See also
+[Veronese sections](sf:veroneseSectionsRealRooted) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 
 Human statement:

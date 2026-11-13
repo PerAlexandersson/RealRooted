@@ -7,7 +7,7 @@ import RealRooted.BrandenVecchi.ChowZeroPrefix
 import RealRooted.BrandenVecchi.SmirnovSpecialization
 
 /-!
-# Real-rooted Chow polynomials of totally nonnegative matrices
+# Chow polynomials of totally nonnegative matrices
 
 <!-- realrooted-catalog
 version = 1
@@ -109,7 +109,7 @@ label = "For the sequence 0, 0, 0, 1, 1, ..., c_6 = x² + x + 1 is not real-root
 -->
 
 <!-- realrooted-catalog-content -->
-# Real-rooted Chow polynomials of totally nonnegative matrices
+# Chow polynomials of totally nonnegative matrices
 
 Chow polynomials and Chow derangement polynomials of a lower-unitriangular totally nonnegative
 matrix are real-rooted or zero, consecutive Chow polynomials interlace, and each Chow polynomial

@@ -5,7 +5,7 @@ import RealRooted.RowThreshold
 import RealRooted.ThresholdMatrix.HaglundZhang
 
 /-!
-# Threshold matrices challenge entry point
+# Threshold matrices
 
 <!-- realrooted-catalog
 version = 1

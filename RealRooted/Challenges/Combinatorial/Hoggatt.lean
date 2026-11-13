@@ -4,7 +4,7 @@ public import RealRooted.CombinatorialExamples.Hoggatt
 public import RealRooted.Applications.OEIS.A056939
 
 /-!
-# Hoggatt polynomials and Baxter permutations
+# Hoggatt polynomials
 
 <!-- realrooted-catalog
 version = 1
@@ -68,47 +68,52 @@ label = "Baxter polynomials are a strict Sturm sequence"
 [[theorems]]
 name = "RealRooted.Hoggatt.normalized_three_eq_baxter"
 module = "RealRooted.Applications.OEIS.A056939"
-label = "The m = 3 specialization equals the existing Baxter recurrence model"
+label = "For m = 3, the Hoggatt polynomials are the Baxter descent polynomials (A056939)"
 
 [[theorems]]
 name = "RealRooted.Applications.OEIS.A056939.polynomial_isCoprime_succ"
 module = "RealRooted.Applications.OEIS.A056939"
-label = "Consecutive rows of the existing A056939 model are coprime"
+label = "Consecutive Baxter descent polynomials are coprime"
 -->
 
 <!-- realrooted-catalog-content -->
-# Hoggatt polynomials form a Sturm sequence
+# Hoggatt polynomials
 
-For positive integers $m$ we set
-\[
-F_{n,m}(t)=\sum_{k=0}^{n-m+1}
-  \left(\prod_{i=0}^{m-1}\binom{n}{k+i}\right)t^k,
-\]
-and normalize by its positive constant coefficient to obtain
-$H_n^{[m]}(t)=F_{n+m-2,m}(t)/F_{n+m-2,m}(0)$ for $n\ge1$.
-MacMahon's formula identifies the coefficient of $t^k$ with plane partitions
-in a $k\times(n-1-k)\times m$ box. The checked statements concern the explicit
-binomial-product polynomials; the combinatorial identification is documentation.
+The Hoggatt polynomials interpolate between the binomial polynomials, the Narayana polynomials
+and the descent polynomials of Baxter permutations. For each $m\ge2$ they form a Sturm sequence
+with simple negative roots.
 
-**Theorem (Fang–Zhang–Zhao).** For every $m\ge2$, consecutive Hoggatt
-polynomials strictly interlace. All roots are simple and negative. We record
-strictness as the conjunction of the library's degree-gap-one `Interlaces`
-predicate and `IsCoprime`; `StrictInterl` alone permits shared roots.
-For $m=1$ we obtain $(1+t)^{n-1}$ and a generalized Sturm sequence.
-Real-rootedness for all $m\ge1$ recovers Dilks's theorem.
+## Results
 
-We use the existing Garloff–Wagner Hadamard theorem and derivative-interlacing
-theory. For $G_{n+1,m+1}=F_{n+1,1}*F_{n,m}$, coefficient comparison gives
-$G'_{n+1,m+1}=(n+1)F_{n,m+1}$. Induction gives the weak root ordering.
-The additional strict corollary needed here rules out common roots for
-Hadamard products with consecutive binomial powers. Its proof combines
-Hadamard simplicity with the adjacent-binomial differential identity.
-Global Wronskian positivity supplies Markov's strict derivative step.
+For $N\ge0$ and $m\ge1$ let
+$$
+F_{N,m}(t)=\sum_{k\ge0}\Bigl(\prod_{i=0}^{m-1}\binom{N}{k+i}\Bigr)t^k ,
+$$
+and for $n\ge1$ define the *Hoggatt polynomial* $H_n^{[m]}(t)=F_{n+m-2,m}(t)/F_{n+m-2,m}(0)$,
+which has degree $n-1$ and constant term $1$. By MacMahon's formula, the coefficient of $t^k$
+counts plane partitions in a $k\times(n-1-k)\times m$ box. For $m=1$ we get $(1+t)^{n-1}$, for
+$m=2$ the Narayana polynomials $\sum_k\frac1n\binom nk\binom n{k+1}t^k$, and for $m=3$ the
+descent polynomials of Baxter permutations of length $n$, which are the rows of
+[OEIS A056939](https://oeis.org/A056939).
 
-At $m=3$ the normalized polynomials are Baxter descent polynomials. The
-checked equality identifies $H_{n+1}^{[3]}$ with row $n$ of the existing
-A056939 recurrence and Schur model. Thus that model inherits coprimality
-of consecutive rows as well as its existing interlacing theorem.
+**Theorem (Fang–Zhang–Zhao).** Let $m\ge2$. For every $n\ge1$, the roots of $H_n^{[m]}$ are
+simple and negative, $H_n^{[m]}\ll H_{n+1}^{[m]}$, and the two polynomials have no common root.
+
+**Corollary (Dilks).** For every $m\ge1$ and $n\ge1$, $H_n^{[m]}$ is real-rooted.
+
+In particular, consecutive Baxter descent polynomials strictly interlace.
+
+## Proof
+
+Write $*$ for the coefficientwise (Hadamard) product. Comparing coefficients gives
+$$
+\frac{d}{dt}\bigl(F_{N+1,1}*F_{N,m}\bigr)=(N+1)\,F_{N,m+1}.
+$$
+Induction on $m$, with the [Garloff–Wagner theorem](rr:hadamard-products) for Hadamard products
+and [derivative interlacing](rr:derivative-interlacing), gives real roots and weak interlacing.
+For strictness, the same identity together with simplicity of the roots of Hadamard products
+rules out common roots of Hadamard products with consecutive binomial powers, and positivity of
+the Wronskian gives Markov's strict form of the derivative step.
 
 ## References
 

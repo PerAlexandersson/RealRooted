@@ -15,7 +15,7 @@ public import RealRooted.NarayanaTransformation.Rising
 public import RealRooted.NarayanaTransformation.RootGeometry
 
 /-!
-# Narayana polynomial challenge entry point
+# Narayana polynomials
 
 <!-- realrooted-catalog
 version = 1
@@ -157,33 +157,30 @@ label = "The zeros of the continuous Narayana interpolation are real and negativ
 -->
 
 <!-- realrooted-catalog-content -->
-# Generalized Narayana polynomials and basis transforms
+# Narayana polynomials
 
-The generalized Narayana polynomials are Pólya-frequency, and the Narayana transform
-$x^n\mapsto N_{n,m}(x)$ preserves Pólya-frequency polynomials.
+The generalized Narayana polynomials are Pólya frequency polynomials, and the Narayana transform
+$x^n\mapsto N_{n,m}(x)$ preserves Pólya frequency polynomials, as do several related basis
+transforms and products of arrays built from them.
 
 ## Results
 
-A real polynomial is *Pólya-frequency* (PF) if its coefficients are nonnegative
-and it is zero or real-rooted with all zeros $\le0$.  For $m,n\ge0$ the generalized Narayana
-polynomial is
+A real polynomial is *Pólya frequency* (PF) if its coefficients are nonnegative and it is zero
+or real-rooted with all zeros $\le0$. For $m,n\ge0$ the generalized Narayana polynomial is
 $$
 N_{n,m}(x) =
 \sum_{k=0}^{n} \frac{\binom{n}{k}\binom{n+m}{k}}{\binom{m+k}{k}}\, x^k .
 $$
 For $m=1$ the coefficients are Narayana numbers; for example $N_{2,1}(x)=1+3x+x^2$.
 
-**Theorem (Narayana transform).** For all $m,n\ge0$, $N_{n,m}$ is real-rooted and
-Pólya-frequency. If $p$ is Pólya-frequency, so is its Narayana transform, the image of $p$
-under the linear map $x^n\mapsto N_{n,m}(x)$.
+**Theorem (Narayana transform).** For all $m,n\ge0$, $N_{n,m}$ is real-rooted and PF. If $p$ is
+PF, so is its Narayana transform, the image of $p$ under the linear map $x^n\mapsto N_{n,m}(x)$.
 
 **Proposition (Dyck paths and 132-avoiders).** For $n\ge0$, the generating polynomial of Dyck
 paths of semilength $n+1$ by peaks is $x\,N_{n,1}(x)$, and that of the 132-avoiding
 permutations of $n+1$ letters by descents is $N_{n,1}(x)$. The number of Dyck paths of semilength
 $n$ with $k$ peaks is the Narayana number for $(n,k)\ne(1,0)$. The descent polynomials of the
 132-avoiders of $n+2$ and $n+3$ letters satisfy $f\ll g$.
-
-### Basis transforms
 
 For polynomials $B_0,B_1,\dots$ the basis transform $T_B$ is the linear map with
 $T_B(x^n)=B_n(x)$. A polynomial has *only nonpositive zeros* if it is $0$ or real-rooted with all
@@ -197,26 +194,20 @@ and let $T_n$ be the Touchard polynomials, $T_0=1$ and $T_{n+1}=xT_n+xT_n'$.
 **Theorem (Brenti).** [@Brenti1989, Thm. 2.4.2] If $\sum_k a_k\langle x\rangle_k$ has only
 nonpositive zeros, then so does $\sum_k a_kx^k$.
 
-**Theorem.** The Touchard transform $x^n\mapsto T_n(x)$ maps Pólya-frequency polynomials to
-Pólya-frequency polynomials. So does the transform $x^n\mapsto(x\mid\mu)_n$ for every
-$\mu>0$.
-
-### Matrix products
+**Theorem.** The Touchard transform $x^n\mapsto T_n(x)$ maps PF polynomials to PF polynomials.
+So does the transform $x^n\mapsto(x\mid\mu)_n$ for every $\mu>0$.
 
 For a lower-triangular array $M=(M(n,k))_{n,k\ge0}$ the row polynomials are
-$M_n(x)=\sum_{k\le n}M(n,k)x^k$; we say $M$ has *Pólya-frequency rows* if every $M_n$ is
-Pólya-frequency. A matrix is a *Mao–Wang factor* if its row $n$ lists the coefficients of
-$B_n$, where $(B_n)$ is one of $(ax+d)^n$ with $a>0$, $d\ge0$; $T_n(x)$; $(x\mid\mu)_n$ with
-$\mu>0$; or $N_{n,m}(x)$ with $m\ge0$.
+$M_n(x)=\sum_{k\le n}M(n,k)x^k$; we say $M$ has *PF rows* if every $M_n$ is PF. A matrix is a
+*Mao–Wang factor* if its row $n$ lists the coefficients of $B_n$, where $(B_n)$ is one of
+$(ax+d)^n$ with $a>0$, $d\ge0$; $T_n(x)$; $(x\mid\mu)_n$ with $\mu>0$; or $N_{n,m}(x)$ with
+$m\ge0$.
 
-**Theorem (Mao–Wang).** [@MaoWang2026x, Thm. 1.3] Let $M$ be lower-triangular with
-Pólya-frequency rows and let $B_1,\dots,B_r$ be Mao–Wang factors. Then $MB_1\dotsm B_r$ has
-Pólya-frequency rows. In particular $MB^r$ has Pólya-frequency rows for every factor $B$ and
-$r\ge0$.
+**Theorem (Mao–Wang).** [@MaoWang2026x, Thm. 1.3] Let $M$ be lower-triangular with PF rows
+and let $B_1,\dots,B_r$ be Mao–Wang factors. Then $MB_1\dotsm B_r$ has PF rows. In particular
+$MB^r$ has PF rows for every factor $B$ and $r\ge0$.
 
-### Continuous interpolation
-
-For real $\theta>-1$ put
+For real $\theta>-1$, the *continuous Narayana interpolation* is
 $$
 N_\theta(n, k) = \binom{n}{k} \frac{(\theta + 1)_n}{(\theta + 1)_k\,(\theta + 1)_{n-k}},
 \qquad
@@ -230,23 +221,26 @@ $$
 P_n^{(\theta)}(t) = \sum_{j \le n/2} \frac{n!}{j!\,(n - 2j)!\,(\theta + 1)_j}\,
   t^j (1 + t)^{n - 2j},
 $$
-so $P_n^{(\theta)}$ is $\gamma$-positive. Moreover $P_n^{(\theta)}$ is Pólya-frequency, and its
-zeros are real and negative.
+so $P_n^{(\theta)}$ is $\gamma$-positive. Moreover $P_n^{(\theta)}$ is PF, and its zeros are real
+and negative. Its $\gamma$-polynomials are on the
+[continuous Narayana interpolation](rr:continuous-narayana-gamma) page.
 
 ## Proof
 
-The root statement is a Schur–Szegő composition: $P_n^{(\theta)}$ is a positive multiple of the
-composition of the Jensen polynomial of $1/(\theta+1)_k$ with its reversal, and that Jensen
-polynomial is Pólya-frequency because $1/(\theta+1)_k$ is a multiplier sequence. The source
-[@Zeng2026x] proves real-rootedness for $\theta\ge0$ through Jacobi polynomials.
+The root statement for $P_n^{(\theta)}$ is a Schur–Szegő composition: $P_n^{(\theta)}$ is a
+positive multiple of the composition of the Jensen polynomial of $1/(\theta+1)_k$ with its
+reversal, and that Jensen polynomial is PF because $1/(\theta+1)_k$ is a multiplier sequence.
 
 ## References
 
-The coefficient normalization is from [@MaoWang2026x] and the root-location input from
-[@DominiciJohnstonJordaan2013x]. The Brenti theorem is Lemma 3.2 of [@MaoWang2026x]. The
-continuous interpolation is [@Zeng2026x, (1.1)–(1.3) and Cor. 3.5]. See also the
-[Narayana real-rootedness examples on symmetricfunctions.com](sf:ex:narayanaSturm),
-[Brenti's falling-factorial theorem](sf:thm:brentiFallingFactorialBasis), and the
-[Mao–Wang row-generating functions](sf:rowGeneratingFunction).
+- [@MaoWang2026x], for the coefficient normalization, the Mao–Wang theorem and, as its
+  Lemma 3.2, Brenti's theorem.
+- [@Brenti1989, Thm. 2.4.2].
+- [@DominiciJohnstonJordaan2013x], for the root location.
+- [@Zeng2026x, (1.1)–(1.3) and Cor. 3.5], for the continuous interpolation.
+
+See also [Narayana real-rootedness examples](sf:ex:narayanaSturm),
+[Brenti's falling-factorial theorem](sf:thm:brentiFallingFactorialBasis) and
+[row-generating functions](sf:rowGeneratingFunction) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 -/

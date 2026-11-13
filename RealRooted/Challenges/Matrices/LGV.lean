@@ -6,7 +6,7 @@ import RealRooted.LGV.RepeatedChip
 import RealRooted.LGV.TotallyNonnegative
 
 /-!
-# Lindström–Gessel–Viennot challenge entry point
+# Lindström–Gessel–Viennot lemma and total positivity
 
 <!-- realrooted-catalog
 version = 1
@@ -69,39 +69,51 @@ label = "Paths of length n and powers of the edge matrix"
 -->
 
 <!-- realrooted-catalog-content -->
-# Lindström–Gessel–Viennot and total positivity
+# Lindström–Gessel–Viennot lemma and total positivity
 
-Path networks with nonnegative weights and ordered cancellation certificates give totally
-nonnegative matrices and Pólya frequency sequences.
+Path matrices of networks with nonnegative weights are totally nonnegative whenever the
+Lindström–Gessel–Viennot cancellation works with sources and sinks in order. Applied to
+Toeplitz minors, this gives Pólya frequency sequences, for instance from networks of
+lower-bidiagonal chips.
 
 ## Results
 
-The [Lindström–Gessel–Viennot lemma](sf:lindstromGesselViennotLemma) expresses a minor of a
-path matrix as a signed sum over vertex-disjoint path families. Here the surviving terms are
-shown to have nonnegative weights using ordered cancellation certificates, building on the
-path-cancellation proof in the LeanLGV library.
+The *path matrix* of a finite network with weighted paths has as $(s,t)$ entry the total weight
+of the paths from $s$ to $t$. The [Lindström–Gessel–Viennot lemma](sf:lindstromGesselViennotLemma)
+writes a minor of the path matrix, with sources $s_1<\dots<s_n$ and sinks $t_1<\dots<t_n$, as a
+signed sum over path families. We say the minor *cancels in order* if there is a notion of
+disjointness for pairs of paths such that two paths from $s_i$ to $t_k$ and from $s_j$ to $t_l$
+with $s_i<s_j$ and $t_l<t_k$ are never disjoint, together with a weight-negating involution on
+the signed path families that are not pairwise disjoint, fixing only families of weight zero.
+Vertex-disjointness in a planar network with sources and sinks in order along the boundary is
+the classical example.
 
 **Theorem (total nonnegativity).** Let $N$ be a finite path network over an ordered ring with
-nonnegative path weights. If every minor with strictly increasing row and column selections has
-an ordered cancellation certificate, then the path matrix of $N$ is totally nonnegative.
+nonnegative path weights. If every minor with strictly increasing row and column selections
+cancels in order, then the path matrix of $N$ is totally nonnegative.
 
-**Theorem (Pólya frequency sequences).** Let $a=(a_k)$ be a real sequence. If every strictly
-increasing Toeplitz minor of $a$ is the path matrix of a network with nonnegative weights and an
-ordered cancellation certificate, then $a$ is a Pólya frequency sequence.
+**Theorem (Pólya frequency sequences).** Let $a=(a_k)$ be a real sequence. If each Toeplitz
+submatrix of $a$ with strictly increasing rows and columns is the path matrix of a network with
+nonnegative weights whose determinant cancels in order, then $a$ is a Pólya frequency sequence.
 
 **Theorem (chip networks).** A *chip* is a lower-bidiagonal matrix on levels $0,\dots,N$. Let
 $G,K$ be words of chips with nonnegative weights such that the product matrix of $K$ is
 strictly lower triangular. Then the repeated-chip kernel sequence of $(G,K)$ is a Pólya frequency
-sequence, and the kernel row of Brändén and Saud Leite at the last level is a PF polynomial.
+sequence, and the kernel row of [Brändén and Saud Leite](rr:branden-leite) at the last level is
+a PF polynomial.
 
-**Proposition (path counting).** For a weighted quiver with finitely many vertices, the sum of
-the weights of the paths of length $n$ from $a$ to $b$ is the $(a,b)$ entry of the $n$-th power
-of the edge-sum matrix.
+For a weighted quiver with finitely many vertices, the total weight of the paths of length $n$
+from $a$ to $b$ is the $(a,b)$ entry of the $n$-th power of the edge-sum matrix.
+
+## Proof
+
+The involution cancels the families that are not pairwise disjoint. A pairwise disjoint family
+cannot contain two paths in opposite order, so it connects $s_i$ to $t_i$ for every $i$ and
+contributes its nonnegative weight with sign $+1$.
 
 ## References
 
-See [@Lindstrom1973; @GesselViennot1985]. The kernel rows connect to the
-[Brändén–Saud Leite page](rr:branden-leite).
+[@Lindstrom1973; @GesselViennot1985].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The path-cancellation argument lives in

@@ -3,7 +3,7 @@ module
 import RealRooted.CombinatorialExamples.BigDescents321
 
 /-!
-# Real roots of big-descent polynomials of 321-avoiding permutations
+# Big-descent polynomials of 321-avoiding permutations
 
 <!-- realrooted-catalog
 version = 1
@@ -45,7 +45,7 @@ label = "Every root of A_n is negative"
 -->
 
 <!-- realrooted-catalog-content -->
-# Real roots of big-descent polynomials of 321-avoiding permutations
+# Big-descent polynomials of 321-avoiding permutations
 
 The big-descent polynomials of 321-avoiding permutations are real-rooted with negative roots, and
 the Motzkin reference polynomials interlace them.
@@ -75,7 +75,7 @@ the case $\Pi=\{321\}$ of [@ElizaldeRiveraZhuang2026, Conj. 4.4]. See also
 
 For $n\ge25$ we expand $(c/2)^nA_n(1-c^{-2})$ in Gegenbauer polynomials and show
 $A_n(\rho)M_{n-2}'(\rho)<0$ at every zero $\rho$ of $M_{n-2}$, which gives interlacing. The cases
-$3\le n\le24$ are exact certificates.
+$3\le n\le24$ are checked by exact computation.
 
 ## References
 
