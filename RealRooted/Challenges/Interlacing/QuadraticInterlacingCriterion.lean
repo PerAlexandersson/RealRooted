@@ -3,7 +3,7 @@ module
 import RealRooted.Interlacing.QuadraticRemainderCriterion
 
 /-!
-# A coefficient criterion for interlacing quadratics
+# Interlacing of quadratics
 
 <!-- realrooted-catalog
 version = 1
@@ -62,10 +62,11 @@ label = "Rows have degree n + 2, positive coefficients and roots in [-1, 0)"
 -->
 
 <!-- realrooted-catalog-content -->
-# A coefficient criterion for interlacing quadratics
+# Interlacing of quadratics
 
-Two quadratics with positive leading coefficients have their roots in alternating order above a
-point $L$ if and only if four inequalities in their coefficients hold.
+Two quadratics with positive leading coefficients have alternating roots above a point $L$
+exactly when four polynomial inequalities in their coefficients hold. The criterion involves no
+square roots, so it applies directly to quadratics whose coefficients depend on parameters.
 
 ## Results
 
@@ -80,13 +81,10 @@ $$
 u<0,\qquad a v^2-b\,u\,v+c\,u^2<0,\qquad f(L)>0,\qquad f'(L)<0 .
 $$
 The second inequality says $u^2f(-v/u)<0$, that is, the root $-v/u$ of the remainder lies
-strictly between the roots of $f$.
+strictly between the roots of $f$. Under these inequalities, $f\ll g$, both $f$ and $g$ have
+simple roots, they have no common root, and $f\ll(x-L)\,g$ with a degree gap of one.
 
-**Proposition (consequences).** Under these inequalities, $f\ll g$, both $f$ and $g$ have simple
-roots, and they have no common root. Moreover $f\ll(x-L)\,g$, where $\deg f=2$ and
-$\deg (x-L)g=3$.
-
-**Theorem (one-parameter family).** For $y\in[0,1/3]$ let
+**Example (a one-parameter family).** For $y\in[0,1/3]$ let
 $$
 H_y(x)=x^2+\frac{6+11y-3y^2}{7}\,x+\frac{1+3y+3y^2}{7}.
 $$
@@ -102,8 +100,7 @@ $$
 
 ## References
 
-The criterion and the family have no published source. For the interlacing convention, see the
-[interlacing page](rr:interlacing).
+For interlacing in general, see [@Fisk2006x].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in

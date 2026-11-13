@@ -3,7 +3,7 @@ module
 public import RealRooted.Basic.ProperPosition
 
 /-!
-# Interlacing of real-rooted polynomials
+# Interlacing
 
 <!-- realrooted-catalog
 version = 1
@@ -40,7 +40,7 @@ label = "Sturm sequence"
 [[theorems]]
 name = "RealRooted.Interlaces.iff_strictInterl_and_natDegree"
 module = "RealRooted.Basic.ProperPosition"
-label = "Interlaces is interlacing with a degree increase"
+label = "Interlacing with a degree gap of one"
 headline = true
 
 [[theorems]]
@@ -51,38 +51,44 @@ label = "Interlacing polynomials differ in degree by at most one"
 [[theorems]]
 name = "RealRooted.StrictInterl.toInterl"
 module = "RealRooted.Basic.ProperPosition"
-label = "f ≪ g implies Interl f g, the relation allowing zero polynomials"
+label = "Interlacing implies interlacing in the sense allowing zero polynomials"
 -->
 
 <!-- realrooted-catalog-content -->
-# Interlacing of real-rooted polynomials
+# Interlacing
 
-Two nonzero real-rooted polynomials interlace if their roots alternate, with the second of the
-same degree as the first or of one higher degree.
+Two real-rooted polynomials interlace if their roots alternate. Interlacing is the standard
+tool for proving that a sequence of polynomials is real-rooted. The convention below is used
+throughout the catalog; a page that departs from it says so.
 
 ## Results
 
 Let $f$ and $g$ be nonzero real-rooted polynomials with roots $s_1\le\dotsb\le s_k$ and
-$r_1\le\dotsb\le r_m$, listed with multiplicity. We write $f\ll g$ (`StrictInterl f g`), and say
-that $f$ *interlaces* $g$, if either
+$r_1\le\dotsb\le r_m$, listed with multiplicity. We say that $f$ *interlaces* $g$, and write
+$f\ll g$, if either
 
 - $m=k+1$ and $r_1\le s_1\le r_2\le s_2\le\dotsb\le s_k\le r_{k+1}$, or
 - $m=k$ and $s_1\le r_1\le s_2\le r_2\le\dotsb\le s_k\le r_k$.
 
-In both cases $g$ has the largest root. Common roots and repeated roots are allowed.
+Thus $g$ has the largest root, and common and repeated roots are allowed. Some statements also
+allow $f=0$ or $g=0$; the zero polynomial then interlaces every polynomial and is interlaced by
+every polynomial. A sequence $p_0,p_1,\dotsc$ is a *Sturm sequence* if $p_{i+1}\ll p_i$ and
+$\deg p_{i+1}=\deg p_i-1$ for every $i$.
 
-The relation `Interl f g` holds if $f=0$, $g=0$ or $f\ll g$. The relation `Interlaces f g` is
-the first case alone. A list $p_0,p_1,\dotsc$ of polynomials is a *Sturm sequence*
-(`IsSturmSeq`) if `Interlaces` holds for each consecutive pair $p_{i+1},p_i$; the degrees then
-drop by one at each step.
+**Theorem.** If $f\ll g$, then $\deg g=\deg f$ or $\deg g=\deg f+1$. The first alternative of
+the definition holds exactly when $f\ll g$ and $\deg g=\deg f+1$.
 
-**Theorem.** If $f\ll g$, then $\deg g=\deg f$ or $\deg g=\deg f+1$. Moreover `Interlaces f g`
-holds if and only if $f\ll g$ and $\deg g=\deg f+1$.
+## Use
+
+By [Obreschkoff's theorem](rr:obreschkoff), $f\ll g$ or $g\ll f$ holds exactly when every real
+linear combination of $f$ and $g$ is real-rooted. Interlacing sequences arise from
+[three-term recurrences](rr:favard) and from [principal submatrices](rr:cauchy-interlacing),
+interlacing is preserved by [differential operators with real-rooted symbol](rr:hermite-poulain),
+and families with a [common interleaver](rr:common-interleavers) have real-rooted sums.
 
 ## References
 
-See [@Fisk2006x] and the
-[interlacing overview on symmetricfunctions.com](sf:interlacesPolynomial).
+[@Fisk2006x]. See also [interlacing on symmetricfunctions.com](sf:interlacesPolynomial).
 <!-- /realrooted-catalog-content -->
 -/
 

@@ -44,10 +44,14 @@ A polynomial with positive coefficients that satisfy $a_k^2>4a_{k-1}a_{k+1}$ is 
 **Theorem (Kurtz).** Let $\sum_{k=0}^na_kx^k$ be a real polynomial of degree $n\ge2$ with
 $a_k>0$ for $0\le k\le n$ and $a_k^2>4a_{k-1}a_{k+1}$ for $0<k<n$. Then all its roots are real.
 
+## Use
+
+[Hutchinson's theorem](rr:hutchinson) is the corresponding statement for entire functions, with
+non-strict inequalities.
+
 ## References
 
-See [@Kurtz1992] and the
-[contextual account on symmetricfunctions.com](sf:kurtzTheorem).
+See [@Kurtz1992] and [Kurtz's theorem](sf:kurtzTheorem) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 
 Human statement:

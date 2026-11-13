@@ -129,36 +129,32 @@ consecutive rows interlace.
 
 ## Results
 
-For nonzero real-rooted polynomials $f$ and $g$ we write $f\ll g$ (`StrictInterl f g`) as on the
-[interlacing page](rr:interlacing), and `Interlaces f g` when moreover
-$\deg g=\deg f+1$. Each family is defined by its recurrence.
+Each family is defined by its recurrence.
 
-**Theorem (recurrences).** In each family below, consecutive polynomials satisfy the
-stated relation.
+**Theorem (recurrences).** In each family below, consecutive polynomials interlace.
 
-- **Touchard** (`touchard`): $T_0=1$, $T_{n+1}=xT_n+xT_n'$. Then `Interlaces` $T_n$ $T_{n+1}$ for
+- **Touchard**: $T_0=1$, $T_{n+1}=xT_n+xT_n'$. Then $T_n\ll T_{n+1}$ for all $n$.
+- **Stirling permutations**: $P_0=1$, $P_{n+1}=(2n+1)xP_n+x(1-x)P_n'$. Then $P_n\ll P_{n+1}$
+  for all $n$.
+- **Derangements**: $P_0=P_1=0$, $P_2=x$ and
+  $P_{n+3}=x\bigl((n+2)P_{n+1}+(n+2)P_{n+2}+(1-x)P_{n+2}'\bigr)$. Then $P_n\ll P_{n+1}$ for all
+  $n\ge2$.
+- **Simsun permutations**: $P_0=1$, $P_{n+1}=(1+nx)P_n+x(1-2x)P_n'$. Then $P_n\ll P_{n+1}$ for
   all $n$.
-- **Stirling permutations** (`stirlingPermutations`): $P_0=1$,
-  $P_{n+1}=(2n+1)xP_n+x(1-x)P_n'$. Then `Interlaces` $P_n$ $P_{n+1}$ for all $n$.
-- **Derangements** (`sturmDerangementsExc`): $P_0=P_1=0$, $P_2=x$ and
-  $P_{n+3}=x\bigl((n+2)P_{n+1}+(n+2)P_{n+2}+(1-x)P_{n+2}'\bigr)$. Then `Interlaces` $P_n$
-  $P_{n+1}$ for all $n\ge2$.
-- **Simsun permutations** (`simsun`): $P_0=1$, $P_{n+1}=(1+nx)P_n+x(1-2x)P_n'$. Then
-  $P_n\ll P_{n+1}$ for all $n$.
-- **Singleton-free set partitions** (`singletonFreeSetPartitions`): $D_0=1$, $D_1=0$ and
+- **Singleton-free set partitions**: $D_0=1$, $D_1=0$ and
   $D_{n+2}=x\bigl((n+1)D_n+D_{n+1}'\bigr)$. Then $D_n\ll D_{n+1}$ for all $n\ge2$.
-- **Colored set partitions** (`coloredSetPartitions c m`) for natural numbers $c,m$: $T_0=1$,
-  $T_{n+1}=(x+c)T_n+mxT_n'$. Then `Interlaces` $T_n$ $T_{n+1}$ for all $n$.
+- **Colored set partitions** for natural numbers $c,m$: $T_0=1$, $T_{n+1}=(x+c)T_n+mxT_n'$.
+  Then $T_n\ll T_{n+1}$ for all $n$.
 
-The degree of the simsun polynomial does not rise at every step, so its consecutive members are
-related by $\ll$ rather than by `Interlaces`. In the derangement and singleton-free families
-$P_1$, respectively $D_1$, is zero, so interlacing starts at index $2$.
+In the Touchard, Stirling-permutation, derangement and colored families, moreover
+$\deg P_{n+1}=\deg P_n+1$, so these polynomials form Sturm sequences. In the derangement and
+singleton-free families $P_1$, respectively $D_1$, is zero, so interlacing starts at index $2$.
 
 **Theorem (Touchard).** The Touchard polynomials are the case $c=0$, $m=1$ of the colored family,
 and
 $$T_n(x)=\sum_kS(n,k)\,x^k,$$
-where $S(n,k)$ is the Stirling number of the second kind (`Nat.stirlingSecond`). The case $c=1$,
-$m=2$ gives the type $B$ set partitions of D. Wang.
+where $S(n,k)$ is the Stirling number of the second kind. The case $c=1$, $m=2$ gives the
+type $B$ set partitions of D. Wang.
 
 **Theorem (Motzkin polynomials).** Let $M_k=\sum_a\binom k{2a}\mathrm{Cat}_a\,x^a$, so that
 $(k+2)M_k=(2k+1)M_{k-1}+(k-1)(4x-1)M_{k-2}$ for $k\ge3$, with $M_1=1$ and $M_2=1+x$. Then
@@ -179,12 +175,13 @@ follows from the [Chudnovsky–Seymour theorem](rr:chudnovsky-seymour).
 
 ## Proof
 
-In the first-order recurrences $P_{n+1}=uP_n+vP_n'$, where $v$ is one of $x$, $x(1-x)$, $x(1-2x)$
-and $mx$. The polynomial $P_n$ has nonnegative coefficients, so its zeros are nonpositive and
-$v$ is nonpositive there. The Liu–Wang criterion with the interlacer $P_n'\ll P_n$ then gives
-$P_n\ll P_{n+1}$. In the derangement and singleton-free recurrences, the earlier row enters with
-a nonnegative coefficient, and Wagner's lemma on nonnegative combinations of common interlacers
-handles the extra term.
+The first-order recurrences have the form $P_{n+1}=uP_n+vP_n'$ with $v$ one of $x$, $x(1-x)$,
+$x(1-2x)$ and $mx$. The polynomial $P_n$ has nonnegative coefficients, so its zeros are
+nonpositive and $v$ is nonpositive there. The [Liu–Wang criterion](rr:ma-wang-liu-wang) with the
+interlacer $P_n'\ll P_n$ then gives $P_n\ll P_{n+1}$. In the derangement and singleton-free
+recurrences the earlier row enters with a nonnegative coefficient, and
+[Wagner's lemma](rr:wagner) on nonnegative combinations of common interlacers handles the extra
+term.
 
 ## References
 

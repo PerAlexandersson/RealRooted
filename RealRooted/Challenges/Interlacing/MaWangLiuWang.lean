@@ -105,22 +105,16 @@ $f$, the sum is again interlaced by $f$; the same holds for $uf+vf'$ with $v\le0
 
 ## Results
 
-For nonzero real-rooted polynomials $f$ and $F$ we write $f\ll F$ if $f$ interlaces $F$ (see
-the [interlacing page](rr:interlacing)): the roots interlace weakly,
-$F$ has the largest root, and $\deg F-\deg f\in\{0,1\}$. Shared and repeated roots are allowed.
-The statement $f\ll F$ includes that $F$ is real-rooted. Throughout, "positive" for a
-polynomial refers to its leading coefficient.
+A polynomial is *positive* if its leading coefficient is positive. The conclusion $f\ll F$
+includes that $F$ is real-rooted.
 
 **Theorem (Liu–Wang).** [@LiuWang2007, Thm. 2.1] Let $f,g,a,b\in\mathbb R[x]$ and $F=af+bg$.
 Suppose that $g\ll f$, that $g$ and $F$ are positive, and that
 $\deg f\le\deg F\le\deg f+1$. If $b(r)\le0$ at every real root $r$ of $f$, then $f\ll F$.
-Both shapes $\deg g=\deg f$ and $\deg g+1=\deg f$ are allowed, $f$ and $g$ may have common and
-repeated roots, and the leading coefficient of $f$ may have either sign.
 
 **Theorem (Ma–Wang).** [@MaWang2008, Thm. 2] Let $f,u,v\in\mathbb R[x]$ and $F=uf+vf'$. Suppose
 that $f$ is real-rooted, that $f$ and $F$ are positive, and that
-$\deg f\le\deg F\le\deg f+1$. If $v(r)\le0$ at every root $r$ of $f$, then $f\ll F$. There is no
-degree hypothesis on $f$.
+$\deg f\le\deg F\le\deg f+1$. If $v(r)\le0$ at every root $r$ of $f$, then $f\ll F$.
 
 **Theorem (Ma–Wang, strict form).** Suppose in addition that $\deg f\ne0$, that $f$ has simple
 roots, that $\deg F=\deg f+1$, and that $v(r)<0$ at every root $r$ of $f$. Then $f\ll F$ and
@@ -140,26 +134,22 @@ special cases.
 **Theorem (finite sums).** Let $f\ne0$ be real-rooted, with leading coefficient of either sign,
 and let $F=af+\sum_{i\in s}b_ig_i$ with $g_i\ll f$ and $g_i$ positive, $F$ positive and
 $\deg f\le\deg F\le\deg f+1$. If $b_i(r)\le0$ at every root $r$ of $f$ for each $i$, then
-$f\ll F$. At repeated roots the termwise conditions cannot be replaced by the combined
-condition $F(r)f'(r)\le0$, which is vacuous there.
-
-**Theorem (weak signs).** Let $g\ll f$ with $\deg g+1=\deg f$, with no common roots, let $g$ and
-$F$ be positive, and $\deg f\le\deg F\le\deg f+1$. If $F(r)g(r)\le0$ at every root $r$ of $f$,
-then $f\ll F$.
-
-**Theorem (derivative signs).** Let $f$ be real-rooted with simple roots and positive, let $F$
-be positive with $\deg f\le\deg F\le\deg f+1$. If $F(r)f'(r)\le0$ at every root $r$ of $f$,
-then $f\ll F$. Common roots of $f$ and $F$ are allowed. Conversely, if $g\ll f$ and both are
-positive, then $g(r)f'(r)\ge0$ at every root $r$ of $f$.
-
-**Theorem (strict critical signs).** If $f$ is nonconstant and real-rooted, $f$ and $F$ are
-positive, $\deg f\le\deg F\le\deg f+1$, and $F(r)f'(r)<0$ at every root $r$ of $f$, then
 $f\ll F$.
+
+**Theorem (sign criteria).** Let $F$ be positive with $\deg f\le\deg F\le\deg f+1$. Then
+$f\ll F$ in each of the following cases:
+
+- $g\ll f$ with $\deg g+1=\deg f$ and no common roots, $g$ is positive, and $F(r)g(r)\le0$ at
+  every root $r$ of $f$;
+- $f$ is positive and real-rooted with simple roots, and $F(r)f'(r)\le0$ at every root $r$ of
+  $f$;
+- $f$ is positive, nonconstant and real-rooted, and $F(r)f'(r)<0$ at every root $r$ of $f$.
+
+Conversely, if $g\ll f$ and both are positive, then $g(r)f'(r)\ge0$ at every root $r$ of $f$.
 
 **Theorem (sequences).** Let $(P_n)_{n\ge0}$ be positive with $P_0\ll P_1$ and
 $\deg P_{n+1}\le\deg P_{n+2}\le\deg P_{n+1}+1$ for all $n$. Then $P_n\ll P_{n+1}$ for all $n$
-in each of the following cases; in particular every $P_n$ is real-rooted, and consecutive
-polynomials may share roots.
+in each of the following cases; in particular every $P_n$ is real-rooted.
 
 - $P_{n+2}=A_nP_{n+1}+B_nP_n$ with $B_n(r)\le0$ at every root $r$ of $P_{n+1}$.
 - $P_{n+2}=U_nP_{n+1}+V_nP_{n+1}'$ with $V_n(r)\le0$ at every root $r$ of $P_{n+1}$.
@@ -169,7 +159,7 @@ polynomials may share roots.
 **Theorem (derivative–lag step).** Let $f\ne0$ be real-rooted and positive, let $g\ll f$ be
 positive, and put $F=uf+vf'+wg$. Suppose that $F$ is positive and
 $\deg f\le\deg F\le\deg f+1$. If $v(r)\le0$ and $w(r)\le0$ at every root $r$ of $f$, then
-$f\ll F$. Common roots of $f$ and $g$ are allowed.
+$f\ll F$.
 
 ## Use
 
@@ -179,10 +169,7 @@ recurrences or by first-order differential operators.
 ## References
 
 [@LiuWang2007, Thm. 2.1]; [@MaWang2008, Thm. 2]; see also the
-[Ma–Wang and Liu–Wang criteria on symmetricfunctions.com](sf:maWangDerivativeCriterion). That
-site states the Liu–Wang theorem for $F$ and $g$ with leading coefficients of the same sign, the
-negative case following by replacing $F,g$ with $-F,-g$, and also gives a strict form of the
-theorem, which is not included here.
+[Ma–Wang and Liu–Wang criteria on symmetricfunctions.com](sf:maWangDerivativeCriterion).
 <!-- /realrooted-catalog-content -->
 
 The general form (combined flux) lives in `RealRooted.LiuWang.CombinedFlux`; the

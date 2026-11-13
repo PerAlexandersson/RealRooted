@@ -6,7 +6,7 @@ import RealRooted.LaguerreSamuelson
 import RealRooted.Mathlib.Algebra.Polynomial.MeanMode
 
 /-!
-# Newton, Maclaurin and Laguerre–Samuelson inequalities challenge entry point
+# Newton, Maclaurin and Laguerre–Samuelson inequalities
 
 <!-- realrooted-catalog
 version = 1
@@ -73,7 +73,7 @@ For real numbers $x_1,\dotsc,x_n$ let $e_k$ be their elementary symmetric functi
 $E_k=e_k/\binom nk$.
 
 **Newton's inequalities.** $E_{k-1}E_{k+1}\le E_k^2$ for $0<k<n$. In polynomial form, for every
-real-rooted polynomial $p$ of degree $d$, with no sign condition on its coefficients,
+real-rooted polynomial $p$ of degree $d$,
 $$(k+1)(d-k+1)\,p_{k-1}p_{k+1}\le k(d-k)\,p_k^2\qquad(0<k<d).$$
 The same inequality holds with $d$ replaced by any $n\ge d$. The coefficients of $p$ are also
 log-concave: $p_{k-1}p_{k+1}\le p_k^2$.

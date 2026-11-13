@@ -75,9 +75,8 @@ Pólya frequency polynomials.
 
 ## Results
 
-A
-real polynomial $p$ is *PF* if it has nonnegative coefficients and is either zero or splits over
-$\mathbb R$ with all roots at most $0$. For $D\ge\deg p$ the *reciprocal shift* is
+A real polynomial $p$ is *PF* if it has nonnegative coefficients and is either zero or splits
+over $\mathbb R$ with all roots at most $0$. For $D\ge\deg p$ the *reciprocal shift* is
 $p_D(x)=x^Dp(1/x)$, the polynomial with coefficients reversed within degree $D$.
 
 **Theorem (reversal).** Let $p,q$ be PF polynomials of degree at most $D$ with $p\ll q$. Then
@@ -91,16 +90,16 @@ where $p^{\mathrm{rev}}$ is the reversed polynomial. If $p\ne0$ splits, then the
 with multiplicity, are $D-\deg p$ zeros together with the inverses of the nonzero roots of $p$.
 If $p$ is PF, so is $p_D$.
 
-**Lemma (root lists).** Let $\ell$ be a sorted list of the roots of a nonzero split polynomial
-$p$ of degree at most $D$, all at most $0$. Remove the zeros from $\ell$, reverse it, invert each
-entry, and append $D-\deg p$ zeros. The result is a sorted list of the roots of $p_D$.
+## Proof
 
-**Lemma (interleaving lists).** Let $A,B$ be lists of negative reals that interleave. Inverting
-and reversing both lists swaps them if $|A|=|B|$, and keeps their order if $|A|+1=|B|$. The step
-uses that $t\mapsto 1/t$ is order-reversing on negative reals.
+Let $p\ne0$ split with all roots at most $0$, listed in increasing order. Removing the zeros,
+reversing the list, inverting each entry and appending $D-\deg p$ zeros gives the roots of $p_D$
+in increasing order. Since $t\mapsto1/t$ is order-reversing on the negative reals, inverting
+and reversing two interleaving lists of negative reals swaps them when they have equal length
+and keeps their order when the second is one longer, which gives the reversal theorem.
 
 ## References
 
-Background on interlacing and polynomial reversal: [@Fisk2006x].
+[@Fisk2006x]
 <!-- /realrooted-catalog-content -->
 -/

@@ -106,7 +106,7 @@ label = "Right-factor product recurrence"
 
 The shift $p\mapsto p-\varepsilon p'$ preserves real-rootedness for every real $\varepsilon$ and,
 for $\varepsilon>0$, produces an interlacing polynomial and, after $\deg p$ iterations, simple
-roots.
+roots. It is the standard way to perturb a real-rooted polynomial into one with simple roots.
 
 ## Results
 
