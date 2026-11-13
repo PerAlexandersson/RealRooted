@@ -81,7 +81,6 @@ $1/(\det(I+zA)-tz)$ are monic, have nonnegative real roots, and consecutive rows
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 A real matrix $A$ is *TP2* if all its entries and all its ordered $2\times2$ minors
 $A_{i_1j_1}A_{i_2j_2}-A_{i_1j_2}A_{i_2j_1}$, $i_1<i_2$, $j_1<j_2$, are nonnegative.
 
@@ -112,10 +111,10 @@ rows begin $1,\ t-2,\ (t-1)(t-3)$.
 ## Use
 
 The strict version (simple positive roots and strict interlacing when $d\ge2$ and $\det A>0$)
-is on the [strict certificate](/RealRooted/theorems/tp2-hessenberg-strictness/) page. The
+is on the [strict certificate](rr:tp2-hessenberg-strictness) page. The
 weighted-run and parity-lift consequences are on the
-[site-weighted run polynomials](/RealRooted/theorems/site-weighted-run-polynomials/) and
-[parity lift](/RealRooted/theorems/parity-lift-tp2-kernels/) pages.
+[site-weighted run polynomials](rr:site-weighted-run-polynomials) and
+[parity lift](rr:parity-lift-tp2-kernels) pages.
 
 ## Proof
 
@@ -123,14 +122,14 @@ Brändén's constant-matrix theorem [@Branden2015, Corollary 8.6] says that a TP
 maps an interlacing sequence with nonnegative coefficients to one of the same kind. It gives
 the vector recursion, since $(f_1,\dots,f_d,xf_1)$ is interlacing and the new $2\times2$ minors
 of $[A\mid b\mathbf 1]$ are $b(A_{ij}-A_{kj})\ge0$. Fisk's theorem for totally nonnegative
-matrices (see the [matrix interlacing](/RealRooted/theorems/matrix-interlacing/) page) is a
+matrices (see the [matrix interlacing](rr:matrix-interlacing) page) is a
 special case. Condition 3 gives $A=\mathbf 1c^{\mathsf T}-L$ with $L$ strictly lower
 triangular, and the matrix determinant lemma identifies $P_k$ with $f_{k,1}$ as displayed.
 
 ## References
 
 [@Branden2015]. See also the [totally nonnegative
-matrices](/RealRooted/theorems/totally-nonnegative-matrices/) page.
+matrices](rr:totally-nonnegative-matrices) page.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in the `RealRooted.MatrixInterlacing` and

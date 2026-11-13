@@ -103,7 +103,7 @@ nonnegative.
 
 [@GelineauZeng2010; @AndrewsEggeGawronskiLittlejohn2013]. The descent polynomials of
 Jacobi–Stirling permutations are on the
-[Jacobi–Stirling descent page](/RealRooted/families/jacobi-stirling-descent/).
+[Jacobi–Stirling descent page](rr:jacobi-stirling-descent).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

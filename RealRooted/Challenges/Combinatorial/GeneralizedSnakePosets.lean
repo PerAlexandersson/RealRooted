@@ -119,7 +119,7 @@ letter gives an interlacing polynomial.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated. A
+A
 polynomial is a *Pólya frequency (PF) polynomial* if it has nonnegative coefficients and only real
 nonpositive roots.
 

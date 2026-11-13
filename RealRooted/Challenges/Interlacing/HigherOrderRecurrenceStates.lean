@@ -180,7 +180,7 @@ parameter ranges are sharp.
 
 ## Results
 
-We write $p\ll q$ if $p=0$, $q=0$, or $p$ interlaces $q$; common roots are allowed. A polynomial
+We use the [zero-aware interlacing convention](rr:about). A polynomial
 is *PF* if it is zero or has nonnegative coefficients and only real, nonpositive roots. A triple
 $(q,p,r)$ is an *ordered PF triple* if $q,p,r$ are PF and $q\ll p$, $q\ll r$, $p\ll r$.
 
@@ -263,7 +263,7 @@ transitions are two instances.
 
 ## Proof
 
-We use the cone lemmas of Wagner [@Wagner1992] (see the [Wagner page](/RealRooted/theorems/wagner/))
+We use the cone lemmas of Wagner [@Wagner1992] (see the [Wagner page](rr:wagner))
 for polynomials with nonnegative coefficients: if $h\ll f_i$ for all $i$, then
 $h\ll\sum_ic_if_i$ for $c_i\ge0$; if $f_i\ll h$ for all $i$, then $\sum_ic_if_i\ll h$; and
 $f\ll g$ implies $g\ll xf$. The sum of an interlacing pair of PF polynomials is PF.
@@ -292,8 +292,8 @@ balance identity makes the update of the first auxiliary coordinate a nonnegativ
 ## References
 
 The cone lemmas for directed interlacing are due to Wagner [@Wagner1992]; see the
-[Wagner page](/RealRooted/theorems/wagner/). For the interlacing convention, see the
-[interlacing page](/RealRooted/concepts/interlacing/).
+[Wagner page](rr:wagner). For the interlacing convention, see the
+[interlacing page](rr:interlacing).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in `RealRooted.Recurrence.CubicTransition`,

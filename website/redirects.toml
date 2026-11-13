@@ -1,0 +1,3 @@
+# Retired section/slug paths map directly to a current catalog slug.
+# Example (when that page is retired): "theorems/old-name" = "current-slug"
+[redirects]

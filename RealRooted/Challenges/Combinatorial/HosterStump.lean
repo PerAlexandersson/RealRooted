@@ -77,7 +77,7 @@ $h$-vector are real-rooted, and the dual Chow polynomial interlaces the augmente
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; common roots are allowed unless stated. Let $P$ be a
+Let $P$ be a
 finite graded poset of rank $n$ with a bottom element $\hat0$, in which every lower interval
 $[\hat 0,x]$ is a Boolean lattice and every element lies below an element of rank $n$ (a
 *simplicial poset*). Write $h_0,\dots,h_n$ for its $h$-vector and $\beta(S)$ for the flag

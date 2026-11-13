@@ -96,8 +96,6 @@ multiplication by $x$ reverses it for polynomials with nonpositive roots.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$ as on the
-[interlacing page](/RealRooted/concepts/interlacing/); common roots are allowed unless stated.
 Polynomials $f,g$ below have positive leading coefficients where stated.
 
 **Theorem (Wagner's lemma).** Let $f,g$ have positive leading coefficients.

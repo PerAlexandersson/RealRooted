@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **174 IDs**; **17 formalized**, **143 shells**, **1 fragments**, and **13 documented-only**.
+Current totals: **177 IDs**; **21 formalized**, **142 shells**, **1 fragments**, and **13 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -29,7 +29,7 @@ Current totals: **174 IDs**; **17 formalized**, **143 shells**, **1 fragments**,
 | A008277 | `shell` | theorem _natDegree (n : ℕ) : ( n).natDegree = n := by rr_row_natDegree<br>theorem _ne_zero (n : ℕ) : n ≠ 0 := by rr_row_ne_zero<br>+10 additional test intents | `rr_row_eval_zero_pos`, `rr_row_interlaces`, `rr_row_leadingCoeff_pos`, `rr_row_natDegree`, `rr_row_ne_zero`, `rr_row_nonneg_coeffs`, `rr_row_splits` | `degree`, `growth`, `half` | concrete row definition and proofs of the listed certificates |
 | A008288 | `shell` | coefficients ().<br>def : ℕ → ℝ[X]<br>+9 additional test intents | `rr_row_eval_zero_pos`, `rr_row_interlaces`, `rr_row_natDegree`, `rr_row_nonneg_coeffs`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A008292 | `shell` | the rows comes from the multiplier bound `n + 1 - j ≥ 0` ().<br>def : ℕ → ℝ[X]<br>+10 additional test intents | `rr_row_eval_zero_pos`, `rr_row_interlaces`, `rr_row_nonneg_coeffs`, `rr_row_splits` | `via` | concrete row definition and proofs of the listed certificates |
-| A008299 | `shell` | A derivative-lag recurrence with half growth ().<br>def : ℕ → ℝ[X]<br>+5 additional test intents | `rr_row_splits` | `drop`, `half`, `via` | concrete row definition and proofs of the listed certificates |
+| A008299 | `formalized` | A derivative-lag recurrence with half growth ().<br>def : ℕ → ℝ[X]<br>+5 additional test intents | `rr_row_splits` | `drop`, `half`, `via` | none |
 | A008303 | `shell` | The recurrence defining the row polynomials.<br>def : ℕ → ℝ[X]<br>+10 additional test intents | `rr_row_natDegree`, `rr_row_splits` | `via` | concrete row definition and proofs of the listed certificates |
 | A008306 | `shell` | Half growth with `n`-dependent coefficients ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A008459 | `shell` | Negative denominators `-2 - n` ().<br>def : ℕ → ℝ[X]<br>+6 additional test intents | `rr_row_interlaces`, `rr_row_natDegree`, `rr_row_ne_zero`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
@@ -48,6 +48,7 @@ Current totals: **174 IDs**; **17 formalized**, **143 shells**, **1 fragments**,
 | A034839 | `shell` | Half growth with a lag `X - 1` of constant sign product ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A036969 | `shell` | Central factorial numbers: `κ = a = b = 1`, `v = 0` ().<br>def : ℕ → ℝ[X]<br>+9 additional test intents | `rr_row_interlaces`, `rr_row_splits` | `via` | concrete row definition and proofs of the listed certificates |
 | A038226 | `shell` | The OEIS polynomial sequence, defined by a product recurrence with a linear factor.<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_product_interlaces`, `rr_product_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
+| A046739 | `formalized` | concrete sequence-facing theorem | none | not recorded | none |
 | A046741 | `shell` | A negative multiplier with Fibonacci top coefficients, by a ratio invariant ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_leadingCoeff_pos`, `rr_row_natDegree` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A046802 | `formalized` | public import RealRooted.Applications.OEIS.<br>namespace Downstream<br>+9 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | none |
 | A049020 | `shell` | Distinguished-block set partitions: `v_n(t) = 1 + t` ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
@@ -105,6 +106,7 @@ Current totals: **174 IDs**; **17 formalized**, **143 shells**, **1 fragments**,
 | A119308 | `formalized` | public import RealRooted.Applications.OEIS.<br>Recurrence presentation of the rows.<br>+5 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | none |
 | A120434 | `shell` | Permutations by big descents: `v_n(t) = t(1 - t)` ().<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A120987 | `shell` | `(1, 1), (2, 1), (3, 1)` on the input `[1, 0, 0]` ().<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_splits` | `via` | concrete row definition and proofs of the listed certificates |
+| A124324 | `formalized` | concrete sequence-facing theorem | none | not recorded | none |
 | A124376 | `shell` | residual (): the rows are `(1 + X) ^ m` times `X⁴ + b X³ + c X² + b X + 1`.<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A124860 | `shell` | the numeric probe finds the factors and their exponents ().<br>def : ℕ → ℝ[X]<br>+2 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A124932 | `shell` | residuals ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_interlaces` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
@@ -123,6 +125,7 @@ Current totals: **174 IDs**; **17 formalized**, **143 shells**, **1 fragments**,
 | A142071 | `shell` | A product with the derivative, `P (n + 1) = A * (P n)'` ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A144090 | `shell` | A third-order recurrence whose stable degree law begins after two rows ().<br>def : ℕ → ℝ[X]<br>+6 additional test intents | `rr_row_leadingCoeff_pos` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A144436 | `shell` | `V ≤ 0`, `W < 0` on the negative axis ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
+| A144438 | `formalized` | concrete sequence-facing theorem | none | not recorded | none |
 | A147644 | `shell` | OEIS , whose recurrence is a product only after three exceptional rows.<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_splits` | `via` | concrete row definition and proofs of the listed certificates |
 | A151775 | `formalized` | import RealRooted.Applications.OEIS.<br>Regression examples for the transfer and the reflected Euler-bidiagonal families. | `rr_row_interlaces` | implicit/local certificates resolved by the route | none |
 | A154602 | `shell` | Scaled Bell rows `2ⁿ Bell(n, (t + 1) / 2)`: `v_n(t) = 2 + 2t` ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |

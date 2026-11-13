@@ -58,7 +58,7 @@ nonnegative coefficients are ULC($d$).
 ## Use
 
 This is the ultra-log-concave analogue of
-[Hoggar's theorem](/RealRooted/theorems/hoggar-log-concavity/). The hypothesis on internal
+[Hoggar's theorem](rr:hoggar-log-concavity). The hypothesis on internal
 zeros cannot be dropped: the sequence $1,0,0,1$ satisfies the displayed inequalities for
 $d=3$, but its product with $1+x$ does not satisfy them for $d=4$.
 

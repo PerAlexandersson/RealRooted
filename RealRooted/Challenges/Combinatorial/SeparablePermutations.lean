@@ -100,7 +100,7 @@ and have no common root; the same holds for their gamma-polynomials.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$. A permutation is *separable* if it avoids $2413$ and
+A permutation is *separable* if it avoids $2413$ and
 $3142$. Let $S_n(t)=\sum_\pi t^{\operatorname{des}\pi}$ over the separable permutations $\pi$
 of $[n]$. Fu, Lin and Zeng [@FuLinZeng2018] give the gamma-polynomials $\Gamma_n$ of $S_n$:
 $$

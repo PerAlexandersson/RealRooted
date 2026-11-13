@@ -90,7 +90,7 @@ $D_af$ for every real $a$.
 
 ## Use
 
-These statements drive [Grace's apolarity theorem](/RealRooted/theorems/grace-apolarity/): the
+These statements drive [Grace's apolarity theorem](rr:grace-apolarity): the
 polar derivative with a pole outside the disk or half-plane keeps all zeros in the region while
 lowering the degree by one.
 

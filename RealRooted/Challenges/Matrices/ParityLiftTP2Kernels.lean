@@ -103,7 +103,6 @@ roots, and consecutive rows interlace without common roots.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 Let $A$ be a real $q\times q$ matrix, $q\ge1$, that is TP2 (nonnegative entries and nonnegative
 ordered $2\times2$ minors), has weakly decreasing columns, and satisfies $A_{ij}=A_{jj}$ for
 $i\le j$. Put $G(w)=\det(I+wA)$.
@@ -130,8 +129,8 @@ Wronskians of the first coordinates, obtained from a Cauchy–Binet expansion.
 
 The constant-matrix theorem [@Branden2015, Corollary 8.6] gives the weak interlacing.
 Related pages: the [finite TP2 Hessenberg
-certificate](/RealRooted/theorems/tp2-hessenberg-certificate/) and its [strict
-version](/RealRooted/theorems/tp2-hessenberg-strictness/).
+certificate](rr:tp2-hessenberg-certificate) and its [strict
+version](rr:tp2-hessenberg-strictness).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in the `RealRooted.Toeplitz` and

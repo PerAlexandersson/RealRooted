@@ -67,7 +67,6 @@ interlace, and they are orthogonal for the Gaussian weight.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 The probabilists' Hermite polynomials satisfy $H_0=1$, $H_1=x$ and
 $$H_{n+2}(x)=x\,H_{n+1}(x)-(n+1)\,H_n(x).$$
 
@@ -82,7 +81,7 @@ $$H_{n+2}(x)=x\,H_{n+1}(x)-(n+1)\,H_n(x).$$
 ## Proof
 
 The root and interlacing statements follow from the general
-[Favard theory](/RealRooted/theorems/favard/), because the subdiagonal is positive.
+[Favard theory](rr:favard), because the subdiagonal is positive.
 
 ## References
 

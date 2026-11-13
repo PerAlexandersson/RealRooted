@@ -74,7 +74,6 @@ interlacing of pairs.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 A matrix $M=\begin{pmatrix}a&b\\c&d\end{pmatrix}$ with entries in $\{0,1,x\}$ acts on pairs by
 $$
 M\cdot(f_1,f_2)=(af_1+bf_2,\ cf_1+df_2).

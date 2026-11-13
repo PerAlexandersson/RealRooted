@@ -81,7 +81,6 @@ denominator are real-rooted and interlace.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 For real $c_2,\dots,c_s$ define monic polynomials $P_n(t)$ of degree $n$ by
 $$
 \sum_{n\ge0}P_n(t)\,z^n=\frac1{1-tz+z^2+\sum_{j=2}^sc_jz^{j+1}} .

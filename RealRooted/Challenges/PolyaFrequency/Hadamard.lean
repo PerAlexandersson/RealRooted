@@ -231,8 +231,7 @@ Schur–Szegő composition and coefficientwise products of polynomials preserve 
 root locations, interlacing and Pólya frequency sequences, and the finite Pólya–Schur theorem
 characterizes the diagonal operators that preserve real-rootedness.
 
-We write $f\ll g$ if $f$ and $g$ are nonzero and real-rooted, $\deg g-\deg f\in\{0,1\}$ and
-the roots of $f$ and $g$ alternate; common roots are allowed. A PF polynomial is a real
+We use the [nonzero interlacing convention](rr:about). A PF polynomial is a real
 polynomial with nonnegative coefficients that is zero or real-rooted.
 
 ## Results

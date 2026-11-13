@@ -145,7 +145,6 @@ consecutive members of most families interlace.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 Results 1 to 7 are the theorems of [@Alexandersson2026Eulerian], in the order of the paper;
 result 8 is not in the paper.
 

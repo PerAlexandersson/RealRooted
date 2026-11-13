@@ -52,7 +52,6 @@ polynomials to zero or real-rooted polynomials, and preserves interlacing.
 
 ## Results
 
-We write $g\ll h$ if $g$ interlaces $h$; repeated and common roots are allowed unless stated.
 For $f(x)=\sum_ka_kx^k$ let $f(D)=\sum_ka_kD^k$ with $D=d/dx$.
 
 **Theorem (Hermite–Poulain).** If $f$ and $p$ are nonzero and real-rooted, then $f(D)\,p$ is

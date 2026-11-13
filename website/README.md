@@ -45,6 +45,21 @@ such as `[related statement](sf:exampleRealRooted)`, resolve through the committ
 snapshot. A declaration's optional `symcat` label adds a link beside its Lean source link and is
 exported in `catalog-manifest.json`.
 
+Use `[another catalog page](rr:slug)` for internal links, including
+`[Conventions](rr:about)`. An optional `#declaration-or-heading-anchor` is supported.
+Inline and reference-style targets are resolved against the complete catalog;
+unknown slugs and missing fragments fail the build. Slugs are unique across
+sections; `about` is reserved. Absolute `/RealRooted/` prose links are legacy syntax.
+They still render at a custom base path, but the prose lint rejects new ones.
+
+The header gathers SymCat labels from declarations and prose links. Optional
+page-level `symcat = ["label", "anotherLabel"]` adds labels without repeating
+them in prose (`symcat = "label"` also works). Labels are validated against the
+committed snapshot, deduplicated, and shown under the title with attribution,
+provenance, a topic › kind breadcrumb, and a link to the main result.
+Bibliography titles retain the BibTeX casing; books also show their series,
+volume and publisher from the snapshot. Do not edit the snapshot to change formatting.
+
 Refresh both snapshots from the live site, or from a local directory containing the two exports:
 
 ```bash
@@ -158,6 +173,52 @@ Run source-only validation without touching an output directory:
 python3 scripts/build_challenge_pages.py --check
 ```
 
+`--check` includes a prose and structure ratchet. Challenge prose uses the H2s
+`Results`, `Use`, `Proof`, `References`, in that order. `Results` and `References`
+are required; unknown, duplicate and out-of-order H2s are reported. Outside
+fenced code, lint also reports inline backticks, “the library”, “Lean”,
+“No published source”, “unless stated” (case-insensitive), `\[` display delimiters,
+and absolute `/RealRooted/` links. Wrapped phrases are checked as paragraphs.
+
+`scripts/prose_baseline.txt` records the existing findings after the convention
+and link migration. Each tab-separated row contains the source path, rule name,
+and offending paragraph (or heading), with whitespace normalized. A new finding
+fails `--check`; a removed finding requires deleting its stale baseline row.
+During a rewrite, fix the prose and remove its rows together. Do not add baseline
+rows for new prose. Fenced code and generated declaration excerpts are excluded.
+
+The landing page groups all kinds by source topic, in this order: Interlacing,
+Roots, Preservers, Pólya frequency, Stability, Matrices, Orthogonal, Graphs,
+Combinatorial. The topic comes from `RealRooted/Challenges/<Topic>/`; legacy
+root-level entry points use Combinatorial. The sticky Topics bar scrolls
+horizontally on phones. Name sorting ignores a leading A, An or The; each
+topic retains its grouping when the sort changes.
+
+The Conventions page is maintained in `website/about.md`. Keep shared
+interlacing and zero-polynomial conventions there, and state a different local
+convention explicitly when needed. Date, main-result, provenance and citation
+explanations also live there.
+
+`catalog-manifest.json` keeps its existing schema version and declaration data,
+and adds page `topic`, `section`, `summary` (the first prose paragraph, with HTML
+markup removed and TeX retained), `headline` (`name` and `label`, or null),
+`symcat` labels, and `references` keys (metadata and inline citations, deduplicated).
+`llms.txt` provides one line per page: title — headline claim — main Lean name —
+absolute page URL. The first theorem remains the fallback for older pages
+without a marked headline; a definitions-only page has no main result.
+
+Before retiring a page, add a direct redirect in `website/redirects.toml`:
+
+```toml
+[redirects]
+"theorems/old-slug" = "current-slug"
+```
+
+The table is empty until a page is retired. Keys are old `section/slug` paths;
+values are current catalog slugs (or `about`). The generator rejects collisions,
+unknown targets, chains and cycles. It emits a small HTML page with a meta
+refresh, a canonical URL, and a visible fallback link; no JavaScript is needed.
+
 Build a source-only local preview without invoking Lake or Lean:
 
 ```bash
@@ -192,7 +253,11 @@ python3 scripts/build_challenge_pages.py \
   --output /tmp/realrooted-pages
 ```
 
-The renderer treats raw HTML in contributed Markdown as text.  Its small local
+The renderer treats raw HTML in contributed Markdown as text. A standalone
+`\[…\]` paragraph renders as a display block, like `$$…$$`; both delimiter
+forms and `\(…\)` are protected from Markdown rewriting and typeset by KaTeX.
+Prefer `$$…$$` in new prose, as required by the lint.
+Its small local
 script only reorders catalog cards by name or earliest cited year; the content
 and links remain complete without JavaScript.  The renderer writes no generated
 files into the repository by itself; Pages CI uploads the specified output

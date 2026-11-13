@@ -65,19 +65,19 @@ Expand $(t+1)^{\operatorname{sink}(O)}$ over the subsets of sinks. The orientati
 every vertex of $S$ is a sink exist only if $S$ is independent, and then there are
 $2^{|E(G)|-\sum_{v\in S}\deg v}$ of them. This gives the identity. Its right-hand side is a
 weighted independence polynomial with positive weights, hence real-rooted for claw-free $G$ by
-the weighted form of the [Chudnovsky--Seymour theorem](/RealRooted/theorems/chudnovsky-seymour/).
+the weighted form of the [Chudnovsky--Seymour theorem](rr:chudnovsky-seymour).
 
 ## Use
 
 For acyclic orientations see [natural unit interval
-graphs](/RealRooted/families/unit-interval-acyclic-sinks/) and [chordal claw-free
-graphs](/RealRooted/families/chordal-claw-free-acyclic-sinks/).
+graphs](rr:unit-interval-acyclic-sinks) and [chordal claw-free
+graphs](rr:chordal-claw-free-acyclic-sinks).
 
 ## References
 
 P. Alexandersson and L. Saud Maia Leite, manuscript (2026). Background on claw-free graphs is
-on the [Chudnovsky--Seymour](/RealRooted/theorems/chudnovsky-seymour/) and
-[Leake--Ryder](/RealRooted/theorems/leake-ryder/) pages, and on
+on the [Chudnovsky--Seymour](rr:chudnovsky-seymour) and
+[Leake--Ryder](rr:leake-ryder) pages, and on
 [symmetricfunctions.com](sf:clawFreeGraph).
 <!-- /realrooted-catalog-content -->
 

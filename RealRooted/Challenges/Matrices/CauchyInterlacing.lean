@@ -57,8 +57,6 @@ interlace, and so do the characteristic polynomials in the real symmetric case.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
-
 **Theorem (Cauchy).** Let $A$ be a Hermitian $(n+1)\times(n+1)$ matrix over $\mathbb R$ or
 $\mathbb C$ with eigenvalues $\lambda_0\ge\dots\ge\lambda_n$. Let $A'$ be obtained by deleting
 the $i$-th row and column, with eigenvalues $\mu_0\ge\dots\ge\mu_{n-1}$. Then
@@ -74,7 +72,7 @@ $A$ is real symmetric and $v$ is real, then $\chi_A\ll\chi_{A+vv^T}$.
 
 ## Proof
 
-Both statements follow from the [Courant–Fischer theorem](/RealRooted/theorems/courant-fischer/).
+Both statements follow from the [Courant–Fischer theorem](rr:courant-fischer).
 
 ## References
 

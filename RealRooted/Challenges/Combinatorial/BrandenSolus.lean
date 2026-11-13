@@ -68,7 +68,6 @@ $x^k(1+x)^{d-k}$ is real-rooted and lies between two Eulerian-type polynomials.
 
 ## Results
 
-We write $u\ll v$ if $u$ interlaces $v$, with the largest root in $v$; common roots are allowed.
 Put $I_d(p)=x^dp(1/x)$ and $R_d(p)(x)=(-1)^dp(-1-x)$. An *$I_d$-decomposition* of $p$ is a pair
 $(a,b)$ with $p=a+xb$, $\deg a\le d$, $\deg b\le d-1$, $I_d(a)=a$ and $I_{d-1}(b)=b$.
 

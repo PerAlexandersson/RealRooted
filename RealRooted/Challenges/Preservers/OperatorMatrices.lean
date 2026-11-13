@@ -169,9 +169,8 @@ $2\times2$ blocks that do are exactly thirteen.
 ## Results
 
 A polynomial is *PF* if it has nonnegative coefficients and is zero or has only real,
-nonpositive roots. We write $p\ll q$ for the directed interlacing of the
-[interlacing page](/RealRooted/concepts/interlacing/): either polynomial may be zero,
-and repeated and common roots are allowed. A vector $(f_1,\dots,f_n)$ is an *ordered PF
+nonpositive roots. We use the [zero-aware interlacing convention](rr:about). A vector
+$(f_1,\dots,f_n)$ is an *ordered PF
 vector* if every $f_i$ is PF and $f_i\ll f_k$ for $i<k$.
 
 An $m\times n$ *operator matrix* $M=(M_{ij})$ has real-linear operators on $\mathbb R[x]$
@@ -179,7 +178,7 @@ as entries and acts by $(Mf)_i=\sum_j M_{ij}f_j$. It *preserves ordered PF vecto
 is an ordered PF vector whenever $f$ is. A block $\begin{pmatrix}a&b\\c&d\end{pmatrix}$
 *preserves ordered PF pairs* if, for all PF $f\ll g$, the polynomials $af+bg$ and $cf+dg$
 are PF and $af+bg\ll cf+dg$. For entries that are multiplications by polynomials, see the
-[matrix interlacing](/RealRooted/theorems/matrix-interlacing/) page.
+[matrix interlacing](rr:matrix-interlacing) page.
 
 **Theorem (local to global).** Let $m,n\ge2$. Then $M$ preserves ordered PF vectors if and
 only if every $2\times2$ submatrix on rows $i<k$ and columns $j<l$, adjacent or not,
@@ -254,8 +253,8 @@ which operator recurrences have interlacing PF rows; the lag recurrence above is
 
 ## References
 
-See the [matrix interlacing](/RealRooted/theorems/matrix-interlacing/) and
-[operator preservers](/RealRooted/theorems/operator-preservers/) pages for classical results
+See the [matrix interlacing](rr:matrix-interlacing) and
+[operator preservers](rr:operator-preservers) pages for classical results
 on matrices and operators preserving interlacing.
 <!-- /realrooted-catalog-content -->
 

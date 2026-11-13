@@ -101,7 +101,7 @@ B_q=2\sum_{1\le i<j\le q}\frac{x_i^2\partial_i-x_j^2\partial_j}{x_i-x_j},\qquad 
 where $\partial_i=\partial/\partial x_i$. The operator $B_q$ maps symmetric polynomials to
 symmetric polynomials. A real polynomial is *real stable* if it has no zeros when all variables
 lie in the open upper half-plane; in particular it is nonzero (see
-[real stability](/RealRooted/theorems/real-stability/)). We write $\operatorname{Sym}_{q,\le N}$
+[real stability](rr:real-stability)). We write $\operatorname{Sym}_{q,\le N}$
 for the finite-dimensional real space of symmetric polynomials in $q$ variables of total degree at
 most $N$.
 

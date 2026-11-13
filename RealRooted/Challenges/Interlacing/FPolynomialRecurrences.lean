@@ -123,7 +123,7 @@ and reflects real-rootedness, and transfers interlacing of rows with half-growth
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; common roots are allowed unless stated. For $d\ge0$ and
+For $d\ge0$ and
 a polynomial $h$ of degree at most $d$ with coefficients $h_k$, the *f-polynomial transform* is
 $$
 f_d(h)=\sum_{k=0}^{d}h_k\,x^k(x+1)^{d-k}.

@@ -59,26 +59,26 @@ exactly when it is [chordal](sf:chordalGraph).
 $S_G(t)$ is real-rooted.
 
 The ascent-refined polynomial $S_G(t;q)$ of [acyclic sinks of natural unit interval
-graphs](/RealRooted/families/unit-interval-acyclic-sinks/) depends on a vertex labelling, and
+graphs](rr:unit-interval-acyclic-sinks) depends on a vertex labelling, and
 $S_G(t;1)=S_G(t)$.
 
 ## Use
 
 Line graphs of forests are chordal and claw-free. For them $S_{L(F)}$ is the
-[minima polynomial](/RealRooted/families/minima-polynomial/) of the forest $F$.
+[minima polynomial](rr:minima-polynomial) of the forest $F$.
 
 ## Proof
 
 Insert the vertices along the order. Since the earlier neighbors of each vertex form a clique,
 $S_G(t+1)$ is a positive multiple of a weighted independence polynomial of $G$ with nonnegative
 weights. This is real-rooted for claw-free $G$ by the weighted form of the
-[Chudnovsky--Seymour theorem](/RealRooted/theorems/chudnovsky-seymour/).
+[Chudnovsky--Seymour theorem](rr:chudnovsky-seymour).
 
 ## References
 
 P. Alexandersson and L. Saud Maia Leite, unpublished manuscript (2026). Background on claw-free
-graphs is on the [Chudnovsky--Seymour](/RealRooted/theorems/chudnovsky-seymour/) and
-[Leake--Ryder](/RealRooted/theorems/leake-ryder/) pages.
+graphs is on the [Chudnovsky--Seymour](rr:chudnovsky-seymour) and
+[Leake--Ryder](rr:leake-ryder) pages.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

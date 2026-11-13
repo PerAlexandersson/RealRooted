@@ -181,7 +181,7 @@ convolution preserves nonnegative roots.
 
 ## Results
 
-We write $f\ll g$ if $f=0$, $g=0$ or $f$ interlaces $g$; common roots are allowed. Write
+We use the [zero-aware interlacing convention](rr:about). Write
 $p(x)=\sum_{i=0}^{d}a_ix^{d-i}$ and $q(x)=\sum_{j=0}^{d}b_jx^{d-j}$ in a degree box of size $d$.
 The *finite free additive convolution* is
 $$
@@ -261,7 +261,7 @@ polarization above [@GribinskiMarcus2022].
 ## References
 
 [@MarcusSpielmanSrivastava2022; @GribinskiMarcus2022; @LeakeRyder2018]. The
-[Narayana page](/RealRooted/families/narayana/) treats the Narayana transformation.
+[Narayana page](rr:narayana) treats the Narayana transformation.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in

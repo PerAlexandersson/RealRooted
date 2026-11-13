@@ -76,7 +76,6 @@ variant are real-rooted.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; common roots are allowed unless stated.
 For $r\ge1$ and $1\le i\le n-r$ put
 $$
 W_{j,i}(r,n) = \binom nj \sum_{\ell=1}^{n-r-i+1}\binom{n-j-\ell}{r-j-1}\binom{n-r-\ell}{i-1}.
