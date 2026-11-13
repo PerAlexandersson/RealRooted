@@ -3,7 +3,7 @@ module
 import RealRooted.LeeYang
 
 /-!
-# Lee–Yang circle theorem challenge entry point
+# Lee–Yang circle theorem
 
 <!-- realrooted-catalog
 version = 1
@@ -47,7 +47,7 @@ label = "Asano contraction"
 -->
 
 <!-- realrooted-catalog-content -->
-# The Lee–Yang circle theorem
+# Lee–Yang circle theorem
 
 The zeros of the partition function of a ferromagnetic Ising model in the fugacity lie on the
 unit circle.
@@ -77,7 +77,9 @@ statement follows from $P(z)=(\prod_iz_i)\,P(1/z)$.
 
 ## References
 
-[@LeeYang1952; @Asano1970; @Ruelle2010].
+- [@LeeYang1952]
+- [@Asano1970]
+- [@Ruelle2010]
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proof lives in `RealRooted.LeeYang`.

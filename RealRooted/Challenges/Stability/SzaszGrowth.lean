@@ -5,7 +5,7 @@ import RealRooted.Mathlib.Analysis.Complex.Polynomial.Szasz
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate
 
 /-!
-# Multivariate Szász growth bound challenge entry point
+# Multivariate Szász growth bound
 
 <!-- realrooted-catalog
 version = 1
@@ -62,10 +62,12 @@ label = "Uniform Szász growth bound for stable polynomials with convergent coef
 -->
 
 <!-- realrooted-catalog-content -->
-# The multivariate Szász growth bound
+# Multivariate Szász growth bound
 
 A polynomial with constant term $1$ whose Jensen-multiplier images are stable has coefficients
-and polydisc growth bounded in terms of its linear and quadratic coefficients.
+and polydisc growth bounded in terms of its linear and quadratic coefficients alone. A uniform
+version shows that limits of stable polynomials grow at most like $e^{Cr^2}$, which is the
+analytic input to the [Borcea–Brändén classification](rr:borcea-branden-classification).
 
 ## Results
 
@@ -75,69 +77,56 @@ $i$th unit exponent. A polynomial is *stable* if it has no zeros when all variab
 open upper half-plane (see [real stability](rr:real-stability)).
 
 For $\alpha,\beta\in\mathbb N^\sigma$ the generalized *Jensen multiplier* is
-$$J(\alpha,\beta)=\prod_i\frac{(\beta_i)_{\alpha_i}}{\beta_i^{\alpha_i}}$$
-(`jensen`), where $(b)_a=b(b-1)\dotsb(b-a+1)$ is the falling factorial. It is $0$ unless
-$\alpha\le\beta$. The operator $J_\beta$ (`jensenOp β`) sends $z^\alpha$ to
-$J(\alpha,\beta)\,z^\alpha$.
-Put
-$$A=\Bigl(3\Bigl(\sum_i|a(e_i)|\Bigr)^2+2\sum_{i,j}|a(e_i+e_j)|\Bigr)^{1/2},\qquad C=2e^2A^2$$
-(`szaszA`, `szaszC`).
+$$
+J(\alpha,\beta)=\prod_i\frac{(\beta_i)_{\alpha_i}}{\beta_i^{\alpha_i}},
+$$
+where $(b)_a=b(b-1)\dotsm(b-a+1)$ is the falling factorial, so that $J(\alpha,\beta)=0$ unless
+$\alpha\le\beta$. The operator $J_\beta$ sends $z^\alpha$ to $J(\alpha,\beta)\,z^\alpha$. Put
+$$
+A=\Bigl(3\Bigl(\sum_i|a(e_i)|\Bigr)^2+2\sum_{i,j}|a(e_i+e_j)|\Bigr)^{1/2},\qquad C=2e^2A^2.
+$$
 
-**Theorem (univariate Szász estimate).** If $\xi_1,\dotsc,\xi_k\in\mathbb C$ have
-$\operatorname{Im}\xi_j\le0$, then
-$$\sum_j|\xi_j|^2\le3\Bigl|\sum_j\xi_j\Bigr|^2+2\Bigl|\sum_{i<j}\xi_i\xi_j\Bigr|.$$
-This applies to $\prod_j(1+\xi_jz)$ when it has no zeros in the open upper half-plane.
+**Theorem (Szász).** If $\xi_1,\dotsc,\xi_k\in\mathbb C$ have $\operatorname{Im}\xi_j\le0$, then
+$$
+\sum_j|\xi_j|^2\le3\Bigl|\sum_j\xi_j\Bigr|^2+2\Bigl|\sum_{i<j}\xi_i\xi_j\Bigr|.
+$$
 
-In the next two theorems assume that $a(0)=1$ and that $J_\beta f$ has no zeros in the open
-upper half-plane for every $\beta\in\mathbb N^\sigma$. This holds for stable $f$ by
+In the next two statements assume that $a(0)=1$ and that $J_\beta f$ has no zeros in the open
+upper half-plane for every $\beta\in\mathbb N^\sigma$. This holds for stable $f$
 [@BorceaBranden2009I, Lemma 5.2].
 
-**Theorem (coefficient bound).** For every $\beta$,
-$$|a(\beta)|\le|\beta|^{-|\beta|/2}\Bigl(\prod_i\frac{\beta_i^{\beta_i}}{\beta_i!}\Bigr)
-A^{|\beta|}.$$
+**Corollary (coefficients and growth).** For every $\beta$,
+$$
+|a(\beta)|\le|\beta|^{-|\beta|/2}\Bigl(\prod_i\frac{\beta_i^{\beta_i}}{\beta_i!}\Bigr)A^{|\beta|},
+$$
+and if $r\ge0$ and $|z_i|\le r$ for all $i$, then
+$$
+|f(z)|\le2^{|\sigma|}\,\frac{\sqrt{2e^2-e}}{e-1}\;e^{Cr^2}.
+$$
 
-**Theorem (growth on polydiscs).** If $r\ge0$ and $|z_i|\le r$ for all $i$, then
-$$|f(z)|\le2^{|\sigma|}\,\frac{\sqrt{2e^2-e}}{e-1}\;e^{Cr^2},$$
-where $|\sigma|$ is the number of variables.
-
-**Theorem (uniform growth bound).** Let $\sigma$ be finite, let $a\colon\mathbb N^\sigma\to\mathbb
-C$
+**Theorem (uniform growth bound; Borcea–Brändén).** Let $a\colon\mathbb N^\sigma\to\mathbb C$
 and let $\kappa_m(\alpha)\in\mathbb R$ satisfy $\kappa_m(\alpha)\to1$ as $m\to\infty$ for every
 $\alpha$. Suppose that for each $m$ the polynomial $f_m$ with coefficients
-$\kappa_m(\alpha)\,a(\alpha)$
-is stable or zero. Then there are real constants $B,C$ and an index $m_0$ such that
-$$|f_m(z)|\le B\,e^{Cr^2}\qquad(m\ge m_0,\ r\ge0,\ |z_i|\le r\text{ for all }i).$$
-Here $a$ need not have constant term $1$, and $B$ and $C$ do not depend on $m$, $r$ or $z$.
-
-## Use
-
-The uniform bound is the growth estimate in the stable-limit criteria (Theorem 5.1 of the paper)
-behind the [Borcea–Brändén classification](rr:borcea-branden-classification).
+$\kappa_m(\alpha)\,a(\alpha)$ is stable or zero. Then there are real constants $B,C$ and an index
+$m_0$ such that
+$$
+|f_m(z)|\le B\,e^{Cr^2}\qquad(m\ge m_0,\ r\ge0,\ |z_i|\le r\text{ for all }i).
+$$
 
 ## Proof
 
-For the coefficient bound we set all variables equal to $t$ in $J_\beta f$, which gives a
-univariate polynomial with no zeros in the open upper half-plane, constant term $1$, degree
-$k=|\beta|$ (if $a(\beta)\ne0$) and leading coefficient $(\beta!/\beta^\beta)\,a(\beta)$. Writing it
-as $\prod_j(1+\xi_jt)$ we have $\operatorname{Im}\xi_j\le0$. The linear and quadratic coefficients
-are controlled by $a(e_i)$ and $a(e_i+e_j)$, so the Szász estimate gives $\sum_j|\xi_j|^2\le A^2$,
-and the arithmetic–geometric mean inequality bounds $\prod_j|\xi_j|$ by $A^kk^{-k/2}$. The growth
-bound sums the coefficient bounds over all monomials, using $\beta_i^{\beta_i}/\beta_i!\le
-e^{\beta_i}$
-and the Cauchy–Schwarz inequality.
-
-For the uniform bound we induct on the number of variables occurring in the support of $a$ and on
-the minimal total degree of the support, over all families $(\kappa,f)$ at once. In degree $0$ the
-polynomials $f_m/f_m(0)$ have constant term $1$ and the growth bound applies uniformly in $m$.
-Otherwise we write $f_m=f_m|_{z_i=0}+z_i\int_0^1\partial_if_m(z_it,\cdot)\,dt$ and apply the
-induction
-hypothesis to the specialization and the partial derivative. This differs from the argument in the
-paper, which claims that partial differentiation always lowers the largest degree among the minimal
-support elements by one; this fails for a general support.
+Setting all variables equal to $t$ in $J_\beta f$ gives $\prod_j(1+\xi_jt)$ with
+$\operatorname{Im}\xi_j\le0$ and leading coefficient $(\beta!/\beta^\beta)\,a(\beta)$, so the
+Szász estimate and the arithmetic–geometric mean inequality give the coefficient bound, and
+summing over all monomials gives the growth bound. The uniform bound follows by induction on the
+number of variables in the support of $a$ and on its minimal total degree, writing
+$f_m=f_m|_{z_i=0}+z_i\int_0^1\partial_if_m(z_it,\cdot)\,dt$. This induction replaces a step in
+[@BorceaBranden2009I, Thm. 5.6] that assumes partial differentiation lowers the largest degree
+among the minimal support elements by one, which fails for a general support.
 
 ## References
 
-See [@BorceaBranden2009I, Lemmas 5.2 and 5.4 and Thms. 5.5 and 5.6].
+- [@BorceaBranden2009I, Lemmas 5.2 and 5.4 and Thms. 5.5 and 5.6]
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The univariate estimate is in

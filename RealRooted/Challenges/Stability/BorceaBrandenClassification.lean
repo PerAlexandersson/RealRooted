@@ -211,8 +211,8 @@ stable or zero. The same holds with real stable polynomials.
 - If the Jensen polynomial $\sum_{k\le d}\binom dk\gamma(k)t^k$ has nonnegative coefficients
   and only real nonpositive roots, the multiplier
   $z_q^k\mapsto\gamma(k)z_q^k$ in one variable preserves stability of polynomials of degree at
-  most $d$ in $z_q$, with no condition on the other variables.
-- If $Q_0,\dots,Q_m$ are polynomials and $\sum_jQ_j(z)(-w)^j$ is stable, then
+  most $d$ in $z_q$ and of any degree in the other variables.
+- If $Q_0,\dotsc,Q_m$ are polynomials and $\sum_jQ_j(z)(-w)^j$ is stable, then
   $\sum_jQ_j(z)\,\partial_q^j$ preserves stability in every degree.
 - The Poisson star product $f\star g=\sum_{a,b}f_{a,b}\,z^av^b\,(1+\partial_v)^{a+b}g$ is
   associative, and if $f(z,v)$ is real stable with nonnegative coefficients, then $g\mapsto
@@ -222,11 +222,11 @@ stable or zero. The same holds with real stable polynomials.
 
 The coordinate multipliers come from the finite-degree theorem in one variable, and the
 differential operators from the falling-factorial multiplier together with the finite-degree
-theorem on each degree box. The proof of [@BorceaBranden2009I, Theorem 5.6] assumes that
-partial differentiation lowers by one the largest degree among the minimal exponents of the
-support, which fails for a general support. Induction on the number of variables in the
-support and on its minimal total degree, using specialization and partial differentiation,
-proves the statement.
+theorem on each degree box. Theorem 5.1 follows by induction on the number of variables in the
+support and on its minimal total degree, using specialization and partial differentiation. This
+replaces a step in the proof of [@BorceaBranden2009I, Theorem 5.6], which assumes that partial
+differentiation lowers the largest degree among the minimal exponents of the support by one;
+that fails for a general support.
 
 ## References
 

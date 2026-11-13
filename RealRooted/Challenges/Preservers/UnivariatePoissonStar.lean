@@ -281,7 +281,7 @@ polynomial *rooted in* a set if it is nonzero, real-rooted and has all its roots
   if $g-u$ and $g-v$ are rooted in $(-\infty,0]$.
 - Every power $q^{\star n}$ is real-rooted if and only if $q$ and $q\star q$ are.
 
-The declarations below also give the degree and leading coefficient of $S_g(p)$, the case
+Further results give the degree and leading coefficient of $S_g(p)$, the case
 $\omega\le0$ on $\mathbb R$, where real-rootedness of the levels $g-r$ suffices, and the affine
 recurrences $P_{n+1}=(a_n+b_nx)P_n+c\,b_nxP_n'$ with $c,a_n,b_n>0$, whose rows are PF with
 simple negative roots and interlace without common roots.

@@ -19,7 +19,7 @@ public import RealRooted.RectangularPolarizationComplement
 public import RealRooted.WagnerX.NonnegativeRoots
 
 /-!
-# Real-rootedness and root locations under finite free convolutions
+# Finite free convolutions
 
 <!-- realrooted-catalog
 version = 1
@@ -173,17 +173,17 @@ label = "The differential pairing of the two polarizations is the rectangular co
 -->
 
 <!-- realrooted-catalog-content -->
-# Real-rootedness and root locations under finite free convolutions
+# Finite free convolutions
 
-The finite free additive and multiplicative convolutions preserve real-rootedness, the additive
-one moves roots by at most the root range of the second factor, and the rectangular additive
-convolution preserves nonnegative roots.
+The finite free additive and multiplicative convolutions of Marcus, Spielman and Srivastava
+preserve real-rootedness, the additive one moves roots by at most the root range of the second
+factor, and the rectangular additive convolution preserves nonnegative roots. These
+convolutions are finite analogues of the free convolutions of random matrix theory.
 
 ## Results
 
-We use the [zero-aware interlacing convention](rr:about). Write
-$p(x)=\sum_{i=0}^{d}a_ix^{d-i}$ and $q(x)=\sum_{j=0}^{d}b_jx^{d-j}$ in a degree box of size $d$.
-The *finite free additive convolution* is
+Write $p(x)=\sum_{i=0}^{d}a_ix^{d-i}$ and $q(x)=\sum_{j=0}^{d}b_jx^{d-j}$ in a degree box of size
+$d$. The *finite free additive convolution* is
 $$
 (p\boxplus_dq)(x)=\sum_{k=0}^{d}x^{d-k}\sum_{i+j=k}
   \frac{(d-i)!\,(d-j)!}{d!\,(d-k)!}\,a_ib_j .
@@ -201,7 +201,7 @@ with falling factorials $(x)^{\underline{k}}$; $\alpha=m$ is the rectangular cas
 $$
 (p\boxtimes_dq)(x)=\sum_{k=0}^{d}(-1)^k\binom dk^{-1}a_kb_k\,x^{d-k},
 $$
-that is, $(-1)^d(p*_dq)(-x)$ for the Schur--Szegő composition
+that is, $(-1)^d(p*_dq)(-x)$ for the Schur–Szegő composition
 $p*_dq=\sum_k\binom dk^{-1}p_kq_kx^k$ of the coefficients $p_k,q_k$ of $x^k$.
 
 **Theorem (real-rootedness).**
@@ -231,7 +231,7 @@ $p*_dq=\sum_k\binom dk^{-1}p_kq_kx^k$ of the coefficients $p_k,q_k$ of $x^k$.
   In the degree box $\kappa$ with $\kappa_q=D$, its algebraic symbol is
   $g(x_q+y_q)\prod_{i\ne q}(x_i+y_i)^{\kappa_i}$.
 - If $g$ is monic of degree $D$, $\deg f,\deg h\le D$, both have positive leading coefficient and
-  $h\ll f$ with both nonzero, then $h\boxplus_Dg\ll f\boxplus_Dg$.
+  $h\ll f$, then $h\boxplus_Dg\ll f\boxplus_Dg$ in the [zero-aware sense](rr:about).
 
 **Theorem (rectangular convolution).** The polynomial $f\boxplus_{m,n}g$ has degree at most $n$.
 If $f,g$ have degree exactly $n$, positive leading coefficients and only nonnegative roots, then
@@ -239,29 +239,25 @@ $f\boxplus_{m,n}g$ is zero or real-rooted with only nonnegative roots [@Gribinsk
 The same holds for the parameters $\alpha=\pm\tfrac12$, for real-rooted $f,g$ of degree at most
 $n$ with only nonnegative roots.
 
-**Theorem (rectangular polarization).** For a complex polynomial $p$ of degree $n$ let
-$$
-P(x,y)=\sum_{k=0}^{n}\frac{p_k}{\binom nk\binom{m+n}{m+k}}\,
-  e_k(x_1,\dots,x_n)\,e_{m+k}(y_1,\dots,y_{m+n}).
-$$
-Then $P$ is multiaffine and specializes to $y^mp(xy)$ when all $x_i=x$ and all $y_j=y$. If the
-bivariate polynomial $p(xy)$ is upper-half-plane stable, then $P$ is upper-half-plane stable,
-and so is its signed reciprocal $\tilde P$, defined by
-$\tilde P(z)=(-1)^m\prod_iz_i\,P(-1/z)$. For real $f,g$, let $P_f$ be the polarization of $f$
-and $\tilde P_g$ the reciprocal polarization of $g$. Applying $\tilde P_g(-\partial)$ to $P_f$
-and then setting all $x_i=x$ and all $y_j=y$ gives $y^m\,(f\boxplus_{m,n}g)(xy)$.
+## Use
+
+The rectangular convolution gives a proof of the [Narayana transformation theorem](rr:narayana).
 
 ## Proof
 
-The additive theorem follows from the Lieb--Sokal lemma: the convolution is a differential
+The additive theorem follows from the Lieb–Sokal lemma: the convolution is a differential
 operator in $q$ applied to $p$. The parameters $\pm\tfrac12$ reduce to $\boxplus_{2n}$ and
-$\boxplus_{2n+1}$ through the lifts $p(x^2)$ and $x\,p(x^2)$. The rectangular case uses the
-polarization above [@GribinskiMarcus2022].
+$\boxplus_{2n+1}$ through the lifts $p(x^2)$ and $x\,p(x^2)$. The rectangular case uses a
+multiaffine polarization of $y^mp(xy)$ in $n+(m+n)$ variables, which is stable when $p(xy)$ is;
+the reciprocal polarization of $g$, applied as a differential operator to the polarization of
+$f$, gives $y^m(f\boxplus_{m,n}g)(xy)$ after the variables are identified
+[@GribinskiMarcus2022].
 
 ## References
 
-[@MarcusSpielmanSrivastava2022; @GribinskiMarcus2022; @LeakeRyder2018]. The
-[Narayana page](rr:narayana) treats the Narayana transformation.
+- [@MarcusSpielmanSrivastava2022]
+- [@GribinskiMarcus2022]
+- [@LeakeRyder2018, Prop. 1.1]
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in

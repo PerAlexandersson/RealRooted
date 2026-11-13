@@ -7,7 +7,7 @@ public import RealRooted.BinaryRunTransformation.MultiplierMotzkin
 public import RealRooted.BinaryRunTransformation.SymbolCounterexample
 
 /-!
-# Binary-run transformation preserving PF polynomials and interlacing
+# Binary-run transformation
 
 <!-- realrooted-catalog
 version = 1
@@ -94,10 +94,11 @@ label = "The balanced run transformation preserves interlacing on low-degree inp
 -->
 
 <!-- realrooted-catalog-content -->
-# Binary-run transformation preserving PF polynomials and interlacing
+# Binary-run transformation
 
 For each $n$, the binary-run transformation $J_n$ maps PF polynomials of degree at most $n$ to
-PF polynomials, and preserves interlacing on inputs of degree at most $(n+1)/2$.
+PF polynomials, and preserves interlacing on inputs of degree at most $(n+1)/2$. It yields the
+Narayana transformation theorem and Sturm sequences of Motzkin-type polynomials.
 
 ## Results
 
@@ -108,7 +109,7 @@ J_n(x^m)=\frac1{\binom nm}\sum_k\binom{m-1}{k-1}\binom{n+1-m}{k}x^k .
 $$
 
 **Theorem (preservation).** If $p$ is PF with $\deg p\le n$, then $J_np$ is PF. If moreover
-$p(0)>0$, then $J_np$ is real-rooted and all its roots are negative [@BorceaBranden2009I].
+$p(0)>0$, then $J_np$ is real-rooted and all its roots are negative.
 
 **Theorem (interlacing).** If $f\ll g$ have nonnegative coefficients and
 $\deg g\le\lfloor(n+1)/2\rfloor$, then $J_nf\ll J_ng$.
@@ -126,9 +127,10 @@ G_n^\gamma(t)=\sum_{0\le m\le n/2}\frac{n!\,\gamma_m}{m!\,(n-2m)!}\,t^m,\qquad
 R_n^\gamma=J_n\bigl(G_n^\gamma\bigr).
 $$
 Then $R_n^\gamma\ll R_{n+1}^\gamma$ for all $n$. This applies to $\gamma_m=1/(\alpha)_m$ for
-every $\alpha>0$, where $(\alpha)_m=\alpha(\alpha+1)\cdots(\alpha+m-1)$. Writing
+every $\alpha>0$, where $(\alpha)_m=\alpha(\alpha+1)\dotsm(\alpha+m-1)$. Writing
 $R_n^{(\alpha)}$ for these rows, $R_n^{(\alpha+1)}\ll R_n^{(\alpha)}$ for all $n$ and
-$\alpha>0$. The case $\alpha=2$, $\gamma_m=1/(m+1)!$, gives the Motzkin ascent polynomials.
+$\alpha>0$. The case $\alpha=2$, $\gamma_m=1/(m+1)!$, gives the Motzkin ascent polynomials
+([OEIS A114580](https://oeis.org/A114580)).
 
 **Theorem (balanced run transformation).** Let $n\ge2$, and let $K_n$ be the linear map with
 $$
@@ -142,18 +144,21 @@ nonnegative coefficients and $\deg g\le\lfloor(n+1)/2\rfloor$, then $K_nf\ll K_n
 The map $x^m\mapsto\frac1{m+1}\binom nm J_n(x^m)$ is $J_n$ composed with a diagonal multiplier
 sequence. Combined with the preservation of PF polynomials by that multiplier, the preservation
 theorem gives the [Narayana transformation theorem](rr:narayana)
-[@MaoWang2026x]. The rows $R_n^\gamma$ for $\gamma_m=1/(m+1)!$ are the Motzkin ascent polynomials
-(OEIS A114580).
+[@MaoWang2026x].
 
 ## Proof
 
-After scaling the input factors, a stable pointing construction controls the motion of every
-critical value of the output. A polarized path-matching polynomial gives the small-parameter
-anchor, and the sign of the critical value prevents collisions along the deformation.
+For preservation, we scale the input by a parameter. At parameter zero the rescaled image is a
+Schur–Szegő composition with the path-matching polynomial $\sum_k\binom{n+1-k}kx^k$, and the
+stability method of [@BorceaBranden2009I] fixes the sign of every critical value of the image
+as the parameter grows, so no two roots collide. Interlacing follows from the
+[monomial-chain criterion](rr:monomial-chain-operator), and the cross-length and Motzkin
+theorems from linear identities between $J_n$, $J_{n+1}$ and $K_n$.
 
 ## References
 
-The preservation theorem is proved with the algebraic-symbol method of [@BorceaBranden2009I].
+- [@BorceaBranden2009I]
+- [@MaoWang2026x]
 <!-- /realrooted-catalog-content -->
 
 This module exposes the strictly negative root corollary of the checked

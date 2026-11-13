@@ -85,8 +85,9 @@ tags = ["realrooted-original"]
 # Interlacing from a monomial chain
 
 A linear operator that preserves nonnegative coefficients and real-rootedness of PF inputs, and
-maps the monomials $1,x,\dots,x^D$ to an interlacing chain, preserves interlacing of
-nonnegative pairs of degree at most $D$.
+maps the monomials $1,x,\dotsc,x^D$ to an interlacing chain, preserves interlacing of
+pairs with nonnegative coefficients and degree at most $D$. This reduces interlacing preservation
+to a check on monomials.
 
 ## Results
 
@@ -105,7 +106,7 @@ $D\in\mathbb N$. Suppose that
 If $f\ll g$ have nonnegative coefficients and $\deg g\le D$, then $Tf\ll Tg$.
 
 **Theorem (rootwise order).** Let $T$ satisfy (1)--(3), and in addition $\deg Tp=D$ whenever
-$\deg p=D$. Let $r_1,\dots,r_D\le0$ be the roots of a monic polynomial $p$ of degree $D$.
+$\deg p=D$. Let $r_1,\dotsc,r_D\le0$ be the roots of a monic polynomial $p$ of degree $D$.
 
 - If one root $r_i$ is replaced by some $b$ with $r_i\le b\le0$, then each root of the image
   $T p$, in increasing order, does not decrease.
@@ -125,19 +126,18 @@ $$
 coefficients with $1\le\deg f\le D$ and $\deg Tf\ge1$. If $f(z)+w\,g(z)$ is
 upper-half-plane stable, then so is $(Tf)(z)+w\,(Tg)(z)$.
 
-**Theorem (Narayana transform).** The Mao--Wang Narayana transform $N_m$ satisfies
+**Corollary (Narayana transform).** The Mao–Wang Narayana transform $N_m$ satisfies
 $N_mf\ll N_mg$ whenever $f\ll g$ have nonnegative coefficients; see the
 [Narayana page](rr:narayana).
 
-## The quadratic closure
-
-Let $F\ll G\ll H$ have nonnegative coefficients. For $b\ge0$ put
+The proof rests on a closure property of quadratic pencils. Let $F\ll G\ll H$ have nonnegative
+coefficients. For $b\ge0$ put
 $$
 Q_b=H+2bG+b^2F,\qquad A_b=G+bF,\qquad B_b=H+bG .
 $$
 
-**Theorem.** If $Q_b$ is real-rooted for every $b\ge0$, then $A_a\ll Q_a$ and $A_a\ll B_a$
-for every $a\ge0$. That is,
+**Theorem (quadratic closure).** If $Q_b$ is real-rooted for every $b\ge0$, then $A_a\ll Q_a$
+and $A_a\ll B_a$ for every $a\ge0$. That is,
 $$
 G+aF\ \ll\ H+aG .
 $$
@@ -148,13 +148,13 @@ above $r$ minus the number of roots of $F$ above $r$.
 
 ## Proof
 
-The chain is first propagated through all PF factors by the quadratic closure, one nonpositive
-linear factor at a time. The Garloff--Wagner Krein expansion then passes from one-root
-deletions to every oriented interlacing pair.
+The quadratic closure propagates the monomial chain through all PF inputs, one nonpositive linear
+factor at a time. The Garloff–Wagner Krein expansion then passes from one-root deletions to every
+interlacing pair.
 
 ## References
 
-The operator viewpoint is related to [@Branden2011b].
+- [@Branden2011b]
 <!-- /realrooted-catalog-content -->
 
 This module exposes the fully checked monomial-chain upgrade.
