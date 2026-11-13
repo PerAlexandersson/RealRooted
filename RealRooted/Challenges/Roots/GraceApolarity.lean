@@ -142,9 +142,9 @@ label = "Lieb–Sokal theorem without the multiaffine hypothesis"
 # Grace's apolarity theorem
 
 If two polynomials of degree $n$ are apolar and all zeros of one lie in a closed disk or closed
-half-plane, then the other has a zero there; polarization turns this into the
-Grace–Walsh–Szegő description of stable symmetric multiaffine polynomials and the Lieb–Sokal
-theorem.
+half-plane, then the other has a zero there. Through polarization this gives the
+Grace–Walsh–Szegő theorem on symmetric multiaffine polynomials, the basic link between
+univariate real-rootedness and multivariate stability, and the Lieb–Sokal theorem.
 
 ## Results
 
@@ -200,14 +200,13 @@ multiaffine $F,G$ and, with the blockwise polarization above, for arbitrary degr
 
 ## Proof
 
-We prove Grace's theorem by induction on $n$, using that the polar derivative of $F$ lowers the
-degree by one and, by Laguerre's theorem, keeps the zeros in the disk or half-plane.
-For polarization, $\operatorname{Pol}_n(p)(z)=0$ says that $p$ is apolar to
-$\prod_i(w-z_i)$. If all $z_i$ lie in the open upper half-plane, Grace's theorem gives a $z_i$ in
-the
-closed lower half-plane, a contradiction. The
+We prove Grace's theorem by induction on $n$: by
+[Laguerre's theorem](rr:laguerre-polar-derivative), the polar derivative of $F$ lowers the
+degree by one and keeps the zeros in the disk or half-plane. For polarization,
+$\operatorname{Pol}_n(p)(z)=0$ says that $p$ is apolar to $\prod_i(w-z_i)$; since the zeros of
+$p$ lie in the closed lower half-plane, Grace's theorem puts some $z_i$ there as well. The
 coincidence theorem for the upper half-plane follows by applying this to $P-P(\zeta)$, and the
-other regions by Möbius maps.
+other regions follow by Möbius maps.
 
 ## References
 

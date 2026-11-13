@@ -5,7 +5,7 @@ import RealRooted.Hadamard.Kostov.Roots
 import RealRooted.Hadamard.Kostov.TwoStep
 
 /-!
-# Kostov's eigenpolynomials of the Schur–Szegő coefficient map
+# Kostov's eigenpolynomials
 
 <!-- realrooted-catalog
 version = 1
@@ -62,7 +62,7 @@ label = "Kostov: eigenpolynomials have simple positive roots"
 [[theorems]]
 name = "RealRooted.Kostov.eigenpolynomial_splits"
 module = "RealRooted.Hadamard.Kostov.Roots"
-label = "The eigenpolynomials split over the reals"
+label = "The eigenpolynomials are real-rooted"
 
 [[theorems]]
 name = "RealRooted.Kostov.eigenpolynomial_strictInterl"
@@ -87,16 +87,18 @@ label = "Odd reduced eigenpolynomials vanish at one"
 -->
 
 <!-- realrooted-catalog-content -->
-# Kostov's eigenpolynomials of the Schur–Szegő coefficient map
+# Kostov's eigenpolynomials
 
-The eigenpolynomials of the linear part of Kostov's coefficient map have simple positive roots,
-and consecutive ones interlace.
+Every monic polynomial of degree $n$ with a root at $-1$ is a Schur–Szegő composition of $n-1$
+polynomials $(x+1)^{n-1}(x+a_j)$, and Kostov studied the map from its coefficients to the
+elementary symmetric functions of the $a_j$. The eigenvectors of the linear part of this map are
+given by polynomials with simple positive roots, and consecutive ones interlace.
 
 ## Results
 
-Fix $n\ge2$. Kostov's coefficient map sends the coefficients of a monic polynomial with a root at
-$-1$ to the elementary symmetric functions of the parameters in its Schur–Szegő factorization.
-For $0\le k<n-1$ put
+Fix $n\ge2$. *Kostov's coefficient map* sends the coefficients of a monic polynomial of degree
+$n$ with a root at $-1$ to the elementary symmetric functions of the parameters $a_j$ in its
+Schur–Szegő factorization [@KostovShapiro2006]. For $0\le k<n-1$ put
 $$
 \lambda_k=\frac{n^k}{(n-1)(n-2)\cdots(n-k)} .
 $$
@@ -109,10 +111,10 @@ $Q_{n,j}$ giving an eigendirection for $\lambda_{j+1}$. It is monic of degree $j
 $X^jQ_{n,j}(1/X)=(-1)^jQ_{n,j}(X)$, and vanishes at $1$ when $j$ is odd. Its roots are real,
 simple and positive.
 
-**Theorem (Kostov, Theorem 3).** [@Kostov2010, Thm. 3] For $1\le j\le n-4$ we have
+**Theorem (Kostov).** [@Kostov2010, Thm. 3] For $1\le j\le n-4$ we have
 $Q_{n,j}\ll Q_{n,j+1}$.
 
-**Theorem (Kostov, Theorem 4).** [@Kostov2010, Thm. 4] Let $1\le j\le n-5$, let
+**Theorem (Kostov).** [@Kostov2010, Thm. 4] Let $1\le j\le n-5$, let
 $x_0<\dots<x_{j-1}$ be the roots of $Q_{n,j}$ and $z_0<\dots<z_{j+1}$ those of $Q_{n,j+2}$. For
 $0\le i<j/2$,
 $$
@@ -122,11 +124,13 @@ and for odd $j$ the middle roots satisfy $x_{(j-1)/2}=z_{(j+1)/2}=1$.
 
 ## Proof
 
-The proofs pass through the eigenproblem of a Bernstein-type operator, real zeros by a
-compactness argument, Descartes' rule of signs, and a Wronskian argument.
+In suitable coordinates the eigenproblem becomes that of a Bernstein-type operator. The proofs
+then use a compactness argument for real zeros, Descartes' rule of signs, and a Wronskian
+argument.
 
 ## References
 
-See [@Kostov2010].
+- [@Kostov2010]
+- [@KostovShapiro2006]
 <!-- /realrooted-catalog-content -->
 -/

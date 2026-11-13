@@ -3,7 +3,7 @@ module
 import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.Sonin
 
 /-!
-# Sonin envelopes and root exclusion for second-order polynomial ODEs
+# Sonin envelopes
 
 <!-- realrooted-catalog
 version = 1
@@ -78,11 +78,13 @@ headline = true
 -->
 
 <!-- realrooted-catalog-content -->
-# Sonin envelopes and root exclusion
+# Sonin envelopes
 
-For a polynomial solution of a second-order linear equation, monotonicity of a weighted Sonin
-envelope excludes roots on half-lines and intervals where the normal-form discriminant is
-nonpositive.
+For a solution of $w''+Q\,w=0$, Sonin's function $w^2+(w')^2/Q$ is monotone wherever $Q$ is
+monotone, a classical tool for the zeros and extrema of orthogonal polynomials. For polynomial
+solutions of a second-order equation, weighted versions of this function and of $w\,w'$ satisfy
+exact derivative identities, and these exclude roots from half-lines and intervals on which the
+normal-form coefficient is nonpositive.
 
 ## Results
 
@@ -96,11 +98,18 @@ The *Sonin envelope* is the polynomial
 $$F=\Delta\,y^2+W^2,$$
 so that $F/\Delta$ is, up to a positive factor, the Sonin function $w^2+(w')^2/Q$.
 
-**Identities.** Let $g,h$ be polynomials and write $R=a\,y''+b\,y'+c\,y$ for the residual of $y$,
-$P=2a'\Delta-a\Delta'$ for the sign polynomial of the envelope, and $T=a\,(g'h-gh')-b\,gh$ for
-the defect of the weight $g/h$. Then, over any commutative ring and with no hypothesis on $a$,
+**Theorem (root exclusion).** Let $y\ne0$ be a polynomial solution of $a\,y''+b\,y'+c\,y=0$, and
+let $g,h,j$ be polynomials with $gh=aj$ and $a\,(g'h-gh')=(b-a')\,gh$. Suppose $a$ and $h$ do
+not vanish, $j>0$ and $\Delta\le0$ on $(-\infty,L]$, and $g\,y\,W/h\to0$ at $-\infty$. Then $y$
+has no root in $(-\infty,L]$. The same hypotheses on $[L,\infty)$ with $g\,y\,W/h\to0$ at
+$+\infty$ give no root in $[L,\infty)$. On a finite interval $[L,U]$ with the same sign
+hypotheses, $y$ has no root in $(L,U]$ if $g\,y\,W/h\ge0$ at $L$, and no root in $[L,U]$ if
+$g\,y\,W/h>0$ at $L$.
+
+**Identities.** Let $g,h$ be polynomials, let $R=a\,y''+b\,y'+c\,y$, $P=2a'\Delta-a\Delta'$ and
+$T=a\,(g'h-gh')-b\,gh$. Then, over any commutative ring,
 $$a\bigl((gF)'h\Delta-gF\,(h\Delta)'\bigr)-gh\,W^2P=\Delta F\,T+4agh\Delta W R.$$
-For the cross product $K=yW$ and $\tilde T=a\,(g'h-gh')-(b-a')\,gh$ there is the companion identity
+For $K=yW$ and $\tilde T=a\,(g'h-gh')-(b-a')\,gh$,
 $$2a\bigl((gK)'h-gKh'\bigr)-gh\,(W^2-\Delta y^2)=2K\,\tilde T+4aghyR.$$
 
 **Theorem (derivatives).** Let $a\ne0$, $gh=aj$ and $R=0$, and let $x$ be real.
@@ -109,14 +118,6 @@ $$\frac{j\,W^2P}{(h\Delta)^2}$$
 at $x$. If $\tilde T=0$ and $h(x)\ne0$, then $gK/h$ has derivative
 $$\frac{j\,(W^2-\Delta y^2)}{2h^2}$$
 at $x$.
-
-**Theorem (root exclusion).** Let $y\ne0$ be a polynomial solution of $a\,y''+b\,y'+c\,y=0$, and
-let $g,h,j$ be polynomials with $gh=aj$ and $a\,(g'h-gh')=(b-a')\,gh$. Suppose $a$ and $h$ do
-not vanish, $j>0$ and $\Delta\le0$ on $(-\infty,L]$, and $g\,y\,W/h\to0$ at $-\infty$. Then $y$
-has no root in $(-\infty,L]$. The same hypotheses on $[L,\infty)$ with $g\,y\,W/h\to0$ at
-$+\infty$ give no root in $[L,\infty)$. On a finite interval $[L,U]$ with the same sign
-hypotheses, $y$ has no root in $(L,U]$ if $g\,y\,W/h\ge0$ at $L$, and no root in $[L,U]$ if
-$g\,y\,W/h>0$ at $L$.
 
 ## Proof
 
@@ -128,10 +129,10 @@ limit at $-\infty$, or from the sign at $L$.
 
 ## References
 
-The Sonin function and its monotonicity are due to N. Sonin, *Math. Ann.* 16 (1880), 1–80. For
-Sonin functions in the study of zeros of orthogonal polynomials see I. Krasikov, LMS J. Comput.
-Math. 17 (2014), 209–225, Section 2; the normal form of a second-order linear equation is
-DLMF 1.13.13–15.
+- N. Sonin, *Math. Ann.* 16 (1880), 1–80, for the Sonin function and its monotonicity.
+- I. Krasikov, *LMS J. Comput. Math.* 17 (2014), 209–225, Section 2, for Sonin functions and
+  zeros of orthogonal polynomials.
+- DLMF 1.13.13–15, for the normal form of a second-order linear equation.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in

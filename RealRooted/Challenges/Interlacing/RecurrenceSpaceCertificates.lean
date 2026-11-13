@@ -5,7 +5,7 @@ import RealRooted.RecurrenceSpace.Filtered
 import RealRooted.RecurrenceSpace.Defect
 
 /-!
-# Finite certificates for differential-recurrence families
+# Finite certificates for differential recurrences
 
 <!-- realrooted-catalog
 version = 1
@@ -76,10 +76,11 @@ symcat = "recurrenceFiniteVerification"
 -->
 
 <!-- realrooted-catalog-content -->
-# Finite certificates for differential-recurrence families
+# Finite certificates for differential recurrences
 
-A pure-lag recurrence and a first-order differential lift for a polynomial sequence are linked by
-one polynomial identity, and the lift follows from the recurrence and finitely many seeds.
+A polynomial sequence with a rational generating function satisfies a pure-lag recurrence, while
+interlacing criteria need a first-order differential recurrence. One polynomial identity links the
+two, so the differential recurrence follows from the lag recurrence and finitely many seeds.
 
 ## Results
 
@@ -126,14 +127,14 @@ Underlying this, if $p(S)^qf=0$ then $p(S)^{q+1}Df=0$.
 
 ## Use
 
-The root-window theorems on the
-[recurrence root windows](rr:recurrence-root-windows) page use the derivative
-recurrence in the third corollary. The tactics `rr_replay_lift` and `rr_replay_source` reduce a
-certificate for a new family to $J=\gamma\chi$, finitely many seeds and nonvanishing leaders.
+To prove interlacing for a sequence given by a pure-lag recurrence, it suffices to check
+$J=\gamma\chi$, finitely many seeds and $d(n+k)\ne0$. The derivative recurrence of the corollary
+then feeds the [root-window theorems](rr:recurrence-root-windows). See also the
+[Sturm sequence families](rr:sturm-sequence-families).
 
 ## References
 
-See also the page on [Sturm sequence families](rr:sturm-sequence-families).
+[Finite verification of recurrences on symmetricfunctions.com](sf:recurrenceFiniteVerification).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in `RealRooted.RecurrenceSpace.Operators`,

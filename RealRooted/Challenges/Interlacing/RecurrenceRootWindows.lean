@@ -376,7 +376,7 @@ Then every $Q_n$ has nonnegative coefficients and is real-rooted, and $Q_i\ll Q_
 $p(n)\le i\le n$. The same holds for $F_{n+1}=a(n+1)F_n+b(n+1)\,x\,F_{p(n+1)}$ with $F_0=1$,
 $a(n)>0$ and $b(n)\ge0$.
 
-The declarations below also contain the following variants.
+The following variants also hold.
 
 - *Moving windows*: windows $[L_n,U_n]$ with $L_n$ nonincreasing and $U_n$ nondecreasing, and
   the weaker outside condition $B_n(x)(x-U)+\min(A_n(x),0)(D_0+n)>0$ for $x>U$ (and its mirror
@@ -412,8 +412,8 @@ lie in the window, then $A_n\le0$ at these roots gives $P_n\ll P_{n+1}$. Beyond 
 $P_n$ and $P_n'$ have constant signs, and the sign conditions on $A_n$ and $B_n$ make
 $P_{n+1}$ nonzero there, so its roots stay in the window. The delay recurrences follow
 the induction of [@Fisk2006x, Example 16.10] with the interlacing cone rules of
-[@Wagner1992, Section 3]. For positive affine lags, $P_{n+1}-P_n$ has nonnegative coefficients,
-and the Liu–Wang criterion applies [@LiuWang2007].
+[@Wagner1992, Section 3], and for positive affine lags $P_{n+1}-P_n$ has nonnegative
+coefficients, so the Liu–Wang criterion applies [@LiuWang2007].
 
 ## References
 

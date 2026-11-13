@@ -106,8 +106,9 @@ label = "Routh–Hurwitz: all zeros in the open left half-plane iff leading mino
 <!-- realrooted-catalog-content -->
 # Hermite–Biehler and Hurwitz stability criteria
 
-A real polynomial is Hurwitz stable if and only if its even and odd parts interlace, and if and
-only if its Hurwitz matrix is totally nonnegative.
+By the Hermite–Biehler theorem, $g\ll f$ exactly when $f+ig$ has no zeros in the open upper
+half-plane. Consequently a real polynomial is Hurwitz stable if and only if its even and odd
+parts interlace, and if and only if its Hurwitz matrix is totally nonnegative.
 
 ## Results
 
@@ -140,16 +141,16 @@ have nonnegative coefficients.
 
 ## Use
 
-The Corollary reduces stability of a polynomial to interlacing of two polynomials in $x^2$.
-By the Lace form, interlacing pairs with nonnegative coefficients have a totally nonnegative Lace
-matrix.
+The corollary translates between Hurwitz stability of one polynomial and interlacing of two
+polynomials in $x^2$. Through the Lace form, interlacing pairs with nonnegative coefficients
+give totally nonnegative matrices.
 
 ## References
 
-See [@Holtz2003], the [Hermite–Biehler theorem](sf:hermiteBiehlerTheorem), and the
-[coefficient signs of Hurwitz-stable polynomials](sf:hurwitzImpliesCoefficientPositivity).
-The related [Hurwitz–Lace criterion](sf:hurwitzLaceCriterion) is stated for a different matrix,
-built from two polynomials.
+- [@Holtz2003]
+- On symmetricfunctions.com: the [Hermite–Biehler theorem](sf:hermiteBiehlerTheorem),
+  [coefficient signs of Hurwitz-stable polynomials](sf:hurwitzImpliesCoefficientPositivity),
+  and the related [Hurwitz–Lace criterion](sf:hurwitzLaceCriterion).
 <!-- /realrooted-catalog-content -->
 
 Human statements:

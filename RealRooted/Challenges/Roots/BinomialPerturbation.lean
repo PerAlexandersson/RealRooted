@@ -3,7 +3,7 @@ module
 import RealRooted.ClassicalHurwitzMatrix.Stability.BinomialPerturbation
 
 /-!
-# Binomial perturbations, Hurwitz stability and a common interlacer
+# Binomial perturbations and Hurwitz stability
 
 <!-- realrooted-catalog
 version = 1
@@ -57,11 +57,12 @@ label = "Any two members of the family are compatible"
 -->
 
 <!-- realrooted-catalog-content -->
-# Binomial perturbations, Hurwitz stability and a common interlacer
+# Binomial perturbations and Hurwitz stability
 
-A perturbation of $(1+z)^n$ with weighted-small lower coefficients has no zero in the open right
-half-plane, and a corresponding family of perturbations of the even binomial section is
-real-rooted and interlaced by the odd section.
+Perturbations of $(1+z)^n$ whose lower coefficients are small in a weighted $\ell^2$ sense have
+no zero in the open right half-plane. Through the odd and even parts, this gives an explicit
+family of real-rooted perturbations of the even binomial section with one common interlacer, so
+any two members of the family are compatible.
 
 ## Results
 
@@ -74,8 +75,8 @@ has no zero with $\operatorname{Re}z>0$. If $n\ge1$ and $q$ has a zero with
 $\operatorname{Re}z\ge0$, then that zero is $0$, $c_0=-1$ and $c_k=0$ for $0<k<n$.
 
 **Theorem (common interlacer).** Let $n\ge1$, let $E_n(x)=\sum_k\binom{2n}{2k}x^k$ and
-$O_n(x)=\sum_k\binom{2n}{2k+1}x^k$ be the even and odd binomial sections, and for real $a_j$
-put
+$O_n(x)=\sum_k\binom{2n}{2k+1}x^k$ be the even and odd binomial sections, so that
+$x\,O_n(x^2)+E_n(x^2)=(1+x)^{2n}$, and for real $a_j$ put
 $$
 G_a(x)=E_n(x)+\sum_{j=1}^{\lfloor n/2\rfloor}a_j\,x^j(1+x)^{n-2j},
 \qquad
@@ -85,20 +86,21 @@ Then $G_a$ is real-rooted with only negative roots and $O_n\ll G_a$. For any two
 $a$, $b$, the polynomials $G_a$ and $G_b$ are compatible: every combination
 $\alpha G_a+\beta G_b$ with $\alpha,\beta\ge0$ is zero or real-rooted.
 
-**Theorem (away from one parameter).** Call $a$ exceptional if $n=2m$, $a_m=-2^n$ and
-$a_j=0$ for all other $j\le n/2$. Let $n\ge1$ and let $a$ be non-exceptional with the bound
-above. Then $x\,O_n(x^2)+G_a(x^2)$ has all zeros in the open left half-plane, the roots of $O_n$
-are simple, the roots of $G_a$ are simple, and $O_n$ and $G_a$ have no common root.
+**Theorem (strict form).** Call $a$ exceptional if $n=2m$, $a_m=-2^n$ and $a_j=0$ for all other
+$j\le n/2$. Let $n\ge1$ and let $a$ be non-exceptional with the bound above. Then
+$x\,O_n(x^2)+G_a(x^2)$ has all zeros in the open left half-plane, the roots of $O_n$ and of $G_a$
+are simple, and $O_n$ and $G_a$ have no common root.
 
-## Use
+## Proof
 
-We obtain the second theorem from the first via a Joukowski substitution. For $a=0$ the
-polynomial $x\,O_n(x^2)+E_n(x^2)$ is $(1+x)^{2n}$. For Hurwitz-stability background, see the
-[Garloff–Wagner page](rr:garloff-wagner-hurwitz).
+A Joukowski substitution turns $x\,O_n(x^2)+G_a(x^2)$ into a perturbation of $(1+z)^n$ that
+satisfies the coefficient bound of the first theorem, so it is Hurwitz stable. The
+[Hermite–Biehler theorem](rr:hermite-biehler-hurwitz) for odd and even parts then gives
+$O_n\ll G_a$, and compatibility follows from the common interlacer $O_n$.
 
 ## References
 
-No published source is cited for these results.
+For Hurwitz stability and the Hermite–Biehler theorem, see [@Holtz2003].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in
