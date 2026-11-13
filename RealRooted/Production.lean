@@ -2163,6 +2163,8 @@ public import RealRooted.MultiplierSequence.FallingFactorial
 public import RealRooted.Hermite.PoulainSymbolInterlacing
 public import RealRooted.Challenges.Combinatorial.Hoggatt
 public import RealRooted.CombinatorialExamples.Hoggatt
+public import RealRooted.Challenges.Matrices.CircleCriterion
+public import RealRooted.Toeplitz.CircleCriterion
 public import RealRooted.DerivativeRecurrence.BandOne
 public import RealRooted.MaWang.PersistentZero
 public import RealRooted.Applications.OEIS.A008299
