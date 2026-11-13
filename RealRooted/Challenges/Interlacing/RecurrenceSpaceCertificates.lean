@@ -127,13 +127,13 @@ Underlying this, if $p(S)^qf=0$ then $p(S)^{q+1}Df=0$.
 ## Use
 
 The root-window theorems on the
-[recurrence root windows](/RealRooted/theorems/recurrence-root-windows/) page use the derivative
+[recurrence root windows](rr:recurrence-root-windows) page use the derivative
 recurrence in the third corollary. The tactics `rr_replay_lift` and `rr_replay_source` reduce a
 certificate for a new family to $J=\gamma\chi$, finitely many seeds and nonvanishing leaders.
 
 ## References
 
-See also the page on [Sturm sequence families](/RealRooted/families/sturm-sequence-families/).
+See also the page on [Sturm sequence families](rr:sturm-sequence-families).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in `RealRooted.RecurrenceSpace.Operators`,

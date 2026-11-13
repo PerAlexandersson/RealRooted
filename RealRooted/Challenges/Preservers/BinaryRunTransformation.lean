@@ -101,7 +101,6 @@ PF polynomials, and preserves interlacing on inputs of degree at most $(n+1)/2$.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 A polynomial is *PF* (Pólya frequency) if it is zero or has nonnegative coefficients and only
 real, nonpositive roots. Let $J_n$ be the linear map with $J_n(1)=1$ and, for $1\le m\le n$,
 $$
@@ -142,7 +141,7 @@ nonnegative coefficients and $\deg g\le\lfloor(n+1)/2\rfloor$, then $K_nf\ll K_n
 
 The map $x^m\mapsto\frac1{m+1}\binom nm J_n(x^m)$ is $J_n$ composed with a diagonal multiplier
 sequence. Combined with the preservation of PF polynomials by that multiplier, the preservation
-theorem gives the [Narayana transformation theorem](/RealRooted/families/narayana/)
+theorem gives the [Narayana transformation theorem](rr:narayana)
 [@MaoWang2026x]. The rows $R_n^\gamma$ for $\gamma_m=1/(m+1)!$ are the Motzkin ascent polynomials
 (OEIS A114580).
 

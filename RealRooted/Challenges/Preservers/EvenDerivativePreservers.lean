@@ -131,7 +131,6 @@ only if a single explicit polynomial $p_N$ is real-rooted.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 A polynomial is *PF* (Pólya frequency) if it is zero or has nonnegative coefficients and only
 real, nonpositive roots. For $c=(c_k)_{k\ge0}$ with $c_0=1$ and $c_k\ge0$ let
 $$

@@ -111,7 +111,6 @@ only if its Hurwitz matrix is totally nonnegative.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$ (see [interlacing](/RealRooted/concepts/interlacing/)).
 A real polynomial is *Hurwitz stable* if it has nonnegative coefficients and no zeros with
 positive real part. Let $p=\sum_k a_kx^k$ with $a_k=0$ for $k<0$. The *Hurwitz matrix* of $p$ is
 $(a_{2j-i})_{i,j\ge0}$.

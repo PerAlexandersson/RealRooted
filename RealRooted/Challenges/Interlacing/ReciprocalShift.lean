@@ -75,7 +75,7 @@ Pólya frequency polynomials.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated. A
+A
 real polynomial $p$ is *PF* if it has nonnegative coefficients and is either zero or splits over
 $\mathbb R$ with all roots at most $0$. For $D\ge\deg p$ the *reciprocal shift* is
 $p_D(x)=x^Dp(1/x)$, the polynomial with coefficients reversed within degree $D$.

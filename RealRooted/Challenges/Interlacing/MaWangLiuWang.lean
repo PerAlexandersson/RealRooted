@@ -106,7 +106,7 @@ $f$, the sum is again interlaced by $f$; the same holds for $uf+vf'$ with $v\le0
 ## Results
 
 For nonzero real-rooted polynomials $f$ and $F$ we write $f\ll F$ if $f$ interlaces $F$ (see
-the [interlacing page](/RealRooted/concepts/interlacing/)): the roots interlace weakly,
+the [interlacing page](rr:interlacing)): the roots interlace weakly,
 $F$ has the largest root, and $\deg F-\deg f\in\{0,1\}$. Shared and repeated roots are allowed.
 The statement $f\ll F$ includes that $F$ is real-rooted. Throughout, "positive" for a
 polynomial refers to its leading coefficient.

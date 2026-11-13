@@ -82,7 +82,7 @@ consecutive partial products interlace.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; common roots are excluded where stated. Call a real
+Call a real
 polynomial $f$ *admissible of degree $m$* if it has degree $m$, positive leading coefficient,
 nonnegative coefficients, positive constant term and only simple real zeros; then all zeros
 are negative. For $d\in\mathbb N$ and $a>0$ let

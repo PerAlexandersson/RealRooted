@@ -90,7 +90,6 @@ nonnegative pairs of degree at most $D$.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 A polynomial is *PF* (Pólya frequency) if it is zero or has nonnegative coefficients and only
 real, nonpositive roots.
 
@@ -128,7 +127,7 @@ upper-half-plane stable, then so is $(Tf)(z)+w\,(Tg)(z)$.
 
 **Theorem (Narayana transform).** The Mao--Wang Narayana transform $N_m$ satisfies
 $N_mf\ll N_mg$ whenever $f\ll g$ have nonnegative coefficients; see the
-[Narayana page](/RealRooted/families/narayana/).
+[Narayana page](rr:narayana).
 
 ## The quadratic closure
 

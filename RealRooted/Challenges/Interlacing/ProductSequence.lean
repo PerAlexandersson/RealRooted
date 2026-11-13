@@ -151,7 +151,6 @@ linear factor gives an interlacing consecutive row.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 Real-rooted polynomials are nonzero here.
 
 **Theorem (product factors).** Let $P_0$ and all $F_n$ be real-rooted, and

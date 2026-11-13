@@ -218,7 +218,6 @@ real-rootedness; these are classified by Jensen polynomials and by the Laguerre�
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 A polynomial is *real-rooted* if it is zero or splits over $\mathbb R$, and *PF* (Pólya
 frequency) if it is zero or has nonnegative coefficients and only real, nonpositive roots. For a
 real sequence $\gamma=(\gamma_0,\gamma_1,\dots)$ the *diagonal operator* is
@@ -237,7 +236,7 @@ sequence if and only if every Jensen polynomial $g_n$ is PF.
 $R>0$, and let $f(z)=\sum_k\gamma_kz^k/k!$.
 
 - $\gamma$ is a PF multiplier sequence if and only if $f$ is in the
-  [Laguerre--Pólya class](/RealRooted/concepts/laguerre-polya-class/) of type I, that is, a
+  [Laguerre--Pólya class](rr:laguerre-polya-class) of type I, that is, a
   locally uniform limit of PF polynomials.
 - $\gamma$ is a multiplier sequence if and only if one of $f(z)$, $-f(z)$, $f(-z)$, $-f(-z)$ is
   of type I.
@@ -278,7 +277,7 @@ following cases:
 
 **Theorem (Jensen-pencil contraction).** Call $(A,B)$ *compatible* if every nonnegative linear
 combination of $A$ and $B$ is zero or real-rooted. Let $*_d$ be Schur--Szegő composition (see the
-[Hadamard products](/RealRooted/theorems/hadamard-products/) page). Let $A$, $xB$ and $p$ be PF
+[Hadamard products](rr:hadamard-products) page). Let $A$, $xB$ and $p$ be PF
 of degree at most $d$ with $\deg B\le d$, and suppose $(A,xB)$ is compatible. Then
 $(A*_dp,\ x\,(B*_dp))$ is compatible. Two ingredients are available separately.
 
@@ -306,7 +305,7 @@ follows from [@KostovShapiro2006, Prop. 1.2 and Thm. 1.3].
 ## References
 
 [@SchurPolya1914], [@KostovShapiro2006]. The finite Pólya--Schur theorem through Schur--Szegő
-composition is on the [Hadamard products](/RealRooted/theorems/hadamard-products/) page.
+composition is on the [Hadamard products](rr:hadamard-products) page.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

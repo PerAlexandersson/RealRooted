@@ -76,7 +76,7 @@ rows at parameters differing by one interlace.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; common roots are allowed unless stated. For
+For
 $\beta,a\in\mathbb R$ define $P_0(a)=1$ and
 $$
 P_{n+1}(a)=x\,P_n(a+2)+\beta\,x\,P_n(a+1)'+a\,P_n(a+1).
@@ -117,7 +117,7 @@ s_{n+\ell_t}$ and $P_i(\xi)=s_i$ for $i<k$, then $P_n(\xi)=s_n$ for all $n$.
 
 ## References
 
-See also the [recurrence root windows](/RealRooted/theorems/recurrence-root-windows/) page.
+See also the [recurrence root windows](rr:recurrence-root-windows) page.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in the `RealRooted.DerivativeRecurrence`

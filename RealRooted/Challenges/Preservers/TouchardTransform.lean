@@ -83,7 +83,7 @@ $$
 where $\star_1$ is the Poisson star product with parameter one. If each $S(f_i)$, $i\in I$,
 is a PF polynomial for a finite family $(f_i)$, then $S\bigl(\prod_if_i\bigr)$ is PF. The
 product is preserved by the PF-preserving property of the Poisson star product; see the
-[univariate Poisson star product](/RealRooted/theorems/univariate-poisson-star-c/) page.
+[univariate Poisson star product](rr:univariate-poisson-star-c) page.
 
 **Theorem (falling factorial prefix).** For $m\in\mathbb N$ and a polynomial $p$,
 $$
@@ -111,7 +111,7 @@ real-rooted.
 
 The root criterion is in the spirit of Brenti, Royle and Wagner, *Location of zeros of
 chromatic and related polynomials of graphs* (1994), Theorem 4.7. For the Poisson product, see
-the [univariate Poisson star product](/RealRooted/theorems/univariate-poisson-star-c/) page.
+the [univariate Poisson star product](rr:univariate-poisson-star-c) page.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in

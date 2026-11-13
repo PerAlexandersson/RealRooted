@@ -64,7 +64,7 @@ $$
 \sum_A x^{|A|}\prod_{v\in A}w(v)
 $$
 is real-rooted. This is due to Engstr\"om; see the
-[Heilmann--Lieb page](/RealRooted/theorems/heilmann-lieb/).
+[Heilmann--Lieb page](rr:heilmann-lieb).
 
 ## References
 

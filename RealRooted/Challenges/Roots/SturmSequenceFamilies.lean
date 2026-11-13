@@ -130,7 +130,7 @@ consecutive rows interlace.
 ## Results
 
 For nonzero real-rooted polynomials $f$ and $g$ we write $f\ll g$ (`StrictInterl f g`) as on the
-[interlacing page](/RealRooted/concepts/interlacing/), and `Interlaces f g` when moreover
+[interlacing page](rr:interlacing), and `Interlaces f g` when moreover
 $\deg g=\deg f+1$. Each family is defined by its recurrence.
 
 **Theorem (recurrences).** In each family below, consecutive polynomials satisfy the
@@ -175,7 +175,7 @@ derangements of $\{1,\dotsc,n\}$ by excedances, the simsun polynomials count sim
 of $\{1,\dotsc,n\}$ by descents, and $D_n$ counts set partitions of $\{1,\dotsc,n\}$ without
 singleton blocks by blocks. For $r\le m$ the path-power polynomial is the independence polynomial
 of the $r$th power of the path on $m-r$ vertices, a claw-free graph, so its real-rootedness also
-follows from the [Chudnovsky–Seymour theorem](/RealRooted/theorems/chudnovsky-seymour/).
+follows from the [Chudnovsky–Seymour theorem](rr:chudnovsky-seymour).
 
 ## Proof
 

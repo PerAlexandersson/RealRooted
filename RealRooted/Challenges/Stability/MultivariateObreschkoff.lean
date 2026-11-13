@@ -79,9 +79,9 @@ $G+wF$, in the variables $z_i$ and a new variable $w$, is real stable.
 ## Use
 
 These are the multivariate analogues of the classical Hermite–Kakeya–Obreschkoff theorem for
-interlacing polynomials; see the [univariate Obreschkoff page](/RealRooted/theorems/obreschkoff/).
+interlacing polynomials; see the [univariate Obreschkoff page](rr:obreschkoff).
 Proper position is the multivariate counterpart of interlacing through the Hermite–Biehler
-theorem; see the [Hermite–Biehler page](/RealRooted/theorems/hermite-biehler-hurwitz/).
+theorem; see the [Hermite–Biehler page](rr:hermite-biehler-hurwitz).
 
 ## Proof
 

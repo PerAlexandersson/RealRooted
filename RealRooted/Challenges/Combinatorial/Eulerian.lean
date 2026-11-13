@@ -108,7 +108,7 @@ both are real-rooted, and consecutive members interlace.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; common roots are allowed unless stated. For real $c$,
+For real $c$,
 the *generalized Eulerian polynomials* are $E^{(c)}_0=1$ and
 $$
 E^{(c)}_{n+1}=\bigl(1+(cn+1)t\bigr)E^{(c)}_n+c\,t(1-t)\bigl(E^{(c)}_n\bigr)'.

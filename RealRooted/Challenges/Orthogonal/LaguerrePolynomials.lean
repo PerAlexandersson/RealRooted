@@ -98,7 +98,7 @@ label = "The case γ = 1 for α > 0"
 The generalized Laguerre polynomials are real-rooted with simple roots, and consecutive ones
 interlace.
 
-We write $f\ll g$ if $f$ interlaces $g$; common roots are allowed unless stated. The library
+The library
 uses the monic, sign-reversed normalization
 $$
 P_n^{(\alpha)}(x) = n!\, L_n^{(\alpha)}(-x)
@@ -139,7 +139,7 @@ with positive parameters preserves simple negative roots.
 ## References
 
 See [@Szego1939, Ch. V]. The general three-term theory is on the
-[Favard page](/RealRooted/theorems/favard/). The combination theorem is the case $K=1$ of
+[Favard page](rr:favard). The combination theorem is the case $K=1$ of
 Theorem 1.3 in A. J. Durán, *Zeros of linear combinations of Laguerre polynomials*,
 [arXiv:2507.22425](https://arxiv.org/abs/2507.22425).
 <!-- /realrooted-catalog-content -->

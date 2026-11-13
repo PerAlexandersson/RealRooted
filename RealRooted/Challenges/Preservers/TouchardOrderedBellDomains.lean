@@ -183,9 +183,9 @@ all summands of the diamond product have the same sign and the $k=0$ summand is 
 The classical inputs are Brändén's theorems that fixed Poisson, respectively diamond,
 multiplication by a PF, respectively $[-1,0]$-rooted, kernel preserves real-rootedness
 ([@Branden2006], Theorems 3.11 and 3.13), as used on the
-[derivative product kernel](/RealRooted/theorems/derivative-product-kernel/) page. See the
-[Touchard transform](/RealRooted/theorems/touchard-transform/) and
-[Brändén E transform](/RealRooted/theorems/branden-e-transform/) pages for the transforms.
+[derivative product kernel](rr:derivative-product-kernel) page. See the
+[Touchard transform](rr:touchard-transform) and
+[Brändén E transform](rr:branden-e-transform) pages for the transforms.
 Durán, *Generalized Bell polynomials* (arXiv:2409.11344), Problem 1 and Theorem 5, discuss
 negative parameters; the uniform bounds here follow by pairing.
 <!-- /realrooted-catalog-content -->

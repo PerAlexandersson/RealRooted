@@ -98,8 +98,7 @@ and has all roots in $[a,b]$.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; common roots, for example at $a$ or $b$, are allowed
-unless stated. Fix real numbers $a\le b$ and put $q=(x-a)(x-b)$.
+Fix real numbers $a\le b$ and put $q=(x-a)(x-b)$.
 
 **Theorem (one step).** Let $f$ be real-rooted with positive leading coefficient, degree at
 least $1$, and all roots in $[a,b]$. Then
@@ -125,7 +124,7 @@ theorem follows by induction on $n$, since the one-step theorem preserves the hy
 ## References
 
 For derivative interlacing, see [@Fisk2006x, Ch. 1]. The derivative step is on the
-[Ma–Wang and Liu–Wang page](/RealRooted/theorems/ma-wang-liu-wang/). Examples are the rows of
+[Ma–Wang and Liu–Wang page](rr:ma-wang-liu-wang). Examples are the rows of
 [OEIS A142071](https://oeis.org/A142071), [OEIS A172106](https://oeis.org/A172106),
 [OEIS A172107](https://oeis.org/A172107) and [OEIS A172108](https://oeis.org/A172108).
 <!-- /realrooted-catalog-content -->

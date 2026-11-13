@@ -58,7 +58,6 @@ generalizations, are Pólya frequency polynomials, and their leading sections in
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 A real matrix is *totally nonnegative* (TNN) if all its minors are nonnegative. For a matrix $L$
 the checkerboard matrix has entries $(-1)^{i+j}L_{ij}$.
 
@@ -84,7 +83,7 @@ root, and all roots of $\chi_H$ are positive.
 ## References
 
 The oscillatory case of [totally nonnegative
-matrices](/RealRooted/theorems/totally-nonnegative-matrices/) is the criterion used in the last
+matrices](rr:totally-nonnegative-matrices) is the criterion used in the last
 theorem.
 <!-- /realrooted-catalog-content -->
 

@@ -42,7 +42,6 @@ vanishes.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 A real polynomial is *Hurwitz stable* if its coefficients are nonnegative and it has no zero with
 positive real part. The Hadamard product of $a=\sum_k a_kx^k$ and $b=\sum_k b_kx^k$ is
 $a\ast b=\sum_k a_kb_kx^k$.

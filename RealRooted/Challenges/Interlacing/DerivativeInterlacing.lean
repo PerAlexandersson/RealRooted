@@ -71,9 +71,6 @@ differentiation preserves interlacing.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; see the
-[interlacing page](/RealRooted/concepts/interlacing/). Common roots are allowed unless stated.
-
 **Theorem (Rolle).** If $a<b$ are real zeros of a real polynomial $p$, then $p'(c)=0$ for some
 $c$ with $a<c<b$.
 

@@ -9,6 +9,7 @@ import shutil
 import sys
 import tempfile
 import unittest
+from dataclasses import replace
 from datetime import date
 
 sys.dont_write_bytecode = True
@@ -20,6 +21,9 @@ from challenge_catalog import (
     load_author_profiles,
     load_catalog,
     parse_challenge_source,
+    prose_findings,
+    validate_prose_baseline,
+    render_markdown,
     render_site,
     source_declarations,
     validate_audit_report,
@@ -372,7 +376,7 @@ end RealRooted.Challenges.Sample
         self.assertIn("formalized 2026-01-02", first["index.html"])
         self.assertNotIn("<select", first["index.html"])
         self.assertIn('href="./#topics">Topics</a>', first["index.html"])
-        self.assertIn('href="./#theorems">Theorems</a>', first["index.html"])
+        self.assertIn('href="./theorems/">Theorems</a>', first["index.html"])
         self.assertIn('href="results/">All results</a>', first["index.html"])
         self.assertIn('href="../../results/">All results</a>', first["theorems/sample/index.html"])
         self.assertIn("results/index.html", first)
@@ -408,7 +412,7 @@ end RealRooted.Challenges.Sample
         self.assertEqual(manifest["pages"][0]["formalized"], "2026-01-02")
         self.assertIn("Formalized 2026-01-02", first["theorems/sample/index.html"])
 
-    def test_home_lists_definitions_before_theorems(self) -> None:
+    def test_home_combines_page_kinds_in_topic_groups(self) -> None:
         self.write("RealRooted/Challenges/Sample.lean", self.sample_source())
         self.write(
             "RealRooted/Challenges/Other.lean",
@@ -429,7 +433,8 @@ end RealRooted.Challenges.Sample
         pages = load_catalog(self.root)
         output = render_site(self.root, pages, validate_sources(self.root, pages), REVISION)
         home = output["index.html"]
-        self.assertLess(home.index('id="topics"'), home.index('id="theorems"'))
+        self.assertLess(home.index('id="topics"'), home.index('id="topic-combinatorial"'))
+        self.assertEqual(home.count('class="catalog-group"'), 1)
         self.assertIn('href="families/sample/"', home)
         self.assertIn('href="theorems/other/"', home)
 
@@ -599,18 +604,20 @@ end RealRooted.Challenges.Sample
         pages = load_catalog(self.root)
         output = render_site(self.root, pages, validate_sources(self.root, pages), REVISION)
         home = output["index.html"]
-        topics, theorems = home.split('id="theorems"', 1)
-        # the family card lives with the topics, shows what it contains, and names its main result
+        topics = home.split('id="topic-combinatorial"', 1)[1]
+        # The family card shows its contents and claim without the Lean name.
         self.assertIn('href="families/sample/"', topics)
         self.assertIn('title="1 definition"', topics)
         self.assertIn('title="2 theorems"', topics)
         self.assertIn("Sample family is real-rooted", topics)
-        self.assertIn("RealRooted.Challenges.Sample.proven", topics)
+        self.assertNotIn("RealRooted.Challenges.Sample.proven", topics)
+        self.assertIn('1 definition</span> <span aria-hidden="true">·</span>', topics)
+        self.assertIn('2 theorems</span>', topics)
         self.assertNotIn("≔</span><span>Definition", home)
         # The family appears only once on the landing page.
         anchor = "decl-RealRooted-Challenges-Sample-proven"
-        self.assertNotIn('href="families/sample/', theorems)
-        self.assertNotIn("minor", theorems)
+        self.assertEqual(home.count('href="families/sample/"'), 1)
+        self.assertNotIn("minor", home)
         page = output["families/sample/index.html"]
         self.assertIn(f'<li id="{anchor}">', page)
         self.assertIn("Sample family is real-rooted<span class=\"headline-tag\">Main result</span>", page)
@@ -870,6 +877,7 @@ end RealRooted.Challenges.Sample
             page.index('class="reference-list"'), page.index("A short contextual note.")
         )
         manifest = json.loads(output["catalog-manifest.json"])
+        self.assertEqual(manifest["pages"][0]["references"], ["Other", "Brenti1995"])
         declaration = manifest["pages"][0]["declarations"][0]
         self.assertEqual(declaration["symcat"], "sampleTheorem")
         self.assertEqual(
@@ -1002,6 +1010,199 @@ end RealRooted.Challenges.Sample
         self.assertIn("def family : Nat := 1", page)
         self.assertIn("theorem proven : True", page)
         self.assertNotIn("by trivial", page)
+
+    def test_bracket_math_display_and_inline_protection(self) -> None:
+        rendered = render_markdown(r"\[a_* *b* < c\]" + "\n\n" + r"Inline \(a_* *b*\).")
+        self.assertIn(r'<div class="math-display">\[a_* *b* &lt; c\]</div>', rendered)
+        self.assertIn(r'<p>Inline \(a_* *b*\).</p>', rendered)
+        self.assertNotIn("<em>", rendered)
+        mixed = render_markdown(r"Before \[a*b*c\] after.")
+        self.assertNotIn('class="math-display"', mixed)
+        self.assertIn(r"\[a*b*c\]", mixed)
+        two = render_markdown(r"\[a\] and \[b\]")
+        self.assertNotIn('class="math-display"', two)
+
+    def test_topic_order_and_article_sorting(self) -> None:
+        from challenge_catalog import TOPICS
+        pages, resolved = self.pages_and_sources()
+        topical = tuple(replace(pages[0], slug=f"topic-{index}",
+                                source_path=f"RealRooted/Challenges/{directory}/Sample.lean")
+                        for index, directory in enumerate(reversed(TOPICS)))
+        output = render_site(self.root, topical, resolved, REVISION)
+        home = output["index.html"]
+        positions = [home.index(f"<h2>{topic}</h2>") for topic in TOPICS.values()]
+        self.assertEqual(positions, sorted(positions))
+        self.assertEqual(home.count('class="catalog-group"'), 9)
+        self.assertIn('href="#topic-polya-frequency"', home)
+        named = tuple(replace(pages[0], title=title, slug=str(index)) for index, title in enumerate(
+            ("The Zebra", "An Apple", "A Bear", "Cedar")
+        ))
+        home = render_site(self.root, named, resolved, REVISION)["index.html"]
+        positions = [home.index(f'class="card-title">{title}<')
+                     for title in ("An Apple", "A Bear", "Cedar", "The Zebra")]
+        self.assertEqual(positions, sorted(positions))
+        self.assertIn('data-title="apple"', home)
+        self.assertIn('data-title="zebra"', home)
+        with self.assertRaisesRegex(CatalogError, "unknown topic"):
+            render_site(self.root, (replace(pages[0], source_path="RealRooted/Challenges/Typo/X.lean"),),
+                        resolved, REVISION)
+
+    def test_page_header_and_agent_overview(self) -> None:
+        pages, resolved = self.pages_and_sources()
+        self.write_symcat(labels={"pageLabel": "one.htm#pageLabel", "itemLabel": "two.htm#itemLabel"})
+        item = replace(pages[0].theorems[0], headline=True, label="The headline", symcat="itemLabel")
+        page = replace(pages[0], source_path="RealRooted/Challenges/Roots/Sample.lean",
+                       authors=("One", "Two"), years=(1952, 1996), tags=("coauthored-paper",),
+                       symcat=("pageLabel", "itemLabel"), theorems=(item,),
+                       content="# Sample\n\nA **short** [summary](rr:about) with $x$.\n\n"
+                               "## Results\n\nA result.\n\n## References\n\nA source.")
+        output = render_site(self.root, (page,), resolved, REVISION)
+        document = output["families/sample/index.html"]
+        header = document.split('class="page-metadata">')[1].split('</div>')[0]
+        self.assertIn("One &amp; Two · 1952–1996", header)
+        self.assertIn("Coauthored paper", header)
+        self.assertIn('href="/RealRooted/#topic-roots">Roots</a> ›', header)
+        self.assertIn('>Family</a>', header)
+        self.assertEqual(header.count('href="https://www.symmetricfunctions.com/two.htm#itemLabel"'), 1)
+        self.assertIn(f'Main result: <a href="#{item.anchor}">The headline</a>', header)
+        self.assertLess(document.index('class="page-metadata"'), document.index('A <strong>short'))
+        record = json.loads(output["catalog-manifest.json"])["pages"][0]
+        self.assertEqual(record["topic"], "Roots")
+        self.assertEqual(record["section"], "families")
+        self.assertEqual(record["summary"], "A short summary with $x$.")
+        self.assertEqual(record["headline"], {"name": item.name, "label": "The headline"})
+        self.assertEqual(record["symcat"], ["pageLabel", "itemLabel"])
+        self.assertEqual(record["references"], [])
+        self.assertIn(f"Sample — The headline — {item.name} — https://peralexandersson.github.io/RealRooted/families/sample/",
+                      output["llms.txt"])
+        self.assertNotIn('class="provenance-legend"', output["index.html"])
+        self.assertNotIn('class="provenance-legend"', output["results/index.html"])
+        self.assertIn("Common and repeated roots are allowed", output["about/index.html"])
+        self.assertIn('href="../../about/">Conventions</a>', document)
+        self.assertIn('href="https://www.symmetricfunctions.com/">SymCat</a>', document)
+
+    def test_page_symcat_metadata_and_reference_keys(self) -> None:
+        for raw in ('"sampleTheorem"', '["sampleTheorem"]'):
+            source = catalog_block().replace('version = 1', f'version = 1\nsymcat = {raw}')
+            page = parse_challenge_source("Sample.lean", source)
+            self.assertEqual(page.symcat, ("sampleTheorem",))
+        for raw in ('3', '["same", "same"]', '["bad label"]', '[3]'):
+            source = catalog_block().replace('version = 1', f'version = 1\nsymcat = {raw}')
+            with self.assertRaisesRegex(CatalogError, "symcat must"):
+                parse_challenge_source("Sample.lean", source)
+        pages, resolved = self.pages_and_sources()
+        with self.assertRaisesRegex(CatalogError, "unknown symmetricfunctions.com label missing"):
+            render_site(self.root, (replace(pages[0], symcat=("missing",)),), resolved, REVISION)
+
+    def test_rr_links_validate_slugs_fragments_and_base_paths(self) -> None:
+        pages, resolved = self.pages_and_sources()
+        item = pages[0].theorems[0]
+        content = (f"# Sample\n\n[Self](rr:sample#{item.anchor}), [about][a].\n\n"
+                   "[a]: rr:about\n\n## References\n\nA source.")
+        for base in ("/", "/RealRooted/", "/catalog/"):
+            with self.subTest(base=base):
+                output = render_site(self.root, (replace(pages[0], content=content),), resolved,
+                                     REVISION, base_path=base)
+                document = output["families/sample/index.html"]
+                self.assertIn(f'href="{base}families/sample/#{item.anchor}"', document)
+                self.assertIn(f'href="{base}about/"', document)
+        for target, error in (("rr:typo", "unknown catalog slug"),
+                              ("rr:sample#typo", "broken internal fragment")):
+            with self.subTest(target=target):
+                with self.assertRaisesRegex(CatalogError, error):
+                    render_site(self.root, (replace(pages[0], content=f"# Sample\n\n[Bad]({target})"),),
+                                resolved, REVISION)
+        with self.assertRaisesRegex(CatalogError, "duplicate catalog slug"):
+            render_site(self.root, (pages[0], replace(pages[0], section="theorems")), resolved, REVISION)
+        with self.assertRaisesRegex(CatalogError, "duplicate catalog slug about"):
+            render_site(self.root, (replace(pages[0], slug="about"),), resolved, REVISION)
+
+    def test_retired_slug_redirects_and_rejections(self) -> None:
+        pages, resolved = self.pages_and_sources()
+        self.write("website/redirects.toml", '[redirects]\n"theorems/old" = "sample"\n')
+        for base in ("/RealRooted/", "/"):
+            output = render_site(self.root, pages, resolved, REVISION, base_path=base)
+            redirect = output["theorems/old/index.html"]
+            self.assertIn('http-equiv="refresh" content="0; url=../../families/sample/"', redirect)
+            self.assertIn('href="../../families/sample/">Continue', redirect)
+            self.assertIn(f'href="https://peralexandersson.github.io{base}families/sample/"', redirect)
+            self.assertIn('name="viewport"', redirect)
+            self.assertIn('name="color-scheme" content="light dark"', redirect)
+        for row, error in (('"families/sample" = "sample"', "collides"),
+                           ('"theorems/old" = "missing"', "unknown redirect target"),
+                           ('"../old" = "sample"', "invalid retired path"),
+                           ('"theorems/old" = "old"', "unknown redirect target")):
+            self.write("website/redirects.toml", "[redirects]\n" + row + "\n")
+            with self.subTest(row=row), self.assertRaisesRegex(CatalogError, error):
+                render_site(self.root, pages, resolved, REVISION)
+
+    def test_bibtex_title_casing_and_book_details(self) -> None:
+        from challenge_catalog import Citation, _reference_list, _bibtex_fields
+        self.assertEqual(_bibtex_fields(r'@article{Key, title={A {Title} with $\frac{a}{b}$}}')["title"],
+                         r'A Title with $\frac{a}{b}$')
+        entry = {"label": "Obr63", "csl": {"title": "Sentence cased title", "volume": "55",
+                 "issued": {"date-parts": [[1963]]}}, "bibtex": r'''@book{Book,
+  title = {Verteilung und {Berechnung} der Nullstellen reeller Polynome},
+  series = {Hochschulb{\"u}cher f{\"u}r Mathematik},
+  publisher = "VEB Deutscher Verlag der Wissenschaften",
+  volume = {55}
+}'''}
+        rendered = _reference_list((Citation("Book"),), {"Book": entry})
+        self.assertIn("Verteilung und Berechnung der Nullstellen reeller Polynome.", rendered)
+        self.assertIn("Hochschulbücher für Mathematik, vol. 55, VEB Deutscher Verlag der Wissenschaften, 1963.", rendered)
+        self.assertNotIn("Sentence cased title", rendered)
+        fallback = {**entry, "bibtex": "@book{Book, publisher={Press}}"}
+        self.assertIn("Sentence cased title.", _reference_list((Citation("Book"),), {"Book": fallback}))
+
+    def test_prose_lint_rules_and_fence_exclusions(self) -> None:
+        page = parse_challenge_source("Sample.lean", catalog_block())
+        page = replace(page, content=r'''# Sample
+
+The library uses `identifier`, Lean, and has No published source unless stated.
+
+\[x\]
+
+[Old](/RealRooted/theorems/old/)
+
+## Proof
+
+## Results
+
+## Odd heading
+
+## Results
+
+```lean
+Lean `identifier` the library unless stated \[ /RealRooted/
+## Hidden
+```
+
+## References
+Source.
+''')
+        findings = prose_findings((page,))
+        rules = {row.split("\t")[1] for row in findings}
+        self.assertEqual(rules, {"backticks", "the-library", "lean", "no-published-source",
+                                "unless-stated", "bracket-display", "absolute-link",
+                                "h2-order", "h2-unknown", "h2-duplicate"})
+        self.assertFalse(any("Hidden" in row or "```" in row for row in findings))
+        wrapped = replace(page, content="# Sample\n\nThe\nlibrary.\n\n## References\n\nSource.")
+        self.assertTrue(any("\tthe-library\t" in row for row in prose_findings((wrapped,))))
+        self.assertTrue(any("\th2-missing\tResults" in row for row in prose_findings((wrapped,))))
+        external = replace(page, content="# Sample\n\n[Issue](https://github.com/PerAlexandersson/RealRooted/issues/1)")
+        self.assertFalse(any("\tabsolute-link\t" in row for row in prose_findings((external,))))
+
+    def test_prose_baseline_rejects_new_and_stale_entries(self) -> None:
+        page = parse_challenge_source("Sample.lean", catalog_block())
+        baseline = "\n".join(sorted(prose_findings((page,)))) + "\n"
+        self.write("scripts/prose_baseline.txt", baseline)
+        validate_prose_baseline(self.root, (page,))
+        regressed = replace(page, content=page.content + "\n\nLean.")
+        with self.assertRaisesRegex(CatalogError, "new prose offender"):
+            validate_prose_baseline(self.root, (regressed,))
+        fixed = replace(page, content=page.content.replace("## References", "## Results\n\n## References"))
+        with self.assertRaisesRegex(CatalogError, "stale prose baseline entry"):
+            validate_prose_baseline(self.root, (fixed,))
 
     def test_audit_report_rejects_mismatch_and_accepts_exact_records(self) -> None:
         pages, resolved = self.pages_and_sources()

@@ -119,7 +119,6 @@ claw-free graphs.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 Let $G$ be a finite simple graph. Its *matching-generating polynomial* is
 $$
 m_G(x)=\sum_{M}x^{|M|},
@@ -167,7 +166,7 @@ nonnegative vectors $a,b$ determined by $p$.
 The matchings of $G$ are the independent sets of the claw-free line graph $L(G)$, so the
 weighted matching polynomial of $G$ is a weighted independence polynomial of $L(G)$ and
 Engström's theorem applies. Engström's theorem is the weighted form of the
-[Chudnovsky--Seymour theorem](/RealRooted/theorems/chudnovsky-seymour/), proved by the same
+[Chudnovsky--Seymour theorem](rr:chudnovsky-seymour), proved by the same
 induction on vertex subsets.
 
 For vertex deletion, use $\mu_S=x\mu_{S\setminus v}-\sum_{u\sim v}\mu_{S\setminus\{v,u\}}$.

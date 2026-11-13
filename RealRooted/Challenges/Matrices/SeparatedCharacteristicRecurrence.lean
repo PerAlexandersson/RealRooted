@@ -73,7 +73,6 @@ polynomials and consecutive rows interlace.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 Let $h\ge1$, $m\ge0$, $a\in\mathbb R^{h+m}$, $b\in\mathbb R^m$, and let $S$ be the shift
 $(SP)_n=P_{n+1}$. Consider the recurrence
 $$
@@ -96,7 +95,7 @@ $P_{s+n}=(M^nv)_i$ for all $n\ge0$.
 $M$ built from $a_i-\rho$ and $b_j-\rho$. Then $M$ has nonnegative polynomial coefficients and
 preserves interlacing sequences of nonnegative real-rooted polynomials, zero entries allowed
 (Brändén's criterion on the
-[matrix interlacing page](/RealRooted/theorems/matrix-interlacing/)).
+[matrix interlacing page](rr:matrix-interlacing)).
 Let the seed $v$ be such a sequence. Then every $M^nv$ is again one, every coordinate of every
 $M^nv$ is a Pólya frequency polynomial (possibly $0$), and
 $$
@@ -106,7 +105,7 @@ $$
 ## References
 
 The preservation criterion is on the
-[matrix interlacing page](/RealRooted/theorems/matrix-interlacing/).
+[matrix interlacing page](rr:matrix-interlacing).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in the

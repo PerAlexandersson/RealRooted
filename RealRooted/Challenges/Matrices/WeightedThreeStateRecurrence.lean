@@ -105,7 +105,6 @@ coefficients, only negative real roots, and consecutive rows interlace.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 Let
 $$
 M=\begin{pmatrix}1&b&d\\0&1&1\\x&\alpha x&1\end{pmatrix}

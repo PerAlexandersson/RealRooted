@@ -52,7 +52,6 @@ the Motzkin reference polynomials interlace them.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 A *big descent* of a permutation $\pi$ is an index $i$ with $\pi(i)>\pi(i+1)+1$. Let $A_n(t)$
 be the big-descent polynomial of the 321-avoiding permutations of length $n$. We define it by
 the first-return recurrence $A_0=1$, $A_n=\sum_{j=1}^n I_jA_{n-j}$, where $I_1=I_2=1$ and

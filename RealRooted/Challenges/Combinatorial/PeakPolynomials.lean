@@ -88,8 +88,8 @@ The total peak polynomial of a peak family built by the Ferrers-board recursion 
 
 ## Results
 
-We write $f\ll g$ if $f=0$, or $g=0$, or $f$ and $g$ are real-rooted and $f$ interlaces $g$
-(common roots are allowed). A *peak family* of width $m$ consists of polynomials $D_k$ and
+We use the [zero-aware interlacing convention](rr:about). A *peak family* of width $m$ consists of
+polynomials $D_k$ and
 $U_k$, $0\le k<m$, with nonnegative coefficients. Put
 $$
 A_k = D_k + U_k, \qquad W_k = x D_k + U_k, \qquad

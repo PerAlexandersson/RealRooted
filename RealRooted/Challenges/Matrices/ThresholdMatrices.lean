@@ -82,7 +82,6 @@ thresholds and a compatibility condition on the markers, preserve interlacing se
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 An *interlacing sequence* is a list of nonzero real-rooted polynomials with nonnegative
 coefficients in which each polynomial interlaces every later one. In a *weak* interlacing
 sequence zero polynomials are allowed.
@@ -101,7 +100,7 @@ length $n$ to an interlacing sequence. If this condition holds with zero polynom
 $G$ maps an interlacing sequence to a weak interlacing sequence of nonnegative polynomials, and
 discarding the zero polynomials leaves an interlacing sequence. This specializes the matrix
 criterion [@Branden2015, Thm. 7.8.5] of the
-[matrix interlacing page](/RealRooted/theorems/matrix-interlacing/).
+[matrix interlacing page](rr:matrix-interlacing).
 
 **Theorem (Haglund–Zhang).** [@HaglundZhang2019] Let $G$ be a threshold matrix whose markers
 are $1$ or $1+x$, whose thresholds weakly increase down the rows, and in which, among rows with

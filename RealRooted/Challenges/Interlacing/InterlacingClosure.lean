@@ -105,8 +105,7 @@ affine and shift operations, and it gives real-rooted h-polynomials of shellings
 
 ## Results
 
-We write $f\ll g$ if $f$ and $g$ are nonzero and real-rooted, $g$ has the rightmost root, and the
-roots alternate, with $\deg g=\deg f$ or $\deg g=\deg f+1$. Roots are compared weakly. In the
+We use the [nonzero interlacing convention](rr:about). Roots are compared weakly. In the
 cone lemma, either side may also be zero.
 
 **Theorem (affine combinations, Brändén).** Let $f,g$ be nonzero with nonnegative coefficients.

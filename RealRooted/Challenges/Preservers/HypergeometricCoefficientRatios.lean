@@ -107,7 +107,7 @@ it. The Euler factors are handled with shifted Euler PF multipliers.
 The parameter region of the first theorem is that of Theorem 4.6 of A. Martínez-Finkelshtein,
 J. Morales and D. Perales,
 *Real roots of hypergeometric polynomials via finite free convolution*. For multiplier
-sequences, see the [multiplier sequences](/RealRooted/concepts/multiplier-sequences/) page.
+sequences, see the [multiplier sequences](rr:multiplier-sequences) page.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in

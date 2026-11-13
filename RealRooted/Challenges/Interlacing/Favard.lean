@@ -72,7 +72,7 @@ functional.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; common roots are allowed unless stated. Let
+Let
 $P_0=1$, $P_1=x-\alpha_0$ and
 $$
 P_{n+2}=(x-\alpha_{n+1})P_{n+1}-\beta_{n+1}P_n .

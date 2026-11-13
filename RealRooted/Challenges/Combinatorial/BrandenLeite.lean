@@ -268,9 +268,7 @@ power series.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$: both are real-rooted, $\deg g-\deg f\in\{0,1\}$, and
-their roots alternate weakly, the largest root belonging to $g$. Common roots are allowed unless
-stated. We also write $f\ll g$ when $f$ or $g$ is zero. A polynomial is a *Pólya frequency (PF)
+We use the [zero-aware interlacing convention](rr:about). A polynomial is a *Pólya frequency (PF)
 polynomial* if it has nonnegative coefficients and only real nonpositive roots.
 
 For a lower-triangular matrix $A$, the *chain polynomials* are $P_0=1$ and

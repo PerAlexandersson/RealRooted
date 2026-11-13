@@ -82,13 +82,13 @@ with simple negative roots, and $F_n$ interlaces $F_{n+1}$ for all $n$ (the libr
 
 At a negative root $x$ of $F_n$ the exclusion theorem gives $\Delta_n(x)\le0$, hence
 $q_n(x)<0$. The critical-sign criterion of the [Ma–Wang and Liu–Wang
-page](/RealRooted/theorems/ma-wang-liu-wang/)
+page](rr:ma-wang-liu-wang)
 then propagates simple negative roots and interlacing.
 
 ## References
 
-See also the [Sonin envelope page](/RealRooted/theorems/sonin-envelope/) and the
-[Ma–Wang and Liu–Wang page](/RealRooted/theorems/ma-wang-liu-wang/).
+See also the [Sonin envelope page](rr:sonin-envelope) and the
+[Ma–Wang and Liu–Wang page](rr:ma-wang-liu-wang).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in `RealRooted.Wronskian.OdeRootBound`

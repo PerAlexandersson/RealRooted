@@ -110,7 +110,6 @@ roots.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 For real $\varepsilon$ let $T_\varepsilon p=p-\varepsilon p'$.
 
 **Theorem (real-rootedness).** If $p$ is real-rooted, then $T_\varepsilon p$ is real-rooted for

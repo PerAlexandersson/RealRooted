@@ -63,7 +63,6 @@ linear combination of them is real-rooted.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 A polynomial is *real-rooted* if it splits over $\mathbb R$; the zero polynomial counts as
 real-rooted in this statement.
 

@@ -84,14 +84,14 @@ negative zeros, and consecutive ones interlace; the same holds for the interpola
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; common roots are allowed unless stated. For real
+For real
 $\theta>-1$ the continuous Narayana interpolation is
 $$
 P_n^{(\theta)}(t)=\sum_{k\le n}\binom nk\frac{(\theta+1)_n}{(\theta+1)_k(\theta+1)_{n-k}}\,t^k,
 $$
 with $(a)_k=a(a+1)\dotsm(a+k-1)$. It equals the type B Narayana polynomial at $\theta=0$ and the
 shifted type A Narayana polynomial at $\theta=1$ [@Zeng2026x]; see the
-[Narayana polynomials](/RealRooted/families/narayana/) page. The $\gamma$-polynomial is
+[Narayana polynomials](rr:narayana) page. The $\gamma$-polynomial is
 $$
 \gamma_n^{(\theta)}(t)=\sum_{j\le n/2}\frac{n!}{j!\,(n-2j)!\,(\theta+1)_j}\,t^j,
 $$
