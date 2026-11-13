@@ -11,7 +11,7 @@ section = "theorems"
 slug = "falling-factorial-truncations"
 formalized = "2026-11-13"
 authors = []
-references = []
+references = ["SchurPolya1914"]
 
 [[definitions]]
 name = "RealRooted.fallingSchur"
@@ -70,6 +70,9 @@ over $\mathbb R$.
 **Theorem.** A real polynomial $f$ is real-rooted if and only if $T_pf$ is real-rooted for every
 $p\ge0$.
 
+The forward direction is due to Pólya and Schur [@SchurPolya1914, §2, p. 97], since
+$T_pf=\sum_j\binom pj\,j!\,c_jt^j$.
+
 **Corollary (big-block rows).** Define the two-weight Bell rows by
 $$
 F_0=1,\qquad
@@ -97,6 +100,7 @@ limit.
 
 ## References
 
+- [@SchurPolya1914]
 - [Multiplier sequences](sf:multiplierSequences) on symmetricfunctions.com
 - [Finite multiplier sequences](sf:finiteMultiplierSequenceCriterion) on symmetricfunctions.com
 <!-- /realrooted-catalog-content -->
