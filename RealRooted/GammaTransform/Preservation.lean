@@ -2,6 +2,7 @@ module
 
 import RealRooted.GammaTransform.RootMap
 public import RealRooted.GammaTransform.Basic
+public import RealRooted.PFPolynomial
 import RealRooted.WagnerX.NonnegativeRoots
 import RealRooted.Linear
 import RealRooted.Basic.PolynomialFacts
@@ -120,6 +121,44 @@ theorem hasRootsNonpos_gammaTransform_of_hasNonnegCoeffs
     {d : ℕ} {γ : ℝ[X]} (hγnn : HasNonnegCoeffs γ) :
     HasRootsNonpos (gammaTransform d γ) := fun r hr =>
   roots_nonpos_of_hasNonnegCoeffs (hasNonnegCoeffs_gammaTransform hγnn) r hr
+
+/-- A PF polynomial with positive constant coefficient has a simple gamma transform
+exactly when its roots are simple and the ambient degree slack is at most one. -/
+theorem nodup_roots_gammaTransform_iff
+    {d : ℕ} {γ : ℝ[X]} (hγ : IsPFPolynomial γ) (hγ0 : 0 < γ.coeff 0)
+    (hγdeg : γ.natDegree ≤ d / 2) :
+    (gammaTransform d γ).roots.Nodup ↔
+      γ.roots.Nodup ∧ d - 2 * γ.natDegree ≤ 1 := by
+  classical
+  have hγne : γ ≠ 0 := by
+    intro hzero
+    simp [hzero] at hγ0
+  have hγneg := roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne
+    hγ.hasNonnegCoeffs (ne_of_gt hγ0)
+  have hTneg := roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne
+    (hasNonnegCoeffs_gammaTransform hγ.hasNonnegCoeffs)
+    (show (gammaTransform d γ).coeff 0 ≠ 0 by simpa using ne_of_gt hγ0)
+  simp_rw [Multiset.nodup_iff_count_le_one, Polynomial.count_roots]
+  constructor
+  · intro hT
+    refine ⟨?_, ?_⟩
+    · intro y
+      by_cases hy : y ∈ γ.roots
+      · obtain ⟨x, hx, hxy⟩ := exists_mem_Ioo_gammaRootMap_eq (hγneg y hy)
+        rw [← hxy, ← rootMultiplicity_gammaTransform_of_mem_Ioo hγdeg hγne hx]
+        exact hT x
+      · simpa only [← Polynomial.count_roots, Multiset.count_eq_zero_of_notMem hy]
+          using (Nat.zero_le 1)
+    · simpa only [rootMultiplicity_neg_one_gammaTransform hγdeg hγne] using hT (-1)
+  · rintro ⟨hγsimple, hslack⟩ x
+    by_cases hx : x ∈ (gammaTransform d γ).roots
+    · by_cases hx1 : x = -1
+      · subst x
+        simpa only [rootMultiplicity_neg_one_gammaTransform hγdeg hγne] using hslack
+      · rw [rootMultiplicity_gammaTransform_of_neg hγdeg hγne (hTneg x hx) hx1]
+        exact hγsimple (gammaRootMap x)
+    · simpa only [← Polynomial.count_roots, Multiset.count_eq_zero_of_notMem hx]
+        using (Nat.zero_le 1)
 
 /-- If the minimal gamma transform is nonzero, split, and has only nonpositive
 roots, then its gamma polynomial has the same properties. -/

@@ -533,4 +533,18 @@ theorem narayanaPolynomial_pure_rec (m n : ℕ) :
     push_cast
     ring
 
+/-- The first-order lowering identity for generalized Narayana polynomials. -/
+theorem narayanaPolynomial_lowering (m n : ℕ) :
+    C ((n : ℝ) + 1) * narayanaPolynomial m (n + 1) -
+        2 * X * (narayanaPolynomial m (n + 1)).derivative =
+      C ((n : ℝ) + 1) * (1 - X) * narayanaPolynomial m n := by
+  have hpure := narayanaPolynomial_pure_rec m n
+  have hderiv := narayanaPolynomial_deriv_lag_rec m n
+  simp only [map_add, map_mul, map_ofNat, map_one] at hpure hderiv ⊢
+  apply mul_left_cancel₀ (show (1 - X : ℝ[X]) ≠ 0 by
+    intro h
+    have := congrArg (fun p : ℝ[X] => p.coeff 0) h
+    simp at this)
+  linear_combination hderiv - hpure
+
 end RealRooted
