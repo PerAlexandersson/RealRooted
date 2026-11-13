@@ -2158,6 +2158,8 @@ public import RealRooted.EulerBidiagonal.Basic
 public import RealRooted.EulerBidiagonal.VaryingRows
 public import RealRooted.Mathlib.Algebra.Polynomial.Veronese
 public import RealRooted.Mathlib.Algebra.LinearRecurrence.Veronese
+public import RealRooted.Challenges.Preservers.FallingFactorial
+public import RealRooted.MultiplierSequence.FallingFactorial
 
 /-!
 # RealRooted production umbrella
