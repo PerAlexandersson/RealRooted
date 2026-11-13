@@ -63,6 +63,7 @@ label = "Colored set-partition polynomials"
 
 [[theorems]]
 objects = ["Touchard polynomials"]
+property = "interlacing"
 name = "RealRooted.interlaces_touchard_succ"
 module = "RealRooted.CombinatorialExamples.Touchard"
 label = "Consecutive Touchard polynomials interlace"
@@ -76,12 +77,14 @@ label = "Touchard coefficients are Stirling numbers of the second kind"
 
 [[theorems]]
 objects = ["Stirling-permutation descent polynomials"]
+property = "interlacing"
 name = "RealRooted.interlaces_stirlingPermutations_succ"
 module = "RealRooted.CombinatorialExamples.StirlingPermutations"
 label = "Consecutive Stirling-permutation descent polynomials interlace"
 
 [[theorems]]
 objects = ["Derangement polynomials"]
+property = "interlacing"
 name = "RealRooted.interlaces_sturmDerangementsExc_succ"
 module = "RealRooted.CombinatorialExamples.SturmDerangementsExc"
 label = "Consecutive derangement polynomials interlace"
@@ -89,18 +92,21 @@ symcat = "derangementPolynomial"
 
 [[theorems]]
 objects = ["Simsun polynomials"]
+property = "interlacing"
 name = "RealRooted.strictInterl_simsun_succ"
 module = "RealRooted.CombinatorialExamples.Simsun"
 label = "Consecutive simsun polynomials interlace"
 
 [[theorems]]
 objects = ["Singleton-free set-partition polynomials"]
+property = "interlacing"
 name = "RealRooted.strictInterl_singletonFreeSetPartitions_succ"
 module = "RealRooted.CombinatorialExamples.SingletonFreeSetPartitions"
 label = "Consecutive singleton-free set-partition polynomials interlace"
 
 [[theorems]]
 objects = ["Colored set-partition polynomials"]
+property = "interlacing"
 name = "RealRooted.interlaces_coloredSetPartitions_succ"
 module = "RealRooted.CombinatorialExamples.ColoredSetPartitions"
 label = "Consecutive colored set-partition polynomials interlace"
@@ -117,6 +123,8 @@ module = "RealRooted.CombinatorialExamples.Motzkin"
 label = "Motzkin polynomials are real-rooted"
 
 [[theorems]]
+objects = ["Motzkin polynomials"]
+property = "interlacing"
 name = "RealRooted.strictInterl_motzkin_succ"
 module = "RealRooted.CombinatorialExamples.Motzkin"
 label = "Consecutive Motzkin polynomials interlace"

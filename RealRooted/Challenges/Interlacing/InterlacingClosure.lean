@@ -161,9 +161,7 @@ endpoint relations.
 
 [@Fisk2006x], [@Branden2015, Lemma 7.8.4] and [@BrandenLeite2024x, Lemma 3.1]. See also the
 [interlacing sequences on symmetricfunctions.com](sf:interlacingSequenceDefinition).
-For the shelling criterion, see M. Hlavacek and L. Solus, “Subdivisions of
-shellable complexes,” *J. Combin. Theory Ser. A* (2021), Theorem 3.1,
-[arXiv:2003.07328](https://arxiv.org/abs/2003.07328).
+For the shelling criterion, see [@HlavacekSolus2022, Theorem 3.1].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in `RealRooted.AffineFamily`,

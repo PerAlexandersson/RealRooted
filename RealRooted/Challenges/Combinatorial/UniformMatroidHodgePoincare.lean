@@ -37,6 +37,7 @@ module = "RealRooted.SymmetricDecomposition.EulerianTransform"
 label = "Eulerian transformation 1 ↦ 1, x^n ↦ x A_n(x)"
 
 [[theorems]]
+objects = ["Refined Hodge–Poincaré polynomials of uniform matroids"]
 name = "RealRooted.BinderVecchi.isRealRooted_refinedHodgePoincare"
 module = "RealRooted.Applications.BinderVecchi.UniformMatroid"
 label = "Binder–Vecchi: refined Hodge–Poincaré polynomials of U_{r,n} are real-rooted"
@@ -48,11 +49,13 @@ module = "RealRooted.Applications.BinderVecchi.UniformMatroid"
 label = "Binder–Vecchi: the modified augmented family is real-rooted"
 
 [[theorems]]
+objects = ["Chow polynomials of uniform matroids"]
 name = "RealRooted.UniformChow.isRealRooted_chowUniform"
 module = "RealRooted.Applications.BinderVecchi.UniformChow"
 label = "The Chow polynomial of U_{r,n} is real-rooted (the case i = 0)"
 
 [[theorems]]
+objects = ["Augmented Chow polynomials of uniform matroids"]
 name = "RealRooted.UniformChow.isRealRooted_augChowUniform"
 module = "RealRooted.Applications.BinderVecchi.UniformChow"
 label = "The augmented Chow polynomial of U_{r,n} is real-rooted"

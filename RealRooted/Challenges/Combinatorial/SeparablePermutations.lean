@@ -54,6 +54,8 @@ module = "RealRooted.SeparablePermutations.Interlacing"
 label = "Consecutive descent polynomials S_n, S_{n+1} interlace without common root"
 
 [[theorems]]
+objects = ["Gamma polynomials of separable permutations"]
+property = "interlacing"
 name = "RealRooted.SeparablePermutations.strictInterl_gammaPolynomial"
 module = "RealRooted.SeparablePermutations.Interlacing"
 label = "Consecutive gamma-polynomials Γ_n, Γ_{n+1} interlace without common root"
@@ -79,6 +81,8 @@ module = "RealRooted.SeparablePermutations.Gamma"
 label = "S_n has degree n − 1 for n ≥ 1"
 
 [[theorems]]
+objects = ["Descent polynomials of separable permutations"]
+property = "interlacing"
 name = "RealRooted.SeparablePermutations.strictInterl_descentEnumerator"
 module = "RealRooted.SeparablePermutations.Identification"
 label = "Zhang: descent polynomials of separable permutations interlace"

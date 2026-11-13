@@ -66,11 +66,14 @@ label = "Auxiliary polynomials Gₙ"
 
 [[theorems]]
 objects = ["Modified Narayana polynomials"]
+property = "pf"
 name = "RealRooted.GeneralizedSnakePosets.modifiedNarayanaPolynomial_isPFPolynomial"
 module = "RealRooted.GeneralizedSnakePosets.Narayana.PFFacts"
 label = "Modified Narayana polynomials are Pólya-frequency"
 
 [[theorems]]
+objects = ["Modified Narayana polynomials"]
+property = "interlacing"
 name = "RealRooted.GeneralizedSnakePosets.modifiedNarayanaPolynomial_strictInterl_succ"
 module = "RealRooted.GeneralizedSnakePosets.Narayana.Modified"
 label = "Consecutive modified Narayana polynomials interlace"
@@ -107,6 +110,7 @@ label = "Recurrence for the snake polynomials"
 
 [[theorems]]
 objects = ["Rook polynomials of generalized snake posets"]
+property = "interlacing"
 name = "RealRooted.GeneralizedSnakePosets.rookPolynomial_splits_and_interlaces"
 module = "RealRooted.GeneralizedSnakePosets.SnakeRecurrence"
 label = "Snake polynomials are real-rooted and interlace"

@@ -57,6 +57,8 @@ module = "RealRooted.BrandenLC.Infinite"
 label = "Pólya frequency polynomials are infinitely log-concave"
 
 [[theorems]]
+objects = ["Boros–Moll polynomials"]
+property = "log-concave"
 name = "RealRooted.BorosMoll.borosMollRow_isInfinitelyLogConcave"
 module = "RealRooted.CombinatorialExamples.BorosMoll.Infinite"
 label = "For n ≥ 1, the Boros–Moll row d(n) is infinitely log-concave"

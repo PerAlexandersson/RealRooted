@@ -34,6 +34,7 @@ label = "For n ≥ 3, M_{n-2} interlaces A_n; both have simple roots and no comm
 headline = true
 
 [[theorems]]
+objects = ["Big-descent polynomials of 321-avoiding permutations"]
 name = "RealRooted.BigDescents321.bigDescentPoly_splits"
 module = "RealRooted.CombinatorialExamples.BigDescents321"
 label = "A_n is real-rooted for every n"

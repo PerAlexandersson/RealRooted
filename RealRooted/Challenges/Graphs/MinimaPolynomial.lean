@@ -53,6 +53,7 @@ module = "RealRooted.Graph.MinimaForest"
 label = "Forests: the minima polynomial is the acyclic sink polynomial of the line graph"
 
 [[theorems]]
+objects = ["Acyclic sink polynomials of line graphs of forests"]
 name = "RealRooted.Graph.ordinaryAcyclicSinkPolynomial_lineGraph_splits"
 module = "RealRooted.Graph.MinimaForest"
 label = "Line graphs of forests have real-rooted acyclic sink polynomials"

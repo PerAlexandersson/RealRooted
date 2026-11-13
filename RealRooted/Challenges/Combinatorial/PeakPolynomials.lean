@@ -60,6 +60,7 @@ module = "RealRooted.Applications.PeakPolynomials.PeakInduction"
 label = "Families reachable from the base family"
 
 [[theorems]]
+objects = ["Peak polynomials of Ferrers boards"]
 name = "RealRooted.Applications.PeakPolynomials.PeakFamily.IsReachable.isRealRooted_P"
 module = "RealRooted.Applications.PeakPolynomials.PeakInduction"
 label = "The total peak polynomial of a reachable family is real-rooted"

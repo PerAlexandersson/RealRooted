@@ -31,6 +31,7 @@ label = "Critical-value criterion for f - s to be real-rooted"
 headline = true
 
 [[theorems]]
+objects = ["Chebyshev polynomials"]
 name = "RealRooted.Chebyshev.T_sub_C_splits"
 module = "RealRooted.Chebyshev.Levels"
 label = "T_n - h is real-rooted for |h| ≤ 1"

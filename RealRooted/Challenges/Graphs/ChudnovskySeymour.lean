@@ -31,11 +31,13 @@ module = "RealRooted.Graph.IndependencePolynomial.Basic"
 label = "Independence polynomial"
 
 [[theorems]]
+objects = ["Independence polynomials of claw-free graphs"]
 name = "RealRooted.Graph.clawFree_indepPoly_splits"
 module = "RealRooted.Graph.IndependencePolynomial.ClawFree"
 label = "Chudnovsky–Seymour: claw-free graphs have real-rooted independence polynomials"
 
 [[theorems]]
+objects = ["Weighted independence polynomials of claw-free graphs"]
 name = "RealRooted.Graph.clawFree_weightedIndepPoly_splits"
 module = "RealRooted.Graph.IndependencePolynomial.ClawFree"
 label = "Weighted independence polynomials of claw-free graphs are real-rooted"

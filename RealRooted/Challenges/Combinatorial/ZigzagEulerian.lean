@@ -227,11 +227,8 @@ roots in $(-1,1)$. The map $z\mapsto(z-1)/(z+1)$ sends $(-1,1)$ to the negative 
 
 ## References
 
-- T. K. Petersen and Y. Zhuang, *Zig-zag Eulerian polynomials*,
-  [arXiv:2403.07181](https://arxiv.org/abs/2403.07181), Conjecture 6.1(a).
+- [@PetersenZhuang2024x, Conjecture 6.1(a)].
 - [@Alexandersson2026Eulerian, App. A–B].
-- J. I. Coons and S. Sullivant, *The h*-Polynomial of the Order Polytope of the Zig-Zag Poset*,
-  Electronic Journal of Combinatorics 30(2) (2023), P2.44,
-  [doi:10.37236/11526](https://doi.org/10.37236/11526).
+- [@CoonsSullivant2023].
 <!-- /realrooted-catalog-content -->
 -/

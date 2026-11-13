@@ -62,11 +62,14 @@ module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
 label = "Chow derangement polynomials have nonnegative coefficients"
 
 [[theorems]]
+objects = ["Chow derangement polynomials of totally nonnegative matrices"]
 name = "RealRooted.BrandenVecchi.chowDerangement_eq_zero_or_splits_of_isTotallyNonneg"
 module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
 label = "Each Chow derangement polynomial is zero or real-rooted"
 
 [[theorems]]
+objects = ["Chow polynomials of totally nonnegative matrices"]
+property = "interlacing"
 name = "RealRooted.BrandenVecchi.chowPolynomial_interl_succ_of_isTotallyNonneg"
 module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
 label = "Consecutive Chow polynomials interlace"

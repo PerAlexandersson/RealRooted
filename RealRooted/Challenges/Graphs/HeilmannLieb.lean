@@ -58,11 +58,14 @@ module = "RealRooted.RankTwoMatching.Basic"
 label = "Rank-two edge weights a_i b_j + a_j b_i on a complete graph"
 
 [[theorems]]
+objects = ["Matching polynomials"]
 name = "RealRooted.Graph.matchingPolynomialByEdges_splits"
 module = "RealRooted.HeilmannLieb"
 label = "Heilmann–Lieb: the matching polynomial is real-rooted"
 
 [[theorems]]
+objects = ["Matching polynomials"]
+property = "interlacing"
 name = "RealRooted.interlaces_matchingPolyOn_erase"
 module = "RealRooted.Graph.MatchingVertexInterlacing"
 label = "Deleting a vertex interlaces the matching polynomial"
@@ -90,6 +93,8 @@ label = "Weighted matching polynomials are real-rooted"
 headline = true
 
 [[theorems]]
+objects = ["Weighted matching polynomials"]
+property = "pf"
 name = "RealRooted.Graph.weightedMatchingPolynomialByEdges_isPFPolynomial"
 module = "RealRooted.HeilmannLieb"
 label = "Weighted matching polynomials are PF polynomials"

@@ -40,6 +40,8 @@ module = "RealRooted.NarayanaTransformation.ContinuousNarayanaGamma"
 label = "The γ-polynomials have simple roots"
 
 [[theorems]]
+objects = ["Gamma polynomials of the continuous Narayana interpolation"]
+property = "interlacing"
 name = "RealRooted.strictInterl_continuousNarayanaGamma_succ"
 module = "RealRooted.NarayanaTransformation.ContinuousNarayanaGamma"
 label = "Consecutive γ-polynomials interlace"
@@ -56,6 +58,8 @@ module = "RealRooted.NarayanaTransformation.ContinuousNarayanaGamma"
 label = "A three-term recurrence for the γ-polynomials"
 
 [[theorems]]
+objects = ["Continuous Narayana interpolation polynomials"]
+property = "interlacing"
 name = "RealRooted.strictInterl_narayanaInterpolation_succ"
 module = "RealRooted.NarayanaTransformation.ContinuousNarayanaGamma"
 label = "Consecutive continuous Narayana interpolations interlace"

@@ -115,10 +115,9 @@ recurrence, so $W_n$ is not real-rooted for all large $n$.
 
 ## References
 
-- A. D. Sokal, *Chromatic roots are dense in the whole complex plane*, Combinatorics,
-  Probability and Computing 13 (2004), Theorems 1.5(b), 1.5(a) and 1.5, for the first three
-  theorems. They generalize the Beraha–Kahane–Weiss theorem.
-- Wang and Zhang, arXiv:1712.06105, Theorem 2.1, for affine three-term recurrences.
+- [@Sokal2004ChromaticRoots, Theorems 1.5(b), 1.5(a) and 1.5], for the first three theorems.
+  They generalize the Beraha–Kahane–Weiss theorem.
+- [@WangZhang2017RootGeometryIII, Theorem 2.1], for affine three-term recurrences.
 <!-- /realrooted-catalog-content -->
 
 The general theorems live in `RealRooted.Mathlib.Analysis.Complex.Hurwitz`, the order-two

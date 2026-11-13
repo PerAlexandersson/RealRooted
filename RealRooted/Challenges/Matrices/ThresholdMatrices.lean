@@ -43,6 +43,7 @@ module = "RealRooted.ThresholdMatrix.HaglundZhang"
 label = "Haglund–Zhang threshold matrices preserve interlacing sequences"
 
 [[theorems]]
+objects = ["Binomial Eulerian polynomials"]
 name = "RealRooted.HaglundZhang.binomialEulerianPolynomial_splits"
 module = "RealRooted.ThresholdMatrix.HaglundZhang"
 label = "Haglund–Zhang: binomial Eulerian polynomials are real-rooted"

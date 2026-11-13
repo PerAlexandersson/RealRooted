@@ -39,6 +39,7 @@ headline = true
 
 [[theorems]]
 objects = ["Jacobi–Stirling first-kind row polynomials"]
+property = "pf"
 name = "RealRooted.JacobiStirling.firstKindRow_isPFPolynomial"
 module = "RealRooted.CombinatorialExamples.JacobiStirling.FirstKindPF"
 label = "First-kind rows are Pólya-frequency polynomials for z ≥ −1"

@@ -60,6 +60,8 @@ module = "RealRooted.Permanent.MonotoneColumn"
 label = "Ferrers permanents are real stable"
 
 [[theorems]]
+objects = ["Monotone column permanents"]
+property = "real-stable"
 name = "RealRooted.Permanent.columnPermanent_mvRealStable_of_decreasingColumns"
 module = "RealRooted.Permanent.MonotoneColumn"
 label = "Decreasing-column permanent is real stable"
@@ -76,6 +78,7 @@ module = "RealRooted.Permanent.MonotoneColumn"
 label = "Decreasing-column univariate permanent is real-rooted"
 
 [[theorems]]
+objects = ["Monotone column permanents"]
 name = "RealRooted.Permanent.diagonalPermanent_ne_zero_and_splits_of_increasingColumns"
 module = "RealRooted.Permanent.MonotoneColumn"
 label = "Monotone column permanent theorem"

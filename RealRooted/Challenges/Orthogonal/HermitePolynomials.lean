@@ -39,6 +39,8 @@ module = "RealRooted.Hermite.Roots"
 label = "Hermite polynomials have simple roots"
 
 [[theorems]]
+objects = ["Hermite polynomials"]
+property = "interlacing"
 name = "RealRooted.hermiteReal_strictInterl_succ"
 module = "RealRooted.Hermite.Roots"
 label = "Consecutive Hermite polynomials interlace"
@@ -55,6 +57,8 @@ module = "RealRooted.Hermite.Favard"
 label = "Hermite polynomials satisfy a Favard recurrence"
 
 [[theorems]]
+objects = ["Hermite polynomials"]
+property = "orthogonal"
 name = "RealRooted.hermiteReal_integral_orthogonal"
 module = "RealRooted.Hermite.Orthogonality.Integral"
 label = "Hermite polynomials are orthogonal for the Gaussian weight"

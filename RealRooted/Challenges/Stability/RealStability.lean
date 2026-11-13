@@ -134,6 +134,8 @@ module = "RealRooted.DeterminantalStability"
 label = "Real determinantal pencils are real stable"
 
 [[theorems]]
+objects = ["Spanning-tree polynomials"]
+property = "real-stable"
 name = "RealRooted.mvRealStable_spanningTreePoly"
 module = "RealRooted.SpanningTreeStability"
 label = "Choe–Oxley–Sokal–Wagner: spanning-tree polynomials are real stable"
@@ -199,6 +201,7 @@ module = "RealRooted.MultivariateStability.Lorentzian"
 label = "Brändén–Huh: nonnegative homogeneous real stable polynomials are Lorentzian"
 
 [[theorems]]
+objects = ["Mixed characteristic polynomials"]
 name = "RealRooted.MixedCharacteristic.isRealRooted_mixedCharacteristic"
 module = "RealRooted.MultivariateStability.MixedCharacteristic"
 label = "Marcus–Spielman–Srivastava: mixed characteristic polynomials are real-rooted"
