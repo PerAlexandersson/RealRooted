@@ -1,18 +1,57 @@
 module
 
+import RealRooted.DerivativeProduct.DiamondIntervals
+import RealRooted.RootLocation.DerivativeSigns
+import RealRooted.RootLocation.Pairing
+import RealRooted.Transforms.BrandenE.RootDomain
 import RealRooted.Transforms.StirlingRootRegions
+import RealRooted.Transforms.TouchardRootDomain
 
 /-!
-# The Touchard transform, PF products and grouped cubic regions
+# Touchard transform
 
 <!-- realrooted-catalog
 version = 1
 section = "theorems"
 slug = "touchard-transform"
-formalized = "2026-10-28"
-authors = []
-references = []
+formalized = "2026-11-09"
+authors = ["Brändén"]
+years = [2006]
+references = [
+  "Branden2006",
+]
 tags = ["realrooted-original"]
+
+[[theorems]]
+name = "RealRooted.forall_splits_basisTransform_touchard_iff"
+module = "RealRooted.Transforms.TouchardRootDomain"
+label = "The Touchard transform of every polynomial rooted in J is real-rooted iff J ⊆ (−∞, 1/4]"
+headline = true
+
+[[theorems]]
+name = "RealRooted.forall_isRealRootedIn_Iic_basisTransform_touchard_iff"
+module = "RealRooted.Transforms.TouchardRootDomain"
+label = "The upper ray (−∞, c] is invariant under the Touchard transform iff 0 ≤ c ≤ 1/4"
+
+[[theorems]]
+name = "RealRooted.forall_splits_brandenE_iff"
+module = "RealRooted.Transforms.BrandenE.RootDomain"
+label = "The E transform of every polynomial rooted in J is real-rooted iff J ⊆ [L, U]"
+
+[[theorems]]
+name = "RealRooted.forall_isRealRootedIn_Icc_brandenE_iff"
+module = "RealRooted.Transforms.BrandenE.RootDomain"
+label = "The interval [A, B] is invariant under the E transform iff L ≤ A ≤ −1 and 0 ≤ B ≤ U"
+
+[[theorems]]
+name = "RealRooted.isRealRootedIn_Iic_quarter_of_touchard_recurrence"
+module = "RealRooted.Transforms.TouchardRootDomain"
+label = "Rows of the recurrence P_{n+1} = (x + a) P_n + x P_n′ with a ≥ −1/4 have roots ≤ 1/4"
+
+[[theorems]]
+name = "RealRooted.isRealRootedIn_Icc_of_brandenE_recurrence"
+module = "RealRooted.Transforms.BrandenE.RootDomain"
+label = "Rows of the Euler type recurrence with (1 − √2)/2 ≤ a ≤ (1 + √2)/2 are rooted in [L, U]"
 
 [[theorems]]
 name = "RealRooted.Poisson.fallingFactorialTransform_touchard"
@@ -48,7 +87,6 @@ label = "A monic cubic is PF exactly when its coefficients and discriminant are 
 name = "RealRooted.isPFPolynomial_touchard_linear_mul_quadratic_iff"
 module = "RealRooted.Transforms.StirlingRootRegions"
 label = "Exact coefficient and discriminant criterion for the grouped cubic (X + a)((X + b)² + w)"
-headline = true
 
 [[theorems]]
 name = "RealRooted.isPFPolynomial_touchard_half_shifted_cubic_iff"
@@ -59,61 +97,140 @@ label = "Sharp region b ≥ -1/2 and w ≤ 3b + 9/4 for the half-shifted grouped
 name = "RealRooted.not_splits_basisTransform_touchard_y_sq_add_half"
 module = "RealRooted.Transforms.StirlingRootRegions"
 label = "The Touchard transform of X² + 1/2 is not real-rooted"
+
+[[theorems]]
+name = "RealRooted.betaProduct_one_isRealRootedIn_Icc"
+module = "RealRooted.DerivativeProduct.DiamondIntervals"
+label = "The diamond product of a [−1, 0]-rooted and a [A, B]-rooted polynomial is [A, B]-rooted"
+
+[[theorems]]
+name = "RealRooted.IsRealRootedIn.basisTransform_touchard"
+module = "RealRooted.Transforms.TouchardRootDomain"
+label = "The Touchard transform of a polynomial rooted in (−∞, 1/4] is real-rooted"
+
+[[theorems]]
+name = "RealRooted.IsRealRootedIn.basisTransform_touchard_Iic"
+module = "RealRooted.Transforms.TouchardRootDomain"
+label = "The Touchard transform preserves root location in (−∞, c] for 0 ≤ c ≤ 1/4"
+
+[[theorems]]
+name = "RealRooted.exists_eq_C_mul_mul_of_isRealRootedIn_Iic_quarter"
+module = "RealRooted.Transforms.TouchardRootDomain"
+label = "Pairing of positive roots: all but at most one factor has a PF Touchard image"
+
+[[theorems]]
+name = "RealRooted.not_splits_basisTransform_touchard_X_sub_C_sq"
+module = "RealRooted.Transforms.TouchardRootDomain"
+label = "The Touchard transform of (X − r)² is not real-rooted for r > 1/4"
+
+[[theorems]]
+name = "RealRooted.IsRealRootedIn.brandenE_Icc"
+module = "RealRooted.Transforms.BrandenE.RootDomain"
+label = "The E transform preserves root location in [A, B] for L ≤ A ≤ −1 and 0 ≤ B ≤ U"
+
+[[theorems]]
+name = "RealRooted.exists_eq_C_mul_mul_of_isRealRootedIn_Icc"
+module = "RealRooted.Transforms.BrandenE.RootDomain"
+label = "Pairing of roots: all but at most one positive and one negative factor are admissible"
+
+[[theorems]]
+name = "RealRooted.splits_brandenE_X_sub_C_sq_iff"
+module = "RealRooted.Transforms.BrandenE.RootDomain"
+label = "The E transform of (X − r)² is real-rooted iff r ∈ [L, U]"
+
+[[theorems]]
+name = "RealRooted.exists_rootPolynomial_eq_mul_of_pairs"
+module = "RealRooted.RootLocation.Pairing"
+label = "Pairing the linear factors of a root polynomial inside a multiplicative class"
+
+[[theorems]]
+name = "RealRooted.IsRealRootedIn.leadingCoeff_mul_eval_iterate_derivative_nonneg"
+module = "RealRooted.RootLocation.DerivativeSigns"
+label = "Derivatives to the right of all roots have the sign of the leading coefficient"
 -->
 
 <!-- realrooted-catalog-content -->
-# The Touchard transform, PF products and grouped cubic regions
+# Touchard transform
 
-The Touchard transform turns products into Poisson star products, which preserves PF
-polynomials, and the transform of $(x+a)\bigl((x+b)^2+w\bigr)$ is PF exactly on an explicit
-region.
+The Touchard transform $t^n\mapsto\sum_kS(n,k)x^k$ sends every polynomial with roots in a set $J$
+to a real-rooted polynomial exactly when $J\subseteq(-\infty,1/4]$. Brändén's ordered Bell
+transform does so exactly when $J\subseteq[L,U]$, with $L=-\frac{1+\sqrt2}2$ and
+$U=\frac{\sqrt2-1}2$. Neither transform preserves real-rootedness in general.
 
 ## Results
 
-Let $T_n$ be the Touchard polynomials, $T_0=1$ and $T_{n+1}=xT_n+xT_n'$, so that
-$T_n(x)=\sum_kS(n,k)x^k$ with the Stirling numbers $S(n,k)$ of the second kind. The *Touchard
-transform* is the linear map $S$ with $S(x^n)=T_n$. It is inverse to the step-one falling
-factorial transform $x^n\mapsto x(x-1)\cdots(x-n+1)$. A polynomial is *PF* if it has
-nonnegative coefficients and is zero or has only real, nonpositive roots.
+The *Touchard transform* $\mathcal T$ is the linear map with
+$\mathcal T(t^n)=T_n(x)=\sum_kS(n,k)x^k$, where $S(n,k)$ are the Stirling numbers of the second
+kind; equivalently $\mathcal T(t^{\underline n})=x^n$, with $t^{\underline n}=t(t-1)\cdots(t-n+1)$.
+It turns multiplication into the Poisson product:
+$$
+\mathcal T(pq)=\mathcal T(p)\star\mathcal T(q),\qquad
+(F\star G)(x)=\sum_{k\ge0}\frac{x^k}{k!}F^{(k)}(x)G^{(k)}(x).
+$$
+Brändén's *ordered Bell transform* $E$, with $E\binom tn=x^n$, turns multiplication into the
+diamond product $(F\diamond G)(x)=\sum_{k\ge0}\frac{[x(x+1)]^k}{(k!)^2}F^{(k)}(x)G^{(k)}(x)$.
+A polynomial is *rooted in* a set $S$ if it is nonzero, real-rooted and has all its roots in
+$S$; nonzero constants are rooted in every set.
 
-**Theorem (products).** For all polynomials $p,q$,
-$$
-S(pq)=S(p)\star_1S(q),
-$$
-where $\star_1$ is the Poisson star product with parameter one. If each $S(f_i)$, $i\in I$,
-is a PF polynomial for a finite family $(f_i)$, then $S\bigl(\prod_if_i\bigr)$ is PF. The
-product is preserved by the PF-preserving property of the Poisson star product; see the
-[univariate Poisson star product](rr:univariate-poisson-star-c) page.
+**Theorem (root domains).** Let $J\subseteq\mathbb R$.
 
-**Theorem (falling factorial prefix).** For $m\in\mathbb N$ and a polynomial $p$,
-$$
-S\bigl(x^{\underline m}\,p\bigr)=x^m\,S\bigl(p(x+m)\bigr).
-$$
-Hence, if $c\ge0$ and each $S\bigl(f_i(x+m)\bigr)$ is PF, then
-$S\bigl(x^{\underline m}\cdot c\prod_if_i\bigr)$ is PF.
+1. $\mathcal T$ sends every polynomial rooted in $J$ to a real-rooted polynomial if and only if
+   $J\subseteq(-\infty,1/4]$.
+2. $E$ sends every polynomial rooted in $J$ to a real-rooted polynomial if and only if
+   $J\subseteq[L,U]$.
+3. For $c\in\mathbb R$, $\mathcal T$ maps the polynomials rooted in $(-\infty,c]$ to themselves
+   if and only if $0\le c\le1/4$.
+4. For $A\le B$, $E$ maps the polynomials rooted in $[A,B]$ to themselves if and only if
+   $L\le A\le-1$ and $0\le B\le U$.
 
-**Theorem (cubic criterion).** A monic cubic $x^3+Ax^2+Bx+C_0$ is PF if and only if
-$A,B,C_0\ge0$ and its discriminant $A^2B^2-4B^3-4A^3C_0-27C_0^2+18ABC_0$ is nonnegative.
+**Corollary (recurrences).** If $P_0=1$ and $P_{n+1}=(x+a_{n+1})P_n+xP_n'$ with all
+$a_i\ge-1/4$, then every $P_n$ is rooted in $(-\infty,1/4]$. If $Q_0=1$ and
+$Q_{n+1}=(x+a_{n+1})Q_n+x(x+1)Q_n'$ with all $\frac{1-\sqrt2}2\le a_i\le\frac{1+\sqrt2}2$, then
+every $Q_n$ is rooted in $[L,U]$.
 
-**Theorem (grouped cubic).** For real $a,b,w$,
+**Theorem (grouped cubics).** A polynomial is *PF* if it has nonnegative coefficients and is zero
+or has only real nonpositive roots. A monic cubic $x^3+\alpha x^2+\beta x+\gamma$ is PF if and
+only if $\alpha,\beta,\gamma\ge0$ and its discriminant is nonnegative. For real $a,b,w$,
 $$
-S\bigl((x+a)((x+b)^2+w)\bigr)=x^3+(3+a+2b)x^2+(1+a+2b+b^2+w+2ab)x+a(b^2+w),
+\mathcal T\bigl((t+a)((t+b)^2+w)\bigr)=x^3+(3+a+2b)x^2+(1+a+2b+2ab+b^2+w)x+a(b^2+w),
 $$
-and this is PF if and only if its coefficients $A,B,C_0$ satisfy the cubic criterion. For
-$w\ge0$ and $a=b+\tfrac12$,
+and for $w\ge0$,
 $$
-S\bigl((x+b+\tfrac12)((x+b)^2+w)\bigr)\text{ is PF}\iff b\ge-\tfrac12\text{ and }w\le3b+\tfrac94 .
+\mathcal T\bigl((t+b+\tfrac12)((t+b)^2+w)\bigr)\text{ is PF}\iff
+b\ge-\tfrac12\text{ and }w\le3b+\tfrac94 .
 $$
-For example, $S\bigl((x+\tfrac12)(x^2+\tfrac12)\bigr)$ is PF, while $S(x^2+\tfrac12)$ is not
-real-rooted.
+
+For instance $\mathcal T\bigl((t+\tfrac12)(t^2+\tfrac12)\bigr)$ is PF, while
+$\mathcal T(t^2+\tfrac12)$ is not real-rooted. The declarations below also give the inverse
+relation with the falling factorial transform, the rule
+$\mathcal T(t^{\underline m}p(t))=x^m\,\mathcal T(p(t+m))$, and closure of PF images under
+products.
+
+## Use
+
+The Touchard polynomials themselves form a
+[Sturm sequence](rr:sturm-sequence-families). The ordered Bell transform has its own
+[page](rr:branden-e-transform), and fixed-factor Poisson multiplication is classified on the
+[Poisson star product](rr:univariate-poisson-star-c) page.
+
+## Proof
+
+Poisson multiplication by a PF polynomial, and diamond multiplication by a polynomial rooted in
+$[-1,0]$, preserve real-rootedness [@Branden2006, Theorems 3.11 and 3.13]. Since
+$\mathcal T\bigl((t-r)(t-s)\bigr)=x^2+(1-r-s)x+rs$ and
+$E\bigl((t-r)(t-s)\bigr)=2x^2+(1-r-s)x+rs$, the image of $(t-r)^2$ is real-rooted exactly when
+$r\le1/4$, respectively $4r^2+4r\le1$; this gives necessity. For sufficiency, pair the roots of
+the input so that each pair has an admissible image; at most one root for $\mathcal T$, and at
+most one positive and one negative root for $E$, remain, and the product rule reduces the claim
+to one admissible multiplication. For the invariant sets, all summands of the product have the
+sign of the leading coefficient beyond $c$, respectively outside $[A,B]$.
 
 ## References
 
-The root criterion is in the spirit of Brenti, Royle and Wagner, *Location of zeros of
-chromatic and related polynomials of graphs* (1994), Theorem 4.7. For the Poisson product, see
-the [univariate Poisson star product](rr:univariate-poisson-star-c) page.
+- [@Branden2006, Theorems 3.11 and 3.13]
+- F. Brenti, G. F. Royle and D. G. Wagner, *Location of zeros of chromatic and related
+  polynomials of graphs*, 1994, Theorem 4.7, for a related cubic criterion.
+- Durán, *Generalized Bell polynomials*, arXiv:2409.11344, Problem 1 and Theorem 5, for the
+  recurrences with negative parameters.
 <!-- /realrooted-catalog-content -->
-
-This module is a catalog facade. The proofs live in
-`RealRooted.Transforms.StirlingRootRegions`.
 -/

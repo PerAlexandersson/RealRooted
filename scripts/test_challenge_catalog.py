@@ -79,6 +79,8 @@ class CatalogFixture(unittest.TestCase):
         challenge_dir.mkdir(parents=True)
         website = self.root / "website"
         shutil.copytree(REPO_ROOT / "website", website)
+        # The fixture has its own pages, so the live redirect targets do not exist here.
+        (website / "redirects.toml").write_text("[redirects]\n", encoding="utf-8")
 
     def tearDown(self) -> None:
         self.tempdir.cleanup()

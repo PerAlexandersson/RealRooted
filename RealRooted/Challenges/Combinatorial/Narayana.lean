@@ -164,7 +164,7 @@ $x^n\mapsto N_{n,m}(x)$ preserves Pólya-frequency polynomials.
 
 ## Results
 
-A real polynomial is *Pólya-frequency* (`IsPFPolynomial`) if its coefficients are nonnegative
+A real polynomial is *Pólya-frequency* (PF) if its coefficients are nonnegative
 and it is zero or real-rooted with all zeros $\le0$.  For $m,n\ge0$ the generalized Narayana
 polynomial is
 $$

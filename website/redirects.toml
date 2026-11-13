@@ -1,3 +1,23 @@
 # Retired section/slug paths map directly to a current catalog slug.
 # Example (when that page is retired): "theorems/old-name" = "current-slug"
 [redirects]
+# Pages removed from the catalog; the target is the closest remaining page.
+"theorems/coefficient-dominance" = "kurtz"
+"theorems/coupled-quadratic-recurrence" = "recurrence-root-windows"
+"theorems/derivative-lag-family" = "recurrence-root-windows"
+"theorems/finite-memory-defect-bridges" = "limits-of-zeros"
+"theorems/root-amplitude" = "kurtz"
+"theorems/shifted-chebyshev-families" = "favard"
+# Pages merged into another page.
+"theorems/borcea-branden" = "borcea-branden-classification"
+"theorems/eulerian-variations" = "eulerian-compendium"
+"theorems/even-derivative-preservers" = "finite-degree-differential-tests"
+"theorems/factorial-compression" = "separable-permutations"
+"theorems/parity-lift-tp2-kernels" = "tp2-hessenberg-certificate"
+"theorems/positive-affine-lag-recurrences" = "recurrence-root-windows"
+"theorems/product-power-maps" = "univariate-poisson-star-c"
+"theorems/product-sequences" = "recurrence-root-windows"
+"theorems/site-weighted-run-polynomials" = "tp2-hessenberg-certificate"
+"theorems/touchard-ordered-bell-root-domains" = "touchard-transform"
+"theorems/tp2-hessenberg-strictness" = "tp2-hessenberg-certificate"
+"theorems/variable-delay-recurrences" = "recurrence-root-windows"
