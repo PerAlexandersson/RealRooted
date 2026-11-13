@@ -41,6 +41,7 @@ module = "RealRooted.UnitIntervalGraph.AcyclicSink"
 label = "The sink polynomial as a shifted weighted independence polynomial"
 
 [[theorems]]
+objects = ["Acyclic sink polynomials of natural unit interval graphs"]
 name = "RealRooted.UnitIntervalGraph.acyclicSinkPolynomial_splits"
 module = "RealRooted.UnitIntervalGraph.AcyclicSink"
 label = "Acyclic sink polynomials of natural unit interval graphs are real-rooted"

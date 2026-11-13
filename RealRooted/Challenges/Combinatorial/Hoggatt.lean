@@ -46,6 +46,7 @@ module = "RealRooted.CombinatorialExamples.Hoggatt"
 label = "The derivative identity at m = 2"
 
 [[theorems]]
+objects = ["Hoggatt polynomials"]
 name = "RealRooted.Hoggatt.normalized_splits"
 module = "RealRooted.CombinatorialExamples.Hoggatt"
 label = "Every Hoggatt polynomial is real-rooted, for all m ≥ 1"
@@ -61,6 +62,7 @@ module = "RealRooted.CombinatorialExamples.Hoggatt"
 label = "The binomial-product polynomials have simple roots for m ≥ 2"
 
 [[theorems]]
+objects = ["Baxter descent polynomials"]
 name = "RealRooted.Hoggatt.baxter_interlaces"
 module = "RealRooted.CombinatorialExamples.Hoggatt"
 label = "Baxter polynomials are a strict Sturm sequence"

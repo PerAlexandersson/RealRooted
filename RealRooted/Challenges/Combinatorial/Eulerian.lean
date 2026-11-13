@@ -39,6 +39,7 @@ module = "RealRooted.GeneralizedEulerian"
 label = "Generalized Eulerian polynomials"
 
 [[theorems]]
+objects = ["Eulerian polynomials"]
 name = "RealRooted.isRealRooted_eulerianTilde"
 module = "RealRooted.CombinatorialExamples.Eulerian"
 label = "Eulerian polynomials are real-rooted"
@@ -49,6 +50,7 @@ module = "RealRooted.CombinatorialExamples.Eulerian"
 label = "Consecutive Eulerian polynomials interlace"
 
 [[theorems]]
+objects = ["Type B Eulerian polynomials"]
 name = "RealRooted.isRealRooted_typeBEulerian"
 module = "RealRooted.CombinatorialExamples.TypeBEulerian"
 label = "Type B Eulerian polynomials are real-rooted"
@@ -59,6 +61,7 @@ module = "RealRooted.CombinatorialExamples.TypeBEulerian"
 label = "Consecutive type B Eulerian polynomials interlace"
 
 [[theorems]]
+objects = ["Generalized Eulerian polynomials"]
 name = "RealRooted.generalizedEulerian_splits"
 module = "RealRooted.GeneralizedEulerian"
 label = "For c > 0, E_n^{(c)} is real-rooted"

@@ -116,6 +116,8 @@ class CatalogItem:
     headline: bool = False
     symcat: str | None = None
     tags: tuple[str, ...] | None = None
+    objects: tuple[str, ...] = ()
+    object_property: str | None = None
 
     @property
     def anchor(self) -> str:
@@ -140,6 +142,8 @@ class CatalogPage:
     kind: str | None = None
     conjecture: str | None = None
     symcat: tuple[str, ...] = ()
+    objects: tuple[str, ...] = ()
+    object_property: str | None = None
 
     @property
     def topic(self) -> str:
@@ -298,6 +302,38 @@ def _source_error(path: str, message: str) -> CatalogError:
     return CatalogError(f"{path}: {message}")
 
 
+OBJECT_PROPERTIES = {
+    "real-rooted": "Real-rooted",
+    "interlacing": "Interlacing",
+    "pf": "PF (Pólya frequency)",
+    "real-stable": "Real stable",
+    "gamma-positive": "γ-positive",
+    "log-concave": "Log-concave",
+    "unimodal": "Unimodal",
+    "totally-nonnegative": "Totally nonnegative",
+    "orthogonal": "Orthogonal",
+}
+
+
+def _read_objects(path: str, record: dict[str, Any]) -> tuple[tuple[str, ...], str | None]:
+    objects = record.get("objects", [])
+    if not isinstance(objects, list) or not all(
+        isinstance(name, str) and name.strip() == name and name
+        and not any(ch in name for ch in "\n\r\t") for name in objects
+    ):
+        raise _source_error(path, "objects must be an array of nonempty single-line strings")
+    if len({name.casefold() for name in objects}) != len(objects):
+        raise _source_error(path, "objects must not contain duplicates (ignoring case)")
+    property_name = record.get("property")
+    if "property" in record and (
+        not isinstance(property_name, str) or property_name not in OBJECT_PROPERTIES
+    ):
+        raise _source_error(path, "unknown object property; expected " + ", ".join(OBJECT_PROPERTIES))
+    if property_name and not objects:
+        raise _source_error(path, "property requires nonempty objects")
+    return tuple(objects), property_name
+
+
 def _read_items(path: str, raw: Any, expected_kind: str) -> tuple[CatalogItem, ...]:
     if raw is None:
         return ()
@@ -307,7 +343,7 @@ def _read_items(path: str, raw: Any, expected_kind: str) -> tuple[CatalogItem, .
     seen: set[str] = set()
     for index, record in enumerate(raw, start=1):
         if not isinstance(record, dict) or set(record) - {
-            "name", "module", "label", "headline", "symcat", "tags"
+            "name", "module", "label", "headline", "symcat", "tags", "objects", "property"
         }:
             raise _source_error(path, f"invalid {expected_kind} record {index}")
         name = record.get("name")
@@ -320,6 +356,9 @@ def _read_items(path: str, raw: Any, expected_kind: str) -> tuple[CatalogItem, .
             if "tags" in record
             else None
         )
+        objects, property_name = _read_objects(path, record)
+        if objects and expected_kind != "theorem":
+            raise _source_error(path, "objects must select a theorem, not a definition")
         if label is not None and (
             not isinstance(label, str) or not label.strip() or label.strip() != label or "\n" in label
         ):
@@ -355,7 +394,8 @@ def _read_items(path: str, raw: Any, expected_kind: str) -> tuple[CatalogItem, .
         if name in seen:
             raise _source_error(path, f"duplicate {expected_kind} declaration {name}")
         seen.add(name)
-        result.append(CatalogItem(name, expected_kind, module, label, headline, symcat, tags))
+        result.append(CatalogItem(name, expected_kind, module, label, headline, symcat, tags,
+                                  objects, property_name))
     return tuple(result)
 
 
@@ -524,6 +564,8 @@ def parse_challenge_source(
         "tags",
         "references",
         "symcat",
+        "objects",
+        "property",
         "kind",
         "conjecture",
         "definitions",
@@ -554,6 +596,9 @@ def parse_challenge_source(
         raise _source_error(source_path, "symcat must be a label or an array of unique labels")
     definitions = _read_items(source_path, metadata.get("definitions"), "definition")
     theorems = _read_items(source_path, metadata.get("theorems"), "theorem")
+    objects, property_name = _read_objects(source_path, metadata)
+    if objects and not theorems:
+        raise _source_error(source_path, "page objects require a selected theorem")
     if not definitions and not theorems:
         raise _source_error(source_path, "requires at least one definition or theorem")
     content = content_match.group(1).strip()
@@ -569,6 +614,8 @@ def parse_challenge_source(
         kind=kind,
         conjecture=conjecture,
         symcat=tuple(symcat),
+        objects=objects,
+        object_property=property_name,
         source_path=source_path,
         section=section,
         slug=slug,
@@ -1586,6 +1633,8 @@ def _template(
         .replace("{{ script }}", script)
         .replace("{{ results }}", results)
         .replace("{{ authors }}", authors)
+        .replace("{{ families_index }}",
+                 _relative_url(f"{base_path}families-index/", current_url, base_path))
         .replace("{{ about }}", _relative_url(f"{base_path}about/", current_url, base_path))
     )
 
@@ -1678,7 +1727,8 @@ def _page_card(page: CatalogPage, href: str) -> str:
     return (
         f'<li class="catalog-card catalog-card--{kind} catalog-card--{page.section}" '
         f'data-title="{html.escape(_title_sort_key(page.title), quote=True)}" data-year="{year}" '
-        f'data-formalized="{page.formalized}" data-tags="{html.escape(" ".join(page.tags))}">'
+        f'data-formalized="{page.formalized}" data-slug="{page.slug}" '
+        f'data-tags="{html.escape(" ".join(page.tags))}">'
         f'<a href="{html.escape(href, quote=True)}">'
         f'<span class="card-top"><span class="kind-badge kind-badge--{kind}">{label}</span>'
         + _counts(page)
@@ -1802,6 +1852,121 @@ def _authors_page(
     )
 
 
+def _search_controls(index_url: str) -> str:
+    return (
+        f'<div class="catalog-search" data-catalog-search="{html.escape(index_url, quote=True)}">'
+        '<label class="results-search" for="catalog-query">Search the whole catalog'
+        '<input id="catalog-query" type="search" autocomplete="off" '
+        'placeholder="Family, theorem, author, year or SymCat label" '
+        'aria-describedby="search-status" data-catalog-query></label>'
+        '<p id="search-status" class="search-status" role="status" aria-live="polite" '
+        'aria-atomic="true" data-search-status>Search all pages and selected declarations.</p>'
+        '<noscript><p>Search needs JavaScript. Browse the catalog using the links below.</p>'
+        '</noscript></div>'
+    )
+
+
+def _search_results() -> str:
+    return (
+        '<section class="search-matches" aria-labelledby="search-matches-title" '
+        'data-search-matches hidden><h2 id="search-matches-title">Matching declarations</h2>'
+        '<ul class="search-list" data-search-list></ul>'
+        '<button class="search-more" type="button" data-search-more hidden>Show more results</button>'
+        '</section>'
+    )
+
+
+def _family_entries(pages: Iterable[CatalogPage], base_path: str) -> list[dict[str, Any]]:
+    """Only explicit object metadata selects a family; page defaults target its headline."""
+    entries: list[dict[str, Any]] = []
+    for page in pages:
+        headline = _headline(page)
+        for item in page.theorems:
+            # Declaration metadata overrides the page default for that theorem.
+            objects = item.objects or (page.objects if item == headline else ())
+            property_name = item.object_property or (
+                page.object_property if item == headline and not item.objects else None
+            ) or "real-rooted"
+            for name in objects:
+                entries.append({
+                    "family": name, "property": property_name,
+                    "label": item.label or item.name, "name": item.name,
+                    "page": page.title, "url": _page_url(page, base_path) + f"#{item.anchor}",
+                    "references": [citation.key for citation in page.citations],
+                    "authors": list(page.authors), "years": list(page.years),
+                })
+    return sorted(entries, key=lambda entry: (
+        entry["family"].casefold(), entry["label"].casefold(), entry["name"]
+    ))
+
+
+def _families_page(entries: list[dict[str, Any]], bibliography: dict[str, Any],
+                   base_path: str) -> str:
+    current_url = f"{base_path}families-index/"
+    rows = []
+    for entry in entries:
+        target = _relative_url(entry["url"], current_url, base_path)
+        page_url = entry["url"].split("#", 1)[0]
+        references = "; ".join(
+            f'<a href="{html.escape(_relative_url(page_url, current_url, base_path), quote=True)}'
+            f'#ref-{html.escape(key, quote=True)}">'
+            f'{html.escape(bibliography[key]["label"])}</a>' for key in entry["references"]
+        )
+        if not references:
+            reference_label = (_authors_label(tuple(entry["authors"])) + " "
+                               + _years_label(tuple(entry["years"]))).strip() or "See references"
+            references = (
+                '<a href="' + html.escape(
+                    _relative_url(page_url, current_url, base_path), quote=True
+                ) + '#references">' + html.escape(reference_label) + '</a>'
+            )
+        rows.append(
+            '<tr><th scope="row">' + html.escape(entry["family"]) + '</th>'
+            '<td data-label="Property">' + OBJECT_PROPERTIES[entry["property"]] + '</td>'
+            '<td data-label="Theorem"><a href="' + html.escape(target, quote=True) + '">'
+            + html.escape(entry["label"]) + '</a><span class="family-page">'
+            + html.escape(entry["page"]) + '</span><code>' + html.escape(entry["name"])
+            + '</code></td><td data-label="Reference">' + (references or "See theorem page")
+            + '</td></tr>'
+        )
+    return (
+        '<main class="families-page"><p class="eyebrow">Browse by object</p>'
+        '<h1>Polynomial families</h1><p class="lede">Find a named family, its known property, '
+        'and the theorem and reference. Parameter restrictions are stated in the linked theorem.</p>'
+        f'<p>{len({entry["family"] for entry in entries})} families · {len(entries)} entries. '
+        'This list grows as object metadata is added to the catalog.</p>'
+        '<table class="families-table"><caption class="visually-hidden">'
+        'Polynomial families in A–Z order</caption><thead><tr><th>Family</th><th>Property</th>'
+        '<th>Theorem</th><th>Reference</th></tr></thead><tbody>' + ''.join(rows)
+        + '</tbody></table></main>'
+    )
+
+
+def _search_index(pages: Iterable[CatalogPage], base_path: str) -> dict[str, Any]:
+    """Normalize shared page metadata once to keep the declaration index compact."""
+    page_records = []
+    declarations = []
+    for number, page in enumerate(pages):
+        headline = _headline(page)
+        page_records.append({
+            "slug": page.slug, "title": page.title,
+            "headline": headline.label if headline else "",
+            "labels": [item.label for item in page.items if item.label],
+            "authors": list(page.authors), "years": list(page.years), "topic": page.topic,
+            "symcat": list(page.symcat_labels), "objects": list(page.objects),
+            "url": _page_url(page, base_path),
+        })
+        for item in page.items:
+            declarations.append({
+                "page": number, "name": item.name, "label": item.label or "",
+                "kind": item.expected_kind, "headline": item.headline,
+                "symcat": item.symcat or "", "objects": list(item.objects),
+                "tags": [PROVENANCE_TAGS[tag][0] for tag in _effective_tags(page, item)],
+                "url": _page_url(page, base_path) + f"#{item.anchor}",
+            })
+    return {"schema_version": 1, "pages": page_records, "declarations": declarations}
+
+
 def _results_page(
     pages: Iterable[CatalogPage], resolved: dict[str, SourceDeclaration], revision: str,
     offset: int = 0, limit: int = 200
@@ -1818,14 +1983,9 @@ def _results_page(
         symbol = "⊢" if kind == "theorem" else "≔"
         title = item.label or ""
         tags = _effective_tags(page, item)
-        tag_labels = " ".join(PROVENANCE_TAGS[tag][0] for tag in tags)
-        search = " ".join(
-            part for part in (title, item.name, page.title, _attribution(page), tag_labels) if part
-        ).casefold()
         href = f"../{page.section}/{page.slug}/#{item.anchor}"
         rows.append(
-            f'<tr data-kind="{kind}" data-headline="{"true" if item.headline else "false"}" '
-            f'data-search="{html.escape(search, quote=True)}">'
+            f'<tr data-kind="{kind}" data-headline="{"true" if item.headline else "false"}">'
             f'<td class="result-kind result-kind--{kind}"><span aria-hidden="true">{symbol}</span>'
             f'<span class="visually-hidden">{kind}</span></td>'
             "<td class=\"result-name\">"
@@ -1847,13 +2007,12 @@ def _results_page(
         "<h1>All results</h1>"
         f"<p class=\"lede\">All {_plural(definitions, 'definition')} and "
         f"{_plural(theorems, 'theorem')} in the catalog.</p>"
-        + '<p>Filters apply to this page. ' + " ".join(
+        + _search_controls("../search-index.json")
+        + '<p data-results-browse>Browse pages: ' + " ".join(
             f'<a href="{("../results/" if n == 0 else f"../results-{n + 1}/")}">{n + 1}</a>'
             for n in range((total_entries + limit - 1) // limit)
         ) + '</p>'
         + '<div class="results-toolbar" data-results-filter>'
-        '<label class="results-search"><span class="visually-hidden">Filter results</span>'
-        '<input type="search" placeholder="Filter by name, page, author or tag" data-results-query></label>'
         '<div class="catalog-toolbar" role="group" aria-label="Kind">'
         + "".join(
             '<label class="catalog-sort-option"><input type="radio" name="results-kind" '
@@ -1867,11 +2026,10 @@ def _results_page(
                 ("theorem", "Theorems"),
             )
         )
-        + "</div></div>"
-        '<table class="results-table"><thead><tr><th><span class="visually-hidden">Kind</span></th>'
+        + "</div></div>" + _search_results()
+        + '<table class="results-table" data-results-browse><thead><tr><th><span class="visually-hidden">Kind</span></th>'
         "<th>Result</th><th>Page</th><th><span class=\"visually-hidden\">Source</span></th></tr></thead>"
-        "<tbody>" + "".join(rows) + "</tbody></table>"
-        '<p class="results-empty" data-results-empty hidden>No matching results.</p></main>'
+        "<tbody>" + "".join(rows) + "</tbody></table></main>"
     )
 
 
@@ -2079,7 +2237,8 @@ def render_site(
         raise CatalogError("site origin must be an absolute HTTP(S) URL")
     site_origin = site_origin.rstrip("/")
     symcat_labels, bibliography = load_symcat_snapshots(repo_root)
-    catalog_links = {"about": f"{base_path}about/"}
+    catalog_links = {"about": f"{base_path}about/",
+                     "families-index": f"{base_path}families-index/"}
     for page in pages:
         if page.slug in catalog_links:
             raise _source_error(page.source_path, f"duplicate catalog slug {page.slug}")
@@ -2124,6 +2283,7 @@ def render_site(
             else ""
         )
         + ".</p></section>"
+        + _search_controls("search-index.json")
         + jump_bar
         + _sort_controls()
         + '<div class="catalog-groups">'
@@ -2132,7 +2292,7 @@ def render_site(
             "".join(_page_card(page, f"{page.section}/{page.slug}/")
                     for page in index_pages if page.topic == topic),
         ) for topic in topics)
-        + "</div></main>"
+        + "</div>" + _search_results() + "</main>"
     )
     files["index.html"] = _template(
         repo_root, index_body, "RealRooted catalog", base_path, base_path
@@ -2227,6 +2387,11 @@ def render_site(
         f"{base_path}authors/",
         base_path,
     )
+    family_entries = _family_entries(pages, base_path)
+    files["families-index/index.html"] = _template(
+        repo_root, _families_page(family_entries, bibliography, base_path),
+        "Polynomial families", f"{base_path}families-index/", base_path,
+    )
     about_source = (repo_root / "website/about.md").read_text(encoding="utf-8")
     about_body = '<main class="catalog-page"><article class="prose">' + render_markdown(
         about_source, base_path=base_path, catalog_links=catalog_links,
@@ -2254,6 +2419,9 @@ def render_site(
         "schema_version": 1,
         "revision": revision,
         "catalog_digest": catalog_digest(pages),
+        "families_index": {
+            "url": f"{base_path}families-index/", "entries": family_entries,
+        },
         "pages": [
             {
                 "title": page.title,
@@ -2265,6 +2433,8 @@ def render_site(
                 "headline": {"name": _headline(page).name, "label": _headline(page).label}
                 if _headline(page) else None,
                 "symcat": list(page.symcat_labels),
+                "objects": list(page.objects),
+                "property": page.object_property,
                 "references": [citation.key for citation in page.citations],
                 "authors": list(page.authors),
                 "years": list(page.years),
@@ -2280,6 +2450,8 @@ def render_site(
                         "kind": item.expected_kind,
                         "url": site_origin + _page_url(page, base_path) + f"#{item.anchor}",
                         "tags": list(_effective_tags(page, item)),
+                        "objects": list(item.objects),
+                        "property": item.object_property,
                         **({"symcat": item.symcat} if item.symcat else {}),
                     }
                     for item in page.items
@@ -2289,7 +2461,13 @@ def render_site(
         ],
     }
     files["catalog-manifest.json"] = json.dumps(manifest, indent=2, sort_keys=True) + "\n"
-    files["llms.txt"] = "# RealRooted catalog\n\n" + "\n".join(
+    files["search-index.json"] = json.dumps(
+        _search_index(pages, base_path), ensure_ascii=False, separators=(",", ":")
+    ) + "\n"
+    files["llms.txt"] = (
+        "# RealRooted catalog\n\nPolynomial families — A–Z properties, theorems and references — "
+        + site_origin + base_path + "families-index/\n\n"
+    ) + "\n".join(
         " — ".join((page.title, headline.label or "", headline.name,
                     site_origin + _page_url(page, base_path)))
         if (headline := _headline(page)) else " — ".join((

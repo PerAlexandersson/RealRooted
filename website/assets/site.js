@@ -44,36 +44,143 @@ for (const control of document.querySelectorAll("[data-catalog-sort]")) {
   });
 }
 
-for (const control of document.querySelectorAll("[data-results-filter]")) {
+// Both entry points use the same complete, normalized index. No search libraries.
+for (const control of document.querySelectorAll("[data-catalog-search]")) {
   const main = control.closest("main");
-  const rows = Array.from(main?.querySelectorAll("tbody tr") ?? []);
-  const query = control.querySelector("[data-results-query]");
-  const empty = main?.querySelector("[data-results-empty]");
+  const query = control.querySelector("[data-catalog-query]");
+  const status = control.querySelector("[data-search-status]");
+  const matchesSection = main.querySelector("[data-search-matches]");
+  const list = main.querySelector("[data-search-list]");
+  const more = main.querySelector("[data-search-more]");
+  const kindControl = main.querySelector("[data-results-filter]");
+  const browsing = Array.from(main.querySelectorAll("[data-results-browse]"));
+  const cards = Array.from(main.querySelectorAll(".catalog-card"));
+  const groups = Array.from(main.querySelectorAll(".catalog-group"));
+  const topicLinks = Array.from(main.querySelectorAll(".topic-jump a"));
+  const landingControls = cards.length ? Array.from(
+    main.querySelectorAll(".topic-jump, [data-catalog-sort]")) : [];
+  const normalize = (value) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLocaleLowerCase("en");
+  let index;
+  let pending;
+  let matches = [];
+  let shown = 0;
+  let timer;
+  const batchSize = 50;
 
-  const update = () => {
-    const words = (query?.value ?? "").toLocaleLowerCase("en").split(/\s+/).filter(Boolean);
-    const kind = control.querySelector('input[name="results-kind"]:checked')?.value ?? "all";
-    let shown = 0;
-    for (const row of rows) {
-      const visible =
-        (kind === "all" ||
-          (kind === "headline" ? row.dataset.headline === "true" : row.dataset.kind === kind)) &&
-        words.every((word) => row.dataset.search.includes(word));
-      row.hidden = !visible;
-      if (visible) shown += 1;
+  const appendResults = () => {
+    const fragment = document.createDocumentFragment();
+    for (const item of matches.slice(shown, shown + batchSize)) {
+      const page = index.pages[item.page];
+      const row = document.createElement("li");
+      const link = document.createElement("a");
+      link.href = item.url;
+      link.textContent = item.label || item.name;
+      const details = document.createElement("span");
+      details.className = "search-detail";
+      details.textContent = `${page.title} · ${item.kind}${item.headline ? " · Main result" : ""}`;
+      const name = document.createElement("code");
+      name.textContent = item.name;
+      row.append(link, details, name);
+      fragment.append(row);
     }
-    if (empty) empty.hidden = shown > 0;
+    list.append(fragment);
+    shown = Math.min(shown + batchSize, matches.length);
+    more.hidden = shown >= matches.length;
+    // Retain the button (and keyboard focus) when the final batch is appended.
+    if (shown >= matches.length && document.activeElement === more) {
+      more.hidden = false;
+      more.disabled = true;
+      more.textContent = "All matching declarations shown";
+    }
   };
 
-  control.addEventListener("input", update);
-  control.addEventListener("change", update);
+  const restoreBrowsing = () => {
+    browsing.forEach((element) => { element.hidden = false; });
+    cards.forEach((card) => { card.hidden = false; });
+    groups.forEach((group) => { group.hidden = false; });
+    topicLinks.forEach((link) => { link.hidden = false; });
+    landingControls.forEach((element) => { element.hidden = false; });
+    matchesSection.hidden = true;
+  };
 
-  // `results/#main-results` opens the list filtered to the main results.
-  if (window.location.hash === "#main-results") {
-    const headline = control.querySelector('input[name="results-kind"][value="headline"]');
-    if (headline) {
-      headline.checked = true;
-      update();
+  const update = () => {
+    const words = normalize(query.value).split(/\s+/).filter(Boolean);
+    const kind = kindControl?.querySelector('input[name="results-kind"]:checked')?.value ?? "all";
+    if (!words.length && kind === "all") {
+      restoreBrowsing();
+      status.textContent = "Search all pages and selected declarations.";
+      return;
     }
+    if (!index) {
+      status.textContent = "Loading catalog search…";
+      loadIndex();
+      return;
+    }
+    const includes = (text) => words.every((word) => text.includes(word));
+    matches = index.declarations.filter((item) =>
+      (kind === "all" || (kind === "headline" ? item.headline : item.kind === kind)) &&
+      includes(item.search));
+    const pageMatches = new Set(index.pages.filter((page) => includes(page.search)).map((p) => p.slug));
+    matches.forEach((item) => pageMatches.add(index.pages[item.page].slug));
+    cards.forEach((card) => { card.hidden = !pageMatches.has(card.dataset.slug); });
+    groups.forEach((group) => {
+      group.hidden = !Array.from(group.querySelectorAll(".catalog-card")).some((card) => !card.hidden);
+    });
+    topicLinks.forEach((link) => {
+      link.hidden = document.querySelector(link.hash)?.hidden ?? false;
+    });
+    landingControls.forEach((element) => { element.hidden = pageMatches.size === 0; });
+    browsing.forEach((element) => { element.hidden = true; });
+    matchesSection.hidden = false;
+    list.replaceChildren();
+    shown = 0;
+    more.disabled = false;
+    more.textContent = "Show more results";
+    appendResults();
+    status.textContent = `${matches.length} matching declaration${matches.length === 1 ? "" : "s"}` +
+      (cards.length ? ` · ${pageMatches.size} matching page${pageMatches.size === 1 ? "" : "s"}` : "") +
+      (matches.length > batchSize ? ` · Showing the first ${batchSize}; use Show more results.` : ".") +
+      (!matches.length && !pageMatches.size ? " No matches. Try another name or fewer words." : "");
+  };
+
+  const loadIndex = () => {
+    if (pending) return;
+    pending = fetch(control.dataset.catalogSearch).then((response) => {
+      if (!response.ok) throw new Error("Search index unavailable");
+      return response.json();
+    }).then((data) => {
+      index = data;
+      for (const page of index.pages) {
+        page.shared = normalize([page.title, page.headline, ...page.authors, ...page.years,
+          page.topic, ...page.symcat, ...page.objects].join(" "));
+        page.search = `${page.shared} ${normalize(page.labels.join(" "))}`;
+      }
+      for (const item of index.declarations) {
+        item.search = `${index.pages[item.page].shared} ${normalize([item.name, item.label,
+          item.symcat, ...item.objects, ...item.tags].join(" "))}`;
+      }
+      update();
+    }).catch(() => {
+      index = undefined;
+      pending = undefined;
+      restoreBrowsing();
+      status.textContent = "Search could not load. Browse the links below or type again to retry.";
+    });
+  };
+
+  query.addEventListener("focus", loadIndex);
+  query.addEventListener("input", () => {
+    clearTimeout(timer);
+    timer = setTimeout(update, 100);
+  });
+  kindControl?.addEventListener("change", update);
+  more.addEventListener("click", () => {
+    appendResults();
+    status.textContent = `Showing ${shown} of ${matches.length} matching declarations.`;
+  });
+  if (window.location.hash === "#main-results") {
+    const headline = kindControl?.querySelector('input[value="headline"]');
+    if (headline) { headline.checked = true; update(); }
   }
 }

@@ -31,6 +31,7 @@ module = "RealRooted.Graph.AllOrientationSinkIdentity"
 label = "The shifted sink polynomial as a weighted independence polynomial"
 
 [[theorems]]
+objects = ["Sink polynomials of all orientations of claw-free graphs"]
 name = "RealRooted.Graph.allOrientationSinkPolynomial_splits_of_clawFree"
 module = "RealRooted.Graph.AllOrientationSinkIdentity"
 label = "Claw-free graphs have real-rooted sink polynomials"

@@ -26,6 +26,7 @@ module = "RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Basic"
 label = "Generalized Laguerre polynomials"
 
 [[theorems]]
+objects = ["Generalized Laguerre polynomials"]
 name = "RealRooted.generalizedLaguerre_splits"
 module = "RealRooted.Laguerre.Roots"
 label = "Generalized Laguerre polynomials are real-rooted"

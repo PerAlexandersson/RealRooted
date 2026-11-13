@@ -45,6 +45,29 @@ such as `[related statement](sf:exampleRealRooted)`, resolve through the committ
 snapshot. A declaration's optional `symcat` label adds a link beside its Lean source link and is
 exported in `catalog-manifest.json`.
 
+Use `objects = ["Eulerian polynomials", "Type B Eulerian polynomials"]` on a
+selected `[[theorems]]` record to include named polynomial families in the A–Z
+`families-index/` page (navigation: **Polynomial families**). Prefer SymCat's
+name where it has one. Each object is a nonempty, trimmed, single-line string;
+duplicates within a record are rejected, ignoring case. An empty array is valid
+and adds no entry. Definitions cannot supply objects: entries must link to a
+theorem. Pages without this field add no entries and still render normally.
+
+An optional `property = "interlacing"` describes every object in that record.
+The supported values are `real-rooted` (the default), `interlacing`, `pf`,
+`real-stable`, `gamma-positive`, `log-concave`, `unimodal`,
+`totally-nonnegative`, and `orthogonal`. Only name a property proved by the
+selected theorem; parameter restrictions remain in its label and statement.
+For example, a PF or interlacing theorem can be indexed with the default
+real-rooted property when that consequence is the intended claim.
+`property` requires a nonempty `objects` array. Both fields are also permitted
+at page level, where they select the headline theorem (or the first theorem
+when no headline is marked). The headline's own nonempty `objects` record
+replaces this page default, including its property; other theorem records are
+independent. These fields are validated during `--check` and do not change the
+selected-declaration digest. The family list uses page bibliography citations,
+or links to the page's References section when only prose references exist.
+
 Use `[another catalog page](rr:slug)` for internal links, including
 `[Conventions](rr:about)`. An optional `#declaration-or-heading-anchor` is supported.
 Inline and reference-style targets are resolved against the complete catalog;
@@ -104,9 +127,23 @@ The catalog validates all citation keys and SymCat labels against the snapshots.
 `python3 scripts/symcat_sync.py --check` reports the number of live labels absent
 from the snapshot, or reports that freshness is unavailable when offline.
 
-The complete `results/` index is paginated; text and kind filters apply to the
-current page. The machine-readable `catalog-manifest.json` retains all selected
-declarations. The displayed Markdown must have one H1 and a nonempty
+The complete `results/` index is paginated for browsing. Search on the landing
+page and every results page uses the same complete `search-index.json`; text
+and kind filters cover every selected declaration, across all browsing pages.
+Landing search also filters page cards. Matching declarations link directly
+to their statements; large matches show 50 at a time with a keyboard-accessible
+**Show more results** button. Search ignores case and accents and requires every
+space-separated word. Without JavaScript, the cards and paginated results remain
+available. Failed index loads leave browsing available and allow a retry.
+
+The compact search JSON has `schema_version = 1`, a `pages` array (title,
+headline label, declaration labels, authors, years, topic, SymCat labels, object
+names and URL), and a `declarations` array (name, label, kind, headline flag,
+SymCat label, objects, provenance labels and URL). Each declaration's integer
+`page` indexes its shared page metadata, avoiding thousands of repeated titles
+and author arrays. URLs respect `--base-path`. The machine-readable
+`catalog-manifest.json` retains all selected declarations. The displayed Markdown
+must have one H1 and a nonempty
 `## References` section.
 
 `python3 scripts/check_declaration_names.py` checks published names against the
@@ -203,8 +240,12 @@ explanations also live there.
 and adds page `topic`, `section`, `summary` (the first prose paragraph, with HTML
 markup removed and TeX retained), `headline` (`name` and `label`, or null),
 `symcat` labels, and `references` keys (metadata and inline citations, deduplicated).
+It also exports explicit page/declaration `objects` and `property`, and a
+`families_index` object containing its URL and the sorted family entries (names,
+properties, theorem labels and names, URLs, authors, years and reference keys).
 `llms.txt` provides one line per page: title — headline claim — main Lean name —
-absolute page URL. The first theorem remains the fallback for older pages
+absolute page URL, plus a link to the Polynomial families index.
+The first theorem remains the fallback for older pages
 without a marked headline; a definitions-only page has no main result.
 
 Before retiring a page, add a direct redirect in `website/redirects.toml`:
@@ -258,7 +299,7 @@ The renderer treats raw HTML in contributed Markdown as text. A standalone
 forms and `\(…\)` are protected from Markdown rewriting and typeset by KaTeX.
 Prefer `$$…$$` in new prose, as required by the lint.
 Its small local
-script only reorders catalog cards by name or earliest cited year; the content
+script searches the catalog and reorders cards by name or earliest cited year; the content
 and links remain complete without JavaScript.  The renderer writes no generated
 files into the repository by itself; Pages CI uploads the specified output
 directory as an artifact.

@@ -67,6 +67,7 @@ label = "The recurrence-defined polynomial equals the swap enumerator"
 tags = []
 
 [[theorems]]
+objects = ["Zig-zag Eulerian polynomials"]
 name = "RealRooted.ZigzagEulerian.zigzagEulerianPolynomial_roots"
 module = "RealRooted.CombinatorialExamples.ZigzagEulerian.RealRooted"
 label = "Simple negative roots of zig-zag Eulerian polynomials"

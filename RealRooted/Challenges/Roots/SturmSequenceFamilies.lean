@@ -62,6 +62,7 @@ module = "RealRooted.CombinatorialExamples.ColoredSetPartitions"
 label = "Colored set-partition polynomials"
 
 [[theorems]]
+objects = ["Touchard polynomials"]
 name = "RealRooted.interlaces_touchard_succ"
 module = "RealRooted.CombinatorialExamples.Touchard"
 label = "Consecutive Touchard polynomials interlace"
@@ -74,27 +75,32 @@ module = "RealRooted.CombinatorialExamples.Touchard"
 label = "Touchard coefficients are Stirling numbers of the second kind"
 
 [[theorems]]
+objects = ["Stirling-permutation descent polynomials"]
 name = "RealRooted.interlaces_stirlingPermutations_succ"
 module = "RealRooted.CombinatorialExamples.StirlingPermutations"
 label = "Consecutive Stirling-permutation descent polynomials interlace"
 
 [[theorems]]
+objects = ["Derangement polynomials"]
 name = "RealRooted.interlaces_sturmDerangementsExc_succ"
 module = "RealRooted.CombinatorialExamples.SturmDerangementsExc"
 label = "Consecutive derangement polynomials interlace"
 symcat = "derangementPolynomial"
 
 [[theorems]]
+objects = ["Simsun polynomials"]
 name = "RealRooted.strictInterl_simsun_succ"
 module = "RealRooted.CombinatorialExamples.Simsun"
 label = "Consecutive simsun polynomials interlace"
 
 [[theorems]]
+objects = ["Singleton-free set-partition polynomials"]
 name = "RealRooted.strictInterl_singletonFreeSetPartitions_succ"
 module = "RealRooted.CombinatorialExamples.SingletonFreeSetPartitions"
 label = "Consecutive singleton-free set-partition polynomials interlace"
 
 [[theorems]]
+objects = ["Colored set-partition polynomials"]
 name = "RealRooted.interlaces_coloredSetPartitions_succ"
 module = "RealRooted.CombinatorialExamples.ColoredSetPartitions"
 label = "Consecutive colored set-partition polynomials interlace"
@@ -105,6 +111,7 @@ module = "RealRooted.CombinatorialExamples.Touchard"
 label = "Touchard polynomials are colored set-partition polynomials with c = 0, m = 1"
 
 [[theorems]]
+objects = ["Motzkin polynomials"]
 name = "RealRooted.isRealRooted_motzkin"
 module = "RealRooted.CombinatorialExamples.Motzkin"
 label = "Motzkin polynomials are real-rooted"
@@ -115,6 +122,7 @@ module = "RealRooted.CombinatorialExamples.Motzkin"
 label = "Consecutive Motzkin polynomials interlace"
 
 [[theorems]]
+objects = ["Independence polynomials of path powers"]
 name = "RealRooted.splits_sum_choose_sub_mul"
 module = "RealRooted.CombinatorialExamples.PathPowerIndependence"
 label = "Independence polynomials of path powers ∑ C(m − rk, k) xᵏ are real-rooted"

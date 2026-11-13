@@ -53,6 +53,7 @@ label = "Consecutive shifted Jacobi polynomials interlace"
 headline = true
 
 [[theorems]]
+objects = ["Jacobi polynomials"]
 name = "RealRooted.shiftedJacobi_splits"
 module = "RealRooted.Jacobi"
 label = "Shifted Jacobi polynomials are real-rooted"
@@ -98,6 +99,7 @@ module = "RealRooted.Legendre.Basic"
 label = "Shifted Legendre polynomials are the case α = β = 0"
 
 [[theorems]]
+objects = ["Legendre polynomials"]
 name = "RealRooted.shiftedLegendreReal_splits"
 module = "RealRooted.Legendre.Roots"
 label = "Shifted Legendre polynomials are real-rooted"
@@ -118,6 +120,7 @@ module = "RealRooted.Jacobi.NegativeIntegerEndpoint"
 label = "The reflected shifted-Jacobi differential operator"
 
 [[theorems]]
+objects = ["Jacobi coefficient polynomials"]
 name = "RealRooted.jacobiCoefficientPolynomial_isPFPolynomial"
 module = "RealRooted.Jacobi.CoefficientFamily"
 label = "For a, b > -1 the family is Pólya frequency"

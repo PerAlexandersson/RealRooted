@@ -50,6 +50,7 @@ label = "For i ∈ {1, 2, 3, k − 2, k − 1}, nonnegative combinations of A_{k
 headline = true
 
 [[theorems]]
+objects = ["Jacobi–Stirling descent polynomials"]
 name = "RealRooted.JacobiStirlingDescent.descentSum_splits_simple_neg"
 module = "RealRooted.CombinatorialExamples.JacobiStirling.Descent.RealRooted"
 label = "A_{k,i} is real-rooted for i ∈ {1, 2, 3, k − 2, k − 1}"

@@ -73,6 +73,7 @@ module = "RealRooted.MaoWangMatrixProduct"
 label = "The Mao–Wang one-step factors"
 
 [[theorems]]
+objects = ["Narayana polynomials"]
 name = "RealRooted.splits_narayanaPolynomial"
 module = "RealRooted.NarayanaTransformation.Endpoints"
 label = "Generalized Narayana polynomials are real-rooted"
@@ -131,6 +132,7 @@ module = "RealRooted.CombinatorialExamples.Avoid132Descents"
 label = "132-avoiding permutations counted by descents give N_{n,1}(x)"
 
 [[theorems]]
+objects = ["Descent polynomials of 132-avoiding permutations"]
 name = "RealRooted.Avoid132.strictInterl_descentGeneratingPolynomial_succ"
 module = "RealRooted.CombinatorialExamples.Avoid132Descents"
 label = "Descent polynomials of 132-avoiders are real-rooted and interlace"
@@ -146,6 +148,7 @@ module = "RealRooted.NarayanaInterpolation"
 label = "γ-expansion of the continuous Narayana interpolation"
 
 [[theorems]]
+objects = ["Continuous Narayana interpolation polynomials"]
 name = "RealRooted.narayanaInterpolation_isPF"
 module = "RealRooted.NarayanaInterpolation"
 label = "The continuous Narayana interpolation is Pólya-frequency for θ > −1"
