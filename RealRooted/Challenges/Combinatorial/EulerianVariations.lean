@@ -96,7 +96,6 @@ interlace.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 A polynomial is a *Pólya frequency (PF) polynomial* if it has nonnegative coefficients and only
 real nonpositive roots.
 
@@ -123,7 +122,7 @@ $$
 Then every $T_n$ is a PF polynomial and $T_n\ll T_{n+1}$. The polynomial $T_n$ is
 $\sum_{w\in\{0,1,2\}^n}x^{\operatorname{runs}(w)}$, where $\operatorname{runs}(w)$ is the number of
 maximal strictly increasing runs of $w$; see the
-[Eulerian compendium](/RealRooted/theorems/eulerian-compendium/).
+[Eulerian compendium](rr:eulerian-compendium).
 
 **Super-Eulerian polynomials.** For an integer $\ell\ge1$ let $E_{1,0}=1$ and
 $E_{n,k}=(k+1)^\ell E_{n-1,k}+(n-k)^\ell E_{n-1,k-1}$, with entries outside $0\le k\le n-1$
@@ -134,7 +133,7 @@ nonzero and real-rooted, with nonpositive roots and nonnegative coefficients.
 
 ## Use
 
-The [Eulerian compendium](/RealRooted/theorems/eulerian-compendium/) identifies $C_n$ with the
+The [Eulerian compendium](rr:eulerian-compendium) identifies $C_n$ with the
 balanced cyclic-word polynomial and $T_n$ with the run enumerator of ternary words.
 
 ## References

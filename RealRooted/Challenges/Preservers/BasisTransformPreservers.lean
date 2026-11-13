@@ -370,14 +370,14 @@ of degree at most $d$ to PF polynomials.
 
 The Newton and order-two classifications reduce preservation to tests on repeated roots and
 constant terms. The ray semigroup contains translations and Lah flows as special cases. The
-[multiplier sequences](/RealRooted/concepts/multiplier-sequences/) page treats the classical
-real-rootedness preservers, and the [Narayana polynomials](/RealRooted/families/narayana/) page
+[multiplier sequences](rr:multiplier-sequences) page treats the classical
+real-rootedness preservers, and the [Narayana polynomials](rr:narayana) page
 uses rising and falling factorial bases.
 
 ## References
 
 Background on real-rootedness preservers is on the
-[multiplier sequences](/RealRooted/concepts/multiplier-sequences/) page.
+[multiplier sequences](rr:multiplier-sequences) page.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in the `RealRooted.BasisTransform`

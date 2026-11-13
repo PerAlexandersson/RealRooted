@@ -121,7 +121,7 @@ theorem on each degree box.
 ## References
 
 The real classification, which is the [site's finite-symbol theorem](sf:borceaBrandenFiniteSymbol),
-is on the [classification page](/RealRooted/theorems/borcea-branden-classification/). See
+is on the [classification page](rr:borcea-branden-classification). See
 [@BorceaBranden2009I].
 <!-- /realrooted-catalog-content -->
 

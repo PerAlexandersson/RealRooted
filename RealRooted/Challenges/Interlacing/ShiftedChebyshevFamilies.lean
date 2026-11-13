@@ -85,8 +85,6 @@ shifted Chebyshev case the root windows are exact in the perturbation.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
-
 **Theorem (constant-lag family).** For real $b,d,c$ let $P_0=1$, $P_1=x+d+c$ and
 $$
 P_{n+2}=(x+d)\,P_{n+1}-b^2P_n .
@@ -121,7 +119,7 @@ at most $-\tfrac14$ if and only if $|c|\le1+1/n$.
 
 ## References
 
-The three-term recurrence is of Favard type; see the [Favard page](/RealRooted/theorems/favard/).
+The three-term recurrence is of Favard type; see the [Favard page](rr:favard).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in

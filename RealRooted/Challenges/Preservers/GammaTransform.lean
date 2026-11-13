@@ -114,7 +114,6 @@ exactly when the gamma polynomials do.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 For $d\ge0$ and $\gamma=\sum_i\gamma_ix^i$, the *gamma transform* in ambient degree $d$ is
 $$
 \Gamma_d(\gamma)(x)=\sum_{i=0}^{\lfloor d/2\rfloor}\gamma_i\,x^i(1+x)^{d-2i}.

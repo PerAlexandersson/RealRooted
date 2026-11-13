@@ -94,7 +94,6 @@ and consecutive ones interlace.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 Fix $n\ge2$. Kostov's coefficient map sends the coefficients of a monic polynomial with a root at
 $-1$ to the elementary symmetric functions of the parameters in its Schur–Szegő factorization.
 For $0\le k<n-1$ put

@@ -144,7 +144,6 @@ rows interlace.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 Throughout, $P_n$ are real polynomials with $\deg P_n=D_0+n$ and positive leading coefficient,
 and $A_n,B_n,a_n,b_n$ are real polynomials; inequalities such as $A_n\le0$ on a set mean
 $A_n(x)\le0$ at each $x$ of the set. When $D_0=0$ we assume $P_0\ll P_1$.

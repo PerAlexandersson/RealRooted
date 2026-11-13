@@ -20,6 +20,7 @@ from challenge_catalog import (
     revision_at,
     validate_audit_report,
     validate_sources,
+    validate_prose_baseline,
     write_site,
 )
 
@@ -78,6 +79,7 @@ def main() -> int:
                       + [f"{path}: stale headline baseline entry" for path in sorted(baseline - offenders)])
             if errors:
                 raise CatalogError("\n".join(errors))
+            validate_prose_baseline(root, pages)
         resolved = validate_sources(root, pages)
         revision = revision_at(root)
         if args.audit_report is not None:

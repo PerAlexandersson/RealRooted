@@ -74,8 +74,6 @@ the rows are real-rooted and rows within the delay window interlace.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
-
 **Theorem (variable delay).** Let $p:\mathbb N\to\mathbb N$ satisfy $p(i)\le p(j)$ for
 $1\le i\le j$ and $p(n)<n$ for $n\ge1$. Let $w(n)\ge0$, $Q_0=1$ and
 $$

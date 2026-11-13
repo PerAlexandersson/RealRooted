@@ -103,9 +103,7 @@ reverse-Hermite transform preserve it exactly.
 ## Results
 
 A polynomial is *PF* if it has nonnegative coefficients and is zero or has only real,
-nonpositive roots. We write $p\ll q$ for the weak interlacing of the
-[interlacing page](/RealRooted/concepts/interlacing/): either polynomial may be zero, and
-repeated and common roots are allowed unless stated.
+nonpositive roots. We use the [zero-aware interlacing convention](rr:about).
 
 **Theorem (real-rootedness preservers).** Let $T$ be a real-linear operator on $\mathbb R[x]$
 such that $Tp$ is zero or real-rooted for every nonzero real-rooted $p$. If $f\ll g$ in the

@@ -91,10 +91,10 @@ The mutual minima of a local order form a matching. For a matching $S$, a fracti
 $\prod_{uv\in S}1/(\deg u\deg v)$ of the local orders has every edge of $S$ first at both of
 its endpoints. Summing over the subsets of the mutual minima gives the identity. The right-hand
 side is a matching polynomial with positive edge weights, hence real-rooted by the
-[Heilmann--Lieb theorem](/RealRooted/theorems/heilmann-lieb/); equivalently, a weighted
+[Heilmann--Lieb theorem](rr:heilmann-lieb); equivalently, a weighted
 independence polynomial of the claw-free line graph $L(G)$ (see the
-[Chudnovsky--Seymour](/RealRooted/theorems/chudnovsky-seymour/) and
-[Leake--Ryder](/RealRooted/theorems/leake-ryder/) pages).
+[Chudnovsky--Seymour](rr:chudnovsky-seymour) and
+[Leake--Ryder](rr:leake-ryder) pages).
 
 For a forest, the edges at a vertex form a clique of $L(F)$, so local orders are the
 orientations of $L(F)$ that are acyclic on these cliques, and every cycle of $L(F)$ lies in such
@@ -104,8 +104,8 @@ minima are the sinks.
 ## Use
 
 For sinks of acyclic orientations see [chordal claw-free
-graphs](/RealRooted/families/chordal-claw-free-acyclic-sinks/) and [all orientations of
-claw-free graphs](/RealRooted/families/claw-free-orientation-sinks/).
+graphs](rr:chordal-claw-free-acyclic-sinks) and [all orientations of
+claw-free graphs](rr:claw-free-orientation-sinks).
 
 ## References
 

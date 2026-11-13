@@ -178,8 +178,7 @@ interleaver if and only if every nonnegative combination of its members is real-
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; see the
-[interlacing page](/RealRooted/concepts/interlacing/). A family $f_1,\dotsc,f_m$ has a
+A family $f_1,\dotsc,f_m$ has a
 **common interleaver** if a single real-rooted $h$ satisfies $f_i\ll h$ for all $i$. It is
 **compatible** if every nonnegative combination
 $c_1f_1+\dotsb+c_mf_m$ is zero or real-rooted, and **pairwise compatible** if every pair is.
@@ -245,7 +244,7 @@ most that of the polynomial at the root.
 
 The Chudnovsky–Seymour theorem is the interlacing input for the real-rootedness of independence
 polynomials of claw-free graphs; see the
-[Chudnovsky–Seymour page](/RealRooted/theorems/chudnovsky-seymour/). The transport theorem is
+[Chudnovsky–Seymour page](rr:chudnovsky-seymour). The transport theorem is
 the criterion for common interleavers of Marcus–Spielman–Srivastava (*Interlacing families I*,
 Lemma 4.5, arXiv:1304.4132), and the last theorem is their selection principle for roots.
 

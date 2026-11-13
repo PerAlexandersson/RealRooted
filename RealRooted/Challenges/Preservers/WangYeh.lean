@@ -58,9 +58,8 @@ or real-rooted; this implies a PF-preserver and PF rows for bilinear triangular 
 
 ## Results
 
-We write $g\ll f$ for `StrictInterl g f`, as on the
-[interlacing page](/RealRooted/concepts/interlacing/); it requires $f$ and $g$ to be nonzero
-and real-rooted. A polynomial is *PF* if it has nonnegative coefficients and is zero or
+We use the [nonzero interlacing convention](rr:about). A polynomial is *PF* if it has nonnegative
+coefficients and is zero or
 real-rooted with only nonpositive roots. A sequence is PF if its Toeplitz matrix is totally
 nonnegative.
 

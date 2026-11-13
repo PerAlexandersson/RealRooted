@@ -69,8 +69,6 @@ point $L$ if and only if four inequalities in their coefficients hold.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
-
 **Theorem (criterion).** Let $f=ax^2+bx+c$ and $g=Ax^2+Bx+d$ with $a,A>0$, and let
 $L\in\mathbb R$. Put $u=aB-Ab$ and $v=ad-Ac$, so that $ag-Af=ux+v$. There are roots $r_1,r_2$ of $f$
 and $s_1,s_2$ of $g$ with
@@ -105,7 +103,7 @@ $$
 ## References
 
 The criterion and the family have no published source. For the interlacing convention, see the
-[interlacing page](/RealRooted/concepts/interlacing/).
+[interlacing page](rr:interlacing).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in

@@ -58,8 +58,7 @@ For $m\in\mathbb N$ and $c\in\mathbb R$ let $D=d/dx$ and
 $$
 T_{m,c}f=D^m\bigl((D+c)(x^mf)\bigr),
 $$
-so that $T_{1,c}f=cf+(cx+2)f'+xf''$. We write $f\ll g$ if $f$ interlaces $g$; repeated and
-common roots are allowed unless stated.
+so that $T_{1,c}f=cf+(cx+2)f'+xf''$.
 
 **Theorem.** Let $c\ne0$ and let $f$ be a nonzero real-rooted polynomial.
 
@@ -72,7 +71,7 @@ common roots are allowed unless stated.
 
 ## References
 
-For interlacing, see the [interlacing page](/RealRooted/concepts/interlacing/).
+For interlacing, see the [interlacing page](rr:interlacing).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in `RealRooted.Derivative.PowerShift`.

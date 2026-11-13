@@ -117,8 +117,8 @@ interlaces the Chow derangement polynomial of the same index.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; common roots are allowed, and we also write $f\ll g$
-when $f$ or $g$ is zero. For a lower-triangular matrix $A$, the *Chow derangement polynomials* are
+We use the [zero-aware interlacing convention](rr:about). For a lower-triangular matrix $A$, the
+*Chow derangement polynomials* are
 $d_0=1$ and
 $$
 d_n=x\,S_{n-1}\Bigl(\sum_{k<n}A(n,k)\,d_k\Bigr),\qquad
@@ -152,7 +152,7 @@ Toeplitz matrix. Then $a$ is a Pólya frequency sequence, but $c_6=x^2+x+1$ is n
 ## Proof
 
 The proof uses the resolution of totally nonnegative matrices by Whitney elimination, as on the
-[Brändén–Saud Leite page](/RealRooted/theorems/branden-leite/).
+[Brändén–Saud Leite page](rr:branden-leite).
 
 ## References
 

@@ -85,7 +85,7 @@ with simple real roots; the weighted ladder polynomials are obtained from them.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; common roots are allowed unless stated. Let
+Let
 $\ell_n(t)=a_nt+b_n$ with $a_n>0$, let $u_0>0$, $u_n\ge0$ and $v_n>0$ for $n\ge1$, and put
 $A_0=1$, $B_1=\ell_0$, $A_1=\ell_0^2-u_0$ and, for $n\ge1$,
 $$
@@ -138,8 +138,8 @@ recurrence.
 ## References
 
 The root-sign criterion is the differ-by-one criterion on the
-[Ma–Wang and Liu–Wang page](/RealRooted/theorems/ma-wang-liu-wang/). For the interlacing
-convention, see the [interlacing page](/RealRooted/concepts/interlacing/).
+[Ma–Wang and Liu–Wang page](rr:ma-wang-liu-wang). For the interlacing
+convention, see the [interlacing page](rr:interlacing).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in

@@ -80,8 +80,6 @@ real-rooted levels $T_n-h$ for $|h|\le1$.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
-
 **Theorem (critical-value criterion).** Let $f\in\mathbb R[x]$ have positive leading
 coefficient and degree at least $2$, and let $f'$ be real-rooted with simple roots. Then
 $f-s$ is real-rooted if and only if

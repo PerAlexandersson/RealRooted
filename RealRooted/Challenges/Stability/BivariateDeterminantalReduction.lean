@@ -75,7 +75,7 @@ scalar multiples of degree-zero pencils.
 
 ## References
 
-See also the [real stability page](/RealRooted/theorems/real-stability/).
+See also the [real stability page](rr:real-stability).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in the `RealRooted.DeterminantalStability`

@@ -46,8 +46,6 @@ interlacing consecutive terms.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
-
 **Theorem.** Let $P_0=p$ and $P_1=q$ be constants with $0<p\le q$, let $b_n,c_n\ge0$ and
 $d_n>0$, and put
 $$
@@ -72,7 +70,7 @@ recurrence contains a subtraction.
 The proposition, with $R=1$ or $R=\rho$, gives the coefficient statements. The interlacing then
 follows from the Liu--Wang criterion for three-term recurrences, which allows equal degrees in
 consecutive rows; see the
-[Ma--Wang and Liu--Wang page](/RealRooted/theorems/ma-wang-liu-wang/).
+[Ma--Wang and Liu--Wang page](rr:ma-wang-liu-wang).
 
 ## References
 

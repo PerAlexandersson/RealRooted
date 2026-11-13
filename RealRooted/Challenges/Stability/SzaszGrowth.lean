@@ -72,7 +72,7 @@ and polydisc growth bounded in terms of its linear and quadratic coefficients.
 Throughout, $f\in\mathbb C[z_i:i\in\sigma]$ is a polynomial in finitely many variables. We write
 $a(\alpha)$ for the coefficient of $z^\alpha$ in $f$, $|\alpha|=\sum_i\alpha_i$, and $e_i$ for the
 $i$th unit exponent. A polynomial is *stable* if it has no zeros when all variables lie in the
-open upper half-plane (see [real stability](/RealRooted/theorems/real-stability/)).
+open upper half-plane (see [real stability](rr:real-stability)).
 
 For $\alpha,\beta\in\mathbb N^\sigma$ the generalized *Jensen multiplier* is
 $$J(\alpha,\beta)=\prod_i\frac{(\beta_i)_{\alpha_i}}{\beta_i^{\alpha_i}}$$
@@ -112,7 +112,7 @@ Here $a$ need not have constant term $1$, and $B$ and $C$ do not depend on $m$, 
 ## Use
 
 The uniform bound is the growth estimate in the stable-limit criteria (Theorem 5.1 of the paper)
-behind the [Borcea–Brändén classification](/RealRooted/theorems/borcea-branden-classification/).
+behind the [Borcea–Brändén classification](rr:borcea-branden-classification).
 
 ## Proof
 

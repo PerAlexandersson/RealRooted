@@ -81,7 +81,7 @@ no zero of $f$ has multiplicity more than one above its multiplicity in $g$.
 ## Results
 
 For nonzero real-rooted polynomials we write $g\ll f$ if $g$ interlaces $f$, as on the
-[interlacing page](/RealRooted/concepts/interlacing/): the zeros interlace weakly and $f$ has the
+[interlacing page](rr:interlacing): the zeros interlace weakly and $f$ has the
 largest zero, so $\deg f-\deg g\in\{0,1\}$. Shared and repeated zeros are allowed. Let
 $W(g,f)=f'g-fg'$, and let $\mathrm{mult}_r(p)$ be the multiplicity of $r$ as a zero of $p$, which
 is $0$ if $p(r)\ne0$.

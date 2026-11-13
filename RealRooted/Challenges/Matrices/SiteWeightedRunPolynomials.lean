@@ -75,7 +75,6 @@ roots, and consecutive ones interlace.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 For run weights $u_k$ and site weights $z_1,\dots,z_N$ put
 $$Z_N(z_1,\dots,z_N)=\sum_{S\subseteq[N]}
 \Bigl(\prod_{R\in\mathrm{Runs}(S)}u_{|R|}\Bigr)\prod_{i\in S}z_i,$$
@@ -104,7 +103,7 @@ gives $B_N\ll B_{N+1}$. Zero site weights need no limiting argument.
 ## References
 
 [@Branden2015]. Related page: the [finite TP2 Hessenberg
-certificate](/RealRooted/theorems/tp2-hessenberg-certificate/).
+certificate](rr:tp2-hessenberg-certificate).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in the `RealRooted.Toeplitz` modules named in

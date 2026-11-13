@@ -61,7 +61,6 @@ $0<\delta<1$ its roots are simple and interlace the roots of $J_{m,0}'$.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 For $m\in\mathbb N$ and real $\delta,c,d,U,V$, the Jacobi deformation is the monic polynomial of
 degree $m$
 $$
@@ -98,7 +97,7 @@ real-rootedness with negative roots to all $\delta\ge0$.
 
 The theorem on the Jacobi deformation is due to P. Alexandersson (2026). For the
 Micchelli–Willoughby theorem see [@MicchelliWilloughby1979]. The Jacobi polynomials used in the
-proof are on the [Jacobi polynomials page](/RealRooted/families/jacobi-polynomials/).
+proof are on the [Jacobi polynomials page](rr:jacobi-polynomials).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in

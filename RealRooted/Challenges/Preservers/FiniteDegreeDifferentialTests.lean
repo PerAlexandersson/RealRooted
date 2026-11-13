@@ -99,8 +99,8 @@ interlacing images.
 ## Results
 
 A polynomial is *PF* (Pólya frequency) if it is zero or has nonnegative coefficients and only
-real, nonpositive roots. We write $f\ll g$ if $f=0$, $g=0$ or $f$ interlaces $g$; common roots
-are allowed. For a real polynomial $h=\sum_jh_jx^j$ let $h(D)=\sum_jh_jD^j$. The *degree-$N$
+real, nonpositive roots. We use the [zero-aware interlacing convention](rr:about). For a real
+polynomial $h=\sum_jh_jx^j$ let $h(D)=\sum_jh_jD^j$. The *degree-$N$
 test* of $h$ and its reversal, the *Jensen test*, are
 $$
 T_N(h)=h(D)\,x^N=\sum_{j\le N}\frac{N!}{(N-j)!}\,h_j\,x^{N-j},\qquad
@@ -151,7 +151,7 @@ following are equivalent:
 ## References
 
 The finite free additive convolution is treated on the
-[finite free convolutions](/RealRooted/theorems/finite-free-convolutions/) page.
+[finite free convolutions](rr:finite-free-convolutions) page.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in the `RealRooted.FiniteFreeAdditive`

@@ -151,7 +151,7 @@ is Laguerre–Pólya.
 
 **Theorem (examples).** The function $e^z$ is Laguerre–Pólya. If $a_k>0$ and
 $4a_ka_{k+2}\le a_{k+1}^2$ for all $k$, then $\sum_ka_kz^k$ is Laguerre–Pólya; this is
-[Hutchinson's theorem](/RealRooted/theorems/hutchinson/).
+[Hutchinson's theorem](rr:hutchinson).
 
 **Theorem (operator).** For $\varphi\colon\mathbb C\to\mathbb C$ and a real polynomial $g$ let
 $$
@@ -167,10 +167,10 @@ sequence if and only if $\sum_k\gamma_kz^k/k!$ is of type I.
 ## Use
 
 Type I functions give the Pólya--Schur description of PF multiplier sequences; see the
-[multiplier sequences](/RealRooted/concepts/multiplier-sequences/) page. For real-rooted
+[multiplier sequences](rr:multiplier-sequences) page. For real-rooted
 polynomials, Laguerre's inequality is on the
-[Wronskian criterion](/RealRooted/theorems/wronskian-criterion/) page, and the operator theorem
-rests on the [Hermite--Poulain theorem](/RealRooted/theorems/hermite-poulain/).
+[Wronskian criterion](rr:wronskian-criterion) page, and the operator theorem
+rests on the [Hermite--Poulain theorem](rr:hermite-poulain).
 
 ## Proof
 

@@ -101,7 +101,7 @@ of the edge-sum matrix.
 ## References
 
 See [@Lindstrom1973; @GesselViennot1985]. The kernel rows connect to the
-[Brändén–Saud Leite page](/RealRooted/theorems/branden-leite/).
+[Brändén–Saud Leite page](rr:branden-leite).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The path-cancellation argument lives in

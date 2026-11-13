@@ -79,7 +79,6 @@ independence polynomial.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 The square of the infinite path has vertex set $\mathbb N$ and edges $\{i,i+1\}$ (*short*) and
 $\{i,i+2\}$ (*long*). Give each short edge weight $u$ and each long edge weight $v$. Let
 $P_n(x)=P_n^{(u,v)}(x)$ be the weighted matching-generating polynomial of the path square on
@@ -111,7 +110,7 @@ squares, delete the edges at the last vertex.
 ## References
 
 The clique deletion theorem refines the induction in [@ChudnovskySeymour2007]; see the
-[Chudnovsky--Seymour page](/RealRooted/theorems/chudnovsky-seymour/).
+[Chudnovsky--Seymour page](rr:chudnovsky-seymour).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in

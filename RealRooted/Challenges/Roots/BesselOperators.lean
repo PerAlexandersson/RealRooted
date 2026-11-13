@@ -94,7 +94,7 @@ The statement on $\delta_hp$ uses the Hermite–Biehler theorem.
 ## References
 
 For the Hermite–Biehler theorem, see the
-[Hermite–Biehler page](/RealRooted/theorems/hermite-biehler-hurwitz/).
+[Hermite–Biehler page](rr:hermite-biehler-hurwitz).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in `RealRooted.Hermite.BesselOperatorFamily`

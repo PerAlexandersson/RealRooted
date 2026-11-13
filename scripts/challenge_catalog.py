@@ -43,6 +43,17 @@ ID_START = f"[{_LEAN_LETTER}]"
 ID_REST = f"[{_LEAN_LETTER}0-9'!?{_LEAN_SUBSCRIPT}]"
 ID_REST_DOT = f"[{_LEAN_LETTER}0-9'!?.{_LEAN_SUBSCRIPT}]"
 SECTIONS = ("concepts", "families", "theorems")
+TOPICS = {
+    "Interlacing": "Interlacing",
+    "Roots": "Roots",
+    "Preservers": "Preservers",
+    "PolyaFrequency": "Pólya frequency",
+    "Stability": "Stability",
+    "Matrices": "Matrices",
+    "Orthogonal": "Orthogonal",
+    "Graphs": "Graphs",
+    "Combinatorial": "Combinatorial",
+}
 PROVENANCE_TAGS = {
     "coauthored-paper": (
         "Coauthored paper",
@@ -128,6 +139,23 @@ class CatalogPage:
     title: str
     kind: str | None = None
     conjecture: str | None = None
+    symcat: tuple[str, ...] = ()
+
+    @property
+    def topic(self) -> str:
+        parts = pathlib.PurePosixPath(self.source_path).parts
+        # Root-level entry points predate the topical directory layout.
+        directory = parts[2] if len(parts) > 3 else "Combinatorial"
+        if directory not in TOPICS:
+            raise _source_error(self.source_path, f"unknown topic directory {directory}")
+        return TOPICS[directory]
+
+    @property
+    def symcat_labels(self) -> tuple[str, ...]:
+        return tuple(dict.fromkeys(
+            self.symcat + tuple(item.symcat for item in self.items if item.symcat)
+            + extract_sf_labels(self.content)
+        ))
 
     @property
     def items(self) -> tuple[CatalogItem, ...]:
@@ -495,6 +523,7 @@ def parse_challenge_source(
         "formalized",
         "tags",
         "references",
+        "symcat",
         "kind",
         "conjecture",
         "definitions",
@@ -515,6 +544,14 @@ def parse_challenge_source(
     formalized = _read_formalized(source_path, metadata, commit_date)
     tags = _read_tags(source_path, metadata.get("tags"))
     references = _read_references(source_path, metadata.get("references"))
+    symcat = metadata.get("symcat", [])
+    if isinstance(symcat, str):
+        symcat = [symcat]
+    if not isinstance(symcat, list) or not all(
+        isinstance(label, str) and label and not any(ch.isspace() for ch in label)
+        for label in symcat
+    ) or len(set(symcat)) != len(symcat):
+        raise _source_error(source_path, "symcat must be a label or an array of unique labels")
     definitions = _read_items(source_path, metadata.get("definitions"), "definition")
     theorems = _read_items(source_path, metadata.get("theorems"), "theorem")
     if not definitions and not theorems:
@@ -531,6 +568,7 @@ def parse_challenge_source(
     return CatalogPage(
         kind=kind,
         conjecture=conjecture,
+        symcat=tuple(symcat),
         source_path=source_path,
         section=section,
         slug=slug,
@@ -1113,6 +1151,7 @@ def render_markdown(
     bibliography: dict[str, dict[str, Any]] | None = None,
     base_path: str = BASE_PATH,
     generated_references: str = "",
+    catalog_links: dict[str, str] | None = None,
 ) -> str:
     """Render the deliberate Markdown subset, escaping raw HTML by default.
 
@@ -1120,8 +1159,9 @@ def render_markdown(
     continue on indented lines, fenced code blocks (also indented inside a
     list item), inline code, `**strong**`, `*emphasis*`, inline or
     reference-style links (`[text](url)`, `[text][id]` with `[id]: url`), and
-    TeX math `$…$` and `$$…$$`, which is left untouched for KaTeX.  A paragraph
-    that consists of one `$$…$$` formula is rendered as display math.
+    TeX math with dollar or backslash delimiters, left untouched for KaTeX.
+    A paragraph consisting of one double-dollar or bracket-delimited formula
+    is rendered as display math.
     """
     lines = markdown.splitlines()
     references: dict[str, str] = {}
@@ -1142,12 +1182,15 @@ def render_markdown(
     code_indent = 0
 
     def inline(text: str) -> str:
-        return _inline(text, references, symcat_labels, bibliography, base_path)
+        return _inline(text, references, symcat_labels, bibliography, base_path, catalog_links)
 
     def flush_paragraph() -> None:
         if paragraph:
             text = " ".join(paragraph)
-            if re.fullmatch(r"\$\$.+\$\$[.,;]?", text, re.DOTALL):
+            if re.fullmatch(
+                r"(?:\$\$(?:(?!\$\$).)+\$\$|\\\[(?:(?!\\\[|\\\]).)+\\\])[.,;]?",
+                text, re.DOTALL,
+            ):
                 blocks.append(f'<div class="math-display">{inline(text)}</div>')
             else:
                 blocks.append(f"<p>{inline(text)}</p>")
@@ -1230,12 +1273,18 @@ def _anchor(text: str) -> str:
     return plain or "section"
 
 
+def _topic_anchor(topic: str) -> str:
+    folded = unicodedata.normalize("NFKD", topic)
+    return "topic-" + _anchor("".join(ch for ch in folded if not unicodedata.combining(ch)))
+
+
 def _inline(
     text: str,
     references: dict[str, str] | None = None,
     symcat_labels: dict[str, str] | None = None,
     bibliography: dict[str, dict[str, Any]] | None = None,
     base_path: str = BASE_PATH,
+    catalog_links: dict[str, str] | None = None,
 ) -> str:
     references = references or {}
     symcat_labels = symcat_labels or {}
@@ -1256,7 +1305,10 @@ def _inline(
         maths.append(match.group(0))
         return f"\x01{len(maths) - 1}\x01"
 
-    rendered = re.sub(r"\$\$.+?\$\$|\$[^$\n]+?\$", stash_math, rendered)
+    rendered = re.sub(
+        r"\$\$.+?\$\$|\$[^$\n]+?\$|\\\[.+?\\\]|\\\(.+?\\\)",
+        stash_math, rendered, flags=re.DOTALL,
+    )
 
     def citation_group(match: re.Match[str]) -> str:
         rendered_citations: list[str] = []
@@ -1282,6 +1334,11 @@ def _inline(
         if raw_target.startswith("sf:"):
             href = symcat_labels.get(raw_target.removeprefix("sf:"))
             raw_target = SYMCAT_ORIGIN + href if href else raw_target
+        elif raw_target.startswith("rr:"):
+            slug, separator, fragment = raw_target[3:].partition("#")
+            if catalog_links is None or slug not in catalog_links:
+                raise CatalogError(f"unknown catalog slug {slug}")
+            raw_target = catalog_links[slug] + (separator + fragment if separator else "")
         elif raw_target.startswith(BASE_PATH) and base_path != BASE_PATH:
             raw_target = base_path + raw_target.removeprefix(BASE_PATH)
         safe = _safe_url(raw_target)
@@ -1343,6 +1400,66 @@ def _csl_year(csl: dict[str, Any]) -> str:
     return ""
 
 
+def _bibtex_fields(bibtex: str) -> dict[str, str]:
+    """Read literal fields from the committed BibTeX (balanced braces/quotes)."""
+    fields: dict[str, str] = {}
+    cursor = bibtex.find(",") + 1
+    while cursor > 0 and cursor < len(bibtex):
+        match = re.match(r"\s*,?\s*([A-Za-z-]+)\s*=\s*", bibtex[cursor:])
+        if not match:
+            break
+        key = match.group(1).lower()
+        cursor += match.end()
+        start = cursor
+        opener = bibtex[cursor:cursor + 1]
+        if opener in {"{", '"'}:
+            cursor += 1
+            start = cursor
+            depth = 1
+            while cursor < len(bibtex):
+                char = bibtex[cursor]
+                if char == "\\":
+                    cursor += 2
+                    continue
+                if opener == "{" and char == "{":
+                    depth += 1
+                elif (opener == "{" and char == "}") or (opener == '"' and char == '"'):
+                    depth -= 1
+                    if not depth:
+                        break
+                cursor += 1
+            value = bibtex[start:cursor]
+            cursor += 1
+        else:
+            while cursor < len(bibtex) and bibtex[cursor] not in ",}\n":
+                cursor += 1
+            value = bibtex[start:cursor].strip()
+        fields[key] = _bibtex_text(value)
+    return fields
+
+
+def _bibtex_text(value: str) -> str:
+    """Remove case-protection braces and decode common BibTeX text accents."""
+    maths: list[str] = []
+
+    def stash_math(match: re.Match[str]) -> str:
+        maths.append(match.group(0))
+        return f"\x00{len(maths) - 1}\x00"
+
+    value = re.sub(r"\$[^$]+\$", stash_math, value)
+    accents = {'"': "\u0308", "'": "\u0301", "`": "\u0300", "^": "\u0302",
+               "~": "\u0303", "=": "\u0304", ".": "\u0307", "c": "\u0327",
+               "v": "\u030c", "H": "\u030b", "u": "\u0306"}
+    value = re.sub(
+        r"\\([\"'`^~=.cvHu])\s*\{?([A-Za-z])\}?",
+        lambda m: unicodedata.normalize("NFC", m.group(2) + accents[m.group(1)]), value,
+    )
+    value = re.sub(r"\\([&%_#$])", r"\1", value)
+    value = value.replace("{", "").replace("}", "").replace("~", " ")
+    value = re.sub(r"\x00(\d+)\x00", lambda m: maths[int(m.group(1))], value)
+    return " ".join(value.split())
+
+
 def _reference_list(
     citations: tuple[Citation, ...], bibliography: dict[str, dict[str, Any]]
 ) -> str:
@@ -1350,8 +1467,11 @@ def _reference_list(
     for citation in citations:
         entry = bibliography[citation.key]
         csl = entry["csl"]
+        bib = _bibtex_fields(entry["bibtex"])
         authors = _csl_authors(csl)
-        title = csl.get("title") if isinstance(csl.get("title"), str) else citation.key
+        title = bib.get("title") or (
+            csl.get("title") if isinstance(csl.get("title"), str) else citation.key
+        )
         doi = csl.get("DOI") if isinstance(csl.get("DOI"), str) else ""
         url = csl.get("URL") if isinstance(csl.get("URL"), str) else ""
         target = f"https://doi.org/{doi}" if doi else url
@@ -1373,6 +1493,15 @@ def _reference_list(
             venue_parts.append(f"({issue})")
         if pages:
             venue_parts.append(pages)
+        if re.match(r"\s*@book\s*\{", entry["bibtex"], re.I):
+            series = bib.get("series") or csl.get("collection-title", "")
+            publisher = bib.get("publisher") or csl.get("publisher", "")
+            book_volume = bib.get("volume") or volume
+            venue_parts = [str(series)] if series else []
+            if book_volume:
+                venue_parts.append(f"vol. {book_volume}")
+            if publisher:
+                venue_parts.append(str(publisher))
         year = _csl_year(csl)
         if year:
             venue_parts.append(year)
@@ -1457,6 +1586,7 @@ def _template(
         .replace("{{ script }}", script)
         .replace("{{ results }}", results)
         .replace("{{ authors }}", authors)
+        .replace("{{ about }}", _relative_url(f"{base_path}about/", current_url, base_path))
     )
 
 
@@ -1511,26 +1641,11 @@ def _tag_badges(tags: Iterable[str]) -> str:
     return '<span class="provenance-tags">' + "".join(badges) + "</span>" if badges else ""
 
 
-def _tag_legend() -> str:
-    entries = []
-    for tag, (label, description) in PROVENANCE_TAGS.items():
-        entries.append(
-            f'<li>{_tag_badges((tag,))}<span>{html.escape(description)}.</span></li>'
-        )
-    return (
-        '<aside class="provenance-legend" aria-labelledby="provenance-heading">'
-        '<h2 id="provenance-heading">Provenance tags</h2><ul>'
-        + "".join(entries)
-        + "</ul></aside>"
-    )
-
-
-def _count(count: int, word: str, symbol: str, kind: str) -> str:
+def _count(count: int, word: str, kind: str) -> str:
     words = _plural(count, word)
     return (
         f'<span class="count count--{kind}" title="{words}">'
-        f'<span aria-hidden="true">{symbol}</span> {count}'
-        f'<span class="visually-hidden"> {words.split(" ", 1)[1]}</span></span>'
+        f'{words}</span>'
     )
 
 
@@ -1538,25 +1653,31 @@ def _counts(page: CatalogPage) -> str:
     """What a page contains: its numbers of definitions and theorems."""
     parts = []
     if page.definitions:
-        parts.append(_count(len(page.definitions), "definition", "≔", "definition"))
+        parts.append(_count(len(page.definitions), "definition", "definition"))
     if page.theorems:
-        parts.append(_count(len(page.theorems), "theorem", "⊢", "theorem"))
-    return '<span class="card-counts">' + "".join(parts) + "</span>"
+        parts.append(_count(len(page.theorems), "theorem", "theorem"))
+    return '<span class="card-counts">' + ' <span aria-hidden="true">·</span> '.join(parts) + "</span>"
+
+
+def _title_sort_key(title: str) -> str:
+    return re.sub(r"^(?:a|an|the)\s+", "", title.casefold())
+
+
+def _headline(page: CatalogPage) -> CatalogItem | None:
+    return next((item for item in page.theorems if item.headline),
+                next(iter(page.theorems), None))
 
 
 def _page_card(page: CatalogPage, href: str) -> str:
     kind = "theorem" if page.section == "theorems" else "definition"
     label = SECTION_LABELS[page.section]
     year = page.years[0] if page.years else ""
-    selected = next((item for item in page.theorems if item.headline), None)
-    if selected is None:
-        selected = next(iter(page.theorems), None)
+    selected = _headline(page)
     headline_html = (f'<span class="card-headlines">{html.escape(selected.label or "")}</span>'
-                     f'<span class="card-context"><code>{html.escape(selected.name)}</code></span>'
                      if selected else "")
     return (
         f'<li class="catalog-card catalog-card--{kind} catalog-card--{page.section}" '
-        f'data-title="{html.escape(page.title.casefold(), quote=True)}" data-year="{year}" '
+        f'data-title="{html.escape(_title_sort_key(page.title), quote=True)}" data-year="{year}" '
         f'data-formalized="{page.formalized}" data-tags="{html.escape(" ".join(page.tags))}">'
         f'<a href="{html.escape(href, quote=True)}">'
         f'<span class="card-top"><span class="kind-badge kind-badge--{kind}">{label}</span>'
@@ -1587,8 +1708,8 @@ def _sort_controls() -> str:
 def _catalog_group(identifier: str, title: str, intro: str, rows: str) -> str:
     return (
         f'<section class="catalog-group" id="{identifier}">'
-        f"<h2>{title}</h2><p class=\"group-intro\">{intro}</p>"
-        f'<ul class="catalog-index" data-catalog-list>{rows}</ul></section>'
+        f"<h2>{title}</h2>" + (f'<p class="group-intro">{intro}</p>' if intro else "")
+        + f'<ul class="catalog-index" data-catalog-list>{rows}</ul></section>'
     )
 
 
@@ -1726,7 +1847,6 @@ def _results_page(
         "<h1>All results</h1>"
         f"<p class=\"lede\">All {_plural(definitions, 'definition')} and "
         f"{_plural(theorems, 'theorem')} in the catalog.</p>"
-        + _tag_legend()
         + '<p>Filters apply to this page. ' + " ".join(
             f'<a href="{("../results/" if n == 0 else f"../results-{n + 1}/")}">{n + 1}</a>'
             for n in range((total_entries + limit - 1) // limit)
@@ -1759,8 +1879,10 @@ class _HrefCollector(HTMLParser):
     def __init__(self) -> None:
         super().__init__()
         self.hrefs: list[str] = []
+        self.ids: set[str] = set()
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        self.ids.update(value for name, value in attrs if name == "id" and value is not None)
         if tag == "a":
             self.hrefs.extend(value for name, value in attrs if name == "href" and value is not None)
 
@@ -1768,15 +1890,23 @@ class _HrefCollector(HTMLParser):
 def validate_internal_links(files: dict[str, str], base_path: str = BASE_PATH) -> None:
     """Reject generated links that cannot resolve under the project-site base path."""
     known = set(files)
+    documents: dict[str, _HrefCollector] = {}
     for source_name, document in files.items():
+        if not source_name.endswith(".html"):
+            continue
         collector = _HrefCollector()
         collector.feed(document)
+        documents[source_name] = collector
+    for source_name, collector in documents.items():
         source_directory = pathlib.PurePosixPath(source_name).parent
         for href in collector.hrefs:
             parsed = urlsplit(href)
-            if parsed.scheme or parsed.netloc or href.startswith("#"):
+            if parsed.scheme or parsed.netloc:
                 continue
-            if href.startswith("/"):
+            if not parsed.path:
+                target = source_name
+                target_path = ""
+            elif href.startswith("/"):
                 if not href.startswith(base_path):
                     raise CatalogError(f"{source_name}: link escapes {base_path}: {href}")
                 target_path = href[len(base_path) :].split("#", 1)[0]
@@ -1790,6 +1920,147 @@ def validate_internal_links(files: dict[str, str], base_path: str = BASE_PATH) -
                 target = target.rstrip("/") + "/index.html"
             if target not in known:
                 raise CatalogError(f"{source_name}: broken internal link {href}")
+            if parsed.fragment and target in documents and parsed.fragment not in documents[target].ids:
+                raise CatalogError(f"{source_name}: broken internal fragment {href}")
+
+
+PROSE_PATTERNS = {
+    "backticks": re.compile(r"`+[^`]+`+"),
+    "the-library": re.compile(r"\bthe\s+library\b", re.I),
+    "lean": re.compile(r"\bLean\b", re.I),
+    "no-published-source": re.compile(r"\bNo\s+published\s+source\b", re.I),
+    "unless-stated": re.compile(r"\bunless\s+stated\b", re.I),
+    "bracket-display": re.compile(r"\\\["),
+    "absolute-link": re.compile(r"(?<![\w./-])/RealRooted/"),
+}
+
+
+def prose_findings(pages: Iterable[CatalogPage]) -> set[str]:
+    """Stable baseline records: source path, rule, normalized offending text."""
+    findings: set[str] = set()
+    allowed = ("Results", "Use", "Proof", "References")
+    for page in pages:
+        def add(rule: str, text: str) -> None:
+            findings.add(f"{page.source_path}\t{rule}\t{' '.join(text.split())}")
+
+        # Work on paragraphs so wrapped phrases cannot evade lint. Code fences
+        # are removed first; inline code is deliberately still checked.
+        prose: list[str] = []
+        fence: str | None = None
+        for line in page.content.splitlines():
+            marker = re.match(r"\s*(`{3,}|~{3,})", line)
+            if marker:
+                token = marker.group(1)
+                if fence is None:
+                    fence = token
+                elif token[0] == fence[0] and len(token) >= len(fence):
+                    fence = None
+                prose.append("")
+            elif fence is None:
+                prose.append(line)
+        headings: list[str] = []
+        for line in prose:
+            match = re.fullmatch(r"##\s+(.+?)\s*", line)
+            if match:
+                heading = match.group(1)
+                if heading not in allowed:
+                    add("h2-unknown", heading)
+                elif heading in headings:
+                    add("h2-duplicate", heading)
+                elif any(allowed.index(previous) > allowed.index(heading) for previous in headings):
+                    add("h2-order", heading)
+                if heading in allowed:
+                    headings.append(heading)
+        for required in ("Results", "References"):
+            if required not in headings:
+                add("h2-missing", required)
+        for paragraph in re.split(r"\n\s*\n", "\n".join(prose)):
+            text = " ".join(paragraph.split())
+            for rule, pattern in PROSE_PATTERNS.items():
+                if pattern.search(text):
+                    add(rule, text)
+    return findings
+
+
+def validate_prose_baseline(repo_root: pathlib.Path, pages: Iterable[CatalogPage]) -> None:
+    path = repo_root / "scripts/prose_baseline.txt"
+    try:
+        baseline = {line for line in path.read_text(encoding="utf-8").splitlines()
+                    if line and not line.startswith("#")}
+    except OSError as error:
+        raise CatalogError(f"cannot load prose baseline: {error}") from error
+    findings = prose_findings(pages)
+    errors = [f"new prose offender: {record}" for record in sorted(findings - baseline)]
+    errors += [f"stale prose baseline entry: {record}" for record in sorted(baseline - findings)]
+    if errors:
+        raise CatalogError("\n".join(errors))
+
+
+def load_redirects(repo_root: pathlib.Path, catalog_links: dict[str, str]) -> dict[str, str]:
+    """Map retired section/slug paths directly to existing canonical URLs."""
+    path = repo_root / "website/redirects.toml"
+    try:
+        data = tomllib.loads(path.read_text(encoding="utf-8"))
+    except (OSError, tomllib.TOMLDecodeError) as error:
+        raise CatalogError(f"cannot load redirects: {error}") from error
+    if set(data) != {"redirects"} or not isinstance(data["redirects"], dict):
+        raise CatalogError(f"{path}: expected a [redirects] table")
+    redirects: dict[str, str] = {}
+    for retired, slug in data["redirects"].items():
+        if not re.fullmatch(r"(?:concepts|families|theorems)/[a-z0-9]+(?:-[a-z0-9]+)*", retired):
+            raise CatalogError(f"{path}: invalid retired path {retired}")
+        if not isinstance(slug, str) or slug not in catalog_links:
+            raise CatalogError(f"{path}: unknown redirect target {slug}")
+        redirects[retired + "/index.html"] = catalog_links[slug]
+    return redirects
+
+
+def _page_header(page: CatalogPage, labels: dict[str, str], base_path: str) -> str:
+    topic_href = f"{base_path}#{_topic_anchor(page.topic)}"
+    parts = [
+        '<div class="page-metadata">',
+        f'<p class="page-attribution">{html.escape(_attribution(page))}</p>'
+        if _attribution(page) else "",
+        _tag_badges(page.tags),
+        f'<p class="topic-breadcrumb"><a href="{topic_href}">{html.escape(page.topic)}</a>'
+        f' › <a href="{base_path}{page.section}/">{SECTION_LABELS[page.section]}</a></p>',
+    ]
+    if page.symcat_labels:
+        links = [f'<a href="{html.escape(SYMCAT_ORIGIN + labels[label], quote=True)}">'
+                 f'{html.escape(label)}</a>' for label in page.symcat_labels]
+        parts.append('<p class="page-symcat">SymCat: ' + " · ".join(links) + "</p>")
+    headline = _headline(page)
+    if headline:
+        parts.append(f'<p class="page-headline">Main result: <a href="#{headline.anchor}">'
+                     f'{html.escape(headline.label or headline.name)}</a></p>')
+    return "".join(parts) + "</div>"
+
+
+class _SummaryText(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.in_paragraph = False
+        self.done = False
+        self.parts: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag == "p" and not self.done:
+            self.in_paragraph = True
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag == "p" and self.in_paragraph:
+            self.in_paragraph = False
+            self.done = True
+
+    def handle_data(self, data: str) -> None:
+        if self.in_paragraph:
+            self.parts.append(data)
+
+
+def _summary(rendered_content: str) -> str:
+    parser = _SummaryText()
+    parser.feed(rendered_content)
+    return " ".join("".join(parser.parts).split())
 
 
 def render_site(
@@ -1808,11 +2079,16 @@ def render_site(
         raise CatalogError("site origin must be an absolute HTTP(S) URL")
     site_origin = site_origin.rstrip("/")
     symcat_labels, bibliography = load_symcat_snapshots(repo_root)
+    catalog_links = {"about": f"{base_path}about/"}
+    for page in pages:
+        if page.slug in catalog_links:
+            raise _source_error(page.source_path, f"duplicate catalog slug {page.slug}")
+        catalog_links[page.slug] = _page_url(page, base_path)
     for page in pages:
         for citation in page.citations:
             if citation.key not in bibliography:
                 raise _source_error(page.source_path, f"unknown bibliography key {citation.key}")
-        for label in extract_sf_labels(page.content):
+        for label in page.symcat_labels:
             if label not in symcat_labels:
                 raise _source_error(
                     page.source_path, f"unknown symmetricfunctions.com label {label}"
@@ -1826,12 +2102,11 @@ def render_site(
     files: dict[str, str] = {}
     author_entries = build_author_index(pages, load_author_profiles(repo_root))
     grouped = {section: [page for page in pages if page.section == section] for section in SECTIONS}
-    index_pages = sorted(pages, key=lambda page: (page.title.casefold(), page.slug))
-    topic_pages = [page for page in index_pages if page.section != "theorems"]
-    theorem_cards = [
-        ((page.title.casefold(), page.slug), _page_card(page, f"{page.section}/{page.slug}/"))
-        for page in index_pages if page.section == "theorems"
-    ]
+    index_pages = sorted(pages, key=lambda page: (_title_sort_key(page.title), page.slug))
+    topics = [topic for topic in TOPICS.values() if any(page.topic == topic for page in pages)]
+    jump_bar = '<nav class="topic-jump" id="topics" aria-label="Topics">' + "".join(
+        f'<a href="#{_topic_anchor(topic)}">{html.escape(topic)}</a>' for topic in topics
+    ) + '</nav>'
     total_definitions = sum(len(page.definitions) for page in pages)
     total_theorems = sum(len(page.theorems) for page in pages)
     total_headlines = sum(item.headline for page in pages for item in page.theorems)
@@ -1849,30 +2124,23 @@ def render_site(
             else ""
         )
         + ".</p></section>"
-        + _tag_legend()
+        + jump_bar
         + _sort_controls()
         + '<div class="catalog-groups">'
-        + _catalog_group(
-            "topics",
-            "Concepts and families",
-            "Concepts and polynomial families, with the number of definitions (≔) and "
-            "theorems (⊢) on each page.",
-            "".join(_page_card(page, f"{page.section}/{page.slug}/") for page in topic_pages),
-        )
-        + _catalog_group(
-            "theorems",
-            "Theorems",
-            "Theorem pages. "
-            "The complete list is under <a href=\"results/\">All results</a>.",
-            "".join(card for _, card in theorem_cards),
-        )
+        + "".join(_catalog_group(
+            _topic_anchor(topic), html.escape(topic), "",
+            "".join(_page_card(page, f"{page.section}/{page.slug}/")
+                    for page in index_pages if page.topic == topic),
+        ) for topic in topics)
         + "</div></main>"
     )
     files["index.html"] = _template(
         repo_root, index_body, "RealRooted catalog", base_path, base_path
     )
     for section, section_pages in grouped.items():
-        links = "".join(_page_card(page, f"{page.slug}/") for page in section_pages)
+        links = "".join(_page_card(page, f"{page.slug}/") for page in sorted(
+            section_pages, key=lambda page: (_title_sort_key(page.title), page.slug)
+        ))
         body = (
             "<main class=\"section-page\"><p class=\"eyebrow\">Browse the catalog</p>"
             f"<h1>{html.escape(section.title())}</h1>"
@@ -1883,6 +2151,7 @@ def render_site(
         files[f"{section}/index.html"] = _template(
             repo_root, body, section.title(), section_url, base_path
         )
+    summaries: dict[str, str] = {}
     for page in pages:
         definition_html = (
             _item_list(page, page.definitions, resolved, revision, symcat_labels)
@@ -1915,19 +2184,17 @@ def render_site(
             symcat_labels=symcat_labels,
             bibliography=bibliography,
             base_path=base_path,
+            catalog_links=catalog_links,
             generated_references=_reference_list(page.citations, bibliography)
             if page.citations
             else "",
         )
-        if page.tags:
-            rendered_content = rendered_content.replace(
-                "</h1>", "</h1>" + _tag_badges(page.tags), 1
-            )
+        summaries[page.slug] = _summary(rendered_content)
+        rendered_content = rendered_content.replace(
+            "</h1>", "</h1>" + _page_header(page, symcat_labels, base_path), 1
+        )
         body = (
-            "<main class=\"catalog-page\"><p class=\"breadcrumb\"><a href=\"../\">"
-            + html.escape(page.section.title())
-            + "</a></p>"
-            + "<article class=\"prose\">"
+            "<main class=\"catalog-page\"><article class=\"prose\">"
             + rendered_content
             + "</article><div class=\"lean-results\">"
             + selected
@@ -1960,6 +2227,29 @@ def render_site(
         f"{base_path}authors/",
         base_path,
     )
+    about_source = (repo_root / "website/about.md").read_text(encoding="utf-8")
+    about_body = '<main class="catalog-page"><article class="prose">' + render_markdown(
+        about_source, base_path=base_path, catalog_links=catalog_links,
+    ) + '</article></main>'
+    files["about/index.html"] = _template(
+        repo_root, about_body, "Conventions", f"{base_path}about/", base_path,
+    )
+    for retired, target in load_redirects(repo_root, catalog_links).items():
+        if retired in files:
+            raise CatalogError(f"redirect collides with an existing page: {retired}")
+        # Relative URLs also work when the preview is served below a different base.
+        current = base_path + retired.removesuffix("index.html")
+        href = html.escape(_relative_url(target, current, base_path), quote=True)
+        files[retired] = (
+            '<!doctype html><html lang="en"><head><meta charset="utf-8">'
+            '<meta name="viewport" content="width=device-width, initial-scale=1">'
+            '<meta name="color-scheme" content="light dark">'
+            f'<meta http-equiv="refresh" content="0; url={href}">'
+            f'<link rel="canonical" href="{html.escape(site_origin + target, quote=True)}">'
+            '<title>Page moved · RealRooted</title></head><body><main>'
+            f'<h1>Page moved</h1><p><a href="{href}">Continue to the catalog page</a>.</p>'
+            '</main></body></html>\n'
+        )
     manifest = {
         "schema_version": 1,
         "revision": revision,
@@ -1969,6 +2259,13 @@ def render_site(
                 "title": page.title,
                 "url": _page_url(page, base_path),
                 "source_path": page.source_path,
+                "topic": page.topic,
+                "section": page.section,
+                "summary": summaries[page.slug],
+                "headline": {"name": _headline(page).name, "label": _headline(page).label}
+                if _headline(page) else None,
+                "symcat": list(page.symcat_labels),
+                "references": [citation.key for citation in page.citations],
                 "authors": list(page.authors),
                 "years": list(page.years),
                 "formalized": page.formalized,
@@ -1992,6 +2289,14 @@ def render_site(
         ],
     }
     files["catalog-manifest.json"] = json.dumps(manifest, indent=2, sort_keys=True) + "\n"
+    files["llms.txt"] = "# RealRooted catalog\n\n" + "\n".join(
+        " — ".join((page.title, headline.label or "", headline.name,
+                    site_origin + _page_url(page, base_path)))
+        if (headline := _headline(page)) else " — ".join((
+            page.title, "", "", site_origin + _page_url(page, base_path)
+        ))
+        for page in index_pages
+    ) + "\n"
     asset = repo_root / "website" / "assets" / "site.css"
     files["assets/site.css"] = asset.read_text(encoding="utf-8")
     script = repo_root / "website" / "assets" / "site.js"

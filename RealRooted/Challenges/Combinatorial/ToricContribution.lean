@@ -80,7 +80,7 @@ Xiao.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; common roots are allowed unless stated. A list
+A list
 $(f_0,\dots,f_k)$ is an *interlacing sequence* if $f_i\ll f_j$ for all $i<j$, not only for
 consecutive indices. For $n=2m+\varepsilon$ with $\varepsilon\in\{0,1\}$ and $0\le j\le m$, the
 toric $g$-contribution polynomial is
@@ -118,7 +118,7 @@ every positive combination real-rooted.
 ## References
 
 [@Xiao2026x]. Common interleavers are described on the
-[common interleaver page](/RealRooted/concepts/common-interleavers/). See also the
+[common interleaver page](rr:common-interleavers). See also the
 [toric $g$-contribution polynomial](sf:toricGContributionPolynomial) on symmetricfunctions.com;
 Xiao's cross-size interlacing theorem there is a different statement.
 <!-- /realrooted-catalog-content -->

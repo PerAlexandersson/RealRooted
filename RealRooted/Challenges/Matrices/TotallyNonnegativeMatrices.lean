@@ -167,7 +167,6 @@ sequences.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 A real matrix is **totally nonnegative** (TNN) if every square minor is nonnegative. Products of
 TNN matrices are TNN, by the Cauchy–Binet formula.
 

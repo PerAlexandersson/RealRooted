@@ -116,7 +116,7 @@ $\Delta_1 q(x) = q(x+1) - q(x)$.
 
 The Euler numerator criterion underlies Brenti's theorem on Euler numerators with roots in
 $[-1,0]$ and Wagner's product theorem for polynomial values; both are on the
-[Hadamard products](/RealRooted/theorems/hadamard-products/) page.
+[Hadamard products](rr:hadamard-products) page.
 
 ## Proof
 

@@ -68,7 +68,7 @@ with negative roots to two polynomials with simple negative roots that strictly 
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; common roots are allowed unless stated. For integers
+For integers
 $N\ge1$ and $0\le\ell\le N$, the *level-$\ell$ factorial compression* of a polynomial $p$ is
 $$
 T_{N,\ell}\,p=\sum_{k\le N,\ 2k\le N+\ell}\frac{(N-k)!}{(N+\ell-2k)!}\,p_k\,x^k,

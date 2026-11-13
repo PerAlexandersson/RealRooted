@@ -64,9 +64,8 @@ positive roots and consecutive rows have no common root.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 Let $A$ be a real $d\times d$ matrix with $d\ge2$ satisfying the hypotheses of the
-[finite TP2 Hessenberg certificate](/RealRooted/theorems/tp2-hessenberg-certificate/)
+[finite TP2 Hessenberg certificate](rr:tp2-hessenberg-certificate)
 (TP2, weakly decreasing columns, $A_{ij}=A_{jj}=c_j$ for $i\le j$) and $\det A>0$. Let $P_k(t)$
 be the coefficients of $1/(\det(I+zA)-tz)$.
 

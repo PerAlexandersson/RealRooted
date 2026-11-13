@@ -65,8 +65,6 @@ real-rooted and interlaced by the odd section.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
-
 **Theorem (right-half-plane stability).** Let $n\ge0$ and let $c_0,\dots,c_{n-1}$ be complex
 numbers with $\sum_{k<n}|c_k|^2/\binom nk\le1$. Then
 $$
@@ -96,7 +94,7 @@ are simple, the roots of $G_a$ are simple, and $O_n$ and $G_a$ have no common ro
 
 We obtain the second theorem from the first via a Joukowski substitution. For $a=0$ the
 polynomial $x\,O_n(x^2)+E_n(x^2)$ is $(1+x)^{2n}$. For Hurwitz-stability background, see the
-[Garloff–Wagner page](/RealRooted/theorems/garloff-wagner-hurwitz/).
+[Garloff–Wagner page](rr:garloff-wagner-hurwitz).
 
 ## References
 

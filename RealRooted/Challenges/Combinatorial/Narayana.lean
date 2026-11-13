@@ -165,8 +165,8 @@ $x^n\mapsto N_{n,m}(x)$ preserves Pólya-frequency polynomials.
 ## Results
 
 A real polynomial is *Pólya-frequency* (`IsPFPolynomial`) if its coefficients are nonnegative
-and it is zero or real-rooted with all zeros $\le0$. We write $f\ll g$ if $f$ interlaces $g$;
-common roots are allowed. For $m,n\ge0$ the generalized Narayana polynomial is
+and it is zero or real-rooted with all zeros $\le0$.  For $m,n\ge0$ the generalized Narayana
+polynomial is
 $$
 N_{n,m}(x) =
 \sum_{k=0}^{n} \frac{\binom{n}{k}\binom{n+m}{k}}{\binom{m+k}{k}}\, x^k .

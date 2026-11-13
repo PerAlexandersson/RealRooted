@@ -69,7 +69,7 @@ $\mu_k$ in place of $\lambda_k$.
 ## Use
 
 The theorem is the tool behind the
-[Cauchy interlacing theorem](/RealRooted/theorems/cauchy-interlacing/) and Weyl's rank-one
+[Cauchy interlacing theorem](rr:cauchy-interlacing) and Weyl's rank-one
 interlacing.
 
 ## Proof

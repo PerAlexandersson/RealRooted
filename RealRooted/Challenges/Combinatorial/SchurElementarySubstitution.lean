@@ -178,7 +178,6 @@ condition on the active positions.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 For a finite alphabet $\alpha$ let $e_m(\alpha)$ be the coefficient of $x^m$ in
 $\prod_i(1+\alpha_i x)$, with $e_m=0$ for $m<0$. For weakly decreasing column heights
 $h=\lambda'$ and $k=\mu'$ (the shorter list padded with zeros to a common length $n$), set

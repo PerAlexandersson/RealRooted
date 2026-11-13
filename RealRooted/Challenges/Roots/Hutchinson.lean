@@ -47,7 +47,7 @@ sequences.
 
 ## Use
 
-This is the entire-function form of [Kurtz's criterion](/RealRooted/theorems/kurtz/), which
+This is the entire-function form of [Kurtz's criterion](rr:kurtz), which
 requires strict inequalities and concerns polynomials.
 
 ## Proof

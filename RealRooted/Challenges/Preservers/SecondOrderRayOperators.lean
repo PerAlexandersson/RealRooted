@@ -168,7 +168,7 @@ inequality contradict the reality of all roots for large $n$.
 
 ## References
 
-See the [operator preservers](/RealRooted/theorems/operator-preservers/) page for background
+See the [operator preservers](rr:operator-preservers) page for background
 on PF polynomials and preservers.
 <!-- /realrooted-catalog-content -->
 

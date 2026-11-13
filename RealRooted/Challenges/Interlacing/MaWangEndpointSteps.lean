@@ -105,7 +105,6 @@ the endpoint root holds, and the affine step sequences with confined roots are c
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 Ma and Wang [@MaWang2008, Theorem 2 and Corollary 3] study sequences of real-rooted
 polynomials obtained by differential steps whose roots stay in a window. For $c,a,b\in\mathbb R$
 let
@@ -161,7 +160,7 @@ Pólya frequency polynomials if and only if $a$ and $r$ are natural numbers.
 
 [@MaWang2008]. The closed-window step is an instance of the interval differential steps on the
 page on [basis transforms preserving real-rootedness and
-PF](/RealRooted/theorems/basis-transform-preservers/).
+PF](rr:basis-transform-preservers).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in the `RealRooted.MaWang` modules

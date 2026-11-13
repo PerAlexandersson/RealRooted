@@ -165,7 +165,7 @@ so its coefficients are asymptotically normal.
   $n\ge1$, variance $(n+2)/12$ [David–Barton; Bender]. The type $B$ Eulerian polynomials have
   mean $n/2$ and, for $n\ge2$, variance $(n+1)/12$.
 - Let $Q_n(x)=\sum_{k=0}^{n-1}N(n,k+1)x^k$, where $N(n,k)=\frac1n\binom nk\binom n{k-1}$. Thus
-  $Q_n=N_{n-1,1}$ in the notation of the [Narayana page](/RealRooted/families/narayana/), and
+  $Q_n=N_{n-1,1}$ in the notation of the [Narayana page](rr:narayana), and
   $(n+3)Q_{n+2}=(2n+3)(1+x)Q_{n+1}-n(1-x)^2Q_n$. For $n\ge1$, $Q_n$ has mean $(n-1)/2$ and
   variance $(n^2-1)/(4(2n-1))$.
 - The descent polynomials of Stirling permutations satisfy $P_{n+1}=(2n+1)xP_n+x(1-x)P_n'$. Their

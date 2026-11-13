@@ -97,7 +97,7 @@ entries equal to $1$.
 ## References
 
 [@DiaconisHicks2017]. The Chow polynomials appear on the
-[Brändén–Vecchi page](/RealRooted/theorems/branden-vecchi/).
+[Brändén–Vecchi page](rr:branden-vecchi).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

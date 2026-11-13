@@ -73,21 +73,21 @@ $S_G(t;q)$ is real-rooted.
 
 The statistic $\operatorname{asc}$ depends on the natural vertex order. At $q=1$ we obtain the
 ordinary acyclic sink polynomial. There the theorem is a special case of the result for
-[chordal claw-free graphs](/RealRooted/families/chordal-claw-free-acyclic-sinks/), since the
+[chordal claw-free graphs](rr:chordal-claw-free-acyclic-sinks), since the
 natural order is a reverse perfect elimination order and natural unit interval graphs are
-claw-free. See also the [minima polynomial](/RealRooted/families/minima-polynomial/) page.
+claw-free. See also the [minima polynomial](rr:minima-polynomial) page.
 
 ## Proof
 
 After a positive normalization, $S_G(t+1;q)$ is a weighted independence polynomial of $G$ with
 nonnegative vertex weights. It is real-rooted by the weighted form of the
-[Chudnovsky--Seymour theorem](/RealRooted/theorems/chudnovsky-seymour/).
+[Chudnovsky--Seymour theorem](rr:chudnovsky-seymour).
 
 ## References
 
 P. Alexandersson and L. Saud Maia Leite, unpublished manuscript (2026). Background on claw-free
-graphs is on the [Chudnovsky--Seymour](/RealRooted/theorems/chudnovsky-seymour/) and
-[Leake--Ryder](/RealRooted/theorems/leake-ryder/) pages.
+graphs is on the [Chudnovsky--Seymour](rr:chudnovsky-seymour) and
+[Leake--Ryder](rr:leake-ryder) pages.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

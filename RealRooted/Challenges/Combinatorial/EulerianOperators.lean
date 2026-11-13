@@ -140,7 +140,6 @@ of the same kind of one higher degree, and the images interlace.
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 A polynomial is *negative-simple* if it has positive leading coefficient, simple roots, and
 only real negative roots. For real $c$ and $a$, the *Euler step* is
 $$
@@ -244,15 +243,15 @@ third follows from the critical-sign criterion [@LiuWang2007; @MaWang2008] appli
 second-order form, in which the lag term has nonnegative coefficient
 $\lambda_n(t_{n+1}-t_n-1)$. The scaled step is $\gamma_n E_{\sigma,\beta_n/\gamma_n}$, and the
 step $E_n\mapsto E_{n+1}$ in the perturbed Eulerian rows is $s\,E_{1/s,\,n+1/s}$. For $s=1$,
-$E_n$ is the [Eulerian polynomial](/RealRooted/families/eulerian/)
+$E_n$ is the [Eulerian polynomial](rr:eulerian)
 $\sum_{\pi\in S_{n+1}}x^{\operatorname{des}(\pi)}$. The power series identities turn an Euler
 differential equation for a generating function into a recurrence for its coefficients.
 
 ## References
 
 The critical-sign criterion is on the
-[Ma–Wang and Liu–Wang page](/RealRooted/theorems/ma-wang-liu-wang/). Related Eulerian
-statements are on the [Eulerian compendium](/RealRooted/theorems/eulerian-compendium/) page.
+[Ma–Wang and Liu–Wang page](rr:ma-wang-liu-wang). Related Eulerian
+statements are on the [Eulerian compendium](rr:eulerian-compendium) page.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in `RealRooted.EulerOperator`,

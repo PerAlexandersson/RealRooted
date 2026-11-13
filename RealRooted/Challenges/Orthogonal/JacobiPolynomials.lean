@@ -204,7 +204,7 @@ label = "Consecutive Euler operators preserve Pólya frequency polynomials"
 The shifted Jacobi polynomials are real-rooted with simple roots in $(0,1)$, and consecutive
 ones interlace.
 
-We write $f\ll g$ if $f$ interlaces $g$; common roots are allowed unless stated. For real
+For real
 $\alpha,\beta$ the shifted Jacobi polynomial is
 $$
 P_n^{(\alpha,\beta)}(x) = \sum_{k=0}^{n} (-1)^k
@@ -248,7 +248,7 @@ $\bigl(H_{n+1}^{(a,b)}\bigr)'=\frac{(n+1)(n+b+1)}{a+1}H_n^{(a+1,b)}$ for $a>-1$,
 $r$-th derivative shifts $a$ to $a+r$. A first-order derivative recurrence in $n$, together
 with $H_0$ and $H_1$, determines the family. On the diagonal $a=b=m$ the polynomial
 $H_n^{(m,m)}$ is the Narayana polynomial; see the
-[Narayana polynomials](/RealRooted/families/narayana/) page.
+[Narayana polynomials](rr:narayana) page.
 
 ### Integral parameter shifts
 
@@ -282,7 +282,7 @@ hypergeometrischen Reihe,” *Journal für die reine und angewandte Mathematik* 
 (1859), 149–165; A. Markoff, “Sur les racines de certaines équations (seconde
 note),” *Mathematische Annalen* 27 (1886), 177–182. See also [@Szego1939,
 Chs. IV and VI]. The general three-term theory is on the
-[Favard page](/RealRooted/theorems/favard/).
+[Favard page](rr:favard).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in `RealRooted.Jacobi` and

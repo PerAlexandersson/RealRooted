@@ -79,7 +79,6 @@ coefficient to a PF polynomial, and respects the rootwise order on such polynomi
 
 ## Results
 
-We write $f\ll g$ if $f$ interlaces $g$; repeated and common roots are allowed unless stated.
 A polynomial is *PF* (Pólya frequency) if it is zero or has nonnegative coefficients and only
 real, nonpositive roots. The ordered Bell polynomials are
 $$

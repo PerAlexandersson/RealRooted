@@ -73,8 +73,8 @@ polynomial is *PF* if it has nonnegative coefficients and is zero or has only re
 nonpositive roots. We say $\gamma$ is a *finite PF multiplier sequence of degree $N$* if
 $\Gamma$ maps PF polynomials of degree at most $N$ to PF polynomials, and a *finite
 multiplier sequence of degree $N$* if $\Gamma$ maps real-rooted polynomials of degree at most
-$N$ to zero or to real-rooted polynomials. We write $f\ll g$ for weak interlacing: either
-polynomial may be zero, and repeated and common roots are allowed. `StrictInterl` is the
+$N$ to zero or to real-rooted polynomials. We use the [zero-aware interlacing convention](rr:about).
+`StrictInterl` is the
 library predicate for nonzero real-rooted pairs; it allows repeated and common roots.
 
 **Theorem (PF multipliers).** Let $\gamma$ be a finite PF multiplier sequence of degree $N$,
