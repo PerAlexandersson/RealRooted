@@ -111,8 +111,14 @@ $\deg f+1$ and positive leading coefficient.
 **Theorem (sequences).** Let $P_0$ be real-rooted with all roots in $[a,b]$, and suppose that
 every $P_n$ has positive leading coefficient and degree at least $1$. Suppose that
 $P_{n+1}=qP_n'$ for all $n$, or that $P_{n+1}=(qP_n)'$ for all $n$. Then every $P_n$ is nonzero
-and real-rooted and $P_n\ll P_{n+1}$ for all $n$. If moreover $\deg P_{n+1}=\deg P_n+1$ for all
-$n$, then $P_n$ interlaces $P_{n+1}$ in the differ-by-one sense.
+and real-rooted and $P_n\ll P_{n+1}$ for all $n$, with a degree gap of one whenever
+$\deg P_{n+1}=\deg P_n+1$ for all $n$.
+
+## Use
+
+Iterating these maps gives, for example, the rows of [OEIS A142071](https://oeis.org/A142071),
+[A172106](https://oeis.org/A172106), [A172107](https://oeis.org/A172107) and
+[A172108](https://oeis.org/A172108), which are therefore real-rooted and interlacing.
 
 ## Proof
 
@@ -124,8 +130,6 @@ theorem follows by induction on $n$, since the one-step theorem preserves the hy
 ## References
 
 For derivative interlacing, see [@Fisk2006x, Ch. 1]. The derivative step is on the
-[Ma–Wang and Liu–Wang page](rr:ma-wang-liu-wang). Examples are the rows of
-[OEIS A142071](https://oeis.org/A142071), [OEIS A172106](https://oeis.org/A172106),
-[OEIS A172107](https://oeis.org/A172107) and [OEIS A172108](https://oeis.org/A172108).
+[Ma–Wang and Liu–Wang page](rr:ma-wang-liu-wang).
 <!-- /realrooted-catalog-content -->
 -/

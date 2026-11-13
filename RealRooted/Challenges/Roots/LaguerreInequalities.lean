@@ -6,7 +6,7 @@ import RealRooted.LaguerreInequalities.SignAlternation
 import RealRooted.LaguerreInequalities.Rows
 
 /-!
-# Two Laguerre inequalities and derivative descent
+# Laguerre inequalities
 
 <!-- realrooted-catalog
 version = 1
@@ -37,7 +37,7 @@ label = "Row n of (Q − t z)^(−κ), zero for negative n"
 [[theorems]]
 name = "RealRooted.splits_iff_splits_derivative_and_forms_nonneg"
 module = "RealRooted.LaguerreInequalities"
-label = "f splits iff f′ splits and both Laguerre forms are nonnegative"
+label = "f is real-rooted iff f′ is real-rooted and both Laguerre forms are nonnegative"
 headline = true
 
 [[theorems]]
@@ -49,7 +49,7 @@ tags = []
 [[theorems]]
 name = "RealRooted.splits_of_splits_derivative_of_forms_nonneg"
 module = "RealRooted.LaguerreInequalities"
-label = "Converse: a split derivative and both forms nonnegative give a split polynomial"
+label = "Converse: a real-rooted derivative and nonnegative forms give a real-rooted polynomial"
 
 [[theorems]]
 name = "RealRooted.eval_mul_eval_derivative_derivative_neg_of_forms_nonneg"
@@ -59,7 +59,7 @@ label = "At a non-root critical point, f f'' < 0"
 [[theorems]]
 name = "RealRooted.splits_of_eval_mul_derivative_neg"
 module = "RealRooted.LaguerreInequalities.SignAlternation"
-label = "Sign alternation at the roots of G forces F to split"
+label = "Sign alternation at the roots of G forces F to be real-rooted"
 
 [[theorems]]
 name = "RealRooted.exists_splits_derivative_laguerreForm_nonneg_not_splits"
@@ -74,14 +74,16 @@ label = "The t-derivative of a coefficient row is κ times a row"
 [[theorems]]
 name = "RealRooted.BrandenLeite.splits_affineNegativePowerRow_of_inequalities"
 module = "RealRooted.LaguerreInequalities.Rows"
-label = "Coefficient-row induction: the two Laguerre inequalities force every row to split"
+label = "The two Laguerre inequalities force every coefficient row to be real-rooted"
 -->
 
 <!-- realrooted-catalog-content -->
-# Two Laguerre inequalities and derivative descent
+# Laguerre inequalities
 
-A real polynomial is real-rooted if and only if its derivative is real-rooted and its two
-Laguerre forms are nonnegative.
+A real polynomial is real-rooted if and only if its derivative is real-rooted and two Laguerre
+forms are nonnegative on the real line. This reduces real-rootedness to one degree lower, which
+suits families closed under differentiation, such as the coefficient rows of
+$(Q(z)-tz)^{-\alpha}$.
 
 ## Results
 
@@ -93,11 +95,11 @@ $$
 These are the coefficients of $y^2$ and of $y^4$ in $f(t+iy)f(t-iy)$.
 
 **Theorem (derivative descent).** A real polynomial $f$ is real-rooted if and only if $f'$ is
-real-rooted and $L_1(f)(t)\ge0$ and $L_2(f)(t)\ge0$ for every real $t$. Repeated roots are
-allowed, and constants, linear polynomials and $0$ are included.
+real-rooted and $L_1(f)(t)\ge0$ and $L_2(f)(t)\ge0$ for every real $t$. Here the zero polynomial
+and constants count as real-rooted.
 
-**Example (the second inequality is needed).** For $f=t^4-1$ the derivative $4t^3$ is real-rooted
-and $L_1(f)=4t^6+12t^2\ge0$, but $L_2(f)(0)=-2$ and $f$ is not real-rooted.
+**Example.** For $f=t^4-1$ the derivative $4t^3$ is real-rooted and $L_1(f)=4t^6+12t^2\ge0$, but
+$L_2(f)(0)=-2$ and $f$ is not real-rooted. Thus the second inequality is needed.
 
 **Proposition (sign at critical points).** Let $f'\ne0$ and let both forms be nonnegative on
 $\mathbb R$. If $f'(\rho)=0$ and $f(\rho)\ne0$, then $f(\rho)f''(\rho)<0$, so $\rho$ is a simple
@@ -123,23 +125,22 @@ $$
 +(\alpha)_4F_n^\alpha F_{n-4}^{\alpha+4}\ge0
 $$
 on $\mathbb R$ for every integer $n$ and every positive integer $\alpha$, then every row
-$F_n^\alpha$ with $n\ge0$ and positive integer $\alpha$ is real-rooted. No factorization
-hypothesis on $Q$ is needed.
+$F_n^\alpha$ with $n\ge0$ and positive integer $\alpha$ is real-rooted.
 
 ## Proof
 
 For the forward direction, $L_1((t-a)g)=g^2+(t-a)^2L_1(g)$ and
-$L_2((t-a)g)=L_1(g)+(t-a)^2L_2(g)$; induction on the roots gives nonnegativity, and $f'$ is
-real-rooted by Rolle's theorem. For the converse, write $f=dF$ and $f'=dG$ with $d=\gcd(f,f')$.
-Then $G$ is real-rooted, $d$ does not vanish at its roots, and the critical-point proposition
-gives $F(\rho)G'(\rho)<0$ at each root $\rho$ of $G$, so $F$ and $f$ are real-rooted by sign
-alternation. For the rows, the $j$th derivative of $F_n^\alpha$ is $(\alpha)_jF_{n-j}^{\alpha+j}$,
-so the two displayed inequalities say $L_1(F_n^\alpha)\ge0$ and $L_2(F_n^\alpha)\ge0$; we conclude
-by induction on $n$, for all $\alpha$ at once.
+$L_2((t-a)g)=L_1(g)+(t-a)^2L_2(g)$, so induction on the roots gives nonnegativity, and $f'$ is
+real-rooted by Rolle's theorem. For the converse, write $f=dF$ and $f'=dG$ with $d=\gcd(f,f')$;
+the critical-point proposition gives $F(\rho)G'(\rho)<0$ at each root $\rho$ of $G$, so $F$ and
+$f$ are real-rooted by sign alternation. For the rows, the $j$th derivative of $F_n^\alpha$ is
+$(\alpha)_jF_{n-j}^{\alpha+j}$, so the displayed inequalities say $L_1(F_n^\alpha)\ge0$ and
+$L_2(F_n^\alpha)\ge0$, and we conclude by induction on $n$.
 
 ## References
 
-No published source is cited for these results.
+For rows of $(Q(z)-tB(z))^{-\alpha}$ with real-rooted $Q$ and $B$, see the
+[chain polynomial page](rr:branden-leite).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in `RealRooted.LaguerreInequalities`,

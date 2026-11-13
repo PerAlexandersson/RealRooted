@@ -3,7 +3,7 @@ module
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.SchurCohn
 
 /-!
-# Schur–Cohn challenge entry point
+# Schur–Cohn criterion
 
 <!-- realrooted-catalog
 version = 1
@@ -36,7 +36,7 @@ headline = true
 -->
 
 <!-- realrooted-catalog-content -->
-# The Schur–Cohn criterion
+# Schur–Cohn criterion
 
 A complex polynomial has all zeros in the open unit disk if and only if $|a_0|<|a_n|$ and its
 Schur transform has all zeros in the open unit disk.

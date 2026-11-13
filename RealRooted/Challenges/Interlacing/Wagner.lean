@@ -12,7 +12,7 @@ public import RealRooted.WagnerX.NonnegativeRoots
 public import RealRooted.WeightedSum
 
 /-!
-# Wagner challenge entry point
+# Wagner’s lemma
 
 <!-- realrooted-catalog
 version = 1
@@ -96,21 +96,17 @@ multiplication by $x$ reverses it for polynomials with nonpositive roots.
 
 ## Results
 
-Polynomials $f,g$ below have positive leading coefficients where stated.
-
 **Theorem (Wagner's lemma).** Let $f,g$ have positive leading coefficients.
 
 1. If $f\ll h$ and $g\ll h$, then $f+g\ll h$.
 2. If $h\ll f$ and $h\ll g$, then $h\ll f+g$.
 3. If all real roots of $f$ and $g$ are nonpositive, then $f\ll g$ if and only if $g\ll xf$.
 
-No degree condition is needed in (3): both $\deg g=\deg f$ and $\deg g=\deg f+1$ occur. If
-$f\ll g$ and both have nonnegative coefficients, then $g\ll xf$.
+In particular, if $f\ll g$ and both have nonnegative coefficients, then $g\ll xf$.
 
 **Proposition (finite sums).** Let $f_1,\dots,f_k$ have positive leading coefficients with
 $f_i\ll h$ for all $i$, and let $a_1,\dots,a_k\ge0$, not all zero. Then $\sum_ia_if_i\ll h$. In
-particular $\sum_if_i\ll h$ for $k\ge1$. If $f+g$ has no root in common with $h$, part (1) holds
-under the same hypotheses.
+particular $\sum_if_i\ll h$ for $k\ge1$.
 
 **Proposition (nonnegative combinations).** Let $f\ll g$ have positive leading coefficients and
 let $a,b\ge0$ be not both zero. Then $f\ll af+bg$ and $af+bg\ll g$.
@@ -121,14 +117,9 @@ $(x-r)f\ll(x-r)g$.
 **Proposition (chains).** If $F_a\ll F_{a+1}\ll\dots\ll F_b$ and $F_a\ll F_b$, then
 $F_i\ll F_j$ for all $a\le i\le j\le b$.
 
-## Relation to SymCat
-
-The common-right addition clause is [Wagner’s lemma](sf:wagnerLemma) on symmetricfunctions.com.
-
 ## References
 
-See [@Wagner1992] and the
-[contextual statement on symmetricfunctions.com](sf:wagnerLemma).
+[@Wagner1992]. Part (1) is [Wagner’s lemma](sf:wagnerLemma) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 
 Human statement:

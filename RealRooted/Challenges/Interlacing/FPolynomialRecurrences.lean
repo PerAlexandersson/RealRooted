@@ -5,7 +5,7 @@ import RealRooted.SymmetricDecomposition.FPolynomialSequence
 import RealRooted.SymmetricDecomposition.EulerFPolynomial
 
 /-!
-# The f-polynomial transform: derivative recurrences, real roots and interlacing
+# The f-polynomial transform
 
 <!-- realrooted-catalog
 version = 1
@@ -116,7 +116,7 @@ label = "The window [-1, 0] is preserved exactly when a ≥ 0 or a ≤ -n"
 -->
 
 <!-- realrooted-catalog-content -->
-# The f-polynomial transform: derivative recurrences, real roots and interlacing
+# The f-polynomial transform
 
 The f-polynomial transform converts derivative recurrences into derivative recurrences, preserves
 and reflects real-rootedness, and transfers interlacing of rows with half-growth degrees.
@@ -160,9 +160,7 @@ $f_{\deg f}(f)\ll f_{\deg g}(g)$.
 nonnegative coefficients, $\deg Q_j=\lfloor (j+1)/2\rfloor$ and $Q_j\ll Q_{j+1}$ for all $j$.
 Then $f_n(Q_n)\ll f_{n+1}(Q_{n+1})$ for all $n\ge1$.
 
-## Euler shifts
-
-Let $\theta=x\,d/dx$. If $\deg p\le n$ and $a\in\mathbb R$, then
+**Theorem (Euler shifts).** Let $\theta=x\,d/dx$. If $\deg p\le n$ and $a\in\mathbb R$, then
 $$
 f_n\bigl(\theta p+ap\bigr)=(a-nx)\,f_n(p)+x(1+x)\,f_n(p)'.
 $$
@@ -174,10 +172,11 @@ to polynomials with roots in $[-1,0]$ if and only if $a\ge0$ or $a\le-n$.
 
 ## Use
 
-The alternating-runs polynomials of OEIS [A008970](https://oeis.org/A008970),
-[A059427](https://oeis.org/A059427) and [A186370](https://oeis.org/A186370) are f-transforms of
-peak polynomials, and the peak rows have the half-growth degree pattern. Real-rootedness and
-interlacing of the peak rows therefore pass to the alternating-runs rows.
+The alternating-runs polynomials are f-transforms of peak polynomials,
+and the peak polynomials have the half-growth degree pattern. Real-rootedness and interlacing of
+the peak polynomials therefore pass to the alternating-runs polynomials, for example the rows of
+OEIS [A008970](https://oeis.org/A008970), [A059427](https://oeis.org/A059427) and
+[A186370](https://oeis.org/A186370).
 
 ## Proof
 

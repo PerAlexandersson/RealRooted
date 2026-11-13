@@ -63,8 +63,10 @@ label = "Wang–Zhang criterion for an affine three-term recurrence"
 <!-- realrooted-catalog-content -->
 # Limits of zeros of recursive families
 
-A recurrence of the form $\sum_k\alpha_k\beta_k^n$ has zeros accumulating where two dominant
-bases have equal modulus, or where the dominant coefficient vanishes.
+The zeros of $f_n=\sum_k\alpha_k\beta_k^n$ accumulate where two dominant bases have equal
+modulus or where the dominant coefficient vanishes. For polynomials defined by a linear
+recurrence, a nonreal accumulation point shows that the late members are not real-rooted, so
+this is a standard tool for proving that real-rootedness fails.
 
 ## Results
 
@@ -106,13 +108,17 @@ have $u+v=A$, $uv=-B$ and $u\ne v$.
 $$W_{n+2}=(a x+b)\,W_{n+1}+(c x+d)\,W_n.$$
 Then every $W_n$ is real-rooted if and only if $ad\le bc$.
 
+## Use
+
+For $ad>bc$, the order-two theorem gives a nonreal limit of zeros of the Wang–Zhang
+recurrence, so $W_n$ is not real-rooted for all large $n$.
+
 ## References
 
-The first three theorems are Theorem 1.5(b), 1.5(a) and 1.5 of
-A. D. Sokal, *Chromatic roots are dense in the whole complex plane*, Combinatorics,
-Probability and Computing 13 (2004), a generalization of the Beraha–Kahane–Weiss theorem. The
-criterion for affine three-term recurrences is Theorem 2.1 of Wang and Zhang,
-arXiv:1712.06105.
+- A. D. Sokal, *Chromatic roots are dense in the whole complex plane*, Combinatorics,
+  Probability and Computing 13 (2004), Theorems 1.5(b), 1.5(a) and 1.5, for the first three
+  theorems. They generalize the Beraha–Kahane–Weiss theorem.
+- Wang and Zhang, arXiv:1712.06105, Theorem 2.1, for affine three-term recurrences.
 <!-- /realrooted-catalog-content -->
 
 The general theorems live in `RealRooted.Mathlib.Analysis.Complex.Hurwitz`, the order-two

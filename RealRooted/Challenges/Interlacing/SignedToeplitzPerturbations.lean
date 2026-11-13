@@ -76,8 +76,9 @@ label = "The real values of b along the curve Im b = 0 are strictly decreasing i
 <!-- realrooted-catalog-content -->
 # Signed Toeplitz perturbations of the Chebyshev rows
 
-Rows of a Chebyshev-type generating function with a small signed perturbation of the
-denominator are real-rooted and interlace.
+The Chebyshev polynomials of the second kind are the rows of $1/(1-tz+z^2)$. Their
+real-rootedness and interlacing survive a perturbation of the denominator by higher powers of
+$z$ with coefficients of either sign, under explicit size bounds.
 
 ## Results
 
@@ -92,8 +93,7 @@ A(R)=\sum_{j=2}^s j\,|c_j|\,R^{j+1},\qquad B(R)=\sum_{j=2}^s j(j-1)\,|c_j|\,R^{j
 $$
 
 **Theorem.** Let $R>0$ with $A(R)\le R^2-1$ and $B(R)\le1$. Then every $P_n$ is real-rooted with
-simple roots, $P_n\ll P_{n+1}$, and $P_n,P_{n+1}$ have no common root. The $c_j$ may have either
-sign.
+simple roots, $P_n\ll P_{n+1}$, and $P_n,P_{n+1}$ have no common root.
 
 **Corollary (bandwidth criterion).** Let $s\ge2$. If
 $$
@@ -109,7 +109,7 @@ under the two hypotheses.
 
 ## References
 
-No published source.
+The unperturbed rows satisfy $P_{n+1}=tP_n-P_{n-1}$; see [Favard recurrences](rr:favard).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in the `RealRooted.Toeplitz.SignedPerturbation`

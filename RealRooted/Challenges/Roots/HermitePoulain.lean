@@ -48,7 +48,8 @@ label = "Degree and root order for positive-coefficient symbols"
 # Hermite–Poulain theorem
 
 A constant-coefficient differential operator $f(D)$ with real-rooted symbol $f$ maps real-rooted
-polynomials to zero or real-rooted polynomials, and preserves interlacing.
+polynomials to zero or real-rooted polynomials, and preserves interlacing. Moreover, for a
+fixed real-rooted input, two symbols in proper position give images in reversed proper position.
 
 ## Results
 
@@ -60,24 +61,21 @@ zero or real-rooted.
 **Corollary (interlacing).** Let $f$ be nonzero and real-rooted and let $g\ll h$. Then
 $f(D)g\ll f(D)h$ or $f(D)h\ll f(D)g$, where we regard $0$ as interlacing every polynomial.
 
-**Theorem (interlacing symbols).** Let $T$ be real-rooted, and suppose the pencil
-$Q(x)+yP(x)$ is real stable. Then either both images vanish or
-$Q(D)T-yP(D)T$ is real stable, equivalently $P(D)T+yQ(D)T$ is real stable.
-Thus the signed proper-position orientation reverses. No coefficient-sign
-condition on $P$, $Q$, or $T$ is needed.
+**Theorem (interlacing symbols).** Let $T$ be real-rooted, and let $P,Q$ be real polynomials
+such that the pencil $Q(x)+yP(x)$ is real stable. Then either $P(D)T=Q(D)T=0$ or
+$P(D)T+yQ(D)T$ is real stable.
 
-If $P\ll Q$ have positive coefficients and $T\ne0$, both images have degree
-$d=\deg T$. Their roots, listed increasingly with multiplicities, satisfy
-$\widetilde q_1\le\widetilde p_1\le\cdots\le\widetilde q_d\le\widetilde p_d$,
-where $\widetilde q_i$ are the roots of $Q(D)T$. Positive leading and constant
-coefficients of the symbols already suffice for this conclusion.
+**Corollary (positive symbols).** If $P\ll Q$ have positive coefficients and $T\ne0$ is
+real-rooted, then $P(D)T$ and $Q(D)T$ have degree $d=\deg T$, and their roots, listed
+increasingly with multiplicity, satisfy
+$\widetilde q_1\le\widetilde p_1\le\cdots\le\widetilde q_d\le\widetilde p_d$, where the
+$\widetilde p_i$ and $\widetilde q_i$ are the roots of $P(D)T$ and $Q(D)T$.
 
 ## References
 
-The theorem goes back to Hermite and Poulain; see the
-[Hermite–Poulain theorem on symmetricfunctions.com](sf:hermitePoulainTheorem)
-for further references, and the
-[interlacing consequence](sf:hermitePoulainInterlacing).
+The theorem goes back to Hermite and Poulain; see [@Obreschkoff1963; @Levin1964], the
+[Hermite–Poulain theorem](sf:hermitePoulainTheorem) and its
+[interlacing consequence](sf:hermitePoulainInterlacing) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 
 Human statement:

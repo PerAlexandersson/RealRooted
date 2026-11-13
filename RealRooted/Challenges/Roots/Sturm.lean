@@ -5,7 +5,7 @@ import RealRooted.RootCounting.Sturm
 import RealRooted.RootVieta.Newton
 
 /-!
-# Sturm root-counting challenge entry point
+# Sturm root counting
 
 <!-- realrooted-catalog
 version = 1
@@ -69,14 +69,16 @@ symcat = "hermiteSylvesterTheorem"
 [[theorems]]
 name = "RealRooted.cubicDiscr_nonneg_iff_splits_of_natDegree_le_three"
 module = "RealRooted.CubicDiscriminant"
-label = "A real polynomial of degree at most three splits iff its discriminant is nonnegative"
+label = "A real polynomial of degree at most three is real-rooted iff its discriminant is ≥ 0"
 -->
 
 <!-- realrooted-catalog-content -->
 # Sturm root counting
 
 Sign changes of the signed Euclidean remainder sequence count the distinct real roots of a
-polynomial in an interval, and a Hermite matrix test decides real-rootedness.
+polynomial in an interval. This gives an exact, finite test for real-rootedness, and the
+Hermite–Sylvester criterion gives a second one through a positive semidefinite matrix of power
+sums.
 
 ## Results
 
@@ -102,15 +104,13 @@ if and only if its cubic discriminant is nonnegative.
 
 ## References
 
-J. C. F. Sturm, “Mémoire sur la résolution des équations numériques,” *Bulletin
-des Sciences de Férussac* 11 (1829), 419–422; C. Hermite, “Remarques sur le
-théorème de M. Sturm,” *Comptes rendus de l’Académie des sciences* 36 (1853),
-52–54. See [@Sylvester1853], the root-counting overview on
-[symmetricfunctions.com][sturm-overview], and the
-[Hermite–Sylvester theorem][hermite-sylvester] there.
-
-[sturm-overview]: sf:sturmRootCounting
-[hermite-sylvester]: sf:hermiteSylvesterTheorem
+- J. C. F. Sturm, “Mémoire sur la résolution des équations numériques,” *Bulletin des Sciences
+  de Férussac* 11 (1829), 419–422.
+- C. Hermite, “Remarques sur le théorème de M. Sturm,” *Comptes rendus de l’Académie des
+  sciences* 36 (1853), 52–54.
+- [@Sylvester1853]
+- On symmetricfunctions.com: [Sturm root counting](sf:sturmRootCounting) and the
+  [Hermite–Sylvester theorem](sf:hermiteSylvesterTheorem).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

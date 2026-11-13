@@ -7,7 +7,7 @@ public import RealRooted.ObreschkoffConverse.Forward
 public import RealRooted.OperatorPreservesInterlacing
 
 /-!
-# Obreschkoff challenge entry point
+# Obreschkoff’s theorem
 
 <!-- realrooted-catalog
 version = 1

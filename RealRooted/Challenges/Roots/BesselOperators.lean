@@ -4,7 +4,7 @@ import RealRooted.Hermite.BesselOperatorFamily
 import RealRooted.Hermite.ImaginaryCentralDifference
 
 /-!
-# Real roots of Bessel operators and imaginary central differences
+# Bessel operators and imaginary central differences
 
 <!-- realrooted-catalog
 version = 1
@@ -58,11 +58,12 @@ label = "The imaginary central difference of a real-rooted polynomial has simple
 -->
 
 <!-- realrooted-catalog-content -->
-# Real roots of Bessel operators and imaginary central differences
+# Bessel operators and imaginary central differences
 
 The finite Bessel operators map real-rooted polynomials to real-rooted polynomials exactly
 when $\lambda\ge0$, and the imaginary central difference of a real-rooted polynomial has only
-simple real roots.
+simple real roots. Both are differential operators $\varphi(D)$ whose symbol is an entire
+function with only real zeros: a rescaled Bessel function $J_r$, and $\sin(hx)/h$.
 
 ## Results
 
@@ -87,14 +88,22 @@ and $p$ is a nonzero real-rooted polynomial of degree at least one, then $\delta
 real-rooted with only simple roots. If $\deg p\ge1$, then $\delta_hp$ has degree $\deg p-1$
 and leading coefficient $\deg p\cdot\operatorname{lc}(p)$.
 
+## Use
+
+For $\lambda>0$ the symbol of $B_{\lambda,r}$ is $\lambda^{-r/2}J_r(2\sqrt\lambda\,x)$. The
+sufficiency of $\lambda\ge0$ is therefore an explicit case of the fact that $\varphi(D)$
+preserves real-rootedness for every $\varphi$ in the
+[Laguerre–Pólya class](rr:laguerre-polya-class).
+
 ## Proof
 
-The statement on $\delta_hp$ uses the Hermite–Biehler theorem.
+The roots of $\delta_hp$ are real and simple by the
+[Hermite–Biehler theorem](rr:hermite-biehler-hurwitz).
 
 ## References
 
-For the Hermite–Biehler theorem, see the
-[Hermite–Biehler page](rr:hermite-biehler-hurwitz).
+See the [Hermite–Biehler theorem](rr:hermite-biehler-hurwitz) and the
+[Laguerre–Pólya class](rr:laguerre-polya-class).
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in `RealRooted.Hermite.BesselOperatorFamily`

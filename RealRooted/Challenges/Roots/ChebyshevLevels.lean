@@ -3,7 +3,7 @@ module
 import RealRooted.Chebyshev.Levels
 
 /-!
-# Chebyshev level polynomials and critical values
+# Chebyshev level polynomials
 
 <!-- realrooted-catalog
 version = 1
@@ -22,18 +22,18 @@ label = "The affine level family α (T_n(1 + λ X) - h)"
 [[theorems]]
 name = "RealRooted.derivative_interlaces_sub_C_of_mem_Icc"
 module = "RealRooted.Chebyshev.Levels"
-label = "f' interlaces f - s whenever s lies between two split levels"
+label = "f' interlaces f - s whenever s lies between two real-rooted levels"
 
 [[theorems]]
 name = "RealRooted.splits_sub_C_iff_eval_secondDerivative_nonpos"
 module = "RealRooted.Chebyshev.Levels"
-label = "Exact critical-value criterion for f - s to split"
+label = "Critical-value criterion for f - s to be real-rooted"
 headline = true
 
 [[theorems]]
 name = "RealRooted.Chebyshev.T_sub_C_splits"
 module = "RealRooted.Chebyshev.Levels"
-label = "T_n - h splits for |h| ≤ 1"
+label = "T_n - h is real-rooted for |h| ≤ 1"
 
 [[theorems]]
 name = "RealRooted.Chebyshev.T_sub_C_splits_simple_roots_mem_Ioo"
@@ -43,12 +43,12 @@ label = "For |h| < 1 the roots of T_n - h are simple and lie in (-1, 1)"
 [[theorems]]
 name = "RealRooted.Chebyshev.forall_pos_T_sub_C_splits_iff_abs_le_one"
 module = "RealRooted.Chebyshev.Levels"
-label = "All levels T_n - h split exactly when |h| ≤ 1"
+label = "All levels T_n - h are real-rooted exactly when |h| ≤ 1"
 
 [[theorems]]
 name = "RealRooted.Chebyshev.not_splits_T_add_C_of_one_lt"
 module = "RealRooted.Chebyshev.Levels"
-label = "T_d + c does not split for d ≥ 2 and c > 1"
+label = "T_d + c is not real-rooted for d ≥ 2 and c > 1"
 
 [[theorems]]
 name = "RealRooted.Chebyshev.affineLevel_add_three"
@@ -72,11 +72,12 @@ label = "All affine levels are PF exactly when |h| ≤ 1"
 -->
 
 <!-- realrooted-catalog-content -->
-# Chebyshev level polynomials and critical values
+# Chebyshev level polynomials
 
-A polynomial $f$ whose derivative has simple real roots has a real-rooted level $f-s$ exactly
-when $f''\,(f-s)\le0$ at the critical points; for Chebyshev polynomials $T_n$ this gives
-real-rooted levels $T_n-h$ for $|h|\le1$.
+If $f'$ has simple real roots, a level $f-s$ is real-rooted exactly when $f-s$ is nonnegative
+at the local maxima of $f$ and nonpositive at its local minima. All critical values of the
+Chebyshev polynomial $T_n$ are $\pm1$, so $T_n-h$ is real-rooted for every $n$ exactly when
+$|h|\le1$, and an affine change of variable turns these levels into Pólya frequency polynomials.
 
 ## Results
 
@@ -112,7 +113,7 @@ $n\ge1$ are Pólya frequency polynomials if and only if $|h|\le1$.
 
 ## References
 
-No published source is cited for these results.
+For Chebyshev polynomials, see [@Szego1939].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in `RealRooted.Chebyshev.Levels`.
