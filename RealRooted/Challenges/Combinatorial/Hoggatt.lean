@@ -36,7 +36,7 @@ module = "RealRooted.CombinatorialExamples.Hoggatt"
 label = "F(n−1,m) strictly interlaces F(n,m) for n ≥ m ≥ 2"
 
 [[theorems]]
-name = "RealRooted.Hoggatt.derivative_auxiliary"
+name = "RealRooted.Hoggatt.derivative_binomialHadamard"
 module = "RealRooted.CombinatorialExamples.Hoggatt"
 label = "The Hadamard derivative identity G'(n+1,m+1) = (n+1) F(n,m+1)"
 
@@ -67,10 +67,12 @@ label = "Baxter polynomials are a strict Sturm sequence"
 
 [[theorems]]
 name = "RealRooted.Hoggatt.normalized_three_eq_baxter"
+module = "RealRooted.Applications.OEIS.A056939"
 label = "The m = 3 specialization equals the existing Baxter recurrence model"
 
 [[theorems]]
 name = "RealRooted.Applications.OEIS.A056939.polynomial_isCoprime_succ"
+module = "RealRooted.Applications.OEIS.A056939"
 label = "Consecutive rows of the existing A056939 model are coprime"
 -->
 
@@ -117,25 +119,3 @@ of consecutive rows as well as its existing interlacing theorem.
   Ph.D. thesis, University of Minnesota, 2015, Theorem 3.8.
 <!-- /realrooted-catalog-content -->
 -/
-
-public section
-
-namespace RealRooted.Hoggatt
-
-/-- The normalized `m = 3` Hoggatt polynomial agrees with the existing
-A056939 model, whose row `n` is indexed by Baxter permutations on `n+1` letters. -/
-theorem normalized_three_eq_baxter (n : ℕ) :
-    normalized (n + 1) 3 = Applications.OEIS.A056939.polynomial n := by
-  rw [normalized_three_eq_binomial_sum, Applications.OEIS.A056939.polynomial_eq_binomial_sum]
-
-end RealRooted.Hoggatt
-
-namespace RealRooted.Applications.OEIS.A056939
-
-/-- Strictness for the existing Baxter model: consecutive rows have no shared root. -/
-theorem polynomial_isCoprime_succ (n : ℕ) :
-    IsCoprime (polynomial n) (polynomial (n + 1)) := by
-  have h := Hoggatt.baxter_interlaces (Nat.succ_ne_zero n)
-  simpa only [Hoggatt.normalized_three_eq_baxter] using h.2
-
-end RealRooted.Applications.OEIS.A056939

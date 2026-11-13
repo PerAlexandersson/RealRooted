@@ -223,21 +223,21 @@ theorem polynomial_one (n : ℕ) : polynomial n 1 = (X + 1) ^ n := by
   ext k
   simp [coeff_polynomial, coeff_X_add_one_pow]
 
-/-- The auxiliary Hadamard product `G(n+1,m+1)` in the paper. -/
-def auxiliary (n m : ℕ) : ℝ[X] :=
+/-- The Hadamard product `G(n+1,m+1)` in the paper. -/
+def binomialHadamard (n m : ℕ) : ℝ[X] :=
   hadamardProduct (polynomial (n + 1) 1) (polynomial n m)
 
-/-- The Hadamard identity defining the auxiliary polynomial, in binomial form. -/
-theorem coeff_auxiliary (n : ℕ) {m : ℕ} (hm : m ≠ 0) (k : ℕ) :
-    (auxiliary n m).coeff k =
+/-- The Hadamard identity defining `binomialHadamard`, in binomial form. -/
+theorem coeff_binomialHadamard (n : ℕ) {m : ℕ} (hm : m ≠ 0) (k : ℕ) :
+    (binomialHadamard n m).coeff k =
       ((n + 1).choose k : ℝ) * ∏ i ∈ range m, (n.choose (k + i) : ℝ) := by
-  simp [auxiliary, coeff_polynomial, hm]
+  simp [binomialHadamard, coeff_polynomial, hm]
 
-/-- Differentiating the auxiliary Hadamard product raises the Hoggatt parameter. -/
-theorem derivative_auxiliary (n : ℕ) {m : ℕ} (hm : m ≠ 0) :
-    (auxiliary n m).derivative = C ((n : ℝ) + 1) * polynomial n (m + 1) := by
+/-- Differentiating `binomialHadamard` raises the Hoggatt parameter. -/
+theorem derivative_binomialHadamard (n : ℕ) {m : ℕ} (hm : m ≠ 0) :
+    (binomialHadamard n m).derivative = C ((n : ℝ) + 1) * polynomial n (m + 1) := by
   ext k
-  rw [coeff_derivative, coeff_auxiliary n hm, coeff_C_mul,
+  rw [coeff_derivative, coeff_binomialHadamard n hm, coeff_C_mul,
     coeff_polynomial n (by lia : m + 1 ≠ 0), prod_range_succ']
   have hc : ((n + 1).choose (k + 1) : ℝ) * (k + 1 : ℕ) =
       (n + 1 : ℕ) * (n.choose k : ℝ) := by
@@ -256,7 +256,8 @@ theorem derivative_auxiliary (n : ℕ) {m : ℕ} (hm : m ≠ 0) :
 theorem derivative_hadamard_one (n : ℕ) :
     (hadamardProduct (polynomial n 1) (polynomial (n + 1) 1)).derivative =
       C ((n : ℝ) + 1) * polynomial n 2 := by
-  simpa [auxiliary, hadamardProduct_comm] using derivative_auxiliary n (m := 1) one_ne_zero
+  simpa [binomialHadamard, hadamardProduct_comm] using
+    derivative_binomialHadamard n (m := 1) one_ne_zero
 
 private theorem interl_polynomial_succ : ∀ m : ℕ, m ≠ 0 →
     ∀ n : ℕ, m ≤ n + 1 → StrictInterl (polynomial n m) (polynomial (n + 1) m) := by
@@ -271,12 +272,12 @@ private theorem interl_polynomial_succ : ∀ m : ℕ, m ≠ 0 →
       · have hpow : StrictInterl (polynomial (n + 1) 1) (polynomial (n + 2) 1) := by
           simpa [polynomial_one] using strictInterl_X_add_C_pow_succ (1 : ℝ) (n + 1)
         have hprev := ih hm0 n (by lia)
-        have haux : Interl (auxiliary n m) (auxiliary (n + 1) m) := by
+        have haux : Interl (binomialHadamard n m) (binomialHadamard (n + 1) m) := by
           exact hpow.interl_hadamardProduct
             (hasNonnegCoeffs_polynomial _ _) (hasNonnegCoeffs_polynomial _ _)
             (hasNonnegCoeffs_polynomial _ _) (hasNonnegCoeffs_polynomial _ _) hprev
         have hder := haux.derivative
-        rw [derivative_auxiliary n hm0, derivative_auxiliary (n + 1) hm0] at hder
+        rw [derivative_binomialHadamard n hm0, derivative_binomialHadamard (n + 1) hm0] at hder
         have hleft : C ((n : ℝ) + 1) * polynomial n (m + 1) ≠ 0 :=
           mul_ne_zero (C_ne_zero.mpr (by positivity)) (polynomial_ne_zero (by lia) hn)
         have hright : C (((n + 1 : ℕ) : ℝ) + 1) * polynomial (n + 1) (m + 1) ≠ 0 :=
@@ -286,7 +287,8 @@ private theorem interl_polynomial_succ : ∀ m : ℕ, m ≠ 0 →
         have hscaled := (hstrict.C_mul_left (a := (n + 1 : ℝ)⁻¹) (by positivity)).C_mul_right
           (a := (n + 1 + 1 : ℝ)⁻¹) (by positivity)
         push_cast at hscaled
-        simpa only [← mul_assoc, ← C_mul, inv_mul_cancel₀ (by positivity : (n : ℝ) + 1 ≠ 0),
+        simpa only [← mul_assoc, ← C_mul,
+          inv_mul_cancel₀ (by positivity : (n : ℝ) + 1 ≠ 0),
           inv_mul_cancel₀ (by positivity : (n : ℝ) + 1 + 1 ≠ 0), C_1, one_mul] using hscaled
 
 /-- Consecutive binomial-product polynomials interlace in the library's orientation.
@@ -313,21 +315,21 @@ theorem polynomial_roots_neg {n m : ℕ} (hm : m ≠ 0) (hn : m ≤ n + 1)
   roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne
     (hasNonnegCoeffs_polynomial n m) (coeff_zero_pos hm hn).ne' r hr
 
-/-- The auxiliary polynomial has the same degree as its second Hadamard factor. -/
-theorem natDegree_auxiliary {n m : ℕ} (hm : m ≠ 0) (hn : m ≤ n + 1) :
-    (auxiliary n m).natDegree = n + 1 - m := by
+/-- `binomialHadamard n m` has the same degree as its second Hadamard factor. -/
+theorem natDegree_binomialHadamard {n m : ℕ} (hm : m ≠ 0) (hn : m ≤ n + 1) :
+    (binomialHadamard n m).natDegree = n + 1 - m := by
   apply natDegree_eq_of_le_of_coeff_ne_zero
   · exact (natDegree_hadamardProduct_le_right _ _).trans
       (natDegree_polynomial hm hn).le
-  · rw [coeff_auxiliary n hm]
+  · rw [coeff_binomialHadamard n hm]
     apply mul_ne_zero
     · exact_mod_cast (Nat.choose_pos (by lia : n + 1 - m ≤ n + 1)).ne'
     · rw [← coeff_polynomial n hm]
       exact (coeff_polynomial_pos hm (by lia : n + 1 - m + m ≤ n + 1)).ne'
 
-/-- Consecutive auxiliary polynomials interlace. -/
-theorem auxiliary_strictInterl_succ {n m : ℕ} (hm : m ≠ 0) (hn : m ≤ n + 1) :
-    StrictInterl (auxiliary n m) (auxiliary (n + 1) m) := by
+/-- Consecutive `binomialHadamard` polynomials interlace. -/
+theorem binomialHadamard_strictInterl_succ {n m : ℕ} (hm : m ≠ 0) (hn : m ≤ n + 1) :
+    StrictInterl (binomialHadamard n m) (binomialHadamard (n + 1) m) := by
   have hpow : StrictInterl (polynomial (n + 1) 1) (polynomial (n + 2) 1) :=
     polynomial_strictInterl_succ one_ne_zero (by lia)
   have h := hpow.interl_hadamardProduct
@@ -348,12 +350,12 @@ theorem auxiliary_strictInterl_succ {n m : ℕ} (hm : m ≠ 0) (hn : m ≤ n + 1
       Nat.choose_zero_right, Nat.cast_one, one_mul, coeff_zero] at hc
     linarith
 
-/-- Consecutive auxiliary polynomials have no common root, including at zero. -/
-theorem auxiliary_isCoprime_succ {n m : ℕ} (hm : m ≠ 0) (hn : m ≤ n + 1) :
-    IsCoprime (auxiliary n m) (auxiliary (n + 1) m) := by
-  have h := auxiliary_strictInterl_succ hm hn
+/-- Consecutive binomialHadamard polynomials have no common root, including at zero. -/
+theorem binomialHadamard_isCoprime_succ {n m : ℕ} (hm : m ≠ 0) (hn : m ≤ n + 1) :
+    IsCoprime (binomialHadamard n m) (binomialHadamard (n + 1) m) := by
+  have h := binomialHadamard_strictInterl_succ hm hn
   apply isCoprime_of_no_common_real_root_of_isRealRooted h.1.1 h.1.2
-  simpa only [auxiliary, polynomial_one, Nat.add_assoc] using
+  simpa only [binomialHadamard, polynomial_one, Nat.add_assoc] using
     (polynomial_strictInterl_succ hm hn).hadamardProduct_power_no_common_root
       (hasNonnegCoeffs_polynomial n m) (hasNonnegCoeffs_polynomial (n + 1) m)
       (coeff_zero_pos hm hn) (coeff_zero_pos hm (by lia))
@@ -366,22 +368,22 @@ theorem polynomial_isCoprime_succ {n m : ℕ} (hm : 2 ≤ m) (hn : m ≤ n + 1) 
     IsCoprime (polynomial n m) (polynomial (n + 1) m) := by
   have hm0 : m - 1 ≠ 0 := by lia
   have hjn : m - 1 ≤ n + 1 := by lia
-  have h := auxiliary_strictInterl_succ hm0 hjn
-  have hnn : HasNonnegCoeffs (auxiliary n (m - 1)) :=
+  have h := binomialHadamard_strictInterl_succ hm0 hjn
+  have hnn : HasNonnegCoeffs (binomialHadamard n (m - 1)) :=
     (hasNonnegCoeffs_polynomial _ _).hadamardProduct (hasNonnegCoeffs_polynomial _ _)
-  have hnn' : HasNonnegCoeffs (auxiliary (n + 1) (m - 1)) :=
+  have hnn' : HasNonnegCoeffs (binomialHadamard (n + 1) (m - 1)) :=
     (hasNonnegCoeffs_polynomial _ _).hadamardProduct (hasNonnegCoeffs_polynomial _ _)
   have hd := h.isCoprime_derivative (hnn.pos_leadingCoeff h.1.1)
     (hnn'.pos_leadingCoeff h.2.1.1)
-    (by rw [natDegree_auxiliary hm0 (by lia), natDegree_auxiliary hm0 hjn]; lia)
-    (by rw [natDegree_auxiliary hm0 hjn]; lia) (auxiliary_isCoprime_succ hm0 hjn)
+    (by rw [natDegree_binomialHadamard hm0 (by lia), natDegree_binomialHadamard hm0 hjn]; lia)
+    (by rw [natDegree_binomialHadamard hm0 hjn]; lia) (binomialHadamard_isCoprime_succ hm0 hjn)
   apply isCoprime_of_no_common_real_root_of_isRealRooted
     (polynomial_ne_zero (by lia) hn) (polynomial_splits (by lia) hn)
   intro r hr hr'
   apply hd.not_isRoot_right (x := r)
-  · rw [derivative_auxiliary n hm0, show m - 1 + 1 = m by lia]
+  · rw [derivative_binomialHadamard n hm0, show m - 1 + 1 = m by lia]
     simp [Polynomial.IsRoot.def, hr.eq_zero]
-  · rw [derivative_auxiliary (n + 1) hm0, show m - 1 + 1 = m by lia]
+  · rw [derivative_binomialHadamard (n + 1) hm0, show m - 1 + 1 = m by lia]
     simp [Polynomial.IsRoot.def, hr'.eq_zero]
 
 /-- Strict interlacing, recorded as degree-gap-one interlacing and coprimality. -/

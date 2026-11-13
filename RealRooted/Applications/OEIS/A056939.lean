@@ -15,6 +15,7 @@ import RealRooted.NarayanaTransformation.Endpoints
 import RealRooted.NarayanaTransformation.Recurrences.Identities
 import RealRooted.NarayanaTransformation.Rectangular.Narayana
 public import RealRooted.Basic.ProperPosition
+public import RealRooted.CombinatorialExamples.Hoggatt
 
 @[expose] public section
 
@@ -586,5 +587,17 @@ theorem interlaces_of_recurrence
     hrec (fun _ => rfl)
   rw [heq n, heq (n + 1)]
   exact polynomial_interlaces n
+
+/-- The normalized `m = 3` Hoggatt polynomial agrees with the existing
+A056939 model, whose row `n` is indexed by Baxter permutations on `n+1` letters. -/
+theorem _root_.RealRooted.Hoggatt.normalized_three_eq_baxter (n : ℕ) :
+    Hoggatt.normalized (n + 1) 3 = polynomial n := by
+  rw [Hoggatt.normalized_three_eq_binomial_sum, polynomial_eq_binomial_sum]
+
+/-- Strictness for the existing Baxter model: consecutive rows have no shared root. -/
+theorem polynomial_isCoprime_succ (n : ℕ) :
+    IsCoprime (polynomial n) (polynomial (n + 1)) := by
+  have h := Hoggatt.baxter_interlaces (Nat.succ_ne_zero n)
+  simpa only [Hoggatt.normalized_three_eq_baxter] using h.2
 
 end RealRooted.Applications.OEIS.A056939
