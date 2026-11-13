@@ -26,6 +26,7 @@ module = "RealRooted.Graph.ChordalAcyclicSink"
 label = "Reverse perfect elimination order"
 
 [[theorems]]
+objects = ["Acyclic sink polynomials of chordal claw-free graphs"]
 name = """RealRooted.Graph.ReversePerfectEliminationOrder.ordinaryAcyclicSinkPolynomial_splits_of_\
 clawFree"""
 module = "RealRooted.Graph.ChordalAcyclicSink"

@@ -643,6 +643,123 @@ end RealRooted.Challenges.Sample
             'kind = "sequence"', 'kind = "sequence"\nconjecture = "Conjecture 3"'))
         self.assertEqual(page.conjecture, "Conjecture 3")
 
+    def test_objects_metadata_validation_and_properties(self) -> None:
+        from challenge_catalog import OBJECT_PROPERTIES
+
+        for property_name in OBJECT_PROPERTIES:
+            source = catalog_block().replace(
+                'version = 1', 'version = 1\nobjects = ["Eulerian polynomials"]\n'
+                f'property = "{property_name}"')
+            page = parse_challenge_source("sample.lean", source)
+            self.assertEqual(page.objects, ("Eulerian polynomials",))
+            self.assertEqual(page.object_property, property_name)
+        for raw in ('"Eulerian"', '[3]', '[""]', '[" padded "]', '["a\\nb"]',
+                    '["Same", "same"]', '["Same", "Same"]', '{}'):
+            for location in ('page', 'theorem'):
+                with self.subTest(raw=raw, location=location):
+                    source = catalog_block()
+                    marker = 'version = 1' if location == 'page' else '[[theorems]]'
+                    source = source.replace(marker, marker + '\nobjects = ' + raw)
+                    with self.assertRaisesRegex(CatalogError, "objects"):
+                        parse_challenge_source("sample.lean", source)
+        for field in ('property = "typo"', 'property = 42', 'property = []',
+                      'property = "pf"'):
+            source = catalog_block().replace('version = 1', 'version = 1\n' + field)
+            with self.assertRaisesRegex(CatalogError, "property"):
+                parse_challenge_source("sample.lean", source)
+        source = catalog_block(definitions='[[definitions]]\nname = "RealRooted.Sample.x"\n'
+                               'objects = ["Sample"]')
+        with self.assertRaisesRegex(CatalogError, "not a definition"):
+            parse_challenge_source("sample.lean", source)
+        source = catalog_block(theorems='', definitions='[[definitions]]\n'
+                               'name = "RealRooted.Sample.x"').replace(
+                                   'version = 1', 'version = 1\nobjects = ["Sample"]')
+        with self.assertRaisesRegex(CatalogError, "page objects require"):
+            parse_challenge_source("sample.lean", source)
+        page = parse_challenge_source("sample.lean", catalog_block().replace(
+            'version = 1', 'version = 1\nobjects = []'))
+        self.assertEqual(page.objects, ())
+
+    def test_family_index_defaults_overrides_references_and_escaping(self) -> None:
+        pages, resolved = self.pages_and_sources()
+        base_page = pages[0]
+        theorem = replace(base_page.theorems[0], label="Sample interlaces", headline=True)
+        page = replace(base_page, objects=("Zeta polynomials", "Alpha <script>"),
+                       object_property="interlacing", theorems=(theorem,))
+        for base in ('/', '/RealRooted/', '/nested/catalog/'):
+            with self.subTest(base=base):
+                output = render_site(self.root, (page,), resolved, REVISION, base_path=base)
+                listing = output['families-index/index.html']
+                entries = json.loads(output['catalog-manifest.json'])['families_index']
+                self.assertEqual(entries['url'], base + 'families-index/')
+                self.assertEqual([entry['family'] for entry in entries['entries']],
+                                 ['Alpha <script>', 'Zeta polynomials'])
+                self.assertTrue(all(entry['property'] == 'interlacing'
+                                    for entry in entries['entries']))
+                self.assertIn('Alpha &lt;script&gt;', listing)
+                self.assertNotIn('Alpha <script>', listing)
+                self.assertIn('../families/sample/#decl-RealRooted-Challenges-Sample-proven', listing)
+                self.assertIn('../families/sample/#references', listing)
+                self.assertIn(base + 'families-index/', output['llms.txt'])
+        overridden = replace(page, theorems=(replace(theorem, objects=('Beta',)),))
+        output = render_site(self.root, (overridden,), resolved, REVISION)
+        manifest = json.loads(output['catalog-manifest.json'])
+        entries = manifest['families_index']['entries']
+        self.assertEqual([(entry['family'], entry['property']) for entry in entries],
+                         [('Beta', 'real-rooted')])
+        self.assertEqual(manifest['pages'][0]['declarations'][1]['objects'], ['Beta'])
+        self.assertEqual(catalog_digest((base_page,)), catalog_digest((overridden,)))
+        self.assertEqual(json.loads(render_site(self.root, pages, resolved, REVISION)
+                                    ['catalog-manifest.json'])['families_index']['entries'], [])
+
+    def test_family_index_bibliography_and_theorem_page_opt_in(self) -> None:
+        pages, resolved = self.pages_and_sources()
+        from challenge_catalog import Citation
+        self.write_symcat(entries={"Paper": {"label": "Pap26", "csl": {}, "bibtex": ""}})
+        page = replace(pages[0], section="theorems", references=(Citation("Paper"),),
+                       objects=("Test polynomials",))
+        output = render_site(self.root, (page,), resolved, REVISION)
+        listing = output['families-index/index.html']
+        self.assertIn('../theorems/sample/#ref-Paper', listing)
+        self.assertIn('Pap26', listing)
+        entry = json.loads(output['catalog-manifest.json'])['families_index']['entries'][0]
+        self.assertEqual(entry['references'], ['Paper'])
+        self.assertEqual(entry['name'], page.theorems[0].name)
+
+    def test_search_index_includes_every_declaration_beyond_browsing_page(self) -> None:
+        count = 205
+        source = catalog_block(
+            authors='authors = ["Szegő"]', years='years = [1939]',
+            theorems='\n'.join(f'[[theorems]]\nname = "RealRooted.Sample.result{i:03}"'
+                               for i in range(count)),
+        ) + 'namespace RealRooted.Sample\n' + '\n'.join(
+            f'theorem result{i:03} : True := trivial' for i in range(count)
+        ) + '\nend RealRooted.Sample\n'
+        self.write('RealRooted/Challenges/Sample.lean', source)
+        pages = load_catalog(self.root)
+        page = replace(pages[0], theorems=tuple(
+            replace(item, label=f'Result {i}', headline=i == 0, objects=('Named family',)
+                    if i == count - 1 else ()) for i, item in enumerate(pages[0].theorems)))
+        output = render_site(self.root, (page,), validate_sources(self.root, (page,)), REVISION,
+                             base_path='/custom/')
+        index = json.loads(output['search-index.json'])
+        self.assertEqual(len(index['pages']), 1)
+        self.assertEqual(len(index['declarations']), count)
+        self.assertEqual(index['pages'][0]['authors'], ['Szegő'])
+        self.assertEqual(index['pages'][0]['years'], [1939])
+        self.assertEqual(index['pages'][0]['topic'], 'Combinatorial')
+        self.assertEqual(index['pages'][0]['headline'], 'Result 0')
+        self.assertEqual(len(index['pages'][0]['labels']), count)
+        last = index['declarations'][-1]
+        self.assertEqual(last['label'], 'Result 204')
+        self.assertEqual(last['page'], 0)
+        self.assertEqual(last['objects'], ['Named family'])
+        self.assertEqual(last['url'], '/custom/families/sample/#decl-RealRooted-Sample-result204')
+        for path in ('results/index.html', 'results-2/index.html'):
+            self.assertIn('data-catalog-search="../search-index.json"', output[path])
+            self.assertNotIn('Filters apply to this page', output[path])
+        self.assertIn('data-catalog-search="search-index.json"', output['index.html'])
+
     def test_markdown_subset(self) -> None:
         from challenge_catalog import render_markdown
 

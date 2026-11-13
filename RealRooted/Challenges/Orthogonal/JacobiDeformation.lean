@@ -32,6 +32,7 @@ module = "RealRooted.SpectralProduct"
 label = "Eigenvalues of a symmetric matrix in increasing order"
 
 [[theorems]]
+objects = ["Jacobi deformation polynomials"]
 name = "RealRooted.JacobiDeformation.polynomial_all_rank_nonneg_parameter"
 module = "RealRooted.JacobiDeformation.Strict"
 label = "For every δ ≥ 0 all roots are real and negative"

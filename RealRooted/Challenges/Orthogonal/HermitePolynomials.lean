@@ -28,6 +28,7 @@ module = "RealRooted.Hermite.Orthogonality.Integral"
 label = "Gaussian weight"
 
 [[theorems]]
+objects = ["Hermite polynomials"]
 name = "RealRooted.hermiteReal_isRealRooted"
 module = "RealRooted.Hermite.Roots"
 label = "Hermite polynomials are real-rooted"

@@ -41,6 +41,7 @@ module = "RealRooted.Graph.MinimaLocalOrder"
 label = "The shifted minima polynomial as a weighted matching polynomial"
 
 [[theorems]]
+objects = ["Minima polynomials of local edge orders"]
 name = "RealRooted.Graph.minimaPolynomial_splits"
 module = "RealRooted.Graph.MinimaLocalOrder"
 label = "Minima polynomials are real-rooted"

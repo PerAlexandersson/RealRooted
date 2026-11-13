@@ -39,6 +39,7 @@ module = "RealRooted.ParkingFunctions.Descents.WeakLeftPeak"
 label = "Weak left peak polynomial of parking functions"
 
 [[theorems]]
+objects = ["Parking function descent polynomials"]
 name = "RealRooted.ParkingFunctions.parkingDescentPolynomial_splits"
 module = "RealRooted.ParkingFunctions.Descents.OrdinaryTransfer"
 label = "Parking function descent polynomials are real-rooted"
@@ -51,6 +52,7 @@ module = "RealRooted.ParkingFunctions.Descents.OrdinaryTransfer"
 label = "Pollak's cyclic action: descents of parking functions and of words"
 
 [[theorems]]
+objects = ["Tieless parking function descent polynomials"]
 name = "RealRooted.ParkingFunctions.map_tielessParkingDescentPolynomial_splits"
 module = "RealRooted.ParkingFunctions.Descents.TielessTransfer"
 label = "Tieless parking function descent polynomials are real-rooted"
@@ -61,6 +63,7 @@ module = "RealRooted.ParkingFunctions.Descents.TielessTransfer"
 label = "Tieless descents and a Brändén–Vecchi Chow polynomial"
 
 [[theorems]]
+objects = ["Parking function weak left peak polynomials"]
 name = "RealRooted.ParkingFunctions.map_parkingWeakLeftPeakPolynomialInt_splits"
 module = "RealRooted.ParkingFunctions.Descents.WeakLeftPeakInterlacing"
 label = "Parking function weak left peak polynomials are real-rooted"

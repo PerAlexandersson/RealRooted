@@ -32,6 +32,7 @@ module = "RealRooted.CombinatorialExamples.MultisetEulerianNarayana"
 label = "The multiset Eulerian–Narayana polynomial P_α"
 
 [[theorems]]
+objects = ["Multiset Eulerian–Narayana polynomials"]
 name = "RealRooted.MultisetEulerianNarayana.simpleNegRooted_multisetEulerianNarayana"
 module = "RealRooted.CombinatorialExamples.MultisetEulerianNarayana"
 label = "P_α has only simple negative zeros"
