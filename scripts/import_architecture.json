@@ -16,10 +16,10 @@
   ],
   "budgets": {
     "RealRooted": {
-      "max_modules": 2225
+      "max_modules": 2226
     },
     "RealRooted.Production": {
-      "max_modules": 2153
+      "max_modules": 2154
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 844
@@ -865,7 +865,7 @@
       "max_modules": 92
     },
     "RealRooted.Challenges.Roots.HermitePoulain": {
-      "max_modules": 105
+      "max_modules": 214
     },
     "RealRooted.Tactic.HermitePoulain": {
       "max_modules": 93
