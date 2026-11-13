@@ -43,4 +43,36 @@ lemma rootMultiplicity_C_mul {c a : R} (hc : c ≠ 0) (p : R[X]) :
   rw [roots_mul (mul_ne_zero X_ne_zero hp), roots_X]
   simp
 
+/-- The number of roots of a composition, counted with multiplicity, is at most
+its inner degree times the number of roots of its outer polynomial. -/
+theorem card_roots_comp_le {f g : R[X]} (hf : f ≠ 0) (hg : g.natDegree ≠ 0) :
+    (f.comp g).roots.card ≤ g.natDegree * f.roots.card := by
+  classical
+  obtain ⟨q, hfactor, _, hqroots⟩ := exists_prod_multiset_X_sub_C_mul f
+  have hq : q ≠ 0 := by
+    intro hzero
+    simp [hzero] at hfactor
+    exact hf hfactor.symm
+  have hcomp : f.comp g ≠ 0 := by
+    rw [Ne, comp_eq_zero_iff]
+    rintro (hzero | ⟨_, hconstant⟩)
+    · exact hf hzero
+    · exact hg (by rw [hconstant, natDegree_C])
+  have hqcomp : (q.comp g).roots = 0 := by
+    apply Multiset.eq_zero_of_forall_notMem
+    intro x hx
+    have hroot : q.IsRoot (g.eval x) := by
+      simpa only [IsRoot, eval_comp] using isRoot_of_mem_roots hx
+    have hmem := (mem_roots hq).mpr hroot
+    simp only [hqroots, Multiset.notMem_zero] at hmem
+  have hfactorcomp :
+      f.comp g = ((f.roots.map fun a => X - C a).prod).comp g * q.comp g := by
+    rw [← mul_comp, hfactor]
+  rw [hfactorcomp] at hcomp ⊢
+  rw [roots_mul hcomp, hqcomp, add_zero]
+  calc
+    _ ≤ (((f.roots.map fun a => X - C a).prod).comp g).natDegree := card_roots' _
+    _ = g.natDegree * f.roots.card := by
+      rw [natDegree_comp, natDegree_multiset_prod_X_sub_C_eq_card, Nat.mul_comm]
+
 end Polynomial

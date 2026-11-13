@@ -2,6 +2,8 @@ module
 
 import RealRooted.Tactic.Row.Frontend
 public import RealRooted.CombinatorialExamples.Common
+public import Mathlib.Combinatorics.Enumerative.Catalan.Basic
+import Mathlib.Data.Nat.Choose.Cast
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
 import RealRooted.Tactic.Recurrence.RowSide
 public import Mathlib.Tactic
@@ -75,6 +77,140 @@ lemma coeff_motzkin_succ_succ (n m : Nat) :
           (coeff (motzkin n) m - motzkinShift * coeff (motzkin n) (m + 1)) := by
   rw [motzkin_succ_succ, coeff_add]
   simp [mul_assoc, coeff_X_sub_C_mul]
+
+/-- The coefficient of a Motzkin path polynomial of a given length. -/
+private def motzkinCoefficient (n k : ℕ) : ℝ :=
+  (n.choose (2 * k) : ℝ) * (catalan k : ℝ)
+
+private lemma motzkinCoefficient_eq_zero (n k : ℕ) (h : n < 2 * k) :
+    motzkinCoefficient n k = 0 := by
+  simp [motzkinCoefficient, Nat.choose_eq_zero_of_lt h]
+
+private lemma motzkinCoefficient_eq_factorial (n k : ℕ) (h : 2 * k ≤ n) :
+    motzkinCoefficient n k =
+      (n.factorial : ℝ) / (k.factorial * (k + 1).factorial * (n - 2 * k).factorial) := by
+  have hcat : ((k : ℝ) + 1) * (catalan k : ℝ) = ((2 * k).choose k : ℝ) := by
+    exact_mod_cast succ_mul_catalan_eq_centralBinom k
+  rw [Nat.cast_choose ℝ (by lia : k ≤ 2 * k), show 2 * k - k = k by lia] at hcat
+  have hfac (a : ℕ) : (a.factorial : ℝ) ≠ 0 := by positivity
+  have hcat' : (catalan k : ℝ) =
+      ((2 * k).factorial : ℝ) / (k.factorial * (k + 1).factorial) := by
+    rw [Nat.factorial_succ]
+    push_cast
+    field_simp [hfac] at hcat ⊢
+    nlinarith [hcat]
+  rw [motzkinCoefficient, hcat', Nat.cast_choose ℝ h]
+  field_simp [hfac]
+
+private lemma motzkinCoefficient_recurrence (n j : ℕ) :
+    ((n : ℝ) + 4) * motzkinCoefficient (n + 2) (j + 1) =
+      (2 * (n : ℝ) + 5) * motzkinCoefficient (n + 1) (j + 1) -
+        ((n : ℝ) + 1) * motzkinCoefficient n (j + 1) +
+        4 * ((n : ℝ) + 1) * motzkinCoefficient n j := by
+  by_cases hfar : n < 2 * j
+  · rw [motzkinCoefficient_eq_zero (n + 2) (j + 1) (by lia),
+      motzkinCoefficient_eq_zero (n + 1) (j + 1) (by lia),
+      motzkinCoefficient_eq_zero n (j + 1) (by lia), motzkinCoefficient_eq_zero n j hfar]
+    ring
+  by_cases hzero : n = 2 * j
+  · subst n
+    rw [motzkinCoefficient_eq_factorial (2 * j + 2) (j + 1) (by lia),
+      motzkinCoefficient_eq_zero (2 * j + 1) (j + 1) (by lia),
+      motzkinCoefficient_eq_zero (2 * j) (j + 1) (by lia),
+      motzkinCoefficient_eq_factorial (2 * j) j (by lia)]
+    rw [show 2 * j + 2 - 2 * (j + 1) = 0 by lia, Nat.sub_self]
+    simp only [Nat.factorial_zero, Nat.cast_one, mul_one, Nat.factorial_succ]
+    push_cast
+    have hfac (a : ℕ) : (a.factorial : ℝ) ≠ 0 := by positivity
+    field_simp [hfac]
+    ring
+  by_cases hone : n = 2 * j + 1
+  · subst n
+    rw [motzkinCoefficient_eq_factorial (2 * j + 1 + 2) (j + 1) (by lia),
+      motzkinCoefficient_eq_factorial (2 * j + 1 + 1) (j + 1) (by lia),
+      motzkinCoefficient_eq_zero (2 * j + 1) (j + 1) (by lia),
+      motzkinCoefficient_eq_factorial (2 * j + 1) j (by lia)]
+    rw [show 2 * j + 1 + 2 - 2 * (j + 1) = 1 by lia,
+      show 2 * j + 1 + 1 - 2 * (j + 1) = 0 by lia,
+      show 2 * j + 1 - 2 * j = 1 by lia]
+    simp only [Nat.factorial_zero, Nat.cast_one, mul_one,
+      Nat.factorial_succ]
+    push_cast
+    have hfac (a : ℕ) : (a.factorial : ℝ) ≠ 0 := by positivity
+    field_simp [hfac]
+    ring
+  have hinterior : 2 * j + 2 ≤ n := by lia
+  obtain ⟨r, rfl⟩ := Nat.exists_eq_add_of_le hinterior
+  rw [motzkinCoefficient_eq_factorial (2 * j + 2 + r + 2) (j + 1) (by lia),
+    motzkinCoefficient_eq_factorial (2 * j + 2 + r + 1) (j + 1) (by lia),
+    motzkinCoefficient_eq_factorial (2 * j + 2 + r) (j + 1) (by lia),
+    motzkinCoefficient_eq_factorial (2 * j + 2 + r) j (by lia)]
+  rw [show 2 * j + 2 + r + 2 - 2 * (j + 1) = r + 2 by lia,
+    show 2 * j + 2 + r + 1 - 2 * (j + 1) = r + 1 by lia,
+    show 2 * j + 2 + r - 2 * (j + 1) = r by lia,
+    show 2 * j + 2 + r - 2 * j = r + 2 by lia]
+  rw [show 2 * j + 2 + r + 2 = (2 * j + 2 + r + 1) + 1 by lia,
+    Nat.factorial_succ,
+    show 2 * j + 2 + r + 1 = (2 * j + 2 + r) + 1 by lia,
+    Nat.factorial_succ, Nat.factorial_succ j,
+    Nat.factorial_succ (j + 1), Nat.factorial_succ r, Nat.factorial_succ (r + 1)]
+  rw [Nat.factorial_succ j, Nat.factorial_succ r]
+  push_cast
+  have hfac (a : ℕ) : (a.factorial : ℝ) ≠ 0 := by positivity
+  field_simp [hfac]
+  ring
+
+/-- The shifted Motzkin coefficient counts choices of paired positions and a Dyck path. -/
+theorem coeff_motzkin (n k : ℕ) :
+    (motzkin n).coeff k = ((n + 1).choose (2 * k) : ℝ) * (catalan k : ℝ) := by
+  change (motzkin n).coeff k = motzkinCoefficient (n + 1) k
+  induction n using Nat.twoStepInduction generalizing k with
+  | zero =>
+      cases k with
+      | zero => simp [motzkinCoefficient]
+      | succ k => simp [motzkinCoefficient, coeff_one,
+          Nat.choose_eq_zero_of_lt (by lia : 1 < 2 * (k + 1))]
+  | one =>
+      rcases k with _ | _ | k
+      · simp [motzkinCoefficient]
+      · norm_num [motzkinCoefficient, coeff_one]
+      · simp [motzkinCoefficient, coeff_one, coeff_X,
+          Nat.choose_eq_zero_of_lt (by lia : 2 < 2 * (k + 2))]
+  | more n ih0 ih1 =>
+      cases k with
+      | zero =>
+          rw [motzkin_succ_succ]
+          simp only [coeff_add, mul_coeff_zero, coeff_sub,
+            coeff_X_zero, coeff_C_zero, ih0, ih1]
+          simp [motzkinCoefficient, motzkinCoeffA, motzkinCoeffB, motzkinShift]
+          field_simp
+          ring
+      | succ j =>
+          rw [coeff_motzkin_succ_succ, ih1, ih0, ih0]
+          have hrec := motzkinCoefficient_recurrence (n + 1) j
+          simp only [Nat.cast_add, Nat.cast_one] at hrec
+          dsimp [motzkinCoeffA, motzkinCoeffB, motzkinShift]
+          push_cast
+          have hden : (n : ℝ) + 5 ≠ 0 := by positivity
+          field_simp [hden]
+          nlinarith [hrec]
+
+/-- Shifted Motzkin polynomials have nonnegative coefficients. -/
+theorem hasNonnegCoeffs_motzkin (n : ℕ) : HasNonnegCoeffs (motzkin n) := by
+  intro k
+  rw [coeff_motzkin]
+  positivity
+
+/-- The constant coefficient of every shifted Motzkin polynomial is one. -/
+@[simp] theorem coeff_zero_motzkin (n : ℕ) : (motzkin n).coeff 0 = 1 := by
+  simp [coeff_motzkin]
+
+/-- Every coefficient of the shifted Motzkin polynomials is monotone in the row index. -/
+theorem coeff_motzkin_mono (k : ℕ) : Monotone (fun n : ℕ => (motzkin n).coeff k) := by
+  intro n m hnm
+  simp only [coeff_motzkin]
+  exact mul_le_mul_of_nonneg_right
+    (Nat.cast_le.mpr (Nat.choose_le_choose (2 * k) (by lia))) (Nat.cast_nonneg _)
 
 lemma coeff_motzkin_top_pos_and_above :
     ∀ n : Nat,

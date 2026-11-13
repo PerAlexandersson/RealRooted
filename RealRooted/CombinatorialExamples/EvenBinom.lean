@@ -199,6 +199,64 @@ lemma evenBinomPolyReal_recurrence (n : ℕ) :
         Nat.choose_succ_succ, Nat.choose_succ_succ, Nat.choose_succ_succ]
       grind
 
+/-- The even-binomial polynomials satisfy a first-order differential recurrence. -/
+theorem evenBinomPolyReal_deriv_rec (n : ℕ) :
+    2 * X * (1 - X) * (evenBinomPolyReal n).derivative =
+      C (n : ℝ) * (evenBinomPolyReal (n + 1) - (1 + X) * evenBinomPolyReal n) := by
+  induction n using Nat.twoStepInduction with
+  | zero => simp [evenBinomPolyReal]
+  | one => norm_num [evenBinomPolyReal, Finset.sum_range_succ, Nat.choose]
+  | more n ih0 ih1 =>
+      have hnext : evenBinomPolyReal (n + 2 + 1) =
+          C 2 * evenBinomPolyReal (n + 2) + (X - 1) * evenBinomPolyReal (n + 1) := by
+        simpa only [Nat.add_assoc, Nat.reduceAdd] using evenBinomPolyReal_recurrence (n + 1)
+      rw [hnext, evenBinomPolyReal_recurrence n]
+      simp only [derivative_add, derivative_mul, derivative_C, derivative_sub,
+        derivative_X, derivative_one, zero_mul, zero_add, sub_zero, one_mul]
+      rw [evenBinomPolyReal_recurrence n] at ih1
+      simp only [Nat.cast_add, Nat.cast_one, Nat.cast_ofNat, map_add, map_one, map_ofNat]
+        at ih1 ⊢
+      linear_combination 2 * ih1 + (X - 1) * ih0
+
+/-- Consecutive even-indexed binomial rows satisfy a contiguous differential identity. -/
+theorem evenBinomPolyReal_contiguous (d : ℕ) :
+    C (d : ℝ) * evenBinomPolyReal (2 * d + 2) =
+      C (d : ℝ) * (1 + 3 * X) * evenBinomPolyReal (2 * d) +
+        2 * X * (1 - X) * (evenBinomPolyReal (2 * d)).derivative := by
+  have h := evenBinomPolyReal_deriv_rec (2 * d)
+  rw [evenBinomPolyReal_recurrence]
+  simp only [Nat.cast_mul, Nat.cast_ofNat, map_mul, map_ofNat] at h ⊢
+  linear_combination -h
+
+/-- The even-binomial polynomial of every index satisfies its second-order differential equation. -/
+theorem evenBinomPolyReal_ode (n : ℕ) :
+    4 * X * (1 - X) * (evenBinomPolyReal n).derivative.derivative +
+        (2 + C (4 * (n : ℝ) - 6) * X) * (evenBinomPolyReal n).derivative -
+      C ((n : ℝ) * ((n : ℝ) - 1)) * evenBinomPolyReal n = 0 := by
+  have h := evenBinomPolyReal_deriv_rec n
+  have hs := evenBinomPolyReal_deriv_rec (n + 1)
+  have hone : (1 - X : ℝ[X]) ≠ 0 := by
+    intro hz
+    have := congrArg (fun p : ℝ[X] => p.coeff 0) hz
+    simp at this
+  have hsucc : 2 * X * (evenBinomPolyReal (n + 1)).derivative =
+      C ((n : ℝ) + 1) * (evenBinomPolyReal (n + 1) - evenBinomPolyReal n) := by
+    apply mul_left_cancel₀ hone
+    rw [show n + 1 + 1 = n + 2 by lia, evenBinomPolyReal_recurrence] at hs
+    simp only [Nat.cast_add, Nat.cast_one, map_add, map_one, map_ofNat] at hs ⊢
+    linear_combination hs
+  have hbridge : 2 * C (n : ℝ) * (evenBinomPolyReal (n + 1)).derivative =
+      C ((n : ℝ) + 1) *
+        (2 * (1 - X) * (evenBinomPolyReal n).derivative +
+          C (n : ℝ) * evenBinomPolyReal n) := by
+    apply mul_left_cancel₀ (X_ne_zero : (X : ℝ[X]) ≠ 0)
+    linear_combination C (n : ℝ) * hsucc - C ((n : ℝ) + 1) * h
+  have hder := congrArg Polynomial.derivative h
+  simp only [derivative_mul, derivative_ofNat, derivative_X, derivative_sub,
+    derivative_one, derivative_C, derivative_add, zero_mul, zero_add, one_mul] at hder
+  simp only [map_sub, map_mul, map_ofNat, map_one, map_add] at hbridge ⊢
+  linear_combination 2 * hder + hbridge
+
 lemma evenBinomPolyReal_natDegree (n : ℕ) :
     (evenBinomPolyReal n).natDegree = n / 2 := by
   apply natDegree_eq_of_le_of_coeff_ne_zero
