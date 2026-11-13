@@ -31,7 +31,7 @@ public import RealRooted.SamePhaseStability
 public import RealRooted.SpanningTreeStability
 
 /-!
-# Real stability challenge entry point
+# Real stability
 
 <!-- realrooted-catalog
 version = 1
@@ -292,18 +292,21 @@ label = "Differentiation in a variable with constant leading coefficient preserv
 <!-- realrooted-catalog-content -->
 # Real stability
 
-A multiaffine real polynomial is real stable if and only if it is Rayleigh; real stability is
-preserved by determinantal pencils, homogenization, specialization and inversion, and gives
-hyperbolicity, matroid supports and Lorentzian polynomials.
+Real stability is the multivariate generalization of real-rootedness. A multiaffine real
+polynomial is real stable if and only if it is Rayleigh; determinantal pencils are real stable;
+real stability is preserved by homogenization, specialization and inversion; and it gives
+hyperbolicity, matroid supports, Lorentzian polynomials and the root bound for mixed
+characteristic polynomials.
 
 ## Results
 
 A polynomial $P\in\mathbb C[z_1,\dotsc,z_n]$ is *stable* if $P(z)\ne0$ whenever
-$\operatorname{Im}z_i>0$
-for all $i$; in particular $P\ne0$. A polynomial with real coefficients is *real stable* if it is
-stable as a complex polynomial. It is *multiaffine* if it has degree at most one in each variable,
-and *Rayleigh* if
-$$\partial_iP\,\partial_jP-P\,\partial_i\partial_jP\ge0$$
+$\operatorname{Im}z_i>0$ for all $i$; in particular $P\ne0$. A polynomial with real coefficients is
+*real stable* if it is stable as a complex polynomial. It is *multiaffine* if it has degree at most
+one in each variable, and *Rayleigh* if
+$$
+\partial_iP\,\partial_jP-P\,\partial_i\partial_jP\ge0
+$$
 at every $x\in\mathbb R^n$ and for all $i,j$. A real polynomial $P$ is *hyperbolic* in the direction
 $e\in\mathbb R^n$ if $P(e)\ne0$ and $t\mapsto P(x+te)$ is real-rooted for every $x\in\mathbb R^n$.
 
@@ -313,7 +316,9 @@ if and only if $P\ne0$ and $P$ is Rayleigh.
 **Corollary (Borcea–Brändén–Liggett)** [@BorceaBrandenLiggett2008]. Let $\mu$ be a weight function
 on the subsets of $\{1,\dotsc,n\}$ whose generating polynomial $\sum_S\mu(S)\prod_{i\in S}z_i$ is
 real stable. Then for $i\ne j$,
-$$\mu(\Omega)\,\mu(i,j\in S)\le\mu(i\in S)\,\mu(j\in S).$$
+$$
+\mu(\Omega)\,\mu(i,j\in S)\le\mu(i\in S)\,\mu(j\in S).
+$$
 For a probability measure this is pairwise negative correlation; it is the Rayleigh inequality at
 the all-ones point.
 
@@ -339,7 +344,7 @@ hyperbolicity cone, the path component of $e$ in $\{x:P(x)\ne0\}$, is convex.
 degree $d$. Then $z_0^dP(z_1/z_0,\dotsc,z_n/z_0)$ and the top homogeneous component of $P$ are real
 stable. The homogenization in any degree at least $d$ is also real stable.
 
-**Theorem (top component without sign hypothesis).** If $P$ is real stable, then its top
+**Theorem (top component).** If $P$ is real stable, then its top
 homogeneous component is real stable, and the homogenization
 $z_0^dP(z_1/z_0,\dotsc,z_n/z_0)$, with $d$ the total degree of $P$, is hyperbolic in the direction
 $(0,b)$ for every $b\in\mathbb R^n$ with all $b_i>0$. In particular the top component does not
@@ -357,9 +362,8 @@ is. For one variable: if $p$ has no zeros in the open upper half-plane and $\deg
 $z^dp(-1/z)$ has none.
 
 **Theorem (specialization).** Let $P$ be stable and $c$ real. Then $P$ with the variable $z_i$
-replaced by $c$ is stable or identically zero, with no bound on the degree of $P$ in $z_i$. The same
-holds for repeated specialization of several variables at real values, and for setting a finite
-block of variables to zero.
+replaced by $c$ is stable or identically zero. The same holds for repeated specialization of several
+variables at real values, and for setting a finite block of variables to zero.
 
 **Theorem (differentiation).** Let $P$ be stable in $z_0,z_1,\dotsc,z_n$, of degree at most
 $m\ge1$ in $z_0$, and suppose the coefficient of $z_0^m$ is a nonzero constant. Then
@@ -367,13 +371,12 @@ $\partial P/\partial z_0$ is stable.
 
 **Theorem (common-rotation criterion).** Call a complex polynomial $Q$ *common-rotation stable* if
 $Q(z)\ne0$ whenever some single $c$ with $\operatorname{Im}c>0$ satisfies
-$\operatorname{Im}(cz_i)>0$
-for all $i$. A homogeneous polynomial $P$ in $z_0,z_1,\dotsc,z_n$ is stable if and only if
-$P(1,z_1,\dotsc,z_n)$ is common-rotation stable; for a homogeneous real polynomial the same holds
-for real stability. The ordinary homogenization of $p$ in any degree at least $\deg p$ is stable if
-and only if $p$ is common-rotation stable.
+$\operatorname{Im}(cz_i)>0$ for all $i$. A homogeneous polynomial $P$ in $z_0,z_1,\dotsc,z_n$ is
+stable if and only if $P(1,z_1,\dotsc,z_n)$ is common-rotation stable; for a homogeneous real
+polynomial the same holds for real stability. The ordinary homogenization of $p$ in any degree at
+least $\deg p$ is stable if and only if $p$ is common-rotation stable.
 
-**Theorem (multiaffine tools).** Let $P$ and $Q$ be multiaffine polynomials not involving $z_k$.
+**Theorem (affine extensions).** Let $P$ and $Q$ be multiaffine polynomials not involving $z_k$.
 Write $W_i(Q,P)=Q\,\partial_iP-P\,\partial_iQ$ for the coordinate Wronskian,
 $R_{ij}(F)=\partial_iF\,\partial_jF-F\,\partial_i\partial_jF$ for the Rayleigh difference, and
 $M_{ij}=\partial_iP\,\partial_jQ+\partial_iQ\,\partial_jP
@@ -390,7 +393,7 @@ multiaffine and stable, so is $z\mapsto\prod_iz_i\,P(-1/z_1,\dotsc,-1/z_n)$. If 
 $a\in\mathbb R^n$ and $b\in\mathbb R^n$ has nonnegative entries, then $p(t)=P(a+tb)$ satisfies
 $p'(t)^2-p(t)\,p''(t)\ge0$ for all real $t$.
 
-**Theorem (Brändén).** [@Branden2007] The support of a real stable polynomial is a jump system:
+**Theorem (Brändén)** [@Branden2007]. The support of a real stable polynomial is a jump system:
 for support points $\alpha,\beta$ and a unit step $s=\pm e_i$ from $\alpha$ towards $\beta$, either
 $\alpha+s$ is in the support, or some further unit step $t$ towards $\beta$ has $\alpha+s+t$ in the
 support.
@@ -403,14 +406,15 @@ coefficients is Lorentzian.
 
 **Theorem (mixed characteristic polynomials).** For real positive semidefinite matrices $A_i$, the
 mixed characteristic polynomial
-$$\mu[A](x)=\prod_i(1-\partial_{z_i})\det\Bigl(xI+\sum_iz_iA_i\Bigr)\Big|_{z=0}$$
+$$
+\mu[A](x)=\prod_i(1-\partial_{z_i})\det\Bigl(xI+\sum_iz_iA_i\Bigr)\Big|_{z=0}
+$$
 is nonzero and real-rooted.
 
 **Theorem (Marcus–Spielman–Srivastava)** [@MarcusSpielmanSrivastava2015II]. Let $A_1,\dotsc,A_m$ be
 real positive semidefinite $n\times n$ matrices with $\sum_iA_i=I$ and
-$\operatorname{tr}A_i\le\varepsilon$,
-where $\varepsilon>0$. Then every root of $\mu[A]$ is at most $(1+\sqrt\varepsilon)^2$. This is the
-root bound behind the solution of the Kadison–Singer problem.
+$\operatorname{tr}A_i\le\varepsilon$, where $\varepsilon>0$. Then every root of $\mu[A]$ is at most
+$(1+\sqrt\varepsilon)^2$. This is the root bound behind the solution of the Kadison–Singer problem.
 
 **Theorem (MSS, Thm. 4.1)** [@MarcusSpielmanSrivastava2015II, Thm. 4.1]. The expected
 characteristic polynomial of a sum of independent random rank-one matrices equals the mixed
@@ -418,25 +422,26 @@ characteristic polynomial of their second-moment matrices.
 
 ## Proof
 
-For determinantal pencils, suppose $M=A+\sum_iz_iB_i$ is singular with all
-$\operatorname{Im}z_i>0$ and
-let $v\ne0$ be in its kernel. The imaginary part of $v^*Mv$ is
-$\sum_i\operatorname{Im}(z_i)\,v^*B_iv$, so
-each $v^*B_iv$ vanishes. Hence $B_iv=0$ and $Av=0$, so the pencil is singular everywhere. Inversion
-works because $\operatorname{Im}(-1/z)=\operatorname{Im}z/|z|^2$, so $z\mapsto-1/z$ maps the open
-upper
-half-plane to itself. For a fresh affine extension $P+z_kQ$ and $i,j\ne k$, the Rayleigh difference
-is a quadratic in $z_k$ with coefficients $R_{ij}(P)$, $M_{ij}$ and $R_{ij}(Q)$; for $i=k$ it equals
-$W_j(Q,P)$, independent of $z_k$. The root bound for $\mu[A]$ follows the barrier argument of
-Marcus, Spielman and Srivastava, with the Helton–Vinnikov step replaced by an elementary
-Pick-function lemma.
+For determinantal pencils, if $v\ne0$ lies in the kernel of $M=A+\sum_iz_iB_i$ with all
+$\operatorname{Im}z_i>0$, then $\operatorname{Im}(v^*Mv)=\sum_i\operatorname{Im}(z_i)\,v^*B_iv=0$
+forces $B_iv=0$ and $Av=0$, so the pencil is singular everywhere. Inversion uses that
+$z\mapsto-1/z$ maps the open upper half-plane to itself. For $P+z_kQ$ and $i,j\ne k$, the
+Rayleigh difference is a quadratic in $z_k$ with coefficients $R_{ij}(P)$, $M_{ij}$ and
+$R_{ij}(Q)$, and for $i=k$ it equals $W_j(Q,P)$. The root bound for $\mu[A]$ follows the barrier
+argument of Marcus, Spielman and Srivastava, with the Helton–Vinnikov step replaced by an
+elementary Pick-function lemma.
 
 ## References
 
-See [@Garding1959; @ChoeOxleySokalWagner2004; @Branden2007; @BorceaBranden2008MixedDeterminants;
-@BorceaBrandenLiggett2008; @MarcusSpielmanSrivastava2015II; @BrandenHuh2020]. See also the
-[stable polynomials](sf:stablePolynomialDefinition) and the
-[Rayleigh property](sf:stronglyRayleighProperty) on symmetricfunctions.com.
+- [@Garding1959]
+- [@ChoeOxleySokalWagner2004]
+- [@Branden2007]
+- [@BorceaBranden2008MixedDeterminants]
+- [@BorceaBrandenLiggett2008]
+- [@MarcusSpielmanSrivastava2015II]
+- [@BrandenHuh2020]
+- [Stable polynomials](sf:stablePolynomialDefinition) and the
+  [Rayleigh property](sf:stronglyRayleighProperty) on symmetricfunctions.com
 <!-- /realrooted-catalog-content -->
 
 This module exposes the multiaffine Rayleigh criterion, determinantal

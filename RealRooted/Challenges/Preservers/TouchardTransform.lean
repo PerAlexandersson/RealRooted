@@ -161,7 +161,7 @@ $U=\frac{\sqrt2-1}2$. Neither transform preserves real-rootedness in general.
 
 The *Touchard transform* $\mathcal T$ is the linear map with
 $\mathcal T(t^n)=T_n(x)=\sum_kS(n,k)x^k$, where $S(n,k)$ are the Stirling numbers of the second
-kind; equivalently $\mathcal T(t^{\underline n})=x^n$, with $t^{\underline n}=t(t-1)\cdots(t-n+1)$.
+kind; equivalently $\mathcal T(t^{\underline n})=x^n$, with $t^{\underline n}=t(t-1)\dotsm(t-n+1)$.
 It turns multiplication into the Poisson product:
 $$
 \mathcal T(pq)=\mathcal T(p)\star\mathcal T(q),\qquad
@@ -201,7 +201,7 @@ b\ge-\tfrac12\text{ and }w\le3b+\tfrac94 .
 $$
 
 For instance $\mathcal T\bigl((t+\tfrac12)(t^2+\tfrac12)\bigr)$ is PF, while
-$\mathcal T(t^2+\tfrac12)$ is not real-rooted. The declarations below also give the inverse
+$\mathcal T(t^2+\tfrac12)$ is not real-rooted. We also have the inverse
 relation with the falling factorial transform, the rule
 $\mathcal T(t^{\underline m}p(t))=x^m\,\mathcal T(p(t+m))$, and closure of PF images under
 products.
@@ -215,15 +215,14 @@ The Touchard polynomials themselves form a
 
 ## Proof
 
-Poisson multiplication by a PF polynomial, and diamond multiplication by a polynomial rooted in
-$[-1,0]$, preserve real-rootedness [@Branden2006, Theorems 3.11 and 3.13]. Since
-$\mathcal T\bigl((t-r)(t-s)\bigr)=x^2+(1-r-s)x+rs$ and
+Since $\mathcal T\bigl((t-r)(t-s)\bigr)=x^2+(1-r-s)x+rs$ and
 $E\bigl((t-r)(t-s)\bigr)=2x^2+(1-r-s)x+rs$, the image of $(t-r)^2$ is real-rooted exactly when
-$r\le1/4$, respectively $4r^2+4r\le1$; this gives necessity. For sufficiency, pair the roots of
-the input so that each pair has an admissible image; at most one root for $\mathcal T$, and at
-most one positive and one negative root for $E$, remain, and the product rule reduces the claim
-to one admissible multiplication. For the invariant sets, all summands of the product have the
-sign of the leading coefficient beyond $c$, respectively outside $[A,B]$.
+$r\le1/4$, respectively $4r^2+4r\le1$; this gives necessity. For sufficiency, we pair the roots
+of the input so that each pair has an admissible image, and the product rule reduces the claim
+to Poisson multiplication by a PF polynomial or diamond multiplication by a polynomial rooted in
+$[-1,0]$, which preserve real-rootedness [@Branden2006, Theorems 3.11 and 3.13]. For the
+invariant sets, all summands of the product have the sign of the leading coefficient beyond
+$c$, respectively outside $[A,B]$.
 
 ## References
 

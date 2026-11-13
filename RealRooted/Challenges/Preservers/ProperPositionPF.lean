@@ -64,7 +64,9 @@ label = "Finite PF multipliers preserve ordered PF lists"
 # Diagonal operators of PF multiplier sequences and interlacing
 
 A diagonal operator $x^n\mapsto\gamma_nx^n$ coming from a finite PF multiplier sequence
-preserves interlacing of PF polynomials, with zero outputs and degree drops allowed.
+preserves interlacing of PF polynomials. For [multiplier sequences](rr:multiplier-sequences) of
+real-rootedness, the orientation of the image pair is decided by the sign of one ratio
+$\gamma_{d-1}/\gamma_d$.
 
 ## Results
 
@@ -73,38 +75,40 @@ polynomial is *PF* if it has nonnegative coefficients and is zero or has only re
 nonpositive roots. We say $\gamma$ is a *finite PF multiplier sequence of degree $N$* if
 $\Gamma$ maps PF polynomials of degree at most $N$ to PF polynomials, and a *finite
 multiplier sequence of degree $N$* if $\Gamma$ maps real-rooted polynomials of degree at most
-$N$ to zero or to real-rooted polynomials. We use the [zero-aware interlacing convention](rr:about).
-`StrictInterl` is the
-library predicate for nonzero real-rooted pairs; it allows repeated and common roots.
+$N$ to zero or to real-rooted polynomials. On this page $f\ll g$ also holds when $f$ or $g$ is
+zero, as in the [zero-aware convention](rr:about), unless $f$ and $g$ are said to be nonzero.
 
 **Theorem (PF multipliers).** Let $\gamma$ be a finite PF multiplier sequence of degree $N$,
 and let $f,g$ be PF polynomials of degree at most $N$ with $f\ll g$. Then
-$\Gamma f\ll\Gamma g$. No top multiplier is assumed to be nonzero, and $\Gamma f$ or
-$\Gamma g$ may vanish.
+$\Gamma f\ll\Gamma g$.
 
 **Theorem (orientation).** Let $\gamma$ be a finite multiplier sequence of degree $N$, let
-$f\ll g$ in the `StrictInterl` sense with $\deg f,\deg g\le N$, and suppose
-$\gamma_{\deg f}\ne0$ and $\gamma_{\deg g}\ne0$. Put $d=\deg f$ and $\rho=\gamma_{d-1}/\gamma_d$,
-reading $d-1$ as $0$ when $d=0$.
+$f\ll g$ be nonzero with $\deg f,\deg g\le N$, and suppose $\gamma_{\deg f}\ne0$ and
+$\gamma_{\deg g}\ne0$. Put $d=\deg f$ and $\rho=\gamma_{d-1}/\gamma_d$, reading $d-1$ as $0$
+when $d=0$.
 
-- If $\rho\ge0$, then $\Gamma f\ll\Gamma g$ in the `StrictInterl` sense.
+- If $\rho\ge0$, then $\Gamma f\ll\Gamma g$.
 - If $\deg g=d$ and $\rho\le0$, equivalently $\gamma_{d-1}\gamma_d\le0$, then
-  $\Gamma g\ll\Gamma f$ in the `StrictInterl` sense.
+  $\Gamma g\ll\Gamma f$.
 - If $\deg g=d$ and $\rho=0$, both orientations hold.
 
+In each case the images are nonzero.
+
 **Theorem (weighted sums).** Let $\gamma$ be a multiplier sequence with $\gamma_k>0$ for all
-$k$, let $h$ be a polynomial, and let $a_1,\dots,a_r\ge0$ with some $a_i>0$. Let
-$p_1,\dots,p_r$ have positive leading coefficients. If $h\ll p_i$ for all $i$ in the
-`StrictInterl` sense, then $\Gamma h\ll\sum_ia_i\,\Gamma p_i$ in the same sense. If
-$p_i\ll h$ for all $i$, then $\sum_ia_i\,\Gamma p_i\ll\Gamma h$.
+$k$, let $h$ be a nonzero polynomial, and let $a_1,\dotsc,a_r\ge0$ with some $a_i>0$. Let
+$p_1,\dotsc,p_r$ have positive leading coefficients. If $h\ll p_i$ for all $i$, then
+$\Gamma h\ll\sum_ia_i\,\Gamma p_i$, and both sides are nonzero. If $p_i\ll h$ for all $i$, then
+$\sum_ia_i\,\Gamma p_i\ll\Gamma h$.
 
 **Theorem (lists).** Let $\gamma$ be a finite PF multiplier sequence of degree $N$ and let
-$f_1,\dots,f_r$ be polynomials of degree at most $N$ such that $f_i\ll f_j$ for $i<j$, every
-$f_i$ has nonnegative coefficients, and every nonzero $f_i$ splits. Then
-$\Gamma f_1,\dots,\Gamma f_r$ has the same three properties.
+$f_1,\dotsc,f_r$ be polynomials of degree at most $N$ such that $f_i\ll f_j$ for $i<j$, every
+$f_i$ has nonnegative coefficients, and every nonzero $f_i$ is real-rooted. Then
+$\Gamma f_1,\dotsc,\Gamma f_r$ has the same three properties.
 
 ## References
 
-See [@BorceaBranden2009I; @BorceaBranden2010; @Branden2015].
+- [@BorceaBranden2009I]
+- [@BorceaBranden2010]
+- [@Branden2015]
 <!-- /realrooted-catalog-content -->
 -/

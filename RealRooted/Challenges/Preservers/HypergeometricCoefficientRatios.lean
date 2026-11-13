@@ -80,7 +80,7 @@ $$
 $$
 Then $p$ is PF.
 
-**Theorem (lists of parameters).** Let $a_1,\dots,a_s>0$ and $b_1,\dots,b_t>0$, with $s,t\ge0$
+**Theorem (lists of parameters).** Let $a_1,\dotsc,a_s>0$ and $b_1,\dotsc,b_t>0$, with $s,t\ge0$
 arbitrary and repetitions allowed. If $p$ has degree at most $d$, $p(0)>0$ and
 $$
 (k+1)\prod_i(a_i+k)\,p_{k+1}=(d-k)\prod_j(b_j+d-k-1)\,p_k\qquad(0\le k<d),
@@ -88,7 +88,7 @@ $$
 then $p$ is PF. Two polynomials of degree at most $d$ satisfying the same ratio differ by a
 scalar factor, provided one of them has nonzero constant term.
 
-**Theorem (Euler factors).** Let moreover $r_1,\dots,r_u>0$ and $s_1,\dots,s_v>0$, and put
+**Theorem (Euler factors).** Let moreover $r_1,\dotsc,r_u>0$ and $s_1,\dotsc,s_v>0$, and put
 $h(k)=\prod_i(r_i+k)\prod_j(s_j+d-k)$. If $p$ has degree at most $d$, $p(0)>0$ and
 $$
 (k+1)\prod_i(a_i+k)\,h(k)\,p_{k+1}=(d-k)\prod_j(b_j+d-k-1)\,h(k+1)\,p_k\qquad(0\le k<d),

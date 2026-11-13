@@ -97,54 +97,53 @@ label = "Euler bidiagonal steps preserve PF polynomials"
 # Operators preserving interlacing
 
 Every linear operator that maps nonzero real-rooted polynomials to zero or to real-rooted
-polynomials preserves interlacing up to orientation; $\theta=x\,d/dx$, $N-\theta$ and the
-reverse-Hermite transform preserve it exactly.
+polynomials preserves interlacing up to orientation. The operators $\theta=x\,d/dx$, $N-\theta$
+and the reverse-Hermite transform preserve it with its orientation.
 
 ## Results
 
 A polynomial is *PF* if it has nonnegative coefficients and is zero or has only real,
-nonpositive roots. We use the [zero-aware interlacing convention](rr:about).
+nonpositive roots. On this page $f\ll g$ also holds when $f$ or $g$ is zero, as in the
+[zero-aware convention](rr:about).
 
 **Theorem (real-rootedness preservers).** Let $T$ be a real-linear operator on $\mathbb R[x]$
-such that $Tp$ is zero or real-rooted for every nonzero real-rooted $p$. If $f\ll g$ in the
-library's `StrictInterl` sense, which requires $f$ and $g$ to be nonzero and real-rooted,
-then $Tf\ll Tg$ or $Tg\ll Tf$; the images may vanish.
+such that $Tp$ is zero or real-rooted for every nonzero real-rooted $p$. If $f\ll g$ with $f$
+and $g$ nonzero, then $Tf\ll Tg$ or $Tg\ll Tf$.
 
 **Theorem (concrete operators).**
 
 - For all polynomials $p\ll q$, we have $\theta p\ll\theta q$.
 - For PF polynomials $p\ll q$ of degree at most $N$, we have
   $(N-\theta)p\ll(N-\theta)q$, where $(N-\theta)p=Np-xp'$.
-- For PF polynomials $p$, $q$ of degree at most $D$ with $p\ll q$ in the `StrictInterl`
-  sense, the reciprocals $x^Dp(1/x)$ reverse the order:
-  $x^Dq(1/x)\ll x^Dp(1/x)$, again in the `StrictInterl` sense.
+- For nonzero PF polynomials $p\ll q$ of degree at most $D$, the reciprocals reverse the order:
+  $x^Dq(1/x)\ll x^Dp(1/x)$.
 
 **Theorem (reverse-Hermite transform).** Let $B_0=1$, $B_1=x$ and
 $B_{n+2}=x\bigl(B_{n+1}+(n+1)B_n\bigr)$, and let $R$ be the linear map with $R(x^n)=B_n$.
 Then $R$ maps PF polynomials to PF polynomials, and $p\ll q$ implies $Rp\ll Rq$ for PF
 $p,q$.
 
-**Theorem (from simple roots to PF).** Let $T$ be a real-linear operator, and suppose
+**Theorem (from simple roots to PF; Brändén).** Let $T$ be a real-linear operator, and suppose
 $Tq$ is PF for every $q$ with positive leading coefficient and simple, negative roots.
-Then $Tp$ is PF for every PF polynomial $p$. The degree-local version holds as well: if
-this is assumed only for $q$ of degree at most $d$, then $Tp$ is PF for every PF
-polynomial $p$ of degree at most $d$.
+Then $Tp$ is PF for every PF polynomial $p$. The same holds degree by degree: if this is
+assumed only for $q$ of degree at most $d$, then $Tp$ is PF for every PF polynomial $p$ of
+degree at most $d$.
 
 **Corollary (Euler bidiagonal step).** If $a,b\ge0$, $ab>0$ and $p$ is PF, then
 $xp+(\theta+a)(\theta+b)p$ is PF.
 
 ## Proof
 
-A PF polynomial $p$ of degree $d$ is the coefficientwise limit as $\varepsilon\to0^+$ of
-$(1+\varepsilon D)^dp$, $D=d/dx$. These polynomials have positive leading coefficient and
-simple negative roots and keep the degree, and the PF cone is closed under coefficientwise
-limits of bounded degree.
+For the transfer from simple roots to PF, a PF polynomial $p$ of degree $d$ is the
+coefficientwise limit as $\varepsilon\to0^+$ of $(1+\varepsilon D)^dp$, $D=d/dx$. These
+polynomials have degree $d$, positive leading coefficient and simple negative roots, and the PF
+cone is closed under coefficientwise limits of bounded degree.
 
 ## References
 
-The finite-degree criterion is [@Branden2004operators, Thm. 8 in the arXiv version]. The
-strict-to-weak transfer is [@Branden2006, Cor. 3.5]. See also the
-[operator-preserver overview on symmetricfunctions.com](sf:operatorPreservesInterlacing).
+- [@Branden2004operators, Thm. 8 in the arXiv version], for real-rootedness preservers
+- [@Branden2006, Cor. 3.5], for the transfer from simple roots to PF
+- [Operators preserving interlacing](sf:operatorPreservesInterlacing) on symmetricfunctions.com
 <!-- /realrooted-catalog-content -->
 
 Human statement:
