@@ -42,6 +42,8 @@ module = "RealRooted.Laguerre.Roots"
 label = "Generalized Laguerre polynomials have simple roots"
 
 [[theorems]]
+objects = ["Generalized Laguerre polynomials"]
+property = "interlacing"
 name = "RealRooted.generalizedLaguerre_strictInterl_succ"
 module = "RealRooted.Laguerre.Roots"
 label = "Consecutive generalized Laguerre polynomials interlace"
@@ -53,6 +55,8 @@ module = "RealRooted.Laguerre.Favard"
 label = "Monic Laguerre polynomials satisfy a Favard recurrence"
 
 [[theorems]]
+objects = ["Generalized Laguerre polynomials"]
+property = "orthogonal"
 name = "RealRooted.generalizedLaguerre_integral_orthogonal"
 module = "RealRooted.Laguerre.Orthogonality.Integral"
 label = "Generalized Laguerre polynomials are orthogonal on the half-line"

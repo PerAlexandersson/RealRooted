@@ -59,11 +59,15 @@ module = "RealRooted.RookPolynomial"
 label = "Rook polynomials of boards are real-rooted"
 
 [[theorems]]
+objects = ["Weighted rook polynomials"]
+property = "pf"
 name = "RealRooted.Rook.weightedRookPolynomial_isPFPolynomial"
 module = "RealRooted.RookPolynomial"
 label = "Nonnegative weighted rook polynomials are Pólya frequency"
 
 [[theorems]]
+objects = ["Rook polynomials"]
+property = "pf"
 name = "RealRooted.Rook.rookPolynomial_isPFPolynomial"
 module = "RealRooted.RookPolynomial"
 label = "Rook polynomials of finite boards are Pólya frequency"

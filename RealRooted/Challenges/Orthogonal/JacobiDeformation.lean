@@ -44,6 +44,8 @@ module = "RealRooted.JacobiDeformation.Strict"
 label = "For 0 < δ < 1 the roots are simple, interlace J′_{m,0} and share no root with it"
 
 [[theorems]]
+objects = ["Jacobi deformation polynomials"]
+property = "pf"
 name = "RealRooted.JacobiDeformation.isPFPolynomial_polynomial"
 module = "RealRooted.JacobiDeformation.Strict"
 label = "For every δ ≥ 0 the deformation is a PF polynomial"

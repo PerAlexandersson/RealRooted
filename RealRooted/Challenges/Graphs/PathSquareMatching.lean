@@ -39,6 +39,8 @@ module = "RealRooted.Graph.IndependencePolynomial.PathSquareMatching"
 label = "The weighted matching polynomials of path squares are real-rooted"
 
 [[theorems]]
+objects = ["Matching polynomials of path squares"]
+property = "interlacing"
 name = "RealRooted.PathSquareEdge.polynomial_strictInterl_succ"
 module = "RealRooted.Graph.IndependencePolynomial.PathSquareMatching"
 label = "Consecutive matching polynomials of path squares interlace"

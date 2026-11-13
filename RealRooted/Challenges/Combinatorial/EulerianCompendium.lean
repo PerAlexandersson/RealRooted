@@ -88,18 +88,22 @@ module = "RealRooted.CombinatorialExamples.SuperEulerian"
 label = "Super-Eulerian polynomial"
 
 [[theorems]]
+objects = ["Descent polynomials of derangements"]
 name = "RealRooted.EulerianCompendium.Challenges.derangementDescent_realRooted"
 module = "RealRooted.Applications.EulerianCompendium.Results"
-label = "Derangement polynomials are real-rooted"
+label = "Descent polynomials of derangements are real-rooted"
 tags = ["coauthored-paper"]
 
 [[theorems]]
+objects = ["Cyclic descent polynomials of balanced binary words"]
 name = "RealRooted.EulerianCompendium.Challenges.cyclicWordDescent_roots"
 module = "RealRooted.Applications.EulerianCompendium.Results"
 label = "Balanced cyclic-word polynomials: simple roots, one at 0, the rest negative"
 tags = ["coauthored-paper"]
 
 [[theorems]]
+objects = ["Even-top descent polynomials"]
+property = "interlacing"
 name = "RealRooted.EulerianCompendium.Challenges.evenTopDescent_strictAlternation"
 module = "RealRooted.Applications.EulerianCompendium.Results"
 label = "Even-top descent polynomials have negative roots that strictly alternate"
@@ -118,12 +122,16 @@ label = "Ternary-word run polynomials are real-rooted and interlace"
 tags = ["coauthored-paper"]
 
 [[theorems]]
+objects = ["Peak polynomials of permutations"]
+property = "interlacing"
 name = "RealRooted.EulerianCompendium.Challenges.peakPolynomial_roots"
 module = "RealRooted.Applications.EulerianCompendium.Results"
 label = "Peak polynomials have negative roots that strictly alternate"
 tags = ["coauthored-paper"]
 
 [[theorems]]
+objects = ["Peak-value polynomials"]
+property = "real-stable"
 name = "RealRooted.EulerianCompendium.peakValue_stability_and_weightedInterlacing"
 module = "RealRooted.Applications.EulerianCompendium.Results"
 label = "Peak-value polynomials are real stable; weighted diagonals interlace"
@@ -155,12 +163,16 @@ label = "Positive weighted diagonals of K_n and K_{n+1} interlace"
 tags = ["coauthored-paper"]
 
 [[theorems]]
+objects = ["Ternary-word run polynomials"]
+property = "pf"
 name = "RealRooted.Applications.EulerianVariations.ternaryRunPolynomial_isPF"
 module = "RealRooted.Applications.EulerianVariations.TernaryRuns"
 label = "Ternary run polynomials are Pólya frequency polynomials"
 tags = ["coauthored-paper"]
 
 [[theorems]]
+objects = ["Ternary-word run polynomials"]
+property = "interlacing"
 name = "RealRooted.Applications.EulerianVariations.ternaryRunPolynomial_strictInterl"
 module = "RealRooted.Applications.EulerianVariations.TernaryRuns"
 label = "Consecutive ternary run polynomials interlace"
@@ -173,12 +185,16 @@ label = "For ℓ ≥ 1, super-Eulerian polynomials are nonzero and real-rooted"
 tags = ["coauthored-paper"]
 
 [[theorems]]
+objects = ["Super-Eulerian polynomials"]
+property = "interlacing"
 name = "RealRooted.SuperEulerian.strictInterl_superEulerian_succ"
 module = "RealRooted.CombinatorialExamples.SuperEulerian"
 label = "For ℓ ≥ 1, consecutive super-Eulerian polynomials interlace, without common roots"
 tags = ["coauthored-paper"]
 
 [[theorems]]
+objects = ["Super-Eulerian polynomials"]
+property = "gamma-positive"
 name = "RealRooted.SuperEulerian.exists_gamma_superEulerian"
 module = "RealRooted.CombinatorialExamples.SuperEulerian"
 label = "Super-Eulerian gamma-polynomials are real-rooted with nonnegative coefficients"
@@ -290,8 +306,6 @@ The two operator theorems give the proof for derangement descents.
 ## References
 
 - [@Alexandersson2026Eulerian]
-- U. Shankar, [*Multivariate stability of powered triangular recurrences and parametrised
-  Eulerian polynomials*](https://arxiv.org/abs/2609.15651), Theorem C, for the absence of
-  common roots in result 4.
+- [@Shankar2026x, Theorem C], for the absence of common roots in result 4.
 <!-- /realrooted-catalog-content -->
 -/

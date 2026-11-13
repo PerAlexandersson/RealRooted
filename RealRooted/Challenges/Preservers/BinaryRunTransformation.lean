@@ -78,6 +78,8 @@ module = "RealRooted.BinaryRunTransformation.MultiplierMotzkin"
 label = "Monotonicity in α"
 
 [[theorems]]
+objects = ["Motzkin ascent polynomials"]
+property = "interlacing"
 name = "RealRooted.motzkinAscentRow_strictInterl_succ"
 module = "RealRooted.BinaryRunTransformation.MultiplierMotzkin"
 label = "The rows with weights 1/(m+1)! form a Sturm chain"

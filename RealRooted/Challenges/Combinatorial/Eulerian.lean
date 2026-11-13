@@ -45,6 +45,8 @@ module = "RealRooted.CombinatorialExamples.Eulerian"
 label = "Eulerian polynomials are real-rooted"
 
 [[theorems]]
+objects = ["Eulerian polynomials"]
+property = "interlacing"
 name = "RealRooted.interlaces_eulerianTilde_succ"
 module = "RealRooted.CombinatorialExamples.Eulerian"
 label = "Consecutive Eulerian polynomials interlace"
@@ -56,6 +58,8 @@ module = "RealRooted.CombinatorialExamples.TypeBEulerian"
 label = "Type B Eulerian polynomials are real-rooted"
 
 [[theorems]]
+objects = ["Type B Eulerian polynomials"]
+property = "interlacing"
 name = "RealRooted.interlaces_typeBEulerian_succ"
 module = "RealRooted.CombinatorialExamples.TypeBEulerian"
 label = "Consecutive type B Eulerian polynomials interlace"
@@ -67,6 +71,8 @@ module = "RealRooted.GeneralizedEulerian"
 label = "For c > 0, E_n^{(c)} is real-rooted"
 
 [[theorems]]
+objects = ["Generalized Eulerian polynomials"]
+property = "interlacing"
 name = "RealRooted.interlaces_generalizedEulerian_succ"
 module = "RealRooted.GeneralizedEulerian.GeneratingFunction"
 label = "For c > 0, E_n^{(c)} interlaces E_{n+1}^{(c)}"
@@ -136,9 +142,7 @@ coefficient $2^{n+1}-n-2$, we have $E^{(1)}_n(-q)>0$ for $q>0$ with $q\,2^{n+1}\
 
 ## References
 
-- F. G. Frobenius, “Über die Bernoullischen Zahlen und die Eulerschen Polynome,”
-  *Sitzungsberichte der Königlich Preussischen Akademie der Wissenschaften* (1910), 809–847,
-  for the Eulerian recurrence and its real-rootedness.
+- [@Frobenius1910], for the Eulerian recurrence and its real-rootedness.
 - [@Brenti1994], for type $B$.
 
 See also [Eulerian polynomials](sf:eulerianPolynomial) on symmetricfunctions.com.

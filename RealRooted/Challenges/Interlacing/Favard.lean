@@ -36,6 +36,8 @@ module = "RealRooted.Favard.Orthogonality"
 label = "The pairing ⟨p, q⟩ = L(pq)"
 
 [[theorems]]
+objects = ["Orthogonal polynomials"]
+property = "interlacing"
 name = "RealRooted.favardInterlacing"
 module = "RealRooted.Favard"
 label = "For positive β, consecutive Favard polynomials interlace"

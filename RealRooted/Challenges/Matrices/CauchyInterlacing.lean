@@ -29,6 +29,8 @@ headline = true
 symcat = "cauchyInterlacingTheorem"
 
 [[theorems]]
+objects = ["Characteristic polynomials of real symmetric matrices"]
+property = "interlacing"
 name = "RealRooted.principalSubmatrix_charpoly_interlaces"
 module = "RealRooted.CauchyInterlacing.Polynomial"
 label = "Characteristic polynomials of a principal submatrix interlace"

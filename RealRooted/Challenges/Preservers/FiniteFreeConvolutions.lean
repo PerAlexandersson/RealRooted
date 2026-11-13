@@ -30,7 +30,7 @@ tags = []
 references = [
   "MarcusSpielmanSrivastava2022",
   "GribinskiMarcus2022",
-  "LeakeRyder2018",
+  "LeakeRyder2018x",
 ]
 authors = ["Marcus", "Spielman", "Srivastava", "Gribinski", "Leake", "Ryder"]
 years = [2018, 2022]
@@ -217,7 +217,7 @@ $p*_dq=\sum_k\binom dk^{-1}p_kq_kx^k$ of the coefficients $p_k,q_k$ of $x^k$.
 
 - If the roots of $p$ lie in $[A,B]$ and the roots of $q$ lie in $[a,b]$, then the roots of
   $p\boxplus_dq$ lie in $[A+a,B+b]$ (Walsh's theorem in the finite free setting; see
-  [@LeakeRyder2018, Prop. 1.1]).
+  [@LeakeRyder2018x, Prop. 1.1]).
 - If $\alpha_i$ and $\rho_i$ are the $i$th smallest roots of $p$ and of $p\boxplus_dq$, and the
   roots of $q$ lie in $[a,b]$, then $\alpha_i+a\le\rho_i\le\alpha_i+b$.
 - $p(x+s)\boxplus_dq(x+t)=(p\boxplus_dq)(x+s+t)$ for all real $s,t$ and $\deg p,\deg q\le d$.
@@ -257,7 +257,7 @@ $f$, gives $y^m(f\boxplus_{m,n}g)(xy)$ after the variables are identified
 
 - [@MarcusSpielmanSrivastava2022]
 - [@GribinskiMarcus2022]
-- [@LeakeRyder2018, Prop. 1.1]
+- [@LeakeRyder2018x, Prop. 1.1]
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in

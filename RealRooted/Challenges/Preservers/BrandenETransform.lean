@@ -50,6 +50,8 @@ module = "RealRooted.Transforms.BrandenE.ProperPosition"
 label = "The images of the binomial basis form an interlacing sequence"
 
 [[theorems]]
+objects = ["Ordered Bell polynomials"]
+property = "pf"
 name = "RealRooted.orderedBellPolynomial_isPFPolynomial"
 module = "RealRooted.Transforms.BrandenE.ProperPosition"
 label = "Ordered Bell polynomials are PF polynomials"

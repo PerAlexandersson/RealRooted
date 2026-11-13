@@ -242,8 +242,9 @@ most that of the polynomial at the root.
 The Chudnovsky–Seymour theorem is the interlacing input for the real-rootedness of independence
 polynomials of claw-free graphs; see the
 [Chudnovsky–Seymour page](rr:chudnovsky-seymour). The transport theorem is
-the criterion for common interleavers of Marcus–Spielman–Srivastava (*Interlacing families I*,
-Lemma 4.5, arXiv:1304.4132), and the last theorem is their selection principle for roots.
+the criterion for common interleavers of Marcus–Spielman–Srivastava
+[@MarcusSpielmanSrivastava2015I, Lemma 4.5], and the last theorem is their selection principle
+for roots.
 
 ## Proof
 

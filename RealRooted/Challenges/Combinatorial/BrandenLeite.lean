@@ -88,6 +88,8 @@ module = "RealRooted.BrandenLeite.TwoKernelAlgebra"
 label = "Rows of g / (1 - x g h)"
 
 [[theorems]]
+objects = ["Chain polynomials of totally nonnegative matrices"]
+property = "interlacing"
 name = "RealRooted.BrandenLeite.interl_chainPolynomial_succ_of_isTotallyNonneg"
 module = "RealRooted.BrandenLeite.Theorem37"
 label = "Consecutive chain polynomials interlace"

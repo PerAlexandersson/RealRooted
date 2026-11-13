@@ -47,6 +47,8 @@ module = "RealRooted.Jacobi.Markoff"
 label = "The i-th smallest root of the monic polynomial"
 
 [[theorems]]
+objects = ["Jacobi polynomials"]
+property = "interlacing"
 name = "RealRooted.shiftedJacobi_interlaces_succ"
 module = "RealRooted.Jacobi"
 label = "Consecutive shifted Jacobi polynomials interlace"
@@ -74,6 +76,8 @@ module = "RealRooted.Jacobi.Favard"
 label = "Monic shifted Jacobi polynomials satisfy a Favard recurrence"
 
 [[theorems]]
+objects = ["Jacobi polynomials"]
+property = "orthogonal"
 name = "RealRooted.shiftedJacobi_integral_orthogonal"
 module = "RealRooted.Jacobi.Orthogonality.Integral"
 label = "Orthogonality on (0, 1) for the weight x^α (1 - x)^β"
@@ -105,6 +109,8 @@ module = "RealRooted.Legendre.Roots"
 label = "Shifted Legendre polynomials are real-rooted"
 
 [[theorems]]
+objects = ["Legendre polynomials"]
+property = "interlacing"
 name = "RealRooted.shiftedLegendreReal_strictInterl_succ"
 module = "RealRooted.Legendre.Roots"
 label = "Consecutive shifted Legendre polynomials interlace"
@@ -121,11 +127,14 @@ label = "The reflected shifted-Jacobi differential operator"
 
 [[theorems]]
 objects = ["Jacobi coefficient polynomials"]
+property = "pf"
 name = "RealRooted.jacobiCoefficientPolynomial_isPFPolynomial"
 module = "RealRooted.Jacobi.CoefficientFamily"
 label = "For a, b > -1 the family is Pólya frequency"
 
 [[theorems]]
+objects = ["Jacobi coefficient polynomials"]
+property = "interlacing"
 name = "RealRooted.jacobiCoefficientPolynomial_strictInterl_succ"
 module = "RealRooted.Jacobi.CoefficientFamily"
 label = "Consecutive polynomials of the family interlace"

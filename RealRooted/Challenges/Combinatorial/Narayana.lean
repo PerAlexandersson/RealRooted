@@ -133,6 +133,7 @@ label = "132-avoiding permutations counted by descents give N_{n,1}(x)"
 
 [[theorems]]
 objects = ["Descent polynomials of 132-avoiding permutations"]
+property = "interlacing"
 name = "RealRooted.Avoid132.strictInterl_descentGeneratingPolynomial_succ"
 module = "RealRooted.CombinatorialExamples.Avoid132Descents"
 label = "Descent polynomials of 132-avoiders are real-rooted and interlace"
@@ -149,6 +150,7 @@ label = "γ-expansion of the continuous Narayana interpolation"
 
 [[theorems]]
 objects = ["Continuous Narayana interpolation polynomials"]
+property = "pf"
 name = "RealRooted.narayanaInterpolation_isPF"
 module = "RealRooted.NarayanaInterpolation"
 label = "The continuous Narayana interpolation is Pólya-frequency for θ > −1"

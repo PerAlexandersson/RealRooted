@@ -70,6 +70,8 @@ module = "RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Spectrum"
 label = "A totally nonnegative matrix has real nonnegative eigenvalues"
 
 [[theorems]]
+objects = ["Characteristic polynomials of totally nonnegative matrices"]
+property = "interlacing"
 name = "Matrix.IsTotallyNonneg.leading_charpoly_interlaces"
 module = "RealRooted.TotallyNonnegInterlacing"
 label = "Leading principal submatrices interlace"

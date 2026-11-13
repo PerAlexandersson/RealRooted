@@ -34,6 +34,7 @@ slug = "hadamard-products"
 formalized = "2026-07-03"
 tags = []
 references = [
+  "Schur1914",
   "SchurPolya1914",
   "Wagner1992",
   "GarloffWagner1996",
@@ -247,7 +248,7 @@ product $p\ast q$ is PF. If $f \ll g$ and $p \ll q$ have nonnegative coefficient
 $f\ast p \ll g\ast q$ or one of $f\ast p$ and $g\ast q$ is zero. If $f,g,p$ are PF and $f\ll g$
 (or one of $f,g$ is zero), then $f\circledast p\ll g\circledast p$ or one of them is zero.
 
-**Theorem (Schur; Maló).** [@SchurPolya1914] If $f$ and $g$ are real-rooted and the roots of
+**Theorem (Schur; Maló).** [@Schur1914] If $f$ and $g$ are real-rooted and the roots of
 $g$ are all nonpositive or all nonnegative, then $f\circledast g$ is zero or real-rooted. The
 termwise product of two Pólya frequency coefficient sequences of polynomials is a Pólya
 frequency sequence; equivalently, the entrywise product of their totally nonnegative Toeplitz
@@ -301,7 +302,7 @@ $(9x^2+24x+17)/8$).
 
 - E. Maló, “Note sur les équations algébriques dont toutes les racines sont réelles,”
   *Journal de Mathématiques Spéciales* 4 (1895), 7–10.
-- [@SchurPolya1914; @Wagner1992; @GarloffWagner1996; @KostovShapiro2006; @Kostov2010].
+- [@Schur1914; @SchurPolya1914; @Wagner1992; @GarloffWagner1996; @KostovShapiro2006; @Kostov2010].
 - [@BrandenFerroniJochemko2024x; @LiuMao2026Hadamard].
 - V. P. Kostov, “Eigenvectors in the context of the Schur–Szegő composition of polynomials,”
   *Mathematica Balkanica* 22 (2008), 155–173.

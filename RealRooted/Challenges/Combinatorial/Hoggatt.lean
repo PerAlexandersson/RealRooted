@@ -25,6 +25,8 @@ module = "RealRooted.CombinatorialExamples.Hoggatt"
 label = "Normalized Hoggatt polynomials H_n^[m]"
 
 [[theorems]]
+objects = ["Hoggatt polynomials"]
+property = "interlacing"
 name = "RealRooted.Hoggatt.normalized_interlaces_and_isCoprime"
 module = "RealRooted.CombinatorialExamples.Hoggatt"
 label = "For every m ≥ 2, consecutive Hoggatt rows strictly interlace"
@@ -63,6 +65,7 @@ label = "The binomial-product polynomials have simple roots for m ≥ 2"
 
 [[theorems]]
 objects = ["Baxter descent polynomials"]
+property = "interlacing"
 name = "RealRooted.Hoggatt.baxter_interlaces"
 module = "RealRooted.CombinatorialExamples.Hoggatt"
 label = "Baxter polynomials are a strict Sturm sequence"
@@ -98,8 +101,9 @@ $m=2$ the Narayana polynomials $\sum_k\frac1n\binom nk\binom n{k+1}t^k$, and for
 descent polynomials of Baxter permutations of length $n$, which are the rows of
 [OEIS A056939](https://oeis.org/A056939).
 
-**Theorem (Fang–Zhang–Zhao).** Let $m\ge2$. For every $n\ge1$, the roots of $H_n^{[m]}$ are
-simple and negative, $H_n^{[m]}\ll H_{n+1}^{[m]}$, and the two polynomials have no common root.
+**Theorem (Fang–Zhang–Zhao).** [@FangZhangZhao2025x] Let $m\ge2$. For every $n\ge1$, the roots
+of $H_n^{[m]}$ are simple and negative, $H_n^{[m]}\ll H_{n+1}^{[m]}$, and the two polynomials
+have no common root.
 
 **Corollary (Dilks).** For every $m\ge1$ and $n\ge1$, $H_n^{[m]}$ is real-rooted.
 
@@ -119,9 +123,7 @@ the Wronskian gives Markov's strict form of the derivative step.
 
 ## References
 
-- H. Fang, C. X. T. Zhang, J. J. Y. Zhao,
-  [*Analytic properties arising from the Baxter numbers*](https://arxiv.org/abs/2505.05873),
-  2025, Theorems 1–2 and §2.
+- [@FangZhangZhao2025x, Theorems 1–2 and §2].
 - K. Dilks, *Involutions on Baxter Objects, and q-Gamma Nonnegativity*,
   Ph.D. thesis, University of Minnesota, 2015, Theorem 3.8.
 <!-- /realrooted-catalog-content -->

@@ -139,9 +139,7 @@ frequency sequences, and the
 
 ## References
 
-- X. Chen, L. Fu, and J. Ruan,
-  [*A unified planar network approach to total positivity of combinatorial matrices and
-  real-rootedness of polynomials*](https://arxiv.org/abs/2512.08369), Theorems 1.3 and 1.4.
+- [@ChenFuRuan2025x, Theorems 1.3 and 1.4].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in

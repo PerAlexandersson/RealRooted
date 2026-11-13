@@ -38,6 +38,7 @@ module = "RealRooted.HosterStump.Refined"
 label = "Refined descent polynomials p^{S ⊆ T}_{n,k}"
 
 [[theorems]]
+objects = ["Chow polynomials of simplicial posets"]
 name = "RealRooted.HosterStump.isRealRooted_chowOfFlagH_flagH"
 module = "RealRooted.HosterStump.PosetChow"
 label = "Chow polynomials of simplicial posets with nonnegative h-vector are real-rooted"
@@ -49,6 +50,7 @@ module = "RealRooted.HosterStump.PosetChow"
 label = "The dual Chow polynomial is real-rooted"
 
 [[theorems]]
+objects = ["Augmented Chow polynomials of simplicial posets"]
 name = "RealRooted.HosterStump.isRealRooted_augChowOfFlagH_flagH"
 module = "RealRooted.HosterStump.PosetChow"
 label = "The augmented Chow polynomial is real-rooted"

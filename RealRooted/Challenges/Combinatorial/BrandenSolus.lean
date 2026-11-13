@@ -54,6 +54,7 @@ module = "RealRooted.CombinatorialExamples.DerangementStatistic"
 label = "Derangements counted by excedances give the derangement polynomials d_n"
 
 [[theorems]]
+objects = ["Derangement polynomials"]
 name = "RealRooted.DerangementStatistic.derangementExcGenPoly_isRealRooted"
 module = "RealRooted.CombinatorialExamples.DerangementStatistic"
 label = "The excedance polynomial of derangements is real-rooted for n ≥ 2"
