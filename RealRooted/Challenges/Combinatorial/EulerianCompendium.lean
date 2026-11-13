@@ -4,6 +4,10 @@ public import RealRooted.Applications.EulerianCompendium.CyclicWords
 public import RealRooted.Applications.EulerianCompendium.Definitions
 public import RealRooted.Applications.EulerianCompendium.Results
 public import RealRooted.Applications.EulerianCompendium.TernaryWords
+public import RealRooted.Applications.EulerianVariations.CyclicPathDescents
+public import RealRooted.Applications.EulerianVariations.TernaryRuns
+public import RealRooted.CombinatorialExamples.PeakValues.WeightedInterleaving
+public import RealRooted.CombinatorialExamples.SuperEulerian
 public import RealRooted.CombinatorialExamples.ZigzagEulerian.Definitions
 public import RealRooted.CombinatorialExamples.ZigzagEulerian.RealRooted
 public import RealRooted.EulerianCompletion
@@ -20,7 +24,7 @@ slug = "eulerian-compendium"
 formalized = "2026-10-24"
 tags = ["coauthored-paper", "realrooted-original"]
 references = ["Alexandersson2026Eulerian"]
-authors = ["Alexandersson"]
+authors = ["Alexandersson", "Shankar"]
 years = [2026]
 
 [[definitions]]
@@ -62,6 +66,26 @@ label = "Euler insertion operator E_{c,d}"
 name = "RealRooted.loweringEulerStep"
 module = "RealRooted.EulerianCompletion"
 label = "Lowering Euler operator p ↦ Mp + (1 - x)p'"
+
+[[definitions]]
+name = "RealRooted.Applications.EulerianVariations.cyclicPathDescentPolynomial"
+module = "RealRooted.Applications.EulerianVariations.CyclicPathDescents"
+label = "Cyclic path descent polynomial Σ 2 C(n,k) C(n-1,k-1) x^k"
+
+[[definitions]]
+name = "RealRooted.Applications.EulerianVariations.ternaryRunPolynomial"
+module = "RealRooted.Applications.EulerianVariations.TernaryRuns.Recurrence"
+label = "Ternary run polynomials, defined by a first-order differential recurrence"
+
+[[definitions]]
+name = "RealRooted.peakValuePolynomial"
+module = "RealRooted.CombinatorialExamples.PeakValues"
+label = "Multivariate peak-value polynomial"
+
+[[definitions]]
+name = "RealRooted.SuperEulerian.superEulerian"
+module = "RealRooted.CombinatorialExamples.SuperEulerian"
+label = "Super-Eulerian polynomial"
 
 [[theorems]]
 name = "RealRooted.EulerianCompendium.Challenges.derangementDescent_realRooted"
@@ -105,6 +129,60 @@ module = "RealRooted.Applications.EulerianCompendium.Results"
 label = "Peak-value polynomials are real stable; weighted diagonals interlace"
 tags = ["coauthored-paper"]
 headline = true
+
+[[theorems]]
+name = "RealRooted.Applications.EulerianVariations.cyclicPathDescentPolynomial_roots"
+module = "RealRooted.Applications.EulerianVariations.CyclicPathDescents"
+label = "Simple roots of the cyclic path descent polynomial: 0 and n - 1 negative"
+tags = ["coauthored-paper"]
+
+[[theorems]]
+name = "RealRooted.Applications.EulerianVariations.cyclicPathDescentPolynomial_eq_derivative"
+module = "RealRooted.Applications.EulerianVariations.CyclicPathDescents"
+label = "The cyclic path descent polynomial is (2/n) x B_n'(x) for the type B Narayana B_n"
+tags = ["coauthored-paper"]
+
+[[theorems]]
+name = "RealRooted.peakValuePolynomial_mvRealStable"
+module = "RealRooted.CombinatorialExamples.PeakValues.Stability"
+label = "The peak-value polynomial K_n is real stable"
+tags = ["coauthored-paper"]
+
+[[theorems]]
+name = "RealRooted.peakValueWeightedDiagonal_consecutive_strictInterl"
+module = "RealRooted.CombinatorialExamples.PeakValues.WeightedInterleaving"
+label = "Positive weighted diagonals of K_n and K_{n+1} interlace"
+tags = ["coauthored-paper"]
+
+[[theorems]]
+name = "RealRooted.Applications.EulerianVariations.ternaryRunPolynomial_isPF"
+module = "RealRooted.Applications.EulerianVariations.TernaryRuns"
+label = "Ternary run polynomials are Pólya frequency polynomials"
+tags = ["coauthored-paper"]
+
+[[theorems]]
+name = "RealRooted.Applications.EulerianVariations.ternaryRunPolynomial_strictInterl"
+module = "RealRooted.Applications.EulerianVariations.TernaryRuns"
+label = "Consecutive ternary run polynomials interlace"
+tags = ["coauthored-paper"]
+
+[[theorems]]
+name = "RealRooted.SuperEulerian.isRealRooted_superEulerian"
+module = "RealRooted.CombinatorialExamples.SuperEulerian"
+label = "For ℓ ≥ 1, super-Eulerian polynomials are nonzero and real-rooted"
+tags = ["coauthored-paper"]
+
+[[theorems]]
+name = "RealRooted.SuperEulerian.strictInterl_superEulerian_succ"
+module = "RealRooted.CombinatorialExamples.SuperEulerian"
+label = "For ℓ ≥ 1, consecutive super-Eulerian polynomials interlace, without common roots"
+tags = ["coauthored-paper"]
+
+[[theorems]]
+name = "RealRooted.SuperEulerian.exists_gamma_superEulerian"
+module = "RealRooted.CombinatorialExamples.SuperEulerian"
+label = "Super-Eulerian gamma-polynomials are real-rooted with nonnegative coefficients"
+tags = ["coauthored-paper"]
 
 [[theorems]]
 name = "RealRooted.ZigzagEulerian.isRealRooted_and_roots_neg"
@@ -154,7 +232,9 @@ result 8 is not in the paper.
 2. **Balanced cyclic words.** For $n\ge1$, let $w$ range over binary words of length $2n$ with
    exactly $n$ ones, and let $\operatorname{cdes}w$ count the cyclic positions $i$ with
    $w_i=1$ and $w_{i+1}=0$. Then $\sum_w x^{\operatorname{cdes}w}$ is real-rooted with simple
-   roots: one root is $0$ and the other $n-1$ are negative.
+   roots: one root is $0$ and the other $n-1$ are negative. This polynomial is
+   $$C_n(x)=\sum_{k=1}^n2\binom nk\binom{n-1}{k-1}x^k=\frac2n\,x\,B_n'(x),$$
+   where $B_n(x)=\sum_k\binom nk^2x^k$ is the type $B$ Narayana polynomial.
 3. **Even-top descents.** Let $\operatorname{edes}\pi$ count the descents $\pi_j>\pi_{j+1}$ with
    $\pi_j$ even. For $n\ge2$, the polynomial $\sum_{\pi\in\mathfrak S_n}x^{\operatorname{edes}\pi}$
    is real-rooted with negative roots. It strictly alternates with the same polynomial for
@@ -163,12 +243,13 @@ result 8 is not in the paper.
    $E^{(\ell)}_{n,k}=(k+1)^\ell E^{(\ell)}_{n-1,k}+(n-k)^\ell E^{(\ell)}_{n-1,k-1}$, with entries
    outside $0\le k\le n-1$ equal to zero, and let $A^{(\ell)}_n=\sum_{k<n}E^{(\ell)}_{n,k}x^k$.
    For $\ell\ge1$ and $n\ge0$, the polynomial $A^{(\ell)}_{n+1}$ is real-rooted with nonpositive
-   roots, and $A^{(\ell)}_{n+1}\ll A^{(\ell)}_{n+2}$. Moreover
+   roots, and $A^{(\ell)}_{n+1}\ll A^{(\ell)}_{n+2}$ with no common root. Moreover
    $$A^{(\ell)}_{n+1}(x)=\sum_{0\le i\le n/2}\gamma_i\,x^i(1+x)^{n-2i},$$
    where $\gamma$ is nonzero, real-rooted, with nonpositive roots and nonnegative coefficients.
 5. **Ternary words.** For $w\in\{0,1,2\}^n$, let $\operatorname{run}w$ be the number of maximal
-   strictly increasing runs. Then $\sum_w x^{\operatorname{run}w}$ is nonzero and real-rooted, and
-   interlaces the same polynomial for $n+1$.
+   strictly increasing runs. Then $T_n(x)=\sum_w x^{\operatorname{run}w}$ is a Pólya frequency
+   polynomial and $T_n\ll T_{n+1}$. These polynomials satisfy $T_0=1$ and
+   $$(n+1)\,T_{n+1}=3x(1-x)\,T_n'+\bigl((4n+3)x-n\bigr)\,T_n.$$
 6. **Peaks.** For $n\ge1$, the polynomial $\sum_{\pi\in\mathfrak S_n}x^{\operatorname{pk}\pi}$,
    where $\operatorname{pk}$ counts interior peaks, is real-rooted. For $n\ge3$ it has degree
    $\lfloor(n-1)/2\rfloor$ and negative roots, and it strictly alternates with the same
@@ -209,5 +290,8 @@ The two operator theorems drive the proof for derangement descents.
 ## References
 
 - [@Alexandersson2026Eulerian]
+- U. Shankar, [*Multivariate stability of powered triangular recurrences and parametrised
+  Eulerian polynomials*](https://arxiv.org/abs/2609.15651), Theorem C, for the absence of
+  common roots in result 4.
 <!-- /realrooted-catalog-content -->
 -/

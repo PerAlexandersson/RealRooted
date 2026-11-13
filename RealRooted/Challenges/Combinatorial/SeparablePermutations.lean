@@ -1,11 +1,13 @@
 module
 
+import RealRooted.FactorialCompression.DegreeChanging
+import RealRooted.Hadamard.SchurSzegoStrict
 import RealRooted.SeparablePermutations.Gamma
 import RealRooted.SeparablePermutations.Identification
 import RealRooted.SeparablePermutations.Interlacing
 
 /-!
-# Descent polynomials of separable permutations: strict interlacing
+# Descent polynomials of separable permutations
 
 <!-- realrooted-catalog
 version = 1
@@ -19,6 +21,7 @@ references = [
 ]
 authors = ["Zhanhe Zhang", "Fu", "Lin", "Zeng"]
 years = [2018, 2026]
+symcat = ["separableDescentRealRooted"]
 
 [[definitions]]
 name = "RealRooted.SeparablePermutations.compressionSourcePolynomial"
@@ -90,13 +93,55 @@ label = "Fu–Lin–Zeng / Zhang: the descent enumerator equals S_{n+1}"
 name = "RealRooted.SeparablePermutations.gammaPolynomial_cubic"
 module = "RealRooted.SeparablePermutations.GammaCubic"
 label = "Fu–Lin–Zeng's cubic for the gamma-polynomials (via Lagrange inversion)"
+
+[[definitions]]
+name = "RealRooted.FactorialCompression.compression"
+module = "RealRooted.FactorialCompression.Basic"
+label = "Factorial-compression operator"
+
+[[definitions]]
+name = "RealRooted.FactorialCompression.nextPolynomial"
+module = "RealRooted.FactorialCompression.Basic"
+label = "Degree-raising differential step"
+
+[[definitions]]
+name = "RealRooted.FactorialCompression.kernel"
+module = "RealRooted.FactorialCompression.Basic"
+label = "Degree-changing kernel"
+
+[[theorems]]
+name = "RealRooted.FactorialCompression.compression_nextPolynomial_strictInterl"
+module = "RealRooted.FactorialCompression.DegreeChanging"
+label = "Compressions of p and (x + a)p + xp' strictly interlace and have simple negative roots"
+
+[[theorems]]
+name = "RealRooted.strictInterl_schurSzegoComp_of_roots_neg"
+module = "RealRooted.Hadamard.SchurSzegoStrict"
+label = "Schur–Szegő composition with a negative-rooted multiplier preserves strict interlacing"
+
+[[theorems]]
+name = "RealRooted.FactorialCompression.compression_one_nextPolynomial_strictInterl"
+module = "RealRooted.FactorialCompression.DegreeChanging"
+label = "Level one with a = (N + 2)/2: the compressions strictly interlace"
+
+[[theorems]]
+name = "RealRooted.FactorialCompression.compression_eq_schurSzegoComp"
+module = "RealRooted.FactorialCompression.Compression"
+label = "Compression is a Schur–Szegő composition"
+
+[[theorems]]
+name = "RealRooted.FactorialCompression.strictInterl_commonKernel_kernel"
+module = "RealRooted.FactorialCompression.Kernel"
+label = "The common kernel strictly interlaces the degree-changing kernel"
 -->
 
 <!-- realrooted-catalog-content -->
 # Descent polynomials of separable permutations
 
 For $n\ge2$ the descent polynomials of the separable permutations of $[n]$ and $[n+1]$ interlace
-and have no common root; the same holds for their gamma-polynomials.
+and have no common root; the same holds for their gamma-polynomials. The proof transfers
+interlacing through factorial compression, which maps polynomials with negative roots to
+strictly interlacing pairs.
 
 ## Results
 
@@ -106,9 +151,14 @@ of $[n]$. Fu, Lin and Zeng [@FuLinZeng2018] give the gamma-polynomials $\Gamma_n
 $$
 S_n(t)=(1+t)^{n-1}\,\Gamma_n\bigl(t/(1+t)^2\bigr).
 $$
-Zhang [@Zhang2026SeparableInterlacing] represents $\Gamma_{N+2}$ as a factorial compression of
-$B_N$, where $B_0=1$ and $B_{N+1}=(x+\tfrac{N+2}{2})B_N+xB_N'$; here $\Gamma_0=0$, $\Gamma_1=1$,
-$\Gamma_2=1$ and $\Gamma_3=1+2x$.
+For integers $N\ge1$ and $0\le\ell\le N$, the *level-$\ell$ factorial compression* of
+$p=\sum_kp_kx^k$ is
+$$
+C_{N,\ell}\,p=\sum_{k\le N,\ 2k\le N+\ell}\frac{(N-k)!}{(N+\ell-2k)!}\,p_k\,x^k ,
+$$
+and for $a\in\mathbb R$ we put $E_ap=(x+a)p+xp'$. Zhang [@Zhang2026SeparableInterlacing]
+represents $\Gamma_{N+2}$ as the level-one factorial compression of $B_N$, where $B_0=1$ and
+$B_{N+1}=E_{(N+2)/2}B_N$; here $\Gamma_0=0$, $\Gamma_1=1$, $\Gamma_2=1$ and $\Gamma_3=1+2x$.
 
 **Theorem (Zhang).** For $n\ge2$:
 
@@ -126,27 +176,32 @@ $$
 $$
 that is, $G=\sum_n\Gamma_nw^n$ satisfies $G=w+wG+xwG^2+xG^3$ [@FuLinZeng2018].
 
+**Theorem (factorial compression).** [@Zhang2026SeparableInterlacing] Let $N\ge1$,
+$0\le\ell\le N$ and $a>0$, and let $p$ be a real-rooted polynomial of degree $N$ with positive
+leading coefficient and only negative roots, which may be repeated. Then $C_{N,\ell}\,p$ and
+$C_{N+1,\ell}\,E_ap$ have degrees $\lfloor(N+\ell)/2\rfloor$ and $\lfloor(N+\ell+1)/2\rfloor$
+and simple negative roots, and $C_{N,\ell}\,p\ll C_{N+1,\ell}\,E_ap$ with no common root.
+
+The compression is a Schur–Szegő composition with an explicit kernel,
+$C_{N,\ell}\,p=\frac{N!}{(N+\ell)!}\,h_{N+\ell}*_Np$ with
+$h_r=\sum_{j\le r/2}\frac{r!}{j!\,(r-2j)!}x^j$, and Schur–Szegő composition with a polynomial
+with only negative roots preserves interlacing without common roots.
+
 ## Proof
 
-The enumerators $S_n$ satisfy the analogous cubic recurrence
+The enumerators $S_n$ satisfy the cubic recurrence
 $S_n=(1+t)S_{n-1}+t\sum_{i+j=n-1}S_iS_j+t\sum_{i+j+l=n}S_iS_jS_l$, from the decomposition of a
-separable permutation into direct and skew sums. The gamma substitution carries the cubic for
-$\Gamma_n$ to this one, and the cubic determines the sequence from $S_1=1$. The cubic for
-$\Gamma_n$ is proved by Lagrange inversion.
-
-Interlacing is proved first for $B_N$, from the derivative-lag recurrence. The factorial
-compression transfers it to $\Gamma_{N+2},\Gamma_{N+3}$, and the gamma lifting to $S_n,S_{n+1}$:
-the two branches of $\rho\mapsto\rho/(1+\rho)^2$ carry a common root of the descent polynomials
-to a common root of the gamma-polynomials, and the root $-1$ is excluded by the evaluation
-formula of the gamma transform.
+separable permutation into direct and skew sums, and the gamma substitution carries the cubic
+for $\Gamma_n$, proved by Lagrange inversion, to this one. Interlacing holds for $B_N$ by the
+derivative-lag recurrence, and the factorial compression theorem with $\ell=1$ and
+$a=(N+2)/2$ transfers it to $\Gamma_{N+2}$ and $\Gamma_{N+3}$. The gamma substitution then
+transfers it to $S_n$ and $S_{n+1}$: the two branches of $\rho\mapsto\rho/(1+\rho)^2$ carry a
+common root of the descent polynomials to a common root of the gamma-polynomials, and the root
+$-1$ is excluded by evaluating the gamma transform there.
 
 ## References
 
-[@Zhang2026SeparableInterlacing; @FuLinZeng2018]. The Lean development follows a formalization
-by yyou59548-design. See also the
-[separable-descent example on symmetricfunctions.com](sf:separableDescentRealRooted).
+- [@Zhang2026SeparableInterlacing]
+- [@FuLinZeng2018]
 <!-- /realrooted-catalog-content -->
-
-This module is a catalog facade.  The proofs live in `RealRooted.SeparablePermutations` and
-`RealRooted.FactorialCompression`.
 -/
