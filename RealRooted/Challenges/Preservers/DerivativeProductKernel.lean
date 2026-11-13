@@ -3,7 +3,7 @@ module
 import RealRooted.DerivativeProduct.Kernel
 
 /-!
-# Real-rootedness of associative derivative products with a fixed factor
+# Associative derivative products with a fixed factor
 
 <!-- realrooted-catalog
 version = 1
@@ -56,10 +56,11 @@ headline = true
 -->
 
 <!-- realrooted-catalog-content -->
-# Real-rootedness of associative derivative products with a fixed factor
+# Associative derivative products with a fixed factor
 
 A fixed polynomial $g$ gives a real-rootedness preserver $f\mapsto f\ast g$ for the associative
-derivative product exactly when $g$ is real-rooted and $w\le0$ at its roots.
+derivative product exactly when $g$ is real-rooted and $w\le0$ at its roots. The family contains
+the Poisson product and the diamond product.
 
 ## Results
 
@@ -72,7 +73,7 @@ $c_k=a^k/\bigl(k!\prod_{j<k}(1+aAj)\bigr)$ with $a>0$. It contains the Poisson p
 ($A=0$, $w=x$) and the *diamond family*
 $$
 f\ast_\beta g=\sum_k\frac{[x(x+1)]^k}{k!\,(\beta)_k}\,f^{(k)}g^{(k)},\qquad
-(\beta)_k=\beta(\beta+1)\cdots(\beta+k-1),
+(\beta)_k=\beta(\beta+1)\dotsm(\beta+k-1),
 $$
 for $\beta>0$; the diamond product is $\beta=1$.
 
@@ -84,8 +85,7 @@ equivalent.
 3. $g$ is real-rooted and $w(r)\le0$ at every root $r$ of $g$.
 
 When (3) holds and $f\ne0$ is real-rooted, $f\ast g\ne0$. For the diamond family, (3) says that
-all roots of $g$ lie in $[-1,0]$. The weight $w$ is any real polynomial of degree at most two
-with $A\ge0$, including constant, linear and zero weights.
+all roots of $g$ lie in $[-1,0]$.
 
 **Theorem (sufficiency).** Let $\gamma$ be a PF multiplier sequence with $\gamma_0=1$ and
 $\gamma_k>0$, let $w$ have degree at most two with $A\ge0$, let $f\ne0$ be real-rooted with
@@ -98,7 +98,7 @@ real-rooted with all roots in $[-1,0]$.
 and $A\ge0$, and let $g\ne0$. If $g\ast(\alpha+\beta x)$ is zero or real-rooted for all real
 $\alpha,\beta$, then $g$ is real-rooted and $w\le0$ at its roots.
 
-**Theorem (Weyl symbols).** Let $a_0,\dots,a_m$ be real polynomials such that
+**Theorem (Weyl symbols; Borcea–Brändén).** Let $a_0,\dotsc,a_m$ be real polynomials such that
 $\sum_j a_j(x)(-y)^j\ne0$ whenever $\operatorname{Im}x>0$ and $\operatorname{Im}y>0$. For every
 real-rooted $g\ne0$, the polynomial $\sum_j a_jg^{(j)}$ is zero or real-rooted.
 
@@ -108,11 +108,9 @@ For sufficiency, the sequence $1/(\beta)_k$ is a PF multiplier sequence, which m
 symbol of $g\mapsto f\ast g$ stable when $w\le0$ at the roots of $f$. Necessity uses the pencil
 spanned by $g$ and $xg+a\,w\,g'$, which arises from the inputs $1$ and $x$.
 
-The diamond family follows Theorem 3.11 of [@Branden2006]; the Weyl-symbol criterion is
-Theorems 1.3 and 1.4 of [@BorceaBranden2009I].
-
 ## References
 
-See [@Branden2006] and [@BorceaBranden2009I].
+- [@Branden2006, Thm. 3.11], for the diamond family
+- [@BorceaBranden2009I, Thms. 1.3–1.4], for the Weyl-symbol criterion
 <!-- /realrooted-catalog-content -->
 -/

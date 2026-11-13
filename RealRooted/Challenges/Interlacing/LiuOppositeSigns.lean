@@ -83,9 +83,9 @@ condition, with an extra branch for common roots.
 
 Two real polynomials $f$ and $g$ are *compatible* if every combination $\alpha f+\beta g$ with
 $\alpha,\beta\ge0$ is zero or real-rooted. For leading coefficients of the same sign,
-compatibility is governed by common interleavers (Chudnovsky--Seymour). Liu treats the case of
-opposite leading signs. Write $n_p(x)$ for the number of roots of $p$ in $[x,\infty)$, counted
-with multiplicity.
+compatibility is governed by [common interleavers](rr:common-interleavers) (Chudnovsky–Seymour).
+Liu treats the case of opposite leading signs. Write $n_p(x)$ for the number of roots of $p$ in
+$[x,\infty)$, counted with multiplicity.
 
 **Theorem (Liu).** [@Liu2012CompatibleSequences] Let $f$ and $g$ be nonconstant real-rooted
 polynomials with opposite leading signs. Then $f$ and $g$ are compatible if and only if one of
@@ -101,17 +101,15 @@ holds.
 **Corollary.** Compatible real-rooted polynomials with opposite leading signs have degrees
 differing by at most two.
 
-The published statement has the first condition alone, and its forward direction fails: $x$ and
-$-x^2$ are compatible, but deleting the largest root $0$ from $x$ leaves a root-count gap of two
-at every $x\le0$. The common-root condition above is the correction. Liu's proof for pairs with
-no common root also treats such endpoints as if all of their roots were simple, which fails
-for individual endpoints.
+Liu's published statement has the first condition alone, and its forward direction fails: $x$
+and $-x^2$ are compatible, but deleting the largest root $0$ from $x$ leaves a root-count gap of
+two at every $x\le0$. The common-root condition corrects this.
 
 ## Proof
 
-For pairs with simple roots we prove the root-count criterion directly. The general case follows
-by small derivative-shift regularizations, which preserve compatibility and reduce to the
-simple-root case, and a limit of root matchings.
+For pairs with simple roots, the root-count criterion is proved directly. The general case
+follows by small [derivative shifts](rr:iterated-derivative-shift), which preserve compatibility
+and give simple roots, and a limit of root matchings.
 
 ## References
 

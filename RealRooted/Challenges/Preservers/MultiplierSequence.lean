@@ -220,23 +220,23 @@ real-rootedness; these are classified by Jensen polynomials and by the Laguerre�
 
 A polynomial is *real-rooted* if it is zero or splits over $\mathbb R$, and *PF* (Pólya
 frequency) if it is zero or has nonnegative coefficients and only real, nonpositive roots. For a
-real sequence $\gamma=(\gamma_0,\gamma_1,\dots)$ the *diagonal operator* is
+real sequence $\gamma=(\gamma_0,\gamma_1,\dotsc)$ the *diagonal operator* is
 $$
-a_0+a_1x+\dots+a_nx^n\ \mapsto\ \gamma_0a_0+\gamma_1a_1x+\dots+\gamma_na_nx^n .
+a_0+a_1x+\dotsb+a_nx^n\ \mapsto\ \gamma_0a_0+\gamma_1a_1x+\dotsb+\gamma_na_nx^n .
 $$
 The sequence $\gamma$ is a *multiplier sequence* if this operator maps every real-rooted
 polynomial to a real-rooted polynomial, and a *PF multiplier sequence* if it maps every PF
 polynomial to a PF polynomial. The *finite* versions restrict to inputs of degree at most $n$.
 The *Jensen polynomial* of $\gamma$ is $g_n(x)=\sum_k\binom nk\gamma_kx^k$.
 
-**Theorem (Pólya--Schur).** Let $\gamma_k\ge0$ for all $k$. Then $\gamma$ is a multiplier
+**Theorem (Pólya–Schur).** Let $\gamma_k\ge0$ for all $k$. Then $\gamma$ is a multiplier
 sequence if and only if every Jensen polynomial $g_n$ is PF.
 
-**Theorem (Laguerre--Pólya classification).** Assume $\sum_k|\gamma_k|R^k/k!<\infty$ for some
+**Theorem (Laguerre–Pólya classification).** Assume $\sum_k|\gamma_k|R^k/k!<\infty$ for some
 $R>0$, and let $f(z)=\sum_k\gamma_kz^k/k!$.
 
 - $\gamma$ is a PF multiplier sequence if and only if $f$ is in the
-  [Laguerre--Pólya class](rr:laguerre-polya-class) of type I, that is, a
+  [Laguerre–Pólya class](rr:laguerre-polya-class) of type I, that is, a
   locally uniform limit of PF polynomials.
 - $\gamma$ is a multiplier sequence if and only if one of $f(z)$, $-f(z)$, $f(-z)$, $-f(-z)$ is
   of type I.
@@ -248,16 +248,16 @@ $\bigl((-1)^k\gamma_k\bigr)$ or $\bigl(-(-1)^k\gamma_k\bigr)$ is a PF multiplier
 $\gamma_k\gamma_{k+2}\le\gamma_{k+1}^2$ for all $k$.
 
 **Theorem (Laguerre).** Let $\varphi$ be a real-rooted polynomial with only nonpositive roots.
-Then $\varphi(0),\varphi(1),\varphi(2),\dots$ is a multiplier sequence, and a PF multiplier
+Then $\varphi(0),\varphi(1),\varphi(2),\dotsc$ is a multiplier sequence, and a PF multiplier
 sequence if $\varphi$ has nonnegative leading coefficient. In particular $k+r$ is a PF
 multiplier sequence for every real $r\ge0$. More generally, if $f$ is of type I, then
 $\bigl(\operatorname{Re}f(k)\bigr)_{k\ge0}$ is a PF multiplier sequence.
 
 **Theorem (examples).** For real $\alpha>0$, the sequence $1/(\alpha)_k$, with
-$(\alpha)_k=\alpha(\alpha+1)\cdots(\alpha+k-1)$, is a PF multiplier sequence. In particular
+$(\alpha)_k=\alpha(\alpha+1)\dotsm(\alpha+k-1)$, is a PF multiplier sequence. In particular
 $1/k!$ is one.
 
-**Theorem (operators).** If $\varphi$ is Laguerre--Pólya and $g$ is real-rooted, then
+**Theorem (operators).** If $\varphi$ is Laguerre–Pólya and $g$ is real-rooted, then
 $\varphi(D)\,g=\sum_k\operatorname{Re}\bigl(\varphi^{(k)}(0)/k!\bigr)\,g^{(k)}$ is real-rooted.
 In particular, for $a\ge0$ the operator $e^{-aD^2}$ maps real-rooted polynomials to
 real-rooted polynomials.
@@ -270,16 +270,16 @@ sends $\sum_ka_kx^k$ to $\sum_k(\alpha_ka_k+\beta_{k-1}a_{k-1})x^k$, with the se
 for $k=0$. It maps PF polynomials of degree at most $d$ to PF polynomials in each of the
 following cases:
 
-- its degree-$d$ Borcea--Brändén algebraic symbol is stable, and $\alpha_k,\beta_k\ge0$ for
+- its degree-$d$ Borcea–Brändén algebraic symbol is stable, and $\alpha_k,\beta_k\ge0$ for
   $k\le d$;
 - with $J_\alpha=\sum_k\binom dk\alpha_kx^k$ and $J_\beta$ defined likewise, the polynomials
   $J_\alpha$, $xJ_\beta$ and $J_\alpha+\lambda xJ_\beta$ are PF for every $\lambda\ge0$.
 
 **Theorem (Jensen-pencil contraction).** Call $(A,B)$ *compatible* if every nonnegative linear
-combination of $A$ and $B$ is zero or real-rooted. Let $*_d$ be Schur--Szegő composition (see the
+combination of $A$ and $B$ is zero or real-rooted. Let $*_d$ be Schur–Szegő composition (see the
 [Hadamard products](rr:hadamard-products) page). Let $A$, $xB$ and $p$ be PF
 of degree at most $d$ with $\deg B\le d$, and suppose $(A,xB)$ is compatible. Then
-$(A*_dp,\ x\,(B*_dp))$ is compatible. Two ingredients are available separately.
+$(A*_dp,\ x\,(B*_dp))$ is compatible. Two steps of the proof hold more generally.
 
 - If $A,B\ne0$ are PF, $(A,xB)$ is compatible and $\varepsilon>0$, then
   $\bigl(A(x+\varepsilon),\ x\,B(x+\varepsilon)\bigr)$ is compatible.
@@ -299,13 +299,13 @@ all roots in $(-1,0)$.
 
 The Bernstein-diagonal map is conjugate by the Cayley change of variable
 $J_Df(z)=(1-z)^Df\bigl(z/(1-z)\bigr)$ to the diagonal operator of $\gamma$, which turns
-$B_k$ into $\binom Dkz^k$ and $L$ into Schur--Szegő composition with $J_Dg$, so the statement
+$B_k$ into $\binom Dkz^k$ and $L$ into Schur–Szegő composition with $J_Dg$, so the statement
 follows from [@KostovShapiro2006, Prop. 1.2 and Thm. 1.3].
 
 ## References
 
-[@SchurPolya1914], [@KostovShapiro2006]. The finite Pólya--Schur theorem through Schur--Szegő
-composition is on the [Hadamard products](rr:hadamard-products) page.
+- [@SchurPolya1914]
+- [@KostovShapiro2006]
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

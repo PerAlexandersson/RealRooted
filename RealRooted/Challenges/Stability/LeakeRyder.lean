@@ -4,7 +4,7 @@ import RealRooted.Graph.LeakeRyder
 import RealRooted.Graph.MatchingPolynomial.Multivariate
 
 /-!
-# Leake--Ryder same-phase stability
+# Same-phase stability for graph polynomials
 
 <!-- realrooted-catalog
 version = 1
@@ -63,7 +63,7 @@ the graph is claw-free.
 
 ## Results
 
-A multivariate polynomial $P$ is *same-phase stable* if $P(w_1x,\dots,w_nx)$ is real-rooted in
+A multivariate polynomial $P$ is *same-phase stable* if $P(w_1x,\dotsc,w_nx)$ is real-rooted in
 $x$ for every choice of nonnegative weights $w_i$.
 
 **Theorem (Leake–Ryder).** For a finite graph $G$, the multivariate independence polynomial

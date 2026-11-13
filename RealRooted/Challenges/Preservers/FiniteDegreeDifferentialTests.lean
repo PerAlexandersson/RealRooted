@@ -237,16 +237,16 @@ $$
 \Delta_cf=\sum_{k\ge0}c_k\,x^kf^{(2k)},\qquad
 p_N(z)=\sum_{k\le N/2}(-1)^kc_k\,(N)_{2k}\,z^{N-2k},
 $$
-where $(N)_j=N(N-1)\cdots(N-j+1)$. The following are equivalent: $\Delta_c$ maps every PF
+where $(N)_j=N(N-1)\dotsm(N-j+1)$. The following are equivalent: $\Delta_c$ maps every PF
 polynomial of degree at most $N$ to a PF polynomial; $\Delta_c(x^N)$ is real-rooted; $p_N$ is
 real-rooted. If $c_k=0$ for $k>M$ and the signed symbol $\sum_{k\le M}(-1)^kc_kw^{2k}$ is
 real-rooted, then this holds for every $N$.
 
-For $c=(1,1,1,0,\dots)$ we get $\Delta_c(x^4)=x^2(x^2+12x+24)$ and
+For $c=(1,1,1,0,\dotsc)$ we get $\Delta_c(x^4)=x^2(x^2+12x+24)$ and
 $\Delta_c(x^5)=x^3(x^2+20x+120)$, so $\Delta_c$ preserves PF polynomials up to degree four but
-not five. For $c=(1,2,1,0,\dots)$ it preserves them in every degree.
+not five. For $c=(1,2,1,0,\dotsc)$ it preserves them in every degree.
 
-The declarations below also cover binomial symbols, with $J_N(h)=(sx+1)^r$ and
+Further results cover binomial symbols, with $J_N(h)=(sx+1)^r$ and
 $J_N(k)=(sx+1)^{r-1}$; the recurrence rows $x\,h(D)p+a\,k(D)p$ with $a\ge0$, which are PF and
 interlaced by $h(D)p$, and their multishift versions; and, when $p_N$ is real-rooted,
 preservation of interlacing by $\Delta_c$ through degree $N$.

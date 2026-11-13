@@ -108,8 +108,10 @@ label = "For 5ρ² < 8 the orbit has non-real roots in all large ranks"
 <!-- realrooted-catalog-content -->
 # Second-order differential operators preserving PF polynomials
 
-For $L=(a+bx)+(c+dx)\frac d{dx}+f\,x\frac{d^2}{dx^2}$ with $a,c,d\ge0$ and $b,f>0$, we give
-an exact criterion on $c$ for $L$ to map every PF polynomial to a PF polynomial.
+For $L=(a+bx)+(c+dx)\frac d{dx}+f\,x\frac{d^2}{dx^2}$ with $a,c,d\ge0$ and $b,f>0$, an explicit
+bound on $c$ decides whether $L$ maps every PF polynomial to a PF polynomial. Such operators
+generate polynomial sequences by $P_{n+1}=LP_n$, and PF preservation makes every member
+real-rooted.
 
 ## Results
 
@@ -119,34 +121,25 @@ $$
 L=(a+bx)+(c+dx)\,\frac{d}{dx}+f\,x\,\frac{d^2}{dx^2},
 $$
 and say $L$ *preserves PF polynomials* if $Lp$ is PF for every PF polynomial $p$. Put
-$\delta=d^2-4bf$.
-
-**Theorem (obstruction).** If $b>0$ and $\delta<0$, then $L$ does not preserve PF
-polynomials. For some $m\ge1$, $L(x^m)$ has a non-real root.
-
-**Theorem (sufficiency).** Let $a,c,d\ge0$, $b,f>0$ and $\delta>0$. For $j\ge1$ let
+$\delta=d^2-4bf$ and, for $j\ge1$,
 $$
 \tau_j=\begin{cases}
-a\bigl(d+\sqrt{\delta+4bf/j}\bigr)/(2b) & \text{if }a^2>j^2\delta+4bfj,\\[2pt]
+a\bigl(d+\sqrt{\delta+4bf/j}\bigr)/(2b) & \text{if }a^2>j^2\delta+4bfj,\\
 f+\dfrac{ad}{2b}+\dfrac{j\delta}{4b}+\dfrac{a^2}{4bj} &
-\text{if }\lvert j^2\delta-a^2\rvert\le4bfj,\\[6pt]
+\text{if }\lvert j^2\delta-a^2\rvert\le4bfj,\\
 \bigl(ad+\sqrt{\delta(a^2+4bfj)}\bigr)/(2b) & \text{otherwise.}
 \end{cases}
 $$
-If $c\le\tau_j$ for all $j\ge1$, then $L$ preserves PF polynomials. The sequence $\tau_j$ is
-minimized at every integer $m\ge1$ with $\delta m(m-1)\le a^2\le\delta m(m+1)$.
 
-**Theorem (classification).** Under the hypotheses of the sufficiency theorem, let $m\ge1$
-satisfy $\delta m(m-1)\le a^2\le\delta m(m+1)$. Then $L$ preserves PF polynomials if and only
-if $c\le\tau_m$. Explicitly:
+**Theorem (classification).** Let $a,c,d\ge0$, $b,f>0$ and $\delta>0$, and let $m\ge1$ satisfy
+$\delta m(m-1)\le a^2\le\delta m(m+1)$. Then $\tau_m\le\tau_j$ for all $j\ge1$, and $L$
+preserves PF polynomials if and only if $c\le\tau_m$. In the middle case
+$\lvert m^2\delta-a^2\rvert\le4bfm$, the condition $c\le\tau_m$ reads
+$(a+dm)^2-4bm\bigl(c+f(m-1)\bigr)\ge0$.
 
-1. (Lower) if $a^2>m^2\delta+4bfm$, the condition is $c\le a\bigl(d+\sqrt{\delta+4bf/m}\bigr)/(2b)$;
-2. (Middle) if $\lvert m^2\delta-a^2\rvert\le4bfm$, the condition is
-   $(a+dm)^2-4bm\bigl(c+f(m-1)\bigr)\ge0$, which is $c\le\tau_m$ in the second form above;
-3. (Upper) in the remaining case, the condition is
-   $c\le\bigl(ad+\sqrt{\delta(a^2+4bfm)}\bigr)/(2b)$.
+**Theorem (obstruction).** If $b>0$ and $\delta<0$, then $L$ does not preserve PF polynomials.
 
-**Theorem (special cases).**
+**Corollary (special cases).** Write $D=d/dx$.
 
 - If $a,d\ge0$, $b,f>0$ and $4bf\le d^2$, then $L$ with $c=0$ preserves PF polynomials.
 - If $A,C>0$, $B,E\ge0$ and $4AC\le B^2$, then $x(AD^2+BD+C)+E$ preserves PF polynomials.
@@ -157,19 +150,19 @@ if $c\le\tau_m$. Explicitly:
 
 **Theorem (orbits).** Let $P_0=1$ and let $P_{n+1}$ be the image of $P_n$ under
 $p\mapsto xp''+\rho\,xp'+xp+\gamma p$. If $\rho,\gamma\ge0$ and $5\rho^2<8$, then $P_n$ has a
-non-real root for all sufficiently large $n$.
+nonreal root for all sufficiently large $n$.
 
 ## Proof
 
-For the obstruction, $L(x^m)$ has a quadratic factor with discriminant
-$(a+dm)^2-4bm\bigl(c+f(m-1)\bigr)$, which is negative for some $m$ when $\delta<0$. For the
-orbit statement, the first two signed root moments (Newton sums) and the Cauchy–Schwarz
-inequality contradict the reality of all roots for large $n$.
+The image $L(x^m)$ has a quadratic factor with discriminant
+$(a+dm)^2-4bm\bigl(c+f(m-1)\bigr)$, which is negative for some $m$ when $\delta<0$; the bound
+$\tau_j$ is the optimal condition on $c$ for the gap with $j$ roots to its right. For the orbit
+statement, the first two signed root moments (Newton sums) and the Cauchy–Schwarz inequality
+contradict the reality of all roots for large $n$.
 
 ## References
 
-See the [operator preservers](rr:operator-preservers) page for background
-on PF polynomials and preservers.
+- [Operators preserving interlacing](rr:operator-preservers), for PF preservers in general
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in the `RealRooted.Interlacing`

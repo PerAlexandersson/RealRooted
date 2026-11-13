@@ -3,7 +3,7 @@ module
 import RealRooted.CoefficientDominance.NewtonDefectRoots
 
 /-!
-# Local Newton defects and positive root parameters
+# Local Newton defects and roots
 
 <!-- realrooted-catalog
 version = 1
@@ -65,16 +65,19 @@ headline = true
 -->
 
 <!-- realrooted-catalog-content -->
-# Local Newton defects and positive root parameters
+# Local Newton defects and roots
 
-The roots of $a_0\prod_{i<n}(1+x_iX)$ with decreasing positive $x_i$ are bounded
-two-sidedly by ratios of consecutive coefficients, with error controlled by local Newton defects.
+For a polynomial with only negative roots, the ratio $a_i/a_{i+1}$ of consecutive coefficients
+approximates the modulus of the $(i+1)$st root closest to the origin. Explicit bounds hold when
+the local Newton defects $a_{k-1}a_{k+1}/a_k^2$ at $k=i,i+1$ are small, and the approximation
+becomes asymptotically exact as these defects tend to $0$.
 
 ## Results
 
-Let $x_0\ge x_1\ge\dots>0$, let $e_k$ be the $k$-th elementary symmetric polynomial of
+Let $x_0\ge x_1\ge\dots>0$, let $e_k$ be the $k$th elementary symmetric polynomial of
 $x_0,\dots,x_{n-1}$, and let $L_k=x_0\cdots x_{k-1}$. Put $\eta_i=x_i^{-1}$ and
-$\rho_i=e_i/e_{i+1}$. The *local Newton defect* is
+$\rho_i=e_i/e_{i+1}$, so the roots of $\prod_{i<n}(1+x_iX)$ are $-\eta_0,\dots,-\eta_{n-1}$ with
+$\eta_0\le\dots\le\eta_{n-1}$. The *local Newton defect* is
 $\delta_k=e_{k-1}e_{k+1}/e_k^2$ for $0<k<n$ and $\delta_k=0$ otherwise. Put
 $C(u)=(1+\sqrt{1-4u})/2$.
 
@@ -97,12 +100,13 @@ $a_k$. The two-sided bounds for $\eta_i$ above hold with $\rho_i$ replaced by $a
 $\delta_k$ by $a_{k-1}a_{k+1}/a_k^2$ (and $0$ for $k=0$ or $k\ge n$).
 
 **Theorem (asymptotics).** Fix $i$. Let $p^{(a)}=a_0^{(a)}\prod_{j<n_a}(1+x^{(a)}_jX)$ be a
-family indexed along a filter $l$, with $a_0^{(a)}>0$, each $x^{(a)}$ positive and decreasing,
-and $i<n_a$ eventually. If the defects of $p^{(a)}$ at $i$ and $i+1$ tend to $0$ along $l$,
-then $\eta^{(a)}_i\sim a^{(a)}_i/a^{(a)}_{i+1}$ along $l$. No bound on $n_a$ is assumed.
+family indexed along a filter, for example a sequence, with $a_0^{(a)}>0$, each $x^{(a)}$
+positive and decreasing, and eventually $i<n_a$. If the defects of $p^{(a)}$ at $i$ and $i+1$
+tend to $0$, then $\eta^{(a)}_i\sim a^{(a)}_i/a^{(a)}_{i+1}$.
 
 ## References
 
-[@KarpenkoVishnyakova2017; @AkianGaubertSharify2017].
+- [@KarpenkoVishnyakova2017]
+- [@AkianGaubertSharify2017]
 <!-- /realrooted-catalog-content -->
 -/

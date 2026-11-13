@@ -70,10 +70,8 @@ Taking $a=0$ and $b$ large recovers Descartes' rule.
 
 R. Descartes, *La Géométrie*, 1637. F. D. Budan, *Nouvelle méthode pour la
 résolution des équations numériques*, 1807; J. Fourier, *Analyse des
-équations déterminées*, 1831. See also the
-[contextual account on symmetricfunctions.com][descartes-context].
-
-[descartes-context]: sf:descartesRuleOfSigns
+équations déterminées*, 1831. See also
+[Descartes' rule of signs](sf:descartesRuleOfSigns) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

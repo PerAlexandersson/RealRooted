@@ -191,20 +191,17 @@ positive leading coefficients, the following are equivalent:
 3. the family has a common interleaver;
 4. the family is compatible.
 
-Let a nonempty family have positive leading coefficients. If it has a common interleaver, or if
-all its members are real-rooted and every pair has a common interleaver, then its sum is
-real-rooted.
+**Corollary.** Let a nonempty family have positive leading coefficients. If it has a common
+interleaver, or if all its members are real-rooted and every pair has a common interleaver, then
+its sum is real-rooted.
 
-**Theorem (pairs).** Let $f,g$ have positive leading coefficients. If $f,g$ are compatible,
-then $f,g$ have a common interleaver. More precisely, suppose that $\lambda f+\mu g$ is
-real-rooted for all $\lambda,\mu>0$. Then $f,g$ have a common interleaver in each of these cases:
-
-- $\deg g=\deg f$ and $f,g$ have no common root; moreover, for every real $x$ that is not a
-  root of $f$ or $g$, the numbers of roots of $f$ and of $g$ larger than $x$ differ by at
-  most one;
-- $\deg g=\deg f+1$;
-- $\deg f\le\deg g\le\deg f+1$ and $f,g$ have no common root;
-- $f$ and $g$ split, with no restriction on the degrees.
+**Theorem (pairs).** Let $f,g$ have positive leading coefficients, and suppose that
+$\lambda f+\mu g$ is real-rooted for all $\lambda,\mu>0$. Then $f$ and $g$ have a common
+interleaver if $f$ and $g$ are real-rooted, if $\deg g=\deg f+1$, or if
+$\deg f\le\deg g\le\deg f+1$ and $f,g$ have no common root. In particular, every compatible
+pair has a common interleaver. If moreover $\deg f=\deg g$ and $f,g$ have no common root, then
+for every real $x$ that is not a root of $f$ or $g$, the numbers of roots of $f$ and of $g$
+larger than $x$ differ by at most one.
 
 **Proposition (left interleavers).** Let $\deg f\le\deg g\le\deg f+1$ and suppose that
 $f\ll h$ and $g\ll h$ for some $h$. Then $\ell\ll f$ and $\ell\ll g$ for some $\ell$.

@@ -69,7 +69,7 @@ say that $F$ and $G$ are in *proper position*, written $F\ll G$, if $G+iF$ is st
 **Theorem (Hermite–Kakeya–Obreschkoff).** Let $\sigma$ be finite and $F\ll G$. Then for all
 real $\alpha,\beta$ the polynomial $\alpha F+\beta G$ is zero or real stable.
 
-**Theorem (converse)** [@Obreschkoff1963]. Let $\sigma$ be any index type, and suppose
+**Theorem (converse)** [@Obreschkoff1963]. Let $\sigma$ be any index set, and suppose
 $\alpha F+\beta G$ is zero or real stable for all real $\alpha,\beta$. Then $F=G=0$, or $F\ll G$,
 or $G\ll F$.
 
@@ -99,7 +99,9 @@ sign makes $F+iG$ stable.
 
 ## References
 
-See [@BorceaBranden2009I, Lemma 1.8 and Thm. 1.9], [@BorceaBranden2010] and [@Obreschkoff1963].
+- [@BorceaBranden2009I, Lemma 1.8 and Thm. 1.9]
+- [@BorceaBranden2010]
+- [@Obreschkoff1963]
 <!-- /realrooted-catalog-content -->
 
 This module exposes the two directions of the multivariate Hermite–Kakeya–Obreschkoff

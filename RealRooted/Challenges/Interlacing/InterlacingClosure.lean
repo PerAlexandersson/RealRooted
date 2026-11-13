@@ -105,9 +105,6 @@ affine and shift operations, and it gives real-rooted h-polynomials of shellings
 
 ## Results
 
-We use the [nonzero interlacing convention](rr:about). Roots are compared weakly. In the
-cone lemma, either side may also be zero.
-
 **Theorem (affine combinations, Brändén).** Let $f,g$ be nonzero with nonnegative coefficients.
 If $(sx+t)f+g$ is real-rooted for all $s,t>0$, then $f\ll g$.
 
@@ -124,14 +121,13 @@ nonpositive roots, and suppose that $h(0)\le f(0)$. Then $f\ll f+(x-1)h$.
 
 **Theorem (subtracting $xg$).** Let $f,g$ be monic with $\deg f=\deg g+1$ and only nonpositive
 roots, and let $g\ll f$. If $f-xg$ has positive leading coefficient, then
-$g\ll f-xg\ll f$. The positivity hypothesis is not automatic, since the leading terms of $f$
-and $xg$ cancel.
+$g\ll f-xg\ll f$.
 
-**Theorem (shellings, Hlavacek and Solus).** We use finite abstract simplicial complexes, a
-subdivision given by a carrier map with facet coverage, and a shelling of the base complex.
-Suppose that, in some order, the h-polynomials of the relative pieces form an interlacing
-sequence of real-rooted polynomials with nonnegative coefficients, and that the h-polynomial of
-the subdivision is nonzero. Then the h-polynomial of the subdivision is real-rooted.
+**Theorem (shellings, Hlavacek and Solus).** Let a finite simplicial complex with a shelling be
+subdivided. Suppose that, in some order, the h-polynomials of the relative pieces form an
+interlacing sequence of real-rooted polynomials with nonnegative coefficients, and that the
+h-polynomial of the subdivision is nonzero. Then the h-polynomial of the subdivision is
+real-rooted.
 
 **Proposition (polytopal shellings).** Let a shelling of a graded face set be given by ordered,
 pairwise disjoint relative pieces that cover all faces. The h-polynomial is the sum of the
@@ -147,6 +143,12 @@ interlacing sequence. Every sum, with repetitions, of members of a nonnegative i
 sequence is real-rooted when it is nonzero. Consequently, if the h-polynomial of a polytopal
 shelling is nonzero and every relative h-polynomial is some $h_{d,l}$, then it is real-rooted.
 
+## Use
+
+The cone lemma is the usual way to prove that a nonnegative sum of interlacing polynomials is
+real-rooted. The shelling theorems apply it to h-polynomials: a shelling splits the h-polynomial
+into relative pieces, and for cubes these pieces are refined type-B Eulerian polynomials.
+
 ## Proof
 
 The affine derivative, shift and subtraction statements are sign arguments at the roots of $f$:
@@ -157,8 +159,7 @@ endpoint relations.
 
 ## References
 
-See [@Fisk2006x], [@Branden2015, Lemma 7.8.4], and
-[@BrandenLeite2024x, Lemma 3.1]. See also the
+[@Fisk2006x], [@Branden2015, Lemma 7.8.4] and [@BrandenLeite2024x, Lemma 3.1]. See also the
 [interlacing sequences on symmetricfunctions.com](sf:interlacingSequenceDefinition).
 For the shelling criterion, see M. Hlavacek and L. Solus, “Subdivisions of
 shellable complexes,” *J. Combin. Theory Ser. A* (2021), Theorem 3.1,

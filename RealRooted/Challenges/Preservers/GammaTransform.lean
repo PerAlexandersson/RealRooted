@@ -11,7 +11,7 @@ public import RealRooted.GammaTransform.StrictLifting
 public import RealRooted.GammaTransform.TwoStep
 
 /-!
-# Real-rootedness and interlacing of the gamma transform
+# Gamma transform
 
 <!-- realrooted-catalog
 version = 1
@@ -106,11 +106,13 @@ label = "Two successive gamma-transform steps preserve proper position"
 -->
 
 <!-- realrooted-catalog-content -->
-# Real-rootedness and interlacing of the gamma transform
+# Gamma transform
 
-The gamma transform $\Gamma_d$ sends a real-rooted polynomial with nonpositive roots to a
-real-rooted polynomial with nonpositive roots, and conversely; adjacent transforms interlace
-exactly when the gamma polynomials do.
+The gamma transform $\Gamma_d$ writes a palindromic polynomial in the basis
+$x^i(1+x)^{d-2i}$. It sends a real-rooted polynomial with nonpositive roots to a real-rooted
+polynomial with nonpositive roots, and conversely, and gamma transforms of adjacent degrees
+interlace exactly when the gamma polynomials do. Thus real-rootedness passes in both directions
+between a palindromic polynomial, such as an Eulerian polynomial, and its gamma polynomial.
 
 ## Results
 
@@ -126,9 +128,9 @@ $\gamma_p$ has nonnegative coefficients.
 only nonpositive roots if and only if $\Gamma_d(\gamma)$ is. If $\gamma\ne0$ is real-rooted with
 nonnegative coefficients, then $\Gamma_d(\gamma)$ is nonzero and real-rooted.
 
-**Theorem (Hoster--Stump [@HosterStump2025x, Prop. 2.5]).** Let $\deg\gamma\le d/2$ and
-$\deg\delta\le(d+1)/2$, where $\gamma,\delta$ have nonnegative coefficients and nonzero constant
-terms. Then $\Gamma_d(\gamma)\ll\Gamma_{d+1}(\delta)$ if and only if $\gamma\ll\delta$.
+**Theorem (Hoster–Stump).** Let $\deg\gamma\le d/2$ and $\deg\delta\le(d+1)/2$, where
+$\gamma,\delta$ have nonnegative coefficients and nonzero constant terms. Then
+$\Gamma_d(\gamma)\ll\Gamma_{d+1}(\delta)$ if and only if $\gamma\ll\delta$.
 
 **Theorem (roots).** Let $\deg\gamma\le d/2$ with $\gamma\ne0$, and suppose all roots of
 $\Gamma_d(\gamma)$ are negative. Then the roots of $\Gamma_d(\gamma)$, with multiplicity, are
@@ -137,8 +139,7 @@ the roots $x\in(-1,0)$, their reciprocals $1/x$, and $-1$ with multiplicity $d-2
 **Theorem (strict lifting).** Let $n\ge2$, and let $A,B$ have positive leading coefficients,
 only negative roots, and degrees $\lfloor(n-1)/2\rfloor$ and $\lfloor n/2\rfloor$. If $A\ll B$
 and $A,B$ have no common root, then $\Gamma_{n-1}(A)$ and $\Gamma_n(B)$ have degrees $n-1$ and
-$n$, simple negative roots and no common root, and $\Gamma_{n-1}(A)\ll\Gamma_n(B)$. The argument
-follows [@Zhang2026SeparableInterlacing].
+$n$, simple negative roots and no common root, and $\Gamma_{n-1}(A)\ll\Gamma_n(B)$.
 
 **Theorem (two steps).** Let $\gamma\ll\delta$ have nonnegative coefficients and nonzero
 constant terms, with $\deg\gamma\le n$ and $\deg\delta\le n+1$. Then
@@ -146,28 +147,25 @@ $$
 \Gamma_{2n}(\gamma)\ \ll\ (x+1)\,\Gamma_{2n}(\gamma)\ \ll\ \Gamma_{2n+2}(\delta).
 $$
 
-**The gamma pencil.** For $n\ge2$ let
-$$
-T_nf=(1+2nx)\,f+x(1-4x)\,f'.
-$$
-Put $U_2=1$, $V_2=x$, $U_{n+1}=T_nU_n$ and $V_{n+1}=T_nV_n$.
-
-**Theorem (pencil).** For $n\ge2$, $T_n$ maps every real-rooted polynomial of degree at most
-$n/2$ to zero or a real-rooted polynomial. For all real $a,b$, $aU_n+bV_n$ is zero or
-real-rooted, and $U_n\ll V_n$.
+**Proposition (gamma pencil).** For $n\ge2$ let $T_nf=(1+2nx)\,f+x(1-4x)\,f'$, and put
+$U_2=1$, $V_2=x$, $U_{n+1}=T_nU_n$ and $V_{n+1}=T_nV_n$. Then $T_n$ maps every real-rooted
+polynomial of degree at most $n/2$ to zero or a real-rooted polynomial. For all real $a,b$,
+$aU_n+bV_n$ is zero or real-rooted, and $U_n\ll V_n$.
 
 ## Proof
 
 Since $\Gamma_d(\gamma)(x)=(1+x)^d\gamma\bigl(x/(1+x)^2\bigr)$ and $x/(1+x)^2$ maps
 $(-\infty,0]\setminus\{-1\}$ onto $(-\infty,0]$, each nonpositive root $y$ of $\gamma$ pulls
 back to two real roots, which are nonpositive because $y\le0<1/4$. For the pencil, $T_n$ has a
-stable algebraic symbol, so the finite Borcea--Brändén theorem [@Branden2015] applies.
+stable algebraic symbol, so the finite Borcea–Brändén theorem [@Branden2015] applies.
 
 ## References
 
-[@Petersen2015EulerianNumbers, Sec. 4.6], [@HosterStump2025x, Prop. 2.5], [@Branden2015]. The
-[gamma polynomial on symmetricfunctions.com](sf:gammaPolynomial) gives the discussion of
-gamma-positivity.
+- [@Petersen2015EulerianNumbers, Sec. 4.6]
+- [@HosterStump2025x, Prop. 2.5], for the interlacing equivalence
+- [@Zhang2026SeparableInterlacing], for the strict lifting
+- [@Branden2015]
+- [Gamma polynomials](sf:gammaPolynomial) on symmetricfunctions.com
 <!-- /realrooted-catalog-content -->
 
 This module exposes the real-rootedness transfer for the gamma transform, the

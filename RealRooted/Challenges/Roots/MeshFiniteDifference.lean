@@ -129,13 +129,15 @@ label = "Only nonnegative roots is closed under coefficientwise limits of bounde
 # Mesh and finite differences
 
 Operators built from derivatives and finite differences preserve a lower bound on the distance
-between consecutive roots of a real-rooted polynomial.
+between consecutive roots of a real-rooted polynomial. This mesh condition is the finite
+difference analogue of real-rootedness, and it leads to a discrete Hermite–Poulain theorem and
+discrete multiplier sequences.
 
 ## Results
 
-We write $p\in\mathrm{Mesh}_{\ge\alpha}$ (`Polynomial.MeshGE p α`) if $p$ is real-rooted and
-consecutive roots, listed increasingly with multiplicity, differ by at least $\alpha\ge0$.
-Numbering follows Brändén, Krasikov and Shapiro (see References).
+We write $p\in\mathrm{Mesh}_{\ge\alpha}$ if $p$ is real-rooted and consecutive roots, listed
+increasingly with multiplicity, differ by at least $\alpha\ge0$. Theorem numbers refer to
+Brändén, Krasikov and Shapiro.
 
 **Theorem 1 (Riesz).** If $p\in\mathrm{Mesh}_{\ge\alpha}$ and $c\in\mathbb R$, then
 $p-c\,p'\in\mathrm{Mesh}_{\ge\alpha}$.
@@ -188,16 +190,16 @@ $a_m\le a_{m+1}$.
 
 ## Proof
 
-For Lemma 8, the source uses the Borcea–Brändén classification; we apply the
-operator to $x^m$ and use the Beraha–Kahane–Weiss limit-of-zeros theorem, since two nonzero
-extreme shifts produce nonreal limits of zeros. The closure property used for Corollary 2 is
-that $\mathrm{Mesh}_{\ge\alpha}$ is closed under coefficientwise limits of bounded degree.
+For Lemma 8 we apply the operator to $x^m$: two nonzero extreme shifts produce nonreal
+[limits of zeros](rr:limits-of-zeros) by the Beraha–Kahane–Weiss theorem. Corollary 2 uses that
+$\mathrm{Mesh}_{\ge\alpha}$ is closed under coefficientwise limits of bounded degree.
 
 ## References
 
-Brändén, Krasikov, and Shapiro, *Elements of Pólya–Schur theory in the finite difference
-setting*, Proc. Amer. Math. Soc. 144 (2016): Theorems 1, 2, 3 and 5, Lemmas 8, 10 and 11,
-Corollaries 2 and 3, Propositions 6, 7 and 12, and Remark 2. Theorem 1 is due to Riesz.
+- P. Brändén, I. Krasikov and B. Shapiro, *Elements of Pólya–Schur theory in the finite
+  difference setting*, Proc. Amer. Math. Soc. 144 (2016): Theorems 1, 2, 3 and 5, Lemmas 8, 10
+  and 11, Corollaries 2 and 3, Propositions 6, 7 and 12, and Remark 2. Theorem 1 is due to
+  Riesz.
 <!-- /realrooted-catalog-content -->
 
 The definitions and theorems live in `RealRooted.Mesh.Basic`, `RealRooted.Mesh.Derivative`,

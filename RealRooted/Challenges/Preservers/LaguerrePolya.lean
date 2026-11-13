@@ -12,7 +12,7 @@ import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Zeros
 
 /-!
-# The Laguerre–Pólya class
+# Laguerre–Pólya class
 
 <!-- realrooted-catalog
 version = 1
@@ -116,10 +116,12 @@ headline = true
 -->
 
 <!-- realrooted-catalog-content -->
-# The Laguerre–Pólya class
+# Laguerre–Pólya class
 
 A function $\mathbb C\to\mathbb C$ is Laguerre–Pólya if it is a locally uniform limit of
 real-rooted real polynomials; such a function is entire, and a nonzero one has only real zeros.
+The class describes the multiplier sequences and the differential operators $\varphi(D)$ that
+preserve real-rootedness.
 
 ## Results
 
@@ -166,23 +168,25 @@ sequence if and only if $\sum_k\gamma_kz^k/k!$ is of type I.
 
 ## Use
 
-Type I functions give the Pólya--Schur description of PF multiplier sequences; see the
+Type I functions give the Pólya–Schur description of PF multiplier sequences; see the
 [multiplier sequences](rr:multiplier-sequences) page. For real-rooted
 polynomials, Laguerre's inequality is on the
 [Wronskian criterion](rr:wronskian-criterion) page, and the operator theorem
-rests on the [Hermite--Poulain theorem](rr:hermite-poulain).
+rests on the [Hermite–Poulain theorem](rr:hermite-poulain).
 
 ## Proof
 
 For a real-rooted polynomial $p$, $|p(x+iy)|$ does not decrease as $|y|$ increases. This passes
 to limits, so a zero $x+iy_0$ of $f$ with $y_0\ne0$ would make $f$ vanish on the segment
 $\{x+iy:|y|\le|y_0|\}$, and the identity theorem would give $f=0$. The operator theorem follows
-because $p_n(D)\,g$ is real-rooted by the Hermite--Poulain theorem and converges to
+because $p_n(D)\,g$ is real-rooted by the Hermite–Poulain theorem and converges to
 $\varphi(D)\,g$ when $p_n\to\varphi$.
 
 ## References
 
-[@SchurPolya1914], [@Levin1964, Ch. VIII], [@Hutchinson1923].
+- [@SchurPolya1914]
+- [@Levin1964, Ch. VIII]
+- [@Hutchinson1923]
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The definition is in
