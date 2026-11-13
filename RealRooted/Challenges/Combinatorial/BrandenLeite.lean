@@ -263,9 +263,11 @@ label = "For R(0) > 0, consecutive renewal rows in a residue class are nonzero a
 # Chain polynomials of totally nonnegative matrices
 
 Chain polynomials of a lower-unitriangular totally nonnegative matrix are real-rooted with zeros
-in $[-1,0]$, and consecutive ones interlace. The same method gives Pólya frequency rows with
-interlacing for many generating functions built from Pólya frequency series, including the
-powers and logarithms of $Q(u)-tB(u)$.
+in $[-1,0]$, and consecutive ones interlace, by a theorem of Brändén and Saud Leite. We prove a
+more general version of their result on $1/(Q(u)-tu^r)$: the coefficient rows of every positive
+power and of the logarithm of $Q(u)-tB(u)$ are Pólya frequency polynomials, and consecutive ones
+interlace. The same method gives such rows for many generating functions built from Pólya
+frequency series.
 
 ## Results
 
@@ -276,9 +278,9 @@ $$
 P_{n+1}(x)=x\sum_{k\le n}A(n+1,k)\,P_k(x).
 $$
 
-**Theorem (Brändén–Saud Leite).** [@BrandenLeite2024x] Let $A$ be lower unitriangular and
-totally nonnegative. Then every $P_n$ has nonnegative coefficients, and is zero or has only real
-roots, all in $[-1,0]$. Moreover $P_n\ll P_{n+1}$ for all $n$.
+**Theorem (Brändén–Saud Leite).** [@BrandenLeite2024x, Thm. 3.7] Let $A$ be lower
+unitriangular and totally nonnegative. Then every $P_n$ has nonnegative coefficients, and is zero
+or has only real roots, all in $[-1,0]$. Moreover $P_n\ll P_{n+1}$ for all $n$.
 
 If instead $A(n,n)=\delta>0$ for all $n$, then $P^A_n(x)=P^{A/\delta}_n(\delta x)$, so $P_n$ is a
 PF polynomial and $P_n\ll P_{n+1}$. A real lower-triangular matrix admits a *resolution*, that
@@ -290,7 +292,8 @@ a triangular network with the Whitney elimination weights.
 **Theorem (rows of power series).** Let $g,h$ be Pólya frequency sequences, and let $p_n$ be the
 coefficient of $z^n$ in $g(z)/\bigl(1-x\,(g(z)h(z)-g(0)h(0))\bigr)$. Then every $p_n$ is a PF
 polynomial and $p_n\ll p_{n+1}$; if $g(0),h(0)>0$, its roots lie in $[-1/(g(0)h(0)),0]$. The
-$p_n$ are the rows of the regularized kernel of the finite Toeplitz matrices of $g$ and $h$.
+$p_n$ are the rows of the regularized kernel of the finite Toeplitz matrices of $g$ and $h$. For
+$g=1$ this is [@BrandenLeite2024x, Thm. 4.4].
 
 In particular, if $h(0)=0$ the coefficients of $1/(1-x\,h(z))$, and if moreover $g(0)>0$ those of
 $g/(1-x\,g\,h)$, are PF polynomials in $x$ and consecutive ones interlace. This applies to
@@ -313,6 +316,10 @@ $\lfloor n/r\rfloor$, has positive coefficients up to that degree and only negat
 $q_n\ll q_{n+1}$. For $n\ge1$ the same holds for
 $\ell_n(t)=[u^n]\bigl(-\log(Q(u)-tB(u))\bigr)=\lim_{\kappa\to0^+}q_n/\kappa$, whose coefficients
 are $[t^k]\,\ell_n=\frac1k\,[u^n]\bigl(B(u)^k\,Q(u)^{-k}\bigr)$ for $k\ge1$.
+
+This theorem is new. Its corollary for $\kappa=1$ and $B(u)=u^r$, that the coefficients of
+$1/(Q(u)-tu^r)$ have only negative roots and consecutive ones interlace, is the theorem of
+Brändén and Saud Leite [@BrandenLeite2024x, Thm. 4.5].
 
 The rows $q_n$ are also PF with $q_n\ll q_{n+1}$ when $B$ is any nonzero real-rooted polynomial
 with nonnegative coefficients and $B(0)=0$. If $r=1$, and $[u^2]Q>0$ or $[u^2]B>0$, consecutive

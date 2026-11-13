@@ -72,7 +72,7 @@ J_{m,\delta}^{c,d}(x;U,V)=\sum_{i+j\le m}
 $$
 where $(a)_n=a(a+1)\cdots(a+n-1)$ is the rising factorial.
 
-**Theorem (Alexandersson, 2026).** Let $c,d,U,V>0$.
+**Theorem.** Let $c,d,U,V>0$.
 
 - For every $\delta\ge0$, all roots of $J_{m,\delta}^{c,d}$ are real and negative, and
   $J_{m,\delta}^{c,d}$ is a Pólya frequency polynomial.

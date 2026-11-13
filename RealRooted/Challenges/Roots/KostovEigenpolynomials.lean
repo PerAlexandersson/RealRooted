@@ -89,16 +89,17 @@ label = "Odd reduced eigenpolynomials vanish at one"
 <!-- realrooted-catalog-content -->
 # Kostov's eigenpolynomials
 
-Every monic polynomial of degree $n$ with a root at $-1$ is a Schur–Szegő composition of $n-1$
-polynomials $(x+1)^{n-1}(x+a_j)$, and Kostov studied the map from its coefficients to the
-elementary symmetric functions of the $a_j$. The eigenvectors of the linear part of this map are
-given by polynomials with simple positive roots, and consecutive ones interlace.
+Every monic complex polynomial of degree $n$ with a root at $-1$ is a Schur–Szegő composition of
+$n-1$ polynomials $(x+1)^{n-1}(x+a_j)$, with the $a_j$ unique up to order, and Kostov studied the
+map from its coefficients to the elementary symmetric functions of the $a_j$. The eigenvectors of
+the linear part of this map are given by polynomials with simple positive roots, and consecutive
+ones interlace.
 
 ## Results
 
 Fix $n\ge2$. *Kostov's coefficient map* sends the coefficients of a monic polynomial of degree
 $n$ with a root at $-1$ to the elementary symmetric functions of the parameters $a_j$ in its
-Schur–Szegő factorization [@KostovShapiro2006]. For $0\le k<n-1$ put
+Schur–Szegő factorization [@Kostov2010, §1, eq. (1)]. For $0\le k<n-1$ put
 $$
 \lambda_k=\frac{n^k}{(n-1)(n-2)\cdots(n-k)} .
 $$

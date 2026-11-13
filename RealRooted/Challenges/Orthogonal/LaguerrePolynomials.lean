@@ -140,9 +140,8 @@ with positive parameters preserves simple negative roots.
 ## References
 
 - [@Szego1939, Ch. V].
-- A. J. Durán, *Zeros of linear combinations of Laguerre polynomials*,
-  [arXiv:2507.22425](https://arxiv.org/abs/2507.22425). The combination theorem is the case
-  $K=1$ of its Theorem 1.3.
+- See also A. J. Durán, *Zeros of linear combinations of Laguerre polynomials*,
+  [arXiv:2507.22425](https://arxiv.org/abs/2507.22425), Theorem 1.3.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in `RealRooted.Laguerre`.
