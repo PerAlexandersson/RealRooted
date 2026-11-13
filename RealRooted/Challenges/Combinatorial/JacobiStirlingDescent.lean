@@ -3,7 +3,7 @@ module
 import RealRooted.CombinatorialExamples.JacobiStirling.Descent.RealRooted
 
 /-!
-# Real-rooted Jacobi–Stirling descent polynomials
+# Jacobi–Stirling descent polynomials
 
 <!-- realrooted-catalog
 version = 1
@@ -61,7 +61,7 @@ label = "Deleting every barred letter: x A_{k,[k]} is the second-order Eulerian 
 -->
 
 <!-- realrooted-catalog-content -->
-# Real-rooted Jacobi–Stirling descent polynomials
+# Jacobi–Stirling descent polynomials
 
 The Jacobi–Stirling descent polynomials $A_{k,i}$ are real-rooted for $i\in\{1,2,3,k-2,k-1\}$.
 

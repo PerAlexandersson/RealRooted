@@ -76,16 +76,15 @@ label = "Zhang–Zhao: the closed transition matrices are totally nonnegative"
 <!-- realrooted-catalog-content -->
 # Multiset Eulerian–Narayana polynomials
 
-The multiset Eulerian–Narayana polynomial of a composition of $N$ has degree $N-1$, only simple
-negative zeros, and palindromic coefficients; it is built from $N-1$ first-order steps whose
-consecutive partial products interlace.
+The multiset Eulerian–Narayana polynomial of a composition of $N$, which counts weakly
+increasing trees on a multiset by leaves, has degree $N-1$, only simple negative zeros and
+palindromic coefficients. This proves a conjecture of Lin, Ma, Ma and Zhou.
 
 ## Results
 
-Call a real
-polynomial $f$ *admissible of degree $m$* if it has degree $m$, positive leading coefficient,
-nonnegative coefficients, positive constant term and only simple real zeros; then all zeros
-are negative. For $d\in\mathbb N$ and $a>0$ let
+Call a real polynomial $f$ *admissible of degree $m$* if it has degree $m$, positive leading
+coefficient, nonnegative coefficients, positive constant term and only simple real zeros; then
+all zeros are negative. For $d\in\mathbb N$ and $a>0$ let
 $$
 E_{d,a} f = \frac1a\Bigl(t(1-t) f' + \bigl(a + (d+a)t\bigr) f\Bigr).
 $$
@@ -94,30 +93,16 @@ $a_d(\alpha)=N_j-d$ for the least $j$ with $N_j>d$. The multiset Eulerian–Nara
 $$
 P_\alpha = E_{N-2,\,a_{N-2}(\alpha)} \circ \dotsb \circ E_{0,\,a_0(\alpha)}(1).
 $$
-Zhang and Zhao [@ZhangZhao2026x] obtain this formula for the leaf enumerator $P_M$ of weakly
-increasing trees on a multiset $M$ with multiplicities $\alpha$ (the identification is
-[@ZhangZhao2026x, Prop. 2.9]); here the formula is the definition of $P_\alpha$.
+By [@ZhangZhao2026x, Prop. 2.9], $P_\alpha$ is the leaf enumerator of weakly increasing trees on
+a multiset with multiplicities $\alpha$.
 
 **Theorem (Zhang–Zhao).** [@ZhangZhao2026x] For a composition $\alpha$ of $N\ge1$, $P_\alpha$
-is admissible of degree $N-1$ and $P_\alpha$ is palindromic: its coefficients of $t^k$ and
-$t^{N-1-k}$ agree for $0\le k\le N-1$. Let $Q_0=1$ and $Q_{d+1}=E_{d,a_d(\alpha)}Q_d$. Then
-$Q_d\ll Q_{d+1}$ and $Q_d,Q_{d+1}$ have no common zero, for $0\le d\le N-2$.
+is admissible of degree $N-1$ and palindromic: its coefficients of $t^k$ and $t^{N-1-k}$ agree
+for $0\le k\le N-1$. Let $Q_0=1$ and $Q_{d+1}=E_{d,a_d(\alpha)}Q_d$. Then $Q_d\ll Q_{d+1}$ and
+$Q_d,Q_{d+1}$ have no common zero, for $0\le d\le N-2$.
 
-**Theorem (Zhang–Zhao, Lemma 3.2).** For $a>0$ and a polynomial $\Gamma$ admissible of degree
-$m$, put
-$$
-\Phi_{d,a}\Gamma=\Gamma+\frac{t(1-4t)\Gamma'+2dt\Gamma}{a},\qquad d\in\{2m,2m+1\}.
-$$
-If $d=2m$ then $\Phi_{d,a}\Gamma$ is admissible of degree $m$; if $d=2m+1$ it is admissible of
-degree $m+1$.
-
-**Theorem (Zhang–Zhao, Proposition 3.4).** Let $a>0$, let $p=\prod_{j=1}^n(t-r_j)$ with
-distinct negative $r_j$, and let $d\in\{2n,2n+1\}$. If $\rho$ is a zero of $\Phi_{d,a}p$ and
-$r_i$ is replaced by $r_i+s$, then $\rho$ moves along a differentiable branch $\rho(s)$ of
-zeros of the new polynomial with $\rho'(0)>0$.
-
-**Theorem (Zhang–Zhao, Theorem 1.3).** [@ZhangZhao2026x, Thm. 1.3] Let $p,r\ge1$. Let $K_{p,r}$
-be the $(p+r)\times p$ matrix whose entry in row $k$ and column $\ell$ (from $0$) is $0$ unless
+**Theorem (Zhang–Zhao).** [@ZhangZhao2026x, Thm. 1.3] Let $p,r\ge1$. Let $K_{p,r}$ be the
+$(p+r)\times p$ matrix whose entry in row $k$ and column $\ell$ (from $0$) is $0$ unless
 $\ell\le k\le\ell+r$, and then
 $$
 \binom{p-\ell+r}{k-\ell}\binom{\ell+1+r}{r-k+\ell}
@@ -127,6 +112,14 @@ Then $K_{p,r}$ is totally nonnegative. It is the product of the coefficient matr
 steps $E_{p+s-1,a_s}$, $0\le s<r$, with $a_0=1$ and $a_s=r-s+1$ for $s\ge1$, each a
 nonnegative lower bidiagonal matrix, restricted to the first $p$ columns.
 
+For the $\gamma$-expansion, let $a>0$ and put
+$\Phi_{d,a}\Gamma=\Gamma+\bigl(t(1-4t)\Gamma'+2dt\Gamma\bigr)/a$. If $\Gamma$ is admissible of
+degree $m$, then $\Phi_{2m,a}\Gamma$ is admissible of degree $m$ and $\Phi_{2m+1,a}\Gamma$ is
+admissible of degree $m+1$ [@ZhangZhao2026x, Lemma 3.2]. If $p=\prod_{j=1}^n(t-r_j)$ has
+distinct negative zeros, $d\in\{2n,2n+1\}$ and $r_i$ is replaced by $r_i+s$, then each zero
+$\rho$ of $\Phi_{d,a}p$ moves along a differentiable branch $\rho(s)$ of zeros with
+$\rho'(0)>0$ [@ZhangZhao2026x, Prop. 3.4].
+
 ## Proof
 
 Each step is a Darboux operator $t(1-t)f'+(a+bt)f$ with $a>0$ and $b>\deg f$. It raises the
@@ -135,8 +128,8 @@ new zeros interlace the old ones. The parameters $a_d(\alpha)$ are positive for 
 
 ## References
 
-For the tree model and the conjecture that $P_M$ is real-rooted, see [@LinMaMaZhou2021]; the
-interlacing result is [@ZhangZhao2026x].
+- [@LinMaMaZhou2021], for the tree model and the conjecture.
+- [@ZhangZhao2026x].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in

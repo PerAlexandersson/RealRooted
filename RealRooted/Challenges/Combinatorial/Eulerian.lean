@@ -9,7 +9,7 @@ public import RealRooted.GeneralizedEulerian.GeneratingFunction
 public import RealRooted.MaWang.DerivativeStep
 
 /-!
-# Real-rooted Eulerian polynomials
+# Eulerian polynomials
 
 <!-- realrooted-catalog
 version = 1
@@ -101,15 +101,14 @@ label = "E_n^{(1)}(-q) > 0 whenever q > 0 and q 2^(n+1) ≤ 1"
 -->
 
 <!-- realrooted-catalog-content -->
-# Real-rooted Eulerian polynomials
+# Eulerian polynomials
 
 The Eulerian polynomials, the type $B$ Eulerian polynomials and a one-parameter family containing
 both are real-rooted, and consecutive members interlace.
 
 ## Results
 
-For real $c$,
-the *generalized Eulerian polynomials* are $E^{(c)}_0=1$ and
+For real $c$, the *generalized Eulerian polynomials* are $E^{(c)}_0=1$ and
 $$
 E^{(c)}_{n+1}=\bigl(1+(cn+1)t\bigr)E^{(c)}_n+c\,t(1-t)\bigl(E^{(c)}_n\bigr)'.
 $$
@@ -129,16 +128,17 @@ $$
 $B_0=1$ and $B_{n+1}=\bigl(1+(2n+1)t\bigr)B_n+2t(1-t)B_n'$. They are real-rooted, and
 $B_n\ll B_{n+1}$.
 
-**Proposition (positivity near zero).** For $n\ge0$ and $q>0$ with $q\,2^{n+1}\le1$,
-$E^{(1)}_n(-q)>0$. Indeed $E^{(1)}_n$ is a Pólya frequency polynomial with constant coefficient
-$1$ and linear coefficient $2^{n+1}-n-2$.
+Since $E^{(1)}_n$ is a Pólya frequency polynomial with constant coefficient $1$ and linear
+coefficient $2^{n+1}-n-2$, we have $E^{(1)}_n(-q)>0$ for $q>0$ with $q\,2^{n+1}\le1$.
 
 ## References
 
-The Eulerian recurrence and its real-rootedness go back to F. G. Frobenius, “Über die
-Bernoullischen Zahlen und die Eulerschen Polynome,” *Sitzungsberichte der Königlich Preussischen
-Akademie der Wissenschaften* (1910), 809–847. For type $B$, see [@Brenti1994]. See also the
-[Eulerian polynomials on symmetricfunctions.com](sf:eulerianPolynomial).
+- F. G. Frobenius, “Über die Bernoullischen Zahlen und die Eulerschen Polynome,”
+  *Sitzungsberichte der Königlich Preussischen Akademie der Wissenschaften* (1910), 809–847,
+  for the Eulerian recurrence and its real-rootedness.
+- [@Brenti1994], for type $B$.
+
+See also [Eulerian polynomials](sf:eulerianPolynomial) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 
 Human statements:

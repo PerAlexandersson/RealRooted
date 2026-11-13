@@ -12,7 +12,7 @@ import RealRooted.Jacobi.NegativeIntegerEndpoint
 import RealRooted.Jacobi.ParameterShifts
 
 /-!
-# Shifted Jacobi polynomials: real roots, interlacing and parameter shifts
+# Jacobi polynomials
 
 <!-- realrooted-catalog
 version = 1
@@ -199,21 +199,21 @@ label = "Consecutive Euler operators preserve Pólya frequency polynomials"
 -->
 
 <!-- realrooted-catalog-content -->
-# Shifted Jacobi polynomials: real roots, interlacing and parameter shifts
+# Jacobi polynomials
 
-The shifted Jacobi polynomials are real-rooted with simple roots in $(0,1)$, and consecutive
-ones interlace.
+The shifted Jacobi polynomials are orthogonal on $(0,1)$, so they have simple roots in $(0,1)$
+and consecutive ones interlace. A related family with positive coefficients contains the
+Narayana polynomials and changes its parameters under differentiation and Euler operators.
 
-For real
-$\alpha,\beta$ the shifted Jacobi polynomial is
+## Results
+
+For real $\alpha,\beta$ the *shifted Jacobi polynomial* is
 $$
 P_n^{(\alpha,\beta)}(x) = \sum_{k=0}^{n} (-1)^k
   \binom{n + \alpha}{n - k} \binom{n + \alpha + \beta + k}{k} x^k,
 $$
 with generalized binomial coefficients; it is the classical Jacobi polynomial at $1 - 2x$.
 The monic version divides by the leading coefficient $(-1)^n \binom{2n + \alpha + \beta}{n}$.
-
-## Results
 
 **Theorem (roots and interlacing).** Let $\alpha, \beta > -1$ and $n \ge 0$.
 
@@ -224,65 +224,51 @@ The monic version divides by the leading coefficient $(-1)^n \binom{2n + \alpha 
   $(\alpha+1,\beta)$ alternate, each root for $(\alpha,\beta)$ lying at most as far right as the
   corresponding one for $(\alpha+1,\beta)$.
 
-**Theorem (orthogonality).** For $\alpha,\beta>-1$ and every real polynomial $q$ with
-$\deg q < n$,
-$$\int_0^1 P_n^{(\alpha,\beta)}(x)\, q(x)\, x^\alpha (1 - x)^\beta \, dx = 0.$$
-The monic polynomials satisfy a Favard three-term recurrence with explicit coefficients.
+For $\alpha,\beta>-1$ and every real polynomial $q$ with $\deg q < n$,
+$$\int_0^1 P_n^{(\alpha,\beta)}(x)\, q(x)\, x^\alpha (1 - x)^\beta \, dx = 0,$$
+and the monic polynomials satisfy a [Favard](rr:favard) three-term recurrence with explicit
+coefficients. The shifted Legendre polynomials are the case $\alpha=\beta=0$.
 
-**Theorem (Markoff monotonicity, $\beta=1$).** For $i<n$, the $i$-th smallest root of the monic
-polynomial with parameters $(\alpha, 1)$ is strictly increasing in $\alpha\in(-1,\infty)$.
-
-The shifted Legendre polynomials are the case $\alpha=\beta=0$; they are real-rooted and
-consecutive ones interlace.
-
-### A positive-coefficient Jacobi family
+**Theorem (Markoff).** For $i<n$, the $i$-th smallest root of the monic polynomial with
+parameters $(\alpha, 1)$ is strictly increasing in $\alpha\in(-1,\infty)$.
 
 For $n\ge0$ and real $a,b$ let
 $$
 H_n^{(a,b)}(x)=\sum_{k=0}^n\frac{\binom nk\binom{n+b}{k}}{\binom{a+k}{k}}\,x^k .
 $$
-For $a,b>-1$ the polynomial $H_n^{(a,b)}$ has positive coefficients, degree $n$ and constant
-term $1$. It is a Pólya frequency polynomial with simple negative roots, and
-$H_n^{(a,b)}\ll H_{n+1}^{(a,b)}$ with no common root. Differentiation shifts the parameter:
-$\bigl(H_{n+1}^{(a,b)}\bigr)'=\frac{(n+1)(n+b+1)}{a+1}H_n^{(a+1,b)}$ for $a>-1$, and the
-$r$-th derivative shifts $a$ to $a+r$. A first-order derivative recurrence in $n$, together
-with $H_0$ and $H_1$, determines the family. On the diagonal $a=b=m$ the polynomial
-$H_n^{(m,m)}$ is the Narayana polynomial; see the
-[Narayana polynomials](rr:narayana) page.
+On the diagonal $a=b=m$ this is the [Narayana polynomial](rr:narayana).
 
-### Integral parameter shifts
+**Theorem (positive-coefficient family).** Let $a,b>-1$. Then $H_n^{(a,b)}$ has positive
+coefficients, degree $n$ and constant term $1$. It is a Pólya frequency polynomial with simple
+negative roots, and $H_n^{(a,b)}\ll H_{n+1}^{(a,b)}$ with no common root.
 
-Let $\theta=x\,d/dx$. The operator $\prod_{j<r}(\theta+a+j)$ multiplies the coefficient of
-$x^k$ by $(k+a)(k+a+1)\cdots(k+a+r-1)$ and preserves Pólya frequency polynomials for $a\ge0$.
-For $a>-1$ and $r\in\mathbb N$, $H_n^{(a,a+r)}$ is a constant multiple of this operator with
-parameter $a+1$ applied to $H_n^{(a+r,a+r)}$. For $a,b>-1$ there is a polynomial $p$ with
+Differentiation shifts the first parameter:
+$\bigl(H_{n+1}^{(a,b)}\bigr)'=\frac{(n+1)(n+b+1)}{a+1}H_n^{(a+1,b)}$, and the $r$-th derivative
+shifts $a$ to $a+r$. A first-order derivative recurrence in $n$, together with $H_0$ and $H_1$,
+determines the family. With $\theta=x\,d/dx$, the operator $\prod_{j<r}(\theta+a+j)$ multiplies
+the coefficient of $x^k$ by $(k+a)_r$ and preserves Pólya frequency polynomials for $a\ge0$; for
+$a>-1$, $H_n^{(a,a+r)}$ is a constant multiple of this operator with parameter $a+1$ applied to
+$H_n^{(a+r,a+r)}$. Conversely, for $a,b>-1$ there is a polynomial $p$ with
 $H_n^{(a,b)}=\sum_kp(k)\,[x^k]H_n^{(b,b)}\,x^k$ for all $n$ if and only if $b=a+r$ with
-$r\in\mathbb N$; then $p(x)=(x+a+1)_r/(a+1)_r$, with $(y)_r$ the rising factorial.
+$r\in\mathbb N$, and then $p(x)=(x+a+1)_r/(a+1)_r$. Here $(y)_r$ is the rising factorial.
 
-### The reflected equation at a negative integer parameter
-
-Let $L_{n,\alpha,\beta}$ be the differential operator whose coefficient recurrence is
+Finally, let $L_{n,\alpha,\beta}$ be the differential operator whose coefficient recurrence is
 $$
-(k+1)(k+\alpha+1)\,p_{k+1}+\bigl(k(k+\alpha+\beta+1)-n(n+\alpha+\beta+1)\bigr)p_k=0.
+(k+1)(k+\alpha+1)\,p_{k+1}+\bigl(k(k+\alpha+\beta+1)-n(n+\alpha+\beta+1)\bigr)p_k=0,
 $$
-The polynomial $P_n^{(\alpha,\beta)}(-x)$ satisfies it. For $\alpha>-1$ a polynomial solution
+so that $L_{n,\alpha,\beta}\,P_n^{(\alpha,\beta)}(-x)=0$. For $\alpha>-1$ a polynomial solution
 is determined by its constant term. If $\beta=-m$ with $m\le n$, every polynomial solution is a
-multiple of
-$$
-(1+x)^m\,P_{n-m}^{(\alpha,m)}(-x).
-$$
-A nonzero solution therefore has degree $n$, real roots, and the root $-1$ with multiplicity
-exactly $m$. If its constant term is nonnegative, its coefficients form a Pólya frequency
-sequence.
+multiple of $(1+x)^m\,P_{n-m}^{(\alpha,m)}(-x)$. A nonzero solution therefore has degree $n$,
+real roots, and the root $-1$ with multiplicity exactly $m$; if its constant term is
+nonnegative, its coefficients form a Pólya frequency sequence.
 
 ## References
 
-C. G. J. Jacobi, “Untersuchungen über die Differentialgleichung der
-hypergeometrischen Reihe,” *Journal für die reine und angewandte Mathematik* 56
-(1859), 149–165; A. Markoff, “Sur les racines de certaines équations (seconde
-note),” *Mathematische Annalen* 27 (1886), 177–182. See also [@Szego1939,
-Chs. IV and VI]. The general three-term theory is on the
-[Favard page](rr:favard).
+- C. G. J. Jacobi, “Untersuchungen über die Differentialgleichung der hypergeometrischen
+  Reihe,” *Journal für die reine und angewandte Mathematik* 56 (1859), 149–165.
+- A. Markoff, “Sur les racines de certaines équations (seconde note),” *Mathematische Annalen*
+  27 (1886), 177–182.
+- [@Szego1939, Chs. IV and VI].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in `RealRooted.Jacobi` and

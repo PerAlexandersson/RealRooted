@@ -7,7 +7,7 @@ import RealRooted.TotallyNonnegPencil.CheckerboardInterlacing
 import RealRooted.TotallyNonnegPencil.StrictInterlacing
 
 /-!
-# Pólya-frequency determinant pencils of totally nonnegative matrices
+# Determinant pencils of totally nonnegative matrices
 
 <!-- realrooted-catalog
 version = 1
@@ -51,7 +51,7 @@ label = "Principal sections of (checkerboard L)⁻¹ M interlace, with simple ro
 -->
 
 <!-- realrooted-catalog-content -->
-# Pólya-frequency determinant pencils of totally nonnegative matrices
+# Determinant pencils of totally nonnegative matrices
 
 Determinants $\det(I+xA)$ of totally nonnegative matrices, and their checkerboard-signed
 generalizations, are Pólya frequency polynomials, and their leading sections interlace.
@@ -67,7 +67,6 @@ $\det\bigl(M+x\cdot\mathrm{checkerboard}(L)\bigr)$ is a Pólya frequency polynom
 
 **Theorem (interlacing of leading sections).** Let $H$ be a TNN $(n+1)\times(n+1)$ matrix and
 $H_n$ its leading principal $n\times n$ section. Then $\det(xI_n+H_n)\ll\det(xI_{n+1}+H)$.
-
 More generally, let $A$ be lower triangular with $\det A\ne0$ and TNN inverse, and let $M$ be
 TNN. Then the leading $n\times n$ section of $\det(M+xA)$ interlaces $\det(M+xA)$. For
 $A=\mathrm{checkerboard}(L)$ with $L$ lower triangular, TNN and $\det L>0$, this gives the same
@@ -80,11 +79,15 @@ and let $H'$ be $H$ without its last row and column. Then
 $\chi_{H'}\ll\chi_H$, both $\chi_H$ and $\chi_{H'}$ have simple roots, they have no common
 root, and all roots of $\chi_H$ are positive.
 
+## Proof
+
+The last theorem uses the oscillatory case of principal interlacing for
+[totally nonnegative matrices](rr:totally-nonnegative-matrices).
+
 ## References
 
-The oscillatory case of [totally nonnegative
-matrices](rr:totally-nonnegative-matrices) is the criterion used in the last
-theorem.
+The background on totally nonnegative and oscillatory matrices is on the
+[totally nonnegative matrices](rr:totally-nonnegative-matrices) page.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in the `RealRooted.TotallyNonnegPencil`

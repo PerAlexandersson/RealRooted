@@ -5,7 +5,7 @@ import RealRooted.CombinatorialExamples.JacobiStirling.Inverse
 import RealRooted.CombinatorialExamples.JacobiStirling.TotallyNonnegative
 
 /-!
-# Jacobi–Stirling numbers challenge entry point
+# Jacobi–Stirling numbers
 
 <!-- realrooted-catalog
 version = 1

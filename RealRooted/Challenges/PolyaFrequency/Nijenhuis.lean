@@ -3,7 +3,7 @@ module
 public import RealRooted.RookPolynomial
 
 /-!
-# Weighted rook polynomials are real-rooted (Nijenhuis)
+# Weighted rook polynomials
 
 <!-- realrooted-catalog
 version = 1
@@ -70,7 +70,7 @@ label = "Rook polynomials of finite boards are Pólya frequency"
 -->
 
 <!-- realrooted-catalog-content -->
-# Weighted rook polynomials are real-rooted (Nijenhuis)
+# Weighted rook polynomials
 
 Weighted rook polynomials of finite matrices with nonnegative entries are Pólya frequency
 polynomials, hence real-rooted with nonpositive roots.

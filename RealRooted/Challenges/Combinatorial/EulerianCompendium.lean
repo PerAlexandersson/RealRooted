@@ -15,7 +15,7 @@ public import RealRooted.EulerianMixedCompatibility
 public import RealRooted.EulerianMixedCompatibility.Insertion
 
 /-!
-# Eulerian-type polynomials with real roots
+# Eulerian-type polynomials
 
 <!-- realrooted-catalog
 version = 1
@@ -216,15 +216,15 @@ tags = ["realrooted-original"]
 -->
 
 <!-- realrooted-catalog-content -->
-# Eulerian-type polynomials with real roots
+# Eulerian-type polynomials
 
 Descent and peak polynomials of derangements, words and permutations are real-rooted, and
 consecutive members of most families interlace.
 
 ## Results
 
-Results 1 to 7 are the theorems of [@Alexandersson2026Eulerian], in the order of the paper;
-result 8 is not in the paper.
+Results 1 to 7 are the theorems of [@Alexandersson2026Eulerian], in the order of the paper.
+Result 8 concerns the [zig-zag Eulerian polynomials](rr:zigzag-eulerian).
 
 1. **Derangements.** For $n\ge2$, the polynomial
    $\sum_{\pi\in\mathfrak D_n}x^{\operatorname{des}\pi}$ over derangements is nonzero and
@@ -283,9 +283,9 @@ E_{1,M-2}\,p,\quad E_{1,M-2}(p+1),\quad E_{0,M-1}\,p,\quad E_{0,M-1}(p+1)
 $$
 have a common left interleaver.
 
-## Use
+## Proof
 
-The two operator theorems drive the proof for derangement descents.
+The two operator theorems give the proof for derangement descents.
 
 ## References
 

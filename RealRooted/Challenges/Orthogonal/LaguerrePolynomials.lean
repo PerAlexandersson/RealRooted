@@ -7,7 +7,7 @@ import RealRooted.Laguerre.FiniteCombinations
 import RealRooted.Laguerre.GeneralizedBell
 
 /-!
-# Generalized Laguerre polynomials: real roots, interlacing and finite combinations
+# Generalized Laguerre polynomials
 
 <!-- realrooted-catalog
 version = 1
@@ -93,27 +93,27 @@ label = "The case γ = 1 for α > 0"
 -->
 
 <!-- realrooted-catalog-content -->
-# Generalized Laguerre polynomials: real roots, interlacing and finite combinations
+# Generalized Laguerre polynomials
 
 The generalized Laguerre polynomials are real-rooted with simple roots, and consecutive ones
-interlace.
+interlace. Suitable finite combinations of consecutive Laguerre polynomials keep simple
+positive roots.
 
-The library
-uses the monic, sign-reversed normalization
+## Results
+
+We use the monic, sign-reversed normalization
 $$
 P_n^{(\alpha)}(x) = n!\, L_n^{(\alpha)}(-x)
 = \sum_k \binom{n}{k} (\alpha+k+1)_{n-k}\, x^k ,
 $$
 with $(y)_m$ the rising factorial, so that the roots are nonpositive.
 
-## Results
-
 **Theorem (roots and interlacing).** For $\alpha \ge -1$ and $n\ge0$, $P_n^{(\alpha)}$ is
 real-rooted with simple roots and $P_n^{(\alpha)} \ll P_{n+1}^{(\alpha)}$. For $\alpha > -1$ all
 roots are strictly negative.
 
-**Theorem (recurrence and orthogonality).** For every real $\alpha$ the family satisfies a
-Favard three-term recurrence. For $\alpha > -1$ and $m \neq n$,
+For every real $\alpha$ the family satisfies a [Favard](rr:favard) three-term recurrence. For
+$\alpha > -1$ and $m \neq n$,
 $$
 \int_0^\infty P_m^{(\alpha)}(-x)\, P_n^{(\alpha)}(-x)\, x^\alpha e^{-x}\, dx = 0.
 $$
@@ -138,10 +138,10 @@ with positive parameters preserves simple negative roots.
 
 ## References
 
-See [@Szego1939, Ch. V]. The general three-term theory is on the
-[Favard page](rr:favard). The combination theorem is the case $K=1$ of
-Theorem 1.3 in A. J. Durán, *Zeros of linear combinations of Laguerre polynomials*,
-[arXiv:2507.22425](https://arxiv.org/abs/2507.22425).
+- [@Szego1939, Ch. V].
+- A. J. Durán, *Zeros of linear combinations of Laguerre polynomials*,
+  [arXiv:2507.22425](https://arxiv.org/abs/2507.22425). The combination theorem is the case
+  $K=1$ of its Theorem 1.3.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade.  The proofs live in `RealRooted.Laguerre`.

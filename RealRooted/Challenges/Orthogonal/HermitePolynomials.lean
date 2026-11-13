@@ -4,7 +4,7 @@ import RealRooted.Hermite.Orthogonality.Integral
 import RealRooted.Hermite.Roots
 
 /-!
-# Hermite polynomial challenge entry point
+# Hermite polynomials
 
 <!-- realrooted-catalog
 version = 1

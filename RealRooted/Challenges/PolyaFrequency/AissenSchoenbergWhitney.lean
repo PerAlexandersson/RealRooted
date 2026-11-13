@@ -13,7 +13,7 @@ public import RealRooted.PFPolynomial
 public import RealRooted.PolyaFrequencyConvolution.Basic
 
 /-!
-# Pólya frequency sequences and real-rooted polynomials (Aissen–Schoenberg–Whitney)
+# Aissen–Schoenberg–Whitney theorem
 
 <!-- realrooted-catalog
 version = 1
@@ -146,23 +146,20 @@ label = "The sector inequality follows from the two sign-variation bounds"
 -->
 
 <!-- realrooted-catalog-content -->
-# Pólya frequency sequences and real-rooted polynomials (Aissen–Schoenberg–Whitney)
+# Aissen–Schoenberg–Whitney theorem
 
-The coefficients of a real polynomial form a Pólya frequency sequence if and only if
-the polynomial has nonnegative coefficients and only real nonpositive zeros.
+The coefficients of a real polynomial form a Pólya frequency sequence if and only if the
+polynomial has nonnegative coefficients and only real nonpositive zeros.
+
+## Results
 
 A real sequence $(a_k)_{k \geq 0}$ is a *Pólya frequency sequence* if its lower-triangular
 Toeplitz matrix, with $(i, j)$ entry $a_{i-j}$ for $j \leq i$ and $0$ otherwise, is totally
 nonnegative. A real polynomial $p$ is a *PF polynomial* if it has nonnegative coefficients and
 either $p=0$ or $p$ splits over $\mathbb R$ with only nonpositive zeros.
 
-## Results
-
 **Theorem (Aissen–Schoenberg–Whitney).** The coefficient sequence of a real polynomial $p$ is a
-Pólya frequency sequence if and only if $p$ is a PF polynomial. In particular, if the
-coefficients of $p$ form a Pólya frequency sequence, then $p$ splits over $\mathbb R$ and all
-its zeros are nonpositive; conversely, nonnegative coefficients, splitting and nonpositive
-zeros give a Pólya frequency sequence.
+Pólya frequency sequence if and only if $p$ is a PF polynomial.
 
 **Theorem (convolution).** If $(a_k)$ and $(b_k)$ are Pólya frequency sequences, finite or
 infinite, then so is their Cauchy convolution $c_n = \sum_{k=0}^n a_k b_{n-k}$. Equivalently,
@@ -178,32 +175,24 @@ each complex zero $z$ of $p$ satisfies
 $$
 |\arg z|\geq \frac{m\pi}{m+d-1}.
 $$
-The threshold $m\pi/(m+d-1)$ tends to $\pi$ as $m\to\infty$, so every zero lies on the
-negative real axis; this gives the forward direction of the equivalence.
+The threshold tends to $\pi$ as $m\to\infty$, so every zero lies on the negative real axis;
+this is the forward direction of the equivalence.
 
 ## Proof
 
-For the sector estimate, fix $m$ and $b\geq1$. Karlin's window matrix $K_b$ has $bm$ rows
-and $b(d+m-1)+1$ columns; its row $i$ is the Toeplitz row at position
-$i+\lfloor i/m\rfloor(d-1)$. It is totally nonnegative, and surjective when the constant
-coefficient is positive. For a complex zero $z$, the vector $(\operatorname{Im} z^j)_j$ lies in
-its kernel and has the same sign variations as the sampled sine vector $(\sin j\theta)_j$,
-$\theta=\arg z$. For nonreal $z$ this gives $bm-1\leq\mathrm{var}+2$ for the sine vector,
-while a sampled sine vector with $N+1$ entries has at most $\lfloor N|\theta|/\pi\rfloor$ sign
-variations; letting $b\to\infty$ yields the bound. A single-block variant combines the same
-kernel vector with the fact that below the threshold the sine vector has fewer than $m$ sign
-variations.
-
-For the convolution, the Toeplitz matrix of $c$ is the product of those of $a$ and $b$; each
-finite truncation is the product of the truncations, since the matrices are lower triangular,
-and a product of totally nonnegative matrices is totally nonnegative. For the perturbation
-criterion, each $p+\mu q$ has Pólya frequency coefficients by the reverse direction, and the
-Toeplitz minors of $p$ are the limits of those of $p+\mu q$ as $\mu\to0^+$.
+Karlin's repeated coefficient-window matrices of a Pólya frequency sequence are totally
+nonnegative, and for a complex zero $z$ the vector $(\operatorname{Im} z^j)_j$ lies in their
+kernel and has the sign variations of the sampled sine vector $(\sin j\theta)_j$,
+$\theta=\arg z$; comparing the many sign variations this forces with the bound
+$\lfloor N|\theta|/\pi\rfloor$ for $N+1$ samples gives the sector estimate. The Toeplitz matrix
+of a convolution is the product of the two Toeplitz matrices, and products of totally
+nonnegative matrices are totally nonnegative. The perturbation criterion follows from the
+reverse direction of the equivalence by letting $\mu\to0^+$ in the Toeplitz minors.
 
 ## References
 
-See [@AissenSchoenbergWhitney1952] and the
-[Pólya-frequency overview on symmetricfunctions.com](sf:aissenSchoenbergWhitney).
+[@AissenSchoenbergWhitney1952]. See also the
+[Aissen–Schoenberg–Whitney theorem](sf:aissenSchoenbergWhitney) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 
 Human statement:

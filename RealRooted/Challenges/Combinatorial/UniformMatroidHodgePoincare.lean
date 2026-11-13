@@ -4,7 +4,7 @@ import RealRooted.Applications.BinderVecchi.UniformChow
 import RealRooted.Applications.BinderVecchi.UniformMatroid
 
 /-!
-# Uniform-matroid refined Hodge–Poincaré challenge entry point
+# Refined Hodge–Poincaré polynomials of uniform matroids
 
 <!-- realrooted-catalog
 version = 1
@@ -81,13 +81,12 @@ $$
 W_{j,i}(r,n) = \binom nj \sum_{\ell=1}^{n-r-i+1}\binom{n-j-\ell}{r-j-1}\binom{n-r-\ell}{i-1}.
 $$
 Let $d_j$ be the derangement polynomials, $A_0=1$, and $A_s(x)=\sum_{\sigma\in\mathfrak S_s}
-x^{\operatorname{des}\sigma}$ for $s\ge1$. Binder and Vecchi [@BinderVecchi2026x] give the
-refined Hodge–Poincaré polynomial of $U_{r,n}$ and its modified augmented variant as
+x^{\operatorname{des}\sigma}$ for $s\ge1$. By Binder and Vecchi [@BinderVecchi2026x], the
+refined Hodge–Poincaré polynomial of $U_{r,n}$ and its modified augmented variant are
 $$
 \underline H^i_{r,n}(x) = \sum_{j<r} W_{j,i}(r,n)\, d_j(x)\, x^{r-1-j},\qquad
 \widetilde H^i_{r,n}(x) = \sum_{s<r} W_{s,i}(r,n)\, A_s(x)\, x^{r-s}.
 $$
-The theorems below concern these explicit formulas.
 
 **Theorem (Binder–Vecchi, Thms. 1.4 and 1.6).** [@BinderVecchi2026x, Thms. 1.4 and 1.6]
 For $r\ge1$ and $1\le i\le n-r$, the polynomials $\underline H^i_{r,n}$ and
@@ -111,11 +110,11 @@ Put $g=\sum_{j<r}W_{j,i}x^j$ and let $I_k(p)=x^kp(1/x)$ be reversal at degree $k
 $\underline H=I_{r-1}(\mathcal D g)$ for the Brändén–Solus derangement transform
 $\mathcal D\colon x^n\mapsto d_n$, and $\widetilde H=I_r(\mathcal A g)$ for the Eulerian
 transformation $\mathcal A$ of Brändén–Jochemko. A Vandermonde-type identity shows that $g$ has
-nonnegative coordinates in the magic basis $x^p(1+x)^{r-1-p}$, and both transforms send such
-polynomials to real-rooted ones. For $\mathcal D$ this is Brändén–Solus, via the
-Brändén–Vecchi Chow resolution of the Pascal matrix. For $\mathcal A$ it is Athanasiadis's
-theorem, proved with the Brändén–Vecchi staircase row transform. The Chow cases use the same
-staircase argument.
+nonnegative coordinates in the magic basis $x^p(1+x)^{r-1-p}$. Both transforms send such
+polynomials to real-rooted ones: for $\mathcal D$ by the [Brändén–Solus theorem](rr:branden-solus),
+via the [Brändén–Vecchi](rr:branden-vecchi) Chow resolution of the Pascal matrix, and for
+$\mathcal A$ by Athanasiadis's theorem, via the Brändén–Vecchi staircase row transform, which
+also gives the Chow cases.
 
 ## References
 

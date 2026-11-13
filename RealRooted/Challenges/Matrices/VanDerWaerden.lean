@@ -3,7 +3,7 @@ module
 import RealRooted.Gurvits
 
 /-!
-# Van der Waerden permanent bound challenge entry point
+# Van der Waerden permanent bound
 
 <!-- realrooted-catalog
 version = 1
@@ -42,7 +42,7 @@ label = "Gurvits' univariate coefficient inequality"
 -->
 
 <!-- realrooted-catalog-content -->
-# The van der Waerden permanent bound
+# Van der Waerden permanent bound
 
 The permanent of an $n\times n$ doubly stochastic matrix is at least $n!/n^n$.
 

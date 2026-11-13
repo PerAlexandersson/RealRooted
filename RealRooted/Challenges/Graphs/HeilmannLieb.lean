@@ -11,7 +11,7 @@ public import RealRooted.RankTwoMatching.Endpoint
 public import RealRooted.RankTwoMatching.Transform
 
 /-!
-# Heilmann–Lieb challenge entry point
+# Heilmann–Lieb theorem
 
 <!-- realrooted-catalog
 version = 1
@@ -111,7 +111,7 @@ label = "Rank-two weighted matching numbers of a complete graph"
 -->
 
 <!-- realrooted-catalog-content -->
-# The Heilmann–Lieb theorem
+# Heilmann–Lieb theorem
 
 Matching polynomials are real-rooted, and deleting a vertex gives an interlacing polynomial; the
 same holds for weighted matching polynomials and for weighted independence polynomials of
@@ -130,9 +130,8 @@ $$
 \mu_G(x)=\sum_k(-1)^k m_k\,x^{n-2k},
 $$
 where $m_k$ is the number of $k$-matchings and $n=|V(G)|$; for a vertex set $S$ we write
-$\mu_S$ for the polynomial of the induced subgraph $G[S]$.
-The generating form $m_G$ is the one used on symmetricfunctions.com; the signed form $\mu_G$ is
-the one of Heilmann and Lieb.
+$\mu_S$ for the polynomial of the induced subgraph $G[S]$. Heilmann and Lieb use the signed
+form $\mu_G$.
 
 **Theorem (Heilmann--Lieb).** [@HeilmannLieb1972, Thm. 4.2] The polynomial $m_G(x)$ is
 real-rooted. If all edge weights are nonnegative, the weighted polynomial is real-rooted with
@@ -142,8 +141,8 @@ nonnegative coefficients and nonpositive roots, that is, it is a Pólya frequenc
 $\mu_{S\setminus\{v\}}\ll\mu_S$. In particular $\mu_S$ is real-rooted.
 
 **Theorem (root bound).** Let $\Delta\ge2$ and suppose every vertex of $G[S]$ has degree at most
-$\Delta$. Then every root $r$ of $\mu_S$ satisfies $|r|\le2\sqrt{\Delta-1}$.
-Heilmann and Lieb prove the strict inequality; the library states the weak form.
+$\Delta$. Then every root $r$ of $\mu_S$ satisfies $|r|\le2\sqrt{\Delta-1}$. Heilmann and Lieb
+prove the strict inequality.
 
 **Theorem (Engström).** [@Engstrom2007, Thm. 2.5] Let $G$ be a finite claw-free graph and let
 $w\colon V(G)\to\mathbb R$ be nonnegative. Then

@@ -3,7 +3,7 @@ module
 import RealRooted.TotalPositivity.PFRiordan
 
 /-!
-# Real roots from totally nonnegative left production matrices
+# Totally nonnegative left production matrices
 
 <!-- realrooted-catalog
 version = 1
@@ -83,19 +83,20 @@ label = "Even-binomial Riordan rows split with nonpositive roots"
 -->
 
 <!-- realrooted-catalog-content -->
-# Real roots from totally nonnegative left production matrices
+# Totally nonnegative left production matrices
 
 If a lower-triangular matrix has totally nonnegative leading truncations, the rows of the
-array it generates are Pólya frequency sequences and their generating polynomials are
-real-rooted with nonpositive roots.
+array it generates are Pólya frequency sequences, so their generating polynomials are
+real-rooted with nonpositive roots. This covers Riordan arrays built from Pólya frequency
+series and polynomial sequences defined by suitable rational generating functions.
 
 ## Results
 
 Let $Q=(q_{n,k})_{n,k\geq0}$ and let the lower-triangular array $A=(a_{n,k})_{n,k\geq0}$ satisfy
-\[
+$$
 a_{n,0}=q_{n,0},\qquad
 a_{n+1,k+1}=\sum_{j=k}^{n}q_{n+1,j+1}a_{j,k}.
-\]
+$$
 This is the entrywise form of the left-production factorization
 $A=Q\,\operatorname{diag}(I_1,Q)\operatorname{diag}(I_2,Q)\cdots$.
 
@@ -104,25 +105,21 @@ truncation of $Q$ is totally nonnegative. Then every row $(a_{n,k})_{k\geq0}$ is
 frequency sequence, and the polynomial $\sum_{k=0}^{n}a_{n,k}x^k$ splits over $\mathbb R$
 with all roots nonpositive.
 
-More precisely, the transpose of every finite leading Toeplitz matrix of row $n$ is a submatrix
-of a product of shifted block copies of the leading truncation $Q_n$. Total nonnegativity is
-preserved by identity-block extensions, finite products, submatrices and transposes.
-
 **Theorem (Pólya frequency Riordan arrays).** Let $d(z)$ and $K(z)$ be power series with Pólya
 frequency coefficient sequences. The ordinary Riordan array whose $k$th column is
 $d(z)\bigl(z d(z)K(z)\bigr)^k$ has left production matrix $T(d)\operatorname{diag}(1,T(K))$,
 with $T$ the lower Toeplitz matrix. Every row polynomial of the array splits over $\mathbb R$
 with only nonpositive roots. Series of the form
-\[
+$$
 c z^r\frac{\prod_i(1+\alpha_i z)}{\prod_j(1-\beta_jz)},
 \qquad c,\alpha_i,\beta_j\geq0,
-\]
+$$
 with finitely many factors have Pólya frequency coefficients.
 
 **Theorem (recurrence criterion).** Let $(P_n)$ be a polynomial sequence with
-\[
+$$
 \bigl(D_0(z)-xL(z)\bigr)\sum_{n\geq0}P_n(x)z^n=N(z)
-\]
+$$
 as an identity of coefficients, where $D_0(0)=1$. If $d=N/D_0$ and $K=L/(zN)$ have Pólya
 frequency coefficient sequences, then every $P_n$ splits over $\mathbb R$ with roots at most
 zero. Examples are the rows of OEIS A114123 and the polynomials
@@ -132,10 +129,13 @@ Total nonnegativity of the Riordan array alone does not suffice: $d=1/(1-z)$ and
 totally nonnegative array with row polynomial $1+x+x^2$, which does not split over
 $\mathbb R$.
 
-## Use
+## Proof
 
-The conclusion on rows uses the Aissen–Schoenberg–Whitney theorem to pass from Pólya frequency
-sequences to real-rootedness.
+The transpose of every finite leading Toeplitz matrix of row $n$ is a submatrix of a product of
+shifted block copies of the leading truncation $Q_n$. Total nonnegativity is preserved by
+identity-block extensions, finite products, submatrices and transposes, so the rows are Pólya
+frequency sequences, and the
+[Aissen–Schoenberg–Whitney theorem](rr:aissen-schoenberg-whitney) gives the real roots.
 
 ## References
 

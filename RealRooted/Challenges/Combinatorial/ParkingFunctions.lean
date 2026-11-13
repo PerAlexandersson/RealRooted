@@ -5,7 +5,7 @@ import RealRooted.ParkingFunctions.Descents.TielessTransfer
 import RealRooted.ParkingFunctions.Descents.WeakLeftPeakInterlacing
 
 /-!
-# Parking function challenge entry point
+# Parking functions
 
 <!-- realrooted-catalog
 version = 1

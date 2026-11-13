@@ -296,9 +296,8 @@ Fisk's theorem for totally nonnegative matrices on the
 Let $J=\mathbf 1e_1^{\mathsf T}$ and $\mathbf f_k=(A+xJ)^k\mathbf 1$. By Brändén's theorem
 [@Branden2015, Corollary 8.6], a TP2 matrix maps interlacing sequences of polynomials with
 nonnegative coefficients to interlacing sequences, so every $\mathbf f_k$ is one, and condition 3
-with the matrix determinant lemma gives $P_k(t)=(-1)^kf_{k,1}(-t)$. For strictness,
-$\det(A+rJ)=\det A\ne0$ for every real $r$, so at a simple root of $f_{k,1}$ all coordinates of
-$\mathbf f_k$ have one sign and $f_{k+1,1}$ does not vanish there. The run polynomials are
+with the matrix determinant lemma gives $P_k(t)=(-1)^kf_{k,1}(-t)$; strictness comes from
+$\det(A+rJ)=\det A\ne0$ for every real $r$. The run polynomials are
 reversals of first coordinates of $(a_NA+xJ)\cdots(a_1A+xJ)\mathbf 1$, and the parity rows come
 from the TP2 block matrix $\begin{pmatrix}A&\mathbf 1c^{\mathsf T}\\0&A\end{pmatrix}$, with
 $c_j=A_{jj}$ and determinant polynomial $F(z)^2$, together with a Cauchy–Binet bound on

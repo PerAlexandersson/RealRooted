@@ -4,7 +4,7 @@ import RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer
 import RealRooted.ParkingFunctions.ToricContribution.ContributionReversal
 
 /-!
-# Toric g-contribution challenge entry point
+# Toric g-contribution polynomials
 
 <!-- realrooted-catalog
 version = 1
@@ -80,15 +80,13 @@ Xiao.
 
 ## Results
 
-A list
-$(f_0,\dots,f_k)$ is an *interlacing sequence* if $f_i\ll f_j$ for all $i<j$, not only for
-consecutive indices. For $n=2m+\varepsilon$ with $\varepsilon\in\{0,1\}$ and $0\le j\le m$, the
+A list $(f_0,\dots,f_k)$ is an *interlacing sequence* if $f_i\ll f_j$ for all $i<j$, not only
+for consecutive indices. For $n=2m+\varepsilon$ with $\varepsilon\in\{0,1\}$ and $0\le j\le m$, the
 toric $g$-contribution polynomial is
 $$
 g_{n,j}(x)=\sum_{k=0}^{m}\binom{n-k}{k}\,C_{n-j-k}\,(x-1)^k,
 $$
-where $C_i$ is the Catalan number. In the library, `toricContribution m ε d` is
-$g_{2m+\varepsilon,\,m-d}$.
+where $C_i$ is the Catalan number.
 
 **Theorem (Xiao's conjecture).** [@Xiao2026x, Conj. 4.2] For all $m\ge0$ and
 $\varepsilon\in\{0,1\}$, the row $(g_{n,0},g_{n,1},\dots,g_{n,m})$ is an interlacing sequence.

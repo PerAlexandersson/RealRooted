@@ -8,7 +8,7 @@ import RealRooted.PolynomialValueEulerNumerator.PF.Causal
 import RealRooted.PolynomialValueEulerNumerator.Interlacing
 
 /-!
-# Pólya frequency sequences with polynomial tails and Euler numerators
+# Pólya frequency sequences with polynomial tails
 
 <!-- realrooted-catalog
 version = 1
@@ -71,11 +71,13 @@ label = "Rootwise-ordered polynomials with roots in [−1, 0] have interlacing E
 -->
 
 <!-- realrooted-catalog-content -->
-# Pólya frequency sequences with polynomial tails and Euler numerators
+# Pólya frequency sequences with polynomial tails
 
 If a Pólya frequency sequence eventually agrees with a polynomial, its causal forward
-difference is again a Pólya frequency sequence; this characterizes polynomial-value sequences
-that are Pólya frequency through their Euler numerators.
+difference is again a Pólya frequency sequence. Consequently, the values of a polynomial form a
+Pólya frequency sequence exactly when its Euler numerator is a PF polynomial.
+
+## Results
 
 A sequence $a = (a_0, a_1, \dotsc)$ is a *Pólya frequency (PF) sequence* if its lower
 triangular Toeplitz matrix $(a_{i-j})_{i,j\ge0}$ is totally nonnegative. The *causal forward
@@ -86,13 +88,11 @@ $$
 so it corresponds to multiplying $\sum_n a_n x^n$ by $1 - x$. A PF polynomial is a real
 polynomial with nonnegative coefficients that is zero or has only real nonpositive roots.
 
-## Results
-
 **Theorem (polynomial tails).** Let $a$ be a PF sequence and let $p \ne 0$ be a real polynomial
 with $a_n = p(n)$ for all large $n$. Then $a_n>0$ for all large $n$, and $\Delta a$ is a PF
 sequence.
 
-**Euler numerators.** For a real polynomial $p$ of degree $d$,
+For a real polynomial $p$ of degree $d$,
 $$
 \sum_{n \ge 0} p(n)\, x^n = \frac{W_p(x)}{(1-x)^{d+1}},
 $$
@@ -127,10 +127,8 @@ $W_p$ with the PF coefficient sequence of $(1-x)^{-(d+1)}$.
 
 ## References
 
-F. Brenti, *Unimodal, log-concave and Pólya frequency sequences in combinatorics*,
-Mem. Amer. Math. Soc. 81 (1989), no. 413, Theorem 4.4.4 [@Brenti1989]; P. Brändén, “On
-linear transformations preserving the Pólya frequency property,” *Trans. Amer. Math. Soc.* 358
-(2006), 3697–3716 [@Branden2006].
+- [@Brenti1989, Thm. 4.4.4].
+- [@Branden2006].
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in `RealRooted.PolyaFrequency.EventuallyPolynomial`

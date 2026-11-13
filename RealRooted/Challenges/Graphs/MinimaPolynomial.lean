@@ -3,7 +3,7 @@ module
 import RealRooted.Graph.MinimaForest
 
 /-!
-# The minima polynomial of local edge orders
+# Minima polynomial of local edge orders
 
 <!-- realrooted-catalog
 version = 1
@@ -58,7 +58,7 @@ label = "Line graphs of forests have real-rooted acyclic sink polynomials"
 -->
 
 <!-- realrooted-catalog-content -->
-# The minima polynomial of local edge orders
+# Minima polynomial of local edge orders
 
 The number of local edge orders of a finite graph, counted by mutual minima, is a real-rooted
 polynomial.
@@ -85,6 +85,12 @@ summed over the matchings $S$ of $G$.
 **Theorem (forests).** If $F$ is a finite forest, then $M_F(t)$ is the acyclic sink polynomial
 of the line graph $L(F)$. In particular that polynomial is real-rooted.
 
+## Use
+
+For sinks of acyclic orientations see [chordal claw-free
+graphs](rr:chordal-claw-free-acyclic-sinks) and [all orientations of
+claw-free graphs](rr:claw-free-orientation-sinks).
+
 ## Proof
 
 The mutual minima of a local order form a matching. For a matching $S$, a fraction
@@ -100,12 +106,6 @@ For a forest, the edges at a vertex form a clique of $L(F)$, so local orders are
 orientations of $L(F)$ that are acyclic on these cliques, and every cycle of $L(F)$ lies in such
 a clique. Hence local orders are exactly the acyclic orientations of $L(F)$, and the mutual
 minima are the sinks.
-
-## Use
-
-For sinks of acyclic orientations see [chordal claw-free
-graphs](rr:chordal-claw-free-acyclic-sinks) and [all orientations of
-claw-free graphs](rr:claw-free-orientation-sinks).
 
 ## References
 

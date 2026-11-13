@@ -7,7 +7,7 @@ public import RealRooted.SimpleRoots
 public import RealRooted.SpectralProduct
 
 /-!
-# Jacobi deformation challenge entry point
+# Jacobi deformation
 
 <!-- realrooted-catalog
 version = 1
@@ -54,7 +54,7 @@ label = "Micchelli–Willoughby: initial spectral products are entrywise nonnega
 -->
 
 <!-- realrooted-catalog-content -->
-# The Jacobi deformation
+# Jacobi deformation
 
 The Jacobi deformation $J_{m,\delta}$ has only negative real roots for every $\delta\ge0$, and for
 $0<\delta<1$ its roots are simple and interlace the roots of $J_{m,0}'$.
@@ -71,7 +71,7 @@ J_{m,\delta}^{c,d}(x;U,V)=\sum_{i+j\le m}
 $$
 where $(a)_n=a(a+1)\cdots(a+n-1)$ is the rising factorial.
 
-**Theorem.** Let $c,d,U,V>0$.
+**Theorem (Alexandersson, 2026).** Let $c,d,U,V>0$.
 
 - For every $\delta\ge0$, all roots of $J_{m,\delta}^{c,d}$ are real and negative, and
   $J_{m,\delta}^{c,d}$ is a Pólya frequency polynomial.
@@ -84,20 +84,18 @@ $(A-\mu_1)\cdots(A-\mu_k)$ is entrywise nonnegative for every $k<N$.
 
 ## Proof
 
-Let $s=c+d$ and let $p_j$ be the monic shifted Jacobi polynomials, orthogonal for the moment
-functional $\ell(t^k)=(c)_k/(s)_k$, with eigenvalues $\lambda_j=j(j+s-1)$ of the Jacobi operator.
-A finite Appell kernel is diagonal in the Jacobi basis with positive weights, and evaluating it
-at suitable points recovers $J_{m,\delta}$. The Micchelli–Willoughby theorem, applied to the
-collocation matrix of the Jacobi operator at the roots of a quasi-Jacobi polynomial
-$p_q-\tau p_{q-1}$, gives strict signs of the kernel there. This settles $0<\delta<1$, and the
-shift $bJ_{m,\delta+1}=(b+m)J_{m,\delta}-xJ_{m,\delta}'$ with $b=m+s-1+\delta$ extends
-real-rootedness with negative roots to all $\delta\ge0$.
+Let $s=c+d$. A finite Appell kernel is diagonal, with positive weights, in the basis of monic
+shifted Jacobi polynomials orthogonal for $\ell(t^k)=(c)_k/(s)_k$, and evaluating it at suitable
+points recovers $J_{m,\delta}$. The Micchelli–Willoughby theorem, applied to the collocation
+matrix of the Jacobi operator at the roots of a quasi-Jacobi polynomial, gives strict signs of
+the kernel there; this settles $0<\delta<1$. The shift
+$bJ_{m,\delta+1}=(b+m)J_{m,\delta}-xJ_{m,\delta}'$ with $b=m+s-1+\delta$ extends negative real
+roots to all $\delta\ge0$.
 
 ## References
 
-The theorem on the Jacobi deformation is due to P. Alexandersson (2026). For the
-Micchelli–Willoughby theorem see [@MicchelliWilloughby1979]. The Jacobi polynomials used in the
-proof are on the [Jacobi polynomials page](rr:jacobi-polynomials).
+[@MicchelliWilloughby1979]. The shifted Jacobi polynomials used in the proof are on the
+[Jacobi polynomials](rr:jacobi-polynomials) page.
 <!-- /realrooted-catalog-content -->
 
 This module is a catalog facade. The proofs live in
