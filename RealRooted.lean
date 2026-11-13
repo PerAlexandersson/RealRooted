@@ -2233,3 +2233,5 @@ public import RealRooted.Tactic.Examples.EulerBidiagonalVarying
 public import RealRooted.Mathlib.Algebra.Polynomial.Veronese
 public import RealRooted.Mathlib.Algebra.LinearRecurrence.Veronese
 public import RealRooted.Tactic.Examples.VeroneseRecurrence
+public import RealRooted.Challenges.Preservers.FallingFactorial
+public import RealRooted.MultiplierSequence.FallingFactorial
