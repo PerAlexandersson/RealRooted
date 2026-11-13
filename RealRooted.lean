@@ -2236,3 +2236,5 @@ public import RealRooted.Tactic.Examples.VeroneseRecurrence
 public import RealRooted.Challenges.Preservers.FallingFactorial
 public import RealRooted.MultiplierSequence.FallingFactorial
 public import RealRooted.Hermite.PoulainSymbolInterlacing
+public import RealRooted.Challenges.Combinatorial.Hoggatt
+public import RealRooted.CombinatorialExamples.Hoggatt
