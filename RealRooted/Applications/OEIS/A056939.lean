@@ -2,6 +2,7 @@ module
 
 import RealRooted.MultiplierSequence.CoefficientRatio
 import RealRooted.Mathlib.RingTheory.Polynomial.Pochhammer
+import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 import RealRooted.Recurrence.Uniqueness
 import RealRooted.Recurrence.RowModel
 public import RealRooted.CombinatorialExamples.Narayana
@@ -14,6 +15,7 @@ import RealRooted.NarayanaTransformation.Endpoints
 import RealRooted.NarayanaTransformation.Recurrences.Identities
 import RealRooted.NarayanaTransformation.Rectangular.Narayana
 public import RealRooted.Basic.ProperPosition
+public import RealRooted.CombinatorialExamples.Hoggatt
 
 @[expose] public section
 
@@ -426,6 +428,32 @@ private lemma polynomial_eq_schur : ∀ n : ℕ, polynomial n = schurModel n
       rw [polynomial_succ_normalized n, polynomial_eq_schur (n + 1),
         polynomial_eq_schur n, ← schurModel_succ n]
 
+/-- The existing Baxter recurrence model is the normalized three-factor
+binomial-product polynomial. Its row `n` is the Baxter polynomial on `n+1`
+letters, or equivalently the Hoggatt polynomial `H_(n+1)^[3]`. -/
+theorem polynomial_eq_binomial_sum (n : ℕ) :
+    polynomial n = C (2 / (((n : ℝ) + 1) * ((n : ℝ) + 2) ^ 2)) *
+      ∑ k ∈ Finset.range (n + 1), monomial k
+        ((Nat.choose (n + 2) k : ℝ) * Nat.choose (n + 2) (k + 1) *
+          Nat.choose (n + 2) (k + 2)) := by
+  ext k
+  rw [polynomial_eq_schur, coeff_C_mul, coeff_sum_range_monomial]
+  by_cases hk : k ≤ n
+  · rw [coeff_schurModel_eq_coeff hk, ite_eq_left (by lia : k < n + 1), modelCoeff,
+      Nat.cast_choose ℝ (by lia : k ≤ n + 2),
+      Nat.cast_choose ℝ (by lia : k + 1 ≤ n + 2),
+      Nat.cast_choose ℝ (by lia : k + 2 ≤ n + 2)]
+    have hfac : ∀ j : ℕ, (Nat.factorial j : ℝ) ≠ 0 :=
+      fun j => Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero j)
+    have hn := factorial_succ_cast n
+    have hn' := factorial_succ_cast (n + 1)
+    push_cast at hn hn'
+    rw [show n + 2 - (k + 1) = n + 1 - k by lia,
+      show n + 2 - (k + 2) = n - k by lia, hn', hn]
+    field_simp [hfac]
+    ring
+  · rw [coeff_schurModel_eq_zero_of_lt (by lia), ite_eq_right (by lia : ¬k < n + 1), mul_zero]
+
 private def jensenWeight (k : ℕ) : ℝ :=
   2 / ((Nat.factorial (k + 1) : ℝ) * (Nat.factorial (k + 2) : ℝ))
 
@@ -559,5 +587,17 @@ theorem interlaces_of_recurrence
     hrec (fun _ => rfl)
   rw [heq n, heq (n + 1)]
   exact polynomial_interlaces n
+
+/-- The normalized `m = 3` Hoggatt polynomial agrees with the existing
+A056939 model, whose row `n` is indexed by Baxter permutations on `n+1` letters. -/
+theorem _root_.RealRooted.Hoggatt.normalized_three_eq_baxter (n : ℕ) :
+    Hoggatt.normalized (n + 1) 3 = polynomial n := by
+  rw [Hoggatt.normalized_three_eq_binomial_sum, polynomial_eq_binomial_sum]
+
+/-- Strictness for the existing Baxter model: consecutive rows have no shared root. -/
+theorem polynomial_isCoprime_succ (n : ℕ) :
+    IsCoprime (polynomial n) (polynomial (n + 1)) := by
+  have h := Hoggatt.baxter_interlaces (Nat.succ_ne_zero n)
+  simpa only [Hoggatt.normalized_three_eq_baxter] using h.2
 
 end RealRooted.Applications.OEIS.A056939

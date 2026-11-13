@@ -2161,6 +2161,8 @@ public import RealRooted.Mathlib.Algebra.LinearRecurrence.Veronese
 public import RealRooted.Challenges.Preservers.FallingFactorial
 public import RealRooted.MultiplierSequence.FallingFactorial
 public import RealRooted.Hermite.PoulainSymbolInterlacing
+public import RealRooted.Challenges.Combinatorial.Hoggatt
+public import RealRooted.CombinatorialExamples.Hoggatt
 
 /-!
 # RealRooted production umbrella
