@@ -5,6 +5,7 @@ import RealRooted.RootLocation.DerivativeSigns
 import RealRooted.RootLocation.Pairing
 import RealRooted.Transforms.BrandenE.RootDomain
 import RealRooted.Transforms.StirlingRootRegions
+import RealRooted.Transforms.StirlingRootRegions.Parabolic
 import RealRooted.Transforms.TouchardRootDomain
 
 /-!
@@ -15,8 +16,8 @@ version = 1
 section = "theorems"
 slug = "touchard-transform"
 formalized = "2026-11-09"
-authors = ["Brändén"]
-years = [2006]
+authors = ["Brändén", "Brenti", "Royle", "Wagner"]
+years = [1994, 2006]
 references = [
   "Branden2006",
 ]
@@ -77,6 +78,23 @@ label = "A falling factorial prefix becomes X^m times a shift of the transform"
 name = "RealRooted.isPFPolynomial_touchard_fallingFactorial_C_mul_prod"
 module = "RealRooted.Transforms.StirlingRootRegions"
 label = "PF criterion for a falling factorial times a nonnegative multiple of a product"
+
+[[theorems]]
+name = "RealRooted.StirlingRootRegion.isPFPolynomial_fallingFactorial_mul"
+module = "RealRooted.Transforms.StirlingRootRegions.Parabolic"
+label = "Brenti–Royle–Wagner: the closed parabolic root criterion gives a PF Stirling transform"
+
+[[theorems]]
+name = "RealRooted.StirlingRootRegion.isPFPolynomial_fallingFactorial_two_mul"
+module = "RealRooted.Transforms.StirlingRootRegions.Parabolic"
+label = "Roots in the closed disk about one give a PF transform with a falling factorial prefix"
+
+[[theorems]]
+name = "RealRooted.StirlingRootRegion.isPFPolynomial_cycle"
+module = "RealRooted.Transforms.StirlingRootRegions.Parabolic"
+label = "Brenti–Royle–Wagner: the Stirling transform of the cycle chromatic polynomial is PF"
+objects = ["Cycle graph partition polynomials"]
+property = "pf"
 
 [[theorems]]
 name = "RealRooted.isPFPolynomial_monic_cubic_iff"
@@ -188,8 +206,17 @@ $a_i\ge-1/4$, then every $P_n$ is rooted in $(-\infty,1/4]$. If $Q_0=1$ and
 $Q_{n+1}=(x+a_{n+1})Q_n+x(x+1)Q_n'$ with all $\frac{1-\sqrt2}2\le a_i\le\frac{1+\sqrt2}2$, then
 every $Q_n$ is rooted in $[L,U]$.
 
-**Theorem (grouped cubics).** A polynomial is *PF* if it has nonnegative coefficients and is zero
-or has only real nonpositive roots. A monic cubic $x^3+\alpha x^2+\beta x+\gamma$ is PF if and
+**Theorem (Brenti–Royle–Wagner, Theorem 4.7).** A polynomial is *PF* if it has nonnegative
+coefficients and is zero or has only real nonpositive roots. Let $m\ge0$ be an integer and let
+$f$ be monic with real coefficients. If every real zero $r$ satisfies $r\le m$ and every
+nonreal zero $s+it$ satisfies $4t^2\le1+4m-4s$, then
+$\mathcal T(t^{\underline m}f(t))$ is PF. All inequalities include equality.
+
+For $m=2$, the disk $(s-1)^2+t^2\le1$ satisfies these bounds. Consequently
+$\mathcal T((t-1)^n+(-1)^n(t-1))$ is PF for $n\ge2$. For $n\ge3$ the source is the
+cycle chromatic polynomial, giving Proposition 4.10.
+
+**Theorem (grouped cubics).** A monic cubic $x^3+\alpha x^2+\beta x+\gamma$ is PF if and
 only if $\alpha,\beta,\gamma\ge0$ and its discriminant is nonnegative. For real $a,b,w$,
 $$
 \mathcal T\bigl((t+a)((t+b)^2+w)\bigr)=x^3+(3+a+2b)x^2+(1+a+2b+2ab+b^2+w)x+a(b^2+w),
@@ -224,11 +251,17 @@ $[-1,0]$, which preserve real-rootedness [@Branden2006, Theorems 3.11 and 3.13].
 invariant sets, all summands of the product have the sign of the leading coefficient beyond
 $c$, respectively outside $[A,B]$.
 
+For the parabolic criterion, factor $f$ into real linear and conjugate-pair quadratic factors
+and translate by $m$. Each factor has a PF Touchard image: the quadratic image has
+discriminant $1+4m-4s-4t^2\ge0$ and nonnegative coefficients. The product rule then applies.
+For cycles, remove $t(t-1)$ and use the disk containing the source roots.
+
 ## References
 
 - [@Branden2006, Theorems 3.11 and 3.13]
 - F. Brenti, G. F. Royle and D. G. Wagner, *Location of zeros of chromatic and related
-  polynomials of graphs*, 1994, Theorem 4.7, for a related cubic criterion.
+  polynomials of graphs*, Canad. J. Math. 46 (1994), 55–80,
+  [Theorem 4.7 and Proposition 4.10](https://doi.org/10.4153/CJM-1994-002-3).
 - Durán, *Generalized Bell polynomials*, arXiv:2409.11344, Problem 1 and Theorem 5, for the
   recurrences with negative parameters.
 <!-- /realrooted-catalog-content -->
