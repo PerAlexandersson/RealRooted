@@ -1159,8 +1159,8 @@ private def degreePatternStrictGoal : TacticM RowHints := do
   let Dt ← `(fun $m:ident : ℕ => $(← halfLawTerm c e m))
   if c == 0 then
     let strictThm := if e == 0 then
-        mkIdent ``derivativeRecurrence_strictInterl_of_floor_half_degree
-      else mkIdent ``derivativeRecurrence_strictInterl_of_half_degree
+        mkIdent ``RealRooted.derivativeRecurrence_strictInterl_of_floor_half_degree
+      else mkIdent ``RealRooted.derivativeRecurrence_strictInterl_of_half_degree
     evalTactic (← `(tactic|
       refine $strictThm:ident (Q := $Q) (A := $A) (B := $B)
         $hrec ?_ ?_ ?_ ?_ $t))

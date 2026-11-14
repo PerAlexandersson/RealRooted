@@ -33,7 +33,7 @@ label = "For every m ≥ 2, consecutive Hoggatt rows strictly interlace"
 headline = true
 
 [[theorems]]
-name = "RealRooted.Hoggatt.polynomial_pred_interlaces"
+name = "RealRooted.Hoggatt.polynomial_pred_interlaces_and_isCoprime"
 module = "RealRooted.CombinatorialExamples.Hoggatt"
 label = "F(n−1,m) strictly interlaces F(n,m) for n ≥ m ≥ 2"
 
@@ -66,7 +66,7 @@ label = "The binomial-product polynomials have simple roots for m ≥ 2"
 [[theorems]]
 objects = ["Baxter descent polynomials"]
 property = "interlacing"
-name = "RealRooted.Hoggatt.baxter_interlaces"
+name = "RealRooted.Hoggatt.baxter_interlaces_and_isCoprime"
 module = "RealRooted.CombinatorialExamples.Hoggatt"
 label = "Baxter polynomials are a strict Sturm sequence"
 

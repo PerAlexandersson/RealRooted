@@ -75,7 +75,7 @@ theorem finiteFreeAdditiveConvolution_C_mul_right (d : ℕ) (c : ℝ) (p q : ℝ
 
 /-- The finite-free additive weight written with a descending factorial: the factor of the
 differential operator expression. -/
-theorem finiteFreeAdditiveConvolutionGamma_eq_factorial_mul_descFactorial (d i l : ℕ)
+theorem FiniteFreeAdditive.convolutionGamma_eq_factorial_mul_descFactorial (d i l : ℕ)
     (hil : i + l ≤ d) :
     finiteFreeAdditiveConvolutionGamma d i l =
       ((d - i).factorial : ℝ) / d.factorial * ((d - l).descFactorial i : ℝ) := by
@@ -107,7 +107,7 @@ theorem finiteFreeAdditiveConvolution_eq_sum_iterate_derivative (d : ℕ) (p : �
       (Finset.range_subset_range.2 (show k + 1 ≤ k + j + 1 by lia)) ?_)
     · refine Finset.sum_congr rfl fun i hi => ?_
       have hik : i ≤ k := by simpa [Nat.lt_succ_iff] using hi
-      rw [finiteFreeAdditiveConvolutionGamma_eq_factorial_mul_descFactorial _ _ _ (by lia)]
+      rw [FiniteFreeAdditive.convolutionGamma_eq_factorial_mul_descFactorial _ _ _ (by lia)]
       have hdk : k + j - (k - i) = j + i := by lia
       rw [hdk]
       ring

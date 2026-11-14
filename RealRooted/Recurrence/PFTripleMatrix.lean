@@ -148,7 +148,7 @@ private lemma isOrderedPFTriple_step_of_eq_zero {l c d : ℝ} (hl : 0 ≤ l) (hc
 /-- **Sufficiency.**  For `l > 0`, the nonnegativity conditions `a, b, d ≥ 0` and `a l ≤ c`
 make the matrix preserve every ordered Pólya-frequency triple, including inputs and outputs
 with zero coordinates. -/
-theorem preservesScaledPFTriple_of_nonneg {l a b c d : ℝ} (hl : 0 < l) (ha : 0 ≤ a)
+theorem PreservesScaledPFTriple.of_nonneg {l a b c d : ℝ} (hl : 0 < l) (ha : 0 ≤ a)
     (hb : 0 ≤ b) (hd : 0 ≤ d) (hc : a * l ≤ c) : PreservesScaledPFTriple l a b c d := by
   intro p u r h
   rcases eq_or_ne r 0 with rfl | hr0
@@ -180,7 +180,7 @@ private lemma mul_le_mul_of_interl_affine {u v U V : ℝ} (hu : 0 < u) (hv : 0 �
 
 /-- **Necessity.**  If the matrix preserves every ordered Pólya-frequency triple, then
 `a, b, d ≥ 0` and `a l ≤ c`. -/
-theorem nonneg_of_preservesScaledPFTriple {l a b c d : ℝ} (hl : 0 < l)
+theorem _root_.RealRooted.PreservesScaledPFTriple.nonneg {l a b c d : ℝ} (hl : 0 < l)
     (h : PreservesScaledPFTriple l a b c d) : 0 ≤ a ∧ 0 ≤ b ∧ 0 ≤ d ∧ a * l ≤ c := by
   have h001 : IsOrderedPFTriple (0 : ℝ[X]) 0 1 :=
     ⟨IsPFPolynomial.zero, IsPFPolynomial.zero, IsPFPolynomial.one,
@@ -234,8 +234,8 @@ theorem nonneg_of_preservesScaledPFTriple {l a b c d : ℝ} (hl : 0 < l)
 `a, b, d ≥ 0` and `a l ≤ c`.  There are no degree or nonzero-coordinate hypotheses. -/
 theorem PreservesScaledPFTriple.iff {l : ℝ} (hl : 0 < l) (a b c d : ℝ) :
     PreservesScaledPFTriple l a b c d ↔ 0 ≤ a ∧ 0 ≤ b ∧ 0 ≤ d ∧ a * l ≤ c :=
-  ⟨nonneg_of_preservesScaledPFTriple hl, fun ⟨ha, hb, hd, hc⟩ ↦
-    preservesScaledPFTriple_of_nonneg hl ha hb hd hc⟩
+  ⟨RealRooted.PreservesScaledPFTriple.nonneg hl, fun ⟨ha, hb, hd, hc⟩ ↦
+    RealRooted.PreservesScaledPFTriple.of_nonneg hl ha hb hd hc⟩
 
 /-- **The sharp criterion.**  The matrix `[[0, 0, 1], [X, 0, 1], [c X, d X, a + b X]]`
 preserves every ordered Pólya-frequency triple if and only if `a, b, d ≥ 0` and `a ≤ c`.
@@ -290,7 +290,7 @@ theorem isOrderedPFTriple_of_recurrence_scaled {κ : ℝ} (hκ : 0 < κ)
           rw [div_le_iff₀ hκ]
           nlinarith [hq s]
         linarith
-      have hstep := preservesScaledPFTriple_of_nonneg hκ (ha s) (hb s) hdκ hc _ _ _ ih
+      have hstep := RealRooted.PreservesScaledPFTriple.of_nonneg hκ (ha s) (hb s) hdκ hc _ _ _ ih
       rw [third_order_step hκ.ne' s (hrec s)] at hstep
       simpa using hstep
 
@@ -347,5 +347,8 @@ theorem interl_of_recurrence
   interl_of_recurrence_scaled one_pos ha hb hd (fun s ↦ by linarith [he s]) hrec h0 h1 s
 
 end Recurrence
+
+@[deprecated (since := "2026-11-14")]
+alias preservesScaledPFTriple_of_nonneg := PreservesScaledPFTriple.of_nonneg
 
 end RealRooted

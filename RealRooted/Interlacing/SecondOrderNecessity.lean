@@ -531,7 +531,7 @@ theorem secondOrderRayPreserving_iff_upper_bound_at_index
 
 /-- A negative explicit monomial residual discriminant obstructs splitting.
 This API avoids unfolding the opaque discriminant abbreviation. -/
-theorem not_splits_secondOrderRayOperator_X_pow_of_explicit_discrim_neg
+theorem _root_.RealRooted.SecondOrderRay.not_splits_X_pow_of_discrim_neg
     {a b c d f : ℝ} {m : ℕ} (hm : 1 ≤ m) (hb : b ≠ 0)
     (hneg : (a + d * m) ^ 2 - 4 * b * m * (c + f * (m - 1)) < 0) :
     ¬(secondOrderRayOperator a b c d f (X ^ m)).Splits := by
@@ -569,7 +569,7 @@ theorem secondOrderRayPreserving_iff_middle_discrim_at_index
   constructor
   · intro hpres
     by_contra hnonneg
-    have hnot := not_splits_secondOrderRayOperator_X_pow_of_explicit_discrim_neg
+    have hnot := RealRooted.SecondOrderRay.not_splits_X_pow_of_discrim_neg
       hm hb.ne' (lt_of_not_ge hnonneg)
     have hout := hpres _ (isPFPolynomial_X_pow m)
     exact hnot hout.splits

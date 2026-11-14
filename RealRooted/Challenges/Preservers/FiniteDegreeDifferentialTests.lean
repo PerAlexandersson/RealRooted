@@ -82,17 +82,17 @@ module = "RealRooted.FiniteFreeAdditive.FiniteDegreeOrderedTests"
 label = "Binomial symbols with Jensen tests (sX + 1)^r, (sX + 1)^(r-1): ordered PF images"
 
 [[theorems]]
-name = "RealRooted.FiniteDegreeOrdered.binomialDifferentialRecurrence_pf_and_interl"
+name = "RealRooted.IsPFPolynomial.binomialDifferentialRecurrence_and_interl"
 module = "RealRooted.FiniteFreeAdditive.FiniteDegreeOrderedTests"
 label = "A binomial differential recurrence row is PF and preceded by the leading image"
 
 [[theorems]]
-name = "RealRooted.differentialRecurrence_pf_and_interl"
+name = "RealRooted.differentialRecurrence_isPFPolynomial_and_interl"
 module = "RealRooted.FiniteFreeAdditive.FiniteDegreeTests"
 label = "An ordered PF pair of images gives a PF row X h(D)p + a k(D)p preceded by h(D)p"
 
 [[theorems]]
-name = "RealRooted.multishiftDifferentialRecurrence_pf_and_interl"
+name = "RealRooted.IsPFPolynomial.multishiftDifferentialRecurrence_and_interl"
 module = "RealRooted.FiniteFreeAdditive.FiniteDegreeCompanions"
 label = "Multishift recurrence rows are PF and preceded by the full-symbol image"
 
@@ -112,7 +112,7 @@ module = "RealRooted.FiniteFreeAdditive.FiniteDegreeCompanionCone"
 label = "All-degree ordered PF preservation by (h, k) is equivalent to k being PF and k ≪ h"
 
 [[theorems]]
-name = "RealRooted.evenDerivative_preservesPF_tfae"
+name = "RealRooted.EvenDerivative.isPFPolynomial_tfae"
 module = "RealRooted.EvenDerivative.Preserver"
 label = "Δ_c preserves PF through degree N iff Δ_c(xᴺ) is real-rooted iff p_N is real-rooted"
 

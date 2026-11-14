@@ -37,7 +37,7 @@ side conditions, implementing modules, and regression examples.
 | 17 | `splitFactors` | (P n).Splits | `productSequence_splits` |
 | 18 | `twoStep` | Interlacing, splitting, degree, or positive leading coefficient for P (n + 2) = q * P n. | `twoStepProduct_interlaces`, `twoStepProduct_splits`, `twoStepProduct_natDegree`, `twoStepProduct_leadingCoeff_pos`, `twoStepProduct_leadingCoeff_pos_of_ne_zero` |
 | 19 | `nextRow` | (P n).Splits | `productSequence_interlaces`, `derivativeRecurrence_interlaces_of_eval_nonpos`, `threeTerm_interlaces_of_eval_nonpos` |
-| 20 | `degreePattern` | (P n).Splits or StrictInterl (P n) (P (n + 1)). | `derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs`, `derivativeRecurrence_strictInterl_of_degree_pattern_of_nonnegCoeffs`, `Tactic.derivativeRecurrence_strictInterl_of_half_degree`, `Tactic.derivativeRecurrence_strictInterl_of_floor_half_degree` |
+| 20 | `degreePattern` | (P n).Splits or StrictInterl (P n) (P (n + 1)). | `derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs`, `derivativeRecurrence_strictInterl_of_degree_pattern_of_nonnegCoeffs`, `RealRooted.derivativeRecurrence_strictInterl_of_half_degree`, `RealRooted.derivativeRecurrence_strictInterl_of_floor_half_degree` |
 | 21 | `reversed` | Interlaces (P n) (P (n + 1)) or (P n).Splits after reflection. | `eq_reflect_of_secondOrderDerivativeRecurrence`, `eq_reflect_of_linearRecurrence`, `interlaces_of_eq_reflect`, `splits_of_eq_reflect` |
 | 22 | `fTransform` | Interlaces (P n) (P (n + 1)) or (P n).Splits for f-polynomial images. | `Tactic.interlaces_fPolynomial_sequence`, `Tactic.interlaces_fPolynomial_sequence_floor`, `splits_of_eq_fPolynomial` |
 
@@ -48,7 +48,7 @@ side conditions, implementing modules, and regression examples.
 | 1 | `reuse` | (P n).Splits or StrictInterl (P n) (P (n + 1)) | `Interlaces.toStrictInterl` |
 | 2 | `variableDelay` | StrictInterl, Interlaces, Splits, or HasNonnegCoeffs. | `strictInterl_of_fixedDelay_recurrence`, `strictInterl_of_scaled_fixedDelay_recurrence`, `hasNonnegCoeffs_of_scaled_fixedDelay_recurrence`, `strictInterl_of_constant_prefix_fixed_delay_recurrence`, `hasNonnegCoeffs_of_constant_prefix_fixed_delay_recurrence` |
 | 3 | `halfGrowth` | Interlaces, StrictInterl, or Splits for half-growth rows. | `derivLag_strictInterl_of_nonnegCoeffs`, `derivLag_strictInterl_of_nonnegCoeffs_half`, `threeTermHalf_ne_zero_and_splits` |
-| 4 | `degreePattern` | (P n).Splits or StrictInterl (P n) (P (n + 1)). | `derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs`, `derivativeRecurrence_strictInterl_of_degree_pattern_of_nonnegCoeffs`, `Tactic.derivativeRecurrence_strictInterl_of_half_degree`, `Tactic.derivativeRecurrence_strictInterl_of_floor_half_degree` |
+| 4 | `degreePattern` | (P n).Splits or StrictInterl (P n) (P (n + 1)). | `derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs`, `derivativeRecurrence_strictInterl_of_degree_pattern_of_nonnegCoeffs`, `RealRooted.derivativeRecurrence_strictInterl_of_half_degree`, `RealRooted.derivativeRecurrence_strictInterl_of_floor_half_degree` |
 | 5 | `interlaces` | StrictInterl (P n) (P (n + 1)) | `Interlaces.toStrictInterl` |
 
 ## `rr_row_interlaces`

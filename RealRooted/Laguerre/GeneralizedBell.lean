@@ -41,7 +41,7 @@ namespace RealRooted
   ∑ j ∈ Finset.range (K + 1), C (gamma j) * monicLaguerre (n - j) alpha
 
 /-- The auxiliary polynomial is monic when its leading coordinate is normalized by `γ₀ = 1`. -/
-theorem laguerreAuxiliary_monic {K : ℕ} {gamma : ℕ → ℝ} (hgamma : gamma 0 = 1) :
+theorem monic_laguerrePochhammerSum {K : ℕ} {gamma : ℕ → ℝ} (hgamma : gamma 0 = 1) :
     (laguerrePochhammerSum K gamma).Monic := by
   apply monic_of_natDegree_le_of_coeff_eq_one K
   · rw [laguerrePochhammerSum]
@@ -339,7 +339,7 @@ theorem generalizedLaguerreSum_splits_simple_roots_neg_of_auxiliary
   let s := alpha + (n - K : ℕ) + 1
   let p := generalizedLaguerre (n - K) alpha
   let parameters := Q.roots.toList.map fun r ↦ s - r
-  have hQmonic : Q.Monic := laguerreAuxiliary_monic hgamma
+  have hQmonic : Q.Monic := monic_laguerrePochhammerSum hgamma
   have hparameters : ∀ a ∈ parameters, 0 < a := by
     intro a ha
     rcases List.mem_map.mp ha with ⟨r, hr, rfl⟩

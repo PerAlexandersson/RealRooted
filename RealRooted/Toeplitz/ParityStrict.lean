@@ -44,7 +44,7 @@ variable {n : ℕ}
 
 /-- The hypotheses of the parity lift on a matrix `A`: `TP2`, decreasing columns, constant
 upper-triangular columns, and `A 0 0 > 0`. -/
-structure ParityHyp (A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) : Prop where
+structure IsParityKernel (A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ) : Prop where
   /-- Nonnegative entries and ordered `2 × 2` minors. -/
   isTP2 : A.IsTP2
   /-- Every column weakly decreases. -/
@@ -58,19 +58,19 @@ section UV
 
 variable {A : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ}
 
-namespace ParityHyp
+namespace IsParityKernel
 
-variable (H : ParityHyp A)
+variable (H : IsParityKernel A)
 
 include H
 
-lemma blockTP2 : (parityBlock A).IsTP2 := parityBlock_isTP2 H.isTP2 H.col
+lemma isTP2_parityBlock : (parityBlock A).IsTP2 := parityBlock_isTP2 H.isTP2 H.col
 
-lemma blockCol :
+lemma parityBlock_apply_le_of_le :
     ∀ ⦃i k j : Fin (n + 1 + n + 1)⦄, i ≤ k → parityBlock A k j ≤ parityBlock A i j :=
   fun _ _ _ h => parityBlock_col_le H.isTP2.nonneg H.col _ h
 
-lemma blockRow :
+lemma parityBlock_apply_eq_of_le :
     ∀ ⦃i j : Fin (n + 1 + n + 1)⦄, i ≤ j → parityBlock A i j = parityBlock A j j :=
   fun _ _ h => parityBlock_row_eq H.row h
 
@@ -78,7 +78,7 @@ lemma blockRow :
 lemma monic_natDegree_u (m : ℕ) :
     (hessenbergRow (n := n + 1 + n) (parityBlock A) m).Monic ∧
       (hessenbergRow (n := n + 1 + n) (parityBlock A) m).natDegree = m :=
-  monic_natDegree_hessenbergRow (n := n + 1 + n) (parityBlock A) H.blockRow m
+  monic_natDegree_hessenbergRow (n := n + 1 + n) (parityBlock A) H.parityBlock_apply_eq_of_le m
 
 /-- `V_m` is monic of degree `m`. -/
 lemma monic_natDegree_v (m : ℕ) :
@@ -90,15 +90,17 @@ lemma monic_natDegree_v (m : ℕ) :
 /-- `U_m` has only nonnegative real roots. -/
 lemma isRealRootedIn_u (m : ℕ) :
     IsRealRootedIn (Set.Ici 0) (hessenbergRow (n := n + 1 + n) (parityBlock A) m) :=
-  isRealRootedIn_Ici_hessenbergRow (n := n + 1 + n) H.blockTP2 H.blockCol H.blockRow m
+  isRealRootedIn_Ici_hessenbergRow (n := n + 1 + n) H.isTP2_parityBlock
+    H.parityBlock_apply_le_of_le H.parityBlock_apply_eq_of_le m
 
 /-- `V_m` has only nonnegative real roots. -/
 lemma isRealRootedIn_v (m : ℕ) :
     IsRealRootedIn (Set.Ici 0) (PowerSeries.coeff m (parityV A)) := by
   rw [coeff_parityV_eq A H.row]
-  exact isRealRootedIn_Ici_signedComp_hessenbergVector (n := n + 1 + n) H.blockTP2 H.blockCol m _
+  exact isRealRootedIn_Ici_signedComp_hessenbergVector (n := n + 1 + n)
+    H.isTP2_parityBlock H.parityBlock_apply_le_of_le m _
 
-end ParityHyp
+end IsParityKernel
 
 private lemma eval_signedComp (f : ℝ[X]) (k : ℕ) (x : ℝ) :
     (C ((-1 : ℝ) ^ k) * f.comp (-X)).eval x = (-1) ^ k * f.eval (-x) := by
@@ -109,9 +111,9 @@ private lemma isRoot_signedComp' {f : ℝ[X]} {k : ℕ} {x : ℝ} :
   have hne : ((-1 : ℝ) ^ k) ≠ 0 := pow_ne_zero _ (by norm_num)
   simp [IsRoot, hne]
 
-namespace ParityHyp
+namespace IsParityKernel
 
-variable (H : ParityHyp A)
+variable (H : IsParityKernel A)
 
 include H
 
@@ -171,7 +173,7 @@ lemma strictInterl_u_v (m : ℕ) :
     StrictInterl (hessenbergRow (n := n + 1 + n) (parityBlock A) m)
       (PowerSeries.coeff (m + 1) (parityV A)) := by
   have hinv := (affineVector_invariant (n := n + 1 + n) (M := fun _ => parityBlock A)
-    (fun _ => H.blockTP2) (fun _ => H.blockCol) m).2
+    (fun _ => H.isTP2_parityBlock) (fun _ => H.parityBlock_apply_le_of_le) m).2
   rw [← hessenbergVector_eq_affineVector (n := n + 1 + n) (parityBlock A)] at hinv
   have h : StrictInterl (parityVector A m 0) (parityVector A (m + 1) (parityIndex n)) :=
     List.rel_of_pairwise_cons (isInterlacingSeq_iff_pairwise.mp hinv.2)
@@ -346,7 +348,7 @@ theorem parityRow_certificate (γ : ℝ) (k : ℕ) :
     simpa [sub_eq_add_neg] using this
   · simpa using h6.map (Polynomial.compRingHom (X - C γ))
 
-end ParityHyp
+end IsParityKernel
 
 end UV
 
@@ -387,7 +389,7 @@ theorem parityRow_certificate_of_natDegree_ne_zero :
         IsCoprime (parityRow A γ k) (parityRow A γ (k + 1))
   | n, A, hA, hcol, hrow, hG, γ, k => by
     rcases (hA.nonneg 0 0).lt_or_eq with hpos | hzero
-    · exact (ParityHyp.mk hA hcol hrow hpos).parityRow_certificate γ k
+    · exact (IsParityKernel.mk hA hcol hrow hpos).parityRow_certificate γ k
     · -- the first column vanishes: delete it with the first row
       have hcol0 : ∀ i, A i 0 = 0 := fun i =>
         le_antisymm (hzero ▸ hcol (Fin.zero_le i)) (hA.nonneg i 0)

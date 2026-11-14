@@ -44,7 +44,7 @@ theorem coeff_degreeControlledDerivativeImage_succ (N c : ℝ) (f : ℝ[X]) (k :
 
 /-- A degree-controlled derivative image of a nonzero PF polynomial is PF and
 is preceded by its input in directed proper position. -/
-theorem IsPFPolynomial.degreeControlledDerivativeImage_isPF_and_strictInterl
+theorem _root_.RealRooted.IsPFPolynomial.degreeControlledDerivativeImage_and_strictInterl
     {f : ℝ[X]} {N c : ℝ} (hf : IsPFPolynomial f) (hf0 : f ≠ 0)
     (hc : 0 ≤ c) (hN : c * f.natDegree ≤ N) :
     IsPFPolynomial (degreeControlledDerivativeImage N c f) ∧
@@ -180,13 +180,13 @@ def pathDerivativeImage (a b c v : ℝ) (n : ℕ) : ℝ[X] :=
 
 /-- In the parameter region `b ≥ 0`, `2a ≥ c`, every path derivative image is PF
 and is preceded by its path row in directed proper position. -/
-theorem pathDerivativeImage_isPF_and_strictInterl
+theorem pathDerivativeImage_isPFPolynomial_and_strictInterl
     {a b c v : ℝ} (hc : 0 ≤ c) (hb : 0 ≤ b) (hac : c ≤ 2 * a)
     (hv : 0 < v) (n : ℕ) :
     IsPFPolynomial (pathDerivativeImage a b c v n) ∧
       StrictInterl (weightedPathPolynomial v n) (pathDerivativeImage a b c v n) := by
   have hpf := isPFPolynomial_weightedPathPolynomial v n hv
-  apply hpf.degreeControlledDerivativeImage_isPF_and_strictInterl
+  apply hpf.degreeControlledDerivativeImage_and_strictInterl
   · exact hpf.ne_zero_and_splits (by
       intro hzero
       have := congrArg (fun p : ℝ[X] ↦ p.coeff 0) hzero
@@ -257,7 +257,7 @@ theorem forall_pathDerivativeImage_isPF_iff
     rw [coeff_pathDerivativeImage_even_top] at hnonneg
     nlinarith [pow_pos hv m]
   · rintro ⟨hb, hac⟩ n
-    exact (pathDerivativeImage_isPF_and_strictInterl hc hb hac hv n).1
+    exact (pathDerivativeImage_isPFPolynomial_and_strictInterl hc hb hac hv n).1
 
 /-- With zero edge weight, every weighted path row is the constant one. -/
 @[simp]
@@ -368,5 +368,9 @@ theorem eq_pathDerivativeImage_of_seeds_and_recurrence
     | k + 4 =>
         rw [hrec, pathDerivativeImage_add_four, ih (k + 3) (by lia),
           ih (k + 2) (by lia), ih (k + 1) (by lia), ih k (by lia)]
+
+@[deprecated (since := "2026-11-14")]
+alias pathDerivativeImage_isPF_and_strictInterl :=
+  pathDerivativeImage_isPFPolynomial_and_strictInterl
 
 end RealRooted

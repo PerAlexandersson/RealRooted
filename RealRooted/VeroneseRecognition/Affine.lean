@@ -293,7 +293,7 @@ theorem affineVeroneseProductRow_orderTwo_eq_of_recurrence
 
 /-- Fibonacci-type rows with `P₀ = P₁ = 1` are affine odd sections of
 successive powers of `X + 1 / 2`. -/
-theorem veroneseSectionPolynomial_X_add_half_pow_comp_eq_of_fibonacci_recurrence
+theorem _root_.RealRooted.VeroneseRecognition.section_X_add_half_pow_comp_eq_of_fibonacci_recurrence
     (P : ℕ → ℝ[X]) (hzero : P 0 = 1) (hone : P 1 = 1)
     (hrec : ∀ n, P (n + 2) = P (n + 1) + X * P n) (n : ℕ) :
     (veroneseSectionPolynomial 2 1 ((X + C (1 / 2 : ℝ)) ^ (n + 1))).comp

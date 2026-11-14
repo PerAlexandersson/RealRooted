@@ -31,6 +31,7 @@ public import RealRooted.Applications.EulerianVariations
 public import RealRooted.Applications.EulerianVariations.CyclicPathDescents
 public import RealRooted.Applications.EulerianVariations.TernaryRuns
 public import RealRooted.Applications.EulerianVariations.TernaryRuns.Recurrence
+public import RealRooted.Applications.OEIS.A114123
 public import RealRooted.Applications.OEIS.A132885
 public import RealRooted.Applications.OEIS.A272471.Recurrence
 public import RealRooted.Applications.OEIS.InversePeaks
@@ -484,6 +485,7 @@ public import RealRooted.DerivativeRecurrence.Degree
 public import RealRooted.DerivativeRecurrence.General
 public import RealRooted.DerivativeRecurrence.GeneralizedLaguerre
 public import RealRooted.DerivativeRecurrence.GeneralizedLaguerreInterlacing
+public import RealRooted.DerivativeRecurrence.HalfDegree
 public import RealRooted.DerivativeRecurrence.Interlacing
 public import RealRooted.DerivativeRecurrence.LagWeak
 public import RealRooted.DerivativeRecurrence.LagDegree

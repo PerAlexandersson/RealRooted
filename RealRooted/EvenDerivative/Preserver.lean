@@ -11,7 +11,7 @@ import RealRooted.ClassicalHurwitzMatrix.Stability.HermiteBiehler
 # Finite-degree criterion for even-derivative PF preservers
 
 For `T_c f = ∑ₖ cₖ xᵏ f^{(2k)}` with `c 0 = 1` and `cₖ ≥ 0`, and every `N`, the following are
-equivalent (`evenDerivative_preservesPF_tfae`):
+equivalent (`RealRooted.EvenDerivative.isPFPolynomial_tfae`):
 
 1. `T_c` maps PF polynomials of degree at most `N` to PF polynomials;
 2. the single image `T_c(uᴺ)` is real-rooted;
@@ -85,7 +85,7 @@ theorem isPFPolynomial_evenDerivativeOperator_of_splits_X_pow (hc0 : c 0 = 1) (h
 /-- **Finite-degree criterion.**  For `c 0 = 1` and `cₖ ≥ 0`, the following are equivalent:
 `T_c` maps PF polynomials of degree at most `N` to PF polynomials; the single image `T_c(uᴺ)`
 is real-rooted; the test polynomial `p_N` is real-rooted. -/
-theorem evenDerivative_preservesPF_tfae (hc0 : c 0 = 1) (hc : ∀ k, 0 ≤ c k) (N : ℕ) :
+theorem EvenDerivative.isPFPolynomial_tfae (hc0 : c 0 = 1) (hc : ∀ k, 0 ≤ c k) (N : ℕ) :
     List.TFAE
       [∀ f : ℝ[X], IsPFPolynomial f → f.natDegree ≤ N → IsPFPolynomial (evenDerivativeOperator c f),
        (evenDerivativeOperator c (X ^ N)).Splits,

@@ -803,7 +803,7 @@ theorem exists_diagonalPolynomial
 
 /-- Repeated-root preservation at degree two forces the quadratic coefficient governing
 the first lower basis diagonal to be nonnegative. -/
-theorem two_mul_coeff_one_appellCoefficient_two_nonneg_of_shiftedPower_splits
+theorem _root_.RealRooted.AppellCoefficient.two_mul_coeff_one_nonneg_of_shiftedPower_splits
     {P : ℕ → ℝ[X]} (hPdeg : ∀ n, (P n).natDegree = n)
     (hPmonic : ∀ n, (P n).Monic)
     (hsplits : ∀ r : ℝ, 0 ≤ r → (shiftedPowerImage P 2 r).Splits) :
@@ -832,7 +832,7 @@ theorem two_mul_coeff_one_appellCoefficient_two_nonneg
     (hpres : ∀ p : ℝ[X], p.Splits →
       (∀ r ∈ p.roots, r ≤ 0) → (basisTransform P p).Splits) :
     0 ≤ 2 * (appellCoefficient P 2).coeff 1 := by
-  exact two_mul_coeff_one_appellCoefficient_two_nonneg_of_shiftedPower_splits hPdeg hPmonic
+  exact RealRooted.AppellCoefficient.two_mul_coeff_one_nonneg_of_shiftedPower_splits hPdeg hPmonic
     fun r hr => splits_shiftedPowerImage_of_preserves hPdeg hPmonic hpres 2 hr
 
 /-- Under the explicit Appell expansion, root preservation makes the first

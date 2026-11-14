@@ -143,7 +143,7 @@ private theorem risingFactorial_cross_mul (a : ℝ) (k r : ℕ) :
 
 /-- Clearing the positive scalar in the upper-parameter Euler factorization:
 `E_(a+1) ... E_(a+r) H_n^(a+r,a+r) = (a+1)_r H_n^(a,a+r)`. -/
-theorem eulerShiftRange_diagonal_eq_C_mul_jacobiCoefficientPolynomial
+theorem _root_.RealRooted.JacobiCoefficientPolynomial.eulerShiftRange_diagonal_eq_C_mul
     (a : ℝ) (r n : ℕ) (ha : -1 < a) :
     eulerShiftRange (a + 1) r
         (jacobiCoefficientPolynomial n (a + r) (a + r)) =
@@ -196,7 +196,7 @@ theorem jacobiCoefficientPolynomial_eq_C_mul_eulerShiftRange
       C (risingFactorial (a + 1) r)⁻¹ *
         eulerShiftRange (a + 1) r
           (jacobiCoefficientPolynomial n (a + r) (a + r)) := by
-  rw [eulerShiftRange_diagonal_eq_C_mul_jacobiCoefficientPolynomial a r n ha]
+  rw [RealRooted.JacobiCoefficientPolynomial.eulerShiftRange_diagonal_eq_C_mul a r n ha]
   rw [← mul_assoc, ← C_mul]
   simp [(risingFactorial_pos r (by linarith : 0 < a + 1)).ne']
 
@@ -304,7 +304,7 @@ private theorem coeff_jacobiCoefficientPolynomial_self (a b : ℝ) (k : ℕ) :
 
 /-- An Euler-multiplier polynomial representing every row is forced at each
 nonnegative integer by the top coefficient of that row. -/
-theorem eval_eq_risingFactorial_div_of_diagonalOperator_jacobiCoefficientPolynomial
+theorem _root_.RealRooted.JacobiCoefficientPolynomial.eval_eq_risingFactorial_div
     {a b : ℝ} {p : ℝ[X]} (hb : -1 < b)
     (h : ∀ n, jacobiCoefficientPolynomial n a b =
       diagonalOperator (fun k ↦ p.eval (k : ℝ))
@@ -332,9 +332,9 @@ private theorem mul_comp_X_add_C_eq_mul_of_diagonalOperator
   simp only [Set.mem_ofPred_eq, eval_mul, eval_add, eval_X, eval_C, eval_comp]
   rw [show (k : ℝ) + 1 = ((k + 1 : ℕ) : ℝ) by norm_num]
   rw [
-    eval_eq_risingFactorial_div_of_diagonalOperator_jacobiCoefficientPolynomial
+    RealRooted.JacobiCoefficientPolynomial.eval_eq_risingFactorial_div
       hb h (k + 1),
-    eval_eq_risingFactorial_div_of_diagonalOperator_jacobiCoefficientPolynomial
+    RealRooted.JacobiCoefficientPolynomial.eval_eq_risingFactorial_div
       hb h k]
   rw [risingFactorial_succ, risingFactorial_succ]
   have ha0 : risingFactorial (a + 1) k ≠ 0 :=
@@ -422,7 +422,7 @@ theorem exists_diagonalOperator_jacobiCoefficientPolynomial_iff
   constructor
   · rintro ⟨p, hp⟩
     have hpEval :=
-      eval_eq_risingFactorial_div_of_diagonalOperator_jacobiCoefficientPolynomial
+      RealRooted.JacobiCoefficientPolynomial.eval_eq_risingFactorial_div
         hb hp 0
     simp only [risingFactorial_zero, div_one] at hpEval
     have hp0 : p ≠ 0 := by
@@ -448,7 +448,7 @@ theorem exists_diagonalOperator_jacobiCoefficientPolynomial_iff
 
 /-- Allowing a nonzero scalar depending on the row does not enlarge the
 class of row-independent polynomial Euler multipliers. -/
-theorem exists_rowScalar_diagonalOperator_jacobiCoefficientPolynomial_iff
+theorem _root_.RealRooted.JacobiCoefficientPolynomial.exists_rowScalar_diagonalOperator_iff
     {a b : ℝ} (ha : -1 < a) (hb : -1 < b) :
     (∃ (p : ℝ[X]) (c : ℕ → ℝ), p.eval 0 ≠ 0 ∧
       (∀ n, c n ≠ 0) ∧
@@ -482,7 +482,7 @@ theorem exists_rowScalar_diagonalOperator_jacobiCoefficientPolynomial_iff
       (exists_diagonalOperator_jacobiCoefficientPolynomial_iff ha hb).mpr hr
     refine ⟨p, fun _ ↦ 1, ?_, fun _ ↦ one_ne_zero, ?_⟩
     · have hpEval :=
-        eval_eq_risingFactorial_div_of_diagonalOperator_jacobiCoefficientPolynomial
+        RealRooted.JacobiCoefficientPolynomial.eval_eq_risingFactorial_div
           hb hp 0
       simp only [risingFactorial_zero, div_one] at hpEval
       norm_num at hpEval
@@ -494,7 +494,7 @@ theorem exists_rowScalar_diagonalOperator_jacobiCoefficientPolynomial_iff
 /-- On an integral upper-parameter shift, the normalized product of linear
 Euler multipliers is the unique polynomial in the Euler operator mapping
 every diagonal row to the shifted family. -/
-theorem diagonalOperator_jacobiCoefficientPolynomial_iff_eq_multiplierPolynomial
+theorem _root_.RealRooted.JacobiCoefficientPolynomial.diagonalOperator_iff_eq_multiplierPolynomial
     (a : ℝ) (r : ℕ) (p : ℝ[X]) (ha : -1 < a) :
     (∀ n, jacobiCoefficientPolynomial n a (a + r) =
       diagonalOperator (fun k ↦ p.eval (k : ℝ))
@@ -525,9 +525,9 @@ theorem diagonalOperator_jacobiCoefficientPolynomial_iff_eq_multiplierPolynomial
     rintro x ⟨k, rfl⟩
     simp only [Set.mem_ofPred_eq]
     rw [
-      eval_eq_risingFactorial_div_of_diagonalOperator_jacobiCoefficientPolynomial
+      RealRooted.JacobiCoefficientPolynomial.eval_eq_risingFactorial_div
         hb hp k,
-      eval_eq_risingFactorial_div_of_diagonalOperator_jacobiCoefficientPolynomial
+      RealRooted.JacobiCoefficientPolynomial.eval_eq_risingFactorial_div
         hb hmodel k]
   · rintro rfl
     exact hmodel

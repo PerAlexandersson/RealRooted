@@ -184,7 +184,7 @@ private theorem rescaledBasisPower_eq_sum_scaled
   have hQdeg := appellCoefficient_natDegree_le hPdeg hPmonic hpres
   have hinputdeg : ((X + C (s ^ 2)) ^ N : ℝ[X]).natDegree ≤ N := by
     rw [natDegree_pow, natDegree_X_add_C, mul_one]
-  have hexpand := basisTransform_eq_sum_iterate_derivative_of_isAppellExpansion
+  have hexpand := RealRooted.IsAppellExpansion.basisTransform_eq_sum_iterate_derivative
     (isAppellExpansion_appellCoefficient P) hPdeg hQdeg hinputdeg
   rw [rescaledBasisPower]
   change C ((s ^ N)⁻¹) *
@@ -984,7 +984,7 @@ theorem coeff_appellCoefficient_even_bounds
 
 /-- Exponential coefficient data attain equality in the second coefficient
 bound. -/
-theorem limitingAppellCoefficient_two_eq_half_square_of_eq_pow_div_factorial
+theorem _root_.RealRooted.LimitingAppell.coeff_two_eq_half_square_of_eq_pow_div_factorial
     {d : ℕ → ℝ} {c : ℝ} (hd : ∀ j, d j = c ^ j / (j.factorial : ℝ)) :
     d 2 = d 1 ^ 2 / 2 := by
   rw [hd 2, hd 1]
@@ -1011,7 +1011,7 @@ private theorem coeff_zero_limitingAppellPolynomial_even
 
 /-- Equality of every limiting polynomial with the Gaussian family is
 equivalent to exponential coefficient data. -/
-theorem forall_limitingAppellPolynomial_eq_iff_coeff_eq_pow_div_factorial
+theorem _root_.RealRooted.LimitingAppell.forall_polynomial_eq_iff_coeff_eq_pow_div_factorial
     (d : ℕ → ℝ) (c : ℝ) :
     (∀ N, limitingAppellPolynomial d N =
       limitingAppellPolynomial (fun j => c ^ j / (j.factorial : ℝ)) N) ↔

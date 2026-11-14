@@ -450,7 +450,7 @@ def fTransformInterlacesGoal : TacticM Unit := do
     withMainContext do
     evalTactic (← `(tactic|
       have $qinterl:ident : ∀ j, StrictInterl ($Q j) ($Q (j + 1)) :=
-        derivativeRecurrence_strictInterl_of_floor_half_degree
+        RealRooted.derivativeRecurrence_strictInterl_of_floor_half_degree
           (Q := $Q) (A := fun $n:ident : ℕ => $aT) (B := fun $n:ident : ℕ => $bT)
           (fun j => by rw [$Q:ident]) $qdeg $qpos $qnn (by
             intro j r hr
@@ -461,7 +461,7 @@ def fTransformInterlacesGoal : TacticM Unit := do
     withMainContext do
     evalTactic (← `(tactic|
       have $qinterl:ident : ∀ j, StrictInterl ($Q j) ($Q (j + 1)) :=
-        derivativeRecurrence_strictInterl_of_half_degree
+        RealRooted.derivativeRecurrence_strictInterl_of_half_degree
           (Q := $Q) (A := fun $n:ident : ℕ => $aT) (B := fun $n:ident : ℕ => $bT)
           (fun j => by rw [$Q:ident]) $qdeg $qpos $qnn (by
             intro j r hr

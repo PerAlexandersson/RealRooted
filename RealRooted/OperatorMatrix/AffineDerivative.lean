@@ -135,7 +135,7 @@ private theorem row_cross_of_cap_two {a b A B : ℝ}
     (heq ▸ hout.splits)
 
 /-- At every common cap at least two, row safety is the cross inequality. -/
-theorem affineDRow_pf_through_iff {a b A B : ℝ} {N : ℕ} (hN : 2 ≤ N)
+theorem affineDRow_isPFPolynomial_upTo_iff {a b A B : ℝ} {N : ℕ} (hN : 2 ≤ N)
     (h : 0 ≤ a ∧ 0 ≤ b ∧ 0 ≤ A ∧ 0 ≤ B) :
     (∀ p q : ℝ[X], IsPFPolynomial p → IsPFPolynomial q → Interl p q →
       p.natDegree ≤ N → q.natDegree ≤ N →
@@ -148,7 +148,7 @@ theorem affineDRow_pf_through_iff {a b A B : ℝ} {N : ℕ} (hN : 2 ≤ N)
     exact (affineDRow_pf_anchor h hc hp hq hi).1
 
 /-- The unrestricted affine-derivative row criterion. -/
-theorem affineDRow_pf_iff {a b A B : ℝ}
+theorem affineDRow_isPFPolynomial_iff {a b A B : ℝ}
     (h : 0 ≤ a ∧ 0 ≤ b ∧ 0 ≤ A ∧ 0 ≤ B) :
     (∀ p q : ℝ[X], IsPFPolynomial p → IsPFPolynomial q → Interl p q →
       IsPFPolynomial (affineDRow a b A B p q)) ↔ a * B ≤ A * b := by
@@ -208,11 +208,11 @@ theorem affineD_column_iff {a c A C₀ : ℝ}
 
 example : ∀ p q : ℝ[X], IsPFPolynomial p → IsPFPolynomial q → Interl p q →
     IsPFPolynomial (affineDRow 0 1 1 0 p q) := by
-  exact (affineDRow_pf_iff (by norm_num)).mpr (by norm_num)
+  exact (affineDRow_isPFPolynomial_iff (by norm_num)).mpr (by norm_num)
 
 example : ¬ (∀ p q : ℝ[X], IsPFPolynomial p → IsPFPolynomial q → Interl p q →
     IsPFPolynomial (affineDRow 1 0 0 1 p q)) := by
-  rw [affineDRow_pf_iff (by norm_num)]
+  rw [affineDRow_isPFPolynomial_iff (by norm_num)]
   norm_num
 
 example {p : ℝ[X]} (hp : IsPFPolynomial p) :

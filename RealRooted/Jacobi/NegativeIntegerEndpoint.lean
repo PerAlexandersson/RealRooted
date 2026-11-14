@@ -429,7 +429,7 @@ theorem hasSimpleRootsExcept_of_reflectedJacobiOperator_eq_zero
   exact endpoint_factor_jacobi_hasSimpleRootsExcept n m halpha r hrne hqr
 
 /-- Every root of a nonzero solution is `-1` or lies strictly between `-1` and `0`. -/
-theorem isRoot_eq_neg_one_or_mem_Ioo_of_reflectedJacobiOperator_eq_zero
+theorem _root_.RealRooted.ReflectedJacobi.eq_neg_one_or_mem_Ioo_of_isRoot
     (n m : ℕ) {alpha r : ℝ} (halpha : -1 < alpha) (hmn : m ≤ n)
     {p : ℝ[X]} (hp : reflectedJacobiOperator n alpha (-(m : ℝ)) p = 0)
     (hpne : p ≠ 0) (hr : p.IsRoot r) :

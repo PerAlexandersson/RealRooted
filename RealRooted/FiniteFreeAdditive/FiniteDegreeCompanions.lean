@@ -124,7 +124,7 @@ private theorem kreinSummand_image_ordered
 
 /-- Every nonnegative root-deletion expansion yields ordered PF images on
 every PF input, including annihilated images. -/
-theorem HasKreinCompanionExpansion.preservesOrderedPF
+theorem _root_.RealRooted.HasKreinCompanionExpansion.isPFPolynomial_and_interl
     {h k : ℝ[X]} (hh : IsPFPolynomial h) (hh0 : h ≠ 0)
     (hk : HasKreinCompanionExpansion h k) {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
@@ -223,7 +223,7 @@ theorem interl_nonneg_combos_of_cross
 
 /-- The determinant-condition affine row is PF and is preceded by its
 leading-coefficient row. -/
-theorem affineDifferentialRow_pf_and_interl
+theorem affineDifferentialRow_isPFPolynomial_and_interl
     {h k p : ℝ[X]}
     (hh : IsPFPolynomial (applyAsDifferentialOperator h p))
     (hk : IsPFPolynomial (applyAsDifferentialOperator k p))
@@ -331,7 +331,7 @@ theorem multishiftDifferentialSymbol_empty (N : ℕ) :
 
 /-- The empty-shift recurrence is multiplication by `X`, hence is PF and is
 preceded by its input. -/
-theorem emptyMultishiftRecurrence_pf_and_interl {p : ℝ[X]}
+theorem emptyMultishiftRecurrence_isPFPolynomial_and_interl {p : ℝ[X]}
     (hp : IsPFPolynomial p) :
     IsPFPolynomial
         (X * applyAsDifferentialOperator
@@ -470,7 +470,7 @@ theorem interl_multishiftJensenPolynomial_removeNth
 
 /-- The full and one-shift-deleted multishift symbols give ordered PF images
 through their common degree cap. -/
-theorem preservesOrderedPFUpTo_multishift_removeNth
+theorem _root_.RealRooted.PreservesOrderedPFUpTo.multishiftDifferentialSymbol_removeNth
     {N r : ℕ} {s : Fin (r + 1) → ℝ} (hrN : r + 1 ≤ N)
     (hs : ∀ i, 0 ≤ s i) (i : Fin (r + 1)) :
     PreservesOrderedPFUpTo N (multishiftDifferentialSymbol N s)
@@ -496,7 +496,7 @@ def multishiftDifferentialRecurrence
       (multishiftDifferentialSymbol N (Fin.removeNth i s)) p
 
 /-- The multishift recurrence is PF and is preceded by its full-symbol image. -/
-theorem multishiftDifferentialRecurrence_pf_and_interl
+theorem _root_.RealRooted.IsPFPolynomial.multishiftDifferentialRecurrence_and_interl
     {N r : ℕ} {s a : Fin (r + 1) → ℝ}
     (hrN : r + 1 ≤ N) (hs : ∀ i, 0 ≤ s i) (ha : ∀ i, 0 ≤ a i)
     {p : ℝ[X]} (hp : IsPFPolynomial p) (hpdeg : p.natDegree ≤ N) :
@@ -514,7 +514,7 @@ theorem multishiftDifferentialRecurrence_pf_and_interl
       Interl f (applyAsDifferentialOperator
         (multishiftDifferentialSymbol N (Fin.removeNth i s)) p) := by
     intro i
-    exact preservesOrderedPFUpTo_multishift_removeNth hrN hs i hp hpdeg
+    exact RealRooted.PreservesOrderedPFUpTo.multishiftDifferentialSymbol_removeNth hrN hs i hp hpdeg
   have hf : IsPFPolynomial f := (hpair 0).1
   have hgpf : ∀ i, IsPFPolynomial (g i) := by
     intro i
@@ -592,7 +592,7 @@ theorem multishiftDifferentialRecurrence_induction
   | succ k ih =>
       have hmk : m ≤ m + k := by lia
       rw [show m + (k + 1) = (m + k) + 1 by lia, hrec (m + k) hmk]
-      have hout := multishiftDifferentialRecurrence_pf_and_interl
+      have hout := RealRooted.IsPFPolynomial.multishiftDifferentialRecurrence_and_interl
         (hr (m + k) hmk) (hs (m + k)) (ha (m + k)) (ih hmk).1 (ih hmk).2
       refine ⟨hout.1, ?_⟩
       by_cases hzero : P (m + k) = 0

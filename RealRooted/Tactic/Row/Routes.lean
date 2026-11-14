@@ -251,8 +251,8 @@ def rowRouteTable : List RowRouteInfo := [
       [
         `RealRooted.derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs,
         `RealRooted.derivativeRecurrence_strictInterl_of_degree_pattern_of_nonnegCoeffs,
-        `RealRooted.Tactic.derivativeRecurrence_strictInterl_of_half_degree,
-        `RealRooted.Tactic.derivativeRecurrence_strictInterl_of_floor_half_degree
+        `RealRooted.derivativeRecurrence_strictInterl_of_half_degree,
+        `RealRooted.derivativeRecurrence_strictInterl_of_floor_half_degree
       ]
   },
   { name := `reversed

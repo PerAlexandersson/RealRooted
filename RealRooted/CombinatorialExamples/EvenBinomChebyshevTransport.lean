@@ -105,7 +105,7 @@ theorem homogenizedSubstitution_chebyshev_T_eq_evenBinomPolyReal (d : ℕ) :
 
 /-- The natural-degree cleared Mobius substitution sends a constant shift of
 `T d` to the corresponding alternating binomial perturbation. -/
-theorem rationalSubstitution_chebyshev_T_add_C_eq_evenBinomPolyReal_add
+theorem _root_.RealRooted.Chebyshev.rationalSubstitution_T_add_C_eq
     (d : ℕ) (c : ℝ) :
     rationalSubstitution (1 + X) (1 - X)
         (Polynomial.Chebyshev.T ℝ d + C c) =
@@ -163,7 +163,7 @@ theorem evenBinomPolyReal_add_C_mul_one_sub_X_pow_not_splits
   have htransport := (rationalSubstitution_splits_iff hq one_sub_X_ne_zero
     isCoprime_one_add_X_one_sub_X hasNonconstantRatio_one_add_X_one_sub_X).mp
   apply (htransport ?_).1
-  rw [rationalSubstitution_chebyshev_T_add_C_eq_evenBinomPolyReal_add]
+  rw [RealRooted.Chebyshev.rationalSubstitution_T_add_C_eq]
   exact hsplit
 
 /-- In every degree at least two, all binomially bounded perturbations are

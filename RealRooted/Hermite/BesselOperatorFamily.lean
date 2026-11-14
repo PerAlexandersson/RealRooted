@@ -125,7 +125,7 @@ theorem besselOperator_eq_zero_iff_natDegree_lt (lambda : ℝ) (r : ℕ)
 /-- The denominator-cleared auxiliary polynomial
 `sum_m f_m t^(N-m) (x*t+t^2-lambda)^m`, with `t` indexed by `none` and `x`
 indexed by `some ()`. -/
-def besselAuxiliary (N : ℕ) (lambda : ℝ) (f : ℝ[X]) :
+def besselHomogenization (N : ℕ) (lambda : ℝ) (f : ℝ[X]) :
     MvPolynomial (Option Unit) ℂ :=
   ∑ m ∈ range (N + 1),
     MvPolynomial.C (f.coeff m : ℂ) * MvPolynomial.X none ^ (N - m) *
@@ -134,23 +134,23 @@ def besselAuxiliary (N : ℕ) (lambda : ℝ) (f : ℝ[X]) :
 
 /-- Evaluation of the finite Bessel auxiliary polynomial in its defining
 coefficient form. -/
-theorem eval_besselAuxiliary (N : ℕ) (lambda : ℝ) (f : ℝ[X])
+theorem eval_besselHomogenization (N : ℕ) (lambda : ℝ) (f : ℝ[X])
     (z : Option Unit → ℂ) :
-    MvPolynomial.eval z (besselAuxiliary N lambda f) =
+    MvPolynomial.eval z (besselHomogenization N lambda f) =
       ∑ m ∈ range (N + 1),
         (f.coeff m : ℂ) * z none ^ (N - m) *
           (z (some ()) * z none + z none ^ 2 - lambda) ^ m := by
-  simp [besselAuxiliary]
+  simp [besselHomogenization]
 
 /-- Away from `t = 0`, the auxiliary polynomial equals
 `t^N f(x+t-lambda/t)`. -/
-theorem eval_besselAuxiliary_eq_pow_mul (N : ℕ) (lambda : ℝ) (f : ℝ[X])
+theorem eval_besselHomogenization_eq_pow_mul (N : ℕ) (lambda : ℝ) (f : ℝ[X])
     (hN : f.natDegree ≤ N) (z : Option Unit → ℂ) (hz : z none ≠ 0) :
-    MvPolynomial.eval z (besselAuxiliary N lambda f) =
+    MvPolynomial.eval z (besselHomogenization N lambda f) =
       z none ^ N *
         (complexify f).eval
           (z (some ()) + z none - (lambda : ℂ) / z none) := by
-  rw [eval_besselAuxiliary, Polynomial.eval_eq_sum_range' (n := N + 1)]
+  rw [eval_besselHomogenization, Polynomial.eval_eq_sum_range' (n := N + 1)]
   · rw [Finset.mul_sum]
     apply sum_congr rfl
     intro m hm
@@ -174,14 +174,14 @@ theorem eval_besselAuxiliary_eq_pow_mul (N : ℕ) (lambda : ℝ) (f : ℝ[X])
 
 /-- For nonnegative parameter, the denominator-cleared auxiliary of a nonzero
 split polynomial is upper-half-plane stable. -/
-theorem mvUpperHalfPlaneStable_besselAuxiliary (N : ℕ) {lambda : ℝ}
+theorem mvUpperHalfPlaneStable_besselHomogenization (N : ℕ) {lambda : ℝ}
     {f : ℝ[X]} (hlambda : 0 ≤ lambda) (hf : f ≠ 0) (hsplits : f.Splits)
     (hN : f.natDegree ≤ N) :
-    MvUpperHalfPlaneStable (besselAuxiliary N lambda f) := by
+    MvUpperHalfPlaneStable (besselHomogenization N lambda f) := by
   intro z hz
   have ht : 0 < (z none).im := hz none
   have ht0 : z none ≠ 0 := fun hzero => by simp [hzero] at ht
-  rw [eval_besselAuxiliary_eq_pow_mul N lambda f hN z ht0]
+  rw [eval_besselHomogenization_eq_pow_mul N lambda f hN z ht0]
   apply mul_ne_zero (pow_ne_zero N ht0)
   apply eval_complexify_ne_zero_of_splits_of_im_pos hsplits hf
   rw [Complex.sub_im, Complex.add_im, Complex.div_im]
@@ -195,18 +195,18 @@ theorem mvUpperHalfPlaneStable_besselAuxiliary (N : ℕ) {lambda : ℝ}
 
 /-- Every distinguished-variable coefficient of a finite Bessel auxiliary is
 zero or upper-half-plane stable. -/
-theorem besselAuxiliary_coeff_zero_or (N r : ℕ) {lambda : ℝ} {f : ℝ[X]}
+theorem mvUpperHalfPlaneStableOrZero_coeff_besselHomogenization (N r : ℕ) {lambda : ℝ} {f : ℝ[X]}
     (hlambda : 0 ≤ lambda) (hf : f ≠ 0) (hsplits : f.Splits)
     (hN : f.natDegree ≤ N) :
     MvUpperHalfPlaneStableOrZero
       ((MvPolynomial.optionEquivLeft ℂ Unit
-        (besselAuxiliary N lambda f)).coeff (N + r)) :=
+        (besselHomogenization N lambda f)).coeff (N + r)) :=
   MvUpperHalfPlaneStable.optionEquivLeft_coeff_zero_or_of_finite
-    (mvUpperHalfPlaneStable_besselAuxiliary N hlambda hf hsplits hN) (N + r)
+    (mvUpperHalfPlaneStable_besselHomogenization N hlambda hf hsplits hN) (N + r)
 
 private def besselAuxiliaryPolynomial (N : ℕ) (lambda : ℝ) (f : ℝ[X]) :
     Polynomial ℂ[X] :=
-  (MvPolynomial.optionEquivLeft ℂ Unit (besselAuxiliary N lambda f)).map
+  (MvPolynomial.optionEquivLeft ℂ Unit (besselHomogenization N lambda f)).map
     (MvPolynomial.eval₂Hom C fun _ ↦ X)
 
 private theorem besselAuxiliaryPolynomial_eq (N : ℕ) (lambda : ℝ) (f : ℝ[X]) :
@@ -214,7 +214,7 @@ private theorem besselAuxiliaryPolynomial_eq (N : ℕ) (lambda : ℝ) (f : ℝ[X
       ∑ m ∈ range (N + 1),
         C (C (f.coeff m : ℂ)) * X ^ (N - m) *
           (C X * X + X ^ 2 - C (C (lambda : ℂ))) ^ m := by
-  rw [besselAuxiliaryPolynomial, besselAuxiliary, map_sum, Polynomial.map_sum]
+  rw [besselAuxiliaryPolynomial, besselHomogenization, map_sum, Polynomial.map_sum]
   simp
 
 private theorem coeff_auxiliary_monomial (N m r : ℕ) (lambda : ℝ)
@@ -413,11 +413,11 @@ private theorem complexBesselOperatorBound_eq_complexify (N r : ℕ)
 
 /-- The coefficient of `t^(N+r)` in the denominator-cleared auxiliary is the
 complexification of the finite Bessel operator. -/
-theorem besselAuxiliary_coeff (N r : ℕ) (lambda : ℝ) (f : ℝ[X])
+theorem coeff_besselHomogenization (N r : ℕ) (lambda : ℝ) (f : ℝ[X])
     (hN : f.natDegree ≤ N) :
     (MvPolynomial.uniqueAlgEquiv ℂ Unit)
         ((MvPolynomial.optionEquivLeft ℂ Unit
-          (besselAuxiliary N lambda f)).coeff (N + r)) =
+          (besselHomogenization N lambda f)).coeff (N + r)) =
       complexify (besselOperator lambda r f) := by
   rw [← complexBesselOperatorBound_eq_complexify N r lambda f hN]
   rw [← coeff_besselAuxiliaryPolynomial_eq_bound N r lambda f hN]
@@ -443,16 +443,17 @@ theorem besselOperator_eq_zero_or_isUpperHalfPlaneStable_complexify
       IsUpperHalfPlaneStable (complexify (besselOperator lambda r f)) := by
   by_cases hf0 : f = 0
   · exact Or.inl (by rw [hf0, besselOperator_zero])
-  have hcoeff := besselAuxiliary_coeff_zero_or f.natDegree r hlambda hf0 hf le_rfl
+  have hcoeff := mvUpperHalfPlaneStableOrZero_coeff_besselHomogenization
+    f.natDegree r hlambda hf0 hf le_rfl
   rcases hcoeff with hzero | hstable
   · left
     apply (Polynomial.map_eq_zero_iff (f := Complex.ofRealHom)
       Complex.ofReal_injective).mp
     change complexify (besselOperator lambda r f) = 0
-    rw [← besselAuxiliary_coeff f.natDegree r lambda f le_rfl, hzero]
+    rw [← coeff_besselHomogenization f.natDegree r lambda f le_rfl, hzero]
     simp
   · right
-    rw [← besselAuxiliary_coeff f.natDegree r lambda f le_rfl]
+    rw [← coeff_besselHomogenization f.natDegree r lambda f le_rfl]
     exact isUpperHalfPlaneStable_uniqueAlgEquiv_unit hstable
 
 /-- For nonnegative parameter, every finite Bessel operator preserves real

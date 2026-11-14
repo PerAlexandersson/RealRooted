@@ -79,7 +79,7 @@ theorem eq_sum_of_isAppellExpansion_of_natDegree_le
 
 /-- An Appell expansion evaluates the associated basis transform as the
 locally finite differential operator with coefficients `Q`. -/
-theorem basisTransform_eq_sum_iterate_derivative_of_isAppellExpansion
+theorem _root_.RealRooted.IsAppellExpansion.basisTransform_eq_sum_iterate_derivative
     {P Q : ℕ → ℝ[X]} (hPQ : IsAppellExpansion P Q)
     (hPdeg : ∀ n, (P n).natDegree = n)
     (hQdeg : ∀ k, (Q k).natDegree ≤ k / 2)
@@ -139,7 +139,7 @@ private theorem shiftedPowerImage_eq_of_commutes_translation
 
 /-- The canonical Appell coefficients are constant exactly when the basis
 transform commutes with every translation. -/
-theorem forall_appellCoefficient_natDegree_eq_zero_iff_commutes_translation
+theorem _root_.RealRooted.AppellCoefficient.forall_natDegree_eq_zero_iff_commutes_translation
     (P : ℕ → ℝ[X]) (hPdeg : ∀ n, (P n).natDegree = n)
     (hQdeg : ∀ k, (appellCoefficient P k).natDegree ≤ k / 2) :
     (∀ k, (appellCoefficient P k).natDegree = 0) ↔
@@ -148,11 +148,11 @@ theorem forall_appellCoefficient_natDegree_eq_zero_iff_commutes_translation
           (basisTransform P p).comp (X + C r) := by
   constructor
   · intro hconstant r p
-    rw [basisTransform_eq_sum_iterate_derivative_of_isAppellExpansion
+    rw [RealRooted.IsAppellExpansion.basisTransform_eq_sum_iterate_derivative
         (isAppellExpansion_appellCoefficient P) hPdeg hQdeg
         (p := p.comp (X + C r)) (N := p.natDegree) (by
           rw [← taylor_apply, natDegree_taylor]),
-      basisTransform_eq_sum_iterate_derivative_of_isAppellExpansion
+      RealRooted.IsAppellExpansion.basisTransform_eq_sum_iterate_derivative
         (isAppellExpansion_appellCoefficient P) hPdeg hQdeg (p := p)
         (N := p.natDegree) le_rfl]
     rw [Polynomial.sum_comp]
@@ -217,11 +217,11 @@ private theorem derivative_appellCoefficient_eq_zero_of_basis_derivative
   induction n using Nat.strong_induction_on with
   | h n ih =>
       have hexpand :=
-        basisTransform_eq_sum_iterate_derivative_of_isAppellExpansion
+        RealRooted.IsAppellExpansion.basisTransform_eq_sum_iterate_derivative
           (isAppellExpansion_appellCoefficient P) hPdeg hQdeg
           (p := X ^ n) (N := n) (by simp)
       have hexpandDer :=
-        basisTransform_eq_sum_iterate_derivative_of_isAppellExpansion
+        RealRooted.IsAppellExpansion.basisTransform_eq_sum_iterate_derivative
           (isAppellExpansion_appellCoefficient P) hPdeg hQdeg
           (p := (X ^ n).derivative) (N := n)
           (calc
@@ -281,10 +281,10 @@ theorem forall_appellCoefficient_natDegree_eq_zero_iff_derivative
   · intro hconstant n
     have hcomm (p : ℝ[X]) :
         (basisTransform P p).derivative = basisTransform P p.derivative := by
-      rw [basisTransform_eq_sum_iterate_derivative_of_isAppellExpansion
+      rw [RealRooted.IsAppellExpansion.basisTransform_eq_sum_iterate_derivative
           (isAppellExpansion_appellCoefficient P) hPdeg hQdeg (p := p)
           (N := p.natDegree) le_rfl,
-        basisTransform_eq_sum_iterate_derivative_of_isAppellExpansion
+        RealRooted.IsAppellExpansion.basisTransform_eq_sum_iterate_derivative
           (isAppellExpansion_appellCoefficient P) hPdeg hQdeg
           (p := p.derivative) (N := p.natDegree)
           ((natDegree_derivative_le (p := p)).trans (Nat.sub_le _ _))]
@@ -389,7 +389,7 @@ theorem appellTranslationRigidity_equivalences
   have hbeta := two_mul_coeff_one_appellCoefficient_two_eq_zero_iff
     hPdeg hPmonic hpres
   exact ⟨hbeta,
-    hbeta.trans (forall_appellCoefficient_natDegree_eq_zero_iff_commutes_translation
+    hbeta.trans (RealRooted.AppellCoefficient.forall_natDegree_eq_zero_iff_commutes_translation
       P hPdeg (appellCoefficient_natDegree_le hPdeg hPmonic hpres)),
     hbeta.trans (forall_appellCoefficient_natDegree_eq_zero_iff_derivative
       P hPdeg (appellCoefficient_natDegree_le hPdeg hPmonic hpres))⟩
@@ -408,7 +408,7 @@ theorem basisTransform_splits_of_quadraticCoefficient_eq_zero
     appellCoefficient_natDegree_eq_zero_of_quadraticCoefficient_eq_zero
       hPdeg hPmonic hpres hbeta
   have hcomm :=
-    (forall_appellCoefficient_natDegree_eq_zero_iff_commutes_translation
+    (RealRooted.AppellCoefficient.forall_natDegree_eq_zero_iff_commutes_translation
       P hPdeg (appellCoefficient_natDegree_le hPdeg hPmonic hpres)).mp hconstant
   obtain ⟨r, hr⟩ := exists_root_upper_bound p
   have hshiftSplits : (p.comp (X + C r)).Splits := hp.comp_X_add_C r

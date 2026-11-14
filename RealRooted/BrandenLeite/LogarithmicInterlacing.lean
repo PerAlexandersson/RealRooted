@@ -18,7 +18,7 @@ namespace RealRooted.BrandenLeite
 /-- Positive-exponent PF and interlacing certificates pass to the normalized
 zero-exponent limit defining the logarithmic rows. Only a uniform degree
 bound is needed; the limit may lose degree. -/
-theorem affineLogCoeff_pf_and_interl_of_positive_powers
+theorem affineLogCoeff_isPFPolynomial_and_interl_of_pos
     (Q B : PowerSeries ℝ) (hQ : PowerSeries.constantCoeff Q = 1)
     (hB : PowerSeries.constantCoeff B = 0)
     (hpf : ∀ a : ℝ, 0 < a → ∀ j,
@@ -100,7 +100,7 @@ private theorem pf_and_interl_aux
         exact Nat.lt_of_not_ge hk
       simpa only [Polynomial.coeff_eq_zero_of_natDegree_lt hlarge] using
         (le_refl (0 : ℝ))
-  exact affineLogCoeff_pf_and_interl_of_positive_powers
+  exact affineLogCoeff_isPFPolynomial_and_interl_of_pos
     (Q : PowerSeries ℝ) (B : PowerSeries ℝ) hQ0 hB0
     (fun a ha j => (hprops a ha j).1)
     (fun a ha j => (hprops a ha j).2.1)
@@ -140,7 +140,7 @@ end
 rows of positive index are PF and consecutively interlace in the oriented
 zero-aware relation. Degree and strict coefficient positivity are separate
 algebraic conclusions, not assumptions in this limit argument. -/
-theorem affineLogCoeff_factor_pf_and_interl
+theorem affineLogCoeff_factor_isPFPolynomial_and_interl
     {ι ν : Type*} (s : Finset ι) (hs : s.Nonempty) (α : ι → ℝ)
     (hα : ∀ i ∈ s, 0 < α i) (t : Finset ν) (β : ν → ℝ)
     (hβ : ∀ j ∈ t, 0 ≤ β j) {c : ℝ} (hc : 0 < c)

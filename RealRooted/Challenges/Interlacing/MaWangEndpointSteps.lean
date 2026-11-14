@@ -87,7 +87,7 @@ module = "RealRooted.MaWang.GrowingZeroMultiplicity"
 label = "The PF threshold depends on the multiplicity of the root zero: 0 ≤ a + u m₀"
 
 [[theorems]]
-name = "RealRooted.growingZeroFamily_pf_degree_multiplicity_interlacing"
+name = "RealRooted.GrowingZeroFamily.isPFPolynomial_degree_multiplicity_interlacing"
 module = "RealRooted.MaWang.GrowingZeroMultiplicity"
 label = "The integer growing-zero family is PF and interlacing, with endpoint multiplicity at zero"
 

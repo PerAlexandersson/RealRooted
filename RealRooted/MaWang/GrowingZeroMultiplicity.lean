@@ -362,7 +362,7 @@ private lemma affineEndpointMultiplicity_succ' (A R n : ℕ) (hR : 0 < R) :
 /-- For nonnegative integer `a` and positive integer `r`, the affine family is
 PF in every row, has degree equal to its index, has the stated zero
 multiplicity and leading coefficient, and consecutive rows interlace. -/
-theorem growingZeroFamily_pf_degree_multiplicity_interlacing
+theorem _root_.RealRooted.GrowingZeroFamily.isPFPolynomial_degree_multiplicity_interlacing
     (A R : ℕ) {b c : ℝ} (hR : 0 < R) (hb : (R : ℝ) ≤ b) (hc : 0 < c) :
     ∀ n : ℕ,
       IsPFPolynomial (growingZeroFamily A R b c n) ∧
@@ -595,7 +595,7 @@ theorem growingZeroFamily_all_isPFPolynomial_iff
     exact ⟨A, R, hR, rfl, hrR⟩
   · rintro ⟨A, R, hR, rfl, rfl⟩
     exact fun n =>
-      (growingZeroFamily_pf_degree_multiplicity_interlacing A R hR hb hc n).1
+      (RealRooted.GrowingZeroFamily.isPFPolynomial_degree_multiplicity_interlacing A R hR hb hc n).1
 
 /-- A growing-zero step with positive derivative parameter preserves
 simplicity away from zero and shares no negative root with its input. -/
@@ -653,7 +653,7 @@ theorem growingZeroFamily_negative_roots_simple_and_noCommon
       ∀ x : ℝ, x < 0 →
         ¬((growingZeroFamily A R b c n).IsRoot x ∧
           (growingZeroFamily A R b c (n + 1)).IsRoot x) := by
-  have hpackage := growingZeroFamily_pf_degree_multiplicity_interlacing A R hR hb hc
+  have hpackage := GrowingZeroFamily.isPFPolynomial_degree_multiplicity_interlacing A R hR hb hc
   have hsimple : ∀ n, HasSimpleRootsExcept (growingZeroFamily A R b c n) 0 := by
     intro n
     induction n with
@@ -688,5 +688,9 @@ theorem growingZeroFamily_negative_roots_simple_and_noCommon
       exact (hpackage (n + 1)).1) (hsimple n) (by positivity) (by positivity) hraise
   rw [← growingZeroFamily_succ] at hstep
   exact ⟨hsimple n, hstep.2⟩
+
+@[deprecated (since := "2026-11-14")]
+alias growingZeroFamily_pf_degree_multiplicity_interlacing :=
+  GrowingZeroFamily.isPFPolynomial_degree_multiplicity_interlacing
 
 end RealRooted

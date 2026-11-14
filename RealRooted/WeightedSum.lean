@@ -37,6 +37,15 @@ def weightedSum : List (ℝ × ℝ[X]) → ℝ[X]
 @[simp] lemma weightedSum_cons (a : ℝ) (p : ℝ[X]) (l : List (ℝ × ℝ[X])) :
     weightedSum ((a, p) :: l) = C a * p + weightedSum l := rfl
 
+/-- A linear map sends a weighted sum to the weighted sum of the images. -/
+theorem map_weightedSum (T : ℝ[X] →ₗ[ℝ] ℝ[X]) :
+    ∀ l : List (ℝ × ℝ[X]),
+      T (weightedSum l) = weightedSum (l.map fun ap => (ap.1, T ap.2))
+  | [] => by simp
+  | (a, p) :: l => by
+    simp only [weightedSum_cons, map_add, List.map_cons, map_weightedSum T l, C_mul',
+      LinearMap.map_smul]
+
 /-- A weighted sum is the ordinary sum of its scalar-multiplied entries. -/
 theorem weightedSum_eq_sum_map (l : List (ℝ × ℝ[X])) :
     weightedSum l = (l.map fun ap => C ap.1 * ap.2).sum := by

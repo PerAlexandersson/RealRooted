@@ -147,7 +147,7 @@ theorem lagTwoEuler_recurrence_certificate
         have hrneg := ih.next.isRoot_neg hr
         have hderne := ih.next.simple.eval_derivative_ne_zero hr
         have hauxSign := ih.auxiliary.eval_mul_eval_derivative_nonneg
-          ih.current.lagTwoEulerCore_preserves.pos ih.next.pos hr
+          ih.current.lagTwoEulerCore.pos ih.next.pos hr
         have heval : (P (n + 2)).eval r =
             b (n + 2) * r * (1 - r) * (P (n + 1)).derivative.eval r +
               c (n + 2) * r * H.eval r := by
@@ -175,8 +175,8 @@ theorem lagTwoEuler_recurrence_certificate
       have hHq := ih.adjacent.lagTwoEulerCore_adjacent ih.current ih.next
       have hqXH : StrictInterl (lagTwoEulerCore (n + 1) (P (n + 1))) (X * H) := by
         exact strictInterl_mul_X_of_strictInterl_of_nonneg hHq
-          ih.current.lagTwoEulerCore_preserves.nonneg
-          ih.next.lagTwoEulerCore_preserves.nonneg
+          ih.current.lagTwoEulerCore.nonneg
+          ih.next.lagTwoEulerCore.nonneg
       have haux : StrictInterl (lagTwoEulerCore (n + 1) (P (n + 1)))
           (P (n + 2)) := by
         have hsum : StrictInterl (lagTwoEulerCore (n + 1) (P (n + 1)))
@@ -187,12 +187,12 @@ theorem lagTwoEuler_recurrence_certificate
             simp only [List.mem_cons, List.not_mem_nil, or_false] at hcq
             rcases hcq with rfl | rfl
             exacts [hqA, hqXH]
-          · exact ih.next.lagTwoEulerCore_preserves.pos
+          · exact ih.next.lagTwoEulerCore.pos
           · intro cq hcq
             simp only [List.mem_cons, List.not_mem_nil, or_false] at hcq
             rcases hcq with rfl | rfl
             · exact hApos
-            · exact ih.current.lagTwoEulerCore_preserves.pos.X_mul
+            · exact ih.current.lagTwoEulerCore.pos.X_mul
           · exact ⟨(1, A), by simp⟩
         rw [hrec n]
         simpa [A, H, L, weightedSum, weightedSum_cons, mul_assoc] using hsum

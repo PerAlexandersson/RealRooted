@@ -116,7 +116,7 @@ private theorem two_mul_appellCoefficient_two_nonneg_of_repeatedRootTestsUpTo
     {N : ℕ} {c : ℕ → ℝ} (hN : 2 ≤ N)
     (htest : NewtonRepeatedRootTestsUpTo N c) :
     0 ≤ 2 * (appellCoefficient (newtonBasisPolynomial c) 2).coeff 1 := by
-  apply two_mul_coeff_one_appellCoefficient_two_nonneg_of_shiftedPower_splits
+  apply RealRooted.AppellCoefficient.two_mul_coeff_one_nonneg_of_shiftedPower_splits
     (newtonBasisPolynomial_natDegree c) (newtonBasisPolynomial_monic c)
   intro r hr
   rw [splits_shiftedPowerImage_iff]
@@ -279,7 +279,7 @@ private theorem newtonBasisTransform_eq_rising_comp
 
 /-- Arithmetic-progression Newton parameters preserve real-rootedness for all
 inputs with only nonpositive roots. -/
-theorem NewtonParametersAffine.preservesNonposRooted {c : ℕ → ℝ}
+theorem _root_.RealRooted.NewtonPreservesNonposRooted.of_parametersAffine {c : ℕ → ℝ}
     (hc : NewtonParametersAffine c) : NewtonPreservesNonposRooted c := by
   obtain ⟨h, hh, hc⟩ := hc
   intro p hp
@@ -298,7 +298,7 @@ theorem NewtonPreservesNonposRooted.repeatedRootTests {c : ℕ → ℝ}
 /-- Arithmetic-progression parameters imply every repeated-root test. -/
 theorem NewtonParametersAffine.repeatedRootTests {c : ℕ → ℝ}
     (hc : NewtonParametersAffine c) : NewtonRepeatedRootTests c :=
-  hc.preservesNonposRooted.repeatedRootTests
+  (NewtonPreservesNonposRooted.of_parametersAffine hc).repeatedRootTests
 
 /-- Repeated-root tests force the Newton parameters to form a nondecreasing
 arithmetic progression. -/
@@ -336,7 +336,7 @@ progression Newton parameters. -/
 theorem newtonPreservesNonposRooted_iff_parametersAffine (c : ℕ → ℝ) :
     NewtonPreservesNonposRooted c ↔ NewtonParametersAffine c :=
   ⟨NewtonPreservesNonposRooted.parametersAffine,
-    NewtonParametersAffine.preservesNonposRooted⟩
+    RealRooted.NewtonPreservesNonposRooted.of_parametersAffine⟩
 
 /-- Preservation, repeated-root tests, and arithmetic-progression parameters
 are equivalent for a Newton basis. -/
@@ -344,7 +344,7 @@ theorem newtonBasis_preserver_equivalences (c : ℕ → ℝ) :
     (NewtonPreservesNonposRooted c ↔ NewtonRepeatedRootTests c) ∧
       (NewtonRepeatedRootTests c ↔ NewtonParametersAffine c) := by
   exact ⟨⟨NewtonPreservesNonposRooted.repeatedRootTests,
-    fun htest => htest.parametersAffine.preservesNonposRooted⟩,
+    fun htest => NewtonPreservesNonposRooted.of_parametersAffine htest.parametersAffine⟩,
     newtonRepeatedRootTests_iff_parametersAffine c⟩
 
 /-- The finite preservation property implies the finite repeated-root tests. -/
@@ -366,7 +366,7 @@ theorem NewtonRepeatedRootTestsUpTo.parametersAffineUpTo
 
 /-- An arithmetic progression through index `N - 1` preserves all admissible
 inputs of degree at most `N`. -/
-theorem NewtonParametersAffineUpTo.preservesNonposRootedUpTo
+theorem _root_.RealRooted.NewtonPreservesNonposRootedUpTo.of_parametersAffineUpTo
     {N : ℕ} {c : ℕ → ℝ} (hc : NewtonParametersAffineUpTo N c) :
     NewtonPreservesNonposRootedUpTo N c := by
   obtain ⟨h, hh, hc⟩ := hc
@@ -386,7 +386,8 @@ theorem NewtonParametersAffineUpTo.preservesNonposRootedUpTo
       basisTransform (newtonBasisPolynomial d) p
     exact basisTransform_eq_of_eq_on_support hbasis
   rw [htransform]
-  exact (show NewtonParametersAffine d from ⟨h, hh, fun j => by simp [d]⟩).preservesNonposRooted
+  exact NewtonPreservesNonposRooted.of_parametersAffine
+    (show NewtonParametersAffine d from ⟨h, hh, fun j => by simp [d]⟩)
     p hproots
 
 /-- Through degree `N ≥ 2`, repeated-root tests are equivalent to affine
@@ -398,7 +399,7 @@ theorem newtonRepeatedRootTestsUpTo_iff_parametersAffineUpTo
   · intro htest
     exact htest.parametersAffineUpTo hN
   · intro haffine
-    exact haffine.preservesNonposRootedUpTo.repeatedRootTestsUpTo
+    exact (NewtonPreservesNonposRootedUpTo.of_parametersAffineUpTo haffine).repeatedRootTestsUpTo
 
 /-- Through degree `N ≥ 2`, preservation is equivalent to affine Newton
 parameters through index `N - 1`. -/
@@ -408,7 +409,7 @@ theorem newtonPreservesNonposRootedUpTo_iff_parametersAffineUpTo
   constructor
   · intro hpres
     exact hpres.repeatedRootTestsUpTo.parametersAffineUpTo hN
-  · exact NewtonParametersAffineUpTo.preservesNonposRootedUpTo
+  · exact RealRooted.NewtonPreservesNonposRootedUpTo.of_parametersAffineUpTo
 
 /-- Through degree `N ≥ 2`, preservation, repeated-root tests, and affine
 parameters through index `N - 1` are equivalent. -/
@@ -417,7 +418,8 @@ theorem newtonBasis_preserver_equivalencesUpTo
     (NewtonPreservesNonposRootedUpTo N c ↔ NewtonRepeatedRootTestsUpTo N c) ∧
       (NewtonRepeatedRootTestsUpTo N c ↔ NewtonParametersAffineUpTo N c) := by
   exact ⟨⟨NewtonPreservesNonposRootedUpTo.repeatedRootTestsUpTo,
-    fun htest => (htest.parametersAffineUpTo hN).preservesNonposRootedUpTo⟩,
+    fun htest => NewtonPreservesNonposRootedUpTo.of_parametersAffineUpTo
+      (htest.parametersAffineUpTo hN)⟩,
     newtonRepeatedRootTestsUpTo_iff_parametersAffineUpTo hN c⟩
 
 end RealRooted

@@ -145,7 +145,7 @@ module = "RealRooted.DegreeDropDivXPrec"
 label = "For g(0) = 0 and deg g = deg f + 1 with nonnegative coefficients: f ≪ g iff g/X ≪ f"
 
 [[theorems]]
-name = "RealRooted.leanderTransform_preserves_compatibility"
+name = "RealRooted.Compatible.leanderTransform_ordered"
 module = "RealRooted.Compatibility.Leander"
 label = "Leander: the transform preserves ordered compatibility"
 

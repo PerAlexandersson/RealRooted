@@ -315,7 +315,7 @@ private theorem differentialPencilDegreeBoxMap_complexify
 
 /-- Ordered PF monomial tests suffice for ordered preservation throughout the
 degree box. -/
-theorem preservesOrderedPFUpTo_of_differentialTests
+theorem _root_.RealRooted.PreservesOrderedPFUpTo.of_differentialTests
     {N : ℕ} {h k : ℝ[X]}
     (hh : IsPFPolynomial (finiteDifferentialTest N h))
     (hk : IsPFPolynomial (finiteDifferentialTest N k))
@@ -370,15 +370,6 @@ theorem preservesOrderedPFUpTo_of_differentialTests
       exact ⟨IsPFPolynomial.zero, IsPFPolynomial.zero, interl_zero_left 0⟩
     · exact pf_pair_interl_of_stablePencil hhnn hknn hstable
 
-/-- Ordered preservation through degree `N` forces both monomial tests to be
-PF and ordered. -/
-theorem differentialTests_ordered_of_preservesOrderedPFUpTo
-    {N : ℕ} {h k : ℝ[X]} (hpres : PreservesOrderedPFUpTo N h k) :
-    IsPFPolynomial (finiteDifferentialTest N h) ∧
-      IsPFPolynomial (finiteDifferentialTest N k) ∧
-        Interl (finiteDifferentialTest N h) (finiteDifferentialTest N k) :=
-  finiteDifferentialTest_ordered_of_preservesOrderedPFUpTo hpres
-
 /-- Two constant-coefficient differential operators preserve the ordered PF
 pair through degree `N` exactly when their images of `X ^ N` are PF and have
 the same order. -/
@@ -389,9 +380,9 @@ theorem _root_.RealRooted.PreservesOrderedPFUpTo.iff_differentialTests
         IsPFPolynomial (finiteDifferentialTest N k) ∧
           Interl (finiteDifferentialTest N h) (finiteDifferentialTest N k) := by
   constructor
-  · exact differentialTests_ordered_of_preservesOrderedPFUpTo
+  · exact RealRooted.PreservesOrderedPFUpTo.differentialTests
   · rintro ⟨hh, hk, horder⟩
-    exact preservesOrderedPFUpTo_of_differentialTests hh hk horder
+    exact RealRooted.PreservesOrderedPFUpTo.of_differentialTests hh hk horder
 
 /-- The degree-`N` Jensen polynomial of a differential symbol, normalized by
 falling factorials. -/
@@ -482,7 +473,7 @@ theorem jensenDifferentialTest_capNormalizedDifferentialSymbol
 
 /-- Any PF pair in reversed Jensen order gives a finite-cap companion pair
 after coefficientwise division by falling factorials. -/
-theorem preservesOrderedPFUpTo_capNormalizedDifferentialSymbol
+theorem _root_.RealRooted.PreservesOrderedPFUpTo.capNormalizedDifferentialSymbol
     {N : ℕ} {q r : ℝ[X]}
     (hqdeg : q.natDegree ≤ N) (hrdeg : r.natDegree ≤ N)
     (hq : IsPFPolynomial q) (hr : IsPFPolynomial r)
@@ -648,7 +639,7 @@ theorem _root_.RealRooted.PreservesOrderedPFUpTo.binomialDifferentialSymbol
 
 /-- The explicit higher-order recurrence row is PF and is preceded by its
 order-`r` differential image on every input in the cap. -/
-theorem binomialDifferentialRecurrence_pf_and_interl
+theorem _root_.RealRooted.IsPFPolynomial.binomialDifferentialRecurrence_and_interl
     {N r : ℕ} {s a : ℝ} (hr : r ≠ 0) (hrN : r ≤ N)
     (hs : 0 ≤ s) (ha : 0 ≤ a) {p : ℝ[X]}
     (hp : IsPFPolynomial p) (hpdeg : p.natDegree ≤ N) :

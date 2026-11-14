@@ -559,7 +559,7 @@ private theorem mvRealStable_pow {σ : Type*} {P : MvPolynomial σ ℝ}
 
 /-- Coordinate convolution by a nonzero split factor preserves real stability on every
 degree box whose selected coordinate has degree bound `D`. The output may be zero. -/
-theorem finiteFreeAdditiveConvolutionDegreeBox_preservesRealStability
+theorem BorceaBranden.PreservesRealStabilityOnDegreeBox.finiteFreeAdditiveConvolution
     {σ : Type*} [Finite σ]
     (q : σ) (D : ℕ) {g : ℝ[X]} (hg0 : g ≠ 0) (hgs : g.Splits)
     (hgdeg : g.natDegree ≤ D) (κ : σ → ℕ) (hκ : κ q = D) :
@@ -592,7 +592,7 @@ theorem finiteFreeAdditiveConvolutionAt_realStableOrZero
     · simpa [κ, hi] using hpq
     · simp [κ, hi]
   let pκ : MvPolynomial.degreeOfLE σ ℝ κ := ⟨p, hpκ⟩
-  exact finiteFreeAdditiveConvolutionDegreeBox_preservesRealStability
+  exact RealRooted.BorceaBranden.PreservesRealStabilityOnDegreeBox.finiteFreeAdditiveConvolution
     q D hg0 hgs hgdeg κ hκ pκ hp
 
 /-! ### Directed interlacing -/
