@@ -1625,6 +1625,7 @@ public import RealRooted.Transforms.ReverseHermite.Basic
 public import RealRooted.Transforms.ReverseHermite.Derivative
 public import RealRooted.Transforms.ReverseHermite.Preservation
 public import RealRooted.Transforms.StirlingRootRegions
+public import RealRooted.Transforms.StirlingRootRegions.Parabolic
 public import RealRooted.Transforms.TouchardRootDomain
 public import RealRooted.UnitIntervalGraph.AcyclicSink
 public import RealRooted.UpperDerivativeInterlace
