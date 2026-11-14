@@ -2248,3 +2248,7 @@ public import RealRooted.Applications.OEIS.A124324
 public import RealRooted.Applications.OEIS.A144438
 public import RealRooted.MatrixInterlacing.ThreeBidiagonalProduction
 public import RealRooted.Applications.PeakPolynomials.SignedStaircase
+public import RealRooted.DerivativeRecurrence.AssociatedBell
+public import RealRooted.DerivativeRecurrence.RealEulerLag
+public import RealRooted.OperatorMatrix.AffineDerivative
+public import RealRooted.OperatorMatrix.AffineSuccessor
