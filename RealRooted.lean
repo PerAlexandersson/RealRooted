@@ -2253,3 +2253,5 @@ public import RealRooted.DerivativeRecurrence.AssociatedBell
 public import RealRooted.DerivativeRecurrence.RealEulerLag
 public import RealRooted.OperatorMatrix.AffineDerivative
 public import RealRooted.OperatorMatrix.AffineSuccessor
+public import RealRooted.Hypergeometric.ThreeFTwo
+public import RealRooted.Challenges.Orthogonal.HypergeometricThreeFTwo
