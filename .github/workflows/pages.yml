@@ -34,6 +34,8 @@ jobs:
         with:
           name: challenge-catalog-audit-${{ inputs.revision }}
           path: ${{ runner.temp }}/challenge-catalog-audit
+      - name: Refresh SymCat snapshots with offline fallback
+        run: python3 scripts/symcat_sync.py --fallback-to-snapshot
       - name: Render audited catalog
         run: |
           python3 scripts/build_challenge_pages.py \

@@ -7,13 +7,14 @@ import argparse
 import json
 import pathlib
 import sys
+from http.client import HTTPException
 from typing import Any
 from urllib.parse import urljoin, urlsplit
 from urllib.request import urlopen
 
 sys.dont_write_bytecode = True
 
-from challenge_catalog import CatalogError, extract_sf_labels, load_catalog
+from challenge_catalog import CatalogError, load_catalog, load_symcat_snapshots
 
 
 LIVE_ROOT = "https://www.symmetricfunctions.com/"
@@ -45,7 +46,7 @@ def _read_json(source: str) -> Any:
             with urlopen(source, timeout=60) as response:
                 return json.load(response)
         return json.loads(pathlib.Path(source).read_text(encoding="utf-8"))
-    except (OSError, ValueError) as error:
+    except (OSError, ValueError, HTTPException) as error:
         raise CatalogError(f"cannot read {source}: {error}") from error
 
 
@@ -54,8 +55,10 @@ def build_snapshots(
     labels_upstream: Any,
     bibliography_upstream: Any,
     keep: tuple[str, ...] = (),
+    *,
+    snapshots: tuple[dict[str, str], dict[str, dict[str, Any]]] | None = None,
 ) -> tuple[dict[str, str], dict[str, Any]]:
-    """Select and normalize the upstream data needed by the current catalog."""
+    """Merge live records over snapshots, retaining records removed upstream."""
     if not isinstance(labels_upstream, dict):
         raise CatalogError("upstream site-labels.json must contain an object")
     if (
@@ -65,28 +68,16 @@ def build_snapshots(
     ):
         raise CatalogError("upstream bibliography.json has an invalid schema")
 
-    pages = load_catalog(repo_root)
-    used_labels = sorted(
-        {
-            label
-            for page in pages
-            for label in (
-                *(item.symcat for item in page.items if item.symcat),
-                *extract_sf_labels(page.content),
-            )
-        }
-    )
-    cited_keys = sorted({citation.key for page in pages for citation in page.citations} | set(keep))
-
-    missing_labels = [label for label in used_labels if label not in labels_upstream]
-    if missing_labels:
-        raise CatalogError("upstream labels missing: " + ", ".join(missing_labels))
+    old_labels, old_entries = snapshots if snapshots is not None else ({}, {})
     upstream_entries = bibliography_upstream["entries"]
-    missing_keys = [key for key in cited_keys if key not in upstream_entries]
-    if missing_keys:
-        raise CatalogError("upstream bibliography missing: " + ", ".join(missing_keys))
+    pages = load_catalog(repo_root)
+    used_labels = sorted({label for page in pages for label in page.symcat_labels})
+    cited_keys = sorted(
+        {citation.key for page in pages for citation in page.citations}
+        | set(keep) | set(old_entries)
+    )
 
-    labels: dict[str, str] = {}
+    labels = dict(old_labels)
     for label in sorted(labels_upstream):
         record = labels_upstream[label]
         href = record.get("href") if isinstance(record, dict) else None
@@ -94,8 +85,24 @@ def build_snapshots(
             raise CatalogError(f"invalid upstream label record {label!r}")
         labels[label] = href
 
+    missing_labels = [label for label in used_labels if label not in labels]
+    if missing_labels:
+        raise CatalogError(
+            "SymCat labels missing from live export and snapshot: " + ", ".join(missing_labels)
+        )
+    missing_keys = [
+        key for key in cited_keys if key not in upstream_entries and key not in old_entries
+    ]
+    if missing_keys:
+        raise CatalogError(
+            "SymCat bibliography missing from live export and snapshot: " + ", ".join(missing_keys)
+        )
+
     selected: dict[str, dict[str, Any]] = {}
     for key in cited_keys:
+        if key not in upstream_entries:
+            selected[key] = old_entries[key]
+            continue
         record = upstream_entries[key]
         if not isinstance(record, dict):
             raise CatalogError(f"invalid upstream bibliography entry {key!r}")
@@ -114,6 +121,16 @@ def build_snapshots(
             "csl": {field: csl[field] for field in CSL_FIELDS if field in csl},
             "bibtex": bibtex.strip() + "\n",
         }
+    for kind, removed in (
+        ("labels", sorted(set(old_labels) - set(labels_upstream))),
+        ("bibliography keys", sorted(set(old_entries) - set(upstream_entries))),
+    ):
+        if removed:
+            print(
+                f"warning: SymCat {kind} removed upstream; retaining snapshot records: "
+                + ", ".join(removed),
+                file=sys.stderr,
+            )
     return labels, {"schema_version": 1, "entries": selected}
 
 
@@ -147,7 +164,15 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--labels-source", help="override the labels JSON path or URL")
     parser.add_argument("--bibliography-source", help="override the bibliography JSON path or URL")
-    parser.add_argument("--check", action="store_true", help="report live labels missing from the snapshot; tolerate offline access")
+    actions = parser.add_mutually_exclusive_group()
+    actions.add_argument(
+        "--check", action="store_true",
+        help="report snapshot changes without writing or failing on staleness; tolerate offline access",
+    )
+    actions.add_argument(
+        "--fallback-to-snapshot", action="store_true",
+        help="leave snapshots unchanged if the live exports cannot be read (site builds still validate references)",
+    )
     parser.add_argument("--keep", action="append", default=[], metavar="KEY")
     return parser.parse_args()
 
@@ -158,34 +183,56 @@ def main() -> int:
     bibliography_source = args.bibliography_source or _source_at(
         args.source, "bibliography.json"
     )
-    if args.check:
-        try:
-            live = _read_json(labels_source)
-        except CatalogError as error:
-            if (urlsplit(labels_source).scheme in {"http", "https"}
-                    and isinstance(error.__cause__, OSError)):
-                print(f"offline: label freshness unavailable: {error}")
-                return 0
-            print(f"error: {error}", file=sys.stderr)
-            return 1
-        try:
-            snapshot = json.loads((args.repo_root / "website/symcat/labels.json").read_text(encoding="utf-8"))
-            if not isinstance(live, dict) or not isinstance(snapshot, dict):
-                raise ValueError("label exports must be objects")
-            missing = sorted(set(live) - set(snapshot))
-            print(f"live labels missing from snapshot: {len(missing)}")
-            return 0
-        except (OSError, ValueError) as error:
-            print(f"error: {error}", file=sys.stderr)
-            return 1
     try:
-        labels, bibliography = build_snapshots(
-            args.repo_root.resolve(),
-            _read_json(labels_source),
-            _read_json(bibliography_source),
-            tuple(args.keep),
+        root = args.repo_root.resolve()
+        snapshot_dir = root / "website" / "symcat"
+        snapshots = (
+            load_symcat_snapshots(root)
+            if any(
+                (snapshot_dir / name).exists() for name in ("labels.json", "bibliography.json")
+            )
+            else None
         )
-        write_snapshots(args.repo_root.resolve(), labels, bibliography)
+        try:
+            labels_live = _read_json(labels_source)
+            bibliography_live = _read_json(bibliography_source)
+        except CatalogError as error:
+            if args.check:
+                print(f"warning: SymCat snapshot freshness unavailable: {error}", file=sys.stderr)
+                return 0
+            if args.fallback_to_snapshot and snapshots is not None:
+                print(
+                    f"warning: SymCat refresh unavailable: {error}; "
+                    "falling back to committed snapshots (unchanged); "
+                    "the site build will still validate all keys and labels",
+                    file=sys.stderr,
+                )
+                return 0
+            raise
+        labels, bibliography = build_snapshots(
+            root,
+            labels_live,
+            bibliography_live,
+            tuple(args.keep),
+            snapshots=snapshots,
+        )
+        if args.check:
+            old_labels, old_entries = snapshots if snapshots is not None else ({}, {})
+            changes = []
+            for kind, old, new in (
+                ("labels", old_labels, labels),
+                ("bibliography entries", old_entries, bibliography["entries"]),
+            ):
+                added = len(set(new) - set(old))
+                updated = sum(old[key] != new[key] for key in set(old) & set(new))
+                changes.append(f"{kind}: {added} added, {updated} updated")
+            if labels != old_labels or bibliography["entries"] != old_entries:
+                print("warning: SymCat snapshots are stale (" + "; ".join(changes) + ")")
+                print("refresh: python3 scripts/symcat_sync.py")
+            else:
+                print("ok: SymCat snapshots are current")
+            return 0
+        write_snapshots(root, labels, bibliography)
         print(
             f"ok: wrote {len(labels)} labels and {len(bibliography['entries'])} bibliography entries"
         )
