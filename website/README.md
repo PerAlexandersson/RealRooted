@@ -83,10 +83,33 @@ provenance, a topic › kind breadcrumb, and a link to the main result.
 Bibliography titles retain the BibTeX casing; books also show their series,
 volume and publisher from the snapshot. Do not edit the snapshot to change formatting.
 
-Refresh both snapshots from the live site, or from a local directory containing the two exports:
+Pages publication refreshes both snapshots from SymCat's public JSON exports
+before rendering the audited catalog. This updates only the build's working
+copy; it does not commit snapshots or write to SymCat. New and changed live
+records take precedence. Previously snapshotted bibliography entries and labels
+removed upstream are retained, with a warning, so upstream removals cannot
+break existing citations. All live labels are saved; bibliography entries are
+limited to cited keys, `--keep` keys, and records already in the snapshot.
+
+If either export cannot be read (including a network failure or invalid JSON),
+publication logs `falling back to committed snapshots (unchanged)` and builds
+with both committed snapshots. No partial refresh is written. The renderer
+still validates every cited key and label: a reference absent from both the
+live export and snapshot fails the build. Invalid snapshot schemas and invalid
+live record schemas remain errors.
+
+To refresh the committed snapshots manually, run this one command, review the
+snapshot diff, and commit the changed JSON files:
 
 ```bash
 python3 scripts/symcat_sync.py
+```
+
+The same merge rules apply to manual refreshes. A normal manual refresh fails
+if an export cannot be read; use `--fallback-to-snapshot` for the publication
+behaviour. A local directory containing both exports is also supported:
+
+```bash
 python3 scripts/symcat_sync.py /path/to/exports --keep ExtraBibliographyKey
 ```
 
@@ -124,8 +147,12 @@ Labels and headlines do not enter the selected-declaration digest.
 Use `kind = "sequence"` and a nonempty `conjecture = "..."` locator for a
 per-sequence page. A title naming an OEIS A-number also requires a locator.
 The catalog validates all citation keys and SymCat labels against the snapshots.
-`python3 scripts/symcat_sync.py --check` reports the number of live labels absent
-from the snapshot, or reports that freshness is unavailable when offline.
+`python3 scripts/symcat_sync.py --check` compares both snapshots with the merged
+live data, including changed label targets and bibliography content. It reports
+added and updated records without writing files or failing on staleness, or
+reports that freshness is unavailable when an export cannot be read. The CI
+`catalog` job runs this as an advisory step with `continue-on-error: true`, so
+freshness reporting cannot block a PR. Catalog validation remains required.
 
 The complete `results/` index is paginated for browsing. Search on the landing
 page and every results page uses the same complete `search-index.json`; text
