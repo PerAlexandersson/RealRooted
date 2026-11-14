@@ -205,4 +205,25 @@ theorem thresholdOneMatrix_preserves_interlacing_weak {q n : ℕ}
   rw [get_thresholdOneRows, get_thresholdOneRows]
   exact has2x2_thresholdEntry_one hi hj
 
+/-- Marker-one threshold matrices with any weakly increasing threshold list
+preserve zero-aware nonnegative interlacing, including repeated thresholds. -/
+theorem thresholdMatrix_one_preserves_interlacing {q : ℕ} (ts : List ℕ)
+    (hts : ts.Pairwise (· ≤ ·)) (fs : List ℝ[X]) (hlen : fs.length = q)
+    (hfs : IsInterlacingSeq0NonnegRealRooted fs) :
+    IsInterlacingSeq0NonnegRealRooted
+      (matPolyAction (thresholdMatrix q (ts.map (fun t => (t, 1)))) fs) := by
+  refine thresholdMatrix_preserves_interlacing_seq0_of_entry_weak _ ?_ ?_
+    fs hlen hfs.1 hfs.2
+  · intro p hp
+    obtain ⟨t, _, rfl⟩ := List.mem_map.mp hp
+    exact hasNonnegCoeffs_one
+  · intro i j a b hij hab
+    simp only [List.get_eq_getElem, List.getElem_map]
+    apply has2x2_thresholdEntry_one ?_ hab
+    by_cases heq : i.val = j.val
+    · simp [heq]
+    · exact List.pairwise_iff_get.mp hts
+        ⟨i.val, by simpa using i.isLt⟩ ⟨j.val, by simpa using j.isLt⟩
+        (by change i.val < j.val; lia)
+
 end RealRooted
