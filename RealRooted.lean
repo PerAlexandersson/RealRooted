@@ -2247,3 +2247,4 @@ public import RealRooted.Applications.OEIS.A046739
 public import RealRooted.Applications.OEIS.A124324
 public import RealRooted.Applications.OEIS.A144438
 public import RealRooted.MatrixInterlacing.ThreeBidiagonalProduction
+public import RealRooted.Applications.PeakPolynomials.SignedStaircase
