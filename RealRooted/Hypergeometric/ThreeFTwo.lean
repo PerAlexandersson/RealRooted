@@ -105,10 +105,15 @@ theorem threeFTwoCoeff_eq_zero {n k : ℕ} (h : n < k) (a₁ a₂ b₁ b₂ : �
   · simp [threeFTwo, coeff_monomial, hk,
       threeFTwoCoeff_eq_zero (show n < k by lia)]
 
-/-- The constant coefficient is one for all real parameters. -/
-@[simp] theorem coeff_zero_threeFTwo (a₁ a₂ b₁ b₂ : ℝ) (n : ℕ) :
-    (threeFTwo a₁ a₂ b₁ b₂ n).coeff 0 = 1 := by
+/-- The zeroth series coefficient is one for all real parameters. -/
+@[simp] theorem threeFTwoCoeff_zero (a₁ a₂ b₁ b₂ : ℝ) (n : ℕ) :
+    threeFTwoCoeff a₁ a₂ b₁ b₂ n 0 = 1 := by
   simp [threeFTwoCoeff]
+
+/-- The constant coefficient is one for all real parameters. -/
+theorem coeff_zero_threeFTwo (a₁ a₂ b₁ b₂ : ℝ) (n : ℕ) :
+    (threeFTwo a₁ a₂ b₁ b₂ n).coeff 0 = 1 := by
+  simp
 
 /-- The series is never the zero polynomial. -/
 theorem threeFTwo_ne_zero (a₁ a₂ b₁ b₂ : ℝ) (n : ℕ) :
