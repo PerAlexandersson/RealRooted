@@ -130,8 +130,7 @@ $k$, and $W_k\ne0$ when $A_k\ne0$.
 
 ## References
 
-- P. Alexandersson, A. Jal and M. Quemener, *Rook-Eulerian polynomials and permutation ideals*,
-  manuscript (2026).
+- [@AlexanderssonJalQuemener2025x].
 
 See also [peaks of permutations](sf:permutationPeak) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->

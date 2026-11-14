@@ -70,9 +70,9 @@
       "label": "AGS17"
     },
     "Alexandersson2026Eulerian": {
-      "bibtex": "@article{Alexandersson2026Eulerian,\n  author = {Per Alexandersson},\n  title = {Real-rooted {E}ulerian polynomials from permutations, words, and\n    paths},\n  year = {2026},\n  eprint = {2609.07325v1},\n  url = {https://arxiv.org/abs/2609.07325v1},\n  journal = {arXiv e-prints}\n}\n",
+      "bibtex": "@article{Alexandersson2026Eulerian,\n  author = {Per Alexandersson},\n  title = {Real-rooted {E}ulerian polynomials from permutations, words, and\n    paths},\n  year = {2026},\n  eprint = {2609.07325v2},\n  url = {https://arxiv.org/abs/2609.07325v2},\n  journal = {arXiv e-prints}\n}\n",
       "csl": {
-        "URL": "https://arxiv.org/abs/2609.07325v1",
+        "URL": "https://arxiv.org/abs/2609.07325v2",
         "author": [
           {
             "family": "Alexandersson",
@@ -118,6 +118,37 @@
         "type": "article-journal"
       },
       "label": "AJ24"
+    },
+    "AlexanderssonJalQuemener2025x": {
+      "bibtex": "@article{AlexanderssonJalQuemener2025x,\n  author = {Per Alexandersson and Aryaman Jal and Maena Quemener},\n  title = {Rook-{E}ulerian polynomials and permutation ideals},\n  year = {2025},\n  eprint = {2502.05939v1},\n  url = {https://arxiv.org/abs/2502.05939v1},\n  journal = {arXiv e-prints}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/2502.05939v1",
+        "author": [
+          {
+            "family": "Alexandersson",
+            "given": "Per"
+          },
+          {
+            "family": "Jal",
+            "given": "Aryaman"
+          },
+          {
+            "family": "Quemener",
+            "given": "Maena"
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        },
+        "title": "Rook-Eulerian polynomials and permutation ideals",
+        "type": "article-journal"
+      },
+      "label": "AJQ25"
     },
     "AndrewsEggeGawronskiLittlejohn2013": {
       "bibtex": "@article{AndrewsEggeGawronskiLittlejohn2013,\n  author = {Andrews, George E. and Egge, Eric S. and Gawronski, Wolfgang and Littlejohn, Lance L.},\n  title = {The {J}acobi–{S}tirling numbers},\n  year = {2013},\n  journal = {Journal of Combinatorial Theory, Series A},\n  volume = {120},\n  number = {1},\n  pages = {288--303},\n  doi = {10.1016/j.jcta.2012.08.006},\n  url = {https://doi.org/10.1016/j.jcta.2012.08.006}\n}\n",
@@ -1372,6 +1403,28 @@
       },
       "label": "DH17"
     },
+    "Dilks2015Thesis": {
+      "bibtex": "@phdthesis{Dilks2015Thesis,\n  author = {Kevin Dilks},\n  title = {Involutions on {B}axter Objects, and $q$-Gamma Nonnegativity},\n  school = {University of Minnesota},\n  type = {PhD Thesis},\n  year = {2015},\n  url = {https://hdl.handle.net/11299/182835}\n}\n",
+      "csl": {
+        "URL": "https://hdl.handle.net/11299/182835",
+        "author": [
+          {
+            "family": "Dilks",
+            "given": "Kevin"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2015
+            ]
+          ]
+        },
+        "title": "Involutions on Baxter objects, and $q$-gamma nonnegativity",
+        "type": "thesis"
+      },
+      "label": "Dil15"
+    },
     "DominiciJohnstonJordaan2013x": {
       "bibtex": "@article{DominiciJohnstonJordaan2013x,\n  author = {D. Dominici and S. J. Johnston and K. Jordaan},\n  title = {Real zeros of 2{F}1 hypergeometric polynomials},\n  year = {2013},\n  eprint = {1301.4771v1},\n  url = {https://arxiv.org/abs/1301.4771v1},\n  journal = {arXiv e-prints},\n  doi = {10.1016/j.cam.2012.12.024}\n}\n",
       "csl": {
@@ -1403,6 +1456,29 @@
         "type": "article-journal"
       },
       "label": "DJJ13"
+    },
+    "Duran2025x": {
+      "bibtex": "@article{Duran2025x,\n  author = {Antonio J. Durán},\n  title = {Zeros of linear combinations of {L}aguerre polynomials},\n  year = {2025},\n  eprint = {2507.22425v1},\n  url = {https://arxiv.org/abs/2507.22425v1},\n  journal = {arXiv e-prints}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/2507.22425v1",
+        "author": [
+          {
+            "family": "Durán",
+            "given": "Antonio J."
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        },
+        "title": "Zeros of linear combinations of Laguerre polynomials",
+        "type": "article-journal"
+      },
+      "label": "Dur25"
     },
     "Edrei1953": {
       "bibtex": "@article{Edrei1953,\n  author = {Edrei, Albert},\n  title = {Proof of a {C}onjecture of {S}choenberg on the {G}enerating {F}unction of a {T}otally {P}ositive {S}equence},\n  year = {1953},\n  journal = {Canadian Journal of Mathematics},\n  volume = {5},\n  pages = {86--94},\n  doi = {10.4153/CJM-1953-010-3},\n  url = {https://doi.org/10.4153/CJM-1953-010-3}\n}\n",

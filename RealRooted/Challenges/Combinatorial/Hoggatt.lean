@@ -105,7 +105,7 @@ descent polynomials of Baxter permutations of length $n$, which are the rows of
 of $H_n^{[m]}$ are simple and negative, $H_n^{[m]}\ll H_{n+1}^{[m]}$, and the two polynomials
 have no common root.
 
-**Corollary (Dilks).** For every $m\ge1$ and $n\ge1$, $H_n^{[m]}$ is real-rooted.
+**Corollary (Dilks).** [@Dilks2015Thesis] For every $m\ge1$ and $n\ge1$, $H_n^{[m]}$ is real-rooted.
 
 In particular, consecutive Baxter descent polynomials strictly interlace.
 
@@ -124,7 +124,6 @@ the Wronskian gives Markov's strict form of the derivative step.
 ## References
 
 - [@FangZhangZhao2025x, Theorems 1–2 and §2].
-- K. Dilks, *Involutions on Baxter Objects, and q-Gamma Nonnegativity*,
-  Ph.D. thesis, University of Minnesota, 2015, Theorem 3.8.
+- [@Dilks2015Thesis, Theorem 3.8].
 <!-- /realrooted-catalog-content -->
 -/
