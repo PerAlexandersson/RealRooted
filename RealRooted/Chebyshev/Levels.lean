@@ -3,6 +3,7 @@ module
 public import RealRooted.Basic.Coefficients
 public import RealRooted.PFPolynomial
 public import RealRooted.SimpleRoots
+public import RealRooted.RootLocation.Basic
 public import Mathlib.RingTheory.Polynomial.Chebyshev
 
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Chebyshev.RootsExtrema
@@ -198,12 +199,13 @@ theorem splits_sub_C_iff_eval_secondDerivative_nonpos {f : ℝ[X]}
     exact hinter.2.1.2
 
 /-- Strict critical-value signs make the corresponding constant level split with simple roots. -/
-theorem splits_and_hasSimpleRoots_sub_C_of_eval_secondDerivative_neg {f : ℝ[X]}
+theorem isSimpleRealRooted_sub_C_of_eval_secondDerivative_neg {f : ℝ[X]}
     (hf_pos : HasPosLeadingCoeff f) (hdeg : 2 ≤ f.natDegree)
     (hder_splits : f.derivative.Splits) (s : ℝ)
     (hsign : ∀ r, f.derivative.IsRoot r →
       f.derivative.derivative.eval r * (f.eval r - s) < 0) :
-    (f - C s).Splits ∧ HasSimpleRoots (f - C s) := by
+    IsSimpleRealRooted (f - C s) := by
+  apply isSimpleRealRooted_iff_splits_and_hasSimpleRoots.mpr
   have hder_pos : HasPosLeadingCoeff f.derivative := hf_pos.derivative (by lia)
   have hlevel_pos : HasPosLeadingCoeff (f - C s) :=
     hasPosLeadingCoeff_sub_C hf_pos (by lia) s
@@ -410,10 +412,11 @@ theorem T_sub_C_roots_mem_Icc {n : ℕ} (hn : n ≠ 0) {h : ℝ}
       (by simpa [hroot] using hhabs)
 
 /-- For an interior level `h ∈ (-1, 1)`, `Tₙ - h` has simple roots, all in `(-1, 1)`. -/
-theorem T_sub_C_splits_simple_roots_mem_Ioo {n : ℕ} (hn : n ≠ 0) {h : ℝ}
+theorem isRealRootedIn_Ioo_T_sub_C_and_hasSimpleRoots {n : ℕ} (hn : n ≠ 0) {h : ℝ}
     (hh : h ∈ Ioo (-1 : ℝ) 1) :
-    (T ℝ n - C h).Splits ∧ HasSimpleRoots (T ℝ n - C h) ∧
-      ∀ r ∈ (T ℝ n - C h).roots, r ∈ Ioo (-1 : ℝ) 1 := by
+    IsRealRootedIn (Ioo (-1 : ℝ) 1) (T ℝ n - C h) ∧
+      HasSimpleRoots (T ℝ n - C h) := by
+  apply isRealRootedIn_and_hasSimpleRoots_iff.mpr
   have hh_closed : h ∈ Icc (-1 : ℝ) 1 := ⟨hh.1.le, hh.2.le⟩
   have hsplits := T_sub_C_splits hn hh_closed
   have hsimple : HasSimpleRoots (T ℝ n - C h) := by
@@ -421,7 +424,7 @@ theorem T_sub_C_splits_simple_roots_mem_Ioo {n : ℕ} (hn : n ≠ 0) {h : ℝ}
     · simpa [T_one] using
         hasSimpleRoots_of_natDegree_le_one (X_sub_C_ne_zero h) (by simp)
     have hn2 : 2 ≤ n := by lia
-    have hstrict := splits_and_hasSimpleRoots_sub_C_of_eval_secondDerivative_neg
+    have hstrict := isSimpleRealRooted_sub_C_of_eval_secondDerivative_neg
       (f := T ℝ n) (by simp [HasPosLeadingCoeff]) (by simpa using hn2)
       (derivative_T_splits_and_nodup hn2).1 h (fun r hr ↦ by
         have hsign := eval_secondDerivative_mul_sub_nonpos hn2 hh_closed hr
@@ -448,7 +451,7 @@ theorem T_sub_C_splits_simple_roots_mem_Ioo {n : ℕ} (hn : n ≠ 0) {h : ℝ}
             (derivative_T_splits_and_nodup hn2).2
         exact lt_of_le_of_ne hsign
           (mul_ne_zero (hder_simple.eval_derivative_ne_zero hr) hne))
-    exact hstrict.2
+    exact hstrict.2.2
   refine ⟨hsplits, hsimple, ?_⟩
   intro r hr
   have hlevel_ne : T ℝ n - C h ≠ 0 := by
@@ -589,12 +592,14 @@ theorem affineLevel_isPFPolynomial {α lam h : ℝ} {n : ℕ}
 
 /-- At an interior height, a positive affine Chebyshev level splits with simple
 roots, all in the open transported interval `(-2 / lam, 0)`. -/
-theorem affineLevel_splits_simple_roots_mem_Ioo {α lam h : ℝ} {n : ℕ}
+theorem isRealRootedIn_Ioo_affineLevel_and_hasSimpleRoots {α lam h : ℝ} {n : ℕ}
     (hn : n ≠ 0) (hα : 0 < α) (hlam : 0 < lam)
     (hh : h ∈ Ioo (-1 : ℝ) 1) :
-    (affineLevel α lam h n).Splits ∧ HasSimpleRoots (affineLevel α lam h n) ∧
-      ∀ r ∈ (affineLevel α lam h n).roots, r ∈ Ioo (-2 / lam) 0 := by
-  have hbase := T_sub_C_splits_simple_roots_mem_Ioo hn hh
+    IsRealRootedIn (Ioo (-2 / lam) 0) (affineLevel α lam h n) ∧
+      HasSimpleRoots (affineLevel α lam h n) := by
+  apply isRealRootedIn_and_hasSimpleRoots_iff.mpr
+  have hbase := isRealRootedIn_and_hasSimpleRoots_iff.mp
+    (isRealRootedIn_Ioo_T_sub_C_and_hasSimpleRoots hn hh)
   have hcomp_simple := hbase.2.1.comp_C_mul_X_add_C (a := lam) (b := 1) hlam.ne'
   have hsimple : HasSimpleRoots (affineLevel α lam h n) := by
     apply HasSimpleRoots.C_mul (c := α) _ hα.ne'

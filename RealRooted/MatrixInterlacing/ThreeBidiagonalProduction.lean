@@ -255,6 +255,39 @@ theorem isTotallyNonneg_threeBidiagonalProduction
 
 /-- Positive factor-diagonal products and positive adjacent product bands give
 strict consecutive interlacing, simple roots, disjointness and positive spectrum. -/
+theorem threeBidiagonalProduction_charpoly_interlaces_and_isCoprime
+    (d₀ s₀ d₁ s₁ d₂ s₂ : ℕ → ℝ)
+    (h : ∀ i, 0 ≤ d₀ i ∧ 0 ≤ s₀ i ∧ 0 ≤ d₁ i ∧ 0 ≤ s₁ i ∧
+      0 ≤ d₂ i ∧ 0 ≤ s₂ i)
+    (hdet : ∀ i, 0 < d₀ i * d₁ i * d₂ i)
+    (hsuper : ∀ i, 0 < d₀ i * d₁ i * s₂ i)
+    (hsub : ∀ i, 0 < threeBidiagonalSub d₀ s₀ d₁ s₁ d₂ s₂ i) (n : ℕ) :
+    let H := threeBidiagonalProduction d₀ s₀ d₁ s₁ d₂ s₂
+    RealRooted.Interlaces (H n).charpoly (H (n + 1)).charpoly ∧
+      IsCoprime (H n).charpoly (H (n + 1)).charpoly ∧
+      ∀ x ∈ (H (n + 1)).charpoly.roots, 0 < x := by
+  have hTN := isTotallyNonneg_threeBidiagonalProduction d₀ s₀ d₁ s₁ d₂ s₂ (n + 1) h
+  have hdet' : (threeBidiagonalProduction d₀ s₀ d₁ s₁ d₂ s₂ (n + 1)).det ≠ 0 := by
+    rw [det_threeBidiagonalProduction]
+    exact (Finset.prod_pos fun i _ => hdet i.val).ne'
+  have hsuper' (i : Fin n) :
+      0 < threeBidiagonalProduction d₀ s₀ d₁ s₁ d₂ s₂ (n + 1) i.castSucc i.succ := by
+    rw [threeBidiagonalProduction_super]
+    exact hsuper i.val
+  have hsub' (i : Fin n) :
+      0 < threeBidiagonalProduction d₀ s₀ d₁ s₁ d₂ s₂ (n + 1) i.succ i.castSucc := by
+    rw [threeBidiagonalProduction_sub]
+    exact hsub i.val
+  obtain ⟨hi, -, -, hno, hpos⟩ :=
+    hTN.leading_charpoly_strictInterlaces hdet' hsuper' hsub'
+  have hcop := hi.toStrictInterl.isCoprime_iff_no_common_root.mpr
+    (fun x hx => hno x hx.symm)
+  simp only [threeBidiagonalProduction_castSucc] at hi hcop
+  exact ⟨hi, hcop, hpos⟩
+
+/-- Compatibility form retaining the original simplicity and disjointness tuple. -/
+@[deprecated threeBidiagonalProduction_charpoly_interlaces_and_isCoprime +typeChanged
+  (since := "2026-11-16")]
 theorem threeBidiagonalProduction_charpoly_strictInterlaces
     (d₀ s₀ d₁ s₁ d₂ s₂ : ℕ → ℝ)
     (h : ∀ i, 0 ≤ d₀ i ∧ 0 ≤ s₀ i ∧ 0 ≤ d₁ i ∧ 0 ≤ s₁ i ∧
@@ -269,20 +302,12 @@ theorem threeBidiagonalProduction_charpoly_strictInterlaces
       (∀ x : ℝ, (H n).charpoly.IsRoot x → (H n).charpoly.rootMultiplicity x = 1) ∧
       (∀ x : ℝ, ¬((H (n + 1)).charpoly.IsRoot x ∧ (H n).charpoly.IsRoot x)) ∧
       ∀ x ∈ (H (n + 1)).charpoly.roots, 0 < x := by
-  have hTN := isTotallyNonneg_threeBidiagonalProduction d₀ s₀ d₁ s₁ d₂ s₂ (n + 1) h
-  have hdet' : (threeBidiagonalProduction d₀ s₀ d₁ s₁ d₂ s₂ (n + 1)).det ≠ 0 := by
-    rw [det_threeBidiagonalProduction]
-    exact (Finset.prod_pos fun i _ => hdet i.val).ne'
-  have hsuper' (i : Fin n) :
-      0 < threeBidiagonalProduction d₀ s₀ d₁ s₁ d₂ s₂ (n + 1) i.castSucc i.succ := by
-    rw [threeBidiagonalProduction_super]
-    exact hsuper i.val
-  have hsub' (i : Fin n) :
-      0 < threeBidiagonalProduction d₀ s₀ d₁ s₁ d₂ s₂ (n + 1) i.succ i.castSucc := by
-    rw [threeBidiagonalProduction_sub]
-    exact hsub i.val
-  simpa only [threeBidiagonalProduction_castSucc] using
-    hTN.leading_charpoly_strictInterlaces hdet' hsuper' hsub'
+  obtain ⟨hi, hcop, hpos⟩ :=
+    threeBidiagonalProduction_charpoly_interlaces_and_isCoprime
+      d₀ s₀ d₁ s₁ d₂ s₂ h hdet hsuper hsub n
+  have hsimple := hi.toStrictInterl.hasSimpleRoots_of_isCoprime hcop
+  exact ⟨hi, hsimple.2, hsimple.1,
+    fun _ hx => hcop.not_isRoot_right hx.2 hx.1, hpos⟩
 
 section Oscillation
 
@@ -300,7 +325,7 @@ theorem threeBidiagonalProduction_charpoly_interlaces (n : ℕ) :
     RealRooted.Interlaces
       (threeBidiagonalProduction d₀ s₀ d₁ s₁ d₂ s₂ n).charpoly
       (threeBidiagonalProduction d₀ s₀ d₁ s₁ d₂ s₂ (n + 1)).charpoly :=
-  (threeBidiagonalProduction_charpoly_strictInterlaces
+  (threeBidiagonalProduction_charpoly_interlaces_and_isCoprime
     d₀ s₀ d₁ s₁ d₂ s₂ h hdet hsuper hsub n).1
 
 /-- Every leading characteristic polynomial splits over the reals. -/
@@ -317,7 +342,7 @@ theorem threeBidiagonalProduction_charpoly_simple_pos (n : ℕ) :
   cases n with
   | zero => simp [charpoly, threeBidiagonalProduction]
   | succ n =>
-      have hp := threeBidiagonalProduction_charpoly_strictInterlaces
+      have hp := threeBidiagonalProduction_charpoly_interlaces_and_isCoprime
         d₀ s₀ d₁ s₁ d₂ s₂ h hdet hsuper hsub n
       intro x hx
       have hn :=
@@ -325,7 +350,8 @@ theorem threeBidiagonalProduction_charpoly_simple_pos (n : ℕ) :
       have hxmem : x ∈
           (threeBidiagonalProduction d₀ s₀ d₁ s₁ d₂ s₂ (n + 1)).charpoly.roots :=
         (Polynomial.mem_roots hn).2 hx
-      exact ⟨hp.2.1 x hx, hp.2.2.2.2 x hxmem⟩
+      exact ⟨(hp.1.toStrictInterl.hasSimpleRoots_of_isCoprime hp.2.1).2 x hx,
+        hp.2.2 x hxmem⟩
 
 end Oscillation
 

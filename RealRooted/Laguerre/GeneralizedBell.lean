@@ -2,6 +2,7 @@ module
 
 public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.FiniteCombinations
 public import RealRooted.SimpleRoots
+public import RealRooted.RootLocation.Basic
 import RealRooted.Laguerre.FiniteCombinations
 
 import RealRooted.MaWang.StrictStep
@@ -326,15 +327,16 @@ theorem laguerreCombination_comp_neg_X
 
 /-- The signed generalized Laguerre sum in Durán's criterion has only simple negative roots
 when the auxiliary polynomial splits below `α + 1`. -/
-theorem generalizedLaguerreSum_splits_simple_roots_neg_of_auxiliary
+theorem LaguerreCombination.isRealRootedIn_Iio_and_hasSimpleRoots_signed
     {K n : ℕ} (hKn : K ≤ n) {gamma : ℕ → ℝ} {alpha : ℝ}
     (hgamma : gamma 0 = 1) (halpha : -1 < alpha)
     (hQsplits : (laguerrePochhammerSum K gamma).Splits)
     (hQroots : ∀ r ∈ (laguerrePochhammerSum K gamma).roots, r < alpha + 1) :
     let F := ∑ j ∈ Finset.range (K + 1),
       C ((-1 : ℝ) ^ j * gamma j) * generalizedLaguerre (n - j) alpha
-    F.Splits ∧ HasSimpleRoots F ∧ ∀ r ∈ F.roots, r < 0 := by
-  dsimp
+    IsRealRootedIn (Set.Iio 0) F ∧ HasSimpleRoots F := by
+  dsimp only
+  apply isRealRootedIn_and_hasSimpleRoots_iff.mpr
   let Q := laguerrePochhammerSum K gamma
   let s := alpha + (n - K : ℕ) + 1
   let p := generalizedLaguerre (n - K) alpha
@@ -369,18 +371,19 @@ theorem generalizedLaguerreSum_splits_simple_roots_neg_of_auxiliary
 /-- Durán's general fixed-bandwidth criterion: a normalized auxiliary polynomial whose roots
 are real and lie below `α + 1` gives a classical Laguerre combination with positive simple
 roots. -/
-theorem laguerreCombination_splits_simple_roots_pos
+theorem LaguerreCombination.isRealRootedIn_Ioi_and_hasSimpleRoots
     {K n : ℕ} (hKn : K ≤ n) {gamma : ℕ → ℝ} {alpha : ℝ}
     (hgamma : gamma 0 = 1) (halpha : -1 < alpha)
     (hQsplits : (laguerrePochhammerSum K gamma).Splits)
     (hQroots : ∀ r ∈ (laguerrePochhammerSum K gamma).roots, r < alpha + 1) :
-    (laguerreCombination K gamma n alpha).Splits ∧
-      HasSimpleRoots (laguerreCombination K gamma n alpha) ∧
-      ∀ r ∈ (laguerreCombination K gamma n alpha).roots, 0 < r := by
+    IsRealRootedIn (Set.Ioi 0) (laguerreCombination K gamma n alpha) ∧
+      HasSimpleRoots (laguerreCombination K gamma n alpha) := by
+  apply isRealRootedIn_and_hasSimpleRoots_iff.mpr
   let F := ∑ j ∈ Finset.range (K + 1),
     C ((-1 : ℝ) ^ j * gamma j) * generalizedLaguerre (n - j) alpha
-  have hpack := generalizedLaguerreSum_splits_simple_roots_neg_of_auxiliary
-    hKn hgamma halpha hQsplits hQroots
+  have hpack := isRealRootedIn_and_hasSimpleRoots_iff.mp
+    (LaguerreCombination.isRealRootedIn_Iio_and_hasSimpleRoots_signed
+      hKn hgamma halpha hQsplits hQroots)
   have href := laguerreCombination_comp_neg_X hKn gamma alpha
   have hsign : (-1 : ℝ) ^ n ≠ 0 := pow_ne_zero _ (by norm_num)
   have hcompSplits :
@@ -412,7 +415,9 @@ theorem laguerreCombination_splits_simple_roots_pos
     simpa [F, hsign] using hcompRoot
   have hFmem : -r ∈ F.roots :=
     (Polynomial.mem_roots hpack.2.1.ne_zero).mpr hFroot
-  linarith [hpack.2.2 (-r) hFmem]
+  have hneg : -r < 0 := hpack.2.2 (-r) hFmem
+  change 0 < r
+  linarith
 
 end RealRooted
 

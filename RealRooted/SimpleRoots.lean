@@ -38,6 +38,15 @@ lemma HasSimpleRoots.ne_zero (hp : HasSimpleRoots p) : p ≠ 0 := by
   rintro rfl
   simp at hp
 
+/-- A nonzero split polynomial with simple real roots. -/
+def IsSimpleRealRooted (p : ℝ[X]) : Prop :=
+  p ≠ 0 ∧ p.Splits ∧ HasSimpleRoots p
+
+/-- Simplicity already supplies the nonzero part of simple real-rootedness. -/
+theorem isSimpleRealRooted_iff_splits_and_hasSimpleRoots {p : ℝ[X]} :
+    IsSimpleRealRooted p ↔ p.Splits ∧ HasSimpleRoots p :=
+  ⟨fun h => h.2, fun h => ⟨h.2.ne_zero, h⟩⟩
+
 /-- A strictly interlacing pair with no common real root has simple real roots in
 both entries. -/
 theorem StrictInterl.hasSimpleRoots_of_no_common_root

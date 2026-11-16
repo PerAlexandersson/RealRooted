@@ -76,6 +76,13 @@ theorem of_realRooted_nonneg {p : ℝ[X]}
     IsPFPolynomial p :=
   ⟨hpnn, Or.inr hprr_splits, roots_nonpos_of_hasNonnegCoeffs hpnn⟩
 
+/-- The PF condition is equivalent to nonnegative coefficients and splitting,
+including for the zero polynomial. -/
+theorem iff_hasNonnegCoeffs_and_splits {p : ℝ[X]} :
+    IsPFPolynomial p ↔ HasNonnegCoeffs p ∧ p.Splits :=
+  ⟨fun hp => ⟨hp.hasNonnegCoeffs, hp.splits⟩,
+    fun hp => of_realRooted_nonneg hp.1 hp.2⟩
+
 /-- The constant polynomial `1` is PF. -/
 theorem one : IsPFPolynomial (1 : ℝ[X]) :=
   IsPFPolynomial.of_realRooted_nonneg hasNonnegCoeffs_one (by simp)

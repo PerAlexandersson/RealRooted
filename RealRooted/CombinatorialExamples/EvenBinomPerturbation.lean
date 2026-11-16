@@ -232,13 +232,14 @@ theorem neg_tan_sq_grid_strictAnti (d : ℕ) (hd : 0 < d) :
 
 /-- A strict binomially bounded perturbation of the even-binomial polynomial splits and
 has only simple real roots. -/
-theorem evenBinomPolyReal_add_splits_and_hasSimpleRoots
+theorem isSimpleRealRooted_evenBinomPolyReal_add
     {h : ℝ[X]} {d : ℕ} {alpha M : ℝ}
     (hd : 0 < d) (halpha : 0 < alpha) (hMalpha : M < alpha)
     (hdegree : h.natDegree ≤ d)
     (hcoeff : ∀ k ≤ d, |h.coeff k| ≤ M * d.choose k) :
     let p := C alpha * BigDescents.evenBinomPolyReal (2 * d) + h
-    p.Splits ∧ HasSimpleRoots p := by
+    IsSimpleRealRooted p := by
+  apply isSimpleRealRooted_iff_splits_and_hasSimpleRoots.mpr
   let p := C alpha * BigDescents.evenBinomPolyReal (2 * d) + h
   let grid : Fin d → ℝ := fun k =>
     -(Real.tan (((k : ℕ) : ℝ) * Real.pi / (2 * (d : ℝ)))) ^ 2
@@ -302,8 +303,8 @@ theorem evenBinomPolyReal_add_isNegativeSimple
     rw [leadingCoeff, hpdegree]
     exact hpcoeff d le_rfl
   have hp0 : p ≠ 0 := leadingCoeff_ne_zero.mp hplead.ne'
-  have hsplitsSimple := evenBinomPolyReal_add_splits_and_hasSimpleRoots
-    hd halpha hMalpha hdegree hcoeff
+  have hsplitsSimple := (isSimpleRealRooted_evenBinomPolyReal_add
+    hd halpha hMalpha hdegree hcoeff).2
   have hnonneg : HasNonnegCoeffs p := by
     intro k
     by_cases hk : k ≤ d

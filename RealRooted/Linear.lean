@@ -164,6 +164,14 @@ lemma isCoprime_of_no_common_real_root_of_isRealRooted {f g : ℝ[X]}
         (degree_pos_of_ne_zero_of_nonunit hz_rr.1 hz_notunit).ne'
     exact hno r (hzr.dvd hzf) (hzr.dvd hzg)
 
+/-- For nonzero interlacing polynomials, coprimeness is equivalent to having no
+common real root. -/
+theorem StrictInterl.isCoprime_iff_no_common_root {f g : ℝ[X]} (h : StrictInterl f g) :
+    IsCoprime f g ↔ ∀ r : ℝ, ¬ (f.IsRoot r ∧ g.IsRoot r) :=
+  ⟨fun hcop _ hr => hcop.not_isRoot_right hr.1 hr.2,
+    fun hno => isCoprime_of_no_common_real_root_of_isRealRooted h.1.1 h.1.2
+      (fun r hf hg => hno r ⟨hf, hg⟩)⟩
+
 /-- Any nonzero degree-1 polynomial is real-rooted. -/
 lemma isRealRooted_of_degree_one {p : ℝ[X]} (hp : p.natDegree = 1) : (p ≠ 0 ∧ p.Splits) := by
   have hne : p ≠ 0 := by intro h; simp [h] at hp

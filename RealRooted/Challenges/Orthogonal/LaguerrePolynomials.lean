@@ -72,7 +72,7 @@ module = "RealRooted.Laguerre.GeneralizedBell"
 label = "The auxiliary polynomial Σ (-1)^j γ_j (X)_{K-j}"
 
 [[theorems]]
-name = "RealRooted.laguerreCombination_splits_simple_roots_pos"
+name = "RealRooted.LaguerreCombination.isRealRootedIn_Ioi_and_hasSimpleRoots"
 module = "RealRooted.Laguerre.GeneralizedBell"
 label = "Auxiliary roots below α + 1 give a combination with simple positive roots"
 

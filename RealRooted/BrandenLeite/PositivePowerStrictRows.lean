@@ -11,6 +11,7 @@ import RealRooted.BrandenLeite.WeightedDerivativeKernel
 import RealRooted.BrandenLeite.PositiveLinearFactors
 import RealRooted.BrandenLeite.PositivePowerFactors
 import RealRooted.BrandenLeite.PositivePowerInterlacing
+public import RealRooted.SimpleRoots
 public import RealRooted.BrandenLeite.AffineNegativePower
 public import RealRooted.BrandenLeite.WeightedDerivativeKernel.Basic
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Checkerboard
@@ -146,7 +147,7 @@ private theorem signedKernel_diagonal_pos {κ : ℝ} (hκ : 0 < κ) {Q : PowerSe
 
 /-- Under the elementary second-coefficient strictness condition, TN kernel
 models give simple roots and disjoint consecutive canonical rows. -/
-theorem affineNegativePowerCoeff_simple_and_disjoint_of_kernels
+theorem AffineNegativePowerCoeff.hasSimpleRoots_and_no_common_root_of_kernels
     {κ : ℝ} (hκ : 0 < κ) (Q B : PowerSeries ℝ)
     (hQ : PowerSeries.constantCoeff Q = 1) (hB : PowerSeries.constantCoeff B = 0)
     (hB₁ : 0 < PowerSeries.coeff 1 B)
@@ -161,10 +162,8 @@ theorem affineNegativePowerCoeff_simple_and_disjoint_of_kernels
     (hMdet : ((weightedDerivativeKernel κ
       (fun k => (-1 : ℝ) ^ k * PowerSeries.coeff k Q)).submatrix Fin.val Fin.val :
         Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ).det ≠ 0) :
-    (∀ x : ℝ, (affineNegativePowerCoeff κ Q B n).IsRoot x →
-      (affineNegativePowerCoeff κ Q B n).rootMultiplicity x = 1) ∧
-    (∀ x : ℝ, (affineNegativePowerCoeff κ Q B (n + 1)).IsRoot x →
-      (affineNegativePowerCoeff κ Q B (n + 1)).rootMultiplicity x = 1) ∧
+    HasSimpleRoots (affineNegativePowerCoeff κ Q B n) ∧
+    HasSimpleRoots (affineNegativePowerCoeff κ Q B (n + 1)) ∧
     ∀ x : ℝ, ¬((affineNegativePowerCoeff κ Q B n).IsRoot x ∧
       (affineNegativePowerCoeff κ Q B (n + 1)).IsRoot x) := by
   let M := ((weightedDerivativeKernel κ
@@ -184,9 +183,13 @@ theorem affineNegativePowerCoeff_simple_and_disjoint_of_kernels
     hsecond.imp (fun hQ₂ => signedKernel_subdiagonal_pos hκ hQ₂ i)
       fun hB₂ =>
         ⟨numeratorKernel_subdiagonal_pos hκ hB₂ i, signedKernel_diagonal_pos hκ hQ₁ i⟩
-  obtain ⟨-, hfull, hsmall, hdisjoint, -⟩ :=
-    hLtri.checkerboard_inv_mul_leading_charpoly_strictInterlaces
+  obtain ⟨hi, hcop, -⟩ :=
+    hLtri.checkerboard_inv_mul_charpoly_interlaces_and_isCoprime
       hL hLdet hM hMdet hsuper hsub
+  obtain ⟨hsmall, hfull⟩ := hi.toStrictInterl.hasSimpleRoots_of_isCoprime hcop
+  have hdisjoint : ∀ x : ℝ, ¬ (H.charpoly.IsRoot x ∧
+      (H.submatrix Fin.castSucc Fin.castSucc).charpoly.IsRoot x) :=
+    fun _ hx => hcop.not_isRoot_right hx.2 hx.1
   have hAunit := isUnit_det_checkerboard L hLdet.ne'.isUnit
   have hlead : H.submatrix Fin.castSucc Fin.castSucc =
       (checkerboard (L.submatrix Fin.castSucc Fin.castSucc))⁻¹ *
@@ -236,7 +239,7 @@ every root is simple and consecutive polynomials have no common root when
 one of the signed-denominator or numerator second coefficients is positive.
 Combined with the checked weak oriented interlacing theorem, every root
 comparison is then strict. -/
-theorem affineNegativePowerCoeff_factor_simple_and_disjoint
+theorem AffineNegativePowerCoeff.factor_hasSimpleRoots_and_no_common_root
     {ι ν : Type*} (s : Finset ι) (hs : s.Nonempty) (α : ι → ℝ)
     (hα : ∀ i ∈ s, 0 < α i) (t : Finset ν) (β : ν → ℝ)
     (hβ : ∀ j ∈ t, 0 ≤ β j) {c κ : ℝ} (hc : 0 < c) (hκ : 0 < κ) (n : ℕ) :
@@ -245,8 +248,7 @@ theorem affineNegativePowerCoeff_factor_simple_and_disjoint
       ∏ j ∈ t, (1 + Polynomial.C (β j) * Polynomial.X)
     (0 < Q.coeff 2 ∨ 0 < B.coeff 2) →
     let q := fun m => affineNegativePowerCoeff κ (Q : PowerSeries ℝ) B m
-    (∀ x : ℝ, (q n).IsRoot x → (q n).rootMultiplicity x = 1) ∧
-      (∀ x : ℝ, (q (n + 1)).IsRoot x → (q (n + 1)).rootMultiplicity x = 1) ∧
+    HasSimpleRoots (q n) ∧ HasSimpleRoots (q (n + 1)) ∧
       ∀ x : ℝ, ¬((q n).IsRoot x ∧ (q (n + 1)).IsRoot x) := by
   let Q : ℝ[X] := ∏ i ∈ s, (1 - Polynomial.C (α i) * Polynomial.X)
   let B : ℝ[X] := Polynomial.C c * Polynomial.X *
@@ -265,15 +267,17 @@ theorem affineNegativePowerCoeff_factor_simple_and_disjoint
     have hpos := coeff_one_prod_one_add_C_mul_X_pos s hs α hα
     rw [← Polynomial.prod_one_sub_C_mul_X_comp_neg_X s α] at hpos
     simpa [Q, Polynomial.coeff_comp_neg_X] using hpos
-  obtain ⟨hQs, hQnn⟩ :=
-    splits_and_hasNonnegCoeffs_prod_one_sub_C_mul_X_comp_neg_X s α fun i hi => (hα i hi).le
+  have hQpf :=
+    isPFPolynomial_prod_one_sub_C_mul_X_comp_neg_X s α fun i hi => (hα i hi).le
+  have hQs := hQpf.splits
+  have hQnn := hQpf.hasNonnegCoeffs
   have hBs : B.Splits := by
     simpa [B] using (Polynomial.Splits.C_mul_X_pow c 1).mul
       (Polynomial.splits_prod_one_add_C_mul_X t β)
   have hBnn : HasNonnegCoeffs B := by
     exact (hasNonnegCoeffs_C_mul hc.le hasNonnegCoeffs_X).mul
       (hasNonnegCoeffs_prod_one_add_C_mul_X t β hβ)
-  apply affineNegativePowerCoeff_simple_and_disjoint_of_kernels hκ
+  apply AffineNegativePowerCoeff.hasSimpleRoots_and_no_common_root_of_kernels hκ
     (Q : PowerSeries ℝ) B (by simpa using hQ0) (by simpa using hB0)
     (by simpa [hB1] using hc) (by simpa using hQ1)
     (by simpa only [Polynomial.coeff_coe] using hsecond) n

@@ -3,7 +3,7 @@ module
 public import RealRooted.BrandenLeite.WeightedDerivativeKernel.Basic
 public import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerPositive
 import RealRooted.BrandenLeite.NegativePowerDetPositive
-public import RealRooted.Basic.Coefficients
+public import RealRooted.PFPolynomial
 import RealRooted.Mathlib.Algebra.Polynomial.LinearFactors
 import Mathlib.Tactic
 
@@ -22,14 +22,14 @@ theorem hasNonnegCoeffs_prod_one_add_C_mul_X {ι : Type*} (s : Finset ι) (α : 
   Polynomial.coeff_prod_one_add_C_mul_X_nonneg s α hα
 
 /-- The reflection of a product of normalized negative linear factors with nonnegative
-parameters splits and has nonnegative coefficients. -/
-theorem splits_and_hasNonnegCoeffs_prod_one_sub_C_mul_X_comp_neg_X {ι : Type*}
+parameters is a PF polynomial. -/
+theorem isPFPolynomial_prod_one_sub_C_mul_X_comp_neg_X {ι : Type*}
     (s : Finset ι) (α : ι → ℝ) (hα : ∀ i ∈ s, 0 ≤ α i) :
-    ((∏ i ∈ s, (1 - C (α i) * X : ℝ[X])).comp (-X)).Splits ∧
-      HasNonnegCoeffs ((∏ i ∈ s, (1 - C (α i) * X : ℝ[X])).comp (-X)) := by
+    IsPFPolynomial ((∏ i ∈ s, (1 - C (α i) * X : ℝ[X])).comp (-X)) := by
   rw [Polynomial.prod_one_sub_C_mul_X_comp_neg_X]
-  exact ⟨Polynomial.splits_prod_one_add_C_mul_X s α,
-    hasNonnegCoeffs_prod_one_add_C_mul_X s α hα⟩
+  exact IsPFPolynomial.of_realRooted_nonneg
+    (hasNonnegCoeffs_prod_one_add_C_mul_X s α hα)
+    (Polynomial.splits_prod_one_add_C_mul_X s α)
 
 /-- The weighted kernel of the reflection of a nonempty product of normalized
 negative linear factors has strictly positive leading determinants. -/

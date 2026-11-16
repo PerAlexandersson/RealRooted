@@ -11,6 +11,7 @@ public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 public import Mathlib.LinearAlgebra.Matrix.Block
 public import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
 import RealRooted.OscillatoryInterlacing
+import RealRooted.Linear
 import RealRooted.Mathlib.LinearAlgebra.Matrix.CheckerboardAdjacent
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 import Mathlib.Tactic
@@ -23,7 +24,7 @@ namespace Matrix
 
 /-- The classical oscillatory endpoint applies to a checkerboard inverse
 product under the elementary adjacent-entry conditions above. -/
-theorem IsLowerTriangular.checkerboard_inv_mul_leading_charpoly_strictInterlaces
+theorem IsLowerTriangular.checkerboard_inv_mul_charpoly_interlaces_and_isCoprime
     {n : ℕ} {L M : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ}
     (hLtri : L.IsLowerTriangular) (hL : L.IsTotallyNonneg)
     (hdet : 0 < L.det) (hM : M.IsTotallyNonneg) (hMdet : M.det ≠ 0)
@@ -33,11 +34,7 @@ theorem IsLowerTriangular.checkerboard_inv_mul_leading_charpoly_strictInterlaces
     let H := (checkerboard L)⁻¹ * M
     RealRooted.Interlaces
         (H.submatrix Fin.castSucc Fin.castSucc).charpoly H.charpoly ∧
-      (∀ x : ℝ, H.charpoly.IsRoot x → H.charpoly.rootMultiplicity x = 1) ∧
-      (∀ x : ℝ, (H.submatrix Fin.castSucc Fin.castSucc).charpoly.IsRoot x →
-        (H.submatrix Fin.castSucc Fin.castSucc).charpoly.rootMultiplicity x = 1) ∧
-      (∀ x : ℝ, ¬(H.charpoly.IsRoot x ∧
-        (H.submatrix Fin.castSucc Fin.castSucc).charpoly.IsRoot x)) ∧
+      IsCoprime (H.submatrix Fin.castSucc Fin.castSucc).charpoly H.charpoly ∧
       ∀ x ∈ H.charpoly.roots, 0 < x := by
   have hRTN := hL.checkerboard_nonsing_inv hdet
   have hRdet := det_checkerboard_nonsing_inv_ne_zero L hdet.ne'.isUnit
@@ -46,6 +43,9 @@ theorem IsLowerTriangular.checkerboard_inv_mul_leading_charpoly_strictInterlaces
     exact mul_ne_zero hRdet hMdet
   obtain ⟨hHsuper, hHsub⟩ :=
     hLtri.checkerboard_inv_mul_adjacent_pos hL hdet hM hsuper hsub
-  exact (hRTN.mul hM).leading_charpoly_strictInterlaces hHdet hHsuper hHsub
+  obtain ⟨hi, -, -, hno, hpos⟩ :=
+    (hRTN.mul hM).leading_charpoly_strictInterlaces hHdet hHsuper hHsub
+  exact ⟨hi, hi.toStrictInterl.isCoprime_iff_no_common_root.mpr
+    (fun x hx => hno x hx.symm), hpos⟩
 
 end Matrix

@@ -300,4 +300,41 @@ theorem StrictInterlSameDegree.toStrictInterl {p q : ℝ[X]}
       Multiset.sort_eq _ _, Multiset.sort_eq _ _,
       Or.inr ⟨h_len, (listAlternates_iff_interleaves_of_length h_len).2 h_le⟩⟩
 
+/-- Strict same-degree interleaving excludes every common real root. -/
+theorem StrictInterlSameDegree.isCoprime {p q : ℝ[X]}
+    (h : StrictInterlSameDegree p q) : IsCoprime p q := by
+  apply isCoprime_of_no_common_real_root_of_isRealRooted h.1.1 h.1.2
+  have hlen : (p.roots.sort (· ≤ ·)).length = (q.roots.sort (· ≤ ·)).length := by
+    simp [Polynomial.splits_iff_card_roots.mp, h.1.2, h.2.1.2, h.2.2.1]
+  have horder := RealRooted.interlaced_of_interleaves_reverse hlen h.2.2.2
+  intro r hp hq
+  obtain ⟨i, hi, hir⟩ := List.getElem_of_mem
+    ((Multiset.mem_sort (· ≤ ·)).mpr ((mem_roots h.1.1).mpr hp))
+  obtain ⟨j, hj, hjr⟩ := List.getElem_of_mem
+    ((Multiset.mem_sort (· ≤ ·)).mpr ((mem_roots h.2.1.1).mpr hq))
+  have hj' : j < (p.roots.sort (· ≤ ·)).length := by lia
+  rcases lt_trichotomy i j with hij | hij | hij
+  · have h₁ := horder.1 ⟨i, hi⟩
+    have h₂ := horder.2 ⟨i, hi⟩ ⟨j, hj'⟩ hij
+    have h₃ := horder.1 ⟨j, hj'⟩
+    rw [hir] at h₁
+    rw [hjr] at h₃
+    exact (h₁.trans (h₂.trans h₃)).false
+  · subst j
+    have hlt := horder.1 ⟨i, hi⟩
+    rw [hir, hjr] at hlt
+    exact hlt.false
+  · have hlt := horder.2 ⟨j, hj'⟩ ⟨i, hi⟩ hij
+    rw [hir, hjr] at hlt
+    exact hlt.false
+
+/-- Strict same-degree interleaving is weak oriented interlacing of coprime
+polynomials of equal degree. -/
+theorem StrictInterlSameDegree.iff_strictInterl_and_isCoprime {p q : ℝ[X]} :
+    StrictInterlSameDegree p q ↔
+      StrictInterl p q ∧ p.natDegree = q.natDegree ∧ IsCoprime p q :=
+  ⟨fun h => ⟨h.toStrictInterl, h.2.2.1, h.isCoprime⟩,
+    fun h => .of_strictInterl_of_no_common h.1 h.2.1
+      (fun _ hp hq => h.2.2.not_isRoot_right hp hq)⟩
+
 end RealRooted
