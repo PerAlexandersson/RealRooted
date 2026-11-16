@@ -142,4 +142,16 @@ theorem IsLaguerrePolyaTypeI.isPFMultiplierSequence_eval_natCast {f : ℂ → �
   have hre := (Complex.continuous_re.tendsto _).comp ht
   exact hre
 
+/-- Shifted rising factorials are PF multiplier sequences: each factor is a shifted
+Euler multiplier with nonnegative shift. This is the product case of Laguerre's theorem,
+as proved by `isPFMultiplierSequence_natCast_add`. See Pólya--Schur (1914),
+DOI: 10.1515/crll.1914.144.89, for multiplier sequences and their product closure. -/
+theorem isPFMultiplierSequence_ascFactorial_shift (a m : ℕ) :
+    IsPFMultiplierSequence (fun k => ((k + a).ascFactorial m : ℝ)) := by
+  induction m with
+  | zero => simpa using isPFMultiplierSequence_one_sequence
+  | succ m ih =>
+    have h := (isPFMultiplierSequence_natCast_add_nat (a + m)).mul ih
+    simpa only [Nat.ascFactorial_succ, Nat.cast_mul, Nat.cast_add, Nat.add_assoc] using h
+
 end RealRooted

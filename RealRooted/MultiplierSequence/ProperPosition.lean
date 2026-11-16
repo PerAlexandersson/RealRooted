@@ -1,6 +1,9 @@
 module
 
 import RealRooted.MultiplierSequence.Laguerre
+import RealRooted.Interlacing.Reversal
+import RealRooted.Interlacing.ReversalCommonFactor
+import RealRooted.MultiplierSequence.InvPochhammer
 public import RealRooted.CommonInterleaver.RootDesc
 public import RealRooted.OperatorPreservesInterlacing
 import RealRooted.MultiplierSequence.PolyaSchur
@@ -15,6 +18,9 @@ import RealRooted.Mathlib.Algebra.Polynomial.Splits
 A multiplier sequence preserves real-rootedness of every real pencil `a f + b g`, so it preserves
 interlacing up to orientation (finite Pólya--Schur).  Comparing the sums of the roots (Vieta)
 fixes the orientation: positive multiplier sequences preserve directed proper position.
+
+Reversal conjugation also transports interlacing under weights `gamma k * delta (d-k)`
+at input degree `d`, including shifted binomial diagonals across consecutive degrees.
 -/
 
 public section
@@ -293,5 +299,129 @@ theorem alternating_sign_linear_not_strictInterl :
           coeff_neg, coeff_X, coeff_C, coeff_one]
   rw [hleft_sum, hright_sum] at hsum
   norm_num at hsum
+
+/-- A positive multiplier preserves successor-degree interlacing. This is the
+Pólya--Schur/HKO consequence in `IsMultiplierSequence.strictInterl_diagonalOperator_of_pos`;
+see Borcea--Brändén, arXiv:0809.0401, Theorem 1.9. -/
+theorem Interlaces.diagonalOperator_of_pos
+    {gamma : ℕ → ℝ} (hgamma : IsMultiplierSequence gamma)
+    (hpos : ∀ k, 0 < gamma k) {f g : ℝ[X]} (hfg : Interlaces f g) :
+    Interlaces (diagonalOperator gamma f) (diagonalOperator gamma g) := by
+  apply (hgamma.strictInterl_diagonalOperator_of_pos hpos hfg.toStrictInterl).toInterlaces
+  rw [natDegree_diagonalOperator_eq_of_natDegree_eq rfl hfg.2.1.1 (hpos _).ne',
+    natDegree_diagonalOperator_eq_of_natDegree_eq rfl hfg.1.1 (hpos _).ne']
+  exact hfg.2.2.1
+
+/-- Conjugating a positive multiplier by natural-degree reversal preserves
+successor-degree interlacing of PF polynomials with nonzero constant terms.
+This follows from Pólya--Schur preservation and the order-reversing inversion of
+negative roots; see Borcea--Brändén, arXiv:0809.0401, Theorem 1.9 for the HKO step.
+The effective weight is `delta (p.natDegree - k)`, so it varies with the row degree. -/
+theorem Interlaces.reverse_diagonalOperator_reverse_of_pos
+    {delta : ℕ → ℝ} (hdelta : IsMultiplierSequence delta)
+    (hpos : ∀ k, 0 < delta k) {f g : ℝ[X]} (hfg : Interlaces f g)
+    (hf : IsPFPolynomial f) (hg : IsPFPolynomial g)
+    (hf0 : f.coeff 0 ≠ 0) (hg0 : g.coeff 0 ≠ 0) :
+    Interlaces (diagonalOperator delta f.reverse).reverse
+      (diagonalOperator delta g.reverse).reverse := by
+  have hrev := interlaces_reverse_of_roots_neg hfg
+    (roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne hg.hasNonnegCoeffs hg0)
+    (roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne hf.hasNonnegCoeffs hf0)
+  have hdiag := hrev.diagonalOperator_of_pos hdelta hpos
+  have hnn (p : ℝ[X]) (hp : IsPFPolynomial p) :
+      HasNonnegCoeffs (diagonalOperator delta p.reverse) :=
+    hp.reverse.hasNonnegCoeffs.diagonalOperator (fun k => (hpos k).le)
+  have hconst (p : ℝ[X]) (hp : p ≠ 0) :
+      (diagonalOperator delta p.reverse).coeff 0 ≠ 0 := by
+    rw [coeff_diagonalOperator, Polynomial.coeff_zero_reverse]
+    exact mul_ne_zero (hpos 0).ne' (Polynomial.leadingCoeff_ne_zero.mpr hp)
+  exact interlaces_reverse_of_roots_neg hdiag
+    (roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne (hnn g hg) (hconst g hfg.1.1))
+    (roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne (hnn f hf) (hconst f hfg.2.1.1))
+
+/-- The elementary coefficient identity for reversal-conjugated diagonal operators.
+A nonzero constant term fixes the reversal degree, and the top multiplier prevents
+its loss after the first diagonal. The resulting weight depends on the input degree. -/
+theorem diagonalOperator_reverse_diagonalOperator_reverse
+    (gamma delta : ℕ → ℝ) {p : ℝ[X]} (hp0 : p.coeff 0 ≠ 0)
+    (hdelta : delta p.natDegree ≠ 0) :
+    diagonalOperator gamma (diagonalOperator delta p.reverse).reverse =
+      diagonalOperator (fun k => gamma k * delta (p.natDegree - k)) p := by
+  have hp : p ≠ 0 := fun h => hp0 (by simp [h])
+  have hrev : p.reverse.natDegree = p.natDegree := by
+    rw [Polynomial.reverse_natDegree,
+      Polynomial.natTrailingDegree_eq_zero.mpr (Or.inr hp0), Nat.sub_zero]
+  have hdegree : (diagonalOperator delta p.reverse).natDegree = p.natDegree :=
+    natDegree_diagonalOperator_eq_of_natDegree_eq hrev
+      (Polynomial.reverse_eq_zero.not.mpr hp) hdelta
+  ext k
+  rw [coeff_diagonalOperator, coeff_diagonalOperator, Polynomial.coeff_reverse, hdegree]
+  by_cases hk : k ≤ p.natDegree
+  · rw [Polynomial.revAt_le hk, coeff_diagonalOperator, Polynomial.coeff_reverse,
+      Polynomial.revAt_le (Nat.sub_le _ _), Nat.sub_sub_self hk]
+    ring
+  · rw [Polynomial.revAt_eq_self_of_lt (Nat.lt_of_not_ge hk), coeff_diagonalOperator,
+      Polynomial.coeff_reverse,
+      Polynomial.revAt_eq_self_of_lt (Nat.lt_of_not_ge hk),
+      coeff_eq_zero_of_natDegree_lt (Nat.lt_of_not_ge hk)]
+    ring
+
+/-- Two positive multiplier sequences give a cross-rank diagonal interlacing
+preserver with weights `gamma k * delta (p.natDegree - k)`.
+This is reversal conjugation followed by fixed multiplier preservation, a direct
+corollary of Pólya--Schur (1914), DOI: 10.1515/crll.1914.144.89, and root inversion. -/
+theorem Interlaces.diagonalOperator_twoSided_of_pos
+    {gamma delta : ℕ → ℝ}
+    (hgamma : IsMultiplierSequence gamma) (hdelta : IsMultiplierSequence delta)
+    (hgammaPos : ∀ k, 0 < gamma k) (hdeltaPos : ∀ k, 0 < delta k)
+    {f g : ℝ[X]} (hfg : Interlaces f g)
+    (hf : IsPFPolynomial f) (hg : IsPFPolynomial g)
+    (hf0 : f.coeff 0 ≠ 0) (hg0 : g.coeff 0 ≠ 0) :
+    Interlaces
+      (diagonalOperator (fun k => gamma k * delta (f.natDegree - k)) f)
+      (diagonalOperator (fun k => gamma k * delta (g.natDegree - k)) g) := by
+  rw [← diagonalOperator_reverse_diagonalOperator_reverse gamma delta hf0 (hdeltaPos _).ne',
+    ← diagonalOperator_reverse_diagonalOperator_reverse gamma delta hg0 (hdeltaPos _).ne']
+  exact Interlaces.diagonalOperator_of_pos hgamma hgammaPos
+    (hfg.reverse_diagonalOperator_reverse_of_pos hdelta hdeltaPos hf hg hf0 hg0)
+
+/-- Shifted binomial diagonals preserve interlacing across consecutive degrees.
+Their weights factor as `(d+a+b)! / ((k+a)! (d-k+b)!)`. The two reciprocal
+factorials are shifted Pólya--Schur multiplier sequences, so reversal conjugation
+applies. This is a direct corollary of the Laguerre multiplier theorem and root inversion;
+see Pólya--Schur (1914), DOI: 10.1515/crll.1914.144.89. -/
+theorem Interlaces.diagonalOperator_choose_shift
+    (a b : ℕ) {f g : ℝ[X]} (hfg : Interlaces f g)
+    (hf : IsPFPolynomial f) (hg : IsPFPolynomial g)
+    (hf0 : f.coeff 0 ≠ 0) (hg0 : g.coeff 0 ≠ 0) :
+    Interlaces
+      (diagonalOperator (fun k => (Nat.choose (f.natDegree + a + b) (k + a) : ℝ)) f)
+      (diagonalOperator (fun k => (Nat.choose (g.natDegree + a + b) (k + a) : ℝ)) g) := by
+  have hfac (j : ℕ) : (j.factorial : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr j.factorial_ne_zero
+  have hpos (j : ℕ) : 0 < (j.factorial : ℝ)⁻¹ := by positivity
+  have hid (p : ℝ[X]) :
+      diagonalOperator (fun k => (Nat.choose (p.natDegree + a + b) (k + a) : ℝ)) p =
+        C ((p.natDegree + a + b).factorial : ℝ) *
+          diagonalOperator (fun k => ((k + a).factorial : ℝ)⁻¹ *
+            ((p.natDegree - k + b).factorial : ℝ)⁻¹) p := by
+    ext k
+    rw [coeff_diagonalOperator, coeff_C_mul, coeff_diagonalOperator]
+    by_cases hk : k ≤ p.natDegree
+    · have hchoose := Nat.choose_mul_factorial_mul_factorial
+        (n := p.natDegree + a + b) (k := k + a) (by lia)
+      have hsub : p.natDegree + a + b - (k + a) = p.natDegree - k + b := by lia
+      rw [hsub] at hchoose
+      have hc : (Nat.choose (p.natDegree + a + b) (k + a) : ℝ) *
+          ((k + a).factorial : ℝ) * ((p.natDegree - k + b).factorial : ℝ) =
+          ((p.natDegree + a + b).factorial : ℝ) := by exact_mod_cast hchoose
+      field_simp [hfac]
+      linear_combination p.coeff k * hc
+    · rw [coeff_eq_zero_of_natDegree_lt (Nat.lt_of_not_ge hk)]
+      ring
+  rw [hid f, hid g]
+  exact (hfg.diagonalOperator_twoSided_of_pos
+    (isMultiplierSequence_inv_factorial.shift a) (isMultiplierSequence_inv_factorial.shift b)
+    (fun k => hpos (k + a)) (fun k => hpos (k + b)) hf hg hf0 hg0).C_mul_both
+      (hfac _) (hfac _)
 
 end RealRooted
