@@ -63,7 +63,7 @@ module = "RealRooted.BrandenLeite.LogarithmicFactors"
 label = "Logarithmic rows: negative roots, exact degree and consecutive interlacing"
 
 [[theorems]]
-name = "RealRooted.BrandenLeite.affineNegativePowerCoeff_factor_simple_and_disjoint"
+name = "RealRooted.BrandenLeite.AffineNegativePowerCoeff.factor_hasSimpleRoots_and_no_common_root"
 module = "RealRooted.BrandenLeite.PositivePowerStrictRows"
 label = "For r = 1 and positive [u²]Q or [u²]B: simple roots, no common roots in consecutive rows"
 

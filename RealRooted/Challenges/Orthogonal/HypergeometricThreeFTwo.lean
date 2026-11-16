@@ -18,7 +18,7 @@ module = "RealRooted.Hypergeometric.ThreeFTwo"
 label = "Terminating three-over-two hypergeometric series"
 
 [[theorems]]
-name = "RealRooted.Hypergeometric.threeFTwo_strictInterlaces"
+name = "RealRooted.Hypergeometric.threeFTwo_interlaces_and_isCoprime"
 module = "RealRooted.Hypergeometric.ThreeFTwo"
 label = "Strict interlacing and simple positive zeros in Lima's strict range"
 headline = true

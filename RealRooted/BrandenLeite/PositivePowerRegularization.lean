@@ -106,8 +106,10 @@ theorem interl_affineNegativePowerCoeff_prod_linear_succ
     exists_isPFPolynomial_coeff_one_pos_approximation B hBne hB0 hBs hBnn
   let Q : ℝ[X] := ∏ i ∈ s, (1 - C (α i) * X)
   have hQ0 : Q.coeff 0 = 1 := Polynomial.coeff_zero_prod_one_sub_C_mul_X s α
-  obtain ⟨hQs, hQnn⟩ :=
-    splits_and_hasNonnegCoeffs_prod_one_sub_C_mul_X_comp_neg_X s α fun i hi => (hα i hi).le
+  have hQpf :=
+    isPFPolynomial_prod_one_sub_C_mul_X_comp_neg_X s α fun i hi => (hα i hi).le
+  have hQs := hQpf.splits
+  have hQnn := hQpf.hasNonnegCoeffs
   have hPne (m : ℕ) : P m ≠ 0 := by
     intro hz
     have := hP1 m

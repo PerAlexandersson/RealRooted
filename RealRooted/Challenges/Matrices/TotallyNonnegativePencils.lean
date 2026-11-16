@@ -45,7 +45,7 @@ module = "RealRooted.TotallyNonnegPencil.CheckerboardInterlacing"
 label = "Leading sections of checkerboard-signed determinant pencils interlace"
 
 [[theorems]]
-name = "Matrix.IsLowerTriangular.checkerboard_inv_mul_leading_charpoly_strictInterlaces"
+name = "Matrix.IsLowerTriangular.checkerboard_inv_mul_charpoly_interlaces_and_isCoprime"
 module = "RealRooted.TotallyNonnegPencil.StrictInterlacing"
 label = "Principal sections of (checkerboard L)⁻¹ M interlace, with simple roots and no common root"
 -->

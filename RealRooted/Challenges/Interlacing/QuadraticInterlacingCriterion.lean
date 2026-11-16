@@ -26,7 +26,7 @@ label = "Alternating root order of two quadratics is equivalent to four sign con
 headline = true
 
 [[theorems]]
-name = "RealRooted.strictInterl_quadratics_of_remainder_signs"
+name = "RealRooted.strictInterlSameDegree_quadratics_of_remainder_signs"
 module = "RealRooted.Interlacing.QuadraticRemainderCriterion"
 label = "The sign conditions give interlacing, simple roots and no common roots"
 
@@ -36,7 +36,7 @@ module = "RealRooted.Interlacing.QuadraticRemainderCriterion"
 label = "The sign conditions give differ-by-one interlacing with a linear multiple"
 
 [[theorems]]
-name = "RealRooted.normalizedQuadraticFamily_splits_simple_roots_mem_Ico"
+name = "RealRooted.NormalizedQuadraticFamily.isRealRootedIn_Ico_and_hasSimpleRoots"
 module = "RealRooted.Interlacing.QuadraticRemainderCriterion"
 label = "H_y has simple real roots in [-1, 0) for 0 ≤ y ≤ 1/3"
 

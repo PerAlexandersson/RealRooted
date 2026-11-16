@@ -52,7 +52,7 @@ module = "RealRooted.Hermite.ImaginaryCentralDifference"
 label = "The central difference is (p(z + ih) - p(z - ih)) / (2ih)"
 
 [[theorems]]
-name = "RealRooted.imaginaryCentralDifference_splits_and_hasSimpleRoots"
+name = "RealRooted.isSimpleRealRooted_imaginaryCentralDifference"
 module = "RealRooted.Hermite.ImaginaryCentralDifference"
 label = "The imaginary central difference of a real-rooted polynomial has simple real roots"
 -->

@@ -4,6 +4,7 @@ public import Mathlib.Algebra.Polynomial.Roots
 public import Mathlib.Algebra.Polynomial.Splits
 public import Mathlib.Basic.Real.Basic
 public import RealRooted.Apolarity
+public import RealRooted.SimpleRoots
 import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 
 /-!
@@ -156,6 +157,14 @@ protected theorem multiset_prod_X_sub_C {m : Multiset ℝ} (h : ∀ r ∈ m, r �
     exact IsRealRootedIn.X_sub_C (h r hr)
 
 end IsRealRootedIn
+
+/-- Splitting, simplicity and a root-location bound are equivalent to simple
+real-rootedness in the prescribed set. -/
+theorem isRealRootedIn_and_hasSimpleRoots_iff {S : Set ℝ} {p : ℝ[X]} :
+    (IsRealRootedIn S p ∧ HasSimpleRoots p) ↔
+      p.Splits ∧ HasSimpleRoots p ∧ ∀ r ∈ p.roots, r ∈ S :=
+  ⟨fun h => ⟨h.1.splits, h.2, fun _ hr => h.1.mem_of_mem_roots hr⟩,
+    fun h => ⟨⟨h.2.1.ne_zero, h.1, h.2.2⟩, h.2.1⟩⟩
 
 /-! ### Affine transport -/
 

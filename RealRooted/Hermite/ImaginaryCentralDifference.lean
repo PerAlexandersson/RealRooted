@@ -350,11 +350,11 @@ private theorem imaginaryCentralDifference_splits_simple_of_posLeadingCoeff
 
 /-- A positive imaginary central difference of a nonzero split polynomial has only simple real
 roots. -/
-theorem imaginaryCentralDifference_splits_and_hasSimpleRoots
+theorem isSimpleRealRooted_imaginaryCentralDifference
     {h : ℝ} (hh : 0 < h) {p : ℝ[X]} (hp0 : p ≠ 0) (hps : p.Splits)
     (hpdeg : 1 ≤ p.natDegree) :
-    (imaginaryCentralDifference h p).Splits ∧
-      HasSimpleRoots (imaginaryCentralDifference h p) := by
+    IsSimpleRealRooted (imaginaryCentralDifference h p) := by
+  apply isSimpleRealRooted_iff_splits_and_hasSimpleRoots.mpr
   have hlc : p.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hp0
   let q := C p.leadingCoeff⁻¹ * p
   have hq0 : q ≠ 0 := mul_ne_zero (C_ne_zero.mpr (inv_ne_zero hlc)) hp0
@@ -393,6 +393,6 @@ theorem imaginaryCentralDifference_spec {h : ℝ} (hh : 0 < h)
       HasSimpleRoots (imaginaryCentralDifference h p) := by
   exact ⟨natDegree_imaginaryCentralDifference hpdeg h,
     leadingCoeff_imaginaryCentralDifference hpdeg h,
-    imaginaryCentralDifference_splits_and_hasSimpleRoots hh hp0 hps hpdeg⟩
+    (isSimpleRealRooted_imaginaryCentralDifference hh hp0 hps hpdeg).2⟩
 
 end RealRooted

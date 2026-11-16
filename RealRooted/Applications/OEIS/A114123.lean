@@ -86,10 +86,12 @@ theorem denominator_mul_rowGeneratingSeries :
 theorem row_splits_and_roots_nonpos (n : ℕ) :
     (row n).Splits ∧
       ∀ r ∈ (row n).roots, r ≤ 0 := by
-  apply rowPolynomial_splits_and_roots_nonpos
-  · exact rationalPFCoeff_isPolyaFreqSeq
-      (c := 1) (by norm_num) 0 (by simp) (by simp)
-  · exact rationalPFCoeff_isPolyaFreqSeq
-      (c := 1) (by norm_num) 0 (by simp) (by simp)
+  have hpf : IsPFPolynomial (row n) := by
+    apply rowPolynomial_isPFPolynomial
+    · exact rationalPFCoeff_isPolyaFreqSeq
+        (c := 1) (by norm_num) 0 (by simp) (by simp)
+    · exact rationalPFCoeff_isPolyaFreqSeq
+        (c := 1) (by norm_num) 0 (by simp) (by simp)
+  exact ⟨hpf.splits, hpf.roots_nonpos⟩
 
 end RealRooted.Applications.OEIS.A114123

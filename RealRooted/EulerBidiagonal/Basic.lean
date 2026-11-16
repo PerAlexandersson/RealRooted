@@ -34,7 +34,7 @@ For `a, b ≥ 0` with `a * b > 0`, the operator `T = X + (θ + a)(θ + b)` (coef
 * `isNegativeSimple_step`: `T` maps polynomials with simple negative roots to such polynomials,
   raising the degree by one; `strictInterl_comparison_step` compares `T q` with
   `(θ + c/2) q`, `c = a + b + 1`.
-* `splits_step_X_sub_C_mul`: `T ((X − ρ) q)` has simple real roots for every real `ρ`.
+* `isSimpleRealRooted_step_X_sub_C_mul`: `T ((X − ρ) q)` has simple real roots for every real `ρ`.
 * `strictInterl_step_of_strictInterl`: `T` preserves strict interlacing (without common roots)
   of pairs with simple negative roots, via the Obreschkoff pencil
   (`strictInterl_map_of_negative_simple_pencil`).
@@ -553,12 +553,13 @@ theorem strictInterl_comparison_step {a b : ℝ} {d : ℕ} (q : ℝ[X])
   (step_simpleNegRooted_and_strictInterl q ha hb hab rfl (hq.toSimpleNegRooted d hqd) hd).2
 
 /-- Affine shifts of a positive-degree negative-simple input have simple real roots. -/
-theorem splits_step_X_sub_C_mul {a b : ℝ} {d : ℕ} (q : ℝ[X])
+theorem isSimpleRealRooted_step_X_sub_C_mul {a b : ℝ} {d : ℕ} (q : ℝ[X])
     (ha : 0 ≤ a) (hb : 0 ≤ b) (hab : 0 < a * b)
     (hq : IsNegativeSimple q) (hd : 1 ≤ d) (hqd : q.natDegree = d) :
-    ∀ ρ : ℝ, (step a b ((X - C ρ) * q)).Splits ∧
-      HasSimpleRoots (step a b ((X - C ρ) * q)) :=
-  splits_step_X_sub_C_mul_of_simpleNegRooted q ha hb hab rfl (hq.toSimpleNegRooted d hqd) hd
+    ∀ ρ : ℝ, IsSimpleRealRooted (step a b ((X - C ρ) * q)) :=
+  fun ρ => isSimpleRealRooted_iff_splits_and_hasSimpleRoots.mpr
+    (splits_step_X_sub_C_mul_of_simpleNegRooted q ha hb hab rfl
+      (hq.toSimpleNegRooted d hqd) hd ρ)
 
 private theorem isNegativeSimple_step_of_natDegree_zero {a b : ℝ}
     (hab : 0 < a * b) {q : ℝ[X]}
@@ -657,9 +658,9 @@ theorem mapsAffineNegativeSimple_step {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)
       rw [Polynomial.roots_C_mul _ (ne_of_gt hq0)]
       exact hQsimple.roots_nodup
     exact ⟨hrr.1, hrr.2, hs⟩
-  · have h := splits_step_X_sub_C_mul q ha hb hab hq
+  · have h := isSimpleRealRooted_step_X_sub_C_mul q ha hb hab hq
       (Nat.one_le_iff_ne_zero.mpr hqd) rfl ρ
-    exact ⟨h.2.ne_zero, h.1, h.2⟩
+    exact h
 
 /-- The Euler step preserves strict successor-degree interlacing. -/
 theorem strictInterl_step_of_strictInterl {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b)

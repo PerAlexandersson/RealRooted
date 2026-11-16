@@ -37,7 +37,7 @@ module = "RealRooted.Chebyshev.Levels"
 label = "T_n - h is real-rooted for |h| ≤ 1"
 
 [[theorems]]
-name = "RealRooted.Chebyshev.T_sub_C_splits_simple_roots_mem_Ioo"
+name = "RealRooted.Chebyshev.isRealRootedIn_Ioo_T_sub_C_and_hasSimpleRoots"
 module = "RealRooted.Chebyshev.Levels"
 label = "For |h| < 1 the roots of T_n - h are simple and lie in (-1, 1)"
 
@@ -62,7 +62,7 @@ module = "RealRooted.Chebyshev.Levels"
 label = "For α, λ > 0 and |h| ≤ 1 the affine level polynomials are PF"
 
 [[theorems]]
-name = "RealRooted.Chebyshev.affineLevel_splits_simple_roots_mem_Ioo"
+name = "RealRooted.Chebyshev.isRealRootedIn_Ioo_affineLevel_and_hasSimpleRoots"
 module = "RealRooted.Chebyshev.Levels"
 label = "For |h| < 1 the roots are simple and lie in (-2/λ, 0)"
 

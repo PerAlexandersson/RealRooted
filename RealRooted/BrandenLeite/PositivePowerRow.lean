@@ -93,8 +93,10 @@ theorem isPFPolynomial_affineNegativePowerCoeff_prod_linear
     IsPFPolynomial (affineNegativePowerCoeff κ
       ((∏ i ∈ s, (1 - Polynomial.C (α i) * Polynomial.X) : ℝ[X]) : PowerSeries ℝ)
       B n) := by
-  obtain ⟨hQs, hQnn⟩ :=
-    splits_and_hasNonnegCoeffs_prod_one_sub_C_mul_X_comp_neg_X s α fun i hi => (hα i hi).le
+  have hQpf :=
+    isPFPolynomial_prod_one_sub_C_mul_X_comp_neg_X s α fun i hi => (hα i hi).le
+  have hQs := hQpf.splits
+  have hQnn := hQpf.hasNonnegCoeffs
   refine isPFPolynomial_affineNegativePowerCoeff hκ.le _ B
     (Polynomial.coeff_zero_prod_one_sub_C_mul_X s α) hB hQs hQnn hBs hBnn n ?_
   rw [← Polynomial.coeff_comp_neg_X_eq_neg_one_pow_mul]

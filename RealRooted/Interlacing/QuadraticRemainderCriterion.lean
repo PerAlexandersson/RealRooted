@@ -2,6 +2,8 @@ module
 
 public import RealRooted.Basic.ProperPosition
 public import RealRooted.SimpleRoots
+public import RealRooted.Bezoutian.StrictInterleaving
+public import RealRooted.RootLocation.Basic
 import RealRooted.QuadraticRoot
 import RealRooted.Interlacing.Euclid
 import RealRooted.IteratedDerivativeShift
@@ -404,19 +406,15 @@ theorem exists_ordered_quadratic_roots_iff_remainder_signs
 
 /-- The quadratic remainder inequalities imply same-degree strict interlacing, simplicity of both
 quadratics, and absence of common roots. -/
-theorem strictInterl_quadratics_of_remainder_signs
+theorem strictInterlSameDegree_quadratics_of_remainder_signs
     {a b c A B d L : ℝ} (ha : 0 < a) (hA : 0 < A)
     (hu : a * B - A * b < 0)
     (hN : a * (a * d - A * c) ^ 2 - b * (a * B - A * b) * (a * d - A * c) +
       c * (a * B - A * b) ^ 2 < 0)
     (hfL : 0 < (C a * X ^ 2 + C b * X + C c : ℝ[X]).eval L)
     (hfL' : (C a * X ^ 2 + C b * X + C c : ℝ[X]).derivative.eval L < 0) :
-    StrictInterl (C a * X ^ 2 + C b * X + C c)
-      (C A * X ^ 2 + C B * X + C d) ∧
-      HasSimpleRoots (C a * X ^ 2 + C b * X + C c : ℝ[X]) ∧
-      HasSimpleRoots (C A * X ^ 2 + C B * X + C d : ℝ[X]) ∧
-      ∀ r, (C a * X ^ 2 + C b * X + C c : ℝ[X]).IsRoot r →
-        ¬ (C A * X ^ 2 + C B * X + C d : ℝ[X]).IsRoot r := by
+    StrictInterlSameDegree (C a * X ^ 2 + C b * X + C c)
+      (C A * X ^ 2 + C B * X + C d) := by
   obtain ⟨r₁, r₂, s₁, s₂, hLr₁, hr₁s₁, hs₁r₂, hr₂s₂, hfr₁, hfr₂,
       hgs₁, hgs₂⟩ := ordered_roots_of_quadratic_remainder_signs ha hA hu hN hfL hfL'
   let f : ℝ[X] := C a * X ^ 2 + C b * X + C c
@@ -449,11 +447,8 @@ theorem strictInterl_quadratics_of_remainder_signs
     rw [hgroots] at hgrmem
     simp only [Multiset.mem_coe, List.mem_cons, List.not_mem_nil, or_false] at hfrmem hgrmem
     rcases hfrmem with rfl | rfl <;> rcases hgrmem with rfl | rfl <;> nlinarith
-  have hsimple := hinter.hasSimpleRoots_of_no_common_root fun r hr ↦ hno r hr.1 hr.2
-  refine ⟨by simpa [f, g] using hinter, by simpa [f] using hsimple.1,
-    by simpa [g] using hsimple.2, ?_⟩
-  intro r hfr hgr
-  exact hno r (by simpa [f] using hfr) (by simpa [g] using hgr)
+  exact StrictInterlSameDegree.of_strictInterl_of_no_common hinter
+    (hfdeg.trans hgdeg.symm) hno
 
 /-- Under the quadratic remainder inequalities, adjoining the distinguished root `L` to the
 second quadratic gives differ-by-one interlacing. -/
@@ -608,7 +603,7 @@ private lemma normalizedQuadraticFamily_strictInterl_of_lt
     exact div_neg_of_neg_of_pos
       (mul_neg_of_neg_of_pos (neg_neg_of_pos (by nlinarith)) (by nlinarith)) (by norm_num)
   have hpackage :=
-    strictInterl_quadratics_of_remainder_signs (a := 1) (b := b_y) (c := cy)
+    strictInterlSameDegree_quadratics_of_remainder_signs (a := 1) (b := b_y) (c := cy)
       (A := 1) (B := bz) (d := cz) (L := -1) (by norm_num) (by norm_num)
       (by simpa using hu) (by simpa using hN) hfL hfL'
   have hordered :=
@@ -616,7 +611,7 @@ private lemma normalizedQuadraticFamily_strictInterl_of_lt
       (a := 1) (b := b_y) (c := cy) (A := 1) (B := bz) (d := cz) (L := -1)
       (by norm_num) (by norm_num)).mpr ⟨by simpa using hu, by simpa using hN, hfL, hfL'⟩
   constructor
-  · simpa only [normalizedQuadraticFamily, b_y, cy, bz, cz] using hpackage.1
+  · simpa only [normalizedQuadraticFamily, b_y, cy, bz, cz] using hpackage.toStrictInterl
   · simpa only [normalizedQuadraticFamily, b_y, cy, bz, cz] using hordered
 
 /-- For `0 ≤ z < y < 1/3`, the roots of `H_y` and `H_z` occur in the strict order
@@ -694,11 +689,11 @@ private lemma normalizedQuadraticFamily_one_third_strictInterl
 
 /-- Every member of the normalized family on `[0, 1/3]` splits with two distinct roots, and all
 of its roots belong to `[-1, 0)`. -/
-theorem normalizedQuadraticFamily_splits_simple_roots_mem_Ico
+theorem NormalizedQuadraticFamily.isRealRootedIn_Ico_and_hasSimpleRoots
     {y : ℝ} (hy₀ : 0 ≤ y) (hy₁ : y ≤ 1 / 3) :
-    (normalizedQuadraticFamily y).Splits ∧
-      HasSimpleRoots (normalizedQuadraticFamily y) ∧
-      ∀ r ∈ (normalizedQuadraticFamily y).roots, -1 ≤ r ∧ r < 0 := by
+    IsRealRootedIn (Set.Ico (-1) 0) (normalizedQuadraticFamily y) ∧
+      HasSimpleRoots (normalizedQuadraticFamily y) := by
+  apply isRealRootedIn_and_hasSimpleRoots_iff.mpr
   let b := (6 + 11 * y - 3 * y ^ 2) / 7
   let c := (1 + 3 * y + 3 * y ^ 2) / 7
   have hdisc : 0 < discrim (1 : ℝ) b c := by
@@ -800,8 +795,10 @@ theorem normalizedQuadraticFamily_interlaces_mul_X_add_one_of_le
     (hzy : z ≤ y) :
     Interlaces (normalizedQuadraticFamily y)
       ((X + C 1) * normalizedQuadraticFamily z) := by
-  have hydata := normalizedQuadraticFamily_splits_simple_roots_mem_Ico hy₀ hy₁
-  have hzdata := normalizedQuadraticFamily_splits_simple_roots_mem_Ico hz₀ hz₁
+  have hydata := isRealRootedIn_and_hasSimpleRoots_iff.mp
+    (NormalizedQuadraticFamily.isRealRootedIn_Ico_and_hasSimpleRoots hy₀ hy₁)
+  have hzdata := isRealRootedIn_and_hasSimpleRoots_iff.mp
+    (NormalizedQuadraticFamily.isRealRootedIn_Ico_and_hasSimpleRoots hz₀ hz₁)
   have hy0 : normalizedQuadraticFamily y ≠ 0 :=
     ne_zero_of_natDegree_gt (n := 0) (by rw [normalizedQuadraticFamily_natDegree]; norm_num)
   have hz0 : normalizedQuadraticFamily z ≠ 0 :=
@@ -863,7 +860,8 @@ theorem normalizedQuadraticFamily_interlaces_mul_X_add_one_iff
       ((X + C 1) * normalizedQuadraticFamily z) ↔ z ≤ y := by
   constructor
   · intro h
-    have hzdata := normalizedQuadraticFamily_splits_simple_roots_mem_Ico hz₀ hz₁
+    have hzdata := isRealRootedIn_and_hasSimpleRoots_iff.mp
+      (NormalizedQuadraticFamily.isRealRootedIn_Ico_and_hasSimpleRoots hz₀ hz₁)
     have hz0 : normalizedQuadraticFamily z ≠ 0 :=
       ne_zero_of_natDegree_gt (n := 0)
         (by rw [normalizedQuadraticFamily_natDegree]; norm_num)
@@ -921,7 +919,8 @@ theorem normalizedQuadraticRow_degree_coeff_roots
       ∀ r ∈ ((X + C 1) ^ n * normalizedQuadraticFamily y).roots, -1 ≤ r ∧ r < 0 := by
   let q : ℝ[X] := (X + C 1) ^ n
   let h := normalizedQuadraticFamily y
-  have hdata := normalizedQuadraticFamily_splits_simple_roots_mem_Ico hy₀ hy₁
+  have hdata := isRealRootedIn_and_hasSimpleRoots_iff.mp
+    (NormalizedQuadraticFamily.isRealRootedIn_Ico_and_hasSimpleRoots hy₀ hy₁)
   have h₀ : h ≠ 0 := ne_zero_of_natDegree_gt (n := 0)
     (by dsimp [h]; rw [normalizedQuadraticFamily_natDegree]; norm_num)
   have q₀ : q ≠ 0 := pow_ne_zero n (X_add_C_ne_zero 1)

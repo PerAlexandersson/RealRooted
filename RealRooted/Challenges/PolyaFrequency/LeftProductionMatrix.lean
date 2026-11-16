@@ -41,7 +41,7 @@ module = "RealRooted.TotalPositivity.LeftProductionMatrix"
 label = "Rows from a totally nonnegative left production matrix are Pólya frequency"
 
 [[theorems]]
-name = "RealRooted.LeftProductionMatrix.rowPolynomial_splits_roots_nonpos"
+name = "RealRooted.LeftProductionMatrix.rowPolynomial_isPFPolynomial"
 module = "RealRooted.TotalPositivity.LeftProductionMatrix"
 label = "Row polynomials split with nonpositive roots"
 headline = true
@@ -57,7 +57,7 @@ module = "RealRooted.TotalPositivity.PFRiordan"
 label = "Riordan left production matrix factorization"
 
 [[theorems]]
-name = "RealRooted.PFRiordan.rowPolynomial_splits_and_roots_nonpos"
+name = "RealRooted.PFRiordan.rowPolynomial_isPFPolynomial"
 module = "RealRooted.TotalPositivity.PFRiordan"
 label = "Rows of a Pólya frequency Riordan array split with nonpositive roots"
 

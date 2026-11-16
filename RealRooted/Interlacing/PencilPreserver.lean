@@ -41,10 +41,6 @@ def IsNegativeSimple (p : ℝ[X]) : Prop :=
   p ≠ 0 ∧ p.Splits ∧ HasSimpleRoots p ∧ HasPosLeadingCoeff p ∧
     ∀ r ∈ p.roots, r < 0
 
-/-- The simple real-rootedness certificate used for affine pencil members. -/
-def IsSimpleRealRooted (p : ℝ[X]) : Prop :=
-  p ≠ 0 ∧ p.Splits ∧ HasSimpleRoots p
-
 /-- H1: `T` raises every negative-simple input by one degree. -/
 def MapsNegativeSimpleBySucc (T : ℝ[X] →ₗ[ℝ] ℝ[X]) : Prop :=
   ∀ ⦃q : ℝ[X]⦄, IsNegativeSimple q →

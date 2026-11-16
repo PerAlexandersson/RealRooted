@@ -361,14 +361,13 @@ theorem denominator_mul_rowGeneratingSeries
     _ = BrandenLeite.polynomialLift (PowerSeries.mk N) := by rw [hdIdentity]
 
 /-- If `d` and `K` are PF, every row of the Riordan array of
-`(d, z d K)` splits and all its roots are nonpositive. -/
-theorem rowPolynomial_splits_and_roots_nonpos
+`(d, z d K)` is a PF polynomial. -/
+theorem rowPolynomial_isPFPolynomial
     {d K : ℕ → ℝ} (hd : IsPolyaFreqSeq d) (hK : IsPolyaFreqSeq K)
     (n : ℕ) :
-    (rowPolynomial d K n).Splits ∧
-      ∀ r ∈ (rowPolynomial d K n).roots, r ≤ 0 := by
+    IsPFPolynomial (rowPolynomial d K n) := by
   exact
-    LeftProductionMatrix.rowPolynomial_splits_roots_nonpos
+    LeftProductionMatrix.rowPolynomial_isPFPolynomial
       (isLeftProductionArray d K) (production_isLowerTriangular d K)
       (production_hasTotallyNonnegativeLeadingTruncations hd hK) n
 
@@ -469,7 +468,8 @@ theorem recurrence_splits_and_roots_nonpos
     BrandenLeite.eq_of_finite_denominator_numerator hDcoeffZero
       (by simpa [Dcoeff, Ecoeff] using hrec) hQrec
   rw [hPQ]
-  exact rowPolynomial_splits_and_roots_nonpos hd hK n
+  exact ⟨(rowPolynomial_isPFPolynomial hd hK n).splits,
+    (rowPolynomial_isPFPolynomial hd hK n).roots_nonpos⟩
 
 /-! ## Validation families -/
 
@@ -568,11 +568,13 @@ theorem evenBinomial_denominator_mul_rowGeneratingSeries :
 theorem evenBinomialRow_splits_and_roots_nonpos (m : ℕ) :
     (evenBinomialRow m).Splits ∧
       ∀ r ∈ (evenBinomialRow m).roots, r ≤ 0 := by
-  apply rowPolynomial_splits_and_roots_nonpos
-  · exact rationalPFCoeff_isPolyaFreqSeq
-      (c := 1) (by norm_num) 0 (by simp) (by simp)
-  · exact rationalPFCoeff_isPolyaFreqSeq
-      (c := 1) (by norm_num) 2 (by simp) (by simp)
+  have hpf : IsPFPolynomial (evenBinomialRow m) := by
+    apply rowPolynomial_isPFPolynomial
+    · exact rationalPFCoeff_isPolyaFreqSeq
+        (c := 1) (by norm_num) 0 (by simp) (by simp)
+    · exact rationalPFCoeff_isPolyaFreqSeq
+        (c := 1) (by norm_num) 2 (by simp) (by simp)
+  exact ⟨hpf.splits, hpf.roots_nonpos⟩
 
 end PFRiordan
 end RealRooted

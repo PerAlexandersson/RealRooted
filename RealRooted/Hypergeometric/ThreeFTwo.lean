@@ -5,6 +5,7 @@ import Mathlib.Analysis.Complex.Basic
 public import RealRooted.MatrixInterlacing.ThreeBidiagonalProduction
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
 import RealRooted.Interlacing.ReversalCommonFactor
+import RealRooted.Linear
 import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Topology.Algebra.Polynomial
 import Mathlib.Analysis.SpecificLimits.Basic
@@ -468,20 +469,17 @@ theorem isTotallyNonneg_production {a₁ a₂ b₁ b₂ : ℝ}
 /-- In the strict parameter range, consecutive production characteristic
 polynomials interlace, have simple disjoint roots, and have positive spectrum.
 The equality with `monicThreeFTwo` is proved in `monicThreeFTwo_eq_charpoly`. -/
-theorem production_charpoly_strictInterlaces {a₁ a₂ b₁ b₂ : ℝ}
+theorem production_charpoly_interlaces_and_isCoprime {a₁ a₂ b₁ b₂ : ℝ}
     (ha₁ : 0 < a₁) (ha₂ : 0 < a₂) (hb₁ : 0 < b₁) (hb₂ : 0 < b₂)
     (h₁ : a₁ < b₁) (h₂ : a₂ - 1 < b₁) (h₃ : a₁ < b₂) (h₄ : a₂ < b₂)
     (n : ℕ) :
     let H := production a₁ a₂ b₁ b₂
     RealRooted.Interlaces (H n).charpoly (H (n + 1)).charpoly ∧
-      (∀ x : ℝ, (H (n + 1)).charpoly.IsRoot x →
-        (H (n + 1)).charpoly.rootMultiplicity x = 1) ∧
-      (∀ x : ℝ, (H n).charpoly.IsRoot x → (H n).charpoly.rootMultiplicity x = 1) ∧
-      (∀ x : ℝ, ¬((H (n + 1)).charpoly.IsRoot x ∧ (H n).charpoly.IsRoot x)) ∧
+      IsCoprime (H n).charpoly (H (n + 1)).charpoly ∧
       ∀ x ∈ (H (n + 1)).charpoly.roots, 0 < x := by
   have hpos := fun (i : ℕ) (hi : 2 ≤ i) =>
     branchedWeight_pos ha₁ ha₂ hb₁ hb₂ h₁ h₂ h₃ h₄ hi
-  apply Matrix.threeBidiagonalProduction_charpoly_strictInterlaces
+  apply Matrix.threeBidiagonalProduction_charpoly_interlaces_and_isCoprime
   · intro i
     have h := branchedWeight_nonneg ha₁ ha₂ hb₁ hb₂ h₁.le h₂.le h₃.le h₄.le
     exact ⟨by norm_num, h _, by norm_num, h _, h _, by norm_num⟩
@@ -878,14 +876,12 @@ theorem monicThreeFTwo_eq_charpoly {a c b d : ℝ}
 
 /-- In Lima's strict range, consecutive terminating series split and interlace,
 with simple disjoint positive roots (Theorem 8.4 of arXiv:2208.03539v2). -/
-theorem threeFTwo_strictInterlaces {a c b d : ℝ}
+theorem threeFTwo_interlaces_and_isCoprime {a c b d : ℝ}
     (ha : 0 < a) (hc : 0 < c) (hb : 0 < b) (hd : 0 < d)
     (h₁ : a < b) (h₂ : c - 1 < b) (h₃ : a < d) (h₄ : c < d) (n : ℕ) :
     let H := threeFTwo a c b d
     RealRooted.Interlaces (H n) (H (n + 1)) ∧
-      (∀ x : ℝ, (H (n + 1)).IsRoot x → (H (n + 1)).rootMultiplicity x = 1) ∧
-      (∀ x : ℝ, (H n).IsRoot x → (H n).rootMultiplicity x = 1) ∧
-      (∀ x : ℝ, ¬((H (n + 1)).IsRoot x ∧ (H n).IsRoot x)) ∧
+      IsCoprime (H n) (H (n + 1)) ∧
       ∀ x ∈ (H (n + 1)).roots, 0 < x := by
   have hnz (j : ℕ) : threeFTwoCoeff a c b d j j ≠ 0 :=
     right_ne_zero_of_mul (threeFTwoCoeff_alternating_pos ha hc hb hd (le_refl j)).ne'
@@ -896,19 +892,14 @@ theorem threeFTwo_strictInterlaces {a c b d : ℝ}
       (monicThreeFTwo a c b d j).IsRoot x := by
     rw [← hs j]
     simp only [Polynomial.IsRoot.def, eval_C_mul, mul_eq_zero, hnz j, false_or]
-  have h := production_charpoly_strictInterlaces ha hc hb hd h₁ h₂ h₃ h₄ n
+  have h := production_charpoly_interlaces_and_isCoprime ha hc hb hd h₁ h₂ h₃ h₄ n
   dsimp only at h ⊢
   simp_rw [← monicThreeFTwo_eq_charpoly ha hc hb hd] at h
-  refine ⟨?_, ?_, ?_, ?_, ?_⟩
-  · simpa only [hs] using h.1.C_mul_both (hnz n) (hnz (n + 1))
+  have hi : Interlaces (threeFTwo a c b d n) (threeFTwo a c b d (n + 1)) := by
+    simpa only [hs] using h.1.C_mul_both (hnz n) (hnz (n + 1))
+  refine ⟨hi, hi.toStrictInterl.isCoprime_iff_no_common_root.mpr ?_, ?_⟩
   · intro x hx
-    rw [← hs (n + 1), Polynomial.rootMultiplicity_C_mul (hnz (n + 1))]
-    exact h.2.1 x ((hr (n + 1) x).1 hx)
-  · intro x hx
-    rw [← hs n, Polynomial.rootMultiplicity_C_mul (hnz n)]
-    exact h.2.2.1 x ((hr n x).1 hx)
-  · intro x hx
-    exact h.2.2.2.1 x ⟨(hr (n + 1) x).1 hx.1, (hr n x).1 hx.2⟩
+    exact h.2.1.not_isRoot_right ((hr n x).1 hx.1) ((hr (n + 1) x).1 hx.2)
   · intro x hx
     exact isRoot_threeFTwo_pos ha hc hb hd (n + 1)
       ((Polynomial.mem_roots (threeFTwo_ne_zero a c b d (n + 1))).1 hx)
@@ -921,7 +912,7 @@ theorem threeFTwo_splits {a c b d : ℝ}
     (threeFTwo a c b d n).Splits := by
   apply splits_threeFTwo_of_pos_shift
   intro ε hε
-  exact (threeFTwo_strictInterlaces ha hc (by linarith) (by linarith)
+  exact (threeFTwo_interlaces_and_isCoprime ha hc (by linarith) (by linarith)
     (by linarith) (by linarith) (by linarith) (by linarith) n).1.2.1.2
 
 end RealRooted.Hypergeometric
