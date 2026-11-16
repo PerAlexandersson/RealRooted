@@ -244,7 +244,7 @@ private theorem simpleNegRooted_polarTheta_succ {d : ℕ} {p : ℝ[X]}
     mul_pos (show (0 : ℝ) < d + 1 by positivity) hp.coeff_zero_pos
 
 /-- The auxiliary operator preserves simple negative roots. -/
-theorem SimpleNegRooted.lagTwoEulerCore_preserves {d : ℕ} {p : ℝ[X]}
+protected theorem SimpleNegRooted.lagTwoEulerCore {d : ℕ} {p : ℝ[X]}
     (hp : SimpleNegRooted p d) :
     SimpleNegRooted (lagTwoEulerCore d p) d := by
   have htheta := simpleNegRooted_thetaPlusOne hp
@@ -252,7 +252,7 @@ theorem SimpleNegRooted.lagTwoEulerCore_preserves {d : ℕ} {p : ℝ[X]}
   | zero =>
       have hder : (thetaPlusOne p).derivative = 0 :=
         derivative_eq_zero.mpr htheta.natDegree_eq
-      have heq : lagTwoEulerCore 0 p = thetaPlusOne p := by
+      have heq : RealRooted.lagTwoEulerCore 0 p = thetaPlusOne p := by
         change polarTheta 1 (thetaPlusOne p) = thetaPlusOne p
         unfold polarTheta theta
         rw [hder]
@@ -381,7 +381,7 @@ private theorem lagTwoEulerBridge_strictInterl_core {d : ℕ} {p : ℝ[X]}
     (hd : 2 ≤ d) (hp : SimpleNegRooted p d) :
     StrictInterl (lagTwoEulerBridge d p) (lagTwoEulerCore d p) := by
   obtain ⟨hh, hhp, hno⟩ := lagTwoEulerBridge_data hd hp
-  have hq := hp.lagTwoEulerCore_preserves
+  have hq := hp.lagTwoEulerCore
   have hpf : IsPFPolynomial p :=
     IsPFPolynomial.of_realRooted_nonneg hp.nonneg hp.splits
   have hsignProduct : ∀ r, (lagTwoEulerBridge d p).IsRoot r →
@@ -482,7 +482,7 @@ private theorem lagTwoEulerBridge_package {d : ℕ} {p : ℝ[X]}
     have hh : SimpleNegRooted (lagTwoEulerBridge 1 p) 0 := by
       rw [heq]
       simpa using SimpleNegRooted.one.C_mul hzero
-    have hq := hp.lagTwoEulerCore_preserves
+    have hq := hp.lagTwoEulerCore
     have hinter : StrictInterl (lagTwoEulerBridge 1 p) (lagTwoEulerCore 1 p) :=
       StrictInterl.of_degree_zero_right_of_degree_one
         hh.pos.ne_zero hh.splits hq.pos.ne_zero hq.splits
@@ -496,11 +496,11 @@ This is the main one-row operator lemma for the lag-two induction. -/
 theorem SimpleNegRooted.lagTwoEulerCore_strictInterl_step
     {d : ℕ} {p : ℝ[X]} (hp : SimpleNegRooted p d)
     {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) :
-    StrictInterl (lagTwoEulerCore d p) (lagTwoEulerStep d a b p) := by
+    StrictInterl (RealRooted.lagTwoEulerCore d p) (lagTwoEulerStep d a b p) := by
   cases d with
   | zero =>
       have hpder : p.derivative = 0 := derivative_eq_zero.mpr hp.natDegree_eq
-      have hcore : lagTwoEulerCore 0 p = p := by
+      have hcore : RealRooted.lagTwoEulerCore 0 p = p := by
         change polarTheta 1 (thetaPlusOne p) = p
         simp [thetaPlusOne, polarTheta, theta, hpder]
       have hstep : lagTwoEulerStep 0 a b p = C a * (1 + X) * p := by
@@ -523,12 +523,12 @@ theorem SimpleNegRooted.lagTwoEulerCore_strictInterl_step
       let D := d + 1
       have hD : 0 < D := by simp [D]
       have hpD : SimpleNegRooted p D := by simpa [D] using hp
-      have hq : SimpleNegRooted (lagTwoEulerCore D p) D :=
-        hpD.lagTwoEulerCore_preserves
+      have hq : SimpleNegRooted (RealRooted.lagTwoEulerCore D p) D :=
+        hpD.lagTwoEulerCore
       have hpf : IsPFPolynomial p :=
         IsPFPolynomial.of_realRooted_nonneg hpD.nonneg hpD.splits
       have htheta := simpleNegRooted_thetaPlusOne hpD
-      have hqR : StrictInterl (lagTwoEulerCore D p) (thetaPlusOne p) := by
+      have hqR : StrictInterl (RealRooted.lagTwoEulerCore D p) (thetaPlusOne p) := by
         have hshift : 2 ≤ (reciprocalShift (D + 1) (thetaPlusOne p)).natDegree := by
           have hcoeff :
               (reciprocalShift (D + 1) (thetaPlusOne p)).coeff (D + 1) ≠ 0 := by
@@ -537,7 +537,7 @@ theorem SimpleNegRooted.lagTwoEulerCore_strictInterl_step
         exact strictInterl_polarTheta_self
           (thetaPlusOne_preserves_pf hpf) (by rw [htheta.natDegree_eq]; lia) hshift
       have hpolar := simpleNegRooted_polarTheta_succ hD hpD
-      have hqS : StrictInterl (lagTwoEulerCore D p) (X * polarTheta (D + 1) p) := by
+      have hqS : StrictInterl (RealRooted.lagTwoEulerCore D p) (X * polarTheta (D + 1) p) := by
         rw [lagTwoEulerCore_eq_derivative_X_mul_polarTheta]
         apply (derivative_interlaces_of_natDegree_ne_zero
           (Splits.X.mul hpolar.splits) ?_).toStrictInterl
@@ -545,14 +545,14 @@ theorem SimpleNegRooted.lagTwoEulerCore_strictInterl_step
           hpolar.natDegree_eq]
         lia
       obtain ⟨hh, hhq⟩ := lagTwoEulerBridge_package hD hpD
-      have hqXh : StrictInterl (lagTwoEulerCore D p)
+      have hqXh : StrictInterl (RealRooted.lagTwoEulerCore D p)
           (X * lagTwoEulerBridge D p) :=
         strictInterl_mul_X_of_strictInterl_of_nonneg hhq
           hh.nonneg hq.nonneg
       have hRpos : HasPosLeadingCoeff (thetaPlusOne p) := htheta.pos
       have hSpos : HasPosLeadingCoeff (X * polarTheta (D + 1) p) := hpolar.pos.X_mul
       have hXhpos : HasPosLeadingCoeff (X * lagTwoEulerBridge D p) := hh.pos.X_mul
-      have hsum : StrictInterl (lagTwoEulerCore D p)
+      have hsum : StrictInterl (RealRooted.lagTwoEulerCore D p)
           (weightedSum [(a, thetaPlusOne p),
             (a, X * polarTheta (D + 1) p),
             (b - a, X * lagTwoEulerBridge D p)]) := by

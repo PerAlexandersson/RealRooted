@@ -1,6 +1,6 @@
 module
 
-import RealRooted.TotalPositivity.PFRiordan
+import RealRooted.Applications.OEIS.A114123
 
 /-!
 # Totally nonnegative left production matrices
@@ -72,8 +72,8 @@ module = "RealRooted.TotalPositivity.PFRiordan"
 label = "Recurrence criterion for real roots via Pólya frequency Riordan arrays"
 
 [[theorems]]
-name = "RealRooted.PFRiordan.a114123Row_splits_and_roots_nonpos"
-module = "RealRooted.TotalPositivity.PFRiordan"
+name = "RealRooted.Applications.OEIS.A114123.row_splits_and_roots_nonpos"
+module = "RealRooted.Applications.OEIS.A114123"
 label = "A114123 rows split with nonpositive roots"
 
 [[theorems]]

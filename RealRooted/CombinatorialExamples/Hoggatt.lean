@@ -393,7 +393,7 @@ theorem polynomial_interlaces_and_isCoprime {n m : ℕ} (hm : 2 ≤ m) (hn : m �
   ⟨polynomial_interlaces (by lia) hn, polynomial_isCoprime_succ hm hn⟩
 
 /-- The indexing of the strict comparison stated in Fang–Zhang–Zhao, §2. -/
-theorem polynomial_pred_interlaces {n m : ℕ} (hm : 2 ≤ m) (hn : m ≤ n) :
+theorem polynomial_pred_interlaces_and_isCoprime {n m : ℕ} (hm : 2 ≤ m) (hn : m ≤ n) :
     Interlaces (polynomial (n - 1) m) (polynomial n m) ∧
       IsCoprime (polynomial (n - 1) m) (polynomial n m) := by
   simpa only [Nat.sub_add_cancel (by lia : 1 ≤ n)] using
@@ -467,7 +467,7 @@ theorem normalized_interlaces_and_isCoprime {n m : ℕ} (hn : n ≠ 0) (hm : 2 �
   exact (polynomial_isCoprime_succ hm (by lia)).not_isRoot_right hp hq
 
 /-- The Baxter specialization is a strict Sturm sequence. -/
-theorem baxter_interlaces {n : ℕ} (hn : n ≠ 0) :
+theorem baxter_interlaces_and_isCoprime {n : ℕ} (hn : n ≠ 0) :
     Interlaces (normalized n 3) (normalized (n + 1) 3) ∧
       IsCoprime (normalized n 3) (normalized (n + 1) 3) :=
   normalized_interlaces_and_isCoprime hn (by norm_num)

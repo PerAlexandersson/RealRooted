@@ -145,7 +145,7 @@ theorem forall_differential_images_iff_isPFPolynomial_and_interl
   constructor
   · exact isPFPolynomial_and_interl_of_forall_differential_images
   · intro hk p hp
-    apply HasKreinCompanionExpansion.preservesOrderedPF hh hh0 _ hp
+    apply RealRooted.HasKreinCompanionExpansion.isPFPolynomial_and_interl hh hh0 _ hp
     exact (isPFPolynomial_and_interl_iff_hasKreinCompanionExpansion
       hh hh0).mp hk
 
@@ -161,7 +161,7 @@ def HasFiniteCapCompanionCone (N : ℕ) (h k : ℝ[X]) : Prop :=
 
 /-- Ordered PF preservation through a finite cap is equivalent to membership
 in the finite-cap companion cone. -/
-theorem preservesOrderedPFUpTo_iff_hasFiniteCapCompanionCone
+theorem _root_.RealRooted.PreservesOrderedPFUpTo.iff_hasFiniteCapCompanionCone
     (N : ℕ) (h k : ℝ[X]) :
     PreservesOrderedPFUpTo N h k ↔ HasFiniteCapCompanionCone N h k := by
   rw [PreservesOrderedPFUpTo.iff_jensenDifferentialTests]

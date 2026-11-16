@@ -26,7 +26,7 @@ namespace RealRooted.BrandenLeite
 /-- Translating the quotient by the compulsory factor `X` regularizes a
 nonzero PF numerator to one with positive first coefficient while preserving
 its zero constant coefficient. -/
-theorem exists_pf_coeff_one_pos_approximation
+theorem exists_isPFPolynomial_coeff_one_pos_approximation
     (B : ℝ[X]) (hBne : B ≠ 0) (hB0 : B.coeff 0 = 0)
     (hBs : B.Splits) (hBnn : HasNonnegCoeffs B) :
     ∃ P : ℕ → ℝ[X],
@@ -103,7 +103,7 @@ theorem interl_affineNegativePowerCoeff_prod_linear_succ
       (affineNegativePowerCoeff κ
         ((∏ i ∈ s, (1 - C (α i) * X) : ℝ[X]) : PowerSeries ℝ) B (n + 1)) := by
   obtain ⟨P, hPpf, hP0, hP1, hPlim⟩ :=
-    exists_pf_coeff_one_pos_approximation B hBne hB0 hBs hBnn
+    exists_isPFPolynomial_coeff_one_pos_approximation B hBne hB0 hBs hBnn
   let Q : ℝ[X] := ∏ i ∈ s, (1 - C (α i) * X)
   have hQ0 : Q.coeff 0 = 1 := Polynomial.coeff_zero_prod_one_sub_C_mul_X s α
   obtain ⟨hQs, hQnn⟩ :=

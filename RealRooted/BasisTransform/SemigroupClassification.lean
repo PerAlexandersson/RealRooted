@@ -115,7 +115,7 @@ private theorem raySemigroupTransform_shifted_square (a b t r : ℝ) :
 
 /-- The algebraic ray semigroup preserves every PF polynomial at every
 nonnegative time exactly when both generator parameters are nonnegative. -/
-theorem raySemigroupTransform_preservesPF_iff (a b : ℝ) :
+theorem _root_.RealRooted.RaySemigroup.forall_isPFPolynomial_iff (a b : ℝ) :
     (∀ t, 0 ≤ t → ∀ {p : ℝ[X]}, IsPFPolynomial p →
       IsPFPolynomial (raySemigroupTransform a b t p)) ↔
       0 ≤ a ∧ 0 ≤ b := by
@@ -412,14 +412,14 @@ theorem finiteEndomorphismLog_raySemigroupEnd_parameters (a b : ℝ) :
 /-- Logarithmic recognition of the PF-preserving members of the algebraic ray
 semigroup family.  The degree-two finite logarithm already detects both
 generator parameters. -/
-theorem raySemigroupTransform_preservesPF_iff_finiteLog (a b : ℝ) :
+theorem _root_.RealRooted.RaySemigroup.forall_isPFPolynomial_iff_finiteLog (a b : ℝ) :
     (∀ t, 0 ≤ t → ∀ {p : ℝ[X]}, IsPFPolynomial p →
       IsPFPolynomial (raySemigroupTransform a b t p)) ↔
       0 ≤ (finiteEndomorphismLog 2 (raySemigroupEnd a b 1) X).coeff 0 ∧
         0 ≤ (finiteEndomorphismLog 2
             (raySemigroupEnd a b 1) (X ^ 2)).coeff 1 / 2 -
           (finiteEndomorphismLog 2 (raySemigroupEnd a b 1) X).coeff 0 := by
-  rw [raySemigroupTransform_preservesPF_iff,
+  rw [RealRooted.RaySemigroup.forall_isPFPolynomial_iff,
     finiteEndomorphismLog_raySemigroupEnd_X,
     finiteEndomorphismLog_raySemigroupEnd_X_sq]
   simp only [coeff_C_zero, coeff_C_mul, coeff_X, ite_true]

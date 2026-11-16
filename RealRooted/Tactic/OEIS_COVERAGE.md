@@ -19,7 +19,7 @@ sequence formalization:
 - `fragment`: only a sign or root-window subcertificate is exercised;
 - `documented`: the ID is mentioned, but no executable route was associated.
 
-Current totals: **177 IDs**; **21 formalized**, **142 shells**, **1 fragments**, and **13 documented-only**.
+Current totals: **177 IDs**; **22 formalized**, **142 shells**, **1 fragments**, and **12 documented-only**.
 
 | OEIS ID | Status | Recurrence shape / test intent | Tactic route | Required certificates | Missing blocker |
 |---|---|---|---|---|---|
@@ -98,7 +98,7 @@ Current totals: **177 IDs**; **21 formalized**, **142 shells**, **1 fragments**,
 | A110608 | `shell` | (, `RealRooted.derivativeRecurrence_interlaces_of_roots_le_mono_div`).<br>def : ℕ → ℝ[X]<br>+5 additional test intents | `rr_row_interlaces`, `rr_row_splits` | `via` | concrete row definition and proofs of the listed certificates |
 | A111006 | `shell` | A three-term recurrence with root window `[-1, 0]`: `b = X (X + 1)` ().<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
 | A112493 | `shell` | Ward-type rows: `v_n(t) = t(1 + t)` ().<br>def : ℕ → ℝ[X]<br>+4 additional test intents | `rr_row_interlaces`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |
-| A114123 | `documented` | copied from the downstream row recurrence. | none | not recorded | executable tactic route and its certificates |
+| A114123 | `formalized` | copied from the downstream row recurrence. | none | not recorded | none |
 | A116088 | `documented` | copied from the downstream row recurrence. | none | not recorded | executable tactic route and its certificates |
 | A116089 | `documented` | copied from the downstream row recurrence. | none | not recorded | executable tactic route and its certificates |
 | A118884 | `shell` | Periodic growth with period four and a lag of changing sign ().<br>def : ℕ → ℝ[X]<br>+3 additional test intents | `rr_row_natDegree`, `rr_row_splits` | implicit/local certificates resolved by the route | concrete row definition and proofs of the listed certificates |

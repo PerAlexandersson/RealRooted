@@ -92,7 +92,7 @@ theorem threeFTwoCoeff_eq_pochhammer (a₁ a₂ b₁ b₂ : ℝ) (n k : ℕ) :
   field_simp
 
 /-- Coefficients outside the terminating support vanish. -/
-theorem threeFTwoCoeff_eq_zero {n k : ℕ} (h : n < k) (a₁ a₂ b₁ b₂ : ℝ) :
+theorem threeFTwoCoeff_eq_zero_of_lt {n k : ℕ} (h : n < k) (a₁ a₂ b₁ b₂ : ℝ) :
     threeFTwoCoeff a₁ a₂ b₁ b₂ n k = 0 := by
   simp [threeFTwoCoeff, Nat.choose_eq_zero_of_lt h]
 
@@ -103,7 +103,7 @@ theorem threeFTwoCoeff_eq_zero {n k : ℕ} (h : n < k) (a₁ a₂ b₁ b₂ : �
   by_cases hk : k < n + 1
   · simp [threeFTwo, coeff_monomial, hk]
   · simp [threeFTwo, coeff_monomial, hk,
-      threeFTwoCoeff_eq_zero (show n < k by lia)]
+      threeFTwoCoeff_eq_zero_of_lt (show n < k by lia)]
 
 /-- The zeroth series coefficient is one for all real parameters. -/
 @[simp] theorem threeFTwoCoeff_zero (a₁ a₂ b₁ b₂ : ℝ) (n : ℕ) :
@@ -132,7 +132,7 @@ theorem natDegree_threeFTwo_le (a₁ a₂ b₁ b₂ : ℝ) (n : ℕ) :
     (threeFTwo a₁ a₂ b₁ b₂ n).natDegree ≤ n := by
   apply natDegree_le_iff_coeff_eq_zero.mpr
   intro k hk
-  simpa using threeFTwoCoeff_eq_zero hk a₁ a₂ b₁ b₂
+  simpa using threeFTwoCoeff_eq_zero_of_lt hk a₁ a₂ b₁ b₂
 
 /-- Alternating coefficients are strictly positive throughout the support. -/
 theorem threeFTwoCoeff_alternating_pos {a₁ a₂ b₁ b₂ : ℝ}
@@ -241,7 +241,7 @@ theorem monic_monicThreeFTwo {a₁ a₂ b₁ b₂ : ℝ}
 
 /-- The scalar in the monic normalization is precisely the prefactor in
 Lima (6.6)/(8.9), rather than a change of the polynomial variable. -/
-theorem monicThreeFTwo_eq {a₁ a₂ b₁ b₂ : ℝ}
+theorem monicThreeFTwo_eq_C_mul {a₁ a₂ b₁ b₂ : ℝ}
     (ha₁ : 0 < a₁) (ha₂ : 0 < a₂) (hb₁ : 0 < b₁) (hb₂ : 0 < b₂) (n : ℕ) :
     monicThreeFTwo a₁ a₂ b₁ b₂ n =
       C ((-1 : ℝ) ^ n * (ascPochhammer ℝ n).eval a₁ *
@@ -377,7 +377,7 @@ def production (a₁ a₂ b₁ b₂ : ℝ) (n : ℕ) : Matrix (Fin n) (Fin n) �
 theorem monicThreeFTwo_one {a₁ a₂ b₁ b₂ : ℝ}
     (ha₁ : 0 < a₁) (ha₂ : 0 < a₂) (hb₁ : 0 < b₁) (hb₂ : 0 < b₂) :
     monicThreeFTwo a₁ a₂ b₁ b₂ 1 = (production a₁ a₂ b₁ b₂ 1).charpoly := by
-  rw [monicThreeFTwo_eq ha₁ ha₂ hb₁ hb₂, production, Matrix.twoBranchedProduction,
+  rw [monicThreeFTwo_eq_C_mul ha₁ ha₂ hb₁ hb₂, production, Matrix.twoBranchedProduction,
     Matrix.threeBidiagonalProduction_charpoly_one]
   have h₁ := ha₁.ne'
   have h₂ := ha₂.ne'
@@ -428,7 +428,7 @@ identities required by the library's four-term recurrence identification. -/
 theorem monicThreeFTwo_two {a₁ a₂ b₁ b₂ : ℝ}
     (ha₁ : 0 < a₁) (ha₂ : 0 < a₂) (hb₁ : 0 < b₁) (hb₂ : 0 < b₂) :
     monicThreeFTwo a₁ a₂ b₁ b₂ 2 = (production a₁ a₂ b₁ b₂ 2).charpoly := by
-  rw [monicThreeFTwo_eq ha₁ ha₂ hb₁ hb₂, production_charpoly_two _ _ hb₁ hb₂]
+  rw [monicThreeFTwo_eq_C_mul ha₁ ha₂ hb₁ hb₂, production_charpoly_two _ _ hb₁ hb₂]
   have h₁ := ha₁.ne'
   have h₂ := ha₂.ne'
   have h₃ : a₁ + 1 ≠ 0 := by positivity
@@ -531,7 +531,7 @@ private theorem term_symm (a c u v : ℝ) (n k : ℕ) :
 private theorem coeff_monicThreeFTwo {a c b d : ℝ}
     (ha : 0 < a) (hc : 0 < c) (hb : 0 < b) (hd : 0 < d) (n k : ℕ) :
     (monicThreeFTwo a c b d n).coeff k = term a c (upperOne b n) (upperTwo d n) n k := by
-  rw [monicThreeFTwo_eq ha hc hb hd, coeff_C_mul, coeff_threeFTwo]
+  rw [monicThreeFTwo_eq_C_mul ha hc hb hd, coeff_C_mul, coeff_threeFTwo]
   rfl
 
 private theorem term_step {a c u v : ℝ} (ha : 0 < a) (hc : 0 < c)

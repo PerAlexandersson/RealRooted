@@ -8,7 +8,10 @@ import sys
 import unittest
 
 sys.dont_write_bytecode = True
-from challenge_catalog import CatalogItem, load_catalog
+from challenge_catalog import (
+    CatalogItem, SourceDeclaration, load_catalog, source_declarations,
+    strip_comments_and_strings,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 BASELINE = ROOT / "scripts/declaration_names_baseline.txt"
@@ -38,7 +41,77 @@ def has_workflow_segment(name):
     return False
 
 
-def findings(pages, family=False):
+def declared_result(declaration):
+    """Read the explicit result after the binders, without inspecting a proof/body."""
+    source = strip_comments_and_strings(declaration.source_code)
+    depth = 0
+    for index, char in enumerate(source):
+        if char in "([{":
+            depth += 1
+        elif char in ")]}":
+            depth -= 1
+        elif char == ":" and depth == 0:
+            return source[index + 1:].split(":=", 1)[0].strip()
+    return ""
+
+
+def preservation_predicates(declarations):
+    """Only explicitly Prop-valued definitions establish preservation-predicate names."""
+    return {
+        name for name, declaration in declarations.items()
+        if declaration.actual_kind == "definition"
+        and name.rsplit(".", 1)[-1].startswith("Preserves")
+        and declared_result(declaration) == "Prop"
+    }
+
+
+def preserves_violation(item, declarations, predicates):
+    """Distinguish operation closure names from literal predicates in conclusions."""
+    leaf = item.name.rsplit(".", 1)[-1]
+    if "preserves" not in leaf.lower():
+        return False
+    declaration = declarations.get(item.name)
+    if declaration is None:
+        return True
+    if item.name in predicates:
+        return False
+    if declaration.actual_kind == "theorem":
+        # A conclusion-named theorem may mention a literal preservation predicate,
+        # e.g. ncard_preservesInterlacing or preservesRealRootedOrZero_iff_....
+        # Require both the complete name segment and the constant in the result;
+        # foo_preserves_pf and sampleOperator_preserves remain closure violations.
+        result_names = set(re.findall(r"[\w.]+", declared_result(declaration)))
+        for predicate in predicates:
+            constant = predicate.rsplit(".", 1)[-1]
+            segment = constant[0].lower() + constant[1:]
+            if segment not in leaf.split("_"):
+                continue
+            if any(name == predicate or name.rsplit(".", 1)[-1] == constant
+                   for name in result_names):
+                return False
+    return True
+
+
+def naming_declarations(pages, root):
+    """Load selected declarations and definitions that can own literal predicate names."""
+    paths = {
+        root / (item.module.replace(".", "/") + ".lean"
+                if item.module else page.source_path)
+        for page in pages for item in page.items
+    }
+    for path in (root / "RealRooted").rglob("*.lean"):
+        if re.search(r"\b(?:def|abbrev)\s+(?:[\w.]*\.)?Preserves\w*\b",
+                     path.read_text(encoding="utf-8")):
+            paths.add(path)
+    declarations = {}
+    for path in sorted(paths):
+        declarations.update(source_declarations(root, path))
+    return declarations
+
+
+def findings(pages, family=False, declarations=None):
+    declarations = declarations or {}
+    predicates = preservation_predicates(declarations)
     result = set()
     for page in pages:
         for item in page.items:
@@ -56,10 +129,8 @@ def findings(pages, family=False):
             if len(leaf) > 60: rules.append("length")
             if has_workflow_segment(name):
                 rules.append("workflow")
-            # Predicate namespaces are the intended home of closure lemmas and criteria.
-            # Their leaf names should describe the operation, even when the predicate
-            # itself starts with Preserves. Predicate definitions remain in the ratchet.
-            if "preserves" in leaf.lower(): rules.append("preserves")
+            if preserves_violation(item, declarations, predicates):
+                rules.append("preserves")
             if item.expected_kind == "theorem" and name.startswith("RealRooted.Challenges."):
                 rules.append("challenges")
             if family and page.section == "families" and item.headline:
@@ -116,7 +187,6 @@ def main():
             def test_preserves_predicate_namespace(self):
                 from types import SimpleNamespace
                 cases = (
-                    ("PreservesOrderedPF", True),
                     ("PreservesOrderedPF.mul", False),
                     ("PreservesOrderedPF.iff_differentialTests", False),
                     ("IsPFPolynomial.narayanaTransform", False),
@@ -128,6 +198,43 @@ def main():
                         item = CatalogItem(name, "theorem", None)
                         page = SimpleNamespace(items=[item], source_path="Sample.lean")
                         self.assertEqual(f"preserves\t{name}" in findings([page]), expected)
+
+            def test_preserves_semantic_role(self):
+                from types import SimpleNamespace
+                prefix = "RealRooted."
+                cases = (
+                    ("PreservesOrderedPF", "definition",
+                     "def PreservesOrderedPF (T : ℕ → ℕ) : Prop := ∀ n, T n = n", False),
+                    ("PreservesData", "definition", "def PreservesData : ℕ := 0", True),
+                    ("foo_preserves_pf", "theorem",
+                     "theorem foo_preserves_pf : PreservesOrderedPF id", True),
+                    ("sampleOperator_preserves", "theorem",
+                     "theorem sampleOperator_preserves : True", True),
+                    ("ncard_preservesOrderedPF", "theorem",
+                     "theorem ncard_preservesOrderedPF : {T | PreservesOrderedPF T}.ncard = 1",
+                     False),
+                    ("preservesOrderedPF_iff_eq", "theorem",
+                     "theorem preservesOrderedPF_iff_eq : PreservesOrderedPF T ↔ T = id",
+                     False),
+                    ("foo_preservesOrderedPF", "theorem",
+                     "theorem foo_preservesOrderedPF (h : PreservesOrderedPF T) : True", True),
+                    ("preservesDataCount", "definition",
+                     "def preservesDataCount : ℕ := 0", True),
+                )
+                declarations = {
+                    prefix + suffix: SourceDeclaration(
+                        prefix + suffix, kind, "Sample.lean", 1, False, source
+                    )
+                    for suffix, kind, source, _ in cases
+                }
+                for suffix, kind, _, expected in cases:
+                    with self.subTest(suffix=suffix):
+                        name = prefix + suffix
+                        item = CatalogItem(name, kind, None)
+                        page = SimpleNamespace(items=[item], source_path="Sample.lean")
+                        self.assertEqual(f"preserves\t{name}" in findings(
+                            [page], declarations=declarations
+                        ), expected)
 
             def test_workflow_segments(self):
                 from types import SimpleNamespace
@@ -160,7 +267,8 @@ def main():
                             self.assertEqual(f"workflow\t{name}" in findings([page]), expected)
         suite = unittest.defaultTestLoader.loadTestsFromTestCase(Tests)
         return 0 if unittest.TextTestRunner().run(suite).wasSuccessful() else 1
-    current = findings(load_catalog(ROOT), args.family)
+    pages = load_catalog(ROOT)
+    current = findings(pages, args.family, naming_declarations(pages, ROOT))
     # Family findings are evaluated separately until the scheme is adopted.
     baseline = set(BASELINE.read_text().splitlines()) if BASELINE.exists() else set()
     if not args.family:

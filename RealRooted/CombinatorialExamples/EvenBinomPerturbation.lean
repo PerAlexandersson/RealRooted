@@ -464,37 +464,4 @@ theorem evenBinomPolyReal_four_add_one_sub_X_sq_not_splits
   · rw [discrim]
     nlinarith
 
-/-- In degree two, every binomially bounded perturbation is real-rooted exactly when
-`M ≤ alpha`; real-rootedness is expressed in its zero-aware form. -/
-theorem all_evenBinomPolyReal_four_add_eq_zero_or_splits_iff_le
-    {alpha M : ℝ} (halpha : 0 < alpha) (hM : 0 ≤ M) :
-    (∀ h : ℝ[X], h.natDegree ≤ 2 →
-      (∀ k ≤ 2, |h.coeff k| ≤ M * Nat.choose 2 k) →
-      C alpha * BigDescents.evenBinomPolyReal 4 + h = 0 ∨
-        (C alpha * BigDescents.evenBinomPolyReal 4 + h).Splits) ↔
-      M ≤ alpha := by
-  constructor
-  · intro hall
-    by_contra hnot
-    have hMalpha : alpha < M := lt_of_not_ge hnot
-    let h : ℝ[X] := C M * (1 - X) ^ 2
-    have hdegree : h.natDegree ≤ 2 := by
-      dsimp [h]
-      compute_degree
-    have heq : h = C M + C (-2 * M) * X + C M * X ^ 2 := by
-      dsimp [h]
-      simp only [C_neg, C_mul, Polynomial.C_ofNat]
-      ring
-    have hcoeff : ∀ k ≤ 2, |h.coeff k| ≤ M * Nat.choose 2 k := by
-      intro k hk
-      rw [heq]
-      interval_cases k <;>
-        norm_num [coeff_add, coeff_C_mul, coeff_X_pow, abs_mul, abs_of_nonneg hM];
-        nlinarith
-    have hsplit := (hall h hdegree hcoeff).elim (fun hz => hz ▸ Splits.zero) id
-    exact evenBinomPolyReal_four_add_one_sub_X_sq_not_splits halpha hMalpha hsplit
-  · intro hMalpha h hdegree hcoeff
-    exact (evenBinomPolyReal_add_isPFPolynomial_of_coeff_bound
-      (d := 2) (by norm_num) halpha hM hMalpha hdegree hcoeff).eq_zero_or_splits
-
 end RealRooted

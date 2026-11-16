@@ -597,7 +597,7 @@ theorem _root_.RealRooted.Hoggatt.normalized_three_eq_baxter (n : ℕ) :
 /-- Strictness for the existing Baxter model: consecutive rows have no shared root. -/
 theorem polynomial_isCoprime_succ (n : ℕ) :
     IsCoprime (polynomial n) (polynomial (n + 1)) := by
-  have h := Hoggatt.baxter_interlaces (Nat.succ_ne_zero n)
+  have h := RealRooted.Hoggatt.baxter_interlaces_and_isCoprime (Nat.succ_ne_zero n)
   simpa only [Hoggatt.normalized_three_eq_baxter] using h.2
 
 end RealRooted.Applications.OEIS.A056939

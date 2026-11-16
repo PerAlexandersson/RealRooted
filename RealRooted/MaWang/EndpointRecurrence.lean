@@ -185,7 +185,7 @@ theorem exists_natDegree_lt_and_mul_generatingSeries_eq_of_pureLag
 
 /-- An eventual pure-lag recurrence gives a polynomial-denominator identity;
 the numerator is supported before the recurrence's first output index. -/
-theorem exists_natDegree_lt_add_and_mul_generatingSeries_eq_of_pureLag_from
+theorem EndpointRecurrence.exists_natDegree_lt_and_mul_generatingSeries_eq_of_pureLag
     {R : Type*} [CommRing R] (P : ℕ → R) (Q : R[X]) (q n₀ : ℕ)
     (hq : 0 < q) (hQ0 : Q.coeff 0 = 1) (hQdeg : Q.natDegree ≤ q)
     (hrec : ∀ n, P (n₀ + n + q) =

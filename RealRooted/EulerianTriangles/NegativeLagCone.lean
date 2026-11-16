@@ -490,12 +490,12 @@ theorem negativeLagEulerRow_degree_pos_rooted
   rw [Polynomial.natDegree_C_mul hscale.ne', hcore.1]
 
 /-- The A371898 specialization of the negative-lag Euler rows. -/
-abbrev a371898Row : ℕ → ℝ[X] :=
+abbrev unitNegativeLagEulerRow : ℕ → ℝ[X] :=
   negativeLagEulerRow (fun _ ↦ 1) (fun n ↦ n)
 
-theorem a371898Row_degree_pos_rooted (n : ℕ) :
-    (a371898Row n).natDegree = n ∧ HasPosLeadingCoeff (a371898Row n) ∧
-      IsRealRootedIn (Set.Icc (-1) 0) (a371898Row n) := by
+theorem unitNegativeLagEulerRow_degree_pos_rooted (n : ℕ) :
+    (unitNegativeLagEulerRow n).natDegree = n ∧ HasPosLeadingCoeff (unitNegativeLagEulerRow n) ∧
+      IsRealRootedIn (Set.Icc (-1) 0) (unitNegativeLagEulerRow n) := by
   apply negativeLagEulerRow_degree_pos_rooted
   · intro k hk
     norm_num

@@ -210,7 +210,7 @@ theorem PreservesPFUpTo.iff_finiteDifferentialTest
 
 /-- Ordered preservation through degree `N` forces the two monomial-test
 images to be PF and ordered. -/
-theorem finiteDifferentialTest_ordered_of_preservesOrderedPFUpTo
+theorem _root_.RealRooted.PreservesOrderedPFUpTo.differentialTests
     {N : ℕ} {h k : ℝ[X]} (hpres : PreservesOrderedPFUpTo N h k) :
     IsPFPolynomial (finiteDifferentialTest N h) ∧
       IsPFPolynomial (finiteDifferentialTest N k) ∧
@@ -246,7 +246,7 @@ theorem isPFPolynomial_X_mul_add_C_mul {f g : ℝ[X]}
   · exact IsPFPolynomial.of_realRooted_nonneg hnn hstrict.2.1.2
 
 /-- Recurrence form of the ordered-pair step for two differential symbols. -/
-theorem differentialRecurrence_pf_and_interl {h k p : ℝ[X]}
+theorem differentialRecurrence_isPFPolynomial_and_interl {h k p : ℝ[X]}
     (hh : IsPFPolynomial (applyAsDifferentialOperator h p))
     (hk : IsPFPolynomial (applyAsDifferentialOperator k p))
     (horder : Interl (applyAsDifferentialOperator h p)

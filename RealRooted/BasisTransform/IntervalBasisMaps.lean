@@ -759,7 +759,7 @@ theorem rationalGeneratingSeries_iff_eventually_pureLag
       (hNdeg.trans_le (by lia)) hgen
   · rintro ⟨q, n₀, Q, hq, hQ0, hQdeg, hrec⟩
     obtain ⟨M, hMdeg, hgen⟩ :=
-      exists_natDegree_lt_add_and_mul_generatingSeries_eq_of_pureLag_from
+      RealRooted.EndpointRecurrence.exists_natDegree_lt_and_mul_generatingSeries_eq_of_pureLag
         P Q q n₀ hq hQ0 hQdeg.le hrec
     exact ⟨q, n₀, Q, M, hq, hQ0, hQdeg, hMdeg, hgen⟩
 
@@ -776,7 +776,7 @@ theorem le_eventualOrder_of_coprime_mul_generatingSeries_eq
         Q.coeff (j + 1) * P (n₀ + n + m - (j + 1))) :
     q ≤ m := by
   obtain ⟨M, -, hQgen⟩ :=
-    exists_natDegree_lt_add_and_mul_generatingSeries_eq_of_pureLag_from
+    RealRooted.EndpointRecurrence.exists_natDegree_lt_and_mul_generatingSeries_eq_of_pureLag
       P Q m n₀ hm hQ0 hQdeg hrec
   rw [← hDdeg]
   exact (natDegree_le_of_coprime_mul_generatingSeries_eq

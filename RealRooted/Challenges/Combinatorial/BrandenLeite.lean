@@ -221,7 +221,7 @@ module = "RealRooted.BrandenLeite.LogarithmDegree"
 label = "Logarithmic rows have exact degree ⌊n/r⌋ and positive coefficients"
 
 [[theorems]]
-name = "RealRooted.BrandenLeite.affineLogCoeff_factor_pf_and_interl"
+name = "RealRooted.BrandenLeite.affineLogCoeff_factor_isPFPolynomial_and_interl"
 module = "RealRooted.BrandenLeite.LogarithmicInterlacing"
 label = "Logarithmic rows are PF polynomials and consecutive rows interlace"
 

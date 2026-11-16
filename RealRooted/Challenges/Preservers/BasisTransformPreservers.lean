@@ -71,7 +71,7 @@ module = "RealRooted.BasisTransform.OrderTwoPF"
 label = "PF preservation for an order-two basis: four equivalent conditions"
 
 [[theorems]]
-name = "RealRooted.basisTransform_orderTwoBasis_preserves_bounded_pf_iff"
+name = "RealRooted.OrderTwoBasis.forall_isPFPolynomial_iff_of_root_bounds"
 module = "RealRooted.BasisTransform.OrderTwoPF"
 label = "Bounded-root PF inputs already detect the order-two criterion"
 
@@ -81,7 +81,7 @@ module = "RealRooted.BasisTransform.OrderTwoPF"
 label = "No degree cap detects PF preservation for order-two bases"
 
 [[theorems]]
-name = "RealRooted.raySemigroupTransform_preservesPF_iff"
+name = "RealRooted.RaySemigroup.forall_isPFPolynomial_iff"
 module = "RealRooted.BasisTransform.SemigroupClassification"
 label = "The ray semigroup preserves PF polynomials exactly when a, b ≥ 0"
 
@@ -91,7 +91,7 @@ module = "RealRooted.BasisTransform.SemigroupClassification"
 label = "The semigroup law T_{s+t} = T_s T_t"
 
 [[theorems]]
-name = "RealRooted.raySemigroupTransform_preservesPF_iff_finiteLog"
+name = "RealRooted.RaySemigroup.forall_isPFPolynomial_iff_finiteLog"
 module = "RealRooted.BasisTransform.SemigroupClassification"
 label = "The degree-two finite logarithm detects PF preservation of the semigroup"
 

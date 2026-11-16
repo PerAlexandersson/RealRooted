@@ -701,7 +701,7 @@ theorem orderTwoBasis_isPFPolynomial_of_conditions
 
 /-- Preserving all PF polynomials is equivalent to every order-two basis row
 being PF. -/
-theorem basisTransform_orderTwoBasis_preserves_pf_iff_rows_pf
+theorem _root_.RealRooted.OrderTwoBasis.forall_isPFPolynomial_iff_rows
     {a b c s : ℝ} (ha : 0 ≤ a) (hb : 0 < b) (hs : 0 ≤ s) :
     (∀ p : ℝ[X], IsPFPolynomial p →
         IsPFPolynomial (basisTransform (orderTwoBasis a b c s) p)) ↔
@@ -752,14 +752,14 @@ theorem orderTwoBasis_pf_equivalences
         ∀ n, 0 ≤ (orderTwoBasis a b c s n).eval 0) ∧
       ((∀ n, 0 ≤ (orderTwoBasis a b c s n).eval 0) ↔
         0 ≤ a ^ 2 + 4 * c ∧ (2 * s ≥ a ∨ c ≥ s ^ 2 - a * s)) := by
-  exact ⟨basisTransform_orderTwoBasis_preserves_pf_iff_rows_pf ha hb hs,
+  exact ⟨RealRooted.OrderTwoBasis.forall_isPFPolynomial_iff_rows ha hb hs,
     forall_orderTwoBasis_isPFPolynomial_iff_eval_zero_nonneg ha hb hs,
     forall_orderTwoBasis_eval_zero_nonneg_iff ha hs⟩
 
 /-- Restricting PF inputs to have all roots in `[-R, 0]` gives exactly the
 same criterion, for every nonnegative `R`.  Necessity is witnessed by
 monomials. -/
-theorem basisTransform_orderTwoBasis_preserves_bounded_pf_iff
+theorem _root_.RealRooted.OrderTwoBasis.forall_isPFPolynomial_iff_of_root_bounds
     {a b c s R : ℝ} (ha : 0 ≤ a) (hb : 0 < b) (hs : 0 ≤ s) (hR : 0 ≤ R) :
     (∀ p : ℝ[X], IsPFPolynomial p →
         (∀ r ∈ p.roots, -R ≤ r ∧ r ≤ 0) →
@@ -784,7 +784,7 @@ theorem basisTransform_orderTwoBasis_preserves_bounded_pf_iff
       (forall_orderTwoBasis_eval_zero_nonneg_iff (b := b) ha hs).2 hconditions
     have hrows :=
       (forall_orderTwoBasis_isPFPolynomial_iff_eval_zero_nonneg ha hb hs).2 heval
-    exact (basisTransform_orderTwoBasis_preserves_pf_iff_rows_pf ha hb hs).2
+    exact (RealRooted.OrderTwoBasis.forall_isPFPolynomial_iff_rows ha hb hs).2
       hrows p hp
 
 /-- There is no universal finite degree cap for detecting preservation.  For
@@ -838,7 +838,7 @@ theorem exists_orderTwoBasis_finite_cap_counterexample (N : ℕ) :
         (by norm_num) (by norm_num) (by norm_num) hp
   · intro hall
     have hrowsPF :=
-      (basisTransform_orderTwoBasis_preserves_pf_iff_rows_pf
+      (RealRooted.OrderTwoBasis.forall_isPFPolynomial_iff_rows
         (a := (1 : ℝ)) (b := 1) (c := c) (s := 1)
         (by norm_num) (by norm_num) (by norm_num)).1 hall
     have heval :=

@@ -139,15 +139,6 @@ end Hull
 
 /-! ### Linear images of weighted sums -/
 
-/-- A linear map sends a weighted sum to the weighted sum of the images. -/
-theorem map_weightedSum (T : ℝ[X] →ₗ[ℝ] ℝ[X]) :
-    ∀ l : List (ℝ × ℝ[X]),
-      T (weightedSum l) = weightedSum (l.map fun ap => (ap.1, T ap.2))
-  | [] => by simp
-  | (a, p) :: l => by
-    simp only [weightedSum_cons, map_add, List.map_cons, map_weightedSum T l, C_mul',
-      LinearMap.map_smul]
-
 /-- Every list of nonnegative-weighted members of `fs.map T` is the image of a list over `fs`. -/
 private theorem exists_preimage_list (T : ℝ[X] →ₗ[ℝ] ℝ[X]) (fs : List ℝ[X]) :
     ∀ l : List (ℝ × ℝ[X]), (∀ ap ∈ l, ap.2 ∈ fs.map T) →

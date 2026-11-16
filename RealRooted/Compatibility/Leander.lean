@@ -19,7 +19,7 @@ ordered compatibility conditions.
 
 No output positive-leading claim is included: for a singleton family the
 transform output is identically zero. -/
-theorem leanderTransform_preserves_compatibility {n : ℕ}
+theorem _root_.RealRooted.Compatible.leanderTransform_ordered {n : ℕ}
     (f : Fin n → ℝ[X])
     (hpos : ∀ h, HasPosLeadingCoeff (f h))
     (hff : ∀ ⦃i j⦄, i ≤ j → Compatible (f i) (f j))
@@ -48,7 +48,7 @@ theorem leanderTransform_two_compatible (f : Fin 2 → ℝ[X])
     (hXf : ∀ ⦃i j⦄, i ≤ j → Compatible (X * f i) (f j)) :
     Compatible (f 1) (X * f 0) ∧
       Compatible (X * f 1) (X * f 0) := by
-  have h := leanderTransform_preserves_compatibility f hpos hff hXf
+  have h := RealRooted.Compatible.leanderTransform_ordered f hpos hff hXf
   have h01 : (0 : Fin 2) ≤ 1 := by decide
   simpa using And.intro (h.1 h01) (h.2 h01)
 

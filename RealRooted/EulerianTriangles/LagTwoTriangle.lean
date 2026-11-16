@@ -148,11 +148,11 @@ abbrev constantLagTwoEulerRow (m lambda : ℝ) (n : ℕ) : ℝ[X] :=
   lagTwoEulerRow m (fun _ ↦ lambda) n
 
 /-- The `lambda = 1` shape represented by A157147--A157151. -/
-abbrev a157147To151Row (m : ℝ) (n : ℕ) : ℝ[X] :=
+abbrev unitLagTwoEulerRow (m : ℝ) (n : ℕ) : ℝ[X] :=
   constantLagTwoEulerRow m 1 n
 
 /-- The A157637 specialization `lambda_n = n / 2`. -/
-abbrev a157637Row (m : ℝ) (n : ℕ) : ℝ[X] :=
+abbrev halfIndexLagTwoEulerRow (m : ℝ) (n : ℕ) : ℝ[X] :=
   lagTwoEulerRow m (fun j ↦ (j : ℝ) / 2) n
 
 theorem constantLagTwoEulerRow_simpleNegRooted_and_strictInterl
@@ -163,16 +163,16 @@ theorem constantLagTwoEulerRow_simpleNegRooted_and_strictInterl
   have h := lagTwoEulerRow_simpleNegRooted_and_strictInterl hm (fun _ ↦ hlambda) n
   exact ⟨h.1, h.2.1⟩
 
-theorem a157147To151Row_simpleNegRooted_and_strictInterl
+theorem unitLagTwoEulerRow_simpleNegRooted_and_strictInterl
     {m : ℝ} (hm : 1 ≤ m) (n : ℕ) :
-    SimpleNegRooted (a157147To151Row m n) n ∧
-      StrictInterl (a157147To151Row m n) (a157147To151Row m (n + 1)) := by
+    SimpleNegRooted (unitLagTwoEulerRow m n) n ∧
+      StrictInterl (unitLagTwoEulerRow m n) (unitLagTwoEulerRow m (n + 1)) := by
   exact constantLagTwoEulerRow_simpleNegRooted_and_strictInterl hm (by norm_num) n
 
-theorem a157637Row_simpleNegRooted_and_strictInterl
+theorem halfIndexLagTwoEulerRow_simpleNegRooted_and_strictInterl
     {m : ℝ} (hm : 1 ≤ m) (n : ℕ) :
-    SimpleNegRooted (a157637Row m n) n ∧
-      StrictInterl (a157637Row m n) (a157637Row m (n + 1)) := by
+    SimpleNegRooted (halfIndexLagTwoEulerRow m n) n ∧
+      StrictInterl (halfIndexLagTwoEulerRow m n) (halfIndexLagTwoEulerRow m (n + 1)) := by
   have hnonneg : ∀ j : ℕ, 0 ≤ (j : ℝ) / 2 := by intro j; positivity
   have h := lagTwoEulerRow_simpleNegRooted_and_strictInterl hm hnonneg n
   exact ⟨h.1, h.2.1⟩

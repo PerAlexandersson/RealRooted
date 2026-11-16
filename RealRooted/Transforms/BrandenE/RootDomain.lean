@@ -117,7 +117,7 @@ theorem isRealRootedIn_Icc_brandenE_X_sub_C_mul_X_sub_C_of_pos {r s : ℝ} (hr0 
     (by positivity) (pair_disc hr hs) (by nlinarith)
 
 /-- For two roots in `[L, -1)`, the `E` image of the pair is rooted in `[-1, 0]`. -/
-theorem isRealRootedIn_Icc_brandenE_X_sub_C_mul_X_sub_C_of_lt_neg_one {r s : ℝ} (hr0 : r < -1)
+theorem BrandenE.isRealRootedIn_Icc_quadratic_of_lt_neg_one {r s : ℝ} (hr0 : r < -1)
     (hs0 : s < -1) (hr : 4 * r ^ 2 + 4 * r ≤ 1) (hs : 4 * s ^ 2 + 4 * s ≤ 1) :
     IsRealRootedIn (Icc (-1) 0) (brandenE ((X - C r) * (X - C s))) := by
   rw [brandenE_X_sub_C_mul_X_sub_C]
@@ -130,7 +130,7 @@ theorem isRealRootedIn_Icc_brandenE_X_sub_C_mul_X_sub_C_of_lt_neg_one {r s : ℝ
 
 /-- For `r < -1 < 0 < s` in `[L, U]` the `E` image of `(X - r) (X - s)` is rooted in `[r, s]`;
 its roots lie in `(r, -1)` and `(0, s)`. -/
-theorem isRealRootedIn_Icc_brandenE_X_sub_C_mul_X_sub_C_of_lt_neg_one_of_pos {r s : ℝ}
+theorem _root_.RealRooted.BrandenE.isRealRootedIn_Icc_quadratic_of_lt_neg_one_of_pos {r s : ℝ}
     (hr0 : r < -1) (hs0 : 0 < s) (hr : 4 * r ^ 2 + 4 * r ≤ 1) (hs : 4 * s ^ 2 + 4 * s ≤ 1) :
     IsRealRootedIn (Icc r s) (brandenE ((X - C r) * (X - C s))) := by
   rw [brandenE_X_sub_C_mul_X_sub_C]
@@ -202,7 +202,7 @@ theorem exists_eq_C_mul_mul_of_isRealRootedIn_Icc {p : ℝ[X]}
   obtain ⟨Fn, Rn, hFRn, hFn, hRn⟩ := exists_rootPolynomial_eq_mul_of_pairs (K := K)
     (S := {r | r < -1 ∧ 4 * r ^ 2 + 4 * r ≤ 1}) h1 hmul
     (fun r hr s hs ↦
-      isRealRootedIn_Icc_brandenE_X_sub_C_mul_X_sub_C_of_lt_neg_one hr.1 hs.1 hr.2 hs.2)
+      RealRooted.BrandenE.isRealRootedIn_Icc_quadratic_of_lt_neg_one hr.1 hs.1 hr.2 hs.2)
     mn (fun r hr ↦ by
       rw [hmn, Multiset.mem_filter] at hr
       exact ⟨hr.2, hroot r hr.1⟩)
@@ -251,7 +251,7 @@ private theorem isRealRootedIn_Icc_brandenE_residual {A B : ℝ} {Rp Rn : ℝ[X]
   · rw [mul_one, brandenE_X_sub_C]
     exact IsRealRootedIn.X_sub_C (hm r hr)
   · rw [mul_comm]
-    exact (isRealRootedIn_Icc_brandenE_X_sub_C_mul_X_sub_C_of_lt_neg_one_of_pos hs0 hr0
+    exact (RealRooted.BrandenE.isRealRootedIn_Icc_quadratic_of_lt_neg_one_of_pos hs0 hr0
       (hm' s hs) (hm' r hr)).mono (Icc_subset_Icc (hm s hs).1 (hm r hr).2)
 
 /-- **Invariant intervals of the `E` transform.**  For `L ≤ A ≤ -1` and `0 ≤ B ≤ U` the `E`

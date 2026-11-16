@@ -29,19 +29,6 @@ noncomputable section
 
 namespace RealRooted
 
-/-- A real-linear map commutes with the finite weighted sums used in Krein
-expansions. -/
-theorem LinearMap.map_weightedSum (T : ℝ[X] →ₗ[ℝ] ℝ[X]) :
-    ∀ l : List (ℝ × ℝ[X]),
-      T (weightedSum l) =
-        weightedSum (l.map fun ap => (ap.1, T ap.2))
-  | [] => by simp
-  | (a, p) :: l => by
-      simp only [weightedSum_cons, List.map_cons, T.map_add,
-        LinearMap.map_weightedSum T l]
-      rw [show C a * p = a • p by rw [Polynomial.smul_eq_C_mul],
-        T.map_smul, Polynomial.smul_eq_C_mul]
-
 /-- A linear map preserves PF Krein interlacing when every nonzero PF
 polynomial remains after each possible one-root deletion in the oriented
 order.  The self-summand is included in `IsKreinSummand`. -/
@@ -291,7 +278,7 @@ theorem strictInterl_map_of_preservesPFKreinInterlacingOnDegree
     · exact exists_kreinSummandExpansion_nonneg_right_of_pos_natDegree
         hfg hfpos hgpos (Nat.pos_of_ne_zero hgdeg)
   obtain ⟨l, hfl, hnonneg, hsummand, hex⟩ := hexp
-  rw [hfl, RealRooted.LinearMap.map_weightedSum T l]
+  rw [hfl, RealRooted.map_weightedSum T l]
   apply StrictInterl.weightedSum_right_of_nonneg
   · intro ap hap
     rcases List.mem_map.mp hap with ⟨ap₀, hap₀, rfl⟩
