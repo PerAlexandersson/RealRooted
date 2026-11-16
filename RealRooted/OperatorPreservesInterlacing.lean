@@ -133,4 +133,34 @@ theorem PreservesRealRootedOrZero.interl_or_reverse :
       PreservesInterlacingPairsUpToOrder0 T :=
   @preservesInterlacingPairsUpToOrder0_of_preservesRealRootedOrZero
 
+/-- A pencil-local preserver transports successor-degree interlacing when both images
+are nonzero and their degrees differ by one. This is the HKO consequence of
+Borcea--Brändén, arXiv:0809.0401, Theorem 1.9, with orientation fixed by degree. -/
+theorem interlaces_map_of_pencil
+    {T : ℝ[X] →ₗ[ℝ] ℝ[X]} {f g : ℝ[X]}
+    (hall : AllComboRealRooted f g)
+    (hT : ∀ α β : ℝ,
+      (C α * f + C β * g ≠ 0 ∧ (C α * f + C β * g).Splits) →
+        T (C α * f + C β * g) = 0 ∨ (T (C α * f + C β * g)).Splits)
+    (hf : T f ≠ 0) (hg : T g ≠ 0)
+    (hdeg : (T f).natDegree + 1 = (T g).natDegree) :
+    Interlaces (T f) (T g) := by
+  have hout := allComboRealRooted_map_of_pencil hall hT
+  have hfs := hout.isRealRooted_left hf
+  have hgs := hout.isRealRooted_right hg
+  exact (StrictInterl.forward_of_orientation_of_succDegree hdeg.symm
+    (strictInterl_of_allComboRealRooted hf hfs.2 hg hgs.2 hout (Or.inl hdeg))).toInterlaces
+      hdeg
+
+/-- A global real-rootedness preserver transports a directed pair when its nonzero
+images have successor degrees. See Borcea--Brändén, arXiv:0809.0401, Theorem 1.9. -/
+theorem PreservesRealRootedOrZero.interlaces
+    {T : ℝ[X] →ₗ[ℝ] ℝ[X]} (hT : PreservesRealRootedOrZero T)
+    {f g : ℝ[X]} (hfg : StrictInterl f g)
+    (hf : T f ≠ 0) (hg : T g ≠ 0)
+    (hdeg : (T f).natDegree + 1 = (T g).natDegree) :
+    Interlaces (T f) (T g) :=
+  interlaces_map_of_pencil (allComboRealRooted_of_strictInterl hfg)
+    (fun α β h => hT (C α * f + C β * g) h) hf hg hdeg
+
 end RealRooted
