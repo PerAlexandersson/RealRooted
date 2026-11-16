@@ -5,6 +5,7 @@ import Mathlib.Analysis.Complex.Basic
 public import RealRooted.MatrixInterlacing.ThreeBidiagonalProduction
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
 import RealRooted.Interlacing.ReversalCommonFactor
+import RealRooted.TotallyNonnegInterlacing
 import RealRooted.Linear
 import Mathlib.Data.Nat.Choose.Basic
 import Mathlib.Topology.Algebra.Polynomial
@@ -903,6 +904,28 @@ theorem threeFTwo_interlaces_and_isCoprime {a c b d : ℝ}
   · intro x hx
     exact isRoot_threeFTwo_pos ha hc hb hd (n + 1)
       ((Polynomial.mem_roots (threeFTwo_ne_zero a c b d (n + 1))).1 hx)
+
+/-- Consecutive terminating series interlace throughout Lima's weak parameter range
+(Theorem 8.4 of arXiv:2208.03539v2, including its weak boundary by closure).
+The production sections remain totally nonnegative when some weights vanish;
+weak principal interlacing uses coefficientwise closure and allows shared roots. -/
+theorem threeFTwo_interlaces {a c b d : ℝ}
+    (ha : 0 < a) (hc : 0 < c) (hb : 0 < b) (hd : 0 < d)
+    (h₁ : a ≤ b) (h₂ : c - 1 ≤ b) (h₃ : a ≤ d) (h₄ : c ≤ d) (n : ℕ) :
+    RealRooted.Interlaces (threeFTwo a c b d n) (threeFTwo a c b d (n + 1)) := by
+  have h := (isTotallyNonneg_production ha hc hb hd h₁ h₂ h₃ h₄
+    (n + 1)).leading_charpoly_interlaces
+  simp only [production, Matrix.twoBranchedProduction,
+    Matrix.threeBidiagonalProduction_castSucc] at h
+  change Interlaces (production a c b d n).charpoly
+    (production a c b d (n + 1)).charpoly at h
+  simp_rw [← monicThreeFTwo_eq_charpoly ha hc hb hd] at h
+  have hnz (j : ℕ) : threeFTwoCoeff a c b d j j ≠ 0 :=
+    right_ne_zero_of_mul (threeFTwoCoeff_alternating_pos ha hc hb hd (le_refl j)).ne'
+  have hs (j : ℕ) : C (threeFTwoCoeff a c b d j j) * monicThreeFTwo a c b d j =
+      threeFTwo a c b d j := by
+    rw [monicThreeFTwo, ← mul_assoc, ← C_mul, mul_inv_cancel₀ (hnz j), C_1, one_mul]
+  simpa only [hs] using h.C_mul_both (hnz n) (hnz (n + 1))
 
 /-- Splitting persists at Lima's weak parameter boundary by positive shifts of
 both upper base parameters. No assertion of simple boundary roots is needed. -/
