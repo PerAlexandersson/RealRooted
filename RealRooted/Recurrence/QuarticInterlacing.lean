@@ -134,29 +134,13 @@ private lemma isPFPolynomial_of_interl_right {p q : ℝ[X]}
   IsPFPolynomial.of_realRooted_nonneg hqnn
     (hpq.toStrictInterl_of_ne hp_ne hq_ne).2.1.2
 
-/-- The quartic transition preserves admissibility throughout the parameter
-region `0 ≤ w ≤ v ≤ u` with `u > 0`. -/
-theorem QuarticInterlacingState.IsAdmissible.step
-    {u v w : ℝ} {S : QuarticInterlacingState}
-    (hS : S.IsAdmissible u v w) (hu : 0 < u)
-    (hw : 0 ≤ w) (hwv : w ≤ v) (hvu : v ≤ u) :
-    (quarticInterlacingStep u v w S).IsAdmissible u v w := by
+/-- The cumulative auxiliary update remains nonzero PF and has its three left bounds. -/
+private lemma quartic_sum_certificates {u v w : ℝ} {S : QuarticInterlacingState}
+    (hS : S.IsAdmissible u v w) :
+    IsPFPolynomial (S.s + X * S.f1) ∧ S.s + X * S.f1 ≠ 0 ∧
+      Interl S.f2 (S.s + X * S.f1) ∧ Interl S.d (S.s + X * S.f1) ∧
+      Interl S.s (S.s + X * S.f1) := by
   let sPlus : ℝ[X] := S.s + X * S.f1
-  let dPlus : ℝ[X] := S.d + sPlus
-  let f3 : ℝ[X] :=
-    S.f2 + C u * S.s + C (u + v - w) * (X * S.f1) + C w * (X * S.f0)
-  have hu0 : 0 ≤ u := hu.le
-  have huvw : 0 ≤ u + v - w := by linarith
-  have hvw : 0 ≤ v - w := sub_nonneg.mpr hwv
-  have hdiv : 0 ≤ 1 - v / u := sub_nonneg.mpr ((div_le_one hu).2 hvu)
-  have hwu : 0 ≤ w / u := div_nonneg hw hu.le
-  have hiu : 0 ≤ 1 / u := (one_div_pos.mpr hu).le
-  have hf1_Xf0 : Interl S.f1 (X * S.f0) :=
-    interl_mul_X_of_interl hS.f0_interl_f1
-      hS.f0_pf.hasNonnegCoeffs hS.f1_pf.hasNonnegCoeffs
-  have hf2_Xf0 : Interl S.f2 (X * S.f0) :=
-    interl_mul_X_of_interl hS.f0_interl_f2
-      hS.f0_pf.hasNonnegCoeffs hS.f2_pf.hasNonnegCoeffs
   have hf2_Xf1 : Interl S.f2 (X * S.f1) :=
     interl_mul_X_of_interl hS.f1_interl_f2
       hS.f1_pf.hasNonnegCoeffs hS.f2_pf.hasNonnegCoeffs
@@ -166,25 +150,6 @@ theorem QuarticInterlacingState.IsAdmissible.step
   have hs_Xf1 : Interl S.s (X * S.f1) :=
     interl_mul_X_of_interl hS.f1_interl_s
       hS.f1_pf.hasNonnegCoeffs hS.s_pf.hasNonnegCoeffs
-  have hf1_Xf1 : Interl S.f1 (X * S.f1) :=
-    interl_mul_X_of_interl hS.f1_pf.interl_self
-      hS.f1_pf.hasNonnegCoeffs hS.f1_pf.hasNonnegCoeffs
-  have hf1_f3 : Interl S.f1 f3 := by
-    have h := interl_weightedSum_left
-      [(1, S.f2), (u, S.s), (u + v - w, X * S.f1), (w, X * S.f0)] S.f1
-      (by simp [hu0, huvw, hw])
-      (by simp [hS.f1_interl_f2, hS.f1_interl_s, hf1_Xf1, hf1_Xf0])
-      (by simp [hS.f2_pf.hasNonnegCoeffs, hS.s_pf.hasNonnegCoeffs,
-        hS.f1_pf.hasNonnegCoeffs.X_mul, hS.f0_pf.hasNonnegCoeffs.X_mul])
-    simpa [f3, weightedSum, add_assoc] using h
-  have hf2_f3 : Interl S.f2 f3 := by
-    have h := interl_weightedSum_left
-      [(1, S.f2), (u, S.s), (u + v - w, X * S.f1), (w, X * S.f0)] S.f2
-      (by simp [hu0, huvw, hw])
-      (by simp [hS.f2_pf.interl_self, hS.f2_interl_s, hf2_Xf1, hf2_Xf0])
-      (by simp [hS.f2_pf.hasNonnegCoeffs, hS.s_pf.hasNonnegCoeffs,
-        hS.f1_pf.hasNonnegCoeffs.X_mul, hS.f0_pf.hasNonnegCoeffs.X_mul])
-    simpa [f3, weightedSum, add_assoc] using h
   have hf2_sPlus : Interl S.f2 sPlus := by
     have h := interl_weightedSum_left [(1, S.s), (1, X * S.f1)] S.f2
       (by simp) (by simp [hS.f2_interl_s, hf2_Xf1])
@@ -208,7 +173,55 @@ theorem QuarticInterlacingState.IsAdmissible.step
       (mul_ne_zero X_ne_zero hS.f1_ne)
   have hsPlus_pf : IsPFPolynomial sPlus :=
     isPFPolynomial_of_interl_right hS.s_ne hsPlus_ne hsPlus_nn hs_sPlus
-  have hdPlus_eq : dPlus = weightedSum
+  exact ⟨hsPlus_pf, hsPlus_ne, hf2_sPlus, hd_sPlus, hs_sPlus⟩
+
+/-- Both retained row coordinates precede the new row by the left cone lemma. -/
+private lemma quartic_row_comparisons {u v w : ℝ} {S : QuarticInterlacingState}
+    (hS : S.IsAdmissible u v w) (hu : 0 < u) (hw : 0 ≤ w) (hwv : w ≤ v) :
+    Interl S.f1 (quarticInterlacingStep u v w S).f2 ∧
+      Interl S.f2 (quarticInterlacingStep u v w S).f2 := by
+  let f3 : ℝ[X] :=
+    S.f2 + C u * S.s + C (u + v - w) * (X * S.f1) + C w * (X * S.f0)
+  have hu0 : 0 ≤ u := hu.le
+  have huvw : 0 ≤ u + v - w := by linarith
+  have hf1_Xf0 : Interl S.f1 (X * S.f0) :=
+    interl_mul_X_of_interl hS.f0_interl_f1
+      hS.f0_pf.hasNonnegCoeffs hS.f1_pf.hasNonnegCoeffs
+  have hf2_Xf0 : Interl S.f2 (X * S.f0) :=
+    interl_mul_X_of_interl hS.f0_interl_f2
+      hS.f0_pf.hasNonnegCoeffs hS.f2_pf.hasNonnegCoeffs
+  have hf2_Xf1 : Interl S.f2 (X * S.f1) :=
+    interl_mul_X_of_interl hS.f1_interl_f2
+      hS.f1_pf.hasNonnegCoeffs hS.f2_pf.hasNonnegCoeffs
+  have hf1_Xf1 : Interl S.f1 (X * S.f1) :=
+    interl_mul_X_of_interl hS.f1_pf.interl_self
+      hS.f1_pf.hasNonnegCoeffs hS.f1_pf.hasNonnegCoeffs
+  have hf1_f3 : Interl S.f1 f3 := by
+    have h := interl_weightedSum_left
+      [(1, S.f2), (u, S.s), (u + v - w, X * S.f1), (w, X * S.f0)] S.f1
+      (by simp [hu0, huvw, hw])
+      (by simp [hS.f1_interl_f2, hS.f1_interl_s, hf1_Xf1, hf1_Xf0])
+      (by simp [hS.f2_pf.hasNonnegCoeffs, hS.s_pf.hasNonnegCoeffs,
+        hS.f1_pf.hasNonnegCoeffs.X_mul, hS.f0_pf.hasNonnegCoeffs.X_mul])
+    simpa [f3, weightedSum, add_assoc] using h
+  have hf2_f3 : Interl S.f2 f3 := by
+    have h := interl_weightedSum_left
+      [(1, S.f2), (u, S.s), (u + v - w, X * S.f1), (w, X * S.f0)] S.f2
+      (by simp [hu0, huvw, hw])
+      (by simp [hS.f2_pf.interl_self, hS.f2_interl_s, hf2_Xf1, hf2_Xf0])
+      (by simp [hS.f2_pf.hasNonnegCoeffs, hS.s_pf.hasNonnegCoeffs,
+        hS.f1_pf.hasNonnegCoeffs.X_mul, hS.f0_pf.hasNonnegCoeffs.X_mul])
+    simpa [f3, weightedSum, add_assoc] using h
+  exact ⟨hf1_f3, hf2_f3⟩
+
+/-- Solve the balance identity to express the first auxiliary update as a positive cone. -/
+private lemma quartic_auxiliary_eq_weightedSum {u v w : ℝ} {S : QuarticInterlacingState}
+    (hS : S.IsAdmissible u v w) (hu : 0 < u) :
+    S.d + (S.s + X * S.f1) = weightedSum
+      [(1 / u, S.f2), (w / u, X * S.f0), (1, X * S.f1), (1 - v / u, S.s)] := by
+  let sPlus : ℝ[X] := S.s + X * S.f1
+  let dPlus : ℝ[X] := S.d + sPlus
+  have h : dPlus = weightedSum
       [(1 / u, S.f2), (w / u, X * S.f0), (1, X * S.f1), (1 - v / u, S.s)] := by
     dsimp [dPlus, sPlus]
     simp only [add_zero, one_div]
@@ -220,6 +233,34 @@ theorem QuarticInterlacingState.IsAdmissible.step
     rw [hb]
     field_simp [hu.ne']
     ring
+  exact h
+
+/-- The first auxiliary update is nonzero PF, between the retained row and the new sum. -/
+private lemma quartic_auxiliary_certificates {u v w : ℝ} {S : QuarticInterlacingState}
+    (hS : S.IsAdmissible u v w) (hu : 0 < u)
+    (hw : 0 ≤ w) (hvu : v ≤ u)
+    (hsPlus_pf : IsPFPolynomial (S.s + X * S.f1))
+    (hsPlus_ne : S.s + X * S.f1 ≠ 0) (hd_sPlus : Interl S.d (S.s + X * S.f1)) :
+    IsPFPolynomial (S.d + (S.s + X * S.f1)) ∧ S.d + (S.s + X * S.f1) ≠ 0 ∧
+      Interl S.f2 (S.d + (S.s + X * S.f1)) ∧
+      Interl (S.d + (S.s + X * S.f1)) (S.s + X * S.f1) := by
+  let sPlus : ℝ[X] := S.s + X * S.f1
+  let dPlus : ℝ[X] := S.d + sPlus
+  have hsPlus_nn : HasNonnegCoeffs sPlus := hsPlus_pf.hasNonnegCoeffs
+  have hu0 : 0 ≤ u := hu.le
+  have hdiv : 0 ≤ 1 - v / u := sub_nonneg.mpr ((div_le_one hu).2 hvu)
+  have hwu : 0 ≤ w / u := div_nonneg hw hu.le
+  have hf2_Xf0 : Interl S.f2 (X * S.f0) :=
+    interl_mul_X_of_interl hS.f0_interl_f2
+      hS.f0_pf.hasNonnegCoeffs hS.f2_pf.hasNonnegCoeffs
+  have hf2_Xf1 : Interl S.f2 (X * S.f1) :=
+    interl_mul_X_of_interl hS.f1_interl_f2
+      hS.f1_pf.hasNonnegCoeffs hS.f2_pf.hasNonnegCoeffs
+  change IsPFPolynomial sPlus at hsPlus_pf
+  change Interl S.d sPlus at hd_sPlus
+  have hdPlus_eq : dPlus = weightedSum
+      [(1 / u, S.f2), (w / u, X * S.f0), (1, X * S.f1), (1 - v / u, S.s)] :=
+    quartic_auxiliary_eq_weightedSum hS hu
   have hf2_dPlus : Interl S.f2 dPlus := by
     rw [hdPlus_eq]
     exact interl_weightedSum_left
@@ -240,12 +281,50 @@ theorem QuarticInterlacingState.IsAdmissible.step
       (by simp) (by simp [hd_sPlus, hsPlus_pf.interl_self])
       (by simp [hS.d_pf.hasNonnegCoeffs, hsPlus_nn])
     simpa [dPlus, weightedSum] using h
-  have hf3_eq : f3 = weightedSum [(u, dPlus), (w, S.s), (v - w, sPlus)] := by
+  exact ⟨hdPlus_pf, hdPlus_ne, hf2_dPlus, hdPlus_sPlus⟩
+
+/-- The balanced new row is a positive cone of the two auxiliary coordinates and old sum. -/
+private lemma quartic_row_eq_weightedSum {u v w : ℝ} {S : QuarticInterlacingState}
+    (hS : S.IsAdmissible u v w) :
+    (quarticInterlacingStep u v w S).f2 = weightedSum
+      [(u, S.d + (S.s + X * S.f1)), (w, S.s), (v - w, S.s + X * S.f1)] := by
+  let sPlus : ℝ[X] := S.s + X * S.f1
+  let dPlus : ℝ[X] := S.d + sPlus
+  let f3 : ℝ[X] :=
+    S.f2 + C u * S.s + C (u + v - w) * (X * S.f1) + C w * (X * S.f0)
+  have h : f3 = weightedSum [(u, dPlus), (w, S.s), (v - w, sPlus)] := by
     dsimp [f3, dPlus, sPlus]
     simp only [add_zero]
     rw [hS.balance]
     simp only [map_add, map_sub]
     ring
+  exact h
+
+/-- The new row is nonzero PF and precedes the cumulative auxiliary update. -/
+private lemma quartic_row_certificates {u v w : ℝ} {S : QuarticInterlacingState}
+    (hS : S.IsAdmissible u v w) (hu : 0 < u) (hw : 0 ≤ w) (hwv : w ≤ v)
+    (hf2_f3 : Interl S.f2 (quarticInterlacingStep u v w S).f2)
+    (hsPlus_pf : IsPFPolynomial (S.s + X * S.f1))
+    (hdPlus_pf : IsPFPolynomial (S.d + (S.s + X * S.f1)))
+    (hdPlus_sPlus : Interl (S.d + (S.s + X * S.f1)) (S.s + X * S.f1))
+    (hs_sPlus : Interl S.s (S.s + X * S.f1)) :
+    IsPFPolynomial (quarticInterlacingStep u v w S).f2 ∧
+      (quarticInterlacingStep u v w S).f2 ≠ 0 ∧
+      Interl (quarticInterlacingStep u v w S).f2 (S.s + X * S.f1) := by
+  let sPlus : ℝ[X] := S.s + X * S.f1
+  let dPlus : ℝ[X] := S.d + sPlus
+  let f3 : ℝ[X] :=
+    S.f2 + C u * S.s + C (u + v - w) * (X * S.f1) + C w * (X * S.f0)
+  have hu0 : 0 ≤ u := hu.le
+  have huvw : 0 ≤ u + v - w := by linarith
+  have hvw : 0 ≤ v - w := sub_nonneg.mpr hwv
+  have hsPlus_nn : HasNonnegCoeffs sPlus := hsPlus_pf.hasNonnegCoeffs
+  have hdPlus_nn : HasNonnegCoeffs dPlus := hdPlus_pf.hasNonnegCoeffs
+  change IsPFPolynomial sPlus at hsPlus_pf
+  change Interl dPlus sPlus at hdPlus_sPlus
+  change Interl S.s sPlus at hs_sPlus
+  have hf3_eq : f3 = weightedSum [(u, dPlus), (w, S.s), (v - w, sPlus)] :=
+    quartic_row_eq_weightedSum hS
   have hf3_sPlus : Interl f3 sPlus := by
     rw [hf3_eq]
     exact weightedSum_interl_right [(u, dPlus), (w, S.s), (v - w, sPlus)] sPlus
@@ -269,43 +348,53 @@ theorem QuarticInterlacingState.IsAdmissible.step
     simpa [f3, add_comm, add_left_comm, add_assoc] using h
   have hf3_pf : IsPFPolynomial f3 :=
     isPFPolynomial_of_interl_right hS.f2_ne hf3_ne hf3_nn hf2_f3
-  have hbalance : f3 = C u * dPlus + C v * sPlus - C w * (X * S.f1) := by
-    dsimp [f3, dPlus, sPlus]
-    rw [hS.balance]
-    simp only [map_add, map_sub]
-    ring
-  refine {
+  exact ⟨hf3_pf, hf3_ne, hf3_sPlus⟩
+
+/-- The auxiliary balance identity propagates through one quartic transition. -/
+private lemma quartic_step_balance {u v w : ℝ} {S : QuarticInterlacingState}
+    (hS : S.IsAdmissible u v w) :
+    (quarticInterlacingStep u v w S).f2 =
+      C u * (quarticInterlacingStep u v w S).d +
+        C v * (quarticInterlacingStep u v w S).s -
+        C w * (X * (quarticInterlacingStep u v w S).f0) := by
+  dsimp [quarticInterlacingStep]
+  rw [hS.balance]
+  simp only [map_add, map_sub]
+  ring
+
+/-- The quartic transition preserves admissibility throughout the parameter
+region `0 ≤ w ≤ v ≤ u` with `u > 0`. -/
+theorem QuarticInterlacingState.IsAdmissible.step
+    {u v w : ℝ} {S : QuarticInterlacingState}
+    (hS : S.IsAdmissible u v w) (hu : 0 < u)
+    (hw : 0 ≤ w) (hwv : w ≤ v) (hvu : v ≤ u) :
+    (quarticInterlacingStep u v w S).IsAdmissible u v w := by
+  obtain ⟨hsPlus_pf, hsPlus_ne, hf2_sPlus, hd_sPlus, hs_sPlus⟩ :=
+    quartic_sum_certificates hS
+  obtain ⟨hf1_f3, hf2_f3⟩ := quartic_row_comparisons hS hu hw hwv
+  obtain ⟨hdPlus_pf, hdPlus_ne, hf2_dPlus, hdPlus_sPlus⟩ :=
+    quartic_auxiliary_certificates hS hu hw hvu hsPlus_pf hsPlus_ne hd_sPlus
+  obtain ⟨hf3_pf, hf3_ne, hf3_sPlus⟩ :=
+    quartic_row_certificates hS hu hw hwv hf2_f3 hsPlus_pf hdPlus_pf hdPlus_sPlus hs_sPlus
+  exact {
     f0_pf := hS.f1_pf
     f0_ne := hS.f1_ne
     f1_pf := hS.f2_pf
     f1_ne := hS.f2_ne
-    f2_pf := ?_
-    f2_ne := ?_
-    d_pf := ?_
-    d_ne := ?_
-    s_pf := ?_
-    s_ne := ?_
+    f2_pf := hf3_pf
+    f2_ne := hf3_ne
+    d_pf := hdPlus_pf
+    d_ne := hdPlus_ne
+    s_pf := hsPlus_pf
+    s_ne := hsPlus_ne
     f0_interl_f1 := hS.f1_interl_f2
-    f0_interl_f2 := ?_
-    f1_interl_f2 := ?_
-    f1_interl_d := ?_
-    f1_interl_s := ?_
-    f2_interl_s := ?_
-    d_interl_s := ?_
-    balance := ?_ }
-  · simpa [quarticInterlacingStep, f3] using hf3_pf
-  · simpa [quarticInterlacingStep, f3] using hf3_ne
-  · simpa [quarticInterlacingStep, dPlus, sPlus] using hdPlus_pf
-  · simpa [quarticInterlacingStep, dPlus, sPlus] using hdPlus_ne
-  · simpa [quarticInterlacingStep, sPlus] using hsPlus_pf
-  · simpa [quarticInterlacingStep, sPlus] using hsPlus_ne
-  · simpa [quarticInterlacingStep, f3] using hf1_f3
-  · simpa [quarticInterlacingStep, f3] using hf2_f3
-  · simpa [quarticInterlacingStep, dPlus, sPlus] using hf2_dPlus
-  · simpa [quarticInterlacingStep, sPlus] using hf2_sPlus
-  · simpa [quarticInterlacingStep, f3, sPlus] using hf3_sPlus
-  · simpa [quarticInterlacingStep, dPlus, sPlus] using hdPlus_sPlus
-  · simpa [quarticInterlacingStep, f3, dPlus, sPlus] using hbalance
+    f0_interl_f2 := hf1_f3
+    f1_interl_f2 := hf2_f3
+    f1_interl_d := hf2_dPlus
+    f1_interl_s := hf2_sPlus
+    f2_interl_s := hf3_sPlus
+    d_interl_s := hdPlus_sPlus
+    balance := quartic_step_balance hS }
 
 /-- The state obtained after `n` quartic transitions. -/
 def quarticInterlacingIterate (u v w : ℝ) (S : QuarticInterlacingState) :
