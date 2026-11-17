@@ -120,9 +120,9 @@ $\sum_jj|c_j|\le\frac1s\bigl(1-\frac1s\bigr)^{(s-1)/2}$.
 ## Use
 
 For $c=0$ the signed perturbations are the Chebyshev polynomials of the second kind, the rows of
-$1/(1-tz+z^2)$; see [Favard recurrences](rr:favard). That TP2 matrices preserve interlacing
-sequences is a case of [Brändén's matrix criterion](rr:matrix-interlacing); see also
-[totally nonnegative matrices](rr:totally-nonnegative-matrices). For polynomial $Q$, the
+$1/(1-tz+z^2)$; see [Favard recurrences](rr:orthogonal-polynomials). That TP2 matrices
+preserve interlacing sequences is a case of [Brändén's matrix criterion](rr:matrix-interlacing);
+see also [totally nonnegative matrices](rr:totally-nonnegative-matrices). For polynomial $Q$, the
 [circle criterion](rr:hessenberg-circle-criterion) gives simple interlacing roots when
 $\operatorname{Im}\bigl(Q(z)/z\bigr)\ge0$ on an upper half-circle $|z|=R$.
 

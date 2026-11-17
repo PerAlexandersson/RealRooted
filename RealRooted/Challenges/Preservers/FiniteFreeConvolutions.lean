@@ -1,25 +1,20 @@
 module
 
-public import RealRooted.FiniteFreeAdditive
-public import RealRooted.FiniteFreeAdditive.HalfIntegerConvolution
-public import RealRooted.FiniteFreeAdditive.HalfIntegerPreservation
-public import RealRooted.FiniteFreeAdditive.OrderedRoots
-public import RealRooted.FiniteFreeAdditive.Preservation
-public import RealRooted.FiniteFreeAdditive.RootWindow
-public import RealRooted.FiniteFreeAdditive.Stability
-public import RealRooted.FiniteFreeMultiplicative
-public import RealRooted.FiniteFreeRootCount
-public import RealRooted.Hadamard.Grace
-public import RealRooted.NarayanaTransformation.Rectangular.Preservation
-public import RealRooted.NarayanaTransformation.RootGeometry
-public import RealRooted.RectangularConvolution
-public import RealRooted.RectangularConvolutionIdentity
-public import RealRooted.RectangularPolarization
-public import RealRooted.RectangularPolarizationComplement
-public import RealRooted.WagnerX.NonnegativeRoots
+import RealRooted.CommonInterleaver.RootSelection
+import RealRooted.CommonInterleaver.RootSelectionTree
+import RealRooted.FiniteFreeAdditive
+import RealRooted.FiniteFreeAdditive.Preservation
+import RealRooted.FiniteFreeAdditive.RootWindow
+import RealRooted.FiniteFreeMultiplicative
+import RealRooted.FiniteFreeRootCount
+import RealRooted.MultivariateStability.ExpectedCharpoly
+import RealRooted.MultivariateStability.MSSBound
+import RealRooted.MultivariateStability.MixedCharacteristic
+import RealRooted.NarayanaTransformation.Rectangular.Preservation
+import RealRooted.RectangularConvolution
 
 /-!
-# Finite free convolutions
+# Finite free convolutions and interlacing families
 
 <!-- realrooted-catalog
 version = 1
@@ -27,14 +22,15 @@ kind = "landmark"
 section = "theorems"
 slug = "finite-free-convolutions"
 formalized = "2026-09-11"
-tags = []
 references = [
+  "MarcusSpielmanSrivastava2015I",
+  "MarcusSpielmanSrivastava2015II",
   "MarcusSpielmanSrivastava2022",
   "GribinskiMarcus2022",
   "LeakeRyder2018x",
 ]
 authors = ["Marcus", "Spielman", "Srivastava", "Gribinski", "Leake", "Ryder"]
-years = [2018, 2022]
+years = [2015, 2018, 2022]
 
 [[definitions]]
 name = "RealRooted.finiteFreeAdditiveConvolution"
@@ -42,39 +38,19 @@ module = "RealRooted.FiniteFreeAdditive"
 label = "Finite free additive convolution"
 
 [[definitions]]
-name = "RealRooted.rectangularAdditiveConvolution"
-module = "RealRooted.RectangularConvolution"
-label = "Rectangular additive convolution"
-
-[[definitions]]
-name = "RealRooted.generalizedRectangularAdditiveConvolution"
-module = "RealRooted.FiniteFreeAdditive.HalfIntegerConvolution"
-label = "Rectangular additive convolution with a real parameter"
-
-[[definitions]]
 name = "RealRooted.finiteFreeMultiplicativeConvolution"
 module = "RealRooted.FiniteFreeMultiplicative"
 label = "Finite free multiplicative convolution"
 
 [[definitions]]
-name = "RealRooted.signedReciprocal"
-module = "RealRooted.FiniteFreeMultiplicative"
-label = "Signed reciprocal x^d p(-1/x)"
+name = "RealRooted.rectangularAdditiveConvolution"
+module = "RealRooted.RectangularConvolution"
+label = "Rectangular additive convolution"
 
 [[definitions]]
-name = "RealRooted.HasOnlyNonnegRoots"
-module = "RealRooted.NarayanaTransformation.RootGeometry"
-label = "Zero, or real-rooted with nonnegative roots"
-
-[[definitions]]
-name = "RealRooted.rectangularPolarization"
-module = "RealRooted.RectangularPolarization"
-label = "Two-block polarization of y^m p(xy)"
-
-[[definitions]]
-name = "RealRooted.reciprocalRectangularPolarization"
-module = "RealRooted.RectangularPolarizationComplement"
-label = "Signed reciprocal of the rectangular polarization"
+name = "RealRooted.MixedCharacteristic.mixedCharacteristic"
+module = "RealRooted.MultivariateStability.MixedCharacteristic"
+label = "Mixed characteristic polynomial"
 
 [[theorems]]
 name = "RealRooted.splits_finiteFreeAdditiveConvolution"
@@ -83,39 +59,14 @@ label = "Marcus–Spielman–Srivastava: ⊞_d preserves real-rootedness"
 headline = true
 
 [[theorems]]
+name = "RealRooted.splits_finiteFreeMultiplicativeConvolution"
+module = "RealRooted.FiniteFreeRootCount"
+label = "Marcus–Spielman–Srivastava: ⊠_d preserves real-rootedness"
+
+[[theorems]]
 name = "RealRooted.IsRealRootedIn.finiteFreeAdditiveConvolution_Icc"
 module = "RealRooted.FiniteFreeAdditive.RootWindow"
-label = "Walsh–Leake–Ryder: ⊞_d sends roots in [A, B] and [a, b] into [A + a, B + b]"
-
-[[theorems]]
-name = "RealRooted.orderedRoot_finiteFreeAdditiveConvolution_bounds"
-module = "RealRooted.FiniteFreeAdditive.OrderedRoots"
-label = "Weyl bounds: the ith root of p ⊞_d q lies between α_i + a and α_i + b"
-
-[[theorems]]
-name = "RealRooted.finiteFreeAdditiveConvolution_comp_X_add_C"
-module = "RealRooted.FiniteFreeAdditive.RootWindow"
-label = "Translating the arguments of ⊞_d by s and t translates the output by s + t"
-
-[[theorems]]
-name = "RealRooted.finiteFreeAdditiveConvolution_eq_lowerDegree"
-module = "RealRooted.FiniteFreeAdditive.Stability"
-label = "For deg f ≤ m: f ⊞_D g = f ⊞_m (m!/D!) g^(D−m)"
-
-[[theorems]]
-name = "RealRooted.algebraicSymbol_finiteFreeAdditiveConvolutionDegreeBox"
-module = "RealRooted.FiniteFreeAdditive.Stability"
-label = "The coordinate convolution symbol is g(x_q + y_q) times spectator factors"
-
-[[theorems]]
-name = "RealRooted.finiteFreeAdditiveConvolutionAt_realStableOrZero"
-module = "RealRooted.FiniteFreeAdditive.Stability"
-label = "Finite free additive convolution preserves multivariate real stability"
-
-[[theorems]]
-name = "RealRooted.interl_finiteFreeAdditiveConvolution_right"
-module = "RealRooted.FiniteFreeAdditive.Stability"
-label = "Convolution by a fixed monic split factor preserves directed interlacing"
+label = "Roots in [A, B] and [a, b] give roots of p ⊞_d q in [A + a, B + b]"
 
 [[theorems]]
 name = "RealRooted.HasOnlyNonnegRoots.rectangularAdditiveConvolution"
@@ -123,149 +74,100 @@ module = "RealRooted.NarayanaTransformation.Rectangular.Preservation"
 label = "Gribinski–Marcus: the rectangular convolution preserves nonnegative roots"
 
 [[theorems]]
-name = "RealRooted.splits_and_roots_nonneg_rectangular_neg_half"
-module = "RealRooted.FiniteFreeAdditive.HalfIntegerPreservation"
-label = "The parameter −1/2 preserves nonnegative roots"
+objects = ["Mixed characteristic polynomials"]
+name = "RealRooted.MixedCharacteristic.isRealRooted_mixedCharacteristic"
+module = "RealRooted.MultivariateStability.MixedCharacteristic"
+label = "Marcus–Spielman–Srivastava: mixed characteristic polynomials are real-rooted"
 
 [[theorems]]
-name = "RealRooted.splits_and_roots_nonneg_rectangular_pos_half"
-module = "RealRooted.FiniteFreeAdditive.HalfIntegerPreservation"
-label = "The parameter 1/2 preserves nonnegative roots"
+name = "RealRooted.MixedCharacteristic.expectedCharpoly_eq_mixedCharacteristic"
+module = "RealRooted.MultivariateStability.ExpectedCharpoly"
+label = "Expected characteristic polynomials of random rank-one sums are mixed characteristic"
 
 [[theorems]]
-name = "RealRooted.splits_finiteFreeMultiplicativeConvolution"
-module = "RealRooted.FiniteFreeRootCount"
-label = "Marcus–Spielman–Srivastava: ⊠_d preserves real-rootedness"
+name = "RealRooted.MixedCharacteristic.mixedCharacteristic_roots_le_one_add_sqrt_sq"
+module = "RealRooted.MultivariateStability.MSSBound"
+label = "Marcus–Spielman–Srivastava: if Σ Aᵢ = I and tr Aᵢ ≤ ε, the roots are at most (1 + √ε)²"
 
 [[theorems]]
-name = "RealRooted.signedReciprocal_schurSzegoComp"
-module = "RealRooted.FiniteFreeMultiplicative"
-label = "The signed reciprocal turns Schur–Szegő composition into ⊠_d"
+name = "RealRooted.exists_mem_largestRoot_le_sum"
+module = "RealRooted.CommonInterleaver.RootSelection"
+label = "With a common interlacer, some member has largest root at most that of the sum"
 
 [[theorems]]
-name = "RealRooted.coeff_rectangularAdditiveConvolution_of_le"
-module = "RealRooted.RectangularConvolution"
-label = "Coefficients of the rectangular additive convolution"
-
-[[theorems]]
-name = "RealRooted.natDegree_rectangularAdditiveConvolution_le"
-module = "RealRooted.RectangularConvolution"
-label = "The rectangular additive convolution has degree at most n"
-
-[[theorems]]
-name = "RealRooted.isMultiaffine_rectangularPolarization"
-module = "RealRooted.RectangularPolarization"
-label = "The rectangular polarization is multiaffine in both blocks"
-
-[[theorems]]
-name = "RealRooted.mvUpperHalfPlaneStable_rectangularPolarization"
-module = "RealRooted.RectangularPolarization"
-label = "Rectangular polarization preserves upper-half-plane stability"
-
-[[theorems]]
-name = "RealRooted.mvUpperHalfPlaneStable_reciprocalRectangularPolarization"
-module = "RealRooted.RectangularPolarizationComplement"
-label = "The signed reciprocal polarization is also stable"
-
-[[theorems]]
-name = "RealRooted.rectangularDifferential_diagonal_identity"
-module = "RealRooted.RectangularConvolutionIdentity"
-label = "The differential pairing of the two polarizations is the rectangular convolution"
+name = "RealRooted.RootSelectionTree.Valid.exists_leaf_largestRoot_le"
+module = "RealRooted.CommonInterleaver.RootSelectionTree"
+label = "Interlacing families: some leaf has largest root at most that of the root polynomial"
 -->
 
 <!-- realrooted-catalog-content -->
-# Finite free convolutions
+# Finite free convolutions and interlacing families
 
-The finite free additive and multiplicative convolutions of Marcus, Spielman and Srivastava
-preserve real-rootedness, the additive one moves roots by at most the root range of the second
-factor, and the rectangular additive convolution preserves nonnegative roots. These
-convolutions are finite analogues of the free convolutions of random matrix theory.
+The finite free convolutions of Marcus, Spielman and Srivastava preserve real-rootedness and are
+finite analogues of the free convolutions of random matrix theory. Together with interlacing
+families and the real-rootedness of mixed characteristic polynomials, they give the solution of
+the Kadison–Singer problem and bipartite Ramanujan graphs of every degree.
 
 ## Results
 
-Write $p(x)=\sum_{i=0}^{d}a_ix^{d-i}$ and $q(x)=\sum_{j=0}^{d}b_jx^{d-j}$ in a degree box of size
-$d$. The *finite free additive convolution* is
+Write $p(x)=\sum_{i=0}^{d}a_ix^{d-i}$ and $q(x)=\sum_{j=0}^{d}b_jx^{d-j}$. The *finite free
+additive* and *multiplicative convolutions* are
 $$
-(p\boxplus_dq)(x)=\sum_{k=0}^{d}x^{d-k}\sum_{i+j=k}
-  \frac{(d-i)!\,(d-j)!}{d!\,(d-k)!}\,a_ib_j .
+(p\boxplus_dq)(x)=\sum_{k=0}^{d}x^{d-k}\sum_{i+j=k}\frac{(d-i)!\,(d-j)!}{d!\,(d-k)!}\,a_ib_j,
+\qquad
+(p\boxtimes_dq)(x)=\sum_{k=0}^{d}(-1)^k\binom dk^{-1}a_kb_k\,x^{d-k}.
 $$
-The *rectangular additive convolution* $p\boxplus_{m,n}q$ in a degree box of size $n$ multiplies
-each term by the further factor $\frac{(n+m-i)!\,(n+m-j)!}{(n+m)!\,(n+m-k)!}$. More generally,
-for real $\alpha$ the weight of $a_ib_j$ in the box of size $n$ is
+The *rectangular additive convolution* $p\boxplus_{m,n}q$, in degree $n$, multiplies each term
+of $\boxplus_n$ by $\frac{(n+m-i)!\,(n+m-j)!}{(n+m)!\,(n+m-k)!}$. For real $n\times n$ matrices
+$A_1,\dots,A_m$, the *mixed characteristic polynomial* is
 $$
-\frac{(n)^{\underline{k}}}{(n)^{\underline{i}}\,(n)^{\underline{j}}}\cdot
-\frac{(n+\alpha)^{\underline{k}}}{(n+\alpha)^{\underline{i}}\,(n+\alpha)^{\underline{j}}},
-\qquad k=i+j,
+\mu[A](x)=\prod_{i=1}^m(1-\partial_{z_i})\det\Bigl(xI+\sum_iz_iA_i\Bigr)\Big|_{z=0}.
 $$
-with falling factorials $(x)^{\underline{k}}$; $\alpha=m$ is the rectangular case. The
-*finite free multiplicative convolution* is
-$$
-(p\boxtimes_dq)(x)=\sum_{k=0}^{d}(-1)^k\binom dk^{-1}a_kb_k\,x^{d-k},
-$$
-that is, $(-1)^d(p*_dq)(-x)$ for the Schur–Szegő composition
-$p*_dq=\sum_k\binom dk^{-1}p_kq_kx^k$ of the coefficients $p_k,q_k$ of $x^k$.
 
-**Theorem (real-rootedness).**
+**Theorem (Marcus–Spielman–Srivastava).** [@MarcusSpielmanSrivastava2022] If $p,q$ are
+real-rooted of degree at most $d$, then $p\boxplus_dq$ is real-rooted, and so is $p\boxtimes_dq$
+when $q$ has only nonnegative roots. If the roots of $p$ lie in $[A,B]$ and those of $q$ in
+$[a,b]$, then the roots of $p\boxplus_dq$ lie in $[A+a,B+b]$ [@LeakeRyder2018x, Prop. 1.1].
 
-- If $p,q$ are real-rooted of degree at most $d$, then $p\boxplus_dq$ is real-rooted
-  [@MarcusSpielmanSrivastava2022].
-- If $p,q$ are real-rooted of degree at most $d$ and $q$ has only nonnegative roots, then
-  $p\boxtimes_dq$ is real-rooted [@MarcusSpielmanSrivastava2022].
-- The signed reciprocal $\hat p=x^dp(-1/x)$ satisfies
-  $\widehat{p*_dq}=\hat p\boxtimes_d\hat q$.
+**Theorem (Gribinski–Marcus).** [@GribinskiMarcus2022] If $p,q$ have degree $n$, positive
+leading coefficients and only nonnegative roots, then $p\boxplus_{m,n}q$ is zero or real-rooted
+with only nonnegative roots.
 
-**Theorem (root location).** Let $p,q$ have degree exactly $d$ and be real-rooted.
+**Theorem (mixed characteristic polynomials).** [@MarcusSpielmanSrivastava2015II] If the $A_i$
+are positive semidefinite, then $\mu[A]$ is real-rooted. If $\sum_iA_i=I$ and
+$\operatorname{tr}A_i\le\varepsilon$ for all $i$, then every root of $\mu[A]$ is at most
+$(1+\sqrt\varepsilon)^2$. The expected characteristic polynomial of a sum of independent random
+rank-one matrices $v_iv_i^{\mathsf T}$ is the mixed characteristic polynomial of the matrices
+$\mathbb E\,v_iv_i^{\mathsf T}$.
 
-- If the roots of $p$ lie in $[A,B]$ and the roots of $q$ lie in $[a,b]$, then the roots of
-  $p\boxplus_dq$ lie in $[A+a,B+b]$ (Walsh's theorem in the finite free setting; see
-  [@LeakeRyder2018x, Prop. 1.1]).
-- If $\alpha_i$ and $\rho_i$ are the $i$th smallest roots of $p$ and of $p\boxplus_dq$, and the
-  roots of $q$ lie in $[a,b]$, then $\alpha_i+a\le\rho_i\le\alpha_i+b$.
-- $p(x+s)\boxplus_dq(x+t)=(p\boxplus_dq)(x+s+t)$ for all real $s,t$ and $\deg p,\deg q\le d$.
-
-**Theorem (stability and interlacing).** Let $g\ne0$ be real-rooted with $\deg g\le D$.
-
-- If $\deg f\le m\le D$, then $f\boxplus_Dg=f\boxplus_m\tfrac{m!}{D!}g^{(D-m)}$.
-- Convolution by $g$ in a single variable $x_q$, namely
-  $p\mapsto\sum_{i\le D}\frac{(D-i)!}{D!}\,[x^{D-i}]g\;\partial_q^{\,i}p$, maps multivariate
-  real stable polynomials of degree at most $D$ in $x_q$ to real stable polynomials or zero.
-  In the degree box $\kappa$ with $\kappa_q=D$, its algebraic symbol is
-  $g(x_q+y_q)\prod_{i\ne q}(x_i+y_i)^{\kappa_i}$.
-- If $g$ is monic of degree $D$, $\deg f,\deg h\le D$, both have positive leading coefficient and
-  $h\ll f$, then $h\boxplus_Dg\ll f\boxplus_Dg$ in the [zero-aware sense](rr:about).
-
-**Theorem (rectangular convolution).** The polynomial $f\boxplus_{m,n}g$ has degree at most $n$.
-If $f,g$ have degree exactly $n$, positive leading coefficients and only nonnegative roots, then
-$f\boxplus_{m,n}g$ is zero or real-rooted with only nonnegative roots [@GribinskiMarcus2022].
-The same holds for the parameters $\alpha=\pm\tfrac12$, for real-rooted $f,g$ of degree at most
-$n$ with only nonnegative roots.
+**Theorem (interlacing families).** [@MarcusSpielmanSrivastava2015I] Let $f_1,\dots,f_k$ have
+degree $d$ and positive leading coefficients, and suppose some $h$ of degree $d-1$ satisfies
+$h\ll f_i$ for every $i$. Then some $f_i$ has largest root at most the largest root of
+$f_1+\dots+f_k$. Consequently, in a finite tree whose leaves carry such polynomials, the node
+polynomials are the sums over their children, and the children of each node have a common
+interlacer, some leaf has largest root at most the largest root of the polynomial at the root.
 
 ## Use
 
-The rectangular convolution gives a proof of the [Narayana transformation theorem](rr:narayana).
+An interlacing family turns a bound on the expected characteristic polynomial into a bound for
+one outcome. With the root bound for $\mu[A]$ this proves Weaver's conjecture and hence the
+Kadison–Singer problem. The root bound $2\sqrt{\Delta-1}$ of the
+[Heilmann–Lieb theorem](rr:heilmann-lieb) plays the same role for Ramanujan graphs. The
+rectangular convolution gives a proof of the [Narayana transformation theorem](rr:narayana).
 
 ## Proof
 
-The additive theorem follows from the Lieb–Sokal lemma: the convolution is a differential
-operator in $q$ applied to $p$. The parameters $\pm\tfrac12$ reduce to $\boxplus_{2n}$ and
-$\boxplus_{2n+1}$ through the lifts $p(x^2)$ and $x\,p(x^2)$. The rectangular case uses a
-multiaffine polarization of $y^mp(xy)$ in $n+(m+n)$ variables, which is stable when $p(xy)$ is;
-the reciprocal polarization of $g$, applied as a differential operator to the polarization of
-$f$, gives $y^m(f\boxplus_{m,n}g)(xy)$ after the variables are identified
-[@GribinskiMarcus2022].
+The additive theorem follows from the Lieb–Sokal lemma, since the convolution is a differential
+operator in $q$ applied to $p$. The signed reciprocal $x^dp(-1/x)$ turns the
+[Schur–Szegő composition](rr:hadamard-products) into $\boxtimes_d$. Real-rootedness of
+$\mu[A]$ follows from [real stability](rr:real-stability): $\det(xI+\sum_iz_iA_i)$ is real
+stable and each $1-\partial_{z_i}$ preserves real stability. The root bound follows the barrier
+argument of Marcus, Spielman and Srivastava, with the Helton–Vinnikov step replaced by an
+elementary Pick-function lemma.
 
 ## References
 
-- [@MarcusSpielmanSrivastava2022]
-- [@GribinskiMarcus2022]
-- [@LeakeRyder2018x, Prop. 1.1]
+[@MarcusSpielmanSrivastava2015I; @MarcusSpielmanSrivastava2015II;
+@MarcusSpielmanSrivastava2022]; [@GribinskiMarcus2022]; [@LeakeRyder2018x, Prop. 1.1].
 <!-- /realrooted-catalog-content -->
-
-This module is a catalog facade. The proofs live in
-`RealRooted.FiniteFreeAdditive`, `RealRooted.FiniteFreeAdditive.RootWindow`,
-`RealRooted.FiniteFreeAdditive.OrderedRoots`,
-`RealRooted.FiniteFreeAdditive.Stability`,
-`RealRooted.RectangularConvolution`,
-`RealRooted.NarayanaTransformation.Rectangular` and
-`RealRooted.FiniteFreeMultiplicative`.
 -/

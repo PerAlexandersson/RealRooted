@@ -1,7 +1,5 @@
 module
 
-import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
-import RealRooted.BorceaBranden.Applications.PoissonStability
 import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol
 import RealRooted.BorceaBranden.FiniteOrderWeylPreserver
 import RealRooted.BorceaBranden.FiniteSymbolClassification
@@ -9,8 +7,9 @@ import RealRooted.BorceaBranden.RealFiniteClassificationIff
 import RealRooted.BorceaBranden.Transcendental.ComplexClassification
 import RealRooted.BorceaBranden.Transcendental.PivotForward
 import RealRooted.BorceaBranden.Transcendental.RealClassification
-import RealRooted.BorceaBranden.Transcendental.RealTheoremFiveOne
-import RealRooted.BorceaBranden.UnivariateFiniteSymbol
+import RealRooted.BorceaBranden.Transcendental.UniformSzasz
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.Szasz
+import RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate
 
 /-!
 # Borcea–Brändén classification of stability preservers
@@ -21,32 +20,11 @@ kind = "landmark"
 section = "theorems"
 slug = "borcea-branden-classification"
 formalized = "2026-10-13"
-tags = []
 references = [
   "BorceaBranden2009I",
 ]
-authors = ["Borcea", "Brändén"]
-years = [2009]
-
-[[definitions]]
-name = "RealRooted.BorceaBranden.PreservesComplexStabilityOnDegreeBox"
-module = "RealRooted.BorceaBranden.FiniteSymbolClassification"
-label = "Stability preserver on a degree box"
-
-[[definitions]]
-name = "RealRooted.BorceaBranden.HasStableRankOneRepresentation"
-module = "RealRooted.BorceaBranden.FiniteSymbolClassification"
-label = "Rank-one operator with stable image"
-
-[[definitions]]
-name = "RealRooted.BorceaBranden.PreservesRealStabilityOnDegreeBox"
-module = "RealRooted.BorceaBranden.RealFiniteClassification"
-label = "Real stability preserver on a degree box"
-
-[[definitions]]
-name = "RealRooted.BorceaBranden.HasStableRankTwoRepresentation"
-module = "RealRooted.BorceaBranden.RealFiniteClassification"
-label = "Stable rank-at-most-two degree-box representation"
+authors = ["Borcea", "Brändén", "Szász"]
+years = [1943, 2009]
 
 [[definitions]]
 name = "RealRooted.BorceaBranden.PreservesComplexStability"
@@ -54,87 +32,37 @@ module = "RealRooted.BorceaBranden.Transcendental.ComplexClassification"
 label = "Complex stability preserver"
 
 [[definitions]]
-name = "RealRooted.BorceaBranden.HasGlobalStableRankOneRepresentation"
-module = "RealRooted.BorceaBranden.Transcendental.ComplexClassification"
-label = "Stable rank-at-most-one representation"
-
-[[definitions]]
 name = "RealRooted.BorceaBranden.PreservesRealStability"
 module = "RealRooted.BorceaBranden.Transcendental.RealOperatorBasics"
 label = "Real stability preserver"
 
-[[definitions]]
-name = "RealRooted.BorceaBranden.HasGlobalStableRankTwoRepresentation"
-module = "RealRooted.BorceaBranden.Transcendental.RealOperatorBasics"
-label = "Stable rank-at-most-two representation"
-
-[[definitions]]
-name = "RealRooted.BorceaBranden.IsComplexStableLimit"
-module = "RealRooted.BorceaBranden.Transcendental.TranscendentalSymbol"
-label = "Complex stable-limit class"
-
-[[definitions]]
-name = "RealRooted.BorceaBranden.IsRealStableLimit"
-module = "RealRooted.BorceaBranden.Transcendental.TranscendentalSymbol"
-label = "Real stable-limit class"
-
-[[definitions]]
-name = "RealRooted.BorceaBranden.transcendentalSymbolPolynomial"
-module = "RealRooted.BorceaBranden.Transcendental.TranscendentalSymbol"
-label = "Complex transcendental-symbol coefficient family"
-
-[[definitions]]
-name = "RealRooted.BorceaBranden.realTranscendentalSymbolPolynomial"
-module = "RealRooted.BorceaBranden.Transcendental.RealTheoremFiveOne"
-label = "Real transcendental-symbol coefficient family"
-
-[[definitions]]
-name = "RealRooted.BorceaBranden.negRightFamily"
-module = "RealRooted.BorceaBranden.Transcendental.RealTheoremFiveOne"
-label = "Right-sign reversal of a coefficient family"
-
-[[definitions]]
-name = "RealRooted.BorceaBranden.finiteAlgebraicSymbol"
-module = "RealRooted.BorceaBranden.UnivariateFiniteSymbol"
-label = "Algebraic symbol of an operator"
-
-[[definitions]]
-name = "RealRooted.BorceaBranden.PreservesRealRootedUpTo"
-module = "RealRooted.BorceaBranden.UnivariateFiniteSymbol"
-label = "Real-rootedness preserver up to degree d"
-
 [[theorems]]
 name = "RealRooted.BorceaBranden.finiteComplexSymbolClassification"
 module = "RealRooted.BorceaBranden.FiniteSymbolClassification"
-label = "Complex finite-degree classification (Theorem 1.1)"
+label = "On a degree box: stability preserver iff rank one with stable range or stable symbol"
 
 [[theorems]]
 name = "RealRooted.BorceaBranden.realStabilityOnDegreeBox_iff_rankTwo_or_stable_symbol"
 module = "RealRooted.BorceaBranden.RealFiniteClassificationIff"
-label = "Real finite-degree classification (Theorem 1.2)"
+label = "On a degree box: real stability preserver iff rank two or a real stable symbol"
 symcat = "borceaBrandenFiniteSymbol"
 
 [[theorems]]
 name = "RealRooted.BorceaBranden.complexStability_iff_rankOne_or_stableLimit_symbol"
 module = "RealRooted.BorceaBranden.Transcendental.ComplexClassification"
-label = "Complex classification (Theorem 1.3)"
+label = "Stability preserver iff rank one or the symbol is a limit of stable polynomials"
 
 [[theorems]]
 name = "RealRooted.BorceaBranden.realStability_iff_rankTwo_or_stableLimit_signedSymbol"
 module = "RealRooted.BorceaBranden.Transcendental.RealClassification"
-label = "Real classification (Theorem 1.4)"
+label = "Borcea–Brändén: real stability preserver iff rank two or a real stable-limit symbol"
 headline = true
 symcat = "borceaBrandenTranscendentalSymbol"
 
 [[theorems]]
 name = "RealRooted.BorceaBranden.isComplexStableLimit_iff_fallingFactorial_glue_stable"
 module = "RealRooted.BorceaBranden.Transcendental.PivotForward"
-label = "Complex stable-limit criterion (Theorem 5.1)"
-
-[[theorems]]
-name = "RealRooted.BorceaBranden.isRealStableLimit_iff_forall_realGlue_stableOrZero"
-module = "RealRooted.BorceaBranden.Transcendental.RealTheoremFiveOne"
-label = "Real stable-limit criterion (Theorem 5.1)"
+label = "A series is a limit of stable polynomials iff all its weighted truncations are stable"
 
 [[theorems]]
 name = "RealRooted.BorceaBranden.PreservesRealRootedUpTo.of_finiteSymbol"
@@ -142,24 +70,24 @@ module = "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol"
 label = "A real stable symbol T((x + y)^d) gives a real-rootedness preserver up to degree d"
 
 [[theorems]]
-name = "RealRooted.MvUpperHalfPlaneStable.coordinateDiagonalOperator"
-module = "RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier"
-label = "Coordinate PF multipliers preserve multivariate stability"
-
-[[theorems]]
 name = "RealRooted.MvUpperHalfPlaneStable.finiteOrderWeylOperator"
 module = "RealRooted.BorceaBranden.FiniteOrderWeylPreserver"
-label = "A stable signed Weyl symbol gives a stability preserver of any degree"
+label = "Σ Qⱼ ∂ʲ preserves stability when Σ Qⱼ(z)(−w)ʲ is stable"
 
 [[theorems]]
-name = "RealRooted.Poisson.star_assoc"
-module = "RealRooted.BorceaBranden.Applications.PoissonStar"
-label = "The Poisson star product is associative"
+name = "Complex.sum_norm_sq_le_of_im_nonpos"
+module = "RealRooted.Mathlib.Analysis.Complex.Polynomial.Szasz"
+label = "Szász: Σ|ξⱼ|² ≤ 3|Σ ξⱼ|² + 2|Σ ξᵢξⱼ| when every Im ξⱼ ≤ 0"
 
 [[theorems]]
-name = "RealRooted.Poisson.spectatorAction_stable"
-module = "RealRooted.BorceaBranden.Applications.PoissonStability"
-label = "Poisson left multiplication preserves real stability"
+name = "MvPolynomial.norm_eval_le_of_forall_jensenOp_stable"
+module = "RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate"
+label = "Szász growth bound for stable polynomials on polydiscs"
+
+[[theorems]]
+name = "RealRooted.BorceaBranden.exists_norm_eval_le_exp_sq"
+module = "RealRooted.BorceaBranden.Transcendental.UniformSzasz"
+label = "Limits of stable polynomials grow at most like exp(Cr²)"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -167,70 +95,79 @@ label = "Poisson left multiplication preserves real stability"
 
 A linear operator on polynomials in finitely many variables preserves stability if and only if
 it has rank at most one (two, in the real case) with a stable range, or its symbol is stable or
-a limit of stable polynomials. Stable symbols give concrete preservers: univariate
-real-rootedness preservers, coordinate multipliers and differential operators.
+a limit of stable polynomials. This solves the multivariate form of the problem that Pólya and
+Schur solved for diagonal operators.
 
 ## Results
 
-A polynomial in $z=(z_i)_{i\in\sigma}$, with $\sigma$ finite, is *stable* if it has no zero
-with every $z_i$ in the open upper half-plane; *real stable* means stable with real
-coefficients. An operator *preserves* (real) stability if it maps (real) stable polynomials to
-(real) stable polynomials or to zero. For a linear operator $T$, the *algebraic symbol* on the
-degree box $\kappa\in\mathbb N^\sigma$ is $T\bigl[\prod_i(z_i+w_i)^{\kappa_i}\bigr]$, and the
-*transcendental symbol* is the series
+A polynomial in $z=(z_i)_{i\in\sigma}$, $\sigma$ finite, is *stable* if it has no zero with
+every $z_i$ in the open upper half-plane, and *real stable* if moreover its coefficients are
+real. An operator *preserves* (real) stability if it maps (real) stable polynomials to (real)
+stable polynomials or to zero. The *algebraic symbol* of $T$ on the degree box
+$\kappa\in\mathbb N^\sigma$ is $T\bigl[\prod_i(z_i+w_i)^{\kappa_i}\bigr]$, and the
+*transcendental symbol* is
 $$
 T\bigl[e^{-z\cdot w}\bigr]=\sum_\alpha(-1)^{|\alpha|}\,T(z^\alpha)\,\frac{w^\alpha}{\alpha!},
 $$
-with $T$ acting on $z$. Theorem numbers refer to [@BorceaBranden2009I].
+with $T$ acting on $z$.
 
-**Theorem (Borcea–Brändén).** Let $T$ be a linear operator on polynomials in $z$.
+**Theorem (Borcea–Brändén).** [@BorceaBranden2009I, Thms. 1.1–1.4] Let $T$ be a linear
+operator on polynomials in $z$.
 
-1. *(Theorem 1.1)* A complex-linear $T$ on the polynomials of degree at most $\kappa_i$ in each
-   $z_i$ preserves stability if and only if $Tf=\varphi(f)P$ for a linear functional $\varphi$ and
-   a stable $P$, or its algebraic symbol is stable.
-2. *(Theorem 1.2)* A real-linear $T$ on this degree box preserves real stability if and only if
-   $Tf=\varphi(f)P+\psi(f)Q$, where every real linear combination of $P$ and $Q$ is real stable
-   or zero, or one of $T\bigl[\prod_i(z_i+w_i)^{\kappa_i}\bigr]$ and
-   $T\bigl[\prod_i(z_i-w_i)^{\kappa_i}\bigr]$ is real stable.
-3. *(Theorem 1.3)* A complex-linear $T$ on all polynomials preserves stability if and only if
-   it has the rank-one form above, or its transcendental symbol is a locally uniform limit of
-   stable polynomials.
-4. *(Theorem 1.4)* A real-linear $T$ on all polynomials preserves real stability if and only if
-   it has the rank-two form above, or its transcendental symbol or the same series with $w$
-   replaced by $-w$ is a locally uniform limit of real stable polynomials.
+1. A complex-linear $T$ on the polynomials of degree at most $\kappa_i$ in each $z_i$
+   preserves stability if and only if $Tf=\varphi(f)P$ for a linear functional $\varphi$ and a
+   stable $P$, or its algebraic symbol is stable.
+2. A real-linear $T$ on this degree box preserves real stability if and only if
+   $Tf=\varphi(f)P+\psi(f)Q$, where every real combination of $P$ and $Q$ is real stable or
+   zero, or one of $T\bigl[\prod_i(z_i\pm w_i)^{\kappa_i}\bigr]$ is real stable.
+3. A complex-linear $T$ on all polynomials preserves stability if and only if it has the
+   rank-one form, or its transcendental symbol is a locally uniform limit of stable
+   polynomials.
+4. A real-linear $T$ on all polynomials preserves real stability if and only if it has the
+   rank-two form, or its transcendental symbol or the same series with $w$ replaced by $-w$ is
+   a locally uniform limit of real stable polynomials.
 
-**Theorem 5.1.** A series $\sum_\alpha P_\alpha(z)\,w^\alpha$ is a locally uniform limit of
-stable polynomials if and only if every truncation
+**Theorem (stable limits).** [@BorceaBranden2009I, Thm. 5.1] A series
+$\sum_\alpha P_\alpha(z)\,w^\alpha$ is a locally uniform limit of stable polynomials if and
+only if every truncation
 $\sum_{\alpha\le\beta}\prod_i\binom{\beta_i}{\alpha_i}\alpha_i!\,P_\alpha(z)\,w^\alpha$ is
-stable or zero. The same holds with real stable polynomials.
+stable or zero.
 
-**Corollaries.**
+**Corollary (preservers).** If $T$ is a real-linear operator on $\mathbb R[x]$ and
+$T\bigl[(x+y)^d\bigr]$ is real stable, then $T$ maps real-rooted polynomials of degree at most
+$d$ to real-rooted polynomials or zero. If $\sum_jQ_j(z)(-w)^j$ is stable, then
+$\sum_jQ_j(z)\,\partial_q^j$ preserves stability in every degree.
 
-- If $T$ is a real-linear operator on $\mathbb R[x]$ and $T\bigl[(x+y)^d\bigr]$ is real stable,
-  then $T$ maps every real-rooted polynomial of degree at most $d$ to zero or to a real-rooted
-  polynomial.
-- If the Jensen polynomial $\sum_{k\le d}\binom dk\gamma(k)t^k$ has nonnegative coefficients
-  and only real nonpositive roots, the multiplier
-  $z_q^k\mapsto\gamma(k)z_q^k$ in one variable preserves stability of polynomials of degree at
-  most $d$ in $z_q$ and of any degree in the other variables.
-- If $Q_0,\dotsc,Q_m$ are polynomials and $\sum_jQ_j(z)(-w)^j$ is stable, then
-  $\sum_jQ_j(z)\,\partial_q^j$ preserves stability in every degree.
-- The Poisson star product $f\star g=\sum_{a,b}f_{a,b}\,z^av^b\,(1+\partial_v)^{a+b}g$ is
-  associative, and if $f(z,v)$ is real stable with nonnegative coefficients, then $g\mapsto
-  f\star g$ preserves real stability.
+**Theorem (Szász).** If $\xi_1,\dots,\xi_k\in\mathbb C$ have $\operatorname{Im}\xi_j\le0$,
+then $\sum_j|\xi_j|^2\le3\bigl|\sum_j\xi_j\bigr|^2+2\bigl|\sum_{i<j}\xi_i\xi_j\bigr|$. Hence
+a stable $f$ with $f(0)=1$ satisfies $|f(z)|\le Be^{Cr^2}$ on the polydisc $|z_i|\le r$, with
+$B,C$ depending only on the number of variables and the coefficients of degree at most $2$.
+The same bound holds uniformly for stable polynomials with coefficients $\kappa_m(\alpha)a(\alpha)$,
+where $\kappa_m(\alpha)\to1$ for every $\alpha$ [@BorceaBranden2009I, Thms. 5.5 and 5.6].
+
+## Use
+
+The univariate corollary is the standard way to show that an operator preserves
+real-rootedness: compute one bivariate polynomial and check that it is real stable. It gives
+the [Pólya–Schur theorem](rr:multiplier-sequences), the
+[Hermite–Kakeya–Obreschkoff theorem](rr:hermite-kakeya-obreschkoff) in several variables and
+the [derivative products](rr:derivative-products).
 
 ## Proof
 
-The coordinate multipliers come from the finite-degree theorem in one variable, and the
-differential operators from the falling-factorial multiplier together with the finite-degree
-theorem on each degree box. Theorem 5.1 follows by induction on the number of variables in the
-support and on its minimal total degree, using specialization and partial differentiation. This
-replaces a step in the proof of [@BorceaBranden2009I, Theorem 5.6], which assumes that partial
-differentiation lowers the largest degree among the minimal exponents of the support by one;
-that fails for a general support.
+Szász's bound controls the growth of stable polynomials, which is what allows passing from
+symbols on degree boxes to the transcendental symbol. The uniform growth bound is proved by
+induction on the number of variables in the support and on its minimal total degree, writing
+$f_m=f_m|_{z_i=0}+z_i\int_0^1\partial_if_m(z_it,\cdot)\,dt$. This replaces a step in
+[@BorceaBranden2009I, Thm. 5.6], which assumes that partial differentiation lowers the largest
+degree among the minimal exponents of the support by one; that fails for a general support.
 
 ## References
 
-- [@BorceaBranden2009I]
+[@BorceaBranden2009I]; O. Szász, “On sequences of polynomials and the distribution of their
+zeros,” *Bull. Amer. Math. Soc.* 49 (1943), 377–383. See also the
+[finite-symbol](sf:borceaBrandenFiniteSymbol) and
+[transcendental-symbol](sf:borceaBrandenTranscendentalSymbol) classifications on
+symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 -/

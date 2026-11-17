@@ -1,14 +1,16 @@
 module
 
-public import RealRooted.CombinatorialExamples.DerangementStatistic
-public import RealRooted.SymmetricDecomposition
-public import RealRooted.SymmetricDecomposition.Definitions
-public import RealRooted.SymmetricDecomposition.DerangementTransform
-public import RealRooted.SymmetricDecomposition.FPolynomial
-public import RealRooted.SymmetricDecomposition.Theorem26
+import RealRooted.CombinatorialExamples.DerangementStatistic
+import RealRooted.SymmetricDecomposition.Definitions
+import RealRooted.SymmetricDecomposition.DerangementTransform
+import RealRooted.SymmetricDecomposition.EulerFPolynomial
+import RealRooted.SymmetricDecomposition.FPolynomial
+import RealRooted.SymmetricDecomposition.FPolynomialRecurrence
+import RealRooted.SymmetricDecomposition.FPolynomialSequence
+import RealRooted.SymmetricDecomposition.Theorem26
 
 /-!
-# Interlacing and real roots under symmetric decompositions
+# Symmetric decompositions and the f-transform (Brändén–Solus)
 
 <!-- realrooted-catalog
 version = 1
@@ -16,7 +18,6 @@ kind = "landmark"
 section = "theorems"
 slug = "branden-solus"
 formalized = "2026-10-02"
-tags = []
 references = [
   "BrandenSolus2019",
 ]
@@ -28,16 +29,21 @@ name = "RealRooted.IsIdDecomposition"
 module = "RealRooted.SymmetricDecomposition.Definitions"
 label = "Symmetric I_d-decomposition"
 
-[[theorems]]
-name = "RealRooted.BrandenSolus.strictInterl_iff_of_isIdDecomposition"
-module = "RealRooted.SymmetricDecomposition.Theorem26"
-label = "Five interlacing conditions on p = a + xb are equivalent"
-headline = true
+[[definitions]]
+name = "RealRooted.fPolynomial"
+module = "RealRooted.SymmetricDecomposition.FPolynomial"
+label = "The f-transform f_d(h) = Σ h_k x^k (x + 1)^(d − k)"
 
 [[definitions]]
 name = "RealRooted.DerangementTransform.transform"
 module = "RealRooted.SymmetricDecomposition.DerangementTransform"
 label = "Derangement transform x^j ↦ d_j"
+
+[[theorems]]
+name = "RealRooted.BrandenSolus.strictInterl_iff_of_isIdDecomposition"
+module = "RealRooted.SymmetricDecomposition.Theorem26"
+label = "Brändén–Solus: five interlacing conditions on p = a + xb are equivalent"
+headline = true
 
 [[theorems]]
 name = "RealRooted.DerangementTransform.transform_magicExpansion_isPF"
@@ -50,74 +56,96 @@ module = "RealRooted.SymmetricDecomposition.DerangementTransform"
 label = "For d ≥ 2 and a positive coordinate, the image lies between A_d and d_d"
 
 [[theorems]]
-name = "RealRooted.DerangementStatistic.derangementExcGenPoly_eq_polynomial"
-module = "RealRooted.CombinatorialExamples.DerangementStatistic"
-label = "Derangements counted by excedances give the derangement polynomials d_n"
-
-[[theorems]]
 objects = ["Derangement polynomials"]
 name = "RealRooted.DerangementStatistic.derangementExcGenPoly_isRealRooted"
 module = "RealRooted.CombinatorialExamples.DerangementStatistic"
 label = "The excedance polynomial of derangements is real-rooted for n ≥ 2"
+
+[[theorems]]
+name = "RealRooted.splits_fPolynomial_iff"
+module = "RealRooted.SymmetricDecomposition.EulerFPolynomial"
+label = "For deg p ≤ d, the f-transform f_d(p) is real-rooted exactly when p is"
+
+[[theorems]]
+name = "RealRooted.fPolynomial_derivative"
+module = "RealRooted.SymmetricDecomposition.FPolynomialRecurrence"
+label = "The derivative rule (x + 1)² f_d(p)′ = d(x + 1) f_d(p) + f_d(p′)"
+
+[[theorems]]
+name = "RealRooted.eq_fPolynomial_of_derivRec"
+module = "RealRooted.SymmetricDecomposition.FPolynomialRecurrence"
+label = "The f-transform turns a derivative recurrence into a derivative recurrence"
+
+[[theorems]]
+name = "RealRooted.StrictInterl.fPolynomial_natDegree_of_roots_lt_one"
+module = "RealRooted.SymmetricDecomposition.FPolynomial"
+label = "The f-transform preserves interlacing of polynomials with roots below one"
+
+[[theorems]]
+name = "RealRooted.StrictInterl.fPolynomial_sequence"
+module = "RealRooted.SymmetricDecomposition.FPolynomialSequence"
+label = "Half-growth sequences transfer consecutive interlacing"
 -->
 
 <!-- realrooted-catalog-content -->
-# Interlacing and real roots under symmetric decompositions
+# Symmetric decompositions and the f-transform (Brändén–Solus)
 
-For a polynomial with a symmetric $I_d$-decomposition $p=a+xb$, five interlacing conditions on
-$a$, $b$, $p$ are equivalent. The derangement transform of nonnegative combinations of
-$x^k(1+x)^{d-k}$ is real-rooted and lies between two Eulerian-type polynomials.
+Every polynomial of degree at most $d$ splits uniquely into two palindromic pieces. P. Brändén
+and L. Solus showed that interlacing of these pieces is equivalent to interlacing of $p$ with
+its reversal and to several other conditions, and they applied this to $h^*$-polynomials and to
+the derangement transform.
 
 ## Results
 
-Put $I_d(p)=x^dp(1/x)$ and $R_d(p)(x)=(-1)^dp(-1-x)$. An *$I_d$-decomposition* of $p$ is a pair
-$(a,b)$ with $p=a+xb$, $\deg a\le d$, $\deg b\le d-1$, $I_d(a)=a$ and $I_{d-1}(b)=b$.
+Put $I_d(p)=x^dp(1/x)$. An *$I_d$-decomposition* of $p$ is a pair $(a,b)$ with $p=a+xb$,
+$\deg a\le d$, $\deg b\le d-1$, $I_d(a)=a$ and $I_{d-1}(b)=b$. For $\deg h\le d$ the
+*f-transform* is
+$$
+f_d(h)=\sum_{k=0}^dh_k\,x^k(x+1)^{d-k},
+$$
+the substitution $x\mapsto x/(x+1)$ homogenized to degree $d$. Let $R_d(p)(x)=(-1)^dp(-1-x)$.
 
-**Theorem (equivalences).** Let $\deg p\le d$, and let $(a,b)$ be an $I_d$-decomposition of $p$
-with $a,b\ne0$ and nonnegative coefficients. Put $f=\sum_kp_k\,x^k(1+x)^{d-k}$. Then the
-following are equivalent:
+**Theorem (Brändén–Solus).** [@BrandenSolus2019, Thm. 2.6] Let $\deg p\le d$, and let $(a,b)$
+be an $I_d$-decomposition of $p$ with $a,b\ne0$ and nonnegative coefficients. Then the following
+are equivalent:
 $$
-b\ll a,\qquad a\ll p,\qquad b\ll p,\qquad I_d(p)\ll p,\qquad R_d(f)\ll f .
+b\ll a,\qquad a\ll p,\qquad b\ll p,\qquad I_d(p)\ll p,\qquad R_d(f_d(p))\ll f_d(p).
 $$
 
-**Derangement polynomials.** Let $d_n(x)=\sum_\sigma x^{\operatorname{exc}\sigma}$, summed over the
-derangements $\sigma$ of $n$ letters, where $\operatorname{exc}\sigma$ counts the $i$ with
-$i<\sigma(i)$. For $n\ge2$, $d_n$ is nonzero and real-rooted.
+**Theorem (derangement transform).** [@BrandenSolus2019, Cor. 3.7] Let $d_n$ be the
+derangement polynomial, counting derangements of $n$ letters by excedances, and $D$ the linear
+map $x^j\mapsto d_j$. If $c_0,\dots,c_d\ge0$, then $D\bigl(\sum_kc_kx^k(1+x)^{d-k}\bigr)$ is zero
+or real-rooted with nonpositive roots. If $d\ge2$ and some $c_k>0$, it lies between
+$D\bigl((1+x)^d\bigr)$ and $d_d$ in the interlacing order. In particular $d_n$ is real-rooted for
+$n\ge2$.
 
-**Theorem (derangement transform).** Let $D$ be the linear map with $D(x^j)=d_j$, let $d\ge0$ and
-let $c_0,\dots,c_d\ge0$. Then $D\bigl(\sum_kc_kx^k(1+x)^{d-k}\bigr)$ has nonnegative coefficients
-and is zero or real-rooted with nonpositive roots. If $d\ge2$ and some $c_k>0$, it is nonzero
-and
-$$
-D\bigl((1+x)^d\bigr)\ \ll\ D\Bigl(\sum_kc_kx^k(1+x)^{d-k}\Bigr)\ \ll\ d_d
-$$
-[@BrandenSolus2019, Cor. 3.7].
+**Theorem (f-transform).** Let $\deg p\le d$.
+
+- $f_d(p)$ is real-rooted if and only if $p$ is real-rooted.
+- $(x+1)^2f_d(p)'=d\,(x+1)f_d(p)+f_d(p')$. Hence if $Q_{n+1}=a_nQ_n'+b_nQ_n$ with
+  $\deg a_n\le2$, $\deg b_n\le1$ and $\deg Q_n\le n$, the rows $f_n(Q_n)$ satisfy an explicit
+  recurrence of the same kind.
+- If $f\ll g$ and all their roots are below $1$, then $f_{\deg f}(f)\ll f_{\deg g}(g)$.
+- If $Q_j$ are nonzero real-rooted with nonnegative coefficients,
+  $\deg Q_j=\lfloor(j+1)/2\rfloor$ and $Q_j\ll Q_{j+1}$, then
+  $f_n(Q_n)\ll f_{n+1}(Q_{n+1})$ for $n\ge1$.
 
 ## Use
 
-The equivalences reduce interlacing of $p$ with its symmetric pieces to interlacing of the
-simpler pair $b\ll a$. See also the
+The equivalences reduce interlacing of $p$ with its reversal to the simpler pair $b\ll a$. The
+f-transform carries the peak polynomials, which have the half-growth degree pattern, to the
+alternating-runs polynomials, so their real-rootedness and interlacing pass over. See also the
 [symmetric-decomposition overview on symmetricfunctions.com](sf:symmetricIDecomposition).
 
 ## Proof
 
-The derangement transform is the Chow-derangement transform of the Pascal matrix, whose
-resolving rows are the polynomials $x^k(1+x)^{d-k}$; the theorem is a case of the Brändén–Vecchi
-Chow-resolution theorem.
+The derangement transform is the Chow derangement transform of the Pascal matrix, so the
+theorem is a case of the [Brändén–Vecchi theorem](rr:chow-polynomials). The f-transform maps a
+root $r\ne1$ of $p$ to $r/(1-r)$, which gives the root and interlacing statements; the derivative
+rule is a direct computation.
 
 ## References
 
-- [@BrandenSolus2019]
+[@BrandenSolus2019].
 <!-- /realrooted-catalog-content -->
-
-Human statement:
-sf:symmetricIDecomposition
-
-Original publication: P. Branden and L. Solus, "Symmetric decompositions and
-real-rootedness", International Mathematics Research Notices 2021 (2019),
-7764--7798.
-
-This module exposes the completed nondegenerate `StrictInterl` form of the
-Branden--Solus symmetric-decomposition theorem.  The decomposition API and
-boundary-case proof remain in `RealRooted.SymmetricDecomposition`.
 -/

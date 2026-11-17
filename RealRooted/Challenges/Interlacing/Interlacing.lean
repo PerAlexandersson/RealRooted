@@ -160,7 +160,7 @@ of the subdivision is nonzero, then this h-polynomial is real-rooted.
 
 By the [Hermite–Kakeya–Obreschkoff theorem](rr:hermite-kakeya-obreschkoff), $f\ll g$ or
 $g\ll f$ holds exactly when every real linear combination of $f$ and $g$ is real-rooted.
-Interlacing sequences come from [three-term recurrences](rr:favard), from
+Interlacing sequences come from [three-term recurrences](rr:orthogonal-polynomials), from
 [principal submatrices](rr:cauchy-interlacing) and from the
 [Liu–Wang and Ma–Wang criteria](rr:ma-wang-liu-wang). Interlacing is preserved by
 [differential operators with real-rooted symbol](rr:hermite-poulain), it can be tested with
