@@ -120,7 +120,7 @@ theorem eq_zero_pair_or_stablePencil_applyAsDifferentialOperator
   have htStable : MvUpperHalfPlaneStable ((complexify t).toMvPolynomial (0 : Fin 2)) := by
     intro z hz
     rw [MvPolynomial.eval_toMvPolynomial]
-    exact RealRooted.Polynomial.Splits.isUpperHalfPlaneStable_complexify ht ht0 (z 0) (hz 0)
+    exact RealRooted.isUpperHalfPlaneStable_complexify_of_splits ht ht0 (z 0) (hz 0)
   have hout := MvUpperHalfPlaneStable.finiteOrderWeylOperator 0 m a hW htStable
   rw [show a = _ from rfl, weylOperator_eq_bivariatePencil p q t m hp hq] at hout
   rcases hout.eq_zero_pair_or_stablePencil with hzero | hstable

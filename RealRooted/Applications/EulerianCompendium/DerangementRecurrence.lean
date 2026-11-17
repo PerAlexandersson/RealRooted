@@ -271,7 +271,7 @@ theorem T_D (n N : ℕ) : T n N (D n) = Z n N := by
     refine ⟨hπ, fun x hx => hu x ?_⟩
     rw [← sort_apply_eq_iff, hπ]; exact hx
 
-lemma binom_aux (m N d : ℕ) :
+private lemma weighted_choose_add_eq_mul_choose (m N d : ℕ) :
     ((d : ℝ) + 1) * ((N + m + 1 - d).choose (m + 2) : ℝ)
       + ((m : ℝ) + 1 - d) * ((N + m - d).choose (m + 2) : ℝ)
       = N * ((N + m - d).choose (m + 1) : ℝ) := by
@@ -298,6 +298,14 @@ lemma binom_aux (m N d : ℕ) :
   · rw [show N + m + 1 - d = 0 by lia, show N + m - d = 0 by lia]
     simp
 
+/-- Deprecated compatibility wrapper for the former helper name. -/
+@[deprecated "This implementation helper is deprecated." (since := "2026-11-17")]
+lemma binom_aux (m N d : ℕ) :
+    ((d : ℝ) + 1) * ((N + m + 1 - d).choose (m + 2) : ℝ)
+      + ((m : ℝ) + 1 - d) * ((N + m - d).choose (m + 2) : ℝ)
+      = N * ((N + m - d).choose (m + 1) : ℝ) :=
+  weighted_choose_add_eq_mul_choose m N d
+
 theorem T_L (n N : ℕ) (hn : 2 ≤ n) (Q : ℝ[X]) :
     T n N ((1 + ((n : ℝ[X]) - 1) * X) * Q + X * (1 - X) * derivative Q)
       = N * T (n - 1) N Q := by
@@ -320,7 +328,7 @@ theorem T_L (n N : ℕ) (hn : 2 ≤ n) (Q : ℝ[X]) :
           map_natCast, map_one]
         push_cast; ring
     rw [hpoly, map_add, T_monomial, T_monomial, T_monomial]
-    have := binom_aux m N d
+    have := weighted_choose_add_eq_mul_choose m N d
     rw [show N + (m + 2) - 1 - d = N + m + 1 - d by lia,
       show N + (m + 2) - 1 - (d + 1) = N + m - d by lia,
       show N + (m + 2 - 1) - 1 - d = N + m - d by lia, show m + 2 - 1 = m + 1 by lia]

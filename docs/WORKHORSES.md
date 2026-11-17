@@ -550,7 +550,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 15 | `RealRooted.IsRealRootedIn.mem_of_mem_roots` | `RealRooted.RootLocation.Basic` | Every multiset root of a polynomial rooted in `S` lies in `S`. |
 | 14 | `RealRooted.MapsRealRootedIn.mono_left` | `RealRooted.RootLocation.Basic` | Shrinking the source set preserves `MapsRealRootedIn`. |
 | 14 | `RealRooted.hasSimpleRoots_of_natDegree_le_one` | `RealRooted.SimpleRoots` | Every nonzero polynomial of degree at most one has only simple roots. |
-| 11 | `RealRooted.Polynomial.Splits.isUpperHalfPlaneStable_complexify` | `RealRooted.HermiteBiehler.Basic` | A nonzero split real polynomial has stable complexification. |
+| 11 | `RealRooted.isUpperHalfPlaneStable_complexify_of_splits` | `RealRooted.HermiteBiehler.Basic` | A nonzero split real polynomial has stable complexification. |
 | 11 | `RealRooted.shiftedJacobiMonic_satisfiesFavardRecurrence` | `RealRooted.Jacobi.Favard` | The monic shifted Jacobi family satisfies the Favard recurrence with its explicit diagonal and subdiagonal coefficients. |
 | 10 | `Matrix.IsTotallyNonnegRect.toSquare` | `RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg` | Rectangular total nonnegativity specializes to the square predicate. |
 | 10 | `MvPolynomial.IsRayleigh.specializeAtList` | `RealRooted.Multiaffine.Rayleigh` | Iterated real scalar specialization preserves the Rayleigh property. |

@@ -42,9 +42,9 @@ theorem splits_finiteFreeAdditiveConvolution
     rw [complexify, Polynomial.natDegree_map_eq_of_injective Complex.ofReal_injective]
     exact hqdeg
   have hpstable : IsUpperHalfPlaneStable (complexify p) :=
-    Polynomial.Splits.isUpperHalfPlaneStable_complexify hp hp0
+    isUpperHalfPlaneStable_complexify_of_splits hp hp0
   have hqstable : IsUpperHalfPlaneStable (complexify q) :=
-    Polynomial.Splits.isUpperHalfPlaneStable_complexify hq hq0
+    isUpperHalfPlaneStable_complexify_of_splits hq hq0
   have hFstable : MvUpperHalfPlaneStable
       (signedMultiaffineReciprocal (polarization d (complexify p))) :=
     MvUpperHalfPlaneStable.signedMultiaffineReciprocal

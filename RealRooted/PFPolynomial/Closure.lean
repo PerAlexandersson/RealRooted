@@ -176,7 +176,7 @@ theorem interl_of_pf_coeff_tendsto_of_natDegree_le
         simp [hermiteBiehlerPolynomial, hqzero']
       · right
         simpa [hermiteBiehlerPolynomial] using
-          Polynomial.Splits.isUpperHalfPlaneStable_complexify
+          isUpperHalfPlaneStable_complexify_of_splits
             ((hq k).ne_zero_and_splits hqzero').2 hqzero'
     · dsimp only [H]
       rw [hqzero]

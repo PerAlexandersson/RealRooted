@@ -444,7 +444,7 @@ def hybrid {n : ℕ} (rows cols : Fin n → ℕ) (M : Matrix ℕ ℕ ℝ) (a : �
 def extendChoices (k : ℕ) (choices : Fin k → Bool) (val : Bool) (i : Fin (k + 1)) : Bool :=
   if h : (i : ℕ) < k then choices ⟨i, h⟩ else val
 
-lemma hybrid_nonneg_aux {n : ℕ} (rows cols : Fin n → ℕ) (hrows : StrictMono rows)
+private lemma det_hybrid_nonneg {n : ℕ} (rows cols : Fin n → ℕ) (hrows : StrictMono rows)
     (hcols : StrictMono cols) (M : Matrix ℕ ℕ ℝ) (hM : M.IsTotallyNonneg) (a : ℝ)
     (ha : 0 ≤ a) (d : ℕ) (k : ℕ) (hk : k ≤ n) (hd : n - k = d)
     (choices : Fin k → Bool) :
@@ -525,6 +525,15 @@ lemma hybrid_nonneg_aux {n : ℕ} (rows cols : Fin n → ℕ) (hrows : StrictMon
         updateRow_eq_self C ⟨k, hk_lt⟩
       simpa [hB_eq, hC_eq] using add_nonneg (mul_nonneg ha hB_nonneg) hC_nonneg
 
+/-- Deprecated compatibility wrapper for the former helper name. -/
+@[deprecated "This implementation helper is deprecated." (since := "2026-11-17")]
+lemma hybrid_nonneg_aux {n : ℕ} (rows cols : Fin n → ℕ) (hrows : StrictMono rows)
+    (hcols : StrictMono cols) (M : Matrix ℕ ℕ ℝ) (hM : M.IsTotallyNonneg) (a : ℝ)
+    (ha : 0 ≤ a) (d : ℕ) (k : ℕ) (hk : k ≤ n) (hd : n - k = d)
+    (choices : Fin k → Bool) :
+    0 ≤ (hybrid rows cols M a k choices).det :=
+  det_hybrid_nonneg rows cols hrows hcols M hM a ha d k hk hd choices
+
 lemma toeplitz_linear_mul (r : ℝ) (q : ℝ[X]) :
     toeplitz (fun n ↦ ((X - C r) * q).coeff n) =
     .of fun i j ↦ (-r) * toeplitz q.coeff i j +
@@ -545,7 +554,7 @@ lemma IsPolyaFreqSeq.linear_mul {r : ℝ} (hr : r ≤ 0) {q : ℝ[X]}
     ext i j
     simp [hybrid, mShift, Matrix.of_apply]
   rw [h_eq]
-  exact hybrid_nonneg_aux rows cols hrows hcols (toeplitz q.coeff)
+  exact det_hybrid_nonneg rows cols hrows hcols (toeplitz q.coeff)
     hq (-r) (neg_nonneg.mpr hr) n 0 (Nat.zero_le n) (Nat.sub_zero n) Fin.elim0
 
 lemma IsPolyaFreqSeq.prod_X_sub_C (s : Multiset ℝ) (hs : ∀ r ∈ s, r ≤ 0) :

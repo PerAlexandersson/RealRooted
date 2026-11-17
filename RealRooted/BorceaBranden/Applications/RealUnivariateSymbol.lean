@@ -179,7 +179,7 @@ theorem finiteSymbolTheorem :
   have hfstable : MvUpperHalfPlaneStable f.1 := by
     simpa [f, fmv] using
       (isUpperHalfPlaneStable_iff_mvUpperHalfPlaneStable (complexify p)).mp
-        (Polynomial.Splits.isUpperHalfPlaneStable_complexify hp hp0)
+        (isUpperHalfPlaneStable_complexify_of_splits hp hp0)
   have hAlgSymbol : MvUpperHalfPlaneStable
       (MvPolynomial.algebraicSymbol (fun _ : Fin 1 => d)
         (complexUnivariateDegreeBoxOperator d (complexificationLinearMap T))) := by
