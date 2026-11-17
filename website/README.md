@@ -17,10 +17,10 @@ tags = ["coauthored-paper"]
 references = ["Example1952", {key = "Other1953", at = "Thm. 2"}]
 
 [[definitions]]
-name = "RealRooted.Challenges.Example.family"
+name = "RealRooted.Example.family"
 
 [[theorems]]
-name = "RealRooted.Challenges.Example.realRooted"
+name = "RealRooted.Example.realRooted"
 symcat = "exampleRealRooted"
 tags = ["realrooted-original"]
 -->
@@ -36,6 +36,9 @@ Short human-readable account of the exact checked results.
 <!-- /realrooted-catalog-content -->
 -/
 ```
+
+Select definitions and checked theorems from their subject modules, such as
+`RealRooted.Example`; challenge modules provide catalog metadata and prose.
 
 Page-level `references` entries are bibliography keys exported by
 `symmetricfunctions.com`; a record may add an `at` locator. In prose, `[@Example1952]`,

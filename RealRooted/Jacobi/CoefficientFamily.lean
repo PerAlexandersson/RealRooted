@@ -2,6 +2,7 @@ module
 
 public import RealRooted.NarayanaTransformation.Coefficients
 public import RealRooted.PFPolynomial
+public import RealRooted.SimpleRoots
 import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi
 import RealRooted.MaWang.StrictStep
 import RealRooted.MaWang.Weak.DerivativeSign

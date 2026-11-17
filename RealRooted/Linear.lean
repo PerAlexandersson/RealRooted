@@ -509,6 +509,19 @@ lemma hasPosLeadingCoeff_add_of_natDegree_lt_left {p q : ℝ[X]}
   simpa [add_comm] using
     hasPosLeadingCoeff_add_of_natDegree_lt_right (p := q) (q := p) hdeg hp_pos
 
+/-- Positive leading coefficients prevent cancellation in a sum, whose degree is the maximum
+of the summands' degrees. -/
+theorem HasPosLeadingCoeff.add_and_natDegree {p q : ℝ[X]} (hp : HasPosLeadingCoeff p)
+    (hq : HasPosLeadingCoeff q) :
+    HasPosLeadingCoeff (p + q) ∧ (p + q).natDegree = max p.natDegree q.natDegree := by
+  rcases lt_trichotomy p.natDegree q.natDegree with hlt | heq | hgt
+  · refine ⟨hasPosLeadingCoeff_add_of_natDegree_lt_right hlt hq, ?_⟩
+    rw [natDegree_add_eq_right_of_natDegree_lt hlt, max_eq_right hlt.le]
+  · refine ⟨hasPosLeadingCoeff_add_of_same_natDegree heq hp hq, ?_⟩
+    rw [natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff heq hp hq, heq, max_self]
+  · refine ⟨hasPosLeadingCoeff_add_of_natDegree_lt_left hgt hp, ?_⟩
+    rw [natDegree_add_eq_left_of_natDegree_lt hgt, max_eq_left hgt.le]
+
 /-- In particular, same-degree positive-leading-coefficient sums are nonzero. -/
 lemma add_ne_zero_of_same_natDegree_of_posLeadingCoeff {p q : ℝ[X]}
     (hdeg : p.natDegree = q.natDegree)

@@ -4,6 +4,7 @@ public import RealRooted.NarayanaInterpolation
 public import RealRooted.MaWang.CriticalSign
 import RealRooted.GammaTransform.ProperPosition
 import RealRooted.Mathlib.Algebra.Polynomial.Coeff
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 import RealRooted.GammaTransform.StrictLifting
 import RealRooted.MaWang.DerivativeStep
 import RealRooted.NarayanaTransformation.Recurrences.Identities

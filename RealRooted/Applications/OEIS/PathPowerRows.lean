@@ -3,6 +3,7 @@ module
 import RealRooted.Tactic.Row.Frontend
 import RealRooted.Tactic.Row.PathPower
 public import RealRooted.CombinatorialExamples.PathPowerClique
+import RealRooted.CombinatorialExamples.PathPowerGap
 import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 import RealRooted.WagnerX.AffineFactors
 import RealRooted.Linear
@@ -30,10 +31,6 @@ private theorem Q_rec (k m : ℕ) (hk : 2 ≤ k) :
     Q k (m + k) = Q k (m + k - 1) + X * Q k m := by
   exact RealRooted.pathPowerCliquePolynomial_add_lag k m hk
 
-private theorem Q_four_rec (m : ℕ) :
-    Q 4 (m + 4) = Q 4 (m + 3) + X * Q 4 m := by
-  simpa only [show m + 4 - 1 = m + 3 by lia] using Q_rec 4 m (by norm_num)
-
 private theorem Q_three_rec (m : ℕ) :
     Q 3 (m + 3) = Q 3 (m + 2) + X * Q 3 m := by
   simpa only [show m + 3 - 1 = m + 2 by lia] using Q_rec 3 m (by norm_num)
@@ -41,55 +38,23 @@ private theorem Q_three_rec (m : ℕ) :
 private theorem Q_three_gap_three (m : ℕ) :
     Q 3 (m + 9) =
       (1 + 3 * X) * Q 3 (m + 6) - 3 * X ^ 2 * Q 3 (m + 3) +
-        X ^ 3 * Q 3 m := by
-  have h0 := Q_rec 3 m (by norm_num)
-  have h1 := Q_rec 3 (m + 1) (by norm_num)
-  have h2 := Q_rec 3 (m + 2) (by norm_num)
-  have h3 := Q_rec 3 (m + 3) (by norm_num)
-  have h4 := Q_rec 3 (m + 4) (by norm_num)
-  have h5 := Q_rec 3 (m + 5) (by norm_num)
-  have h6 := Q_rec 3 (m + 6) (by norm_num)
-  grind
+        X ^ 3 * Q 3 m :=
+  RealRooted.PathPowerGap.pathPowerCliquePolynomial_three_gap_three m
 
 private theorem Q_three_gap_two (m : ℕ) :
-    Q 3 (m + 6) = Q 3 (m + 4) + 2 * X * Q 3 (m + 2) + X ^ 2 * Q 3 m := by
-  have h0 := Q_rec 3 m (by norm_num)
-  have h2 := Q_rec 3 (m + 2) (by norm_num)
-  have h3 := Q_rec 3 (m + 3) (by norm_num)
-  grind
+    Q 3 (m + 6) = Q 3 (m + 4) + 2 * X * Q 3 (m + 2) + X ^ 2 * Q 3 m :=
+  RealRooted.PathPowerGap.pathPowerCliquePolynomial_three_gap_two m
 
 private theorem Q_four_gap_three (m : ℕ) :
     Q 4 (m + 12) = Q 4 (m + 9) + 3 * X * Q 4 (m + 6) +
-      3 * X ^ 2 * Q 4 (m + 3) + X ^ 3 * Q 4 m := by
-  rw [show m + 12 = (m + 8) + 4 by lia, Q_four_rec]
-  rw [show m + 11 = (m + 7) + 4 by lia, Q_four_rec]
-  rw [show m + 10 = (m + 6) + 4 by lia, Q_four_rec]
-  rw [show m + 9 = (m + 5) + 4 by lia, Q_four_rec]
-  rw [show m + 8 = (m + 4) + 4 by lia, Q_four_rec]
-  rw [show m + 7 = (m + 3) + 4 by lia, Q_four_rec]
-  rw [show m + 6 = (m + 2) + 4 by lia, Q_four_rec]
-  rw [show m + 5 = (m + 1) + 4 by lia, Q_four_rec]
-  rw [show m + 4 = m + 4 by lia, Q_four_rec]
-  ring
+      3 * X ^ 2 * Q 4 (m + 3) + X ^ 3 * Q 4 m :=
+  RealRooted.PathPowerGap.pathPowerCliquePolynomial_four_gap_three m
 
 private theorem Q_four_gap_four (m : ℕ) :
     Q 4 (m + 16) =
       (1 + 4 * X) * Q 4 (m + 12) - 6 * X ^ 2 * Q 4 (m + 8) +
-        4 * X ^ 3 * Q 4 (m + 4) - X ^ 4 * Q 4 m := by
-  rw [show m + 16 = (m + 12) + 4 by lia, Q_four_rec]
-  rw [show m + 15 = (m + 11) + 4 by lia, Q_four_rec]
-  rw [show m + 14 = (m + 10) + 4 by lia, Q_four_rec]
-  rw [show m + 13 = (m + 9) + 4 by lia, Q_four_rec]
-  rw [show m + 12 = (m + 8) + 4 by lia, Q_four_rec]
-  rw [show m + 11 = (m + 7) + 4 by lia, Q_four_rec]
-  rw [show m + 10 = (m + 6) + 4 by lia, Q_four_rec]
-  rw [show m + 9 = (m + 5) + 4 by lia, Q_four_rec]
-  rw [show m + 8 = (m + 4) + 4 by lia, Q_four_rec]
-  rw [show m + 7 = (m + 3) + 4 by lia, Q_four_rec]
-  rw [show m + 6 = (m + 2) + 4 by lia, Q_four_rec]
-  rw [show m + 5 = (m + 1) + 4 by lia, Q_four_rec]
-  rw [show m + 4 = m + 4 by lia, Q_four_rec]
-  ring
+        4 * X ^ 3 * Q 4 (m + 4) - X ^ 4 * Q 4 m :=
+  RealRooted.PathPowerGap.pathPowerCliquePolynomial_four_gap_four m
 
 /-- The third-section Graeffe recurrence for the cubic path-power family. -/
 theorem pathPowerCliquePolynomial_three_gap_three (m : ℕ) :
@@ -142,20 +107,6 @@ private theorem Q_two : Q 3 2 = 1 := by
 private theorem Q_four_zero : Q 4 0 = 1 := by
   ext i
   rcases i with _ | i <;> simp [coeff_one]
-
-private theorem splits_subsequence (k p c n : ℕ) (hk : 2 ≤ k) (hp : 1 ≤ p) (hpk : p ≤ k)
-    (hbase : Q k c = 1) :
-    (RealRooted.reciprocalShift n (Q k (p * n + c))).Splits := by
-  simpa [hbase] using RealRooted.splits_reciprocalShift_pathPowerCliquePolynomial
-    k p c n hk hp hpk
-
-private theorem strictInterl_subsequence (k p c n : ℕ) (hk : 2 ≤ k) (hp : 1 ≤ p)
-    (hpk : p ≤ k) (hbase : Q k c = 1) :
-    RealRooted.StrictInterl
-      (RealRooted.reciprocalShift n (Q k (p * n + c)))
-      (RealRooted.reciprocalShift (n + 1) (Q k (p * (n + 1) + c))) := by
-  simpa [hbase] using RealRooted.strictInterl_reciprocalShift_pathPowerCliquePolynomial
-    k p c n hk hp hpk
 
 private theorem degree_Q_three_three_le (c n : ℕ) (hc : c = 0 ∨ c = 2) :
     (Q 3 (3 * n + c)).natDegree ≤ n := by

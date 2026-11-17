@@ -68,17 +68,6 @@ private lemma imaginaryCentralDifference_C_mul {h c : ℝ} (hc : c ≠ 0) (p : �
   simp only [smul_eq_C_mul]
   ring
 
-private lemma imaginaryShiftRealPart_C_mul {h c : ℝ} (hc : c ≠ 0) (p : ℝ[X]) :
-    imaginaryShiftRealPart h (C c * p) = C c * imaginaryShiftRealPart h p := by
-  rw [imaginaryShiftRealPart, natDegree_C_mul hc, imaginaryShiftRealPart,
-    Finset.mul_sum]
-  apply Finset.sum_congr rfl
-  intro k _
-  rw [show C c * p = c • p by rw [smul_eq_C_mul]]
-  rw [LinearMap.map_smul]
-  simp only [smul_eq_C_mul]
-  ring
-
 /-- The imaginary central difference of a constant polynomial is zero. -/
 theorem imaginaryCentralDifference_eq_zero_of_natDegree_eq_zero
     {p : ℝ[X]} (hp : p.natDegree = 0) (h : ℝ) :

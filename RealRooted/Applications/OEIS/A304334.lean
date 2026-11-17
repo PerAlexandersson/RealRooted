@@ -46,14 +46,6 @@ private theorem strictInterl_dividedRows_succ (n : ℕ) :
   exact (strictInterl_generalRows 1 1 1 6 4 (by norm_num) (by norm_num)
     (by norm_num) (fun k => by positivity) comparisonDefect_neg n).1
 
-private theorem dividedRows_roots_nonpos (n : ℕ) :
-    ∀ r ∈ (dividedRows n).roots, r ≤ 0 := by
-  intro r hr
-  have hsimple :=
-    (isNegativeSimple_generalRows 1 1 1 6 4 (by norm_num) (by norm_num)
-      (by norm_num) (fun k => by positivity) comparisonDefect_neg n).1
-  exact (hsimple.2.2.2.2 r hr).le
-
 /-- A sequence with the A304334 base rows and recurrence has interlacing
 consecutive rows. -/
 @[rr_row_model]

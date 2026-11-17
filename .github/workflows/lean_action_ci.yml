@@ -87,6 +87,10 @@ jobs:
         run: python3 scripts/generate-oeis-tactic-coverage.py --check
       - name: Check generated tactic routes
         run: python3 scripts/generate-tactic-routes.py --check
+      - name: Check lemma index
+        run: |
+          python3 scripts/lemma_index.py --self-test
+          python3 scripts/lemma_index.py --check
       - name: Check proof status
         run: |
           python3 scripts/check_proof_status.py --self-test
