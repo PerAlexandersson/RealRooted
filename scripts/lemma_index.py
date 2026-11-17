@@ -15,7 +15,9 @@ Usage counts are the number of other ``.lean`` files that mention the theorem's 
 component, or its qualified name when the last component is too generic.
 
     python3 scripts/lemma_index.py          # regenerate
-    python3 scripts/lemma_index.py --check  # fail if the files are stale
+    python3 scripts/lemma_index.py --check  # check the committed Markdown snapshot
+    python3 scripts/lemma_index.py --check --tsv PATH  # also check an explicit local index
+    python3 scripts/lemma_index.py --self-test
 """
 
 from __future__ import annotations
@@ -32,6 +34,20 @@ TSV = ROOT / "docs" / "LEMMA_INDEX.tsv"
 MD = ROOT / "docs" / "WORKHORSES.md"
 STATEMENT_WIDTH = 220
 TOP_PER_KEY = 25
+
+# Source-local uniqueness does not make common Mathlib constants or tactic words
+# distinctive. These leaves require a namespace-qualified reference.
+GENERIC_NAMES = frozenset({
+    "natDegree", "degree", "leadingCoeff", "coeff", "eval", "eval₂", "roots",
+    "rootMultiplicity", "derivative", "induction", "induction_on", "recursion",
+    "nonempty", "continuous", "measurable", "monotone", "antitone", "injective",
+    "surjective", "bijective", "congr", "congrArg", "congrFun", "congruent",
+    "ext", "ext_iff", "apply", "symm", "trans", "refl", "add", "mul", "map",
+    "mul_assoc", "mul_comm", "add_assoc", "add_comm", "pow_succ", "pow_zero",
+    "mul_apply", "add_apply", "map_apply", "smul_apply", "of_apply", "coeff_zero",
+    "coeff_one", "coeff_add", "coeff_mul", "coeff_smul", "mem_roots",
+    "pos_leadingCoeff", "eval_derivative_ne_zero", "eval_smul", "recurrence", "diagonal",
+})
 
 DECL = re.compile(r"^(?:@\[[^\]]*\]\s*)?(protected |private |noncomputable )*(theorem|lemma)\s+(\S+)")
 IDENT = re.compile(r"[A-Za-z_][A-Za-z0-9_'.!?₀-₉ᵢ]*")
@@ -194,29 +210,88 @@ def collect():
                 "module": module_of(path), "stmt": stmt,
                 "key": key_of(conclusion_of(stmt)), "doc": doc_before(raw_lines, i),
             })
-    # usage counts: other files mentioning the name
-    by_word: dict[str, set[Path]] = defaultdict(set)
-    for path, words in words_per_file.items():
-        for w in words:
-            by_word[w].add(path)
-            if "." in w:
-                by_word[w.split(".")[-1]].add(path)
-    # a short name counts only when it is distinctive; otherwise the last two components do
-    short_count: dict[str, int] = defaultdict(int)
-    for d in decls:
-        short_count[d["short"]] += 1
-    for d in decls:
-        parts = d["name"].split(".")
-        if short_count[d["short"]] == 1 and len(d["short"]) >= 8:
-            users = by_word.get(d["short"], set()) | by_word.get(d["name"], set())
-        else:
-            tail = ".".join(parts[-2:])
-            users = {p for p in by_word.get(d["short"], set())
-                     if any(w.endswith(tail) for w in words_per_file[p] if "." in w)}
-            users |= by_word.get(d["name"], set())
-        d["uses"] = len(users - {d["path"]})
+    count_uses(decls, words_per_file)
     decls.sort(key=lambda d: d["name"])
     return decls
+
+
+def count_uses(decls, words_per_file: dict[Path, set[str]]) -> None:
+    """Count lexical users, requiring component boundaries on qualified suffixes."""
+    by_leaf: dict[str, set[Path]] = defaultdict(set)
+    by_suffix: dict[str, set[Path]] = defaultdict(set)
+    for path, words in words_per_file.items():
+        for word in words:
+            parts = word.split(".")
+            by_leaf[parts[-1]].add(path)
+            for i in range(len(parts) - 1):
+                by_suffix[".".join(parts[i:])].add(path)
+    short_count: dict[str, int] = defaultdict(int)
+    for decl in decls:
+        short_count[decl["short"]] += 1
+    for decl in decls:
+        short = decl["short"]
+        if short_count[short] == 1 and len(short) >= 8 and short not in GENERIC_NAMES:
+            users = by_leaf.get(short, set())
+        else:
+            tail = ".".join(decl["name"].split(".")[-2:])
+            users = by_suffix.get(tail, set())
+        decl["uses"] = len(users - {decl["path"]})
+
+
+def generated_outputs(tsv: str, md: str, tsv_path: Path | None, check: bool):
+    """Always check the tracked snapshot; opt in to checking a local TSV."""
+    outputs = [(MD, md)]
+    if not check or tsv_path is not None:
+        outputs.append((tsv_path if tsv_path is not None else TSV, tsv))
+    return outputs
+
+
+def run_self_test() -> int:
+    from contextlib import redirect_stdout
+    from io import StringIO
+    from tempfile import TemporaryDirectory
+    from unittest.mock import patch
+
+    owner, unrelated, qualified, distinctive = map(Path, ("owner", "unrelated", "qualified", "unique"))
+    decls = [
+        {"name": "RealRooted.Family.natDegree", "short": "natDegree", "path": owner},
+        {"name": "RealRooted.Window.induction", "short": "induction", "path": owner},
+        {"name": "RealRooted.distinctive_lemma", "short": "distinctive_lemma", "path": owner},
+        {"name": "RealRooted.Other.add", "short": "add", "path": owner},
+        {"name": "RealRooted.Another.add", "short": "add", "path": owner},
+        {"name": "RealRooted.Triangular.mul_assoc", "short": "mul_assoc", "path": owner},
+        {"name": "RealRooted.LargestRoot.mem_roots", "short": "mem_roots", "path": owner},
+    ]
+    count_uses(decls, {
+        owner: {"Family.natDegree", "Window.induction", "distinctive_lemma"},
+        unrelated: {"p.natDegree", "natDegree", "induction", "OtherFamily.natDegree", "Windowed.induction",
+                    "mul_assoc", "Polynomial.mem_roots"},
+        qualified: {"Family.natDegree", "RealRooted.Window.induction", "RealRooted.Other.add",
+                    "Triangular.mul_assoc", "LargestRoot.mem_roots"},
+        distinctive: {"distinctive_lemma", "Another.add"},
+    })
+    assert [d["uses"] for d in decls] == [1, 1, 1, 1, 1, 1, 1], decls
+    # The CLI must pass in a fresh checkout without the ignored TSV, fail on a stale
+    # tracked snapshot, and check a TSV only when explicitly requested.
+    with TemporaryDirectory(prefix="lemma-index-test-") as directory:
+        root = Path(directory)
+        md, tsv = root / "WORKHORSES.md", root / "index.tsv"
+        with patch.multiple(__name__, MD=md, TSV=tsv), patch(__name__ + ".collect", return_value=[]):
+            with redirect_stdout(StringIO()):
+                assert main(["--check"]) == 1
+                md.write_text(render([])[1], encoding="utf-8")
+                assert main(["--check"]) == 0
+                assert not tsv.exists()
+                assert main(["--check", "--tsv", str(tsv)]) == 1
+                assert main(["--tsv", str(tsv)]) == 0
+                assert main(["--check", "--tsv", str(tsv)]) == 0
+                tsv.write_text("stale", encoding="utf-8")
+                assert main(["--check"]) == 0
+                assert main(["--check", "--tsv", str(tsv)]) == 1
+                md.write_text("stale", encoding="utf-8")
+                assert main(["--check"]) == 1
+    print("ok: lemma-index self-test passed")
+    return 0
 
 
 def render(decls) -> tuple[str, str]:
@@ -244,7 +319,10 @@ def render(decls) -> tuple[str, str]:
           "```", "",
           "For goals about rows of a recurrence, try the row tactics first (`rr_row_interlaces`, "
           "`rr_row_splits`, `rr_row_natDegree` and their `?` variants, see "
-          "`RealRooted/Tactic/Row/Frontend.lean`).", ""]
+          "`RealRooted/Tactic/Row/Frontend.lean`).", "",
+          "Counts are lexical estimates: distinctive leaves count unqualified references; "
+          "generic or ambiguous leaves require the last two namespace components. "
+          "They do not resolve receiver notation or measure proof-term dependencies.", ""]
     order = [k for k, _ in KEYS] + ["other"]
     for key in order:
         items = sorted(by_key.get(key, []), key=lambda d: (-d["uses"], d["name"]))
@@ -259,22 +337,26 @@ def render(decls) -> tuple[str, str]:
     return tsv, "\n".join(md)
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("--check", action="store_true", help="fail if the generated files are stale")
-    args = ap.parse_args()
+    ap.add_argument("--check", action="store_true", help="check the committed Markdown snapshot")
+    ap.add_argument("--tsv", type=Path, help="write or also check this local TSV index")
+    ap.add_argument("--self-test", action="store_true", help="run usage and snapshot regression tests")
+    args = ap.parse_args(argv)
+    if args.self_test:
+        return run_self_test()
     tsv, md = render(collect())
+    outputs = generated_outputs(tsv, md, args.tsv, args.check)
     if args.check:
-        stale = [p for p, c in ((TSV, tsv), (MD, md))
-                 if not p.exists() or p.read_text(encoding="utf-8") != c]
-        for p in stale:
-            print(f"{p.relative_to(ROOT)} is stale; run python3 scripts/lemma_index.py")
+        stale = [path for path, content in outputs
+                 if not path.exists() or path.read_text(encoding="utf-8") != content]
+        for path in stale:
+            print(f"{path} is stale; run python3 scripts/lemma_index.py")
         return 1 if stale else 0
-    TSV.parent.mkdir(exist_ok=True)
-    TSV.write_text(tsv, encoding="utf-8")
-    MD.write_text(md, encoding="utf-8")
-    print(f"wrote {TSV.relative_to(ROOT)} ({tsv.count(chr(10)) - 1} theorems) and "
-          f"{MD.relative_to(ROOT)}")
+    for path, content in outputs:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(content, encoding="utf-8")
+    print(f"wrote {tsv.count(chr(10)) - 1} theorems to {outputs[1][0]} and {MD}")
     return 0
 
 

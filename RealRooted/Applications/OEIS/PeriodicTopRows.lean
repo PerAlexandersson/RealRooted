@@ -149,11 +149,9 @@ private lemma A177040_coeff_one (n : ℕ) :
   ring_nf
 
 private lemma fac1 (n : ℕ) : ((n + 1).factorial : ℝ) = (n + 1) * n.factorial := by
-  rw [Nat.factorial_succ]
-  simp
+  simp [Nat.factorial_succ]
 private lemma fac2 (n : ℕ) : ((n + 2).factorial : ℝ) = (n + 2) * (n + 1) * n.factorial := by
-  norm_num [Nat.factorial_succ]
-  ring
+  simp [Nat.factorial_succ, add_assoc, mul_assoc]
 private lemma fac3 (n : ℕ) : ((n + 3).factorial : ℝ) = (n + 3) * (n + 2) * (n + 1) * n.factorial
   := by
   norm_num [Nat.factorial_succ]

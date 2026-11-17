@@ -2,7 +2,6 @@ module
 
 public import RealRooted.Compatibility.InterleaverBridge
 import RealRooted.CommonInterleaver.SuccDegreeLowDegree
-public import RealRooted.GammaRealRoots
 import RealRooted.DegreeIncreasingLocalLowerCount
 import RealRooted.SmallPositiveParameterCount
 import RealRooted.CommonInterleaver.RightPencil

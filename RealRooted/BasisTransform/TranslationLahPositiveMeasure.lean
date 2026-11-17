@@ -618,13 +618,6 @@ private theorem derivative_translationLahSubstitutionSeries (b : ℝ) :
         PowerSeries.coeff_succ_X_mul, PowerSeries.coeff_derivative, pow_succ]
       ring
 
-private theorem derivative_map_C (B : PowerSeries ℝ) :
-    PowerSeries.derivative (B.map C) =
-      (PowerSeries.derivative B).map C := by
-  apply PowerSeries.ext
-  intro n
-  simp [PowerSeries.coeff_derivative]
-
 private theorem derivative_exp_subst_translationLahSubstitutionSeries (b : ℝ) :
     let B := translationLahSubstitutionSeries b
     let F := (PowerSeries.exp ℝ[X]).subst (PowerSeries.C X * B.map C)

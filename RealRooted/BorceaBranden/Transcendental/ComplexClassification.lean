@@ -116,14 +116,6 @@ private theorem preservesComplexStabilityOnDegreeBox_of_preservesComplexStabilit
   intro p hp
   exact hT p.1 hp
 
-private theorem signedInvFactorial_ne_zero' (α : σ →₀ ℕ) :
-    signedInvFactorial α ≠ 0 := by
-  unfold signedInvFactorial multiFactorial
-  apply div_ne_zero
-  · exact pow_ne_zero _ (by norm_num)
-  · exact_mod_cast Finset.prod_ne_zero_iff.mpr
-      (fun i _hi => Nat.factorial_ne_zero (α i))
-
 private theorem fall_ne_zero_of_le {α β : σ →₀ ℕ} (hαβ : α ≤ β) :
     (fall α β : ℂ) ≠ 0 := by
   apply Complex.ofReal_ne_zero.mpr
@@ -158,7 +150,7 @@ theorem degreeBoxRestriction_eq_zero_of_jensenTruncation_eq_zero
   rw [hpair, coeff_transcendentalSymbolPolynomial] at hz
   simp only [AddMonoidAlgebra.coeff_zero, Finsupp.coe_zero, Pi.zero_apply] at hz
   have hscalar : (fall α.1 β : ℂ) * signedInvFactorial α.1 ≠ 0 :=
-    mul_ne_zero (fall_ne_zero_of_le α.2) (signedInvFactorial_ne_zero' α.1)
+    mul_ne_zero (fall_ne_zero_of_le α.2) (signedInvFactorial_ne_zero α.1)
   simp only [degreeBoxRestriction, LinearMap.comp_apply, Submodule.coe_subtype,
     MvPolynomial.coe_basisDegreeOfLE, LinearMap.zero_apply]
   rw [AddMonoidAlgebra.coeff_zero]

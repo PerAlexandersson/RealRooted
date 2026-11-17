@@ -58,6 +58,16 @@ def multiFactorial (α : σ →₀ ℕ) : ℕ :=
 def signedInvFactorial (α : σ →₀ ℕ) : ℂ :=
   (-1 : ℂ) ^ (∑ i, α i) / (multiFactorial α : ℂ)
 
+omit [Fintype τ] in
+/-- The signed reciprocal factorial is nonzero. -/
+theorem signedInvFactorial_ne_zero (α : σ →₀ ℕ) :
+    signedInvFactorial α ≠ 0 := by
+  have hfactorial : multiFactorial α ≠ 0 := by
+    unfold multiFactorial
+    exact Finset.prod_ne_zero_iff.mpr fun i _ => Nat.factorial_ne_zero (α i)
+  unfold signedInvFactorial multiFactorial
+  exact div_ne_zero (pow_ne_zero _ (by norm_num)) (Nat.cast_ne_zero.mpr hfactorial)
+
 /-- The coefficient polynomial of the transcendental symbol of `T` at `w^α`.
 
 Thus `G_T(z,w) = ∑_α transcendentalSymbolPolynomial T α (z) w^α`.  This is the symbol
@@ -85,14 +95,6 @@ theorem coeff_transcendentalSymbolPolynomial
     (transcendentalSymbolPolynomial T α).coeff γ =
       signedInvFactorial α * (T (MvPolynomial.monomial α 1)).coeff γ := by
   simp only [transcendentalSymbolPolynomial, MvPolynomial.coeff_C_mul]
-
-private theorem signedInvFactorial_ne_zero (α : σ →₀ ℕ) :
-    signedInvFactorial α ≠ 0 := by
-  have hfactorial : multiFactorial α ≠ 0 := by
-    unfold multiFactorial
-    exact Finset.prod_ne_zero_iff.mpr fun i _ => Nat.factorial_ne_zero (α i)
-  unfold signedInvFactorial multiFactorial
-  exact div_ne_zero (pow_ne_zero _ (by norm_num)) (Nat.cast_ne_zero.mpr hfactorial)
 
 omit [Fintype τ] in
 /-- A complex linear operator is determined by its transcendental-symbol coefficient

@@ -32,7 +32,7 @@ ALLOWED_ADMISSIONS: frozenset[tuple[str, str]] = frozenset()
 ALLOWED_OMEGA: dict[tuple[str, str], int] = {}
 
 DECLARATION_RE = re.compile(
-    r"^\s*(?:(?:private|protected|noncomputable)\s+)*"
+    r"^\s*(?:@\[[^\]]*\]\s*)?(?:(?:private|protected|noncomputable)\s+)*"
     r"(theorem|lemma|def|abbrev|structure|class|instance|opaque)\s+"
     r"([A-Za-z_][A-Za-z0-9_'.]*)\b"
 )
@@ -150,7 +150,13 @@ def scan_text(path: str, text: str) -> tuple[list[Finding], list[StatementDeclar
     current_declaration = "<unknown>"
     in_tactic_implementation = False
     lines = clean.splitlines()
+    pending_attributes = ""
+    attribute_depth = 0
     for line_number, line in enumerate(lines, start=1):
+        is_attribute = line.lstrip().startswith("@[") or attribute_depth > 0
+        if is_attribute:
+            pending_attributes += "\n" + line
+            attribute_depth += line.count("[") - line.count("]")
         command_match = COMMAND_START_RE.match(line)
         if command_match:
             in_tactic_implementation = (
@@ -160,18 +166,30 @@ def scan_text(path: str, text: str) -> tuple[list[Finding], list[StatementDeclar
         if declaration_match:
             declaration_kind = declaration_match.group(1)
             current_declaration = declaration_match.group(2)
+            header = ""
             if declaration_kind == "def":
                 header = "\n".join(lines[line_number - 1 : line_number + 7])
                 header = header.split(":=", 1)[0]
                 in_tactic_implementation = bool(META_MONAD_RE.search(header))
+            # Registration is a use, but only a definition returning the actual route
+            # implementation type qualifies. A registered Prop target must still be reviewed.
+            registered_route = (
+                declaration_kind == "def"
+                and re.search(r":\s*(?:RealRooted\.Tactic\.)?RowRouteImpl\s*$", header)
+                and re.search(r"@\[[^\]]*\brr_row_route_impl\b[^\]]*\]", pending_attributes)
+            )
             if (
-                declaration_kind in STATEMENT_DECLARATION_KINDS
+                not registered_route
+                and declaration_kind in STATEMENT_DECLARATION_KINDS
                 and not line.lstrip().startswith("private ")
                 and STATEMENT_NAME_RE.search(current_declaration)
             ):
                 statements.append(
                     StatementDeclaration(path, current_declaration, line_number)
                 )
+        if line.strip() and (declaration_match or not is_attribute):
+            pending_attributes = ""
+            attribute_depth = 0
         axiom_match = AXIOM_RE.match(line)
         if axiom_match:
             findings.append(Finding(path, axiom_match.group(1), line_number, "axiom"))
@@ -324,6 +342,33 @@ def run_self_test() -> int:
         )
     ] == ["ExampleStatement"]
     assert not low_use_statements(statements, Counter({"ExampleStatement": 2}))
+
+    # Route registrations count as uses; neither a suffix nor an attribute alone does.
+    routes, route_statements, _ = scan_text(
+        "RealRooted/Tactic/Test.lean",
+        "@[rr_row_route_impl good]\n"
+        "-- a comment between attribute and definition\n"
+        "def goodRoute : RowRouteImpl := fun _ => pure ()\n"
+        "@[rr_row_route_impl inline] def inlineRoute : RowRouteImpl := fun _ => pure ()\n"
+        "@[simp,\n  rr_row_route_impl multiline]\n"
+        "def multilineRoute : RealRooted.Tactic.RowRouteImpl := fun _ => pure ()\n"
+        "def unregisteredRoute : RowRouteImpl := fun _ => pure ()\n"
+        "@[rr_row_route_impl target]\n"
+        "def unfinishedTarget : Prop := True\n"
+        "@[rr_row_route_impl unused]\n"
+        "def helper : Nat := 0\n"
+        "def unrelatedRoute : RowRouteImpl := fun _ => pure ()\n"
+        "def assumedStatement : Prop := True\n"
+        "-- @[rr_row_route_impl commented]\n"
+        "def commentedRoute : RowRouteImpl := fun _ => pure ()\n"
+        "@[rr_row_route_impl bad]\n"
+        "def badRoute : RowRouteImpl := by sorry\n",
+    )
+    assert [item.declaration for item in route_statements] == [
+        "unregisteredRoute", "unfinishedTarget", "unrelatedRoute", "assumedStatement",
+        "commentedRoute",
+    ], route_statements
+    assert any("unexpected sorry" in error for error in admission_errors(routes))
 
     # Exercise the CLI without a Markdown ledger, including its hard-fail path.
     with tempfile.TemporaryDirectory(prefix="realrooted-proof-guard-") as directory:

@@ -6,6 +6,14 @@ import RealRooted.ObreschkoffConverse.Converse
 import RealRooted.ObreschkoffConverse.DegreeGap
 public import RealRooted.AllCombo
 
+/-!
+# Linear operators preserving real-rootedness and interlacing
+
+We relate preservation of real-rooted polynomials to preservation of all real linear
+combinations and interlacing pairs. The preservation predicates allow zero output;
+`PreservesInterlacingPairsUpToOrder0` also allows either orientation of the output pair.
+-/
+
 @[expose] public section
 
 open Polynomial

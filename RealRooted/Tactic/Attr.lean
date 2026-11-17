@@ -148,14 +148,6 @@ def formatNameList (names : Array Name) : String :=
   else
     String.intercalate ", " (names.toList.map toString)
 
-private def logTaggedCertificates [Monad m] [MonadEnv m] [MonadLog m]
-    [MonadOptions m] [AddMessageContext m] : m Unit := do
-  let env ← getEnv
-  for (attrName, attr) in rrCertificateAttributes do
-    let names := taggedDecls env attr
-    logInfo m!"[{attrName}] {names.size}: {formatNameList names}"
-
 end Tactic
 end RealRooted
-
 
