@@ -104,6 +104,13 @@ theorem const_mul {a : ℝ} (ha : 0 < a) {p : ℝ[X]}
     (hasNonnegCoeffs_C_mul ha.le hp.hasNonnegCoeffs)
     (hp.splits.C_mul a)
 
+/-- Multiplication by a positive constant is an equivalence on PF polynomials. -/
+theorem const_mul_iff {a : ℝ} (ha : 0 < a) {p : ℝ[X]} :
+    IsPFPolynomial (C a * p) ↔ IsPFPolynomial p := by
+  refine ⟨fun hp => ?_, const_mul ha⟩
+  simpa only [← mul_assoc, ← C_mul, inv_mul_cancel₀ ha.ne', C_1, one_mul] using
+    hp.const_mul (inv_pos.mpr ha)
+
 /-- A nonnegative constant polynomial is PF. -/
 theorem of_C_nonneg {a : ℝ} (ha : 0 ≤ a) : IsPFPolynomial (Polynomial.C a) :=
   IsPFPolynomial.of_realRooted_nonneg (hasNonnegCoeffs_C ha) (by simp)

@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.MultiplierSequence.TwoSidedJensen
+public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Basic
 import RealRooted.MultiplierSequence.InvPochhammer
 import RealRooted.NarayanaTransformation.Interlacing
 import RealRooted.ReciprocalShift.ProperPosition
@@ -60,6 +61,54 @@ private theorem ascPochhammer_eval_one_half_mul_factorial_mul_four_pow (k : ℕ)
       push_cast
       ring_nf at ih ⊢
       linear_combination (4 * (k : ℝ) ^ 2 + 6 * (k : ℝ) + 2) * ih
+
+/-- The two half-integer rising factorials have a common parity-indexed factorial form. -/
+private theorem ascPochhammer_half_mul_factorial (n ε : ℕ) (hε : ε ≤ 1) :
+    (ascPochhammer ℝ n).eval ((ε : ℝ) + 1 / 2) * (n.factorial : ℝ) * 4 ^ n =
+      ((2 * n + ε).factorial : ℝ) := by
+  interval_cases ε
+  · simpa using ascPochhammer_eval_one_half_mul_factorial_mul_four_pow n
+  · have h := ascPochhammer_eval_one_half_mul_factorial_mul_four_pow (n + 1)
+    rw [ascPochhammer_succ_left] at h
+    simp only [eval_mul, eval_X, eval_comp, eval_add, eval_one] at h
+    rw [show 2 * (n + 1) = (2 * n + 1) + 1 by lia,
+      Nat.factorial_succ (2 * n + 1), Nat.factorial_succ n, pow_succ] at h
+    push_cast at h
+    have hn : (2 * (n : ℝ) + 2) ≠ 0 := by positivity
+    apply mul_left_cancel₀ hn
+    convert h using 1 <;> ring
+
+/-- Coefficients of the two half-integer Laguerre specializations in the
+monic sign-reversed convention `n! L_n^α(-X)`, after scaling by `4^n` and `X/4`. -/
+theorem coeff_scaled_generalizedLaguerre_half (n k ε : ℕ) (hε : ε ≤ 1) :
+    (C ((4 : ℝ) ^ n) *
+      (generalizedLaguerre n ((ε : ℝ) - 1 / 2)).comp (C (1 / 4 : ℝ) * X)).coeff k =
+      if k ≤ n then
+        ((2 * n + ε).factorial : ℝ) /
+          (((2 * k + ε).factorial : ℝ) * ((n - k).factorial : ℝ))
+      else 0 := by
+  rw [coeff_C_mul, comp_C_mul_X_coeff, coeff_generalizedLaguerre]
+  by_cases hk : k ≤ n
+  · simp only [hk, ite_true]
+    obtain ⟨r, rfl⟩ := Nat.exists_eq_add_of_le hk
+    have hmul := congrArg (eval ((ε : ℝ) + 1 / 2)) (ascPochhammer_mul ℝ k r)
+    simp only [eval_mul, eval_comp, eval_add, eval_X, eval_natCast] at hmul
+    have hwk := ascPochhammer_half_mul_factorial k ε hε
+    have hwn := ascPochhammer_half_mul_factorial (k + r) ε hε
+    have hc := congrArg (fun m : ℕ => (m : ℝ))
+      (Nat.choose_mul_factorial_mul_factorial hk)
+    simp only [Nat.add_sub_cancel_left, Nat.cast_mul] at hc
+    rw [show (ε : ℝ) - 1 / 2 + k + 1 = ε + 1 / 2 + k by ring,
+      show k + r - k = r by lia]
+    have ha := ascPochhammer_pos k ((ε : ℝ) + 1 / 2) (by positivity)
+    rw [← hmul] at hwn
+    generalize (ascPochhammer ℝ k).eval ((ε : ℝ) + 1 / 2) = a at *
+    generalize (ascPochhammer ℝ r).eval ((ε : ℝ) + 1 / 2 + k) = e at *
+    rw [one_div_pow]
+    field_simp at hwk hwn ⊢
+    rw [← hwk, ← hwn, ← hc]
+    ring
+  · simp [hk]
 
 /-- Factorial form of the even-factorial Jensen weight. -/
 theorem evenFactorialJensenWeight_eq (k : ℕ) :
