@@ -7,6 +7,7 @@ import RealRooted.LeeYang
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "lee-yang"
 formalized = "2026-10-07"

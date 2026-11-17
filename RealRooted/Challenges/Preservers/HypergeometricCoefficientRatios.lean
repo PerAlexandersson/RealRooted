@@ -8,6 +8,7 @@ import RealRooted.MultiplierSequence.EulerCoefficientRatio
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "hypergeometric-coefficient-ratios"
 formalized = "2026-10-27"

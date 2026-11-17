@@ -15,6 +15,7 @@ public import RealRooted.Polarization
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "grace-apolarity"
 formalized = "2026-10-06"

@@ -7,6 +7,7 @@ import RealRooted.ClassicalHurwitzMatrix.Stability.BinomialPerturbation
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "binomial-perturbations"
 formalized = "2026-11-01"

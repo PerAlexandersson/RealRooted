@@ -12,6 +12,7 @@ public import RealRooted.SymmetricDecomposition.Theorem26
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "branden-solus"
 formalized = "2026-10-02"

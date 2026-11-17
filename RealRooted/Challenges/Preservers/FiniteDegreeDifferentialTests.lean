@@ -16,6 +16,7 @@ import RealRooted.FiniteFreeAdditive.FiniteDegreeCompanionCone
 
 <!-- realrooted-catalog
 version = 1
+kind = "original"
 section = "theorems"
 slug = "finite-degree-differential-tests"
 formalized = "2026-11-01"

@@ -9,6 +9,7 @@ import RealRooted.DeterminantalStability.Closure
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "bivariate-determinantal-reduction"
 formalized = "2026-10-29"

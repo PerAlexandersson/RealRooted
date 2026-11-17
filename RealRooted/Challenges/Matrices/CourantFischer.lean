@@ -7,6 +7,7 @@ import RealRooted.CauchyInterlacing
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "courant-fischer"
 formalized = "2026-07-01"

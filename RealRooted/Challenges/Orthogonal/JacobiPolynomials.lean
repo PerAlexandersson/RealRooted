@@ -16,6 +16,7 @@ import RealRooted.Jacobi.ParameterShifts
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "families"
 slug = "jacobi-polynomials"
 formalized = "2026-09-07"

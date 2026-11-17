@@ -11,6 +11,7 @@ import RealRooted.SeparablePermutations.Interlacing
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "separable-permutations"
 formalized = "2026-10-09"

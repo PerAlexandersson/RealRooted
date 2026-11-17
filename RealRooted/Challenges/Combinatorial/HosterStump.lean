@@ -7,6 +7,7 @@ import RealRooted.HosterStump.PosetChow
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "chow-polynomials-simplicial-posets"
 formalized = "2026-10-08"

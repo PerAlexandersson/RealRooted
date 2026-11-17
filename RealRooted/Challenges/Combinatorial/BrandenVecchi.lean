@@ -11,6 +11,7 @@ import RealRooted.BrandenVecchi.SmirnovSpecialization
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "branden-vecchi"
 formalized = "2026-09-12"

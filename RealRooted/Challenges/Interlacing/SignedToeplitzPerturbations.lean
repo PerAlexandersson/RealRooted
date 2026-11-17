@@ -9,6 +9,7 @@ import RealRooted.Toeplitz.SignedPerturbation.Rows
 
 <!-- realrooted-catalog
 version = 1
+kind = "original"
 section = "theorems"
 slug = "signed-toeplitz-perturbations"
 formalized = "2026-11-09"
@@ -39,7 +40,7 @@ label = "B(R) = ∑ j (j - 1) |c_j| R^(j+1)"
 [[theorems]]
 name = "RealRooted.ToeplitzPerturbation.strictInterl_row_succ"
 module = "RealRooted.Toeplitz.SignedPerturbation"
-label = "If A(R) ≤ R² - 1 and B(R) ≤ 1, consecutive rows strictly interlace"
+label = "Signed Toeplitz perturbation rows interlace when A(R) ≤ R² − 1 and B(R) ≤ 1 for some R > 0"
 headline = true
 
 [[theorems]]

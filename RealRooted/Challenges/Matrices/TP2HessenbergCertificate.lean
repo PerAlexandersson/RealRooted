@@ -22,6 +22,7 @@ import RealRooted.Wronskian.CauchyBinet
 
 <!-- realrooted-catalog
 version = 1
+kind = "original"
 section = "theorems"
 slug = "tp2-hessenberg-certificate"
 formalized = "2026-11-09"
@@ -100,7 +101,7 @@ label = "Every stage of the vector recursion is an interlacing sequence"
 [[theorems]]
 name = "RealRooted.hessenbergRow_certificate"
 module = "RealRooted.Toeplitz.TP2Hessenberg"
-label = "The rows are monic, have nonnegative real roots and interlace"
+label = "Rows of 1/(det(I+zA)−tz) interlace, roots ≥ 0, for suitable TP2 Hessenberg A"
 headline = true
 
 [[theorems]]

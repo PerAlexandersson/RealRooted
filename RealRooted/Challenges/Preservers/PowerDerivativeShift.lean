@@ -7,6 +7,7 @@ import RealRooted.Derivative.PowerShift
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "power-derivative-shift"
 formalized = "2026-11-01"

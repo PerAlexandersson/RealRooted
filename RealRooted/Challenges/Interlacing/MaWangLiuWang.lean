@@ -18,6 +18,7 @@ public import RealRooted.SimpleRoots
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "ma-wang-liu-wang"
 formalized = "2026-10-06"

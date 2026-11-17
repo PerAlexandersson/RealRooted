@@ -24,6 +24,7 @@ import RealRooted.ThreeTermRecurrence.PositiveAffineLag
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "recurrence-root-windows"
 formalized = "2026-10-01"

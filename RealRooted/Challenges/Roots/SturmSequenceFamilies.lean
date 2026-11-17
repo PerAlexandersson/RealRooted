@@ -15,6 +15,7 @@ public import RealRooted.Touchard
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "families"
 slug = "sturm-sequence-families"
 formalized = "2026-05-12"

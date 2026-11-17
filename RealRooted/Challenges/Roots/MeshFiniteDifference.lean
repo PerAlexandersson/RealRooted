@@ -16,6 +16,7 @@ import RealRooted.Mesh.HermitePoulain
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "mesh-finite-difference"
 formalized = "2026-10-27"

@@ -7,6 +7,7 @@ import RealRooted.Graph.MinimaForest
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "families"
 slug = "minima-polynomial"
 formalized = "2026-10-02"

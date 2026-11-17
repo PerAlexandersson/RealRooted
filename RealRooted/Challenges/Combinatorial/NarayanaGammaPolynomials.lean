@@ -8,6 +8,7 @@ import RealRooted.NarayanaTransformation.ReflectedNarayanaGamma
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "continuous-narayana-gamma"
 formalized = "2026-11-01"

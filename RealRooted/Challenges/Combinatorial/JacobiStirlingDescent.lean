@@ -7,6 +7,7 @@ import RealRooted.CombinatorialExamples.JacobiStirling.Descent.RealRooted
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "families"
 slug = "jacobi-stirling-descent"
 formalized = "2026-10-07"

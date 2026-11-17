@@ -8,6 +8,8 @@ import RealRooted.CombinatorialExamples.BorosMoll.Infinite
 
 <!-- realrooted-catalog
 version = 1
+kind = "conjecture"
+conjecture = "Boros–Moll infinite log-concavity, recorded in Brändén (2011), Conjecture 8.4"
 section = "theorems"
 slug = "boros-moll-log-concavity-transform"
 formalized = "2026-10-08"

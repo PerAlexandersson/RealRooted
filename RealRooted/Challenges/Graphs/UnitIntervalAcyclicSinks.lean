@@ -7,6 +7,7 @@ import RealRooted.UnitIntervalGraph.AcyclicSink
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "families"
 slug = "unit-interval-acyclic-sinks"
 formalized = "2026-09-12"

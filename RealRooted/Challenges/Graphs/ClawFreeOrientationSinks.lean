@@ -7,6 +7,7 @@ import RealRooted.Graph.AllOrientationSinkIdentity
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "families"
 slug = "claw-free-orientation-sinks"
 formalized = "2026-09-12"

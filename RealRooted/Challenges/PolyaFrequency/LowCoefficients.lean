@@ -7,6 +7,7 @@ import RealRooted.PFPolynomial.LowCoefficients
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "pf-low-coefficients"
 formalized = "2026-11-03"

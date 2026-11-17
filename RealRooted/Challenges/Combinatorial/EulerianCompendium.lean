@@ -19,6 +19,7 @@ public import RealRooted.EulerianMixedCompatibility.Insertion
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "eulerian-compendium"
 formalized = "2026-10-24"

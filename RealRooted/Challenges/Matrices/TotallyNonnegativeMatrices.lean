@@ -21,6 +21,7 @@ public import RealRooted.TotallyNonnegInterlacing
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "totally-nonnegative-matrices"
 formalized = "2026-09-05"

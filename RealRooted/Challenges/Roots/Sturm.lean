@@ -9,6 +9,7 @@ import RealRooted.RootVieta.Newton
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "sturm-root-counting"
 formalized = "2026-09-27"

@@ -7,6 +7,7 @@ public import RealRooted.MatrixInterlacing
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "small-interlacing-matrices"
 formalized = "2026-10-06"

@@ -10,6 +10,7 @@ import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.ZeroMonotonicit
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "families"
 slug = "multiset-eulerian-narayana"
 formalized = "2026-10-07"

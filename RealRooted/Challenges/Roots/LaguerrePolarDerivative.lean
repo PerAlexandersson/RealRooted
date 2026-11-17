@@ -9,6 +9,7 @@ import RealRooted.PolarDerivative
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "laguerre-polar-derivative"
 formalized = "2026-07-01"

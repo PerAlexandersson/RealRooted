@@ -7,6 +7,7 @@ import RealRooted.Gurvits
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "van-der-waerden"
 formalized = "2026-10-07"

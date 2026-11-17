@@ -8,6 +8,7 @@ import RealRooted.Applications.BinderVecchi.UniformMatroid
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "uniform-matroid-hodge-poincare"
 formalized = "2026-10-09"

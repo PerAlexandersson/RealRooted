@@ -14,6 +14,7 @@ public import RealRooted.Transforms.ReverseHermite.Preservation
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "operator-preservers"
 formalized = "2026-10-05"

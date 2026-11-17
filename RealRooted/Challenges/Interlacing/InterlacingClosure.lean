@@ -17,6 +17,7 @@ public import RealRooted.ShiftLemma
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "interlacing-closure"
 formalized = "2026-10-06"

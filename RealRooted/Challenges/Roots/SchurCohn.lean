@@ -7,6 +7,7 @@ import RealRooted.Mathlib.Analysis.Complex.Polynomial.SchurCohn
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "schur-cohn"
 formalized = "2026-10-07"

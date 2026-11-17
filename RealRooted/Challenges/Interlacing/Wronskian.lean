@@ -9,6 +9,7 @@ import RealRooted.Wronskian.PolarLaguerre
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "wronskian-criterion"
 formalized = "2026-10-06"

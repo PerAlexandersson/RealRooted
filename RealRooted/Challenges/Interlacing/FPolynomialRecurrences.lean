@@ -9,6 +9,7 @@ import RealRooted.SymmetricDecomposition.EulerFPolynomial
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "f-transform-recurrences"
 formalized = "2026-10-11"

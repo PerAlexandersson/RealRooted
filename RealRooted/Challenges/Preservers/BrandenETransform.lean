@@ -9,6 +9,7 @@ import RealRooted.Transforms.BrandenE.Interlacing
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "branden-e-transform"
 formalized = "2026-09-14"

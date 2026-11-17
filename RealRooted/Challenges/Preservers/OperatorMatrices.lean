@@ -15,6 +15,7 @@ import RealRooted.OperatorMatrix.CouplingThresholds
 
 <!-- realrooted-catalog
 version = 1
+kind = "original"
 section = "theorems"
 slug = "operator-matrices-ordered-pf"
 formalized = "2026-11-03"
@@ -60,7 +61,7 @@ label = "A two-by-two block over {1, θ, X} preserves ordered PF pairs iff it is
 [[theorems]]
 name = "RealRooted.OperatorMatrix.PreservesOrderedPF.letters_iff"
 module = "RealRooted.OperatorMatrix.OneThetaX"
-label = "Classification of ordered-PF preserving matrices over {1, θ, X}"
+label = "A matrix over {1, θ, X} preserves ordered PF vectors iff all 2×2 blocks are of 13 types"
 headline = true
 
 [[theorems]]

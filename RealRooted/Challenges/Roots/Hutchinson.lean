@@ -7,6 +7,7 @@ import RealRooted.Hutchinson
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "hutchinson"
 formalized = "2026-10-07"

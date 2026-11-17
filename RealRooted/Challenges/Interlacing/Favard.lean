@@ -10,6 +10,7 @@ public import RealRooted.Favard.Recurrence
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "favard"
 formalized = "2026-09-07"

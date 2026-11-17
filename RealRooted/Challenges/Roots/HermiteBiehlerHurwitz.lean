@@ -21,6 +21,7 @@ public import RealRooted.SamePhaseInterlacing
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "hermite-biehler-hurwitz"
 formalized = "2026-07-10"

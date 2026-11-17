@@ -16,6 +16,7 @@ import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Zeros
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "concepts"
 slug = "laguerre-polya-class"
 formalized = "2026-09-11"

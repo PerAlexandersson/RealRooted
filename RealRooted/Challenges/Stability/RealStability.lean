@@ -35,6 +35,7 @@ public import RealRooted.SpanningTreeStability
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "real-stability"
 formalized = "2026-10-12"

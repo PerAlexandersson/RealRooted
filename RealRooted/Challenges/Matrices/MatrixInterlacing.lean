@@ -14,6 +14,7 @@ public import RealRooted.ProductFamily
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "matrix-interlacing"
 formalized = "2026-10-06"

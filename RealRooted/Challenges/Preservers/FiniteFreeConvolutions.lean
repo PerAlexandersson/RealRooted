@@ -23,6 +23,7 @@ public import RealRooted.WagnerX.NonnegativeRoots
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "finite-free-convolutions"
 formalized = "2026-09-11"

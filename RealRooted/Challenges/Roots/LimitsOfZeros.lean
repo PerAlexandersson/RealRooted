@@ -10,6 +10,7 @@ import RealRooted.ThreeTermRecurrence.WangZhang
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "limits-of-zeros"
 formalized = "2026-10-27"

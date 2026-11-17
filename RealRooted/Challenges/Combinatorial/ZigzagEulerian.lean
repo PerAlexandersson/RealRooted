@@ -7,11 +7,13 @@ public import RealRooted.CombinatorialExamples.ZigzagEulerian.RecurrencePolynomi
 
 <!-- realrooted-catalog
 version = 1
+kind = "conjecture"
+conjecture = "Petersen–Zhuang (2024), Conjecture 6.1(a)"
 section = "families"
 slug = "zigzag-eulerian"
 formalized = "2026-10-23"
 references = ["Alexandersson2026Eulerian"]
-tags = ["realrooted-original"]
+tags = []
 authors = ["Alexandersson"]
 years = [2026]
 
@@ -49,11 +51,13 @@ label = "Zig-zag Eulerian polynomial"
 name = "RealRooted.CenteredEulerian.polynomial"
 module = "RealRooted.CenteredEulerian.Basis"
 label = "Centered polynomial p_n(c)"
+tags = ["realrooted-original"]
 
 [[definitions]]
 name = "RealRooted.CenteredEulerian.ColumnBound"
 module = "RealRooted.CenteredEulerian.RootCriterion"
 label = "Weighted column bound for multiplication by c² on the centered basis"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.ZigzagEulerian.polynomial_roots"
@@ -83,86 +87,104 @@ tags = []
 name = "RealRooted.CenteredEulerian.polynomial_root_normSq_lt"
 module = "RealRooted.CenteredEulerian.ColumnBound"
 label = "Complex zeros of the centered polynomials satisfy |c|² < 13/3"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.CenteredEulerian.root_bound_of_columnBound"
 module = "RealRooted.CenteredEulerian.RootCriterion"
 label = "The weighted column bound implies the root disk"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.CenteredEulerian.columnBound"
 module = "RealRooted.CenteredEulerian.ColumnBound"
 label = "The weighted column bound holds"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.CenteredEulerian.rMat_decomp"
 module = "RealRooted.CenteredEulerian.ChangeBasis"
 label = "Exact entries of the matrix of multiplication by c² on the centered basis"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.CenteredEulerian.riccati_unique"
 module = "RealRooted.CenteredEulerian.Riccati"
 label = "The Riccati equation determines the centered generating function"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.CenteredEulerian.riccati_mobius"
 module = "RealRooted.CenteredEulerian.Riccati"
 label = "A Möbius map sends Riccati solutions for c to c + 2"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.CenteredEulerian.hasSum_eulerG"
 module = "RealRooted.CenteredEulerian.EulerAnalytic"
 label = "Analytic expansion of cot(π/4 − z/2)"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.IntervalDifferential.zigzagOperator_natDegree"
 module = "RealRooted.IntervalDifferential.Degree"
 label = "The zigzag operator raises the degree of a nonzero polynomial by one"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.IntervalDifferential.zigzagLinearFactor_roots"
 module = "RealRooted.IntervalDifferential.LinearInsertion"
 label = "Inserting a real factor inserts a simple root into each gap"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.IntervalDifferential.zigzag_quadratic_certificate"
 module = "RealRooted.IntervalDifferential.Certificates"
 label = "Polynomial identity behind the insertion of a conjugate pair"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.IntervalDifferential.zigzagQuadraticFactor_roots"
 module = "RealRooted.IntervalDifferential.QuadraticInsertion"
 label = "Inserting a conjugate pair in the disk of squared radius 13/3 keeps simple interval roots"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.IntervalDifferential.zigzagTransform_cubic_roots_of_disk"
 module = "RealRooted.IntervalDifferential.CubicDisk"
 label = "The cubic seed has three simple transformed roots in (−1, 1)"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.IntervalDifferential.zigzagTransform_quartic_roots_of_disk"
 module = "RealRooted.IntervalDifferential.QuarticBounds"
 label = "The even quartic seed has four simple transformed roots in (−1, 1)"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.IntervalDifferential.splits_roots_nodup_neg_of_mobius_eval"
 module = "RealRooted.IntervalDifferential.MobiusRoots"
 label = "The map (z − 1)/(z + 1) carries simple roots in (−1, 1) to simple negative roots"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.IntervalDifferential.zigzagTransform_parity_roots_of_disk"
 module = "RealRooted.IntervalDifferential.UniversalTransfer"
 label = "A parity polynomial with all roots in the disk transforms to simple roots in (−1, 1)"
+tags = ["realrooted-original"]
 
 [[definitions]]
 name = "RealRooted.IntervalDifferential.zigzagOperator"
 module = "RealRooted.IntervalDifferential.Basic"
 label = "The centered zigzag differential operator"
+tags = ["realrooted-original"]
 
 [[definitions]]
 name = "RealRooted.IntervalDifferential.zigzagTransform"
 module = "RealRooted.IntervalDifferential.Basic"
 label = "The centered zigzag transform Q(L)1"
+tags = ["realrooted-original"]
+
 -->
 
 <!-- realrooted-catalog-content -->

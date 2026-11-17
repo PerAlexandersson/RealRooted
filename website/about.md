@@ -12,11 +12,20 @@ In closure statements, we allow the zero polynomial as well as real-rooted
 polynomials. The zero-aware interlacing relation allows either polynomial to
 be zero. A statement that requires nonzero polynomials says so.
 
-## Provenance tags
+## Kinds
 
-- **Coauthored paper:** a result from a paper coauthored by Per Alexandersson.
-- **RealRooted original:** a result first developed in RealRooted and not
-  currently attached to a paper.
+- **Classical theorems:** named theorems and main results from the literature.
+- **Methods:** general criteria and tools for real-rootedness and interlacing.
+- **Solved conjectures:** results with a cited conjecture locator; a stated case
+  or restriction remains part of the claim.
+- **New results:** results first proved in RealRooted. Cards give the main claim,
+  its formalization date and, when available, a paper reference. “Builds on”
+  identifies prior authors and years; it does not attribute the new claim to them.
+
+Current pages have provisional kinds pending the planned restructuring.
+A page missing its kind would appear under **Unclassified**.
+Selected results may also credit a coauthored paper or carry an individual
+RealRooted-original provenance tag.
 
 ## Dates and main results
 

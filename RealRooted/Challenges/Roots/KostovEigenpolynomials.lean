@@ -9,6 +9,7 @@ import RealRooted.Hadamard.Kostov.TwoStep
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "kostov-eigenpolynomials"
 formalized = "2026-10-12"

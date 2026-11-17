@@ -696,3 +696,39 @@ pre {
   }
   .catalog-index li, .section-index li, .declaration-group { box-shadow: none; }
 }
+
+/* Result kinds keep the catalog palette and give new results their own showcase. */
+.catalog-band > h2 { margin-bottom: 1.5rem; }
+.catalog-band > h2 span { color: var(--muted); font-size: 0.8em; }
+.catalog-topic + .catalog-topic { margin-top: 1.7rem; }
+.catalog-topic h3 { margin-bottom: 0.8rem; color: var(--muted); }
+.kind-badge--method { color: var(--definition); }
+.kind-badge--conjecture { color: var(--coauthored); }
+.kind-badge--original { color: var(--original); }
+.kind-badge--unclassified { color: var(--muted); }
+.catalog-index .catalog-card--method { border-left-color: var(--definition); }
+.catalog-index .catalog-card--conjecture { border-left-color: var(--coauthored); }
+.catalog-index .catalog-card--original { border-left-color: var(--original); }
+.catalog-band--original {
+  padding: clamp(0.8rem, 2vw, 1.5rem);
+  border: 1px solid color-mix(in srgb, var(--original) 28%, var(--line));
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--original-soft) 48%, var(--paper));
+}
+.catalog-band--original > h2 { color: var(--original); }
+.catalog-band--original .catalog-index { grid-template-columns: minmax(0, 1fr); }
+.catalog-card--original .card-headlines {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.card-conjecture, .card-paper {
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.card-conjecture { color: var(--coauthored); font-weight: 650; }
+.catalog-card--original .card-arrow { color: var(--original); }
+.page-conjecture { color: var(--coauthored); font-weight: 650; }

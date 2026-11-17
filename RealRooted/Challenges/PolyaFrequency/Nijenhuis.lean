@@ -7,6 +7,7 @@ public import RealRooted.RookPolynomial
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "nijenhuis-rook-polynomials"
 formalized = "2026-09-26"

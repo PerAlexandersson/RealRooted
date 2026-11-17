@@ -11,6 +11,7 @@ import RealRooted.Laguerre.GeneralizedBell
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "families"
 slug = "laguerre-polynomials"
 formalized = "2026-09-07"

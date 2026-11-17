@@ -8,6 +8,7 @@ import RealRooted.EndpointDerivative.Sequence
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "endpoint-derivative"
 formalized = "2026-09-26"

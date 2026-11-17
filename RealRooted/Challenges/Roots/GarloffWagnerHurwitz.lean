@@ -7,6 +7,7 @@ import RealRooted.GarloffWagner.HurwitzStable
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "garloff-wagner-hurwitz"
 formalized = "2026-06-10"

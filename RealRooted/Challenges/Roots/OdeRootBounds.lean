@@ -8,6 +8,7 @@ import RealRooted.Wronskian.OdePropagation
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "ode-root-bounds"
 formalized = "2026-11-01"
