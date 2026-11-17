@@ -117,7 +117,7 @@ $$
 \frac{d}{dt}\bigl(F_{N+1,1}*F_{N,m}\bigr)=(N+1)\,F_{N,m+1}.
 $$
 Induction on $m$, with the [Garloff–Wagner theorem](rr:hadamard-products) for Hadamard products
-and [derivative interlacing](rr:derivative-interlacing), gives real roots and weak interlacing.
+and [derivative interlacing](rr:interlacing), gives real roots and weak interlacing.
 For strictness, the same identity together with simplicity of the roots of Hadamard products
 rules out common roots of Hadamard products with consecutive binomial powers, and positivity of
 the Wronskian gives Markov's strict form of the derivative step.

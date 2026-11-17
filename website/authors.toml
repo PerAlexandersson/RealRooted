@@ -86,6 +86,7 @@
 
 [overrides]
 "aissen-schoenberg-whitney:Whitney" = { name = "Anne Whitney" }
+"common-interleavers:Liu" = { name = "Lily L. Liu" }
 "finite-free-convolutions:Srivastava" = { name = "Nikhil Srivastava" }
 "gamma-transform:Petersen" = { name = "T. Kyle Petersen" }
 "hadamard-products:Liu" = { name = "Yanxin Liu" }
@@ -95,7 +96,6 @@
 "jacobi-stirling-descent:Wang" = { name = "Ming-Xin Wang" }
 "jacobi-stirling-descent:Zeng" = { name = "Jiang Zeng" }
 "lindstrom-gessel-viennot:Gessel" = { name = "Ira M. Gessel" }
-"liu-opposite-signs:Liu" = { name = "Lily L. Liu" }
 "ma-wang-liu-wang:Liu" = { name = "Lily L. Liu" }
 "ma-wang-liu-wang:Ma" = { name = "Shi-Mei Ma" }
 "ma-wang-liu-wang:Wang" = { name = "Yi Wang" }

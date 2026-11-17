@@ -1,5 +1,4 @@
 # Advisory migration baseline: source path and declarations without objects (target 12).
-RealRooted/Challenges/Interlacing/CommonInterleaver.lean	26
 RealRooted/Challenges/Preservers/LaguerrePolya.lean	17
 RealRooted/Challenges/Preservers/MultiplierSequence.lean	34
 RealRooted/Challenges/Orthogonal/JacobiPolynomials.lean	27
@@ -13,7 +12,6 @@ RealRooted/Challenges/Stability/BorceaBrandenClassification.lean	26
 RealRooted/Challenges/Combinatorial/HarperCLT.lean	15
 RealRooted/Challenges/Combinatorial/BrandenLeite.lean	42
 RealRooted/Challenges/Combinatorial/BrandenVecchi.lean	15
-RealRooted/Challenges/Interlacing/InterlacingClosure.lean	13
 RealRooted/Challenges/Roots/RootContinuity.lean	21
 RealRooted/Challenges/Combinatorial/SeparablePermutations.lean	20
 RealRooted/Challenges/PolyaFrequency/EdreiThoma.lean	15
@@ -30,7 +28,6 @@ RealRooted/Challenges/Matrices/TP2HessenbergCertificate.lean	40
 RealRooted/Challenges/Interlacing/EndpointDerivative.lean	14
 RealRooted/Challenges/Interlacing/RecurrenceRootWindows.lean	59
 RealRooted/Challenges/Interlacing/IteratedDerivativeShift.lean	16
-RealRooted/Challenges/Roots/KostovEigenpolynomials.lean	13
 RealRooted/Challenges/Matrices/MatrixInterlacing.lean	14
 RealRooted/Challenges/Interlacing/MaWangEndpointSteps.lean	15
 RealRooted/Challenges/Roots/MeshFiniteDifference.lean	20

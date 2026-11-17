@@ -172,7 +172,7 @@ sequence if and only if $\sum_k\gamma_kz^k/k!$ is of type I.
 Type I functions give the Pólya–Schur description of PF multiplier sequences; see the
 [multiplier sequences](rr:multiplier-sequences) page. For real-rooted
 polynomials, Laguerre's inequality is on the
-[Wronskian criterion](rr:wronskian-criterion) page, and the operator theorem
+[Wronskian criterion](rr:bezoutian) page, and the operator theorem
 rests on the [Hermite–Poulain theorem](rr:hermite-poulain).
 
 ## Proof

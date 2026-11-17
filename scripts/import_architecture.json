@@ -879,11 +879,8 @@
     "RealRooted.Tactic.Kurtz": {
       "max_modules": 93
     },
-    "RealRooted.Challenges.Interlacing.Wagner": {
-      "max_modules": 90
-    },
     "RealRooted.Challenges.Interlacing.Interlacing": {
-      "max_modules": 9
+      "max_modules": 177
     },
     "RealRooted.Challenges.Combinatorial.Narayana": {
       "max_modules": 219
@@ -2047,7 +2044,6 @@
     "RealRooted.Challenges.Roots.Kurtz",
     "RealRooted.Tactic.Kurtz",
     "RealRooted.Wagner.NonpositiveRoots",
-    "RealRooted.Challenges.Interlacing.Wagner",
     "RealRooted.Challenges.Interlacing.Interlacing",
     "RealRooted.Challenges.Combinatorial.Narayana",
     "RealRooted.Tactic.Wagner",

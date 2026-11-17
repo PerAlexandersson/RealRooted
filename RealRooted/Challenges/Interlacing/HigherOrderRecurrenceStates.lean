@@ -253,10 +253,11 @@ the sequence as one coordinate of the state.
 
 ## Proof
 
-Sufficiency follows from the cone lemmas of [Wagner](rr:wagner): if $h\ll f_i$ for all $i$, then
-$h\ll\sum_ic_if_i$ for $c_i\ge0$; if $f_i\ll h$ for all $i$, then $\sum_ic_if_i\ll h$; and
-$f\ll g$ implies $g\ll xf$. Necessity follows by applying the map to the triples $(1,0,0)$,
-$(0,1,0)$, $(0,0,1)$ and $(K,0,1)$ for large $K$. For the subsequence recurrence, the cubic
+Sufficiency follows from the cone lemmas of [Wagner](rr:interlacing): if $h\ll f_i$ for all
+$i$, then $h\ll\sum_ic_if_i$ for $c_i\ge0$; if $f_i\ll h$ for all $i$, then
+$\sum_ic_if_i\ll h$; and $f\ll g$ implies $g\ll xf$. Necessity follows by applying the map to
+the triples $(1,0,0)$, $(0,1,0)$, $(0,0,1)$ and $(K,0,1)$ for large $K$. For the subsequence
+recurrence, the cubic
 characteristic polynomial $z^3-pz^2+qz-u$ divides $z^9-(p^3-3pq+3u)z^6+(q^3-3pqu+3u^2)z^3-u^3$.
 
 ## References
