@@ -17,6 +17,7 @@ import RealRooted.BorceaBranden.UnivariateFiniteSymbol
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "borcea-branden-classification"
 formalized = "2026-10-13"

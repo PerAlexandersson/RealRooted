@@ -10,6 +10,7 @@ import RealRooted.LaguerreInequalities.Rows
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "laguerre-inequalities"
 formalized = "2026-11-09"

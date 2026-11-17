@@ -9,6 +9,7 @@ public import RealRooted.Hermite.PoulainSymbolInterlacing
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "hermite-poulain"
 formalized = "2026-07-18"

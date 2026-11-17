@@ -29,6 +29,7 @@ public import RealRooted.PolynomialValueEulerNumerator.Product.PF.Causal
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "hadamard-products"
 formalized = "2026-07-03"

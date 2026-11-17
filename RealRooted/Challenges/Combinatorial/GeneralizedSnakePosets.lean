@@ -18,6 +18,7 @@ public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurre
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "families"
 slug = "generalized-snake-posets"
 formalized = "2026-10-05"

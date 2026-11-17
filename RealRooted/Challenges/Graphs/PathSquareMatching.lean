@@ -8,6 +8,7 @@ import RealRooted.Graph.IndependencePolynomial.SimplicialCliqueDeletion
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "path-square-matching"
 formalized = "2026-11-01"

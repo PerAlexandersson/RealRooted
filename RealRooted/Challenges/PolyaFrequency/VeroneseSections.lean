@@ -9,6 +9,7 @@ public import RealRooted.VeroneseMatrix
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "veronese-sections"
 formalized = "2026-10-05"

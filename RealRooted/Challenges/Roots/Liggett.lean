@@ -7,6 +7,7 @@ import RealRooted.CoefficientShape.Liggett
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "liggett-ultra-log-concavity"
 formalized = "2026-10-07"

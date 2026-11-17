@@ -8,6 +8,7 @@ import RealRooted.Permanent.MonotoneColumn
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "monotone-column-permanent"
 formalized = "2026-10-13"

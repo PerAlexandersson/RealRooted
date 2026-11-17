@@ -11,6 +11,7 @@ import RealRooted.Interlacing.QuadraticDifferentialOrbit
 
 <!-- realrooted-catalog
 version = 1
+kind = "original"
 section = "theorems"
 slug = "second-order-ray-operators"
 formalized = "2026-11-01"
@@ -41,7 +42,7 @@ label = "The orbit of 1 under X D² + ρ X D + X + γ"
 [[theorems]]
 name = "RealRooted.secondOrderRayPreserving_iff_three_branch_at_index"
 module = "RealRooted.Interlacing.SecondOrderNecessity"
-label = "PF preservation is equivalent to an explicit bound on c in three regimes"
+label = "Second-order ray operators preserve PF exactly when c ≤ τ_m"
 headline = true
 
 [[theorems]]

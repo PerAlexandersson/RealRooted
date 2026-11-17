@@ -9,6 +9,7 @@ import RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "szasz-growth"
 formalized = "2026-10-13"

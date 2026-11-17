@@ -7,6 +7,7 @@ import RealRooted.Kurtz
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "kurtz"
 formalized = "2026-07-18"

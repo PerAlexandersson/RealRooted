@@ -7,6 +7,7 @@ import RealRooted.CoefficientDominance.NewtonDefectRoots
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "local-newton-defect-roots"
 formalized = "2026-10-11"

@@ -17,6 +17,7 @@ import RealRooted.BasisTransform.FiniteSymbol
 
 <!-- realrooted-catalog
 version = 1
+kind = "original"
 section = "theorems"
 slug = "basis-transform-preservers"
 formalized = "2026-11-03"

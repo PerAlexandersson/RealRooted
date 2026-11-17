@@ -9,6 +9,7 @@ import RealRooted.ThresholdMatrix.HaglundZhang
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "threshold-matrices"
 formalized = "2026-10-06"

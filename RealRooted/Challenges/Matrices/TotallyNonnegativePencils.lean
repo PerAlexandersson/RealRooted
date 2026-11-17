@@ -11,6 +11,7 @@ import RealRooted.TotallyNonnegPencil.StrictInterlacing
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "totally-nonnegative-pencils"
 formalized = "2026-11-07"

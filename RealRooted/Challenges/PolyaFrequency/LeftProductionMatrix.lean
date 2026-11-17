@@ -7,13 +7,14 @@ import RealRooted.Applications.OEIS.A114123
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "left-production-matrices"
 formalized = "2026-11-10"
 references = []
 authors = ["X. Chen", "L. Fu", "J. Ruan"]
 years = [2025]
-tags = ["realrooted-original"]
+tags = []
 
 [[definitions]]
 name = "RealRooted.IsLeftProductionArray"
@@ -75,6 +76,7 @@ label = "Recurrence criterion for real roots via Pólya frequency Riordan arrays
 name = "RealRooted.Applications.OEIS.A114123.row_splits_and_roots_nonpos"
 module = "RealRooted.Applications.OEIS.A114123"
 label = "A114123 rows split with nonpositive roots"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.PFRiordan.evenBinomialRow_splits_and_roots_nonpos"

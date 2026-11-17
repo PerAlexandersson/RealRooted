@@ -10,6 +10,7 @@ import RealRooted.Schur.MinorPositivity
 
 <!-- realrooted-catalog
 version = 1
+kind = "original"
 section = "theorems"
 slug = "schur-elementary-substitution"
 formalized = "2026-11-07"
@@ -55,7 +56,7 @@ label = "Positive constant determinant from the number of positive letters"
 [[theorems]]
 name = "RealRooted.Schur.elementarySubstitution_isRealRooted"
 module = "RealRooted.Schur.Roots"
-label = "Real-rooted dual Jacobi–Trudi specialization under alphabet-size and parity hypotheses"
+label = "Replacing e_r by e_r + t in skew Schur determinants gives real roots (size, parity bounds)"
 headline = true
 
 [[theorems]]

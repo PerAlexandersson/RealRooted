@@ -26,6 +26,7 @@ public import RealRooted.SameDegreeCountFromAnalytic
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "concepts"
 slug = "common-interleavers"
 formalized = "2026-07-03"

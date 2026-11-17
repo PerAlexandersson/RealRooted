@@ -7,6 +7,7 @@ import RealRooted.MultiplierSequence.ProperPositionPF
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "pf-multiplier-proper-position"
 formalized = "2026-10-11"

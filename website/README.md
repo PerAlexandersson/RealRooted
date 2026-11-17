@@ -8,6 +8,7 @@ block inside a `/-! ... -/` module comment:
 /-!
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "families"
 slug = "example"
 formalized = "2026-10-23"
@@ -82,7 +83,7 @@ The header gathers SymCat labels from declarations and prose links. Optional
 page-level `symcat = ["label", "anotherLabel"]` adds labels without repeating
 them in prose (`symcat = "label"` also works). Labels are validated against the
 committed snapshot, deduplicated, and shown under the title with attribution,
-provenance, a topic › kind breadcrumb, and a link to the main result.
+provenance, a kind › topic breadcrumb, and a link to the main result.
 Bibliography titles retain the BibTeX casing; books also show their series,
 volume and publisher from the snapshot. Do not edit the snapshot to change formatting.
 
@@ -139,6 +140,10 @@ default for its selected theorems. Definitions are untagged unless their own
 record supplies `tags`; any item can use `tags = []` to clear the page default.
 Tags are editorial metadata: they are displayed on cards, declaration pages,
 and the all-results table, but do not enter the selected-declaration digest.
+On mixed pages, put `realrooted-original` only on the selected new results,
+so the page's cited main result does not inherit it. For `kind = "original"`,
+the New result badge already conveys the page's status; the redundant original
+provenance badge is omitted on the card and header, while item tags still display.
 
 Mark exactly one theorem per page with `headline = true` and a one-line label.
 The landing page displays one card per page, using the first headline; a warning
@@ -147,8 +152,21 @@ first theorem. `scripts/headline_baseline.txt` lists existing exceptions: source
 checks reject new exceptions and stale entries, so remove an entry when fixed.
 Labels and headlines do not enter the selected-declaration digest.
 
-Use `kind = "sequence"` and a nonempty `conjecture = "..."` locator for a
-per-sequence page. A title naming an OEIS A-number also requires a locator.
+The optional page `kind` is one of `landmark` (Classical theorems), `method`
+(Methods), `conjecture` (Solved conjectures), or `original` (New results).
+`sequence` is no longer accepted. Exactly the `conjecture` kind requires a
+nonempty, trimmed, single-line `conjecture = "..."` locator: name the paper
+and conjecture number, or the OEIS entry's conjecture. Read the primary source
+before adding it. Include any restriction, such as “case 321” or “partial”,
+in the locator. Cards and page headers show the locator. A title naming an
+OEIS A-number also requires a locator. Pages without a kind temporarily appear
+under Unclassified as a fallback. Every current page has a provisional kind;
+merge candidates and demoted pages remain visible until their planned restructuring.
+New-result cards show a one-line headline stating the new mathematical claim,
+the formalization date and, when present, the first cited paper (including its
+arXiv identifier when available). Their authors/years line reads
+“Builds on: authors · years”, so prior sources are not credited with the new
+result. The line is omitted when both arrays are empty.
 The catalog validates all citation keys and SymCat labels against the snapshots.
 `python3 scripts/symcat_sync.py --check` compares both snapshots with the merged
 live data, including changed label targets and bibliography content. It reports
@@ -167,8 +185,9 @@ space-separated word. Without JavaScript, the cards and paginated results remain
 available. Failed index loads leave browsing available and allow a retry.
 
 The compact search JSON has `schema_version = 1`, a `pages` array (title,
-headline label, declaration labels, authors, years, topic, SymCat labels, object
-names and URL), and a `declarations` array (name, label, kind, headline flag,
+headline label, declaration labels, authors, years, topic, page kind, conjecture
+locator, SymCat labels, object names and URL), and a `declarations` array
+(name, label, kind, headline flag,
 SymCat label, objects, provenance labels and URL). Each declaration's integer
 `page` indexes its shared page metadata, avoiding thousands of repeated titles
 and author arrays. URLs respect `--base-path`. The machine-readable
@@ -254,12 +273,23 @@ fails `--check`; a removed finding requires deleting its stale baseline row.
 During a rewrite, fix the prose and remove its rows together. Do not add baseline
 rows for new prose. Fenced code and generated declaration excerpts are excluded.
 
-The landing page groups all kinds by source topic, in this order: Interlacing,
-Roots, Preservers, Pólya frequency, Stability, Matrices, Orthogonal, Graphs,
-Combinatorial. The topic comes from `RealRooted/Challenges/<Topic>/`; legacy
-root-level entry points use Combinatorial. The sticky Topics bar scrolls
-horizontally on phones. Name sorting ignores a leading A, An or The; each
-topic retains its grouping when the sort changes.
+The landing page groups pages into Classical theorems, Methods, Solved
+conjectures and New results, in that order. A fallback Unclassified band appears
+only when a page lacks a kind; no current page does. Each band groups by source topic: Interlacing, Roots, Preservers, Pólya
+frequency, Stability, Matrices, Orthogonal, Graphs, Combinatorial. The topic
+comes from `RealRooted/Challenges/<Topic>/`; legacy root-level entry points use
+Combinatorial. The sticky jump bar gives band counts and a Families A–Z link.
+Name sorting ignores a leading A, An or The; sorting preserves each topic
+within its kind band. Existing section/slug URLs and redirects are unchanged.
+
+A lead paragraph before `## Results` is required, with about 60 words as the
+target. `prose_findings` reports `lead-missing` and `lead-long`; for this migration
+both are warnings and do not enter the failing prose ratchet. The declaration
+target is about 12 per page, excluding theorem records carrying `objects`
+(including page defaults on the headline). `scripts/declaration_count_baseline.txt`
+records current oversized pages as `source_path<TAB>count`. Counts, regressions
+and stale rows are advisory for now; remove or reduce baseline rows as later
+batches trim selections. These warnings do not block `--check`.
 
 The Conventions page is maintained in `website/about.md`. Keep shared
 interlacing and zero-polynomial conventions there, and state a different local
@@ -273,8 +303,16 @@ markup removed and TeX retained), `headline` (`name` and `label`, or null),
 It also exports explicit page/declaration `objects` and `property`, and a
 `families_index` object containing its URL and the sorted family entries (names,
 properties, theorem labels and names, URLs, authors, years and reference keys).
-`llms.txt` provides one line per page: title — headline claim — main Lean name —
-absolute page URL, plus a link to the Polynomial families index.
+The manifest and search index both export page `kind` and `conjecture`
+(null when absent), and the same ordered `groups` array: each record has
+`kind`, `title` and `topics`, whose records hold `topic` and ordered page slugs.
+Their page arrays follow this kind/topic/name order; search declaration `page`
+indices refer to that reordered page array. Declaration `kind` still means
+`definition` or `theorem`. Kind metadata does not change the declaration digest.
+`llms.txt` uses the same kind headings and topic subheadings, includes explicit
+kind and conjecture locators, and provides one line per page: title — headline
+claim — main Lean name — absolute page URL, plus a link to the Polynomial
+families index.
 The first theorem remains the fallback for older pages
 without a marked headline; a definitions-only page has no main result.
 

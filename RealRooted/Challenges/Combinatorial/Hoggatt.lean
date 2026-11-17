@@ -8,6 +8,7 @@ public import RealRooted.Applications.OEIS.A056939
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "families"
 slug = "hoggatt"
 formalized = "2026-11-13"

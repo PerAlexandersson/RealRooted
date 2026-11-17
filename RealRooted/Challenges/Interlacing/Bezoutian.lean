@@ -14,6 +14,7 @@ public import RealRooted.Mathlib.Algebra.Polynomial.Bezoutian
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "bezoutian"
 formalized = "2026-10-06"

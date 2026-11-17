@@ -13,6 +13,7 @@ import RealRooted.ThreeTermRecurrence.Moments
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "harper-clt"
 formalized = "2026-10-12"

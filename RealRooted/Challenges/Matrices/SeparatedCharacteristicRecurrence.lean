@@ -10,6 +10,7 @@ import RealRooted.MatrixInterlacing.SeparatedCharacteristicDeterminant
 
 <!-- realrooted-catalog
 version = 1
+kind = "original"
 section = "theorems"
 slug = "separated-characteristic-recurrence"
 formalized = "2026-11-01"
@@ -45,7 +46,7 @@ label = "Every coordinate of every iterate of an ordered PF seed is a PF polynom
 [[theorems]]
 name = "RealRooted.separatedCharacteristicRows_interl_succ"
 module = "RealRooted.MatrixInterlacing.SeparatedCharacteristicRows"
-label = "Each coordinate interlaces the same coordinate after one step"
+label = "Parameters a_i ≥ 0 ≥ b_j give PF rows, interlacing from ordered PF seeds"
 headline = true
 
 [[theorems]]

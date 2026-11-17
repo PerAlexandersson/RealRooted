@@ -9,6 +9,7 @@ import RealRooted.MultivariateStability.MorrisOperator
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "morris-flow"
 formalized = "2026-10-16"

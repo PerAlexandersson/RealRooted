@@ -8,6 +8,7 @@ import RealRooted.EdreiThoma.Easy
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "edrei-thoma"
 formalized = "2026-10-13"

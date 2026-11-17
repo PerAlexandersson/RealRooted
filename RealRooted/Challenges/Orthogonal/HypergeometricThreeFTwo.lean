@@ -5,6 +5,7 @@ import RealRooted.Hypergeometric.ThreeFTwo
 /-!
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "families"
 slug = "terminating-three-f-two"
 formalized = "2026-11-14"

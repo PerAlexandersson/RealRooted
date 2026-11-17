@@ -9,6 +9,7 @@ import RealRooted.RecurrenceSpace.Defect
 
 <!-- realrooted-catalog
 version = 1
+kind = "original"
 section = "theorems"
 slug = "recurrence-space-certificates"
 formalized = "2026-10-21"
@@ -70,7 +71,7 @@ label = "A filtered operator of weight below h maps solutions into the kernel of
 [[theorems]]
 name = "RealRooted.FilteredOperator.apply_eq_zero_iff"
 module = "RealRooted.RecurrenceSpace.Filtered"
-label = "Filtered finite check: vanishing of the first h·k terms suffices"
+label = "A weight < h operator on an order-k lag sequence vanishes iff its first hk values do"
 headline = true
 symcat = "recurrenceFiniteVerification"
 -->

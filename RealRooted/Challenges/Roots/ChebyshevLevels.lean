@@ -7,6 +7,7 @@ import RealRooted.Chebyshev.Levels
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "chebyshev-level-polynomials"
 formalized = "2026-11-01"

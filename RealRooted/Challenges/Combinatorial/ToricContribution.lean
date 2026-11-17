@@ -8,6 +8,8 @@ import RealRooted.ParkingFunctions.ToricContribution.ContributionReversal
 
 <!-- realrooted-catalog
 version = 1
+kind = "conjecture"
+conjecture = "Xiao (2026), Conjecture 4.2"
 section = "theorems"
 slug = "toric-g-contributions"
 formalized = "2026-09-02"

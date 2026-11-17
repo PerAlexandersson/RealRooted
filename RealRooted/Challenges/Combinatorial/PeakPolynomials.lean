@@ -7,6 +7,7 @@ import RealRooted.Applications.PeakPolynomials.PeakInduction
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "peak-polynomials"
 formalized = "2026-07-01"

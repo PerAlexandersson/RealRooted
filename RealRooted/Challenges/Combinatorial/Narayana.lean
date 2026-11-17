@@ -19,6 +19,7 @@ public import RealRooted.NarayanaTransformation.RootGeometry
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "families"
 slug = "narayana"
 formalized = "2026-07-18"

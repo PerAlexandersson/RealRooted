@@ -11,6 +11,7 @@ public import RealRooted.LiuOppositeSigns.RootCountBranches.Interfaces
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "liu-opposite-signs"
 formalized = "2026-10-02"

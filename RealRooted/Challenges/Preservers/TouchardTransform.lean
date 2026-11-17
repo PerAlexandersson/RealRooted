@@ -13,6 +13,7 @@ import RealRooted.Transforms.TouchardRootDomain
 
 <!-- realrooted-catalog
 version = 1
+kind = "original"
 section = "theorems"
 slug = "touchard-transform"
 formalized = "2026-11-09"
@@ -21,38 +22,44 @@ years = [1994, 2006]
 references = [
   "Branden2006",
 ]
-tags = ["realrooted-original"]
+tags = []
 
 [[theorems]]
 name = "RealRooted.forall_splits_basisTransform_touchard_iff"
 module = "RealRooted.Transforms.TouchardRootDomain"
 label = "The Touchard transform of every polynomial rooted in J is real-rooted iff J ⊆ (−∞, 1/4]"
 headline = true
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.forall_isRealRootedIn_Iic_basisTransform_touchard_iff"
 module = "RealRooted.Transforms.TouchardRootDomain"
 label = "The upper ray (−∞, c] is invariant under the Touchard transform iff 0 ≤ c ≤ 1/4"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.forall_splits_brandenE_iff"
 module = "RealRooted.Transforms.BrandenE.RootDomain"
 label = "The E transform of every polynomial rooted in J is real-rooted iff J ⊆ [L, U]"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.forall_isRealRootedIn_Icc_brandenE_iff"
 module = "RealRooted.Transforms.BrandenE.RootDomain"
 label = "The interval [A, B] is invariant under the E transform iff L ≤ A ≤ −1 and 0 ≤ B ≤ U"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.isRealRootedIn_Iic_quarter_of_touchard_recurrence"
 module = "RealRooted.Transforms.TouchardRootDomain"
 label = "Rows of the recurrence P_{n+1} = (x + a) P_n + x P_n′ with a ≥ −1/4 have roots ≤ 1/4"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.isRealRootedIn_Icc_of_brandenE_recurrence"
 module = "RealRooted.Transforms.BrandenE.RootDomain"
 label = "Rows of the Euler type recurrence with (1 − √2)/2 ≤ a ≤ (1 + √2)/2 are rooted in [L, U]"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.Poisson.fallingFactorialTransform_touchard"
@@ -105,11 +112,13 @@ label = "A monic cubic is PF exactly when its coefficients and discriminant are 
 name = "RealRooted.isPFPolynomial_touchard_linear_mul_quadratic_iff"
 module = "RealRooted.Transforms.StirlingRootRegions"
 label = "Exact coefficient and discriminant criterion for the grouped cubic (X + a)((X + b)² + w)"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.isPFPolynomial_touchard_half_shifted_cubic_iff"
 module = "RealRooted.Transforms.StirlingRootRegions"
 label = "Sharp region b ≥ -1/2 and w ≤ 3b + 9/4 for the half-shifted grouped cubic"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.not_splits_basisTransform_touchard_y_sq_add_half"

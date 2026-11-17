@@ -17,6 +17,7 @@ public import RealRooted.PolyaFrequencyConvolution.Basic
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "aissen-schoenberg-whitney"
 formalized = "2026-10-05"

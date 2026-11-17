@@ -7,6 +7,7 @@ import RealRooted.MultiplierSequence.FallingFactorial
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "falling-factorial-truncations"
 formalized = "2026-11-13"

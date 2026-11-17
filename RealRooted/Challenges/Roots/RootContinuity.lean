@@ -9,6 +9,7 @@ import RealRooted.RootContinuity.Path
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "root-continuity"
 formalized = "2026-10-06"

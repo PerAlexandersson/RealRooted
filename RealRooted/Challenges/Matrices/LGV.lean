@@ -10,6 +10,7 @@ import RealRooted.LGV.TotallyNonnegative
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "lindstrom-gessel-viennot"
 formalized = "2026-09-17"

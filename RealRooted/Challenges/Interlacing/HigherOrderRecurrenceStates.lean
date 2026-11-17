@@ -10,6 +10,7 @@ import RealRooted.Recurrence.ResidueSubsequence
 
 <!-- realrooted-catalog
 version = 1
+kind = "original"
 section = "theorems"
 slug = "higher-order-recurrence-states"
 formalized = "2026-11-03"

@@ -7,6 +7,7 @@ import RealRooted.Interlacing.QuadraticRemainderCriterion
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "quadratic-interlacing-criterion"
 formalized = "2026-11-01"

@@ -18,6 +18,7 @@ import RealRooted.GeneralizedEulerian
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "eulerian-operators"
 formalized = "2026-11-01"

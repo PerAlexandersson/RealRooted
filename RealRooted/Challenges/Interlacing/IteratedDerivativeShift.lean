@@ -9,6 +9,7 @@ import RealRooted.Tactic.IteratedDerivativeShiftProduct
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "iterated-derivative-shift"
 formalized = "2026-10-05"

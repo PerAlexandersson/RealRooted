@@ -10,6 +10,7 @@ import RealRooted.MaWang.GrowingZeroMultiplicity
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "ma-wang-endpoint-steps"
 formalized = "2026-11-01"

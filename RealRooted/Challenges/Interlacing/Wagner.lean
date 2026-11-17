@@ -16,6 +16,7 @@ public import RealRooted.WeightedSum
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "wagner"
 formalized = "2026-07-10"

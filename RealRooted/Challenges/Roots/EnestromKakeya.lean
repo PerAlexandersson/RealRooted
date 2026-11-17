@@ -7,6 +7,7 @@ import RealRooted.Mathlib.Analysis.Complex.Polynomial.EnestromKakeya
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "enestrom-kakeya"
 formalized = "2026-10-07"

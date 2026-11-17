@@ -56,7 +56,7 @@ for (const control of document.querySelectorAll("[data-catalog-search]")) {
   const browsing = Array.from(main.querySelectorAll("[data-results-browse]"));
   const cards = Array.from(main.querySelectorAll(".catalog-card"));
   const groups = Array.from(main.querySelectorAll(".catalog-group"));
-  const topicLinks = Array.from(main.querySelectorAll(".topic-jump a"));
+  const topicLinks = Array.from(main.querySelectorAll('.topic-jump a[href^="#"]'));
   const landingControls = cards.length ? Array.from(
     main.querySelectorAll(".topic-jump, [data-catalog-sort]")) : [];
   const normalize = (value) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
@@ -153,7 +153,7 @@ for (const control of document.querySelectorAll("[data-catalog-search]")) {
       index = data;
       for (const page of index.pages) {
         page.shared = normalize([page.title, page.headline, ...page.authors, ...page.years,
-          page.topic, ...page.symcat, ...page.objects].join(" "));
+          page.topic, page.kind ?? "", page.conjecture ?? "", ...page.symcat, ...page.objects].join(" "));
         page.search = `${page.shared} ${normalize(page.labels.join(" "))}`;
       }
       for (const item of index.declarations) {

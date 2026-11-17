@@ -18,6 +18,7 @@ import pathlib
 import posixpath
 import re
 import subprocess
+import sys
 import tomllib
 import unicodedata
 from datetime import date
@@ -54,6 +55,14 @@ TOPICS = {
     "Graphs": "Graphs",
     "Combinatorial": "Combinatorial",
 }
+# Ordered bands are shared by HTML and machine-readable exports.
+KINDS = {
+    "landmark": ("Classical theorems", "Classical theorem"),
+    "method": ("Methods", "Method"),
+    "conjecture": ("Solved conjectures", "Solved conjecture"),
+    "original": ("New results", "New result"),
+}
+KIND_BANDS = {**KINDS, None: ("Unclassified", "Unclassified")}
 PROVENANCE_TAGS = {
     "coauthored-paper": (
         "Coauthored paper",
@@ -604,12 +613,17 @@ def parse_challenge_source(
     content = content_match.group(1).strip()
     kind = metadata.get("kind")
     conjecture = metadata.get("conjecture")
-    if kind is not None and kind != "sequence":
-        raise _source_error(source_path, "kind must be sequence when specified")
-    if conjecture is not None and (not isinstance(conjecture, str) or not conjecture.strip()):
-        raise _source_error(source_path, "conjecture must be a nonempty locator")
-    if kind == "sequence" and not conjecture:
-        raise _source_error(source_path, "sequence pages require a conjecture locator")
+    if kind is not None and (not isinstance(kind, str) or kind not in KINDS):
+        raise _source_error(source_path, f"kind must be one of {', '.join(KINDS)}")
+    if conjecture is not None and (
+        not isinstance(conjecture, str) or not conjecture.strip()
+        or conjecture != conjecture.strip() or "\n" in conjecture or "\r" in conjecture
+    ):
+        raise _source_error(source_path, "conjecture must be a nonempty, trimmed, single-line locator")
+    if kind == "conjecture" and not conjecture:
+        raise _source_error(source_path, "conjecture pages require a conjecture locator")
+    if conjecture is not None and kind != "conjecture":
+        raise _source_error(source_path, "a conjecture locator requires kind = conjecture")
     return CatalogPage(
         kind=kind,
         conjecture=conjecture,
@@ -1717,27 +1731,75 @@ def _headline(page: CatalogPage) -> CatalogItem | None:
                 next(iter(page.theorems), None))
 
 
-def _page_card(page: CatalogPage, href: str) -> str:
-    kind = "theorem" if page.section == "theorems" else "definition"
-    label = SECTION_LABELS[page.section]
+def _kind_anchor(kind: str | None) -> str:
+    return "kind-" + (kind or "unclassified")
+
+
+def _kind_topic_anchor(kind: str | None, topic: str) -> str:
+    return _kind_anchor(kind) + "-" + _topic_anchor(topic)
+
+
+def _kind_groups(pages: Iterable[CatalogPage]) -> list[dict[str, Any]]:
+    """One stable kind/topic grouping, using slugs to reference page records."""
+    pages = tuple(sorted(pages, key=lambda page: (_title_sort_key(page.title), page.slug)))
+    for page in pages:
+        _ = page.topic  # Reject unknown topic directories before grouping.
+    return [
+        {"kind": kind, "title": labels[0], "topics": [
+            {"topic": topic, "pages": [page.slug for page in pages
+                                       if page.kind == kind and page.topic == topic]}
+            for topic in TOPICS.values()
+            if any(page.kind == kind and page.topic == topic for page in pages)
+        ]}
+        for kind, labels in KIND_BANDS.items() if any(page.kind == kind for page in pages)
+    ]
+
+
+def _kind_badge(page: CatalogPage) -> str:
+    kind = page.kind or "unclassified"
+    return (f'<span class="kind-badge kind-badge--{kind}">'
+            f'{KIND_BANDS[page.kind][1]}</span>')
+
+
+def _page_card(page: CatalogPage, href: str, bibliography: dict[str, Any]) -> str:
+    kind = page.kind or "unclassified"
     year = page.years[0] if page.years else ""
     selected = _headline(page)
-    headline_html = (f'<span class="card-headlines">{html.escape(selected.label or "")}</span>'
-                     if selected else "")
+    attribution = _attribution(page)
+    if page.kind == "original" and attribution:
+        attribution = "Builds on: " + attribution
+    attribution_html = (f'<span class="card-attribution">{html.escape(attribution)}</span>'
+                        if attribution or page.kind != "original" else "")
+    headline_title = (f' title="{html.escape(selected.label or "", quote=True)}"'
+                      if selected and page.kind == "original" else "")
+    headline_html = (f'<span class="card-headlines"{headline_title}>'
+                     f'{html.escape(selected.label or "")}</span>' if selected else "")
+    locator = (f'<span class="card-conjecture">{html.escape(page.conjecture)}</span>'
+               if page.conjecture else "")
+    paper = ""
+    if page.kind == "original" and page.citations:
+        citation = page.citations[0]
+        entry = bibliography[citation.key]
+        csl = entry.get("csl", {})
+        title = csl.get("title") or entry.get("label") or citation.key
+        url = csl.get("URL", "")
+        arxiv = re.search(r"arxiv\.org/(?:abs|pdf)/([^/?#]+)", url)
+        source = f"{title} · arXiv:{arxiv.group(1)}" if arxiv else title
+        paper = f'<span class="card-paper">Reference: {html.escape(source)}</span>'
     return (
         f'<li class="catalog-card catalog-card--{kind} catalog-card--{page.section}" '
         f'data-title="{html.escape(_title_sort_key(page.title), quote=True)}" data-year="{year}" '
         f'data-formalized="{page.formalized}" data-slug="{page.slug}" '
         f'data-tags="{html.escape(" ".join(page.tags))}">'
         f'<a href="{html.escape(href, quote=True)}">'
-        f'<span class="card-top"><span class="kind-badge kind-badge--{kind}">{label}</span>'
-        + _counts(page)
+        '<span class="card-top">' + _kind_badge(page) + _counts(page)
         + f'</span><strong class="card-title">{html.escape(page.title)}</strong>'
-        + headline_html
-        + _tag_badges(page.tags)
-        + f'<span class="card-attribution">{html.escape(_attribution(page))}</span>'
-        + f'<span class="card-formalized">{_formalized_label(page)}</span>'
-        '<span class="card-arrow" aria-hidden="true">→</span></a></li>'
+        + headline_html + locator
+        + _tag_badges(tag for tag in page.tags
+                      if not (page.kind == "original" and tag == "realrooted-original"))
+        + attribution_html
+        + f'<span class="card-formalized">{_formalized_label(page)}</span>' + paper
+        + '<span class="card-arrow" aria-hidden="true">→</span></a></li>'
     )
 
 
@@ -1752,14 +1814,6 @@ def _sort_controls() -> str:
         'aria-hidden="true"></span><span>Year</span></label><label class="catalog-sort-option">'
         '<input type="radio" name="catalog-sort" value="newest"><span class="catalog-sort-indicator" '
         'aria-hidden="true"></span><span>Newest</span></label></div>'
-    )
-
-
-def _catalog_group(identifier: str, title: str, intro: str, rows: str) -> str:
-    return (
-        f'<section class="catalog-group" id="{identifier}">'
-        f"<h2>{title}</h2>" + (f'<p class="group-intro">{intro}</p>' if intro else "")
-        + f'<ul class="catalog-index" data-catalog-list>{rows}</ul></section>'
     )
 
 
@@ -1944,12 +1998,14 @@ def _families_page(entries: list[dict[str, Any]], bibliography: dict[str, Any],
 
 def _search_index(pages: Iterable[CatalogPage], base_path: str) -> dict[str, Any]:
     """Normalize shared page metadata once to keep the declaration index compact."""
+    pages = tuple(pages)
     page_records = []
     declarations = []
     for number, page in enumerate(pages):
         headline = _headline(page)
         page_records.append({
             "slug": page.slug, "title": page.title,
+            "kind": page.kind, "conjecture": page.conjecture,
             "headline": headline.label if headline else "",
             "labels": [item.label for item in page.items if item.label],
             "authors": list(page.authors), "years": list(page.years), "topic": page.topic,
@@ -1964,7 +2020,8 @@ def _search_index(pages: Iterable[CatalogPage], base_path: str) -> dict[str, Any
                 "tags": [PROVENANCE_TAGS[tag][0] for tag in _effective_tags(page, item)],
                 "url": _page_url(page, base_path) + f"#{item.anchor}",
             })
-    return {"schema_version": 1, "pages": page_records, "declarations": declarations}
+    return {"schema_version": 1, "groups": _kind_groups(pages),
+            "pages": page_records, "declarations": declarations}
 
 
 def _results_page(
@@ -2116,6 +2173,13 @@ def prose_findings(pages: Iterable[CatalogPage]) -> set[str]:
                 prose.append("")
             elif fence is None:
                 prose.append(line)
+        lead = re.split(r"^##\s", "\n".join(prose), maxsplit=1, flags=re.M)[0]
+        lead = re.sub(r"^#\s+.*$", "", lead, flags=re.M).strip()
+        paragraphs = [part.strip() for part in re.split(r"\n\s*\n", lead) if part.strip()]
+        if not paragraphs or re.match(r"^(?:[#>*]|[-+]\s|\d+[.)]\s|\$\$)", paragraphs[0]):
+            add("lead-missing", "lead paragraph before Results")
+        elif len(paragraphs[0].split()) > 60:
+            add("lead-long", paragraphs[0])
         headings: list[str] = []
         for line in prose:
             match = re.fullmatch(r"##\s+(.+?)\s*", line)
@@ -2140,6 +2204,12 @@ def prose_findings(pages: Iterable[CatalogPage]) -> set[str]:
     return findings
 
 
+def _counted_declarations(page: CatalogPage) -> int:
+    """Count selected declarations, exempting theorem records that index families."""
+    headline = _headline(page)
+    return sum(not (item.objects or (item == headline and page.objects)) for item in page.items)
+
+
 def validate_prose_baseline(repo_root: pathlib.Path, pages: Iterable[CatalogPage]) -> None:
     path = repo_root / "scripts/prose_baseline.txt"
     try:
@@ -2147,7 +2217,28 @@ def validate_prose_baseline(repo_root: pathlib.Path, pages: Iterable[CatalogPage
                     if line and not line.startswith("#")}
     except OSError as error:
         raise CatalogError(f"cannot load prose baseline: {error}") from error
+    pages = tuple(pages)
     findings = prose_findings(pages)
+    advisory = {row for row in findings if row.split("\t")[1] in {"lead-missing", "lead-long"}}
+    for row in sorted(advisory):
+        print(f"warning: {row}", file=sys.stderr)
+    findings -= advisory
+    # Temporary, non-failing baseline; later trimming batches remove these rows.
+    count_path = repo_root / "scripts/declaration_count_baseline.txt"
+    count_baseline = {}
+    if count_path.exists():
+        for row in count_path.read_text(encoding="utf-8").splitlines():
+            if row and not row.startswith("#"):
+                path, count = row.split("\t")
+                count_baseline[path] = int(count)
+    oversized = {page.source_path: _counted_declarations(page) for page in pages
+                 if _counted_declarations(page) > 12}
+    for path, count in sorted(oversized.items()):
+        status = "baseline" if count_baseline.get(path) == count else "review baseline"
+        print(f"warning: {path}: {count} declarations without objects (target 12; {status})",
+              file=sys.stderr)
+    for path in sorted(count_baseline.keys() - oversized.keys()):
+        print(f"warning: {path}: stale declaration-count baseline entry", file=sys.stderr)
     errors = [f"new prose offender: {record}" for record in sorted(findings - baseline)]
     errors += [f"stale prose baseline entry: {record}" for record in sorted(baseline - findings)]
     if errors:
@@ -2174,14 +2265,19 @@ def load_redirects(repo_root: pathlib.Path, catalog_links: dict[str, str]) -> di
 
 
 def _page_header(page: CatalogPage, labels: dict[str, str], base_path: str) -> str:
-    topic_href = f"{base_path}#{_topic_anchor(page.topic)}"
+    topic_href = f"{base_path}#{_kind_topic_anchor(page.kind, page.topic)}"
+    kind_href = f"{base_path}#{_kind_anchor(page.kind)}"
     parts = [
         '<div class="page-metadata">',
         f'<p class="page-attribution">{html.escape(_attribution(page))}</p>'
         if _attribution(page) else "",
-        _tag_badges(page.tags),
-        f'<p class="topic-breadcrumb"><a href="{topic_href}">{html.escape(page.topic)}</a>'
-        f' › <a href="{base_path}{page.section}/">{SECTION_LABELS[page.section]}</a></p>',
+        _kind_badge(page),
+        _tag_badges(tag for tag in page.tags
+                    if not (page.kind == "original" and tag == "realrooted-original")),
+        f'<p class="topic-breadcrumb"><a href="{kind_href}">{KIND_BANDS[page.kind][1]}</a>'
+        f' › <a href="{topic_href}">{html.escape(page.topic)}</a></p>',
+        f'<p class="page-conjecture">{html.escape(page.conjecture)}</p>'
+        if page.conjecture else "",
     ]
     if page.symcat_labels:
         links = [f'<a href="{html.escape(SYMCAT_ORIGIN + labels[label], quote=True)}">'
@@ -2261,11 +2357,14 @@ def render_site(
     files: dict[str, str] = {}
     author_entries = build_author_index(pages, load_author_profiles(repo_root))
     grouped = {section: [page for page in pages if page.section == section] for section in SECTIONS}
-    index_pages = sorted(pages, key=lambda page: (_title_sort_key(page.title), page.slug))
-    topics = [topic for topic in TOPICS.values() if any(page.topic == topic for page in pages)]
-    jump_bar = '<nav class="topic-jump" id="topics" aria-label="Topics">' + "".join(
-        f'<a href="#{_topic_anchor(topic)}">{html.escape(topic)}</a>' for topic in topics
-    ) + '</nav>'
+    kind_groups = _kind_groups(pages)
+    by_slug = {page.slug: page for page in pages}
+    index_pages = [by_slug[slug] for band in kind_groups for topic in band["topics"]
+                   for slug in topic["pages"]]
+    jump_bar = '<nav class="topic-jump" id="topics" aria-label="Result kinds">' + "".join(
+        f'<a href="#{_kind_anchor(band["kind"])}">{band["title"]} '
+        f'{sum(len(topic["pages"]) for topic in band["topics"])}</a>' for band in kind_groups
+    ) + '<a href="families-index/">Families A–Z</a></nav>'
     total_definitions = sum(len(page.definitions) for page in pages)
     total_theorems = sum(len(page.theorems) for page in pages)
     total_headlines = sum(item.headline for page in pages for item in page.theorems)
@@ -2287,18 +2386,27 @@ def render_site(
         + jump_bar
         + _sort_controls()
         + '<div class="catalog-groups">'
-        + "".join(_catalog_group(
-            _topic_anchor(topic), html.escape(topic), "",
-            "".join(_page_card(page, f"{page.section}/{page.slug}/")
-                    for page in index_pages if page.topic == topic),
-        ) for topic in topics)
+        + "".join(
+            f'<section class="catalog-band catalog-group catalog-band--{band["kind"] or "unclassified"}" '
+            f'id="{_kind_anchor(band["kind"])}"><h2>{band["title"]} '
+            f'<span>{sum(len(topic["pages"]) for topic in band["topics"])}</span></h2>'
+            + "".join(
+                f'<section class="catalog-topic catalog-group" '
+                f'id="{_kind_topic_anchor(band["kind"], topic["topic"])}">'
+                f'<h3>{html.escape(topic["topic"])}</h3><ul class="catalog-index" data-catalog-list>'
+                + "".join(_page_card(by_slug[slug],
+                                     f"{by_slug[slug].section}/{slug}/", bibliography)
+                          for slug in topic["pages"])
+                + '</ul></section>' for topic in band["topics"]
+            ) + '</section>' for band in kind_groups
+        )
         + "</div>" + _search_results() + "</main>"
     )
     files["index.html"] = _template(
         repo_root, index_body, "RealRooted catalog", base_path, base_path
     )
     for section, section_pages in grouped.items():
-        links = "".join(_page_card(page, f"{page.slug}/") for page in sorted(
+        links = "".join(_page_card(page, f"{page.slug}/", bibliography) for page in sorted(
             section_pages, key=lambda page: (_title_sort_key(page.title), page.slug)
         ))
         body = (
@@ -2419,6 +2527,7 @@ def render_site(
         "schema_version": 1,
         "revision": revision,
         "catalog_digest": catalog_digest(pages),
+        "groups": kind_groups,
         "families_index": {
             "url": f"{base_path}families-index/", "entries": family_entries,
         },
@@ -2429,6 +2538,8 @@ def render_site(
                 "source_path": page.source_path,
                 "topic": page.topic,
                 "section": page.section,
+                "kind": page.kind,
+                "conjecture": page.conjecture,
                 "summary": summaries[page.slug],
                 "headline": {"name": _headline(page).name, "label": _headline(page).label}
                 if _headline(page) else None,
@@ -2457,24 +2568,30 @@ def render_site(
                     for item in page.items
                 ],
             }
-            for page in pages
+            for page in index_pages
         ],
     }
     files["catalog-manifest.json"] = json.dumps(manifest, indent=2, sort_keys=True) + "\n"
     files["search-index.json"] = json.dumps(
-        _search_index(pages, base_path), ensure_ascii=False, separators=(",", ":")
+        _search_index(index_pages, base_path), ensure_ascii=False, separators=(",", ":")
     ) + "\n"
-    files["llms.txt"] = (
-        "# RealRooted catalog\n\nPolynomial families — A–Z properties, theorems and references — "
-        + site_origin + base_path + "families-index/\n\n"
-    ) + "\n".join(
-        " — ".join((page.title, headline.label or "", headline.name,
-                    site_origin + _page_url(page, base_path)))
-        if (headline := _headline(page)) else " — ".join((
-            page.title, "", "", site_origin + _page_url(page, base_path)
-        ))
-        for page in index_pages
-    ) + "\n"
+    overview = ["# RealRooted catalog", "",
+                "Polynomial families — A–Z properties, theorems and references — "
+                + site_origin + base_path + "families-index/", ""]
+    for band in kind_groups:
+        overview.extend(("## " + band["title"], ""))
+        for topic in band["topics"]:
+            overview.extend(("### " + topic["topic"], ""))
+            for slug in topic["pages"]:
+                page = by_slug[slug]
+                headline = _headline(page)
+                overview.append(" — ".join((
+                    page.title, (headline.label or "") if headline else "",
+                    headline.name if headline else "", site_origin + _page_url(page, base_path)
+                )) + f" — kind: {page.kind or 'unclassified'}"
+                    + (f" — conjecture: {page.conjecture}" if page.conjecture else ""))
+            overview.append("")
+    files["llms.txt"] = "\n".join(overview) + "\n"
     asset = repo_root / "website" / "assets" / "site.css"
     files["assets/site.css"] = asset.read_text(encoding="utf-8")
     script = repo_root / "website" / "assets" / "site.js"

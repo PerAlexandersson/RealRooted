@@ -8,6 +8,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.BudanFourier
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "descartes-rule-of-signs"
 formalized = "2026-09-27"

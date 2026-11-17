@@ -10,6 +10,7 @@ public import RealRooted.CauchyInterlacing.RankOne
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "cauchy-interlacing"
 formalized = "2026-07-10"

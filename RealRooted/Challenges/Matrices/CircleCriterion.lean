@@ -7,6 +7,7 @@ public import RealRooted.Toeplitz.CircleCriterion
 
 <!-- realrooted-catalog
 version = 1
+kind = "original"
 section = "theorems"
 slug = "hessenberg-circle-criterion"
 formalized = "2026-11-13"
@@ -23,7 +24,7 @@ module = "RealRooted.Toeplitz.CircleCriterion"
 [[theorems]]
 name = "RealRooted.Toeplitz.Circle.strictInterl_of_circleNonneg"
 module = "RealRooted.Toeplitz.CircleCriterion"
-label = "The circle criterion gives simple real roots and consecutive interlacing"
+label = "Toeplitz Hessenberg sections: simple real interlacing spectra if Im b ≥ 0 on a half-circle"
 headline = true
 
 [[theorems]]

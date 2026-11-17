@@ -32,10 +32,11 @@ import RealRooted.BrandenLeite.RationalRodCanonical
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "branden-leite"
 formalized = "2026-09-24"
-tags = ["realrooted-original"]
+tags = []
 references = [
   "BrandenLeite2024x",
 ]
@@ -56,11 +57,13 @@ label = "Coefficients of -log(Q(u) - tB(u)) as polynomials in t"
 name = "RealRooted.BrandenLeite.affineNegativePowerCoeff_factor_properties"
 module = "RealRooted.BrandenLeite.PositivePowerFactors"
 label = "Positive real powers: negative roots, exact degree and consecutive interlacing"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.affineLogCoeff_factor_properties"
 module = "RealRooted.BrandenLeite.LogarithmicFactors"
 label = "Logarithmic rows: negative roots, exact degree and consecutive interlacing"
+tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.AffineNegativePowerCoeff.factor_hasSimpleRoots_and_no_common_root"

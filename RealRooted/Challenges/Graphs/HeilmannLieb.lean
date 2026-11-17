@@ -15,6 +15,7 @@ public import RealRooted.RankTwoMatching.Transform
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "heilmann-lieb"
 formalized = "2026-10-06"

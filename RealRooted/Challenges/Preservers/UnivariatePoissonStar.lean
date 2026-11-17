@@ -16,6 +16,7 @@ import RealRooted.DerivativeProduct.ProductPowerRoots
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "univariate-poisson-star-c"
 formalized = "2026-10-12"

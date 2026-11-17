@@ -9,6 +9,7 @@ import RealRooted.ParkingFunctions.Descents.WeakLeftPeakInterlacing
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "families"
 slug = "parking-functions"
 formalized = "2026-09-13"

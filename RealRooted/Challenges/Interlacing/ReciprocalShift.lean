@@ -11,6 +11,7 @@ import RealRooted.ReciprocalShift.Roots
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "reciprocal-shift"
 formalized = "2026-09-26"

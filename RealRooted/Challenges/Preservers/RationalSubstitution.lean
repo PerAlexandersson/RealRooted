@@ -8,6 +8,7 @@ import RealRooted.Transforms.RationalSubstitutionDerivative
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "rational-substitution"
 formalized = "2026-11-01"

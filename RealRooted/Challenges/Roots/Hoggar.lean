@@ -7,6 +7,7 @@ import RealRooted.CoefficientShape.Hoggar
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "hoggar-log-concavity"
 formalized = "2026-10-07"

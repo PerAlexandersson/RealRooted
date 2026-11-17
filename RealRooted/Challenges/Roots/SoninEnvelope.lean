@@ -7,6 +7,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.Sonin
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "sonin-envelope"
 formalized = "2026-11-03"

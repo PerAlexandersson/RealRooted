@@ -9,6 +9,7 @@ import RealRooted.CombinatorialExamples.JacobiStirling.TotallyNonnegative
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "families"
 slug = "jacobi-stirling-numbers"
 formalized = "2026-09-13"

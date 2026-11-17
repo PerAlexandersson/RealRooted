@@ -11,6 +11,7 @@ public import RealRooted.OperatorPreservesInterlacing
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "obreschkoff"
 formalized = "2026-07-10"

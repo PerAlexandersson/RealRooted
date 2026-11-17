@@ -10,6 +10,7 @@ import RealRooted.MatrixInterlacing.WeightedThreeStateStripRoots
 
 <!-- realrooted-catalog
 version = 1
+kind = "original"
 section = "theorems"
 slug = "weighted-three-state-recurrence"
 formalized = "2026-10-29"
@@ -38,7 +39,7 @@ label = "The normalized rows Q_n with parameters (ρ, e)"
 [[theorems]]
 name = "RealRooted.PreservesInterlacingSeq0.weightedThreeStateMatrix_iff"
 module = "RealRooted.MatrixInterlacing.WeightedThreeStateRows"
-label = "The three-state matrix preserves interlacing sequences exactly in an explicit region"
+label = "The three-state matrix preserves interlacing exactly when b, α, d ≥ 0 and d, α ≤ b"
 headline = true
 
 [[theorems]]

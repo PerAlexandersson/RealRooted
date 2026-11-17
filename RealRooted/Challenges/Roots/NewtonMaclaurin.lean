@@ -10,6 +10,7 @@ import RealRooted.Mathlib.Algebra.Polynomial.MeanMode
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "newton-maclaurin"
 formalized = "2026-10-07"

@@ -12,6 +12,7 @@ public import RealRooted.QuadraticInterlacingClosure
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "monomial-chain-operator"
 formalized = "2026-05-12"

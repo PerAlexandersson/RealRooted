@@ -7,6 +7,7 @@ import RealRooted.DerivativeProduct.Kernel
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "derivative-product-kernel"
 formalized = "2026-11-09"

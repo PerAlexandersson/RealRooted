@@ -11,6 +11,7 @@ public import RealRooted.WangYeh.TriangularMatrix
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "wang-yeh"
 formalized = "2026-10-06"

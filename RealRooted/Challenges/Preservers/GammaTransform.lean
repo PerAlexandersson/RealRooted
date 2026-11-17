@@ -15,6 +15,7 @@ public import RealRooted.GammaTransform.TwoStep
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "gamma-transform"
 formalized = "2026-10-06"

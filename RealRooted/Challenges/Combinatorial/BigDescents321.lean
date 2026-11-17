@@ -7,10 +7,12 @@ import RealRooted.CombinatorialExamples.BigDescents321
 
 <!-- realrooted-catalog
 version = 1
+kind = "conjecture"
+conjecture = "Elizalde–Rivera–Zhuang (2026), Conjecture 4.4, case Π = {321}"
 section = "theorems"
 slug = "big-descents-321"
 formalized = "2026-10-06"
-tags = ["realrooted-original"]
+tags = []
 references = [
   "ElizaldeRiveraZhuang2026",
 ]

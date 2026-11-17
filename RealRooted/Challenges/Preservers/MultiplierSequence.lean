@@ -20,6 +20,7 @@ import RealRooted.RootLocation.BernsteinDiagonal
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "concepts"
 slug = "multiplier-sequences"
 formalized = "2026-09-07"

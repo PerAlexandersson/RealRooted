@@ -8,6 +8,7 @@ import RealRooted.Graph.MatchingPolynomial.Multivariate
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "leake-ryder"
 formalized = "2026-09-06"

@@ -11,6 +11,7 @@ public import RealRooted.SpectralProduct
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "families"
 slug = "jacobi-deformation"
 formalized = "2026-10-06"

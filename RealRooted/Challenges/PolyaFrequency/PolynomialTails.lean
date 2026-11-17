@@ -12,6 +12,7 @@ import RealRooted.PolynomialValueEulerNumerator.Interlacing
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "pf-polynomial-tails"
 formalized = "2026-09-10"

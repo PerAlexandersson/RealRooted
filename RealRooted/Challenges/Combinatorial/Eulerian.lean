@@ -13,6 +13,7 @@ public import RealRooted.MaWang.DerivativeStep
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "families"
 slug = "eulerian"
 formalized = "2026-07-10"
@@ -43,6 +44,7 @@ objects = ["Eulerian polynomials"]
 name = "RealRooted.isRealRooted_eulerianTilde"
 module = "RealRooted.CombinatorialExamples.Eulerian"
 label = "Eulerian polynomials are real-rooted"
+headline = true
 
 [[theorems]]
 objects = ["Eulerian polynomials"]
@@ -76,7 +78,6 @@ property = "interlacing"
 name = "RealRooted.interlaces_generalizedEulerian_succ"
 module = "RealRooted.GeneralizedEulerian.GeneratingFunction"
 label = "For c > 0, E_n^{(c)} interlaces E_{n+1}^{(c)}"
-headline = true
 
 [[theorems]]
 name = "RealRooted.eulerianTilde_eq_X_mul_generalizedEulerian_one"

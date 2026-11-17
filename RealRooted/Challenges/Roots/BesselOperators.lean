@@ -8,6 +8,7 @@ import RealRooted.Hermite.ImaginaryCentralDifference
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "bessel-operators"
 formalized = "2026-11-01"

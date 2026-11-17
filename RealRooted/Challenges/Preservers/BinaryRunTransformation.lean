@@ -11,6 +11,7 @@ public import RealRooted.BinaryRunTransformation.SymbolCounterexample
 
 <!-- realrooted-catalog
 version = 1
+kind = "original"
 section = "theorems"
 slug = "binary-run-transformation"
 formalized = "2026-09-28"

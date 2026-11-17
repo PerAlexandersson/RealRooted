@@ -9,6 +9,7 @@ public import RealRooted.MultivariateStability.AllCombo
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "multivariate-obreschkoff"
 formalized = "2026-10-13"

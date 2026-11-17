@@ -14,6 +14,7 @@ public import RealRooted.PolarDerivative
 
 <!-- realrooted-catalog
 version = 1
+kind = "method"
 section = "theorems"
 slug = "derivative-interlacing"
 formalized = "2026-05-12"

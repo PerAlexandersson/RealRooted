@@ -10,6 +10,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Nonneg
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "perron-frobenius"
 formalized = "2026-08-21"

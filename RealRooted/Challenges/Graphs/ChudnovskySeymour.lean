@@ -10,6 +10,7 @@ public import RealRooted.HeilmannLieb
 
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "chudnovsky-seymour"
 formalized = "2026-07-09"
