@@ -80,7 +80,7 @@ label = "A positive Wronskian gives interlacing in successor degree"
 [[theorems]]
 name = "RealRooted.laguerre_form_nonneg"
 module = "RealRooted.Wronskian.Algebra"
-label = "Laguerre's inequality p′² − p p″ ≥ 0 for real-rooted p"
+label = "Laguerre's inequality (p′)² − p p′′ ≥ 0 for real-rooted p"
 -->
 
 <!-- realrooted-catalog-content -->
