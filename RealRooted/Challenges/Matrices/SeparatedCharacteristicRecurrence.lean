@@ -155,7 +155,7 @@ To prove that a recurrence has PF rows with consecutive interlacing, realize it 
 on a short state of polynomials that preserves ordered PF vectors. For entries that are
 multiplications by polynomials, the test is
 [Brändén's criterion](rr:matrix-interlacing); for three-term recurrences see
-[Favard recurrences](rr:favard).
+[Favard recurrences](rr:orthogonal-polynomials).
 
 ## Proof
 

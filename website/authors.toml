@@ -91,18 +91,17 @@
 "common-interleavers:Liu" = { name = "Lily L. Liu" }
 "finite-free-convolutions:Srivastava" = { name = "Nikhil Srivastava" }
 "gamma-transform:Petersen" = { name = "T. Kyle Petersen" }
-"hadamard-products:Liu" = { name = "Yanxin Liu" }
-"jacobi-stirling-descent:Gessel" = { name = "Ira M. Gessel" }
-"jacobi-stirling-descent:Lin" = { name = "Zhicong Lin" }
-"jacobi-stirling-descent:Ma" = { name = "Shi-Mei Ma" }
-"jacobi-stirling-descent:Wang" = { name = "Ming-Xin Wang" }
-"jacobi-stirling-descent:Zeng" = { name = "Jiang Zeng" }
+"jacobi-stirling:Gessel" = { name = "Ira M. Gessel" }
+"jacobi-stirling:Lin" = { name = "Zhicong Lin" }
+"jacobi-stirling:Ma" = { name = "Shi-Mei Ma" }
+"jacobi-stirling:Wang" = { name = "Ming-Xin Wang" }
+"jacobi-stirling:Zeng" = { name = "Jiang Zeng" }
 "lindstrom-gessel-viennot:Gessel" = { name = "Ira M. Gessel" }
 "ma-wang-liu-wang:Liu" = { name = "Lily L. Liu" }
 "ma-wang-liu-wang:Ma" = { name = "Shi-Mei Ma" }
 "ma-wang-liu-wang:Wang" = { name = "Yi Wang" }
 "narayana:Wang" = { name = "Lijie Wang" }
-"real-stability:Srivastava" = { name = "Nikhil Srivastava" }
+"orthogonal-polynomials:Lima" = { name = "Hélder Lima" }
 "recurrence-root-windows:Liu" = { name = "Lily L. Liu" }
 "recurrence-root-windows:Ma" = { name = "Shi-Mei Ma" }
 "recurrence-root-windows:Wang" = { name = "Yi Wang" }

@@ -1,19 +1,15 @@
 module
 
-public import RealRooted.ASWKarlinKernel
-public import RealRooted.ASWKarlinMatrix
-public import RealRooted.ASWKarlinSineBounds
-public import RealRooted.ASWKarlinThreshold
-public import RealRooted.ASWKarlinVariation
-public import RealRooted.ASWKarlinVectors
-public import RealRooted.AissenSchoenbergWhitney
-public import RealRooted.AissenSchoenbergWhitneyBase
-public import RealRooted.NatCauchyConvolution
-public import RealRooted.PFPolynomial
-public import RealRooted.PolyaFrequencyConvolution.Basic
+import RealRooted.ASWKarlinKernel
+import RealRooted.AissenSchoenbergWhitney
+import RealRooted.AissenSchoenbergWhitneyBase
+import RealRooted.EdreiThoma.Converse
+import RealRooted.EdreiThoma.Easy
+import RealRooted.PFPolynomial
+import RealRooted.PolyaFrequencyConvolution.Basic
 
 /-!
-# Aissen–Schoenberg–Whitney theorem
+# Pólya frequency sequences: Aissen–Schoenberg–Whitney and Edrei
 
 <!-- realrooted-catalog
 version = 1
@@ -21,12 +17,13 @@ kind = "landmark"
 section = "theorems"
 slug = "aissen-schoenberg-whitney"
 formalized = "2026-10-05"
-tags = []
 references = [
   "AissenSchoenbergWhitney1952",
+  "Edrei1953",
+  "Karlin1968",
 ]
-authors = ["Aissen", "Schoenberg", "Whitney"]
-years = [1952]
+authors = ["Aissen", "Schoenberg", "Whitney", "Edrei", "Karlin"]
+years = [1952, 1953, 1968]
 
 [[definitions]]
 name = "RealRooted.toeplitz"
@@ -39,46 +36,27 @@ module = "RealRooted.AissenSchoenbergWhitneyBase"
 label = "Pólya frequency sequence"
 
 [[definitions]]
-name = "RealRooted.natCauchyConvolution"
-module = "RealRooted.NatCauchyConvolution"
-label = "Cauchy convolution of sequences"
-
-[[definitions]]
-name = "RealRooted.aswSectorThreshold"
-module = "RealRooted.ASWKarlinThreshold"
-label = "Karlin's sector threshold mπ/(m+d−1)"
-
-[[definitions]]
-name = "RealRooted.aswKarlinMatrix"
-module = "RealRooted.ASWKarlinMatrix"
-label = "Karlin's repeated coefficient-window matrix"
-
-[[definitions]]
-name = "RealRooted.aswKarlinRootVector"
-module = "RealRooted.ASWKarlinVectors"
-label = "Imaginary parts of the powers of a complex root"
-
-[[definitions]]
-name = "RealRooted.aswKarlinSineVector"
-module = "RealRooted.ASWKarlinVectors"
-label = "Sampled sine vector of the argument of a root"
+name = "RealRooted.EdreiThoma.canonicalProduct"
+module = "RealRooted.EdreiThoma.Easy"
+label = "Canonical product c X^m e^(γX) ∏(1 + αᵢX) / ∏(1 − βᵢX)"
 
 [[theorems]]
 name = "RealRooted.isPolyaFreqSeq_coeff_iff_isPFPolynomial"
 module = "RealRooted.PFPolynomial"
-label = "Pólya frequency coefficients if and only if a PF polynomial"
+label = "Aissen–Schoenberg–Whitney: PF coefficients iff nonnegative coefficients and real roots"
 headline = true
 symcat = "aissenSchoenbergWhitney"
 
 [[theorems]]
-name = "RealRooted.aissenSchoenbergWhitneyForward"
-module = "RealRooted.AissenSchoenbergWhitney"
-label = "Pólya frequency coefficients give real nonpositive zeros"
+name = "RealRooted.EdreiThoma.exists_canonicalProduct_representation"
+module = "RealRooted.EdreiThoma.Converse"
+label = "Edrei: a Pólya frequency sequence with a₀ = 1 has a canonical product representation"
+symcat = "edreiThomaTheorem"
 
 [[theorems]]
-name = "RealRooted.aissenSchoenbergWhitney_reverse"
-module = "RealRooted.AissenSchoenbergWhitney"
-label = "Nonnegative coefficients and real nonpositive zeros give PF coefficients"
+name = "RealRooted.EdreiThoma.isPolyaFreqSeries_canonicalProduct"
+module = "RealRooted.EdreiThoma.Easy"
+label = "Canonical products with nonnegative parameters are Pólya frequency series"
 
 [[theorems]]
 name = "RealRooted.IsPolyaFreqSeq.natCauchyConvolution"
@@ -86,125 +64,84 @@ module = "RealRooted.PolyaFrequencyConvolution.Basic"
 label = "Pólya frequency sequences are closed under convolution"
 
 [[theorems]]
-name = "RealRooted.IsPolyaFreqSeq.coeff_mul"
-module = "RealRooted.PolyaFrequencyConvolution.Basic"
-label = "Products of power series with PF coefficients have PF coefficients"
-
-[[theorems]]
-name = "RealRooted.aswKarlinSectorThreshold_le_abs_arg"
-module = "RealRooted.ASWKarlinKernel"
-label = "Karlin: PF zeros satisfy |arg z| ≥ mπ/(m+d−1) for every m ≥ 1"
+name = "RealRooted.EdreiThoma.IsPolyaFreqSeries.of_tendsto"
+module = "RealRooted.EdreiThoma.Easy"
+label = "Pólya frequency series are closed under coefficientwise limits"
 
 [[theorems]]
 name = "RealRooted.IsPolyaFreqSeq.of_forall_pos_add_C_mul_splits"
 module = "RealRooted.AissenSchoenbergWhitney"
-label = "PF coefficients if p + μq splits for every μ > 0"
+label = "PF coefficients if p + μq is real-rooted for every μ > 0"
 
 [[theorems]]
-name = "RealRooted.tendsto_aswSectorThreshold"
-module = "RealRooted.ASWKarlinThreshold"
-label = "The sector threshold tends to π as the order grows"
-
-[[theorems]]
-name = "RealRooted.IsPolyaFreqSeq.aswKarlinMatrix_isTotallyNonnegRect"
-module = "RealRooted.ASWKarlinMatrix"
-label = "Karlin window matrices of PF sequences are totally nonnegative"
-
-[[theorems]]
-name = "RealRooted.aswKarlinMatrix_mulVec_surjective"
-module = "RealRooted.ASWKarlinMatrix"
-label = "The Karlin window matrix is surjective when the constant coefficient is positive"
-
-[[theorems]]
-name = "RealRooted.aswKarlinMatrix_mulVec_rootVector"
+name = "RealRooted.aswKarlinSectorThreshold_le_abs_arg"
 module = "RealRooted.ASWKarlinKernel"
-label = "The root vector of a complex zero lies in the kernel of the window matrix"
-
-[[theorems]]
-name = "RealRooted.signVariations_aswKarlinRootVector_eq_sine"
-module = "RealRooted.ASWKarlinVectors"
-label = "The root vector and the sampled sine vector have the same sign variations"
-
-[[theorems]]
-name = "RealRooted.signVariations_aswKarlinSineVector_le_floor_div_pi_abs"
-module = "RealRooted.ASWKarlinSineBounds"
-label = "A sampled sine vector has at most ⌊N|θ|/π⌋ sign variations"
-
-[[theorems]]
-name = "RealRooted.signVariations_aswKarlinSineVector_lt_of_lt_threshold"
-module = "RealRooted.ASWKarlinSineBounds"
-label = "Below the threshold the sine vector has fewer than m sign variations"
-
-[[theorems]]
-name = "RealRooted.aswKarlinRepeatedSineVariationLowerBound"
-module = "RealRooted.ASWKarlinKernel"
-label = "Karlin's repeated matrices force many sign variations on the sine vector"
-
-[[theorems]]
-name = "RealRooted.aswSectorThreshold_le_of_signVariation_bounds"
-module = "RealRooted.ASWKarlinVariation"
-label = "The sector inequality follows from the two sign-variation bounds"
+label = "Karlin: zeros of a PF polynomial satisfy |arg z| ≥ mπ/(m+d−1) for every m ≥ 1"
 -->
 
 <!-- realrooted-catalog-content -->
-# Aissen–Schoenberg–Whitney theorem
+# Pólya frequency sequences: Aissen–Schoenberg–Whitney and Edrei
 
-The coefficients of a real polynomial form a Pólya frequency sequence if and only if the
-polynomial has nonnegative coefficients and only real nonpositive zeros.
+A sequence is a Pólya frequency sequence if its Toeplitz matrix is totally nonnegative. Aissen,
+Schoenberg and Whitney showed that the finite ones are exactly the coefficient sequences of
+real-rooted polynomials with nonnegative coefficients, and Edrei classified all of them by their
+generating functions.
 
 ## Results
 
-A real sequence $(a_k)_{k \geq 0}$ is a *Pólya frequency sequence* if its lower-triangular
-Toeplitz matrix, with $(i, j)$ entry $a_{i-j}$ for $j \leq i$ and $0$ otherwise, is totally
-nonnegative. A real polynomial $p$ is a *PF polynomial* if it has nonnegative coefficients and
-either $p=0$ or $p$ splits over $\mathbb R$ with only nonpositive zeros.
+A real sequence $(a_k)_{k\ge0}$ is a *Pólya frequency sequence* if the lower-triangular
+Toeplitz matrix $(a_{i-j})_{i,j\ge0}$, with $a_{i-j}=0$ for $j>i$, is totally nonnegative. A
+*PF polynomial* is a real polynomial with nonnegative coefficients that is zero or has only
+real zeros.
 
-**Theorem (Aissen–Schoenberg–Whitney).** The coefficient sequence of a real polynomial $p$ is a
-Pólya frequency sequence if and only if $p$ is a PF polynomial.
+**Theorem (Aissen–Schoenberg–Whitney).** [@AissenSchoenbergWhitney1952] The coefficient
+sequence of a real polynomial $p$ is a Pólya frequency sequence if and only if $p$ is a PF
+polynomial.
 
-**Theorem (convolution).** If $(a_k)$ and $(b_k)$ are Pólya frequency sequences, finite or
-infinite, then so is their Cauchy convolution $c_n = \sum_{k=0}^n a_k b_{n-k}$. Equivalently,
-if formal power series $F$ and $G$ have Pólya frequency coefficient sequences, so does $FG$.
+**Theorem (Edrei).** [@Edrei1953] Let $(a_n)$ be a Pólya frequency sequence with $a_0=1$.
+There are $\gamma\ge0$ and $\alpha_i,\beta_i\ge0$ with $\sum_i(\alpha_i+\beta_i)<\infty$ such
+that, for $z$ near $0$,
+$$
+\sum_{n\ge0}a_nz^n=e^{\gamma z}\,\frac{\prod_i(1+\alpha_iz)}{\prod_i(1-\beta_iz)}.
+$$
+Conversely, for $c,\gamma\ge0$, $m\in\mathbb N$ and such $\alpha,\beta$, the series
+$cX^me^{\gamma X}\prod_i(1+\alpha_iX)/\prod_i(1-\beta_iX)$ has Pólya frequency coefficients
+[@AissenSchoenbergWhitney1952].
+
+**Theorem (closure).** Pólya frequency sequences are closed under Cauchy convolution, and
+Pólya frequency series are closed under coefficientwise limits.
 
 **Theorem (perturbation criterion).** If $p$ and $q$ have nonnegative coefficients and
-$p+\mu q$ splits over $\mathbb R$ for every $\mu>0$, then the coefficients of $p$ form a Pólya
-frequency sequence.
+$p+\mu q$ is real-rooted for every $\mu>0$, then the coefficients of $p$ form a Pólya frequency
+sequence.
 
-**Theorem (Karlin's sector estimate).** Let $p$ be a real polynomial of degree $d\geq1$ with
-$p(0)>0$ whose coefficients form a Pólya frequency sequence. For every integer $m\geq1$,
-each complex zero $z$ of $p$ satisfies
-$$
-|\arg z|\geq \frac{m\pi}{m+d-1}.
-$$
-The threshold tends to $\pi$ as $m\to\infty$, so every zero lies on the negative real axis;
-this is the forward direction of the equivalence.
+**Theorem (Karlin's sector estimate).** [@Karlin1968] Let $p$ be a polynomial of degree
+$d\ge1$ with $p(0)>0$ whose coefficients form a Pólya frequency sequence. For every $m\ge1$,
+each zero $z$ of $p$ satisfies $|\arg z|\ge m\pi/(m+d-1)$.
+
+## Use
+
+The equivalence turns real-rootedness of a polynomial with nonnegative coefficients into total
+nonnegativity of its Toeplitz matrix, which can be proved with planar networks and the
+[Lindström–Gessel–Viennot lemma](rr:lindstrom-gessel-viennot), as for
+[left production matrices](rr:left-production-matrices). The $2\times2$ minors give
+log-concavity of the coefficients.
 
 ## Proof
 
-Karlin's repeated coefficient-window matrices of a Pólya frequency sequence are totally
-nonnegative, and for a complex zero $z$ the vector $(\operatorname{Im} z^j)_j$ lies in their
-kernel and has the sign variations of the sampled sine vector $(\sin j\theta)_j$,
-$\theta=\arg z$; comparing the many sign variations this forces with the bound
-$\lfloor N|\theta|/\pi\rfloor$ for $N+1$ samples gives the sector estimate. The Toeplitz matrix
-of a convolution is the product of the two Toeplitz matrices, and products of totally
-nonnegative matrices are totally nonnegative. The perturbation criterion follows from the
-reverse direction of the equivalence by letting $\mu\to0^+$ in the Toeplitz minors.
+Letting $m\to\infty$ in Karlin's estimate puts every zero on the negative real axis, which is
+the forward direction. Karlin's repeated coefficient-window matrices are totally nonnegative,
+and the vector $(\operatorname{Im}z^j)_j$ of a complex zero lies in their kernel; counting the
+sign variations of $(\sin j\arg z)_j$ gives the estimate. The Toeplitz matrix of a convolution
+is the product of the two Toeplitz matrices, which gives the reverse direction from the linear
+factors $1+\alpha X$. For Edrei's theorem the factors $1+\alpha X$, $1/(1-\beta X)$ and
+$e^{\gamma X}$ are Pólya frequency, and the converse follows Edrei's determinant identities,
+with Nevanlinna theory replaced by a growth argument based on Jensen's formula.
 
 ## References
 
-[@AissenSchoenbergWhitney1952]. See also the
-[Aissen–Schoenberg–Whitney theorem](sf:aissenSchoenbergWhitney) on symmetricfunctions.com.
+[@AissenSchoenbergWhitney1952]; [@Edrei1953]; [@Karlin1968]. See also the
+[Aissen–Schoenberg–Whitney theorem](sf:aissenSchoenbergWhitney) and the
+[Edrei–Thoma theorem](sf:edreiThomaTheorem) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
-
-Human statement:
-sf:aissenSchoenbergWhitney
-
-Original publication: M. Aissen, I. J. Schoenberg, and A. M. Whitney,
-"On the generating functions of totally positive sequences. I",
-J. Analyse Math. 2 (1952), 93--103.
-
-This module exposes the proved Aissen--Schoenberg--Whitney equivalence, its
-forward and reverse directions, and closure of Pólya frequency sequences under
-convolution.  The Toeplitz/PF infrastructure remains in
-`RealRooted.AissenSchoenbergWhitney`.
 -/

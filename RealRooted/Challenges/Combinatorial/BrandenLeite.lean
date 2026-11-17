@@ -350,7 +350,7 @@ $Q$ and $B$.
 Whitney elimination produces the resolution of a totally nonnegative unitriangular matrix, and
 its recurrence assembles each $P_n$ from lower rows by nonnegative combinations, which preserve
 interlacing. For powers and logarithms we use the determinant formula with weighted derivative
-kernels; see also [determinant pencils](rr:totally-nonnegative-pencils).
+kernels; see also [determinant pencils](rr:totally-nonnegative-matrices).
 
 ## References
 

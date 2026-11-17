@@ -1,31 +1,30 @@
 module
 
+import RealRooted.Applications.BinderVecchi.UniformChow
+import RealRooted.Applications.BinderVecchi.UniformMatroid
+import RealRooted.BrandenVecchi.Chow
 import RealRooted.BrandenVecchi.ChowInfinitePF
-import RealRooted.BrandenVecchi.ChowSignedWords
 import RealRooted.BrandenVecchi.ChowTotallyNonneg
-import RealRooted.BrandenVecchi.ChowZeroPrefix
-import RealRooted.BrandenVecchi.SmirnovSpecialization
+import RealRooted.HosterStump.Chow
+import RealRooted.HosterStump.PosetBasic
+import RealRooted.HosterStump.PosetChow
 
 /-!
-# Chow polynomials of totally nonnegative matrices
+# Chow polynomials of posets and matroids
 
 <!-- realrooted-catalog
 version = 1
 kind = "landmark"
 section = "theorems"
-slug = "branden-vecchi"
+slug = "chow-polynomials"
 formalized = "2026-09-12"
-tags = []
 references = [
   "BrandenVecchi2025x",
+  "HosterStump2025x",
+  {key = "BinderVecchi2026x", at = "Thms. 1.4 and 1.6"},
 ]
-authors = ["Brändén", "Vecchi"]
-years = [2025]
-
-[[definitions]]
-name = "RealRooted.BrandenVecchi.chowDerangement"
-module = "RealRooted.BrandenVecchi.Chow"
-label = "Chow derangement polynomials"
+authors = ["Brändén", "Vecchi", "Hoster", "Stump", "Binder"]
+years = [2025, 2026]
 
 [[definitions]]
 name = "RealRooted.BrandenVecchi.chowPolynomial"
@@ -33,48 +32,43 @@ module = "RealRooted.BrandenVecchi.Chow"
 label = "Chow polynomials of a lower-triangular matrix"
 
 [[definitions]]
-name = "RealRooted.BrandenVecchi.aissenSchoenbergWhitneyEdreiChow"
-module = "RealRooted.BrandenVecchi.ChowInfinitePF"
-label = "Chow polynomials of a Pólya frequency symbol"
+name = "RealRooted.BrandenVecchi.chowDerangement"
+module = "RealRooted.BrandenVecchi.Chow"
+label = "Chow derangement polynomials"
 
 [[definitions]]
-name = "RealRooted.BrandenVecchi.finiteSupersymmetricChow"
-module = "RealRooted.BrandenVecchi.ChowSupersymmetric"
-label = "Chow polynomials of a supersymmetric symbol"
+name = "RealRooted.HosterStump.IsSimplicialPoset"
+module = "RealRooted.HosterStump.PosetBasic"
+label = "Simplicial poset: every lower interval is Boolean, every element lies below rank n"
 
 [[definitions]]
-name = "RealRooted.BrandenVecchi.scaledZeroPrefix"
-module = "RealRooted.BrandenVecchi.ChowZeroPrefix"
-label = "A sequence shifted by a zero prefix and scaled"
+name = "RealRooted.HosterStump.chowOfFlagH"
+module = "RealRooted.HosterStump.Chow"
+label = "Chow polynomial of a flag h-vector"
 
-[[theorems]]
-name = "RealRooted.BrandenVecchi.chowPolynomial_nonnegCoeffs_of_isTotallyNonneg"
-module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
-label = "Chow polynomials have nonnegative coefficients"
-
-[[theorems]]
-name = "RealRooted.BrandenVecchi.chowPolynomial_eq_zero_or_splits_of_isTotallyNonneg"
-module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
-label = "Each Chow polynomial is zero or real-rooted"
-
-[[theorems]]
-name = "RealRooted.BrandenVecchi.chowDerangement_nonnegCoeffs_of_isTotallyNonneg"
-module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
-label = "Chow derangement polynomials have nonnegative coefficients"
-
-[[theorems]]
-objects = ["Chow derangement polynomials of totally nonnegative matrices"]
-name = "RealRooted.BrandenVecchi.chowDerangement_eq_zero_or_splits_of_isTotallyNonneg"
-module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
-label = "Each Chow derangement polynomial is zero or real-rooted"
+[[definitions]]
+name = "RealRooted.BinderVecchi.refinedHodgePoincare"
+module = "RealRooted.Applications.BinderVecchi.UniformMatroid"
+label = "Refined Hodge–Poincaré polynomial of a uniform matroid"
 
 [[theorems]]
 objects = ["Chow polynomials of totally nonnegative matrices"]
 property = "interlacing"
 name = "RealRooted.BrandenVecchi.chowPolynomial_interl_succ_of_isTotallyNonneg"
 module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
-label = "Consecutive Chow polynomials interlace"
+label = "Brändén–Vecchi: consecutive Chow polynomials of a TNN matrix interlace"
 headline = true
+
+[[theorems]]
+name = "RealRooted.BrandenVecchi.chowPolynomial_eq_zero_or_splits_of_isTotallyNonneg"
+module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
+label = "Each Chow polynomial of a TNN matrix is zero or real-rooted"
+
+[[theorems]]
+objects = ["Chow derangement polynomials of totally nonnegative matrices"]
+name = "RealRooted.BrandenVecchi.chowDerangement_eq_zero_or_splits_of_isTotallyNonneg"
+module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
+label = "Each Chow derangement polynomial of a TNN matrix is zero or real-rooted"
 
 [[theorems]]
 name = "RealRooted.BrandenVecchi.chowPolynomial_interl_chowDerangement_of_isTotallyNonneg"
@@ -87,82 +81,107 @@ module = "RealRooted.BrandenVecchi.ChowInfinitePF"
 label = "Pólya frequency symbols give Pólya frequency Chow polynomials"
 
 [[theorems]]
-name = "RealRooted.BrandenVecchi.aissenSchoenbergWhitneyEdreiChow_interl_succ"
-module = "RealRooted.BrandenVecchi.ChowInfinitePF"
-label = "Consecutive Chow polynomials of a Pólya frequency symbol interlace"
+objects = ["Chow polynomials of simplicial posets"]
+name = "RealRooted.HosterStump.isRealRooted_chowOfFlagH_flagH"
+module = "RealRooted.HosterStump.PosetChow"
+label = "Hoster–Stump: a simplicial poset with h ≥ 0 has a real-rooted Chow polynomial"
 
 [[theorems]]
-name = "RealRooted.BrandenVecchi.finiteSupersymmetricChow_eq_finiteSignedWordEnumerator"
-module = "RealRooted.BrandenVecchi.ChowSignedWords"
-label = "Chow polynomials of finite supersymmetric symbols are signed-word enumerators"
+objects = ["Augmented Chow polynomials of simplicial posets"]
+name = "RealRooted.HosterStump.isRealRooted_augChowOfFlagH_flagH"
+module = "RealRooted.HosterStump.PosetChow"
+label = "The augmented Chow polynomial of such a poset is real-rooted"
 
 [[theorems]]
-name = "RealRooted.BrandenVecchi.finiteSupersymmetricChow_replicate_one_nil_eq_smirnov"
-module = "RealRooted.BrandenVecchi.SmirnovSpecialization"
-label = "Chow polynomials of (1+z)^m are Smirnov word descent polynomials"
+name = "RealRooted.HosterStump.strictInterl_chowOfFlagH_dualFlagH_augChowOfFlagH_flagH"
+module = "RealRooted.HosterStump.PosetChow"
+label = "For n ≥ 1, the dual Chow polynomial interlaces the augmented one"
 
 [[theorems]]
-name = "RealRooted.BrandenVecchi.three_zero_prefix_constant_isPolyaFreqSeq"
-module = "RealRooted.BrandenVecchi.ChowZeroPrefix"
-label = "The sequence 0, 0, 0, 1, 1, 1, ... is a Pólya frequency sequence"
+objects = ["Refined Hodge–Poincaré polynomials of uniform matroids"]
+name = "RealRooted.BinderVecchi.isRealRooted_refinedHodgePoincare"
+module = "RealRooted.Applications.BinderVecchi.UniformMatroid"
+label = "Binder–Vecchi: refined Hodge–Poincaré polynomials of U_{r,n} are real-rooted"
 
 [[theorems]]
-name = "RealRooted.BrandenVecchi.chowPolynomial_three_zero_prefix_six_not_splits"
-module = "RealRooted.BrandenVecchi.ChowZeroPrefix"
-label = "For the sequence 0, 0, 0, 1, 1, ..., c_6 = x² + x + 1 is not real-rooted"
+name = "RealRooted.BinderVecchi.isRealRooted_modifiedAugmentedHodgePoincare"
+module = "RealRooted.Applications.BinderVecchi.UniformMatroid"
+label = "Binder–Vecchi: the modified augmented family is real-rooted"
+
+[[theorems]]
+objects = ["Chow polynomials of uniform matroids"]
+name = "RealRooted.UniformChow.isRealRooted_chowUniform"
+module = "RealRooted.Applications.BinderVecchi.UniformChow"
+label = "The Chow polynomial of U_{r,n} is real-rooted"
+
+[[theorems]]
+objects = ["Augmented Chow polynomials of uniform matroids"]
+name = "RealRooted.UniformChow.isRealRooted_augChowUniform"
+module = "RealRooted.Applications.BinderVecchi.UniformChow"
+label = "The augmented Chow polynomial of U_{r,n} is real-rooted"
 -->
 
 <!-- realrooted-catalog-content -->
-# Chow polynomials of totally nonnegative matrices
+# Chow polynomials of posets and matroids
 
-Chow polynomials and Chow derangement polynomials of a lower-unitriangular totally nonnegative
-matrix are real-rooted or zero, consecutive Chow polynomials interlace, and each Chow polynomial
-interlaces the Chow derangement polynomial of the same index.
+The Chow polynomial of a matroid is the Hilbert series of its Chow ring. P. Brändén and L. Vecchi
+define Chow polynomials for every lower-triangular matrix and prove that they are real-rooted and
+interlace when the matrix is totally nonnegative. Related theorems of Hoster–Stump and
+Binder–Vecchi cover simplicial posets and uniform matroids.
 
 ## Results
 
 We use the [zero-aware interlacing convention](rr:about). For a lower-triangular matrix $A$, the
-*Chow derangement polynomials* are
-$d_0=1$ and
+*Chow derangement polynomials* are $d_0=1$ and
 $$
 d_n=x\,S_{n-1}\Bigl(\sum_{k<n}A(n,k)\,d_k\Bigr),\qquad
 S_m(q)=\frac{x^mq(1/x)-q}{x-1}\quad(n\ge1),
 $$
 and the *Chow polynomials* are $c_n=\sum_{k\le n}A(n,k)\,d_k$. For the incidence data of a
-poset these generalize the Chow polynomials of matroids and posets; see the
-[Chow-polynomial definition on symmetricfunctions.com](sf:chowPolynomialDefinition).
+poset these are the Chow polynomials of posets and matroids; see the
+[definition on symmetricfunctions.com](sf:chowPolynomialDefinition).
 
-**Theorem (Brändén–Vecchi).** Let $A$ be lower unitriangular and totally nonnegative. Then for
-every $n$ the polynomials $c_n$ and $d_n$ have nonnegative coefficients and each is zero or
-real-rooted. Moreover $c_n\ll c_{n+1}$ and $c_n\ll d_n$ [@BrandenVecchi2025x].
+**Theorem (Brändén–Vecchi).** [@BrandenVecchi2025x] Let $A$ be lower unitriangular and totally
+nonnegative. Then $c_n$ and $d_n$ have nonnegative coefficients and each is zero or real-rooted,
+$c_n\ll c_{n+1}$ and $c_n\ll d_n$. If $A$ is the Toeplitz matrix of a Pólya frequency series
+$e^{\gamma z}\prod_i(1+\alpha_iz)/\prod_i(1-\beta_iz)$, every $c_n$ is a Pólya frequency
+polynomial.
 
-**Theorem (Pólya frequency symbols).** Let $\gamma,\alpha_i,\beta_i\ge0$ with
-$\sum_i(\alpha_i+\beta_i)<\infty$, and let $A$ be the lower Toeplitz matrix of the coefficients of
-$$
-e^{\gamma z}\,\prod_i(1+\alpha_iz)\Big/\prod_i(1-\beta_iz).
-$$
-Then every $c_n$ is a Pólya frequency polynomial, that is, it has nonnegative coefficients and
-only real nonpositive roots, and $c_n\ll c_{n+1}$.
+Let $P$ be a finite graded poset of rank $n$ with bottom element in which every lower interval is
+Boolean and every element lies below one of rank $n$ (a *simplicial poset*), and let $\hat P$ be
+$P$ with a top element added.
 
-**Theorem (signed words).** For finite lists of real numbers $x_1,\dots,x_p$ and $y_1,\dots,y_q$,
-let $A$ be the Toeplitz matrix of $\prod_i(1+x_iz)\big/\prod_j(1-y_jz)$. Then $c_n$ equals the
-signed-word enumerator of length-$n$ words by descents and collisions, with the letter weights
-$x_i$, $y_j$. For $x_1=\dots=x_m=1$ and no $y_j$, it is the descent polynomial of the Smirnov
-words of length $n$ in $m$ letters.
+**Theorem (Hoster–Stump).** [@HosterStump2025x] If the $h$-vector of $P$ is nonnegative, then
+the Chow polynomial, the dual Chow polynomial and the augmented Chow polynomial of $\hat P$ are
+nonzero and real-rooted. For $n\ge1$ the dual Chow polynomial interlaces the augmented one.
 
-**Proposition (zero prefix).** Let $a$ be the sequence $0,0,0,1,1,1,\dots$ and let $A$ be its
-Toeplitz matrix. Then $a$ is a Pólya frequency sequence, but $c_6=x^2+x+1$ is not real-rooted.
+**Theorem (Binder–Vecchi).** [@BinderVecchi2026x, Thms. 1.4 and 1.6] For the uniform matroid
+$U_{r,n}$ and $1\le i\le n-r$, the refined Hodge–Poincaré polynomial $\underline H^i_{r,n}$ and
+its modified augmented variant are nonzero and real-rooted. The case $i=0$ gives the Chow and
+augmented Chow polynomials of $U_{r,n}$, which are real-rooted as well.
+
+## Use
+
+Hoster and Stump's theorem applies to Cohen–Macaulay simplicial posets and to the lattices of
+flats of uniform matroids. The derangement transform of the
+[Brändén–Solus theorem](rr:branden-solus) is the Chow derangement transform of the Pascal
+matrix.
 
 ## Proof
 
-The proof uses the resolution of totally nonnegative matrices by Whitney elimination, as on the
-[Brändén–Saud Leite page](rr:branden-leite).
+Brändén and Vecchi resolve a totally nonnegative matrix by Whitney elimination, as on the
+[Brändén–Saud Leite page](rr:branden-leite). Hoster and Stump write the $\gamma$-polynomials of
+the three Chow polynomials through refined descent polynomials, using Stanley's formula for the
+flag $h$-vector, and show that these form interlacing diagrams. Binder and Vecchi write
+$\underline H^i_{r,n}$ as a reversed derangement transform and the augmented variant as a
+reversed Eulerian transform of a polynomial with nonnegative coordinates in the basis
+$x^p(1+x)^{r-1-p}$; both transforms are real-rooted on that cone
+[@BrandenSolus2019; @Athanasiadis2025EulerianTransformation].
 
 ## References
 
-- [@BrandenVecchi2025x]
+[@BrandenVecchi2025x]; [@HosterStump2025x]; [@BinderVecchi2026x, Thms. 1.4 and 1.6];
+[@BrandenSolus2019]; [@Athanasiadis2025EulerianTransformation]; R. P. Stanley, *Combinatorics
+and Commutative Algebra*, 2nd ed., Birkhäuser, 1996, III.6.
 <!-- /realrooted-catalog-content -->
-
-This module is a catalog facade.  The proofs live in
-`RealRooted.BrandenVecchi`.
 -/
