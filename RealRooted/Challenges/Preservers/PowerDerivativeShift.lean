@@ -72,7 +72,7 @@ coefficients and no positive roots.
 ## Proof
 
 Multiplication by $x^m$, the operator $D+c$ (by the [Hermite–Poulain theorem](rr:hermite-poulain))
-and $D^m$ (by [derivative interlacing](rr:derivative-interlacing)) each preserve real-rootedness and
+and $D^m$ (by [derivative interlacing](rr:interlacing)) each preserve real-rootedness and
 interlacing, and $D+c$ keeps the degree when $c\ne0$.
 
 ## References

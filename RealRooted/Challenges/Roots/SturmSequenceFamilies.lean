@@ -197,7 +197,7 @@ $x(1-2x)$ and $mx$. The polynomial $P_n$ has nonnegative coefficients, so its ze
 nonpositive and $v$ is nonpositive there. The [Liu–Wang criterion](rr:ma-wang-liu-wang) with the
 interlacer $P_n'\ll P_n$ then gives $P_n\ll P_{n+1}$. In the derangement and singleton-free
 recurrences the earlier row enters with a nonnegative coefficient, and
-[Wagner's lemma](rr:wagner) on nonnegative combinations of common interlacers handles the extra
+[Wagner's lemma](rr:interlacing) on nonnegative combinations of common interlacers handles the extra
 term.
 
 ## References

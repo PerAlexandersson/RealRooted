@@ -96,7 +96,7 @@ The [catalog](https://peralexandersson.github.io/RealRooted/) is the full,
 curated list. Some representative checked theorems:
 
 - **Interlacing basics.** Rolle (`derivative_interlaces`), Wagner's lemmas
-  (`Challenges.Wagner`), Obreschkoff's theorem
+  (`StrictInterl.add_of_right_of_posLeadingCoeff`), Obreschkoff's theorem
   (`allComboRealRooted_of_strictInterl`, `strictInterl_of_allComboRealRooted`),
   and Favard sequences (`favardInterlacing`).
 - **Matrices.** Cauchy interlacing (`cauchy_interlacing`), principal
