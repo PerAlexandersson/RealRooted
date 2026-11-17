@@ -325,37 +325,92 @@ private theorem List.getD_last_eq_of_getLast?_eq_some
   rw [h] at hlast
   exact Option.some.inj hlast.symm
 
-/-- Brändén's Theorem 4.6 in `brandenE` coordinates: coordinatewise
-increasing roots in `[-1, 0]` give oriented weak interlacing of the images. -/
-theorem brandenE_strictInterl_of_rootwiseLE
-    {f g : ℝ[X]} {n : ℕ}
-    (hf_monic : f.Monic) (hg_monic : g.Monic)
-    (hf_splits : f.Splits) (hg_splits : g.Splits)
-    (hf_degree : f.natDegree = n) (hg_degree : g.natDegree = n)
-    (hn : n ≠ 0)
-    (hf_roots : ∀ r ∈ f.roots, (-1 : ℝ) ≤ r ∧ r ≤ 0)
-    (hg_roots : ∀ r ∈ g.roots, (-1 : ℝ) ≤ r ∧ r ≤ 0)
-    (hfg : RootwiseLE f g) :
-    StrictInterl (brandenE f) (brandenE g) := by
-  replace hn : 1 ≤ n := Nat.one_le_iff_ne_zero.mpr hn
-  let xs := f.roots.sort (· ≤ ·)
-  let ys := g.roots.sort (· ≤ ·)
+/-- Normalize a monic split polynomial to its bounded sorted root list. -/
+private theorem sorted_roots_normalization {p : ℝ[X]} {n : ℕ}
+    (hmonic : p.Monic) (hsplits : p.Splits) (hdegree : p.natDegree = n)
+    (hroots : ∀ r ∈ p.roots, (-1 : ℝ) ≤ r ∧ r ≤ 0) :
+    let xs := p.roots.sort (· ≤ ·)
+    xs.length = n ∧ rootsInUnitBox (xs : Multiset ℝ) ∧
+      rootPolynomial (xs : Multiset ℝ) = p := by
+  have hcoe : ((p.roots.sort (· ≤ ·) : List ℝ) : Multiset ℝ) = p.roots :=
+    Multiset.sort_eq p.roots (· ≤ ·)
+  refine ⟨?_, ?_, ?_⟩
+  · simp [Polynomial.splits_iff_card_roots.mp hsplits, hdegree]
+  · rw [hcoe]
+    exact hroots
+  · rw [hcoe]
+    simpa [rootPolynomial] using (hsplits.eq_prod_roots_of_monic hmonic).symm
+
+/-- Join root-move chains at a common nonempty bounded multiset. -/
+private theorem rootMove_chain_append {left right : List (Multiset ℝ)} {s : Multiset ℝ}
+    (hl : left.IsChain IsRootMove) (hr : right.IsChain IsRootMove)
+    (hlast : left.getLast? = some s) (hhead : right.head? = some s)
+    (hs0 : s ≠ 0) (hsbox : rootsInUnitBox s) :
+    (left ++ right).IsChain IsRootMove := by
+  apply List.IsChain.append hl hr
+  intro a ha b hb
+  have ha' := Option.mem_def.mp ha
+  have hb' := Option.mem_def.mp hb
+  rw [hlast] at ha'
+  rw [hhead] at hb'
+  have ha_eq := Option.some.inj ha'.symm
+  have hb_eq := Option.some.inj hb'.symm
+  subst a
+  subst b
+  exact IsRootMove.refl_of_ne_zero hs0 hsbox
+
+/-- Locate both ends of the middle segment in a concatenated root-move chain. -/
+private theorem rootMove_chain_middle_indices
+    (left middle right : List (Multiset ℝ)) {xs ys : Multiset ℝ}
+    (hmiddle0 : middle ≠ []) (hright0 : right ≠ [])
+    (hmiddle_head : middle.head? = some xs) (hmiddle_last : middle.getLast? = some ys) :
+    let ms := (left ++ middle) ++ right
+    ∃ i j, i ≤ j ∧ j ≤ ms.length - 1 ∧ ms.getD i 0 = xs ∧ ms.getD j 0 = ys := by
+  let ms := (left ++ middle) ++ right
+  let i := left.length
+  let j := left.length + middle.length - 1
+  have hm : 1 ≤ middle.length := List.length_pos_of_ne_nil hmiddle0
+  have hr : 1 ≤ right.length := List.length_pos_of_ne_nil hright0
+  refine ⟨i, j, ?_, ?_, ?_, ?_⟩
+  · dsimp [i, j]
+    lia
+  · dsimp [j, ms]
+    simp only [List.length_append]
+    lia
+  · have hi_outer : i < (left ++ middle).length := by
+      dsimp [i]
+      simp only [List.length_append]
+      lia
+    have hmid_first := List.getD_zero_eq_of_head?_eq_some
+      (d := (0 : Multiset ℝ)) hmiddle_head
+    change ((left ++ middle) ++ right).getD i 0 = xs
+    rw [List.getD_append _ _ _ _ hi_outer,
+      List.getD_append_right left middle 0 i (by simp [i])]
+    simpa [i] using hmid_first
+  · have hj_outer : j < (left ++ middle).length := by
+      dsimp [j]
+      simp only [List.length_append]
+      lia
+    have hmid_last := List.getD_last_eq_of_getLast?_eq_some
+      (d := (0 : Multiset ℝ)) hmiddle_last
+    have hindex : j - left.length = middle.length - 1 := by dsimp [j]; lia
+    change ((left ++ middle) ++ right).getD j 0 = ys
+    rw [List.getD_append _ _ _ _ hj_outer,
+      List.getD_append_right left middle 0 j (by dsimp [j]; lia), hindex]
+    exact hmid_last
+
+/-- Extend coordinatewise ordered root lists to a chain between the two extreme lists. -/
+private theorem exists_bounded_rootMove_chain {xs ys : List ℝ} {n : ℕ}
+    (hn : 1 ≤ n) (hxs_length : xs.length = n) (hys_length : ys.length = n)
+    (hxs_box : rootsInUnitBox (xs : Multiset ℝ))
+    (hys_box : rootsInUnitBox (ys : Multiset ℝ)) (hxs_ys : List.Forall₂ (· ≤ ·) xs ys) :
+    ∃ (ms : List (Multiset ℝ)) (i j : ℕ),
+      ms.IsChain IsRootMove ∧ ms.head? = some (List.replicate n (-1 : ℝ) : Multiset ℝ) ∧
+      ms.getLast? = some (List.replicate n (0 : ℝ) : Multiset ℝ) ∧
+      i ≤ j ∧ j ≤ ms.length - 1 ∧ ms.getD i 0 = (xs : Multiset ℝ) ∧
+      ms.getD j 0 = (ys : Multiset ℝ) := by
   let lo := List.replicate n (-1 : ℝ)
   let hi := List.replicate n (0 : ℝ)
-  have hxs_length : xs.length = n := by
-    simp [xs, Polynomial.splits_iff_card_roots.mp hf_splits, hf_degree]
-  have hys_length : ys.length = n := by
-    simp [ys, Polynomial.splits_iff_card_roots.mp hg_splits, hg_degree]
-  have hxs_coe : (xs : Multiset ℝ) = f.roots := by
-    exact Multiset.sort_eq f.roots (· ≤ ·)
-  have hys_coe : (ys : Multiset ℝ) = g.roots := by
-    exact Multiset.sort_eq g.roots (· ≤ ·)
-  have hxs_box : rootsInUnitBox (xs : Multiset ℝ) := by
-    rw [hxs_coe]
-    exact hf_roots
-  have hys_box : rootsInUnitBox (ys : Multiset ℝ) := by
-    rw [hys_coe]
-    exact hg_roots
   have hlo_box : rootsInUnitBox (lo : Multiset ℝ) := by
     intro r hr
     have hr' : r = -1 := (by simpa [lo] using hr : n ≠ 0 ∧ r = -1).2
@@ -380,14 +435,11 @@ theorem brandenE_strictInterl_of_rootwiseLE
       have hmem : ys[i] ∈ (ys : Multiset ℝ) :=
         Multiset.mem_coe.mpr (List.getElem_mem hys_i)
       simpa [hi] using (hys_box ys[i] hmem).2
-  have hxs_ys : List.Forall₂ (· ≤ ·) xs ys := by
-    exact hfg
-  obtain ⟨left, hleft0, hleft_head, hleft_last, hleft_box, hleft_chain⟩ :=
+  obtain ⟨left, _, hleft_head, hleft_last, _, hleft_chain⟩ :=
     exists_rootMove_chain_of_forall₂ hlo_xs hlo_box hxs_box
-  obtain ⟨middle, hmiddle0, hmiddle_head, hmiddle_last, hmiddle_box,
-      hmiddle_chain⟩ :=
+  obtain ⟨middle, hmiddle0, hmiddle_head, hmiddle_last, _, hmiddle_chain⟩ :=
     exists_rootMove_chain_of_forall₂ hxs_ys hxs_box hys_box
-  obtain ⟨right, hright0, hright_head, hright_last, hright_box, hright_chain⟩ :=
+  obtain ⟨right, hright0, hright_head, hright_last, _, hright_chain⟩ :=
     exists_rootMove_chain_of_forall₂ hys_hi hys_box hhi_box
   have hxs0 : (xs : Multiset ℝ) ≠ 0 := by
     intro hzero
@@ -397,42 +449,33 @@ theorem brandenE_strictInterl_of_rootwiseLE
     intro hzero
     have : ys.length = 0 := by simpa using congrArg Multiset.card hzero
     lia
-  have hleft_middle : (left ++ middle).IsChain IsRootMove := by
-    apply List.IsChain.append hleft_chain hmiddle_chain
-    intro a ha b hb
-    have ha' := Option.mem_def.mp ha
-    have hb' := Option.mem_def.mp hb
-    rw [hleft_last] at ha'
-    rw [hmiddle_head] at hb'
-    have ha_eq := Option.some.inj ha'.symm
-    have hb_eq := Option.some.inj hb'.symm
-    subst a
-    subst b
-    exact IsRootMove.refl_of_ne_zero hxs0 hxs_box
-  let ms := (left ++ middle) ++ right
-  have hms_chain : ms.IsChain IsRootMove := by
-    apply List.IsChain.append hleft_middle hright_chain
-    intro a ha b hb
-    have ha' := Option.mem_def.mp ha
-    have hb' := Option.mem_def.mp hb
-    rw [List.getLast?_append, hmiddle_last] at ha'
-    simp only [Option.some_or] at ha'
-    rw [hright_head] at hb'
-    have ha_eq := Option.some.inj ha'.symm
-    have hb_eq := Option.some.inj hb'.symm
-    subst a
-    subst b
-    exact IsRootMove.refl_of_ne_zero hys0 hys_box
-  have hms0 : ms ≠ [] := by
-    simp [ms, hleft0]
-  have hms_head : ms.head? = some (lo : Multiset ℝ) := by
-    change ((left ++ middle) ++ right).head? = some (lo : Multiset ℝ)
+  have hleft_middle := rootMove_chain_append hleft_chain hmiddle_chain
+    hleft_last hmiddle_head hxs0 hxs_box
+  have hleft_middle_last : (left ++ middle).getLast? = some (ys : Multiset ℝ) := by
+    rw [List.getLast?_append, hmiddle_last]
+    rfl
+  have hms_chain := rootMove_chain_append hleft_middle hright_chain
+    hleft_middle_last hright_head hys0 hys_box
+  have hms_head : ((left ++ middle) ++ right).head? = some (lo : Multiset ℝ) := by
     rw [List.head?_append, List.head?_append, hleft_head]
     rfl
-  have hms_last : ms.getLast? = some (hi : Multiset ℝ) := by
-    change ((left ++ middle) ++ right).getLast? = some (hi : Multiset ℝ)
+  have hms_last : ((left ++ middle) ++ right).getLast? = some (hi : Multiset ℝ) := by
     rw [List.getLast?_append, hright_last]
     rfl
+  obtain ⟨i, j, hij, hj, hi_eq, hj_eq⟩ := rootMove_chain_middle_indices
+    left middle right hmiddle0 hright0 hmiddle_head hmiddle_last
+  exact ⟨(left ++ middle) ++ right, i, j, hms_chain, hms_head, hms_last,
+    hij, hj, hi_eq, hj_eq⟩
+
+/-- The extreme endpoint relation orients every pair along a root-move chain. -/
+private theorem strictInterl_brandenE_of_bounded_rootMove_chain
+    {ms : List (Multiset ℝ)} {n i j : ℕ} (hn : 1 ≤ n)
+    (hms_chain : ms.IsChain IsRootMove)
+    (hms_head : ms.head? = some (List.replicate n (-1 : ℝ) : Multiset ℝ))
+    (hms_last : ms.getLast? = some (List.replicate n (0 : ℝ) : Multiset ℝ))
+    (hij : i ≤ j) (hj : j ≤ ms.length - 1) :
+    StrictInterl (brandenE (rootPolynomial (ms.getD i 0)))
+      (brandenE (rootPolynomial (ms.getD j 0))) := by
   let P : Multiset ℝ → ℝ[X] := fun s ↦ brandenE (rootPolynomial s)
   let F : ℕ → ℝ[X] := fun k ↦ P (ms.getD k 0)
   have hcons : ∀ k, 0 ≤ k → k < ms.length - 1 →
@@ -443,10 +486,11 @@ theorem brandenE_strictInterl_of_rootwiseLE
     rw [← List.getD_eq_getElem ms 0 (by lia),
       ← List.getD_eq_getElem ms 0 hk'] at hmove
     exact hmove.strictInterl_brandenE
-  have hlo_poly : rootPolynomial (lo : Multiset ℝ) = (X + 1) ^ n := by
-    simp [lo, rootPolynomial_coe, sub_eq_add_neg]
-  have hhi_poly : rootPolynomial (hi : Multiset ℝ) = X ^ n := by
-    simp [hi, rootPolynomial_coe]
+  have hlo_poly : rootPolynomial (List.replicate n (-1 : ℝ) : Multiset ℝ) =
+      (X + 1) ^ n := by
+    simp [rootPolynomial_coe, sub_eq_add_neg]
+  have hhi_poly : rootPolynomial (List.replicate n (0 : ℝ) : Multiset ℝ) = X ^ n := by
+    simp [rootPolynomial_coe]
   have hext : StrictInterl (F 0) (F (ms.length - 1)) := by
     have hfirst := List.getD_zero_eq_of_head?_eq_some
       (d := (0 : Multiset ℝ)) hms_head
@@ -454,70 +498,35 @@ theorem brandenE_strictInterl_of_rootwiseLE
       (d := (0 : Multiset ℝ)) hms_last
     change StrictInterl (P (ms.getD 0 0)) (P (ms.getD (ms.length - 1) 0))
     rw [hfirst, hlast]
-    change StrictInterl (brandenE (rootPolynomial (lo : Multiset ℝ)))
-      (brandenE (rootPolynomial (hi : Multiset ℝ)))
+    change StrictInterl (brandenE (rootPolynomial (List.replicate n (-1 : ℝ) : Multiset ℝ)))
+      (brandenE (rootPolynomial (List.replicate n (0 : ℝ) : Multiset ℝ)))
     rw [hlo_poly, hhi_poly]
     simpa [brandenBasisImage, brandenBinomialBasis] using
       brandenBasisImage_endpoint_strictInterl n hn
-  have hall := strictInterl_chain_of_consecutive_of_endpoint
-    F 0 (ms.length - 1) hcons hext
-  let i := left.length
-  let j := left.length + middle.length - 1
-  have hi_le_j : i ≤ j := by
-    dsimp [i, j]
-    have : 1 ≤ middle.length := by
-      exact List.length_pos_of_ne_nil hmiddle0
-    lia
-  have hj_bound : j ≤ ms.length - 1 := by
-    dsimp [i, j, ms]
-    have : 1 ≤ right.length := by
-      exact List.length_pos_of_ne_nil hright0
-    simp only [List.length_append]
-    lia
-  have hFi : F i = brandenE f := by
-    have hi_outer : i < (left ++ middle).length := by
-      dsimp [i]
-      simp only [List.length_append]
-      exact Nat.lt_add_of_pos_right
-        (List.length_pos_of_ne_nil hmiddle0)
-    have hmid_first := List.getD_zero_eq_of_head?_eq_some
-      (d := (0 : Multiset ℝ)) hmiddle_head
-    have hsource : ms.getD i 0 = (xs : Multiset ℝ) := by
-      change ((left ++ middle) ++ right).getD i 0 = (xs : Multiset ℝ)
-      rw [List.getD_append _ _ _ _ hi_outer,
-        List.getD_append_right left middle 0 i (by simp [i])]
-      simpa [i] using hmid_first
-    have hf_poly : rootPolynomial (xs : Multiset ℝ) = f := by
-      rw [hxs_coe]
-      simpa [rootPolynomial] using (hf_splits.eq_prod_roots_of_monic hf_monic).symm
-    simp only [F, P, hsource, hf_poly]
-  have hFj : F j = brandenE g := by
-    have hj_outer : j < (left ++ middle).length := by
-      dsimp [j]
-      simp only [List.length_append]
-      have : 1 ≤ middle.length := by
-        exact List.length_pos_of_ne_nil hmiddle0
-      lia
-    have hmid_last := List.getD_last_eq_of_getLast?_eq_some
-      (d := (0 : Multiset ℝ)) hmiddle_last
-    have hindex : j - left.length = middle.length - 1 := by
-      dsimp [j]
-      have := List.length_pos_of_ne_nil hmiddle0
-      lia
-    have hsource : ms.getD j 0 = (ys : Multiset ℝ) := by
-      change ((left ++ middle) ++ right).getD j 0 = (ys : Multiset ℝ)
-      rw [List.getD_append _ _ _ _ hj_outer,
-        List.getD_append_right left middle 0 j (by
-          dsimp [j]
-          have := List.length_pos_of_ne_nil hmiddle0
-          lia)]
-      rw [hindex]
-      exact hmid_last
-    have hg_poly : rootPolynomial (ys : Multiset ℝ) = g := by
-      rw [hys_coe]
-      simpa [rootPolynomial] using (hg_splits.eq_prod_roots_of_monic hg_monic).symm
-    simp only [F, P, hsource, hg_poly]
-  rw [← hFi, ← hFj]
-  exact hall i j (Nat.zero_le i) hi_le_j hj_bound
+  exact strictInterl_chain_of_consecutive_of_endpoint
+    F 0 (ms.length - 1) hcons hext i j (Nat.zero_le i) hij hj
+
+/-- Brändén's Theorem 4.6 in `brandenE` coordinates: coordinatewise
+increasing roots in `[-1, 0]` give oriented weak interlacing of the images. -/
+theorem brandenE_strictInterl_of_rootwiseLE
+    {f g : ℝ[X]} {n : ℕ}
+    (hf_monic : f.Monic) (hg_monic : g.Monic)
+    (hf_splits : f.Splits) (hg_splits : g.Splits)
+    (hf_degree : f.natDegree = n) (hg_degree : g.natDegree = n)
+    (hn : n ≠ 0)
+    (hf_roots : ∀ r ∈ f.roots, (-1 : ℝ) ≤ r ∧ r ≤ 0)
+    (hg_roots : ∀ r ∈ g.roots, (-1 : ℝ) ≤ r ∧ r ≤ 0)
+    (hfg : RootwiseLE f g) :
+    StrictInterl (brandenE f) (brandenE g) := by
+  have hn' : 1 ≤ n := Nat.one_le_iff_ne_zero.mpr hn
+  obtain ⟨hxs_length, hxs_box, hf_poly⟩ :=
+    sorted_roots_normalization hf_monic hf_splits hf_degree hf_roots
+  obtain ⟨hys_length, hys_box, hg_poly⟩ :=
+    sorted_roots_normalization hg_monic hg_splits hg_degree hg_roots
+  obtain ⟨ms, i, j, hchain, hhead, hlast, hij, hj, hi_eq, hj_eq⟩ :=
+    exists_bounded_rootMove_chain hn' hxs_length hys_length hxs_box hys_box hfg
+  have h := strictInterl_brandenE_of_bounded_rootMove_chain hn' hchain hhead hlast hij hj
+  rw [hi_eq, hj_eq, hf_poly, hg_poly] at h
+  exact h
 
 end RealRooted

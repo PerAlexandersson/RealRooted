@@ -22,12 +22,12 @@ years = [2026]
 
 [[definitions]]
 name = "RealRooted.BorosMoll.bmCoeff"
-module = "RealRooted.CombinatorialExamples.BorosMoll.Basic"
+module = "RealRooted.CombinatorialExamples.BorosMoll.Core"
 label = "Boros–Moll coefficients"
 
 [[definitions]]
 name = "RealRooted.BorosMoll.bmM"
-module = "RealRooted.CombinatorialExamples.BorosMoll.Basic"
+module = "RealRooted.CombinatorialExamples.BorosMoll.Core"
 label = "Generating polynomial of the log-concavity transform of a Boros–Moll row"
 
 [[theorems]]

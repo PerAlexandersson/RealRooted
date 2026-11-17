@@ -16,10 +16,10 @@
   ],
   "budgets": {
     "RealRooted": {
-      "max_modules": 2247
+      "max_modules": 2249
     },
     "RealRooted.Production": {
-      "max_modules": 2175
+      "max_modules": 2177
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 844
@@ -1607,6 +1607,15 @@
     },
     "RealRooted.Tactic.Product": {
       "max_modules": 92
+    },
+    "RealRooted.CombinatorialExamples.BorosMoll.Core": {
+      "max_modules": 3
+    },
+    "RealRooted.CombinatorialExamples.BorosMoll.SmallCases": {
+      "max_modules": 4
+    },
+    "RealRooted.CombinatorialExamples.BorosMoll.Basic": {
+      "max_modules": 5
     }
   },
   "forbidden_imports": [
@@ -2032,6 +2041,9 @@
     "RealRooted.Tactic.MaWang",
     "RealRooted.Tactic.Product",
     "RealRooted.Tactic.CommonInterleaver.Core",
-    "RealRooted.Tactic"
+    "RealRooted.Tactic",
+    "RealRooted.CombinatorialExamples.BorosMoll.Core",
+    "RealRooted.CombinatorialExamples.BorosMoll.SmallCases",
+    "RealRooted.CombinatorialExamples.BorosMoll.Basic"
   ]
 }
