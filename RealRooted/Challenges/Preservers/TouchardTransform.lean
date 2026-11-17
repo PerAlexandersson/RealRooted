@@ -245,9 +245,9 @@ products.
 ## Use
 
 The Touchard polynomials themselves form a
-[Sturm sequence](rr:sturm-sequence-families). The ordered Bell transform has its own
+[Sturm sequence](rr:ma-wang-liu-wang). The ordered Bell transform has its own
 [page](rr:branden-e-transform), and fixed-factor Poisson multiplication is classified on the
-[Poisson star product](rr:univariate-poisson-star-c) page.
+[derivative products](rr:derivative-products) page.
 
 ## Proof
 

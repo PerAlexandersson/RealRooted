@@ -865,16 +865,13 @@
       "max_modules": 92
     },
     "RealRooted.Challenges.Roots.HermitePoulain": {
-      "max_modules": 214
+      "max_modules": 223
     },
     "RealRooted.Tactic.HermitePoulain": {
       "max_modules": 93
     },
     "RealRooted.Tactic.SecondDerivative": {
       "max_modules": 121
-    },
-    "RealRooted.Challenges.Roots.Kurtz": {
-      "max_modules": 49
     },
     "RealRooted.Tactic.Kurtz": {
       "max_modules": 93
@@ -2041,7 +2038,6 @@
     "RealRooted.RowThresholdOne",
     "RealRooted.GustafssonSolus",
     "RealRooted.Kurtz",
-    "RealRooted.Challenges.Roots.Kurtz",
     "RealRooted.Tactic.Kurtz",
     "RealRooted.Wagner.NonpositiveRoots",
     "RealRooted.Challenges.Interlacing.Interlacing",

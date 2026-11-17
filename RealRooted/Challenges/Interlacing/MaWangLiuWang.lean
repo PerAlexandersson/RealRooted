@@ -1,20 +1,24 @@
 module
 
-public import RealRooted.Basic.Coefficients
+public import RealRooted.CombinatorialExamples.ColoredSetPartitions
+public import RealRooted.CombinatorialExamples.Motzkin
+public import RealRooted.CombinatorialExamples.PathPowerIndependence
+public import RealRooted.CombinatorialExamples.Simsun
+public import RealRooted.CombinatorialExamples.SingletonFreeSetPartitions
+public import RealRooted.CombinatorialExamples.StirlingPermutations
+public import RealRooted.CombinatorialExamples.SturmDerangementsExc
+public import RealRooted.CombinatorialExamples.Touchard
 public import RealRooted.LiuWang.CombinedFlux
-public import RealRooted.LiuWang.FiniteFamily
 public import RealRooted.LiuWang.General
 public import RealRooted.LiuWang.SequenceCore
 public import RealRooted.LiuWangRecursion
-public import RealRooted.MaWang.CriticalSign
 public import RealRooted.MaWang.DerivativeSequence
 public import RealRooted.MaWang.DerivativeStep
 public import RealRooted.MaWang.StrictStep
-public import RealRooted.MaWang.Weak.DerivativeSign
-public import RealRooted.SimpleRoots
+public import RealRooted.ThreeTermRecurrence.PositiveAffineLag
 
 /-!
-# The Liu–Wang and Ma–Wang interlacing criteria
+# Liu–Wang and Ma–Wang interlacing criteria
 
 <!-- realrooted-catalog
 version = 1
@@ -22,87 +26,132 @@ kind = "method"
 section = "theorems"
 slug = "ma-wang-liu-wang"
 formalized = "2026-10-06"
-tags = []
 references = [
   "LiuWang2007",
   "MaWang2008",
+  "GesselStanley1978",
+  "MantaciRakotondrajao2003",
+  "Bona2009",
+  "ChowShiu2011",
+  "Wang2014",
+  "BonaHezo2016",
 ]
 authors = ["Liu", "Wang", "Ma"]
 years = [2007, 2008]
 
 [[theorems]]
-name = "RealRooted.LiuWang.strictInterl_mul_add_sum_mul_of_combined_flux_of_pos"
-module = "RealRooted.LiuWang.CombinedFlux"
-label = "General form: f ≪ af + Σ bᵢgᵢ from the combined flux at the zeros of f"
-headline = true
-
-[[theorems]]
-name = "RealRooted.strictInterl_of_interlaces_eval_mul_nonpos"
-module = "RealRooted.MaWang.Weak.DerivativeSign"
-label = "f ≪ F when g interlaces f without common zeros and F g ≤ 0 at the zeros of f"
-
-[[theorems]]
 name = "RealRooted.LiuWang.strictInterl_mul_add_mul_of_eval_nonpos"
 module = "RealRooted.LiuWang.General"
-label = "Liu–Wang criterion: f ≪ af + bg when b ≤ 0 at the zeros of f"
-
-[[theorems]]
-name = "RealRooted.strictInterl_of_eval_mul_derivative_nonpos"
-module = "RealRooted.MaWang.Weak.DerivativeSign"
-label = "f ≪ F when F f' ≤ 0 at the simple zeros of f"
+label = "Liu–Wang: f ≪ af + bg when g ≪ f and b ≤ 0 at the roots of f"
+headline = true
 
 [[theorems]]
 name = "RealRooted.MaWang.strictInterl_derivative_of_nonpos_of_splits"
 module = "RealRooted.MaWang.DerivativeStep"
-label = "Ma–Wang criterion: f ≪ uf + vf' when v ≤ 0 at the zeros of f"
+label = "Ma–Wang: f ≪ uf + vf′ when v ≤ 0 at the roots of f"
 symcat = "maWangDerivativeCriterion"
-
-[[theorems]]
-name = "RealRooted.StrictInterl.eval_mul_eval_derivative_nonneg"
-module = "RealRooted.MaWang.Weak.DerivativeSign"
-label = "An interlacer g ≪ f has the sign of f' at the zeros of f"
 
 [[theorems]]
 name = "RealRooted.MaWang.strictInterl_and_hasSimpleRoots_of_eval_neg"
 module = "RealRooted.MaWang.StrictStep"
-label = "Strict Ma–Wang step: simple zeros propagate when v < 0"
+label = "Ma–Wang, strict form: v < 0 at the roots keeps the roots simple"
 
 [[theorems]]
-name = "RealRooted.LiuWang.strictInterl_mul_add_sum_mul_of_eval_nonpos"
-module = "RealRooted.LiuWang.FiniteFamily"
-label = "Liu–Wang criterion for finite sums of interlacers, repeated roots allowed"
-
-[[theorems]]
-name = "RealRooted.strictInterl_of_eval_mul_derivative_neg"
-module = "RealRooted.MaWang.CriticalSign"
-label = "Strict interlacing from strict critical signs"
+name = "RealRooted.LiuWang.strictInterl_mul_add_sum_mul_of_combined_flux_of_pos"
+module = "RealRooted.LiuWang.CombinedFlux"
+label = "Common generalization for finite sums af + Σ bᵢgᵢ"
 
 [[theorems]]
 name = "RealRooted.LiuWang.strictInterl_succ_of_recurrence_of_eval_nonpos"
 module = "RealRooted.LiuWang.SequenceCore"
-label = "Liu–Wang criterion for three-term recurrences"
+label = "Rows of P(n+2) = A P(n+1) + B P(n) interlace when B ≤ 0 at the roots of P(n+1)"
 
 [[theorems]]
 name = "RealRooted.MaWang.strictInterl_derivative_nonpos_sequence"
 module = "RealRooted.MaWang.DerivativeSequence"
-label = "Ma–Wang criterion for derivative recurrences"
-
-[[theorems]]
-name = "RealRooted.LiuWang.strictInterl_derivative_lag_of_eval_nonpos"
-module = "RealRooted.LiuWang.FiniteFamily"
-label = "Liu–Wang step with an additional derivative term"
+label = "Rows of P(n+1) = U P(n) + V P(n)′ interlace when V ≤ 0 at the roots of P(n)"
 
 [[theorems]]
 name = "RealRooted.LiuWang.strictInterl_sequence_of_derivative_lag"
 module = "RealRooted.LiuWangRecursion"
-label = "Liu–Wang criterion for derivative–lag recurrences"
+label = "Rows of P(n+2) = U P(n+1) + V P(n+1)′ + W P(n) interlace when V, W ≤ 0 there"
+
+[[theorems]]
+name = "RealRooted.PositiveAffineLag.interlacing_and_roots"
+module = "RealRooted.ThreeTermRecurrence.PositiveAffineLag"
+label = "Positive affine lags: rows interlace, with simple negative roots"
+
+[[theorems]]
+objects = ["Touchard polynomials"]
+property = "interlacing"
+name = "RealRooted.interlaces_touchard_succ"
+module = "RealRooted.CombinatorialExamples.Touchard"
+label = "Consecutive Touchard polynomials interlace"
+symcat = "touchardPolynomial"
+
+[[theorems]]
+objects = ["Stirling-permutation descent polynomials"]
+property = "interlacing"
+name = "RealRooted.interlaces_stirlingPermutations_succ"
+module = "RealRooted.CombinatorialExamples.StirlingPermutations"
+label = "Consecutive Stirling-permutation descent polynomials interlace"
+
+[[theorems]]
+objects = ["Derangement polynomials"]
+property = "interlacing"
+name = "RealRooted.interlaces_sturmDerangementsExc_succ"
+module = "RealRooted.CombinatorialExamples.SturmDerangementsExc"
+label = "Consecutive derangement polynomials interlace"
+symcat = "derangementPolynomial"
+
+[[theorems]]
+objects = ["Simsun polynomials"]
+property = "interlacing"
+name = "RealRooted.strictInterl_simsun_succ"
+module = "RealRooted.CombinatorialExamples.Simsun"
+label = "Consecutive simsun polynomials interlace"
+
+[[theorems]]
+objects = ["Singleton-free set-partition polynomials"]
+property = "interlacing"
+name = "RealRooted.strictInterl_singletonFreeSetPartitions_succ"
+module = "RealRooted.CombinatorialExamples.SingletonFreeSetPartitions"
+label = "Consecutive singleton-free set-partition polynomials interlace"
+
+[[theorems]]
+objects = ["Colored set-partition polynomials"]
+property = "interlacing"
+name = "RealRooted.interlaces_coloredSetPartitions_succ"
+module = "RealRooted.CombinatorialExamples.ColoredSetPartitions"
+label = "Consecutive colored set-partition polynomials interlace"
+
+[[theorems]]
+objects = ["Motzkin polynomials"]
+name = "RealRooted.isRealRooted_motzkin"
+module = "RealRooted.CombinatorialExamples.Motzkin"
+label = "Motzkin polynomials are real-rooted"
+
+[[theorems]]
+objects = ["Motzkin polynomials"]
+property = "interlacing"
+name = "RealRooted.strictInterl_motzkin_succ"
+module = "RealRooted.CombinatorialExamples.Motzkin"
+label = "Consecutive Motzkin polynomials interlace"
+
+[[theorems]]
+objects = ["Independence polynomials of path powers"]
+name = "RealRooted.splits_sum_choose_sub_mul"
+module = "RealRooted.CombinatorialExamples.PathPowerIndependence"
+label = "Independence polynomials of path powers ∑ C(m − rk, k) xᵏ are real-rooted"
 -->
 
 <!-- realrooted-catalog-content -->
-# The Liu–Wang and Ma–Wang interlacing criteria
+# Liu–Wang and Ma–Wang interlacing criteria
 
-If an interlacer of $f$ is added to $af$ with a coefficient that is nonpositive at the roots of
-$f$, the sum is again interlaced by $f$; the same holds for $uf+vf'$ with $v\le0$ at the roots.
+If $g$ interlaces $f$, then $f$ interlaces $af+bg$ whenever $b$ is nonpositive at the roots of
+$f$. Applied to consecutive rows of a recurrence, this criterion and its derivative form, due to
+L. L. Liu and Y. Wang and to S.-M. Ma and Y. Wang, prove that the Touchard, Stirling-permutation,
+derangement and many other combinatorial polynomials form interlacing sequences.
 
 ## Results
 
@@ -114,69 +163,65 @@ Suppose that $g\ll f$, that $g$ and $F$ are positive, and that
 $\deg f\le\deg F\le\deg f+1$. If $b(r)\le0$ at every real root $r$ of $f$, then $f\ll F$.
 
 **Theorem (Ma–Wang).** [@MaWang2008, Thm. 2] Let $f,u,v\in\mathbb R[x]$ and $F=uf+vf'$. Suppose
-that $f$ is real-rooted, that $f$ and $F$ are positive, and that
-$\deg f\le\deg F\le\deg f+1$. If $v(r)\le0$ at every root $r$ of $f$, then $f\ll F$.
+that $f$ is real-rooted, that $f$ and $F$ are positive, and that $\deg f\le\deg F\le\deg f+1$.
+If $v(r)\le0$ at every root $r$ of $f$, then $f\ll F$. If moreover $f$ is nonconstant with
+simple roots, $\deg F=\deg f+1$ and $v(r)<0$ at every root, then $F$ has simple roots.
 
-**Theorem (Ma–Wang, strict form).** Suppose in addition that $\deg f\ne0$, that $f$ has simple
-roots, that $\deg F=\deg f+1$, and that $v(r)<0$ at every root $r$ of $f$. Then $f\ll F$ and
-$F$ has simple roots.
+Both are special cases of one statement for $F=af+\sum_ib_ig_i$ with finitely many positive
+$g_i\ll f$.
 
-**Theorem (general form).** Let $f,a\in\mathbb R[x]$ and, for a finite index set $s$, let
-$g_i,b_i\in\mathbb R[x]$. Put $F=af+\sum_{i\in s}b_ig_i$. Suppose that $f$ is real-rooted and
-positive, that $g_i\ll f$ and $g_i$ is positive for each $i$, that $F$ is positive, and that
-$\deg f\le\deg F\le\deg f+1$. If
-$$
-\Bigl(\sum_{i\in s}b_i(r)\,g_i(r)\Bigr)f'(r)\le0
-$$
-at every real root $r$ of $f$, and $b_i(r)\le0$ for every $i$ at every repeated root $r$ of
-$f$, then $f\ll F$. The Liu–Wang theorem, the Ma–Wang theorem and the finite-sum form below are
-special cases.
+**Theorem (recurrences).** Let $(P_n)_{n\ge0}$ be positive with $P_0\ll P_1$ and
+$\deg P_{n+1}\le\deg P_{n+2}\le\deg P_{n+1}+1$ for all $n$. In each of the following cases
+$P_n\ll P_{n+1}$ for all $n$, so every $P_n$ is real-rooted:
 
-**Theorem (finite sums).** Let $f\ne0$ be real-rooted, with leading coefficient of either sign,
-and let $F=af+\sum_{i\in s}b_ig_i$ with $g_i\ll f$ and $g_i$ positive, $F$ positive and
-$\deg f\le\deg F\le\deg f+1$. If $b_i(r)\le0$ at every root $r$ of $f$ for each $i$, then
-$f\ll F$.
+- $P_{n+2}=A_nP_{n+1}+B_nP_n$ with $B_n\le0$ at the roots of $P_{n+1}$;
+- $P_{n+2}=U_nP_{n+1}+V_nP_{n+1}'$ with $V_n\le0$ at the roots of $P_{n+1}$;
+- $P_{n+2}=U_nP_{n+1}+V_nP_{n+1}'+W_nP_n$ with $V_n,W_n\le0$ at the roots of $P_{n+1}$.
 
-**Theorem (sign criteria).** Let $F$ be positive with $\deg f\le\deg F\le\deg f+1$. Then
-$f\ll F$ in each of the following cases:
+For example, if $0<P_0\le P_1$ are constants, $b_n,c_n\ge0$, $d_n>0$ and
+$P_{n+2}=(1+b_n+c_n)P_{n+1}+(d_nx-b_n)P_n$, then $P_n$ has degree $\lfloor n/2\rfloor$ and simple
+negative roots, and $P_n\ll P_{n+1}$.
 
-- $g\ll f$ with $\deg g+1=\deg f$ and no common roots, $g$ is positive, and $F(r)g(r)\le0$ at
-  every root $r$ of $f$;
-- $f$ is positive and real-rooted with simple roots, and $F(r)f'(r)\le0$ at every root $r$ of
-  $f$;
-- $f$ is positive, nonconstant and real-rooted, and $F(r)f'(r)<0$ at every root $r$ of $f$.
+**Corollary (families).** Consecutive rows interlace for each of the following recurrences:
 
-Conversely, if $g\ll f$ and both are positive, then $g(r)f'(r)\ge0$ at every root $r$ of $f$.
+- Touchard polynomials: $T_0=1$, $T_{n+1}=xT_n+xT_n'$;
+- descent polynomials of Stirling permutations: $P_0=1$, $P_{n+1}=(2n+1)xP_n+x(1-x)P_n'$;
+- derangement polynomials (excedances): $P_0=P_1=0$, $P_2=x$,
+  $P_{n+3}=x\bigl((n+2)P_{n+1}+(n+2)P_{n+2}+(1-x)P_{n+2}'\bigr)$, from $n=2$;
+- simsun polynomials: $P_0=1$, $P_{n+1}=(1+nx)P_n+x(1-2x)P_n'$;
+- singleton-free set partitions: $D_0=1$, $D_1=0$, $D_{n+2}=x\bigl((n+1)D_n+D_{n+1}'\bigr)$,
+  from $n=2$;
+- colored set partitions, for natural numbers $c,m$: $T_0=1$, $T_{n+1}=(x+c)T_n+mxT_n'$;
+- Motzkin polynomials $M_k=\sum_a\binom k{2a}\mathrm{Cat}_a\,x^a$, $k\ge1$, which satisfy
+  $(k+2)M_k=(2k+1)M_{k-1}+(k-1)(4x-1)M_{k-2}$.
 
-**Theorem (sequences).** Let $(P_n)_{n\ge0}$ be positive with $P_0\ll P_1$ and
-$\deg P_{n+1}\le\deg P_{n+2}\le\deg P_{n+1}+1$ for all $n$. Then $P_n\ll P_{n+1}$ for all $n$
-in each of the following cases; in particular every $P_n$ is real-rooted.
-
-- $P_{n+2}=A_nP_{n+1}+B_nP_n$ with $B_n(r)\le0$ at every root $r$ of $P_{n+1}$.
-- $P_{n+2}=U_nP_{n+1}+V_nP_{n+1}'$ with $V_n(r)\le0$ at every root $r$ of $P_{n+1}$.
-- $P_{n+2}=U_nP_{n+1}+V_nP_{n+1}'+W_nP_n$ with $V_n(r)\le0$ and $W_n(r)\le0$ at every root $r$
-  of $P_{n+1}$.
-
-**Theorem (derivative–lag step).** Let $f\ne0$ be real-rooted and positive, let $g\ll f$ be
-positive, and put $F=uf+vf'+wg$. Suppose that $F$ is positive and
-$\deg f\le\deg F\le\deg f+1$. If $v(r)\le0$ and $w(r)\le0$ at every root $r$ of $f$, then
-$f\ll F$.
+**Corollary (path powers).** For all natural numbers $r,m$ the polynomial
+$\sum_k\binom{m-rk}{k}x^k$ is real-rooted. For $r\le m$ it is the independence polynomial of the
+$r$th power of a path, a claw-free graph, so this also follows from the
+[Chudnovsky–Seymour theorem](rr:chudnovsky-seymour).
 
 ## Use
 
-The criteria give the interlacing of consecutive rows of polynomial families defined by
-recurrences or by first-order differential operators.
+These criteria are the standard route from a recurrence to interlacing. For a first-order
+recurrence $P_{n+1}=uP_n+vP_n'$ with nonnegative coefficients, the roots of $P_n$ are
+nonpositive, so it suffices that $v\le0$ on $(-\infty,0]$. Recurrences whose roots stay in a
+window are treated on the [root-window page](rr:recurrence-root-windows).
+
+## Proof
+
+At a root $r$ of $f$ we have $F(r)=b(r)g(r)$, and $g(r)f'(r)\ge0$ because $g\ll f$. Hence
+$F(r)f'(r)\le0$, so $F$ changes sign between consecutive roots of $f$, and the degree condition
+places the last root of $F$ to the right of the roots of $f$. The Ma–Wang theorem is the same
+argument with $g=f'$. For the families, the coefficients of $P_n'$ and of the earlier row are
+nonpositive at the nonpositive roots of $P_n$.
 
 ## References
 
-[@LiuWang2007, Thm. 2.1]; [@MaWang2008, Thm. 2]; see also the
-[Ma–Wang and Liu–Wang criteria on symmetricfunctions.com](sf:maWangDerivativeCriterion).
+[@LiuWang2007, Thm. 2.1]; [@MaWang2008, Thm. 2]. The families are from
+[@GesselStanley1978; @MantaciRakotondrajao2003; @Bona2009; @ChowShiu2011; @Wang2014;
+@BonaHezo2016]. See also the [Ma–Wang criterion](sf:maWangDerivativeCriterion), the
+[Touchard polynomials](sf:touchardPolynomial), the
+[derangement polynomials](sf:derangementPolynomial) and the
+[Motzkin-polynomial theorem](sf:motzkinPolynomialsRealRooted) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
-
-The general form (combined flux) lives in `RealRooted.LiuWang.CombinedFlux`; the
-Liu–Wang theorem (`RealRooted.LiuWang.General`) and the finite-sum form
-(`RealRooted.LiuWang.FiniteFamily`) are its corollaries. The weak-sign and
-derivative-sign criteria live in `RealRooted.MaWang.Weak.DerivativeSign`, and the
-derivative steps in `RealRooted.MaWang.DerivativeStep` and
-`RealRooted.MaWang.StrictStep`.
 -/

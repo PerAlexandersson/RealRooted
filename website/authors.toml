@@ -64,6 +64,7 @@
 "Schoenberg" = { name = "I. J. Schoenberg" }
 "Schur" = { name = "Issai Schur" }
 "Seymour" = { name = "Paul Seymour" }
+"Shapiro" = { name = "Boris Shapiro" }
 "Shiu" = { name = "Wai Chee Shiu" }
 "Sokal" = { name = "Alan D. Sokal" }
 "Solus" = { name = "Liam Solus" }
@@ -83,6 +84,7 @@
 "Zhanhe Zhang" = { name = "Zhanhe Zhang" }
 "Zhao" = { name = "Tongyuan Zhao" }
 "Zhuang" = { name = "Yan Zhuang" }
+"Štampach" = { name = "František Štampach" }
 
 [overrides]
 "aissen-schoenberg-whitney:Whitney" = { name = "Anne Whitney" }
@@ -102,9 +104,8 @@
 "narayana:Wang" = { name = "Lijie Wang" }
 "real-stability:Srivastava" = { name = "Nikhil Srivastava" }
 "recurrence-root-windows:Liu" = { name = "Lily L. Liu" }
+"recurrence-root-windows:Ma" = { name = "Shi-Mei Ma" }
 "recurrence-root-windows:Wang" = { name = "Yi Wang" }
 "separable-permutations:Lin" = { name = "Zhicong Lin" }
 "separable-permutations:Zeng" = { name = "Jiang Zeng" }
-"sturm-sequence-families:Gessel" = { name = "Ira M. Gessel" }
-"sturm-sequence-families:Wang" = { name = "David Wang" }
 "wang-yeh:Wang" = { name = "Yi Wang" }
