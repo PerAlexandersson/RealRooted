@@ -147,7 +147,7 @@ For a compatible pair, equal degrees and degrees differing by one are treated se
 real-rooted polynomials of arbitrary degrees, we translate both far enough that their
 coefficients become nonnegative, apply that case, and translate the interleaver back. For Liu's
 theorem, the root-count criterion is proved directly for simple roots; small
-[derivative shifts](rr:iterated-derivative-shift) preserve compatibility and reduce the general
+[derivative shifts](rr:hermite-poulain) preserve compatibility and reduce the general
 case to it.
 
 ## References

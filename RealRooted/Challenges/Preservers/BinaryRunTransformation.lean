@@ -155,7 +155,7 @@ For preservation, we scale the input by a parameter. At parameter zero the resca
 Schur–Szegő composition with the path-matching polynomial $\sum_k\binom{n+1-k}kx^k$, and the
 stability method of [@BorceaBranden2009I] fixes the sign of every critical value of the image
 as the parameter grows, so no two roots collide. Interlacing follows from the
-[monomial-chain criterion](rr:monomial-chain-operator), and the cross-length and Motzkin
+[monomial-chain criterion](rr:operator-preservers), and the cross-length and Motzkin
 theorems from linear identities between $J_n$, $J_{n+1}$ and $K_n$.
 
 ## References

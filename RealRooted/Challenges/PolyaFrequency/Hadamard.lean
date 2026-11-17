@@ -8,7 +8,6 @@ public import RealRooted.GarloffWagner.Theorem12
 public import RealRooted.Hadamard
 public import RealRooted.Hadamard.Basic
 public import RealRooted.Hadamard.Consequences
-public import RealRooted.Hadamard.FiniteReflection
 public import RealRooted.Hadamard.Grace
 public import RealRooted.Hadamard.KostovMap
 public import RealRooted.Hadamard.OrderedRoots
@@ -173,16 +172,6 @@ label = "Kostov: Schur–Szegő factorizations have coefficients affine in σ(a)
 name = "RealRooted.Kostov.coeffMap_eq_sigma"
 module = "RealRooted.Hadamard.KostovMap"
 label = "Kostov's coefficient map recovers the symmetric functions of a factorization"
-
-[[theorems]]
-name = "RealRooted.Hadamard.finiteMultiplierSequence_iff_jensen_isPFPolynomial"
-module = "RealRooted.Hadamard.Grace"
-label = "Finite Pólya–Schur theorem"
-
-[[theorems]]
-name = "RealRooted.isFiniteMultiplierSequence_iff_jensenPolynomial_roots_nonneg"
-module = "RealRooted.Hadamard.FiniteReflection"
-label = "Finite Pólya–Schur theorem, alternating signs"
 
 [[theorems]]
 name = "RealRooted.StrictInterl.interl_hadamardProduct"

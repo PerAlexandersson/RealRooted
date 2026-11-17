@@ -198,7 +198,6 @@ public import RealRooted.Challenges.Preservers.BinaryRunTransformation
 public import RealRooted.Challenges.Stability.BorceaBranden
 public import RealRooted.Challenges.Combinatorial.BorosMoll
 public import RealRooted.Challenges.Preservers.BrandenETransform
-public import RealRooted.Challenges.Preservers.DerivativeProductKernel
 public import RealRooted.Challenges.Combinatorial.BrandenLeite
 public import RealRooted.Challenges.Combinatorial.BrandenSolus
 public import RealRooted.Challenges.Combinatorial.BrandenVecchi
@@ -229,12 +228,10 @@ public import RealRooted.Challenges.Roots.HermiteBiehlerHurwitz
 public import RealRooted.Challenges.Orthogonal.HermitePolynomials
 public import RealRooted.Challenges.Roots.HermitePoulain
 public import RealRooted.Challenges.Combinatorial.HosterStump
-public import RealRooted.Challenges.Roots.Hutchinson
 public import RealRooted.Challenges.Interlacing.Interlacing
 public import RealRooted.Challenges.Orthogonal.JacobiPolynomials
 public import RealRooted.Challenges.Combinatorial.JacobiStirlingDescent
 public import RealRooted.Challenges.Combinatorial.JacobiStirlingNumbers
-public import RealRooted.Challenges.Roots.Kurtz
 public import RealRooted.Challenges.Matrices.LGV
 public import RealRooted.Challenges.Orthogonal.LaguerrePolynomials
 public import RealRooted.Challenges.Stability.LeakeRyder
@@ -242,7 +239,6 @@ public import RealRooted.Challenges.Stability.LeeYang
 public import RealRooted.Challenges.Interlacing.MaWangLiuWang
 public import RealRooted.Challenges.Matrices.MatrixInterlacing
 public import RealRooted.Challenges.Graphs.MinimaPolynomial
-public import RealRooted.Challenges.Preservers.MonomialChainOperator
 public import RealRooted.Challenges.Preservers.MultiplierSequence
 public import RealRooted.Challenges.Combinatorial.MultisetEulerianNarayana
 public import RealRooted.Challenges.Combinatorial.Narayana
@@ -259,9 +255,6 @@ public import RealRooted.Challenges.Interlacing.RecurrenceRootWindows
 
 public import RealRooted.Challenges.Roots.RootAmplitude
 public import RealRooted.Challenges.Combinatorial.SeparablePermutations
-public import RealRooted.Challenges.Matrices.SmallInterlacingMatrices
-public import RealRooted.Challenges.Roots.SturmSequenceFamilies
-public import RealRooted.Challenges.Matrices.ThresholdMatrices
 public import RealRooted.Challenges.Combinatorial.ToricContribution
 public import RealRooted.Challenges.Matrices.TotallyNonnegativeMatrices
 public import RealRooted.Challenges.Combinatorial.UniformMatroidHodgePoincare
@@ -1635,18 +1628,15 @@ public import RealRooted.Tactic.Row.ClosedFormInterlaces
 public import RealRooted.BorceaBranden.FiniteOrderWeylPreserver
 public import RealRooted.MultivariateStability.Substitution
 
-public import RealRooted.Challenges.Interlacing.EndpointDerivative
 public import RealRooted.Challenges.Roots.RootContinuity
 public import RealRooted.BorceaBranden.Applications.PoissonStability
 public import RealRooted.BorceaBranden.Applications.PoissonStar
 
-public import RealRooted.Challenges.Interlacing.IteratedDerivativeShift
 public import RealRooted.CoefficientDominance.NewtonDefectRoots
 public import RealRooted.FiniteMemory.Defect
 public import RealRooted.MultiplierSequence.ProperPositionPF
 public import RealRooted.BorceaBranden.Applications.UnivariatePoissonStar
 public import RealRooted.Challenges.Roots.FiniteMemoryDefect
-public import RealRooted.Challenges.Preservers.ProperPositionPF
 public import RealRooted.Challenges.Preservers.UnivariatePoissonStar
 public import RealRooted.Wronskian.OdeRootExclusion
 public import RealRooted.BorceaBranden.Applications.PoissonStarFallingFactorial
@@ -2025,11 +2015,7 @@ public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.Sonin
 public import RealRooted.Mathlib.Algebra.Polynomial.LinearFactors
 public import RealRooted.PFPolynomial.LowCoefficients
 public import RealRooted.Challenges.Interlacing.CoupledQuadraticRecurrence
-public import RealRooted.Challenges.Interlacing.HigherOrderRecurrenceStates
 public import RealRooted.Challenges.Preservers.BasisTransformPreservers
-public import RealRooted.Challenges.Preservers.OperatorMatrices
-public import RealRooted.Challenges.Roots.SoninEnvelope
-public import RealRooted.Challenges.PolyaFrequency.PolynomialTails
 public import RealRooted.MultiplierSequence.CoefficientRatio
 public import RealRooted.MultiplierSequence.EulerCoefficientRatio
 public import RealRooted.DerivativeRecurrence.FiniteLagCoefficients
@@ -2093,10 +2079,8 @@ public import RealRooted.BrandenLeite.AffineNegativePowerDegree
 public import RealRooted.BrandenLeite.Examples
 public import RealRooted.Challenges.Graphs.PathSquareMatching
 public import RealRooted.Challenges.Interlacing.DerivativeLagFamily
-public import RealRooted.Challenges.Interlacing.MaWangEndpointSteps
 public import RealRooted.Challenges.Interlacing.PositiveAffineLagRecurrences
 public import RealRooted.Challenges.Interlacing.ShiftedChebyshevFamilies
-public import RealRooted.Challenges.Interlacing.SignedToeplitzPerturbations
 public import RealRooted.Challenges.Interlacing.VariableDelayRecurrences
 public import RealRooted.Challenges.Matrices.SeparatedCharacteristicRecurrence
 public import RealRooted.Challenges.Matrices.ParityLiftTP2Kernels
@@ -2104,17 +2088,10 @@ public import RealRooted.Challenges.Matrices.SiteWeightedRunPolynomials
 public import RealRooted.Challenges.Matrices.TP2HessenbergCertificate
 public import RealRooted.Challenges.Matrices.TP2HessenbergStrictness
 public import RealRooted.Challenges.Matrices.TotallyNonnegativePencils
-public import RealRooted.Challenges.Matrices.WeightedThreeStateRecurrence
 public import RealRooted.Challenges.Preservers.EvenDerivativePreservers
 public import RealRooted.Challenges.Preservers.FiniteDegreeDifferentialTests
-public import RealRooted.Challenges.Preservers.HypergeometricCoefficientRatios
-public import RealRooted.Challenges.Preservers.PowerDerivativeShift
-public import RealRooted.Challenges.Preservers.RationalSubstitution
-public import RealRooted.Challenges.Preservers.SecondOrderRayOperators
 public import RealRooted.Challenges.Preservers.TouchardTransform
-public import RealRooted.Challenges.Roots.BesselOperators
 public import RealRooted.Challenges.Roots.ChebyshevLevels
-public import RealRooted.Challenges.Roots.OdeRootBounds
 public import RealRooted.Challenges.Combinatorial.NarayanaGammaPolynomials
 public import RealRooted.DerivativeRecurrence.HalfStepLag
 public import RealRooted.DerivativeProduct.Associative
@@ -2141,7 +2118,6 @@ public import RealRooted.EulerBidiagonal.Basic
 public import RealRooted.EulerBidiagonal.VaryingRows
 public import RealRooted.Mathlib.Algebra.Polynomial.Veronese
 public import RealRooted.Mathlib.Algebra.LinearRecurrence.Veronese
-public import RealRooted.Challenges.Preservers.FallingFactorial
 public import RealRooted.MultiplierSequence.FallingFactorial
 public import RealRooted.Hermite.PoulainSymbolInterlacing
 public import RealRooted.Challenges.Combinatorial.Hoggatt
