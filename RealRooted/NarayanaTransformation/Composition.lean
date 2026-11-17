@@ -6,6 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.ArrayPolynomialSchur
+public import RealRooted.Hadamard.Basic
 import RealRooted.NarayanaTransformation.Endpoints
 public import RealRooted.NarayanaTransformation.Coefficients
 
@@ -25,6 +26,25 @@ polynomial is first multiplied by the falling-factorial Schur multiplier and
 then sent through the Narayana basis transformation.  The statements are
 independent of any particular OEIS family.
 -/
+
+/-- Schur--Szegő composition with the parameter-one Narayana polynomial is the
+adjacent-binomial diagonal operator, including outside the ambient degree. -/
+theorem schurSzegoComp_narayanaPolynomial_one {n : ℕ} {p : ℝ[X]}
+    (hp : p.natDegree ≤ n) :
+    schurSzegoComp n p (narayanaPolynomial 1 n) =
+      diagonalOperator (fun k => (Nat.choose (n + 1) k : ℝ) / (k + 1)) p := by
+  ext k
+  rw [coeff_diagonalOperator]
+  by_cases hk : k ≤ n
+  · rw [coeff_schurSzegoComp_of_le hk, coeff_narayanaPolynomial_of_le hk]
+    unfold narayanaTransformCoeff
+    rw [show Nat.choose (1 + k) k = k + 1 by
+      simp only [Nat.add_comm, Nat.choose_succ_self_right]]
+    have hchoose : (Nat.choose n k : ℝ) ≠ 0 := Nat.cast_choose_ne_zero hk
+    push_cast
+    field_simp
+  · rw [coeff_schurSzegoComp_eq_zero_of_lt (Nat.lt_of_not_ge hk),
+      coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hp (Nat.lt_of_not_ge hk)), mul_zero]
 
 /-- At its tight ambient degree, `fallingSchur` multiplies a monomial by `n!`.
 -/

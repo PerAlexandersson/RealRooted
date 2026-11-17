@@ -3,6 +3,7 @@ module
 public import RealRooted.Derivative
 public import RealRooted.PFPolynomial
 public import RealRooted.ObreschkoffConverse
+import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 import RealRooted.OrderedRoots
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 import RealRooted.ObreschkoffConverse.Derivative
@@ -281,6 +282,58 @@ theorem polarTheta_eq_reciprocalShift_derivative_reciprocalShift
       have hpcoeff : p.coeff k = 0 :=
         coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hdeg hNklt)
       simp [hpcoeff]
+
+/-- Reversing an affine multiple at the next ambient degree swaps its coefficients. -/
+theorem reciprocalShift_affine_mul {m : ℕ} {p : ℝ[X]} (hp : p.natDegree ≤ m)
+    (b c : ℝ) :
+    reciprocalShift (m + 1) ((C b + C c * X) * p) =
+      (C c + C b * X) * reciprocalShift m p := by
+  unfold reciprocalShift
+  rw [show m + 1 = 1 + m by lia, reflect_mul _ _ (by compute_degree!) hp]
+  congr 1
+  ext k
+  rcases k with _ | _ | k <;> norm_num [coeff_reflect, revAt, coeff_X]
+
+/-- Raising the reversal bound by two gives the padded affine multiple. -/
+theorem reciprocalShift_affine_mul_add_two {m : ℕ} {p : ℝ[X]}
+    (hp : p.natDegree ≤ m) (b c : ℝ) :
+    reciprocalShift (m + 2) ((C b + C c * X) * p) =
+      (C b * X ^ 2 + C c * X) * reciprocalShift m p := by
+  have hdeg : ((C b + C c * X) * p).natDegree ≤ m + 1 := by
+    compute_degree!
+    lia
+  rw [show m + 2 = (m + 1) + 1 by lia]
+  change (((C b + C c * X) * p).reflect ((m + 1) + 1)) = _
+  rw [reflect_succ _ hdeg]
+  change reciprocalShift (m + 1) ((C b + C c * X) * p) * X = _
+  rw [reciprocalShift_affine_mul hp]
+  ring
+
+/-- Reversal transports the differential block `X * (1 - X) * p'` to a
+first-order differential block at the reversed polynomial. -/
+theorem reciprocalShift_X_mul_one_sub_X_mul_derivative {m : ℕ}
+    (hm : 1 ≤ m) {p : ℝ[X]} (hp : p.natDegree ≤ m) :
+    reciprocalShift (m + 1) (X * (1 - X) * p.derivative) =
+      X * (1 - X) * (reciprocalShift m p).derivative +
+        C (m : ℝ) * (X - 1) * reciprocalShift m p := by
+  have hder : p.derivative.natDegree ≤ m - 1 := by simp_all
+  have hfac : (X * (1 - X) : ℝ[X]).reflect 2 = X - 1 := by
+    rw [show (X * (1 - X) : ℝ[X]) = C 1 * X ^ 1 + C (-1) * X ^ 2 by
+        simp only [C_1, map_neg, pow_one]
+        ring,
+      reflect_add, reflect_C_mul_X_pow, reflect_C_mul_X_pow]
+    simp
+    ring
+  have hrefdeg : (p.reflect m).natDegree ≤ m :=
+    natDegree_reflect_le.trans (max_le le_rfl hp)
+  have hpolar :=
+    polarTheta_eq_reciprocalShift_derivative_reciprocalShift m (p.reflect m) hrefdeg
+  simp only [reciprocalShift, reflect_reflect] at hpolar
+  unfold reciprocalShift
+  rw [show m + 1 = 2 + (m - 1) by lia,
+    reflect_mul _ _ (by compute_degree!) hder, hfac, ← hpolar]
+  unfold polarTheta theta
+  ring
 
 /-- The polar-theta operator `N - theta` preserves the polynomial PF cone for
 polynomials of degree at most `N`. -/
