@@ -69,7 +69,7 @@ theorem mvRealStable_iff_aeval_X_ne_zero_and_splits {n : ℕ}
     refine ⟨fun h0 => ?_, IsUpperHalfPlaneStable.splits_complexify h⟩
     exact h Complex.I (by simp) (by simp [h0])
   · rintro ⟨h0, hs⟩
-    exact Polynomial.Splits.isUpperHalfPlaneStable_complexify hs h0
+    exact isUpperHalfPlaneStable_complexify_of_splits hs h0
 
 end RealRooted
 

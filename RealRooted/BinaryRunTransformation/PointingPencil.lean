@@ -436,7 +436,7 @@ theorem sourceCoefficientGeneral_pderiv_binaryRunHomogenizedSource_diagonal
 /-- On a diagonal source exponent, the two terms of the pointing source are
 respectively the source Euler term and multiplication by the retained `W`
 variable. -/
-theorem sourceCoefficientGeneral_binaryRunPointingSource_diagonal_aux
+private theorem sourceCoefficientGeneral_binaryRunPointingSource_eq_euler_add
     (n : ℕ) (p : ℝ[X]) (t : ℝ) (k : ℕ) :
     sourceCoefficientGeneral (binaryRunPointingSource n p t)
         (binaryRunSourceIndex k k) =
@@ -453,6 +453,22 @@ theorem sourceCoefficientGeneral_binaryRunPointingSource_diagonal_aux
     sourceCoefficientGeneral_output_X_mul]
   simp [binaryRunSourceIndex]
 
+/-- Deprecated compatibility wrapper for the former helper name. -/
+@[deprecated "This implementation helper is deprecated." (since := "2026-11-17")]
+theorem sourceCoefficientGeneral_binaryRunPointingSource_diagonal_aux
+    (n : ℕ) (p : ℝ[X]) (t : ℝ) (k : ℕ) :
+    sourceCoefficientGeneral (binaryRunPointingSource n p t)
+        (binaryRunSourceIndex k k) =
+      MvPolynomial.C (k : ℂ) *
+          sourceCoefficientGeneral (binaryRunHomogenizedSource n p t)
+            (binaryRunSourceIndex k k) +
+        MvPolynomial.X 1 *
+          sourceCoefficientGeneral
+            (MvPolynomial.pderiv (Sum.inr 0)
+              (binaryRunHomogenizedSource n p t))
+            (binaryRunSourceIndex k k) :=
+  sourceCoefficientGeneral_binaryRunPointingSource_eq_euler_add n p t k
+
 /-- Exact diagonal coefficient of the pointing source.  These are precisely
 the coefficients retained by normalized diagonal contraction. -/
 theorem sourceCoefficientGeneral_binaryRunPointingSource_diagonal
@@ -467,7 +483,7 @@ theorem sourceCoefficientGeneral_binaryRunPointingSource_diagonal
           MvPolynomial.X 1 *
             MvPolynomial.C ((binaryRunPointingRemainder n p t).coeff k : ℂ) *
               MvPolynomial.X 0 ^ (n - 2 * k)) := by
-  rw [sourceCoefficientGeneral_binaryRunPointingSource_diagonal_aux,
+  rw [sourceCoefficientGeneral_binaryRunPointingSource_eq_euler_add,
     sourceCoefficientGeneral_binaryRunHomogenizedSource_diagonal hp t hk,
     sourceCoefficientGeneral_pderiv_binaryRunHomogenizedSource_diagonal hp t hk]
   simp only [map_mul]; ring

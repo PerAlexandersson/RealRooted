@@ -182,10 +182,17 @@ theorem complexify_conj_root {f : ℝ[X]} {z : ℂ}
   rw [eval_complexify_conj, hz, map_zero]
 
 /-- A nonzero split real polynomial has stable complexification. -/
-theorem Polynomial.Splits.isUpperHalfPlaneStable_complexify
+theorem isUpperHalfPlaneStable_complexify_of_splits
     {p : ℝ[X]} (hp : p.Splits) (hp0 : p ≠ 0) :
     IsUpperHalfPlaneStable (complexify p) :=
   fun _ hz ↦ eval_complexify_ne_zero_of_splits_of_im_pos hp hp0 hz
+
+/-- Deprecated compatibility wrapper for the former nested namespace. -/
+@[deprecated isUpperHalfPlaneStable_complexify_of_splits (since := "2026-11-17")]
+theorem Polynomial.Splits.isUpperHalfPlaneStable_complexify
+    {p : ℝ[X]} (hp : p.Splits) (hp0 : p ≠ 0) :
+    IsUpperHalfPlaneStable (complexify p) :=
+  isUpperHalfPlaneStable_complexify_of_splits hp hp0
 
 /-- Upper-half-plane stability of a real polynomial's complexification forces
 all its roots to be real. -/

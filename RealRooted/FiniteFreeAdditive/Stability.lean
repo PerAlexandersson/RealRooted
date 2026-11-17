@@ -535,7 +535,7 @@ private theorem finiteFreeAdditiveConvolutionSymbol_realStable
     MvRealStable (finiteFreeAdditiveConvolutionSymbol g q) := by
   unfold MvRealStable
   intro z hz hzero
-  have hgstable := Polynomial.Splits.isUpperHalfPlaneStable_complexify hgs hg0
+  have hgstable := isUpperHalfPlaneStable_complexify_of_splits hgs hg0
   apply hgstable (z (Sum.inl q) + z (Sum.inr q))
   · simpa only [Complex.add_im] using
       add_pos (hz (Sum.inl q)) (hz (Sum.inr q))

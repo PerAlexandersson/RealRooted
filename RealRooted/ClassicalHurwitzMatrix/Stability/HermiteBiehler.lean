@@ -72,7 +72,7 @@ theorem Polynomial.Splits.of_comp_neg_X_sq {p : ℝ[X]}
     simp
   have hcomp0 : p.comp (-(X ^ 2)) ≠ 0 := comp_neg_X_sq_ne_zero hp0
   have hstable :=
-    Polynomial.Splits.isUpperHalfPlaneStable_complexify h hcomp0
+    isUpperHalfPlaneStable_complexify_of_splits h hcomp0
   have hwroot :
       (complexify (p.comp (-(X ^ 2)))).eval w = 0 := by
     simp only [complexify, Polynomial.map_comp, Polynomial.map_neg,
@@ -123,7 +123,7 @@ theorem roots_nonpos_of_splits_comp_neg_X_sq {p : ℝ[X]}
     rw [← complexify, eval_complexify_ofReal]
     exact_mod_cast hrroot
   exact
-    (Polynomial.Splits.isUpperHalfPlaneStable_complexify h
+    (isUpperHalfPlaneStable_complexify_of_splits h
       (comp_neg_X_sq_ne_zero hp0)) w hwim hwroot
 
 /-- If `p` splits over the reals and all its roots are nonpositive, then `p(-X²)` splits. -/

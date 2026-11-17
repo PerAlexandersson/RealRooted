@@ -51,7 +51,7 @@ theorem isHurwitzStable_oddEvenPolynomial_zero_left_iff {q : ℝ[X]} :
       hermiteBiehlerStableToHurwitzOddEven (fun _ ↦ by simp) hpf.hasNonnegCoeffs ?_⟩
     have hs : q.Splits := hpf.splits
     simpa [hermiteBiehlerPolynomial, complexify] using
-      Polynomial.Splits.isUpperHalfPlaneStable_complexify hs hq
+      isUpperHalfPlaneStable_complexify_of_splits hs hq
 
 /-- `X p(X²)` is Hurwitz stable exactly when `p` is a nonzero PF polynomial. -/
 theorem isHurwitzStable_oddEvenPolynomial_zero_right_iff {p : ℝ[X]} :
@@ -74,7 +74,7 @@ theorem isHurwitzStable_oddEvenPolynomial_zero_right_iff {p : ℝ[X]} :
       hermiteBiehlerStableToHurwitzOddEven hpf.hasNonnegCoeffs (fun _ ↦ by simp) ?_⟩
     have hs : p.Splits := hpf.splits
     simpa [hermiteBiehlerPolynomial, complexify, hI] using
-      Polynomial.Splits.isUpperHalfPlaneStable_complexify hs hp
+      isUpperHalfPlaneStable_complexify_of_splits hs hp
 
 /-- Both parts of a Hurwitz-stable `q(X²) + X p(X²)` are PF polynomials. -/
 theorem IsHurwitzStable.isPFPolynomial_oddEvenPolynomial {p q : ℝ[X]}

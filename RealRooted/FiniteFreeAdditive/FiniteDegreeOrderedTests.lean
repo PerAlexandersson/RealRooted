@@ -353,7 +353,7 @@ theorem _root_.RealRooted.PreservesOrderedPFUpTo.of_differentialTests
     have hfstable : MvUpperHalfPlaneStable f.1 := by
       simpa [f, fmv] using
         (isUpperHalfPlaneStable_iff_mvUpperHalfPlaneStable (complexify p)).mp
-          (Polynomial.Splits.isUpperHalfPlaneStable_complexify hp.splits hp0)
+          (isUpperHalfPlaneStable_complexify_of_splits hp.splits hp0)
     have hsymbol :=
       algebraicSymbol_differentialPencilDegreeBoxMap_stable hcap
     have hout := finiteSymbol_preserves_stability_general

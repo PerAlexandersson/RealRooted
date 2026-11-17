@@ -46,7 +46,7 @@ private theorem symbol_nonzero {ψ : ℝ[X]} (hψ : ψ ≠ 0 ∧ ψ.Splits)
     have := congrArg (fun p : ℝ[X] => p.comp (-X)) h
     exact hψ.1 (by simpa [comp_assoc] using this)
   have hq : ∀ z : ℂ, 0 < z.im → q.eval z ≠ 0 :=
-    RealRooted.Polynomial.Splits.isUpperHalfPlaneStable_complexify hψ.2.comp_neg_X hq0
+    RealRooted.isUpperHalfPlaneStable_complexify_of_splits hψ.2.comp_neg_X hq0
   have hqy := hq y hy
   have hratio := q.derivative_eval_div_eval_im_nonpos hq hy
   have hval : q.eval y = (complexify ψ).eval (-y) := by

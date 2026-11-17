@@ -55,7 +55,7 @@ theorem sum_mul_iterate_derivative_eq_zero_or_splits {m : ℕ} (a : Fin (m + 1) 
   have hgStable : MvUpperHalfPlaneStable ((complexify g).toMvPolynomial ()) := by
     intro z hz
     rw [MvPolynomial.eval_toMvPolynomial]
-    exact Polynomial.Splits.isUpperHalfPlaneStable_complexify hgs hg0 (z ()) (hz ())
+    exact isUpperHalfPlaneStable_complexify_of_splits hgs hg0 (z ()) (hz ())
   have hout := MvUpperHalfPlaneStable.finiteOrderWeylOperator () m _ hW hgStable
   have hop : BorceaBranden.finiteOrderWeylOperator () m
       (fun j ↦ (complexify (a j)).toMvPolynomial ()) ((complexify g).toMvPolynomial ()) =
