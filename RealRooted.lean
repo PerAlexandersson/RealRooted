@@ -2259,3 +2259,12 @@ public import RealRooted.Hypergeometric.ThreeFTwo
 public import RealRooted.Challenges.Orthogonal.HypergeometricThreeFTwo
 public import RealRooted.CombinatorialExamples.BorosMoll.Core
 public import RealRooted.CombinatorialExamples.BorosMoll.SmallCases
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Adjacent
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Border
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Elimination
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Reduction
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Symmetrization
+public import RealRooted.QuadraticInterlacing.Basic
+public import RealRooted.QuadraticInterlacing.Crossing
+public import RealRooted.QuadraticInterlacing.Preservation
+public import RealRooted.QuadraticInterlacing.Residue

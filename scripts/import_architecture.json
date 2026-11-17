@@ -16,10 +16,10 @@
   ],
   "budgets": {
     "RealRooted": {
-      "max_modules": 2249
+      "max_modules": 2258
     },
     "RealRooted.Production": {
-      "max_modules": 2177
+      "max_modules": 2186
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 844
@@ -172,7 +172,7 @@
       "max_modules": 167
     },
     "RealRooted.Challenges.PolyaFrequency.Hadamard": {
-      "max_modules": 358
+      "max_modules": 362
     },
     "RealRooted.PolyaFrequencyConvolution.Basic": {
       "max_modules": 20
@@ -199,7 +199,7 @@
       "max_modules": 17
     },
     "RealRooted.MatrixInterlacing.PrincipalInterlacingExamples": {
-      "max_modules": 138
+      "max_modules": 143
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Rank": {
       "max_modules": 1
@@ -379,10 +379,10 @@
       "max_modules": 92
     },
     "RealRooted.BrandenLeite.NetworkTotallyNonneg": {
-      "max_modules": 118
+      "max_modules": 123
     },
     "RealRooted.BrandenLeite.NetworkWhitney": {
-      "max_modules": 117
+      "max_modules": 122
     },
     "RealRooted.BrandenLeite.Resolvable": {
       "max_modules": 91
@@ -919,13 +919,13 @@
       "max_modules": 2
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core": {
-      "max_modules": 26
+      "max_modules": 31
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix": {
       "max_modules": 1
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.PrincipalInterlacing": {
-      "max_modules": 27
+      "max_modules": 32
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.CornerPerturbation": {
       "max_modules": 4
@@ -940,13 +940,13 @@
       "max_modules": 105
     },
     "RealRooted.TotallyNonnegInterlacing": {
-      "max_modules": 135
+      "max_modules": 140
     },
     "RealRooted.OscillatoryInterlacing": {
-      "max_modules": 38
+      "max_modules": 43
     },
     "RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing": {
-      "max_modules": 39
+      "max_modules": 44
     },
     "RealRooted.MultiplierSequence": {
       "max_modules": 93
@@ -1616,6 +1616,33 @@
     },
     "RealRooted.CombinatorialExamples.BorosMoll.Basic": {
       "max_modules": 5
+    },
+    "RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Border": {
+      "max_modules": 24
+    },
+    "RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Elimination": {
+      "max_modules": 25
+    },
+    "RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Reduction": {
+      "max_modules": 26
+    },
+    "RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Adjacent": {
+      "max_modules": 27
+    },
+    "RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Symmetrization": {
+      "max_modules": 25
+    },
+    "RealRooted.QuadraticInterlacing.Basic": {
+      "max_modules": 215
+    },
+    "RealRooted.QuadraticInterlacing.Crossing": {
+      "max_modules": 216
+    },
+    "RealRooted.QuadraticInterlacing.Residue": {
+      "max_modules": 217
+    },
+    "RealRooted.QuadraticInterlacing.Preservation": {
+      "max_modules": 218
     }
   },
   "forbidden_imports": [
