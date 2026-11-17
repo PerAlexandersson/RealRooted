@@ -23,12 +23,12 @@ references = [
 
 [[definitions]]
 name = "RealRooted.quadraticInterlacingPencil"
-module = "RealRooted.QuadraticInterlacingClosure"
+module = "RealRooted.QuadraticInterlacing.Basic"
 label = "Quadratic interlacing pencil"
 
 [[definitions]]
 name = "RealRooted.quadraticInterlacingTangent"
-module = "RealRooted.QuadraticInterlacingClosure"
+module = "RealRooted.QuadraticInterlacing.Basic"
 label = "Tangent of the quadratic interlacing pencil"
 
 [[theorems]]
@@ -64,19 +64,19 @@ label = "Monomial-chain operators preserve nonnegative stable pencils"
 
 [[theorems]]
 name = "RealRooted.quadraticParameterEvaluation_positiveRootCount_le"
-module = "RealRooted.QuadraticInterlacingClosure"
+module = "RealRooted.QuadraticInterlacing.Crossing"
 label = "Descartes budget for the quadratic parameter evaluation of an interlacing chain"
 tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.strictInterl_quadraticInterlacingTangent_pencil"
-module = "RealRooted.QuadraticInterlacingClosure"
+module = "RealRooted.QuadraticInterlacing.Preservation"
 label = "The tangent of a real-rooted quadratic pencil precedes the pencil"
 tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.strictInterl_quadraticInterlacingRight_of_tangent"
-module = "RealRooted.QuadraticInterlacingClosure"
+module = "RealRooted.QuadraticInterlacing.Preservation"
 label = "The tangent precedes the right member of the quadratic closure"
 tags = ["realrooted-original"]
 -->

@@ -3409,6 +3409,56 @@
       ],
       "note": "Speculative target module: zero count of real trigonometric polynomials via the unit-circle polynomial lift; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/OscillatoryInterlacing/Border.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Border"
+      ],
+      "note": "Speculative upstream target for the oscillatory matrix core split; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/OscillatoryInterlacing/Elimination.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Elimination"
+      ],
+      "note": "Speculative upstream target for the oscillatory matrix core split; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/OscillatoryInterlacing/Reduction.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Reduction"
+      ],
+      "note": "Speculative upstream target for the oscillatory matrix core split; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/OscillatoryInterlacing/Adjacent.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Adjacent"
+      ],
+      "note": "Speculative upstream target for the oscillatory matrix core split; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/OscillatoryInterlacing/Symmetrization.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Symmetrization"
+      ],
+      "note": "Speculative upstream target for the oscillatory matrix core split; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }

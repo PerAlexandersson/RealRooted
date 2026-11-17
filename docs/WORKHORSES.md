@@ -30,10 +30,10 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 12 | `RealRooted.isInterlacingSeq_iff_pairwise` | `RealRooted.InterlacingSequenceBasic` | `IsInterlacingSeq` is exactly the pairwise `StrictInterl` relation on a list. |
 | 11 | `RealRooted.StrictInterl.add_of_left` | `RealRooted.Wagner.LeftSum` | Wagner (2): if `h` interlaces both `f` and `g`, and `f` and `g` have positive leading coefficients, then `h` interlaces `f + g`. |
 | 10 | `RealRooted.MaWang.strictInterl_derivative_of_nonpos_of_splits` | `RealRooted.MaWang.DerivativeStep` | Weak Ma--Wang derivative step using the Liu--Wang sign criterion, with no degree hypothesis on `f`. |
+| 10 | `RealRooted.StrictInterl.of_degree_zero_degree_zero` | `RealRooted.ObreschkoffConverse.Derivative` | Degree-zero polynomials satisfy `StrictInterl` in both orientations. |
 | 10 | `RealRooted.StrictInterl.of_reverse_of_roots_sum_le` | `RealRooted.Basic.ProperPosition` | In the same-degree case, a reverse `StrictInterl g f` can be flipped back to `StrictInterl f g` once the root sums have the forward order. |
 | 10 | `RealRooted.strictInterl_of_stable_general` | `RealRooted.HermiteBiehler.Converse` |  |
 | 9 | `RealRooted.Interlaces.toStrictInterl` | `RealRooted.Basic.ProperPosition` |  |
-| 9 | `RealRooted.StrictInterl.of_degree_zero_degree_zero` | `RealRooted.ObreschkoffConverse.Derivative` | Degree-zero polynomials satisfy `StrictInterl` in both orientations. |
 | 9 | `RealRooted.StrictInterl.sum_left_of_common_left_signed` | `RealRooted.PosCombo` | Sign-normalized left-cone theorem: if all summands are interlaced on the left by the same nonzero real-rooted polynomial `h`, and the summands have positive leading coefficient, then their sum is inte |
 | 9 | `RealRooted.StrictInterl.weightedSum_right_of_nonneg` | `RealRooted.WeightedSum` | Finite weighted Wagner theorem on the right: if every polynomial in the list precedes the same right-hand bound `h`, has positive leading coefficient, and all weights are nonnegative with at least one |
 | 9 | `RealRooted.reciprocalShift_reverses_strictInterl` | `RealRooted.ReciprocalShift.ProperPosition` | At a common degree bound, reciprocal shift reverses a strictly interlacing pair of PF polynomials. |
@@ -218,8 +218,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 14 | `RealRooted.isRealRooted_affine_factor` | `RealRooted.AffineFamily` |  |
 | 14 | `RealRooted.isRealRooted_of_degree_one` | `RealRooted.Linear` | Any nonzero degree-1 polynomial is real-rooted. |
 | 13 | `RealRooted.isRealRooted_X_mul` | `RealRooted.Linear` |  |
+| 13 | `RealRooted.isRealRooted_of_deg_zero` | `RealRooted.Linear` |  |
 | 13 | `RealRooted.quadraticPoly_not_splits_of_discrim_neg` | `RealRooted.QuadraticRoot` | A real quadratic polynomial with nonzero leading coefficient and negative discriminant does not split over `ℝ`. |
-| 12 | `RealRooted.isRealRooted_of_deg_zero` | `RealRooted.Linear` |  |
 | 11 | `Polynomial.Splits.reverse` | `RealRooted.Mathlib.Algebra.Polynomial.Reverse` | Reversal preserves splitting over a field. |
 | 11 | `Polynomial.splits_of_all_roots_real` | `RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex` | A real polynomial splits if every root of its complexification is real. |
 | 11 | `RealRooted.isRealRooted_mul` | `RealRooted.Basic.PolynomialFacts` | The product of two real-rooted polynomials is real-rooted. |
@@ -392,12 +392,12 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 11 | `RealRooted.StrictInterl.eval_mul_eval_derivative_nonneg` | `RealRooted.MaWang.Weak.DerivativeSign` | Every interlacer `g ≪ f` with positive leading coefficients has the sign of `f'` at the roots of `f`: `g(r) f'(r) ≥ 0`. |
 | 10 | `RealRooted.eval_hermiteBiehlerPolynomial` | `RealRooted.HermiteBiehler.Basic` |  |
 | 10 | `RealRooted.wronskian_eval_nonneg_of_strictInterl` | `RealRooted.Wronskian.WeakForward` | Interlacing with positive leading coefficients gives global nonnegativity of the oriented Wronskian. |
+| 8 | `Polynomial.not_isRoot_iff_eval_ne_zero` | `RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs` |  |
 | 8 | `RealRooted.eval_derivative_ne_zero_of_rootMultiplicity_eq_one` | `RealRooted.Derivative.Algebra` | The derivative does not vanish at a root of multiplicity one. |
 | 8 | `RealRooted.tendsto_eval_atBot_atBot_of_posLeadingCoeff_odd` | `RealRooted.WagnerRightSum.Sign` |  |
 | 8 | `RealRooted.tendsto_eval_atBot_atTop_of_posLeadingCoeff_even` | `RealRooted.WagnerRightSum.Sign` |  |
 | 8 | `RealRooted.wronskian_pos_of_strictInterl_succ` | `RealRooted.Wronskian.Forward` | **Global forward Wronskian bridge, degree gap one.** If `q` strictly interlaces `p` in the differ-by-one sense (`StrictInterl q p` with `deg p = deg q + 1`, all roots simple and no common root), then  |
 | 7 | `MvPolynomial.eval_specializeAt` | `RealRooted.Mathlib.Algebra.MvPolynomial.Specialize` | Evaluation after scalar specialization is evaluation at the updated assignment. |
-| 7 | `Polynomial.not_isRoot_iff_eval_ne_zero` | `RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs` |  |
 | 7 | `RealRooted.deriv2_mul_lt_deriv_sq_at_non_root` | `RealRooted.IteratedDerivativeShift` |  |
 | 7 | `RealRooted.eval_mul_eval_nonneg_of_strictInterl_right` | `RealRooted.WagnerRightSum.Sign` | If two polynomials both precede the same right-hand polynomial with positive leading coefficients, then they have the same sign at every root of that common right-hand polynomial. |
 | 7 | `RealRooted.eval_neg_of_all_roots_gt_of_odd` | `RealRooted.WagnerRightSum.Sign` |  |
@@ -544,15 +544,15 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | uses | theorem | module | doc |
 |---:|---|---|---|
 | 43 | `RealRooted.StrictInterl.hasSimpleRoots_of_no_common_root` | `RealRooted.SimpleRoots` | A strictly interlacing pair with no common real root has simple real roots in both entries. |
-| 33 | `RealRooted.allComboRealRooted_of_strictInterl` | `RealRooted.ObreschkoffConverse.Forward` | Forward direction of Obreschkoff: if `f ≪ g` then all real combinations `αf + βg` are real-rooted (or zero). |
+| 34 | `RealRooted.allComboRealRooted_of_strictInterl` | `RealRooted.ObreschkoffConverse.Forward` | Forward direction of Obreschkoff: if `f ≪ g` then all real combinations `αf + βg` are real-rooted (or zero). |
 | 21 | `RealRooted.HasSimpleRoots.of_roots_nodup` | `RealRooted.SimpleRoots` | A nonzero polynomial with a duplicate-free root multiset has simple real roots. |
 | 15 | `MvPolynomial.IsRayleigh.specializeAt` | `RealRooted.Multiaffine.Rayleigh` | Real scalar specialization preserves the Rayleigh property. |
 | 15 | `RealRooted.IsRealRootedIn.mem_of_mem_roots` | `RealRooted.RootLocation.Basic` | Every multiset root of a polynomial rooted in `S` lies in `S`. |
 | 14 | `RealRooted.MapsRealRootedIn.mono_left` | `RealRooted.RootLocation.Basic` | Shrinking the source set preserves `MapsRealRootedIn`. |
 | 14 | `RealRooted.hasSimpleRoots_of_natDegree_le_one` | `RealRooted.SimpleRoots` | Every nonzero polynomial of degree at most one has only simple roots. |
+| 12 | `Matrix.IsTotallyNonnegRect.toSquare` | `RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg` | Rectangular total nonnegativity specializes to the square predicate. |
 | 11 | `RealRooted.isUpperHalfPlaneStable_complexify_of_splits` | `RealRooted.HermiteBiehler.Basic` | A nonzero split real polynomial has stable complexification. |
 | 11 | `RealRooted.shiftedJacobiMonic_satisfiesFavardRecurrence` | `RealRooted.Jacobi.Favard` | The monic shifted Jacobi family satisfies the Favard recurrence with its explicit diagonal and subdiagonal coefficients. |
-| 10 | `Matrix.IsTotallyNonnegRect.toSquare` | `RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg` | Rectangular total nonnegativity specializes to the square predicate. |
 | 10 | `MvPolynomial.IsRayleigh.specializeAtList` | `RealRooted.Multiaffine.Rayleigh` | Iterated real scalar specialization preserves the Rayleigh property. |
 | 10 | `RealRooted.PosComboRealRooted.comm` | `RealRooted.ObreschkoffContinuity` | Positive-combination real-rootedness is symmetric in the two polynomials. |
 | 9 | `Complex.Contour.intervalIntegrable_inv_sub_mul_deriv` | `RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Number.Basic` | **Integrability of the index integrand for a point off the curve.** If `γ` is continuous on `Set.uIcc a b` and avoids `w` there (so `(γ · - w)⁻¹` is continuous) and `deriv γ` is interval-integrable, t |
