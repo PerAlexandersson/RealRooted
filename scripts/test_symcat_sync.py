@@ -22,6 +22,7 @@ from symcat_sync import build_snapshots, main, write_snapshots
 SOURCE = '''/-!
 <!-- realrooted-catalog
 version = 1
+kind = "landmark"
 section = "theorems"
 slug = "sample"
 formalized = "2026-01-02"
