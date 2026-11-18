@@ -68,7 +68,7 @@ label = "φ(0), φ(1), … is a discrete multiplier sequence for φ with nonposi
 [[theorems]]
 name = "RealRooted.fallingFactorialMap_meshGE_one"
 module = "RealRooted.Mesh.FallingFactorial"
-label = "Brenti: x^i ↦ [x]_i sends nonnegative zeros to mesh at least one"
+label = "Brenti: $x^i ↦ [x]_i$ sends nonnegative zeros to mesh at least one"
 
 [[theorems]]
 name = "RealRooted.IsDiscreteMultiplierSequence.isMultiplierSequence"
@@ -83,7 +83,7 @@ label = "φ(0), φ(1), … is a discrete multiplier sequence for φ in the Lague
 [[theorems]]
 name = "RealRooted.PreservesRealRootedOrZero.polyFiniteDifferenceOp_iff"
 module = "RealRooted.Mesh.FiniteDifferenceHyperbolicity"
-label = "p ↦ ∑ q_j(x) p(x − j) preserves real-rootedness iff at most one q_j is nonzero"
+label = "$p ↦ ∑_j q_j(x) p(x - j)$ preserves real-rootedness iff at most one $q_j$ is nonzero"
 
 
 -->

@@ -30,7 +30,7 @@ label = "Edge-weighted matching polynomial"
 [[definitions]]
 name = "SimpleGraph.matchingPolyOn"
 module = "RealRooted.Mathlib.Combinatorics.SimpleGraph.MatchingPolyOn"
-label = "Signed matching polynomial μ_S of the induced subgraph G[S]"
+label = "Signed matching polynomial $μ_S$ of the induced subgraph $G[S]$"
 
 [[definitions]]
 name = "RealRooted.Rook.weightedRookPolynomial"

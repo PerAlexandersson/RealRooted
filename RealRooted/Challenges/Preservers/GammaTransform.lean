@@ -36,7 +36,7 @@ label = "Gamma transform"
 [[definitions]]
 name = "RealRooted.rationalSubstitution"
 module = "RealRooted.Transforms.RationalSubstitution"
-label = "The substitution B^deg(p) p(A/B), cleared of denominators"
+label = 'The substitution $B^{\deg p} p(A/B)$, cleared of denominators'
 
 [[theorems]]
 name = "RealRooted.GammaTransform.isRealRooted_and_roots_nonpos_iff"

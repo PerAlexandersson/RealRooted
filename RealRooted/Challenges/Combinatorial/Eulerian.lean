@@ -25,7 +25,7 @@ years = [1910, 1994]
 [[definitions]]
 name = "RealRooted.eulerianTilde"
 module = "RealRooted.CombinatorialExamples.Eulerian"
-label = "Shifted Eulerian polynomials P_n = t A_{n+1}"
+label = "Shifted Eulerian polynomials $P_n = t A_{n+1}$"
 
 [[definitions]]
 name = "RealRooted.typeBEulerian"
@@ -68,29 +68,29 @@ label = "Consecutive type B Eulerian polynomials interlace"
 objects = ["Generalized Eulerian polynomials"]
 name = "RealRooted.generalizedEulerian_splits"
 module = "RealRooted.GeneralizedEulerian"
-label = "For c > 0, E_n^{(c)} is real-rooted"
+label = "For $c > 0$, $E_n^{(c)}$ is real-rooted"
 
 [[theorems]]
 objects = ["Generalized Eulerian polynomials"]
 property = "interlacing"
 name = "RealRooted.interlaces_generalizedEulerian_succ"
 module = "RealRooted.GeneralizedEulerian.GeneratingFunction"
-label = "For c > 0, E_n^{(c)} interlaces E_{n+1}^{(c)}"
+label = "For $c > 0$, $E_n^{(c)}$ interlaces $E_{n+1}^{(c)}$"
 
 [[theorems]]
 name = "RealRooted.eulerianTilde_eq_X_mul_generalizedEulerian_one"
 module = "RealRooted.GeneralizedEulerian.GeneratingFunction"
-label = "The shifted Eulerian polynomial P_n equals t E_n^{(1)}"
+label = "The shifted Eulerian polynomial $P_n$ equals $t E_n^{(1)}$"
 
 [[theorems]]
 name = "RealRooted.typeBEulerian_eq_generalizedEulerian_two"
 module = "RealRooted.CombinatorialExamples.TypeBEulerian"
-label = "The type B Eulerian polynomial B_n equals E_n^{(2)}"
+label = "The type B Eulerian polynomial $B_n$ equals $E_n^{(2)}$"
 
 [[theorems]]
 name = "RealRooted.genPoly_univ_descentCount"
 module = "RealRooted.CombinatorialExamples.EulerianStatistic"
-label = "The descent polynomial of permutations of n+1 letters is E_n^{(1)}"
+label = "The descent polynomial of permutations of $n+1$ letters is $E_n^{(1)}$"
 
 [[theorems]]
 name = "RealRooted.isRealRooted_genPoly_univ_descentCount"

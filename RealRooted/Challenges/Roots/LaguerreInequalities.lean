@@ -56,7 +56,7 @@ label = "Sign alternation at the roots of G forces F to be real-rooted"
 [[theorems]]
 name = "RealRooted.BrandenLeite.splits_affineNegativePowerRow_of_inequalities"
 module = "RealRooted.LaguerreInequalities.Rows"
-label = "The two Laguerre inequalities force every row of (Q − tz)^(−κ) to be real-rooted"
+label = "The two Laguerre inequalities force every row of $(Q - tz)^{-κ}$ to be real-rooted"
 tags = ["realrooted-original"]
 
 [[theorems]]

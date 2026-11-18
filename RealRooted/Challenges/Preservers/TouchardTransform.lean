@@ -48,7 +48,7 @@ tags = ["realrooted-original"]
 [[theorems]]
 name = "RealRooted.isRealRootedIn_Iic_quarter_of_touchard_recurrence"
 module = "RealRooted.Transforms.TouchardRootDomain"
-label = "Rows of the recurrence P_{n+1} = (x + a) P_n + x P_n′ with a ≥ −1/4 have roots ≤ 1/4"
+label = "Rows of $P_{n+1} = (x + a) P_n + x P_n'$ with $a ≥ -1/4$ have roots $≤ 1/4$"
 tags = ["realrooted-original"]
 
 [[theorems]]

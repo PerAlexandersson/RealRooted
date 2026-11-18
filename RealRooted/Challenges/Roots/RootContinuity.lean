@@ -41,7 +41,7 @@ label = "Real-rootedness persists along a path of squarefree polynomials of fixe
 [[theorems]]
 name = "RealRooted.exists_aroot_near_of_monic_of_coeff_close"
 module = "RealRooted.RootContinuity"
-label = "Coefficients within ε move every root by at most ((m + 1)ε)^(1/m) max(|z|, 1)"
+label = 'Coefficients within $ε$ move every root by at most $((m + 1)ε)^{1/m} \max(|z|, 1)$'
 
 [[theorems]]
 name = "RealRooted.exists_real_root_near_in_left_family"

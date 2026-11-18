@@ -233,6 +233,15 @@ first theorem. `scripts/headline_baseline.txt` lists existing exceptions: source
 checks reject new exceptions and stale entries, so remove an entry when fixed.
 Labels and headlines do not enter the selected-declaration digest.
 
+Labels, page titles and conjecture locators are plain text with inline `$…$`
+math, typeset by KaTeX on cards, page headers, theorem lists, the results and
+families pages and search results; everything outside math is escaped. Write
+`label = "Rows of $P_{n+1} = A_n P_n' + B_n P_n$ interlace"`, and use a TOML
+literal string (`'…'`) when the math needs a backslash, as in `$\{0, 1, x\}$`.
+The source checks reject an unmatched `$`, `$$`, and `_`, `^`, `\`, `{` or `}`
+outside math. Machine exports (`llms.txt`, the manifest, `search-index.json`)
+keep the `$…$` source.
+
 The required page `kind` is one of `landmark` (Classical theorems), `method`
 (Methods), `conjecture` (Solved conjectures), or `original` (New results).
 `sequence` is no longer accepted. Exactly the `conjecture` kind requires a

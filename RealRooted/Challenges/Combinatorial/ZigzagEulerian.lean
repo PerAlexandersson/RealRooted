@@ -47,7 +47,7 @@ label = "Zig-zag Eulerian polynomial"
 [[definitions]]
 name = "RealRooted.CenteredEulerian.polynomial"
 module = "RealRooted.CenteredEulerian.Basis"
-label = "Centered polynomial p_n(c)"
+label = "Centered polynomial $p_n(c)$"
 
 [[definitions]]
 name = "RealRooted.IntervalDifferential.zigzagOperator"

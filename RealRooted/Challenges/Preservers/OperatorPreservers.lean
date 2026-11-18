@@ -46,7 +46,7 @@ symcat = "operatorPreservesInterlacing"
 [[theorems]]
 name = "RealRooted.strictInterl_map_of_monomialChain"
 module = "RealRooted.OperatorInterlacingUpgrade.RootOrder"
-label = "T(1) ≪ T(x) ≪ … ≪ T(x^D) gives Tf ≪ Tg for f ≪ g with nonnegative coefficients"
+label = "$T(1) ≪ T(x) ≪ ⋯ ≪ T(x^D)$ gives $Tf ≪ Tg$ for $f ≪ g$ with nonnegative coefficients"
 
 [[theorems]]
 name = "RealRooted.isPFPolynomial_map_of_isNegativeSimple"

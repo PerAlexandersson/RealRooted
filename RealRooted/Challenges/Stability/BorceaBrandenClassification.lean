@@ -67,7 +67,7 @@ label = "A series is a limit of stable polynomials iff all its weighted truncati
 [[theorems]]
 name = "RealRooted.BorceaBranden.PreservesRealRootedUpTo.of_finiteSymbol"
 module = "RealRooted.BorceaBranden.Applications.RealUnivariateSymbol"
-label = "A real stable symbol T((x + y)^d) gives a real-rootedness preserver up to degree d"
+label = "A real stable symbol $T((x + y)^d)$ gives a real-rootedness preserver up to degree $d$"
 
 [[theorems]]
 name = "RealRooted.MvUpperHalfPlaneStable.finiteOrderWeylOperator"

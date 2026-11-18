@@ -37,12 +37,12 @@ label = "Generating polynomial of the log-concavity transform of a Boros–Moll 
 [[theorems]]
 name = "RealRooted.BorosMoll.bmM_roots"
 module = "RealRooted.CombinatorialExamples.BorosMoll"
-label = "For n ≥ 1, M_n has degree n and n simple negative roots"
+label = "For $n ≥ 1$, $M_n$ has degree $n$ and $n$ simple negative roots"
 
 [[theorems]]
 name = "RealRooted.BorosMoll.bmM_strictInterlaces_narayanaN"
 module = "RealRooted.CombinatorialExamples.BorosMoll"
-label = "Xie–Zhang: the roots of M_n strictly interlace those of the Narayana polynomial N_n"
+label = "Xie–Zhang: the roots of $M_n$ strictly interlace those of the Narayana polynomial $N_n$"
 
 [[definitions]]
 name = "RealRooted.Branden.IsInfinitelyLogConcave"

@@ -1,18 +1,24 @@
 "use strict";
 
 // Typeset $…$ and $$…$$ with KaTeX; Lean declarations in <pre>/<code> are skipped.
-window.addEventListener("DOMContentLoaded", () => {
+const typeset = (element) => {
   if (typeof renderMathInElement !== "function") return;
-  for (const element of document.querySelectorAll("main .prose")) {
-    renderMathInElement(element, {
-      delimiters: [
-        { left: "$$", right: "$$", display: true },
-        { left: "\\[", right: "\\]", display: true },
-        { left: "$", right: "$", display: false },
-        { left: "\\(", right: "\\)", display: false },
-      ],
-      throwOnError: false,
-    });
+  renderMathInElement(element, {
+    delimiters: [
+      { left: "$$", right: "$$", display: true },
+      { left: "\\[", right: "\\]", display: true },
+      { left: "$", right: "$", display: false },
+      { left: "\\(", right: "\\)", display: false },
+    ],
+    throwOnError: false,
+  });
+};
+
+// Page prose, and the $…$ spans of labels, titles and locators outside it.
+window.addEventListener("DOMContentLoaded", () => {
+  for (const element of document.querySelectorAll("main .prose, main .tex")) {
+    if (!element.matches(".prose") && element.closest(".prose")) continue;
+    typeset(element);
   }
 });
 
@@ -82,6 +88,7 @@ for (const control of document.querySelectorAll("[data-catalog-search]")) {
       const name = document.createElement("code");
       name.textContent = item.name;
       row.append(link, details, name);
+      typeset(row);
       fragment.append(row);
     }
     list.append(fragment);

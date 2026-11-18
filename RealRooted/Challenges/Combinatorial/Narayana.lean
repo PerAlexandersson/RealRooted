@@ -70,12 +70,12 @@ label = "Consecutive generalized Narayana polynomials of positive degree interla
 [[theorems]]
 name = "DyckWord.peakGeneratingPolynomial_eq_narayanaPolynomial"
 module = "RealRooted.CombinatorialExamples.DyckNarayana"
-label = "The peak polynomial of Dyck paths is x N_{n,1}(x)"
+label = "The peak polynomial of Dyck paths is $x N_{n,1}(x)$"
 
 [[theorems]]
 name = "RealRooted.Avoid132.descentGeneratingPolynomial_succ_eq_narayanaPolynomial"
 module = "RealRooted.CombinatorialExamples.Avoid132Descents"
-label = "132-avoiding permutations counted by descents give N_{n,1}(x)"
+label = "132-avoiding permutations counted by descents give $N_{n,1}(x)$"
 
 [[theorems]]
 objects = ["Descent polynomials of 132-avoiding permutations"]
@@ -130,13 +130,13 @@ label = "Consecutive γ-polynomials of the interpolation interlace"
 [[theorems]]
 name = "RealRooted.IsPFPolynomial.binaryRunTransform"
 module = "RealRooted.BinaryRunTransformation.Continuation"
-label = "J_n maps PF polynomials of degree at most n to PF polynomials"
+label = "$J_n$ maps PF polynomials of degree at most $n$ to PF polynomials"
 tags = ["realrooted-original"]
 
 [[theorems]]
 name = "RealRooted.strictInterl_binaryRunTransform"
 module = "RealRooted.BinaryRunTransformation.Interlacing"
-label = "J_n preserves interlacing on inputs of degree at most (n+1)/2"
+label = "$J_n$ preserves interlacing on inputs of degree at most $(n+1)/2$"
 tags = ["realrooted-original"]
 
 [[theorems]]

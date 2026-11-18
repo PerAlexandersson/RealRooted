@@ -28,12 +28,12 @@ tags = ["realrooted-original"]
 [[definitions]]
 name = "RealRooted.finiteDifferentialTest"
 module = "RealRooted.FiniteFreeAdditive.FiniteDegreeTests"
-label = "The degree-N test h(D) X^N"
+label = "The degree-$N$ test $h(D) X^N$"
 
 [[definitions]]
 name = "RealRooted.evenDerivativeOperator"
 module = "RealRooted.EvenDerivative.Basic"
-label = "The operator Δ_c f = ∑ cₖ xᵏ f^{(2k)}"
+label = "The operator $Δ_c f = ∑ c_k x^k f^{(2k)}$"
 
 [[definitions]]
 name = "RealRooted.secondOrderRayOperator"
@@ -43,7 +43,7 @@ label = "The operator (a + bX) + (c + dX) D + f X D²"
 [[theorems]]
 name = "RealRooted.PreservesPFUpTo.iff_finiteDifferentialTest"
 module = "RealRooted.FiniteFreeAdditive.FiniteDegreeTests"
-label = "h(D) preserves PF polynomials of degree at most N exactly when h(D) X^N is PF"
+label = "$h(D)$ preserves PF polynomials of degree at most $N$ exactly when $h(D) X^N$ is PF"
 headline = true
 
 [[theorems]]
@@ -59,17 +59,17 @@ label = "All-degree ordered PF preservation by (h, k) is equivalent to k being P
 [[theorems]]
 name = "RealRooted.EvenDerivative.isPFPolynomial_tfae"
 module = "RealRooted.EvenDerivative.Preserver"
-label = "Δ_c preserves PF through degree N iff Δ_c(xᴺ) is real-rooted iff p_N is real-rooted"
+label = "$Δ_c$ preserves PF through degree $N$ iff $Δ_c(x^N)$, equivalently $p_N$, is real-rooted"
 
 [[theorems]]
 name = "RealRooted.splits_evenDerivativeTest_of_splits_symbol"
 module = "RealRooted.EvenDerivative.Symbol"
-label = "Finitely supported c with a real-rooted signed symbol: p_N is real-rooted for every N"
+label = "Finitely supported $c$ with a real-rooted signed symbol: $p_N$ is real-rooted for all $N$"
 
 [[theorems]]
 name = "RealRooted.secondOrderRayPreserving_iff_three_branch_at_index"
 module = "RealRooted.Interlacing.SecondOrderNecessity"
-label = "(a + bX) + (c + dX) D + f X D² preserves PF polynomials exactly when c ≤ τ_m"
+label = "$(a + bX) + (c + dX) D + f X D^2$ preserves PF polynomials exactly when $c ≤ τ_m$"
 
 [[theorems]]
 name = "RealRooted.not_secondOrderRayPreserving_of_discrim_neg"

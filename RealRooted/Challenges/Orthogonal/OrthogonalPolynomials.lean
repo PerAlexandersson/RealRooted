@@ -131,7 +131,7 @@ objects = ["Jacobi polynomials"]
 property = "orthogonal"
 name = "RealRooted.shiftedJacobi_integral_orthogonal"
 module = "RealRooted.Jacobi.Orthogonality.Integral"
-label = "Orthogonality on (0, 1) for the weight x^α (1 - x)^β"
+label = "Orthogonality on $(0, 1)$ for the weight $x^α (1 - x)^β$"
 
 [[theorems]]
 name = "RealRooted.shiftedJacobi_isRoot_mem_Ioo"
@@ -160,12 +160,12 @@ label = "Consecutive shifted Legendre polynomials interlace"
 objects = ["Chebyshev polynomials"]
 name = "RealRooted.Chebyshev.T_sub_C_splits"
 module = "RealRooted.Chebyshev.Levels"
-label = "For n ≥ 1 and |h| ≤ 1, T_n − h is real-rooted; h = 0 gives T_n"
+label = "For $n ≥ 1$ and $|h| ≤ 1$, $T_n - h$ is real-rooted; $h = 0$ gives $T_n$"
 
 [[definitions]]
 name = "RealRooted.jacobiCoefficientPolynomial"
 module = "RealRooted.Jacobi.CoefficientFamily"
-label = "The positive-coefficient Jacobi family Σ C(n,k) C(n+b,k) / C(a+k,k) X^k"
+label = "The positive-coefficient Jacobi family $∑ C(n,k) C(n+b,k) X^k / C(a+k,k)$"
 
 [[theorems]]
 objects = ["Jacobi coefficient polynomials"]

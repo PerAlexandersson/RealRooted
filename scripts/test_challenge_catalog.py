@@ -625,7 +625,8 @@ end RealRooted.Challenges.Sample
         self.assertNotIn("minor", home)
         page = output["families/sample/index.html"]
         self.assertIn(f'<li id="{anchor}">', page)
-        self.assertIn("Sample family is real-rooted<span class=\"headline-tag\">Main result</span>", page)
+        self.assertIn("Sample family is real-rooted</span><span class=\"headline-tag\">Main result</span>",
+                      page)
         results = output["results/index.html"]
         self.assertEqual(results.count("<tr data-kind="), 3)
         self.assertEqual(results.count('data-headline="true"'), 1)
@@ -1331,6 +1332,94 @@ end RealRooted.Challenges.Sample
         self.assertIn("Common and repeated roots are allowed", output["about/index.html"])
         self.assertIn('href="../../about/">Conventions</a>', document)
         self.assertIn('href="https://www.symmetricfunctions.com/">SymCat</a>', document)
+
+    def test_inline_math_in_labels_titles_and_locators(self) -> None:
+        pages, resolved = self.pages_and_sources()
+        label = "Rows of $P_{n+1} < Q_n$ & <b>stay</b> real"
+        item = replace(pages[0].theorems[0], headline=True, label=label, objects=("Rows",))
+        page = replace(pages[0], kind="original", theorems=(item,), title="Sample $x_1$",
+                       content="# Sample $x_1$\n\nA lead with $y$.\n\n## References\n\nSource.")
+        output = render_site(self.root, (page,), resolved, REVISION)
+        math = '<span class="tex">$P_{n+1} &lt; Q_n$</span>'
+        rendered = f"Rows of {math} &amp; &lt;b&gt;stay&lt;/b&gt; real"
+        card = output["index.html"].split('<li class="catalog-card')[1].split("</li>")[0]
+        self.assertIn(f'<strong class="card-title">Sample <span class="tex">$x_1$</span></strong>',
+                      card)
+        self.assertIn(f">{rendered}</span>", card)
+        self.assertIn('title="Rows of P_{n+1} &lt; Q_n &amp; &lt;b&gt;stay&lt;/b&gt; real"', card)
+        document = output["families/sample/index.html"]
+        self.assertIn("<title>Sample x_1 · RealRooted</title>", document)
+        self.assertIn(f'Main result: <a href="#{item.anchor}">{rendered}</a>', document)
+        self.assertIn('<p class="declaration-label"><span class="declaration-label-text">'
+                      f'{rendered}</span><span class="headline-tag">',
+                      document)
+        self.assertIn(f'<span class="result-label">{rendered}</span>', output["results/index.html"])
+        families = output["families-index/index.html"]
+        self.assertIn(f">{rendered}</a>", families)
+        self.assertIn('<span class="family-page">Sample <span class="tex">$x_1$</span></span>',
+                      families)
+        self.assertNotIn("<b>", "".join(output[name] for name in (
+            "index.html", "families/sample/index.html", "results/index.html",
+            "families-index/index.html")))
+        # Machine exports keep the $…$ source.
+        manifest = json.loads(output["catalog-manifest.json"])
+        self.assertEqual(manifest["pages"][0]["labels"], {item.name: label})
+        self.assertEqual(manifest["families_index"]["entries"][0]["label"], label)
+        search = json.loads(output["search-index.json"])
+        self.assertEqual(search["pages"][0]["headline"], label)
+        self.assertIn({"name": item.name, "label": label},
+                      [{"name": row["name"], "label": row["label"]} for row in search["declarations"]])
+        self.assertIn(f"Sample $x_1$ — {label} — ", output["llms.txt"])
+        conjecture = replace(page, kind="conjecture", conjecture="Author 2024, case $\\Pi = \\{321\\}$")
+        output = render_site(self.root, (conjecture,), resolved, REVISION)
+        locator = 'case <span class="tex">$\\Pi = \\{321\\}$</span>'
+        self.assertIn(f'<span class="card-conjecture">Author 2024, {locator}</span>',
+                      output["index.html"])
+        self.assertIn(f'<p class="page-conjecture">Author 2024, {locator}</p>',
+                      output["families/sample/index.html"])
+
+    def test_unbalanced_or_display_math_in_labels_is_rejected(self) -> None:
+        from challenge_catalog import split_inline_math
+
+        self.assertEqual(split_inline_math("For $n ≥ 1$, $M_n$"),
+                         [("For ", False), ("n ≥ 1", True), (", ", False), ("M_n", True)])
+        self.assertEqual(split_inline_math("plain"), [("plain", False)])
+        for text in ("Costs $5", "$a$ and $b", "Display $$x$$", "Empty $ $ math"):
+            with self.subTest(text=text), self.assertRaises(CatalogError):
+                split_inline_math(text)
+        pages, resolved = self.pages_and_sources()
+        item = replace(pages[0].theorems[0], label="Rows of $P_n are real")
+        with self.assertRaisesRegex(CatalogError, r"unbalanced \$"):
+            render_site(self.root, (replace(pages[0], theorems=(item,)),), resolved, REVISION)
+
+    def test_tex_outside_math_in_metadata_is_a_prose_lint_error(self) -> None:
+        page = parse_challenge_source("Sample.lean", catalog_block())
+        page = replace(page, content="# Sample\n\nA lead.\n\n## Results\n\nA theorem.\n\n"
+                                     "## References\n\nSource.")
+        self.write("scripts/prose_baseline.txt", "")
+        validate_prose_baseline(self.root, (page,))
+        theorem = page.theorems[0]
+        offenders = {
+            "M_{n-2} interlaces A_n": r"label of .*proven has TeX notation \(_ \{ \}\) outside math",
+            "x^2 is positive": r".*TeX notation \(\^\)",
+            r"Over $\{0, 1\}$ and \{x\}": r".*TeX notation \(\\ \{ \}\)",
+            "A cost of $5": r"label of .*proven: unbalanced \$",
+        }
+        for label, message in offenders.items():
+            with self.subTest(label=label), self.assertRaisesRegex(
+                CatalogError, "Sample.lean: " + message
+            ):
+                validate_prose_baseline(self.root, (replace(page, theorems=(
+                    replace(theorem, label=label),)),))
+        with self.assertRaisesRegex(CatalogError, r"Sample.lean: title has TeX notation \(_\)"):
+            validate_prose_baseline(self.root, (replace(page, title="Sample E_n"),))
+        with self.assertRaisesRegex(CatalogError, r"conjecture locator has TeX notation \(\{ \}\)"):
+            validate_prose_baseline(self.root, (replace(page, kind="conjecture",
+                                                        conjecture="Case {321}"),))
+        fixed = replace(page, title="Sample $E_n$", kind="conjecture",
+                        conjecture=r"Case $\Pi = \{321\}$", theorems=(
+                            replace(theorem, label=r"$M_{n-2}$ interlaces $A_n$ over $\{0, 1\}$"),))
+        validate_prose_baseline(self.root, (fixed,))
 
     def test_page_symcat_metadata_and_reference_keys(self) -> None:
         for raw in ('"sampleTheorem"', '["sampleTheorem"]'):

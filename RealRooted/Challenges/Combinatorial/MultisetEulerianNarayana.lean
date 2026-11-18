@@ -24,18 +24,18 @@ years = [2021, 2026]
 [[definitions]]
 name = "RealRooted.MultisetEulerianNarayana.step"
 module = "RealRooted.CombinatorialExamples.MultisetEulerianNarayana"
-label = "The first-order factor E_{d,a}"
+label = "The first-order factor $E_{d,a}$"
 
 [[definitions]]
 name = "RealRooted.MultisetEulerianNarayana.multisetEulerianNarayana"
 module = "RealRooted.CombinatorialExamples.MultisetEulerianNarayana"
-label = "The multiset Eulerian–Narayana polynomial P_α"
+label = "The multiset Eulerian–Narayana polynomial $P_α$"
 
 [[theorems]]
 objects = ["Multiset Eulerian–Narayana polynomials"]
 name = "RealRooted.MultisetEulerianNarayana.simpleNegRooted_multisetEulerianNarayana"
 module = "RealRooted.CombinatorialExamples.MultisetEulerianNarayana"
-label = "Zhang–Zhao: P_α has only simple negative zeros"
+label = "Zhang–Zhao: $P_α$ has only simple negative zeros"
 headline = true
 
 [[theorems]]
@@ -46,7 +46,7 @@ label = "Consecutive partial products interlace without common zeros"
 [[theorems]]
 name = "RealRooted.MultisetEulerianNarayana.coeff_multisetEulerianNarayana_symm"
 module = "RealRooted.CombinatorialExamples.MultisetEulerianNarayana"
-label = "P_α is palindromic"
+label = "$P_α$ is palindromic"
 
 [[theorems]]
 name = "RealRooted.SimpleNegRooted.darbouxOperator"

@@ -31,12 +31,12 @@ years = [2026]
 [[definitions]]
 name = "RealRooted.EulerianCompendium.derangementDescentPolynomial"
 module = "RealRooted.Applications.EulerianCompendium.Definitions"
-label = "Derangement descent polynomial Σ x^des π"
+label = 'Derangement descent polynomial $∑ x^{\operatorname{des} π}$'
 
 [[definitions]]
 name = "RealRooted.EulerianCompendium.BalancedCyclic.balancedWordSum"
 module = "RealRooted.Applications.EulerianCompendium.CyclicWords"
-label = "Balanced cyclic-word polynomial Σ x^cdes w"
+label = 'Balanced cyclic-word polynomial $∑ x^{\operatorname{cdes} w}$'
 
 [[definitions]]
 name = "RealRooted.EulerianCompendium.evenTopDescentPolynomial"
@@ -61,7 +61,7 @@ label = "Multivariate peak-value polynomial"
 [[definitions]]
 name = "RealRooted.eulerInsertionStep"
 module = "RealRooted.EulerianMixedCompatibility.Insertion"
-label = "Euler insertion operator E_{c,d}"
+label = "Euler insertion operator $E_{c,d}$"
 
 [[theorems]]
 objects = ["Descent polynomials of derangements"]
@@ -79,7 +79,7 @@ label = "Balanced cyclic-word polynomials: simple roots, one at 0, the rest nega
 [[theorems]]
 name = "RealRooted.Applications.EulerianVariations.cyclicPathDescentPolynomial_eq_derivative"
 module = "RealRooted.Applications.EulerianVariations.CyclicPathDescents"
-label = "The cyclic descent polynomial is (2/n) x B_n′(x) for the type B Narayana B_n"
+label = "The cyclic descent polynomial is $(2/n) x B_n'(x)$ for the type B Narayana $B_n$"
 
 [[theorems]]
 objects = ["Even-top descent polynomials"]

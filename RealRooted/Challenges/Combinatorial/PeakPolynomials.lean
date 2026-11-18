@@ -24,12 +24,12 @@ label = "A peak family of width m"
 [[definitions]]
 name = "RealRooted.Applications.PeakPolynomials.PeakFamily.A"
 module = "RealRooted.Applications.PeakPolynomials.PeakInduction"
-label = "A_k = D_k + U_k"
+label = "$A_k = D_k + U_k$"
 
 [[definitions]]
 name = "RealRooted.Applications.PeakPolynomials.PeakFamily.W"
 module = "RealRooted.Applications.PeakPolynomials.PeakInduction"
-label = "W_k = x D_k + U_k"
+label = "$W_k = x D_k + U_k$"
 
 [[definitions]]
 name = "RealRooted.Applications.PeakPolynomials.PeakFamily.P"
