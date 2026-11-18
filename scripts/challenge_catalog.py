@@ -19,13 +19,17 @@ import posixpath
 import re
 import subprocess
 import sys
-import tomllib
 import unicodedata
 from datetime import date
 from dataclasses import dataclass
 from html.parser import HTMLParser
 from typing import Any, Iterable
 from urllib.parse import urlsplit
+
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python 3.10: bundled CPython standard-library compatibility.
+    import _stdlib_tomllib as tomllib
 
 
 BASE_PATH = "/RealRooted/"
@@ -856,7 +860,8 @@ def _local_imports(source_path: pathlib.Path) -> set[str]:
 
 
 def _module_in_import_closure(
-    repo_root: pathlib.Path, challenge_path: pathlib.Path, owner_path: pathlib.Path
+    repo_root: pathlib.Path, challenge_path: pathlib.Path, owner_path: pathlib.Path,
+    imports: dict[pathlib.Path, set[str]] | None = None,
 ) -> bool:
     """Check local imports only; external dependencies cannot own a selection."""
     owner_module = module_name_for_path(repo_root, owner_path)
@@ -873,7 +878,13 @@ def _module_in_import_closure(
             current_path = module_source_path(repo_root, current)
         except CatalogError:
             continue
-        pending.extend(_local_imports(current_path) - seen)
+        if imports is None:
+            imported = _local_imports(current_path)
+        else:
+            if current_path not in imports:
+                imports[current_path] = _local_imports(current_path)
+            imported = imports[current_path]
+        pending.extend(imported - seen)
     return False
 
 
@@ -966,7 +977,9 @@ def _attribute_tail(line: str, depth: int) -> tuple[int, str]:
     return depth, ""
 
 
-def source_declarations(repo_root: pathlib.Path, source_path: pathlib.Path) -> dict[str, SourceDeclaration]:
+def source_declarations(
+    repo_root: pathlib.Path, source_path: pathlib.Path, *, include_source: bool = True,
+) -> dict[str, SourceDeclaration]:
     """Find ordinary public declaration headers in one Lean source file."""
     relative_path = source_path.relative_to(repo_root).as_posix()
     clean = strip_comments_and_strings(source_path.read_text(encoding="utf-8"))
@@ -1017,7 +1030,9 @@ def source_declarations(repo_root: pathlib.Path, source_path: pathlib.Path) -> d
         name = _qualified_name(namespaces, raw_name)
         if name in found:
             raise CatalogError(f"{relative_path}:{line_number}: ambiguous declaration {name}")
-        source_code = _declaration_source_code(source_path, line_number, actual_kind)
+        source_code = (
+            _declaration_source_code(source_path, line_number, actual_kind) if include_source else ""
+        )
         found[name] = SourceDeclaration(
             name, actual_kind, relative_path, line_number, deprecated, source_code
         )
@@ -1025,12 +1040,15 @@ def source_declarations(repo_root: pathlib.Path, source_path: pathlib.Path) -> d
 
 
 def resolve_item(
-    repo_root: pathlib.Path, page: CatalogPage, item: CatalogItem
+    repo_root: pathlib.Path, page: CatalogPage, item: CatalogItem,
+    *, imports: dict[pathlib.Path, set[str]] | None = None,
 ) -> SourceDeclaration:
     module = item.module or page.source_path.removesuffix(".lean").replace("/", ".")
     owner_path = module_source_path(repo_root, module)
     challenge_path = repo_root / page.source_path
-    if item.module is not None and not _module_in_import_closure(repo_root, challenge_path, owner_path):
+    if item.module is not None and not _module_in_import_closure(
+        repo_root, challenge_path, owner_path, imports,
+    ):
         raise CatalogError(
             f"{page.source_path}: owning module {module} is outside this module's import closure"
         )
@@ -1061,9 +1079,11 @@ def resolve_item(
 
 def validate_sources(repo_root: pathlib.Path, pages: Iterable[CatalogPage]) -> dict[str, SourceDeclaration]:
     resolved: dict[str, SourceDeclaration] = {}
+    # Scoped to this validation: reuse import scans without hiding edits on the next call.
+    imports: dict[pathlib.Path, set[str]] = {}
     for page in pages:
         for item in page.items:
-            declaration = resolve_item(repo_root, page, item)
+            declaration = resolve_item(repo_root, page, item, imports=imports)
             if item.name in resolved:
                 raise CatalogError(f"duplicate selected declaration {item.name}")
             resolved[item.name] = declaration
