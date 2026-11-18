@@ -61,7 +61,7 @@ label = "The ray semigroup preserves PF polynomials exactly when a, b ≥ 0"
 [[theorems]]
 name = "RealRooted.raySemigroupTransform_add_time"
 module = "RealRooted.BasisTransform.SemigroupClassification"
-label = "The semigroup law T_{s+t} = T_s T_t"
+label = "The semigroup law $T_{s+t} = T_s T_t$"
 
 [[theorems]]
 name = "RealRooted.RaySemigroup.forall_isPFPolynomial_iff_finiteLog"

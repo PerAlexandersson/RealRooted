@@ -55,18 +55,18 @@ label = "Mixed characteristic polynomial"
 [[theorems]]
 name = "RealRooted.splits_finiteFreeAdditiveConvolution"
 module = "RealRooted.FiniteFreeAdditive.Preservation"
-label = "Marcus–Spielman–Srivastava: ⊞_d preserves real-rootedness"
+label = "Marcus–Spielman–Srivastava: $⊞_d$ preserves real-rootedness"
 headline = true
 
 [[theorems]]
 name = "RealRooted.splits_finiteFreeMultiplicativeConvolution"
 module = "RealRooted.FiniteFreeRootCount"
-label = "Marcus–Spielman–Srivastava: ⊠_d preserves real-rootedness"
+label = "Marcus–Spielman–Srivastava: $⊠_d$ preserves real-rootedness"
 
 [[theorems]]
 name = "RealRooted.IsRealRootedIn.finiteFreeAdditiveConvolution_Icc"
 module = "RealRooted.FiniteFreeAdditive.RootWindow"
-label = "Roots in [A, B] and [a, b] give roots of p ⊞_d q in [A + a, B + b]"
+label = "Roots in $[A, B]$ and $[a, b]$ give roots of $p ⊞_d q$ in $[A + a, B + b]$"
 
 [[theorems]]
 name = "RealRooted.HasOnlyNonnegRoots.rectangularAdditiveConvolution"

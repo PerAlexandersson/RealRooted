@@ -41,6 +41,26 @@ jobs:
           python3 scripts/build_challenge_pages.py \
             --audit-report "$RUNNER_TEMP/challenge-catalog-audit/challenge-catalog-audit.json" \
             --output "$RUNNER_TEMP/challenge-catalog"
+      - name: Read public polytool route sources (optional)
+        id: polytool
+        continue-on-error: true
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          repository: PerAlexandersson/polytool
+          ref: main
+          path: .rr-nav-polytool
+          persist-credentials: false
+      - name: Build agent navigation index
+        env:
+          POLYTOOL_CHECKOUT: ${{ steps.polytool.outcome }}
+        run: |
+          if [[ "$POLYTOOL_CHECKOUT" == "success" ]]; then
+            python3 scripts/agent_index.py --polytool .rr-nav-polytool \
+              --output "$RUNNER_TEMP/challenge-catalog/agent-index.json"
+          else
+            python3 scripts/agent_index.py \
+              --output "$RUNNER_TEMP/challenge-catalog/agent-index.json"
+          fi
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         with:

@@ -88,7 +88,7 @@ label = "Brändén: if (sx + t) f + g is real-rooted for all s, t > 0, then f �
 [[theorems]]
 name = "RealRooted.reciprocalShift_reverses_strictInterl"
 module = "RealRooted.ReciprocalShift.ProperPosition"
-label = "The reciprocal shift x^D p(1/x) reverses interlacing of PF polynomials"
+label = "The reciprocal shift $x^D p(1/x)$ reverses interlacing of PF polynomials"
 
 [[theorems]]
 name = "RealRooted.HlavacekSolus.isRealRooted_hPolynomial_of_perm_isInterlacingSeqNonneg"

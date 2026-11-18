@@ -27,17 +27,17 @@ years = [2019]
 [[definitions]]
 name = "RealRooted.IsIdDecomposition"
 module = "RealRooted.SymmetricDecomposition.Definitions"
-label = "Symmetric I_d-decomposition"
+label = "Symmetric $I_d$-decomposition"
 
 [[definitions]]
 name = "RealRooted.fPolynomial"
 module = "RealRooted.SymmetricDecomposition.FPolynomial"
-label = "The f-transform f_d(h) = Σ h_k x^k (x + 1)^(d − k)"
+label = "The $f$-transform $f_d(h) = ∑ h_k x^k (x + 1)^{d-k}$"
 
 [[definitions]]
 name = "RealRooted.DerangementTransform.transform"
 module = "RealRooted.SymmetricDecomposition.DerangementTransform"
-label = "Derangement transform x^j ↦ d_j"
+label = "Derangement transform $x^j ↦ d_j$"
 
 [[theorems]]
 name = "RealRooted.BrandenSolus.strictInterl_iff_of_isIdDecomposition"
@@ -53,7 +53,7 @@ label = "The derangement image of a nonnegative magic-basis combination is zero 
 [[theorems]]
 name = "RealRooted.DerangementTransform.transform_magicExpansion_strictInterl"
 module = "RealRooted.SymmetricDecomposition.DerangementTransform"
-label = "For d ≥ 2 and a positive coordinate, the image lies between A_d and d_d"
+label = "For $d ≥ 2$ and a positive coordinate, the image lies between $A_d$ and $d_d$"
 
 [[theorems]]
 objects = ["Derangement polynomials"]
@@ -64,12 +64,12 @@ label = "The excedance polynomial of derangements is real-rooted for n ≥ 2"
 [[theorems]]
 name = "RealRooted.splits_fPolynomial_iff"
 module = "RealRooted.SymmetricDecomposition.EulerFPolynomial"
-label = "For deg p ≤ d, the f-transform f_d(p) is real-rooted exactly when p is"
+label = 'For $\deg p ≤ d$, the $f$-transform $f_d(p)$ is real-rooted exactly when $p$ is'
 
 [[theorems]]
 name = "RealRooted.fPolynomial_derivative"
 module = "RealRooted.SymmetricDecomposition.FPolynomialRecurrence"
-label = "The derivative rule (x + 1)² f_d(p)′ = d(x + 1) f_d(p) + f_d(p′)"
+label = "The derivative rule $(x + 1)^2 f_d(p)' = d(x + 1) f_d(p) + f_d(p')$"
 
 [[theorems]]
 name = "RealRooted.eq_fPolynomial_of_derivRec"

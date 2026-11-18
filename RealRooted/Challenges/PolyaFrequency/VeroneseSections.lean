@@ -57,12 +57,12 @@ symcat = "veroneseSectionsRealRooted"
 [[theorems]]
 name = "RealRooted.iterate_sequenceDelta_eq_X_mul_iff_existsUnique_seed"
 module = "RealRooted.VeroneseRecognition"
-label = "Δ^r P = X P holds exactly for the rows of a product parent"
+label = "$Δ^r P = XP$ holds exactly for the rows of a product parent"
 
 [[theorems]]
 name = "RealRooted.iterate_sequenceDelta_eq_affine_mul_iff_existsUnique_seed"
 module = "RealRooted.VeroneseRecognition.Affine"
-label = "Δ^r P = (α + βX) P holds exactly for affine substitutions of such rows"
+label = "$Δ^r P = (α + βX) P$ holds exactly for affine substitutions of such rows"
 
 [[theorems]]
 name = "RealRooted.sequenceDelta_row_eq_zero_or_splits"

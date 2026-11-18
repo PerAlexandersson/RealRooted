@@ -41,12 +41,12 @@ label = "Descent enumerator of the separable permutations"
 [[definitions]]
 name = "RealRooted.SeparablePermutations.gammaPolynomial"
 module = "RealRooted.SeparablePermutations.Gamma"
-label = "Gamma-polynomials Γ_n through the factorial-compression representation"
+label = "Gamma-polynomials $Γ_n$ through the factorial-compression representation"
 
 [[definitions]]
 name = "RealRooted.SeparablePermutations.descentPolynomial"
 module = "RealRooted.SeparablePermutations.Gamma"
-label = "Descent polynomials S_n = (1 + t)^{n-1} Γ_n(t/(1+t)^2)"
+label = "Descent polynomials $S_n = (1 + t)^{n-1} Γ_n(t/(1 + t)^2)$"
 
 [[definitions]]
 name = "RealRooted.FactorialCompression.compression"
@@ -64,24 +64,24 @@ headline = true
 [[theorems]]
 name = "RealRooted.SeparablePermutations.hasSimpleRoots_descentPolynomial"
 module = "RealRooted.SeparablePermutations.Interlacing"
-label = "The descent polynomials S_n have simple roots"
+label = "The descent polynomials $S_n$ have simple roots"
 
 [[theorems]]
 name = "RealRooted.SeparablePermutations.roots_descentPolynomial_neg"
 module = "RealRooted.SeparablePermutations.Interlacing"
-label = "All roots of S_n are negative for n ≥ 2"
+label = "All roots of $S_n$ are negative for $n ≥ 2$"
 
 [[theorems]]
 objects = ["Gamma polynomials of separable permutations"]
 property = "interlacing"
 name = "RealRooted.SeparablePermutations.strictInterl_gammaPolynomial"
 module = "RealRooted.SeparablePermutations.Interlacing"
-label = "Consecutive gamma-polynomials Γ_n, Γ_{n+1} interlace without common root"
+label = "Consecutive gamma-polynomials $Γ_n$, $Γ_{n+1}$ interlace without common root"
 
 [[theorems]]
 name = "RealRooted.SeparablePermutations.descentEnumerator_eq_descentPolynomial"
 module = "RealRooted.SeparablePermutations.Identification"
-label = "Fu–Lin–Zeng / Zhang: the descent enumerator equals S_{n+1}"
+label = "Fu–Lin–Zeng / Zhang: the descent enumerator equals $S_{n+1}$"
 
 [[theorems]]
 name = "RealRooted.SeparablePermutations.gammaPolynomial_cubic"

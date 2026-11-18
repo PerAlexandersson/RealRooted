@@ -52,7 +52,7 @@ label = "A real-rooted polynomial has log-concave coefficients"
 [[theorems]]
 name = "RealRooted.Maclaurin.esymm_div_choose_rpow_le"
 module = "RealRooted.Maclaurin"
-label = "Maclaurin: E₁ ≥ E₂^(1/2) ≥ ⋯ ≥ Eₙ^(1/n) for nonnegative reals"
+label = "Maclaurin: $E_1 ≥ E_2^{1/2} ≥ ⋯ ≥ E_n^{1/n}$ for nonnegative reals"
 
 [[theorems]]
 name = "RealRooted.Samuelson.sq_add_coeff_div_le"

@@ -65,7 +65,7 @@ objects = ["Monotone column permanents"]
 property = "real-stable"
 name = "RealRooted.Permanent.columnPermanent_mvRealStable_of_decreasingColumns"
 module = "RealRooted.Permanent.MonotoneColumn"
-label = "Brändén–Haglund–Visontai–Wagner: per(z_j + a_ij) is real stable for decreasing columns"
+label = '$\operatorname{per}(z_j + a_{ij})$ is real stable when the columns of $(a_{ij})$ decrease'
 headline = true
 
 [[theorems]]

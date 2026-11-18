@@ -38,7 +38,7 @@ label = "Pólya frequency sequence"
 [[definitions]]
 name = "RealRooted.EdreiThoma.canonicalProduct"
 module = "RealRooted.EdreiThoma.Easy"
-label = "Canonical product c X^m e^(γX) ∏(1 + αᵢX) / ∏(1 − βᵢX)"
+label = "Canonical product $c X^m e^{γX} ∏(1 + α_i X) / ∏(1 - β_i X)$"
 
 [[theorems]]
 name = "RealRooted.isPolyaFreqSeq_coeff_iff_isPFPolynomial"

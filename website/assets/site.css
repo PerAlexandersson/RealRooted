@@ -513,7 +513,7 @@ h3 { font-size: 1.25rem; }
 
 .math-display { margin: 1.1rem 0; overflow-x: auto; overflow-y: hidden; }
 .katex-display { overflow-x: auto; overflow-y: hidden; }
-.prose .katex { font-size: 1.05em; }
+.prose .katex, .tex .katex { font-size: 1.05em; }
 
 .breadcrumb { margin-bottom: 1.5rem; }
 .breadcrumb a {
@@ -630,6 +630,7 @@ pre {
 }
 .verification span { font-weight: 750; text-transform: uppercase; letter-spacing: 0.06em; }
 .verification code { color: var(--muted); }
+.verification a { overflow-wrap: anywhere; }
 .site-footer {
   width: min(100% - 2rem, 72rem);
   margin: 0 auto;

@@ -19,13 +19,17 @@ import posixpath
 import re
 import subprocess
 import sys
-import tomllib
 import unicodedata
 from datetime import date
 from dataclasses import dataclass
 from html.parser import HTMLParser
 from typing import Any, Iterable
 from urllib.parse import urlsplit
+
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python 3.10: bundled CPython standard-library compatibility.
+    import _stdlib_tomllib as tomllib
 
 
 BASE_PATH = "/RealRooted/"
@@ -798,7 +802,8 @@ def build_author_index(
             identity,
             profile.display_name,
             profile.url,
-            tuple(sorted(credited_pages, key=lambda page: (page.title.casefold(), page.slug))),
+            tuple(sorted(credited_pages,
+                         key=lambda page: (_plain_text(page.title).casefold(), page.slug))),
         )
         for identity, (profile, credited_pages) in grouped.items()
     ]
@@ -856,7 +861,8 @@ def _local_imports(source_path: pathlib.Path) -> set[str]:
 
 
 def _module_in_import_closure(
-    repo_root: pathlib.Path, challenge_path: pathlib.Path, owner_path: pathlib.Path
+    repo_root: pathlib.Path, challenge_path: pathlib.Path, owner_path: pathlib.Path,
+    imports: dict[pathlib.Path, set[str]] | None = None,
 ) -> bool:
     """Check local imports only; external dependencies cannot own a selection."""
     owner_module = module_name_for_path(repo_root, owner_path)
@@ -873,7 +879,13 @@ def _module_in_import_closure(
             current_path = module_source_path(repo_root, current)
         except CatalogError:
             continue
-        pending.extend(_local_imports(current_path) - seen)
+        if imports is None:
+            imported = _local_imports(current_path)
+        else:
+            if current_path not in imports:
+                imports[current_path] = _local_imports(current_path)
+            imported = imports[current_path]
+        pending.extend(imported - seen)
     return False
 
 
@@ -966,7 +978,9 @@ def _attribute_tail(line: str, depth: int) -> tuple[int, str]:
     return depth, ""
 
 
-def source_declarations(repo_root: pathlib.Path, source_path: pathlib.Path) -> dict[str, SourceDeclaration]:
+def source_declarations(
+    repo_root: pathlib.Path, source_path: pathlib.Path, *, include_source: bool = True,
+) -> dict[str, SourceDeclaration]:
     """Find ordinary public declaration headers in one Lean source file."""
     relative_path = source_path.relative_to(repo_root).as_posix()
     clean = strip_comments_and_strings(source_path.read_text(encoding="utf-8"))
@@ -1017,7 +1031,9 @@ def source_declarations(repo_root: pathlib.Path, source_path: pathlib.Path) -> d
         name = _qualified_name(namespaces, raw_name)
         if name in found:
             raise CatalogError(f"{relative_path}:{line_number}: ambiguous declaration {name}")
-        source_code = _declaration_source_code(source_path, line_number, actual_kind)
+        source_code = (
+            _declaration_source_code(source_path, line_number, actual_kind) if include_source else ""
+        )
         found[name] = SourceDeclaration(
             name, actual_kind, relative_path, line_number, deprecated, source_code
         )
@@ -1025,12 +1041,15 @@ def source_declarations(repo_root: pathlib.Path, source_path: pathlib.Path) -> d
 
 
 def resolve_item(
-    repo_root: pathlib.Path, page: CatalogPage, item: CatalogItem
+    repo_root: pathlib.Path, page: CatalogPage, item: CatalogItem,
+    *, imports: dict[pathlib.Path, set[str]] | None = None,
 ) -> SourceDeclaration:
     module = item.module or page.source_path.removesuffix(".lean").replace("/", ".")
     owner_path = module_source_path(repo_root, module)
     challenge_path = repo_root / page.source_path
-    if item.module is not None and not _module_in_import_closure(repo_root, challenge_path, owner_path):
+    if item.module is not None and not _module_in_import_closure(
+        repo_root, challenge_path, owner_path, imports,
+    ):
         raise CatalogError(
             f"{page.source_path}: owning module {module} is outside this module's import closure"
         )
@@ -1061,9 +1080,11 @@ def resolve_item(
 
 def validate_sources(repo_root: pathlib.Path, pages: Iterable[CatalogPage]) -> dict[str, SourceDeclaration]:
     resolved: dict[str, SourceDeclaration] = {}
+    # Scoped to this validation: reuse import scans without hiding edits on the next call.
+    imports: dict[pathlib.Path, set[str]] = {}
     for page in pages:
         for item in page.items:
-            declaration = resolve_item(repo_root, page, item)
+            declaration = resolve_item(repo_root, page, item, imports=imports)
             if item.name in resolved:
                 raise CatalogError(f"duplicate selected declaration {item.name}")
             resolved[item.name] = declaration
@@ -1339,6 +1360,32 @@ def _anchor(text: str) -> str:
 def _topic_anchor(topic: str) -> str:
     folded = unicodedata.normalize("NFKD", topic)
     return "topic-" + _anchor("".join(ch for ch in folded if not unicodedata.combining(ch)))
+
+
+def split_inline_math(text: str) -> list[tuple[str, bool]]:
+    """Split a label, title or locator into ``(text, is_math)`` segments at ``$`` delimiters.
+
+    Short metadata supports inline ``$…$`` math only; there is no escape for a literal ``$``.
+    """
+    parts = text.split("$")
+    if len(parts) % 2 == 0:
+        raise CatalogError(f"unbalanced $ in {text!r}; write inline math as $…$")
+    if any(not parts[index].strip() for index in range(1, len(parts), 2)):
+        raise CatalogError(f"empty or display $$ math in {text!r}; write inline math as $…$")
+    return [(part, index % 2 == 1) for index, part in enumerate(parts) if part]
+
+
+def _text_html(text: str) -> str:
+    """Escape short metadata text and mark its ``$…$`` math for KaTeX (see ``site.js``)."""
+    return "".join(
+        f'<span class="tex">${html.escape(part)}$</span>' if is_math else html.escape(part)
+        for part, is_math in split_inline_math(text)
+    )
+
+
+def _plain_text(text: str) -> str:
+    """Metadata text without math delimiters, for tooltips, tab titles and sort keys."""
+    return "".join(part for part, _ in split_inline_math(text))
 
 
 def _inline(
@@ -1642,7 +1689,7 @@ def _template(
     results = _relative_url(f"{base_path}results/", current_url, base_path)
     authors = _relative_url(f"{base_path}authors/", current_url, base_path)
     return (
-        template.replace("{{ title }}", html.escape(title))
+        template.replace("{{ title }}", html.escape(_plain_text(title)))
         .replace("{{ body }}", body)
         .replace("{{ home }}", home)
         .replace("{{ stylesheet }}", stylesheet)
@@ -1725,7 +1772,7 @@ def _counts(page: CatalogPage) -> str:
 
 
 def _title_sort_key(title: str) -> str:
-    return re.sub(r"^(?:a|an|the)\s+", "", title.casefold())
+    return re.sub(r"^(?:a|an|the)\s+", "", _plain_text(title).casefold())
 
 
 def _headline(page: CatalogPage) -> CatalogItem | None:
@@ -1771,11 +1818,11 @@ def _page_card(page: CatalogPage, href: str, bibliography: dict[str, Any]) -> st
         attribution = "Builds on: " + attribution
     attribution_html = (f'<span class="card-attribution">{html.escape(attribution)}</span>'
                         if attribution or page.kind != "original" else "")
-    headline_title = (f' title="{html.escape(selected.label or "", quote=True)}"'
+    headline_title = (f' title="{html.escape(_plain_text(selected.label or ""), quote=True)}"'
                       if selected and page.kind == "original" else "")
     headline_html = (f'<span class="card-headlines"{headline_title}>'
-                     f'{html.escape(selected.label or "")}</span>' if selected else "")
-    locator = (f'<span class="card-conjecture">{html.escape(page.conjecture)}</span>'
+                     f'{_text_html(selected.label or "")}</span>' if selected else "")
+    locator = (f'<span class="card-conjecture">{_text_html(page.conjecture)}</span>'
                if page.conjecture else "")
     paper = ""
     if page.kind == "original" and page.citations:
@@ -1794,7 +1841,7 @@ def _page_card(page: CatalogPage, href: str, bibliography: dict[str, Any]) -> st
         f'data-tags="{html.escape(" ".join(page.tags))}">'
         f'<a href="{html.escape(href, quote=True)}">'
         '<span class="card-top">' + _kind_badge(page) + _counts(page)
-        + f'</span><strong class="card-title">{html.escape(page.title)}</strong>'
+        + f'</span><strong class="card-title">{_text_html(page.title)}</strong>'
         + headline_html + locator
         + _tag_badges(tag for tag in page.tags
                       if not (page.kind == "original" and tag == "realrooted-original"))
@@ -1833,7 +1880,8 @@ def _item_list(
         if item.label:
             label = (
                 "<p class=\"declaration-label\">"
-                + html.escape(item.label)
+                # One flex item, so text and math in the label wrap together.
+                + "<span class=\"declaration-label-text\">" + _text_html(item.label) + "</span>"
                 + ("<span class=\"headline-tag\">Main result</span>" if item.headline else "")
                 + _tag_badges(tags)
                 + "</p>"
@@ -1886,7 +1934,7 @@ def _authors_page(
                 '<li><a class="author-credit-title" href="'
                 + html.escape(href, quote=True)
                 + '">'
-                + html.escape(page.title)
+                + _text_html(page.title)
                 + '</a><span class="author-credit-meta">'
                 + html.escape(years)
                 + " · "
@@ -1951,7 +1999,7 @@ def _family_entries(pages: Iterable[CatalogPage], base_path: str) -> list[dict[s
                     "authors": list(page.authors), "years": list(page.years),
                 })
     return sorted(entries, key=lambda entry: (
-        entry["family"].casefold(), entry["label"].casefold(), entry["name"]
+        entry["family"].casefold(), _plain_text(entry["label"]).casefold(), entry["name"]
     ))
 
 
@@ -1979,8 +2027,8 @@ def _families_page(entries: list[dict[str, Any]], bibliography: dict[str, Any],
             '<tr><th scope="row">' + html.escape(entry["family"]) + '</th>'
             '<td data-label="Property">' + OBJECT_PROPERTIES[entry["property"]] + '</td>'
             '<td data-label="Theorem"><a href="' + html.escape(target, quote=True) + '">'
-            + html.escape(entry["label"]) + '</a><span class="family-page">'
-            + html.escape(entry["page"]) + '</span><code>' + html.escape(entry["name"])
+            + _text_html(entry["label"]) + '</a><span class="family-page">'
+            + _text_html(entry["page"]) + '</span><code>' + html.escape(entry["name"])
             + '</code></td><td data-label="Reference">' + (references or "See theorem page")
             + '</td></tr>'
         )
@@ -2034,7 +2082,8 @@ def _results_page(
     entries = [
         (page, item) for page in pages for item in page.items
     ]
-    entries.sort(key=lambda entry: ((entry[1].label or entry[1].name).casefold(), entry[1].name))
+    entries.sort(key=lambda entry: (_plain_text(entry[1].label or entry[1].name).casefold(),
+                                    entry[1].name))
     total_entries = len(entries)
     for page, item in entries[offset:offset + limit]:
         kind = item.expected_kind
@@ -2047,12 +2096,12 @@ def _results_page(
             f'<td class="result-kind result-kind--{kind}"><span aria-hidden="true">{symbol}</span>'
             f'<span class="visually-hidden">{kind}</span></td>'
             "<td class=\"result-name\">"
-            + (f"<span class=\"result-label\">{html.escape(title)}</span>" if title else "")
+            + (f"<span class=\"result-label\">{_text_html(title)}</span>" if title else "")
             + ("<span class=\"headline-tag\">Main result</span>" if item.headline else "")
             + _tag_badges(tags)
             + f"<a href=\"{html.escape(href, quote=True)}\"><code>{html.escape(item.name)}</code></a></td>"
             + f"<td class=\"result-page\"><a href=\"../{page.section}/{page.slug}/\">"
-            + html.escape(page.title)
+            + _text_html(page.title)
             + "</a></td>"
             + "<td class=\"result-source\"><a href=\""
             + html.escape(_source_link(revision, resolved[item.name]), quote=True)
@@ -2205,6 +2254,37 @@ def prose_findings(pages: Iterable[CatalogPage]) -> set[str]:
     return findings
 
 
+TEX_OUTSIDE_MATH_RE = re.compile(r"[_^\\{}]")
+
+
+def metadata_math_errors(pages: Iterable[CatalogPage]) -> list[str]:
+    """Titles, labels and conjecture locators keep TeX notation inside ``$…$``.
+
+    They are rendered as escaped text with KaTeX math, so ``P_{n+1}`` outside math would
+    show as raw source on cards, page headers and result lists.
+    """
+    errors: list[str] = []
+    for page in pages:
+        texts = [("title", page.title)]
+        if page.conjecture:
+            texts.append(("conjecture locator", page.conjecture))
+        texts.extend((f"label of {item.name}", item.label) for item in page.items if item.label)
+        for context, text in texts:
+            try:
+                segments = split_inline_math(text)
+            except CatalogError as error:
+                errors.append(f"{page.source_path}: {context}: {error}")
+                continue
+            outside = "".join(part for part, is_math in segments if not is_math)
+            found = sorted(set(TEX_OUTSIDE_MATH_RE.findall(outside)))
+            if found:
+                errors.append(
+                    f"{page.source_path}: {context} has TeX notation ({' '.join(found)}) "
+                    f"outside math; write it as inline $…$: {text}"
+                )
+    return errors
+
+
 def _counted_declarations(page: CatalogPage) -> int:
     """Count selected declarations, exempting theorem records that index families."""
     headline = _headline(page)
@@ -2223,6 +2303,7 @@ def validate_prose_baseline(repo_root: pathlib.Path, pages: Iterable[CatalogPage
     counts = sorted((page.source_path, _counted_declarations(page)) for page in pages)
     errors = [f"{source}: {count} declarations without objects (cap {DECLARATION_CAP})"
               for source, count in counts if count > DECLARATION_CAP]
+    errors += metadata_math_errors(pages)
     errors += [f"new prose offender: {record}" for record in sorted(findings - baseline)]
     errors += [f"stale prose baseline entry: {record}" for record in sorted(baseline - findings)]
     if errors:
@@ -2260,7 +2341,7 @@ def _page_header(page: CatalogPage, labels: dict[str, str], base_path: str) -> s
                     if not (page.kind == "original" and tag == "realrooted-original")),
         f'<p class="topic-breadcrumb"><a href="{kind_href}">{KINDS[page.kind][1]}</a>'
         f' › <a href="{topic_href}">{html.escape(page.topic)}</a></p>',
-        f'<p class="page-conjecture">{html.escape(page.conjecture)}</p>'
+        f'<p class="page-conjecture">{_text_html(page.conjecture)}</p>'
         if page.conjecture else "",
     ]
     if page.symcat_labels:
@@ -2270,7 +2351,7 @@ def _page_header(page: CatalogPage, labels: dict[str, str], base_path: str) -> s
     headline = _headline(page)
     if headline:
         parts.append(f'<p class="page-headline">Main result: <a href="#{headline.anchor}">'
-                     f'{html.escape(headline.label or headline.name)}</a></p>')
+                     f'{_text_html(headline.label or headline.name)}</a></p>')
     return "".join(parts) + "</div>"
 
 

@@ -22,47 +22,47 @@ years = [2026]
 [[definitions]]
 name = "RealRooted.LiuZhang.morrisA"
 module = "RealRooted.MultivariateStability.MorrisOperator"
-label = "The operator A_q = Σ xᵢ² ∂ᵢ²"
+label = "The operator $A_q = ∑ x_i^2 ∂_i^2$"
 
 [[definitions]]
 name = "RealRooted.LiuZhang.morrisB"
 module = "RealRooted.MultivariateStability.MorrisOperator"
-label = "The operator B_q of the Morris flow"
+label = "The operator $B_q$ of the Morris flow"
 
 [[definitions]]
 name = "RealRooted.LiuZhang.morrisD"
 module = "RealRooted.MultivariateStability.MorrisOperator"
-label = "The Morris operator D_q = B_q − A_q"
+label = "The Morris operator $D_q = B_q - A_q$"
 
 [[definitions]]
 name = "RealRooted.LiuZhang.morrisEigenvalue"
 module = "RealRooted.MultivariateStability.MorrisOperator"
-label = "The eigenvalue ε_λ of D_q"
+label = "The eigenvalue $ε_λ$ of $D_q$"
 
 [[definitions]]
 name = "RealRooted.LiuZhang.morrisDExp"
 module = "RealRooted.MultivariateStability.MorrisDFlow"
-label = "The flow exp(t D_q) on symmetric polynomials of bounded degree"
+label = 'The flow $\exp(t D_q)$ on symmetric polynomials of bounded degree'
 
 [[definitions]]
 name = "RealRooted.LiuZhang.normalizedMorrisDExp"
 module = "RealRooted.MultivariateStability.MorrisEigenfunction"
-label = "The normalized flow exp(−t ε_λ) exp(t D_q) E_λ"
+label = 'The normalized flow $\exp(-t ε_λ) \exp(t D_q) E_λ$'
 
 [[theorems]]
 name = "RealRooted.LiuZhang.MvRealStable.morrisDExp_of_symmetric"
 module = "RealRooted.MultivariateStability.MorrisDFlow"
-label = "Liu–Zhang: for t ≥ 0 the flow exp(t D_q) preserves real stability of symmetric polynomials"
+label = 'Liu–Zhang: for $t ≥ 0$, $\exp(t D_q)$ preserves real stability of symmetric polynomials'
 
 [[theorems]]
 name = "RealRooted.LiuZhang.MvRealStable.morrisElementary"
 module = "RealRooted.MultivariateStability.MorrisEigenfunction"
-label = "The elementary product E_λ is real stable"
+label = "The elementary product $E_λ$ is real stable"
 
 [[theorems]]
 name = "RealRooted.LiuZhang.MvRealStable.normalizedMorrisDExp"
 module = "RealRooted.MultivariateStability.MorrisEigenfunction"
-label = "The normalized flow exp(−t ε_λ) exp(t D_q) E_λ is real stable for t ≥ 0"
+label = 'The normalized flow $\exp(-t ε_λ) \exp(t D_q) E_λ$ is real stable for $t ≥ 0$'
 
 [[theorems]]
 name = "RealRooted.LiuZhang.MvRealStable.of_normalizedMorrisDExp_tendsto"
@@ -72,12 +72,12 @@ label = "A nonzero coefficientwise limit of the normalized flow is real stable"
 [[theorems]]
 name = "RealRooted.LiuZhang.existsUnique_morrisEigenfunction"
 module = "RealRooted.MultivariateStability.MorrisEigenfunction"
-label = "D_q has a unique eigenfunction in the dominance downset with top coefficient 1"
+label = "$D_q$ has a unique eigenfunction in the dominance downset with top coefficient 1"
 
 [[theorems]]
 name = "RealRooted.LiuZhang.MvRealStable.morrisEigenfunction"
 module = "RealRooted.MultivariateStability.MorrisEigenfunction"
-label = "Liu–Zhang: the normalized eigenfunctions of the Morris operator D_q are real stable"
+label = "Liu–Zhang: the normalized eigenfunctions of the Morris operator $D_q$ are real stable"
 headline = true
 -->
 

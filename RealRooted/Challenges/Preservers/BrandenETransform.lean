@@ -31,17 +31,17 @@ years = [1989, 2006]
 [[definitions]]
 name = "RealRooted.brandenE"
 module = "RealRooted.Transforms.BrandenE.Basic"
-label = "The E transform x^n ↦ ordered Bell polynomial"
+label = "The E transform, $x^n ↦$ ordered Bell polynomial"
 
 [[definitions]]
 name = "RealRooted.orderedBellPolynomial"
 module = "RealRooted.Transforms.BrandenE.OrderedBell"
-label = "Ordered Bell polynomials F_n"
+label = "Ordered Bell polynomials $F_n$"
 
 [[definitions]]
 name = "RealRooted.polynomialValueEulerNumerator"
 module = "RealRooted.PolynomialValueEulerNumerator"
-label = "Euler numerator W_p of the values p(0), p(1), p(2), …"
+label = "Euler numerator $W_p$ of the values $p(0), p(1), p(2), …$"
 
 [[theorems]]
 name = "RealRooted.brandenE_strictInterl_of_rootwiseLE"

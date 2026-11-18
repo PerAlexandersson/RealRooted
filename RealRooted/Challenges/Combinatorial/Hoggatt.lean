@@ -27,7 +27,7 @@ label = "The binomial-product polynomial F(n,m)"
 [[definitions]]
 name = "RealRooted.Hoggatt.normalized"
 module = "RealRooted.CombinatorialExamples.Hoggatt"
-label = "Normalized Hoggatt polynomials H_n^[m]"
+label = "Normalized Hoggatt polynomials $H_n^{[m]}$"
 
 [[theorems]]
 objects = ["Hoggatt polynomials"]

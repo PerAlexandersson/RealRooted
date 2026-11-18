@@ -1,5 +1,86 @@
 # RealRooted challenge catalog
 
+## Agent navigation (rr-nav)
+
+`scripts/agent_index.py` builds `agent-index.json` from this catalog, the
+row-tactic routes, and public source declarations. The cheap `catalog` CI job
+builds and tests it; Pages publishes it beside `catalog-manifest.json` at
+<https://peralexandersson.github.io/RealRooted/agent-index.json>. Pages also
+reads the public polytool `main` route sources when that optional checkout
+succeeds. The index records each source revision and a content fingerprint.
+It includes no OEIS coverage tables or private overlay.
+
+Use Python 3.10 or newer; no package installation or Lean build is needed.
+Python 3.10 uses a bundled copy of CPython 3.12's standard-library `tomllib`
+under `scripts/_stdlib_tomllib` (MIT license included); newer Python uses its
+own `tomllib`. Only this import compatibility is changed from the copied code.
+
+```bash
+python3 scripts/rr_nav.py build --repo . --output /tmp/agent-index.json
+python3 scripts/rr_nav.py query --repo . find_start \
+  '{"query":"Narayana polynomials real-rooted","limit":3}'
+python3 scripts/rr_nav.py serve --repo /path/to/RealRooted \
+  --polytool /path/to/polytool
+python3 scripts/test_agent_index.py
+RR_NAV_POLYTOOL=/path/to/polytool python3 scripts/test_agent_index.py
+```
+
+Register the stdio server with Codex (`config.toml`):
+
+```toml
+[mcp_servers.rr-nav]
+command = "python3"
+args = ["/workspace/lean/RealRooted/scripts/rr_nav.py", "serve", "--repo",
+        "/workspace/lean/RealRooted", "--polytool", "/workspace/rust/polytool"]
+```
+
+For Claude (`.mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "rr-nav": {
+      "command": "python3",
+      "args": ["/workspace/lean/RealRooted/scripts/rr_nav.py", "serve", "--repo",
+               "/workspace/lean/RealRooted", "--polytool", "/workspace/rust/polytool"]
+    }
+  }
+}
+```
+
+Omit the `--polytool` pair for RealRooted alone. The six tools are `find_start`
+(optional kind, property and topic filters), `get_page`, `get_declaration`,
+`route_links`, `search_declarations` (optional conclusion key and module prefix),
+and `index_status`. Search and route results default to 20 records, capped at
+50; page declarations and route lists support `offset` pagination. Lean names
+are qualified. `get_page` accepts either `slug` or `name`.
+
+On startup and before each tool query the server compares HEAD and indexed
+input contents for both checkouts. A changed input triggers an in-process
+rebuild before answering. A failed rebuild is an error, never a stale answer.
+`index_status` reports revisions, fingerprints, layers, build time, index size,
+and the SQLite FTS5 or pure-Python BM25 backend. The default cache is
+`/cargo-target/mcp-tools/rr-nav/<checkout-key>/agent-index.json`; override its
+external directory with `--cache` or `RR_NAV_CACHE`. Keep it outside every
+repository and Dropbox. The server creates no links and writes only its cache.
+
+Source parsing is navigation evidence: it does not supply elaborated types,
+axiom audits, dependency edges, or proof validation. `unresolved_at_head` means
+a cited name has no public source declaration or alias; known namespace
+references are marked separately. Polytool links are scraped citations, so
+checking a recurrence's hypotheses still belongs to polytool. Search folds
+accents, splits Lean identifiers, expands a few mathematical synonyms, and
+gives curated headline theorems a ranking preference. Search statements are
+truncated to 1,500 characters; exact lookup supplies the source statement.
+
+The stdio transport is newline-delimited JSON-RPC 2.0. It implements initialize,
+the initialized notification, ping, tools/list and tools/call. It echoes supported
+protocol versions (2024-11-05, 2025-03-26, 2025-06-18, 2025-11-25) and offers
+2025-11-25 for unsupported versions, allowing the client to accept or disconnect.
+Protocol output goes to stdout; startup errors go to stderr.
+
+## Catalog maintenance
+
 The challenge modules are the only maintained source of catalog prose and
 references.  A module opts in with one TOML block and one bounded Markdown
 block inside a `/-! ... -/` module comment:
@@ -151,6 +232,15 @@ lists multiple headlines. A page with no headline temporarily falls back to its
 first theorem. `scripts/headline_baseline.txt` lists existing exceptions: source
 checks reject new exceptions and stale entries, so remove an entry when fixed.
 Labels and headlines do not enter the selected-declaration digest.
+
+Labels, page titles and conjecture locators are plain text with inline `$…$`
+math, typeset by KaTeX on cards, page headers, theorem lists, the results and
+families pages and search results; everything outside math is escaped. Write
+`label = "Rows of $P_{n+1} = A_n P_n' + B_n P_n$ interlace"`, and use a TOML
+literal string (`'…'`) when the math needs a backslash, as in `$\{0, 1, x\}$`.
+The source checks reject an unmatched `$`, `$$`, and `_`, `^`, `\`, `{` or `}`
+outside math. Machine exports (`llms.txt`, the manifest, `search-index.json`)
+keep the `$…$` source.
 
 The required page `kind` is one of `landmark` (Classical theorems), `method`
 (Methods), `conjecture` (Solved conjectures), or `original` (New results).
