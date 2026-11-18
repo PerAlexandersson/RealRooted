@@ -1,10 +1,10 @@
 module
 
-public import RealRooted.MultiplierSequence.Bidiagonal
-public import RealRooted.WangYeh.Affine
-public import RealRooted.WangYeh.PF
-public import RealRooted.WangYeh.TriangularArray
-public import RealRooted.WangYeh.TriangularMatrix
+import RealRooted.MultiplierSequence.Bidiagonal
+import RealRooted.WangYeh.Affine
+import RealRooted.WangYeh.PF
+import RealRooted.WangYeh.TriangularArray
+import RealRooted.WangYeh.TriangularMatrix
 
 /-!
 # Wang–Yeh criterion
@@ -15,7 +15,6 @@ kind = "method"
 section = "theorems"
 slug = "wang-yeh"
 formalized = "2026-10-06"
-tags = []
 references = [
   "WangYeh2005",
 ]
@@ -30,25 +29,25 @@ label = "Coefficient-bidiagonal operator"
 [[theorems]]
 name = "RealRooted.wangYehAffine_eq_zero_or_splits"
 module = "RealRooted.WangYeh.Affine"
-label = "(bx + a) f + (dx + c) g is real-rooted or zero when ad ≥ bc"
+label = "Wang–Yeh: (bx + a)f + (dx + c)g is zero or real-rooted when g ≪ f and bc ≤ ad"
 headline = true
 symcat = "wangYehAffineCriterion"
 
 [[theorems]]
 name = "RealRooted.IsPFPolynomial.wangYeh_bidiagonal"
 module = "RealRooted.WangYeh.PF"
-label = "Affine bidiagonal transforms preserve Pólya-frequency polynomials"
+label = "Affine bidiagonal transforms with bc ≤ ad preserve PF polynomials"
 symcat = "wangYehPfPreserver"
 
 [[theorems]]
 name = "RealRooted.IsPolyaFreqSeq.row_of_bilinear_recurrence"
 module = "RealRooted.WangYeh.TriangularMatrix"
-label = "Rows of a bilinear triangular recurrence are Pólya-frequency sequences"
+label = "Rows of a bilinear triangular recurrence are Pólya frequency sequences"
 
 [[theorems]]
 name = "RealRooted.wangYeh_triangularRows_pf"
 module = "RealRooted.WangYeh.TriangularArray"
-label = "Row polynomials of a bilinear triangular recurrence are Pólya-frequency"
+label = "Row polynomials of a bilinear triangular recurrence are PF polynomials"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -63,8 +62,8 @@ triangular arrays with bilinear recurrences, such as the Eulerian and Stirling t
 A polynomial is *PF* if it has nonnegative coefficients and is zero or real-rooted with only
 nonpositive roots. A sequence is PF if its Toeplitz matrix is totally nonnegative.
 
-**Theorem (Wang–Yeh).** Let $f,g\in\mathbb R[x]$ have positive leading coefficients with
-$g\ll f$, and let $a,b,c,d\in\mathbb R$ satisfy $bc\le ad$. Then
+**Theorem (Wang–Yeh).** [@WangYeh2005, Thm. 1] Let $f,g\in\mathbb R[x]$ have positive
+leading coefficients with $g\ll f$, and let $a,b,c,d\in\mathbb R$ satisfy $bc\le ad$. Then
 $$
 (bx+a)\,f(x)+(dx+c)\,g(x)
 $$
@@ -89,6 +88,12 @@ $$
 then every row $(A(n,0),A(n,1),\dotsc)$ is a PF sequence. Equivalently, every row polynomial
 $\sum_kA(n,k)x^k$ is PF.
 
+## Use
+
+The criterion is a standard way to prove that the rows of a triangular array with a bilinear
+recurrence are real-rooted. Related criteria for $af+bg$ are the
+[Liu–Wang and Ma–Wang criteria](rr:ma-wang-liu-wang).
+
 ## Proof
 
 By the [Hermite–Biehler theorem](rr:hermite-biehler-hurwitz), $g\ll f$ makes $f+ig$ stable in
@@ -99,10 +104,6 @@ $p\ll xp'$. Each row of the triangular array is such an image of the previous ro
 
 ## References
 
-- [@WangYeh2005, Thm. 1 and Cors. 2–3]
+[@WangYeh2005, Thm. 1 and Cors. 2–3]
 <!-- /realrooted-catalog-content -->
-
-The affine criterion lives in `RealRooted.WangYeh.Affine`, the PF preserver in
-`RealRooted.WangYeh.PF`, and the triangular-array corollaries in
-`RealRooted.WangYeh.TriangularArray` and `RealRooted.WangYeh.TriangularMatrix`.
 -/

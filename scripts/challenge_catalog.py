@@ -62,7 +62,7 @@ KINDS = {
     "conjecture": ("Solved conjectures", "Solved conjecture"),
     "original": ("New results", "New result"),
 }
-KIND_BANDS = {**KINDS, None: ("Unclassified", "Unclassified")}
+DECLARATION_CAP = 12
 PROVENANCE_TAGS = {
     "coauthored-paper": (
         "Coauthored paper",
@@ -148,7 +148,7 @@ class CatalogPage:
     theorems: tuple[CatalogItem, ...]
     content: str
     title: str
-    kind: str | None = None
+    kind: str
     conjecture: str | None = None
     symcat: tuple[str, ...] = ()
     objects: tuple[str, ...] = ()
@@ -613,7 +613,9 @@ def parse_challenge_source(
     content = content_match.group(1).strip()
     kind = metadata.get("kind")
     conjecture = metadata.get("conjecture")
-    if kind is not None and (not isinstance(kind, str) or kind not in KINDS):
+    if kind is None:
+        raise _source_error(source_path, f"metadata requires kind (one of {', '.join(KINDS)})")
+    if not isinstance(kind, str) or kind not in KINDS:
         raise _source_error(source_path, f"kind must be one of {', '.join(KINDS)}")
     if conjecture is not None and (
         not isinstance(conjecture, str) or not conjecture.strip()
@@ -1731,11 +1733,11 @@ def _headline(page: CatalogPage) -> CatalogItem | None:
                 next(iter(page.theorems), None))
 
 
-def _kind_anchor(kind: str | None) -> str:
-    return "kind-" + (kind or "unclassified")
+def _kind_anchor(kind: str) -> str:
+    return "kind-" + kind
 
 
-def _kind_topic_anchor(kind: str | None, topic: str) -> str:
+def _kind_topic_anchor(kind: str, topic: str) -> str:
     return _kind_anchor(kind) + "-" + _topic_anchor(topic)
 
 
@@ -1751,18 +1753,17 @@ def _kind_groups(pages: Iterable[CatalogPage]) -> list[dict[str, Any]]:
             for topic in TOPICS.values()
             if any(page.kind == kind and page.topic == topic for page in pages)
         ]}
-        for kind, labels in KIND_BANDS.items() if any(page.kind == kind for page in pages)
+        for kind, labels in KINDS.items() if any(page.kind == kind for page in pages)
     ]
 
 
 def _kind_badge(page: CatalogPage) -> str:
-    kind = page.kind or "unclassified"
-    return (f'<span class="kind-badge kind-badge--{kind}">'
-            f'{KIND_BANDS[page.kind][1]}</span>')
+    return (f'<span class="kind-badge kind-badge--{page.kind}">'
+            f'{KINDS[page.kind][1]}</span>')
 
 
 def _page_card(page: CatalogPage, href: str, bibliography: dict[str, Any]) -> str:
-    kind = page.kind or "unclassified"
+    kind = page.kind
     year = page.years[0] if page.years else ""
     selected = _headline(page)
     attribution = _attribution(page)
@@ -2219,27 +2220,10 @@ def validate_prose_baseline(repo_root: pathlib.Path, pages: Iterable[CatalogPage
         raise CatalogError(f"cannot load prose baseline: {error}") from error
     pages = tuple(pages)
     findings = prose_findings(pages)
-    advisory = {row for row in findings if row.split("\t")[1] in {"lead-missing", "lead-long"}}
-    for row in sorted(advisory):
-        print(f"warning: {row}", file=sys.stderr)
-    findings -= advisory
-    # Temporary, non-failing baseline; later trimming batches remove these rows.
-    count_path = repo_root / "scripts/declaration_count_baseline.txt"
-    count_baseline = {}
-    if count_path.exists():
-        for row in count_path.read_text(encoding="utf-8").splitlines():
-            if row and not row.startswith("#"):
-                path, count = row.split("\t")
-                count_baseline[path] = int(count)
-    oversized = {page.source_path: _counted_declarations(page) for page in pages
-                 if _counted_declarations(page) > 12}
-    for path, count in sorted(oversized.items()):
-        status = "baseline" if count_baseline.get(path) == count else "review baseline"
-        print(f"warning: {path}: {count} declarations without objects (target 12; {status})",
-              file=sys.stderr)
-    for path in sorted(count_baseline.keys() - oversized.keys()):
-        print(f"warning: {path}: stale declaration-count baseline entry", file=sys.stderr)
-    errors = [f"new prose offender: {record}" for record in sorted(findings - baseline)]
+    counts = sorted((page.source_path, _counted_declarations(page)) for page in pages)
+    errors = [f"{source}: {count} declarations without objects (cap {DECLARATION_CAP})"
+              for source, count in counts if count > DECLARATION_CAP]
+    errors += [f"new prose offender: {record}" for record in sorted(findings - baseline)]
     errors += [f"stale prose baseline entry: {record}" for record in sorted(baseline - findings)]
     if errors:
         raise CatalogError("\n".join(errors))
@@ -2274,7 +2258,7 @@ def _page_header(page: CatalogPage, labels: dict[str, str], base_path: str) -> s
         _kind_badge(page),
         _tag_badges(tag for tag in page.tags
                     if not (page.kind == "original" and tag == "realrooted-original")),
-        f'<p class="topic-breadcrumb"><a href="{kind_href}">{KIND_BANDS[page.kind][1]}</a>'
+        f'<p class="topic-breadcrumb"><a href="{kind_href}">{KINDS[page.kind][1]}</a>'
         f' › <a href="{topic_href}">{html.escape(page.topic)}</a></p>',
         f'<p class="page-conjecture">{html.escape(page.conjecture)}</p>'
         if page.conjecture else "",
@@ -2387,7 +2371,7 @@ def render_site(
         + _sort_controls()
         + '<div class="catalog-groups">'
         + "".join(
-            f'<section class="catalog-band catalog-group catalog-band--{band["kind"] or "unclassified"}" '
+            f'<section class="catalog-band catalog-group catalog-band--{band["kind"]}" '
             f'id="{_kind_anchor(band["kind"])}"><h2>{band["title"]} '
             f'<span>{sum(len(topic["pages"]) for topic in band["topics"])}</span></h2>'
             + "".join(
@@ -2588,7 +2572,7 @@ def render_site(
                 overview.append(" — ".join((
                     page.title, (headline.label or "") if headline else "",
                     headline.name if headline else "", site_origin + _page_url(page, base_path)
-                )) + f" — kind: {page.kind or 'unclassified'}"
+                )) + f" — kind: {page.kind}"
                     + (f" — conjecture: {page.conjecture}" if page.conjecture else ""))
             overview.append("")
     files["llms.txt"] = "\n".join(overview) + "\n"

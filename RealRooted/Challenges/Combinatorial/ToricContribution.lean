@@ -1,7 +1,10 @@
 module
 
+import RealRooted.CommonInterleaver.RootDesc
+import RealRooted.InterlacingSequenceBasic
 import RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer
 import RealRooted.ParkingFunctions.ToricContribution.ContributionReversal
+import RealRooted.ParkingFunctions.ToricContribution.Definitions
 
 /-!
 # Toric g-contribution polynomials
@@ -13,7 +16,6 @@ conjecture = "Xiao (2026), Conjecture 4.2"
 section = "theorems"
 slug = "toric-g-contributions"
 formalized = "2026-09-02"
-tags = []
 references = [
   "Xiao2026x",
 ]
@@ -124,7 +126,4 @@ every positive combination real-rooted.
 [toric $g$-contribution polynomial](sf:toricGContributionPolynomial) on symmetricfunctions.com;
 Xiao's cross-size interlacing theorem there is a different statement.
 <!-- /realrooted-catalog-content -->
-
-This module is a catalog facade.  The proofs live in
-`RealRooted.ParkingFunctions.ToricContribution`.
 -/

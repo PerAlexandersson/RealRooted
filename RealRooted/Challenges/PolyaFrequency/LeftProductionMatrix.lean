@@ -1,6 +1,7 @@
 module
 
-import RealRooted.Applications.OEIS.A114123
+import RealRooted.TotalPositivity.LeftProductionMatrix
+import RealRooted.TotalPositivity.PFRiordan
 
 /-!
 # Totally nonnegative left production matrices
@@ -11,10 +12,11 @@ kind = "method"
 section = "theorems"
 slug = "left-production-matrices"
 formalized = "2026-11-10"
-references = []
-authors = ["X. Chen", "L. Fu", "J. Ruan"]
+references = [
+  "ChenFuRuan2025x",
+]
+authors = ["Chen", "Fu", "Ruan"]
 years = [2025]
-tags = []
 
 [[definitions]]
 name = "RealRooted.IsLeftProductionArray"
@@ -32,119 +34,94 @@ module = "RealRooted.TotalPositivity.LeftProductionMatrix"
 label = "Row-generating polynomial"
 
 [[theorems]]
-name = "RealRooted.LeftProductionMatrix.toeplitzFin_transpose_eq_submatrix_finiteProduct"
+name = "RealRooted.LeftProductionMatrix.rowPolynomial_isPFPolynomial"
 module = "RealRooted.TotalPositivity.LeftProductionMatrix"
-label = "A row Toeplitz truncation is a submatrix of a left-production product"
+label = "Chen–Fu–Ruan: a totally nonnegative left production matrix gives PF row polynomials"
+headline = true
 
 [[theorems]]
 name = "RealRooted.LeftProductionMatrix.isPolyaFreqSeq_of_isLeftProductionArray"
 module = "RealRooted.TotalPositivity.LeftProductionMatrix"
-label = "Rows from a totally nonnegative left production matrix are Pólya frequency"
-
-[[theorems]]
-name = "RealRooted.LeftProductionMatrix.rowPolynomial_isPFPolynomial"
-module = "RealRooted.TotalPositivity.LeftProductionMatrix"
-label = "Row polynomials split with nonpositive roots"
-headline = true
-
-[[definitions]]
-name = "RealRooted.PFRiordan.rowPolynomial"
-module = "RealRooted.TotalPositivity.PFRiordan"
-label = "Row polynomial of a Pólya frequency Riordan array"
+label = "Rows from a totally nonnegative left production matrix are Pólya frequency sequences"
 
 [[theorems]]
 name = "RealRooted.PFRiordan.production_eq_toeplitz_mul_oneToeplitz"
 module = "RealRooted.TotalPositivity.PFRiordan"
-label = "Riordan left production matrix factorization"
+label = "The Riordan array of d and K has left production matrix T(d) diag(1, T(K))"
 
 [[theorems]]
 name = "RealRooted.PFRiordan.rowPolynomial_isPFPolynomial"
 module = "RealRooted.TotalPositivity.PFRiordan"
-label = "Rows of a Pólya frequency Riordan array split with nonpositive roots"
+label = "Rows of a Riordan array built from Pólya frequency series are PF polynomials"
 
 [[theorems]]
 name = "RealRooted.PFRiordan.rationalPFCoeff_isPolyaFreqSeq"
 module = "RealRooted.TotalPositivity.PFRiordan"
-label = "Finite rational products have Pólya frequency coefficients"
+label = "c zʳ ∏(1 + αᵢz) / ∏(1 − βⱼz) with c, αᵢ, βⱼ ≥ 0 has Pólya frequency coefficients"
 
 [[theorems]]
 name = "RealRooted.PFRiordan.recurrence_splits_and_roots_nonpos"
 module = "RealRooted.TotalPositivity.PFRiordan"
-label = "Recurrence criterion for real roots via Pólya frequency Riordan arrays"
-
-[[theorems]]
-name = "RealRooted.Applications.OEIS.A114123.row_splits_and_roots_nonpos"
-module = "RealRooted.Applications.OEIS.A114123"
-label = "A114123 rows split with nonpositive roots"
-tags = ["realrooted-original"]
+label = "(D₀(z) − xL(z)) Σ Pₙ zⁿ = N(z) gives real-rooted Pₙ when N/D₀ and L/(zN) are PF"
 
 [[theorems]]
 name = "RealRooted.PFRiordan.evenBinomialRow_splits_and_roots_nonpos"
 module = "RealRooted.TotalPositivity.PFRiordan"
-label = "Even-binomial Riordan rows split with nonpositive roots"
+label = "Σⱼ C(m − j, 2j) xʲ has only real nonpositive roots"
 -->
 
 <!-- realrooted-catalog-content -->
 # Totally nonnegative left production matrices
 
-If a lower-triangular matrix has totally nonnegative leading truncations, the rows of the
-array it generates are Pólya frequency sequences, so their generating polynomials are
-real-rooted with nonpositive roots. This covers Riordan arrays built from Pólya frequency
-series and polynomial sequences defined by suitable rational generating functions.
+If a lower-triangular matrix has totally nonnegative leading truncations, the rows of the array
+it generates are Pólya frequency sequences, so their generating polynomials have only real
+nonpositive roots. This covers Riordan arrays built from Pólya frequency series and polynomial
+sequences with suitable rational generating functions.
 
 ## Results
 
-Let $Q=(q_{n,k})_{n,k\geq0}$ and let the lower-triangular array $A=(a_{n,k})_{n,k\geq0}$ satisfy
+Let $Q=(q_{n,k})_{n,k\ge0}$ and let the lower-triangular array $A=(a_{n,k})_{n,k\ge0}$ satisfy
 $$
 a_{n,0}=q_{n,0},\qquad
-a_{n+1,k+1}=\sum_{j=k}^{n}q_{n+1,j+1}a_{j,k}.
+a_{n+1,k+1}=\sum_{j=k}^{n}q_{n+1,j+1}a_{j,k},
 $$
-This is the entrywise form of the left-production factorization
-$A=Q\,\operatorname{diag}(I_1,Q)\operatorname{diag}(I_2,Q)\cdots$.
+that is, $A=Q\,\operatorname{diag}(I_1,Q)\operatorname{diag}(I_2,Q)\cdots$. We call $Q$ the
+*left production matrix* of $A$.
 
-**Theorem (Chen–Fu–Ruan).** Suppose $Q$ is lower triangular and every finite leading principal
-truncation of $Q$ is totally nonnegative. Then every row $(a_{n,k})_{k\geq0}$ is a Pólya
-frequency sequence, and the polynomial $\sum_{k=0}^{n}a_{n,k}x^k$ splits over $\mathbb R$
-with all roots nonpositive.
+**Theorem (Chen–Fu–Ruan).** [@ChenFuRuan2025x, Thm. 1.3] If $Q$ is lower triangular and every
+finite leading principal submatrix of $Q$ is totally nonnegative, then every row of $A$ is a
+Pólya frequency sequence, and $\sum_ka_{n,k}x^k$ has only real nonpositive roots.
 
-**Theorem (Pólya frequency Riordan arrays).** Let $d(z)$ and $K(z)$ be power series with Pólya
-frequency coefficient sequences. The ordinary Riordan array whose $k$th column is
-$d(z)\bigl(z d(z)K(z)\bigr)^k$ has left production matrix $T(d)\operatorname{diag}(1,T(K))$,
-with $T$ the lower Toeplitz matrix. Every row polynomial of the array splits over $\mathbb R$
-with only nonpositive roots. Series of the form
-$$
-c z^r\frac{\prod_i(1+\alpha_i z)}{\prod_j(1-\beta_jz)},
-\qquad c,\alpha_i,\beta_j\geq0,
-$$
-with finitely many factors have Pólya frequency coefficients.
+**Corollary (Pólya frequency Riordan arrays).** Let $d(z)$ and $K(z)$ have Pólya frequency
+coefficient sequences. The Riordan array whose $k$th column is $d(z)\bigl(zd(z)K(z)\bigr)^k$ has
+left production matrix $T(d)\operatorname{diag}(1,T(K))$, where $T$ is the lower Toeplitz
+matrix, so its row polynomials have only real nonpositive roots. Every series
+$cz^r\prod_i(1+\alpha_iz)/\prod_j(1-\beta_jz)$ with finitely many factors and
+$c,\alpha_i,\beta_j\ge0$ has Pólya frequency coefficients.
 
-**Theorem (recurrence criterion).** Let $(P_n)$ be a polynomial sequence with
-$$
-\bigl(D_0(z)-xL(z)\bigr)\sum_{n\geq0}P_n(x)z^n=N(z)
-$$
-as an identity of coefficients, where $D_0(0)=1$. If $d=N/D_0$ and $K=L/(zN)$ have Pólya
-frequency coefficient sequences, then every $P_n$ splits over $\mathbb R$ with roots at most
-zero. Examples are the rows of OEIS A114123 and the polynomials
-$R_m(x)=\sum_j\binom{m-j}{2j}x^j$.
+**Corollary (recurrences).** Let $\bigl(D_0(z)-xL(z)\bigr)\sum_{n\ge0}P_n(x)z^n=N(z)$ with
+$D_0(0)=1$. If $N/D_0$ and $L/(zN)$ have Pólya frequency coefficients, then every $P_n$ has only
+real nonpositive roots. For example, $\sum_j\binom{m-j}{2j}x^j$ has only real nonpositive roots.
 
 Total nonnegativity of the Riordan array alone does not suffice: $d=1/(1-z)$ and $h=z$ give a
-totally nonnegative array with row polynomial $1+x+x^2$, which does not split over
-$\mathbb R$.
+totally nonnegative array with row polynomial $1+x+x^2$, which has no real roots.
+
+## Use
+
+A rational generating function in two variables of the form above gives real-rooted rows as soon
+as two one-variable series have Pólya frequency coefficients, which reduces to the location of
+their zeros and poles.
 
 ## Proof
 
-The transpose of every finite leading Toeplitz matrix of row $n$ is a submatrix of a product of
-shifted block copies of the leading truncation $Q_n$. Total nonnegativity is preserved by
-identity-block extensions, finite products, submatrices and transposes, so the rows are Pólya
-frequency sequences, and the
-[Aissen–Schoenberg–Whitney theorem](rr:aissen-schoenberg-whitney) gives the real roots.
+The transpose of each finite Toeplitz matrix of row $n$ is a submatrix of a product of shifted
+block copies of the leading truncation of $Q$ [@ChenFuRuan2025x, Thm. 1.4]. Total
+nonnegativity is preserved by such products and by submatrices, so the rows are Pólya frequency
+sequences, and the [Aissen–Schoenberg–Whitney theorem](rr:aissen-schoenberg-whitney) gives the
+real roots.
 
 ## References
 
-- [@ChenFuRuan2025x, Theorems 1.3 and 1.4].
+[@ChenFuRuan2025x, Thms. 1.3 and 1.4]
 <!-- /realrooted-catalog-content -->
-
-This module is a catalog facade. The proofs live in
-`RealRooted.TotalPositivity.LeftProductionMatrix` and
-`RealRooted.TotalPositivity.PFRiordan`.
 -/

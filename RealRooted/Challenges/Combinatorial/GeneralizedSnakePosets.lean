@@ -1,49 +1,33 @@
 module
 
-public import RealRooted.GeneralizedSnakePosets.FiniteBoard
-public import RealRooted.GeneralizedSnakePosets.Narayana.Modified
-public import RealRooted.GeneralizedSnakePosets.Narayana.PFFacts
-public import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
-public import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacing
-public import RealRooted.GeneralizedSnakePosets.Narayana.Turan
-public import RealRooted.GeneralizedSnakePosets.SnakeBoard
-public import RealRooted.GeneralizedSnakePosets.SnakeConstant
-public import RealRooted.GeneralizedSnakePosets.SnakeRecurrence
-public import RealRooted.GeneralizedSnakePosets.SnakeWord
-public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Auxiliary
-public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
+import RealRooted.GeneralizedSnakePosets.FiniteBoard
+import RealRooted.GeneralizedSnakePosets.Narayana.Modified
+import RealRooted.GeneralizedSnakePosets.Narayana.PFFacts
+import RealRooted.GeneralizedSnakePosets.Narayana.Recurrence
+import RealRooted.GeneralizedSnakePosets.Narayana.ShiftedDifferenceInterlacing
+import RealRooted.GeneralizedSnakePosets.Narayana.Turan
+import RealRooted.GeneralizedSnakePosets.SnakeBoard
+import RealRooted.GeneralizedSnakePosets.SnakeConstant
+import RealRooted.GeneralizedSnakePosets.SnakeRecurrence
+import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Auxiliary
+import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
 
 /-!
-# Rook polynomials of generalized snake posets
+# h*-polynomials of generalized snake posets
 
 <!-- realrooted-catalog
 version = 1
-kind = "landmark"
+kind = "conjecture"
+conjecture = "Lee–Vindas-Meléndez–Wang (2024), Conjecture 5.1(1)"
 section = "families"
 slug = "generalized-snake-posets"
 formalized = "2026-10-05"
-tags = []
 references = [
   "BraunJal2026x",
   "AlexanderssonJal2024x",
 ]
-authors = ["Braun", "Jal", "Alexandersson"]
+authors = ["Lee", "Vindas-Meléndez", "Wang", "Braun", "Jal", "Alexandersson"]
 years = [2024, 2026]
-
-[[definitions]]
-name = "RealRooted.GeneralizedSnakePosets.SnakeLetter"
-module = "RealRooted.GeneralizedSnakePosets.SnakeWord"
-label = "Letters L and R of a snake word"
-
-[[definitions]]
-name = "RealRooted.GeneralizedSnakePosets.SnakeWord.IsConstant"
-module = "RealRooted.GeneralizedSnakePosets.SnakeWord"
-label = "Constant snake words"
-
-[[definitions]]
-name = "RealRooted.GeneralizedSnakePosets.SnakeWord.IsLastChangeIndex"
-module = "RealRooted.GeneralizedSnakePosets.SnakeWord"
-label = "Last position differing from the final letter"
 
 [[definitions]]
 name = "RealRooted.GeneralizedSnakePosets.generalizedSnakeBoard"
@@ -114,31 +98,34 @@ objects = ["Rook polynomials of generalized snake posets"]
 property = "interlacing"
 name = "RealRooted.GeneralizedSnakePosets.rookPolynomial_splits_and_interlaces"
 module = "RealRooted.GeneralizedSnakePosets.SnakeRecurrence"
-label = "Snake polynomials are real-rooted and interlace"
+label = "Braun–Jal: h*-polynomials of generalized snake posets are real-rooted and interlace"
 headline = true
 -->
 
 <!-- realrooted-catalog-content -->
-# Rook polynomials of generalized snake posets
+# h*-polynomials of generalized snake posets
 
-The order polytope of a generalized snake poset has a real-rooted $h^*$-polynomial, and deleting
-the last letter of the defining word gives an interlacing polynomial.
+Lee, Vindas-Meléndez and Wang conjectured that the order polytope of a generalized snake poset
+has a real-rooted $h^*$-polynomial. Braun and Jal proved this, and that deleting the last letter
+of the defining word gives an interlacing polynomial.
 
 ## Results
 
 A *generalized snake poset* $P(w)$ is a width-two poset built from a word $w$ in the letters $L$
 and $R$. Under the Alexandersson–Jal correspondence between naturally labeled width-two posets
-and skew shapes, the incomparable cross-chain pairs of $P(w)$ form a board, and the
-$P(w)$-Eulerian polynomial is the non-nesting rook polynomial
+and skew shapes [@AlexanderssonJal2024x], the $h^*$-polynomial of the order polytope of $P(w)$
+is the non-nesting rook polynomial
 $$
 M_w(x)=\sum_P x^{|P|}
 $$
-of this board with its columns reversed. Here $P$ runs over the sets of cells with no two in a
-row and with columns strictly decreasing as rows increase [@AlexanderssonJal2024x]. By Braun
-and Jal, $M_w$ is the $h^*$-polynomial of the order polytope of $P(w)$.
+of a board determined by $w$. Here $P$ runs over the sets of cells with no two in a row and with
+columns strictly decreasing as rows increase.
 
-**Theorem (Braun–Jal).** If $w$ is nonempty, then $M_w$ is nonzero and real-rooted, and
-$M_{w'}\ll M_w$, where $w'$ is $w$ with its last letter deleted [@BraunJal2026x].
+**Theorem (Braun–Jal).** [@BraunJal2026x, Thm. 4.1] If $w$ is nonempty, then $M_w$ is nonzero
+and real-rooted, and $M_{w'}\ll M_w$, where $w'$ is $w$ with its last letter deleted.
+
+This proves Conjecture 5.1(1) of E. Lee, A. R. Vindas-Meléndez and Z. Wang, "Generalized snake
+posets, order polytopes, and lattice-point enumeration," arXiv:2411.18695 (2024).
 
 ## Proof
 
@@ -149,21 +136,16 @@ size $n$, and $M_w=P_{|w|+1}$ for a constant word $w$. In general, let $k$ be th
 $$
 M_w=M_{w[:k+1]}\,P_s+x\,M_{w[:k]}\,G_s,
 $$
-where $w[:j]$ is the prefix of length $j$ and $x\,G_{n-1}=P_n-(1+x)P_{n-1}$; each $G_n$ is a sum
-of rook polynomials of truncated staircase boards. The theorem follows by induction along this
-recurrence from three facts: each $P_n$ has nonnegative coefficients and real nonpositive roots,
+where $w[:j]$ is the prefix of length $j$ and $x\,G_{n-1}=P_n-(1+x)P_{n-1}$. The theorem follows
+by induction along this recurrence from three facts: each $P_n$ is a Pólya frequency polynomial
 with $P_n\ll P_{n+1}$; $G_n\ll P_n$, and $G_n-G_{n-1}$ has nonnegative coefficients; and
 $(\lambda x+\nu)P_{m-1}+P_m\ll(\lambda x+\nu)P_m+P_{m+1}$ for $m\ge2$, $\lambda\ge0$ and
 $\nu\ge-1$.
 
 ## References
 
-- [@BraunJal2026x]
-- [@AlexanderssonJal2024x, Art. 59]
-
-See also [rook matroid polynomials](sf:rookMatroidPolynomials) on symmetricfunctions.com.
+[@BraunJal2026x, Thm. 4.1]; [@AlexanderssonJal2024x]; E. Lee, A. R. Vindas-Meléndez and
+Z. Wang, arXiv:2411.18695 (2024), Conj. 5.1. See also
+[rook matroid polynomials](sf:rookMatroidPolynomials) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
-
-This module is a catalog facade.  The proofs live in
-`RealRooted.GeneralizedSnakePosets`.
 -/

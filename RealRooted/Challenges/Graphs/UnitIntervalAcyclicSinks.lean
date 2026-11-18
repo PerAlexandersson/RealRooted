@@ -18,6 +18,9 @@ section = "families"
 slug = "graph-sink-polynomials"
 formalized = "2026-09-13"
 tags = ["coauthored-paper"]
+references = [
+  "AlexanderssonLeite2026x",
+]
 authors = ["Alexandersson", "Leite"]
 years = [2026]
 
@@ -118,15 +121,17 @@ summed over the acyclic orientations and over all $2^{|E(G)|}$ orientations of $
 perfect elimination order* is a linear order of the vertices in which the earlier neighbours of
 every vertex form a clique; a graph has one exactly when it is [chordal](sf:chordalGraph).
 
-**Theorem (chordal claw-free graphs).** If a finite claw-free graph $G$ has a reverse perfect
-elimination order, then $S_G(t)$ is real-rooted.
+**Theorem (chordal claw-free graphs).** [@AlexanderssonLeite2026x, Thm. 3.1] If a finite claw-free
+graph $G$ has a reverse perfect elimination order, then $S_G(t)$ is real-rooted.
 
-**Theorem (natural unit interval graphs).** Let $G$ be a natural unit interval graph on
-$0,\dots,n-1$ and $q\ge0$. Then $\sum_{O}q^{\operatorname{asc}(O)}t^{\operatorname{sink}(O)}$,
-summed over the acyclic orientations, is real-rooted; $\operatorname{asc}(O)$ counts the edges
-directed from the smaller to the larger vertex. At $q=1$ this is $S_G(t)$.
+**Theorem (natural unit interval graphs).** [@AlexanderssonLeite2026x, Thm. 5.2] Let $G$ be a
+natural unit interval graph on $0,\dots,n-1$ and $q\ge0$. Then
+$\sum_{O}q^{\operatorname{asc}(O)}t^{\operatorname{sink}(O)}$, summed over the acyclic orientations,
+is real-rooted; $\operatorname{asc}(O)$ counts the edges directed from the smaller to the larger
+vertex. At $q=1$ this is $S_G(t)$.
 
-**Theorem (all orientations).** For every finite graph $G$,
+**Theorem (all orientations).** [@AlexanderssonLeite2026x, Prop. 4.1, Thm. 4.3] For every finite
+graph $G$,
 $$
 \Sigma_G(t+1)=2^{|E(G)|}\sum_{A}\ \prod_{v\in A}2^{-\deg v}\,t^{|A|},
 $$
@@ -137,7 +142,8 @@ A *local order* of $G$ orders the edges at every vertex. An edge is a *mutual mi
 comes first at both ends. Let $M_G(t)=\sum_Lt^{\operatorname{mm}(L)}$, summed over the
 $\prod_v\deg v!$ local orders $L$, where $\operatorname{mm}(L)$ counts the mutual minima.
 
-**Theorem (minima polynomial).** For every finite graph $G$,
+**Theorem (minima polynomial).** [@AlexanderssonLeite2026x, Thms. 3.8, 3.16] For every finite graph
+$G$,
 $$
 M_G(t+1)=\prod_v\deg v!\ \sum_{S}\ \prod_{uv\in S}\frac1{\deg u\,\deg v}\,t^{|S|},
 $$
@@ -162,7 +168,7 @@ orders are exactly the acyclic orientations of $L(G)$, with mutual minima as sin
 
 ## References
 
-P. Alexandersson and L. Saud Maia Leite, manuscript (2026). Background on
+[@AlexanderssonLeite2026x]. Background on
 [claw-free graphs](sf:clawFreeGraph) is on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
 -/

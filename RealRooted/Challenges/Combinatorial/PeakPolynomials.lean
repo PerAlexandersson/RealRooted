@@ -11,9 +11,10 @@ kind = "landmark"
 section = "theorems"
 slug = "peak-polynomials"
 formalized = "2026-07-01"
-references = []
 tags = ["coauthored-paper"]
+references = ["AlexanderssonJalQuemener2025x"]
 authors = ["Alexandersson", "Jal", "Quemener"]
+years = [2025]
 
 [[definitions]]
 name = "RealRooted.Applications.PeakPolynomials.PeakFamily"
@@ -41,21 +42,6 @@ module = "RealRooted.Applications.PeakPolynomials.PeakInduction"
 label = "The six interlacing conditions"
 
 [[definitions]]
-name = "RealRooted.Applications.PeakPolynomials.PeakFamily.next"
-module = "RealRooted.Applications.PeakPolynomials.PeakInduction"
-label = "The next-level family along a map of cut positions"
-
-[[definitions]]
-name = "RealRooted.Applications.PeakPolynomials.PeakFamily.nextBoundary"
-module = "RealRooted.Applications.PeakPolynomials.PeakInduction"
-label = "The next-level family with an extra boundary index"
-
-[[definitions]]
-name = "RealRooted.Applications.PeakPolynomials.PeakFamily.base"
-module = "RealRooted.Applications.PeakPolynomials.PeakInduction"
-label = "The base family"
-
-[[definitions]]
 name = "RealRooted.Applications.PeakPolynomials.PeakFamily.IsReachable"
 module = "RealRooted.Applications.PeakPolynomials.PeakInduction"
 label = "Families reachable from the base family"
@@ -64,7 +50,7 @@ label = "Families reachable from the base family"
 objects = ["Peak polynomials of Ferrers boards"]
 name = "RealRooted.Applications.PeakPolynomials.PeakFamily.IsReachable.isRealRooted_P"
 module = "RealRooted.Applications.PeakPolynomials.PeakInduction"
-label = "The total peak polynomial of a reachable family is real-rooted"
+label = "The peak polynomial of every reachable peak family is real-rooted"
 headline = true
 
 [[theorems]]
@@ -131,11 +117,7 @@ $k$, and $W_k\ne0$ when $A_k\ne0$.
 
 ## References
 
-- [@AlexanderssonJalQuemener2025x].
-
-See also [peaks of permutations](sf:permutationPeak) on symmetricfunctions.com.
+[@AlexanderssonJalQuemener2025x]. See also [peaks of permutations](sf:permutationPeak) on
+symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
-
-This module is a catalog facade. The proofs live in
-`RealRooted.Applications.PeakPolynomials.PeakInduction`.
 -/

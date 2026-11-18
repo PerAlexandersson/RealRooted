@@ -30,7 +30,7 @@ references = [
   "FallatJohnson2011",
 ]
 authors = ["Gantmacher", "Krein", "Karlin", "Cryer", "Fisk"]
-years = [1937, 1968, 1976, 2006]
+years = [1941, 1968, 1976, 2006]
 
 [[definitions]]
 name = "Matrix.IsTotallyNonnegRect"
@@ -167,8 +167,8 @@ from the Gaussian kernel by a limit.
 ## References
 
 F. R. Gantmacher and M. G. Krein, *Oscillation Matrices and Kernels and Small Vibrations of
-Mechanical Systems*, 1937; revised English edition, AMS Chelsea, 2002;
-[@Karlin1968; @Cryer1976; @FallatJohnson2011]; [@Fisk2006x, Thm. 3.7]. See also
+Mechanical Systems*, 1941 (Russian); revised English edition, AMS Chelsea, Providence, RI,
+2002; [@Karlin1968; @Cryer1976; @FallatJohnson2011]; [@Fisk2006x, Thm. 3.7]. See also
 [totally nonnegative matrices](sf:totallyNonnegativeMatrix), the
 [variation-diminishing property](sf:variationDiminishingProperty) and
 [TNN mixing](sf:tnnMixingInterlacing) on symmetricfunctions.com.

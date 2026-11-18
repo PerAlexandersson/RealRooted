@@ -13,172 +13,102 @@ kind = "method"
 section = "theorems"
 slug = "root-continuity"
 formalized = "2026-10-06"
-authors = []
-references = []
-tags = []
-
-[[theorems]]
-name = "RealRooted.splits_of_isPreconnected"
-module = "RealRooted.RootContinuity.Path"
-label = "Transport along a preconnected parameter set"
-
-[[theorems]]
-name = "RealRooted.splits_of_path"
-module = "RealRooted.RootContinuity.Path"
-label = "Transport along a squarefree path"
-
-[[theorems]]
-name = "RealRooted.splits_of_path_of_separable"
-module = "RealRooted.RootContinuity.Path"
-label = "Transport from fibrewise separability"
-
-[[theorems]]
-name = "RealRooted.splits_of_monic_of_coeff_approx"
-module = "RealRooted.RootContinuity"
-label = "Closure under coefficient approximation"
+references = [
+  "RahmanSchmeisser2002",
+]
 
 [[theorems]]
 name = "RealRooted.splits_of_monic_of_coeff_tendsto"
 module = "RealRooted.RootContinuity"
-label = "Closure under coefficientwise limits"
+label = "A coefficientwise limit of monic real-rooted polynomials of fixed degree is real-rooted"
 headline = true
+
+[[theorems]]
+name = "RealRooted.splits_of_monic_of_coeff_approx"
+module = "RealRooted.RootContinuity"
+label = "A monic polynomial approximable by real-rooted ones of its degree is real-rooted"
+
+[[theorems]]
+name = "RealRooted.splits_of_isPreconnected"
+module = "RealRooted.RootContinuity.Path"
+label = "Real-rootedness persists over a preconnected family of squarefree polynomials"
+
+[[theorems]]
+name = "RealRooted.splits_of_path"
+module = "RealRooted.RootContinuity.Path"
+label = "Real-rootedness persists along a path of squarefree polynomials of fixed degree"
 
 [[theorems]]
 name = "RealRooted.exists_aroot_near_of_monic_of_coeff_close"
 module = "RealRooted.RootContinuity"
-label = "A nearby root under coefficient control"
+label = "Coefficients within ε move every root by at most ((m + 1)ε)^(1/m) max(|z|, 1)"
 
 [[theorems]]
 name = "RealRooted.exists_real_root_near_in_left_family"
 module = "RealRooted.RootContinuity"
-label = "A nearby real root in a left pencil"
-
-[[theorems]]
-name = "RealRooted.exists_complex_aroot_near_in_left_family"
-module = "RealRooted.RootContinuity"
-label = "A nearby complex root in a left pencil"
-
-[[theorems]]
-name = "RealRooted.exists_t_pos_with_normalized_left_family_bound"
-module = "RealRooted.RootContinuity"
-label = "Large-parameter coefficient control"
-
-[[theorems]]
-name = "RealRooted.splits_of_symmetric_substitution"
-module = "RealRooted.RootContinuity"
-label = "Real-rootedness from a symmetric substitution"
-
-[[theorems]]
-name = "RealRooted.add_right_roots_eq_add_left_inv"
-module = "RealRooted.RootContinuity"
-label = "Reciprocal scaling of root multisets"
-
-[[theorems]]
-name = "RealRooted.add_right_roots_gt_card_eq_add_left_inv"
-module = "RealRooted.RootContinuity"
-label = "Reciprocal scaling of upper root counts"
-
-[[theorems]]
-name = "RealRooted.eval_endpoint_pos_of_forall_ne_zero"
-module = "RealRooted.RootContinuity"
-label = "Endpoint signs across a nonvanishing family"
-
-[[theorems]]
-name = "RealRooted.card_roots_filter_le_eq_of_no_isRoot_Icc"
-module = "RealRooted.RootContinuity"
-label = "Constancy of lower root counts"
-
-[[theorems]]
-name = "RealRooted.card_roots_filter_gt_eq_of_no_isRoot_Icc"
-module = "RealRooted.RootContinuity"
-label = "Constancy of upper root counts"
-
-[[theorems]]
-name = "RealRooted.card_roots_filter_all_eq_of_no_isRoot_Icc"
-module = "RealRooted.RootContinuity"
-label = "Bundled root-count constancy"
-
-[[theorems]]
-name = "RealRooted.card_roots_filter_le_sub_eq_of_no_isRoot_Icc"
-module = "RealRooted.RootContinuity"
-label = "Stability of lower count differences"
-
-[[theorems]]
-name = "RealRooted.card_roots_filter_gt_sub_eq_of_no_isRoot_Icc"
-module = "RealRooted.RootContinuity"
-label = "Stability of upper count differences"
-
-[[theorems]]
-name = "RealRooted.card_roots_filter_gt_sub_eq_of_no_isRoot_Ioo"
-module = "RealRooted.RootContinuity"
-label = "Count differences at interior samples"
-
-[[theorems]]
-name = "RealRooted.odd_card_roots_filter_gt_sub_iff_of_no_isRoot_Ioo"
-module = "RealRooted.RootContinuity"
-label = "Parity of interior count differences"
+label = "For large t, every real root of f is close to a real root of tf + g"
 
 [[theorems]]
 name = "RealRooted.degreeIncreasing_local_lower_count"
 module = "RealRooted.DegreeIncreasingLocalLowerCount"
-label = "Roots of f survive near their positions in a degree-increasing perturbation f + μg"
+label = "For small μ > 0, a root of f of multiplicity k keeps k nearby roots in f + μg"
 tags = ["realrooted-original"]
+
+[[theorems]]
+name = "RealRooted.card_roots_filter_all_eq_of_no_isRoot_Icc"
+module = "RealRooted.RootContinuity"
+label = "Root counts on either side are constant across an interval without roots"
+
+[[theorems]]
+name = "RealRooted.card_roots_filter_gt_sub_eq_of_no_isRoot_Ioo"
+module = "RealRooted.RootContinuity"
+label = "The difference of upper root counts of f and g is constant where both are nonzero"
 -->
 
 <!-- realrooted-catalog-content -->
 # Continuity of roots
 
-Real-rootedness of monic polynomials of fixed degree is preserved under coefficientwise limits,
-and it propagates along continuous families of squarefree polynomials. Root counts are constant
-across intervals without roots. These facts are the basic tools for deformation and limit
-arguments.
+Roots depend continuously on coefficients. Hence real-rootedness of monic polynomials of fixed
+degree is closed under coefficientwise limits, persists along continuous families of squarefree
+polynomials, and root counts do not change across intervals free of roots.
 
 ## Results
 
-We write $\lVert p\rVert_1$ for the sum of the absolute values of the coefficients of $p$. Roots
-are counted with multiplicity.
+Roots are counted with multiplicity.
 
 **Theorem (closure).** Let $f$ be monic. If for every $\varepsilon>0$ there is a monic
-real-rooted polynomial $g$ of degree $\deg f$ with all coefficients within $\varepsilon$ of those
+real-rooted polynomial of degree $\deg f$ whose coefficients are within $\varepsilon$ of those
 of $f$, then $f$ is real-rooted. In particular, a coefficientwise limit of monic real-rooted
 polynomials of degree $\deg f$ is real-rooted.
 
-**Theorem (continuous families).** Let $P_t$ be real polynomials of constant degree $d$ for $t$
-in a preconnected set $S$, with each coefficient continuous in $t$ and each $P_t$ squarefree
-(equivalently, separable). If $P_a$ is real-rooted for some $a\in S$, then $P_b$ is real-rooted
-for all $b\in S$.
+**Theorem (continuous families).** Let $P_t$ be real polynomials of constant degree, indexed by
+a preconnected set $S$, with coefficients continuous in $t$ and each $P_t$ squarefree. If one
+$P_a$ is real-rooted, then every $P_b$ is real-rooted.
 
-**Theorem (nearby roots).** Let $f,g$ be monic of the same degree $m$, let $g$ be real-rooted, and
-let all coefficients of $g$ be within $\varepsilon>0$ of those of $f$. For every complex root $z$
-of $f$ there is a complex root $w$ of $g$ with
-$$|z-w|<\bigl((m+1)\varepsilon\bigr)^{1/m}\max(|z|,1).$$
-
-**Theorem (pencils).** Let $f,g$ be monic of the same degree $m$, let $t>0$ and $\varepsilon>0$
-with $(t+1)^{-1}(\lVert f\rVert_1+\lVert g\rVert_1)<\varepsilon$, and let $tf+g$ be nonzero and
-real-rooted. For every real root $a$ of $f$ there is a real root $b$ of $tf+g$, and for every
-complex root $z$ of $f$ there is a complex root $w$ of $tf+g$, within
-$((m+1)\varepsilon)^{1/m}\max(|a|,1)$, respectively $((m+1)\varepsilon)^{1/m}\max(|z|,1)$.
-Such $t>0$ exists for every $\varepsilon>0$.
+**Theorem (nearby roots).** Let $f,g$ be monic of degree $m$, with $g$ real-rooted and all
+coefficients of $g$ within $\varepsilon>0$ of those of $f$. Every complex root $z$ of $f$ has a
+root $w$ of $g$ with $|z-w|<\bigl((m+1)\varepsilon\bigr)^{1/m}\max(|z|,1)$. The same bound
+holds between a real root of $f$ and a real root of $tf+g$ when $tf+g$ is real-rooted and
+$t>0$ is large compared with the coefficients of $f$ and $g$.
 
 **Theorem (degree-increasing perturbation).** Let $f$ be real-rooted, $\deg f<\deg g$ and
-$\rho>0$. There is $\delta>0$ such that for all $0<\mu<\delta$ with $f+\mu g$ real-rooted, every
-root $a$ of $f$ of multiplicity $k$ has at least $k$ roots of $f+\mu g$ within distance $\rho$
-of $a$.
+$\rho>0$. There is $\delta>0$ such that whenever $0<\mu<\delta$ and $f+\mu g$ is real-rooted,
+each root of $f$ of multiplicity $k$ has at least $k$ roots of $f+\mu g$ within distance
+$\rho$.
 
-**Theorem (root counts).** Let $a\le b$ and let $p$ have no root in $[a,b]$. Then $p$ has equally
-many roots $\le a$ and $\le b$, equally many roots $>a$ and $>b$, and no root in $(a,b]$. If
-$f,g$ both have no root in $[a,b]$, then the number of roots $\le t$ of $f$ minus that of $g$,
-and likewise for roots $>t$, agree at $t=a$ and $t=b$. If $f,g$ have no root in $(a,b)$, the
-difference of the numbers of roots $>t$ is the same for all $t\in(a,b)$, and so is its parity.
+**Theorem (root counts).** If $p$ has no root in $[a,b]$, then $p$ has as many roots $\le a$ as
+$\le b$, and as many roots $>a$ as $>b$. If $f$ and $g$ have no root in $(a,b)$, then the
+number of roots of $f$ greater than $t$ minus that of $g$ is the same for all $t\in(a,b)$.
 
-**Lemmas.** For real $\mu\ne0$, the polynomials $f+\mu g$ and $g+\mu^{-1}f$ have the same
-roots. If $h\ne0$ is real-rooted and
-$f(-u^2)=u^n\,h\bigl((1-u^2)/u\bigr)$ for all nonzero $u\in\mathbb C$, then $f$ is real-rooted.
-If $t\mapsto P_t(a)$ is continuous and nonvanishing on $[t_0,t_1]$, then
-$P_{t_0}(a)\,P_{t_1}(a)>0$.
+## Use
+
+To prove that a family is real-rooted, we deform it to a known real-rooted member and check that
+no member along the way has a repeated root, or we approximate it by real-rooted polynomials of
+the same degree. Counting roots across root-free intervals is the basic step in sign-change
+proofs of [interlacing](rr:interlacing).
 
 ## References
 
-For the continuity of zeros, see [@RahmanSchmeisser2002].
+[@RahmanSchmeisser2002] for the continuity of zeros.
 <!-- /realrooted-catalog-content -->
 -/

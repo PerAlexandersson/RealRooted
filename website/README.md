@@ -152,16 +152,14 @@ first theorem. `scripts/headline_baseline.txt` lists existing exceptions: source
 checks reject new exceptions and stale entries, so remove an entry when fixed.
 Labels and headlines do not enter the selected-declaration digest.
 
-The optional page `kind` is one of `landmark` (Classical theorems), `method`
+The required page `kind` is one of `landmark` (Classical theorems), `method`
 (Methods), `conjecture` (Solved conjectures), or `original` (New results).
 `sequence` is no longer accepted. Exactly the `conjecture` kind requires a
 nonempty, trimmed, single-line `conjecture = "..."` locator: name the paper
 and conjecture number, or the OEIS entry's conjecture. Read the primary source
 before adding it. Include any restriction, such as “case 321” or “partial”,
 in the locator. Cards and page headers show the locator. A title naming an
-OEIS A-number also requires a locator. Pages without a kind temporarily appear
-under Unclassified as a fallback. Every current page has a provisional kind;
-merge candidates and demoted pages remain visible until their planned restructuring.
+OEIS A-number also requires a locator. A page without a kind fails `--check`.
 New-result cards show a one-line headline stating the new mathematical claim,
 the formalization date and, when present, the first cited paper (including its
 arXiv identifier when available). Their authors/years line reads
@@ -274,22 +272,20 @@ During a rewrite, fix the prose and remove its rows together. Do not add baselin
 rows for new prose. Fenced code and generated declaration excerpts are excluded.
 
 The landing page groups pages into Classical theorems, Methods, Solved
-conjectures and New results, in that order. A fallback Unclassified band appears
-only when a page lacks a kind; no current page does. Each band groups by source topic: Interlacing, Roots, Preservers, Pólya
-frequency, Stability, Matrices, Orthogonal, Graphs, Combinatorial. The topic
-comes from `RealRooted/Challenges/<Topic>/`; legacy root-level entry points use
-Combinatorial. The sticky jump bar gives band counts and a Families A–Z link.
-Name sorting ignores a leading A, An or The; sorting preserves each topic
-within its kind band. Existing section/slug URLs and redirects are unchanged.
+conjectures and New results, in that order. Each band groups by source topic:
+Interlacing, Roots, Preservers, Pólya frequency, Stability, Matrices, Orthogonal,
+Graphs, Combinatorial. The topic comes from `RealRooted/Challenges/<Topic>/`;
+legacy root-level entry points use Combinatorial. The sticky jump bar gives band
+counts and a Families A–Z link. Name sorting ignores a leading A, An or The;
+sorting preserves each topic within its kind band. Existing section/slug URLs
+and redirects are unchanged.
 
-A lead paragraph before `## Results` is required, with about 60 words as the
-target. `prose_findings` reports `lead-missing` and `lead-long`; for this migration
-both are warnings and do not enter the failing prose ratchet. The declaration
-target is about 12 per page, excluding theorem records carrying `objects`
-(including page defaults on the headline). `scripts/declaration_count_baseline.txt`
-records current oversized pages as `source_path<TAB>count`. Counts, regressions
-and stale rows are advisory for now; remove or reduce baseline rows as later
-batches trim selections. These warnings do not block `--check`.
+A lead paragraph of at most 60 words before `## Results` is required:
+`prose_findings` reports `lead-missing` and `lead-long`, and `--check` fails on
+both. A page lists at most 12 declarations, not counting theorem records that
+carry `objects` (including page defaults on the headline); `--check` fails on a
+larger selection. List the headline, its key corollaries and every
+objects-bearing record; other results stay in the library unlisted.
 
 The Conventions page is maintained in `website/about.md`. Keep shared
 interlacing and zero-polynomial conventions there, and state a different local

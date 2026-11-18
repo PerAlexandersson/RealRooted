@@ -1,8 +1,10 @@
 module
 
-import RealRooted.VeroneseRecognition.Affine
 import RealRooted.Mathlib.Algebra.LinearRecurrence.Veronese
-public import RealRooted.VeroneseMatrix
+import RealRooted.VeroneseMatrix
+import RealRooted.VeroneseRecognition
+import RealRooted.VeroneseRecognition.Affine
+import RealRooted.VeroneseSection
 
 /-!
 # Veronese sections
@@ -13,21 +15,17 @@ kind = "method"
 section = "theorems"
 slug = "veronese-sections"
 formalized = "2026-10-05"
-authors = ["Athanasiadis", "Wagner"]
-tags = []
 references = [
+  "AissenSchoenbergWhitney1952",
   "AthanasiadisWagner2024x",
 ]
+authors = ["Aissen", "Schoenberg", "Whitney", "Athanasiadis", "Wagner"]
+years = [1952, 2024]
 
 [[definitions]]
 name = "RealRooted.veroneseSectionPolynomial"
 module = "RealRooted.VeroneseSection"
 label = "Veronese section"
-
-[[definitions]]
-name = "Polynomial.veroneseNorm"
-module = "RealRooted.Mathlib.Algebra.Polynomial.Veronese"
-label = "Explicit section-matrix determinant in the coefficient variable"
 
 [[definitions]]
 name = "LinearRecurrence.veronese"
@@ -42,34 +40,29 @@ label = "Normalized difference operator on a polynomial sequence"
 [[definitions]]
 name = "RealRooted.veroneseProductParent"
 module = "RealRooted.VeroneseRecognition"
-label = "Scalar product parent with seed H"
+label = "Product parent H(x) ∏ (aᵢ + bᵢ x) with seed H"
 
 [[definitions]]
 name = "RealRooted.veroneseProductRow"
 module = "RealRooted.VeroneseRecognition"
-label = "Residue row of a scalar product parent"
-
-[[definitions]]
-name = "RealRooted.reconstructedVeroneseParent"
-module = "RealRooted.VeroneseRecognition"
-label = "Seed reconstructed from the first r differences"
+label = "Last Veronese section of a product parent"
 
 [[theorems]]
 name = "RealRooted.veroneseSectionPolynomial_eq_zero_or_splits"
 module = "RealRooted.VeroneseMatrix"
-label = "Veronese sections preserve real-rootedness"
+label = "Veronese sections of real-rooted polynomials with nonnegative coefficients are real-rooted"
 headline = true
 symcat = "veroneseSectionsRealRooted"
 
 [[theorems]]
 name = "RealRooted.iterate_sequenceDelta_eq_X_mul_iff_existsUnique_seed"
 module = "RealRooted.VeroneseRecognition"
-label = "Δ^r P = X P holds exactly for rows of Veronese product parents"
+label = "Δ^r P = X P holds exactly for the rows of a product parent"
 
 [[theorems]]
 name = "RealRooted.iterate_sequenceDelta_eq_affine_mul_iff_existsUnique_seed"
 module = "RealRooted.VeroneseRecognition.Affine"
-label = "Affine recognition of Veronese product parents"
+label = "Δ^r P = (α + βX) P holds exactly for affine substitutions of such rows"
 
 [[theorems]]
 name = "RealRooted.sequenceDelta_row_eq_zero_or_splits"
@@ -79,7 +72,7 @@ label = "Recognized rows are zero or real-rooted when the seed is nonnegative an
 [[theorems]]
 name = "RealRooted.existsUnique_affineVeroneseProductRow_of_orderTwo_recurrence"
 module = "RealRooted.VeroneseRecognition.Affine"
-label = "Constant second-order recurrences have a unique affine Veronese parent"
+label = "P(n+2) = A P(n+1) + (Bx + c) P(n) has a unique affine Veronese parent"
 
 [[theorems]]
 name = "LinearRecurrence.exists_veroneseSection"
@@ -87,87 +80,65 @@ module = "RealRooted.Mathlib.Algebra.LinearRecurrence.Veronese"
 label = "Sections of an order-d recurrence share a recurrence of order rd"
 
 [[theorems]]
-name = "LinearRecurrence.veronese_recurrence_of_eventually"
-module = "RealRooted.Mathlib.Algebra.LinearRecurrence.Veronese"
-label = "Eventual recurrences pass to every Veronese section"
-
-[[theorems]]
 name = "RealRooted.isSolution_and_eq_zero_or_splits_veroneseSectionPolynomial"
 module = "RealRooted.VeroneseSection"
-label = "Nonnegative real-rooted solutions give real-rooted section solutions"
+label = "Sections of nonnegative real-rooted recurrence rows are real-rooted section solutions"
 -->
 
 <!-- realrooted-catalog-content -->
 # Veronese sections
 
-Veronese sections of a real-rooted polynomial with nonnegative coefficients are real-rooted or
-zero. A difference equation recognizes the polynomial sequences that are Veronese sections of
-products of linear factors, so their rows are real-rooted, and Veronese sections of
-constant-coefficient recurrences again satisfy a constant-coefficient recurrence.
+Taking every $r$th coefficient of a real-rooted polynomial with nonnegative coefficients gives a
+real-rooted polynomial. A difference equation recognizes the sequences that arise as sections of
+products of linear factors, and sections of recurrence rows again satisfy a recurrence, so both
+give real-rooted families.
 
 ## Results
 
-The $k$th $r$-Veronese section of $p=\sum_i p_i x^i$ is $\sum_{n\geq0}p_{k+rn}x^n$: it keeps
-the coefficients whose indices are congruent to $k$ modulo $r$ and re-indexes them by
-$n=(i-k)/r$.
+The $k$th $r$-*Veronese section* of $p=\sum_ip_ix^i$, for $0\le k<r$, is
+$\sum_{n\ge0}p_{k+rn}x^n$.
 
-**Theorem (Veronese sections).** Let $0 \leq k < r$. If a polynomial with nonnegative
-coefficients splits over $\mathbb R$, then its $k$th $r$-Veronese section is zero or splits
-over $\mathbb R$.
+**Theorem (Veronese sections).** If $p$ has nonnegative coefficients and is real-rooted, then
+each of its Veronese sections is zero or real-rooted.
 
-Fix $r \geq 1$ and real sequences $a_n$, $b_n$ with every $b_n \neq 0$. For a polynomial
-sequence $P = (P_n)$ put $(\Delta P)_n = (P_{n+1} - a_n P_n)/b_n$. For a polynomial $H$, the
-*seed*, the *product parent* is $Q_n(H) = H(x)\prod_{i<n}(a_i + b_i x)$, and $R_n(H)$ denotes
-its $(r-1)$st $r$-Veronese section.
+Fix $r\ge1$ and real sequences $a_n$, $b_n$ with $b_n\ne0$. For a polynomial sequence
+$P=(P_n)$ put $(\Delta P)_n=(P_{n+1}-a_nP_n)/b_n$. For a polynomial $H$, the *seed*, let
+$R_n(H)$ be the $(r-1)$st $r$-Veronese section of $H(x)\prod_{i<n}(a_i+b_ix)$.
 
-**Theorem (recognition).** $\Delta^r P = x P$ if and only if there is a unique polynomial $H$
-with $R_n(H) = P_n$ for all $n$; the $i$th $r$-Veronese section of $H$ is
-$(\Delta^{r-1-i} P)_0$ for $0 \leq i < r$. For $\beta \neq 0$, $\Delta^r P = (\alpha + \beta x) P$
-if and only if there is a unique seed $H$ with $P_n(x) = R_n(H)(\alpha + \beta x)$ for all $n$.
-If $a_n \geq 0$, $b_n > 0$, and the seed has nonnegative coefficients and splits over
-$\mathbb R$, then every $P_n$ is zero or splits over $\mathbb R$, in the affine case for
-$\beta>0$.
+**Theorem (recognition).** $\Delta^rP=xP$ if and only if $P_n=R_n(H)$ for all $n$, for a unique
+seed $H$, whose sections are read off from $(\Delta^jP)_0$. For $\beta\ne0$,
+$\Delta^rP=(\alpha+\beta x)P$ if and only if $P_n(x)=R_n(H)(\alpha+\beta x)$ for a unique $H$. If
+$a_n\ge0$, $b_n>0$ and $H$ has nonnegative coefficients and is real-rooted, then every $P_n$ is
+zero or real-rooted, in the affine case for $\beta>0$.
 
-For example, if $B \neq 0$ and $P_{n+2} = A P_{n+1} + (Bx + c) P_n$ for all $n$, then there is a
-unique seed $H$ such that $P_n$ is the odd Veronese section ($r = 2$) of $H\,(x + A/2)^n$,
-evaluated at $c + A^2/4 + Bx$.
+**Corollary (second-order recurrences).** If $B\ne0$ and $P_{n+2}=AP_{n+1}+(Bx+c)P_n$, then
+$P_n$ is the odd section ($r=2$) of $H(x)\,(x+A/2)^n$ evaluated at $c+A^2/4+Bx$, for a unique
+seed $H$.
 
-**Theorem (sections of recurrences).** Let $A$ be a commutative ring, $r \geq 1$, and let
-$P(x,t)$ be monic in $t$ of degree $d$ with coefficients in $A[x]$. Put $y=x^r$ and let
-$D(y,t)$ be the determinant of multiplication by $P(x,t)$ on $A[y,t]$ in the basis
-$1,x,\dotsc,x^{r-1}$. If a sequence of polynomials in $A[x]$ satisfies the recurrence with
-characteristic polynomial $P$, then every residue section of every solution satisfies the
-recurrence with characteristic polynomial $D$, which is monic in $t$ of degree $rd$ when $A$
-is nontrivial. If the source recurrence first determines row $N \geq d$, the section
-recurrence first determines row $N+(r-1)d$. Over $\mathbb R$, if every source row has
-nonnegative coefficients and splits, then every section row is zero or splits.
+**Theorem (sections of recurrences).** If a sequence of polynomials satisfies a linear
+recurrence of order $d$ whose coefficients are polynomials in $x$ independent of $n$, then all
+its $r$-Veronese sections satisfy one common recurrence of order $rd$, whose characteristic
+polynomial is a norm of the original one. If every row has nonnegative coefficients and is
+real-rooted, so is every section row.
 
-For binomial rows with $r=2$, Fibonacci tiling rows with $r=3$, and Delannoy triangle rows
-with $r=2$, the section recurrences have orders two, six and four.
+## Use
+
+Veronese sections turn a real-rooted family into new ones, such as the even and odd parts of
+binomial or Delannoy rows. Athanasiadis and Wagner show that sections also preserve
+interlacing, in the stronger form of fully interlacing matrices [@AthanasiadisWagner2024x,
+Thm. 5.3].
 
 ## Proof
 
-Real-rootedness of Veronese sections follows from the Pólya frequency characterization of
-real-rooted polynomials with nonnegative coefficients and total nonnegativity of an associated
-matrix. For recurrences, the adjugate of the section multiplication matrix writes $D$ as a
-multiple of $P$, so the shift operator $D$ annihilates every source solution, and taking a
-section gives the section recurrence.
+By the [Aissen–Schoenberg–Whitney theorem](rr:aissen-schoenberg-whitney), $p$ is real-rooted
+with nonnegative coefficients exactly when its coefficient sequence is a Pólya frequency
+sequence, and the Toeplitz matrix of a section is a submatrix of the Toeplitz matrix of $p$.
+For recurrences, the adjugate of the multiplication matrix on $1,x,\dots,x^{r-1}$ writes the
+norm as a multiple of the characteristic polynomial, so it annihilates every solution.
 
 ## References
 
-[@AthanasiadisWagner2024x], where the Veronese-section convention and its linear-factor
-recurrences appear together with a stronger interlacing statement. See also
+[@AissenSchoenbergWhitney1952]; [@AthanasiadisWagner2024x, Thm. 5.3]. See also
 [Veronese sections](sf:veroneseSectionsRealRooted) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
-
-Human statement:
-sf:veroneseSectionsRealRooted
-
-Catalog reference: the standard PF/TNN proof via Aissen--Schoenberg--Whitney.
-
-This module exposes the checked matrix-recursion proof that Veronese sections
-of real-rooted polynomials with nonnegative coefficients are real-rooted or
-zero.  The cyclic matrix construction remains in `RealRooted.VeroneseMatrix`;
-the recognition theorems are cited from `RealRooted.VeroneseRecognition` and
-`RealRooted.VeroneseRecognition.Affine`.
 -/

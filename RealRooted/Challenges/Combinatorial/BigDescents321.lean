@@ -1,6 +1,7 @@
 module
 
 import RealRooted.CombinatorialExamples.BigDescents321
+import RealRooted.CombinatorialExamples.BigDescents321.Basic
 
 /-!
 # Big-descent polynomials of 321-avoiding permutations
@@ -12,7 +13,6 @@ conjecture = "Elizalde–Rivera–Zhuang (2026), Conjecture 4.4, case Π = {321}
 section = "theorems"
 slug = "big-descents-321"
 formalized = "2026-10-06"
-tags = []
 references = [
   "ElizaldeRiveraZhuang2026",
 ]
@@ -32,14 +32,14 @@ label = "Reference Motzkin polynomial"
 [[theorems]]
 name = "RealRooted.BigDescents321.motzkinRef_interl_bigDescentPoly_and_noCommonRoots"
 module = "RealRooted.CombinatorialExamples.BigDescents321"
-label = "For n ≥ 3, M_{n-2} interlaces A_n; both have simple roots and no common root"
+label = "For n ≥ 3, the Motzkin polynomial M_{n-2} strictly interlaces A_n"
 headline = true
 
 [[theorems]]
 objects = ["Big-descent polynomials of 321-avoiding permutations"]
 name = "RealRooted.BigDescents321.bigDescentPoly_splits"
 module = "RealRooted.CombinatorialExamples.BigDescents321"
-label = "A_n is real-rooted for every n"
+label = "Big-descent polynomials of 321-avoiding permutations are real-rooted"
 
 [[theorems]]
 name = "RealRooted.BigDescents321.neg_of_isRoot_bigDescentPoly"
@@ -71,8 +71,7 @@ $M_{n-2}\ll A_n$, both polynomials have simple roots, and they have no common ro
 
 By [@ElizaldeRiveraZhuang2026], the recurrence-defined $A_n$ is the big-descent enumerator of
 321-avoiding permutations of length $n$. Together with that identification the theorem proves
-the case $\Pi=\{321\}$ of [@ElizaldeRiveraZhuang2026, Conj. 4.4]. See also
-[big descents on symmetricfunctions.com](sf:bigDescent).
+the case $\Pi=\{321\}$ of [@ElizaldeRiveraZhuang2026, Conj. 4.4].
 
 ## Proof
 
@@ -82,9 +81,7 @@ $3\le n\le24$ are checked by exact computation.
 
 ## References
 
-- [@ElizaldeRiveraZhuang2026]
+[@ElizaldeRiveraZhuang2026, Conj. 4.4]. See also
+[big descents on symmetricfunctions.com](sf:bigDescent).
 <!-- /realrooted-catalog-content -->
-
-This module is a catalog facade.  The proofs live in
-`RealRooted.CombinatorialExamples.BigDescents321`.
 -/

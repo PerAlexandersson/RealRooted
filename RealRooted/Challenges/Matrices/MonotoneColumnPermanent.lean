@@ -1,6 +1,7 @@
 module
 
 import RealRooted.Permanent.Basic
+import RealRooted.Permanent.Ferrers
 import RealRooted.Permanent.MonotoneColumn
 
 /-!
@@ -12,7 +13,6 @@ kind = "landmark"
 section = "theorems"
 slug = "monotone-column-permanent"
 formalized = "2026-10-13"
-tags = []
 references = [
   "HaglundOnoWagner1999",
   "BrandenHaglundVisontaiWagner2011",
@@ -65,7 +65,7 @@ objects = ["Monotone column permanents"]
 property = "real-stable"
 name = "RealRooted.Permanent.columnPermanent_mvRealStable_of_decreasingColumns"
 module = "RealRooted.Permanent.MonotoneColumn"
-label = "Decreasing-column permanent is real stable"
+label = "Brändén–Haglund–Visontai–Wagner: per(z_j + a_ij) is real stable for decreasing columns"
 headline = true
 
 [[theorems]]
@@ -82,7 +82,7 @@ label = "Decreasing-column univariate permanent is real-rooted"
 objects = ["Monotone column permanents"]
 name = "RealRooted.Permanent.diagonalPermanent_ne_zero_and_splits_of_increasingColumns"
 module = "RealRooted.Permanent.MonotoneColumn"
-label = "Monotone column permanent theorem"
+label = "Monotone column permanent theorem: per(zJ + A) is real-rooted for monotone columns"
 
 [[theorems]]
 name = "RealRooted.Permanent.diagonalPermanent_coeff_card"
@@ -93,44 +93,40 @@ label = "The leading coefficient of per(zJ + A) is n!"
 <!-- realrooted-catalog-content -->
 # Monotone column permanent theorem
 
-If the columns of a real matrix $A$ are monotone, then $\operatorname{per}(zJ+A)$ is real-rooted
-with leading coefficient $n!$, and the multivariate column permanent is real stable.
+If the columns of a real $n\times n$ matrix $A$ are monotone, then $\operatorname{per}(zJ+A)$ is
+real-rooted, where $J$ is the all-ones matrix. Haglund, Ono and Wagner conjectured this, and
+Brändén, Haglund, Visontai and Wagner proved the stronger multivariate statement.
 
 ## Results
 
-Let $A=(a_{ij})$ be a real $n\times n$ matrix and $J_n$ the all-ones matrix. The columns of $A$
-are *weakly decreasing* if $a_{kj}\le a_{ij}$ for $i\le k$, and *weakly increasing* if
-$a_{ij}\le a_{kj}$ for $i\le k$. The *column permanent* of $A$ is
-$$
-\operatorname{per}(z_j+a_{ij})
-=\operatorname{per}\bigl(J_n\operatorname{diag}(z_1,\dots,z_n)+A\bigr).
-$$
+The columns of $A=(a_{ij})$ are *weakly decreasing* if $a_{kj}\le a_{ij}$ for $i\le k$, and
+*weakly increasing* if $a_{ij}\le a_{kj}$ for $i\le k$.
 
-**Theorem (monotone column permanent).** If the columns of $A$ are weakly decreasing or weakly
-increasing, then $\operatorname{per}(z_j+a_{ij})$ is real stable: it has no zero with every $z_j$
-in the open upper half-plane. Consequently $\operatorname{per}(zJ_n+A)$ is nonzero and splits over
-$\mathbb R$. Its coefficient of $z^n$ is $n!$ for every $A$.
-
-The decreasing case is [@BrandenHaglundVisontaiWagner2011]; the increasing case is the
-convention of the conjecture of Haglund, Ono and Wagner [@HaglundOnoWagner1999], to which the
-decreasing case reduces by reversing the rows.
+**Theorem (Brändén–Haglund–Visontai–Wagner).** [@BrandenHaglundVisontaiWagner2011] If the
+columns of $A$ are weakly decreasing or weakly increasing, then
+$\operatorname{per}(z_j+a_{ij})$ is real stable. Consequently $\operatorname{per}(zJ+A)$ is
+real-rooted, with leading coefficient $n!$.
 
 **Proposition (Ferrers matrices).** A *Ferrers matrix* is a zero-one matrix with weakly
 decreasing columns and weakly increasing rows. For such $A$ the two-alphabet permanent
-$$
-\operatorname{per}\bigl(a_{ij}y_j+(1-a_{ij})x_i\bigr)
-$$
-is real stable. If $A$ is a Ferrers matrix of size $n+1$ with $a_{n+1,n+1}=0$, this polynomial
-satisfies a deletion recurrence in terms of the polynomials of smaller Ferrers matrices.
+$\operatorname{per}\bigl(a_{ij}y_j+(1-a_{ij})x_i\bigr)$ is real stable, and it satisfies a
+deletion recurrence in terms of smaller Ferrers matrices.
+
+## Use
+
+For a zero-one matrix the permanent $\operatorname{per}(zJ+A)$ is a rook-type polynomial, so the
+theorem contains the real-rootedness of many rook and hit polynomials. It is one of the main
+applications of [real stability](rr:real-stability).
 
 ## Proof
 
-Decreasing columns reduce to zero-one columns, which sort into a Ferrers matrix. Real stability
-of the Ferrers permanents follows by induction using the deletion recurrence. A specialization
-of the $x_i$ and a fractional substitution give the multivariate theorem.
+Decreasing columns reduce to zero-one columns, which sort into a Ferrers matrix, and the
+increasing case follows by reversing the rows. Real stability of the Ferrers permanents follows
+by induction from the deletion recurrence. A specialization of the $x_i$ and a fractional
+substitution give the multivariate theorem.
 
 ## References
 
-See [@HaglundOnoWagner1999; @BrandenHaglundVisontaiWagner2011].
+[@HaglundOnoWagner1999]; [@BrandenHaglundVisontaiWagner2011].
 <!-- /realrooted-catalog-content -->
 -/
