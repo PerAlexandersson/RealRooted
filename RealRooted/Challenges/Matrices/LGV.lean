@@ -1,8 +1,10 @@
 module
 
+import RealRooted.LGV.ChipNetwork.Word
 import RealRooted.LGV.PathMatrix
 import RealRooted.LGV.PolyaFrequency
 import RealRooted.LGV.RepeatedChip
+import RealRooted.LGV.Toeplitz
 import RealRooted.LGV.TotallyNonnegative
 
 /-!
@@ -14,7 +16,6 @@ kind = "landmark"
 section = "theorems"
 slug = "lindstrom-gessel-viennot"
 formalized = "2026-09-17"
-tags = []
 references = [
   "Lindstrom1973",
   "GesselViennot1985",
@@ -45,13 +46,13 @@ label = "Repeated-chip kernel sequence"
 [[theorems]]
 name = "LGV.FinitePathNetwork.matrix_isTotallyNonneg_of_orderedCertificates"
 module = "RealRooted.LGV.TotallyNonnegative"
-label = "Path networks give totally nonnegative matrices"
+label = "LGV: path matrices with nonnegative weights and ordered cancellation are TNN"
 headline = true
 
 [[theorems]]
 name = "RealRooted.isPolyaFreqSeq_of_minorOrderedCertificates"
 module = "RealRooted.LGV.PolyaFrequency"
-label = "Path networks give Pólya frequency sequences"
+label = "Toeplitz minors realized by such networks make a Pólya frequency sequence"
 
 [[theorems]]
 name = "RealRooted.LGV.RepeatedChip.kernelSequence_isPolyaFreqSeq"
@@ -72,39 +73,39 @@ label = "Paths of length n and powers of the edge matrix"
 <!-- realrooted-catalog-content -->
 # Lindström–Gessel–Viennot lemma and total positivity
 
-Path matrices of networks with nonnegative weights are totally nonnegative whenever the
-Lindström–Gessel–Viennot cancellation works with sources and sinks in order. Applied to
-Toeplitz minors, this gives Pólya frequency sequences, for instance from networks of
-lower-bidiagonal chips.
+The Lindström–Gessel–Viennot lemma writes a minor of the path matrix of a network as a signed
+sum over families of paths. When the non-disjoint families cancel and the sources and sinks are
+in order, every minor is nonnegative, so the path matrix is totally nonnegative.
 
 ## Results
 
-The *path matrix* of a finite network with weighted paths has as $(s,t)$ entry the total weight
-of the paths from $s$ to $t$. The [Lindström–Gessel–Viennot lemma](sf:lindstromGesselViennotLemma)
-writes a minor of the path matrix, with sources $s_1<\dots<s_n$ and sinks $t_1<\dots<t_n$, as a
-signed sum over path families. We say the minor *cancels in order* if there is a notion of
-disjointness for pairs of paths such that two paths from $s_i$ to $t_k$ and from $s_j$ to $t_l$
-with $s_i<s_j$ and $t_l<t_k$ are never disjoint, together with a weight-negating involution on
-the signed path families that are not pairwise disjoint, fixing only families of weight zero.
-Vertex-disjointness in a planar network with sources and sinks in order along the boundary is
-the classical example.
+The *path matrix* of a finite network has as $(s,t)$ entry the total weight of the paths from
+$s$ to $t$. A minor with sources $s_1<\dots<s_n$ and sinks $t_1<\dots<t_n$ *cancels in order*
+if there is a disjointness relation on pairs of paths such that paths in opposite order are
+never disjoint, and a weight-negating involution on the non-disjoint path families. The
+classical example is vertex-disjointness in a planar network with sources and sinks in order
+along the boundary.
 
-**Theorem (total nonnegativity).** Let $N$ be a finite path network over an ordered ring with
-nonnegative path weights. If every minor with strictly increasing row and column selections
-cancels in order, then the path matrix of $N$ is totally nonnegative.
+**Theorem (Lindström, Gessel–Viennot).** [@Lindstrom1973; @GesselViennot1985] If a finite
+network has nonnegative path weights and every minor cancels in order, then its path matrix is
+totally nonnegative.
 
-**Theorem (Pólya frequency sequences).** Let $a=(a_k)$ be a real sequence. If each Toeplitz
-submatrix of $a$ with strictly increasing rows and columns is the path matrix of a network with
-nonnegative weights whose determinant cancels in order, then $a$ is a Pólya frequency sequence.
+**Corollary (Pólya frequency sequences).** If every Toeplitz minor of a real sequence $a$ is
+the path matrix of such a network, then $a$ is a Pólya frequency sequence.
 
-**Theorem (chip networks).** A *chip* is a lower-bidiagonal matrix on levels $0,\dots,N$. Let
-$G,K$ be words of chips with nonnegative weights such that the product matrix of $K$ is
-strictly lower triangular. Then the repeated-chip kernel sequence of $(G,K)$ is a Pólya frequency
-sequence, and the kernel row of [Brändén and Saud Leite](rr:branden-leite) at the last level is
-a PF polynomial.
+**Corollary (chip networks).** A *chip* is a lower-bidiagonal matrix. Let $G,K$ be words of
+chips with nonnegative weights such that the product of $K$ is strictly lower triangular. Then
+the repeated-chip kernel sequence of $(G,K)$ is a Pólya frequency sequence, and its kernel row
+at the last level is a PF polynomial.
 
-For a weighted quiver with finitely many vertices, the total weight of the paths of length $n$
-from $a$ to $b$ is the $(a,b)$ entry of the $n$-th power of the edge-sum matrix.
+In a weighted quiver, the total weight of the paths of length $n$ from $a$ to $b$ is the
+$(a,b)$ entry of the $n$-th power of the edge-sum matrix.
+
+## Use
+
+The lemma is the main source of [totally nonnegative matrices](rr:totally-nonnegative-matrices)
+and Pólya frequency sequences in combinatorics. The chip networks give the kernel rows used by
+[Brändén and Saud Maia Leite](rr:branden-leite).
 
 ## Proof
 
@@ -114,9 +115,7 @@ contributes its nonnegative weight with sign $+1$.
 
 ## References
 
-[@Lindstrom1973; @GesselViennot1985].
+[@Lindstrom1973]; [@GesselViennot1985]. See also the
+[Lindström–Gessel–Viennot lemma](sf:lindstromGesselViennotLemma) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
-
-This module is a catalog facade.  The path-cancellation argument lives in
-the LeanLGV dependency; the adapters live in `RealRooted.LGV`.
 -/

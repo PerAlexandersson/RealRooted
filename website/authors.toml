@@ -91,15 +91,26 @@
 "common-interleavers:Liu" = { name = "Lily L. Liu" }
 "finite-free-convolutions:Srivastava" = { name = "Nikhil Srivastava" }
 "gamma-transform:Petersen" = { name = "T. Kyle Petersen" }
+"generalized-snake-posets:Lee" = { name = "Eon Lee" }
+"generalized-snake-posets:Vindas-Meléndez" = { name = "Andrés R. Vindas-Meléndez" }
+"generalized-snake-posets:Wang" = { name = "Zhi Wang" }
+"hoggatt:Fang" = { name = "Hanqian Fang" }
+"hoggatt:Zhang" = { name = "Candice X. T. Zhang" }
+"hoggatt:Zhao" = { name = "James J. Y. Zhao" }
 "jacobi-stirling:Gessel" = { name = "Ira M. Gessel" }
 "jacobi-stirling:Lin" = { name = "Zhicong Lin" }
 "jacobi-stirling:Ma" = { name = "Shi-Mei Ma" }
 "jacobi-stirling:Wang" = { name = "Ming-Xin Wang" }
 "jacobi-stirling:Zeng" = { name = "Jiang Zeng" }
+"left-production-matrices:Chen" = { name = "Xi Chen" }
+"left-production-matrices:Fu" = { name = "Lang Fu" }
+"left-production-matrices:Ruan" = { name = "Jiajie Ruan" }
 "lindstrom-gessel-viennot:Gessel" = { name = "Ira M. Gessel" }
 "ma-wang-liu-wang:Liu" = { name = "Lily L. Liu" }
 "ma-wang-liu-wang:Ma" = { name = "Shi-Mei Ma" }
 "ma-wang-liu-wang:Wang" = { name = "Yi Wang" }
+"morris-flow:Liu" = { name = "Feihu Liu" }
+"morris-flow:Zhang" = { name = "Zihao Zhang" }
 "narayana:Wang" = { name = "Lijie Wang" }
 "orthogonal-polynomials:Lima" = { name = "Hélder Lima" }
 "recurrence-root-windows:Liu" = { name = "Lily L. Liu" }
@@ -107,4 +118,6 @@
 "recurrence-root-windows:Wang" = { name = "Yi Wang" }
 "separable-permutations:Lin" = { name = "Zhicong Lin" }
 "separable-permutations:Zeng" = { name = "Jiang Zeng" }
+"veronese-sections:Whitney" = { name = "Anne Whitney" }
 "wang-yeh:Wang" = { name = "Yi Wang" }
+"zigzag-eulerian:Petersen" = { name = "T. Kyle Petersen" }

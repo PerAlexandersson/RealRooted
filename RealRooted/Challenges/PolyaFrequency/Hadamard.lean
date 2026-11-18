@@ -155,7 +155,7 @@ Grace's apolarity theorem in which one polynomial has all roots in a half-line.
 ## References
 
 E. Maló, “Note sur les équations algébriques dont toutes les racines sont réelles,”
-*Journal de Mathématiques Spéciales* 4 (1895), 7–10;
+*Journal de Mathématiques Spéciales* (4) 4 (1895), 7–10;
 [@Schur1914; @Wagner1992; @GarloffWagner1996; @KostovShapiro2006]. See also
 [Hadamard products](sf:hadamardProductTheorems) and the
 [Schur–Szegő composition](sf:schurSzegoComposition) on symmetricfunctions.com.

@@ -705,7 +705,6 @@ pre {
 .kind-badge--method { color: var(--definition); }
 .kind-badge--conjecture { color: var(--coauthored); }
 .kind-badge--original { color: var(--original); }
-.kind-badge--unclassified { color: var(--muted); }
 .catalog-index .catalog-card--method { border-left-color: var(--definition); }
 .catalog-index .catalog-card--conjecture { border-left-color: var(--coauthored); }
 .catalog-index .catalog-card--original { border-left-color: var(--original); }

@@ -1,6 +1,8 @@
 module
 
 import RealRooted.Gurvits
+import RealRooted.Gurvits.Capacity
+import RealRooted.Gurvits.Univariate
 
 /-!
 # Van der Waerden permanent bound
@@ -11,7 +13,6 @@ kind = "landmark"
 section = "theorems"
 slug = "van-der-waerden"
 formalized = "2026-10-07"
-tags = []
 references = [
   "Gurvits2008",
   "Egorychev1981",
@@ -39,13 +40,15 @@ label = "Gurvits: capacity drops by at most ((d−1)/d)^(d−1) per variable"
 [[theorems]]
 name = "RealRooted.Gurvits.mul_le_coeff_one_of_splits"
 module = "RealRooted.Gurvits.Univariate"
-label = "Gurvits' univariate coefficient inequality"
+label = "Gurvits: c ((d − 1)/d)^(d − 1) ≤ q′(0) when ct ≤ q(t) for real-rooted q ≥ 0"
 -->
 
 <!-- realrooted-catalog-content -->
 # Van der Waerden permanent bound
 
-The permanent of an $n\times n$ doubly stochastic matrix is at least $n!/n^n$.
+The permanent of an $n\times n$ doubly stochastic matrix is at least $n!/n^n$, with equality
+for the matrix with all entries $1/n$. Van der Waerden conjectured this in 1926; we follow
+Gurvits's proof by real stable polynomials.
 
 ## Results
 
@@ -54,6 +57,11 @@ doubly stochastic matrix, then
 $$
 \operatorname{per}A\ge\frac{n!}{n^n}.
 $$
+
+## Use
+
+The proof is a model application of [real stability](rr:real-stability): a coefficient of a
+real stable polynomial is bounded below by its capacity, one variable at a time.
 
 ## Proof
 
@@ -71,6 +79,4 @@ extract this coefficient and the factors multiply to $n!/n^n$.
 
 [@Egorychev1981; @Falikman1981]; the proof above is that of [@Gurvits2008].
 <!-- /realrooted-catalog-content -->
-
-This module is a catalog facade. The proof lives in `RealRooted.Gurvits`.
 -/

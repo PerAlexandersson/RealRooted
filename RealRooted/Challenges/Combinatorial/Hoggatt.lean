@@ -1,7 +1,7 @@
 module
 
-public import RealRooted.CombinatorialExamples.Hoggatt
-public import RealRooted.Applications.OEIS.A056939
+import RealRooted.Applications.OEIS.A056939
+import RealRooted.CombinatorialExamples.Hoggatt
 
 /-!
 # Hoggatt polynomials
@@ -12,7 +12,11 @@ kind = "landmark"
 section = "families"
 slug = "hoggatt"
 formalized = "2026-11-13"
-authors = ["Fang", "Zhang", "Zhao", "Dilks"]
+references = [
+  "Dilks2015Thesis",
+  "FangZhangZhao2025x",
+]
+authors = ["Dilks", "Fang", "Zhang", "Zhao"]
 years = [2015, 2025]
 
 [[definitions]]
@@ -30,7 +34,7 @@ objects = ["Hoggatt polynomials"]
 property = "interlacing"
 name = "RealRooted.Hoggatt.normalized_interlaces_and_isCoprime"
 module = "RealRooted.CombinatorialExamples.Hoggatt"
-label = "For every m ≥ 2, consecutive Hoggatt rows strictly interlace"
+label = "Fang–Zhang–Zhao: for m ≥ 2, consecutive Hoggatt polynomials strictly interlace"
 headline = true
 
 [[theorems]]
@@ -44,20 +48,10 @@ module = "RealRooted.CombinatorialExamples.Hoggatt"
 label = "The Hadamard derivative identity G'(n+1,m+1) = (n+1) F(n,m+1)"
 
 [[theorems]]
-name = "RealRooted.Hoggatt.derivative_hadamard_one"
-module = "RealRooted.CombinatorialExamples.Hoggatt"
-label = "The derivative identity at m = 2"
-
-[[theorems]]
 objects = ["Hoggatt polynomials"]
 name = "RealRooted.Hoggatt.normalized_splits"
 module = "RealRooted.CombinatorialExamples.Hoggatt"
-label = "Every Hoggatt polynomial is real-rooted, for all m ≥ 1"
-
-[[theorems]]
-name = "RealRooted.Hoggatt.normalized_one"
-module = "RealRooted.CombinatorialExamples.Hoggatt"
-label = "The m = 1 family consists of powers of X + 1"
+label = "Dilks: every Hoggatt polynomial is real-rooted"
 
 [[theorems]]
 name = "RealRooted.Hoggatt.hasSimpleRoots_polynomial"
@@ -69,17 +63,12 @@ objects = ["Baxter descent polynomials"]
 property = "interlacing"
 name = "RealRooted.Hoggatt.baxter_interlaces_and_isCoprime"
 module = "RealRooted.CombinatorialExamples.Hoggatt"
-label = "Baxter polynomials are a strict Sturm sequence"
+label = "Consecutive Baxter descent polynomials strictly interlace"
 
 [[theorems]]
 name = "RealRooted.Hoggatt.normalized_three_eq_baxter"
 module = "RealRooted.Applications.OEIS.A056939"
 label = "For m = 3, the Hoggatt polynomials are the Baxter descent polynomials (A056939)"
-
-[[theorems]]
-name = "RealRooted.Applications.OEIS.A056939.polynomial_isCoprime_succ"
-module = "RealRooted.Applications.OEIS.A056939"
-label = "Consecutive Baxter descent polynomials are coprime"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -102,13 +91,15 @@ $m=2$ the Narayana polynomials $\sum_k\frac1n\binom nk\binom n{k+1}t^k$, and for
 descent polynomials of Baxter permutations of length $n$, which are the rows of
 [OEIS A056939](https://oeis.org/A056939).
 
-**Theorem (Fang–Zhang–Zhao).** [@FangZhangZhao2025x] Let $m\ge2$. For every $n\ge1$, the roots
-of $H_n^{[m]}$ are simple and negative, $H_n^{[m]}\ll H_{n+1}^{[m]}$, and the two polynomials
-have no common root.
+**Theorem (Fang–Zhang–Zhao).** [@FangZhangZhao2025x, Thm. 2] Let $m\ge2$. For every $n\ge1$,
+the roots of $H_n^{[m]}$ are simple and negative, $H_n^{[m]}\ll H_{n+1}^{[m]}$, and the two
+polynomials have no common root.
 
-**Corollary (Dilks).** [@Dilks2015Thesis] For every $m\ge1$ and $n\ge1$, $H_n^{[m]}$ is real-rooted.
+**Corollary (Dilks).** [@Dilks2015Thesis, Thm. 3.8] For every $m\ge1$ and $n\ge1$,
+$H_n^{[m]}$ is real-rooted.
 
-In particular, consecutive Baxter descent polynomials strictly interlace.
+**Corollary (Baxter permutations).** [@FangZhangZhao2025x, Thm. 1] Consecutive descent
+polynomials of Baxter permutations strictly interlace.
 
 ## Proof
 
@@ -124,7 +115,6 @@ the Wronskian gives Markov's strict form of the derivative step.
 
 ## References
 
-- [@FangZhangZhao2025x, Theorems 1–2 and §2].
-- [@Dilks2015Thesis, Theorem 3.8].
+[@FangZhangZhao2025x, Thms. 1–2 and §2]; [@Dilks2015Thesis, Thm. 3.8].
 <!-- /realrooted-catalog-content -->
 -/

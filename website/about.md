@@ -22,8 +22,6 @@ be zero. A statement that requires nonzero polynomials says so.
   its formalization date and, when available, a paper reference. “Builds on”
   identifies prior authors and years; it does not attribute the new claim to them.
 
-Current pages have provisional kinds pending the planned restructuring.
-A page missing its kind would appear under **Unclassified**.
 Selected results may also credit a coauthored paper or carry an individual
 RealRooted-original provenance tag.
 

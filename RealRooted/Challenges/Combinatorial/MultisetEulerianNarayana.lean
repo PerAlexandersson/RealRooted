@@ -3,7 +3,7 @@ module
 import RealRooted.CombinatorialExamples.MultisetEulerianNarayana
 import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.GammaOperator
 import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.TotallyNonneg
-import RealRooted.CombinatorialExamples.MultisetEulerianNarayana.ZeroMonotonicity
+import RealRooted.EulerOperator.Darboux.NegativeRoots
 
 /-!
 # Multiset Eulerian–Narayana polynomials
@@ -14,7 +14,6 @@ kind = "landmark"
 section = "families"
 slug = "multiset-eulerian-narayana"
 formalized = "2026-10-07"
-tags = []
 references = [
   "ZhangZhao2026x",
   "LinMaMaZhou2021",
@@ -36,7 +35,7 @@ label = "The multiset Eulerian–Narayana polynomial P_α"
 objects = ["Multiset Eulerian–Narayana polynomials"]
 name = "RealRooted.MultisetEulerianNarayana.simpleNegRooted_multisetEulerianNarayana"
 module = "RealRooted.CombinatorialExamples.MultisetEulerianNarayana"
-label = "P_α has only simple negative zeros"
+label = "Zhang–Zhao: P_α has only simple negative zeros"
 headline = true
 
 [[theorems]]
@@ -58,11 +57,6 @@ label = "Darboux steps preserve simple negative zeros and interlace"
 name = "RealRooted.MultisetEulerianNarayana.simpleNegRooted_gammaOperator"
 module = "RealRooted.CombinatorialExamples.MultisetEulerianNarayana.GammaOperator"
 label = "Zhang–Zhao: the gamma operator preserves simple negative zeros"
-
-[[theorems]]
-name = "RealRooted.MultisetEulerianNarayana.exists_hasDerivAt_gammaOperator_input_shift"
-module = "RealRooted.CombinatorialExamples.MultisetEulerianNarayana.ZeroMonotonicity"
-label = "Zhang–Zhao: output zeros move strictly right with each input zero"
 
 [[theorems]]
 name = "RealRooted.MultisetEulerianNarayana.coefficientTransitionMatrix_eq_closedTransitionMatrix"
@@ -98,10 +92,10 @@ $$
 By [@ZhangZhao2026x, Prop. 2.9], $P_\alpha$ is the leaf enumerator of weakly increasing trees on
 a multiset with multiplicities $\alpha$.
 
-**Theorem (Zhang–Zhao).** [@ZhangZhao2026x] For a composition $\alpha$ of $N\ge1$, $P_\alpha$
-is admissible of degree $N-1$ and palindromic: its coefficients of $t^k$ and $t^{N-1-k}$ agree
-for $0\le k\le N-1$. Let $Q_0=1$ and $Q_{d+1}=E_{d,a_d(\alpha)}Q_d$. Then $Q_d\ll Q_{d+1}$ and
-$Q_d,Q_{d+1}$ have no common zero, for $0\le d\le N-2$.
+**Theorem (Zhang–Zhao).** [@ZhangZhao2026x, Thm. 1.1] For a composition $\alpha$ of $N\ge1$,
+$P_\alpha$ is admissible of degree $N-1$ and palindromic: its coefficients of $t^k$ and
+$t^{N-1-k}$ agree for $0\le k\le N-1$. Let $Q_0=1$ and $Q_{d+1}=E_{d,a_d(\alpha)}Q_d$. Then
+$Q_d\ll Q_{d+1}$ and $Q_d,Q_{d+1}$ have no common zero, for $0\le d\le N-2$.
 
 **Theorem (Zhang–Zhao).** [@ZhangZhao2026x, Thm. 1.3] Let $p,r\ge1$. Let $K_{p,r}$ be the
 $(p+r)\times p$ matrix whose entry in row $k$ and column $\ell$ (from $0$) is $0$ unless
@@ -117,10 +111,7 @@ nonnegative lower bidiagonal matrix, restricted to the first $p$ columns.
 For the $\gamma$-expansion, let $a>0$ and put
 $\Phi_{d,a}\Gamma=\Gamma+\bigl(t(1-4t)\Gamma'+2dt\Gamma\bigr)/a$. If $\Gamma$ is admissible of
 degree $m$, then $\Phi_{2m,a}\Gamma$ is admissible of degree $m$ and $\Phi_{2m+1,a}\Gamma$ is
-admissible of degree $m+1$ [@ZhangZhao2026x, Lemma 3.2]. If $p=\prod_{j=1}^n(t-r_j)$ has
-distinct negative zeros, $d\in\{2n,2n+1\}$ and $r_i$ is replaced by $r_i+s$, then each zero
-$\rho$ of $\Phi_{d,a}p$ moves along a differentiable branch $\rho(s)$ of zeros with
-$\rho'(0)>0$ [@ZhangZhao2026x, Prop. 3.4].
+admissible of degree $m+1$ [@ZhangZhao2026x, Lemma 3.2].
 
 ## Proof
 
@@ -130,10 +121,6 @@ new zeros interlace the old ones. The parameters $a_d(\alpha)$ are positive for 
 
 ## References
 
-- [@LinMaMaZhou2021], for the tree model and the conjecture.
-- [@ZhangZhao2026x].
+[@LinMaMaZhou2021], for the tree model and the conjecture; [@ZhangZhao2026x, Thm. 1.1].
 <!-- /realrooted-catalog-content -->
-
-This module is a catalog facade.  The proofs live in
-`RealRooted.CombinatorialExamples.MultisetEulerianNarayana`.
 -/

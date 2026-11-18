@@ -38,6 +38,7 @@ REVISION = "a" * 40
 
 def catalog_block(
     *,
+    kind: str | None = "landmark",
     section: str = "families",
     slug: str = "sample",
     authors: str = "",
@@ -50,9 +51,11 @@ def catalog_block(
     content: str | None = None,
 ) -> str:
     body = content or "# Sample\n\nA checked result.\n\n## References\n\n- [Paper](https://example.org/)"
+    kind_line = f'kind = "{kind}"' if kind else ""
     return f'''/-!
 <!-- realrooted-catalog
 version = 1
+{kind_line}
 section = "{section}"
 slug = "{slug}"
 {formalized}
@@ -366,9 +369,9 @@ end RealRooted.Challenges.Sample
         self.assertIn("theorems/sample/index.html", first)
         self.assertIn('class="catalog-home"', first["index.html"])
         self.assertIn(
-            'class="catalog-card catalog-card--unclassified catalog-card--theorems"', first["index.html"]
+            'class="catalog-card catalog-card--landmark catalog-card--theorems"', first["index.html"]
         )
-        self.assertIn('class="kind-badge kind-badge--unclassified"', first["index.html"])
+        self.assertIn('class="kind-badge kind-badge--landmark"', first["index.html"])
         self.assertIn('class="count count--theorem" title="1 theorem"', first["index.html"])
         self.assertIn("Canonical &amp; Author · 1914–1996", first["index.html"])
         self.assertIn('data-catalog-sort', first["index.html"])
@@ -435,7 +438,7 @@ end RealRooted.Challenges.Sample
         pages = load_catalog(self.root)
         output = render_site(self.root, pages, validate_sources(self.root, pages), REVISION)
         home = output["index.html"]
-        self.assertLess(home.index('id="topics"'), home.index('id="kind-unclassified-topic-combinatorial"'))
+        self.assertLess(home.index('id="topics"'), home.index('id="kind-landmark-topic-combinatorial"'))
         self.assertEqual(home.count('class="catalog-topic catalog-group"'), 1)
         self.assertIn('href="families/sample/"', home)
         self.assertIn('href="theorems/other/"', home)
@@ -606,7 +609,7 @@ end RealRooted.Challenges.Sample
         pages = load_catalog(self.root)
         output = render_site(self.root, pages, validate_sources(self.root, pages), REVISION)
         home = output["index.html"]
-        topics = home.split('id="kind-unclassified-topic-combinatorial"', 1)[1]
+        topics = home.split('id="kind-landmark-topic-combinatorial"', 1)[1]
         # The family card shows its contents and claim without the Lean name.
         self.assertIn('href="families/sample/"', topics)
         self.assertIn('title="1 definition"', topics)
@@ -635,33 +638,35 @@ end RealRooted.Challenges.Sample
         self.assertEqual(manifest["pages"][0]["headlines"], ["RealRooted.Challenges.Sample.proven"])
 
     def test_kind_metadata_and_conjecture_locator(self) -> None:
+        with self.assertRaisesRegex(CatalogError, "metadata requires kind"):
+            parse_challenge_source("sample.lean", catalog_block(kind=None))
         for kind in ("landmark", "method", "original", "conjecture"):
             with self.subTest(kind=kind):
                 extra = '\nconjecture = "Author 2024, Conjecture 3"' if kind == "conjecture" else ""
-                source = catalog_block().replace('version = 1', f'version = 1\nkind = "{kind}"{extra}')
+                source = catalog_block(kind=None).replace('version = 1', f'version = 1\nkind = "{kind}"{extra}')
                 page = parse_challenge_source("sample.lean", source)
                 self.assertEqual(page.kind, kind)
         for raw in ('"sequence"', '"minor"', '""', '3', '[]', '{}'):
-            source = catalog_block().replace('version = 1', f'version = 1\nkind = {raw}')
+            source = catalog_block(kind=None).replace('version = 1', f'version = 1\nkind = {raw}')
             with self.subTest(raw=raw), self.assertRaisesRegex(CatalogError, "kind must be"):
                 parse_challenge_source("sample.lean", source)
-        source = catalog_block().replace('version = 1', 'version = 1\nkind = "conjecture"')
+        source = catalog_block(kind=None).replace('version = 1', 'version = 1\nkind = "conjecture"')
         with self.assertRaisesRegex(CatalogError, "conjecture pages require"):
             parse_challenge_source("sample.lean", source)
         for raw in ('""', '" "', '" padded "', '"line\\nbreak"', '3'):
             with self.subTest(raw=raw), self.assertRaisesRegex(CatalogError, "single-line locator"):
                 parse_challenge_source("sample.lean", source.replace('version = 1',
                                        f'version = 1\nconjecture = {raw}'))
-        for kind in (None, "landmark", "method", "original"):
+        for kind in ("landmark", "method", "original"):
             extra = f'\nkind = "{kind}"' if kind else ""
-            source = catalog_block().replace('version = 1', 'version = 1' + extra
+            source = catalog_block(kind=None).replace('version = 1', 'version = 1' + extra
                                             + '\nconjecture = "Author 2024, Conjecture 3"')
             with self.subTest(kind=kind), self.assertRaisesRegex(CatalogError, "requires kind"):
                 parse_challenge_source("sample.lean", source)
 
     def test_kind_bands_and_exports_share_kind_topic_order(self) -> None:
         pages, resolved = self.pages_and_sources()
-        kinds = ("original", None, "conjecture", "method", "landmark")
+        kinds = ("original", "method", "conjecture", "landmark")
         mixed = tuple(replace(pages[0], kind=kind, slug=f"page-{i}",
                               conjecture="Author 2024, Conjecture 3 (case 321)" if kind == "conjecture" else None,
                               theorems=(replace(pages[0].theorems[0], headline=True,
@@ -669,10 +674,10 @@ end RealRooted.Challenges.Sample
                       for i, kind in enumerate(kinds))
         output = render_site(self.root, mixed, resolved, REVISION, base_path="/catalog/")
         home = output["index.html"]
-        expected = ["landmark", "method", "conjecture", "original", "unclassified"]
+        expected = ["landmark", "method", "conjecture", "original"]
         positions = [home.index(f'id="kind-{kind}"') for kind in expected]
         self.assertEqual(positions, sorted(positions))
-        self.assertEqual(home.count('class="catalog-card catalog-card--'), 5)
+        self.assertEqual(home.count('class="catalog-card catalog-card--'), 4)
         self.assertIn('href="#kind-original">New results 1</a>', home)
         self.assertIn('main.querySelectorAll(\'.topic-jump a[href^="#"]\')', output["assets/site.js"])
         self.assertIn('page.conjecture ?? ""', output["assets/site.js"])
@@ -683,18 +688,18 @@ end RealRooted.Challenges.Sample
         manifest = json.loads(output["catalog-manifest.json"])
         search = json.loads(output["search-index.json"])
         self.assertEqual(manifest["groups"], search["groups"])
-        ordered = ["landmark", "method", "conjecture", "original", None]
+        ordered = ["landmark", "method", "conjecture", "original"]
         self.assertEqual([row["kind"] for row in manifest["pages"]], ordered)
         self.assertEqual([row["kind"] for row in search["pages"]], ordered)
         self.assertEqual(search["pages"][2]["conjecture"], mixed[2].conjecture)
         overview = output["llms.txt"]
         self.assertEqual([line for line in overview.splitlines() if line.startswith("## ")],
                          ["## Classical theorems", "## Methods", "## Solved conjectures",
-                          "## New results", "## Unclassified"])
+                          "## New results"])
         self.assertIn("kind: conjecture — conjecture: " + mixed[2].conjecture, overview)
         for item in search["declarations"]:
             self.assertIn(search["pages"][item["page"]]["slug"], item["url"])
-        self.assertEqual(catalog_digest(mixed), catalog_digest(tuple(replace(p, kind=None,
+        self.assertEqual(catalog_digest(mixed), catalog_digest(tuple(replace(p, kind="landmark",
                          conjecture=None) for p in mixed)))
         repeated = mixed + tuple(replace(p, source_path="RealRooted/Challenges/Roots/Sample.lean",
                                          slug=p.slug + "-roots") for p in mixed)
@@ -707,7 +712,7 @@ end RealRooted.Challenges.Sample
         self.assertEqual(len(flat), len(set(flat)))
         self.assertTrue(all([topic["topic"] for topic in band["topics"]]
                             == ["Roots", "Combinatorial"] for band in grouped["groups"]))
-        self.assertEqual(repeated_output["index.html"].count('class="catalog-topic catalog-group"'), 10)
+        self.assertEqual(repeated_output["index.html"].count('class="catalog-topic catalog-group"'), 8)
         # Redirects continue to resolve after changing a destination's kind.
         self.write("website/redirects.toml", '[redirects]\n"theorems/retired" = "page-0"\n')
         redirected = render_site(self.root, mixed, resolved, REVISION)
@@ -769,9 +774,6 @@ end RealRooted.Challenges.Sample
             data = json.loads(output[file])
             self.assertEqual([band["kind"] for band in data["groups"]], list(kinds))
             self.assertTrue(all(page["kind"] for page in data["pages"]))
-        # Missing kinds still have a safe fallback for future additions.
-        fallback = render_site(self.root, pages, resolved, REVISION)
-        self.assertIn('id="kind-unclassified"', fallback["index.html"])
 
     def test_objects_metadata_validation_and_properties(self) -> None:
         from challenge_catalog import OBJECT_PROPERTIES
@@ -1282,7 +1284,7 @@ end RealRooted.Challenges.Sample
         positions = [home.index(f"<h3>{topic}</h3>") for topic in TOPICS.values()]
         self.assertEqual(positions, sorted(positions))
         self.assertEqual(home.count('class="catalog-topic catalog-group"'), 9)
-        self.assertIn('id="kind-unclassified-topic-polya-frequency"', home)
+        self.assertIn('id="kind-landmark-topic-polya-frequency"', home)
         named = tuple(replace(pages[0], title=title, slug=str(index)) for index, title in enumerate(
             ("The Zebra", "An Apple", "A Bear", "Cedar")
         ))
@@ -1310,8 +1312,8 @@ end RealRooted.Challenges.Sample
         header = document.split('class="page-metadata">')[1].split('</div>')[0]
         self.assertIn("One &amp; Two · 1952–1996", header)
         self.assertIn("Coauthored paper", header)
-        self.assertIn('href="/RealRooted/#kind-unclassified">Unclassified</a> ›', header)
-        self.assertIn('href="/RealRooted/#kind-unclassified-topic-roots">Roots</a>', header)
+        self.assertIn('href="/RealRooted/#kind-landmark">Classical theorem</a> ›', header)
+        self.assertIn('href="/RealRooted/#kind-landmark-topic-roots">Roots</a>', header)
         self.assertEqual(header.count('href="https://www.symmetricfunctions.com/two.htm#itemLabel"'), 1)
         self.assertIn(f'Main result: <a href="#{item.anchor}">The headline</a>', header)
         self.assertLess(document.index('class="page-metadata"'), document.index('A <strong>short'))
@@ -1462,30 +1464,28 @@ Source.
         with self.assertRaisesRegex(CatalogError, "stale prose baseline entry"):
             validate_prose_baseline(self.root, (fixed,))
 
-    def test_lead_and_declaration_count_lints_are_advisory(self) -> None:
-        from contextlib import redirect_stderr
-        from io import StringIO
+    def test_lead_paragraph_and_declaration_cap_are_enforced(self) -> None:
         page = parse_challenge_source("Sample.lean", catalog_block())
-        page = replace(page, content="# Sample\n\n## Results\n\nA theorem.\n\n## References\n\nSource.",
+        page = replace(page, content="# Sample\n\nA lead.\n\n## Results\n\nA theorem.\n\n"
+                                     "## References\n\nSource.",
                        theorems=tuple(replace(page.theorems[0], name=f"Example.result{i}")
-                                      for i in range(14)))
+                                      for i in range(13)))
         self.write("scripts/prose_baseline.txt", "")
-        self.write("scripts/declaration_count_baseline.txt", "Sample.lean\t14\n")
-        warnings = StringIO()
-        with redirect_stderr(warnings):
+        with self.assertRaisesRegex(CatalogError, r"Sample.lean: 13 declarations without objects \(cap 12\)"):
             validate_prose_baseline(self.root, (page,))
-        self.assertIn("lead-missing", warnings.getvalue())
-        self.assertIn("target 12; baseline", warnings.getvalue())
-        long = replace(page, content=page.content.replace("## Results", " ".join(["Word"] * 61)
-                                                        + "\n\n## Results"))
-        self.assertTrue(any("\tlead-long\t" in row for row in prose_findings((long,))))
+        capped = replace(page, theorems=page.theorems[:12])
+        validate_prose_baseline(self.root, (capped,))
         indexed = replace(page, theorems=tuple(replace(item, objects=("Family",))
                                                for item in page.theorems))
-        warnings = StringIO()
-        with redirect_stderr(warnings):
-            validate_prose_baseline(self.root, (indexed,))
-        self.assertNotIn("target 12", warnings.getvalue())
-        self.assertIn("stale declaration-count", warnings.getvalue())
+        validate_prose_baseline(self.root, (indexed,))
+        missing = replace(capped, content=capped.content.replace("A lead.\n\n", ""))
+        with self.assertRaisesRegex(CatalogError, "new prose offender: .*\tlead-missing\t"):
+            validate_prose_baseline(self.root, (missing,))
+        long = replace(capped, content=capped.content.replace("A lead.", " ".join(["Word"] * 61)))
+        with self.assertRaisesRegex(CatalogError, "\tlead-long\t"):
+            validate_prose_baseline(self.root, (long,))
+        exact = replace(capped, content=capped.content.replace("A lead.", " ".join(["Word"] * 60)))
+        validate_prose_baseline(self.root, (exact,))
 
     def test_audit_report_rejects_mismatch_and_accepts_exact_records(self) -> None:
         pages, resolved = self.pages_and_sources()

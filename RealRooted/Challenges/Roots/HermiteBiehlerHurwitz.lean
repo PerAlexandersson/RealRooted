@@ -1,20 +1,15 @@
 module
 
-public import RealRooted.Basic.ProperPosition
-public import RealRooted.ClassicalHurwitzMatrix
-public import RealRooted.ClassicalHurwitzMatrix.Stability
-public import RealRooted.ClassicalHurwitzMatrix.Stability.CoefficientSigns
-public import RealRooted.ClassicalHurwitzMatrix.Stability.Converse
-public import RealRooted.ClassicalHurwitzMatrix.Stability.Lace
-public import RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse
-public import RealRooted.ClassicalHurwitzMatrix.Stability.WeakConverse
-public import RealRooted.HermiteBiehler.Basic
-public import RealRooted.HermiteBiehler.Forward
-public import RealRooted.HermiteBiehler.OddEven
-public import RealRooted.HurwitzMatrix
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz.Determinant
-public import RealRooted.SamePhaseInterlacing
+import RealRooted.ClassicalHurwitzMatrix.Stability.CoefficientSigns
+import RealRooted.ClassicalHurwitzMatrix.Stability.Converse
+import RealRooted.ClassicalHurwitzMatrix.Stability.Lace
+import RealRooted.ClassicalHurwitzMatrix.Stability.OddEvenConverse
+import RealRooted.ClassicalHurwitzMatrix.Stability.WeakConverse
+import RealRooted.HermiteBiehler.Basic
+import RealRooted.HermiteBiehler.Forward
+import RealRooted.HermiteBiehler.OddEven
+import RealRooted.Mathlib.LinearAlgebra.Matrix.Hurwitz
+import RealRooted.SamePhaseInterlacing
 
 /-!
 # Hermite–Biehler and Hurwitz stability criteria
@@ -25,22 +20,11 @@ kind = "landmark"
 section = "theorems"
 slug = "hermite-biehler-hurwitz"
 formalized = "2026-07-10"
-tags = []
 references = [
   "Holtz2003",
 ]
-authors = ["Holtz"]
-years = [2003]
-
-[[definitions]]
-name = "RealRooted.hermiteBiehlerPolynomial"
-module = "RealRooted.HermiteBiehler.Basic"
-label = "The Hermite–Biehler combination f + ig"
-
-[[definitions]]
-name = "RealRooted.IsUpperHalfPlaneStable"
-module = "RealRooted.HermiteBiehler.Basic"
-label = "No zeros in the open upper half-plane"
+authors = ["Hermite", "Routh", "Biehler", "Hurwitz", "Holtz"]
+years = [1856, 1877, 1879, 1895, 2003]
 
 [[definitions]]
 name = "RealRooted.IsHurwitzStable"
@@ -84,19 +68,9 @@ module = "RealRooted.ClassicalHurwitzMatrix.Stability.CoefficientSigns"
 label = "No zeros with positive real part implies nonnegative coefficients"
 
 [[theorems]]
-name = "RealRooted.IsStrictlyHurwitzStable.coeff_pos"
-module = "RealRooted.ClassicalHurwitzMatrix.Stability.CoefficientSigns"
-label = "All zeros with negative real part implies positive coefficients"
-
-[[theorems]]
 name = "RealRooted.fullyInterlacingPair_of_isHurwitzStable_oddEvenPolynomial"
 module = "RealRooted.ClassicalHurwitzMatrix.Stability.Lace"
 label = "If q(x²) + x p(x²) is Hurwitz stable, the Lace matrix of (q, p) is totally nonnegative"
-
-[[theorems]]
-name = "RealRooted.StrictInterl.fullyInterlacingPair"
-module = "RealRooted.ClassicalHurwitzMatrix.Stability.Lace"
-label = "If p ≪ q have nonnegative coefficients, the Lace matrix of (q, p) is totally nonnegative"
 
 [[theorems]]
 name = "Matrix.strictlyHurwitzStable_iff_hurwitzLeadingPrincipal_det_pos"
@@ -122,7 +96,8 @@ coefficients. Then $g\ll f$ if and only if $f+ig$ has no zeros with positive ima
 
 **Corollary (odd and even parts).** For nonzero real polynomials $p$ and $q$, the polynomial
 $q(x^2)+x\,p(x^2)$ is Hurwitz stable if and only if $p$ and $q$ have nonnegative coefficients
-and $p\ll q$.
+and $p\ll q$. In that case the two-row Lace matrix of $(q,p)$, whose rows are shifts of the
+coefficient sequences of $q$ and $p$, is totally nonnegative.
 
 **Theorem (Hurwitz).** A nonzero real polynomial is Hurwitz stable if and only if its Hurwitz
 matrix is totally nonnegative.
@@ -131,45 +106,21 @@ matrix is totally nonnegative.
 zeros in the open left half-plane if and only if the leading principal minors of its Hurwitz
 matrix of orders $1,\dots,\deg p$ are positive.
 
-**Proposition (coefficient signs).** Let $p$ be a real polynomial with positive leading
-coefficient. If $p$ has no zeros with positive real part, its coefficients are nonnegative. If all
-its zeros have negative real part, then $a_0,\dots,a_{\deg p}$ are positive.
-
-**Proposition (Lace form).** If $q(x^2)+x\,p(x^2)$ is Hurwitz stable, then the two-row Lace matrix
-of $(q,p)$ is totally nonnegative. Its even rows are shifts of the coefficient sequence of $q$
-and its odd rows are shifts of that of $p$. In particular this holds whenever $p\ll q$ and $p,q$
-have nonnegative coefficients.
+**Proposition (coefficient signs).** A real polynomial with positive leading coefficient and no
+zeros with positive real part has nonnegative coefficients.
 
 ## Use
 
 The corollary translates between Hurwitz stability of one polynomial and interlacing of two
-polynomials in $x^2$. Through the Lace form, interlacing pairs with nonnegative coefficients
-give totally nonnegative matrices.
+polynomials in $x^2$, and turns interlacing pairs with nonnegative coefficients into totally
+nonnegative matrices; see [totally nonnegative matrices](rr:totally-nonnegative-matrices).
 
 ## References
 
-- [@Holtz2003]
-- On symmetricfunctions.com: the [Hermite–Biehler theorem](sf:hermiteBiehlerTheorem),
-  [coefficient signs of Hurwitz-stable polynomials](sf:hurwitzImpliesCoefficientPositivity),
-  and the related [Hurwitz–Lace criterion](sf:hurwitzLaceCriterion).
+The classical sources are Hermite (1856), Routh (1877), Biehler (1879) and Hurwitz (1895); we
+follow the account of [@Holtz2003]. See also the
+[Hermite–Biehler theorem](sf:hermiteBiehlerTheorem),
+[coefficient signs of Hurwitz-stable polynomials](sf:hurwitzImpliesCoefficientPositivity) and
+the related [Hurwitz–Lace criterion](sf:hurwitzLaceCriterion) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
-
-Human statements:
-
-* Hermite--Biehler:
-  sf:hermiteBiehlerTheorem
-* Hurwitz stability implies coefficient positivity:
-  sf:hurwitzImpliesCoefficientPositivity
-* Related, not formalized: the Hurwitz--Lace criterion, stated for a different
-  matrix:
-  sf:hurwitzLaceCriterion
-
-Classical references include C. Hermite, A. Hurwitz, M. G. Krein, M. A. Naimark,
-and the modern account by O. Holtz, "Hermite-Biehler, Routh-Hurwitz, and
-total positivity", Linear Algebra Appl. 372 (2003), 105--110.
-
-This module exposes the checked Hermite--Biehler and Hurwitz theorems. The refutation of
-the criterion for the row-oriented matrix and the finite regressions for the classical
-convention are in `RealRooted.ClassicalHurwitzMatrix.Examples`; the analytic stability bridges
-and finite-minor plumbing remain in `RealRooted.HermiteBiehler` and `RealRooted.HurwitzMatrix`.
 -/

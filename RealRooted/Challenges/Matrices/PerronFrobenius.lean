@@ -14,7 +14,6 @@ kind = "landmark"
 section = "theorems"
 slug = "perron-frobenius"
 formalized = "2026-08-21"
-tags = []
 references = [
   "Perron1907",
 ]
@@ -34,7 +33,7 @@ label = "The Perron root has a nonnegative eigenvector"
 [[theorems]]
 name = "Matrix.exists_positive_eigenvector_of_irreducible"
 module = "RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Irreducible"
-label = "Irreducible matrices have a positive eigenvector"
+label = "Perron–Frobenius: an irreducible nonnegative matrix has a positive eigenvector"
 headline = true
 
 [[theorems]]
@@ -77,6 +76,12 @@ $$
   nonnegative eigenvector of sum $1$ with positive eigenvalue.
 - If $Av=rv$ with $v$ entrywise positive and $r>0$, then $r=r(A)$.
 
+## Use
+
+The Perron root controls the growth of $A^n$. Applied to a companion or transfer matrix, it is
+a root of maximal modulus of a linear recurrence with nonnegative coefficients, which locates
+the dominant root in [limits of zeros](rr:limits-of-zeros) arguments.
+
 ## Proof
 
 Existence comes from upper semicontinuity of the Collatz–Wielandt function on the standard
@@ -87,7 +92,4 @@ simplex. The irreducible case reduces to the primitive case through $1+A$.
 [@Perron1907]; G. Frobenius, “Über Matrizen aus nicht negativen Elementen,”
 *Sitzungsberichte der Königlich Preussischen Akademie der Wissenschaften* (1912), 456–477.
 <!-- /realrooted-catalog-content -->
-
-This module is a catalog facade.  The proofs live in
-`RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius`.
 -/

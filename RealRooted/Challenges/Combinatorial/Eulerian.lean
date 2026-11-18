@@ -1,12 +1,10 @@
 module
 
-public import RealRooted.CombinatorialExamples.Eulerian
-public import RealRooted.CombinatorialExamples.EulerianStatistic
-public import RealRooted.CombinatorialExamples.TypeBEulerian
-public import RealRooted.GeneralizedEulerian
-public import RealRooted.GeneralizedEulerian.EvalNeg
-public import RealRooted.GeneralizedEulerian.GeneratingFunction
-public import RealRooted.MaWang.DerivativeStep
+import RealRooted.CombinatorialExamples.Eulerian
+import RealRooted.CombinatorialExamples.EulerianStatistic
+import RealRooted.CombinatorialExamples.TypeBEulerian
+import RealRooted.GeneralizedEulerian
+import RealRooted.GeneralizedEulerian.GeneratingFunction
 
 /-!
 # Eulerian polynomials
@@ -17,8 +15,8 @@ kind = "landmark"
 section = "families"
 slug = "eulerian"
 formalized = "2026-07-10"
-tags = []
 references = [
+  "Frobenius1910",
   "Brenti1994",
 ]
 authors = ["Frobenius", "Brenti"]
@@ -43,7 +41,7 @@ label = "Generalized Eulerian polynomials"
 objects = ["Eulerian polynomials"]
 name = "RealRooted.isRealRooted_eulerianTilde"
 module = "RealRooted.CombinatorialExamples.Eulerian"
-label = "Eulerian polynomials are real-rooted"
+label = "Frobenius: the Eulerian polynomials are real-rooted"
 headline = true
 
 [[theorems]]
@@ -57,7 +55,7 @@ label = "Consecutive Eulerian polynomials interlace"
 objects = ["Type B Eulerian polynomials"]
 name = "RealRooted.isRealRooted_typeBEulerian"
 module = "RealRooted.CombinatorialExamples.TypeBEulerian"
-label = "Type B Eulerian polynomials are real-rooted"
+label = "Brenti: the type B Eulerian polynomials are real-rooted"
 
 [[theorems]]
 objects = ["Type B Eulerian polynomials"]
@@ -90,11 +88,6 @@ module = "RealRooted.CombinatorialExamples.TypeBEulerian"
 label = "The type B Eulerian polynomial B_n equals E_n^{(2)}"
 
 [[theorems]]
-name = "RealRooted.GeneralizedEulerian.coeff_generalizedEulerian_one_eq_sum"
-module = "RealRooted.GeneralizedEulerian.GeneratingFunction"
-label = "Alternating-sum formula for the coefficients of E_n^{(1)}"
-
-[[theorems]]
 name = "RealRooted.genPoly_univ_descentCount"
 module = "RealRooted.CombinatorialExamples.EulerianStatistic"
 label = "The descent polynomial of permutations of n+1 letters is E_n^{(1)}"
@@ -103,18 +96,14 @@ label = "The descent polynomial of permutations of n+1 letters is E_n^{(1)}"
 name = "RealRooted.isRealRooted_genPoly_univ_descentCount"
 module = "RealRooted.CombinatorialExamples.EulerianStatistic"
 label = "The descent polynomial of permutations of n+1 letters is real-rooted"
-
-[[theorems]]
-name = "RealRooted.eval_neg_generalizedEulerian_one_pos"
-module = "RealRooted.GeneralizedEulerian.EvalNeg"
-label = "E_n^{(1)}(-q) > 0 whenever q > 0 and q 2^(n+1) ≤ 1"
 -->
 
 <!-- realrooted-catalog-content -->
 # Eulerian polynomials
 
-The Eulerian polynomials, the type $B$ Eulerian polynomials and a one-parameter family containing
-both are real-rooted, and consecutive members interlace.
+The Eulerian polynomial $A_n(t)$ counts the permutations of $[n]$ by descents. Frobenius proved
+that it has only real roots. The same holds for Brenti's type $B$ analogue and for a
+one-parameter family containing both, and consecutive members of each family interlace.
 
 ## Results
 
@@ -122,46 +111,31 @@ For real $c$, the *generalized Eulerian polynomials* are $E^{(c)}_0=1$ and
 $$
 E^{(c)}_{n+1}=\bigl(1+(cn+1)t\bigr)E^{(c)}_n+c\,t(1-t)\bigl(E^{(c)}_n\bigr)'.
 $$
+Let $A_n(t)=\sum_{\sigma\in\mathfrak S_n}t^{\operatorname{des}\sigma}$. Then
+$E^{(1)}_n=A_{n+1}$, and $E^{(2)}_n=B_n$ is the type $B$ Eulerian polynomial, the descent
+polynomial of the signed permutations of $[n]$.
+
+**Theorem (Frobenius).** [@Frobenius1910] The Eulerian polynomial $A_n$ is real-rooted, and
+$A_n\ll A_{n+1}$. Equivalently, $P_n=tA_{n+1}$, given by $P_0=t$ and
+$P_{n+1}=t\bigl((n+2)P_n+(1-t)P_n'\bigr)$, is real-rooted and $P_n\ll P_{n+1}$.
+
+**Theorem (Brenti).** [@Brenti1994] The type $B$ Eulerian polynomial $B_n$ is real-rooted, and
+$B_n\ll B_{n+1}$.
 
 **Theorem (generalized Eulerian polynomials).** For $c>0$ and $n\ge0$, $E^{(c)}_n$ is nonzero
 and real-rooted, and $E^{(c)}_n\ll E^{(c)}_{n+1}$.
 
-**Eulerian polynomials ($c=1$).** Let $A_n(t)=\sum_{\sigma\in\mathfrak
-S_n}t^{\operatorname{des}\sigma}$. Then $E^{(1)}_n=A_{n+1}$. Hence $A_{n+1}$ is real-rooted and
-$A_{n+1}\ll A_{n+2}$. The shifted polynomials $P_n=tE^{(1)}_n$ satisfy $P_0=t$ and
-$P_{n+1}=t\bigl((n+2)P_n+(1-t)P_n'\bigr)$, and are real-rooted with $P_n\ll P_{n+1}$. For $j\ge0$,
-$$
-[t^j]\,E^{(1)}_n=\sum_{i=0}^{j+1}(-1)^{j+1-i}\binom{n+2}{j+1-i}\,i^{\,n+1}.
-$$
+## Use
 
-**Type $B$ Eulerian polynomials ($c=2$).** The polynomials $B_n=E^{(2)}_n$ are given by
-$B_0=1$ and $B_{n+1}=\bigl(1+(2n+1)t\bigr)B_n+2t(1-t)B_n'$. They are real-rooted, and
-$B_n\ll B_{n+1}$.
-
-Since $E^{(1)}_n$ is a Pólya frequency polynomial with constant coefficient $1$ and linear
-coefficient $2^{n+1}-n-2$, we have $E^{(1)}_n(-q)>0$ for $q>0$ with $q\,2^{n+1}\le1$.
+The recurrence is the case $u=1+(cn+1)t$, $v=ct(1-t)$ of the
+[Ma–Wang criterion](rr:ma-wang-liu-wang): $v\le0$ at the nonpositive roots of $E^{(c)}_n$.
+Many descent polynomials are built from the same Euler steps; see the
+[Euler operator page](rr:eulerian-operators) and the
+[Eulerian-type polynomials](rr:eulerian-compendium).
 
 ## References
 
-- [@Frobenius1910], for the Eulerian recurrence and its real-rootedness.
-- [@Brenti1994], for type $B$.
-
-See also [Eulerian polynomials](sf:eulerianPolynomial) on symmetricfunctions.com.
+[@Frobenius1910]; [@Brenti1994]. See also [Eulerian polynomials](sf:eulerianPolynomial) and
+[type B Eulerian polynomials](sf:typeBEulerianPolynomial) on symmetricfunctions.com.
 <!-- /realrooted-catalog-content -->
-
-Human statements:
-
-* Eulerian polynomials:
-  sf:eulerianPolynomial
-* Eulerian Sturm sequence example:
-  sf:ex:eulerianSturm
-* Type `B` Eulerian polynomials:
-  sf:typeBEulerianPolynomial
-
-Classical origin: F. G. Frobenius, "Über die Bernoullischen Zahlen und die
-Eulerschen Polynome", Sitzungsberichte der Königlich Preussischen Akademie der
-Wissenschaften (1910), 809--847.
-
-This module exposes the checked ordinary and type `B` Eulerian real-rootedness
-and interlacing statements, together with the corresponding Sturm-prefix API.
 -/

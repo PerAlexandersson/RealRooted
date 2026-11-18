@@ -150,6 +150,64 @@
       },
       "label": "AJQ25"
     },
+    "AlexanderssonLeite2026x": {
+      "bibtex": "@article{AlexanderssonLeite2026x,\n  author = {Per Alexandersson and Leonardo Saud Maia Leite},\n  title = {Sink polynomials of line graphs and weighted matching polynomials},\n  year = {2026},\n  eprint = {2610.41502v1},\n  url = {https://arxiv.org/abs/2610.41502v1},\n  journal = {arXiv e-prints}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/2610.41502v1",
+        "author": [
+          {
+            "family": "Alexandersson",
+            "given": "Per"
+          },
+          {
+            "family": "Leite",
+            "given": "Leonardo Saud Maia"
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        },
+        "title": "Sink polynomials of line graphs and weighted matching polynomials",
+        "type": "article-journal"
+      },
+      "label": "AL26"
+    },
+    "AlexanderssonNabawanda2021": {
+      "bibtex": "@article{AlexanderssonNabawanda2021,\nAuthor = {Per Alexandersson and Olivia Nabawanda},\nTitle = {Peaks are preserved under run-sorting},\nvolume ={2},\nnumber = {1},\nYear = {2021},\nmonth = jun,\ndoi = {10.54550/ECA2022V2S1R2},\nurl = {http://ecajournal.haifa.ac.il/Volume2022/ECA2022_S2A2.pdf},\njournal = {Enumerative Combinatorics and Applications}\n}\n",
+      "csl": {
+        "DOI": "10.54550/ECA2022V2S1R2",
+        "URL": "http://ecajournal.haifa.ac.il/Volume2022/ECA2022_S2A2.pdf",
+        "author": [
+          {
+            "family": "Alexandersson",
+            "given": "Per"
+          },
+          {
+            "family": "Nabawanda",
+            "given": "Olivia"
+          }
+        ],
+        "container-title": "Enumerative Combinatorics and Applications",
+        "issue": "1",
+        "issued": {
+          "date-parts": [
+            [
+              2021,
+              6
+            ]
+          ]
+        },
+        "title": "Peaks are preserved under run-sorting",
+        "type": "article-journal",
+        "volume": "2"
+      },
+      "label": "AN21"
+    },
     "AndrewsEggeGawronskiLittlejohn2013": {
       "bibtex": "@article{AndrewsEggeGawronskiLittlejohn2013,\n  author = {Andrews, George E. and Egge, Eric S. and Gawronski, Wolfgang and Littlejohn, Lance L.},\n  title = {The {J}acobi–{S}tirling numbers},\n  year = {2013},\n  journal = {Journal of Combinatorial Theory, Series A},\n  volume = {120},\n  number = {1},\n  pages = {288--303},\n  doi = {10.1016/j.jcta.2012.08.006},\n  url = {https://doi.org/10.1016/j.jcta.2012.08.006}\n}\n",
       "csl": {

@@ -11,7 +11,6 @@ kind = "landmark"
 section = "theorems"
 slug = "lee-yang"
 formalized = "2026-10-07"
-tags = []
 references = [
   "LeeYang1952",
   "Asano1970",
@@ -23,7 +22,7 @@ years = [1952, 1970]
 [[theorems]]
 name = "RealRooted.LeeYang.lee_yang_circle"
 module = "RealRooted.LeeYang"
-label = "Lee–Yang: all zeros lie on the unit circle"
+label = "Lee–Yang: the zeros of P(z, …, z) lie on the unit circle"
 headline = true
 
 [[theorems]]
@@ -39,19 +38,20 @@ label = "No zeros in the exterior of the polydisc"
 [[theorems]]
 name = "RealRooted.LeeYang.ising_norm_eq_one"
 module = "RealRooted.LeeYang"
-label = "Ferromagnetic Ising partition function"
+label = "Zeros of the ferromagnetic Ising partition function lie on the unit circle"
 
 [[theorems]]
 name = "RealRooted.LeeYang.asano_contraction"
 module = "RealRooted.LeeYang"
-label = "Asano contraction"
+label = "Asano: contraction preserves nonvanishing on the open bidisc"
 -->
 
 <!-- realrooted-catalog-content -->
 # Lee–Yang circle theorem
 
 The zeros of the partition function of a ferromagnetic Ising model in the fugacity lie on the
-unit circle.
+unit circle, so phase transitions can occur only at zero magnetic field. The theorem is a
+starting point of the theory of stable polynomials.
 
 ## Results
 
@@ -59,15 +59,22 @@ Let $a=(a_{ij})$ be a real symmetric matrix with $|a_{ij}|\le1$, indexed by a fi
 Define the multiaffine polynomial
 $$P(z)=\sum_{S\subseteq V}\Bigl(\prod_{i\in S}\prod_{j\notin S}a_{ij}\Bigr)\prod_{i\in S}z_i.$$
 
-**Theorem (Lee–Yang)** [@LeeYang1952]. All zeros of $P(z,z,\dotsc,z)$ lie on the unit circle
+**Theorem (Lee–Yang).** [@LeeYang1952] All zeros of $P(z,z,\dotsc,z)$ lie on the unit circle
 $|z|=1$. More precisely, $P(z)\ne0$ whenever every $|z_i|<1$, and whenever every $|z_i|>1$.
 
 **Corollary (Ising model).** For $a_{ij}=e^{-2\beta J_{ij}}$ with $\beta\ge0$ and symmetric
 $J_{ij}\ge0$, the zeros of the ferromagnetic Ising partition function in the fugacity lie on the
 unit circle.
 
-**Lemma (Asano contraction)** [@Asano1970]. If $\alpha+\beta u+\gamma v+\delta uv\ne0$ for all
+**Lemma (Asano contraction).** [@Asano1970] If $\alpha+\beta u+\gamma v+\delta uv\ne0$ for all
 $|u|,|v|<1$, then $\alpha+\delta z\ne0$ for all $|z|<1$.
+
+## Use
+
+Replacing the unit disk by a half-plane gives [real stability](rr:real-stability), and the
+characterization of Lee–Yang type polynomials is due to Ruelle [@Ruelle2010]. The
+[Borcea–Brändén classification](rr:borcea-branden-classification) describes all linear operators
+preserving such zero-free regions.
 
 ## Proof
 
@@ -78,10 +85,6 @@ statement follows from $P(z)=(\prod_iz_i)\,P(1/z)$.
 
 ## References
 
-- [@LeeYang1952]
-- [@Asano1970]
-- [@Ruelle2010]
+[@LeeYang1952]; [@Asano1970]; [@Ruelle2010].
 <!-- /realrooted-catalog-content -->
-
-This module is a catalog facade. The proof lives in `RealRooted.LeeYang`.
 -/
