@@ -15,9 +15,9 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 70 | `RealRooted.StrictInterl.refl` | `RealRooted.Basic.ProperPosition` | A nonzero real-rooted polynomial is in same-degree proper position with itself. |
+| 71 | `RealRooted.StrictInterl.refl` | `RealRooted.Basic.ProperPosition` | A nonzero real-rooted polynomial is in same-degree proper position with itself. |
 | 56 | `RealRooted.Interl.toStrictInterl_of_ne` | `RealRooted.Basic.ProperPosition` |  |
-| 40 | `RealRooted.strictInterl_mul_X_of_strictInterl_of_nonneg` | `RealRooted.WagnerX.NonnegativeRoots` | Nonnegative-coefficients form of Wagner (3): if `f ≪ g` and both polynomials have nonnegative coefficients, then `g ≪ X * f`. |
+| 41 | `RealRooted.strictInterl_mul_X_of_strictInterl_of_nonneg` | `RealRooted.WagnerX.NonnegativeRoots` | Nonnegative-coefficients form of Wagner (3): if `f ≪ g` and both polynomials have nonnegative coefficients, then `g ≪ X * f`. |
 | 34 | `RealRooted.StrictInterl.C_mul_left` | `RealRooted.Basic.ProperPosition` | Multiplying the left polynomial in a proper-position relation by a nonzero real scalar preserves proper position. |
 | 33 | `RealRooted.StrictInterl.C_mul_right` | `RealRooted.Basic.ProperPosition` | Multiplying the right polynomial in a proper-position relation by a nonzero real scalar preserves proper position. |
 | 27 | `RealRooted.strictInterl_of_allComboRealRooted` | `RealRooted.ObreschkoffConverse.Converse` | **Obreschkoff's theorem** (Brändén, Theorem 7.7.3): `f` and `g` interlace if and only if every polynomial in the real linear span `{αf + βg : α, β ∈ ℝ}` is real-rooted (or zero). |
@@ -37,9 +37,9 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 9 | `RealRooted.StrictInterl.sum_left_of_common_left_signed` | `RealRooted.PosCombo` | Sign-normalized left-cone theorem: if all summands are interlaced on the left by the same nonzero real-rooted polynomial `h`, and the summands have positive leading coefficient, then their sum is inte |
 | 9 | `RealRooted.StrictInterl.weightedSum_right_of_nonneg` | `RealRooted.WeightedSum` | Finite weighted Wagner theorem on the right: if every polynomial in the list precedes the same right-hand bound `h`, has positive leading coefficient, and all weights are nonnegative with at least one |
 | 9 | `RealRooted.reciprocalShift_reverses_strictInterl` | `RealRooted.ReciprocalShift.ProperPosition` | At a common degree bound, reciprocal shift reverses a strictly interlacing pair of PF polynomials. |
+| 9 | `RealRooted.strictInterl_chain_of_consecutive_of_endpoint` | `RealRooted.CommonInterleaver.RootDesc` | **Chain lemma.** If `F a ≪ F (a+1) ≪ ⋯ ≪ F b` is a chain of consecutive interlacings and additionally the two extremes satisfy `F a ≪ F b`, then every pair `F i ≪ F j` with `a ≤ i ≤ j ≤ b` interlaces. |
 | 8 | `RealRooted.StrictInterl.comp_X_add_C_iff` | `RealRooted.Linear` | Translation by `r` is an equivalence on `StrictInterl`. |
 | 8 | `RealRooted.StrictInterl.nonneg_combo_right` | `RealRooted.PosCombo` | If `f ⊳ g` with positive leading coefficients and non-negative `λ, μ`, not both zero, then `λf + μg` interlaces `g` from the left: `StrictInterl (λf + μg) g`. |
-| 8 | `RealRooted.StrictInterl.of_natDegree_eq_zero_left` | `RealRooted.MaWang.Weak.DerivativeSign` | A degree-zero real polynomial is interlaced by any nonzero polynomial of degree at most one. |
 
 ## Interlaces
 
@@ -135,7 +135,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 74 | `RealRooted.IsPFPolynomial.of_realRooted_nonneg` | `RealRooted.PFPolynomial` | A split polynomial with nonnegative coefficients is PF. |
+| 75 | `RealRooted.IsPFPolynomial.of_realRooted_nonneg` | `RealRooted.PFPolynomial` | A split polynomial with nonnegative coefficients is PF. |
 | 40 | `RealRooted.IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits` | `RealRooted.PFPolynomial` | Construct a PF polynomial from nonnegative coefficients and a zero-or-splits certificate. |
 | 37 | `RealRooted.IsPFPolynomial.zero` | `RealRooted.PFPolynomial` | The zero polynomial is PF. |
 | 28 | `RealRooted.IsPFPolynomial.one` | `RealRooted.PFPolynomial` | The constant polynomial `1` is PF. |
@@ -150,8 +150,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 9 | `RealRooted.theta_preserves_pf` | `RealRooted.EulerOperator` | `theta` preserves the polynomial PF cone. |
 | 8 | `RealRooted.IsPFPolynomial.add_of_interl` | `RealRooted.OperatorMatrix.Directed` | The sum of an interlacing PF pair is PF. |
 | 8 | `RealRooted.isPFPolynomial_jensenPolynomial_of_PFMultiplierSequence` | `RealRooted.MultiplierSequence.Infinite` | Every Jensen polynomial of a PF multiplier sequence is PF. |
+| 7 | `RealRooted.IsPFMultiplierSequence.diagonalOperator_isPF` | `RealRooted.MultiplierSequence.Infinite` |  |
 | 7 | `RealRooted.thetaPlusOne_preserves_pf` | `RealRooted.EulerOperator` | `theta + 1` preserves the polynomial PF cone. |
-| 6 | `RealRooted.IsPFMultiplierSequence.diagonalOperator_isPF` | `RealRooted.MultiplierSequence.Infinite` |  |
 | 6 | `RealRooted.IsPFPolynomial.of_polyaFreqSeq` | `RealRooted.PFPolynomial` | Construct a PF polynomial directly from its Pólya-frequency coefficient sequence using the proved forward ASW theorem. |
 | 5 | `Matrix.IsTotallyNonneg.isPFPolynomial_det_map_add_X_smul_checkerboard` | `RealRooted.TotallyNonnegPencil.Checkerboard` | A totally nonnegative constant matrix with positive determinant and a checkerboard-signed totally nonnegative variable matrix give a PF determinant. |
 | 5 | `RealRooted.BrandenVecchi.finiteSupersymmetricCoeff_isPolyaFreqSeq` | `RealRooted.BrandenVecchi.SupersymmetricCoefficients` | Finite supersymmetric product coefficients are Pólya-frequency for nonnegative parameters. |
@@ -265,15 +265,15 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 84 | `RealRooted.hasNonnegCoeffs_C_mul` | `RealRooted.Basic.Coefficients` |  |
-| 52 | `RealRooted.hasNonnegCoeffs_one` | `RealRooted.Basic.Coefficients` |  |
+| 85 | `RealRooted.hasNonnegCoeffs_C_mul` | `RealRooted.Basic.Coefficients` |  |
+| 53 | `RealRooted.hasNonnegCoeffs_one` | `RealRooted.Basic.Coefficients` |  |
 | 49 | `RealRooted.hasNonnegCoeffs_C` | `RealRooted.Basic.Coefficients` |  |
 | 47 | `RealRooted.hasNonnegCoeffs_X` | `RealRooted.Basic.Coefficients` |  |
 | 45 | `RealRooted.HasNonnegCoeffs.basisTransform` | `RealRooted.BasisTransform` | A basis transform preserves coefficientwise nonnegativity when every basis element has nonnegative coefficients. |
 | 44 | `RealRooted.hasPosLeadingCoeff_C_mul` | `RealRooted.Basic.Coefficients` |  |
 | 39 | `RealRooted.HasNonnegCoeffs.weightedSum` | `RealRooted.GarloffWagner.Theorem12` |  |
 | 32 | `RealRooted.hasPosLeadingCoeff_of_monic` | `RealRooted.Basic.Coefficients` |  |
-| 28 | `RealRooted.HasNonnegCoeffs.diagonalOperator` | `RealRooted.MultiplierSequence` | Nonnegative diagonal coefficients preserve nonnegative coefficients. |
+| 29 | `RealRooted.HasNonnegCoeffs.diagonalOperator` | `RealRooted.MultiplierSequence` | Nonnegative diagonal coefficients preserve nonnegative coefficients. |
 | 27 | `RealRooted.hasNonnegCoeffs_finsetSum` | `RealRooted.Basic.Coefficients` |  |
 | 25 | `RealRooted.hasNonnegCoeffs_zero` | `RealRooted.Basic.Coefficients` |  |
 | 16 | `MvPolynomial.HasNonnegCoeffs.uniqueAlgEquiv` | `RealRooted.Basic.Coefficients.Multivariate` | The unique-variable equivalence preserves coefficientwise nonnegativity. |
@@ -364,8 +364,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 12 | `RealRooted.coeff_schurSzegoComp_of_le` | `RealRooted.Hadamard.Basic` |  |
 | 11 | `Polynomial.coeff_quadratic_derivative_add_linear_mul_succ` | `RealRooted.Mathlib.Algebra.Polynomial.Derivative` | The coefficient at `k + 1` after multiplying `p'` by a quadratic with no constant term and `p` by a linear polynomial. |
 | 10 | `RealRooted.coeff_oddEvenPolynomial_even` | `RealRooted.HermiteBiehler.OddEven` |  |
+| 10 | `RealRooted.coeff_thetaPlusOne` | `RealRooted.EulerOperator` |  |
 | 9 | `RealRooted.coeff_narayanaPolynomial_of_lt` | `RealRooted.NarayanaTransformation.Coefficients` |  |
-| 9 | `RealRooted.coeff_thetaPlusOne` | `RealRooted.EulerOperator` |  |
 | 8 | `Polynomial.continuous_coeff_comp_X_add_C` | `RealRooted.Mathlib.Topology.Algebra.Polynomial` | Every coefficient of a translated real polynomial varies continuously with the translation parameter. |
 | 8 | `RealRooted.coeff_schurSzegoComp` | `RealRooted.Hadamard.Basic` |  |
 | 7 | `Polynomial.coeff_basisTransform` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
