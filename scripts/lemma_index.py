@@ -76,14 +76,14 @@ KEYS = [
 ]
 
 
-def git_files() -> list[Path]:
+def git_files(root: Path = ROOT) -> list[Path]:
     out = subprocess.run(["git", "ls-files", "RealRooted/*.lean", "RealRooted/**/*.lean"],
-                         cwd=ROOT, capture_output=True, text=True, check=True).stdout
-    return [ROOT / p for p in out.split() if p]
+                         cwd=root, capture_output=True, text=True, check=True).stdout
+    return [root / p for p in out.split() if p]
 
 
-def module_of(path: Path) -> str:
-    return str(path.relative_to(ROOT).with_suffix("")).replace("/", ".")
+def module_of(path: Path, root: Path = ROOT) -> str:
+    return str(path.relative_to(root).with_suffix("")).replace("/", ".")
 
 
 def strip_comments(text: str) -> str:
@@ -175,8 +175,9 @@ def doc_before(raw_lines: list[str], start: int) -> str:
     return sentence[:200]
 
 
-def collect():
-    files = git_files()
+def collect(root: Path = ROOT):
+    """Collect public source theorems, optionally from a different checkout."""
+    files = git_files(root)
     decls = []
     words_per_file: dict[Path, set[str]] = {}
     for path in files:
@@ -207,7 +208,7 @@ def collect():
             stmt = statement_of(lines, i)
             decls.append({
                 "name": full, "short": short.split(".")[-1], "path": path,
-                "module": module_of(path), "stmt": stmt,
+                "module": module_of(path, root), "stmt": stmt, "source_line": i + 1,
                 "key": key_of(conclusion_of(stmt)), "doc": doc_before(raw_lines, i),
             })
     count_uses(decls, words_per_file)

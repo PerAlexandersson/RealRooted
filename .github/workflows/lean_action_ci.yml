@@ -31,6 +31,7 @@ jobs:
           PYTHONDONTWRITEBYTECODE=1 python3 scripts/test_challenge_catalog_audit.py
           PYTHONDONTWRITEBYTECODE=1 python3 scripts/build_challenge_pages.py --check
           PYTHONDONTWRITEBYTECODE=1 python3 scripts/audit_challenge_catalog.py --check
+          PYTHONDONTWRITEBYTECODE=1 python3 scripts/test_agent_index.py
       - name: Report SymCat snapshot freshness (advisory)
         continue-on-error: true
         run: python3 scripts/symcat_sync.py --check
@@ -38,6 +39,8 @@ jobs:
         run: |
           python3 scripts/build_challenge_pages.py \
             --output "$RUNNER_TEMP/challenge-catalog"
+          python3 scripts/agent_index.py \
+            --output "$RUNNER_TEMP/challenge-catalog/agent-index.json"
       - name: Upload pull-request preview
         if: ${{ github.event_name == 'pull_request' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
