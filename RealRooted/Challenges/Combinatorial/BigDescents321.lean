@@ -9,7 +9,7 @@ import RealRooted.CombinatorialExamples.BigDescents321.Basic
 <!-- realrooted-catalog
 version = 1
 kind = "conjecture"
-conjecture = "Elizalde–Rivera–Zhuang (2026), Conjecture 4.4, case Π = {321}"
+conjecture = 'Elizalde–Rivera–Zhuang (2026), Conjecture 4.4, case $Π = \{321\}$'
 section = "theorems"
 slug = "big-descents-321"
 formalized = "2026-10-06"
@@ -32,7 +32,7 @@ label = "Reference Motzkin polynomial"
 [[theorems]]
 name = "RealRooted.BigDescents321.motzkinRef_interl_bigDescentPoly_and_noCommonRoots"
 module = "RealRooted.CombinatorialExamples.BigDescents321"
-label = "For n ≥ 3, the Motzkin polynomial M_{n-2} strictly interlaces A_n"
+label = "For $n ≥ 3$, the Motzkin polynomial $M_{n-2}$ strictly interlaces $A_n$"
 headline = true
 
 [[theorems]]
@@ -44,7 +44,7 @@ label = "Big-descent polynomials of 321-avoiding permutations are real-rooted"
 [[theorems]]
 name = "RealRooted.BigDescents321.neg_of_isRoot_bigDescentPoly"
 module = "RealRooted.CombinatorialExamples.BigDescents321"
-label = "Every root of A_n is negative"
+label = "Every root of $A_n$ is negative"
 -->
 
 <!-- realrooted-catalog-content -->

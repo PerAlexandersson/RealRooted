@@ -60,7 +60,7 @@ label = "Coupled Euler families: simple negative roots and interlacing"
 [[theorems]]
 name = "RealRooted.eulerMultiplier_simpleNegRooted_and_strictInterl"
 module = "RealRooted.EulerOperator.EulerMultiplier"
-label = "Scaled Euler steps: simple negative roots of F_n and (θ + σ) F_n, interlacing"
+label = "Scaled Euler steps: simple negative roots of $F_n$ and $(θ + σ) F_n$, interlacing"
 
 [[theorems]]
 name = "RealRooted.lagTwoEulerPolynomial_certificate"

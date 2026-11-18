@@ -31,12 +31,12 @@ years = [2006, 2009]
 [[definitions]]
 name = "RealRooted.derivProductPowMap"
 module = "RealRooted.DerivativeProduct.ProductPower"
-label = "The linear map S_g sending t^n to the product power g^{⋆n}"
+label = 'The linear map $S_g$ sending $t^n$ to the product power $g^{\star n}$'
 
 [[theorems]]
 name = "RealRooted.Poisson.PreservesPF.iff"
 module = "RealRooted.BorceaBranden.Applications.PoissonStarGeneral"
-label = "Brändén: g ↦ f ⋆_c g preserves PF iff f is PF (c ≥ 0) or a constant ≥ 0 (c < 0)"
+label = '$g ↦ f \star_c g$ preserves PF iff $f$ is PF ($c ≥ 0$) or a constant $≥ 0$ ($c < 0$)'
 headline = true
 
 [[theorems]]
@@ -77,7 +77,7 @@ label = "Rows of P(n+1) = (a + bx)P(n) + c b x P(n)′ are PF and interlace"
 [[theorems]]
 name = "RealRooted.forall_isRealRootedIn_derivProductPowMap_iff"
 module = "RealRooted.DerivativeProduct.ProductPowerRoots"
-label = "S_g maps J-rooted inputs to T-rooted outputs iff every level g − r, r ∈ J, is T-rooted"
+label = "$S_g$ maps $J$-rooted to $T$-rooted polynomials iff $g - r$ is $T$-rooted for all $r ∈ J$"
 tags = ["realrooted-original"]
 
 [[theorems]]

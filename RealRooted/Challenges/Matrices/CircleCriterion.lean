@@ -18,12 +18,12 @@ tags = ["realrooted-original"]
 [[definitions]]
 name = "RealRooted.Toeplitz.Circle.row"
 module = "RealRooted.Toeplitz.CircleCriterion"
-label = "P_n = det(tI − T_n) for the Toeplitz Hessenberg sections of b"
+label = '$P_n = \det(tI - T_n)$ for the Toeplitz Hessenberg sections of $b$'
 
 [[definitions]]
 name = "RealRooted.Toeplitz.Circle.CircleNonneg"
 module = "RealRooted.Toeplitz.CircleCriterion"
-label = "The circle condition Q_R(u) ≥ 0 for −1 ≤ u ≤ 1"
+label = "The circle condition $Q_R(u) ≥ 0$ for $-1 ≤ u ≤ 1$"
 
 [[theorems]]
 name = "RealRooted.Toeplitz.Circle.strictInterl_of_circleNonneg"
@@ -34,7 +34,7 @@ headline = true
 [[theorems]]
 name = "RealRooted.Toeplitz.Circle.roots_card_of_circleNonneg"
 module = "RealRooted.Toeplitz.CircleCriterion"
-label = "Under the circle condition P_n has exactly n distinct real roots"
+label = "Under the circle condition $P_n$ has exactly $n$ distinct real roots"
 
 [[theorems]]
 name = "RealRooted.Toeplitz.Circle.not_isRoot_succ_of_circleNonneg"

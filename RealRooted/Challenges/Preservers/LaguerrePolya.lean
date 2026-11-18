@@ -77,12 +77,12 @@ label = "Laguerre–Pólya: φ(D) preserves real-rootedness"
 [[theorems]]
 name = "RealRooted.Hutchinson.isLaguerrePolya_tsum"
 module = "RealRooted.Hutchinson"
-label = "Hutchinson: Σ a_k zᵏ with a_k > 0 and a_{k+1}² ≥ 4 a_k a_{k+2} is Laguerre–Pólya"
+label = "Hutchinson: $∑ a_k z^k$ with $a_k > 0$ and $a_{k+1}^2 ≥ 4 a_k a_{k+2}$ is Laguerre–Pólya"
 
 [[theorems]]
 name = "RealRooted.Kurtz.coefficient_criterion"
 module = "RealRooted.Kurtz"
-label = "Kurtz: positive coefficients with a_k² > 4 a_{k-1} a_{k+1} give a real-rooted polynomial"
+label = "Kurtz: positive coefficients with $a_k^2 > 4 a_{k-1} a_{k+1}$ give real roots"
 -->
 
 <!-- realrooted-catalog-content -->

@@ -34,7 +34,7 @@ label = "Chain polynomials of a lower-triangular matrix"
 [[definitions]]
 name = "RealRooted.BrandenLeite.affineNegativePowerCoeff"
 module = "RealRooted.BrandenLeite.AffineNegativePower"
-label = "Coefficients of (Q(u) − tB(u))^(−κ) as polynomials in t"
+label = "Coefficients of $(Q(u) - tB(u))^{-κ}$ as polynomials in $t$"
 
 [[definitions]]
 name = "RealRooted.BrandenLeite.affineLogCoeff"
@@ -79,7 +79,7 @@ tags = ["realrooted-original"]
 [[theorems]]
 name = "RealRooted.BrandenLeite.affineNegativePowerCoeff_factor_properties"
 module = "RealRooted.BrandenLeite.PositivePowerFactors"
-label = "Rows of (Q(u) − tB(u))^(−κ) have negative roots, degree ⌊n/r⌋ and interlace"
+label = "Rows of $(Q(u) - tB(u))^{-κ}$ have negative roots, degree $⌊n/r⌋$ and interlace"
 tags = ["realrooted-original"]
 
 [[theorems]]

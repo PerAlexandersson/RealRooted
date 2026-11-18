@@ -30,7 +30,7 @@ years = [1992, 2006, 2007, 2008]
 [[theorems]]
 name = "RealRooted.derivativeRecurrence_interlaces_of_roots_mem_Icc"
 module = "RealRooted.DerivativeRecurrence.RootWindow"
-label = "Rows of P_{n+1} = A_n P_n′ + B_n P_n interlace if their roots stay in a window"
+label = "Rows of $P_{n+1} = A_n P_n' + B_n P_n$ interlace if their roots stay in a window"
 headline = true
 
 [[theorems]]
@@ -51,7 +51,7 @@ label = "Interlacing when each new row has its roots in the next window"
 [[theorems]]
 name = "RealRooted.threeTerm_interlaces_of_roots_mem_Icc"
 module = "RealRooted.DerivativeRecurrence.RootWindow"
-label = "Rows of P_{n+2} = a_n P_{n+1} + b_n P_n interlace in a fixed root window"
+label = "Rows of $P_{n+2} = a_n P_{n+1} + b_n P_n$ interlace in a fixed root window"
 
 [[theorems]]
 name = "RealRooted.strictInterl_endpointDerivative"
@@ -81,7 +81,7 @@ label = "(a + bx) f + x(u − vx) f′ is PF iff a + u · (multiplicity of 0 in 
 [[theorems]]
 name = "RealRooted.strictInterl_of_variableDelay_recurrence"
 module = "RealRooted.Interlacing.VariableDelay"
-label = "Delay recurrences Q_{n+1} = Q_n + w x Q_{p(n+1)}: Q_i ≪ Q_n for p(n) ≤ i ≤ n"
+label = "Delay recurrences $Q_{n+1} = Q_n + wx Q_{p(n+1)}$: $Q_i ≪ Q_n$ for $p(n) ≤ i ≤ n$"
 
 [[theorems]]
 name = "RealRooted.strictInterl_iterate_derivative_mul_X_sub_C_pow_succ"

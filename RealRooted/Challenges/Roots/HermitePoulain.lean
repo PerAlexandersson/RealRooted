@@ -31,7 +31,7 @@ label = "The operator f(D)"
 [[definitions]]
 name = "RealRooted.besselOperator"
 module = "RealRooted.Hermite.BesselOperatorFamily"
-label = "The finite Bessel operator Σ (-λ)^k D^(2k+r) / (k! (k+r)!)"
+label = 'The finite Bessel operator $∑_k (-λ)^k D^{2k+r} / (k!\,(k+r)!)$'
 
 [[definitions]]
 name = "RealRooted.imaginaryCentralDifference"

@@ -81,7 +81,7 @@ label = "Borcea–Brändén–Liggett: strongly Rayleigh measures are negatively
 [[theorems]]
 name = "RealRooted.MvRealStable.invertVariable"
 module = "RealRooted.MultivariateStability.Inversion"
-label = "Inversion z^d P(−1/z) in one variable preserves real stability"
+label = "Inversion $z^d P(-1/z)$ in one variable preserves real stability"
 
 [[theorems]]
 name = "RealRooted.MvPolynomial.IsHomogeneous.mvRealStable_iff_forall_hyperbolicAt_pos"

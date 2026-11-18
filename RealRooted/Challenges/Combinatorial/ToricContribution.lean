@@ -40,12 +40,12 @@ label = "Interlacing sequence"
 [[definitions]]
 name = "RealRooted.ParkingFunctions.ToricContribution.rPolynomial"
 module = "RealRooted.ParkingFunctions.ToricContribution.Definitions"
-label = "Hypergeometric polynomials R_d"
+label = "Hypergeometric polynomials $R_d$"
 
 [[definitions]]
 name = "RealRooted.ParkingFunctions.ToricContribution.normalizedRPolynomialFamily"
 module = "RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer"
-label = "The sign-normalized family of the R_d"
+label = "The sign-normalized family of the $R_d$"
 
 [[definitions]]
 name = "RealRooted.HasCommonLeftInterleaver"
@@ -69,7 +69,7 @@ headline = true
 name = """RealRooted.ParkingFunctions.ToricContribution.normalizedRPolynomialFamily_\
 hasCommonLeftInterleaver"""
 module = "RealRooted.ParkingFunctions.ToricContribution.CommonInterlacer"
-label = "The R_d have a common interleaver"
+label = "The $R_d$ have a common interleaver"
 
 [[theorems]]
 name = """RealRooted.ParkingFunctions.ToricContribution.\

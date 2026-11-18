@@ -32,7 +32,7 @@ label = "Nonnegative entries and nonnegative ordered 2 × 2 minors"
 [[definitions]]
 name = "RealRooted.hessenbergRow"
 module = "RealRooted.Toeplitz.HessenbergRows"
-label = "The rows P_k, the coefficients of 1 / (det (I + z A) − t z)"
+label = 'The rows $P_k$, the coefficients of $1 / (\det(I + zA) - tz)$'
 
 [[theorems]]
 name = "RealRooted.hessenbergRow_certificate"
@@ -54,7 +54,7 @@ tags = []
 [[theorems]]
 name = "RealRooted.siteWeightedRunPolynomial_certificate"
 module = "RealRooted.Toeplitz.SiteWeightedRunRoots"
-label = "Run polynomials B_N: B_N(0) = 1, negative real roots, B_N ≪ B_{N+1}"
+label = "Run polynomials $B_N$: $B_N(0) = 1$, negative real roots, $B_N ≪ B_{N+1}$"
 
 [[theorems]]
 name = "RealRooted.parityRow_certificate_of_natDegree_ne_zero"
@@ -69,7 +69,7 @@ label = "Rows of 1/(1 − tz + z² + ∑ cⱼ zʲ⁺¹) interlace when A(R) ≤ 
 [[theorems]]
 name = "RealRooted.ToeplitzPerturbation.strictInterl_row_succ_of_sum_le"
 module = "RealRooted.Toeplitz.SignedPerturbation"
-label = "The bandwidth criterion ∑ j |cⱼ| ≤ (1/s)(1 − 1/s)^((s − 1)/2) suffices"
+label = "The bandwidth criterion $∑_j j |c_j| ≤ (1/s)(1 - 1/s)^{(s - 1)/2}$ suffices"
 -->
 
 <!-- realrooted-catalog-content -->

@@ -22,7 +22,7 @@ tags = ["realrooted-original"]
 [[definitions]]
 name = "RealRooted.Schur.elementarySubstitution"
 module = "RealRooted.Schur.ElementaryToeplitz"
-label = "Φ(t) = det(M + tV): e_r replaced by e_r + t in a dual Jacobi–Trudi matrix"
+label = '$Φ(t) = \det(M + tV)$: $e_r$ replaced by $e_r + t$ in a dual Jacobi–Trudi matrix'
 
 [[definitions]]
 name = "RealRooted.Schur.rectangularElementarySubstitution"
@@ -32,7 +32,7 @@ label = "Signed elementary substitution for a rectangular shape"
 [[theorems]]
 name = "RealRooted.Schur.elementarySubstitution_isRealRooted"
 module = "RealRooted.Schur.Roots"
-label = "Replacing e_r by e_r + t in a dual Jacobi–Trudi determinant gives a real-rooted polynomial"
+label = "A dual Jacobi–Trudi determinant with $e_r$ replaced by $e_r + t$ is real-rooted"
 headline = true
 
 [[theorems]]

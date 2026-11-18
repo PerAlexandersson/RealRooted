@@ -73,7 +73,7 @@ label = "Each Chow derangement polynomial of a TNN matrix is zero or real-rooted
 [[theorems]]
 name = "RealRooted.BrandenVecchi.chowPolynomial_interl_chowDerangement_of_isTotallyNonneg"
 module = "RealRooted.BrandenVecchi.ChowTotallyNonneg"
-label = "The Chow polynomial c_n interlaces the Chow derangement polynomial d_n"
+label = "The Chow polynomial $c_n$ interlaces the Chow derangement polynomial $d_n$"
 
 [[theorems]]
 name = "RealRooted.BrandenVecchi.aissenSchoenbergWhitneyEdreiChow_isPFPolynomial"
@@ -101,7 +101,7 @@ label = "For n ≥ 1, the dual Chow polynomial interlaces the augmented one"
 objects = ["Refined Hodge–Poincaré polynomials of uniform matroids"]
 name = "RealRooted.BinderVecchi.isRealRooted_refinedHodgePoincare"
 module = "RealRooted.Applications.BinderVecchi.UniformMatroid"
-label = "Binder–Vecchi: refined Hodge–Poincaré polynomials of U_{r,n} are real-rooted"
+label = "Binder–Vecchi: refined Hodge–Poincaré polynomials of $U_{r,n}$ are real-rooted"
 
 [[theorems]]
 name = "RealRooted.BinderVecchi.isRealRooted_modifiedAugmentedHodgePoincare"
@@ -112,13 +112,13 @@ label = "Binder–Vecchi: the modified augmented family is real-rooted"
 objects = ["Chow polynomials of uniform matroids"]
 name = "RealRooted.UniformChow.isRealRooted_chowUniform"
 module = "RealRooted.Applications.BinderVecchi.UniformChow"
-label = "The Chow polynomial of U_{r,n} is real-rooted"
+label = "The Chow polynomial of $U_{r,n}$ is real-rooted"
 
 [[theorems]]
 objects = ["Augmented Chow polynomials of uniform matroids"]
 name = "RealRooted.UniformChow.isRealRooted_augChowUniform"
 module = "RealRooted.Applications.BinderVecchi.UniformChow"
-label = "The augmented Chow polynomial of U_{r,n} is real-rooted"
+label = "The augmented Chow polynomial of $U_{r,n}$ is real-rooted"
 -->
 
 <!-- realrooted-catalog-content -->

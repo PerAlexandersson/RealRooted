@@ -46,7 +46,7 @@ label = "An operator matrix preserves ordered PF vectors iff every 2 × 2 submat
 [[theorems]]
 name = "RealRooted.OperatorMatrix.PreservesOrderedPF.letters_iff"
 module = "RealRooted.OperatorMatrix.OneThetaX"
-label = "A matrix over {1, θ, x} preserves ordered PF vectors iff all 2×2 blocks are of 13 types"
+label = 'A $\{1, θ, x\}$-matrix preserves ordered PF vectors iff its $2×2$ blocks are of 13 types'
 
 [[theorems]]
 name = "RealRooted.OperatorMatrix.EulerDerivativeLag.splits_of_recurrence_one_X"

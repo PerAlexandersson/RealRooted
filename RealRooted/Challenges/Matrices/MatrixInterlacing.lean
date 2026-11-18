@@ -58,13 +58,13 @@ label = "The reversed product-sum of two interlacing nonnegative sequences is re
 [[theorems]]
 name = "RealRooted.Atomic2x2Matrix.isNondegenerate_and_interlacing_iff_mem"
 module = "RealRooted.MatrixInterlacing"
-label = "Exactly 18 nondegenerate 2 × 2 matrices over {0, 1, x} preserve interlacing"
+label = 'Exactly 18 nondegenerate $2 × 2$ matrices over $\{0, 1, x\}$ preserve interlacing'
 symcat = "smallInterlacingMatrices"
 
 [[theorems]]
 name = "RealRooted.Atomic2x2Matrix.ncard_preservesInterlacing"
 module = "RealRooted.MatrixInterlacing"
-label = "40 of the 81 matrices over {0, 1, x} preserve interlacing"
+label = '40 of the 81 matrices over $\{0, 1, x\}$ preserve interlacing'
 
 [[theorems]]
 name = "RealRooted.IsInterlacingSeq0Nonneg.matPolyAction_of_rowThreshold"

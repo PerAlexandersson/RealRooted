@@ -41,39 +41,39 @@ label = "Jacobi–Stirling numbers of the second kind"
 [[definitions]]
 name = "RealRooted.JacobiStirlingDescent.insertion"
 module = "RealRooted.CombinatorialExamples.JacobiStirling.Descent.Basic"
-label = "The insertion operator D_L f = (1 + Lx) f + x(1 − x) f′"
+label = "The insertion operator $D_L f = (1 + Lx) f + x(1 - x) f'$"
 
 [[definitions]]
 name = "RealRooted.JacobiStirlingDescent.descentSum"
 module = "RealRooted.CombinatorialExamples.JacobiStirling.Descent.RealRooted"
-label = "The Jacobi–Stirling descent polynomial A_{k,i}"
+label = "The Jacobi–Stirling descent polynomial $A_{k,i}$"
 
 [[theorems]]
 name = "RealRooted.JacobiStirlingDescent.weightedDescentSum_splits_simple_neg"
 module = "RealRooted.CombinatorialExamples.JacobiStirling.Descent.RealRooted"
-label = "Ma–Wang: for i ∈ {1, 2, 3, k − 2, k − 1}, combinations Σ c_S A_{k,S} are real-rooted"
+label = 'Ma–Wang: for $i ∈ \{1, 2, 3, k - 2, k - 1\}$, every $∑ c_S A_{k,S}$ is real-rooted'
 headline = true
 
 [[theorems]]
 objects = ["Jacobi–Stirling descent polynomials"]
 name = "RealRooted.JacobiStirlingDescent.descentSum_splits_simple_neg"
 module = "RealRooted.CombinatorialExamples.JacobiStirling.Descent.RealRooted"
-label = "A_{k,i} is real-rooted for i ∈ {1, 2, 3, k − 2, k − 1}"
+label = '$A_{k,i}$ is real-rooted for $i ∈ \{1, 2, 3, k - 2, k - 1\}$'
 
 [[theorems]]
 name = "RealRooted.JacobiStirlingDescent.isGood_descentPoly"
 module = "RealRooted.CombinatorialExamples.JacobiStirling.Descent.Basic"
-label = "For k ≥ 1, A_{k,S} has degree 2k − |S| − 1, constant term 1, simple negative roots"
+label = "For $k ≥ 1$, $A_{k,S}$ has degree $2k - |S| - 1$, constant term 1, simple negative roots"
 
 [[theorems]]
 name = "RealRooted.JacobiStirlingDescent.StrictInterleave.insertion_succ"
 module = "RealRooted.CombinatorialExamples.JacobiStirling.Descent.Comparison"
-label = "If f ≺ g, deg g = deg f + 1 and deg f < L, then D_L f ≺ D_{L+1} g"
+label = 'If $f ≺ g$, $\deg g = \deg f + 1$ and $\deg f < L$, then $D_L f ≺ D_{L+1} g$'
 
 [[theorems]]
 name = "RealRooted.JacobiStirlingDescent.X_mul_descentPoly_Icc"
 module = "RealRooted.CombinatorialExamples.JacobiStirling.Descent.Basic"
-label = "Deleting every barred letter: x A_{k,[k]} is the second-order Eulerian polynomial"
+label = "Deleting every barred letter: $x A_{k,[k]}$ is the second-order Eulerian polynomial"
 
 [[theorems]]
 name = "RealRooted.JacobiStirling.firstKindMatrix_isTotallyNonneg"

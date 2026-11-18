@@ -35,12 +35,12 @@ headline = true
 [[theorems]]
 name = "RealRooted.Gurvits.gurvitsFactor_mul_capacity_le_capacity_step"
 module = "RealRooted.Gurvits"
-label = "Gurvits: capacity drops by at most ((d−1)/d)^(d−1) per variable"
+label = "Gurvits: capacity drops by at most $((d - 1)/d)^{d-1}$ per variable"
 
 [[theorems]]
 name = "RealRooted.Gurvits.mul_le_coeff_one_of_splits"
 module = "RealRooted.Gurvits.Univariate"
-label = "Gurvits: c ((d − 1)/d)^(d − 1) ≤ q′(0) when ct ≤ q(t) for real-rooted q ≥ 0"
+label = "Gurvits: $c ((d - 1)/d)^{d-1} ≤ q'(0)$ when $ct ≤ q(t)$ for real-rooted $q ≥ 0$"
 -->
 
 <!-- realrooted-catalog-content -->
