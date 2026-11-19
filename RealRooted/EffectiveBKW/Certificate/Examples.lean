@@ -86,6 +86,11 @@ example : IntPoly.posOn [1] ⟨2, 1⟩ ⟨1, 1⟩ = false := by decide +kernel
 
 example : IntPoly.posOn [1, 1] ⟨1, 2⟩ ⟨2, 4⟩ = true := by decide +kernel
 
+-- A positive constant transform can conceal a zero at the upper endpoint.
+example : IntPoly.posOn [1, -1] ⟨0, 1⟩ ⟨1, 1⟩ = false := by decide +kernel
+
+example : IntPoly.posOn [1, 0, 0] ⟨0, 1⟩ ⟨1, 1⟩ = true := by decide +kernel
+
 example : ({ sqrtSign with boxes := [] } : SignCond).check sqrtBranch = false := by
   decide +kernel
 
