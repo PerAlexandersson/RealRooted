@@ -99,7 +99,10 @@ theorem evalScaled_eq (p : IntPoly) (q : QNum) (hq : q.valid = true) :
     field_simp
 
 /-- A zero test that tolerates trailing zero coefficients. -/
-def eqCheck (p q : IntPoly) : Bool := (addList p (q.map (-1 * ·))).all (· == 0)
+def eqCheck : IntPoly → IntPoly → Bool
+  | [], q => q.all (· == 0)
+  | p, [] => p.all (· == 0)
+  | a :: p, b :: q => (a == b) && eqCheck p q
 
 private theorem ofList_eq_zero_of_all {p : IntPoly} (h : p.all (· == 0) = true) :
     (ofList p : ℝ[X]) = 0 := by
@@ -112,9 +115,16 @@ private theorem ofList_eq_zero_of_all {p : IntPoly} (h : p.all (· == 0) = true)
 /-- Integer-list equality checks imply polynomial equality. -/
 theorem eqCheck_sound {p q : IntPoly} (h : p.eqCheck q = true) :
     p.polynomial = q.polynomial := by
-  have hz := ofList_eq_zero_of_all h
-  rw [ofList_addList, ofList_map_mul] at hz
-  simpa [polynomial] using eq_of_sub_eq_zero (by simpa [sub_eq_add_neg] using hz)
+  induction p generalizing q with
+  | nil => exact (ofList_eq_zero_of_all h).symm
+  | cons a p ih =>
+    cases q with
+    | nil => exact ofList_eq_zero_of_all h
+    | cons b q =>
+      simp only [eqCheck, Bool.and_eq_true, beq_iff_eq] at h
+      have ht := ih h.2
+      simpa only [polynomial, ofList_cons, h.1] using
+        congrArg (fun r : ℝ[X] => C (b : ℝ) + X * r) ht
 
 /-- Multiplication by an integer. -/
 def scale (a : ℤ) (p : IntPoly) : IntPoly := p.map (a * ·)
@@ -210,8 +220,10 @@ theorem eval_mul (f g : IntPoly2) (t y : ℝ) :
 def smul (a : ℤ) (f : IntPoly2) : IntPoly2 := f.map (IntPoly.scale a)
 
 /-- Bivariate equality test, tolerating trailing zeros in either variable. -/
-def eqCheck (f g : IntPoly2) : Bool :=
-  (add f (smul (-1) g)).all (fun p => p.eqCheck [])
+def eqCheck : IntPoly2 → IntPoly2 → Bool
+  | [], g => g.all (fun p => p.eqCheck [])
+  | f, [] => f.all (fun p => p.eqCheck [])
+  | p :: f, q :: g => p.eqCheck q && eqCheck f g
 
 /-- Evaluation commutes with integer scaling. -/
 theorem eval_smul (a : ℤ) (f : IntPoly2) (t y : ℝ) :
@@ -235,10 +247,16 @@ theorem eqCheck_sound {f g : IntPoly2} (h : eqCheck f g = true) (t y : ℝ) :
       have hp := congrArg (Polynomial.eval t) (IntPoly.eqCheck_sound hk.1)
       simp only [IntPoly.polynomial, ofList_nil, Polynomial.eval_zero] at hp
       simp [eval, IntPoly.eval, IntPoly.polynomial, hp, ih hk.2]
-  have he := hz _ h
-  rw [eval_add, eval_smul] at he
-  norm_num only [Int.cast_neg, Int.cast_one] at he
-  linarith
+  induction f generalizing g with
+  | nil => exact (hz g h).symm
+  | cons p f ih =>
+    cases g with
+    | nil => exact hz (p :: f) h
+    | cons q g =>
+      simp only [eqCheck, Bool.and_eq_true] at h
+      have hp := congrArg (Polynomial.eval t) (IntPoly.eqCheck_sound h.1)
+      change p.eval t = q.eval t at hp
+      simp only [eval, hp, ih h.2]
 
 end IntPoly2
 end RealRooted.EffectiveBKW
