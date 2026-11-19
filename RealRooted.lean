@@ -478,9 +478,16 @@ public import RealRooted.EffectiveBKW.Certificate.IsolatedRoot
 public import RealRooted.EffectiveBKW.Certificate.ListPoly
 public import RealRooted.EffectiveBKW.Certificate.Positivity
 public import RealRooted.EffectiveBKW.Certificate.SignGrid
+public import RealRooted.EffectiveBKW.Domination
+public import RealRooted.EffectiveBKW.EdgeLimits
+public import RealRooted.EffectiveBKW.Examples.Chebyshev
+public import RealRooted.EffectiveBKW.Exterior
+public import RealRooted.EffectiveBKW.PairExpansion
+public import RealRooted.EffectiveBKW.Phase
 public import RealRooted.EffectiveBKW.QuadraticInverse
 public import RealRooted.EffectiveBKW.Tail
 public import RealRooted.EffectiveBKW.TailExamples
+public import RealRooted.EffectiveBKW.ZeroCount
 public import RealRooted.ElementaryDifferential
 public import RealRooted.EndpointDerivative
 public import RealRooted.EndpointDerivative.Basic
