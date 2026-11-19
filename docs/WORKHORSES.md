@@ -385,8 +385,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 389 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
-| 252 | `RealRooted.EffectiveBKW.IntPoly2.eval_add` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate addition. |
+| 391 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
+| 254 | `RealRooted.EffectiveBKW.IntPoly2.eval_add` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate addition. |
 | 19 | `RealRooted.bezoutEntry.wronskian` | `RealRooted.Bezoutian.RootEvaluation` |  |
 | 15 | `RealRooted.eval_pos_of_all_roots_lt` | `RealRooted.WagnerRightSum.Sign` |  |
 | 13 | `RealRooted.eval_complexify_ne_zero_of_splits_of_im_pos` | `RealRooted.HermiteBiehler.Basic` | A nonzero split real polynomial has no root in the open upper half-plane. |
@@ -408,8 +408,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 6 | `RealRooted.StrictInterl.eval_mul_derivative_nonpos_of_left_root` | `RealRooted.Interlacing.OuterDifference` | At a root of the left polynomial in a positive-leading interlacing pair, the right value and left derivative have nonpositive product. |
 | 6 | `RealRooted.eval_complexify_oddEvenPolynomial` | `RealRooted.HermiteBiehler.OddEven` |  |
 | 6 | `RealRooted.eval_complexify_ofReal` | `RealRooted.HermiteBiehler.Converse.Wronskian` | Value of a complexified real polynomial at a real point. |
+| 6 | `RealRooted.exists_left_endpoint_sign` | `RealRooted.RootCounting.SignChanges` | A positive-leading degree-`d` polynomial has the sign `(-1)^d` sufficiently far to the left. |
 | 6 | `RealRooted.exists_upperHalfPlane_eval_ne_zero` | `RealRooted.MultivariateStability` | A nonzero multivariate polynomial has a nonzero evaluation in a product of open upper half-planes. |
-| 5 | `MvPolynomial.HasNonnegCoeffs.eval_pos` | `RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative` |  |
 
 ## recurrence
 
@@ -496,6 +496,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 9 | `MvPolynomial.algebraicSymbol_eq_sum` | `RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol` | Expand the finite algebraic symbol in its bounded monomial basis. |
 | 8 | `RealRooted.JacobiDeformation.risingFactorial_pos` | `RealRooted.JacobiDeformation.Pochhammer` |  |
 | 7 | `ParkingFunction.isParkingFunction_iff_prefix` | `RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunction` | The finite-indexed predicate is equivalent to the usual bounded-natural formulation used by the existing parking-function modules. |
+| 7 | `Polynomial.splits_nodup_roots_of_strict_sign_changes` | `RealRooted.Mathlib.Algebra.Polynomial.IntervalSignChanges` | A finite grid with strict sign changes accounts for every root of a nonzero polynomial of degree at most the number of gaps. |
 | 7 | `RealRooted.MaWang.exists_roots_strictly_interlacing_of_consecutive_signs` | `RealRooted.MaWang.StrictSigns.Assembly` | Public strict wrapper around `exists_strictSignInterleaving`. |
 | 7 | `RealRooted.ParkingFunctions.ToricContribution.realRisingFactorial_pos` | `RealRooted.ParkingFunctions.ToricContribution.Definitions` |  |
 | 7 | `RealRooted.StrictInterl.X_add_C_iff` | `RealRooted.Linear` | Orientation sanity check for the local `StrictInterl` convention on linear factors. |
@@ -503,7 +504,6 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 7 | `RealRooted.rootSeqDesc_pairwise` | `RealRooted.CommonInterleaver.RootDesc` |  |
 | 6 | `Multiset.exists_pos_lt_and_two_mul_le_abs_sub_toFinset` | `RealRooted.RootMultiplicityMatching` | Choose a positive radius, smaller than a prescribed one, whose doubled balls around distinct values of a finite real multiset are disjoint. |
 | 6 | `Polynomial.shiftedJacobiSubdiag_pos` | `RealRooted.Mathlib.RingTheory.Polynomial.Jacobi` | The subdiagonal coefficient in the monic shifted-Jacobi recurrence is strictly positive in every positive degree when both parameters exceed `-1`. |
-| 6 | `Polynomial.splits_nodup_roots_of_strict_sign_changes` | `RealRooted.Mathlib.Algebra.Polynomial.IntervalSignChanges` | A finite grid with strict sign changes accounts for every root of a nonzero polynomial of degree at most the number of gaps. |
 | 6 | `Polynomial.tendsto_standardizedCoeffDistribution` | `RealRooted.Mathlib.Probability.CoeffDistribution` | **Harper's central limit theorem** (Harper 1967; Bender 1973). |
 | 6 | `RealRooted.roots_nonpos_of_realrooted_of_nonneg_coeffs` | `RealRooted.RootBounds` |  |
 | 5 | `Matrix.IsTP2.minor_nonneg` | `RealRooted.MatrixInterlacing.TotallyNonnegative` |  |
