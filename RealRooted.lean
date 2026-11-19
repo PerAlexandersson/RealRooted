@@ -487,6 +487,14 @@ public import RealRooted.EffectiveBKW.Phase
 public import RealRooted.EffectiveBKW.QuadraticInverse
 public import RealRooted.EffectiveBKW.Tail
 public import RealRooted.EffectiveBKW.TailExamples
+public import RealRooted.EffectiveBKW.Tiling4.Basic
+public import RealRooted.EffectiveBKW.Tiling4.Branch
+public import RealRooted.EffectiveBKW.Tiling4.Domination
+public import RealRooted.EffectiveBKW.Tiling4.EdgePhase
+public import RealRooted.EffectiveBKW.Tiling4.Endpoint
+public import RealRooted.EffectiveBKW.Tiling4.Phase
+public import RealRooted.EffectiveBKW.Tiling4.RootCount
+public import RealRooted.EffectiveBKW.Tiling4.Theorem
 public import RealRooted.EffectiveBKW.ZeroCount
 public import RealRooted.ElementaryDifferential
 public import RealRooted.EndpointDerivative
