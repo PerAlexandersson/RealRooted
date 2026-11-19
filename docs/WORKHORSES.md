@@ -279,8 +279,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 16 | `MvPolynomial.HasNonnegCoeffs.uniqueAlgEquiv` | `RealRooted.Basic.Coefficients.Multivariate` | The unique-variable equivalence preserves coefficientwise nonnegativity. |
 | 16 | `RealRooted.HasNonnegCoeffs.bidiagonalOperator` | `RealRooted.MultiplierSequence.Bidiagonal` | Nonnegative bidiagonal entries preserve coefficient nonnegativity. |
 | 14 | `RealRooted.hasPosLeadingCoeff_one` | `RealRooted.Basic.Coefficients` |  |
+| 12 | `RealRooted.HasNonnegCoeffs.homogenize` | `RealRooted.Basic.Coefficients.Multivariate` | Homogenization preserves coefficientwise nonnegativity. |
 | 12 | `RealRooted.hasPosLeadingCoeff_add_of_natDegree_lt_left` | `RealRooted.Linear` | If the left summand has strictly larger degree and positive leading coefficient, then the sum also has positive leading coefficient. |
-| 11 | `RealRooted.HasNonnegCoeffs.homogenize` | `RealRooted.Basic.Coefficients.Multivariate` | Homogenization preserves coefficientwise nonnegativity. |
 | 11 | `RealRooted.hasPosLeadingCoeff_add_of_natDegree_lt_right` | `RealRooted.Linear` | If the right summand has strictly larger degree and positive leading coefficient, then the sum also has positive leading coefficient. |
 | 11 | `RealRooted.hasPosLeadingCoeff_add_of_same_natDegree` | `RealRooted.Linear` | In the natural positive-leading-coefficient situation, same-degree sums also have positive leading coefficient. |
 | 10 | `RealRooted.HasNonnegCoeffs.pos_leadingCoeff` | `RealRooted.Basic.Coefficients` |  |
@@ -385,6 +385,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
+| 388 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
+| 252 | `RealRooted.EffectiveBKW.IntPoly2.eval_add` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate addition. |
 | 19 | `RealRooted.bezoutEntry.wronskian` | `RealRooted.Bezoutian.RootEvaluation` |  |
 | 15 | `RealRooted.eval_pos_of_all_roots_lt` | `RealRooted.WagnerRightSum.Sign` |  |
 | 13 | `RealRooted.eval_complexify_ne_zero_of_splits_of_im_pos` | `RealRooted.HermiteBiehler.Basic` | A nonzero split real polynomial has no root in the open upper half-plane. |
@@ -408,8 +410,6 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 6 | `RealRooted.eval_complexify_ofReal` | `RealRooted.HermiteBiehler.Converse.Wronskian` | Value of a complexified real polynomial at a real point. |
 | 6 | `RealRooted.exists_upperHalfPlane_eval_ne_zero` | `RealRooted.MultivariateStability` | A nonzero multivariate polynomial has a nonzero evaluation in a product of open upper half-planes. |
 | 5 | `MvPolynomial.HasNonnegCoeffs.eval_pos` | `RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative` |  |
-| 5 | `MvPolynomial.eval_affineLineRestriction` | `RealRooted.Mathlib.RingTheory.MvPolynomial.Hyperbolic` |  |
-| 5 | `MvPolynomial.eval_specializeZero` | `RealRooted.Multiaffine` |  |
 
 ## recurrence
 
