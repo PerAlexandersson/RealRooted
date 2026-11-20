@@ -3,6 +3,7 @@ module
 public import RealRooted.EffectiveBKW.PathCube.GeometricExpansion
 public import RealRooted.EffectiveBKW.PathCube.ResidueBound
 public import Mathlib.LinearAlgebra.Matrix.Notation
+import Mathlib.Algebra.Polynomial.Degree.Lemmas
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Ring
 
@@ -61,8 +62,13 @@ private theorem residue_real_two {a c x y u v w : ℝ} (hx : x ≠ 0) :
       (x : ℂ) ^ 3 = (pairDistance a c x * (x - y) : ℝ) := by
     simp [cofactorPolynomial, normalizedRoots, linearPolynomial, Fin.prod_univ_succ]
     field_simp
-    apply Complex.ext <;> simp [pairDistance, pow_two, Complex.mul_re, Complex.mul_im] <;>
-      (ring_nf; first | done | simp)
+    apply Complex.ext
+    · simp [pairDistance, pow_two, Complex.mul_re, Complex.mul_im]
+      ring
+    · simp only [pairDistance, pow_two, Complex.mul_im, Complex.sub_re, Complex.sub_im,
+        Complex.ofReal_re, Complex.ofReal_im, Complex.add_re, Complex.add_im, Complex.mul_re,
+        Complex.I_re, Complex.I_im]
+      ring
   unfold residue
   change (cubicPolynomial u v w).eval (x : ℂ)⁻¹ /
     (cofactorPolynomial (normalizedRoots a c x y) 2).eval (x : ℂ)⁻¹ = _
