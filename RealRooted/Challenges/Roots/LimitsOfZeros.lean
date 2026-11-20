@@ -123,7 +123,8 @@ nonreal limit of zeros, then $W_n$ is not real-rooted for all large $n$.
 $W_1=x$ and $W_{n+2}=(ax+b)\,W_{n+1}+(cx+d)\,W_n$. Then every $W_n$ is real-rooted if and only
 if $ad\le bc$.
 
-**Effective version.** [@Torres2026x, Prop. 5.7, Thm. 7.1] A sign-changing version of the same picture proves
+**Effective version.** [@Torres2026x, Prop. 5.7, Thm. 7.1] A sign-changing version of the same
+picture proves
 real-rootedness for every $n$, not only in the limit. Write $P_n=2\operatorname{Re}(A\lambda^n)
 +r_n$ on an interval $J$ with a conjugate pair $\lambda,\bar\lambda$. If $|r_n|<2|A\lambda^n|$
 on $J$ for $n\ge N$, then $P_n$ has the sign of $\cos\varphi$ wherever the phase
@@ -145,6 +146,7 @@ the "only if" direction of the Wang–Zhang theorem.
 ## References
 
 [@Sokal2004ChromaticRoots, Thm. 1.5], which generalizes the Beraha–Kahane–Weiss theorem;
-[@WangZhang2017RootGeometryIII, Thm. 2.1]; [@Torres2026x, Prop. 5.7, Thm. 7.1] for the effective version.
+[@WangZhang2017RootGeometryIII, Thm. 2.1]; [@Torres2026x, Prop. 5.7, Thm. 7.1] for the
+effective version.
 <!-- /realrooted-catalog-content -->
 -/
