@@ -71,6 +71,7 @@ RealRooted/TuranHurwitz/DiskInduction.lean: RealRooted.TuranHurwitz.WeightedReci
 RealRooted/TuranHurwitz/DiskNormLowerBound.lean: Mathlib.Analysis.Complex.Polynomial.Basic
 RealRooted/TuranHurwitz/FormalFlow.lean: RealRooted.TuranHurwitz.BinomialComposition
 RealRooted/TuranHurwitz/InteriorStability.lean: RealRooted.TuranHurwitz.NormalizedTuran
+RealRooted/TuranHurwitz/Laguerre.lean: RealRooted.TuranHurwitz.PartIIMain
 RealRooted/TuranHurwitz/Main.lean: RealRooted.TuranHurwitz.BoundaryLimit
 RealRooted/TuranHurwitz/MobiusFlow.lean: Mathlib.Analysis.Complex.Basic
 RealRooted/TuranHurwitz/NormalizedTuran.lean: RealRooted.TuranHurwitz.PolynomialPair
@@ -79,6 +80,14 @@ RealRooted/TuranHurwitz/OpenStability.lean: RealRooted.TuranHurwitz.BoundaryValu
 RealRooted/TuranHurwitz/OpenStability.lean: RealRooted.TuranHurwitz.InteriorStability
 RealRooted/TuranHurwitz/PairedKernel.lean: RealRooted.TuranHurwitz.FormalParity
 RealRooted/TuranHurwitz/PairedRoots.lean: RealRooted.TuranHurwitz.FormalParity
+RealRooted/TuranHurwitz/PartIIApproximant.lean: RealRooted.Laguerre.Roots
+RealRooted/TuranHurwitz/PartIICoefficientNonzero.lean: RealRooted.TuranHurwitz.PartIIConvexRoots
+RealRooted/TuranHurwitz/PartIIEuler.lean: RealRooted.TuranHurwitz.PartIISector
+RealRooted/TuranHurwitz/PartIIExpansion.lean: RealRooted.TuranHurwitz.PartIICoefficients
+RealRooted/TuranHurwitz/PartIILaguerre.lean: RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Differential
+RealRooted/TuranHurwitz/PartIILeadingCoefficient.lean: RealRooted.TuranHurwitz.PartIILaguerre
+RealRooted/TuranHurwitz/PartIIMain.lean: RealRooted.TuranHurwitz.PartIILeadingCoefficient
+RealRooted/TuranHurwitz/PartIISector.lean: RealRooted.TuranHurwitz.PartIICoefficientNonzero
 RealRooted/TuranHurwitz/RisingConvolution.lean: RealRooted.TuranHurwitz.BinomialComposition
 RealRooted/TuranHurwitz/ScaledRecurrence.lean: RealRooted.TuranHurwitz.FlowShift
 RealRooted/TuranHurwitz/TanhCoefficients.lean: RealRooted.TuranHurwitz.KernelCoefficients
