@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.TuranHurwitz.PartIIEuler
+public import RealRooted.TuranHurwitz.PositiveEulerChain
 public import RealRooted.Laguerre.Roots
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Linarith
@@ -20,16 +20,16 @@ open Polynomial
 namespace RealRooted.TuranHurwitz
 
 /-- The finite product approximating the exponential times the Laguerre generating series. -/
-@[expose] noncomputable def partIIApproxBase (a b alpha : ℝ) (k : ℕ) (x : ℂ) : ℂ[X] :=
+@[expose] noncomputable def laguerreApproxBase (a b alpha : ℝ) (k : ℕ) (x : ℂ) : ℂ[X] :=
   (1 + C ((a / k : ℝ) : ℂ) * X) ^ k *
     (C (((rising alpha k)⁻¹ : ℝ) : ℂ) *
       ((generalizedLaguerre k (alpha - 1)).map Complex.ofRealHom).comp
         (C (((b / k : ℝ) : ℂ) * x) * X))
 
 /-- The approximant has constant coefficient one. -/
-theorem eval_zero_partIIApproxBase {alpha : ℝ} (halpha : 0 < alpha)
-    (a b : ℝ) (k : ℕ) (x : ℂ) : (partIIApproxBase a b alpha k x).eval 0 = 1 := by
-  simp only [partIIApproxBase, eval_mul, eval_pow, eval_add, eval_one, eval_C,
+theorem eval_zero_laguerreApproxBase {alpha : ℝ} (halpha : 0 < alpha)
+    (a b : ℝ) (k : ℕ) (x : ℂ) : (laguerreApproxBase a b alpha k x).eval 0 = 1 := by
+  simp only [laguerreApproxBase, eval_mul, eval_pow, eval_add, eval_one, eval_C,
     eval_X, mul_zero, add_zero, one_pow, eval_comp, eval_map]
   rw [eval₂_at_zero, coeff_zero_eq_eval_zero, generalizedLaguerre_eval_zero,
     sub_add_cancel, one_mul]
@@ -37,9 +37,9 @@ theorem eval_zero_partIIApproxBase {alpha : ℝ} (halpha : 0 < alpha)
   rw [← Complex.ofReal_mul, inv_mul_cancel₀ (rising_pos halpha k).ne', Complex.ofReal_one]
 
 /-- The approximant has degree twice the approximation index. -/
-theorem natDegree_partIIApproxBase {a b alpha : ℝ} (ha : 0 < a) (hb : 0 < b)
+theorem natDegree_laguerreApproxBase {a b alpha : ℝ} (ha : 0 < a) (hb : 0 < b)
     (halpha : 0 < alpha) {k : ℕ} (hk : 0 < k) {x : ℂ} (hx : x ≠ 0) :
-    (partIIApproxBase a b alpha k x).natDegree = 2 * k := by
+    (laguerreApproxBase a b alpha k x).natDegree = 2 * k := by
   have hkR : 0 < (k : ℝ) := by exact_mod_cast hk
   have ha0 : ((a / k : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (div_pos ha hkR).ne'
   have hb0 : ((b / k : ℝ) : ℂ) * x ≠ 0 :=
@@ -51,7 +51,7 @@ theorem natDegree_partIIApproxBase {a b alpha : ℝ} (ha : 0 < a) (hb : 0 < b)
         (C (((b / k : ℝ) : ℂ) * x) * X)).natDegree = k := by
     rw [natDegree_comp, natDegree_map, natDegree_generalizedLaguerre,
       natDegree_C_mul_X _ hb0, mul_one]
-  rw [partIIApproxBase, natDegree_mul, natDegree_pow, hfirst,
+  rw [laguerreApproxBase, natDegree_mul, natDegree_pow, hfirst,
     natDegree_C_mul (Complex.ofReal_ne_zero.mpr (inv_ne_zero (rising_pos halpha k).ne')),
     hsecond]
   · lia
@@ -65,15 +65,15 @@ theorem natDegree_partIIApproxBase {a b alpha : ℝ} (ha : 0 < a) (hb : 0 < b)
       (by intro h; have hd := congrArg natDegree h; rw [hsecond, natDegree_zero] at hd; lia)
 
 /-- Every root lies on one of the two generating rays of the cone. -/
-theorem roots_partIIApproxBase {a b alpha : ℝ} (ha : 0 < a) (hb : 0 < b)
+theorem roots_laguerreApproxBase {a b alpha : ℝ} (ha : 0 < a) (hb : 0 < b)
     (halpha : 0 < alpha) {k : ℕ} (hk : 0 < k) {x : ℂ} (hx : 0 < x.re) :
-    ∀ z ∈ (partIIApproxBase a b alpha k x).roots, z ∈ partIICone x := by
+    ∀ z ∈ (laguerreApproxBase a b alpha k x).roots, z ∈ twoRaySector x := by
   have hkR : 0 < (k : ℝ) := by exact_mod_cast hk
   have hx0 : x ≠ 0 := by intro h; simp [h] at hx
   intro z hz
-  have hev : (partIIApproxBase a b alpha k x).eval z = 0 :=
+  have hev : (laguerreApproxBase a b alpha k x).eval z = 0 :=
     (Polynomial.mem_roots'.mp hz).2
-  simp only [partIIApproxBase, eval_mul, eval_pow, eval_add, eval_one, eval_C,
+  simp only [laguerreApproxBase, eval_mul, eval_pow, eval_add, eval_one, eval_C,
     eval_X, eval_comp] at hev
   rcases mul_eq_zero.mp hev with hfirst | hsecond
   · have heq : 1 + ((a / k : ℝ) : ℂ) * z = 0 := eq_zero_of_pow_eq_zero hfirst
@@ -107,16 +107,16 @@ theorem roots_partIIApproxBase {a b alpha : ℝ} (ha : 0 < a) (hb : 0 < b)
     linear_combination -heq
 
 /-- Euler-normalized Laguerre approximants have all the paired derivative coefficients needed. -/
-theorem paired_coeff_partIIApproxBase {a b alpha beta : ℝ} (ha : 0 < a) (hb : 0 < b)
+theorem paired_coeff_laguerreApproxBase {a b alpha beta : ℝ} (ha : 0 < a) (hb : 0 < b)
     (halpha : 0 < alpha) (hbeta : 0 < beta) (N : ℕ) {k : ℕ} (hk : 0 < k)
     {x : ℂ} (hx : 0 < x.re) {m n : ℕ} (hmn : m + n ≤ 2 * k) :
-    let q := derivative^[m] (partIIEuler beta N (partIIApproxBase a b alpha k x))
+    let q := derivative^[m] (positiveEuler beta N (laguerreApproxBase a b alpha k x))
     (q * q.comp (-X)).coeff (2 * n) ≠ 0 := by
-  apply paired_coeff_partIIEuler_derivative hbeta N hx
-  · rw [eval_zero_partIIApproxBase halpha]
+  apply paired_coeff_positiveEuler_derivative hbeta N hx
+  · rw [eval_zero_laguerreApproxBase halpha]
     exact one_ne_zero
-  · exact roots_partIIApproxBase ha hb halpha hk hx
-  · rwa [natDegree_partIIApproxBase ha hb halpha hk
+  · exact roots_laguerreApproxBase ha hb halpha hk hx
+  · rwa [natDegree_laguerreApproxBase ha hb halpha hk
       (by intro h; simp [h] at hx)]
 
 end RealRooted.TuranHurwitz

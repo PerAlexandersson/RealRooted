@@ -1,7 +1,7 @@
 module
 
-public import RealRooted.TuranHurwitz.PartIICoefficientNonzero
-public import RealRooted.TuranHurwitz.PartIICone
+public import RealRooted.TuranHurwitz.ConvexRegionCoefficients
+public import RealRooted.TuranHurwitz.TwoRaySector
 public import Mathlib.Algebra.Polynomial.Expand
 import Mathlib.Algebra.Polynomial.BigOperators
 import Mathlib.Analysis.Complex.Polynomial.Basic
@@ -77,8 +77,8 @@ theorem polynomial_pair_rotated_squares (p : ℂ[X]) (x : ℂ) :
   linear_combination C (p.leadingCoeff) ^ 2 * h
 
 /-- The even coefficients in the reflected product are nonzero in the part (ii) cone. -/
-theorem paired_coeff_ne_zero_of_partIICone {x : ℂ} (hx : 0 < x.re) {p : ℂ[X]}
-    (hpzero : p.eval 0 ≠ 0) (hroots : ∀ r ∈ p.roots, r ∈ partIICone x)
+theorem paired_coeff_ne_zero_of_twoRaySector {x : ℂ} (hx : 0 < x.re) {p : ℂ[X]}
+    (hpzero : p.eval 0 ≠ 0) (hroots : ∀ r ∈ p.roots, r ∈ twoRaySector x)
     {n : ℕ} (hn : n ≤ p.natDegree) : (p * p.comp (-X)).coeff (2 * n) ≠ 0 := by
   have hp : p ≠ 0 := by intro h; simp [h] at hpzero
   have hx0 : x ≠ 0 := by intro h; simp [h] at hx
@@ -92,7 +92,7 @@ theorem paired_coeff_ne_zero_of_partIICone {x : ℂ} (hx : 0 < x.re) {p : ℂ[X]
       apply hpzero
       have hev : p.eval r = 0 := (mem_roots hp).mp hr
       simpa only [h] using hev
-    exact partIICone_mul_sq_re_pos hx (hroots r hr) hr0
+    exact twoRaySector_mul_sq_re_pos hx (hroots r hr) hr0
   have hconvex : Convex ℝ {z : ℂ | 0 < z.re} :=
     (convex_Ioi (0 : ℝ)).linear_preimage Complex.reLm
   have hqcoeff : q.coeff n ≠ 0 := by

@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.SymmetricDecomposition.Theorem26
+public import RealRooted.SymmetricDecomposition.InterlacingEquivalence
 
 /-!
 # Symmetric decompositions and real-rootedness

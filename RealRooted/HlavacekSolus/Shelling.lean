@@ -1,6 +1,6 @@
 module
 
-import RealRooted.ChudnovskySeymour.Core
+import RealRooted.ChudnovskySeymour.CommonInterleaver
 import RealRooted.PosCombo
 public import RealRooted.InterlacingSequenceBasic
 

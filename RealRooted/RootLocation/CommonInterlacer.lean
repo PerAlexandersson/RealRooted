@@ -3,7 +3,7 @@ module
 public import RealRooted.Compatibility.Basic
 public import RealRooted.CommonInterleaver.RootDesc
 public import RealRooted.RootLocation.Basic
-import RealRooted.ChudnovskySeymour.Core
+import RealRooted.ChudnovskySeymour.CommonInterleaver
 import RealRooted.WagnerRightSum.Sign
 import RealRooted.CommonInterleaver.PairwiseUpgrade.FamilyCompatibility
 import RealRooted.CommonInterleaver.SuccDegreeLowDegree

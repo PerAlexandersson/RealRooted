@@ -7,7 +7,7 @@ import RealRooted.SymmetricDecomposition.EulerFPolynomial
 import RealRooted.SymmetricDecomposition.FPolynomial
 import RealRooted.SymmetricDecomposition.FPolynomialRecurrence
 import RealRooted.SymmetricDecomposition.FPolynomialSequence
-import RealRooted.SymmetricDecomposition.Theorem26
+import RealRooted.SymmetricDecomposition.InterlacingEquivalence
 
 /-!
 # Symmetric decompositions and the f-transform (Brändén–Solus)
@@ -41,7 +41,7 @@ label = "Derangement transform $x^j ↦ d_j$"
 
 [[theorems]]
 name = "RealRooted.BrandenSolus.strictInterl_iff_of_isIdDecomposition"
-module = "RealRooted.SymmetricDecomposition.Theorem26"
+module = "RealRooted.SymmetricDecomposition.InterlacingEquivalence"
 label = "Brändén–Solus: five interlacing conditions on p = a + xb are equivalent"
 headline = true
 

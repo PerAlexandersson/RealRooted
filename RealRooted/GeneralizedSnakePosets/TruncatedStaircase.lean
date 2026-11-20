@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Auxiliary
+public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowPolynomials
 public import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.FullStaircase
 
 /-!

@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.CombinatorialExamples.CoefficientHelpers
 public import RealRooted.Tactic.WagnerX
 import RealRooted.Tactic.Row.Frontend
 public import Mathlib.Tactic

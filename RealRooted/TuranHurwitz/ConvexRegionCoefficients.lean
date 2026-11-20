@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.TuranHurwitz.PartIIConvexRoots
+public import RealRooted.TuranHurwitz.EulerStepConvexRoots
 import Mathlib.Tactic.NormNum
 
 /-!

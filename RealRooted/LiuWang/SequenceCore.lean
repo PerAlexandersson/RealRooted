@@ -1,6 +1,6 @@
 module
 
-import RealRooted.LiuWang.General
+import RealRooted.LiuWang.Criterion
 import RealRooted.ScalarNormalization
 import RealRooted.SequenceClosure
 import RealRooted.SignEvaluation

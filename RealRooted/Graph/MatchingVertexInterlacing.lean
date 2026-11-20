@@ -2,7 +2,7 @@ module
 
 public import RealRooted.Mathlib.Combinatorics.SimpleGraph.MatchingPolyOn
 import RealRooted.GarloffWagner.KreinExpansion
-import RealRooted.LiuWang.General
+import RealRooted.LiuWang.Criterion
 public import RealRooted.WeightedSum
 public import RealRooted.Basic.ProperPosition
 

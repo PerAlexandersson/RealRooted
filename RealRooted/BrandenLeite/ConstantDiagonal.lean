@@ -1,6 +1,6 @@
 module
 
-import RealRooted.BrandenLeite.Theorem37
+import RealRooted.BrandenLeite.TotalNonnegativity
 public import RealRooted.PFPolynomial
 public import RealRooted.BrandenLeite.ChainPolynomial.Algebra
 import RealRooted.Linear

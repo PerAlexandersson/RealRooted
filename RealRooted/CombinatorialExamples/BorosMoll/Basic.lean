@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.CombinatorialExamples.BorosMoll.Core
+public import RealRooted.CombinatorialExamples.BorosMoll.Transform
 public import RealRooted.CombinatorialExamples.BorosMoll.SmallCases
 
 /-!

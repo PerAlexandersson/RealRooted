@@ -78,7 +78,7 @@ jobs:
           lake build \
             RealRooted.AissenSchoenbergWhitney \
             RealRooted.Bezoutian.LowDegree \
-            RealRooted.SymmetricDecomposition.Theorem26
+            RealRooted.SymmetricDecomposition.InterlacingEquivalence
 
       - name: Save .lake
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}

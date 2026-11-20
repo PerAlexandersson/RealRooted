@@ -9,7 +9,7 @@ public import RealRooted.CombinatorialExamples.StirlingPermutations
 public import RealRooted.CombinatorialExamples.SturmDerangementsExc
 public import RealRooted.CombinatorialExamples.Touchard
 public import RealRooted.LiuWang.CombinedFlux
-public import RealRooted.LiuWang.General
+public import RealRooted.LiuWang.Criterion
 public import RealRooted.LiuWang.SequenceCore
 public import RealRooted.LiuWangRecursion
 public import RealRooted.MaWang.DerivativeSequence
@@ -41,7 +41,7 @@ years = [2007, 2008]
 
 [[theorems]]
 name = "RealRooted.LiuWang.strictInterl_mul_add_mul_of_eval_nonpos"
-module = "RealRooted.LiuWang.General"
+module = "RealRooted.LiuWang.Criterion"
 label = "Liu–Wang: f ≪ af + bg when g ≪ f and b ≤ 0 at the roots of f"
 headline = true
 

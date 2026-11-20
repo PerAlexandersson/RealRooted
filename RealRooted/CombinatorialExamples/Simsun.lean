@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.CombinatorialExamples.CoefficientHelpers
 public import RealRooted.MaWang
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
 public import Mathlib.Tactic
@@ -8,7 +8,7 @@ import RealRooted.Tactic.Row.Frontend
 import RealRooted.Tactic.Row.FTransform
 import RealRooted.Tactic.Recurrence.Cancel
 import RealRooted.Tactic.Recurrence.Degree
-import RealRooted.DerivativeRecurrence.General
+import RealRooted.DerivativeRecurrence.RowDegree
 import RealRooted.DerivativeRecurrence.Interlacing
 public import RealRooted.Basic.Coefficients
 public import RealRooted.Basic.ProperPosition

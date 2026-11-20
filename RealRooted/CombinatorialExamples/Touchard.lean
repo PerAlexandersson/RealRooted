@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.CombinatorialExamples.CoefficientHelpers
 public import RealRooted.CombinatorialExamples.ColoredSetPartitions
 public import RealRooted.MaWang
 public import RealRooted.Touchard

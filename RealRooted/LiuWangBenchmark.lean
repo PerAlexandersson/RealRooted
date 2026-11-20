@@ -2,7 +2,7 @@ module
 
 public import RealRooted.MaWang
 import RealRooted.Linear
-public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.CombinatorialExamples.CoefficientHelpers
 import RealRooted.Interlacing.NegativeRoots
 public import RealRooted.Mathlib.Data.Nat.Choose.Cast
 public import Mathlib.Data.Nat.Choose.Basic

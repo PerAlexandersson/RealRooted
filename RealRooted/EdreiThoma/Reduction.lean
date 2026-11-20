@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.EdreiThoma.Identities
-import RealRooted.EdreiThoma.Easy
+import RealRooted.EdreiThoma.CanonicalProduct
 import RealRooted.Mathlib.LinearAlgebra.Matrix.CauchyBinet
 import RealRooted.PolyaFrequencyConvolution.Basic
 public import RealRooted.NatCauchyConvolution

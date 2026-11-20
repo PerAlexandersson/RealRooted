@@ -6,7 +6,7 @@ public import RealRooted.CombinatorialExamples.EvenBinom
 public import RealRooted.Interlacing.PencilPreserver
 import RealRooted.PFPolynomial.Closure
 import Mathlib.Data.Nat.Choose.Vandermonde
-import RealRooted.EulerBidiagonal.General
+import RealRooted.EulerBidiagonal.QuadraticEulerStep
 import RealRooted.MaWang.StrictSigns.RootSigns
 import RealRooted.PFPolynomial.PreserverClosure
 import RealRooted.QuadraticRoot

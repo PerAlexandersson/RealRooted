@@ -2,7 +2,7 @@ module
 
 public import RealRooted.SymmetricDecomposition
 import RealRooted.SymmetricDecomposition.FPolynomialInterlacing
-import RealRooted.SymmetricDecomposition.Theorem26
+import RealRooted.SymmetricDecomposition.InterlacingEquivalence
 public import RealRooted.SymmetricDecomposition.FPolynomial
 public import RealRooted.ObreschkoffContinuity
 

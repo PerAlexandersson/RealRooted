@@ -2,7 +2,7 @@ module
 
 public import RealRooted.AissenSchoenbergWhitney
 public import RealRooted.Bezoutian.LowDegree
-public import RealRooted.SymmetricDecomposition.Theorem26
+public import RealRooted.SymmetricDecomposition.InterlacingEquivalence
 
 /-!
 # Solution: bridge from Challenge to the RealRooted library

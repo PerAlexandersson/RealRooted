@@ -15,7 +15,7 @@ public import RealRooted.SimpleRoots
 import RealRooted.SymmetricDecomposition.Decomposition
 import RealRooted.WagnerX.NonnegativeRoots
 public import RealRooted.GammaTransform.Basic
-import RealRooted.GarloffWagner.Theorem12
+import RealRooted.GarloffWagner.SchurProductPF
 import RealRooted.Linear
 
 /-!

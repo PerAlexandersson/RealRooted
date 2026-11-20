@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.Basic
-public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.CombinatorialExamples.CoefficientHelpers
 import RealRooted.Linear
 public import RealRooted.MaWang
 public import RealRooted.Wagner

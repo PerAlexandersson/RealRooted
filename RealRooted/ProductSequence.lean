@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.ProductSequence.Core
+public import RealRooted.ProductSequence.InductionShells
 public import RealRooted.ProductSequence.EndpointPair
 public import RealRooted.ProductSequence.FactorFamilies
 public import RealRooted.ProductSequence.Factors

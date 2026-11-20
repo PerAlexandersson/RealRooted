@@ -5,7 +5,7 @@ import RealRooted.GarloffWagner.Hadamard
 import RealRooted.Hadamard.GarloffWagner
 import RealRooted.HermiteBiehler.Hurwitz
 public import RealRooted.HermiteBiehler.OddEven
-import RealRooted.GarloffWagner.Theorem12
+import RealRooted.GarloffWagner.SchurProductPF
 public import RealRooted.Hadamard.Product
 
 /-!

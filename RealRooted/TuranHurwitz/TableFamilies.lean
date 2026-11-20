@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.TuranHurwitz.Main
+public import RealRooted.TuranHurwitz.FamilyStability
 
 /-!
 # The Bell and Table 1 corollaries

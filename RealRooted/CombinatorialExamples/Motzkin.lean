@@ -1,7 +1,7 @@
 module
 
 import RealRooted.Tactic.Row.Frontend
-public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.CombinatorialExamples.CoefficientHelpers
 public import Mathlib.Combinatorics.Enumerative.Catalan.Basic
 import Mathlib.Data.Nat.Choose.Cast
 import RealRooted.Mathlib.Algebra.Polynomial.Basic

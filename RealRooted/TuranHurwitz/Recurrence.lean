@@ -14,7 +14,8 @@ import Mathlib.Tactic.Ring
 We use the six parameters of Shi, arXiv:2610.35783v2, Theorem 1.1(i).
 The parameters `σ` and `ρ` are zero throughout. Named families below are
 defined by their differential recurrences, without combinatorial identifications.
-The general stability theorem is proved in `TuranHurwitz.Main`; see RealRooted issue #2600.
+The general stability theorem is proved in `TuranHurwitz.FamilyStability`; see RealRooted issue
+#2600.
 -/
 
 public section

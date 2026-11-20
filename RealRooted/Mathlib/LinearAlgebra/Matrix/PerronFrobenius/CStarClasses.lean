@@ -9,7 +9,7 @@ public import Mathlib.Algebra.BigOperators.Field
 import Mathlib.Algebra.EuclideanDomain.Basic
 import Mathlib.Algebra.EuclideanDomain.Field
 import Mathlib.Analysis.CStarAlgebra.Classes
-public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.NonnegativeVectors
 
 /-!
 # Equality in the triangle inequality for complex numbers

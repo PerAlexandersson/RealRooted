@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.TuranHurwitz.PartIIMain
+public import RealRooted.TuranHurwitz.Laguerre.Stability
 
 /-!
 # Reflected Laguerre Turán stability
@@ -18,7 +18,7 @@ theorem reflectedLaguerre_turan_stable (N : ℕ) {lam : ℝ} (hlam : 0 ≤ lam) 
     turan m n (reflectedLaguerre N lam) ≠ 0 ∧
       ∀ z : ℂ, -lam < z.re →
         Polynomial.aeval z (turan m n (reflectedLaguerre N lam)) ≠ 0 := by
-  exact partIIFamily_turan_stable (reflectedLaguerre_admissible N hlam) m n
+  exact laguerreFamily_turan_stable (reflectedLaguerre_admissible N hlam) m n
 
 /-- CGV Conjecture 4.4 for the ordinary reflected Laguerre recurrence, at all indices. -/
 theorem reflectedOrdinaryLaguerre_turan_stable (m n : ℕ) :

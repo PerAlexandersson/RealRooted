@@ -6,8 +6,8 @@ import RealRooted.ThreeTermRecurrence.OrderTwoLimitZeros
 import RealRooted.ThreeTermRecurrence.WangZhang
 import RealRooted.EffectiveBKW.ZeroCount
 import RealRooted.EffectiveBKW.Examples.Chebyshev
-import RealRooted.EffectiveBKW.Tiling4.Theorem
-import RealRooted.EffectiveBKW.PathCube.Proof
+import RealRooted.EffectiveBKW.Tiling4.Roots
+import RealRooted.EffectiveBKW.PathCube.Roots
 
 /-!
 # Limits of zeros of recursive families
@@ -79,12 +79,12 @@ label = "Effective BKW, order two: the rows of 1/(1 − 2tz + z²)"
 
 [[theorems]]
 name = "RealRooted.EffectiveBKW.Tiling4.polynomial_roots"
-module = "RealRooted.EffectiveBKW.Tiling4.Theorem"
+module = "RealRooted.EffectiveBKW.Tiling4.Roots"
 label = "Effective BKW, order three: tilings of a 4 × n strip by 1 × 1 and 2 × 2 squares"
 
 [[theorems]]
 name = "RealRooted.EffectiveBKW.PathCube.row_splits_nodup"
-module = "RealRooted.EffectiveBKW.PathCube.Proof"
+module = "RealRooted.EffectiveBKW.PathCube.Roots"
 label = "Effective BKW, order four: a four-state transfer family with a certified remainder bound"
 -->
 

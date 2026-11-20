@@ -2,7 +2,7 @@ module
 
 import RealRooted.DegreeDropReversal
 public import RealRooted.GarloffWagner
-import RealRooted.GarloffWagner.Theorem12
+import RealRooted.GarloffWagner.SchurProductPF
 public import RealRooted.GarloffWagner.Algebra
 
 @[expose] public section

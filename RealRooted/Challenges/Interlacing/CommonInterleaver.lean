@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.ChudnovskySeymour.Core
+public import RealRooted.ChudnovskySeymour.CommonInterleaver
 public import RealRooted.CommonInterleaver.FamilyUpgrade
 public import RealRooted.CommonInterleaver.PairBridge.Compatibility.NonnegativeShift
 public import RealRooted.CommonInterleaver.RootDesc
@@ -40,14 +40,14 @@ label = "Compatible pair: every nonnegative combination is zero or real-rooted"
 
 [[theorems]]
 name = "RealRooted.chudnovskySeymour_pairwiseCompatible_iff_commonInterleaver"
-module = "RealRooted.ChudnovskySeymour.Core"
+module = "RealRooted.ChudnovskySeymour.CommonInterleaver"
 label = "Chudnovsky–Seymour: a family is pairwise compatible iff it has a common interleaver"
 headline = true
 symcat = "commonInterlacingCompatibilityTheorem"
 
 [[theorems]]
 name = "RealRooted.chudnovskySeymour_pairwiseCompatible_iff_familyCompatible"
-module = "RealRooted.ChudnovskySeymour.Core"
+module = "RealRooted.ChudnovskySeymour.CommonInterleaver"
 label = "Chudnovsky–Seymour: pairwise compatible families are compatible"
 
 [[theorems]]
