@@ -2,6 +2,7 @@ module
 
 public import RealRooted.TuranHurwitz.TanhKernel
 public import Mathlib.Analysis.Complex.Basic
+import RealRooted.TuranHurwitz.BinomialComposition
 import RealRooted.TuranHurwitz.CoefficientDerivation
 import Mathlib.Tactic.LinearCombination
 import Mathlib.Tactic.Ring

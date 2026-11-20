@@ -2,7 +2,7 @@ module
 
 public import RealRooted.TuranHurwitz.DiskKernel
 public import RealRooted.TuranHurwitz.DiskInduction
-public import RealRooted.TuranHurwitz.TanhCoefficients
+import RealRooted.TuranHurwitz.TanhCoefficients
 import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.Ring
 

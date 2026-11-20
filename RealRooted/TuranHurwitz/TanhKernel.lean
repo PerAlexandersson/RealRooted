@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.TuranHurwitz.FormalKernel
-public import RealRooted.TuranHurwitz.BinomialComposition
+import RealRooted.TuranHurwitz.BinomialComposition
 import RealRooted.TuranHurwitz.CoefficientDerivation
 import Mathlib.Tactic.LinearCombination
 import Mathlib.Tactic.Ring

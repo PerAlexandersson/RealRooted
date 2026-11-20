@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.EffectiveBKW.PathCube.ParameterBounds
-public import RealRooted.EffectiveBKW.PathCube.PhaseGeometry
+import RealRooted.EffectiveBKW.PathCube.PhaseGeometry
 import RealRooted.EffectiveBKW.PathCube.BranchBounds
 import RealRooted.EffectiveBKW.PathCube.EndpointChecks
 import Mathlib.Tactic.FunProp

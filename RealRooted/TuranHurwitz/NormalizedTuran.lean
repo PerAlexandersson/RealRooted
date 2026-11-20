@@ -5,6 +5,7 @@ public import RealRooted.TuranHurwitz.DiskCoefficients
 public import RealRooted.TuranHurwitz.PairedKernel
 public import RealRooted.TuranHurwitz.PolynomialPair
 import RealRooted.TuranHurwitz.MobiusFlow
+import RealRooted.TuranHurwitz.TanhCoefficients
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
 

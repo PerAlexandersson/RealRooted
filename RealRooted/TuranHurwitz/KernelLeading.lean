@@ -1,6 +1,8 @@
 module
 
 public import RealRooted.TuranHurwitz.DiskCoefficients
+public import RealRooted.TuranHurwitz.IntervalOperator
+import RealRooted.TuranHurwitz.TanhCoefficients
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
 

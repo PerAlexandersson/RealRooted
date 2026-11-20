@@ -5,6 +5,7 @@ public import RealRooted.TuranHurwitz.KernelLeading
 public import RealRooted.TuranHurwitz.NormalizedTuran
 import RealRooted.TuranHurwitz.InteriorStability
 import RealRooted.TuranHurwitz.DiskNormLowerBound
+import RealRooted.TuranHurwitz.TanhCoefficients
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
