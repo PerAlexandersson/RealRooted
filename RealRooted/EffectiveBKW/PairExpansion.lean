@@ -8,6 +8,9 @@ import Mathlib.Tactic.Linarith
 /-!
 # Exact dominant-pair expansions
 
+This is the setting of the effective Beraha–Kahane–Weiss method, following E. Torres,
+*Real-Rootedness and Log-Concavity of Zigzag Eulerian Polynomials*, arXiv:2611.22110.
+
 The domain is an arbitrary set; the phase theorem will require it to be order connected.
 This includes bounded open intervals and either open ray without special endpoint data.
 The expansion starts at `first`, allowing a polynomial part in a rational generating function.

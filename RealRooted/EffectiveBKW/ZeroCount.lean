@@ -16,6 +16,10 @@ import Mathlib.Tactic.Ring
 Alternating samples yield distinct roots in their open gaps. A finite set of roots
 whose cardinality reaches the degree closes the count, including several disjoint
 regions or additional exterior roots supplied by sign data.
+
+The main theorem `PairExpansion.splits_nodup_forall_ge` is a general form of the argument in
+E. Torres, arXiv:2611.22110 (Prop. 5.7 and Thm. 7.1: domination of the nearest
+conjugate pair at the phase extrema), with an explicit domination cutoff.
 -/
 
 public section
