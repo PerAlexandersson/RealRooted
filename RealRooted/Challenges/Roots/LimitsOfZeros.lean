@@ -70,7 +70,7 @@ label = "Wang–Zhang: W(n+2) = (ax + b)W(n+1) + (cx + d)W(n) is real-rooted iff
 [[theorems]]
 name = "RealRooted.EffectiveBKW.PairExpansion.splits_nodup_forall_ge"
 module = "RealRooted.EffectiveBKW.ZeroCount"
-label = "Effective BKW: a dominating conjugate pair and its phase crossings give simple real zeros for every n ≥ N"
+label = "Effective BKW: a dominating pair and its phase crossings give simple real zeros for n ≥ N"
 
 [[theorems]]
 name = "RealRooted.EffectiveBKW.Examples.Chebyshev.splits_nodup"
