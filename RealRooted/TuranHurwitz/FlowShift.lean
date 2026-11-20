@@ -2,6 +2,7 @@ module
 
 public import RealRooted.TuranHurwitz.FormalFlow
 public import RealRooted.TuranHurwitz.NormalizedRecurrence
+import Mathlib.Algebra.Polynomial.Derivation
 import Mathlib.Tactic.LinearCombination
 import Mathlib.Tactic.Ring
 

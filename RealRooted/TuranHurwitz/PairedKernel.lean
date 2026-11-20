@@ -2,6 +2,7 @@ module
 
 public import RealRooted.TuranHurwitz.DiskKernel
 public import RealRooted.TuranHurwitz.FormalParity
+import RealRooted.TuranHurwitz.CoefficientDerivation
 import Mathlib.Tactic.Ring
 
 /-!

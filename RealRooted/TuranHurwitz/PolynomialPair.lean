@@ -2,6 +2,7 @@ module
 
 public import RealRooted.TuranHurwitz.PairedRoots
 public import RealRooted.TuranHurwitz.FiniteRoots
+import RealRooted.TuranHurwitz.CoefficientDerivation
 import Mathlib.Tactic.Ring
 
 /-!
