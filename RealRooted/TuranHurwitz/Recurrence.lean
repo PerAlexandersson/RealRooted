@@ -25,11 +25,17 @@ namespace RealRooted.TuranHurwitz
 
 /-- Parameters of the differential recurrence with `σ = ρ = 0`. -/
 structure Parameters where
+  /-- The coefficient `a₁` of `(x + λ) D` in the recurrence. -/
   a₁ : ℝ
+  /-- The constant coefficient `a₂` of the multiplier of `P_j`. -/
   a₂ : ℝ
+  /-- The coefficient `b₁` of `(x + λ)²` terms. -/
   b₁ : ℝ
+  /-- The coefficient `b₂` of `(x + λ) P_j`. -/
   b₂ : ℝ
+  /-- The shift `λ`; the conclusion excludes zeros with `Re z > −λ`. -/
   lam : ℝ
+  /-- The parameter `τ` of the `j`-dependent terms. -/
   tau : ℝ
 
 /-- The parameter conditions of Theorem 1.1(i). -/
