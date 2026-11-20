@@ -3722,6 +3722,29 @@
       },
       "label": "Sze39"
     },
+    "Torres2026x": {
+      "bibtex": "@article{Torres2026x,\n  author = {Ethan Torres},\n  title = {Real-Rootedness and Log-Concavity of Zigzag Eulerian Polynomials},\n  year = {2026},\n  eprint = {2611.22110v1},\n  url = {https://arxiv.org/abs/2611.22110v1},\n  journal = {arXiv e-prints}\n}\n",
+      "csl": {
+        "URL": "https://arxiv.org/abs/2611.22110v1",
+        "author": [
+          {
+            "family": "Torres",
+            "given": "Ethan"
+          }
+        ],
+        "container-title": "arXiv e-prints",
+        "issued": {
+          "date-parts": [
+            [
+              2026
+            ]
+          ]
+        },
+        "title": "Real-rootedness and log-concavity of zigzag eulerian polynomials",
+        "type": "article-journal"
+      },
+      "label": "Tor26"
+    },
     "Wagner1992": {
       "bibtex": "@article{Wagner1992,\n  doi = {10.1016/0022-247x(92)90261-b},\n  url2 = {https://doi.org/10.1016/0022-247x(92)90261-b},\n  year = {1992},\n  month = jan,\n  publisher = {Elsevier {BV}},\n  volume = {163},\n  number = {2},\n  pages = {459--483},\n  author = {David G Wagner},\n  title = {Total positivity of {H}adamard products},\n  journal = {Journal of Mathematical Analysis and Applications}\n}\n",
       "csl": {
