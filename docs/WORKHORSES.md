@@ -27,8 +27,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 16 | `RealRooted.MaWang.strictInterl_of_interlaces_eval_mul_neg_succ` | `RealRooted.MaWang.Strong` | Liu--Wang differ-by-1 form: if `g ⊳ f`, `F` has degree `deg(f)+1`, positive leading coefficient, and at every root `r` of `f` the value `F(r)` has the opposite sign from `g(r)`, then `f ⊳ F`. |
 | 15 | `RealRooted.strictInterl_self_X_mul_of_nonneg` | `RealRooted.WagnerX.NonnegativeRoots` | A split polynomial with nonnegative coefficients precedes its product with `X`. |
 | 13 | `RealRooted.StrictInterl.of_degree_zero_right_of_degree_one` | `RealRooted.Derivative.Interlacing` | A nonzero degree-zero real-rooted polynomial precedes a nonzero degree-one real-rooted polynomial. |
+| 12 | `RealRooted.StrictInterl.add_of_left` | `RealRooted.Wagner.LeftSum` | Wagner (2): if `h` interlaces both `f` and `g`, and `f` and `g` have positive leading coefficients, then `h` interlaces `f + g`. |
 | 12 | `RealRooted.isInterlacingSeq_iff_pairwise` | `RealRooted.InterlacingSequenceBasic` | `IsInterlacingSeq` is exactly the pairwise `StrictInterl` relation on a list. |
-| 11 | `RealRooted.StrictInterl.add_of_left` | `RealRooted.Wagner.LeftSum` | Wagner (2): if `h` interlaces both `f` and `g`, and `f` and `g` have positive leading coefficients, then `h` interlaces `f + g`. |
 | 10 | `RealRooted.MaWang.strictInterl_derivative_of_nonpos_of_splits` | `RealRooted.MaWang.DerivativeStep` | Weak Ma--Wang derivative step using the Liu--Wang sign criterion, with no degree hypothesis on `f`. |
 | 10 | `RealRooted.StrictInterl.of_degree_zero_degree_zero` | `RealRooted.ObreschkoffConverse.Derivative` | Degree-zero polynomials satisfy `StrictInterl` in both orientations. |
 | 10 | `RealRooted.StrictInterl.of_reverse_of_roots_sum_le` | `RealRooted.Basic.ProperPosition` | In the same-degree case, a reverse `StrictInterl g f` can be flipped back to `StrictInterl f g` once the root sums have the forward order. |
@@ -47,8 +47,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 |---:|---|---|---|
 | 97 | `RealRooted.StrictInterl.toInterlaces` | `RealRooted.Basic.ProperPosition` |  |
 | 61 | `RealRooted.StrictInterl.toInterl` | `RealRooted.Basic.ProperPosition` |  |
+| 45 | `RealRooted.interlaces_one_linear` | `RealRooted.Linear` |  |
 | 43 | `RealRooted.interl_zero_left` | `RealRooted.Basic.ProperPosition` |  |
-| 43 | `RealRooted.interlaces_one_linear` | `RealRooted.Linear` |  |
 | 42 | `RealRooted.derivative_interlaces_of_natDegree_ne_zero` | `RealRooted.Derivative.Interlacing` | **Derivative interlacing**: the derivative of a nonconstant real-rooted polynomial `f` interlaces `f`. |
 | 42 | `RealRooted.interl_zero_right` | `RealRooted.Basic.ProperPosition` |  |
 | 36 | `RealRooted.Interl.refl` | `RealRooted.Basic.ProperPosition` | A polynomial that splits whenever it is nonzero is zero-aware interlacing with itself. |
@@ -245,11 +245,11 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 11 | `IsCoprime.not_isRoot_right` | `RealRooted.Basic.PolynomialFacts` | Coprime polynomials cannot vanish at the same point. |
 | 10 | `RealRooted.SimpleNegRooted.darbouxOperator` | `RealRooted.EulerOperator.Darboux.NegativeRoots` | **Darboux step.** If `a > 0` and `deg f < b`, then `D_{a,-b}(f) = x (1 - x) f' + (a + b x) f` keeps the invariant in degree `deg f + 1` and strictly interlaces with `f`, with no common root. |
 | 8 | `RealRooted.StrictInterl.roots_sum_le_of_sameDegree` | `RealRooted.Basic.ProperPosition` | In the same-degree case, `StrictInterl f g` orders the sums of the roots. |
+| 7 | `Polynomial.roots_mem_of_tendsto_eval_of_natDegree_le` | `RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots` | Roots of a limit polynomial stay in any closed set that contains the roots along a sequence of uniformly bounded degree, provided evaluations converge pointwise. |
 | 7 | `Polynomial.roots_reverse_eq_map_inv` | `RealRooted.Mathlib.Algebra.Polynomial.Reverse` | If `p` splits over a field and `p 0 ≠ 0`, the roots of `p.reverse` are the inverses of the roots of `p`, retaining multiplicity. |
 | 7 | `RealRooted.HasSimpleRoots.roots_count_eq_one` | `RealRooted.SimpleRoots` | At a simple real root the root multiset carries exactly one copy. |
 | 7 | `RealRooted.Polynomial.exists_strictMono_roots` | `RealRooted.Bezoutian.RootEvaluation` |  |
 | 7 | `RealRooted.rootCountAbove_diff_le_one_of_nonRoot_isRoot` | `RealRooted.RootCountJump` | `IsRoot`-form wrapper for `rootCountAbove_diff_le_one_of_nonRoot`. |
-| 6 | `Polynomial.roots_mem_of_tendsto_eval_of_natDegree_le` | `RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots` | Roots of a limit polynomial stay in any closed set that contains the roots along a sequence of uniformly bounded degree, provided evaluations converge pointwise. |
 | 6 | `RealRooted.MaWang.exists_isRoot_ge_of_eval_nonpos_of_tendsto_atTop_atTop` | `RealRooted.MaWang.StrictSigns.Assembly` | Right-hand IVT bridge: if a polynomial is nonpositive at `r` and tends to `+∞` at `+∞`, then it has a real root to the right of `r`. |
 | 6 | `RealRooted.StrictInterl.exists_listAlternates_of_natDegree_eq` | `RealRooted.Basic.ProperPosition` | Same-degree proper position exposes sorted root lists in its oriented `ListAlternates` branch. |
 | 6 | `RealRooted.exists_rightmost_root_of_isRealRooted` | `RealRooted.Basic.PolynomialFacts` | A nonconstant real-rooted polynomial has a rightmost root. |
@@ -303,10 +303,10 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 11 | `RealRooted.natDegree_jensenPolynomial_le` | `RealRooted.MultiplierSequence` |  |
 | 10 | `Polynomial.reflect_eq_X_pow_mul_reverse` | `RealRooted.Mathlib.Algebra.Polynomial.Reverse` | Reflecting at a degree bound factors through reversal and a power of `X`. |
 | 10 | `RealRooted.natDegree_diagonalOperator_le` | `RealRooted.MultiplierSequence` |  |
+| 10 | `RealRooted.natDegree_mul_iterate_derivative_le` | `RealRooted.DerivativeRecurrence.Degree` |  |
 | 10 | `RealRooted.rootSeqDesc_length` | `RealRooted.CommonInterleaver.RootDesc` |  |
 | 9 | `RealRooted.natDegree_schurSzegoComp_le` | `RealRooted.Hadamard.Basic` |  |
 | 8 | `Polynomial.natDegree_shiftedJacobi` | `RealRooted.Mathlib.RingTheory.Polynomial.Jacobi` | For Jacobi parameters greater than `-1`, `shiftedJacobi n α β` has degree exactly `n`. |
-| 8 | `RealRooted.natDegree_mul_iterate_derivative_le` | `RealRooted.DerivativeRecurrence.Degree` |  |
 | 7 | `MvPolynomial.degreeOf_uniqueAlgEquiv_symm` | `RealRooted.Mathlib.Algebra.MvPolynomial.Equiv` | The degree in the unique variable after converting a univariate polynomial to an `MvPolynomial` is its natural degree. |
 | 7 | `Polynomial.Splits.length_eq_natDegree_of_coe_eq_roots` | `RealRooted.Mathlib.Algebra.Polynomial.Splits` | The length of a list representing all roots of a splitting polynomial is its natural degree. |
 | 7 | `Polynomial.rootMultiplicity_le_natDegree` | `RealRooted.Mathlib.Algebra.Polynomial.Roots` | A root multiplicity is at most the degree of its polynomial. |
@@ -326,13 +326,14 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | uses | theorem | module | doc |
 |---:|---|---|---|
 | 5 | `RealRooted.DegreeDropReversal.leadingCoeff_reflect_eq_coeff_zero_of_natDegree_le` | `RealRooted.DegreeDropReversal` | Under the same hypotheses, the leading coefficient of the reflected polynomial is the original constant coefficient. |
+| 5 | `RealRooted.derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos` | `RealRooted.DerivativeRecurrence.Degree` | `derivativeRecurrence_natDegree` and `derivativeRecurrence_leadingCoeff_pos` from one set of hypotheses. |
 | 5 | `RealRooted.exists_roots_pair_of_splits_natDegree_two` | `RealRooted.SameDegreeQuadraticRootCount` | A split real quadratic factors through an ordered pair of real roots. |
 | 5 | `RealRooted.leadingCoeff_mul_coeff_pos_of_roots_neg` | `RealRooted.Hadamard.SchurSzegoSigns` | A nonzero real polynomial with only (real) negative roots has all its coefficients of the sign of the leading coefficient, up to the degree. |
 | 4 | `RealRooted.LiuOppositeSigns.leadingCoeff_deleteRootFactor_of_isRoot` | `RealRooted.LiuOppositeSigns.RootDeletion` |  |
-| 4 | `RealRooted.derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos` | `RealRooted.DerivativeRecurrence.Degree` | `derivativeRecurrence_natDegree` and `derivativeRecurrence_leadingCoeff_pos` from one set of hypotheses. |
 | 3 | `Polynomial.even_signVariations_iff_sign_leadingCoeff_eq_sign_trailingCoeff` | `RealRooted.Mathlib.Algebra.Polynomial.RuleOfSigns` | The parity of the coefficient sign variations is determined by the signs of the first and last nonzero coefficients. |
 | 3 | `Polynomial.leadingCoeff_add_C_mul_of_natDegree_lt` | `RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations` | If `g` has strictly larger degree than `f`, then the leading coefficient of `f + C a * g` is the scaled leading coefficient of `g`. |
 | 3 | `RealRooted.LinRec.natDegree_eq_and_leadingCoeff_pos_of_cancel` | `RealRooted.DerivativeRecurrence.General` | Cancellation analogue of `natDegree_eq_and_leadingCoeff_pos_of_degreeLaw`. |
+| 3 | `RealRooted.TuranHurwitz.normalized_natDegree_and_leadingCoeff_pos` | `RealRooted.TuranHurwitz.NormalizedRecurrence` | The degree is the row index and the leading coefficient is positive. |
 | 3 | `RealRooted.leadingCoeff_divByMonic_X_sub_C` | `RealRooted.Interlacing.Residue` |  |
 | 3 | `RealRooted.threeTermPos_natDegree_eq_and_leadingCoeff_pos` | `RealRooted.ThreeTermRecurrence.Degree` |  |
 | 3 | `RealRooted.threeTermRatio_natDegree_eq_and_leadingCoeff_pos` | `RealRooted.ThreeTermRecurrence.Degree` |  |
@@ -346,10 +347,9 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 2 | `RealRooted.LinRec.natDegree_eq_and_leadingCoeff_pos` | `RealRooted.DerivativeRecurrence.General` | Rows of `P (n + k) = ∑ₜ Aₜ n * D^[iₜ] (P (n + jₜ))` have degree `D₀ + d * n` and positive leading coefficients, when the summands have degree at most `D₀ + d * (n + k)`, the first `k` rows have positi |
 | 2 | `RealRooted.LinRec.natDegree_eq_and_leadingCoeff_pos_of_degreeLaw` | `RealRooted.DerivativeRecurrence.General` | Rows of `P (n + k) = ∑ₜ Aₜ n * D^[iₜ] (P (n + jₜ))` have degree `D n` and positive leading coefficients, for an arbitrary degree law `D`, when the summands have degree at most `D (n + k) - D (n + jₜ)  |
 | 2 | `RealRooted.LiuOppositeSigns.exists_linear_factor_of_splits_natDegree_one` | `RealRooted.LiuOppositeSigns.PositiveSplitPair` |  |
+| 2 | `RealRooted.TuranHurwitz.intervalRow_natDegree_and_leadingCoeff_pos` | `RealRooted.TuranHurwitz.IntervalOperator` | The kernel recurrence has degree `n` and a positive leading coefficient. |
 | 2 | `RealRooted.derivRec₂_natDegree_eq_and_leadingCoeff_pos` | `RealRooted.DerivativeRecurrence.Degree` | `derivRec₂_natDegree` and `derivRec₂_leadingCoeff_pos` from one set of hypotheses. |
 | 2 | `RealRooted.derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos_step_of_cancel` | `RealRooted.DerivativeRecurrence.Interlacing` | One step of a first-order derivative recurrence whose top terms either grow (`A_{m+1} d + B_m > 0`, degree `d + m`) or cancel exactly (degree `d + m - 1`), for `f` with nonnegative coefficients. |
-| 2 | `RealRooted.eval_cross_le_of_strictInterl_sameDegree_of_nonneg` | `RealRooted.ProductOrientation` | For same-degree nonnegative-coefficient polynomials, interlacing orders the normalized values at zero. |
-| 2 | `RealRooted.exists_roots_triple_of_splits_natDegree_three` | `RealRooted.SameDegreeCubicRootCount` | A split real cubic factors through an ordered triple of real roots. |
 
 ## coeff
 
@@ -371,6 +371,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 7 | `Polynomial.coeff_basisTransform` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
 | 7 | `Polynomial.coeff_one_sub_X_pow` | `RealRooted.Mathlib.Algebra.Polynomial.Coeff` | The coefficient of `(1 - X) ^ n` is the signed binomial coefficient. |
 | 7 | `RealRooted.coeff_hadamardProduct` | `RealRooted.Hadamard.Product` |  |
+| 7 | `RealRooted.coeff_mul_iterate_derivative_of_natDegree_le` | `RealRooted.DerivativeRecurrence.Degree` |  |
 | 7 | `RealRooted.coeff_oddEvenPolynomial_odd` | `RealRooted.HermiteBiehler.OddEven` |  |
 | 7 | `RealRooted.coeff_polarTheta` | `RealRooted.EulerOperator` |  |
 | 7 | `RealRooted.coeff_schurSzegoComp_eq_zero_of_lt` | `RealRooted.Hadamard.Basic` |  |
@@ -379,14 +380,13 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 6 | `RealRooted.CenteredEulerian.coeff_sinS` | `RealRooted.CenteredEulerian.SeriesBasic` |  |
 | 6 | `RealRooted.coeff_reciprocalShift` | `RealRooted.PFPolynomial` |  |
 | 5 | `Finset.coeff_genPoly` | `RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly` | The coefficient of `X ^ k` in `genPoly s stat` counts the `k`-fibre. |
-| 5 | `Polynomial.coeff_shiftedJacobi` | `RealRooted.Mathlib.RingTheory.Polynomial.Jacobi` | The coefficient formula for the shifted Jacobi polynomial. |
 
 ## eval
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 400 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
-| 261 | `RealRooted.EffectiveBKW.IntPoly2.eval_add` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate addition. |
+| 406 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
+| 266 | `RealRooted.EffectiveBKW.IntPoly2.eval_add` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate addition. |
 | 19 | `RealRooted.bezoutEntry.wronskian` | `RealRooted.Bezoutian.RootEvaluation` |  |
 | 15 | `RealRooted.eval_pos_of_all_roots_lt` | `RealRooted.WagnerRightSum.Sign` |  |
 | 13 | `RealRooted.eval_complexify_ne_zero_of_splits_of_im_pos` | `RealRooted.HermiteBiehler.Basic` | A nonzero split real polynomial has no root in the open upper half-plane. |
@@ -423,6 +423,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
+| 13 | `RealRooted.TuranHurwitz.derivative_map` | `RealRooted.TuranHurwitz.CoefficientDerivation` | Formal differentiation commutes with mapping the coefficient ring. |
 | 8 | `RealRooted.generalizedEulerian_succ` | `RealRooted.GeneralizedEulerian` |  |
 | 7 | `RealRooted.div_ofNat_eq_C_mul` | `RealRooted.DerivativeRecurrence.SecondOrderODE` | Division by a numeral, as generated recurrences write `(1 / 2) * X`. |
 | 7 | `RealRooted.isNonnegLinearForm_one` | `RealRooted.RowThreshold` |  |
@@ -441,13 +442,12 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 3 | `PowerSeries.subst_binomialSeries_neg_ode` | `RealRooted.Mathlib.RingTheory.PowerSeries.BinomialDerivative` | Substituting `H-1` into the negative binomial series gives a solution of the formal negative-power differential equation. |
 | 3 | `PowerSeries.two_mul_mul_derivative_sqrt` | `RealRooted.Mathlib.RingTheory.PowerSeries.Sqrt` | The linear differential equation `2 f (sqrt f)' = f' sqrt f`. |
 | 3 | `RealRooted.Poisson.starC_linear_factor_left` | `RealRooted.BorceaBranden.Applications.UnivariatePoissonStar` | A linear left factor gives the Poisson differential recurrence. |
+| 3 | `RealRooted.TuranHurwitz.normalized_succ` | `RealRooted.TuranHurwitz.NormalizedRecurrence` | The normalized recurrence. |
 | 3 | `RealRooted.basisTransform_touchard_mul_X_add_C` | `RealRooted.NarayanaTransformation.Basis` | Factor recurrence for the Touchard-basis transform. |
 | 3 | `RealRooted.brandenE_X_mul` | `RealRooted.Transforms.BrandenE.Basic` | Multiplication by `X` before `brandenE` becomes the Euler differential operator afterwards. |
 | 3 | `RealRooted.eulerOperator_eq_diagonalOperator_natCast` | `RealRooted.MultiplierSequence` | The Euler operator `X d/dX` acts diagonally with multiplier `k`. |
 | 3 | `RealRooted.gammaOperator_apply` | `RealRooted.GammaPencil.Basic` |  |
 | 3 | `RealRooted.isNonnegLinearForm_X` | `RealRooted.RowThreshold` |  |
-| 3 | `RealRooted.iterateTDeriv_C_mul` | `RealRooted.IteratedDerivativeShift` |  |
-| 3 | `RealRooted.iterateTDeriv_add` | `RealRooted.IteratedDerivativeShift` |  |
 
 ## nonvanishing
 
