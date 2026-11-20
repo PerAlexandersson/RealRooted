@@ -9,7 +9,7 @@ import RealRooted.GeneralizedSnakePosets.Narayana.Turan
 import RealRooted.GeneralizedSnakePosets.SnakeBoard
 import RealRooted.GeneralizedSnakePosets.SnakeConstant
 import RealRooted.GeneralizedSnakePosets.SnakeRecurrence
-import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Auxiliary
+import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowPolynomials
 import RealRooted.GeneralizedSnakePosets.TruncatedStaircase.ColumnRecurrence
 
 /-!
@@ -46,7 +46,7 @@ label = "Modified Narayana polynomials Pₙ"
 
 [[definitions]]
 name = "RealRooted.GeneralizedSnakePosets.FiniteSkewBoard.rookSum"
-module = "RealRooted.GeneralizedSnakePosets.TruncatedStaircase.Auxiliary"
+module = "RealRooted.GeneralizedSnakePosets.TruncatedStaircase.RowPolynomials"
 label = "Auxiliary polynomials Gₙ"
 
 [[theorems]]

@@ -8,7 +8,7 @@ import RealRooted.BrandenLeite.KernelClosure
 import RealRooted.BrandenLeite.TwoKernel
 import RealRooted.BrandenLeite.ConstantDiagonal
 import RealRooted.BrandenLeite.DiagonalTail
-import RealRooted.BrandenLeite.Theorem37
+import RealRooted.BrandenLeite.TotalNonnegativity
 import RealRooted.BrandenLeite.ZeroConstant
 import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 import RealRooted.PFPolynomial.Closure

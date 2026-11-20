@@ -7,7 +7,7 @@ import RealRooted.CommonInterleaver.RootDesc
 import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Algebra
 import RealRooted.PolynomialValueEulerNumerator.Interlacing
 import RealRooted.Transforms.BrandenE.BasisImage
-import RealRooted.ChudnovskySeymour.Core
+import RealRooted.ChudnovskySeymour.CommonInterleaver
 
 /-!
 # Stable cubical shellings have real-rooted h-polynomials

@@ -1,6 +1,6 @@
 module
 
-import RealRooted.LiuWang.General
+import RealRooted.LiuWang.Criterion
 public import RealRooted.Basic.Coefficients
 public import RealRooted.Basic.ProperPosition
 

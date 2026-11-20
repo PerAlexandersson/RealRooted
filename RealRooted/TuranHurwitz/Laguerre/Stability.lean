@@ -1,7 +1,7 @@
 module
 
-import RealRooted.TuranHurwitz.PartIILimit
-public import RealRooted.TuranHurwitz.PartIILeadingCoefficient
+import RealRooted.TuranHurwitz.Laguerre.ApproximantLimit
+public import RealRooted.TuranHurwitz.Laguerre.LeadingCoefficient
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
 import Mathlib.Tactic.Linarith
 
@@ -20,31 +20,31 @@ open Polynomial Filter Topology
 namespace RealRooted.TuranHurwitz
 
 /-- The complete all-index nonzero and half-plane conclusion of Theorem 1.1(ii). -/
-theorem partIIFamily_turan_stable {c : PartIIParameters} (hc : c.Admissible) (m n : ℕ) :
-    turan m n (partIIFamily c) ≠ 0 ∧
-      ∀ z : ℂ, -c.lam < z.re → Polynomial.aeval z (turan m n (partIIFamily c)) ≠ 0 := by
-  have hne := turan_partIIFamily_ne_zero hc m n
+theorem laguerreFamily_turan_stable {c : LaguerreParameters} (hc : c.Admissible) (m n : ℕ) :
+    turan m n (laguerreFamily c) ≠ 0 ∧
+      ∀ z : ℂ, -c.lam < z.re → Polynomial.aeval z (turan m n (laguerreFamily c)) ≠ 0 := by
+  have hne := turan_laguerreFamily_ne_zero hc m n
   refine ⟨hne, ?_⟩
   let Q := fun k =>
-    (turan m n (partIIApproxFamily c (k + (m + n + 1)))).map (algebraMap ℝ ℂ)
-  let Q₀ := (turan m n (partIIFamily c)).map (algebraMap ℝ ℂ)
+    (turan m n (laguerreApproxFamily c (k + (m + n + 1)))).map (algebraMap ℝ ℂ)
+  let Q₀ := (turan m n (laguerreFamily c)).map (algebraMap ℝ ℂ)
   have hdeg : ∀ k, (Q k).natDegree ≤ 2 * m + 2 * n := by
     intro k
     dsimp [Q]
     rw [natDegree_map]
-    exact natDegree_turan_partIIApproxFamily_le c _ m n
+    exact natDegree_turan_laguerreApproxFamily_le c _ m n
   have hroots : ∀ k, ∀ r ∈ (Q k).roots, r.re ≤ -c.lam := by
     intro k r hr
     by_contra hre
     have hzero := (Polynomial.mem_roots'.mp hr).2
     dsimp [Q] at hzero
     rw [IsRoot.def, Polynomial.eval_map_algebraMap] at hzero
-    exact aeval_turan_partIIApproxFamily_ne_zero hc (by lia) m n (by lia)
+    exact aeval_turan_laguerreApproxFamily_ne_zero hc (by lia) m n (by lia)
       (lt_of_not_ge hre) hzero
   have hlim : ∀ z : ℂ, Tendsto (fun k => (Q k).eval z) atTop (𝓝 (Q₀.eval z)) := by
     intro z
     simpa only [Q, Q₀, Polynomial.eval_map_algebraMap, Function.comp_def] using
-      (tendsto_aeval_turan_partIIApproxFamily hc m n z).comp
+      (tendsto_aeval_turan_laguerreApproxFamily hc m n z).comp
         (tendsto_add_atTop_nat (m + n + 1))
   have hclosed : IsClosed {z : ℂ | z.re ≤ -c.lam} :=
     isClosed_le Complex.continuous_re continuous_const
@@ -58,9 +58,9 @@ theorem partIIFamily_turan_stable {c : PartIIParameters} (hc : c.Admissible) (m 
   exact (not_le_of_gt hz) (hrootlimit z hzroot)
 
 /-- Every admissible part (ii) Turán polynomial excludes the stated open half-plane. -/
-theorem aeval_partIIFamily_turan_ne_zero {c : PartIIParameters} (hc : c.Admissible)
+theorem aeval_laguerreFamily_turan_ne_zero {c : LaguerreParameters} (hc : c.Admissible)
     (m n : ℕ) (z : ℂ) (hz : -c.lam < z.re) :
-    Polynomial.aeval z (turan m n (partIIFamily c)) ≠ 0 :=
-  (partIIFamily_turan_stable hc m n).2 z hz
+    Polynomial.aeval z (turan m n (laguerreFamily c)) ≠ 0 :=
+  (laguerreFamily_turan_stable hc m n).2 z hz
 
 end RealRooted.TuranHurwitz

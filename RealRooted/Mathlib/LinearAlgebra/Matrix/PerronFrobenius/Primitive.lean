@@ -6,9 +6,9 @@ Authors: Matteo Cipollina
 module
 
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CollatzWielandt
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.PrimitivityCriteria
 public import Mathlib.Tactic
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.NonnegativeVectors
 
 /-!
 # Perron-Frobenius for primitive matrices

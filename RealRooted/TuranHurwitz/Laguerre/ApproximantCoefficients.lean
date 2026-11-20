@@ -1,7 +1,7 @@
 module
 
-public import RealRooted.TuranHurwitz.PartIILaguerre
-public import RealRooted.TuranHurwitz.PartIIApproximant
+public import RealRooted.TuranHurwitz.Laguerre.Reduction
+public import RealRooted.TuranHurwitz.Laguerre.Approximant
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Ring
 
@@ -73,35 +73,35 @@ theorem coeff_scaled_binomial (a : ℂ) (k r : ℕ) :
   rw [heq, comp_C_mul_X_coeff, coeff_one_add_X_pow]
 
 /-- A Cauchy product gives every fixed coefficient of the complex approximant. -/
-theorem coeff_partIIApproxBase {alpha : ℝ} (halpha : 0 < alpha)
+theorem coeff_laguerreApproxBase {alpha : ℝ} (halpha : 0 < alpha)
     (a b : ℝ) (k j : ℕ) (x : ℂ) :
-    (partIIApproxBase a b alpha k x).coeff j =
+    (laguerreApproxBase a b alpha k x).coeff j =
       ∑ r ∈ Finset.range (j + 1),
         ((k.choose (j - r) : ℂ) * (((a / k : ℝ) : ℂ) ^ (j - r))) *
           ((((k.choose r : ℝ) / rising alpha r : ℝ) : ℂ) *
             ((((b / k : ℝ) : ℂ) * x) ^ r)) := by
-  rw [partIIApproxBase, mul_comm, coeff_mul,
+  rw [laguerreApproxBase, mul_comm, coeff_mul,
     Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk]
   apply Finset.sum_congr rfl
   intro r _
   rw [coeff_scaled_normalizedLaguerre halpha, coeff_scaled_binomial, mul_comm]
 
 /-- The fixed-index real polynomial extracted from the finite approximant. -/
-@[expose] noncomputable def partIIApproxFamily (c : PartIIParameters) (k j : ℕ) : ℝ[X] :=
+@[expose] noncomputable def laguerreApproxFamily (c : LaguerreParameters) (k j : ℕ) : ℝ[X] :=
   C (rising (c.a₂ / c.a₁) j / rising (1 / c.sigma) j * (j.factorial : ℝ)) *
     ∑ r ∈ Finset.range (j + 1),
       C (((k.choose (j - r) : ℝ) * ((c.a₁ / c.sigma / k) ^ (j - r))) *
         ((k.choose r : ℝ) / rising (c.a₂ / c.a₁) r) *
-          (c.b₂ / c.sigma / k) ^ r) * partIIShift c ^ r
+          (c.b₂ / c.sigma / k) ^ r) * laguerreShift c ^ r
 
 /-- Every fixed-index approximation has degree at most its index. -/
-theorem natDegree_partIIApproxFamily_le (c : PartIIParameters) (k j : ℕ) :
-    (partIIApproxFamily c k j).natDegree ≤ j := by
+theorem natDegree_laguerreApproxFamily_le (c : LaguerreParameters) (k j : ℕ) :
+    (laguerreApproxFamily c k j).natDegree ≤ j := by
   apply (natDegree_C_mul_le _ _).trans
   apply natDegree_sum_le_of_forall_le
   intro r hr
   apply (natDegree_C_mul_le _ _).trans
-  rw [natDegree_pow, show (partIIShift c).natDegree = 1 from natDegree_X_add_C _, mul_one]
+  rw [natDegree_pow, show (laguerreShift c).natDegree = 1 from natDegree_X_add_C _, mul_one]
   exact Nat.le_of_lt_succ (Finset.mem_range.mp hr)
 
 /-- Integer shifts identify the Euler coefficient multiplier with the rising ratio. -/
@@ -114,19 +114,19 @@ theorem rising_integer_shift_ratio {beta : ℝ} (hbeta : 0 < beta) (N j : ℕ) :
   linear_combination h₂ - h₁
 
 /-- The real approximating row evaluates to the normalized Euler coefficient. -/
-theorem aeval_partIIApproxFamily {c : PartIIParameters} (hc : c.Admissible)
+theorem aeval_laguerreApproxFamily {c : LaguerreParameters} (hc : c.Admissible)
     {N : ℕ} (hN : c.a₂ / c.a₁ - 1 / c.sigma = (N : ℝ)) (k j : ℕ) (z : ℂ) :
-    Polynomial.aeval z (partIIApproxFamily c k j) =
+    Polynomial.aeval z (laguerreApproxFamily c k j) =
       (j.factorial : ℂ) *
-        (partIIEuler (1 / c.sigma) N
-          (partIIApproxBase (c.a₁ / c.sigma) (c.b₂ / c.sigma) (c.a₂ / c.a₁) k
+        (positiveEuler (1 / c.sigma) N
+          (laguerreApproxBase (c.a₁ / c.sigma) (c.b₂ / c.sigma) (c.a₂ / c.a₁) k
             (z + (c.lam : ℂ)))).coeff j := by
-  rw [coeff_partIIEuler (one_div_pos.mpr hc.sigma_pos),
+  rw [coeff_positiveEuler (one_div_pos.mpr hc.sigma_pos),
     rising_integer_shift_ratio (one_div_pos.mpr hc.sigma_pos)]
   have hparam : 1 / c.sigma + (N : ℝ) = c.a₂ / c.a₁ := by linarith
-  rw [hparam, coeff_partIIApproxBase hc.ratio_pos]
-  simp only [partIIApproxFamily, map_mul, map_sum, Polynomial.aeval_C, map_pow,
-    partIIShift, map_add, Polynomial.aeval_X, Complex.coe_algebraMap]
+  rw [hparam, coeff_laguerreApproxBase hc.ratio_pos]
+  simp only [laguerreApproxFamily, map_mul, map_sum, Polynomial.aeval_C, map_pow,
+    laguerreShift, map_add, Polynomial.aeval_X, Complex.coe_algebraMap]
   push_cast
   simp only [Finset.mul_sum]
   apply Finset.sum_congr rfl

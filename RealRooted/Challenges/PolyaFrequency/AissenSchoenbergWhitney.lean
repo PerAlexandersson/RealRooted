@@ -4,7 +4,7 @@ import RealRooted.ASWKarlinKernel
 import RealRooted.AissenSchoenbergWhitney
 import RealRooted.AissenSchoenbergWhitneyBase
 import RealRooted.EdreiThoma.Converse
-import RealRooted.EdreiThoma.Easy
+import RealRooted.EdreiThoma.CanonicalProduct
 import RealRooted.PFPolynomial
 import RealRooted.PolyaFrequencyConvolution.Basic
 
@@ -37,7 +37,7 @@ label = "Pólya frequency sequence"
 
 [[definitions]]
 name = "RealRooted.EdreiThoma.canonicalProduct"
-module = "RealRooted.EdreiThoma.Easy"
+module = "RealRooted.EdreiThoma.CanonicalProduct"
 label = "Canonical product $c X^m e^{γX} ∏(1 + α_i X) / ∏(1 - β_i X)$"
 
 [[theorems]]
@@ -55,7 +55,7 @@ symcat = "edreiThomaTheorem"
 
 [[theorems]]
 name = "RealRooted.EdreiThoma.isPolyaFreqSeries_canonicalProduct"
-module = "RealRooted.EdreiThoma.Easy"
+module = "RealRooted.EdreiThoma.CanonicalProduct"
 label = "Canonical products with nonnegative parameters are Pólya frequency series"
 
 [[theorems]]
@@ -65,7 +65,7 @@ label = "Pólya frequency sequences are closed under convolution"
 
 [[theorems]]
 name = "RealRooted.EdreiThoma.IsPolyaFreqSeries.of_tendsto"
-module = "RealRooted.EdreiThoma.Easy"
+module = "RealRooted.EdreiThoma.CanonicalProduct"
 label = "Pólya frequency series are closed under coefficientwise limits"
 
 [[theorems]]

@@ -1,13 +1,13 @@
 module
 
-public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.CombinatorialExamples.CoefficientHelpers
 public import RealRooted.DerivativeRecurrence.QuadraticInterlacing
 public import RealRooted.GeneralizedEulerian
 public import Mathlib.Tactic
 import RealRooted.Tactic.Row.Frontend
 import RealRooted.Tactic.Recurrence.Cancel
 import RealRooted.Tactic.Recurrence.Degree
-import RealRooted.DerivativeRecurrence.General
+import RealRooted.DerivativeRecurrence.RowDegree
 import RealRooted.DerivativeRecurrence.Interlacing
 import RealRooted.ThreeTermRecurrence.Interlacing
 import RealRooted.Derivative.Interlacing

@@ -3,7 +3,7 @@ module
 public import Mathlib.Algebra.Polynomial.Basic
 public import Mathlib.Algebra.Polynomial.Splits
 public import Mathlib.Basic.Real.Basic
-import RealRooted.ProductSequence.Core
+import RealRooted.ProductSequence.InductionShells
 import RealRooted.ProductSequence.Factors
 
 /-!
@@ -12,7 +12,7 @@ import RealRooted.ProductSequence.Factors
 First-order affine, unit-slope affine, and powered unit-slope affine recurrence
 shells derived from the generic product-sequence core.  Right-factor and tail-start
 variants follow from `isRealRooted_of_product_factor_right_sequence` and
-`isRealRooted_of_product_factor_sequence_from` in `RealRooted.ProductSequence.Core`.
+`isRealRooted_of_product_factor_sequence_from` in `RealRooted.ProductSequence.InductionShells`.
 -/
 
 public section

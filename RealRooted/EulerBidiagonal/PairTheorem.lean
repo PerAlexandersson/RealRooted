@@ -5,7 +5,7 @@ import RealRooted.Interlacing.RootDeletionExpansion
 import RealRooted.Mathlib.Algebra.Polynomial.FieldDivision
 import RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations
 import RealRooted.EulerBidiagonal.Location
-public import RealRooted.EulerBidiagonal.General
+public import RealRooted.EulerBidiagonal.QuadraticEulerStep
 import RealRooted.Interlacing.RootCountSigns
 import RealRooted.Interlacing.Residue
 

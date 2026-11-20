@@ -5,8 +5,8 @@ Authors: Matteo Cipollina
 -/
 module
 
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.PrimitivityCriteria
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.NonnegativeVectors
 public import Mathlib.Data.Matrix.Basic
 public import Mathlib.Algebra.Order.AbsoluteValue.Basic
 public import Mathlib.Data.Rat.Floor

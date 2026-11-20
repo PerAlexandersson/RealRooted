@@ -1,6 +1,6 @@
 module
 
-import RealRooted.GarloffWagner.Theorem12
+import RealRooted.GarloffWagner.SchurProductPF
 import RealRooted.PFPolynomial.LinearFactor
 public import RealRooted.Transforms.ReverseHermite.Basic
 import RealRooted.GarloffWagner.KreinExpansion

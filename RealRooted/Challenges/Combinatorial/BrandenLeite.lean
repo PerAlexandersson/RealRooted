@@ -7,7 +7,7 @@ import RealRooted.BrandenLeite.LogarithmicFactors
 import RealRooted.BrandenLeite.PFFactorNumerators
 import RealRooted.BrandenLeite.PFFactorRenewal
 import RealRooted.BrandenLeite.PositivePowerFactors
-import RealRooted.BrandenLeite.Theorem37
+import RealRooted.BrandenLeite.TotalNonnegativity
 import RealRooted.BrandenLeite.WeightedDerivativeKernel
 import RealRooted.BrandenLeite.ZeroConstant
 
@@ -45,18 +45,18 @@ label = "Coefficients of −log(Q(u) − tB(u)) as polynomials in t"
 objects = ["Chain polynomials of totally nonnegative matrices"]
 property = "interlacing"
 name = "RealRooted.BrandenLeite.interl_chainPolynomial_succ_of_isTotallyNonneg"
-module = "RealRooted.BrandenLeite.Theorem37"
+module = "RealRooted.BrandenLeite.TotalNonnegativity"
 label = "Brändén–Saud Maia Leite: chain polynomials of a unitriangular TNN matrix interlace"
 headline = true
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.chainPolynomial_eq_zero_or_splits_of_isTotallyNonneg"
-module = "RealRooted.BrandenLeite.Theorem37"
+module = "RealRooted.BrandenLeite.TotalNonnegativity"
 label = "Chain polynomials of a unitriangular TNN matrix are real-rooted"
 
 [[theorems]]
 name = "RealRooted.BrandenLeite.roots_chainPolynomial_mem_Icc_of_isTotallyNonneg"
-module = "RealRooted.BrandenLeite.Theorem37"
+module = "RealRooted.BrandenLeite.TotalNonnegativity"
 label = "Their zeros lie in [−1, 0]"
 
 [[theorems]]

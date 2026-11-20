@@ -7,10 +7,10 @@ module
 
 public import Mathlib.LinearAlgebra.Matrix.Irreducible.Defs
 public import Mathlib.Combinatorics.Quiver.Path
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.PrimitivityCriteria
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Uniqueness
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Primitive
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.NonnegativeVectors
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Simplex
 
 /-!

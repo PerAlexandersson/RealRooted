@@ -5,7 +5,7 @@ public import RealRooted.GarloffWagner
 import RealRooted.Interlacing.Reversal
 import RealRooted.Recurrence.RowModel
 import RealRooted.Recurrence.Uniqueness
-import RealRooted.GarloffWagner.Theorem12
+import RealRooted.GarloffWagner.SchurProductPF
 public import RealRooted.Basic.ProperPosition
 
 /-!

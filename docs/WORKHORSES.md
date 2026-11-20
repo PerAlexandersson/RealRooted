@@ -271,7 +271,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 48 | `RealRooted.hasNonnegCoeffs_X` | `RealRooted.Basic.Coefficients` |  |
 | 45 | `RealRooted.HasNonnegCoeffs.basisTransform` | `RealRooted.BasisTransform` | A basis transform preserves coefficientwise nonnegativity when every basis element has nonnegative coefficients. |
 | 44 | `RealRooted.hasPosLeadingCoeff_C_mul` | `RealRooted.Basic.Coefficients` |  |
-| 39 | `RealRooted.HasNonnegCoeffs.weightedSum` | `RealRooted.GarloffWagner.Theorem12` |  |
+| 39 | `RealRooted.HasNonnegCoeffs.weightedSum` | `RealRooted.GarloffWagner.SchurProductPF` |  |
 | 32 | `RealRooted.hasPosLeadingCoeff_of_monic` | `RealRooted.Basic.Coefficients` |  |
 | 29 | `RealRooted.HasNonnegCoeffs.diagonalOperator` | `RealRooted.MultiplierSequence` | Nonnegative diagonal coefficients preserve nonnegative coefficients. |
 | 27 | `RealRooted.hasNonnegCoeffs_finsetSum` | `RealRooted.Basic.Coefficients` |  |
@@ -332,7 +332,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 4 | `RealRooted.LiuOppositeSigns.leadingCoeff_deleteRootFactor_of_isRoot` | `RealRooted.LiuOppositeSigns.RootDeletion` |  |
 | 3 | `Polynomial.even_signVariations_iff_sign_leadingCoeff_eq_sign_trailingCoeff` | `RealRooted.Mathlib.Algebra.Polynomial.RuleOfSigns` | The parity of the coefficient sign variations is determined by the signs of the first and last nonzero coefficients. |
 | 3 | `Polynomial.leadingCoeff_add_C_mul_of_natDegree_lt` | `RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations` | If `g` has strictly larger degree than `f`, then the leading coefficient of `f + C a * g` is the scaled leading coefficient of `g`. |
-| 3 | `RealRooted.LinRec.natDegree_eq_and_leadingCoeff_pos_of_cancel` | `RealRooted.DerivativeRecurrence.General` | Cancellation analogue of `natDegree_eq_and_leadingCoeff_pos_of_degreeLaw`. |
+| 3 | `RealRooted.LinRec.natDegree_eq_and_leadingCoeff_pos_of_cancel` | `RealRooted.DerivativeRecurrence.RowDegree` | Cancellation analogue of `natDegree_eq_and_leadingCoeff_pos_of_degreeLaw`. |
 | 3 | `RealRooted.TuranHurwitz.normalized_natDegree_and_leadingCoeff_pos` | `RealRooted.TuranHurwitz.NormalizedRecurrence` | The degree is the row index and the leading coefficient is positive. |
 | 3 | `RealRooted.leadingCoeff_divByMonic_X_sub_C` | `RealRooted.Interlacing.Residue` |  |
 | 3 | `RealRooted.threeTermPos_natDegree_eq_and_leadingCoeff_pos` | `RealRooted.ThreeTermRecurrence.Degree` |  |
@@ -341,11 +341,11 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 2 | `Polynomial.leadingCoeff_add_pos_of_pos_of_nonneg` | `RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations` | A positive leader and a nonnegative leader give a positive leader for the sum. |
 | 2 | `RealRooted.BandOne.eulerLag_natDegree` | `RealRooted.DerivativeRecurrence.BandOne` | Positive lag scalars in an `I + θ` recurrence give the alternating rise/plateau path `floor(n/2)`, including the two constant seed rows. |
 | 2 | `RealRooted.BandOne.eulerianLag_natDegree` | `RealRooted.DerivativeRecurrence.BandOne` | Exact rising degrees for the Eulerian current, uniformly in its lag scalar. |
-| 2 | `RealRooted.EulerBidiagonal.generalStep_natDegree_and_leadingCoeff` | `RealRooted.EulerBidiagonal.General` |  |
+| 2 | `RealRooted.EulerBidiagonal.generalStep_natDegree_and_leadingCoeff` | `RealRooted.EulerBidiagonal.QuadraticEulerStep` |  |
 | 2 | `RealRooted.GeneralizedSnakePosets.modifiedNarayanaPolynomial_leadingCoeff` | `RealRooted.GeneralizedSnakePosets.Narayana.Modified` | The modified Narayana polynomial `P_n` is monic. |
-| 2 | `RealRooted.LinRec.natDegree_eq_and_leadingCoeff_eq_of_coeff` | `RealRooted.DerivativeRecurrence.General` | A degree bound together with a nonvanishing coefficient at the bound gives the degree and the leading coefficient. |
-| 2 | `RealRooted.LinRec.natDegree_eq_and_leadingCoeff_pos` | `RealRooted.DerivativeRecurrence.General` | Rows of `P (n + k) = ∑ₜ Aₜ n * D^[iₜ] (P (n + jₜ))` have degree `D₀ + d * n` and positive leading coefficients, when the summands have degree at most `D₀ + d * (n + k)`, the first `k` rows have positi |
-| 2 | `RealRooted.LinRec.natDegree_eq_and_leadingCoeff_pos_of_degreeLaw` | `RealRooted.DerivativeRecurrence.General` | Rows of `P (n + k) = ∑ₜ Aₜ n * D^[iₜ] (P (n + jₜ))` have degree `D n` and positive leading coefficients, for an arbitrary degree law `D`, when the summands have degree at most `D (n + k) - D (n + jₜ)  |
+| 2 | `RealRooted.LinRec.natDegree_eq_and_leadingCoeff_eq_of_coeff` | `RealRooted.DerivativeRecurrence.RowDegree` | A degree bound together with a nonvanishing coefficient at the bound gives the degree and the leading coefficient. |
+| 2 | `RealRooted.LinRec.natDegree_eq_and_leadingCoeff_pos` | `RealRooted.DerivativeRecurrence.RowDegree` | Rows of `P (n + k) = ∑ₜ Aₜ n * D^[iₜ] (P (n + jₜ))` have degree `D₀ + d * n` and positive leading coefficients, when the summands have degree at most `D₀ + d * (n + k)`, the first `k` rows have positi |
+| 2 | `RealRooted.LinRec.natDegree_eq_and_leadingCoeff_pos_of_degreeLaw` | `RealRooted.DerivativeRecurrence.RowDegree` | Rows of `P (n + k) = ∑ₜ Aₜ n * D^[iₜ] (P (n + jₜ))` have degree `D n` and positive leading coefficients, for an arbitrary degree law `D`, when the summands have degree at most `D (n + k) - D (n + jₜ)  |
 | 2 | `RealRooted.LiuOppositeSigns.exists_linear_factor_of_splits_natDegree_one` | `RealRooted.LiuOppositeSigns.PositiveSplitPair` |  |
 | 2 | `RealRooted.TuranHurwitz.intervalRow_natDegree_and_leadingCoeff_pos` | `RealRooted.TuranHurwitz.IntervalOperator` | The kernel recurrence has degree `n` and a positive leading coefficient. |
 | 2 | `RealRooted.derivRec₂_natDegree_eq_and_leadingCoeff_pos` | `RealRooted.DerivativeRecurrence.Degree` | `derivRec₂_natDegree` and `derivRec₂_leadingCoeff_pos` from one set of hypotheses. |
@@ -428,7 +428,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 7 | `RealRooted.div_ofNat_eq_C_mul` | `RealRooted.DerivativeRecurrence.SecondOrderODE` | Division by a numeral, as generated recurrences write `(1 / 2) * X`. |
 | 7 | `RealRooted.isNonnegLinearForm_one` | `RealRooted.RowThreshold` |  |
 | 6 | `RealRooted.touchard_succ` | `RealRooted.Touchard` |  |
-| 5 | `RealRooted.EulerBidiagonal.generalStep_eq_second_derivative` | `RealRooted.EulerBidiagonal.General` | Differential form of the general Euler step. |
+| 5 | `RealRooted.EulerBidiagonal.generalStep_eq_second_derivative` | `RealRooted.EulerBidiagonal.QuadraticEulerStep` | Differential form of the general Euler step. |
 | 5 | `RealRooted.brandenE_mul_X_add_C` | `RealRooted.Transforms.BrandenE.Basic` | Affine-factor form of `brandenE_X_mul`. |
 | 4 | `RealRooted.GeneralizedSnakePosets.FiniteSkewBoard.rookPolynomial_eq_nonNestingPlacements_sum` | `RealRooted.GeneralizedSnakePosets.FiniteBoard` | The rook polynomial as a sum over the named finite set of non-nesting placements. |
 | 4 | `RealRooted.IntervalDifferential.zigzagOperator_apply` | `RealRooted.IntervalDifferential.Basic` |  |
@@ -468,7 +468,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 5 | `RealRooted.narayanaPolynomial_ne_zero` | `RealRooted.NarayanaTransformation.Recurrences.Identities` |  |
 | 5 | `RealRooted.right_ne_zero_of_strictInterl` | `RealRooted.SequenceClosure` | Project right-argument nonvanishing from a `StrictInterl` certificate. |
 | 5 | `RealRooted.rootPolynomial_ne_zero` | `RealRooted.RootPolynomial` | `rootPolynomial s` is nonzero. |
-| 4 | `Pi.ne_zero_of_pos` | `RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas` | A strictly positive dependent function on a nonempty type is nonzero. |
+| 4 | `Pi.ne_zero_of_pos` | `RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.PrimitivityCriteria` | A strictly positive dependent function on a nonempty type is nonzero. |
 | 4 | `Polynomial.mobiusTransform_ne_zero` | `RealRooted.Mathlib.Algebra.Polynomial.MobiusTransform` | If `a d - b c` is a unit, the transform of a nonzero polynomial of degree at most `n` is nonzero. |
 | 4 | `RealRooted.GeneralizedSnakePosets.modifiedNarayanaPolynomial_ne_zero` | `RealRooted.GeneralizedSnakePosets.Narayana.Modified` | Modified Narayana polynomials are nonzero. |
 | 4 | `RealRooted.ne_zero_of_isRealRooted_sequence` | `RealRooted.SequenceClosure` | Project row-wise nonvanishing from a sequence real-rootedness certificate. |

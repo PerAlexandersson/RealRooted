@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.EulerBidiagonal.General
+public import RealRooted.EulerBidiagonal.QuadraticEulerStep
 public import RealRooted.Interlacing.RootCountSigns
 import RealRooted.RootCounting.SignChanges
 import RealRooted.Interlacing.Residue

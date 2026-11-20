@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.DerivativeRecurrence.General
+public import RealRooted.DerivativeRecurrence.RowDegree
 import RealRooted.DerivativeRecurrence.Degree
 
 /-!

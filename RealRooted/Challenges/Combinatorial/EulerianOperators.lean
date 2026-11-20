@@ -1,7 +1,7 @@
 module
 
 import RealRooted.EulerBidiagonal
-import RealRooted.EulerBidiagonal.General
+import RealRooted.EulerBidiagonal.QuadraticEulerStep
 import RealRooted.EulerBidiagonal.PairTheorem
 import RealRooted.EulerOperator.CoupledInsertion
 import RealRooted.EulerOperator.EulerMultiplier
@@ -43,7 +43,7 @@ label = "Rows of an Euler recurrence with a lag-two correction"
 
 [[definitions]]
 name = "RealRooted.EulerBidiagonal.generalStep"
-module = "RealRooted.EulerBidiagonal.General"
+module = "RealRooted.EulerBidiagonal.QuadraticEulerStep"
 label = "The second-order step κ(θ + a)(θ + b) + X(u + vθ)"
 
 [[theorems]]

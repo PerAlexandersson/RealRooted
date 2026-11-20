@@ -7,7 +7,7 @@ public import RealRooted.EulerOperator
 /-!
 # Euler factorization for second-derivative recurrences
 
-Target module: `RealRooted.DerivativeRecurrence.SecondOrder.Top`.
+Target module: `RealRooted.DerivativeRecurrence.SecondOrder.EulerFactorization`.
 
 This is the nonduplicated operator core of the downstream
 `ProofsOeis/SecondDerivativeTop.lean`. The coefficient and degree theory is

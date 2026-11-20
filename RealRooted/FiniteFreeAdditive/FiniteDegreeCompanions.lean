@@ -4,7 +4,7 @@ public import RealRooted.FiniteFreeAdditive.FiniteDegreeTests
 public import RealRooted.FiniteFreeAdditive.FiniteDegreeOrderedTests
 public import RealRooted.GarloffWagner.KreinData
 public import Mathlib.RingTheory.Polynomial.Vieta
-import RealRooted.GarloffWagner.Theorem12
+import RealRooted.GarloffWagner.SchurProductPF
 import RealRooted.GarloffWagner.KreinExpansion
 import RealRooted.Interlacing.QuadraticPFPreservers
 import RealRooted.LinearPowerFamily

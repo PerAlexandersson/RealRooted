@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.Hadamard
-import RealRooted.GarloffWagner.Theorem12
+import RealRooted.GarloffWagner.SchurProductPF
 public import RealRooted.Tactic.Finish
 import RealRooted.Hadamard.Grace
 import RealRooted.Hadamard.Cubic

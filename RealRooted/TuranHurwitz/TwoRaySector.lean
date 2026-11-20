@@ -19,15 +19,15 @@ public section
 namespace RealRooted.TuranHurwitz
 
 /-- The closed cone spanned by the two rays of the Laguerre approximants. -/
-@[expose] noncomputable def partIICone (x : ℂ) : Set ℂ :=
+@[expose] noncomputable def twoRaySector (x : ℂ) : Set ℂ :=
   {z | ∃ a b : ℝ, 0 ≤ a ∧ 0 ≤ b ∧ z = -((a : ℂ) + (b : ℂ) / x)}
 
 /-- The cone contains its vertex. -/
-theorem zero_mem_partIICone (x : ℂ) : 0 ∈ partIICone x := by
+theorem zero_mem_twoRaySector (x : ℂ) : 0 ∈ twoRaySector x := by
   exact ⟨0, 0, le_refl _, le_refl _, by simp⟩
 
 /-- Nonnegative combinations of the two rays form a convex set. -/
-theorem convex_partIICone (x : ℂ) : Convex ℝ (partIICone x) := by
+theorem convex_twoRaySector (x : ℂ) : Convex ℝ (twoRaySector x) := by
   rintro z ⟨a, b, ha, hb, rfl⟩ w ⟨c, d, hc, hd, rfl⟩ s t hs ht _
   refine ⟨s * a + t * c, s * b + t * d,
     add_nonneg (mul_nonneg hs ha) (mul_nonneg ht hc),
@@ -36,20 +36,20 @@ theorem convex_partIICone (x : ℂ) : Convex ℝ (partIICone x) := by
   ring
 
 /-- The inverse of a right-half-plane parameter has positive real part. -/
-theorem partII_inv_re_pos {x : ℂ} (hx : 0 < x.re) : 0 < x⁻¹.re := by
+theorem laguerre_inv_re_pos {x : ℂ} (hx : 0 < x.re) : 0 < x⁻¹.re := by
   have hne : x ≠ 0 := by intro h; simp [h] at hx
   rw [Complex.inv_re]
   exact div_pos hx (Complex.normSq_pos.mpr hne)
 
 /-- A nonzero point of the cone has negative real part. -/
-theorem partIICone_re_neg {x z : ℂ} (hx : 0 < x.re) (hz : z ∈ partIICone x)
+theorem twoRaySector_re_neg {x z : ℂ} (hx : 0 < x.re) (hz : z ∈ twoRaySector x)
     (hne : z ≠ 0) : z.re < 0 := by
   obtain ⟨a, b, ha, hb, rfl⟩ := hz
   have hpos : 0 < a + b := by
     by_contra h
     have hab : a = 0 ∧ b = 0 := by constructor <;> linarith
     simp [hab.1, hab.2] at hne
-  have hinv := partII_inv_re_pos hx
+  have hinv := laguerre_inv_re_pos hx
   simp only [div_eq_mul_inv, Complex.neg_re, Complex.add_re, Complex.mul_re,
     Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
   by_cases hbzero : b = 0
@@ -59,11 +59,11 @@ theorem partIICone_re_neg {x z : ℂ} (hx : 0 < x.re) (hz : z ∈ partIICone x)
     nlinarith [mul_pos hbpos hinv]
 
 /-- Squaring a cone point and multiplying by the parameter gives positive real part. -/
-theorem partIICone_mul_sq_re_pos {x z : ℂ} (hx : 0 < x.re) (hz : z ∈ partIICone x)
+theorem twoRaySector_mul_sq_re_pos {x z : ℂ} (hx : 0 < x.re) (hz : z ∈ twoRaySector x)
     (hne : z ≠ 0) : 0 < (x * z ^ 2).re := by
   obtain ⟨a, b, ha, hb, rfl⟩ := hz
   have hxne : x ≠ 0 := by intro h; simp [h] at hx
-  have hinv := partII_inv_re_pos hx
+  have hinv := laguerre_inv_re_pos hx
   have hidentity : x * (-((a : ℂ) + (b : ℂ) / x)) ^ 2 =
       (a : ℂ) ^ 2 * x + ((2 * a * b : ℝ) : ℂ) + (b : ℂ) ^ 2 * x⁻¹ := by
     push_cast

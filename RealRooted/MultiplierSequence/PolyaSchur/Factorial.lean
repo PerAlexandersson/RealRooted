@@ -1,6 +1,6 @@
 module
 
-import RealRooted.GarloffWagner.Theorem12
+import RealRooted.GarloffWagner.SchurProductPF
 import RealRooted.MultiplierSequence.PolyaSchur
 public import RealRooted.MultiplierSequence.Infinite
 public import RealRooted.GarloffWagner.Algebra

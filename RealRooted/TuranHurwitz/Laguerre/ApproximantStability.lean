@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.TuranHurwitz.PartIICoefficients
+public import RealRooted.TuranHurwitz.Laguerre.ApproximantCoefficients
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.LinearCombination
 import Mathlib.Tactic.Ring
@@ -63,32 +63,32 @@ theorem coeff_paired_iterate_derivative {P : ℕ → ℝ[X]} {f : ℂ[X]} {z : �
       Polynomial.aeval z (P (m + j)) * Polynomial.aeval z (P (m + 2 * n - j)))
 
 /-- The finite Turán approximants exclude the required open half-plane. -/
-theorem aeval_turan_partIIApproxFamily_ne_zero {c : PartIIParameters} (hc : c.Admissible)
+theorem aeval_turan_laguerreApproxFamily_ne_zero {c : LaguerreParameters} (hc : c.Admissible)
     {k : ℕ} (hk : 0 < k) (m n : ℕ) (hmn : m + n ≤ 2 * k) {z : ℂ}
-    (hz : -c.lam < z.re) : Polynomial.aeval z (turan m n (partIIApproxFamily c k)) ≠ 0 := by
+    (hz : -c.lam < z.re) : Polynomial.aeval z (turan m n (laguerreApproxFamily c k)) ≠ 0 := by
   obtain ⟨N, hN⟩ := hc.integer_shift
   have hx : 0 < (z + (c.lam : ℂ)).re := by
     simp only [Complex.add_re, Complex.ofReal_re]
     linarith
-  have hpair := paired_coeff_partIIApproxBase (div_pos hc.a₁_pos hc.sigma_pos)
+  have hpair := paired_coeff_laguerreApproxBase (div_pos hc.a₁_pos hc.sigma_pos)
     (div_pos hc.b₂_pos hc.sigma_pos) hc.ratio_pos (one_div_pos.mpr hc.sigma_pos) N hk hx hmn
   have hidentity := coeff_paired_iterate_derivative
-    (fun j => aeval_partIIApproxFamily hc hN k j z) m n
+    (fun j => aeval_laguerreApproxFamily hc hN k j z) m n
   dsimp only at hpair hidentity
   rw [hidentity] at hpair
   exact (mul_ne_zero_iff.mp hpair).2
 
 /-- Every finite Turán approximant stays in a degree box independent of `k`. -/
-theorem natDegree_turan_partIIApproxFamily_le (c : PartIIParameters) (k m n : ℕ) :
-    (turan m n (partIIApproxFamily c k)).natDegree ≤ 2 * m + 2 * n := by
+theorem natDegree_turan_laguerreApproxFamily_le (c : LaguerreParameters) (k m n : ℕ) :
+    (turan m n (laguerreApproxFamily c k)).natDegree ≤ 2 * m + 2 * n := by
   rw [turan]
   apply natDegree_sum_le_of_forall_le
   intro j hj
   have hjle : j ≤ 2 * n := by simpa using Finset.mem_range.mp hj
   apply (natDegree_C_mul_le _ _).trans
   apply natDegree_mul_le.trans
-  have h₁ := natDegree_partIIApproxFamily_le c k (m + j)
-  have h₂ := natDegree_partIIApproxFamily_le c k (m + 2 * n - j)
+  have h₁ := natDegree_laguerreApproxFamily_le c k (m + j)
+  have h₂ := natDegree_laguerreApproxFamily_le c k (m + 2 * n - j)
   lia
 
 end RealRooted.TuranHurwitz

@@ -1,7 +1,7 @@
 module
 
 import RealRooted.EulerBidiagonal.Location
-public import RealRooted.EulerBidiagonal.General
+public import RealRooted.EulerBidiagonal.QuadraticEulerStep
 import RealRooted.Interlacing.RootCountSigns
 import RealRooted.WagnerX.NonnegativeRoots
 

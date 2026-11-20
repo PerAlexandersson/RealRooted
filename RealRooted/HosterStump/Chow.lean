@@ -1,6 +1,6 @@
 module
 
-import RealRooted.HosterStump.Step
+import RealRooted.HosterStump.InterlacingInduction
 public import RealRooted.HosterStump.Permutation
 import RealRooted.GammaTransform.ProperPosition
 import RealRooted.PosCombo

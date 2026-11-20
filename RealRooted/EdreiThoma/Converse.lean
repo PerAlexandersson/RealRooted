@@ -1,8 +1,8 @@
 module
 
 import RealRooted.EdreiThoma.Continuation
-public import RealRooted.EdreiThoma.Easy
-import RealRooted.EdreiThoma.FinalStep
+public import RealRooted.EdreiThoma.CanonicalProduct
+import RealRooted.EdreiThoma.AffineExponent
 import RealRooted.EdreiThoma.OddPart
 import RealRooted.EdreiThoma.Reduction
 public import RealRooted.Mathlib.Analysis.Complex.EdreiUniqueness

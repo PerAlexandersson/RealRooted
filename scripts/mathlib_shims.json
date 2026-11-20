@@ -1804,7 +1804,7 @@
     },
     {
       "sources": [
-        "RealRooted/Mathlib/LinearAlgebra/Matrix/PerronFrobenius/Auxiliary.lean"
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PerronFrobenius/NonnegativeVectors.lean"
       ],
       "modules": [
         "Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary"
@@ -1854,7 +1854,7 @@
     },
     {
       "sources": [
-        "RealRooted/Mathlib/LinearAlgebra/Matrix/PerronFrobenius/Lemmas.lean"
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PerronFrobenius/PrimitivityCriteria.lean"
       ],
       "modules": [
         "Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas"

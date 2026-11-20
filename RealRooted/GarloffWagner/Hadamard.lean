@@ -1,6 +1,6 @@
 module
 
-import RealRooted.GarloffWagner.Theorem12
+import RealRooted.GarloffWagner.SchurProductPF
 import RealRooted.GarloffWagner.KreinExpansion
 public import RealRooted.GarloffWagner.KreinData
 import RealRooted.WagnerX.NonnegativeRoots

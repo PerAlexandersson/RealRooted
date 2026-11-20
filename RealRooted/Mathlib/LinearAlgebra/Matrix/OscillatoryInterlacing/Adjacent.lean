@@ -16,7 +16,7 @@ public import Mathlib.LinearAlgebra.Matrix.Transvection
 import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Mul
 public import Mathlib.Analysis.Real.Sqrt
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Charpoly
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.PrimitivityCriteria
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg
 import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Reduction

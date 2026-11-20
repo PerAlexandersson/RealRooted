@@ -3,7 +3,7 @@ module
 import RealRooted.BrandenLC
 import RealRooted.BrandenLC.Infinite
 import RealRooted.CombinatorialExamples.BorosMoll
-import RealRooted.CombinatorialExamples.BorosMoll.Core
+import RealRooted.CombinatorialExamples.BorosMoll.Transform
 import RealRooted.CombinatorialExamples.BorosMoll.Infinite
 
 /-!
@@ -26,12 +26,12 @@ years = [1999, 2011, 2026]
 
 [[definitions]]
 name = "RealRooted.BorosMoll.bmCoeff"
-module = "RealRooted.CombinatorialExamples.BorosMoll.Core"
+module = "RealRooted.CombinatorialExamples.BorosMoll.Transform"
 label = "Boros–Moll coefficients"
 
 [[definitions]]
 name = "RealRooted.BorosMoll.bmM"
-module = "RealRooted.CombinatorialExamples.BorosMoll.Core"
+module = "RealRooted.CombinatorialExamples.BorosMoll.Transform"
 label = "Generating polynomial of the log-concavity transform of a Boros–Moll row"
 
 [[theorems]]

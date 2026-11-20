@@ -2,7 +2,7 @@ module
 
 import RealRooted.EulerBidiagonal.PairTheorem
 import RealRooted.EulerBidiagonal.PairStep
-public import RealRooted.EulerBidiagonal.General
+public import RealRooted.EulerBidiagonal.QuadraticEulerStep
 
 /-!
 # Rows of the general Euler recurrence

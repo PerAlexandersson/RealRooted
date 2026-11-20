@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.ChudnovskySeymour.Core
+public import RealRooted.ChudnovskySeymour.CommonInterleaver
 import RealRooted.LiuOppositeSigns.PositiveSplitPair
 public import RealRooted.LiuOppositeSigns.RootCount
 import RealRooted.CommonInterleaver.PairBridge.Compatibility.NonnegativeShift

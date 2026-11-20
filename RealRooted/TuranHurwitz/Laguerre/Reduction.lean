@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.TuranHurwitz.PartIIRecurrence
+public import RealRooted.TuranHurwitz.Laguerre.Recurrence
 public import RealRooted.TuranHurwitz.RisingConvolution
 public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Differential
 import Mathlib.Tactic.FieldSimp
@@ -21,76 +21,76 @@ open Polynomial
 namespace RealRooted.TuranHurwitz
 
 /-- The scalar converting a monic reflected Laguerre row to the part (ii) row. -/
-@[expose] noncomputable def partIILaguerreScale (c : PartIIParameters) (j : ℕ) : ℝ :=
+@[expose] noncomputable def laguerreScale (c : LaguerreParameters) (j : ℕ) : ℝ :=
   (c.a₁ / c.sigma) ^ j / rising (1 / c.sigma) j
 
 /-- The affine variable in the Laguerre normalization. -/
-@[expose] noncomputable def partIILaguerreVariable (c : PartIIParameters) : ℝ[X] :=
-  C (c.b₂ / c.a₁) * partIIShift c
+@[expose] noncomputable def laguerreVariable (c : LaguerreParameters) : ℝ[X] :=
+  C (c.b₂ / c.a₁) * laguerreShift c
 
 /-- The row-normalization factors satisfy the scalar recurrence. -/
-theorem partIILaguerreScale_succ {c : PartIIParameters} (hc : c.Admissible) (j : ℕ) :
-    (1 + c.sigma * j) * partIILaguerreScale c (j + 1) =
-      c.a₁ * partIILaguerreScale c j := by
+theorem laguerreScale_succ {c : LaguerreParameters} (hc : c.Admissible) (j : ℕ) :
+    (1 + c.sigma * j) * laguerreScale c (j + 1) =
+      c.a₁ * laguerreScale c j := by
   have hsig := hc.sigma_pos.ne'
   have hr := (rising_pos (one_div_pos.mpr hc.sigma_pos) j).ne'
   have hnext : 1 / c.sigma + (j : ℝ) ≠ 0 :=
     (add_pos_of_pos_of_nonneg (one_div_pos.mpr hc.sigma_pos) (Nat.cast_nonneg j)).ne'
-  rw [partIILaguerreScale, partIILaguerreScale, pow_succ, rising_succ]
-  field_simp [hsig, hr, hnext, (partII_normalization_pos hc j).ne']
+  rw [laguerreScale, laguerreScale, pow_succ, rising_succ]
+  field_simp [hsig, hr, hnext, (laguerre_normalization_pos hc j).ne']
 
 /-- The scaled-variable Laguerre recurrence has exactly the original numerator. -/
-theorem partII_laguerre_numerator {c : PartIIParameters} (hc : c.Admissible) (j : ℕ) :
+theorem laguerre_numerator {c : LaguerreParameters} (hc : c.Admissible) (j : ℕ) :
     C c.a₁ *
-        (generalizedLaguerre (j + 1) (c.a₂ / c.a₁ - 1)).comp (partIILaguerreVariable c) =
-      (C (c.a₂ + c.a₁ * j) + C c.b₂ * partIIShift c) *
-          (generalizedLaguerre j (c.a₂ / c.a₁ - 1)).comp (partIILaguerreVariable c) +
-        C c.a₁ * partIIShift c *
+        (generalizedLaguerre (j + 1) (c.a₂ / c.a₁ - 1)).comp (laguerreVariable c) =
+      (C (c.a₂ + c.a₁ * j) + C c.b₂ * laguerreShift c) *
+          (generalizedLaguerre j (c.a₂ / c.a₁ - 1)).comp (laguerreVariable c) +
+        C c.a₁ * laguerreShift c *
           ((generalizedLaguerre j (c.a₂ / c.a₁ - 1)).comp
-            (partIILaguerreVariable c)).derivative := by
-  let Y := partIILaguerreVariable c
-  have hcoordinate : C c.a₁ * Y = C c.b₂ * partIIShift c := by
-    dsimp [Y, partIILaguerreVariable]
+            (laguerreVariable c)).derivative := by
+  let Y := laguerreVariable c
+  have hcoordinate : C c.a₁ * Y = C c.b₂ * laguerreShift c := by
+    dsimp [Y, laguerreVariable]
     rw [← mul_assoc, ← map_mul, mul_div_cancel₀ _ hc.a₁_pos.ne']
   have hconstant : c.a₁ * ((j : ℝ) + (c.a₂ / c.a₁ - 1) + 1) =
       c.a₂ + c.a₁ * j := by
     field_simp [hc.a₁_pos.ne']
     ring
   have hlinear : C c.a₁ * (Y + C ((j : ℝ) + (c.a₂ / c.a₁ - 1) + 1)) =
-      C (c.a₂ + c.a₁ * j) + C c.b₂ * partIIShift c := by
+      C (c.a₂ + c.a₁ * j) + C c.b₂ * laguerreShift c := by
     rw [mul_add, hcoordinate, ← map_mul, hconstant]
     ring
   have hderivative : Y.derivative = C (c.b₂ / c.a₁) := by
-    simp [Y, partIILaguerreVariable, partIIShift]
-  have hvector : C c.a₁ * Y = C c.a₁ * partIIShift c * Y.derivative := by
+    simp [Y, laguerreVariable, laguerreShift]
+  have hvector : C c.a₁ * Y = C c.a₁ * laguerreShift c * Y.derivative := by
     rw [hderivative]
-    dsimp [Y, partIILaguerreVariable]
+    dsimp [Y, laguerreVariable]
     ring
   simp only [generalizedLaguerre_succ, laguerreRaisingStep, add_comp, mul_comp,
     X_comp, C_comp, derivative_comp]
-  change _ = _ + C c.a₁ * partIIShift c *
+  change _ = _ + C c.a₁ * laguerreShift c *
     (Y.derivative * (generalizedLaguerre j (c.a₂ / c.a₁ - 1)).derivative.comp Y)
   linear_combination
     ((generalizedLaguerre j (c.a₂ / c.a₁ - 1)).comp Y) * hlinear +
     ((generalizedLaguerre j (c.a₂ / c.a₁ - 1)).derivative.comp Y) * hvector
 
 /-- The recurrence family equals the normalized and shifted reflected Laguerre polynomial. -/
-theorem partIIFamily_eq_generalizedLaguerre {c : PartIIParameters} (hc : c.Admissible)
+theorem laguerreFamily_eq_generalizedLaguerre {c : LaguerreParameters} (hc : c.Admissible)
     (j : ℕ) :
-    partIIFamily c j = C (partIILaguerreScale c j) *
-      (generalizedLaguerre j (c.a₂ / c.a₁ - 1)).comp (partIILaguerreVariable c) := by
+    laguerreFamily c j = C (laguerreScale c j) *
+      (generalizedLaguerre j (c.a₂ / c.a₁ - 1)).comp (laguerreVariable c) := by
   induction j with
-  | zero => simp [partIILaguerreScale]
+  | zero => simp [laguerreScale]
   | succ j ih =>
-      have hstep := partIIFamily_succ c (partII_normalization_pos hc j).ne'
-      have hscale := congrArg (Polynomial.C (R := ℝ)) (partIILaguerreScale_succ hc j)
+      have hstep := laguerreFamily_succ c (laguerre_normalization_pos hc j).ne'
+      have hscale := congrArg (Polynomial.C (R := ℝ)) (laguerreScale_succ hc j)
       simp only [map_mul] at hscale
-      apply mul_left_cancel₀ (C_ne_zero.mpr (partII_normalization_pos hc j).ne')
+      apply mul_left_cancel₀ (C_ne_zero.mpr (laguerre_normalization_pos hc j).ne')
       rw [hstep, ih, derivative_C_mul]
-      have hlag := partII_laguerre_numerator hc j
+      have hlag := laguerre_numerator hc j
       linear_combination
-        -C (partIILaguerreScale c j) * hlag -
+        -C (laguerreScale c j) * hlag -
         ((generalizedLaguerre (j + 1) (c.a₂ / c.a₁ - 1)).comp
-          (partIILaguerreVariable c)) * hscale
+          (laguerreVariable c)) * hscale
 
 end RealRooted.TuranHurwitz

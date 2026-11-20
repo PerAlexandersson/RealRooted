@@ -1,7 +1,7 @@
 module
 
-import RealRooted.TuranHurwitz.PartIIExpansion
-public import RealRooted.TuranHurwitz.PartIIApproxStability
+import RealRooted.TuranHurwitz.Laguerre.FixedIndexExpansion
+public import RealRooted.TuranHurwitz.Laguerre.ApproximantStability
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Choose
 import Mathlib.Tactic.Ring
 
@@ -29,12 +29,12 @@ theorem tendsto_scaled_binomial (a : ℝ) (r : ℕ) :
   ring
 
 /-- Every fixed approximating row converges at every complex evaluation point. -/
-theorem tendsto_aeval_partIIApproxFamily {c : PartIIParameters} (hc : c.Admissible)
+theorem tendsto_aeval_laguerreApproxFamily {c : LaguerreParameters} (hc : c.Admissible)
     (j : ℕ) (z : ℂ) :
-    Tendsto (fun k => Polynomial.aeval z (partIIApproxFamily c k j)) atTop
-      (𝓝 (Polynomial.aeval z (partIIFamily c j))) := by
-  rw [partIIFamily_eq_factorial_sum hc]
-  simp only [partIIApproxFamily, map_mul, map_sum, Polynomial.aeval_C, map_pow]
+    Tendsto (fun k => Polynomial.aeval z (laguerreApproxFamily c k j)) atTop
+      (𝓝 (Polynomial.aeval z (laguerreFamily c j))) := by
+  rw [laguerreFamily_eq_factorial_sum hc]
+  simp only [laguerreApproxFamily, map_mul, map_sum, Polynomial.aeval_C, map_pow]
   apply Tendsto.const_mul
   apply tendsto_finsetSum
   intro r _
@@ -56,14 +56,14 @@ theorem tendsto_aeval_partIIApproxFamily {c : PartIIParameters} (hc : c.Admissib
     Function.comp_def] using Complex.continuous_ofReal.continuousAt.tendsto.comp hreal
 
 /-- The corresponding finite Turán expressions converge pointwise at every complex point. -/
-theorem tendsto_aeval_turan_partIIApproxFamily {c : PartIIParameters} (hc : c.Admissible)
+theorem tendsto_aeval_turan_laguerreApproxFamily {c : LaguerreParameters} (hc : c.Admissible)
     (m n : ℕ) (z : ℂ) :
-    Tendsto (fun k => Polynomial.aeval z (turan m n (partIIApproxFamily c k))) atTop
-      (𝓝 (Polynomial.aeval z (turan m n (partIIFamily c)))) := by
+    Tendsto (fun k => Polynomial.aeval z (turan m n (laguerreApproxFamily c k))) atTop
+      (𝓝 (Polynomial.aeval z (turan m n (laguerreFamily c)))) := by
   simp only [turan, map_sum, map_mul]
   apply tendsto_finsetSum
   intro j _
-  exact ((tendsto_aeval_partIIApproxFamily hc (m + j) z).mul
-    (tendsto_aeval_partIIApproxFamily hc (m + 2 * n - j) z)).const_mul _
+  exact ((tendsto_aeval_laguerreApproxFamily hc (m + j) z).mul
+    (tendsto_aeval_laguerreApproxFamily hc (m + 2 * n - j) z)).const_mul _
 
 end RealRooted.TuranHurwitz
