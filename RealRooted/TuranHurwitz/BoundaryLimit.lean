@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.TuranHurwitz.OpenStability
-public import RealRooted.TuranHurwitz.TuranLowerBound
+import RealRooted.TuranHurwitz.TuranLowerBound
 public import RealRooted.TuranHurwitz.ParameterContinuity
 import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots
 import Mathlib.Analysis.SpecificLimits.Basic

@@ -6,6 +6,11 @@ that shake would downgrade to a plain `import` because only proofs need them.  S
 suggestions (unused or replaceable imports) are not checked.  Findings already recorded in
 `scripts/private_imports_baseline.txt` are accepted; any new finding fails the check.
 
+A downgrade counts only when shake's suggestion for that module adds no `public import`.  If it
+does, the downgraded module still provides names the module's statements need (for example
+`Real` or `Polynomial.roots` reached through it), and shake is proposing a replacement by a
+narrower public import, not a plain downgrade; applying the downgrade alone breaks the build.
+
 Shake cannot see names inside syntax quotations, so a tactic module whose macros insert a theorem
 must keep `public import` of the declaring module; such imports belong in the baseline.
 
@@ -65,6 +70,9 @@ def findings(report):
             continue
         added = {m.group(1) for item in add.group(1).split(',')
                  if (m := re.match(r'\s*(?:meta )?import (\S+)\s*$', item))}
+        if any(re.match(r'\s*public ', item) for item in add.group(1).split(',')):
+            # a replacement (the statements need a narrower public import), not a downgrade
+            continue
         for item in rem.group(1).split(','):
             m = re.match(r'\s*public (?:meta )?import (\S+)\s*$', item)
             if m and m.group(1) in added:

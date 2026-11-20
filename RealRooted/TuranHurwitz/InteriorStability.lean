@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.TuranHurwitz.FamilyNormalization
-public import RealRooted.TuranHurwitz.NormalizedTuran
+import RealRooted.TuranHurwitz.NormalizedTuran
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.LinearCombination
 import Mathlib.Tactic.Ring
