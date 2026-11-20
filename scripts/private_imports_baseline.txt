@@ -2,6 +2,10 @@ RealRooted/AffineFamily/Basic.lean: RealRooted.WagnerX.NonnegativeRoots
 RealRooted/AissenSchoenbergWhitney.lean: RealRooted.QuadraticRoot
 RealRooted/BinaryRunTransformation/Continuation.lean: RealRooted.QuadraticRoot
 RealRooted/CubicDiscriminant.lean: RealRooted.QuadraticRoot
+RealRooted/EffectiveBKW/PathCube/BranchGeometry.lean: RealRooted.EffectiveBKW.PathCube.PhaseGeometry
+RealRooted/EffectiveBKW/PathCube/GeometricExpansion.lean: Mathlib.Analysis.Complex.Basic
+RealRooted/EffectiveBKW/PathCube/ParameterBounds.lean: RealRooted.EffectiveBKW.PathCube.CofactorBounds
+RealRooted/EffectiveBKW/PathCube/PhaseGeometry.lean: Mathlib.Analysis.SpecialFunctions.Complex.Arg
 RealRooted/HosterStump/Sequence.lean: RealRooted.WagnerX.NonnegativeRoots
 RealRooted/LinearPowerFamily.lean: RealRooted.ThreeTermRecurrence.Interlacing
 RealRooted/LiuOppositeSigns/XSub/LeftSucc.lean: RealRooted.QuadraticRoot
