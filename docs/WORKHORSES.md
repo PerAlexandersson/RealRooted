@@ -484,7 +484,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | uses | theorem | module | doc |
 |---:|---|---|---|
 | 29 | `RealRooted.toeplitz_apply` | `RealRooted.AissenSchoenbergWhitneyBase` |  |
-| 21 | `RealRooted.IsRealRootedIn.comp_neg_X` | `RealRooted.RootLocation.Basic` | Substituting `-X` into a polynomial rooted in `S` gives a polynomial rooted in the preimage of `S` under negation. |
+| 22 | `RealRooted.IsRealRootedIn.comp_neg_X` | `RealRooted.RootLocation.Basic` | Substituting `-X` into a polynomial rooted in `S` gives a polynomial rooted in the preimage of `S` under negation. |
 | 15 | `MvPolynomial.mem_degreeOfLE_iff_degreeOf` | `RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox` |  |
 | 14 | `MvPolynomial.coe_basisDegreeOfLE` | `RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox` |  |
 | 14 | `RealRooted.isRoot_nonpos_of_hasNonnegCoeffs` | `RealRooted.Basic.Coefficients` | A real root of a nonzero polynomial with nonnegative coefficients is nonpositive. |
@@ -495,9 +495,9 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 10 | `Polynomial.ring_choose_pos` | `RealRooted.Mathlib.RingTheory.Polynomial.Jacobi` | A generalized real binomial coefficient is positive above its largest possible zero. |
 | 9 | `MvPolynomial.algebraicSymbol_eq_sum` | `RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol` | Expand the finite algebraic symbol in its bounded monomial basis. |
 | 9 | `RealRooted.TuranHurwitz.rising_pos` | `RealRooted.TuranHurwitz.RisingConvolution` | Rising factorials are strictly positive for positive starting value. |
+| 8 | `Polynomial.splits_nodup_roots_of_strict_sign_changes` | `RealRooted.Mathlib.Algebra.Polynomial.IntervalSignChanges` | A finite grid with strict sign changes accounts for every root of a nonzero polynomial of degree at most the number of gaps. |
 | 8 | `RealRooted.JacobiDeformation.risingFactorial_pos` | `RealRooted.JacobiDeformation.Pochhammer` |  |
 | 7 | `ParkingFunction.isParkingFunction_iff_prefix` | `RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunction` | The finite-indexed predicate is equivalent to the usual bounded-natural formulation used by the existing parking-function modules. |
-| 7 | `Polynomial.splits_nodup_roots_of_strict_sign_changes` | `RealRooted.Mathlib.Algebra.Polynomial.IntervalSignChanges` | A finite grid with strict sign changes accounts for every root of a nonzero polynomial of degree at most the number of gaps. |
 | 7 | `RealRooted.MaWang.exists_roots_strictly_interlacing_of_consecutive_signs` | `RealRooted.MaWang.StrictSigns.Assembly` | Public strict wrapper around `exists_strictSignInterleaving`. |
 | 7 | `RealRooted.ParkingFunctions.ToricContribution.realRisingFactorial_pos` | `RealRooted.ParkingFunctions.ToricContribution.Definitions` |  |
 | 7 | `RealRooted.StrictInterl.X_add_C_iff` | `RealRooted.Linear` | Orientation sanity check for the local `StrictInterl` convention on linear factors. |
@@ -529,6 +529,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 8 | `RealRooted.schurSzegoComp_comm` | `RealRooted.Hadamard.Basic` |  |
 | 8 | `RealRooted.weightedSum_ofFn` | `RealRooted.WeightedSum` | Finite-function form of `weightedSum_eq_sum_map`. |
 | 7 | `Complex.Contour.windingNumber_eq_integral_of_avoidance` | `RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Number.Basic` | If `γ` is continuous on `[a, b]`, avoids `z₀` there, and the index integrand is interval-integrable, the generalized winding number is the ordinary index integral: the principal value collapses to `(2 |
+| 7 | `MvPolynomial.diagonal_mul` | `RealRooted.Mathlib.Algebra.MvPolynomial.Diagonal` |  |
 | 7 | `Polynomial.basisTransform_finset_sum` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` | A basis transform distributes over a finite polynomial sum. |
 | 7 | `Polynomial.momentPairingBilinForm_apply` | `RealRooted.Mathlib.Algebra.Polynomial.Moment` |  |
 | 7 | `RealRooted.BigDescents321.SmallCases.ofList_nil` | `RealRooted.CombinatorialExamples.BigDescents321.SmallCases.ListPoly` |  |
@@ -537,7 +538,6 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 7 | `RealRooted.jensenPolynomial_eq_diagonalOperator_X_add_one_pow` | `RealRooted.MultiplierSequence` | The Jensen polynomial of `gamma` is the image of `(X + 1) ^ n` under the diagonal operator attached to `gamma`. |
 | 7 | `RealRooted.schurSzegoComp_C_mul_left` | `RealRooted.Hadamard.Basic` | Scalars pull out of the left argument of a Schur--Szego composition. |
 | 6 | `List.sum_map_range` | `RealRooted.Mathlib.Algebra.BigOperators.Group.List` |  |
-| 6 | `Matrix.lowerBidiagonalFin_apply` | `RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal` |  |
 
 ## other
 
