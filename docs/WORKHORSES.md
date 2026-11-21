@@ -137,10 +137,10 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 |---:|---|---|---|
 | 75 | `RealRooted.IsPFPolynomial.of_realRooted_nonneg` | `RealRooted.PFPolynomial` | A split polynomial with nonnegative coefficients is PF. |
 | 40 | `RealRooted.IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits` | `RealRooted.PFPolynomial` | Construct a PF polynomial from nonnegative coefficients and a zero-or-splits certificate. |
-| 37 | `RealRooted.IsPFPolynomial.zero` | `RealRooted.PFPolynomial` | The zero polynomial is PF. |
-| 28 | `RealRooted.IsPFPolynomial.one` | `RealRooted.PFPolynomial` | The constant polynomial `1` is PF. |
+| 38 | `RealRooted.IsPFPolynomial.zero` | `RealRooted.PFPolynomial` | The zero polynomial is PF. |
+| 29 | `RealRooted.IsPFPolynomial.one` | `RealRooted.PFPolynomial` | The constant polynomial `1` is PF. |
 | 27 | `RealRooted.isPFPolynomial_X_add_C` | `RealRooted.PFPolynomial` | The polynomial `X + C a` is PF when `a` is nonnegative. |
-| 16 | `RealRooted.IsPFPolynomial.of_C_nonneg` | `RealRooted.PFPolynomial` | A nonnegative constant polynomial is PF. |
+| 17 | `RealRooted.IsPFPolynomial.of_C_nonneg` | `RealRooted.PFPolynomial` | A nonnegative constant polynomial is PF. |
 | 14 | `RealRooted.isPFPolynomial_X_pow` | `RealRooted.PFPolynomial` | Every natural power of `X` is PF. |
 | 13 | `RealRooted.IsPFPolynomial.of_coeff_tendsto` | `RealRooted.PFPolynomial.Closure` | Coefficientwise limits of Pólya-frequency polynomials are Pólya-frequency. |
 | 11 | `RealRooted.IsPFPolynomial.reciprocalShift` | `RealRooted.PFPolynomial` | Shifted reciprocals preserve the PF cone when the shift bounds the degree. |
@@ -269,7 +269,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 56 | `RealRooted.hasNonnegCoeffs_one` | `RealRooted.Basic.Coefficients` |  |
 | 51 | `RealRooted.hasNonnegCoeffs_C` | `RealRooted.Basic.Coefficients` |  |
 | 49 | `RealRooted.hasNonnegCoeffs_X` | `RealRooted.Basic.Coefficients` |  |
-| 45 | `RealRooted.HasNonnegCoeffs.basisTransform` | `RealRooted.BasisTransform` | A basis transform preserves coefficientwise nonnegativity when every basis element has nonnegative coefficients. |
+| 47 | `RealRooted.HasNonnegCoeffs.basisTransform` | `RealRooted.BasisTransform` | A basis transform preserves coefficientwise nonnegativity when every basis element has nonnegative coefficients. |
 | 44 | `RealRooted.hasPosLeadingCoeff_C_mul` | `RealRooted.Basic.Coefficients` |  |
 | 39 | `RealRooted.HasNonnegCoeffs.weightedSum` | `RealRooted.GarloffWagner.SchurProductPF` |  |
 | 32 | `RealRooted.hasPosLeadingCoeff_of_monic` | `RealRooted.Basic.Coefficients` |  |
@@ -385,7 +385,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 416 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
+| 417 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
 | 273 | `RealRooted.EffectiveBKW.IntPoly2.eval_add` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate addition. |
 | 19 | `RealRooted.bezoutEntry.wronskian` | `RealRooted.Bezoutian.RootEvaluation` |  |
 | 15 | `RealRooted.eval_pos_of_all_roots_lt` | `RealRooted.WagnerRightSum.Sign` |  |
@@ -441,6 +441,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 3 | `Polynomial.taylor_iterate_derivative` | `RealRooted.Mathlib.Algebra.Polynomial.Taylor` | The Taylor shift commutes with iterated derivatives. |
 | 3 | `PowerSeries.subst_binomialSeries_neg_ode` | `RealRooted.Mathlib.RingTheory.PowerSeries.BinomialDerivative` | Substituting `H-1` into the negative binomial series gives a solution of the formal negative-power differential equation. |
 | 3 | `PowerSeries.two_mul_mul_derivative_sqrt` | `RealRooted.Mathlib.RingTheory.PowerSeries.Sqrt` | The linear differential equation `2 f (sqrt f)' = f' sqrt f`. |
+| 3 | `RealRooted.Poisson.starC_X_right` | `RealRooted.BorceaBranden.Applications.UnivariatePoissonStar` | Applying `starC` to `X` gives the first-order Euler pencil `X * (f + c f')`. |
 | 3 | `RealRooted.Poisson.starC_linear_factor_left` | `RealRooted.BorceaBranden.Applications.UnivariatePoissonStar` | A linear left factor gives the Poisson differential recurrence. |
 | 3 | `RealRooted.TuranHurwitz.normalized_succ` | `RealRooted.TuranHurwitz.NormalizedRecurrence` | The normalized recurrence. |
 | 3 | `RealRooted.basisTransform_touchard_mul_X_add_C` | `RealRooted.NarayanaTransformation.Basis` | Factor recurrence for the Touchard-basis transform. |
@@ -448,7 +449,6 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 3 | `RealRooted.eulerOperator_eq_diagonalOperator_natCast` | `RealRooted.MultiplierSequence` | The Euler operator `X d/dX` acts diagonally with multiplier `k`. |
 | 3 | `RealRooted.gammaOperator_apply` | `RealRooted.GammaPencil.Basic` |  |
 | 3 | `RealRooted.isNonnegLinearForm_X` | `RealRooted.RowThreshold` |  |
-| 3 | `RealRooted.iterateTDeriv_C_mul` | `RealRooted.IteratedDerivativeShift` |  |
 
 ## nonvanishing
 
@@ -514,12 +514,12 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 22 | `Polynomial.basisTransform_smul` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
+| 23 | `Polynomial.basisTransform_smul` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
+| 20 | `Polynomial.basisTransform_add` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
 | 20 | `RealRooted.weightedSum_cons` | `RealRooted.WeightedSum` |  |
-| 19 | `Polynomial.basisTransform_add` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
+| 14 | `Polynomial.basisTransform_X_pow` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
 | 14 | `Polynomial.basisTransform_monomial` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
-| 13 | `Polynomial.basisTransform_X_pow` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
-| 9 | `Polynomial.basisTransform_C` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
+| 10 | `Polynomial.basisTransform_C` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
 | 9 | `Polynomial.basisTransform_C_mul_X_pow` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` | A scalar monomial is sent to the corresponding scalar basis element. |
 | 9 | `RealRooted.gammaTransform_add` | `RealRooted.GammaTransform.Basic` |  |
 | 9 | `RealRooted.sequence_eq_of_same_lag_two_recurrence` | `RealRooted.Recurrence.Uniqueness` | Two sequences with the same first two values and lag-two recurrence agree. |
