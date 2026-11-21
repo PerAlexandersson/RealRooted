@@ -3,6 +3,16 @@
   "entries": [
     {
       "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/NewtonPartialProducts.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.NewtonPartialProducts"
+      ],
+      "note": "Algebraic Newton coefficients of omitted-factor products and their derivatives, including repeated nodes, two zero nodes, and the ordered nonnegative coefficient inequality (RealRooted#2415). No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
         "RealRooted/Mathlib/LinearAlgebra/Matrix/Determinant/Alternant.lean"
       ],
       "modules": [

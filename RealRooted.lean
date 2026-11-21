@@ -2337,3 +2337,12 @@ public import RealRooted.QuadraticInterlacing.Preservation
 public import RealRooted.QuadraticInterlacing.Residue
 public import RealRooted.CombinatorialExamples.BigBlockSingletons
 public import RealRooted.DerivativeRecurrence.EulerLag
+public import RealRooted.ExponentialRows.Insertion
+public import RealRooted.ExponentialRows.PartialProducts
+public import RealRooted.ExponentialRows.ProductInsertion
+public import RealRooted.ExponentialRows.Quartic
+public import RealRooted.ExponentialRows.QuarticInsertion
+public import RealRooted.ExponentialRows.RealRootedProduct
+public import RealRooted.Mathlib.Algebra.Polynomial.NewtonPartialProducts
+public import RealRooted.MatrixInterlacing.PartialProductStep
+public import RealRooted.MatrixInterlacing.VariableLastRow
