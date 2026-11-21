@@ -48,7 +48,7 @@ lemma monomial_comp_X_sq (n : ℕ) (a : ℝ) :
   refine Polynomial.induction_on' p ?_ ?_
   · simp_all
   · intro m a
-    simp only [monomial_comp_X_sq, Polynomial.coeff_monomial,
+    simp only [monomial_comp_X_sq, Polynomial.coeff_monomial, Finsupp.single_apply,
       (by lia : 2 * m = 2 * n ↔ m = n)]
 
 @[simp] lemma coeff_comp_X_sq_odd (p : ℝ[X]) (n : ℕ) :
@@ -56,7 +56,7 @@ lemma monomial_comp_X_sq (n : ℕ) (a : ℝ) :
   refine Polynomial.induction_on' p ?_ ?_
   · simp_all
   · intro m a
-    simp only [monomial_comp_X_sq, Polynomial.coeff_monomial,
+    simp only [monomial_comp_X_sq, Polynomial.coeff_monomial, Finsupp.single_apply,
       (by lia : 2 * m = 2 * n + 1 ↔ False), ite_false]
 
 @[simp] lemma coeff_X_mul_comp_X_sq_even (p : ℝ[X]) (n : ℕ) :

@@ -72,7 +72,7 @@ theorem MvPolynomial.IsRayleigh.mvRealStableOrZero_of_isMultiaffine_finite
         MvRealStableOrZero Q := by
     intro n
     induction n using Nat.strong_induction_on with
-    | h n ih =>
+    | ind n ih =>
         intro Q hcard hQ hQma
         by_cases hvars : Q.vars = ∅
         · rw [MvPolynomial.vars_eq_empty_iff_eq_C.mp hvars]

@@ -204,7 +204,7 @@ theorem strictInterl_polynomial_shift {m : ℕ} {δ c d U V : ℝ}
       simp [hconst.ne']
     exact hm.trans (le_natDegree_of_ne_zero htop)
   have hpolar : StrictInterl (polarTheta m p) p :=
-    strictInterl_polarTheta_self hp hpdeg.le hreflect
+    strictInterl_polarTheta_self hp hpdeg.le (by lia)
   have hpolarPos : HasPosLeadingCoeff (polarTheta m p) :=
     (polarTheta_preserves_pf hp hpdeg.le).hasNonnegCoeffs.pos_leadingCoeff
       hpolar.1.1

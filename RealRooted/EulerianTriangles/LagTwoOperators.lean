@@ -210,7 +210,7 @@ private theorem simpleNegRooted_polarTheta_succ {d : ℕ} {p : ℝ[X]}
       simpa using hp.coeff_zero_pos.ne'
     exact (by lia : 2 ≤ d + 1).trans (le_natDegree_of_ne_zero hcoeff)
   have hinter : StrictInterl (polarTheta (d + 1) p) p :=
-    strictInterl_polarTheta_self hpf (by rw [hp.natDegree_eq]; lia) hshift
+    strictInterl_polarTheta_self hpf (by rw [hp.natDegree_eq]; lia) (by lia)
   have hno : ∀ r, ¬ ((polarTheta (d + 1) p).IsRoot r ∧ p.IsRoot r) := by
     intro r hr
     have hrneg := hp.isRoot_neg hr.2
@@ -311,7 +311,7 @@ private theorem lagTwoEulerBridge_data {d : ℕ} {p : ℝ[X]}
       simpa using hp.coeff_zero_pos.ne'
     exact hd.trans (le_natDegree_of_ne_zero hcoeff)
   have hpolar : StrictInterl (polarTheta d p) p :=
-    strictInterl_polarTheta_self hpf (by rw [hp.natDegree_eq]) hshift
+    strictInterl_polarTheta_self hpf (by rw [hp.natDegree_eq]) (by lia)
   have hderiv : StrictInterl p.derivative p :=
     (derivative_interlaces_of_natDegree_ne_zero hp.splits (by
       rw [hp.natDegree_eq]
@@ -535,7 +535,7 @@ theorem SimpleNegRooted.lagTwoEulerCore_strictInterl_step
             simpa using htheta.coeff_zero_pos.ne'
           exact (by lia : 2 ≤ D + 1).trans (le_natDegree_of_ne_zero hcoeff)
         exact strictInterl_polarTheta_self
-          (thetaPlusOne_preserves_pf hpf) (by rw [htheta.natDegree_eq]; lia) hshift
+          (thetaPlusOne_preserves_pf hpf) (by rw [htheta.natDegree_eq]; lia) (by lia)
       have hpolar := simpleNegRooted_polarTheta_succ hD hpD
       have hqS : StrictInterl (RealRooted.lagTwoEulerCore D p) (X * polarTheta (D + 1) p) := by
         rw [lagTwoEulerCore_eq_derivative_X_mul_polarTheta]

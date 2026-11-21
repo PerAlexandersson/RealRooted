@@ -41,7 +41,7 @@ private theorem coeff_gammaOperatorNumerator (d : ℕ) (a : ℝ) (f : ℝ[X]) (k
   unfold gammaOperatorNumerator
   by_cases hk : k = 0
   · subst k
-    simp [coeff_add]
+    simp
   · have hkpos : 0 < k := Nat.pos_of_ne_zero hk
     have hpoly :
         C a * f + X * (1 - C 4 * X) * f.derivative + C (2 * (d : ℝ)) * X * f =

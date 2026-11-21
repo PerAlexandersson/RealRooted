@@ -231,7 +231,7 @@ theorem natDegree_right_le_succ
     g.natDegree ≤ f.natDegree + 1 := by
   refine
     Nat.strong_induction_on
-      (p := fun n =>
+      (motive := fun n =>
         ∀ {f g : ℝ[X]},
           f.natDegree = n →
           Compatible f g →

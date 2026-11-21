@@ -4,7 +4,7 @@ import RealRooted.PFPolynomial.PreserverClosure
 public import RealRooted.EulerBidiagonal
 import RealRooted.EulerBidiagonal.PairStep
 public import RealRooted.MultiplierSequence.Bidiagonal
-public import RealRooted.EulerBidiagonal.General
+public import RealRooted.EulerBidiagonal.QuadraticEulerStep
 
 /-!
 # Degree-local Pólya-frequency preservers for Euler bidiagonal operators

@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.ChudnovskySeymour.Core
+public import RealRooted.ChudnovskySeymour.CommonInterleaver
 import RealRooted.Compatibility.InterleaverBridge
 public import RealRooted.Compatibility.Basic
 import RealRooted.CommonInterleaver.FamilyUpgrade

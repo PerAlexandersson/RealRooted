@@ -108,7 +108,7 @@ theorem strictInterl_of_wronskian_eval_nonneg {f g : ℝ[X]}
     (hW : ∀ t, 0 ≤ (wronskian g f).eval t) : StrictInterl g f := by
   generalize hn : f.natDegree = n
   induction n using Nat.strong_induction_on generalizing f g with
-  | h n ih =>
+  | ind n ih =>
     subst hn
     by_cases hcommon : ∃ r, f.IsRoot r ∧ g.IsRoot r
     · obtain ⟨r, hrf, hrg⟩ := hcommon

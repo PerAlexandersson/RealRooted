@@ -1,6 +1,6 @@
 module
 
-import RealRooted.BrandenLeite.Theorem37
+import RealRooted.BrandenLeite.TotalNonnegativity
 public import RealRooted.PFPolynomial
 public import RealRooted.BrandenLeite.ChainPolynomial.Algebra
 import RealRooted.Linear
@@ -64,7 +64,7 @@ theorem chainPolynomial_comp_C_mul_X_normalizeConstantDiagonal
       (chainPolynomial (normalizeConstantDiagonal δ A) n).comp
         (C δ * X) := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       cases n with
       | zero => simp
       | succ n =>

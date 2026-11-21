@@ -62,7 +62,7 @@ private theorem binomialWordTransform_succ (n j : ℕ) (hn : 0 < n) (p : ℝ[X])
     rw [binomialWordTransform_monomial]
     have htop : j + 1 + n - 1 = n + j := by lia
     rw [htop]
-    simp only [coeff_monomial, ite_mul, zero_mul]
+    simp only [coeff_monomial, Finsupp.single_apply, ite_mul, zero_mul]
     by_cases hd : d < j
     · simp [hd, ne_of_lt hd]
     · by_cases he : d = j
@@ -84,7 +84,7 @@ decreasing_by exact i.isLt
 theorem recursiveCoefficient_eq_coeff (n j : ℕ) (hn : 0 < n) :
     recursiveCoefficient n j = (zigzagEulerianPolynomial n).coeff j := by
   induction j using Nat.strong_induction_on with
-  | h j ih =>
+  | ind j ih =>
     rw [recursiveCoefficient, recursiveWordCount_eq_weakUpDownWordCount]
     have hsum :
         (∑ i : Fin j, recursiveCoefficient n i.val * (Nat.choose (n + j - i.val) n : ℝ)) =

@@ -68,7 +68,7 @@ theorem antiderivative_derivative (p : R[X]) :
     | zero => simp
     | succ n =>
       rw [derivative_monomial, Nat.add_sub_cancel, antiderivative_monomial, coeff_monomial]
-      simp only [Nat.succ_ne_zero, ite_false, map_zero, sub_zero]
+      simp only [Finsupp.single_apply, Nat.succ_ne_zero, ite_false, map_zero, sub_zero]
       congr 1
       linear_combination a * natCast_succ_mul_invSucc (R := R) n
 

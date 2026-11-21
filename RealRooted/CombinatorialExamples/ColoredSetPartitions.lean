@@ -1,7 +1,7 @@
 module
 
 import RealRooted.Tactic.Row.Frontend
-public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.CombinatorialExamples.CoefficientHelpers
 public import RealRooted.MaWang
 public import Mathlib.Tactic
 import RealRooted.MaWang.Weak.Endpoint
@@ -21,6 +21,7 @@ recurrence, including the type `B` specialization.
 @[expose] public section
 
 open Polynomial
+open AddMonoidAlgebra (coeff)
 
 noncomputable section
 

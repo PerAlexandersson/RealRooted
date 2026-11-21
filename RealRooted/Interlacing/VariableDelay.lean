@@ -38,7 +38,7 @@ private theorem variableDelay_recurrence_invariant
     ∀ n, VariableDelayInvariant Q p n := by
   intro n
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       rcases n with _ | n
       · refine ⟨?_, ?_, ?_, ?_⟩
         · simpa [hQ0] using hasNonnegCoeffs_one
@@ -267,7 +267,7 @@ theorem hasNonnegCoeffs_of_scaled_fixedDelay_recurrence
     (n : ℕ) :
     HasNonnegCoeffs (P n) := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
     rcases n with _ | n
     · simpa [hP0] using hasNonnegCoeffs_one
     · have hdelay : n + 1 - L < n + 1 := by lia

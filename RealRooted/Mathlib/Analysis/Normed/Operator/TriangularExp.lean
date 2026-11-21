@@ -95,7 +95,7 @@ private lemma norm_one_add_smul_le (M : Matrix m m ℝ) (c h : ℝ) (hh : 0 ≤ 
       nlinarith [hrow i]
     convert hi using 1
     · rw [NNReal.coe_sum]
-      simp only [coe_nnnorm]
+      simp only [coe_nnNorm]
     · rfl
   exact_mod_cast this
 

@@ -2,7 +2,7 @@ module
 
 public import RealRooted.Compatibility.LeanderTransform
 import RealRooted.Compatibility.Three
-import RealRooted.ChudnovskySeymour.Core
+import RealRooted.ChudnovskySeymour.CommonInterleaver
 public import RealRooted.Compatibility.Pair
 public import RealRooted.WeightedSum
 import RealRooted.Linear

@@ -34,7 +34,7 @@ namespace RealRooted
 through a bounded reciprocal shift. -/
 theorem strictInterl_polarTheta_self {N : ℕ} {p : ℝ[X]} (hp : IsPFPolynomial p)
     (hpdeg : p.natDegree ≤ N)
-    (hshift : 2 ≤ (reciprocalShift N p).natDegree) :
+    (hshift : 1 ≤ (reciprocalShift N p).natDegree) :
     StrictInterl (polarTheta N p) p := by
   set q := reciprocalShift N p with hq
   have hqpf : IsPFPolynomial q := IsPFPolynomial.reciprocalShift hp hpdeg
@@ -42,7 +42,8 @@ theorem strictInterl_polarTheta_self {N : ℕ} {p : ℝ[X]} (hp : IsPFPolynomial
     rw [hq]
     unfold reciprocalShift
     exact (Polynomial.natDegree_reflect_le).trans (max_le le_rfl hpdeg)
-  have hbase : StrictInterl q (theta q) := strictInterl_self_theta hqpf hshift
+  have hbase : StrictInterl q (theta q) :=
+    strictInterl_self_theta_of_natDegree_ne_zero hqpf (by lia)
   have htheta_pf : IsPFPolynomial (theta q) := theta_preserves_pf hqpf
   have htheta_deg : (theta q).natDegree ≤ N := by
     exact (natDegree_theta_le q).trans hqdeg
@@ -84,7 +85,7 @@ theorem strictInterl_derivative_polarTheta_boundary
     exact mul_ne_zero Polynomial.X_ne_zero hder0
   have htheta_splits : (theta p).Splits :=
     (htheta_pf.ne_zero_and_splits htheta0).2
-  have hp_theta : StrictInterl p (theta p) := strictInterl_self_theta hp hpdeg
+  have hp_theta : StrictInterl p (theta p) := strictInterl_self_theta hp (by lia)
   have hder_theta : StrictInterl p.derivative (theta p) := by
     have hself : StrictInterl p.derivative (X * p.derivative) :=
       strictInterl_self_X_mul_of_nonneg hder0
@@ -186,7 +187,7 @@ theorem interl_derivative_polarTheta_boundary {M : ℕ} {p : ℝ[X]}
 /-- A polar Euler derivative precedes `thetaPlusOne` at a strictly larger
 index. -/
 theorem strictInterl_polarTheta_thetaPlusOne {N : ℕ} {p : ℝ[X]}
-    (hp : IsPFPolynomial p) (hpdeg : 2 ≤ p.natDegree)
+    (hp : IsPFPolynomial p) (hpdeg : 1 ≤ p.natDegree)
     (hpN : p.natDegree < N) (hconst : p.coeff 0 ≠ 0) :
     StrictInterl (polarTheta N p) (thetaPlusOne p) := by
   have hp0 : p ≠ 0 := fun hzero ↦ hconst (by simp_all)
@@ -200,7 +201,7 @@ theorem strictInterl_polarTheta_thetaPlusOne {N : ℕ} {p : ℝ[X]}
       simp_all
     exact le_trans (by lia) (le_natDegree_of_ne_zero hcoeff)
   have hpolar_q : StrictInterl (polarTheta (N + 1) q) q :=
-    strictInterl_polarTheta_self hqpf (le_of_lt hqN) hshift
+    strictInterl_polarTheta_self hqpf (le_of_lt hqN) (by lia)
   have hstep : StrictInterl q.derivative (polarTheta (N + 1) q) :=
     strictInterl_derivative_polarTheta hqpf hqdeg2 hqN hpolar_q
   have hpolar : polarTheta (N + 1) q = X * polarTheta N p := by
@@ -220,7 +221,7 @@ theorem strictInterl_polarTheta_thetaPlusOne {N : ℕ} {p : ℝ[X]}
 /-- At the boundary index, `thetaPlusOne p` precedes the `X`-shifted polar
 Euler derivative. -/
 theorem strictInterl_thetaPlusOne_X_polarTheta_boundary {N : ℕ} {p : ℝ[X]}
-    (hp : IsPFPolynomial p) (hpdeg : p.natDegree = N) (hN : 2 ≤ N)
+    (hp : IsPFPolynomial p) (hpdeg : p.natDegree = N) (hN : 1 ≤ N)
     (hconst : p.coeff 0 ≠ 0) :
     StrictInterl (thetaPlusOne p) (X * polarTheta N p) := by
   have hp0 : p ≠ 0 := fun hzero ↦ hconst (by simp_all)
@@ -241,7 +242,7 @@ theorem strictInterl_thetaPlusOne_X_polarTheta_boundary {N : ℕ} {p : ℝ[X]}
     have hcoeff := coeff_polarTheta N p 0
     rw [hzero] at hcoeff
     simp_all
-  have hshift : 2 ≤ (reciprocalShift (N + 1) q).natDegree := by
+  have hshift : 1 ≤ (reciprocalShift (N + 1) q).natDegree := by
     have hcoeff : (reciprocalShift (N + 1) q).coeff N ≠ 0 := by
       simp_all
     exact le_trans hN (le_natDegree_of_ne_zero hcoeff)
@@ -256,7 +257,7 @@ theorem strictInterl_thetaPlusOne_X_polarTheta_boundary {N : ℕ} {p : ℝ[X]}
 /-- The unshifted boundary counterpart of
 `strictInterl_polarTheta_thetaPlusOne`. -/
 theorem strictInterl_polarTheta_thetaPlusOne_boundary {N : ℕ} {p : ℝ[X]}
-    (hp : IsPFPolynomial p) (hpdeg : p.natDegree = N) (hN : 2 ≤ N)
+    (hp : IsPFPolynomial p) (hpdeg : p.natDegree = N) (hN : 1 ≤ N)
     (hconst : p.coeff 0 ≠ 0) :
     StrictInterl (polarTheta N p) (thetaPlusOne p) := by
   have hstep :=
@@ -269,7 +270,7 @@ theorem strictInterl_polarTheta_thetaPlusOne_boundary {N : ℕ} {p : ℝ[X]}
 theorem strictInterl_polarTheta_add_thetaPlusOne
     {n : ℕ} {p q : ℝ[X]} (hp : IsPFPolynomial p) (hq : IsPFPolynomial q)
     (hpdeg : p.natDegree ≤ n) (hqdeg : q.natDegree = n + 1)
-    (hn : 1 ≤ n) (hq0 : q.coeff 0 ≠ 0)
+    (hq0 : q.coeff 0 ≠ 0)
     (hmixed :
       StrictInterl (polarTheta (n + 1) (thetaPlusOne p)) (thetaPlusOne q)) :
     StrictInterl (polarTheta (n + 1) (q + thetaPlusOne p)) (thetaPlusOne q) := by
@@ -316,7 +317,7 @@ theorem strictInterl_self_add_C_mul_theta_X_polarTheta_boundary
     have hcoeff : (reciprocalShift N p).coeff N ≠ 0 := by simp_all
     exact hN.trans (le_natDegree_of_ne_zero hcoeff)
   have hpolar_p : StrictInterl (polarTheta N p) p :=
-    strictInterl_polarTheta_self hp (le_of_eq hpdeg) hshift
+    strictInterl_polarTheta_self hp (le_of_eq hpdeg) (by lia)
   have hp_right : StrictInterl p (X * polarTheta N p) :=
     strictInterl_mul_X_of_strictInterl_of_nonneg hpolar_p
       hpolar_pf.hasNonnegCoeffs hp.hasNonnegCoeffs

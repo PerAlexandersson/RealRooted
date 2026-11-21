@@ -4,7 +4,7 @@ public import RealRooted.BrandenLeite.ChainPolynomial.Algebra
 public import RealRooted.BrandenLeite.ChainPolynomial.Resolution
 public import RealRooted.Interlacing.ConeBounds
 import RealRooted.RowThresholdOne
-import RealRooted.SymmetricDecomposition.Theorem26
+import RealRooted.SymmetricDecomposition.InterlacingEquivalence
 import RealRooted.Mathlib.Algebra.BigOperators.Group.List
 import RealRooted.Mathlib.Algebra.Polynomial.BigOperators
 public import RealRooted.SymmetricDecomposition.FPolynomial
@@ -20,7 +20,7 @@ Definitions and the Brändén--Saud Leite induction, stated for explicit
 coefficients and roots in `[-1, 0]`, and consecutive chain polynomials
 interlace.  `RealRooted.BrandenLeite.WhitneyReduction` constructs this data from
 total nonnegativity (`resolutionOfTotallyNonneg`), and
-`RealRooted.BrandenLeite.Theorem37` restates the results for every
+`RealRooted.BrandenLeite.TotalNonnegativity` restates the results for every
 lower-unitriangular totally nonnegative matrix.
 -/
 

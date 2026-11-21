@@ -1,6 +1,6 @@
 module
 
-import RealRooted.ChudnovskySeymour.Core
+import RealRooted.ChudnovskySeymour.CommonInterleaver
 public import RealRooted.Compatibility.CutTransform
 public import RealRooted.Compatibility.Basic
 import RealRooted.WagnerX.NonnegativeRoots

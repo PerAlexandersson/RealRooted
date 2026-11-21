@@ -38,23 +38,23 @@ def A177040 : ℕ → ℝ[X]
         + (C (-13 / 5 - 2 / 5 * r) + C (8 / 5 + 2 / 5 * r) * X) * A177040 n
 
 private lemma A177040_coeff_succ (n k : ℕ) :
-    Polynomial.coeff (A177040 (n + 4)) (k + 2) =
-      ((2 / 5) * ((k : ℝ) +2) * Polynomial.coeff (A177040 (n + 3)) (k + 2)
-        + (-2 / 5) * ((k : ℝ) +1) * Polynomial.coeff (A177040 (n + 3)) (k + 1))
-      + ((-4 / 5) * ((k : ℝ) +2) * Polynomial.coeff (A177040 (n + 2)) (k + 2)
-        + (4 / 5) * ((k : ℝ) +1) * Polynomial.coeff (A177040 (n + 2)) (k + 1))
-      + ((2 / 5) * ((k : ℝ) +2) * Polynomial.coeff (A177040 (n + 1)) (k + 2)
-        + (-2 / 5) * ((k : ℝ) +1) * Polynomial.coeff (A177040 (n + 1)) (k + 1))
-      + ((-4 / 5) * ((k : ℝ) +2) * Polynomial.coeff (A177040 n) (k + 2)
-        + (4 / 5) * ((k : ℝ) +1) * Polynomial.coeff (A177040 n) (k + 1))
-      + (((2 / 5) + (-1 / 5) * (n : ℝ)) * Polynomial.coeff (A177040 (n + 3)) (k + 2)
-        + ((3 / 5) + (1 / 5) * (n : ℝ)) * Polynomial.coeff (A177040 (n + 3)) (k + 1))
-      + ((2 + (2 / 5) * (n : ℝ)) * Polynomial.coeff (A177040 (n + 2)) (k + 2)
-        + ((-2 / 5) * (n : ℝ)) * Polynomial.coeff (A177040 (n + 2)) (k + 1))
-      + (((2 / 5) + (1 / 5) * (n : ℝ)) * Polynomial.coeff (A177040 (n + 1)) (k + 2)
-        + ((-7 / 5) + (-1 / 5) * (n : ℝ)) * Polynomial.coeff (A177040 (n + 1)) (k + 1))
-      + (((-13 / 5) + (-2 / 5) * (n : ℝ)) * Polynomial.coeff (A177040 n) (k + 2)
-        + ((8 / 5) + (2 / 5) * (n : ℝ)) * Polynomial.coeff (A177040 n) (k + 1)) := by
+    (A177040 (n + 4)).coeff (k + 2) =
+      ((2 / 5) * ((k : ℝ) +2) * (A177040 (n + 3)).coeff (k + 2)
+        + (-2 / 5) * ((k : ℝ) +1) * (A177040 (n + 3)).coeff (k + 1))
+      + ((-4 / 5) * ((k : ℝ) +2) * (A177040 (n + 2)).coeff (k + 2)
+        + (4 / 5) * ((k : ℝ) +1) * (A177040 (n + 2)).coeff (k + 1))
+      + ((2 / 5) * ((k : ℝ) +2) * (A177040 (n + 1)).coeff (k + 2)
+        + (-2 / 5) * ((k : ℝ) +1) * (A177040 (n + 1)).coeff (k + 1))
+      + ((-4 / 5) * ((k : ℝ) +2) * (A177040 n).coeff (k + 2)
+        + (4 / 5) * ((k : ℝ) +1) * (A177040 n).coeff (k + 1))
+      + (((2 / 5) + (-1 / 5) * (n : ℝ)) * (A177040 (n + 3)).coeff (k + 2)
+        + ((3 / 5) + (1 / 5) * (n : ℝ)) * (A177040 (n + 3)).coeff (k + 1))
+      + ((2 + (2 / 5) * (n : ℝ)) * (A177040 (n + 2)).coeff (k + 2)
+        + ((-2 / 5) * (n : ℝ)) * (A177040 (n + 2)).coeff (k + 1))
+      + (((2 / 5) + (1 / 5) * (n : ℝ)) * (A177040 (n + 1)).coeff (k + 2)
+        + ((-7 / 5) + (-1 / 5) * (n : ℝ)) * (A177040 (n + 1)).coeff (k + 1))
+      + (((-13 / 5) + (-2 / 5) * (n : ℝ)) * (A177040 n).coeff (k + 2)
+        + ((8 / 5) + (2 / 5) * (n : ℝ)) * (A177040 n).coeff (k + 1)) := by
   conv_lhs => rw [A177040]
   rw [show ((C ((2 / 5)) * X + C ((-2 / 5)) * X ^ 2)) * (A177040 (n + 3)).derivative
     + ((C ((-4 / 5)) * X + C ((4 / 5)) * X ^ 2)) * (A177040 (n + 2)).derivative
@@ -112,38 +112,38 @@ private lemma A177040_rewrite (n : ℕ) :
 
 -- i = 0
 private lemma A177040_coeff_zero (n : ℕ) :
-    Polynomial.coeff (A177040 (n + 4)) 0 =
-        ((2 / 5) + (-1 / 5) * (n : ℝ)) * Polynomial.coeff (A177040 (n + 3)) 0
-      + (2 + (2 / 5) * (n : ℝ)) * Polynomial.coeff (A177040 (n + 2)) 0
-      + ((2 / 5) + (1 / 5) * (n : ℝ)) * Polynomial.coeff (A177040 (n + 1)) 0
-      + ((-13 / 5) + (-2 / 5) * (n : ℝ)) * Polynomial.coeff (A177040 n) 0 := by
+    (A177040 (n + 4)).coeff 0 =
+        ((2 / 5) + (-1 / 5) * (n : ℝ)) * (A177040 (n + 3)).coeff 0
+      + (2 + (2 / 5) * (n : ℝ)) * (A177040 (n + 2)).coeff 0
+      + ((2 / 5) + (1 / 5) * (n : ℝ)) * (A177040 (n + 1)).coeff 0
+      + ((-13 / 5) + (-2 / 5) * (n : ℝ)) * (A177040 n).coeff 0 := by
   rw [A177040_rewrite]
   simp
 
 -- i = 1
 private lemma A177040_coeff_one (n : ℕ) :
-    Polynomial.coeff (A177040 (n + 4)) 1 =
-        ((2 / 5) * Polynomial.coeff (A177040 (n + 3)) 1)
-      + ((-4 / 5) * Polynomial.coeff (A177040 (n + 2)) 1)
-      + ((2 / 5) * Polynomial.coeff (A177040 (n + 1)) 1)
-      + ((-4 / 5) * Polynomial.coeff (A177040 n) 1)
-      + (((2 / 5) + (-1 / 5) * (n : ℝ)) * Polynomial.coeff (A177040 (n + 3)) 1 + ((3 / 5)
-        + (1 / 5) * (n : ℝ)) * Polynomial.coeff (A177040 (n
-        + 3)) 0)
-      + ((2 + (2 / 5) * (n : ℝ)) * Polynomial.coeff (A177040 (n + 2)) 1 + ((-2 / 5) * (n : ℝ))
-        * Polynomial.coeff (A177040 (n
-        + 2)) 0)
-      + (((2 / 5) + (1 / 5) * (n : ℝ)) * Polynomial.coeff (A177040 (n + 1)) 1 + ((-7 / 5)
-        + (-1 / 5) * (n : ℝ)) * Polynomial.coeff (A177040 (n
-        + 1)) 0)
-      + (((-13 / 5) + (-2 / 5) * (n : ℝ)) * Polynomial.coeff (A177040 n) 1 + ((8 / 5)
-        + (2 / 5) * (n : ℝ)) * Polynomial.coeff (A177040 n) 0)
+    (A177040 (n + 4)).coeff 1 =
+        ((2 / 5) * (A177040 (n + 3)).coeff 1)
+      + ((-4 / 5) * (A177040 (n + 2)).coeff 1)
+      + ((2 / 5) * (A177040 (n + 1)).coeff 1)
+      + ((-4 / 5) * (A177040 n).coeff 1)
+      + (((2 / 5) + (-1 / 5) * (n : ℝ)) * (A177040 (n + 3)).coeff 1 + ((3 / 5)
+        + (1 / 5) * (n : ℝ)) * (A177040 (n
+        + 3)).coeff 0)
+      + ((2 + (2 / 5) * (n : ℝ)) * (A177040 (n + 2)).coeff 1 + ((-2 / 5) * (n : ℝ))
+        * (A177040 (n
+        + 2)).coeff 0)
+      + (((2 / 5) + (1 / 5) * (n : ℝ)) * (A177040 (n + 1)).coeff 1 + ((-7 / 5)
+        + (-1 / 5) * (n : ℝ)) * (A177040 (n
+        + 1)).coeff 0)
+      + (((-13 / 5) + (-2 / 5) * (n : ℝ)) * (A177040 n).coeff 1 + ((8 / 5)
+        + (2 / 5) * (n : ℝ)) * (A177040 n).coeff 0)
         := by
-  have hXd : ∀ p : ℝ[X], Polynomial.coeff (X * derivative p) 1 = Polynomial.coeff p 1 := by
+  have hXd : ∀ p : ℝ[X], (X * derivative p).coeff 1 = p.coeff 1 := by
     intro p; rw [show (1 : ℕ) = 0 + 1 from rfl, coeff_X_mul, coeff_derivative]; simp
-  have hX2d : ∀ p : ℝ[X], Polynomial.coeff (X ^ 2 * derivative p) 1 = 0 := by
+  have hX2d : ∀ p : ℝ[X], (X ^ 2 * derivative p).coeff 1 = 0 := by
     intro p; rw [coeff_X_pow_mul']; simp
-  have hXp : ∀ p : ℝ[X], Polynomial.coeff (X * p) 1 = Polynomial.coeff p 0 := by simp
+  have hXp : ∀ p : ℝ[X], (X * p).coeff 1 = p.coeff 0 := by simp
   rw [A177040_rewrite]
   simp only [coeff_add, coeff_C_mul, hXd, hX2d, hXp]
   ring_nf
@@ -670,7 +670,7 @@ private lemma i1_step (m : ℕ) :
       grind
 
 private lemma A177040_coeff (n i : ℕ) :
-    Polynomial.coeff (A177040 n) i = if i ≤ n / 2 then (Nat.choose (n - n / 2 + i
+    (A177040 n).coeff i = if i ≤ n / 2 then (Nat.choose (n - n / 2 + i
       + 1) (n / 2 - i) : ℝ) else 0
       := by
   induction n using Nat.strong_induction_on generalizing i with
@@ -689,17 +689,17 @@ private lemma A177040_coeff (n i : ℕ) :
       · norm_num [A177040, coeff_add, coeff_X]
       · norm_num [A177040, coeff_add, coeff_X]
       · rw [ite_eq_right (by lia)]
-        simp [A177040, coeff_add, coeff_X]
+        simp [A177040, coeff_X]
     | 3 =>
       rcases i with _ | i | i
       · norm_num [A177040, coeff_add, coeff_X]
       · norm_num [A177040, coeff_add, coeff_X]
       · rw [ite_eq_right (by lia)]
-        simp [A177040, coeff_add, coeff_X]
+        simp [A177040, coeff_X]
     | (m + 4) =>
-      change Polynomial.coeff (A177040 (m + 4)) i = Bcoef (m + 4) i
+      change (A177040 (m + 4)).coeff i = Bcoef (m + 4) i
       have hprev (t : ℕ) (ht : t < m + 4) (j : ℕ) :
-          Bcoef t j = Polynomial.coeff (A177040 t) j := (ih t ht j).symm
+          Bcoef t j = (A177040 t).coeff j := (ih t ht j).symm
       rcases i with _ | _ | k
       · rw [A177040_coeff_zero m, i0_step m]
         simp only [hprev (m + 3) (by lia), hprev (m + 2) (by lia),
@@ -786,7 +786,7 @@ theorem A177040_natDegree_of_recurrence
   have heq : ∀ m, P m = A177040 m := by
     intro m
     induction m using Nat.strong_induction_on with
-    | h m ih =>
+    | ind m ih =>
         by_cases hm : m < 4
         · exact hinit m hm
         · obtain ⟨q, rfl⟩ : ∃ q, m = q + 4 := ⟨m - 4, by lia⟩

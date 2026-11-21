@@ -195,7 +195,7 @@ lemma bernOp_roots_le (n : ℕ) (hn : 2 ≤ n) (G : ℝ[X]) (h0 : G.eval 0 = 0) 
 
 lemma bernOp_pow_eval_zero (n r : ℕ) (G : ℝ[X]) :
     (((bernOp n) ^ r) G).eval 0 = G.eval 0 := by
-  induction r generalizing G <;> simp_all [pow_succ, Module.End.mul_apply, bernOp_eval_zero]
+  induction r generalizing G <;> simp_all [pow_succ, mul_apply_eq_comp, bernOp_eval_zero]
 
 /-- Iterating the variation diminishing property. -/
 lemma bernOp_pow_roots_le (n : ℕ) (hn : 2 ≤ n) : ∀ (r : ℕ) (G : ℝ[X]), G.eval 0 = 0 →
@@ -213,7 +213,7 @@ lemma bernOp_pow_roots_le (n : ℕ) (hn : 2 ≤ n) : ∀ (r : ℕ) (G : ℝ[X]),
   | zero => intro G _ _ _ s hs; exact ⟨s, le_rfl, by simpa using hs⟩
   | succ r ih =>
     intro G h0 h1 hG s hs
-    rw [pow_succ, Module.End.mul_apply] at hG hs
+    rw [pow_succ, mul_apply_eq_comp] at hG hs
     obtain ⟨s₁, hs₁, hs₁'⟩ := ih (bernOp n G) (by rw [bernOp_eval_zero, h0])
       (by rw [bernOp_eval_one n hn0, h1]) hG s hs
     have hBG : bernOp n G ≠ 0 := fun h => hG (by simp [h])
@@ -263,7 +263,7 @@ lemma eig_expand (n : ℕ) : ∀ m : ℕ, m ≤ n → ∀ F : ℝ[X], F.natDegre
     have hF'd : F'.natDegree ≤ m := by
       rw [natDegree_le_iff_coeff_eq_zero]
       intro k hk
-      rw [hF', coeff_sub, coeff_smul, smul_eq_mul]
+      rw [hF', coeff_sub, AddMonoidAlgebra.coeff_smul_apply, smul_eq_mul]
       rcases Nat.lt_or_ge (m + 1) k with h | h
       · rw [coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hF h),
           coeff_eq_zero_of_natDegree_lt (by lia)]
@@ -334,7 +334,7 @@ lemma coeff_one_bound (P : ℝ[X]) (m : ℕ) (hm : 2 ≤ m) (hP : P.Monic) (hd :
 
 lemma bernOp_pow_eigPoly (n d : ℕ) (hd : 2 ≤ d) (hdn : d ≤ n) (r : ℕ) :
     ((bernOp n) ^ r) (eigPoly n d) = (mu n d) ^ r • eigPoly n d := by
-  induction r <;> simp_all [pow_succ, Module.End.mul_apply, (eigPoly_spec n d hd hdn).2.2,
+  induction r <;> simp_all [pow_succ, mul_apply_eq_comp, (eigPoly_spec n d hd hdn).2.2,
     map_smul, smul_smul, mul_comm]
 
 /-- A Bernstein inverse iterate with prescribed interior roots has a bounded linear coefficient. -/
@@ -390,7 +390,7 @@ private lemma tendsto_coeff_one_eigen_combo
     Filter.Tendsto (fun r : ℕ => (∑ d ∈ Finset.Icc 2 m,
       (a d * (mu n m / mu n d) ^ r) • eigPoly n d).coeff 1) Filter.atTop
       (nhds ((eigPoly n m).coeff 1)) := by
-  simp_rw [finsetSum_coeff, coeff_smul, smul_eq_mul]
+  simp_rw [finsetSum_coeff, AddMonoidAlgebra.coeff_smul_apply, smul_eq_mul]
   have hlim : (eigPoly n m).coeff 1 = ∑ d ∈ Finset.Icc 2 m,
       (if d = m then a d * (eigPoly n d).coeff 1 else 0) := by
     rw [Finset.sum_ite_eq', ite_eq_left (by simp; lia), ham1, one_mul]
@@ -456,7 +456,7 @@ theorem eigPoly_coeff_one_ne_zero (n m : ℕ) (hm : 2 ≤ m) (hmn : m ≤ n) :
   have hFrc : ∀ r k, (Fr r).coeff k =
       ∑ d ∈ Finset.Icc 2 m, a d * (mu n m / mu n d) ^ r * (eigPoly n d).coeff k := by
     intro r k
-    simp [hFr, coeff_smul]
+    simp [hFr]
   have hFrdeg : ∀ r, (Fr r).natDegree ≤ m := by
     intro r
     refine natDegree_sum_le_of_forall_le _ _ fun d hd => ?_
@@ -534,7 +534,7 @@ lemma eigPoly_reflect (n m : ℕ) (hm : 2 ≤ m) (hmn : m ≤ n) :
     (by lia) heig heig'
   have : c = (-1) ^ m := by
     have h2 := congrArg (fun P => P.coeff m) hc
-    simp only [coeff_smul, smul_eq_mul] at h2
+    simp only [AddMonoidAlgebra.coeff_smul_apply, smul_eq_mul] at h2
     have hcm : G.coeff m = 1 := by rw [← hdeg]; exact hmon.leadingCoeff
     rw [hlc, hcm, mul_one] at h2
     exact h2.symm

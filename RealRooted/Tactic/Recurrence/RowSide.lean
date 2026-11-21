@@ -3,7 +3,7 @@ module
 import RealRooted.DerivativeRecurrence.Degree
 import RealRooted.ThreeTermRecurrence.Degree
 public import RealRooted.DerivativeRecurrence.SecondOrderODE
-public import RealRooted.DerivativeRecurrence.General
+public import RealRooted.DerivativeRecurrence.RowDegree
 public import RealRooted.Tactic.Recurrence.ODE
 public import RealRooted.Tactic.Recurrence.Shape
 public import RealRooted.Tactic.Recurrence.LinRecProbe
@@ -11,7 +11,7 @@ public import RealRooted.Tactic.SideGoals
 public meta import RealRooted.DerivativeRecurrence.Degree
 public meta import RealRooted.ThreeTermRecurrence.Degree
 public meta import RealRooted.DerivativeRecurrence.SecondOrderODE
-public meta import RealRooted.DerivativeRecurrence.General
+public meta import RealRooted.DerivativeRecurrence.RowDegree
 public meta import RealRooted.Tactic.Recurrence.ODE
 public meta import RealRooted.Tactic.Recurrence.Shape
 public meta import RealRooted.Tactic.Recurrence.LinRecProbe

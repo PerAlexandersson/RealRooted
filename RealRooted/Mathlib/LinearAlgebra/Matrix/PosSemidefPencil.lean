@@ -74,7 +74,7 @@ private lemma psdPencil_backward {ι : Type*} [Fintype ι]
   let S : Set (ι → ℝ) := (N' : Set (ι → ℝ)) ∩ {x | ‖x‖ = 1}
   have hSc : IsCompact S := by
     apply Metric.isCompact_of_isClosed_isBounded
-    · exact N'.closed_of_finiteDimensional.inter (isClosed_eq continuous_norm continuous_const)
+    · exact N'.isClosed_of_finiteDimensional.inter (isClosed_eq continuous_norm continuous_const)
     · refine (Metric.isBounded_closedBall (x := (0 : ι → ℝ)) (r := 1)).subset ?_
       intro x hx
       simp [Metric.mem_closedBall, hx.2.le]
@@ -205,7 +205,7 @@ private lemma pair_conj_diag {n : ℕ} (V : Matrix (Fin n) (Fin n) ℝ) (c : Fin
     (H : Matrix (Fin n) (Fin n) ℝ) :
     pair (V * diagonal c * Vᵀ) H =
       ∑ k, c k * ((fun i => V i k) ⬝ᵥ (H *ᵥ fun i => V i k)) := by
-  simp only [pair, mul_apply, diagonal, of_apply, transpose_apply, dotProduct, mulVec,
+  simp only [pair, Matrix.mul_apply, diagonal, of_apply, transpose_apply, dotProduct, mulVec,
     Finset.sum_mul, Finset.mul_sum, mul_ite, mul_zero,
     Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   conv_lhs => arg 2; ext a; rw [Finset.sum_comm]

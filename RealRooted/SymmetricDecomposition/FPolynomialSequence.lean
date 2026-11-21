@@ -1,6 +1,6 @@
 module
 
-import RealRooted.SymmetricDecomposition.Theorem26
+import RealRooted.SymmetricDecomposition.InterlacingEquivalence
 import RealRooted.SymmetricDecomposition.FPolynomialInterlacing
 public import RealRooted.SymmetricDecomposition.FPolynomial
 

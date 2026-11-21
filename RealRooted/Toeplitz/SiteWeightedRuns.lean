@@ -63,7 +63,7 @@ theorem siteRunSum_succ (u : ℕ → R) (k : ℕ) {N : ℕ} (z : Fin (N + 1) →
       z (Fin.last N) * siteRunSum u (k + 1) (Fin.init z) + u k * siteRunSum u 0 (Fin.init z) := by
   rw [siteRunSum, ← (Fin.snocEquiv fun _ => Bool).sum_comp, Fintype.sum_prod_type]
   simp only [siteRunSum, Fintype.sum_bool, Fin.snocEquiv_apply]
-  simp only [Fin.snocEquiv_apply, List.ofFn_succ', Fin.snoc_castSucc, Fin.snoc_last,
+  simp only [List.ofFn_succ', Fin.snoc_castSucc, Fin.snoc_last,
     Fin.prod_univ_castSucc, List.concat_eq_append, List.reverse_append, List.reverse_cons,
     List.reverse_nil, List.nil_append, List.singleton_append, runWeight, ite_true,
     Bool.false_eq_true, ite_false, Fin.init, mul_one, Finset.mul_sum]

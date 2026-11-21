@@ -1187,7 +1187,7 @@ private theorem tendsto_cdf_of_tendsto_standardized {P : ℕ → ℝ[X]}
   rw [standardizedCoeffDistribution, ProbabilityMeasure.toMeasure_map,
     Measure.map_apply hmeas measurableSet_Iic]
   rw [coeffDistribution_toMeasure (hnn n) (hne n), coeffMeasure]
-  simp only [Measure.coe_finsetSum, Finset.sum_apply, Measure.smul_apply, smul_eq_mul]
+  simp only [FunLike.coe_sum, Finset.sum_apply, smul_apply, smul_eq_mul]
   rw [ENNReal.toReal_sum (fun k _ => by
     rw [Measure.dirac_apply' _ (hmeas measurableSet_Iic)]
     exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top

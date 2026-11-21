@@ -50,7 +50,7 @@ private theorem polynomial_closed_pair (k : ℕ) :
         C ((k : ℝ) ^ 2 + (k : ℝ) + 1) * X ^ (k + 1) +
           C (((k : ℝ) + 1) ^ 2) * X ^ k := by
   induction k using Nat.strong_induction_on with
-  | h k ih =>
+  | ind k ih =>
       match k with
       | 0 =>
           constructor
@@ -314,7 +314,7 @@ private theorem closed_two :
 private theorem polynomial_closed (n : ℕ) :
     polynomial (n + 2) = (X + 1) ^ n * quadraticFactor (2 ^ (n + 3)) := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       match n with
       | 0 => exact closed_zero
       | 1 => exact closed_one

@@ -15,7 +15,7 @@ public import RealRooted.SimpleRoots
 import RealRooted.SymmetricDecomposition.Decomposition
 import RealRooted.WagnerX.NonnegativeRoots
 public import RealRooted.GammaTransform.Basic
-import RealRooted.GarloffWagner.Theorem12
+import RealRooted.GarloffWagner.SchurProductPF
 import RealRooted.Linear
 
 /-!
@@ -250,7 +250,7 @@ theorem SimpleNegRooted.polarTheta {g : ℝ[X]} {d N : ℕ} (hd : 0 < d) (hN : d
       simpa using hg.coeff_zero_pos.ne'
     exact le_trans (by lia) (le_natDegree_of_ne_zero hcoeff)
   have hint : StrictInterl (RealRooted.polarTheta N g) g :=
-    strictInterl_polarTheta_self hpf hdegle hshift
+    strictInterl_polarTheta_self hpf hdegle (by lia)
   have hno : ∀ r, (RealRooted.polarTheta N g).IsRoot r → ¬ g.IsRoot r := by
     intro r hΘ hr
     have hrneg : r < 0 := hg.isRoot_neg hr
@@ -523,44 +523,24 @@ private lemma interl_hadPow {F G : ℝ[X]} (hF : IsPFPolynomial F) (hG : IsPFPol
       exact garloffWagnerHadamardPFInterl_of_nonnegStrictInterl (isPFPolynomial_hadPow hF l)
         (isPFPolynomial_hadPow hG l) hF hG ih h
 
-private lemma thetaPlusOne_X_add_one_pow_one :
-    thetaPlusOne ((X + 1 : ℝ[X]) ^ 1) = C 2 * (X + C (1 / 2)) := by
-  rw [thetaPlusOne_eq_derivative_X_mul]
-  simp only [pow_one, mul_add, ← C_mul]
-  norm_num
-  simp only [C_ofNat]
-  ring
-
 /-- The binomial row `(X+1)^m` precedes its `(θ+1)`-image. -/
 private lemma interl_X_add_one_pow_thetaPlusOne (m : ℕ) :
     Interl ((X + 1 : ℝ[X]) ^ m) (thetaPlusOne ((X + 1) ^ m)) := by
   have hpf : IsPFPolynomial ((X + 1 : ℝ[X]) ^ m) := isPFPolynomial_X_add_one.pow m
-  rcases m with _ | _ | m
-  · simpa [thetaPlusOne, theta] using IsPFPolynomial.one.interl_self
-  · rw [thetaPlusOne_X_add_one_pow_one]
-    refine Interl.C_mul_right_of_nonneg ?_ (by norm_num)
-    simpa using (Interl.X_add_C_iff (a := 1 / 2) (b := 1)).mpr (by norm_num)
-  · have hdeg : 2 ≤ ((X + 1 : ℝ[X]) ^ (m + 2)).natDegree := by simp [natDegree_pow]
-    have := strictInterl_self_thetac hpf hdeg one_pos
-    simpa [thetaPlusOne, theta] using this.toInterl
+  cases m with
+  | zero => simpa [thetaPlusOne, theta] using IsPFPolynomial.one.interl_self
+  | succ m => exact (strictInterl_self_thetaPlusOne hpf (by simp [natDegree_pow])).toInterl
 
 /-- The binomial row `(X+1)^m` has the polar `(m+1-θ)`-image to the left of its
 `(θ+1)`-image. -/
 private lemma interl_polarTheta_thetaPlusOne_X_add_one_pow (m : ℕ) :
     Interl (polarTheta (m + 1) ((X + 1 : ℝ[X]) ^ m)) (thetaPlusOne ((X + 1) ^ m)) := by
   have hpf : IsPFPolynomial ((X + 1 : ℝ[X]) ^ m) := isPFPolynomial_X_add_one.pow m
-  rcases m with _ | _ | m
-  · simpa [thetaPlusOne, theta, polarTheta] using IsPFPolynomial.one.interl_self
-  · have h1 : polarTheta (0 + 1 + 1) ((X + 1 : ℝ[X]) ^ (0 + 1)) = X + C 2 := by
-      simp only [polarTheta, theta, zero_add, pow_one]
-      simp [C_ofNat]
-      ring
-    rw [h1, thetaPlusOne_X_add_one_pow_one]
-    exact Interl.C_mul_right_of_nonneg
-      ((Interl.X_add_C_iff (a := 1 / 2) (b := 2)).mpr (by norm_num)) (by norm_num)
-  · have hdeg : 2 ≤ ((X + 1 : ℝ[X]) ^ (m + 2)).natDegree := by simp [natDegree_pow]
-    exact (strictInterl_polarTheta_thetaPlusOne hpf hdeg (by rw [natDegree_pow]; simp)
-      (by simp [coeff_X_add_one_pow])).toInterl
+  cases m with
+  | zero => simpa [thetaPlusOne, theta, polarTheta] using IsPFPolynomial.one.interl_self
+  | succ m =>
+    exact (strictInterl_polarTheta_thetaPlusOne hpf (by simp [natDegree_pow])
+      (by rw [natDegree_pow]; simp) (by simp [coeff_X_add_one_pow])).toInterl
 
 /-! ### The normalized rows -/
 

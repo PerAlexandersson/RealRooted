@@ -277,7 +277,7 @@ private theorem delayedTailSequence_isSolution :
       delayedTailSequence (2 + (n + i))
   rw [show 2 + (n + 3) = n + 5 by lia, delayedTailSequence,
     delayedMatrix_charpoly]
-  simp [Fin.sum_univ_succ, coeff_sub, coeff_add, coeff_C_mul,
+  simp [Fin.sum_univ_succ, coeff_C_mul,
     coeff_X_pow, coeff_X, coeff_one]
   ring_nf
 

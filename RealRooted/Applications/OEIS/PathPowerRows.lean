@@ -145,7 +145,7 @@ private theorem reflect_linear_rows :
     reflect 1 (1 + 4 * X : ℝ[X]) = 4 + X := by
   constructor <;> ext i <;> rcases i with _ | _ | i <;>
     simp [Polynomial.coeff_reflect, Polynomial.revAt_le,
-      Polynomial.revAt_eq_self_of_lt, coeff_add, coeff_X]
+      Polynomial.revAt_eq_self_of_lt, coeff_X]
 
 private theorem reflect_three_X_sq : reflect 2 (3 * X ^ 2 : ℝ[X]) = 3 := by
   rw [show (3 : ℝ[X]) = C 3 from (map_ofNat C 3).symm,
@@ -387,7 +387,7 @@ theorem a109955_eq_reciprocalShift (n : ℕ) :
     a109955 n = RealRooted.reciprocalShift n
       (RealRooted.pathPowerCliquePolynomial 3 (3 * n)) := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       rcases n with _ | _ | _ | n
       · norm_num [a109955, Q, RealRooted.pathPowerCliquePolynomial,
           RealRooted.reciprocalShift]
@@ -406,7 +406,7 @@ theorem a127893_eq_reciprocalShift (n : ℕ) :
     a127893 n = RealRooted.reciprocalShift n
       (RealRooted.pathPowerCliquePolynomial 3 (3 * n + 2)) := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       rcases n with _ | _ | _ | n
       · norm_num [a127893, Q, RealRooted.pathPowerCliquePolynomial,
           RealRooted.reciprocalShift, Finset.sum_range_succ]
@@ -429,7 +429,7 @@ theorem a127893_eq_reciprocalShift (n : ℕ) :
 theorem a206294_succ_eq_X_mul_a127893 (n : ℕ) :
     a206294 (n + 1) = X * a127893 n := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       rcases n with _ | _ | _ | n
       · simp only [a206294, a127893, mul_one]
       · rw [a206294, a127893]
@@ -458,7 +458,7 @@ theorem a109960_eq_reciprocalShift (n : ℕ) :
     a109960 n = RealRooted.reciprocalShift n
       (RealRooted.pathPowerCliquePolynomial 4 (4 * n)) := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       rcases n with _ | _ | _ | _ | n
       · norm_num [a109960, Q, RealRooted.pathPowerCliquePolynomial,
           RealRooted.reciprocalShift]
@@ -488,7 +488,7 @@ theorem a116088_eq_reciprocalShift (n : ℕ) :
     a116088 n = RealRooted.reciprocalShift n
       (RealRooted.pathPowerCliquePolynomial 3 (2 * n)) := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       rcases n with _ | _ | _ | n
       · norm_num [a116088, Q, RealRooted.pathPowerCliquePolynomial,
           RealRooted.reciprocalShift]
@@ -508,7 +508,7 @@ theorem a116089_eq_reciprocalShift (n : ℕ) :
     a116089 n = RealRooted.reciprocalShift n
       (RealRooted.pathPowerCliquePolynomial 4 (3 * n)) := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       rcases n with _ | _ | _ | _ | n
       · norm_num [a116089, Q, RealRooted.pathPowerCliquePolynomial,
           RealRooted.reciprocalShift]
@@ -535,7 +535,7 @@ theorem a277627_eq_reciprocalShift (n : ℕ) :
     a277627 n = RealRooted.reciprocalShift (n + 1)
       (RealRooted.pathPowerCliquePolynomial 3 n) := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       rcases n with _ | _ | _ | n
       · norm_num [a277627, Q, RealRooted.pathPowerCliquePolynomial,
           RealRooted.reciprocalShift]

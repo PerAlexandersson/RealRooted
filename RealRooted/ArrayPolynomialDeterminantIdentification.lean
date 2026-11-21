@@ -469,7 +469,7 @@ theorem arrayNormalizedCoefficientPolynomial_recurrence (m : ℕ) :
 theorem arrayNormalizedDeterminant_eq_coefficientPolynomial (n : ℕ) :
     arrayNormalizedDeterminant n = arrayNormalizedCoefficientPolynomial n := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       rcases n with _ | _ | _ | m
       · simp
       · simp

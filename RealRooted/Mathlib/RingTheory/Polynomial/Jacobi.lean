@@ -787,7 +787,7 @@ theorem eq_of_jacobi_differential_equation
         (C (α + 1) - C (α + β + 2) * X) * q.derivative +
         C (n * (n + α + β + 1)) * q = 0) :
     p = q := by
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   induction k with
   | zero => exact hcoeff
@@ -994,7 +994,7 @@ theorem shiftedJacobi_degree_add_one_beta_sub_one (n : ℕ) (α β : ℝ) :
         X * f.derivative - X * (X * f.derivative) +
           C (n + α + 1) * f - C (n + α + β + 1) * (X * f) := by
     ring
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   rw [hform]
   cases k with

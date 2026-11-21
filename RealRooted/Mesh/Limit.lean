@@ -57,7 +57,7 @@ theorem _root_.Polynomial.MeshGE.of_tendsto_coeff {q : ℕ → ℝ[X]} {q₀ : �
   obtain ⟨i₀, hi₀⟩ : ∃ i, q₀.coeff i ≠ 0 := by
     by_contra h
     push Not at h
-    exact hq₀ (Polynomial.ext h)
+    exact hq₀ ((AddMonoidAlgebra.ext ∘ Finsupp.ext) h)
   obtain ⟨K, hK⟩ := eventually_atTop.1
     ((hcoeff i₀).eventually (isOpen_ne.mem_nhds hi₀))
   have hne : ∀ k, q (k + K) ≠ 0 := fun k h => by

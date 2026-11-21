@@ -6,8 +6,8 @@ Authors: Matteo Cipollina
 module
 
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Primitive
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.NonnegativeVectors
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.PrimitivityCriteria
 
 /-!
 # Perron-Frobenius Theorem: Uniqueness of the Eigenvector

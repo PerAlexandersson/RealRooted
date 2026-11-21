@@ -173,7 +173,7 @@ theorem eq_zero_of_sum_choose_mul_pow_eq_zero_on_window
       _ = ((N₀ + t).choose j : ℝ) * r ^ (N₀ + t - j) *
           (E j).coeff m := by rw [hpow]
   intro j hj
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro m
   have hv := Polynomial.eq_zero_of_sum_choose_eq_zero_on_window
     (fun i ↦ (r⁻¹) ^ i * (E i).coeff m) (hscalar m) j hj

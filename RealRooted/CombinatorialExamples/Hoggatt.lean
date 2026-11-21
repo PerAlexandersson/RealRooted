@@ -5,7 +5,7 @@ public import RealRooted.Hadamard.Product
 public import RealRooted.PFPolynomial
 public import RealRooted.SimpleRoots
 import RealRooted.GarloffWagner.Hadamard
-import RealRooted.GarloffWagner.Theorem12
+import RealRooted.GarloffWagner.SchurProductPF
 import RealRooted.Hadamard.Basic
 import RealRooted.MultiplierSequence.InvPochhammerSimple
 import RealRooted.Wronskian.Forward

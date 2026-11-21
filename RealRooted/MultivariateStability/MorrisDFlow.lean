@@ -336,7 +336,7 @@ theorem MvRealStable.morrisAFlow {q : ℕ} {t : ℝ} (ht : 0 ≤ t)
   | nil => simpa [coordinateDiagonalList] using hP
   | cons i l ih =>
       simp only [coordinateDiagonalList, List.foldr_cons,
-        Module.End.mul_apply]
+        mul_apply_eq_comp]
       apply BorceaBranden.mvRealStable_quadraticExponentialMultiplier ht i
       simpa [coordinateDiagonalList] using ih
 

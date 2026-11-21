@@ -74,31 +74,31 @@ example : recurrencePolynomial 4 = 5 + 30 * X + 40 * X ^ 2 + 14 * X ^ 3 + X ^ 4 
   grind
 
 private lemma A119308_coeff_succ_succ_succ (n k : ℕ) :
-    Polynomial.coeff (recurrencePolynomial (n + 3)) (k + 3) =
+    AddMonoidAlgebra.coeff (recurrencePolynomial (n + 3)) (k + 3) =
       (((1 / (3 + (1 / 2) * (n : ℝ))) * ((13 / 2) + (3 / 2) * (n : ℝ))) *
-          Polynomial.coeff (recurrencePolynomial (n + 2)) (k + 3))
+          AddMonoidAlgebra.coeff (recurrencePolynomial (n + 2)) (k + 3))
         + (((1 / (3 + (1 / 2) * (n : ℝ))) * ((9 / 2) + (n : ℝ))) *
-          Polynomial.coeff (recurrencePolynomial (n + 2)) (k + 2))
+          AddMonoidAlgebra.coeff (recurrencePolynomial (n + 2)) (k + 2))
         + (((1 / (3 + (1 / 2) * (n : ℝ))) * (-4 + (-3 / 2) * (n : ℝ))) *
-          Polynomial.coeff (recurrencePolynomial (n + 1)) (k + 3))
+          AddMonoidAlgebra.coeff (recurrencePolynomial (n + 1)) (k + 3))
         + (((1 / 2) * (1 / (3 + (1 / 2) * (n : ℝ)))) *
-          Polynomial.coeff (recurrencePolynomial (n + 1)) (k + 2))
+          AddMonoidAlgebra.coeff (recurrencePolynomial (n + 1)) (k + 2))
         + (((1 / (3 + (1 / 2) * (n : ℝ))) * ((-3 / 2) + (-1 / 2) * (n : ℝ))) *
-          Polynomial.coeff (recurrencePolynomial (n + 1)) (k + 1))
+          AddMonoidAlgebra.coeff (recurrencePolynomial (n + 1)) (k + 1))
         + (((1 / (3 + (1 / 2) * (n : ℝ))) * ((1 / 2) + (1 / 2) * (n : ℝ))) *
-          Polynomial.coeff (recurrencePolynomial n) (k + 3))
+          AddMonoidAlgebra.coeff (recurrencePolynomial n) (k + 3))
         + (((1 / (3 + (1 / 2) * (n : ℝ))) * (-1 + -1 * (n : ℝ))) *
-          Polynomial.coeff (recurrencePolynomial n) (k + 2))
+          AddMonoidAlgebra.coeff (recurrencePolynomial n) (k + 2))
         + (((1 / (3 + (1 / 2) * (n : ℝ))) * ((1 / 2) + (1 / 2) * (n : ℝ))) *
-          Polynomial.coeff (recurrencePolynomial n) (k + 1)) := by
+          AddMonoidAlgebra.coeff (recurrencePolynomial n) (k + 1)) := by
   rw [recurrencePolynomial, nextRow]
   simp only [add_mul, coeff_add, mul_assoc, coeff_C_mul, coeff_X_mul,
     coeff_X_pow_mul']
   grind
 
 private lemma A119308_top_and_above :
-    ∀ n : ℕ, Polynomial.coeff (recurrencePolynomial n) n = 1 ∧
-      ∀ m > n, Polynomial.coeff (recurrencePolynomial n) m = 0
+    ∀ n : ℕ, AddMonoidAlgebra.coeff (recurrencePolynomial n) n = 1 ∧
+      ∀ m > n, AddMonoidAlgebra.coeff (recurrencePolynomial n) m = 0
   | 0 => by
       constructor
       · simp [recurrencePolynomial]
@@ -1334,7 +1334,7 @@ private lemma A119308_coeff_recurrence_raw (n m : ℕ) :
 private lemma A119308_coeff_closed (n k : ℕ) :
     (recurrencePolynomial n).coeff k = A119308Coeff n k := by
   induction n using Nat.strong_induction_on generalizing k with
-  | h n ih =>
+  | ind n ih =>
       rcases n with _ | _ | _ | n
       · rcases k with _ | k
         · norm_num [recurrencePolynomial, nextRow, A119308Coeff]
@@ -1409,7 +1409,7 @@ private lemma A119308_model_coeff (n k : ℕ) :
 
 private lemma A119308_eq_model (n : ℕ) :
     recurrencePolynomial n = A119308_model n := by
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   rw [A119308_coeff_closed, A119308_model_coeff]
 

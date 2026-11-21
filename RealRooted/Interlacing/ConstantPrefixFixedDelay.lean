@@ -132,7 +132,7 @@ theorem coeff_zero_pos_of_constant_prefix_fixed_delay_recurrence
     (n : ℕ) :
     0 < (P n).coeff 0 := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       by_cases hn : n < L
       · simp [hprefix n hn, hc n hn]
       · have hLn : L ≤ n := by lia
@@ -175,7 +175,7 @@ theorem natDegree_of_constant_prefix_fixed_delay_recurrence
       P c a b L hL hc ha (fun k ↦ (hb k).le) hprefix hrec
       (A := m) (B := m) le_rfl (by lia)).1.1
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       by_cases hn : n < L
       · rw [hprefix n hn]
         simp [Nat.div_eq_of_lt hn]

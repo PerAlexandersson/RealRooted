@@ -64,7 +64,7 @@ theorem strictInterl_C_mul_sub_two_theta_self {N : ℕ} {g : ℝ[X]}
     strictInterl_polarTheta_self hg le_rfl (by
       rw [reciprocalShift,
         DegreeDropReversal.natDegree_reflect_eq_of_coeff_zero_ne le_rfl hg0]
-      exact hdeg2)
+      lia)
   have hPnn : HasNonnegCoeffs (polarTheta d g) :=
     (polarTheta_preserves_pf hg le_rfl).hasNonnegCoeffs
   have hP2 : StrictInterl (C 2 * polarTheta d g) g := hpd.C_mul_left two_ne_zero

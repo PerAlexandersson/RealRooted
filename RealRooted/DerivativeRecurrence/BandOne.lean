@@ -387,7 +387,7 @@ theorem eulerianLag_endpoints (p q : ℝ[X]) (lam : ℝ) {m : ℕ}
   have hpzero : p.coeff m = 0 := coeff_eq_zero_of_natDegree_lt (by lia)
   refine ⟨natDegree_step_le (δ := 0) (d := m) hU hV hL (by lia) hq (by simp), ?_⟩
   rw [coeff_step_succ (δ := 0) (d := m) hU hV hL (by lia) hq (by simp)]
-  simp [hpzero, coeff_sub, coeff_add, coeff_one, coeff_X]
+  simp [hpzero, coeff_one, coeff_X]
 
 /-- Exact rising degrees for the Eulerian current, uniformly in its lag scalar. -/
 theorem eulerianLag_natDegree {P : ℕ → ℝ[X]} {lam : ℕ → ℝ} {D : ℕ}

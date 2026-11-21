@@ -283,7 +283,7 @@ theorem eq_regularizedKernelRow_of_recurrence
       P i = regularizedKernelRow G H i := by
     intro n
     induction n using Nat.strong_induction_on with
-    | h n ih =>
+    | ind n ih =>
         intro i hin
         rw [hP, regularizedKernelRow_eq]
         apply congrArg (C (G i 0) + X * ·)

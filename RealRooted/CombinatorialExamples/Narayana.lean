@@ -3,13 +3,13 @@ module
 public import RealRooted.MaWang
 import RealRooted.Linear
 import RealRooted.NarayanaTransformation.Recurrences.Identities
-public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.CombinatorialExamples.CoefficientHelpers
 public import RealRooted.Tactic.WagnerX
 public import Mathlib.Tactic
 import RealRooted.Tactic.Row.Frontend
 import RealRooted.Tactic.Recurrence.Degree
 import RealRooted.Tactic.Recurrence.LinRec
-import RealRooted.DerivativeRecurrence.General
+import RealRooted.DerivativeRecurrence.RowDegree
 import RealRooted.Tactic.WagnerX.Frontend
 import RealRooted.NarayanaTransformation.Rectangular.Preservation
 public import RealRooted.NarayanaTransformation.Coefficients

@@ -202,7 +202,7 @@ theorem eq_reflect_of_linearRecurrence {S : Type*} [Semiring S]
   simp only [reflect_reflect] at hr
   intro n
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
     by_cases hn : n < k
     · exact hinit n hn
     · have hkn : k ≤ n := Nat.le_of_not_gt hn

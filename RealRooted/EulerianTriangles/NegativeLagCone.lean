@@ -127,7 +127,7 @@ private theorem coeff_negativeLagInput (r s : ℕ → ℝ) (n j : ℕ) :
 private theorem negativeLagInput_succ (r s : ℕ → ℝ) (n : ℕ) :
     negativeLagInput r s (n + 1) =
       X * negativeLagInput r s n + C (negativeLagRatioProduct r s (n + 1)) := by
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro j
   rw [coeff_negativeLagInput, Polynomial.coeff_add]
   by_cases hj : j = 0

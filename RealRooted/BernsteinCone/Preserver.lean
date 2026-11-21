@@ -1,7 +1,7 @@
 module
 
 import RealRooted.BernsteinCone
-import RealRooted.ChudnovskySeymour.Core
+import RealRooted.ChudnovskySeymour.CommonInterleaver
 import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.BernsteinBasisTransform
 public import RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Bernstein
 public import RealRooted.Compatibility.Basic

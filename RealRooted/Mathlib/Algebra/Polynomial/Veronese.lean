@@ -42,8 +42,7 @@ variable [Semiring A]
 /-- The `i`th `r`-Veronese section of a polynomial. For `r = 0` it is zero. -/
 def veroneseSection (r i : ℕ) (p : A[X]) : A[X] :=
   if hr : r = 0 then 0 else
-    Polynomial.ofFinsupp <|
-      ⟨Finsupp.onFinset (Finset.range (p.natDegree + 1))
+    ⟨Finsupp.onFinset (Finset.range (p.natDegree + 1))
         (fun n => p.coeff (i + r * n)) (by
           intro n hn
           by_contra hmem
@@ -254,8 +253,8 @@ variable [CommRing A]
 
 /-- Take a Veronese section in the coefficient variable, leaving the outer variable fixed. -/
 def veroneseSectionCoeffs (r i : ℕ) (p : A[X][X]) : A[X][X] :=
-  ofFinsupp ⟨Finsupp.mapRange (veroneseSection r i) (veroneseSection_zero r i)
-    p.toFinsupp.coeff⟩
+  ⟨Finsupp.mapRange (veroneseSection r i) (veroneseSection_zero r i)
+    p.coeff⟩
 
 /-- Coefficients of the section in the inner variable are the sections of the coefficients. -/
 @[simp] theorem coeff_veroneseSectionCoeffs (r i n : ℕ) (p : A[X][X]) :
@@ -299,7 +298,7 @@ theorem veroneseSectionCoeffs_map_expand_mul {r i : ℕ} (hr : 0 < r) (hi : i < 
     (a p : A[X][X]) :
     (a.map (expand A r).toRingHom * p).veroneseSectionCoeffs r i =
       a * p.veroneseSectionCoeffs r i := by
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro n
   simp only [coeff_veroneseSectionCoeffs, coeff_mul, coeff_map]
   rw [veroneseSection_sum]
@@ -446,7 +445,7 @@ theorem mul_veroneseAdjugateCoeffs {r : ℕ} (hr : 0 < r) (p : A[X][X]) :
   have hsection :
       ((veroneseNorm r p).map (expand A r).toRingHom).veroneseSectionCoeffs r i =
         if i = ⟨0, hr⟩ then veroneseNorm r p else 0 := by
-    apply Polynomial.ext
+    apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
     intro n
     by_cases hi : i = ⟨0, hr⟩
     · simpa [coeff_veroneseSectionCoeffs, hi] using

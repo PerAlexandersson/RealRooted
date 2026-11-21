@@ -3,6 +3,106 @@
   "entries": [
     {
       "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/DifferentialEquation/Degree.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.DifferentialEquation.Degree"
+      ],
+      "note": "Polynomial ODE indicial, degree, multiplicity, or recognition API (#2343). Unpublished proof notes in the corresponding RealRooted issue; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/DifferentialEquation/Indicial.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.DifferentialEquation.Indicial"
+      ],
+      "note": "Polynomial ODE indicial, degree, multiplicity, or recognition API (#2341). Unpublished proof notes in the corresponding RealRooted issue; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/DifferentialEquation/Solutions.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.DifferentialEquation.Solutions"
+      ],
+      "note": "Polynomial ODE indicial, degree, multiplicity, or recognition API (#2343). Unpublished proof notes in the corresponding RealRooted issue; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Jacobi/Multiplicity.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Jacobi.Multiplicity"
+      ],
+      "note": "Polynomial ODE indicial, degree, multiplicity, or recognition API (#2341). Unpublished proof notes in the corresponding RealRooted issue; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Jacobi/NegativeParameters.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Jacobi.NegativeParameters"
+      ],
+      "note": "Polynomial ODE indicial, degree, multiplicity, or recognition API (#2341). Unpublished proof notes in the corresponding RealRooted issue; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Jacobi/Solutions.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Jacobi.Solutions"
+      ],
+      "note": "Polynomial ODE indicial, degree, multiplicity, or recognition API (#2341). Unpublished proof notes in the corresponding RealRooted issue; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Laguerre/Multiplicity.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Laguerre.Multiplicity"
+      ],
+      "note": "Polynomial ODE indicial, degree, multiplicity, or recognition API (#2341). Unpublished proof notes in the corresponding RealRooted issue; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Laguerre/Solutions.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Laguerre.Solutions"
+      ],
+      "note": "Polynomial ODE indicial, degree, multiplicity, or recognition API (#2343). Unpublished proof notes in the corresponding RealRooted issue; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/NewtonPartialProducts.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.NewtonPartialProducts"
+      ],
+      "note": "Algebraic Newton coefficients of omitted-factor products and their derivatives, including repeated nodes, two zero nodes, and the ordered nonnegative coefficient inequality (RealRooted#2415). No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/Determinant/Alternant.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.Determinant.Alternant"
+      ],
+      "note": "Four-variable alternant factorization at a common power and explicit descending Vandermonde determinant (RealRooted#2157). No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
         "RealRooted/Mathlib/Algebra/LinearRecurrence/Veronese.lean"
       ],
       "modules": [
@@ -280,7 +380,7 @@
       "modules": [
         "Mathlib.Algebra.MvPolynomial.Homogenize"
       ],
-      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet. Mathlib v4.36.0 now supplies `IsHomogeneous.eval_smul`; its local declaration was removed.",
       "speculative": true
     },
     {
@@ -710,7 +810,7 @@
       "modules": [
         "Mathlib.Algebra.Polynomial.Roots"
       ],
-      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet. Mathlib v4.36.0 now supplies `rootMultiplicity_C_mul`; its local declaration was removed.",
       "speculative": true
     },
     {
@@ -779,7 +879,7 @@
       "modules": [
         "Mathlib.Algebra.Polynomial.Taylor"
       ],
-      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet. Mathlib v4.36.0 now supplies `taylor_derivative`; its local declaration was removed.",
       "speculative": true
     },
     {
@@ -1804,7 +1904,7 @@
     },
     {
       "sources": [
-        "RealRooted/Mathlib/LinearAlgebra/Matrix/PerronFrobenius/Auxiliary.lean"
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PerronFrobenius/NonnegativeVectors.lean"
       ],
       "modules": [
         "Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary"
@@ -1854,7 +1954,7 @@
     },
     {
       "sources": [
-        "RealRooted/Mathlib/LinearAlgebra/Matrix/PerronFrobenius/Lemmas.lean"
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PerronFrobenius/PrimitivityCriteria.lean"
       ],
       "modules": [
         "Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas"
@@ -3458,6 +3558,86 @@
         "Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Symmetrization"
       ],
       "note": "Speculative upstream target for the oscillatory matrix core split; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Trigonometric/Cotangent.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Trigonometric.Cotangent"
+      ],
+      "note": "Cotangent derivative series on the punctured unit disk, including real points; termwise differentiation and inverse-power pole sums for Cao--Fu Lemma 3.2. No upstream PR.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Trigonometric/Cosecant.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Trigonometric.Cosecant"
+      ],
+      "note": "Second derivatives of integer sine powers and the even-cosecant differential identity in Cao--Fu Lemma 3.2, equation (3.6). No upstream PR.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PowerTraceSeries.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PowerTraceSeries"
+      ],
+      "note": "Formal Newton trace series over a commutative ring, via the adjugate derivative and matrix geometric series. Uses the existing determinant-pencil derivative theorem. Independent proof; no Tau Ceti code ported. No upstream PR.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/DifferentialEquation/EulerSolutions.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.DifferentialEquation.EulerSolutions"
+      ],
+      "note": "Complete two-diagonal polynomial coefficient systems, Euler-derivative residue kernels, and Jacobi solution spaces (#2345). Unpublished proof notes; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/DifferentialEquation/ResidueSolutions.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.DifferentialEquation.ResidueSolutions"
+      ],
+      "note": "Complete two-diagonal polynomial coefficient systems, Euler-derivative residue kernels, and Jacobi solution spaces (#2345). Unpublished proof notes; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/DifferentialEquation/TwoDiagonal.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.DifferentialEquation.TwoDiagonal"
+      ],
+      "note": "Complete two-diagonal polynomial coefficient systems, Euler-derivative residue kernels, and Jacobi solution spaces (#2345). Unpublished proof notes; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Jacobi/CompleteSolutions.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Jacobi.CompleteSolutions"
+      ],
+      "note": "Complete two-diagonal polynomial coefficient systems, Euler-derivative residue kernels, and Jacobi solution spaces (#2345). Unpublished proof notes; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Jacobi/SolutionBasis.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Jacobi.SolutionBasis"
+      ],
+      "note": "Complete two-diagonal polynomial coefficient systems, Euler-derivative residue kernels, and Jacobi solution spaces (#2345). Unpublished proof notes; no upstream PR yet.",
       "speculative": true
     }
   ]

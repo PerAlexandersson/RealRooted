@@ -2,7 +2,7 @@ module
 
 import RealRooted.Applications.EulerianCompendium.CyclicWords
 import RealRooted.Applications.EulerianCompendium.Definitions
-import RealRooted.Applications.EulerianCompendium.Results
+import RealRooted.Applications.EulerianCompendium.RootTheorems
 import RealRooted.Applications.EulerianVariations.CyclicPathDescents
 import RealRooted.Applications.EulerianVariations.TernaryRuns
 import RealRooted.CombinatorialExamples.PeakValues
@@ -66,14 +66,14 @@ label = "Euler insertion operator $E_{c,d}$"
 [[theorems]]
 objects = ["Descent polynomials of derangements"]
 name = "RealRooted.EulerianCompendium.Challenges.derangementDescent_realRooted"
-module = "RealRooted.Applications.EulerianCompendium.Results"
+module = "RealRooted.Applications.EulerianCompendium.RootTheorems"
 label = "Alexandersson: descent polynomials of derangements are real-rooted"
 headline = true
 
 [[theorems]]
 objects = ["Cyclic descent polynomials of balanced binary words"]
 name = "RealRooted.EulerianCompendium.Challenges.cyclicWordDescent_roots"
-module = "RealRooted.Applications.EulerianCompendium.Results"
+module = "RealRooted.Applications.EulerianCompendium.RootTheorems"
 label = "Balanced cyclic-word polynomials: simple roots, one at 0, the rest negative"
 
 [[theorems]]
@@ -85,7 +85,7 @@ label = "The cyclic descent polynomial is $(2/n) x B_n'(x)$ for the type B Naray
 objects = ["Even-top descent polynomials"]
 property = "interlacing"
 name = "RealRooted.EulerianCompendium.Challenges.evenTopDescent_strictAlternation"
-module = "RealRooted.Applications.EulerianCompendium.Results"
+module = "RealRooted.Applications.EulerianCompendium.RootTheorems"
 label = "Even-top descent polynomials have negative roots that strictly alternate"
 
 [[theorems]]
@@ -109,7 +109,7 @@ label = "Super-Eulerian gamma-polynomials are real-rooted with nonnegative coeff
 
 [[theorems]]
 name = "RealRooted.EulerianCompendium.Challenges.ternaryWordRun_realRooted_interlaces"
-module = "RealRooted.Applications.EulerianCompendium.Results"
+module = "RealRooted.Applications.EulerianCompendium.RootTheorems"
 label = "Run polynomials of ternary words are real-rooted and interlace"
 
 [[theorems]]
@@ -130,14 +130,14 @@ label = "Consecutive ternary run polynomials interlace"
 objects = ["Peak polynomials of permutations"]
 property = "interlacing"
 name = "RealRooted.EulerianCompendium.Challenges.peakPolynomial_roots"
-module = "RealRooted.Applications.EulerianCompendium.Results"
+module = "RealRooted.Applications.EulerianCompendium.RootTheorems"
 label = "Peak polynomials have negative roots that strictly alternate"
 
 [[theorems]]
 objects = ["Peak-value polynomials"]
 property = "real-stable"
 name = "RealRooted.EulerianCompendium.peakValue_stability_and_weightedInterlacing"
-module = "RealRooted.Applications.EulerianCompendium.Results"
+module = "RealRooted.Applications.EulerianCompendium.RootTheorems"
 label = "Peak-value polynomials are real stable; weighted diagonals interlace"
 
 [[theorems]]

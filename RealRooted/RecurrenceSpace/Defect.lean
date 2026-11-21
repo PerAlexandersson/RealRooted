@@ -201,7 +201,7 @@ theorem liftDefect_eq_zero_from_of_lagDefect_eq_zero_from {k : ℕ}
   have hcorr := shiftAction_defectCorrection_eq_smul_lagDefect a d₁ A₁ B gamma P hfactor
   intro m hm
   induction m using Nat.strong_induction_on with
-  | h m ih =>
+  | ind m ih =>
       by_cases hmk : m < n₀ + k
       · exact hseed m hm hmk
       · let n := m - k

@@ -114,7 +114,7 @@ theorem weightedLapMatrix_eq_mul [CommRing R] (w : Sym2 V → R) :
       rw [mul_comm _ (w e), mul_assoc,
         Sym2.orientedIncMatrix_mul_orientedIncMatrix i j (G.not_isDiag_of_mem_edgeSet he)]
     · simp [he]
-  rw [mul_apply]
+  rw [Matrix.mul_apply]
   simp only [mul_diagonal, transpose_apply, key]
   unfold weightedLapMatrix
   split_ifs with hij hadj

@@ -142,7 +142,7 @@ theorem jPolynomial_differentialEquation (m ε : ℕ) :
       | zero => simp [jPolynomial, insertionOperator]
       | succ n =>
           simp only [Nat.add_sub_cancel]
-          apply Polynomial.ext
+          apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
           intro k
           cases k with
           | zero =>

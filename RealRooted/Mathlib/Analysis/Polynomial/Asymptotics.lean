@@ -139,7 +139,7 @@ theorem tendsto_eval_nat_add_div {p : ℝ[X]} (hp : p ≠ 0) (u v : ℝ) :
     rw [degree_comp hu, degree_comp hv]
     simp
   have h := div_tendsto_atTop_leadingCoeff_div_of_degree_eq
-    (p.comp (X + C u)) (p.comp (X + C v)) hdeg
+    hdeg
   have hnat := h.comp tendsto_natCast_atTop_atTop
   convert hnat using 1 <;>
     simp [Function.comp_def, eval_comp, leadingCoeff_comp, hp]

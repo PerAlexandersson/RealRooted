@@ -29,7 +29,7 @@ theorem coeff_sum_finset_monomial {R : Type*} [Semiring R]
     (s : Finset ℕ) (a : ℕ → R) (k : ℕ) :
     (∑ i ∈ s, monomial i (a i)).coeff k =
       if k ∈ s then a k else 0 := by
-  simp only [finsetSum_coeff, coeff_monomial]
+  simp only [finsetSum_coeff, coeff_monomial, Finsupp.single_apply]
   rw [Finset.sum_ite_eq' s k]
 
 /-- The coefficient of a finite initial-segment monomial sum. -/

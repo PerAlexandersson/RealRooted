@@ -320,7 +320,7 @@ theorem chowS_eq_zero_or_hasPosLeadingCoeff
     (hfnn : HasNonnegCoeffs f) (hstrictInterl : StrictInterl f (f.reflect n)) :
     Polynomial.chowS n f = 0 ∨ HasPosLeadingCoeff (Polynomial.chowS n f) := by
   induction n using Nat.strong_induction_on generalizing f with
-  | h n ih =>
+  | ind n ih =>
     by_cases hcoeff0 : f.coeff 0 = 0
     · have hfne : f ≠ 0 := hstrictInterl.1.1
       have hg_ne : f.reflect n ≠ 0 := hstrictInterl.2.1.1

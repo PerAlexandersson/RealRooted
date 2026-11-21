@@ -160,7 +160,7 @@ variable {A : ℕ → ℝ[X]} {k : ℕ} {c : ℕ → ℝ}
 /-- Every row of a seeded half-step recurrence has nonnegative coefficients. -/
 theorem hasNonnegCoeffs (h : HalfStepRows A k c) (m : ℕ) : HasNonnegCoeffs (A m) := by
   induction m using Nat.strong_induction_on with
-  | h m ih =>
+  | ind m ih =>
     by_cases hm : m < k
     · rw [h.seed m hm]
       exact hasNonnegCoeffs_one
@@ -253,7 +253,7 @@ of the weights prevents cancellation between the Euler term and the `X` lag. -/
 theorem natDegree_eq_div (h : HalfStepRows A k c) (m : ℕ) : (A m).natDegree = m / k := by
   have hk := h.k_ne_zero
   induction m using Nat.strong_induction_on with
-  | h m ih =>
+  | ind m ih =>
     by_cases hm : m < k
     · rw [h.seed m hm, natDegree_one, Nat.div_eq_of_lt hm]
     · obtain ⟨q, rfl⟩ : ∃ q, m = q + k := ⟨m - k, by lia⟩

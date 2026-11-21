@@ -192,7 +192,7 @@ theorem
       le_rfl hCdiv_deg_le
   have hR_coeff : R.coeff p.natDegree = p.leadingCoeff - μ * q.leadingCoeff := by
     dsimp [R]
-    rw [coeff_sub, coeff_C_mul, coeff_natDegree, hqdiv_coeff]
+    rw [coeff_C_mul, hqdiv_coeff]
   have hR_natDegree : R.natDegree = p.natDegree :=
     Polynomial.natDegree_eq_of_le_of_coeff_ne_zero hR_deg_le
       (by simpa [hR_coeff] using ne_of_gt hcoeff)

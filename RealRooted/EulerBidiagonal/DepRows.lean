@@ -3,7 +3,7 @@ module
 import RealRooted.EulerBidiagonal.GeneralRows
 import RealRooted.EulerBidiagonal.PairTheorem
 import RealRooted.EulerBidiagonal.PairStep
-public import RealRooted.EulerBidiagonal.General
+public import RealRooted.EulerBidiagonal.QuadraticEulerStep
 
 /-!
 # Rows with an index-dependent multiplier

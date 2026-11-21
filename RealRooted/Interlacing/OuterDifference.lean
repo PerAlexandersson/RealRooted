@@ -458,7 +458,7 @@ theorem StrictInterl.sub_of_triple_of_posLeadingCoeff
     StrictInterl g (h - f) := by
   classical
   refine Nat.strong_induction_on
-    (p := fun n => ∀ {f g h : ℝ[X]}, g.natDegree = n →
+    (motive := fun n => ∀ {f g h : ℝ[X]}, g.natDegree = n →
       StrictInterl f g → StrictInterl g h → StrictInterl f h →
       HasPosLeadingCoeff f → HasPosLeadingCoeff g → HasPosLeadingCoeff h →
       HasPosLeadingCoeff (h - f) → StrictInterl g (h - f))

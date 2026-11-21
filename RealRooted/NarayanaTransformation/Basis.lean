@@ -136,7 +136,7 @@ private theorem basisTransform_touchard_preservesPF_aux :
       IsPFPolynomial (basisTransform touchard p) := by
   intro n
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       intro p hpdeg hp0 hp
       by_cases hn0 : n = 0
       · have hpdeg0 : p.natDegree = 0 := by lia

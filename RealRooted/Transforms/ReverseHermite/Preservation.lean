@@ -1,6 +1,6 @@
 module
 
-import RealRooted.GarloffWagner.Theorem12
+import RealRooted.GarloffWagner.SchurProductPF
 import RealRooted.PFPolynomial.LinearFactor
 public import RealRooted.Transforms.ReverseHermite.Basic
 import RealRooted.GarloffWagner.KreinExpansion
@@ -177,7 +177,7 @@ private theorem reverseHermiteTransform_preserves_pf_and_interl :
   have hP : ∀ n, P n := by
     intro n
     induction n using Nat.strong_induction_on with
-    | h n ih =>
+    | ind n ih =>
         have hPF_lt :
             ∀ {p : ℝ[X]}, IsPFPolynomial p → p.natDegree < n →
               IsPFPolynomial (reverseHermiteTransform p) := by

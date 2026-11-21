@@ -98,7 +98,7 @@ theorem _root_.RealRooted.IsPFPolynomial.degreeControlledDerivativeImage_and_str
           (d := f.natDegree) (d' := f.natDegree) (m := 1)
           (by norm_num) hA hB hf.hasNonnegCoeffs rfl hfpos
           (Or.inr ⟨by simp [A, B, coeff_one, heq], by simp, by simp [A, hc],
-            by simp [A, B, coeff_one]⟩)
+            by simp [A, B]⟩)
       rw [hAQ] at h
       exact ⟨Or.inl h.1, h.2⟩
   have hQpos : HasPosLeadingCoeff Q := hdegpos.2

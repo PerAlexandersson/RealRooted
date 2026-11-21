@@ -511,7 +511,7 @@ theorem of_aissenSchoenbergWhitney_right_pencil
       C a * (f + C z * g) = C a * f + C b * g := by
     grind
   rw [← hscale]
-  exact ⟨mul_ne_zero (by grind) (hne hz),
+  exact ⟨mul_ne_zero (C_ne_zero.mpr ha.ne') (hne hz),
     .mul (.C _) <| (aissenSchoenbergWhitneyForward (hpf hz)).1⟩
 
 /-- Any two positive combinations from the same one-parameter family again form
@@ -712,7 +712,7 @@ theorem strictInterl_or_reverse_of_posComboRealRooted_of_no_common
     StrictInterl f g ∨ StrictInterl g f := by
   refine
     Nat.strong_induction_on
-      (p := fun n =>
+      (motive := fun n =>
         ∀ {f g : ℝ[X]},
           f.natDegree = n →
           PosComboRealRooted f g →

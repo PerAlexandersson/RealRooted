@@ -308,7 +308,7 @@ theorem divFactorialShift_splits_of_splits {f : ℝ[X]} (hf0 : f ≠ 0) (hfs : f
   classical
   refine
     Nat.strong_induction_on
-      (p := fun n =>
+      (motive := fun n =>
         ∀ {f : ℝ[X]}, f.natDegree = n → f ≠ 0 → f.Splits →
           ∀ k, (divFactorialShift k f).Splits)
       f.natDegree ?_ rfl hf0 hfs

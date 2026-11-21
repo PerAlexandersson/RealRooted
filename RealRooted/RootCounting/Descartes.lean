@@ -74,7 +74,7 @@ private theorem exists_pos_isRoot_of_sign_endpoints_ne
     leadingCoeff_divByMonic_of_monic hmonic hdegree
   have hpLead : p.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hp
   have hpTrail : p.trailingCoeff ≠ 0 :=
-    trailingCoeff_nonzero_iff_nonzero.mpr hp
+    Polynomial.trailingCoeff_ne_zero.mpr hp
   rcases lt_or_gt_of_ne hpLead with hpLeadNeg | hpLeadPos
   · have hpTrailPos : 0 < p.trailingCoeff := by
       rcases lt_or_gt_of_ne hpTrail with hpTrailNeg | hpTrailPos
@@ -116,7 +116,7 @@ theorem even_signVariations_sub_positiveRootCount (p : ℝ[X]) :
     Even (p.signVariations - p.positiveRootCount) := by
   generalize hcount : p.positiveRootCount = n
   induction n using Nat.strong_induction_on generalizing p with
-  | h n ih =>
+  | ind n ih =>
       by_cases hn : n = 0
       · rw [hn]
         by_cases hp : p = 0

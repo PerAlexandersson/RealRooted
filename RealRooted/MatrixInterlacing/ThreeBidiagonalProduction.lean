@@ -51,7 +51,7 @@ def threeBidiagonalSub (d₀ s₀ d₁ s₁ d₂ s₂ : ℕ → R) : ℕ → R
 private lemma lowerBidiagonalFin_mul_zero {n : ℕ} (d s : ℕ → R)
     (M : Matrix (Fin (n + 1)) (Fin (n + 1)) R) (j : Fin (n + 1)) :
     (lowerBidiagonalFin (n + 1) d s * M) 0 j = d 0 * M 0 j := by
-  rw [mul_apply]
+  rw [Matrix.mul_apply]
   rw [Finset.sum_eq_single 0]
   · simp
   · intro k _ hk
@@ -63,7 +63,7 @@ private lemma lowerBidiagonalFin_mul_succ {n k : ℕ} (hk : k + 1 < n)
     (d s : ℕ → R) (M : Matrix (Fin n) (Fin n) R) (j : Fin n) :
     (lowerBidiagonalFin n d s * M) ⟨k + 1, hk⟩ j =
       d (k + 1) * M ⟨k + 1, hk⟩ j + s k * M ⟨k, by lia⟩ j := by
-  rw [mul_apply]
+  rw [Matrix.mul_apply]
   have hentry (a : Fin n) :
       lowerBidiagonalFin n d s ⟨k + 1, hk⟩ a * M a j =
         (if a = ⟨k + 1, hk⟩ then d (k + 1) * M a j else 0) +
@@ -495,7 +495,7 @@ theorem eq_tetradiagonalPolynomial_of_recurrence
     ∀ n, P n = tetradiagonalPolynomial d s t n := by
   intro n
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       match n with
       | 0 => exact hzero
       | 1 => exact hone
@@ -531,7 +531,7 @@ theorem eq_charpoly_threeBidiagonalProduction_of_recurrence
           C (s₀ (n + 1) * s₁ n * d₂ n) * P n) (n : ℕ) :
     P n = (Matrix.threeBidiagonalProduction d₀ s₀ d₁ s₁ d₂ s₂ n).charpoly := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       match n with
       | 0 => rw [hzero, Matrix.threeBidiagonalProduction_charpoly_zero]
       | 1 => rw [hone, Matrix.threeBidiagonalProduction_charpoly_one]

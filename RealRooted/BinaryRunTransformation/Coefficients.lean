@@ -83,7 +83,7 @@ theorem hasNonnegCoeffs_binaryRunPolynomial (n m : ℕ) :
   intro j
   rw [Polynomial.finsetSum_coeff]
   exact Finset.sum_nonneg fun k _ => by
-    rw [coeff_monomial]
+    rw [coeff_monomial, Finsupp.single_apply]
     split <;> positivity
 
 theorem HasNonnegCoeffs.binaryRunTransform {n : ℕ} {p : ℝ[X]}
@@ -131,7 +131,7 @@ theorem coeff_binaryRunPolynomial_of_pos_formula (n m k : ℕ)
     rw [Finset.sum_eq_zero]
     · simp [Nat.choose_eq_zero_of_lt htop]
     · intro b hb
-      rw [coeff_monomial, ite_eq_right]
+      rw [coeff_monomial, Finsupp.single_apply, ite_eq_right]
       intro hbk
       subst b
       exact hkn (Finset.mem_Icc.mp hb).2

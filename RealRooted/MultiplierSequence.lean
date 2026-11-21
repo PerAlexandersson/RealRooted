@@ -40,7 +40,7 @@ def diagonalOperator (gamma : ℕ → ℝ) (p : ℝ[X]) : ℝ[X] :=
     (diagonalOperator gamma p).coeff n = gamma n * p.coeff n := by
   classical
   rw [diagonalOperator, Polynomial.coeff_sum]
-  simp only [Polynomial.coeff_monomial]
+  simp only [Polynomial.coeff_monomial, Finsupp.single_apply]
   rw [Polynomial.sum_def]
   simp_all
 

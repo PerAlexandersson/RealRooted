@@ -358,7 +358,7 @@ theorem ternaryWordRunEnumerator_one :
 theorem ternaryWordRunEnumerator_eq_threeStep (n : ℕ) :
     ternaryWordRunEnumerator n = ternaryRunThreeStep n := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
     rcases n with _ | _ | _ | _ | n
     · rw [ternaryWordRunEnumerator_zero]
       rfl

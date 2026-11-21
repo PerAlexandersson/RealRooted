@@ -155,7 +155,7 @@ theorem strictInterl_mul_add_sum_mul_of_combined_flux_of_pos
     StrictInterl f (a * f + ∑ i ∈ s, b i * g i) := by
   generalize hn : f.natDegree = n
   induction n using Nat.strong_induction_on generalizing f g with
-  | h n ih =>
+  | ind n ih =>
     subst hn
     by_cases hnodup : f.roots.Nodup
     · refine strictInterl_of_eval_mul_derivative_nonpos hf_pos hf hnodup hF_pos hdeg_lo

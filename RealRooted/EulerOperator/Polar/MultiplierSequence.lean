@@ -99,7 +99,7 @@ theorem not_isMultiplierSequence_polarThetaMultiplier_three :
     ext k
     by_cases hk : k ≤ 4
     · interval_cases k <;>
-        norm_num [coeff_diagonalOperator, coeff_add, coeff_C_mul,
+        norm_num [coeff_diagonalOperator, coeff_C_mul,
           coeff_X_pow, coeff_X, coeff_one, coeff_C,
           polarThetaMultiplier]
     · have h0 : k ≠ 0 := by lia
@@ -107,7 +107,7 @@ theorem not_isMultiplierSequence_polarThetaMultiplier_three :
       have h2 : k ≠ 2 := by lia
       have h3 : k ≠ 3 := by lia
       have h4 : k ≠ 4 := by lia
-      simp [coeff_diagonalOperator, coeff_add, coeff_C_mul,
+      simp [coeff_diagonalOperator, coeff_C_mul,
         coeff_X_pow, coeff_X, coeff_one, coeff_C,
         polarThetaMultiplier, h0, Ne.symm h1, h2, h3, h4]
   rw [heq] at hout

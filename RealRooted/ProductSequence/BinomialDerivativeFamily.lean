@@ -147,19 +147,19 @@ theorem binomialDerivativeRow_add_two (r n : ℕ) :
 @[simp] theorem binomialDerivativeRow_zero (r : ℕ) :
     binomialDerivativeRow r 0 = 1 := by
   ext (_ | k)
-  · simp [coeff_binomialDerivativeRow, coeff_one]
+  · simp [coeff_binomialDerivativeRow]
   · simp [coeff_binomialDerivativeRow, coeff_one]
 
 /-- The first row is `1 + (r + 1) X`. -/
 theorem binomialDerivativeRow_one (r : ℕ) :
     binomialDerivativeRow r 1 = 1 + C (r + 1 : ℝ) * X := by
   ext (_ | _ | k)
-  · simp [coeff_binomialDerivativeRow, coeff_add, coeff_one, coeff_X]
+  · simp [coeff_binomialDerivativeRow, coeff_X]
   · rw [coeff_binomialDerivativeRow, Nat.add_comm 1 r,
       Nat.choose_succ_self_right]
     norm_num [coeff_add, coeff_one, coeff_C_mul, coeff_X]
   · rw [coeff_binomialDerivativeRow, Nat.choose_eq_zero_of_lt (by lia)]
-    simp [coeff_add, coeff_one]
+    simp [coeff_one]
 
 /-- The first two rows and the three-term recurrence uniquely determine the
 normalized binomial derivative family. -/

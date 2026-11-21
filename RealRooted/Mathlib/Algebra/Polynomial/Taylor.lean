@@ -20,11 +20,6 @@ namespace Polynomial
 
 variable {R : Type*} [CommSemiring R]
 
-/-- The Taylor shift commutes with the derivative. -/
-theorem taylor_derivative (r : R) (p : R[X]) :
-    taylor r (derivative p) = derivative (taylor r p) := by
-  simp [taylor_apply, derivative_comp]
-
 /-- The Taylor shift commutes with iterated derivatives. -/
 theorem taylor_iterate_derivative (r : R) (p : R[X]) (n : ℕ) :
     taylor r (derivative^[n] p) = derivative^[n] (taylor r p) := by

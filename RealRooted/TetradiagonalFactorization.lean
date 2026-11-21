@@ -340,7 +340,7 @@ and uniformly thereafter. -/
 theorem tetradiagonalPolynomial_eq_charpoly (d s t : ℕ → ℝ) (n : ℕ) :
     tetradiagonalPolynomial d s t n = (tetradiagonalMatrix d s t n).charpoly := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       match n with
       | 0 =>
           rw [tetradiagonalPolynomial, Matrix.charpoly,

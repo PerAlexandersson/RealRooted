@@ -1,7 +1,7 @@
 module
 
 import RealRooted.EulerBidiagonal.ComparisonData
-public import RealRooted.EulerBidiagonal.General
+public import RealRooted.EulerBidiagonal.QuadraticEulerStep
 import RealRooted.RootCounting.SignChanges
 import RealRooted.Interlacing.RootCountSigns
 import RealRooted.Interlacing.Residue

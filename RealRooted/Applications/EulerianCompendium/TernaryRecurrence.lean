@@ -49,7 +49,7 @@ theorem ternaryRunThreeStep_differential (n : ℕ) :
       (C (n : ℝ) * (4 * X - 1) + 3 * X) * ternaryRunThreeStep n +
         runB * (ternaryRunThreeStep n).derivative := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
     rcases n with _ | _ | _ | n
     · norm_num [ternaryRunThreeStep]
     · norm_num [ternaryRunThreeStep, runB, map_ofNat]

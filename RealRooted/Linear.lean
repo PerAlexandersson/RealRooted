@@ -471,7 +471,7 @@ lemma natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff {p q : ℝ[X]}
 unique cancellation value `-a / b`. -/
 private theorem add_mul_ne_zero_iff_ne_neg_div {a b t : ℝ} (hb : b ≠ 0) :
     a + t * b ≠ 0 ↔ t ≠ -a / b := by
-  constructor <;> contrapose!
+  constructor <;> contrapose
   · rintro rfl
     field_simp [hb]
     ring

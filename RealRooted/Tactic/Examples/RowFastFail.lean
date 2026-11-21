@@ -4,6 +4,7 @@ public import RealRooted.Applications.EulerianVariations.TernaryRuns
 public import RealRooted.Applications.OEIS.A080721
 public import RealRooted.Applications.OEIS.LowerReentrantCorner
 import RealRooted.Tactic.RowInterlacing
+import Mathlib.Tactic.Linter.UnusedTactic
 
 /-!
 # Row-tactic fast-failure regressions
@@ -21,7 +22,7 @@ syntax (name := rrRowFastFail)
   "rr_row_fast_fail " ident " (" &"budget" " := " num ")" " in " tactic : tactic
 
 -- The helper and the row tactics it runs fail by design here, leaving the goal unchanged.
-#allow_unused_tactic rrRowFastFail RealRooted.Tactic.rrRowStrictInterl
+local allow_unused_tactic rrRowFastFail RealRooted.Tactic.rrRowStrictInterl
   RealRooted.Tactic.rrRowNonnegCoeffs
 
 elab_rules : tactic

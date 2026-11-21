@@ -282,7 +282,7 @@ theorem eq_even_of_recurrence
     ∀ n, P n = polynomial (2 * n) := by
   intro n
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       rcases n with _ | _ | _ | n
       · simp [h0]
       · simp [h1]
@@ -431,7 +431,7 @@ theorem reflect_eq_even_of_recurrence
   have hdeg := natDegree_le_of_reflected_recurrence P h0 (Or.inl h1) (Or.inl h2) hrec
   intro n
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       rcases n with _ | _ | _ | n
       · simp [h0]
       · rw [h1, reflect_one_one_add_X, polynomial_two]
@@ -456,7 +456,7 @@ theorem reflect_eq_odd_of_recurrence
   have hdeg := natDegree_le_of_reflected_recurrence P h0 (Or.inr h1) (Or.inr h2) hrec
   intro n
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       rcases n with _ | _ | _ | n
       · simp [h0]
       · rw [h1, polynomial_three, reflect_one_three_add_X]

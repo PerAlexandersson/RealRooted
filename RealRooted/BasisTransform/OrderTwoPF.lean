@@ -459,7 +459,7 @@ private theorem orderTwoZeroTransform_interlacing
       [basisTransform (orderTwoBasis a 1 0 s) p,
         basisTransform (fun n => orderTwoBasis a 1 0 s (n + 1)) p] := by
   induction hdegree : p.natDegree using Nat.strong_induction_on generalizing p with
-  | h n ih =>
+  | ind n ih =>
       by_cases hp0 : p = 0
       · simpa [hp0] using
           constantPair_interlacing (u := 0) (v := 0) le_rfl le_rfl

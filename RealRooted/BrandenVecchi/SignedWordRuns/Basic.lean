@@ -356,7 +356,7 @@ theorem isSigned_iff_repeated_isNegative {q p : ℕ}
 private theorem blocks_isChain_signedAdjacent {q p : ℕ}
     (data : RunLengthData (SignedLetter q p)) :
     data.blocks.IsChain fun left right =>
-      ∀ᵉ (x ∈ left.getLast?) (y ∈ right.head?), SignedAdjacent x y :=
+      ∀ x ∈ left.getLast?, ∀ y ∈ right.head?, SignedAdjacent x y :=
   data.blocks_separated.imp fun left right h => by
     obtain ⟨hleft, hright, hne⟩ := h
     simp [List.getLast?_eq_some_getLast hleft,

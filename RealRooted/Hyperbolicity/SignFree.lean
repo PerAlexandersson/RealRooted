@@ -131,6 +131,7 @@ theorem MvRealStable.eval_homogeneousComponent_totalDegree_ne_zero
   have hnonzero := hHstable (fun i => Complex.I * (b i : ℂ)) fun i => by
     simpa using hb i
   apply hnonzero
+  change MvPolynomial.eval (Complex.I • (fun i => (b i : ℂ))) (complexifyMv H) = 0
   rw [hHhom.eval_smul, hcomplexEval, mul_zero]
 
 /-- For an arbitrary variable type, exact ordinary homogenization is hyperbolic in every

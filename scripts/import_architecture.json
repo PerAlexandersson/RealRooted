@@ -16,10 +16,10 @@
   ],
   "budgets": {
     "RealRooted": {
-      "max_modules": 2258
+      "max_modules": 2395
     },
     "RealRooted.Production": {
-      "max_modules": 2186
+      "max_modules": 2323
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 844
@@ -699,7 +699,7 @@
     "RealRooted.GarloffWagner.KreinExpansion": {
       "max_modules": 110
     },
-    "RealRooted.GarloffWagner.Theorem12": {
+    "RealRooted.GarloffWagner.SchurProductPF": {
       "max_modules": 111
     },
     "RealRooted.GarloffWagner.Hadamard": {
@@ -720,7 +720,7 @@
     "RealRooted.SymmetricDecomposition.Decomposition": {
       "max_modules": 123
     },
-    "RealRooted.SymmetricDecomposition.Theorem26": {
+    "RealRooted.SymmetricDecomposition.InterlacingEquivalence": {
       "max_modules": 124
     },
     "RealRooted.SymmetricDecomposition": {
@@ -1263,7 +1263,7 @@
     "RealRooted.ProductSequence.Factors": {
       "max_modules": 19
     },
-    "RealRooted.ProductSequence.Core": {
+    "RealRooted.ProductSequence.InductionShells": {
       "max_modules": 20
     },
     "RealRooted.ProductSequence.Lifts": {
@@ -1560,7 +1560,7 @@
     "RealRooted.MaWang.Weak.DerivativeSign": {
       "max_modules": 38
     },
-    "RealRooted.LiuWang.General": {
+    "RealRooted.LiuWang.Criterion": {
       "max_modules": 39
     },
     "RealRooted.MaWang.Weak.Endpoint": {
@@ -1602,7 +1602,7 @@
     "RealRooted.Tactic.Product": {
       "max_modules": 92
     },
-    "RealRooted.CombinatorialExamples.BorosMoll.Core": {
+    "RealRooted.CombinatorialExamples.BorosMoll.Transform": {
       "max_modules": 3
     },
     "RealRooted.CombinatorialExamples.BorosMoll.SmallCases": {
@@ -1972,7 +1972,7 @@
     "RealRooted.GarloffWagner.Iterated",
     "RealRooted.GarloffWagner.KreinData",
     "RealRooted.GarloffWagner.KreinExpansion",
-    "RealRooted.GarloffWagner.Theorem12",
+    "RealRooted.GarloffWagner.SchurProductPF",
     "RealRooted.GarloffWagner.Hadamard",
     "RealRooted.GarloffWagner",
     "RealRooted.ScalarNormalization",
@@ -2005,7 +2005,7 @@
     "RealRooted.SymmetricDecomposition.FPolynomial",
     "RealRooted.SymmetricDecomposition.FPolynomialInterlacing",
     "RealRooted.SymmetricDecomposition.Decomposition",
-    "RealRooted.SymmetricDecomposition.Theorem26",
+    "RealRooted.SymmetricDecomposition.InterlacingEquivalence",
     "RealRooted.SymmetricDecomposition",
     "RealRooted.VeroneseSectionPair",
     "RealRooted.VeroneseSectionPair.HermiteBiehler",
@@ -2029,7 +2029,7 @@
     "RealRooted.Transforms.ReverseHermite.Derivative",
     "RealRooted.Transforms.ReverseHermite.Preservation",
     "RealRooted.Transforms.ReverseHermite",
-    "RealRooted.GarloffWagner.Theorem12",
+    "RealRooted.GarloffWagner.SchurProductPF",
     "RealRooted.VeroneseMatrix",
     "RealRooted.ThresholdMatrix.Basic",
     "RealRooted.ThresholdMatrix.HaglundZhang",
@@ -2061,7 +2061,7 @@
     "RealRooted.Tactic.Product",
     "RealRooted.Tactic.CommonInterleaver.Core",
     "RealRooted.Tactic",
-    "RealRooted.CombinatorialExamples.BorosMoll.Core",
+    "RealRooted.CombinatorialExamples.BorosMoll.Transform",
     "RealRooted.CombinatorialExamples.BorosMoll.SmallCases",
     "RealRooted.CombinatorialExamples.BorosMoll.Basic"
   ]

@@ -295,7 +295,7 @@ lemma Alt.of_bernOp_pow {n : ℕ} (hn : 2 ≤ n) : ∀ (r : ℕ) (F : ℝ[X]), F
   | zero => intro F _ _ k h; simpa using h
   | succ r ih =>
     intro F h0 h1 k h
-    rw [pow_succ, Module.End.mul_apply] at h
+    rw [pow_succ, mul_apply_eq_comp] at h
     exact Alt.of_bernOp hn h0 h1 (ih (bernOp n F) (by rw [bernOp_eval_zero, h0])
       (by rw [bernOp_eval_one n (by lia), h1]) k h)
 
@@ -577,7 +577,7 @@ lemma wronskian_ne_zero (n m : ℕ) (hm : 2 ≤ m) (hmn : m + 1 ≤ n) (t : ℝ)
     have hne : g - c • f ≠ 0 := by
       intro h0
       have := congrArg (fun P => P.coeff (m + 1)) h0
-      simp only [coeff_sub, coeff_smul, smul_eq_mul, coeff_zero] at this
+      simp only [coeff_sub, AddMonoidAlgebra.coeff_smul_apply, smul_eq_mul, coeff_zero] at this
       rw [coeff_eq_zero_of_natDegree_lt (by lia : f.natDegree < m + 1), ← hgdeg,
         hgmon.coeff_natDegree] at this
       norm_num at this

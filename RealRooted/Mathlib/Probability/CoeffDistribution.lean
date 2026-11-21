@@ -82,7 +82,7 @@ theorem isProbabilityMeasure_coeffMeasure {p : ℝ[X]} (hnn : ∀ k, 0 ≤ p.coe
     (hp : p ≠ 0) : IsProbabilityMeasure p.coeffMeasure := by
   have h1 := eval_pos_of_coeff_nonneg hnn hp one_pos
   constructor
-  simp only [coeffMeasure, Measure.coe_finsetSum, Finset.sum_apply, Measure.smul_apply,
+  simp only [coeffMeasure, FunLike.coe_sum, Finset.sum_apply, smul_apply,
     measure_univ, smul_eq_mul, mul_one]
   rw [← ENNReal.ofReal_sum_of_nonneg (fun k _ => div_nonneg (hnn k) h1.le), ← Finset.sum_div]
   have hsum : ∑ k ∈ Finset.range (p.natDegree + 1), p.coeff k = p.eval 1 := by
@@ -114,7 +114,7 @@ theorem integral_coeffMeasure {p : ℝ[X]} (hnn : ∀ k, 0 ≤ p.coeff k) (g : �
   · refine Finset.sum_congr rfl fun k _ => ?_
     rw [integral_smul_measure, integral_dirac, ENNReal.toReal_ofReal (div_nonneg (hnn k) h1),
       Complex.real_smul]
-  · exact fun k _ => (integrable_dirac enorm_lt_top).smul_measure ENNReal.ofReal_ne_top
+  · exact fun k _ => (integrable_dirac eNorm_lt_top).smul_measure ENNReal.ofReal_ne_top
 
 /-- The characteristic function of the standardized coefficient distribution. -/
 theorem charFun_standardizedCoeffDistribution {p : ℝ[X]} (hnn : ∀ k, 0 ≤ p.coeff k)

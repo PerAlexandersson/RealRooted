@@ -49,7 +49,7 @@ theorem shiftAction_one : shiftAction (1 : R[X]) = LinearMap.id := by
 /-- Products of shift polynomials act by composition. -/
 theorem shiftAction_mul_apply (p q : R[X]) (u : ℕ → R) :
     shiftAction (p * q) u = shiftAction p (shiftAction q u) := by
-  simp [shiftAction, Polynomial.aeval_mul, Module.End.mul_apply]
+  simp [shiftAction, Polynomial.aeval_mul, mul_apply_eq_comp]
 
 /-- Powers of a shift polynomial act by iterating its action. -/
 theorem shiftAction_pow_apply (p : R[X]) (q : ℕ) (u : ℕ → R) :
@@ -101,7 +101,7 @@ theorem indexMul_apply (u : ℕ → R) (n : ℕ) : indexMul u n = (n : R) * u n 
 theorem shiftAction_monomial_apply (a : R) (k : ℕ) (u : ℕ → R) :
     shiftAction (monomial k a) u = a • (forwardShift ^ k) u := by
   simp [shiftAction, ← C_mul_X_pow_eq_monomial, Polynomial.aeval_mul,
-    Module.End.mul_apply]
+    mul_apply_eq_comp]
 
 /-- The commutator of a shift polynomial with index multiplication is the action of
 `X * p.derivative`. -/

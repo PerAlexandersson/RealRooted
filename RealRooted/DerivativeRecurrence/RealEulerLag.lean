@@ -161,7 +161,8 @@ example : eulerShift (1 / 2 : ℝ) (C (1 / 2) * (1 + C 3 * X)) +
 example {s : ℝ} (hs : s < 0) : ¬ IsPFPolynomial (eulerShift s 1) := by
   intro h
   have := h.hasNonnegCoeffs 0
-  simp only [coeff_eulerShift, Nat.cast_zero, zero_add, coeff_one_zero, mul_one] at this
+  simp only [coeff_eulerShift, Nat.cast_zero, zero_add, AddMonoidAlgebra.coeff_one_zero,
+    mul_one] at this
   exact (not_le_of_gt hs) this
 
 example : ¬ Interl (X ^ 2 + 4 * X + 3 : ℝ[X]) (X ^ 2 + 4 * X) := by

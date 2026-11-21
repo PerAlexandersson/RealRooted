@@ -518,7 +518,7 @@ private theorem isPFPolynomial_and_interl_factorialHadamardProduct :
   have hP : ∀ n, P n := by
     intro n
     induction n using Nat.strong_induction_on with
-    | h n ih =>
+    | ind n ih =>
         have hA_lt :
             ∀ {f p : ℝ[X]},
               IsPFPolynomial f → IsPFPolynomial p →

@@ -20,8 +20,8 @@ namespace RealRooted
 
 lemma hasNonnegCoeffs_X_sub_C {r : ℝ} (hr : r ≤ 0) : HasNonnegCoeffs (X - C r) := by
   rintro (_ | _ | n)
-  · simp [coeff_sub, hr]
-  · simp [coeff_sub]
+  · simp [hr]
+  · simp
   · rw [coeff_sub, coeff_X_of_ne_one (by lia), coeff_C_succ]
     simp
 

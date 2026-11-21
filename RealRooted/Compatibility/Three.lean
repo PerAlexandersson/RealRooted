@@ -1,6 +1,6 @@
 module
 
-import RealRooted.ChudnovskySeymour.Core
+import RealRooted.ChudnovskySeymour.CommonInterleaver
 public import RealRooted.Compatibility.Pair
 import RealRooted.AffineFamily
 import RealRooted.ProductFamily

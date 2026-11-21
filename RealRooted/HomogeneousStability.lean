@@ -149,6 +149,7 @@ theorem mvUpperHalfPlaneStable_iff_commonRotation_dehomogenize
     rw [MvPolynomial.eval_dehomogenize]
     intro hzero
     apply hne
+    change MvPolynomial.eval (c • base) P = 0
     rw [hhom.eval_smul c base, hzero, mul_zero]
   · intro hP w hw
     let c : ℂ := w none
@@ -171,8 +172,9 @@ theorem mvUpperHalfPlaneStable_iff_commonRotation_dehomogenize
     apply hne
     rw [MvPolynomial.eval_dehomogenize]
     let base : Option σ → ℂ := fun o => Option.elim o 1 z
-    have hw_eq : w = fun o => c * base o := by
+    have hw_eq : w = c • base := by
       funext o
+      change w o = c * base o
       cases o with
       | none => simp [base, c]
       | some i =>

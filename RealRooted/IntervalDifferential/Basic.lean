@@ -57,7 +57,7 @@ theorem zigzagTransform_add (Q R : ℝ[X]) :
 theorem zigzagTransform_C_mul (c : ℝ) (Q : ℝ[X]) :
     zigzagTransform (C c * Q) = C c * zigzagTransform Q := by
   simp only [zigzagTransform, zigzagFunctionalCalculus, map_mul, aeval_C,
-    Module.End.mul_apply, Module.algebraMap_end_apply, smul_eq_C_mul]
+    mul_apply_eq_comp, Module.algebraMap_end_apply, smul_eq_C_mul]
 
 theorem zigzagTransform_X_pow (n : ℕ) :
     zigzagTransform (X ^ n) = (zigzagOperator ^ n) 1 := by
@@ -68,7 +68,7 @@ theorem zigzagTransform_linear_mul (t : ℝ) (Q : ℝ[X]) :
     zigzagTransform ((X - C t) * Q) =
       zigzagOperator (zigzagTransform Q) - C t * zigzagTransform Q := by
   simp only [zigzagTransform, zigzagFunctionalCalculus, map_mul, map_sub,
-    aeval_X, aeval_C, LinearMap.sub_apply, Module.End.mul_apply]
+    aeval_X, aeval_C, LinearMap.sub_apply, mul_apply_eq_comp]
   simp only [Module.algebraMap_end_apply, smul_eq_C_mul]
 
 /-- The two families of centered linear factors in Appendix A.3. -/

@@ -89,7 +89,7 @@ theorem eulerTransformedPolynomial_differentialEquation (m ε d : ℕ) :
     C ((m : ℝ) * (m + ε + 1)) * eulerTransformedPolynomial m ε d +
       insertionOperator (ε + d + 2) (ε + 2)
         (eulerTransformedPolynomial m ε d).derivative = 0 := by
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   cases k with
   | zero =>
@@ -457,7 +457,7 @@ theorem one_sub_X_mul_triangleFamily_diagonal_eq_C_mul_rPolynomial
           ((d.factorial : ℝ) * jCoeff m ε d)) * rPolynomial m ε d := by
   rw [one_sub_X_mul_triangleFamily_diagonal,
     one_sub_X_pow_mul_iterate_derivative_jPolynomial_eq m ε d hm hd]
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   rw [coeff_risingEulerOperator, coeff_C_mul, coeff_C_mul,
     coeff_eulerTransformedPolynomial, coeff_rPolynomial]

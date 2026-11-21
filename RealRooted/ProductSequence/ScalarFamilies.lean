@@ -4,7 +4,7 @@ public import Mathlib.Algebra.Polynomial.Basic
 public import Mathlib.Algebra.Polynomial.Splits
 public import Mathlib.Basic.Real.Basic
 import RealRooted.ProductSequence.Lifts
-import RealRooted.ProductSequence.Core
+import RealRooted.ProductSequence.InductionShells
 import RealRooted.ProductSequence.Factors
 import RealRooted.SequenceClosure
 import RealRooted.Linear
@@ -16,7 +16,7 @@ Degree-plateau and alternating scalar/product recurrence shells: a scalar step
 followed by a supplied real-rooted factor, a unit-slope linear factor, or a powered
 unit-slope linear factor.  Right-factor and tail-start variants follow from
 `isRealRooted_of_product_factor_right_sequence` and `isRealRooted_of_product_factor_sequence_from`
-in `RealRooted.ProductSequence.Core`.
+in `RealRooted.ProductSequence.InductionShells`.
 -/
 
 public section

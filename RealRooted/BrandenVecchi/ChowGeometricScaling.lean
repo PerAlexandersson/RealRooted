@@ -62,7 +62,7 @@ theorem chowDerangement_geometricScale
         C (c ^ n) * chowDerangement A n := by
   intro n
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       cases n with
       | zero => simp
       | succ n =>

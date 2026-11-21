@@ -5,8 +5,8 @@ Authors: Matteo Cipollina
 -/
 module
 
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.PrimitivityCriteria
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.NonnegativeVectors
 public import Mathlib.Data.Matrix.Basic
 public import Mathlib.Algebra.Order.AbsoluteValue.Basic
 public import Mathlib.Data.Rat.Floor
@@ -470,7 +470,7 @@ theorem le_eigenvalue_of_right_eigenvector
     rw [mulVec_diagonal]
     exact mul_nonneg (inv_nonneg.mpr (hv_pos i).le) (hw_nonneg i)
   have hx_ne_zero : x ≠ 0 := by
-    contrapose! hw_ne_zero
+    contrapose hw_ne_zero
     rw [h_w_eq_Dx, hw_ne_zero, mulVec_zero]
   have h_smul_le : (collatzWielandtFn A w) • w ≤ A *ᵥ w :=
     CollatzWielandt.le_mulVec hA_nonneg hw_nonneg hw_ne_zero

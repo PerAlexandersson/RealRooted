@@ -49,7 +49,7 @@ theorem intervalBasisMap_linear_mul
       intervalDifferentialStep alpha beta rho kappa L U xi
         (intervalBasisMap alpha beta rho kappa L U g p) := by
   rw [intervalBasisMap_eq_aeval_apply, intervalBasisMap_eq_aeval_apply]
-  simp only [map_mul, map_sub, aeval_X, aeval_C, Module.End.mul_apply,
+  simp only [map_mul, map_sub, aeval_X, aeval_C, mul_apply_eq_comp,
     LinearMap.sub_apply, Module.algebraMap_end_apply, smul_eq_C_mul]
   rw [intervalDifferentialOperator_sub_apply]
 

@@ -141,7 +141,7 @@ theorem eq_of_reflectedJacobiOperator_eq_zero
 theorem reflectedJacobiOperator_shiftedJacobi_comp_neg_X
     (n : ℕ) (alpha beta : ℝ) :
     reflectedJacobiOperator n alpha beta ((shiftedJacobi n alpha beta).comp (-X)) = 0 := by
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   rw [coeff_reflectedJacobiOperator, coeff_zero, coeff_comp_neg_X,
     coeff_comp_neg_X, pow_succ]

@@ -1,7 +1,7 @@
 module
 
 import RealRooted.Tactic.Row.Frontend
-public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.CombinatorialExamples.CoefficientHelpers
 public import Mathlib.Combinatorics.Enumerative.Catalan.Basic
 import Mathlib.Data.Nat.Choose.Cast
 import RealRooted.Mathlib.Algebra.Polynomial.Basic
@@ -27,6 +27,7 @@ their recurrence `(k + 2) M_k = (2k + 1) M_(k-1) + (k - 1) (4X - 1) M_(k-2)`.
 @[expose] public section
 
 open Polynomial
+open AddMonoidAlgebra (coeff)
 
 noncomputable section
 

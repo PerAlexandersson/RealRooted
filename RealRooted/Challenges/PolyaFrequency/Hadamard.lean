@@ -3,7 +3,7 @@ module
 import RealRooted.GarloffWagner.Algebra
 import RealRooted.GarloffWagner.Hadamard
 import RealRooted.GarloffWagner.HurwitzStable
-import RealRooted.GarloffWagner.Theorem12
+import RealRooted.GarloffWagner.SchurProductPF
 import RealRooted.Hadamard.Basic
 import RealRooted.Hadamard.Consequences
 import RealRooted.Hadamard.Grace
@@ -48,7 +48,7 @@ label = "Schur–Szegő composition"
 
 [[theorems]]
 name = "RealRooted.IsPFPolynomial.hadamardProduct"
-module = "RealRooted.GarloffWagner.Theorem12"
+module = "RealRooted.GarloffWagner.SchurProductPF"
 label = "Maló–Schur: Hadamard products of PF polynomials are PF"
 
 [[theorems]]

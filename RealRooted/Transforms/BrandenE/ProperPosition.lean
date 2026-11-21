@@ -195,7 +195,7 @@ theorem brandenBasisImage_endpoint_strictInterl (n : ℕ) (hn : 1 ≤ n) :
     obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hn
     rw [show 1 + m = m + 1 by lia]
     rw [brandenBasisImage_succ_succ, brandenEulerStep]
-    simp [coeff_add, coeff_mul]
+    simp [coeff_mul]
   have hg_ne : g ≠ 0 := (brandenBasisImage_degree_pos n n (by lia)).2.ne_zero
   have hg_split : g.Splits := brandenBasisImage_splits n n (by lia)
   have hh_rr : h ≠ 0 ∧ h.Splits :=

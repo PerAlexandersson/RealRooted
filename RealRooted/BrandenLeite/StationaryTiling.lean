@@ -288,7 +288,7 @@ theorem coeff_quadraticMarkedFactorSeries (j : ℕ) :
     have hj1 : j ≠ 1 := by lia
     have hj2 : j ≠ 2 := by lia
     have hj3 : j ≠ 3 := by lia
-    simp [Polynomial.coeff_add, Polynomial.coeff_one,
+    simp [Polynomial.coeff_one,
       Polynomial.coeff_C_mul, Polynomial.coeff_X,
       Polynomial.coeff_X_pow, hs0, hs1', hj1, hj2, hj3]
 

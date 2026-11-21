@@ -33,19 +33,19 @@ theorem natDegree_of_one_add_X_positive_coeff
     (n : ℕ) :
     (P n).natDegree = n := by
   have hcoeff_succ (n k : ℕ) :
-      Polynomial.coeff (P (n + 2)) (k + 1) =
-        Polynomial.coeff (P (n + 1)) (k + 1)
-          + Polynomial.coeff (P (n + 1)) k + c n * Polynomial.coeff (P n) k := by
+      AddMonoidAlgebra.coeff (P (n + 2)) (k + 1) =
+        AddMonoidAlgebra.coeff (P (n + 1)) (k + 1)
+          + AddMonoidAlgebra.coeff (P (n + 1)) k + c n * AddMonoidAlgebra.coeff (P n) k := by
     rw [hrec n]
     have hsplit :
         (1 + X) * P (n + 1) + (C (c n) * X) * P n =
           P (n + 1) + X * P (n + 1) + C (c n) * (X * P n) := by
       ring
     simp_all
-  have habove : ∀ n N : ℕ, n < N → Polynomial.coeff (P n) N = 0 := by
+  have habove : ∀ n N : ℕ, n < N → AddMonoidAlgebra.coeff (P n) N = 0 := by
     intro n
     induction n using Nat.strong_induction_on with
-    | h n ih =>
+    | ind n ih =>
         intro N hN
         match n with
         | 0 =>
@@ -62,16 +62,16 @@ theorem natDegree_of_one_add_X_positive_coeff
             · lia
             · rw [hcoeff_succ]
               grind
-  have htop : ∀ n : ℕ, Polynomial.coeff (P n) n ≠ 0 := by
+  have htop : ∀ n : ℕ, AddMonoidAlgebra.coeff (P n) n ≠ 0 := by
     intro n
     induction n using Nat.strong_induction_on with
-    | h n ih =>
+    | ind n ih =>
         match n with
         | 0 =>
             simp_all
         | 1 =>
             rw [h1]
-            change Polynomial.coeff (1 + C a * X) 1 ≠ 0
+            change AddMonoidAlgebra.coeff (1 + C a * X) 1 ≠ 0
             rw [coeff_add, coeff_one, coeff_C_mul, coeff_X]
             grind
         | k + 2 =>
@@ -96,7 +96,7 @@ theorem interlaces_of_one_add_X_positive_coeff_with_base
   have hinv : ∀ n, (P n).eval 0 = 1 ∧ HasNonnegCoeffs (P n) := by
     intro n
     induction n using Nat.strong_induction_on with
-    | h n ih =>
+    | ind n ih =>
         match n with
         | 0 =>
             rw [h0]

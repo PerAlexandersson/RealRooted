@@ -95,7 +95,7 @@ variable {A : ℕ → ℝ[X]} {k : ℕ} {c : ℕ → ℝ}
 theorem hasNonnegCoeffs (h : EulerLagRows A k c) (m : ℕ) : HasNonnegCoeffs (A m) := by
   have hk := h.two_le
   induction m using Nat.strong_induction_on with
-  | h m ih =>
+  | ind m ih =>
     by_cases hm : m < k
     · rw [h.seed m hm]
       exact hasNonnegCoeffs_one

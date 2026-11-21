@@ -1,6 +1,6 @@
 module
 
-import RealRooted.ChudnovskySeymour.Core
+import RealRooted.ChudnovskySeymour.CommonInterleaver
 public import RealRooted.PFPolynomial
 public import RealRooted.Compatibility.Basic
 

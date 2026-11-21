@@ -25,8 +25,9 @@ references = [
   "Alexandersson2026Eulerian",
   "PetersenZhuang2024x",
   "CoonsSullivant2023",
+  {key = "Torres2026x", at = "Thm. 1.1"},
 ]
-authors = ["Petersen", "Zhuang", "Alexandersson"]
+authors = ["Petersen", "Zhuang", "Alexandersson", "Torres"]
 years = [2024, 2026]
 
 [[definitions]]
@@ -103,7 +104,9 @@ $H_1=H_2=1$, $H_3=1+t$ and $H_4=1+3t+t^2$.
 
 **Theorem (Alexandersson).** [@Alexandersson2026Eulerian, Thm. 7.1] For every $n\ge1$, $H_n$
 has degree $\max(n-2,0)$ and only simple negative roots. Hence $Z_n(t)=tH_n(t)$ is
-real-rooted, as conjectured in [@PetersenZhuang2024x, Conj. 6.1(a)].
+real-rooted, as conjectured in [@PetersenZhuang2024x, Conj. 6.1(a)]. Torres proves this
+independently [@Torres2026x, Thm. 1.1] by an effective Beraha–Kahane–Weiss argument; its
+general form is on the [limits of zeros](rr:limits-of-zeros) page.
 
 **Theorem (disk bound).** [@Alexandersson2026Eulerian, Lemma 7.3] Let
 $$
@@ -130,6 +133,6 @@ $Q_n$ one at a time, and $z\mapsto(z-1)/(z+1)$ maps $(-1,1)$ onto the negative r
 ## References
 
 [@Alexandersson2026Eulerian, Thm. 7.1]; [@PetersenZhuang2024x, Conj. 6.1(a)];
-[@CoonsSullivant2023].
+[@CoonsSullivant2023]; [@Torres2026x, Thm. 1.1].
 <!-- /realrooted-catalog-content -->
 -/

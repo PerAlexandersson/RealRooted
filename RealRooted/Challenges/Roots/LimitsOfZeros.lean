@@ -4,6 +4,10 @@ import RealRooted.Mathlib.Analysis.Complex.Hurwitz
 import RealRooted.Mathlib.Analysis.Complex.LimitsOfZeros
 import RealRooted.ThreeTermRecurrence.OrderTwoLimitZeros
 import RealRooted.ThreeTermRecurrence.WangZhang
+import RealRooted.EffectiveBKW.ZeroCount
+import RealRooted.EffectiveBKW.Examples.Chebyshev
+import RealRooted.EffectiveBKW.Tiling4.Roots
+import RealRooted.EffectiveBKW.PathCube.Roots
 
 /-!
 # Limits of zeros of recursive families
@@ -17,9 +21,10 @@ formalized = "2026-10-27"
 references = [
   {key = "Sokal2004ChromaticRoots", at = "Thm. 1.5"},
   {key = "WangZhang2017RootGeometryIII", at = "Thm. 2.1"},
+  {key = "Torres2026x", at = "Prop. 5.7, Thm. 7.1"},
 ]
-authors = ["Beraha", "Kahane", "Weiss", "Sokal", "Wang", "Zhang"]
-years = [2004, 2017]
+authors = ["Beraha", "Kahane", "Weiss", "Sokal", "Wang", "Zhang", "Torres"]
+years = [2004, 2017, 2026]
 
 [[definitions]]
 name = "Complex.IsLimitOfZeros"
@@ -61,6 +66,26 @@ label = "A nonreal limit of zeros forces late polynomials to be not real-rooted"
 name = "RealRooted.WangZhang.forall_splits_iff"
 module = "RealRooted.ThreeTermRecurrence.WangZhang"
 label = "Wang–Zhang: W(n+2) = (ax + b)W(n+1) + (cx + d)W(n) is real-rooted iff ad ≤ bc"
+
+[[theorems]]
+name = "RealRooted.EffectiveBKW.PairExpansion.splits_nodup_forall_ge"
+module = "RealRooted.EffectiveBKW.ZeroCount"
+label = "Effective BKW: a dominating pair and its phase crossings give simple real zeros for n ≥ N"
+
+[[theorems]]
+name = "RealRooted.EffectiveBKW.Examples.Chebyshev.splits_nodup"
+module = "RealRooted.EffectiveBKW.Examples.Chebyshev"
+label = "Effective BKW, order two: the rows of 1/(1 − 2tz + z²)"
+
+[[theorems]]
+name = "RealRooted.EffectiveBKW.Tiling4.polynomial_roots"
+module = "RealRooted.EffectiveBKW.Tiling4.Roots"
+label = "Effective BKW, order three: tilings of a 4 × n strip by 1 × 1 and 2 × 2 squares"
+
+[[theorems]]
+name = "RealRooted.EffectiveBKW.PathCube.row_splits_nodup"
+module = "RealRooted.EffectiveBKW.PathCube.Roots"
+label = "Effective BKW, order four: a four-state transfer family with a certified remainder bound"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -98,6 +123,20 @@ nonreal limit of zeros, then $W_n$ is not real-rooted for all large $n$.
 $W_1=x$ and $W_{n+2}=(ax+b)\,W_{n+1}+(cx+d)\,W_n$. Then every $W_n$ is real-rooted if and only
 if $ad\le bc$.
 
+**Effective version.** [@Torres2026x, Prop. 5.7, Thm. 7.1] A sign-changing version of the same
+picture proves
+real-rootedness for every $n$, not only in the limit. Write $P_n=2\operatorname{Re}(A\lambda^n)
++r_n$ on an interval $J$ with a conjugate pair $\lambda,\bar\lambda$. If $|r_n|<2|A\lambda^n|$
+on $J$ for $n\ge N$, then $P_n$ has the sign of $\cos\varphi$ wherever the phase
+$\varphi=\arg(A\lambda^n)$ is a multiple of $\pi$, so consecutive multiples give sign changes.
+Counting them and closing with the degree gives simple real zeros in $J$.
+The remaining rows $n<N$ are checked exactly. This is the method of Torres's proof of the zig-zag
+Eulerian conjecture, here as a general theorem with an explicit domination cutoff.
+Applications: the Chebyshev rows of $1/(1-2tz+z^2)$, the tilings of a $4\times n$ strip by
+$1\times1$ and $2\times2$ squares (with generating function
+$(1-tz)/(1-(1+t)z-(2t+t^2)z^2+(t^2+t^3)z^3)$), and a four-state transfer family
+$1,\ 1+t,\ 1+4t+t^2,\ 1+11t+11t^2+t^3,\dots$ with an exact certified remainder bound.
+
 ## Use
 
 This is the standard tool for showing that a recursive family is not real-rooted: one exhibits
@@ -107,6 +146,7 @@ the "only if" direction of the Wang–Zhang theorem.
 ## References
 
 [@Sokal2004ChromaticRoots, Thm. 1.5], which generalizes the Beraha–Kahane–Weiss theorem;
-[@WangZhang2017RootGeometryIII, Thm. 2.1].
+[@WangZhang2017RootGeometryIII, Thm. 2.1]; [@Torres2026x, Prop. 5.7, Thm. 7.1] for the
+effective version.
 <!-- /realrooted-catalog-content -->
 -/

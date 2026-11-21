@@ -35,7 +35,7 @@ theorem natDegree_le_and_hasNonnegCoeffs {k : ℕ} {D : ℕ → ℕ}
     (hbase : ∀ j, j < k → (P j).natDegree ≤ D j ∧ HasNonnegCoeffs (P j))
     (m : ℕ) : (P m).natDegree ≤ D m ∧ HasNonnegCoeffs (P m) := by
   induction m using Nat.strong_induction_on with
-  | h m ih =>
+  | ind m ih =>
     by_cases hm : m < k
     · exact hbase m hm
     obtain ⟨n, rfl⟩ : ∃ n, m = n + k := ⟨m - k, by lia⟩

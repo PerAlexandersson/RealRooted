@@ -300,12 +300,14 @@ lemma bernOp_surj (n : ℕ) (hn : n ≠ 0) (μ : ℝ) :
       rw [degree_lt_iff_coeff_zero] at hS ⊢
       intro k hk
       rcases eq_or_lt_of_le hk with rfl | hk'
-      · rw [hS', coeff_sub, coeff_smul, hP, coeff_sub, hPc, coeff_smul]
+      · rw [hS', coeff_sub, AddMonoidAlgebra.coeff_smul_apply, hP, coeff_sub, hPc,
+        AddMonoidAlgebra.coeff_smul_apply]
         simp only [coeff_X_pow_self, mul_one, smul_eq_mul]
         rw [← hc]
         field_simp
         ring
-      · rw [hS', coeff_sub, coeff_smul, hP, coeff_sub, coeff_smul,
+      · rw [hS', coeff_sub, AddMonoidAlgebra.coeff_smul_apply, hP, coeff_sub,
+        AddMonoidAlgebra.coeff_smul_apply,
           coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hPd hk'), coeff_X_pow,
           ite_eq_right (by lia), hS k (by lia)]
         simp
@@ -314,7 +316,8 @@ lemma bernOp_surj (n : ℕ) (hn : n ≠ 0) (μ : ℝ) :
     · rw [degree_lt_iff_coeff_zero]
       intro k hk
       rw [degree_lt_iff_coeff_zero] at hR'd
-      rw [coeff_add, coeff_smul, hR'd k (by lia), coeff_X_pow, ite_eq_right (by lia)]
+      rw [coeff_add, AddMonoidAlgebra.coeff_smul_apply, hR'd k (by lia), coeff_X_pow,
+        ite_eq_right (by lia)]
       simp
     · rw [map_add, map_smul]
       calc bernOp n R' + (c / μ') • bernOp n (X ^ m) - μ • (R' + (c / μ') • X ^ m)
@@ -338,7 +341,7 @@ lemma exists_eigPoly (n m : ℕ) (hm : 2 ≤ m) (hmn : m ≤ n) :
     rcases eq_or_lt_of_le hk with rfl | hk'
     · simp [hS, hPc]
     · rw [hS, coeff_neg, coeff_sub, coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hPd hk'),
-        coeff_smul, coeff_X_pow, ite_eq_right (by lia)]
+        AddMonoidAlgebra.coeff_smul_apply, coeff_X_pow, ite_eq_right (by lia)]
       simp
   obtain ⟨R, hRd, hR⟩ := bernOp_surj n hn (mu n m) m hmu S hSd
   refine ⟨X ^ m + R, monic_X_pow_add hRd, ?_, ?_⟩
@@ -379,7 +382,7 @@ lemma eigen_eval_one (n : ℕ) (hn : n ≠ 0) (G : ℝ[X]) (μ : ℝ) (hμ : μ 
 lemma mu_natDegree_of_eigen (n : ℕ) (hn : n ≠ 0) (G : ℝ[X]) (μ : ℝ) (hG0 : G ≠ 0)
     (hG : bernOp n G = μ • G) : mu n G.natDegree = μ := by
   obtain ⟨-, h2⟩ := bernOp_deg n hn G.natDegree G le_rfl
-  rw [hG, coeff_smul, smul_eq_mul] at h2
+  rw [hG, AddMonoidAlgebra.coeff_smul_apply, smul_eq_mul] at h2
   have hl : G.coeff G.natDegree ≠ 0 := leadingCoeff_ne_zero.mpr hG0
   exact (mul_right_cancel₀ hl h2).symm
 
@@ -405,7 +408,7 @@ lemma eigen_unique (n m : ℕ) (hm : 2 ≤ m) (hmn : m ≤ n) (G₁ G₂ : ℝ[X
     (natDegree_sub_le _ _).trans (max_le hd2 ((natDegree_smul_le _ _).trans hd1))
   have eD := hdeg D hD0 hDd hDe
   have hDc : D.coeff m = 0 := by
-    rw [hD, coeff_sub, coeff_smul, smul_eq_mul, hc]
+    rw [hD, coeff_sub, AddMonoidAlgebra.coeff_smul_apply, smul_eq_mul, hc]
     field_simp
     ring
   rw [← eD] at hDc

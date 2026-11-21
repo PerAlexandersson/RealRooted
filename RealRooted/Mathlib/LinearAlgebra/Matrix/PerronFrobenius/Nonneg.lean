@@ -7,7 +7,7 @@ module
 
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Dominance
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CollatzWielandt
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.NonnegativeVectors
 public import Mathlib.Analysis.CStarAlgebra.Classes
 import Mathlib.Algebra.Order.Ring.Star
 import Mathlib.Tactic

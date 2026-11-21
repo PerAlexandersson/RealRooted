@@ -383,7 +383,7 @@ private lemma expo_hasFPowerSeriesAt {γ : ℝ} {α β : ℕ → ℝ}
   · intro y hy
     have hy' : |y| < r := by
       exact NNReal.coe_lt_coe.2 (by
-        simpa only [Metric.mem_eball, edist_zero_right, enorm_lt_coe] using hy)
+        simpa only [Metric.mem_eball, edist_zero_right, eNorm_lt_coe] using hy)
     have hx : |y| * A ≤ 1 / 2 := by nlinarith
     simpa [FormalMultilinearSeries.ofScalars_apply_eq, mul_comm] using
       expo_hasSum (γ := γ) hα hβ sα sβ hAα hAβ hx
@@ -527,7 +527,7 @@ theorem params_eq_of_edreiFunction_eq {C₁ C₂ γ₁ γ₂ : ℝ} {k₁ k₂ :
     simp only [coef] at this
     rw [ite_eq_right (by lia), ite_eq_right (by lia)] at this
     have hpow : (-1 : ℝ) ^ (2 * j + 1) = -1 := by rw [pow_succ, pow_mul]; norm_num
-    rw [hpow, add_zero, add_zero, div_left_inj' (by positivity),
+    rw [hpow, add_zero, add_zero, div_left_inj₀ (by positivity),
       show 2 * j + 1 + 1 = 2 * j + 2 by ring] at this
     linarith
   have hodd : ∀ j, psum α₁ (2 * j + 3) + psum β₁ (2 * j + 3) =
@@ -536,7 +536,7 @@ theorem params_eq_of_edreiFunction_eq {C₁ C₂ γ₁ γ₂ : ℝ} {k₁ k₂ :
     simp only [coef] at this
     rw [ite_eq_right (by lia), ite_eq_right (by lia)] at this
     have hpow : (-1 : ℝ) ^ (2 * j + 2) = 1 := by rw [pow_add, pow_mul]; norm_num
-    rw [hpow, add_zero, add_zero, div_left_inj' (by positivity),
+    rw [hpow, add_zero, add_zero, div_left_inj₀ (by positivity),
       show 2 * j + 2 + 1 = 2 * j + 3 by ring] at this
     linarith
   have ME := moment_unique hβ₁ hα₂ hβ₂ hα₁ sβ₁ sα₂ sβ₂ sα₁

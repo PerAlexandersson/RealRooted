@@ -106,7 +106,7 @@ theorem exceptionalBasePolynomial_differentialEquation (m ε : ℕ) :
           exceptionalBasePolynomial m ε +
         insertionOperator ((ε : ℝ) + 1 / 2) ((ε : ℝ) + 3 / 2)
           (exceptionalBasePolynomial m ε).derivative = 0 := by
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   cases k with
   | zero =>

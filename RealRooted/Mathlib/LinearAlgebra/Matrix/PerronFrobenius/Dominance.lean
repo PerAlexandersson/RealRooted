@@ -10,8 +10,8 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Irreducible
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CStarClasses
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Primitive
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CollatzWielandt
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Auxiliary
-import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Lemmas
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.NonnegativeVectors
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.PrimitivityCriteria
 
 /-!
 # Dominance of the Perron root
@@ -63,7 +63,7 @@ variable {n : Type*} [Fintype n] [DecidableEq n] {A : Matrix n n ℝ}
 omit [Fintype n] [DecidableEq n] in
 /-- If `x : n → ℂ` is nonzero, then `fun i ↦ ‖x i‖` is nonzero as a dependent function. -/
 lemma normFun_complex_ne_zero_of_ne_zero {x : n → ℂ} (hx : x ≠ 0) : (fun i ↦ ‖x i‖) ≠ 0 := by
-  contrapose! hx
+  contrapose hx
   ext i
   exact norm_eq_zero.mp (congr_fun hx i)
 

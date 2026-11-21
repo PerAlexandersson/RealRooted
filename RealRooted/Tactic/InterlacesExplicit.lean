@@ -191,7 +191,8 @@ partial def proveInterlacesExplicit (gq fq : QPoly) : TacticM Unit := do
     setGoals [g]
     if (← instantiateMVars (← g.getType)).isAppOf ``Eq &&
         ((← instantiateMVars (← g.getType)).find? (·.isConstOf ``Polynomial.natDegree)).isNone &&
-        ((← instantiateMVars (← g.getType)).find? (·.isConstOf ``Polynomial.coeff)).isNone then
+        ((← instantiateMVars (← g.getType)).find?
+          (·.isConstOf ``AddMonoidAlgebra.coeff)).isNone then
       evalTactic (← `(tactic| rr_poly_identity))
     else explicitSideGoal
   setGoals [grec]

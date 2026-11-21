@@ -184,7 +184,7 @@ theorem exists_pos_multiset_prod_one_add_C_mul_X {p : ℝ[X]}
         s.card = p.natDegree ∧
           p = (s.map fun a ↦ 1 + C a * X).prod := by
   induction hdegree : p.natDegree using Nat.strong_induction_on generalizing p with
-  | h degree ih =>
+  | ind degree ih =>
       by_cases hzero : degree = 0
       · have hpC : p = C (p.coeff 0) :=
           Polynomial.eq_C_of_natDegree_eq_zero (by simpa [hdegree] using hzero)
@@ -365,7 +365,7 @@ theorem comp_C_mul_X_add_C {a d : ℝ} (ha : 0 < a) (hd : 0 ≤ d)
     {p : ℝ[X]} (hp : IsPFPolynomial p) :
     IsPFPolynomial (p.comp (C a * X + C d)) := by
   induction hdeg : p.natDegree using Nat.strong_induction_on generalizing p with
-  | h n ih =>
+  | ind n ih =>
       by_cases hp0 : p = 0
       · simpa [hp0] using IsPFPolynomial.zero
       by_cases hn0 : n = 0

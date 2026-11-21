@@ -80,6 +80,10 @@ lemma Polynomial.roots_sort_eq_ofFn {n : ℕ} {p : ℝ[X]}
   have h_eq_multiset : p.roots = Multiset.ofList (List.ofFn s) := by
     refine Multiset.eq_of_le_of_card_le (Multiset.le_iff_count.mpr ?_) ?_
     · intro x
+      have hmem : x ∈ p.roots → (Finset.univ.filter fun k => s k = x).Nonempty := by
+        intro hx
+        obtain ⟨k, hk⟩ := hs_surj x hx
+        exact ⟨k, by simp [hk]⟩
       by_cases hx : x ∈ p.roots <;> simp_all
     · rw [Polynomial.splits_iff_card_roots] at hp_splits
       simp_all

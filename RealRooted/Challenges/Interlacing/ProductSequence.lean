@@ -1,6 +1,6 @@
 module
 
-import RealRooted.ProductSequence.Core
+import RealRooted.ProductSequence.InductionShells
 import RealRooted.ProductSequence.Interlacing
 import RealRooted.ProductSequence.FactorFamilies
 import RealRooted.ProductSequence.Lifts

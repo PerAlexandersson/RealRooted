@@ -114,7 +114,7 @@ theorem tendsto_coeff_inv_of_constantCoeff_one
       (𝓝 (PowerSeries.coeff d f₀⁻¹)) := by
   intro d
   induction d using Nat.strong_induction_on with
-  | h d ih =>
+  | ind d ih =>
       cases d with
       | zero =>
           have hleft : (fun a => PowerSeries.coeff 0 (f a)⁻¹) = fun _ => 1 := by

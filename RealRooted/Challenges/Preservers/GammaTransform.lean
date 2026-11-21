@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.GammaPencil.Theorem
+public import RealRooted.GammaPencil.AllRank
 public import RealRooted.GammaTransform.Basic
 public import RealRooted.GammaTransform.Preservation
 public import RealRooted.GammaTransform.ProperPosition
@@ -66,7 +66,7 @@ label = "Two successive gamma-transform steps preserve proper position"
 
 [[theorems]]
 name = "RealRooted.gammaUV_allComboRealRooted"
-module = "RealRooted.GammaPencil.Theorem"
+module = "RealRooted.GammaPencil.AllRank"
 label = "Every real combination of the gamma-pencil components is real-rooted"
 
 [[theorems]]

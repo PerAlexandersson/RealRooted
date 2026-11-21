@@ -244,7 +244,7 @@ private theorem swapCount_one_eq_zero (π : Equiv.Perm (Fin 1)) : swapCount π =
 /-- The first four rows of the actual alternating-permutation sum. -/
 theorem zigzagEulerianPolynomial_one : zigzagEulerianPolynomial 1 = 1 := by
   classical
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   by_cases hk : k = 0
   · subst k
@@ -264,7 +264,7 @@ theorem zigzagEulerianPolynomial_one : zigzagEulerianPolynomial 1 = 1 := by
 
 /-- The size-two zig-zag Eulerian polynomial is constant. -/
 theorem zigzagEulerianPolynomial_two : zigzagEulerianPolynomial 2 = 1 := by
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   by_cases hk : k = 0
   · subst k
@@ -279,7 +279,7 @@ theorem zigzagEulerianPolynomial_two : zigzagEulerianPolynomial 2 = 1 := by
 
 /-- The size-three zig-zag Eulerian polynomial is linear. -/
 theorem zigzagEulerianPolynomial_three : zigzagEulerianPolynomial 3 = 1 + X := by
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   by_cases h0 : k = 0
   · subst k
@@ -300,7 +300,7 @@ theorem zigzagEulerianPolynomial_three : zigzagEulerianPolynomial 3 = 1 + X := b
 
 /-- The size-four zig-zag Eulerian polynomial is quadratic. -/
 theorem zigzagEulerianPolynomial_four : zigzagEulerianPolynomial 4 = 1 + 3 * X + X ^ 2 := by
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   by_cases h0 : k = 0
   · subst k

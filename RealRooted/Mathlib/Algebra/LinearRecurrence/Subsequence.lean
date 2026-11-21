@@ -54,7 +54,7 @@ private theorem aeval_forwardShift_apply_eq_mulVec {k : ℕ}
         Matrix.add_mulVec]
   | monomial n a =>
       rw [Polynomial.aeval_monomial, Polynomial.aeval_monomial]
-      simp only [Module.End.mul_apply, Module.algebraMap_end_apply,
+      simp only [mul_apply_eq_comp, Module.algebraMap_end_apply,
         Matrix.algebraMap_eq_diagonal, Pi.smul_apply, smul_eq_mul]
       rw [LinearRecurrence.forwardShift_pow_apply,
         state_add_eq_pow_mulVec hv m n]
@@ -71,7 +71,7 @@ the characteristic polynomial of that matrix. -/
   change Polynomial.monomial k 1 -
     ∑ i : Fin k, Polynomial.monomial i (-A.charpoly.coeff i) = A.charpoly
   ext n
-  simp only [coeff_sub, coeff_monomial, finsetSum_coeff]
+  simp only [coeff_sub, coeff_monomial, Finsupp.single_apply, finsetSum_coeff]
   rcases lt_trichotomy n k with hn | hn | hn
   · have hsum : (∑ i : Fin k, if (i : ℕ) = n then -A.charpoly.coeff i else 0) =
         -A.charpoly.coeff n := by

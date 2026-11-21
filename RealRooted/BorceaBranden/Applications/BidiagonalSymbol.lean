@@ -63,7 +63,7 @@ def complexDiagonalOperator (gamma : ℕ → ℂ) (p : ℂ[X]) : ℂ[X] :=
     (complexDiagonalOperator gamma p).coeff n = gamma n * p.coeff n := by
   classical
   rw [complexDiagonalOperator, Polynomial.coeff_sum]
-  simp only [Polynomial.coeff_monomial]
+  simp only [Polynomial.coeff_monomial, Finsupp.single_apply]
   rw [Polynomial.sum_def]
   simp_all
 

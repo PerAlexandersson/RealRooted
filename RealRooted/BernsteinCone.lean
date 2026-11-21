@@ -50,9 +50,9 @@ theorem hasNonnegCoeffs_cayleyTransform_of_roots_mem_Icc
         ring]
   intro k
   rcases k with _ | _ | k
-  · simp [coeff_add, coeff_one]
+  · simp
     linarith [hrange.2]
-  · simp [coeff_one]
+  · simp
     linarith [hrange.1]
   · simp [coeff_one]
 

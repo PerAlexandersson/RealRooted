@@ -31,7 +31,7 @@ theorem coeff_rankTwoBinomialTransform (p : ℝ[X]) (M k : ℕ) :
             p.coeff j * (Nat.choose j k : ℝ) * (Nat.choose (M - j) k : ℝ)
       else 0 := by
   classical
-  simp [rankTwoBinomialTransform, Polynomial.coeff_monomial]
+  simp [rankTwoBinomialTransform, Polynomial.coeff_monomial, Finsupp.single_apply]
 
 theorem natDegree_rankTwoBinomialTransform_le (p : ℝ[X]) (M : ℕ) :
     (rankTwoBinomialTransform p M).natDegree ≤ p.natDegree := by

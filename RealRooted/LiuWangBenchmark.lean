@@ -2,7 +2,7 @@ module
 
 public import RealRooted.MaWang
 import RealRooted.Linear
-public import RealRooted.CombinatorialExamples.Common
+public import RealRooted.CombinatorialExamples.CoefficientHelpers
 import RealRooted.Interlacing.NegativeRoots
 public import RealRooted.Mathlib.Data.Nat.Choose.Cast
 public import Mathlib.Data.Nat.Choose.Basic
@@ -29,7 +29,9 @@ the family as a benchmark for the Liu--Wang / Ma--Wang machinery.
 
 @[expose] public section
 
-open Polynomial Finset
+open Polynomial
+open AddMonoidAlgebra (coeff)
+open Finset
 
 noncomputable section
 
@@ -153,7 +155,7 @@ lemma liuWangPoly_two (d : Nat) :
       | succ m =>
           have hm : 2 ≤ m + 2 := by lia
           rw [coeff_liuWangPoly_of_ge _ _ _ hm]
-          simp [coeff_add]
+          simp
 
 lemma coeff_zero_liuWangPoly (d n : Nat) :
     coeff (liuWangPoly d n) 0 =
@@ -444,7 +446,7 @@ private theorem strictData_liuWangRec (d : Nat) :
           (liuWangRec_posLeadingCoeff d 2 (by lia))
           (eval_zero_liuWangRec_pos d 2 (by lia) hnd)
           (fun r hr => False.elim ((hOne_no_root r) hr))
-      lia
+      exact ⟨hInter, hNoCommon, hNeg⟩
   | n + 2, hn, hnd => by
       have hprev := strictData_liuWangRec d (n + 1) (by lia) (by lia)
       have hInter : Interlaces (liuWangRec d (n + 1)) (liuWangRec d (n + 2)) := hprev.1
@@ -489,7 +491,7 @@ private theorem strictData_liuWangRec (d : Nat) :
           (liuWangRec_posLeadingCoeff d (n + 3) (by lia))
           (eval_zero_liuWangRec_pos d (n + 3) (by lia) hnd)
           hNeg
-      lia
+      exact ⟨hInter', hNoCommon', hNeg'⟩
 
 lemma interlaces_liuWangRec_of_lt_threshold (d n : Nat)
     (hn : 1 ≤ n) (hnd : n + 1 ≤ d + 1) :

@@ -1,6 +1,6 @@
 module
 
-public import RealRooted.DerivativeRecurrence.General
+public import RealRooted.DerivativeRecurrence.RowDegree
 import RealRooted.DerivativeRecurrence.Degree
 
 /-!
@@ -91,7 +91,7 @@ theorem natDegree_eq_and_leadingCoeff_pos_of_topWindow {k e : ℕ} {D : ℕ → 
       (P m).natDegree ≤ D m ∧ 0 < (P m).coeff (D m) ∧ S m (P m) := by
     intro m
     induction m using Nat.strong_induction_on with
-    | h m ih =>
+    | ind m ih =>
         by_cases hm : m < k
         · exact hbase m hm
         · obtain ⟨q, rfl⟩ : ∃ q, m = q + k := ⟨m - k, by lia⟩
