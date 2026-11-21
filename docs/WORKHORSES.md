@@ -213,9 +213,9 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 19 | `RealRooted.isRealRooted_comp_X_add_C` | `RealRooted.Linear` |  |
 | 17 | `RealRooted.IsPFPolynomial.eq_zero_or_splits` | `RealRooted.PFPolynomial` | A PF polynomial is zero or splits over the reals. |
 | 15 | `Polynomial.Splits.reflect` | `RealRooted.Mathlib.Algebra.Polynomial.Reverse` | Reflection at any degree bound preserves splitting. |
+| 15 | `RealRooted.IsUpperHalfPlaneStable.splits_complexify` | `RealRooted.HermiteBiehler.Basic` | Upper-half-plane stability of a real polynomial's complexification forces all its roots to be real. |
 | 15 | `RealRooted.isRealRooted_affine_factor` | `RealRooted.AffineFamily` |  |
 | 14 | `Polynomial.Splits.cayleyTransform` | `RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Algebra` | The Cayley transform of a split polynomial splits in every degree box containing it. |
-| 14 | `RealRooted.IsUpperHalfPlaneStable.splits_complexify` | `RealRooted.HermiteBiehler.Basic` | Upper-half-plane stability of a real polynomial's complexification forces all its roots to be real. |
 | 14 | `RealRooted.isRealRooted_of_degree_one` | `RealRooted.Linear` | Any nonzero degree-1 polynomial is real-rooted. |
 | 13 | `Polynomial.splits_of_all_roots_real` | `RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex` | A real polynomial splits if every root of its complexification is real. |
 | 13 | `RealRooted.isRealRooted_X_mul` | `RealRooted.Linear` |  |
@@ -378,15 +378,15 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 7 | `RealRooted.routhCoefficient_mul_coeff_zero` | `RealRooted.ClassicalHurwitzMatrix.Routh` |  |
 | 6 | `RealRooted.BorceaBranden.coeff_coordinateDiagonalOperator` | `RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier` |  |
 | 6 | `RealRooted.CenteredEulerian.coeff_sinS` | `RealRooted.CenteredEulerian.SeriesBasic` |  |
+| 6 | `RealRooted.coeff_binomialLift` | `RealRooted.Apolarity` |  |
 | 6 | `RealRooted.coeff_reciprocalShift` | `RealRooted.PFPolynomial` |  |
-| 5 | `Finset.coeff_genPoly` | `RealRooted.Mathlib.Combinatorics.Enumerative.GenPoly` | The coefficient of `X ^ k` in `genPoly s stat` counts the `k`-fibre. |
 
 ## eval
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 412 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
-| 272 | `RealRooted.EffectiveBKW.IntPoly2.eval_add` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate addition. |
+| 414 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
+| 273 | `RealRooted.EffectiveBKW.IntPoly2.eval_add` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate addition. |
 | 19 | `RealRooted.bezoutEntry.wronskian` | `RealRooted.Bezoutian.RootEvaluation` |  |
 | 15 | `RealRooted.eval_pos_of_all_roots_lt` | `RealRooted.WagnerRightSum.Sign` |  |
 | 13 | `RealRooted.eval_complexify_ne_zero_of_splits_of_im_pos` | `RealRooted.HermiteBiehler.Basic` | A nonzero split real polynomial has no root in the open upper half-plane. |
@@ -418,6 +418,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 6 | `LinearRecurrence.quadratic_isSolution_iff` | `RealRooted.Mathlib.Algebra.LinearRecurrence.Quadratic` | A sequence solves `quadratic p q` precisely when it satisfies its second-order recurrence. |
 | 3 | `RealRooted.eulerianTilde_recurrence` | `RealRooted.CombinatorialExamples.Eulerian` |  |
 | 2 | `Polynomial.hermite_add_two` | `RealRooted.Mathlib.RingTheory.Polynomial.Hermite` | The probabilists' Hermite polynomials satisfy their monic three-term recurrence. |
+| 1 | `RealRooted.hermiteReal_add_two` | `RealRooted.Hermite.Basic` | The real probabilists' Hermite family satisfies its monic three-term recurrence. |
 
 ## polynomial identity
 
@@ -454,7 +455,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | uses | theorem | module | doc |
 |---:|---|---|---|
 | 23 | `RealRooted.add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero` | `RealRooted.Basic.Coefficients` | A finite sum of nonnegative-coefficient polynomials cannot vanish if one of the summands is already nonzero. |
-| 19 | `Nat.cast_choose_ne_zero` | `RealRooted.Mathlib.Data.Nat.Choose.Cast` | A binomial coefficient remains nonzero after casting to a characteristic-zero target. |
+| 20 | `Nat.cast_choose_ne_zero` | `RealRooted.Mathlib.Data.Nat.Choose.Cast` | A binomial coefficient remains nonzero after casting to a characteristic-zero target. |
 | 8 | `RealRooted.iterateTDeriv_ne_zero` | `RealRooted.IteratedDerivativeShift` | Iterating a derivative shift preserves nonzeroness. |
 | 8 | `RealRooted.tDeriv_ne_zero` | `RealRooted.IteratedDerivativeShift` | T_ε of a nonzero polynomial with degree ≥ 1 is nonzero. |
 | 7 | `RealRooted.LiuOppositeSigns.OppositeLeadingSigns.left_ne_zero` | `RealRooted.LiuOppositeSigns.RootCount` |  |
