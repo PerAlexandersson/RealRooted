@@ -326,6 +326,9 @@ public import RealRooted.CombinatorialExamples.BorosMoll.Basic
 public import RealRooted.CombinatorialExamples.BorosMoll.Estimates
 public import RealRooted.CombinatorialExamples.BorosMoll.Infinite
 public import RealRooted.CombinatorialExamples.BorosMoll.NarayanaBridge
+public import RealRooted.CombinatorialExamples.CaoFu.Basic
+public import RealRooted.CombinatorialExamples.CaoFu.Roots
+public import RealRooted.CombinatorialExamples.CaoFu.SmallRanks
 public import RealRooted.CombinatorialExamples.CentralFactorial
 public import RealRooted.CombinatorialExamples.ColoredSetPartitions
 public import RealRooted.CombinatorialExamples.CoefficientHelpers
@@ -1426,6 +1429,7 @@ public import RealRooted.RootCounting
 public import RealRooted.RootCounting.CrossingExhaustion
 public import RealRooted.RootCounting.Descartes
 public import RealRooted.RootCounting.Finite
+public import RealRooted.RootCounting.Pencil
 public import RealRooted.RootCounting.SignChanges
 public import RealRooted.RootCounting.Sturm
 public import RealRooted.RootCounting.Threshold
