@@ -1812,6 +1812,11 @@ public import RealRooted.Toeplitz.SiteWeightedRuns
 public import RealRooted.Toeplitz.TP2Hessenberg
 public import RealRooted.Toeplitz.TP2HessenbergExamples
 public import RealRooted.Toeplitz.TP2HessenbergStrict
+public import RealRooted.Toeplitz.TrinomialBinomialRay
+public import RealRooted.Toeplitz.TrinomialCoprimeRows
+public import RealRooted.Toeplitz.TrinomialLocalization
+public import RealRooted.Toeplitz.TrinomialRoots
+public import RealRooted.Toeplitz.TrinomialRows
 public import RealRooted.ToeplitzFin
 public import RealRooted.ThreeTermRecurrence.CoeffMoments
 public import RealRooted.ThreeTermRecurrence.Coefficients
