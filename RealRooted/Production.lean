@@ -2353,6 +2353,19 @@ public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Theta
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Hadamard
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Jensen
 public import RealRooted.RiemannHypothesis
+public import RealRooted.Hermite.GeneratingFunction
+public import RealRooted.Hermite.Jensen
+public import RealRooted.Mathlib.Analysis.Calculus.IteratedDeriv.MulPow
+public import RealRooted.Mathlib.Analysis.MellinTransform.LogMoments
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Kernel
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Mellin
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Moments
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Positivity
+public import RealRooted.MultiplierSequence.JensenDerivative
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Hermite
+public import RealRooted.RiemannHypothesis.Hermite
+public import RealRooted.RiemannHypothesis.Inequalities
+public import RealRooted.RiemannHypothesis.MultiplierSequence
 
 /-!
 # RealRooted production umbrella
