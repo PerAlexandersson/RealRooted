@@ -113,7 +113,7 @@ theorem sideCellRight1_sign :
 
 /-- The outside side strip agrees with the global branch. -/
 theorem sideCellRight1_parent :
-    sideCellRight1.compatible cell168 curve false = true := by
+    sideCellRight1.compatible cell072 curve false = true := by
   decide +kernel
 
 /-- The outside side strip has the required real-part sign. -/

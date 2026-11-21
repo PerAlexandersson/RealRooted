@@ -261,7 +261,7 @@ theorem eval_polyHh (t b : ℝ) : polyHh.eval t b = scalarHh t b := by
 
 /-- Denominator-cleared expression for G1. -/
 def exprG1 : IntPoly2 :=
-  (((polyB.pow 2).smul (289)).add (polyPi.smul (400)))
+  (((polyB.pow 2).smul (1)).add (polyPi.smul (1)))
 
 /-- Exact quotient witness for G1. -/
 def quotientG1 : IntPoly2 :=
@@ -302,12 +302,12 @@ theorem exprG1_pos {t b : ℝ} (hc : curve.eval t b = 0)
 
 /-- Denominator-cleared expression for G2. -/
 def exprG2 : IntPoly2 :=
-  (((exprG1.pow 2).mul (polyD.pow 2)).add ((((polyB.pow 3).mul (polyJ.pow 2)).smul
-  (115600)).smul (-1)))
+  (((exprG1.pow 2).mul (polyD.pow 2)).add ((((polyB.pow 3).mul (polyJ.pow 2)).smul (1)).smul
+  (-1)))
 
 /-- Exact quotient witness for G2. -/
 def quotientG2 : IntPoly2 :=
-[[0, -668168, -924800, -154904, 1747872], [0, -668168, 668168], [334084]]
+[[0, -8, -8, -8, 24], [0, -8, 8], [4]]
 
 /-- Positive factor removed from condition G2. -/
 def factorG2 : IntPoly2 :=
@@ -342,195 +342,6 @@ theorem exprG2_pos {t b : ℝ} (ht : t < 0) (hc : curve.eval t b = 0)
   rw [eval_exprG2 hc]
   have hn : 0 < -t := neg_pos.mpr ht
   have ho : 0 < 1 - t := by linarith
-  positivity
-
-/-- Denominator-cleared expression for AMP. -/
-def exprAMP : IntPoly2 :=
-  (((polyB.mul polyNn).smul (100)).add (((polyD.pow 2).mul polyHh).smul (-1)))
-
-/-- Exact quotient witness for AMP. -/
-def quotientAMP : IntPoly2 :=
-[
-    [
-      0,
-      0,
-      0,
-      -25344,
-      256464,
-      -751040,
-      403696,
-      -1159648,
-      2608512,
-      -1078080,
-      -137360,
-      -115360,
-      -1840
-    ],
-    [0, 0, 0, -101280, 28592, -285856, 746592, -306528, -21008, -58080, -2432],
-    [0, 0, 12672, -28608, 167248, -111808, -672, -34816, -4016],
-    [0, 0, 28464, -15584, 1552, -12608, -1824],
-    [0, -6336, 1616, -12640, -1840],
-    [0, 32, -32],
-    [1584]
-  ]
-
-/-- Positive factor removed from condition AMP. -/
-def factorAMP : IntPoly2 :=
-[[0, 0, 0, 0, 1, -3, 3, -1]]
-
-/-- The exact list identity for AMP is checked by the kernel. -/
-theorem exprAMP_check : exprAMP.eqCheck
-    ((quotientAMP.mul curve).add ((conditionAMP.smul 16).mul factorAMP)) = true := by
-  decide +kernel
-
-/-- Interpretation of the removed positive factor for AMP. -/
-theorem eval_factorAMP (t b : ℝ) :
-    factorAMP.eval t b = (-t) ^ 4 * (1 - t) ^ 3 := by
-  simp only [factorAMP, IntPoly2.eval, IntPoly.eval, IntPoly.polynomial,
-    BigDescents321.SmallCases.ofList_cons,
-    BigDescents321.SmallCases.ofList_nil, Polynomial.eval_add,
-    Polynomial.eval_C, Polynomial.eval_mul, Polynomial.eval_X,
-    Polynomial.eval_zero]
-  ring
-
-/-- The reduction identity holds on the resolvent curve. -/
-theorem eval_exprAMP {t b : ℝ} (hc : curve.eval t b = 0) :
-    exprAMP.eval t b = 16 * conditionAMP.eval t b *
-      ((-t) ^ 4 * (1 - t) ^ 3) := by
-  have he := IntPoly2.eqCheck_sound exprAMP_check t b
-  simpa only [IntPoly2.eval_add, IntPoly2.eval_mul, IntPoly2.eval_smul,
-    hc, mul_zero, zero_add, eval_factorAMP, Int.cast_ofNat] using he
-
-/-- A reduced positive sign yields the denominator-cleared sign. -/
-theorem exprAMP_pos {t b : ℝ} (ht : t < 0) (hc : curve.eval t b = 0)
-    (hp : 0 < conditionAMP.eval t b) : 0 < exprAMP.eval t b := by
-  rw [eval_exprAMP hc]
-  have hn : 0 < -t := neg_pos.mpr ht
-  have ho : 0 < 1 - t := by linarith
-  positivity
-
-/-- Denominator-cleared expression for W1. -/
-def exprW1 : IntPoly2 :=
-  ((polyB.smul (64)).add (((polyT.pow 2).smul (100)).smul (-1)))
-
-/-- Exact quotient witness for W1. -/
-def quotientW1 : IntPoly2 :=
-[]
-
-/-- Positive factor removed from condition W1. -/
-def factorW1 : IntPoly2 :=
-[[1]]
-
-/-- The exact list identity for W1 is checked by the kernel. -/
-theorem exprW1_check : exprW1.eqCheck
-    ((quotientW1.mul curve).add ((conditionW1.smul 4).mul factorW1)) = true := by
-  decide +kernel
-
-/-- Interpretation of the removed positive factor for W1. -/
-theorem eval_factorW1 (t b : ℝ) :
-    factorW1.eval t b = (-t) ^ 0 * (1 - t) ^ 0 := by
-  simp only [factorW1, IntPoly2.eval, IntPoly.eval, IntPoly.polynomial,
-    BigDescents321.SmallCases.ofList_cons,
-    BigDescents321.SmallCases.ofList_nil, Polynomial.eval_add,
-    Polynomial.eval_C, Polynomial.eval_mul, Polynomial.eval_X,
-    Polynomial.eval_zero]
-  ring
-
-/-- The reduction identity holds on the resolvent curve. -/
-theorem eval_exprW1 {t b : ℝ} (hc : curve.eval t b = 0) :
-    exprW1.eval t b = 4 * conditionW1.eval t b *
-      ((-t) ^ 0 * (1 - t) ^ 0) := by
-  have he := IntPoly2.eqCheck_sound exprW1_check t b
-  simpa only [IntPoly2.eval_add, IntPoly2.eval_mul, IntPoly2.eval_smul,
-    hc, mul_zero, zero_add, eval_factorW1, Int.cast_ofNat] using he
-
-/-- A reduced positive sign yields the denominator-cleared sign. -/
-theorem exprW1_pos {t b : ℝ} (hc : curve.eval t b = 0)
-    (hp : 0 < conditionW1.eval t b) : 0 < exprW1.eval t b := by
-  rw [eval_exprW1 hc]
-  positivity
-
-/-- Denominator-cleared expression for W2. -/
-def exprW2 : IntPoly2 :=
-  (((polyB.pow 2).smul (9)).add (((polyT.pow 2).smul (100)).smul (-1)))
-
-/-- Exact quotient witness for W2. -/
-def quotientW2 : IntPoly2 :=
-[]
-
-/-- Positive factor removed from condition W2. -/
-def factorW2 : IntPoly2 :=
-[[1]]
-
-/-- The exact list identity for W2 is checked by the kernel. -/
-theorem exprW2_check : exprW2.eqCheck
-    ((quotientW2.mul curve).add ((conditionW2.smul 1).mul factorW2)) = true := by
-  decide +kernel
-
-/-- Interpretation of the removed positive factor for W2. -/
-theorem eval_factorW2 (t b : ℝ) :
-    factorW2.eval t b = (-t) ^ 0 * (1 - t) ^ 0 := by
-  simp only [factorW2, IntPoly2.eval, IntPoly.eval, IntPoly.polynomial,
-    BigDescents321.SmallCases.ofList_cons,
-    BigDescents321.SmallCases.ofList_nil, Polynomial.eval_add,
-    Polynomial.eval_C, Polynomial.eval_mul, Polynomial.eval_X,
-    Polynomial.eval_zero]
-  ring
-
-/-- The reduction identity holds on the resolvent curve. -/
-theorem eval_exprW2 {t b : ℝ} (hc : curve.eval t b = 0) :
-    exprW2.eval t b = 1 * conditionW2.eval t b *
-      ((-t) ^ 0 * (1 - t) ^ 0) := by
-  have he := IntPoly2.eqCheck_sound exprW2_check t b
-  simpa only [IntPoly2.eval_add, IntPoly2.eval_mul, IntPoly2.eval_smul,
-    hc, mul_zero, zero_add, eval_factorW2, Int.cast_one] using he
-
-/-- A reduced positive sign yields the denominator-cleared sign. -/
-theorem exprW2_pos {t b : ℝ} (hc : curve.eval t b = 0)
-    (hp : 0 < conditionW2.eval t b) : 0 < exprW2.eval t b := by
-  rw [eval_exprW2 hc]
-  positivity
-
-/-- Denominator-cleared expression for W3. -/
-def exprW3 : IntPoly2 :=
-  ((polyB.pow 3).add ((((polyT.pow 4).mul ((polyOne.add (polyT.smul (-1))).pow 2)).smul
-  (4)).smul (-1)))
-
-/-- Exact quotient witness for W3. -/
-def quotientW3 : IntPoly2 :=
-[]
-
-/-- Positive factor removed from condition W3. -/
-def factorW3 : IntPoly2 :=
-[[1]]
-
-/-- The exact list identity for W3 is checked by the kernel. -/
-theorem exprW3_check : exprW3.eqCheck
-    ((quotientW3.mul curve).add ((conditionW3.smul 1).mul factorW3)) = true := by
-  decide +kernel
-
-/-- Interpretation of the removed positive factor for W3. -/
-theorem eval_factorW3 (t b : ℝ) :
-    factorW3.eval t b = (-t) ^ 0 * (1 - t) ^ 0 := by
-  simp only [factorW3, IntPoly2.eval, IntPoly.eval, IntPoly.polynomial,
-    BigDescents321.SmallCases.ofList_cons,
-    BigDescents321.SmallCases.ofList_nil, Polynomial.eval_add,
-    Polynomial.eval_C, Polynomial.eval_mul, Polynomial.eval_X,
-    Polynomial.eval_zero]
-  ring
-
-/-- The reduction identity holds on the resolvent curve. -/
-theorem eval_exprW3 {t b : ℝ} (hc : curve.eval t b = 0) :
-    exprW3.eval t b = 1 * conditionW3.eval t b *
-      ((-t) ^ 0 * (1 - t) ^ 0) := by
-  have he := IntPoly2.eqCheck_sound exprW3_check t b
-  simpa only [IntPoly2.eval_add, IntPoly2.eval_mul, IntPoly2.eval_smul,
-    hc, mul_zero, zero_add, eval_factorW3, Int.cast_one] using he
-
-/-- A reduced positive sign yields the denominator-cleared sign. -/
-theorem exprW3_pos {t b : ℝ} (hc : curve.eval t b = 0)
-    (hp : 0 < conditionW3.eval t b) : 0 < exprW3.eval t b := by
-  rw [eval_exprW3 hc]
   positivity
 
 /-- Denominator-cleared expression for WIND. -/

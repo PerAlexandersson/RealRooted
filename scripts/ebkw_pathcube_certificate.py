@@ -7,12 +7,15 @@ conditions independently and shares no polynomial arithmetic with the producer.
 
 Run with -B. See --help for generation, reproducibility, and corruption checks.
 No build tools, external source files, or third-party Python packages are used.
+
+The canonical certificate has cutoff zero: exact two-real-mode amplitudes are
+certified by symmetric polynomial signs on eight boxes covering 73 branch cells.
+The Lean proof uses these signs for every index, with no finite-row prefix.
 """
 import argparse
 from fractions import Fraction as F
 from functools import lru_cache
 from math import comb, gcd, lcm
-import hashlib
 import json
 from pathlib import Path
 import time
@@ -274,95 +277,19 @@ def bezout():
                 discriminant=dense(mul(power(t, 3), power(sub(t, one), 3), Q))[0],
                 kind='sylvester-scaled-discriminant')
 
-def tail(q, weights, n):
-    total = F(0)
-    for j, w in enumerate(weights):
-        k = max(0, n+2-j)
-        total += w*q**k*(k+1-k*q)/(1-q)**2
-    return total
 
-def conditions(q, m, weights):
+def conditions(q):
     g1 = add(scale(power(b, 2), q*q), pi)
     raw = dict(G1=g1,
         G2=sub(mul(power(g1, 2), power(d, 2)), scale(mul(power(b, 3), power(J, 2)), q*q)),
-        AMP=sub(mul(b, NN), scale(mul(power(d, 2), HH), m*m)),
-        W1=sub(scale(b, weights[1]**2), scale(power(t, 2), 4)),
-        W2=sub(scale(power(b, 2), weights[2]**2), scale(power(t, 2), 4)),
-        W3=sub(scale(power(b, 3), weights[3]**2), mul(power(t, 4), power(sub(one, t), 2))),
         WIND=add(mul(U, H, power(b, 2)), mul(V, L)))
     ps, witnesses = {}, {}
     for name, f in raw.items():
         ps[name], witnesses[name] = reduced(f)
     return ps, witnesses
 
-def rows_prefix(limit):
-    D = [one, scale(S, -1), E2, scale(C, -1), pi]
-    N = [one, scale(t, -2), scale(t, -2), scale(mul(power(t, 2), sub(one, t)), -1)]
-    rows = []
-    for n in range(limit):
-        row = N[n] if n < 4 else {}
-        for k in range(1, min(4, n)+1):
-            row = sub(row, mul(D[k], rows[n-k]))
-        rows.append(row)
-    return rows
 
-def row_sign(coeff, x):
-    num, den = x.numerator, x.denominator
-    value, dp = coeff[-1], den
-    for c in reversed(coeff[:-1]):
-        value = value*num+c*dp
-        dp *= den
-    return (value > 0)-(value < 0)
 
-def sign_grids(rows):
-    """Find exact interlacing separators; only the resulting sign grids are trusted."""
-    previous_roots, previous = [], [1]
-    grids = []
-    for n, pp in enumerate(rows[1:], 1):
-        coeff = dense(pp)[0]
-        for attempt in range(128):
-            pts = [(lo+hi)/2 for lo, hi in previous_roots]
-            left = min(F(-1), previous_roots[0][0]*2) if previous_roots else F(-2)
-            while row_sign(coeff, left) != (-1)**n:
-                left *= 2
-            grid = [left]+pts+[F(0)]
-            if all(row_sign(coeff, x) == (-1)**(n-i) for i, x in enumerate(grid)):
-                break
-            refined = []
-            for lo, hi in previous_roots:
-                mid = (lo+hi)/2
-                if row_sign(previous, lo)*row_sign(previous, mid) < 0:
-                    hi = mid
-                else:
-                    lo = mid
-                refined.append((lo, hi))
-            previous_roots = refined
-        else:
-            raise RuntimeError(('sign grid discovery', n))
-        grids.append(dict(n=n, points=[rational(v) for v in grid]))
-        roots = []
-        for lo, hi in zip(grid, grid[1:]):
-            sign = row_sign(coeff, lo)
-            while hi-lo > F(1, 2**16):
-                mid = (lo+hi)/2
-                sm = row_sign(coeff, mid)
-                if sm == 0:
-                    # Keep a strict rational bracket around an exact dyadic root.
-                    width = min((hi-lo)/4, F(1, 2**18))
-                    lo, hi = mid-width, mid+width
-                    break
-                if sm == sign:
-                    lo = mid
-                else:
-                    hi = mid
-            unit = F(1, 2**20)
-            low = (lo//unit-1)*unit
-            high = (-((-hi)//unit)+1)*unit
-            assert row_sign(coeff, low)*row_sign(coeff, high) < 0
-            lo, hi = low, high
-            roots.append((lo, hi))
-        previous_roots, previous = roots, coeff
-    return grids
 
 def q_gap_boxes(lo, hi, depth=0):
     bx = (lo, hi, F(0), F(0))
@@ -372,11 +299,30 @@ def q_gap_boxes(lo, hi, depth=0):
     mid = (lo+hi)/2
     return q_gap_boxes(lo, mid, depth+1)+q_gap_boxes(mid, hi, depth+1)
 
-def produce(tag, q, m, be, endpoints, bz):
-    started = time.monotonic()
-    ps, witnesses = conditions(q, m, be)
+def produce(q, endpoints, bz):
+    ps, witnesses = conditions(q)
     lo, hi = endpoints[0][0], endpoints[1][1]
     boxes = partition(lo, hi, ps)
+    # A cell-local derivative check does not suffice at a junction: refine
+    # until uniqueness also holds on the union of the two vertical strips.
+    for _ in range(12):
+        bad = set()
+        for i, (left, right) in enumerate(zip(boxes, boxes[1:])):
+            hull = (min(left[2], right[2]), max(left[3], right[3]), F(0), F(0))
+            if not bernstein(at_t(Pb, left[1]), hull):
+                bad.update([i, i+1])
+        if not bad:
+            break
+        refined = []
+        for i, box in enumerate(boxes):
+            if i in bad:
+                mid = (box[0]+box[1])/2
+                refined += partition(box[0], mid, ps)+partition(mid, box[1], ps)
+            else:
+                refined.append(box)
+        boxes = refined
+    else:
+        raise RuntimeError('pointwise branch-junction refinement did not close')
     stats = {}
     for bx in boxes:
         tl, tu, bl, bu = bx
@@ -411,13 +357,6 @@ def produce(tag, q, m, be, endpoints, bz):
         assert bernstein(scale(diff(Q, 0), qsign), (el, eu, F(0), F(0)), stats, 'endpoint_Q_derivative')
         ep.append(dict(interval=[rational(el), rational(eu)], box=box_json(bx),
                        derivative_sign=qsign, a_sign=asign, F_sign=asign, cpos_sides=side_boxes))
-    n0 = 0
-    while tail(q, be, n0) >= m:
-        n0 += 1
-    rows = rows_prefix(n0)
-    finite = dict(kind='sign-grids', rows_range=[1, n0-1],
-        prefix_sign_grids=sign_grids(rows), status='exact_sign_grids',
-        generated_rows=[dense(p)[0] for p in rows[1:]])
     cert = dict(schema='polytool.effective-bkw.v1', namespace='RealRooted.EffectiveBKW',
         family=dict(name='path-cube', representation='N/D',
             N=[dense(p)[0] if p else [] for p in [one, scale(t, -2), scale(t, -2),
@@ -432,9 +371,8 @@ def produce(tag, q, m, be, endpoints, bz):
                                    boxes=list(range(len(boxes)))) for name, p in ps.items()},
         endpoint_auxiliary=dict(CPOS=dict(polynomial=dense(cpos), reduction=cpos_wit),
                                 REALF=dict(polynomial=dense(rf), reduction=rf_wit)),
-        constants=dict(q=rational(q), m=rational(m), beta=[rational(v) for v in be], e=2, w=-1, sigma=0),
-        N0=n0, tail_witness=dict(T_N0=rational(tail(q, be, n0)), T_previous=rational(tail(q, be, n0-1))),
-        prefix=finite, exterior_sign_source=dict(kind='monic-degree-n',
+        constants=dict(q=rational(q), w=-1, sigma=0),
+        N0=0, exterior_sign_source=dict(kind='monic-degree-n',
              argument='matrix M0+t M1; (M1^n)[0,0]=1; positive row coefficients'),
         lean_replay='not_attempted', metrics=dict(conditions=stats, branch_cells=len(boxes),
             generation_seconds='not recorded (deterministic output)'))
@@ -449,6 +387,8 @@ def produce(tag, q, m, be, endpoints, bz):
             return [clean(w) for w in v]
         return v
     cert = clean(cert)
+    cert['domination_method'] = 'pointwise_two_real_modes'
+    cert['pointwise'] = pointwise_certificate(cert)
     return cert
 
 def factorization_witness():
@@ -677,7 +617,7 @@ def replay_glued(curve, cells):
         replay_positive(curve.derivative(1).specialize(0, left[1]),
                  (min(left[2], right[2]), max(left[3], right[3]), replay_F(0), replay_F(0)))
 
-def replay_condition_expressions(q, m, beta):
+def replay_condition_expressions(q):
     a, c0 = replay_Rat(replay_ANUM, 0, 1), replay_Rat(replay_PI, 1, 0)
     c1 = 2*a-replay_S
     # Reduction mod lambda²-2a*lambda+b, using independently constructed rational functions.
@@ -689,13 +629,10 @@ def replay_condition_expressions(q, m, beta):
     def real_product(u, v, r, s):
         return u*r*replay_B+(u*s+v*r)*a+v*s
     return dict(G1=q*q*replay_B+c0, G2=(q*q*replay_B+c0)**2-q*q*replay_B*c1**2,
-        AMP=norm(un, vn)-m*m*replay_B*norm(uh, vh),
-        W1=replay_Rat(beta[1]**2*replay_B-4*replay_T**2), W2=replay_Rat(beta[2]**2*replay_B**2-4*replay_T**2),
-        W3=replay_Rat(beta[3]**2*replay_B**3-replay_T**4*(1-replay_T)**2), WIND=-(un*vd-vn*ud),
+        WIND=-(un*vd-vn*ud),
         CPOS=replay_B-a**2, REALF=real_product(un, vn, ud, vd))
 
-replay_DENOM_POWERS = dict(G1=(1, 0), G2=(2, 2), AMP=(1, 4), W1=(0, 0),
-                    W2=(0, 0), W3=(0, 0), WIND=(1, 3), CPOS=(0, 2), REALF=(1, 4))
+replay_DENOM_POWERS = dict(G1=(1, 0), G2=(2, 2), WIND=(1, 3), CPOS=(0, 2), REALF=(1, 4))
 
 def replay_reduction(name, entry, expression, curve):
     p = replay_polynomial(entry['polynomial'])
@@ -811,44 +748,7 @@ def replay_check_endpoints(data, curve, cells, aux):
             assert gaps[i-1][1] == a
         replay_positive(-replay_Q, (a, z, replay_F(0), replay_F(0)))
 
-def replay_tail(q, beta, n):
-    # Compute total series minus its finite prefix, independently of producer's tail formula.
-    out = replay_F(0)
-    for j, w in enumerate(beta):
-        k = max(0, n+2-j)
-        out += w*(1/(1-q)**2-sum((h+1)*q**h for h in range(k)))
-    return out
 
-def replay_prefix(data, N, D, n0):
-    assert data['rows_range'] == [1, n0-1]
-    rows = [replay_Poly.cast(1)]
-    for n in range(1, n0):
-        p = N[n] if n < len(N) else replay_Poly()
-        for j in range(1, min(n, len(D)-1)+1):
-            p -= D[j]*rows[n-j]
-        rows.append(p)
-    assert list(map(replay_univariate, data['generated_rows'])) == rows[1:]
-    assert len(data['prefix_sign_grids']) == n0-1
-    evaluations, bits = 0, 0
-    for n, (p, entry) in enumerate(zip(rows[1:], data['prefix_sign_grids']), 1):
-        assert entry['n'] == n
-        assert p.c.get((n, 0)) == 1 and max(i for i, j in p.c) == n
-        assert all(v > 0 for v in p.c.values())
-        pts = list(map(replay_qnum, entry['points']))
-        assert len(pts) == n+1 and all(a < z for a, z in zip(pts, pts[1:]))
-        assert pts[-1] == 0
-        coeff = [int(p.c.get((i, 0), 0)) for i in range(n+1)]
-        for i, x in enumerate(pts):
-            # Integer homogenized Horner, independently evaluated from JSON.
-            num, den = x.numerator, x.denominator
-            value, power = 0, 1
-            for c in reversed(coeff):
-                value = value*num+c*power
-                power *= den
-            assert (-1)**(n-i)*value > 0, ('prefix sign', n, i)
-            evaluations += 1
-            bits = max(bits, abs(value).bit_length())
-    return dict(rows=n0-1, grid_evaluations=evaluations, max_grid_value_bits=bits)
 
 def replay_verify(cert):
     assert cert['schema'] == 'polytool.effective-bkw.v1'
@@ -859,11 +759,10 @@ def replay_verify(cert):
     replay_check_factorization(cert['factorization_witness'], curve)
     replay_check_discriminant(cert['discriminant_bezout'], D)
     constants = cert['constants']
-    q, m = replay_qnum(constants['q']), replay_qnum(constants['m'])
-    beta = list(map(replay_qnum, constants['beta']))
-    assert 0 < q < 1 and m > 0 and len(beta) == 4 and beta[0] >= 1 and all(w >= 0 for w in beta)
-    assert constants['e'] == 2 and constants['w'] == -1 and constants['sigma'] == 0
-    expressions = replay_condition_expressions(q, m, beta)
+    assert cert['domination_method'] == 'pointwise_two_real_modes'
+    q = replay_qnum(constants['q'])
+    assert q == 1 and constants['w'] == -1 and constants['sigma'] == 0
+    expressions = replay_condition_expressions(q)
     branch = cert['branch']
     assert branch['derivative_sign'] == 1
     cells = [replay_box(bx) for bx in branch['cells']]
@@ -871,7 +770,7 @@ def replay_verify(cert):
     assert domain == (cells[0][0], cells[-1][1]) and domain[1] < 0
     replay_glued(curve, cells)
     entries = cert['sign_conditions']
-    assert set(entries) == set(expressions)-{'CPOS', 'REALF'}
+    assert set(entries) == {'G1', 'G2', 'WIND'}
     for name, entry in entries.items():
         assert entry['neg'] is False
         p = replay_reduction(name, entry, expressions[name], curve)
@@ -881,19 +780,16 @@ def replay_verify(cert):
     aux = {name: replay_reduction(name, cert['endpoint_auxiliary'][name], expressions[name], curve)
            for name in ['CPOS', 'REALF']}
     replay_check_endpoints(cert['endpoint_roots'], curve, cells, aux)
-    n0 = cert['N0']
-    assert type(n0) is int and n0 > 0
-    now, prev = replay_tail(q, beta, n0), replay_tail(q, beta, n0-1)
-    assert now < m <= prev
-    assert replay_qnum(cert['tail_witness']['T_N0']) == now and replay_qnum(cert['tail_witness']['T_previous']) == prev
-    finite = replay_prefix(cert['prefix'], N, D, n0)
+    assert type(cert['N0']) is int and cert['N0'] == 0
+    assert 'prefix' not in cert and 'tail_witness' not in cert
     assert cert['exterior_sign_source']['kind'] == 'monic-degree-n'
-    return dict(status='verified', N0=n0, branch_cells=len(cells), conditions={k: len(v['boxes']) for k, v in entries.items()},
-                endpoint_b_simple=True, finite=finite, cost=dict(replay_COUNTS), lean_replay='not_attempted')
+    signs = replay_pointwise(cert['pointwise'], cert)
+    return dict(status='verified', N0=0, branch_cells=len(cells),
+                conditions={k: len(v['boxes']) for k, v in entries.items()},
+                pointwise=signs, finite_prefix='not_required',
+                cost=dict(replay_COUNTS), lean_replay='not_attempted')
 
 
-# Lean rendering. All generated data are reproduced by `generate`; `check` compares
-# bytes without writing. No result of Python replay is a premise of a Lean proof.
 def lean_list(values, render=str, indent=2):
     items = [render(v) for v in values]
     short = '[' + ', '.join(items) + ']'
@@ -984,7 +880,7 @@ def render_certificate(cert):
                  'cells.all (fun c ↦ branch.lo.le c.tlo && c.thi.le branch.hi) = true',
                  'Each cell lies inside the prescribed rational hull.')
     body += proof('cells_cover', 'Branch.covers branch.lo branch.hi cells = true',
-                  'Exact adjacency of the 169 rational parameter intervals.')
+                  f'Exact adjacency of the {len(names)} rational parameter intervals.')
     body += proof('cells_lower_pos',
                   'cells.all (fun c ↦ (⟨0, 1⟩ : QNum).lt c.lo) = true',
                   'Every certified strip has a strictly positive lower wall.')
@@ -1094,60 +990,6 @@ private theorem posOn_branch {f : IntPoly2}
     return {'BranchFacts.lean': lean_module(imports, 'The continuous path-cube branch', body)}
 
 
-def render_finite(cert):
-    out = {}
-    rows = [[1]] + cert['prefix']['generated_rows']
-    grids = [[[0, 1]]] + [g['points'] for g in cert['prefix']['prefix_sign_grids']]
-    body = ''
-    for i, (row, points) in enumerate(zip(rows, grids)):
-        body += declaration(f'rowCoeffs{i:02}', 'IntPoly', lean_list(row),
-                            f'Ascending coefficients of row {i}.')
-        body += declaration(f'points{i:02}', 'List QNum', lean_list(points, lean_q),
-                            f'Exact sample points for row {i}.')
-    body += declaration('rowLists', 'List IntPoly',
-                       lean_list([f'rowCoeffs{i:02}' for i in range(len(rows))]),
-                       'The first 59 rows, including the constant row at index zero.')
-    body += declaration('gridPoints', 'List (List QNum)',
-                        lean_list([f'points{i:02}' for i in range(len(rows))]),
-                        'Exact increasing sign grids, ending at zero.')
-    body += ('/-- Total lookup of an ascending coefficient list. -/\n'
-             'def rowList (r : ℕ) : IntPoly := rowLists.getD r []\n\n'
-             '/-- The rational sign grid for a row. -/\n'
-             'def grid (r : ℕ) : SignGrid := ⟨rowList r, gridPoints.getD r []⟩\n\n'
-             '/-- Integer-list version of the order-four transfer recurrence. -/\n'
-             'def listStep (a b c d : IntPoly) : IntPoly :=\n'
-             '  BigDescents321.SmallCases.addList\n'
-             '    (BigDescents321.SmallCases.addList\n'
-             '      (BigDescents321.SmallCases.addList\n'
-             '        (BigDescents321.SmallCases.mulList [1, 3] a)\n'
-             '        (BigDescents321.SmallCases.mulList [0, 2, -2] b))\n'
-             '      (BigDescents321.SmallCases.mulList [0, 2, -1, -1] c))\n'
-             '    (BigDescents321.SmallCases.mulList [0, 0, 1, -2, 1] d)\n')
-    out['FiniteData.lean'] = lean_module(
-        ['public import RealRooted.EffectiveBKW.Certificate.SignGrid'],
-        'Exact finite path-cube data', body, True)
-    for start in range(0, len(rows), 10):
-        body = ''
-        for r in range(start, min(start + 10, len(rows))):
-            body += proof(f'grid{r:02}_check', f'(grid {r}).check = true',
-                          f'The sign grid for row {r} passes the kernel checker.')
-        out[f'FiniteChecks{start // 10:02}.lean'] = lean_module(
-            ['public import RealRooted.EffectiveBKW.PathCube.FiniteData'],
-            f'Finite path-cube sign grids {start} through {min(start + 9, len(rows) - 1)}', body)
-    body = proof('rowLists_recurrence',
-                 '∀ r : Fin 55, (rowList (r + 4)).eqCheck\n'
-                 '      (listStep (rowList (r + 3)) (rowList (r + 2))\n'
-                 '        (rowList (r + 1)) (rowList r)) = true',
-                 'The 55 scalar recurrence steps are checked exactly on integer lists.')
-    body += proof('grid_degrees', '∀ r : Fin 59, (grid r).degree = r.val',
-                  'Each finite grid has exactly one more point than the row index.')
-    body += proof('grid_last_points',
-                  '∀ r : Fin 59, (grid r).point (grid r).degree = ⟨0, 1⟩',
-                  'Every finite grid ends at the rational number zero.')
-    out['FiniteRecurrence.lean'] = lean_module(
-        ['public import RealRooted.EffectiveBKW.PathCube.FiniteData'],
-        'Finite path-cube recurrence checks', body)
-    return out
 
 
 def render_endpoints(cert):
@@ -1223,6 +1065,7 @@ def render_endpoints(cert):
 def render_algebra_data(cert):
     """Kernel witnesses connecting reduced signs with scalar rational parameters."""
     from fractions import Fraction
+    qnum, qden = cert['constants']['q']
     definitions = [
         ('one', '[[1]]', '1'),
         ('t', '[[0, 1]]', 't'),
@@ -1283,13 +1126,9 @@ def render_algebra_data(cert):
          '    scalarK t b ^ 2 * scalarD t b ^ 2'),
     ]
     exprs = {
-        'G1': (plus(scale(powr(B, 2), 289), scale(PI, 400)), 400),
+        'G1': (plus(scale(powr(B, 2), qnum*qnum), scale(PI, qden*qden)), qden*qden),
         'G2': (minus(times(powr('exprG1', 2), powr(D, 2)),
-                     scale(times(powr(B, 3), powr(pn('j'), 2)), 115600)), 160000),
-        'AMP': (minus(scale(times(B, pn('nn')), 100), times(powr(D, 2), pn('hh'))), 100),
-        'W1': (minus(scale(B, 64), scale(powr(T, 2), 100)), 25),
-        'W2': (minus(scale(powr(B, 2), 9), scale(powr(T, 2), 100)), 25),
-        'W3': (minus(powr(B, 3), scale(times(powr(T, 4), powr(minus(O, T), 2)), 4)), 4),
+                     scale(times(powr(B, 3), powr(pn('j'), 2)), qnum*qnum*qden*qden)), qden**4),
         'WIND': (plus(times(pn('u'), pn('h'), powr(B, 2)), times(pn('v'), pn('l'))), 1),
         'CPOS': (minus(times(B, powr(D, 2)), powr(A, 2)), 1),
         'FACT': (plus(times(powr(B, 2), powr(D, 2)), times(PI, powr(D, 2)),
@@ -1351,6 +1190,8 @@ def render_algebra_data(cert):
                  proof + '\n')
         known.append(nameP)
     for name, (expr, den) in exprs.items():
+        if name not in cert['sign_conditions'] and name not in {'CPOS', 'FACT'}:
+            continue
         body += f'/-- Denominator-cleared expression for {name}. -/\ndef expr{name} : IntPoly2 :=\n'
         body += '\n'.join(textwrap.wrap(expr, 94, initial_indent='  ', subsequent_indent='  ',
                                         break_long_words=False, break_on_hyphens=False)) + '\n\n'
@@ -1425,18 +1266,21 @@ def render_algebra_data(cert):
 
 def generated_files(cert):
     prefix = Path('RealRooted/EffectiveBKW/PathCube')
-    result = {prefix / name: value for name, value in
-              (render_certificate(cert) | render_finite(cert) | render_endpoints(cert) |
-               render_branch_facts(cert) | render_algebra_data(cert)).items()}
+    rendered = (render_certificate(cert) | render_endpoints(cert) |
+                render_branch_facts(cert) | render_algebra_data(cert) |
+                render_pointwise(cert['pointwise']) | render_pointwise_algebra(cert['pointwise']))
+    result = {prefix / name: value for name, value in rendered.items()}
     result[Path('scripts/ebkw_pathcube_certificate.json')] = (
         json.dumps(cert, separators=(',', ':')) + '\n')
+    result[Path('scripts/ebkw_pathcube_pointwise_certificate.json')] = (
+        json.dumps(cert['pointwise'], separators=(',', ':')) + '\n')
     return result
 
 
 def make_certificate():
+    """The cutoff-zero profile uses only weak spectral bounds and exact amplitudes."""
     endpoints = [isolate_q(-40, -39), isolate_q(F(-1, 20), F(-1, 100))]
-    return produce('wide', F(17, 20), F(1, 10),
-                   [F(1), F(8, 5), F(3, 5), F(1, 2)], endpoints, bezout())
+    return produce(F(1), endpoints, bezout())
 
 
 def self_test(cert):
@@ -1459,15 +1303,22 @@ def self_test(cert):
     else:
         raise RuntimeError('corrupted condition polynomial was accepted')
     damaged = copy.deepcopy(cert)
-    damaged['prefix']['prefix_sign_grids'][-1]['points'][1] = [0, 1]
-    try:
-        replay_verify(damaged)
-    except AssertionError:
-        pass
-    else:
-        raise RuntimeError('corrupted finite grid was accepted')
-    return {'replay': 'passed', 'corrupt_cell': 'rejected',
-            'corrupt_condition': 'rejected', 'corrupt_grid': 'rejected'}
+    results = {'replay': 'passed', 'corrupt_cell': 'rejected', 'corrupt_condition': 'rejected'}
+    for kind in ['polynomial', 'coverage', 'reduction']:
+        damaged = copy.deepcopy(cert)
+        if kind == 'polynomial':
+            damaged['pointwise']['conditions']['Plus']['polynomial'][0][0] += 1
+        elif kind == 'coverage':
+            damaged['pointwise']['groups'][0]['stop'] -= 1
+        else:
+            damaged['pointwise']['conditions']['Minus']['reduction']['raw'][0][0] += 1
+        try:
+            replay_verify(damaged)
+        except AssertionError:
+            results['corrupt_' + kind] = 'rejected'
+        else:
+            raise RuntimeError('corrupted pointwise ' + kind + ' was accepted')
+    return results
 
 
 def combine_module(root, module, timed=False):
@@ -1488,7 +1339,9 @@ def combine_module(root, module, timed=False):
         for line in source_text.splitlines():
             if line.startswith(('import ', 'public import ')):
                 target = line.split()[-1]
-                if target.startswith('RealRooted.EffectiveBKW.PathCube.'):
+                if target.startswith('RealRooted.EffectiveBKW.PathCube.') or target in {
+                    'RealRooted.EffectiveBKW.PointwiseDomination',
+                    'RealRooted.EffectiveBKW.Certificate.SignCover'}:
                     visit(target)
                 else:
                     imports.append(line)
@@ -1511,13 +1364,341 @@ def combine_module(root, module, timed=False):
             audits = '\n'.join('#print axioms ' + thm for thm in theorem_names)
             stop = (f'\n#eval show IO Unit from do\n'
                     f'  IO.println s!"EBKW_END {name} {{← IO.monoMsNow}}"\n')
-            bodies.append(start + '\n'.join(body) + '\n' + audits + stop)
+            bodies.append(start + 'section\n' + '\n'.join(body) + '\nend\n' + audits + stop)
         else:
-            bodies.append('\n'.join(body))
+            bodies.append('section\n' + '\n'.join(body) + '\nend')
 
     for selected in module.split(','):
         visit(selected)
     return 'module\n\n' + '\n'.join(dict.fromkeys(imports)) + '\n\n' + '\n'.join(bodies) + '\n'
+
+
+def pointwise_conditions():
+    """Cleared symmetric amplitude differences, before any branch reduction.
+
+    With s=J/d, c=pi/b, reduce Nbar modulo mu^2+s*mu+c to u*mu+v.
+    Reducing q(mu)=mu^2-2*a*mu+b gives e*mu+f. If Q=q(x)q(y),
+    the residue sum is (u*f-v*e)/Q and their difference has square
+    (-s*(u*f-v*e)+2*(v*(f-e*s)+u*e*c))^2/(Q^2*(s^2-4*c)).
+    The two positive expressions below are equivalent to the corresponding
+    strict squared amplitude comparisons on the nonreal pair branch.
+    PointwiseComparison interprets them as inequalities for the actual residues.
+    """
+    un = add(mul(b, power(J, 2)), scale(mul(pi, power(d, 2)), -1),
+             scale(mul(t, J, b, d), 2), scale(mul(t, b, power(d, 2)), -2))
+    vn = add(mul(pi, J), scale(mul(t, pi, d), 2),
+             scale(mul(power(t, 2), sub(one, t), b, d), -1))
+    ps = add(mul(un, d), scale(mul(b, vn, H), 2))
+    ms = add(scale(mul(J, ps), -1), scale(mul(vn, power(d, 3)), 2),
+             scale(mul(b, vn, H, J), 4), scale(mul(un, H, pi), -4))
+    disc = sub(mul(b, power(J, 2)), scale(mul(pi, power(d, 2)), 4))
+    return dict(Plus=sub(scale(mul(power(b, 2), NN, HH), 4), mul(CPOS, power(ps, 2))),
+                Minus=sub(scale(mul(b, NN, HH, disc), 4), mul(CPOS, power(ms, 2))))
+
+
+def pointwise_certificate(cert):
+    """Greedily merge existing cells for the two strict sign conditions only."""
+    conditions = {}
+    polys = {}
+    for name, raw in pointwise_conditions().items():
+        content = gcd(*(abs(v) for v in raw.values()))
+        bpower = min(j for i, j in raw)
+        normalized = {(i, j-bpower): F(v, content) for (i, j), v in raw.items()}
+        p, witness = reduced(normalized)
+        conditions[name] = dict(polynomial=dense(p), reduction=witness,
+                                clearing_factor=dict(content=content, b_power=bpower))
+        polys[name] = p
+    cells = [tuple(F(*q) for q in bx) for bx in cert['branch']['cells']]
+
+    def merged(i, j):
+        return (cells[i][0], cells[j-1][1], min(c[2] for c in cells[i:j]),
+                max(c[3] for c in cells[i:j]))
+
+    def good(i, j):
+        return all(bernstein(p, merged(i, j)) for p in polys.values())
+
+    groups = []
+    i = 0
+    while i < len(cells):
+        low, high = i+1, len(cells)+1
+        while high-low > 1:
+            mid = (low+high)//2
+            if good(i, mid):
+                low = mid
+            else:
+                high = mid
+        assert good(i, low)
+        groups.append(dict(start=i, stop=low, box=box_json(merged(i, low))))
+        i = low
+    result = dict(schema='realrooted.pathcube-pointwise-signs.v1',
+                  status='sign_conditions_only', target_cutoff=0,
+                  branch=cert['branch'], conditions=conditions, groups=groups)
+
+    def clean(v):
+        if isinstance(v, F):
+            assert v.denominator == 1
+            return v.numerator
+        if isinstance(v, dict):
+            return {k: clean(w) for k, w in v.items()}
+        if isinstance(v, list):
+            return [clean(w) for w in v]
+        return v
+    return clean(result)
+
+
+def replay_pointwise(data, cert):
+    """Independent rational-function reconstruction and Taylor/Bernstein replay."""
+    assert data['schema'] == 'realrooted.pathcube-pointwise-signs.v1'
+    assert data['status'] == 'sign_conditions_only' and data['target_cutoff'] == 0
+    assert data['branch'] == cert['branch']
+    assert set(data['conditions']) == {'Plus', 'Minus'}
+    a = replay_Rat(replay_ANUM, 0, 1)
+    s, c0 = 2*a-replay_S, replay_Rat(replay_PI, 1, 0)
+    u = s**2-c0+2*replay_T*s-2*replay_T
+    v = s*c0+2*replay_T*c0-replay_T**2*(1-replay_T)
+    e, f = -s-2*a, replay_B-c0
+    qprod = f**2-s*e*f+c0*e**2
+    up, vp = u*f-v*e, v*(f-e*s)+u*e*c0
+    un = 4*a**2-replay_B-4*replay_T*a-2*replay_T
+    vn = -2*a*replay_B+2*replay_T*replay_B-replay_T**2*(1-replay_T)
+    def norm(r, z):
+        return r**2*replay_B+2*r*z*a+z**2
+    nn, hh = norm(un, vn), norm(2*a+s, c0-replay_B)
+    cpos = replay_B-a**2
+    expressions = dict(Plus=nn*qprod**2-cpos*hh*up**2,
+                       Minus=nn*qprod**2*(s**2-4*c0)-cpos*hh*(-s*up+2*vp)**2)
+    curve = replay_polynomial(cert['P2'])
+    # HH = b^2*d^2*|h(lambda)|^2; cross multiplication avoids cancellations.
+    polynomials = {}
+    for name, expression in expressions.items():
+        entry = data['conditions'][name]
+        p = replay_polynomial(entry['polynomial'])
+        wit = entry['reduction']
+        normalized = replay_polynomial(wit['raw'])
+        quotient = replay_polynomial(wit['quotient'])
+        k = wit['positive_factor']['negative_t_power']
+        h = wit['positive_factor']['one_minus_t_power']
+        assert type(k) is int and k >= 0 and type(h) is int and h >= 0
+        assert type(wit['content']) is int and wit['content'] > 0
+        assert wit['rational_denominator'] == 1
+        assert normalized == quotient*curve+wit['content']*(-replay_T)**k*(1-replay_T)**h*p
+        factor = entry['clearing_factor']
+        assert type(factor['content']) is int and factor['content'] > 0
+        assert type(factor['b_power']) is int and factor['b_power'] >= 0
+        raw = factor['content']*replay_B**factor['b_power']*normalized
+        d_power = 8 if name == 'Plus' else 10
+        assert expression.num*4*replay_B**(6+hh.i)*replay_DEN**(d_power+hh.j) == (
+            raw*hh.num*replay_B**(2+expression.i)*replay_DEN**(2+expression.j)), name
+        assert max(j for i, j in p.c) <= 5
+        polynomials[name] = p
+    cells = [replay_box(bx) for bx in cert['branch']['cells']]
+    cursor = 0
+    for group in data['groups']:
+        assert group['start'] == cursor < group['stop'] <= len(cells)
+        bx = replay_box(group['box'])
+        for inner in cells[cursor:group['stop']]:
+            assert bx[0] <= inner[0] <= inner[1] <= bx[1]
+            assert bx[2] <= inner[2] <= inner[3] <= bx[3]
+        for p in polynomials.values():
+            replay_positive(p, bx)
+        cursor = group['stop']
+    assert cursor == len(cells)
+    return dict(status='verified_signs_only', sign_boxes=len(data['groups']),
+                branch_cells=len(cells), degrees={name: [max(i for i, j in p.c),
+                max(j for i, j in p.c)] for name, p in polynomials.items()})
+
+
+def render_pointwise(data):
+    """Kernel sign replay; the rational residue interpretation remains separate."""
+    definitions = ''
+    for name, entry in data['conditions'].items():
+        definitions += declaration('pointwise' + name, 'IntPoly2',
+            lean_poly2(entry['polynomial']), 'Reduced symmetric ' + name.lower() + ' condition.')
+    names = []
+    for i, group in enumerate(data['groups']):
+        name = f'pointwiseBox{i}'
+        names.append(name)
+        value = '⟨\n    ' + ',\n    '.join(map(lean_q, group['box'])) + '\n  ⟩'
+        definitions += declaration(name, 'BranchCell', value,
+            'A sign box containing several complete branch cells.')
+    definitions += declaration('pointwiseBoxes', 'List BranchCell', lean_list(names),
+        f'{len(names)} sign boxes covering {len(data["branch"]["cells"])} branch cells.')
+    for name in data['conditions']:
+        definitions += declaration('pointwise' + name + 'Cover', 'SignCover',
+            f'⟨pointwise{name}, pointwiseBoxes⟩', 'The sign cover for the symmetric condition.')
+    out = {'PointwiseData.lean': lean_module([
+        'public import RealRooted.EffectiveBKW.Certificate.SignCover'],
+        'Symmetric amplitude sign data', definitions, exposed=True)}
+    checks = ('/-- All branch cells lie in one of the larger sign boxes. -/\n'
+              'private theorem pointwise_covers :\n'
+              '    branch.cells.all (fun inner ↦\n'
+              '      pointwiseBoxes.any (fun outer ↦ outer.contains inner)) = true := by\n'
+              '  decide +kernel\n\n')
+    for name in data['conditions']:
+        for i, box in enumerate(names):
+            checks += (f'/-- Kernel positivity on a covering sign rectangle. -/\n'
+                f'private theorem pointwise{name}_box{i} :\n'
+                f'    pointwise{name}.posOnBox {box}.tlo {box}.thi\n'
+                f'      {box}.lo {box}.hi = true := by\n'
+                '  decide +kernel\n\n')
+        checks += (f'/-- The symmetric {name.lower()} sign holds on the checked branch. -/\n'
+            f'theorem pointwise{name}_pos {{t : ℝ}}\n'
+            '    (ht : t ∈ Set.Icc branch.lo.val branch.hi.val) :\n'
+            f'    0 < pointwise{name}.eval t (branch.y t) := by\n'
+            f'  apply SignCover.check_sound (c := pointwise{name}Cover) branch_check ?_ ht\n'
+            '  change (branch.cells.all (fun inner ↦\n'
+            '    pointwiseBoxes.any (fun outer ↦ outer.contains inner)) &&\n'
+            f'      pointwiseBoxes.all (fun box ↦ pointwise{name}.posOnBox\n'
+            '        box.tlo box.thi box.lo box.hi)) = true\n'
+            '  simp only [Bool.and_eq_true]\n'
+            '  refine ⟨pointwise_covers, ?_⟩\n'
+            '  simp only [pointwiseBoxes, List.all_cons, List.all_nil,\n'
+            + '    ' + ', '.join(f'pointwise{name}_box{i}' for i in range(len(names))) + ',\n'
+            '    Bool.true_and]\n\n')
+    import textwrap
+    checks = '\n'.join('\n'.join(textwrap.wrap(line, width=98,
+        subsequent_indent=' ' * (len(line)-len(line.lstrip())+2),
+        break_long_words=False, break_on_hyphens=False)) if len(line) > 98 else line
+        for line in checks.splitlines()) + '\n'
+    out['PointwiseSigns.lean'] = lean_module([
+        'public import RealRooted.EffectiveBKW.PathCube.CertificateData',
+        'public import RealRooted.EffectiveBKW.PathCube.PointwiseData',
+        'import RealRooted.EffectiveBKW.PathCube.BranchFacts'],
+        'Kernel replay of the symmetric amplitude signs', checks)
+    return out
+
+
+def render_pointwise_algebra(data):
+    """Kernel identities between the reduced signs and the cleared scalar differences."""
+    import textwrap
+    import re
+    def plus(*xs):
+        return xs[0] if len(xs) == 1 else f'({plus(*xs[:-1])}.add {xs[-1]})'
+    def times(*xs):
+        return xs[0] if len(xs) == 1 else f'({times(*xs[:-1])}.mul {xs[-1]})'
+    def power_of(x, n):
+        return f'({x}.pow {n})'
+    def scaled(x, n):
+        return f'({x}.smul ({n}))'
+    def minus(x, y):
+        return plus(x, scaled(y, -1))
+    B, T, D, J, H, PI = 'polyB', 'polyT', 'polyD', 'polyJ', 'polyH', 'polyPi'
+    definitions = [
+        ('pairImaginaryNumerator', 'exprCPOS',
+         'b * scalarD t b ^ 2 - scalarA t b ^ 2'),
+        ('cofactorLinearNumerator', plus(times(B, power_of(J, 2)),
+            scaled(times(PI, power_of(D, 2)), -1), scaled(times(T, J, B, D), 2),
+            scaled(times(T, B, power_of(D, 2)), -2)),
+         'b * scalarJ t b ^ 2 - scalarPi t * scalarD t b ^ 2 +\n'
+         '    2 * t * scalarJ t b * b * scalarD t b - 2 * t * b * scalarD t b ^ 2'),
+        ('cofactorConstantNumerator', plus(times(PI, J), scaled(times(T, PI, D), 2),
+            scaled(times(power_of(T, 2), minus('polyOne', T), B, D), -1)),
+         'scalarPi t * scalarJ t b + 2 * t * scalarPi t * scalarD t b -\n'
+         '    t ^ 2 * (1 - t) * b * scalarD t b'),
+    ]
+    UN = 'polyCofactorLinearNumerator'
+    VN = 'polyCofactorConstantNumerator'
+    PS = 'polyCofactorSumNumerator'
+    MS = 'polyCofactorDifferenceNumerator'
+    DS = 'polyCofactorDiscriminantNumerator'
+    definitions += [
+        ('cofactorSumNumerator', plus(times(UN, D), scaled(times(B, VN, H), 2)),
+         'cofactorLinearNumerator t b * scalarD t b +\n'
+         '    2 * b * cofactorConstantNumerator t b * scalarH t b'),
+        ('cofactorDifferenceNumerator', plus(scaled(times(J, PS), -1),
+            scaled(times(VN, power_of(D, 3)), 2), scaled(times(B, VN, H, J), 4),
+            scaled(times(UN, H, PI), -4)),
+         '-scalarJ t b * cofactorSumNumerator t b +\n'
+         '    2 * cofactorConstantNumerator t b * scalarD t b ^ 3 +\n'
+         '    4 * b * cofactorConstantNumerator t b * scalarH t b * scalarJ t b -\n'
+         '    4 * cofactorLinearNumerator t b * scalarH t b * scalarPi t'),
+        ('cofactorDiscriminantNumerator', minus(times(B, power_of(J, 2)),
+            scaled(times(PI, power_of(D, 2)), 4)),
+         'b * scalarJ t b ^ 2 - 4 * scalarPi t * scalarD t b ^ 2'),
+        ('pointwisePlusDifference', minus(scaled(times(power_of(B, 2), 'polyNn', 'polyHh'), 4),
+            times('polyPairImaginaryNumerator', power_of(PS, 2))),
+         '4 * b ^ 2 * scalarNn t b * scalarHh t b -\n'
+         '    pairImaginaryNumerator t b * cofactorSumNumerator t b ^ 2'),
+        ('pointwiseMinusDifference', minus(scaled(times(B, 'polyNn', 'polyHh', DS), 4),
+            times('polyPairImaginaryNumerator', power_of(MS, 2))),
+         '4 * b * scalarNn t b * scalarHh t b * cofactorDiscriminantNumerator t b -\n'
+         '    pairImaginaryNumerator t b * cofactorDifferenceNumerator t b ^ 2'),
+    ]
+    known = ['polyOne', 'polyT', 'polyB', 'polyD', 'polyA', 'polyJ', 'polyH',
+             'polyPi', 'polyNn', 'polyHh']
+    body = ''
+    for name, expression, scalar in definitions:
+        pname = 'poly' + name[0].upper() + name[1:]
+        body += declaration(pname, 'IntPoly2', expression,
+                            'Integer-list expression for the cleared scalar ' + name + '.')
+        body += (f'/-- Cleared real scalar {name}. -/\n'
+                 f'noncomputable def {name} (t b : ℝ) : ℝ :=\n  {scalar}\n\n')
+        args = [pname, name]
+        expanded = expression
+        if name == 'pairImaginaryNumerator':
+            args.append('exprCPOS')
+            expanded = minus(times(B, power_of(D, 2)), power_of('polyA', 2))
+        for op in ['add', 'mul', 'smul', 'pow']:
+            if '.' + op in expanded:
+                args.append('IntPoly2.eval_' + op)
+        args += ['eval_' + p for p in known if p in re.findall(r'\b\w+\b', expanded)]
+        if '(-' in expanded:
+            args.append('Int.cast_neg')
+        if '(-1)' in expanded:
+            args.append('Int.cast_one')
+        if '.smul (2)' in expanded or '.smul (-2)' in expanded or '.smul (4)' in expanded or '.smul (-4)' in expanded:
+            args.append('Int.cast_ofNat')
+        body += (f'/-- Evaluation of the cleared list expression {name}. -/\n'
+                 f'theorem eval_{pname} (t b : ℝ) :\n'
+                 f'    {pname}.eval t b = {name} t b := by\n'
+                 '  simp only [' + ', '.join(args) + ']\n  ring\n\n')
+        known.append(pname)
+    for name, entry in data['conditions'].items():
+        wit, fac = entry['reduction'], entry['clearing_factor']
+        bfactor = power(b, fac['b_power'])
+        quotient = mul(scale(bfactor, fac['content']),
+            {(i, j): v for j, row in enumerate(wit['quotient']) for i, v in enumerate(row) if v})
+        k, h = wit['positive_factor']['negative_t_power'], wit['positive_factor']['one_minus_t_power']
+        factor = mul(bfactor, power(scale(t, -1), k), power(sub(one, t), h))
+        content = fac['content']*wit['content']
+        body += declaration('pointwise' + name + 'Quotient', 'IntPoly2', lean_poly2(dense(quotient)),
+                            'Exact quotient in the symmetric amplitude reduction.')
+        body += declaration('pointwise' + name + 'Factor', 'IntPoly2', lean_poly2(dense(factor)),
+                            'Positive factor removed from the symmetric amplitude reduction.')
+        value = f'b ^ {fac["b_power"]} * (-t) ^ {k} * (1 - t) ^ {h}'
+        body += (f'/-- Interpretation of the removed positive factor. -/\n'
+            f'theorem eval_pointwise{name}Factor (t b : ℝ) :\n'
+            f'    pointwise{name}Factor.eval t b = {value} := by\n'
+            f'  simp only [pointwise{name}Factor, IntPoly2.eval, IntPoly.eval, IntPoly.polynomial,\n'
+            '    BigDescents321.SmallCases.ofList_cons, BigDescents321.SmallCases.ofList_nil,\n'
+            '    Polynomial.eval_add, Polynomial.eval_C, Polynomial.eval_mul, Polynomial.eval_X,\n'
+            '    Polynomial.eval_zero]\n  ring\n\n')
+        body += (f'/-- Kernel identity for the symmetric amplitude reduction. -/\n'
+            f'theorem pointwise{name}Difference_check :\n'
+            f'    polyPointwise{name}Difference.eqCheck\n'
+            f'      ((pointwise{name}Quotient.mul curve).add\n'
+            f'        ((pointwise{name}.smul {content}).mul pointwise{name}Factor)) = true := by\n'
+            '  decide +kernel\n\n')
+        body += (f'/-- A positive reduced sign gives the cleared symmetric difference. -/\n'
+            f'theorem pointwise{name}Difference_pos {{t b : ℝ}} (ht : t < 0) (hb : 0 < b)\n'
+            f'    (hc : curve.eval t b = 0) (hp : 0 < pointwise{name}.eval t b) :\n'
+            f'    0 < pointwise{name}Difference t b := by\n'
+            f'  have he := IntPoly2.eqCheck_sound pointwise{name}Difference_check t b\n'
+            f'  simp only [eval_polyPointwise{name}Difference, IntPoly2.eval_add, IntPoly2.eval_mul,\n'
+            f'    IntPoly2.eval_smul, hc, mul_zero, zero_add, eval_pointwise{name}Factor,\n'
+            '    Int.cast_ofNat] at he\n'
+            '  rw [he]\n  have hn : 0 < -t := neg_pos.mpr ht\n'
+            '  have ho : 0 < 1 - t := by linarith\n  positivity\n\n')
+    body = '\n'.join('\n'.join(textwrap.wrap(line, width=98,
+        subsequent_indent=' ' * (len(line)-len(line.lstrip())+2),
+        break_long_words=False, break_on_hyphens=False)) if len(line) > 98 else line
+        for line in body.splitlines()) + '\n'
+    return {'PointwiseAlgebra.lean': lean_module([
+        'public import RealRooted.EffectiveBKW.PathCube.AlgebraData',
+        'public import RealRooted.EffectiveBKW.PathCube.PointwiseData',
+        'import Mathlib.Tactic.Ring', 'import Mathlib.Tactic.Linarith',
+        'import Mathlib.Tactic.Positivity'],
+        'Cleared symmetric amplitude identities', body, exposed=True)}
 
 
 def main():

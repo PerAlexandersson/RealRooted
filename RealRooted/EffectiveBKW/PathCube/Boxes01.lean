@@ -26,26 +26,6 @@ theorem conditionG2_016 :
     conditionG2.posOnBox cell016.tlo cell016.thi cell016.lo cell016.hi = true := by
   decide +kernel
 
-/-- Kernel replay of AMP on rectangle 16. -/
-theorem conditionAMP_016 :
-    conditionAMP.posOnBox cell016.tlo cell016.thi cell016.lo cell016.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W1 on rectangle 16. -/
-theorem conditionW1_016 :
-    conditionW1.posOnBox cell016.tlo cell016.thi cell016.lo cell016.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W2 on rectangle 16. -/
-theorem conditionW2_016 :
-    conditionW2.posOnBox cell016.tlo cell016.thi cell016.lo cell016.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W3 on rectangle 16. -/
-theorem conditionW3_016 :
-    conditionW3.posOnBox cell016.tlo cell016.thi cell016.lo cell016.hi = true := by
-  decide +kernel
-
 /-- Kernel replay of WIND on rectangle 16. -/
 theorem conditionWIND_016 :
     conditionWIND.posOnBox cell016.tlo cell016.thi cell016.lo cell016.hi = true := by
@@ -64,26 +44,6 @@ theorem conditionG1_017 :
 /-- Kernel replay of G2 on rectangle 17. -/
 theorem conditionG2_017 :
     conditionG2.posOnBox cell017.tlo cell017.thi cell017.lo cell017.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of AMP on rectangle 17. -/
-theorem conditionAMP_017 :
-    conditionAMP.posOnBox cell017.tlo cell017.thi cell017.lo cell017.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W1 on rectangle 17. -/
-theorem conditionW1_017 :
-    conditionW1.posOnBox cell017.tlo cell017.thi cell017.lo cell017.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W2 on rectangle 17. -/
-theorem conditionW2_017 :
-    conditionW2.posOnBox cell017.tlo cell017.thi cell017.lo cell017.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W3 on rectangle 17. -/
-theorem conditionW3_017 :
-    conditionW3.posOnBox cell017.tlo cell017.thi cell017.lo cell017.hi = true := by
   decide +kernel
 
 /-- Kernel replay of WIND on rectangle 17. -/
@@ -106,26 +66,6 @@ theorem conditionG2_018 :
     conditionG2.posOnBox cell018.tlo cell018.thi cell018.lo cell018.hi = true := by
   decide +kernel
 
-/-- Kernel replay of AMP on rectangle 18. -/
-theorem conditionAMP_018 :
-    conditionAMP.posOnBox cell018.tlo cell018.thi cell018.lo cell018.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W1 on rectangle 18. -/
-theorem conditionW1_018 :
-    conditionW1.posOnBox cell018.tlo cell018.thi cell018.lo cell018.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W2 on rectangle 18. -/
-theorem conditionW2_018 :
-    conditionW2.posOnBox cell018.tlo cell018.thi cell018.lo cell018.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W3 on rectangle 18. -/
-theorem conditionW3_018 :
-    conditionW3.posOnBox cell018.tlo cell018.thi cell018.lo cell018.hi = true := by
-  decide +kernel
-
 /-- Kernel replay of WIND on rectangle 18. -/
 theorem conditionWIND_018 :
     conditionWIND.posOnBox cell018.tlo cell018.thi cell018.lo cell018.hi = true := by
@@ -144,26 +84,6 @@ theorem conditionG1_019 :
 /-- Kernel replay of G2 on rectangle 19. -/
 theorem conditionG2_019 :
     conditionG2.posOnBox cell019.tlo cell019.thi cell019.lo cell019.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of AMP on rectangle 19. -/
-theorem conditionAMP_019 :
-    conditionAMP.posOnBox cell019.tlo cell019.thi cell019.lo cell019.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W1 on rectangle 19. -/
-theorem conditionW1_019 :
-    conditionW1.posOnBox cell019.tlo cell019.thi cell019.lo cell019.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W2 on rectangle 19. -/
-theorem conditionW2_019 :
-    conditionW2.posOnBox cell019.tlo cell019.thi cell019.lo cell019.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W3 on rectangle 19. -/
-theorem conditionW3_019 :
-    conditionW3.posOnBox cell019.tlo cell019.thi cell019.lo cell019.hi = true := by
   decide +kernel
 
 /-- Kernel replay of WIND on rectangle 19. -/
@@ -186,26 +106,6 @@ theorem conditionG2_020 :
     conditionG2.posOnBox cell020.tlo cell020.thi cell020.lo cell020.hi = true := by
   decide +kernel
 
-/-- Kernel replay of AMP on rectangle 20. -/
-theorem conditionAMP_020 :
-    conditionAMP.posOnBox cell020.tlo cell020.thi cell020.lo cell020.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W1 on rectangle 20. -/
-theorem conditionW1_020 :
-    conditionW1.posOnBox cell020.tlo cell020.thi cell020.lo cell020.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W2 on rectangle 20. -/
-theorem conditionW2_020 :
-    conditionW2.posOnBox cell020.tlo cell020.thi cell020.lo cell020.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W3 on rectangle 20. -/
-theorem conditionW3_020 :
-    conditionW3.posOnBox cell020.tlo cell020.thi cell020.lo cell020.hi = true := by
-  decide +kernel
-
 /-- Kernel replay of WIND on rectangle 20. -/
 theorem conditionWIND_020 :
     conditionWIND.posOnBox cell020.tlo cell020.thi cell020.lo cell020.hi = true := by
@@ -224,26 +124,6 @@ theorem conditionG1_021 :
 /-- Kernel replay of G2 on rectangle 21. -/
 theorem conditionG2_021 :
     conditionG2.posOnBox cell021.tlo cell021.thi cell021.lo cell021.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of AMP on rectangle 21. -/
-theorem conditionAMP_021 :
-    conditionAMP.posOnBox cell021.tlo cell021.thi cell021.lo cell021.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W1 on rectangle 21. -/
-theorem conditionW1_021 :
-    conditionW1.posOnBox cell021.tlo cell021.thi cell021.lo cell021.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W2 on rectangle 21. -/
-theorem conditionW2_021 :
-    conditionW2.posOnBox cell021.tlo cell021.thi cell021.lo cell021.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W3 on rectangle 21. -/
-theorem conditionW3_021 :
-    conditionW3.posOnBox cell021.tlo cell021.thi cell021.lo cell021.hi = true := by
   decide +kernel
 
 /-- Kernel replay of WIND on rectangle 21. -/
@@ -266,26 +146,6 @@ theorem conditionG2_022 :
     conditionG2.posOnBox cell022.tlo cell022.thi cell022.lo cell022.hi = true := by
   decide +kernel
 
-/-- Kernel replay of AMP on rectangle 22. -/
-theorem conditionAMP_022 :
-    conditionAMP.posOnBox cell022.tlo cell022.thi cell022.lo cell022.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W1 on rectangle 22. -/
-theorem conditionW1_022 :
-    conditionW1.posOnBox cell022.tlo cell022.thi cell022.lo cell022.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W2 on rectangle 22. -/
-theorem conditionW2_022 :
-    conditionW2.posOnBox cell022.tlo cell022.thi cell022.lo cell022.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W3 on rectangle 22. -/
-theorem conditionW3_022 :
-    conditionW3.posOnBox cell022.tlo cell022.thi cell022.lo cell022.hi = true := by
-  decide +kernel
-
 /-- Kernel replay of WIND on rectangle 22. -/
 theorem conditionWIND_022 :
     conditionWIND.posOnBox cell022.tlo cell022.thi cell022.lo cell022.hi = true := by
@@ -304,26 +164,6 @@ theorem conditionG1_023 :
 /-- Kernel replay of G2 on rectangle 23. -/
 theorem conditionG2_023 :
     conditionG2.posOnBox cell023.tlo cell023.thi cell023.lo cell023.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of AMP on rectangle 23. -/
-theorem conditionAMP_023 :
-    conditionAMP.posOnBox cell023.tlo cell023.thi cell023.lo cell023.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W1 on rectangle 23. -/
-theorem conditionW1_023 :
-    conditionW1.posOnBox cell023.tlo cell023.thi cell023.lo cell023.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W2 on rectangle 23. -/
-theorem conditionW2_023 :
-    conditionW2.posOnBox cell023.tlo cell023.thi cell023.lo cell023.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W3 on rectangle 23. -/
-theorem conditionW3_023 :
-    conditionW3.posOnBox cell023.tlo cell023.thi cell023.lo cell023.hi = true := by
   decide +kernel
 
 /-- Kernel replay of WIND on rectangle 23. -/
@@ -346,26 +186,6 @@ theorem conditionG2_024 :
     conditionG2.posOnBox cell024.tlo cell024.thi cell024.lo cell024.hi = true := by
   decide +kernel
 
-/-- Kernel replay of AMP on rectangle 24. -/
-theorem conditionAMP_024 :
-    conditionAMP.posOnBox cell024.tlo cell024.thi cell024.lo cell024.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W1 on rectangle 24. -/
-theorem conditionW1_024 :
-    conditionW1.posOnBox cell024.tlo cell024.thi cell024.lo cell024.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W2 on rectangle 24. -/
-theorem conditionW2_024 :
-    conditionW2.posOnBox cell024.tlo cell024.thi cell024.lo cell024.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W3 on rectangle 24. -/
-theorem conditionW3_024 :
-    conditionW3.posOnBox cell024.tlo cell024.thi cell024.lo cell024.hi = true := by
-  decide +kernel
-
 /-- Kernel replay of WIND on rectangle 24. -/
 theorem conditionWIND_024 :
     conditionWIND.posOnBox cell024.tlo cell024.thi cell024.lo cell024.hi = true := by
@@ -384,26 +204,6 @@ theorem conditionG1_025 :
 /-- Kernel replay of G2 on rectangle 25. -/
 theorem conditionG2_025 :
     conditionG2.posOnBox cell025.tlo cell025.thi cell025.lo cell025.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of AMP on rectangle 25. -/
-theorem conditionAMP_025 :
-    conditionAMP.posOnBox cell025.tlo cell025.thi cell025.lo cell025.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W1 on rectangle 25. -/
-theorem conditionW1_025 :
-    conditionW1.posOnBox cell025.tlo cell025.thi cell025.lo cell025.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W2 on rectangle 25. -/
-theorem conditionW2_025 :
-    conditionW2.posOnBox cell025.tlo cell025.thi cell025.lo cell025.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W3 on rectangle 25. -/
-theorem conditionW3_025 :
-    conditionW3.posOnBox cell025.tlo cell025.thi cell025.lo cell025.hi = true := by
   decide +kernel
 
 /-- Kernel replay of WIND on rectangle 25. -/
@@ -426,26 +226,6 @@ theorem conditionG2_026 :
     conditionG2.posOnBox cell026.tlo cell026.thi cell026.lo cell026.hi = true := by
   decide +kernel
 
-/-- Kernel replay of AMP on rectangle 26. -/
-theorem conditionAMP_026 :
-    conditionAMP.posOnBox cell026.tlo cell026.thi cell026.lo cell026.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W1 on rectangle 26. -/
-theorem conditionW1_026 :
-    conditionW1.posOnBox cell026.tlo cell026.thi cell026.lo cell026.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W2 on rectangle 26. -/
-theorem conditionW2_026 :
-    conditionW2.posOnBox cell026.tlo cell026.thi cell026.lo cell026.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W3 on rectangle 26. -/
-theorem conditionW3_026 :
-    conditionW3.posOnBox cell026.tlo cell026.thi cell026.lo cell026.hi = true := by
-  decide +kernel
-
 /-- Kernel replay of WIND on rectangle 26. -/
 theorem conditionWIND_026 :
     conditionWIND.posOnBox cell026.tlo cell026.thi cell026.lo cell026.hi = true := by
@@ -464,26 +244,6 @@ theorem conditionG1_027 :
 /-- Kernel replay of G2 on rectangle 27. -/
 theorem conditionG2_027 :
     conditionG2.posOnBox cell027.tlo cell027.thi cell027.lo cell027.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of AMP on rectangle 27. -/
-theorem conditionAMP_027 :
-    conditionAMP.posOnBox cell027.tlo cell027.thi cell027.lo cell027.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W1 on rectangle 27. -/
-theorem conditionW1_027 :
-    conditionW1.posOnBox cell027.tlo cell027.thi cell027.lo cell027.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W2 on rectangle 27. -/
-theorem conditionW2_027 :
-    conditionW2.posOnBox cell027.tlo cell027.thi cell027.lo cell027.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W3 on rectangle 27. -/
-theorem conditionW3_027 :
-    conditionW3.posOnBox cell027.tlo cell027.thi cell027.lo cell027.hi = true := by
   decide +kernel
 
 /-- Kernel replay of WIND on rectangle 27. -/
@@ -506,26 +266,6 @@ theorem conditionG2_028 :
     conditionG2.posOnBox cell028.tlo cell028.thi cell028.lo cell028.hi = true := by
   decide +kernel
 
-/-- Kernel replay of AMP on rectangle 28. -/
-theorem conditionAMP_028 :
-    conditionAMP.posOnBox cell028.tlo cell028.thi cell028.lo cell028.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W1 on rectangle 28. -/
-theorem conditionW1_028 :
-    conditionW1.posOnBox cell028.tlo cell028.thi cell028.lo cell028.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W2 on rectangle 28. -/
-theorem conditionW2_028 :
-    conditionW2.posOnBox cell028.tlo cell028.thi cell028.lo cell028.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W3 on rectangle 28. -/
-theorem conditionW3_028 :
-    conditionW3.posOnBox cell028.tlo cell028.thi cell028.lo cell028.hi = true := by
-  decide +kernel
-
 /-- Kernel replay of WIND on rectangle 28. -/
 theorem conditionWIND_028 :
     conditionWIND.posOnBox cell028.tlo cell028.thi cell028.lo cell028.hi = true := by
@@ -544,26 +284,6 @@ theorem conditionG1_029 :
 /-- Kernel replay of G2 on rectangle 29. -/
 theorem conditionG2_029 :
     conditionG2.posOnBox cell029.tlo cell029.thi cell029.lo cell029.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of AMP on rectangle 29. -/
-theorem conditionAMP_029 :
-    conditionAMP.posOnBox cell029.tlo cell029.thi cell029.lo cell029.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W1 on rectangle 29. -/
-theorem conditionW1_029 :
-    conditionW1.posOnBox cell029.tlo cell029.thi cell029.lo cell029.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W2 on rectangle 29. -/
-theorem conditionW2_029 :
-    conditionW2.posOnBox cell029.tlo cell029.thi cell029.lo cell029.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W3 on rectangle 29. -/
-theorem conditionW3_029 :
-    conditionW3.posOnBox cell029.tlo cell029.thi cell029.lo cell029.hi = true := by
   decide +kernel
 
 /-- Kernel replay of WIND on rectangle 29. -/
@@ -586,26 +306,6 @@ theorem conditionG2_030 :
     conditionG2.posOnBox cell030.tlo cell030.thi cell030.lo cell030.hi = true := by
   decide +kernel
 
-/-- Kernel replay of AMP on rectangle 30. -/
-theorem conditionAMP_030 :
-    conditionAMP.posOnBox cell030.tlo cell030.thi cell030.lo cell030.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W1 on rectangle 30. -/
-theorem conditionW1_030 :
-    conditionW1.posOnBox cell030.tlo cell030.thi cell030.lo cell030.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W2 on rectangle 30. -/
-theorem conditionW2_030 :
-    conditionW2.posOnBox cell030.tlo cell030.thi cell030.lo cell030.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W3 on rectangle 30. -/
-theorem conditionW3_030 :
-    conditionW3.posOnBox cell030.tlo cell030.thi cell030.lo cell030.hi = true := by
-  decide +kernel
-
 /-- Kernel replay of WIND on rectangle 30. -/
 theorem conditionWIND_030 :
     conditionWIND.posOnBox cell030.tlo cell030.thi cell030.lo cell030.hi = true := by
@@ -624,26 +324,6 @@ theorem conditionG1_031 :
 /-- Kernel replay of G2 on rectangle 31. -/
 theorem conditionG2_031 :
     conditionG2.posOnBox cell031.tlo cell031.thi cell031.lo cell031.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of AMP on rectangle 31. -/
-theorem conditionAMP_031 :
-    conditionAMP.posOnBox cell031.tlo cell031.thi cell031.lo cell031.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W1 on rectangle 31. -/
-theorem conditionW1_031 :
-    conditionW1.posOnBox cell031.tlo cell031.thi cell031.lo cell031.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W2 on rectangle 31. -/
-theorem conditionW2_031 :
-    conditionW2.posOnBox cell031.tlo cell031.thi cell031.lo cell031.hi = true := by
-  decide +kernel
-
-/-- Kernel replay of W3 on rectangle 31. -/
-theorem conditionW3_031 :
-    conditionW3.posOnBox cell031.tlo cell031.thi cell031.lo cell031.hi = true := by
   decide +kernel
 
 /-- Kernel replay of WIND on rectangle 31. -/

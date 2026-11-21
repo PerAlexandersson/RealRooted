@@ -16,7 +16,7 @@ theorem cells_bounds :
     cells.all (fun c ↦ branch.lo.le c.tlo && c.thi.le branch.hi) = true := by
   decide +kernel
 
-/-- Exact adjacency of the 169 rational parameter intervals. -/
+/-- Exact adjacency of the 73 rational parameter intervals. -/
 theorem cells_cover :
     Branch.covers branch.lo branch.hi cells = true := by
   decide +kernel
