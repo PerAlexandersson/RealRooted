@@ -2364,3 +2364,6 @@ public import RealRooted.ExponentialRows.QuarticRecurrence
 public import RealRooted.Mathlib.Algebra.Polynomial.NewtonPartialProducts
 public import RealRooted.MatrixInterlacing.PartialProductStep
 public import RealRooted.MatrixInterlacing.VariableLastRow
+public import RealRooted.MultiplierSequence.DiagonalSemigroup
+public import RealRooted.MultiplierSequence.FiniteQuadratic
+public import RealRooted.MultiplierSequence.FiniteQuadraticExponential
