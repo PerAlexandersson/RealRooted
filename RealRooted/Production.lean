@@ -1634,6 +1634,8 @@ public import RealRooted.Transforms.ReverseHermite.Basic
 public import RealRooted.Transforms.ReverseHermite.Derivative
 public import RealRooted.Transforms.ReverseHermite.Preservation
 public import RealRooted.Transforms.StirlingRootRegions
+public import RealRooted.Transforms.StirlingRootRegions.Normalization
+public import RealRooted.Transforms.StirlingRootRegions.Operators
 public import RealRooted.Transforms.StirlingRootRegions.Parabolic
 public import RealRooted.Transforms.TouchardRootDomain
 public import RealRooted.TuranHurwitz.BinomialComposition
@@ -1809,6 +1811,7 @@ public import RealRooted.Hadamard.Kostov.Tangent
 public import RealRooted.Hadamard.Kostov.TwoStep
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Polynomial.PosDef
 public import RealRooted.BorceaBranden.Applications.PoissonStarGeneral
+public import RealRooted.BorceaBranden.Applications.PoissonStarRecognition
 public import RealRooted.BorceaBranden.Applications.PoissonStarTransport
 public import RealRooted.BorceaBranden.Applications.PoissonStarClose
 public import RealRooted.BorceaBranden.Applications.PoissonStarFinal
