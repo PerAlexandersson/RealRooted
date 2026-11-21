@@ -2323,6 +2323,14 @@ public import RealRooted.MatrixInterlacing.VariableLastRow
 public import RealRooted.MultiplierSequence.DiagonalSemigroup
 public import RealRooted.MultiplierSequence.FiniteQuadratic
 public import RealRooted.MultiplierSequence.FiniteQuadraticExponential
+public import RealRooted.Mathlib.Analysis.Calculus.IteratedDeriv.CompPow
+public import RealRooted.Mathlib.Analysis.Calculus.IteratedDeriv.Star
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Coefficients
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Theta
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Hadamard
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Jensen
+public import RealRooted.RiemannHypothesis
 
 /-!
 # RealRooted production umbrella

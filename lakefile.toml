@@ -22,5 +22,10 @@ name = "LeanLGV"
 git = "https://github.com/PerAlexandersson/LeanLGV.git"
 rev = "dc44c677ad699305a7fc6b4790d2519c890e02d8"
 
+[[require]]
+name = "TauCeti"
+git = "https://github.com/TauCetiProject/TauCeti.git"
+rev = "d91980bdc255e6e50506be147ad9bcb88eb9fcc0"
+
 [[lean_lib]]
 name = "RealRooted"
