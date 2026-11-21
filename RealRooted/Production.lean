@@ -804,7 +804,9 @@ public import RealRooted.Hyperbolicity
 public import RealRooted.HyperbolicityCone
 public import RealRooted.Interlacing.Closure
 public import RealRooted.Interlacing.ConeBounds
+public import RealRooted.Interlacing.DerivativeLagObstruction
 public import RealRooted.Interlacing.Euclid
+public import RealRooted.Interlacing.FiniteFamilyWindow
 public import RealRooted.Interlacing.Multiplicity
 public import RealRooted.Interlacing.NegativeRoots
 public import RealRooted.Interlacing.OuterDifference
