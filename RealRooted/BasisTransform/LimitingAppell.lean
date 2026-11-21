@@ -325,7 +325,9 @@ theorem tendsto_coeff_rescaledBasisPower
   rw [sum_scaledAppellCoefficient_zero_eq_limiting] at hsum
   exact hsum
 
-private theorem coeff_zero_appellCoefficient_zero_eq_one
+/-- The normalized zeroth differential coefficient of a preserving monic
+basis has constant coefficient one. -/
+theorem coeff_zero_appellCoefficient_zero_eq_one
     {P : ℕ → ℝ[X]} (hPdeg : ∀ n, (P n).natDegree = n)
     (hPmonic : ∀ n, (P n).Monic)
     (hpres : ∀ p : ℝ[X], p.Splits →
@@ -712,7 +714,9 @@ private theorem coeff_limitingAppellSquarePolynomial_sub
     exfalso
     exact hnot (Finset.mem_range.mpr (Nat.lt_succ_of_le hj))
 
-private theorem esymm_roots_limitingAppellSquarePolynomial
+/-- The elementary symmetric functions of the squared roots are the
+falling-factorial multiples of the limiting Appell coefficients. -/
+theorem esymm_roots_limitingAppellSquarePolynomial
     {d : ℕ → ℝ} (hd₀ : d 0 = 1) {n j : ℕ} (hj : j ≤ n)
     (hsplits : (limitingAppellPolynomial d (2 * n)).Splits) :
     (limitingAppellSquarePolynomial d n).roots.esymm j =
