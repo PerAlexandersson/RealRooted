@@ -1595,6 +1595,7 @@ public import RealRooted.ThresholdMatrix
 public import RealRooted.ThresholdMatrix.Basic
 public import RealRooted.ThresholdMatrix.GustafssonSolus
 public import RealRooted.ThresholdMatrix.HaglundZhang
+public import RealRooted.Toeplitz.SignedArrow
 public import RealRooted.Toeplitz.SignedPerturbation
 public import RealRooted.Toeplitz.SignedPerturbation.AlternatingRoots
 public import RealRooted.Toeplitz.SignedPerturbation.Chebyshev
@@ -2224,6 +2225,7 @@ public import RealRooted.Hermite.PoulainSymbolInterlacing
 public import RealRooted.Challenges.Combinatorial.Hoggatt
 public import RealRooted.CombinatorialExamples.Hoggatt
 public import RealRooted.Challenges.Matrices.CircleCriterion
+public import RealRooted.Toeplitz.CircleCorollaries
 public import RealRooted.Toeplitz.CircleCriterion
 public import RealRooted.DerivativeRecurrence.BandOne
 public import RealRooted.MaWang.PersistentZero
