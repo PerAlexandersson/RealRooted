@@ -1096,6 +1096,7 @@ public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Rank
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.Submatrix
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Compound
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.CompoundSpectrum
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Alternant
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.BandedHessenberg
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.CauchyBinet
@@ -1630,6 +1631,9 @@ public import RealRooted.ThresholdMatrix
 public import RealRooted.ThresholdMatrix.Basic
 public import RealRooted.ThresholdMatrix.GustafssonSolus
 public import RealRooted.ThresholdMatrix.HaglundZhang
+public import RealRooted.Toeplitz.LaurentSection
+public import RealRooted.Toeplitz.SchurRootTransfer
+public import RealRooted.Toeplitz.SchurSign
 public import RealRooted.Toeplitz.SignedArrow
 public import RealRooted.Toeplitz.SignedPerturbation
 public import RealRooted.Toeplitz.SignedPerturbation.AlternatingRoots
