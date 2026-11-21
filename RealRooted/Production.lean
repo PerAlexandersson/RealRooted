@@ -469,6 +469,7 @@ public import RealRooted.Derivative.ShiftSequence
 public import RealRooted.Derivative.SimpleRoots
 public import RealRooted.DerivativeRecurrence
 public import RealRooted.DerivativeRecurrence.AffineLagStrict
+public import RealRooted.DerivativeRecurrence.ClosedInterval
 public import RealRooted.DerivativeRecurrence.Degree
 public import RealRooted.DerivativeRecurrence.RowDegree
 public import RealRooted.DerivativeRecurrence.GeneralizedLaguerre
@@ -663,8 +664,10 @@ public import RealRooted.IntervalDifferential.CenteredCoordinates
 public import RealRooted.IntervalDifferential.CenteredTransfer
 public import RealRooted.Jacobi.NegativeParameters
 public import RealRooted.Laguerre.FiniteCombinations
+public import RealRooted.MaWang.CubicEndpoint
 public import RealRooted.MaWang.EndpointClassification
 public import RealRooted.MaWang.EndpointMultiplicity
+public import RealRooted.MaWang.IntervalSequence
 public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.Degree
 public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.EulerSolutions
 public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.Indicial
