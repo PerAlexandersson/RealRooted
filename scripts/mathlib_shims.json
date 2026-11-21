@@ -3479,6 +3479,36 @@
       ],
       "note": "Speculative upstream target for the oscillatory matrix core split; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Trigonometric/Cotangent.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Trigonometric.Cotangent"
+      ],
+      "note": "Cotangent derivative series on the punctured unit disk, including real points; termwise differentiation and inverse-power pole sums for Cao--Fu Lemma 3.2. No upstream PR.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Trigonometric/Cosecant.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Trigonometric.Cosecant"
+      ],
+      "note": "Second derivatives of integer sine powers and the even-cosecant differential identity in Cao--Fu Lemma 3.2, equation (3.6). No upstream PR.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PowerTraceSeries.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PowerTraceSeries"
+      ],
+      "note": "Formal Newton trace series over a commutative ring, via the adjugate derivative and matrix geometric series. Uses the existing determinant-pencil derivative theorem. Independent proof; no Tau Ceti code ported. No upstream PR.",
+      "speculative": true
     }
   ]
 }

@@ -7,6 +7,7 @@ module
 
 public import RealRooted.CombinatorialExamples.ZigzagEulerian.Definitions
 public import RealRooted.IntervalDifferential.Basic
+import RealRooted.IntervalDifferential.CenteredBasis
 
 /-!
 # The finite zig-zag operator identity
@@ -39,14 +40,6 @@ def zigzagHomogenizedSum (n : ℕ) : ℝ[X] := by
   exact ∑ π ∈ (univ : Finset (Equiv.Perm (Fin n))).filter IsUpDown,
     (X - 1) ^ swapCount π * (X + 1) ^ (n - 2 - swapCount π)
 
-private theorem zigzagTransform_finsetSum {ι : Type*} (s : Finset ι)
-    (f : ι → ℝ[X]) :
-    zigzagTransform (∑ i ∈ s, f i) = ∑ i ∈ s, zigzagTransform (f i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simp [zigzagTransform, zigzagFunctionalCalculus]
-  | @insert i s hi ih => simp [hi, zigzagTransform_add, ih]
-
 /-- Appendix A.3, formula (A.7), summed over the actual alternating class.
 The factor `2` is kept integral, so no division is needed. -/
 theorem zigzagCenteredQuotient_transform (n : ℕ) (hn : 2 ≤ n) :
@@ -61,20 +54,6 @@ theorem zigzagCenteredQuotient_transform (n : ℕ) (hn : 2 ≤ n) :
   have hindex : swapCount π + (n - 2 - swapCount π) + 2 = n := by lia
   simpa only [hindex] using
     zigzagBasis_transform (swapCount π) (n - 2 - swapCount π)
-
-private theorem zigzag_rational_monomial (D d : ℕ) (hd : d ≤ D)
-    (z : ℝ) (hz : z + 1 ≠ 0) :
-    (z + 1) ^ D * ((z - 1) / (z + 1)) ^ d =
-      (z - 1) ^ d * (z + 1) ^ (D - d) := by
-  have hsum : d + (D - d) = D := by lia
-  have hsplit : (z + 1) ^ D = (z + 1) ^ d * (z + 1) ^ (D - d) := by
-    rw [← pow_add, hsum]
-  have hpow : (z + 1) ^ d ≠ 0 := pow_ne_zero d hz
-  calc
-    (z + 1) ^ D * ((z - 1) / (z + 1)) ^ d =
-      ((z + 1) ^ d * (z + 1) ^ (D - d)) *
-        ((z - 1) ^ d / (z + 1) ^ d) := by rw [hsplit, div_pow]
-    _ = (z - 1) ^ d * (z + 1) ^ (D - d) := by field_simp
 
 /-- Evaluation form of Appendix A.3, formula (I), for the actual permutation
 polynomial and the finite centered quotient. -/
