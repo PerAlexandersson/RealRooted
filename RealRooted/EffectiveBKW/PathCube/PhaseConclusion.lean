@@ -2,10 +2,12 @@ module
 
 public import RealRooted.EffectiveBKW.PathCube.Basic
 public import RealRooted.EffectiveBKW.PathCube.CertificateData
+public import RealRooted.EffectiveBKW.PathCube.PointwiseData
 import RealRooted.EffectiveBKW.PathCube.BranchGeometry
 import RealRooted.EffectiveBKW.PathCube.PairFormula
 import RealRooted.EffectiveBKW.PathCube.Exterior
-import RealRooted.EffectiveBKW.PathCube.FiniteRows
+import RealRooted.EffectiveBKW.PathCube.PointwiseSine
+import RealRooted.EffectiveBKW.PathCube.PointwiseComparison
 import RealRooted.EffectiveBKW.Phase
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.FunProp
@@ -26,7 +28,7 @@ namespace RealRooted.EffectiveBKW.PathCube
 
 open Set
 
-/-- The verified finite prefix and a continuous sine approximation give all rows.
+/-- A pointwise sine approximation at every index gives all rows.
 The phase only needs the lower-semicircle endpoint bounds; its exact winding
 values are stronger than the inequalities used in this sign count. -/
 theorem row_splits_nodup_of_sine_error {l u : ℝ} (hlu : l < u)
@@ -34,16 +36,13 @@ theorem row_splits_nodup_of_sine_error {l u : ℝ} (hlu : l < u)
     (hδ : ContinuousOn δ (Icc l u)) (hθl : θ l = Real.pi) (hθu : θ u = 0)
     (hδl : -Real.pi ≤ δ l) (hδu : δ u ≤ 0)
     (hR : ∀ t ∈ Ioo l u, 0 < R t) (hsin : ∀ t ∈ Ioo l u, 0 < Real.sin (θ t))
-    (herr : ∀ n, 59 ≤ n → ∀ t ∈ Ioo l u,
+    (herr : ∀ n t, t ∈ Ioo l u →
       |Real.sin (θ t) * (R t)⁻¹ ^ n * (row n).eval t -
         M t * Real.sin (((n : ℝ) + 1) * θ t + δ t)| < M t) (r : ℕ) :
     (row r).natDegree = r ∧ (row r).Splits ∧ (row r).roots.Nodup ∧
       ∀ x ∈ (row r).roots, x < 0 := by
-  by_cases hr : r < 59
-  · exact row_splits_nodup_of_lt hr
-  have hr59 : 59 ≤ r := by lia
   cases r with
-  | zero => lia
+  | zero => simp
   | succ n =>
     let φ : ℝ → ℝ := fun t ↦ ((n + 1 : ℕ) + 1 : ℝ) * θ t + δ t
     let levels : Fin (n + 1) → ℝ := fun j ↦ ((j.val : ℝ) + 1 / 2) * Real.pi
@@ -69,7 +68,7 @@ theorem row_splits_nodup_of_sine_error {l u : ℝ} (hlu : l < u)
     apply row_splits_nodup_of_alternating s hs
     intro j
     have ht := (hspec j).1
-    have he := herr (n + 1) hr59 (s j) ht
+    have he := herr (n + 1) (s j) ht
     have hphase := (hspec j).2
     change (((n + 1 : ℕ) + 1 : ℝ) * θ (s j) + δ (s j)) =
       ((j.val : ℝ) + 1 / 2) * Real.pi at hphase
@@ -155,16 +154,14 @@ private theorem pair_sq_le_on_collision_interval (hbranch : branch.check = true)
     rw [hl]
     norm_num
 
-/-- Interpreting the checked branch and its seven signs discharges the sine-error
+/-- Interpreting the checked branch and its pointwise signs discharges the sine-error
 hypothesis and gives the all-row conclusion. The separate Boolean witnesses are
 supplied by `BranchFacts` in the unconditional instance theorem. -/
 theorem row_splits_nodup_of_check (hbranch : branch.check = true)
     (hG₁ : ∀ t ∈ Icc branch.lo.val branch.hi.val, 0 < conditionG1.eval t (branch.y t))
     (hG₂ : ∀ t ∈ Icc branch.lo.val branch.hi.val, 0 < conditionG2.eval t (branch.y t))
-    (hAMP : ∀ t ∈ Icc branch.lo.val branch.hi.val, 0 < conditionAMP.eval t (branch.y t))
-    (hW₁ : ∀ t ∈ Icc branch.lo.val branch.hi.val, 0 < conditionW1.eval t (branch.y t))
-    (hW₂ : ∀ t ∈ Icc branch.lo.val branch.hi.val, 0 < conditionW2.eval t (branch.y t))
-    (hW₃ : ∀ t ∈ Icc branch.lo.val branch.hi.val, 0 < conditionW3.eval t (branch.y t))
+    (hPlus : ∀ t ∈ Icc branch.lo.val branch.hi.val, 0 < pointwisePlus.eval t (branch.y t))
+    (hMinus : ∀ t ∈ Icc branch.lo.val branch.hi.val, 0 < pointwiseMinus.eval t (branch.y t))
     (hWIND : ∀ t ∈ Icc branch.lo.val branch.hi.val, 0 < conditionWIND.eval t (branch.y t))
     (r : ℕ) : (row r).natDegree = r ∧ (row r).Splits ∧ (row r).roots.Nodup ∧
       ∀ x ∈ (row r).roots, x < 0 := by
@@ -175,19 +172,15 @@ theorem row_splits_nodup_of_check (hbranch : branch.check = true)
   have hclosed (t : ℝ) (ht : t ∈ Icc l u) : pairReal t (branch.y t) ^ 2 ≤ branch.y t :=
     pair_sq_le_on_collision_interval hbranch hsub hl hu hi ht
   have hden (t : ℝ) (ht : t ∈ Icc l u) : amplitudeDenominator t (branch.y t) ≠ 0 :=
-    amplitudeDenominator_ne_zero (hneg t ht) (hpos t ht) (hclosed t ht) (hcurve t ht)
-      (hG₁ t (hsub ht)) (hG₂ t (hsub ht))
-  have hM (t : ℝ) (ht : t ∈ Icc l u) : 1 / 10 ≤ ‖phaseAmplitude t (branch.y t)‖ :=
-    phaseAmplitude_norm_ge (hneg t ht) (hpos t ht) (hclosed t ht) (hcurve t ht)
-      (hden t ht) (hAMP t (hsub ht))
+    amplitudeDenominator_ne_zero_of_pointwise (hneg t ht) (hpos t ht) (hclosed t ht)
+      (hcurve t ht) (hPlus t (hsub ht))
+  have hFne (t : ℝ) (ht : t ∈ Icc l u) : phaseAmplitude t (branch.y t) ≠ 0 :=
+    phaseAmplitude_ne_zero_of_pointwise (hneg t ht) (hpos t ht) (hclosed t ht)
+      (hcurve t ht) (hPlus t (hsub ht))
   have hF : ContinuousOn (fun t ↦ phaseAmplitude t (branch.y t)) (Icc l u) :=
     continuousOn_phaseAmplitude ((Branch.check_sound hbranch).1.mono hsub) hpos hden
-  have hδ : ContinuousOn (fun t ↦ lowerPhase (phaseAmplitude t (branch.y t))) (Icc l u) := by
-    apply continuousOn_lowerPhase hF
-    intro t ht he
-    have hm := hM t ht
-    rw [he, norm_zero] at hm
-    norm_num at hm
+  have hδ : ContinuousOn (fun t ↦ lowerPhase (phaseAmplitude t (branch.y t))) (Icc l u) :=
+    continuousOn_lowerPhase hF hFne
   refine row_splits_nodup_of_sine_error hlu
     (fun t ↦ Real.arccos (normalizedReal t (branch.y t)))
     (fun t ↦ lowerPhase (phaseAmplitude t (branch.y t)))
@@ -201,11 +194,10 @@ theorem row_splits_nodup_of_check (hbranch : branch.check = true)
   · intro t ht
     rw [sin_arccos_normalizedReal (hpos t (Ioo_subset_Icc_self ht)) (hi t ht).le]
     exact normalizedImag_pos (hpos t (Ioo_subset_Icc_self ht)) (hi t ht)
-  · intro n hn t ht
+  · intro n t ht
     have hcc := Ioo_subset_Icc_self ht
     have hh := hsub hcc
-    exact sine_error_lt (hneg t hcc) (hpos t hcc) (hi t ht) (hcurve t hcc)
-      (hG₁ t hh) (hG₂ t hh) (hAMP t hh) (hWIND t hh)
-      (hW₁ t hh) (hW₂ t hh) (hW₃ t hh) hn
+    exact pointwise_sine_error_lt (hneg t hcc) (hpos t hcc) (hi t ht) (hcurve t hcc)
+      (hG₁ t hh) (hG₂ t hh) (hPlus t hh) (hMinus t hh) (hWIND t hh) n
 
 end RealRooted.EffectiveBKW.PathCube

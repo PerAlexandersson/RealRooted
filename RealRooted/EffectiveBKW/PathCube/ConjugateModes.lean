@@ -11,8 +11,7 @@ import Mathlib.Tactic.Ring
 # The rational remainder for one conjugate pair and two real modes
 
 The exact finite expansion identifies the real remainder with the two cofactor
-modes. Their opposite signs give the uniform tail estimate without an analytic
-infinite-series argument.
+modes. Their amplitudes are compared pointwise in the following modules.
 -/
 
 @[expose] public section
@@ -119,21 +118,5 @@ theorem coeff_re_sub_pair_eq {a c x y u v w : ℝ}
     Complex.ofReal_re, Complex.zero_re, modeRemainder]
   ring
 
-/-- A rational quartic series has the Phase 2 tail bound for its exact paired remainder. -/
-theorem abs_coeff_re_sub_pair_le_tail {a c q x y u v w β₁ β₂ β₃ : ℝ}
-    (hu : a ^ 2 + c ^ 2 = 1) (hc : 0 < c) (hq : 0 ≤ q) (hq1 : q < 1)
-    (hx : 0 < x) (hy : y < 0) (hxq : |x| ≤ q) (hyq : |y| ≤ q)
-    (h₁ : |u| ≤ β₁) (h₂ : |v| ≤ β₂) (h₃ : |w| ≤ β₃)
-    (hz : ∀ i, normalizedRoots a c x y i ≠ 0)
-    (hinj : Function.Injective (normalizedRoots a c x y))
-    (p : PowerSeries ℂ)
-    (hp : (denominatorPolynomial (normalizedRoots a c x y) : PowerSeries ℂ) * p =
-      cubicPolynomial u v w) (k : ℕ) :
-    c * |(PowerSeries.coeff (k + 1) p).re -
-        2 * (residue (normalizedRoots a c x y) (cubicPolynomial u v w) 0 *
-          ((a : ℂ) + c * Complex.I) ^ (k + 1)).re| ≤
-      tail q [1, β₁, β₂, β₃] 2 (k + 1) := by
-  rw [coeff_re_sub_pair_eq hz hinj hx.ne' hy.ne p hp]
-  exact two_real_modes_le_tail hu hc hq hq1 hx hy hxq hyq h₁ h₂ h₃ k
 
 end RealRooted.EffectiveBKW.PathCube.RationalSeries

@@ -68,65 +68,35 @@ theorem pair_cofactor_cubic {t b : ℝ} (hb : 0 < b) :
   dsimp [scalarJ, scalarA, scalarD]
   ring
 
-/-- The first gap condition has the intended rational interpretation. -/
+/-- The first sign condition puts the cofactor product inside the pair circle. -/
 theorem cofactor_jury_pos {t b : ℝ} (hb : 0 < b) (hc : curve.eval t b = 0)
-    (hG : 0 < conditionG1.eval t b) :
-    0 < (17 / 20 : ℝ) ^ 2 * b + cofactorConstant t b := by
+    (hG : 0 < conditionG1.eval t b) : 0 < b + cofactorConstant t b := by
   have he := exprG1_pos hc hG
   simp only [exprG1, IntPoly2.eval_add, IntPoly2.eval_smul, IntPoly2.eval_pow,
-    eval_polyB, eval_polyPi, Int.cast_ofNat] at he
-  have hh : 0 < (289 * b ^ 2 + 400 * scalarPi t) / (400 * b) :=
-    div_pos he (by positivity)
+    eval_polyB, eval_polyPi, Int.cast_one, one_mul] at he
+  have hh : 0 < (b ^ 2 + scalarPi t) / b := div_pos he hb
   convert hh using 1
   unfold cofactorConstant
-  field_simp
-  ring
+  field_simp [hb.ne']
 
-/-- The second gap condition is the squared Jury inequality. -/
+/-- The second sign condition is the squared Jury inequality at the pair radius. -/
 theorem cofactor_jury_sq {t b : ℝ} (ht : t < 0) (hb : 0 < b)
     (hc : curve.eval t b = 0) (hG : 0 < conditionG2.eval t b) :
-    (17 / 20 : ℝ) ^ 2 * b * cofactorLinear t b ^ 2 <
-      ((17 / 20 : ℝ) ^ 2 * b + cofactorConstant t b) ^ 2 := by
+    b * cofactorLinear t b ^ 2 < (b + cofactorConstant t b) ^ 2 := by
   have hd := scalarD_pos (t := t) hb
   have he := exprG2_pos ht hc hG
   simp only [exprG2, exprG1, IntPoly2.eval_add, IntPoly2.eval_smul,
     IntPoly2.eval_mul, IntPoly2.eval_pow, eval_polyB, eval_polyPi, eval_polyD,
-    eval_polyJ, Int.cast_neg, Int.cast_ofNat, Int.cast_one] at he
-  have hh : 0 < ((289 * b ^ 2 + 400 * scalarPi t) ^ 2 * scalarD t b ^ 2 -
-      115600 * b ^ 3 * scalarJ t b ^ 2) / (160000 * b ^ 2 * scalarD t b ^ 2) :=
+    eval_polyJ, Int.cast_neg, Int.cast_one, one_mul, neg_one_mul] at he
+  have hh : 0 < ((b ^ 2 + scalarPi t) ^ 2 * scalarD t b ^ 2 -
+      b ^ 3 * scalarJ t b ^ 2) / (b ^ 2 * scalarD t b ^ 2) :=
     div_pos (by linarith) (by positivity)
-  have hid : ((17 / 20 : ℝ) ^ 2 * b + cofactorConstant t b) ^ 2 -
-      (17 / 20 : ℝ) ^ 2 * b * cofactorLinear t b ^ 2 =
-      ((289 * b ^ 2 + 400 * scalarPi t) ^ 2 * scalarD t b ^ 2 -
-      115600 * b ^ 3 * scalarJ t b ^ 2) / (160000 * b ^ 2 * scalarD t b ^ 2) := by
+  have heq : (b + cofactorConstant t b) ^ 2 - b * cofactorLinear t b ^ 2 =
+      ((b ^ 2 + scalarPi t) ^ 2 * scalarD t b ^ 2 - b ^ 3 * scalarJ t b ^ 2) /
+        (b ^ 2 * scalarD t b ^ 2) := by
     unfold cofactorConstant cofactorLinear
-    field_simp
-    ring
-  linarith
-
-/-- The three checked weight signs give the normalized generating-function weights. -/
-theorem numerator_weights {t b : ℝ} (hb : 0 < b) (hc : curve.eval t b = 0)
-    (h₁ : 0 < conditionW1.eval t b) (h₂ : 0 < conditionW2.eval t b)
-    (h₃ : 0 < conditionW3.eval t b) :
-    |(-2 * t) / Real.sqrt b| ≤ 8 / 5 ∧
-      |(-2 * t) / Real.sqrt b ^ 2| ≤ 3 / 5 ∧
-      |(-t ^ 2 * (1 - t)) / Real.sqrt b ^ 3| ≤ 1 / 2 := by
-  have hw₁ := exprW1_pos hc h₁
-  have hw₂ := exprW2_pos hc h₂
-  have hw₃ := exprW3_pos hc h₃
-  simp only [exprW1, IntPoly2.eval_add, IntPoly2.eval_smul, IntPoly2.eval_pow,
-    eval_polyB, eval_polyT, Int.cast_neg, Int.cast_ofNat, Int.cast_one] at hw₁
-  simp only [exprW2, IntPoly2.eval_add, IntPoly2.eval_smul, IntPoly2.eval_pow,
-    eval_polyB, eval_polyT, Int.cast_neg, Int.cast_ofNat, Int.cast_one] at hw₂
-  simp only [exprW3, IntPoly2.eval_add, IntPoly2.eval_smul, IntPoly2.eval_pow,
-    IntPoly2.eval_mul, eval_polyB, eval_polyT, eval_polyOne, Int.cast_neg,
-    Int.cast_ofNat, Int.cast_one] at hw₃
-  have hs := Real.sqrt_pos.mpr hb
-  have hs2 := Real.sq_sqrt hb.le
-  refine ⟨?_, ?_, ?_⟩
-  · simpa using abs_div_pow_le_of_sq hs (by norm_num : (0 : ℝ) ≤ 8 / 5) 1
-      (by rw [hs2]; nlinarith)
-  · exact abs_div_pow_le_of_sq hs (by norm_num) 2 (by rw [hs2]; nlinarith)
-  · exact abs_div_pow_le_of_sq hs (by norm_num) 3 (by rw [hs2]; nlinarith)
+    field_simp [hd.ne', hb.ne']
+  rw [← heq] at hh
+  exact sub_pos.mp hh
 
 end RealRooted.EffectiveBKW.PathCube

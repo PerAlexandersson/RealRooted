@@ -97,9 +97,9 @@ theorem branch_ratio_endpoints (h : branch.check = true) :
     (by norm_num [branch, sideCellLeft0, BranchCell.domain, QNum.val])
     (by norm_num [branch, cell000, BranchCell.domain, QNum.val])
   have hright := branch_mem_side h sideCellRight1_check
-    (show cell168 ∈ cells by decide +kernel) sideCellRight1_parent hhi
+    (show cell072 ∈ cells by decide +kernel) sideCellRight1_parent hhi
     (by norm_num [branch, sideCellRight1, BranchCell.domain, QNum.val])
-    (by norm_num [branch, cell168, BranchCell.domain, QNum.val])
+    (by norm_num [branch, cell072, BranchCell.domain, QNum.val])
   have hal := IntPoly2.posOnBox_sound sideCellLeft0_aNumerator
     (show branch.lo.val ∈ sideCellLeft0.domain by
       norm_num [branch, sideCellLeft0, BranchCell.domain, QNum.val]) hleft

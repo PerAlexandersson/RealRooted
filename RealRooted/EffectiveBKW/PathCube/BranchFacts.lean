@@ -8,15 +8,8 @@ import RealRooted.EffectiveBKW.PathCube.Boxes01
 import RealRooted.EffectiveBKW.PathCube.Boxes02
 import RealRooted.EffectiveBKW.PathCube.Boxes03
 import RealRooted.EffectiveBKW.PathCube.Boxes04
-import RealRooted.EffectiveBKW.PathCube.Boxes05
-import RealRooted.EffectiveBKW.PathCube.Boxes06
-import RealRooted.EffectiveBKW.PathCube.Boxes07
-import RealRooted.EffectiveBKW.PathCube.Boxes08
-import RealRooted.EffectiveBKW.PathCube.Boxes09
-import RealRooted.EffectiveBKW.PathCube.Boxes10
 import RealRooted.EffectiveBKW.PathCube.Compatibility00
 import RealRooted.EffectiveBKW.PathCube.Compatibility01
-import RealRooted.EffectiveBKW.PathCube.Compatibility02
 
 /-!
 # The continuous path-cube branch
@@ -129,148 +122,10 @@ private theorem cellBlock04_all {p : BranchCell → Bool}
     (h070 : p cell070 = true)
     (h071 : p cell071 = true)
     (h072 : p cell072 = true)
-    (h073 : p cell073 = true)
-    (h074 : p cell074 = true)
-    (h075 : p cell075 = true)
-    (h076 : p cell076 = true)
-    (h077 : p cell077 = true)
-    (h078 : p cell078 = true)
-    (h079 : p cell079 = true)
     : cellBlock04.all p = true := by
   simp only [
     cellBlock04, List.all_cons, List.all_nil, h064, h065, h066, h067, h068, h069, h070, h071,
-    h072, h073, h074, h075, h076, h077, h078, h079, Bool.true_and]
-
-/-- Assemble a short block without unfolding its predicate. -/
-private theorem cellBlock05_all {p : BranchCell → Bool}
-    (h080 : p cell080 = true)
-    (h081 : p cell081 = true)
-    (h082 : p cell082 = true)
-    (h083 : p cell083 = true)
-    (h084 : p cell084 = true)
-    (h085 : p cell085 = true)
-    (h086 : p cell086 = true)
-    (h087 : p cell087 = true)
-    (h088 : p cell088 = true)
-    (h089 : p cell089 = true)
-    (h090 : p cell090 = true)
-    (h091 : p cell091 = true)
-    (h092 : p cell092 = true)
-    (h093 : p cell093 = true)
-    (h094 : p cell094 = true)
-    (h095 : p cell095 = true)
-    : cellBlock05.all p = true := by
-  simp only [
-    cellBlock05, List.all_cons, List.all_nil, h080, h081, h082, h083, h084, h085, h086, h087,
-    h088, h089, h090, h091, h092, h093, h094, h095, Bool.true_and]
-
-/-- Assemble a short block without unfolding its predicate. -/
-private theorem cellBlock06_all {p : BranchCell → Bool}
-    (h096 : p cell096 = true)
-    (h097 : p cell097 = true)
-    (h098 : p cell098 = true)
-    (h099 : p cell099 = true)
-    (h100 : p cell100 = true)
-    (h101 : p cell101 = true)
-    (h102 : p cell102 = true)
-    (h103 : p cell103 = true)
-    (h104 : p cell104 = true)
-    (h105 : p cell105 = true)
-    (h106 : p cell106 = true)
-    (h107 : p cell107 = true)
-    (h108 : p cell108 = true)
-    (h109 : p cell109 = true)
-    (h110 : p cell110 = true)
-    (h111 : p cell111 = true)
-    : cellBlock06.all p = true := by
-  simp only [
-    cellBlock06, List.all_cons, List.all_nil, h096, h097, h098, h099, h100, h101, h102, h103,
-    h104, h105, h106, h107, h108, h109, h110, h111, Bool.true_and]
-
-/-- Assemble a short block without unfolding its predicate. -/
-private theorem cellBlock07_all {p : BranchCell → Bool}
-    (h112 : p cell112 = true)
-    (h113 : p cell113 = true)
-    (h114 : p cell114 = true)
-    (h115 : p cell115 = true)
-    (h116 : p cell116 = true)
-    (h117 : p cell117 = true)
-    (h118 : p cell118 = true)
-    (h119 : p cell119 = true)
-    (h120 : p cell120 = true)
-    (h121 : p cell121 = true)
-    (h122 : p cell122 = true)
-    (h123 : p cell123 = true)
-    (h124 : p cell124 = true)
-    (h125 : p cell125 = true)
-    (h126 : p cell126 = true)
-    (h127 : p cell127 = true)
-    : cellBlock07.all p = true := by
-  simp only [
-    cellBlock07, List.all_cons, List.all_nil, h112, h113, h114, h115, h116, h117, h118, h119,
-    h120, h121, h122, h123, h124, h125, h126, h127, Bool.true_and]
-
-/-- Assemble a short block without unfolding its predicate. -/
-private theorem cellBlock08_all {p : BranchCell → Bool}
-    (h128 : p cell128 = true)
-    (h129 : p cell129 = true)
-    (h130 : p cell130 = true)
-    (h131 : p cell131 = true)
-    (h132 : p cell132 = true)
-    (h133 : p cell133 = true)
-    (h134 : p cell134 = true)
-    (h135 : p cell135 = true)
-    (h136 : p cell136 = true)
-    (h137 : p cell137 = true)
-    (h138 : p cell138 = true)
-    (h139 : p cell139 = true)
-    (h140 : p cell140 = true)
-    (h141 : p cell141 = true)
-    (h142 : p cell142 = true)
-    (h143 : p cell143 = true)
-    : cellBlock08.all p = true := by
-  simp only [
-    cellBlock08, List.all_cons, List.all_nil, h128, h129, h130, h131, h132, h133, h134, h135,
-    h136, h137, h138, h139, h140, h141, h142, h143, Bool.true_and]
-
-/-- Assemble a short block without unfolding its predicate. -/
-private theorem cellBlock09_all {p : BranchCell → Bool}
-    (h144 : p cell144 = true)
-    (h145 : p cell145 = true)
-    (h146 : p cell146 = true)
-    (h147 : p cell147 = true)
-    (h148 : p cell148 = true)
-    (h149 : p cell149 = true)
-    (h150 : p cell150 = true)
-    (h151 : p cell151 = true)
-    (h152 : p cell152 = true)
-    (h153 : p cell153 = true)
-    (h154 : p cell154 = true)
-    (h155 : p cell155 = true)
-    (h156 : p cell156 = true)
-    (h157 : p cell157 = true)
-    (h158 : p cell158 = true)
-    (h159 : p cell159 = true)
-    : cellBlock09.all p = true := by
-  simp only [
-    cellBlock09, List.all_cons, List.all_nil, h144, h145, h146, h147, h148, h149, h150, h151,
-    h152, h153, h154, h155, h156, h157, h158, h159, Bool.true_and]
-
-/-- Assemble a short block without unfolding its predicate. -/
-private theorem cellBlock10_all {p : BranchCell → Bool}
-    (h160 : p cell160 = true)
-    (h161 : p cell161 = true)
-    (h162 : p cell162 = true)
-    (h163 : p cell163 = true)
-    (h164 : p cell164 = true)
-    (h165 : p cell165 = true)
-    (h166 : p cell166 = true)
-    (h167 : p cell167 = true)
-    (h168 : p cell168 = true)
-    : cellBlock10.all p = true := by
-  simp only [
-    cellBlock10, List.all_cons, List.all_nil, h160, h161, h162, h163, h164, h165, h166, h167,
-    h168, Bool.true_and]
+    h072, Bool.true_and]
 
 /-- Assemble block predicates without descending into their applications. -/
 private theorem cells_all {p : BranchCell → Bool}
@@ -279,15 +134,9 @@ private theorem cells_all {p : BranchCell → Bool}
     (h02 : cellBlock02.all p = true)
     (h03 : cellBlock03.all p = true)
     (h04 : cellBlock04.all p = true)
-    (h05 : cellBlock05.all p = true)
-    (h06 : cellBlock06.all p = true)
-    (h07 : cellBlock07.all p = true)
-    (h08 : cellBlock08.all p = true)
-    (h09 : cellBlock09.all p = true)
-    (h10 : cellBlock10.all p = true)
     : cells.all p = true := by
   simp only [
-    cells, List.all_append, h00, h01, h02, h03, h04, h05, h06, h07, h08, h09, h10, Bool.true_and]
+    cells, List.all_append, h00, h01, h02, h03, h04, Bool.true_and]
 
 /-- Assemble the separately checked branch rectangles. -/
 theorem cells_check :
@@ -306,25 +155,7 @@ theorem cells_check :
       cell053_check cell054_check cell055_check cell056_check cell057_check cell058_check
       cell059_check cell060_check cell061_check cell062_check cell063_check
   · exact cellBlock04_all cell064_check cell065_check cell066_check cell067_check cell068_check
-      cell069_check cell070_check cell071_check cell072_check cell073_check cell074_check
-      cell075_check cell076_check cell077_check cell078_check cell079_check
-  · exact cellBlock05_all cell080_check cell081_check cell082_check cell083_check cell084_check
-      cell085_check cell086_check cell087_check cell088_check cell089_check cell090_check
-      cell091_check cell092_check cell093_check cell094_check cell095_check
-  · exact cellBlock06_all cell096_check cell097_check cell098_check cell099_check cell100_check
-      cell101_check cell102_check cell103_check cell104_check cell105_check cell106_check
-      cell107_check cell108_check cell109_check cell110_check cell111_check
-  · exact cellBlock07_all cell112_check cell113_check cell114_check cell115_check cell116_check
-      cell117_check cell118_check cell119_check cell120_check cell121_check cell122_check
-      cell123_check cell124_check cell125_check cell126_check cell127_check
-  · exact cellBlock08_all cell128_check cell129_check cell130_check cell131_check cell132_check
-      cell133_check cell134_check cell135_check cell136_check cell137_check cell138_check
-      cell139_check cell140_check cell141_check cell142_check cell143_check
-  · exact cellBlock09_all cell144_check cell145_check cell146_check cell147_check cell148_check
-      cell149_check cell150_check cell151_check cell152_check cell153_check cell154_check
-      cell155_check cell156_check cell157_check cell158_check cell159_check
-  · exact cellBlock10_all cell160_check cell161_check cell162_check cell163_check cell164_check
-      cell165_check cell166_check cell167_check cell168_check
+      cell069_check cell070_check cell071_check cell072_check
 
 /-- Assemble the separately checked overlap rows. -/
 theorem cells_compatible :
@@ -352,37 +183,7 @@ theorem cells_compatible :
       cell063_compatible
   · exact cellBlock04_all cell064_compatible cell065_compatible cell066_compatible
       cell067_compatible cell068_compatible cell069_compatible cell070_compatible
-      cell071_compatible cell072_compatible cell073_compatible cell074_compatible
-      cell075_compatible cell076_compatible cell077_compatible cell078_compatible
-      cell079_compatible
-  · exact cellBlock05_all cell080_compatible cell081_compatible cell082_compatible
-      cell083_compatible cell084_compatible cell085_compatible cell086_compatible
-      cell087_compatible cell088_compatible cell089_compatible cell090_compatible
-      cell091_compatible cell092_compatible cell093_compatible cell094_compatible
-      cell095_compatible
-  · exact cellBlock06_all cell096_compatible cell097_compatible cell098_compatible
-      cell099_compatible cell100_compatible cell101_compatible cell102_compatible
-      cell103_compatible cell104_compatible cell105_compatible cell106_compatible
-      cell107_compatible cell108_compatible cell109_compatible cell110_compatible
-      cell111_compatible
-  · exact cellBlock07_all cell112_compatible cell113_compatible cell114_compatible
-      cell115_compatible cell116_compatible cell117_compatible cell118_compatible
-      cell119_compatible cell120_compatible cell121_compatible cell122_compatible
-      cell123_compatible cell124_compatible cell125_compatible cell126_compatible
-      cell127_compatible
-  · exact cellBlock08_all cell128_compatible cell129_compatible cell130_compatible
-      cell131_compatible cell132_compatible cell133_compatible cell134_compatible
-      cell135_compatible cell136_compatible cell137_compatible cell138_compatible
-      cell139_compatible cell140_compatible cell141_compatible cell142_compatible
-      cell143_compatible
-  · exact cellBlock09_all cell144_compatible cell145_compatible cell146_compatible
-      cell147_compatible cell148_compatible cell149_compatible cell150_compatible
-      cell151_compatible cell152_compatible cell153_compatible cell154_compatible
-      cell155_compatible cell156_compatible cell157_compatible cell158_compatible
-      cell159_compatible
-  · exact cellBlock10_all cell160_compatible cell161_compatible cell162_compatible
-      cell163_compatible cell164_compatible cell165_compatible cell166_compatible
-      cell167_compatible cell168_compatible
+      cell071_compatible cell072_compatible
 
 /-- Assemble the separate box checks for G1. -/
 theorem conditionG1_checks :
@@ -406,30 +207,6 @@ theorem conditionG1_checks :
       conditionG1_062 conditionG1_063
   · exact cellBlock04_all conditionG1_064 conditionG1_065 conditionG1_066 conditionG1_067
       conditionG1_068 conditionG1_069 conditionG1_070 conditionG1_071 conditionG1_072
-      conditionG1_073 conditionG1_074 conditionG1_075 conditionG1_076 conditionG1_077
-      conditionG1_078 conditionG1_079
-  · exact cellBlock05_all conditionG1_080 conditionG1_081 conditionG1_082 conditionG1_083
-      conditionG1_084 conditionG1_085 conditionG1_086 conditionG1_087 conditionG1_088
-      conditionG1_089 conditionG1_090 conditionG1_091 conditionG1_092 conditionG1_093
-      conditionG1_094 conditionG1_095
-  · exact cellBlock06_all conditionG1_096 conditionG1_097 conditionG1_098 conditionG1_099
-      conditionG1_100 conditionG1_101 conditionG1_102 conditionG1_103 conditionG1_104
-      conditionG1_105 conditionG1_106 conditionG1_107 conditionG1_108 conditionG1_109
-      conditionG1_110 conditionG1_111
-  · exact cellBlock07_all conditionG1_112 conditionG1_113 conditionG1_114 conditionG1_115
-      conditionG1_116 conditionG1_117 conditionG1_118 conditionG1_119 conditionG1_120
-      conditionG1_121 conditionG1_122 conditionG1_123 conditionG1_124 conditionG1_125
-      conditionG1_126 conditionG1_127
-  · exact cellBlock08_all conditionG1_128 conditionG1_129 conditionG1_130 conditionG1_131
-      conditionG1_132 conditionG1_133 conditionG1_134 conditionG1_135 conditionG1_136
-      conditionG1_137 conditionG1_138 conditionG1_139 conditionG1_140 conditionG1_141
-      conditionG1_142 conditionG1_143
-  · exact cellBlock09_all conditionG1_144 conditionG1_145 conditionG1_146 conditionG1_147
-      conditionG1_148 conditionG1_149 conditionG1_150 conditionG1_151 conditionG1_152
-      conditionG1_153 conditionG1_154 conditionG1_155 conditionG1_156 conditionG1_157
-      conditionG1_158 conditionG1_159
-  · exact cellBlock10_all conditionG1_160 conditionG1_161 conditionG1_162 conditionG1_163
-      conditionG1_164 conditionG1_165 conditionG1_166 conditionG1_167 conditionG1_168
 
 /-- Assemble the separate box checks for G2. -/
 theorem conditionG2_checks :
@@ -453,218 +230,6 @@ theorem conditionG2_checks :
       conditionG2_062 conditionG2_063
   · exact cellBlock04_all conditionG2_064 conditionG2_065 conditionG2_066 conditionG2_067
       conditionG2_068 conditionG2_069 conditionG2_070 conditionG2_071 conditionG2_072
-      conditionG2_073 conditionG2_074 conditionG2_075 conditionG2_076 conditionG2_077
-      conditionG2_078 conditionG2_079
-  · exact cellBlock05_all conditionG2_080 conditionG2_081 conditionG2_082 conditionG2_083
-      conditionG2_084 conditionG2_085 conditionG2_086 conditionG2_087 conditionG2_088
-      conditionG2_089 conditionG2_090 conditionG2_091 conditionG2_092 conditionG2_093
-      conditionG2_094 conditionG2_095
-  · exact cellBlock06_all conditionG2_096 conditionG2_097 conditionG2_098 conditionG2_099
-      conditionG2_100 conditionG2_101 conditionG2_102 conditionG2_103 conditionG2_104
-      conditionG2_105 conditionG2_106 conditionG2_107 conditionG2_108 conditionG2_109
-      conditionG2_110 conditionG2_111
-  · exact cellBlock07_all conditionG2_112 conditionG2_113 conditionG2_114 conditionG2_115
-      conditionG2_116 conditionG2_117 conditionG2_118 conditionG2_119 conditionG2_120
-      conditionG2_121 conditionG2_122 conditionG2_123 conditionG2_124 conditionG2_125
-      conditionG2_126 conditionG2_127
-  · exact cellBlock08_all conditionG2_128 conditionG2_129 conditionG2_130 conditionG2_131
-      conditionG2_132 conditionG2_133 conditionG2_134 conditionG2_135 conditionG2_136
-      conditionG2_137 conditionG2_138 conditionG2_139 conditionG2_140 conditionG2_141
-      conditionG2_142 conditionG2_143
-  · exact cellBlock09_all conditionG2_144 conditionG2_145 conditionG2_146 conditionG2_147
-      conditionG2_148 conditionG2_149 conditionG2_150 conditionG2_151 conditionG2_152
-      conditionG2_153 conditionG2_154 conditionG2_155 conditionG2_156 conditionG2_157
-      conditionG2_158 conditionG2_159
-  · exact cellBlock10_all conditionG2_160 conditionG2_161 conditionG2_162 conditionG2_163
-      conditionG2_164 conditionG2_165 conditionG2_166 conditionG2_167 conditionG2_168
-
-/-- Assemble the separate box checks for AMP. -/
-theorem conditionAMP_checks :
-    cells.all (fun c ↦ conditionAMP.posOnBox c.tlo c.thi c.lo c.hi) = true := by
-  apply cells_all
-  · exact cellBlock00_all conditionAMP_000 conditionAMP_001 conditionAMP_002 conditionAMP_003
-      conditionAMP_004 conditionAMP_005 conditionAMP_006 conditionAMP_007 conditionAMP_008
-      conditionAMP_009 conditionAMP_010 conditionAMP_011 conditionAMP_012 conditionAMP_013
-      conditionAMP_014 conditionAMP_015
-  · exact cellBlock01_all conditionAMP_016 conditionAMP_017 conditionAMP_018 conditionAMP_019
-      conditionAMP_020 conditionAMP_021 conditionAMP_022 conditionAMP_023 conditionAMP_024
-      conditionAMP_025 conditionAMP_026 conditionAMP_027 conditionAMP_028 conditionAMP_029
-      conditionAMP_030 conditionAMP_031
-  · exact cellBlock02_all conditionAMP_032 conditionAMP_033 conditionAMP_034 conditionAMP_035
-      conditionAMP_036 conditionAMP_037 conditionAMP_038 conditionAMP_039 conditionAMP_040
-      conditionAMP_041 conditionAMP_042 conditionAMP_043 conditionAMP_044 conditionAMP_045
-      conditionAMP_046 conditionAMP_047
-  · exact cellBlock03_all conditionAMP_048 conditionAMP_049 conditionAMP_050 conditionAMP_051
-      conditionAMP_052 conditionAMP_053 conditionAMP_054 conditionAMP_055 conditionAMP_056
-      conditionAMP_057 conditionAMP_058 conditionAMP_059 conditionAMP_060 conditionAMP_061
-      conditionAMP_062 conditionAMP_063
-  · exact cellBlock04_all conditionAMP_064 conditionAMP_065 conditionAMP_066 conditionAMP_067
-      conditionAMP_068 conditionAMP_069 conditionAMP_070 conditionAMP_071 conditionAMP_072
-      conditionAMP_073 conditionAMP_074 conditionAMP_075 conditionAMP_076 conditionAMP_077
-      conditionAMP_078 conditionAMP_079
-  · exact cellBlock05_all conditionAMP_080 conditionAMP_081 conditionAMP_082 conditionAMP_083
-      conditionAMP_084 conditionAMP_085 conditionAMP_086 conditionAMP_087 conditionAMP_088
-      conditionAMP_089 conditionAMP_090 conditionAMP_091 conditionAMP_092 conditionAMP_093
-      conditionAMP_094 conditionAMP_095
-  · exact cellBlock06_all conditionAMP_096 conditionAMP_097 conditionAMP_098 conditionAMP_099
-      conditionAMP_100 conditionAMP_101 conditionAMP_102 conditionAMP_103 conditionAMP_104
-      conditionAMP_105 conditionAMP_106 conditionAMP_107 conditionAMP_108 conditionAMP_109
-      conditionAMP_110 conditionAMP_111
-  · exact cellBlock07_all conditionAMP_112 conditionAMP_113 conditionAMP_114 conditionAMP_115
-      conditionAMP_116 conditionAMP_117 conditionAMP_118 conditionAMP_119 conditionAMP_120
-      conditionAMP_121 conditionAMP_122 conditionAMP_123 conditionAMP_124 conditionAMP_125
-      conditionAMP_126 conditionAMP_127
-  · exact cellBlock08_all conditionAMP_128 conditionAMP_129 conditionAMP_130 conditionAMP_131
-      conditionAMP_132 conditionAMP_133 conditionAMP_134 conditionAMP_135 conditionAMP_136
-      conditionAMP_137 conditionAMP_138 conditionAMP_139 conditionAMP_140 conditionAMP_141
-      conditionAMP_142 conditionAMP_143
-  · exact cellBlock09_all conditionAMP_144 conditionAMP_145 conditionAMP_146 conditionAMP_147
-      conditionAMP_148 conditionAMP_149 conditionAMP_150 conditionAMP_151 conditionAMP_152
-      conditionAMP_153 conditionAMP_154 conditionAMP_155 conditionAMP_156 conditionAMP_157
-      conditionAMP_158 conditionAMP_159
-  · exact cellBlock10_all conditionAMP_160 conditionAMP_161 conditionAMP_162 conditionAMP_163
-      conditionAMP_164 conditionAMP_165 conditionAMP_166 conditionAMP_167 conditionAMP_168
-
-/-- Assemble the separate box checks for W1. -/
-theorem conditionW1_checks :
-    cells.all (fun c ↦ conditionW1.posOnBox c.tlo c.thi c.lo c.hi) = true := by
-  apply cells_all
-  · exact cellBlock00_all conditionW1_000 conditionW1_001 conditionW1_002 conditionW1_003
-      conditionW1_004 conditionW1_005 conditionW1_006 conditionW1_007 conditionW1_008
-      conditionW1_009 conditionW1_010 conditionW1_011 conditionW1_012 conditionW1_013
-      conditionW1_014 conditionW1_015
-  · exact cellBlock01_all conditionW1_016 conditionW1_017 conditionW1_018 conditionW1_019
-      conditionW1_020 conditionW1_021 conditionW1_022 conditionW1_023 conditionW1_024
-      conditionW1_025 conditionW1_026 conditionW1_027 conditionW1_028 conditionW1_029
-      conditionW1_030 conditionW1_031
-  · exact cellBlock02_all conditionW1_032 conditionW1_033 conditionW1_034 conditionW1_035
-      conditionW1_036 conditionW1_037 conditionW1_038 conditionW1_039 conditionW1_040
-      conditionW1_041 conditionW1_042 conditionW1_043 conditionW1_044 conditionW1_045
-      conditionW1_046 conditionW1_047
-  · exact cellBlock03_all conditionW1_048 conditionW1_049 conditionW1_050 conditionW1_051
-      conditionW1_052 conditionW1_053 conditionW1_054 conditionW1_055 conditionW1_056
-      conditionW1_057 conditionW1_058 conditionW1_059 conditionW1_060 conditionW1_061
-      conditionW1_062 conditionW1_063
-  · exact cellBlock04_all conditionW1_064 conditionW1_065 conditionW1_066 conditionW1_067
-      conditionW1_068 conditionW1_069 conditionW1_070 conditionW1_071 conditionW1_072
-      conditionW1_073 conditionW1_074 conditionW1_075 conditionW1_076 conditionW1_077
-      conditionW1_078 conditionW1_079
-  · exact cellBlock05_all conditionW1_080 conditionW1_081 conditionW1_082 conditionW1_083
-      conditionW1_084 conditionW1_085 conditionW1_086 conditionW1_087 conditionW1_088
-      conditionW1_089 conditionW1_090 conditionW1_091 conditionW1_092 conditionW1_093
-      conditionW1_094 conditionW1_095
-  · exact cellBlock06_all conditionW1_096 conditionW1_097 conditionW1_098 conditionW1_099
-      conditionW1_100 conditionW1_101 conditionW1_102 conditionW1_103 conditionW1_104
-      conditionW1_105 conditionW1_106 conditionW1_107 conditionW1_108 conditionW1_109
-      conditionW1_110 conditionW1_111
-  · exact cellBlock07_all conditionW1_112 conditionW1_113 conditionW1_114 conditionW1_115
-      conditionW1_116 conditionW1_117 conditionW1_118 conditionW1_119 conditionW1_120
-      conditionW1_121 conditionW1_122 conditionW1_123 conditionW1_124 conditionW1_125
-      conditionW1_126 conditionW1_127
-  · exact cellBlock08_all conditionW1_128 conditionW1_129 conditionW1_130 conditionW1_131
-      conditionW1_132 conditionW1_133 conditionW1_134 conditionW1_135 conditionW1_136
-      conditionW1_137 conditionW1_138 conditionW1_139 conditionW1_140 conditionW1_141
-      conditionW1_142 conditionW1_143
-  · exact cellBlock09_all conditionW1_144 conditionW1_145 conditionW1_146 conditionW1_147
-      conditionW1_148 conditionW1_149 conditionW1_150 conditionW1_151 conditionW1_152
-      conditionW1_153 conditionW1_154 conditionW1_155 conditionW1_156 conditionW1_157
-      conditionW1_158 conditionW1_159
-  · exact cellBlock10_all conditionW1_160 conditionW1_161 conditionW1_162 conditionW1_163
-      conditionW1_164 conditionW1_165 conditionW1_166 conditionW1_167 conditionW1_168
-
-/-- Assemble the separate box checks for W2. -/
-theorem conditionW2_checks :
-    cells.all (fun c ↦ conditionW2.posOnBox c.tlo c.thi c.lo c.hi) = true := by
-  apply cells_all
-  · exact cellBlock00_all conditionW2_000 conditionW2_001 conditionW2_002 conditionW2_003
-      conditionW2_004 conditionW2_005 conditionW2_006 conditionW2_007 conditionW2_008
-      conditionW2_009 conditionW2_010 conditionW2_011 conditionW2_012 conditionW2_013
-      conditionW2_014 conditionW2_015
-  · exact cellBlock01_all conditionW2_016 conditionW2_017 conditionW2_018 conditionW2_019
-      conditionW2_020 conditionW2_021 conditionW2_022 conditionW2_023 conditionW2_024
-      conditionW2_025 conditionW2_026 conditionW2_027 conditionW2_028 conditionW2_029
-      conditionW2_030 conditionW2_031
-  · exact cellBlock02_all conditionW2_032 conditionW2_033 conditionW2_034 conditionW2_035
-      conditionW2_036 conditionW2_037 conditionW2_038 conditionW2_039 conditionW2_040
-      conditionW2_041 conditionW2_042 conditionW2_043 conditionW2_044 conditionW2_045
-      conditionW2_046 conditionW2_047
-  · exact cellBlock03_all conditionW2_048 conditionW2_049 conditionW2_050 conditionW2_051
-      conditionW2_052 conditionW2_053 conditionW2_054 conditionW2_055 conditionW2_056
-      conditionW2_057 conditionW2_058 conditionW2_059 conditionW2_060 conditionW2_061
-      conditionW2_062 conditionW2_063
-  · exact cellBlock04_all conditionW2_064 conditionW2_065 conditionW2_066 conditionW2_067
-      conditionW2_068 conditionW2_069 conditionW2_070 conditionW2_071 conditionW2_072
-      conditionW2_073 conditionW2_074 conditionW2_075 conditionW2_076 conditionW2_077
-      conditionW2_078 conditionW2_079
-  · exact cellBlock05_all conditionW2_080 conditionW2_081 conditionW2_082 conditionW2_083
-      conditionW2_084 conditionW2_085 conditionW2_086 conditionW2_087 conditionW2_088
-      conditionW2_089 conditionW2_090 conditionW2_091 conditionW2_092 conditionW2_093
-      conditionW2_094 conditionW2_095
-  · exact cellBlock06_all conditionW2_096 conditionW2_097 conditionW2_098 conditionW2_099
-      conditionW2_100 conditionW2_101 conditionW2_102 conditionW2_103 conditionW2_104
-      conditionW2_105 conditionW2_106 conditionW2_107 conditionW2_108 conditionW2_109
-      conditionW2_110 conditionW2_111
-  · exact cellBlock07_all conditionW2_112 conditionW2_113 conditionW2_114 conditionW2_115
-      conditionW2_116 conditionW2_117 conditionW2_118 conditionW2_119 conditionW2_120
-      conditionW2_121 conditionW2_122 conditionW2_123 conditionW2_124 conditionW2_125
-      conditionW2_126 conditionW2_127
-  · exact cellBlock08_all conditionW2_128 conditionW2_129 conditionW2_130 conditionW2_131
-      conditionW2_132 conditionW2_133 conditionW2_134 conditionW2_135 conditionW2_136
-      conditionW2_137 conditionW2_138 conditionW2_139 conditionW2_140 conditionW2_141
-      conditionW2_142 conditionW2_143
-  · exact cellBlock09_all conditionW2_144 conditionW2_145 conditionW2_146 conditionW2_147
-      conditionW2_148 conditionW2_149 conditionW2_150 conditionW2_151 conditionW2_152
-      conditionW2_153 conditionW2_154 conditionW2_155 conditionW2_156 conditionW2_157
-      conditionW2_158 conditionW2_159
-  · exact cellBlock10_all conditionW2_160 conditionW2_161 conditionW2_162 conditionW2_163
-      conditionW2_164 conditionW2_165 conditionW2_166 conditionW2_167 conditionW2_168
-
-/-- Assemble the separate box checks for W3. -/
-theorem conditionW3_checks :
-    cells.all (fun c ↦ conditionW3.posOnBox c.tlo c.thi c.lo c.hi) = true := by
-  apply cells_all
-  · exact cellBlock00_all conditionW3_000 conditionW3_001 conditionW3_002 conditionW3_003
-      conditionW3_004 conditionW3_005 conditionW3_006 conditionW3_007 conditionW3_008
-      conditionW3_009 conditionW3_010 conditionW3_011 conditionW3_012 conditionW3_013
-      conditionW3_014 conditionW3_015
-  · exact cellBlock01_all conditionW3_016 conditionW3_017 conditionW3_018 conditionW3_019
-      conditionW3_020 conditionW3_021 conditionW3_022 conditionW3_023 conditionW3_024
-      conditionW3_025 conditionW3_026 conditionW3_027 conditionW3_028 conditionW3_029
-      conditionW3_030 conditionW3_031
-  · exact cellBlock02_all conditionW3_032 conditionW3_033 conditionW3_034 conditionW3_035
-      conditionW3_036 conditionW3_037 conditionW3_038 conditionW3_039 conditionW3_040
-      conditionW3_041 conditionW3_042 conditionW3_043 conditionW3_044 conditionW3_045
-      conditionW3_046 conditionW3_047
-  · exact cellBlock03_all conditionW3_048 conditionW3_049 conditionW3_050 conditionW3_051
-      conditionW3_052 conditionW3_053 conditionW3_054 conditionW3_055 conditionW3_056
-      conditionW3_057 conditionW3_058 conditionW3_059 conditionW3_060 conditionW3_061
-      conditionW3_062 conditionW3_063
-  · exact cellBlock04_all conditionW3_064 conditionW3_065 conditionW3_066 conditionW3_067
-      conditionW3_068 conditionW3_069 conditionW3_070 conditionW3_071 conditionW3_072
-      conditionW3_073 conditionW3_074 conditionW3_075 conditionW3_076 conditionW3_077
-      conditionW3_078 conditionW3_079
-  · exact cellBlock05_all conditionW3_080 conditionW3_081 conditionW3_082 conditionW3_083
-      conditionW3_084 conditionW3_085 conditionW3_086 conditionW3_087 conditionW3_088
-      conditionW3_089 conditionW3_090 conditionW3_091 conditionW3_092 conditionW3_093
-      conditionW3_094 conditionW3_095
-  · exact cellBlock06_all conditionW3_096 conditionW3_097 conditionW3_098 conditionW3_099
-      conditionW3_100 conditionW3_101 conditionW3_102 conditionW3_103 conditionW3_104
-      conditionW3_105 conditionW3_106 conditionW3_107 conditionW3_108 conditionW3_109
-      conditionW3_110 conditionW3_111
-  · exact cellBlock07_all conditionW3_112 conditionW3_113 conditionW3_114 conditionW3_115
-      conditionW3_116 conditionW3_117 conditionW3_118 conditionW3_119 conditionW3_120
-      conditionW3_121 conditionW3_122 conditionW3_123 conditionW3_124 conditionW3_125
-      conditionW3_126 conditionW3_127
-  · exact cellBlock08_all conditionW3_128 conditionW3_129 conditionW3_130 conditionW3_131
-      conditionW3_132 conditionW3_133 conditionW3_134 conditionW3_135 conditionW3_136
-      conditionW3_137 conditionW3_138 conditionW3_139 conditionW3_140 conditionW3_141
-      conditionW3_142 conditionW3_143
-  · exact cellBlock09_all conditionW3_144 conditionW3_145 conditionW3_146 conditionW3_147
-      conditionW3_148 conditionW3_149 conditionW3_150 conditionW3_151 conditionW3_152
-      conditionW3_153 conditionW3_154 conditionW3_155 conditionW3_156 conditionW3_157
-      conditionW3_158 conditionW3_159
-  · exact cellBlock10_all conditionW3_160 conditionW3_161 conditionW3_162 conditionW3_163
-      conditionW3_164 conditionW3_165 conditionW3_166 conditionW3_167 conditionW3_168
 
 /-- Assemble the separate box checks for WIND. -/
 theorem conditionWIND_checks :
@@ -688,30 +253,6 @@ theorem conditionWIND_checks :
       conditionWIND_062 conditionWIND_063
   · exact cellBlock04_all conditionWIND_064 conditionWIND_065 conditionWIND_066 conditionWIND_067
       conditionWIND_068 conditionWIND_069 conditionWIND_070 conditionWIND_071 conditionWIND_072
-      conditionWIND_073 conditionWIND_074 conditionWIND_075 conditionWIND_076 conditionWIND_077
-      conditionWIND_078 conditionWIND_079
-  · exact cellBlock05_all conditionWIND_080 conditionWIND_081 conditionWIND_082 conditionWIND_083
-      conditionWIND_084 conditionWIND_085 conditionWIND_086 conditionWIND_087 conditionWIND_088
-      conditionWIND_089 conditionWIND_090 conditionWIND_091 conditionWIND_092 conditionWIND_093
-      conditionWIND_094 conditionWIND_095
-  · exact cellBlock06_all conditionWIND_096 conditionWIND_097 conditionWIND_098 conditionWIND_099
-      conditionWIND_100 conditionWIND_101 conditionWIND_102 conditionWIND_103 conditionWIND_104
-      conditionWIND_105 conditionWIND_106 conditionWIND_107 conditionWIND_108 conditionWIND_109
-      conditionWIND_110 conditionWIND_111
-  · exact cellBlock07_all conditionWIND_112 conditionWIND_113 conditionWIND_114 conditionWIND_115
-      conditionWIND_116 conditionWIND_117 conditionWIND_118 conditionWIND_119 conditionWIND_120
-      conditionWIND_121 conditionWIND_122 conditionWIND_123 conditionWIND_124 conditionWIND_125
-      conditionWIND_126 conditionWIND_127
-  · exact cellBlock08_all conditionWIND_128 conditionWIND_129 conditionWIND_130 conditionWIND_131
-      conditionWIND_132 conditionWIND_133 conditionWIND_134 conditionWIND_135 conditionWIND_136
-      conditionWIND_137 conditionWIND_138 conditionWIND_139 conditionWIND_140 conditionWIND_141
-      conditionWIND_142 conditionWIND_143
-  · exact cellBlock09_all conditionWIND_144 conditionWIND_145 conditionWIND_146 conditionWIND_147
-      conditionWIND_148 conditionWIND_149 conditionWIND_150 conditionWIND_151 conditionWIND_152
-      conditionWIND_153 conditionWIND_154 conditionWIND_155 conditionWIND_156 conditionWIND_157
-      conditionWIND_158 conditionWIND_159
-  · exact cellBlock10_all conditionWIND_160 conditionWIND_161 conditionWIND_162 conditionWIND_163
-      conditionWIND_164 conditionWIND_165 conditionWIND_166 conditionWIND_167 conditionWIND_168
 
 /-- All hypotheses of the branch soundness theorem are checked. -/
 theorem branch_check : branch.check = true := by
@@ -757,30 +298,6 @@ theorem conditionG2_pos {t : ℝ}
     (ht : t ∈ Set.Icc branch.lo.val branch.hi.val) :
     0 < conditionG2.eval t (branch.y t) :=
   posOn_branch conditionG2_checks ht
-
-/-- The AMP reduced sign condition holds on the continuous branch. -/
-theorem conditionAMP_pos {t : ℝ}
-    (ht : t ∈ Set.Icc branch.lo.val branch.hi.val) :
-    0 < conditionAMP.eval t (branch.y t) :=
-  posOn_branch conditionAMP_checks ht
-
-/-- The W1 reduced sign condition holds on the continuous branch. -/
-theorem conditionW1_pos {t : ℝ}
-    (ht : t ∈ Set.Icc branch.lo.val branch.hi.val) :
-    0 < conditionW1.eval t (branch.y t) :=
-  posOn_branch conditionW1_checks ht
-
-/-- The W2 reduced sign condition holds on the continuous branch. -/
-theorem conditionW2_pos {t : ℝ}
-    (ht : t ∈ Set.Icc branch.lo.val branch.hi.val) :
-    0 < conditionW2.eval t (branch.y t) :=
-  posOn_branch conditionW2_checks ht
-
-/-- The W3 reduced sign condition holds on the continuous branch. -/
-theorem conditionW3_pos {t : ℝ}
-    (ht : t ∈ Set.Icc branch.lo.val branch.hi.val) :
-    0 < conditionW3.eval t (branch.y t) :=
-  posOn_branch conditionW3_checks ht
 
 /-- The WIND reduced sign condition holds on the continuous branch. -/
 theorem conditionWIND_pos {t : ℝ}
