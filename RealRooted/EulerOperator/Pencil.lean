@@ -23,16 +23,17 @@ noncomputable section
 namespace RealRooted
 
 /-- A positive Euler pencil lies in an interlacing relation with `X * f` for a
-polynomial-PF `f` of degree at least two. -/
+nonconstant polynomial-PF `f`. -/
 theorem strictInterl_thetac_X_mul {f : ℝ[X]} (hf : IsPFPolynomial f)
-    (hdeg : 2 ≤ f.natDegree) {c : ℝ} (hc : 0 < c) :
+    (hdeg : 1 ≤ f.natDegree) {c : ℝ} (hc : 0 < c) :
     StrictInterl (X * f.derivative + C c * f) (X * f) := by
   have hf0 : f ≠ 0 := by
     intro hzero
     simp_all
   have hfs : f ≠ 0 ∧ f.Splits := hf.ne_zero_and_splits hf0
-  have hleft : StrictInterl (X * f.derivative) (X * f) :=
-    strictInterl_X_derivative_X_self_of_splits hfs.2 hdeg
+  have hleft : StrictInterl (X * f.derivative) (X * f) := by
+    simpa using
+      (derivative_interlaces_of_natDegree_ne_zero hfs.2 (by lia)).toStrictInterl.mul_X_sub_C_both 0
   have hnn : HasNonnegCoeffs f := hf.hasNonnegCoeffs
   have hself : StrictInterl f (X * f) := strictInterl_self_X_mul_of_nonneg hfs.1 hfs.2 hnn
   have hright : StrictInterl (C c * f) (X * f) := StrictInterl.C_mul_left hself hc.ne'
@@ -50,9 +51,9 @@ theorem strictInterl_thetac_X_mul {f : ℝ[X]} (hf : IsPFPolynomial f)
   exact StrictInterl.add_of_right_of_posLeadingCoeff hleft hright hpos_left hpos_right
 
 /-- A polynomial-PF `f` precedes every positive Euler pencil of `f` when its
-degree is at least two. -/
+degree is positive. -/
 theorem strictInterl_self_thetac {f : ℝ[X]} (hf : IsPFPolynomial f)
-    (hdeg : 2 ≤ f.natDegree) {c : ℝ} (hc : 0 < c) :
+    (hdeg : 1 ≤ f.natDegree) {c : ℝ} (hc : 0 < c) :
     StrictInterl f (X * f.derivative + C c * f) := by
   have hnn : HasNonnegCoeffs f := hf.hasNonnegCoeffs
   have hnn_thc : HasNonnegCoeffs (X * f.derivative + C c * f) :=
@@ -60,9 +61,14 @@ theorem strictInterl_self_thetac {f : ℝ[X]} (hf : IsPFPolynomial f)
   exact strictInterl_of_strictInterl_X_mul_of_nonneg
     (strictInterl_thetac_X_mul hf hdeg hc) hnn hnn_thc
 
+/-- A nonconstant polynomial PF member precedes its `thetaPlusOne` image. -/
+theorem strictInterl_self_thetaPlusOne {p : ℝ[X]} (hp : IsPFPolynomial p)
+    (hdeg : 1 ≤ p.natDegree) : StrictInterl p (thetaPlusOne p) := by
+  simpa [thetaPlusOne, theta] using strictInterl_self_thetac hp hdeg (c := 1) one_pos
+
 /-- Positive Euler pencils are ordered by the scalar shift. -/
 theorem strictInterl_thetaa_thetab {f : ℝ[X]} (hf : IsPFPolynomial f)
-    (hdeg : 2 ≤ f.natDegree) {a b : ℝ} (hb : 0 < b) (hab : b < a) :
+    (hdeg : 1 ≤ f.natDegree) {a b : ℝ} (hb : 0 < b) (hab : b < a) :
     StrictInterl (X * f.derivative + C a * f) (X * f.derivative + C b * f) := by
   have hf0 : f ≠ 0 := by
     intro hzero
@@ -103,9 +109,9 @@ theorem strictInterl_self_theta_of_natDegree_ne_zero {p : ℝ[X]}
   simpa [theta] using hmul
 
 /-- A polynomial PF member lies to the left of its Euler derivative when its
-degree is at least two. -/
+degree is positive. -/
 theorem strictInterl_self_theta {p : ℝ[X]} (hp : IsPFPolynomial p)
-    (hdeg : 2 ≤ p.natDegree) : StrictInterl p (theta p) :=
-  strictInterl_self_theta_of_natDegree_ne_zero hp (by lia)
+    (hdeg : 1 ≤ p.natDegree) : StrictInterl p (theta p) := by
+  exact strictInterl_self_theta_of_natDegree_ne_zero hp (by lia)
 
 end RealRooted

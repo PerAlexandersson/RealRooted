@@ -80,7 +80,7 @@ theorem orderNumeratorStep_isPF_tight
       simp [hpzero]
     exact hm.trans (le_natDegree_of_ne_zero htop)
   have hpolar : StrictInterl (polarTheta m p) p :=
-    strictInterl_polarTheta_self hp hpdeg.le hreflect
+    strictInterl_polarTheta_self hp hpdeg.le (by lia)
   have hderiv : StrictInterl p.derivative p :=
     (derivative_interlaces_of_natDegree_ne_zero (hp.ne_zero_and_splits hp0).2
       (by lia)).toStrictInterl

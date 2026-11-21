@@ -62,15 +62,18 @@ theorem exists_ordered_roots_of_strict_sign_changes {p : ℝ[X]} {n : ℕ}
     exact Nat.succ_le_of_lt hij
   exact ((hr i).2.1.trans_le (hx.monotone hle)).trans (hr j).1
 
-/-- A finite grid with strict sign changes accounts for every root of a
-nonzero polynomial of degree at most the number of gaps. In particular all
-its roots are simple and lie strictly between the outer grid points. -/
-theorem splits_nodup_roots_of_strict_sign_changes {p : ℝ[X]} {n : ℕ}
+/-- A strict sign grid exhausts the roots of a nonzero polynomial whose degree
+is at most the number of gaps. The roots are simple, lie between the outer
+grid points, and admit an increasing enumeration with one root per open gap. -/
+theorem splits_nodup_ordered_roots_of_strict_sign_changes {p : ℝ[X]} {n : ℕ}
     (hp : p ≠ 0) (hdegree : p.natDegree ≤ n)
     (x : Fin (n + 1) → ℝ) (hx : StrictMono x)
     (hsign : ∀ i : Fin n, p.eval (x i.castSucc) * p.eval (x i.succ) < 0) :
-    p.natDegree = n ∧ p.Splits ∧ p.roots.Nodup ∧
-      ∀ z ∈ p.roots, x 0 < z ∧ z < x (Fin.last n) := by
+    (p.natDegree = n ∧ p.Splits ∧ p.roots.Nodup ∧
+      ∀ z ∈ p.roots, x 0 < z ∧ z < x (Fin.last n)) ∧
+      ∃ r : Fin n → ℝ, StrictMono r ∧
+        (∀ i, x i.castSucc < r i ∧ r i < x i.succ ∧ p.IsRoot (r i)) ∧
+        ∀ z ∈ p.roots, ∃ i, z = r i := by
   classical
   obtain ⟨r, hrmono, hr⟩ :=
     exists_ordered_roots_of_strict_sign_changes x hx hsign
@@ -97,13 +100,27 @@ theorem splits_nodup_roots_of_strict_sign_changes {p : ℝ[X]} {n : ℕ}
     apply Finset.eq_of_subset_of_card_le hs_sub
     lia
   have hroot_degree : p.roots.card ≤ p.natDegree := card_roots' p
-  refine ⟨by lia, (splits_iff_card_roots).mpr (by lia),
-    Multiset.toFinset_card_eq_card_iff_nodup.mp hsetCard, ?_⟩
+  have hcover : ∀ z ∈ p.roots, ∃ i, z = r i := by
+    intro z hz
+    have hzs : z ∈ s := by rw [hs_eq]; exact Multiset.mem_toFinset.mpr hz
+    obtain ⟨i, _, rfl⟩ := Finset.mem_image.mp hzs
+    exact ⟨i, rfl⟩
+  refine ⟨⟨by lia, (splits_iff_card_roots).mpr (by lia),
+    Multiset.toFinset_card_eq_card_iff_nodup.mp hsetCard, ?_⟩, r, hrmono, hr, hcover⟩
   intro z hz
-  have hzs : z ∈ s := by rw [hs_eq]; exact Multiset.mem_toFinset.mpr hz
-  obtain ⟨i, _, rfl⟩ := Finset.mem_image.mp hzs
-  constructor
-  · exact (hx.monotone (Fin.zero_le i.castSucc)).trans_lt (hr i).1
-  · exact (hr i).2.1.trans_le (hx.monotone (Fin.le_last i.succ))
+  obtain ⟨i, rfl⟩ := hcover z hz
+  exact ⟨(hx.monotone (Fin.zero_le i.castSucc)).trans_lt (hr i).1,
+    (hr i).2.1.trans_le (hx.monotone (Fin.le_last i.succ))⟩
+
+/-- A finite grid with strict sign changes accounts for every root of a
+nonzero polynomial of degree at most the number of gaps. In particular all
+its roots are simple and lie strictly between the outer grid points. -/
+theorem splits_nodup_roots_of_strict_sign_changes {p : ℝ[X]} {n : ℕ}
+    (hp : p ≠ 0) (hdegree : p.natDegree ≤ n)
+    (x : Fin (n + 1) → ℝ) (hx : StrictMono x)
+    (hsign : ∀ i : Fin n, p.eval (x i.castSucc) * p.eval (x i.succ) < 0) :
+    p.natDegree = n ∧ p.Splits ∧ p.roots.Nodup ∧
+      ∀ z ∈ p.roots, x 0 < z ∧ z < x (Fin.last n) := by
+  exact (splits_nodup_ordered_roots_of_strict_sign_changes hp hdegree x hx hsign).1
 
 end Polynomial
