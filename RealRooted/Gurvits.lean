@@ -15,12 +15,17 @@ L. Gurvits, *Van der Waerden/Schrijver–Valiant like conjectures and stable (ak
 homogeneous polynomials: one theorem for all*, Electron. J. Combin. 15 (2008).
 
 For a real-stable polynomial `p` in variables `x₀, …, x_k` with nonnegative coefficients and
-total degree at most `k + 1`, `step p = (∂p/∂x₀)|_{x₀ = 0}` is again real stable (or zero), and
-`capacity (step p) ≥ gurvitsFactor (k + 1) * capacity p`: for positive `y`, the univariate
+degree at most `d` in `x₀`, `step p = (∂p/∂x₀)|_{x₀ = 0}` is again real stable (or zero), and
+`capacity (step p) ≥ gurvitsFactor d * capacity p`: for positive `y`, the univariate
 restriction `t ↦ p(t, y)` is real-rooted, so the univariate inequality
-`mul_le_coeff_one_of_splits` applies.  Iterating over the `n` variables of
-`prodLin A = ∏ i, ∑ j, A i j * x j` gives the van der Waerden bound
-`per A ≥ n! / nⁿ` for doubly stochastic `A` (Egorychev–Falikman).
+`mul_le_coeff_one_of_splits` applies.
+
+Iterating over all variables, with a separate degree cap for each, gives Theorem 2.4 of the paper
+(`prod_gurvitsFactor_min_mul_capacity_le_coeffIter`).  Applied to
+`prodLin A = ∏ i, ∑ j, A i j * x j` for a nonnegative matrix `A`, this bounds `per A` below in
+terms of the number of nonzero entries in each column (Corollary 2.7(a) of the paper,
+`prod_gurvitsFactor_min_mul_capacity_prodLin_le_permanent`).  Using only the total degree gives
+the van der Waerden bound `per A ≥ n! / nⁿ` for doubly stochastic `A` (Egorychev–Falikman).
 -/
 
 public section
@@ -113,13 +118,18 @@ theorem splits_map_finSuccEquiv {p : MvPolynomial (Fin (n + 1)) ℝ}
       rw [← key]
       exact hstab (fun _ => t) fun _ => ht
 
-/-- **Gurvits' inequality.**  For a weakly real-stable `p` in `k + 1` variables with
-nonnegative coefficients and total degree at most `k + 1`,
-`gurvitsFactor (k + 1) * capacity p ≤ capacity (step p)`. -/
-theorem gurvitsFactor_mul_capacity_le_capacity_step {k : ℕ}
+/-- **Gurvits' inequality, degree-sensitive form.**  For a weakly real-stable `p` in `k + 1`
+variables with nonnegative coefficients and degree at most `d` in `x₀`,
+`gurvitsFactor d * capacity p ≤ capacity (step p)`.  This is inequality (25) of Gurvits (2008),
+the inductive step of Theorem 2.4. -/
+theorem gurvitsFactor_mul_capacity_le_capacity_step_of_degreeOf_le {k d : ℕ}
     {p : MvPolynomial (Fin (k + 1)) ℝ} (hp : MvRealStableOrZero p) (hnn : ∀ m, 0 ≤ p.coeff m)
-    (hdeg : p.totalDegree ≤ k + 1) :
-    gurvitsFactor (k + 1) * capacity p ≤ capacity (step p) := by
+    (hdeg : p.degreeOf 0 ≤ d) :
+    gurvitsFactor d * capacity p ≤ capacity (step p) := by
+  -- The univariate inequality needs `d ≠ 0`, and `gurvitsFactor 0 = gurvitsFactor 1`.
+  wlog hd : d ≠ 0 generalizing d
+  · obtain rfl : d = 0 := not_ne_iff.1 hd
+    simpa using this (d := 1) (by lia) one_ne_zero
   apply le_capacity
   intro y hy
   have hprod : 0 < ∏ i, y i := Finset.prod_pos fun i _ => hy i
@@ -135,76 +145,123 @@ theorem gurvitsFactor_mul_capacity_le_capacity_step {k : ℕ}
       _ = u.eval t := (eval_map_finSuccEquiv p y t).symm
   have hL1 := mul_le_coeff_one_of_splits (splits_map_finSuccEquiv hp y)
     (coeff_map_finSuccEquiv_nonneg hnn fun i => (hy i).le)
-    ((natDegree_map_finSuccEquiv_le p y).trans hdeg) (by lia) hbound
+    ((natDegree_map_finSuccEquiv_le_degreeOf p y).trans hdeg) (by lia) hbound
   rw [coeff_one_map_finSuccEquiv] at hL1
   rw [le_div_iff₀ hprod]
-  calc gurvitsFactor (k + 1) * capacity p * ∏ i, y i
-      = (capacity p * ∏ i, y i) * gurvitsFactor (k + 1) := by ring
+  calc gurvitsFactor d * capacity p * ∏ i, y i
+      = (capacity p * ∏ i, y i) * gurvitsFactor d := by ring
     _ ≤ eval y (step p) := hL1
+
+/-- **Gurvits' inequality.**  For a weakly real-stable `p` in `k + 1` variables with
+nonnegative coefficients and total degree at most `k + 1`,
+`gurvitsFactor (k + 1) * capacity p ≤ capacity (step p)`. -/
+theorem gurvitsFactor_mul_capacity_le_capacity_step {k : ℕ}
+    {p : MvPolynomial (Fin (k + 1)) ℝ} (hp : MvRealStableOrZero p) (hnn : ∀ m, 0 ≤ p.coeff m)
+    (hdeg : p.totalDegree ≤ k + 1) :
+    gurvitsFactor (k + 1) * capacity p ≤ capacity (step p) :=
+  gurvitsFactor_mul_capacity_le_capacity_step_of_degreeOf_le hp hnn
+    ((degreeOf_le_totalDegree p 0).trans hdeg)
+
+/-- **Gurvits' capacity inequality with a degree cap for each variable** (Gurvits 2008,
+Theorem 2.4).  Let `p` be a weakly real-stable polynomial in `k` variables with nonnegative
+coefficients and total degree at most `k`, with `p.degreeOf i ≤ c i` for every `i`.  Then
+`(∏ i, gurvitsFactor (min (c i) (k - i))) * capacity p` is at most `coeffIter k p`, the
+coefficient of `x₀ ⋯ x_{k-1}` in `p` (`coeffIter_eq_coeff_allOnes`).  The variable `x i` is
+eliminated when `k - i` variables remain; the paper eliminates the variables in the opposite
+order, so its index `i` corresponds to `k - i` here. -/
+theorem prod_gurvitsFactor_min_mul_capacity_le_coeffIter :
+    ∀ (k : ℕ) (p : MvPolynomial (Fin k) ℝ) (c : Fin k → ℕ), MvRealStableOrZero p →
+      (∀ m, 0 ≤ p.coeff m) → p.totalDegree ≤ k → (∀ i, p.degreeOf i ≤ c i) →
+      (∏ i : Fin k, gurvitsFactor (min (c i) (k - i))) * capacity p ≤ coeffIter k p
+  | 0, p, _, _, hnn, _, _ => by
+    have h := capacity_le hnn (x := fun i => Fin.elim0 i) fun i => Fin.elim0 i
+    simpa [coeffIter, eval_eq_coeff_zero_of_fin_zero] using h
+  | k + 1, p, c, hs, hnn, hdeg, hc => by
+    have ih := prod_gurvitsFactor_min_mul_capacity_le_coeffIter k (step p) (fun i => c i.succ)
+      hs.step (coeff_step_nonneg hnn) (totalDegree_step_le hdeg)
+      fun i => (degreeOf_step_le p i).trans (hc i.succ)
+    have hnn' : 0 ≤ ∏ i : Fin k, gurvitsFactor (min (c i.succ) (k - i)) :=
+      Finset.prod_nonneg fun i _ => gurvitsFactor_nonneg _
+    have hstep := gurvitsFactor_mul_capacity_le_capacity_step_of_degreeOf_le hs hnn
+      (le_min (hc 0) ((degreeOf_le_totalDegree p 0).trans hdeg))
+    rw [Fin.prod_univ_succ]
+    simp only [Fin.val_zero, Nat.sub_zero, Fin.val_succ, Nat.add_sub_add_right]
+    calc gurvitsFactor (min (c 0) (k + 1)) *
+          (∏ i : Fin k, gurvitsFactor (min (c i.succ) (k - i))) * capacity p
+        = (∏ i : Fin k, gurvitsFactor (min (c i.succ) (k - i))) *
+            (gurvitsFactor (min (c 0) (k + 1)) * capacity p) := by ring
+      _ ≤ (∏ i : Fin k, gurvitsFactor (min (c i.succ) (k - i))) * capacity (step p) :=
+          mul_le_mul_of_nonneg_left hstep hnn'
+      _ ≤ coeffIter k (step p) := ih
+      _ = coeffIter (k + 1) p := rfl
 
 /-- Iterating Gurvits' inequality over all variables. -/
 theorem prod_gurvitsFactor_mul_capacity_le_coeffIter :
     ∀ (k : ℕ) (p : MvPolynomial (Fin k) ℝ), MvRealStableOrZero p → (∀ m, 0 ≤ p.coeff m) →
       p.totalDegree ≤ k →
-      (∏ i ∈ Finset.range k, gurvitsFactor (i + 1)) * capacity p ≤ coeffIter k p
-  | 0, p, _, hnn, _ => by
-    have h := capacity_le hnn (x := fun i => Fin.elim0 i) fun i => Fin.elim0 i
-    simpa [coeffIter, eval_eq_coeff_zero_of_fin_zero] using h
-  | k + 1, p, hs, hnn, hdeg => by
-    have ih := prod_gurvitsFactor_mul_capacity_le_coeffIter k (step p) hs.step
-      (coeff_step_nonneg hnn) (totalDegree_step_le hdeg)
-    have hnn' : 0 ≤ ∏ i ∈ Finset.range k, gurvitsFactor (i + 1) :=
-      Finset.prod_nonneg fun i _ => gurvitsFactor_nonneg _
-    rw [Finset.prod_range_succ]
-    calc (∏ i ∈ Finset.range k, gurvitsFactor (i + 1)) * gurvitsFactor (k + 1) * capacity p
-        = (∏ i ∈ Finset.range k, gurvitsFactor (i + 1)) *
-            (gurvitsFactor (k + 1) * capacity p) := by ring
-      _ ≤ (∏ i ∈ Finset.range k, gurvitsFactor (i + 1)) * capacity (step p) :=
-          mul_le_mul_of_nonneg_left
-            (gurvitsFactor_mul_capacity_le_capacity_step hs hnn hdeg) hnn'
-      _ ≤ coeffIter k (step p) := ih
-      _ = coeffIter (k + 1) p := rfl
+      (∏ i ∈ Finset.range k, gurvitsFactor (i + 1)) * capacity p ≤ coeffIter k p := by
+  intro k p hs hnn hdeg
+  have h := prod_gurvitsFactor_min_mul_capacity_le_coeffIter k p (fun _ => k) hs hnn hdeg
+    fun i => (degreeOf_le_totalDegree p i).trans hdeg
+  have hprod : ∏ i : Fin k, gurvitsFactor (min k (k - i)) =
+      ∏ i ∈ Finset.range k, gurvitsFactor (i + 1) := by
+    rw [← Fin.prod_univ_eq_prod_range fun i => gurvitsFactor (i + 1)]
+    refine Fintype.prod_equiv Fin.revPerm _ _ fun i => ?_
+    rw [Fin.revPerm_apply, Fin.val_rev]
+    congr 1
+    lia
+  rwa [hprod] at h
+
+/-- `∏ i, ∑ j, A i j * x j` is real stable or zero for an entrywise nonnegative `A`: a row with a
+positive entry gives a real-stable linear form, and a zero row makes the product zero. -/
+theorem mvRealStableOrZero_prodLin {σ : Type*} [Fintype σ] {A : Matrix σ σ ℝ}
+    (hA : ∀ i j, 0 ≤ A i j) : MvRealStableOrZero (prodLin A) := by
+  by_cases hrow : ∀ i, ∃ j, 0 < A i j
+  · refine Or.inr (MvRealStable.finset_prod _ _ fun i _ => ?_)
+    obtain ⟨j, hj⟩ := hrow i
+    exact MvRealStable.finset_sum_C_mul_X Finset.univ (A i) id (fun j _ => hA i j)
+      ⟨j, Finset.mem_univ j, hj⟩
+  · push Not at hrow
+    obtain ⟨i, hi⟩ := hrow
+    refine Or.inl (Finset.prod_eq_zero (Finset.mem_univ i) ?_)
+    simp [fun j => le_antisymm (hi j) (hA i j)]
+
+open scoped Finset in
+/-- **Gurvits' capacity bound for the permanent of a sparse matrix** (Gurvits 2008,
+Corollary 2.7(a)).  If `A` is an entrywise nonnegative `n × n` matrix and column `j` has `Δ j`
+nonzero entries, then `(∏ j, gurvitsFactor (min (Δ j) (j + 1))) * capacity (prodLin A) ≤ per A`.
+Columns are numbered from `0` here, so `j + 1` is the column index used in the paper. -/
+theorem prod_gurvitsFactor_min_mul_capacity_prodLin_le_permanent {n : ℕ}
+    {A : Matrix (Fin n) (Fin n) ℝ} (hA : ∀ i j, 0 ≤ A i j) :
+    (∏ j : Fin n, gurvitsFactor (min #{i | A i j ≠ 0} ((j : ℕ) + 1))) * capacity (prodLin A) ≤
+      A.permanent := by
+  -- `step` eliminates `x₀` first, so reverse the columns to give column `j` the cap `j + 1`.
+  have hB : ∀ i j, 0 ≤ A.submatrix id Fin.revPerm i j := fun i j => hA _ _
+  have key := prod_gurvitsFactor_min_mul_capacity_le_coeffIter n
+    (prodLin (A.submatrix id Fin.revPerm)) (fun v => #{i | A i (Fin.rev v) ≠ 0})
+    (mvRealStableOrZero_prodLin hB) (hasNonnegCoeffs_prodLin hB)
+    (by simpa using totalDegree_prodLin_le (A.submatrix id Fin.revPerm))
+    (degreeOf_prodLin_le_card_filter_ne_zero _)
+  rw [coeffIter_eq_coeff_allOnes, coeff_allOnes_prodLin, Matrix.permanent_permute_rows,
+    capacity_prodLin_submatrix_id] at key
+  refine le_of_eq_of_le (congrArg (· * capacity (prodLin A)) ?_) key
+  refine Fintype.prod_equiv Fin.revPerm _ _ fun j => ?_
+  rw [Fin.revPerm_apply, Fin.rev_rev, Fin.val_rev]
+  congr 2
+  lia
 
 /-- **The van der Waerden conjecture** (Egorychev, Falikman; via Gurvits): the permanent of an
 `n × n` doubly stochastic matrix is at least `n! / nⁿ`. -/
 theorem factorial_div_pow_le_permanent {n : ℕ} {A : Matrix (Fin n) (Fin n) ℝ}
     (hA : A ∈ doublyStochastic ℝ (Fin n)) : (n.factorial : ℝ) / n ^ n ≤ A.permanent := by
-  obtain ⟨hnn, hrow, -⟩ := mem_doublyStochastic_iff_sum.1 hA
-  have hcoeff : ∀ m, 0 ≤ (prodLin A).coeff m := by
-    unfold prodLin
-    refine Finset.prod_induction _ (fun q : MvPolynomial (Fin n) ℝ => ∀ m, 0 ≤ q.coeff m)
-      (fun a b ha hb m => ?_) (fun m => ?_) fun i _ m => ?_
-    · rw [coeff_mul]
-      exact Finset.sum_nonneg fun x _ => mul_nonneg (ha _) (hb _)
-    · rw [coeff_one]
-      split_ifs <;> norm_num
-    · rw [coeff_sum]
-      refine Finset.sum_nonneg fun j _ => ?_
-      rw [coeff_C_mul]
-      exact mul_nonneg (hnn i j) (by rw [coeff_X]; split_ifs <;> norm_num)
-  have hstab : MvRealStableOrZero (prodLin A) := by
-    refine Or.inr (MvRealStable.finset_prod _ _ fun i _ => ?_)
-    obtain ⟨j, hj⟩ : ∃ j, 0 < A i j := by
-      by_contra h
-      push Not at h
-      have h0 : ∑ j, A i j = 0 := Finset.sum_eq_zero fun j _ => le_antisymm (h j) (hnn i j)
-      rw [hrow i] at h0
-      norm_num at h0
-    exact MvRealStable.finset_sum_C_mul_X Finset.univ (A i) id (fun j _ => hnn i j)
-      ⟨j, by simp, hj⟩
-  have hdeg : (prodLin A).totalDegree ≤ n := by
-    unfold prodLin
-    refine (totalDegree_finsetProd _ _).trans ?_
-    calc ∑ i, (∑ j, C (A i j) * X j : MvPolynomial (Fin n) ℝ).totalDegree
-        ≤ ∑ _i : Fin n, 1 := Finset.sum_le_sum fun i _ => (totalDegree_finsetSum _ _).trans
-          (Finset.sup_le fun j _ => (totalDegree_mul _ _).trans (by simp))
-      _ = n := by simp
-  have h := prod_gurvitsFactor_mul_capacity_le_coeffIter n (prodLin A) hstab hcoeff hdeg
+  have hnn := (mem_doublyStochastic_iff_sum.1 hA).1
+  have h := prod_gurvitsFactor_mul_capacity_le_coeffIter n (prodLin A)
+    (mvRealStableOrZero_prodLin hnn) (hasNonnegCoeffs_prodLin hnn)
+    (by simpa using totalDegree_prodLin_le A)
   rw [prod_range_gurvitsFactor, coeffIter_eq_coeff_allOnes, coeff_allOnes_prodLin] at h
-  have hpos : (0 : ℝ) ≤ n.factorial / n ^ n := by positivity
   calc (n.factorial : ℝ) / n ^ n = n.factorial / n ^ n * 1 := (mul_one _).symm
     _ ≤ n.factorial / n ^ n * capacity (prodLin A) :=
-        mul_le_mul_of_nonneg_left (one_le_capacity_prodLin hA) hpos
+        mul_le_mul_of_nonneg_left (one_le_capacity_prodLin hA) (by positivity)
     _ ≤ A.permanent := h
 
 end Gurvits

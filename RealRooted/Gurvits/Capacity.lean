@@ -1,14 +1,16 @@
 module
 
 public import Mathlib
+public import RealRooted.Mathlib.Algebra.MvPolynomial.Nonnegative
 
 /-!
 # Capacity and the permanent
 
 The capacity `capacity p = inf_{x > 0} p(x) / ∏ i, x i` of a real multivariate polynomial, the
 permanent as the coefficient of `∏ i, x i` in `prodLin A = ∏ i, ∑ j, A i j * x j`, the bound
-`1 ≤ capacity (prodLin A)` for doubly stochastic `A`, and the extraction of that coefficient
-one variable at a time (`step`: differentiate in `x₀`, then set `x₀ = 0`).
+`1 ≤ capacity (prodLin A)` for doubly stochastic `A`, coefficient and degree bounds for
+`prodLin A`, and the extraction of the coefficient of `∏ i, x i` one variable at a time
+(`step`: differentiate in `x₀`, then set `x₀ = 0`).
 -/
 
 @[expose] public section
@@ -190,6 +192,62 @@ theorem one_le_capacity_prodLin [DecidableEq σ] {A : Matrix σ σ ℝ}
 
 end DoublyStochastic
 
+section ProdLin
+
+open MvPolynomial
+open scoped Finset
+
+variable {σ : Type*} [Fintype σ]
+
+/-- `∏ i, ∑ j, A i j * x j` has nonnegative coefficients when `A` is entrywise nonnegative. -/
+theorem hasNonnegCoeffs_prodLin {A : Matrix σ σ ℝ} (hA : ∀ i j, 0 ≤ A i j) :
+    (prodLin A).HasNonnegCoeffs :=
+  .prod fun i _ => .sum fun j _ => MvPolynomial.HasNonnegCoeffs.mul (.C (hA i j)) (.X j)
+
+/-- `∏ i, ∑ j, A i j * x j` has total degree at most the number of rows of `A`. -/
+theorem totalDegree_prodLin_le (A : Matrix σ σ ℝ) :
+    (prodLin A).totalDegree ≤ Fintype.card σ := by
+  unfold prodLin
+  refine (totalDegree_finsetProd _ _).trans ?_
+  calc ∑ i, (∑ j, C (A i j) * X j : MvPolynomial σ ℝ).totalDegree
+      ≤ ∑ _i : σ, 1 := Finset.sum_le_sum fun i _ => (totalDegree_finsetSum _ _).trans
+        (Finset.sup_le fun j _ => (totalDegree_mul _ _).trans (by simp))
+    _ = Fintype.card σ := by simp
+
+/-- The degree of `∏ i, ∑ j, A i j * x j` in `x j` is at most the number of nonzero entries in
+column `j` of `A`. -/
+theorem degreeOf_prodLin_le_card_filter_ne_zero (A : Matrix σ σ ℝ) (j : σ) :
+    (prodLin A).degreeOf j ≤ #{i | A i j ≠ 0} := by
+  classical
+  rw [Finset.card_filter]
+  refine (degreeOf_prod_le j _ _).trans (Finset.sum_le_sum fun i _ => ?_)
+  refine (degreeOf_sum_le j _ _).trans (Finset.sup_le fun k _ => ?_)
+  by_cases hk : k = j
+  · subst hk
+    by_cases hA : A i k = 0
+    · simp [hA]
+    · simpa [hA, degreeOf_X] using degreeOf_C_mul_le (X k : MvPolynomial σ ℝ) k (A i k)
+  · exact (degreeOf_C_mul_le (X k : MvPolynomial σ ℝ) j (A i k)).trans
+      (by simp [degreeOf_X, Ne.symm hk])
+
+/-- Permuting the columns of `A` does not change the capacity of `∏ i, ∑ j, A i j * x j`. -/
+theorem capacity_prodLin_submatrix_id (A : Matrix σ σ ℝ) (e : σ ≃ σ) :
+    capacity (prodLin (A.submatrix id e)) = capacity (prodLin A) := by
+  let r : {x : σ → ℝ // ∀ i, 0 < x i} ≃ {x : σ → ℝ // ∀ i, 0 < x i} :=
+    (e.arrowCongr (.refl ℝ)).subtypeEquiv fun x =>
+      ⟨fun h _ => h _, fun h i => by simpa using h (e i)⟩
+  unfold capacity
+  refine Equiv.iInf_congr r fun x => ?_
+  change eval (fun j => x.1 (e.symm j)) (prodLin A) / ∏ j, x.1 (e.symm j) =
+    eval x.1 (prodLin (A.submatrix id e)) / ∏ j, x.1 j
+  rw [eval_prodLin, eval_prodLin, e.symm.prod_comp x.1]
+  congr 1
+  refine Finset.prod_congr rfl fun i _ => ?_
+  rw [← e.sum_comp]
+  simp
+
+end ProdLin
+
 section Extraction
 
 open MvPolynomial
@@ -290,6 +348,12 @@ theorem totalDegree_step_add_one_le {p : MvPolynomial (Fin (n + 1)) R} (h : step
   rw [step_eq_coeff_one] at h ⊢
   exact totalDegree_coeff_finSuccEquiv_add_le p 1 h
 
+/-- B2 (one variable): `step` does not raise the degree in any remaining variable. -/
+theorem degreeOf_step_le (p : MvPolynomial (Fin (n + 1)) R) (i : Fin n) :
+    (step p).degreeOf i ≤ p.degreeOf i.succ := by
+  rw [step_eq_coeff_one]
+  exact degreeOf_coeff_finSuccEquiv p i 1
+
 /-- B4 (product): splitting off the first coordinate of `Fin.cons t y`. -/
 theorem prod_fin_cons (t : R) (y : Fin n → R) :
     ∏ i : Fin (n + 1), (Fin.cons t y : Fin (n + 1) → R) i = t * ∏ i, y i := by
@@ -338,11 +402,16 @@ theorem coeff_map_finSuccEquiv_nonneg {p : MvPolynomial (Fin (n + 1)) ℝ}
   rw [finSuccEquiv_coeff_coeff]
   exact hp _
 
-/-- B3 (d): the degree of the restriction is at most the total degree of `p`. -/
+/-- B3 (d): the degree of the restriction is at most the degree of `p` in `x₀`. -/
+theorem natDegree_map_finSuccEquiv_le_degreeOf (p : MvPolynomial (Fin (n + 1)) ℝ)
+    (y : Fin n → ℝ) :
+    (Polynomial.map (MvPolynomial.eval y) (finSuccEquiv ℝ n p)).natDegree ≤ p.degreeOf 0 :=
+  Polynomial.natDegree_map_le.trans (natDegree_finSuccEquiv p).le
+
+/-- B3 (d), coarse form: the degree of the restriction is at most the total degree of `p`. -/
 theorem natDegree_map_finSuccEquiv_le (p : MvPolynomial (Fin (n + 1)) ℝ) (y : Fin n → ℝ) :
     (Polynomial.map (MvPolynomial.eval y) (finSuccEquiv ℝ n p)).natDegree ≤ p.totalDegree :=
-  Polynomial.natDegree_map_le.trans
-    ((natDegree_finSuccEquiv p).trans_le (degreeOf_le_totalDegree p 0))
+  (natDegree_map_finSuccEquiv_le_degreeOf p y).trans (degreeOf_le_totalDegree p 0)
 
 end Real
 
