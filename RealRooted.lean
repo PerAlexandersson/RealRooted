@@ -660,9 +660,13 @@ public import RealRooted.Interlacing.QuadraticPFPreservers
 public import RealRooted.IntervalDifferential.CenteredBasis
 public import RealRooted.IntervalDifferential.CenteredCoordinates
 public import RealRooted.IntervalDifferential.CenteredTransfer
+public import RealRooted.Jacobi.NegativeParameters
 public import RealRooted.Laguerre.FiniteCombinations
 public import RealRooted.MaWang.EndpointClassification
 public import RealRooted.MaWang.EndpointMultiplicity
+public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.Degree
+public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.Indicial
+public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.Solutions
 public import RealRooted.Mathlib.Analysis.Complex.Contour.Argument.Lift
 public import RealRooted.Mathlib.Analysis.Complex.Contour.Cauchy.PrincipalValue.Basic
 public import RealRooted.Mathlib.Analysis.Complex.Contour.Curve.Distance
@@ -695,7 +699,12 @@ public import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Cosecan
 public import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Cotangent
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.EntryDegree
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.PowerTraceSeries
+public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.Multiplicity
+public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.NegativeParameters
+public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.Solutions
 public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.FiniteCombinations
+public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Multiplicity
+public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Solutions
 public import RealRooted.MatrixInterlacing.WeightedThreeStateRows
 public import RealRooted.MatrixInterlacing.WeightedThreeStateStrip
 public import RealRooted.MatrixInterlacing.WeightedThreeStateStripRoots
