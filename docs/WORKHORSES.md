@@ -370,6 +370,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 8 | `RealRooted.coeff_schurSzegoComp` | `RealRooted.Hadamard.Basic` |  |
 | 7 | `Polynomial.coeff_basisTransform` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
 | 7 | `Polynomial.coeff_one_sub_X_pow` | `RealRooted.Mathlib.Algebra.Polynomial.Coeff` | The coefficient of `(1 - X) ^ n` is the signed binomial coefficient. |
+| 7 | `RealRooted.CenteredEulerian.IsEvenPS.coeff_odd` | `RealRooted.CenteredEulerian.Parity` |  |
+| 7 | `RealRooted.CenteredEulerian.coeff_sinS` | `RealRooted.CenteredEulerian.SeriesBasic` |  |
 | 7 | `RealRooted.coeff_hadamardProduct` | `RealRooted.Hadamard.Product` |  |
 | 7 | `RealRooted.coeff_mul_iterate_derivative_of_natDegree_le` | `RealRooted.DerivativeRecurrence.Degree` |  |
 | 7 | `RealRooted.coeff_oddEvenPolynomial_odd` | `RealRooted.HermiteBiehler.OddEven` |  |
@@ -377,16 +379,14 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 7 | `RealRooted.coeff_schurSzegoComp_eq_zero_of_lt` | `RealRooted.Hadamard.Basic` |  |
 | 7 | `RealRooted.routhCoefficient_mul_coeff_zero` | `RealRooted.ClassicalHurwitzMatrix.Routh` |  |
 | 6 | `RealRooted.BorceaBranden.coeff_coordinateDiagonalOperator` | `RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier` |  |
-| 6 | `RealRooted.CenteredEulerian.coeff_sinS` | `RealRooted.CenteredEulerian.SeriesBasic` |  |
 | 6 | `RealRooted.coeff_binomialLift` | `RealRooted.Apolarity` |  |
-| 6 | `RealRooted.coeff_reciprocalShift` | `RealRooted.PFPolynomial` |  |
 
 ## eval
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 417 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
-| 273 | `RealRooted.EffectiveBKW.IntPoly2.eval_add` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate addition. |
+| 425 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
+| 275 | `RealRooted.EffectiveBKW.IntPoly2.eval_add` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate addition. |
 | 19 | `RealRooted.bezoutEntry.wronskian` | `RealRooted.Bezoutian.RootEvaluation` |  |
 | 15 | `RealRooted.eval_pos_of_all_roots_lt` | `RealRooted.WagnerRightSum.Sign` |  |
 | 13 | `RealRooted.eval_complexify_ne_zero_of_splits_of_im_pos` | `RealRooted.HermiteBiehler.Basic` | A nonzero split real polynomial has no root in the open upper half-plane. |
@@ -424,7 +424,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 13 | `RealRooted.TuranHurwitz.derivative_map` | `RealRooted.TuranHurwitz.CoefficientDerivation` | Formal differentiation commutes with mapping the coefficient ring. |
+| 14 | `RealRooted.TuranHurwitz.derivative_map` | `RealRooted.TuranHurwitz.CoefficientDerivation` | Formal differentiation commutes with mapping the coefficient ring. |
 | 8 | `RealRooted.generalizedEulerian_succ` | `RealRooted.GeneralizedEulerian` |  |
 | 7 | `RealRooted.div_ofNat_eq_C_mul` | `RealRooted.DerivativeRecurrence.SecondOrderODE` | Division by a numeral, as generated recurrences write `(1 / 2) * X`. |
 | 7 | `RealRooted.isNonnegLinearForm_one` | `RealRooted.RowThreshold` |  |
@@ -475,10 +475,10 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 4 | `RealRooted.ne_zero_of_isRealRooted_sequence` | `RealRooted.SequenceClosure` | Project row-wise nonvanishing from a sequence real-rootedness certificate. |
 | 3 | `Matrix.exists_ordered_minor_ne_zero_of_mulVec_injective` | `RealRooted.Mathlib.LinearAlgebra.Matrix.Determinant.CauchyBinet` | Full column rank gives a nonzero maximal minor on strictly increasing rows. |
 | 3 | `RealRooted.CommonInterleaver.rootSeqDesc_reverse_ne_nil_of_natDegree_pos` | `RealRooted.CommonInterleaver.RootDesc` |  |
+| 3 | `RealRooted.IntervalDifferential.zigzagTransform_ne_zero` | `RealRooted.IntervalDifferential.Degree` | The centered zigzag transform of a nonzero polynomial is nonzero. |
 | 3 | `RealRooted.IsStrictlyHurwitzStable.C` | `RealRooted.ClassicalHurwitzMatrix.Stability` |  |
 | 3 | `RealRooted.LiuOppositeSigns.IsLargestRoot.deleteRootFactor_ne_zero` | `RealRooted.LiuOppositeSigns.RootDeletion` |  |
 | 3 | `RealRooted.ZigzagEulerian.zigzagEulerianPolynomial_ne_zero` | `RealRooted.CombinatorialExamples.ZigzagEulerian.Definitions` | The alternating class contains the explicit pair-swapping witness, so its actual generating polynomial is nonzero at every size. |
-| 3 | `RealRooted.evenDerivativeTest_ne_zero` | `RealRooted.EvenDerivative.Basic` | For `c 0 = 1` the test polynomial `p_N` is nonzero. |
 
 ## inequality
 
@@ -534,11 +534,11 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 7 | `Polynomial.basisTransform_finset_sum` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` | A basis transform distributes over a finite polynomial sum. |
 | 7 | `Polynomial.momentPairingBilinForm_apply` | `RealRooted.Mathlib.Algebra.Polynomial.Moment` |  |
 | 7 | `RealRooted.BigDescents321.SmallCases.ofList_nil` | `RealRooted.CombinatorialExamples.BigDescents321.SmallCases.ListPoly` |  |
+| 7 | `RealRooted.CenteredEulerian.constantCoeff_cosS` | `RealRooted.CenteredEulerian.SeriesBasic` |  |
+| 7 | `RealRooted.CenteredEulerian.constantCoeff_sinS` | `RealRooted.CenteredEulerian.SeriesBasic` |  |
+| 7 | `RealRooted.CenteredEulerian.cosS_mul_secS` | `RealRooted.CenteredEulerian.SeriesBasic` |  |
 | 7 | `RealRooted.exists_index_eq_of_mem_roots` | `RealRooted.Bezoutian.WronskianConverse` |  |
 | 7 | `RealRooted.gammaTransform_C_mul` | `RealRooted.GammaTransform.Basic` |  |
-| 7 | `RealRooted.jensenPolynomial_eq_diagonalOperator_X_add_one_pow` | `RealRooted.MultiplierSequence` | The Jensen polynomial of `gamma` is the image of `(X + 1) ^ n` under the diagonal operator attached to `gamma`. |
-| 7 | `RealRooted.schurSzegoComp_C_mul_left` | `RealRooted.Hadamard.Basic` | Scalars pull out of the left argument of a Schur--Szego composition. |
-| 6 | `List.sum_map_range` | `RealRooted.Mathlib.Algebra.BigOperators.Group.List` |  |
 
 ## other
 
