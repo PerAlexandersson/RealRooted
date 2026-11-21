@@ -3,6 +3,86 @@
   "entries": [
     {
       "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/DifferentialEquation/Degree.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.DifferentialEquation.Degree"
+      ],
+      "note": "Polynomial ODE indicial, degree, multiplicity, or recognition API (#2343). Unpublished proof notes in the corresponding RealRooted issue; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/DifferentialEquation/Indicial.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.DifferentialEquation.Indicial"
+      ],
+      "note": "Polynomial ODE indicial, degree, multiplicity, or recognition API (#2341). Unpublished proof notes in the corresponding RealRooted issue; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/DifferentialEquation/Solutions.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.DifferentialEquation.Solutions"
+      ],
+      "note": "Polynomial ODE indicial, degree, multiplicity, or recognition API (#2343). Unpublished proof notes in the corresponding RealRooted issue; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Jacobi/Multiplicity.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Jacobi.Multiplicity"
+      ],
+      "note": "Polynomial ODE indicial, degree, multiplicity, or recognition API (#2341). Unpublished proof notes in the corresponding RealRooted issue; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Jacobi/NegativeParameters.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Jacobi.NegativeParameters"
+      ],
+      "note": "Polynomial ODE indicial, degree, multiplicity, or recognition API (#2341). Unpublished proof notes in the corresponding RealRooted issue; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Jacobi/Solutions.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Jacobi.Solutions"
+      ],
+      "note": "Polynomial ODE indicial, degree, multiplicity, or recognition API (#2341). Unpublished proof notes in the corresponding RealRooted issue; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Laguerre/Multiplicity.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Laguerre.Multiplicity"
+      ],
+      "note": "Polynomial ODE indicial, degree, multiplicity, or recognition API (#2341). Unpublished proof notes in the corresponding RealRooted issue; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Laguerre/Solutions.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Laguerre.Solutions"
+      ],
+      "note": "Polynomial ODE indicial, degree, multiplicity, or recognition API (#2343). Unpublished proof notes in the corresponding RealRooted issue; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
         "RealRooted/Mathlib/Algebra/Polynomial/NewtonPartialProducts.lean"
       ],
       "modules": [
