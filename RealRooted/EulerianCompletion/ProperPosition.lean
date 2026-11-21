@@ -33,7 +33,7 @@ theorem loweringEulerStep_strictInterl_self_of_reflect {M : ℕ} {p : ℝ[X]}
     rw [reciprocalShift, hsym, hpdeg]
     exact hM
   have hpolar : StrictInterl (polarTheta M p) p :=
-    strictInterl_polarTheta_self hp hpdeg.le hshift
+    strictInterl_polarTheta_self hp hpdeg.le (by lia)
   have hderiv : StrictInterl p.derivative p :=
     (derivative_interlaces_of_natDegree_ne_zero (hp.ne_zero_and_splits hp0).2
       (by lia)).toStrictInterl
