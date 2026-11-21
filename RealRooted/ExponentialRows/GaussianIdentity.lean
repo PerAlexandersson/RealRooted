@@ -79,7 +79,7 @@ theorem gaussianEval_hermiteAuxiliary_eq_insertionRow (β γ c : ℝ) (t : ℂ) 
   let w := markedBlockWeights
     (C (γ + c * β ^ 2) * X ^ 2 + C (2 * c * β) * X ^ 3 + C c * X ^ 4)
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
     rcases n with (_ | _ | _ | _ | n)
     · simp [hermiteAuxiliary, insertionRow_zero]
     · simp [hermiteAuxiliary, insertionRow_succ, markedBlockWeights]

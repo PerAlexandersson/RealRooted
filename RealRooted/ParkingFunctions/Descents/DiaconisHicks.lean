@@ -52,9 +52,9 @@ theorem card_lt_eq_of_ofFn_perm {n m : ℕ} {w v : Fin n → Fin m}
       (Finset.univ.filter fun i => (v i).val < k).card := by
   rw [show (Finset.univ.filter fun i => (w i).val < k).card =
         List.countP (fun x => decide (x.val < k)) (List.ofFn w) by
-      simpa using List.card_filter_univ_eq_countP_ofFn w (fun x => decide (x.val < k))]
+      simp]
   rw [h.countP_eq]
-  simpa using (List.card_filter_univ_eq_countP_ofFn v (fun x => decide (x.val < k))).symm
+  simp
 
 /-- The parking-function condition depends only on the word's value multiset. -/
 theorem isParkingFunction_iff_of_ofFn_perm {n : ℕ} {w v : Fin n → Fin n}

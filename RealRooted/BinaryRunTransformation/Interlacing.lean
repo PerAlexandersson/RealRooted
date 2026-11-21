@@ -34,7 +34,7 @@ theorem binaryRunTransform_ne_zero {n : ℕ} {p : ℝ[X]}
     rw [binaryRunTransform, Polynomial.coeff_basisTransform, Polynomial.sum_def]
     refine Finset.sum_pos' (fun m _ =>
       mul_nonneg (hp m) (hasNonnegCoeffs_binaryRunPolynomial n m _))
-      ⟨p.natDegree, natDegree_mem_support_of_nonzero hp0, mul_pos ?_ ?_⟩
+      ⟨p.natDegree, natDegree_mem_support_of_ne_zero hp0, mul_pos ?_ ?_⟩
     · exact (hp _).lt_of_ne' (leadingCoeff_ne_zero.mpr hp0)
     · rcases Nat.eq_zero_or_pos p.natDegree with h0 | h0
       · simp [h0]

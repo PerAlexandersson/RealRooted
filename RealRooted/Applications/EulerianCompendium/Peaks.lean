@@ -45,7 +45,7 @@ theorem peakPolynomial_coeff (n k : ℕ) :
     ext π
     simp [eq_comm]
   rw [peakPolynomial_eq_sum_peakCount]
-  simp [Equiv.Perm.peakNumber, finsetSum_coeff, coeff_X_pow, hfilter]
+  simp [Equiv.Perm.peakNumber, coeff_X_pow, hfilter]
 
 /-- The degree of the peak enumerator is exactly the largest possible number
 of interior peaks; this is the degree assertion in `thm:permutationPeaks`. -/
@@ -131,7 +131,7 @@ theorem peakPolynomial_succ (n : ℕ) (hn : 1 ≤ n) :
       (C 2 * X + C (-2) * X ^ 2) * (peakPolynomial n).derivative +
         (C 2 + C ((n - 1 : ℕ) : ℝ) * X) * peakPolynomial n := by
   classical
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   cases k with
   | zero =>
@@ -142,7 +142,7 @@ theorem peakPolynomial_succ (n : ℕ) (hn : 1 ≤ n) :
           Equiv.Perm.peakNumber_succ_zero, pow_succ]
         ring
       rw [peakPolynomial_coeff, hcount]
-      simp [coeff_add, peakPolynomial_coeff]
+      simp [peakPolynomial_coeff]
   | succ k =>
       rw [peakPolynomial_coeff]
       have hcoeff := Polynomial.coeff_quadratic_derivative_add_linear_mul_succ

@@ -72,7 +72,7 @@ theorem spanningTreePoly_eq_realDetPencil (r : V) :
   rw [spanningTreePoly, ← G.det_weightedLapMatrix_submatrix (fun e => X e) r, realDetPencil]
   congr 1
   funext i j
-  rw [submatrix_apply, G.weightedLapMatrix_eq_mul, mul_apply]
+  rw [submatrix_apply, G.weightedLapMatrix_eq_mul, Matrix.mul_apply]
   simp only [mul_diagonal, transpose_apply, Matrix.zero_apply, map_zero, zero_add,
     orientedIncMatrix_map, edgePencilMatrix]
   refine Finset.sum_congr rfl fun e _ => ?_

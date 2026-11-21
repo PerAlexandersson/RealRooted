@@ -743,7 +743,7 @@ theorem polynomial_natDegree {u v : ℝ} (hu : 0 < u) (hv : 0 ≤ v) :
     ∀ n, (polynomial u v n).natDegree = n / 2 := by
   intro m
   induction m using Nat.strong_induction_on with
-  | h m ih =>
+  | ind m ih =>
       by_cases hsmall : m < 4
       · exact polynomial_natDegree_of_lt_four hu hv hsmall
       · obtain ⟨n, rfl⟩ : ∃ n, m = n + 4 := ⟨m - 4, by lia⟩
@@ -773,7 +773,7 @@ theorem eq_polynomial_of_satisfiesRecurrence {u v : ℝ} {P : ℕ → ℝ[X]}
     (hP : SatisfiesRecurrence u v P) : ∀ n, P n = polynomial u v n := by
   intro m
   induction m using Nat.strong_induction_on with
-  | h m ih =>
+  | ind m ih =>
       rcases hP with ⟨h0, h1, h2, h3, hrec⟩
       by_cases hsmall : m < 4
       · have hm : m ≤ 3 := by lia

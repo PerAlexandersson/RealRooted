@@ -122,8 +122,8 @@ theorem natDegree_X_mul_sub_C_mul_eq_right_natDegree_of_right_natDegree_eq_left_
     (h.natDegree_X_mul_sub_C_mul_le_right_natDegree_of_right_natDegree_eq_left_add_one
       hdeg μ) ?_
   apply le_natDegree_of_ne_zero
-  simpa [coeff_X_mul_sub_C_mul_right_natDegree_of_right_natDegree_eq_left_add_one
-    hdeg μ] using hcoeff
+  rw [coeff_X_mul_sub_C_mul_right_natDegree_of_right_natDegree_eq_left_add_one hdeg μ]
+  exact hcoeff
 
 /-- Leading coefficient of the x-subtraction pencil in the non-cancelling
 right-successor case. -/
@@ -178,8 +178,8 @@ theorem natDegree_X_mul_sub_C_mul_lt_right_natDegree_of_right_natDegree_eq_left_
   intro hnat
   have htop_zero :
       (X * p - C μ * q).coeff q.natDegree = 0 := by
-    simpa [coeff_X_mul_sub_C_mul_right_natDegree_of_right_natDegree_eq_left_add_one
-      hdeg μ] using hcoeff
+    rw [coeff_X_mul_sub_C_mul_right_natDegree_of_right_natDegree_eq_left_add_one hdeg μ]
+    exact hcoeff
   have hP_ne : X * p - C μ * q ≠ 0 := by
     intro hzero
     have hqdeg_zero : q.natDegree = 0 := by

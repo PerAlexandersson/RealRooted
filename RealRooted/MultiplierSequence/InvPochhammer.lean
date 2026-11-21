@@ -37,7 +37,7 @@ theorem C_mul_jensenPolynomial_inv_ascPochhammer {α : ℝ} (hα : 0 < α) (n : 
   ext j
   rw [coeff_C_mul, jensenPolynomial, generalizedLaguerre, finsetSum_coeff,
     finsetSum_coeff]
-  simp only [coeff_monomial, coeff_C_mul_X_pow]
+  simp only [coeff_monomial, Finsupp.single_apply, coeff_C_mul_X_pow]
   rw [Finset.sum_eq_single j (fun b _ hb => by simp [hb]) (fun h => by
       rw [Nat.choose_eq_zero_of_lt (by simpa using h)]
       simp),

@@ -64,7 +64,7 @@ private lemma eq_quadratic_of_third_difference {d : ℕ} (g : ℕ → ℝ)
         (g 1 - g 0 - (g 2 - 2 * g 1 + g 0) / 2) * k + g 0 := by
   intro k
   induction k using Nat.strong_induction_on with
-  | h k ih =>
+  | ind k ih =>
       intro hk
       rcases k with (_ | _ | _ | k)
       · simp

@@ -230,7 +230,7 @@ theorem aissenSchoenbergWhitneyForwardSplits {p : ℝ[X]}
     p.Splits := by
   revert hpf
   induction hdeg : p.natDegree using Nat.strong_induction_on generalizing p with
-  | h d ih =>
+  | ind d ih =>
       intro hpf
       by_cases hp0 : p = 0
       · exact hp0 ▸ Polynomial.Splits.zero
@@ -600,6 +600,6 @@ theorem IsPolyaFreqSeq.of_forall_pos_add_C_mul_splits {p q : ℝ[X]}
       convert aissenSchoenbergWhitney_reverse hnn (hfamily hμ)
         (roots_nonpos_of_hasNonnegCoeffs hnn) using 1
       funext n
-      simp [Polynomial.coeff_add, Polynomial.coeff_C_mul])
+      simp [Polynomial.coeff_C_mul])
 
 end RealRooted

@@ -107,7 +107,7 @@ private theorem coeff_zero_weightedGapPolynomial {d : ℕ} [NeZero d]
     (a : Fin d → ℝ) (ℓ N : ℕ) :
     (weightedGapPolynomial a ℓ N).coeff 0 = 1 := by
   induction N using Nat.strong_induction_on with
-  | h N ih =>
+  | ind N ih =>
       rcases N with _ | N
       · simp [weightedGapPolynomial]
       · rw [weightedGapPolynomial, coeff_add]
@@ -119,7 +119,7 @@ private theorem coeff_weightedGapPolynomial_succ {d : ℕ} [NeZero d]
       (periodicRenewalProduct a (N - d * ℓ * j)).coeff (j + 1) := by
   revert j
   induction N using Nat.strong_induction_on with
-  | h N ih =>
+  | ind N ih =>
       intro j
       rcases N with _ | N
       · simp [weightedGapPolynomial, periodicRenewalProduct]

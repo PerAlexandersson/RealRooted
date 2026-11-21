@@ -62,7 +62,7 @@ theorem polynomialOrbitMap_mul_X_add_C
     polynomialOrbitMap L g (p * (X + C a)) =
       (L + a • (1 : Module.End ℝ V)) (polynomialOrbitMap L g p) := by
   rw [polynomialOrbitMap_apply, polynomialOrbitMap_apply, mul_comm, map_mul,
-    Module.End.mul_apply]
+    mul_apply_eq_comp]
   simp [Algebra.algebraMap_eq_smul_one]
 
 /-- For polynomial-valued orbits, `polynomialOrbitMap` is the existing basis
@@ -114,7 +114,7 @@ theorem basisMap_factorization_of_scalarIndex_recurrence
   have hsucc' : ∀ j, P (j + 1) =
       (L + ((j : ℝ) * h) • (1 : Module.End ℝ M)) (P j) := by
     intro j
-    simpa only [LinearMap.add_apply, LinearMap.smul_apply, Module.End.one_apply]
+    simpa only [LinearMap.add_apply, LinearMap.smul_apply, one_apply_eq_self]
       using hsucc j
   have hrow := scalarIndexRow_eq_polynomialOrbitMap L g h P hzero hsucc' n
   simp only [LinearMap.coe_comp, Function.comp_apply, Polynomial.lsum_apply,

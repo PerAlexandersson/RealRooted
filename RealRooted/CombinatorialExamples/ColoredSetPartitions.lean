@@ -21,6 +21,7 @@ recurrence, including the type `B` specialization.
 @[expose] public section
 
 open Polynomial
+open AddMonoidAlgebra (coeff)
 
 noncomputable section
 

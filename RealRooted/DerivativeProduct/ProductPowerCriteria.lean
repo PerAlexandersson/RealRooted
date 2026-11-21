@@ -150,7 +150,7 @@ theorem forall_isRealRootedIn_derivProductPow_iff (ha : 0 < a) (hw : w.natDegree
       | zero => exact fun p hp ↦ by simpa using hp
       | succ m ih =>
         intro p hp
-        rw [pow_succ', Module.End.mul_apply, derivProductLinearMap_apply]
+        rw [pow_succ', mul_apply_eq_comp, derivProductLinearMap_apply]
         exact assocProduct_isRealRootedIn_univ ha hw hA hQW (ih p hp)
     obtain ⟨m, rfl | rfl⟩ := Nat.even_or_odd' n
     · rw [derivProductPow_two_mul ha hw hA]

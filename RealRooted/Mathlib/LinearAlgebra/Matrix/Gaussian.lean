@@ -72,7 +72,7 @@ theorem tendsto_gaussianMatrix_atTop (n : ℕ) :
   intro j
   by_cases hij : i = j
   · subst j
-    simp only [gaussianMatrix_apply_self, one_apply, ite_eq_left]
+    simp only [gaussianMatrix_apply_self, Matrix.one_apply, ite_eq_left]
     exact tendsto_const_nhds
   · have hcast :
         (((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)) ≠ 0 := by
@@ -356,7 +356,6 @@ theorem det_adjacentRowDiff_exponentialKernelMatrix_pos {n : ℕ}
   have hsupp : Function.support
       (fun t : Fin n → ℝ => (Matrix.of fun i j => f i (t i) j).det) =ᵐ[Measure.pi μ]
       Set.univ := hpoint_pos.mono fun t ht => by
-    apply propext
     change ((Matrix.of fun i j => f i (t i) j).det ≠ 0) ↔ True
     exact iff_true_intro ht.ne'
   rw [integral_pos_iff_support_of_nonneg_ae

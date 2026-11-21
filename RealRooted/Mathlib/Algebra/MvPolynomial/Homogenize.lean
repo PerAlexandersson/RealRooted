@@ -61,22 +61,6 @@ theorem HasNonnegCoeffs.dehomogenize {σ : Type*}
   | none => simpa using (HasNonnegCoeffs.one (σ := σ))
   | some i => exact HasNonnegCoeffs.X i
 
-/-- Evaluating a homogeneous polynomial after scaling every variable scales
-the value by the corresponding power. -/
-theorem IsHomogeneous.eval_smul {σ R : Type*} [CommSemiring R]
-    {p : MvPolynomial σ R} {d : ℕ} (hp : p.IsHomogeneous d)
-    (a : R) (z : σ → R) :
-    eval (fun i => a * z i) p = a ^ d * eval z p := by
-  classical
-  rw [eval_eq, eval_eq, Finset.mul_sum]
-  apply Finset.sum_congr rfl
-  intro m hm
-  have hmdeg : ∑ i ∈ m.support, m i = d := by
-    simpa [Finsupp.degree] using (hp.degree_eq_sum_deg_support hm).symm
-  simp only [mul_pow, Finset.prod_mul_distrib]
-  rw [Finset.prod_pow_eq_pow_sum, hmdeg]
-  ring
-
 /-- Evaluation of ordinary homogenization as a sum of evaluated homogeneous
 components. -/
 theorem eval_ordinaryHomogenization {σ R : Type*} [CommSemiring R]
@@ -390,8 +374,9 @@ theorem eval_ordinaryHomogenization_eq_pow_mul_eval_div
   have hk_le : k ≤ d := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
   have hscale := (homogeneousComponent_isHomogeneous k p).eval_smul
     y (fun i => z i / y)
-  have hfun : (fun i => y * (z i / y)) = z := by
+  have hfun : y • (fun i => z i / y) = z := by
     funext i
+    change y * (z i / y) = z i
     rw [div_eq_mul_inv, ← mul_assoc, mul_comm y (z i), mul_assoc,
       mul_inv_cancel₀ hy, mul_one]
   rw [hfun] at hscale

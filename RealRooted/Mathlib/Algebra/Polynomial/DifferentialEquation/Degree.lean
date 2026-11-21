@@ -30,7 +30,7 @@ variable {K : Type*} [Field K]
     K[X] →ₗ[K] K[X] where
   toFun p := ∑ j ∈ Finset.range (d + 1), A j * derivative^[j] p
   map_add' p q := by
-    simp [← Module.End.pow_apply, mul_add, Finset.sum_add_distrib]
+    simp [← pow_apply_eq_iterate, mul_add, Finset.sum_add_distrib]
   map_smul' c p := by
     simp [iterate_derivative_smul, Finset.smul_sum]
 

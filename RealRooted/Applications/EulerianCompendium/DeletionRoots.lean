@@ -335,7 +335,7 @@ compatible. This is the induction behind paper `thm:largerFamily`. -/
 theorem deletionComponents_compatible (a k : ℕ) :
     Compatible (deletionFirst a k) (deletionSecond a k) := by
   induction k using Nat.strong_induction_on with
-  | h k ih =>
+  | ind k ih =>
     cases k with
     | zero => exact deletionComponents_zero_compatible a
     | succ j =>

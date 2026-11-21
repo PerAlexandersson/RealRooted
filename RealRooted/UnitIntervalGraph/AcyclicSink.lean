@@ -971,7 +971,7 @@ theorem acyclicSinkPolynomial_take_comp_X_add_one {q : ℝ} (hq : 0 ≤ q)
       C (a.prefixNormalization q k) *
         Graph.weightedIndepPolyOn a.graph (a.prefixSupport k) (weight a q) := by
   induction k using Nat.strong_induction_on with
-  | h k ih =>
+  | ind k ih =>
       cases k with
       | zero =>
           simp [Data.prefixNormalization, Data.prefixSupport,

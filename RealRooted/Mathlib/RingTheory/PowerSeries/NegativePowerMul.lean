@@ -26,7 +26,7 @@ theorem eq_of_negPower_ode {R : Type*} [CommRing R] [IsDomain R] [CharZero R]
     (hr : H * derivative r + C κ * derivative H * r = 0) : q = r := by
   ext n
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
     cases n with
     | zero => simpa only [coeff_zero_eq_constantCoeff_apply] using hzero
     | succ n =>

@@ -117,7 +117,7 @@ private theorem motzkinRef_eq_motzkinList (k : ℕ) (hk : k ≤ 22) :
     (motzkinRef k : ℝ[X]) = ofList (motzkinList k) := by
   revert hk
   induction k using Nat.strong_induction_on with
-  | h k ih =>
+  | ind k ih =>
     match k with
     | 0 => intro _; simp [motzkinList, motzkinRows, ofList_singleton]
     | 1 =>
@@ -163,7 +163,7 @@ private theorem bigDescentPoly_eq_bigDescentList (n : ℕ) (hn : n ≤ 24) :
     (bigDescentPoly n : ℝ[X]) = ofList (bigDescentList n) := by
   revert hn
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
     match n with
     | 0 => intro _; simp [bigDescentList, bigDescentRows, ofList_singleton]
     | n + 1 =>

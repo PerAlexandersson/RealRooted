@@ -380,7 +380,7 @@
       "modules": [
         "Mathlib.Algebra.MvPolynomial.Homogenize"
       ],
-      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet. Mathlib v4.36.0 now supplies `IsHomogeneous.eval_smul`; its local declaration was removed.",
       "speculative": true
     },
     {
@@ -810,7 +810,7 @@
       "modules": [
         "Mathlib.Algebra.Polynomial.Roots"
       ],
-      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet. Mathlib v4.36.0 now supplies `rootMultiplicity_C_mul`; its local declaration was removed.",
       "speculative": true
     },
     {
@@ -879,7 +879,7 @@
       "modules": [
         "Mathlib.Algebra.Polynomial.Taylor"
       ],
-      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet. Mathlib v4.36.0 now supplies `taylor_derivative`; its local declaration was removed.",
       "speculative": true
     },
     {

@@ -95,7 +95,7 @@ theorem eval_newtonPolynomial (s : ℝ) (k j : ℕ) :
 theorem eval_newtonPolynomial_eq_zero {s : ℝ} {j k : ℕ} (hjk : j < k) :
     (newtonPolynomial s k).eval (eigenvalue s j) = 0 := by
   rw [eval_newtonPolynomial,
-    descPochhammer_eval_coe_nat_of_lt (R := ℝ) hjk, zero_mul]
+    descPochhammer_eval_natCast_of_lt (R := ℝ) hjk, zero_mul]
 
 theorem eval_newtonPolynomial_pos {s : ℝ} (hs : 0 < s)
     {j k : ℕ} (hkj : k ≤ j) :

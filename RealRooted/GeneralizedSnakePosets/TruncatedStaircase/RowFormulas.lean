@@ -26,7 +26,7 @@ private lemma listSum_coeff (ps : List ℝ[X]) (k : ℕ) :
   | nil =>
       simp
   | cons p ps ih =>
-      simp [ih, Polynomial.coeff_add]
+      simp [ih]
 
 /-- Truncated-staircase rook polynomials are nonzero. -/
 theorem truncatedStaircaseRookPolynomial_ne_zero (n i : ℕ) :

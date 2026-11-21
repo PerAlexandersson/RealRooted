@@ -165,7 +165,7 @@ private def ev (f : Q⟦X⟧) : (Polynomial ℝ)⟦X⟧ :=
 private lemma coeff_ev (f : Q⟦X⟧) (n k : ℕ) :
     (coeff n (ev f)).coeff k = if k ≤ n then coeff k (coeff (n - k) f) else 0 := by
   rw [ev, coeff_mk, Polynomial.finsetSum_coeff]
-  simp only [Polynomial.coeff_monomial]
+  simp only [Polynomial.coeff_monomial, Finsupp.single_apply]
   split_ifs with h
   · rw [sum_eq_single (n - k, k)]
     · simp

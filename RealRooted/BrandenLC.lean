@@ -490,7 +490,7 @@ private lemma descFactorial_div_tendsto (c j : ℕ) :
   have hQd : Q.natDegree = j := by rw [natDegree_pow, natDegree_X_add_C, mul_one]
   have hdeg : P.degree = Q.degree := by
     rw [degree_eq_natDegree hPm.ne_zero, degree_eq_natDegree hQm.ne_zero, hPd, hQd]
-  have := (Polynomial.div_tendsto_atTop_leadingCoeff_div_of_degree_eq P Q hdeg).comp
+  have := (Polynomial.div_tendsto_atTop_leadingCoeff_div_of_degree_eq hdeg).comp
     tendsto_natCast_atTop_atTop
   rw [hPm.leadingCoeff, hQm.leadingCoeff, div_one] at this
   refine this.congr fun N => ?_
@@ -880,8 +880,8 @@ private lemma UV_eq_PhiD (p : ℝ[X]) (hs : p.Splits) (s : ℂ) :
 private lemma factor_ne_zero (r : ℝ) {s : ℂ} (hs : s ≠ 0) :
     C ((r : ℂ) ^ 2 - s ^ 2) + C (-(r : ℂ) * s) * X ≠ 0 := by
   intro h
-  have h0 := congrArg (coeff · 0) h
-  have h1 := congrArg (coeff · 1) h
+  have h0 := congrArg (AddMonoidAlgebra.coeff · 0) h
+  have h1 := congrArg (AddMonoidAlgebra.coeff · 1) h
   simp only [coeff_add, coeff_C_mul, coeff_X_zero, mul_zero, add_zero,
     coeff_zero, coeff_C, coeff_X_one, mul_one, one_ne_zero, ite_false, zero_add, ite_true] at h0 h1
   have hr : (r : ℂ) = 0 := by

@@ -41,7 +41,7 @@ theorem cancel_lin_nonneg {a b D j : ℝ} (hj : 0 ≤ j) (hjD : j ≤ D) (hb : 0
 
 theorem cancel_coeff_zero {A B f : ℝ[X]} (hA0 : A.coeff 0 = 0) :
     (A * f.derivative + B * f).coeff 0 = B.coeff 0 * f.coeff 0 := by
-  simp [Polynomial.coeff_add, Polynomial.coeff_mul, hA0]
+  simp [Polynomial.coeff_mul, hA0]
 
 theorem cancel_coeff_succ {A B f : ℝ[X]}
     (hA : A.natDegree ≤ 2) (hB : B.natDegree ≤ 1) (hA0 : A.coeff 0 = 0)

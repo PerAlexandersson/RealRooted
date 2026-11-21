@@ -390,7 +390,7 @@ theorem coeff_diagonalProjection_self {n : ℕ} {P : MvPolynomial (Fin n) ℂ}
     (diagonalProjection n P).coeff n = P.coeff (∑ i, Finsupp.single i 1) := by
   conv_lhs => rw [hsym.eq_sum_C_mul_esymm hma]
   simp only [map_sum, ← MvPolynomial.smul_eq_C_mul, map_smul, diagonalProjection_esymm,
-    Polynomial.finsetSum_coeff, Polynomial.coeff_smul, Polynomial.coeff_C_mul,
+    Polynomial.finsetSum_coeff, AddMonoidAlgebra.coeff_smul_apply, Polynomial.coeff_C_mul,
     Polynomial.coeff_X_pow]
   rw [Finset.sum_eq_single n (fun k _ hk => by simp [Ne.symm hk]) (by simp)]
   simp

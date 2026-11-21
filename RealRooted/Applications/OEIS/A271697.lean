@@ -67,15 +67,8 @@ theorem a271697_quotient_step (n : ℕ) (p q : ℝ[X]) :
       C ((n : ℝ) + 1) * X * (X * p) =
     X * ((X - X ^ 2) * q.derivative + (1 + C (n : ℝ) * X) * q +
       C ((n : ℝ) + 1) * X * p) := by
-  have h := PersistentZero.weylLag_mul_X_pow 1 (C ((n : ℝ) + 1) * X) (1 - X)
-    (C ((n : ℝ) + 1) * X) p q
-  simp only [pow_one, Nat.cast_one, C_1, one_mul] at h
-  calc
-    _ = C ((n : ℝ) + 1) * X * (X * q) + X * (1 - X) * (X * q).derivative +
-        C ((n : ℝ) + 1) * X * (X * p) := by ring
-    _ = X * (((C ((n : ℝ) + 1) * X + (1 - X)) * q +
-        X * (1 - X) * q.derivative) + C ((n : ℝ) + 1) * X * p) := h
-    _ = _ := by rw [C_add, C_1]; ring
+  simp only [derivative_mul, derivative_X, one_mul, map_add, map_one]
+  ring
 
 /-- The A271697 and A046739 recurrences propagate the tail factorization
 `P (n + 4) = X * Q n` from two consecutive seed identities. -/
@@ -103,7 +96,8 @@ theorem a271697_tail_eq {P Q : ℕ → ℝ[X]}
         _ = X * ((X - X ^ 2) * (Q (n + 1)).derivative +
             (1 + C ((n + 4 : ℕ) : ℝ) * X) * Q (n + 1) +
             C ((n + 4 : ℕ) + 1 : ℝ) * X * Q n) :=
-          a271697_quotient_step (n + 4) (Q n) (Q (n + 1))
+          by simpa only [Nat.cast_add, Nat.cast_ofNat] using
+            a271697_quotient_step (n + 4) (Q n) (Q (n + 1))
         _ = X * Q (n + 2) := by rw [hQ n]; push_cast; ring
 
 /-- The A271697 seeds `1, 0` and the A046739 seed polynomials give

@@ -188,7 +188,7 @@ lemma wronskian2_ne_zero (n m : ℕ) (hm : 2 ≤ m) (hmn : m + 2 ≤ n) (t : ℝ
       (natDegree_sub_le _ _).trans (max_le hgdeg.le ((natDegree_smul_le _ _).trans (by lia)))
     have hne : g - c • f ≠ 0 := by
       intro h0; have := congrArg (fun P => P.coeff (m + 2)) h0
-      simp only [coeff_sub, coeff_smul, smul_eq_mul, coeff_zero] at this
+      simp only [coeff_sub, AddMonoidAlgebra.coeff_smul_apply, smul_eq_mul, coeff_zero] at this
       rw [coeff_eq_zero_of_natDegree_lt (by lia : f.natDegree < m + 2), ← hgdeg,
         hgmon.coeff_natDegree] at this
       norm_num at this

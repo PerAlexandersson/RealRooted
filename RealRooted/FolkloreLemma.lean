@@ -87,7 +87,7 @@ private theorem strictInterl_sub_X_mul_core {f g : ℝ[X]}
       have hq_top_zero : q.coeff f.natDegree = 0 := by
         calc
           q.coeff f.natDegree
-              = f.coeff f.natDegree - (X * g).coeff f.natDegree := by simp [q, coeff_sub]
+              = f.coeff f.natDegree - (X * g).coeff f.natDegree := by simp [q]
           _ = 1 - (X * g).coeff f.natDegree := by simp_all
           _ = 1 - g.coeff g.natDegree := by rw [← hdeg, coeff_X_mul]
           _ = 1 - g.leadingCoeff := by simp

@@ -103,7 +103,7 @@ theorem pos_and_pow_mul_le_of_delay_recurrence {k : ℕ} (hk : k ≠ 0)
     ∀ n, 0 < p n ∧ ∀ m, m ≤ n → lam ^ (n - m) * p m ≤ p n := by
   intro n
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
     cases n with
     | zero =>
       rw [hinit 0 (by lia)]

@@ -62,7 +62,7 @@ private theorem coeff_step (a b c : ℝ[X]) (n : ℕ) :
 /-- The recurrence gives the degree bound before accounting for parity cancellation. -/
 theorem natDegree_polynomial_le (n : ℕ) : (polynomial n).natDegree ≤ n := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
     match n with
     | 0 => simp
     | 1 => simp
@@ -86,7 +86,7 @@ theorem natDegree_polynomial_le (n : ℕ) : (polynomial n).natDegree ≤ n := by
 /-- The constant coefficient of every row is one. -/
 @[simp] theorem coeff_polynomial_zero (n : ℕ) : (polynomial n).coeff 0 = 1 := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
     match n with
     | 0 => simp
     | 1 => simp
@@ -103,7 +103,7 @@ theorem polynomial_ne_zero (n : ℕ) : polynomial n ≠ 0 := by
 theorem coeff_polynomial_self (n : ℕ) :
     (polynomial n).coeff n = (1 + (-1 : ℝ) ^ n) / 2 := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
     match n with
     | 0 => norm_num
     | 1 => norm_num [coeff_one]
@@ -133,7 +133,7 @@ theorem coeff_polynomial_succ (n : ℕ) :
     (polynomial (n + 1)).coeff n =
       (2 * (n : ℝ) ^ 2 + 10 * n + 9 - (2 * n + 1) * (-1 : ℝ) ^ n) / 8 := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
     match n with
     | 0 => norm_num
     | 1 => norm_num [polynomial, coeff_one]
@@ -428,7 +428,7 @@ theorem eval_polynomial_eq_pair {t r : ℝ} (hr : characteristic t r = 0)
     (polynomial n).eval t =
       2 * (amplitude t r * eigenvalue t r ^ n).re + thirdAmplitude t r * r ^ n := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
     match n with
     | 0 => simpa using (amplitude_initial_zero t r).symm
     | 1 => simpa using (amplitude_initial_one hy).symm

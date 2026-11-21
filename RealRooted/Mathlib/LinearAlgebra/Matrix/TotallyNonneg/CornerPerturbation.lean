@@ -44,8 +44,7 @@ theorem det_add_single_zero_zero {R : Type*} [CommRing R] {n : ℕ}
   rw [Fin.sum_univ_succ, Fin.sum_univ_succ]
   have hzero : ∀ j : Fin n, (0 : Fin (n + 1)) ≠ j.succ := fun j =>
     Ne.symm (Fin.succ_ne_zero j)
-  simp only [Fin.val_zero, pow_zero, one_mul, add_apply, Matrix.single_apply,
-    add_mul]
+  simp only [Fin.val_zero, pow_zero, one_mul]
   simp [hzero, Fin.succAbove_zero]
   ring
 

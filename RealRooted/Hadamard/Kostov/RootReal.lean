@@ -202,7 +202,7 @@ lemma eigPoly_eq_prod_closed (n m : ℕ) (hm : 2 ≤ m) (hmn : m ≤ n) :
     simp [eigPoly_eval_one n d (by simp at hd; lia) (by simp at hd; lia)]
   have hFrc : ∀ r k, (Fr r).coeff k =
       ∑ d ∈ Finset.Icc 2 m, a d * (mu n m / mu n d) ^ r * (eigPoly n d).coeff k :=
-    fun r k => by simp [hFr, finsetSum_coeff, coeff_smul]
+    fun r k => by simp [hFr]
   have hFrdeg : ∀ r, (Fr r).natDegree ≤ m := fun r =>
     natDegree_sum_le_of_forall_le _ _ fun d hd => (natDegree_smul_le _ _).trans (by
       rw [(eigPoly_spec n d (by simp at hd; lia) (by simp at hd; lia)).2.1]

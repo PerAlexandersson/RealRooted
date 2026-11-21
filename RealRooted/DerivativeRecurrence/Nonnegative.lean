@@ -28,7 +28,7 @@ theorem hasNonnegCoeffs
     ∀ n, HasNonnegCoeffs (P n) := by
   intro n
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       by_cases hn : n < offset
       · exact hbase n hn
       · have hoff : offset ≤ n := Nat.le_of_not_gt hn

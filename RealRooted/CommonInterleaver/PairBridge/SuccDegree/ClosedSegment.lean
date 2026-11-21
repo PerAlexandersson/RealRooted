@@ -133,7 +133,7 @@ theorem compatibleSuccDegree_rootCountAbove_diff_le_one_of_nonRoot
               (f.roots.filter (x < ·)).card ≤ 1 := by
     intro n
     induction n using Nat.strong_induction_on with
-    | h n ih =>
+    | ind n ih =>
       intro f g hfdeg_eq hcomp hf_pos hg_pos hdeg hf_split x hxf hxg
       by_cases hfdeg : 2 ≤ f.natDegree
       · have hf'_pos : HasPosLeadingCoeff f.derivative :=

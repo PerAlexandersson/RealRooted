@@ -322,7 +322,7 @@ private lemma strictInterl_right_pair_of_affine_family_high_degree
     StrictInterl g (X * f) := by
   refine
     Nat.strong_induction_on
-      (p := fun n =>
+      (motive := fun n =>
         ∀ {f g : ℝ[X]},
           f.natDegree = n →
           f ≠ 0 →
@@ -753,7 +753,7 @@ theorem strictInterl_of_forall_affine_mul_add_splits {f g : ℝ[X]}
   refine strictInterl_of_affine_family_nonneg hf0 hg0 hf hg fun {s t} hs ht ↦
     ⟨?_, haff s t hs ht⟩
   intro h0
-  have hcoeff := congrArg (coeff · g.natDegree) h0
+  have hcoeff := congrArg (AddMonoidAlgebra.coeff · g.natDegree) h0
   simp only [coeff_add, coeff_zero] at hcoeff
   have hprod := (hasNonnegCoeffs_affine_linear hs.le ht.le).mul hf g.natDegree
   have hlead : 0 < g.coeff g.natDegree := hg.pos_leadingCoeff hg0

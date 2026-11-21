@@ -31,7 +31,7 @@ theorem mul_apply_eq_zero_of_lt_of_upper_zero
     (hB : ∀ i j, i < j → B i j = 0)
     {i j : ι} (hij : i < j) :
     (A * B) i j = 0 := by
-  rw [mul_apply]
+  rw [Matrix.mul_apply]
   apply Finset.sum_eq_zero
   intro k _
   by_cases hik : i < k
@@ -46,7 +46,7 @@ theorem mul_apply_self_of_upper_zero
     (hA : ∀ i j, i < j → A i j = 0)
     (hB : ∀ i j, i < j → B i j = 0) (i : ι) :
     (A * B) i i = A i i * B i i := by
-  rw [mul_apply, Finset.sum_eq_single i]
+  rw [Matrix.mul_apply, Finset.sum_eq_single i]
   · intro k _ hki
     rcases lt_or_gt_of_ne hki with hki | hik
     · rw [hB k i hki, mul_zero]

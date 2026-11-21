@@ -47,7 +47,7 @@ theorem chainPolynomial_congr_le
     (hAB : ∀ i ≤ n, ∀ j ≤ i, A i j = B i j) :
     chainPolynomial A n = chainPolynomial B n := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       cases n with
       | zero => simp
       | succ n =>

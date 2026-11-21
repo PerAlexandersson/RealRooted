@@ -39,7 +39,7 @@ theorem chowDerangement_eq_of_blockEq {R : Type*} [CommRing R]
       chowDerangement A n = chowDerangement B n := by
   intro n
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       intro hblock
       cases n with
       | zero => simp
@@ -153,7 +153,7 @@ theorem tendsto_coeff_chowDerangement_of_block
         (𝓝 ((chowDerangement A₀ n).coeff d)) := by
   intro n
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       intro hA d
       cases n with
       | zero =>

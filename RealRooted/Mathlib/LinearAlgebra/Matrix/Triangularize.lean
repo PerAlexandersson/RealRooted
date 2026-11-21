@@ -156,7 +156,7 @@ private theorem exists_unitsConj_blockTriangular_aux [IsAlgClosed K] :
       have hj : (j : m) = i₀ := j.prop
       have hi : (i : m) ≠ i₀ := i.prop
       simp only [toBlocks₂₁, of_apply, hNdef, submatrix_apply, hedef,
-        Equiv.sumCompl_apply_inr, Equiv.sumCompl_apply_inl, zero_apply]
+        Equiv.sumCompl_apply_inr, Equiv.sumCompl_apply_inl]
       rw [hj]
       exact hMcol _ hi
     have hcardS : Fintype.card {a : m // ¬a = i₀} = n := by

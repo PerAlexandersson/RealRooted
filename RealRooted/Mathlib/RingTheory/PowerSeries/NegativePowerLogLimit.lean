@@ -31,7 +31,7 @@ theorem coeff_coeff_subst_binomialSeries_neg_eq_sum_range
   rw [coeff_subst_eq_sum_range G _ hG n, Polynomial.finsetSum_coeff]
   apply Finset.sum_congr rfl
   intro j _
-  simp only [binomialSeries_coeff, smul_mul_assoc, one_mul, Polynomial.coeff_smul,
+  simp only [binomialSeries_coeff, smul_mul_assoc, one_mul, AddMonoidAlgebra.coeff_smul_apply,
     smul_eq_mul, Ring.choose_neg', Units.smul_def, zsmul_eq_mul,
     Int.cast_negOnePow_natCast]
 

@@ -38,7 +38,7 @@ def derivProductPow (w : ℝ[X]) (c : ℕ → ℝ) (g : ℝ[X]) (n : ℕ) : ℝ[
 /-- Product powers satisfy `g^{⋆(n+1)} = g ⋆ g^{⋆n}`. -/
 theorem derivProductPow_succ (n : ℕ) :
     derivProductPow w c g (n + 1) = derivProduct w c g (derivProductPow w c g n) := by
-  simp [derivProductPow, pow_succ', Module.End.mul_apply]
+  simp [derivProductPow, pow_succ', mul_apply_eq_comp]
 
 /-- The first product power is `g` itself, when `c 0 = 1`. -/
 @[simp] theorem derivProductPow_one (hc0 : c 0 = 1) : derivProductPow w c g 1 = g := by
@@ -69,7 +69,7 @@ theorem derivProductPowMap_one : derivProductPowMap w c g 1 = 1 := by
 theorem derivProductPowMap_X_mul (p : ℝ[X]) :
     derivProductPowMap w c g (X * p) = derivProduct w c g (derivProductPowMap w c g p) := by
   rw [derivProductPowMap_eq_aeval, derivProductPowMap_eq_aeval, map_mul, aeval_X,
-    Module.End.mul_apply, derivProductLinearMap_apply]
+    mul_apply_eq_comp, derivProductLinearMap_apply]
 
 /-- **Functional calculus for linear factors.**  Multiplying the source by `X - r` multiplies the
 image by `g - r` under `⋆` (for `c 0 = 1`). -/
@@ -105,7 +105,7 @@ theorem iterate_derivProductLinearMap_apply (n : ℕ) (h : ℝ[X]) :
   induction n with
   | zero => simp [derivProduct_one_left_of_zero_eq_one hc0]
   | succ n ih =>
-    rw [pow_succ', Module.End.mul_apply, ih, derivProductPow_succ, hassoc]
+    rw [pow_succ', mul_apply_eq_comp, ih, derivProductPow_succ, hassoc]
     rfl
 
 /-- For an associative product, evaluating a polynomial `p` at left multiplication by `g` is left
@@ -116,7 +116,7 @@ theorem aeval_derivProductLinearMap_apply (p h : ℝ[X]) :
   | add p q hp hq =>
     rw [map_add, LinearMap.add_apply, hp, hq, map_add, derivProduct_add_left]
   | monomial n a =>
-    rw [aeval_monomial, Module.End.mul_apply, Module.algebraMap_end_apply,
+    rw [aeval_monomial, mul_apply_eq_comp, Module.algebraMap_end_apply,
       iterate_derivProductLinearMap_apply hc0 hassoc]
     simp [derivProductPowMap, derivProduct_C_mul_left, smul_eq_C_mul]
 
@@ -124,7 +124,7 @@ theorem aeval_derivProductLinearMap_apply (p h : ℝ[X]) :
 theorem derivProductPowMap_mul (p q : ℝ[X]) :
     derivProductPowMap w c g (p * q) =
       derivProduct w c (derivProductPowMap w c g p) (derivProductPowMap w c g q) := by
-  rw [derivProductPowMap_eq_aeval, map_mul, Module.End.mul_apply,
+  rw [derivProductPowMap_eq_aeval, map_mul, mul_apply_eq_comp,
     ← derivProductPowMap_eq_aeval q,
     aeval_derivProductLinearMap_apply hc0 hassoc]
 

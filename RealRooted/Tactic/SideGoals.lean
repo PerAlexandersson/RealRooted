@@ -232,7 +232,7 @@ macro_rules
           Polynomial.coeff_add,
           Polynomial.coeff_sub,
           Polynomial.coeff_neg,
-          Polynomial.coeff_smul,
+          AddMonoidAlgebra.coeff_smul_apply,
           Polynomial.coeff_C_mul,
           Polynomial.coeff_mul_C,
           Polynomial.coeff_natCast_mul,

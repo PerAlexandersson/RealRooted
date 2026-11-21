@@ -219,7 +219,7 @@ lemma CoeffLogConcaveUpTo.no_strict_increase_after_max {d : ℕ} {a : ℕ → �
   have hprop : ∀ t, m < t → t ≤ i + 1 → a (t - 1) < a t := by
     intro t hmt hti
     refine Nat.decreasingInduction' (m := t) (n := i + 1)
-      (P := fun u ↦ m < u → u ≤ i + 1 → a (u - 1) < a u) ?step hti
+      (motive := fun u ↦ m < u → u ≤ i + 1 → a (u - 1) < a u) ?step hti
       ?base hmt hti
     · intro k hk_lt htk ih hmk hki
       have hcurr : a k < a (k + 1) := by grind

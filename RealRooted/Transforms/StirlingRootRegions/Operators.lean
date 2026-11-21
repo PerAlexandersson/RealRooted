@@ -45,7 +45,7 @@ theorem aeval_raising_eq_starC (g p : ℝ[X]) :
         Poisson.starC_add_left, hg, hh]
   | monomial n a ih =>
       rw [show C a * X ^ (n + 1) = X * (C a * X ^ n) by ring,
-        map_mul, aeval_X, Module.End.mul_apply, ih,
+        map_mul, aeval_X, mul_apply_eq_comp, ih,
         Poisson.starCLinearMap_apply, ← Poisson.starC_assoc]
       have hmul := basisTransform_touchard_mul X (C a * X ^ n)
       rw [hX] at hmul

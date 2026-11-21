@@ -36,7 +36,7 @@ theorem tendsto_of_finite_coefficient_recurrence
         a₀ n i k j * p₀ (n - k) (i - j))
     (n i : ℕ) : Tendsto (fun t => p t n i) l (𝓝 (p₀ n i)) := by
   induction n using Nat.strong_induction_on generalizing i with
-  | h n ih =>
+  | ind n ih =>
     cases n with
     | zero => exact hpzero i
     | succ n =>

@@ -65,7 +65,7 @@ theorem map_row (f : R →+* S) {ℓ k : ℕ} (hℓ : ℓ ≠ 0) (hk : k ≠ 0)
     (a b : R) (n : ℕ) :
     f (row ℓ k a b n) = row ℓ k (f a) (f b) n := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
     cases n with
     | zero => simp
     | succ n =>
@@ -131,7 +131,7 @@ theorem exists_decomposition_of_row_ne_zero {ℓ k : ℕ} (hℓ : ℓ ≠ 0) (hk
     (a b : R) {n : ℕ} (hne : row ℓ k a b n ≠ 0) :
     ∃ i j : ℕ, n = ℓ * i + k * j := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
     cases n with
     | zero => exact ⟨0, 0, by simp⟩
     | succ n =>

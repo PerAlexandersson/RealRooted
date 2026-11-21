@@ -52,14 +52,14 @@ lemma second_derivative_family_coeff_succ_succ
     (P : ℕ → ℝ[X]) (b : ℝ)
     (hrec : IsSecondDerivativeFamilyRecurrence P b)
     (n k : ℕ) :
-    coeff (P (n + 2)) (k + 2) =
-      -b * ((k : ℝ) + 1) * (k : ℝ) * coeff (P n) (k + 1)
-        + b * ((k : ℝ) + 2) * coeff (P (n + 1)) (k + 2)
-        - b * ((k : ℝ) + 1) * coeff (P (n + 1)) (k + 1)
-        + (-b + b * (n : ℝ)) * ((k : ℝ) + 1) * coeff (P n) (k + 1)
-        + coeff (P (n + 1)) (k + 2)
-        + (b + 1 + b * (n : ℝ)) * coeff (P (n + 1)) (k + 1)
-        + (b + b * (n : ℝ)) * coeff (P n) (k + 1) := by
+    (P (n + 2)).coeff (k + 2) =
+      -b * ((k : ℝ) + 1) * (k : ℝ) * (P n).coeff (k + 1)
+        + b * ((k : ℝ) + 2) * (P (n + 1)).coeff (k + 2)
+        - b * ((k : ℝ) + 1) * (P (n + 1)).coeff (k + 1)
+        + (-b + b * (n : ℝ)) * ((k : ℝ) + 1) * (P n).coeff (k + 1)
+        + (P (n + 1)).coeff (k + 2)
+        + (b + 1 + b * (n : ℝ)) * (P (n + 1)).coeff (k + 1)
+        + (b + b * (n : ℝ)) * (P n).coeff (k + 1) := by
   rw [hrec n]
   rw [show C (-b) * X ^ 3 * derivative (derivative (P n)) =
       C (-b) * (X ^ 3 * derivative (derivative (P n))) by ring]
@@ -85,10 +85,10 @@ lemma second_derivative_family_coeff_three_part
     (P : ℕ → ℝ[X]) (b : ℝ)
     (hrec : IsSecondDerivativeFamilyRecurrence P b)
     (n k : ℕ) :
-    coeff (P (n + 2)) (k + 2) =
-      (1 + b * ((k : ℝ) + 2)) * coeff (P (n + 1)) (k + 2) +
-        (1 + b * ((n : ℝ) - (k : ℝ))) * coeff (P (n + 1)) (k + 1) +
-        b * ((n : ℝ) - (k : ℝ)) * ((k : ℝ) + 2) * coeff (P n) (k + 1) := by
+    (P (n + 2)).coeff (k + 2) =
+      (1 + b * ((k : ℝ) + 2)) * (P (n + 1)).coeff (k + 2) +
+        (1 + b * ((n : ℝ) - (k : ℝ))) * (P (n + 1)).coeff (k + 1) +
+        b * ((n : ℝ) - (k : ℝ)) * ((k : ℝ) + 2) * (P n).coeff (k + 1) := by
   rw [second_derivative_family_coeff_succ_succ P b hrec]
   ring
 
@@ -98,7 +98,7 @@ lemma second_derivative_family_top_and_above
     (P : ℕ → ℝ[X]) (b : ℝ)
     (h0 : P 0 = 1) (h1 : P 1 = 1 + X)
     (hrec : IsSecondDerivativeFamilyRecurrence P b) :
-    ∀ n : ℕ, coeff (P n) n = 1 ∧ ∀ m > n, coeff (P n) m = 0
+    ∀ n : ℕ, (P n).coeff n = 1 ∧ ∀ m > n, (P n).coeff m = 0
   | 0 => by
       constructor
       · simp_all
@@ -109,7 +109,7 @@ lemma second_derivative_family_top_and_above
   | 1 => by
       constructor
       · rw [h1]
-        simp [coeff_add, coeff_one, coeff_X]
+        simp [coeff_one, coeff_X]
       · intro m hm
         rw [h1]
         apply coeff_eq_zero_of_natDegree_lt
@@ -260,22 +260,22 @@ namespace IsSecondDerivativeFamilyRecurrence
 
 /-- Coefficient recurrence at a positive index. -/
 lemma coeff_succ_succ (h : IsSecondDerivativeFamilyRecurrence P b) (n k : ℕ) :
-    coeff (P (n + 2)) (k + 2) =
-      -b * ((k : ℝ) + 1) * (k : ℝ) * coeff (P n) (k + 1) +
-        b * ((k : ℝ) + 2) * coeff (P (n + 1)) (k + 2) -
-          b * ((k : ℝ) + 1) * coeff (P (n + 1)) (k + 1) +
-            (-b + b * (n : ℝ)) * ((k : ℝ) + 1) * coeff (P n) (k + 1) +
-              coeff (P (n + 1)) (k + 2) +
-                (b + 1 + b * (n : ℝ)) * coeff (P (n + 1)) (k + 1) +
-                  (b + b * (n : ℝ)) * coeff (P n) (k + 1) :=
+    (P (n + 2)).coeff (k + 2) =
+      -b * ((k : ℝ) + 1) * (k : ℝ) * (P n).coeff (k + 1) +
+        b * ((k : ℝ) + 2) * (P (n + 1)).coeff (k + 2) -
+          b * ((k : ℝ) + 1) * (P (n + 1)).coeff (k + 1) +
+            (-b + b * (n : ℝ)) * ((k : ℝ) + 1) * (P n).coeff (k + 1) +
+              (P (n + 1)).coeff (k + 2) +
+                (b + 1 + b * (n : ℝ)) * (P (n + 1)).coeff (k + 1) +
+                  (b + b * (n : ℝ)) * (P n).coeff (k + 1) :=
   second_derivative_family_coeff_succ_succ P b h n k
 
 /-- Three-part coefficient recurrence. -/
 lemma coeff_three_part (h : IsSecondDerivativeFamilyRecurrence P b) (n k : ℕ) :
-    coeff (P (n + 2)) (k + 2) =
-      (1 + b * ((k : ℝ) + 2)) * coeff (P (n + 1)) (k + 2) +
-        (1 + b * ((n : ℝ) - (k : ℝ))) * coeff (P (n + 1)) (k + 1) +
-          b * ((n : ℝ) - (k : ℝ)) * ((k : ℝ) + 2) * coeff (P n) (k + 1) :=
+    (P (n + 2)).coeff (k + 2) =
+      (1 + b * ((k : ℝ) + 2)) * (P (n + 1)).coeff (k + 2) +
+        (1 + b * ((n : ℝ) - (k : ℝ))) * (P (n + 1)).coeff (k + 1) +
+          b * ((n : ℝ) - (k : ℝ)) * ((k : ℝ) + 2) * (P n).coeff (k + 1) :=
   second_derivative_family_coeff_three_part P b h n k
 
 end IsSecondDerivativeFamilyRecurrence
@@ -284,7 +284,7 @@ namespace IsSecondDerivativeFamily
 
 /-- The family is monic of degree `n`, with no coefficients above degree `n`. -/
 lemma top_and_above (h : IsSecondDerivativeFamily P b) :
-    ∀ n : ℕ, coeff (P n) n = 1 ∧ ∀ m > n, coeff (P n) m = 0 :=
+    ∀ n : ℕ, (P n).coeff n = 1 ∧ ∀ m > n, (P n).coeff m = 0 :=
   second_derivative_family_top_and_above P b h.zero h.one h.recurrence
 
 /-- Degree formula for a parameterized second-derivative family. -/

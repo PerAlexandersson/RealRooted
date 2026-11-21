@@ -284,7 +284,7 @@ private theorem regularized_strictInterl_no_common
     have hfdegε : fε.natDegree = f.natDegree := by simp [fε]
     have hgdegε : gε.natDegree = g.natDegree := by simp [gε]
     dsimp [q] at hcoeff
-    simp only [coeff_add, coeff_C_mul] at hcoeff
+    simp only [coeff_C_mul] at hcoeff
     rw [show fε.coeff f.natDegree = f.leadingCoeff by
       rw [← hfdegε, coeff_natDegree]
       simp [fε],
@@ -504,7 +504,7 @@ private theorem mixedEulerStep_strictInterl_of_no_common_of_nontrivial_boundary
     exact le_natDegree_of_ne_zero <| by
       rw [show h.coeff f.natDegree = f.leadingCoeff by
         dsimp [h]
-        rw [coeff_add, coeff_C_mul]
+        rw [coeff_C_mul]
         change f.leadingCoeff + lam * g.coeff f.natDegree = f.leadingCoeff
         rw [coeff_eq_zero_of_natDegree_lt (by lia), mul_zero, add_zero]]
       exact hf_pos.ne'

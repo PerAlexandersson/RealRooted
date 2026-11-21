@@ -183,7 +183,7 @@ private def twoStepDegree : TacticM (TSyntax `tactic) := withMainContext do
       haves := haves.push (← `(tactic|
         have $hb:ident : $P $(rowNumLit k) ≠ 0 := fun hz => by
           simpa [$P:ident, Polynomial.coeff_one, Polynomial.coeff_X, Polynomial.coeff_X_pow,
-            Polynomial.coeff_C] using congrArg (Polynomial.coeff · $c) hz))
+            Polynomial.coeff_C] using congrArg (AddMonoidAlgebra.coeff · $c) hz))
       haves := haves.push (← `(tactic|
         have $hd:ident : ($P $(rowNumLit k)).natDegree = $c := by
           simp only [$P:ident]; first | (simp; done) | compute_degree!))
@@ -200,7 +200,7 @@ private def twoStepDegree : TacticM (TSyntax `tactic) := withMainContext do
   let tac ← `(tactic| (
     $haves*
     rw [RealRooted.twoStepProduct_natDegree (P := $P) (q := $qT) (fun _ => rfl)
-      (fun h => by simpa using congrArg (Polynomial.coeff · $(rowNumLit qq.natDegree)) h)]
+      (fun h => by simpa using congrArg (AddMonoidAlgebra.coeff · $(rowNumLit qq.natDegree)) h)]
     rcases Nat.mod_two_eq_zero_or_one $t with $hpar:ident | $hpar:ident <;>
       simp [$simpArgs,*] <;> lia))
   evalTactic tac

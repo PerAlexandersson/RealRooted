@@ -126,7 +126,7 @@ theorem g_eq_zero_of_hermiteBiehler_map_conj_self {f g : ℝ[X]}
 theorem f_eq_zero_of_hermiteBiehler_map_conj_neg {f g : ℝ[X]}
     (h : (hermiteBiehlerPolynomial f g).map (starRingEnd ℂ) = -hermiteBiehlerPolynomial f g) :
     f = 0 := by
-  rw [hermiteBiehler_map_conj, hermiteBiehlerPolynomial, neg_add] at h
+  rw [hermiteBiehler_map_conj, hermiteBiehlerPolynomial, neg_add, sub_eq_add_neg] at h
   have h_cf : complexify f = 0 := by
     have h_eq : complexify f = - complexify f := add_right_cancel h
     rwa [CharZero.eq_neg_self_iff] at h_eq

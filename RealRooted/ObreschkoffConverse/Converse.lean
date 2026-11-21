@@ -285,7 +285,7 @@ private theorem strictInterl_of_allComboRealRooted_of_no_common
     StrictInterl f g ∨ StrictInterl g f := by
   refine
     Nat.strong_induction_on
-      (p := fun n =>
+      (motive := fun n =>
         ∀ {f g : ℝ[X]},
           f.natDegree = n →
           (f ≠ 0 ∧ f.Splits) → (g ≠ 0 ∧ g.Splits) →

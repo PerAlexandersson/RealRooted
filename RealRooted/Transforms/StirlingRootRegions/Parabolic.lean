@@ -102,7 +102,7 @@ theorem isPFPolynomial_comp {m : ℝ} {p : ℝ[X]} (hp : p.Monic)
     (hz : ∀ z : ℂ, aeval z p = 0 → z.im ≠ 0 → 4 * z.im ^ 2 ≤ 1 + 4 * m - 4 * z.re) :
     IsPFPolynomial (basisTransform touchard (p.comp (X + C m))) := by
   induction hn : p.natDegree using Nat.strong_induction_on generalizing p with
-  | h n ih =>
+  | ind n ih =>
     by_cases hd : p.natDegree = 0
     · rw [eq_one_of_monic_natDegree_zero hp hd, one_comp]
       exact touchardTransformPreservesPF IsPFPolynomial.one

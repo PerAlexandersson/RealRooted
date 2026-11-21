@@ -174,7 +174,7 @@ private theorem allComboRealRooted_of_strictInterl_sameDegree_of_no_common
     AllComboRealRooted f g := by
   refine
     Nat.strong_induction_on
-      (p := fun n =>
+      (motive := fun n =>
         ∀ {f g : ℝ[X]},
           f.natDegree = n →
           StrictInterl f g →

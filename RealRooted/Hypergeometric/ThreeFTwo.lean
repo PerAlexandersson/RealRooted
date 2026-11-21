@@ -103,8 +103,8 @@ theorem threeFTwoCoeff_eq_zero_of_lt {n k : ℕ} (h : n < k) (a₁ a₂ b₁ b�
     (threeFTwo a₁ a₂ b₁ b₂ n).coeff k = threeFTwoCoeff a₁ a₂ b₁ b₂ n k := by
   classical
   by_cases hk : k < n + 1
-  · simp [threeFTwo, coeff_monomial, hk]
-  · simp [threeFTwo, coeff_monomial, hk,
+  · simp [threeFTwo, coeff_monomial, Finsupp.single_apply, hk]
+  · simp [threeFTwo, coeff_monomial, Finsupp.single_apply, hk,
       threeFTwoCoeff_eq_zero_of_lt (show n < k by lia)]
 
 /-- The zeroth series coefficient is one for all real parameters. -/

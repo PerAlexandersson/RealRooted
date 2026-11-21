@@ -697,7 +697,7 @@ theorem derivative_sub_leadingCoeffRatio_degree_leadingCoeff {p g : ℝ[X]}
   have hcoeff : h.coeff p.natDegree =
       (p.natDegree : ℝ) * g.leadingCoeff := by
     dsimp [h]
-    rw [coeff_sub, coeff_derivative, coeff_C_mul]
+    rw [coeff_derivative, coeff_C_mul]
     have hgcoeff : g.coeff (p.natDegree + 1) = g.leadingCoeff := by
       rw [← hdeg]
       rfl

@@ -48,7 +48,7 @@ theorem eq_insertionRow {w : ℕ → ℝ[X]} {f : ℕ → ℝ[X]} (hzero : f 0 =
       ∑ k ∈ range (n + 1), C (n.choose k : ℝ) * w (k + 1) * f (n - k)) (n : ℕ) :
     f n = insertionRow w n := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
     cases n with
     | zero => simpa using hzero
     | succ n =>

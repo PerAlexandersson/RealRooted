@@ -65,7 +65,7 @@ theorem theta_mul_x :
       Letter.x.linearMap * Letter.theta.linearMap + Letter.x.linearMap := by
   apply LinearMap.ext
   intro p
-  simp only [Module.End.mul_apply, LinearMap.add_apply, Letter.linearMap_theta,
+  simp only [mul_apply_eq_comp, LinearMap.add_apply, Letter.linearMap_theta,
     Letter.linearMap_x, RealRooted.theta, derivative_mul, derivative_X, one_mul]
   ring
 
@@ -75,7 +75,7 @@ theorem derivative_mul_x :
       Letter.x.linearMap * Polynomial.derivative + Letter.one.linearMap := by
   apply LinearMap.ext
   intro p
-  simp only [Module.End.mul_apply, LinearMap.add_apply, Letter.linearMap_x,
+  simp only [mul_apply_eq_comp, LinearMap.add_apply, Letter.linearMap_x,
     Letter.linearMap_one, derivative_mul, derivative_X, one_mul]
   ring
 
@@ -172,7 +172,7 @@ theorem apply_transition_decoratedState_of_recurrence (P : ℕ → ℝ[X])
       source.leftQuotient (source.rightFactor (P n)) = X * RealRooted.theta (P n) := by
     have h := congrArg (fun T : Module.End ℝ ℝ[X] => T (P n))
       (lag_eq_leftQuotient_mul_rightFactor source)
-    simpa [Module.End.mul_apply, Letter.linearMap_x, Letter.linearMap_theta] using h.symm
+    simpa [mul_apply_eq_comp, Letter.linearMap_x, Letter.linearMap_theta] using h.symm
   have hindex : 1 + (n + 1) = n + 2 := by lia
   calc
     apply (transition source target) (decoratedState P n source) =
@@ -193,7 +193,7 @@ theorem twoStep_eq_leftNormal : twoStep = twoStepLeftNormal := by
   apply LinearMap.ext
   intro p
   fin_cases i <;> fin_cases j <;>
-    simp [twoStep, twoStepLeftNormal, Module.End.mul_apply, LinearMap.add_apply,
+    simp [twoStep, twoStepLeftNormal, mul_apply_eq_comp, LinearMap.add_apply,
       LinearMap.comp_apply, LinearMap.mulLeft_apply, Letter.linearMap_x,
       Letter.linearMap_theta, RealRooted.theta, derivative_mul, derivative_X] <;>
     ring
@@ -224,7 +224,7 @@ theorem apply_thetaTop_pair (p q : ℝ[X]) :
       ![RealRooted.theta q, RealRooted.theta q + X * RealRooted.theta p] := by
   funext i
   fin_cases i <;>
-    simp [apply, thetaTop, Fin.sum_univ_two, Module.End.mul_apply,
+    simp [apply, thetaTop, Fin.sum_univ_two, mul_apply_eq_comp,
       Letter.linearMap_x, Letter.linearMap_theta, add_comm]
 
 /-- One application of the dense matrix advances any family satisfying the Euler-derivative
@@ -332,9 +332,9 @@ theorem preservesOrderedPFPair_thetaTop :
   refine ⟨?_, ?_, ?_⟩
   · simpa only [Letter.linearMap_theta, LinearMap.zero_apply, zero_add] using
       theta_preserves_pf hq
-  · simpa only [Letter.linearMap_theta, Letter.linearMap_x, Module.End.mul_apply,
+  · simpa only [Letter.linearMap_theta, Letter.linearMap_x, mul_apply_eq_comp,
       RealRooted.theta, mul_add, LinearMap.zero_apply, zero_add] using hbottom
-  · simpa only [Letter.linearMap_theta, Letter.linearMap_x, Module.End.mul_apply,
+  · simpa only [Letter.linearMap_theta, Letter.linearMap_x, mul_apply_eq_comp,
       RealRooted.theta, mul_add, LinearMap.zero_apply, zero_add] using hinterl
 
 /-- The matrix `thetaTop` preserves ordered PF vectors. -/
@@ -433,7 +433,7 @@ theorem not_preservesOrderedPF_transition_identity_identity :
     ring
   have hg : IsPFPolynomial (5 * X + 3 * X ^ 2 : ℝ[X]) := by
     convert himage.2.1 using 1
-    simp [FactorLabel.leftQuotient, Module.End.mul_apply, Letter.linearMap_x,
+    simp [FactorLabel.leftQuotient, mul_apply_eq_comp, Letter.linearMap_x,
       Letter.linearMap_theta, RealRooted.theta, derivative_mul]
     ring
   have hsign :
@@ -448,7 +448,7 @@ theorem not_preservesOrderedPF_transition_identity_identity :
   · norm_num [Polynomial.IsRoot.def]
   · exact hsign
   convert himage.2.2 using 1 <;>
-    simp [FactorLabel.rightFactor, FactorLabel.leftQuotient, Module.End.mul_apply,
+    simp [FactorLabel.rightFactor, FactorLabel.leftQuotient, mul_apply_eq_comp,
       Letter.linearMap_one, Letter.linearMap_x, Letter.linearMap_theta,
       RealRooted.theta, derivative_mul] <;> ring
 

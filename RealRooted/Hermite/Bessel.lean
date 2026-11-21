@@ -84,8 +84,9 @@ private theorem laguerreApproximation_eq_aeval (M : ℕ) :
   rw [aeval_eq_sum_range' hdeg]
   ext k
   simp only [coeff_C_mul, laguerreApproximation_coeff, LinearMap.coe_sum,
-    Finset.sum_apply, LinearMap.smul_apply, Module.End.pow_apply,
-    iterate_derivative_X_pow_eq_smul, finsetSum_coeff, coeff_smul, smul_eq_mul,
+    Finset.sum_apply, LinearMap.smul_apply, pow_apply_eq_iterate,
+    iterate_derivative_X_pow_eq_smul, finsetSum_coeff, AddMonoidAlgebra.coeff_smul_apply,
+    smul_eq_mul,
     sub_eq_add_neg, ← C_neg, coeff_X_add_C_pow, coeff_X_pow]
   rcases le_or_gt k M with hk | hk
   · rw [Finset.sum_eq_single (M - k)]
@@ -126,7 +127,7 @@ private theorem laguerreApproximation_splits (M : ℕ) :
     rw [applyAsDifferentialOperator_eq_sum_range (N := M + 1) hdeg]
     rw [aeval_eq_sum_range' (n := M + 1) hdeg]
     simp only [LinearMap.coe_sum, Finset.sum_apply, LinearMap.smul_apply,
-      Module.End.pow_apply, smul_eq_C_mul]
+      pow_apply_eq_iterate, smul_eq_C_mul]
   rw [← haeval, ← laguerreApproximation_eq_aeval] at hpres
   have hfactorial : (M.factorial : ℝ) ≠ 0 := by positivity
   rcases hpres with hzero | hsplit
@@ -153,7 +154,7 @@ private theorem sqDifferentialOperator_pow_apply (c : ℝ) (k : ℕ) (p : ℝ[X]
     ((sqDifferentialOperator c) ^ k) p =
       C (c ^ k) * derivative^[2 * k] p := by
   rw [sqDifferentialOperator, _root_.smul_pow, LinearMap.smul_apply, ← sq, ← pow_mul,
-    Module.End.pow_apply, smul_eq_C_mul, mul_comm 2 k]
+    pow_apply_eq_iterate, smul_eq_C_mul, mul_comm 2 k]
 
 private theorem aeval_sqDifferentialOperator_apply
     (L : ℝ[X]) (c : ℝ) {p : ℝ[X]} {N : ℕ} (hN : p.natDegree < 2 * N) :
@@ -198,7 +199,7 @@ private theorem aeval_sqDifferentialOperator_prod_splits
   induction s using Multiset.induction_on with
   | empty => simpa using hp
   | cons a s ih =>
-    rw [Multiset.map_cons, Multiset.prod_cons, map_mul, Module.End.mul_apply]
+    rw [Multiset.map_cons, Multiset.prod_cons, map_mul, mul_apply_eq_comp]
     simpa [sqDifferentialOperator, Module.algebraMap_end_apply] using
       splits_sq_sub (ih (fun r hr' => hr r (Multiset.mem_cons_of_mem hr'))) hc
         (hr a (Multiset.mem_cons_self _ _))
@@ -211,7 +212,7 @@ theorem aeval_sqDifferentialOperator_splits {L : ℝ[X]} (hL : L.Splits)
     (hr : ∀ r ∈ L.roots, 0 ≤ r) {c : ℝ} (hc : 0 < c)
     {p : ℝ[X]} (hp : p.Splits) :
     ((aeval (sqDifferentialOperator c) L : Module.End ℝ ℝ[X]) p).Splits := by
-  rw [hL.eq_prod_roots, map_mul, aeval_C, Module.End.mul_apply,
+  rw [hL.eq_prod_roots, map_mul, aeval_C, mul_apply_eq_comp,
     Module.algebraMap_end_apply, smul_eq_C_mul]
   exact (aeval_sqDifferentialOperator_prod_splits _ hr hc hp).C_mul _
 

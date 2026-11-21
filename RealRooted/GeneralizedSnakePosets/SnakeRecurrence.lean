@@ -263,7 +263,7 @@ theorem generalizedSnakeRecurrence :
 theorem generalizedSnakeRookModel_natDegree_eq (w : SnakeWord) :
     (generalizedSnakeRookModel.snakePolynomial w).natDegree = w.length + 1 := by
   induction hn : w.length using Nat.strong_induction_on generalizing w with
-  | h n ih =>
+  | ind n ih =>
       by_cases hc : w.IsConstant
       · rw [generalizedSnakeRookModel_snakePolynomial_of_isConstant hc,
           modifiedNarayanaPolynomial_natDegree, hn]

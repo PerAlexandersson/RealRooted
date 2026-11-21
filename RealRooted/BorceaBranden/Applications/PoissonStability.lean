@@ -237,7 +237,7 @@ private theorem shiftDeriv_succ {R σ : Type*} [CommSemiring R]
     (q : σ) (n : ℕ) (P : MvPolynomial σ R) :
     shiftDeriv q (n + 1) P =
       MvPolynomial.pderiv q (shiftDeriv q n P) + shiftDeriv q n P := by
-  rw [shiftDeriv, pow_succ', Module.End.mul_apply]
+  rw [shiftDeriv, pow_succ', mul_apply_eq_comp]
   rfl
 
 private theorem shiftDeriv_complexify {σ : Type*} (q : σ) (n : ℕ)

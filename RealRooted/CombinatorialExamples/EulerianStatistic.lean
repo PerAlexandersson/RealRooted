@@ -22,7 +22,7 @@ private lemma coeff_eulerianNumber (n k : ℕ) :
       cases k with
       | zero =>
           rw [Equiv.Perm.eulerianNumber_succ_zero]
-          simp [generalizedEulerian, Polynomial.coeff_one]
+          simp [generalizedEulerian]
       | succ k =>
           change (Equiv.Perm.eulerianNumber 1 (k + 1) : ℝ) =
             (generalizedEulerian 1 0).coeff (k + 1)
@@ -63,7 +63,7 @@ corresponds to permutations of `Fin (n + 1)`. -/
 theorem genPoly_univ_descentCount (n : ℕ) :
     (Finset.genPoly (Finset.univ : Finset (Equiv.Perm (Fin (n + 1))))
       Equiv.Perm.descentCount : ℝ[X]) = generalizedEulerian 1 n := by
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   rw [Finset.coeff_genPoly]
   exact coeff_eulerianNumber n k

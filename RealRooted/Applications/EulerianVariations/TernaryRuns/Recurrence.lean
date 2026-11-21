@@ -146,7 +146,7 @@ theorem ternaryRunPolynomial_two :
       · subst k
         norm_num [Polynomial.coeff_X]
       have hk1' : 1 ≠ k := Ne.symm hk1
-      simp [Polynomial.coeff_add, Polynomial.coeff_C_mul, Polynomial.coeff_C,
+      simp [Polynomial.coeff_C_mul, Polynomial.coeff_C,
         Polynomial.coeff_X, Polynomial.coeff_X_pow, hk0, hk1, hk1']
 
 theorem ternaryRunPolynomial_three :
@@ -168,7 +168,7 @@ theorem ternaryRunPolynomial_three :
       · subst k
         norm_num [Polynomial.coeff_X]
       have hk1' : 1 ≠ k := Ne.symm hk1
-      simp [Polynomial.coeff_add, Polynomial.coeff_C_mul, Polynomial.coeff_C,
+      simp [Polynomial.coeff_C_mul, Polynomial.coeff_C,
         Polynomial.coeff_X, Polynomial.coeff_X_pow, hk0, hk1, hk1', hk2]
 
 /-- Coefficients are nonnegative, and coefficients strictly below one third

@@ -171,7 +171,7 @@ theorem coeff_basisTransform_natDegree_eq_one_of_monic
     (basisTransform B p).coeff p.natDegree = 1 := by
   rw [coeff_basisTransform, Polynomial.sum_def]
   have hnmem : p.natDegree ∈ p.support :=
-    natDegree_mem_support_of_nonzero hp.ne_zero
+    natDegree_mem_support_of_ne_zero hp.ne_zero
   rw [Finset.sum_eq_single_of_mem p.natDegree hnmem]
   · rw [hp.coeff_natDegree]
     have hcoeff : (B p.natDegree).coeff p.natDegree = 1 := by
@@ -291,7 +291,7 @@ theorem basisTransform_injective_of_natDegree_eq
   have htransform_ne : ∀ {p : R[X]}, p ≠ 0 → basisTransform B p ≠ 0 := by
     intro p hp hzero
     let d := p.natDegree
-    have hdmem : d ∈ p.support := natDegree_mem_support_of_nonzero hp
+    have hdmem : d ∈ p.support := natDegree_mem_support_of_ne_zero hp
     have hcoeff := congrArg (fun q : R[X] => q.coeff d) hzero
     rw [coeff_basisTransform, Polynomial.sum_def] at hcoeff
     have hsum :
@@ -347,7 +347,7 @@ theorem basisTransform_natDegree_eq
       (fun n ↦ (hdegree n).le) p
   · rw [coeff_basisTransform, Polynomial.sum_def]
     have hdmem : p.natDegree ∈ p.support :=
-      natDegree_mem_support_of_nonzero hp
+      natDegree_mem_support_of_ne_zero hp
     rw [Finset.sum_eq_single_of_mem p.natDegree hdmem]
     · apply mul_ne_zero (Polynomial.mem_support_iff.mp hdmem)
       have hlead : (B p.natDegree).leadingCoeff ≠ 0 :=
@@ -392,7 +392,7 @@ theorem basisTransform_iterate_X_sub_C_mul (L : Module.End R R[X]) (g p : R[X]) 
     basisTransform (fun n ↦ (L ^ n) g) ((X - C ρ) * p) =
       L (basisTransform (fun n ↦ (L ^ n) g) p) - C ρ * basisTransform (fun n ↦ (L ^ n) g) p := by
   rw [basisTransform_iterate_eq_aeval_apply, basisTransform_iterate_eq_aeval_apply]
-  simp only [map_mul, map_sub, aeval_X, aeval_C, Module.End.mul_apply,
+  simp only [map_mul, map_sub, aeval_X, aeval_C, mul_apply_eq_comp,
     LinearMap.sub_apply, Module.algebraMap_end_apply, smul_eq_C_mul]
 
 end AevalRing

@@ -240,7 +240,7 @@ theorem preservesPFShiftInterlacingOnDegree_of_monomials
   have hP : ∀ n, P n := by
     intro n
     induction n using Nat.strong_induction_on with
-    | h n ih =>
+    | ind n ih =>
         intro p m hp hp0 hpdeg hbound
         by_cases hn0 : n = 0
         · exact strictInterl_monomial_mul_of_natDegree_eq_zero

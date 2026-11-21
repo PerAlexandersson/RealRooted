@@ -122,7 +122,7 @@ private theorem natDegree_eq_zero_of_sq_eval_neg_le_const
       nlinarith [sq_nonneg (|q.eval x| - 1), sq_abs (q.eval x)]
     nlinarith [hsq'.trans (le_abs_self C)]
   exact natDegree_eq_zero_iff_degree_le_zero.mpr
-    ((Polynomial.isBoundedUnder_abs_atBot_iff q).mp hbounded)
+    (Polynomial.isBoundedUnder_abs_atBot_iff.mp hbounded)
 
 private theorem shiftedPowerImage_eq_of_commutes_translation
     {P : ℕ → ℝ[X]}
@@ -215,7 +215,7 @@ private theorem derivative_appellCoefficient_eq_zero_of_basis_derivative
   have hcomm := basisTransform_derivative_commutes_of_basis_derivative hP
   intro n
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       have hexpand :=
         RealRooted.IsAppellExpansion.basisTransform_eq_sum_iterate_derivative
           (isAppellExpansion_appellCoefficient P) hPdeg hQdeg

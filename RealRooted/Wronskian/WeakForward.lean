@@ -34,7 +34,7 @@ theorem wronskian_eval_nonneg_of_strictInterl {p q : ℝ[X]}
     0 ≤ (Polynomial.wronskian q p).eval t := by
   generalize hn : p.natDegree = n
   induction n using Nat.strong_induction_on generalizing p q with
-  | h n ih =>
+  | ind n ih =>
       subst hn
       by_cases hcommon : ∃ r : ℝ, p.IsRoot r ∧ q.IsRoot r
       · obtain ⟨r, hrp, hrq⟩ := hcommon

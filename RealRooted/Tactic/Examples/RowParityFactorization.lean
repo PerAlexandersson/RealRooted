@@ -49,7 +49,7 @@ private theorem upper_splits (n : ℕ) : (upper n).Splits := by
 private theorem upper_succ_eq_lower_succ_add_lower (k : ℕ) :
     upper (k + 1) = lower (k + 1) + lower k := by
   induction k using Nat.strong_induction_on with
-  | h k ih =>
+  | ind k ih =>
       match k with
       | 0 =>
           rw [show upper 1 = X + 3 from rfl, show lower 1 = X + 2 from rfl,
@@ -81,7 +81,7 @@ private theorem a156308_shapes (k : ℕ) :
     a156308 (2 * k) = (upper k) ^ 2 ∧
       a156308 (2 * k + 1) = (X + C 4) * (lower k) ^ 2 := by
   induction k using Nat.strong_induction_on with
-  | h k ih =>
+  | ind k ih =>
       match k with
       | 0 =>
           constructor
@@ -176,7 +176,7 @@ def a334009 : ℕ → ℝ[X]
 private theorem a334009_eq_comp (n : ℕ) :
     a334009 n = (a156308 n).comp (C (4 : ℝ) * X) := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       match n with
       | 0 => simp [a334009, a156308]
       | 1 =>
@@ -234,7 +234,7 @@ def a082649 : ℕ → ℝ[X]
 private theorem a082649_eq_reverse (n : ℕ) :
     a082649 n = (a334009 n).reverse := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       match n with
       | 0 =>
           rw [show a082649 0 = 1 from rfl, show a334009 0 = 1 from rfl]
@@ -391,7 +391,7 @@ private theorem oddQ_splits (n : ℕ) : (oddQ n).Splits := by
 private theorem a099605_even_factor (k : ℕ) :
     a099605 (2 * k) = (1 + X) ^ k * evenQ k := by
   induction k using Nat.strong_induction_on with
-  | h k ih =>
+  | ind k ih =>
       match k with
       | 0 => simp [evenQ, a099605]
       | 1 =>
@@ -421,7 +421,7 @@ private theorem a099605_even_factor (k : ℕ) :
 private theorem a099605_odd_factor (k : ℕ) :
     a099605 (2 * k + 1) = C (2 : ℝ) * (1 + X) ^ (k + 1) * oddQ k := by
   induction k using Nat.strong_induction_on with
-  | h k ih =>
+  | ind k ih =>
       match k with
       | 0 =>
           rw [show 2 * 0 + 1 = 1 by norm_num]
@@ -486,7 +486,7 @@ theorem a099605_splits_of_recurrence
   have heq : ∀ m : ℕ, P m = a099605 m := by
     intro m
     induction m using Nat.strong_induction_on with
-    | h m ih =>
+    | ind m ih =>
         rcases m with _ | _ | _ | _ | m
         · exact hzero
         · exact hone
@@ -525,7 +525,7 @@ private theorem a049325_first_order : ∀ n : ℕ,
         (C (4 - 4 * (n : ℝ)) + C 2 * X) * a049325 n := by
   intro n
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       rcases lt_or_ge n 4 with hn | hn
       · interval_cases n <;>
           norm_num [a049325, derivative_add, derivative_mul, derivative_X,
@@ -696,7 +696,7 @@ theorem a049325_splits_of_recurrence
   have heq : ∀ m : ℕ, P m = a049325 m := by
     intro m
     induction m using Nat.strong_induction_on with
-    | h m ih =>
+    | ind m ih =>
         rcases m with _ | _ | _ | _ | m
         · exact hzero
         · exact hone
@@ -724,7 +724,7 @@ theorem a049325_interlaces_of_recurrence
   have heq : ∀ m : ℕ, P m = a049325 m := by
     intro m
     induction m using Nat.strong_induction_on with
-    | h m ih =>
+    | ind m ih =>
         rcases m with _ | _ | _ | _ | m
         · exact hzero
         · exact hone

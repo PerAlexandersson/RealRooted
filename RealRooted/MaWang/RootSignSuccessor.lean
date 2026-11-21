@@ -359,7 +359,7 @@ private lemma rootSign_of_coeff_eq_zero_of_nonpos_sign
   have hG_top : G.coeff (m + 1) = 0 := by
     have hcoeff : f.coeff (m + 2) = 0 :=
       coeff_eq_zero_of_natDegree_lt (by rw [hf_degree]; lia)
-    simp [G, coeff_sub, coeff_C_mul, coeff_derivative, htop_zero, hcoeff]
+    simp [G, coeff_C_mul, coeff_derivative, htop_zero, hcoeff]
   obtain ⟨hG_deg, hG_pos, _, hG_splits, _, hG_neg, hG_coeff⟩ :=
     rootSignSameDegree_of_coeff_eq_zero hf_splits hf_pos hf_degree hf_nodup
       hf_neg hG_degree hG_zero hG_sign hG_top

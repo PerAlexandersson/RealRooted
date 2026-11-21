@@ -82,7 +82,7 @@ variable {m n R : Type*} [Fintype m] [DecidableEq m] [CommRing R]
 /-- Expansion of `det (A * B)` as a sum over all maps `p : m → n`. -/
 theorem det_mul_eq_sum_fun [Fintype n] (A : Matrix m n R) (B : Matrix n m R) :
     (A * B).det = ∑ p : m → n, (A.submatrix id p).det * ∏ i, B (p i) i := by
-  simp only [det_apply', mul_apply, prod_univ_sum, mul_sum, Fintype.piFinset_univ,
+  simp only [det_apply', Matrix.mul_apply, prod_univ_sum, mul_sum, Fintype.piFinset_univ,
     submatrix_apply, id, sum_mul]
   rw [sum_comm]
   refine sum_congr rfl fun p _ => sum_congr rfl fun σ _ => ?_

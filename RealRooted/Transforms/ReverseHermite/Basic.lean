@@ -138,7 +138,7 @@ theorem reverseHermiteBasis_monic_natDegree :
 theorem coeff_reverseHermiteTransform_natDegree {p : ℝ[X]} (hp : p ≠ 0) :
     (reverseHermiteTransform p).coeff p.natDegree = p.leadingCoeff := by
   rw [reverseHermiteTransform, coeff_basisTransform, Polynomial.sum_def]
-  have hnmem : p.natDegree ∈ p.support := natDegree_mem_support_of_nonzero hp
+  have hnmem : p.natDegree ∈ p.support := Polynomial.natDegree_mem_support_of_ne_zero hp
   rw [Finset.sum_eq_single_of_mem p.natDegree hnmem]
   · rw [coeff_natDegree]
     have hcoeff :

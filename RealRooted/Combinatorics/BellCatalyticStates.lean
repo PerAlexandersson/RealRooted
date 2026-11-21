@@ -62,7 +62,7 @@ theorem thresholdBell_zero (j : ℕ) : thresholdBell j 0 = 1 := by
 theorem thresholdBell_hasNonnegCoeffs (j n : ℕ) :
     HasNonnegCoeffs (thresholdBell j n) := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       cases n with
       | zero =>
           simpa [thresholdBell] using hasNonnegCoeffs_one

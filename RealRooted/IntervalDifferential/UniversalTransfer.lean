@@ -51,7 +51,7 @@ private theorem intervalSimple_of_monic_remainder (S R : ℝ[X])
       intervalSimple (zigzagTransform (T * S)) := by
     intro n
     induction n using Nat.strong_induction_on with
-    | h n ih =>
+    | ind n ih =>
       intro T hTdeg hTmonic hTdisk
       by_cases hn : n = 0
       · have hT1 : T = 1 := eq_one_of_monic_natDegree_zero hTmonic (hTdeg.trans hn)

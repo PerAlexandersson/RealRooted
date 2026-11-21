@@ -165,7 +165,7 @@ private lemma mul_le_mul_of_interl_affine {u v U V : ℝ} (hu : 0 < u) (hv : 0 �
     simpa [natDegree_linear hu.ne'] using congrArg natDegree h0
   have hg0 : (C U * X + C V : ℝ[X]) ≠ 0 := by
     intro h0
-    simpa [hV.ne'] using congrArg (coeff · 0) h0
+    simpa [hV.ne'] using congrArg (AddMonoidAlgebra.coeff · 0) h0
   have hstrict := h.toStrictInterl_of_ne hf0 hg0
   have hle := hstrict.natDegree_le
   rw [natDegree_linear hu.ne'] at hle

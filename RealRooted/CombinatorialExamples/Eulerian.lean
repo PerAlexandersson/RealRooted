@@ -29,6 +29,7 @@ using the affine derivative block before the outer `X` factor.
 @[expose] public section
 
 open Polynomial
+open AddMonoidAlgebra (coeff)
 
 noncomputable section
 

@@ -143,7 +143,7 @@ private lemma hermiteBiehlerPolynomial_stable_of_finiteSymbol_stable
     rw [hvalue] at hz
     simp only [map_zero] at hz
     apply hpout.ne_zero
-    apply Polynomial.ext
+    apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
     intro k
     have hz' := congrArg (fun r : ℂ[X] => r.coeff k) hz
     have hre := congrArg Complex.re hz'

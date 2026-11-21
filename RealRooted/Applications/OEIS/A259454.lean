@@ -162,7 +162,7 @@ private lemma neg_infty (p : ℝ[X]) (m : ℕ) (hm : p.natDegree = m) (hpos : 0 
       leadingCoeff_comp (by rw [hX]; norm_num), hm]
     simp only [leadingCoeff_neg, leadingCoeff_X]
     rw [← mul_assoc, mul_comm ((-1 : ℝ) ^ m), mul_assoc, ← mul_pow]; norm_num
-  have ht := tendsto_atTop_of_leadingCoeff_nonneg q
+  have ht := tendsto_atTop_of_leadingCoeff_nonneg (P := q)
     (by rw [degree_eq_natDegree (fun h => by rw [h] at hdeg; simp at hdeg; lia), hdeg];
         exact_mod_cast h1) (by rw [hlc]; exact hpos.le)
   obtain ⟨x, hx1, hx2⟩ :=
@@ -474,7 +474,7 @@ private lemma literalRows_compact_recurrence (n : ℕ) :
   have hraw : nextRow n (literalRows (n + 2)) (literalRows (n + 1))
       (literalRows n) = compactRHS n := by
     induction n using Nat.strong_induction_on with
-    | h n ih =>
+    | ind n ih =>
       match n with
       | 0 =>
         apply Polynomial.funext
@@ -529,7 +529,7 @@ private lemma literalRows_compact_recurrence (n : ℕ) :
 private lemma literalRows_eq_row : ∀ n : ℕ, literalRows n = row n := by
   intro n
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
     match n with
     | 0 | 1 | 2 => rfl
     | k + 3 =>

@@ -93,20 +93,20 @@ private theorem pow_succ_apply_eq_zero_of_commutator
     (T ^ (q + 1)) (N x) = 0 := by
   induction q generalizing x with
   | zero =>
-      simp only [pow_zero, Module.End.one_apply] at hx
+      simp only [pow_zero, one_apply_eq_self] at hx
       subst x
       simp
   | succ q ih =>
       have hTx : (T ^ q) (T x) = 0 := by
-        simpa only [pow_succ, Module.End.mul_apply] using hx
+        simpa only [pow_succ, mul_apply_eq_comp] using hx
       have hN : (T ^ (q + 1)) (N (T x)) = 0 := ih hTx
       have hC : (T ^ (q + 1)) (C x) = 0 := by
         have hc := LinearMap.congr_fun (hTC.pow_left (q + 1)).eq x
-        simp only [Module.End.mul_apply] at hc
+        simp only [mul_apply_eq_comp] at hc
         rw [hc, hx, map_zero]
-      rw [show q + 1 + 1 = (q + 1) + 1 by rfl, pow_succ, Module.End.mul_apply,
+      rw [show q + 1 + 1 = (q + 1) + 1 by rfl, pow_succ, mul_apply_eq_comp,
         show T (N x) = N (T x) + C x by
-          simpa only [Module.End.mul_apply, LinearMap.add_apply] using
+          simpa only [mul_apply_eq_comp, LinearMap.add_apply] using
             LinearMap.congr_fun hcomm x,
         map_add, hN, hC, add_zero]
 
@@ -119,7 +119,7 @@ private theorem polynomialShiftEnd_pow_apply (p : Polynomial K[X]) (q : ℕ)
   induction q generalizing f with
   | zero => simp [polynomialShiftEnd]
   | succ q ih =>
-      rw [pow_succ, Module.End.mul_apply, ih]
+      rw [pow_succ, mul_apply_eq_comp, ih]
       exact (LinearRecurrence.shiftAction_mul_apply (p ^ q) p f).symm
 
 private def polynomialIndexEnd : Module.End K (ℕ → K[X]) :=
@@ -137,12 +137,14 @@ theorem shiftAction_pow_succ_indexMul_eq_zero (p : Polynomial K[X]) (q : ℕ)
   have hcomm : T * N = N * T + C := by
     apply LinearMap.ext
     intro f
-    simpa [T, N, C, polynomialShiftEnd, polynomialIndexEnd, Module.End.mul_apply]
+    simpa [T, N, C, polynomialShiftEnd, polynomialIndexEnd, mul_apply_eq_comp]
       using LinearRecurrence.shiftAction_indexMul p f
   have hTC : Commute T C := by
     change T * C = C * T
     apply LinearMap.ext
     intro f
+    dsimp only [T, C, polynomialShiftEnd]
+    simp only [mul_apply_eq_comp]
     change LinearRecurrence.shiftAction p
         (LinearRecurrence.shiftAction (X * p.derivative) f) =
       LinearRecurrence.shiftAction (X * p.derivative)
@@ -172,15 +174,19 @@ theorem shiftAction_pow_succ_sequenceDerivative_eq_zero (p : Polynomial K[X]) (q
     apply LinearMap.ext
     intro f
     have h := sequenceDerivative_shiftAction p f
+    dsimp only [T, N, C, polynomialShiftEnd, polynomialDerivativeEnd]
+    simp only [mul_apply_eq_comp, LinearMap.add_apply, LinearMap.neg_apply]
     change LinearRecurrence.shiftAction p (sequenceDerivative f) =
-      sequenceDerivative (LinearRecurrence.shiftAction p f) -
-        LinearRecurrence.shiftAction (coefficientDerivative p) f
+      sequenceDerivative (LinearRecurrence.shiftAction p f) +
+        -LinearRecurrence.shiftAction (coefficientDerivative p) f
     rw [h]
     abel
   have hTC : Commute T C := by
     change T * C = C * T
     apply LinearMap.ext
     intro f
+    dsimp only [T, C, polynomialShiftEnd]
+    simp only [mul_apply_eq_comp, LinearMap.neg_apply]
     change LinearRecurrence.shiftAction p
         (-LinearRecurrence.shiftAction (coefficientDerivative p) f) =
       -LinearRecurrence.shiftAction (coefficientDerivative p)

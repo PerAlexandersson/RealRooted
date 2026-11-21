@@ -601,7 +601,7 @@ private lemma pencil_normalized_splits (n : ℕ) (a : ℝ) :
     intro j hj φ hφ
     rw [hGdef, eval_add, eval_mul, pencil_H_zero n j hj φ hφ]; simp
   -- behaviour at `+∞`
-  have htop := tendsto_atTop_of_leadingCoeff_nonneg G
+  have htop := tendsto_atTop_of_leadingCoeff_nonneg (P := G)
     (natDegree_pos_iff_degree_pos.1 (by lia)) (by rw [hlead]; norm_num)
   obtain ⟨M, hM1, hM2⟩ := ((htop.eventually_gt_atTop 0).and
     (eventually_gt_atTop (xpar (-cang n n)))).exists
@@ -611,7 +611,7 @@ private lemma pencil_normalized_splits (n : ℕ) (a : ℝ) :
     rw [pow_add, pow_mul]; norm_num
   have hdeg' : (G.comp (-X)).natDegree = 2 * n + 2 := by
     rw [natDegree_comp, hdeg]; simp
-  have hbot := tendsto_atTop_of_leadingCoeff_nonneg (G.comp (-X))
+  have hbot := tendsto_atTop_of_leadingCoeff_nonneg (P := G.comp (-X))
     (natDegree_pos_iff_degree_pos.1 (by lia)) (by rw [hlead']; norm_num)
   obtain ⟨y, hy1, hy2⟩ := ((hbot.eventually_gt_atTop 0).and
     (eventually_gt_atTop (-xpar (cang n n)))).exists
@@ -809,7 +809,7 @@ private lemma choose_gammaPolynomial_sub_real (n k : ℕ) :
 private lemma coeff_zero_gammaPolynomial (n : ℕ) :
     (gammaPolynomial n).coeff 0 = 1 := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       match n with
       | 0 => simp [gammaPolynomial]
       | 1 => simp [gammaPolynomial]
@@ -830,7 +830,7 @@ private lemma coeff_one_gammaPolynomial_step (n : ℕ) :
 private lemma coeff_one_gammaPolynomial (n : ℕ) :
     (gammaPolynomial n).coeff 1 = (2 * n - 1 : ℕ) := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       match n with
       | 0 =>
           rw [gammaPolynomial]
@@ -847,14 +847,14 @@ private lemma coeff_gammaPolynomial_eq_choose (n k : ℕ) :
     (gammaPolynomial n).coeff k = (Nat.choose (2 * n - k) k : ℝ) := by
   revert k
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       intro k
       match n with
       | 0 =>
           rcases k with _ | k <;> simp [gammaPolynomial, coeff_one]
       | 1 =>
           rcases k with _ | _ | k <;>
-            simp [gammaPolynomial, coeff_add, coeff_one, coeff_X]
+            simp [gammaPolynomial, coeff_one, coeff_X]
       | n + 2 =>
           cases k with
           | zero => simp [coeff_zero_gammaPolynomial]
@@ -935,13 +935,13 @@ theorem strictInterl_gammaPolynomial_succ (n : ℕ) :
 theorem polynomial_eq_gammaTransform (n : ℕ) :
     polynomial n = gammaTransform (2 * n) (gammaPolynomial n) := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       match n with
       | 0 => simp [polynomial, gammaPolynomial, gammaTransform]
       | 1 =>
           have hgamma : gammaTransform 2 (1 + X : ℝ[X]) = (X + 1) ^ 2 + X := by
             simp [gammaTransform, gammaBasisTerm, Finset.sum_range_succ,
-              coeff_add, coeff_one, coeff_X]
+              coeff_one, coeff_X]
           change 1 + 3 * X + X ^ 2 = gammaTransform 2 (1 + X)
           rw [hgamma]
           ring

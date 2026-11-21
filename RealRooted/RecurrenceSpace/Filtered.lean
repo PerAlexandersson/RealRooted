@@ -62,7 +62,7 @@ private theorem shiftAction_pow_iterate_derivative {p : Polynomial K[X]} (q s : 
   induction s generalizing f q with
   | zero => simpa using hf
   | succ s ih =>
-      rw [pow_succ', Module.End.mul_apply]
+      rw [pow_succ', mul_apply_eq_comp]
       have hs := ih q f hf
       have hc := shiftAction_pow_succ_sequenceDerivative_eq_zero p (q + s)
         ((sequenceDerivative ^ s) f) hs
@@ -75,7 +75,7 @@ private theorem shiftAction_pow_iterate_index {p : Polynomial K[X]} (q u : ℕ)
   induction u generalizing f q with
   | zero => simpa using hf
   | succ u ih =>
-      rw [pow_succ', Module.End.mul_apply]
+      rw [pow_succ', mul_apply_eq_comp]
       have hu := ih q f hf
       have hc := shiftAction_pow_succ_indexMul_eq_zero p (q + u)
         ((LinearRecurrence.indexMul ^ u) f) hu

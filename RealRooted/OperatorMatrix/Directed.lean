@@ -344,7 +344,6 @@ theorem interl_derivative_add_derivative_add_X_mul_derivative_of_isCoprime
       hp hq hpq.toInterl
   have hF_coeff : 0 < F.coeff q.natDegree := by
     dsimp [F]
-    rw [coeff_add]
     exact add_pos_of_pos_of_nonneg hq_pos
       (hp.hasNonnegCoeffs.derivative.X_mul q.natDegree)
   have hF_deg : F.natDegree = q.natDegree := by

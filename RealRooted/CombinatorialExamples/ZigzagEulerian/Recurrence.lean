@@ -42,7 +42,7 @@ decreasing_by
 theorem recursiveWordCount_eq_weakUpDownWordCount (n k : ℕ) :
     recursiveWordCount n k = weakUpDownWordCount n k := by
   induction n using Nat.strong_induction_on generalizing k with
-  | h n ih =>
+  | ind n ih =>
     cases n with
     | zero => simp [recursiveWordCount]
     | succ n =>
