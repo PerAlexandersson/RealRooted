@@ -45,7 +45,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 98 | `RealRooted.StrictInterl.toInterlaces` | `RealRooted.Basic.ProperPosition` |  |
+| 99 | `RealRooted.StrictInterl.toInterlaces` | `RealRooted.Basic.ProperPosition` |  |
 | 62 | `RealRooted.StrictInterl.toInterl` | `RealRooted.Basic.ProperPosition` |  |
 | 45 | `RealRooted.interlaces_one_linear` | `RealRooted.Linear` |  |
 | 44 | `RealRooted.interl_zero_left` | `RealRooted.Basic.ProperPosition` |  |
@@ -64,8 +64,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 10 | `RealRooted.Interl.finsetSum_left_of_nonneg` | `RealRooted.PosCombo` | Left cone for `Interl` over finite sums of nonnegative-coefficient polynomials. |
 | 10 | `RealRooted.Interl.finsetSum_right_of_nonneg` | `RealRooted.PosCombo` | Right cone for `Interl` over finite sums of nonnegative-coefficient polynomials. |
 | 10 | `RealRooted.Interl.mul_X_both` | `RealRooted.WagnerX.ListInterlacing` | Multiplying both polynomials by `X` preserves zero-aware interlacing. |
+| 10 | `RealRooted.PreservesRealRootedOrZero.interlaces` | `RealRooted.OperatorPreservesInterlacing` | A global real-rootedness preserver transports a directed pair when its nonzero images have successor degrees. |
 | 9 | `RealRooted.Interl.sum_left_of_common_left_of_nonneg` | `RealRooted.PosCombo` | Borcea--Brändén left-cone lemma in the nonnegative-coefficients specialization, zero-aware form on lists: if `h ≪₀ f_i` for every summand and each `f_i` has nonnegative coefficients, then `h ≪₀ ∑ f_i` |
-| 9 | `RealRooted.PreservesRealRootedOrZero.interlaces` | `RealRooted.OperatorPreservesInterlacing` | A global real-rootedness preserver transports a directed pair when its nonzero images have successor degrees. |
 | 9 | `RealRooted.interlaces_of_natDegree_eq_zero_of_natDegree_eq_one` | `RealRooted.ThreeTermRecurrence.Interlacing` | A nonzero constant interlaces a linear polynomial. |
 | 7 | `RealRooted.interl_affine_mul_X_add_X_self` | `RealRooted.AffineProperPosition` |  |
 | 7 | `RealRooted.interl_iff_interl_X_mul` | `RealRooted.OperatorMatrix.Directed` | Zero-aware `X`-duality for PF polynomials. |
@@ -295,7 +295,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 32 | `RealRooted.SatisfiesFavardRecurrence.natDegree_eq` | `RealRooted.Favard.Recurrence` | Every member of a Favard family has natural degree equal to its index. |
+| 33 | `RealRooted.SatisfiesFavardRecurrence.natDegree_eq` | `RealRooted.Favard.Recurrence` | Every member of a Favard family has natural degree equal to its index. |
 | 19 | `RealRooted.StrictInterl.natDegree_eq_or_eq_succ` | `RealRooted.Basic.ProperPosition` | Proper position forces equal natural degrees or a one-degree increase. |
 | 14 | `RealRooted.natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff` | `RealRooted.Linear` | If two polynomials have the same degree and positive leading coefficients, their top coefficients cannot cancel. |
 | 12 | `Polynomial.natDegree_divByMonic_X_sub_C` | `RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations` | Dividing by a monic linear factor lowers natural degree by one. |
@@ -385,17 +385,17 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 415 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
+| 416 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
 | 273 | `RealRooted.EffectiveBKW.IntPoly2.eval_add` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate addition. |
 | 19 | `RealRooted.bezoutEntry.wronskian` | `RealRooted.Bezoutian.RootEvaluation` |  |
 | 15 | `RealRooted.eval_pos_of_all_roots_lt` | `RealRooted.WagnerRightSum.Sign` |  |
 | 13 | `RealRooted.eval_complexify_ne_zero_of_splits_of_im_pos` | `RealRooted.HermiteBiehler.Basic` | A nonzero split real polynomial has no root in the open upper half-plane. |
 | 13 | `RealRooted.eval_pos_of_hasNonnegCoeffs` | `RealRooted.Basic.Coefficients` | A nonzero polynomial with nonnegative coefficients is strictly positive at every strictly positive real argument. |
-| 11 | `RealRooted.StrictInterl.eval_mul_eval_derivative_nonneg` | `RealRooted.MaWang.Weak.DerivativeSign` | Every interlacer `g ≪ f` with positive leading coefficients has the sign of `f'` at the roots of `f`: `g(r) f'(r) ≥ 0`. |
+| 12 | `RealRooted.StrictInterl.eval_mul_eval_derivative_nonneg` | `RealRooted.MaWang.Weak.DerivativeSign` | Every interlacer `g ≪ f` with positive leading coefficients has the sign of `f'` at the roots of `f`: `g(r) f'(r) ≥ 0`. |
 | 10 | `RealRooted.eval_hermiteBiehlerPolynomial` | `RealRooted.HermiteBiehler.Basic` |  |
 | 10 | `RealRooted.wronskian_eval_nonneg_of_strictInterl` | `RealRooted.Wronskian.WeakForward` | Interlacing with positive leading coefficients gives global nonnegativity of the oriented Wronskian. |
+| 9 | `RealRooted.eval_derivative_ne_zero_of_rootMultiplicity_eq_one` | `RealRooted.Derivative.Algebra` | The derivative does not vanish at a root of multiplicity one. |
 | 8 | `Polynomial.not_isRoot_iff_eval_ne_zero` | `RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs` |  |
-| 8 | `RealRooted.eval_derivative_ne_zero_of_rootMultiplicity_eq_one` | `RealRooted.Derivative.Algebra` | The derivative does not vanish at a root of multiplicity one. |
 | 8 | `RealRooted.eval_mul_eval_nonneg_of_strictInterl_right` | `RealRooted.WagnerRightSum.Sign` | If two polynomials both precede the same right-hand polynomial with positive leading coefficients, then they have the same sign at every root of that common right-hand polynomial. |
 | 8 | `RealRooted.tendsto_eval_atBot_atBot_of_posLeadingCoeff_odd` | `RealRooted.WagnerRightSum.Sign` |  |
 | 8 | `RealRooted.tendsto_eval_atBot_atTop_of_posLeadingCoeff_even` | `RealRooted.WagnerRightSum.Sign` |  |
