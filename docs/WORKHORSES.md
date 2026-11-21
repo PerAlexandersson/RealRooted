@@ -135,14 +135,14 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 75 | `RealRooted.IsPFPolynomial.of_realRooted_nonneg` | `RealRooted.PFPolynomial` | A split polynomial with nonnegative coefficients is PF. |
+| 77 | `RealRooted.IsPFPolynomial.of_realRooted_nonneg` | `RealRooted.PFPolynomial` | A split polynomial with nonnegative coefficients is PF. |
 | 40 | `RealRooted.IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits` | `RealRooted.PFPolynomial` | Construct a PF polynomial from nonnegative coefficients and a zero-or-splits certificate. |
 | 38 | `RealRooted.IsPFPolynomial.zero` | `RealRooted.PFPolynomial` | The zero polynomial is PF. |
-| 29 | `RealRooted.IsPFPolynomial.one` | `RealRooted.PFPolynomial` | The constant polynomial `1` is PF. |
+| 30 | `RealRooted.IsPFPolynomial.one` | `RealRooted.PFPolynomial` | The constant polynomial `1` is PF. |
 | 27 | `RealRooted.isPFPolynomial_X_add_C` | `RealRooted.PFPolynomial` | The polynomial `X + C a` is PF when `a` is nonnegative. |
-| 17 | `RealRooted.IsPFPolynomial.of_C_nonneg` | `RealRooted.PFPolynomial` | A nonnegative constant polynomial is PF. |
+| 18 | `RealRooted.IsPFPolynomial.of_C_nonneg` | `RealRooted.PFPolynomial` | A nonnegative constant polynomial is PF. |
+| 14 | `RealRooted.IsPFPolynomial.of_coeff_tendsto` | `RealRooted.PFPolynomial.Closure` | Coefficientwise limits of Pólya-frequency polynomials are Pólya-frequency. |
 | 14 | `RealRooted.isPFPolynomial_X_pow` | `RealRooted.PFPolynomial` | Every natural power of `X` is PF. |
-| 13 | `RealRooted.IsPFPolynomial.of_coeff_tendsto` | `RealRooted.PFPolynomial.Closure` | Coefficientwise limits of Pólya-frequency polynomials are Pólya-frequency. |
 | 11 | `RealRooted.IsPFPolynomial.reciprocalShift` | `RealRooted.PFPolynomial` | Shifted reciprocals preserve the PF cone when the shift bounds the degree. |
 | 11 | `RealRooted.IsPFPolynomial.to_sequence` | `RealRooted.PFPolynomial` | The coefficient sequence of a PF polynomial is a Pólya-frequency sequence. |
 | 11 | `RealRooted.IsPolyaFreqSeq.natCauchyConvolution` | `RealRooted.PolyaFrequencyConvolution.Basic` | Pólya-frequency sequences are closed under Cauchy convolution. |
@@ -150,16 +150,16 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 9 | `RealRooted.theta_preserves_pf` | `RealRooted.EulerOperator` | `theta` preserves the polynomial PF cone. |
 | 8 | `RealRooted.IsPFPolynomial.add_of_interl` | `RealRooted.OperatorMatrix.Directed` | The sum of an interlacing PF pair is PF. |
 | 8 | `RealRooted.isPFPolynomial_jensenPolynomial_of_PFMultiplierSequence` | `RealRooted.MultiplierSequence.Infinite` | Every Jensen polynomial of a PF multiplier sequence is PF. |
+| 8 | `RealRooted.isPFPolynomial_jensenPolynomial_of_finitePFMultiplierSequence` | `RealRooted.MultiplierSequence` | The easy PF direction: a finite PF multiplier sequence has a PF Jensen polynomial. |
 | 7 | `RealRooted.IsPFMultiplierSequence.diagonalOperator_isPF` | `RealRooted.MultiplierSequence.Infinite` |  |
 | 7 | `RealRooted.thetaPlusOne_preserves_pf` | `RealRooted.EulerOperator` | `theta + 1` preserves the polynomial PF cone. |
+| 6 | `RealRooted.IsPFPolynomial.of_X_sub_C_mul_factor` | `RealRooted.PFPolynomial` | If a PF polynomial is factored by a real linear factor, then the quotient is again PF. |
 | 6 | `RealRooted.IsPFPolynomial.of_polyaFreqSeq` | `RealRooted.PFPolynomial` | Construct a PF polynomial directly from its Pólya-frequency coefficient sequence using the proved forward ASW theorem. |
 | 5 | `Matrix.IsTotallyNonneg.isPFPolynomial_det_map_add_X_smul_checkerboard` | `RealRooted.TotallyNonnegPencil.Checkerboard` | A totally nonnegative constant matrix with positive determinant and a checkerboard-signed totally nonnegative variable matrix give a PF determinant. |
 | 5 | `RealRooted.BrandenVecchi.finiteSupersymmetricCoeff_isPolyaFreqSeq` | `RealRooted.BrandenVecchi.SupersymmetricCoefficients` | Finite supersymmetric product coefficients are Pólya-frequency for nonnegative parameters. |
 | 5 | `RealRooted.IsPolyaFreqSeq.prefix_zeros` | `RealRooted.AissenSchoenbergWhitney` | Inserting a finite prefix of zeroes preserves the Pólya-frequency property. |
 | 5 | `RealRooted.isPFMultiplierSequence_iff_jensenPolynomial_isPF` | `RealRooted.MultiplierSequence.PolyaSchur` | A sequence preserves the polynomial PF cone in every degree exactly when all of its Jensen polynomials are PF. |
 | 5 | `RealRooted.isPFPolynomial_X` | `RealRooted.PFPolynomial` | The polynomial `X` is PF. |
-| 5 | `RealRooted.isPFPolynomial_jensenPolynomial_of_finitePFMultiplierSequence` | `RealRooted.MultiplierSequence` | The easy PF direction: a finite PF multiplier sequence has a PF Jensen polynomial. |
-| 4 | `RealRooted.IsPFPolynomial.const_mul` | `RealRooted.PFPolynomial` | Multiplication by a positive constant preserves the PF property. |
 
 ## Stable
 
@@ -267,13 +267,13 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 |---:|---|---|---|
 | 85 | `RealRooted.hasNonnegCoeffs_C_mul` | `RealRooted.Basic.Coefficients` |  |
 | 56 | `RealRooted.hasNonnegCoeffs_one` | `RealRooted.Basic.Coefficients` |  |
-| 51 | `RealRooted.hasNonnegCoeffs_C` | `RealRooted.Basic.Coefficients` |  |
-| 49 | `RealRooted.hasNonnegCoeffs_X` | `RealRooted.Basic.Coefficients` |  |
+| 52 | `RealRooted.hasNonnegCoeffs_C` | `RealRooted.Basic.Coefficients` |  |
+| 50 | `RealRooted.hasNonnegCoeffs_X` | `RealRooted.Basic.Coefficients` |  |
 | 47 | `RealRooted.HasNonnegCoeffs.basisTransform` | `RealRooted.BasisTransform` | A basis transform preserves coefficientwise nonnegativity when every basis element has nonnegative coefficients. |
 | 44 | `RealRooted.hasPosLeadingCoeff_C_mul` | `RealRooted.Basic.Coefficients` |  |
 | 39 | `RealRooted.HasNonnegCoeffs.weightedSum` | `RealRooted.GarloffWagner.SchurProductPF` |  |
+| 32 | `RealRooted.HasNonnegCoeffs.diagonalOperator` | `RealRooted.MultiplierSequence` | Nonnegative diagonal coefficients preserve nonnegative coefficients. |
 | 32 | `RealRooted.hasPosLeadingCoeff_of_monic` | `RealRooted.Basic.Coefficients` |  |
-| 29 | `RealRooted.HasNonnegCoeffs.diagonalOperator` | `RealRooted.MultiplierSequence` | Nonnegative diagonal coefficients preserve nonnegative coefficients. |
 | 27 | `RealRooted.hasNonnegCoeffs_finsetSum` | `RealRooted.Basic.Coefficients` |  |
 | 27 | `RealRooted.hasNonnegCoeffs_zero` | `RealRooted.Basic.Coefficients` |  |
 | 16 | `MvPolynomial.HasNonnegCoeffs.uniqueAlgEquiv` | `RealRooted.Basic.Coefficients.Multivariate` | The unique-variable equivalence preserves coefficientwise nonnegativity. |
@@ -300,7 +300,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 14 | `RealRooted.natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff` | `RealRooted.Linear` | If two polynomials have the same degree and positive leading coefficients, their top coefficients cannot cancel. |
 | 12 | `Polynomial.natDegree_divByMonic_X_sub_C` | `RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations` | Dividing by a monic linear factor lowers natural degree by one. |
 | 12 | `RealRooted.DegreeDropReversal.natDegree_reflect_eq_of_coeff_zero_ne` | `RealRooted.DegreeDropReversal` | If the constant coefficient is nonzero, reflecting at any degree bound puts a nonzero coefficient in the top reflected degree. |
-| 11 | `RealRooted.natDegree_jensenPolynomial_le` | `RealRooted.MultiplierSequence` |  |
+| 12 | `RealRooted.natDegree_jensenPolynomial_le` | `RealRooted.MultiplierSequence` |  |
 | 10 | `Polynomial.reflect_eq_X_pow_mul_reverse` | `RealRooted.Mathlib.Algebra.Polynomial.Reverse` | Reflecting at a degree bound factors through reversal and a power of `X`. |
 | 10 | `RealRooted.natDegree_diagonalOperator_le` | `RealRooted.MultiplierSequence` |  |
 | 10 | `RealRooted.natDegree_mul_iterate_derivative_le` | `RealRooted.DerivativeRecurrence.Degree` |  |
@@ -355,8 +355,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
+| 26 | `RealRooted.coeff_diagonalOperator` | `RealRooted.MultiplierSequence` |  |
 | 25 | `Polynomial.coeff_sum_range_monomial` | `RealRooted.Mathlib.Algebra.Polynomial.Coeff` | The coefficient of a finite initial-segment monomial sum. |
-| 24 | `RealRooted.coeff_diagonalOperator` | `RealRooted.MultiplierSequence` |  |
 | 17 | `RealRooted.coeff_jensenPolynomial` | `RealRooted.MultiplierSequence` |  |
 | 16 | `Polynomial.coeff_comp_neg_X` | `RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas` | The coefficients of `p.comp (-X)` are those of `p` with alternating signs. |
 | 15 | `RealRooted.coeff_theta` | `RealRooted.EulerOperator` |  |
