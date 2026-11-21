@@ -366,11 +366,11 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 10 | `RealRooted.coeff_oddEvenPolynomial_even` | `RealRooted.HermiteBiehler.OddEven` |  |
 | 10 | `RealRooted.coeff_thetaPlusOne` | `RealRooted.EulerOperator` |  |
 | 9 | `RealRooted.coeff_narayanaPolynomial_of_lt` | `RealRooted.NarayanaTransformation.Coefficients` |  |
+| 8 | `Polynomial.coeff_shiftedJacobi` | `RealRooted.Mathlib.RingTheory.Polynomial.Jacobi` | The coefficient formula for the shifted Jacobi polynomial. |
 | 8 | `Polynomial.continuous_coeff_comp_X_add_C` | `RealRooted.Mathlib.Topology.Algebra.Polynomial` | Every coefficient of a translated real polynomial varies continuously with the translation parameter. |
 | 8 | `RealRooted.coeff_schurSzegoComp` | `RealRooted.Hadamard.Basic` |  |
 | 7 | `Polynomial.coeff_basisTransform` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
 | 7 | `Polynomial.coeff_one_sub_X_pow` | `RealRooted.Mathlib.Algebra.Polynomial.Coeff` | The coefficient of `(1 - X) ^ n` is the signed binomial coefficient. |
-| 7 | `Polynomial.coeff_shiftedJacobi` | `RealRooted.Mathlib.RingTheory.Polynomial.Jacobi` | The coefficient formula for the shifted Jacobi polynomial. |
 | 7 | `RealRooted.CenteredEulerian.IsEvenPS.coeff_odd` | `RealRooted.CenteredEulerian.Parity` |  |
 | 7 | `RealRooted.CenteredEulerian.coeff_sinS` | `RealRooted.CenteredEulerian.SeriesBasic` |  |
 | 7 | `RealRooted.coeff_hadamardProduct` | `RealRooted.Hadamard.Product` |  |
@@ -385,7 +385,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 426 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
+| 427 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
 | 275 | `RealRooted.EffectiveBKW.IntPoly2.eval_add` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate addition. |
 | 19 | `RealRooted.bezoutEntry.wronskian` | `RealRooted.Bezoutian.RootEvaluation` |  |
 | 15 | `RealRooted.eval_pos_of_all_roots_lt` | `RealRooted.WagnerRightSum.Sign` |  |
@@ -428,8 +428,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 8 | `RealRooted.generalizedEulerian_succ` | `RealRooted.GeneralizedEulerian` |  |
 | 7 | `RealRooted.div_ofNat_eq_C_mul` | `RealRooted.DerivativeRecurrence.SecondOrderODE` | Division by a numeral, as generated recurrences write `(1 / 2) * X`. |
 | 7 | `RealRooted.isNonnegLinearForm_one` | `RealRooted.RowThreshold` |  |
+| 6 | `Polynomial.shiftedJacobi_differential_equation` | `RealRooted.Mathlib.RingTheory.Polynomial.Jacobi` | The shifted Jacobi differential equation `X(1-X)y'' + (α+1-(α+β+2)X)y' + n(n+α+β+1)y = 0`. |
 | 6 | `RealRooted.touchard_succ` | `RealRooted.Touchard` |  |
-| 5 | `Polynomial.shiftedJacobi_differential_equation` | `RealRooted.Mathlib.RingTheory.Polynomial.Jacobi` | The shifted Jacobi differential equation `X(1-X)y'' + (α+1-(α+β+2)X)y' + n(n+α+β+1)y = 0`. |
 | 5 | `RealRooted.EulerBidiagonal.generalStep_eq_second_derivative` | `RealRooted.EulerBidiagonal.QuadraticEulerStep` | Differential form of the general Euler step. |
 | 5 | `RealRooted.brandenE_mul_X_add_C` | `RealRooted.Transforms.BrandenE.Basic` | Affine-factor form of `brandenE_X_mul`. |
 | 4 | `Polynomial.taylor_iterate_derivative` | `RealRooted.Mathlib.Algebra.Polynomial.Taylor` | The Taylor shift commutes with iterated derivatives. |
@@ -491,7 +491,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 14 | `RealRooted.isRoot_nonpos_of_hasNonnegCoeffs` | `RealRooted.Basic.Coefficients` | A real root of a nonzero polynomial with nonnegative coefficients is nonpositive. |
 | 13 | `RealRooted.StrictInterl.rootMultiplicity_bounds` | `RealRooted.Basic.ProperPosition` | In proper position, the multiplicities of every real root differ by at most one. |
 | 13 | `RealRooted.listInterlaces_all_ge` | `RealRooted.Basic.RootLists` | Every element of `ss` is at least the first element of the right-hand list in a `ListInterlaces` relation. |
-| 11 | `Polynomial.ring_choose_pos` | `RealRooted.Mathlib.RingTheory.Polynomial.Jacobi` | A generalized real binomial coefficient is positive above its largest possible zero. |
+| 12 | `Polynomial.ring_choose_pos` | `RealRooted.Mathlib.RingTheory.Polynomial.Jacobi` | A generalized real binomial coefficient is positive above its largest possible zero. |
 | 11 | `RealRooted.List.Interleaves.ofFn_succ` | `RealRooted.Bezoutian.StrictInterleaving` |  |
 | 11 | `RealRooted.SimpleNegRooted.isRoot_neg` | `RealRooted.EulerOperator.Darboux.NegativeRoots` |  |
 | 9 | `MvPolynomial.algebraicSymbol_eq_sum` | `RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol` | Expand the finite algebraic symbol in its bounded monomial basis. |
