@@ -26,6 +26,7 @@ public import RealRooted.Analysis.PowerTail.Bernoulli
 public import RealRooted.Analysis.PowerTail.Quadratic
 public import RealRooted.Analysis.PowerTail.Telescoping
 public import RealRooted.Apolarity
+public import RealRooted.Apolarity.Scaling
 public import RealRooted.Applications.BinderVecchi.UniformChow
 public import RealRooted.Applications.BinderVecchi.UniformMatroid
 public import RealRooted.Applications.EulerianVariations
@@ -2306,6 +2307,9 @@ public import RealRooted.Mathlib.Algebra.LinearRecurrence.Veronese
 public import RealRooted.Tactic.Examples.VeroneseRecurrence
 public import RealRooted.MultiplierSequence.FallingFactorial
 public import RealRooted.Hermite.PoulainSymbolInterlacing
+public import RealRooted.Hermite.Gaussian
+public import RealRooted.Hermite.Grace
+public import RealRooted.Hermite.Homogeneous
 public import RealRooted.Challenges.Combinatorial.Hoggatt
 public import RealRooted.CombinatorialExamples.Hoggatt
 public import RealRooted.Challenges.Matrices.CircleCriterion
@@ -2343,6 +2347,11 @@ public import RealRooted.ExponentialRows.ProductInsertion
 public import RealRooted.ExponentialRows.Quartic
 public import RealRooted.ExponentialRows.QuarticInsertion
 public import RealRooted.ExponentialRows.RealRootedProduct
+public import RealRooted.ExponentialRows.GaussianIdentity
+public import RealRooted.ExponentialRows.HermiteAuxiliary
+public import RealRooted.ExponentialRows.QuadraticLocation
+public import RealRooted.ExponentialRows.QuarticGrace
+public import RealRooted.ExponentialRows.QuarticRecurrence
 public import RealRooted.Mathlib.Algebra.Polynomial.NewtonPartialProducts
 public import RealRooted.MatrixInterlacing.PartialProductStep
 public import RealRooted.MatrixInterlacing.VariableLastRow
