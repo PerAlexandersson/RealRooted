@@ -444,7 +444,7 @@ private theorem analyticOrderAt_finset_prod_one_sub {ι : Type*} (z : ι → ℂ
       ((s.filter (fun i => z i = w)).card) := by
   classical
   induction s using Finset.induction_on with
-  | empty => simpa using (analyticAt_const).analyticOrderAt_eq_zero.mpr one_ne_zero
+  | empty => simp
   | insert i s hi ih =>
     have hfac : AnalyticAt ℂ (fun x => 1 - x / z i) w := by fun_prop
     have hrest : AnalyticAt ℂ (fun x => ∏ j ∈ s, (1 - x / z j)) w := by fun_prop

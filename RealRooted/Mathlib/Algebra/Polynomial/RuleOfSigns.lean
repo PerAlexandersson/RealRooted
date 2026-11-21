@@ -30,7 +30,7 @@ theorem trailingCoeff_eraseLead_of_ne_zero [Semiring R] {p : R[X]}
     (h : p.eraseLead ≠ 0) :
     p.eraseLead.trailingCoeff = p.trailingCoeff := by
   have hmem : p.eraseLead.natTrailingDegree ∈ p.eraseLead.support :=
-    natTrailingDegree_mem_support_of_nonzero h
+    natTrailingDegree_mem_support_of_ne_zero h
   have hlt : p.eraseLead.natTrailingDegree < p.natDegree :=
     lt_natDegree_of_mem_eraseLead_support hmem
   have hecoeff : p.eraseLead.coeff p.eraseLead.natTrailingDegree ≠ 0 :=
@@ -65,7 +65,7 @@ theorem even_signVariations_iff_sign_leadingCoeff_eq_sign_trailingCoeff
       sign p.leadingCoeff = sign p.trailingCoeff := by
   generalize hn : p.support.card = n
   induction n using Nat.strong_induction_on generalizing p with
-  | h n ih =>
+  | ind n ih =>
       by_cases he : p.eraseLead = 0
       · have hmono : monomial p.natDegree p.leadingCoeff = p := by
           simpa [he] using p.eraseLead_add_monomial_natDegree_leadingCoeff
@@ -81,7 +81,7 @@ theorem even_signVariations_iff_sign_leadingCoeff_eq_sign_trailingCoeff
         have hpLead : sign p.leadingCoeff ≠ 0 := by simp [hp]
         have heLead : sign p.eraseLead.leadingCoeff ≠ 0 := by simp [he]
         have hpTrail : sign p.trailingCoeff ≠ 0 := by
-          simp [trailingCoeff_nonzero_iff_nonzero.mpr hp]
+          simp [trailingCoeff_ne_zero.mpr hp]
         generalize hpSign : sign p.leadingCoeff = sp at hpLead ⊢
         generalize heSign : sign p.eraseLead.leadingCoeff = se at heLead hi ⊢
         generalize htSign : sign p.trailingCoeff = st at hpTrail hi ⊢
@@ -117,7 +117,7 @@ theorem even_signVariations_X_sub_C_mul_iff_not
   rw [htrailSign]
   have hpLead : sign p.leadingCoeff ≠ 0 := by simp [hp]
   have hpTrail : sign p.trailingCoeff ≠ 0 := by
-    simp [trailingCoeff_nonzero_iff_nonzero.mpr hp]
+    simp [trailingCoeff_ne_zero.mpr hp]
   generalize hpSign : sign p.leadingCoeff = sp at hpLead ⊢
   generalize htSign : sign p.trailingCoeff = st at hpTrail ⊢
   fin_cases sp <;> fin_cases st <;> simp_all

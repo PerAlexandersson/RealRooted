@@ -156,7 +156,7 @@ lemma bezoutSeqEntry.bilinear_mul_sub {A : Type*} [CommRing A] (a b : ℕ → A)
 `(p(X) q(Y) - p(Y) q(X)) / (X - Y)`.
 
 This definition is independent of a matrix size. Coefficients outside the
-degrees of `p` and `q` vanish through `Polynomial.coeff`. -/
+degrees of `p` and `q` vanish through `AddMonoidAlgebra.coeff`. -/
 def bezoutEntry {R : Type*} [CommRing R] (p q : R[X]) (i j : ℕ) : R :=
   bezoutSeqEntry p.coeff q.coeff i j
 

@@ -115,7 +115,7 @@ theorem natDegree_genPoly_le [CommSemiring R] (s : Finset ι) (stat : ι → ℕ
 theorem genPoly_congr [CommSemiring R] (s t : Finset ι) (stat : ι → ℕ)
     (h : ∀ k, (s.filter (stat · = k)).card = (t.filter (stat · = k)).card) :
     (genPoly s stat : R[X]) = genPoly t stat := by
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   rw [coeff_genPoly, coeff_genPoly, h]
 
@@ -161,7 +161,7 @@ example :
           (if k = 3 then 1 else 0) := by
     rw [coeff_add, coeff_add, ← Nat.cast_ofNat (R := ℕ[X]) (n := 2), coeff_natCast_ite]
     simp [coeff_X, coeff_X_pow, eq_comm]
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   rw [coeff_genPoly]
   rw [hcoeff]

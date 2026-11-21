@@ -44,7 +44,7 @@ theorem eq_of_sum_coeff_mul_shifted_choose_eq
   have hcoeff : ∀ n ≤ d, r.coeff n = s.coeff n := by
     intro n hn
     induction n using Nat.strong_induction_on with
-    | h n ih =>
+    | ind n ih =>
         have hnmem : n ∈ Finset.range (d + 1) := Finset.mem_range.mpr (by lia)
         have hsum := h n hn
         rw [← Finset.sum_erase_add _ _ hnmem,

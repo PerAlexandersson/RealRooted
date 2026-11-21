@@ -147,7 +147,7 @@ theorem coeff_row_add_succ (k q r : ℕ) (hk : k ≠ 0) :
 /-- The all-singleton partition gives constant coefficient one in every ordered row. -/
 @[simp] theorem coeff_orderedRow_zero (k n : ℕ) : (orderedRow k n).coeff 0 = 1 := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
     cases n with
     | zero => simp
     | succ n =>

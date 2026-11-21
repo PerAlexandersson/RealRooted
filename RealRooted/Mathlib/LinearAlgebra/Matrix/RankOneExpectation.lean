@@ -30,7 +30,7 @@ private theorem det_add_vecMulVec_trace (M : Matrix n n R) (u w : n → R) :
     (M + vecMulVec u w).det = M.det + (M.adjugate * vecMulVec u w).trace := by
   rw [Matrix.det_add_vecMulVec]
   congr 1
-  simp only [trace, diag_apply, mul_apply, vecMulVec_apply, mulVec, dotProduct,
+  simp only [trace, diag_apply, Matrix.mul_apply, vecMulVec_apply, mulVec, dotProduct,
     Finset.mul_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   refine Finset.sum_congr rfl fun j _ => ?_
@@ -78,7 +78,8 @@ private theorem derivative_det_rankOne_sum {ι : Type*} (s : Finset ι) (u w : �
     have hN : N.map (eval 0) = M := by
       ext a b
       simp [hNdef]
-    simp only [trace, diag_apply, mul_apply, vecMulVec_apply, eval_finsetSum, eval_mul, eval_C,
+    simp only [trace, diag_apply, Matrix.mul_apply, vecMulVec_apply, eval_finsetSum,
+      eval_mul, eval_C,
       eval_zero_adjugate N M hN]
 
 /-- Evaluating the derivative of a determinant pencil at zero gives its adjugate trace. -/

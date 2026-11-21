@@ -114,7 +114,8 @@ theorem key_sort_strictMono {n N : ℕ} (u : Fin n → Fin N) :
   intro i j hij
   simp only [key]
   rcases (h1 hij.le).eq_or_lt with he | hl
-  · exact Prod.Lex.toLex_lt_toLex.2 (Or.inr ⟨he, h2 i j hij he⟩)
+  · exact Prod.Lex.toLex_lt_toLex.2 (Or.inr ⟨he,
+      lt_of_le_of_ne (h2 hij.le he) (fun h => hij.ne ((Tuple.sort u).injective h))⟩)
   · exact Prod.Lex.toLex_lt_toLex.2 (Or.inl hl)
 
 theorem rank_eq_sort_symm {n N : ℕ} (u : Fin n → Fin N) (x : Fin n) :
@@ -158,8 +159,8 @@ theorem sort_eq_iff_compat {n N : ℕ} (u : Fin n → Fin N) (π : Equiv.Perm (F
     rcases hle.lt_or_eq with hlt | heq
     · exact hlt
     · exfalso
-      have := ht i ⟨i.val + 1, h⟩ (Fin.mk_lt_mk.2 (by simp)) heq
-      exact lt_asymm this hd
+      have := ht (Fin.mk_le_mk.2 (by simp)) heq
+      exact (not_lt_of_ge this) hd
   · rintro ⟨hm, hs⟩
     refine ⟨hm, ?_⟩
     have base : ∀ (i : Fin n) (h : i.val + 1 < n), f i = f ⟨i.val + 1, h⟩ →
@@ -189,11 +190,13 @@ theorem sort_eq_iff_compat {n N : ℕ} (u : Fin n → Fin N) (π : Equiv.Perm (F
         have := base ⟨i.val + k + 1, by lia⟩ (by lia) e2
         exact lt_trans ‹π i < _› (by simpa [add_assoc] using this)
     intro i j hij he
+    rcases hij.eq_or_lt with rfl | hij
+    · exact le_rfl
     obtain ⟨k, hk⟩ : ∃ k, j.val = i.val + k + 1 := ⟨j.val - i.val - 1, by
       rw [Fin.lt_def] at hij; lia⟩
     have hj : j = ⟨i.val + k + 1, by lia⟩ := Fin.ext hk
     rw [hj] at he ⊢
-    exact key k i _ he
+    exact (key k i _ he).le
 
 theorem card_sort_eq {n N : ℕ} (π : Equiv.Perm (Fin n)) :
     (univ.filter (fun u : Fin n → Fin N => Tuple.sort u = π)).card

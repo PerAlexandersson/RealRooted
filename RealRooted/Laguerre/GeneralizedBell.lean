@@ -224,7 +224,7 @@ private theorem aeval_ascPochhammer_laguerreRaisingEndomorphism
       have hcomm := (Commute.all (ascPochhammer ℝ m) (X + (m : ℝ[X]))).map
         (aeval (laguerreRaisingEndomorphism (alpha + d + 1)) :
           ℝ[X] →ₐ[ℝ] Module.End ℝ ℝ[X])
-      rw [hcomm.eq, Module.End.mul_apply, ih]
+      rw [hcomm.eq, mul_apply_eq_comp, ih]
       have hop : (aeval (laguerreRaisingEndomorphism (alpha + d + 1))
           (X + (m : ℝ[X])) : Module.End ℝ ℝ[X]) =
           laguerreRaisingEndomorphism (alpha + (d + m) + 1) := by
@@ -255,7 +255,7 @@ private theorem aeval_laguerreAuxiliary_eq_sum
   apply Finset.sum_congr rfl
   intro j hj
   simp only [Finset.mem_range] at hj
-  rw [map_mul, Module.End.mul_apply,
+  rw [map_mul, mul_apply_eq_comp,
     aeval_ascPochhammer_laguerreRaisingEndomorphism]
   simp only [aeval_C, Module.algebraMap_end_apply, smul_eq_C_mul]
   congr 2
@@ -269,7 +269,7 @@ private theorem aeval_prod_X_sub_C_eq_laguerreRaisingSteps
   induction roots with
   | nil => simp [laguerreRaisingSteps]
   | cons r roots ih =>
-      simp only [List.map_cons, List.prod_cons, map_mul, Module.End.mul_apply,
+      simp only [List.map_cons, List.prod_cons, map_mul, mul_apply_eq_comp,
         aeval_X_sub_C_laguerreRaisingEndomorphism,
         laguerreRaisingEndomorphism_apply, laguerreRaisingSteps]
       rw [ih]

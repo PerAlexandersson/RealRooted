@@ -79,7 +79,7 @@ theorem pow_apply_eq_zero_of_lt_add_of_strictLower
       have hij' : i < j := Fin.mk_lt_mk.mpr hij
       simp [ne_of_lt hij']
   | succ q ih =>
-      rw [pow_succ, mul_apply]
+      rw [pow_succ, Matrix.mul_apply]
       apply Finset.sum_eq_zero
       intro k _
       by_cases hik : i.val < k.val + q
@@ -109,7 +109,7 @@ theorem mul_apply_eq_zero_of_le_of_strictLower_lower
     (hG : ∀ i j, i < j → G i j = 0)
     {i j : Fin N} (hij : i.val ≤ j.val) :
     (K * G) i j = 0 := by
-  rw [mul_apply]
+  rw [Matrix.mul_apply]
   apply Finset.sum_eq_zero
   intro k _
   by_cases hik : i.val ≤ k.val
@@ -129,7 +129,7 @@ theorem mul_apply_eq_zero_of_le_of_lower_strictLower
     (hK : ∀ i j, i.val ≤ j.val → K i j = 0)
     {i j : Fin N} (hij : i.val ≤ j.val) :
     (G * K) i j = 0 := by
-  rw [mul_apply]
+  rw [Matrix.mul_apply]
   apply Finset.sum_eq_zero
   intro k _
   by_cases hik : i < k
@@ -147,7 +147,7 @@ theorem mul_apply_eq_zero_of_lt_add_of_drop_lower
     (hG : ∀ i j, i < j → G i j = 0)
     {i j : Fin N} (hij : i.val < j.val + r) :
     (K * G) i j = 0 := by
-  rw [mul_apply]
+  rw [Matrix.mul_apply]
   apply Finset.sum_eq_zero
   intro k _
   by_cases hik : i.val < k.val + r
@@ -171,7 +171,7 @@ theorem pow_apply_eq_zero_of_lt_add_mul_of_drop
       have hij' : i < j := Fin.mk_lt_mk.mpr hij
       simp [ne_of_lt hij']
   | succ q ih =>
-      rw [pow_succ, mul_apply]
+      rw [pow_succ, Matrix.mul_apply]
       apply Finset.sum_eq_zero
       intro k _
       by_cases hik : i.val < k.val + q * r
@@ -190,7 +190,7 @@ theorem mul_pow_apply_eq_zero_of_lt_add_mul_of_lower_drop
     (hK : ∀ i j, i.val < j.val + r → K i j = 0)
     {i j : Fin N} (hij : i.val < j.val + q * r) :
     (G * K ^ q) i j = 0 := by
-  rw [mul_apply]
+  rw [Matrix.mul_apply]
   apply Finset.sum_eq_zero
   intro k _
   by_cases hik : i < k
@@ -220,7 +220,7 @@ theorem mul_pow_apply_eq_zero_of_lt_add_of_lower_strictLower
     (hK : ∀ i j, i.val ≤ j.val → K i j = 0)
     {i j : Fin N} (hij : i.val < j.val + q) :
     (G * K ^ q) i j = 0 := by
-  rw [mul_apply]
+  rw [Matrix.mul_apply]
   apply Finset.sum_eq_zero
   intro k _
   by_cases hik : i < k
@@ -238,7 +238,7 @@ theorem pow_mul_apply_eq_zero_of_lt_add_of_strictLower_lower
     (hG : ∀ i j, i < j → G i j = 0)
     {i j : Fin N} (hij : i.val < j.val + q) :
     (K ^ q * G) i j = 0 := by
-  rw [mul_apply]
+  rw [Matrix.mul_apply]
   apply Finset.sum_eq_zero
   intro k _
   by_cases hkj : k < j

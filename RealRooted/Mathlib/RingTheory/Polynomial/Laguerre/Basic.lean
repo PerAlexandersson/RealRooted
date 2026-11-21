@@ -68,10 +68,10 @@ theorem coeff_generalizedLaguerre (n k : ℕ) (α : R) :
   ext k
   cases k with
   | zero =>
-      simp [coeff_generalizedLaguerre, coeff_add, Polynomial.coeff_one]
+      simp [coeff_generalizedLaguerre]
   | succ k =>
       cases k <;>
-        simp [coeff_generalizedLaguerre, coeff_add, Polynomial.coeff_one,
+        simp [coeff_generalizedLaguerre, Polynomial.coeff_one,
           Polynomial.coeff_X]
 
 @[simp] theorem generalizedLaguerre_two (α : R) :

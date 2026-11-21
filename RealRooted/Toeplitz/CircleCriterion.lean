@@ -118,7 +118,7 @@ theorem row_succ (b : ℕ →₀ ℝ) (n : ℕ) :
 theorem row_isMonicOfDegree (b : ℕ →₀ ℝ) (n : ℕ) :
     (row b n).IsMonicOfDegree n := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
     cases n with
     | zero => simp
     | succ n =>

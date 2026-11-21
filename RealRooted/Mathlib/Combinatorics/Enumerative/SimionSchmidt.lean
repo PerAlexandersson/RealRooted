@@ -856,7 +856,21 @@ private lemma P123_ge (L : List ℕ) (t x : ℕ) (hL : L.Nodup) (l' : List ℕ)
     P123 t (x :: l') ↔ (∀ y ∈ L, t ≤ y → y ≤ x) ∧ P123 t l' := by
   unfold P123
   rw [LAvoids_cons, pairs_cons]
-  grind [R123, mem_L_of_perm_erase, mem_perm_erase]
+  constructor
+  · rintro ⟨⟨ha, _⟩, hh, ht⟩
+    refine ⟨?_, ha, ht⟩
+    intro y hy hty
+    by_cases hyx : y = x
+    · simp [hyx]
+    · exact hh y (mem_perm_erase hL hl hy hyx) hxt hty
+  · rintro ⟨hb, ha, ht⟩
+    refine ⟨⟨ha, ?_⟩, ?_, ht⟩
+    · intro b c hbc hbad
+      dsimp [R123] at hbad
+      have horder : c ≤ b := ht b c hbc (by lia) (by lia)
+      lia
+    · intro c hc _ htc
+      exact hb c (mem_L_of_perm_erase hl hc) htc
 
 private lemma P132_lt (t x : ℕ) (l' : List ℕ) (hxt : x < t) :
     P132 t (x :: l') ↔ P132 (x + 1) l' := by
@@ -870,7 +884,21 @@ private lemma P132_ge (L : List ℕ) (t x : ℕ) (hL : L.Nodup) (l' : List ℕ)
     P132 t (x :: l') ↔ (∀ y ∈ L, t ≤ y → x ≤ y) ∧ P132 t l' := by
   unfold P132
   rw [LAvoids_cons, pairs_cons]
-  grind [R132, mem_L_of_perm_erase, mem_perm_erase]
+  constructor
+  · rintro ⟨⟨ha, _⟩, hh, ht⟩
+    refine ⟨?_, ha, ht⟩
+    intro y hy hty
+    by_cases hyx : y = x
+    · simp [hyx]
+    · exact hh y (mem_perm_erase hL hl hy hyx) hxt hty
+  · rintro ⟨hb, ha, ht⟩
+    refine ⟨⟨ha, ?_⟩, ?_, ht⟩
+    · intro b c hbc hbad
+      dsimp [R132] at hbad
+      have horder : b ≤ c := ht b c hbc (by lia) (by lia)
+      lia
+    · intro c hc _ htc
+      exact hb c (mem_L_of_perm_erase hl hc) htc
 
 private lemma card_max_filter (L : List ℕ) (t : ℕ) :
     (L.toFinset.filter (fun x => t ≤ x ∧ ∀ y ∈ L, t ≤ y → y ≤ x)).card =

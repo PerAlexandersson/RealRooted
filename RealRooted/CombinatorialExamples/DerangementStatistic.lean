@@ -320,7 +320,7 @@ private theorem polynomial_recurrence_of_coefficients {P : ℕ → ℝ[X]} {n : 
     P (n + 2) =
       X * (C (n + 1 : ℝ) * (P n + P (n + 1)) +
         (1 - X) * (P (n + 1)).derivative) := by
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro j
   cases j with
   | zero =>
@@ -363,7 +363,7 @@ private lemma derangementExcGenPoly_recurrence (n : ℕ) :
   ring
 
 private lemma derangementExcGenPoly_zero : derangementExcGenPoly 0 = 1 := by
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   by_cases hk : k = 0
   · subst k
@@ -375,7 +375,7 @@ private lemma derangementExcGenPoly_zero : derangementExcGenPoly 0 = 1 := by
     simp only [coeff_one, hk, ite_false, Nat.cast_zero]
 
 private lemma derangementExcGenPoly_one : derangementExcGenPoly 1 = 0 := by
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   rcases k with _ | _ | k
   · rw [coeff_derangementExcGenPoly, D_zero_right]
@@ -388,7 +388,7 @@ private lemma derangementExcGenPoly_one : derangementExcGenPoly 1 = 0 := by
     simp
 
 private lemma derangementExcGenPoly_two : derangementExcGenPoly 2 = X := by
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   rcases k with _ | _ | k
   · rw [coeff_derangementExcGenPoly, D_zero_right]
@@ -413,7 +413,7 @@ theorem derangementExcGenPoly_eq_polynomial :
     ∀ n, derangementExcGenPoly n = DerangementTransform.polynomial n := by
   intro n
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       rcases n with _ | _ | _ | n
       · rw [derangementExcGenPoly_zero,
           DerangementTransform.polynomial_zero]

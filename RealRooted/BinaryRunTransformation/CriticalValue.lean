@@ -62,7 +62,7 @@ theorem signedParityLift_eq_zero_iff
     signedParityLift n p = 0 ↔ p = 0 := by
   constructor
   · intro hzero
-    apply Polynomial.ext
+    apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
     intro k
     by_cases hk : k ≤ n / 2
     · have hcoeff := congrArg (fun q : ℝ[X] => q.coeff (n - 2 * k)) hzero

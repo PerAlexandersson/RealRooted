@@ -141,7 +141,7 @@ theorem symbolRow_hasNonnegCoeffs {r : ℕ} {p : Fin r → ℝ[X]}
     (hp : ∀ i, HasNonnegCoeffs (p i)) (n : ℕ) :
     HasNonnegCoeffs (symbolRow p n) := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       by_cases hn : n = 0
       · subst n
         simpa only [symbolRow_zero] using hasNonnegCoeffs_one

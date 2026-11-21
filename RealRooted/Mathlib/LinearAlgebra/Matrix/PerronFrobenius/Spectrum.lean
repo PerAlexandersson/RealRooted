@@ -37,7 +37,7 @@ Polynomials (R[X] or Polynomial R):
 Polynomial.eval (μ : R) (p : R[X]) : R: Evaluation of polynomial p at scalar μ.
 Polynomial.aeval (a : A) (p : R[X]) : A: Evaluation of p at an element a in an R-algebra A.
 Polynomial.IsRoot p μ : Prop := Polynomial.eval μ p = 0.
-Polynomial.coeff p n : R: The n-th coefficient of p.
+AddMonoidAlgebra.coeff p n : R: The n-th coefficient of p.
 Polynomial.leadingCoeff p : R.
 Polynomial.monic p : Prop.
 Polynomial.natDegree p : ℕ.

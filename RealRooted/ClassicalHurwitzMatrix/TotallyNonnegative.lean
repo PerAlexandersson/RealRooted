@@ -209,8 +209,8 @@ theorem hurwitz_C_isTotallyNonneg (a : ℝ) (ha : 0 ≤ a) :
   have hsub := hscaled.submatrix strictMono_id hdouble
   convert hsub using 1
   ext i j
-  simp only [hurwitz_apply, coeff_C, submatrix_apply, smul_apply, one_apply,
-    smul_eq_mul, id_eq]
+  simp only [hurwitz_apply, coeff_C, submatrix_apply,
+    id_eq]
   by_cases hle : i ≤ 2 * j
   · rw [ite_eq_left hle]
     by_cases hij : i = 2 * j

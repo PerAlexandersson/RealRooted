@@ -57,7 +57,7 @@ theorem natDegree_chowDerangement_le (A : LowerTriangularMatrix R) :
     ∀ n, (chowDerangement A n).natDegree ≤ n := by
   intro n
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
     cases n with
     | zero => simp
     | succ n =>
@@ -208,7 +208,7 @@ theorem chowDerangement_chowPolynomial_unique (A : LowerTriangularMatrix R)
   have hd : ∀ n, d n = chowDerangement A n := by
     intro n
     induction n using Nat.strong_induction_on with
-    | h n ih =>
+    | ind n ih =>
       cases n with
       | zero => simpa using hdzero
       | succ n =>

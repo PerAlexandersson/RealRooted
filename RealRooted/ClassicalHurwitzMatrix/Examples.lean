@@ -124,7 +124,7 @@ theorem cexOddZero_eq_one_add_X_sq_coeff :
       · subst n
         norm_num [RealRooted.cexOddZero, Polynomial.coeff_add,
           Polynomial.coeff_X_pow, Polynomial.coeff_one]
-      · simp [RealRooted.cexOddZero, Polynomial.coeff_add,
+      · simp [RealRooted.cexOddZero,
           Polynomial.coeff_X_pow, Polynomial.coeff_one]
 
 /-- The polynomial `1 + X²` is weakly Hurwitz stable: its two roots lie on the
@@ -164,7 +164,7 @@ theorem classicalHurwitzCexOddZero_isTotallyNonneg :
 nonnegative, so the nonzero hypothesis in the equivalence is essential. -/
 theorem classicalHurwitzZero_isTotallyNonneg :
     (Matrix.hurwitz (0 : ℝ[X]).coeff).IsTotallyNonneg := by
-  simpa using Matrix.hurwitz_C_isTotallyNonneg (0 : ℝ) (by norm_num)
+  simp
 
 /-- The zero polynomial is not weakly Hurwitz stable. -/
 theorem not_isHurwitzStable_zero :

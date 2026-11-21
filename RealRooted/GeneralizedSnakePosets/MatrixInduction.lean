@@ -312,7 +312,7 @@ theorem snakeInterlacing_of_strictInterl_step
         (M w ≠ 0 ∧ (M w).Splits) ∧ Interlaces (M w.deleteFinal) (M w) := by
     intro n
     induction n using Nat.strong_induction_on with
-    | h n ih =>
+    | ind n ih =>
         intro w hlen hw
         by_cases hconstw : w.IsConstant
         · exact hconst hw hconstw

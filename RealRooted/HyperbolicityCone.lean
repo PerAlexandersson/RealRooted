@@ -58,7 +58,7 @@ theorem convex_hyperbolicityCone {σ : Type*} {P : MvPolynomial σ ℝ} {d : ℕ
       simp
     have hneg := MvPolynomial.HyperbolicAt.affineLineRestriction_isRoot_neg_of_joinedIn
       (MvPolynomial.HyperbolicAt.of_joinedIn he hhom hy) hhom hd hyx
-    have hz : a' • x + b' • y = fun i => a' * (x i + y i * (b' / a')) := by
+    have hz : a' • x + b' • y = a' • (fun i => x i + y i * (b' / a')) := by
       ext i
       simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
       field_simp

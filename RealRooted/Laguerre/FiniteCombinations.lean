@@ -108,7 +108,7 @@ theorem generalizedLaguerre_sub_prev_strict_package
     · exact (natDegree_C_mul_le γ _).trans (by simp)
   have hFcoeff : F.coeff n = 1 := by
     dsimp [F]
-    rw [coeff_sub, coeff_C_mul, coeff_generalizedLaguerre,
+    rw [coeff_C_mul, coeff_generalizedLaguerre,
       ite_eq_left le_rfl, coeff_generalizedLaguerre,
       ite_eq_right (by lia : ¬n ≤ n - 1)]
     simp

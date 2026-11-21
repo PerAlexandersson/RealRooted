@@ -268,7 +268,7 @@ theorem rayDifferentialStep_package
     ring
   have hmultP : P.rootMultiplicity h = p.rootMultiplicity h := by
     dsimp [P]
-    exact rootMultiplicity_C_mul hc p
+    exact rootMultiplicity_C_mul hc
   have hpack := rayDifferentialStep_package_of_pos
     (a := a) (rho := rho) hb hkappa hPpos hPs hProots
   have hstep_ne : rayDifferentialStep a b kappa h rho p ≠ 0 := by
@@ -286,7 +286,7 @@ theorem rayDifferentialStep_package
       (rayDifferentialStep a b kappa h rho P).rootMultiplicity h =
         (rayDifferentialStep a b kappa h rho p).rootMultiplicity h := by
     rw [hstep]
-    exact rootMultiplicity_C_mul hc _
+    exact rootMultiplicity_C_mul hc
   refine ⟨hstep_ne, hstep_splits, ?_, ?_⟩
   · rw [← hroot_transfer, hpack.2.2.1, hmultP]
   · rw [← hmultP, ← houtmult]

@@ -93,7 +93,7 @@ theorem shiftDeriv_monomial {R σ : Type*} [CommSemiring R]
     Commute.add_pow (Commute.one_right (MvPolynomial.pderiv q).toLinearMap)]
   rw [LinearMap.sum_apply]
   apply Finset.sum_congr rfl; intro j hj
-  rw [Module.End.mul_apply, one_pow, mul_one]
+  rw [mul_apply_eq_comp, one_pow, mul_one]
   change ((MvPolynomial.pderiv q).toLinearMap ^ j)
       (n.choose j • MvPolynomial.monomial d c) = _
   rw [map_nsmul, iteratedPDerivAt_eq_pow, iteratedPDerivAt_monomial, nsmul_eq_mul]
@@ -113,7 +113,7 @@ theorem shiftDeriv_eq_sum_iterated {R σ : Type*} [CommSemiring R]
     Commute.add_pow (Commute.one_right (MvPolynomial.pderiv q).toLinearMap)]
   rw [LinearMap.sum_apply]
   apply Finset.sum_congr rfl; intro j hj
-  rw [Module.End.mul_apply, one_pow, mul_one]
+  rw [mul_apply_eq_comp, one_pow, mul_one]
   change ((MvPolynomial.pderiv q).toLinearMap ^ j)
       (n.choose j • P) = _
   rw [map_nsmul, iteratedPDerivAt_eq_pow, nsmul_eq_mul]
@@ -374,7 +374,7 @@ private theorem opZ_pow_apply {R : Type*} [CommSemiring R]
   induction a with
   | zero => simp [shiftDeriv]
   | succ a ih =>
-      rw [pow_succ', Module.End.mul_apply, ih]
+      rw [pow_succ', mul_apply_eq_comp, ih]
       change z * (MvPolynomial.pderiv true
         (z ^ a * shiftDeriv true a P) +
         z ^ a * shiftDeriv true a P) = _
@@ -384,7 +384,7 @@ private theorem opZ_pow_apply {R : Type*} [CommSemiring R]
       have hshift : (shiftMap true ^ (a + 1)) P =
           MvPolynomial.pderiv true (shiftDeriv true a P) +
             shiftDeriv true a P := by
-        rw [pow_succ', Module.End.mul_apply]
+        rw [pow_succ', mul_apply_eq_comp]
         rfl
       rw [hshift]
       change _ = z ^ (a + 1) *
@@ -399,7 +399,7 @@ private theorem fallingEnd_opV_apply {R : Type*} [CommRing R]
   induction b with
   | zero => simp [fallingEnd, shiftDeriv]
   | succ b ih =>
-      rw [fallingEnd, Module.End.mul_apply, ih]
+      rw [fallingEnd, mul_apply_eq_comp, ih]
       change v * (MvPolynomial.pderiv true
           (v ^ b * shiftDeriv true b P) +
           v ^ b * shiftDeriv true b P) -
@@ -410,7 +410,7 @@ private theorem fallingEnd_opV_apply {R : Type*} [CommRing R]
       have hshift : (shiftMap true ^ (b + 1)) P =
           MvPolynomial.pderiv true (shiftDeriv true b P) +
             shiftDeriv true b P := by
-        rw [pow_succ', Module.End.mul_apply]
+        rw [pow_succ', mul_apply_eq_comp]
         rfl
       rw [hshift]
       change _ = v ^ (b + 1) *
@@ -433,12 +433,12 @@ private theorem shiftDeriv_z_pow_mul {R : Type*} [CommSemiring R]
       have hleft : (shiftMap true ^ (b + 1)) (z ^ a * P) =
           MvPolynomial.pderiv true (shiftDeriv true b (z ^ a * P)) +
             shiftDeriv true b (z ^ a * P) := by
-        rw [pow_succ', Module.End.mul_apply]
+        rw [pow_succ', mul_apply_eq_comp]
         rfl
       have hright : (shiftMap true ^ (b + 1)) P =
           MvPolynomial.pderiv true (shiftDeriv true b P) +
             shiftDeriv true b P := by
-        rw [pow_succ', Module.End.mul_apply]
+        rw [pow_succ', mul_apply_eq_comp]
         rfl
       rw [hleft]
       change _ = z ^ a * (shiftMap true ^ (b + 1)) P
@@ -452,7 +452,7 @@ private theorem shiftDeriv_comp {R σ : Type*} [CommSemiring R]
     shiftDeriv q b (shiftDeriv q a P) = shiftDeriv q (a + b) P := by
   change (shiftMap q ^ b) ((shiftMap q ^ a) P) =
     (shiftMap q ^ (a + b)) P
-  rw [← Module.End.mul_apply, ← pow_add, add_comm a b]
+  rw [← mul_apply_eq_comp, ← pow_add, add_comm a b]
 
 private def termOp {R : Type*} [CommRing R] (a b : ℕ) :
     Module.End R (MvPolynomial Bool R) :=
@@ -461,7 +461,7 @@ private def termOp {R : Type*} [CommRing R] (a b : ℕ) :
 private theorem termOp_apply {R : Type*} [CommRing R]
     (a b : ℕ) (P : MvPolynomial Bool R) :
     termOp a b P = z ^ a * v ^ b * shiftDeriv true (a + b) P := by
-  rw [termOp, Module.End.mul_apply, fallingEnd_opV_apply, opZ_pow_apply,
+  rw [termOp, mul_apply_eq_comp, fallingEnd_opV_apply, opZ_pow_apply,
     shiftDeriv_z_pow_mul, shiftDeriv_comp]
   ring
 
@@ -560,7 +560,7 @@ private theorem shiftDeriv_one {R σ : Type*} [CommSemiring R]
       change (shiftMap q ^ (n + 1)) (1 : MvPolynomial σ R) = 1
       have hstep : (shiftMap q ^ (n + 1)) (1 : MvPolynomial σ R) =
           MvPolynomial.pderiv q (shiftDeriv q n 1) + shiftDeriv q n 1 := by
-        rw [pow_succ', Module.End.mul_apply]
+        rw [pow_succ', mul_apply_eq_comp]
         rfl
       rw [hstep, ih, MvPolynomial.pderiv_one, zero_add]
 
@@ -604,8 +604,8 @@ private theorem end_eq_on_v_pow {R : Type*} [CommRing R]
   | zero => simpa using h1
   | succ b ih =>
       have hDeq : A (eulerOp (v ^ b)) = B (eulerOp (v ^ b)) := by
-        rw [← Module.End.mul_apply, hAD.eq, Module.End.mul_apply, ih,
-          ← Module.End.mul_apply, ← hBD.eq, Module.End.mul_apply]
+        rw [← mul_apply_eq_comp, hAD.eq, mul_apply_eq_comp, ih,
+          ← mul_apply_eq_comp, ← hBD.eq, mul_apply_eq_comp]
       rw [eulerOp_v_pow, A.map_add, B.map_add, A.map_smul,
         B.map_smul, ih] at hDeq
       exact add_right_cancel hDeq
@@ -673,9 +673,9 @@ theorem action_comp {R : Type*} [CommRing R]
   have hBD : Commute B (eulerOp : Module.End R (MvPolynomial Bool R)) :=
     actionEnd_commute_euler (star f g)
   have h1 : A 1 = B 1 := by
-    simp [A, B, Module.End.mul_apply, actionEnd_apply, star_one_right]
+    simp [A, B, mul_apply_eq_comp, actionEnd_apply, star_one_right]
   have hP := LinearMap.congr_fun (end_eq_of_commute A B hAZ hBZ hAD hBD h1) P
-  simpa [A, B, Module.End.mul_apply, actionEnd_apply] using hP
+  simpa [A, B, mul_apply_eq_comp, actionEnd_apply] using hP
 
 /-- The Poisson star product is associative. -/
 theorem star_assoc {R : Type*} [CommRing R]

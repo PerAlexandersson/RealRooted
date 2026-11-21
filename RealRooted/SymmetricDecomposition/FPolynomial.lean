@@ -37,7 +37,7 @@ def fPolynomial (d : ℕ) (h : ℝ[X]) : ℝ[X] :=
   rw [← Finset.sum_add_distrib]
   apply Finset.sum_congr rfl
   intro k _
-  simp [coeff_add, add_mul]
+  simp [add_mul]
 
 @[simp] lemma fPolynomial_C_mul (d : ℕ) (a : ℝ) (p : ℝ[X]) :
     fPolynomial d (C a * p) = C a * fPolynomial d p := by

@@ -53,7 +53,7 @@ theorem apply_mul {m n r : ℕ}
     apply (A * B) f = apply A (apply B f) := by
   classical
   funext i
-  simp only [apply, Matrix.mul_apply, LinearMap.sum_apply, Module.End.mul_apply,
+  simp only [apply, Matrix.mul_apply, LinearMap.sum_apply, mul_apply_eq_comp,
     map_sum]
   rw [Finset.sum_comm]
 

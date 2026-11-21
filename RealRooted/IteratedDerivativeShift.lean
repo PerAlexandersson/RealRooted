@@ -101,7 +101,7 @@ lemma iterateTDeriv_eq_of_natDegree_zero (eps : ℝ) {p : ℝ[X]}
 lemma coeff_tDeriv (eps : ℝ) (p : ℝ[X]) (i : ℕ) :
     (tDeriv eps p).coeff i =
       p.coeff i - eps * ((i + 1 : ℕ) : ℝ) * p.coeff (i + 1) := by
-  simp [tDeriv, coeff_sub, coeff_C_mul, coeff_derivative]
+  simp [tDeriv, coeff_C_mul, coeff_derivative]
   ring
 
 /-! ## Multiplicity bounds -/

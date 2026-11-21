@@ -152,7 +152,7 @@ private lemma maxGenEigenspace_eq_span_of_eigenspace_eq_span
         let y := T x
         have hy_pow : (T ^ k) y = 0 := by
           change (T ^ k) (T x) = 0
-          rw [← Module.End.mul_apply, ← pow_succ]
+          rw [← mul_apply_eq_comp, ← pow_succ]
           exact hk
         have hy_span : y ∈ ℝ ∙ v := ih hy_pow
         obtain ⟨c, hc⟩ := Submodule.mem_span_singleton.mp hy_span

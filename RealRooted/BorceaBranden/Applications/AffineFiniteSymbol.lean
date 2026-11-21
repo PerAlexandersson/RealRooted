@@ -51,7 +51,7 @@ lemma complexBidiagonalDegreeBox_value
   simp only [complexUnivariateDegreeBoxOperator, LinearMap.coe_mk,
     AddHom.coe_mk, AlgEquiv.apply_symm_apply]
   change complexBidiagonalLinearMap alpha beta (complexify p) = _
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   cases k with
   | zero => simp [complexBidiagonalLinearMap, bidiagonalOperator, complexify]
@@ -81,7 +81,7 @@ lemma complexBidiagonalDegreeBox_hermiteBiehler_value
         (bidiagonalOperator alpha beta q) := by
   simp only [complexUnivariateDegreeBoxOperator, LinearMap.coe_mk,
     AddHom.coe_mk, AlgEquiv.apply_symm_apply]
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   cases k with
   | zero =>

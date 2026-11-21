@@ -140,7 +140,7 @@ private lemma sequenceShift_pow_apply (P : ℕ → ℝ[X]) (m n : ℕ) :
   induction m generalizing P n with
   | zero => simp
   | succ m ih =>
-      rw [pow_succ, Module.End.mul_apply, ih]
+      rw [pow_succ, mul_apply_eq_comp, ih]
       change P (n + m + 1) = P (n + (m + 1))
       rw [Nat.add_assoc]
 
@@ -149,7 +149,7 @@ private lemma sequenceMul_pow_apply (p : ℝ[X]) (P : ℕ → ℝ[X]) (m n : ℕ
   induction m generalizing P n with
   | zero => simp
   | succ m ih =>
-      rw [pow_succ, Module.End.mul_apply, ih]
+      rw [pow_succ, mul_apply_eq_comp, ih]
       change p ^ m * (p * P n) = p ^ (m + 1) * P n
       rw [pow_succ]
       ring
@@ -174,8 +174,8 @@ private lemma lagDifference_pow_apply (p : ℝ[X]) (P : ℕ → ℝ[X]) (m n : �
   apply Finset.sum_congr rfl
   intro i hi
   have hi_le : i ≤ m := by simpa using Finset.mem_range.mp hi
-  rw [mul_assoc, Module.End.mul_apply, Module.End.mul_apply,
-    Module.End.natCast_apply, map_nsmul, map_nsmul]
+  rw [mul_assoc, mul_apply_eq_comp, mul_apply_eq_comp,
+    natCast_apply_eq_smul, map_nsmul, map_nsmul]
   rw [Pi.smul_apply, nsmul_eq_mul]
   change (m.choose i : ℝ[X]) *
     (sequenceMul (-p) ^ i) ((sequenceShift ^ (m - i)) P) n = _
@@ -221,7 +221,7 @@ private lemma lagDifference_pow_derivative_eq_zero (q : ℝ[X]) (a : ℝ) :
       rw [pow_succ]
       ring
   | succ r ih =>
-      rw [show r + 1 + 1 = (r + 1) + 1 by ring, pow_succ, Module.End.mul_apply,
+      rw [show r + 1 + 1 = (r + 1) + 1 by ring, pow_succ, mul_apply_eq_comp,
         lagDifference_derivative_succ]
       simpa using congrArg (fun P ↦ (r + 1 : ℝ[X]) • P) ih
 

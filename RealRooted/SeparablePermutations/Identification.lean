@@ -39,7 +39,7 @@ theorem cubic_recursion_unique
     ∀ n, S n = T n := by
   intro n
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       by_cases hn0 : n = 0
       · simpa [hn0] using hS0.trans hT0.symm
       by_cases hn1 : n = 1

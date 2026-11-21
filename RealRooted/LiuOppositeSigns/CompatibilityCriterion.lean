@@ -260,7 +260,7 @@ theorem natDegree_abs_sub_le_two_of_compatible {f g : ℝ[X]}
     exact h _ f g rfl hf hg hsgn hcompat
   intro n
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
     intro f g hsum hf hg hsgn hcompat
     by_cases hfdeg : f.natDegree = 0
     · exact

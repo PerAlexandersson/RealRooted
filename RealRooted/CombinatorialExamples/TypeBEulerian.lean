@@ -23,6 +23,7 @@ Real-rootedness and Sturm-sequence facts for the type `B` Eulerian recurrence.
 @[expose] public section
 
 open Polynomial
+open AddMonoidAlgebra (coeff)
 
 noncomputable section
 
@@ -57,7 +58,7 @@ lemma typeBEulerian_one : typeBEulerian 1 = 1 + X := by
 lemma coeff_typeBEulerianCoeffA_mul (n m : Nat) (p : ℝ[X]) :
     coeff (typeBEulerianCoeffA n * p) (m + 1) =
       coeff p (m + 1) + (2 * n + 1 : ℝ) * coeff p m := by
-  simp [typeBEulerianCoeffA, add_mul, coeff_add, mul_assoc]
+  simp [typeBEulerianCoeffA, add_mul, mul_assoc]
 
 lemma coeff_typeBEulerianCoeffB_mul_derivative (m : Nat) (p : ℝ[X]) :
     coeff (typeBEulerianCoeffB * p.derivative) (m + 1) =

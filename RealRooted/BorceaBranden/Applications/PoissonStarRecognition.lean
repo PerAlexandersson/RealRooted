@@ -97,7 +97,7 @@ private theorem differential_coefficients_unique {A B : ℕ → ℝ[X]}
         ∑ j ∈ Finset.range (p.natDegree + 1), B j * (derivative^[j]) p) : A = B := by
   funext n
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
     have hn := h (X ^ n)
     rw [natDegree_X_pow, Finset.sum_range_succ, Finset.sum_range_succ] at hn
     have hsum :

@@ -31,9 +31,9 @@ def firstKindRow (z : R) (n : ℕ) : R[X] :=
 theorem coeff_firstKindRow (z : R) (n k : ℕ) :
     (firstKindRow z n).coeff k = firstKind z n k := by
   by_cases hk : k < n + 1
-  · simp [firstKindRow, coeff_monomial, hk]
+  · simp [firstKindRow, coeff_monomial, Finsupp.single_apply, hk]
   · have hnk : n < k := by lia
-    simp [firstKindRow, coeff_monomial, hk, firstKind_eq_zero_of_lt z hnk]
+    simp [firstKindRow, coeff_monomial, Finsupp.single_apply, hk, firstKind_eq_zero_of_lt z hnk]
 
 @[simp]
 theorem firstKindRow_zero (z : R) : firstKindRow z 0 = 1 := by

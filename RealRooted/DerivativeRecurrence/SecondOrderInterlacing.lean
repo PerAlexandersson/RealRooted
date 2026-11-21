@@ -21,6 +21,7 @@ second-order recurrence shared by several OEIS polynomial families.
 public section
 
 open Polynomial
+open AddMonoidAlgebra (coeff)
 
 noncomputable section
 

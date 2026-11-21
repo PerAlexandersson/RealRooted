@@ -392,7 +392,7 @@ private theorem isRealRooted_sum_C_mul_of_interl {n : ℕ} (F : ℕ → ℝ[X]) 
 
 private lemma coeff_zero_sum_C_mul_refined (n : ℕ) (h : ℕ → ℝ) (T : Finset ℕ) :
     (∑ k ∈ Finset.range (n + 1), C (h k) * refined n k ∅ T).coeff 0 = h 0 := by
-  simp [finsetSum_coeff, coeff_zero_refined]
+  simp [coeff_zero_refined]
 
 private lemma hasNonnegCoeffs_sum_C_mul_refined (n : ℕ) {h : ℕ → ℝ} (hh : ∀ k, 0 ≤ h k)
     (S T : Finset ℕ) :

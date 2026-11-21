@@ -133,7 +133,7 @@ theorem gammaPencil_two (a : ℝ) : gammaPencil a 2 = 1 + a • X := by
 
 theorem gammaPencil_constantCoeff_add_two (a : ℝ) (n : ℕ) :
     (gammaPencil a (n + 2)).constantCoeff = 1 := by
-  rw [constantCoeff_apply, gammaPencil, coeff_add, coeff_smul, smul_eq_mul]
+  rw [constantCoeff_apply, gammaPencil, coeff_add, AddMonoidAlgebra.coeff_smul_apply, smul_eq_mul]
   rw [show (gammaU (n + 2)).coeff 0 = 1 from
       gammaU_constantCoeff_add_two n,
     show (gammaV (n + 2)).coeff 0 = 0 from

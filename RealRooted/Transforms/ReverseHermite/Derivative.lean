@@ -26,7 +26,7 @@ theorem reverseHermiteBasis_derivative_succ_succ
           C (((n + 2).choose 2 : ℕ) : R) * reverseHermiteBasis n := by
   intro n
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       rw [reverseHermiteBasis_succ_succ]
       simp only [derivative_mul, derivative_X, one_mul, derivative_add,
         derivative_C, zero_mul, zero_add]

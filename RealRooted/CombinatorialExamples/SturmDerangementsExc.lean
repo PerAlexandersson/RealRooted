@@ -101,10 +101,10 @@ lemma sturmDerangementsExc_five :
   grind
 
 lemma coeff_sturmDerangementsExc_succ (n m : Nat) :
-    coeff (sturmDerangementsExc (n + 3)) (m + 1) =
-      (n + 2 : ℝ) * coeff (sturmDerangementsExc (n + 1)) m +
-      ((n + 2 : ℝ) - m) * coeff (sturmDerangementsExc (n + 2)) m +
-      (m + 1 : ℝ) * coeff (sturmDerangementsExc (n + 2)) (m + 1) := by
+    (sturmDerangementsExc (n + 3)).coeff (m + 1) =
+      (n + 2 : ℝ) * (sturmDerangementsExc (n + 1)).coeff m +
+      ((n + 2 : ℝ) - m) * (sturmDerangementsExc (n + 2)).coeff m +
+      (m + 1 : ℝ) * (sturmDerangementsExc (n + 2)).coeff (m + 1) := by
   rw [sturmDerangementsExc_recurrence, coeff_X_mul]
   simp only [coeff_add, coeff_one_sub_X_mul_derivative]
   rw [show ((n + 2 : ℝ[X])) = C (n + 2 : ℝ) by simp [ofNat_def],
@@ -113,8 +113,8 @@ lemma coeff_sturmDerangementsExc_succ (n m : Nat) :
 
 lemma coeff_sturmDerangementsExc_top_and_above :
     ∀ n : Nat, 2 ≤ n →
-      coeff (sturmDerangementsExc n) (n - 1) = 1 ∧
-      ∀ m > n - 1, coeff (sturmDerangementsExc n) m = 0
+      (sturmDerangementsExc n).coeff (n - 1) = 1 ∧
+      ∀ m > n - 1, (sturmDerangementsExc n).coeff m = 0
   | 0, h => by lia
   | 1, h => by lia
   | 2, _ => by
@@ -126,8 +126,8 @@ lemma coeff_sturmDerangementsExc_top_and_above :
       · intro m hm
         have hm' : 2 < m := by lia
         rw [sturmDerangementsExc_three]
-        have hX2 : coeff (X ^ 2 : ℝ[X]) m = 0 := by grind
-        have hX : coeff (X : ℝ[X]) m = 0 := by
+        have hX2 : (X ^ 2 : ℝ[X]).coeff m = 0 := by grind
+        have hX : (X : ℝ[X]).coeff m = 0 := by
           have hm1' : ¬1 = m := by lia
           simp [coeff_X, hm1']
         simp [hX2, hX]
@@ -136,13 +136,13 @@ lemma coeff_sturmDerangementsExc_top_and_above :
         ⟨hsmall_top, hsmall_hi⟩
       rcases coeff_sturmDerangementsExc_top_and_above (n + 3) (by lia) with ⟨hbig_top, hbig_hi⟩
       constructor
-      · have hsmall_zero : coeff (sturmDerangementsExc (n + 2)) (n + 2) = 0 :=
+      · have hsmall_zero : (sturmDerangementsExc (n + 2)).coeff (n + 2) = 0 :=
           hsmall_hi (n + 2) (by lia)
-        have hbig_zero : coeff (sturmDerangementsExc (n + 3)) (n + 3) = 0 :=
+        have hbig_zero : (sturmDerangementsExc (n + 3)).coeff (n + 3) = 0 :=
           hbig_hi (n + 3) (by lia)
-        have hbig_top' : coeff (sturmDerangementsExc (n + 3)) (n + 2) = 1 := by lia
+        have hbig_top' : (sturmDerangementsExc (n + 3)).coeff (n + 2) = 1 := by lia
         have htop :
-            coeff (sturmDerangementsExc (n + 4)) (n + 3) = 1 := by
+            (sturmDerangementsExc (n + 4)).coeff (n + 3) = 1 := by
           rw [coeff_sturmDerangementsExc_succ (n + 1) (n + 2)]
           simp [hsmall_zero, hbig_top', hbig_zero]
         lia
@@ -151,18 +151,18 @@ lemma coeff_sturmDerangementsExc_top_and_above :
         | zero =>
             lia
         | succ m =>
-            have hsmall_zero : coeff (sturmDerangementsExc (n + 2)) m = 0 :=
+            have hsmall_zero : (sturmDerangementsExc (n + 2)).coeff m = 0 :=
               hsmall_hi m (by lia)
-            have hbig_zero₁ : coeff (sturmDerangementsExc (n + 3)) m = 0 :=
+            have hbig_zero₁ : (sturmDerangementsExc (n + 3)).coeff m = 0 :=
               hbig_hi m (by lia)
-            have hbig_zero₂ : coeff (sturmDerangementsExc (n + 3)) (m + 1) = 0 :=
+            have hbig_zero₂ : (sturmDerangementsExc (n + 3)).coeff (m + 1) = 0 :=
               hbig_hi (m + 1) (by lia)
             rw [coeff_sturmDerangementsExc_succ (n + 1) m]
             simp [hsmall_zero, hbig_zero₁, hbig_zero₂]
 
 lemma coeff_sturmDerangementsExc_symm :
     ∀ n : Nat, ∀ m ≤ n,
-      coeff (sturmDerangementsExc n) m = coeff (sturmDerangementsExc n) (n - m)
+      (sturmDerangementsExc n).coeff m = (sturmDerangementsExc n).coeff (n - m)
   | 0, m, hm => by
       lia
   | 1, m, hm => by
@@ -171,19 +171,19 @@ lemma coeff_sturmDerangementsExc_symm :
       have hm0 : m = 0 ∨ m = 1 ∨ m = 2 := by lia
       rcases hm0 with rfl | rfl | rfl <;> simp [sturmDerangementsExc_two, coeff_X]
   | n + 3, 0, hm => by
-      have hcoeff0 : coeff (sturmDerangementsExc (n + 3)) 0 = 0 := by
+      have hcoeff0 : (sturmDerangementsExc (n + 3)).coeff 0 = 0 := by
         rcases X_dvd_sturmDerangementsExc (n + 3) with ⟨q, hq⟩
         simp [hq]
-      have hcoeff_hi : coeff (sturmDerangementsExc (n + 3)) (n + 3) = 0 := by
+      have hcoeff_hi : (sturmDerangementsExc (n + 3)).coeff (n + 3) = 0 := by
         rcases coeff_sturmDerangementsExc_top_and_above (n + 3) (by lia) with ⟨_, habove⟩
         simp_all
       lia
   | n + 3, m + 1, hm => by
       by_cases htop : m + 1 = n + 3
-      · have hcoeff_hi : coeff (sturmDerangementsExc (n + 3)) (m + 1) = 0 := by
+      · have hcoeff_hi : (sturmDerangementsExc (n + 3)).coeff (m + 1) = 0 := by
           rcases coeff_sturmDerangementsExc_top_and_above (n + 3) (by lia) with ⟨_, habove⟩
           simp_all
-        have hcoeff0 : coeff (sturmDerangementsExc (n + 3)) 0 = 0 := by
+        have hcoeff0 : (sturmDerangementsExc (n + 3)).coeff 0 = 0 := by
           rcases X_dvd_sturmDerangementsExc (n + 3) with ⟨q, hq⟩
           simp [hq]
         simp_all
@@ -197,17 +197,17 @@ lemma coeff_sturmDerangementsExc_symm :
         have hs2m :=
           coeff_sturmDerangementsExc_symm (n + 2) m (by lia)
         have hs2m1 :
-            coeff (sturmDerangementsExc (n + 2)) (m + 1) =
-              coeff (sturmDerangementsExc (n + 2)) (n + 1 - m) := by
+            (sturmDerangementsExc (n + 2)).coeff (m + 1) =
+              (sturmDerangementsExc (n + 2)).coeff (n + 1 - m) := by
           simpa [hsub] using
             coeff_sturmDerangementsExc_symm (n + 2) (m + 1) hm_succ_le
         have hrec1 := coeff_sturmDerangementsExc_succ n m
         have hrec2 :
-            coeff (sturmDerangementsExc (n + 3)) (n + 2 - m) =
-              (n + 2 : ℝ) * coeff (sturmDerangementsExc (n + 1)) (n + 1 - m) +
-              ((n + 2 : ℝ) - ↑(n + 1 - m)) * coeff (sturmDerangementsExc (n + 2)) (n + 1 - m) +
+            (sturmDerangementsExc (n + 3)).coeff (n + 2 - m) =
+              (n + 2 : ℝ) * (sturmDerangementsExc (n + 1)).coeff (n + 1 - m) +
+              ((n + 2 : ℝ) - ↑(n + 1 - m)) * (sturmDerangementsExc (n + 2)).coeff (n + 1 - m) +
               (((n + 1 - m : Nat) : ℝ) + 1) *
-                coeff (sturmDerangementsExc (n + 2)) (n + 2 - m) := by
+                (sturmDerangementsExc (n + 2)).coeff (n + 2 - m) := by
           simpa [hidx] using coeff_sturmDerangementsExc_succ n (n + 1 - m)
         rw [hgoal, hrec1, hrec2, hs1, hs2m, hs2m1]
         have hcast1 : (((n + 1 - m : Nat) : ℝ)) = (n + 1 : ℝ) - m := by simp_all
@@ -332,16 +332,16 @@ lemma affine_sturmDerangementsExc_nonnegCoeffs {n : Nat} (hn : 2 ≤ n) :
   rw [affineSturmDerangementsExc, coeff_add, coeff_C_mul]
   rw [coeff_one_sub_X_mul_derivative]
   by_cases hm : m ≤ n
-  · have hcoeff_m : 0 ≤ coeff (sturmDerangementsExc n) m :=
+  · have hcoeff_m : 0 ≤ (sturmDerangementsExc n).coeff m :=
       sturmDerangementsExc_nonnegCoeffs n m
-    have hcoeff_succ : 0 ≤ coeff (sturmDerangementsExc n) (m + 1) :=
+    have hcoeff_succ : 0 ≤ (sturmDerangementsExc n).coeff (m + 1) :=
       sturmDerangementsExc_nonnegCoeffs n (m + 1)
     have hnm : 0 ≤ (n : ℝ) - m := by simp_all
     nlinarith
   · have hm' : n < m := lt_of_not_ge hm
     rcases coeff_sturmDerangementsExc_top_and_above n hn with ⟨_, habove⟩
-    have hcoeff_m : coeff (sturmDerangementsExc n) m = 0 := habove m (by lia)
-    have hcoeff_succ : coeff (sturmDerangementsExc n) (m + 1) = 0 :=
+    have hcoeff_m : (sturmDerangementsExc n).coeff m = 0 := habove m (by lia)
+    have hcoeff_succ : (sturmDerangementsExc n).coeff (m + 1) = 0 :=
       habove (m + 1) (by lia)
     simp [hcoeff_m, hcoeff_succ]
 

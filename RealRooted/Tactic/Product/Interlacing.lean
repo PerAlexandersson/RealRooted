@@ -47,8 +47,8 @@ def isPolySeqConst (c : Name) (us : List Level) : MetaM Bool := do
   let ty ← whnfR (← inferType (.const c us))
   match ty with
   | .forallE _ dom body _ =>
-      return dom.isConstOf ``Nat && !body.hasLooseBVars &&
-        (← whnfR body).getAppFn.isConstOf ``Polynomial
+      unless dom.isConstOf ``Nat && !body.hasLooseBVars do return false
+      isDefEq body (← mkAppOptM ``Polynomial #[some (mkConst ``Real), none])
   | _ => return false
 
 /-- The first constant `P : ℕ → ℝ[X]` applied to an argument in `e`. -/

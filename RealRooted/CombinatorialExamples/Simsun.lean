@@ -22,6 +22,7 @@ Real-rootedness and Sturm-sequence facts for the simsun descent recurrence.
 @[expose] public section
 
 open Polynomial
+open AddMonoidAlgebra (coeff)
 
 noncomputable section
 
@@ -71,7 +72,7 @@ lemma simsun_three : simsun 3 = 1 + C (4 : ℝ) * X := by
 lemma coeff_simsunCoeffA_mul (n m : Nat) (p : ℝ[X]) :
     coeff (simsunCoeffA n * p) (m + 1) =
       coeff p (m + 1) + (n : ℝ) * coeff p m := by
-  simp [simsunCoeffA, add_mul, coeff_add, mul_assoc]
+  simp [simsunCoeffA, add_mul, mul_assoc]
 
 lemma coeff_simsunCoeffB_mul_derivative (m : Nat) (p : ℝ[X]) :
     coeff (simsunCoeffB * p.derivative) (m + 1) =

@@ -76,7 +76,7 @@ lemma coeff_norm_le_coeffSumRange (p : ℝ[X]) (i : ℕ) :
 /-- Coefficient difference for the affine perturbation `f + μ g`. -/
 private lemma norm_coeff_sub_add_C_mul (f g : ℝ[X]) (μ : ℝ) (i : ℕ) :
     ‖(f + C μ * g).coeff i - f.coeff i‖ = ‖μ * g.coeff i‖ := by
-  simp [Polynomial.coeff_add, Polynomial.coeff_C_mul]
+  simp [Polynomial.coeff_C_mul]
 
 /-- Uniform coefficient bound for `f + μ g` relative to `f`. -/
 lemma norm_coeff_sub_add_C_mul_le

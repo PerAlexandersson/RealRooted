@@ -101,7 +101,7 @@ theorem lagTwoEulerRow_eq
     {m : ℝ} {lambda : ℕ → ℝ} (hm : 1 ≤ m)
     (hlambda : ∀ n, 0 ≤ lambda n) (n : ℕ) :
     lagTwoEulerRow m lambda n = lagTwoEulerPolynomial m lambda n := by
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   rw [lagTwoEulerRow]
   by_cases hk : k < n + 1

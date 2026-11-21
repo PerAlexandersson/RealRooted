@@ -71,7 +71,7 @@ theorem degreeOfLE_const (n : ℕ) :
 /-- The canonical monomial basis of a coordinate-wise degree box. -/
 noncomputable def basisDegreeOfLE (κ : σ → ℕ) :
     Module.Basis {m : σ →₀ ℕ // ∀ i, m i ≤ κ i} R (degreeOfLE σ R κ) :=
-  basisRestrictSupport R _
+  basisRestrictSupport R {m | ∀ i, m i ≤ κ i}
 
 @[simp]
 theorem coe_basisDegreeOfLE (κ : σ → ℕ) :
@@ -81,7 +81,8 @@ theorem coe_basisDegreeOfLE (κ : σ → ℕ) :
       MvPolynomial σ R) = monomial m.1 1 :=
   fun m => by
     rw [← Module.Basis.repr_symm_single_one]
-    exact AddMonoidAlgebra.ext (Finsupp.supportedEquivFinsupp_symm_single (R := R) _ _ _)
+    apply AddMonoidAlgebra.ext
+    exact Finsupp.supportedEquivFinsupp_symm_single (R := R) _ _ _
 
 @[simp]
 theorem basisDegreeOfLE_repr_apply (κ : σ → ℕ)

@@ -125,7 +125,7 @@ theorem natDegree_entry_le_of_isSymm_charpoly {d k : ℕ}
       lia
   have hsq : (∑ p : Fin d × Fin d, M p.1 p.2 ^ 2) = trace (M * M) := by
     rw [Fintype.sum_prod_type]
-    simp only [trace, diag_apply, mul_apply, pow_two]
+    simp only [trace, diag_apply, Matrix.mul_apply, pow_two]
     refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun b _ => ?_
     rw [hM.apply a b]
   exact natDegree_le_of_natDegree_sum_sq_le Finset.univ (fun p : Fin d × Fin d => M p.1 p.2) k

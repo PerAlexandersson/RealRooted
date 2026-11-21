@@ -95,7 +95,8 @@ theorem isDiscreteMultiplierSequence_of_isLaguerrePolyaTypeI {f : ℂ → ℂ}
   have hcoeff : ∀ i, Tendsto (fun k => (Tk k p).coeff i) atTop (𝓝 ((T p).coeff i)) := by
     intro i
     rw [apply_eq_sum_of_natDegree_le hT (le_refl N)]
-    simp only [apply_eq_sum_of_natDegree_le (hTk _) (le_refl N), finsetSum_coeff, coeff_smul,
+    simp only [apply_eq_sum_of_natDegree_le (hTk _) (le_refl N), finsetSum_coeff,
+      AddMonoidAlgebra.coeff_smul_apply,
       smul_eq_mul]
     refine tendsto_finsetSum _ fun j _ => ?_
     exact ((hval j).mul_const _).mul_const _

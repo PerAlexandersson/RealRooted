@@ -96,7 +96,7 @@ private theorem MeshClass.aeval_prod {s : Multiset ℝ} (hs : ∀ r ∈ s, r ≤
   induction s using Multiset.induction_on generalizing p with
   | empty => simpa using hp
   | cons r s ih =>
-    simp only [Multiset.map_cons, Multiset.prod_cons, map_mul, Module.End.mul_apply]
+    simp only [Multiset.map_cons, Multiset.prod_cons, map_mul, mul_apply_eq_comp]
     exact MeshClass.aeval_X_sub_C (hs r (Multiset.mem_cons_self r s))
       (ih (fun x hx => hs x (Multiset.mem_cons_of_mem hx)) hp)
 

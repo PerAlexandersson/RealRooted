@@ -272,7 +272,7 @@ theorem one_sub_mul_twoKernelGeneratingSeries
   rw [sub_mul, one_mul, mul_assoc]
   apply PowerSeries.ext
   intro n
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   rw [show PowerSeries.coeff n
         (twoKernelGeneratingSeries g h -

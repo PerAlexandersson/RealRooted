@@ -251,7 +251,7 @@ theorem interlaces_of_last_recurrence
   have heq : ∀ m, P m = last m := by
     intro m
     induction m using Nat.strong_induction_on with
-    | h m ih =>
+    | ind m ih =>
         by_cases hm₀ : m = 0
         · subst m
           exact hzero.trans last_zero.symm
@@ -288,7 +288,7 @@ theorem interlaces_of_total_recurrence
   have heq : ∀ m, P m = total m := by
     intro m
     induction m using Nat.strong_induction_on with
-    | h m ih =>
+    | ind m ih =>
         by_cases hm₀ : m = 0
         · subst m
           exact hzero.trans total_zero.symm

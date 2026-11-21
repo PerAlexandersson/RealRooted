@@ -357,7 +357,7 @@ theorem nat_threeStepInduction {motive : ℕ → Prop}
     ∀ n, motive n := by
   intro n
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       rcases n with _ | n
       · exact zero
       rcases n with _ | n

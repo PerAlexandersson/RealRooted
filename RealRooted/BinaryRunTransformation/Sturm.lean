@@ -362,7 +362,7 @@ theorem strictInterl_binaryRunPolynomial_succ (n m : ℕ)
     (hm0 : 0 < m) (hmid : 2 * m < n) :
     StrictInterl (binaryRunPolynomial n m) (binaryRunPolynomial n (m + 1)) := by
   induction m using Nat.strong_induction_on with
-  | h m ih =>
+  | ind m ih =>
       have hmdeg :
           (binaryRunPolynomial n m).natDegree = m :=
         natDegree_binaryRunPolynomial_eq n m hm0 (by lia)
@@ -553,7 +553,7 @@ theorem hasSimpleRoots_binaryRunPolynomial_divX
     (n m : ℕ) (hm0 : 0 < m) (hmid : 2 * m ≤ n + 1) :
     HasSimpleRoots (binaryRunPolynomial n m).divX := by
   induction m using Nat.strong_induction_on with
-  | h m ih =>
+  | ind m ih =>
       by_cases hm1 : m = 1
       · subst m
         rw [binaryRunPolynomial_one n (by lia)]

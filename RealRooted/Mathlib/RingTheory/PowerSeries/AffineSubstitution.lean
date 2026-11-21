@@ -38,7 +38,7 @@ theorem coeff_coeff_affine_monomial (U V : PowerSeries R) (a b n k : ℕ) :
     ring
   rw [hseries, coeff_C_mul, coeff_map, mul_comm,
     Polynomial.C_mul_X_pow_eq_monomial, Polynomial.coeff_monomial]
-  simp only [eq_comm]
+  simp only [Finsupp.single_apply, eq_comm]
 
 /-- A finitely supported exponent vector on two variables is uniquely
 determined by one fixed exponent and the other arbitrary exponent. -/

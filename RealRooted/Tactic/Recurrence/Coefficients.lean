@@ -249,7 +249,7 @@ private partial def scalarCoefficientClosure (fuel : Nat) : TacticM Unit :=
     | throwError "expected scalar nonnegativity"
   let coefficient := if rhs.isAppOfArity ``DFunLike.coe 6 then
       rhs.getAppArgs[4]! else rhs
-  if coefficient.isAppOf ``Polynomial.coeff then
+  if coefficient.isAppOf ``AddMonoidAlgebra.coeff then
     let p ← certTerm coefficient.getAppArgs.back!
     let k ← certTerm rhs.getAppArgs.back!
     let step ← `(tactic| exact (show RealRooted.HasNonnegCoeffs ($p : ℝ[X]) from

@@ -109,7 +109,10 @@ theorem MvPolynomial.IsHomogeneous.affineLineRestriction_zero
   rw [MvPolynomial.eval_affineLineRestriction]
   simp only [Polynomial.eval_mul, Polynomial.eval_C,
     Polynomial.eval_pow, Polynomial.eval_X]
-  simpa [mul_comm] using hP.eval_smul t e
+  have hvec : (fun i => 0 + e i * t) = t • e := by
+    funext i
+    simp [mul_comm]
+  rw [hvec, hP.eval_smul, mul_comm]
 
 /-- The linear-plane restriction of a homogeneous polynomial is the
 bivariate homogenization of its affine-line restriction through `u` in
@@ -218,8 +221,9 @@ theorem MvPolynomial.HyperbolicAt.affineLineRestriction_isRoot_neg_of_joinedIn
       have hreval :
           MvPolynomial.eval (fun i => e i + e i * r) P = 0 := by
         simpa [q, c, hγ0, Polynomial.IsRoot, he.1] using hr
-      have hvec : (fun i => e i + e i * r) = fun i => (1 + r) * e i := by
+      have hvec : (fun i => e i + e i * r) = (1 + r) • e := by
         funext i
+        change e i + e i * r = (1 + r) * e i
         ring
       rw [hvec, hhom.eval_smul] at hreval
       exact (mul_eq_zero.mp hreval).resolve_right he.1

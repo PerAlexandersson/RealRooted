@@ -45,7 +45,7 @@ theorem natTrailingDegree_eraseLead_of_ne_zero {p : ℝ[X]} (h : p.eraseLead ≠
     p.eraseLead.natTrailingDegree = p.natTrailingDegree := by
   have hp : p ≠ 0 := fun hp => h (by simp [hp])
   have hlt : p.eraseLead.natTrailingDegree < p.natDegree :=
-    lt_natDegree_of_mem_eraseLead_support (natTrailingDegree_mem_support_of_nonzero h)
+    lt_natDegree_of_mem_eraseLead_support (natTrailingDegree_mem_support_of_ne_zero h)
   have hle : p.natTrailingDegree ≤ p.eraseLead.natTrailingDegree := by
     apply natTrailingDegree_le_of_ne_zero
     rw [← eraseLead_coeff_of_ne _ hlt.ne]

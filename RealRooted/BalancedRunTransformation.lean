@@ -76,7 +76,7 @@ theorem hasNonnegCoeffs_balancedRunPolynomial (n m : ℕ) :
   intro j
   rw [balancedRunPolynomial, Polynomial.finsetSum_coeff]
   exact Finset.sum_nonneg fun k _ => by
-    rw [coeff_monomial]
+    rw [coeff_monomial, Finsupp.single_apply]
     split <;> positivity
 
 /-- A balanced run kernel in its natural range is nonzero. -/
@@ -363,7 +363,7 @@ theorem strictInterl_balancedRunPolynomial_succ
     StrictInterl (balancedRunPolynomial n m)
       (balancedRunPolynomial n (m + 1)) := by
   induction m using Nat.strong_induction_on with
-  | h m ih =>
+  | ind m ih =>
       by_cases hm0 : m = 0
       · subst m
         rw [balancedRunPolynomial_zero]

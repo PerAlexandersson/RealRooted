@@ -197,7 +197,7 @@ theorem iteratedDeriv_cot_pi_mul_eq_tsum_of_norm_lt_one {k : ℕ} (hk : 1 ≤ k)
       (fun w : ℂ => (Real.pi : ℂ) * cot (Real.pi * w) - 1 / w) U z =
         ∑' n : ℕ, (-1 : ℂ) ^ k * k.factorial *
           ((z + (n + 1)) ^ (-1 - k : ℤ) + (z - (n + 1)) ^ (-1 - k : ℤ)) := by
-    rw [iteratedDerivWithin_congr (fun w hw => cot_series_rep' hw.1) hzU,
+    rw [iteratedDerivWithin_congr (fun w (hw : w ∈ U) => cot_series_rep' hw.1) hzU,
       iteratedDerivWithin_tsum_cotTerm hR₀ hR₁ k hzU]
     apply tsum_congr
     intro n

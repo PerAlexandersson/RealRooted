@@ -57,8 +57,8 @@ private def inferredDegreeFact (p : Expr) (h : Ident) : TacticM (TSyntax `tactic
 private def integerRowBoundary? (p : Expr) : MetaM (Option (Expr × Nat)) := do
   unless p.isApp do return none
   let .forallE _ domain body _ ← whnfR (← inferType p.appFn!) | return none
-  unless domain.isConstOf ``Int && !body.hasLooseBVars &&
-      (← whnfR body).getAppFn.isConstOf ``Polynomial do return none
+  unless domain.isConstOf ``Int && !body.hasLooseBVars do return none
+  unless ← isDefEq body (← mkAppOptM ``Polynomial #[some (mkConst ``Real), none]) do return none
   let index := p.appArg!.consumeMData
   unless index.isAppOfArity ``HSub.hSub 6 do return none
   let some left ← naturalRowIndex? index.appFn!.appArg! | return none

@@ -44,7 +44,7 @@ def binomialUnlift (n : ℕ) (p : ℂ[X]) : ℂ[X] :=
 @[simp] theorem coeff_binomialUnlift_of_le (n : ℕ) (p : ℂ[X])
     {k : ℕ} (hk : k ≤ n) :
     (binomialUnlift n p).coeff k = p.coeff k / (n.choose k : ℂ) := by
-  simp [binomialUnlift, hk, Polynomial.coeff_monomial]
+  simp [binomialUnlift, hk, Polynomial.coeff_monomial, Finsupp.single_apply]
 
 /-- The binomial unlift is a right inverse on polynomials of degree at most
 `n`. -/
@@ -106,7 +106,7 @@ private theorem binomialUnlift_smul (n : ℕ) (c : ℂ) (p : ℂ[X]) :
   rw [Finset.smul_sum]
   apply Finset.sum_congr rfl
   intro k _
-  simp only [Polynomial.coeff_smul, div_eq_mul_inv]
+  simp only [AddMonoidAlgebra.coeff_smul_apply, div_eq_mul_inv]
   change (Polynomial.monomial k)
     (c * p.coeff k * (n.choose k : ℂ)⁻¹) =
       c • (Polynomial.monomial k)

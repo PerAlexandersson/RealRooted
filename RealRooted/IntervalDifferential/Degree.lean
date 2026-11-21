@@ -86,7 +86,7 @@ theorem zigzagOperator_natDegree (F : ℝ[X]) (hF : F ≠ 0) :
           _ ≤ 2 + (d - 1) := by
             have hquad : (X ^ 2 - 1 : ℝ[X]).natDegree = 2 := by
               simpa only [C_1] using
-                (natDegree_X_pow_sub_C (n := 2) (r := (1 : ℝ)))
+                (natDegree_X_pow_sub_C (n := 2) (a := (1 : ℝ)))
             rw [hquad]
             exact Nat.add_le_add_left (natDegree_derivative_le F) 2
           _ ≤ d + 1 := by lia

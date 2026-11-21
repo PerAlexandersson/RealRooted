@@ -64,7 +64,7 @@ theorem chainPolynomial_comp_C_mul_X_normalizeConstantDiagonal
       (chainPolynomial (normalizeConstantDiagonal δ A) n).comp
         (C δ * X) := by
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       cases n with
       | zero => simp
       | succ n =>

@@ -65,7 +65,7 @@ private lemma quadratic_pos_eventually_atTop (A B d M : ℝ) (hA : 0 < A) :
     exact hA
   have hdegree : 0 < g.degree :=
     natDegree_pos_iff_degree_pos.mp (by simp [hgdeg])
-  have htends := tendsto_atTop_of_leadingCoeff_nonneg g hdegree hglc.le
+  have htends := tendsto_atTop_of_leadingCoeff_nonneg hdegree hglc.le
   obtain ⟨x, hx⟩ :=
     ((htends.eventually (eventually_gt_atTop 0)).and (eventually_gt_atTop M)).exists
   exact ⟨x, hx.2, by simpa [g, quadratic_eval] using hx.1⟩

@@ -272,7 +272,7 @@ private lemma scaledReversal_coeff_eq_factorial_mul :
 
 private lemma divFactorial_scaledReversal_eq_reflect (n : ℕ) :
     divFactorial (scaledReversal n) = Polynomial.reflect n (polynomial n) := by
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   rw [coeff_divFactorial, Polynomial.coeff_reflect]
   by_cases hk : k ≤ n

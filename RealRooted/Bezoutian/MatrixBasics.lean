@@ -31,7 +31,7 @@ namespace RealRooted
 `(p(X) q(Y) - p(Y) q(X)) / (X - Y)`.
 
 This definition is independent of a matrix size. Coefficients outside the
-degrees of `p` and `q` vanish through `Polynomial.coeff`. -/
+degrees of `p` and `q` vanish through `AddMonoidAlgebra.coeff`. -/
 abbrev bezoutEntry (p q : ℝ[X]) (i j : ℕ) : ℝ := Polynomial.bezoutEntry p q i j
 
 /-- The `n × n` Bezout matrix attached to two polynomials. -/

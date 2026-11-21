@@ -22,7 +22,7 @@ private theorem generalizedRisingFactorialPreservesPF_shiftStrictInterl {μ : �
       IsPFPolynomial q ∧ StrictInterl (q.comp (X + C μ)) q := by
   intro n
   induction n using Nat.strong_induction_on with
-  | h n ih =>
+  | ind n ih =>
       intro p hpdeg hp0 hp
       by_cases hn0 : n = 0
       · have hpdeg0 : p.natDegree = 0 := by lia

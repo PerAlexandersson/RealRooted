@@ -403,7 +403,7 @@ private lemma schurModel_succ (n : ℕ) :
         ring
 
 private lemma schurModel_zero : schurModel 0 = 1 := by
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   rcases k with _ | k
   · simp
@@ -411,7 +411,7 @@ private lemma schurModel_zero : schurModel 0 = 1 := by
     simp
 
 private lemma schurModel_one : schurModel 1 = 1 + X := by
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   rcases k with _ | _ | k
   · simp
@@ -489,7 +489,7 @@ private def jensenScale (n : ℕ) : ℝ :=
 private lemma schurModel_eq_jensenModel (n : ℕ) :
     schurModel n = C (jensenScale n) *
       twoSidedJensenPolynomial n jensenWeight jensenWeight := by
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   rw [coeff_C_mul,
     coeff_twoSidedJensenPolynomial jensenWeight_pos n jensenWeight k]

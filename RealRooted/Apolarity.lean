@@ -407,7 +407,7 @@ theorem coeff_binomialLift {R : Type*} [CommRing R] (n : Nat) (f : R[X]) (k : Na
 theorem natDegree_binomialLift_le {R : Type*} [CommRing R] (n : Nat) (f : R[X]) :
     (binomialLift n f).natDegree ≤ n := by
   rw [Polynomial.natDegree_le_iff_degree_le, Polynomial.degree_le_iff_coeff_zero]
-  simp +contextual [binomialLift, Polynomial.coeff_monomial]
+  simp +contextual [binomialLift, Polynomial.coeff_monomial, Finsupp.single_apply]
 
 theorem natDegree_coApolarPoint_le {R : Type*} [CommRing R] (n : Nat) (z : R) :
     (coApolarPoint n z).natDegree ≤ n := by
@@ -681,19 +681,19 @@ binomial lift of the polar shift.
 theorem polarDeriv_binomialLift {n : Nat} (hn : 1 ≤ n) (ζ : ℂ) (f : ℂ[X]) :
     polarDeriv n ζ (binomialLift n f)
       = C (n : ℂ) * binomialLift (n - 1) (polarShift ζ f) := by
-  refine Polynomial.ext fun k => ?_
+  refine (AddMonoidAlgebra.ext ∘ Finsupp.ext) fun k => ?_
   rcases k with _ | k
   · unfold polarDeriv binomialLift polarShift
     simp only [Polynomial.coeff_C_mul]
     simp [ Polynomial.coeff_derivative, Polynomial.coeff_C, Polynomial.coeff_X,
       mul_comm ]
-    rcases n <;> simp_all [Polynomial.coeff_monomial] ; ring
+    rcases n <;> simp_all [Finsupp.single_apply] ; ring
   · simp only [Polynomial.coeff_C_mul]
     by_cases hk : k + 1 ≤ n
     · simp_all only [Order.add_one_le_iff, polarDeriv, map_natCast,
         binomialLift, map_sum, coeff_add, coeff_natCast_mul, finsetSum_coeff,
         Nat.sub_add_cancel, coeff_polarShift]
-      simp only [coeff_monomial, Finset.sum_ite_eq', Finset.mem_range,
+      simp only [coeff_monomial, Finsupp.single_apply, Finset.sum_ite_eq', Finset.mem_range,
         Order.lt_add_one_iff, Order.add_one_le_iff, mul_ite, mul_zero,
         Finset.sum_range_succ, Nat.choose_self, Nat.cast_one, one_mul, sub_mul,
         coeff_sub, coeff_C_mul, coeff_add, finsetSum_coeff, coeff_derivative,
@@ -733,7 +733,7 @@ theorem polarDeriv_binomialLift {n : Nat} (hn : 1 ≤ n) (ζ : ℂ) (f : ℂ[X])
     · simp_all only [Order.add_one_le_iff, not_lt, polarDeriv,
         map_natCast, binomialLift, map_sum, coeff_add, coeff_natCast_mul,
         finsetSum_coeff, Nat.sub_add_cancel, coeff_polarShift]
-      simp only [coeff_monomial, Finset.sum_ite_eq', Finset.mem_range,
+      simp only [coeff_monomial, Finsupp.single_apply, Finset.sum_ite_eq', Finset.mem_range,
         Order.lt_add_one_iff, Order.add_one_le_iff, mul_ite, mul_zero,
         Finset.sum_range_succ', derivative_monomial_succ, mul_assoc,
         Nat.choose_zero_right, Nat.cast_one, one_mul, monomial_zero_left,
@@ -904,7 +904,7 @@ private theorem grace_aux {c : ℂ} {r : ℝ} (hr : 0 ≤ r) :
     · have h_contra : f.coeff 0 = 0 := by
         unfold AreApolar at hap
         simp_all [apolarPairing]
-      contrapose! hroots;
+      contrapose hroots;
       unfold RootsIn;
       simp_all only [binomialLift, zero_add, Finset.range_one,
         Finset.sum_singleton, Nat.choose_self, Nat.cast_one, mul_zero,

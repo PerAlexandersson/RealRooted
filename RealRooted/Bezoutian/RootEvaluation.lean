@@ -164,7 +164,7 @@ lemma bezoutMatrix.vandermonde_eq_diagonal (p q : ℝ[X]) (n : ℕ)
   ext i j
   by_cases hij : i = j
   · subst hij
-    simp only [diagonal_apply_eq, mul_apply, vandermonde_apply, transpose_apply]
+    simp only [diagonal_apply_eq, Matrix.mul_apply, vandermonde_apply, transpose_apply]
     convert bezoutMatrix.vandermonde_diagonal p q n (r i) hp hq using 1
     · have (x y : Fin n) :
           r i ^ y.val * (r i ^ x.val * bezoutMatrix n p q x y) =
@@ -173,7 +173,7 @@ lemma bezoutMatrix.vandermonde_eq_diagonal (p q : ℝ[X]) (n : ℕ)
       simpa only [mul_comm, Finset.mul_sum, dotProduct, Matrix.mulVec] using
         Finset.sum_comm.trans
           (Finset.sum_congr rfl fun x _ ↦ Finset.sum_congr rfl fun y _ ↦ this x y)
-  · simp only [diagonal_apply_ne _ hij, mul_apply, vandermonde_apply, transpose_apply]
+  · simp only [diagonal_apply_ne _ hij, Matrix.mul_apply, vandermonde_apply, transpose_apply]
     convert bezoutMatrix.vandermonde_off_diagonal p q n r hp hq hr_roots hr_inj i j hij using 1
     · simpa only [mul_comm, Finset.mul_sum, dotProduct, Matrix.mulVec, mul_left_comm] using
         Finset.sum_comm

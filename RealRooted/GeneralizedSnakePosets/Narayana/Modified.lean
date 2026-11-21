@@ -175,7 +175,7 @@ theorem modifiedNarayanaCoeffPolynomial_posLeadingCoeff (n : ℕ) :
         coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_C, coeff_one]
   · have hklt : 3 < k := Nat.lt_of_not_ge hk
     simp [modifiedNarayanaCoeffPolynomial, coeff_narayanaPolynomial_of_lt hklt,
-      coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_one,
+      coeff_C_mul, coeff_X_pow, coeff_X, coeff_one,
       show k ≠ 0 by lia, show (1 : ℕ) ≠ k by lia, show k ≠ 2 by lia,
       show k ≠ 3 by lia]
 
@@ -190,7 +190,7 @@ theorem modifiedNarayanaCoeffPolynomial_posLeadingCoeff (n : ℕ) :
         coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_C, coeff_one]
   · have hklt : 4 < k := Nat.lt_of_not_ge hk
     simp [modifiedNarayanaCoeffPolynomial, coeff_narayanaPolynomial_of_lt hklt,
-      coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_one,
+      coeff_C_mul, coeff_X_pow, coeff_X, coeff_one,
       show k ≠ 0 by lia, show (1 : ℕ) ≠ k by lia, show k ≠ 2 by lia,
       show k ≠ 3 by lia, show k ≠ 4 by lia]
 
@@ -205,7 +205,7 @@ theorem modifiedNarayanaCoeffPolynomial_posLeadingCoeff (n : ℕ) :
         coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_C, coeff_one]
   · have hklt : 5 < k := Nat.lt_of_not_ge hk
     simp [modifiedNarayanaCoeffPolynomial, coeff_narayanaPolynomial_of_lt hklt,
-      coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_one,
+      coeff_C_mul, coeff_X_pow, coeff_X, coeff_one,
       show k ≠ 0 by lia, show (1 : ℕ) ≠ k by lia, show k ≠ 2 by lia,
       show k ≠ 3 by lia, show k ≠ 4 by lia, show k ≠ 5 by lia]
 
@@ -221,7 +221,7 @@ theorem modifiedNarayanaCoeffPolynomial_posLeadingCoeff (n : ℕ) :
         coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_C, coeff_one]
   · have hklt : 6 < k := Nat.lt_of_not_ge hk
     simp [modifiedNarayanaCoeffPolynomial, coeff_narayanaPolynomial_of_lt hklt,
-      coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_one,
+      coeff_C_mul, coeff_X_pow, coeff_X, coeff_one,
       show k ≠ 0 by lia, show (1 : ℕ) ≠ k by lia, show k ≠ 2 by lia,
       show k ≠ 3 by lia, show k ≠ 4 by lia, show k ≠ 5 by lia,
       show k ≠ 6 by lia]
@@ -238,7 +238,7 @@ theorem modifiedNarayanaCoeffPolynomial_posLeadingCoeff (n : ℕ) :
         coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_C, coeff_one]
   · have hklt : 7 < k := Nat.lt_of_not_ge hk
     simp [modifiedNarayanaCoeffPolynomial, coeff_narayanaPolynomial_of_lt hklt,
-      coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_one,
+      coeff_C_mul, coeff_X_pow, coeff_X, coeff_one,
       show k ≠ 0 by lia, show (1 : ℕ) ≠ k by lia, show k ≠ 2 by lia,
       show k ≠ 3 by lia, show k ≠ 4 by lia, show k ≠ 5 by lia,
       show k ≠ 6 by lia, show k ≠ 7 by lia]
@@ -256,7 +256,7 @@ theorem modifiedNarayanaCoeffPolynomial_posLeadingCoeff (n : ℕ) :
         coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_C, coeff_one]
   · have hklt : 8 < k := Nat.lt_of_not_ge hk
     simp [modifiedNarayanaCoeffPolynomial, coeff_narayanaPolynomial_of_lt hklt,
-      coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_one,
+      coeff_C_mul, coeff_X_pow, coeff_X, coeff_one,
       show k ≠ 0 by lia, show (1 : ℕ) ≠ k by lia, show k ≠ 2 by lia,
       show k ≠ 3 by lia, show k ≠ 4 by lia, show k ≠ 5 by lia,
       show k ≠ 6 by lia, show k ≠ 7 by lia, show k ≠ 8 by lia]
@@ -274,7 +274,7 @@ theorem modifiedNarayanaCoeffPolynomial_posLeadingCoeff (n : ℕ) :
         coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_C, coeff_one]
   · have hklt : 9 < k := Nat.lt_of_not_ge hk
     simp [modifiedNarayanaCoeffPolynomial, coeff_narayanaPolynomial_of_lt hklt,
-      coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_one,
+      coeff_C_mul, coeff_X_pow, coeff_X, coeff_one,
       show k ≠ 0 by lia, show (1 : ℕ) ≠ k by lia, show k ≠ 2 by lia,
       show k ≠ 3 by lia, show k ≠ 4 by lia, show k ≠ 5 by lia,
       show k ≠ 6 by lia, show k ≠ 7 by lia, show k ≠ 8 by lia,
@@ -294,7 +294,7 @@ theorem modifiedNarayanaCoeffPolynomial_posLeadingCoeff (n : ℕ) :
         coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_C, coeff_one]
   · have hklt : 10 < k := Nat.lt_of_not_ge hk
     simp [modifiedNarayanaCoeffPolynomial, coeff_narayanaPolynomial_of_lt hklt,
-      coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_one,
+      coeff_C_mul, coeff_X_pow, coeff_X, coeff_one,
       show k ≠ 0 by lia, show (1 : ℕ) ≠ k by lia, show k ≠ 2 by lia,
       show k ≠ 3 by lia, show k ≠ 4 by lia, show k ≠ 5 by lia,
       show k ≠ 6 by lia, show k ≠ 7 by lia, show k ≠ 8 by lia,
@@ -314,7 +314,7 @@ theorem modifiedNarayanaCoeffPolynomial_posLeadingCoeff (n : ℕ) :
         coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_C, coeff_one]
   · have hklt : 11 < k := Nat.lt_of_not_ge hk
     simp [modifiedNarayanaCoeffPolynomial, coeff_narayanaPolynomial_of_lt hklt,
-      coeff_add, coeff_C_mul, coeff_X_pow, coeff_X, coeff_one,
+      coeff_C_mul, coeff_X_pow, coeff_X, coeff_one,
       show k ≠ 0 by lia, show (1 : ℕ) ≠ k by lia, show k ≠ 2 by lia,
       show k ≠ 3 by lia, show k ≠ 4 by lia, show k ≠ 5 by lia,
       show k ≠ 6 by lia, show k ≠ 7 by lia, show k ≠ 8 by lia,

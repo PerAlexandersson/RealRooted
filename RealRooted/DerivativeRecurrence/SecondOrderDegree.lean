@@ -23,9 +23,9 @@ lemma second_order_derivative_coeff_succ_succ
       (C a * X + C (-a) * X ^ 2) * (P (n + 1)).derivative +
         (C 1 + C (b n) * X) * P (n + 1) + (C c * X) * P n)
     (n k : ℕ) :
-    coeff (P (n + 2)) (k + 1) =
-      (a * ((k : ℝ) + 1) + 1) * coeff (P (n + 1)) (k + 1) +
-        (b n - a * (k : ℝ)) * coeff (P (n + 1)) k + c * coeff (P n) k := by
+    (P (n + 2)).coeff (k + 1) =
+      (a * ((k : ℝ) + 1) + 1) * (P (n + 1)).coeff (k + 1) +
+        (b n - a * (k : ℝ)) * (P (n + 1)).coeff k + c * (P n).coeff k := by
   rw [hrec n]
   rw [coeff_add, Polynomial.coeff_quadratic_derivative_add_linear_mul_succ]
   rw [show (C c * X) * P n = C c * (X * P n) by ring]
@@ -41,21 +41,20 @@ lemma second_order_derivative_top_and_above
       (C a * X + C (-a) * X ^ 2) * (P (n + 1)).derivative +
         (C 1 + C (b n) * X) * P (n + 1) + (C c * X) * P n)
     (hcancel : ∀ n, b n - a * ((n : ℝ) + 1) = 1) :
-    ∀ n : ℕ, 0 < coeff (P n) n ∧ ∀ m > n, coeff (P n) m = 0
+    ∀ n : ℕ, 0 < (P n).coeff n ∧ ∀ m > n, (P n).coeff m = 0
   | 0 => by
       constructor
       · simp_all
       · intro m hm
         rw [h0, coeff_one]
-        grind
+        simp [ne_of_gt hm]
   | 1 => by
       constructor
       · rw [h1]
         norm_num [coeff_add, coeff_one, coeff_X]
       · intro m hm
         rw [h1]
-        rw [coeff_add, coeff_one, coeff_X]
-        grind
+        simp [coeff_one, coeff_X, (by lia : m ≠ 0), (by lia : 1 ≠ m)]
   | n + 2 => by
       rcases second_order_derivative_top_and_above P a c b h0 h1 hrec hcancel (n + 1) with
         ⟨htop1, habove1⟩

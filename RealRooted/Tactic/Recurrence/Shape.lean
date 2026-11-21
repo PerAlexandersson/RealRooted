@@ -251,7 +251,8 @@ private def isRowCoeffDef (name : Name) : MetaM Bool := do
   if ← isLibraryDef name then return false
   forallTelescopeReducing info.type fun _ result => do
     let result ← whnf result
-    return result.isConstOf ``Real || result.getAppFn.isConstOf ``Polynomial
+    if result.isConstOf ``Real then return true
+    isDefEq result (← mkAppOptM ``Polynomial #[some (mkConst ``Real), none])
 
 /-- Unfold one non-recursive definition at the head of `e`.  Row-coefficient evaluators use
 this only after their explicit arithmetic grammar fails, and validate the unfolded body by
@@ -871,10 +872,10 @@ partial def findPolySeqApp? (e : Expr) : MetaM (Option PolySeqApp) := do
     if let .forallE _ dom body _ := ty then
       let natural := dom.isConstOf ``Nat ||
         (dom.isConstOf ``Int && (← naturalRowIndex? e.appArg!).isSome)
-      if natural && !body.hasLooseBVars &&
-          (← whnfR body).getAppFn.isConstOf ``Polynomial then
-        if let .const name _ := f.getAppFn then
-          return some { name, params := f.getAppArgs }
+      if natural && !body.hasLooseBVars then
+        if ← isDefEq body (← mkAppOptM ``Polynomial #[some (mkConst ``Real), none]) then
+          if let .const name _ := f.getAppFn then
+            return some { name, params := f.getAppArgs }
     if let some r ← findPolySeqApp? f then return some r
     return ← findPolySeqApp? e.appArg!
   return none

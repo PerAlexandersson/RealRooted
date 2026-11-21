@@ -24,6 +24,7 @@ recurrence.
 @[expose] public section
 
 open Polynomial
+open AddMonoidAlgebra (coeff)
 
 noncomputable section
 

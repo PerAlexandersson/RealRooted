@@ -46,7 +46,7 @@ theorem forwardShift_pow_apply (k : ℕ) (u : ℕ → R) (n : ℕ) :
   induction k generalizing u n with
   | zero => simp
   | succ k ih =>
-      rw [pow_succ, Module.End.mul_apply]
+      rw [pow_succ, mul_apply_eq_comp]
       rw [ih (forwardShift u) n]
       simp only [forwardShift_apply]
       congr 1

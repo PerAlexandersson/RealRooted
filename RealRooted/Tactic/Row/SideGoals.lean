@@ -287,9 +287,9 @@ private def isInterlaceGoal (P? : Option Ident) (ty : Expr) : MetaM Bool := do
   return has ``RealRooted.Interlaces || has ``Polynomial.roots || has ``Polynomial.eval ||
     has ``RealRooted.HasNonnegCoeffs || (!ty.isForall && mentionsP && has ``Polynomial.Splits) ||
     (rowBinder && mentionsP && (has ``Polynomial.natDegree || has ``Polynomial.leadingCoeff)) ||
-    (ty.isForall && !mentionsP && has ``LE.le && has ``Polynomial.coeff) ||
+    (ty.isForall && !mentionsP && has ``LE.le && has ``AddMonoidAlgebra.coeff) ||
     (ty.isForall && ty.bindingBody!.isForall && !mentionsP && has ``LE.le && has ``HMul.hMul &&
-      has ``Polynomial.coeff)
+      has ``AddMonoidAlgebra.coeff)
 
 /-- The local hypotheses `h : ∀ n, … (P n) …` whose statement mentions the constant `c`, such as
 the shared `hdeg_row` and `hpos_row` of `rr_row_interlaces`.  A degree or leading-coefficient
@@ -461,7 +461,7 @@ private def interlaceSideGoal (P? : Option Ident) : TacticM Unit := do
          explicitNonnegCoeffs]
     else if ty.isForall && ty.bindingBody!.isForall then
       [multiplierGoal]
-    else if ty.isForall && !mentionsP && has ``LE.le && has ``Polynomial.coeff then
+    else if ty.isForall && !mentionsP && has ``LE.le && has ``AddMonoidAlgebra.coeff then
       -- `ring_nf` in `constantCoeffGoal` can miss literal coefficients such as
       -- `(2 + 2 * X).coeff 1` (#2366), which the general closer handles
       [constantCoeffGoal, rowSideGoal P?]

@@ -44,7 +44,7 @@ theorem coeff_laguerreRaisingStep (r : R) (p : R[X]) (k : ℕ) :
     ring
   rw [hform]
   cases k with
-  | zero => simp [coeff_add, coeff_derivative]
+  | zero => simp [coeff_derivative]
   | succ k =>
       simp only [coeff_add, coeff_C_mul, coeff_X_mul,
         coeff_derivative, Nat.succ_ne_zero, ite_false,

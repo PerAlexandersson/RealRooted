@@ -176,7 +176,7 @@ lemma delete_eq_true_of_local {choices : List (ℕ × Bool)}
     · simpa only [heq] using hmono k' j hkj
     · exact hmono i k' hik
   have hmain := Nat.le_induction (m := i.1)
-    (P := fun n _ => ∀ hnj : n ≤ j.1,
+    (motive := fun n _ => ∀ hnj : n ≤ j.1,
       (choices.get ⟨n, Nat.lt_of_le_of_lt hnj j.2⟩).2 = true)
     (by intro _; simpa using hdel)
     (by
@@ -375,7 +375,7 @@ private lemma fin_mono_of_adjacent {m : ℕ} {phi : Fin (m + 1) → ℕ}
     ∀ i j : Fin (m + 1), i ≤ j → phi i ≤ phi j := by
   intro i j hij
   have hmain := Nat.le_induction (m := i.1)
-    (P := fun n _ => ∀ hn : n < m + 1, phi i ≤ phi ⟨n, hn⟩)
+    (motive := fun n _ => ∀ hn : n < m + 1, phi i ≤ phi ⟨n, hn⟩)
     (by intro hn; simp)
     (by
       intro n hin ih hsucc

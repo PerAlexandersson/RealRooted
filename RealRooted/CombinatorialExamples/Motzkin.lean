@@ -27,6 +27,7 @@ their recurrence `(k + 2) M_k = (2k + 1) M_(k-1) + (k - 1) (4X - 1) M_(k-2)`.
 @[expose] public section
 
 open Polynomial
+open AddMonoidAlgebra (coeff)
 
 noncomputable section
 

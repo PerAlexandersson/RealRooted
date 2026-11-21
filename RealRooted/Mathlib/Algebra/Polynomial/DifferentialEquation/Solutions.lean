@@ -163,7 +163,7 @@ theorem odeCoefficientMatrix_mulVec
   have hexp : p = ∑ k ∈ Finset.range (N + 1), p.coeff k • (X ^ k : K[X]) := by
     simpa only [smul_eq_C_mul] using p.as_sum_range_C_mul_X_pow' (by lia : p.natDegree < N + 1)
   conv_rhs => rw [hexp]
-  simp only [map_sum, map_smul, finsetSum_coeff, coeff_smul]
+  simp only [map_sum, map_smul, finsetSum_coeff, AddMonoidAlgebra.coeff_smul_apply]
   change (∑ k : Fin (N + 1),
     (differentialOperator A d (X ^ (k : ℕ))).coeff ℓ * p.coeff k) = _
   rw [Fin.sum_univ_eq_sum_range

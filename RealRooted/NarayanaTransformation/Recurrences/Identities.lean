@@ -523,7 +523,7 @@ theorem narayanaPolynomial_pure_rec (m n : ℕ) :
             narayanaTransformCoeff m N 1 = (N : ℝ) * (N + m) / (m + 1) := by
         dsimp [narayanaTransformCoeff]
         simp
-      simp [hcoeff₁, coeff_add, coeff_sub, coeff_C_mul, coeff_X_mul, sq, mul_assoc,
+      simp [hcoeff₁, coeff_C_mul, coeff_X_mul, sq, mul_assoc,
         coeff_narayanaPolynomial_of_le, narayanaTransformCoeff_zero_right, add_mul, mul_add]
       field_simp
       ring

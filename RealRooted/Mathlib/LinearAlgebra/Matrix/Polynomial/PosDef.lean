@@ -231,7 +231,7 @@ theorem posDef_of_continuous_of_det_ne_zero {n : Type*} [Fintype n] [DecidableEq
           simpa only [star_trivial] using hx⟩).posSemidef
     · exact fun hx => (posDef_iff_dotProduct_mulVec.mp
         (hx.posDef_iff_det_ne_zero.mpr (hdet x))).2
-  have hclopen : IsClopen S := ⟨by rw [hS]; exact posSemidef_is_closed.preimage hA, hopen⟩
+  have hclopen : IsClopen S := ⟨by rw [hS]; exact isClosed_setOfPred_posSemidef.preimage hA, hopen⟩
   have hx₀S : x₀ ∈ S := by
     change ∀ v : n → ℝ, v ≠ 0 → 0 < v ⬝ᵥ A x₀ *ᵥ v
     simpa only [star_trivial] using (posDef_iff_dotProduct_mulVec.mp hx₀).2
@@ -514,7 +514,7 @@ theorem exists_transpose_mul_mul_eq_one_of_posDef_eval {n : Type*}
     ∃ Q : Matrix n n ℝ[X], IsUnit Q.det ∧ Qᵀ * G * Q = 1 := by
   generalize hmu : diagDegreeSum G = mu
   induction mu using Nat.strong_induction_on generalizing G with
-  | h mu ih =>
+  | ind mu ih =>
       by_cases hzero : mu = 0
       · exact exists_transpose_mul_mul_eq_one_of_diagDegreeSum_eq_zero
           (hmu.trans hzero) hGpos

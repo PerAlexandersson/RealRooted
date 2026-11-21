@@ -82,7 +82,7 @@ theorem inversePeakEulerian_coeff_succ_succ (n k : ℕ) :
 theorem inversePeakEulerian_coeff_zero :
     ∀ n : ℕ, (inversePeakEulerian n).coeff 0 = 1
   | 0 => by simp
-  | 1 => by simp [coeff_add]
+  | 1 => by simp
   | n + 2 => by
       have ih := inversePeakEulerian_coeff_zero (n + 1)
       rw [inversePeakEulerian_recurrence]
@@ -109,7 +109,7 @@ theorem inversePeakEulerian_coeff_support :
         interval_cases k <;> norm_num [inversePeakEulerian, coeff_add, coeff_one, coeff_X]
       · intro k hk
         rw [inversePeakEulerian_one]
-        simp [coeff_add, coeff_one, coeff_X,
+        simp [coeff_one, coeff_X,
           show k ≠ 0 by lia, show 1 ≠ k by lia]
   | more n ih0 ih1 =>
       constructor

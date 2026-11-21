@@ -112,7 +112,7 @@ theorem maximizer_is_eigenvector (hA_prim : IsPrimitive A)
     change 0 ≤ (A *ᵥ v) i - (r • v) i
     exact sub_nonneg.mpr (h_fund_ineq i)
   have hz_ne_zero : z ≠ 0 := by
-    contrapose! h_ne
+    contrapose h_ne
     ext i
     simpa [z, sub_eq_zero] using congr_fun h_ne i
   obtain ⟨y, hy_pos, r_lt_r_y⟩ :=

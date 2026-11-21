@@ -29,7 +29,7 @@ private theorem nnnorm_aeval_of_splits (p : ℝ[X]) (z : ℂ) (hp : p.Splits) :
       = (Multiset.map (fun r : ℝ => ‖z - (r : ℂ)‖₊) p.roots).prod := by
     simp
   conv_lhs => rw [hp.eq_prod_roots]
-  rw [map_mul, h1, nnnorm_mul, h2]
+  rw [map_mul, h1, nnNorm_mul, h2]
   simp
 
 /-- Along a vertical line, the norm of a real splitting polynomial is
@@ -39,12 +39,12 @@ theorem norm_aeval_mono_im_of_splits {p : ℝ[X]} (hp : p.Splits) (x y y' : ℝ)
     ‖aeval ((x : ℂ) + y' * I) p‖ ≤ ‖aeval ((x : ℂ) + y * I) p‖ := by
   have hsq : y' ^ 2 ≤ y ^ 2 := by
     nlinarith [sq_abs y, sq_abs y', abs_nonneg y', abs_nonneg y]
-  rw [← coe_nnnorm, ← coe_nnnorm, NNReal.coe_le_coe,
+  rw [← coe_nnNorm, ← coe_nnNorm, NNReal.coe_le_coe,
     nnnorm_aeval_of_splits p _ hp, nnnorm_aeval_of_splits p _ hp]
   gcongr
   refine Multiset.prod_map_le_prod_map _ _ (fun r _ => ?_)
   rw [← NNReal.coe_le_coe]
-  simp only [coe_nnnorm, Complex.norm_def]
+  simp only [coe_nnNorm, Complex.norm_def]
   apply Real.sqrt_le_sqrt
   simp [Complex.normSq_apply]
   linarith

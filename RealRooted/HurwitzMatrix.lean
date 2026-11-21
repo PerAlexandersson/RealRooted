@@ -430,13 +430,13 @@ theorem hurwitzMatrixCriterionCounterexample_matrix_isTotallyNonneg :
   · subst hm
     rw [show m + m = 2 * m by ring, hurwitz_even_row_apply, ite_eq_left (Nat.zero_le m)]
     rw [show (X * (X + 1) : ℝ[X]) = X ^ 2 + X by ring]
-    simp [hurwitzMatrixCriterionCounterexample, Polynomial.coeff_add,
+    simp [hurwitzMatrixCriterionCounterexample,
       Polynomial.coeff_X_pow, Polynomial.coeff_one, Polynomial.coeff_X]
     lia
   · subst hm
     rw [hurwitz_odd_row_apply, ite_eq_left (Nat.zero_le m)]
     rw [show (X * (X + 1) : ℝ[X]) = X ^ 2 + X by ring]
-    simp [hurwitzMatrixCriterionCounterexample, Polynomial.coeff_add,
+    simp [hurwitzMatrixCriterionCounterexample,
       Polynomial.coeff_X_pow, Polynomial.coeff_one, Polynomial.coeff_X]
     lia
 

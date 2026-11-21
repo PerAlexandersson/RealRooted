@@ -120,7 +120,8 @@ theorem divFactorial_C_mul (a : ℝ) (p : ℝ[X]) :
 
 theorem divFactorial_eq_zero_iff (p : ℝ[X]) :
     divFactorial p = 0 ↔ p = 0 := by
-  simp only [Polynomial.ext_iff, coeff_divFactorial, coeff_zero, mul_eq_zero,
+  simp only [← AddMonoidAlgebra.coeff_inj, Finsupp.ext_iff, coeff_divFactorial, coeff_zero,
+    mul_eq_zero,
     inv_eq_zero, Nat.cast_eq_zero, Nat.factorial_ne_zero, false_or]
 
 theorem divFactorial_ne_zero_iff (p : ℝ[X]) :

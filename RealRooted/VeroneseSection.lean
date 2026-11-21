@@ -71,7 +71,7 @@ def veroneseSectionPowerSeries (r k : ℕ) (A : PowerSeries ℝ) : PowerSeries �
 `r = 0` set to zero.  The coefficient theorem below is intended for `0 < r`. -/
 def veroneseSectionPolynomial (r k : ℕ) (p : ℝ[X]) : ℝ[X] :=
   if hr0 : r = 0 then 0 else
-    Polynomial.ofFinsupp <|
+    id <|
       ⟨Finsupp.onFinset (Finset.range (p.natDegree + 1))
         (fun n => p.coeff (k + r * n))
         (by

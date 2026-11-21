@@ -921,7 +921,7 @@ theorem limitingAppellCoefficient_one_nonneg
     rw [limitingAppellSquarePolynomial]
     norm_num [hd₀, Finset.sum_range_succ]
     rw [show (2 : ℝ[X]) = C (2 : ℝ) from (map_ofNat C 2).symm]
-    rfl
+    rw [sub_eq_add_neg]
   have hne : limitingAppellSquarePolynomial d 1 ≠ 0 := by
     rw [heq]
     exact (monic_X_sub_C (2 * d 1)).ne_zero

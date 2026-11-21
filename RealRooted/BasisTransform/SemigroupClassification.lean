@@ -237,7 +237,7 @@ theorem raySemigroupEnd_add_time (a b s t : ℝ) :
     raySemigroupEnd a b (s + t) = raySemigroupEnd a b s * raySemigroupEnd a b t := by
   apply LinearMap.ext
   intro p
-  rw [Module.End.mul_apply]
+  rw [mul_apply_eq_comp]
   simp only [raySemigroupEnd_apply]
   exact raySemigroupTransform_add_time a b s t p
 
@@ -246,7 +246,7 @@ theorem raySemigroupEnd_add_time (a b s t : ℝ) :
     raySemigroupEnd a b 0 = 1 := by
   apply LinearMap.ext
   intro p
-  rw [Module.End.one_apply, raySemigroupEnd_apply]
+  rw [one_apply_eq_self, raySemigroupEnd_apply]
   exact raySemigroupTransform_time_zero a b p
 
 private theorem raySemigroupTransform_X (a b t : ℝ) :
@@ -269,12 +269,12 @@ private theorem finiteEndomorphismLog_raySemigroupEnd_C (a b c : ℝ) :
     finiteEndomorphismLog 2 (raySemigroupEnd a b 1) (C c) = 0 := by
   let U := raySemigroupEnd a b 1 - 1
   have hU : U (C c) = 0 := by
-    simp only [U, LinearMap.sub_apply, Module.End.one_apply, raySemigroupEnd_apply]
+    simp only [U, LinearMap.sub_apply, one_apply_eq_self, raySemigroupEnd_apply]
     rw [raySemigroupTransform_C]
     simp
   rw [finiteEndomorphismLog_two_apply]
   change U (C c) - C (1 / 2 : ℝ) * ((U ^ 2 : Module.End ℝ ℝ[X]) (C c)) = 0
-  rw [pow_two, Module.End.mul_apply, hU, map_zero]
+  rw [pow_two, mul_apply_eq_comp, hU, map_zero]
   simp
 
 /-- On the two-dimensional truncation, the finite logarithm recovers the
@@ -283,12 +283,12 @@ theorem finiteEndomorphismLog_raySemigroupEnd_X (a b : ℝ) :
     finiteEndomorphismLog 2 (raySemigroupEnd a b 1) X = C a := by
   let U := raySemigroupEnd a b 1 - 1
   have hU : U X = C a := by
-    simp only [U, LinearMap.sub_apply, Module.End.one_apply, raySemigroupEnd_apply]
+    simp only [U, LinearMap.sub_apply, one_apply_eq_self, raySemigroupEnd_apply]
     rw [raySemigroupTransform_X]
     simp
   have hUtwo : (U ^ 2 : Module.End ℝ ℝ[X]) X = 0 := by
-    rw [pow_two, Module.End.mul_apply, hU]
-    simp only [U, LinearMap.sub_apply, Module.End.one_apply, raySemigroupEnd_apply]
+    rw [pow_two, mul_apply_eq_comp, hU]
+    simp only [U, LinearMap.sub_apply, one_apply_eq_self, raySemigroupEnd_apply]
     rw [raySemigroupTransform_C]
     simp
   rw [finiteEndomorphismLog_two_apply]
@@ -303,14 +303,14 @@ theorem finiteEndomorphismLog_raySemigroupEnd_X_sq (a b : ℝ) :
       C (2 * (a + b)) * X := by
   let U := raySemigroupEnd a b 1 - 1
   have hU : U (X ^ 2) = C (2 * (a + b)) * X + C (a * (a + b)) := by
-    simp only [U, LinearMap.sub_apply, Module.End.one_apply, raySemigroupEnd_apply]
+    simp only [U, LinearMap.sub_apply, one_apply_eq_self, raySemigroupEnd_apply]
     rw [raySemigroupTransform_X_sq]
     simp only [one_mul, one_pow, map_mul, map_add, map_ofNat, map_one]
     ring
   have hUtwo :
       (U ^ 2 : Module.End ℝ ℝ[X]) (X ^ 2) = C (2 * a * (a + b)) := by
-    rw [pow_two, Module.End.mul_apply, hU]
-    simp only [U, LinearMap.sub_apply, Module.End.one_apply, raySemigroupEnd_apply]
+    rw [pow_two, mul_apply_eq_comp, hU]
+    simp only [U, LinearMap.sub_apply, one_apply_eq_self, raySemigroupEnd_apply]
     rw [show C (2 * (a + b)) * X = (2 * (a + b)) • X by
       rw [Polynomial.smul_eq_C_mul]]
     rw [show C (a * (a + b)) = (a * (a + b)) • (1 : ℝ[X]) by
@@ -342,7 +342,7 @@ theorem finiteEndomorphismPower_raySemigroupEnd_C (a b t c : ℝ) :
   let L := finiteEndomorphismLog 2 (raySemigroupEnd a b 1)
   have hL : L (C c) = 0 := finiteEndomorphismLog_raySemigroupEnd_C a b c
   have hLtwo : (L ^ 2 : Module.End ℝ ℝ[X]) (C c) = 0 := by
-    rw [pow_two, Module.End.mul_apply, hL, map_zero]
+    rw [pow_two, mul_apply_eq_comp, hL, map_zero]
   rw [finiteEndomorphismPower, finiteEndomorphismExp_two_apply]
   change C c + C t * L (C c) + C (t ^ 2 / 2) *
       ((L ^ 2 : Module.End ℝ ℝ[X]) (C c)) = _
@@ -357,7 +357,7 @@ theorem finiteEndomorphismPower_raySemigroupEnd_X (a b t : ℝ) :
   let L := finiteEndomorphismLog 2 (raySemigroupEnd a b 1)
   have hL : L X = C a := finiteEndomorphismLog_raySemigroupEnd_X a b
   have hLtwo : (L ^ 2 : Module.End ℝ ℝ[X]) X = 0 := by
-    rw [pow_two, Module.End.mul_apply, hL]
+    rw [pow_two, mul_apply_eq_comp, hL]
     exact finiteEndomorphismLog_raySemigroupEnd_C a b a
   rw [finiteEndomorphismPower, finiteEndomorphismExp_two_apply]
   change X + C t * L X + C (t ^ 2 / 2) * ((L ^ 2 : Module.End ℝ ℝ[X]) X) = _
@@ -375,7 +375,7 @@ theorem finiteEndomorphismPower_raySemigroupEnd_X_sq (a b t : ℝ) :
     finiteEndomorphismLog_raySemigroupEnd_X_sq a b
   have hLtwo :
       (L ^ 2 : Module.End ℝ ℝ[X]) (X ^ 2) = C (2 * a * (a + b)) := by
-    rw [pow_two, Module.End.mul_apply, hL]
+    rw [pow_two, mul_apply_eq_comp, hL]
     rw [show C (2 * (a + b)) * X = (2 * (a + b)) • X by
       rw [Polynomial.smul_eq_C_mul], LinearMap.map_smul, hLX]
     simp only [Polynomial.smul_eq_C_mul, ← map_mul]

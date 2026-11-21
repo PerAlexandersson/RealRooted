@@ -49,7 +49,7 @@ theorem narayanaTransform_ne_zero {m : ℕ} {p : ℝ[X]}
     rw [coeff_narayanaTransform, Polynomial.sum_def]
     refine Finset.sum_pos' (fun k _ =>
       mul_nonneg (hp k) (hasNonnegCoeffs_narayanaPolynomial m k p.natDegree))
-      ⟨p.natDegree, natDegree_mem_support_of_nonzero hp0, ?_⟩
+      ⟨p.natDegree, natDegree_mem_support_of_ne_zero hp0, ?_⟩
     exact mul_pos ((hp _).lt_of_ne' (leadingCoeff_ne_zero.mpr hp0)) (by simp)
   simp [hzero] at htop
 

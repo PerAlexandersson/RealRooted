@@ -671,15 +671,18 @@ private theorem coeff_binaryRunTransform_three {p : ℝ[X]}
   constructor
   · rw [coeff_binaryRunTransform_eq_sum_range hpdeg]
     norm_num [Finset.sum_range_succ, binaryRunPolynomial,
-      Polynomial.finsetSum_coeff, Polynomial.coeff_monomial, Polynomial.coeff_one]
+      Polynomial.finsetSum_coeff, Polynomial.coeff_monomial, Finsupp.single_apply,
+      Polynomial.coeff_one]
   constructor
   · rw [coeff_binaryRunTransform_eq_sum_range hpdeg]
     norm_num [Finset.sum_range_succ, binaryRunPolynomial,
-      Polynomial.finsetSum_coeff, Polynomial.coeff_monomial, Polynomial.coeff_one]
+      Polynomial.finsetSum_coeff, Polynomial.coeff_monomial, Finsupp.single_apply,
+      Polynomial.coeff_one]
     ring_nf
   · rw [coeff_binaryRunTransform_eq_sum_range hpdeg]
     norm_num [Finset.sum_range_succ, binaryRunPolynomial,
-      Polynomial.finsetSum_coeff, Polynomial.coeff_monomial, Polynomial.coeff_one]
+      Polynomial.finsetSum_coeff, Polynomial.coeff_monomial, Finsupp.single_apply,
+      Polynomial.coeff_one]
     ring
 
 private theorem isPFPolynomial_binaryRunTransform_of_le_three

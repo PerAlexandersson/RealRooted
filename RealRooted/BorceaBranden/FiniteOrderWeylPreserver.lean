@@ -379,7 +379,7 @@ private theorem optionEquivLeft_coordinateDiagonalOperator_coeff
 
 private theorem polynomial_coeff_fintype_sum {ι R : Type*} [Fintype ι]
     [CommSemiring R] (f : ι → Polynomial R) (k : ℕ) :
-    Polynomial.coeff (∑ i, f i) k = ∑ i, Polynomial.coeff (f i) k := by
+    AddMonoidAlgebra.coeff (∑ i, f i) k = ∑ i, AddMonoidAlgebra.coeff (f i) k := by
   change Polynomial.lcoeff R k (∑ i, f i) = _
   rw [map_sum]
   rfl
@@ -412,7 +412,7 @@ private theorem coordinateDiagonalOperator_signedWeylSymbol
           MvPolynomial.C ((gamma (j : ℕ) : ℂ) * (-1 : ℂ) ^ (j : ℕ)) *
           MvPolynomial.X none ^ (j : ℕ) := by
   apply (MvPolynomial.optionEquivLeft ℂ σ).injective
-  apply Polynomial.ext
+  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
   intro k
   rw [optionEquivLeft_coordinateDiagonalOperator_coeff,
     optionEquivLeft_signedWeylSymbol,

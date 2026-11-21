@@ -31,7 +31,7 @@ theorem isRegular_of_isRegular_constantCoeff {f : PowerSeries R}
     apply PowerSeries.ext
     intro n
     induction n using Nat.strong_induction_on with
-    | h n ih =>
+    | ind n ih =>
       have hcoeff := congrArg (PowerSeries.coeff n) hfg
       rw [PowerSeries.coeff_mul, PowerSeries.coeff_mul,
         Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk,

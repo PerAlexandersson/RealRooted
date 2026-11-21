@@ -311,7 +311,7 @@ private theorem grace_aux_lowerHalf {b : ℝ} :
         unfold AreApolar at hap
         simp [apolarPairing] at hap
         simp_all
-      contrapose! hroots
+      contrapose hroots
       unfold RootsIn
       simp_all only [IsRoot.def, mem_lowerHalf, not_forall, not_le]
       refine ⟨Complex.mk 0 (b + 1), ?_, ?_⟩
