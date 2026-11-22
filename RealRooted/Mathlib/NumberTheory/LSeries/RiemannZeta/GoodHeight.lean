@@ -13,6 +13,8 @@ import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.LocalLogDeriv
 import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.RiemannHypothesis
 import RealRooted.Mathlib.Topology.Instances.Real.FiniteSeparation
 import TauCeti.Analysis.Meromorphic.Divisor
+import TauCeti.Analysis.Calculus.LogDeriv.Symmetry
+import Mathlib.NumberTheory.Harmonic.ZetaAsymp
 import Mathlib.Tactic.Lemma
 
 /-!
@@ -35,6 +37,17 @@ Jensen's bound counts their full multiplicities.
 public section
 
 open Complex Metric Set TauCeti
+open ComplexConjugate
+
+/-- The logarithmic derivative of zeta commutes with complex conjugation. -/
+@[simp]
+theorem logDeriv_riemannZeta_conj (s : ℂ) :
+    logDeriv riemannZeta (conj s) = conj (logDeriv riemannZeta s) := by
+  have hfun : conj ∘ riemannZeta ∘ conj = riemannZeta := by
+    funext z
+    simp [Function.comp_def, riemannZeta_conj]
+  simpa only [hfun, starRingEnd_self_apply] using
+    (TauCeti.logDeriv_conj_conj riemannZeta (conj s))
 
 namespace RiemannHypothesis
 
@@ -227,5 +240,20 @@ theorem exists_good_height (hRH : RiemannHypothesis) : ∃ C : ℝ, 0 < C ∧
   have h3 := (nearby_height_log_le hT ht).1
   exact norm_logDeriv_le_at_separated_height hRH hT ht hδ hA hB hL hinv hfar
     (hcount t h3) (hlocal t h3) hσ
+
+/-- The same good height works above and below the real axis, with one uniform bound. -/
+theorem exists_good_height_abs_im (hRH : RiemannHypothesis) : ∃ C : ℝ, 0 < C ∧
+    ∀ T : ℝ, 5 ≤ T → ∃ t ∈ Icc T (T + 1), ∀ σ ∈ Icc (9 / 20 : ℝ) 2,
+      ∀ u : ℝ, |u| = t → riemannZeta (σ + I * u) ≠ 0 ∧
+        ‖logDeriv riemannZeta (σ + I * u)‖ ≤ C * Real.log T ^ 2 := by
+  obtain ⟨C, hC, hgood⟩ := hRH.exists_good_height
+  refine ⟨C, hC, fun T hT ↦ ?_⟩
+  obtain ⟨t, ht, hbound⟩ := hgood T hT
+  refine ⟨t, ht, fun σ hσ u hu ↦ ?_⟩
+  rcases eq_or_eq_neg_of_abs_eq hu with rfl | rfl
+  · exact hbound σ hσ
+  · have heq : (σ : ℂ) + I * (-t : ℝ) = conj ((σ : ℂ) + I * t) := by simp
+    rw [heq, riemannZeta_conj, logDeriv_riemannZeta_conj, norm_conj]
+    simpa using hbound σ hσ
 
 end RiemannHypothesis

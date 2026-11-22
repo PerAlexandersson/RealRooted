@@ -2596,6 +2596,18 @@ public import RealRooted.Mathlib.Topology.Instances.Real.FiniteSeparation
 public import RealRooted.Mathlib.Analysis.Complex.PartialFractions
 public import RealRooted.Mathlib.Analysis.MellinInversion.Decay
 public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.GoodHeight
+public import RealRooted.Mathlib.Analysis.Contour.Residue.LogDeriv
+public import RealRooted.Mathlib.Analysis.Contour.Residue.Rectangle
+public import RealRooted.Mathlib.Analysis.MellinInversion.FiniteDifference
+public import RealRooted.Mathlib.Analysis.MellinInversion.HorizontalDecay
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.Log.Weights
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.Contour
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.HorizontalDecay
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.Order
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.Residues
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.ZeroKernel
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.ZeroSum
+public import RealRooted.Mathlib.Topology.Algebra.InfiniteSum.FiberMajorant
 
 /-!
 # RealRooted production umbrella

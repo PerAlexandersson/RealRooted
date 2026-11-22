@@ -9,7 +9,7 @@ public import Mathlib.NumberTheory.LSeries.RiemannZeta
 public import Mathlib.Analysis.Analytic.Order
 import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.RiemannHypothesis
 import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.ZeroCount
-import Mathlib.Analysis.Normed.Module.Connected
+import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.Order
 import Mathlib.NumberTheory.LSeries.Nonvanishing
 import Mathlib.Tactic.Lemma
 
@@ -63,16 +63,8 @@ theorem ne_one_of_mem_riemannZetaZeroWindow {t h : ℝ} {ρ : ℂ}
 theorem one_le_analyticOrderNatAt_riemannZeta {ρ : ℂ}
     (hρ : riemannZeta ρ = 0) (h1 : ρ ≠ 1) : 1 ≤ analyticOrderNatAt riemannZeta ρ := by
   have hf : AnalyticOnNhd ℂ riemannZeta ({1}ᶜ : Set ℂ) := analyticOn_riemannZeta
-  have hconn : IsPreconnected ({1}ᶜ : Set ℂ) :=
-    (isConnected_compl_singleton_of_one_lt_rank (by rw [Complex.rank_real_complex]; norm_num)
-      (1 : ℂ)).isPreconnected
-  have h2 : analyticOrderAt riemannZeta 2 ≠ ⊤ := by
-    rw [analyticOrderAt_eq_zero.mpr
-      (Or.inr (riemannZeta_ne_zero_of_one_lt_re (by norm_num)))]
-    simp
   have htop : analyticOrderAt riemannZeta ρ ≠ ⊤ :=
-    hf.analyticOrderAt_ne_top_of_isPreconnected hconn (x := 2) (y := ρ)
-      (by simp) (by simpa using h1) h2
+    analyticOrderAt_riemannZeta_ne_top h1
   have hne : analyticOrderAt riemannZeta ρ ≠ 0 :=
     analyticOrderAt_ne_zero.mpr ⟨hf ρ (by simpa using h1), hρ⟩
   apply Nat.one_le_iff_ne_zero.mpr

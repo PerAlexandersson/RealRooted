@@ -4489,6 +4489,126 @@
       ],
       "note": "Partial-fraction, Mellin-decay and contour-height estimates for the conditional prime-counting proof; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Contour/Residue/LogDeriv.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Contour.Residue.LogDeriv"
+      ],
+      "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Contour/Residue/Rectangle.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Contour.Residue.Rectangle"
+      ],
+      "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/MellinInversion/FiniteDifference.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.MellinInversion.FiniteDifference"
+      ],
+      "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/MellinInversion/HorizontalDecay.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.MellinInversion.HorizontalDecay"
+      ],
+      "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Log/Weights.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Log.Weights"
+      ],
+      "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/Contour.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.Contour"
+      ],
+      "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/HorizontalDecay.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.HorizontalDecay"
+      ],
+      "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/Order.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.Order"
+      ],
+      "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/Residues.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.Residues"
+      ],
+      "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/ZeroKernel.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.ZeroKernel"
+      ],
+      "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/ZeroSum.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.ZeroSum"
+      ],
+      "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Topology/Algebra/InfiniteSum/FiberMajorant.lean"
+      ],
+      "modules": [
+        "Mathlib.Topology.Algebra.InfiniteSum.FiberMajorant"
+      ],
+      "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }
