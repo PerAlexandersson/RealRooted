@@ -7,6 +7,7 @@ module
 
 public import Mathlib.MeasureTheory.Measure.Prokhorov
 public import Mathlib.MeasureTheory.Integral.BoundedContinuousFunction
+import TauCeti.Topology.Compactness.Compact
 
 /-!
 # Compactness for moment limits
@@ -25,15 +26,6 @@ public section
 
 open MeasureTheory Set Filter Topology
 open scoped NNReal
-
-/-- A family eventually in a compact set converges along its ultrafilter.
-Adapted from Tau Ceti `Topology/Compactness/Compact.lean` (Apache-2.0). -/
-theorem IsCompact.exists_tendsto_of_eventually_mem
-    {α ι : Type*} [TopologicalSpace α] {s : Set α}
-    (hs : IsCompact s) {U : Ultrafilter ι} {u : ι → α} (hu : ∀ᶠ i in U, u i ∈ s) :
-    ∃ x ∈ s, Tendsto u U (𝓝 x) := by
-  obtain ⟨x, hx, h⟩ := hs.ultrafilter_le_nhds' (U.map u) (Ultrafilter.mem_map.2 hu)
-  exact ⟨x, hx, by rwa [Ultrafilter.coe_map] at h⟩
 
 namespace MeasureTheory
 
