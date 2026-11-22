@@ -2394,6 +2394,12 @@ public import RealRooted.MultiplierSequence.JensenProductExpansion
 public import RealRooted.Mathlib.Analysis.Complex.GrowthOrder.Derivative
 public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Derivative
 public import RealRooted.RiemannHypothesis.DerivativeCriteria
+public import RealRooted.BasisTransform.Hermite
+public import RealRooted.Hermite.FiniteTransfer
+public import RealRooted.RiemannHypothesis.HermiteSimple
+public import RealRooted.BrandenLC.Sequence
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.LogConcavity
+public import RealRooted.RiemannHypothesis.LogConcavity
 
 /-!
 # RealRooted production umbrella
