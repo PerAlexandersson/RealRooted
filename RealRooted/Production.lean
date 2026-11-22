@@ -596,6 +596,7 @@ public import RealRooted.EulerOperator.Shift
 public import RealRooted.EulerianCompletion
 public import RealRooted.EulerianCompletion.ProperPosition
 public import RealRooted.EulerianMixedCompatibility
+public import RealRooted.EulerianMixedCompatibility.AnchoredCapacity
 public import RealRooted.EulerianMixedCompatibility.Insertion
 public import RealRooted.EulerianTriangles.LagTwoOperators
 public import RealRooted.EulerianTriangles.LagTwoRecurrence
@@ -668,6 +669,7 @@ public import RealRooted.Laguerre.FiniteCombinations
 public import RealRooted.MaWang.CubicEndpoint
 public import RealRooted.MaWang.EndpointClassification
 public import RealRooted.MaWang.EndpointMultiplicity
+public import RealRooted.MaWang.ForcingBudget
 public import RealRooted.MaWang.IntervalSequence
 public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.Degree
 public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.EulerSolutions
@@ -2315,6 +2317,7 @@ public import RealRooted.DerivativeRecurrence.RealEulerLag
 public import RealRooted.OperatorMatrix.AffineDerivative
 public import RealRooted.OperatorMatrix.AffineSuccessor
 public import RealRooted.Hypergeometric.ThreeFTwo
+public import RealRooted.Hypergeometric.ThreeFTwoBoundary
 public import RealRooted.CombinatorialExamples.BorosMoll.Transform
 public import RealRooted.CombinatorialExamples.BorosMoll.SmallCases
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Adjacent
