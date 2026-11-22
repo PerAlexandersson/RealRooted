@@ -5,9 +5,10 @@ Authors: The RealRooted contributors
 -/
 module
 
-public import RealRooted.Mathlib.Analysis.Complex.HeatOperator.Bounds
+public import TauCeti.Analysis.Complex.GrowthOrder
+
+import RealRooted.Mathlib.Analysis.Complex.HeatOperator.Bounds
 import RealRooted.Mathlib.Analysis.Complex.GrowthOrder.Derivative
-import Mathlib.Data.Nat.Choose.Basic
 
 /-!
 # Bounds for infinite differential symbols below order two

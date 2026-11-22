@@ -4109,6 +4109,126 @@
       ],
       "note": "Conjugation symmetry of the entire heat operator; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HeatOperator/Composition.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HeatOperator.Composition"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HeatOperator/TimeLimit.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HeatOperator.TimeLimit"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/Basic.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.Basic"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/Bounds.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.Bounds"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/Derivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.Derivative"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/Star.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.Star"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LineIdentity.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LineIdentity"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LocallyUniformIteratedDeriv.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LocallyUniformIteratedDeriv"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Polynomial/CoefficientMajorant.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Polynomial.CoefficientMajorant"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Data/Nat/Factorial/ArithmeticProduct.lean"
+      ],
+      "modules": [
+        "Mathlib.Data.Nat.Factorial.ArithmeticProduct"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/MomentDeterminacy.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.MomentDeterminacy"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Topology/UniformSpace/LocallyUniformAvoidance.lean"
+      ],
+      "modules": [
+        "Mathlib.Topology.UniformSpace.LocallyUniformAvoidance"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }

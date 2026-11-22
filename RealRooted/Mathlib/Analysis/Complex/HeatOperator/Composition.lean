@@ -7,6 +7,7 @@ module
 
 public import RealRooted.Mathlib.Analysis.Complex.HeatOperator.Basic
 import RealRooted.Mathlib.Analysis.Complex.HeatOperator.Nonzero
+import RealRooted.Mathlib.Analysis.Complex.HeatOperator.Derivative
 import Mathlib.Analysis.Complex.TaylorSeries
 
 /-!

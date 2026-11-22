@@ -1,11 +1,12 @@
 module
 
-public import RealRooted.RiemannHypothesis
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Theta
+
+import RealRooted.RiemannHypothesis
 public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.Basic
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.InfiniteDifferential
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.IteratedDerivative
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
 import RealRooted.Mathlib.Analysis.Complex.GrowthOrder.Derivative
 
 /-!

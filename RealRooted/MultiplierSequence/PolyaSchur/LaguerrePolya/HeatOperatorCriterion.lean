@@ -5,7 +5,6 @@ public import RealRooted.Mathlib.Analysis.Complex.HeatOperator.Basic
 import RealRooted.Mathlib.Analysis.Complex.HeatOperator.TimeLimit
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.HeatOperator
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Closure
-import Mathlib.Analysis.SpecificLimits.Basic
 
 /-!
 # Laguerre--Pólya criteria from small positive heat times

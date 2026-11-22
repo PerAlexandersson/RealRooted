@@ -5,8 +5,9 @@ Authors: The RealRooted contributors
 -/
 module
 
-public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.Bounds
-import Mathlib.Analysis.Normed.Group.FunctionSeries
+public import TauCeti.Analysis.Complex.GrowthOrder
+
+import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.Bounds
 
 /-!
 # Entire infinite differential operators

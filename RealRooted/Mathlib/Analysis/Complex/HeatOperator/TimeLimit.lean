@@ -6,7 +6,6 @@ Authors: The RealRooted contributors
 module
 
 public import RealRooted.Mathlib.Analysis.Complex.HeatOperator.Basic
-import Mathlib.Topology.UniformSpace.HeineCantor
 
 /-!
 # Locally uniform continuity of heat images in time

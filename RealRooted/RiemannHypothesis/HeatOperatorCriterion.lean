@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.RiemannHypothesis
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Theta
+
+import RealRooted.RiemannHypothesis
 public import RealRooted.Mathlib.Analysis.Complex.HeatOperator.Basic
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.HeatOperatorCriterion
