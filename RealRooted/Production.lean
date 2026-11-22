@@ -724,9 +724,12 @@ public import RealRooted.MatrixInterlacing.WeightedThreeStateStrip
 public import RealRooted.MatrixInterlacing.WeightedThreeStateStripRoots
 public import RealRooted.Mesh.FiniteDifferenceHyperbolicity
 public import RealRooted.OperatorMatrix.Bounded
+public import RealRooted.OperatorMatrix.CommonInput
+public import RealRooted.OperatorMatrix.CommonInputMixedDerivative
 public import RealRooted.OperatorMatrix.CouplingOperators
 public import RealRooted.OperatorMatrix.CouplingThresholds
 public import RealRooted.MatrixInterlacing.WeightedThreeState
+public import RealRooted.OperatorMatrix.RowCommonInput
 public import RealRooted.PoweredEulerian
 public import RealRooted.GeneralizedSnakePosets
 public import RealRooted.GeneralizedSnakePosets.ChainPolynomial
