@@ -14,6 +14,7 @@ import RealRooted.Mathlib.Analysis.Asymptotics.IncrementBounds
 import RealRooted.Jacobi.MomentPolynomial
 import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.Perturbation
 import Mathlib.Algebra.Order.Star.Real
+import RealRooted.RiemannHypothesis.PrimeWindowJacobiPolynomialBounds
 
 /-!
 # Prime-window orthogonal polynomials approaching shifted Legendre polynomials
@@ -90,32 +91,9 @@ theorem eventually_coeff_primeWindowPolynomial_sub_le
     ∃ C : ℝ, 0 < C ∧ ∀ᶠ X : ℝ in atTop, ∀ k : ℕ,
       |(Chebyshev.primeWindowPolynomial X (Real.sqrt X * Real.log X ^ 3) n).coeff k -
           (shiftedJacobiMonic n 0 0).coeff k| ≤ C / Real.log X := by
-  obtain ⟨A, hA, hcoeff⟩ := eventually_abs_coeff_sub_monicMomentPolynomial_le
-    (n := n) (fun k _ ↦ tendsto_primeWindowMoment_uniform hRH k) (uniform_hankel_isUnit n)
-  obtain ⟨B, hB, hmom⟩ := hRH.eventually_primeWindowMoment_sub_le
-  have hmonic : IsMonicOfDegree (shiftedJacobiMonic n 0 0) n :=
-    ⟨natDegree_shiftedJacobiMonic n (by norm_num) (by norm_num),
-      monic_shiftedJacobiMonic n (by norm_num) (by norm_num)⟩
-  refine ⟨A * B, mul_pos hA hB, ?_⟩
-  filter_upwards [hcoeff, hmom, eventually_gt_atTop (1 : ℝ)] with X hX hmoment hX1 k
-  have hlog : 0 < Real.log X := Real.log_pos hX1
-  have hδ : 0 ≤ B / Real.log X := (div_pos hB hlog).le
-  by_cases hk : k < n
-  · have herror : ∀ j < 2 * n,
-        |Chebyshev.primeWindowMoment X (Real.sqrt X * Real.log X ^ 3) j -
-          RealRooted.shiftedJacobiMoment 0 0 j| ≤ B / Real.log X := by
-      intro j _
-      simpa only [RealRooted.shiftedJacobiMoment_zero_zero] using hmoment j
-    have h := hX.2 (B / Real.log X) hδ herror ⟨k, hk⟩
-    change |(Chebyshev.primeWindowPolynomial X (Real.sqrt X * Real.log X ^ 3) n).coeff k -
-      (monicMomentPolynomial (RealRooted.shiftedJacobiMoment 0 0) n).coeff k| ≤
-        A * (B / Real.log X) at h
-    rw [← RealRooted.shiftedJacobiMonic_eq_monicMomentPolynomial n
-      (by norm_num : (-1 : ℝ) < 0) (by norm_num : (-1 : ℝ) < 0)] at h
-    simpa only [mul_div_assoc] using h
-  · have heq := (Chebyshev.isMonicOfDegree_primeWindowPolynomial
-        X (Real.sqrt X * Real.log X ^ 3) n).coeff_eq hmonic (Nat.le_of_not_gt hk)
-    rw [heq, sub_self, abs_zero]
-    exact (div_pos (mul_pos hA hB) hlog).le
+  simpa only [RealRooted.shiftedJacobiWeight_zero_zero,
+    Chebyshev.primeWindowWeightedPolynomial_one] using
+      hRH.eventually_coeff_primeWindowWeightedPolynomial_sub_le
+        (α := 0) (β := 0) (by norm_num) (by norm_num) n
 
 end RiemannHypothesis

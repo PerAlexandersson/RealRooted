@@ -2728,3 +2728,8 @@ public import RealRooted.Mathlib.MeasureTheory.Integral.IntervalIntegral.Cumulat
 public import RealRooted.Mathlib.MeasureTheory.Integral.IntervalIntegral.CumulativeDerivative
 public import RealRooted.Mathlib.MeasureTheory.Integral.IntervalIntegral.CumulativeIntegral
 public import RealRooted.RiemannHypothesis.PrimeWindowJacobiBounds
+public import RealRooted.Jacobi.RootRates
+public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.CoefficientRates
+public import RealRooted.Mathlib.Analysis.Polynomial.OrderedRootRates
+public import RealRooted.RiemannHypothesis.PrimeWindowJacobiPolynomialBounds
+public import RealRooted.RiemannHypothesis.PrimeWindowJacobiRoots
