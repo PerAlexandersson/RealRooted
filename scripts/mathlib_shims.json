@@ -4989,6 +4989,46 @@
       ],
       "note": "Finite weighted prime moment polynomials, actual weighted pairings and Hankel semidefiniteness; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/IntervalIntegral/CumulativeIntegral.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.IntervalIntegral.CumulativeIntegral"
+      ],
+      "note": "Cumulative integral identities for interval-integrable tests and finite signed atoms; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/IntervalIntegral/CumulativeDerivative.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.IntervalIntegral.CumulativeDerivative"
+      ],
+      "note": "Cumulative discrepancy bounds for tests with integrable interior derivative; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Gamma/BetaVariation.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Gamma.BetaVariation"
+      ],
+      "note": "Uniform variation bound for nonnegative beta exponents; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/IntervalIntegral/CumulativeBeta.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.IntervalIntegral.CumulativeBeta"
+      ],
+      "note": "Beta-weighted finite moment error from cumulative discrepancy; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }

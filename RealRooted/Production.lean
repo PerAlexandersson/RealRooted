@@ -2657,6 +2657,11 @@ public import RealRooted.Jacobi.MomentStability
 public import RealRooted.Mathlib.NumberTheory.Chebyshev.PrimeWindowWeightedOrthogonal
 public import RealRooted.RiemannHypothesis.PrimeWindowInterlacing
 public import RealRooted.RiemannHypothesis.PrimeWindowJacobiPolynomial
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.Gamma.BetaVariation
+public import RealRooted.Mathlib.MeasureTheory.Integral.IntervalIntegral.CumulativeBeta
+public import RealRooted.Mathlib.MeasureTheory.Integral.IntervalIntegral.CumulativeDerivative
+public import RealRooted.Mathlib.MeasureTheory.Integral.IntervalIntegral.CumulativeIntegral
+public import RealRooted.RiemannHypothesis.PrimeWindowJacobiBounds
 
 /-!
 # RealRooted production umbrella

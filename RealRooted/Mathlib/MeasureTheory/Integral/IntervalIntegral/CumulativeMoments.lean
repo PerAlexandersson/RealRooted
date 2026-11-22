@@ -6,6 +6,7 @@ Authors: RealRooted contributors
 module
 
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
+import RealRooted.Mathlib.MeasureTheory.Integral.IntervalIntegral.CumulativeIntegral
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
@@ -23,63 +24,22 @@ public section
 
 open MeasureTheory Set
 
-private theorem intervalIntegrable_ite_le_zero {f : ℝ → ℝ} {a b r : ℝ}
-    (hf : IntervalIntegrable f volume a b) :
-    IntervalIntegrable (fun t ↦ if r ≤ t then f t else 0) volume a b := by
-  change IntervalIntegrable ((Ici r).indicator f) volume a b
-  exact ⟨hf.1.indicator measurableSet_Ici, hf.2.indicator measurableSet_Ici⟩
-
-private theorem integral_ite_le_zero {f : ℝ → ℝ} {a b r : ℝ}
-    (hr : r ∈ Set.Icc a b) (hf : IntervalIntegrable f volume a b) :
-    (∫ t in a..b, if r ≤ t then f t else 0) = ∫ t in r..b, f t := by
-  have hi := intervalIntegrable_ite_le_zero (r := r) hf
-  have hparts := (IntervalIntegrable.trans_iff
-    (a := a) (b := r) (c := b) (by
-      simpa only [uIcc_of_le (hr.1.trans hr.2)] using hr)).mp hi
-  have hlo : (∫ t in a..r, if r ≤ t then f t else 0) = 0 := by
-    calc
-      _ = ∫ _t in a..r, (0 : ℝ) :=
-        intervalIntegral.integral_congr_Ioo_of_le hr.1 fun t ht ↦ by
-          rw [ite_eq_right (not_le.mpr ht.2)]
-      _ = 0 := by simp
-  have hhi : (∫ t in r..b, if r ≤ t then f t else 0) = ∫ t in r..b, f t :=
-    intervalIntegral.integral_congr_Ioo_of_le hr.2 fun t ht ↦ by
-      rw [ite_eq_left ht.1.le]
-  rw [← intervalIntegral.integral_add_adjacent_intervals hparts.1 hparts.2, hlo, hhi, zero_add]
-
 namespace Finset
 
 variable {ι : Type*}
 
 private theorem intervalIntegrable_cumulative (s : Finset ι) (r w : ι → ℝ) (a b : ℝ) :
     IntervalIntegrable (fun t ↦ ∑ i ∈ s, if r i ≤ t then w i else 0) volume a b := by
-  have hi (i : ι) :
-      IntervalIntegrable (fun t ↦ if r i ≤ t then w i else 0) volume a b :=
-    intervalIntegrable_ite_le_zero intervalIntegrable_const
-  convert IntervalIntegrable.sum s (fun i _ ↦ hi i) using 1
-  ext t
-  simp only [Finset.sum_apply]
+  simpa only [mul_one] using intervalIntegrable_cumulative_mul s r w
+    (intervalIntegrable_const (a := a) (b := b) (c := (1 : ℝ)))
 
 /-- Integrating a finite weighted cumulative sum against a continuous function exchanges the
 finite sum with the tail integrals. Signed weights and repeated nodes are allowed. -/
 theorem integral_cumulative_mul (s : Finset ι) (r w : ι → ℝ)
     (hr : ∀ i ∈ s, r i ∈ Set.Icc (0 : ℝ) 1) {g : ℝ → ℝ} (hg : Continuous g) :
     (∫ t in (0 : ℝ)..1, (∑ i ∈ s, if r i ≤ t then w i else 0) * g t) =
-      ∑ i ∈ s, w i * ∫ t in r i..1, g t := by
-  classical
-  have heq : (fun t ↦ (∑ i ∈ s, if r i ≤ t then w i else 0) * g t) =
-      (fun t ↦ ∑ i ∈ s, if r i ≤ t then w i * g t else 0) := by
-    funext t
-    rw [Finset.sum_mul]
-    apply Finset.sum_congr rfl
-    intro i _
-    split_ifs <;> simp
-  rw [heq, intervalIntegral.integral_finsetSum (fun i _ ↦
-    intervalIntegrable_ite_le_zero ((hg.intervalIntegrable 0 1).const_mul (w i)))]
-  apply Finset.sum_congr rfl
-  intro i hi
-  rw [integral_ite_le_zero (hr i hi) ((hg.intervalIntegrable 0 1).const_mul (w i)),
-    intervalIntegral.integral_const_mul]
+      ∑ i ∈ s, w i * ∫ t in r i..1, g t :=
+  integral_cumulative_mul_of_intervalIntegrable s r w hr (hg.intervalIntegrable 0 1)
 
 /-- The cumulative discrepancy at the right endpoint bounds the total-mass error.
 No positivity of the weights or prior mass normalization is required. -/
