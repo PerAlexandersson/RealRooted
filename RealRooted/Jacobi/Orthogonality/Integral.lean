@@ -31,6 +31,11 @@ namespace RealRooted
 def shiftedJacobiWeight (α β x : ℝ) : ℝ :=
   x ^ α * (1 - x) ^ β
 
+/-- Zero Jacobi exponents give the constant unit weight. -/
+@[simp] theorem shiftedJacobiWeight_zero_zero : shiftedJacobiWeight 0 0 = fun _ ↦ 1 := by
+  funext x
+  simp only [shiftedJacobiWeight, Real.rpow_zero, mul_one]
+
 /-- A polynomial multiplied by the shifted Jacobi weight. -/
 def shiftedJacobiIntegrand (α β : ℝ) (p : ℝ[X]) (x : ℝ) : ℝ :=
   p.eval x * shiftedJacobiWeight α β x

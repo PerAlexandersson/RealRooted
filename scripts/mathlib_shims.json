@@ -4979,6 +4979,16 @@
       ],
       "note": "Exact positive Gaussian rules for actual finite prime-window sums, including one-node mass identity; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/Chebyshev/PrimeWindowWeightedOrthogonal.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.Chebyshev.PrimeWindowWeightedOrthogonal"
+      ],
+      "note": "Finite weighted prime moment polynomials, actual weighted pairings and Hankel semidefiniteness; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }

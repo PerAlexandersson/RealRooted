@@ -2651,6 +2651,12 @@ public import RealRooted.Jacobi.GaussianQuadrature
 public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.Gaussian
 public import RealRooted.Mathlib.NumberTheory.Chebyshev.PrimeWindowQuadrature
 public import RealRooted.RiemannHypothesis.PrimeWindowQuadrature
+public import RealRooted.Interlacing.RootPerturbation
+public import RealRooted.Interlacing.SimplePencil
+public import RealRooted.Jacobi.MomentStability
+public import RealRooted.Mathlib.NumberTheory.Chebyshev.PrimeWindowWeightedOrthogonal
+public import RealRooted.RiemannHypothesis.PrimeWindowInterlacing
+public import RealRooted.RiemannHypothesis.PrimeWindowJacobiPolynomial
 
 /-!
 # RealRooted production umbrella
