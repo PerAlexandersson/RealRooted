@@ -24,7 +24,7 @@ open Filter Topology
 namespace Complex
 
 /-- Each finite differential partial sum is entire. -/
-private theorem differentiable_partial_infiniteDifferentialApply {φ f : ℂ → ℂ}
+theorem differentiable_partial_infiniteDifferentialApply {φ f : ℂ → ℂ}
     (hf : Differentiable ℂ f) (N : ℕ) : Differentiable ℂ
     (fun z => ∑ n ∈ Finset.range N,
       iteratedDeriv n φ 0 * iteratedDeriv n f z / (n.factorial : ℂ)) := by
@@ -45,7 +45,7 @@ theorem differentiable_infiniteDifferentialApply {φ f : ℂ → ℂ} {ρ σ : �
         (differentiable_partial_infiniteDifferentialApply hf N).differentiableOn) isOpen_univ
 
 /-- Spatial derivatives commute with finite differential partial sums. -/
-private theorem iteratedDeriv_partial_infiniteDifferentialApply {φ f : ℂ → ℂ}
+theorem iteratedDeriv_partial_infiniteDifferentialApply {φ f : ℂ → ℂ}
     (hf : Differentiable ℂ f) (N k : ℕ) :
     iteratedDeriv k (fun z => ∑ n ∈ Finset.range N,
       iteratedDeriv n φ 0 * iteratedDeriv n f z / (n.factorial : ℂ)) =
