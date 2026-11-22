@@ -3,6 +3,7 @@ module
 public import RealRooted.RiemannHypothesis
 public import RealRooted.SimpleRoots
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.JensenSimple
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Jensen
 import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Derivative
 import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
 import RealRooted.Mathlib.Analysis.Complex.GrowthOrder.Derivative

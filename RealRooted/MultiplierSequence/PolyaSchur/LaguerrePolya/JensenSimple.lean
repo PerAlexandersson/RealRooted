@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Jensen
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Jensen
 public import RealRooted.SimpleRoots
 public import TauCeti.Analysis.Complex.GrowthOrder
 import RealRooted.Hermite.PoulainSimple

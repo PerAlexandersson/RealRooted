@@ -3819,6 +3819,36 @@
       ],
       "note": "All Taylor coefficients under a positive power substitution, including nondivisible indices.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/LogDeriv/Star.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.LogDeriv.Star"
+      ],
+      "note": "Conjugation symmetry and real-axis values of logarithmic derivatives.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Pick/Support.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Pick.Support"
+      ],
+      "note": "Support of finite Nevanlinna measures is localized at real singularities.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Pick/Atoms.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Pick.Atoms"
+      ],
+      "note": "Vertical imaginary-part boundary limits recover the atoms of a finite Nevanlinna measure.",
+      "speculative": true
     }
   ]
 }

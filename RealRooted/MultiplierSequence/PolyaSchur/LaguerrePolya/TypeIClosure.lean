@@ -1,7 +1,8 @@
 module
 
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
-import RealRooted.PFPolynomial
+public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
+import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
 
 /-!
 # Type-I Laguerre--Pólya products
@@ -16,6 +17,22 @@ public section
 open Polynomial Filter Topology
 
 namespace RealRooted
+
+/-- Differentiation preserves the positive Type-I class, including zero outputs. -/
+theorem IsLaguerrePolyaTypeI.deriv {f : ℂ → ℂ} (hf : IsLaguerrePolyaTypeI f) :
+    IsLaguerrePolyaTypeI (deriv f) := by
+  obtain ⟨p, hp, hlim⟩ := hf
+  refine ⟨fun n => (p n).derivative, fun n => (hp n).derivative, ?_⟩
+  have h := hlim.iteratedDeriv (fun n => ((p n).map Complex.ofRealHom).differentiable) 1
+  simpa only [Polynomial.iteratedDeriv_fun_eval, Polynomial.iterate_derivative_map,
+    Function.iterate_one, iteratedDeriv_one] using h
+
+/-- Every derivative of a positive Type-I function remains positive Type-I. -/
+theorem IsLaguerrePolyaTypeI.iterate_deriv {f : ℂ → ℂ}
+    (hf : IsLaguerrePolyaTypeI f) (n : ℕ) : IsLaguerrePolyaTypeI (iteratedDeriv n f) := by
+  induction n with
+  | zero => simpa using hf
+  | succ n ih => simpa [iteratedDeriv_succ] using ih.deriv
 
 /-- Every PF polynomial defines a Type-I Laguerre--Pólya function. -/
 theorem IsPFPolynomial.isLaguerrePolyaTypeI {p : ℝ[X]} (hp : IsPFPolynomial p) :

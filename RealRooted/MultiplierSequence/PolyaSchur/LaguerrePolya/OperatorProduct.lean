@@ -2,8 +2,6 @@ module
 
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
 public import RealRooted.Hermite.Poulain
-import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
-import Mathlib.Analysis.Complex.Polynomial.Basic
 
 /-!
 # Polynomial factors of Taylor differential operators

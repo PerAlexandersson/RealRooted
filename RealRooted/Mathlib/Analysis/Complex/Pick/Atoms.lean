@@ -6,7 +6,6 @@ Authors: The RealRooted contributors
 module
 
 public import TauCeti.Analysis.Complex.Pick.Nevanlinna
-import Mathlib.MeasureTheory.Integral.DominatedConvergence
 
 /-!
 # Atoms of a Nevanlinna measure
