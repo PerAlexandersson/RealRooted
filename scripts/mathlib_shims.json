@@ -4879,6 +4879,46 @@
       ],
       "note": "RH uniform Chebyshev discrepancy in square-root logarithmic-cube windows; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/IntervalIntegral/ContinuousTests.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.IntervalIntegral.ContinuousTests"
+      ],
+      "note": "Continuous-test convergence from finite atomic moment limits and bounded total variation; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/Chebyshev/PrimeWindowContinuous.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.Chebyshev.PrimeWindowContinuous"
+      ],
+      "note": "RH continuous-weight moment limits for finite logarithmic prime windows; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Moment/FiniteAtoms.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Moment.FiniteAtoms"
+      ],
+      "note": "Finite atomic moment functional and pairing identities and Hankel positivity; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/Chebyshev/PrimeWindowOrthogonal.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.Chebyshev.PrimeWindowOrthogonal"
+      ],
+      "note": "Monic finite prime-window moment polynomials and genuine weighted-sum orthogonality; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }
