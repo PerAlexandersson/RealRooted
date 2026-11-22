@@ -3849,6 +3849,46 @@
       ],
       "note": "Vertical imaginary-part boundary limits recover the atoms of a finite Nevanlinna measure.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Analytic/CountableZeros.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Analytic.CountableZeros"
+      ],
+      "note": "Analytic zeros, logarithmic residues, or convergent atomic-sum infrastructure for canonical products.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/LogDeriv/Residue.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.LogDeriv.Residue"
+      ],
+      "note": "Analytic zeros, logarithmic residues, or convergent atomic-sum infrastructure for canonical products.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Normed/Field/WeightedInverse.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Normed.Field.WeightedInverse"
+      ],
+      "note": "Analytic zeros, logarithmic residues, or convergent atomic-sum infrastructure for canonical products.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/Bochner/Countable.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.Bochner.Countable"
+      ],
+      "note": "Analytic zeros, logarithmic residues, or convergent atomic-sum infrastructure for canonical products.",
+      "speculative": true
     }
   ]
 }

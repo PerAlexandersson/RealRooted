@@ -9,7 +9,7 @@ import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.OperatorProduct
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.PolynomialFactors
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Zeros
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
-import RealRooted.Mathlib.Algebra.Polynomial.Reverse
+import RealRooted.SimpleRoots.Reflection
 import RealRooted.Mathlib.Analysis.Calculus.IteratedDeriv.Star
 
 /-!
@@ -49,21 +49,6 @@ theorem IsLaguerrePolya.simple_taylorDifferentialOperator {f : ℂ → ℂ} {rho
     (taylorDifferentialOperator_ne_zero hgre hp0) (hg.taylorDifferentialOperator_splits hp)
   rwa [natDegree_taylorDifferentialOperator hgre hp0]
 
-/-- Simple roots of a degree-reflection transfer back when the original has
-nonzero constant coefficient, even if the reflection bound exceeds its degree. -/
-private theorem simple_of_reflect {p : ℝ[X]} {d : ℕ}
-    (hp0 : p.coeff 0 ≠ 0) (hp : p.Splits) (hd : p.natDegree ≤ d)
-    (hsimple : HasSimpleRoots (reflect d p)) : HasSimpleRoots p := by
-  have hpne : p ≠ 0 := by intro hz; simp [hz] at hp0
-  have hrev : p.reverse ≠ 0 := fun h => hpne (reverse_eq_zero.mp h)
-  have hroots := hsimple.roots_nodup
-  rw [reflect_eq_X_pow_mul_reverse p hd,
-    roots_mul (mul_ne_zero (pow_ne_zero _ X_ne_zero) hrev)] at hroots
-  have hnodup := (Multiset.nodup_add.mp hroots).2.1
-  rw [roots_reverse_eq_map_inv hp hp0] at hnodup
-  exact HasSimpleRoots.of_roots_nodup hpne
-    ((Multiset.nodup_map_iff_of_injective inv_injective).mp hnodup)
-
 /-- Every Jensen polynomial of a nonpolynomial LP symbol of order below one
 and nonzero initial coefficient has simple real roots. The final coefficient
 may vanish, so no exact-degree hypothesis is imposed. -/
@@ -82,8 +67,8 @@ theorem IsLaguerrePolya.simple_jensenPolynomial {f : ℂ → ℂ} {rho : ℝ}
     simp only [iteratedDeriv_zero, hz, ofReal_zero] at hreal
     exact hf0 hreal.symm
   refine ⟨?_, hf.jensenPolynomial_splits d,
-    simple_of_reflect hconst (hf.jensenPolynomial_splits d)
-      (natDegree_jensenPolynomial_le d _) hsimple.2.2⟩
+    hsimple.2.2.of_reflect hconst (hf.jensenPolynomial_splits d)
+      (natDegree_jensenPolynomial_le d _)⟩
   intro hz
   exact hconst (by simp [hz])
 

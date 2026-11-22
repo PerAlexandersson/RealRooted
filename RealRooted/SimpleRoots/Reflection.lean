@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.SimpleRoots
-public import Mathlib.Algebra.Polynomial.Reverse
+import Mathlib.Algebra.Polynomial.Reverse
 import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 
 /-!

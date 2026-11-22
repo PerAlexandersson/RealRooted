@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Jensen
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
+public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
 public import Mathlib.Analysis.Calculus.DSlope
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Jensen
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
 import RealRooted.Mathlib.Analysis.Calculus.IteratedDeriv.Star
 import Mathlib.Analysis.Complex.RemovableSingularity

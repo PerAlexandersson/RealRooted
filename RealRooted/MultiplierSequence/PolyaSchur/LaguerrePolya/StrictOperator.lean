@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Jensen
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Jensen
 public import RealRooted.SimpleRoots
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.InfiniteZeros
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.OperatorProduct

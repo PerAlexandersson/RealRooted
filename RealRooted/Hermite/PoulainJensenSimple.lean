@@ -2,7 +2,8 @@ module
 
 public import RealRooted.Hermite.Poulain
 public import RealRooted.SimpleRoots
-public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Jensen
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Jensen
 import RealRooted.Hermite.PoulainSimple
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Closure
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.OperatorProduct
