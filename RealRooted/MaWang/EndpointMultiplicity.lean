@@ -467,7 +467,8 @@ private lemma ceilDiv_succ (L k : ℕ) (hL : 0 < L) :
       lia
     · exact (gc_mul_ceilDiv hL).monotone_l (Nat.le_add_right k 1)
 
-private lemma affineEndpointMultiplicity_threshold (L r n : ℕ) (hL : 0 < L) :
+/-- The affine hit counter always dominates the current threshold. -/
+theorem affineEndpointMultiplicity_threshold (L r n : ℕ) (hL : 0 < L) :
     ((n : ℝ) / L - (r : ℝ) / L) ≤ affineEndpointMultiplicity L r n := by
   by_cases hrn : r ≤ n
   · have hceil : n - r ≤ L * affineEndpointMultiplicity L r n := by
@@ -513,7 +514,8 @@ private lemma affineEndpointMultiplicity_eq_iff (L r n : ℕ) (hL : 0 < L) :
     norm_num
     field_simp
 
-private lemma affineEndpointMultiplicity_succ (L r n : ℕ) (hL : 0 < L) :
+/-- The affine hit counter increases exactly at equality with the current threshold. -/
+theorem affineEndpointMultiplicity_succ (L r n : ℕ) (hL : 0 < L) :
     affineEndpointMultiplicity L r (n + 1) =
       if ((n : ℝ) / L - (r : ℝ) / L) = affineEndpointMultiplicity L r n
       then affineEndpointMultiplicity L r n + 1 else affineEndpointMultiplicity L r n := by

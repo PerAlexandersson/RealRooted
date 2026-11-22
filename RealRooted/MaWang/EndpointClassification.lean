@@ -23,7 +23,8 @@ noncomputable section
 
 namespace RealRooted.MaWang
 
-private lemma exists_affine_hit {lambda mu : ℝ} {m : ℕ → ℕ}
+/-- A nonnegative affine threshold counter starting at zero hits every natural level. -/
+theorem exists_affine_hit {lambda mu : ℝ} {m : ℕ → ℕ}
     (hlambda : 0 < lambda) (hmzero : m 0 = 0)
     (hstep : ∀ n : ℕ, m (n + 1) =
       if lambda * (n : ℝ) - mu = m n then m n + 1 else m n)
