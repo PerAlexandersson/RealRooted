@@ -4959,6 +4959,26 @@
       ],
       "note": "Full Gaussian polynomial exactness and strict weight positivity from nodal orthogonality; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/Gaussian.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.Gaussian"
+      ],
+      "note": "Gaussian exactness and positive weights from finite moment orthogonality and positive definite Hankel matrices; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/Chebyshev/PrimeWindowQuadrature.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.Chebyshev.PrimeWindowQuadrature"
+      ],
+      "note": "Exact positive Gaussian rules for actual finite prime-window sums, including one-node mass identity; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }

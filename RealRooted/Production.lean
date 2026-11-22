@@ -2647,6 +2647,10 @@ public import RealRooted.Mathlib.LinearAlgebra.Lagrange.GaussianQuadrature
 public import RealRooted.Mathlib.LinearAlgebra.Lagrange.QuadratureMoments
 public import RealRooted.Mathlib.LinearAlgebra.Lagrange.QuadraturePerturbation
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerturbationLimits
+public import RealRooted.Jacobi.GaussianQuadrature
+public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.Gaussian
+public import RealRooted.Mathlib.NumberTheory.Chebyshev.PrimeWindowQuadrature
+public import RealRooted.RiemannHypothesis.PrimeWindowQuadrature
 
 /-!
 # RealRooted production umbrella
