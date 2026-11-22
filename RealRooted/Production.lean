@@ -2436,6 +2436,24 @@ public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.RootDivisio
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.StrictOperator
 public import RealRooted.SimpleRoots.Reflection
 
+public import RealRooted.Hermite.GaussianOperator
+public import RealRooted.Hermite.PolynomialGaussian
+public import RealRooted.LaguerreInequalities.CanonicalLogDerivative
+public import RealRooted.LaguerreInequalities.CanonicalProduct
+public import RealRooted.LaguerreInequalities.CanonicalRepresentation
+public import RealRooted.LaguerreInequalities.Characterization
+public import RealRooted.LaguerreInequalities.Translation
+public import RealRooted.LaguerreInequalities.ZeroFree
+public import RealRooted.Mathlib.Analysis.Calculus.LogDeriv.Identity
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.AppellMoments
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.FiniteGaussian
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.FiniteZeros
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.IndexedProduct
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.OperatorLinear
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Strictness
+public import RealRooted.RiemannHypothesis.IntegerSamples
+public import RealRooted.RiemannHypothesis.Moments
+
 /-!
 # RealRooted production umbrella
 

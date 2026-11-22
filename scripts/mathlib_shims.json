@@ -3889,6 +3889,16 @@
       ],
       "note": "Analytic zeros, logarithmic residues, or convergent atomic-sum infrastructure for canonical products.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/LogDeriv/Identity.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.LogDeriv.Identity"
+      ],
+      "note": "Entire functions with equal logarithmic derivatives on a nonempty open preconnected set differ by their normalization constant. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }
