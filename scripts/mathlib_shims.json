@@ -125,7 +125,7 @@
       "sources": [
         "RealRooted/Mathlib/Data/List/Interleave.lean"
       ],
-      "note": "mathlib4#39870 (Yaël Dillies; merged, in Mathlib v4.35.0): List interleaving API. The shim now keeps only `Interleaves.map`, `Interleaves.map_of_mem` and one deprecated alias."
+      "note": "mathlib4#39870 (Ya\u00ebl Dillies; merged, in Mathlib v4.35.0): List interleaving API. The shim now keeps only `Interleaves.map`, `Interleaves.map_of_mem` and one deprecated alias."
     },
     {
       "sources": [
@@ -979,7 +979,7 @@
       "modules": [
         "Mathlib.Analysis.Complex.LimitsOfZeros"
       ],
-      "note": "Speculative target module (Beraha–Kahane–Weiss reverse direction, #2071); no upstream PR or attribution has been recorded yet.",
+      "note": "Speculative target module (Beraha\u2013Kahane\u2013Weiss reverse direction, #2071); no upstream PR or attribution has been recorded yet.",
       "speculative": true
     },
     {
@@ -2967,7 +2967,7 @@
       "modules": [
         "Mathlib.RingTheory.Polynomial.Laguerre.FiniteCombinations"
       ],
-      "note": "Speculative target module (Durán 2025, Theorem 1.3, case K = 1; #2069); no upstream PR or attribution has been recorded yet.",
+      "note": "Speculative target module (Dur\u00e1n 2025, Theorem 1.3, case K = 1; #2069); no upstream PR or attribution has been recorded yet.",
       "speculative": true
     },
     {
@@ -3267,7 +3267,7 @@
       "modules": [
         "Mathlib.LinearAlgebra.Matrix.Determinant.Hessenberg"
       ],
-      "note": "General matrix lemmas supporting the positive-power Brändén–Leite extension (#2441).",
+      "note": "General matrix lemmas supporting the positive-power Br\u00e4nd\u00e9n\u2013Leite extension (#2441).",
       "speculative": true
     },
     {
@@ -3287,7 +3287,7 @@
       "modules": [
         "Mathlib.LinearAlgebra.Matrix.Charpoly.DeterminantPencil"
       ],
-      "note": "General algebra and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "note": "General algebra and matrix lemmas for positive-power Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3297,7 +3297,7 @@
       "modules": [
         "Mathlib.LinearAlgebra.Matrix.Checkerboard"
       ],
-      "note": "General formal-series and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "note": "General formal-series and matrix lemmas for positive-power Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3307,7 +3307,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.BinomialDerivative"
       ],
-      "note": "General formal-series and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "note": "General formal-series and matrix lemmas for positive-power Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3317,7 +3317,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.BinomialPositive"
       ],
-      "note": "General formal-series and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "note": "General formal-series and matrix lemmas for positive-power Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3327,7 +3327,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.NegativePowerRecurrence"
       ],
-      "note": "General formal-series and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "note": "General formal-series and matrix lemmas for positive-power Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3337,7 +3337,7 @@
       "modules": [
         "Mathlib.Algebra.Polynomial.LinearFactors"
       ],
-      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3347,7 +3347,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.AffineSubstitution"
       ],
-      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3357,7 +3357,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.BinomialAffineExpansion"
       ],
-      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3367,7 +3367,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.BivariateBinomial"
       ],
-      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3377,7 +3377,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.NegativePowerCoefficients"
       ],
-      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3387,7 +3387,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.NegativePowerMul"
       ],
-      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3397,7 +3397,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.NegativePowerPositive"
       ],
-      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3407,7 +3407,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.NegativePowerDegree"
       ],
-      "note": "General positive-power coefficient and recurrence lemmas for Brändén–Leite (#2441).",
+      "note": "General positive-power coefficient and recurrence lemmas for Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3417,7 +3417,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.BinomialLogLimit"
       ],
-      "note": "Formal logarithmic limits and inverse identities for generalized Brändén–Leite (#2441).",
+      "note": "Formal logarithmic limits and inverse identities for generalized Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3427,7 +3427,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.FiniteSubstitution"
       ],
-      "note": "Formal logarithmic limits and inverse identities for generalized Brändén–Leite (#2441).",
+      "note": "Formal logarithmic limits and inverse identities for generalized Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3437,7 +3437,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.NegativePowerLogLimit"
       ],
-      "note": "Formal logarithmic limits and inverse identities for generalized Brändén–Leite (#2441).",
+      "note": "Formal logarithmic limits and inverse identities for generalized Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3447,7 +3447,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.NegativePowerOne"
       ],
-      "note": "Formal logarithmic limits and inverse identities for generalized Brändén–Leite (#2441).",
+      "note": "Formal logarithmic limits and inverse identities for generalized Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3457,7 +3457,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.LogarithmMul"
       ],
-      "note": "Logarithmic coefficient identities and positivity for generalized Brändén–Leite (#2441).",
+      "note": "Logarithmic coefficient identities and positivity for generalized Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3467,7 +3467,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.LogarithmPositive"
       ],
-      "note": "Logarithmic coefficient identities and positivity for generalized Brändén–Leite (#2441).",
+      "note": "Logarithmic coefficient identities and positivity for generalized Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3728,6 +3728,606 @@
         "Mathlib.NumberTheory.LSeries.RiemannXi"
       ],
       "note": "Taylor calculus and Riemann xi foundations for the Jensen criterion. Uses the pinned Tau Ceti analytic results where Mathlib lacks them; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/IteratedDeriv/MulPow.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.IteratedDeriv.MulPow"
+      ],
+      "note": "Taylor and Mellin calculus, theta moment bounds, and unconditional positivity of normalized xi coefficients; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/MellinTransform/LogMoments.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.MellinTransform.LogMoments"
+      ],
+      "note": "Taylor and Mellin calculus, theta moment bounds, and unconditional positivity of normalized xi coefficients; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/Kernel.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.Kernel"
+      ],
+      "note": "Taylor and Mellin calculus, theta moment bounds, and unconditional positivity of normalized xi coefficients; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/Mellin.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.Mellin"
+      ],
+      "note": "Taylor and Mellin calculus, theta moment bounds, and unconditional positivity of normalized xi coefficients; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/Moments.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.Moments"
+      ],
+      "note": "Taylor and Mellin calculus, theta moment bounds, and unconditional positivity of normalized xi coefficients; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/Positivity.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.Positivity"
+      ],
+      "note": "Taylor and Mellin calculus, theta moment bounds, and unconditional positivity of normalized xi coefficients; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/GrowthOrder/Derivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.GrowthOrder.Derivative"
+      ],
+      "note": "Iterated derivatives preserve the growth order of entire functions, using Cauchy estimates and Tau Ceti growth definitions; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/Derivative.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.Derivative"
+      ],
+      "note": "Entire xi derivatives retain growth bounds and are nonzero at the origin; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/IteratedDeriv/CompPowCoefficient.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.IteratedDeriv.CompPowCoefficient"
+      ],
+      "note": "All Taylor coefficients under a positive power substitution, including nondivisible indices.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/LogDeriv/Star.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.LogDeriv.Star"
+      ],
+      "note": "Conjugation symmetry and real-axis values of logarithmic derivatives.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Pick/Support.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Pick.Support"
+      ],
+      "note": "Support of finite Nevanlinna measures is localized at real singularities.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Pick/Atoms.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Pick.Atoms"
+      ],
+      "note": "Vertical imaginary-part boundary limits recover the atoms of a finite Nevanlinna measure.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Analytic/CountableZeros.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Analytic.CountableZeros"
+      ],
+      "note": "Analytic zeros, logarithmic residues, or convergent atomic-sum infrastructure for canonical products.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/LogDeriv/Residue.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.LogDeriv.Residue"
+      ],
+      "note": "Analytic zeros, logarithmic residues, or convergent atomic-sum infrastructure for canonical products.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Normed/Field/WeightedInverse.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Normed.Field.WeightedInverse"
+      ],
+      "note": "Analytic zeros, logarithmic residues, or convergent atomic-sum infrastructure for canonical products.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/Bochner/Countable.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.Bochner.Countable"
+      ],
+      "note": "Analytic zeros, logarithmic residues, or convergent atomic-sum infrastructure for canonical products.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/LogDeriv/Identity.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.LogDeriv.Identity"
+      ],
+      "note": "Entire functions with equal logarithmic derivatives on a nonempty open preconnected set differ by their normalization constant. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Analytic/TaylorSeries.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Analytic.TaylorSeries"
+      ],
+      "note": "Analytic Taylor series, derivatives and normalized formal logarithms; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/IteratedDeriv/Polynomial.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.IteratedDeriv.Polynomial"
+      ],
+      "note": "Finite polynomial differential operators and locally uniform convergence; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/IteratedDeriv/PolynomialAlgebra.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.IteratedDeriv.PolynomialAlgebra"
+      ],
+      "note": "Composition and derivative commutation for finite polynomial differential operators; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/CanonicalProduct/GenusOne.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.CanonicalProduct.GenusOne"
+      ],
+      "note": "Canonical-product genus one star and elementary closure properties; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/ForwardDifference.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.ForwardDifference"
+      ],
+      "note": "Taylor derivatives, exponential multiplication and signed forward differences; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Topology/Algebra/IsUniformGroup/FiniteSum.lean"
+      ],
+      "modules": [
+        "Mathlib.Topology.Algebra.IsUniformGroup.FiniteSum"
+      ],
+      "note": "Finite sums of locally uniformly convergent families; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Expand/PositiveRoots.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Expand.PositiveRoots"
+      ],
+      "note": "Positive-root counts under polynomial power substitutions; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/IteratedDeriv/PolynomialRange.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.IteratedDeriv.PolynomialRange"
+      ],
+      "note": "Padded finite sums for polynomial differential symbols; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/LocalExtr/PolynomialEuler.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.LocalExtr.PolynomialEuler"
+      ],
+      "note": "Euler differential operators, Rolle separation and multiplicity root counts; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/GrowthOrder/Subquadratic.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.GrowthOrder.Subquadratic"
+      ],
+      "note": "Global arbitrarily small Gaussian bounds for subquadratic growth; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HeatOperator/Basic.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HeatOperator.Basic"
+      ],
+      "note": "Entire backward heat-series convergence, differential identities and injectivity below order two; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HeatOperator/Bounds.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HeatOperator.Bounds"
+      ],
+      "note": "Entire backward heat-series convergence, differential identities and injectivity below order two; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HeatOperator/Derivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HeatOperator.Derivative"
+      ],
+      "note": "Entire backward heat-series convergence, differential identities and injectivity below order two; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HeatOperator/Nonzero.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HeatOperator.Nonzero"
+      ],
+      "note": "Entire backward heat-series convergence, differential identities and injectivity below order two; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HeatOperator/TimeDerivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HeatOperator.TimeDerivative"
+      ],
+      "note": "Entire backward heat-series convergence, differential identities and injectivity below order two; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LinearProduct.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LinearProduct"
+      ],
+      "note": "Locally uniform convergence of summable real linear products; extracted from the canonical product construction; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecificLimits/DescFactorialWeights.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecificLimits.DescFactorialWeights"
+      ],
+      "note": "Regularity of falling-factorial weights in Jensen approximations; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecificLimits/WeightedSum.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecificLimits.WeightedSum"
+      ],
+      "note": "Regular finite weighted means and conditionally convergent series; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/Bochner/PowerSum.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.Bochner.PowerSum"
+      ],
+      "note": "Finite positive atomic measures, compact support and power-sum moments; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Expand/Contract.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Expand.Contract"
+      ],
+      "note": "Degree bounds and inversion under polynomial contraction; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HeatOperator/Star.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HeatOperator.Star"
+      ],
+      "note": "Conjugation symmetry of the entire heat operator; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HeatOperator/Composition.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HeatOperator.Composition"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HeatOperator/TimeLimit.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HeatOperator.TimeLimit"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/Basic.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.Basic"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/Bounds.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.Bounds"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/Derivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.Derivative"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/Star.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.Star"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LineIdentity.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LineIdentity"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LocallyUniformIteratedDeriv.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LocallyUniformIteratedDeriv"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Polynomial/CoefficientMajorant.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Polynomial.CoefficientMajorant"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Data/Nat/Factorial/ArithmeticProduct.lean"
+      ],
+      "modules": [
+        "Mathlib.Data.Nat.Factorial.ArithmeticProduct"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/MomentDeterminacy.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.MomentDeterminacy"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Topology/UniformSpace/LocallyUniformAvoidance.lean"
+      ],
+      "modules": [
+        "Mathlib.Topology.UniformSpace.LocallyUniformAvoidance"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/GrowthOrder/CauchyBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.GrowthOrder.CauchyBound"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/GrowthOrder/ExponentialPowerBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.GrowthOrder.ExponentialPowerBound"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/GrowthOrder/OfBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.GrowthOrder.OfBound"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/OrderBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.OrderBound"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/OrderConvergence.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.OrderConvergence"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/OrderDerivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.OrderDerivative"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Convex/LogDerivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Convex.LogDerivative"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Normed/Group/LocallyBoundedMajorant.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Normed.Group.LocallyBoundedMajorant"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/Hankel.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.Hankel"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Pochhammer/ReciprocalConvolution.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Pochhammer.ReciprocalConvolution"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
       "speculative": true
     }
   ]
