@@ -4609,6 +4609,166 @@
       ],
       "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/MellinInversion/FiniteDifferenceIntegral.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.MellinInversion.FiniteDifferenceIntegral"
+      ],
+      "note": "Integral bounds for polynomial-growth weights times finite differences of the Mellin kernel; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/MellinInversion/FiniteDifferenceInterpolation.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.MellinInversion.FiniteDifferenceInterpolation"
+      ],
+      "note": "Interpolated Mellin-kernel decay on positive vertical lines; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Log/BandBounds.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Log.BandBounds"
+      ],
+      "note": "Finite logarithmic head and tail estimates using fiber bounds; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Pow/Interpolation.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Pow.Interpolation"
+      ],
+      "note": "Real power interpolation of nonnegative bounds and logarithmic growth; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/IntervalIntegral/MonotoneBounds.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.IntervalIntegral.MonotoneBounds"
+      ],
+      "note": "Pointwise bounds from adjacent integral means of monotone functions; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/IntervalIntegral/PrimitiveBounds.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.IntervalIntegral.PrimitiveBounds"
+      ],
+      "note": "Pointwise bounds from finite differences of integrated errors; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/Chebyshev/Unsmoothing.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.Chebyshev.Unsmoothing"
+      ],
+      "note": "Chebyshev unsmoothing and unconditional transfer from psi to theta; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/LogGrowth.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.LogGrowth"
+      ],
+      "note": "Global logarithmic growth on a fixed positive line under RH; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/ResidualDifference.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.ResidualDifference"
+      ],
+      "note": "Finite-difference bounds for the residual zeta contour under RH; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/RieszContour.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.RieszContour"
+      ],
+      "note": "Integrated zeta contour specialization and zero-series exhaustion under RH; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/RieszExplicitFormula.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.RieszExplicitFormula"
+      ],
+      "note": "Integrated Chebyshev explicit formula under RH with a positive-line remainder; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/ZeroDifference.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.ZeroDifference"
+      ],
+      "note": "Head and tail bounds for finite differences of the zeta zero series under RH; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/ZeroDifferenceSqrt.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.ZeroDifferenceSqrt"
+      ],
+      "note": "Square-root finite-difference bounds for the zeta zero series under RH; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/ZeroSumBounds.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.ZeroSumBounds"
+      ],
+      "note": "Quantitative finite logarithmic head and tail zeta-zero bounds under RH; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/ErrorDifference.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.ErrorDifference"
+      ],
+      "note": "Finite-difference bounds for the actual integrated Chebyshev error under RH; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/Chebyshev/RiemannHypothesis.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.Chebyshev.RiemannHypothesis"
+      ],
+      "note": "RH square-root logarithmic-square error bounds for psi and theta; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }
