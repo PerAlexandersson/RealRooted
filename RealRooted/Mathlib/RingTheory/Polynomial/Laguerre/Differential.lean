@@ -329,4 +329,25 @@ theorem derivative_generalizedLaguerre (n : ℕ) (α : R) :
       coeff_generalizedLaguerre, ite_eq_right hk]
     simp
 
+/-- Raising the Laguerre parameter by one adds the polynomial derivative. -/
+theorem generalizedLaguerre_add_one (n : ℕ) (α : R) :
+    generalizedLaguerre n (α + 1) =
+      generalizedLaguerre n α + (generalizedLaguerre n α).derivative := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      simp only [generalizedLaguerre_succ, laguerreRaisingStep,
+        ih, derivative_mul, derivative_X, derivative_C, derivative_one,
+        one_mul, add_zero, map_add, map_one]
+      ring
+
+/-- Lowering the Laguerre parameter gives a difference of consecutive degrees. -/
+theorem generalizedLaguerre_succ_eq_sub {S : Type*} [CommRing S] (n : ℕ) (α : S) :
+    generalizedLaguerre (n + 1) α =
+      generalizedLaguerre (n + 1) (α + 1) -
+        C (n + 1 : S) * generalizedLaguerre n (α + 1) := by
+  have h := generalizedLaguerre_add_one (n + 1) α
+  rw [derivative_generalizedLaguerre] at h
+  exact (eq_sub_iff_add_eq).mpr h.symm
+
 end Polynomial

@@ -1,10 +1,12 @@
 module
 
-public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
+public import Mathlib.Analysis.Complex.Exponential
+
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
 import RealRooted.RootContinuity
-public import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
-import Mathlib.Analysis.Normed.Module.MultipliableUniformlyOn
+import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
+import RealRooted.Mathlib.Analysis.Complex.LinearProduct
 
 /-!
 # Products in the Laguerre–Pólya class
@@ -317,15 +319,6 @@ private lemma realRootedOrZero_approx (c : ℝ) (m : ℕ) {a : ℝ} (ha : 0 ≤ 
 
 /-! ### The Type-I approximants -/
 
-/-- Uniform convergence on every closed ball centred at `0` gives local uniform convergence. -/
-private lemma tendstoLocallyUniformly_of_closedBall {F : ℕ → ℂ → ℂ} {f : ℂ → ℂ}
-    (h : ∀ R : ℝ, TendstoUniformlyOn F f atTop (Metric.closedBall 0 R)) :
-    TendstoLocallyUniformly F f atTop := by
-  intro u hu x
-  refine ⟨Metric.closedBall 0 (‖x‖ + 1), ?_, h (‖x‖ + 1) u hu⟩
-  apply Metric.closedBall_mem_nhds_of_mem
-  simp
-
 /-- `(1 + σ z / n) ^ n → exp (σ z)` uniformly on closed balls. -/
 private lemma tendstoUniformlyOn_one_add_div_pow (σ R : ℝ) :
     TendstoUniformlyOn (fun (n : ℕ) (z : ℂ) => (1 + (σ : ℂ) * z / n) ^ n)
@@ -356,18 +349,6 @@ private lemma tendstoUniformlyOn_one_add_div_pow (σ R : ℝ) :
     exact (Complex.re_le_norm _).trans (hbd z hz)⟩).congr ?_
   filter_upwards [hlarge] with n ⟨hn, hn2⟩ z hz
   exact (one_add_div_pow_eq_exp hn (by linarith [hbd z hz])).symm
-
-/-- The partial products of `∏ₖ (1 + yₖ z)` converge locally uniformly when `∑ |yₖ| < ∞`. -/
-private lemma tendstoLocallyUniformly_prod_one_add (y : ℕ → ℝ) (hy : Summable y) :
-    TendstoLocallyUniformly (fun n (z : ℂ) => ∏ k ∈ Finset.range n, (1 + (y k : ℂ) * z))
-      (fun z => ∏' k, (1 + (y k : ℂ) * z)) atTop := by
-  refine tendstoLocallyUniformly_of_closedBall fun R => ?_
-  refine (Summable.hasProdUniformlyOn_nat_one_add (f := fun k (z : ℂ) => (y k : ℂ) * z)
-    (isCompact_closedBall 0 R) (hy.norm.mul_right R) ?_
-    (fun n => by fun_prop)).tendstoUniformlyOn_finsetRange
-  refine Eventually.of_forall fun n z hz => ?_
-  rw [norm_mul, Complex.norm_real]
-  exact mul_le_mul_of_nonneg_left (by simpa using hz) (norm_nonneg _)
 
 /-- The Type-I approximants `c z ^ m (1 + σ z / n) ^ n ∏_{k < n} (1 + yₖ z)` converge locally
 uniformly to `c z ^ m e^(σ z) ∏ₖ (1 + yₖ z)`. -/
