@@ -160,6 +160,11 @@ def translationLahPrefactorSeries (atoms : List (ℝ × ℝ)) : PowerSeries ℝ 
 def polynomialRowEGF (P : ℕ → ℝ[X]) : PowerSeries ℝ[X] :=
   PowerSeries.mk fun n => C ((n.factorial : ℝ)⁻¹) * P n
 
+/-- Coefficients of the polynomial row EGF are the factorial-normalized rows. -/
+@[simp] theorem coeff_polynomialRowEGF (P : ℕ → ℝ[X]) (n : ℕ) :
+    PowerSeries.coeff n (polynomialRowEGF P) = C ((n.factorial : ℝ)⁻¹) * P n := by
+  simp [polynomialRowEGF]
+
 /-- A row family has the translation--Lah EGF with the displayed final Lah
 time and atomic prefactor.  This is an equality of formal power series, so no
 analytic convergence is involved. -/

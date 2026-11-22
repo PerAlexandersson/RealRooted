@@ -3642,6 +3642,46 @@
     },
     {
       "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/MomentMatrix.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.MomentMatrix"
+      ],
+      "note": "Compact moment limits and algebraic limiting-Appell/Sheffer consequences (#2181, #2185). No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/CompactMoments.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.CompactMoments"
+      ],
+      "note": "Compact moment limits and algebraic limiting-Appell/Sheffer consequences (#2181, #2185). No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/ExponentialSubstitution.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.ExponentialSubstitution"
+      ],
+      "note": "Compact moment limits and algebraic limiting-Appell/Sheffer consequences (#2181, #2185). No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/NewtonSums.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.NewtonSums"
+      ],
+      "note": "Compact moment limits and algebraic limiting-Appell/Sheffer consequences (#2181, #2185). No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
         "RealRooted/Mathlib/Analysis/Calculus/IteratedDeriv/CompPow.lean"
       ],
       "modules": [

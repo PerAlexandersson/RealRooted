@@ -58,7 +58,9 @@ public import RealRooted.Basic.ProperPosition
 public import RealRooted.Basic.RootLists
 public import RealRooted.BasisTransform
 public import RealRooted.BasisTransform.FiniteSymbol
+public import RealRooted.BasisTransform.LimitingAppellMoments
 public import RealRooted.BasisTransform.ScalarIndexFactorization
+public import RealRooted.BasisTransform.ShefferAppell
 public import RealRooted.BernsteinCone
 public import RealRooted.BernsteinCone.Preserver
 public import RealRooted.Bezoutian
@@ -469,6 +471,7 @@ public import RealRooted.Derivative.ShiftSequence
 public import RealRooted.Derivative.SimpleRoots
 public import RealRooted.DerivativeRecurrence
 public import RealRooted.DerivativeRecurrence.AffineLagStrict
+public import RealRooted.DerivativeRecurrence.ClosedInterval
 public import RealRooted.DerivativeRecurrence.Degree
 public import RealRooted.DerivativeRecurrence.RowDegree
 public import RealRooted.DerivativeRecurrence.GeneralizedLaguerre
@@ -662,8 +665,10 @@ public import RealRooted.IntervalDifferential.CenteredCoordinates
 public import RealRooted.IntervalDifferential.CenteredTransfer
 public import RealRooted.Jacobi.NegativeParameters
 public import RealRooted.Laguerre.FiniteCombinations
+public import RealRooted.MaWang.CubicEndpoint
 public import RealRooted.MaWang.EndpointClassification
 public import RealRooted.MaWang.EndpointMultiplicity
+public import RealRooted.MaWang.IntervalSequence
 public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.Degree
 public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.EulerSolutions
 public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.Indicial
@@ -702,6 +707,8 @@ public import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Cosecan
 public import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Cotangent
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.EntryDegree
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.PowerTraceSeries
+public import RealRooted.Mathlib.MeasureTheory.Integral.MomentMatrix
+public import RealRooted.Mathlib.MeasureTheory.Measure.CompactMoments
 public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.CompleteSolutions
 public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.Multiplicity
 public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.NegativeParameters
@@ -710,6 +717,8 @@ public import RealRooted.Mathlib.RingTheory.Polynomial.Jacobi.Solutions
 public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.FiniteCombinations
 public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Multiplicity
 public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Solutions
+public import RealRooted.Mathlib.RingTheory.PowerSeries.ExponentialSubstitution
+public import RealRooted.Mathlib.RingTheory.PowerSeries.NewtonSums
 public import RealRooted.MatrixInterlacing.WeightedThreeStateRows
 public import RealRooted.MatrixInterlacing.WeightedThreeStateStrip
 public import RealRooted.MatrixInterlacing.WeightedThreeStateStripRoots
