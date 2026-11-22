@@ -1,6 +1,6 @@
 module
 
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.IteratedDerivative
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
 import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 import Mathlib.Analysis.Complex.TaylorSeries
@@ -53,10 +53,8 @@ theorem IsLaguerrePolya.jensenPolynomial_splits {f : ℂ → ℂ}
 
 /-- Every derivative of a Laguerre–Pólya function belongs to the same class. -/
 theorem IsLaguerrePolya.iterate_deriv {f : ℂ → ℂ}
-    (hf : IsLaguerrePolya f) (n : ℕ) : IsLaguerrePolya (iteratedDeriv n f) := by
-  induction n with
-  | zero => simpa using hf
-  | succ n ih => simpa [iteratedDeriv_succ] using ih.deriv
+    (hf : IsLaguerrePolya f) (n : ℕ) : IsLaguerrePolya (iteratedDeriv n f) :=
+  hf.iteratedDeriv n
 
 /-- Jensen's theorem also applies to every shift of the Taylor data. -/
 theorem IsLaguerrePolya.jensenPolynomial_shift_splits {f : ℂ → ℂ}

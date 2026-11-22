@@ -1,7 +1,9 @@
 module
 
-public import RealRooted.Mathlib.Analysis.Complex.HeatOperator.Derivative
-public import RealRooted.Hermite.GaussianCoefficients
+public import RealRooted.Mathlib.Analysis.Complex.HeatOperator.Basic
+
+import RealRooted.Mathlib.Analysis.Complex.HeatOperator.Derivative
+import RealRooted.Hermite.GaussianCoefficients
 import RealRooted.Mathlib.Analysis.Complex.GrowthOrder.Derivative
 import Mathlib.Topology.Algebra.InfiniteSum.NatInt
 

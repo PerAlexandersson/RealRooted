@@ -3959,6 +3959,156 @@
       ],
       "note": "Finite sums of locally uniformly convergent families; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Expand/PositiveRoots.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Expand.PositiveRoots"
+      ],
+      "note": "Positive-root counts under polynomial power substitutions; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/IteratedDeriv/PolynomialRange.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.IteratedDeriv.PolynomialRange"
+      ],
+      "note": "Padded finite sums for polynomial differential symbols; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/LocalExtr/PolynomialEuler.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.LocalExtr.PolynomialEuler"
+      ],
+      "note": "Euler differential operators, Rolle separation and multiplicity root counts; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/GrowthOrder/Subquadratic.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.GrowthOrder.Subquadratic"
+      ],
+      "note": "Global arbitrarily small Gaussian bounds for subquadratic growth; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HeatOperator/Basic.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HeatOperator.Basic"
+      ],
+      "note": "Entire backward heat-series convergence, differential identities and injectivity below order two; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HeatOperator/Bounds.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HeatOperator.Bounds"
+      ],
+      "note": "Entire backward heat-series convergence, differential identities and injectivity below order two; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HeatOperator/Derivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HeatOperator.Derivative"
+      ],
+      "note": "Entire backward heat-series convergence, differential identities and injectivity below order two; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HeatOperator/Nonzero.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HeatOperator.Nonzero"
+      ],
+      "note": "Entire backward heat-series convergence, differential identities and injectivity below order two; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HeatOperator/TimeDerivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HeatOperator.TimeDerivative"
+      ],
+      "note": "Entire backward heat-series convergence, differential identities and injectivity below order two; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LinearProduct.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LinearProduct"
+      ],
+      "note": "Locally uniform convergence of summable real linear products; extracted from the canonical product construction; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecificLimits/DescFactorialWeights.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecificLimits.DescFactorialWeights"
+      ],
+      "note": "Regularity of falling-factorial weights in Jensen approximations; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecificLimits/WeightedSum.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecificLimits.WeightedSum"
+      ],
+      "note": "Regular finite weighted means and conditionally convergent series; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/Bochner/PowerSum.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.Bochner.PowerSum"
+      ],
+      "note": "Finite positive atomic measures, compact support and power-sum moments; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Expand/Contract.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Expand.Contract"
+      ],
+      "note": "Degree bounds and inversion under polynomial contraction; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HeatOperator/Star.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HeatOperator.Star"
+      ],
+      "note": "Conjugation symmetry of the entire heat operator; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }

@@ -1,6 +1,12 @@
 module
 
-public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.HeatOperator
+import RealRooted.Mathlib.Analysis.Complex.HeatOperator.TimeDerivative
+
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
+
+public import RealRooted.Mathlib.Analysis.Complex.HeatOperator.Basic
+
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.HeatOperator
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.HeatFlowStrict
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Zeros

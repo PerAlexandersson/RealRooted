@@ -1,8 +1,10 @@
 module
 
+public import Mathlib.Topology.Algebra.Module.ModuleTopology
+
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
 public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
-public import Mathlib.Analysis.Calculus.Deriv.Basic
+import Mathlib.Analysis.Calculus.Deriv.Basic
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.IteratedDerivative
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.GeneralizedInequality
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative

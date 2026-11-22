@@ -1,6 +1,14 @@
 module
 
-public import RealRooted.Hermite.GeneratingFunction
+public import Mathlib.Analysis.Complex.Basic
+
+public import Mathlib.Analysis.Complex.Exponential
+
+public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
+
+public import RealRooted.Hermite.Homogeneous
+
+import RealRooted.Hermite.GeneratingFunction
 import Mathlib.Data.Nat.Factorial.Basic
 
 /-!

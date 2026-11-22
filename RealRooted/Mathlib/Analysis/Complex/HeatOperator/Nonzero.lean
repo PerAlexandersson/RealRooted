@@ -5,7 +5,11 @@ Authors: The RealRooted contributors
 -/
 module
 
-public import RealRooted.Mathlib.Analysis.Complex.HeatOperator.TimeDerivative
+import RealRooted.Mathlib.Analysis.Complex.HeatOperator.Derivative
+
+public import RealRooted.Mathlib.Analysis.Complex.HeatOperator.Basic
+
+import RealRooted.Mathlib.Analysis.Complex.HeatOperator.TimeDerivative
 import RealRooted.Mathlib.Analysis.Complex.GrowthOrder.Derivative
 import Mathlib.Analysis.Analytic.Order
 

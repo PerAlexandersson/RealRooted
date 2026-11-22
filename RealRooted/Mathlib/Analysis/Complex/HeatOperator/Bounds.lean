@@ -5,8 +5,10 @@ Authors: The RealRooted contributors
 -/
 module
 
-public import RealRooted.Mathlib.Analysis.Complex.GrowthOrder.Subquadratic
-public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
+public import TauCeti.Analysis.Complex.GrowthOrder
+
+import RealRooted.Mathlib.Analysis.Complex.GrowthOrder.Subquadratic
+import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
 import Mathlib.Analysis.Complex.Liouville
 import Mathlib.Data.Nat.Factorial.Basic
 

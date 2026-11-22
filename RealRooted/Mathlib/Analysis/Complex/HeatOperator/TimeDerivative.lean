@@ -5,7 +5,9 @@ Authors: The RealRooted contributors
 -/
 module
 
-public import RealRooted.Mathlib.Analysis.Complex.HeatOperator.Derivative
+public import RealRooted.Mathlib.Analysis.Complex.HeatOperator.Basic
+
+import RealRooted.Mathlib.Analysis.Complex.HeatOperator.Derivative
 import RealRooted.Mathlib.Analysis.Complex.GrowthOrder.Derivative
 import RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff
 import Mathlib.Analysis.Complex.RealDeriv

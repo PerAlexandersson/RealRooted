@@ -5,7 +5,9 @@ Authors: The RealRooted contributors
 -/
 module
 
-public import RealRooted.Mathlib.Analysis.Complex.HeatOperator.Bounds
+public import TauCeti.Analysis.Complex.GrowthOrder
+
+import RealRooted.Mathlib.Analysis.Complex.HeatOperator.Bounds
 import Mathlib.Analysis.Normed.Group.FunctionSeries
 import Mathlib.Topology.UniformSpace.UniformApproximation
 import Mathlib.Analysis.Normed.Group.Constructions

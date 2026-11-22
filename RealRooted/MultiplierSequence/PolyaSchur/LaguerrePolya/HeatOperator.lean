@@ -1,5 +1,7 @@
 module
 
+import RealRooted.Mathlib.Analysis.Complex.HeatOperator.Derivative
+
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
 public import RealRooted.Mathlib.Analysis.Complex.HeatOperator.Basic
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.HeatFlow
