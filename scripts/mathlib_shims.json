@@ -3679,6 +3679,56 @@
       ],
       "note": "Compact moment limits and algebraic limiting-Appell/Sheffer consequences (#2181, #2185). No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/IteratedDeriv/CompPow.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.IteratedDeriv.CompPow"
+      ],
+      "note": "Taylor calculus and Riemann xi foundations for the Jensen criterion. Uses the pinned Tau Ceti analytic results where Mathlib lacks them; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/IteratedDeriv/Star.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.IteratedDeriv.Star"
+      ],
+      "note": "Taylor calculus and Riemann xi foundations for the Jensen criterion. Uses the pinned Tau Ceti analytic results where Mathlib lacks them; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/Coefficients.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.Coefficients"
+      ],
+      "note": "Taylor calculus and Riemann xi foundations for the Jensen criterion. Uses the pinned Tau Ceti analytic results where Mathlib lacks them; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/Theta.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.Theta"
+      ],
+      "note": "Taylor calculus and Riemann xi foundations for the Jensen criterion. Uses the pinned Tau Ceti analytic results where Mathlib lacks them; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi"
+      ],
+      "note": "Taylor calculus and Riemann xi foundations for the Jensen criterion. Uses the pinned Tau Ceti analytic results where Mathlib lacks them; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }
