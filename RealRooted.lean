@@ -1793,6 +1793,7 @@ public import RealRooted.VeroneseSectionPair.HermiteBiehler
 public import RealRooted.Wagner
 public import RealRooted.Wagner.LeftSum
 public import RealRooted.Wagner.NonpositiveRoots
+public import RealRooted.Wagner.ThreeStateRecurrence
 public import RealRooted.WagnerRightSum
 public import RealRooted.WagnerRightSum.Sign
 public import RealRooted.WagnerX
