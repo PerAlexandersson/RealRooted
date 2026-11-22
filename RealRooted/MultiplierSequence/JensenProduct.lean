@@ -33,6 +33,18 @@ noncomputable def jensenProductPolynomial (d : ℕ) (gamma delta : ℕ → ℝ) 
     binomialConvolution gamma delta 0 = gamma 0 * delta 0 := by
   simp [binomialConvolution]
 
+/-- Binomial convolution is symmetric in its two coefficient sequences. -/
+theorem binomialConvolution_comm (gamma delta : ℕ → ℝ) (n : ℕ) :
+    binomialConvolution gamma delta n = binomialConvolution delta gamma n := by
+  unfold binomialConvolution
+  rw [← Finset.sum_range_reflect
+    (fun k => (n.choose k : ℝ) * gamma k * delta (n - k)) (n + 1)]
+  apply Finset.sum_congr rfl
+  intro k hk
+  have hkn : k ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
+  simp only [Nat.add_sub_cancel, Nat.sub_sub_self hkn, Nat.choose_symm hkn]
+  ring
+
 /-- Jensen product coefficients in binomial normalization. -/
 @[simp] theorem coeff_jensenProductPolynomial (d : ℕ) (gamma delta : ℕ → ℝ) (k : ℕ) :
     (jensenProductPolynomial d gamma delta).coeff k =

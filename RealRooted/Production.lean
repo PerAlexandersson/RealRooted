@@ -2374,6 +2374,14 @@ public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TotalPositi
 public import RealRooted.RiemannHypothesis.DifferentialOperator
 public import RealRooted.RiemannHypothesis.JensenProduct
 public import RealRooted.RiemannHypothesis.TotalPositivity
+public import RealRooted.Laguerre.NegativeParameters
+public import RealRooted.MultiplierSequence.JensenConvolution
+public import RealRooted.MultiplierSequence.JensenLaguerre
+public import RealRooted.MultiplierSequence.JensenLaguerreBasis
+public import RealRooted.MultiplierSequence.JensenLaguerreLimit
+public import RealRooted.RiemannHypothesis.Laguerre
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TotalPositivityConverse
+public import RealRooted.RiemannHypothesis.TotalPositivityCriterion
 
 /-!
 # RealRooted production umbrella
