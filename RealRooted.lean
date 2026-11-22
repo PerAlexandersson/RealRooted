@@ -390,6 +390,7 @@ public import RealRooted.CombinatorialExamples.PeakValues.TranslatedRecurrence
 public import RealRooted.CombinatorialExamples.PeakValues.WeightedInterleaving
 public import RealRooted.CombinatorialExamples.Simsun
 public import RealRooted.CombinatorialExamples.SingletonFreeSetPartitions
+public import RealRooted.CombinatorialExamples.SmoothPermutationDescents
 public import RealRooted.CombinatorialExamples.StirlingPermutations
 public import RealRooted.CombinatorialExamples.StirlingPermutationsNormal
 public import RealRooted.CombinatorialExamples.SturmDerangementsExc
