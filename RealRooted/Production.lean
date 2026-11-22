@@ -2315,6 +2315,7 @@ public import RealRooted.DerivativeRecurrence.RealEulerLag
 public import RealRooted.OperatorMatrix.AffineDerivative
 public import RealRooted.OperatorMatrix.AffineSuccessor
 public import RealRooted.Hypergeometric.ThreeFTwo
+public import RealRooted.Hypergeometric.ThreeFTwoBoundary
 public import RealRooted.CombinatorialExamples.BorosMoll.Transform
 public import RealRooted.CombinatorialExamples.BorosMoll.SmallCases
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Adjacent
