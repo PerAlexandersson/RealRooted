@@ -2659,3 +2659,6 @@ public import RealRooted.Mathlib.NumberTheory.LSeries.Riesz
 public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.RiemannHypothesis
 public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.ZeroWindow
 public import RealRooted.Mathlib.Topology.Instances.Real.FiniteSeparation
+public import RealRooted.Mathlib.Analysis.Complex.PartialFractions
+public import RealRooted.Mathlib.Analysis.MellinInversion.Decay
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.GoodHeight

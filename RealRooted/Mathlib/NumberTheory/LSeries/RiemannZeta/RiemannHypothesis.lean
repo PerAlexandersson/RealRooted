@@ -6,8 +6,12 @@ Authors: RealRooted contributors
 module
 
 public import Mathlib.NumberTheory.LSeries.RiemannZeta
+public import Mathlib.Analysis.MellinInversion
 import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.LocalLogDeriv
 import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.ZeroCount
+import RealRooted.Mathlib.Analysis.Complex.PartialFractions
+import RealRooted.Mathlib.Analysis.MellinInversion.Decay
+import TauCeti.Analysis.MellinInversion
 import TauCeti.Analysis.Calculus.LogDeriv
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Tactic.Lemma
@@ -56,24 +60,6 @@ theorem riemannZeta_ne_zero_of_re_eq_nine_twentieths (hRH : RiemannHypothesis)
     (by linarith) hz hs1
   linarith
 
-private lemma norm_finsum_int_div_le {D : ℂ → ℤ} (hfin : Function.HasFiniteSupport D)
-    (hnonneg : ∀ ρ, 0 ≤ D ρ) {s : ℂ} {δ : ℝ} (hδ : 0 < δ)
-    (hsep : ∀ ρ ∈ Function.support D, δ ≤ ‖s - ρ‖) :
-    ‖∑ᶠ ρ, (D ρ : ℂ) / (s - ρ)‖ ≤ δ⁻¹ * ((∑ᶠ ρ, D ρ : ℤ) : ℝ) := by
-  classical
-  have hsub : Function.support (fun ρ ↦ (D ρ : ℂ) / (s - ρ)) ⊆ hfin.toFinset := by
-    intro ρ hρ
-    exact hfin.mem_toFinset.mpr fun h ↦ hρ (by simp [h])
-  rw [finsum_eq_sum_of_support_subset _ hsub, finsum_eq_sum D hfin,
-    Int.cast_sum, Finset.mul_sum]
-  refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun ρ hρ ↦ ?_)
-  have hDρ : 0 ≤ (D ρ : ℝ) := Int.cast_nonneg (hnonneg ρ)
-  rw [norm_div, Complex.norm_intCast, abs_of_nonneg hDρ]
-  calc
-    (D ρ : ℝ) / ‖s - ρ‖ ≤ (D ρ : ℝ) / δ :=
-      div_le_div_of_nonneg_left hDρ hδ (hsep ρ (hfin.mem_toFinset.mp hρ))
-    _ = δ⁻¹ * (D ρ : ℝ) := by ring
-
 private lemma distance_from_divisor_support (hRH : RiemannHypothesis)
     {t : ℝ} (ht : 3 ≤ |t|) {ρ : ℂ}
     (hρ : ρ ∈ Function.support
@@ -121,7 +107,8 @@ theorem exists_norm_logDeriv_riemannZeta_le_log (hRH : RiemannHypothesis) :
     (TauCeti.analyticOnNhd_riemannZeta_closedBall ht).mono
       (closedBall_subset_closedBall (by norm_num))
   have hfin : Function.HasFiniteSupport D := D.finiteSupport (isCompact_closedBall _ _)
-  have hsum := norm_finsum_int_div_le hfin (MeromorphicOn.AnalyticOnNhd.divisor_nonneg hf)
+  have hsum := Complex.norm_finsum_intCast_div_sub_le hfin
+    (MeromorphicOn.AnalyticOnNhd.divisor_nonneg hf)
     (by norm_num : (0 : ℝ) < 1 / 20)
     (fun ρ hρ ↦ distance_from_divisor_support hRH ht hρ)
   have hsum' : ‖∑ᶠ ρ, (D ρ : ℂ) / (s - ρ)‖ ≤ 20 * C₂ * Real.log |t| := by
@@ -184,5 +171,31 @@ theorem exists_norm_logDeriv_riemannZeta_le_rpow (hRH : RiemannHypothesis) :
     have h := hD t hmem
     have hD' : D ≤ |D| := le_abs_self D
     nlinarith [abs_nonneg D]
+
+/-- Under RH, the logarithmic derivative divided by the first-order Perron denominator
+is absolutely integrable on the positive line `Re s = 9 / 20`. -/
+theorem verticalIntegrable_logDeriv_riemannZeta (hRH : RiemannHypothesis) :
+    VerticalIntegrable (fun s : ℂ ↦ logDeriv riemannZeta s / (s * (s + 1))) (9 / 20) := by
+  obtain ⟨C, _, hbound⟩ := hRH.exists_norm_logDeriv_riemannZeta_le_rpow
+  refine Complex.verticalIntegrable_div_mul_add_one_of_le_rpow
+    (C := C) (r := 1 / 2) (by norm_num) (by norm_num) (by norm_num) ?_ ?_
+  · simpa only [mul_comm] using hRH.continuous_logDeriv_riemannZeta_line
+      (σ := 9 / 20) (by norm_num) (by norm_num) (by norm_num)
+  · intro t
+    simpa only [ofReal_div, ofReal_ofNat, mul_comm] using hbound t
+
+/-- Under RH, the smoothed zeta Perron integrand is absolutely integrable on the positive
+left contour line, for every positive real base. -/
+theorem integrable_logDeriv_riemannZeta_mul_cpow (hRH : RiemannHypothesis)
+    {x : ℝ} (hx : 0 < x) :
+    MeasureTheory.Integrable (fun t : ℝ ↦
+      logDeriv riemannZeta ((9 / 20 : ℂ) + t * I) * (x : ℂ) ^ ((9 / 20 : ℂ) + t * I) /
+        (((9 / 20 : ℂ) + t * I) * ((9 / 20 : ℂ) + t * I + 1))) := by
+  have h := hRH.verticalIntegrable_logDeriv_riemannZeta.integrable_cpow_smul (inv_pos.mpr hx)
+  simp only [ofReal_inv, inv_cpow_ofReal_nonneg hx.le, cpow_neg, inv_inv,
+    smul_eq_mul, ofReal_div, ofReal_ofNat] at h
+  convert h using 1
+  funext t
+  ring
 
 end RiemannHypothesis
