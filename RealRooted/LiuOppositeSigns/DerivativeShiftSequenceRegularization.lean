@@ -97,7 +97,7 @@ theorem NoCommonRoots.exists_applyTDerivList_roots_rel
           hf_tail, hg_tail⟩ :=
         ih hcomp_shift hno_shift (tDeriv_ne_zero hf_ne) (tDeriv_ne_zero hg_ne)
           (splits_tDeriv heps hf) (splits_tDeriv heps hg) hhalf
-      have hf_final := Multiset.Rel.comp
+      have hf_final := Multiset.Rel.comp_of_imp
         (fun a b c hab hbc => by
           calc
             |c - a| = |(c - b) + (b - a)| := by ring_nf
@@ -105,7 +105,7 @@ theorem NoCommonRoots.exists_applyTDerivList_roots_rel
             _ < ρ / 2 + ρ / 2 := add_lt_add hbc hab
             _ = ρ := by ring)
         hf_step hf_tail
-      have hg_final := Multiset.Rel.comp
+      have hg_final := Multiset.Rel.comp_of_imp
         (fun a b c hab hbc => by
           calc
             |c - a| = |(c - b) + (b - a)| := by ring_nf

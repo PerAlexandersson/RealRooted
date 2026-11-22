@@ -2624,6 +2624,17 @@ public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.ZeroDifference
 public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.ZeroSumBounds
 public import RealRooted.Mathlib.NumberTheory.Chebyshev.RiemannHypothesis
 public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.ErrorDifference
+public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.Moment
+public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.Perturbation
+public import RealRooted.Mathlib.Analysis.Asymptotics.IncrementBounds
+public import RealRooted.Mathlib.Analysis.Polynomial.OrderedRootPerturbation
+public import RealRooted.Mathlib.Analysis.Polynomial.SimpleRootMatching
+public import RealRooted.Mathlib.Analysis.Polynomial.SimpleRootSeparation
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.LinearSystemPerturbation
+public import RealRooted.Mathlib.MeasureTheory.Integral.IntervalIntegral.CumulativeMoments
+public import RealRooted.Mathlib.NumberTheory.Chebyshev.PrimeWindow
+public import RealRooted.Mathlib.NumberTheory.Chebyshev.PrimeWindowMoments
+public import RealRooted.Mathlib.NumberTheory.Chebyshev.ShortIntervals
 
 /-!
 # RealRooted production umbrella

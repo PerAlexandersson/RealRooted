@@ -1599,7 +1599,7 @@
       "modules": [
         "Mathlib.Data.Multiset.Rel"
       ],
-      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "note": "Reuses canonical multiset-relation composition from pinned TauCeti.Data.Multiset.Rel; adds composition into a target relation, filtered cardinalities, and sorting compatibility. No upstream PR yet.",
       "speculative": true
     },
     {
@@ -4768,6 +4768,116 @@
         "Mathlib.NumberTheory.Chebyshev.RiemannHypothesis"
       ],
       "note": "RH square-root logarithmic-square error bounds for psi and theta; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/Moment.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.Moment"
+      ],
+      "note": "Existence and uniqueness of monic orthogonal polynomials from finite moment matrices; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/Perturbation.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.Perturbation"
+      ],
+      "note": "Finite moment perturbation and orthogonal-polynomial coefficient continuity; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Asymptotics/IncrementBounds.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Asymptotics.IncrementBounds"
+      ],
+      "note": "Uniform normalized-increment discrepancy from square-root logarithmic-square errors; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Polynomial/OrderedRootPerturbation.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Polynomial.OrderedRootPerturbation"
+      ],
+      "note": "Linear coefficient-error bounds for ordered simple real roots under perturbation; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Polynomial/SimpleRootMatching.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Polynomial.SimpleRootMatching"
+      ],
+      "note": "Finite-coefficient neighborhoods and real-root matching at simple split references; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Polynomial/SimpleRootSeparation.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Polynomial.SimpleRootSeparation"
+      ],
+      "note": "Linear root displacement bounds using separated reference factors; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/LinearSystemPerturbation.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.LinearSystemPerturbation"
+      ],
+      "note": "Entrywise residual estimates for perturbed finite linear systems; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/IntervalIntegral/CumulativeMoments.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.IntervalIntegral.CumulativeMoments"
+      ],
+      "note": "Signed finite cumulative discrepancy controls unit-interval monomial moments; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/Chebyshev/PrimeWindow.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.Chebyshev.PrimeWindow"
+      ],
+      "note": "Finite logarithmically weighted prime windows and exact cumulative theta identity; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/Chebyshev/PrimeWindowMoments.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.Chebyshev.PrimeWindowMoments"
+      ],
+      "note": "RH convergence and quantitative errors for genuine finite prime-window moments; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/Chebyshev/ShortIntervals.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.Chebyshev.ShortIntervals"
+      ],
+      "note": "RH uniform Chebyshev discrepancy in square-root logarithmic-cube windows; no upstream PR yet.",
       "speculative": true
     }
   ]
