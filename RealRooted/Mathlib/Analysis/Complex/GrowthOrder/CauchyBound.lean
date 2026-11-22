@@ -5,9 +5,8 @@ Authors: The RealRooted contributors
 -/
 module
 
-public import RealRooted.Mathlib.Analysis.Complex.GrowthOrder.ExponentialPowerBound
-public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
-import Mathlib.Analysis.Complex.Liouville
+public import TauCeti.Analysis.Complex.GrowthOrder
+import RealRooted.Mathlib.Analysis.Complex.GrowthOrder.ExponentialPowerBound
 
 /-!
 # Cauchy derivative estimates above the growth order

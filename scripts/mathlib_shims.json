@@ -4229,6 +4229,106 @@
       ],
       "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/GrowthOrder/CauchyBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.GrowthOrder.CauchyBound"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/GrowthOrder/ExponentialPowerBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.GrowthOrder.ExponentialPowerBound"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/GrowthOrder/OfBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.GrowthOrder.OfBound"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/OrderBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.OrderBound"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/OrderConvergence.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.OrderConvergence"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/OrderDerivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.OrderDerivative"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Convex/LogDerivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Convex.LogDerivative"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Normed/Group/LocallyBoundedMajorant.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Normed.Group.LocallyBoundedMajorant"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/Hankel.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.Hankel"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Pochhammer/ReciprocalConvolution.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Pochhammer.ReciprocalConvolution"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }

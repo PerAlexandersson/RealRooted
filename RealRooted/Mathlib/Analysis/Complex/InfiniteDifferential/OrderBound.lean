@@ -5,11 +5,8 @@ Authors: The RealRooted contributors
 -/
 module
 
-public import RealRooted.Mathlib.Analysis.Complex.GrowthOrder.CauchyBound
-import Mathlib.Analysis.Normed.Group.InfiniteSum
-import Mathlib.Analysis.SpecificLimits.Normed
-import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
-import Mathlib.Data.Nat.Factorial.Basic
+public import TauCeti.Analysis.Complex.GrowthOrder
+import RealRooted.Mathlib.Analysis.Complex.GrowthOrder.CauchyBound
 
 /-!
 # Reciprocal-order bounds for infinite differential series

@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.RiemannHypothesis
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Theta
+import RealRooted.RiemannHypothesis
 public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.Basic
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.InfiniteDifferentialEntire

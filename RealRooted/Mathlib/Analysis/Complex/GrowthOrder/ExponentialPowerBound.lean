@@ -6,7 +6,6 @@ Authors: The RealRooted contributors
 module
 
 public import TauCeti.Analysis.Complex.GrowthOrder
-import Mathlib.Analysis.Normed.Group.Bounded
 
 /-!
 # Global exponential power bounds above the growth order

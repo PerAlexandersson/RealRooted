@@ -7,7 +7,6 @@ module
 
 public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.Basic
 import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.OrderBound
-import Mathlib.Analysis.Normed.Group.FunctionSeries
 
 /-!
 # Differential-series convergence under reciprocal growth bounds
