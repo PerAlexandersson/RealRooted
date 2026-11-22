@@ -1,8 +1,11 @@
+/-
+Copyright (c) 2026 The RealRooted contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: The RealRooted contributors
+-/
 module
 
 public import RealRooted.Mathlib.Analysis.Calculus.IteratedDeriv.Polynomial
-import Mathlib.Algebra.Polynomial.Degree.Support
-import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
 import Mathlib.Analysis.Complex.CauchyIntegral
 
 /-!

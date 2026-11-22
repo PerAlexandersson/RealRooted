@@ -4,6 +4,8 @@ public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Coefficients
 public import RealRooted.BasisTransform.LimitingAppellMoments
 import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Positivity
 import RealRooted.RiemannHypothesis.TotalPositivity
+import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Derivative
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.LogDerivativeMoments
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.AppellMoments
 
 /-!
@@ -55,5 +57,16 @@ theorem posSemidef_riemannXiCoeff_logOf
   simpa only [riemannXiCoeff, iteratedDeriv_eq_iterate,
     ← Function.iterate_add_apply, Nat.add_comm] using
     hf.posSemidef_signed_coeff_logOf h0 n r
+
+/-- Under RH every shifted Hankel matrix of the signed Taylor coefficients
+of the logarithmic derivative of each xi derivative is positive semidefinite. -/
+theorem posSemidef_logDeriv_iteratedDeriv_riemannXiTheta
+    (hRH : RiemannHypothesis) (s n r : ℕ) :
+    Matrix.PosSemidef (fun i j : Fin n =>
+      let k := i.val + j.val + r
+      (-1 : ℝ) ^ k *
+        (iteratedDeriv k (logDeriv (iteratedDeriv s riemannXiTheta)) 0).re / k.factorial) :=
+  (isLaguerrePolyaTypeI_iteratedDeriv_riemannXiTheta hRH s).posSemidef_logDeriv
+    (iteratedDeriv_riemannXiTheta_zero_ne_zero s) n r
 
 end RealRooted

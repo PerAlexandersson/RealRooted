@@ -1,7 +1,11 @@
 module
 
-public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Jensen
-import RealRooted.SimpleRoots
+public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
+
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
+
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Jensen
+
 public import Mathlib.Analysis.Complex.Exponential
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Closure
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.HeatFlow

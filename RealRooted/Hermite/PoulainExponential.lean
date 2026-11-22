@@ -1,7 +1,10 @@
 module
 
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
+
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Jensen
+
 public import RealRooted.Hermite.Poulain
-public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Jensen
 public import RealRooted.SimpleRoots
 public import Mathlib.Analysis.Complex.Exponential
 import RealRooted.Hermite.PoulainSimple

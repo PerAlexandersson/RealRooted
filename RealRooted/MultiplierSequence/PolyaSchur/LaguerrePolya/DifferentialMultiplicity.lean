@@ -1,11 +1,16 @@
 module
 
-public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.DifferentialApply
-public import RealRooted.Mathlib.Analysis.Calculus.IteratedDeriv.PolynomialAlgebra
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
+
+public import RealRooted.Mathlib.Analysis.Calculus.IteratedDeriv.Polynomial
+
+import RealRooted.Mathlib.Analysis.Calculus.IteratedDeriv.PolynomialAlgebra
+
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.DifferentialApply
+
 public import Mathlib.Analysis.Analytic.Order
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.DerivativeMultiplicity
-import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
 
 /-!
 # Entire-target multiplicity for real-rooted differential symbols

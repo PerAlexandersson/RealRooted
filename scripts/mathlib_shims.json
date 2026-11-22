@@ -3899,6 +3899,66 @@
       ],
       "note": "Entire functions with equal logarithmic derivatives on a nonempty open preconnected set differ by their normalization constant. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Analytic/TaylorSeries.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Analytic.TaylorSeries"
+      ],
+      "note": "Analytic Taylor series, derivatives and normalized formal logarithms; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/IteratedDeriv/Polynomial.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.IteratedDeriv.Polynomial"
+      ],
+      "note": "Finite polynomial differential operators and locally uniform convergence; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/IteratedDeriv/PolynomialAlgebra.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.IteratedDeriv.PolynomialAlgebra"
+      ],
+      "note": "Composition and derivative commutation for finite polynomial differential operators; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/CanonicalProduct/GenusOne.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.CanonicalProduct.GenusOne"
+      ],
+      "note": "Canonical-product genus one star and elementary closure properties; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/ForwardDifference.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.ForwardDifference"
+      ],
+      "note": "Taylor derivatives, exponential multiplication and signed forward differences; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Topology/Algebra/IsUniformGroup/FiniteSum.lean"
+      ],
+      "modules": [
+        "Mathlib.Topology.Algebra.IsUniformGroup.FiniteSum"
+      ],
+      "note": "Finite sums of locally uniformly convergent families; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }

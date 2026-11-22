@@ -5,7 +5,6 @@ public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
 import RealRooted.LaguerreInequalities.Strict
 import RealRooted.LaguerreInequalities.DerivativeFormula
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
-import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 
 /-!
 # Multiplicity descent for an entire LP derivative shift

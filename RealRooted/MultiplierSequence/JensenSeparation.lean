@@ -2,9 +2,6 @@ module
 
 public import RealRooted.MultiplierSequence
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
-import Mathlib.Analysis.Calculus.LocalExtr.Rolle
-import Mathlib.Analysis.Calculus.Deriv.Polynomial
-import Mathlib.Analysis.Calculus.Deriv.Pow
 
 /-!
 # Same-sign separation of consecutive Jensen polynomials

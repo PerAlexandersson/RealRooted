@@ -1,5 +1,7 @@
 module
 
+public import Mathlib.Analysis.Complex.Exponential
+
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
 public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TotalPositivity
@@ -93,12 +95,14 @@ private theorem exists_eq_exp_mul_prod_of_normalized
   simpa [B, E, hβ0] using hid
 
 /-- An entire function with a real PF generating-series germ and positive constant
-coefficient is Type-I Laguerre--Pólya. -/
-theorem IsPolyaFreqSeq.isLaguerrePolyaTypeI_of_hasSum
+coefficient has a Type-I product representation with summable nonnegative slopes. -/
+theorem IsPolyaFreqSeq.exists_eq_const_mul_exp_mul_prod
     {a : ℕ → ℝ} {f : ℂ → ℂ} (ha : IsPolyaFreqSeq a) (ha0 : 0 < a 0)
     (hf : Differentiable ℂ f)
     (hs : ∀ᶠ z in 𝓝 (0 : ℂ), HasSum (fun n => (a n : ℂ) * z ^ n) (f z)) :
-    IsLaguerrePolyaTypeI f := by
+    ∃ (γ : ℝ) (α : ℕ → ℝ), 0 ≤ γ ∧ (∀ i, 0 ≤ α i) ∧ Summable α ∧
+      f = fun z => (a 0 : ℂ) * Complex.exp (γ * z) *
+        ∏' i, (1 + (α i : ℂ) * z) := by
   let b : ℕ → ℝ := fun n => (a 0)⁻¹ * a n
   let g : ℂ → ℂ := fun z => (a 0 : ℂ)⁻¹ * f z
   have hb : IsPolyaFreqSeq b := ha.const_mul_sequence _ (inv_nonneg.mpr ha0.le)
@@ -114,8 +118,18 @@ theorem IsPolyaFreqSeq.isLaguerrePolyaTypeI_of_hasSum
     have h := congrFun heq z
     have h0 : (a 0 : ℂ) ≠ 0 := by exact_mod_cast ha0.ne'
     simpa [g, h0, mul_assoc] using congrArg (fun w : ℂ => (a 0 : ℂ) * w) h
-  rw [heqf]
-  exact isLaguerrePolyaTypeI_product ha0.le 0 hγ hα sα
+  exact ⟨γ, α, hγ, hα, sα, by simpa only [pow_zero, mul_one] using heqf⟩
+
+/-- An entire function with a real PF generating-series germ and positive constant
+coefficient is Type-I Laguerre--Pólya. -/
+theorem IsPolyaFreqSeq.isLaguerrePolyaTypeI_of_hasSum
+    {a : ℕ → ℝ} {f : ℂ → ℂ} (ha : IsPolyaFreqSeq a) (ha0 : 0 < a 0)
+    (hf : Differentiable ℂ f)
+    (hs : ∀ᶠ z in 𝓝 (0 : ℂ), HasSum (fun n => (a n : ℂ) * z ^ n) (f z)) :
+    IsLaguerrePolyaTypeI f := by
+  obtain ⟨γ, α, hγ, hα, sα, heq⟩ := ha.exists_eq_const_mul_exp_mul_prod ha0 hf hs
+  rw [heq]
+  simpa only [pow_zero, mul_one] using isLaguerrePolyaTypeI_product ha0.le 0 hγ hα sα
 
 /-- For an entire function with real Taylor data and positive constant coefficient,
 Type-I Laguerre--Pólya membership is equivalent to total positivity of the ordinary
