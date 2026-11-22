@@ -30,16 +30,11 @@ open Filter Topology Polynomial
 
 namespace RiemannHypothesis
 
-private theorem uniform_moment_eq (k : ℕ) :
-    RealRooted.shiftedJacobiMoment 0 0 k = 1 / ((k : ℝ) + 1) := by
-  simpa only [zero_add, one_div] using
-    RealRooted.shiftedJacobiMoment_beta_zero (by norm_num : (-1 : ℝ) < 0) k
-
 private theorem tendsto_primeWindowMoment_uniform (hRH : RiemannHypothesis) (k : ℕ) :
     Tendsto (fun X : ℝ ↦
       Chebyshev.primeWindowMoment X (Real.sqrt X * Real.log X ^ 3) k)
       atTop (𝓝 (RealRooted.shiftedJacobiMoment 0 0 k)) := by
-  simpa only [uniform_moment_eq] using hRH.tendsto_primeWindowMoment k
+  simpa only [RealRooted.shiftedJacobiMoment_zero_zero] using hRH.tendsto_primeWindowMoment k
 
 private theorem uniform_hankel_isUnit (n : ℕ) :
     IsUnit (momentHankelMatrix (RealRooted.shiftedJacobiMoment 0 0) n).det :=
@@ -110,7 +105,7 @@ theorem eventually_coeff_primeWindowPolynomial_sub_le
         |Chebyshev.primeWindowMoment X (Real.sqrt X * Real.log X ^ 3) j -
           RealRooted.shiftedJacobiMoment 0 0 j| ≤ B / Real.log X := by
       intro j _
-      simpa only [uniform_moment_eq] using hmoment j
+      simpa only [RealRooted.shiftedJacobiMoment_zero_zero] using hmoment j
     have h := hX.2 (B / Real.log X) hδ herror ⟨k, hk⟩
     change |(Chebyshev.primeWindowPolynomial X (Real.sqrt X * Real.log X ^ 3) n).coeff k -
       (monicMomentPolynomial (RealRooted.shiftedJacobiMoment 0 0) n).coeff k| ≤

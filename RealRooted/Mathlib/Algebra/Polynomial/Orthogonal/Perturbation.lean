@@ -9,8 +9,7 @@ public import Mathlib.Topology.MetricSpace.Pseudo.Defs
 
 public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.Moment
 import RealRooted.Mathlib.LinearAlgebra.Matrix.LinearSystemPerturbation
-import Mathlib.Topology.Instances.Matrix
-import Mathlib.Topology.Algebra.Field
+import RealRooted.Mathlib.LinearAlgebra.Matrix.PerturbationLimits
 import Mathlib.Topology.Instances.Real.Lemmas
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Positivity
@@ -77,18 +76,6 @@ private theorem tendsto_momentHankelMatrix
   have hj := j.is_lt
   lia
 
-/-- The total matrix inverse converges at every nondegenerate reference
-moment matrix. -/
-private theorem tendsto_inv_momentHankelMatrix
-    (hμ : ∀ k < 2 * n, Tendsto (fun t => μ t k) l (𝓝 (μ₀ k)))
-    (hdet : IsUnit (momentHankelMatrix μ₀ n).det) :
-    Tendsto (fun t => (momentHankelMatrix (μ t) n)⁻¹) l
-      (𝓝 (momentHankelMatrix μ₀ n)⁻¹) := by
-  have hi : ContinuousAt (Ring.inverse : ℝ → ℝ) (momentHankelMatrix μ₀ n).det := by
-    rw [Ring.inverse_eq_inv']
-    exact continuousAt_inv₀ (isUnit_iff_ne_zero.mp hdet)
-  exact (continuousAt_matrix_inv _ hi).tendsto.comp (tendsto_momentHankelMatrix hμ)
-
 /-- The lower orthogonal coefficient vector varies continuously with the first
 `2n` moments at every nondegenerate reference system. -/
 theorem tendsto_momentOrthogonalCoefficients
@@ -96,7 +83,7 @@ theorem tendsto_momentOrthogonalCoefficients
     (hdet : IsUnit (momentHankelMatrix μ₀ n).det) :
     Tendsto (fun t => momentOrthogonalCoefficients (μ t) n) l
       (𝓝 (momentOrthogonalCoefficients μ₀ n)) := by
-  have hinv := tendsto_inv_momentHankelMatrix hμ hdet
+  have hinv := Matrix.tendsto_nonsing_inv_of_isUnit_det (tendsto_momentHankelMatrix hμ) hdet
   have hb : Tendsto (fun t => fun i : Fin n => -μ t (n + i.val)) l
       (𝓝 (fun i : Fin n => -μ₀ (n + i.val))) := by
     apply tendsto_pi_nhds.mpr
@@ -133,36 +120,7 @@ theorem eventually_isUnit_momentHankelMatrix_det_and_inv_bound
     (hdet : IsUnit (momentHankelMatrix μ₀ n).det) :
     ∃ M > 0, ∀ᶠ t in l, IsUnit (momentHankelMatrix (μ t) n).det ∧
       ∀ i j : Fin n, |(momentHankelMatrix (μ t) n)⁻¹ i j| ≤ M := by
-  let A := momentHankelMatrix μ₀ n
-  let M : ℝ := 1 + ∑ i : Fin n, ∑ j : Fin n, |A⁻¹ i j|
-  have hM : 0 < M := by dsimp [M]; positivity
-  have hentry (i j : Fin n) : |A⁻¹ i j| < M := by
-    have hj : |A⁻¹ i j| ≤ ∑ k : Fin n, |A⁻¹ i k| :=
-      Finset.single_le_sum (fun k _ => abs_nonneg (A⁻¹ i k)) (Finset.mem_univ j)
-    have hi : (∑ k : Fin n, |A⁻¹ i k|) ≤
-        ∑ r : Fin n, ∑ k : Fin n, |A⁻¹ r k| :=
-      Finset.single_le_sum (f := fun r : Fin n => ∑ k : Fin n, |A⁻¹ r k|)
-        (fun r _ => Finset.sum_nonneg (fun k _ => abs_nonneg (A⁻¹ r k)))
-        (Finset.mem_univ i)
-    dsimp only [M]
-    linarith
-  have hdetc : Continuous (fun B : Matrix (Fin n) (Fin n) ℝ => B.det) :=
-    continuous_id.matrix_det
-  have hdetlim := (hdetc.tendsto A).comp (tendsto_momentHankelMatrix hμ)
-  have hdet' : ∀ᶠ t in l, IsUnit (momentHankelMatrix (μ t) n).det := by
-    filter_upwards [hdetlim.eventually_ne (isUnit_iff_ne_zero.mp hdet)] with t ht
-    exact isUnit_iff_ne_zero.mpr ht
-  have hinv := tendsto_inv_momentHankelMatrix hμ hdet
-  have hbound : ∀ᶠ t in l, ∀ i j : Fin n,
-      |(momentHankelMatrix (μ t) n)⁻¹ i j| ≤ M := by
-    apply eventually_all.mpr
-    intro i
-    apply eventually_all.mpr
-    intro j
-    have hij := tendsto_pi_nhds.mp (tendsto_pi_nhds.mp hinv i) j
-    exact (hij.abs.eventually_lt tendsto_const_nhds (hentry i j)).mono
-      fun _ h => h.le
-  exact ⟨M, hM, hdet'.and hbound⟩
+  exact Matrix.eventually_isUnit_det_and_inv_bound (tendsto_momentHankelMatrix hμ) hdet
 
 /-- Near a nondegenerate finite moment limit, lower coefficient error is bounded
 linearly by any nonnegative bound on the finite moment error. -/

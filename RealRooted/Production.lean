@@ -2643,6 +2643,10 @@ public import RealRooted.Mathlib.NumberTheory.Chebyshev.PrimeWindowOrthogonal
 public import RealRooted.RiemannHypothesis.PrimeWindowJacobi
 public import RealRooted.RiemannHypothesis.PrimeWindowPolynomial
 public import RealRooted.RiemannHypothesis.PrimeWindowRoots
+public import RealRooted.Mathlib.LinearAlgebra.Lagrange.GaussianQuadrature
+public import RealRooted.Mathlib.LinearAlgebra.Lagrange.QuadratureMoments
+public import RealRooted.Mathlib.LinearAlgebra.Lagrange.QuadraturePerturbation
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerturbationLimits
 
 /-!
 # RealRooted production umbrella

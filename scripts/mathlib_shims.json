@@ -4919,6 +4919,46 @@
       ],
       "note": "Monic finite prime-window moment polynomials and genuine weighted-sum orthogonality; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PerturbationLimits.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PerturbationLimits"
+      ],
+      "note": "Nonsingular finite real matrix inverse convergence and uniform entry bounds; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Lagrange/QuadratureMoments.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Lagrange.QuadratureMoments"
+      ],
+      "note": "Lagrange quadrature moment equations and inverse Vandermonde representation; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Lagrange/QuadraturePerturbation.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Lagrange.QuadraturePerturbation"
+      ],
+      "note": "Lagrange weight convergence and quantitative node/moment perturbation estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Lagrange/GaussianQuadrature.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Lagrange.GaussianQuadrature"
+      ],
+      "note": "Full Gaussian polynomial exactness and strict weight positivity from nodal orthogonality; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }

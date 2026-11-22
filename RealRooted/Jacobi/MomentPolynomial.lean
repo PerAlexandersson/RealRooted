@@ -29,6 +29,12 @@ noncomputable section
 
 namespace RealRooted
 
+/-- With zero Jacobi exponents, the native moments are the uniform moments on `[0, 1]`. -/
+theorem shiftedJacobiMoment_zero_zero (k : ℕ) :
+    shiftedJacobiMoment 0 0 k = 1 / ((k : ℝ) + 1) := by
+  simpa only [zero_add, one_div] using
+    shiftedJacobiMoment_beta_zero (by norm_num : (-1 : ℝ) < 0) k
+
 /-- Every finite Hankel matrix of shifted Jacobi moments is positive definite
 when both exponents exceed `-1`. The empty matrix is included. -/
 theorem shiftedJacobiMoment_hankel_posDef (n : ℕ) {α β : ℝ}
