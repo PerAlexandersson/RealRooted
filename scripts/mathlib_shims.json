@@ -4429,6 +4429,36 @@
       ],
       "note": "Analytic-number-theory infrastructure for RH prime-counting estimates and prime-supported polynomial applications. Selective attributed reuse of Tau Ceti and goldbach-lean; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/RiemannHypothesis.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.RiemannHypothesis"
+      ],
+      "note": "RH contour estimates and finite-set separation for conditional prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/ZeroWindow.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.ZeroWindow"
+      ],
+      "note": "RH contour estimates and finite-set separation for conditional prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Topology/Instances/Real/FiniteSeparation.lean"
+      ],
+      "modules": [
+        "Mathlib.Topology.Instances.Real.FiniteSeparation"
+      ],
+      "note": "RH contour estimates and finite-set separation for conditional prime-counting estimates; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }

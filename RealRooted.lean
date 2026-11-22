@@ -2656,3 +2656,6 @@ public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.Bounds
 public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.LocalLogDeriv
 public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.ZeroCount
 public import RealRooted.Mathlib.NumberTheory.LSeries.Riesz
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.RiemannHypothesis
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannZeta.ZeroWindow
+public import RealRooted.Mathlib.Topology.Instances.Real.FiniteSeparation

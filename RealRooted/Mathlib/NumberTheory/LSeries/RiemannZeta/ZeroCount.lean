@@ -1,7 +1,7 @@
 /-
-Copyright (c) 2026 The Tau Ceti contributors. All rights reserved.
+Copyright (c) 2026 RealRooted contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: The Tau Ceti contributors
+Authors: RealRooted contributors
 -/
 module
 
@@ -144,6 +144,45 @@ theorem norm_riemannZeta_le_on_closedBall {t : ℝ} (ht : 3 ≤ |t|) {s : ℂ}
   have hz := norm_riemannZeta_le_of_re_pos hpos
   linarith
 
+/-- Relative zeta bounds on the fixed outer circles have logarithmic height growth. -/
+theorem exists_riemannZeta_relative_bound_log : ∃ C : ℝ, 0 < C ∧
+    ∀ t : ℝ, 3 ≤ |t| → ∃ M : ℝ, 1 ≤ M ∧ Real.log M ≤ C * Real.log |t| ∧
+      ∀ w ∈ sphere (2 + I * t) (7 / 4),
+        ‖riemannZeta w‖ ≤ M * ‖riemannZeta (2 + I * t)‖ := by
+  have h3 : 0 < Real.log 3 := Real.log_pos (by norm_num)
+  have h20 : 0 < Real.log 20 := Real.log_pos (by norm_num)
+  refine ⟨1 + Real.log 20 / Real.log 3, by positivity, fun t ht ↦
+    ⟨36 + 8 * |t|, by linarith [abs_nonneg t], ?_, ?_⟩⟩
+  · have ht0 : 0 < |t| := by linarith
+    have hlt : Real.log 3 ≤ Real.log |t| := Real.log_le_log (by norm_num) ht
+    have hconstant : Real.log 20 ≤ Real.log 20 / Real.log 3 * Real.log |t| := by
+      rw [div_mul_eq_mul_div, le_div_iff₀ h3]
+      exact mul_le_mul_of_nonneg_left hlt h20.le
+    calc
+      _ ≤ Real.log (20 * |t|) := Real.log_le_log (by positivity) (by linarith)
+      _ = Real.log 20 + Real.log |t| := Real.log_mul (by norm_num) ht0.ne'
+      _ ≤ _ := by nlinarith
+  · intro w hw
+    have hw' := norm_riemannZeta_le_on_closedBall ht (sphere_subset_closedBall hw)
+    have hc := mul_le_mul_of_nonneg_left (half_le_norm_riemannZeta_two_add_mul_I t)
+      (by positivity : 0 ≤ 36 + 8 * |t|)
+    nlinarith
+
+/-- The sum of the analytic divisor multiplicities in the inner disks is logarithmic in height. -/
+theorem exists_sum_divisor_riemannZeta_le_log : ∃ C : ℝ, 0 < C ∧ ∀ t : ℝ, 3 ≤ |t| →
+    ((∑ᶠ ρ, MeromorphicOn.divisor riemannZeta
+      (closedBall (2 + I * t) (8 / 5)) ρ : ℤ) : ℝ) ≤ C * Real.log |t| := by
+  have hden : 0 < Real.log (35 / 32) := Real.log_pos (by norm_num)
+  obtain ⟨C, hC, hbound⟩ := exists_riemannZeta_relative_bound_log
+  refine ⟨C / Real.log (35 / 32), div_pos hC hden, fun t ht ↦ ?_⟩
+  obtain ⟨M, _, hlog, hM⟩ := hbound t ht
+  have hf := analyticOnNhd_riemannZeta_closedBall ht
+  have hj := hf.sum_divisor_le_log_div_log (r := 8 / 5) (by norm_num) (by norm_num)
+    (riemannZeta_ne_zero_of_one_lt_re (by simp)) hM
+  rw [show (7 / 4 : ℝ) / (8 / 5) = 35 / 32 by norm_num] at hj
+  rw [div_mul_eq_mul_div]
+  exact hj.trans (div_le_div_of_nonneg_right hlog hden.le)
+
 /-- Zeta has only finitely many zeros in the disks used for the local count. -/
 theorem finite_zeros_riemannZeta_closedBall {t : ℝ} (ht : 3 ≤ |t|) :
     {z ∈ closedBall (2 + I * t) (8 / 5) | riemannZeta z = 0}.Finite := by
@@ -195,5 +234,28 @@ theorem exists_zeroCount_riemannZeta_closedBall_le_log : ∃ C : ℝ, 0 < C ∧
   rw [Real.log_mul (by norm_num : (20 : ℝ) ≠ 0) ht0.ne']
   rw [div_mul_eq_mul_div]
   exact div_le_div_of_nonneg_right (by nlinarith) hd.le
+
+/-- The total order of vanishing on any finite subset of the inner disk has a uniform
+logarithmic height bound. The subset need not consist only of zeros. -/
+theorem exists_sum_analyticOrderNatAt_riemannZeta_le_log : ∃ C : ℝ, 0 < C ∧
+    ∀ t : ℝ, 3 ≤ |t| → ∀ (S : Set ℂ) (hfin : S.Finite),
+      S ⊆ closedBall (2 + I * t) (8 / 5) →
+      (∑ ρ ∈ hfin.toFinset, (analyticOrderNatAt riemannZeta ρ : ℝ)) ≤ C * Real.log |t| := by
+  obtain ⟨C, hC, hcount⟩ := exists_sum_divisor_riemannZeta_le_log
+  refine ⟨C, hC, fun t ht S hfin hS ↦ ?_⟩
+  have hf : AnalyticOnNhd ℂ riemannZeta (closedBall (2 + I * t) (8 / 5)) :=
+    (analyticOnNhd_riemannZeta_closedBall ht).mono (closedBall_subset_closedBall (by norm_num))
+  have hz : (zeroCount riemannZeta (closedBall (2 + I * t) (8 / 5)) S : ℝ) ≤
+      ((∑ᶠ ρ, MeromorphicOn.divisor riemannZeta
+        (closedBall (2 + I * t) (8 / 5)) ρ : ℤ) : ℝ) := by
+    exact_mod_cast hf.zeroCount_le_finsum_divisor (isCompact_closedBall _ _) _ hS
+  have heq : (zeroCount riemannZeta (closedBall (2 + I * t) (8 / 5)) S : ℝ) =
+      ∑ ρ ∈ hfin.toFinset, (analyticOrderNatAt riemannZeta ρ : ℝ) := by
+    rw [zeroCount_def, finsum_mem_eq_finite_toFinset_sum _ hfin, Nat.cast_sum]
+    refine Finset.sum_congr rfl fun ρ hρ ↦ ?_
+    have hmem := hS (hfin.mem_toFinset.mp hρ)
+    rw [hf.meromorphicOn.divisor_eq_analyticOrderNatAt (hf ρ hmem) hmem, Int.toNat_natCast]
+  rw [heq] at hz
+  exact hz.trans (hcount t ht)
 
 end TauCeti
