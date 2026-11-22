@@ -3809,6 +3809,16 @@
       ],
       "note": "Entire xi derivatives retain growth bounds and are nonzero at the origin; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/IteratedDeriv/CompPowCoefficient.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.IteratedDeriv.CompPowCoefficient"
+      ],
+      "note": "All Taylor coefficients under a positive power substitution, including nondivisible indices.",
+      "speculative": true
     }
   ]
 }

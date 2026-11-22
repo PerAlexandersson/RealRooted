@@ -1,6 +1,7 @@
 module
 
-public import RealRooted.RiemannHypothesis.HermiteSimple
+public import RealRooted.RiemannHypothesis.Hermite
+import RealRooted.RiemannHypothesis.HermiteSimple
 import RealRooted.Hermite.Appell
 
 /-!

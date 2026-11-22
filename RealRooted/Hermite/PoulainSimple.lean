@@ -1,7 +1,7 @@
 module
 
 public import RealRooted.Hermite.Poulain
-public import RealRooted.SimpleRoots
+import RealRooted.SimpleRoots
 public import RealRooted.IteratedDerivativeShift
 import RealRooted.Hermite.PoulainSymbolInterlacing
 

@@ -2475,3 +2475,11 @@ public import RealRooted.RiemannHypothesis.HermiteSimple
 public import RealRooted.BrandenLC.Sequence
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.LogConcavity
 public import RealRooted.RiemannHypothesis.LogConcavity
+public import RealRooted.Hermite.Companions
+public import RealRooted.Hermite.Appell
+public import RealRooted.RiemannHypothesis.HermiteCompanions
+public import RealRooted.RiemannHypothesis.HermiteInterlacing
+public import RealRooted.Hermite.PoulainSimple
+public import RealRooted.Mathlib.Analysis.Calculus.IteratedDeriv.CompPowCoefficient
+public import RealRooted.LaguerreInequalities.AuxiliaryQuartic
+public import RealRooted.LaguerreInequalities.AuxiliaryCounterexample

@@ -1,7 +1,10 @@
 module
 
-public import RealRooted.Hermite.FiniteTransfer
+public import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
+public import RealRooted.Hermite.Jensen
+public import RealRooted.SimpleRoots
 public import Mathlib.RingTheory.Polynomial.Pochhammer
+import RealRooted.Hermite.FiniteTransfer
 import RealRooted.MultiplierSequence.InvPochhammer
 import RealRooted.MultiplierSequence.PolyaSchur
 import RealRooted.Mathlib.Algebra.Polynomial.Reverse

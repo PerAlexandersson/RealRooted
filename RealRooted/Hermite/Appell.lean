@@ -1,6 +1,8 @@
 module
 
-public import RealRooted.Hermite.FiniteTransfer
+public import RealRooted.Hermite.Jensen
+public import RealRooted.SimpleRoots
+import RealRooted.Hermite.FiniteTransfer
 import RealRooted.Derivative.Interlacing
 
 /-!
