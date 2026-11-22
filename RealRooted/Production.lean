@@ -2331,6 +2331,7 @@ public import RealRooted.QuadraticInterlacing.Preservation
 public import RealRooted.QuadraticInterlacing.Residue
 public import RealRooted.CombinatorialExamples.BigBlockSingletons
 public import RealRooted.DerivativeRecurrence.EulerLag
+public import RealRooted.ExponentialRows.DerivativeProduct
 public import RealRooted.ExponentialRows.Insertion
 public import RealRooted.ExponentialRows.PartialProducts
 public import RealRooted.ExponentialRows.ProductInsertion
