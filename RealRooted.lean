@@ -2441,3 +2441,11 @@ public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Hermite
 public import RealRooted.RiemannHypothesis.Hermite
 public import RealRooted.RiemannHypothesis.Inequalities
 public import RealRooted.RiemannHypothesis.MultiplierSequence
+public import RealRooted.MultiplierSequence.JensenProduct
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.JensenProduct
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.OperatorCriterion
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Product
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TotalPositivity
+public import RealRooted.RiemannHypothesis.DifferentialOperator
+public import RealRooted.RiemannHypothesis.JensenProduct
+public import RealRooted.RiemannHypothesis.TotalPositivity

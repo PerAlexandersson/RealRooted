@@ -1,9 +1,7 @@
 module
 
-public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
-public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
-import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Operator
 import RealRooted.Mathlib.Algebra.Polynomial.Reverse
 import Mathlib.Analysis.Complex.TaylorSeries
 
@@ -21,7 +19,9 @@ open Polynomial Complex Filter Topology
 
 namespace RealRooted
 
-private theorem taylorDifferentialOperator_X_pow (f : ℂ → ℂ) (n : ℕ) :
+/-- Applying a Taylor differential operator to a monomial gives the
+reflected Jensen polynomial of its Taylor data. -/
+theorem taylorDifferentialOperator_X_pow (f : ℂ → ℂ) (n : ℕ) :
     taylorDifferentialOperator f (X ^ n) =
       reflect n (jensenPolynomial n (fun k => (iteratedDeriv k f 0).re)) := by
   classical
