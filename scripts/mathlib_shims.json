@@ -3729,6 +3729,66 @@
       ],
       "note": "Taylor calculus and Riemann xi foundations for the Jensen criterion. Uses the pinned Tau Ceti analytic results where Mathlib lacks them; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/IteratedDeriv/MulPow.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.IteratedDeriv.MulPow"
+      ],
+      "note": "Taylor and Mellin calculus, theta moment bounds, and unconditional positivity of normalized xi coefficients; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/MellinTransform/LogMoments.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.MellinTransform.LogMoments"
+      ],
+      "note": "Taylor and Mellin calculus, theta moment bounds, and unconditional positivity of normalized xi coefficients; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/Kernel.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.Kernel"
+      ],
+      "note": "Taylor and Mellin calculus, theta moment bounds, and unconditional positivity of normalized xi coefficients; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/Mellin.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.Mellin"
+      ],
+      "note": "Taylor and Mellin calculus, theta moment bounds, and unconditional positivity of normalized xi coefficients; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/Moments.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.Moments"
+      ],
+      "note": "Taylor and Mellin calculus, theta moment bounds, and unconditional positivity of normalized xi coefficients; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/Positivity.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.Positivity"
+      ],
+      "note": "Taylor and Mellin calculus, theta moment bounds, and unconditional positivity of normalized xi coefficients; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }
