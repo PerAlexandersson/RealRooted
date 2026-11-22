@@ -125,7 +125,7 @@
       "sources": [
         "RealRooted/Mathlib/Data/List/Interleave.lean"
       ],
-      "note": "mathlib4#39870 (Yaël Dillies; merged, in Mathlib v4.35.0): List interleaving API. The shim now keeps only `Interleaves.map`, `Interleaves.map_of_mem` and one deprecated alias."
+      "note": "mathlib4#39870 (Ya\u00ebl Dillies; merged, in Mathlib v4.35.0): List interleaving API. The shim now keeps only `Interleaves.map`, `Interleaves.map_of_mem` and one deprecated alias."
     },
     {
       "sources": [
@@ -979,7 +979,7 @@
       "modules": [
         "Mathlib.Analysis.Complex.LimitsOfZeros"
       ],
-      "note": "Speculative target module (Beraha–Kahane–Weiss reverse direction, #2071); no upstream PR or attribution has been recorded yet.",
+      "note": "Speculative target module (Beraha\u2013Kahane\u2013Weiss reverse direction, #2071); no upstream PR or attribution has been recorded yet.",
       "speculative": true
     },
     {
@@ -2967,7 +2967,7 @@
       "modules": [
         "Mathlib.RingTheory.Polynomial.Laguerre.FiniteCombinations"
       ],
-      "note": "Speculative target module (Durán 2025, Theorem 1.3, case K = 1; #2069); no upstream PR or attribution has been recorded yet.",
+      "note": "Speculative target module (Dur\u00e1n 2025, Theorem 1.3, case K = 1; #2069); no upstream PR or attribution has been recorded yet.",
       "speculative": true
     },
     {
@@ -3267,7 +3267,7 @@
       "modules": [
         "Mathlib.LinearAlgebra.Matrix.Determinant.Hessenberg"
       ],
-      "note": "General matrix lemmas supporting the positive-power Brändén–Leite extension (#2441).",
+      "note": "General matrix lemmas supporting the positive-power Br\u00e4nd\u00e9n\u2013Leite extension (#2441).",
       "speculative": true
     },
     {
@@ -3287,7 +3287,7 @@
       "modules": [
         "Mathlib.LinearAlgebra.Matrix.Charpoly.DeterminantPencil"
       ],
-      "note": "General algebra and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "note": "General algebra and matrix lemmas for positive-power Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3297,7 +3297,7 @@
       "modules": [
         "Mathlib.LinearAlgebra.Matrix.Checkerboard"
       ],
-      "note": "General formal-series and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "note": "General formal-series and matrix lemmas for positive-power Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3307,7 +3307,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.BinomialDerivative"
       ],
-      "note": "General formal-series and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "note": "General formal-series and matrix lemmas for positive-power Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3317,7 +3317,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.BinomialPositive"
       ],
-      "note": "General formal-series and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "note": "General formal-series and matrix lemmas for positive-power Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3327,7 +3327,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.NegativePowerRecurrence"
       ],
-      "note": "General formal-series and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "note": "General formal-series and matrix lemmas for positive-power Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3337,7 +3337,7 @@
       "modules": [
         "Mathlib.Algebra.Polynomial.LinearFactors"
       ],
-      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3347,7 +3347,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.AffineSubstitution"
       ],
-      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3357,7 +3357,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.BinomialAffineExpansion"
       ],
-      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3367,7 +3367,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.BivariateBinomial"
       ],
-      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3377,7 +3377,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.NegativePowerCoefficients"
       ],
-      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3387,7 +3387,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.NegativePowerMul"
       ],
-      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3397,7 +3397,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.NegativePowerPositive"
       ],
-      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Brändén–Leite (#2441).",
+      "note": "General formal-series, polynomial, and matrix lemmas for positive-power Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3407,7 +3407,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.NegativePowerDegree"
       ],
-      "note": "General positive-power coefficient and recurrence lemmas for Brändén–Leite (#2441).",
+      "note": "General positive-power coefficient and recurrence lemmas for Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3417,7 +3417,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.BinomialLogLimit"
       ],
-      "note": "Formal logarithmic limits and inverse identities for generalized Brändén–Leite (#2441).",
+      "note": "Formal logarithmic limits and inverse identities for generalized Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3427,7 +3427,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.FiniteSubstitution"
       ],
-      "note": "Formal logarithmic limits and inverse identities for generalized Brändén–Leite (#2441).",
+      "note": "Formal logarithmic limits and inverse identities for generalized Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3437,7 +3437,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.NegativePowerLogLimit"
       ],
-      "note": "Formal logarithmic limits and inverse identities for generalized Brändén–Leite (#2441).",
+      "note": "Formal logarithmic limits and inverse identities for generalized Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3447,7 +3447,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.NegativePowerOne"
       ],
-      "note": "Formal logarithmic limits and inverse identities for generalized Brändén–Leite (#2441).",
+      "note": "Formal logarithmic limits and inverse identities for generalized Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3457,7 +3457,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.LogarithmMul"
       ],
-      "note": "Logarithmic coefficient identities and positivity for generalized Brändén–Leite (#2441).",
+      "note": "Logarithmic coefficient identities and positivity for generalized Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3467,7 +3467,7 @@
       "modules": [
         "Mathlib.RingTheory.PowerSeries.LogarithmPositive"
       ],
-      "note": "Logarithmic coefficient identities and positivity for generalized Brändén–Leite (#2441).",
+      "note": "Logarithmic coefficient identities and positivity for generalized Br\u00e4nd\u00e9n\u2013Leite (#2441).",
       "speculative": true
     },
     {
@@ -3788,6 +3788,26 @@
         "Mathlib.NumberTheory.LSeries.RiemannXi.Positivity"
       ],
       "note": "Taylor and Mellin calculus, theta moment bounds, and unconditional positivity of normalized xi coefficients; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/GrowthOrder/Derivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.GrowthOrder.Derivative"
+      ],
+      "note": "Iterated derivatives preserve the growth order of entire functions, using Cauchy estimates and Tau Ceti growth definitions; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/Derivative.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.Derivative"
+      ],
+      "note": "Entire xi derivatives retain growth bounds and are nonzero at the origin; no upstream PR yet.",
       "speculative": true
     }
   ]

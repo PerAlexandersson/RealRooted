@@ -133,9 +133,8 @@ private theorem orderLE_riemannXi : TauCeti.OrderLE riemannXi 1 := by
   simp only [riemannXi]
   ring
 
-/-- The square-variable xi function has order at most one, sufficient for Hadamard's
-genus-one factorization. Its sharper classical order is one half. -/
-theorem orderLE_riemannXiTheta : TauCeti.OrderLE riemannXiTheta 1 := by
+/-- The square-variable xi function has growth order at most one half. -/
+theorem orderLE_half_riemannXiTheta : TauCeti.OrderLE riemannXiTheta (1 / 2) := by
   let root : ℂ → ℂ := fun z => z ^ (2⁻¹ : ℂ)
   have hsq (z : ℂ) : ‖root z‖ ^ 2 = ‖z‖ := by
     rw [← norm_pow]
@@ -153,7 +152,7 @@ theorem orderLE_riemannXiTheta : TauCeti.OrderLE riemannXiTheta 1 := by
   have hg := orderLE_riemannXi.comp_mul_add 1 (1 / 2)
   rw [TauCeti.orderLE_def]
   intro A hA
-  have h := (hg.isBigO hA).comp_tendsto ht
+  have h := (hg.isBigO (show 1 < 2 * A by linarith)).comp_tendsto ht
   change (fun z => riemannXiTheta z) =O[cobounded ℂ] (fun z => Real.exp (‖z‖ ^ A))
   have heq : (fun z => riemannXiTheta z) =
       (fun s => riemannXi (1 * s + 1 / 2)) ∘ root := by
@@ -161,11 +160,13 @@ theorem orderLE_riemannXiTheta : TauCeti.OrderLE riemannXiTheta 1 := by
     simp [riemannXiTheta, TauCeti.descendPow_apply, root, add_comm]
   rw [heq]
   refine h.trans (IsBigO.of_bound 1 ?_)
-  filter_upwards [eventually_cobounded_le_norm 1] with z hz
-  have hroot : ‖root z‖ ≤ ‖z‖ := by
-    have := hsq z
-    have := norm_nonneg (root z)
-    have hge : 1 ≤ ‖root z‖ := by nlinarith
-    nlinarith
-  simp only [Function.comp_apply, Real.norm_eq_abs, Real.abs_exp, one_mul, Real.exp_le_exp]
-  exact Real.rpow_le_rpow (norm_nonneg _) hroot (by linarith)
+  apply Eventually.of_forall
+  intro z
+  have hpow : ‖root z‖ ^ (2 * A) = ‖z‖ ^ A := by
+    rw [Real.rpow_mul (norm_nonneg _), Real.rpow_two, hsq]
+  simp only [Function.comp_apply, Real.norm_eq_abs, Real.abs_exp, one_mul, hpow, le_refl]
+
+/-- The square-variable xi function satisfies the order-one bound used by
+the genus-one Hadamard factorization criterion. -/
+theorem orderLE_riemannXiTheta : TauCeti.OrderLE riemannXiTheta 1 :=
+  orderLE_half_riemannXiTheta.mono (by norm_num)

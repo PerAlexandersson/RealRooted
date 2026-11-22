@@ -13,7 +13,7 @@ import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Positivity
 /-!
 # Derivatives of the square-variable xi function
 
-Every derivative of `riemannXiTheta` is entire, has order at most one, and is
+Every derivative of `riemannXiTheta` is entire, has order at most one half, and is
 nonzero at the origin. These unconditional facts allow the real-zero criterion
 for the Laguerre--Pólya class to be applied at any fixed derivative index.
 -/
@@ -24,6 +24,11 @@ public section
 theorem differentiable_iteratedDeriv_riemannXiTheta (n : ℕ) :
     Differentiable ℂ (iteratedDeriv n riemannXiTheta) :=
   (differentiable_riemannXiTheta.contDiff (n := ⊤)).differentiable_iteratedDeriv n (by simp)
+
+/-- Every iterated derivative of the square-variable xi function has order at most one half. -/
+theorem orderLE_half_iteratedDeriv_riemannXiTheta (n : ℕ) :
+    TauCeti.OrderLE (iteratedDeriv n riemannXiTheta) (1 / 2) :=
+  orderLE_half_riemannXiTheta.iteratedDeriv differentiable_riemannXiTheta n
 
 /-- Every iterated derivative of the square-variable xi function has order at most one. -/
 theorem orderLE_iteratedDeriv_riemannXiTheta (n : ℕ) :
