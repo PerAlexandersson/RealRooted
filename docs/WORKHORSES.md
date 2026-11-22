@@ -242,7 +242,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 15 | `RealRooted.StrictInterl.roots_le_of_right` | `RealRooted.Basic.ProperPosition` | Every root of the left-hand polynomial is bounded by any common upper bound for the roots of the right-hand polynomial in a `StrictInterl` witness. |
 | 15 | `RealRooted.roots_comp_X_add_C` | `RealRooted.Linear` |  |
 | 13 | `RealRooted.MaWang.exists_isRoot_between_of_eval_mul_neg` | `RealRooted.MaWang.StrictSigns.RootSigns` | Strict IVT bridge: strictly opposite endpoint signs give a real root in the open interval. |
-| 11 | `IsCoprime.not_isRoot_right` | `RealRooted.Basic.PolynomialFacts` | Coprime polynomials cannot vanish at the same point. |
+| 12 | `IsCoprime.not_isRoot_right` | `RealRooted.Basic.PolynomialFacts` | Coprime polynomials cannot vanish at the same point. |
 | 10 | `RealRooted.SimpleNegRooted.darbouxOperator` | `RealRooted.EulerOperator.Darboux.NegativeRoots` | **Darboux step.** If `a > 0` and `deg f < b`, then `D_{a,-b}(f) = x (1 - x) f' + (a + b x) f` keeps the invariant in degree `deg f + 1` and strictly interlaces with `f`, with no common root. |
 | 8 | `Polynomial.roots_mem_of_tendsto_eval_of_natDegree_le` | `RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots` | Roots of a limit polynomial stay in any closed set that contains the roots along a sequence of uniformly bounded degree, provided evaluations converge pointwise. |
 | 8 | `RealRooted.StrictInterl.roots_sum_le_of_sameDegree` | `RealRooted.Basic.ProperPosition` | In the same-degree case, `StrictInterl f g` orders the sums of the roots. |
