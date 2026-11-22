@@ -45,7 +45,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 100 | `RealRooted.StrictInterl.toInterlaces` | `RealRooted.Basic.ProperPosition` |  |
+| 101 | `RealRooted.StrictInterl.toInterlaces` | `RealRooted.Basic.ProperPosition` |  |
 | 63 | `RealRooted.StrictInterl.toInterl` | `RealRooted.Basic.ProperPosition` |  |
 | 46 | `RealRooted.interl_zero_left` | `RealRooted.Basic.ProperPosition` |  |
 | 45 | `RealRooted.interlaces_one_linear` | `RealRooted.Linear` |  |
@@ -313,12 +313,12 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 7 | `RealRooted.LiuOppositeSigns.natDegree_deleteRootFactor` | `RealRooted.LiuOppositeSigns.RootCount` |  |
 | 7 | `RealRooted.StrictInterl.natDegree_le_succ` | `RealRooted.Basic.ProperPosition` | The right endpoint in `StrictInterl f g` has degree at most one more than the left endpoint. |
 | 7 | `RealRooted.natDegree_gammaTransform_le` | `RealRooted.GammaTransform.Basic` |  |
+| 7 | `RealRooted.natDegree_narayanaPolynomial` | `RealRooted.NarayanaTransformation.Recurrences.Identities` |  |
 | 7 | `RealRooted.natDegree_touchard` | `RealRooted.CombinatorialExamples.Touchard` |  |
 | 6 | `Polynomial.natDegree_shiftedJacobiMonic` | `RealRooted.Mathlib.RingTheory.Polynomial.Jacobi` | The monic shifted Jacobi polynomial has its indexed degree. |
 | 6 | `RealRooted.IsPFPolynomial.exists_X_sub_C_factor_of_pos_natDegree` | `RealRooted.PFPolynomial` | A positive-degree PF polynomial has a nonpositive linear root factor whose quotient is again PF and has smaller degree. |
 | 6 | `RealRooted.generalizedEulerian_natDegree` | `RealRooted.GeneralizedEulerian` | Degree of a generalized Eulerian polynomial, for every real parameter. |
 | 6 | `RealRooted.natDegree_iterate_derivative_eq_sub` | `RealRooted.ObreschkoffConverse.DegreeGap` | Exact degree bookkeeping for iterated derivatives. |
-| 6 | `RealRooted.natDegree_narayanaPolynomial` | `RealRooted.NarayanaTransformation.Recurrences.Identities` |  |
 | 6 | `RealRooted.natDegree_rootPolynomial` | `RealRooted.RootPolynomial` | The degree of `rootPolynomial s` is the cardinality of `s`. |
 
 ## leadingCoeff
@@ -360,7 +360,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 19 | `RealRooted.coeff_jensenPolynomial` | `RealRooted.MultiplierSequence` |  |
 | 16 | `Polynomial.coeff_comp_neg_X` | `RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas` | The coefficients of `p.comp (-X)` are those of `p` with alternating signs. |
 | 16 | `RealRooted.coeff_theta` | `RealRooted.EulerOperator` |  |
-| 13 | `RealRooted.coeff_narayanaPolynomial_of_le` | `RealRooted.NarayanaTransformation.Coefficients` |  |
+| 14 | `RealRooted.coeff_narayanaPolynomial_of_le` | `RealRooted.NarayanaTransformation.Coefficients` |  |
 | 12 | `RealRooted.coeff_schurSzegoComp_of_le` | `RealRooted.Hadamard.Basic` |  |
 | 11 | `Polynomial.coeff_quadratic_derivative_add_linear_mul_succ` | `RealRooted.Mathlib.Algebra.Polynomial.Derivative` | The coefficient at `k + 1` after multiplying `p'` by a quadratic with no constant term and `p` by a linear polynomial. |
 | 10 | `RealRooted.coeff_oddEvenPolynomial_even` | `RealRooted.HermiteBiehler.OddEven` |  |
@@ -385,8 +385,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 430 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
-| 278 | `RealRooted.EffectiveBKW.IntPoly2.eval_add` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate addition. |
+| 431 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
+| 279 | `RealRooted.EffectiveBKW.IntPoly2.eval_add` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate addition. |
 | 19 | `RealRooted.bezoutEntry.wronskian` | `RealRooted.Bezoutian.RootEvaluation` |  |
 | 16 | `RealRooted.eval_pos_of_all_roots_lt` | `RealRooted.WagnerRightSum.Sign` |  |
 | 13 | `RealRooted.eval_complexify_ne_zero_of_splits_of_im_pos` | `RealRooted.HermiteBiehler.Basic` | A nonzero split real polynomial has no root in the open upper half-plane. |
