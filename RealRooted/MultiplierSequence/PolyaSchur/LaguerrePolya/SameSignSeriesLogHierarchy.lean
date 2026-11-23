@@ -40,10 +40,7 @@ theorem isCompletelyMonotoneOnIoi_weighted_logDeriv_of_series
     TauCeti.IsCompletelyMonotoneOnIoi (fun x : ℝ ↦
       (-1 / x) ^ m * iteratedDeriv k (fun y : ℝ ↦ y ^ (k + m) *
         iteratedDeriv m (fun z : ℝ ↦ (logDeriv f (z : ℂ)).re) y) x) := by
-  have hc (n : ℕ) : (iteratedDeriv n f 0).re / (n.factorial : ℝ) = a n := by
-    have h := congrArg Complex.re
-      (Complex.iteratedDeriv_div_factorial_eq_of_hasSum (hf.analyticAt 0) hseries n)
-    simpa only [Complex.div_natCast_re, Complex.ofReal_re] using h
+  have hc := Complex.re_iteratedDeriv_div_factorial_eq_of_hasSum (hf.analyticAt 0) hseries
   have hc0 : (f 0).re = a 0 := by
     simpa only [iteratedDeriv_zero, Nat.factorial_zero, Nat.cast_one, div_one] using hc 0
   apply isCompletelyMonotoneOnIoi_weighted_logDeriv_of_negZeros hf horder hrho

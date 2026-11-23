@@ -2766,6 +2766,9 @@ public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.LaplaceKernel
 public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Rodrigues
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.NativeWeightedHeatHierarchy
 public import RealRooted.RiemannHypothesis.NativeWeightedHeatHierarchy
+public import RealRooted.Mathlib.Analysis.Complex.ZeroHeatTraceScale
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.SameSignNativeWeightedHeat
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.SameSignSeriesNativeWeightedHeat
 
 /-!
 # RealRooted production umbrella

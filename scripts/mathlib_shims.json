@@ -5669,6 +5669,16 @@
       ],
       "note": "Weighted exponential-mixture Laplace and Laguerre kernel identities; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/ZeroHeatTraceScale.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.ZeroHeatTraceScale"
+      ],
+      "note": "Nonzero scalar invariance of native divisor heat traces; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }

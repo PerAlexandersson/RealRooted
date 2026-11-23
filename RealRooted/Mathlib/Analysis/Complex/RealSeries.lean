@@ -42,6 +42,15 @@ theorem iteratedDeriv_div_factorial_eq_of_hasSum
   have hc := congrArg (fun p : FormalMultilinearSeries ℂ ℂ ℂ ↦ p.coeff n) heq
   simpa only [FormalMultilinearSeries.coeff_ofScalars] using hc
 
+/-- Real scalar-series coefficients equal the real Taylor derivatives
+with the same factorial normalization. -/
+theorem re_iteratedDeriv_div_factorial_eq_of_hasSum
+    {f : ℂ → ℂ} {a : ℕ → ℝ} (hf : AnalyticAt ℂ f 0)
+    (hs : ∀ᶠ z in 𝓝 (0 : ℂ), HasSum (fun n : ℕ ↦ (a n : ℂ) * z ^ n) (f z))
+    (n : ℕ) : (iteratedDeriv n f 0).re / (n.factorial : ℝ) = a n := by
+  have h := congrArg Complex.re (iteratedDeriv_div_factorial_eq_of_hasSum hf hs n)
+  simpa only [Complex.div_natCast_re, Complex.ofReal_re] using h
+
 /-- A scalar-series germ of an entire function represents the same
 function at every complex argument. -/
 theorem hasSum_of_entire_of_hasSum_germ {f : ℂ → ℂ} {a : ℕ → ℂ}
