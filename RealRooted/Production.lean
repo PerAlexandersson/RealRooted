@@ -2919,6 +2919,10 @@ public import RealRooted.Mathlib.MeasureTheory.Measure.AeratedSeries
 public import RealRooted.Mathlib.RingTheory.PowerSeries.JacobiFraction.ActiveCoefficients
 public import RealRooted.Mathlib.RingTheory.PowerSeries.JacobiFraction.Aeration
 public import RealRooted.Mathlib.RingTheory.PowerSeries.JacobiFraction.Coefficients
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.CatalanBound
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.ChainParameters
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.MeasureBound
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.TranslatedAeration
 
 /-!
 # RealRooted production umbrella

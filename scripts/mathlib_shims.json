@@ -6839,6 +6839,46 @@
       ],
       "note": "Formal square-variable aeration and recovery of active Jacobi coefficients. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/CatalanBound.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.CatalanBound"
+      ],
+      "note": "Stieltjes coefficient bounds and Wall chain extraction from active Jacobi data. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/MeasureBound.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.MeasureBound"
+      ],
+      "note": "Stieltjes coefficient bounds and Wall chain extraction from active Jacobi data. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/ChainParameters.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.ChainParameters"
+      ],
+      "note": "Stieltjes coefficient bounds and Wall chain extraction from active Jacobi data. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/TranslatedAeration.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.TranslatedAeration"
+      ],
+      "note": "Stieltjes coefficient bounds and Wall chain extraction from active Jacobi data. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }
