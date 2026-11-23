@@ -3086,3 +3086,11 @@ public import RealRooted.Mathlib.MeasureTheory.Integral.Bochner.LogConcaveMoment
 public import RealRooted.Mathlib.MeasureTheory.Integral.Bochner.StrictWeightedCovariance
 public import RealRooted.Mathlib.MeasureTheory.Integral.Bochner.WeightedCovariance
 public import RealRooted.Mathlib.MeasureTheory.Integral.IntegralEqImproper.Power
+public import RealRooted.Mathlib.Analysis.Polynomial.GaussianMajorant
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianTail
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.Gaussian.ParameterDerivative
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.FourierMajorant
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.FourierPolynomial
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.FourierSeries
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.FourierSummand
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.ThetaSecondDerivative

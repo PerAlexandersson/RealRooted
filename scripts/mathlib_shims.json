@@ -7289,6 +7289,86 @@
       ],
       "note": "Weighted covariance and strict even-moment inequalities from logarithmic concavity; general infrastructure for Csordas--Varga1988.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/FourierPolynomial.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.FourierPolynomial"
+      ],
+      "note": "Gaussian lattice majorants and the actual xi Fourier-kernel derivative series; Csordas--Varga1988 analytic infrastructure.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/FourierSummand.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.FourierSummand"
+      ],
+      "note": "Gaussian lattice majorants and the actual xi Fourier-kernel derivative series; Csordas--Varga1988 analytic infrastructure.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Gaussian/GaussianTail.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianTail"
+      ],
+      "note": "Gaussian lattice majorants and the actual xi Fourier-kernel derivative series; Csordas--Varga1988 analytic infrastructure.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Polynomial/GaussianMajorant.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Polynomial.GaussianMajorant"
+      ],
+      "note": "Gaussian lattice majorants and the actual xi Fourier-kernel derivative series; Csordas--Varga1988 analytic infrastructure.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/FourierMajorant.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.FourierMajorant"
+      ],
+      "note": "Gaussian lattice majorants and the actual xi Fourier-kernel derivative series; Csordas--Varga1988 analytic infrastructure.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/FourierSeries.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.FourierSeries"
+      ],
+      "note": "Gaussian lattice majorants and the actual xi Fourier-kernel derivative series; Csordas--Varga1988 analytic infrastructure.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Gaussian/ParameterDerivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Gaussian.ParameterDerivative"
+      ],
+      "note": "Gaussian lattice majorants and the actual xi Fourier-kernel derivative series; Csordas--Varga1988 analytic infrastructure.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/ThetaSecondDerivative.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.ThetaSecondDerivative"
+      ],
+      "note": "Gaussian lattice majorants and the actual xi Fourier-kernel derivative series; Csordas--Varga1988 analytic infrastructure.",
+      "speculative": true
     }
   ]
 }
