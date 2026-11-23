@@ -2977,3 +2977,7 @@ public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.Compac
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.InitialParameterCriterion
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.LowerParameters
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.TerminatingBoundary
+public import RealRooted.Mathlib.MeasureTheory.Measure.AeratedMoments
+public import RealRooted.Mathlib.MeasureTheory.Measure.SqrtMoments
+public import RealRooted.Mathlib.MeasureTheory.Measure.SqrtSupport
+public import RealRooted.Mathlib.MeasureTheory.Measure.SqrtSymmetrization

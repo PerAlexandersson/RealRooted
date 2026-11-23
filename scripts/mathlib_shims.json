@@ -6759,6 +6759,46 @@
       ],
       "note": "Nonnegative initial Stieltjes parameters, compact active-prefix admissibility, and the terminating Dirac boundary. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/SqrtSymmetrization.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.SqrtSymmetrization"
+      ],
+      "note": "Symmetric square-root measures, moment aeration, and exact support transport. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/SqrtMoments.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.SqrtMoments"
+      ],
+      "note": "Symmetric square-root measures, moment aeration, and exact support transport. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/SqrtSupport.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.SqrtSupport"
+      ],
+      "note": "Symmetric square-root measures, moment aeration, and exact support transport. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/AeratedMoments.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.AeratedMoments"
+      ],
+      "note": "Symmetric square-root measures, moment aeration, and exact support transport. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }
