@@ -5049,6 +5049,26 @@
       ],
       "note": "Ordered root error rates and one chosen convergent root family near a simple real reference; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/GaussianLimits.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.GaussianLimits"
+      ],
+      "note": "Quantitative positive Gaussian quadrature convergence from finite moments and ordered roots; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/Chebyshev/PrimeWindowWeightedQuadrature.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.Chebyshev.PrimeWindowWeightedQuadrature"
+      ],
+      "note": "Actual weighted prime-sum moment functionals and one-node quadrature mass; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }

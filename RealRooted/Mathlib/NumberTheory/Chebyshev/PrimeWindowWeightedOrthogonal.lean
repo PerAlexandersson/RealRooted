@@ -44,10 +44,7 @@ theorem isMonicOfDegree_primeWindowWeightedPolynomial
 /-- The constant unit reference weight gives the original prime-window polynomial. -/
 @[simp] theorem primeWindowWeightedPolynomial_one (X H : ℝ) (n : ℕ) :
     primeWindowWeightedPolynomial (fun _ ↦ 1) X H n = primeWindowPolynomial X H n := by
-  unfold primeWindowWeightedPolynomial primeWindowPolynomial
-  apply congrArg (fun μ ↦ monicMomentPolynomial μ n)
-  funext k
-  simp only [primeWindowWeightedMoment, primeWindowMoment, mul_one]
+  simp only [primeWindowWeightedPolynomial, primeWindowWeightedMoment_one, primeWindowPolynomial]
 
 /-- Weighted prime moments are finite atomic moments with the product weight. -/
 theorem primeWindowWeightedMoment_eq_sum (W : ℝ → ℝ) (X H : ℝ) (k : ℕ) :

@@ -35,6 +35,12 @@ The base logarithmic weights are divided by the window length, with no mass norm
   ∑ p ∈ primeWindow X H, (Real.log p / H) *
     ((((p : ℝ) - X) / H) ^ k * W (((p : ℝ) - X) / H))
 
+/-- A constant unit reference weight recovers the original moment sequence. -/
+@[simp] theorem primeWindowWeightedMoment_one (X H : ℝ) :
+    primeWindowWeightedMoment (fun _ ↦ 1) X H = primeWindowMoment X H := by
+  funext k
+  simp only [primeWindowWeightedMoment, primeWindowMoment, mul_one]
+
 end Chebyshev
 
 namespace RiemannHypothesis

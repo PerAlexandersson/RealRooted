@@ -2733,3 +2733,6 @@ public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.CoefficientRates
 public import RealRooted.Mathlib.Analysis.Polynomial.OrderedRootRates
 public import RealRooted.RiemannHypothesis.PrimeWindowJacobiPolynomialBounds
 public import RealRooted.RiemannHypothesis.PrimeWindowJacobiRoots
+public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.GaussianLimits
+public import RealRooted.Mathlib.NumberTheory.Chebyshev.PrimeWindowWeightedQuadrature
+public import RealRooted.RiemannHypothesis.PrimeWindowJacobiQuadrature
