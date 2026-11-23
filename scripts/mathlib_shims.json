@@ -5769,6 +5769,36 @@
       ],
       "note": "Entire finite translated products and nonvanishing with nonzero slopes. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/CompactJets.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.CompactJets"
+      ],
+      "note": "Uniform nonvanishing Taylor jets on compact sets for nonzero entire functions. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/SymbolAlgebra.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.SymbolAlgebra"
+      ],
+      "note": "Scalar, additive and variable-factor algebra of actual infinite differential series. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/PolynomialComposition.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.PolynomialComposition"
+      ],
+      "note": "Finite polynomial-symbol composition with infinite differential operators under reciprocal growth bounds. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }

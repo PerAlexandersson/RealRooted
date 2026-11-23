@@ -2859,3 +2859,7 @@ public import RealRooted.Mathlib.Analysis.Complex.TranslateProductNonzero
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.AuxiliaryCriterion
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.AuxiliaryInequality
 public import RealRooted.RiemannHypothesis.AuxiliaryCriterion
+public import RealRooted.Mathlib.Analysis.Complex.CompactJets
+public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.PolynomialComposition
+public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.SymbolAlgebra
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.CompactDifferentialSimple
