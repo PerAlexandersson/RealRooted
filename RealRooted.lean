@@ -2835,3 +2835,8 @@ public import RealRooted.RiemannHypothesis.NativeWeightedHeatHierarchy
 public import RealRooted.Mathlib.Analysis.Complex.ZeroHeatTraceScale
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.SameSignNativeWeightedHeat
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.SameSignSeriesNativeWeightedHeat
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.RegularizedHypergeometric.Derivatives
+public import RealRooted.MultiplierSequence.JensenBesselObstruction
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.BesselClassification
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.BesselInteger
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.BesselTaylor

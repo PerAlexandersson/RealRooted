@@ -223,8 +223,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 13 | `RealRooted.quadraticPoly_not_splits_of_discrim_neg` | `RealRooted.QuadraticRoot` | A real quadratic polynomial with nonzero leading coefficient and negative discriminant does not split over `ℝ`. |
 | 12 | `Polynomial.eq_zero_or_splits_of_tendsto_eval_of_natDegree_le` | `RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real` | Pointwise limits of real splitting polynomials with uniformly bounded degree are zero or split. |
 | 12 | `Polynomial.splits_reflect_iff` | `RealRooted.Mathlib.Algebra.Polynomial.Reverse` | At a valid degree bound, reflection preserves and reflects splitting. |
+| 12 | `RealRooted.IsLaguerrePolya.jensenPolynomial_splits` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Jensen` | Every Jensen polynomial of the Taylor data of a Laguerre–Pólya function splits. |
 | 11 | `Polynomial.Splits.reverse` | `RealRooted.Mathlib.Algebra.Polynomial.Reverse` | Reversal preserves splitting over a field. |
-| 11 | `RealRooted.IsLaguerrePolya.jensenPolynomial_splits` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Jensen` | Every Jensen polynomial of the Taylor data of a Laguerre–Pólya function splits. |
 | 11 | `RealRooted.isRealRooted_mul` | `RealRooted.Basic.PolynomialFacts` | The product of two real-rooted polynomials is real-rooted. |
 | 11 | `RealRooted.splits_of_natDegree_eq_two_of_discrim_nonneg` | `RealRooted.QuadraticRoot` | A degree-two real polynomial with nonnegative discriminant splits. |
 | 10 | `RealRooted.HermitePoulain.applyAsDifferentialOperator_eq_zero_or_splits` | `RealRooted.Hermite.Poulain` | Hermite--Poulain theorem target, zero-aware because a differential operator can annihilate a lower-degree polynomial. |
@@ -485,7 +485,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | uses | theorem | module | doc |
 |---:|---|---|---|
 | 29 | `RealRooted.toeplitz_apply` | `RealRooted.AissenSchoenbergWhitneyBase` |  |
-| 24 | `RealRooted.IsRealRootedIn.comp_neg_X` | `RealRooted.RootLocation.Basic` | Substituting `-X` into a polynomial rooted in `S` gives a polynomial rooted in the preimage of `S` under negation. |
+| 25 | `RealRooted.IsRealRootedIn.comp_neg_X` | `RealRooted.RootLocation.Basic` | Substituting `-X` into a polynomial rooted in `S` gives a polynomial rooted in the preimage of `S` under negation. |
 | 15 | `MvPolynomial.mem_degreeOfLE_iff_degreeOf` | `RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox` |  |
 | 14 | `MvPolynomial.coe_basisDegreeOfLE` | `RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox` |  |
 | 14 | `RealRooted.StrictInterl.rootMultiplicity_bounds` | `RealRooted.Basic.ProperPosition` | In proper position, the multiplicities of every real root differ by at most one. |

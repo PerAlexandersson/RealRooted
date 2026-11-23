@@ -5679,6 +5679,16 @@
       ],
       "note": "Nonzero scalar invariance of native divisor heat traces; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/RegularizedHypergeometric/Derivatives.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.RegularizedHypergeometric.Derivatives"
+      ],
+      "note": "Taylor derivatives of entire regularized hypergeometric functions, including Gamma-pole lower parameters; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }
