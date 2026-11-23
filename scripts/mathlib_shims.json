@@ -5949,6 +5949,26 @@
       ],
       "note": "Continuity in locally uniform symbols under a common Gaussian envelope. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/CanonicalProduct/MinimalType.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.CanonicalProduct.MinimalType"
+      ],
+      "note": "Arbitrary-index weighted genus-one canonical products have minimal quadratic type. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/CanonicalProduct/GaussianProductBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.CanonicalProduct.GaussianProductBound"
+      ],
+      "note": "Canonical products retain their Gaussian coefficient in arbitrarily sharp norm estimates. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }

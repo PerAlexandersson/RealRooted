@@ -2885,3 +2885,7 @@ public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.InfiniteDif
 public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.GaussianImageGrowth
 public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.GaussianSymbolLimit
 public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.GaussianUniformBound
+public import RealRooted.Mathlib.Analysis.Complex.CanonicalProduct.GaussianProductBound
+public import RealRooted.Mathlib.Analysis.Complex.CanonicalProduct.MinimalType
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.CanonicalDifferential
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.InfiniteDifferentialGaussianType
