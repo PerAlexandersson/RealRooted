@@ -2935,6 +2935,9 @@ public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.Compac
 public import RealRooted.RiemannHypothesis.CompactStieltjesFraction
 public import RealRooted.Mathlib.Analysis.Calculus.LogDeriv.Const
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.CompactStieltjesFraction
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.Complementary
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.ComplementaryChain
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.ComplementaryCoefficients
 
 /-!
 # RealRooted production umbrella

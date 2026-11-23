@@ -533,12 +533,12 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 8 | `Polynomial.basisTransform_finset_sum` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` | A basis transform distributes over a finite polynomial sum. |
 | 8 | `Polynomial.momentFunctional_add` | `RealRooted.Mathlib.Algebra.Polynomial.Moment` |  |
 | 8 | `Polynomial.momentPairing_comm` | `RealRooted.Mathlib.Algebra.Polynomial.Moment` |  |
+| 8 | `PowerSeries.one_sub_mul_stieltjesStep` | `RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.Step` | The formal Stieltjes step inverts its stated denominator. |
 | 8 | `RealRooted.BigDescents321.SmallCases.ofList_cons` | `RealRooted.CombinatorialExamples.BigDescents321.SmallCases.ListPoly` |  |
 | 8 | `RealRooted.brandenE_X_pow` | `RealRooted.Transforms.BrandenE.Basic` |  |
 | 8 | `RealRooted.gammaTransform_X_mul_two` | `RealRooted.GammaTransform.Basic` |  |
 | 8 | `RealRooted.jensenPolynomial_eq_diagonalOperator_X_add_one_pow` | `RealRooted.MultiplierSequence` | The Jensen polynomial of `gamma` is the image of `(X + 1) ^ n` under the diagonal operator attached to `gamma`. |
 | 8 | `RealRooted.schurSzegoComp_comm` | `RealRooted.Hadamard.Basic` |  |
-| 8 | `RealRooted.weightedSum_ofFn` | `RealRooted.WeightedSum` | Finite-function form of `weightedSum_eq_sum_map`. |
 
 ## other
 

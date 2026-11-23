@@ -6979,6 +6979,36 @@
       ],
       "note": "Constant division preserves totalized logarithmic derivatives over normed fields. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/Complementary.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.Complementary"
+      ],
+      "note": "Complementary Wall chains and their exact coefficient convolution over commutative rings. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/ComplementaryCoefficients.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.ComplementaryCoefficients"
+      ],
+      "note": "Complementary Wall chains and their exact coefficient convolution over commutative rings. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/ComplementaryChain.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.ComplementaryChain"
+      ],
+      "note": "Complementary Wall chains and their exact coefficient convolution over commutative rings. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }

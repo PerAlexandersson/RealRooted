@@ -9,6 +9,8 @@ public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.LowerS
 public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.ActivePrefix
 
+import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.Coefficients
+
 /-!
 # A terminating boundary for lower-support parameters
 
@@ -37,16 +39,8 @@ theorem stieltjesTail_point_eq (c : ℝ) :
 
 /-- Coefficients of a one-step geometric fraction are powers of its numerator. -/
 theorem coeff_stieltjesStep_one (c : ℝ) (n : ℕ) :
-    coeff n (stieltjesStep c 1) = c ^ n := by
-  have hrec : stieltjesStep c 1 = 1 + X * (C c * stieltjesStep c 1) := by
-    conv_lhs => rw [stieltjesStep_eq_one_add]
-    ring
-  induction n with
-  | zero => simp
-  | succ n ih =>
-      have h := congrArg (coeff (n + 1)) hrec
-      simpa only [map_add, coeff_one, Nat.add_one_ne_zero, ite_false, zero_add,
-        coeff_succ_X_mul, coeff_C_mul, ih, pow_succ'] using h
+    coeff n (stieltjesStep c 1) = c ^ n :=
+  coeff_stieltjesStep_one_eq_pow c n
 
 /-- The standard one-atom fraction has the genuine moments of the Dirac measure at `c`. -/
 theorem integral_dirac_eq_coeff_pointStieltjes (c : ℝ) (n : ℕ) :

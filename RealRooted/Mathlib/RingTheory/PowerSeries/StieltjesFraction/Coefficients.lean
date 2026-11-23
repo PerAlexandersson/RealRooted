@@ -7,6 +7,7 @@ module
 
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.Tail
 public import Mathlib.Basic.Real.Basic
+import Mathlib.Tactic.TypeStar
 
 /-!
 # Coefficients of formal Stieltjes fractions
@@ -23,6 +24,19 @@ open scoped BigOperators
 namespace PowerSeries
 
 variable {R : Type*} [CommRing R]
+
+/-- Geometric Stieltjes steps have power coefficients over every commutative ring. -/
+theorem coeff_stieltjesStep_one_eq_pow (c : R) (n : ℕ) :
+    coeff n (stieltjesStep c 1) = c ^ n := by
+  have hrec : stieltjesStep c 1 = 1 + X * (C c * stieltjesStep c 1) := by
+    conv_lhs => rw [stieltjesStep_eq_one_add]
+    ring
+  induction n with
+  | zero => simp
+  | succ n ih =>
+      have h := congrArg (coeff (n + 1)) hrec
+      simpa only [map_add, coeff_one, Nat.add_one_ne_zero, ite_false, zero_add,
+        coeff_succ_X_mul, coeff_C_mul, ih, pow_succ'] using h
 
 /-- The multiplicative tail recurrence with its degree shift explicit. -/
 theorem stieltjesTail_eq_one_add (a : ℕ → R) (s : ℕ) :
