@@ -6799,6 +6799,46 @@
       ],
       "note": "Symmetric square-root measures, moment aeration, and exact support transport. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/JacobiFraction/Aeration.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.JacobiFraction.Aeration"
+      ],
+      "note": "Formal square-variable aeration and recovery of active Jacobi coefficients. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/AeratedSeries.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.AeratedSeries"
+      ],
+      "note": "Formal square-variable aeration and recovery of active Jacobi coefficients. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/JacobiFraction/Coefficients.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.JacobiFraction.Coefficients"
+      ],
+      "note": "Formal square-variable aeration and recovery of active Jacobi coefficients. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/JacobiFraction/ActiveCoefficients.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.JacobiFraction.ActiveCoefficients"
+      ],
+      "note": "Formal square-variable aeration and recovery of active Jacobi coefficients. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }

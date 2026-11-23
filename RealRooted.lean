@@ -2981,3 +2981,7 @@ public import RealRooted.Mathlib.MeasureTheory.Measure.AeratedMoments
 public import RealRooted.Mathlib.MeasureTheory.Measure.SqrtMoments
 public import RealRooted.Mathlib.MeasureTheory.Measure.SqrtSupport
 public import RealRooted.Mathlib.MeasureTheory.Measure.SqrtSymmetrization
+public import RealRooted.Mathlib.MeasureTheory.Measure.AeratedSeries
+public import RealRooted.Mathlib.RingTheory.PowerSeries.JacobiFraction.ActiveCoefficients
+public import RealRooted.Mathlib.RingTheory.PowerSeries.JacobiFraction.Aeration
+public import RealRooted.Mathlib.RingTheory.PowerSeries.JacobiFraction.Coefficients
