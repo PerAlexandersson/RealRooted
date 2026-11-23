@@ -139,7 +139,12 @@ curated list. Some representative checked theorems:
 
 Open problems and proof tasks are tracked in
 [GitHub issues](https://github.com/PerAlexandersson/RealRooted/issues), not in
-this file.
+this file. A curated list of open real-rootedness problems is on the Symmetric
+Functions Catalog page
+[Real-rooted polynomials: open problems](https://www.symmetricfunctions.com/realRootedOpenProblems.htm).
+It is organized by topic, and each entry gives the combinatorial meaning, a
+formula, the first polynomials and the tested range. A final section lists
+counterexamples.
 
 ## Contributing
 
@@ -313,5 +318,6 @@ Apache License, Version 2.0. See [`LICENSE`](LICENSE).
 Related surveys: the Symmetric Functions Catalog pages on
 [real-rooted polynomials](https://www.symmetricfunctions.com/realRooted.htm),
 [interlacing](https://www.symmetricfunctions.com/realRootedInterlacing.htm),
-[Pólya frequency](https://www.symmetricfunctions.com/polyaFrequency.htm), and
-[real-rooted words](https://www.symmetricfunctions.com/realRootedWords.htm).
+[Pólya frequency](https://www.symmetricfunctions.com/polyaFrequency.htm),
+[real-rooted words](https://www.symmetricfunctions.com/realRootedWords.htm), and
+[open problems](https://www.symmetricfunctions.com/realRootedOpenProblems.htm).
