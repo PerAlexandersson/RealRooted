@@ -268,8 +268,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 87 | `RealRooted.hasNonnegCoeffs_C_mul` | `RealRooted.Basic.Coefficients` |  |
 | 57 | `RealRooted.hasNonnegCoeffs_one` | `RealRooted.Basic.Coefficients` |  |
 | 53 | `RealRooted.hasNonnegCoeffs_C` | `RealRooted.Basic.Coefficients` |  |
+| 50 | `RealRooted.HasNonnegCoeffs.basisTransform` | `RealRooted.BasisTransform` | A basis transform preserves coefficientwise nonnegativity when every basis element has nonnegative coefficients. |
 | 50 | `RealRooted.hasNonnegCoeffs_X` | `RealRooted.Basic.Coefficients` |  |
-| 49 | `RealRooted.HasNonnegCoeffs.basisTransform` | `RealRooted.BasisTransform` | A basis transform preserves coefficientwise nonnegativity when every basis element has nonnegative coefficients. |
 | 46 | `RealRooted.hasPosLeadingCoeff_C_mul` | `RealRooted.Basic.Coefficients` |  |
 | 40 | `RealRooted.HasNonnegCoeffs.weightedSum` | `RealRooted.GarloffWagner.SchurProductPF` |  |
 | 32 | `RealRooted.HasNonnegCoeffs.diagonalOperator` | `RealRooted.MultiplierSequence` | Nonnegative diagonal coefficients preserve nonnegative coefficients. |
@@ -278,7 +278,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 27 | `RealRooted.hasNonnegCoeffs_finsetSum` | `RealRooted.Basic.Coefficients` |  |
 | 16 | `MvPolynomial.HasNonnegCoeffs.uniqueAlgEquiv` | `RealRooted.Basic.Coefficients.Multivariate` | The unique-variable equivalence preserves coefficientwise nonnegativity. |
 | 16 | `RealRooted.HasNonnegCoeffs.bidiagonalOperator` | `RealRooted.MultiplierSequence.Bidiagonal` | Nonnegative bidiagonal entries preserve coefficient nonnegativity. |
-| 14 | `RealRooted.hasPosLeadingCoeff_one` | `RealRooted.Basic.Coefficients` |  |
+| 15 | `RealRooted.hasPosLeadingCoeff_one` | `RealRooted.Basic.Coefficients` |  |
 | 12 | `RealRooted.HasNonnegCoeffs.homogenize` | `RealRooted.Basic.Coefficients.Multivariate` | Homogenization preserves coefficientwise nonnegativity. |
 | 12 | `RealRooted.hasPosLeadingCoeff_add_of_natDegree_lt_left` | `RealRooted.Linear` | If the left summand has strictly larger degree and positive leading coefficient, then the sum also has positive leading coefficient. |
 | 11 | `RealRooted.hasPosLeadingCoeff_add_of_natDegree_lt_right` | `RealRooted.Linear` | If the right summand has strictly larger degree and positive leading coefficient, then the sum also has positive leading coefficient. |
@@ -429,9 +429,9 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 7 | `RealRooted.div_ofNat_eq_C_mul` | `RealRooted.DerivativeRecurrence.SecondOrderODE` | Division by a numeral, as generated recurrences write `(1 / 2) * X`. |
 | 7 | `RealRooted.isNonnegLinearForm_one` | `RealRooted.RowThreshold` |  |
 | 6 | `Polynomial.shiftedJacobi_differential_equation` | `RealRooted.Mathlib.RingTheory.Polynomial.Jacobi` | The shifted Jacobi differential equation `X(1-X)y'' + (α+1-(α+β+2)X)y' + n(n+α+β+1)y = 0`. |
+| 6 | `RealRooted.brandenE_mul_X_add_C` | `RealRooted.Transforms.BrandenE.Basic` | Affine-factor form of `brandenE_X_mul`. |
 | 6 | `RealRooted.touchard_succ` | `RealRooted.Touchard` |  |
 | 5 | `RealRooted.EulerBidiagonal.generalStep_eq_second_derivative` | `RealRooted.EulerBidiagonal.QuadraticEulerStep` | Differential form of the general Euler step. |
-| 5 | `RealRooted.brandenE_mul_X_add_C` | `RealRooted.Transforms.BrandenE.Basic` | Affine-factor form of `brandenE_X_mul`. |
 | 4 | `Polynomial.taylor_iterate_derivative` | `RealRooted.Mathlib.Algebra.Polynomial.Taylor` | The Taylor shift commutes with iterated derivatives. |
 | 4 | `RealRooted.GeneralizedSnakePosets.FiniteSkewBoard.rookPolynomial_eq_nonNestingPlacements_sum` | `RealRooted.GeneralizedSnakePosets.FiniteBoard` | The rook polynomial as a sum over the named finite set of non-nesting placements. |
 | 4 | `RealRooted.IntervalDifferential.zigzagOperator_apply` | `RealRooted.IntervalDifferential.Basic` |  |
@@ -521,11 +521,11 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 14 | `Polynomial.basisTransform_monomial` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
 | 10 | `Polynomial.basisTransform_C` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
 | 9 | `Polynomial.basisTransform_C_mul_X_pow` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` | A scalar monomial is sent to the corresponding scalar basis element. |
+| 9 | `RealRooted.brandenE_X_pow` | `RealRooted.Transforms.BrandenE.Basic` |  |
 | 9 | `RealRooted.gammaTransform_add` | `RealRooted.GammaTransform.Basic` |  |
 | 9 | `RealRooted.sequence_eq_of_same_lag_two_recurrence` | `RealRooted.Recurrence.Uniqueness` | Two sequences with the same first two values and lag-two recurrence agree. |
 | 8 | `Polynomial.X_sub_one_mul_chowS` | `RealRooted.Mathlib.Algebra.Polynomial.Chow` | The defining quotient for `chowS` is exact at every reflection bound at least the degree of the input. |
 | 8 | `RealRooted.BigDescents321.SmallCases.ofList_cons` | `RealRooted.CombinatorialExamples.BigDescents321.SmallCases.ListPoly` |  |
-| 8 | `RealRooted.brandenE_X_pow` | `RealRooted.Transforms.BrandenE.Basic` |  |
 | 8 | `RealRooted.gammaTransform_X_mul_two` | `RealRooted.GammaTransform.Basic` |  |
 | 8 | `RealRooted.schurSzegoComp_comm` | `RealRooted.Hadamard.Basic` |  |
 | 8 | `RealRooted.weightedSum_ofFn` | `RealRooted.WeightedSum` | Finite-function form of `weightedSum_eq_sum_map`. |
@@ -537,8 +537,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 7 | `RealRooted.CenteredEulerian.constantCoeff_cosS` | `RealRooted.CenteredEulerian.SeriesBasic` |  |
 | 7 | `RealRooted.CenteredEulerian.constantCoeff_sinS` | `RealRooted.CenteredEulerian.SeriesBasic` |  |
 | 7 | `RealRooted.CenteredEulerian.cosS_mul_secS` | `RealRooted.CenteredEulerian.SeriesBasic` |  |
+| 7 | `RealRooted.brandenE_C_mul` | `RealRooted.Transforms.BrandenE.Basic` |  |
 | 7 | `RealRooted.exists_index_eq_of_mem_roots` | `RealRooted.Bezoutian.WronskianConverse` |  |
-| 7 | `RealRooted.gammaTransform_C_mul` | `RealRooted.GammaTransform.Basic` |  |
 
 ## other
 
