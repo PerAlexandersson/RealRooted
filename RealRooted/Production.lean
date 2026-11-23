@@ -715,6 +715,9 @@ public import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Number.Circle
 public import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Number.Reverse
 public import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.SegmentSum
 public import RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Vanishing
+public import RealRooted.Mathlib.Analysis.Complex.Dominance
+public import RealRooted.Mathlib.Analysis.Complex.LimitsOfZerosDominant
+public import RealRooted.Mathlib.Analysis.Complex.Montel
 public import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Cosecant
 public import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Cotangent
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.EntryDegree
