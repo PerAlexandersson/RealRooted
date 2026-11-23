@@ -6189,6 +6189,26 @@
       ],
       "note": "Exact formal contraction from Stieltjes to Jacobi fractions. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/CanonicalProduct/ImaginaryAxisBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.CanonicalProduct.ImaginaryAxisBound"
+      ],
+      "note": "Imaginary-axis lower bounds for weighted real canonical products. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/CanonicalProduct/GaussianCoefficient.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.CanonicalProduct.GaussianCoefficient"
+      ],
+      "note": "Every sharp Gaussian bound controls the native canonical Gaussian coefficient. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }

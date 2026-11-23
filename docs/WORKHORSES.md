@@ -501,6 +501,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 9 | `RealRooted.taylorDifferentialOperator_X_pow` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Jensen` | Applying a Taylor differential operator to a monomial gives the reflected Jensen polynomial of its Taylor data. |
 | 8 | `Nat.tendsto_descFactorial_div_pow_atTop` | `RealRooted.Mathlib.Analysis.SpecialFunctions.Choose` | For fixed `k`, `n.descFactorial k / n^k` tends to `1`. |
 | 8 | `Polynomial.splits_nodup_roots_of_strict_sign_changes` | `RealRooted.Mathlib.Algebra.Polynomial.IntervalSignChanges` | A finite grid with strict sign changes accounts for every root of a nonzero polynomial of degree at most the number of gaps. |
+| 8 | `RealRooted.IsLaguerrePolya.laguerreCoefficient_nonneg` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.GeneralizedInequality` | Every generalized Laguerre coefficient of a Laguerre--Pólya function is nonnegative on the real axis. |
 | 8 | `RealRooted.JacobiDeformation.risingFactorial_pos` | `RealRooted.JacobiDeformation.Pochhammer` |  |
 | 7 | `ParkingFunction.isParkingFunction_iff_prefix` | `RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunction` | The finite-indexed predicate is equivalent to the usual bounded-natural formulation used by the existing parking-function modules. |
 | 7 | `Polynomial.shiftedJacobiSubdiag_pos` | `RealRooted.Mathlib.RingTheory.Polynomial.Jacobi` | The subdiagonal coefficient in the monic shifted-Jacobi recurrence is strictly positive in every positive degree when both parameters exceed `-1`. |
@@ -508,7 +509,6 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 7 | `RealRooted.MaWang.exists_roots_strictly_interlacing_of_consecutive_signs` | `RealRooted.MaWang.StrictSigns.Assembly` | Public strict wrapper around `exists_strictSignInterleaving`. |
 | 7 | `RealRooted.ParkingFunctions.ToricContribution.realRisingFactorial_pos` | `RealRooted.ParkingFunctions.ToricContribution.Definitions` |  |
 | 7 | `RealRooted.StrictInterl.X_add_C_iff` | `RealRooted.Linear` | Orientation sanity check for the local `StrictInterl` convention on linear factors. |
-| 7 | `RealRooted.listInterlaces_all_le_getLast` | `RealRooted.Basic.RootLists` |  |
 
 ## equation
 

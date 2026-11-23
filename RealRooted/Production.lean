@@ -2849,6 +2849,11 @@ public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.Conver
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.Step
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.Tail
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.Uniqueness
+public import RealRooted.Mathlib.Analysis.Complex.CanonicalProduct.GaussianCoefficient
+public import RealRooted.Mathlib.Analysis.Complex.CanonicalProduct.ImaginaryAxisBound
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.CanonicalRepresentation
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.GaussianBoundSimple
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.OriginFactor
 
 /-!
 # RealRooted production umbrella
