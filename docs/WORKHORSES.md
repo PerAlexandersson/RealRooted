@@ -457,9 +457,9 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 23 | `RealRooted.add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero` | `RealRooted.Basic.Coefficients` | A finite sum of nonnegative-coefficient polynomials cannot vanish if one of the summands is already nonzero. |
 | 20 | `Nat.cast_choose_ne_zero` | `RealRooted.Mathlib.Data.Nat.Choose.Cast` | A binomial coefficient remains nonzero after casting to a characteristic-zero target. |
 | 9 | `RealRooted.tDeriv_ne_zero` | `RealRooted.IteratedDerivativeShift` | T_ε of a nonzero polynomial with degree ≥ 1 is nonzero. |
+| 9 | `iteratedDeriv_riemannXiTheta_zero_ne_zero` | `RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Derivative` | Positivity of the xi Taylor data excludes vanishing at zero for every derivative. |
 | 8 | `RealRooted.iterateTDeriv_ne_zero` | `RealRooted.IteratedDerivativeShift` | Iterating a derivative shift preserves nonzeroness. |
 | 7 | `RealRooted.LiuOppositeSigns.OppositeLeadingSigns.left_ne_zero` | `RealRooted.LiuOppositeSigns.RootCount` |  |
-| 7 | `iteratedDeriv_riemannXiTheta_zero_ne_zero` | `RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Derivative` | Positivity of the xi Taylor data excludes vanishing at zero for every derivative. |
 | 6 | `RealRooted.Graph.weightedIndepPolyOn_ne_zero` | `RealRooted.Graph.IndependencePolynomial.Basic` | Weighted support-restricted independence polynomials are nonzero. |
 | 6 | `RealRooted.derivProduct_ne_zero` | `RealRooted.DerivativeProduct.Basic` | A derivative product of nonzero polynomials is nonzero (quadratic weight, nonnegative data). |
 | 6 | `riemannXiTheta_zero_ne_zero` | `RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Theta` | In particular, the constant coefficient of the square-variable xi function is nonzero. |
@@ -557,13 +557,13 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 12 | `Matrix.IsTotallyNonnegRect.toSquare` | `RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg` | Rectangular total nonnegativity specializes to the square predicate. |
 | 12 | `RealRooted.IsLaguerrePolya.heatOperator` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.HeatOperator` | The entire backward heat operator preserves the LP class at every nonnegative real time for inputs of growth order strictly below two. |
 | 12 | `RealRooted.shiftedJacobiMonic_satisfiesFavardRecurrence` | `RealRooted.Jacobi.Favard` | The monic shifted Jacobi family satisfies the Favard recurrence with its explicit diagonal and subdiagonal coefficients. |
+| 11 | `RealRooted.isLaguerrePolyaTypeI_iteratedDeriv_riemannXiTheta` | `RealRooted.RiemannHypothesis.TotalPositivity` | Every derivative of the square-variable xi function is Type-I Laguerre--Pólya under RH. |
 | 10 | `MvPolynomial.IsRayleigh.specializeAtList` | `RealRooted.Multiaffine.Rayleigh` | Iterated real scalar specialization preserves the Rayleigh property. |
 | 10 | `RealRooted.PosComboRealRooted.comm` | `RealRooted.ObreschkoffContinuity` | Positive-combination real-rootedness is symmetric in the two polynomials. |
 | 9 | `Complex.Contour.intervalIntegrable_inv_sub_mul_deriv` | `RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Number.Basic` | **Integrability of the index integrand for a point off the curve.** If `γ` is continuous on `Set.uIcc a b` and avoids `w` there (so `(γ · - w)⁻¹` is continuous) and `deriv γ` is interval-integrable, t |
 | 9 | `Polynomial.natDegree_and_leadingCoeff_quadratic_derivative_add_linear_mul_add` | `RealRooted.Mathlib.Algebra.Polynomial.Derivative` | A nonzero prospective top coefficient gives both the exact degree and leading coefficient of a quadratic-derivative plus linear-multiple step. |
 | 9 | `RealRooted.AllComboRealRooted.linear_recombination` | `RealRooted.AllCombo` | `AllComboRealRooted` is preserved by any linear change of coordinates in the `(f, g)`-plane. |
 | 9 | `RealRooted.hermiteBiehlerForwardPos` | `RealRooted.HermiteBiehler.Forward` |  |
-| 9 | `RealRooted.isLaguerrePolyaTypeI_iteratedDeriv_riemannXiTheta` | `RealRooted.RiemannHypothesis.TotalPositivity` | Every derivative of the square-variable xi function is Type-I Laguerre--Pólya under RH. |
 | 8 | `MvPolynomial.IsMultiaffine.sum` | `RealRooted.Multiaffine` |  |
 | 8 | `RealRooted.IsRealRootedIn.mem_of_isRoot` | `RealRooted.RootLocation.Basic` | Every root of a polynomial rooted in `S` lies in `S`. |
 | 8 | `RealRooted.StrictInterl.hasSimpleRoots_of_isCoprime` | `RealRooted.SimpleRoots` | A coprime strictly interlacing pair has simple real roots in both entries. |

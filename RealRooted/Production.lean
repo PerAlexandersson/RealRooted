@@ -2691,6 +2691,17 @@ public import RealRooted.Mathlib.Topology.Algebra.InfiniteSum.FiniteMultiplicity
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.MomentTypeI
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeILinearProduct
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIMomentCriterion
+public import RealRooted.Mathlib.Analysis.Calculus.IteratedDeriv.EulerRodrigues
+public import RealRooted.Mathlib.Analysis.CompletelyMonotone.RationalDerivatives
+public import RealRooted.Mathlib.Analysis.CompletelyMonotone.RationalMixtures
+public import RealRooted.Mathlib.Analysis.CompletelyMonotone.RationalSeriesDerivatives
+public import RealRooted.Mathlib.Analysis.CompletelyMonotone.ResolventHierarchy
+public import RealRooted.Mathlib.Analysis.CompletelyMonotone.ResolventRodrigues
+public import RealRooted.Mathlib.Analysis.Complex.LinearProductLogDerivative
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.LogDerivativeCompletelyMonotone
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.LogDerivativeHierarchy
+public import RealRooted.RiemannHypothesis.LogDerivativeCompletelyMonotone
+public import RealRooted.RiemannHypothesis.LogDerivativeHierarchy
 
 /-!
 # RealRooted production umbrella

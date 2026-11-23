@@ -5209,6 +5209,76 @@
       ],
       "note": "Summability and sum grouping over finite multiplicity fibers; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/IteratedDeriv/EulerRodrigues.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.IteratedDeriv.EulerRodrigues"
+      ],
+      "note": "Positive resolvent series, complete monotonicity and Euler-Rodrigues differentiation; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/CompletelyMonotone/RationalMixtures.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.CompletelyMonotone.RationalMixtures"
+      ],
+      "note": "Positive resolvent series, complete monotonicity and Euler-Rodrigues differentiation; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/CompletelyMonotone/RationalDerivatives.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.CompletelyMonotone.RationalDerivatives"
+      ],
+      "note": "Positive resolvent series, complete monotonicity and Euler-Rodrigues differentiation; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/CompletelyMonotone/RationalSeriesDerivatives.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.CompletelyMonotone.RationalSeriesDerivatives"
+      ],
+      "note": "Positive resolvent series, complete monotonicity and Euler-Rodrigues differentiation; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/CompletelyMonotone/ResolventHierarchy.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.CompletelyMonotone.ResolventHierarchy"
+      ],
+      "note": "Positive resolvent series, complete monotonicity and Euler-Rodrigues differentiation; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LinearProductLogDerivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LinearProductLogDerivative"
+      ],
+      "note": "Positive resolvent series, complete monotonicity and Euler-Rodrigues differentiation; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/CompletelyMonotone/ResolventRodrigues.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.CompletelyMonotone.ResolventRodrigues"
+      ],
+      "note": "Positive resolvent series, complete monotonicity and Euler-Rodrigues differentiation; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }
