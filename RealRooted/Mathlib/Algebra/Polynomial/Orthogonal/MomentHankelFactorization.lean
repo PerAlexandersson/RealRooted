@@ -52,9 +52,11 @@ theorem isLowerTriangular_momentOrthogonalMatrix (μ : ℕ → R) (n : ℕ) :
   rw [Matrix.det_of_isLowerTriangular _ (isLowerTriangular_momentOrthogonalMatrix μ n)]
   simp
 
-/-- Orthogonality diagonalizes the pairings between monic moment polynomials. -/
-theorem momentPairing_monicMomentPolynomial_eq_ite (μ : ℕ → R)
-    (hdet : ∀ n, IsUnit (momentHankelMatrix μ n).det) (i j : ℕ) :
+/-- Orthogonality of two monic moment polynomials needs only their defining
+Hankel matrices to be invertible. -/
+theorem momentPairing_monicMomentPolynomial_eq_ite_of_isUnit (μ : ℕ → R)
+    (i j : ℕ) (hi : IsUnit (momentHankelMatrix μ i).det)
+    (hj : IsUnit (momentHankelMatrix μ j).det) :
     momentPairing μ (monicMomentPolynomial μ i) (monicMomentPolynomial μ j) =
       if i = j then momentNormSq μ i else 0 := by
   by_cases hij : i = j
@@ -62,15 +64,22 @@ theorem momentPairing_monicMomentPolynomial_eq_ite (μ : ℕ → R)
     simp only [ite_true, momentNormSq]
   · rw [ite_eq_right hij]
     rcases lt_or_gt_of_ne hij with hlt | hgt
-    · apply momentPairing_monicMomentPolynomial μ j (hdet j)
+    · apply momentPairing_monicMomentPolynomial μ j hj
       apply lt_of_le_of_lt degree_le_natDegree
       rw [(isMonicOfDegree_monicMomentPolynomial μ i).natDegree_eq]
       exact_mod_cast hlt
     · rw [momentPairing_comm]
-      apply momentPairing_monicMomentPolynomial μ i (hdet i)
+      apply momentPairing_monicMomentPolynomial μ i hi
       apply lt_of_le_of_lt degree_le_natDegree
       rw [(isMonicOfDegree_monicMomentPolynomial μ j).natDegree_eq]
       exact_mod_cast hgt
+
+/-- Orthogonality diagonalizes the pairings between monic moment polynomials. -/
+theorem momentPairing_monicMomentPolynomial_eq_ite (μ : ℕ → R)
+    (hdet : ∀ n, IsUnit (momentHankelMatrix μ n).det) (i j : ℕ) :
+    momentPairing μ (monicMomentPolynomial μ i) (monicMomentPolynomial μ j) =
+      if i = j then momentNormSq μ i else 0 :=
+  momentPairing_monicMomentPolynomial_eq_ite_of_isUnit μ i j (hdet i) (hdet j)
 
 /-- Each coefficient row reconstructs its monic orthogonal polynomial. -/
 private theorem ofFn_momentOrthogonalMatrix_row (μ : ℕ → R) (n : ℕ) (i : Fin n) :
@@ -80,9 +89,10 @@ private theorem ofFn_momentOrthogonalMatrix_row (μ : ℕ → R) (n : ℕ) (i : 
   rw [(isMonicOfDegree_monicMomentPolynomial μ i.val).natDegree_eq]
   exact i.is_lt
 
-/-- The coefficient change of basis diagonalizes each finite Hankel matrix. -/
-theorem momentOrthogonalMatrix_mul_hankel_mul_transpose (μ : ℕ → R)
-    (hdet : ∀ n, IsUnit (momentHankelMatrix μ n).det) (n : ℕ) :
+/-- A finite nondegenerate prefix suffices to diagonalize the next Hankel matrix.
+The matrix being diagonalized may itself be singular. -/
+theorem momentOrthogonalMatrix_mul_hankel_mul_transpose_of_isUnit (μ : ℕ → R)
+    (n : ℕ) (hdet : ∀ i < n, IsUnit (momentHankelMatrix μ i).det) :
     momentOrthogonalMatrix μ n * momentHankelMatrix μ n *
         (momentOrthogonalMatrix μ n)ᵀ =
       Matrix.diagonal (fun i : Fin n => momentNormSq μ i.val) := by
@@ -96,30 +106,57 @@ theorem momentOrthogonalMatrix_mul_hankel_mul_transpose (μ : ℕ → R)
       ← ofFn_momentOrthogonalMatrix_row μ n j, momentPairing_ofFn_ofFn,
       Matrix.dotProduct_mulVec]
     rfl
-  rw [hpair, momentPairing_monicMomentPolynomial_eq_ite μ hdet]
+  rw [hpair, momentPairing_monicMomentPolynomial_eq_ite_of_isUnit μ i.val j.val
+    (hdet i.val i.is_lt) (hdet j.val j.is_lt)]
   by_cases hij : i = j
   · subst j
     simp
   · have hv : i.val ≠ j.val := fun h => hij (Fin.ext h)
     simp [hij, hv]
 
+/-- The coefficient change of basis diagonalizes each finite Hankel matrix. -/
+theorem momentOrthogonalMatrix_mul_hankel_mul_transpose (μ : ℕ → R)
+    (hdet : ∀ n, IsUnit (momentHankelMatrix μ n).det) (n : ℕ) :
+    momentOrthogonalMatrix μ n * momentHankelMatrix μ n *
+        (momentOrthogonalMatrix μ n)ᵀ =
+      Matrix.diagonal (fun i : Fin n => momentNormSq μ i.val) :=
+  momentOrthogonalMatrix_mul_hankel_mul_transpose_of_isUnit μ n (fun i _ => hdet i)
+
+/-- A finite Hankel determinant is the product of the squared norms of the
+preceding monic moment polynomials, assuming only the preceding determinants
+are units. The determinant in the conclusion may vanish. -/
+theorem det_momentHankelMatrix_eq_prod_norm_of_isUnit (μ : ℕ → R)
+    (n : ℕ) (hdet : ∀ i < n, IsUnit (momentHankelMatrix μ i).det) :
+    (momentHankelMatrix μ n).det = ∏ i : Fin n, momentNormSq μ i.val := by
+  have h := congrArg Matrix.det
+    (momentOrthogonalMatrix_mul_hankel_mul_transpose_of_isUnit μ n hdet)
+  simpa only [Matrix.det_mul, Matrix.det_transpose, det_momentOrthogonalMatrix,
+    one_mul, mul_one, Matrix.det_diagonal] using h
+
 /-- A finite Hankel determinant is the product of the squared norms of the
 preceding monic moment polynomials. -/
 theorem det_momentHankelMatrix_eq_prod_norm (μ : ℕ → R)
     (hdet : ∀ n, IsUnit (momentHankelMatrix μ n).det) (n : ℕ) :
-    (momentHankelMatrix μ n).det = ∏ i : Fin n, momentNormSq μ i.val := by
-  have h := congrArg Matrix.det
-    (momentOrthogonalMatrix_mul_hankel_mul_transpose μ hdet n)
-  simpa only [Matrix.det_mul, Matrix.det_transpose, det_momentOrthogonalMatrix,
-    one_mul, mul_one, Matrix.det_diagonal] using h
+    (momentHankelMatrix μ n).det = ∏ i : Fin n, momentNormSq μ i.val :=
+  det_momentHankelMatrix_eq_prod_norm_of_isUnit μ n (fun i _ => hdet i)
+
+/-- Consecutive Hankel determinants differ by the next squared norm, including
+the first vanishing norm after a nondegenerate prefix. -/
+theorem det_momentHankelMatrix_succ_of_isUnit (μ : ℕ → R)
+    (n : ℕ) (hdet : ∀ i ≤ n, IsUnit (momentHankelMatrix μ i).det) :
+    (momentHankelMatrix μ (n + 1)).det =
+      (momentHankelMatrix μ n).det * momentNormSq μ n := by
+  rw [det_momentHankelMatrix_eq_prod_norm_of_isUnit μ (n + 1)
+      (fun i hi => hdet i (by lia)), Fin.prod_univ_castSucc,
+    det_momentHankelMatrix_eq_prod_norm_of_isUnit μ n
+      (fun i hi => hdet i (by lia))]
+  rfl
 
 /-- Consecutive Hankel determinants differ by the next squared norm. -/
 theorem det_momentHankelMatrix_succ (μ : ℕ → R)
     (hdet : ∀ n, IsUnit (momentHankelMatrix μ n).det) (n : ℕ) :
     (momentHankelMatrix μ (n + 1)).det =
-      (momentHankelMatrix μ n).det * momentNormSq μ n := by
-  rw [det_momentHankelMatrix_eq_prod_norm μ hdet (n + 1), Fin.prod_univ_castSucc,
-    det_momentHankelMatrix_eq_prod_norm μ hdet n]
-  rfl
+      (momentHankelMatrix μ n).det * momentNormSq μ n :=
+  det_momentHankelMatrix_succ_of_isUnit μ n (fun i _ => hdet i)
 
 end Polynomial

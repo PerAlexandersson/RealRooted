@@ -22,13 +22,34 @@ public section
 
 namespace Polynomial
 
+/-- A finite nondegenerate prefix gives the next norm as a determinant quotient.
+The numerator determinant and the norm may vanish. -/
+theorem momentNormSq_eq_det_div_of_isUnit {K : Type*} [Field K] [DecidableEq K]
+    (μ : ℕ → K) (n : ℕ) (hdet : ∀ i ≤ n, IsUnit (momentHankelMatrix μ i).det) :
+    momentNormSq μ n = (momentHankelMatrix μ (n + 1)).det /
+      (momentHankelMatrix μ n).det := by
+  rw [det_momentHankelMatrix_succ_of_isUnit μ n hdet, mul_comm,
+    mul_div_cancel_right₀ _ (hdet n le_rfl).ne_zero]
+
 /-- An orthogonal norm is the quotient of consecutive Hankel determinants. -/
 theorem momentNormSq_eq_det_div {K : Type*} [Field K] [DecidableEq K]
     (μ : ℕ → K) (hdet : ∀ n, IsUnit (momentHankelMatrix μ n).det) (n : ℕ) :
     momentNormSq μ n = (momentHankelMatrix μ (n + 1)).det /
-      (momentHankelMatrix μ n).det := by
-  rw [det_momentHankelMatrix_succ μ hdet n, mul_comm,
-    mul_div_cancel_right₀ _ (hdet n).ne_zero]
+      (momentHankelMatrix μ n).det :=
+  momentNormSq_eq_det_div_of_isUnit μ n (fun i _ => hdet i)
+
+/-- The even numerator uses only finite shifted and unshifted nondegenerate
+prefixes. The two next determinants need not be nonzero. -/
+theorem momentStieltjesEven_eq_det_ratio_of_isUnit (μ : ℕ → ℝ) (n : ℕ)
+    (hdet : ∀ i ≤ n, IsUnit (momentHankelMatrix μ i).det)
+    (hshift : ∀ i ≤ n, IsUnit (momentHankelMatrix (fun k => μ (k + 1)) i).det) :
+    momentStieltjesEven μ n =
+      (momentHankelMatrix (fun k => μ (k + 1)) (n + 1)).det *
+        (momentHankelMatrix μ n).det /
+      ((momentHankelMatrix (fun k => μ (k + 1)) n).det *
+        (momentHankelMatrix μ (n + 1)).det) := by
+  rw [momentStieltjesEven, momentNormSq_eq_det_div_of_isUnit _ n hshift,
+    momentNormSq_eq_det_div_of_isUnit μ n hdet, div_div_div_eq]
 
 /-- The even Stieltjes numerator is a ratio of shifted and unshifted Hankel determinants. -/
 theorem momentStieltjesEven_eq_det_ratio (μ : ℕ → ℝ)
@@ -38,10 +59,22 @@ theorem momentStieltjesEven_eq_det_ratio (μ : ℕ → ℝ)
       (momentHankelMatrix (fun k => μ (k + 1)) (n + 1)).det *
         (momentHankelMatrix μ n).det /
       ((momentHankelMatrix (fun k => μ (k + 1)) n).det *
-        (momentHankelMatrix μ (n + 1)).det) := by
-  rw [momentStieltjesEven, momentNormSq_eq_det_div _ hshift n,
-    momentNormSq_eq_det_div μ hdet n]
-  field_simp [(hdet n).ne_zero, (hdet (n + 1)).ne_zero, (hshift n).ne_zero]
+        (momentHankelMatrix μ (n + 1)).det) :=
+  momentStieltjesEven_eq_det_ratio_of_isUnit μ n (fun i _ => hdet i)
+    (fun i _ => hshift i)
+
+/-- The odd numerator also admits a finite-prefix determinant formula. No
+nonvanishing condition is imposed on either next determinant. -/
+theorem momentStieltjesOdd_eq_det_ratio_of_isUnit (μ : ℕ → ℝ) (n : ℕ)
+    (hdet : ∀ i ≤ n + 1, IsUnit (momentHankelMatrix μ i).det)
+    (hshift : ∀ i ≤ n, IsUnit (momentHankelMatrix (fun k => μ (k + 1)) i).det) :
+    momentStieltjesOdd μ n =
+      (momentHankelMatrix μ (n + 2)).det *
+        (momentHankelMatrix (fun k => μ (k + 1)) n).det /
+      ((momentHankelMatrix μ (n + 1)).det *
+        (momentHankelMatrix (fun k => μ (k + 1)) (n + 1)).det) := by
+  rw [momentStieltjesOdd, momentNormSq_eq_det_div_of_isUnit μ (n + 1) hdet,
+    momentNormSq_eq_det_div_of_isUnit _ n hshift, div_div_div_eq]
 
 /-- The odd Stieltjes numerator uses the next unshifted Hankel determinant. -/
 theorem momentStieltjesOdd_eq_det_ratio (μ : ℕ → ℝ)
@@ -51,9 +84,8 @@ theorem momentStieltjesOdd_eq_det_ratio (μ : ℕ → ℝ)
       (momentHankelMatrix μ (n + 2)).det *
         (momentHankelMatrix (fun k => μ (k + 1)) n).det /
       ((momentHankelMatrix μ (n + 1)).det *
-        (momentHankelMatrix (fun k => μ (k + 1)) (n + 1)).det) := by
-  rw [momentStieltjesOdd, momentNormSq_eq_det_div μ hdet (n + 1),
-    momentNormSq_eq_det_div _ hshift n]
-  field_simp [(hdet (n + 1)).ne_zero, (hshift n).ne_zero, (hshift (n + 1)).ne_zero]
+        (momentHankelMatrix (fun k => μ (k + 1)) (n + 1)).det) :=
+  momentStieltjesOdd_eq_det_ratio_of_isUnit μ n (fun i _ => hdet i)
+    (fun i _ => hshift i)
 
 end Polynomial
