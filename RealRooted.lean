@@ -3073,3 +3073,5 @@ public import RealRooted.Hermite.FormalDifferential.ExpandOperator
 public import RealRooted.Hermite.Generalized.ComplexScaling
 public import RealRooted.Hermite.Generalized.DifferentialIdentity
 public import RealRooted.Hermite.Generalized.ExponentialRoots
+public import RealRooted.Hermite.Generalized.Separability
+public import RealRooted.Mathlib.Analysis.Polynomial.SeparableLimit

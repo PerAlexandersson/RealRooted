@@ -7209,6 +7209,16 @@
       ],
       "note": "Root multiplicities and positive-root bijection under power substitution.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Polynomial/SeparableLimit.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Polynomial.SeparableLimit"
+      ],
+      "note": "Separability is eventually preserved by fixed-degree monic coefficient limits.",
+      "speculative": true
     }
   ]
 }
