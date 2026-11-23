@@ -295,7 +295,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 48 | `RealRooted.SatisfiesFavardRecurrence.natDegree_eq` | `RealRooted.Favard.Recurrence` | Every member of a Favard family has natural degree equal to its index. |
+| 50 | `RealRooted.SatisfiesFavardRecurrence.natDegree_eq` | `RealRooted.Favard.Recurrence` | Every member of a Favard family has natural degree equal to its index. |
 | 29 | `RealRooted.natDegree_jensenPolynomial_le` | `RealRooted.MultiplierSequence` |  |
 | 20 | `RealRooted.StrictInterl.natDegree_eq_or_eq_succ` | `RealRooted.Basic.ProperPosition` | Proper position forces equal natural degrees or a one-degree increase. |
 | 14 | `RealRooted.natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff` | `RealRooted.Linear` | If two polynomials have the same degree and positive leading coefficients, their top coefficients cannot cancel. |
@@ -523,6 +523,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 14 | `RealRooted.IsLaguerrePolya.im_eq_zero_of_eq_zero` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Zeros` | A nonzero Laguerre--Pólya limit has only real complex zeros. |
 | 11 | `Polynomial.basisTransform_C` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
 | 11 | `Polynomial.basisTransform_C_mul_X_pow` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` | A scalar monomial is sent to the corresponding scalar basis element. |
+| 10 | `RealRooted.HermitePoulain.formalDifferentialOperator_pow` | `RealRooted.Hermite.FormalDifferential.Composition` | Powers of a formal symbol are the corresponding iterated operators. |
 | 9 | `Polynomial.momentFunctional_X_pow` | `RealRooted.Mathlib.Algebra.Polynomial.Moment` |  |
 | 9 | `Polynomial.momentPairing_monicMomentPolynomial` | `RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.Moment` | The constructed polynomial is orthogonal to every lower-degree polynomial. |
 | 9 | `RealRooted.gammaTransform_add` | `RealRooted.GammaTransform.Basic` |  |
@@ -535,7 +536,6 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 8 | `Polynomial.momentPairing_comm` | `RealRooted.Mathlib.Algebra.Polynomial.Moment` |  |
 | 8 | `PowerSeries.one_sub_mul_stieltjesStep` | `RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.Step` | The formal Stieltjes step inverts its stated denominator. |
 | 8 | `RealRooted.BigDescents321.SmallCases.ofList_cons` | `RealRooted.CombinatorialExamples.BigDescents321.SmallCases.ListPoly` |  |
-| 8 | `RealRooted.HermitePoulain.formalDifferentialOperator_pow` | `RealRooted.Hermite.FormalDifferential.Composition` | Powers of a formal symbol are the corresponding iterated operators. |
 | 8 | `RealRooted.brandenE_X_pow` | `RealRooted.Transforms.BrandenE.Basic` |  |
 | 8 | `RealRooted.gammaTransform_X_mul_two` | `RealRooted.GammaTransform.Basic` |  |
 | 8 | `RealRooted.jensenPolynomial_eq_diagonalOperator_X_add_one_pow` | `RealRooted.MultiplierSequence` | The Jensen polynomial of `gamma` is the image of `(X + 1) ^ n` under the diagonal operator attached to `gamma`. |
@@ -561,6 +561,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 12 | `RealRooted.shiftedJacobiMonic_satisfiesFavardRecurrence` | `RealRooted.Jacobi.Favard` | The monic shifted Jacobi family satisfies the Favard recurrence with its explicit diagonal and subdiagonal coefficients. |
 | 11 | `Polynomial.isMonicOfDegree_monicMomentPolynomial` | `RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.Moment` | The finite moment construction is always monic of the requested degree. |
 | 10 | `MvPolynomial.IsRayleigh.specializeAtList` | `RealRooted.Multiaffine.Rayleigh` | Iterated real scalar specialization preserves the Rayleigh property. |
+| 10 | `RealRooted.IsSimpleRealRooted.scaleRoots` | `RealRooted.SimpleRoots.Affine` | A nonzero root scaling preserves simple real-rootedness. |
 | 10 | `RealRooted.PosComboRealRooted.comm` | `RealRooted.ObreschkoffContinuity` | Positive-combination real-rootedness is symmetric in the two polynomials. |
 | 9 | `Complex.Contour.intervalIntegrable_inv_sub_mul_deriv` | `RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Number.Basic` | **Integrability of the index integrand for a point off the curve.** If `γ` is continuous on `Set.uIcc a b` and avoids `w` there (so `(γ · - w)⁻¹` is continuous) and `deriv γ` is interval-integrable, t |
 | 9 | `Polynomial.natDegree_and_leadingCoeff_quadratic_derivative_add_linear_mul_add` | `RealRooted.Mathlib.Algebra.Polynomial.Derivative` | A nonzero prospective top coefficient gives both the exact degree and leading coefficient of a quadratic-derivative plus linear-multiple step. |
@@ -568,4 +569,3 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 9 | `RealRooted.IsPFMultiplierSequence.isLaguerrePolyaTypeI_complexExpGeneratingFunction` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI` | The complex EGF of a PF multiplier sequence is Type-I Laguerre--Pólya. |
 | 9 | `RealRooted.hermiteBiehlerForwardPos` | `RealRooted.HermiteBiehler.Forward` |  |
 | 8 | `MvPolynomial.IsMultiaffine.sum` | `RealRooted.Multiaffine` |  |
-| 8 | `RealRooted.IsLaguerrePolyaTypeI.toLaguerrePolya` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI` | Type-I Laguerre--Pólya functions are Laguerre--Pólya. |

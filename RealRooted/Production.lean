@@ -3009,6 +3009,10 @@ public import RealRooted.Hermite.Generalized.DifferentialIdentity
 public import RealRooted.Hermite.Generalized.ExponentialRoots
 public import RealRooted.Hermite.Generalized.Separability
 public import RealRooted.Mathlib.Analysis.Polynomial.SeparableLimit
+public import RealRooted.Hermite.FormalDifferential.SeparableIteration
+public import RealRooted.Hermite.Generalized.Degree
+public import RealRooted.Hermite.FormalDifferential.SeparableNormalization
+public import RealRooted.Mathlib.RingTheory.Polynomial.ScaleRoots.Separable
 
 /-!
 # RealRooted production umbrella

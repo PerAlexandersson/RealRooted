@@ -4,13 +4,12 @@ public import RealRooted.Hermite.FormalDifferential.Basic
 public import Mathlib.RingTheory.PowerSeries.Expand
 public import Mathlib.RingTheory.PowerSeries.Exp
 public import Mathlib.Analysis.SpecialFunctions.Pow.Real
+import RealRooted.Hermite.Generalized.Degree
 import RealRooted.Hermite.FormalDifferential.RescaledIterates
 import RealRooted.Hermite.FormalDifferential.Structure
 import RealRooted.Hermite.FormalDifferential.Composition
 import RealRooted.Mathlib.Analysis.Polynomial.RootMatchingLimit
-import RealRooted.Mathlib.RingTheory.PowerSeries.ExpCoefficient
 import Mathlib.Analysis.Complex.Polynomial.Basic
-import Mathlib.Tactic.NormNum
 
 /-!
 # Multiplicity-sensitive clustering of centered formal iterates
@@ -25,20 +24,6 @@ public section
 open Polynomial Filter Topology
 
 namespace RealRooted.HermitePoulain
-
-/-- A constant-one expanded exponential preserves monicity and degree. -/
-private theorem exponential_limit_monic_degree (β : ℝ) {p : ℕ} (hp : 0 < p) (d : ℕ) :
-    let H := formalDifferentialOperator
-      (PowerSeries.expand p hp.ne' (PowerSeries.rescale β (PowerSeries.exp ℝ))) (X ^ d)
-    H.Monic ∧ H.natDegree = d := by
-  dsimp only
-  have h0 : PowerSeries.constantCoeff (PowerSeries.expand p hp.ne'
-      (PowerSeries.rescale β (PowerSeries.exp ℝ))) = 1 := by
-    rw [PowerSeries.constantCoeff_expand, ← PowerSeries.coeff_zero_eq_constantCoeff]
-    simp
-  refine ⟨formalDifferentialOperator_monic h0 (monic_X.pow d), ?_⟩
-  rw [natDegree_formalDifferentialOperator (by rw [h0]; exact one_ne_zero)
-    (pow_ne_zero d X_ne_zero), natDegree_X_pow]
 
 /-- Every complex root of the rescaled iterates is matched with a limiting
 root, with multiplicity. This includes repeated roots at zero, degree zero,
@@ -62,8 +47,10 @@ theorem eventually_rel_roots_rescaled_iterate
   have h0 : PowerSeries.constantCoeff φ = 1 := by
     simpa only [PowerSeries.coeff_zero_eq_constantCoeff, pow_zero,
       Nat.factorial_zero, Nat.cast_one, div_one] using hjet 0 hp
-  obtain ⟨hH, hHd⟩ := exponential_limit_monic_degree
+  have hdata := isMonicOfDegree_formal_exp_stride
     (PowerSeries.coeff p φ - a ^ p / (p.factorial : ℝ)) hp P.natDegree
+  have hH := hdata.monic
+  have hHd := hdata.natDegree_eq
   have hQ (m : ℕ) : (Q m).Monic ∧ (Q m).natDegree = H.natDegree := by
     have hφm : PowerSeries.constantCoeff (φ ^ m) = 1 := by simp [h0]
     constructor
