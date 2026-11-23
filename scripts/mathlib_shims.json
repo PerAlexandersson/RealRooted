@@ -6609,6 +6609,46 @@
       ],
       "note": "Binomial moment translation, orthogonal covariance and symmetric-measure parity. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/MomentTranslationSucc.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.MomentTranslationSucc"
+      ],
+      "note": "Formal binomial and Jacobi translation; equality through the first terminating Stieltjes numerator. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/BinomialTransform.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.BinomialTransform"
+      ],
+      "note": "Formal binomial and Jacobi translation; equality through the first terminating Stieltjes numerator. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/JacobiFraction/Translation.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.JacobiFraction.Translation"
+      ],
+      "note": "Formal binomial and Jacobi translation; equality through the first terminating Stieltjes numerator. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/ActivePrefix.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.ActivePrefix"
+      ],
+      "note": "Formal binomial and Jacobi translation; equality through the first terminating Stieltjes numerator. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }

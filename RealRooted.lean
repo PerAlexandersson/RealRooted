@@ -2962,3 +2962,7 @@ public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.MomentParity
 public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.MomentTranslation
 public import RealRooted.Mathlib.MeasureTheory.Measure.MomentParity
 public import RealRooted.Mathlib.MeasureTheory.Measure.MomentTranslation
+public import RealRooted.Mathlib.Algebra.Polynomial.MomentTranslationSucc
+public import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialTransform
+public import RealRooted.Mathlib.RingTheory.PowerSeries.JacobiFraction.Translation
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.ActivePrefix
