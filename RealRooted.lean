@@ -3062,3 +3062,10 @@ public import RealRooted.MittagLeffler.Growth
 public import RealRooted.MittagLeffler.Jensen
 public import RealRooted.MultiplierSequence.Veronese
 public import RealRooted.RiemannHypothesis.Veronese
+public import RealRooted.Hermite.Generalized.Basic
+public import RealRooted.Hermite.Generalized.JensenIdentity
+public import RealRooted.Hermite.Generalized.Monic
+public import RealRooted.Hermite.Generalized.PositiveFactor
+public import RealRooted.Hermite.Generalized.Product
+public import RealRooted.Hermite.Generalized.Roots
+public import RealRooted.Mathlib.Algebra.Polynomial.Expand.PowerRoots
