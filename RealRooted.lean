@@ -2876,3 +2876,12 @@ public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.GenusZeroDi
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.LinearProduct
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIDifferentialSimple
 public import RealRooted.RiemannHypothesis.XiDifferentialSimple
+public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.GaussianBound
+public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.GaussianConvergence
+public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.GaussianDerivative
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.FactorialExponential
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.InfiniteDifferentialGaussian
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.InfiniteDifferentialSummable
+public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.GaussianImageGrowth
+public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.GaussianSymbolLimit
+public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.GaussianUniformBound

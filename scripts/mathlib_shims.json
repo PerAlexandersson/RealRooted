@@ -5879,6 +5879,76 @@
       ],
       "note": "Growth, prefix factorization and support of convergent real linear canonical products. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/FactorialExponential.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.FactorialExponential"
+      ],
+      "note": "Normalized factorial upper bound retaining the exponential scale. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianDerivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianDerivative"
+      ],
+      "note": "Gaussian norm recentering and optimized Cauchy derivative estimates. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianBound"
+      ],
+      "note": "Differential series term bounds retaining the sharp Gaussian threshold. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianConvergence.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianConvergence"
+      ],
+      "note": "Absolute and locally uniform convergence of actual differential series under sharp Gaussian bounds. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianUniformBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianUniformBound"
+      ],
+      "note": "Common summable Gaussian differential majorants for symbol families. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianImageGrowth.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianImageGrowth"
+      ],
+      "note": "Gaussian norm and order bounds for actual infinite differential images. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianSymbolLimit.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianSymbolLimit"
+      ],
+      "note": "Continuity in locally uniform symbols under a common Gaussian envelope. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }
