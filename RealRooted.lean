@@ -2940,3 +2940,9 @@ public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.MomentHankelFacto
 public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.MomentRecurrence
 public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.MomentShift
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.EulerGauss
+public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.MomentSeries
+public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.MomentSeriesLocal
+public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.MomentSeriesRecurrence
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.EulerPaired
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.StrictMoment
+public import RealRooted.RiemannHypothesis.StieltjesFraction

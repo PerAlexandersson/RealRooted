@@ -6409,6 +6409,56 @@
       ],
       "note": "Christoffel identities with finite determinant and norm hypotheses. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/EulerPaired.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.EulerPaired"
+      ],
+      "note": "Paired formal Euler-Gauss recurrences. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/MomentSeries.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.MomentSeries"
+      ],
+      "note": "Normalized orthogonal moment series. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/MomentSeriesRecurrence.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.MomentSeriesRecurrence"
+      ],
+      "note": "Euler-Gauss recurrences from positive Hankel forms. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/StrictMoment.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.StrictMoment"
+      ],
+      "note": "Strict Hankel positivity gives positive formal Stieltjes fractions. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/MomentSeriesLocal.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.MomentSeriesLocal"
+      ],
+      "note": "Finite Euler-Gauss steps and terminating pairing identities. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }

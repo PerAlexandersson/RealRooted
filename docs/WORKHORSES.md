@@ -514,7 +514,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 26 | `Complex.ofReal_re_iteratedDeriv_zero` | `RealRooted.Mathlib.Analysis.Calculus.IteratedDeriv.Star` | The Taylor data at zero of a conjugation-invariant function are real. |
+| 27 | `Complex.ofReal_re_iteratedDeriv_zero` | `RealRooted.Mathlib.Analysis.Calculus.IteratedDeriv.Star` | The Taylor data at zero of a conjugation-invariant function are real. |
 | 23 | `Polynomial.basisTransform_smul` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
 | 22 | `Polynomial.basisTransform_add` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
 | 21 | `RealRooted.weightedSum_cons` | `RealRooted.WeightedSum` |  |
@@ -526,6 +526,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 9 | `RealRooted.gammaTransform_add` | `RealRooted.GammaTransform.Basic` |  |
 | 9 | `RealRooted.hermiteHomogeneous_add_two` | `RealRooted.Hermite.Homogeneous` | The homogeneous Hermite three-term recurrence. |
 | 9 | `RealRooted.sequence_eq_of_same_lag_two_recurrence` | `RealRooted.Recurrence.Uniqueness` | Two sequences with the same first two values and lag-two recurrence agree. |
+| 9 | `riemannXiTheta_conj` | `RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Theta` | The square-variable xi function respects conjugation. |
 | 8 | `Polynomial.X_sub_one_mul_chowS` | `RealRooted.Mathlib.Algebra.Polynomial.Chow` | The defining quotient for `chowS` is exact at every reflection bound at least the degree of the input. |
 | 8 | `Polynomial.basisTransform_finset_sum` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` | A basis transform distributes over a finite polynomial sum. |
 | 8 | `Polynomial.momentPairing_comm` | `RealRooted.Mathlib.Algebra.Polynomial.Moment` |  |
@@ -535,7 +536,6 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 8 | `RealRooted.jensenPolynomial_eq_diagonalOperator_X_add_one_pow` | `RealRooted.MultiplierSequence` | The Jensen polynomial of `gamma` is the image of `(X + 1) ^ n` under the diagonal operator attached to `gamma`. |
 | 8 | `RealRooted.schurSzegoComp_comm` | `RealRooted.Hadamard.Basic` |  |
 | 8 | `RealRooted.weightedSum_ofFn` | `RealRooted.WeightedSum` | Finite-function form of `weightedSum_eq_sum_map`. |
-| 8 | `riemannXiTheta_conj` | `RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Theta` | The square-variable xi function respects conjugation. |
 | 7 | `Complex.Contour.windingNumber_eq_integral_of_avoidance` | `RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Number.Basic` | If `γ` is continuous on `[a, b]`, avoids `z₀` there, and the index integrand is interval-integrable, the generalized winding number is the ordinary index integral: the principal value collapses to `(2 |
 | 7 | `Complex.iteratedDeriv_conj` | `RealRooted.Mathlib.Analysis.Calculus.IteratedDeriv.Star` | Every iterated derivative of a function respecting conjugation respects conjugation. |
 | 7 | `Matrix.lowerBidiagonalFin_apply` | `RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal` |  |
