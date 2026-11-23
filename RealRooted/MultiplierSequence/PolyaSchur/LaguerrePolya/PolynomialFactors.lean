@@ -4,6 +4,7 @@ public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
 public import TauCeti.Analysis.Complex.GrowthOrder
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Hadamard
 import RealRooted.Mathlib.Analysis.Complex.GrowthOrder.Zero.Nonempty
+import RealRooted.Mathlib.Analysis.Complex.OriginFactor
 import TauCeti.Analysis.Complex.GrowthOrder.Zero.Factorization
 
 /-!
@@ -28,26 +29,6 @@ private theorem exists_zero_of_nonpolynomial {f : ℂ → ℂ} {rho : ℝ}
     (hnp : ∀ p : ℂ[X], f ≠ fun z => p.eval z) : ∃ z, f z = 0 := by
   exact horder.exists_zero_of_nonconstant hrho hf
     (by simpa only [eval_C] using hnp (C (f 0)))
-
-/-- Conjugation symmetry descends through a power of a real linear factor. -/
-private theorem conj_of_real_factor {f g : ℂ → ℂ} {r : ℝ} {m : ℕ}
-    (hg : Continuous g) (hf : ∀ z, f (conj z) = conj (f z))
-    (hfactor : ∀ z, f z = (z - r) ^ m * g z) :
-    ∀ z, g (conj z) = conj (g z) := by
-  have heq : (fun z => g (conj z)) = fun z => conj (g z) := by
-    apply Continuous.ext_on (dense_compl_singleton (r : ℂ))
-      (hg.comp continuous_conj) (continuous_conj.comp hg)
-    intro z hz
-    have hzr : z ≠ (r : ℂ) := by simpa using hz
-    have hconjne : conj z - (r : ℂ) ≠ 0 := by
-      intro hzero
-      have h := congrArg conj (sub_eq_zero.mp hzero)
-      exact hzr (by simpa using h)
-    have h := hf z
-    rw [hfactor, hfactor] at h
-    simp only [map_mul, map_pow, map_sub, conj_ofReal] at h
-    exact mul_left_cancel₀ (pow_ne_zero _ hconjne) h
-  exact fun z => congrFun heq z
 
 /-- Remove a full real zero while preserving all hypotheses needed for further extraction. -/
 private theorem exists_real_root_factor {f : ℂ → ℂ} {rho : ℝ}
@@ -82,7 +63,7 @@ private theorem exists_real_root_factor {f : ℂ → ℂ} {rho : ℝ}
     intro hzero
     exact hf0 (by rw [hfactor, hzero, mul_zero])
   refine ⟨z.re, m, g, hr0, hm, hg, hg0, hgorder,
-    conj_of_real_factor hg.continuous hconj hfactor, ?_, ?_, hfactor⟩
+    Complex.conj_of_real_pow_mul hg.continuous hconj hfactor, ?_, ?_, hfactor⟩
   · intro w hw
     exact hzeros w (by rw [hfactor, hw, mul_zero])
   · intro p hp

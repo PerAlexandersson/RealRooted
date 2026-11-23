@@ -2813,3 +2813,6 @@ public import RealRooted.Mathlib.Analysis.Complex.ZeroHeatTraceOrigin
 public import RealRooted.Mathlib.Analysis.SpecialFunctions.Exp.LaplaceConstant
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.OriginHeatTrace
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.OriginLogDerivativeHierarchy
+public import RealRooted.Mathlib.Analysis.Complex.OriginFactor
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeILogDerivativeOrigin
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIOriginFactor

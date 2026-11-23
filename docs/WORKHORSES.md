@@ -520,9 +520,9 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 21 | `RealRooted.weightedSum_cons` | `RealRooted.WeightedSum` |  |
 | 15 | `Polynomial.basisTransform_monomial` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
 | 14 | `Polynomial.basisTransform_X_pow` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
+| 12 | `RealRooted.IsLaguerrePolya.im_eq_zero_of_eq_zero` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Zeros` | A nonzero Laguerre--Pólya limit has only real complex zeros. |
 | 11 | `Polynomial.basisTransform_C` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
 | 11 | `Polynomial.basisTransform_C_mul_X_pow` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` | A scalar monomial is sent to the corresponding scalar basis element. |
-| 11 | `RealRooted.IsLaguerrePolya.im_eq_zero_of_eq_zero` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Zeros` | A nonzero Laguerre--Pólya limit has only real complex zeros. |
 | 9 | `RealRooted.gammaTransform_add` | `RealRooted.GammaTransform.Basic` |  |
 | 9 | `RealRooted.hermiteHomogeneous_add_two` | `RealRooted.Hermite.Homogeneous` | The homogeneous Hermite three-term recurrence. |
 | 9 | `RealRooted.sequence_eq_of_same_lag_two_recurrence` | `RealRooted.Recurrence.Uniqueness` | Two sequences with the same first two values and lag-two recurrence agree. |

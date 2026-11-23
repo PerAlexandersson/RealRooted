@@ -5569,6 +5569,16 @@
       ],
       "note": "Origin multiplicity contributions to logarithmic derivatives and heat traces; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/OriginFactor.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.OriginFactor"
+      ],
+      "note": "Conjugation symmetry and Taylor signs after removing real monomial factors; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }
