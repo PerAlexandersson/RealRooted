@@ -3079,3 +3079,4 @@ public import RealRooted.Hermite.FormalDifferential.SeparableIteration
 public import RealRooted.Hermite.Generalized.Degree
 public import RealRooted.Hermite.FormalDifferential.SeparableNormalization
 public import RealRooted.Mathlib.RingTheory.Polynomial.ScaleRoots.Separable
+public import RealRooted.Hermite.FormalDifferential.SeparableResidues
