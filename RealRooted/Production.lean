@@ -2965,6 +2965,16 @@ public import RealRooted.Hermite.FormalDifferential.OperatorLimits
 public import RealRooted.Mathlib.Analysis.SpecialFunctions.ChooseRpow
 public import RealRooted.Mathlib.RingTheory.PowerSeries.PowerCoefficient
 public import RealRooted.Mathlib.RingTheory.PowerSeries.RescaledPowerLimit
+public import RealRooted.Hermite.FormalDifferential.Covariance
+public import RealRooted.Hermite.FormalDifferential.Exponential
+public import RealRooted.Hermite.FormalDifferential.NegativeVariance
+public import RealRooted.Hermite.FormalDifferential.PolynomialCriterion
+public import RealRooted.Hermite.FormalDifferential.QuadraticLimit
+public import RealRooted.Hermite.FormalDifferential.Structure
+public import RealRooted.Hermite.FormalDifferential.Translation
+public import RealRooted.Mathlib.RingTheory.PowerSeries.Centering
+public import RealRooted.Mathlib.RingTheory.PowerSeries.ExpCoefficient
+public import RealRooted.SimpleRoots.Affine
 
 /-!
 # RealRooted production umbrella

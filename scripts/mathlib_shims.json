@@ -7129,6 +7129,26 @@
       ],
       "note": "Fixed-coefficient binomial formulas and real-power asymptotics for rescaled formal power series.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/ExpCoefficient.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.ExpCoefficient"
+      ],
+      "note": "Formal exponential coefficients and centering by the inverse linear exponential.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/Centering.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.Centering"
+      ],
+      "note": "Formal exponential coefficients and centering by the inverse linear exponential.",
+      "speculative": true
     }
   ]
 }
