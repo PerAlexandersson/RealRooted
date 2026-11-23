@@ -2981,6 +2981,13 @@ public import RealRooted.Hermite.FormalDifferential.RootClustering
 public import RealRooted.Mathlib.Analysis.Polynomial.LocallyUniformLimit
 public import RealRooted.Mathlib.Analysis.Polynomial.RootMatchingLimit
 public import RealRooted.Mathlib.RingTheory.PowerSeries.ExponentialJet
+public import RealRooted.Hermite.FormalDifferential.Derivative
+public import RealRooted.Hermite.FormalDifferential.ExponentialMonomial
+public import RealRooted.Hermite.FormalDifferential.NonnegativeVariance
+public import RealRooted.Hermite.FormalDifferential.NonrealExponential
+public import RealRooted.Hermite.FormalDifferential.NonrealIterates
+public import RealRooted.Mathlib.Analysis.Polynomial.NonrealPersistence
+public import RealRooted.Mathlib.RingTheory.PowerSeries.FirstDiscrepancy
 
 /-!
 # RealRooted production umbrella

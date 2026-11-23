@@ -7179,6 +7179,26 @@
       ],
       "note": "Bounded-degree coefficient convergence implies locally uniform polynomial evaluation convergence over seminormed rings. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Polynomial/NonrealPersistence.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Polynomial.NonrealPersistence"
+      ],
+      "note": "Nonreal roots persist under coefficientwise limits or multiplicity-sensitive complex root matching. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/FirstDiscrepancy.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.FirstDiscrepancy"
+      ],
+      "note": "A nonexponential normalized formal symbol has a least exponential-coefficient discrepancy of order at least two. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }
