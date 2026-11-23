@@ -2840,3 +2840,9 @@ public import RealRooted.MultiplierSequence.JensenBesselObstruction
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.BesselClassification
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.BesselInteger
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.BesselTaylor
+public import RealRooted.LaguerreInequalities.AuxiliaryProduct
+public import RealRooted.LaguerreInequalities.PowerGenerating
+public import RealRooted.Mathlib.Algebra.Polynomial.PowerRootsProduct
+public import RealRooted.Mathlib.Topology.MetricSpace.Algebra.FiniteProduct
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.AuxiliaryPowers
+public import RealRooted.RiemannHypothesis.AuxiliaryPowers
