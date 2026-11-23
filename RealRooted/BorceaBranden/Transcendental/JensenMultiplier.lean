@@ -2,6 +2,7 @@ module
 
 public import RealRooted.Mathlib.Analysis.Complex.Polynomial.SzaszMultivariate
 import RealRooted.BorceaBranden.Applications.CoordinatePFMultiplier
+import RealRooted.MultiplierSequence.Geometric
 public import RealRooted.MultivariateStability
 
 /-!
@@ -22,20 +23,6 @@ namespace RealRooted.BorceaBranden
 noncomputable section
 
 open Polynomial
-
-private theorem isPFMultiplierSequence_pow {c : ℝ} (hc : 0 < c) :
-    IsPFMultiplierSequence (fun k => c ^ k) := by
-  rw [isPFMultiplierSequence_iff_preserves]
-  intro p hp
-  have hscaled := hp.comp_C_mul_X_add_C hc le_rfl
-  have heq : diagonalOperator (fun k => c ^ k) p =
-      p.comp (C c * X + C 0) := by
-    ext k
-    rw [coeff_diagonalOperator]
-    simp only [C_0, add_zero, Polynomial.comp_C_mul_X_coeff]
-    ring
-  rw [heq]
-  exact hscaled
 
 private theorem isPFMultiplierSequence_normalizedDescFactorial (n : ℕ) :
     IsPFMultiplierSequence

@@ -1599,7 +1599,7 @@
       "modules": [
         "Mathlib.Data.Multiset.Rel"
       ],
-      "note": "Speculative target module generated from the shim tree; no upstream PR or attribution has been recorded yet.",
+      "note": "Reuses canonical multiset-relation composition from pinned TauCeti.Data.Multiset.Rel; adds composition into a target relation, filtered cardinalities, and sorting compatibility. No upstream PR yet.",
       "speculative": true
     },
     {
@@ -3728,6 +3728,3646 @@
         "Mathlib.NumberTheory.LSeries.RiemannXi"
       ],
       "note": "Taylor calculus and Riemann xi foundations for the Jensen criterion. Uses the pinned Tau Ceti analytic results where Mathlib lacks them; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/IteratedDeriv/MulPow.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.IteratedDeriv.MulPow"
+      ],
+      "note": "Taylor and Mellin calculus, theta moment bounds, and unconditional positivity of normalized xi coefficients; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/MellinTransform/LogMoments.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.MellinTransform.LogMoments"
+      ],
+      "note": "Taylor and Mellin calculus, theta moment bounds, and unconditional positivity of normalized xi coefficients; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/Kernel.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.Kernel"
+      ],
+      "note": "Taylor and Mellin calculus, theta moment bounds, and unconditional positivity of normalized xi coefficients; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/Mellin.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.Mellin"
+      ],
+      "note": "Taylor and Mellin calculus, theta moment bounds, and unconditional positivity of normalized xi coefficients; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/Moments.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.Moments"
+      ],
+      "note": "Taylor and Mellin calculus, theta moment bounds, and unconditional positivity of normalized xi coefficients; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/Positivity.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.Positivity"
+      ],
+      "note": "Taylor and Mellin calculus, theta moment bounds, and unconditional positivity of normalized xi coefficients; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/GrowthOrder/Derivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.GrowthOrder.Derivative"
+      ],
+      "note": "Iterated derivatives preserve the growth order of entire functions, using Cauchy estimates and Tau Ceti growth definitions; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/Derivative.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.Derivative"
+      ],
+      "note": "Entire xi derivatives retain growth bounds and are nonzero at the origin; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/IteratedDeriv/CompPowCoefficient.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.IteratedDeriv.CompPowCoefficient"
+      ],
+      "note": "All Taylor coefficients under a positive power substitution, including nondivisible indices.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/LogDeriv/Star.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.LogDeriv.Star"
+      ],
+      "note": "Conjugation symmetry and real-axis values of logarithmic derivatives.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Pick/Support.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Pick.Support"
+      ],
+      "note": "Support of finite Nevanlinna measures is localized at real singularities.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Pick/Atoms.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Pick.Atoms"
+      ],
+      "note": "Vertical imaginary-part boundary limits recover the atoms of a finite Nevanlinna measure.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Analytic/CountableZeros.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Analytic.CountableZeros"
+      ],
+      "note": "Analytic zeros, logarithmic residues, or convergent atomic-sum infrastructure for canonical products.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/LogDeriv/Residue.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.LogDeriv.Residue"
+      ],
+      "note": "Analytic zeros, logarithmic residues, or convergent atomic-sum infrastructure for canonical products.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Normed/Field/WeightedInverse.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Normed.Field.WeightedInverse"
+      ],
+      "note": "Analytic zeros, logarithmic residues, or convergent atomic-sum infrastructure for canonical products.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/Bochner/Countable.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.Bochner.Countable"
+      ],
+      "note": "Analytic zeros, logarithmic residues, or convergent atomic-sum infrastructure for canonical products.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/LogDeriv/Identity.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.LogDeriv.Identity"
+      ],
+      "note": "Entire functions with equal logarithmic derivatives on a nonempty open preconnected set differ by their normalization constant. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Analytic/TaylorSeries.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Analytic.TaylorSeries"
+      ],
+      "note": "Analytic Taylor series, derivatives and normalized formal logarithms; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/IteratedDeriv/Polynomial.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.IteratedDeriv.Polynomial"
+      ],
+      "note": "Finite polynomial differential operators and locally uniform convergence; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/IteratedDeriv/PolynomialAlgebra.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.IteratedDeriv.PolynomialAlgebra"
+      ],
+      "note": "Composition and derivative commutation for finite polynomial differential operators; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/CanonicalProduct/GenusOne.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.CanonicalProduct.GenusOne"
+      ],
+      "note": "Canonical-product genus one star and elementary closure properties; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/ForwardDifference.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.ForwardDifference"
+      ],
+      "note": "Taylor derivatives, exponential multiplication and signed forward differences; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Topology/Algebra/IsUniformGroup/FiniteSum.lean"
+      ],
+      "modules": [
+        "Mathlib.Topology.Algebra.IsUniformGroup.FiniteSum"
+      ],
+      "note": "Finite sums of locally uniformly convergent families; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Expand/PositiveRoots.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Expand.PositiveRoots"
+      ],
+      "note": "Positive-root counts under polynomial power substitutions; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/IteratedDeriv/PolynomialRange.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.IteratedDeriv.PolynomialRange"
+      ],
+      "note": "Padded finite sums for polynomial differential symbols; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/LocalExtr/PolynomialEuler.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.LocalExtr.PolynomialEuler"
+      ],
+      "note": "Euler differential operators, Rolle separation and multiplicity root counts; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/GrowthOrder/Subquadratic.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.GrowthOrder.Subquadratic"
+      ],
+      "note": "Global arbitrarily small Gaussian bounds for subquadratic growth; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HeatOperator/Basic.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HeatOperator.Basic"
+      ],
+      "note": "Entire backward heat-series convergence, differential identities and injectivity below order two; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HeatOperator/Bounds.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HeatOperator.Bounds"
+      ],
+      "note": "Entire backward heat-series convergence, differential identities and injectivity below order two; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HeatOperator/Derivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HeatOperator.Derivative"
+      ],
+      "note": "Entire backward heat-series convergence, differential identities and injectivity below order two; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HeatOperator/Nonzero.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HeatOperator.Nonzero"
+      ],
+      "note": "Entire backward heat-series convergence, differential identities and injectivity below order two; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HeatOperator/TimeDerivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HeatOperator.TimeDerivative"
+      ],
+      "note": "Entire backward heat-series convergence, differential identities and injectivity below order two; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LinearProduct.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LinearProduct"
+      ],
+      "note": "Locally uniform convergence of summable real linear products; extracted from the canonical product construction; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecificLimits/DescFactorialWeights.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecificLimits.DescFactorialWeights"
+      ],
+      "note": "Regularity of falling-factorial weights in Jensen approximations; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecificLimits/WeightedSum.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecificLimits.WeightedSum"
+      ],
+      "note": "Regular finite weighted means and conditionally convergent series; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/Bochner/PowerSum.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.Bochner.PowerSum"
+      ],
+      "note": "Finite positive atomic measures, compact support and power-sum moments; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Expand/Contract.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Expand.Contract"
+      ],
+      "note": "Degree bounds and inversion under polynomial contraction; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HeatOperator/Star.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HeatOperator.Star"
+      ],
+      "note": "Conjugation symmetry of the entire heat operator; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HeatOperator/Composition.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HeatOperator.Composition"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/HeatOperator/TimeLimit.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.HeatOperator.TimeLimit"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/Basic.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.Basic"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/Bounds.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.Bounds"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/Derivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.Derivative"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/Star.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.Star"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LineIdentity.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LineIdentity"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LocallyUniformIteratedDeriv.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LocallyUniformIteratedDeriv"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Polynomial/CoefficientMajorant.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Polynomial.CoefficientMajorant"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Data/Nat/Factorial/ArithmeticProduct.lean"
+      ],
+      "modules": [
+        "Mathlib.Data.Nat.Factorial.ArithmeticProduct"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/MomentDeterminacy.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.MomentDeterminacy"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Topology/UniformSpace/LocallyUniformAvoidance.lean"
+      ],
+      "modules": [
+        "Mathlib.Topology.UniformSpace.LocallyUniformAvoidance"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/GrowthOrder/CauchyBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.GrowthOrder.CauchyBound"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/GrowthOrder/ExponentialPowerBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.GrowthOrder.ExponentialPowerBound"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/GrowthOrder/OfBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.GrowthOrder.OfBound"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/OrderBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.OrderBound"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/OrderConvergence.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.OrderConvergence"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/OrderDerivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.OrderDerivative"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Convex/LogDerivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Convex.LogDerivative"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Normed/Group/LocallyBoundedMajorant.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Normed.Group.LocallyBoundedMajorant"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/Hankel.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.Hankel"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Pochhammer/ReciprocalConvolution.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Pochhammer.ReciprocalConvolution"
+      ],
+      "note": "General analytic, polynomial or measure infrastructure for real-rooted entire-function theory; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/GrowthOrder/PolynomialFactor.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.GrowthOrder.PolynomialFactor"
+      ],
+      "note": "General growth and convergence infrastructure for entire differential operators; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/Constant.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.Constant"
+      ],
+      "note": "General growth and convergence infrastructure for entire differential operators; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GrowthOrder.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GrowthOrder"
+      ],
+      "note": "General growth and convergence infrastructure for entire differential operators; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/TaylorGrowth.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.TaylorGrowth"
+      ],
+      "note": "General growth and convergence infrastructure for entire differential operators; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecificLimits/PowerSequence.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecificLimits.PowerSequence"
+      ],
+      "note": "General growth and convergence infrastructure for entire differential operators; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/Chebyshev/Riesz.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.Chebyshev.Riesz"
+      ],
+      "note": "Analytic-number-theory infrastructure for RH prime-counting estimates and prime-supported polynomial applications. Selective attributed reuse of Tau Ceti and goldbach-lean; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/Riesz.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.Riesz"
+      ],
+      "note": "Analytic-number-theory infrastructure for RH prime-counting estimates and prime-supported polynomial applications. Selective attributed reuse of Tau Ceti and goldbach-lean; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/Bounds.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.Bounds"
+      ],
+      "note": "Analytic-number-theory infrastructure for RH prime-counting estimates and prime-supported polynomial applications. Selective attributed reuse of Tau Ceti and goldbach-lean; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/ZeroCount.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.ZeroCount"
+      ],
+      "note": "Analytic-number-theory infrastructure for RH prime-counting estimates and prime-supported polynomial applications. Selective attributed reuse of Tau Ceti and goldbach-lean; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/LocalLogDeriv.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.LocalLogDeriv"
+      ],
+      "note": "Analytic-number-theory infrastructure for RH prime-counting estimates and prime-supported polynomial applications. Selective attributed reuse of Tau Ceti and goldbach-lean; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/RiemannHypothesis.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.RiemannHypothesis"
+      ],
+      "note": "RH contour estimates and finite-set separation for conditional prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/ZeroWindow.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.ZeroWindow"
+      ],
+      "note": "RH contour estimates and finite-set separation for conditional prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Topology/Instances/Real/FiniteSeparation.lean"
+      ],
+      "modules": [
+        "Mathlib.Topology.Instances.Real.FiniteSeparation"
+      ],
+      "note": "RH contour estimates and finite-set separation for conditional prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/PartialFractions.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.PartialFractions"
+      ],
+      "note": "Partial-fraction, Mellin-decay and contour-height estimates for the conditional prime-counting proof; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/MellinInversion/Decay.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.MellinInversion.Decay"
+      ],
+      "note": "Partial-fraction, Mellin-decay and contour-height estimates for the conditional prime-counting proof; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/GoodHeight.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.GoodHeight"
+      ],
+      "note": "Partial-fraction, Mellin-decay and contour-height estimates for the conditional prime-counting proof; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Contour/Residue/LogDeriv.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Contour.Residue.LogDeriv"
+      ],
+      "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Contour/Residue/Rectangle.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Contour.Residue.Rectangle"
+      ],
+      "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/MellinInversion/FiniteDifference.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.MellinInversion.FiniteDifference"
+      ],
+      "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/MellinInversion/HorizontalDecay.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.MellinInversion.HorizontalDecay"
+      ],
+      "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Log/Weights.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Log.Weights"
+      ],
+      "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/Contour.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.Contour"
+      ],
+      "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/HorizontalDecay.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.HorizontalDecay"
+      ],
+      "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/Order.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.Order"
+      ],
+      "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/Residues.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.Residues"
+      ],
+      "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/ZeroKernel.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.ZeroKernel"
+      ],
+      "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/ZeroSum.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.ZeroSum"
+      ],
+      "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Topology/Algebra/InfiniteSum/FiberMajorant.lean"
+      ],
+      "modules": [
+        "Mathlib.Topology.Algebra.InfiniteSum.FiberMajorant"
+      ],
+      "note": "Contour residues, finite differences, and multiplicity-weighted zero sums for RH prime-counting estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/MellinInversion/FiniteDifferenceIntegral.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.MellinInversion.FiniteDifferenceIntegral"
+      ],
+      "note": "Integral bounds for polynomial-growth weights times finite differences of the Mellin kernel; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/MellinInversion/FiniteDifferenceInterpolation.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.MellinInversion.FiniteDifferenceInterpolation"
+      ],
+      "note": "Interpolated Mellin-kernel decay on positive vertical lines; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Log/BandBounds.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Log.BandBounds"
+      ],
+      "note": "Finite logarithmic head and tail estimates using fiber bounds; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Pow/Interpolation.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Pow.Interpolation"
+      ],
+      "note": "Real power interpolation of nonnegative bounds and logarithmic growth; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/IntervalIntegral/MonotoneBounds.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.IntervalIntegral.MonotoneBounds"
+      ],
+      "note": "Pointwise bounds from adjacent integral means of monotone functions; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/IntervalIntegral/PrimitiveBounds.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.IntervalIntegral.PrimitiveBounds"
+      ],
+      "note": "Pointwise bounds from finite differences of integrated errors; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/Chebyshev/Unsmoothing.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.Chebyshev.Unsmoothing"
+      ],
+      "note": "Chebyshev unsmoothing and unconditional transfer from psi to theta; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/LogGrowth.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.LogGrowth"
+      ],
+      "note": "Global logarithmic growth on a fixed positive line under RH; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/ResidualDifference.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.ResidualDifference"
+      ],
+      "note": "Finite-difference bounds for the residual zeta contour under RH; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/RieszContour.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.RieszContour"
+      ],
+      "note": "Integrated zeta contour specialization and zero-series exhaustion under RH; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/RieszExplicitFormula.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.RieszExplicitFormula"
+      ],
+      "note": "Integrated Chebyshev explicit formula under RH with a positive-line remainder; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/ZeroDifference.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.ZeroDifference"
+      ],
+      "note": "Head and tail bounds for finite differences of the zeta zero series under RH; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/ZeroDifferenceSqrt.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.ZeroDifferenceSqrt"
+      ],
+      "note": "Square-root finite-difference bounds for the zeta zero series under RH; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/ZeroSumBounds.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.ZeroSumBounds"
+      ],
+      "note": "Quantitative finite logarithmic head and tail zeta-zero bounds under RH; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannZeta/ErrorDifference.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannZeta.ErrorDifference"
+      ],
+      "note": "Finite-difference bounds for the actual integrated Chebyshev error under RH; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/Chebyshev/RiemannHypothesis.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.Chebyshev.RiemannHypothesis"
+      ],
+      "note": "RH square-root logarithmic-square error bounds for psi and theta; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/Moment.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.Moment"
+      ],
+      "note": "Existence and uniqueness of monic orthogonal polynomials from finite moment matrices; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/Perturbation.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.Perturbation"
+      ],
+      "note": "Finite moment perturbation and orthogonal-polynomial coefficient continuity; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Asymptotics/IncrementBounds.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Asymptotics.IncrementBounds"
+      ],
+      "note": "Uniform normalized-increment discrepancy from square-root logarithmic-square errors; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Polynomial/OrderedRootPerturbation.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Polynomial.OrderedRootPerturbation"
+      ],
+      "note": "Linear coefficient-error bounds for ordered simple real roots under perturbation; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Polynomial/SimpleRootMatching.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Polynomial.SimpleRootMatching"
+      ],
+      "note": "Finite-coefficient neighborhoods and real-root matching at simple split references; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Polynomial/SimpleRootSeparation.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Polynomial.SimpleRootSeparation"
+      ],
+      "note": "Linear root displacement bounds using separated reference factors; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/LinearSystemPerturbation.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.LinearSystemPerturbation"
+      ],
+      "note": "Entrywise residual estimates for perturbed finite linear systems; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/IntervalIntegral/CumulativeMoments.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.IntervalIntegral.CumulativeMoments"
+      ],
+      "note": "Signed finite cumulative discrepancy controls unit-interval monomial moments; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/Chebyshev/PrimeWindow.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.Chebyshev.PrimeWindow"
+      ],
+      "note": "Finite logarithmically weighted prime windows and exact cumulative theta identity; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/Chebyshev/PrimeWindowMoments.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.Chebyshev.PrimeWindowMoments"
+      ],
+      "note": "RH convergence and quantitative errors for genuine finite prime-window moments; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/Chebyshev/ShortIntervals.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.Chebyshev.ShortIntervals"
+      ],
+      "note": "RH uniform Chebyshev discrepancy in square-root logarithmic-cube windows; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/IntervalIntegral/ContinuousTests.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.IntervalIntegral.ContinuousTests"
+      ],
+      "note": "Continuous-test convergence from finite atomic moment limits and bounded total variation; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/Chebyshev/PrimeWindowContinuous.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.Chebyshev.PrimeWindowContinuous"
+      ],
+      "note": "RH continuous-weight moment limits for finite logarithmic prime windows; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Moment/FiniteAtoms.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Moment.FiniteAtoms"
+      ],
+      "note": "Finite atomic moment functional and pairing identities and Hankel positivity; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/Chebyshev/PrimeWindowOrthogonal.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.Chebyshev.PrimeWindowOrthogonal"
+      ],
+      "note": "Monic finite prime-window moment polynomials and genuine weighted-sum orthogonality; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PerturbationLimits.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PerturbationLimits"
+      ],
+      "note": "Nonsingular finite real matrix inverse convergence and uniform entry bounds; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Lagrange/QuadratureMoments.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Lagrange.QuadratureMoments"
+      ],
+      "note": "Lagrange quadrature moment equations and inverse Vandermonde representation; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Lagrange/QuadraturePerturbation.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Lagrange.QuadraturePerturbation"
+      ],
+      "note": "Lagrange weight convergence and quantitative node/moment perturbation estimates; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Lagrange/GaussianQuadrature.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Lagrange.GaussianQuadrature"
+      ],
+      "note": "Full Gaussian polynomial exactness and strict weight positivity from nodal orthogonality; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/Gaussian.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.Gaussian"
+      ],
+      "note": "Gaussian exactness and positive weights from finite moment orthogonality and positive definite Hankel matrices; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/Chebyshev/PrimeWindowQuadrature.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.Chebyshev.PrimeWindowQuadrature"
+      ],
+      "note": "Exact positive Gaussian rules for actual finite prime-window sums, including one-node mass identity; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/Chebyshev/PrimeWindowWeightedOrthogonal.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.Chebyshev.PrimeWindowWeightedOrthogonal"
+      ],
+      "note": "Finite weighted prime moment polynomials, actual weighted pairings and Hankel semidefiniteness; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/IntervalIntegral/CumulativeIntegral.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.IntervalIntegral.CumulativeIntegral"
+      ],
+      "note": "Cumulative integral identities for interval-integrable tests and finite signed atoms; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/IntervalIntegral/CumulativeDerivative.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.IntervalIntegral.CumulativeDerivative"
+      ],
+      "note": "Cumulative discrepancy bounds for tests with integrable interior derivative; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Gamma/BetaVariation.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Gamma.BetaVariation"
+      ],
+      "note": "Uniform variation bound for nonnegative beta exponents; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/IntervalIntegral/CumulativeBeta.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.IntervalIntegral.CumulativeBeta"
+      ],
+      "note": "Beta-weighted finite moment error from cumulative discrepancy; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/CoefficientRates.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.CoefficientRates"
+      ],
+      "note": "Finite moment perturbation rates for every monic polynomial coefficient; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Polynomial/OrderedRootRates.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Polynomial.OrderedRootRates"
+      ],
+      "note": "Ordered root error rates and one chosen convergent root family near a simple real reference; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/GaussianLimits.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.GaussianLimits"
+      ],
+      "note": "Quantitative positive Gaussian quadrature convergence from finite moments and ordered roots; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/Chebyshev/PrimeWindowWeightedQuadrature.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.Chebyshev.PrimeWindowWeightedQuadrature"
+      ],
+      "note": "Actual weighted prime-sum moment functionals and one-node quadrature mass; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/AnalyticMomentSupport.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.AnalyticMomentSupport"
+      ],
+      "note": "Geometric analytic Taylor bounds force compact support for positive moment measures; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/CompactMomentTransform.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.CompactMomentTransform"
+      ],
+      "note": "Reciprocal-kernel power series of a finite bounded moment measure; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/LocalMomentTransform.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.LocalMomentTransform"
+      ],
+      "note": "Local analytic and logarithmic-derivative identities from exact complex signed moments; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/LogDeriv/ZeroFree.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.LogDeriv.ZeroFree"
+      ],
+      "note": "Zero exclusion for nontrivial analytic first-order equations on connected domains; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/FiniteMomentStieltjes.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.FiniteMomentStieltjes"
+      ],
+      "note": "Explicit Stieltjes representation and holomorphy of finite reciprocal moment transforms; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/NonnegativeMomentTransform.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.NonnegativeMomentTransform"
+      ],
+      "note": "Transport of nonnegative real moment measures to reciprocal Stieltjes data; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/LogDeriv/SlitPlaneContinuation.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.LogDeriv.SlitPlaneContinuation"
+      ],
+      "note": "Slit-plane continuation of a local logarithmic derivative without assuming zero exclusion; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/LogDeriv/MomentContinuation.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.LogDeriv.MomentContinuation"
+      ],
+      "note": "Global zero location and Stieltjes representation from genuine local log-derivative moments; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/LogDeriv/NormalizedConjugation.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.LogDeriv.NormalizedConjugation"
+      ],
+      "note": "Moment transforms, logarithmic derivatives, and locally uniform products; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/MomentNevanlinna.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.MomentNevanlinna"
+      ],
+      "note": "Moment transforms, logarithmic derivatives, and locally uniform products; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/MomentNevanlinnaRepresentation.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.MomentNevanlinnaRepresentation"
+      ],
+      "note": "Moment transforms, logarithmic derivatives, and locally uniform products; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/Bochner/CountableSupport.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.Bochner.CountableSupport"
+      ],
+      "note": "Moment transforms, logarithmic derivatives, and locally uniform products; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LinearProductAnalytic.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LinearProductAnalytic"
+      ],
+      "note": "Moment transforms, logarithmic derivatives, and locally uniform products; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Topology/Algebra/InfiniteSum/FiniteMultiplicity.lean"
+      ],
+      "modules": [
+        "Mathlib.Topology.Algebra.InfiniteSum.FiniteMultiplicity"
+      ],
+      "note": "Summability and sum grouping over finite multiplicity fibers; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/IteratedDeriv/EulerRodrigues.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.IteratedDeriv.EulerRodrigues"
+      ],
+      "note": "Positive resolvent series, complete monotonicity and Euler-Rodrigues differentiation; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/CompletelyMonotone/RationalMixtures.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.CompletelyMonotone.RationalMixtures"
+      ],
+      "note": "Positive resolvent series, complete monotonicity and Euler-Rodrigues differentiation; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/CompletelyMonotone/RationalDerivatives.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.CompletelyMonotone.RationalDerivatives"
+      ],
+      "note": "Positive resolvent series, complete monotonicity and Euler-Rodrigues differentiation; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/CompletelyMonotone/RationalSeriesDerivatives.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.CompletelyMonotone.RationalSeriesDerivatives"
+      ],
+      "note": "Positive resolvent series, complete monotonicity and Euler-Rodrigues differentiation; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/CompletelyMonotone/ResolventHierarchy.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.CompletelyMonotone.ResolventHierarchy"
+      ],
+      "note": "Positive resolvent series, complete monotonicity and Euler-Rodrigues differentiation; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LinearProductLogDerivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LinearProductLogDerivative"
+      ],
+      "note": "Positive resolvent series, complete monotonicity and Euler-Rodrigues differentiation; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/CompletelyMonotone/ResolventRodrigues.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.CompletelyMonotone.ResolventRodrigues"
+      ],
+      "note": "Positive resolvent series, complete monotonicity and Euler-Rodrigues differentiation; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Topology/Algebra/InfiniteSum/SortedEnumeration.lean"
+      ],
+      "modules": [
+        "Mathlib.Topology.Algebra.InfiniteSum.SortedEnumeration"
+      ],
+      "note": "Sorted positive summable families, finite atomic measures and product grouping; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/AtomicRange.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.AtomicRange"
+      ],
+      "note": "Sorted positive summable families, finite atomic measures and product grouping; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/SortedAtomicMeasure.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.SortedAtomicMeasure"
+      ],
+      "note": "Sorted positive summable families, finite atomic measures and product grouping; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Topology/Algebra/InfiniteSum/FiniteMultiplicityProduct.lean"
+      ],
+      "modules": [
+        "Mathlib.Topology.Algebra.InfiniteSum.FiniteMultiplicityProduct"
+      ],
+      "note": "Sorted positive summable families, finite atomic measures and product grouping; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/NonnegativeAtomicMap.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.NonnegativeAtomicMap"
+      ],
+      "note": "Sorted positive summable families, finite atomic measures and product grouping; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Order/Monotone/PositiveExtension.lean"
+      ],
+      "modules": [
+        "Mathlib.Order.Monotone.PositiveExtension"
+      ],
+      "note": "Sorted positive summable families, finite atomic measures and product grouping; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/SortedAtomicSequence.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.SortedAtomicSequence"
+      ],
+      "note": "Sorted positive summable families, finite atomic measures and product grouping; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Exp/ExponentialSumBounds.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Exp.ExponentialSumBounds"
+      ],
+      "note": "Positive spectral heat traces, Laplace moments, and real restriction of holomorphic derivatives; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Exp/ExponentialSum.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Exp.ExponentialSum"
+      ],
+      "note": "Positive spectral heat traces, Laplace moments, and real restriction of holomorphic derivatives; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Exp/ExponentialSumLaplace.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Exp.ExponentialSumLaplace"
+      ],
+      "note": "Positive spectral heat traces, Laplace moments, and real restriction of holomorphic derivatives; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Exp/PositiveSlopeHeatTrace.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Exp.PositiveSlopeHeatTrace"
+      ],
+      "note": "Positive spectral heat traces, Laplace moments, and real restriction of holomorphic derivatives; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/IteratedRealDeriv.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.IteratedRealDeriv"
+      ],
+      "note": "Positive spectral heat traces, Laplace moments, and real restriction of holomorphic derivatives; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/SubexponentialLowerBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.SubexponentialLowerBound"
+      ],
+      "note": "Exponential lower bounds obstruct order below one; positive linear products have norm at least one on the right half-plane. Generalizes the former private Edrei lemma; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LinearProductLowerBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LinearProductLowerBound"
+      ],
+      "note": "Exponential lower bounds obstruct order below one; positive linear products have norm at least one on the right half-plane. Generalizes the former private Edrei lemma; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Topology/Algebra/InfiniteSum/FiberCardinality.lean"
+      ],
+      "modules": [
+        "Mathlib.Topology.Algebra.InfiniteSum.FiberCardinality"
+      ],
+      "note": "Fiber grouping, exact analytic multiplicities of linear products, and native zero heat traces. Generalizes the former private Edrei grouping argument; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LinearProductDivisor.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LinearProductDivisor"
+      ],
+      "note": "Fiber grouping, exact analytic multiplicities of linear products, and native zero heat traces. Generalizes the former private Edrei grouping argument; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/PositiveSlopeRoots.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.PositiveSlopeRoots"
+      ],
+      "note": "Fiber grouping, exact analytic multiplicities of linear products, and native zero heat traces. Generalizes the former private Edrei grouping argument; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LinearProductInverseMoments.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LinearProductInverseMoments"
+      ],
+      "note": "Fiber grouping, exact analytic multiplicities of linear products, and native zero heat traces. Generalizes the former private Edrei grouping argument; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/ZeroHeatTrace.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.ZeroHeatTrace"
+      ],
+      "note": "Fiber grouping, exact analytic multiplicities of linear products, and native zero heat traces. Generalizes the former private Edrei grouping argument; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/ZeroSpectralIndex.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.ZeroSpectralIndex"
+      ],
+      "note": "Unconditional heat estimates from native zero moduli, nonempty spectra below order one, and xi specializations. Shares zero-existence proof with polynomial factor extraction; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/AbsoluteZeroHeatTrace.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.AbsoluteZeroHeatTrace"
+      ],
+      "note": "Unconditional heat estimates from native zero moduli, nonempty spectra below order one, and xi specializations. Shares zero-existence proof with polynomial factor extraction; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/AbsoluteHeatTrace.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.AbsoluteHeatTrace"
+      ],
+      "note": "Unconditional heat estimates from native zero moduli, nonempty spectra below order one, and xi specializations. Shares zero-existence proof with polynomial factor extraction; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/GrowthOrder/Zero/Nonempty.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.GrowthOrder.Zero.Nonempty"
+      ],
+      "note": "Unconditional heat estimates from native zero moduli, nonempty spectra below order one, and xi specializations. Shares zero-existence proof with polynomial factor extraction; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/ZeroSpectralNonempty.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.ZeroSpectralNonempty"
+      ],
+      "note": "Unconditional heat estimates from native zero moduli, nonempty spectra below order one, and xi specializations. Shares zero-existence proof with polynomial factor extraction; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/AbsoluteHeatTracePositive.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.AbsoluteHeatTracePositive"
+      ],
+      "note": "Unconditional heat estimates from native zero moduli, nonempty spectra below order one, and xi specializations. Shares zero-existence proof with polynomial factor extraction; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/CompletelyMonotone/ReciprocalHierarchy.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.CompletelyMonotone.ReciprocalHierarchy"
+      ],
+      "note": "Origin multiplicity contributions to logarithmic derivatives and heat traces; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LogDerivPowMul.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LogDerivPowMul"
+      ],
+      "note": "Origin multiplicity contributions to logarithmic derivatives and heat traces; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Exp/LaplaceConstant.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Exp.LaplaceConstant"
+      ],
+      "note": "Origin multiplicity contributions to logarithmic derivatives and heat traces; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/ZeroHeatTraceOrigin.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.ZeroHeatTraceOrigin"
+      ],
+      "note": "Origin multiplicity contributions to logarithmic derivatives and heat traces; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/OriginFactor.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.OriginFactor"
+      ],
+      "note": "Conjugation symmetry and Taylor signs after removing real monomial factors; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/RealLogDeriv.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.RealLogDeriv"
+      ],
+      "note": "Real logarithms and canonical coefficients of entire scalar series; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/RealSeries.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.RealSeries"
+      ],
+      "note": "Real logarithms and canonical coefficients of entire scalar series; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Exp/WeightedMixtureLaplace.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Exp.WeightedMixtureLaplace"
+      ],
+      "note": "Weighted exponential-mixture Laplace and Laguerre kernel identities; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Exp/WeightedHeatLaplace.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Exp.WeightedHeatLaplace"
+      ],
+      "note": "Weighted exponential-mixture Laplace and Laguerre kernel identities; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Laguerre/LaplaceKernel.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Laguerre.LaplaceKernel"
+      ],
+      "note": "Weighted exponential-mixture Laplace and Laguerre kernel identities; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Exp/LaguerreHeatLaplace.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Exp.LaguerreHeatLaplace"
+      ],
+      "note": "Weighted exponential-mixture Laplace and Laguerre kernel identities; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Exp/PositiveSlopeWeightedHeat.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Exp.PositiveSlopeWeightedHeat"
+      ],
+      "note": "Weighted exponential-mixture Laplace and Laguerre kernel identities; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/ZeroWeightedHeatTrace.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.ZeroWeightedHeatTrace"
+      ],
+      "note": "Weighted exponential-mixture Laplace and Laguerre kernel identities; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Laguerre/Rodrigues.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Laguerre.Rodrigues"
+      ],
+      "note": "Weighted exponential-mixture Laplace and Laguerre kernel identities; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/ZeroHeatTraceScale.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.ZeroHeatTraceScale"
+      ],
+      "note": "Nonzero scalar invariance of native divisor heat traces; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/RegularizedHypergeometric/Derivatives.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.RegularizedHypergeometric.Derivatives"
+      ],
+      "note": "Taylor derivatives of entire regularized hypergeometric functions, including Gamma-pole lower parameters; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/PowerRootsProduct.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.PowerRootsProduct"
+      ],
+      "note": "Homogeneous product over the roots of X^n+1 with multiplicities and zero scaling. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Topology/MetricSpace/Algebra/FiniteProduct.lean"
+      ],
+      "modules": [
+        "Mathlib.Topology.MetricSpace.Algebra.FiniteProduct"
+      ],
+      "note": "Locally uniform convergence of finite multiset products. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/MobiusTransform/Map.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.MobiusTransform.Map"
+      ],
+      "note": "Coefficient maps commute with homogeneous Mobius transforms. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/EvenCoefficients.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.EvenCoefficients"
+      ],
+      "note": "Even coefficient support and removal of even origin factors. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/IteratedDeriv/PartialContinuity.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.IteratedDeriv.PartialContinuity"
+      ],
+      "note": "Continuity of partial iterated derivatives in a parameter. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/RealIdentity.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.RealIdentity"
+      ],
+      "note": "Punctured real-axis nonvanishing for nonzero entire functions. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/TranslateProductContinuity.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.TranslateProductContinuity"
+      ],
+      "note": "Continuity of translated-product Taylor coefficients in the center. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/TranslateProductNonzero.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.TranslateProductNonzero"
+      ],
+      "note": "Entire finite translated products and nonvanishing with nonzero slopes. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/CompactJets.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.CompactJets"
+      ],
+      "note": "Uniform nonvanishing Taylor jets on compact sets for nonzero entire functions. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/SymbolAlgebra.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.SymbolAlgebra"
+      ],
+      "note": "Scalar, additive and variable-factor algebra of actual infinite differential series. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/PolynomialComposition.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.PolynomialComposition"
+      ],
+      "note": "Finite polynomial-symbol composition with infinite differential operators under reciprocal growth bounds. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/ExponentialCoefficients.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.ExponentialCoefficients"
+      ],
+      "note": "Exponential-type Taylor coefficient bounds retaining the type. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/SmallTypeBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.SmallTypeBound"
+      ],
+      "note": "Absolute convergence and linear error bounds for small-type differential symbols. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/SmallTypeLimit.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.SmallTypeLimit"
+      ],
+      "note": "Local uniform convergence to the identity for normalized symbols of vanishing type. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GenusZeroTail.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GenusZeroTail"
+      ],
+      "note": "Canonical genus-zero tail operators converge to identity on finite-order entire targets. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/PolynomialCommute.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.PolynomialCommute"
+      ],
+      "note": "Finite polynomial differential operators commute with actual infinite differential operators. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/SimpleLimit.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.SimpleLimit"
+      ],
+      "note": "Stability of simple zeros on compact sets under locally uniform entire convergence. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/LinearProductDegree.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.LinearProductDegree"
+      ],
+      "note": "Degree divergence of products of real linear factors with infinite nonzero-slope support. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LinearProductPrefix.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LinearProductPrefix"
+      ],
+      "note": "Growth, prefix factorization and support of convergent real linear canonical products. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/FactorialExponential.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.FactorialExponential"
+      ],
+      "note": "Normalized factorial upper bound retaining the exponential scale. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianDerivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianDerivative"
+      ],
+      "note": "Gaussian norm recentering and optimized Cauchy derivative estimates. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianBound"
+      ],
+      "note": "Differential series term bounds retaining the sharp Gaussian threshold. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianConvergence.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianConvergence"
+      ],
+      "note": "Absolute and locally uniform convergence of actual differential series under sharp Gaussian bounds. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianUniformBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianUniformBound"
+      ],
+      "note": "Common summable Gaussian differential majorants for symbol families. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianImageGrowth.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianImageGrowth"
+      ],
+      "note": "Gaussian norm and order bounds for actual infinite differential images. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianSymbolLimit.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianSymbolLimit"
+      ],
+      "note": "Continuity in locally uniform symbols under a common Gaussian envelope. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/CanonicalProduct/MinimalType.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.CanonicalProduct.MinimalType"
+      ],
+      "note": "Arbitrary-index weighted genus-one canonical products have minimal quadratic type. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/CanonicalProduct/GaussianProductBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.CanonicalProduct.GaussianProductBound"
+      ],
+      "note": "Canonical products retain their Gaussian coefficient in arbitrarily sharp norm estimates. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianJets.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianJets"
+      ],
+      "note": "Gaussian bounds for spatial derivatives with arbitrarily small type increase. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianSpatialDerivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianSpatialDerivative"
+      ],
+      "note": "Spatial derivatives commute with convergent Gaussian differential operators. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianPolynomialBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianPolynomialBound"
+      ],
+      "note": "Polynomial multiplication retains arbitrarily close Gaussian bounds. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/SymbolSummable.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.SymbolSummable"
+      ],
+      "note": "Additive and variable-factor algebra of actually summable differential symbols. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianSymbolAlgebra.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianSymbolAlgebra"
+      ],
+      "note": "Actual differential-symbol algebra under sharp Gaussian convergence. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianPolynomialComposition.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianPolynomialComposition"
+      ],
+      "note": "Finite polynomial-factor composition for Gaussian infinite differential operators. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/PolynomialSymbol.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.PolynomialSymbol"
+      ],
+      "note": "Actual polynomial differential series equal finite differential operators. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianApproxComposition.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianApproxComposition"
+      ],
+      "note": "Infinite-factor composition under controlled minimal-quadratic polynomial approximation. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LinearPrefixGaussian.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LinearPrefixGaussian"
+      ],
+      "note": "Common arbitrarily small Gaussian bounds for summable linear-product prefixes. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GenusZeroComposition.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GenusZeroComposition"
+      ],
+      "note": "Actual infinite composition for summable real genus-zero factors. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Normed/Group/SparseSubfamily.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Normed.Group.SparseSubfamily"
+      ],
+      "note": "Square-summable real families admit summable subfamilies of distinct nonzero values. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LinearProductNonpolynomial.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LinearProductNonpolynomial"
+      ],
+      "note": "Infinitely many distinct nonzero slopes force a nonpolynomial linear product. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/CanonicalProduct/GenusOneSplit.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.CanonicalProduct.GenusOneSplit"
+      ],
+      "note": "Actual genus-one product splitting and natural multiplicity expansion. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/CanonicalProduct/CanonicalSupport.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.CanonicalProduct.CanonicalSupport"
+      ],
+      "note": "Infinite canonical zero sets force infinite active slope support. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianMargin.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianMargin"
+      ],
+      "note": "Positive Gaussian coefficients inside the strict product threshold. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/Step.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.Step"
+      ],
+      "note": "Formal Stieltjes steps and their contraction in the X-adic filtration. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/Convergents.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.Convergents"
+      ],
+      "note": "Finite Stieltjes convergents stabilize coefficientwise and terminate at zero numerators. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/Tail.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.Tail"
+      ],
+      "note": "Actual formal Stieltjes tails and their unique recursion. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/Coefficients.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.Coefficients"
+      ],
+      "note": "Stieltjes-Rogers coefficient recurrence and coefficient positivity. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/Uniqueness.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.Uniqueness"
+      ],
+      "note": "Stieltjes numerator uniqueness up to the first zero and active-sign obstructions. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/JacobiFraction/Step.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.JacobiFraction.Step"
+      ],
+      "note": "Formal Jacobi steps and unique tail equations. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/Contraction.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.Contraction"
+      ],
+      "note": "Exact formal contraction from Stieltjes to Jacobi fractions. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/CanonicalProduct/ImaginaryAxisBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.CanonicalProduct.ImaginaryAxisBound"
+      ],
+      "note": "Imaginary-axis lower bounds for weighted real canonical products. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/CanonicalProduct/GaussianCoefficient.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.CanonicalProduct.GaussianCoefficient"
+      ],
+      "note": "Every sharp Gaussian bound controls the native canonical Gaussian coefficient. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Matrix/CoordinateSpectralMeasure.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Matrix.CoordinateSpectralMeasure"
+      ],
+      "note": "Coordinate spectral measures and exact matrix-power moments. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/FirstMomentTight.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.FirstMomentTight"
+      ],
+      "note": "Tightness from uniformly bounded first moments on the nonnegative half-line. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/WeakMomentLimits.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.WeakMomentLimits"
+      ],
+      "note": "Weak limits inherit convergent polynomial moments by higher-moment bounds. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/MomentLimit.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.MomentLimit"
+      ],
+      "note": "Pointwise limits of Stieltjes moment sequences admit actual finite representing measures. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PowerSeries/Resolvent.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PowerSeries.Resolvent"
+      ],
+      "note": "Formal matrix-power resolvents over commutative rings. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PowerSeries/Schur.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PowerSeries.Schur"
+      ],
+      "note": "Formal scalar Schur denominators and Jacobi fraction steps. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/BidiagonalGram.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.BidiagonalGram"
+      ],
+      "note": "Exact first-coordinate block identities for bidiagonal Gram matrices. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PowerSeries/Reindex.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PowerSeries.Reindex"
+      ],
+      "note": "Reindexing invariance of formal matrix resolvents. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PowerSeries/FinSchur.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PowerSeries.FinSchur"
+      ],
+      "note": "Finite-index form of the first Jacobi resolvent step. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/TailOffset.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.TailOffset"
+      ],
+      "note": "Stieltjes tail offsets and first-diagonal corrections. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/StieltjesGram.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.StieltjesGram"
+      ],
+      "note": "Positive semidefinite finite Jacobi matrices from Stieltjes numerator data. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PowerSeries/StieltjesConvergence.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PowerSeries.StieltjesConvergence"
+      ],
+      "note": "Stabilization of matrix-power moments to formal Stieltjes coefficients. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/Moment.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.Moment"
+      ],
+      "note": "Nonnegative formal Stieltjes fractions have genuine finite moment measures. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/MomentAlgebra.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.MomentAlgebra"
+      ],
+      "note": "Moment pairing symmetry, lower orthogonality and squared norms. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/MomentRecurrence.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.MomentRecurrence"
+      ],
+      "note": "Monic three-term recurrence from positive Hankel forms. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/MomentHankelFactorization.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.MomentHankelFactorization"
+      ],
+      "note": "Unitriangular Hankel factorization and determinant norm products. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/MomentShift.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.MomentShift"
+      ],
+      "note": "Moment shifts as multiplication by X. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/MomentChristoffel.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.MomentChristoffel"
+      ],
+      "note": "Positive paired Christoffel identities and Stieltjes norm ratios. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/EulerGauss.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.EulerGauss"
+      ],
+      "note": "Formal Euler-Gauss recurrence produces Stieltjes tails. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/MomentChristoffelLocal.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.MomentChristoffelLocal"
+      ],
+      "note": "Christoffel identities with finite determinant and norm hypotheses. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/EulerPaired.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.EulerPaired"
+      ],
+      "note": "Paired formal Euler-Gauss recurrences. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/MomentSeries.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.MomentSeries"
+      ],
+      "note": "Normalized orthogonal moment series. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/MomentSeriesRecurrence.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.MomentSeriesRecurrence"
+      ],
+      "note": "Euler-Gauss recurrences from positive Hankel forms. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/StrictMoment.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.StrictMoment"
+      ],
+      "note": "Strict Hankel positivity gives positive formal Stieltjes fractions. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/MomentSeriesLocal.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.MomentSeriesLocal"
+      ],
+      "note": "Finite Euler-Gauss steps and terminating pairing identities. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/PolynomialMoment.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.PolynomialMoment"
+      ],
+      "note": "Integration identities for shifted polynomial moments. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/HankelSupport.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.HankelSupport"
+      ],
+      "note": "Strict Hankel positivity for measures without finite carriers. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/InfiniteMoment.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.InfiniteMoment"
+      ],
+      "note": "Strictly positive Stieltjes fractions for arbitrary infinite-support measures. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/EulerTermination.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.EulerTermination"
+      ],
+      "note": "Formal terminating Euler-Gauss recurrences. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/FiniteAtomicNorms.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.FiniteAtomicNorms"
+      ],
+      "note": "Finite atomic Hankel positivity, nodal polynomials and exact vanishing norms. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/FiniteMoment.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.FiniteMoment"
+      ],
+      "note": "Finite-rank moment data give exactly terminating positive Stieltjes fractions. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/FiniteAtomicFraction.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.FiniteAtomicFraction"
+      ],
+      "note": "Nonnegative finite atomic moment sequences have Stieltjes fractions. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/FiniteMeasureFraction.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.FiniteMeasureFraction"
+      ],
+      "note": "Finite-carrier measures give Stieltjes fractions via their positive-mass atoms. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/MomentCriterion.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.MomentCriterion"
+      ],
+      "note": "Complete equivalence of genuine Stieltjes moment measures and formal nonnegative fractions. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/MomentDeterminantRatios.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.MomentDeterminantRatios"
+      ],
+      "note": "Hankel determinant ratios for orthogonal norms and Stieltjes numerators. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/MomentTranslation.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.MomentTranslation"
+      ],
+      "note": "Binomial moment translation, orthogonal covariance and symmetric-measure parity. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/MomentTranslation.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.MomentTranslation"
+      ],
+      "note": "Binomial moment translation, orthogonal covariance and symmetric-measure parity. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/MomentTranslation.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.MomentTranslation"
+      ],
+      "note": "Binomial moment translation, orthogonal covariance and symmetric-measure parity. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/MomentParity.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.MomentParity"
+      ],
+      "note": "Binomial moment translation, orthogonal covariance and symmetric-measure parity. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/MomentParity.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.MomentParity"
+      ],
+      "note": "Binomial moment translation, orthogonal covariance and symmetric-measure parity. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/MomentTranslationSucc.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.MomentTranslationSucc"
+      ],
+      "note": "Formal binomial and Jacobi translation; equality through the first terminating Stieltjes numerator. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/BinomialTransform.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.BinomialTransform"
+      ],
+      "note": "Formal binomial and Jacobi translation; equality through the first terminating Stieltjes numerator. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/JacobiFraction/Translation.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.JacobiFraction.Translation"
+      ],
+      "note": "Formal binomial and Jacobi translation; equality through the first terminating Stieltjes numerator. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/ActivePrefix.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.ActivePrefix"
+      ],
+      "note": "Formal binomial and Jacobi translation; equality through the first terminating Stieltjes numerator. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/LowerSupportParameters.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.LowerSupportParameters"
+      ],
+      "note": "Formal Stieltjes criterion for a prescribed lower support bound, with terminating active-prefix parameters. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/LowerSupportConstruction.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.LowerSupportConstruction"
+      ],
+      "note": "Formal Stieltjes criterion for a prescribed lower support bound, with terminating active-prefix parameters. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/BinomialTransform/Inverse.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.BinomialTransform.Inverse"
+      ],
+      "note": "Formal Stieltjes criterion for a prescribed lower support bound, with terminating active-prefix parameters. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/LowerSupportCriterion.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.LowerSupportCriterion"
+      ],
+      "note": "Formal Stieltjes criterion for a prescribed lower support bound, with terminating active-prefix parameters. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/ActiveSupportCriterion.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.ActiveSupportCriterion"
+      ],
+      "note": "Formal Stieltjes criterion for a prescribed lower support bound, with terminating active-prefix parameters. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/LowerParameters.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.LowerParameters"
+      ],
+      "note": "Nonnegative initial Stieltjes parameters, compact active-prefix admissibility, and the terminating Dirac boundary. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/InitialParameterCriterion.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.InitialParameterCriterion"
+      ],
+      "note": "Nonnegative initial Stieltjes parameters, compact active-prefix admissibility, and the terminating Dirac boundary. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/AdmissibleParameters.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.AdmissibleParameters"
+      ],
+      "note": "Nonnegative initial Stieltjes parameters, compact active-prefix admissibility, and the terminating Dirac boundary. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/TerminatingBoundary.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.TerminatingBoundary"
+      ],
+      "note": "Nonnegative initial Stieltjes parameters, compact active-prefix admissibility, and the terminating Dirac boundary. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/BoundedParameters.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.BoundedParameters"
+      ],
+      "note": "Nonnegative initial Stieltjes parameters, compact active-prefix admissibility, and the terminating Dirac boundary. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/CompactParameters.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.CompactParameters"
+      ],
+      "note": "Nonnegative initial Stieltjes parameters, compact active-prefix admissibility, and the terminating Dirac boundary. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/SqrtSymmetrization.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.SqrtSymmetrization"
+      ],
+      "note": "Symmetric square-root measures, moment aeration, and exact support transport. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/SqrtMoments.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.SqrtMoments"
+      ],
+      "note": "Symmetric square-root measures, moment aeration, and exact support transport. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/SqrtSupport.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.SqrtSupport"
+      ],
+      "note": "Symmetric square-root measures, moment aeration, and exact support transport. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/AeratedMoments.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.AeratedMoments"
+      ],
+      "note": "Symmetric square-root measures, moment aeration, and exact support transport. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/JacobiFraction/Aeration.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.JacobiFraction.Aeration"
+      ],
+      "note": "Formal square-variable aeration and recovery of active Jacobi coefficients. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/AeratedSeries.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.AeratedSeries"
+      ],
+      "note": "Formal square-variable aeration and recovery of active Jacobi coefficients. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/JacobiFraction/Coefficients.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.JacobiFraction.Coefficients"
+      ],
+      "note": "Formal square-variable aeration and recovery of active Jacobi coefficients. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/JacobiFraction/ActiveCoefficients.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.JacobiFraction.ActiveCoefficients"
+      ],
+      "note": "Formal square-variable aeration and recovery of active Jacobi coefficients. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/CatalanBound.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.CatalanBound"
+      ],
+      "note": "Stieltjes coefficient bounds and Wall chain extraction from active Jacobi data. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/MeasureBound.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.MeasureBound"
+      ],
+      "note": "Stieltjes coefficient bounds and Wall chain extraction from active Jacobi data. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/ChainParameters.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.ChainParameters"
+      ],
+      "note": "Stieltjes coefficient bounds and Wall chain extraction from active Jacobi data. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/TranslatedAeration.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.TranslatedAeration"
+      ],
+      "note": "Stieltjes coefficient bounds and Wall chain extraction from active Jacobi data. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/SqrtTranslation.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.SqrtTranslation"
+      ],
+      "note": "Wall chain representations and sharp support of genuine compact moment measures. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/CompactMomentsChain.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.CompactMomentsChain"
+      ],
+      "note": "Wall chain representations and sharp support of genuine compact moment measures. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/ChainAeration.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.ChainAeration"
+      ],
+      "note": "Wall chain representations and sharp support of genuine compact moment measures. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/NonnegativeMoments.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.NonnegativeMoments"
+      ],
+      "note": "Wall chain representations and sharp support of genuine compact moment measures. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/ChainMomentSupport.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.ChainMomentSupport"
+      ],
+      "note": "Wall chain representations and sharp support of genuine compact moment measures. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/ExactMomentSupport.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.ExactMomentSupport"
+      ],
+      "note": "Exact compact support and the full Wall chain moment criterion, including arbitrary initial parameters. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/ChainCoefficientBound.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.ChainCoefficientBound"
+      ],
+      "note": "Exact compact support and the full Wall chain moment criterion, including arbitrary initial parameters. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/BoundedChainSupport.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.BoundedChainSupport"
+      ],
+      "note": "Exact compact support and the full Wall chain moment criterion, including arbitrary initial parameters. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/CompactMomentCriterion.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.CompactMomentCriterion"
+      ],
+      "note": "Exact compact support and the full Wall chain moment criterion, including arbitrary initial parameters. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/LogDeriv/Const.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.LogDeriv.Const"
+      ],
+      "note": "Constant division preserves totalized logarithmic derivatives over normed fields. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/Complementary.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.Complementary"
+      ],
+      "note": "Complementary Wall chains and their exact coefficient convolution over commutative rings. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/ComplementaryCoefficients.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.ComplementaryCoefficients"
+      ],
+      "note": "Complementary Wall chains and their exact coefficient convolution over commutative rings. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/ComplementaryChain.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.ComplementaryChain"
+      ],
+      "note": "Complementary Wall chains and their exact coefficient convolution over commutative rings. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/GrowthOrder/SquareDescent.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.GrowthOrder.SquareDescent"
+      ],
+      "note": "Square-variable descent, growth-order halving, and correspondence of real and negative zeros, extending TauCeti descent.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/ImaginarySquareDescent.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.ImaginarySquareDescent"
+      ],
+      "note": "Square-variable descent, growth-order halving, and correspondence of real and negative zeros, extending TauCeti descent.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/AtomicGap.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.AtomicGap"
+      ],
+      "note": "Finite-support linear products and positive support gaps for slope-weighted atomic measures.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LinearProductFinite.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LinearProductFinite"
+      ],
+      "note": "Finite-support linear products and positive support gaps for slope-weighted atomic measures.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/LowDegree.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.LowDegree"
+      ],
+      "note": "Second coefficients of formal power-series products and normalized powers over commutative semirings.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/TaylorEvaluation.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.TaylorEvaluation"
+      ],
+      "note": "Polynomial Taylor evaluation, translation integrals, and actual complex moment-generating Taylor series and reciprocal germs.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/PolynomialTranslation.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.PolynomialTranslation"
+      ],
+      "note": "Polynomial Taylor evaluation, translation integrals, and actual complex moment-generating Taylor series and reciprocal germs.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Analytic/TaylorInverse.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Analytic.TaylorInverse"
+      ],
+      "note": "Polynomial Taylor evaluation, translation integrals, and actual complex moment-generating Taylor series and reciprocal germs.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Probability/Moments/MGFTaylor.lean"
+      ],
+      "modules": [
+        "Mathlib.Probability.Moments.MGFTaylor"
+      ],
+      "note": "Polynomial Taylor evaluation, translation integrals, and actual complex moment-generating Taylor series and reciprocal germs.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/PowerCoefficient.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.PowerCoefficient"
+      ],
+      "note": "Fixed-coefficient binomial formulas and real-power asymptotics for rescaled formal power series.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/ChooseRpow.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.ChooseRpow"
+      ],
+      "note": "Fixed-coefficient binomial formulas and real-power asymptotics for rescaled formal power series.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/RescaledPowerLimit.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.RescaledPowerLimit"
+      ],
+      "note": "Fixed-coefficient binomial formulas and real-power asymptotics for rescaled formal power series.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/ExpCoefficient.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.ExpCoefficient"
+      ],
+      "note": "Formal exponential coefficients and centering by the inverse linear exponential.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/Centering.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.Centering"
+      ],
+      "note": "Formal exponential coefficients and centering by the inverse linear exponential.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/ExponentialJet.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.ExponentialJet"
+      ],
+      "note": "Finite exponential jet centering and exact first ordinary-coefficient discrepancy over characteristic-zero fields. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Polynomial/RootMatchingLimit.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Polynomial.RootMatchingLimit"
+      ],
+      "note": "Filter forms of multiplicity-sensitive polynomial root matching and local root counts under fixed-degree monic coefficient convergence. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Polynomial/LocallyUniformLimit.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Polynomial.LocallyUniformLimit"
+      ],
+      "note": "Bounded-degree coefficient convergence implies locally uniform polynomial evaluation convergence over seminormed rings. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Polynomial/NonrealPersistence.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Polynomial.NonrealPersistence"
+      ],
+      "note": "Nonreal roots persist under coefficientwise limits or multiplicity-sensitive complex root matching. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/FirstDiscrepancy.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.FirstDiscrepancy"
+      ],
+      "note": "A nonexponential normalized formal symbol has a least exponential-coefficient discrepancy of order at least two. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Expand/PowerRoots.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Expand.PowerRoots"
+      ],
+      "note": "Root multiplicities and positive-root bijection under power substitution.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Polynomial/SeparableLimit.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Polynomial.SeparableLimit"
+      ],
+      "note": "Separability is eventually preserved by fixed-degree monic coefficient limits.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/ScaleRoots/Separable.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.ScaleRoots.Separable"
+      ],
+      "note": "Separability under nonzero root scaling over arbitrary fields; translation reuses pinned TauCeti.RingTheory.Polynomial.Roots.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/Bochner/WeightedCovariance.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.Bochner.WeightedCovariance"
+      ],
+      "note": "Weighted covariance and strict even-moment inequalities from logarithmic concavity; general infrastructure for Csordas--Varga1988.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/Bochner/StrictWeightedCovariance.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.Bochner.StrictWeightedCovariance"
+      ],
+      "note": "Weighted covariance and strict even-moment inequalities from logarithmic concavity; general infrastructure for Csordas--Varga1988.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/IntegralEqImproper/Power.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.IntegralEqImproper.Power"
+      ],
+      "note": "Weighted covariance and strict even-moment inequalities from logarithmic concavity; general infrastructure for Csordas--Varga1988.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/Bochner/EvenMoments.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.Bochner.EvenMoments"
+      ],
+      "note": "Weighted covariance and strict even-moment inequalities from logarithmic concavity; general infrastructure for Csordas--Varga1988.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Convex/LogSqrtSlope.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Convex.LogSqrtSlope"
+      ],
+      "note": "Weighted covariance and strict even-moment inequalities from logarithmic concavity; general infrastructure for Csordas--Varga1988.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/Bochner/LogConcaveMoments.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.Bochner.LogConcaveMoments"
+      ],
+      "note": "Weighted covariance and strict even-moment inequalities from logarithmic concavity; general infrastructure for Csordas--Varga1988.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/FourierPolynomial.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.FourierPolynomial"
+      ],
+      "note": "Gaussian lattice majorants and the actual xi Fourier-kernel derivative series; Csordas--Varga1988 analytic infrastructure.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/FourierSummand.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.FourierSummand"
+      ],
+      "note": "Gaussian lattice majorants and the actual xi Fourier-kernel derivative series; Csordas--Varga1988 analytic infrastructure.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Gaussian/GaussianTail.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianTail"
+      ],
+      "note": "Gaussian lattice majorants and the actual xi Fourier-kernel derivative series; Csordas--Varga1988 analytic infrastructure.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Polynomial/GaussianMajorant.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Polynomial.GaussianMajorant"
+      ],
+      "note": "Gaussian lattice majorants and the actual xi Fourier-kernel derivative series; Csordas--Varga1988 analytic infrastructure.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/FourierMajorant.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.FourierMajorant"
+      ],
+      "note": "Gaussian lattice majorants and the actual xi Fourier-kernel derivative series; Csordas--Varga1988 analytic infrastructure.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/FourierSeries.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.FourierSeries"
+      ],
+      "note": "Gaussian lattice majorants and the actual xi Fourier-kernel derivative series; Csordas--Varga1988 analytic infrastructure.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Gaussian/ParameterDerivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Gaussian.ParameterDerivative"
+      ],
+      "note": "Gaussian lattice majorants and the actual xi Fourier-kernel derivative series; Csordas--Varga1988 analytic infrastructure.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/ThetaSecondDerivative.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.ThetaSecondDerivative"
+      ],
+      "note": "Gaussian lattice majorants and the actual xi Fourier-kernel derivative series; Csordas--Varga1988 analytic infrastructure.",
       "speculative": true
     }
   ]

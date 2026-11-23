@@ -9,6 +9,7 @@ public import Mathlib.Data.List.Forall2
 import Mathlib.Data.Multiset.Basic
 public import Mathlib.Data.Multiset.Sort
 public import Mathlib.Data.Multiset.ZeroCons
+import TauCeti.Data.Multiset.Rel
 
 /-!
 # Additional lemmas for multiset relations
@@ -22,24 +23,14 @@ public section
 
 namespace Multiset
 
-/-- Compose multiset relations whose element relations may differ. -/
-theorem Rel.comp {α β γ : Type*}
+/-- Compose multiset relations and map the composite element relation into a target relation. -/
+theorem Rel.comp_of_imp {α β γ : Type*}
     {R : α → β → Prop} {S : β → γ → Prop} {T : α → γ → Prop}
     {xs : Multiset α} {ys : Multiset β} {zs : Multiset γ}
     (hcomp : ∀ a b c, R a b → S b c → T a c)
     (h₁ : Multiset.Rel R xs ys) (h₂ : Multiset.Rel S ys zs) :
     Multiset.Rel T xs zs := by
-  induction ys using Multiset.induction_on generalizing xs zs with
-  | empty =>
-      have hxs : xs = 0 := Multiset.rel_zero_right.mp h₁
-      have hzs : zs = 0 := Multiset.rel_zero_left.mp h₂
-      subst xs
-      subst zs
-      exact Rel.zero
-  | cons b ys ih =>
-      obtain ⟨a, xs', hab, htail₁, rfl⟩ := Multiset.rel_cons_right.mp h₁
-      obtain ⟨c, zs', hbc, htail₂, rfl⟩ := Multiset.rel_cons_left.mp h₂
-      exact Rel.cons (hcomp a b c hab hbc) (ih htail₁ htail₂)
+  exact (h₁.comp h₂).mono fun a _ c _ ⟨b, hab, hbc⟩ ↦ hcomp a b c hab hbc
 
 /-- Related multisets have equally many elements satisfying corresponding predicates. -/
 theorem Rel.card_filter_eq {α β : Type*} {R : α → β → Prop}

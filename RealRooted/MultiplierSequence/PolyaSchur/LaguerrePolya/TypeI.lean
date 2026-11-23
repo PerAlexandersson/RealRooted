@@ -36,7 +36,9 @@ theorem IsLaguerrePolyaTypeI.toLaguerrePolya {f : ℂ → ℂ}
   rcases hf with ⟨p, hp, hlim⟩
   exact ⟨p, fun n => (hp n).eq_zero_or_splits, hlim⟩
 
-private theorem IsPFMultiplierSequence.isPF_rescaledJensenPolynomial
+/-- Every rescaled Jensen polynomial of a PF multiplier sequence is PF,
+including degree zero. -/
+theorem IsPFMultiplierSequence.isPFPolynomial_rescaledJensenPolynomial
     {gamma : ℕ → ℝ} (hgamma : IsPFMultiplierSequence gamma) (n : ℕ) :
     IsPFPolynomial (rescaledJensenPolynomial n gamma) := by
   cases n with
@@ -55,7 +57,7 @@ theorem IsPFMultiplierSequence.isLaguerrePolyaTypeI_complexExpGeneratingFunction
     {gamma : ℕ → ℝ} (hgamma : IsPFMultiplierSequence gamma) :
     IsLaguerrePolyaTypeI (complexExpGeneratingFunction gamma) := by
   refine ⟨fun n => rescaledJensenPolynomial n gamma,
-    fun n => hgamma.isPF_rescaledJensenPolynomial n, ?_⟩
+    fun n => hgamma.isPFPolynomial_rescaledJensenPolynomial n, ?_⟩
   exact tendstoLocallyUniformly_complexExpGeneratingFunction_of_summable gamma
     fun R hR => hgamma.summable_expGenerating_majorant R hR
 

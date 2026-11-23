@@ -6,9 +6,9 @@ Authors: Per Alexandersson
 module
 
 import Mathlib.Analysis.Complex.LocallyUniformLimit
-public import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
+import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
-public import Mathlib.Analysis.Complex.Basic
+import Mathlib.Analysis.Complex.Basic
 public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
 public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Mathlib.Algebra.Polynomial.Derivative
@@ -61,6 +61,26 @@ theorem TendstoLocallyUniformly.iteratedDeriv {F : ℕ → ℂ → ℂ} {f : ℂ
         (WithTop.coe_lt_top _)).differentiableOn) isOpen_univ
 
 namespace Polynomial
+
+/-- Locally uniform convergence of real polynomials on the complex plane implies
+pointwise convergence of every formal derivative at every real point. -/
+theorem tendsto_eval_iterate_derivative_of_tendstoLocallyUniformly
+    {p : ℕ → ℝ[X]} {f : ℂ → ℂ}
+    (hf : TendstoLocallyUniformly
+      (fun n (z : ℂ) => ((p n).map Complex.ofRealHom).eval z) f atTop) (k : ℕ) (x : ℝ) :
+    Tendsto (fun n => (derivative^[k] (p n)).eval x) atTop
+      (𝓝 (iteratedDeriv k f x).re) := by
+  have hd : ∀ n, Differentiable ℂ fun z : ℂ => ((p n).map Complex.ofRealHom).eval z :=
+    fun n => ((p n).map Complex.ofRealHom).differentiable
+  have h := (tendstoLocallyUniformlyOn_univ.mpr (hf.iteratedDeriv hd k)).tendsto_at
+    (Set.mem_univ (x : ℂ))
+  simp only [iteratedDeriv_fun_eval, iterate_derivative_map] at h
+  have hre := Complex.continuous_re.tendsto _ |>.comp h
+  have he (q : ℝ[X]) : ((q.map Complex.ofRealHom).eval (x : ℂ)).re = q.eval x := by
+    change ((q.map Complex.ofRealHom).eval (Complex.ofRealHom x)).re = _
+    rw [eval_map_apply]
+    rfl
+  simpa only [Function.comp_def, he] using hre
 
 /-- If real polynomials converge locally uniformly on `ℂ` to `f`, then their `k`-th
 coefficients converge (in `ℂ`) to the `k`-th Taylor coefficient of `f` at `0`. -/
