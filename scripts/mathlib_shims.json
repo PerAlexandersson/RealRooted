@@ -5579,6 +5579,26 @@
       ],
       "note": "Conjugation symmetry and Taylor signs after removing real monomial factors; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/RealLogDeriv.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.RealLogDeriv"
+      ],
+      "note": "Real logarithms and canonical coefficients of entire scalar series; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/RealSeries.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.RealSeries"
+      ],
+      "note": "Real logarithms and canonical coefficients of entire scalar series; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }

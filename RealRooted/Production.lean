@@ -2750,6 +2750,13 @@ public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.OriginLogDe
 public import RealRooted.Mathlib.Analysis.Complex.OriginFactor
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeILogDerivativeOrigin
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIOriginFactor
+public import RealRooted.Mathlib.Analysis.Complex.RealLogDeriv
+public import RealRooted.Mathlib.Analysis.Complex.RealSeries
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.RealLogHierarchy
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.SameSignLogDerivativeHierarchy
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.SameSignSeriesLogHierarchy
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.SameSignTypeI
+public import RealRooted.RiemannHypothesis.RealLogHierarchy
 
 /-!
 # RealRooted production umbrella

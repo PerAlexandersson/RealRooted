@@ -456,7 +456,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 |---:|---|---|---|
 | 23 | `RealRooted.add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero` | `RealRooted.Basic.Coefficients` | A finite sum of nonnegative-coefficient polynomials cannot vanish if one of the summands is already nonzero. |
 | 20 | `Nat.cast_choose_ne_zero` | `RealRooted.Mathlib.Data.Nat.Choose.Cast` | A binomial coefficient remains nonzero after casting to a characteristic-zero target. |
-| 14 | `iteratedDeriv_riemannXiTheta_zero_ne_zero` | `RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Derivative` | Positivity of the xi Taylor data excludes vanishing at zero for every derivative. |
+| 15 | `iteratedDeriv_riemannXiTheta_zero_ne_zero` | `RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Derivative` | Positivity of the xi Taylor data excludes vanishing at zero for every derivative. |
 | 9 | `RealRooted.tDeriv_ne_zero` | `RealRooted.IteratedDerivativeShift` | T_ε of a nonzero polynomial with degree ≥ 1 is nonzero. |
 | 8 | `RealRooted.iterateTDeriv_ne_zero` | `RealRooted.IteratedDerivativeShift` | Iterating a derivative shift preserves nonzeroness. |
 | 7 | `RealRooted.LiuOppositeSigns.OppositeLeadingSigns.left_ne_zero` | `RealRooted.LiuOppositeSigns.RootCount` |  |
@@ -494,11 +494,11 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 12 | `Polynomial.ring_choose_pos` | `RealRooted.Mathlib.RingTheory.Polynomial.Jacobi` | A generalized real binomial coefficient is positive above its largest possible zero. |
 | 11 | `RealRooted.List.Interleaves.ofFn_succ` | `RealRooted.Bezoutian.StrictInterleaving` |  |
 | 11 | `RealRooted.SimpleNegRooted.isRoot_neg` | `RealRooted.EulerOperator.Darboux.NegativeRoots` |  |
+| 10 | `riemannXiCoeff_pos` | `RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Positivity` | Every normalized xi coefficient is strictly positive, without assuming RH. |
 | 9 | `MvPolynomial.algebraicSymbol_eq_sum` | `RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol` | Expand the finite algebraic symbol in its bounded monomial basis. |
 | 9 | `RealRooted.IsLaguerrePolya.comp_affine_real` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya` | Precomposition by a real affine map preserves the zero-aware Laguerre--Pólya class. |
 | 9 | `RealRooted.TuranHurwitz.rising_pos` | `RealRooted.TuranHurwitz.RisingConvolution` | Rising factorials are strictly positive for positive starting value. |
 | 9 | `RealRooted.taylorDifferentialOperator_X_pow` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Jensen` | Applying a Taylor differential operator to a monomial gives the reflected Jensen polynomial of its Taylor data. |
-| 9 | `riemannXiCoeff_pos` | `RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Positivity` | Every normalized xi coefficient is strictly positive, without assuming RH. |
 | 8 | `Nat.tendsto_descFactorial_div_pow_atTop` | `RealRooted.Mathlib.Analysis.SpecialFunctions.Choose` | For fixed `k`, `n.descFactorial k / n^k` tends to `1`. |
 | 8 | `Polynomial.splits_nodup_roots_of_strict_sign_changes` | `RealRooted.Mathlib.Algebra.Polynomial.IntervalSignChanges` | A finite grid with strict sign changes accounts for every root of a nonzero polynomial of degree at most the number of gaps. |
 | 8 | `RealRooted.JacobiDeformation.risingFactorial_pos` | `RealRooted.JacobiDeformation.Pochhammer` |  |
@@ -514,7 +514,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 24 | `Complex.ofReal_re_iteratedDeriv_zero` | `RealRooted.Mathlib.Analysis.Calculus.IteratedDeriv.Star` | The Taylor data at zero of a conjugation-invariant function are real. |
+| 25 | `Complex.ofReal_re_iteratedDeriv_zero` | `RealRooted.Mathlib.Analysis.Calculus.IteratedDeriv.Star` | The Taylor data at zero of a conjugation-invariant function are real. |
 | 23 | `Polynomial.basisTransform_smul` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
 | 22 | `Polynomial.basisTransform_add` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
 | 21 | `RealRooted.weightedSum_cons` | `RealRooted.WeightedSum` |  |
@@ -552,8 +552,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 16 | `differentiable_riemannXiTheta` | `RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Theta` | The square-variable expansion of xi is entire. |
 | 15 | `MvPolynomial.IsRayleigh.specializeAt` | `RealRooted.Multiaffine.Rayleigh` | Real scalar specialization preserves the Rayleigh property. |
 | 15 | `RealRooted.hasSimpleRoots_of_natDegree_le_one` | `RealRooted.SimpleRoots` | Every nonzero polynomial of degree at most one has only simple roots. |
+| 15 | `RealRooted.isLaguerrePolyaTypeI_iteratedDeriv_riemannXiTheta` | `RealRooted.RiemannHypothesis.TotalPositivity` | Every derivative of the square-variable xi function is Type-I Laguerre--Pólya under RH. |
 | 14 | `RealRooted.IsLaguerrePolya.analyticOnNhd` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative` | A zero-aware Laguerre--Pólya limit is analytic on the whole complex plane. |
-| 14 | `RealRooted.isLaguerrePolyaTypeI_iteratedDeriv_riemannXiTheta` | `RealRooted.RiemannHypothesis.TotalPositivity` | Every derivative of the square-variable xi function is Type-I Laguerre--Pólya under RH. |
 | 13 | `RealRooted.isUpperHalfPlaneStable_complexify_of_splits` | `RealRooted.HermiteBiehler.Basic` | A nonzero split real polynomial has stable complexification. |
 | 12 | `Matrix.IsTotallyNonnegRect.toSquare` | `RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg` | Rectangular total nonnegativity specializes to the square predicate. |
 | 12 | `RealRooted.IsLaguerrePolya.heatOperator` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.HeatOperator` | The entire backward heat operator preserves the LP class at every nonnegative real time for inputs of growth order strictly below two. |
