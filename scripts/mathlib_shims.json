@@ -7049,6 +7049,16 @@
       ],
       "note": "Finite-support linear products and positive support gaps for slope-weighted atomic measures.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/LowDegree.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.LowDegree"
+      ],
+      "note": "Second coefficients of formal power-series products and normalized powers over commutative semirings.",
+      "speculative": true
     }
   ]
 }

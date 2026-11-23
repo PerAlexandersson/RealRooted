@@ -3015,3 +3015,8 @@ public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.LogMomentMa
 public import RealRooted.PFPolynomial.FiniteProduct
 public import RealRooted.PFPolynomial.LogMomentGap
 public import RealRooted.RiemannHypothesis.LogMomentGap
+public import RealRooted.Hermite.FormalDifferential.Basic
+public import RealRooted.Hermite.FormalDifferential.Composition
+public import RealRooted.Hermite.FormalDifferential.QuadraticObstruction
+public import RealRooted.Hermite.FormalDifferential.Taylor
+public import RealRooted.Mathlib.RingTheory.PowerSeries.LowDegree
