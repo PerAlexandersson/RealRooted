@@ -2991,6 +2991,11 @@ public import RealRooted.Mathlib.RingTheory.PowerSeries.FirstDiscrepancy
 public import RealRooted.RiemannHypothesis.PolynomialIteration
 public import RealRooted.RiemannHypothesis.StrictCoefficient
 public import RealRooted.SimpleRoots.QuadraticDiscriminant
+public import RealRooted.MittagLeffler.Basic
+public import RealRooted.MittagLeffler.Growth
+public import RealRooted.MittagLeffler.Jensen
+public import RealRooted.MultiplierSequence.Veronese
+public import RealRooted.RiemannHypothesis.Veronese
 
 /-!
 # RealRooted production umbrella

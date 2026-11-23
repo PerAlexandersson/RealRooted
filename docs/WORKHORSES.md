@@ -141,22 +141,22 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 35 | `RealRooted.IsPFPolynomial.one` | `RealRooted.PFPolynomial` | The constant polynomial `1` is PF. |
 | 29 | `RealRooted.isPFPolynomial_X_add_C` | `RealRooted.PFPolynomial` | The polynomial `X + C a` is PF when `a` is nonnegative. |
 | 23 | `RealRooted.IsPFPolynomial.of_C_nonneg` | `RealRooted.PFPolynomial` | A nonnegative constant polynomial is PF. |
+| 17 | `RealRooted.IsPFPolynomial.to_sequence` | `RealRooted.PFPolynomial` | The coefficient sequence of a PF polynomial is a Pólya-frequency sequence. |
 | 16 | `RealRooted.IsPFPolynomial.of_coeff_tendsto` | `RealRooted.PFPolynomial.Closure` | Coefficientwise limits of Pólya-frequency polynomials are Pólya-frequency. |
-| 16 | `RealRooted.IsPFPolynomial.to_sequence` | `RealRooted.PFPolynomial` | The coefficient sequence of a PF polynomial is a Pólya-frequency sequence. |
 | 15 | `RealRooted.isPFPolynomial_X_pow` | `RealRooted.PFPolynomial` | Every natural power of `X` is PF. |
 | 11 | `RealRooted.IsPFPolynomial.reciprocalShift` | `RealRooted.PFPolynomial` | Shifted reciprocals preserve the PF cone when the shift bounds the degree. |
 | 11 | `RealRooted.IsPolyaFreqSeq.natCauchyConvolution` | `RealRooted.PolyaFrequencyConvolution.Basic` | Pólya-frequency sequences are closed under Cauchy convolution. |
-| 10 | `RealRooted.isPFPolynomial_jensenPolynomial_of_PFMultiplierSequence` | `RealRooted.MultiplierSequence.Infinite` | Every Jensen polynomial of a PF multiplier sequence is PF. |
+| 11 | `RealRooted.isPFPolynomial_jensenPolynomial_of_PFMultiplierSequence` | `RealRooted.MultiplierSequence.Infinite` | Every Jensen polynomial of a PF multiplier sequence is PF. |
 | 10 | `RealRooted.polarTheta_preserves_pf` | `RealRooted.EulerOperator` | The polar-theta operator `N - theta` preserves the polynomial PF cone for polynomials of degree at most `N`. |
 | 10 | `RealRooted.theta_preserves_pf` | `RealRooted.EulerOperator` | `theta` preserves the polynomial PF cone. |
 | 8 | `RealRooted.IsPFMultiplierSequence.diagonalOperator_isPF` | `RealRooted.MultiplierSequence.Infinite` |  |
 | 8 | `RealRooted.IsPFPolynomial.add_of_interl` | `RealRooted.OperatorMatrix.Directed` | The sum of an interlacing PF pair is PF. |
 | 8 | `RealRooted.isPFPolynomial_jensenPolynomial_of_finitePFMultiplierSequence` | `RealRooted.MultiplierSequence` | The easy PF direction: a finite PF multiplier sequence has a PF Jensen polynomial. |
 | 7 | `RealRooted.IsPFPolynomial.of_X_sub_C_mul_factor` | `RealRooted.PFPolynomial` | If a PF polynomial is factored by a real linear factor, then the quotient is again PF. |
+| 7 | `RealRooted.IsPFPolynomial.of_polyaFreqSeq` | `RealRooted.PFPolynomial` | Construct a PF polynomial directly from its Pólya-frequency coefficient sequence using the proved forward ASW theorem. |
 | 7 | `RealRooted.IsPolyaFreqSeq.of_tendsto` | `RealRooted.PFPolynomial.Closure` | Pointwise limits of Pólya-frequency sequences are Pólya-frequency. |
 | 7 | `RealRooted.isPFMultiplierSequence_iff_jensenPolynomial_isPF` | `RealRooted.MultiplierSequence.PolyaSchur` | A sequence preserves the polynomial PF cone in every degree exactly when all of its Jensen polynomials are PF. |
 | 7 | `RealRooted.thetaPlusOne_preserves_pf` | `RealRooted.EulerOperator` | `theta + 1` preserves the polynomial PF cone. |
-| 6 | `RealRooted.IsPFPolynomial.of_polyaFreqSeq` | `RealRooted.PFPolynomial` | Construct a PF polynomial directly from its Pólya-frequency coefficient sequence using the proved forward ASW theorem. |
 | 5 | `Matrix.IsTotallyNonneg.isPFPolynomial_det_map_add_X_smul_checkerboard` | `RealRooted.TotallyNonnegPencil.Checkerboard` | A totally nonnegative constant matrix with positive determinant and a checkerboard-signed totally nonnegative variable matrix give a PF determinant. |
 | 5 | `RealRooted.BrandenVecchi.finiteSupersymmetricCoeff_isPolyaFreqSeq` | `RealRooted.BrandenVecchi.SupersymmetricCoefficients` | Finite supersymmetric product coefficients are Pólya-frequency for nonnegative parameters. |
 | 5 | `RealRooted.IsPolyaFreqSeq.prefix_zeros` | `RealRooted.AissenSchoenbergWhitney` | Inserting a finite prefix of zeroes preserves the Pólya-frequency property. |
@@ -236,7 +236,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | uses | theorem | module | doc |
 |---:|---|---|---|
 | 91 | `RealRooted.roots_nonpos_of_hasNonnegCoeffs` | `RealRooted.Basic.Coefficients` | A real polynomial with nonnegative coefficients has no positive real roots. |
-| 46 | `RealRooted.IsPFPolynomial.roots_nonpos` | `RealRooted.PFPolynomial` |  |
+| 47 | `RealRooted.IsPFPolynomial.roots_nonpos` | `RealRooted.PFPolynomial` |  |
 | 20 | `RealRooted.hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos` | `RealRooted.WagnerX.NonnegativeRoots` |  |
 | 18 | `RealRooted.roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne` | `RealRooted.Basic.Coefficients` | A nonnegative-coefficient polynomial with nonzero constant coefficient has strictly negative roots. |
 | 15 | `RealRooted.StrictInterl.roots_le_of_right` | `RealRooted.Basic.ProperPosition` | Every root of the left-hand polynomial is bounded by any common upper bound for the roots of the right-hand polynomial in a `StrictInterl` witness. |
@@ -355,7 +355,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 40 | `RealRooted.coeff_jensenPolynomial` | `RealRooted.MultiplierSequence` |  |
+| 41 | `RealRooted.coeff_jensenPolynomial` | `RealRooted.MultiplierSequence` |  |
 | 28 | `RealRooted.coeff_diagonalOperator` | `RealRooted.MultiplierSequence` |  |
 | 25 | `Polynomial.coeff_sum_range_monomial` | `RealRooted.Mathlib.Algebra.Polynomial.Coeff` | The coefficient of a finite initial-segment monomial sum. |
 | 21 | `Polynomial.coeff_comp_neg_X` | `RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas` | The coefficients of `p.comp (-X)` are those of `p` with alternating signs. |
@@ -397,12 +397,12 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 10 | `RealRooted.wronskian_eval_nonneg_of_strictInterl` | `RealRooted.Wronskian.WeakForward` | Interlacing with positive leading coefficients gives global nonnegativity of the oriented Wronskian. |
 | 9 | `RealRooted.eval_derivative_ne_zero_of_rootMultiplicity_eq_one` | `RealRooted.Derivative.Algebra` | The derivative does not vanish at a root of multiplicity one. |
 | 9 | `RealRooted.wronskian_pos_of_strictInterl_succ` | `RealRooted.Wronskian.Forward` | **Global forward Wronskian bridge, degree gap one.** If `q` strictly interlaces `p` in the differ-by-one sense (`StrictInterl q p` with `deg p = deg q + 1`, all roots simple and no common root), then  |
+| 8 | `Polynomial.iteratedDeriv_fun_eval` | `RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff` | The `k`-th iterated derivative of a polynomial function is the polynomial function of the `k`-th iterated formal derivative. |
 | 8 | `Polynomial.not_isRoot_iff_eval_ne_zero` | `RealRooted.Mathlib.Algebra.Polynomial.Eval.Defs` |  |
 | 8 | `RealRooted.eval_mul_eval_nonneg_of_strictInterl_right` | `RealRooted.WagnerRightSum.Sign` | If two polynomials both precede the same right-hand polynomial with positive leading coefficients, then they have the same sign at every root of that common right-hand polynomial. |
 | 8 | `RealRooted.tendsto_eval_atBot_atBot_of_posLeadingCoeff_odd` | `RealRooted.WagnerRightSum.Sign` |  |
 | 8 | `RealRooted.tendsto_eval_atBot_atTop_of_posLeadingCoeff_even` | `RealRooted.WagnerRightSum.Sign` |  |
 | 7 | `MvPolynomial.eval_specializeAt` | `RealRooted.Mathlib.Algebra.MvPolynomial.Specialize` | Evaluation after scalar specialization is evaluation at the updated assignment. |
-| 7 | `Polynomial.iteratedDeriv_fun_eval` | `RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff` | The `k`-th iterated derivative of a polynomial function is the polynomial function of the `k`-th iterated formal derivative. |
 | 7 | `RealRooted.StrictInterl.eval_mul_derivative_nonpos_of_left_root` | `RealRooted.Interlacing.OuterDifference` | At a root of the left polynomial in a positive-leading interlacing pair, the right value and left derivative have nonpositive product. |
 | 7 | `RealRooted.deriv2_mul_lt_deriv_sq_at_non_root` | `RealRooted.IteratedDerivativeShift` |  |
 | 7 | `RealRooted.eval_neg_of_all_roots_gt_of_odd` | `RealRooted.WagnerRightSum.Sign` |  |
@@ -565,7 +565,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 9 | `Complex.Contour.intervalIntegrable_inv_sub_mul_deriv` | `RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Number.Basic` | **Integrability of the index integrand for a point off the curve.** If `γ` is continuous on `Set.uIcc a b` and avoids `w` there (so `(γ · - w)⁻¹` is continuous) and `deriv γ` is interval-integrable, t |
 | 9 | `Polynomial.natDegree_and_leadingCoeff_quadratic_derivative_add_linear_mul_add` | `RealRooted.Mathlib.Algebra.Polynomial.Derivative` | A nonzero prospective top coefficient gives both the exact degree and leading coefficient of a quadratic-derivative plus linear-multiple step. |
 | 9 | `RealRooted.AllComboRealRooted.linear_recombination` | `RealRooted.AllCombo` | `AllComboRealRooted` is preserved by any linear change of coordinates in the `(f, g)`-plane. |
+| 9 | `RealRooted.IsPFMultiplierSequence.isLaguerrePolyaTypeI_complexExpGeneratingFunction` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI` | The complex EGF of a PF multiplier sequence is Type-I Laguerre--Pólya. |
 | 9 | `RealRooted.hermiteBiehlerForwardPos` | `RealRooted.HermiteBiehler.Forward` |  |
 | 8 | `MvPolynomial.IsMultiaffine.sum` | `RealRooted.Multiaffine` |  |
-| 8 | `RealRooted.IsRealRootedIn.mem_of_isRoot` | `RealRooted.RootLocation.Basic` | Every root of a polynomial rooted in `S` lies in `S`. |
-| 8 | `RealRooted.StrictInterl.hasSimpleRoots_of_isCoprime` | `RealRooted.SimpleRoots` | A coprime strictly interlacing pair has simple real roots in both entries. |
+| 8 | `RealRooted.IsLaguerrePolyaTypeI.toLaguerrePolya` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI` | Type-I Laguerre--Pólya functions are Laguerre--Pólya. |

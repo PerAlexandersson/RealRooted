@@ -3,6 +3,7 @@ module
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
 public import TauCeti.Analysis.Complex.GrowthOrder
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIReverse
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
 import RealRooted.MultiplierSequence.PolyaSchur.GeometricGrowth
 import RealRooted.Mathlib.Analysis.Complex.TaylorGrowth
 import RealRooted.Mathlib.Analysis.Calculus.IteratedDeriv.Star

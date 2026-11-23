@@ -1,7 +1,9 @@
 module
 
+public import Mathlib.Analysis.Calculus.Deriv.Basic
+
 import RealRooted.MultiplierSequence.PolyaSchur.Factorial
-public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
+import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
 import RealRooted.MultiplierSequence.PolyaSchur.Limit
 
@@ -81,7 +83,9 @@ theorem IsLaguerrePolyaTypeI.isPFMultiplierSequence_of_iteratedDeriv_zero
     · rw [htaylor k]
       simp
 
-private theorem iteratedDeriv_complexExpGeneratingFunction_zero
+/-- Inside a positive convergence radius, exponential Taylor data are the
+actual iterated derivatives of their generating function at zero. -/
+theorem iteratedDeriv_complexExpGeneratingFunction_zero
     (gamma : ℕ → ℝ) {R : NNReal} (hR : 0 < R)
     (hsum : Summable (fun k => ‖gamma k‖ * (R : ℝ) ^ k / k.factorial)) (k : ℕ) :
     (deriv^[k]) (complexExpGeneratingFunction gamma) 0 = (gamma k : ℂ) := by
