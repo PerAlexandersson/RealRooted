@@ -6209,6 +6209,46 @@
       ],
       "note": "Every sharp Gaussian bound controls the native canonical Gaussian coefficient. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Matrix/CoordinateSpectralMeasure.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Matrix.CoordinateSpectralMeasure"
+      ],
+      "note": "Coordinate spectral measures and exact matrix-power moments. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/FirstMomentTight.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.FirstMomentTight"
+      ],
+      "note": "Tightness from uniformly bounded first moments on the nonnegative half-line. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/WeakMomentLimits.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.WeakMomentLimits"
+      ],
+      "note": "Weak limits inherit convergent polynomial moments by higher-moment bounds. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/MomentLimit.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.MomentLimit"
+      ],
+      "note": "Pointwise limits of Stieltjes moment sequences admit actual finite representing measures. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }

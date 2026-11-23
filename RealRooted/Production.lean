@@ -2854,6 +2854,10 @@ public import RealRooted.Mathlib.Analysis.Complex.CanonicalProduct.ImaginaryAxis
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.CanonicalRepresentation
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.GaussianBoundSimple
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.OriginFactor
+public import RealRooted.Mathlib.Analysis.Matrix.CoordinateSpectralMeasure
+public import RealRooted.Mathlib.MeasureTheory.Measure.FirstMomentTight
+public import RealRooted.Mathlib.MeasureTheory.Measure.MomentLimit
+public import RealRooted.Mathlib.MeasureTheory.Measure.WeakMomentLimits
 
 /-!
 # RealRooted production umbrella
