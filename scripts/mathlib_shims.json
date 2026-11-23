@@ -5099,6 +5099,56 @@
       ],
       "note": "Local analytic and logarithmic-derivative identities from exact complex signed moments; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/LogDeriv/ZeroFree.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.LogDeriv.ZeroFree"
+      ],
+      "note": "Zero exclusion for nontrivial analytic first-order equations on connected domains; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/FiniteMomentStieltjes.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.FiniteMomentStieltjes"
+      ],
+      "note": "Explicit Stieltjes representation and holomorphy of finite reciprocal moment transforms; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/NonnegativeMomentTransform.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.NonnegativeMomentTransform"
+      ],
+      "note": "Transport of nonnegative real moment measures to reciprocal Stieltjes data; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/LogDeriv/SlitPlaneContinuation.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.LogDeriv.SlitPlaneContinuation"
+      ],
+      "note": "Slit-plane continuation of a local logarithmic derivative without assuming zero exclusion; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/LogDeriv/MomentContinuation.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.LogDeriv.MomentContinuation"
+      ],
+      "note": "Global zero location and Stieltjes representation from genuine local log-derivative moments; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }

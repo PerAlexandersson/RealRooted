@@ -2673,6 +2673,12 @@ public import RealRooted.RiemannHypothesis.PrimeWindowJacobiQuadrature
 public import RealRooted.Mathlib.MeasureTheory.Measure.AnalyticMomentSupport
 public import RealRooted.Mathlib.MeasureTheory.Measure.CompactMomentTransform
 public import RealRooted.Mathlib.MeasureTheory.Measure.LocalMomentTransform
+public import RealRooted.Mathlib.Analysis.Calculus.LogDeriv.MomentContinuation
+public import RealRooted.Mathlib.Analysis.Calculus.LogDeriv.SlitPlaneContinuation
+public import RealRooted.Mathlib.Analysis.Calculus.LogDeriv.ZeroFree
+public import RealRooted.Mathlib.MeasureTheory.Measure.FiniteMomentStieltjes
+public import RealRooted.Mathlib.MeasureTheory.Measure.NonnegativeMomentTransform
+public import RealRooted.RiemannHypothesis.MomentCriterion
 
 /-!
 # RealRooted production umbrella
