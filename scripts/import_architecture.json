@@ -16,10 +16,10 @@
   ],
   "budgets": {
     "RealRooted": {
-      "max_modules": 2923
+      "max_modules": 2930
     },
     "RealRooted.Production": {
-      "max_modules": 2851
+      "max_modules": 2858
     },
     "RealRooted.Tactic.Examples": {
       "max_modules": 844

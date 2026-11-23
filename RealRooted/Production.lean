@@ -2867,6 +2867,13 @@ public import RealRooted.Mathlib.LinearAlgebra.Matrix.PowerSeries.StieltjesConve
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.StieltjesGram
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.Moment
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.TailOffset
+public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.MomentAlgebra
+public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.MomentChristoffel
+public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.MomentChristoffelLocal
+public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.MomentHankelFactorization
+public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.MomentRecurrence
+public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.MomentShift
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.EulerGauss
 
 /-!
 # RealRooted production umbrella
