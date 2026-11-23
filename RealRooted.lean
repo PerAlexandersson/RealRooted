@@ -3020,3 +3020,9 @@ public import RealRooted.Hermite.FormalDifferential.Composition
 public import RealRooted.Hermite.FormalDifferential.QuadraticObstruction
 public import RealRooted.Hermite.FormalDifferential.Taylor
 public import RealRooted.Mathlib.RingTheory.PowerSeries.LowDegree
+public import RealRooted.Mathlib.Algebra.Polynomial.TaylorEvaluation
+public import RealRooted.Mathlib.Analysis.Analytic.TaylorInverse
+public import RealRooted.Mathlib.MeasureTheory.Integral.PolynomialTranslation
+public import RealRooted.Mathlib.Probability.Moments.MGFTaylor
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.MGFPolynomialOperator
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.ReciprocalPolynomialOperator
