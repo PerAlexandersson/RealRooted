@@ -6,6 +6,7 @@ public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 public import Mathlib.Analysis.Calculus.LogDeriv
 import RealRooted.Mathlib.MeasureTheory.Measure.MomentNevanlinnaRepresentation
 public import Mathlib.Analysis.Analytic.Order
+import RealRooted.Mathlib.MeasureTheory.Measure.AtomicRange
 import RealRooted.LaguerreInequalities.AtomMultiplicity
 import RealRooted.LaguerreInequalities.MeasureSupport
 import RealRooted.Mathlib.Analysis.Calculus.LogDeriv.NormalizedConjugation
@@ -78,13 +79,8 @@ theorem summable_mul_order_of_logDeriv_integral
       logDeriv f z = ∫ x : ℝ≥0, (1 + z * ((x : ℝ) : ℂ))⁻¹ ∂mu) :
     Summable (fun a : {x : ℝ≥0 // x ≠ 0} ↦ (a : ℝ) *
       (analyticOrderNatAt f ((-(a : ℝ)⁻¹ : ℝ) : ℂ) : ℝ)) := by
-  have hs : Summable (fun a : {x : ℝ≥0 // x ≠ 0} ↦ mu.real {(a : ℝ≥0)}) := by
-    apply summable_of_sum_le (c := mu.real Set.univ) (fun _ ↦ measureReal_nonneg)
-    intro s
-    apply sum_measureReal_le_measureReal_univ (fun _ _ ↦ measurableSet_singleton _)
-    intro i _ j _ hij
-    apply Set.disjoint_singleton.mpr
-    exact fun h ↦ hij (Subtype.ext h)
+  have hs : Summable (fun a : {x : ℝ≥0 // x ≠ 0} ↦ mu.real {(a : ℝ≥0)}) :=
+    mu.summable_measureReal_singleton_comp Subtype.coe_injective
   exact hs.congr fun a ↦
     measureReal_singleton_eq_mul_order_of_logDeriv_integral hf hf0 mu hlog a.property
 

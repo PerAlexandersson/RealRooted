@@ -5279,6 +5279,76 @@
       ],
       "note": "Positive resolvent series, complete monotonicity and Euler-Rodrigues differentiation; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Topology/Algebra/InfiniteSum/SortedEnumeration.lean"
+      ],
+      "modules": [
+        "Mathlib.Topology.Algebra.InfiniteSum.SortedEnumeration"
+      ],
+      "note": "Sorted positive summable families, finite atomic measures and product grouping; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/AtomicRange.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.AtomicRange"
+      ],
+      "note": "Sorted positive summable families, finite atomic measures and product grouping; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/SortedAtomicMeasure.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.SortedAtomicMeasure"
+      ],
+      "note": "Sorted positive summable families, finite atomic measures and product grouping; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Topology/Algebra/InfiniteSum/FiniteMultiplicityProduct.lean"
+      ],
+      "modules": [
+        "Mathlib.Topology.Algebra.InfiniteSum.FiniteMultiplicityProduct"
+      ],
+      "note": "Sorted positive summable families, finite atomic measures and product grouping; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/NonnegativeAtomicMap.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.NonnegativeAtomicMap"
+      ],
+      "note": "Sorted positive summable families, finite atomic measures and product grouping; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Order/Monotone/PositiveExtension.lean"
+      ],
+      "modules": [
+        "Mathlib.Order.Monotone.PositiveExtension"
+      ],
+      "note": "Sorted positive summable families, finite atomic measures and product grouping; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/SortedAtomicSequence.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.SortedAtomicSequence"
+      ],
+      "note": "Sorted positive summable families, finite atomic measures and product grouping; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }

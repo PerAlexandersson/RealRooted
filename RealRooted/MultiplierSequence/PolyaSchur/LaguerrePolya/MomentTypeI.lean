@@ -1,8 +1,12 @@
 module
 
+public import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeI
 public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Mathlib.Analysis.Calculus.LogDeriv
+public import Mathlib.Analysis.Analytic.Order
+import Mathlib.Analysis.Complex.Exponential
+import Mathlib.Topology.Algebra.InfiniteSum.Defs
 public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.MomentResidues
@@ -10,6 +14,7 @@ import RealRooted.Mathlib.Analysis.Complex.LinearProductAnalytic
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.AtomicMomentSum
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeILinearProduct
 import RealRooted.Mathlib.Topology.Algebra.InfiniteSum.FiniteMultiplicity
+import RealRooted.Mathlib.Topology.Algebra.InfiniteSum.FiniteMultiplicityProduct
 import RealRooted.Mathlib.Analysis.Calculus.LogDeriv.Identity
 import Mathlib.Analysis.Complex.Convex
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
@@ -91,6 +96,65 @@ private theorem logDeriv_eq_atom_add_reciprocal_product
   have heq := hgroup.unique hpos'
   linear_combination -heq
 
+/-- Recover the entire function from the convergent reciprocal-root product.
+The same identity supplies Type-I membership and the explicit product formula. -/
+private theorem eq_mul_exp_mul_reciprocal_product
+    {f : ℂ → ℂ} (hf : Differentiable ℂ f) (hf0 : f 0 ≠ 0)
+    (hc : ∀ z, f (conj z) = conj (f z))
+    (mu : Measure ℝ≥0) [IsFiniteMeasure mu]
+    (hne : ∀ z ∈ UpperHalfPlane.upperHalfPlaneSet, f z ≠ 0)
+    (hlog : ∀ z ∈ UpperHalfPlane.upperHalfPlaneSet,
+      logDeriv f z = ∫ x : ℝ≥0, (1 + z * ((x : ℝ) : ℂ))⁻¹ ∂mu) (z : ℂ) :
+    f z = f 0 * exp ((mu.real {0} : ℂ) * z) *
+      ∏' j : ReciprocalZeroIndex f, (1 + (reciprocalZeroSlope f j : ℂ) * z) := by
+  have hs := summable_reciprocalZeroSlope hf hf0 mu hlog
+  let P : ℂ → ℂ := fun w ↦ ∏' j : ReciprocalZeroIndex f,
+    (1 + (reciprocalZeroSlope f j : ℂ) * w)
+  let E : ℂ → ℂ := fun w ↦ exp ((mu.real {0} : ℂ) * w)
+  let G : ℂ → ℂ := E * P
+  have hG : IsLaguerrePolyaTypeI G :=
+    isLaguerrePolyaTypeI_exp_mul_tprod
+      (fun j : ReciprocalZeroIndex f ↦ (j.1 : ℝ≥0).coe_nonneg) hs measureReal_nonneg
+  have hP : Differentiable ℂ P := differentiable_tprod_one_add_ofReal_mul hs
+  have hPn : ∀ w ∈ UpperHalfPlane.upperHalfPlaneSet, P w ≠ 0 :=
+    fun _ hw ↦ tprod_one_add_ofReal_mul_ne_zero_of_im_pos hs hw
+  have hElog (w : ℂ) : logDeriv E w = (mu.real {0} : ℂ) := by
+    rw [logDeriv_apply, show deriv E w = _ from
+      (hasDerivAt_const_mul (mu.real {0} : ℂ)).cexp.deriv]
+    exact mul_div_cancel_left₀ _ (exp_ne_zero _)
+  have hGlog : EqOn (logDeriv f) (logDeriv G) UpperHalfPlane.upperHalfPlaneSet := by
+    intro w hw
+    rw [show logDeriv G w = logDeriv E w + logDeriv P w from
+      logDeriv_mul w (exp_ne_zero _) (hPn w hw) (by dsimp [E]; fun_prop) (hP w), hElog]
+    exact logDeriv_eq_atom_add_reciprocal_product hf hf0 hc mu hlog hw
+  have hG0 : G 0 = 1 := by simp [G, E, P, Pi.mul_apply]
+  have heq := hf.eq_mul_of_logDeriv_eqOn (g := G) hG.toLaguerrePolya.differentiable
+    UpperHalfPlane.isOpen_upperHalfPlaneSet (convex_halfSpace_im_gt 0).isPreconnected
+    ⟨I, by simp⟩ hne (fun w hw ↦ mul_ne_zero (exp_ne_zero _) (hPn w hw)) hGlog hG0
+  simpa only [G, E, P, Pi.mul_apply, mul_assoc] using heq z
+
+/-- The reciprocal-root factors, grouped by their actual natural multiplicities,
+converge to the normalized entire function after removing its exponential factor.
+This is a genuine product limit, including at zeros of the function. -/
+theorem hasProd_pow_order_of_logDeriv_integral
+    {f : ℂ → ℂ} (hf : Differentiable ℂ f) (hf0 : f 0 ≠ 0)
+    (hc : ∀ z, f (conj z) = conj (f z))
+    (mu : Measure ℝ≥0) [IsFiniteMeasure mu]
+    (hne : ∀ z ∈ UpperHalfPlane.upperHalfPlaneSet, f z ≠ 0)
+    (hlog : ∀ z ∈ UpperHalfPlane.upperHalfPlaneSet,
+      logDeriv f z = ∫ x : ℝ≥0, (1 + z * ((x : ℝ) : ℂ))⁻¹ ∂mu) (z : ℂ) :
+    HasProd (fun a : {x : ℝ≥0 // x ≠ 0} ↦
+      (1 + ((a : ℝ) : ℂ) * z) ^ analyticOrderNatAt f ((-(a : ℝ)⁻¹ : ℝ) : ℂ))
+      (f z / (f 0 * exp ((mu.real {0} : ℂ) * z))) := by
+  have hs := summable_reciprocalZeroSlope hf hf0 mu hlog
+  have hp := HasProd.sigma_fin_const
+    (a := fun a : {x : ℝ≥0 // x ≠ 0} ↦ (1 + ((a : ℝ) : ℂ) * z))
+    (m := fun a ↦ analyticOrderNatAt f ((-(a : ℝ)⁻¹ : ℝ) : ℂ))
+    ((hasProdLocallyUniformlyOn_one_add_ofReal_mul hs).hasProd (mem_univ z))
+  rw [eq_mul_exp_mul_reciprocal_product hf hf0 hc mu hne hlog z,
+    mul_div_cancel_left₀ _ (mul_ne_zero hf0 (exp_ne_zero _))]
+  exact hp
+
 /-- A normalized entire function with a finite nonnegative moment transform
 for its actual logarithmic derivative is positive Type-I. The global transform
 and its nonvanishing domain are supplied by local-moment continuation. -/
@@ -107,32 +171,14 @@ theorem isLaguerrePolyaTypeI_of_logDeriv_integral
   have hlogH := fun z hz ↦ hlog (hH z hz)
   have hc := conj_of_logDeriv_integral hf hf0 mu hne hlog
   have hs := summable_reciprocalZeroSlope hf hf0n mu hlogH
-  let P : ℂ → ℂ := fun z ↦ ∏' j : ReciprocalZeroIndex f,
-    (1 + (reciprocalZeroSlope f j : ℂ) * z)
-  let E : ℂ → ℂ := fun z ↦ exp ((mu.real {0} : ℂ) * z)
-  let G : ℂ → ℂ := E * P
-  have hG : IsLaguerrePolyaTypeI G :=
-    isLaguerrePolyaTypeI_exp_mul_tprod (fun j : ReciprocalZeroIndex f ↦ (j.1 : ℝ≥0).coe_nonneg) hs
-      measureReal_nonneg
-  have hP : Differentiable ℂ P := differentiable_tprod_one_add_ofReal_mul hs
-  have hPn : ∀ z ∈ UpperHalfPlane.upperHalfPlaneSet, P z ≠ 0 :=
-    fun _ hz ↦ tprod_one_add_ofReal_mul_ne_zero_of_im_pos hs hz
-  have hElog (z : ℂ) : logDeriv E z = (mu.real {0} : ℂ) := by
-    rw [logDeriv_apply, show deriv E z = _ from
-      (hasDerivAt_const_mul (mu.real {0} : ℂ)).cexp.deriv]
-    exact mul_div_cancel_left₀ _ (exp_ne_zero _)
-  have hGlog : EqOn (logDeriv f) (logDeriv G) UpperHalfPlane.upperHalfPlaneSet := by
-    intro z hz
-    rw [show logDeriv G z = logDeriv E z + logDeriv P z from
-      logDeriv_mul z (exp_ne_zero _) (hPn z hz) (by dsimp [E]; fun_prop) (hP z), hElog]
-    exact logDeriv_eq_atom_add_reciprocal_product hf hf0n hc mu hlogH hz
-  have hG0 : G 0 = 1 := by simp [G, E, P, Pi.mul_apply]
-  have heq := hf.eq_mul_of_logDeriv_eqOn (g := G) hG.toLaguerrePolya.differentiable
-    UpperHalfPlane.isOpen_upperHalfPlaneSet (convex_halfSpace_im_gt 0).isPreconnected
-    ⟨I, by simp⟩ (fun z hz ↦ hne z (hH z hz))
-    (fun z hz ↦ mul_ne_zero (exp_ne_zero _) (hPn z hz)) hGlog
-    hG0
-  have hfg : f = G := funext fun z ↦ by simpa only [hf0, one_mul] using heq z
-  rwa [hfg]
+  have heq := eq_mul_exp_mul_reciprocal_product hf hf0n hc mu
+    (fun z hz ↦ hne z (hH z hz)) hlogH
+  have hfg : f = fun z ↦ exp ((mu.real {0} : ℂ) * z) *
+      ∏' j : ReciprocalZeroIndex f, (1 + (reciprocalZeroSlope f j : ℂ) * z) := by
+    funext z
+    simpa only [hf0, one_mul] using heq z
+  rw [hfg]
+  exact isLaguerrePolyaTypeI_exp_mul_tprod
+    (fun j : ReciprocalZeroIndex f ↦ (j.1 : ℝ≥0).coe_nonneg) hs measureReal_nonneg
 
 end RealRooted
