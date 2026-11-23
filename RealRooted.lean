@@ -623,6 +623,8 @@ public import RealRooted.Favard.Affine.RowSign
 public import RealRooted.Favard.Orthogonality
 public import RealRooted.Favard.PathEnvelope
 public import RealRooted.Favard.Recurrence
+public import RealRooted.FerrersHit.Basic
+public import RealRooted.FerrersHit.Roots
 public import RealRooted.FiniteFreeAdditive
 public import RealRooted.FiniteFreeAdditive.HalfInteger
 public import RealRooted.FiniteFreeAdditive.HalfIntegerConvolution
@@ -1711,6 +1713,7 @@ public import RealRooted.Transforms.BrandenE.Basic
 public import RealRooted.Transforms.BrandenE.BasisImage
 public import RealRooted.Transforms.BrandenE.Delannoy
 public import RealRooted.Transforms.BrandenE.EvenBinomial
+public import RealRooted.Transforms.BrandenE.IntegerFactors
 public import RealRooted.Transforms.BrandenE.IntervalPreserver
 public import RealRooted.Transforms.BrandenE.Inverse
 public import RealRooted.Transforms.BrandenE.OrderedBell
@@ -1793,6 +1796,7 @@ public import RealRooted.VeroneseSectionPair.HermiteBiehler
 public import RealRooted.Wagner
 public import RealRooted.Wagner.LeftSum
 public import RealRooted.Wagner.NonpositiveRoots
+public import RealRooted.Wagner.ThreeStateRecurrence
 public import RealRooted.WagnerRightSum
 public import RealRooted.WagnerRightSum.Sign
 public import RealRooted.WagnerX
@@ -2406,6 +2410,7 @@ public import RealRooted.QuadraticInterlacing.Preservation
 public import RealRooted.QuadraticInterlacing.Residue
 public import RealRooted.CombinatorialExamples.BigBlockSingletons
 public import RealRooted.DerivativeRecurrence.EulerLag
+public import RealRooted.ExponentialRows.DerivativeProduct
 public import RealRooted.ExponentialRows.Insertion
 public import RealRooted.ExponentialRows.PartialProducts
 public import RealRooted.ExponentialRows.ProductInsertion
