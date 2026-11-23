@@ -79,12 +79,15 @@ theorem countable_zeroSpectralIndex {f : ℂ → ℂ} {rho : ℝ}
     exact (Real.rpow_pos_of_pos (zeroSpectralRate_pos hf h0 i) _).ne'
   exact Set.countable_univ_iff.mp hcount
 
-/-- The native weighted heat trace equals the repeated spectral heat
-sum at positive time. Entirety provides the sign of each multiplicity. -/
-theorem zeroHeatTrace_eq_exponentialMomentSum {f : ℂ → ℂ} {rho p t : ℝ}
+/-- The native divisor-weighted heat sum converges to the repeated
+spectral sum at positive time. -/
+theorem hasSum_zeroHeatTrace_summand_on_support {f : ℂ → ℂ} {rho p t : ℝ}
     (hf : Differentiable ℂ f) (h0 : f 0 ≠ 0) (horder : TauCeti.OrderLE f rho)
     (hp : rho < p) (hp0 : 0 ≤ p) (ht : 0 < t) :
-    zeroHeatTrace f t = Real.exponentialMomentSum (zeroSpectralRate f) 0 t := by
+    HasSum
+      (fun z : (MeromorphicOn.divisor f Set.univ).support ↦
+        (MeromorphicOn.divisor f Set.univ z : ℝ) * Real.exp (-‖(z : ℂ)‖ * t))
+      (Real.exponentialMomentSum (zeroSpectralRate f) 0 t) := by
   have hs := Real.summable_pow_mul_exp_neg_mul (zeroSpectralRate_pos hf h0) hp0
     (summable_zeroSpectralRate_rpow_neg hf horder hp) 0 ht
   have hsum : HasSum (fun i : zeroSpectralIndex f ↦ Real.exp (-zeroSpectralRate f i * t))
@@ -100,6 +103,14 @@ theorem zeroHeatTrace_eq_exponentialMomentSum {f : ℂ → ℂ} {rho p t : ℝ}
       nsmul_eq_mul, zeroMultiplicity_toNat_cast hf] using
       hasSum_fintype (fun _ : Fin (MeromorphicOn.divisor f Set.univ z).toNat ↦
         Real.exp (-‖(z : ℂ)‖ * t))
-  exact hgroup.tsum_eq
+  exact hgroup
+
+/-- The native weighted heat trace equals the repeated spectral heat
+sum at positive time. Entirety provides the sign of each multiplicity. -/
+theorem zeroHeatTrace_eq_exponentialMomentSum {f : ℂ → ℂ} {rho p t : ℝ}
+    (hf : Differentiable ℂ f) (h0 : f 0 ≠ 0) (horder : TauCeti.OrderLE f rho)
+    (hp : rho < p) (hp0 : 0 ≤ p) (ht : 0 < t) :
+    zeroHeatTrace f t = Real.exponentialMomentSum (zeroSpectralRate f) 0 t := by
+  exact (hasSum_zeroHeatTrace_summand_on_support hf h0 horder hp hp0 ht).tsum_eq
 
 end Complex

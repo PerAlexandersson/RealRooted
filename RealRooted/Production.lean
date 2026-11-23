@@ -2741,6 +2741,12 @@ public import RealRooted.Mathlib.Analysis.Complex.ZeroSpectralIndex
 public import RealRooted.Mathlib.Analysis.Complex.ZeroSpectralNonempty
 public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.AbsoluteHeatTrace
 public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.AbsoluteHeatTracePositive
+public import RealRooted.Mathlib.Analysis.CompletelyMonotone.ReciprocalHierarchy
+public import RealRooted.Mathlib.Analysis.Complex.LogDerivPowMul
+public import RealRooted.Mathlib.Analysis.Complex.ZeroHeatTraceOrigin
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.Exp.LaplaceConstant
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.OriginHeatTrace
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.OriginLogDerivativeHierarchy
 
 /-!
 # RealRooted production umbrella

@@ -5529,6 +5529,46 @@
       ],
       "note": "Unconditional heat estimates from native zero moduli, nonempty spectra below order one, and xi specializations. Shares zero-existence proof with polynomial factor extraction; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/CompletelyMonotone/ReciprocalHierarchy.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.CompletelyMonotone.ReciprocalHierarchy"
+      ],
+      "note": "Origin multiplicity contributions to logarithmic derivatives and heat traces; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LogDerivPowMul.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LogDerivPowMul"
+      ],
+      "note": "Origin multiplicity contributions to logarithmic derivatives and heat traces; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Exp/LaplaceConstant.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Exp.LaplaceConstant"
+      ],
+      "note": "Origin multiplicity contributions to logarithmic derivatives and heat traces; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/ZeroHeatTraceOrigin.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.ZeroHeatTraceOrigin"
+      ],
+      "note": "Origin multiplicity contributions to logarithmic derivatives and heat traces; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }
