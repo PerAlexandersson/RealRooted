@@ -7,6 +7,9 @@ module
 
 public import Mathlib.Analysis.Complex.Basic
 public import Mathlib.Analysis.Calculus.LogDeriv
+public import Mathlib.Analysis.Complex.Exponential
+import RealRooted.Mathlib.Analysis.Complex.LinearProductAnalytic
+import TauCeti.Analysis.SpecialFunctions.Complex.Exp.LogDeriv
 import RealRooted.Mathlib.Analysis.Complex.LinearProduct
 import RealRooted.Mathlib.Analysis.CompletelyMonotone.RationalMixtures
 import TauCeti.Analysis.Calculus.LogDerivUniformlyOn
@@ -80,5 +83,25 @@ theorem re_logDeriv_tprod_one_add {a : ℕ → ℝ}
     norm_cast
   have h := congrArg Complex.re (tendsto_nhds_unique hpoint hcomplex)
   simpa only [ofReal_re] using h
+
+/-- A nonzero complex scalar and a real exponential add only the exponential
+constant to the real logarithmic derivative of a nonnegative linear product. -/
+theorem re_logDeriv_exp_linear_product {c : ℂ} (hc : c ≠ 0)
+    (gamma : ℝ) {a : ℕ → ℝ} (ha : ∀ i, 0 ≤ a i) (hs : Summable a)
+    {x : ℝ} (hx : 0 ≤ x) :
+    (logDeriv (fun z : ℂ ↦ c * exp ((gamma : ℂ) * z) *
+      ∏' i, (1 + (a i : ℂ) * z)) (x : ℂ)).re =
+      gamma + ∑' i, a i / (1 + a i * x) := by
+  let P : ℂ → ℂ := fun z ↦ ∏' i, (1 + (a i : ℂ) * z)
+  have hd : Differentiable ℂ P := Complex.differentiable_tprod_one_add_ofReal_mul hs
+  have hP : P (x : ℂ) ≠ 0 := Complex.tprod_one_add_ofReal_mul_ne_zero ha hs hx
+  have hlog : logDeriv (fun z : ℂ ↦ c * exp ((gamma : ℂ) * z) * P z) (x : ℂ) =
+      (gamma : ℂ) + logDeriv P (x : ℂ) := by
+    rw [show (fun z : ℂ ↦ c * exp ((gamma : ℂ) * z) * P z) =
+      (fun z ↦ c * (exp ((gamma : ℂ) * z) * P z)) by funext z; ring]
+    rw [logDeriv_const_mul _ _ hc,
+      TauCeti.logDeriv_cexp_mul hP (hd (x : ℂ)) (by fun_prop), deriv_const_mul_id]
+  rw [hlog, Complex.add_re, Complex.ofReal_re]
+  exact congrArg (fun y : ℝ ↦ gamma + y) (Complex.re_logDeriv_tprod_one_add ha hs hx)
 
 end Complex

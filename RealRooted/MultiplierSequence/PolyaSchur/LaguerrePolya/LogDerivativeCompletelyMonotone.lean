@@ -10,10 +10,8 @@ public import TauCeti.Analysis.CompletelyMonotone.Basic
 public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Mathlib.Analysis.Calculus.LogDeriv
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIFactorization
-import RealRooted.Mathlib.Analysis.Complex.LinearProductAnalytic
 import RealRooted.Mathlib.Analysis.Complex.LinearProductLogDerivative
 import RealRooted.Mathlib.Analysis.CompletelyMonotone.RationalMixtures
-import TauCeti.Analysis.SpecialFunctions.Complex.Exp.LogDeriv
 import TauCeti.Analysis.CompletelyMonotone.OpenClosure
 
 /-!
@@ -44,20 +42,9 @@ theorem IsLaguerrePolyaTypeI.exists_re_logDeriv_eq_const_add_tsum
       ∀ x : ℝ, 0 ≤ x → (logDeriv f (x : ℂ)).re =
         gamma + ∑' i, a i / (1 + a i * x) := by
   obtain ⟨gamma, a, hg, ha, hs, heq⟩ := hf.exists_eq_exp_mul_prod h0
-  let P : ℂ → ℂ := fun z ↦ ∏' i, (1 + (a i : ℂ) * z)
-  have hd : Differentiable ℂ P := Complex.differentiable_tprod_one_add_ofReal_mul hs
-  refine ⟨gamma, a, hg, ha, hs, ?_⟩
-  intro x hx
-  have hP : P (x : ℂ) ≠ 0 := Complex.tprod_one_add_ofReal_mul_ne_zero ha hs hx
-  have hlog : logDeriv f (x : ℂ) = (gamma : ℂ) + logDeriv P (x : ℂ) := by
-    rw [heq]
-    change logDeriv (fun z ↦ f 0 * exp ((gamma : ℂ) * z) * P z) (x : ℂ) = _
-    rw [show (fun z ↦ f 0 * exp ((gamma : ℂ) * z) * P z) =
-      (fun z ↦ f 0 * (exp ((gamma : ℂ) * z) * P z)) by funext z; ring]
-    rw [logDeriv_const_mul _ _ h0,
-      TauCeti.logDeriv_cexp_mul hP (hd (x : ℂ)) (by fun_prop), deriv_const_mul_id]
-  rw [hlog, Complex.add_re, Complex.ofReal_re]
-  exact congrArg (fun y : ℝ ↦ gamma + y) (Complex.re_logDeriv_tprod_one_add ha hs hx)
+  refine ⟨gamma, a, hg, ha, hs, fun x hx ↦ ?_⟩
+  have h := Complex.re_logDeriv_exp_linear_product h0 gamma ha hs hx
+  simpa only [← heq] using h
 
 /-- A Type-I logarithmic derivative, restricted to the positive real axis,
 is completely monotone. Smoothness is part of the conclusion. -/

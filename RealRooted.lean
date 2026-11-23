@@ -2781,3 +2781,11 @@ public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.SortedProdu
 public import RealRooted.MultiplierSequence.JensenBessel
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Bessel
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.QuarticInequality
+public import RealRooted.Mathlib.Analysis.Complex.IteratedRealDeriv
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.Exp.ExponentialSum
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.Exp.ExponentialSumBounds
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.Exp.ExponentialSumLaplace
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.Exp.PositiveSlopeHeatTrace
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.GenusZeroHeatTrace
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.LogDerivativeHeatTrace
+public import RealRooted.RiemannHypothesis.HeatTrace

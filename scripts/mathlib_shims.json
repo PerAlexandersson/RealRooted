@@ -5349,6 +5349,56 @@
       ],
       "note": "Sorted positive summable families, finite atomic measures and product grouping; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Exp/ExponentialSumBounds.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Exp.ExponentialSumBounds"
+      ],
+      "note": "Positive spectral heat traces, Laplace moments, and real restriction of holomorphic derivatives; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Exp/ExponentialSum.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Exp.ExponentialSum"
+      ],
+      "note": "Positive spectral heat traces, Laplace moments, and real restriction of holomorphic derivatives; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Exp/ExponentialSumLaplace.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Exp.ExponentialSumLaplace"
+      ],
+      "note": "Positive spectral heat traces, Laplace moments, and real restriction of holomorphic derivatives; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Exp/PositiveSlopeHeatTrace.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Exp.PositiveSlopeHeatTrace"
+      ],
+      "note": "Positive spectral heat traces, Laplace moments, and real restriction of holomorphic derivatives; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/IteratedRealDeriv.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.IteratedRealDeriv"
+      ],
+      "note": "Positive spectral heat traces, Laplace moments, and real restriction of holomorphic derivatives; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }
