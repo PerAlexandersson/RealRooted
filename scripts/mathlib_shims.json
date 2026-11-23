@@ -5469,6 +5469,66 @@
       ],
       "note": "Fiber grouping, exact analytic multiplicities of linear products, and native zero heat traces. Generalizes the former private Edrei grouping argument; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/ZeroSpectralIndex.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.ZeroSpectralIndex"
+      ],
+      "note": "Unconditional heat estimates from native zero moduli, nonempty spectra below order one, and xi specializations. Shares zero-existence proof with polynomial factor extraction; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/AbsoluteZeroHeatTrace.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.AbsoluteZeroHeatTrace"
+      ],
+      "note": "Unconditional heat estimates from native zero moduli, nonempty spectra below order one, and xi specializations. Shares zero-existence proof with polynomial factor extraction; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/AbsoluteHeatTrace.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.AbsoluteHeatTrace"
+      ],
+      "note": "Unconditional heat estimates from native zero moduli, nonempty spectra below order one, and xi specializations. Shares zero-existence proof with polynomial factor extraction; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/GrowthOrder/Zero/Nonempty.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.GrowthOrder.Zero.Nonempty"
+      ],
+      "note": "Unconditional heat estimates from native zero moduli, nonempty spectra below order one, and xi specializations. Shares zero-existence proof with polynomial factor extraction; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/ZeroSpectralNonempty.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.ZeroSpectralNonempty"
+      ],
+      "note": "Unconditional heat estimates from native zero moduli, nonempty spectra below order one, and xi specializations. Shares zero-existence proof with polynomial factor extraction; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/NumberTheory/LSeries/RiemannXi/AbsoluteHeatTracePositive.lean"
+      ],
+      "modules": [
+        "Mathlib.NumberTheory.LSeries.RiemannXi.AbsoluteHeatTracePositive"
+      ],
+      "note": "Unconditional heat estimates from native zero moduli, nonempty spectra below order one, and xi specializations. Shares zero-existence proof with polynomial factor extraction; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }

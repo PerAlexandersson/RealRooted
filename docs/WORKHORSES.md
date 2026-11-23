@@ -456,7 +456,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 |---:|---|---|---|
 | 23 | `RealRooted.add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero` | `RealRooted.Basic.Coefficients` | A finite sum of nonnegative-coefficient polynomials cannot vanish if one of the summands is already nonzero. |
 | 20 | `Nat.cast_choose_ne_zero` | `RealRooted.Mathlib.Data.Nat.Choose.Cast` | A binomial coefficient remains nonzero after casting to a characteristic-zero target. |
-| 12 | `iteratedDeriv_riemannXiTheta_zero_ne_zero` | `RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Derivative` | Positivity of the xi Taylor data excludes vanishing at zero for every derivative. |
+| 14 | `iteratedDeriv_riemannXiTheta_zero_ne_zero` | `RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Derivative` | Positivity of the xi Taylor data excludes vanishing at zero for every derivative. |
 | 9 | `RealRooted.tDeriv_ne_zero` | `RealRooted.IteratedDerivativeShift` | T_ε of a nonzero polynomial with degree ≥ 1 is nonzero. |
 | 8 | `RealRooted.iterateTDeriv_ne_zero` | `RealRooted.IteratedDerivativeShift` | Iterating a derivative shift preserves nonzeroness. |
 | 7 | `RealRooted.LiuOppositeSigns.OppositeLeadingSigns.left_ne_zero` | `RealRooted.LiuOppositeSigns.RootCount` |  |

@@ -2735,6 +2735,12 @@ public import RealRooted.Mathlib.Analysis.Complex.ZeroHeatTrace
 public import RealRooted.Mathlib.Topology.Algebra.InfiniteSum.FiberCardinality
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.NativeHeatTrace
 public import RealRooted.RiemannHypothesis.NativeHeatTrace
+public import RealRooted.Mathlib.Analysis.Complex.AbsoluteZeroHeatTrace
+public import RealRooted.Mathlib.Analysis.Complex.GrowthOrder.Zero.Nonempty
+public import RealRooted.Mathlib.Analysis.Complex.ZeroSpectralIndex
+public import RealRooted.Mathlib.Analysis.Complex.ZeroSpectralNonempty
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.AbsoluteHeatTrace
+public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.AbsoluteHeatTracePositive
 
 /-!
 # RealRooted production umbrella

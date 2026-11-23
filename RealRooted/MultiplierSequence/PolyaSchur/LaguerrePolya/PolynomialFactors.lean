@@ -3,7 +3,7 @@ module
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya
 public import TauCeti.Analysis.Complex.GrowthOrder
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Hadamard
-import TauCeti.Analysis.Complex.GrowthOrder.Exponential
+import RealRooted.Mathlib.Analysis.Complex.GrowthOrder.Zero.Nonempty
 import TauCeti.Analysis.Complex.GrowthOrder.Zero.Factorization
 
 /-!
@@ -26,17 +26,8 @@ namespace RealRooted
 private theorem exists_zero_of_nonpolynomial {f : ℂ → ℂ} {rho : ℝ}
     (horder : TauCeti.OrderLE f rho) (hrho : rho < 1) (hf : Differentiable ℂ f)
     (hnp : ∀ p : ℂ[X], f ≠ fun z => p.eval z) : ∃ z, f z = 0 := by
-  by_contra hno
-  have hnz : ∀ z, f z ≠ 0 := by simpa using hno
-  obtain ⟨p, hp, heq⟩ := horder.exists_eq_cexp_polynomial_eval_of_forall_ne_zero hf hnz
-  have hdegree : p.natDegree = 0 := by
-    rw [Nat.floor_eq_zero.mpr hrho] at hp
-    exact Nat.eq_zero_of_le_zero hp
-  apply hnp (C (exp (p.coeff 0)))
-  funext z
-  have h := heq z
-  rw [eq_C_of_natDegree_eq_zero hdegree, eval_C] at h
-  simpa only [eval_C] using h
+  exact horder.exists_zero_of_nonconstant hrho hf
+    (by simpa only [eval_C] using hnp (C (f 0)))
 
 /-- Conjugation symmetry descends through a power of a real linear factor. -/
 private theorem conj_of_real_factor {f g : ℂ → ℂ} {r : ℝ} {m : ℕ}
