@@ -2778,3 +2778,6 @@ public import RealRooted.Mathlib.Topology.Algebra.InfiniteSum.SortedEnumeration
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.SortedMomentAtoms
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.SortedMomentCriterion
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.SortedProduct
+public import RealRooted.MultiplierSequence.JensenBessel
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Bessel
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.QuarticInequality
