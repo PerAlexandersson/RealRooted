@@ -6929,6 +6929,46 @@
       ],
       "note": "Wall chain representations and sharp support of genuine compact moment measures. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/ExactMomentSupport.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.ExactMomentSupport"
+      ],
+      "note": "Exact compact support and the full Wall chain moment criterion, including arbitrary initial parameters. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/ChainCoefficientBound.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.ChainCoefficientBound"
+      ],
+      "note": "Exact compact support and the full Wall chain moment criterion, including arbitrary initial parameters. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/BoundedChainSupport.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.BoundedChainSupport"
+      ],
+      "note": "Exact compact support and the full Wall chain moment criterion, including arbitrary initial parameters. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/CompactMomentCriterion.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.CompactMomentCriterion"
+      ],
+      "note": "Exact compact support and the full Wall chain moment criterion, including arbitrary initial parameters. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }
