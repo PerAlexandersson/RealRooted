@@ -7,6 +7,7 @@ public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
 public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.MomentTypeI
 import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.LogDerivativeMeasure
+import RealRooted.Mathlib.Analysis.Calculus.LogDeriv.Const
 import RealRooted.Mathlib.Analysis.Calculus.LogDeriv.MomentContinuation
 import RealRooted.Mathlib.MeasureTheory.Measure.NonnegativeMomentTransform
 
@@ -35,8 +36,7 @@ unchanged, including its totalized values at zeros. -/
 private theorem logDeriv_div_value_zero {f : ℂ → ℂ} (h0 : f 0 ≠ 0) :
     logDeriv (fun z ↦ f z / f 0) = logDeriv f := by
   funext z
-  simpa only [div_eq_mul_inv] using
-    logDeriv_mul_const (f := f) z (f 0)⁻¹ (inv_ne_zero h0)
+  exact logDeriv_div_const z (f 0) h0
 
 /-- Genuine nonnegative moments of the actual complex logarithmic coefficients
 force the normalized entire function to be positive Type-I. -/

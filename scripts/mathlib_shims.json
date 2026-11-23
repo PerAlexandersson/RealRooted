@@ -6969,6 +6969,16 @@
       ],
       "note": "Exact compact support and the full Wall chain moment criterion, including arbitrary initial parameters. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/LogDeriv/Const.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.LogDeriv.Const"
+      ],
+      "note": "Constant division preserves totalized logarithmic derivatives over normed fields. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }

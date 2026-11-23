@@ -2999,3 +2999,5 @@ public import RealRooted.Mathlib.MeasureTheory.Measure.ExactMomentSupport
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.ChainCoefficientBound
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.CompactMomentCriterion
 public import RealRooted.RiemannHypothesis.CompactStieltjesFraction
+public import RealRooted.Mathlib.Analysis.Calculus.LogDeriv.Const
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.CompactStieltjesFraction
