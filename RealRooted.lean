@@ -2895,3 +2895,8 @@ public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.GaussianP
 public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.GaussianSpatialDerivative
 public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.GaussianSymbolAlgebra
 public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.SymbolSummable
+public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.GaussianApproxComposition
+public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.GenusZeroComposition
+public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.PolynomialSymbol
+public import RealRooted.Mathlib.Analysis.Complex.LinearPrefixGaussian
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.GenusZeroFactorSimple

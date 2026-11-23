@@ -6029,6 +6029,46 @@
       ],
       "note": "Finite polynomial-factor composition for Gaussian infinite differential operators. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/PolynomialSymbol.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.PolynomialSymbol"
+      ],
+      "note": "Actual polynomial differential series equal finite differential operators. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianApproxComposition.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianApproxComposition"
+      ],
+      "note": "Infinite-factor composition under controlled minimal-quadratic polynomial approximation. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LinearPrefixGaussian.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LinearPrefixGaussian"
+      ],
+      "note": "Common arbitrarily small Gaussian bounds for summable linear-product prefixes. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GenusZeroComposition.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GenusZeroComposition"
+      ],
+      "note": "Actual infinite composition for summable real genus-zero factors. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }
