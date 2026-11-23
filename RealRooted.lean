@@ -2989,3 +2989,8 @@ public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.Catala
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.ChainParameters
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.MeasureBound
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.TranslatedAeration
+public import RealRooted.Mathlib.MeasureTheory.Measure.ChainMomentSupport
+public import RealRooted.Mathlib.MeasureTheory.Measure.NonnegativeMoments
+public import RealRooted.Mathlib.MeasureTheory.Measure.SqrtTranslation
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.ChainAeration
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.CompactMomentsChain

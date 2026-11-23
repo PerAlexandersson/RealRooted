@@ -6879,6 +6879,56 @@
       ],
       "note": "Stieltjes coefficient bounds and Wall chain extraction from active Jacobi data. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/SqrtTranslation.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.SqrtTranslation"
+      ],
+      "note": "Wall chain representations and sharp support of genuine compact moment measures. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/CompactMomentsChain.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.CompactMomentsChain"
+      ],
+      "note": "Wall chain representations and sharp support of genuine compact moment measures. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/ChainAeration.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.ChainAeration"
+      ],
+      "note": "Wall chain representations and sharp support of genuine compact moment measures. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/NonnegativeMoments.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.NonnegativeMoments"
+      ],
+      "note": "Wall chain representations and sharp support of genuine compact moment measures. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/ChainMomentSupport.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.ChainMomentSupport"
+      ],
+      "note": "Wall chain representations and sharp support of genuine compact moment measures. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }
