@@ -5149,6 +5149,56 @@
       ],
       "note": "Global zero location and Stieltjes representation from genuine local log-derivative moments; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/LogDeriv/NormalizedConjugation.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.LogDeriv.NormalizedConjugation"
+      ],
+      "note": "Moment transforms, logarithmic derivatives, and locally uniform products; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/MomentNevanlinna.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.MomentNevanlinna"
+      ],
+      "note": "Moment transforms, logarithmic derivatives, and locally uniform products; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/MomentNevanlinnaRepresentation.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.MomentNevanlinnaRepresentation"
+      ],
+      "note": "Moment transforms, logarithmic derivatives, and locally uniform products; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/Bochner/CountableSupport.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.Bochner.CountableSupport"
+      ],
+      "note": "Moment transforms, logarithmic derivatives, and locally uniform products; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LinearProductAnalytic.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LinearProductAnalytic"
+      ],
+      "note": "Moment transforms, logarithmic derivatives, and locally uniform products; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }
