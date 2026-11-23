@@ -5399,6 +5399,26 @@
       ],
       "note": "Positive spectral heat traces, Laplace moments, and real restriction of holomorphic derivatives; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/SubexponentialLowerBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.SubexponentialLowerBound"
+      ],
+      "note": "Exponential lower bounds obstruct order below one; positive linear products have norm at least one on the right half-plane. Generalizes the former private Edrei lemma; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LinearProductLowerBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LinearProductLowerBound"
+      ],
+      "note": "Exponential lower bounds obstruct order below one; positive linear products have norm at least one on the right half-plane. Generalizes the former private Edrei lemma; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }

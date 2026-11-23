@@ -2723,6 +2723,11 @@ public import RealRooted.Mathlib.Analysis.SpecialFunctions.Exp.PositiveSlopeHeat
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.GenusZeroHeatTrace
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.LogDerivativeHeatTrace
 public import RealRooted.RiemannHypothesis.HeatTrace
+public import RealRooted.Mathlib.Analysis.Complex.LinearProductLowerBound
+public import RealRooted.Mathlib.Analysis.Complex.SubexponentialLowerBound
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.LogDerivativePureHeatTrace
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIPureProduct
+public import RealRooted.RiemannHypothesis.PureHeatTrace
 
 /-!
 # RealRooted production umbrella

@@ -1,5 +1,6 @@
 module
 
+import RealRooted.Mathlib.Analysis.Complex.LinearProductLowerBound
 import RealRooted.Mathlib.Analysis.Complex.EntireExponentialType
 import Mathlib.Analysis.Real.Pi.Bounds
 import Mathlib.Analysis.SpecialFunctions.Log.Summable
@@ -66,21 +67,6 @@ private lemma nonneg_series_norm_le {p : ℕ → ℝ} (hp : ∀ n, 0 ≤ p n) {F
     (Complex.re_le_norm _)
   intro n
   simp [norm_pow, abs_of_nonneg (hp n)]
-
-/-- Lower bound for the product on the closed right half-plane. -/
-private lemma one_le_norm_tprod {α : ℕ → ℝ} (hα : ∀ i, 0 ≤ α i) {z : ℂ}
-    (hz : 0 ≤ z.re) :
-    1 ≤ ‖∏' i, (1 + (α i : ℂ) * z)‖ := by
-  by_cases hm : Multipliable (fun i => (1 + (α i : ℂ) * z))
-  · have ht := hm.hasProd.norm
-    refine ge_of_tendsto' ht (fun s => ?_)
-    calc (1 : ℝ) = ∏ i ∈ s, (1 : ℝ) := by simp
-      _ ≤ ∏ i ∈ s, ‖1 + (α i : ℂ) * z‖ :=
-        Finset.prod_le_prod₀ (fun _ _ => zero_le_one) (fun i _ => ?_)
-    refine le_trans ?_ (Complex.re_le_norm _)
-    simp only [add_re, one_re, re_ofReal_mul]
-    nlinarith [hα i]
-  · rw [tprod_eq_one_of_not_multipliable hm]; simp
 
 /-- Subexponential growth of the product on the positive real axis. -/
 private lemma norm_tprod_le {α : ℕ → ℝ} (hα : ∀ i, 0 ≤ α i) (sα : Summable α)
@@ -286,7 +272,7 @@ private lemma re_le_of_series {h : ℂ → ℂ} {c : ℂ}
     have h2 := hpos ‖z‖ (norm_nonneg _)
     have h3 : Real.exp ((h z).re + z.re) ≤ ‖F1 z‖ := by
       simp only [F1, norm_mul, Complex.norm_exp]
-      have := one_le_norm_tprod hα hz
+      have := Complex.one_le_norm_tprod_one_add_ofReal_mul hα hz
       simp only [add_re, Complex.ofReal_one, one_mul]
       nlinarith [Real.exp_pos ((h z).re + z.re)]
     have h4 : Real.exp ((h z).re + z.re) ≤ Real.exp (L + (2 * ‖c‖ + 4) * ‖z‖) := by
@@ -321,7 +307,7 @@ private lemma im_eq_zero_of_affine {h : ℂ → ℂ} {a : ℂ}
   set r : ℝ := 1 / (|a.im| + 1) with hr
   have hrpos : 0 < r := by positivity
   have hP : (∏' i, (1 + α i * r) : ℝ) ≠ 0 := by
-    have := one_le_norm_tprod hα (z := (r : ℂ))
+    have := Complex.one_le_norm_tprod_one_add_ofReal_mul hα (z := (r : ℂ))
       (by simpa only [Complex.ofReal_re] using hrpos.le)
     rw [tprod_ofReal_eq sα r] at this
     intro h'
@@ -446,4 +432,3 @@ theorem exists_nonneg_eq_affine_of_series {h : ℂ → ℂ} (hh : Differentiable
   exact ⟨a.re, nonneg_of_affine ha hα hβ sα sβ h1 h2, ha⟩
 
 end RealRooted.EdreiThoma
-
