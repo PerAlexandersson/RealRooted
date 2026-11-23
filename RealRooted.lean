@@ -2971,3 +2971,9 @@ public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.Active
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.LowerSupportConstruction
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.LowerSupportCriterion
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.LowerSupportParameters
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.AdmissibleParameters
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.BoundedParameters
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.CompactParameters
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.InitialParameterCriterion
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.LowerParameters
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.TerminatingBoundary

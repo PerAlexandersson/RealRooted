@@ -6699,6 +6699,66 @@
       ],
       "note": "Formal Stieltjes criterion for a prescribed lower support bound, with terminating active-prefix parameters. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/LowerParameters.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.LowerParameters"
+      ],
+      "note": "Nonnegative initial Stieltjes parameters, compact active-prefix admissibility, and the terminating Dirac boundary. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/InitialParameterCriterion.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.InitialParameterCriterion"
+      ],
+      "note": "Nonnegative initial Stieltjes parameters, compact active-prefix admissibility, and the terminating Dirac boundary. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/AdmissibleParameters.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.AdmissibleParameters"
+      ],
+      "note": "Nonnegative initial Stieltjes parameters, compact active-prefix admissibility, and the terminating Dirac boundary. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/TerminatingBoundary.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.TerminatingBoundary"
+      ],
+      "note": "Nonnegative initial Stieltjes parameters, compact active-prefix admissibility, and the terminating Dirac boundary. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/BoundedParameters.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.BoundedParameters"
+      ],
+      "note": "Nonnegative initial Stieltjes parameters, compact active-prefix admissibility, and the terminating Dirac boundary. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/CompactParameters.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.CompactParameters"
+      ],
+      "note": "Nonnegative initial Stieltjes parameters, compact active-prefix admissibility, and the terminating Dirac boundary. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }
