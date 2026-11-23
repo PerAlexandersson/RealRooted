@@ -7029,6 +7029,26 @@
       ],
       "note": "Square-variable descent, growth-order halving, and correspondence of real and negative zeros, extending TauCeti descent.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/AtomicGap.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.AtomicGap"
+      ],
+      "note": "Finite-support linear products and positive support gaps for slope-weighted atomic measures.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LinearProductFinite.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LinearProductFinite"
+      ],
+      "note": "Finite-support linear products and positive support gaps for slope-weighted atomic measures.",
+      "speculative": true
     }
   ]
 }

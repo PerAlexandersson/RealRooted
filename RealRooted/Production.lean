@@ -2940,6 +2940,15 @@ public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.Comple
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.ComplementaryCoefficients
 public import RealRooted.Mathlib.Analysis.Complex.GrowthOrder.SquareDescent
 public import RealRooted.Mathlib.Analysis.Complex.ImaginarySquareDescent
+public import RealRooted.Mathlib.Analysis.Complex.LinearProductFinite
+public import RealRooted.Mathlib.MeasureTheory.Measure.AtomicGap
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.LinearProductMomentMeasure
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.LogMomentGapCriterion
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.LogMomentGapPolynomial
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.LogMomentMassNearZero
+public import RealRooted.PFPolynomial.FiniteProduct
+public import RealRooted.PFPolynomial.LogMomentGap
+public import RealRooted.RiemannHypothesis.LogMomentGap
 
 /-!
 # RealRooted production umbrella
