@@ -6509,6 +6509,46 @@
       ],
       "note": "Finite atomic Hankel positivity, nodal polynomials and exact vanishing norms. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/FiniteMoment.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.FiniteMoment"
+      ],
+      "note": "Finite-rank moment data give exactly terminating positive Stieltjes fractions. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/FiniteAtomicFraction.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.FiniteAtomicFraction"
+      ],
+      "note": "Nonnegative finite atomic moment sequences have Stieltjes fractions. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/FiniteMeasureFraction.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.FiniteMeasureFraction"
+      ],
+      "note": "Finite-carrier measures give Stieltjes fractions via their positive-mass atoms. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/MomentCriterion.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.MomentCriterion"
+      ],
+      "note": "Complete equivalence of genuine Stieltjes moment measures and formal nonnegative fractions. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }

@@ -2951,3 +2951,7 @@ public import RealRooted.Mathlib.MeasureTheory.Integral.HankelSupport
 public import RealRooted.Mathlib.MeasureTheory.Integral.PolynomialMoment
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.EulerTermination
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.InfiniteMoment
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.FiniteAtomicFraction
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.FiniteMeasureFraction
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.FiniteMoment
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.MomentCriterion
