@@ -5969,6 +5969,66 @@
       ],
       "note": "Canonical products retain their Gaussian coefficient in arbitrarily sharp norm estimates. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianJets.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianJets"
+      ],
+      "note": "Gaussian bounds for spatial derivatives with arbitrarily small type increase. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianSpatialDerivative.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianSpatialDerivative"
+      ],
+      "note": "Spatial derivatives commute with convergent Gaussian differential operators. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianPolynomialBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianPolynomialBound"
+      ],
+      "note": "Polynomial multiplication retains arbitrarily close Gaussian bounds. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/SymbolSummable.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.SymbolSummable"
+      ],
+      "note": "Additive and variable-factor algebra of actually summable differential symbols. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianSymbolAlgebra.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianSymbolAlgebra"
+      ],
+      "note": "Actual differential-symbol algebra under sharp Gaussian convergence. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianPolynomialComposition.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianPolynomialComposition"
+      ],
+      "note": "Finite polynomial-factor composition for Gaussian infinite differential operators. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }

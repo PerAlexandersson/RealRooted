@@ -386,7 +386,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | uses | theorem | module | doc |
 |---:|---|---|---|
 | 467 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
-| 304 | `RealRooted.EffectiveBKW.IntPoly2.eval_add` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate addition. |
+| 305 | `RealRooted.EffectiveBKW.IntPoly2.eval_add` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate addition. |
 | 19 | `RealRooted.bezoutEntry.wronskian` | `RealRooted.Bezoutian.RootEvaluation` |  |
 | 16 | `RealRooted.eval_pos_of_all_roots_lt` | `RealRooted.WagnerRightSum.Sign` |  |
 | 14 | `RealRooted.eval_pos_of_hasNonnegCoeffs` | `RealRooted.Basic.Coefficients` | A nonzero polynomial with nonnegative coefficients is strictly positive at every strictly positive real argument. |
@@ -554,9 +554,9 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 15 | `MvPolynomial.IsRayleigh.specializeAt` | `RealRooted.Multiaffine.Rayleigh` | Real scalar specialization preserves the Rayleigh property. |
 | 15 | `RealRooted.hasSimpleRoots_of_natDegree_le_one` | `RealRooted.SimpleRoots` | Every nonzero polynomial of degree at most one has only simple roots. |
 | 14 | `RealRooted.IsLaguerrePolya.analyticOnNhd` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative` | A zero-aware Laguerre--Pólya limit is analytic on the whole complex plane. |
+| 13 | `RealRooted.IsLaguerrePolya.differentialApply` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.DifferentialApply` | Every real-rooted polynomial differential symbol preserves the entire Laguerre--Pólya class. |
 | 13 | `RealRooted.isUpperHalfPlaneStable_complexify_of_splits` | `RealRooted.HermiteBiehler.Basic` | A nonzero split real polynomial has stable complexification. |
 | 12 | `Matrix.IsTotallyNonnegRect.toSquare` | `RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg` | Rectangular total nonnegativity specializes to the square predicate. |
-| 12 | `RealRooted.IsLaguerrePolya.differentialApply` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.DifferentialApply` | Every real-rooted polynomial differential symbol preserves the entire Laguerre--Pólya class. |
 | 12 | `RealRooted.IsLaguerrePolya.heatOperator` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.HeatOperator` | The entire backward heat operator preserves the LP class at every nonnegative real time for inputs of growth order strictly below two. |
 | 12 | `RealRooted.shiftedJacobiMonic_satisfiesFavardRecurrence` | `RealRooted.Jacobi.Favard` | The monic shifted Jacobi family satisfies the Favard recurrence with its explicit diagonal and subdiagonal coefficients. |
 | 10 | `MvPolynomial.IsRayleigh.specializeAtList` | `RealRooted.Multiaffine.Rayleigh` | Iterated real scalar specialization preserves the Rayleigh property. |
