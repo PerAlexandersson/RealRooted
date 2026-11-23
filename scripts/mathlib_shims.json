@@ -5709,6 +5709,66 @@
       ],
       "note": "Locally uniform convergence of finite multiset products. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/MobiusTransform/Map.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.MobiusTransform.Map"
+      ],
+      "note": "Coefficient maps commute with homogeneous Mobius transforms. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/EvenCoefficients.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.EvenCoefficients"
+      ],
+      "note": "Even coefficient support and removal of even origin factors. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Calculus/IteratedDeriv/PartialContinuity.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Calculus.IteratedDeriv.PartialContinuity"
+      ],
+      "note": "Continuity of partial iterated derivatives in a parameter. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/RealIdentity.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.RealIdentity"
+      ],
+      "note": "Punctured real-axis nonvanishing for nonzero entire functions. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/TranslateProductContinuity.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.TranslateProductContinuity"
+      ],
+      "note": "Continuity of translated-product Taylor coefficients in the center. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/TranslateProductNonzero.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.TranslateProductNonzero"
+      ],
+      "note": "Entire finite translated products and nonvanishing with nonzero slopes. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }

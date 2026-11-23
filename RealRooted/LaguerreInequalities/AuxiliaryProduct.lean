@@ -6,6 +6,7 @@ import Mathlib.Analysis.Complex.Polynomial.Basic
 public import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
 import RealRooted.Mathlib.Topology.MetricSpace.Algebra.FiniteProduct
 import Mathlib.Analysis.Calculus.Deriv.Mul
+import RealRooted.Mathlib.Analysis.Complex.TranslateProductNonzero
 
 /-!
 # Translated products attached to a real auxiliary polynomial
@@ -36,14 +37,7 @@ Structural reality is established separately when using real inequalities. -/
 /-- Finite auxiliary products of an entire function are entire. -/
 theorem differentiable_auxiliaryProduct {f : ℂ → ℂ} (hf : Differentiable ℂ f)
     (g : ℝ[X]) (x : ℝ) : Differentiable ℂ (auxiliaryProduct g f x) := by
-  have h (s : Multiset ℂ) :
-      Differentiable ℂ (fun z ↦ (s.map fun r ↦ f ((x : ℂ) - r * z)).prod) := by
-    induction s using Multiset.induction_on with
-    | empty => simpa only [Multiset.map_zero, Multiset.prod_zero] using differentiable_const 1
-    | cons r s ih =>
-        simpa only [Multiset.map_cons, Multiset.prod_cons, Pi.mul_def, Function.comp_def] using
-          (hf.comp (by fun_prop)).mul ih
-  exact h _
+  exact Complex.differentiable_translateProduct hf _ _
 
 /-- Locally uniform limits pass through finite auxiliary products. -/
 theorem tendstoLocallyUniformly_auxiliaryProduct {ι : Type*} {F : ι → ℂ → ℂ}
