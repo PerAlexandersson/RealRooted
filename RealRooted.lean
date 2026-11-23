@@ -3004,3 +3004,5 @@ public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.CompactStie
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.Complementary
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.ComplementaryChain
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.ComplementaryCoefficients
+public import RealRooted.Mathlib.Analysis.Complex.GrowthOrder.SquareDescent
+public import RealRooted.Mathlib.Analysis.Complex.ImaginarySquareDescent

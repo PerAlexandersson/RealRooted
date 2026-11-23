@@ -11,6 +11,7 @@ public import TauCeti.Analysis.Complex.GrowthOrder
 import TauCeti.NumberTheory.LSeries.HurwitzZetaGrowth
 import TauCeti.NumberTheory.LSeries.RiemannZeta
 import Mathlib.NumberTheory.LSeries.Nonvanishing
+import RealRooted.Mathlib.Analysis.Complex.GrowthOrder.SquareDescent
 
 /-!
 # The square-variable expansion of the Riemann xi function
@@ -135,36 +136,8 @@ private theorem orderLE_riemannXi : TauCeti.OrderLE riemannXi 1 := by
 
 /-- The square-variable xi function has growth order at most one half. -/
 theorem orderLE_half_riemannXiTheta : TauCeti.OrderLE riemannXiTheta (1 / 2) := by
-  let root : ℂ → ℂ := fun z => z ^ (2⁻¹ : ℂ)
-  have hsq (z : ℂ) : ‖root z‖ ^ 2 = ‖z‖ := by
-    rw [← norm_pow]
-    exact congrArg norm (Complex.cpow_nat_inv_pow z (by norm_num : 2 ≠ 0))
-  have ht : Tendsto root (cobounded ℂ) (cobounded ℂ) := by
-    rw [← tendsto_norm_atTop_iff_cobounded]
-    apply tendsto_atTop.mpr
-    intro R
-    filter_upwards [eventually_cobounded_le_norm ((max R 0) ^ 2)] with z hz
-    have := hsq z
-    have := norm_nonneg (root z)
-    have := le_max_left R 0
-    have := le_max_right R 0
-    nlinarith
-  have hg := orderLE_riemannXi.comp_mul_add 1 (1 / 2)
-  rw [TauCeti.orderLE_def]
-  intro A hA
-  have h := (hg.isBigO (show 1 < 2 * A by linarith)).comp_tendsto ht
-  change (fun z => riemannXiTheta z) =O[cobounded ℂ] (fun z => Real.exp (‖z‖ ^ A))
-  have heq : (fun z => riemannXiTheta z) =
-      (fun s => riemannXi (1 * s + 1 / 2)) ∘ root := by
-    funext z
-    simp [riemannXiTheta, TauCeti.descendPow_apply, root, add_comm]
-  rw [heq]
-  refine h.trans (IsBigO.of_bound 1 ?_)
-  apply Eventually.of_forall
-  intro z
-  have hpow : ‖root z‖ ^ (2 * A) = ‖z‖ ^ A := by
-    rw [Real.rpow_mul (norm_nonneg _), Real.rpow_two, hsq]
-  simp only [Function.comp_apply, Real.norm_eq_abs, Real.abs_exp, one_mul, hpow, le_refl]
+  simpa only [riemannXiTheta, one_mul, add_comm] using
+    (orderLE_riemannXi.comp_mul_add 1 (1 / 2)).descendPow_two
 
 /-- The square-variable xi function satisfies the order-one bound used by
 the genus-one Hadamard factorization criterion. -/
