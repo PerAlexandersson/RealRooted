@@ -5859,6 +5859,26 @@
       ],
       "note": "Stability of simple zeros on compact sets under locally uniform entire convergence. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/LinearProductDegree.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.LinearProductDegree"
+      ],
+      "note": "Degree divergence of products of real linear factors with infinite nonzero-slope support. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LinearProductPrefix.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LinearProductPrefix"
+      ],
+      "note": "Growth, prefix factorization and support of convergent real linear canonical products. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }

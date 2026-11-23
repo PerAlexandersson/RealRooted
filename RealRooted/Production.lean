@@ -2803,6 +2803,13 @@ public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.Polynomia
 public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.SmallTypeBound
 public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.SmallTypeLimit
 public import RealRooted.Mathlib.Analysis.Complex.SimpleLimit
+public import RealRooted.Mathlib.Algebra.Polynomial.LinearProductDegree
+public import RealRooted.Mathlib.Analysis.Complex.LinearProductPrefix
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.DifferentialTailSimple
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.GenusZeroDifferentialSimple
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.LinearProduct
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIDifferentialSimple
+public import RealRooted.RiemannHypothesis.XiDifferentialSimple
 
 /-!
 # RealRooted production umbrella

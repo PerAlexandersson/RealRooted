@@ -385,8 +385,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 464 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
-| 303 | `RealRooted.EffectiveBKW.IntPoly2.eval_add` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate addition. |
+| 466 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
+| 304 | `RealRooted.EffectiveBKW.IntPoly2.eval_add` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate addition. |
 | 19 | `RealRooted.bezoutEntry.wronskian` | `RealRooted.Bezoutian.RootEvaluation` |  |
 | 16 | `RealRooted.eval_pos_of_all_roots_lt` | `RealRooted.WagnerRightSum.Sign` |  |
 | 14 | `RealRooted.eval_pos_of_hasNonnegCoeffs` | `RealRooted.Basic.Coefficients` | A nonzero polynomial with nonnegative coefficients is strictly positive at every strictly positive real argument. |
@@ -520,7 +520,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 21 | `RealRooted.weightedSum_cons` | `RealRooted.WeightedSum` |  |
 | 15 | `Polynomial.basisTransform_monomial` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
 | 14 | `Polynomial.basisTransform_X_pow` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
-| 12 | `RealRooted.IsLaguerrePolya.im_eq_zero_of_eq_zero` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Zeros` | A nonzero Laguerre--Pólya limit has only real complex zeros. |
+| 14 | `RealRooted.IsLaguerrePolya.im_eq_zero_of_eq_zero` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Zeros` | A nonzero Laguerre--Pólya limit has only real complex zeros. |
 | 11 | `Polynomial.basisTransform_C` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
 | 11 | `Polynomial.basisTransform_C_mul_X_pow` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` | A scalar monomial is sent to the corresponding scalar basis element. |
 | 9 | `RealRooted.gammaTransform_add` | `RealRooted.GammaTransform.Basic` |  |
@@ -547,19 +547,19 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 47 | `RealRooted.StrictInterl.hasSimpleRoots_of_no_common_root` | `RealRooted.SimpleRoots` | A strictly interlacing pair with no common real root has simple real roots in both entries. |
 | 36 | `RealRooted.allComboRealRooted_of_strictInterl` | `RealRooted.ObreschkoffConverse.Forward` | Forward direction of Obreschkoff: if `f ≪ g` then all real combinations `αf + βg` are real-rooted (or zero). |
 | 25 | `RealRooted.HasSimpleRoots.of_roots_nodup` | `RealRooted.SimpleRoots` | A nonzero polynomial with a duplicate-free root multiset has simple real roots. |
+| 19 | `RealRooted.isLaguerrePolyaTypeI_iteratedDeriv_riemannXiTheta` | `RealRooted.RiemannHypothesis.TotalPositivity` | Every derivative of the square-variable xi function is Type-I Laguerre--Pólya under RH. |
 | 18 | `RealRooted.MapsRealRootedIn.mono_left` | `RealRooted.RootLocation.Basic` | Shrinking the source set preserves `MapsRealRootedIn`. |
-| 18 | `RealRooted.isLaguerrePolyaTypeI_iteratedDeriv_riemannXiTheta` | `RealRooted.RiemannHypothesis.TotalPositivity` | Every derivative of the square-variable xi function is Type-I Laguerre--Pólya under RH. |
-| 17 | `differentiable_riemannXiTheta` | `RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Theta` | The square-variable expansion of xi is entire. |
+| 18 | `differentiable_riemannXiTheta` | `RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Theta` | The square-variable expansion of xi is entire. |
 | 16 | `RealRooted.IsRealRootedIn.mem_of_mem_roots` | `RealRooted.RootLocation.Basic` | Every multiset root of a polynomial rooted in `S` lies in `S`. |
 | 15 | `MvPolynomial.IsRayleigh.specializeAt` | `RealRooted.Multiaffine.Rayleigh` | Real scalar specialization preserves the Rayleigh property. |
 | 15 | `RealRooted.hasSimpleRoots_of_natDegree_le_one` | `RealRooted.SimpleRoots` | Every nonzero polynomial of degree at most one has only simple roots. |
 | 14 | `RealRooted.IsLaguerrePolya.analyticOnNhd` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative` | A zero-aware Laguerre--Pólya limit is analytic on the whole complex plane. |
 | 13 | `RealRooted.isUpperHalfPlaneStable_complexify_of_splits` | `RealRooted.HermiteBiehler.Basic` | A nonzero split real polynomial has stable complexification. |
 | 12 | `Matrix.IsTotallyNonnegRect.toSquare` | `RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg` | Rectangular total nonnegativity specializes to the square predicate. |
+| 12 | `RealRooted.IsLaguerrePolya.differentialApply` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.DifferentialApply` | Every real-rooted polynomial differential symbol preserves the entire Laguerre--Pólya class. |
 | 12 | `RealRooted.IsLaguerrePolya.heatOperator` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.HeatOperator` | The entire backward heat operator preserves the LP class at every nonnegative real time for inputs of growth order strictly below two. |
 | 12 | `RealRooted.shiftedJacobiMonic_satisfiesFavardRecurrence` | `RealRooted.Jacobi.Favard` | The monic shifted Jacobi family satisfies the Favard recurrence with its explicit diagonal and subdiagonal coefficients. |
 | 10 | `MvPolynomial.IsRayleigh.specializeAtList` | `RealRooted.Multiaffine.Rayleigh` | Iterated real scalar specialization preserves the Rayleigh property. |
-| 10 | `RealRooted.IsLaguerrePolya.differentialApply` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.DifferentialApply` | Every real-rooted polynomial differential symbol preserves the entire Laguerre--Pólya class. |
 | 10 | `RealRooted.PosComboRealRooted.comm` | `RealRooted.ObreschkoffContinuity` | Positive-combination real-rootedness is symmetric in the two polynomials. |
 | 9 | `Complex.Contour.intervalIntegrable_inv_sub_mul_deriv` | `RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Number.Basic` | **Integrability of the index integrand for a point off the curve.** If `γ` is continuous on `Set.uIcc a b` and avoids `w` there (so `(γ · - w)⁻¹` is continuous) and `deriv γ` is interval-integrable, t |
 | 9 | `Polynomial.natDegree_and_leadingCoeff_quadratic_derivative_add_linear_mul_add` | `RealRooted.Mathlib.Algebra.Polynomial.Derivative` | A nonzero prospective top coefficient gives both the exact degree and leading coefficient of a quadratic-derivative plus linear-multiple step. |
