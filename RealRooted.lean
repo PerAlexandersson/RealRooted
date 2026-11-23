@@ -3080,3 +3080,9 @@ public import RealRooted.Hermite.Generalized.Degree
 public import RealRooted.Hermite.FormalDifferential.SeparableNormalization
 public import RealRooted.Mathlib.RingTheory.Polynomial.ScaleRoots.Separable
 public import RealRooted.Hermite.FormalDifferential.SeparableResidues
+public import RealRooted.Mathlib.Analysis.Convex.LogSqrtSlope
+public import RealRooted.Mathlib.MeasureTheory.Integral.Bochner.EvenMoments
+public import RealRooted.Mathlib.MeasureTheory.Integral.Bochner.LogConcaveMoments
+public import RealRooted.Mathlib.MeasureTheory.Integral.Bochner.StrictWeightedCovariance
+public import RealRooted.Mathlib.MeasureTheory.Integral.Bochner.WeightedCovariance
+public import RealRooted.Mathlib.MeasureTheory.Integral.IntegralEqImproper.Power
