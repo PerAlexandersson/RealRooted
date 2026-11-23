@@ -17,7 +17,7 @@ have positive semidefinite Hankel matrices at every positive shift. Equivalently
 these are the signed coefficients of its formal logarithmic derivative.
 
 This specializes the forward Hankel positivity assertion associated with
-Sokal's logarithmic-derivative criterion (Appendix A, Proposition 6),
+Sokal's logarithmic-derivative criterion (Proposition 6),
 https://doi.org/10.1016/j.jmaa.2022.126432.
 -/
 

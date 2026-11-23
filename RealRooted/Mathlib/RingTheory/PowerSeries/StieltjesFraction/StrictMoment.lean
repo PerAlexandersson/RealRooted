@@ -20,7 +20,7 @@ ratios or observing nonnegative coefficients would not give this identity.
 
 This is the strict case of the classical moment/S-fraction criterion in
 Sokal, "When does a hypergeometric function pFq belong to the Laguerre–Pólya
-class LP+?", Appendix A, Proposition 7. Finite-rank moment families require
+class LP+?", Proposition 7. Finite-rank moment families require
 a separate terminating case.
 -/
 

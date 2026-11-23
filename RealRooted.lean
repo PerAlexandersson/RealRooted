@@ -2946,3 +2946,8 @@ public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.MomentSeriesRecur
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.EulerPaired
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.StrictMoment
 public import RealRooted.RiemannHypothesis.StieltjesFraction
+public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.FiniteAtomicNorms
+public import RealRooted.Mathlib.MeasureTheory.Integral.HankelSupport
+public import RealRooted.Mathlib.MeasureTheory.Integral.PolynomialMoment
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.EulerTermination
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.InfiniteMoment

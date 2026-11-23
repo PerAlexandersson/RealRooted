@@ -17,7 +17,7 @@ both matrices in the Stieltjes moment criterion.
 
 These are the Hankel positivity consequences of the forward direction of
 A. D. Sokal, *When does a hypergeometric function pFq belong to the
-Laguerre–Pólya class LP+?*, Appendix A, Proposition 6,
+Laguerre–Pólya class LP+?*, Proposition 6,
 https://doi.org/10.1016/j.jmaa.2022.126432. A representing measure and the converse
 criterion require additional arguments.
 -/

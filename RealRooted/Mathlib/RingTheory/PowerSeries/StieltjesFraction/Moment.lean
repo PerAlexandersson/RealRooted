@@ -23,7 +23,7 @@ The outer mass may be zero, coefficients may vanish, and numerator data may
 be unbounded. No numerical continued-fraction convergence is assumed.
 This is the forward direction of the classical Stieltjes criterion, as
 stated in Sokal, "When does a hypergeometric function pFq belong to the
-Laguerre–Pólya class LP+?", Appendix A, Proposition 7.
+Laguerre–Pólya class LP+?", Proposition 7.
 -/
 
 public section

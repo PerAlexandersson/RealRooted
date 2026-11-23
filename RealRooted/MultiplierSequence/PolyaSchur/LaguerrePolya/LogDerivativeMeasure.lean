@@ -18,7 +18,7 @@ Type-I entire function nonzero at zero are moments of a finite positive measure
 with compact nonnegative support. The measure has exponential mass at zero and
 mass equal to each linear slope at that slope. Repeated slopes count their
 multiplicities. This proves the measure-existence direction of Sokal (2022),
-Appendix A, Proposition 6, https://doi.org/10.1016/j.jmaa.2022.126432.
+Proposition 6, https://doi.org/10.1016/j.jmaa.2022.126432.
 
 The identity uses the actual complex coefficients, not only their real parts.
 -/

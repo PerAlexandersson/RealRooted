@@ -15,7 +15,7 @@ import RealRooted.Mathlib.Analysis.Calculus.IteratedDeriv.Star
 The signed Taylor coefficients of `f'/f` have positive semidefinite shifted
 Hankel matrices when `f` is Type-I Laguerre--Pólya and nonzero at zero. This is
 the matrix positivity assertion in the forward direction of Sokal's
-logarithmic-derivative criterion, Appendix A, Proposition 6,
+logarithmic-derivative criterion, Proposition 6,
 https://doi.org/10.1016/j.jmaa.2022.126432.
 -/
 

@@ -18,7 +18,7 @@ Type-I class exactly when the signed Taylor coefficients of its logarithmic
 derivative are genuine moments of a nonnegative measure. The coefficients are
 compared in the complex numbers, and every natural power is integrable.
 
-This is the normalized form of Sokal (2022), Appendix A, Proposition 6(a)--(b),
+This is the normalized form of Sokal (2022), Proposition 6(a)--(b),
 https://doi.org/10.1016/j.jmaa.2022.126432. The converse derives the product and
 its convergence from the moment measure; it assumes no growth bound.
 -/

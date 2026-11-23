@@ -15,7 +15,7 @@ nonzero at zero have a unique positive representing measure. Uniqueness is
 among all measures on the real line with genuine power moments; it does not
 assume compact or nonnegative support for a competing measure. The explicit
 measure constructed earlier has both properties. This proves the existence
-and uniqueness part of Sokal (2022), Appendix A, Proposition 6.
+and uniqueness part of Sokal (2022), Proposition 6.
 -/
 
 public section

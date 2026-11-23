@@ -6459,6 +6459,56 @@
       ],
       "note": "Finite Euler-Gauss steps and terminating pairing identities. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/PolynomialMoment.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.PolynomialMoment"
+      ],
+      "note": "Integration identities for shifted polynomial moments. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Integral/HankelSupport.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Integral.HankelSupport"
+      ],
+      "note": "Strict Hankel positivity for measures without finite carriers. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/InfiniteMoment.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.InfiniteMoment"
+      ],
+      "note": "Strictly positive Stieltjes fractions for arbitrary infinite-support measures. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/EulerTermination.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.EulerTermination"
+      ],
+      "note": "Formal terminating Euler-Gauss recurrences. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/FiniteAtomicNorms.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.FiniteAtomicNorms"
+      ],
+      "note": "Finite atomic Hankel positivity, nodal polynomials and exact vanishing norms. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }

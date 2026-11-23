@@ -23,7 +23,7 @@ atomic measure and the corresponding entire product. The scalar `f(0)` may be
 any nonzero complex number. No growth or reality assumption is added.
 
 Together with the checked normalized Type-I criterion and moment-measure
-uniqueness, this is Sokal (2022), Appendix A, Proposition 6(c), equation (7):
+uniqueness, this is Sokal (2022), Proposition 6(c), equation (7):
 https://doi.org/10.1016/j.jmaa.2022.126432. Finite and empty root sets are included
 by zero-multiplicity padding of a strictly decreasing summable positive sequence.
 -/

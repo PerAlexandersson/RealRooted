@@ -16,7 +16,7 @@ infinitely many distinct positive atoms. This makes every shifted Hankel
 moment matrix positive definite and every such determinant strictly positive.
 
 This is a consequence of the moment representation associated with Sokal's
-Appendix A, Proposition 6. Simplicity of the entire function's zeros is not
+Proposition 6. Simplicity of the entire function's zeros is not
 required. The function is assumed nonzero at zero to define its Taylor data.
 -/
 
