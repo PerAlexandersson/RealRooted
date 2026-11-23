@@ -5069,6 +5069,36 @@
       ],
       "note": "Actual weighted prime-sum moment functionals and one-node quadrature mass; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/AnalyticMomentSupport.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.AnalyticMomentSupport"
+      ],
+      "note": "Geometric analytic Taylor bounds force compact support for positive moment measures; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/CompactMomentTransform.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.CompactMomentTransform"
+      ],
+      "note": "Reciprocal-kernel power series of a finite bounded moment measure; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/MeasureTheory/Measure/LocalMomentTransform.lean"
+      ],
+      "modules": [
+        "Mathlib.MeasureTheory.Measure.LocalMomentTransform"
+      ],
+      "note": "Local analytic and logarithmic-derivative identities from exact complex signed moments; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }

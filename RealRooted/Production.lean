@@ -2670,6 +2670,9 @@ public import RealRooted.RiemannHypothesis.PrimeWindowJacobiRoots
 public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.GaussianLimits
 public import RealRooted.Mathlib.NumberTheory.Chebyshev.PrimeWindowWeightedQuadrature
 public import RealRooted.RiemannHypothesis.PrimeWindowJacobiQuadrature
+public import RealRooted.Mathlib.MeasureTheory.Measure.AnalyticMomentSupport
+public import RealRooted.Mathlib.MeasureTheory.Measure.CompactMomentTransform
+public import RealRooted.Mathlib.MeasureTheory.Measure.LocalMomentTransform
 
 /-!
 # RealRooted production umbrella
