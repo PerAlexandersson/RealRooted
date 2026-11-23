@@ -3054,3 +3054,6 @@ public import RealRooted.Hermite.FormalDifferential.NonrealExponential
 public import RealRooted.Hermite.FormalDifferential.NonrealIterates
 public import RealRooted.Mathlib.Analysis.Polynomial.NonrealPersistence
 public import RealRooted.Mathlib.RingTheory.PowerSeries.FirstDiscrepancy
+public import RealRooted.RiemannHypothesis.PolynomialIteration
+public import RealRooted.RiemannHypothesis.StrictCoefficient
+public import RealRooted.SimpleRoots.QuadraticDiscriminant
