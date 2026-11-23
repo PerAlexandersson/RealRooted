@@ -89,4 +89,10 @@ theorem coeff_stieltjesTail_eq_of_prefix {a b : ℕ → R} (s t n : ℕ)
   rw [coeff_stieltjesTail, coeff_stieltjesTail,
     stieltjesConvergent_eq_of_prefix (n + 1) s t h]
 
+/-- The denominator identity for the actual formal Stieltjes tail. -/
+theorem one_sub_mul_stieltjesTail (a : ℕ → R) (s : ℕ) :
+    (1 - C (a s) * X * stieltjesTail a (s + 1)) * stieltjesTail a s = 1 := by
+  conv_lhs => rw [stieltjesTail_eq_step a s]
+  exact one_sub_mul_stieltjesStep _ _
+
 end PowerSeries

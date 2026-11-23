@@ -6249,6 +6249,96 @@
       ],
       "note": "Pointwise limits of Stieltjes moment sequences admit actual finite representing measures. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PowerSeries/Resolvent.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PowerSeries.Resolvent"
+      ],
+      "note": "Formal matrix-power resolvents over commutative rings. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PowerSeries/Schur.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PowerSeries.Schur"
+      ],
+      "note": "Formal scalar Schur denominators and Jacobi fraction steps. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/BidiagonalGram.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.BidiagonalGram"
+      ],
+      "note": "Exact first-coordinate block identities for bidiagonal Gram matrices. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PowerSeries/Reindex.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PowerSeries.Reindex"
+      ],
+      "note": "Reindexing invariance of formal matrix resolvents. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PowerSeries/FinSchur.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PowerSeries.FinSchur"
+      ],
+      "note": "Finite-index form of the first Jacobi resolvent step. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/TailOffset.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.TailOffset"
+      ],
+      "note": "Stieltjes tail offsets and first-diagonal corrections. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/StieltjesGram.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.StieltjesGram"
+      ],
+      "note": "Positive semidefinite finite Jacobi matrices from Stieltjes numerator data. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PowerSeries/StieltjesConvergence.lean"
+      ],
+      "modules": [
+        "Mathlib.LinearAlgebra.Matrix.PowerSeries.StieltjesConvergence"
+      ],
+      "note": "Stabilization of matrix-power moments to formal Stieltjes coefficients. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/Moment.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.Moment"
+      ],
+      "note": "Nonnegative formal Stieltjes fractions have genuine finite moment measures. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }

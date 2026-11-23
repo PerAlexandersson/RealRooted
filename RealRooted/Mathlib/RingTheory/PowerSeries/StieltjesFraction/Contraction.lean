@@ -27,12 +27,6 @@ namespace PowerSeries
 
 variable {R : Type*} [CommRing R]
 
-/-- The denominator identity for the actual formal Stieltjes tail. -/
-private theorem one_sub_mul_stieltjesTail (a : ℕ → R) (s : ℕ) :
-    (1 - C (a s) * X * stieltjesTail a (s + 1)) * stieltjesTail a s = 1 := by
-  conv_lhs => rw [stieltjesTail_eq_step a s]
-  exact one_sub_mul_stieltjesStep _ _
-
 /-- The shared coefficient recurrence in multiplicative order for contraction. -/
 private theorem stieltjesTail_additive (a : ℕ → R) (s : ℕ) :
     stieltjesTail a s =

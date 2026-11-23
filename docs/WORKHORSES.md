@@ -537,8 +537,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 8 | `riemannXiTheta_conj` | `RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Theta` | The square-variable xi function respects conjugation. |
 | 7 | `Complex.Contour.windingNumber_eq_integral_of_avoidance` | `RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Number.Basic` | If `γ` is continuous on `[a, b]`, avoids `z₀` there, and the index integrand is interval-integrable, the generalized winding number is the ordinary index integral: the principal value collapses to `(2 |
 | 7 | `Complex.iteratedDeriv_conj` | `RealRooted.Mathlib.Analysis.Calculus.IteratedDeriv.Star` | Every iterated derivative of a function respecting conjugation respects conjugation. |
+| 7 | `Matrix.lowerBidiagonalFin_apply` | `RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal` |  |
 | 7 | `MvPolynomial.diagonal_mul` | `RealRooted.Mathlib.Algebra.MvPolynomial.Diagonal` |  |
-| 7 | `Polynomial.momentPairingBilinForm_apply` | `RealRooted.Mathlib.Algebra.Polynomial.Moment` |  |
 
 ## other
 

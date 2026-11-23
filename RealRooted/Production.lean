@@ -2858,6 +2858,15 @@ public import RealRooted.Mathlib.Analysis.Matrix.CoordinateSpectralMeasure
 public import RealRooted.Mathlib.MeasureTheory.Measure.FirstMomentTight
 public import RealRooted.Mathlib.MeasureTheory.Measure.MomentLimit
 public import RealRooted.Mathlib.MeasureTheory.Measure.WeakMomentLimits
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.BidiagonalGram
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PowerSeries.FinSchur
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PowerSeries.Reindex
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PowerSeries.Resolvent
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PowerSeries.Schur
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PowerSeries.StieltjesConvergence
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.StieltjesGram
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.Moment
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.TailOffset
 
 /-!
 # RealRooted production umbrella
