@@ -623,6 +623,8 @@ public import RealRooted.Favard.Affine.RowSign
 public import RealRooted.Favard.Orthogonality
 public import RealRooted.Favard.PathEnvelope
 public import RealRooted.Favard.Recurrence
+public import RealRooted.FerrersHit.Basic
+public import RealRooted.FerrersHit.Roots
 public import RealRooted.FiniteFreeAdditive
 public import RealRooted.FiniteFreeAdditive.HalfInteger
 public import RealRooted.FiniteFreeAdditive.HalfIntegerConvolution
@@ -1711,6 +1713,7 @@ public import RealRooted.Transforms.BrandenE.Basic
 public import RealRooted.Transforms.BrandenE.BasisImage
 public import RealRooted.Transforms.BrandenE.Delannoy
 public import RealRooted.Transforms.BrandenE.EvenBinomial
+public import RealRooted.Transforms.BrandenE.IntegerFactors
 public import RealRooted.Transforms.BrandenE.IntervalPreserver
 public import RealRooted.Transforms.BrandenE.Inverse
 public import RealRooted.Transforms.BrandenE.OrderedBell

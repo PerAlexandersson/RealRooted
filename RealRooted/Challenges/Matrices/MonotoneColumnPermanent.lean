@@ -1,5 +1,6 @@
 module
 
+import RealRooted.FerrersHit.Roots
 import RealRooted.Permanent.Basic
 import RealRooted.Permanent.Ferrers
 import RealRooted.Permanent.MonotoneColumn
@@ -88,6 +89,17 @@ label = "Monotone column permanent theorem: per(zJ + A) is real-rooted for monot
 name = "RealRooted.Permanent.diagonalPermanent_coeff_card"
 module = "RealRooted.Permanent.Basic"
 label = "The leading coefficient of per(zJ + A) is n!"
+[[definitions]]
+name = "RealRooted.FerrersHit.hitPolynomial"
+module = "RealRooted.FerrersHit.Basic"
+label = "Standard rook-to-hit transform"
+
+[[theorems]]
+objects = ["Hit polynomials of Ferrers boards"]
+property = "real-rooted"
+name = "RealRooted.FerrersHit.hitPolynomial_ne_zero_and_splits"
+module = "RealRooted.FerrersHit.Roots"
+label = "Ferrers hit polynomials are nonzero and real-rooted"
 -->
 
 <!-- realrooted-catalog-content -->
@@ -114,9 +126,18 @@ deletion recurrence in terms of smaller Ferrers matrices.
 
 ## Use
 
-For a zero-one matrix the permanent $\operatorname{per}(zJ+A)$ is a rook-type polynomial, so the
-theorem contains the real-rootedness of many rook and hit polynomials. It is one of the main
-applications of [real stability](rr:real-stability).
+For a zero-one matrix the permanent $\operatorname{per}(zJ+A)$ is a rook-type polynomial.
+The height-based rook-to-hit transform is also formalized directly: if
+$0\le h_1\le\cdots\le h_n\le n$, we define $r_k$ by
+$\sum_k r_k(x)_{n-k}=\prod_i(x+h_i-i+1)$ and set
+$H(t)=\sum_k r_k(n-k)!(t-1)^k$. Then $H$ is nonzero and real-rooted
+[@HaglundOnoWagner1999, Thm. 1]. This algebraic definition does not require a
+rook-placement counting model.
+
+The hit-polynomial proof uses the Brändén E transform of the factorial product,
+integer level crossings, and endpoint multiplicity. It is independent of the
+permanent counting identities. The E image has all its roots in $[-1,0]$;
+bounded reversal and a shift yield $H$.
 
 ## Proof
 
