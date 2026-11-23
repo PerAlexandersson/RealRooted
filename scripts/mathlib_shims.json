@@ -5199,6 +5199,16 @@
       ],
       "note": "Moment transforms, logarithmic derivatives, and locally uniform products; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Topology/Algebra/InfiniteSum/FiniteMultiplicity.lean"
+      ],
+      "modules": [
+        "Mathlib.Topology.Algebra.InfiniteSum.FiniteMultiplicity"
+      ],
+      "note": "Summability and sum grouping over finite multiplicity fibers; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }

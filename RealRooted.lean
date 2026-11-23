@@ -2753,3 +2753,7 @@ public import RealRooted.Mathlib.MeasureTheory.Measure.MomentNevanlinnaRepresent
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.AtomicMomentSum
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.MomentResidues
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIIndexedProduct
+public import RealRooted.Mathlib.Topology.Algebra.InfiniteSum.FiniteMultiplicity
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.MomentTypeI
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeILinearProduct
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.TypeIMomentCriterion
