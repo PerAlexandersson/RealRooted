@@ -2966,3 +2966,8 @@ public import RealRooted.Mathlib.Algebra.Polynomial.MomentTranslationSucc
 public import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialTransform
 public import RealRooted.Mathlib.RingTheory.PowerSeries.JacobiFraction.Translation
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.ActivePrefix
+public import RealRooted.Mathlib.RingTheory.PowerSeries.BinomialTransform.Inverse
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.ActiveSupportCriterion
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.LowerSupportConstruction
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.LowerSupportCriterion
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.LowerSupportParameters

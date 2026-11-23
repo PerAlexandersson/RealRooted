@@ -6649,6 +6649,56 @@
       ],
       "note": "Formal binomial and Jacobi translation; equality through the first terminating Stieltjes numerator. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/LowerSupportParameters.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.LowerSupportParameters"
+      ],
+      "note": "Formal Stieltjes criterion for a prescribed lower support bound, with terminating active-prefix parameters. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/LowerSupportConstruction.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.LowerSupportConstruction"
+      ],
+      "note": "Formal Stieltjes criterion for a prescribed lower support bound, with terminating active-prefix parameters. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/BinomialTransform/Inverse.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.BinomialTransform.Inverse"
+      ],
+      "note": "Formal Stieltjes criterion for a prescribed lower support bound, with terminating active-prefix parameters. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/LowerSupportCriterion.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.LowerSupportCriterion"
+      ],
+      "note": "Formal Stieltjes criterion for a prescribed lower support bound, with terminating active-prefix parameters. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/ActiveSupportCriterion.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.ActiveSupportCriterion"
+      ],
+      "note": "Formal Stieltjes criterion for a prescribed lower support bound, with terminating active-prefix parameters. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }
