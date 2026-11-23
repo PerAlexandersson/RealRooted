@@ -385,7 +385,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 459 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
+| 461 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
 | 299 | `RealRooted.EffectiveBKW.IntPoly2.eval_add` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate addition. |
 | 19 | `RealRooted.bezoutEntry.wronskian` | `RealRooted.Bezoutian.RootEvaluation` |  |
 | 16 | `RealRooted.eval_pos_of_all_roots_lt` | `RealRooted.WagnerRightSum.Sign` |  |
@@ -456,7 +456,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 |---:|---|---|---|
 | 23 | `RealRooted.add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero` | `RealRooted.Basic.Coefficients` | A finite sum of nonnegative-coefficient polynomials cannot vanish if one of the summands is already nonzero. |
 | 20 | `Nat.cast_choose_ne_zero` | `RealRooted.Mathlib.Data.Nat.Choose.Cast` | A binomial coefficient remains nonzero after casting to a characteristic-zero target. |
-| 15 | `iteratedDeriv_riemannXiTheta_zero_ne_zero` | `RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Derivative` | Positivity of the xi Taylor data excludes vanishing at zero for every derivative. |
+| 16 | `iteratedDeriv_riemannXiTheta_zero_ne_zero` | `RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Derivative` | Positivity of the xi Taylor data excludes vanishing at zero for every derivative. |
 | 9 | `RealRooted.tDeriv_ne_zero` | `RealRooted.IteratedDerivativeShift` | T_ε of a nonzero polynomial with degree ≥ 1 is nonzero. |
 | 8 | `RealRooted.iterateTDeriv_ne_zero` | `RealRooted.IteratedDerivativeShift` | Iterating a derivative shift preserves nonzeroness. |
 | 7 | `RealRooted.LiuOppositeSigns.OppositeLeadingSigns.left_ne_zero` | `RealRooted.LiuOppositeSigns.RootCount` |  |
@@ -549,10 +549,10 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 25 | `RealRooted.HasSimpleRoots.of_roots_nodup` | `RealRooted.SimpleRoots` | A nonzero polynomial with a duplicate-free root multiset has simple real roots. |
 | 17 | `RealRooted.MapsRealRootedIn.mono_left` | `RealRooted.RootLocation.Basic` | Shrinking the source set preserves `MapsRealRootedIn`. |
 | 16 | `RealRooted.IsRealRootedIn.mem_of_mem_roots` | `RealRooted.RootLocation.Basic` | Every multiset root of a polynomial rooted in `S` lies in `S`. |
+| 16 | `RealRooted.isLaguerrePolyaTypeI_iteratedDeriv_riemannXiTheta` | `RealRooted.RiemannHypothesis.TotalPositivity` | Every derivative of the square-variable xi function is Type-I Laguerre--Pólya under RH. |
 | 16 | `differentiable_riemannXiTheta` | `RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Theta` | The square-variable expansion of xi is entire. |
 | 15 | `MvPolynomial.IsRayleigh.specializeAt` | `RealRooted.Multiaffine.Rayleigh` | Real scalar specialization preserves the Rayleigh property. |
 | 15 | `RealRooted.hasSimpleRoots_of_natDegree_le_one` | `RealRooted.SimpleRoots` | Every nonzero polynomial of degree at most one has only simple roots. |
-| 15 | `RealRooted.isLaguerrePolyaTypeI_iteratedDeriv_riemannXiTheta` | `RealRooted.RiemannHypothesis.TotalPositivity` | Every derivative of the square-variable xi function is Type-I Laguerre--Pólya under RH. |
 | 14 | `RealRooted.IsLaguerrePolya.analyticOnNhd` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Derivative` | A zero-aware Laguerre--Pólya limit is analytic on the whole complex plane. |
 | 13 | `RealRooted.isUpperHalfPlaneStable_complexify_of_splits` | `RealRooted.HermiteBiehler.Basic` | A nonzero split real polynomial has stable complexification. |
 | 12 | `Matrix.IsTotallyNonnegRect.toSquare` | `RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg` | Rectangular total nonnegativity specializes to the square predicate. |

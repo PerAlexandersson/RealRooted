@@ -2757,6 +2757,15 @@ public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.SameSignLog
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.SameSignSeriesLogHierarchy
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.SameSignTypeI
 public import RealRooted.RiemannHypothesis.RealLogHierarchy
+public import RealRooted.Mathlib.Analysis.Complex.ZeroWeightedHeatTrace
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.Exp.LaguerreHeatLaplace
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.Exp.PositiveSlopeWeightedHeat
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.Exp.WeightedHeatLaplace
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.Exp.WeightedMixtureLaplace
+public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.LaplaceKernel
+public import RealRooted.Mathlib.RingTheory.Polynomial.Laguerre.Rodrigues
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.NativeWeightedHeatHierarchy
+public import RealRooted.RiemannHypothesis.NativeWeightedHeatHierarchy
 
 /-!
 # RealRooted production umbrella

@@ -5599,6 +5599,76 @@
       ],
       "note": "Real logarithms and canonical coefficients of entire scalar series; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Exp/WeightedMixtureLaplace.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Exp.WeightedMixtureLaplace"
+      ],
+      "note": "Weighted exponential-mixture Laplace and Laguerre kernel identities; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Exp/WeightedHeatLaplace.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Exp.WeightedHeatLaplace"
+      ],
+      "note": "Weighted exponential-mixture Laplace and Laguerre kernel identities; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Laguerre/LaplaceKernel.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Laguerre.LaplaceKernel"
+      ],
+      "note": "Weighted exponential-mixture Laplace and Laguerre kernel identities; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Exp/LaguerreHeatLaplace.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Exp.LaguerreHeatLaplace"
+      ],
+      "note": "Weighted exponential-mixture Laplace and Laguerre kernel identities; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/Exp/PositiveSlopeWeightedHeat.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.Exp.PositiveSlopeWeightedHeat"
+      ],
+      "note": "Weighted exponential-mixture Laplace and Laguerre kernel identities; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/ZeroWeightedHeatTrace.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.ZeroWeightedHeatTrace"
+      ],
+      "note": "Weighted exponential-mixture Laplace and Laguerre kernel identities; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/Polynomial/Laguerre/Rodrigues.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.Polynomial.Laguerre.Rodrigues"
+      ],
+      "note": "Weighted exponential-mixture Laplace and Laguerre kernel identities; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }
