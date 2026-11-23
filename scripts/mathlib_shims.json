@@ -5419,6 +5419,56 @@
       ],
       "note": "Exponential lower bounds obstruct order below one; positive linear products have norm at least one on the right half-plane. Generalizes the former private Edrei lemma; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Topology/Algebra/InfiniteSum/FiberCardinality.lean"
+      ],
+      "modules": [
+        "Mathlib.Topology.Algebra.InfiniteSum.FiberCardinality"
+      ],
+      "note": "Fiber grouping, exact analytic multiplicities of linear products, and native zero heat traces. Generalizes the former private Edrei grouping argument; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LinearProductDivisor.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LinearProductDivisor"
+      ],
+      "note": "Fiber grouping, exact analytic multiplicities of linear products, and native zero heat traces. Generalizes the former private Edrei grouping argument; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/PositiveSlopeRoots.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.PositiveSlopeRoots"
+      ],
+      "note": "Fiber grouping, exact analytic multiplicities of linear products, and native zero heat traces. Generalizes the former private Edrei grouping argument; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LinearProductInverseMoments.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LinearProductInverseMoments"
+      ],
+      "note": "Fiber grouping, exact analytic multiplicities of linear products, and native zero heat traces. Generalizes the former private Edrei grouping argument; no upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/ZeroHeatTrace.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.ZeroHeatTrace"
+      ],
+      "note": "Fiber grouping, exact analytic multiplicities of linear products, and native zero heat traces. Generalizes the former private Edrei grouping argument; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }
