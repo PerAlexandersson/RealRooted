@@ -493,6 +493,14 @@ public import RealRooted.DerivativeRecurrence.SecondOrderODE
 public import RealRooted.DeterminantalStability
 public import RealRooted.DeterminantalStability.Constants
 public import RealRooted.DifferentialBlocks
+public import RealRooted.DistinctValues.Chordal
+public import RealRooted.DistinctValues.ChordalCodes
+public import RealRooted.DistinctValues.Code
+public import RealRooted.DistinctValues.Marked
+public import RealRooted.DistinctValues.Order
+public import RealRooted.DistinctValues.Poisson
+public import RealRooted.DistinctValues.Reciprocal
+public import RealRooted.DistinctValues.Univariate
 public import RealRooted.EdreiThoma.CanonicalProduct
 public import RealRooted.EffectiveBKW.Certificate.Branch
 public import RealRooted.EffectiveBKW.Certificate.BranchSign
