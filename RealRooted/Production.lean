@@ -2842,6 +2842,13 @@ public import RealRooted.Mathlib.Analysis.Normed.Group.SparseSubfamily
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.CanonicalDifferentialSimple
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.CanonicalMultiplicitySimple
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.CanonicalSparseFactor
+public import RealRooted.Mathlib.RingTheory.PowerSeries.JacobiFraction.Step
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.Coefficients
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.Contraction
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.Convergents
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.Step
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.Tail
+public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.Uniqueness
 
 /-!
 # RealRooted production umbrella

@@ -6119,6 +6119,76 @@
       ],
       "note": "Positive Gaussian coefficients inside the strict product threshold. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/Step.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.Step"
+      ],
+      "note": "Formal Stieltjes steps and their contraction in the X-adic filtration. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/Convergents.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.Convergents"
+      ],
+      "note": "Finite Stieltjes convergents stabilize coefficientwise and terminate at zero numerators. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/Tail.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.Tail"
+      ],
+      "note": "Actual formal Stieltjes tails and their unique recursion. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/Coefficients.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.Coefficients"
+      ],
+      "note": "Stieltjes-Rogers coefficient recurrence and coefficient positivity. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/Uniqueness.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.Uniqueness"
+      ],
+      "note": "Stieltjes numerator uniqueness up to the first zero and active-sign obstructions. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/JacobiFraction/Step.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.JacobiFraction.Step"
+      ],
+      "note": "Formal Jacobi steps and unique tail equations. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/StieltjesFraction/Contraction.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.StieltjesFraction.Contraction"
+      ],
+      "note": "Exact formal contraction from Stieltjes to Jacobi fractions. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }
