@@ -3026,3 +3026,8 @@ public import RealRooted.Mathlib.MeasureTheory.Integral.PolynomialTranslation
 public import RealRooted.Mathlib.Probability.Moments.MGFTaylor
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.MGFPolynomialOperator
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.ReciprocalPolynomialOperator
+public import RealRooted.Hermite.FormalDifferential.CenteredLimit
+public import RealRooted.Hermite.FormalDifferential.OperatorLimits
+public import RealRooted.Mathlib.Analysis.SpecialFunctions.ChooseRpow
+public import RealRooted.Mathlib.RingTheory.PowerSeries.PowerCoefficient
+public import RealRooted.Mathlib.RingTheory.PowerSeries.RescaledPowerLimit

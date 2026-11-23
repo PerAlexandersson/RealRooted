@@ -7099,6 +7099,36 @@
       ],
       "note": "Polynomial Taylor evaluation, translation integrals, and actual complex moment-generating Taylor series and reciprocal germs.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/PowerCoefficient.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.PowerCoefficient"
+      ],
+      "note": "Fixed-coefficient binomial formulas and real-power asymptotics for rescaled formal power series.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/SpecialFunctions/ChooseRpow.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.SpecialFunctions.ChooseRpow"
+      ],
+      "note": "Fixed-coefficient binomial formulas and real-power asymptotics for rescaled formal power series.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/RingTheory/PowerSeries/RescaledPowerLimit.lean"
+      ],
+      "modules": [
+        "Mathlib.RingTheory.PowerSeries.RescaledPowerLimit"
+      ],
+      "note": "Fixed-coefficient binomial formulas and real-power asymptotics for rescaled formal power series.",
+      "speculative": true
     }
   ]
 }
