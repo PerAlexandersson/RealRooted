@@ -559,11 +559,11 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 12 | `RealRooted.IsLaguerrePolya.heatOperator` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.HeatOperator` | The entire backward heat operator preserves the LP class at every nonnegative real time for inputs of growth order strictly below two. |
 | 12 | `RealRooted.shiftedJacobiMonic_satisfiesFavardRecurrence` | `RealRooted.Jacobi.Favard` | The monic shifted Jacobi family satisfies the Favard recurrence with its explicit diagonal and subdiagonal coefficients. |
 | 10 | `MvPolynomial.IsRayleigh.specializeAtList` | `RealRooted.Multiaffine.Rayleigh` | Iterated real scalar specialization preserves the Rayleigh property. |
+| 10 | `RealRooted.IsLaguerrePolya.differentialApply` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.DifferentialApply` | Every real-rooted polynomial differential symbol preserves the entire Laguerre--Pólya class. |
 | 10 | `RealRooted.PosComboRealRooted.comm` | `RealRooted.ObreschkoffContinuity` | Positive-combination real-rootedness is symmetric in the two polynomials. |
 | 9 | `Complex.Contour.intervalIntegrable_inv_sub_mul_deriv` | `RealRooted.Mathlib.Analysis.Complex.Contour.Winding.Number.Basic` | **Integrability of the index integrand for a point off the curve.** If `γ` is continuous on `Set.uIcc a b` and avoids `w` there (so `(γ · - w)⁻¹` is continuous) and `deriv γ` is interval-integrable, t |
 | 9 | `Polynomial.natDegree_and_leadingCoeff_quadratic_derivative_add_linear_mul_add` | `RealRooted.Mathlib.Algebra.Polynomial.Derivative` | A nonzero prospective top coefficient gives both the exact degree and leading coefficient of a quadratic-derivative plus linear-multiple step. |
 | 9 | `RealRooted.AllComboRealRooted.linear_recombination` | `RealRooted.AllCombo` | `AllComboRealRooted` is preserved by any linear change of coordinates in the `(f, g)`-plane. |
-| 9 | `RealRooted.IsLaguerrePolya.differentialApply` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.DifferentialApply` | Every real-rooted polynomial differential symbol preserves the entire Laguerre--Pólya class. |
 | 9 | `RealRooted.hermiteBiehlerForwardPos` | `RealRooted.HermiteBiehler.Forward` |  |
 | 8 | `MvPolynomial.IsMultiaffine.sum` | `RealRooted.Multiaffine` |  |
 | 8 | `RealRooted.IsRealRootedIn.mem_of_isRoot` | `RealRooted.RootLocation.Basic` | Every root of a polynomial rooted in `S` lies in `S`. |

@@ -2797,6 +2797,12 @@ public import RealRooted.Mathlib.Analysis.Complex.CompactJets
 public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.PolynomialComposition
 public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.SymbolAlgebra
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.CompactDifferentialSimple
+public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.ExponentialCoefficients
+public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.GenusZeroTail
+public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.PolynomialCommute
+public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.SmallTypeBound
+public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.SmallTypeLimit
+public import RealRooted.Mathlib.Analysis.Complex.SimpleLimit
 
 /-!
 # RealRooted production umbrella

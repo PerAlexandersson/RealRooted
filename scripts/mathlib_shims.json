@@ -5799,6 +5799,66 @@
       ],
       "note": "Finite polynomial-symbol composition with infinite differential operators under reciprocal growth bounds. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/ExponentialCoefficients.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.ExponentialCoefficients"
+      ],
+      "note": "Exponential-type Taylor coefficient bounds retaining the type. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/SmallTypeBound.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.SmallTypeBound"
+      ],
+      "note": "Absolute convergence and linear error bounds for small-type differential symbols. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/SmallTypeLimit.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.SmallTypeLimit"
+      ],
+      "note": "Local uniform convergence to the identity for normalized symbols of vanishing type. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GenusZeroTail.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GenusZeroTail"
+      ],
+      "note": "Canonical genus-zero tail operators converge to identity on finite-order entire targets. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/PolynomialCommute.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.PolynomialCommute"
+      ],
+      "note": "Finite polynomial differential operators commute with actual infinite differential operators. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/SimpleLimit.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.SimpleLimit"
+      ],
+      "note": "Stability of simple zeros on compact sets under locally uniform entire convergence. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }
