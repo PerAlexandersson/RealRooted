@@ -3729,6 +3729,36 @@
       ],
       "note": "Taylor calculus and Riemann xi foundations for the Jensen criterion. Uses the pinned Tau Ceti analytic results where Mathlib lacks them; no upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Dominance.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Dominance"
+      ],
+      "note": "Sokal no-degenerate-dominance, dense unique dominance, and analytic unit-proportionality; supports the completed many-dominant case of #2158. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LimitsOfZerosDominant.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LimitsOfZerosDominant"
+      ],
+      "note": "Sokal Theorem 1.5(b) for arbitrary finite analytic sums, including vanishing tied coefficients and simultaneous zero bases; checked witness for #2158. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/Montel.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.Montel"
+      ],
+      "note": "Bounded-disc Montel selection, adapted from Tau Ceti normal families and Montel (Apache-2.0); supports Sokal Theorem 1.5(b), #2158. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }

@@ -2,6 +2,7 @@ module
 
 import RealRooted.Mathlib.Analysis.Complex.Hurwitz
 import RealRooted.Mathlib.Analysis.Complex.LimitsOfZeros
+import RealRooted.Mathlib.Analysis.Complex.LimitsOfZerosDominant
 import RealRooted.ThreeTermRecurrence.OrderTwoLimitZeros
 import RealRooted.ThreeTermRecurrence.WangZhang
 import RealRooted.EffectiveBKW.ZeroCount
@@ -32,9 +33,9 @@ module = "RealRooted.Mathlib.Analysis.Complex.Hurwitz"
 label = "Limit of zeros of a sequence of functions"
 
 [[theorems]]
-name = "Complex.isLimitOfZeros_finset_two_dominant"
-module = "RealRooted.Mathlib.Analysis.Complex.Hurwitz"
-label = "Beraha–Kahane–Weiss–Sokal: two dominant bases of equal modulus give a limit of zeros"
+name = "Complex.isLimitOfZeros_finset_dominant"
+module = "RealRooted.Mathlib.Analysis.Complex.LimitsOfZerosDominant"
+label = "Beraha–Kahane–Weiss–Sokal: two or more dominant bases give a limit of zeros"
 headline = true
 
 [[theorems]]
@@ -91,7 +92,7 @@ label = "Effective BKW, order four: a four-state transfer family with a certifie
 <!-- realrooted-catalog-content -->
 # Limits of zeros of recursive families
 
-The zeros of $f_n=\sum_k\alpha_k\beta_k^n$ accumulate where two dominant bases have equal
+The zeros of $f_n=\sum_k\alpha_k\beta_k^n$ accumulate where two or more dominant bases have equal
 modulus or where the dominant coefficient vanishes. For polynomials given by a linear
 recurrence, a nonreal accumulation point shows that the late members are not real-rooted.
 
@@ -104,11 +105,18 @@ $\alpha_k,\beta_k$ analytic at $z_0$.
 **Theorem (Beraha–Kahane–Weiss, Sokal).** [@Sokal2004ChromaticRoots, Thm. 1.5] The point
 $z_0$ is a limit of zeros of $(f_n)$ in each of these cases:
 
-- two bases $\beta_i,\beta_j$ have equal modulus at $z_0$, larger than that of every other
-  base, $\alpha_i(z_0)\alpha_j(z_0)\beta_j(z_0)\ne0$, and $\beta_i/\beta_j$ is not constant
-  near $z_0$;
+- at least two bases have maximal modulus at $z_0$, provided the data are analytic on a
+  domain $D$ containing $z_0$, no coefficient or base is identically zero on $D$, and there
+  is no degenerate dominance: two distinct bases that are unit multiples on $D$ cannot
+  dominate on a nonempty open subset. Coefficients may vanish at $z_0$;
 - one base $\beta_i\ne0$ is strictly dominant at $z_0$, and $\alpha_i(z_0)=0$ while $\alpha_i$
   does not vanish identically near $z_0$.
+
+The local exactly-two-dominant theorem also remains available: the other bases are strictly
+smaller, both leading coefficients and the dominant bases are nonzero at $z_0$, and the ratio
+of the two dominant bases is nonconstant near $z_0$. The general finite-sum theorem includes
+three or more tied bases and supplies the remaining case tracked in
+[RealRooted #2158](https://github.com/PerAlexandersson/RealRooted/issues/2158).
 
 Conversely, at a limit of zeros two bases have equal maximal modulus, or the strictly dominant
 coefficient vanishes, or all bases vanish.
