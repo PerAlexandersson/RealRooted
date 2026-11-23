@@ -3003,6 +3003,10 @@ public import RealRooted.Hermite.Generalized.PositiveFactor
 public import RealRooted.Hermite.Generalized.Product
 public import RealRooted.Hermite.Generalized.Roots
 public import RealRooted.Mathlib.Algebra.Polynomial.Expand.PowerRoots
+public import RealRooted.Hermite.FormalDifferential.ExpandOperator
+public import RealRooted.Hermite.Generalized.ComplexScaling
+public import RealRooted.Hermite.Generalized.DifferentialIdentity
+public import RealRooted.Hermite.Generalized.ExponentialRoots
 
 /-!
 # RealRooted production umbrella
