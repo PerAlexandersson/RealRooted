@@ -6069,6 +6069,56 @@
       ],
       "note": "Actual infinite composition for summable real genus-zero factors. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Normed/Group/SparseSubfamily.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Normed.Group.SparseSubfamily"
+      ],
+      "note": "Square-summable real families admit summable subfamilies of distinct nonzero values. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/LinearProductNonpolynomial.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.LinearProductNonpolynomial"
+      ],
+      "note": "Infinitely many distinct nonzero slopes force a nonpolynomial linear product. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/CanonicalProduct/GenusOneSplit.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.CanonicalProduct.GenusOneSplit"
+      ],
+      "note": "Actual genus-one product splitting and natural multiplicity expansion. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/CanonicalProduct/CanonicalSupport.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.CanonicalProduct.CanonicalSupport"
+      ],
+      "note": "Infinite canonical zero sets force infinite active slope support. No upstream PR yet.",
+      "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Analysis/Complex/InfiniteDifferential/GaussianMargin.lean"
+      ],
+      "modules": [
+        "Mathlib.Analysis.Complex.InfiniteDifferential.GaussianMargin"
+      ],
+      "note": "Positive Gaussian coefficients inside the strict product threshold. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }

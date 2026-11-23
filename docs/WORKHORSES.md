@@ -407,9 +407,9 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 7 | `RealRooted.deriv2_mul_lt_deriv_sq_at_non_root` | `RealRooted.IteratedDerivativeShift` |  |
 | 7 | `RealRooted.eval_neg_of_all_roots_gt_of_odd` | `RealRooted.WagnerRightSum.Sign` |  |
 | 7 | `RealRooted.eval_pos_of_all_roots_gt_of_even` | `RealRooted.WagnerRightSum.Sign` |  |
+| 7 | `RealRooted.isLaguerrePolya_eval_map` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.IndexedProduct` | A real polynomial that splits over the reals belongs to the Laguerre--Pólya class. |
 | 6 | `RealRooted.EffectiveBKW.Branch.check_sound` | `RealRooted.EffectiveBKW.Certificate.Branch` | A checked branch is continuous, lies on the curve, and stays inside every covering strip. |
 | 6 | `RealRooted.eval_complexify_oddEvenPolynomial` | `RealRooted.HermiteBiehler.OddEven` |  |
-| 6 | `RealRooted.eval_complexify_ofReal` | `RealRooted.HermiteBiehler.Converse.Wronskian` | Value of a complexified real polynomial at a real point. |
 
 ## recurrence
 
@@ -494,9 +494,9 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 12 | `Polynomial.ring_choose_pos` | `RealRooted.Mathlib.RingTheory.Polynomial.Jacobi` | A generalized real binomial coefficient is positive above its largest possible zero. |
 | 11 | `RealRooted.List.Interleaves.ofFn_succ` | `RealRooted.Bezoutian.StrictInterleaving` |  |
 | 11 | `RealRooted.SimpleNegRooted.isRoot_neg` | `RealRooted.EulerOperator.Darboux.NegativeRoots` |  |
+| 10 | `RealRooted.IsLaguerrePolya.comp_affine_real` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya` | Precomposition by a real affine map preserves the zero-aware Laguerre--Pólya class. |
 | 10 | `riemannXiCoeff_pos` | `RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Positivity` | Every normalized xi coefficient is strictly positive, without assuming RH. |
 | 9 | `MvPolynomial.algebraicSymbol_eq_sum` | `RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol` | Expand the finite algebraic symbol in its bounded monomial basis. |
-| 9 | `RealRooted.IsLaguerrePolya.comp_affine_real` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya` | Precomposition by a real affine map preserves the zero-aware Laguerre--Pólya class. |
 | 9 | `RealRooted.TuranHurwitz.rising_pos` | `RealRooted.TuranHurwitz.RisingConvolution` | Rising factorials are strictly positive for positive starting value. |
 | 9 | `RealRooted.taylorDifferentialOperator_X_pow` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Jensen` | Applying a Taylor differential operator to a monomial gives the reflected Jensen polynomial of its Taylor data. |
 | 8 | `Nat.tendsto_descFactorial_div_pow_atTop` | `RealRooted.Mathlib.Analysis.SpecialFunctions.Choose` | For fixed `k`, `n.descFactorial k / n^k` tends to `1`. |
@@ -504,11 +504,11 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 8 | `RealRooted.JacobiDeformation.risingFactorial_pos` | `RealRooted.JacobiDeformation.Pochhammer` |  |
 | 7 | `ParkingFunction.isParkingFunction_iff_prefix` | `RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunction` | The finite-indexed predicate is equivalent to the usual bounded-natural formulation used by the existing parking-function modules. |
 | 7 | `Polynomial.shiftedJacobiSubdiag_pos` | `RealRooted.Mathlib.RingTheory.Polynomial.Jacobi` | The subdiagonal coefficient in the monic shifted-Jacobi recurrence is strictly positive in every positive degree when both parameters exceed `-1`. |
+| 7 | `RealRooted.IsLaguerrePolya.const_mul_real` | `RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya` | Multiplication by a real scalar preserves the zero-aware Laguerre--Pólya class. |
 | 7 | `RealRooted.MaWang.exists_roots_strictly_interlacing_of_consecutive_signs` | `RealRooted.MaWang.StrictSigns.Assembly` | Public strict wrapper around `exists_strictSignInterleaving`. |
 | 7 | `RealRooted.ParkingFunctions.ToricContribution.realRisingFactorial_pos` | `RealRooted.ParkingFunctions.ToricContribution.Definitions` |  |
 | 7 | `RealRooted.StrictInterl.X_add_C_iff` | `RealRooted.Linear` | Orientation sanity check for the local `StrictInterl` convention on linear factors. |
 | 7 | `RealRooted.listInterlaces_all_le_getLast` | `RealRooted.Basic.RootLists` |  |
-| 7 | `RealRooted.rootSeqDesc_pairwise` | `RealRooted.CommonInterleaver.RootDesc` |  |
 
 ## equation
 

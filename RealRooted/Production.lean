@@ -2834,6 +2834,14 @@ public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.GenusZero
 public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.PolynomialSymbol
 public import RealRooted.Mathlib.Analysis.Complex.LinearPrefixGaussian
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.GenusZeroFactorSimple
+public import RealRooted.Mathlib.Analysis.Complex.CanonicalProduct.CanonicalSupport
+public import RealRooted.Mathlib.Analysis.Complex.CanonicalProduct.GenusOneSplit
+public import RealRooted.Mathlib.Analysis.Complex.InfiniteDifferential.GaussianMargin
+public import RealRooted.Mathlib.Analysis.Complex.LinearProductNonpolynomial
+public import RealRooted.Mathlib.Analysis.Normed.Group.SparseSubfamily
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.CanonicalDifferentialSimple
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.CanonicalMultiplicitySimple
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.CanonicalSparseFactor
 
 /-!
 # RealRooted production umbrella
