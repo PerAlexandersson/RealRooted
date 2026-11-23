@@ -6549,6 +6549,16 @@
       ],
       "note": "Complete equivalence of genuine Stieltjes moment measures and formal nonnegative fractions. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Algebra/Polynomial/Orthogonal/MomentDeterminantRatios.lean"
+      ],
+      "modules": [
+        "Mathlib.Algebra.Polynomial.Orthogonal.MomentDeterminantRatios"
+      ],
+      "note": "Hankel determinant ratios for orthogonal norms and Stieltjes numerators. No upstream PR yet.",
+      "speculative": true
     }
   ]
 }

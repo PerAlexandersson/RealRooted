@@ -2889,6 +2889,8 @@ public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.Finite
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.FiniteMeasureFraction
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.FiniteMoment
 public import RealRooted.Mathlib.RingTheory.PowerSeries.StieltjesFraction.MomentCriterion
+public import RealRooted.Mathlib.Algebra.Polynomial.Orthogonal.MomentDeterminantRatios
+public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.StieltjesFraction
 
 /-!
 # RealRooted production umbrella
