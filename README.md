@@ -130,6 +130,13 @@ curated list. Some representative checked theorems:
   (`ZigzagEulerian.zigzagEulerianPolynomial_roots`). The word recurrence,
   standardization identity, centered root bound and differential-operator
   transfer are proved in the library.
+- **Exponential rows.** Rows of `exp(A(z) + t B(z))` are real-rooted for
+  every nonnegative quartic `B = az² + bz³ + cz⁴`
+  (`insertionRow_isRealRooted_quartic_of_nonneg`, via Grace's apolarity
+  theorem). Substituting `P(B)` with `P' = a + bz + lP` preserves
+  real-rootedness and interlacing of rows (`insertionRow_splits_subst`); this
+  gives set partitions counted by non-singleton blocks
+  (`insertionRow_isRealRooted_threshold_two`).
 - **Combinatorial families.** Eulerian and type-B Eulerian polynomials
   (`Challenges.Eulerian`), generalized snake posets
   (`snakeInterlacing_generalizedSnakeRookModel`), peak-value enumerators
