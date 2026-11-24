@@ -7,10 +7,10 @@ public import RealRooted.GeneralizedEulerian
 import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 
 /-!
-# Degree models for higher-order derivative recurrences
+# Degree and leading-coefficient models for higher-order derivative recurrences
 
 Closed forms and uniqueness transfers for recurrence rows whose top terms cancel.  The
-registered transfers let the row-degree tactic identify a downstream recurrence from its
+registered transfers let the row tactics identify a downstream recurrence from its
 explicit base window and update, without family-specific tactic code.
 -/
 
@@ -162,6 +162,18 @@ theorem polynomial_natDegree (n : ℕ) :
     rw [hdegree]
     lia
 
+/-- Every A367873 model row has a positive leading coefficient. -/
+theorem polynomial_leadingCoeff_pos (n : ℕ) : 0 < (polynomial n).leadingCoeff := by
+  rw [leadingCoeff, polynomial_natDegree]
+  obtain ⟨k, rfl | rfl⟩ := Nat.even_or_odd' n
+  · rw [(polynomial_closed_pair k).1]
+    have h : (2 * k + 1) / 2 = k := by lia
+    simpa only [h, coeff_C_mul_X_pow, ite_true] using even_coefficient_pos k
+  · rw [(polynomial_closed_pair k).2]
+    have h : (2 * k + 1 + 1) / 2 = k + 1 := by lia
+    simpa only [h, coeff_add, coeff_C_mul_X_pow, ite_true,
+      ite_eq_right (Nat.ne_of_gt (Nat.lt_succ_self k)), add_zero] using odd_coefficient_pos k
+
 private theorem polynomial_step (n : ℕ) :
     polynomial (n + 3) =
       nextRow n (polynomial (n + 2)) (polynomial (n + 1)) (polynomial n) := rfl
@@ -179,6 +191,19 @@ theorem natDegree_of_recurrence
     hrec polynomial_step
   rw [heq n]
   exact polynomial_natDegree n
+
+/-- Every sequence with these initial rows and update has positive leading coefficients. -/
+@[rr_row_model]
+theorem leadingCoeff_pos_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hinit : ∀ i < 3, P i = polynomial i)
+    (hrec : ∀ n, P (n + 3) = nextRow n (P (n + 2)) (P (n + 1)) (P n))
+    (n : ℕ) : 0 < (P n).leadingCoeff := by
+  have heq := sequence_eq_of_same_lag_three_recurrence nextRow
+    (hinit 0 (by norm_num)) (hinit 1 (by norm_num)) (hinit 2 (by norm_num))
+    hrec polynomial_step
+  rw [heq n]
+  exact polynomial_leadingCoeff_pos n
 
 end A367873
 
@@ -365,6 +390,29 @@ theorem polynomial_natDegree (n : ℕ) : (polynomial n).natDegree = n := by
         (monic_X_add_C (1 : ℝ)).natDegree_pow, natDegree_X_add_C, mul_one,
         quadraticFactor_natDegree _ ht]
 
+/-- Every A110205 model row has a positive leading coefficient. -/
+theorem polynomial_leadingCoeff_pos (n : ℕ) : 0 < (polynomial n).leadingCoeff := by
+  match n with
+  | 0 => norm_num [polynomial]
+  | 1 =>
+      rw [leadingCoeff, polynomial_natDegree]
+      norm_num [polynomial]
+  | m + 2 =>
+      rw [polynomial_closed m, leadingCoeff_mul, leadingCoeff_pow]
+      have ht : (8 : ℝ) ≤ 2 ^ (m + 3) := by
+        calc
+          (8 : ℝ) = 2 ^ 3 := by norm_num
+          _ ≤ 2 ^ (m + 3) := by
+            apply pow_le_pow_right₀ (by norm_num)
+            lia
+      have hq : 0 < (quadraticFactor (2 ^ (m + 3))).leadingCoeff := by
+        rw [quadraticFactor, leadingCoeff_quadratic
+          (ne_of_gt (quadraticFactor_leading_pos _ ht))]
+        exact quadraticFactor_leading_pos _ ht
+      have hx : ((X : ℝ[X]) + 1).leadingCoeff = 1 := by
+        simpa using (monic_X_add_C (1 : ℝ)).leadingCoeff
+      simpa only [hx, one_pow, one_mul] using hq
+
 private theorem polynomial_step (n : ℕ) :
     polynomial (n + 3) =
       nextRow n (polynomial (n + 2)) (polynomial (n + 1)) (polynomial n) := rfl
@@ -382,6 +430,19 @@ theorem natDegree_of_recurrence
     hrec polynomial_step
   rw [heq n]
   exact polynomial_natDegree n
+
+/-- Every sequence with these initial rows and update has positive leading coefficients. -/
+@[rr_row_model]
+theorem leadingCoeff_pos_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hinit : ∀ i < 3, P i = polynomial i)
+    (hrec : ∀ n, P (n + 3) = nextRow n (P (n + 2)) (P (n + 1)) (P n))
+    (n : ℕ) : 0 < (P n).leadingCoeff := by
+  have heq := sequence_eq_of_same_lag_three_recurrence nextRow
+    (hinit 0 (by norm_num)) (hinit 1 (by norm_num)) (hinit 2 (by norm_num))
+    hrec polynomial_step
+  rw [heq n]
+  exact polynomial_leadingCoeff_pos n
 
 end A110205
 

@@ -56,7 +56,8 @@ def rowRouteTable : List RowRouteInfo := [
     frontEnds := [
       "rr_row_interlaces",
       "rr_row_splits",
-      "rr_row_natDegree"
+      "rr_row_natDegree",
+      "rr_row_leadingCoeff_pos"
     ]
     conclusion := "The conclusion advertised by a matching registered row-model " ++
       "theorem."
@@ -637,8 +638,6 @@ def rowRoutesOf (frontEnd : String) : List Name :=
       `cone,
       `cancel
     ]
-  | "rr_row_nonneg_coeffs" => [
-    ]
   | "rr_row_leadingCoeff_pos" => [
       `scale,
       `algebra,
@@ -646,6 +645,8 @@ def rowRoutesOf (frontEnd : String) : List Name :=
       `cone,
       `cancel,
       `coefficients
+    ]
+  | "rr_row_nonneg_coeffs" => [
     ]
   | "rowInterlacesCoreAt" => [
       `product,
