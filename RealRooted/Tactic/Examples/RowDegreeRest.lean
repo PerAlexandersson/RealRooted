@@ -194,6 +194,13 @@ def A177040 : ℕ → ℝ[X]
 theorem A177040_natDegree (n : ℕ) : (A177040 n).natDegree = n / 2 := by
   rr_row_natDegree
 
+/-- The registered recurrence model also certifies a positive leading coefficient. -/
+theorem A177040_leadingCoeff_pos (n : ℕ) : 0 < (A177040 n).leadingCoeff := by
+  rr_row_leadingCoeff_pos
+
+example (n : ℕ) : HasPosLeadingCoeff (A177040 n) := by
+  rr_row_leadingCoeff_pos?
+
 /-- The downstream A110205 recurrence, used to regress the degree-model fallback. -/
 def A110205 : ℕ → ℝ[X]
   | 0 => 1
@@ -222,5 +229,19 @@ theorem A367873_natDegree (n : ℕ) : (A367873 n).natDegree = (n + 1) / 2 := by
   rr_row_natDegree
 
 end
+
+/-- The higher-order model gives positive leaders for A110205. -/
+theorem A110205_leadingCoeff_pos (n : ℕ) : HasPosLeadingCoeff (A110205 n) := by
+  rr_row_leadingCoeff_pos
+
+/-- The parity-dependent model gives positive leaders for A367873. -/
+theorem A367873_leadingCoeff_pos (n : ℕ) : 0 < (A367873 n).leadingCoeff := by
+  rr_row_leadingCoeff_pos
+
+example (n : ℕ) : HasPosLeadingCoeff (A110205 n) := by
+  rr_row_leadingCoeff_pos?
+
+example (n : ℕ) : 0 < (A367873 n).leadingCoeff := by
+  rr_row_leadingCoeff_pos?
 
 end RealRooted.Tactic.RowDegreeRest

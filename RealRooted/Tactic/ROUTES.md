@@ -90,16 +90,6 @@ side conditions, implementing modules, and regression examples.
 | 5 | `subseq` | Splitting, a natural-degree identity, or a positive leading coefficient. | `productSequence_splits`, `threeTermPos_natDegree`, `productSequence_natDegree_of_constant_degree` |
 | 6 | `rowModel` (pseudo) | The conclusion advertised by a matching registered row-model theorem. | — |
 
-## `rr_row_nonneg_coeffs`
-
-| # | route | proves | main theorem(s) |
-|---:|---|---|---|
-| 1 | `variableDelay` | StrictInterl, Interlaces, Splits, or HasNonnegCoeffs. | `strictInterl_of_fixedDelay_recurrence`, `strictInterl_of_scaled_fixedDelay_recurrence`, `hasNonnegCoeffs_of_scaled_fixedDelay_recurrence`, `strictInterl_of_constant_prefix_fixed_delay_recurrence`, `hasNonnegCoeffs_of_constant_prefix_fixed_delay_recurrence` |
-| 2 | `cone` | HasNonnegCoeffs, degree, nonvanishing, or positive leader. | `LinRec.hasNonnegCoeffs`, `LinRec.natDegree_eq_and_leadingCoeff_pos`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_degreeLaw`, `LinRec.natDegree_eq_and_leadingCoeff_eq_of_coeff` |
-| 3 | `threeTerm` | HasNonnegCoeffs (P n) | `threeTerm_hasNonnegCoeffs` |
-| 4 | `secondOrder` | HasNonnegCoeffs (P n) | `derivRec₂_hasNonnegCoeffs` |
-| 5 | `derivativeMult` | HasNonnegCoeffs (P n) | `derivativeRecurrence_hasNonnegCoeffs_of_mult` |
-
 ## `rr_row_leadingCoeff_pos`
 
 | # | route | proves | main theorem(s) |
@@ -112,6 +102,17 @@ side conditions, implementing modules, and regression examples.
 | 6 | `cancel` | The requested degree, nonvanishing, leading-coefficient, or conjunction goal. | `derivativeRecurrence_natDegree_eq_and_leadingCoeff_pos_of_cancel`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_cancel` |
 | 7 | `subseq` | Splitting, a natural-degree identity, or a positive leading coefficient. | `productSequence_splits`, `threeTermPos_natDegree`, `productSequence_natDegree_of_constant_degree` |
 | 8 | `coefficients` | HasPosLeadingCoeff (P n) | `LinRec.natDegree_le_and_hasNonnegCoeffs`, `hasNonnegCoeffs_and_sub_mul_of_threeTerm`, `hasNonnegCoeffs_gammaTransform`, `HasNonnegCoeffs.diagonalOperator`, `HasNonnegCoeffs.pos_leadingCoeff` |
+| 9 | `rowModel` (pseudo) | The conclusion advertised by a matching registered row-model theorem. | — |
+
+## `rr_row_nonneg_coeffs`
+
+| # | route | proves | main theorem(s) |
+|---:|---|---|---|
+| 1 | `variableDelay` | StrictInterl, Interlaces, Splits, or HasNonnegCoeffs. | `strictInterl_of_fixedDelay_recurrence`, `strictInterl_of_scaled_fixedDelay_recurrence`, `hasNonnegCoeffs_of_scaled_fixedDelay_recurrence`, `strictInterl_of_constant_prefix_fixed_delay_recurrence`, `hasNonnegCoeffs_of_constant_prefix_fixed_delay_recurrence` |
+| 2 | `cone` | HasNonnegCoeffs, degree, nonvanishing, or positive leader. | `LinRec.hasNonnegCoeffs`, `LinRec.natDegree_eq_and_leadingCoeff_pos`, `LinRec.natDegree_eq_and_leadingCoeff_pos_of_degreeLaw`, `LinRec.natDegree_eq_and_leadingCoeff_eq_of_coeff` |
+| 3 | `threeTerm` | HasNonnegCoeffs (P n) | `threeTerm_hasNonnegCoeffs` |
+| 4 | `secondOrder` | HasNonnegCoeffs (P n) | `derivRec₂_hasNonnegCoeffs` |
+| 5 | `derivativeMult` | HasNonnegCoeffs (P n) | `derivativeRecurrence_hasNonnegCoeffs_of_mult` |
 
 ## `rowInterlacesCoreAt`
 
