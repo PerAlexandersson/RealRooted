@@ -2,6 +2,7 @@ module
 
 import RealRooted.MatrixInterlacing.DigitStep
 import RealRooted.Recurrence.RowModel
+import RealRooted.Recurrence.Uniqueness
 import RealRooted.ThresholdMatrix.HaglundZhang
 public import RealRooted.Basic.ProperPosition
 
@@ -248,24 +249,11 @@ theorem interlaces_of_last_recurrence
         (1 + X + X ^ 2 + X ^ 3) * P n)
     (hdegree : ∀ n, (P n).natDegree = n)
     (n : ℕ) : Interlaces (P n) (P (n + 1)) := by
-  have heq : ∀ m, P m = last m := by
-    intro m
-    induction m using Nat.strong_induction_on with
-    | ind m ih =>
-        by_cases hm₀ : m = 0
-        · subst m
-          exact hzero.trans last_zero.symm
-        by_cases hm₁ : m = 1
-        · subst m
-          exact hone.trans last_one.symm
-        by_cases hm₂ : m = 2
-        · subst m
-          exact htwo.trans last_two.symm
-        obtain ⟨k, rfl⟩ : ∃ k, m = k + 3 := ⟨m - 3, by lia⟩
-        have h₂ := ih (k + 2) (by lia)
-        have h₁ := ih (k + 1) (by lia)
-        have h₀ := ih k (by lia)
-        rw [hrec k, last_rec k, h₂, h₁, h₀]
+  have heq := sequence_eq_of_same_lag_three_recurrence (Q := last)
+    (fun _ p q r ↦ 3 * (1 + X) * p - 3 * (1 + X + X ^ 2) * q +
+      (1 + X + X ^ 2 + X ^ 3) * r)
+    (hzero.trans last_zero.symm) (hone.trans last_one.symm)
+    (htwo.trans last_two.symm) hrec last_rec
   have hstrict : StrictInterl (P n) (P (n + 1)) := by
     rw [heq n, heq (n + 1)]
     exact strictInterl_last_succ n
@@ -285,24 +273,11 @@ theorem interlaces_of_total_recurrence
         (1 + X + X ^ 2 + X ^ 3) * P n)
     (hdegree : ∀ n, (P n).natDegree = n)
     (n : ℕ) : Interlaces (P n) (P (n + 1)) := by
-  have heq : ∀ m, P m = total m := by
-    intro m
-    induction m using Nat.strong_induction_on with
-    | ind m ih =>
-        by_cases hm₀ : m = 0
-        · subst m
-          exact hzero.trans total_zero.symm
-        by_cases hm₁ : m = 1
-        · subst m
-          exact hone.trans total_one.symm
-        by_cases hm₂ : m = 2
-        · subst m
-          exact htwo.trans total_two.symm
-        obtain ⟨k, rfl⟩ : ∃ k, m = k + 3 := ⟨m - 3, by lia⟩
-        have h₂ := ih (k + 2) (by lia)
-        have h₁ := ih (k + 1) (by lia)
-        have h₀ := ih k (by lia)
-        rw [hrec k, total_rec k, h₂, h₁, h₀]
+  have heq := sequence_eq_of_same_lag_three_recurrence (Q := total)
+    (fun _ p q r ↦ 3 * (1 + X) * p - 3 * (1 + X + X ^ 2) * q +
+      (1 + X + X ^ 2 + X ^ 3) * r)
+    (hzero.trans total_zero.symm) (hone.trans total_one.symm)
+    (htwo.trans total_two.symm) hrec total_rec
   have hstrict : StrictInterl (P n) (P (n + 1)) := by
     rw [heq n, heq (n + 1)]
     exact strictInterl_total_succ n

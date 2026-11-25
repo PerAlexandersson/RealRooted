@@ -1552,23 +1552,6 @@ private theorem polynomial_two : polynomial 2 = 3 + 5 * X + X ^ 2 := by
   simpa only [recurrencePolynomial] using
     (recurrencePolynomial_eq_polynomial 2).symm
 
-/-- A sequence with the A119308 initial rows and update has split rows. -/
-@[rr_row_model]
-theorem splits_of_recurrence
-    {P : ℕ → ℝ[X]}
-    (hzero : P 0 = 1)
-    (hone : P 1 = 2 + X)
-    (htwo : P 2 = 3 + 5 * X + X ^ 2)
-    (hrec : ∀ n : ℕ,
-      P (n + 3) = nextRow n (P (n + 2)) (P (n + 1)) (P n))
-    (n : ℕ) :
-    (P n).Splits := by
-  have heq := sequence_eq_of_same_lag_three_recurrence nextRow
-    (hzero.trans polynomial_zero.symm) (hone.trans polynomial_one.symm)
-    (htwo.trans polynomial_two.symm) hrec polynomial_recurrence
-  rw [heq n]
-  exact polynomial_splits n
-
 /-- Consecutive rows with the A119308 initial rows and update interlace. -/
 @[rr_row_model]
 theorem interlaces_of_recurrence
@@ -1585,6 +1568,19 @@ theorem interlaces_of_recurrence
     (htwo.trans polynomial_two.symm) hrec polynomial_recurrence
   rw [heq n, heq (n + 1)]
   exact polynomial_interlaces n
+
+/-- A sequence with the A119308 initial rows and update has split rows. -/
+@[rr_row_model]
+theorem splits_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hzero : P 0 = 1)
+    (hone : P 1 = 2 + X)
+    (htwo : P 2 = 3 + 5 * X + X ^ 2)
+    (hrec : ∀ n : ℕ,
+      P (n + 3) = nextRow n (P (n + 2)) (P (n + 1)) (P n))
+    (n : ℕ) :
+    (P n).Splits := by
+  exact (interlaces_of_recurrence hzero hone htwo hrec n).2.1.2
 
 /-- The downstream A119308 recurrence rows interlace. -/
 theorem A119308_interlaces (n : ℕ) :

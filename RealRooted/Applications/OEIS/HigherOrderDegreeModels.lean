@@ -186,10 +186,8 @@ theorem natDegree_of_recurrence
     (hrec : ∀ n, P (n + 3) = nextRow n (P (n + 2)) (P (n + 1)) (P n))
     (n : ℕ) :
     (P n).natDegree = (n + 1) / 2 := by
-  have heq := sequence_eq_of_same_lag_three_recurrence nextRow
-    (hinit 0 (by norm_num)) (hinit 1 (by norm_num)) (hinit 2 (by norm_num))
-    hrec polynomial_step
-  rw [heq n]
+  rw [sequence_eq_of_same_finite_recurrence (k := 3)
+    (op := fun n w ↦ nextRow n (w 2) (w 1) (w 0)) hinit hrec polynomial_step n]
   exact polynomial_natDegree n
 
 /-- Every sequence with these initial rows and update has positive leading coefficients. -/
@@ -199,10 +197,8 @@ theorem leadingCoeff_pos_of_recurrence
     (hinit : ∀ i < 3, P i = polynomial i)
     (hrec : ∀ n, P (n + 3) = nextRow n (P (n + 2)) (P (n + 1)) (P n))
     (n : ℕ) : 0 < (P n).leadingCoeff := by
-  have heq := sequence_eq_of_same_lag_three_recurrence nextRow
-    (hinit 0 (by norm_num)) (hinit 1 (by norm_num)) (hinit 2 (by norm_num))
-    hrec polynomial_step
-  rw [heq n]
+  rw [sequence_eq_of_same_finite_recurrence (k := 3)
+    (op := fun n w ↦ nextRow n (w 2) (w 1) (w 0)) hinit hrec polynomial_step n]
   exact polynomial_leadingCoeff_pos n
 
 end A367873
@@ -425,10 +421,8 @@ theorem natDegree_of_recurrence
     (hrec : ∀ n, P (n + 3) = nextRow n (P (n + 2)) (P (n + 1)) (P n))
     (n : ℕ) :
     (P n).natDegree = n := by
-  have heq := sequence_eq_of_same_lag_three_recurrence nextRow
-    (hinit 0 (by norm_num)) (hinit 1 (by norm_num)) (hinit 2 (by norm_num))
-    hrec polynomial_step
-  rw [heq n]
+  rw [sequence_eq_of_same_finite_recurrence (k := 3)
+    (op := fun n w ↦ nextRow n (w 2) (w 1) (w 0)) hinit hrec polynomial_step n]
   exact polynomial_natDegree n
 
 /-- Every sequence with these initial rows and update has positive leading coefficients. -/
@@ -438,10 +432,8 @@ theorem leadingCoeff_pos_of_recurrence
     (hinit : ∀ i < 3, P i = polynomial i)
     (hrec : ∀ n, P (n + 3) = nextRow n (P (n + 2)) (P (n + 1)) (P n))
     (n : ℕ) : 0 < (P n).leadingCoeff := by
-  have heq := sequence_eq_of_same_lag_three_recurrence nextRow
-    (hinit 0 (by norm_num)) (hinit 1 (by norm_num)) (hinit 2 (by norm_num))
-    hrec polynomial_step
-  rw [heq n]
+  rw [sequence_eq_of_same_finite_recurrence (k := 3)
+    (op := fun n w ↦ nextRow n (w 2) (w 1) (w 0)) hinit hrec polynomial_step n]
   exact polynomial_leadingCoeff_pos n
 
 end A110205
