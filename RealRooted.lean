@@ -353,6 +353,7 @@ public import RealRooted.CombinatorialExamples.CaoFu.TracePolynomial
 public import RealRooted.CombinatorialExamples.CentralFactorial
 public import RealRooted.CombinatorialExamples.ColoredSetPartitions
 public import RealRooted.CombinatorialExamples.CoefficientHelpers
+public import RealRooted.CombinatorialExamples.CombClustering
 public import RealRooted.CombinatorialExamples.DerangementStatistic
 public import RealRooted.CombinatorialExamples.DerangementsExcNormal
 public import RealRooted.CombinatorialExamples.DyckNarayana
