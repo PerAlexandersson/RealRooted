@@ -16,6 +16,7 @@ import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Analysis.Calculus.LocalExtr.Rolle
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
 import Mathlib.Topology.Algebra.Polynomial
+import Mathlib.Order.Interval.Set.Monotone
 
 /-!
 # The inverse Bernstein inequality
@@ -36,32 +37,22 @@ namespace Polynomial
 theorem eq_of_derivative_eval_eq_zero {p : ℝ[X]} {n : ℕ} (hn : 0 < n) (hdeg : p.natDegree = n)
     {c : Fin (n - 1) → ℝ} (hc : StrictMono c) (hc0 : ∀ j, p.derivative.eval (c j) = 0)
     {z : ℝ} (hz : p.derivative.eval z = 0) : ∃ j, z = c j := by
-  by_contra hzc
-  push Not at hzc
-  have hd : p.derivative ≠ 0 := by
-    intro h
-    have := derivative_eq_zero.mp h
-    lia
-  let S : Finset ℝ := insert z (Finset.univ.image c)
-  have hzS : z ∉ Finset.univ.image c := by
-    simp only [Finset.mem_image, Finset.mem_univ, true_and, not_exists]
-    exact fun j h ↦ hzc j h.symm
-  have hcard : S.card = n := by
-    rw [Finset.card_insert_of_notMem hzS, Finset.card_image_of_injective _ hc.injective,
-      Finset.card_univ, Fintype.card_fin]
-    lia
-  have hsub : S ⊆ p.derivative.roots.toFinset := by
-    intro w hw
-    rw [Multiset.mem_toFinset, mem_roots hd, IsRoot.def]
-    rcases Finset.mem_insert.mp hw with rfl | hw
-    · exact hz
-    · obtain ⟨j, -, rfl⟩ := Finset.mem_image.mp hw
-      exact hc0 j
-  have h1 := Finset.card_le_card hsub
-  have h2 := Multiset.toFinset_card_le p.derivative.roots
-  have h3 := card_roots' p.derivative
-  have h4 := natDegree_derivative_le p
-  lia
+  classical
+  have hd : p.derivative ≠ 0 := p.derivative_ne_zero.mpr (by lia)
+  let S : Finset ℝ := Finset.univ.image c
+  have hroots : p.derivative.roots = S.val :=
+    p.derivative.roots_eq_of_natDegree_le_card_of_ne_zero
+      (fun x hx => by
+        obtain ⟨i, _, rfl⟩ := Finset.mem_image.mp hx
+        exact hc0 i)
+      (by
+        dsimp only [S]
+        rw [Finset.card_image_of_injective _ hc.injective, Finset.card_univ,
+          Fintype.card_fin, natDegree_derivative, hdeg]) hd
+  have hzS : z ∈ S := by
+    rw [← Finset.mem_val, ← hroots]
+    exact (mem_roots hd).mpr hz
+  simpa only [S, Finset.mem_image, Finset.mem_univ, true_and, eq_comm] using hzS
 
 /-- Root and critical-point structure of a degree-`n` polynomial with `n` simple roots in
 `(-1, 1)`: roots `r 0 < ⋯ < r (n - 1)` in `(-1, 1)`, zeros `c j ∈ (r j, r (j + 1))` of `p'`, and
@@ -213,11 +204,8 @@ theorem exists_sign_alternation_points {p : ℝ[X]} {n : ℕ}
       exact (hrc k hk1).1
     · rw [show k + 1 = n by lia, hCn]; exact (hr k hk).1.2
   have hstep : ∀ k < n, C k < C (k + 1) := fun k hk ↦ (hC_lt_r k hk).trans (hr_lt_C k hk)
-  have hmono : ∀ a b, a ≤ b → b ≤ n → C a ≤ C b := by
-    intro a b hab hbn
-    induction b, hab using Nat.le_induction with
-    | base => exact le_rfl
-    | succ b hab ih => exact (ih (by lia)).trans (hstep b (by lia)).le
+  have hmono : ∀ a b, a ≤ b → b ≤ n → C a ≤ C b := fun a b hab hb =>
+    (strictMonoOn_Iic_of_lt_succ hstep).monotoneOn (hab.trans hb) hb hab
   have hmid : ∀ k, 0 < k → k < n → C k ∈ Ioo (-1 : ℝ) 1 ∧ p.derivative.eval (C k) = 0 := by
     intro k hk0 hkn
     rw [hCmid k hk0 hkn]
@@ -308,44 +296,25 @@ private theorem abs_eval_le_abs_eval_critical_of_unique {p : ℝ[X]} {a b c x : 
     (ha : p.eval a = 0) (hb : p.eval b = 0) (hc : c ∈ Ioo a b) (hx : x ∈ Icc a b)
     (hunique : ∀ y ∈ Ioo a b, p.derivative.eval y = 0 → y = c) :
     |p.eval x| ≤ |p.eval c| := by
-  rcases lt_trichotomy x c with hxc | rfl | hcx
-  · by_cases hxa : x = a
-    · simp [hxa, ha]
-    have hax : a < x := lt_of_le_of_ne hx.1 (Ne.symm hxa)
-    have hne : ∀ y ∈ Ioo a c, p.derivative.eval y ≠ 0 := by
-      intro y hy hy0
-      exact hy.2.ne (hunique y ⟨hy.1, hy.2.trans hc.2⟩ hy0)
-    have ha_mem : a ∈ Icc a c := ⟨le_rfl, hc.1.le⟩
-    have hx_mem : x ∈ Icc a c := ⟨hax.le, hxc.le⟩
-    have hc_mem : c ∈ Icc a c := ⟨hc.1.le, le_rfl⟩
-    rcases strictMonoOn_or_strictAntiOn_of_derivative_ne_zero hne with hmono | hanti
-    · have hpx : 0 < p.eval x := by simpa [ha] using hmono ha_mem hx_mem hax
-      have hpc : p.eval x < p.eval c := hmono hx_mem hc_mem hxc
-      rw [abs_of_pos hpx, abs_of_pos (hpx.trans hpc)]
-      exact hpc.le
-    · have hpx : p.eval x < 0 := by simpa [ha] using hanti ha_mem hx_mem hax
-      have hpc : p.eval c < p.eval x := hanti hx_mem hc_mem hxc
-      rw [abs_of_neg hpx, abs_of_neg (hpc.trans hpx)]
-      linarith
-  · exact le_rfl
-  · by_cases hxb : x = b
-    · simp [hxb, hb]
-    have hxb' : x < b := lt_of_le_of_ne hx.2 hxb
-    have hne : ∀ y ∈ Ioo c b, p.derivative.eval y ≠ 0 := by
-      intro y hy hy0
-      exact hy.1.ne' (hunique y ⟨hc.1.trans hy.1, hy.2⟩ hy0)
-    have hc_mem : c ∈ Icc c b := ⟨le_rfl, hc.2.le⟩
-    have hx_mem : x ∈ Icc c b := ⟨hcx.le, hxb'.le⟩
-    have hb_mem : b ∈ Icc c b := ⟨hc.2.le, le_rfl⟩
-    rcases strictMonoOn_or_strictAntiOn_of_derivative_ne_zero hne with hmono | hanti
-    · have hpx : p.eval x < 0 := by simpa [hb] using hmono hx_mem hb_mem hxb'
-      have hpc : p.eval c < p.eval x := hmono hc_mem hx_mem hcx
-      rw [abs_of_neg hpx, abs_of_neg (hpc.trans hpx)]
-      linarith
-    · have hpx : 0 < p.eval x := by simpa [hb] using hanti hx_mem hb_mem hxb'
-      have hpc : p.eval x < p.eval c := hanti hc_mem hx_mem hcx
-      rw [abs_of_pos hpx, abs_of_pos (hpx.trans hpc)]
-      exact hpc.le
+  obtain ⟨y, hy, hmax⟩ := isCompact_Icc.exists_isMaxOn ⟨c, hc.1.le, hc.2.le⟩
+    (p.continuous.pow 2).continuousOn
+  have hxy : p.eval x ^ 2 ≤ p.eval y ^ 2 := hmax hx
+  by_cases hy0 : p.eval y = 0
+  · rw [hy0] at hxy
+    simpa only [abs_eq_zero.mpr (by nlinarith : p.eval x = 0)] using abs_nonneg (p.eval c)
+  have hyint : y ∈ Ioo a b := by
+    constructor
+    · exact lt_of_le_of_ne hy.1 (by rintro rfl; exact hy0 ha)
+    · exact lt_of_le_of_ne hy.2 (by rintro rfl; exact hy0 hb)
+  have hd := (hmax.isLocalMax (Icc_mem_nhds hyint.1 hyint.2)).hasDerivAt_eq_zero
+    ((p.hasDerivAt y).pow 2)
+  have hcrit : p.derivative.eval y = 0 := by
+    norm_num only [Nat.cast_ofNat, Nat.reduceSub, pow_one] at hd
+    rcases mul_eq_zero.mp hd with h | h
+    · exact ((mul_ne_zero (by norm_num : (2 : ℝ) ≠ 0) hy0) h).elim
+    · exact h
+  rw [hunique y hyint hcrit] at hxy
+  exact (sq_le_sq₀ (abs_nonneg _) (abs_nonneg _)).mp (by simpa only [sq_abs] using hxy)
 
 /-- Alternating values of size at least one force every interior critical value to have size at
 least one. -/
@@ -361,11 +330,8 @@ theorem one_le_abs_eval_critical_of_alternation {q : ℝ[X]} {N : ℕ} (hN : 0 <
     have heq : ξ 0 = ξ N := by rw [hN0]
     rw [hξ0, hξN] at heq
     norm_num at heq
-  have hξmono : ∀ a b, a ≤ b → b ≤ N → ξ a ≤ ξ b := by
-    intro a b hab hbN
-    induction b, hab using Nat.le_induction with
-    | base => exact le_rfl
-    | succ b hab ih => exact (ih (by lia)).trans (hξinc b (by lia)).le
+  have hξmono : ∀ a b, a ≤ b → b ≤ N → ξ a ≤ ξ b := fun a b hab hb =>
+    (strictMonoOn_Iic_of_lt_succ hξinc).monotoneOn (hab.trans hb) hb hab
   have hex : ∀ i < N, ∃ y ∈ Ioo (ξ i) (ξ (i + 1)), q.eval y = 0 :=
     fun i hi ↦ exists_Ioo_eq_zero_of_mul_neg q.continuous (hξinc i hi) (hprod i hi)
   choose! z hz hz0 using hex
@@ -439,11 +405,8 @@ theorem _root_.exists_finset_zeros_of_sign_changes {D : ℝ → ℝ} (hD : Conti
     {k : ℕ} (hk : k < N) {w₁ t w₂ : ℝ} (h₀ : τ k < w₁) (h₁ : w₁ < t) (h₂ : t < w₂)
     (h₃ : w₂ < τ (k + 1)) (hw₁ : D w₁ = 0) (ht : D t = 0) (hw₂ : D w₂ = 0) :
     ∃ Z : Finset ℝ, Z.card = N + 2 ∧ ∀ z ∈ Z, τ 0 < z ∧ z < τ N ∧ D z = 0 := by
-  have hmono : ∀ a b, a ≤ b → b ≤ N → τ a ≤ τ b := by
-    intro a b hab hbN
-    induction b, hab using Nat.le_induction with
-    | base => exact le_rfl
-    | succ b hab ih => exact (ih (by lia)).trans (hτ b (by lia)).le
+  have hmono : ∀ a b, a ≤ b → b ≤ N → τ a ≤ τ b := fun a b hab hb =>
+    (strictMonoOn_Iic_of_lt_succ hτ).monotoneOn (hab.trans hb) hb hab
   have hex : ∀ i < N, ∃ y ∈ Ioo (τ i) (τ (i + 1)), D y = 0 :=
     fun i hi ↦ exists_Ioo_eq_zero_of_mul_neg hD (hτ i hi) (hsign i hi)
   choose! z hz hz0 using hex
@@ -504,11 +467,8 @@ theorem alternation_angles {p : ℝ[X]} {n : ℕ} (hn : 0 < n) {C : ℕ → ℝ}
     τ 0 = 0 ∧ τ (2 * n) = 2 * Real.pi ∧ (∀ i < 2 * n, τ i < τ (i + 1)) ∧
       (∀ i ≤ 2 * n, 1 ≤ |p.eval (Real.cos (τ i))|) ∧
       (∀ i < 2 * n, p.eval (Real.cos (τ i)) * p.eval (Real.cos (τ (i + 1))) < 0) := by
-  have hmono : ∀ a b, a ≤ b → b ≤ n → C a ≤ C b := by
-    intro a b hab hbn
-    induction b, hab using Nat.le_induction with
-    | base => exact le_rfl
-    | succ b hab ih => exact (ih (by lia)).trans (hstep b (by lia)).le
+  have hmono : ∀ a b, a ≤ b → b ≤ n → C a ≤ C b := fun a b hab hb =>
+    (strictMonoOn_Iic_of_lt_succ hstep).monotoneOn (hab.trans hb) hb hab
   have hmem : ∀ k ≤ n, C k ∈ Icc (-1 : ℝ) 1 := fun k hk ↦
     ⟨hC0 ▸ hmono 0 k (Nat.zero_le _) hk, hCn ▸ hmono k n hk le_rfl⟩
   have hlo : ∀ i ≤ n, τ i = Real.arccos (C (n - i)) := by
@@ -744,11 +704,8 @@ theorem sq_mul_one_sub_sq_le_of_abs_eval_critical
   push Not at hlt
   obtain ⟨C, hC0, hCn, hstep, hcritC, hprod, -⟩ :=
     exists_alternation_points hn hdeg hroots hsimple hone hmone hcrit
-  have hmonoC : ∀ a b, a ≤ b → b ≤ n → C a ≤ C b := by
-    intro a b hab hbn
-    induction b, hab using Nat.le_induction with
-    | base => exact le_rfl
-    | succ b hab ih => exact (ih (by lia)).trans (hstep b (by lia)).le
+  have hmonoC : ∀ a b, a ≤ b → b ≤ n → C a ≤ C b := fun a b hab hb =>
+    (strictMonoOn_Iic_of_lt_succ hstep).monotoneOn (hab.trans hb) hb hab
   have hmemC : ∀ k ≤ n, C k ∈ Icc (-1 : ℝ) 1 := fun k hk ↦
     ⟨hC0 ▸ hmonoC 0 k (Nat.zero_le _) hk, hCn ▸ hmonoC k n hk le_rfl⟩
   have hxC : ∀ k ≤ n, C k ≠ x := by
@@ -801,11 +758,8 @@ theorem roots_of_sign_changes {h : ℝ[X]} {n : ℕ} (hn : 0 < n) (hdeg : h.natD
       (∀ r, h.IsRoot r → ∃ k < n, r ∈ Ioo (C k) (C (k + 1))) ∧
       (∀ k < n, ∀ r ∈ Ioo (C k) (C (k + 1)), h.IsRoot r →
         0 < h.derivative.eval r * h.eval (C (k + 1))) := by
-  have hmono : ∀ a b, a ≤ b → b ≤ n → C a ≤ C b := by
-    intro a b hab hbn
-    induction b, hab using Nat.le_induction with
-    | base => exact le_rfl
-    | succ b hab ih => exact (ih (by lia)).trans (hC b (by lia)).le
+  have hmono : ∀ a b, a ≤ b → b ≤ n → C a ≤ C b := fun a b hab hb =>
+    (strictMonoOn_Iic_of_lt_succ hC).monotoneOn (hab.trans hb) hb hab
   have hne : h ≠ 0 := by
     rintro rfl
     simp at hdeg
@@ -827,14 +781,11 @@ theorem roots_of_sign_changes {h : ℝ[X]} {n : ℕ} (hn : 0 < n) (hdeg : h.natD
     exact hdisj i hi' j hj' (z i) (hz i hi') (hij ▸ hz j hj')
   let Z := (Finset.range n).image z
   have hZcard : Z.card = n := by rw [Finset.card_image_of_injOn hinj, Finset.card_range]
-  have hZle : Z.val ≤ h.roots := by
-    rw [Multiset.le_iff_subset Z.nodup]
-    intro y hy
-    obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp (Finset.mem_val.mp hy)
-    exact (mem_roots hne).mpr (hz0 i (Finset.mem_range.mp hi))
-  have hroots : h.roots = Z.val := (Multiset.eq_of_le_of_card_le hZle (by
-    rw [Finset.card_val, hZcard, ← hdeg]
-    exact card_roots' h)).symm
+  have hroots : h.roots = Z.val :=
+    h.roots_eq_of_natDegree_le_card_of_ne_zero (fun y hy => by
+      obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hy
+      exact hz0 i (Finset.mem_range.mp hi))
+      (by rw [hZcard, hdeg]) hne
   have hroot_mem : ∀ r, h.IsRoot r → ∃ k < n, r = z k := by
     intro r hr
     have hr' : r ∈ Z := by

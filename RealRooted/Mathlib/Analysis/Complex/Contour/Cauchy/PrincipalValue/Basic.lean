@@ -590,15 +590,10 @@ theorem HasCauchyPVAt.of_avoidance {γ : ℝ → ℂ} {a b : ℝ} {f : ℂ → �
   obtain ⟨t₀, ht₀, ht₀_min⟩ := isCompact_uIcc.exists_isMinOn
     Set.nonempty_uIcc (h_cont.sub continuousOn_const).norm
   have hpos : 0 < ‖γ t₀ - z₀‖ := norm_pos_iff.mpr (sub_ne_zero.mpr (h_avoid t₀ ht₀))
-  refine ⟨?_, ?_⟩
-  · filter_upwards [Ioo_mem_nhdsGT hpos] with ε hε
-    refine (intervalIntegrable_congr fun t ht => ?_).mpr hf_int
-    exact ite_eq_left (lt_of_lt_of_le hε.2 (ht₀_min (Set.uIoc_subset_uIcc ht)))
-  · apply Filter.Tendsto.congr' _ tendsto_const_nhds
-    rw [Filter.EventuallyEq, Filter.eventually_iff_exists_mem]
-    refine ⟨Set.Ioo 0 ‖γ t₀ - z₀‖, Ioo_mem_nhdsGT hpos, fun ε hε => ?_⟩
-    exact intervalIntegral.integral_congr fun t ht =>
-      (ite_eq_left (lt_of_lt_of_le hε.2 (ht₀_min ht))).symm
+  refine HasCauchyPVAt.of_dist_lower_bound hpos ht₀_min ?_
+  filter_upwards [Ioo_mem_nhdsGT hpos] with ε hε
+  refine (intervalIntegrable_congr fun t ht => ?_).mpr hf_int
+  exact ite_eq_left (hε.2.trans_le (ht₀_min (Set.uIoc_subset_uIcc ht)))
 
 /-- **Concatenation.** The principal values along adjacent subcurves `[a, b]` and `[b, c]` add to
 the principal value along `[a, c]`. The integrability of the excised integrand across `[a, c]` and
@@ -718,22 +713,13 @@ private theorem truncated_const_mul_curve_eq {γ : ℝ → ℂ} {f : ℂ → ℂ
     (ε t : ℝ) : (if ‖c * γ t - c * z₀‖ > ε then
         (fun z => c⁻¹ * f (c⁻¹ * z)) (c * γ t) * deriv (fun t => c * γ t) t else 0)
       = if ‖γ t - z₀‖ > ε / ‖c‖ then f (γ t) * deriv γ t else 0 := by
-  by_cases hεt : ‖γ t - z₀‖ > ε / ‖c‖
-  · have hscaled : ‖c * γ t - c * z₀‖ > ε := by
-      rw [← mul_sub, norm_mul]
-      have hmul := mul_lt_mul_of_pos_right hεt (norm_pos_iff.mpr hc)
-      have hmul' : ε < ‖γ t - z₀‖ * ‖c‖ := by
-        simpa [div_mul_cancel₀ _ (norm_ne_zero_iff.mpr hc)] using hmul
-      simpa [mul_comm] using hmul'
-    rw [ite_eq_left hscaled, ite_eq_left hεt, deriv_const_mul_field]
+  simp only [gt_iff_lt, ← mul_sub, norm_mul,
+    ← div_lt_iff₀' (norm_pos_iff.mpr hc)]
+  split_ifs
+  · rw [deriv_const_mul_field]
     simp only [inv_mul_cancel_left₀ hc]
     rw [mul_mul_mul_comm, inv_mul_cancel₀ hc, one_mul]
-  · have hscaled : ¬ ‖c * γ t - c * z₀‖ > ε := by
-      rw [← mul_sub, norm_mul, not_lt]
-      rw [not_lt] at hεt
-      have hmul := mul_le_mul_of_nonneg_right hεt (norm_nonneg c)
-      rwa [div_mul_cancel₀ _ (norm_ne_zero_iff.mpr hc), mul_comm] at hmul
-    rw [ite_eq_right hscaled, ite_eq_right hεt]
+  · rfl
 
 /-- Simultaneously scaling the curve and the excision point by a nonzero complex number `c`
 preserves a single-point Cauchy principal value, provided the integrand is rescaled by

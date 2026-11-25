@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.SimpleRoots
+import RealRooted.EulerOperator.Darboux.NegativeRoots
 import RealRooted.DerivativeRecurrence.QuadraticLagStrict
 import RealRooted.Interlacing.OuterDifference
 import RealRooted.MaWang.CriticalSign
@@ -104,36 +105,18 @@ theorem realEulerInsertionStep_simple_roots_strictInterl
       HasNonnegCoeffs q ∧ q.Splits ∧ HasSimpleRoots q ∧
       (∀ r, q.IsRoot r → r < 0) ∧ StrictInterl p q ∧
       (∀ r, p.IsRoot r → ¬ q.IsRoot r) ∧ 0 < q.eval 0 := by
+  have hp : SimpleNegRooted p p.natDegree :=
+    ⟨rfl, hp_pos, hp_nn, by simpa only [coeff_zero_eq_eval_zero] using hp_zero,
+      hp_splits, hp_simple⟩
+  have hstep := hp.darbouxOperator hc ha
+  have heq : realEulerInsertionStep c a p = darbouxOperator c (-a) p := by
+    simp only [realEulerInsertionStep, darbouxOperator, map_neg]
+    ring
   dsimp only
-  obtain ⟨hq_degree, hq_pos⟩ := realEulerInsertionStep_degree_pos ha hp_pos
-  have hq_nn := hp_nn.realEulerInsertionStep hc.le ha
-  have hp_neg : ∀ r, p.IsRoot r → r < 0 := by
-    intro r hr
-    have hr_le := isRoot_nonpos_of_hasNonnegCoeffs hp_nn hp_pos.ne_zero hr
-    refine lt_of_le_of_ne hr_le fun hre ↦ ?_
-    subst r
-    rw [Polynomial.IsRoot.def.mp hr] at hp_zero
-    exact (lt_irrefl 0 hp_zero).elim
-  have hsign : ∀ r, p.IsRoot r →
-      (realEulerInsertionStep c a p).eval r * p.derivative.eval r < 0 := by
-    intro r hr
-    have hrneg := hp_neg r hr
-    have hderiv := hp_simple.eval_derivative_ne_zero hr
-    simp [realEulerInsertionStep, Polynomial.IsRoot.def.mp hr]
-    nlinarith [sq_pos_of_ne_zero hderiv, sq_nonneg r]
-  have hstrict := strictInterl_package_of_eval_mul_derivative_neg_succ
-    hp_splits hp_pos hq_pos rfl hq_degree hsign
-  have hq_zero : 0 < (realEulerInsertionStep c a p).eval 0 := by
-    simpa [realEulerInsertionStep] using mul_pos hc hp_zero
-  have hq_neg : ∀ r, (realEulerInsertionStep c a p).IsRoot r → r < 0 := by
-    intro r hr
-    have hr_le := isRoot_nonpos_of_hasNonnegCoeffs hq_nn hq_pos.ne_zero hr
-    refine lt_of_le_of_ne hr_le fun hre ↦ ?_
-    subst r
-    rw [Polynomial.IsRoot.def.mp hr] at hq_zero
-    exact (lt_irrefl 0 hq_zero).elim
-  exact ⟨hq_degree, hq_pos, hq_nn, hstrict.2.2.1, hstrict.2.2.2.2.1,
-    hq_neg, hstrict.1, hstrict.2.2.2.2.2, hq_zero⟩
+  rw [heq]
+  exact ⟨hstep.1.natDegree_eq, hstep.1.pos, hstep.1.nonneg, hstep.1.splits,
+    hstep.1.simple, fun r hr => hstep.1.isRoot_neg hr, hstep.2.1, hstep.2.2,
+    by simpa only [coeff_zero_eq_eval_zero] using hstep.1.coeff_zero_pos⟩
 
 /-- Two coupled first-order Euler recurrences imply a second-order recurrence
 for the second family. -/

@@ -8,6 +8,7 @@ public import Mathlib.Algebra.Polynomial.Div
 public import RealRooted.BrandenLeite.CompositionRow
 public import RealRooted.PFPolynomial
 import RealRooted.AissenSchoenbergWhitney
+import RealRooted.Recurrence.Uniqueness
 
 /-!
 # Finite supersymmetric composition-row families
@@ -595,22 +596,11 @@ theorem eq_a207327Row_of_initial_and_recurrence
       P (n + 3) = (1 + X) * P (n + 2) +
         (2 * X) * P (n + 1) + X * P n) :
     P = a207327Row := by
-  funext n
-  induction n using Nat.strongRecOn with
-  | ind n ih =>
-      cases n with
-      | zero => simpa using hzero
-      | succ n =>
-          cases n with
-          | zero => simpa using hone
-          | succ n =>
-              cases n with
-              | zero => simpa using htwo
-              | succ n =>
-                  rw [show n + 1 + 1 + 1 = n + 3 by lia,
-                    hrec, a207327Row_recurrence,
-                    ih (n + 2) (by lia), ih (n + 1) (by lia),
-                    ih n (by lia)]
+  exact funext <| sequence_eq_of_same_lag_three_recurrence
+    (fun _ a b c => (1 + X) * a + (2 * X) * b + X * c)
+    (by simpa only [a207327Row_zero] using hzero)
+    (by simpa only [a207327Row_one] using hone)
+    (by simpa only [a207327Row_two] using htwo) hrec a207327Row_recurrence
 
 /-- A207327 rows are PF and consecutive rows are in zero-aware proper
 position. -/

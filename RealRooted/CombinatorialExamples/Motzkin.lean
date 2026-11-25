@@ -250,17 +250,8 @@ lemma strictInterl_self_mul_X_sub_C_of_roots_le {r : ℝ} {f : ℝ[X]}
     (hf : f.Splits) (hf_pos : HasPosLeadingCoeff f)
     (hf_le : ∀ s ∈ f.roots, s ≤ r) :
     StrictInterl f ((X - C r) * f) := by
-  have hXf_pos : HasPosLeadingCoeff ((X - C r) * f) :=
-    hasPosLeadingCoeff_X_sub_C_mul hf_pos
-  have hXf_le : ∀ s ∈ ((X - C r) * f).roots, s ≤ r := roots_le_X_sub_C_mul hf hf_le
-  have hdeg : f.natDegree + 1 = ((X - C r) * f).natDegree := by
-    rw [natDegree_mul (X_sub_C_ne_zero r) hf_pos.ne_zero, natDegree_X_sub_C]
-    lia
-  have hself : StrictInterl ((X - C r) * f) ((X - C r) * f) :=
-    StrictInterl.refl (by simp_all [hf_pos.ne_zero, sub_eq_zero]) (by simp_all)
-  exact
-    (strictInterl_iff_strictInterl_mul_X_sub_C_of_roots_le
-      r hf (by simp_all [hf_pos.ne_zero]) hf_pos hXf_pos hf_le hXf_le hdeg).mpr hself
+  exact (StrictInterl.refl hf_pos.ne_zero hf).mul_X_sub_C_of_sameDegree_of_roots_le
+    r rfl hf_pos hf_pos hf_le hf_le
 
 lemma motzkin_bound_zero :
     ∀ r ∈ (motzkin 0).roots, r ≤ motzkinShift := by
@@ -269,12 +260,8 @@ lemma motzkin_bound_zero :
 lemma motzkin_bound_one :
     ∀ r ∈ (motzkin 1).roots, r ≤ motzkinShift := by
   intro r hr
-  have hr_root : (1 + X : ℝ[X]).IsRoot r := by simp_all
-  have hr_eq : r = -1 := by
-    rw [Polynomial.IsRoot.def, eval_add, eval_one, eval_X] at hr_root
-    linarith
-  rw [hr_eq, motzkinShift]
-  norm_num
+  exact (roots_nonpos_of_hasNonnegCoeffs (hasNonnegCoeffs_motzkin 1) r hr).trans
+    (by norm_num [motzkinShift])
 
 lemma strictInterl_motzkin_zero_one :
     StrictInterl (motzkin 0) (motzkin 1) := by
@@ -286,38 +273,16 @@ lemma strictInterl_motzkin_shifted_succ {n : Nat}
     (hprev : StrictInterl (motzkin n) (motzkin (n + 1)))
     (hle_succ : ∀ r ∈ (motzkin (n + 1)).roots, r ≤ motzkinShift) :
     StrictInterl (motzkin (n + 2)) ((X - C motzkinShift) * motzkin (n + 1)) := by
-  have hscalarA_pos : 0 < motzkinCoeffA n := by rw [motzkinCoeffA]; positivity
-  have hscalarB_pos : 0 < motzkinCoeffB n := by rw [motzkinCoeffB]; positivity
-  have hleft :
-      StrictInterl (C (motzkinCoeffA n) * motzkin (n + 1))
-        ((X - C motzkinShift) * motzkin (n + 1)) :=
-    StrictInterl.C_mul_left
-      (strictInterl_self_mul_X_sub_C_of_roots_le
-        hprev.2.1.2 (motzkin_posLeadingCoeff (n + 1)) hle_succ)
-      hscalarA_pos.ne'
-  have hright_core :
-      StrictInterl ((X - C motzkinShift) * motzkin n)
-        ((X - C motzkinShift) * motzkin (n + 1)) :=
-    hprev.mul_X_sub_C_both motzkinShift
-  have hright :
-      StrictInterl (C (motzkinCoeffB n) * ((X - C motzkinShift) * motzkin n))
-        ((X - C motzkinShift) * motzkin (n + 1)) :=
-    StrictInterl.C_mul_left hright_core hscalarB_pos.ne'
-  have hleft_pos :
-      HasPosLeadingCoeff (C (motzkinCoeffA n) * motzkin (n + 1)) :=
-    hasPosLeadingCoeff_C_mul hscalarA_pos (motzkin_posLeadingCoeff (n + 1))
-  have hright_pos :
-      HasPosLeadingCoeff
-        (C (motzkinCoeffB n) * ((X - C motzkinShift) * motzkin n)) :=
-    hasPosLeadingCoeff_C_mul hscalarB_pos
-      (hasPosLeadingCoeff_X_sub_C_mul (motzkin_posLeadingCoeff n))
-  have hsum :
-      StrictInterl
-        (C (motzkinCoeffA n) * motzkin (n + 1) +
-          C (motzkinCoeffB n) * ((X - C motzkinShift) * motzkin n))
-        ((X - C motzkinShift) * motzkin (n + 1)) :=
-    StrictInterl.add_of_right_of_posLeadingCoeff hleft hright hleft_pos hright_pos
-  simpa [motzkin_succ_succ, add_comm, add_left_comm, add_assoc, mul_assoc] using hsum
+  have hA : 0 < motzkinCoeffA n := by rw [motzkinCoeffA]; positivity
+  have hB : 0 < motzkinCoeffB n := by rw [motzkinCoeffB]; positivity
+  rw [motzkin_succ_succ]
+  simpa only [mul_assoc] using StrictInterl.add_of_right_of_posLeadingCoeff
+    ((strictInterl_self_mul_X_sub_C_of_roots_le hprev.2.1.2
+      (motzkin_posLeadingCoeff (n + 1)) hle_succ).C_mul_left hA.ne')
+    ((hprev.mul_X_sub_C_both motzkinShift).C_mul_left hB.ne')
+    (hasPosLeadingCoeff_C_mul hA (motzkin_posLeadingCoeff (n + 1)))
+    (hasPosLeadingCoeff_C_mul hB
+      (hasPosLeadingCoeff_X_sub_C_mul (motzkin_posLeadingCoeff n)))
 
 /-- Consecutive Motzkin polynomials satisfy the generalized interlacing relation `StrictInterl`. -/
 theorem strictInterl_motzkin_succ (n : Nat) :
@@ -328,21 +293,13 @@ theorem strictInterl_motzkin_succ_and_roots_le :
     ∀ n : Nat,
       StrictInterl (motzkin n) (motzkin (n + 1)) ∧
       (∀ r ∈ (motzkin n).roots, r ≤ motzkinShift) ∧
-      (∀ r ∈ (motzkin (n + 1)).roots, r ≤ motzkinShift)
-  | 0 => ⟨strictInterl_motzkin_zero_one, motzkin_bound_zero, motzkin_bound_one⟩
-  | n + 1 => by
-      rcases strictInterl_motzkin_succ_and_roots_le n with ⟨_, _, hle_succ⟩
-      have hprev := strictInterl_motzkin_succ n
-      have hshift :
-          StrictInterl (motzkin (n + 2)) ((X - C motzkinShift) * motzkin (n + 1)) :=
-        strictInterl_motzkin_shifted_succ hprev hle_succ
-      have hright_le :
-          ∀ r ∈ ((X - C motzkinShift) * motzkin (n + 1)).roots, r ≤ motzkinShift :=
-        roots_le_X_sub_C_mul hprev.2.1.2 hle_succ
-      have hle_next :
-          ∀ r ∈ (motzkin (n + 2)).roots, r ≤ motzkinShift :=
-        hshift.roots_le_of_right hright_le
-      exact ⟨strictInterl_motzkin_succ (n + 1), hle_succ, hle_next⟩
+      (∀ r ∈ (motzkin (n + 1)).roots, r ≤ motzkinShift) := by
+  intro n
+  have hle (k : ℕ) : ∀ r ∈ (motzkin k).roots, r ≤ motzkinShift := by
+    intro r hr
+    exact (roots_nonpos_of_hasNonnegCoeffs (hasNonnegCoeffs_motzkin k) r hr).trans
+      (by norm_num [motzkinShift])
+  exact ⟨strictInterl_motzkin_succ n, hle n, hle (n + 1)⟩
 
 theorem roots_le_motzkinShift_motzkin (n : Nat) :
     ∀ r ∈ (motzkin n).roots, r ≤ motzkinShift :=

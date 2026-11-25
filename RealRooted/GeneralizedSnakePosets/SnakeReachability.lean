@@ -61,6 +61,21 @@ theorem snakeReachableFuel_eq_false_of_target_lt {w : SnakeWord}
   Bool.eq_false_of_not_eq_true fun hreach =>
     (not_lt_of_ge (snakeReachableFuel_le hreach)) hba
 
+/-- A predicate closed under cover edges is preserved by every bounded path. -/
+private lemma snakeReachableFuel_invariant {w : SnakeWord} {S : ℕ → Prop}
+    (hstep : ∀ a b, S a → snakeCoverEdge w a b = true → S b)
+    {fuel a b : ℕ} (ha : S a) (hreach : snakeReachableFuel w fuel a b = true) : S b := by
+  induction fuel generalizing a with
+  | zero =>
+      simp only [snakeReachableFuel, beq_iff_eq] at hreach
+      exact hreach ▸ ha
+  | succ fuel ih =>
+      simp only [snakeReachableFuel, Bool.or_eq_true, beq_iff_eq,
+        List.any_eq_true, List.mem_range, Bool.and_eq_true] at hreach
+      rcases hreach with rfl | ⟨c, _, hac, hcb⟩
+      · exact ha
+      · exact ih (hstep a c ha hac) hcb
+
 /-- A row cannot reach a weakly lower column in any generalized snake word. -/
 theorem snakeReachableFuel_rowCode_colCode_eq_false_of_le
     {w : SnakeWord} {fuel r c : ℕ} (hcr : c ≤ r) :
@@ -350,79 +365,48 @@ theorem snakeReachableFuel_suffix_R_rowCode_colCode_eq_false
     (hc : c ≤ w.length - (last + 1))
     (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.R) :
     snakeReachableFuel w fuel (snakeRowCode r) (snakeColCode c) = false := by
-  induction fuel generalizing r hr with
-  | zero =>
-      exact Bool.eq_false_of_not_eq_true fun hreach => by
-        simp only [snakeReachableFuel, beq_iff_eq] at hreach
-        exact snakeRowCode_ne_colCode r c hreach
-  | succ fuel ih =>
-      apply Bool.eq_false_of_not_eq_true
-      intro hreach
-      change ((snakeRowCode r == snakeColCode c) ||
-        (List.range (snakeCodeBound w)).any fun x =>
-          snakeCoverEdge w (snakeRowCode r) x &&
-            snakeReachableFuel w fuel x (snakeColCode c)) = true at hreach
-      rw [Bool.or_eq_true] at hreach
-      rcases hreach with heq | hstep
-      · rw [beq_iff_eq] at heq
-        exact snakeRowCode_ne_colCode r c heq
-      · simp only [List.any_eq_true, List.mem_range, Bool.and_eq_true] at hstep
-        rcases hstep with ⟨x, _hx, hcover, htail⟩
-        rw [snakeCoverEdge] at hcover
-        rw [Bool.or_eq_true] at hcover
-        rcases hcover with hchain | hcross
-        · rw [Bool.and_eq_true] at hchain
-          rcases hchain with ⟨hnext, _hbound⟩
-          rw [beq_iff_eq] at hnext
-          have hx : x = snakeRowCode (r + 1) := by
-            rw [← hnext]
-            simp [snakeRowCode]
-            lia
-          rw [hx] at htail
-          by_cases hrm : r < w.length - (last + 1)
-          · have hfalse := ih (r := r + 1) (hr := by lia)
-            rw [hfalse] at htail
-            cases htail
-          · have hdrop : snakeColCode c < snakeRowCode (r + 1) := by
-              simp [snakeRowCode, snakeColCode]
+  let M := w.length - (last + 1)
+  let S := fun x => (∃ i, i ≤ M ∧ x = snakeRowCode i) ∨ snakeColCode M < x
+  have hclosed : ∀ x y, S x → snakeCoverEdge w x y = true → S y := by
+    rintro x y (⟨i, hi, rfl⟩ | hlarge) hcover
+    · simp only [snakeCoverEdge, Bool.or_eq_true, Bool.and_eq_true,
+        beq_iff_eq, decide_eq_true_eq] at hcover
+      rcases hcover with ⟨hnext, _⟩ | hcross
+      · by_cases hbound : i + 1 ≤ M
+        · exact Or.inl ⟨i + 1, hbound, by dsimp [snakeRowCode] at hnext ⊢; lia⟩
+        · right
+          dsimp [snakeRowCode, snakeColCode] at hnext ⊢
+          lia
+      · simp only [snakeCrossCoverEdge, List.any_eq_true, List.mem_range] at hcross
+        obtain ⟨idx, hidx, hbool⟩ := hcross
+        cases hletter : w.getD idx SnakeLetter.L with
+        | L =>
+            simp only [hletter, Bool.and_eq_true, beq_iff_eq] at hbool
+            obtain ⟨hrow, rfl⟩ := hbool
+            have hgap : i = w.length - (idx + 1) := by
+              dsimp [snakeRowCode] at hrow
               lia
-            have hfalse := snakeReachableFuel_eq_false_of_target_lt
-              (w := w) (fuel := fuel) (a := snakeRowCode (r + 1))
-              (b := snakeColCode c) hdrop
-            rw [hfalse] at htail
-            cases htail
-        · rw [snakeCrossCoverEdge] at hcross
-          simp only [List.any_eq_true, List.mem_range] at hcross
-          rcases hcross with ⟨idx, hidx, hbool⟩
-          by_cases hletter : w.getD idx SnakeLetter.L = SnakeLetter.L
-          · simp only [hletter, Bool.and_eq_true, beq_iff_eq] at hbool
-            rcases hbool with ⟨hrow, hx⟩
-            have hgap_eq : w.length - (idx + 1) = r := by
-              have hrgap : r = w.length - (idx + 1) := by simpa [snakeRowCode] using hrow
-              exact hrgap.symm
-            have hx' : x = snakeColCode (r + 1) := by simpa [hgap_eq] using hx
-            rw [hx'] at htail
-            by_cases hrm : r < w.length - (last + 1)
-            · have hkidx : last < idx := by lia
-              have hletter_final : w.getD idx SnakeLetter.L = SnakeLetter.R := by
-                rw [hlast.getD_eq_final_of_lt hkidx hidx, hfinal]
-              rw [hletter_final] at hletter
-              cases hletter
-            · have hdrop : snakeColCode c < snakeColCode (r + 1) := by
-                simp [snakeColCode]
-                lia
-              have hfalse := snakeReachableFuel_eq_false_of_target_lt
-                (w := w) (fuel := fuel) (a := snakeColCode (r + 1))
-                (b := snakeColCode c) hdrop
-              rw [hfalse] at htail
-              cases htail
-          · have hletterR : w.getD idx SnakeLetter.L = SnakeLetter.R := by
-              cases hletter' : w.getD idx SnakeLetter.L with
-              | L => exact (hletter hletter').elim
-              | R => rfl
-            simp only [hletterR, Bool.and_eq_true, beq_iff_eq] at hbool
-            rcases hbool with ⟨hcol, _hx⟩
-            exact snakeRowCode_ne_colCode r (w.length - (idx + 1)) hcol
+            have hcut : M ≤ i := by
+              by_contra hlt
+              have hidxlast : last < idx := by dsimp [M] at *; lia
+              have h := hlast.getD_eq_final_of_lt hidxlast hidx SnakeLetter.L
+              rw [hletter, hfinal] at h
+              cases h
+            right
+            dsimp [snakeColCode]
+            lia
+        | R =>
+            simp only [hletter, Bool.and_eq_true, beq_iff_eq] at hbool
+            exact (snakeRowCode_ne_colCode i _ hbool.1).elim
+    · exact Or.inr (hlarge.trans (snakeCoverEdge_lt hcover))
+  apply Bool.eq_false_of_not_eq_true
+  intro hreach
+  rcases snakeReachableFuel_invariant hclosed (Or.inl ⟨r, hr, rfl⟩) hreach with
+    ⟨i, _, heq⟩ | hlarge
+  · exact snakeColCode_ne_rowCode c i heq
+  · dsimp [snakeColCode] at hlarge
+    dsimp [M] at hlarge
+    lia
 
 /-- In a final `L` suffix after a last-change index, suffix columns never reach
 suffix rows. -/
@@ -432,79 +416,48 @@ theorem snakeReachableFuel_suffix_L_colCode_rowCode_eq_false
     (hr : r ≤ w.length - (last + 1))
     (hfinal : w.getD (w.length - 1) SnakeLetter.L = SnakeLetter.L) :
     snakeReachableFuel w fuel (snakeColCode c) (snakeRowCode r) = false := by
-  induction fuel generalizing c hc with
-  | zero =>
-      exact Bool.eq_false_of_not_eq_true fun hreach => by
-        simp only [snakeReachableFuel, beq_iff_eq] at hreach
-        exact snakeColCode_ne_rowCode c r hreach
-  | succ fuel ih =>
-      apply Bool.eq_false_of_not_eq_true
-      intro hreach
-      change ((snakeColCode c == snakeRowCode r) ||
-        (List.range (snakeCodeBound w)).any fun x =>
-          snakeCoverEdge w (snakeColCode c) x &&
-            snakeReachableFuel w fuel x (snakeRowCode r)) = true at hreach
-      rw [Bool.or_eq_true] at hreach
-      rcases hreach with heq | hstep
-      · rw [beq_iff_eq] at heq
-        exact snakeColCode_ne_rowCode c r heq
-      · simp only [List.any_eq_true, List.mem_range, Bool.and_eq_true] at hstep
-        rcases hstep with ⟨x, _hx, hcover, htail⟩
-        rw [snakeCoverEdge] at hcover
-        rw [Bool.or_eq_true] at hcover
-        rcases hcover with hchain | hcross
-        · rw [Bool.and_eq_true] at hchain
-          rcases hchain with ⟨hnext, _hbound⟩
-          rw [beq_iff_eq] at hnext
-          have hx : x = snakeColCode (c + 1) := by
-            rw [← hnext]
-            simp [snakeColCode]
-            lia
-          rw [hx] at htail
-          by_cases hcm : c < w.length - (last + 1)
-          · have hfalse := ih (c := c + 1) (hc := by lia)
-            rw [hfalse] at htail
-            cases htail
-          · have hdrop : snakeRowCode r < snakeColCode (c + 1) := by
-              simp [snakeRowCode, snakeColCode]
+  let M := w.length - (last + 1)
+  let S := fun x => (∃ i, i ≤ M ∧ x = snakeColCode i) ∨ snakeRowCode M < x
+  have hclosed : ∀ x y, S x → snakeCoverEdge w x y = true → S y := by
+    rintro x y (⟨i, hi, rfl⟩ | hlarge) hcover
+    · simp only [snakeCoverEdge, Bool.or_eq_true, Bool.and_eq_true,
+        beq_iff_eq, decide_eq_true_eq] at hcover
+      rcases hcover with ⟨hnext, _⟩ | hcross
+      · by_cases hbound : i + 1 ≤ M
+        · exact Or.inl ⟨i + 1, hbound, by dsimp [snakeColCode] at hnext ⊢; lia⟩
+        · right
+          dsimp [snakeColCode, snakeRowCode] at hnext ⊢
+          lia
+      · simp only [snakeCrossCoverEdge, List.any_eq_true, List.mem_range] at hcross
+        obtain ⟨idx, hidx, hbool⟩ := hcross
+        cases hletter : w.getD idx SnakeLetter.L with
+        | R =>
+            simp only [hletter, Bool.and_eq_true, beq_iff_eq] at hbool
+            obtain ⟨hrow, rfl⟩ := hbool
+            have hgap : i = w.length - (idx + 1) := by
+              dsimp [snakeColCode] at hrow
               lia
-            have hfalse := snakeReachableFuel_eq_false_of_target_lt
-              (w := w) (fuel := fuel) (a := snakeColCode (c + 1))
-              (b := snakeRowCode r) hdrop
-            rw [hfalse] at htail
-            cases htail
-        · rw [snakeCrossCoverEdge] at hcross
-          simp only [List.any_eq_true, List.mem_range] at hcross
-          rcases hcross with ⟨idx, hidx, hbool⟩
-          by_cases hletter : w.getD idx SnakeLetter.L = SnakeLetter.R
-          · simp only [hletter, Bool.and_eq_true, beq_iff_eq] at hbool
-            rcases hbool with ⟨hcol, hx⟩
-            have hgap_eq : w.length - (idx + 1) = c := by
-              have hcgap : c = w.length - (idx + 1) := by simpa [snakeColCode] using hcol
-              exact hcgap.symm
-            have hx' : x = snakeRowCode (c + 1) := by simpa [hgap_eq] using hx
-            rw [hx'] at htail
-            by_cases hcm : c < w.length - (last + 1)
-            · have hkidx : last < idx := by lia
-              have hletter_final : w.getD idx SnakeLetter.L = SnakeLetter.L := by
-                rw [hlast.getD_eq_final_of_lt hkidx hidx, hfinal]
-              rw [hletter_final] at hletter
-              cases hletter
-            · have hdrop : snakeRowCode r < snakeRowCode (c + 1) := by
-                simp [snakeRowCode]
-                lia
-              have hfalse := snakeReachableFuel_eq_false_of_target_lt
-                (w := w) (fuel := fuel) (a := snakeRowCode (c + 1))
-                (b := snakeRowCode r) hdrop
-              rw [hfalse] at htail
-              cases htail
-          · have hletterL : w.getD idx SnakeLetter.L = SnakeLetter.L := by
-              cases hletter' : w.getD idx SnakeLetter.L with
-              | L => rfl
-              | R => exact (hletter hletter').elim
-            simp only [hletterL, Bool.and_eq_true, beq_iff_eq] at hbool
-            rcases hbool with ⟨hrow, _hx⟩
-            exact snakeColCode_ne_rowCode c (w.length - (idx + 1)) hrow
+            have hcut : M ≤ i := by
+              by_contra hlt
+              have hidxlast : last < idx := by dsimp [M] at *; lia
+              have h := hlast.getD_eq_final_of_lt hidxlast hidx SnakeLetter.L
+              rw [hletter, hfinal] at h
+              cases h
+            right
+            dsimp [snakeRowCode]
+            lia
+        | L =>
+            simp only [hletter, Bool.and_eq_true, beq_iff_eq] at hbool
+            exact (snakeColCode_ne_rowCode i _ hbool.1).elim
+    · exact Or.inr (hlarge.trans (snakeCoverEdge_lt hcover))
+  apply Bool.eq_false_of_not_eq_true
+  intro hreach
+  rcases snakeReachableFuel_invariant hclosed (Or.inl ⟨c, hc, rfl⟩) hreach with
+    ⟨i, _, heq⟩ | hlarge
+  · exact snakeRowCode_ne_colCode r i heq
+  · dsimp [snakeRowCode] at hlarge
+    dsimp [M] at hlarge
+    lia
 
 /-- In an all-`R` snake word, a column reaches exactly the higher rows in exact
 path fuel. -/
@@ -531,76 +484,34 @@ theorem snakeReachableFuel_replicate_R_rowCode_colCode_eq_false
     {n fuel r c : ℕ} :
     snakeReachableFuel (List.replicate n SnakeLetter.R) fuel
       (snakeRowCode r) (snakeColCode c) = false := by
-  induction fuel generalizing r with
-  | zero =>
-      exact Bool.eq_false_of_not_eq_true fun hreach => by
-        simp only [snakeReachableFuel, beq_iff_eq] at hreach
-        exact snakeRowCode_ne_colCode r c hreach
-  | succ fuel ih =>
-      apply Bool.eq_false_of_not_eq_true
-      intro hreach
-      change ((snakeRowCode r == snakeColCode c) ||
-        (List.range (snakeCodeBound (List.replicate n SnakeLetter.R))).any fun x =>
-          snakeCoverEdge (List.replicate n SnakeLetter.R) (snakeRowCode r) x &&
-            snakeReachableFuel (List.replicate n SnakeLetter.R) fuel x
-              (snakeColCode c)) = true at hreach
-      rw [Bool.or_eq_true] at hreach
-      rcases hreach with heq | hstep
-      · rw [beq_iff_eq] at heq
-        exact snakeRowCode_ne_colCode r c heq
-      · simp only [List.any_eq_true, List.mem_range, Bool.and_eq_true] at hstep
-        rcases hstep with ⟨x, _hx, hcover, htail⟩
-        rw [snakeCoverEdge_replicate_R] at hcover
-        rcases hcover with hchain | hcross
-        · rcases hchain with ⟨hnext, _hbound⟩
-          have hx : x = snakeRowCode (r + 1) := by
-            rw [← hnext]
-            simp [snakeRowCode]
-            lia
-          rw [hx] at htail
-          have hfalse := ih (r := r + 1)
-          rw [hfalse] at htail
-          cases htail
-        · rcases hcross with ⟨d, _hd, hrow, _hx⟩
-          exact snakeRowCode_ne_colCode r d hrow
+  apply Bool.eq_false_of_not_eq_true
+  intro hreach
+  have hclosed : ∀ a b, (∃ i, a = snakeRowCode i) →
+      snakeCoverEdge (List.replicate n SnakeLetter.R) a b = true →
+        ∃ i, b = snakeRowCode i := by
+    rintro a b ⟨i, rfl⟩ hcover
+    rcases snakeCoverEdge_replicate_R.mp hcover with ⟨hnext, _⟩ | ⟨j, _, heq, _⟩
+    · exact ⟨i + 1, by dsimp [snakeRowCode] at hnext ⊢; lia⟩
+    · exact (snakeRowCode_ne_colCode i j heq).elim
+  obtain ⟨i, hi⟩ := snakeReachableFuel_invariant hclosed ⟨r, rfl⟩ hreach
+  exact snakeColCode_ne_rowCode c i hi
 
 /-- In an all-`L` word, columns never reach rows. -/
 theorem snakeReachableFuel_replicate_L_colCode_rowCode_eq_false
     {n fuel c r : ℕ} :
     snakeReachableFuel (List.replicate n SnakeLetter.L) fuel
       (snakeColCode c) (snakeRowCode r) = false := by
-  induction fuel generalizing c with
-  | zero =>
-      exact Bool.eq_false_of_not_eq_true fun hreach => by
-        simp only [snakeReachableFuel, beq_iff_eq] at hreach
-        exact snakeColCode_ne_rowCode c r hreach
-  | succ fuel ih =>
-      apply Bool.eq_false_of_not_eq_true
-      intro hreach
-      change ((snakeColCode c == snakeRowCode r) ||
-        (List.range (snakeCodeBound (List.replicate n SnakeLetter.L))).any fun x =>
-          snakeCoverEdge (List.replicate n SnakeLetter.L) (snakeColCode c) x &&
-            snakeReachableFuel (List.replicate n SnakeLetter.L) fuel x
-              (snakeRowCode r)) = true at hreach
-      rw [Bool.or_eq_true] at hreach
-      rcases hreach with heq | hstep
-      · rw [beq_iff_eq] at heq
-        exact snakeColCode_ne_rowCode c r heq
-      · simp only [List.any_eq_true, List.mem_range, Bool.and_eq_true] at hstep
-        rcases hstep with ⟨x, _hx, hcover, htail⟩
-        rw [snakeCoverEdge_replicate_L] at hcover
-        rcases hcover with hchain | hcross
-        · rcases hchain with ⟨hnext, _hbound⟩
-          have hx : x = snakeColCode (c + 1) := by
-            rw [← hnext]
-            simp [snakeColCode]
-            lia
-          rw [hx] at htail
-          have hfalse := ih (c := c + 1)
-          rw [hfalse] at htail
-          cases htail
-        · rcases hcross with ⟨d, _hd, hcol, _hx⟩
-          exact snakeColCode_ne_rowCode c d hcol
+  apply Bool.eq_false_of_not_eq_true
+  intro hreach
+  have hclosed : ∀ a b, (∃ i, a = snakeColCode i) →
+      snakeCoverEdge (List.replicate n SnakeLetter.L) a b = true →
+        ∃ i, b = snakeColCode i := by
+    rintro a b ⟨i, rfl⟩ hcover
+    rcases snakeCoverEdge_replicate_L.mp hcover with ⟨hnext, _⟩ | ⟨j, _, heq, _⟩
+    · exact ⟨i + 1, by dsimp [snakeColCode] at hnext ⊢; lia⟩
+    · exact (snakeColCode_ne_rowCode i j heq).elim
+  obtain ⟨i, hi⟩ := snakeReachableFuel_invariant hclosed ⟨c, rfl⟩ hreach
+  exact snakeRowCode_ne_colCode r i hi
 
 /-- In an all-`R` word, columns cannot reach rows weakly below them. -/
 theorem snakeReachableFuel_replicate_R_colCode_rowCode_eq_false_of_le

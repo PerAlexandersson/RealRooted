@@ -2,6 +2,9 @@ module
 
 public import RealRooted.EulerOperator.Darboux.NegativeRoots
 
+import RealRooted.MultiplierSequence.ProperPosition
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
+import RealRooted.MaWang.DerivativeStep
 import RealRooted.Interlacing.OuterDifference
 import RealRooted.MaWang.CriticalSign
 import RealRooted.MaWang.Weak.DerivativeSign
@@ -9,9 +12,9 @@ import RealRooted.MaWang.Weak.DerivativeSign
 /-!
 # Euler multipliers of Eulerian Sturm sequences
 
-This module proves that a positive shifted Euler operator sends a scaled Euler
-insertion sequence to another Sturm sequence.  It also derives the order-two
-recurrence obtained by eliminating the original sequence.
+We obtain the source Sturm sequence from the Darboux step and transport its
+interlacing through the general positive-multiplier theorem. We also derive
+the order-two recurrence obtained by eliminating the original sequence.
 -/
 
 public section
@@ -94,6 +97,18 @@ theorem eulerShift_scaledEulerInsertionStep_lagTwo
     map_add, map_sub, map_mul, map_one, map_ofNat]
   ring
 
+/-- Scaling the Darboux step gives the real-parameter Euler insertion. -/
+private lemma scaledEulerInsertionStep_eq_C_mul_darbouxOperator
+    (sigma gamma beta : ℝ) (p : ℝ[X]) (hgamma : gamma ≠ 0) :
+    scaledEulerInsertionStep sigma gamma beta p =
+      C gamma * darbouxOperator sigma (-(beta / gamma)) p := by
+  apply Polynomial.funext
+  intro x
+  simp only [scaledEulerInsertionStep, darbouxOperator, eval_add, eval_mul, eval_sub,
+    eval_X, eval_one, eval_C, eval_neg, map_neg]
+  field_simp
+  ring
+
 /-- Positive scaled Euler insertions produce degree-indexed polynomials with
 simple strictly negative roots. -/
 theorem scaledEulerInsertion_simpleNegRooted
@@ -107,33 +122,14 @@ theorem scaledEulerInsertion_simpleNegRooted
     ∀ n, SimpleNegRooted (F n) n := by
   intro n
   induction n with
-  | zero => simpa [hFzero] using SimpleNegRooted.one
+  | zero => simpa only [hFzero] using SimpleNegRooted.one
   | succ n ih =>
       have hgamma_pos := hgamma n
       have hslope : (n : ℝ) < beta (n + 1) / gamma (n + 1) := by
-        apply (lt_div_iff₀ hgamma_pos).2
-        simpa [mul_comm] using hbeta n
-      have hstep := ih.darbouxOperator hsigma hslope
-      have heq :
-          scaledEulerInsertionStep sigma (gamma (n + 1)) (beta (n + 1)) (F n) =
-            C (gamma (n + 1)) *
-              darbouxOperator sigma (-(beta (n + 1) / gamma (n + 1))) (F n) := by
-        have hC : C (gamma (n + 1)) * C (beta (n + 1) / gamma (n + 1)) =
-            (C (beta (n + 1)) : ℝ[X]) := by
-          rw [← map_mul]
-          congr 1
-          field_simp
-        simp only [scaledEulerInsertionStep, darbouxOperator, map_neg]
-        simp only [map_mul]
-        ring_nf
-        have hC' : C (gamma (1 + n)) * C (beta (1 + n) / gamma (1 + n)) =
-            (C (beta (1 + n)) : ℝ[X]) := by
-          simpa [Nat.add_comm] using hC
-        rw [← hC']
-        simp only [div_eq_mul_inv]
-        ring
-      rw [hFsucc n, heq]
-      exact hstep.1.C_mul hgamma_pos
+        exact (lt_div_iff₀ hgamma_pos).2 (by simpa only [mul_comm] using hbeta n)
+      rw [hFsucc n, scaledEulerInsertionStep_eq_C_mul_darbouxOperator
+        _ _ _ _ hgamma_pos.ne']
+      exact ((ih.darbouxOperator hsigma hslope).1).C_mul hgamma_pos
 
 /-- A positive shifted Euler operator preserves the simple-negative-rooted
 invariant and strictly interlaces its input. -/
@@ -143,66 +139,37 @@ private theorem simpleNegRooted_eulerShift
     SimpleNegRooted (eulerShift sigma f) d ∧
       StrictInterl f (eulerShift sigma f) ∧
       (∀ r, f.IsRoot r → ¬(eulerShift sigma f).IsRoot r) := by
-  have hnonneg : HasNonnegCoeffs (eulerShift sigma f) := by
-    intro k
+  have hfactor : 0 < sigma + (f.natDegree : ℝ) := by positivity
+  have hdata := Polynomial.natDegree_and_leadingCoeff_C_mul_add_affine_mul_derivative
+    f sigma 0 1 (by simpa only [one_mul] using mul_ne_zero hfactor.ne' hf.pos.ne')
+  have heq : C sigma * f + (C 0 + C 1 * X) * f.derivative = eulerShift sigma f := by
+    simp only [map_zero, map_one, one_mul, zero_add, eulerShift, add_comm]
+  rw [heq] at hdata
+  have hdegree : (eulerShift sigma f).natDegree = d := hdata.1.trans hf.natDegree_eq
+  have hpos : HasPosLeadingCoeff (eulerShift sigma f) := by
+    change 0 < (eulerShift sigma f).leadingCoeff
+    rw [hdata.2]
+    exact mul_pos (by simpa only [one_mul] using hfactor) hf.pos
+  have hinterl : StrictInterl f (eulerShift sigma f) := by
+    rw [← heq]
+    exact MaWang.strictInterl_derivative_of_nonpos_of_splits hf.splits
+      (by rw [heq, hdata.1]) (by rw [heq, hdata.1]; lia) (heq ▸ hpos) hf.pos
+      (fun r hr => by simpa only [map_zero, map_one, one_mul, zero_add, eval_X]
+        using (hf.isRoot_neg hr).le)
+  have hno : ∀ r, f.IsRoot r → ¬ (eulerShift sigma f).IsRoot r := by
+    intro r hr hroot
+    have hzero : r * f.derivative.eval r = 0 := by
+      simpa only [eulerShift, eval_add, eval_mul, eval_X, eval_C, hr.eq_zero,
+        mul_zero, add_zero] using hroot.eq_zero
+    exact mul_ne_zero (hf.isRoot_neg hr).ne (hf.simple.eval_derivative_ne_zero hr) hzero
+  refine ⟨⟨hdegree, hpos, ?_, ?_, hinterl.2.1.2,
+    (hinterl.hasSimpleRoots_of_no_common_root fun r hr => hno r hr.1 hr.2).2⟩,
+      hinterl, hno⟩
+  · intro k
     rw [coeff_eulerShift]
     exact mul_nonneg (add_nonneg (Nat.cast_nonneg k) hsigma.le) (hf.nonneg k)
-  have hcoeff_zero : 0 < (eulerShift sigma f).coeff 0 := by
-    rw [coeff_eulerShift]
-    simpa using mul_pos hsigma hf.coeff_zero_pos
-  by_cases hd : d = 0
-  · subst d
-    have hderivative : f.derivative = 0 :=
-      derivative_eq_zero.mpr hf.natDegree_eq
-    have heq : eulerShift sigma f = C sigma * f := by
-      simp [eulerShift, hderivative]
-    have hno : ∀ r, f.IsRoot r → ¬(eulerShift sigma f).IsRoot r := by
-      intro r hr
-      rw [eq_C_of_natDegree_eq_zero hf.natDegree_eq] at hr
-      have hz : f.coeff 0 = 0 := by
-        simpa [Polynomial.IsRoot.def] using hr
-      linarith [hf.coeff_zero_pos]
-    rw [heq]
-    refine ⟨hf.C_mul hsigma,
-      (StrictInterl.refl hf.pos.ne_zero hf.splits).C_mul_right hsigma.ne', ?_⟩
-    simpa only [heq] using hno
-  · have hdegree_le : (eulerShift sigma f).natDegree ≤ d := by
-      rw [natDegree_le_iff_coeff_eq_zero]
-      intro k hk
-      rw [coeff_eulerShift, coeff_eq_zero_of_natDegree_lt]
-      · simp
-      · rw [hf.natDegree_eq]
-        exact hk
-    have htop : 0 < (eulerShift sigma f).coeff d := by
-      rw [coeff_eulerShift]
-      have hf_top : 0 < f.coeff d := by
-        simpa [HasPosLeadingCoeff, leadingCoeff, hf.natDegree_eq] using hf.pos
-      exact mul_pos (add_pos_of_nonneg_of_pos (Nat.cast_nonneg d) hsigma) hf_top
-    have hdegree : (eulerShift sigma f).natDegree = d :=
-      natDegree_eq_of_le_of_coeff_ne_zero hdegree_le htop.ne'
-    have hpos : HasPosLeadingCoeff (eulerShift sigma f) := by
-      rw [HasPosLeadingCoeff, leadingCoeff, hdegree]
-      exact htop
-    have hsign : ∀ r, f.IsRoot r →
-        (eulerShift sigma f).eval r * f.derivative.eval r < 0 := by
-      intro r hr
-      have hrneg := hf.isRoot_neg hr
-      have hderivative := hf.simple.eval_derivative_ne_zero hr
-      simp only [eulerShift, eval_add, eval_mul, eval_X, eval_C, hr.eq_zero, mul_zero,
-        add_zero]
-      nlinarith [sq_pos_of_ne_zero hderivative]
-    have hinterl : StrictInterl f (eulerShift sigma f) :=
-      strictInterl_of_eval_mul_derivative_neg hf.splits hf.pos hpos
-        (by simpa [hf.natDegree_eq]) (by rw [hdegree, hf.natDegree_eq])
-        (by rw [hdegree, hf.natDegree_eq]; simp) hsign
-    have hno : ∀ r, f.IsRoot r → ¬(eulerShift sigma f).IsRoot r := by
-      intro r hr hHr
-      have := hsign r hr
-      rw [hHr.eq_zero, zero_mul] at this
-      exact (lt_irrefl 0) this
-    have hsimple := (hinterl.hasSimpleRoots_of_no_common_root fun r h ↦ hno r h.1 h.2).2
-    exact ⟨⟨hdegree, hpos, hnonneg, hcoeff_zero, hinterl.2.1.2, hsimple⟩,
-      hinterl, hno⟩
+  · rw [coeff_eulerShift]
+    simpa only [Nat.cast_zero, zero_add] using mul_pos hsigma hf.coeff_zero_pos
 
 /-- Shifted Euler images of a positive scaled insertion sequence have simple
 negative roots and strictly interlace in consecutive degrees. -/
@@ -219,86 +186,15 @@ theorem eulerMultiplier_simpleNegRooted_and_strictInterl
       (∀ n, StrictInterl (eulerShift sigma (F n))
         (eulerShift sigma (F (n + 1)))) := by
   have hFdata := scaledEulerInsertion_simpleNegRooted hsigma hgamma hbeta hFzero hFsucc
-  have hHdata : ∀ n, SimpleNegRooted (eulerShift sigma (F n)) n :=
-    fun n ↦ (simpleNegRooted_eulerShift (hFdata n) hsigma).1
-  refine ⟨hFdata, hHdata, ?_⟩
+  refine ⟨hFdata, fun n => (simpleNegRooted_eulerShift (hFdata n) hsigma).1, ?_⟩
   intro n
-  cases n with
-  | zero =>
-      exact StrictInterl.of_natDegree_eq_zero_left
-        (hHdata 0).pos.ne_zero (hHdata 0).natDegree_eq
-        (hHdata 1).pos.ne_zero (by rw [(hHdata 1).natDegree_eq])
-  | succ n =>
-      have hcross := (simpleNegRooted_eulerShift (hFdata (n + 1)) hsigma).2.1
-      have hcrossNo := (simpleNegRooted_eulerShift (hFdata (n + 1)) hsigma).2.2
-      have hroot_sign : ∀ r, (eulerShift sigma (F (n + 1))).IsRoot r →
-          (eulerShift sigma (F (n + 2))).eval r *
-            (eulerShift sigma (F (n + 1))).derivative.eval r < 0 := by
-        intro r hr
-        have hrneg := (hHdata (n + 1)).isRoot_neg hr
-        have hsame_sign : 0 < (F (n + 1)).eval r *
-            (eulerShift sigma (F (n + 1))).derivative.eval r :=
-          hcross.eval_mul_derivative_pos_of_right_root_of_no_common
-            (hFdata (n + 1)).pos (hHdata (n + 1)).pos hcrossNo hr
-        have hderivative := (hHdata (n + 1)).simple.eval_derivative_ne_zero hr
-        have hgamma_pos : 0 < gamma (n + 2) := by
-          simpa [Nat.add_assoc] using hgamma (n + 1)
-        have hbeta_pos : 0 < beta (n + 2) := by
-          have hbound : gamma (n + 2) * (n + 1 : ℝ) < beta (n + 2) := by
-            simpa [Nat.add_assoc] using hbeta (n + 1)
-          have hnonneg : 0 ≤ gamma (n + 2) * (n + 1 : ℝ) := by positivity
-          linarith [hbound, hnonneg]
-        have heval : (eulerShift sigma (F (n + 2))).eval r =
-            gamma (n + 2) * (1 - r) * r *
-                (eulerShift sigma (F (n + 1))).derivative.eval r +
-              (beta (n + 2) + sigma * gamma (n + 2)) * r * (F (n + 1)).eval r := by
-          rw [hFsucc (n + 1), eulerShift_scaledEulerInsertionStep]
-          simp [hr.eq_zero]
-          ring
-        have hfirst : gamma (n + 2) * (1 - r) * r *
-            ((eulerShift sigma (F (n + 1))).derivative.eval r) ^ 2 < 0 := by
-          have hsquare : 0 <
-              ((eulerShift sigma (F (n + 1))).derivative.eval r) ^ 2 :=
-            sq_pos_of_ne_zero hderivative
-          have hone : 0 < 1 - r := by linarith
-          calc
-            gamma (n + 2) * (1 - r) * r *
-                ((eulerShift sigma (F (n + 1))).derivative.eval r) ^ 2 =
-              (gamma (n + 2) * (1 - r)) *
-                (r * ((eulerShift sigma (F (n + 1))).derivative.eval r) ^ 2) := by ring
-            _ < 0 := mul_neg_of_pos_of_neg (mul_pos hgamma_pos hone)
-              (mul_neg_of_neg_of_pos hrneg hsquare)
-        have hsecond : (beta (n + 2) + sigma * gamma (n + 2)) * r *
-              ((F (n + 1)).eval r *
-                (eulerShift sigma (F (n + 1))).derivative.eval r) < 0 := by
-          calc
-            (beta (n + 2) + sigma * gamma (n + 2)) * r *
-                ((F (n + 1)).eval r *
-                  (eulerShift sigma (F (n + 1))).derivative.eval r) =
-              (beta (n + 2) + sigma * gamma (n + 2)) *
-                (r * ((F (n + 1)).eval r *
-                  (eulerShift sigma (F (n + 1))).derivative.eval r)) := by ring
-            _ < 0 := mul_neg_of_pos_of_neg (by positivity)
-              (mul_neg_of_neg_of_pos hrneg hsame_sign)
-        rw [heval]
-        calc
-          (gamma (n + 2) * (1 - r) * r *
-                (eulerShift sigma (F (n + 1))).derivative.eval r +
-              (beta (n + 2) + sigma * gamma (n + 2)) * r * (F (n + 1)).eval r) *
-              (eulerShift sigma (F (n + 1))).derivative.eval r =
-            gamma (n + 2) * (1 - r) * r *
-                ((eulerShift sigma (F (n + 1))).derivative.eval r) ^ 2 +
-              (beta (n + 2) + sigma * gamma (n + 2)) * r *
-                ((F (n + 1)).eval r *
-                  (eulerShift sigma (F (n + 1))).derivative.eval r) := by ring
-          _ < 0 := add_neg hfirst hsecond
-      have hinterl := strictInterl_of_eval_mul_derivative_neg
-        (hHdata (n + 1)).splits (hHdata (n + 1)).pos (hHdata (n + 2)).pos
-        (by rw [(hHdata (n + 1)).natDegree_eq]; lia)
-        (by rw [(hHdata (n + 1)).natDegree_eq, (hHdata (n + 2)).natDegree_eq]; simp)
-        (by rw [(hHdata (n + 1)).natDegree_eq, (hHdata (n + 2)).natDegree_eq])
-        hroot_sign
-      simpa [Nat.add_assoc] using hinterl
+  apply eulerShift_strictInterl_of_pos hsigma
+  have hgamma_pos := hgamma n
+  have hslope : (n : ℝ) < beta (n + 1) / gamma (n + 1) :=
+    (lt_div_iff₀ hgamma_pos).2 (by simpa only [mul_comm] using hbeta n)
+  rw [hFsucc n, scaledEulerInsertionStep_eq_C_mul_darbouxOperator
+    _ _ _ _ hgamma_pos.ne']
+  exact ((hFdata n).darbouxOperator hsigma hslope).2.1.C_mul_right hgamma_pos.ne'
 
 /-- The shifted Euler images have the two initial rows stated in the
 Euler-multiplier theorem. -/

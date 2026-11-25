@@ -1,9 +1,9 @@
 module
 
 import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.SplitEndpoints
+import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.UpperTail
 import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.GapCounts
 import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RootFilters
-import RealRooted.LiuOppositeSigns.XSub.LeftSucc
 public import RealRooted.LiuOppositeSigns.NoCommonRoots
 public import RealRooted.LiuOppositeSigns.PositiveSplitRootCount
 import RealRooted.WagnerRightSum.Sign
@@ -19,6 +19,53 @@ open Polynomial Filter
 
 namespace RealRooted
 namespace LiuOppositeSigns
+/-- The lower exterior root credit in the left-successor degree case.
+Its sign follows from the parity of the right degree. -/
+private lemma one_le_lower_tail_of_left_successor {p q : ℝ[X]}
+    (hpair : PositiveSplitRootCountPair p q) (hno : NoCommonRoots p q)
+    {a μ : ℝ} (ha : p.IsRoot a) (hroots_ge : ∀ r ∈ p.roots, a ≤ r)
+    (hdeg : p.natDegree = q.natDegree + 1) (hμ : 0 < μ) :
+    1 ≤ ((X * p - C μ * q).roots.filter (fun x => x ≤ a)).card := by
+  let P := X * p - C μ * q
+  have htail_card := hpair.card_right_roots_filter_gt_eq_natDegree_of_left_roots_ge
+    hno ha hroots_ge hdeg
+  have hqa : ¬ q.IsRoot a := hno a ha
+  have hP_data := hpair.posLeadingCoeff_and_natDegree_X_mul_sub_C_mul_of_right_natDegree_le
+    (by rw [hdeg]; exact Nat.le_succ _) μ
+  have hP_pos : HasPosLeadingCoeff P := hP_data.1
+  have hP_natDegree_q : P.natDegree = q.natDegree + 2 := by rw [hP_data.2, hdeg]
+  have hP_degree_pos : 0 < P.degree :=
+    Polynomial.natDegree_pos_iff_degree_pos.mp (by rw [hP_natDegree_q]; lia)
+  rcases Nat.even_or_odd q.natDegree with hq_even | hq_odd
+  · have hq_a_pos : 0 < q.eval a :=
+      (hpair.right_splits.eval_pos_iff_even_card_roots_gt
+        (by simpa [HasPosLeadingCoeff] using hpair.right_pos) hqa).mpr
+          (by simpa [htail_card] using hq_even)
+    have hP_even : Even P.natDegree := by
+      rw [hP_natDegree_q]
+      exact hq_even.add (by norm_num)
+    have hbot : Tendsto (fun x => P.eval x) atBot atTop :=
+      tendsto_eval_atBot_atTop_of_posLeadingCoeff_even
+        hP_pos hP_degree_pos hP_even
+    have hP_ne : P ≠ 0 := hP_pos.ne_zero
+    simpa [P] using
+      one_le_card_xSub_roots_filter_le_of_left_root_right_eval_nonneg
+        ha hq_a_pos.le hμ hP_ne hbot
+  · have hq_a_neg : q.eval a < 0 :=
+      (hpair.right_splits.eval_neg_iff_odd_card_roots_gt
+        (by simpa [HasPosLeadingCoeff] using hpair.right_pos) hqa).mpr
+          (by simpa [htail_card] using hq_odd)
+    have hP_odd : Odd P.natDegree := by
+      rw [hP_natDegree_q]
+      exact hq_odd.add_even (by norm_num)
+    have hbot : Tendsto (fun x => P.eval x) atBot atBot :=
+      tendsto_eval_atBot_atBot_of_posLeadingCoeff_odd
+        hP_pos hP_degree_pos hP_odd
+    have hP_ne : P ≠ 0 := hP_pos.ne_zero
+    simpa [P] using
+      one_le_card_xSub_roots_filter_le_of_left_root_right_eval_nonpos
+        ha (le_of_lt hq_a_neg) hμ hP_ne hbot
+
 /-- In the left-successor degree case, the sorted-root count endpoint proves
 splitting whenever the left endpoint has at least two distinct root locations
 and both endpoint polynomials have nonnegative coefficients.
@@ -41,10 +88,6 @@ theorem
       hpair.left_pos.ne_zero hrs
   have ha : p.IsRoot a := hhead.1
   have hroots_ge : ∀ r ∈ p.roots, a ≤ r := hhead.2
-  have htail_card : (q.roots.filter (a < ·)).card = q.natDegree :=
-    hpair.card_right_roots_filter_gt_eq_natDegree_of_left_roots_ge
-      hno ha hroots_ge hdeg
-  have hqa : ¬ q.IsRoot a := hno a ha
   have hP_data :=
     hpair.posLeadingCoeff_and_natDegree_X_mul_sub_C_mul_of_right_natDegree_le
       (by rw [hdeg]; exact Nat.le_succ _) μ
@@ -63,44 +106,57 @@ theorem
     fun y hy _ => roots_nonpos_of_hasNonnegCoeffs hq_nonneg y hy
   have hlower_one :
       1 ≤ (P.roots.filter (fun x => x ≤ a)).card := by
-    rcases Nat.even_or_odd q.natDegree with hq_even | hq_odd
-    · have hq_a_pos : 0 < q.eval a :=
-        (hpair.right_splits.eval_pos_iff_even_card_roots_gt
-          (by simpa [HasPosLeadingCoeff] using hpair.right_pos) hqa).mpr
-            (by simpa [htail_card] using hq_even)
-      have hP_even : Even P.natDegree := by
-        rw [hP_natDegree_q]
-        exact hq_even.add (by norm_num)
-      have hbot : Tendsto (fun x => P.eval x) atBot atTop :=
-        tendsto_eval_atBot_atTop_of_posLeadingCoeff_even
-          hP_pos hP_degree_pos hP_even
-      have hP_ne : P ≠ 0 := hP_pos.ne_zero
-      simpa [P] using
-        one_le_card_xSub_roots_filter_le_of_left_root_right_eval_nonneg
-          ha hq_a_pos.le hμ hP_ne hbot
-    · have hq_a_neg : q.eval a < 0 :=
-        (hpair.right_splits.eval_neg_iff_odd_card_roots_gt
-          (by simpa [HasPosLeadingCoeff] using hpair.right_pos) hqa).mpr
-            (by simpa [htail_card] using hq_odd)
-      have hP_odd : Odd P.natDegree := by
-        rw [hP_natDegree_q]
-        exact hq_odd.add_even (by norm_num)
-      have hbot : Tendsto (fun x => P.eval x) atBot atBot :=
-        tendsto_eval_atBot_atBot_of_posLeadingCoeff_odd
-          hP_pos hP_degree_pos hP_odd
-      have hP_ne : P ≠ 0 := hP_pos.ne_zero
-      simpa [P] using
-        one_le_card_xSub_roots_filter_le_of_left_root_right_eval_nonpos
-          ha (le_of_lt hq_a_neg) hμ hP_ne hbot
+    exact one_le_lower_tail_of_left_successor hpair hno ha hroots_ge hdeg hμ
   exact hpair.xSub_splits_of_roots_sort_of_upper_nonpos_tail_transfer
     hp_nonneg hno hrs hμ hdeg (by simpa [P] using hlower_one)
     hupper_nonpos (by simpa [P] using htop)
 
+/-- The exterior-tail credits close the left-successor endpoint
+when the left root list has a single distinct location. -/
+private lemma splits_of_extremal_left_root_left_successor {p q : ℝ[X]}
+    (hpair : PositiveSplitRootCountPair p q) (hq_nonneg : HasNonnegCoeffs q)
+    (hno : NoCommonRoots p q) {a μ : ℝ}
+    (hhead : p.IsRoot a ∧ ∀ r ∈ p.roots, a ≤ r)
+    (ha_largest : IsLargestRoot p a) (hdeg : p.natDegree = q.natDegree + 1) (hμ : 0 < μ)
+    (htail_card : (q.roots.filter (a < ·)).card = q.natDegree) :
+    (X * p - C μ * q).Splits := by
+  let P := X * p - C μ * q
+  let lowerTail := (P.roots.filter (fun x => x ≤ a)).card
+  let upperTail := (P.roots.filter (fun x => a ≤ x)).card
+  have hPnot : ¬ P.IsRoot a := hno.not_isRoot_xSub_of_left_root hhead.1 hμ.ne'
+  have hfilter : P.roots.filter (a ≤ ·) = P.roots.filter (a < ·) := by
+    apply Multiset.filter_congr
+    intro x hx
+    have hxa : x ≠ a := by
+      rintro rfl
+      exact hPnot (Polynomial.isRoot_of_mem_roots hx)
+    exact ⟨fun h => lt_of_le_of_ne h hxa.symm, le_of_lt⟩
+  have hpack : lowerTail + upperTail = P.roots.card := by
+    dsimp [lowerTail, upperTail]
+    rw [hfilter]
+    simpa only [Multiset.card_add, not_le] using
+      congrArg Multiset.card (Multiset.filter_add_not (fun x => x ≤ a) P.roots)
+  have hupper_nonpos : ∀ y ∈ q.roots, a < y → y ≤ 0 :=
+    fun y hy _ => roots_nonpos_of_hasNonnegCoeffs hq_nonneg y hy
+  have hdata := hpair.posLeadingCoeff_and_natDegree_X_mul_sub_C_mul_of_right_natDegree_le
+    (by rw [hdeg]; exact Nat.le_succ _) μ
+  have hdegree : P.natDegree = q.natDegree + 2 := by rw [hdata.2, hdeg]
+  have htop : Tendsto (fun x => P.eval x) atTop atTop :=
+    P.tendsto_atTop_of_leadingCoeff_nonneg
+      (natDegree_pos_iff_degree_pos.mp (by rw [hdegree]; lia)) hdata.1.le
+  have hlo : 1 ≤ lowerTail :=
+    one_le_lower_tail_of_left_successor hpair hno hhead.1 hhead.2 hdeg hμ
+  have hup : q.natDegree + 1 ≤ upperTail := by
+    rw [← htail_card]
+    exact hpair.upper_nonpos_tail_add_one_le_card_xSub_ge
+      hno ha_largest hμ (by rw [hdeg]; lia) hupper_nonpos htop
+  exact Polynomial.splits_of_le_roots_of_natDegree_le_card (s := P.roots)
+    le_rfl (by rw [hdegree]; lia)
+
 /-- No-common-root branch of the left-successor x-subtraction family, in the
 unshifted `p, q` form.  If `p` has at least two distinct roots, the sorted-root
 count endpoint applies directly.  If it has only one distinct root, the
-upper-tail cap forces `q.natDegree ≤ 1`, so the existing low-degree endpoint
-applies. -/
+same exterior-tail credits apply directly, without a low-degree endpoint. -/
 theorem PositiveSplitRootCountPair.xSub_splits_of_left_successor_nonneg_of_noCommonRoots
     {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q)
     (hp_nonneg : HasNonnegCoeffs p) (hq_nonneg : HasNonnegCoeffs q)
@@ -139,24 +195,9 @@ theorem PositiveSplitRootCountPair.xSub_splits_of_left_successor_nonneg_of_noCom
           have htail_card : (q.roots.filter (a < ·)).card = q.natDegree :=
             hpair.card_right_roots_filter_gt_eq_natDegree_of_left_roots_ge
               hno hhead.1 hhead.2 hdeg
-          have htail_le : (q.roots.filter (a < ·)).card ≤ 1 :=
-            hpair.card_right_roots_filter_gt_le_one_of_left_largest_root
-              ha_largest
-          have hqdeg_le : q.natDegree ≤ 1 := by simpa [htail_card] using htail_le
-          have hp_nonneg_zero : HasNonnegCoeffs (p.comp (X + C (0 : ℝ))) := by
-            simpa using hp_nonneg
-          have hq_nonneg_zero : HasNonnegCoeffs (q.comp (X + C (0 : ℝ))) := by
-            simpa using hq_nonneg
-          by_cases hqzero : q.natDegree = 0
-          · simpa using
-              positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_zero
-                (f := p) (g := q) (r := 0)
-                hpair hdeg hqzero μ hμ
-          · have hqone : q.natDegree = 1 := by lia
-            simpa using
-              positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_one
-                (f := p) (g := q) (r := 0)
-                hpair hp_nonneg_zero hq_nonneg_zero hdeg hqone μ hμ
+          exact splits_of_extremal_left_root_left_successor
+            hpair hq_nonneg hno hhead ha_largest hdeg hμ
+            htail_card
       | cons b ys =>
           have hrs_two :
               p.roots.toFinset.sort (· ≤ ·) = a :: b :: ys := by

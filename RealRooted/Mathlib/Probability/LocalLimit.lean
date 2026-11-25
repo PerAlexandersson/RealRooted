@@ -138,26 +138,15 @@ private lemma gpdf_intervalIntegrable (u v : ℝ) : IntervalIntegrable (fun t =>
 
 private lemma gpdf_tail {ε : ℝ} (hε : 0 < ε) :
     ∃ y : ℝ, 0 ≤ y ∧ ∀ t, y ≤ t → φ t < ε := by
-  refine ⟨max 2 (1 / ε), by positivity, fun t ht => ?_⟩
-  have h2 : 2 ≤ t := le_trans (le_max_left _ _) ht
-  have hε' : 1 / ε ≤ t := le_trans (le_max_right _ _) ht
-  rw [gpdf_eq]
-  have he : Real.exp (-t ^ 2 / 2) * (1 + t ^ 2 / 2) ≤ 1 := by
-    have h := Real.add_one_le_exp (t ^ 2 / 2)
-    have e : Real.exp (-t ^ 2 / 2) * Real.exp (t ^ 2 / 2) = 1 := by
-      rw [← Real.exp_add]; ring_nf; simp
-    nlinarith [Real.exp_pos (-t ^ 2 / 2)]
-  have h4 : (√(2 * Real.pi))⁻¹ ≤ 1 / 2 := by
-    rw [inv_eq_one_div]; exact one_div_le_one_div_of_le (by norm_num) sqrt_two_pi_ge_two
-  have h3 : 0 ≤ (√(2 * Real.pi))⁻¹ := by positivity
-  have ht1 : 1 < ε * (1 + t ^ 2 / 2) := by
-    have : 1 ≤ ε * t := by rwa [div_le_iff₀ hε, mul_comm] at hε'
-    nlinarith
-  have hE : Real.exp (-t ^ 2 / 2) < ε := by
-    exact lt_of_not_ge fun hc => by nlinarith
-  calc (√(2 * Real.pi))⁻¹ * Real.exp (-t ^ 2 / 2) ≤ 1 / 2 * Real.exp (-t ^ 2 / 2) := by
-        gcongr
-    _ < ε := by nlinarith [Real.exp_pos (-t ^ 2 / 2)]
+  have hsq : Tendsto (fun t : ℝ => t ^ 2 / 2) atTop atTop :=
+    (tendsto_pow_atTop (by decide : 2 ≠ 0)).atTop_div_const (by norm_num)
+  have hφ : Tendsto (fun t => φ t) atTop (𝓝 0) := by
+    simp_rw [gpdf_eq]
+    convert tendsto_const_nhds.mul (Real.tendsto_exp_neg_atTop_nhds_zero.comp hsq) using 1
+    · ext t; congr 2; ring
+    · simp
+  obtain ⟨y, hy⟩ := (hφ.eventually (gt_mem_nhds hε)).exists_forall_of_atTop
+  exact ⟨max y 0, le_max_right _ _, fun t ht => hy t ((le_max_left _ _).trans ht)⟩
 
 /-! ### Integral estimates -/
 

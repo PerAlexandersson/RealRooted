@@ -92,16 +92,6 @@ private theorem nat_choose_two_cast_real (n : ℕ) :
     ((Nat.choose n 2 : ℕ) : ℝ) = (n : ℝ) * ((n : ℝ) - 1) / 2 :=
   Nat.cast_choose_two (K := ℝ) n
 
-/-- Add two cubic polynomials written by coefficients. -/
-private theorem add_cubic_coeffs (a b c d e f g : ℝ) :
-    (1 + C a * X + C b * X ^ 2 + C c * X ^ 3 : ℝ[X]) +
-      (C d + C e * X + C f * X ^ 2 + C g * X ^ 3) =
-        C (1 + d) + C (a + e) * X + C (b + f) * X ^ 2 +
-          C (c + g) * X ^ 3 := by
-  rw [Polynomial.C_add, Polynomial.C_add, Polynomial.C_add, Polynomial.C_add]
-  rw [Polynomial.C_1]
-  ring_nf
-
 /-- Add a cubic polynomial to `X` times another cubic polynomial. -/
 private theorem add_X_mul_cubic_coeffs (a b c d e f g : ℝ) :
     (1 + C a * X + C b * X ^ 2 + C c * X ^ 3 : ℝ[X]) +
@@ -111,17 +101,6 @@ private theorem add_X_mul_cubic_coeffs (a b c d e f g : ℝ) :
   rw [Polynomial.C_add, Polynomial.C_add, Polynomial.C_add]
   ring_nf
 
-/-- Add two quartic polynomials written by coefficients. -/
-private theorem add_quartic_coeffs (a b c d e f g h i : ℝ) :
-    (1 + C a * X + C b * X ^ 2 + C c * X ^ 3 + C d * X ^ 4 : ℝ[X]) +
-      (C e + C f * X + C g * X ^ 2 + C h * X ^ 3 + C i * X ^ 4) =
-        C (1 + e) + C (a + f) * X + C (b + g) * X ^ 2 +
-          C (c + h) * X ^ 3 + C (d + i) * X ^ 4 := by
-  rw [Polynomial.C_add, Polynomial.C_add, Polynomial.C_add, Polynomial.C_add,
-    Polynomial.C_add]
-  rw [Polynomial.C_1]
-  ring_nf
-
 /-- Add a quartic polynomial to `X` times another quartic polynomial. -/
 private theorem add_X_mul_quartic_coeffs (a b c d e f g h i : ℝ) :
     (1 + C a * X + C b * X ^ 2 + C c * X ^ 3 + C d * X ^ 4 : ℝ[X]) +
@@ -129,19 +108,6 @@ private theorem add_X_mul_quartic_coeffs (a b c d e f g h i : ℝ) :
         1 + C (a + e) * X + C (b + f) * X ^ 2 +
           C (c + g) * X ^ 3 + C (d + h) * X ^ 4 + C i * X ^ 5 := by
   rw [Polynomial.C_add, Polynomial.C_add, Polynomial.C_add, Polynomial.C_add]
-  ring_nf
-
-/-- Add two quintic polynomials written by coefficients. -/
-private theorem add_quintic_coeffs (a b c d e f g h i j k : ℝ) :
-    (1 + C a * X + C b * X ^ 2 + C c * X ^ 3 + C d * X ^ 4 +
-        C e * X ^ 5 : ℝ[X]) +
-      (C f + C g * X + C h * X ^ 2 + C i * X ^ 3 + C j * X ^ 4 +
-        C k * X ^ 5) =
-        C (1 + f) + C (a + g) * X + C (b + h) * X ^ 2 +
-          C (c + i) * X ^ 3 + C (d + j) * X ^ 4 + C (e + k) * X ^ 5 := by
-  rw [Polynomial.C_add, Polynomial.C_add, Polynomial.C_add, Polynomial.C_add,
-    Polynomial.C_add, Polynomial.C_add]
-  rw [Polynomial.C_1]
   ring_nf
 
 /-- Add a quintic polynomial to `X` times another quintic polynomial. -/
@@ -157,6 +123,20 @@ private theorem add_X_mul_quintic_coeffs (a b c d e f g h i j k : ℝ) :
     Polynomial.C_add]
   ring_nf
 
+/-- Peeling a reverse-indexed tail sum is independent of the number of rows. -/
+private lemma reverse_tail_sum_succ (P : ℕ → ℝ[X]) (n d : ℕ) :
+    ((List.range (n + 1)).map fun c => P (n + 1 + d - c - 1)).sum =
+      P (n + d) + ((List.range n).map fun c => P (n + d - c - 1)).sum := by
+  rw [List.sum_range_succ']
+  congr 1
+  · congr 1
+    lia
+  · congr 1
+    apply List.map_congr_left
+    intro c hc
+    congr 1
+    lia
+
 /-- The same tail sum with a direct row-count parameter. -/
 private theorem truncatedStaircaseRookPolynomial_one_row_tail_sum_direct (n : ℕ) :
     ((List.range n).map fun c =>
@@ -166,14 +146,8 @@ private theorem truncatedStaircaseRookPolynomial_one_row_tail_sum_direct (n : �
   | zero =>
       simp [truncatedStaircaseRookPolynomial_one_row]
   | succ n ih =>
-      rw [List.sum_range_succ']
-      simp only [Nat.succ_eq_add_one, Nat.add_sub_add_right,
-        Nat.add_sub_cancel_right, tsub_zero]
-      change truncatedStaircaseRookPolynomial (n + 1) 1 +
-          ((List.range n).map fun c =>
-            truncatedStaircaseRookPolynomial (n + 1 - c - 1) 1).sum =
-        C ((n + 1 : ℕ) : ℝ) + C (Nat.choose (n + 1 + 1) 2 : ℝ) * X
-      rw [ih, truncatedStaircaseRookPolynomial_one_row]
+      rw [reverse_tail_sum_succ (fun j => truncatedStaircaseRookPolynomial j 1) n 1,
+        ih, truncatedStaircaseRookPolynomial_one_row]
       have hchoose :
           Nat.choose (n + 1 + 1) 2 = Nat.choose (n + 1) 2 + (n + 1) := by
         rw [show n + 1 + 1 = Nat.succ (n + 1) by rfl]
@@ -238,38 +212,18 @@ private theorem truncatedStaircaseRookPolynomial_two_rows_tail_sum_direct (n : �
       C (n : ℝ) + C ((n * (n + 2) : ℕ) : ℝ) * X +
         C (Nat.choose (n + 2) 3 : ℝ) * X ^ 2 := by
   induction n with
-  | zero =>
-      simp [truncatedStaircaseRookPolynomial_two_rows]
+  | zero => norm_num [Nat.choose]
   | succ n ih =>
-      rw [List.sum_range_succ']
-      simp only [Nat.succ_eq_add_one]
-      have hhead : n + 1 + 2 - 0 - 1 = n + 2 := by lia
-      have htail :
-          ((List.range n).map fun c =>
-            truncatedStaircaseRookPolynomial (n + 1 + 2 - (c + 1) - 1) 2).sum =
-          ((List.range n).map fun c =>
-            truncatedStaircaseRookPolynomial (n + 2 - c - 1) 2).sum := by
-        congr 1
-        apply List.map_congr_left
-        intro c hc
-        have hc_lt : c < n := List.mem_range.mp hc
-        congr 1
-        lia
-      rw [hhead, htail, ih, truncatedStaircaseRookPolynomial_two_rows]
-      have hchoose :
-          Nat.choose (n + 1 + 2) 3 =
-            Nat.choose (n + 2) 2 + Nat.choose (n + 2) 3 :=
-        Nat.choose_succ_succ (n + 2) 2
-      have hchoose2 :
-          Nat.choose (n + 2) 2 = (n + 1) + Nat.choose (n + 1) 2 := by
-        simpa [Nat.choose_one_right] using Nat.choose_succ_succ (n + 1) 1
-      rw [hchoose, hchoose2]
-      have hC2 : (C (2 : ℝ) : ℝ[X]) = 2 := Polynomial.C_eq_natCast (R := ℝ) 2
-      simp only [Order.lt_two_iff, zero_le, mul_pos_iff_of_pos_left, add_pos_iff,
-        or_true, Nat.cast_pred, Nat.cast_mul, Nat.cast_ofNat, Nat.cast_add,
-        map_sub, map_mul, map_add, map_natCast, map_one, Nat.cast_one]
-      rw [hC2]
-      ring_nf
+      rw [reverse_tail_sum_succ (fun j => truncatedStaircaseRookPolynomial j 2) n 2,
+        ih,
+        truncatedStaircaseRookPolynomial_two_rows]
+      apply Polynomial.funext
+      intro x
+      simp only [eval_add, eval_mul, eval_C, eval_X, eval_pow, eval_one]
+      simp only [Nat.choose_succ_succ, Nat.choose_one_right, Nat.choose_zero_right]
+      push_cast [nat_choose_two_cast_real,
+        Nat.cast_sub (by lia : 1 ≤ 2 * (n + 2))]
+      ring
 
 /-- Tail sum of two-row truncated-staircase rook polynomials. -/
 private theorem truncatedStaircaseRookPolynomial_two_rows_tail_sum (n : ℕ)
@@ -293,49 +247,12 @@ theorem truncatedStaircaseRookPolynomial_three_rows (n : ℕ) (hn : 3 ≤ n) :
   have hbottom := truncatedStaircaseBottomRowExpansion_all n 2
   dsimp [truncatedStaircaseBottomRowExpansion] at hbottom
   rw [truncatedStaircaseRookPolynomial_two_rows,
-    truncatedStaircaseRookPolynomial_two_rows_tail_sum n (by lia : 2 ≤ n)] at hbottom
+    truncatedStaircaseRookPolynomial_two_rows_tail_sum n (by lia)] at hbottom
   rw [hbottom]
-  have hn_pos : 0 < n := lt_of_lt_of_le (by norm_num : 0 < 3) hn
-  have hn_two : 2 ≤ n := by lia
-  have hcast_sub_two : ((n - 2 : ℕ) : ℝ) = (n : ℝ) - 2 := by
-    rw [Nat.cast_sub hn_two]
-    norm_num
-  rw [hcast_sub_two]
-  have hC2n :
-      (C ((2 * n - 1 : ℕ) : ℝ) : ℝ[X]) = C ((2 : ℝ) * n - 1) := by
-    rw [show ((2 * n - 1 : ℕ) : ℝ) = (2 : ℝ) * n - 1 by
-      rw [Nat.cast_sub (by lia : 1 ≤ 2 * n)]
-      norm_num]
-  have hCtail :
-      (C (((n - 2) * n : ℕ) : ℝ) : ℝ[X]) = C (((n : ℝ) - 2) * n) := by
-    rw [Nat.cast_mul, hcast_sub_two]
-  have hC3n :
-      (C ((3 * n - 3 : ℕ) : ℝ) : ℝ[X]) = C ((3 : ℝ) * n - 3) := by
-    rw [show ((3 * n - 3 : ℕ) : ℝ) = (3 : ℝ) * n - 3 by
-      rw [Nat.cast_sub (by lia : 3 ≤ 3 * n)]
-      norm_num]
-  have hCtwo :
-      (C ((Nat.choose n 2 + (n - 2) * n : ℕ) : ℝ) : ℝ[X]) =
-        C ((Nat.choose n 2 : ℝ) + ((n : ℝ) - 2) * n) := by
-    rw [Nat.cast_add, Nat.cast_mul, hcast_sub_two]
-  rw [hC2n, hCtail, hC3n, hCtwo]
-  have hXcoeff :
-      C ((2 : ℝ) * n - 1) + C ((n : ℝ) - 2) =
-        (C ((3 : ℝ) * n - 3) : ℝ[X]) := by
-    rw [← Polynomial.C_add]
-    ring_nf
-  calc
-    1 + C ((2 : ℝ) * n - 1) * X + C (Nat.choose n 2 : ℝ) * X ^ 2 +
-        X * (C ((n : ℝ) - 2) + C (((n : ℝ) - 2) * n) * X +
-          C (Nat.choose n 3 : ℝ) * X ^ 2)
-        = 1 + (C ((2 : ℝ) * n - 1) + C ((n : ℝ) - 2)) * X +
-          (C (Nat.choose n 2 : ℝ) + C (((n : ℝ) - 2) * n)) * X ^ 2 +
-            C (Nat.choose n 3 : ℝ) * X ^ 3 := by
-          ring_nf
-    _ = 1 + C ((3 : ℝ) * n - 3) * X +
-        C ((Nat.choose n 2 : ℝ) + ((n : ℝ) - 2) * n) * X ^ 2 +
-          C (Nat.choose n 3 : ℝ) * X ^ 3 := by
-        rw [hXcoeff, ← Polynomial.C_add]
+  push_cast [Nat.cast_sub (by lia : 2 ≤ n), Nat.cast_sub (by lia : 1 ≤ 2 * n),
+    Nat.cast_sub (by lia : 3 ≤ 3 * n)]
+  simp only [map_sub, map_add, map_mul, map_ofNat, map_one]
+  ring
 
 /-- Tail sum of three-row truncated-staircase rook polynomials. -/
 private theorem truncatedStaircaseRookPolynomial_three_rows_tail_sum_direct
@@ -348,76 +265,19 @@ private theorem truncatedStaircaseRookPolynomial_three_rows_tail_sum_direct
             (Nat.choose (n + 3) 2 : ℝ)) * X ^ 2 +
             C (Nat.choose (n + 3) 4 : ℝ) * X ^ 3 := by
   induction n with
-  | zero =>
-      norm_num [Nat.choose]
+  | zero => norm_num [Nat.choose]
   | succ n ih =>
-      rw [List.sum_range_succ']
-      simp only [Nat.succ_eq_add_one]
-      have hhead : n + 1 + 3 - 0 - 1 = n + 3 := by lia
-      have htail :
-          ((List.range n).map fun c =>
-            truncatedStaircaseRookPolynomial (n + 1 + 3 - (c + 1) - 1) 3).sum =
-          ((List.range n).map fun c =>
-            truncatedStaircaseRookPolynomial (n + 3 - c - 1) 3).sum := by
-        congr 1
-        apply List.map_congr_left
-        intro c hc
-        have hc_lt : c < n := List.mem_range.mp hc
-        congr 1
-        lia
-      rw [hhead, htail, ih,
+      rw [reverse_tail_sum_succ (fun j => truncatedStaircaseRookPolynomial j 3) n 3,
+        ih,
         truncatedStaircaseRookPolynomial_three_rows (n + 3) (by lia)]
-      have hCheadX :
-          (C ((3 * (n + 3) - 3 : ℕ) : ℝ) : ℝ[X]) =
-            C ((3 : ℝ) * (n + 3) - 3) := by
-        rw [show ((3 * (n + 3) - 3 : ℕ) : ℝ) =
-            (3 : ℝ) * (n + 3) - 3 by
-          rw [Nat.cast_sub (by lia : 3 ≤ 3 * (n + 3))]
-          norm_num]
-      have hCheadX2 :
-          (C ((Nat.choose (n + 3) 2 + (n + 3 - 2) * (n + 3) : ℕ) : ℝ) :
-              ℝ[X]) =
-            C ((Nat.choose (n + 3) 2 : ℝ) + ((n : ℝ) + 1) * ((n : ℝ) + 3)) := by
-        have hsub : ((n + 3 - 2 : ℕ) : ℝ) = (n : ℝ) + 1 := by
-          rw [Nat.cast_sub (by lia : 2 ≤ n + 3)]
-          norm_num
-          ring_nf
-        rw [show ((Nat.choose (n + 3) 2 + (n + 3 - 2) * (n + 3) : ℕ) : ℝ) =
-            (Nat.choose (n + 3) 2 : ℝ) +
-              ((n : ℝ) + 1) * ((n : ℝ) + 3) by
-          rw [Nat.cast_add, Nat.cast_mul, hsub]
-          norm_num
-          ]
-      have hchoose3 :
-          Nat.choose (n + 1 + 3) 3 =
-            Nat.choose (n + 3) 2 + Nat.choose (n + 3) 3 :=
-        Nat.choose_succ_succ (n + 3) 2
-      have hchoose2 :
-          Nat.choose (n + 1 + 3) 2 =
-            Nat.choose (n + 3) 1 + Nat.choose (n + 3) 2 :=
-        Nat.choose_succ_succ (n + 3) 1
-      have hchoose4 :
-          Nat.choose (n + 1 + 3) 4 =
-            Nat.choose (n + 3) 3 + Nat.choose (n + 3) 4 :=
-        Nat.choose_succ_succ (n + 3) 3
-      have hchoose2_prev :
-          ((Nat.choose (n + 2) 2 : ℕ) : ℝ) =
-            ((n : ℝ) + 2) * ((n : ℝ) + 1) / 2 := by
-        have h := nat_choose_two_cast_real (n + 2)
-        norm_num at h
-        linarith
-      have hchoose2_head :
-          ((Nat.choose (n + 3) 2 : ℕ) : ℝ) =
-            ((n : ℝ) + 3) * ((n : ℝ) + 2) / 2 := by
-        have h := nat_choose_two_cast_real (n + 3)
-        norm_num at h
-        linarith
-      rw [hCheadX, hCheadX2, hchoose3, hchoose2, hchoose4]
-      rw [add_cubic_coeffs]
-      simp only [Nat.choose_one_right, Nat.cast_add, Nat.cast_ofNat, Nat.cast_one]
-      rw [hchoose2_prev, hchoose2_head]
-      congr 1
-      ring_nf
+      apply Polynomial.funext
+      intro x
+      simp only [eval_add, eval_mul, eval_C, eval_X, eval_pow, eval_one]
+      simp only [Nat.choose_succ_succ, Nat.choose_one_right, Nat.choose_zero_right]
+      push_cast [nat_choose_two_cast_real,
+        Nat.cast_sub (by lia : 3 ≤ 3 * (n + 3)),
+        Nat.cast_sub (by lia : 2 ≤ n + 3)]
+      ring
 
 /-- Tail sum of three-row truncated-staircase rook polynomials. -/
 private theorem truncatedStaircaseRookPolynomial_three_rows_tail_sum (n : ℕ)
@@ -496,53 +356,17 @@ private theorem truncatedStaircaseRookPolynomial_four_rows_tail_sum_direct
           (Nat.choose (n + 4) 3 : ℝ)) * X ^ 3 +
         C (Nat.choose (n + 4) 5 : ℝ) * X ^ 4 := by
   induction n with
-  | zero =>
-      norm_num [Nat.choose]
+  | zero => norm_num [Nat.choose]
   | succ n ih =>
-      rw [List.sum_range_succ']
-      simp only [Nat.succ_eq_add_one]
-      have hhead : n + 1 + 4 - 0 - 1 = n + 4 := by lia
-      have htail :
-          ((List.range n).map fun c =>
-            truncatedStaircaseRookPolynomial (n + 1 + 4 - (c + 1) - 1) 4).sum =
-          ((List.range n).map fun c =>
-            truncatedStaircaseRookPolynomial (n + 4 - c - 1) 4).sum := by
-        congr 1
-        apply List.map_congr_left
-        intro c hc
-        have hc_lt : c < n := List.mem_range.mp hc
-        congr 1
-        lia
-      rw [hhead, htail, ih,
+      rw [reverse_tail_sum_succ (fun j => truncatedStaircaseRookPolynomial j 4) n 4,
+        ih,
         truncatedStaircaseRookPolynomial_four_rows (n + 4) (by lia)]
-      have hchoose2_succ :
-          Nat.choose (n + 1 + 4) 2 =
-            Nat.choose (n + 4) 1 + Nat.choose (n + 4) 2 :=
-        Nat.choose_succ_succ (n + 4) 1
-      have hchoose3_succ :
-          Nat.choose (n + 1 + 4) 3 =
-            Nat.choose (n + 4) 2 + Nat.choose (n + 4) 3 :=
-        Nat.choose_succ_succ (n + 4) 2
-      have hchoose4_succ :
-          Nat.choose (n + 1 + 4) 4 =
-            Nat.choose (n + 4) 3 + Nat.choose (n + 4) 4 :=
-        Nat.choose_succ_succ (n + 4) 3
-      have hchoose5_succ :
-          Nat.choose (n + 1 + 4) 5 =
-            Nat.choose (n + 4) 4 + Nat.choose (n + 4) 5 :=
-        Nat.choose_succ_succ (n + 4) 4
-      have hchoose2_head :
-          ((Nat.choose (n + 4) 2 : ℕ) : ℝ) =
-            ((n : ℝ) + 4) * ((n : ℝ) + 3) / 2 := by
-        have h := nat_choose_two_cast_real (n + 4)
-        norm_num at h
-        linarith
-      rw [add_quartic_coeffs, hchoose2_succ, hchoose3_succ, hchoose4_succ,
-        hchoose5_succ]
-      simp only [Nat.choose_one_right, Nat.cast_add, Nat.cast_ofNat, Nat.cast_one]
-      rw [hchoose2_head]
-      congr 1
-      ring_nf
+      apply Polynomial.funext
+      intro x
+      simp only [eval_add, eval_mul, eval_C, eval_X, eval_pow, eval_one]
+      simp only [Nat.choose_succ_succ, Nat.choose_one_right, Nat.choose_zero_right]
+      push_cast [nat_choose_two_cast_real]
+      ring
 
 /-- Tail sum of four-row truncated-staircase rook polynomials. -/
 private theorem truncatedStaircaseRookPolynomial_four_rows_tail_sum (n : ℕ)
@@ -603,57 +427,17 @@ private theorem truncatedStaircaseRookPolynomial_five_rows_tail_sum_direct
           (Nat.choose (n + 5) 4 : ℝ)) * X ^ 4 +
         C (Nat.choose (n + 5) 6 : ℝ) * X ^ 5 := by
   induction n with
-  | zero =>
-      norm_num [Nat.choose]
+  | zero => norm_num [Nat.choose]
   | succ n ih =>
-      rw [List.sum_range_succ']
-      simp only [Nat.succ_eq_add_one]
-      have hhead : n + 1 + 5 - 0 - 1 = n + 5 := by lia
-      have htail :
-          ((List.range n).map fun c =>
-            truncatedStaircaseRookPolynomial (n + 1 + 5 - (c + 1) - 1) 5).sum =
-          ((List.range n).map fun c =>
-            truncatedStaircaseRookPolynomial (n + 5 - c - 1) 5).sum := by
-        congr 1
-        apply List.map_congr_left
-        intro c hc
-        have hc_lt : c < n := List.mem_range.mp hc
-        congr 1
-        lia
-      rw [hhead, htail, ih,
+      rw [reverse_tail_sum_succ (fun j => truncatedStaircaseRookPolynomial j 5) n 5,
+        ih,
         truncatedStaircaseRookPolynomial_five_rows (n + 5) (by lia)]
-      have hchoose2_succ :
-          Nat.choose (n + 1 + 5) 2 =
-            Nat.choose (n + 5) 1 + Nat.choose (n + 5) 2 :=
-        Nat.choose_succ_succ (n + 5) 1
-      have hchoose3_succ :
-          Nat.choose (n + 1 + 5) 3 =
-            Nat.choose (n + 5) 2 + Nat.choose (n + 5) 3 :=
-        Nat.choose_succ_succ (n + 5) 2
-      have hchoose4_succ :
-          Nat.choose (n + 1 + 5) 4 =
-            Nat.choose (n + 5) 3 + Nat.choose (n + 5) 4 :=
-        Nat.choose_succ_succ (n + 5) 3
-      have hchoose5_succ :
-          Nat.choose (n + 1 + 5) 5 =
-            Nat.choose (n + 5) 4 + Nat.choose (n + 5) 5 :=
-        Nat.choose_succ_succ (n + 5) 4
-      have hchoose6_succ :
-          Nat.choose (n + 1 + 5) 6 =
-            Nat.choose (n + 5) 5 + Nat.choose (n + 5) 6 :=
-        Nat.choose_succ_succ (n + 5) 5
-      have hchoose2_head :
-          ((Nat.choose (n + 5) 2 : ℕ) : ℝ) =
-            ((n : ℝ) + 5) * ((n : ℝ) + 4) / 2 := by
-        have h := nat_choose_two_cast_real (n + 5)
-        norm_num at h
-        linarith
-      rw [add_quintic_coeffs, hchoose2_succ, hchoose3_succ, hchoose4_succ,
-        hchoose5_succ, hchoose6_succ]
-      simp only [Nat.choose_one_right, Nat.cast_add, Nat.cast_ofNat, Nat.cast_one]
-      rw [hchoose2_head]
-      congr 1
-      ring_nf
+      apply Polynomial.funext
+      intro x
+      simp only [eval_add, eval_mul, eval_C, eval_X, eval_pow, eval_one]
+      simp only [Nat.choose_succ_succ, Nat.choose_one_right, Nat.choose_zero_right]
+      push_cast [nat_choose_two_cast_real]
+      ring
 
 /-- Tail sum of five-row truncated-staircase rook polynomials. -/
 private theorem truncatedStaircaseRookPolynomial_five_rows_tail_sum (n : ℕ)

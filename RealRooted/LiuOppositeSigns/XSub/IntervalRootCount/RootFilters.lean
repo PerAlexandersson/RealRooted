@@ -3,9 +3,6 @@ module
 import RealRooted.Mathlib.Data.List.Zip
 public import RealRooted.LiuOppositeSigns.NonnegCoeffs
 public import RealRooted.LiuOppositeSigns.NoCommonRoots
-public import RealRooted.LiuOppositeSigns.XSub.LeftSucc
-public import RealRooted.LiuOppositeSigns.XSub.QuadraticQuadratic
-public import RealRooted.LiuOppositeSigns.XSub.QuadraticCubic
 import RealRooted.LiuOppositeSigns.XSub.SplittingTools
 import RealRooted.RootCountJump
 import RealRooted.MaWang.StrictSigns.Assembly

@@ -45,9 +45,7 @@ theorem norm_le_of_forall_add_mul_ne_zero {p q : ℂ}
 /-- The parallelogram law in `ℂ`, with squared norms. -/
 theorem norm_add_sq_add_norm_sub_sq (x y : ℂ) :
     ‖x + y‖ ^ 2 + ‖x - y‖ ^ 2 = 2 * (‖x‖ ^ 2 + ‖y‖ ^ 2) := by
-  simp only [Complex.sq_norm, Complex.normSq_apply, Complex.add_re, Complex.add_im,
-    Complex.sub_re, Complex.sub_im]
-  ring
+  exact parallelogram_law_with_norm ℂ x y
 
 /-- **Asano contraction**, scalar form (Asano 1970; see also Ruelle 2010).
 If `α + β u + γ v + δ u v` has no zero for `‖u‖ < 1` and `‖v‖ < 1`, then `α + δ z` has no zero

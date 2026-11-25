@@ -15,455 +15,423 @@ public section
 
 namespace RealRooted.EffectiveBKW.PathCube
 
-/-- A checked cell already contains its self-overlap derivative certificate. -/
-private theorem compatible_self_of_check {c : BranchCell} {f : IntPoly2} {neg : Bool}
-    (h : c.check f neg = true) : c.compatible c f neg = true := by
-  simp only [BranchCell.check, Bool.and_eq_true] at h
-  unfold BranchCell.compatible
-  split
-  · rfl
-  · simpa only [QNum.max, QNum.min, ite_self] using h.1.1.2
-
-/-- Swapping cells preserves compatibility when the four selected endpoints agree. -/
-private theorem compatible_of_swap {c d : BranchCell} {f : IntPoly2} {neg : Bool}
-    (he : (c.tlo.max d.tlo, c.thi.min d.thi, c.lo.min d.lo, c.hi.max d.hi) =
-      (d.tlo.max c.tlo, d.thi.min c.thi, d.lo.min c.lo, d.hi.max c.hi))
-    (h : d.compatible c f neg = true) : c.compatible d f neg = true := by
-  simp only [Prod.mk.injEq] at he
-  obtain ⟨h₁, h₂, h₃, h₄⟩ := he
-  simpa only [BranchCell.compatible, h₁, h₂, h₃, h₄, Bool.or_comm] using h
-
-/-- Reuse the self-overlap and one neighbor before checking the remaining row. -/
-private theorem compatible_all_of_check {c d : BranchCell}
-    (hc : c.check curve false = true) (hd : c.compatible d curve false = true)
-    (h : cells.all (fun e ↦ if e = c ∨ e = d then true
-      else c.compatible e curve false) = true) :
-    cells.all (fun e ↦ c.compatible e curve false) = true := by
-  apply List.all_eq_true.mpr
-  intro e he
-  by_cases hec : e = c
-  · simpa only [hec] using compatible_self_of_check hc
-  · by_cases hed : e = d
-    · simpa only [hed] using hd
-    · simpa only [ite_eq_right (not_or_intro hec hed)] using (List.all_eq_true.mp h e he)
-
 /-- All overlap and disjointness checks for rectangle 0. -/
 theorem cell000_compatible :
     cells.all (fun c ↦ cell000.compatible c curve false) = true := by
-  exact compatible_all_of_check cell000_check
-    (compatible_self_of_check cell000_check) (by decide +kernel)
+  exact BranchCell.compatible_all_of_check cell000_check
+    (BranchCell.compatible_self_of_check cell000_check) (by decide +kernel)
 
 /-- All overlap and disjointness checks for rectangle 1. -/
 theorem cell001_compatible :
     cells.all (fun c ↦ cell001.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell000) cell001_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell000) cell001_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell000_compatible cell001 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 2. -/
 theorem cell002_compatible :
     cells.all (fun c ↦ cell002.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell001) cell002_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell001) cell002_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell001_compatible cell002 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 3. -/
 theorem cell003_compatible :
     cells.all (fun c ↦ cell003.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell002) cell003_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell002) cell003_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell002_compatible cell003 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 4. -/
 theorem cell004_compatible :
     cells.all (fun c ↦ cell004.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell003) cell004_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell003) cell004_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell003_compatible cell004 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 5. -/
 theorem cell005_compatible :
     cells.all (fun c ↦ cell005.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell004) cell005_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell004) cell005_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell004_compatible cell005 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 6. -/
 theorem cell006_compatible :
     cells.all (fun c ↦ cell006.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell005) cell006_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell005) cell006_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell005_compatible cell006 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 7. -/
 theorem cell007_compatible :
     cells.all (fun c ↦ cell007.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell006) cell007_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell006) cell007_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell006_compatible cell007 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 8. -/
 theorem cell008_compatible :
     cells.all (fun c ↦ cell008.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell007) cell008_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell007) cell008_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell007_compatible cell008 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 9. -/
 theorem cell009_compatible :
     cells.all (fun c ↦ cell009.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell008) cell009_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell008) cell009_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell008_compatible cell009 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 10. -/
 theorem cell010_compatible :
     cells.all (fun c ↦ cell010.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell009) cell010_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell009) cell010_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell009_compatible cell010 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 11. -/
 theorem cell011_compatible :
     cells.all (fun c ↦ cell011.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell010) cell011_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell010) cell011_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell010_compatible cell011 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 12. -/
 theorem cell012_compatible :
     cells.all (fun c ↦ cell012.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell011) cell012_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell011) cell012_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell011_compatible cell012 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 13. -/
 theorem cell013_compatible :
     cells.all (fun c ↦ cell013.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell012) cell013_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell012) cell013_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell012_compatible cell013 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 14. -/
 theorem cell014_compatible :
     cells.all (fun c ↦ cell014.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell013) cell014_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell013) cell014_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell013_compatible cell014 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 15. -/
 theorem cell015_compatible :
     cells.all (fun c ↦ cell015.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell014) cell015_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell014) cell015_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell014_compatible cell015 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 16. -/
 theorem cell016_compatible :
     cells.all (fun c ↦ cell016.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell015) cell016_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell015) cell016_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell015_compatible cell016 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 17. -/
 theorem cell017_compatible :
     cells.all (fun c ↦ cell017.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell016) cell017_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell016) cell017_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell016_compatible cell017 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 18. -/
 theorem cell018_compatible :
     cells.all (fun c ↦ cell018.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell017) cell018_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell017) cell018_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell017_compatible cell018 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 19. -/
 theorem cell019_compatible :
     cells.all (fun c ↦ cell019.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell018) cell019_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell018) cell019_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell018_compatible cell019 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 20. -/
 theorem cell020_compatible :
     cells.all (fun c ↦ cell020.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell019) cell020_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell019) cell020_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell019_compatible cell020 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 21. -/
 theorem cell021_compatible :
     cells.all (fun c ↦ cell021.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell020) cell021_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell020) cell021_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell020_compatible cell021 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 22. -/
 theorem cell022_compatible :
     cells.all (fun c ↦ cell022.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell021) cell022_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell021) cell022_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell021_compatible cell022 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 23. -/
 theorem cell023_compatible :
     cells.all (fun c ↦ cell023.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell022) cell023_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell022) cell023_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell022_compatible cell023 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 24. -/
 theorem cell024_compatible :
     cells.all (fun c ↦ cell024.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell023) cell024_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell023) cell024_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell023_compatible cell024 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 25. -/
 theorem cell025_compatible :
     cells.all (fun c ↦ cell025.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell024) cell025_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell024) cell025_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell024_compatible cell025 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 26. -/
 theorem cell026_compatible :
     cells.all (fun c ↦ cell026.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell025) cell026_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell025) cell026_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell025_compatible cell026 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 27. -/
 theorem cell027_compatible :
     cells.all (fun c ↦ cell027.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell026) cell027_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell026) cell027_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell026_compatible cell027 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 28. -/
 theorem cell028_compatible :
     cells.all (fun c ↦ cell028.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell027) cell028_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell027) cell028_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell027_compatible cell028 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 29. -/
 theorem cell029_compatible :
     cells.all (fun c ↦ cell029.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell028) cell029_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell028) cell029_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell028_compatible cell029 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 30. -/
 theorem cell030_compatible :
     cells.all (fun c ↦ cell030.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell029) cell030_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell029) cell030_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell029_compatible cell030 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 31. -/
 theorem cell031_compatible :
     cells.all (fun c ↦ cell031.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell030) cell031_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell030) cell031_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell030_compatible cell031 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 32. -/
 theorem cell032_compatible :
     cells.all (fun c ↦ cell032.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell031) cell032_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell031) cell032_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell031_compatible cell032 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 33. -/
 theorem cell033_compatible :
     cells.all (fun c ↦ cell033.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell032) cell033_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell032) cell033_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell032_compatible cell033 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 34. -/
 theorem cell034_compatible :
     cells.all (fun c ↦ cell034.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell033) cell034_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell033) cell034_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell033_compatible cell034 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 35. -/
 theorem cell035_compatible :
     cells.all (fun c ↦ cell035.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell034) cell035_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell034) cell035_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell034_compatible cell035 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 36. -/
 theorem cell036_compatible :
     cells.all (fun c ↦ cell036.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell035) cell036_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell035) cell036_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell035_compatible cell036 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 37. -/
 theorem cell037_compatible :
     cells.all (fun c ↦ cell037.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell036) cell037_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell036) cell037_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell036_compatible cell037 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 38. -/
 theorem cell038_compatible :
     cells.all (fun c ↦ cell038.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell037) cell038_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell037) cell038_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell037_compatible cell038 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 39. -/
 theorem cell039_compatible :
     cells.all (fun c ↦ cell039.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell038) cell039_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell038) cell039_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell038_compatible cell039 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 40. -/
 theorem cell040_compatible :
     cells.all (fun c ↦ cell040.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell039) cell040_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell039) cell040_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell039_compatible cell040 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 41. -/
 theorem cell041_compatible :
     cells.all (fun c ↦ cell041.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell040) cell041_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell040) cell041_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell040_compatible cell041 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 42. -/
 theorem cell042_compatible :
     cells.all (fun c ↦ cell042.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell041) cell042_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell041) cell042_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell041_compatible cell042 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 43. -/
 theorem cell043_compatible :
     cells.all (fun c ↦ cell043.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell042) cell043_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell042) cell043_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell042_compatible cell043 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 44. -/
 theorem cell044_compatible :
     cells.all (fun c ↦ cell044.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell043) cell044_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell043) cell044_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell043_compatible cell044 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 45. -/
 theorem cell045_compatible :
     cells.all (fun c ↦ cell045.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell044) cell045_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell044) cell045_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell044_compatible cell045 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 46. -/
 theorem cell046_compatible :
     cells.all (fun c ↦ cell046.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell045) cell046_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell045) cell046_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell045_compatible cell046 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 47. -/
 theorem cell047_compatible :
     cells.all (fun c ↦ cell047.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell046) cell047_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell046) cell047_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell046_compatible cell047 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 48. -/
 theorem cell048_compatible :
     cells.all (fun c ↦ cell048.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell047) cell048_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell047) cell048_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell047_compatible cell048 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 49. -/
 theorem cell049_compatible :
     cells.all (fun c ↦ cell049.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell048) cell049_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell048) cell049_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell048_compatible cell049 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 50. -/
 theorem cell050_compatible :
     cells.all (fun c ↦ cell050.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell049) cell050_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell049) cell050_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell049_compatible cell050 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 51. -/
 theorem cell051_compatible :
     cells.all (fun c ↦ cell051.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell050) cell051_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell050) cell051_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell050_compatible cell051 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 52. -/
 theorem cell052_compatible :
     cells.all (fun c ↦ cell052.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell051) cell052_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell051) cell052_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell051_compatible cell052 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 53. -/
 theorem cell053_compatible :
     cells.all (fun c ↦ cell053.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell052) cell053_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell052) cell053_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell052_compatible cell053 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 54. -/
 theorem cell054_compatible :
     cells.all (fun c ↦ cell054.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell053) cell054_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell053) cell054_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell053_compatible cell054 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 55. -/
 theorem cell055_compatible :
     cells.all (fun c ↦ cell055.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell054) cell055_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell054) cell055_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell054_compatible cell055 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 56. -/
 theorem cell056_compatible :
     cells.all (fun c ↦ cell056.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell055) cell056_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell055) cell056_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell055_compatible cell056 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 57. -/
 theorem cell057_compatible :
     cells.all (fun c ↦ cell057.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell056) cell057_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell056) cell057_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell056_compatible cell057 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 58. -/
 theorem cell058_compatible :
     cells.all (fun c ↦ cell058.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell057) cell058_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell057) cell058_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell057_compatible cell058 (by decide +kernel))
 
 /-- All overlap and disjointness checks for rectangle 59. -/
 theorem cell059_compatible :
     cells.all (fun c ↦ cell059.compatible c curve false) = true := by
-  refine compatible_all_of_check (d := cell058) cell059_check ?_ (by decide +kernel)
-  exact compatible_of_swap (by decide +kernel)
+  refine BranchCell.compatible_all_of_check (d := cell058) cell059_check ?_ (by decide +kernel)
+  exact BranchCell.compatible_of_endpoints_eq (by decide +kernel)
     (List.all_eq_true.mp cell058_compatible cell059 (by decide +kernel))
 
 

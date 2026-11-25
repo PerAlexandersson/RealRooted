@@ -1,5 +1,7 @@
 module
 
+import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.LeftSuccessor
+import RealRooted.CommonInterleaver.RootCountCombinatorics
 public import RealRooted.CubicDiscriminant
 import RealRooted.LiuOppositeSigns.PositiveSplitPair
 public import RealRooted.QuadraticRoot
@@ -10,9 +12,8 @@ import RealRooted.Linear
 /-!
 # Liu left-successor x-subtraction base cases
 
-This module contains low-degree right-endpoint cases of the left-successor
-positive-split x-subtraction pencil used by the two-degree factor-return
-branch.
+This module specializes the general left-successor splitting theorem to the
+quadratic/linear pencil. Splitting also gives its cubic discriminant certificates.
 -/
 
 public section
@@ -65,6 +66,65 @@ theorem positiveSplitLeftSuccDegreeTranslatedXSubRightFamily_of_right_natDegree_
     (hpair.left_pos.comp_X_add_C r) (hpair.right_pos.comp_X_add_C r)
     hFdeg hGdeg hμ
 
+/-- A normalized quadratic/linear pair is covered by the general left-successor theorem. -/
+private lemma normalized_left_successor {a b c μ : ℝ} (hab : a ≤ b) (hac : a ≤ c)
+    (hb0 : b ≤ 0) (hc0 : c ≤ 0) (hμ : 0 < μ) :
+    (X * ((X - C a) * (X - C b)) - C μ * (X - C c)).Splits := by
+  let p : ℝ[X] := (X - C a) * (X - C b)
+  let q : ℝ[X] := X - C c
+  let k : ℝ[X] := (X - C (min b c)) * (X - C (max b c))
+  have hp : p.Monic := (monic_X_sub_C a).mul (monic_X_sub_C b)
+  have hq : q.Monic := monic_X_sub_C c
+  have hk : k.Monic := (monic_X_sub_C (min b c)).mul (monic_X_sub_C (max b c))
+  have hp_split : p.Splits := (Splits.X_sub_C a).mul (Splits.X_sub_C b)
+  have hq_split : q.Splits := Splits.X_sub_C c
+  have hk_split : k.Splits :=
+    (Splits.X_sub_C (min b c)).mul (Splits.X_sub_C (max b c))
+  have hp_roots : p.roots = (↑[a, b] : Multiset ℝ) := by
+    change p.roots = {a, b}
+    simp [p, roots_mul, X_sub_C_ne_zero]
+  have hq_roots : q.roots = (↑[c] : Multiset ℝ) := roots_X_sub_C c
+  have hk_roots : k.roots = (↑[min b c, max b c] : Multiset ℝ) := by
+    change k.roots = {min b c, max b c}
+    simp [k, roots_mul, X_sub_C_ne_zero]
+  have hpk : StrictInterl p k := by
+    refine ⟨⟨hp.ne_zero, hp_split⟩, ⟨hk.ne_zero, hk_split⟩,
+      [a, b], [min b c, max b c], ?_, ?_, hp_roots.symm, hk_roots.symm, Or.inr ?_⟩
+    · simp [hab]
+    · grind [List.pairwise_cons, le_max_iff, min_le_iff]
+    · exact ⟨rfl, by simp [ListAlternates, ListInterlaces, hab, hac, le_min_iff]⟩
+  have hqk : StrictInterl q k := by
+    refine ⟨⟨hq.ne_zero, hq_split⟩, ⟨hk.ne_zero, hk_split⟩,
+      [c], [min b c, max b c], ?_, ?_, hq_roots.symm, hk_roots.symm, Or.inl ?_⟩
+    · simp
+    · grind [List.pairwise_cons, le_max_iff, min_le_iff]
+    · exact ⟨rfl, by simp [ListInterlaces]⟩
+  have hpair : PositiveSplitRootCountPair p q := by
+    refine ⟨hasPosLeadingCoeff_of_monic hp, hasPosLeadingCoeff_of_monic hq,
+      hp_split, hq_split, ?_⟩
+    apply RootCountCompatible.of_rootCountAbove_bounds_of_nonRoot hp.ne_zero hq.ne_zero
+    intro x _ _
+    have hpdeg : k.natDegree = p.natDegree := by
+      simp [p, k, natDegree_mul, X_sub_C_ne_zero]
+    have hpbound :=
+      (sameDegreeRootCountAbove_oriented_iff_rootCount_oriented_pointwise
+        hk_split hp_split hpdeg.symm x).mpr
+          (sameDegreeRootCountOriented_of_strictInterl hpk hpdeg x)
+    have hqbound := succDegreeRootCountAboveOriented_of_strictInterl hqk
+      (by simp [q, k, natDegree_mul, X_sub_C_ne_zero]) x
+    constructor <;> lia
+  exact hpair.xSub_splits_of_left_successor_nonneg
+    ((hasNonnegCoeffs_X_sub_C (hab.trans hb0)).mul (hasNonnegCoeffs_X_sub_C hb0))
+    (hasNonnegCoeffs_X_sub_C hc0)
+    (by simp [p, q, natDegree_mul, X_sub_C_ne_zero]) hμ
+
+/-- Splitting, rather than an expanded sum of squares, certifies the cubic discriminant. -/
+private lemma normalized_left_discr_nonneg {a b c μ : ℝ} (hab : a ≤ b) (hac : a ≤ c)
+    (hb0 : b ≤ 0) (hc0 : c ≤ 0) (hμ : 0 < μ) :
+    0 ≤ cubicDiscr (X * ((X - C a) * (X - C b)) - C μ * (X - C c)) := by
+  exact cubicDiscr_nonneg_of_splits_natDegree_le_three (by compute_degree)
+    (normalized_left_successor hab hac hb0 hc0 hμ)
+
 /-- Explicit discriminant certificate for the normalized case
 `a ≤ c ≤ b ≤ 0`. -/
 lemma xSubQuadraticLinearCubicDiscrimNonneg_between
@@ -72,31 +132,7 @@ lemma xSubQuadraticLinearCubicDiscrimNonneg_between
     0 ≤ cubicDiscr
       (X * ((X - C (-(u + v + w))) * (X - C (-w))) -
         C μ * (X - C (-(v + w)))) := by
-  have hpoly :
-      X * ((X - C (-(u + v + w))) * (X - C (-w))) -
-          C μ * (X - C (-(v + w))) =
-        C 1 * X ^ 3 + C (u + v + 2 * w) * X ^ 2 +
-          C ((u + v + w) * w - μ) * X + C (-μ * (v + w)) := by
-    simp only [C_add, C_mul, C_neg, C_sub, C_1, C_ofNat]
-    ring_nf
-  have hdisc :
-      cubicDiscr
-          (X * ((X - C (-(u + v + w))) * (X - C (-w))) -
-            C μ * (X - C (-(v + w)))) =
-        (μ - v ^ 2 - v * w) ^ 2 * (4 * μ + w ^ 2) +
-          u *
-            (μ ^ 2 * u + 20 * μ ^ 2 * v + 4 * μ * u ^ 2 * v +
-              12 * μ * u * v ^ 2 + 12 * μ * v ^ 3 + 10 * μ ^ 2 * w +
-              2 * μ * u ^ 2 * w + 12 * μ * u * v * w +
-              18 * μ * v ^ 2 * w + 8 * μ * u * w ^ 2 + u ^ 3 * w ^ 2 +
-              10 * μ * v * w ^ 2 + 4 * u ^ 2 * v * w ^ 2 +
-              6 * u * v ^ 2 * w ^ 2 + 4 * v ^ 3 * w ^ 2 +
-              2 * μ * w ^ 3 + 2 * u ^ 2 * w ^ 3 + 6 * u * v * w ^ 3 +
-              6 * v ^ 2 * w ^ 3 + u * w ^ 4 + 2 * v * w ^ 4) := by
-    rw [hpoly, cubicDiscr_of_coeffs]
-    ring
-  rw [hdisc]
-  positivity
+  apply normalized_left_discr_nonneg <;> linarith
 
 /-- Explicit discriminant certificate for the normalized case
 `a ≤ b ≤ c ≤ 0`. -/
@@ -105,80 +141,14 @@ lemma xSubQuadraticLinearCubicDiscrimNonneg_right
     0 ≤ cubicDiscr
       (X * ((X - C (-(u + v + w))) * (X - C (-(v + w)))) -
         C μ * (X - C (-w))) := by
-  have hpoly :
-      X * ((X - C (-(u + v + w))) * (X - C (-(v + w)))) -
-          C μ * (X - C (-w)) =
-        C 1 * X ^ 3 + C (u + 2 * v + 2 * w) * X ^ 2 +
-          C ((u + v + w) * (v + w) - μ) * X + C (-μ * w) := by
-    simp only [C_add, C_mul, C_neg, C_sub, C_1, C_ofNat]
-    ring_nf
-  have hdisc :
-      cubicDiscr
-          (X * ((X - C (-(u + v + w))) * (X - C (-(v + w)))) -
-            C μ * (X - C (-w))) =
-        (4 * μ + u ^ 2) * (μ - u * v - v ^ 2) ^ 2 +
-          w *
-            (10 * μ ^ 2 * u + 2 * μ * u ^ 3 + 20 * μ ^ 2 * v +
-              10 * μ * u ^ 2 * v + 2 * u ^ 4 * v +
-              18 * μ * u * v ^ 2 + 6 * u ^ 3 * v ^ 2 +
-              12 * μ * v ^ 3 + 4 * u ^ 2 * v ^ 3 + μ ^ 2 * w +
-              8 * μ * u ^ 2 * w + u ^ 4 * w + 12 * μ * u * v * w +
-              6 * u ^ 3 * v * w + 12 * μ * v ^ 2 * w +
-              6 * u ^ 2 * v ^ 2 * w + 2 * μ * u * w ^ 2 +
-              2 * u ^ 3 * w ^ 2 + 4 * μ * v * w ^ 2 +
-              4 * u ^ 2 * v * w ^ 2 + u ^ 2 * w ^ 3) := by
-    rw [hpoly, cubicDiscr_of_coeffs]
-    ring
-  rw [hdisc]
-  positivity
+  apply normalized_left_discr_nonneg <;> linarith
 
 /-- The cubic discriminant of the normalized degree-two/degree-one
 x-subtraction pencil is nonnegative. -/
 theorem xSubQuadraticLinearCubicDiscrimNonneg {a b c μ : ℝ} (hab : a ≤ b) (hac : a ≤ c)
     (hb0 : b ≤ 0) (hc0 : c ≤ 0) (hμ : 0 < μ) :
     0 ≤ cubicDiscr (X * ((X - C a) * (X - C b)) - C μ * (X - C c)) := by
-  by_cases hcb : c ≤ b
-  · let u : ℝ := c - a
-    let v : ℝ := b - c
-    let w : ℝ := -b
-    have hu : 0 ≤ u := by
-      dsimp [u]
-      linarith
-    have hv : 0 ≤ v := by
-      dsimp [v]
-      linarith
-    have hw : 0 ≤ w := by
-      dsimp [w]
-      linarith
-    have hnorm :
-        X * ((X - C a) * (X - C b)) - C μ * (X - C c) =
-          X * ((X - C (-(u + v + w))) * (X - C (-w))) -
-            C μ * (X - C (-(v + w))) := by
-      dsimp [u, v, w]
-      ring_nf
-    rw [hnorm]
-    exact xSubQuadraticLinearCubicDiscrimNonneg_between hu hv hw hμ
-  · have hbc : b ≤ c := le_of_not_ge hcb
-    let u : ℝ := b - a
-    let v : ℝ := c - b
-    let w : ℝ := -c
-    have hu : 0 ≤ u := by
-      dsimp [u]
-      linarith
-    have hv : 0 ≤ v := by
-      dsimp [v]
-      linarith
-    have hw : 0 ≤ w := by
-      dsimp [w]
-      linarith
-    have hnorm :
-        X * ((X - C a) * (X - C b)) - C μ * (X - C c) =
-          X * ((X - C (-(u + v + w))) * (X - C (-(v + w)))) -
-            C μ * (X - C (-w)) := by
-      dsimp [u, v, w]
-      ring_nf
-    rw [hnorm]
-    exact xSubQuadraticLinearCubicDiscrimNonneg_right hu hv hw hμ
+  exact normalized_left_discr_nonneg hab hac hb0 hc0 hμ
 
 /-- Degree-two/degree-one positive-split x-subtraction endpoint. -/
 lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_two_one
@@ -187,56 +157,7 @@ lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_two_one
     (hpdeg : p.natDegree = 2) (hqdeg : q.natDegree = 1)
     {μ : ℝ} (hμ : 0 < μ) :
     (X * p - C μ * q).Splits := by
-  obtain ⟨a, b, hab, hproots, hpfac⟩ :=
-    exists_roots_pair_of_splits_natDegree_two hpair.left_splits hpdeg
-  obtain ⟨c, hqroots, hqfac⟩ :=
-    exists_linear_factor_of_splits_natDegree_one hpair.right_splits hqdeg
-  have hac : a ≤ c :=
-    left_root_le_singleton_root_of_positiveSplitRootCountPair_two_one
-      hpair hab hproots hqroots
-  have hb0 : b ≤ 0 := by
-    have hb_mem : b ∈ p.roots := by
-      rw [hproots]
-      simp only [Multiset.insert_eq_cons]
-      simp
-    exact roots_nonpos_of_hasNonnegCoeffs hpnn b hb_mem
-  have hc0 : c ≤ 0 := by
-    have hc_mem : c ∈ q.roots := by
-      rw [hqroots]
-      simp
-    exact roots_nonpos_of_hasNonnegCoeffs hqnn c hc_mem
-  let A : ℝ := p.leadingCoeff
-  let B : ℝ := q.leadingCoeff
-  have hA_pos : 0 < A := by
-    dsimp [A]
-    exact hpair.left_pos
-  have hB_pos : 0 < B := by
-    dsimp [B]
-    exact hpair.right_pos
-  let ν : ℝ := μ * B / A
-  have hν_pos : 0 < ν := by
-    dsimp [ν]
-    exact div_pos (mul_pos hμ hB_pos) hA_pos
-  let inner : ℝ[X] := X * ((X - C a) * (X - C b)) - C ν * (X - C c)
-  have hinner_deg : inner.natDegree ≤ 3 := by
-    dsimp [inner]
-    compute_degree
-  have hinner_disc : 0 ≤ cubicDiscr inner := by
-    dsimp [inner]
-    exact xSubQuadraticLinearCubicDiscrimNonneg hab hac hb0 hc0 hν_pos
-  have hinner_splits : inner.Splits :=
-    splits_of_natDegree_le_three_cubicDiscr_nonneg hinner_deg hinner_disc
-  have hpfacA : p = C A * ((X - C a) * (X - C b)) := by simpa [A] using hpfac
-  have hqfacB : q = C B * (X - C c) := by simpa [B] using hqfac
-  have hpoly : X * p - C μ * q = C A * inner := by
-    rw [hpfacA, hqfacB]
-    dsimp [inner, ν]
-    apply Polynomial.funext
-    intro x
-    simp only [eval_sub, eval_mul, eval_C, eval_X]
-    field_simp [hA_pos.ne']
-  rw [hpoly]
-  exact hinner_splits.C_mul A
+  exact hpair.xSub_splits_of_left_successor_nonneg hpnn hqnn (by lia) hμ
 
 /-- Degree-one right endpoint case for the sign-normalized x-subtraction
 leaf. -/

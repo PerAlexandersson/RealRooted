@@ -496,19 +496,15 @@ theorem networkPathSumFrom_one_eq_networkShift {R : Type*} [CommSemiring R]
   · rw [networkPathSumFrom_eq_zero_of_lt_right weights (by lia)]
     rw [networkPathSum_eq_zero_of_lt (networkShift weights) (by lia)]
 
+/-- Extract the path sum at any degree, including degrees above the network. -/
 private theorem coeff_networkResolvingPolynomial {R : Type*} [CommSemiring R]
-    (weights : ℕ → ℕ → R) (n k j : ℕ)
-    (hj : j ≤ n) :
+    (weights : ℕ → ℕ → R) (n k j : ℕ) :
     (networkResolvingPolynomial weights n k).coeff j = networkPathSumFrom weights n k j := by
   rw [networkResolvingPolynomial, Polynomial.finsetSum_coeff]
-  simp [hj]
-
-private theorem coeff_networkResolvingPolynomial_eq_zero {R : Type*} [CommSemiring R]
-    (weights : ℕ → ℕ → R)
-    (n k j : ℕ) (hj : n < j) :
-    (networkResolvingPolynomial weights n k).coeff j = 0 := by
-  rw [networkResolvingPolynomial, Polynomial.finsetSum_coeff]
-  simp [not_le_of_gt hj]
+  by_cases hj : j ≤ n
+  · simp [hj]
+  · rw [networkPathSumFrom_eq_zero_of_lt_right weights (Nat.lt_of_not_ge hj)]
+    simp [hj]
 
 /-- The literal path polynomials satisfy the Brändén--Saud Leite resolution
 recurrence. -/
@@ -519,26 +515,8 @@ theorem networkResolvingPolynomial_step {R : Type*} [CommSemiring R]
       networkResolvingPolynomial weights (n + 1) (k + 1) +
         C (weights n k) * networkResolvingPolynomial weights n k := by
   ext j
-  rw [Polynomial.coeff_add, Polynomial.coeff_C_mul]
-  by_cases hj : j ≤ n
-  · rw [coeff_networkResolvingPolynomial weights (n + 1) k j (Nat.le_succ_of_le hj)]
-    rw [coeff_networkResolvingPolynomial weights (n + 1) (k + 1) j
-      (Nat.le_succ_of_le hj)]
-    rw [coeff_networkResolvingPolynomial weights n k j hj]
-    simpa only [add_comm] using networkPathSumFrom_step weights hkn j
-  by_cases hjs : j ≤ n + 1
-  · have hj_eq : j = n + 1 := by lia
-    subst j
-    rw [coeff_networkResolvingPolynomial weights (n + 1) k (n + 1) le_rfl]
-    rw [coeff_networkResolvingPolynomial weights (n + 1) (k + 1) (n + 1) le_rfl]
-    rw [coeff_networkResolvingPolynomial_eq_zero weights n k (n + 1) (by lia)]
-    rw [networkPathSumFrom_step weights hkn (n + 1)]
-    rw [networkPathSumFrom_eq_zero_of_lt_right weights (n := n) (by lia)]
-    simp
-  · rw [coeff_networkResolvingPolynomial_eq_zero weights (n + 1) k j (by lia)]
-    rw [coeff_networkResolvingPolynomial_eq_zero weights (n + 1) (k + 1) j (by lia)]
-    rw [coeff_networkResolvingPolynomial_eq_zero weights n k j (by lia)]
-    simp
+  simp only [Polynomial.coeff_add, Polynomial.coeff_C_mul, coeff_networkResolvingPolynomial]
+  exact (networkPathSumFrom_step weights hkn j).trans (add_comm _ _)
 
 /-- Every weighted triangular-network path matrix is lower triangular. -/
 theorem isLowerTriangular_networkMatrix {R : Type*} [CommSemiring R]
@@ -670,7 +648,7 @@ theorem coeff_networkResolvingPolynomial_top {R : Type*} [CommSemiring R]
     (weights : ℕ → ℕ → R)
     {n k : ℕ} (hkn : k ≤ n) :
     (networkResolvingPolynomial weights n k).coeff n = 1 := by
-  rw [coeff_networkResolvingPolynomial weights n k n le_rfl]
+  rw [coeff_networkResolvingPolynomial weights n k n]
   exact networkPathSumFrom_top weights hkn
 
 /-- Nonnegative triangular-network weights give a resolution of their path

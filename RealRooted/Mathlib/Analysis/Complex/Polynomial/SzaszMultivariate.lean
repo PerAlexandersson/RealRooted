@@ -13,6 +13,7 @@ import Mathlib.Analysis.MeanInequalities
 import Mathlib.Analysis.Complex.Polynomial.Basic
 import Mathlib.Analysis.SpecificLimits.Basic
 import Mathlib.Algebra.CharP.Defs
+import RealRooted.Mathlib.Algebra.Polynomial.Splits.FinRoots
 
 /-!
 # The multivariate Szász growth bound
@@ -152,47 +153,27 @@ private lemma exists_prod_one_add (g : ℂ[X]) (h0 : g.coeff 0 = 1) :
     ∃ ξ : Fin g.natDegree → ℂ,
       g = ∏ j, (1 + Polynomial.C (ξ j) * Polynomial.X) := by
   have hg0 : g ≠ 0 := by rintro rfl; simp at h0
-  have hcard : g.roots.card = g.natDegree := IsAlgClosed.card_roots_eq_natDegree
-  have hfac := C_leadingCoeff_mul_prod_multiset_X_sub_C hcard
-  have hroots_ne : ∀ r ∈ g.roots, r ≠ 0 := by
-    intro r hr h; subst h
-    rw [mem_roots hg0, IsRoot, ← coeff_zero_eq_eval_zero, h0] at hr; exact one_ne_zero hr
-  set s := g.roots with hs
-  set Q := (s.map (fun r => 1 + Polynomial.C (-r⁻¹) * Polynomial.X)).prod with hQ
-  have h1 : (s.map (fun r => Polynomial.X - Polynomial.C r)).prod =
-      Polynomial.C (s.map (fun r => -r)).prod * Q := by
-    rw [hQ, map_multiset_prod, Multiset.map_map, ← Multiset.prod_map_mul]
-    congr 1
-    apply Multiset.map_congr rfl
-    intro r hr
-    simp only [Function.comp_apply]
-    rw [mul_add, mul_one, ← mul_assoc, ← Polynomial.C_mul]
-    have : -r * -r⁻¹ = 1 := by rw [neg_mul_neg, mul_inv_cancel₀ (hroots_ne r hr)]
-    rw [this, Polynomial.C_1, one_mul, Polynomial.C_neg]
+  obtain ⟨r, hr, hfac⟩ := (IsAlgClosed.splits g).exists_fin_eq_C_mul_prod
+  have hrne : ∀ i, r i ≠ 0 := by
+    intro i hi
+    have hroot : r i ∈ g.roots := by rw [← hr]; simp
+    rw [hi, mem_roots hg0, IsRoot, ← coeff_zero_eq_eval_zero, h0] at hroot
+    exact one_ne_zero hroot
+  have hlin : ∀ i, Polynomial.X - Polynomial.C (r i) =
+      Polynomial.C (-r i) * (1 + Polynomial.C (-(r i)⁻¹) * Polynomial.X) := by
+    intro i
+    rw [mul_add, mul_one, ← mul_assoc, ← Polynomial.C_mul, neg_mul_neg,
+      mul_inv_cancel₀ (hrne i), Polynomial.C_1, one_mul, Polynomial.C_neg]
     ring
-  have hQ0 : Q.coeff 0 = 1 := by
-    rw [coeff_zero_eq_eval_zero, hQ, eval_multiset_prod, Multiset.map_map]
-    simp
-  have hgQ : g = Polynomial.C (g.leadingCoeff * (s.map (fun r => -r)).prod) * Q := by
-    conv_lhs => rw [← hfac]
-    rw [h1, Polynomial.C_mul, mul_assoc]
-  have hc : g.leadingCoeff * (s.map (fun r => -r)).prod = 1 := by
-    have := congrArg (fun p => p.coeff 0) hgQ
-    simp only [Polynomial.coeff_C_mul, hQ0, mul_one, h0] at this
-    exact this.symm
-  rw [hc, Polynomial.C_1, one_mul] at hgQ
-  obtain ⟨n, hn⟩ : ∃ n, g.natDegree = n := ⟨_, rfl⟩
-  rw [hn]
-  set l := s.toList with hl
-  have hlen : l.length = n := by rw [hl, Multiset.length_toList, hcard, hn]
-  subst hlen
-  refine ⟨fun j => -(l[(j : ℕ)]'j.2)⁻¹, ?_⟩
-  have := Fin.prod_univ_fun_getElem l
-    (fun r => 1 + Polynomial.C (-r⁻¹) * Polynomial.X)
-  refine hgQ.trans (Eq.trans ?_ this.symm)
-  rw [hQ]
-  conv_lhs => rw [← Multiset.coe_toList s]
-  rw [Multiset.map_coe, Multiset.prod_coe]
+  simp_rw [hlin] at hfac
+  rw [Finset.prod_mul_distrib, ← map_prod, ← mul_assoc, ← Polynomial.C_mul] at hfac
+  have hc : g.leadingCoeff * ∏ i, -r i = 1 := by
+    have := congrArg (fun p => p.eval 0) hfac
+    simpa only [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_prod,
+      Polynomial.eval_add, Polynomial.eval_one, Polynomial.eval_X,
+      ← Polynomial.coeff_zero_eq_eval_zero, h0, mul_zero, add_zero, Finset.prod_const_one,
+      mul_one] using this.symm
+  exact ⟨fun i => -(r i)⁻¹, by simpa only [hc, Polynomial.C_1, one_mul] using hfac⟩
 
 open Polynomial in
 /-- Univariate coefficient bound. -/

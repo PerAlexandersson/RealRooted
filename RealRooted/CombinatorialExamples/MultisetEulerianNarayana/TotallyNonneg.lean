@@ -56,64 +56,21 @@ private theorem lowerBidiagonalFin_mulVec {N : ℕ} (d s : ℕ → ℝ) (v : Fin
   cases N with
   | zero => exact Fin.elim0 i
   | succ N =>
-      rcases Fin.eq_zero_or_eq_succ i with rfl | ⟨i, rfl⟩
-      · simp [Matrix.mulVec, dotProduct, Matrix.lowerBidiagonalFin_apply]
-      · simp only [Matrix.mulVec, dotProduct, Matrix.lowerBidiagonalFin_apply]
-        have hsplit (x : Fin (N + 1)) :
-            (if i.succ = x then d (i.val + 1)
-              else if i.succ.val = x.val + 1 then s x.val else 0) * v x =
-              (if i.succ = x then d (i.val + 1) * v x else 0) +
-                (if i.succ.val = x.val + 1 then s x.val * v x else 0) := by
-          by_cases h₁ : i.succ = x
-          · simp [h₁]
-          · simp [h₁]
-        have hsum :
-            (∑ x : Fin (N + 1),
-                (if i.succ = x then d (i.val + 1)
-                  else if i.succ.val = x.val + 1 then s x.val else 0) * v x) =
-              ∑ x : Fin (N + 1),
-                ((if i.succ = x then d (i.val + 1) * v x else 0) +
-                  (if i.succ.val = x.val + 1 then s x.val * v x else 0)) := by
-          apply Finset.sum_congr rfl
-          intro x hx
-          exact hsplit x
-        change (∑ x : Fin (N + 1),
-            (if i.succ = x then d (i.val + 1)
-              else if i.succ.val = x.val + 1 then s x.val else 0) * v x) = _
-        rw [hsum]
-        rw [Finset.sum_add_distrib]
-        have hfirst :
-            (∑ x : Fin (N + 1),
-                if i.succ = x then d (i.val + 1) * v x else 0) =
-              d (i.val + 1) * v i.succ := by
-          rw [Finset.sum_eq_single i.succ]
-          · simp
-          · intro b hb hbi
-            simp only [ite_eq_right (Ne.symm hbi)]
-          · simp
-        have hsecond :
-            (∑ x : Fin (N + 1),
-                if i.succ.val = x.val + 1 then s x.val * v x else 0) =
-              s i.val * v i.castSucc := by
-          rw [Finset.sum_eq_single i.castSucc]
-          · simp
-          · intro b hb hbi
-            have hne : i.val ≠ b.val := by
-              intro h
-              apply hbi
-              apply Fin.ext
-              simpa using h.symm
-            have hne' : ¬i.succ.val = b.val + 1 := by
-              intro h
-              have h' : i.val + 1 = b.val + 1 := by simpa using h
-              apply hne
-              lia
-            simp only [ite_eq_right hne']
-          · simp
-        rw [hfirst, hsecond]
-        have hfin : v i.castSucc = v ⟨i.val, by lia⟩ := by
-          congr 1
-        simp [Fin.val_succ, hfin]
+    rcases Fin.eq_zero_or_eq_succ i with rfl | ⟨i, rfl⟩
+    · simp [Matrix.mulVec, dotProduct, Matrix.lowerBidiagonalFin_apply]
+    · simp only [Matrix.mulVec, dotProduct]
+      rw [Finset.sum_eq_add_of_mem i.succ i.castSucc (Finset.mem_univ _)
+        (Finset.mem_univ _) (by simp [Fin.ext_iff])]
+      · have hfin : (⟨i.val, by lia⟩ : Fin (N + 1)) = i.castSucc := by ext; rfl
+        simp [Matrix.lowerBidiagonalFin_apply, Fin.ext_iff, hfin]
+      · intro j _ hj
+        have hdiag : i.succ ≠ j := hj.1.symm
+        have hsub : i.val ≠ j.val := by
+          intro h
+          apply hj.2
+          apply Fin.ext
+          exact h.symm
+        simp [Matrix.lowerBidiagonalFin_apply, hdiag, hsub]
 
 private theorem factorDiagonal_nonneg {d : ℕ} {a : ℝ} (ha : 0 < a) (i : ℕ) :
     0 ≤ factorDiagonal d a i := by
@@ -457,32 +414,12 @@ private lemma coefficientFactor_mul_apply {N N' : ℕ} (d : ℕ) (a : ℝ)
     (coefficientFactor N d a * M) k j = factorDiagonal d a k.val * M k j +
       (if h : 1 ≤ k.val then
         factorSubdiagonal d a (k.val - 1) * M ⟨k.val - 1, by lia⟩ j else 0) := by
-  rw [Matrix.mul_apply]
-  have hsplit : ∀ i : Fin N, coefficientFactor N d a k i * M i j =
-      (if k = i then factorDiagonal d a k.val * M k j else 0) +
-      (if k.val = i.val + 1 then factorSubdiagonal d a i.val * M i j else 0) := by
-    intro i
-    unfold coefficientFactor
-    by_cases h1 : k = i
-    · subst h1; simp
-    · simp only [h1, ite_false, zero_add]
-      split_ifs <;> simp_all
-  simp_rw [hsplit, Finset.sum_add_distrib, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
-  congr 1
-  split_ifs with hk
-  · rw [Finset.sum_eq_single ⟨k.val - 1, by lia⟩]
-    · rw [ite_eq_left (by lia)]
-    · intro b _ hb
-      rw [ite_eq_right]
-      intro h
-      apply hb
-      ext
-      lia
-    · simp
-  · apply Finset.sum_eq_zero
-    intro i _
-    rw [ite_eq_right]
-    lia
+  change (coefficientFactor N d a).mulVec (fun i => M i j) k = _
+  rw [coefficientFactor, lowerBidiagonalFin_mulVec]
+  by_cases hk : k.val = 0
+  · simp [hk]
+  · have hpos : 1 ≤ k.val := by lia
+    simp [hk, hpos]
 
 private lemma paddedFactorWord_apply (p r ell : ℕ) (hl : ell < p) :
     ∀ s, s < r → ∀ k : Fin (p + r),

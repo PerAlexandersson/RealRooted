@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.MultivariateStability
+import RealRooted.Gurvits
 import Mathlib.Analysis.Complex.Polynomial.GaussLucas
 public import Mathlib.RingTheory.MvPolynomial.WeightedHomogeneous
 import Mathlib.Analysis.Complex.AbsMax
@@ -268,27 +269,7 @@ variable {n : ℕ}
 
 lemma coeff_pderiv' (j : Fin n) (p : MvPolynomial (Fin n) ℝ) (e : Fin n →₀ ℕ) :
     (pderiv j p).coeff e = p.coeff (e + Finsupp.single j 1) * (e j + 1) := by
-  classical
-  induction p using MvPolynomial.induction_on' with
-  | monomial s a =>
-    rw [pderiv_monomial, coeff_monomial, coeff_monomial]
-    by_cases hs : s = e + Finsupp.single j 1
-    · subst hs
-      simp
-    · rw [ite_eq_right hs, zero_mul]
-      split_ifs with h
-      · have : s j = 0 := by
-          by_contra hsj
-          apply hs
-          rw [← h]
-          ext l
-          by_cases hl : l = j
-          · subst hl; simp; lia
-          · simp [Finsupp.single_eq_of_ne hl]
-        simp [this]
-      · rfl
-  | add p q hp hq =>
-    simp only [map_add, AddMonoidAlgebra.coeff_add, Finsupp.add_apply, hp, hq, add_mul]
+  exact MvPolynomial.coeff_pderiv p e
 
 lemma mem_support_pderiv (j : Fin n) (p : MvPolynomial (Fin n) ℝ) (e : Fin n →₀ ℕ) :
     e ∈ (pderiv j p).support ↔ e + Finsupp.single j 1 ∈ p.support := by
@@ -346,72 +327,10 @@ lemma eval_derivative_univPoly (z : Fin n → ℂ) (j : Fin n) (q : MvPolynomial
 
 theorem Stable.pderiv {p : MvPolynomial (Fin n) ℝ} (hp : Stable p) (j : Fin n)
     (hne : pderiv j p ≠ 0) : Stable (pderiv j p) := by
-  classical
-  intro z hz hzero; have hp0 := hp.ne_zero
-  -- the degree of `p` in `z_j`
-  set D := p.support.sup (fun d => d j) with hD
-  have hDle : ∀ d ∈ p.support, d j ≤ D := fun d hd => Finset.le_sup (f := fun d => d j) hd
-  obtain ⟨dmax, hdmax, hdmaxD⟩ := Finset.exists_mem_eq_sup p.support
-    (Finset.nonempty_iff_ne_empty.mpr (support_eq_empty.not.mpr hp0)) (fun d => d j)
-  have hD1 : 1 ≤ D := by
-    obtain ⟨e, he⟩ : (MvPolynomial.pderiv j p).support.Nonempty :=
-      Finset.nonempty_iff_ne_empty.mpr (support_eq_empty.not.mpr hne)
-    have := hDle _ ((mem_support_pderiv j p e).1 he)
-    simp at this
-    lia
-  -- the top part in `z_j` is stable
-  set w : Fin n → ℤ := fun l => if l = j then -1 else 0 with hw
-  have hweight : ∀ d : Fin n →₀ ℕ, Finsupp.weight w d = -(d j : ℤ) := by
-    intro d; rw [Finsupp.weight_apply, Finsupp.sum_fintype _ _ (fun _ => by simp)]; simp [hw]
-  have hPtop := hp.weightedHomogeneousComponent w (-(D : ℤ))
-    (fun d hd => by rw [hweight]; have := hDle d hd; lia)
-    ⟨dmax, hdmax, by rw [hweight, hD, hdmaxD]⟩
-  set Ptop := MvPolynomial.weightedHomogeneousComponent w (-(D : ℤ)) p with hPtopdef
-  -- the top coefficient of the univariate restriction is nonzero
-  set f := univPoly z j p with hf
-  have hcoeffD : f.coeff D ≠ 0 := by
-    have hzI : ∀ l, 0 < (Function.update z j Complex.I l).im := by
-      intro l; by_cases hl : l = j
-      · subst hl; simp
-      · simpa [hl] using hz l
-    have h1 := hPtop _ hzI
-    have hsub : Ptop.support ⊆ p.support := by
-      intro d hd; rw [mem_support_iff, hPtopdef, coeff_weightedHomogeneousComponent] at hd
-      split_ifs at hd
-      · exact mem_support_iff.mpr hd
-      · exact absurd rfl hd
-    rw [eval_map_eq_sum_of_subset _ hsub] at h1
-    have h2 : ∑ d ∈ p.support, ((Ptop.coeff d : ℝ) : ℂ) *
-        ∏ i, Function.update z j Complex.I i ^ d i = Complex.I ^ D * f.coeff D := by
-      rw [hf, univPoly, Polynomial.finsetSum_coeff, Finset.mul_sum]
-      refine Finset.sum_congr rfl fun d _ => ?_
-      rw [Polynomial.coeff_C_mul_X_pow, hPtopdef, coeff_weightedHomogeneousComponent,
-        hweight, prod_update_pow]
-      by_cases hdj : d j = D
-      · rw [ite_eq_left (by lia), ite_eq_left hdj.symm, hdj]; ring
-      · rw [ite_eq_right (by lia), ite_eq_right (Ne.symm hdj)]; simp
-    rw [h2] at h1; exact right_ne_zero_of_mul h1
-  have hdeg : D ≤ f.natDegree := Polynomial.le_natDegree_of_ne_zero hcoeffD
-  have hdegpos : 0 < f.degree := by rw [← Polynomial.natDegree_pos_iff_degree_pos]; lia
-  -- Gauss–Lucas
-  have hderiv0 : Polynomial.derivative f ≠ 0 :=
-    (f.derivative_ne_zero).mpr (by lia)
-  have hroot : z j ∈ (Polynomial.derivative f).rootSet ℂ := by
-    rw [Polynomial.mem_rootSet]; refine ⟨hderiv0, ?_⟩
-    simpa only [Polynomial.coe_aeval_eq_eval, hf, eval_derivative_univPoly] using hzero
-  have hGL := Polynomial.rootSet_derivative_subset_convexHull_rootSet hdegpos hroot
-  have hroots : f.rootSet ℂ ⊆ {w : ℂ | w.im ≤ 0} := by
-    intro r hr; rw [Polynomial.mem_rootSet, Polynomial.coe_aeval_eq_eval, hf, eval_univPoly] at hr
-    by_contra hcon
-    simp only [Set.mem_ofPred_eq, not_le] at hcon
-    apply hp _ _ hr.2
-    intro l; by_cases hl : l = j
-    · subst hl; simpa using hcon
-    · simpa [hl] using hz l
-  have hconv : Convex ℝ {w : ℂ | w.im ≤ 0} :=
-    convex_halfSpace_le Complex.imLm.isLinear 0
-  have := convexHull_min hroots hconv hGL
-  simp only [Set.mem_ofPred_eq] at this; linarith [hz j]
+  change MvRealStable (MvPolynomial.pderiv j p)
+  rcases MvRealStableOrZero.pderiv_of_finite (Or.inr hp) j with hzero | hstable
+  · exact (hne hzero).elim
+  · exact hstable
 
 theorem exists_shift {p : MvPolynomial (Fin n) ℝ} (hp : Stable p) (j : Fin n) (k : ℕ)
     (hne : ∃ d ∈ p.support, k ≤ d j) :

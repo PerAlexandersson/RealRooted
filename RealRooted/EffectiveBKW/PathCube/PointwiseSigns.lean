@@ -13,139 +13,54 @@ public section
 
 namespace RealRooted.EffectiveBKW.PathCube
 
-/-- All branch cells lie in one of the larger sign boxes. -/
+/-- Small-denominator rectangles containing the checked branch cells. -/
+private def signBoxes : List BranchCell :=
+  [
+    ⟨⟨-40, 1⟩, ⟨-35, 1⟩, ⟨2094, 1⟩, ⟨2652, 1⟩⟩,
+    ⟨⟨-71, 2⟩, ⟨-30, 1⟩, ⟨1555, 1⟩, ⟨4225, 2⟩⟩,
+    ⟨⟨-31, 1⟩, ⟨-26, 1⟩, ⟨1142, 1⟩, ⟨1572, 1⟩⟩,
+    ⟨⟨-27, 1⟩, ⟨-21, 1⟩, ⟨755, 1⟩, ⟨1170, 1⟩⟩,
+    ⟨⟨-22, 1⟩, ⟨-16, 1⟩, ⟨447, 1⟩, ⟨777, 1⟩⟩,
+    ⟨⟨-17, 1⟩, ⟨-9, 1⟩, ⟨175, 1⟩, ⟨465, 1⟩⟩,
+    ⟨⟨-10, 1⟩, ⟨-3, 1⟩, ⟨25, 1⟩, ⟨186, 1⟩⟩,
+    ⟨⟨-7, 2⟩, ⟨0, 1⟩, ⟨1, 4⟩, ⟨27, 1⟩⟩
+  ]
+
+/-- Every branch cell is contained in a simple sign rectangle. -/
 private theorem pointwise_covers :
-    branch.cells.all (fun inner ↦
-      pointwiseBoxes.any (fun outer ↦ outer.contains inner)) = true := by
+    branch.cells.all (fun inner ↦ signBoxes.any (fun outer ↦ outer.contains inner)) = true := by
   decide +kernel
 
-/-- Kernel positivity on a covering sign rectangle. -/
-private theorem pointwisePlus_box0 :
-    pointwisePlus.posOnBox pointwiseBox0.tlo pointwiseBox0.thi
-      pointwiseBox0.lo pointwiseBox0.hi = true := by
-  decide +kernel
+/-- Positivity on the covering rectangles supplies the sign on the checked branch. -/
+private theorem pointwise_pos_of_boxes {f : IntPoly2}
+    (h : signBoxes.all (fun box ↦ f.posOnBox box.tlo box.thi box.lo box.hi) = true)
+    {t : ℝ} (ht : t ∈ Set.Icc branch.lo.val branch.hi.val) :
+    0 < f.eval t (branch.y t) := by
+  exact SignCover.check_sound (c := ⟨f, signBoxes⟩) branch_check
+    (Bool.and_eq_true_iff.mpr ⟨pointwise_covers, h⟩) ht
 
-/-- Kernel positivity on a covering sign rectangle. -/
-private theorem pointwisePlus_box1 :
-    pointwisePlus.posOnBox pointwiseBox1.tlo pointwiseBox1.thi
-      pointwiseBox1.lo pointwiseBox1.hi = true := by
-  decide +kernel
-
-/-- Kernel positivity on a covering sign rectangle. -/
-private theorem pointwisePlus_box2 :
-    pointwisePlus.posOnBox pointwiseBox2.tlo pointwiseBox2.thi
-      pointwiseBox2.lo pointwiseBox2.hi = true := by
-  decide +kernel
-
-/-- Kernel positivity on a covering sign rectangle. -/
-private theorem pointwisePlus_box3 :
-    pointwisePlus.posOnBox pointwiseBox3.tlo pointwiseBox3.thi
-      pointwiseBox3.lo pointwiseBox3.hi = true := by
-  decide +kernel
-
-/-- Kernel positivity on a covering sign rectangle. -/
-private theorem pointwisePlus_box4 :
-    pointwisePlus.posOnBox pointwiseBox4.tlo pointwiseBox4.thi
-      pointwiseBox4.lo pointwiseBox4.hi = true := by
-  decide +kernel
-
-/-- Kernel positivity on a covering sign rectangle. -/
-private theorem pointwisePlus_box5 :
-    pointwisePlus.posOnBox pointwiseBox5.tlo pointwiseBox5.thi
-      pointwiseBox5.lo pointwiseBox5.hi = true := by
-  decide +kernel
-
-/-- Kernel positivity on a covering sign rectangle. -/
-private theorem pointwisePlus_box6 :
-    pointwisePlus.posOnBox pointwiseBox6.tlo pointwiseBox6.thi
-      pointwiseBox6.lo pointwiseBox6.hi = true := by
-  decide +kernel
-
-/-- Kernel positivity on a covering sign rectangle. -/
-private theorem pointwisePlus_box7 :
-    pointwisePlus.posOnBox pointwiseBox7.tlo pointwiseBox7.thi
-      pointwiseBox7.lo pointwiseBox7.hi = true := by
+/-- Kernel sign replay on the simpler covering rectangles. -/
+private theorem pointwisePlus_boxes :
+    signBoxes.all (fun box ↦ pointwisePlus.posOnBox
+      box.tlo box.thi box.lo box.hi) = true := by
   decide +kernel
 
 /-- The symmetric plus sign holds on the checked branch. -/
 theorem pointwisePlus_pos {t : ℝ}
     (ht : t ∈ Set.Icc branch.lo.val branch.hi.val) :
     0 < pointwisePlus.eval t (branch.y t) := by
-  apply SignCover.check_sound (c := pointwisePlusCover) branch_check ?_ ht
-  change (branch.cells.all (fun inner ↦
-    pointwiseBoxes.any (fun outer ↦ outer.contains inner)) &&
-      pointwiseBoxes.all (fun box ↦ pointwisePlus.posOnBox
-        box.tlo box.thi box.lo box.hi)) = true
-  simp only [Bool.and_eq_true]
-  refine ⟨pointwise_covers, ?_⟩
-  simp only [pointwiseBoxes, List.all_cons, List.all_nil,
-    pointwisePlus_box0, pointwisePlus_box1, pointwisePlus_box2, pointwisePlus_box3,
-      pointwisePlus_box4, pointwisePlus_box5, pointwisePlus_box6, pointwisePlus_box7,
-    Bool.true_and]
+  exact pointwise_pos_of_boxes pointwisePlus_boxes ht
 
-/-- Kernel positivity on a covering sign rectangle. -/
-private theorem pointwiseMinus_box0 :
-    pointwiseMinus.posOnBox pointwiseBox0.tlo pointwiseBox0.thi
-      pointwiseBox0.lo pointwiseBox0.hi = true := by
-  decide +kernel
-
-/-- Kernel positivity on a covering sign rectangle. -/
-private theorem pointwiseMinus_box1 :
-    pointwiseMinus.posOnBox pointwiseBox1.tlo pointwiseBox1.thi
-      pointwiseBox1.lo pointwiseBox1.hi = true := by
-  decide +kernel
-
-/-- Kernel positivity on a covering sign rectangle. -/
-private theorem pointwiseMinus_box2 :
-    pointwiseMinus.posOnBox pointwiseBox2.tlo pointwiseBox2.thi
-      pointwiseBox2.lo pointwiseBox2.hi = true := by
-  decide +kernel
-
-/-- Kernel positivity on a covering sign rectangle. -/
-private theorem pointwiseMinus_box3 :
-    pointwiseMinus.posOnBox pointwiseBox3.tlo pointwiseBox3.thi
-      pointwiseBox3.lo pointwiseBox3.hi = true := by
-  decide +kernel
-
-/-- Kernel positivity on a covering sign rectangle. -/
-private theorem pointwiseMinus_box4 :
-    pointwiseMinus.posOnBox pointwiseBox4.tlo pointwiseBox4.thi
-      pointwiseBox4.lo pointwiseBox4.hi = true := by
-  decide +kernel
-
-/-- Kernel positivity on a covering sign rectangle. -/
-private theorem pointwiseMinus_box5 :
-    pointwiseMinus.posOnBox pointwiseBox5.tlo pointwiseBox5.thi
-      pointwiseBox5.lo pointwiseBox5.hi = true := by
-  decide +kernel
-
-/-- Kernel positivity on a covering sign rectangle. -/
-private theorem pointwiseMinus_box6 :
-    pointwiseMinus.posOnBox pointwiseBox6.tlo pointwiseBox6.thi
-      pointwiseBox6.lo pointwiseBox6.hi = true := by
-  decide +kernel
-
-/-- Kernel positivity on a covering sign rectangle. -/
-private theorem pointwiseMinus_box7 :
-    pointwiseMinus.posOnBox pointwiseBox7.tlo pointwiseBox7.thi
-      pointwiseBox7.lo pointwiseBox7.hi = true := by
+/-- Kernel sign replay on the simpler covering rectangles. -/
+private theorem pointwiseMinus_boxes :
+    signBoxes.all (fun box ↦ pointwiseMinus.posOnBox
+      box.tlo box.thi box.lo box.hi) = true := by
   decide +kernel
 
 /-- The symmetric minus sign holds on the checked branch. -/
 theorem pointwiseMinus_pos {t : ℝ}
     (ht : t ∈ Set.Icc branch.lo.val branch.hi.val) :
     0 < pointwiseMinus.eval t (branch.y t) := by
-  apply SignCover.check_sound (c := pointwiseMinusCover) branch_check ?_ ht
-  change (branch.cells.all (fun inner ↦
-    pointwiseBoxes.any (fun outer ↦ outer.contains inner)) &&
-      pointwiseBoxes.all (fun box ↦ pointwiseMinus.posOnBox
-        box.tlo box.thi box.lo box.hi)) = true
-  simp only [Bool.and_eq_true]
-  refine ⟨pointwise_covers, ?_⟩
-  simp only [pointwiseBoxes, List.all_cons, List.all_nil,
-    pointwiseMinus_box0, pointwiseMinus_box1, pointwiseMinus_box2, pointwiseMinus_box3,
-      pointwiseMinus_box4, pointwiseMinus_box5, pointwiseMinus_box6, pointwiseMinus_box7,
-    Bool.true_and]
-
+  exact pointwise_pos_of_boxes pointwiseMinus_boxes ht
 
 end RealRooted.EffectiveBKW.PathCube

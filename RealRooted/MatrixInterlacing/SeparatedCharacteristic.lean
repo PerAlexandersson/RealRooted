@@ -241,24 +241,21 @@ private lemma separatedCharacteristicScalarEntry_det_nonneg {h m : ℕ}
         separatedCharacteristicScalarEntry a b i₂ j₂ := by
   have ht₁ := separatedCharacteristicTailCoeff_nonpos hb j₁
   have ht₂ := separatedCharacteristicTailCoeff_nonpos hb j₂
-  have hu₁ : 0 ≤ a j₁ - separatedCharacteristicTailCoeff b j₁ := by
-    linarith [ha j₁]
-  have hu₂ : 0 ≤ a j₂ - separatedCharacteristicTailCoeff b j₂ := by
-    linarith [ha j₂]
-  have huu : 0 ≤ (a j₁ - separatedCharacteristicTailCoeff b j₁) *
-      (a j₂ - separatedCharacteristicTailCoeff b j₂) := mul_nonneg hu₁ hu₂
-  have hua₁ : 0 ≤ (a j₂ - separatedCharacteristicTailCoeff b j₂) * a j₁ :=
-    mul_nonneg hu₂ (ha j₁)
-  have hua₂ : 0 ≤ a j₁ * (a j₂ - separatedCharacteristicTailCoeff b j₂) :=
-    mul_nonneg (ha j₁) hu₂
-  have hua₃ : 0 ≤ (a j₁ - separatedCharacteristicTailCoeff b j₁) * a j₂ :=
-    mul_nonneg hu₁ (ha j₂)
-  have haa : 0 ≤ a j₁ * a j₂ := mul_nonneg (ha j₁) (ha j₂)
-  have htailprod : 0 ≤ (a j₂ - separatedCharacteristicTailCoeff b j₂) *
-      (-separatedCharacteristicTailCoeff b j₁) :=
-    mul_nonneg hu₂ (neg_nonneg.mpr ht₁)
+  have ha₁ := ha j₁
+  have ha₂ := ha j₂
+  have hu₁ : 0 ≤ a j₁ - separatedCharacteristicTailCoeff b j₁ := by linarith
+  have hu₂ : 0 ≤ a j₂ - separatedCharacteristicTailCoeff b j₂ := by linarith
+  have hprod : 0 ≤ (a j₁ - separatedCharacteristicTailCoeff b j₁) *
+      (a j₂ - separatedCharacteristicTailCoeff b j₂) ∧
+      0 ≤ (a j₁ - separatedCharacteristicTailCoeff b j₁) * a j₂ ∧
+      0 ≤ (a j₂ - separatedCharacteristicTailCoeff b j₂) * a j₁ ∧
+      0 ≤ a j₁ * a j₂ ∧
+      0 ≤ (a j₂ - separatedCharacteristicTailCoeff b j₂) *
+        (-separatedCharacteristicTailCoeff b j₁) :=
+    ⟨mul_nonneg hu₁ hu₂, mul_nonneg hu₁ ha₂, mul_nonneg hu₂ ha₁,
+      mul_nonneg ha₁ ha₂, mul_nonneg hu₂ (neg_nonneg.mpr ht₁)⟩
   unfold separatedCharacteristicScalarEntry
-  split_ifs <;> simp_all <;> grind
+  split_ifs <;> simp_all only [zero_mul, mul_zero] <;> grind
 
 private def separatedCharacteristicConstantEntry {h m : ℕ}
     (a : Fin (h + m) → ℝ) (b : Fin m → ℝ)

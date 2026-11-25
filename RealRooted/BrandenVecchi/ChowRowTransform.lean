@@ -493,27 +493,25 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_eq_zero
     intro p hp
     rw [Polynomial.reflect_succ p (houtdeg p hp), houtsym p hp]
     ring
+  have hall : ∀ p ∈ out, ∀ q ∈ out, Interl p q := by
+    intro p hp q hq
+    rcases List.get_of_mem hp with ⟨i, rfl⟩
+    rcases List.get_of_mem hq with ⟨j, rfl⟩
+    rcases lt_trichotomy i j with hij | rfl | hji
+    · exact hdirect.interlacingSeq0.interl hij
+    · exact (houtpf _ hp).interl_self
+    · have hrev := reciprocalShift_reverses_interl
+        (houtpf _ hq) (houtpf _ hp) (houtdeg _ hq) (houtdeg _ hp)
+        (hdirect.interlacingSeq0.interl hji)
+      simpa only [houtsym _ hp, houtsym _ hq] using hrev
   have hrefs : refs.Pairwise Interl := by
-    have hrev := hdirect.interlacingSeq0.reverse
-    have hrev' : out.reverse.Pairwise
-        (fun p q => Interl (p.reflect (n + 1)) (q.reflect (n + 1))) :=
-      hrev.imp_of_mem (by
-      intro p q hp hq hpq
-      have hpout : p ∈ out := by simpa using hp
-      have hqout : q ∈ out := by simpa using hq
-      rcases hpq with hp0 | hq0 | hpq
-      · subst q
-        simp [interl_zero_right]
-      · subst p
-        simp [interl_zero_left]
-      · exact (reciprocalShift_reverses_strictInterl
-          (houtpf q hqout) (houtpf p hpout)
-          ((houtdeg q hqout).trans (by lia))
-          ((houtdeg p hpout).trans (by lia)) hpq).toInterl)
-    have hmap := hrev'.map (fun p => p.reflect (n + 1)) (by
-      intro p q hpq
-      exact hpq)
-    simpa [refs, List.map_reverse] using hmap
+    rw [List.pairwise_reverse, List.pairwise_map]
+    refine (isInterlacingSeq0_iff_pairwise.mp hdirect.interlacingSeq0).imp_of_mem ?_
+    intro p q hp hq hpq
+    exact reciprocalShift_reverses_interl
+      (houtpf p hp) (houtpf q hq)
+      ((houtdeg p hp).trans (Nat.le_succ n))
+      ((houtdeg q hq).trans (Nat.le_succ n)) hpq
   refine ⟨?_, ?_⟩
   · intro p hp
     exact (houtdeg p hp).trans (by lia)
@@ -525,49 +523,8 @@ theorem IsReflectionInterlacingSeq.chowRowTransform_of_chowS_eq_zero
       intro p hp r hr
       rcases List.mem_map.mp (by simpa [refs] using hr) with ⟨q, hq, rfl⟩
       rw [hrefout q hq]
-      by_cases hp0 : p = 0
-      · exact Or.inl hp0
-      by_cases hq0 : q = 0
-      · simp [hq0, interl_zero_right]
-      rcases List.get_of_mem hp with ⟨i, rfl⟩
-      rcases List.get_of_mem hq with ⟨j, rfl⟩
-      have hi_mem : out.get i ∈ out := List.get_mem out i
-      have hj_mem : out.get j ∈ out := List.get_mem out j
-      have hi_ne : out.get i ≠ 0 := hp0
-      have hj_ne : out.get j ≠ 0 := hq0
-      rcases lt_trichotomy i j with hij | rfl | hji
-      · have hpq := (hdirect.interlacingSeq0.interl hij).toStrictInterl_of_ne hi_ne hj_ne
-        have hqXp := strictInterl_mul_X_of_strictInterl_of_nonneg hpq
-          (houtpf _ hi_mem).hasNonnegCoeffs
-          (houtpf _ hj_mem).hasNonnegCoeffs
-        have hipdeg := houtdeg _ hi_mem
-        have hXpdeg : (X * out.get i).natDegree ≤ n + 1 := by
-          calc
-            (X * out.get i).natDegree ≤ X.natDegree + (out.get i).natDegree :=
-              natDegree_mul_le
-            _ = 1 + (out.get i).natDegree := by simp
-            _ ≤ 1 + n := Nat.add_le_add_left hipdeg 1
-            _ = n + 1 := by ac_rfl
-        have hjdeg' : (out.get j).natDegree ≤ n + 1 :=
-          (houtdeg _ hj_mem).trans (by lia)
-        have hrev := reciprocalShift_reverses_strictInterl (D := n + 1)
-          (houtpf _ hj_mem) (houtpf _ hi_mem).X_mul hjdeg' hXpdeg hqXp
-        change StrictInterl ((X * out.get i).reflect (n + 1))
-          ((out.get j).reflect (n + 1)) at hrev
-        have hrefXp : (X * out.get i).reflect (n + 1) = out.get i := by
-          rw [show n + 1 = 1 + n by lia,
-            reflect_mul X (out.get i) natDegree_X_le
-              hipdeg, houtsym _ hi_mem]
-          simp
-        rw [hrefXp, hrefout _ hj_mem] at hrev
-        exact hrev.toInterl
-      · exact (strictInterl_self_X_mul_of_nonneg hi_ne
-          ((houtpf _ hi_mem).ne_zero_and_splits hi_ne).2
-          (houtpf _ hi_mem).hasNonnegCoeffs).toInterl
-      · have hqp := (hdirect.interlacingSeq0.interl hji).toStrictInterl_of_ne hj_ne hi_ne
-        exact (strictInterl_mul_X_of_strictInterl_of_nonneg hqp
-          (houtpf _ hj_mem).hasNonnegCoeffs
-          (houtpf _ hi_mem).hasNonnegCoeffs).toInterl
+      exact interl_mul_X_of_interl (hall q hq p hp)
+        (houtpf q hq).hasNonnegCoeffs (houtpf p hp).hasNonnegCoeffs
     · intro p hp
       rcases List.mem_append.mp hp with hp | hp
       · exact hdirect.nonnegCoeffs p hp

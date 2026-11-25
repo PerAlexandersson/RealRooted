@@ -128,135 +128,50 @@ private theorem polynomial_succ_succ (n : ℕ) :
     eval_X]
   grind
 
-/-- The preceding Legendre polynomial strictly interlaces a type-`D` row. -/
-theorem legendre_strictInterl_polynomial (n : ℕ) :
-    StrictInterl (legendre (n + 1)) (polynomial (n + 2)) := by
-  let a : ℝ[X] :=
-    C ((3 * ((n : ℝ) + 2) - 2) / (2 * ((n : ℝ) + 2))) * (1 + 2 * X)
-  let b : ℝ[X] := C (-((n : ℝ) / (2 * ((n : ℝ) + 2))))
-  have ha_scalar :
-      0 < (3 * ((n : ℝ) + 2) - 2) / (2 * ((n : ℝ) + 2)) := by
-    have hn : 0 ≤ (n : ℝ) := Nat.cast_nonneg n
-    apply div_pos <;> nlinarith
-  have hlinear_pos : HasPosLeadingCoeff (1 + 2 * X : ℝ[X]) := by
-    rw [show (1 + 2 * X : ℝ[X]) =
-        C 2 * (X + C (1 / 2 : ℝ)) by
-          simp only [one_div]
-          rw [show (2 : ℝ[X]) = C (2 : ℝ) from
-            (map_ofNat C 2).symm, mul_add, ← map_mul]
-          grind]
-    exact hasPosLeadingCoeff_C_mul (by norm_num)
-      (hasPosLeadingCoeff_X_add_C (1 / 2))
-  have ha_pos : HasPosLeadingCoeff a :=
-    hasPosLeadingCoeff_C_mul ha_scalar hlinear_pos
-  have hf_pos := legendre_posLeadingCoeff (n + 1)
-  have hg_pos := legendre_posLeadingCoeff n
-  have haf_pos : HasPosLeadingCoeff (a * legendre (n + 1)) :=
-    ha_pos.mul hf_pos
-  have ha_deg : a.natDegree = 1 := by
-    change
-      (C ((3 * ((n : ℝ) + 2) - 2) / (2 * ((n : ℝ) + 2))) *
-        (1 + 2 * X)).natDegree = 1
-    rw [natDegree_C_mul ha_scalar.ne']
-    compute_degree!
-  have hdeg_af :
-      (a * legendre (n + 1)).natDegree = n + 2 := by
-    rw [natDegree_mul ha_pos.ne_zero hf_pos.ne_zero, ha_deg,
-      legendre_natDegree]
-    lia
-  have hdeg_bg : (b * legendre n).natDegree ≤ n := by
-    exact Polynomial.natDegree_mul_le.trans (by
-      have hbdeg : b.natDegree ≤ 0 := by simp [b]
-      rw [legendre_natDegree]
-      lia)
-  have hsum_pos :
-      HasPosLeadingCoeff
-        (a * legendre (n + 1) + b * legendre n) :=
-    hasPosLeadingCoeff_add_of_natDegree_lt_left (by grind) haf_pos
-  have hsum_deg :
-      (a * legendre (n + 1) + b * legendre n).natDegree = n + 2 :=
-    (Polynomial.natDegree_add_eq_left_of_natDegree_lt
-      (by grind)).trans hdeg_af
-  have hb_nonpos :
-      ∀ r : ℝ, (legendre (n + 1)).IsRoot r → b.eval r ≤ 0 := by
-    intro r _
-    simp only [b, eval_C]
-    exact neg_nonpos.mpr (div_nonneg (Nat.cast_nonneg n) (by positivity))
-  have hprec :
-      StrictInterl (legendre (n + 1))
-        (a * legendre (n + 1) + b * legendre n) :=
-    strictInterl_of_interlaces_evalCoeff_nonpos
-      ((legendre_strictInterl_succ n).toInterlaces (by simp))
-      hg_pos hsum_pos (by simp [hsum_deg]) (by simp [hsum_deg]) hb_nonpos
-  rw [polynomial_succ_succ]
-  exact hprec
+/-- The top Legendre summand controls the degree and leading coefficient. -/
+private theorem polynomial_degree_pos (n : ℕ) :
+    (polynomial (n + 2)).natDegree = n + 2 ∧
+      HasPosLeadingCoeff (polynomial (n + 2)) := by
+  have ha : 0 < (3 * ((n : ℝ) + 2) - 2) / (4 * ((n : ℝ) + 2) - 2) := by
+    have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+    exact div_pos (by linarith) (by linarith)
+  have hpos := hasPosLeadingCoeff_C_mul ha (legendre_posLeadingCoeff (n + 2))
+  have hdeg :
+      (C ((3 * ((n : ℝ) + 2) - 2) / (4 * ((n : ℝ) + 2) - 2)) *
+        legendre (n + 2)).natDegree = n + 2 := by
+    rw [natDegree_C_mul ha.ne', legendre_natDegree]
+  rw [polynomial, Nat.add_sub_cancel]
+  push_cast
+  have hlt :
+      (C (((n : ℝ) + 2) / (4 * ((n : ℝ) + 2) - 2)) * legendre n).natDegree <
+        (C ((3 * ((n : ℝ) + 2) - 2) / (4 * ((n : ℝ) + 2) - 2)) *
+          legendre (n + 2)).natDegree := by
+    rw [hdeg]
+    exact (natDegree_C_mul_le _ _).trans_lt (by rw [legendre_natDegree]; lia)
+  exact ⟨(natDegree_add_eq_left_of_natDegree_lt hlt).trans hdeg,
+    hasPosLeadingCoeff_add_of_natDegree_lt_left hlt hpos⟩
 
 @[simp] theorem polynomial_natDegree (n : ℕ) :
     (polynomial (n + 2)).natDegree = n + 2 := by
-  rw [polynomial_succ_succ]
-  let a : ℝ[X] :=
-    C ((3 * ((n : ℝ) + 2) - 2) / (2 * ((n : ℝ) + 2))) * (1 + 2 * X)
-  let b : ℝ[X] := C (-((n : ℝ) / (2 * ((n : ℝ) + 2))))
-  have ha_scalar :
-      0 < (3 * ((n : ℝ) + 2) - 2) / (2 * ((n : ℝ) + 2)) := by
-    have hn : 0 ≤ (n : ℝ) := Nat.cast_nonneg n
-    apply div_pos <;> nlinarith
-  have ha_ne : a ≠ 0 := by
-    apply mul_ne_zero (C_ne_zero.mpr ha_scalar.ne')
-    intro hzero
-    have hdegree : (1 + 2 * X : ℝ[X]).natDegree = 1 := by compute_degree!
-    rw [hzero] at hdegree
-    simp at hdegree
-  have hleft : (a * legendre (n + 1)).natDegree = n + 2 := by
-    rw [natDegree_mul ha_ne (legendre_posLeadingCoeff (n + 1)).ne_zero,
-      show a.natDegree = 1 by
-        simp only [a]
-        rw [natDegree_C_mul ha_scalar.ne']
-        compute_degree!,
-      legendre_natDegree]
-    lia
-  have hright : (b * legendre n).natDegree < n + 2 :=
-    lt_of_le_of_lt Polynomial.natDegree_mul_le (by simp [b])
-  have hdegree : (b * legendre n).natDegree <
-      (a * legendre (n + 1)).natDegree := by
-    rw [hleft]
-    exact hright
-  exact (natDegree_add_eq_left_of_natDegree_lt hdegree).trans hleft
+  exact (polynomial_degree_pos n).1
 
 theorem polynomial_posLeadingCoeff (n : ℕ) :
     HasPosLeadingCoeff (polynomial (n + 2)) := by
-  rw [polynomial_succ_succ]
-  let a : ℝ[X] :=
-    C ((3 * ((n : ℝ) + 2) - 2) / (2 * ((n : ℝ) + 2))) * (1 + 2 * X)
-  let b : ℝ[X] := C (-((n : ℝ) / (2 * ((n : ℝ) + 2))))
-  have ha_scalar :
-      0 < (3 * ((n : ℝ) + 2) - 2) / (2 * ((n : ℝ) + 2)) := by
-    have hn : 0 ≤ (n : ℝ) := Nat.cast_nonneg n
-    apply div_pos <;> nlinarith
-  have hlinear_pos : HasPosLeadingCoeff (1 + 2 * X : ℝ[X]) := by
-    rw [show (1 + 2 * X : ℝ[X]) = C 2 * (X + C (1 / 2 : ℝ)) by
-      simp only [one_div]
-      rw [show (2 : ℝ[X]) = C (2 : ℝ) from (map_ofNat C 2).symm,
-        mul_add, ← map_mul]
-      grind]
-    exact
-      hasPosLeadingCoeff_C_mul (by norm_num)
-        (hasPosLeadingCoeff_X_add_C (1 / 2))
-  have ha_pos : HasPosLeadingCoeff a :=
-    hasPosLeadingCoeff_C_mul ha_scalar hlinear_pos
-  have hf_pos := legendre_posLeadingCoeff (n + 1)
-  have haf_pos : HasPosLeadingCoeff (a * legendre (n + 1)) :=
-    ha_pos.mul hf_pos
-  have hdeg_right : (b * legendre n).natDegree <
-      (a * legendre (n + 1)).natDegree := by
-    have ha_deg : a.natDegree = 1 := by
-      simp only [a]
-      rw [natDegree_C_mul ha_scalar.ne']
-      compute_degree!
-    rw [natDegree_mul ha_pos.ne_zero hf_pos.ne_zero, ha_deg,
-      legendre_natDegree]
-    exact lt_of_le_of_lt Polynomial.natDegree_mul_le (by simp [b]; lia)
-  exact hasPosLeadingCoeff_add_of_natDegree_lt_left hdeg_right haf_pos
+  exact (polynomial_degree_pos n).2
+
+/-- The preceding Legendre polynomial strictly interlaces a type-`D` row. -/
+theorem legendre_strictInterl_polynomial (n : ℕ) :
+    StrictInterl (legendre (n + 1)) (polynomial (n + 2)) := by
+  have hpos := polynomial_posLeadingCoeff n
+  have hdeg := polynomial_natDegree n
+  rw [polynomial_succ_succ] at hpos hdeg ⊢
+  apply strictInterl_of_interlaces_evalCoeff_nonpos
+    ((legendre_strictInterl_succ n).toInterlaces (by simp))
+    (legendre_posLeadingCoeff n) hpos
+    (by rw [legendre_natDegree, hdeg]; lia) (by rw [legendre_natDegree, hdeg])
+  intro r _
+  simp only [eval_C]
+  exact neg_nonpos.mpr (div_nonneg (Nat.cast_nonneg n) (by positivity))
 
 private theorem polynomial_three_from_two :
     polynomial 3 =

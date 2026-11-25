@@ -354,24 +354,13 @@ theorem splits_of_natDegree_le_three_cubicDiscr_nonneg
 theorem cubicDiscr_nonneg_of_splits_natDegree_three
     {p : ℝ[X]} (hdeg : p.natDegree = 3) (hs : p.Splits) :
     0 ≤ cubicDiscr p := by
-  obtain ⟨r, hr⟩ := cubic_exists_isRoot hdeg
-  have hfact : (X - C r) * (p /ₘ (X - C r)) = p := mul_divByMonic_eq_iff_isRoot.mpr hr
-  set q := p /ₘ (X - C r) with hq
-  have hqdeg : q.natDegree = 2 := by
-    rw [hq, natDegree_divByMonic_X_sub_C, hdeg]
-  have hqsplit : q.Splits := by
-    have hp : ((X - C r) * q).Splits := by rwa [hfact]
-    rwa [splits_X_sub_C_mul_iff] at hp
-  have hdisc_q : 0 ≤ discrim (q.coeff 2) (q.coeff 1) (q.coeff 0) := by
-    have hquad := quadratic_disc_coeff_le_of_splits_natDegree_two hqdeg hqsplit
-    unfold discrim
-    linarith [hquad]
-  have hkey : cubicDiscr p
-      = (q.eval r) ^ 2 * discrim (q.coeff 2) (q.coeff 1) (q.coeff 0) := by
-    rw [← hfact]
-    exact cubicDiscr_eq_of_factor hqdeg
-  rw [hkey]
-  exact mul_nonneg (sq_nonneg _) hdisc_q
+  obtain ⟨a, b, c, hroots⟩ := Multiset.card_eq_three.mp
+    (hs.natDegree_eq_card_roots.symm.trans hdeg)
+  have hp : p = C p.leadingCoeff * ((X - C a) * (X - C b) * (X - C c)) := by
+    conv_lhs => rw [hs.eq_prod_roots, hroots]
+    simp [mul_assoc]
+  rw [hp, cubicDiscr_C_mul, cubicDiscr_prod_three_X_sub_C]
+  positivity
 
 /-- A splitting real polynomial of degree at most three has nonnegative cubic
 coefficient discriminant. -/
