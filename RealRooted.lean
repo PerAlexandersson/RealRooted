@@ -68,6 +68,7 @@ public import RealRooted.Bezoutian
 public import RealRooted.Bezoutian.ComplexRoots
 public import RealRooted.Bezoutian.LowDegree
 public import RealRooted.Bezoutian.MatrixBasics
+public import RealRooted.Bezoutian.QuadraticPencil
 public import RealRooted.Bezoutian.RootEvaluation
 public import RealRooted.Bezoutian.StrictInterleaving
 public import RealRooted.Bezoutian.Successor
@@ -735,6 +736,10 @@ public import RealRooted.Mathlib.Analysis.Complex.Montel
 public import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Cosecant
 public import RealRooted.Mathlib.Analysis.SpecialFunctions.Trigonometric.Cotangent
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.Charpoly.EntryDegree
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PosSemidefPencilCrossBlock
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PosSemidefPencilFactor
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PosSemidefPencilScalar
+public import RealRooted.Mathlib.LinearAlgebra.Matrix.PosSemidefPencilTransport
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.PowerTraceSeries
 public import RealRooted.Mathlib.MeasureTheory.Integral.MomentMatrix
 public import RealRooted.Mathlib.MeasureTheory.Measure.CompactMoments

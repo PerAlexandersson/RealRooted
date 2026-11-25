@@ -2903,12 +2903,16 @@
     },
     {
       "sources": [
-        "RealRooted/Mathlib/LinearAlgebra/Matrix/PosSemidefPencil.lean"
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PosSemidefPencil.lean",
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PosSemidefPencilCrossBlock.lean",
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PosSemidefPencilFactor.lean",
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PosSemidefPencilScalar.lean",
+        "RealRooted/Mathlib/LinearAlgebra/Matrix/PosSemidefPencilTransport.lean"
       ],
       "modules": [
         "Mathlib.LinearAlgebra.Matrix.PosDef"
       ],
-      "note": "Positive semidefinite linear and quadratic pencil criteria (issues #1984 and #1991). Proofs found by Aristotle.",
+      "note": "Positive semidefinite linear and quadratic pencil criteria (issues #1984 and #1991). Core proofs found by Aristotle. Rectangular Gram factors, exact scalar recovery, nonsymmetric cross-block regression and division-free nonnegative-board transport follow the unpublished manuscript full-operator-block-common-input-reduction.md.",
       "speculative": true
     },
     {
