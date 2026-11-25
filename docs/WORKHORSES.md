@@ -16,7 +16,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | uses | theorem | module | doc |
 |---:|---|---|---|
 | 74 | `RealRooted.StrictInterl.refl` | `RealRooted.Basic.ProperPosition` | A nonzero real-rooted polynomial is in same-degree proper position with itself. |
-| 66 | `RealRooted.Interl.toStrictInterl_of_ne` | `RealRooted.Basic.ProperPosition` |  |
+| 67 | `RealRooted.Interl.toStrictInterl_of_ne` | `RealRooted.Basic.ProperPosition` |  |
 | 43 | `RealRooted.strictInterl_mul_X_of_strictInterl_of_nonneg` | `RealRooted.WagnerX.NonnegativeRoots` | Nonnegative-coefficients form of Wagner (3): if `f ≪ g` and both polynomials have nonnegative coefficients, then `g ≪ X * f`. |
 | 34 | `RealRooted.StrictInterl.C_mul_left` | `RealRooted.Basic.ProperPosition` | Multiplying the left polynomial in a proper-position relation by a nonzero real scalar preserves proper position. |
 | 33 | `RealRooted.StrictInterl.C_mul_right` | `RealRooted.Basic.ProperPosition` | Multiplying the right polynomial in a proper-position relation by a nonzero real scalar preserves proper position. |
@@ -136,10 +136,10 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | uses | theorem | module | doc |
 |---:|---|---|---|
 | 88 | `RealRooted.IsPFPolynomial.of_realRooted_nonneg` | `RealRooted.PFPolynomial` | A split polynomial with nonnegative coefficients is PF. |
+| 44 | `RealRooted.IsPFPolynomial.zero` | `RealRooted.PFPolynomial` | The zero polynomial is PF. |
 | 43 | `RealRooted.IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits` | `RealRooted.PFPolynomial` | Construct a PF polynomial from nonnegative coefficients and a zero-or-splits certificate. |
-| 43 | `RealRooted.IsPFPolynomial.zero` | `RealRooted.PFPolynomial` | The zero polynomial is PF. |
 | 36 | `RealRooted.IsPFPolynomial.one` | `RealRooted.PFPolynomial` | The constant polynomial `1` is PF. |
-| 29 | `RealRooted.isPFPolynomial_X_add_C` | `RealRooted.PFPolynomial` | The polynomial `X + C a` is PF when `a` is nonnegative. |
+| 30 | `RealRooted.isPFPolynomial_X_add_C` | `RealRooted.PFPolynomial` | The polynomial `X + C a` is PF when `a` is nonnegative. |
 | 21 | `RealRooted.IsPFPolynomial.of_C_nonneg` | `RealRooted.PFPolynomial` | A nonnegative constant polynomial is PF. |
 | 15 | `RealRooted.IsPFPolynomial.of_coeff_tendsto` | `RealRooted.PFPolynomial.Closure` | Coefficientwise limits of Pólya-frequency polynomials are Pólya-frequency. |
 | 14 | `RealRooted.isPFPolynomial_X_pow` | `RealRooted.PFPolynomial` | Every natural power of `X` is PF. |
@@ -385,8 +385,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 441 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
-| 289 | `RealRooted.EffectiveBKW.IntPoly2.eval_add` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate addition. |
+| 442 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
+| 290 | `RealRooted.EffectiveBKW.IntPoly2.eval_add` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate addition. |
 | 19 | `RealRooted.bezoutEntry.wronskian` | `RealRooted.Bezoutian.RootEvaluation` |  |
 | 18 | `RealRooted.eval_pos_of_all_roots_lt` | `RealRooted.WagnerRightSum.Sign` |  |
 | 13 | `RealRooted.StrictInterl.eval_mul_eval_derivative_nonneg` | `RealRooted.MaWang.Weak.DerivativeSign` | Every interlacer `g ≪ f` with positive leading coefficients has the sign of `f'` at the roots of `f`: `g(r) f'(r) ≥ 0`. |
@@ -544,7 +544,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 50 | `RealRooted.StrictInterl.hasSimpleRoots_of_no_common_root` | `RealRooted.SimpleRoots` | A strictly interlacing pair with no common real root has simple real roots in both entries. |
+| 51 | `RealRooted.StrictInterl.hasSimpleRoots_of_no_common_root` | `RealRooted.SimpleRoots` | A strictly interlacing pair with no common real root has simple real roots in both entries. |
 | 35 | `RealRooted.allComboRealRooted_of_strictInterl` | `RealRooted.ObreschkoffConverse.Forward` | Forward direction of Obreschkoff: if `f ≪ g` then all real combinations `αf + βg` are real-rooted (or zero). |
 | 24 | `RealRooted.HasSimpleRoots.of_roots_nodup` | `RealRooted.SimpleRoots` | A nonzero polynomial with a duplicate-free root multiset has simple real roots. |
 | 22 | `MvPolynomial.IsRayleigh.specializeAt` | `RealRooted.Multiaffine.Rayleigh` | Real scalar specialization preserves the Rayleigh property. |
