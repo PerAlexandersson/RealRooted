@@ -686,6 +686,7 @@ public import RealRooted.MaWang.EndpointClassification
 public import RealRooted.MaWang.EndpointMultiplicity
 public import RealRooted.MaWang.ForcingBudget
 public import RealRooted.MaWang.IntervalSequence
+public import RealRooted.MaWang.LagWeightInterval
 public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.Degree
 public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.EulerSolutions
 public import RealRooted.Mathlib.Algebra.Polynomial.DifferentialEquation.Indicial
