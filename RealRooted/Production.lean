@@ -2378,6 +2378,15 @@ public import RealRooted.Mathlib.NumberTheory.LSeries.RiemannXi.Theta
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Hadamard
 public import RealRooted.MultiplierSequence.PolyaSchur.LaguerrePolya.Jensen
 public import RealRooted.RiemannHypothesis
+public import RealRooted.ExponentialRows.Clustering
+public import RealRooted.ExponentialRows.GaussianSimplicity
+public import RealRooted.ExponentialRows.HalfPlaneTransport
+public import RealRooted.ExponentialRows.HermiteSeeds
+public import RealRooted.ExponentialRows.ProductStrict
+public import RealRooted.ExponentialRows.QuarticCoefficients
+public import RealRooted.ExponentialRows.QuarticGaussian
+public import RealRooted.ExponentialRows.QuarticStrict
+public import RealRooted.ExponentialRows.QuarticWindow
 
 /-!
 # RealRooted production umbrella
