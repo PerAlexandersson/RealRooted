@@ -11,6 +11,7 @@ import Mathlib.Analysis.Matrix.Spectrum
 public import Mathlib.Analysis.Normed.Module.FiniteDimension
 public import Mathlib.LinearAlgebra.Matrix.PosDef
 import Mathlib.Topology.MetricSpace.Sequences
+import Mathlib.Topology.Instances.Matrix
 public import Mathlib.Topology.Order.Compact
 
 /-!
@@ -425,19 +426,6 @@ private lemma K_convex (n : ℕ) : Convex ℝ (K n) := by
   intro p hp q hq a b ha hb _
   exact K_add (K_smul hp ha) (K_smul hq hb)
 
-private lemma isClosed_psd {ι : Type*} [Finite ι] :
-    IsClosed {M : Matrix ι ι ℝ | M.PosSemidef} := by
-  let _ := Fintype.ofFinite ι
-  have : {M : Matrix ι ι ℝ | M.PosSemidef} =
-      {M | Mᵀ = M} ∩ ⋂ x : ι → ℝ, {M | 0 ≤ x ⬝ᵥ (M *ᵥ x)} := by
-    ext M
-    simp only [Set.mem_ofPred_eq, Set.mem_inter_iff, Set.mem_iInter,
-      posSemidef_iff_dotProduct_mulVec, star_trivial, IsHermitian,
-      conjTranspose_eq_transpose_of_trivial]
-  rw [this]
-  refine IsClosed.inter (isClosed_eq (by fun_prop) continuous_id) (isClosed_iInter fun x => ?_)
-  exact isClosed_le continuous_const (by fun_prop)
-
 private lemma psd_entry_bound {ι : Type*} [Finite ι] (M : Matrix ι ι ℝ)
     (hM : M.PosSemidef) (a b : ι) : 2 * |M a b| ≤ M a a + M b b := by
   classical
@@ -497,7 +485,7 @@ private lemma K_closed (n : ℕ) : IsClosed (K n) := by
   refine ⟨Matrix.of Sl, Matrix.of p.2.1 - Matrix.of Sl - (Matrix.of Sl)ᵀ, ?_, ?_, by abel⟩
   · have hT : Filter.Tendsto (fun k => (S (φ k))ᵀ) Filter.atTop (nhds (Matrix.of Sl)ᵀ) :=
       ((continuous_id.matrix_transpose).tendsto _).comp hSl'
-    refine isClosed_psd.mem_of_tendsto ((h1.sub hSl').sub hT)
+    refine isClosed_setOfPred_posSemidef.mem_of_tendsto ((h1.sub hSl').sub hT)
       (Filter.Eventually.of_forall fun k => ?_)
     have : Matrix.of (q (φ k)).2.1 - S (φ k) - (S (φ k))ᵀ = Z (φ k) := by
       rw [hE (φ k)]; abel
@@ -506,7 +494,7 @@ private lemma K_closed (n : ℕ) : IsClosed (K n) := by
   · have hT := h0.prodMk_nhds (hSl'.prodMk_nhds h2)
     have hc : Continuous (fun x : Matrix (Fin n) (Fin n) ℝ × Matrix (Fin n) (Fin n) ℝ ×
         Matrix (Fin n) (Fin n) ℝ => Matrix.fromBlocks x.1 x.2.1 x.2.1ᵀ x.2.2) := by fun_prop
-    exact isClosed_psd.mem_of_tendsto ((hc.tendsto _).comp hT)
+    exact isClosed_setOfPred_posSemidef.mem_of_tendsto ((hc.tendsto _).comp hT)
       (Filter.Eventually.of_forall fun k => hM (φ k))
 
 private lemma lin_repr {n : ℕ} (f : (Fin n → Fin n → ℝ) →ₗ[ℝ] ℝ) :

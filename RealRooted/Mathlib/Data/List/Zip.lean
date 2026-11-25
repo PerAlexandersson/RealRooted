@@ -25,27 +25,13 @@ namespace List
 in the first list. -/
 theorem fst_mem_of_mem_zip {α β : Type*} {xs : List α} {ys : List β}
     {p : α × β} (hp : p ∈ xs.zip ys) : p.1 ∈ xs := by
-  induction xs generalizing ys with
-  | nil =>
-      simp at hp
-  | cons x xs ih =>
-      cases ys with
-      | nil =>
-          simp at hp
-      | cons _ ys =>
-          simp only [zip_cons_cons, mem_cons] at hp
-          rcases hp with hp | hp
-          · simp [hp]
-          · exact List.mem_cons_of_mem x (ih hp)
+  exact (List.of_mem_zip hp).1
 
 /-- If a pair occurs in the zip of two lists, then its second coordinate occurs
 in the second list. -/
 theorem snd_mem_of_mem_zip {α β : Type*} {xs : List α} {ys : List β}
     {p : α × β} (hp : p ∈ xs.zip ys) : p.2 ∈ ys := by
-  have hp' : p.swap ∈ ys.zip xs := by
-    rw [← List.zip_swap xs ys]
-    exact List.mem_map.mpr ⟨p, hp, rfl⟩
-  simpa using fst_mem_of_mem_zip hp'
+  exact (List.of_mem_zip hp).2
 
 /-- A pair in `xs.zip xs.tail` consists of adjacent entries, so an `IsChain`
 proof relates its two coordinates. -/

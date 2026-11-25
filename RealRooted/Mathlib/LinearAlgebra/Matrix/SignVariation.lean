@@ -210,50 +210,18 @@ lemma signVariations_append_nonneg_le_succ (l₁ l₂ : List ℝ)
 lemma length_destutter'_map_neg_signType (s : SignType) (l : List SignType) :
     (destutter' (· ≠ ·) (-s) (l.map Neg.neg)).length =
       (destutter' (· ≠ ·) s l).length := by
-  induction l generalizing s with
-  | nil => simp [List.destutter'_nil]
-  | cons t l ih =>
-      rw [List.map_cons, List.destutter'_cons, List.destutter'_cons]
-      by_cases hst : s ≠ t
-      · rw [ite_eq_left (fun h => hst (neg_inj.mp h)), ite_eq_left hst]
-        simp [ih]
-      · have : s = t := of_not_not hst
-        subst t
-        simpa using ih s
+  simpa only [List.map_cons, List.destutter_cons', List.length_map] using
+    (congrArg List.length (List.map_destutter_ne (s :: l) neg_injective)).symm
 
 lemma length_destutter_map_neg_signType (l : List SignType) :
     ((l.map Neg.neg).destutter (· ≠ ·)).length =
       (l.destutter (· ≠ ·)).length := by
-  cases l with
-  | nil => simp [List.destutter_nil]
-  | cons s l =>
-      rw [List.map_cons, List.destutter_cons', List.destutter_cons']
-      exact length_destutter'_map_neg_signType s l
+  simpa only [List.length_map] using
+    (congrArg List.length (List.map_destutter_ne l neg_injective)).symm
 
 lemma signVariations_neg (l : List ℝ) :
     (l.map Neg.neg).signVariations = l.signVariations := by
-  rw [List.signVariations, List.signVariations]
-  let signs : List SignType := l.map SignType.sign
-  have hmap : (l.map Neg.neg).map SignType.sign = signs.map Neg.neg := by
-    calc
-      (l.map Neg.neg).map SignType.sign =
-          l.map (fun x => SignType.sign (-x)) := by simp [List.map_map]
-      _ = l.map (fun x => -SignType.sign x) := by
-          apply List.map_congr_left
-          intro x _
-          exact Right.sign_neg x
-      _ = signs.map Neg.neg := by simp [signs, List.map_map]
-  rw [hmap]
-  have hfilter : (signs.map Neg.neg).filter (· ≠ 0) =
-      (signs.filter (· ≠ 0)).map Neg.neg := by
-    rw [List.filter_map]
-    congr 1
-    apply List.filter_congr
-    intro s _
-    simp
-  rw [hfilter]
-  exact congrArg (fun m : ℕ => m - 1)
-    (List.length_destutter_map_neg_signType (signs.filter (· ≠ 0)))
+  exact signVariations_map_of_sign_eq_neg Right.sign_neg l
 
 /-- A list of real numbers with no positive entries has no sign variations. -/
 lemma signVariations_eq_zero_of_forall_nonpos (l : List ℝ)
@@ -1421,11 +1389,10 @@ theorem List.getLast?_filter_sign_take_succ
 theorem List.signVariations_append_singleton_le_succ
     (l : List ℝ) (x : ℝ) :
     (l ++ [x]).signVariations ≤ l.signVariations + 1 := by
-  rcases le_total 0 x with hx | hx
-  · apply List.signVariations_append_nonneg_le_succ
-    simpa using hx
-  · apply List.signVariations_append_nonpos_le_succ
-    simpa using hx
+  rw [← List.signVariations_map_sign (l ++ [x]), List.map_append, List.map_singleton]
+  simpa only [List.signVariations_map_sign] using
+    List.signVariations_append_singleton_signType_le_succ (l.map SignType.sign)
+      (SignType.sign x)
 
 /-- Data expressing a finite vector as nonnegative weights pulled back from an
 ordered collection of sign blocks.

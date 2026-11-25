@@ -47,50 +47,20 @@ theorem cast_choose_sq_sub_choose_pred_mul_choose_succ_eq
     (Nat.choose n k : R) ^ 2 -
         (Nat.choose n (k - 1) : R) * (Nat.choose n (k + 1) : R) =
       (Nat.choose n k : R) * (Nat.choose (n + 1) k : R) / (k + 1 : R) := by
-  have hk_pred_succ : k - 1 + 1 = k := Nat.sub_add_cancel (Nat.succ_le_of_lt hkpos)
-  have hk_pred_succ_cast : ((k - 1 : ℕ) : R) + 1 = (k : R) := by exact_mod_cast hk_pred_succ
-  have hden_prev_nat : n - (k - 1) = n + 1 - k := by lia
-  have hk_succ_ne : (k + 1 : R) ≠ 0 := by positivity
-  have hden_prev_ne : ((n - (k - 1) : ℕ) : R) ≠ 0 := by
-    exact_mod_cast (show n - (k - 1) ≠ 0 by lia)
-  have hden_succ_ne : ((n + 1 - k : ℕ) : R) ≠ 0 := by
-    exact_mod_cast (show n + 1 - k ≠ 0 by lia)
-  have hprev_raw := Nat.cast_choose_succ_right_eq (R := R) n (k - 1)
-  rw [hk_pred_succ, hk_pred_succ_cast] at hprev_raw
-  have hnext_raw := Nat.cast_choose_succ_right_eq (R := R) n k
-  have hsucc_raw :
-      (Nat.choose n k : R) * ((n + 1 : ℕ) : R) =
-        (Nat.choose (n + 1) k : R) * ((n + 1 - k : ℕ) : R) := by
-    exact_mod_cast Nat.choose_mul_succ_eq n k
-  have hprev :
-      (Nat.choose n (k - 1) : R) =
-        (Nat.choose n k : R) * (k : R) / ((n + 1 - k : ℕ) : R) := by
-    rw [← hden_prev_nat]
-    field_simp [hden_prev_ne]
-    linarith [hprev_raw]
-  have hnext :
-      (Nat.choose n (k + 1) : R) =
-        (Nat.choose n k : R) * ((n - k : ℕ) : R) / (k + 1 : R) := by
-    field_simp [hk_succ_ne]
-    linarith [hnext_raw]
-  have hsucc :
-      (Nat.choose (n + 1) k : R) =
-        (Nat.choose n k : R) * ((n + 1 : ℕ) : R) /
-          ((n + 1 - k : ℕ) : R) := by
-    field_simp [hden_succ_ne]
-    linarith [hsucc_raw]
-  have hnk_cast : ((n - k : ℕ) : R) = (n : R) - (k : R) := by rw [Nat.cast_sub hkn]
-  have hnkp1_cast : ((n + 1 - k : ℕ) : R) = (n : R) + 1 - (k : R) := by
-    rw [Nat.cast_sub (by lia : k ≤ n + 1)]
-    norm_num [Nat.cast_add]
-  have hD_ne : (n : R) + 1 - (k : R) ≠ 0 := by
-    rw [← hnkp1_cast]
-    exact hden_succ_ne
-  rw [hprev, hnext, hsucc]
-  rw [hnk_cast, hnkp1_cast]
-  norm_num [Nat.cast_add]
-  field_simp [hk_succ_ne, hD_ne]
-  ring_nf
+  have hpred : k - 1 + 1 = k := by lia
+  have hcast : ((k - 1 : ℕ) : R) + 1 = k := by exact_mod_cast hpred
+  have hsub : n - (k - 1) = n - k + 1 := by lia
+  have hprev := cast_choose_succ_right_eq (R := R) n (k - 1)
+  rw [hpred, hcast, hsub, Nat.cast_add, Nat.cast_one] at hprev
+  have hnext := cast_choose_succ_right_eq (R := R) n k
+  have hpascal : (Nat.choose (n + 1) k : R) =
+      (Nat.choose n (k - 1) : R) + Nat.choose n k := by
+    exact_mod_cast (show Nat.choose (n + 1) k =
+      Nat.choose n (k - 1) + Nat.choose n k by
+        simpa only [Nat.succ_eq_add_one, hpred] using Nat.choose_succ_succ n (k - 1))
+  rw [hpascal, eq_div_iff (by positivity : (k + 1 : R) ≠ 0)]
+  linear_combination (Nat.choose n k : R) * hprev -
+    (Nat.choose n (k - 1) : R) * hnext
 
 /-- Casted descending factorial of length three. -/
 theorem cast_descFactorial_three {R : Type*} [CommRing R] (n : ℕ) :

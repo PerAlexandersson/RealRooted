@@ -8,6 +8,8 @@ module
 public import Mathlib.Data.Fintype.Card
 import Mathlib.Data.Fintype.Prod
 import Mathlib.Data.Fintype.Sigma
+import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
+import Mathlib.Algebra.BigOperators.Group.Finset.Sigma
 
 /-!
 # Finite cardinality from unique hits under equivalences
@@ -22,6 +24,8 @@ public section
 
 namespace Fintype
 
+open scoped BigOperators
+
 /-- A finite family of equivalences with a unique predicate-hitting parameter
 partitions the ambient finite type into equally sized predicate fibers. -/
 theorem card_eq_card_mul_card_subtype_of_existsUnique_equiv
@@ -30,40 +34,17 @@ theorem card_eq_card_mul_card_subtype_of_existsUnique_equiv
     (h : ∀ x : X, ∃! c : C, P (act c x)) :
     Fintype.card X = Fintype.card C * Fintype.card {x : X // P x} := by
   classical
-  let A := Σ x : X, {c : C // P (act c x)}
-  let eAX : A ≃ X := by
-    let eFiber : ∀ x : X, {c : C // P (act c x)} ≃ Unit := fun x =>
-      { toFun := fun _ => Unit.unit
-        invFun := fun _ => ⟨Classical.choose (h x),
-          (Classical.choose_spec (h x)).1⟩
-        left_inv :=
-          fun z => Subtype.ext ((h x).unique (Classical.choose_spec (h x)).1 z.prop)
-        right_inv :=
-          fun _ => Unit.ext _ _ }
-    exact (Equiv.sigmaEquivProdOfEquiv eFiber).trans
-      { toFun := Prod.fst
-        invFun := fun x => (x, Unit.unit)
-        left_inv := by
-          rintro ⟨x, u⟩
-          cases u
-          rfl
-        right_inv := fun _ => rfl }
-  let eSwap : A ≃ Σ c : C, {x : X // P (act c x)} :=
-    { toFun := fun z => ⟨z.2.val, z.1, z.2.prop⟩
-      invFun := fun z => ⟨z.2.val, z.1, z.2.prop⟩
-      left_inv := by
-        rintro ⟨x, c, hc⟩
-        rfl
-      right_inv := by
-        rintro ⟨c, x, hx⟩
-        rfl }
-  let eAB : A ≃ C × {x : X // P x} :=
-    eSwap.trans <| (Equiv.sigmaCongrRight fun c =>
-      (act c).subtypeEquivOfSubtype) |>.trans
-        (Equiv.sigmaEquivProd C {x : X // P x})
+  have hc (x : X) : Fintype.card {c : C // P (act c x)} = 1 :=
+    (Fintype.card_subtype _).trans ((existsUnique_iff_card_one _).mp (h x))
   calc
-    Fintype.card X = Fintype.card A := (Fintype.card_congr eAX).symm
-    _ = Fintype.card (C × {x : X // P x}) := Fintype.card_congr eAB
+    Fintype.card X = ∑ x : X, Fintype.card {c : C // P (act c x)} := by simp [hc]
+    _ = ∑ c : C, Fintype.card {x : X // P (act c x)} := by
+      simp only [Fintype.card_subtype, Finset.card_filter]
+      exact Finset.sum_comm
+    _ = ∑ _c : C, Fintype.card {x : X // P x} := by
+      apply Finset.sum_congr rfl
+      intro c _
+      exact Fintype.card_congr (act c).subtypeEquivOfSubtype
     _ = Fintype.card C * Fintype.card {x : X // P x} := by simp
 
 end Fintype
