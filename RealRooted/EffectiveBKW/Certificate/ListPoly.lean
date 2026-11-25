@@ -3,6 +3,7 @@ module
 public import RealRooted.CombinatorialExamples.BigDescents321.SmallCases.ListPoly
 public import Mathlib.Basic.Real.Basic
 public import Mathlib.Algebra.Polynomial.Eval.Defs
+import Mathlib.Algebra.Polynomial.Coeff
 import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Ring
@@ -155,6 +156,44 @@ def derivativeFrom : ℕ → IntPoly → IntPoly
 
 /-- Formal derivative on integer lists. -/
 def derivative (p : IntPoly) : IntPoly := derivativeFrom 1 p.tail
+
+/-- A zero polynomial has only zero coefficients in the integer-list representation. -/
+private theorem all_zero_of_polynomial_eq_zero {p : IntPoly} (h : polynomial p = 0) :
+    p.all (· == 0) = true := by
+  induction p with
+  | nil => rfl
+  | cons a p ih =>
+    have ha : a = 0 := by
+      have hc := congrArg (fun f : ℝ[X] => f.coeff 0) h
+      exact_mod_cast (show (a : ℝ) = 0 by
+        simpa only [polynomial, ofList_cons, coeff_add, coeff_C_zero,
+          coeff_X_mul_zero, add_zero, coeff_zero] using hc)
+    subst a
+    have hp : polynomial p = 0 := by
+      simpa only [polynomial, ofList_cons, Int.cast_zero, C_0, zero_add,
+        mul_eq_zero, X_ne_zero, false_or] using h
+    simp only [List.all_cons, beq_self_eq_true, Bool.true_and, ih hp]
+
+/-- Polynomial equality is complete for the trailing-zero-tolerant list checker. -/
+theorem eqCheck_of_polynomial_eq {p q : IntPoly} (h : polynomial p = polynomial q) :
+    p.eqCheck q = true := by
+  induction p generalizing q with
+  | nil => exact all_zero_of_polynomial_eq_zero h.symm
+  | cons a p ih =>
+    cases q with
+    | nil => exact all_zero_of_polynomial_eq_zero h
+    | cons b q =>
+      have hab : a = b := by
+        have hc := congrArg (fun f : ℝ[X] => f.coeff 0) h
+        exact_mod_cast (show (a : ℝ) = b by
+        simpa only [polynomial, ofList_cons, coeff_add, coeff_C_zero,
+          coeff_X_mul_zero, add_zero, coeff_zero] using hc)
+      have hp : polynomial p = polynomial q := by
+        apply mul_left_cancel₀ (X_ne_zero : (X : ℝ[X]) ≠ 0)
+        apply add_left_cancel (a := C (b : ℝ))
+        simpa only [polynomial, ofList_cons, hab] using h
+      simp only [eqCheck, hab, beq_self_eq_true, Bool.true_and, ih hp]
+
 
 end IntPoly
 

@@ -265,35 +265,17 @@ private theorem cast_choose_mul_choose (m k r : ℕ) :
     (m.choose k : ℂ) * ((m - k).choose (k + r) : ℂ) =
       (m.descFactorial (2 * k + r) : ℂ) /
         ((k.factorial : ℂ) * ((k + r).factorial : ℂ)) := by
-  by_cases h : 2 * k + r ≤ m
-  · have hk : k ≤ m := by lia
-    have hsub : 2 * k + r - k = k + r := by lia
-    have hchoose := Nat.choose_mul (n := m) (k := 2 * k + r) (s := k) (by lia)
-    have hfactor := Nat.choose_mul_factorial_mul_factorial
-      (n := 2 * k + r) (k := k) (by lia)
-    rw [hsub] at hchoose hfactor
-    rw [Nat.descFactorial_eq_factorial_mul_choose]
-    have hkfac : (k.factorial : ℂ) ≠ 0 := by
-      exact_mod_cast k.factorial_ne_zero
-    have hkrfac : ((k + r).factorial : ℂ) ≠ 0 := by
-      exact_mod_cast (k + r).factorial_ne_zero
-    field_simp
-    exact_mod_cast (show
-      m.choose k * (m - k).choose (k + r) * k.factorial * (k + r).factorial =
-        (2 * k + r).factorial * m.choose (2 * k + r) by
-      calc
-        _ = (m.choose k * (m - k).choose (k + r)) *
-            (k.factorial * (k + r).factorial) := by ring
-        _ = (m.choose (2 * k + r) * (2 * k + r).choose k) *
-            (k.factorial * (k + r).factorial) := by rw [hchoose]
-        _ = m.choose (2 * k + r) *
-            ((2 * k + r).choose k * k.factorial * (k + r).factorial) := by ring
-        _ = _ := by rw [hfactor]; ring)
-  · have hlt : m < 2 * k + r := by lia
-    have hchoose : m - k < k + r := by lia
-    rw [Nat.choose_eq_zero_of_lt hchoose,
-      Nat.descFactorial_eq_zero_iff_lt.mpr hlt]
-    simp
+  have h := Nat.descFactorial_mul_descFactorial (n := m) (k := k)
+    (m := 2 * k + r) (by lia)
+  rw [show 2 * k + r - k = k + r by lia,
+    Nat.descFactorial_eq_factorial_mul_choose,
+    Nat.descFactorial_eq_factorial_mul_choose] at h
+  have hc := congrArg (fun n : ℕ => (n : ℂ)) h
+  push_cast at hc
+  apply (eq_div_iff (mul_ne_zero
+    (Nat.cast_ne_zero.mpr k.factorial_ne_zero)
+    (Nat.cast_ne_zero.mpr (k + r).factorial_ne_zero))).mpr
+  linear_combination hc
 
 private def complexBesselOperatorBound (N : ℕ) (lambda : ℝ) (r : ℕ)
     (p : ℂ[X]) : ℂ[X] :=

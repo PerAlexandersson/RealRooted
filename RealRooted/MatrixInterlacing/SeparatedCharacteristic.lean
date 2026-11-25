@@ -126,38 +126,6 @@ private lemma interl_separatedCharacteristicConstant_affineMulX
   simp only [C_add, C_mul]
   ring
 
-private lemma interl_separatedCharacteristicConstant_pencils
-    {A B c D s t : ℝ} (hA : 0 ≤ A) (hB : 0 ≤ B)
-    (hc : 0 ≤ c) (hD : 0 ≤ D) (hdet : B * c ≤ A * D)
-    (hs : 0 < s) :
-    Interl ((C s * X + C t) * C B + C D)
-      ((C s * X + C t) * C A + C c) := by
-  by_cases hB0 : B = 0
-  · by_cases hA0 : A = 0
-    · simp [hB0, hA0, interl_C_C]
-    · refine interl_congr (p' := C D)
-        (q' := C (s * A) * X + C (t * A + c)) ?_ ?_ ?_
-      · simp [hB0]
-      · simp only [C_add, C_mul]
-        ring
-      · exact interl_C_affine_linear (mul_pos hs (lt_of_le_of_ne hA (Ne.symm hA0)))
-  have hBpos : 0 < B := lt_of_le_of_ne hB (Ne.symm hB0)
-  by_cases hA0 : A = 0
-  · have hc0 : c = 0 := by nlinarith
-    simp [hA0, hc0, interl_zero_right]
-  have hApos : 0 < A := lt_of_le_of_ne hA (Ne.symm hA0)
-  refine interl_congr
-    (p' := C (s * B) * X + C (t * B + D))
-    (q' := C (s * A) * X + C (t * A + c)) ?_ ?_ ?_
-  · simp only [C_add, C_mul]
-    ring
-  · simp only [C_add, C_mul]
-    ring
-  · apply interl_affine_linear_affine_linear_of_cross
-    · exact mul_pos hs hBpos
-    · exact mul_pos hs hApos
-    · nlinarith [mul_nonneg hs.le (sub_nonneg.mpr hdet)]
-
 private lemma interl_separatedCharacteristicAffineX_self
     {A E s t : ℝ} (hA : 0 ≤ A) (hs : 0 < s) :
     Interl ((C s * X + C t) * C A + (X + C E))
@@ -395,9 +363,9 @@ private lemma separatedCharacteristicFinMatrix_has2x2 {h m : ℕ}
     ha hb i₁ i₂ j₁ j₂ hi hj
   by_cases hi₁ : (i₁ : ℕ) + 1 < h
   · by_cases hi₂ : (i₂ : ℕ) + 1 < h
-    · simpa [hi₁, hi₂] using interl_separatedCharacteristicConstant_pencils
+    · simpa [hi₁, hi₂] using interl_const_entries_affine_of_det_nonneg
         (hnonneg i₁ j₁) (hnonneg i₁ j₂) (hnonneg i₂ j₁)
-        (hnonneg i₂ j₂) hdet hs
+        (hnonneg i₂ j₂) hs hdet
     · by_cases hj10 : (j₁ : ℕ) = 0
       · by_cases hj20 : (j₂ : ℕ) = 0
         · have hj_eq : j₁ = j₂ := Fin.ext (by lia)
@@ -414,9 +382,9 @@ private lemma separatedCharacteristicFinMatrix_has2x2 {h m : ℕ}
               (hnonneg i₁ j₁) (hnonneg i₁ j₂) (hnonneg i₂ j₂) hs ht
       · have hj20 : (j₂ : ℕ) ≠ 0 := by lia
         simpa [hi₁, hi₂, hj10, hj20] using
-          interl_separatedCharacteristicConstant_pencils
+          interl_const_entries_affine_of_det_nonneg
             (hnonneg i₁ j₁) (hnonneg i₁ j₂) (hnonneg i₂ j₁)
-            (hnonneg i₂ j₂) hdet hs
+            (hnonneg i₂ j₂) hs hdet
   · have hi₂ : ¬(i₂ : ℕ) + 1 < h := by lia
     have hanti (j : Fin (h + m)) :
         separatedCharacteristicConstantEntry a b i₂ j ≤
@@ -436,9 +404,9 @@ private lemma separatedCharacteristicFinMatrix_has2x2 {h m : ℕ}
             (by simpa [mul_comm] using hdet) hs ht
     · have hj20 : (j₂ : ℕ) ≠ 0 := by lia
       simpa [hi₁, hi₂, hj10, hj20] using
-        interl_separatedCharacteristicConstant_pencils
+        interl_const_entries_affine_of_det_nonneg
           (hnonneg i₁ j₁) (hnonneg i₁ j₂) (hnonneg i₂ j₁)
-          (hnonneg i₂ j₂) hdet hs
+          (hnonneg i₂ j₂) hs hdet
 
 /-- The row-major list form used by the matrix-interlacing API. -/
 def separatedCharacteristicMatrix {h m : ℕ}

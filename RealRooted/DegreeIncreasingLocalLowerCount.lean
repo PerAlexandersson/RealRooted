@@ -231,18 +231,12 @@ private lemma exists_mem_roots_abs_sub_gt (f g : ℝ[X]) (hlt : f.natDegree < g.
   set L := max A 1 with hLdef
   have hL0 : (0 : ℝ) ≤ L := le_trans zero_le_one (le_max_right _ _)
   -- Product of `|c - r|` over any bounded root set is bounded by `L ^ card`.
-  have hpow_le : ∀ s : Multiset ℝ, (∀ r ∈ s, |c - r| ≤ L) →
-      (s.map (fun r ↦ |c - r|)).prod ≤ L ^ Multiset.card s := by
-    intro s
-    induction s using Multiset.induction with
-    | empty => simp
-    | cons a t ih =>
-        intro hs
-        rw [Multiset.map_cons, Multiset.prod_cons, Multiset.card_cons, pow_succ']
-        refine mul_le_mul (hs a (Multiset.mem_cons_self a t))
-          (ih fun r hr ↦ hs r (Multiset.mem_cons_of_mem hr)) ?_ hL0
-        refine Multiset.prod_nonneg ?_
-        simp
+  have hpow_le (s : Multiset ℝ) (hs : ∀ r ∈ s, |c - r| ≤ L) :
+      (s.map (fun r ↦ |c - r|)).prod ≤ L ^ s.card :=
+    calc
+      _ ≤ (s.map (fun _ => L)).prod :=
+        Multiset.prod_map_le_prod_map₀ _ _ (fun _ _ => abs_nonneg _) hs
+      _ = _ := by simp
   set δ := min (|f.eval c| / (2 * (|g.eval c| + 1)))
     (|f.eval c| / (2 * (L ^ g.natDegree + 1) * |g.leadingCoeff|)) with hδdef
   have hδ0 : 0 < δ := lt_min (by positivity) (by positivity)
@@ -254,19 +248,12 @@ private lemma exists_mem_roots_abs_sub_gt (f g : ℝ[X]) (hlt : f.natDegree < g.
   have hplc : (f + C μ * g).leadingCoeff = μ * g.leadingCoeff :=
     Polynomial.leadingCoeff_add_C_mul_of_natDegree_lt hμne hlt
   -- Product identity for the split member evaluated at `c`.
-  have habs_prod : ∀ s : Multiset ℝ,
+  have habs_prod (s : Multiset ℝ) :
       |(s.map (fun r => c - r)).prod| = (s.map (fun r => |c - r|)).prod := by
-    intro s
-    induction s using Multiset.induction with
-    | empty => simp
-    | cons a t ih =>
-        simp_all
-  have heval : (f + C μ * g).eval c
-      = (f + C μ * g).leadingCoeff *
-        ((f + C μ * g).roots.map (fun r ↦ c - r)).prod := by
-    conv_lhs => rw [hsplit.eq_prod_roots]
-    rw [eval_mul, eval_C, eval_multiset_prod, Multiset.map_map]
-    simp
+    simpa only [Multiset.map_map, Function.comp_apply, absHom, MonoidWithZeroHom.coe_mk,
+      MonoidHom.coe_mk, ZeroHom.coe_mk] using
+      map_multiset_prod (absHom : ℝ →*₀ ℝ) (s.map (fun r => c - r))
+  have heval := hsplit.eval_eq_prod_roots c
   set P := ((f + C μ * g).roots.map (fun r ↦ |c - r|)).prod with hPdef
   have : |(f + C μ * g).eval c| = μ * |g.leadingCoeff| * P := by grind
   -- Numerator stays away from `0`.

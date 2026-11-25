@@ -166,8 +166,10 @@ def algebraRowLeadingCoeff (positive : Bool := true) : TacticM Cert := withMainC
   if ← rowSucceeds (do evalTactic basic; evalTactic (← `(tactic| done))) then
     return #[change, ← `(tactic| ($basic:tactic; done))]
   let nonneg ← if positive then
-      `(tactic| exact RealRooted.HasNonnegCoeffs.pos_leadingCoeff
-        (by rr_row_unfold; rr_nonneg_coeffs) (by assumption))
+      `(tactic| (
+        refine RealRooted.HasNonnegCoeffs.pos_leadingCoeff ?_ (by assumption)
+        rr_row_unfold
+        rr_nonneg_coeffs))
     else
       `(tactic| exact (show RealRooted.HasNonnegCoeffs $poly from
         by rr_row_unfold; rr_nonneg_coeffs) _)

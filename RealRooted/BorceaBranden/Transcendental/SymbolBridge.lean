@@ -7,6 +7,8 @@ public import RealRooted.Mathlib.Analysis.Complex.Polynomial.CoeffExtraction
 public import RealRooted.BorceaBranden.Transcendental.LambdaBar
 import RealRooted.BorceaBranden.Applications.GeneralDegreeBoxPolarization
 import RealRooted.BorceaBranden.FiniteSymbolDegree
+import RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas
+import RealRooted.Mathlib.Algebra.Ring.Parity
 public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 
 @[expose] public section
@@ -58,9 +60,7 @@ private theorem coeff_invertVariable_of_degree
   rw [AlgEquiv.apply_symm_apply]
   dsimp only [q]
   rw [Polynomial.coeff_reflect]
-  simp only [show (-Polynomial.X : Polynomial (MvPolynomial υ ℂ)) =
-    Polynomial.C (-1) * Polynomial.X by simp]
-  rw [Polynomial.comp_C_mul_X_coeff]
+  rw [Polynomial.coeff_comp_neg_X]
   by_cases he : e none ≤ d
   · rw [ite_eq_left he, Polynomial.revAt_le he]
     rw [show (-1 : MvPolynomial υ ℂ) ^ (d - e none) =
@@ -468,17 +468,9 @@ theorem coeff_paperRightBoxReciprocal (β : σ →₀ ℕ)
 private theorem neg_one_pow_box_sub (β α : σ →₀ ℕ) (hαβ : α ≤ β) :
     (-1 : ℂ) ^ (∑ i, β i) * (-1 : ℂ) ^ (∑ i, (β i - α i)) =
       (-1 : ℂ) ^ (∑ i, α i) := by
-  have hsum : (∑ i, β i) = (∑ i, α i) + ∑ i, (β i - α i) := by
-    rw [← Finset.sum_add_distrib]
-    apply Finset.sum_congr rfl
-    intro i _hi
-    exact (Nat.add_sub_of_le (hαβ i)).symm
-  rw [hsum, pow_add]
-  have hsquare : (-1 : ℂ) ^ (∑ i, (β i - α i)) *
-      (-1 : ℂ) ^ (∑ i, (β i - α i)) = 1 := by
-    rw [← mul_pow]
-    simp
-  rw [mul_assoc, hsquare, mul_one]
+  rw [Finset.sum_tsub_distrib _ (fun i _ => hαβ i),
+    Parity.neg_one_pow_mul_eq_neg_one_pow_sub (Nat.sub_le _ _),
+    Nat.sub_sub_self (Finset.sum_le_sum fun i _ => hαβ i)]
 
 omit [Finite τ] in
 /-- The paper normalization is the signed reciprocal multiplied by the global sign
@@ -522,13 +514,8 @@ theorem degreeOf_signedRightBoxReciprocal_inr_le
 private theorem neg_one_pow_box_sub_mul (β α : σ →₀ ℕ) (hαβ : α ≤ β) :
     (-1 : ℂ) ^ (∑ i, (β i - α i)) * (-1 : ℂ) ^ (∑ i, α i) =
       (-1 : ℂ) ^ (∑ i, β i) := by
-  have hsum : (∑ i, β i) = (∑ i, (β i - α i)) + ∑ i, α i := by
-    rw [add_comm]
-    rw [← Finset.sum_add_distrib]
-    apply Finset.sum_congr rfl
-    intro i _hi
-    exact (Nat.add_sub_of_le (hαβ i)).symm
-  rw [hsum, pow_add]
+  rw [Finset.sum_tsub_distrib _ (fun i _ => hαβ i), ← pow_add,
+    Nat.sub_add_cancel (Finset.sum_le_sum fun i _ => hαβ i)]
 
 omit [Finite τ] in
 /-- Applying the signed right-box reciprocal twice gives the global sign
@@ -556,17 +543,15 @@ theorem signedRightBoxReciprocal_involutive
       rw [E.apply_symm_apply]
     rw [hpair]
     rw [ite_eq_left hsub]
-    have hsubsub : β - (β - (E e).2) = (E e).2 := by
-      ext i; exact Nat.sub_sub_self (hle i)
+    have hsubsub : β - (β - (E e).2) = (E e).2 := tsub_tsub_cancel_of_le hle
     have he : (E e).1.sumElim (E e).2 = e := by
       change E.symm (E e) = e
       rw [E.symm_apply_apply]
     rw [hsubsub, he, ← mul_assoc]
     have hinner :
         (∑ i, (β i - (β - (E e).2) i)) = ∑ i, (E e).2 i := by
-      apply Finset.sum_congr rfl
-      intro i _hi
-      exact Nat.sub_sub_self (hle i)
+      change (∑ i, (β - (β - (E e).2)) i) = _
+      rw [hsubsub]
     rw [hinner]
     rw [neg_one_pow_box_sub_mul β (E e).2 hle]
   · change ¬(Finsupp.sumFinsuppEquivProdFinsupp e).2 ≤ β at hle
@@ -595,16 +580,10 @@ theorem paperRightBoxReciprocal_stable_iff
     (hdegree : ∀ i, p.degreeOf (Sum.inr i) ≤ β i) :
     MvUpperHalfPlaneStable (paperRightBoxReciprocal β p) ↔
       MvUpperHalfPlaneStable p := by
-  rw [paperRightBoxReciprocal_eq_globalSign_mul]
-  constructor
-  · intro hscaled
-    apply (signedRightBoxReciprocal_stable_iff β p hdegree).mp
-    intro z hz
-    have hne := hscaled z hz
-    simp only [MvPolynomial.eval_mul, MvPolynomial.eval_C] at hne
-    exact (mul_ne_zero_iff.mp hne).2
-  · intro hp
-    exact ((signedRightBoxReciprocal_stable_iff β p hdegree).mpr hp).C_mul (by simp)
+  rw [paperRightBoxReciprocal_eq_globalSign_mul,
+    ← signedRightBoxReciprocal_stable_iff β p hdegree]
+  simp only [MvUpperHalfPlaneStable, MvStableIn, MvPolynomial.eval_mul, MvPolynomial.eval_C]
+  exact forall_congr' fun z => forall_congr' fun _ => mul_ne_zero_iff_left (by simp)
 
 private theorem fall_mul_signedInvFactorial_eq_boxChoose
     (α β : σ →₀ ℕ) :

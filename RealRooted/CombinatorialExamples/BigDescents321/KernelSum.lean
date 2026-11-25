@@ -64,7 +64,7 @@ theorem kernelWeight_succ_right {r k J : ℕ} (hr : 2 ≤ r) (hk : k ≤ r) :
     have : u + 1 = 2 * k + s := by lia
     rw [eq_sub_iff_add_eq]; exact_mod_cast this
   rw [hu']
-  field_simp
+  field_simp (disch := first | positivity | linarith)
   ring
 
 /-- `W_(r,k)(J+2) / W_(r+1,k)(J)`. -/
@@ -93,16 +93,12 @@ theorem kernelWeight_two {r k J : ℕ} (hr : 2 ≤ r) (hk : k ≤ r) :
     rw [eq_sub_iff_add_eq]; exact_mod_cast this
   have h2 : (2 : ℚ) ≤ k + s := by exact_mod_cast hr
   have hk0 : (0 : ℚ) ≤ k := k.cast_nonneg
-  have hn1 : ((k : ℚ) + s + k - 1) ≠ 0 := by intro h; linarith
-  have hn2 : ((k : ℚ) + s + k + 1) ≠ 0 := by intro h; linarith
-  have hn3 : ((k : ℚ) + s + k) ≠ 0 := by intro h; linarith
-  have hn4 : (2 * (k : ℚ) + s - 2 + 1) ≠ 0 := by intro h; linarith
   have hA' : (A : ℚ) = 2 * J + 2 * k + s + 2 := by rw [← hA]; push_cast; ring
   have hB' : (B : ℚ) = J + k + 1 := by rw [← hB]; push_cast; ring
   have hC' : (Cc : ℚ) = 2 * J + 2 * k + 3 := by rw [← hC]; push_cast; ring
   have hE' : (E : ℚ) = J + 2 * k + s + 2 := by rw [← hE]; push_cast; ring
   rw [hu', hA', hB', hC', hE']
-  field_simp
+  field_simp (disch := first | positivity | linarith)
   ring
 
 /-- `W_(r,k)(J+1) / W_(r+1,k)(J)`. -/
@@ -130,16 +126,12 @@ theorem kernelWeight_one {r k J : ℕ} (hr : 2 ≤ r) (hk : k ≤ r) :
     rw [eq_sub_iff_add_eq]; exact_mod_cast this
   have h2 : (2 : ℚ) ≤ k + s := by exact_mod_cast hr
   have hk0 : (0 : ℚ) ≤ k := k.cast_nonneg
-  have hn1 : ((k : ℚ) + s + k - 1) ≠ 0 := by intro h; linarith
-  have hn2 : ((k : ℚ) + s + k + 1) ≠ 0 := by intro h; linarith
-  have hn3 : ((k : ℚ) + s + k) ≠ 0 := by intro h; linarith
-  have hn4 : (2 * (k : ℚ) + s - 2 + 1) ≠ 0 := by intro h; linarith
   have hA' : (A : ℚ) = 2 * J + 2 * k + s + 2 := by rw [← hA]; push_cast; ring
   have hB' : (B : ℚ) = J + k + 1 := by rw [← hB]; push_cast; ring
   have hC' : (Cc : ℚ) = 2 * J + 2 * k + 3 := by rw [← hC]; push_cast; ring
   have hE' : (E : ℚ) = J + 2 * k + s + 2 := by rw [← hE]; push_cast; ring
   rw [hu', hA', hB', hC']
-  field_simp
+  field_simp (disch := first | positivity | linarith)
   ring
 
 /-- `W_(r,k)(J+1) / W_(r+2,k)(J)`, the lower neighbour in the recurrence. -/
@@ -167,16 +159,12 @@ theorem kernelWeight_lower {r k J : ℕ} (hr : 2 ≤ r) (hk : k ≤ r) :
     rw [eq_sub_iff_add_eq]; exact_mod_cast this
   have h2 : (2 : ℚ) ≤ k + s := by exact_mod_cast hr
   have hk0 : (0 : ℚ) ≤ k := k.cast_nonneg
-  have hn1 : ((k : ℚ) + s + k - 1) ≠ 0 := by intro h; linarith
-  have hn2 : ((k : ℚ) + s + k + 1) ≠ 0 := by intro h; linarith
-  have hn3 : ((k : ℚ) + s + k) ≠ 0 := by intro h; linarith
-  have hn4 : (2 * (k : ℚ) + s - 2 + 1) ≠ 0 := by intro h; linarith
   have hA' : (A : ℚ) = 2 * J + 2 * k + s + 3 := by rw [← hA]; push_cast; ring
   have hB' : (B : ℚ) = J + k + 1 := by rw [← hB]; push_cast; ring
   have hC' : (Cc : ℚ) = 2 * J + 2 * k + 3 := by rw [← hC]; push_cast; ring
   have hE' : (E : ℚ) = J + 2 * k + s + 2 := by rw [← hE]; push_cast; ring
   rw [hu', hB', hC', hE']
-  field_simp
+  field_simp (disch := first | positivity | linarith)
   ring
 
 /-! ### The recurrence in `r` -/
@@ -295,20 +283,14 @@ def certSigma : ℚ := -2 * k * (2 * r - 1) * (16 * J ^ 2 * k ^ 2 - 16 * J ^ 2 *
 theorem certRho_eq {r J k : ℚ} (hr : 3 ≤ r) (hJ : 0 ≤ J) (hk : 0 ≤ k) :
     certRho r J k = certBq r J k * certSigma r J (k + 1) - certSigma r J k := by
   unfold certRho certF certBq certR2 certR1 certR0 certSigma
-  have h1 : r + k - 1 ≠ 0 := by intro h; linarith
-  have h2 : r + k - 2 ≠ 0 := by intro h; linarith
-  have h3 : k + r - 2 ≠ 0 := by intro h; linarith
-  have h4 : k + r - 1 ≠ 0 := by intro h; linarith
-  have h5 : k + 1 + r - 2 ≠ 0 := by intro h; linarith
-  have h6 : k + 1 + r - 1 ≠ 0 := by intro h; linarith
-  have h7 : 2 * J + 2 * k + 4 ≠ 0 := by intro h; linarith
-  have h8 : 2 * J + 2 * k + 5 ≠ 0 := by intro h; linarith
-  have h9 : 2 * J + 2 * k + 6 ≠ 0 := by intro h; linarith
-  have h10 : 2 * J + 2 * k + 7 ≠ 0 := by intro h; linarith
-  have h11 : 2 * J + 2 * (k + 1) + 5 ≠ 0 := by intro h; linarith
-  have h12 : J + k + r + 3 ≠ 0 := by intro h; linarith
-  have h13 : k + 1 ≠ 0 := by intro h; linarith
-  field_simp
+  rw [show k + 1 + r - 2 = r + k - 1 by ring,
+    show k + 1 + r - 1 = r + k by ring,
+    show k + r - 2 = r + k - 2 by ring,
+    show k + r - 1 = r + k - 1 by ring,
+    show 2 * J + 2 * (k + 1) + 5 = 2 * J + 2 * k + 7 by ring,
+    show 2 * J + 2 * k + 4 = 2 * (J + k + 2) by ring,
+    show 2 * J + 2 * k + 6 = 2 * (J + k + 3) by ring]
+  field_simp (disch := linarith)
   ring
 
 end Certificate

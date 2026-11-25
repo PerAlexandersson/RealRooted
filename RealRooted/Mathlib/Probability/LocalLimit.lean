@@ -218,61 +218,48 @@ private lemma Phi_mono {u v : ℝ} (h : u ≤ v) : Phi u ≤ Phi v := by
 
 /-! ### Discrete concavity -/
 
+/-- Discrete concavity makes the first differences antitone on the finite interval. -/
 private lemma concave_seq_diff_anti (u : ℕ → ℝ) (L : ℕ)
     (h : ∀ t, t + 2 ≤ L → u t + u (t + 2) ≤ 2 * u (t + 1)) :
-    ∀ i m, i + m + 1 ≤ L → u (i + m + 1) - u (i + m) ≤ u (i + 1) - u i := by
-  intro i m
-  induction m with
-  | zero => intro _; simp
-  | succ m ih =>
-    intro hm
-    have h1 := ih (by lia)
-    have h2 := h (i + m) (by lia)
-    have e1 : i + m + 2 = i + (m + 1) + 1 := by ring
-    have e2 : i + m + 1 = i + (m + 1) := by ring
-    rw [e1, e2] at h2
-    rw [e2] at h1
-    linarith
+    AntitoneOn (fun t => u (t + 1) - u t) (Set.Iio L) := by
+  apply antitoneOn_of_succ_le Set.ordConnected_Iio
+  intro t _ _ ht
+  have := h t (by
+    change t + 1 < L at ht
+    lia)
+  simpa only [Order.succ_eq_add_one] using (by linarith :
+    u (t + 1 + 1) - u (t + 1) ≤ u (t + 1) - u t)
 
+/-- Summing the antitone first differences gives the chord bound. -/
 private lemma concave_seq_chord (u : ℕ → ℝ) (L : ℕ)
     (h : ∀ t, t + 2 ≤ L → u t + u (t + 2) ≤ 2 * u (t + 1)) (i : ℕ) (hi : i ≤ L) :
     ((L : ℝ) - i) * u 0 + i * u L ≤ L * u i := by
-  have hanti := concave_seq_diff_anti u L h
   rcases eq_or_lt_of_le hi with rfl | hlt
   · simp
-  -- (a) lower bound on the increment from 0 to i
-  have ha : ∀ i, i + 1 ≤ L → (i : ℝ) * (u (i + 1) - u i) ≤ u i - u 0 := by
-    intro i
-    induction i with
-    | zero => intro _; simp
-    | succ i ih =>
-      intro hi
-      have h1 := ih (by lia)
-      have h2 := h i (by lia)
-      push_cast
-      have h3 : u (i + 1 + 1) - u (i + 1) ≤ u (i + 1) - u i := by
-        rw [show i + 1 + 1 = i + 2 by ring]; linarith
-      have hi0 : (0 : ℝ) ≤ i := by positivity
-      nlinarith
-  -- (b) upper bound on the increment from i to L
-  have hb : ∀ m, i + m + 1 ≤ L →
-      u (i + m + 1) - u i ≤ ((m : ℝ) + 1) * (u (i + 1) - u i) := by
-    intro m
-    induction m with
-    | zero => intro _; simp
-    | succ m ih =>
-      intro hm
-      have h1 := ih (by lia)
-      have h2 := hanti i (m + 1) hm
-      rw [show i + (m + 1) = i + m + 1 by ring] at h2 ⊢
-      push_cast; linarith
-  have h1 := ha i (by lia)
-  obtain ⟨m, rfl⟩ : ∃ m, L = i + m + 1 := ⟨L - i - 1, by lia⟩
-  have h2 := hb m le_rfl
-  push_cast at *
-  have hi0 : (0 : ℝ) ≤ i := by positivity
-  have hm0 : (0 : ℝ) ≤ m := by positivity
-  nlinarith
+  have hanti := concave_seq_diff_anti u L h
+  have hlow : (i : ℝ) * (u (i + 1) - u i) ≤ u i - u 0 := by
+    calc
+      _ = ∑ k ∈ Finset.range i, (u (i + 1) - u i) := by
+        simp only [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+      _ ≤ ∑ k ∈ Finset.range i, (u (k + 1) - u k) := by
+        exact Finset.sum_le_sum fun k hk =>
+          hanti (lt_trans (Finset.mem_range.mp hk) hlt) hlt (Finset.mem_range.mp hk).le
+      _ = _ := Finset.sum_range_sub u i
+  have hhigh : u L - u i ≤ ((L - i : ℕ) : ℝ) * (u (i + 1) - u i) := by
+    calc
+      _ = ∑ k ∈ Finset.range (L - i), (u (i + k + 1) - u (i + k)) := by
+        simpa only [Nat.add_assoc, Nat.add_sub_of_le hi, Nat.add_zero] using
+          (Finset.sum_range_sub (fun k => u (i + k)) (L - i)).symm
+      _ ≤ ∑ k ∈ Finset.range (L - i), (u (i + 1) - u i) := by
+        exact Finset.sum_le_sum fun k hk => hanti hlt (by
+          have := Finset.mem_range.mp hk
+          change i + k < L
+          lia) (Nat.le_add_right i k)
+      _ = _ := by
+        simp only [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+  rw [Nat.cast_sub hi] at hhigh
+  nlinarith [mul_le_mul_of_nonneg_left hlow (sub_nonneg.mpr (Nat.cast_le.mpr hi)),
+    mul_le_mul_of_nonneg_left hhigh (Nat.cast_nonneg i)]
 
 /-! ### Log-concave sequences on `ℤ` -/
 
@@ -506,6 +493,21 @@ private lemma lower_det {b : ℤ → ℝ} {μ σ η : ℝ}
 
 /-! ### Upper bound in the central region -/
 
+/-- A multiplicative gap forces a Bernoulli lower bound under a power comparison. -/
+private lemma bernoulli_mul_le_of_pow_mul_le {A m c e : ℝ} {k : ℕ}
+    (hm : 0 < m) (hc : 0 ≤ c) (he : 0 ≤ e) (hgap : m * (1 + e) ≤ A)
+    (hpow : A ^ k * c ≤ m ^ (k + 1)) : (1 + k * e) * c ≤ m := by
+  have hr : 1 + e ≤ A / m := (le_div_iff₀ hm).mpr (by nlinarith only [hgap])
+  have hp : (A / m) ^ k * c ≤ m := by
+    rw [div_pow, div_mul_eq_mul_div, div_le_iff₀ (pow_pos hm k)]
+    simpa only [pow_succ, mul_comm] using hpow
+  calc
+    _ ≤ (1 + e) ^ k * c :=
+      mul_le_mul_of_nonneg_right (one_add_mul_le_pow (by linarith) k) hc
+    _ ≤ (A / m) ^ k * c :=
+      mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (by linarith) hr k) hc
+    _ ≤ m := hp
+
 private lemma upper_det {b : ℤ → ℝ} {μ σ η c ε : ℝ} (hnn : ∀ j, 0 ≤ b j)
     (hlc : ∀ j, b (j - 1) * b (j + 1) ≤ b j ^ 2)
     (hnz : ∀ i j k, i < j → j < k → b i ≠ 0 → b k ≠ 0 → b j ≠ 0)
@@ -571,26 +573,12 @@ private lemma upper_det {b : ℤ → ℝ} {μ σ η c ε : ℝ} (hnn : ∀ j, 0 
     linarith
   have hm1 : m ≤ 1 := by linarith [gpdf_le_half (xs μ σ k)]
   have hAm : m * (1 + ε / 2) ≤ A := by nlinarith
-  have hbern : 1 + ((K - 1 : ℕ) : ℝ) * (ε / 2) ≤ (1 + ε / 2) ^ (K - 1) :=
-    one_add_mul_le_pow (by linarith) _
-  have hpowA : (m * (1 + ε / 2)) ^ (K - 1) ≤ A ^ (K - 1) :=
-    pow_le_pow_left₀ (by positivity) hAm _
-  rw [mul_pow] at hpowA
-  have hmK : m ^ K ≤ m ^ (K - 1) := by
-    have : m ^ K = m ^ (K - 1) * m := by rw [← pow_succ]; congr 1; lia
-    rw [this]; nlinarith [pow_pos hmpos (K - 1)]
-  have hmK1 : 0 < m ^ (K - 1) := pow_pos hmpos _
-  have : m ^ (K - 1) * ((1 + ((K - 1 : ℕ) : ℝ) * (ε / 2)) * c) ≤ m ^ (K - 1) * 1 := by
-    calc m ^ (K - 1) * ((1 + ((K - 1 : ℕ) : ℝ) * (ε / 2)) * c)
-        ≤ m ^ (K - 1) * ((1 + ε / 2) ^ (K - 1) * c) := by gcongr
-      _ = m ^ (K - 1) * (1 + ε / 2) ^ (K - 1) * c := by ring
-      _ ≤ A ^ (K - 1) * c := by gcongr
-      _ ≤ m ^ K := hmpow
-      _ ≤ m ^ (K - 1) * 1 := by linarith
-  have := le_of_mul_le_mul_left this hmK1
-  rw [Nat.cast_sub hK] at this
-  push_cast at this
-  linarith
+  have hmpow' : A ^ (K - 1) * c ≤ m ^ ((K - 1) + 1) := by
+    simpa only [Nat.sub_add_cancel hK] using hmpow
+  have hbern := bernoulli_mul_le_of_pow_mul_le hmpos hc.le (by positivity) hAm hmpow'
+  rw [Nat.cast_sub hK] at hbern
+  push_cast at hbern
+  linarith only [hbern, hKbig, hm1]
 
 /-! ### Right tail -/
 

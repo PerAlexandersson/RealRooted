@@ -282,15 +282,18 @@ elab_rules : tactic
 /-- Prove positive leading coefficient from nonnegative coefficients and a nonzero premise.
 The coefficient certificate uses general recurrence and polynomial closure lemmas. -/
 def coefficientRowLeadingCoeff : TacticM Cert := withMainContext do
+  -- Check the nonzero premise before constructing the coefficient certificate.
+  let nonzero ← `(tactic|
+    refine RealRooted.HasNonnegCoeffs.pos_leadingCoeff ?_ (by assumption))
+  evalTactic nonzero
   let direct ← rowAttempt do
     let proof ← coefficientRowNonnegTerm
-    let cert ← `(tactic| exact ($proof).pos_leadingCoeff (by assumption))
+    let cert ← `(tactic| exact $proof)
     evalTactic cert
-    return #[cert]
+    return #[nonzero, cert]
   if let .ok cert := direct then return cert
-  let cert ← `(tactic| exact RealRooted.HasNonnegCoeffs.pos_leadingCoeff
-    (by rr_row_coefficient_closure 32) (by assumption))
+  let cert ← `(tactic| rr_row_coefficient_closure 32)
   evalTactic cert
-  return #[cert]
+  return #[nonzero, cert]
 
 end RealRooted.Tactic

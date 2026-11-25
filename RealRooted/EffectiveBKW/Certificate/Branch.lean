@@ -2,6 +2,7 @@ module
 
 public import RealRooted.EffectiveBKW.Certificate.IsolatedRoot
 public import Mathlib.Topology.Instances.Real.Lemmas
+import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Topology.Algebra.Polynomial
 import Mathlib.Analysis.Calculus.Deriv.Polynomial
 import Mathlib.Topology.Homeomorph.Lemmas
@@ -38,6 +39,219 @@ theorem eval_polynomial (f : IntPoly2) (t y : ℝ) :
   induction f with
   | nil => simp [polynomial, eval]
   | cons p f ih => simp [polynomial, eval, ih]
+
+/-- A vanishing specialized polynomial has zero coefficient lists. -/
+private theorem all_eqCheck_nil_of_polynomial_eq_zero {f : IntPoly2}
+    (h : ∀ t, polynomial f t = 0) : f.all (fun p => p.eqCheck []) = true := by
+  induction f with
+  | nil => rfl
+  | cons p f ih =>
+    have hp : IntPoly.polynomial p = 0 := by
+      apply Polynomial.funext
+      intro t
+      simp only [Polynomial.eval_zero]
+      change p.eval t = 0
+      have hc := congrArg (fun q : ℝ[X] => q.coeff 0) (h t)
+      simpa only [polynomial, coeff_add, coeff_C_zero, coeff_X_mul_zero,
+        add_zero, coeff_zero] using hc
+    have hf : ∀ t, polynomial f t = 0 := by
+      intro t
+      have hp' : p.eval t = 0 := by
+        rw [IntPoly.eval, hp, Polynomial.eval_zero]
+      simpa only [polynomial, hp', C_0, zero_add, mul_eq_zero, X_ne_zero, false_or]
+        using h t
+    exact Bool.and_eq_true_iff.mpr ⟨IntPoly.eqCheck_of_polynomial_eq hp, ih hf⟩
+
+/-- Bivariate polynomial equality is complete for the integer-list checker. -/
+theorem eqCheck_of_forall_eval_eq {f g : IntPoly2}
+    (he : ∀ t y, f.eval t y = g.eval t y) : f.eqCheck g = true := by
+  have h : ∀ t, polynomial f t = polynomial g t := by
+    intro t
+    apply Polynomial.funext
+    intro y
+    simpa only [eval_polynomial] using he t y
+  induction f generalizing g with
+  | nil => exact all_eqCheck_nil_of_polynomial_eq_zero (fun t => (h t).symm)
+  | cons p f ih =>
+    cases g with
+    | nil => exact all_eqCheck_nil_of_polynomial_eq_zero h
+    | cons q g =>
+      have hpq : IntPoly.polynomial p = IntPoly.polynomial q := by
+        apply Polynomial.funext
+        intro t
+        change p.eval t = q.eval t
+        have hc := congrArg (fun q : ℝ[X] => q.coeff 0) (h t)
+        simpa only [polynomial, coeff_add, coeff_C_zero, coeff_X_mul_zero, add_zero] using hc
+      have hf : ∀ t, polynomial f t = polynomial g t := by
+        intro t
+        apply mul_left_cancel₀ (X_ne_zero : (X : ℝ[X]) ≠ 0)
+        apply add_left_cancel (a := C (q.eval t))
+        have hp' : p.eval t = q.eval t := congrArg (Polynomial.eval t) hpq
+        simpa only [polynomial, hp'] using h t
+      apply Bool.and_eq_true_iff.mpr
+      refine ⟨IntPoly.eqCheck_of_polynomial_eq hpq, ih ?_ hf⟩
+      intro t y
+      simpa only [eval_polynomial] using congrArg (Polynomial.eval y) (hf t)
+
+/-- Appending a zero coefficient row does not change bivariate evaluation. -/
+private theorem eval_append_zero {p : IntPoly} (hp : p.all (· == 0) = true)
+    (f : IntPoly2) (t y : ℝ) : (f ++ [p]).eval t y = f.eval t y := by
+  have hz : p.eqCheck [] = true := by cases p <;> exact hp
+  have hp0 : p.eval t = 0 := by
+    simpa only [IntPoly.eval, IntPoly.polynomial, BigDescents321.SmallCases.ofList_nil,
+      Polynomial.eval_zero] using congrArg (Polynomial.eval t) (IntPoly.eqCheck_sound hz)
+  induction f with
+  | nil => simpa only [List.nil_append, IntPoly2.eval, mul_zero, add_zero] using hp0
+  | cons q f ih => simp only [List.cons_append, IntPoly2.eval, ih]
+
+/-- Dropping zero rows before reversal preserves the represented polynomial. -/
+private theorem eval_reverse_dropWhile (f : IntPoly2) (t y : ℝ) :
+    IntPoly2.eval ((f.dropWhile (fun p ↦ p.all (· == 0))).reverse) t y =
+      IntPoly2.eval f.reverse t y := by
+  induction f with
+  | nil => rfl
+  | cons p f ih =>
+    by_cases hp : p.all (· == 0) = true
+    · rw [List.dropWhile_cons_of_pos (p := fun p : IntPoly ↦ p.all (· == 0)) hp,
+        List.reverse_cons, eval_append_zero hp, ih]
+    · rw [List.dropWhile_cons_of_neg (p := fun p : IntPoly ↦ p.all (· == 0)) hp]
+
+/-- Trimming zero rows leaves bivariate evaluation unchanged. -/
+private theorem eval_trim (f : IntPoly2) (t y : ℝ) : f.trim.eval t y = f.eval t y := by
+  simpa only [IntPoly2.trim, List.reverse_reverse] using
+    eval_reverse_dropWhile f.reverse t y
+
+
+/-- Homogeneous evaluation agrees with ordinary bivariate evaluation after division. -/
+private theorem bernsteinEval_mul_eval (f : IntPoly2) (t x z : ℝ) (hz : z ≠ 0) :
+    z * bernsteinEval (f.map (fun p ↦ p.eval t)) x z =
+      z ^ f.length * f.eval t (x / z) := by
+  induction f with
+  | nil => simp [bernsteinEval, IntPoly2.eval]
+  | cons p f ih =>
+    simp only [List.map_cons, bernsteinEval, List.length_map, List.length_cons,
+      IntPoly2.eval, pow_succ] at *
+    calc
+      _ = p.eval t * z ^ f.length * z + x *
+          (z ^ f.length * IntPoly2.eval f t (x / z)) := by rw [← ih]; ring
+      _ = _ := by field_simp
+
+
+/-- The inverse linear substitution reconstructs homogeneous evaluation, after cancellation. -/
+private theorem bernstein_reconstruction_eval (f coeffs : IntPoly2) (d l u : ℤ) (t y : ℝ)
+    (hn : f.length ≠ 0) (hlen : coeffs.length = f.length)
+    (hD : (0 : ℝ) < (d : ℝ) * (u - l)) (hz : (u : ℝ) - d * y ≠ 0)
+    (hc : ∀ s : ℝ, coeffs.eval t s = bernsteinEval (f.map (fun p => p.eval t))
+      (l + u * s) (d + d * s)) :
+    ((d : ℝ) * (u - l)) ^ (f.length - 1) * f.eval t y =
+      (bernsteinList [[-l], [d]] [[u], [-d]] coeffs).eval t y := by
+  have hlin (a b : ℤ) (v : ℝ) : eval [[a], [b]] t v = a + v * b := by
+    simp [eval, IntPoly.eval, IntPoly.polynomial, ofList_cons]
+  let z : ℝ := u - d * y
+  let s : ℝ := (-l + d * y) / z
+  have hw : (d : ℝ) + d * s = (d : ℝ) * (u - l) / z := by
+    dsimp [s, z]
+    field_simp
+    ring
+  have hw0 : (d : ℝ) + d * s ≠ 0 := by rw [hw]; exact div_ne_zero hD.ne' hz
+  have ha : ((l : ℝ) + u * s) / ((d : ℝ) + d * s) = y := by
+    apply (div_eq_iff hw0).mpr
+    dsimp [s, z]
+    field_simp
+    ring
+  have he₁ := bernsteinEval_mul_eval coeffs t (-l + d * y) z hz
+  have heval : (bernsteinList [[-l], [d]] [[u], [-d]] coeffs).eval t y =
+      bernsteinEval (coeffs.map (fun p => p.eval t)) (-l + d * y) z := by
+    simp only [eval_bernsteinList, hlin, Int.cast_neg, mul_neg, mul_comm,
+      z, sub_eq_add_neg]
+  rw [← heval, hlen] at he₁
+  have he₂ := bernsteinEval_mul_eval f t (l + u * s) (d + d * s) hw0
+  rw [ha, ← hc s] at he₂
+  have hprod : ((d : ℝ) * (u - l)) * (bernsteinList [[-l], [d]] [[u], [-d]] coeffs).eval t y =
+      ((d : ℝ) * (u - l)) ^ f.length * f.eval t y := by
+    calc
+      _ = (d + d * s) * (z * (bernsteinList [[-l], [d]] [[u], [-d]] coeffs).eval t y) := by
+        rw [hw, div_mul_eq_mul_div, ← mul_assoc, mul_right_comm _ z,
+          mul_div_cancel_right₀ _ hz]
+      _ = (d + d * s) * (z ^ f.length * coeffs.eval t s) := by rw [he₁]
+      _ = z ^ f.length * ((d + d * s) * coeffs.eval t s) := by ring
+      _ = z ^ f.length * ((d + d * s) ^ f.length * f.eval t y) := by rw [he₂]
+      _ = ((d : ℝ) * (u - l)) ^ f.length * f.eval t y := by
+        rw [← mul_assoc, ← mul_pow, hw, mul_div_cancel₀ _ hz]
+  have hpw : ((d : ℝ) * (u - l)) ^ f.length =
+      ((d : ℝ) * (u - l)) * ((d : ℝ) * (u - l)) ^ (f.length - 1) := by
+    rw [← pow_succ', Nat.sub_add_cancel (Nat.one_le_iff_ne_zero.mpr hn)]
+  have he : ((d : ℝ) * (u - l)) ^ (f.length - 1) * f.eval t y =
+      (bernsteinList [[-l], [d]] [[u], [-d]] coeffs).eval t y := by
+    apply mul_left_cancel₀ hD.ne'
+    rw [← mul_assoc, ← hpw]
+    exact hprod.symm
+  exact he
+
+/-- The automatic Bernstein coefficients reconstruct the original polynomial when trimming
+preserves the expected degree. -/
+theorem bernsteinCoeffs_reconstruction {f : IntPoly2} {lo hi : QNum}
+    (hlo : lo.valid = true) (hhi : hi.valid = true) (hlt : lo.lt hi = true)
+    (hlen : (bernsteinCoeffs f lo hi).length = f.length) :
+    let (d, l, u) := IntPoly.intervalData lo hi
+    (smul ((d * (u - l)) ^ (f.length - 1)) f).eqCheck
+      (bernsteinList [[-l], [d]] [[u], [-d]] (bernsteinCoeffs f lo hi)) = true := by
+  by_cases hf : f = []
+  · subst f
+    rfl
+  have hn : f.length ≠ 0 := fun h => hf (List.length_eq_zero_iff.mp h)
+  let d : ℤ := lo.den * hi.den
+  let l : ℤ := lo.num * hi.den
+  let u : ℤ := hi.num * lo.den
+  have hd : 0 < d := by
+    exact mul_pos (Int.natCast_pos.mpr (of_decide_eq_true hlo))
+      (Int.natCast_pos.mpr (of_decide_eq_true hhi))
+  have hlu : l < u := of_decide_eq_true hlt
+  have hD : (0 : ℝ) < (d : ℝ) * (u - l) := by exact_mod_cast mul_pos hd (sub_pos.mpr hlu)
+  let coeffs := bernsteinCoeffs f lo hi
+  let rhs := bernsteinList [[-l], [d]] [[u], [-d]] coeffs
+  apply eqCheck_of_forall_eval_eq
+  intro t y
+  have hp : (smul ((d * (u - l)) ^ (f.length - 1)) f).polynomial t = rhs.polynomial t := by
+    apply Polynomial.eq_of_infinite_eval_eq
+    apply (Set.Iio_infinite ((u : ℝ) / d)).mono
+    intro y hy
+    have hdr : (0 : ℝ) < d := by exact_mod_cast hd
+    have hz : (u : ℝ) - d * y ≠ 0 := by
+      apply ne_of_gt
+      have := (lt_div_iff₀ hdr).mp hy
+      linarith
+    have hc (s : ℝ) : coeffs.eval t s = bernsteinEval (f.map (fun p => p.eval t))
+        (l + u * s) (d + d * s) := by
+      have hlin (a b : ℤ) (v : ℝ) : eval [[a], [b]] t v = a + v * b := by
+        simp [eval, IntPoly.eval, IntPoly.polynomial, ofList_cons]
+      simp only [coeffs, bernsteinCoeffs, IntPoly.intervalData, eval_trim, eval_homogenize, hlin]
+      dsimp only [d, l, u]
+      push_cast
+      simp only [mul_comm]
+    have he := bernstein_reconstruction_eval f coeffs d l u t y hn hlen hD hz hc
+    simp only [mem_ofPred_eq, eval_polynomial]
+    simpa only [eval_smul, Int.cast_pow, Int.cast_mul, Int.cast_sub] using he
+  simpa only [eval_polynomial, rhs, d, l, u, IntPoly.intervalData] using
+    congrArg (Polynomial.eval y) hp
+
+/-- Assemble a box check by proving reconstruction symbolically and checking only coefficients. -/
+theorem posOnBox_of_bernsteinCoeffs {f : IntPoly2} {tlo thi lo hi : QNum}
+    (h : let cs := bernsteinCoeffs f lo hi
+      (lo.valid && hi.valid && lo.lt hi && decide (cs.length = f.length) &&
+        decide (cs ≠ []) && cs.all (fun p => p.posOn tlo thi)) = true) :
+    f.posOnBox tlo thi lo hi = true := by
+  simp only [Bool.and_eq_true, decide_eq_true_eq] at h
+  obtain ⟨⟨⟨⟨⟨hlo, hhi⟩, hlt⟩, hlen⟩, hne⟩, hc⟩ := h
+  have hd : (0 : ℤ) < (lo.den : ℤ) * hi.den :=
+    mul_pos (Int.natCast_pos.mpr (of_decide_eq_true hlo))
+      (Int.natCast_pos.mpr (of_decide_eq_true hhi))
+  have hgap : lo.num * hi.den < hi.num * lo.den := of_decide_eq_true hlt
+  dsimp only [posOnBox, PosCert.check, IntPoly.intervalData]
+  simp only [Bool.and_eq_true]
+  exact ⟨⟨⟨⟨⟨⟨hlo, hhi⟩, hlt⟩, decide_eq_true (pow_pos (mul_pos hd (sub_pos.mpr hgap)) _)⟩,
+    decide_eq_true hne⟩, hc⟩, bernsteinCoeffs_reconstruction hlo hhi hlt hlen⟩
+
 
 /-- Bivariate polynomial evaluation is continuous. -/
 theorem continuous_eval (f : IntPoly2) :
@@ -154,6 +368,26 @@ def BranchCell.check (c : BranchCell) (f : IntPoly2) (neg : Bool) : Bool :=
     g.derivativeY.posOnBox c.tlo c.thi c.lo c.hi &&
     ((g.specializeY c.lo).signed true).posOn c.tlo c.thi &&
     (g.specializeY c.hi).posOn c.tlo c.thi
+
+/-- Check cell walls numerically while using symbolic reconstruction for its derivative. -/
+theorem BranchCell.check_of_bernsteinCoeffs {c : BranchCell} {f : IntPoly2} {neg : Bool}
+    (h : let g := f.signed neg
+      let cs := IntPoly2.bernsteinCoeffs g.derivativeY c.lo c.hi
+      (c.tlo.valid && c.thi.valid && c.tlo.le c.thi &&
+        (c.lo.valid && c.hi.valid && c.lo.lt c.hi &&
+          decide (cs.length = g.derivativeY.length) && decide (cs ≠ []) &&
+          cs.all (fun p => p.posOn c.tlo c.thi)) &&
+        ((g.specializeY c.lo).signed true).posOn c.tlo c.thi &&
+        (g.specializeY c.hi).posOn c.tlo c.thi) = true) :
+    c.check f neg = true := by
+  simp only [Bool.and_eq_true] at h
+  obtain ⟨⟨⟨⟨⟨hlo, hhi⟩, hle⟩, hd⟩, hl⟩, hu⟩ := h
+  have hb : (f.signed neg).derivativeY.posOnBox c.tlo c.thi c.lo c.hi = true :=
+    IntPoly2.posOnBox_of_bernsteinCoeffs (by simpa only [Bool.and_eq_true] using hd)
+  have he := hd
+  simp only [check, Bool.and_eq_true]
+  exact ⟨⟨⟨⟨⟨⟨⟨⟨hlo, hhi⟩, hle⟩, he.1.1.1.1.1⟩, he.1.1.1.1.2⟩,
+    he.1.1.1.2⟩, hb⟩, hl⟩, hu⟩
 
 /-- A checked cell has one root at each parameter value, unique in its closed strip. -/
 theorem BranchCell.check_sound {c : BranchCell} {f : IntPoly2} {neg : Bool}

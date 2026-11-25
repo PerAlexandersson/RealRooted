@@ -53,49 +53,29 @@ private theorem im_nonneg_of_weight_mul_eq {W : ℝ[X]} (hW : W.natDegree ≤ 2)
   have hWr : W.eval r = W.coeff 0 + W.coeff 1 * r + W.coeff 2 * r ^ 2 := by
     rw [eval_eq_sum_range' (show W.natDegree < 3 by lia)]
     simp [Finset.sum_range_succ]
-  rw [hWx] at hz
-  have hre : (W.coeff 0 + W.coeff 1 * x.re + W.coeff 2 * (x.re * x.re - x.im * x.im)) * z.re -
-      (W.coeff 1 * x.im + W.coeff 2 * (x.re * x.im + x.im * x.re)) * z.im = r - x.re := by
-    have h := congrArg Complex.re hz
-    simp only [Complex.mul_re, Complex.add_re, Complex.add_im, Complex.mul_im, Complex.ofReal_re,
-      Complex.ofReal_im, Complex.sub_re, pow_two] at h
-    linear_combination h
-  have him : (W.coeff 0 + W.coeff 1 * x.re + W.coeff 2 * (x.re * x.re - x.im * x.im)) * z.im +
-      (W.coeff 1 * x.im + W.coeff 2 * (x.re * x.im + x.im * x.re)) * z.re = -x.im := by
-    have h := congrArg Complex.im hz
-    simp only [Complex.mul_re, Complex.add_re, Complex.add_im, Complex.mul_im, Complex.ofReal_re,
-      Complex.ofReal_im, Complex.sub_im, pow_two] at h
-    linear_combination h
-  set a := x.re
-  set b := x.im
-  set c0 := W.coeff 0
-  set c1 := W.coeff 1
-  set c2 := W.coeff 2
-  set p := z.re
-  set s := z.im
-  set X1 := c0 + c1 * a + c2 * (a * a - b * b) with hX1
-  set Y1 := c1 * b + c2 * (a * b + b * a) with hY1
-  have h1 : X1 * p - Y1 * s = r - a := by rw [hX1, hY1]; linear_combination hre
-  have h2 : X1 * s + Y1 * p = -b := by rw [hX1, hY1]; linear_combination him
-  have hkey : s * (X1 ^ 2 + Y1 ^ 2) = -b * X1 - Y1 * (r - a) := by
-    linear_combination X1 * h2 - Y1 * h1
-  have hpos : 0 < X1 ^ 2 + Y1 ^ 2 := by
-    by_contra hnot
-    have hX : X1 = 0 := by nlinarith [sq_nonneg X1, sq_nonneg Y1]
-    have hY : Y1 = 0 := by nlinarith [sq_nonneg X1, sq_nonneg Y1]
-    rw [hX, hY] at h2
+  have hne : (complexify W).eval x ≠ 0 := by
+    intro h
+    rw [h, zero_mul] at hz
+    have hi := congrArg Complex.im hz
+    simp only [Complex.zero_im, Complex.sub_im, Complex.ofReal_im] at hi
     linarith
-  have hrhs : 0 ≤ -b * X1 - Y1 * (r - a) := by
-    have : -b * X1 - Y1 * (r - a) =
-        b * (-(c0 + c1 * r + c2 * r ^ 2) + c2 * ((a - r) ^ 2 + b ^ 2)) := by
-      rw [hX1, hY1]; ring
-    rw [this]
-    have hb : 0 < b := hx
-    have h3 : 0 ≤ -(c0 + c1 * r + c2 * r ^ 2) := by linarith
-    positivity
-  by_contra hneg
-  push Not at hneg
-  nlinarith [mul_neg_of_neg_of_pos hneg hpos]
+  have hz' : z = ((r : ℂ) - x) / (complexify W).eval x := by
+    apply (eq_div_iff hne).mpr
+    rwa [mul_comm]
+  rw [hz', Complex.div_im, ← sub_div]
+  apply div_nonneg _ (Complex.normSq_nonneg _)
+  rw [hWx]
+  simp only [Complex.sub_re, Complex.sub_im, Complex.ofReal_re, Complex.ofReal_im,
+    Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, pow_two,
+    zero_mul, add_zero, zero_add, zero_sub, sub_zero]
+  have hfactor :
+      -x.im * (W.coeff 0 + W.coeff 1 * x.re + W.coeff 2 * (x.re * x.re - x.im * x.im)) -
+          (r - x.re) * (W.coeff 1 * x.im + W.coeff 2 * (x.re * x.im + x.im * x.re)) =
+        x.im * (-(W.coeff 0 + W.coeff 1 * r + W.coeff 2 * r ^ 2) +
+          W.coeff 2 * ((x.re - r) ^ 2 + x.im ^ 2)) := by ring
+  rw [hfactor]
+  exact mul_nonneg hx.le (add_nonneg (neg_nonneg.mpr (hWr ▸ hr))
+    (mul_nonneg hA (add_nonneg (sq_nonneg _) (sq_nonneg _))))
 
 open BorceaBranden in
 /-- The signed Weyl symbol of the fixed-factor operator of a derivative product does not vanish in
