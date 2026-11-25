@@ -619,8 +619,14 @@ public import RealRooted.EvenDerivative.Preserver
 public import RealRooted.EvenDerivative.Stability
 public import RealRooted.EvenDerivative.Symbol
 public import RealRooted.ExponentialRows.Substitution
+public import RealRooted.ExponentialRows.SubstitutionComposition
 public import RealRooted.ExponentialRows.SubstitutionKernel
+public import RealRooted.ExponentialRows.SubstitutionPowers
 public import RealRooted.ExponentialRows.SubstitutionPreserver
+public import RealRooted.ExponentialRows.SubstitutionRational
+public import RealRooted.ExponentialRows.SubstitutionRationalExamples
+public import RealRooted.ExponentialRows.SubstitutionRationalKernel
+public import RealRooted.ExponentialRows.SubstitutionRationalPreserver
 public import RealRooted.ExponentialRows.SubstitutionRows
 public import RealRooted.FactorialCompression.Basic
 public import RealRooted.FactorialCompression.CommonKernel
