@@ -22,6 +22,26 @@ namespace RealRooted
 
 section
 
+/-- Erasing the root in one interlacing gap leaves the consumed roots below the
+  gap and exactly the remaining list above it. -/
+private lemma roots_erase_interlacing_gap {f : ℝ[X]} {s a b : ℝ}
+    {rest rs : List ℝ} {consumed : Multiset ℝ}
+    (hroots : f.roots.erase s = ↑rest + consumed)
+    (hint : ListInterlaces rest (b :: rs))
+    (hcons : ∀ r ∈ consumed, r ≤ a) (hab : a < b) :
+    (∀ r ∈ f.roots.erase s, r ≤ a ∨ b ≤ r) ∧
+      (f.roots.erase s).countP (b ≤ ·) = rest.length := by
+  have hrest : ∀ r ∈ (↑rest : Multiset ℝ), b ≤ r :=
+    fun r hr => listInterlaces_all_ge rest rs b hint r (Multiset.mem_coe.mp hr)
+  rw [hroots]
+  constructor
+  · intro r hr
+    exact (Multiset.mem_add.mp hr).elim (fun hr => Or.inr (hrest r hr))
+      (fun hr => Or.inl (hcons r hr))
+  · rw [Multiset.countP_add, Multiset.countP_eq_card.mpr hrest,
+      Multiset.countP_eq_zero.mpr (fun r hr => not_le.mpr ((hcons r hr).trans_lt hab))]
+    simp
+
 /-- A sign-based version of the Wagner (1) root-production helper: if the
     common right-hand roots are not roots of `f + g`, then we can produce the
     strict interlacing roots of `f + g` without assuming `f` and `g` are
@@ -60,69 +80,31 @@ private lemma wagner1_roots_exist_of_no_common_right (f g : ℝ[X])
       have hcons_f_le : ∀ r ∈ consumed_f, r ≤ a := hcons_f
       have hcons_g_le : ∀ r ∈ consumed_g, r ≤ a := hcons_g
       have hsf_root : f.IsRoot sf := by
-        have : sf ∈ f.roots := by
-          rw [← hss_f_eq]
-          simp [Multiset.mem_add]
-        simp_all
+        rw [← mem_roots hf_ne, ← hss_f_eq]
+        simp
       have hsg_root : g.IsRoot sg := by
-        have : sg ∈ g.roots := by
-          rw [← hss_g_eq]
-          simp [Multiset.mem_add]
-        simp_all
+        rw [← mem_roots hg_ne, ← hss_g_eq]
+        simp
       have hlen_f' : rest_f.length + 1 = (b :: rest_rs).length := by grind
       have hlen_g' : rest_g.length + 1 = (b :: rest_rs).length := by grind
-      have hss_f_eq' : (↑rest_f : Multiset ℝ) + (sf ::ₘ consumed_f) = f.roots :=
-        calc
-          (↑rest_f : Multiset ℝ) + (sf ::ₘ consumed_f)
-              = sf ::ₘ consumed_f + ↑rest_f := add_comm _ _
-          _ = sf ::ₘ (consumed_f + ↑rest_f) := Multiset.cons_add ..
-          _ = sf ::ₘ (↑rest_f + consumed_f) := by grind
-          _ = sf ::ₘ ↑rest_f + consumed_f := (Multiset.cons_add ..).symm
-          _ = (↑(sf :: rest_f) : Multiset ℝ) + consumed_f := by simp
-          _ = f.roots := hss_f_eq
-      have hss_g_eq' : (↑rest_g : Multiset ℝ) + (sg ::ₘ consumed_g) = g.roots :=
-        calc
-          (↑rest_g : Multiset ℝ) + (sg ::ₘ consumed_g)
-              = sg ::ₘ consumed_g + ↑rest_g := add_comm _ _
-          _ = sg ::ₘ (consumed_g + ↑rest_g) := Multiset.cons_add ..
-          _ = sg ::ₘ (↑rest_g + consumed_g) := by grind
-          _ = sg ::ₘ ↑rest_g + consumed_g := (Multiset.cons_add ..).symm
-          _ = (↑(sg :: rest_g) : Multiset ℝ) + consumed_g := by simp
-          _ = g.roots := hss_g_eq
+      have hss_f_eq' : (↑rest_f : Multiset ℝ) + (sf ::ₘ consumed_f) = f.roots := by
+        simpa only [← Multiset.cons_coe, Multiset.cons_add, Multiset.add_cons] using hss_f_eq
+      have hss_g_eq' : (↑rest_g : Multiset ℝ) + (sg ::ₘ consumed_g) = g.roots := by
+        simpa only [← Multiset.cons_coe, Multiset.cons_add, Multiset.add_cons] using hss_g_eq
       have hcons_f' : ∀ r ∈ (sf ::ₘ consumed_f), r ≤ b := by grind
       have hcons_g' : ∀ r ∈ (sg ::ₘ consumed_g), r ≤ b := by grind
       rcases eq_or_lt_of_le hab with hab_eq | hab_lt
       · have hsf_eq : sf = a := le_antisymm (hab_eq.symm ▸ hsfb) hasf
         have hsg_eq : sg = a := le_antisymm (hab_eq.symm ▸ hsgb) hasg
         simp_all
-      · have hf_dichotomy : ∀ r ∈ f.roots.erase sf, r ≤ a ∨ b ≤ r := by
-          rw [hf_roots_erase]
-          intro r hr
-          rcases Multiset.mem_add.mp hr with hr_rest | hr_cons
-          · right
-            exact listInterlaces_all_ge rest_f rest_rs b hint_f_tail r (Multiset.mem_coe.mp hr_rest)
-          · grind
-        have hg_dichotomy : ∀ r ∈ g.roots.erase sg, r ≤ a ∨ b ≤ r := by
-          rw [hg_roots_erase]
-          intro r hr
-          rcases Multiset.mem_add.mp hr with hr_rest | hr_cons
-          · right
-            exact listInterlaces_all_ge rest_g rest_rs b hint_g_tail r (Multiset.mem_coe.mp hr_rest)
-          · grind
+      · obtain ⟨hf_dichotomy, hf_count⟩ :=
+          roots_erase_interlacing_gap hf_roots_erase hint_f_tail hcons_f_le hab_lt
+        obtain ⟨hg_dichotomy, hg_count⟩ :=
+          roots_erase_interlacing_gap hg_roots_erase hint_g_tail hcons_g_le hab_lt
         have hcount_eq :
             (g.roots.erase sg).countP (b ≤ ·) = (f.roots.erase sf).countP (b ≤ ·) := by
-          rw [hf_roots_erase, hg_roots_erase, Multiset.countP_add, Multiset.countP_add]
-          have hcf_rest := Multiset.countP_eq_card.mpr (fun r hr =>
-            listInterlaces_all_ge rest_f rest_rs b hint_f_tail r (Multiset.mem_coe.mp hr))
-          have hcg_rest := Multiset.countP_eq_card.mpr (fun r hr =>
-            listInterlaces_all_ge rest_g rest_rs b hint_g_tail r (Multiset.mem_coe.mp hr))
-          have hcf_cons : consumed_f.countP (b ≤ ·) = 0 :=
-            Multiset.countP_eq_zero.mpr (fun r hr =>
-              not_le.mpr (lt_of_le_of_lt (hcons_f_le r hr) hab_lt))
-          have hcg_cons : consumed_g.countP (b ≤ ·) = 0 :=
-            Multiset.countP_eq_zero.mpr (fun r hr =>
-              not_le.mpr (lt_of_le_of_lt (hcons_g_le r hr) hab_lt))
-          simp_all
+          rw [hf_count, hg_count]
+          grind
         obtain ⟨u, hau, hub, hu_root⟩ :
             ∃ u, a ≤ u ∧ u ≤ b ∧ (f + g).IsRoot u := by
           rcases le_total sf sg with hsfsg | hsgf

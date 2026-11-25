@@ -404,6 +404,110 @@ theorem PositiveSplitRootCountPair.card_right_roots_lt_head_le_card_xSub_le
         one_le_card_xSub_roots_filter_le_of_left_root_right_eval_nonpos
           ha (le_of_lt hq_a_neg) hμ hP_ne (by simpa [P] using hbot)
 
+/-- A negative right root below all left roots gives opposite pencil signs at
+that root and a left root; their orientation records the upper-tail parity. -/
+private lemma xSub_signs_below_left_roots
+    {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q) {a y μ : ℝ} {upper : ℕ}
+    (ha : p.IsRoot a) (hqa : ¬ q.IsRoot a) (hy : q.IsRoot y)
+    (hy_neg : y < 0) (hμ : 0 < μ) (hroots_gt_y : ∀ t ∈ p.roots, y < t)
+    (hp_upper : p.natDegree = upper + 1)
+    (hupper_eq : upper = (q.roots.filter (a < ·)).card) :
+    let P := X * p - C μ * q
+    (0 < P.eval y ∧ P.eval a < 0 ∧ Even upper) ∨
+      (P.eval y < 0 ∧ 0 < P.eval a ∧ Odd upper) := by
+  dsimp only
+  rcases Nat.even_or_odd upper with heven | hodd
+  · have hqa_pos : 0 < q.eval a :=
+      (hpair.right_splits.eval_pos_iff_even_card_roots_gt hpair.right_pos hqa).mpr
+        (hupper_eq ▸ heven)
+    have hpy_neg : p.eval y < 0 := eval_neg_of_all_roots_gt_of_odd
+      hpair.left_pos.ne_zero hpair.left_pos (hp_upper ▸ heven.add_one) hroots_gt_y
+    left
+    rw [eval_X_mul_sub_C_mul_of_right_isRoot hy,
+      eval_X_mul_sub_C_mul_of_left_isRoot ha]
+    exact ⟨mul_pos_of_neg_of_neg hy_neg hpy_neg,
+      by nlinarith [mul_pos hμ hqa_pos], heven⟩
+  · have hqa_neg : q.eval a < 0 :=
+      (hpair.right_splits.eval_neg_iff_odd_card_roots_gt hpair.right_pos hqa).mpr
+        (hupper_eq ▸ hodd)
+    have hpy_pos : 0 < p.eval y := eval_pos_of_all_roots_gt_of_even
+      hpair.left_pos.ne_zero hpair.left_pos (hp_upper ▸ hodd.add_one) hroots_gt_y
+    right
+    rw [eval_X_mul_sub_C_mul_of_right_isRoot hy,
+      eval_X_mul_sub_C_mul_of_left_isRoot ha]
+    exact ⟨mul_neg_of_neg_of_pos hy_neg hpy_pos,
+      by nlinarith [mul_neg_of_pos_of_neg hμ hqa_neg], hodd⟩
+
+/-- Opposite signs across a gap and the matching negative-leading parity give
+one root in the gap and a second root to its left. -/
+private lemma two_le_card_roots_filter_le_of_gap_signs
+    {P : ℝ[X]} {a y : ℝ} {upper : ℕ}
+    (hnegP_pos : HasPosLeadingCoeff (-P)) (hdegree : P.natDegree = upper + 2)
+    (hya : y < a)
+    (hsign : (0 < P.eval y ∧ P.eval a < 0 ∧ Even upper) ∨
+      (P.eval y < 0 ∧ 0 < P.eval a ∧ Odd upper)) :
+    2 ≤ (P.roots.filter (fun x => x ≤ a)).card := by
+  have hdeg : 0 < P.degree := natDegree_pos_iff_degree_pos.mp (by lia)
+  have hmul : P.eval y * P.eval a < 0 := by
+    rcases hsign with ⟨hy, ha, _⟩ | ⟨hy, ha, _⟩
+    · exact mul_neg_of_pos_of_neg hy ha
+    · exact mul_neg_of_neg_of_pos hy ha
+  obtain ⟨c₂, hyc₂, hc₂a, hc₂⟩ := exists_isRoot_between_of_eval_mul_neg hya hmul
+  obtain ⟨c₁, hc₁y, hc₁⟩ : ∃ c₁ ≤ y, P.IsRoot c₁ := by
+    rcases hsign with ⟨hy, _, heven⟩ | ⟨hy, _, hodd⟩
+    · exact exists_isRoot_le_of_eval_nonneg_of_tendsto_atBot_atBot hy.le
+        (tendsto_eval_atBot_atBot_of_neg_posLeadingCoeff_even hnegP_pos hdeg
+          (hdegree ▸ heven.add (by norm_num)))
+    · exact exists_isRoot_le_of_eval_nonpos_of_tendsto_atBot_atTop hy.le
+        (tendsto_eval_atBot_atTop_of_neg_posLeadingCoeff_odd hnegP_pos hdeg
+          (hdegree ▸ hodd.add_even (by norm_num)))
+  exact two_le_card_roots_filter_le_of_two_isRoot_ordered
+    (neg_ne_zero.mp hnegP_pos.ne_zero) (hc₁y.trans_lt hyc₂) hc₂a hc₁ hc₂
+
+/-- With one lower exterior root, the upper-tail parity gives a sign change
+between the first left root and negative infinity. -/
+private lemma one_le_card_xSub_le_of_negative_leading_parity
+    {p q : ℝ[X]} (hpair : PositiveSplitRootCountPair p q) {a μ : ℝ} {upper : ℕ}
+    (ha : p.IsRoot a) (hqa : ¬ q.IsRoot a) (hμ : 0 < μ)
+    (hupper_eq : upper = (q.roots.filter (a < ·)).card)
+    (hq_upper : q.natDegree = upper + 1)
+    (hP_natDegree : (X * p - C μ * q).natDegree = q.natDegree)
+    (hnegP_pos : HasPosLeadingCoeff (-(X * p - C μ * q))) :
+    1 ≤ ((X * p - C μ * q).roots.filter (fun x => x ≤ a)).card := by
+  let P := X * p - C μ * q
+  have hP_ne : P ≠ 0 := neg_ne_zero.mp hnegP_pos.ne_zero
+  have hP_degree_pos : 0 < P.degree := natDegree_pos_iff_degree_pos.mp (by
+    change 0 < (X * p - C μ * q).natDegree
+    rw [hP_natDegree, hq_upper]
+    exact Nat.succ_pos _)
+  rcases Nat.even_or_odd upper with hupper_even | hupper_odd
+  · have hq_a_pos : 0 < q.eval a :=
+      (hpair.right_splits.eval_pos_iff_even_card_roots_gt
+        (by simpa [HasPosLeadingCoeff] using hpair.right_pos) hqa).mpr
+          (by simpa [hupper_eq] using hupper_even)
+    have hP_odd : Odd P.natDegree := by
+      rw [hP_natDegree, hq_upper]
+      exact Even.add_one hupper_even
+    have hbot : Tendsto (fun x => P.eval x) atBot atTop :=
+      tendsto_eval_atBot_atTop_of_neg_posLeadingCoeff_odd
+        hnegP_pos hP_degree_pos hP_odd
+    exact
+      one_le_card_xSub_roots_filter_le_of_left_root_right_eval_nonneg
+        ha hq_a_pos.le hμ (by simpa [P] using hP_ne) (by simpa [P] using hbot)
+  · have hq_a_neg : q.eval a < 0 :=
+      (hpair.right_splits.eval_neg_iff_odd_card_roots_gt
+        (by simpa [HasPosLeadingCoeff] using hpair.right_pos) hqa).mpr
+          (by simpa [hupper_eq] using hupper_odd)
+    have hP_even : Even P.natDegree := by
+      rw [hP_natDegree, hq_upper]
+      exact Odd.add_one hupper_odd
+    have hbot : Tendsto (fun x => P.eval x) atBot atBot :=
+      tendsto_eval_atBot_atBot_of_neg_posLeadingCoeff_even
+        hnegP_pos hP_degree_pos hP_even
+    exact
+      one_le_card_xSub_roots_filter_le_of_left_root_right_eval_nonpos
+        ha (le_of_lt hq_a_neg) hμ (by simpa [P] using hP_ne) (by simpa [P] using hbot)
+
 /-- In the right-successor degree case, if the lower exterior right-root tail
 below the first left root has size two, then the x-subtraction pencil has at
 least one root in the closed lower tail. -/
@@ -444,43 +548,14 @@ theorem
     with hy_neg | hy_zero
   · have hroots_gt_y : ∀ t ∈ p.roots, y < t :=
       fun t ht => lt_of_lt_of_le hya (hroots_ge t ht)
-    rcases Nat.even_or_odd upper with hupper_even | hupper_odd
-    · have hq_a_pos : 0 < q.eval a :=
-        (hpair.right_splits.eval_pos_iff_even_card_roots_gt
-          (by simpa [HasPosLeadingCoeff] using hpair.right_pos) hqa).mpr
-            (by simpa [hupper_eq] using hupper_even)
-      have hp_odd : Odd p.natDegree := by simpa [hp_upper] using Even.add_one hupper_even
-      have hp_y_neg : p.eval y < 0 :=
-        eval_neg_of_all_roots_gt_of_odd
-          hpair.left_pos.ne_zero hpair.left_pos hp_odd hroots_gt_y
-      have hP_y_pos : 0 < P.eval y := by
-        simpa [P, eval_X_mul_sub_C_mul_of_right_isRoot hy] using
-          mul_pos_of_neg_of_neg hy_neg hp_y_neg
-      have hP_a_neg : P.eval a < 0 := by
-        simpa [P, eval_X_mul_sub_C_mul_of_left_isRoot ha, neg_mul] using
-          (neg_neg_of_pos (mul_pos hμ hq_a_pos))
-      obtain ⟨c, _hyc, hca, hc_root⟩ :=
-        exists_isRoot_between_of_eval_mul_neg (p := P) hya
-          (mul_neg_of_pos_of_neg hP_y_pos hP_a_neg)
-      exact one_le_card_roots_filter_le_of_isRoot hP_ne (le_of_lt hca) hc_root
-    · have hq_a_neg : q.eval a < 0 :=
-        (hpair.right_splits.eval_neg_iff_odd_card_roots_gt
-          (by simpa [HasPosLeadingCoeff] using hpair.right_pos) hqa).mpr
-            (by simpa [hupper_eq] using hupper_odd)
-      have hp_even : Even p.natDegree := by simpa [hp_upper] using Odd.add_one hupper_odd
-      have hp_y_pos : 0 < p.eval y :=
-        eval_pos_of_all_roots_gt_of_even
-          hpair.left_pos.ne_zero hpair.left_pos hp_even hroots_gt_y
-      have hP_y_neg : P.eval y < 0 := by
-        simpa [P, eval_X_mul_sub_C_mul_of_right_isRoot hy] using
-          mul_neg_of_neg_of_pos hy_neg hp_y_pos
-      have hP_a_pos : 0 < P.eval a := by
-        simpa [P, eval_X_mul_sub_C_mul_of_left_isRoot ha, neg_mul] using
-          neg_pos.mpr (mul_neg_of_pos_of_neg hμ hq_a_neg)
-      obtain ⟨c, _hyc, hca, hc_root⟩ :=
-        exists_isRoot_between_of_eval_mul_neg (p := P) hya
-          (mul_neg_of_neg_of_pos hP_y_neg hP_a_pos)
-      exact one_le_card_roots_filter_le_of_isRoot hP_ne (le_of_lt hca) hc_root
+    have hsign := xSub_signs_below_left_roots hpair ha hqa hy hy_neg hμ
+      hroots_gt_y hp_upper hupper_eq
+    have hmul : P.eval y * P.eval a < 0 := by
+      rcases hsign with ⟨hy, ha, _⟩ | ⟨hy, ha, _⟩
+      · exact mul_neg_of_pos_of_neg hy ha
+      · exact mul_neg_of_neg_of_pos hy ha
+    obtain ⟨c, _, hca, hc⟩ := exists_isRoot_between_of_eval_mul_neg hya hmul
+    exact one_le_card_roots_filter_le_of_isRoot hP_ne hca.le hc
   · subst y
     have hP_zero : P.IsRoot (0 : ℝ) := by simp [P, eval_X_mul_sub_C_mul_of_right_isRoot hy]
     exact one_le_card_roots_filter_le_of_isRoot hP_ne (le_of_lt hya) hP_zero
@@ -519,12 +594,6 @@ theorem
     simpa [P] using
       hpair.hasPosLeadingCoeff_neg_X_mul_sub_C_mul_of_right_natDegree_eq_left_add_one
         hdeg hcoeff
-  have hP_ne : P ≠ 0 := neg_ne_zero.mp hnegP_pos.ne_zero
-  have hP_nat_pos : 0 < P.natDegree := by
-    rw [hP_natDegree, hdeg]
-    exact Nat.succ_pos _
-  have hP_degree_pos : 0 < P.degree :=
-    Polynomial.natDegree_pos_iff_degree_pos.mp hP_nat_pos
   have hL_le : lower ≤ 2 := by
     simpa [lower] using
       hpair.card_right_roots_filter_lt_le_two_of_roots_ge_of_right_successor
@@ -535,33 +604,9 @@ theorem
   · have hq_upper : q.natDegree = upper + 1 := by
       have hpart' : 1 + upper = q.natDegree := by simpa [lower, hlower] using hpart
       lia
-    rcases Nat.even_or_odd upper with hupper_even | hupper_odd
-    · have hq_a_pos : 0 < q.eval a :=
-        (hpair.right_splits.eval_pos_iff_even_card_roots_gt
-          (by simpa [HasPosLeadingCoeff] using hpair.right_pos) hqa).mpr
-            (by simpa [hupper_eq] using hupper_even)
-      have hP_odd : Odd P.natDegree := by
-        rw [hP_natDegree, hq_upper]
-        exact Even.add_one hupper_even
-      have hbot : Tendsto (fun x => P.eval x) atBot atTop :=
-        tendsto_eval_atBot_atTop_of_neg_posLeadingCoeff_odd
-          hnegP_pos hP_degree_pos hP_odd
-      simpa [lower, P, hlower] using
-        one_le_card_xSub_roots_filter_le_of_left_root_right_eval_nonneg
-          ha hq_a_pos.le hμ (by simpa [P] using hP_ne) (by simpa [P] using hbot)
-    · have hq_a_neg : q.eval a < 0 :=
-        (hpair.right_splits.eval_neg_iff_odd_card_roots_gt
-          (by simpa [HasPosLeadingCoeff] using hpair.right_pos) hqa).mpr
-            (by simpa [hupper_eq] using hupper_odd)
-      have hP_even : Even P.natDegree := by
-        rw [hP_natDegree, hq_upper]
-        exact Odd.add_one hupper_odd
-      have hbot : Tendsto (fun x => P.eval x) atBot atBot :=
-        tendsto_eval_atBot_atBot_of_neg_posLeadingCoeff_even
-          hnegP_pos hP_degree_pos hP_even
-      simpa [lower, P, hlower] using
-        one_le_card_xSub_roots_filter_le_of_left_root_right_eval_nonpos
-          ha (le_of_lt hq_a_neg) hμ (by simpa [P] using hP_ne) (by simpa [P] using hbot)
+    simpa only [lower, hlower] using
+      one_le_card_xSub_le_of_negative_leading_parity hpair ha hqa hμ
+        hupper_eq hq_upper hP_natDegree hnegP_pos
   · have hp_upper : p.natDegree = upper + 1 := by
       have hpart' : 2 + upper = q.natDegree := by simpa [lower, hlower] using hpart
       lia
@@ -581,69 +626,11 @@ theorem
     have hy_neg : y < 0 := lt_of_lt_of_le hya ha_nonpos
     have hroots_gt_y : ∀ t ∈ p.roots, y < t :=
       fun t ht => lt_of_lt_of_le hya (hroots_ge t ht)
-    rcases Nat.even_or_odd upper with hupper_even | hupper_odd
-    · have hq_a_pos : 0 < q.eval a :=
-        (hpair.right_splits.eval_pos_iff_even_card_roots_gt
-          (by simpa [HasPosLeadingCoeff] using hpair.right_pos) hqa).mpr
-            (by simpa [hupper_eq] using hupper_even)
-      have hp_odd : Odd p.natDegree := by
-        rw [hp_upper]
-        exact Even.add_one hupper_even
-      have hp_y_neg : p.eval y < 0 :=
-        eval_neg_of_all_roots_gt_of_odd
-          hpair.left_pos.ne_zero hpair.left_pos hp_odd hroots_gt_y
-      have hP_y_pos : 0 < P.eval y := by
-        simpa [P, eval_X_mul_sub_C_mul_of_right_isRoot hy] using
-          mul_pos_of_neg_of_neg hy_neg hp_y_neg
-      have hP_a_neg : P.eval a < 0 := by
-        simpa [P, eval_X_mul_sub_C_mul_of_left_isRoot ha, neg_mul] using
-          (neg_neg_of_pos (mul_pos hμ hq_a_pos))
-      have hP_even : Even P.natDegree := by
-        rw [hP_natDegree, hq_upper]
-        exact hupper_even.add (by norm_num)
-      have hbot : Tendsto (fun x => P.eval x) atBot atBot :=
-        tendsto_eval_atBot_atBot_of_neg_posLeadingCoeff_even
-          hnegP_pos hP_degree_pos hP_even
-      obtain ⟨c₁, hc₁y, hc₁_root⟩ :=
-        exists_isRoot_le_of_eval_nonneg_of_tendsto_atBot_atBot
-          (le_of_lt hP_y_pos) hbot
-      obtain ⟨c₂, hyc₂, hc₂a, hc₂_root⟩ :=
-        exists_isRoot_between_of_eval_mul_neg (p := P) hya
-          (mul_neg_of_pos_of_neg hP_y_pos hP_a_neg)
-      simpa [lower, P, hlower] using
-        two_le_card_roots_filter_le_of_two_isRoot_ordered hP_ne
-          (lt_of_le_of_lt hc₁y hyc₂) hc₂a hc₁_root hc₂_root
-    · have hq_a_neg : q.eval a < 0 :=
-        (hpair.right_splits.eval_neg_iff_odd_card_roots_gt
-          (by simpa [HasPosLeadingCoeff] using hpair.right_pos) hqa).mpr
-            (by simpa [hupper_eq] using hupper_odd)
-      have hp_even : Even p.natDegree := by
-        rw [hp_upper]
-        exact Odd.add_one hupper_odd
-      have hp_y_pos : 0 < p.eval y :=
-        eval_pos_of_all_roots_gt_of_even
-          hpair.left_pos.ne_zero hpair.left_pos hp_even hroots_gt_y
-      have hP_y_neg : P.eval y < 0 := by
-        simpa [P, eval_X_mul_sub_C_mul_of_right_isRoot hy] using
-          mul_neg_of_neg_of_pos hy_neg hp_y_pos
-      have hP_a_pos : 0 < P.eval a := by
-        simpa [P, eval_X_mul_sub_C_mul_of_left_isRoot ha, neg_mul] using
-          neg_pos.mpr (mul_neg_of_pos_of_neg hμ hq_a_neg)
-      have hP_odd : Odd P.natDegree := by
-        rw [hP_natDegree, hq_upper]
-        exact hupper_odd.add_even (by norm_num)
-      have hbot : Tendsto (fun x => P.eval x) atBot atTop :=
-        tendsto_eval_atBot_atTop_of_neg_posLeadingCoeff_odd
-          hnegP_pos hP_degree_pos hP_odd
-      obtain ⟨c₁, hc₁y, hc₁_root⟩ :=
-        exists_isRoot_le_of_eval_nonpos_of_tendsto_atBot_atTop
-          (le_of_lt hP_y_neg) hbot
-      obtain ⟨c₂, hyc₂, hc₂a, hc₂_root⟩ :=
-        exists_isRoot_between_of_eval_mul_neg (p := P) hya
-          (mul_neg_of_neg_of_pos hP_y_neg hP_a_pos)
-      simpa [lower, P, hlower] using
-        two_le_card_roots_filter_le_of_two_isRoot_ordered hP_ne
-          (lt_of_le_of_lt hc₁y hyc₂) hc₂a hc₁_root hc₂_root
+    simpa only [lower, P, hlower] using
+      two_le_card_roots_filter_le_of_gap_signs hnegP_pos
+        (hP_natDegree.trans hq_upper) hya
+        (xSub_signs_below_left_roots hpair ha hqa hy hy_neg hμ
+          hroots_gt_y hp_upper hupper_eq)
 
 /-- In the left-successor degree case, if `a` is a lowest left-root threshold
 and `p` and `q` have no common root at `a`, then every right root lies strictly
