@@ -103,96 +103,32 @@ lemma coeff_simsun_zero :
 lemma simsun_nonnegCoeffs_top_pos_and_above :
     ∀ n : Nat, HasNonnegCoeffs (simsun n) ∧
       0 < coeff (simsun n) (n / 2) ∧
-      ∀ m > n / 2, coeff (simsun n) m = 0
-  | 0 => by
-      refine ⟨?_, ?_, ?_⟩
-      · rintro (_ | m)
-        · simp [simsun_zero]
-        · rw [simsun_zero, coeff_one, ite_eq_right (Nat.succ_ne_zero m)]
-      · simp [simsun_zero]
-      · intro m hm
-        rw [simsun_zero, coeff_one]
-        lia
-  | 1 => by
-      refine ⟨?_, ?_, ?_⟩
-      · rintro (_ | m)
-        · simp [simsun_one]
-        · rw [simsun_one, coeff_one, ite_eq_right (Nat.succ_ne_zero m)]
-      · simp [simsun_one]
-      · intro m hm
-        rw [simsun_one, coeff_one]
-        lia
-  | n + 2 => by
-      rcases simsun_nonnegCoeffs_top_pos_and_above (n + 1) with
-        ⟨hprev_nonneg, hprev_top, hprev_above⟩
-      refine ⟨?_, ?_, ?_⟩
-      · rintro (_ | m)
-        · rw [coeff_simsun_zero]
-          positivity
-        · rw [coeff_simsun_succ]
-          by_cases hm : m ≤ (n + 1) / 2
-          · have hscale : 0 ≤ (((n + 1 : Nat) : ℝ) - 2 * (m : ℝ)) := by
-              have hm' : ((2 * m : Nat) : ℝ) ≤ ((n + 1 : Nat) : ℝ) :=
-                Nat.cast_le.mpr (by lia)
-              simp_all
-            exact add_nonneg
-              (mul_nonneg hscale (hprev_nonneg m))
-              (mul_nonneg (by positivity) (hprev_nonneg (m + 1)))
-          · have hm' : (n + 1) / 2 < m := lt_of_not_ge hm
-            have hm_zero : coeff (simsun (n + 1)) m = 0 := hprev_above m hm'
-            have hm_succ_zero : coeff (simsun (n + 1)) (m + 1) = 0 :=
-              hprev_above (m + 1) (by lia)
-            simp [hm_zero, hm_succ_zero]
-      · set k : Nat := (n + 2) / 2 - 1
-        have hk_succ : k + 1 = (n + 2) / 2 := by lia
-        rw [show (n + 2) / 2 = k + 1 by lia, coeff_simsun_succ]
-        rcases Nat.mod_two_eq_zero_or_one n with hpar | hpar
-        · have hk_eq : k = n / 2 := by lia
-          have hprev_idx : (n + 1) / 2 = n / 2 := by lia
-          have hprev_pos : 0 < coeff (simsun (n + 1)) k := by lia
-          have hprev_zero : coeff (simsun (n + 1)) (k + 1) = 0 := by simp_all
-          have hdouble : (2 : ℝ) * (k : ℝ) = (n : ℝ) := by
-            simpa [Nat.cast_mul] using
-              congrArg (fun r : Nat => (r : ℝ)) (show 2 * k = n by lia)
-          simp_all
-        · have hk_eq : k = n / 2 := by lia
-          have hk_top : k + 1 = (n + 1) / 2 := by lia
-          have hprev_nonneg_k : 0 ≤ coeff (simsun (n + 1)) k :=
-            hprev_nonneg k
-          have hprev_pos : 0 < coeff (simsun (n + 1)) (k + 1) := by lia
-          have hdouble : (2 : ℝ) * (k : ℝ) + 1 = (n : ℝ) := by
-            simpa [Nat.cast_add, Nat.cast_one, Nat.cast_mul] using
-              congrArg (fun r : Nat => (r : ℝ)) (show 2 * k + 1 = n by lia)
-          have hcast :
-              (((n + 1 : Nat) : ℝ) - 2 * (k : ℝ)) = (n : ℝ) + 1 - 2 * (k : ℝ) := by
-            lia
-          have hscale_eq : (n : ℝ) + 1 - 2 * (k : ℝ) = 2 := by nlinarith
-          have hlead_pos :
-              0 < ((k : ℝ) + 2) * coeff (simsun (n + 1)) (k + 1) := by
-            have hscale : 0 < (k : ℝ) + 2 := by positivity
-            simp_all
-          have hsmall_nonneg :
-              0 ≤ (((n + 1 : Nat) : ℝ) - 2 * (k : ℝ)) *
-                coeff (simsun (n + 1)) k := by
-            simp_all
-          grind
-      · intro m hm
-        cases m with
-        | zero =>
-            lia
+      ∀ m > n / 2, coeff (simsun n) m = 0 := by
+  intro n
+  have hdeg (m : ℕ) : (simsun m).natDegree = m / 2 := by rr_row_natDegree
+  have hnn (m : ℕ) : HasNonnegCoeffs (simsun m) := by
+    induction m with
+    | zero => simpa only [simsun_zero] using hasNonnegCoeffs_one
+    | succ m ih =>
+        intro k
+        cases k with
+        | zero => rw [coeff_simsun_zero]; positivity
         | succ k =>
             rw [coeff_simsun_succ]
-            have hk_succ_zero : coeff (simsun (n + 1)) (k + 1) = 0 :=
-              hprev_above (k + 1) (by lia)
-            by_cases hk : (n + 1) / 2 < k
-            · simp_all
-            · have hk_le : k ≤ (n + 1) / 2 := le_of_not_gt hk
-              have hk_ge : (n + 2) / 2 ≤ k := by lia
-              have hk_eq : k = (n + 1) / 2 := by lia
-              have hdouble : (2 : ℝ) * (k : ℝ) = (((n + 1 : Nat) : ℝ)) := by
-                simpa [Nat.cast_add, Nat.cast_one, Nat.cast_mul] using
-                  congrArg (fun r : Nat => (r : ℝ)) (show 2 * k = n + 1 by lia)
-              simp_all
+            by_cases hk : k ≤ m / 2
+            · have hscale : 0 ≤ (m : ℝ) - 2 * k := by
+                exact_mod_cast (show 0 ≤ (m : ℤ) - 2 * k by lia)
+              exact add_nonneg (mul_nonneg hscale (ih k))
+                (mul_nonneg (by positivity) (ih (k + 1)))
+            · rw [coeff_eq_zero_of_natDegree_lt ((hdeg m).trans_lt (by lia : m / 2 < k)),
+                coeff_eq_zero_of_natDegree_lt
+                  ((hdeg m).trans_lt (by lia : m / 2 < k + 1))]
+              simp only [mul_zero, add_zero, le_refl]
+  have hpos : 0 < (simsun n).leadingCoeff := by rr_row_leadingCoeff_pos
+  refine ⟨hnn n, ?_, ?_⟩
+  · simpa only [leadingCoeff, hdeg n] using hpos
+  · intro m hm
+    exact coeff_eq_zero_of_natDegree_lt ((hdeg n).trans_lt hm)
 
 lemma simsun_nonnegCoeffs (n : Nat) :
     HasNonnegCoeffs (simsun n) :=
