@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.BrandenLeite.Resolvable
+import RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.FinTruncation
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.OscillatoryInterlacing.Core
 
 /-!
@@ -199,29 +200,9 @@ theorem isTotallyNonneg_of_principalSections (M : Matrix ℕ ℕ ℝ)
       (M.submatrix (fun i : Fin (N + 1) ↦ i.val)
         (fun i : Fin (N + 1) ↦ i.val))) :
     Matrix.IsTotallyNonneg M := by
-  intro n rows cols hrows hcols
-  cases n with
-  | zero => simp
-  | succ n =>
-      let B := max (rows (Fin.last n)) (cols (Fin.last n))
-      let rows' : Fin (n + 1) → Fin (B + 1) := fun i ↦
-        ⟨rows i, Nat.lt_succ_of_le <|
-          le_trans (hrows.monotone (Fin.le_last i)) (le_max_left _ _)⟩
-      let cols' : Fin (n + 1) → Fin (B + 1) := fun i ↦
-        ⟨cols i, Nat.lt_succ_of_le <|
-          le_trans (hcols.monotone (Fin.le_last i)) (le_max_right _ _)⟩
-      have hrows' : StrictMono rows' := by
-        intro i j hij
-        exact Fin.lt_def.mpr (hrows hij)
-      have hcols' : StrictMono cols' := by
-        intro i j hij
-        exact Fin.lt_def.mpr (hcols hij)
-      have hminor : M.submatrix rows cols =
-          (M.submatrix (fun i : Fin (B + 1) ↦ i.val)
-            (fun i : Fin (B + 1) ↦ i.val)).submatrix rows' cols' := by
-        rfl
-      rw [hminor]
-      exact hM B hrows' hcols'
+  exact Matrix.IsTotallyNonneg.of_fin_truncations M
+    (fun N => M.submatrix (fun i : Fin (N + 1) => i.val) (fun i => i.val))
+    (fun _ _ _ => rfl) hM
 
 theorem det_principalSection_eq_one
     {R : LowerTriangularMatrix ℝ}

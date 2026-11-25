@@ -3,8 +3,9 @@ module
 import RealRooted.MultiplierSequence.ProperPosition
 import RealRooted.PFPolynomial.Closure
 import RealRooted.PFPolynomial.CoefficientShape
-import RealRooted.JensenPencilContraction
-import RealRooted.Mathlib.Topology.Algebra.Polynomial
+import RealRooted.BorceaBranden.Applications.HomogenizeStable
+import RealRooted.Mathlib.Algebra.Polynomial.Homogenize
+import RealRooted.BorceaBranden.Applications.RealUnivariateSymbol.Interlacing
 public import RealRooted.MultiplierSequence.Infinite
 import RealRooted.Hadamard.Grace
 import RealRooted.PosCombo
@@ -16,13 +17,12 @@ import RealRooted.Mathlib.Data.Nat.Choose.Cast
 /-!
 # Degree-drop transport for finite PF multiplier sequences
 
-We regularize the finite Jensen polynomial by positive translation and by adding
-roots which escape to negative infinity.  Coefficientwise PF closure then
-retains the directed, zero-aware interlacing relation when top multipliers
-vanish.
+We identify the finite diagonal symbol with the homogenized Jensen polynomial.
+The general stable-symbol interlacing theorem then retains the directed,
+zero-aware relation, including when top multipliers vanish.
 -/
 
-@[expose] public section
+public section
 
 open Filter Polynomial Topology
 
@@ -58,52 +58,20 @@ theorem IsPFPolynomial.coeff_pos_of_coeff_zero_pos
     (Nat.pos_of_ne_zero hkzero) (lt_of_le_of_ne hk hktop.symm) le_rfl hzero.ne' hlead
   exact hkcoeff hcoeff.symm
 
-private def pfJensenKernel (N : ℕ) (J : ℝ[X]) (ε : ℝ) : ℝ[X] :=
-  (((X + C 1 : ℝ[X]) ^ (N - J.natDegree)).comp (C ε * X)) *
-    J.comp (X + C ε)
-
-private theorem pfJensenKernel_isPF
-    {N : ℕ} {J : ℝ[X]} (hJ : IsPFPolynomial J)
-    {epsilon : ℝ} (hepsilon : 0 < epsilon) :
-    IsPFPolynomial (pfJensenKernel N J epsilon) := by
-  apply IsPFPolynomial.mul
-  · simpa using
-      ((isPFPolynomial_X_add_C zero_le_one).pow
-        (N - J.natDegree)).comp_C_mul_X_add_C hepsilon le_rfl
-  · simpa using hJ.comp_C_mul_X_add_C (a := 1) (d := epsilon) zero_lt_one
-      hepsilon.le
-
-private theorem pfJensenKernel_natDegree
-    {N : ℕ} {J : ℝ[X]} (hJN : J.natDegree ≤ N) (hJ0 : J ≠ 0)
-    {epsilon : ℝ} (hepsilon : 0 < epsilon) :
-    (pfJensenKernel N J epsilon).natDegree = N := by
-  have hfactor0 :
-      (((X + C 1 : ℝ[X]) ^ (N - J.natDegree)).comp
-        (C epsilon * X)) ≠ 0 := by
-    intro hzero
-    exact pow_ne_zero _ (Polynomial.X_add_C_ne_zero 1)
-      ((Polynomial.comp_C_mul_X_eq_zero_iff (by simpa using hepsilon.ne')).mp hzero)
-  rw [pfJensenKernel, Polynomial.natDegree_mul hfactor0
-      (Polynomial.comp_X_add_C_ne_zero_iff.mpr hJ0),
-    Polynomial.natDegree_comp, Polynomial.natDegree_pow,
-    Polynomial.natDegree_X_add_C,
-    Polynomial.natDegree_C_mul_X epsilon hepsilon.ne',
-    Polynomial.natDegree_comp, Polynomial.natDegree_X_add_C]
-  lia
-
-private theorem continuous_coeff_pfJensenKernel (N : ℕ) (J : ℝ[X]) (i : ℕ) :
-    Continuous fun epsilon : ℝ => (pfJensenKernel N J epsilon).coeff i := by
-  simp_rw [pfJensenKernel, Polynomial.coeff_mul,
-    Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk,
-    Polynomial.comp_C_mul_X_coeff]
-  apply continuous_finsetSum
-  intro j _
-  exact (continuous_const.mul (continuous_id.pow j)).mul
-    (J.continuous_coeff_comp_X_add_C (i - j))
-
-private theorem pfJensenKernel_zero (N : ℕ) (J : ℝ[X]) :
-    pfJensenKernel N J 0 = J := by
-  simp [pfJensenKernel]
+/-- The diagonal symbol is the padded homogenization of its Jensen polynomial. -/
+private theorem finiteAlgebraicSymbol_diagonalLinearMap (N : ℕ) (gamma : ℕ → ℝ) :
+    BorceaBranden.finiteAlgebraicSymbol N (diagonalLinearMap gamma) =
+      (jensenPolynomial N gamma).homogenize N := by
+  rw [Polynomial.homogenize_eq_sum_range_C_mul_X_pow (natDegree_jensenPolynomial_le N gamma)]
+  unfold BorceaBranden.finiteAlgebraicSymbol
+  apply Finset.sum_congr rfl
+  intro k hk
+  have hkN : k ≤ N := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
+  simp only [diagonalLinearMap_apply, Polynomial.X_pow_eq_monomial,
+    diagonalOperator_monomial, mul_one, BorceaBranden.polynomialInFirstMv,
+    Polynomial.eval₂_monomial, coeff_jensenPolynomial, hkN, ↓reduceIte,
+    MvPolynomial.C_mul]
+  ring
 
 private theorem diagonalOperator_eq_zero_of_jensenPolynomial_eq_zero
     {N : ℕ} {gamma : ℕ → ℝ}
@@ -127,102 +95,31 @@ theorem IsFinitePFMultiplierSequence.interl_diagonalOperator
     (hfg : Interl f g)
     (hfdeg : f.natDegree ≤ N) (hgdeg : g.natDegree ≤ N) :
     Interl (diagonalOperator gamma f) (diagonalOperator gamma g) := by
-  let J : ℝ[X] := jensenPolynomial N gamma
-  have hJpf := isPFPolynomial_jensenPolynomial_of_finitePFMultiplierSequence hgamma
-  by_cases hJ0 : J = 0
+  have hJ := isPFPolynomial_jensenPolynomial_of_finitePFMultiplierSequence hgamma
+  by_cases hJ0 : jensenPolynomial N gamma = 0
   · rw [diagonalOperator_eq_zero_of_jensenPolynomial_eq_zero hJ0 hfdeg,
       diagonalOperator_eq_zero_of_jensenPolynomial_eq_zero hJ0 hgdeg]
     exact interl_zero_left 0
-  let epsilon : ℕ → ℝ := fun m => 1 / (m + 1 : ℝ)
-  let K : ℕ → ℝ[X] := fun m => pfJensenKernel N J (epsilon m)
-  let gammaReg : ℕ → ℕ → ℝ := fun m k =>
-    (K m).coeff k / (Nat.choose N k : ℝ)
-  have hepsilon_pos (m : ℕ) : 0 < epsilon m := by
-    dsimp [epsilon]
-    positivity
-  have hJdeg : J.natDegree ≤ N := natDegree_jensenPolynomial_le N gamma
-  have hKpf (m : ℕ) : IsPFPolynomial (K m) :=
-    pfJensenKernel_isPF hJpf (hepsilon_pos m)
-  have hKdeg (m : ℕ) : (K m).natDegree = N :=
-    pfJensenKernel_natDegree hJdeg hJ0 (hepsilon_pos m)
-  have hKzero_pos (m : ℕ) : 0 < (K m).coeff 0 := by
-    dsimp [K, pfJensenKernel]
-    rw [Polynomial.mul_coeff_zero, Polynomial.comp_C_mul_X_coeff, pow_zero, mul_one,
-      Polynomial.coeff_zero_eq_eval_zero, Polynomial.eval_pow, Polynomial.eval_add,
-      Polynomial.eval_X, Polynomial.eval_C]
-    norm_num
-    have htranslated := hJpf.comp_X_add_C_and_coeff_zero_pos hJ0 (hepsilon_pos m)
-    simpa using htranslated.2
-  have hgammaReg_pos (m k : ℕ) (hk : k ≤ N) : 0 < gammaReg m k := by
-    dsimp [gammaReg]
-    exact div_pos (hKpf m |>.coeff_pos_of_coeff_zero_pos (hKzero_pos m) (by
-      rw [hKdeg m]
-      exact hk)) (by exact_mod_cast Nat.choose_pos hk)
-  have hKjensen (m : ℕ) : jensenPolynomial N (gammaReg m) = K m := by
-    exact jensenPolynomial_normalized_coeff_eq_of_natDegree_le (by rw [hKdeg m])
-  have hgammaReg_mult (m : ℕ) : IsFiniteMultiplierSequence N (gammaReg m) := by
-    apply isFiniteMultiplierSequence_of_isPFPolynomial_jensenPolynomial
-    rw [hKjensen m]
-    exact hKpf m
-  have hgammaReg_pf (m : ℕ) : IsFinitePFMultiplierSequence N (gammaReg m) := by
-    apply isFinitePFMultiplierSequence_of_finiteMultiplierSequence
-    · intro k
-      by_cases hk : k ≤ N
-      · exact (hgammaReg_pos m k hk).le
-      · simp [gammaReg, Nat.choose_eq_zero_of_lt (Nat.lt_of_not_le hk)]
-    · exact hgammaReg_mult m
-  have hinterl (m : ℕ) :
-      Interl (diagonalOperator (gammaReg m) f)
-        (diagonalOperator (gammaReg m) g) := by
-    by_cases hf0 : f = 0
-    · subst f
-      simpa only [diagonalOperator_zero] using interl_zero_left (diagonalOperator (gammaReg m) g)
-    by_cases hg0 : g = 0
-    · subst g
-      simpa only [diagonalOperator_zero] using interl_zero_right (diagonalOperator (gammaReg m) f)
-    apply StrictInterl.toInterl
-    apply IsFiniteMultiplierSequence.strictInterl_diagonalOperator
-      (hgammaReg_mult m)
-      (hfg.toStrictInterl_of_ne hf0 hg0) hfdeg hgdeg
-      (hgammaReg_pos m f.natDegree hfdeg).ne'
-      (hgammaReg_pos m g.natDegree hgdeg).ne'
-    intro hdegree hpos
-    exact mul_nonneg (hgammaReg_pos m (f.natDegree - 1) (by lia)).le
-      (hgammaReg_pos m f.natDegree hfdeg).le
-  have hepsilon : Tendsto epsilon atTop (𝓝 0) := by
-    simpa [epsilon, one_div] using
-      (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
-  have hKcoeff (i : ℕ) : Tendsto (fun m => (K m).coeff i) atTop
-      (𝓝 (J.coeff i)) := by
-    have hcont : Tendsto
-        (fun e : ℝ ↦ (pfJensenKernel N J e).coeff i) (𝓝 0)
-          (𝓝 ((pfJensenKernel N J 0).coeff i)) :=
-      (continuous_coeff_pfJensenKernel N J i).continuousAt
-    change Tendsto ((fun e : ℝ ↦ (pfJensenKernel N J e).coeff i) ∘ epsilon)
-      atTop (𝓝 (J.coeff i))
-    simpa only [pfJensenKernel_zero] using hcont.comp hepsilon
-  have hcoeff (p : ℝ[X]) (hpdeg : p.natDegree ≤ N) (i : ℕ) :
-      Tendsto (fun m => (diagonalOperator (gammaReg m) p).coeff i) atTop
-        (𝓝 ((diagonalOperator gamma p).coeff i)) := by
-    by_cases hi : i ≤ N
-    · have hchoose : (Nat.choose N i : ℝ) ≠ 0 :=
-        Nat.cast_choose_ne_zero hi
-      have hreg : Tendsto (fun m => gammaReg m i) atTop (𝓝 (gamma i)) := by
-        dsimp [gammaReg]
-        have hdiv := (hKcoeff i).div_const (Nat.choose N i : ℝ)
-        simpa only [J, coeff_jensenPolynomial, hi, ite_true,
-          mul_div_cancel_left₀ _ hchoose] using hdiv
-      simpa only [coeff_diagonalOperator] using hreg.mul_const (p.coeff i)
-    · have hip : p.coeff i = 0 :=
-        coeff_eq_zero_of_natDegree_lt (lt_of_le_of_lt hpdeg (Nat.lt_of_not_le hi))
-      simp only [coeff_diagonalOperator, hip, mul_zero]
-      exact tendsto_const_nhds
-  apply interl_of_pf_coeff_tendsto_of_natDegree_le
-    (fun m => hgammaReg_pf m hf hfdeg)
-    (fun m => hgammaReg_pf m hg hgdeg) hinterl
-    (fun m => (natDegree_diagonalOperator_le (gammaReg m) f).trans hfdeg)
-    (fun m => (natDegree_diagonalOperator_le (gammaReg m) g).trans hgdeg)
-    (hcoeff f hfdeg) (hcoeff g hgdeg)
+  by_cases hf0 : f = 0
+  · simp only [hf0, diagonalOperator_zero]
+    exact interl_zero_left _
+  by_cases hg0 : g = 0
+  · simp only [hg0, diagonalOperator_zero]
+    exact interl_zero_right _
+  have hSymbol : MvUpperHalfPlaneStable
+      (complexifyMv (BorceaBranden.finiteAlgebraicSymbol N (diagonalLinearMap gamma))) := by
+    rw [finiteAlgebraicSymbol_diagonalLinearMap]
+    exact BorceaBranden.homogenize_stable_of_splits_nonpos_of_natDegree_le
+      (natDegree_jensenPolynomial_le N gamma) hJ0 hJ.splits hJ.roots_nonpos
+  apply BorceaBranden.linearMap_interl_of_finiteSymbol_stable
+    hSymbol hgdeg hfdeg (hfg.toStrictInterl_of_ne hf0 hg0)
+    (hg.hasNonnegCoeffs.pos_leadingCoeff hg0) (hf.hasNonnegCoeffs.pos_leadingCoeff hf0)
+  · by_cases h : diagonalOperator gamma g = 0
+    · exact Or.inl h
+    · exact Or.inr ((hgamma hg hgdeg).hasNonnegCoeffs.pos_leadingCoeff h)
+  · by_cases h : diagonalOperator gamma f = 0
+    · exact Or.inl h
+    · exact Or.inr ((hgamma hf hfdeg).hasNonnegCoeffs.pos_leadingCoeff h)
 
 private theorem natDegree_diagonalOperator_eq
     {gamma : ℕ → ℝ} {p : ℝ[X]} (hp0 : p ≠ 0)

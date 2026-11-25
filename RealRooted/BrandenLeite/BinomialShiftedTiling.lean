@@ -203,42 +203,18 @@ theorem binomialShiftedRodRow_three_add_three (n : ℕ) :
         X * binomialShiftedRodRow 3 (n + 1) +
           (X + C 4) * binomialShiftedRodRow 3 n := by
   have h := binomialShiftedRodRow_recurrence 3 (n + 3)
-  have hcoeff (j : ℕ) :
-      binomialShiftedRecurrenceCoefficient 3 (j + 1) =
-        if j = 0 then C 3 else if j = 1 then X else
-          if j = 2 then X + C 4 else 0 := by
-    simpa using
-      (binomialShiftedRecurrenceCoefficient_three
-        (j := j + 1) (by lia))
-  simp_rw [hcoeff] at h
-  have hsum :
-      ∑ j ∈ Finset.range (n + 3),
-          (if j = 0 then C 3 else if j = 1 then X else
-            if j = 2 then X + C 4 else 0) *
-            binomialShiftedRodRow 3 (n + 3 - (j + 1)) =
-        C 3 * binomialShiftedRodRow 3 (n + 2) +
-          X * binomialShiftedRodRow 3 (n + 1) +
-            (X + C 4) * binomialShiftedRodRow 3 n := by
-    have hsplit (j : ℕ) :
-        (if j = 0 then C 3 else if j = 1 then X else
-          if j = 2 then X + C 4 else 0) *
-            binomialShiftedRodRow 3 (n + 3 - (j + 1)) =
-          (if j = 0 then
-            C 3 * binomialShiftedRodRow 3 (n + 3 - (j + 1)) else 0) +
-          (if j = 1 then
-            X * binomialShiftedRodRow 3 (n + 3 - (j + 1)) else 0) +
-          (if j = 2 then
-            (X + C 4) * binomialShiftedRodRow 3
-              (n + 3 - (j + 1)) else 0) := by
-      by_cases hj : j ≤ 2
-      · interval_cases j <;> simp
-      · simp [show j ≠ 0 by lia, show j ≠ 1 by lia, show j ≠ 2 by lia]
-    simp_rw [hsplit, Finset.sum_add_distrib]
-    rw [Finset.sum_ite_eq', Finset.sum_ite_eq', Finset.sum_ite_eq']
-    simp [show 0 < n + 3 by lia, show 1 < n + 3 by lia,
-      show 2 < n + 3 by lia]
-  rw [hsum] at h
-  simpa [show n + 3 ≠ 0 by lia] using h
+  have htail : ∑ j ∈ Finset.range n,
+      binomialShiftedRecurrenceCoefficient 3 (3 + j + 1) *
+        binomialShiftedRodRow 3 (3 + n - (3 + j + 1)) = 0 := by
+    apply Finset.sum_eq_zero
+    intro j _
+    rw [binomialShiftedRecurrenceCoefficient_three (by lia)]
+    simp only [(show 3 + j + 1 ≠ 1 by lia), (show 3 + j + 1 ≠ 2 by lia),
+      (show 3 + j + 1 ≠ 3 by lia), ↓reduceIte, zero_mul]
+  rw [show n + 3 = 3 + n by lia, Finset.sum_range_add] at h
+  rw [htail] at h
+  simpa [Finset.sum_range_succ, binomialShiftedRecurrenceCoefficient_three,
+    Nat.add_comm 3 n, add_assoc] using h
 
 /-- The displayed quartic recurrence from the binomial two-seed
 construction. -/
@@ -249,50 +225,18 @@ theorem binomialShiftedRodRow_four_add_four (n : ℕ) :
           (C 2 * X + C 16) * binomialShiftedRodRow 4 (n + 1) +
             (X + C 5) * binomialShiftedRodRow 4 n := by
   have h := binomialShiftedRodRow_recurrence 4 (n + 4)
-  have hcoeff (j : ℕ) :
-      binomialShiftedRecurrenceCoefficient 4 (j + 1) =
-        if j = 0 then C 4 else if j = 1 then X else
-          if j = 2 then C 2 * X + C 16 else
-            if j = 3 then X + C 5 else 0 := by
-    simpa using
-      (binomialShiftedRecurrenceCoefficient_four
-        (j := j + 1) (by lia))
-  simp_rw [hcoeff] at h
-  have hsum :
-      ∑ j ∈ Finset.range (n + 4),
-          (if j = 0 then C 4 else if j = 1 then X else
-            if j = 2 then C 2 * X + C 16 else
-              if j = 3 then X + C 5 else 0) *
-            binomialShiftedRodRow 4 (n + 4 - (j + 1)) =
-        C 4 * binomialShiftedRodRow 4 (n + 3) +
-          X * binomialShiftedRodRow 4 (n + 2) +
-            (C 2 * X + C 16) * binomialShiftedRodRow 4 (n + 1) +
-              (X + C 5) * binomialShiftedRodRow 4 n := by
-    have hsplit (j : ℕ) :
-        (if j = 0 then C 4 else if j = 1 then X else
-          if j = 2 then C 2 * X + C 16 else
-            if j = 3 then X + C 5 else 0) *
-            binomialShiftedRodRow 4 (n + 4 - (j + 1)) =
-          (if j = 0 then
-            C 4 * binomialShiftedRodRow 4 (n + 4 - (j + 1)) else 0) +
-          (if j = 1 then
-            X * binomialShiftedRodRow 4 (n + 4 - (j + 1)) else 0) +
-          (if j = 2 then
-            (C 2 * X + C 16) * binomialShiftedRodRow 4
-              (n + 4 - (j + 1)) else 0) +
-          (if j = 3 then
-            (X + C 5) * binomialShiftedRodRow 4
-              (n + 4 - (j + 1)) else 0) := by
-      by_cases hj : j ≤ 3
-      · interval_cases j <;> simp
-      · simp [show j ≠ 0 by lia, show j ≠ 1 by lia, show j ≠ 2 by lia, show j ≠ 3 by lia]
-    simp_rw [hsplit, Finset.sum_add_distrib]
-    rw [Finset.sum_ite_eq', Finset.sum_ite_eq',
-      Finset.sum_ite_eq', Finset.sum_ite_eq']
-    simp [show 0 < n + 4 by lia, show 1 < n + 4 by lia,
-      show 2 < n + 4 by lia, show 3 < n + 4 by lia]
-  rw [hsum] at h
-  simpa [show n + 4 ≠ 0 by lia] using h
+  have htail : ∑ j ∈ Finset.range n,
+      binomialShiftedRecurrenceCoefficient 4 (4 + j + 1) *
+        binomialShiftedRodRow 4 (4 + n - (4 + j + 1)) = 0 := by
+    apply Finset.sum_eq_zero
+    intro j _
+    rw [binomialShiftedRecurrenceCoefficient_four (by lia)]
+    simp only [(show 4 + j + 1 ≠ 1 by lia), (show 4 + j + 1 ≠ 2 by lia),
+      (show 4 + j + 1 ≠ 3 by lia), (show 4 + j + 1 ≠ 4 by lia), ↓reduceIte, zero_mul]
+  rw [show n + 4 = 4 + n by lia, Finset.sum_range_add] at h
+  rw [htail] at h
+  simpa [Finset.sum_range_succ, binomialShiftedRecurrenceCoefficient_four,
+    Nat.add_comm 4 n, add_assoc] using h
 
 end
 

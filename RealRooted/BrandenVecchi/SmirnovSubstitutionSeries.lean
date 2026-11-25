@@ -556,42 +556,12 @@ theorem smirnovSubstitutionSeries_comp_equiv {m : ℕ}
     (ht : IsRegular (1 - t)) (e : Equiv.Perm (Fin m)) :
     smirnovSubstitutionSeries t (weight ∘ e) =
       smirnovSubstitutionSeries t weight := by
-  let rescaledProduct :=
-    ∏ i : Fin m, (1 + PowerSeries.C t * weight i)
-  let product := ∏ i : Fin m, (1 + weight i)
-  let denominator := rescaledProduct - product * PowerSeries.C t
-  have hrescaled :
-      (∏ i : Fin m,
-          (1 + PowerSeries.C t * (weight ∘ e) i)) =
-        rescaledProduct :=
-    Fintype.prod_equiv e
-      (fun i => 1 + PowerSeries.C t * (weight ∘ e) i)
-      (fun i => 1 + PowerSeries.C t * weight i) (fun _ => rfl)
-  have hproduct :
-      (∏ i : Fin m, (1 + (weight ∘ e) i)) = product :=
-    Fintype.prod_equiv e
-      (fun i => 1 + (weight ∘ e) i)
-      (fun i => 1 + weight i) (fun _ => rfl)
-  have hpermuted := smirnovSubstitutionSeries_product_identity
+  apply eq_smirnovSubstitutionSeries_of_product_identity t weight hweight ht
+  have h := smirnovSubstitutionSeries_product_identity
     t (weight ∘ e) (fun i => hweight (e i))
-  rw [hrescaled, hproduct] at hpermuted
-  have horiginal :=
-    smirnovSubstitutionSeries_product_identity t weight hweight
-  have hpermutedDenominator :
-      denominator * smirnovSubstitutionSeries t (weight ∘ e) =
-        product * (1 - PowerSeries.C t) := by
-    dsimp only [denominator]
-    linear_combination hpermuted
-  have horiginalDenominator :
-      denominator * smirnovSubstitutionSeries t weight =
-        product * (1 - PowerSeries.C t) := by
-    dsimp only [denominator]
-    linear_combination horiginal
-  have hconstant : PowerSeries.constantCoeff denominator = 1 - t := by
-    simp [denominator, rescaledProduct, product, hweight]
-  apply (PowerSeries.isRegular_of_isRegular_constantCoeff
-    (hconstant ▸ ht)).left
-  exact hpermutedDenominator.trans horiginalDenominator.symm
+  simpa only [Function.comp_apply,
+    Equiv.prod_comp e (fun i => 1 + PowerSeries.C t * weight i),
+    Equiv.prod_comp e (fun i => 1 + weight i)] using h
 
 /-! ## Signed-run specialization -/
 
