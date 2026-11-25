@@ -121,7 +121,6 @@ private lemma weightedThreeStateMatrix_affine
           |>.C_mul_right_of_nonneg ha
       convert h using 1 <;> grind
     · convert interl_affine_add_one_self (t := t) hs using 1 <;> grind
-
   · fin_cases i₁ <;> fin_cases i₂ <;> norm_num at hi <;> norm_num at hdiag <;>
       fin_cases j₁ <;> fin_cases j₂ <;> norm_num at hj <;>
       simp only [weightedThreeStateMatrix, List.get_eq_getElem,
