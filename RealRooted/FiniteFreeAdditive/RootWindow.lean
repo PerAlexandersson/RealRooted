@@ -53,8 +53,8 @@ theorem finiteFreeAdditiveConvolutionCoeff_C_mul_left (d k : ℕ) (c : ℝ) (p q
 theorem finiteFreeAdditiveConvolutionCoeff_C_mul_right (d k : ℕ) (c : ℝ) (p q : ℝ[X]) :
     finiteFreeAdditiveConvolutionCoeff d p (C c * q) k =
       c * finiteFreeAdditiveConvolutionCoeff d p q k := by
-  simp only [finiteFreeAdditiveConvolutionCoeff, coeff_C_mul, Finset.mul_sum]
-  exact Finset.sum_congr rfl fun _ _ => by ring
+  rw [finiteFreeAdditiveConvolutionCoeff_comm,
+    finiteFreeAdditiveConvolutionCoeff_C_mul_left, finiteFreeAdditiveConvolutionCoeff_comm]
 
 /-- Finite-free additive convolution is homogeneous in the left argument. -/
 theorem finiteFreeAdditiveConvolution_C_mul_left (d : ℕ) (c : ℝ) (p q : ℝ[X]) :

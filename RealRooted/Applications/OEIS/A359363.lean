@@ -107,22 +107,6 @@ theorem polynomial_interlaces (n : ℕ) :
       exact (A056939.polynomial_interlaces n).mul_both_of_splits
         Polynomial.Splits.X Polynomial.X_ne_zero
 
-/-- A sequence with the A359363 initial rows and update has split rows. -/
-@[rr_row_model]
-theorem splits_of_recurrence
-    {P : ℕ → ℝ[X]}
-    (hzero : P 0 = 1)
-    (hone : P 1 = X)
-    (hrec : ∀ n : ℕ, P (n + 2) = nextRow n (P (n + 1)) (P n))
-    (n : ℕ) :
-    (P n).Splits := by
-  have heq := sequence_eq_of_same_lag_two_recurrence nextRow
-    (hzero.trans (show (1 : ℝ[X]) = polynomial 0 by rfl))
-    (hone.trans (show X = polynomial 1 by rfl))
-    hrec (fun _ => rfl)
-  rw [heq n]
-  exact polynomial_splits n
-
 /-- A sequence with the A359363 initial rows and update has interlacing
 consecutive rows. -/
 @[rr_row_model]
@@ -133,11 +117,20 @@ theorem interlaces_of_recurrence
     (hrec : ∀ n : ℕ, P (n + 2) = nextRow n (P (n + 1)) (P n))
     (n : ℕ) :
     Interlaces (P n) (P (n + 1)) := by
-  have heq := sequence_eq_of_same_lag_two_recurrence nextRow
-    (hzero.trans (show (1 : ℝ[X]) = polynomial 0 by rfl))
-    (hone.trans (show X = polynomial 1 by rfl))
-    hrec (fun _ => rfl)
+  have heq := sequence_eq_of_same_lag_two_recurrence (Q := polynomial)
+    nextRow hzero hone hrec (fun _ ↦ rfl)
   rw [heq n, heq (n + 1)]
   exact polynomial_interlaces n
+
+/-- A sequence with the A359363 initial rows and update has split rows. -/
+@[rr_row_model]
+theorem splits_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hzero : P 0 = 1)
+    (hone : P 1 = X)
+    (hrec : ∀ n : ℕ, P (n + 2) = nextRow n (P (n + 1)) (P n))
+    (n : ℕ) :
+    (P n).Splits := by
+  exact (interlaces_of_recurrence hzero hone hrec n).2.1.2
 
 end RealRooted.Applications.OEIS.A359363

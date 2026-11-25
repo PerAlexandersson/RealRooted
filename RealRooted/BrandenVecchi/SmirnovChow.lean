@@ -1,6 +1,7 @@
 module
 
 public import RealRooted.BrandenVecchi.ChowToeplitz
+import Mathlib.Algebra.Order.BigOperators.Group.LocallyFinite
 public import RealRooted.ParkingFunctions.Descents.Basic
 public import RealRooted.Mathlib.Combinatorics.Enumerative.Descent
 
@@ -27,83 +28,27 @@ theorem sum_fin_val_lt_succ {A : Type*} [AddCommMonoid A]
     {m k : ℕ} (hk : k < m) (f : Fin m → A) :
     (∑ i, if i.val < k + 1 then f i else 0) =
       (∑ i, if i.val < k then f i else 0) + f ⟨k, hk⟩ := by
-  let kfin : Fin m := ⟨k, hk⟩
-  rw [show f kfin = ∑ i, if i = kfin then f i else 0 by simp]
-  rw [← Finset.sum_add_distrib]
-  apply Fintype.sum_congr
-  intro i
-  by_cases hik : i.val < k
-  · have hisucc : i.val < k + 1 := hik.trans_le (Nat.le_add_right k 1)
-    have hine : i ≠ kfin := by
-      intro h
-      subst i
-      exact (Nat.lt_irrefl k) hik
-    simp [hik, hisucc, hine]
-  · by_cases hieq : i = kfin
-    · subst i
-      simp [kfin]
-    · have hisucc : ¬i.val < k + 1 := by
-        intro hi
-        have hle : i.val ≤ k := Nat.lt_succ_iff.mp (by simpa using hi)
-        have hge : k ≤ i.val := Nat.le_of_not_gt hik
-        exact hieq (Fin.ext (le_antisymm hle hge))
-      simp [hik, hieq, hisucc]
+  simpa only [← Finset.filter_ge_eq_Iic, ← Finset.filter_gt_eq_Iio,
+    Finset.sum_filter, Fin.le_def, Fin.lt_def, Nat.lt_succ_iff] using
+    (Finset.sum_Iio_add_eq_sum_Iic (f := f) (⟨k, hk⟩ : Fin m)).symm
 
 /-- Splitting the complementary finite sum at the next natural cut. -/
 theorem sum_fin_succ_le_val {A : Type*} [AddCommMonoid A]
     {m k : ℕ} (hk : k < m) (f : Fin m → A) :
     (∑ i, if k ≤ i.val then f i else 0) =
       f ⟨k, hk⟩ + ∑ i, if k + 1 ≤ i.val then f i else 0 := by
-  let kfin : Fin m := ⟨k, hk⟩
-  rw [show f kfin = ∑ i, if i = kfin then f i else 0 by simp]
-  rw [← Finset.sum_add_distrib]
-  apply Fintype.sum_congr
-  intro i
-  by_cases hik : k + 1 ≤ i.val
-  · have hki : k ≤ i.val := le_trans (Nat.le_add_right k 1) hik
-    have hine : i ≠ kfin := by
-      intro h
-      subst i
-      exact (Nat.not_succ_le_self k) hik
-    simp [hik, hki, hine]
-  · by_cases hieq : i = kfin
-    · subst i
-      simp [kfin]
-    · have hki : ¬k ≤ i.val := by
-        intro hle
-        have heq : i.val = k := by
-          have hupper : i.val ≤ k :=
-            Nat.lt_succ_iff.mp (Nat.lt_of_not_ge hik)
-          exact le_antisymm hupper hle
-        exact hieq (Fin.ext heq)
-      simp [hik, hieq, hki]
+  simpa only [← Finset.filter_le_eq_Ici, ← Finset.filter_lt_eq_Ioi,
+    Finset.sum_filter, Fin.le_def, Fin.lt_def, Nat.add_one_le_iff] using
+    (Finset.add_sum_Ioi_eq_sum_Ici (f := f) (⟨k, hk⟩ : Fin m)).symm
 
 /-- Splitting a finite product at the next natural cut. -/
 theorem prod_fin_val_lt_succ {A : Type*} [CommMonoid A]
     {m k : ℕ} (hk : k < m) (f : Fin m → A) :
     (∏ i, if i.val < k + 1 then f i else 1) =
       (∏ i, if i.val < k then f i else 1) * f ⟨k, hk⟩ := by
-  let kfin : Fin m := ⟨k, hk⟩
-  rw [show f kfin = ∏ i, if i = kfin then f i else 1 by simp]
-  rw [← Finset.prod_mul_distrib]
-  apply Fintype.prod_congr
-  intro i
-  by_cases hik : i.val < k
-  · have hisucc : i.val < k + 1 := hik.trans_le (Nat.le_add_right k 1)
-    have hine : i ≠ kfin := by
-      intro h
-      subst i
-      exact (Nat.lt_irrefl k) hik
-    simp [hik, hisucc, hine]
-  · by_cases hieq : i = kfin
-    · subst i
-      simp [kfin]
-    · have hisucc : ¬i.val < k + 1 := by
-        intro hi
-        have hle : i.val ≤ k := Nat.lt_succ_iff.mp (by simpa using hi)
-        have hge : k ≤ i.val := Nat.le_of_not_gt hik
-        exact hieq (Fin.ext (le_antisymm hle hge))
-      simp [hik, hieq, hisucc]
+  simpa only [← Finset.filter_ge_eq_Iic, ← Finset.filter_gt_eq_Iio,
+    Finset.prod_filter, Fin.le_def, Fin.lt_def, Nat.lt_succ_iff] using
+    (Finset.prod_Iio_mul_eq_prod_Iic (f := f) (⟨k, hk⟩ : Fin m)).symm
 
 /-- A finite word is Smirnov when adjacent letters are distinct. -/
 def IsSmirnovWord {m : ℕ} :
@@ -540,32 +485,10 @@ theorem smirnovFactor_telescope_aux {m : ℕ}
       rw [smirnovRescaledFactorProduct,
         prod_fin_val_lt_succ hklt,
         smirnovFactorProduct, prod_fin_val_lt_succ hklt]
-      calc
-        (smirnovRescaledFactorProduct weight k *
-              (1 + PowerSeries.C X *
-                smirnovLetterSeries weight ⟨k, hklt⟩)) *
-            smirnovCutSeries weight (k + 1) =
-          smirnovRescaledFactorProduct weight k *
-            ((1 + PowerSeries.C X *
-                smirnovLetterSeries weight ⟨k, hklt⟩) *
-              smirnovCutSeries weight (k + 1)) := by
-            ring
-        _ = smirnovRescaledFactorProduct weight k *
-            ((1 + smirnovLetterSeries weight ⟨k, hklt⟩) *
-              smirnovCutSeries weight k) := by
-            rw [smirnovCutSeries_factor_step weight hklt]
-        _ = (1 + smirnovLetterSeries weight ⟨k, hklt⟩) *
-            (smirnovRescaledFactorProduct weight k *
-              smirnovCutSeries weight k) := by
-            ring
-        _ = (1 + smirnovLetterSeries weight ⟨k, hklt⟩) *
-            (smirnovFactorProduct weight k *
-              smirnovCutSeries weight 0) := by
-            rw [ih (Nat.le_of_succ_le hk)]
-        _ = (smirnovFactorProduct weight k *
-              (1 + smirnovLetterSeries weight ⟨k, hklt⟩)) *
-            smirnovCutSeries weight 0 := by
-            ring
+      change (smirnovRescaledFactorProduct weight k * _) * _ =
+        (smirnovFactorProduct weight k * _) * _
+      rw [mul_assoc, smirnovCutSeries_factor_step weight hklt,
+        mul_left_comm, ih (Nat.le_of_succ_le hk), mul_left_comm, mul_assoc]
 
 @[simp]
 theorem smirnovCutSeries_zero {m : ℕ} (weight : Fin m → R) :

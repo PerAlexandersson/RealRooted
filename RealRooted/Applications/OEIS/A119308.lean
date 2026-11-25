@@ -96,106 +96,6 @@ private lemma A119308_coeff_succ_succ_succ (n k : ℕ) :
     coeff_X_pow_mul']
   grind
 
-private lemma A119308_top_and_above :
-    ∀ n : ℕ, AddMonoidAlgebra.coeff (recurrencePolynomial n) n = 1 ∧
-      ∀ m > n, AddMonoidAlgebra.coeff (recurrencePolynomial n) m = 0
-  | 0 => by
-      constructor
-      · simp [recurrencePolynomial]
-      · intro m hm
-        rw [show recurrencePolynomial 0 = 1 from rfl, coeff_one]
-        grind
-  | 1 => by
-      constructor
-      · rw [show recurrencePolynomial 1 = 2 + X from rfl]
-        simp
-      · intro m hm
-        rw [show recurrencePolynomial 1 = 2 + X from rfl]
-        apply coeff_eq_zero_of_natDegree_lt
-        rwa [show (2 + X : ℝ[X]).natDegree = 1 by compute_degree!]
-  | 2 => by
-      constructor
-      · rw [show recurrencePolynomial 2 = 3 + 5 * X + X ^ 2 from rfl]
-        norm_num [coeff_add, coeff_X, coeff_X_pow]
-      · intro m hm
-        rw [show recurrencePolynomial 2 = 3 + 5 * X + X ^ 2 from rfl]
-        apply coeff_eq_zero_of_natDegree_lt
-        rwa [show (3 + 5 * X + X ^ 2 : ℝ[X]).natDegree = 2 by compute_degree!]
-  | n + 3 => by
-      rcases A119308_top_and_above (n + 2) with ⟨htop₂, habove₂⟩
-      rcases A119308_top_and_above (n + 1) with ⟨htop₁, habove₁⟩
-      rcases A119308_top_and_above n with ⟨htop₀, habove₀⟩
-      constructor
-      · rw [A119308_coeff_succ_succ_succ]
-        grind
-      · intro m hm
-        obtain ⟨k, rfl⟩ : ∃ k, m = k + 3 := ⟨m - 3, by lia⟩
-        rw [A119308_coeff_succ_succ_succ]
-        grind
-
-private lemma A119308_ne_zero' (n : ℕ) : recurrencePolynomial n ≠ 0 := by
-  intro hzero
-  simpa [hzero] using (A119308_top_and_above n).1
-private def A119308_model (n : ℕ) : ℝ[X] :=
-  polarTheta (2 * n + 2)
-    (C ((2 * ((n : ℝ) + 2))⁻¹) *
-      reciprocalShift n
-        (theta (narayanaPolynomial 2 n) + C 2 * narayanaPolynomial 2 n))
-
-private lemma A119308_model_coeff_of_le (n k : ℕ) (hk : k ≤ n) :
-    (A119308_model n).coeff k =
-      (((2 * n + 2 - k : ℕ) : ℝ) *
-        (((n - k : ℕ) : ℝ) + 2) *
-          narayanaTransformCoeff 2 n (n - k)) /
-        (2 * ((n : ℝ) + 2)) := by
-  unfold A119308_model
-  rw [coeff_polarTheta, coeff_C_mul, coeff_reciprocalShift,
-    Polynomial.revAt_le hk]
-  simp only [coeff_add, coeff_theta, coeff_C_mul,
-    coeff_narayanaPolynomial_of_le (Nat.sub_le n k)]
-  have hden : (2 * ((n : ℝ) + 2)) ≠ 0 := by positivity
-  rw [Nat.cast_sub (by lia : k ≤ 2 * n + 2)]
-  grind
-
-private lemma A119308_model_coeff_closed (n k : ℕ) (hk : k ≤ n) :
-    (A119308_model n).coeff k =
-      (Nat.choose (n + 1) k : ℝ) *
-        (2 * (Nat.choose (n + 1) (k + 2) : ℝ) +
-          (Nat.choose (n + 1) (k + 1) : ℝ)) /
-        ((n : ℝ) + 1) := by
-  rw [A119308_model_coeff_of_le n k hk]
-  rcases eq_or_lt_of_le hk with rfl | hklt
-  · simp [narayanaTransformCoeff]
-    field_simp
-    norm_cast
-    lia
-  · have hk1 : k + 1 ≤ n + 1 := by lia
-    have hk2 : k + 2 ≤ n + 1 := by lia
-    rw [narayanaTransformCoeff_eq_factorial 2 n (n - k) (Nat.sub_le n k),
-      Nat.cast_choose ℝ (hk.trans (by lia : n ≤ n + 1)),
-      Nat.cast_choose ℝ hk2, Nat.cast_choose ℝ hk1]
-    have hk1fac := factorial_succ_cast k
-    have hk2fac := factorial_succ_succ_cast k
-    have hnk : n - k ≠ 0 := by lia
-    have hnkfac := factorial_cast_pred hnk
-    have hsub1 : n + 1 - k = n - k + 1 := by lia
-    have hsub2 : n + 1 - (k + 1) = n - k := by lia
-    have hsub3 : n + 1 - (k + 2) = n - k - 1 := by lia
-    have hsub4 : n + 2 - (n - k) = k + 2 := by lia
-    have hsub5 : 2 + (n - k) = n - k + 2 := by lia
-    have hsub0 : n - (n - k) = k := by lia
-    rw [hsub1, hsub2, hsub3, hsub4, hsub5, hsub0,
-      factorial_succ_cast (n - k + 1), factorial_succ_cast (n - k),
-      hk1fac, hk2fac, hnkfac]
-    norm_num
-    have hfac : ∀ m : ℕ, (Nat.factorial m : ℝ) ≠ 0 :=
-      fun m => Nat.cast_ne_zero.mpr (Nat.factorial_pos m).ne'
-    field_simp [hfac]
-    rw [factorial_succ_succ_cast n, factorial_succ_cast n]
-    rw [Nat.cast_sub (by lia : k ≤ 2 * n + 2),
-      Nat.cast_sub hk]
-    grind
-
 private def A119308Coeff (n k : ℕ) : ℝ :=
   (Nat.choose (n + 1) k : ℝ) *
     (2 * (Nat.choose (n + 1) (k + 2) : ℝ) +
@@ -455,640 +355,6 @@ private lemma A119308Coeff_rec_high_of_le (n k : ℕ) (hnk : n ≤ k + 2) :
             grind
       · lia
 
-private def A119308Pair67 (n k : ℕ) : ℝ :=
-  (((n : ℝ) + 1) * ((k : ℝ) - 2 * (n : ℝ) - 2) *
-      ((k : ℝ) ^ 2 - 4 * (k : ℝ) * (n : ℝ) - (k : ℝ) +
-        2 * (n : ℝ) ^ 2 - 4 * (n : ℝ) - 4)) /
-    (((k : ℝ) + 2) * ((k : ℝ) + 4) * ((n : ℝ) + 6) *
-      (2 * (n : ℝ) + 1 - (k : ℝ)))
-
-private lemma A119308_pair67 (n k : ℕ) (hnk : k + 3 < n) :
-    ((-1 - (n : ℝ)) / (3 + (1 / 2) * (n : ℝ))) *
-        A119308CoeffH n (k + 1) +
-      (((1 / 2 : ℝ) + (1 / 2) * (n : ℝ)) /
-        (3 + (1 / 2) * (n : ℝ))) =
-      A119308Pair67 n k := by
-  have hkn : (k : ℝ) + 3 < (n : ℝ) := by exact_mod_cast hnk
-  have hH : A119308CoeffH n (k + 1) =
-      (((n : ℝ) - (k : ℝ)) * ((n : ℝ) - (k : ℝ) - 1) *
-        (2 * (n : ℝ) - (k : ℝ))) /
-      (((k : ℝ) + 2) * ((k : ℝ) + 4) *
-        (2 * (n : ℝ) + 1 - (k : ℝ))) := by
-    unfold A119308CoeffH
-    grind
-  rw [hH]
-  unfold A119308Pair67
-  have hk2 : (k : ℝ) + 2 ≠ 0 := by positivity
-  have hk4 : (k : ℝ) + 4 ≠ 0 := by positivity
-  have hn6 : (n : ℝ) + 6 ≠ 0 := by positivity
-  have htwo : 2 * (n : ℝ) + 1 - (k : ℝ) ≠ 0 := by grind
-  have htwo' : 2 * (n : ℝ) + 2 - ((k : ℝ) + 1) ≠ 0 := by
-    linarith
-  have hD : 1 + (n : ℝ) * 2 - (k : ℝ) ≠ 0 := by linarith
-  have hmain : 3 + (1 / 2 : ℝ) * (n : ℝ) ≠ 0 := by positivity
-  field_simp [hk2, hk4, hn6, htwo, htwo', hD, hmain]
-  grind
-
-private def A119308Bracket25 (n k : ℕ) : ℝ :=
-  (((n : ℝ) + 1) *
-      ((k : ℝ) ^ 3 - 4 * (k : ℝ) ^ 2 * (n : ℝ) + 4 * (k : ℝ) ^ 2 +
-        2 * (k : ℝ) * (n : ℝ) ^ 2 - 25 * (k : ℝ) * (n : ℝ) -
-        11 * (k : ℝ) + 4 * (n : ℝ) ^ 3 + 38 * (n : ℝ) ^ 2 +
-        39 * (n : ℝ) + 18)) /
-    (((n : ℝ) + 6) * ((k : ℝ) - 2 * (n : ℝ) + 1) *
-      ((k : ℝ) - (n : ℝ) + 1) * ((k : ℝ) - (n : ℝ) + 2))
-
-private lemma A119308_bracket25 (n k : ℕ) (hnk : k + 3 < n) :
-    ((-4 + (-3 / 2) * (n : ℝ)) /
-        (3 + (1 / 2) * (n : ℝ))) * A119308CoeffV n (k + 3) +
-      (((1 / 2 : ℝ) + (1 / 2) * (n : ℝ)) /
-        (3 + (1 / 2) * (n : ℝ))) =
-      A119308Bracket25 n k := by
-  have hkn : (k : ℝ) + 3 < (n : ℝ) := by exact_mod_cast hnk
-  unfold A119308CoeffV A119308Bracket25
-  push_cast
-  have hn6 : (n : ℝ) + 6 ≠ 0 := by positivity
-  have hm1 : (n : ℝ) - (k : ℝ) - 1 ≠ 0 := by linarith
-  have hm2 : (n : ℝ) - (k : ℝ) - 2 ≠ 0 := by linarith
-  have ht : 2 * (n : ℝ) - (k : ℝ) - 1 ≠ 0 := by linarith
-  have hm1' : (k : ℝ) - (n : ℝ) + 1 ≠ 0 := by linarith
-  have hm2' : (k : ℝ) - (n : ℝ) + 2 ≠ 0 := by linarith
-  have ht' : (k : ℝ) - 2 * (n : ℝ) + 1 ≠ 0 := by linarith
-  have hmain : 3 + (1 / 2 : ℝ) * (n : ℝ) ≠ 0 := by positivity
-  have hdenV :
-      ((n : ℝ) - (k : ℝ) - 1) * ((n : ℝ) - (k : ℝ) - 2) *
-        (2 * (n : ℝ) - (k : ℝ) - 1) ≠ 0 :=
-    mul_ne_zero (mul_ne_zero hm1 hm2) ht
-  have hdenT :
-      ((n : ℝ) + 6) * ((k : ℝ) - 2 * (n : ℝ) + 1) *
-        ((k : ℝ) - (n : ℝ) + 1) * ((k : ℝ) - (n : ℝ) + 2) ≠ 0 :=
-    mul_ne_zero (mul_ne_zero (mul_ne_zero hn6 ht') hm1') hm2'
-  grind
-
-private def A119308Pair25 (n k : ℕ) : ℝ :=
-  A119308CoeffH n (k + 1) * A119308CoeffH n (k + 2) *
-    A119308Bracket25 n k
-
-private lemma A119308_pair25 (n k : ℕ) (hnk : k + 3 < n) :
-    ((-4 + (-3 / 2) * (n : ℝ)) /
-        (3 + (1 / 2) * (n : ℝ))) *
-        A119308CoeffH n (k + 1) * A119308CoeffH n (k + 2) *
-        A119308CoeffV n (k + 3) +
-      (((1 / 2 : ℝ) + (1 / 2) * (n : ℝ)) /
-        (3 + (1 / 2) * (n : ℝ))) *
-        A119308CoeffH n (k + 1) * A119308CoeffH n (k + 2) =
-      A119308Pair25 n k := by
-  unfold A119308Pair25
-  rw [show
-    ((-4 + (-3 / 2) * (n : ℝ)) / (3 + (1 / 2) * (n : ℝ))) *
-          A119308CoeffH n (k + 1) * A119308CoeffH n (k + 2) *
-          A119308CoeffV n (k + 3) +
-        (((1 / 2 : ℝ) + (1 / 2) * (n : ℝ)) /
-          (3 + (1 / 2) * (n : ℝ))) *
-          A119308CoeffH n (k + 1) * A119308CoeffH n (k + 2) =
-      A119308CoeffH n (k + 1) * A119308CoeffH n (k + 2) *
-        (((-4 + (-3 / 2) * (n : ℝ)) / (3 + (1 / 2) * (n : ℝ))) *
-          A119308CoeffV n (k + 3) +
-        (((1 / 2 : ℝ) + (1 / 2) * (n : ℝ)) /
-          (3 + (1 / 2) * (n : ℝ)))) by ring]
-  rw [A119308_bracket25 n k hnk]
-
-private lemma A119308_opaque14_normal_eq (n k : ℕ) :
-    ((n : ℝ) * 6 - (n : ℝ) * (k : ℝ) * 27 +
-        (n : ℝ) * (k : ℝ) ^ 2 * 25 - (n : ℝ) * (k : ℝ) ^ 3 * 6 +
-        (n : ℝ) ^ 2 * 16 - (n : ℝ) ^ 2 * (k : ℝ) * 33 +
-        (n : ℝ) ^ 2 * (k : ℝ) ^ 2 * 13 + (n : ℝ) ^ 3 * 14 -
-        (n : ℝ) ^ 3 * (k : ℝ) * 12 + (n : ℝ) ^ 4 * 4 -
-        (k : ℝ) * 6 + (k : ℝ) ^ 2 * 11 - (k : ℝ) ^ 3 * 6 +
-        (k : ℝ) ^ 4) =
-      ((k : ℝ) - (n : ℝ)) * ((k : ℝ) - 2 * (n : ℝ) - 3) *
-        ((k : ℝ) - 2 * (n : ℝ) - 2) *
-          ((k : ℝ) - (n : ℝ) - 1) := by
-  ring
-
-private def A119308HV14 (n k : ℕ) : ℝ :=
-  (((n : ℝ) + 2) * ((n : ℝ) + 3) *
-      ((k : ℝ) - 2 * (n : ℝ) - 4)) /
-    (((k : ℝ) + 2) * ((k : ℝ) + 4) *
-      ((k : ℝ) - 2 * (n : ℝ) - 3))
-
-private lemma A119308_hv14 (n k : ℕ) (hnk : k + 3 < n) :
-    A119308CoeffH (n + 1) (k + 1) *
-        A119308CoeffV (n + 1) (k + 2) =
-      A119308HV14 n k := by
-  have hkn : (k : ℝ) + 3 < (n : ℝ) := by exact_mod_cast hnk
-  unfold A119308CoeffH A119308CoeffV A119308HV14
-  push_cast
-  have hk2 : (k : ℝ) + 2 ≠ 0 := by positivity
-  have hk4 : (k : ℝ) + 4 ≠ 0 := by positivity
-  have h₁ : (k : ℝ) - (n : ℝ) ≠ 0 := by linarith
-  have h₂ : (k : ℝ) - 2 * (n : ℝ) - 2 ≠ 0 := by linarith
-  have h₃ : (k : ℝ) - (n : ℝ) - 1 ≠ 0 := by linarith
-  have ht3' : (k : ℝ) - 2 * (n : ℝ) - 3 ≠ 0 := by linarith
-  have hdenT :
-      ((k : ℝ) + 2) * ((k : ℝ) + 4) *
-        ((k : ℝ) - 2 * (n : ℝ) - 3) ≠ 0 :=
-    mul_ne_zero (mul_ne_zero hk2 hk4) ht3'
-  apply (eq_div_iff hdenT).2
-  field_simp
-  ring_nf
-  rw [A119308_opaque14_normal_eq]
-  field_simp [h₁, h₂, h₃, ht3']
-  ring_nf
-  have hquad :
-      (6 : ℝ) + (n : ℝ) * 10 - (n : ℝ) * (k : ℝ) * 4 +
-          (n : ℝ) ^ 2 * 4 - (k : ℝ) * 5 + (k : ℝ) ^ 2 ≠ 0 := by grind
-  apply mul_left_cancel₀ hquad
-  field_simp [hquad]
-  ring
-
-private def A119308Bracket14 (n k : ℕ) : ℝ :=
-  (-((n : ℝ) + 3) *
-      ((k : ℝ) ^ 3 - 2 * (k : ℝ) ^ 2 * (n : ℝ) + 3 * (k : ℝ) ^ 2 -
-        2 * (k : ℝ) * (n : ℝ) ^ 2 - 25 * (k : ℝ) * (n : ℝ) -
-        28 * (k : ℝ) + 4 * (n : ℝ) ^ 3 + 34 * (n : ℝ) ^ 2 +
-        72 * (n : ℝ) + 48)) /
-    (((k : ℝ) + 2) * ((k : ℝ) + 4) * ((n : ℝ) + 6) *
-      ((k : ℝ) - 2 * (n : ℝ) - 3))
-
-private lemma A119308_bracket14 (n k : ℕ) (hnk : k + 3 < n) :
-    (((9 / 2 : ℝ) + (n : ℝ)) /
-        (3 + (1 / 2) * (n : ℝ))) *
-        A119308CoeffH (n + 1) (k + 1) *
-        A119308CoeffV (n + 1) (k + 2) +
-      (((-3 / 2 : ℝ) + (-1 / 2) * (n : ℝ)) /
-        (3 + (1 / 2) * (n : ℝ))) =
-      A119308Bracket14 n k := by
-  have hkn : (k : ℝ) + 3 < (n : ℝ) := by exact_mod_cast hnk
-  rw [mul_assoc, A119308_hv14 n k hnk]
-  unfold A119308HV14 A119308Bracket14
-  have hk2 : (k : ℝ) + 2 ≠ 0 := by positivity
-  have hk4 : (k : ℝ) + 4 ≠ 0 := by positivity
-  have hn6 : (n : ℝ) + 6 ≠ 0 := by positivity
-  have ht3 : 2 * (n : ℝ) + 3 - (k : ℝ) ≠ 0 := by linarith
-  have ht3' : (k : ℝ) - 2 * (n : ℝ) - 3 ≠ 0 := by linarith
-  have hmain : 3 + (1 / 2 : ℝ) * (n : ℝ) ≠ 0 := by positivity
-  have hdenT :
-      ((k : ℝ) + 2) * ((k : ℝ) + 4) * ((n : ℝ) + 6) *
-        ((k : ℝ) - 2 * (n : ℝ) - 3) ≠ 0 :=
-    mul_ne_zero (mul_ne_zero (mul_ne_zero hk2 hk4) hn6) ht3'
-  apply (eq_div_iff hdenT).2
-  field_simp [hk2, hk4, ht3, hmain]
-  grind
-
-private def A119308Pair14 (n k : ℕ) : ℝ :=
-  A119308CoeffV n (k + 1) * A119308Bracket14 n k
-
-private lemma A119308_pair14 (n k : ℕ) (hnk : k + 3 < n) :
-    (((9 / 2 : ℝ) + (n : ℝ)) /
-        (3 + (1 / 2) * (n : ℝ))) *
-        A119308CoeffV n (k + 1) *
-        A119308CoeffH (n + 1) (k + 1) *
-        A119308CoeffV (n + 1) (k + 2) +
-      (((-3 / 2 : ℝ) + (-1 / 2) * (n : ℝ)) /
-        (3 + (1 / 2) * (n : ℝ))) *
-        A119308CoeffV n (k + 1) =
-      A119308Pair14 n k := by
-  unfold A119308Pair14
-  rw [show
-    (((9 / 2 : ℝ) + (n : ℝ)) / (3 + (1 / 2) * (n : ℝ))) *
-          A119308CoeffV n (k + 1) *
-          A119308CoeffH (n + 1) (k + 1) *
-          A119308CoeffV (n + 1) (k + 2) +
-        (((-3 / 2 : ℝ) + (-1 / 2) * (n : ℝ)) /
-          (3 + (1 / 2) * (n : ℝ))) *
-          A119308CoeffV n (k + 1) =
-      A119308CoeffV n (k + 1) *
-        ((((9 / 2 : ℝ) + (n : ℝ)) / (3 + (1 / 2) * (n : ℝ))) *
-          A119308CoeffH (n + 1) (k + 1) *
-          A119308CoeffV (n + 1) (k + 2) +
-        (((-3 / 2 : ℝ) + (-1 / 2) * (n : ℝ)) /
-          (3 + (1 / 2) * (n : ℝ)))) by ring]
-  rw [A119308_bracket14 n k hnk]
-
-private def A119308VH03 (n k : ℕ) : ℝ :=
-  (((n : ℝ) + 2) * ((n : ℝ) + 3) *
-      ((k : ℝ) - 2 * (n : ℝ) - 3)) /
-    (((k : ℝ) + 3) * ((k : ℝ) + 5) *
-      ((k : ℝ) - 2 * (n : ℝ) - 2))
-
-private lemma A119308_vh03 (n k : ℕ) (hnk : k + 3 < n) :
-    A119308CoeffV (n + 1) (k + 2) *
-        A119308CoeffH (n + 2) (k + 2) =
-      A119308VH03 n k := by
-  have hkn : (k : ℝ) + 3 < (n : ℝ) := by exact_mod_cast hnk
-  unfold A119308CoeffH A119308CoeffV A119308VH03
-  push_cast
-  have hk3 : (k : ℝ) + 3 ≠ 0 := by positivity
-  have hk5 : (k : ℝ) + 5 ≠ 0 := by positivity
-  have ht2' : (k : ℝ) - 2 * (n : ℝ) - 2 ≠ 0 := by linarith
-  have hdenT :
-      ((k : ℝ) + 3) * ((k : ℝ) + 5) *
-        ((k : ℝ) - 2 * (n : ℝ) - 2) ≠ 0 :=
-    mul_ne_zero (mul_ne_zero hk3 hk5) ht2'
-  apply (eq_div_iff hdenT).2
-  field_simp
-  ring_nf
-  rw [show
-    (n : ℝ) * 8 - (n : ℝ) * (k : ℝ) * 34 +
-        (n : ℝ) * (k : ℝ) ^ 2 * 29 - (n : ℝ) * (k : ℝ) ^ 3 * 6 +
-        (n : ℝ) ^ 2 * 20 - (n : ℝ) ^ 2 * (k : ℝ) * 38 +
-        (n : ℝ) ^ 2 * (k : ℝ) ^ 2 * 13 + (n : ℝ) ^ 3 * 16 -
-        (n : ℝ) ^ 3 * (k : ℝ) * 12 + (n : ℝ) ^ 4 * 4 -
-        (k : ℝ) * 8 + (k : ℝ) ^ 2 * 14 - (k : ℝ) ^ 3 * 7 +
-        (k : ℝ) ^ 4 =
-      ((k : ℝ) - (n : ℝ)) * ((k : ℝ) - 2 * (n : ℝ) - 4) *
-        ((k : ℝ) - 2 * (n : ℝ) - 2) *
-          ((k : ℝ) - (n : ℝ) - 1) by ring]
-  have h₁ : (k : ℝ) - (n : ℝ) ≠ 0 := by linarith
-  have h₂ : (k : ℝ) - 2 * (n : ℝ) - 4 ≠ 0 := by linarith
-  have h₃ : (k : ℝ) - (n : ℝ) - 1 ≠ 0 := by linarith
-  field_simp [h₁, h₂, h₃, ht2']
-  ring_nf
-  have hquad :
-      (8 : ℝ) + (n : ℝ) * 12 - (n : ℝ) * (k : ℝ) * 4 +
-          (n : ℝ) ^ 2 * 4 - (k : ℝ) * 6 + (k : ℝ) ^ 2 ≠ 0 := by
-    grind
-  apply mul_left_cancel₀ hquad
-  field_simp [hquad]
-  ring
-
-private def A119308Bracket03 (n k : ℕ) : ℝ :=
-  (((k : ℝ) ^ 3 - 2 * (k : ℝ) ^ 2 * (n : ℝ) + 6 * (k : ℝ) ^ 2 +
-      3 * (k : ℝ) * (n : ℝ) ^ 3 + 28 * (k : ℝ) * (n : ℝ) ^ 2 +
-      67 * (k : ℝ) * (n : ℝ) + 77 * (k : ℝ) -
-      6 * (n : ℝ) ^ 4 - 65 * (n : ℝ) ^ 3 - 250 * (n : ℝ) ^ 2 -
-      435 * (n : ℝ) - 264)) /
-    (((k : ℝ) + 3) * ((k : ℝ) + 5) * ((n : ℝ) + 6) *
-      ((k : ℝ) - 2 * (n : ℝ) - 2))
-
-private lemma A119308_bracket03 (n k : ℕ) (hnk : k + 3 < n) :
-    (((13 / 2 : ℝ) + (3 / 2) * (n : ℝ)) /
-        (3 + (1 / 2) * (n : ℝ))) *
-        A119308CoeffV (n + 1) (k + 2) *
-        A119308CoeffH (n + 2) (k + 2) +
-      ((1 / 2 : ℝ) / (3 + (1 / 2) * (n : ℝ))) =
-      A119308Bracket03 n k := by
-  have hkn : (k : ℝ) + 3 < (n : ℝ) := by exact_mod_cast hnk
-  rw [mul_assoc, A119308_vh03 n k hnk]
-  unfold A119308VH03 A119308Bracket03
-  have hk3 : (k : ℝ) + 3 ≠ 0 := by positivity
-  have hk5 : (k : ℝ) + 5 ≠ 0 := by positivity
-  have hn6 : (n : ℝ) + 6 ≠ 0 := by positivity
-  have ht2' : (k : ℝ) - 2 * (n : ℝ) - 2 ≠ 0 := by linarith
-  have hmain : 3 + (1 / 2 : ℝ) * (n : ℝ) ≠ 0 := by positivity
-  have hdenT :
-      ((k : ℝ) + 3) * ((k : ℝ) + 5) * ((n : ℝ) + 6) *
-        ((k : ℝ) - 2 * (n : ℝ) - 2) ≠ 0 :=
-    mul_ne_zero (mul_ne_zero (mul_ne_zero hk3 hk5) hn6) ht2'
-  apply (eq_div_iff hdenT).2
-  field_simp [hk3, hk5, ht2', hmain]
-  grind
-
-private def A119308Pair03 (n k : ℕ) : ℝ :=
-  A119308CoeffV n (k + 1) * A119308CoeffH (n + 1) (k + 1) *
-    A119308Bracket03 n k
-
-private lemma A119308_pair03 (n k : ℕ) (hnk : k + 3 < n) :
-    (((13 / 2 : ℝ) + (3 / 2) * (n : ℝ)) /
-        (3 + (1 / 2) * (n : ℝ))) *
-        A119308CoeffV n (k + 1) *
-        A119308CoeffH (n + 1) (k + 1) *
-        A119308CoeffV (n + 1) (k + 2) *
-        A119308CoeffH (n + 2) (k + 2) +
-      ((1 / 2 : ℝ) / (3 + (1 / 2) * (n : ℝ))) *
-        A119308CoeffV n (k + 1) *
-        A119308CoeffH (n + 1) (k + 1) =
-      A119308Pair03 n k := by
-  unfold A119308Pair03
-  rw [show
-    (((13 / 2 : ℝ) + (3 / 2) * (n : ℝ)) /
-          (3 + (1 / 2) * (n : ℝ))) *
-          A119308CoeffV n (k + 1) *
-          A119308CoeffH (n + 1) (k + 1) *
-          A119308CoeffV (n + 1) (k + 2) *
-          A119308CoeffH (n + 2) (k + 2) +
-        ((1 / 2 : ℝ) / (3 + (1 / 2) * (n : ℝ))) *
-          A119308CoeffV n (k + 1) *
-          A119308CoeffH (n + 1) (k + 1) =
-      A119308CoeffV n (k + 1) * A119308CoeffH (n + 1) (k + 1) *
-        ((((13 / 2 : ℝ) + (3 / 2) * (n : ℝ)) /
-            (3 + (1 / 2) * (n : ℝ))) *
-          A119308CoeffV (n + 1) (k + 2) *
-          A119308CoeffH (n + 2) (k + 2) +
-        ((1 / 2 : ℝ) / (3 + (1 / 2) * (n : ℝ)))) by ring]
-  rw [A119308_bracket03 n k hnk]
-
-private def A119308TargetRatio (n k : ℕ) : ℝ :=
-  (((n : ℝ) + 1) * ((n : ℝ) + 2) ^ 2 * ((n : ℝ) + 3) ^ 2 *
-      ((n : ℝ) + 4) * ((k : ℝ) - 2 * (n : ℝ) - 5)) /
-    (((k : ℝ) + 2) * ((k : ℝ) + 3) * ((k : ℝ) + 4) *
-      ((k : ℝ) + 5) * ((k : ℝ) - (n : ℝ)) *
-      ((k : ℝ) - 2 * (n : ℝ) - 1) *
-      ((k : ℝ) - (n : ℝ) - 1))
-
-private def A119308Expanded14 (n k : ℕ) : ℝ :=
-  (-((n : ℝ) + 1) * ((n : ℝ) + 2) * ((n : ℝ) + 3) *
-      ((k : ℝ) ^ 3 - 2 * (k : ℝ) ^ 2 * (n : ℝ) + 3 * (k : ℝ) ^ 2 -
-        2 * (k : ℝ) * (n : ℝ) ^ 2 - 25 * (k : ℝ) * (n : ℝ) -
-        28 * (k : ℝ) + 4 * (n : ℝ) ^ 3 + 34 * (n : ℝ) ^ 2 +
-        72 * (n : ℝ) + 48)) /
-    (((k : ℝ) + 2) * ((k : ℝ) + 4) *
-      ((k : ℝ) - (n : ℝ)) * ((n : ℝ) + 6) *
-      ((k : ℝ) - 2 * (n : ℝ) - 1) *
-      ((k : ℝ) - (n : ℝ) - 1))
-
-private def A119308V14Simple (n k : ℕ) : ℝ :=
-  (((n : ℝ) + 1) * ((n : ℝ) + 2) *
-      ((k : ℝ) - 2 * (n : ℝ) - 3)) /
-    (((k : ℝ) - (n : ℝ)) * ((k : ℝ) - 2 * (n : ℝ) - 1) *
-      ((k : ℝ) - (n : ℝ) - 1))
-
-private lemma A119308_v14_cross (n k : ℕ) (hnk : k + 3 < n) :
-    A119308CoeffV n (k + 1) *
-        (((k : ℝ) - (n : ℝ)) * ((k : ℝ) - 2 * (n : ℝ) - 1) *
-          ((k : ℝ) - (n : ℝ) - 1)) =
-      ((n : ℝ) + 1) * ((n : ℝ) + 2) *
-        ((k : ℝ) - 2 * (n : ℝ) - 3) := by
-  have hkn : (k : ℝ) + 3 < (n : ℝ) := by exact_mod_cast hnk
-  unfold A119308CoeffV
-  push_cast
-  have hv1 : (n : ℝ) - (k : ℝ) + 1 ≠ 0 := by linarith
-  have hv2 : (n : ℝ) - (k : ℝ) ≠ 0 := by linarith
-  have hv3 : 2 * (n : ℝ) + 1 - (k : ℝ) ≠ 0 := by linarith
-  have hden :
-      ((n : ℝ) - (k : ℝ) + 1) * ((n : ℝ) - (k : ℝ)) *
-        (2 * (n : ℝ) + 1 - (k : ℝ)) ≠ 0 :=
-    mul_ne_zero (mul_ne_zero hv1 hv2) hv3
-  grind
-
-private lemma A119308_v14_simple (n k : ℕ) (hnk : k + 3 < n) :
-    A119308CoeffV n (k + 1) = A119308V14Simple n k := by
-  have hkn : (k : ℝ) + 3 < (n : ℝ) := by exact_mod_cast hnk
-  have h₁ : (k : ℝ) - (n : ℝ) ≠ 0 := by linarith
-  have h₂ : (k : ℝ) - 2 * (n : ℝ) - 1 ≠ 0 := by linarith
-  have h₃ : (k : ℝ) - (n : ℝ) - 1 ≠ 0 := by linarith
-  have hden :
-      ((k : ℝ) - (n : ℝ)) * ((k : ℝ) - 2 * (n : ℝ) - 1) *
-        ((k : ℝ) - (n : ℝ) - 1) ≠ 0 :=
-    mul_ne_zero (mul_ne_zero h₁ h₂) h₃
-  unfold A119308V14Simple
-  apply (eq_div_iff hden).2
-  exact A119308_v14_cross n k hnk
-
-private def A119308Expanded03 (n k : ℕ) : ℝ :=
-  (((n : ℝ) + 1) * ((n : ℝ) + 2) *
-      ((k : ℝ) ^ 3 - 2 * (k : ℝ) ^ 2 * (n : ℝ) + 6 * (k : ℝ) ^ 2 +
-        3 * (k : ℝ) * (n : ℝ) ^ 3 + 28 * (k : ℝ) * (n : ℝ) ^ 2 +
-        67 * (k : ℝ) * (n : ℝ) + 77 * (k : ℝ) -
-        6 * (n : ℝ) ^ 4 - 65 * (n : ℝ) ^ 3 - 250 * (n : ℝ) ^ 2 -
-        435 * (n : ℝ) - 264)) /
-    (((k : ℝ) + 2) * ((k : ℝ) + 3) * ((k : ℝ) + 4) *
-      ((k : ℝ) + 5) * ((n : ℝ) + 6) *
-      ((k : ℝ) - 2 * (n : ℝ) - 1))
-
-private def A119308Expanded25 (n k : ℕ) : ℝ :=
-  (((k : ℝ) - (n : ℝ)) * ((n : ℝ) + 1) *
-      ((k : ℝ) - (n : ℝ) + 1) *
-      ((k : ℝ) ^ 3 - 4 * (k : ℝ) ^ 2 * (n : ℝ) + 4 * (k : ℝ) ^ 2 +
-        2 * (k : ℝ) * (n : ℝ) ^ 2 - 25 * (k : ℝ) * (n : ℝ) -
-        11 * (k : ℝ) + 4 * (n : ℝ) ^ 3 + 38 * (n : ℝ) ^ 2 +
-        39 * (n : ℝ) + 18)) /
-    (((k : ℝ) + 2) * ((k : ℝ) + 3) * ((k : ℝ) + 4) *
-      ((k : ℝ) + 5) * ((n : ℝ) + 6) *
-      ((k : ℝ) - 2 * (n : ℝ) - 1))
-
-private def A119308VH03Base (n k : ℕ) : ℝ :=
-  (((n : ℝ) + 1) * ((n : ℝ) + 2) *
-      ((k : ℝ) - 2 * (n : ℝ) - 2)) /
-    (((k : ℝ) + 2) * ((k : ℝ) + 4) *
-      ((k : ℝ) - 2 * (n : ℝ) - 1))
-
-private lemma A119308_vh03_base (n k : ℕ) (hnk : k + 3 < n) :
-    A119308CoeffV n (k + 1) * A119308CoeffH (n + 1) (k + 1) =
-      A119308VH03Base n k := by
-  have hkn : (k : ℝ) + 3 < (n : ℝ) := by exact_mod_cast hnk
-  have hk2 : (k : ℝ) + 2 ≠ 0 := by positivity
-  have hk4 : (k : ℝ) + 4 ≠ 0 := by positivity
-  have hkn0 : (k : ℝ) - (n : ℝ) ≠ 0 := by linarith
-  have hkn1 : (k : ℝ) - (n : ℝ) - 1 ≠ 0 := by linarith
-  have ht1 : (k : ℝ) - 2 * (n : ℝ) - 1 ≠ 0 := by linarith
-  have ht3 : (k : ℝ) - 2 * (n : ℝ) - 3 ≠ 0 := by linarith
-  have hbig :
-      ((k : ℝ) + 2) * ((k : ℝ) + 4) *
-          ((k : ℝ) - (n : ℝ)) *
-          ((k : ℝ) - 2 * (n : ℝ) - 3) *
-          ((k : ℝ) - 2 * (n : ℝ) - 1) *
-          ((k : ℝ) - (n : ℝ) - 1) ≠ 0 :=
-    mul_ne_zero
-      (mul_ne_zero
-        (mul_ne_zero (mul_ne_zero (mul_ne_zero hk2 hk4) hkn0) ht3) ht1)
-      hkn1
-  unfold A119308CoeffV A119308CoeffH A119308VH03Base
-  push_cast
-  rw [div_mul_div_comm]
-  apply (div_eq_div_iff (by
-    grind) (by
-    simp_all)).2
-  ring
-
-private lemma A119308_pair03_expanded (n k : ℕ) (hnk : k + 3 < n) :
-    A119308Pair03 n k = A119308Expanded03 n k := by
-  unfold A119308Pair03
-  rw [A119308_vh03_base n k hnk]
-  unfold A119308VH03Base A119308Bracket03 A119308Expanded03
-  rw [div_mul_div_comm]
-  apply (div_eq_div_iff (by
-    have hkn : (k : ℝ) + 3 < (n : ℝ) := by exact_mod_cast hnk
-    have h₁ : (k : ℝ) - 2 * (n : ℝ) - 1 ≠ 0 := by linarith
-    have h₂ : (k : ℝ) - 2 * (n : ℝ) - 2 ≠ 0 := by linarith
-    positivity) (by
-    have hkn : (k : ℝ) + 3 < (n : ℝ) := by exact_mod_cast hnk
-    have : (k : ℝ) - 2 * (n : ℝ) - 1 ≠ 0 := by linarith
-    positivity)).2
-  ring
-
-private lemma A119308_pair14_expanded (n k : ℕ) (hnk : k + 3 < n) :
-    A119308Pair14 n k = A119308Expanded14 n k := by
-  have hkn : (k : ℝ) + 3 < (n : ℝ) := by exact_mod_cast hnk
-  have hk2 : (k : ℝ) + 2 ≠ 0 := by positivity
-  have hk4 : (k : ℝ) + 4 ≠ 0 := by positivity
-  have hn6 : (n : ℝ) + 6 ≠ 0 := by positivity
-  have hnk0 : (k : ℝ) - (n : ℝ) ≠ 0 := by linarith
-  have hnk1 : (k : ℝ) - (n : ℝ) - 1 ≠ 0 := by linarith
-  have ht1 : (k : ℝ) - 2 * (n : ℝ) - 1 ≠ 0 := by linarith
-  have ht3 : (k : ℝ) - 2 * (n : ℝ) - 3 ≠ 0 := by linarith
-  have ht1n : (-1 : ℝ) + (k : ℝ) - (n : ℝ) * 2 ≠ 0 := by
-    linarith
-  have hcomp :
-      (3 : ℝ) - (k : ℝ) * 4 - (k : ℝ) * (n : ℝ) * 4 +
-          (k : ℝ) ^ 2 + (n : ℝ) * 8 + (n : ℝ) ^ 2 * 4 ≠ 0 := by
-    grind
-  rw [show A119308Pair14 n k =
-      A119308V14Simple n k * A119308Bracket14 n k by
-    unfold A119308Pair14
-    rw [A119308_v14_simple n k hnk]]
-  unfold A119308V14Simple A119308Bracket14 A119308Expanded14
-  field_simp [hk2, hk4, hn6, hnk0, hnk1, ht1, ht3]
-  ring_nf
-  field_simp [hcomp, ht1n]
-  ring
-
-private def A119308HH25Base (n k : ℕ) : ℝ :=
-  (((k : ℝ) - (n : ℝ)) *
-      ((k : ℝ) - 2 * (n : ℝ) + 1) *
-      ((k : ℝ) - (n : ℝ) + 1) ^ 2 *
-      ((k : ℝ) - (n : ℝ) + 2)) /
-    (((k : ℝ) + 2) * ((k : ℝ) + 3) * ((k : ℝ) + 4) *
-      ((k : ℝ) + 5) * ((k : ℝ) - 2 * (n : ℝ) - 1))
-
-private lemma A119308_hh25_base (n k : ℕ) (hnk : k + 3 < n) :
-    A119308CoeffH n (k + 1) * A119308CoeffH n (k + 2) =
-      A119308HH25Base n k := by
-  have hkn : (k : ℝ) + 3 < (n : ℝ) := by exact_mod_cast hnk
-  have hk2 : (k : ℝ) + 2 ≠ 0 := by positivity
-  have hk3 : (k : ℝ) + 3 ≠ 0 := by positivity
-  have hk4 : (k : ℝ) + 4 ≠ 0 := by positivity
-  have hk5 : (k : ℝ) + 5 ≠ 0 := by positivity
-  have ht0 : 2 * (n : ℝ) - (k : ℝ) ≠ 0 := by linarith
-  have ht1 : 2 * (n : ℝ) + 1 - (k : ℝ) ≠ 0 := by linarith
-  have hbig :
-      ((k : ℝ) + 2) * ((k : ℝ) + 3) * ((k : ℝ) + 4) *
-          ((k : ℝ) + 5) * (2 * (n : ℝ) - (k : ℝ)) *
-          (2 * (n : ℝ) + 1 - (k : ℝ)) ≠ 0 :=
-    mul_ne_zero
-      (mul_ne_zero
-        (mul_ne_zero (mul_ne_zero (mul_ne_zero hk2 hk3) hk4) hk5) ht0)
-      ht1
-  unfold A119308CoeffH A119308HH25Base
-  push_cast
-  rw [div_mul_div_comm]
-  apply (div_eq_div_iff (by
-    grind) (by
-    grind)).2
-  ring
-
-private lemma A119308_pair25_expanded (n k : ℕ) (hnk : k + 3 < n) :
-    A119308Pair25 n k = A119308Expanded25 n k := by
-  unfold A119308Pair25
-  rw [A119308_hh25_base n k hnk]
-  unfold A119308HH25Base A119308Bracket25 A119308Expanded25
-  rw [div_mul_div_comm]
-  apply (div_eq_div_iff (by
-    have hkn : (k : ℝ) + 3 < (n : ℝ) := by exact_mod_cast hnk
-    have h₁ : (k : ℝ) - 2 * (n : ℝ) + 1 ≠ 0 := by linarith
-    have h₂ : (k : ℝ) - (n : ℝ) + 1 ≠ 0 := by linarith
-    have h₃ : (k : ℝ) - (n : ℝ) + 2 ≠ 0 := by linarith
-    have h₄ : (k : ℝ) - 2 * (n : ℝ) - 1 ≠ 0 := by linarith
-    positivity) (by
-    have hkn : (k : ℝ) + 3 < (n : ℝ) := by exact_mod_cast hnk
-    have : (k : ℝ) - 2 * (n : ℝ) - 1 ≠ 0 := by linarith
-    positivity)).2
-  ring
-
-private lemma A119308_pair_sum (n k : ℕ) (hnk : k + 3 < n) :
-    A119308Pair03 n k + A119308Pair14 n k +
-        A119308Pair25 n k + A119308Pair67 n k =
-      A119308TargetRatio n k := by
-  rw [A119308_pair03_expanded n k hnk,
-    A119308_pair14_expanded n k hnk,
-    A119308_pair25_expanded n k hnk]
-  have hkn : (k : ℝ) + 3 < (n : ℝ) := by exact_mod_cast hnk
-  have hk2 : (k : ℝ) + 2 ≠ 0 := by positivity
-  have hk3 : (k : ℝ) + 3 ≠ 0 := by positivity
-  have hk4 : (k : ℝ) + 4 ≠ 0 := by positivity
-  have hk5 : (k : ℝ) + 5 ≠ 0 := by positivity
-  have hn6 : (n : ℝ) + 6 ≠ 0 := by positivity
-  have hkn0 : (k : ℝ) - (n : ℝ) ≠ 0 := by linarith
-  have hkn1 : (k : ℝ) - (n : ℝ) - 1 ≠ 0 := by linarith
-  have ht1 : (k : ℝ) - 2 * (n : ℝ) - 1 ≠ 0 := by linarith
-  have ht1' : 2 * (n : ℝ) + 1 - (k : ℝ) ≠ 0 := by linarith
-  have htm : (-1 : ℝ) - (n : ℝ) * 2 + (k : ℝ) ≠ 0 := by linarith
-  have htp : (1 : ℝ) + (n : ℝ) * 2 - (k : ℝ) ≠ 0 := by linarith
-  unfold A119308Expanded03 A119308Expanded14 A119308Expanded25
-    A119308Pair67 A119308TargetRatio
-  field_simp [hk2, hk3, hk4, hk5, hn6, hkn0, hkn1, ht1, ht1']
-  grind
-
-private lemma A119308_target_product (n k : ℕ) (hnk : k + 3 < n) :
-    A119308CoeffV n (k + 1) *
-        A119308CoeffH (n + 1) (k + 1) *
-        A119308CoeffV (n + 1) (k + 2) *
-        A119308CoeffH (n + 2) (k + 2) *
-        A119308CoeffV (n + 2) (k + 3) =
-      A119308TargetRatio n k := by
-  rw [show
-      A119308CoeffV n (k + 1) *
-          A119308CoeffH (n + 1) (k + 1) *
-          A119308CoeffV (n + 1) (k + 2) *
-          A119308CoeffH (n + 2) (k + 2) *
-          A119308CoeffV (n + 2) (k + 3) =
-        (A119308CoeffV n (k + 1) *
-            A119308CoeffH (n + 1) (k + 1)) *
-          (A119308CoeffV (n + 1) (k + 2) *
-            A119308CoeffH (n + 2) (k + 2)) *
-          A119308CoeffV (n + 2) (k + 3) by ring]
-  rw [A119308_vh03_base n k hnk, A119308_vh03 n k hnk]
-  have hkn : (k : ℝ) + 3 < (n : ℝ) := by exact_mod_cast hnk
-  have hk2 : (k : ℝ) + 2 ≠ 0 := by positivity
-  have hk3 : (k : ℝ) + 3 ≠ 0 := by positivity
-  have hk4 : (k : ℝ) + 4 ≠ 0 := by positivity
-  have hk5 : (k : ℝ) + 5 ≠ 0 := by positivity
-  have ht1 : (k : ℝ) - 2 * (n : ℝ) - 1 ≠ 0 := by linarith
-  have ht2 : (k : ℝ) - 2 * (n : ℝ) - 2 ≠ 0 := by linarith
-  have ht3 : 2 * (n : ℝ) + 3 - (k : ℝ) ≠ 0 := by linarith
-  have hnk0 : (n : ℝ) - (k : ℝ) ≠ 0 := by linarith
-  have hnk1 : (n : ℝ) - (k : ℝ) + 1 ≠ 0 := by linarith
-  have hbig :
-      ((k : ℝ) + 2) * ((k : ℝ) + 4) *
-          ((k : ℝ) - 2 * (n : ℝ) - 1) *
-          ((k : ℝ) + 3) * ((k : ℝ) + 5) *
-          ((k : ℝ) - 2 * (n : ℝ) - 2) *
-          ((n : ℝ) - (k : ℝ) + 1) *
-          ((n : ℝ) - (k : ℝ)) *
-          (2 * (n : ℝ) + 3 - (k : ℝ)) ≠ 0 :=
-    mul_ne_zero
-      (mul_ne_zero
-        (mul_ne_zero
-          (mul_ne_zero
-            (mul_ne_zero
-              (mul_ne_zero
-                (mul_ne_zero (mul_ne_zero hk2 hk4) ht1) hk3) hk5)
-              ht2)
-            hnk1)
-          hnk0)
-        ht3
-  unfold A119308VH03Base A119308VH03 A119308CoeffV
-    A119308TargetRatio
-  push_cast
-  rw [div_mul_div_comm, div_mul_div_comm]
-  apply (div_eq_div_iff (by
-    grind) (by
-    grind)).2
-  ring
-
-private lemma A119308Coeff_target (n k : ℕ) (hnk : k + 3 < n) :
-    A119308Coeff (n + 3) (k + 3) =
-      A119308Coeff n (k + 1) * A119308TargetRatio n k := by
-  rw [A119308Coeff_vertical_eq (n + 2) (k + 3) (by lia),
-    A119308Coeff_horizontal_eq (n + 2) (k + 2) (by lia),
-    A119308Coeff_vertical_eq (n + 1) (k + 2) (by lia),
-    A119308Coeff_horizontal_eq (n + 1) (k + 1) (by lia),
-    A119308Coeff_vertical_eq n (k + 1) (by lia)]
-  rw [show
-      A119308Coeff n (k + 1) * A119308CoeffV n (k + 1) *
-          A119308CoeffH (n + 1) (k + 1) *
-          A119308CoeffV (n + 1) (k + 2) *
-          A119308CoeffH (n + 2) (k + 2) *
-          A119308CoeffV (n + 2) (k + 3) =
-        A119308Coeff n (k + 1) *
-          (A119308CoeffV n (k + 1) *
-            A119308CoeffH (n + 1) (k + 1) *
-            A119308CoeffV (n + 1) (k + 2) *
-            A119308CoeffH (n + 2) (k + 2) *
-            A119308CoeffV (n + 2) (k + 3)) by ring]
-  rw [A119308_target_product n k hnk]
-
 private lemma A119308Coeff_rec_low (n k : ℕ) (hnk : k + 3 < n) :
     A119308Coeff (n + 3) (k + 3) = A119308CoeffRecRhs n k := by
   have hn2k2 :
@@ -1139,19 +405,16 @@ private lemma A119308Coeff_rec_low (n k : ℕ) (hnk : k + 3 < n) :
           A119308CoeffH n (k + 1) *
           A119308CoeffH n (k + 2) := by
     rw [A119308Coeff_horizontal_eq n (k + 2) (by assumption), hnk2]
-  rw [A119308Coeff_target n k hnk]
   unfold A119308CoeffRecRhs
-  rw [hn2k3, hn2k2, hn1k3, hn1k2, hn1k1, hnk3, hnk2]
-  calc
-    A119308Coeff n (k + 1) * A119308TargetRatio n k =
-        A119308Coeff n (k + 1) *
-          (A119308Pair03 n k + A119308Pair14 n k +
-            A119308Pair25 n k + A119308Pair67 n k) := by
-      rw [A119308_pair_sum n k hnk]
-    _ = _ := by
-      rw [← A119308_pair03 n k hnk, ← A119308_pair14 n k hnk,
-        ← A119308_pair25 n k hnk, ← A119308_pair67 n k hnk]
-      ring
+  rw [hn2k3, hn2k2, hn1k3, hn1k2, hn1k1, hnk3, hnk2,
+    A119308Coeff_vertical_eq (n + 2) (k + 3) (by lia), hn2k3]
+  unfold A119308CoeffH A119308CoeffV
+  push_cast
+  have hkn : (k : ℝ) + 3 < n := by exact_mod_cast hnk
+  have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+  have hk : (0 : ℝ) ≤ k := Nat.cast_nonneg k
+  field_simp (disch := linarith)
+  ring
 
 private lemma A119308Coeff_rec_boundary (k : ℕ) :
     A119308Coeff (k + 6) (k + 3) =
@@ -1372,46 +635,12 @@ private lemma A119308_coeff_closed (n k : ℕ) :
           simpa [A119308CoeffRecRhs, Nat.add_assoc] using
             (A119308Coeff_rec n k).symm
 
-private lemma A119308_model_coeff_above (n k : ℕ) (hk : n < k) :
-    (A119308_model n).coeff k = 0 := by
-  let G : ℝ[X] := narayanaPolynomial 2 n
-  have hdegG : G.natDegree = n := natDegree_narayanaPolynomial 2 n
-  have hdeg :
-      (theta G + C 2 * G).natDegree ≤ n := by
-    rw [Polynomial.natDegree_le_iff_coeff_eq_zero]
-    intro j hj
-    simp only [coeff_add, coeff_theta, coeff_C_mul]
-    rw [Polynomial.coeff_eq_zero_of_natDegree_lt (hdegG ▸ hj)]
-    ring
-  unfold A119308_model
-  change
-    (polarTheta (2 * n + 2)
-      (C ((2 * ((n : ℝ) + 2))⁻¹) *
-        reciprocalShift n (theta G + C 2 * G))).coeff k = 0
-  rw [coeff_polarTheta, coeff_C_mul, coeff_reciprocalShift,
-    Polynomial.revAt_eq_self_of_lt hk,
-    Polynomial.coeff_eq_zero_of_natDegree_lt (hdeg.trans_lt hk)]
-  ring
-
 private lemma A119308Coeff_above (n k : ℕ) (hk : n < k) :
     A119308Coeff n k = 0 := by
   unfold A119308Coeff
   rw [Nat.choose_eq_zero_of_lt (by lia : n + 1 < k + 2),
     Nat.choose_eq_zero_of_lt (by lia : n + 1 < k + 1)]
   ring
-
-private lemma A119308_model_coeff (n k : ℕ) :
-    (A119308_model n).coeff k = A119308Coeff n k := by
-  by_cases hk : k ≤ n
-  · exact A119308_model_coeff_closed n k hk
-  · rw [A119308_model_coeff_above n k (by lia),
-      A119308Coeff_above n k (by lia)]
-
-private lemma A119308_eq_model (n : ℕ) :
-    recurrencePolynomial n = A119308_model n := by
-  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
-  intro k
-  rw [A119308_coeff_closed, A119308_model_coeff]
 
 /-- The strictly interlacing coefficient model for A119308. -/
 def polynomial (n : ℕ) : ℝ[X] :=
@@ -1461,14 +690,10 @@ private lemma polynomial_coeff (n k : ℕ) :
         rw [polynomial, natDegree_affineThetaJensenPolynomial]
         lia), A119308Coeff_above n k (by lia)]
 
-private lemma polynomial_eq_old_model (n : ℕ) :
-    polynomial n = A119308_model n := by
-  ext k
-  rw [polynomial_coeff, A119308_model_coeff]
-
 private lemma recurrencePolynomial_eq_polynomial (n : ℕ) :
     recurrencePolynomial n = polynomial n := by
-  rw [A119308_eq_model, polynomial_eq_old_model]
+  ext k
+  rw [A119308_coeff_closed, polynomial_coeff]
 
 private lemma polynomial_coeff_eq_euler (n k : ℕ) (hk : k ≤ n) :
     (polynomial n).coeff k = (n + 1).factorial / 2 *
@@ -1552,23 +777,6 @@ private theorem polynomial_two : polynomial 2 = 3 + 5 * X + X ^ 2 := by
   simpa only [recurrencePolynomial] using
     (recurrencePolynomial_eq_polynomial 2).symm
 
-/-- A sequence with the A119308 initial rows and update has split rows. -/
-@[rr_row_model]
-theorem splits_of_recurrence
-    {P : ℕ → ℝ[X]}
-    (hzero : P 0 = 1)
-    (hone : P 1 = 2 + X)
-    (htwo : P 2 = 3 + 5 * X + X ^ 2)
-    (hrec : ∀ n : ℕ,
-      P (n + 3) = nextRow n (P (n + 2)) (P (n + 1)) (P n))
-    (n : ℕ) :
-    (P n).Splits := by
-  have heq := sequence_eq_of_same_lag_three_recurrence nextRow
-    (hzero.trans polynomial_zero.symm) (hone.trans polynomial_one.symm)
-    (htwo.trans polynomial_two.symm) hrec polynomial_recurrence
-  rw [heq n]
-  exact polynomial_splits n
-
 /-- Consecutive rows with the A119308 initial rows and update interlace. -/
 @[rr_row_model]
 theorem interlaces_of_recurrence
@@ -1586,6 +794,19 @@ theorem interlaces_of_recurrence
   rw [heq n, heq (n + 1)]
   exact polynomial_interlaces n
 
+/-- A sequence with the A119308 initial rows and update has split rows. -/
+@[rr_row_model]
+theorem splits_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hzero : P 0 = 1)
+    (hone : P 1 = 2 + X)
+    (htwo : P 2 = 3 + 5 * X + X ^ 2)
+    (hrec : ∀ n : ℕ,
+      P (n + 3) = nextRow n (P (n + 2)) (P (n + 1)) (P n))
+    (n : ℕ) :
+    (P n).Splits := by
+  exact (interlaces_of_recurrence hzero hone htwo hrec n).2.1.2
+
 /-- The downstream A119308 recurrence rows interlace. -/
 theorem A119308_interlaces (n : ℕ) :
     RealRooted.Interlaces (recurrencePolynomial n) (recurrencePolynomial (n + 1)) := by
@@ -1599,7 +820,7 @@ theorem A119308_splits (n : ℕ) : (recurrencePolynomial n).Splits := by
 
 /-- Every downstream A119308 recurrence row is nonzero. -/
 theorem A119308_ne_zero (n : ℕ) : (recurrencePolynomial n) ≠ 0 :=
-  A119308_ne_zero' n
+  (A119308_interlaces n).2.1.1
 
 /-- Consecutive downstream A119308 recurrence rows are in directed proper position. -/
 theorem A119308_prec (n : ℕ) :

@@ -120,37 +120,21 @@ lemma Interleaves.append_replicate_right_of_length_eq
       Interleaves r (l₁ ++ List.replicate k a) (l₂ ++ List.replicate (k + 1) a) := by
   intro k
   induction k with
-  | zero =>
-      simpa using ⟨h, h.append_right_of_length_eq hlen hupper⟩
+  | zero => simpa using ⟨h, h.append_right_of_length_eq hlen hupper⟩
   | succ k ih =>
-      obtain ⟨ihsame, ihright⟩ := ih
-      have hlenk : (l₁ ++ List.replicate k a).length =
-          (l₂ ++ List.replicate k a).length := by
-        simp only [length_append, length_replicate]
-        lia
-      have hsame : Interleaves r (l₁ ++ List.replicate (k + 1) a)
-          (l₂ ++ List.replicate (k + 1) a) := by
-        rw [show l₁ ++ List.replicate (k + 1) a =
-              (l₁ ++ List.replicate k a) ++ [a] by
-            rw [append_assoc, ← replicate_succ'],
-          show l₂ ++ List.replicate (k + 1) a =
-              (l₂ ++ List.replicate k a) ++ [a] by
-            rw [append_assoc, ← replicate_succ']]
-        rw [interleaves_append_singleton_append_singleton_of_length_eq_length hlenk]
-        simpa [show l₂ ++ List.replicate k a ++ [a] =
-              l₂ ++ List.replicate (k + 1) a by rw [append_assoc, ← replicate_succ']]
-          using ⟨hself, ihright⟩
-      refine ⟨hsame, ?_⟩
-      have hupperk : ∀ ⦃x⦄, x ∈ l₁ ++ List.replicate (k + 1) a ∨
-          x ∈ l₂ ++ List.replicate (k + 1) a → r x a := by
-        intro x hx
-        grind
-      have hlenksucc : (l₁ ++ List.replicate (k + 1) a).length =
-          (l₂ ++ List.replicate (k + 1) a).length := by
-        simp only [length_append, length_replicate]
-        lia
-      simpa [Nat.add_assoc, append_assoc, replicate_succ'] using
-        hsame.append_right_of_length_eq hlenksucc hupperk
+      have hupperk : ∀ ⦃x⦄, x ∈ l₁ ++ replicate k a ∨
+          x ∈ l₂ ++ replicate (k + 1) a → r x a := by grind
+      have hsame := ih.2.append_left_of_length_add_one_eq
+        (by simp only [length_append, length_replicate, hlen, Nat.add_assoc]) hupperk
+      have hsame' : Interleaves r (l₁ ++ replicate (k + 1) a)
+          (l₂ ++ replicate (k + 1) a) := by
+        simpa only [append_assoc, ← replicate_succ'] using hsame
+      refine ⟨hsame', ?_⟩
+      have hupper' : ∀ ⦃x⦄, x ∈ l₁ ++ replicate (k + 1) a ∨
+          x ∈ l₂ ++ replicate (k + 1) a → r x a := by grind
+      simpa only [append_assoc, ← replicate_succ'] using
+        hsame'.append_right_of_length_eq
+          (by simp only [length_append, length_replicate, hlen]) hupper'
 
 /-- Equal end padding preserves an interleaving when the right-hand list is
 one entry longer; one additional left-hand endpoint also preserves it. -/
@@ -160,39 +144,18 @@ lemma Interleaves.append_replicate_left_of_length_add_one_eq
     ∀ k : ℕ,
       Interleaves r (l₁ ++ List.replicate k a) (l₂ ++ List.replicate k a) ∧
       Interleaves r (l₁ ++ List.replicate (k + 1) a) (l₂ ++ List.replicate k a) := by
+  have hleft := h.append_left_of_length_add_one_eq hlen hupper
+  have hupper' : ∀ ⦃x⦄, x ∈ l₁ ++ [a] ∨ x ∈ l₂ → r x a := by
+    grind
+  have hpad := hleft.append_replicate_right_of_length_eq
+    (by simpa only [length_append, length_singleton] using hlen) hself hupper'
   intro k
-  induction k with
-  | zero =>
-      simpa using ⟨h, h.append_left_of_length_add_one_eq hlen hupper⟩
-  | succ k ih =>
-      obtain ⟨ihsame, ihleft⟩ := ih
-      have hlenk : (l₁ ++ List.replicate k a).length + 1 =
-          (l₂ ++ List.replicate k a).length := by
-        simp only [length_append, length_replicate]
-        lia
-      have hsame : Interleaves r (l₁ ++ List.replicate (k + 1) a)
-          (l₂ ++ List.replicate (k + 1) a) := by
-        rw [show l₁ ++ List.replicate (k + 1) a =
-              (l₁ ++ List.replicate k a) ++ [a] by
-            rw [append_assoc, ← replicate_succ'],
-          show l₂ ++ List.replicate (k + 1) a =
-              (l₂ ++ List.replicate k a) ++ [a] by
-            rw [append_assoc, ← replicate_succ']]
-        rw [interleaves_append_singleton_append_singleton_of_length_eq_length_add_one hlenk]
-        simpa [show l₁ ++ List.replicate k a ++ [a] =
-              l₁ ++ List.replicate (k + 1) a by rw [append_assoc, ← replicate_succ']]
-          using ⟨hself, ihleft⟩
-      refine ⟨hsame, ?_⟩
-      have hupperk : ∀ ⦃x⦄, x ∈ l₁ ++ List.replicate (k + 1) a ∨
-          x ∈ l₂ ++ List.replicate (k + 1) a → r x a := by
-        intro x hx
-        grind
-      have hlenksucc : (l₁ ++ List.replicate (k + 1) a).length + 1 =
-          (l₂ ++ List.replicate (k + 1) a).length := by
-        simp only [length_append, length_replicate]
-        lia
-      simpa [Nat.add_assoc, append_assoc, replicate_succ'] using
-        hsame.append_left_of_length_add_one_eq hlenksucc hupperk
+  refine ⟨?_, ?_⟩
+  · cases k with
+    | zero => simpa only [replicate_zero, append_nil] using h
+    | succ k =>
+        simpa only [append_assoc, singleton_append, ← replicate_succ] using (hpad k).2
+  · simpa only [append_assoc, singleton_append, ← replicate_succ] using (hpad k).1
 
 private lemma not_interleaves_append_replicate_succ_left
     [LinearOrder α] (l₁ l₂ : List α) (k : ℕ) (hlt : ∀ x ∈ l₂, x < a)

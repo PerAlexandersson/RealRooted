@@ -285,13 +285,9 @@ theorem shiftedJacobi_reflection (n : ℕ) (α β : ℝ) :
 private lemma succ_mul_ringChoose (x : ℝ) (k : ℕ) :
     (k + 1 : ℝ) * Ring.choose x (k + 1) =
       x * Ring.choose (x - 1) k := by
-  rw [Ring.choose_eq_smul, Ring.choose_eq_smul]
-  simp only [smul_eq_mul]
-  rw [descPochhammer_succ_left]
-  simp only [smeval_mul, smeval_X, pow_one, smeval_comp, smeval_sub,
-    smeval_one, one_smul]
-  norm_num only [Nat.factorial_succ, Nat.cast_mul, Nat.cast_add, Nat.cast_one]
-  field_simp
+  simpa only [Nat.choose_one_right, nsmul_eq_mul, Nat.cast_add, Nat.cast_one,
+    Ring.choose_one_right, Nat.add_sub_cancel] using
+    (Ring.choose_smul_choose x (n := k + 1) (k := 1) (by lia))
 
 private lemma sub_mul_ringChoose (x : ℝ) (k : ℕ) :
     (x - k) * Ring.choose x k = x * Ring.choose (x - 1) k := by
@@ -418,17 +414,9 @@ private lemma choose_product_alpha_base (n k : ℕ) (α β : ℝ) (hk : k < n) :
     rw [Nat.cast_sub (by lia : 1 ≤ n - k), Nat.cast_sub hk.le]
     norm_num
   rw [hcastPred] at hA
-  have hA' :
-      (n - k) * Ring.choose (n + α + 1) (n - k) =
-        (n + α + 1) * Ring.choose (n + α) (n - k - 1) := by
-    convert hA using 1
-    ring
-  have hB' :
-      (k + 1) * Ring.choose (n + α + β + k + 1) (k + 1) =
-        (n + α + β + 1) * Ring.choose (n + α + β + k + 1) k := hB
   linear_combination
-    -((k + 1) * Ring.choose (n + α + β + k + 1) (k + 1)) * hA' +
-      ((n - k) * Ring.choose (n + α + 1) (n - k)) * hB'
+    -((k + 1) * Ring.choose (n + α + β + k + 1) (k + 1)) * hA +
+      ((n - k) * Ring.choose (n + α + 1) (n - k)) * hB
 
 /-- The twice-shifted factors in the interior coefficient identity have a common form. -/
 private lemma choose_product_alpha_add_two (n k : ℕ) (α β : ℝ) (hk : k < n) :
@@ -443,19 +431,9 @@ private lemma choose_product_alpha_add_two (n k : ℕ) (α β : ℝ) (hk : k < n
   rw [show (n : ℝ) + α + β + k + 2 - 1 = n + α + β + k + 1 by ring] at hB
   have hcast : ((n - k : ℕ) : ℝ) = n - k := by rw [Nat.cast_sub hk.le]
   rw [hcast] at hA
-  have hA' :
-      (α + k + 2) * Ring.choose (n + α + 2) (n - k) =
-        (n + α + 2) * Ring.choose (n + α + 1) (n - k) := by
-    convert hA using 1
-    ring
-  have hB' :
-      (n + α + β + 2) * Ring.choose (n + α + β + k + 2) k =
-        (n + α + β + k + 2) * Ring.choose (n + α + β + k + 1) k := by
-    convert hB using 1
-    ring
   linear_combination
-    ((n + α + β + 2) * Ring.choose (n + α + β + k + 2) k) * hA' +
-      ((n + α + 2) * Ring.choose (n + α + 1) (n - k)) * hB'
+    ((n + α + β + 2) * Ring.choose (n + α + β + k + 2) k) * hA +
+      ((n + α + 2) * Ring.choose (n + α + 1) (n - k)) * hB
 
 /-- The once-shifted factors in the interior coefficient identity have a common form. -/
 private lemma choose_product_alpha_add_one (n k : ℕ) (α β : ℝ) (hk : k < n) :
@@ -472,17 +450,9 @@ private lemma choose_product_alpha_add_one (n k : ℕ) (α β : ℝ) (hk : k < n
     norm_num
   rw [hcastPred] at hA
   rw [show α + (k : ℝ) + 2 + (n - k - 1) = n + α + 1 by ring] at hA
-  have hA' :
-      (n - k) * Ring.choose (n + α + 1) (n - k) =
-        (α + k + 2) * Ring.choose (n + α + 1) (n - k - 1) := by
-    convert hA using 1
-    ring
-  have hB' :
-      (k + 1) * Ring.choose (n + α + β + k + 2) (k + 1) =
-        (n + α + β + k + 2) * Ring.choose (n + α + β + k + 1) k := hB
   linear_combination
-    -((k + 1) * Ring.choose (n + α + β + k + 2) (k + 1)) * hA' +
-      ((n - k) * Ring.choose (n + α + 1) (n - k)) * hB'
+    -((k + 1) * Ring.choose (n + α + β + k + 2) (k + 1)) * hA +
+      ((n - k) * Ring.choose (n + α + 1) (n - k)) * hB
 
 /-- Interior coefficients satisfy the two-unit first-parameter contiguous identity. -/
 private lemma coeff_shiftedJacobi_alpha_add_two_of_lt
@@ -674,16 +644,7 @@ theorem shiftedJacobi_alpha_add_two_degree_pred (m : ℕ) (α β : ℝ)
 private lemma succ_mul_choose_succ_add (x : ℝ) (k : ℕ) :
     (k + 1 : ℝ) * Ring.choose (x + k + 1) (k + 1) =
       (x + k + 1) * Ring.choose (x + k) k := by
-  rw [Ring.choose_eq_smul, Ring.choose_eq_smul]
-  simp only [smul_eq_mul]
-  rw [descPochhammer_succ_left]
-  simp only [smeval_mul, smeval_X, pow_one, smeval_comp]
-  have heval :
-      ((X - 1 : Polynomial ℤ).smeval (x + k + 1)) = x + k := by
-    simp [smeval_sub]
-  rw [heval]
-  norm_num only [Nat.factorial_succ, Nat.cast_mul, Nat.cast_add, Nat.cast_one]
-  field_simp
+  simpa only [add_sub_cancel_right] using succ_mul_ringChoose (x + k + 1) k
 
 private lemma coeff_succ_relation (n k : ℕ) (α β : ℝ) (hk : k < n) :
     (k + 1 : ℝ) * (k + α + 1) * (shiftedJacobi n α β).coeff (k + 1) =
@@ -944,40 +905,21 @@ coefficient. -/
 lemma succ_mul_choose_succ (r : ℝ) (k : ℕ) :
     (k + 1 : ℝ) * Ring.choose (r + 1) (k + 1) =
       (r + 1) * Ring.choose r k := by
-  rw [Ring.choose_eq_smul, Ring.choose_eq_smul]
-  simp only [smul_eq_mul, descPochhammer_succ_left, smeval_mul,
-    smeval_X, pow_one, smeval_comp, smeval_sub, smeval_one, pow_zero,
-    one_smul, add_sub_cancel_right, Nat.factorial_succ, Nat.cast_mul,
-    Nat.cast_add, Nat.cast_one]
-  field_simp
+  simpa only [add_sub_cancel_right] using succ_mul_ringChoose (r + 1) k
 
 /-- `(r + 1 - k) * choose (r + 1) k = (r + 1) * choose r k` for the generalized binomial
 coefficient. -/
 lemma sub_mul_choose_add_one (r : ℝ) (k : ℕ) :
     (r + 1 - k) * Ring.choose (r + 1) k =
       (r + 1) * Ring.choose r k := by
-  cases k with
-  | zero => simp
-  | succ k =>
-      rw [Ring.choose_succ_succ]
-      have h := Ring.choose_smul_choose (R := ℝ) r (n := k + 1) (k := k) (by lia)
-      simp only [Nat.choose_succ_self_right, nsmul_eq_mul, Nat.cast_add,
-        Nat.cast_one, Nat.add_sub_cancel_left, Ring.choose_one_right] at h
-      push_cast at h ⊢
-      linear_combination -h
+  simpa only [add_sub_cancel_right] using sub_mul_ringChoose (r + 1) k
 
 /-- `(k + 1) * choose x (k + 1) = (x - k) * choose x k` for the generalized binomial
 coefficient. -/
 lemma succ_mul_ringChoose_same (x : ℝ) (k : ℕ) :
     (k + 1 : ℝ) * Ring.choose x (k + 1) =
       (x - k) * Ring.choose x k := by
-  have hleft := succ_mul_ringChoose x k
-  have hright := sub_mul_choose_add_one (x - 1) k
-  calc
-    (k + 1 : ℝ) * Ring.choose x (k + 1) =
-        x * Ring.choose (x - 1) k := hleft
-    _ = (x - k) * Ring.choose x k := by
-      convert hright.symm using 1 <;> ring_nf
+  exact (succ_mul_ringChoose x k).trans (sub_mul_ringChoose x k).symm
 
 /-- Raising the degree while lowering the second Jacobi parameter is a
 first-order differential operation. -/
@@ -1489,106 +1431,24 @@ theorem shiftedJacobiMonic_recurrence_one (α β : ℝ)
   have h2 : α + β + 2 ≠ 0 := by linarith
   have h3 : α + β + 3 ≠ 0 := by linarith
   have h4 : α + β + 4 ≠ 0 := by linarith
-  let l2 : ℝ := (-1 : ℝ) ^ 2 * Ring.choose (2 + α + β + 2) 2
-  have hl2 : l2 ≠ 0 := by
-    dsimp [l2]
-    exact mul_ne_zero (by norm_num) (leading_choose_pos 2 hα hβ).ne'
-  have hl2eq : l2 = (α + β + 4) * (α + β + 3) / 2 := by
-    dsimp [l2]
-    rw [ring_choose_two]
-    norm_num
+  have htop : 2 + α + β + 2 = α + β + 4 := by ring
+  rw [shiftedJacobiMonic_one α β h2, shiftedJacobiMonic_zero]
+  simp only [mul_sub, sub_mul, mul_one, ← C_mul]
+  ext k
+  rcases k with _ | _ | _ | k
+  · norm_num [coeff_shiftedJacobiMonic, ring_choose_two, shiftedJacobiDiag,
+      shiftedJacobiSubdiag, htop]
+    field_simp [h2, h3, h4, show 2 + α + β ≠ 0 by linarith,
+      show 3 + α + β ≠ 0 by linarith, show α + β + 4 - 1 ≠ 0 by linarith]
     ring
-  have hl2inv : l2⁻¹ = 2 / ((α + β + 4) * (α + β + 3)) := by
-    rw [hl2eq]
-    field_simp [h3, h4]
-  have hraw0 :
-      (shiftedJacobi 2 α β).coeff 0 = (α + 2) * (α + 1) / 2 := by
-    rw [coeff_shiftedJacobi, ite_eq_left (by lia : 0 ≤ 2)]
-    rw [ring_choose_two]
-    norm_num
+  · norm_num [coeff_shiftedJacobiMonic, ring_choose_two, shiftedJacobiDiag,
+      shiftedJacobiSubdiag, htop]
+    field_simp [h2, h3, h4, show 2 + α + β ≠ 0 by linarith,
+      show 3 + α + β ≠ 0 by linarith, show α + β + 4 - 1 ≠ 0 by linarith]
     ring
-  have hraw1 :
-      (shiftedJacobi 2 α β).coeff 1 = -(α + 2) * (α + β + 3) := by
-    rw [coeff_shiftedJacobi, ite_eq_left (by lia : 1 ≤ 2)]
-    norm_num [Ring.choose_one_right]
-    ring
-  have hraw2 :
-      (shiftedJacobi 2 α β).coeff 2 = (α + β + 4) * (α + β + 3) / 2 := by
-    rw [coeff_shiftedJacobi, ite_eq_left (by lia : 2 ≤ 2)]
-    rw [ring_choose_two]
-    norm_num
-    ring
-  have hcoeff0 :
-      (shiftedJacobiMonic 2 α β).coeff 0 =
-        (α + 2) * (α + 1) / ((α + β + 4) * (α + β + 3)) := by
-    rw [shiftedJacobiMonic, coeff_C_mul, hraw0]
-    change l2⁻¹ * ((α + 2) * (α + 1) / 2) = _
-    rw [hl2inv]
-    field_simp [h3, h4]
-  have hcoeff1 :
-      (shiftedJacobiMonic 2 α β).coeff 1 =
-        -(2 * (α + 2) / (α + β + 4)) := by
-    rw [shiftedJacobiMonic, coeff_C_mul, hraw1]
-    change l2⁻¹ * (-(α + 2) * (α + β + 3)) = _
-    rw [hl2inv]
-    field_simp [h3, h4]
-  have hcoeff2 : (shiftedJacobiMonic 2 α β).coeff 2 = 1 := by
-    rw [shiftedJacobiMonic, coeff_C_mul, hraw2]
-    change l2⁻¹ * ((α + β + 4) * (α + β + 3) / 2) = 1
-    rw [hl2inv]
-    field_simp [h3, h4]
-  have hpoly :
-      shiftedJacobiMonic 2 α β =
-        X ^ 2 - C (2 * (α + 2) / (α + β + 4)) * X +
-          C ((α + 2) * (α + 1) / ((α + β + 4) * (α + β + 3))) := by
-    ext k
-    rcases lt_trichotomy k 2 with hk | rfl | hk
-    · interval_cases k
-      · simpa using hcoeff0
-      · simpa using hcoeff1
-    · simpa using hcoeff2
-    · have hk3 : 3 ≤ k := by lia
-      simp [coeff_shiftedJacobiMonic, Nat.not_le.mpr (by lia : 2 < k),
-        show k ≠ 2 by lia, show 1 ≠ k by lia, show k ≠ 0 by lia,
-        Polynomial.coeff_X, Polynomial.coeff_C]
-  have hdiag :
-      shiftedJacobiDiag 1 α β + (α + 1) / (α + β + 2) =
-        2 * (α + 2) / (α + β + 4) := by
-    have hdiag' :
-        (1 - (β ^ 2 - α ^ 2) /
-            ((α + β + 2) * (α + β + 4))) / 2 +
-            (α + 1) / (α + β + 2) =
-          2 * (α + 2) / (α + β + 4) := by
-      field_simp [h2, h4]
-      ring
-    rw [shiftedJacobiDiag, ite_eq_right (by norm_num : (1 : ℕ) ≠ 0)]
-    convert hdiag' using 1; ring
-  have hconst :
-      shiftedJacobiDiag 1 α β * ((α + 1) / (α + β + 2)) -
-          shiftedJacobiSubdiag 1 α β =
-        (α + 2) * (α + 1) / ((α + β + 4) * (α + β + 3)) := by
-    rw [show shiftedJacobiDiag 1 α β =
-      2 * (α + 2) / (α + β + 4) - (α + 1) / (α + β + 2) by
-        linarith [hdiag]]
-    rw [shiftedJacobiSubdiag, ite_eq_right (by norm_num : (1 : ℕ) ≠ 0), ite_eq_left rfl]
-    change
-      (2 * (α + 2) / (α + β + 4) - (α + 1) / (α + β + 2)) *
-            ((α + 1) / (α + β + 2)) -
-          (1 + α) * (1 + β) / ((α + β + 2) ^ 2 * (α + β + 3)) =
-        (α + 2) * (α + 1) / ((α + β + 4) * (α + β + 3))
-    field_simp [h2, h3, h4]
-    ring
-  rw [hpoly, shiftedJacobiMonic_one α β h2, shiftedJacobiMonic_zero]
-  simp only [mul_one]
-  rw [show
-    (X - C (shiftedJacobiDiag 1 α β)) * (X - C ((α + 1) / (α + β + 2))) -
-        C (shiftedJacobiSubdiag 1 α β) =
-      X ^ 2 - C (shiftedJacobiDiag 1 α β + (α + 1) / (α + β + 2)) * X +
-        C (shiftedJacobiDiag 1 α β * ((α + 1) / (α + β + 2)) -
-          shiftedJacobiSubdiag 1 α β) by
-    simp only [map_add, map_sub, map_mul]
-    ring]
-  rw [hdiag, hconst]
+  · norm_num [coeff_shiftedJacobiMonic, ring_choose_two, htop]
+    constructor <;> linarith
+  · simp [coeff_shiftedJacobiMonic, Polynomial.coeff_mul_X, Polynomial.coeff_X]
 
 /-- The monic shifted Jacobi polynomials satisfy their standard Favard
 recurrence in every positive degree. -/

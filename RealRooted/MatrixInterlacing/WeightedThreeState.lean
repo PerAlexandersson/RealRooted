@@ -29,12 +29,6 @@ namespace RealRooted
 def weightedThreeStateMatrix (b alpha d : ℝ) : List (List ℝ[X]) :=
   [[1, C b, C d], [0, 1, 1], [X, C alpha * X, 1]]
 
-private lemma interl_affine_self_or_zero {u v : ℝ} (hu : 0 ≤ u) :
-    Interl (C u * X + C v) (C u * X + C v) := by
-  rcases hu.eq_or_lt with rfl | hu
-  · simp [interl_C_C]
-  · exact Interl.refl fun _ => (isRealRooted_affine_factor hu).2
-
 private lemma interl_affine_affine_of_cross_nonneg
     {u v U V : ℝ} (hu : 0 ≤ u) (hU : 0 ≤ U) (hV : 0 ≤ V)
     (hcross : u * V ≤ U * v) :
@@ -49,26 +43,15 @@ private lemma interl_affine_affine_of_cross_nonneg
       simp [hV0, interl_zero_right]
     · exact interl_affine_linear_affine_linear_of_cross hu hU hcross
 
-private lemma interl_pencil_affine_entries
-    {A b cX c0 dX d0 s t : ℝ}
-    (hleftX : 0 ≤ s * b + dX) (_hleft0 : 0 ≤ t * b + d0)
-    (hrightX : 0 ≤ s * A + cX) (hright0 : 0 ≤ t * A + c0)
-    (hcross : (s * b + dX) * (t * A + c0) ≤
-      (s * A + cX) * (t * b + d0)) :
-    Interl
-      ((C s * X + C t) * C b + (C dX * X + C d0))
-      ((C s * X + C t) * C A + (C cX * X + C c0)) := by
-  convert interl_affine_affine_of_cross_nonneg
-    hleftX hrightX hright0 hcross using 1 <;> grind
-
-private lemma interl_common_affine_scalars
-    {a b s t : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (hs : 0 < s) (ht : 0 < t) :
-    Interl ((C s * X + C t) * C b + C b)
-      ((C s * X + C t) * C a + C a) := by
-  convert interl_affine_affine_of_cross_nonneg
-    (u := s * b) (v := (t + 1) * b)
-    (U := s * a) (V := (t + 1) * a)
-    (by positivity) (by positivity) (by positivity) (by nlinarith) using 1 <;> grind
+/-- For affine polynomials, interlacing reduces to a coefficient cross inequality,
+including vanishing slopes. -/
+private lemma interl_of_affine_coeff {p q : ℝ[X]}
+    (hp : p.natDegree ≤ 1) (hq : q.natDegree ≤ 1)
+    (hp1 : 0 ≤ p.coeff 1) (hq1 : 0 ≤ q.coeff 1) (hq0 : 0 ≤ q.coeff 0)
+    (hcross : p.coeff 1 * q.coeff 0 ≤ q.coeff 1 * p.coeff 0) : Interl p q := by
+  convert interl_affine_affine_of_cross_nonneg hp1 hq1 hq0 hcross using 1
+  · exact eq_X_add_C_of_natDegree_le_one hp
+  · exact eq_X_add_C_of_natDegree_le_one hq
 
 /-- Every row of the weighted three-state matrix has length three. -/
 theorem weightedThreeStateMatrix_rect (b alpha d : ℝ) :
@@ -121,139 +104,9 @@ private lemma weightedThreeStateMatrix_affine
             exact j₂.isLt⟩) := by
   intro i₁ i₂ j₁ j₂ hi hj
   change Fin 3 at i₁ i₂
-  fin_cases i₁ <;> fin_cases i₂ <;> norm_num at hi
-  · fin_cases j₁ <;> fin_cases j₂ <;> norm_num at hj <;>
-      simp only [weightedThreeStateMatrix, List.get_eq_getElem,
-        List.getElem_cons_zero, List.getElem_cons_succ] <;>
-      intro s t hs ht
-    · exact interl_common_affine_scalars (by norm_num) (by norm_num) hs ht
-    · exact interl_common_affine_scalars (by norm_num) hb hs ht
-    · exact interl_common_affine_scalars (by norm_num) hd hs ht
-    · exact interl_common_affine_scalars hb hb hs ht
-    · exact interl_common_affine_scalars hb hd hs ht
-    · exact interl_common_affine_scalars hd hd hs ht
-  · fin_cases j₁ <;> fin_cases j₂ <;> norm_num at hj <;>
-      simp only [weightedThreeStateMatrix, List.get_eq_getElem,
-        List.getElem_cons_zero, List.getElem_cons_succ] <;>
-      intro s t hs ht
-    · convert
-        (interl_pencil_affine_entries (A := 1) (b := 1) (cX := 0) (c0 := 0)
-          (dX := 0) (d0 := 0) (s := s) (t := t)
-          (by positivity) (by positivity) (by positivity) (by positivity) (by nlinarith))
-        using 1 <;> grind
-    · convert
-        (interl_pencil_affine_entries (A := 1) (b := b) (cX := 0) (c0 := 0)
-          (dX := 0) (d0 := 1) (s := s) (t := t)
-          (by positivity) (by positivity) (by positivity) (by positivity) (by nlinarith))
-        using 1 <;> grind
-    · convert
-        (interl_pencil_affine_entries (A := 1) (b := d) (cX := 0) (c0 := 0)
-          (dX := 0) (d0 := 1) (s := s) (t := t)
-          (by positivity) (by positivity) (by positivity) (by positivity) (by nlinarith))
-        using 1 <;> grind
-    · convert
-        (interl_pencil_affine_entries (A := b) (b := b) (cX := 0) (c0 := 1)
-          (dX := 0) (d0 := 1) (s := s) (t := t)
-          (by positivity) (by positivity) (by positivity) (by positivity) (by nlinarith))
-        using 1 <;> grind
-    · convert
-        (interl_pencil_affine_entries (A := b) (b := d) (cX := 0) (c0 := 1)
-          (dX := 0) (d0 := 1) (s := s) (t := t)
-          (by positivity) (by positivity) (by positivity) (by positivity) (by nlinarith))
-        using 1 <;> grind
-    · convert
-        (interl_pencil_affine_entries (A := d) (b := d) (cX := 0) (c0 := 1)
-          (dX := 0) (d0 := 1) (s := s) (t := t)
-          (by positivity) (by positivity) (by positivity) (by positivity) (by nlinarith))
-        using 1 <;> grind
-  · fin_cases j₁ <;> fin_cases j₂ <;> norm_num at hj <;>
-      simp only [weightedThreeStateMatrix, List.get_eq_getElem,
-        List.getElem_cons_zero, List.getElem_cons_succ] <;>
-      intro s t hs ht
-    · convert
-        (interl_pencil_affine_entries (A := 1) (b := 1) (cX := 1) (c0 := 0)
-          (dX := 1) (d0 := 0) (s := s) (t := t)
-          (by positivity) (by positivity) (by positivity) (by positivity) (by nlinarith))
-        using 1 <;> grind
-    · convert
-        (interl_pencil_affine_entries (A := 1) (b := b) (cX := 1) (c0 := 0)
-          (dX := alpha) (d0 := 0) (s := s) (t := t)
-          (by positivity) (by positivity) (by positivity) (by positivity) (by nlinarith))
-        using 1 <;> grind
-    · convert
-        (interl_pencil_affine_entries (A := 1) (b := d) (cX := 1) (c0 := 0)
-          (dX := 0) (d0 := 1) (s := s) (t := t)
-          (by positivity) (by positivity) (by positivity) (by positivity) (by nlinarith))
-        using 1 <;> grind
-    · convert
-        (interl_pencil_affine_entries (A := b) (b := b) (cX := alpha) (c0 := 0)
-          (dX := alpha) (d0 := 0) (s := s) (t := t)
-          (by positivity) (by positivity) (by positivity) (by positivity) (by nlinarith))
-        using 1 <;> grind
-    · convert
-        (interl_pencil_affine_entries (A := b) (b := d) (cX := alpha) (c0 := 0)
-          (dX := 0) (d0 := 1) (s := s) (t := t)
-          (by positivity) (by positivity) (by positivity) (by positivity)
-          (by
-            nlinarith [mul_nonneg hs.le hb,
-              mul_nonneg ha (mul_nonneg ht.le hd)]))
-        using 1 <;> grind
-    · convert
-        (interl_pencil_affine_entries (A := d) (b := d) (cX := 0) (c0 := 1)
-          (dX := 0) (d0 := 1) (s := s) (t := t)
-          (by positivity) (by positivity) (by positivity) (by positivity) (by nlinarith))
-        using 1 <;> grind
-  · fin_cases j₁ <;> fin_cases j₂ <;> norm_num at hj <;>
-      simp only [weightedThreeStateMatrix, List.get_eq_getElem,
-        List.getElem_cons_zero, List.getElem_cons_succ] <;>
-      intro s t hs ht
-    · convert interl_common_affine_scalars (a := 0) (b := 0) (by norm_num)
-        (by norm_num) hs ht using 1 <;> grind
-    · convert interl_common_affine_scalars (a := 0) (b := 1) (by norm_num)
-        (by norm_num) hs ht using 1 <;> grind
-    · convert interl_common_affine_scalars (a := 0) (b := 1) (by norm_num)
-        (by norm_num) hs ht using 1 <;> grind
-    · exact interl_common_affine_scalars (a := 1) (b := 1) (by norm_num)
-        (by norm_num) hs ht
-    · exact interl_common_affine_scalars (a := 1) (b := 1) (by norm_num)
-        (by norm_num) hs ht
-    · exact interl_common_affine_scalars (a := 1) (b := 1) (by norm_num)
-        (by norm_num) hs ht
-  · fin_cases j₁ <;> fin_cases j₂ <;> norm_num at hj <;>
-      simp only [weightedThreeStateMatrix, List.get_eq_getElem,
-        List.getElem_cons_zero, List.getElem_cons_succ] <;>
-      intro s t hs ht
-    · convert
-        (interl_pencil_affine_entries (A := 0) (b := 0) (cX := 1) (c0 := 0)
-          (dX := 1) (d0 := 0) (s := s) (t := t)
-          (by positivity) (by positivity) (by positivity) (by positivity) (by nlinarith))
-        using 1 <;> grind
-    · convert
-        (interl_pencil_affine_entries (A := 0) (b := 1) (cX := 1) (c0 := 0)
-          (dX := alpha) (d0 := 0) (s := s) (t := t)
-          (by positivity) (by positivity) (by positivity) (by positivity) (by nlinarith))
-        using 1 <;> grind
-    · convert
-        (interl_pencil_affine_entries (A := 0) (b := 1) (cX := 1) (c0 := 0)
-          (dX := 0) (d0 := 1) (s := s) (t := t)
-          (by positivity) (by positivity) (by positivity) (by positivity) (by nlinarith))
-        using 1 <;> grind
-    · convert
-        (interl_pencil_affine_entries (A := 1) (b := 1) (cX := alpha) (c0 := 0)
-          (dX := alpha) (d0 := 0) (s := s) (t := t)
-          (by positivity) (by positivity) (by positivity) (by positivity) (by nlinarith))
-        using 1 <;> grind
-    · convert
-        (interl_pencil_affine_entries (A := 1) (b := 1) (cX := alpha) (c0 := 0)
-          (dX := 0) (d0 := 1) (s := s) (t := t)
-          (by positivity) (by positivity) (by positivity) (by positivity) (by nlinarith))
-        using 1 <;> grind
-    · convert
-        (interl_pencil_affine_entries (A := 1) (b := 1) (cX := 0) (c0 := 1)
-          (dX := 0) (d0 := 1) (s := s) (t := t)
-          (by positivity) (by positivity) (by positivity) (by positivity) (by nlinarith))
-        using 1 <;> grind
-  · fin_cases j₁ <;> fin_cases j₂ <;> norm_num at hj <;>
+  by_cases hdiag : i₁ = 2 ∧ i₂ = 2
+  · fin_cases i₁ <;> fin_cases i₂ <;> norm_num at hdiag
+    fin_cases j₁ <;> fin_cases j₂ <;> norm_num at hj <;>
       simp only [weightedThreeStateMatrix, List.get_eq_getElem,
         List.getElem_cons_zero, List.getElem_cons_succ] <;>
       intro s t hs ht
@@ -268,6 +121,16 @@ private lemma weightedThreeStateMatrix_affine
           |>.C_mul_right_of_nonneg ha
       convert h using 1 <;> grind
     · convert interl_affine_add_one_self (t := t) hs using 1 <;> grind
+  · fin_cases i₁ <;> fin_cases i₂ <;> norm_num at hi <;> norm_num at hdiag <;>
+      fin_cases j₁ <;> fin_cases j₂ <;> norm_num at hj <;>
+      simp only [weightedThreeStateMatrix, List.get_eq_getElem,
+        List.getElem_cons_zero, List.getElem_cons_succ] <;>
+      intro s t hs ht <;>
+      apply interl_of_affine_coeff (by compute_degree) (by compute_degree) <;>
+      norm_num [coeff_add, coeff_C_mul, coeff_mul_C, coeff_C, coeff_X, coeff_one] <;>
+      first
+      | positivity
+      | nlinarith [mul_nonneg ha (mul_nonneg ht.le hd)]
 
 /-- Under `b ≥ d` and `b ≥ alpha`, the weighted three-state matrix preserves
 zero-aware nonnegative real-rooted interlacing triples. -/

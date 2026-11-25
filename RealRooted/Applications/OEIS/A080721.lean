@@ -484,29 +484,6 @@ private theorem polynomial_initial :
       eval_X, eval_one, eval_pow, eval_ofNat] <;>
     norm_num [legendre] <;> ring
 
-/-- A sequence with the generated A080721 initial rows and order-four update
-has split rows. -/
-@[rr_row_model]
-theorem splits_of_recurrence
-    {P : ℕ → ℝ[X]}
-    (hzero : P 0 = 1 + 4 * X + 4 * X ^ 2)
-    (hone : P 1 = 1 + 9 * X + 21 * X ^ 2 + 14 * X ^ 3)
-    (htwo : P 2 = 1 + 16 * X + 66 * X ^ 2 + 100 * X ^ 3 + 50 * X ^ 4)
-    (hthree : P 3 =
-      1 + 25 * X + 160 * X ^ 2 + 410 * X ^ 3 + 455 * X ^ 4 + 182 * X ^ 5)
-    (hrec : ∀ n : ℕ,
-      P (n + 4) = nextRow n (P (n + 3)) (P (n + 2)) (P (n + 1)) (P n))
-    (n : ℕ) :
-    (P n).Splits := by
-  have heq := sequence_eq_of_same_lag_four_recurrence
-    (P := P) (Q := fun m => polynomial (m + 2)) nextRow
-    (hzero.trans polynomial_initial.1.symm) (hone.trans polynomial_initial.2.1.symm)
-    (htwo.trans polynomial_initial.2.2.1.symm) (hthree.trans polynomial_initial.2.2.2.symm)
-    hrec (fun m => by simpa only [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using
-      polynomial_recurrence m)
-  rw [heq n]
-  exact (polynomial_strictInterl_succ n).1.2
-
 /-- Consecutive rows of a sequence with the generated A080721 initial rows and
 order-four update interlace. -/
 @[rr_row_model]
@@ -529,5 +506,21 @@ theorem interlaces_of_recurrence
       polynomial_recurrence m)
   rw [heq n, heq (n + 1)]
   exact polynomial_interlaces_succ n
+
+/-- A sequence with the generated A080721 initial rows and order-four update
+has split rows. -/
+@[rr_row_model]
+theorem splits_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hzero : P 0 = 1 + 4 * X + 4 * X ^ 2)
+    (hone : P 1 = 1 + 9 * X + 21 * X ^ 2 + 14 * X ^ 3)
+    (htwo : P 2 = 1 + 16 * X + 66 * X ^ 2 + 100 * X ^ 3 + 50 * X ^ 4)
+    (hthree : P 3 =
+      1 + 25 * X + 160 * X ^ 2 + 410 * X ^ 3 + 455 * X ^ 4 + 182 * X ^ 5)
+    (hrec : ∀ n : ℕ,
+      P (n + 4) = nextRow n (P (n + 3)) (P (n + 2)) (P (n + 1)) (P n))
+    (n : ℕ) :
+    (P n).Splits := by
+  exact (interlaces_of_recurrence hzero hone htwo hthree hrec n).2.1.2
 
 end RealRooted.Applications.OEIS.A080721

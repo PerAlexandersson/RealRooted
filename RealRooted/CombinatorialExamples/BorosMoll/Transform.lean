@@ -93,46 +93,6 @@ private lemma lt_of_succ_lt {s : ℕ → ℝ} {n : ℕ} (h : ∀ j, j + 1 < n �
   | zero => lia
   | succ k ih => grind
 
-/-- If a polynomial of degree `n` alternates in sign along `t 0 < t 1 < ⋯ < t n`, then its
-roots are exactly `n` reals `s 0 < ⋯ < s (n-1)` with `t j < s j < t (j+1)`. -/
-private lemma roots_of_alternation (p : ℝ[X]) (n : ℕ) (hn : 1 ≤ n) (hdeg : p.natDegree = n)
-    (t : ℕ → ℝ) (ht : ∀ j < n, t j < t (j + 1))
-    (hsign : ∀ j < n, p.eval (t j) * p.eval (t (j + 1)) < 0) :
-    ∃ s : ℕ → ℝ, (∀ j < n, t j < s j ∧ s j < t (j + 1)) ∧ p ≠ 0 ∧
-      p.roots = ((List.range n).map s : Multiset ℝ) := by
-  have : ∀ j, ∃ x, j < n → (t j < x ∧ x < t (j+1) ∧ p.eval x = 0) := by
-    intro j
-    by_cases hj : j < n
-    · obtain ⟨x, hx, hx0⟩ := exists_root_between (ht j hj) (hsign j hj)
-      exact ⟨x, fun _ => ⟨hx.1, hx.2, hx0⟩⟩
-    · exact ⟨0, fun h => absurd h hj⟩
-  choose s hs using this
-  have hp0 : p ≠ 0 := by
-    intro h; have := hsign 0 hn; simp [h] at this
-  have hmono : ∀ i j, i < j → j < n → s i < s j :=
-    lt_of_succ_lt (fun j hj => ((hs j (by lia)).2.1).trans (hs (j+1) hj).1)
-  have hnd : ((List.range n).map s).Nodup := by
-    apply List.Nodup.map_on _ (List.nodup_range)
-    intro i hi j hj hij
-    simp only [List.mem_range] at hi hj
-    by_contra hne
-    rcases lt_or_gt_of_ne hne with h | h
-    · exact (hmono i j h hj).ne hij
-    · exact (hmono j i h hi).ne hij.symm
-  have hle : ((List.range n).map s : Multiset ℝ) ≤ p.roots := by
-    rw [Multiset.le_iff_subset (by simpa using hnd)]
-    intro x hx
-    simp only [Multiset.mem_coe, List.mem_map, List.mem_range] at hx
-    obtain ⟨j, hj, rfl⟩ := hx
-    exact (mem_roots hp0).2 (hs j hj).2.2
-  refine ⟨s, fun j hj => ⟨(hs j hj).1, (hs j hj).2.1⟩, hp0,
-    (Multiset.eq_of_le_of_card_le hle ?_).symm⟩
-  simpa [hdeg] using card_roots' p
-
-private lemma mono_of_interleave {s t : ℕ → ℝ} {n : ℕ} (h : ∀ j < n, t j < s j ∧ s j < t (j + 1)) :
-    ∀ i j, i < j → j < n → s i < s j :=
-  lt_of_succ_lt (fun j hj => ((h j (by lia)).2).trans (h (j+1) hj).1)
-
 /-- A strictly increasing sequence `s 0 < ⋯ < s (n-1)` gives a duplicate-free multiset. -/
 lemma nodup_map_range {s : ℕ → ℝ} {n : ℕ} (hmono : ∀ i j, i < j → j < n → s i < s j) :
     (((List.range n).map s : List ℝ) : Multiset ℝ).Nodup := by
@@ -144,6 +104,49 @@ lemma nodup_map_range {s : ℕ → ℝ} {n : ℕ} (hmono : ∀ i j, i < j → j 
   rcases lt_or_gt_of_ne hne with h | h
   · exact (hmono i j h hj).ne hij
   · exact (hmono j i h hi).ne hij.symm
+
+/-- Roots in prescribed disjoint intervals: a degree `n` polynomial changing sign on `n`
+disjoint intervals `(a j, b j)` has exactly one simple root in each, and no others. -/
+private lemma roots_of_intervals (p : ℝ[X]) (n : ℕ) (hn : 1 ≤ n) (hdeg : p.natDegree = n)
+    (a b : ℕ → ℝ) (hab : ∀ j < n, a j < b j) (hba : ∀ j, j + 1 < n → b j ≤ a (j + 1))
+    (hsign : ∀ j < n, p.eval (a j) * p.eval (b j) < 0) :
+    ∃ s : ℕ → ℝ, (∀ j < n, a j < s j ∧ s j < b j) ∧ p ≠ 0 ∧
+      p.roots = ((List.range n).map s : Multiset ℝ) := by
+  have : ∀ j, ∃ x, j < n → (a j < x ∧ x < b j ∧ p.eval x = 0) := by
+    intro j
+    by_cases hj : j < n
+    · obtain ⟨x, hx, hx0⟩ := exists_root_between (hab j hj) (hsign j hj)
+      exact ⟨x, fun _ => ⟨hx.1, hx.2, hx0⟩⟩
+    · exact ⟨0, fun h => absurd h hj⟩
+  choose s hs using this
+  have hp0 : p ≠ 0 := by
+    intro h; have := hsign 0 hn; simp [h] at this
+  have hmono : ∀ i j, i < j → j < n → s i < s j :=
+    lt_of_succ_lt (fun j hj => (((hs j (by lia)).2.1).trans_le (hba j hj)).trans
+      (hs (j+1) hj).1)
+  have hle : ((List.range n).map s : Multiset ℝ) ≤ p.roots := by
+    rw [Multiset.le_iff_subset (nodup_map_range hmono)]
+    intro x hx
+    simp only [Multiset.mem_coe, List.mem_map, List.mem_range] at hx
+    obtain ⟨j, hj, rfl⟩ := hx
+    exact (mem_roots hp0).2 (hs j hj).2.2
+  refine ⟨s, fun j hj => ⟨(hs j hj).1, (hs j hj).2.1⟩, hp0,
+    (Multiset.eq_of_le_of_card_le hle ?_).symm⟩
+  simpa [hdeg] using card_roots' p
+
+/-- If a polynomial of degree `n` alternates in sign along `t 0 < t 1 < ⋯ < t n`, then its
+roots are exactly `n` reals `s 0 < ⋯ < s (n-1)` with `t j < s j < t (j+1)`. -/
+private lemma roots_of_alternation (p : ℝ[X]) (n : ℕ) (hn : 1 ≤ n) (hdeg : p.natDegree = n)
+    (t : ℕ → ℝ) (ht : ∀ j < n, t j < t (j + 1))
+    (hsign : ∀ j < n, p.eval (t j) * p.eval (t (j + 1)) < 0) :
+    ∃ s : ℕ → ℝ, (∀ j < n, t j < s j ∧ s j < t (j + 1)) ∧ p ≠ 0 ∧
+      p.roots = ((List.range n).map s : Multiset ℝ) := by
+  exact roots_of_intervals p n hn hdeg t (fun j => t (j + 1)) ht
+    (fun _ _ => le_rfl) hsign
+
+private lemma mono_of_interleave {s t : ℕ → ℝ} {n : ℕ} (h : ∀ j < n, t j < s j ∧ s j < t (j + 1)) :
+    ∀ i j, i < j → j < n → s i < s j :=
+  lt_of_succ_lt (fun j hj => ((h j (by lia)).2).trans (h (j+1) hj).1)
 
 private lemma sortedRoots_eq {p : ℝ[X]} {n : ℕ} {s : ℕ → ℝ}
     (hmono : ∀ i j, i < j → j < n → s i < s j)
@@ -595,35 +598,6 @@ section SmallCasesCore
 /-! ## Interlacing from prescribed root intervals -/
 
 open Polynomial
-
-/-- Roots in prescribed disjoint intervals: a degree `n` polynomial changing sign on `n`
-disjoint intervals `(a j, b j)` has exactly one simple root in each, and no others. -/
-private lemma roots_of_intervals (p : ℝ[X]) (n : ℕ) (hn : 1 ≤ n) (hdeg : p.natDegree = n)
-    (a b : ℕ → ℝ) (hab : ∀ j < n, a j < b j) (hba : ∀ j, j + 1 < n → b j ≤ a (j + 1))
-    (hsign : ∀ j < n, p.eval (a j) * p.eval (b j) < 0) :
-    ∃ s : ℕ → ℝ, (∀ j < n, a j < s j ∧ s j < b j) ∧ p ≠ 0 ∧
-      p.roots = ((List.range n).map s : Multiset ℝ) := by
-  have : ∀ j, ∃ x, j < n → (a j < x ∧ x < b j ∧ p.eval x = 0) := by
-    intro j
-    by_cases hj : j < n
-    · obtain ⟨x, hx, hx0⟩ := exists_root_between (hab j hj) (hsign j hj)
-      exact ⟨x, fun _ => ⟨hx.1, hx.2, hx0⟩⟩
-    · exact ⟨0, fun h => absurd h hj⟩
-  choose s hs using this
-  have hp0 : p ≠ 0 := by
-    intro h; have := hsign 0 hn; simp [h] at this
-  have hmono : ∀ i j, i < j → j < n → s i < s j :=
-    lt_of_succ_lt (fun j hj => (((hs j (by lia)).2.1).trans_le (hba j hj)).trans
-      (hs (j+1) hj).1)
-  have hle : ((List.range n).map s : Multiset ℝ) ≤ p.roots := by
-    rw [Multiset.le_iff_subset (nodup_map_range hmono)]
-    intro x hx
-    simp only [Multiset.mem_coe, List.mem_map, List.mem_range] at hx
-    obtain ⟨j, hj, rfl⟩ := hx
-    exact (mem_roots hp0).2 (hs j hj).2.2
-  refine ⟨s, fun j hj => ⟨(hs j hj).1, (hs j hj).2.1⟩, hp0,
-    (Multiset.eq_of_le_of_card_le hle ?_).symm⟩
-  simpa [hdeg] using card_roots' p
 
 private lemma mono_of_succ {t : ℕ → ℝ} {m : ℕ} (ht : ∀ i < m, t i < t (i + 1)) :
     ∀ i j, i ≤ j → j ≤ m → t i ≤ t j := by

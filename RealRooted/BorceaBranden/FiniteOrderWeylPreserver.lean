@@ -302,32 +302,19 @@ private theorem finiteOrderWeylOperatorDegreeBox_algebraicSymbol_explicit
     simp [finiteOrderWeylOperatorDegreeBox, finiteOrderWeylOperator,
       iteratedPDerivAtDegreeBox, leftMultiply]
   rw [hmap]
-  have hsum : ∀ s : Finset (Fin (m + 1)),
-      MvPolynomial.algebraicSymbol κ
-          (s.sum (fun j =>
-            leftMultiply (Q j) ∘ₗ iteratedPDerivAtDegreeBox q (j : ℕ) κ)) =
-        s.sum (fun j => MvPolynomial.algebraicSymbol κ
-          (leftMultiply (Q j) ∘ₗ iteratedPDerivAtDegreeBox q (j : ℕ) κ)) := by
-    intro s
-    induction s using Finset.induction_on with
-    | empty => simp
-    | @insert j s hj ih =>
-        simp only [Finset.sum_insert hj, MvPolynomial.algebraicSymbol_add, ih]
-  rw [hsum Finset.univ]
-  rw [show (∑ j : Fin (m + 1), MvPolynomial.algebraicSymbol κ
-      (leftMultiply (Q j) ∘ₗ iteratedPDerivAtDegreeBox q (j : ℕ) κ)) =
-      (∑ j : Fin (m + 1),
-        MvPolynomial.C (n.descFactorial (j : ℕ) : ℂ) *
-          MvPolynomial.rename (Sum.inl : σ → σ ⊕ σ) (Q j) *
-          (MvPolynomial.X (Sum.inl q) + MvPolynomial.X (Sum.inr q)) ^ (n - (j : ℕ)) *
-          ∏ i ∈ Finset.univ.erase q,
-            (MvPolynomial.X (Sum.inl i) + MvPolynomial.X (Sum.inr i)) ^ κ i) by
-        apply Finset.sum_congr rfl
-        intro j _
-        rw [algebraicSymbol_leftMultiply,
-          algebraicSymbol_iteratedPDerivAtDegreeBox_explicit q (j : ℕ) n κ hκ]
-        ring_nf,
-    Finset.sum_mul]
+  have hsum : MvPolynomial.algebraicSymbol κ
+      (∑ j : Fin (m + 1), leftMultiply (Q j) ∘ₗ iteratedPDerivAtDegreeBox q (j : ℕ) κ) =
+      ∑ j : Fin (m + 1), MvPolynomial.algebraicSymbol κ
+        (leftMultiply (Q j) ∘ₗ iteratedPDerivAtDegreeBox q (j : ℕ) κ) := by
+    simp only [MvPolynomial.algebraicSymbol_eq_sum, LinearMap.sum_apply,
+      map_sum, Finset.mul_sum, Finset.sum_mul]
+    exact Finset.sum_comm
+  rw [hsum, Finset.sum_mul]
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [algebraicSymbol_leftMultiply,
+    algebraicSymbol_iteratedPDerivAtDegreeBox_explicit q (j : ℕ) n κ hκ]
+  ring
 
 /-- The signed Weyl symbol of a finite-order differential operator. -/
 def signedWeylSymbol {σ : Type*} (m : ℕ)

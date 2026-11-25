@@ -375,30 +375,6 @@ private theorem polynomial_two : polynomial 2 = X + 12 * X ^ 2 := by
   norm_num [map_ofNat]
   ring
 
-/-- A sequence with the A304330 initial rows and update has split rows. -/
-@[rr_row_model]
-theorem splits_of_recurrence
-    {P : ℕ → ℝ[X]}
-    (hzero : P 0 = 1)
-    (hone : P 1 = X)
-    (_htwo : P 2 = X + 12 * X ^ 2)
-    (hrec : ∀ n : ℕ, P (n + 2) = nextRow n (P (n + 1)))
-    (n : ℕ) :
-    (P n).Splits := by
-  have heq := sequence_eq_of_same_lag_one_recurrence
-    (fun n p => if n = 0 then X else nextRow (n - 1) p)
-    (hzero.trans polynomial_zero.symm)
-    (fun n => by
-      cases n with
-      | zero => simpa using hone
-      | succ n => simpa using hrec n)
-    (fun n => by
-      cases n with
-      | zero => simpa using polynomial_one
-      | succ n => simpa using polynomial_recurrence n)
-  rw [heq n]
-  exact polynomial_splits n
-
 /-- Consecutive rows of a sequence with the A304330 initial rows and update interlace. -/
 @[rr_row_model]
 theorem interlaces_of_recurrence
@@ -409,18 +385,22 @@ theorem interlaces_of_recurrence
     (hrec : ∀ n : ℕ, P (n + 2) = nextRow n (P (n + 1)))
     (n : ℕ) :
     Interlaces (P n) (P (n + 1)) := by
-  have heq := sequence_eq_of_same_lag_one_recurrence
-    (fun n p => if n = 0 then X else nextRow (n - 1) p)
-    (hzero.trans polynomial_zero.symm)
-    (fun n => by
-      cases n with
-      | zero => simpa using hone
-      | succ n => simpa using hrec n)
-    (fun n => by
-      cases n with
-      | zero => simpa using polynomial_one
-      | succ n => simpa using polynomial_recurrence n)
+  have heq := sequence_eq_of_same_lag_two_recurrence (Q := polynomial)
+    (fun n p _ ↦ nextRow n p) (hzero.trans polynomial_zero.symm)
+    (hone.trans polynomial_one.symm) hrec polynomial_recurrence
   rw [heq n, heq (n + 1)]
   exact polynomial_interlaces n
+
+/-- A sequence with the A304330 initial rows and update has split rows. -/
+@[rr_row_model]
+theorem splits_of_recurrence
+    {P : ℕ → ℝ[X]}
+    (hzero : P 0 = 1)
+    (hone : P 1 = X)
+    (_htwo : P 2 = X + 12 * X ^ 2)
+    (hrec : ∀ n : ℕ, P (n + 2) = nextRow n (P (n + 1)))
+    (n : ℕ) :
+    (P n).Splits := by
+  exact (interlaces_of_recurrence hzero hone _htwo hrec n).2.1.2
 
 end RealRooted.Applications.OEIS.A304330

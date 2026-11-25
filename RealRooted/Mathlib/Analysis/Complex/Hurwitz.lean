@@ -229,29 +229,6 @@ private theorem log_ratio_not_locally_constant {r : ℂ → ℂ} {z₀ : ℂ} {�
     rw [← exp_log (slitPlane_ne_zero (hslit z hzball)), hz, exp_zero]
   exact (div_eq_one_iff_eq hr0).mp heq
 
-private theorem tendstoLocallyUniformlyOn_div_nat {g : ℂ → ℂ} {s : Set ℂ}
-    (hg : ContinuousOn g s) :
-    TendstoLocallyUniformlyOn (fun (n : ℕ) z => g z / (n : ℂ))
-      (fun _ => 0) atTop s := by
-  have hfixed : TendstoLocallyUniformlyOn (fun _ : ℕ => g) g atTop s := by
-    apply TendstoUniformlyOn.tendstoLocallyUniformlyOn
-    rw [Metric.tendstoUniformlyOn_iff]
-    intro ε hε
-    exact Eventually.of_forall fun _ z _ => by simpa using hε
-  have hscalar : TendstoLocallyUniformlyOn
-      (fun n : ℕ => fun _ : ℂ => (n : ℂ)⁻¹) (fun _ => 0) atTop s :=
-    (tendsto_inv_atTop_nhds_zero_nat.tendstoUniformlyOn_const s).tendstoLocallyUniformlyOn
-  have hprod := hfixed.mul₀ hscalar hg continuousOn_const
-  have hF : ((fun _ : ℕ => g) * (fun n : ℕ => fun _ : ℂ => (n : ℂ)⁻¹)) =
-      (fun (n : ℕ) z => g z / (n : ℂ)) := by
-    funext n z
-    simp [Pi.mul_apply, div_eq_mul_inv]
-  have hzero : g * (fun _ : ℂ => 0) = fun _ => 0 := by
-    funext z
-    simp [Pi.mul_apply]
-  rw [hF, hzero] at hprod
-  exact hprod
-
 private theorem tendstoLocallyUniformlyOn_div_nat_of_tendsto {g : ℂ → ℂ}
     {G : ℕ → ℂ → ℂ} {s : Set ℂ}
     (hG : TendstoLocallyUniformlyOn G g atTop s) (hg : ContinuousOn g s) :
@@ -261,15 +238,9 @@ private theorem tendstoLocallyUniformlyOn_div_nat_of_tendsto {g : ℂ → ℂ}
       (fun n : ℕ => fun _ : ℂ => (n : ℂ)⁻¹) (fun _ => 0) atTop s :=
     (tendsto_inv_atTop_nhds_zero_nat.tendstoUniformlyOn_const s).tendstoLocallyUniformlyOn
   have hprod := hG.mul₀ hscalar hg continuousOn_const
-  have hF : (G * (fun n : ℕ => fun _ : ℂ => (n : ℂ)⁻¹)) =
-      (fun (n : ℕ) z => G n z / (n : ℂ)) := by
-    funext n z
-    simp [Pi.mul_apply, div_eq_mul_inv]
-  have hzero : g * (fun _ : ℂ => 0) = fun _ => 0 := by
-    funext z
-    simp [Pi.mul_apply]
-  rw [hF, hzero] at hprod
-  exact hprod
+  change TendstoLocallyUniformlyOn (fun n z => G n z * (n : ℂ)⁻¹)
+    (fun z => g z * 0) atTop s at hprod
+  simpa only [mul_zero, div_eq_mul_inv] using hprod
 
 private theorem tendstoLocallyUniformlyOn_log_of_closedBall_one
     {H : ℕ → ℂ → ℂ} {h : ℂ → ℂ} {s : Set ℂ}
@@ -339,40 +310,6 @@ private theorem tendsto_log_rotated_div_nat (ω h : ℂ) (hω : ‖ω‖ = 1) :
   apply tendsto_zero_iff_norm_tendsto_zero.mpr
   simpa [norm_div] using ht
 
-private theorem tendstoLocallyUniformlyOn_log_auxiliary {r h : ℂ → ℂ} {z₀ : ℂ}
-    {ρ : ℝ} (hr0 : ‖r z₀‖ = 1)
-    (hH : ContinuousOn (fun z => log (h z / h z₀)) (ball z₀ ρ)) :
-    TendstoLocallyUniformlyOn
-      (fun (n : ℕ) z => log (r z / r z₀) -
-        log ((r z₀)⁻¹ ^ n * h z₀) / (n : ℂ) -
-        log (h z / h z₀) / (n : ℂ))
-      (fun z => log (r z / r z₀)) atTop (ball z₀ ρ) := by
-  let L : ℂ → ℂ := fun z => log (r z / r z₀)
-  let H : ℂ → ℂ := fun z => log (h z / h z₀)
-  let c : ℕ → ℂ := fun n => log ((r z₀)⁻¹ ^ n * h z₀) / (n : ℂ)
-  have hfixed : TendstoLocallyUniformlyOn (fun _ : ℕ => L) L atTop (ball z₀ ρ) := by
-    apply TendstoUniformlyOn.tendstoLocallyUniformlyOn
-    rw [Metric.tendstoUniformlyOn_iff]
-    intro ε hε
-    exact Eventually.of_forall fun _ z _ => by simpa using hε
-  have hc : TendstoLocallyUniformlyOn (fun n => fun _ : ℂ => c n)
-      (fun _ => 0) atTop (ball z₀ ρ) :=
-    ((tendsto_log_rotated_div_nat (r z₀) (h z₀) hr0).tendstoUniformlyOn_const
-      (ball z₀ ρ)).tendstoLocallyUniformlyOn
-  have hHdiv : TendstoLocallyUniformlyOn (fun (n : ℕ) z => H z / (n : ℂ))
-      (fun _ => 0) atTop (ball z₀ ρ) := tendstoLocallyUniformlyOn_div_nat hH
-  have hconv := (hfixed.sub hc).sub hHdiv
-  have hF : ((fun _ : ℕ => L) - (fun n => fun _ : ℂ => c n) -
-      (fun (n : ℕ) z => H z / (n : ℂ))) =
-      (fun (n : ℕ) z => L z - c n - H z / (n : ℂ)) := by
-    funext n z
-    simp [Pi.sub_apply]
-  have hlim : (L - (fun _ => 0) - (fun _ => 0)) = L := by
-    funext z
-    simp [Pi.sub_apply]
-  rw [hF, hlim] at hconv
-  exact hconv
-
 private theorem tendstoLocallyUniformlyOn_varying_log_auxiliary
     {r : ℂ → ℂ} {h₀ : ℂ} {K : ℕ → ℂ → ℂ} {k : ℂ → ℂ}
     {z₀ : ℂ} {ρ : ℝ} (hr0 : ‖r z₀‖ = 1)
@@ -396,47 +333,10 @@ private theorem tendstoLocallyUniformlyOn_varying_log_auxiliary
       (ball z₀ ρ)).tendstoLocallyUniformlyOn
   have hKdiv := tendstoLocallyUniformlyOn_div_nat_of_tendsto hK hkcont
   have hconv := (hfixed.sub hc).sub hKdiv
-  have hF : ((fun _ : ℕ => L) -
-      (fun n : ℕ => fun _ : ℂ => log ((r z₀)⁻¹ ^ n * h₀) / (n : ℂ)) -
-      (fun (n : ℕ) z => log (K n z) / (n : ℂ))) =
-      (fun (n : ℕ) z => L z -
-        log ((r z₀)⁻¹ ^ n * h₀) / (n : ℂ) - log (K n z) / (n : ℂ)) := by
-    funext n z
-    simp [Pi.sub_apply]
-  have hlim : (L - (fun _ => 0) - (fun _ => 0)) = L := by
-    funext z
-    simp [Pi.sub_apply]
-  rw [hF, hlim] at hconv
-  exact hconv
-
-private theorem log_auxiliary_zero_imp_pow_eq {r h : ℂ → ℂ} {z₀ z : ℂ} {ρ : ℝ}
-    (hr0 : r z₀ ≠ 0) (hh0 : h z₀ ≠ 0) (hz : z ∈ ball z₀ ρ)
-    (hR : ∀ w ∈ ball z₀ ρ, exp (log (r w / r z₀)) = r w / r z₀)
-    (hH : ∀ w ∈ ball z₀ ρ, exp (log (h w / h z₀)) = h w / h z₀)
-    {n : ℕ} (hn : n ≠ 0)
-    (hG : log (r z / r z₀) - log ((r z₀)⁻¹ ^ n * h z₀) / (n : ℂ) -
-      log (h z / h z₀) / (n : ℂ) = 0) :
-    r z ^ n = h z := by
-  have hnC : (n : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hn
-  have hEq : (n : ℂ) * log (r z / r z₀) =
-      log ((r z₀)⁻¹ ^ n * h z₀) + log (h z / h z₀) := by
-    field_simp [hnC] at hG
-    simp only [inv_eq_one_div] at ⊢
-    linear_combination hG
-  have hexp := congrArg exp hEq
-  rw [exp_add, exp_nat_mul, hR z hz, exp_log, hH z hz] at hexp
-  · calc
-      r z ^ n = (r z / r z₀) ^ n * (r z₀) ^ n := by
-        rw [div_pow, div_mul_cancel₀ _ (pow_ne_zero _ hr0)]
-      _ = h z := by
-        rw [hexp]
-        field_simp [hr0, hh0]
-        simp only [one_div]
-        calc
-          (r z₀)⁻¹ ^ n * h z * (r z₀) ^ n =
-              ((r z₀)⁻¹ * r z₀) ^ n * h z := by rw [mul_pow]; ring
-          _ = h z := by simp [hr0]
-  · exact mul_ne_zero (pow_ne_zero _ (inv_ne_zero hr0)) hh0
+  change TendstoLocallyUniformlyOn
+    (fun (n : ℕ) z => L z - log ((r z₀)⁻¹ ^ n * h₀) / (n : ℂ) - log (K n z) / (n : ℂ))
+    (fun z => L z - 0 - 0) atTop (ball z₀ ρ) at hconv
+  simpa only [sub_zero] using hconv
 
 private theorem varying_log_auxiliary_zero_imp_pow_eq
     {r K : ℂ → ℂ} {h₀ z₀ z : ℂ} {ρ : ℝ}
@@ -539,52 +439,6 @@ private theorem isLimitOfZeros_pow_sub_varying_of_closedBall_one
     exact varying_log_auxiliary_zero_imp_pow_eq hr0 hh₀ hz
       (fun w hw => hRexp w (hsubR hw)) (hKexp n) hn hzero
   exact isLimitOfZeros_of_auxiliary hδ hGanalytic hconv hL0 hLnonconst himp
-
-/-- The two-term analytic zero-limit theorem, in normalized form. It is the two-dominant
-case of Sokal, *Combinatorics, Probability and Computing* 13 (2004), Theorem 1.5. -/
-theorem isLimitOfZeros_pow_sub_of_analyticAt {r h : ℂ → ℂ} {z₀ : ℂ}
-    (hr : AnalyticAt ℂ r z₀) (hh : AnalyticAt ℂ h z₀)
-    (hrunit : ‖r z₀‖ = 1) (hh0 : h z₀ ≠ 0)
-    (hnconst : ¬∀ᶠ z in 𝓝 z₀, r z = r z₀) :
-    IsLimitOfZeros (fun n z => r z ^ n - h z) z₀ := by
-  have hr0 : r z₀ ≠ 0 := by
-    exact fun heq => by simp [heq] at hrunit
-  obtain ⟨ρr, hρr, hRslit, hRanalytic, hRexp⟩ := exists_ball_analytic_log_ratio hr hr0
-  obtain ⟨ρh, hρh, hHslit, hHanalytic, hHexp⟩ := exists_ball_analytic_log_ratio hh hh0
-  let ρ := min ρr ρh
-  have hρ : 0 < ρ := lt_min hρr hρh
-  have hsubR : ball z₀ ρ ⊆ ball z₀ ρr :=
-    ball_subset_ball (min_le_left _ _)
-  have hsubH : ball z₀ ρ ⊆ ball z₀ ρh :=
-    ball_subset_ball (min_le_right _ _)
-  let L : ℂ → ℂ := fun z => log (r z / r z₀)
-  let H : ℂ → ℂ := fun z => log (h z / h z₀)
-  let G : ℕ → ℂ → ℂ := fun n z => L z -
-    log ((r z₀)⁻¹ ^ n * h z₀) / (n : ℂ) - H z / (n : ℂ)
-  have hHcont : ContinuousOn H (ball z₀ ρ) := by
-    intro z hz
-    exact (hHanalytic z (hsubH hz)).continuousAt.continuousWithinAt
-  have hconv : TendstoLocallyUniformlyOn G L atTop (ball z₀ ρ) :=
-    tendstoLocallyUniformlyOn_log_auxiliary hrunit hHcont
-  have hGanalytic : ∀ n, DifferentiableOn ℂ (G n) (ball z₀ ρ) := by
-    intro n z hz
-    exact ((hRanalytic z (hsubR hz)).differentiableAt.sub
-      (differentiableAt_const _)).sub
-      ((hHanalytic z (hsubH hz)).differentiableAt.div_const _)
-      |>.differentiableWithinAt
-  have hL0 : L z₀ = 0 := by simp [L]
-  have hLnonconst : ¬∀ᶠ z in 𝓝 z₀, L z = L z₀ := by
-    rw [hL0]
-    exact log_ratio_not_locally_constant hρ hr0
-      (fun z hz => hRslit z (hsubR hz)) hnconst
-  have himp : ∀ᶠ n in atTop, ∀ z ∈ ball z₀ ρ,
-      G n z = 0 → r z ^ n - h z = 0 := by
-    filter_upwards [eventually_ne_atTop 0] with n hn z hz hzero
-    apply sub_eq_zero.mpr
-    exact log_auxiliary_zero_imp_pow_eq hr0 hh0 hz
-      (fun w hw => hRexp w (hsubR hw))
-      (fun w hw => hHexp w (hsubH hw)) hn hzero
-  exact isLimitOfZeros_of_auxiliary hρ hGanalytic hconv hL0 hLnonconst himp
 
 private theorem tendstoUniformlyOn_mul_pow_of_bounds {a b : ℂ → ℂ}
     {s : Set ℂ} {M q : ℝ} (hM : 0 ≤ M) (hq0 : 0 ≤ q) (hq1 : q < 1)
@@ -794,6 +648,18 @@ private theorem isLimitOfZeros_pow_sub_perturbed
   simp only [K, Nat.not_lt.mpr hn, ↓reduceIte] at hzero
   rw [mul_div_cancel₀ _ hh0] at hzero
   exact hzero
+
+/-- The two-term analytic zero-limit theorem, in normalized form. It is the two-dominant
+case of Sokal, *Combinatorics, Probability and Computing* 13 (2004), Theorem 1.5. -/
+theorem isLimitOfZeros_pow_sub_of_analyticAt {r h : ℂ → ℂ} {z₀ : ℂ}
+    (hr : AnalyticAt ℂ r z₀) (hh : AnalyticAt ℂ h z₀)
+    (hrunit : ‖r z₀‖ = 1) (hh0 : h z₀ ≠ 0)
+    (hnconst : ¬∀ᶠ z in 𝓝 z₀, r z = r z₀) :
+    IsLimitOfZeros (fun n z => r z ^ n - h z) z₀ := by
+  obtain ⟨ρ, hρ, hball⟩ := Metric.mem_nhds_iff.mp hh.eventually_analyticAt
+  simpa only [sub_zero] using isLimitOfZeros_pow_sub_perturbed hρ hr hrunit hnconst
+    (fun z hz => hball hz) hh0 (fun _ _ _ => analyticAt_const)
+    (tendsto_const_nhds.tendstoUniformlyOn_const (ball z₀ ρ))
 
 /-- Two equimodular dominant terms in a finite analytic exponential sum produce nearby zeros.
 The sum is displayed as two leading terms and its subdominant finite tail. This is Sokal,

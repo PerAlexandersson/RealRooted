@@ -413,11 +413,7 @@ lemma Interl.comp_X_add_C {f g : ℝ[X]} (h : Interl f g) (r : ℝ) :
 /-- Translation by `r` is an equivalence on zero-aware proper position. -/
 lemma Interl.comp_X_add_C_iff {f g : ℝ[X]} (r : ℝ) :
     Interl (f.comp (X + C r)) (g.comp (X + C r)) ↔ Interl f g := by
-  constructor
-  · intro h
-    have h' := h.comp_X_add_C (-r)
-    simpa [comp_assoc, add_assoc, add_left_comm, add_comm, sub_eq_add_neg] using h'
-  · exact fun h => h.comp_X_add_C r
+  simp only [Interl, comp_X_add_C_eq_zero_iff, StrictInterl.comp_X_add_C_iff]
 
 /-- Positive rescaling of the variable preserves zero-aware proper position. -/
 lemma Interl.comp_C_mul_X {f g : ℝ[X]} (h : Interl f g) {a : ℝ} (ha : 0 < a) :

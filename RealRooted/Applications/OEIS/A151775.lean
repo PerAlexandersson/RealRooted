@@ -5,6 +5,8 @@ public import RealRooted.OperatorPreservesInterlacing
 public import RealRooted.Derivative.FamilyClosure
 public import RealRooted.Basic.Coefficients
 import RealRooted.Recurrence.RowModel
+import RealRooted.DerivativeRecurrence.Degree
+import RealRooted.DerivativeRecurrence.Interlacing
 import RealRooted.ObreschkoffConverse.Converse
 public import RealRooted.AllCombo
 import RealRooted.Mathlib.Analysis.Calculus.LocalExtr.Polynomial
@@ -118,110 +120,41 @@ private theorem splits_upperStep {f : ℝ[X]} (hf : f.Splits) :
 private theorem splits_step {f : ℝ[X]} (hf : f.Splits) : (step f).Splits :=
   splits_upperStep (splits_lowerStep hf)
 
-private lemma coeff_lowerStep (f : ℝ[X]) (n : ℕ) :
-    (lowerStep f).coeff n = (1 + 2 * n) * f.coeff n + 2 * (n + 1) * f.coeff (n + 1) := by
-  have : lowerStep f = f + C 2 * derivative f + C 2 * (X * derivative f) := by
-    simp only [lowerStep, map_ofNat]; ring
-  rw [this]
-  rcases n with _ | n
-  · simp [coeff_derivative]
-  · simp [coeff_derivative, coeff_X_mul]; ring
-
-private lemma upperStep_eq (g : ℝ[X]) :
-    upperStep g = g + C 2 * (X * g) + C 2 * (X * derivative g) +
-      C 2 * (X * (X * derivative g)) := by
-  simp only [upperStep, map_ofNat]; ring
-
-private lemma coeff_zero_upperStep (g : ℝ[X]) : (upperStep g).coeff 0 = g.coeff 0 := by
-  rw [upperStep_eq]
-  simp
-
-private lemma coeff_succ_upperStep (g : ℝ[X]) (n : ℕ) :
-    (upperStep g).coeff (n + 1) = (2 * n + 3) * g.coeff (n + 1) + 2 * (n + 1) * g.coeff n := by
-  rw [upperStep_eq]
-  rcases n with _ | n
-  · simp [coeff_derivative]; ring
-  · simp [coeff_derivative, coeff_X_mul]; ring
-
-private lemma natDegree_lowerStep {f : ℝ[X]} (hpos : 0 < f.leadingCoeff) :
-    (lowerStep f).natDegree = f.natDegree := by
-  apply natDegree_eq_of_le_of_coeff_ne_zero
-  · rw [natDegree_le_iff_coeff_eq_zero]
-    intro k hk
-    have hk' : f.natDegree < k := by exact_mod_cast hk
-    rw [coeff_lowerStep, coeff_eq_zero_of_natDegree_lt hk',
-      coeff_eq_zero_of_natDegree_lt (by lia : f.natDegree < k + 1)]
-    ring
-  · rw [coeff_lowerStep,
-      coeff_eq_zero_of_natDegree_lt (by lia : f.natDegree < f.natDegree + 1)]
-    have : 0 < f.coeff f.natDegree := hpos
-    positivity
-
-private lemma leadingCoeff_lowerStep_pos {f : ℝ[X]} (hpos : 0 < f.leadingCoeff) :
-    0 < (lowerStep f).leadingCoeff := by
-  rw [leadingCoeff, natDegree_lowerStep hpos, coeff_lowerStep,
-    coeff_eq_zero_of_natDegree_lt (by lia : f.natDegree < f.natDegree + 1)]
-  have : 0 < f.coeff f.natDegree := hpos
-  positivity
-
-private lemma natDegree_upperStep {g : ℝ[X]} (hpos : 0 < g.leadingCoeff) :
-    (upperStep g).natDegree = g.natDegree + 1 := by
-  apply natDegree_eq_of_le_of_coeff_ne_zero
-  · rw [natDegree_le_iff_coeff_eq_zero]
-    intro k hk
-    have hk' : g.natDegree + 1 < k := by exact_mod_cast hk
-    obtain ⟨j, rfl⟩ : ∃ j, k = j + 1 := ⟨k - 1, by lia⟩
-    rw [coeff_succ_upperStep,
-      coeff_eq_zero_of_natDegree_lt (by lia : g.natDegree < j + 1),
-      coeff_eq_zero_of_natDegree_lt (by lia : g.natDegree < j)]
-    ring
-  · rw [coeff_succ_upperStep,
-      coeff_eq_zero_of_natDegree_lt (by lia : g.natDegree < g.natDegree + 1)]
-    have : 0 < g.coeff g.natDegree := hpos
-    positivity
-
-private lemma leadingCoeff_upperStep_pos {g : ℝ[X]} (hpos : 0 < g.leadingCoeff) :
-    0 < (upperStep g).leadingCoeff := by
-  rw [leadingCoeff, natDegree_upperStep hpos, coeff_succ_upperStep,
-    coeff_eq_zero_of_natDegree_lt (by lia : g.natDegree < g.natDegree + 1)]
-  have : 0 < g.coeff g.natDegree := hpos
-  positivity
-
-private lemma hasNonnegCoeffs_lowerStep {f : ℝ[X]} (h : HasNonnegCoeffs f) :
-    HasNonnegCoeffs (lowerStep f) := by
-  intro k
-  rw [coeff_lowerStep]
-  have := h k
-  have := h (k + 1)
-  positivity
-
-private lemma hasNonnegCoeffs_upperStep {g : ℝ[X]} (h : HasNonnegCoeffs g) :
-    HasNonnegCoeffs (upperStep g) := by
-  intro k
-  rcases k with _ | k
-  · rw [coeff_zero_upperStep]
-    exact h 0
-  · rw [coeff_succ_upperStep]
-    have := h k
-    have := h (k + 1)
-    positivity
-
 private lemma polynomial_props (n : ℕ) :
     (polynomial n).natDegree = n ∧
       HasPosLeadingCoeff (polynomial n) ∧ HasNonnegCoeffs (polynomial n) := by
-  induction n with
-  | zero =>
-    refine ⟨by simp [polynomial], ?_, fun k => ?_⟩
-    · simpa [polynomial] using hasPosLeadingCoeff_one
-    · simp only [polynomial, coeff_one]
-      split_ifs <;> norm_num
-  | succ n ih =>
-    obtain ⟨h1, h2, h3⟩ := ih
-    refine ⟨?_, ?_, ?_⟩
-    · rw [polynomial, step, natDegree_upperStep (leadingCoeff_lowerStep_pos h2),
-        natDegree_lowerStep h2, h1]
-    · exact leadingCoeff_upperStep_pos (leadingCoeff_lowerStep_pos h2)
-    · exact hasNonnegCoeffs_upperStep (hasNonnegCoeffs_lowerStep h3)
+  let A : ℝ[X] := C 4 * X ^ 3 + C 8 * X ^ 2 + C 4 * X
+  let B : ℝ[X] := C 10 * X ^ 2 + C 12 * X + C 2
+  let E : ℝ[X] := C 2 * X + 1
+  have hrec (m : ℕ) : polynomial (m + 1) =
+      A * (polynomial m).derivative.derivative + B * (polynomial m).derivative +
+        E * polynomial m := by
+    rw [polynomial_succ, nextRow]
+    dsimp [A, B, E]
+    norm_num only [C_ofNat]
+    ring
+  have hdeg := derivRec₂_natDegree_eq_and_leadingCoeff_pos (D₀ := 0) (d := 1) hrec
+    (by intro m; dsimp [A]; compute_degree)
+    (by intro m; dsimp [B]; compute_degree)
+    (by intro m; dsimp [E]; compute_degree)
+    (by simp [polynomial]) (by simp [polynomial]) (by simp [polynomial])
+    (by
+      intro m
+      norm_num [A, B, E, coeff_one, coeff_X_pow, coeff_X]
+      nlinarith [sq_nonneg (m : ℝ)]) n
+  have hX := hasNonnegCoeffs_X
+  have hA : HasNonnegCoeffs A :=
+    (((hasNonnegCoeffs_C (by norm_num)).mul (hX.pow 3)).add
+      ((hasNonnegCoeffs_C (by norm_num)).mul (hX.pow 2))).add
+      ((hasNonnegCoeffs_C (by norm_num)).mul hX)
+  have hB : HasNonnegCoeffs B :=
+    (((hasNonnegCoeffs_C (by norm_num)).mul (hX.pow 2)).add
+      ((hasNonnegCoeffs_C (by norm_num)).mul hX)).add (hasNonnegCoeffs_C (by norm_num))
+  have hE : HasNonnegCoeffs E :=
+    ((hasNonnegCoeffs_C (by norm_num)).mul hX).add hasNonnegCoeffs_one
+  exact ⟨by simpa only [zero_add, one_mul] using hdeg.1, hdeg.2,
+    derivRec₂_hasNonnegCoeffs hrec (fun _ => hA) (fun _ => hB) (fun _ => hE)
+      hasNonnegCoeffs_one n⟩
 
 /-- The `n`th A151775 row has degree `n`. -/
 theorem natDegree_polynomial (n : ℕ) : (polynomial n).natDegree = n :=

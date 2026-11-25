@@ -123,96 +123,7 @@ theorem eval_glue_jensen [Finite τ]
   simp only [div_pow, Finset.prod_div_distrib]
   ring
 
-omit [Fintype τ] in
-private theorem stable_or_zero_glue_jensen [Finite τ]
-    (P : (σ →₀ ℕ) → MvPolynomial τ ℂ)
-    (h : ∀ β : σ →₀ ℕ,
-      MvUpperHalfPlaneStable (glue P (fun α => fall α β) β) ∨
-        glue P (fun α => fall α β) β = 0)
-    (m : ℕ) :
-    MvUpperHalfPlaneStable
-      (glue P (fun α => MvPolynomial.jensen α (constExp σ (m + 1)))
-        (constExp σ (m + 1))) ∨
-      glue P (fun α => MvPolynomial.jensen α (constExp σ (m + 1)))
-        (constExp σ (m + 1)) = 0 := by
-  rcases h (constExp σ (m + 1)) with hs | hz
-  · left
-    intro x hx
-    rw [eval_glue_jensen]
-    apply hs
-    rintro (t | j)
-    · simpa using hx (Sum.inl t)
-    · simp only [Sum.elim_inr, Set.mem_ofPred_eq]
-      rw [Complex.div_natCast_im]
-      exact div_pos (hx (Sum.inr j)) (by positivity)
-  · right
-    apply MvPolynomial.funext
-    intro x
-    rw [eval_glue_jensen, hz]
-    simp
-
 /-! ## Target -/
-
-/-- **Borcea--Brändén, arXiv:0809.0401, Theorem 5.1, sufficiency (⇐).**
-Let `P α ∈ ℂ[z]` (`α ∈ ℕ^σ`) be
-such that for every `β ∈ ℕ^σ` the polynomial
-`∑_{α ≤ β} (β)_α P_α(z) w^α` is stable or zero.
-Then the formal series
-`∑_α P_α(z) w^α` is a locally uniform limit of stable-or-zero polynomials
-in the variables `(z, w)`:
-there are polynomials `F k`, stable or zero, such that the series `∑ c_e x^e` converges absolutely
-everywhere and `F k → ∑ c_e x^e` locally uniformly, where `c_e` is the coefficient of
-`z^γ w^α` in the series.
-
-Proof (paper §5.3): with `β_m = (m,…,m)` put
-`F_m = ∑_{α ≤ β_m} J(α,β_m) P_α w^α`.  Since
-`J(α, β_m) = (β_m)_α / m^{|α|}`, we have `F_m(z,w) = G_m(z, w/m)`, where
-`G_m = ∑_{α ≤ β_m} (β_m)_α P_α w^α`.  This is stable or zero by hypothesis.  Positive
-rescaling preserves the upper half-plane, so `F_m` is stable or zero for `m ≥ 1`.  Its
-coefficients are `κ_m(e) * c e`, where `κ_m(e) = J(α(e), β_m) → 1`.
-Hence `exists_norm_eval_le_exp_sq` applies and gives `B`, `C`, and `m₀`;
-consequently `F_{m₀+k}`
-is bounded on every polydisc uniformly in `k`, and
-`MvPolynomial.tendstoLocallyUniformly_of_bounded_of_coeff_tendsto` gives the conclusion for
-`F k := F_{m₀+k}`. -/
-theorem exists_stableOrZero_tendstoLocallyUniformly_of_fallingFactorial_glue
-    (P : (σ →₀ ℕ) → MvPolynomial τ ℂ)
-    (h : ∀ β : σ →₀ ℕ,
-      MvUpperHalfPlaneStable (glue P (fun α => fall α β) β) ∨
-        glue P (fun α => fall α β) β = 0) :
-    ∃ F : ℕ → MvPolynomial (τ ⊕ σ) ℂ,
-      (∀ k, MvUpperHalfPlaneStable (F k) ∨ F k = 0) ∧
-      (∀ x : τ ⊕ σ → ℂ,
-        Summable fun e : τ ⊕ σ →₀ ℕ => ‖seriesCoeff P e * ∏ i, x i ^ (e i)‖) ∧
-      TendstoLocallyUniformly (fun k (x : τ ⊕ σ → ℂ) => MvPolynomial.eval x (F k))
-        (fun x => ∑' e : τ ⊕ σ →₀ ℕ, seriesCoeff P e * ∏ i, x i ^ (e i)) atTop := by
-  set f : ℕ → MvPolynomial (τ ⊕ σ) ℂ := fun m =>
-    glue P (fun α => MvPolynomial.jensen α (constExp σ (m + 1)))
-      (constExp σ (m + 1)) with hf
-  set κ : ℕ → (τ ⊕ σ →₀ ℕ) → ℝ := fun m e =>
-    MvPolynomial.jensen (Finsupp.sumFinsuppEquivProdFinsupp e).2
-      (constExp σ (m + 1)) with hκ
-  have hcoef : ∀ m e, (f m).coeff e = (κ m e : ℂ) * seriesCoeff P e := by
-    intro m e
-    simp only [hf, hκ, coeff_glue]
-    split_ifs with hle
-    · rfl
-    · rw [MvPolynomial.jensen_eq_zero_of_not_le hle, Complex.ofReal_zero]
-  have hκt : ∀ e, Tendsto (fun m => κ m e) atTop (𝓝 1) := fun e =>
-    tendsto_jensen_constExp _
-  have hst : ∀ m, MvUpperHalfPlaneStable (f m) ∨ f m = 0 := fun m =>
-    stable_or_zero_glue_jensen P h m
-  obtain ⟨B, C, m₀, hB⟩ :=
-    exists_norm_eval_le_exp_sq (seriesCoeff P) κ f hcoef hκt hst
-  obtain ⟨h1, h2⟩ := MvPolynomial.tendstoLocallyUniformly_of_bounded_of_coeff_tendsto
-    (fun k => f (k + m₀)) (seriesCoeff P)
-    (fun r hr => ⟨B * Real.exp (C * r ^ 2), fun k z hz => hB (k + m₀) (by lia) r hr.le z hz⟩)
-    (fun e => by
-      simp only [hcoef]
-      have := ((hκt e).comp (tendsto_add_atTop_nat m₀))
-      have h' := (Complex.continuous_ofReal.tendsto 1).comp this
-      simpa [Function.comp] using h'.mul_const (seriesCoeff P e))
-  exact ⟨fun k => f (k + m₀), fun k => hst _, h1, h2⟩
 
 /-- Cofinal-tail form of Borcea--Brändén, arXiv:0809.0401, Theorem 5.1 (⇐).
 It suffices that the constant-box falling-factorial truncations are stable or zero for all
@@ -276,5 +187,42 @@ theorem exists_stableOrZero_tendstoLocallyUniformly_of_eventually_constExp_glue
       have ht' := (Complex.continuous_ofReal.tendsto 1).comp ht
       simpa [Function.comp] using ht'.mul_const (seriesCoeff P e))
   exact ⟨fun k => f (k + m₀), fun k => hst _, h1, h2⟩
+
+/-- **Borcea--Brändén, arXiv:0809.0401, Theorem 5.1, sufficiency (⇐).**
+Let `P α ∈ ℂ[z]` (`α ∈ ℕ^σ`) be
+such that for every `β ∈ ℕ^σ` the polynomial
+`∑_{α ≤ β} (β)_α P_α(z) w^α` is stable or zero.
+Then the formal series
+`∑_α P_α(z) w^α` is a locally uniform limit of stable-or-zero polynomials
+in the variables `(z, w)`:
+there are polynomials `F k`, stable or zero, such that the series `∑ c_e x^e` converges absolutely
+everywhere and `F k → ∑ c_e x^e` locally uniformly, where `c_e` is the coefficient of
+`z^γ w^α` in the series.
+
+Proof (paper §5.3): with `β_m = (m,…,m)` put
+`F_m = ∑_{α ≤ β_m} J(α,β_m) P_α w^α`.  Since
+`J(α, β_m) = (β_m)_α / m^{|α|}`, we have `F_m(z,w) = G_m(z, w/m)`, where
+`G_m = ∑_{α ≤ β_m} (β_m)_α P_α w^α`.  This is stable or zero by hypothesis.  Positive
+rescaling preserves the upper half-plane, so `F_m` is stable or zero for `m ≥ 1`.  Its
+coefficients are `κ_m(e) * c e`, where `κ_m(e) = J(α(e), β_m) → 1`.
+Hence `exists_norm_eval_le_exp_sq` applies and gives `B`, `C`, and `m₀`;
+consequently `F_{m₀+k}`
+is bounded on every polydisc uniformly in `k`, and
+`MvPolynomial.tendstoLocallyUniformly_of_bounded_of_coeff_tendsto` gives the conclusion for
+`F k := F_{m₀+k}`. -/
+theorem exists_stableOrZero_tendstoLocallyUniformly_of_fallingFactorial_glue
+    (P : (σ →₀ ℕ) → MvPolynomial τ ℂ)
+    (h : ∀ β : σ →₀ ℕ,
+      MvUpperHalfPlaneStable (glue P (fun α => fall α β) β) ∨
+        glue P (fun α => fall α β) β = 0) :
+    ∃ F : ℕ → MvPolynomial (τ ⊕ σ) ℂ,
+      (∀ k, MvUpperHalfPlaneStable (F k) ∨ F k = 0) ∧
+      (∀ x : τ ⊕ σ → ℂ,
+        Summable fun e : τ ⊕ σ →₀ ℕ => ‖seriesCoeff P e * ∏ i, x i ^ (e i)‖) ∧
+      TendstoLocallyUniformly (fun k (x : τ ⊕ σ → ℂ) => MvPolynomial.eval x (F k))
+        (fun x => ∑' e : τ ⊕ σ →₀ ℕ, seriesCoeff P e * ∏ i, x i ^ (e i)) atTop := by
+  exact exists_stableOrZero_tendstoLocallyUniformly_of_eventually_constExp_glue
+    P 0 (fun m _ => h (constExp σ (m + 1)))
+
 
 end RealRooted.BorceaBranden

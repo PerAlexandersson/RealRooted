@@ -5,6 +5,7 @@ import RealRooted.BorceaBranden.FiniteSymbolPreserver
 public import RealRooted.Polarization
 import RealRooted.BorceaBranden.FiniteSymbolDegree
 import RealRooted.Mathlib.Algebra.MvPolynomial.Equiv
+import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
 
 /-!
 # Source diagonalization for a general degree box
@@ -258,39 +259,23 @@ theorem degreeOf_sourcePolarizationStageStep_raw_le
     (sourcePolarizationStageStep κ S i hi P).degreeOf
         (Sum.inr ⟨j, hj⟩) ≤
       P.degreeOf (Sum.inr ⟨j, fun hjS => hj (Finset.mem_insert_of_mem hjS)⟩) := by
-  have hji : j ≠ i := by
-    rintro rfl
-    exact hj (Finset.mem_insert_self j S)
+  have hji : j ≠ i := fun h => hj (Finset.mem_insert.mpr (Or.inl h))
   have hjS : j ∉ S := fun h => hj (Finset.mem_insert_of_mem h)
   let rj : {j : σ // j ∉ S ∧ j ≠ i} := ⟨j, hjS, hji⟩
-  let oldj : {j : σ // j ∉ S} := ⟨j, hjS⟩
-  let newj : {j : σ // j ∉ insert i S} := ⟨j, hj⟩
   let isolate := sourcePolarizationStageIsolateEquiv κ S i hi
   let install := sourcePolarizationStageInstallEquiv κ S i hi
-  let Q := MvPolynomial.rename isolate P
-  let R := MvPolynomial.sourceBlockPolarization (κ i) Q
-  have hinstallMap : install.symm (Sum.inl (Sum.inr rj)) = Sum.inr newj := by
-    simpa only [install, rj, newj] using
-      sourcePolarizationStageInstallEquiv_symm_raw κ S i j hi hjS hji
-  have hinstall :
-      (MvPolynomial.rename install.symm R).degreeOf (Sum.inr newj) =
-        R.degreeOf (Sum.inl (Sum.inr rj)) := by
-    rw [← hinstallMap]
-    exact MvPolynomial.degreeOf_rename_of_injective install.symm.injective
-      (Sum.inl (Sum.inr rj))
-  have hisolateMap : isolate (Sum.inr oldj) = Sum.inl (Sum.inr rj) := by
-    simpa only [isolate, oldj, rj] using
-      sourcePolarizationStageIsolateEquiv_raw κ S i j hi hjS hji
-  have hisolate :
-      Q.degreeOf (Sum.inl (Sum.inr rj)) = P.degreeOf (Sum.inr oldj) := by
-    rw [← hisolateMap]
-    exact MvPolynomial.degreeOf_rename_of_injective isolate.injective
-      (Sum.inr oldj)
-  change (MvPolynomial.rename install.symm R).degreeOf (Sum.inr newj) ≤
-    P.degreeOf (Sum.inr oldj)
-  rw [hinstall]
-  exact (MvPolynomial.degreeOf_sourceBlockPolarization_inl_le
-    (κ i) Q (Sum.inr rj)).trans_eq hisolate
+  change (MvPolynomial.rename install.symm
+    (MvPolynomial.sourceBlockPolarization (κ i) (MvPolynomial.rename isolate P))).degreeOf
+      (install.symm (Sum.inl (Sum.inr rj))) ≤ _
+  rw [MvPolynomial.degreeOf_rename_of_injective install.symm.injective]
+  refine (MvPolynomial.degreeOf_sourceBlockPolarization_inl_le
+    (κ i) (MvPolynomial.rename isolate P) (Sum.inr rj)).trans_eq ?_
+  change (MvPolynomial.rename isolate P).degreeOf (Sum.inl (Sum.inr rj)) =
+    P.degreeOf (Sum.inr ⟨j, hjS⟩)
+  have hisolateMap : isolate (Sum.inr ⟨j, hjS⟩) = Sum.inl (Sum.inr rj) := by
+    exact sourcePolarizationStageIsolateEquiv_raw κ S i j hi hjS hji
+  rw [← hisolateMap]
+  exact MvPolynomial.degreeOf_rename_of_injective isolate.injective (Sum.inr ⟨j, hjS⟩)
 
 /-- The coefficient of a general source monomial, retaining all output
 variables. -/
@@ -1446,11 +1431,7 @@ theorem degreeOf_sourceBlockwisePolarizationGeneral_inr_le_one
   have houtput :
       (MvPolynomial.rename (Sum.inl : τ → τ ⊕ PolarizedSource κ)
         (sourceCoefficientGeneral P r.1)).degreeOf (Sum.inr x) = 0 := by
-    apply not_ne_iff.mp
-    rw [← MvPolynomial.mem_vars_iff_degreeOf_ne_zero]
-    intro hxvars
-    obtain ⟨j, _hj, hji⟩ := MvPolynomial.mem_vars_rename Sum.inl _ hxvars
-    exact Sum.inl_ne_inr hji
+    exact MvPolynomial.degreeOf_rename_eq_zero_of_notMem_range _ _ (by simp)
   have hsource :
       (MvPolynomial.rename (Sum.inr : PolarizedSource κ →
         τ ⊕ PolarizedSource κ) (blockwisePolarizationBasis κ r)).degreeOf

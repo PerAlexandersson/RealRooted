@@ -143,24 +143,16 @@ private theorem degree_Q_three_one_le (n : ℕ) : (Q 3 n).natDegree ≤ n := by
 private theorem reflect_linear_rows :
     reflect 1 (1 + 3 * X : ℝ[X]) = 3 + X ∧
     reflect 1 (1 + 4 * X : ℝ[X]) = 4 + X := by
-  constructor <;> ext i <;> rcases i with _ | _ | i <;>
-    simp [Polynomial.coeff_reflect, Polynomial.revAt_le,
-      Polynomial.revAt_eq_self_of_lt, coeff_X]
+  simp [← C_ofNat, reflect_X, add_comm]
 
 private theorem reflect_three_X_sq : reflect 2 (3 * X ^ 2 : ℝ[X]) = 3 := by
-  rw [show (3 : ℝ[X]) = C 3 from (map_ofNat C 3).symm,
-    reflect_C_mul_X_pow]
-  simp
+  simp [← C_ofNat]
 
 private theorem reflect_six_X_sq : reflect 2 (6 * X ^ 2 : ℝ[X]) = 6 := by
-  rw [show (6 : ℝ[X]) = C 6 from (map_ofNat C 6).symm,
-    reflect_C_mul_X_pow]
-  simp
+  simp [← C_ofNat]
 
 private theorem reflect_four_X_cube : reflect 3 (4 * X ^ 3 : ℝ[X]) = 4 := by
-  rw [show (4 : ℝ[X]) = C 4 from (map_ofNat C 4).symm,
-    reflect_C_mul_X_pow]
-  simp
+  simp [← C_ofNat]
 
 private theorem reflect_X_cube : reflect 3 (X ^ 3 : ℝ[X]) = 1 := by simp
 
@@ -170,53 +162,35 @@ private theorem reflect_X_four : reflect 4 (X ^ 4 : ℝ[X]) = 1 := by simp
 private theorem reflect_linear_monomials :
     reflect 2 (2 * X : ℝ[X]) = 2 * X ∧
     reflect 2 (3 * X : ℝ[X]) = 3 * X := by
-  constructor <;> ext i <;> rcases i with _ | _ | _ | i <;>
-    simp [Polynomial.coeff_reflect, Polynomial.revAt_le,
-      Polynomial.revAt_eq_self_of_lt, coeff_X]
+  simp [← C_ofNat, reflect_X]
 
 private theorem reflect_three_X_sq_padded :
     reflect 3 (3 * X ^ 2 : ℝ[X]) = 3 * X := by
-  ext i
-  rcases i with _ | _ | _ | _ | i <;>
-    simp [Polynomial.coeff_reflect, Polynomial.revAt_le,
-      Polynomial.revAt_eq_self_of_lt, coeff_X, coeff_X_pow]
+  simp [← C_ofNat]
 
 private theorem reflect_X_sq_padded : reflect 3 (X ^ 2 : ℝ[X]) = X := by
-  ext i
-  rcases i with _ | _ | _ | _ | i <;>
-    simp [Polynomial.revAt_le, coeff_X]
+  simp
 
 private theorem reflect_X_cube_padded : reflect 4 (X ^ 3 : ℝ[X]) = X := by
-  ext i
-  rcases i with _ | _ | _ | _ | _ | i <;>
-    simp [Polynomial.revAt_le, coeff_X]
+  simp
 
 private theorem reflect_X_padded : reflect 3 (X : ℝ[X]) = X ^ 2 := by
-  ext i
-  rcases i with _ | _ | _ | _ | i <;>
-    simp [Polynomial.revAt_le, Polynomial.revAt_eq_self_of_lt, coeff_X]
+  simp [reflect_X]
 
 private theorem reflect_four_X_middle : reflect 2 (4 * X : ℝ[X]) = 4 * X := by
-  ext i
-  rcases i with _ | _ | _ | i <;>
-    simp [Polynomial.revAt_le, Polynomial.revAt_eq_self_of_lt, coeff_X]
+  simp [← C_ofNat, reflect_X]
 
 private theorem reflect_two_X_six : reflect 2 (6 * X : ℝ[X]) = 6 * X := by
-  ext i
-  rcases i with _ | _ | _ | i <;>
-    simp [Polynomial.revAt_le, Polynomial.revAt_eq_self_of_lt, coeff_X]
+  simp [← C_ofNat, reflect_X]
 
 private theorem reflect_two_X_five : reflect 2 (5 * X : ℝ[X]) = 5 * X := by
-  ext i
-  rcases i with _ | _ | _ | i <;>
-    simp [Polynomial.revAt_le, Polynomial.revAt_eq_self_of_lt, coeff_X]
+  simp [← C_ofNat, reflect_X]
 
 /-- Reflections of the two monomials in the cubic shift. -/
 private theorem reflect_cubic_monomials :
     reflect 3 (9 * X : ℝ[X]) = 9 * X ^ 2 ∧
     reflect 3 (15 * X ^ 2 : ℝ[X]) = 15 * X := by
-  constructor <;> ext i <;> rcases i with _ | _ | _ | _ | i <;>
-    simp [Polynomial.revAt_le, Polynomial.revAt_eq_self_of_lt, coeff_X, coeff_X_pow]
+  simp [← C_ofNat, reflect_X]
 
 private theorem reflected_three_gap_three (c n : ℕ) (hc : c = 0 ∨ c = 2) :
     RealRooted.reciprocalShift (n + 3) (Q 3 (3 * (n + 3) + c)) =

@@ -20,12 +20,12 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 43 | `RealRooted.strictInterl_mul_X_of_strictInterl_of_nonneg` | `RealRooted.WagnerX.NonnegativeRoots` | Nonnegative-coefficients form of Wagner (3): if `f ≪ g` and both polynomials have nonnegative coefficients, then `g ≪ X * f`. |
 | 34 | `RealRooted.StrictInterl.C_mul_left` | `RealRooted.Basic.ProperPosition` | Multiplying the left polynomial in a proper-position relation by a nonzero real scalar preserves proper position. |
 | 33 | `RealRooted.StrictInterl.C_mul_right` | `RealRooted.Basic.ProperPosition` | Multiplying the right polynomial in a proper-position relation by a nonzero real scalar preserves proper position. |
-| 27 | `RealRooted.strictInterl_of_allComboRealRooted` | `RealRooted.ObreschkoffConverse.Converse` | **Obreschkoff's theorem** (Brändén, Theorem 7.7.3): `f` and `g` interlace if and only if every polynomial in the real linear span `{αf + βg : α, β ∈ ℝ}` is real-rooted (or zero). |
-| 21 | `RealRooted.MaWang.strictInterl_of_interlaces_evalCoeff_nonpos` | `RealRooted.MaWang.Weak.Endpoint` | Degree-bounded structured Liu--Wang theorem in the weak-sign regime, for a successor-degree interlacer `g`. |
+| 26 | `RealRooted.strictInterl_of_allComboRealRooted` | `RealRooted.ObreschkoffConverse.Converse` | **Obreschkoff's theorem** (Brändén, Theorem 7.7.3): `f` and `g` interlace if and only if every polynomial in the real linear span `{αf + βg : α, β ∈ ℝ}` is real-rooted (or zero). |
+| 20 | `RealRooted.MaWang.strictInterl_of_interlaces_evalCoeff_nonpos` | `RealRooted.MaWang.Weak.Endpoint` | Degree-bounded structured Liu--Wang theorem in the weak-sign regime, for a successor-degree interlacer `g`. |
 | 20 | `RealRooted.StrictInterl.add_of_right_of_posLeadingCoeff` | `RealRooted.WagnerRightSum` | Wagner (1) without a coprimeness hypothesis: positive leading coefficients and a common right-hand interlacing bound already force `f + g` to precede `h`. |
-| 19 | `RealRooted.StrictInterl.forward_of_orientation_of_succDegree` | `RealRooted.Basic.ProperPosition` |  |
 | 19 | `RealRooted.strictInterl_self_X_mul_of_nonneg` | `RealRooted.WagnerX.NonnegativeRoots` | A split polynomial with nonnegative coefficients precedes its product with `X`. |
-| 17 | `RealRooted.MaWang.strictInterl_of_interlaces_eval_mul_neg_succ` | `RealRooted.MaWang.Strong` | Liu--Wang differ-by-1 form: if `g ⊳ f`, `F` has degree `deg(f)+1`, positive leading coefficient, and at every root `r` of `f` the value `F(r)` has the opposite sign from `g(r)`, then `f ⊳ F`. |
+| 18 | `RealRooted.MaWang.strictInterl_of_interlaces_eval_mul_neg_succ` | `RealRooted.MaWang.Strong` | Liu--Wang differ-by-1 form: if `g ⊳ f`, `F` has degree `deg(f)+1`, positive leading coefficient, and at every root `r` of `f` the value `F(r)` has the opposite sign from `g(r)`, then `f ⊳ F`. |
+| 18 | `RealRooted.StrictInterl.forward_of_orientation_of_succDegree` | `RealRooted.Basic.ProperPosition` |  |
 | 15 | `RealRooted.StrictInterl.of_degree_zero_right_of_degree_one` | `RealRooted.Derivative.Interlacing` | A nonzero degree-zero real-rooted polynomial precedes a nonzero degree-one real-rooted polynomial. |
 | 12 | `RealRooted.StrictInterl.add_of_left` | `RealRooted.Wagner.LeftSum` | Wagner (2): if `h` interlaces both `f` and `g`, and `f` and `g` have positive leading coefficients, then `h` interlaces `f + g`. |
 | 12 | `RealRooted.isInterlacingSeq_iff_pairwise` | `RealRooted.InterlacingSequenceBasic` | `IsInterlacingSeq` is exactly the pairwise `StrictInterl` relation on a list. |
@@ -46,12 +46,12 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | uses | theorem | module | doc |
 |---:|---|---|---|
 | 102 | `RealRooted.StrictInterl.toInterlaces` | `RealRooted.Basic.ProperPosition` |  |
-| 69 | `RealRooted.StrictInterl.toInterl` | `RealRooted.Basic.ProperPosition` |  |
+| 68 | `RealRooted.StrictInterl.toInterl` | `RealRooted.Basic.ProperPosition` |  |
 | 52 | `RealRooted.interl_zero_left` | `RealRooted.Basic.ProperPosition` |  |
 | 47 | `RealRooted.interl_zero_right` | `RealRooted.Basic.ProperPosition` |  |
-| 46 | `RealRooted.interlaces_one_linear` | `RealRooted.Linear` |  |
+| 47 | `RealRooted.interlaces_one_linear` | `RealRooted.Linear` |  |
 | 45 | `RealRooted.derivative_interlaces_of_natDegree_ne_zero` | `RealRooted.Derivative.Interlacing` | **Derivative interlacing**: the derivative of a nonconstant real-rooted polynomial `f` interlaces `f`. |
-| 37 | `RealRooted.Interl.refl` | `RealRooted.Basic.ProperPosition` | A polynomial that splits whenever it is nonzero is zero-aware interlacing with itself. |
+| 36 | `RealRooted.Interl.refl` | `RealRooted.Basic.ProperPosition` | A polynomial that splits whenever it is nonzero is zero-aware interlacing with itself. |
 | 34 | `RealRooted.Interl.C_mul_right_of_nonneg` | `RealRooted.Basic.ProperPosition` | Multiplying the right polynomial in a zero-aware interlacing relation by a nonnegative scalar preserves the relation. |
 | 29 | `RealRooted.IsPFPolynomial.interl_self` | `RealRooted.PFPolynomial` | A PF polynomial is in zero-aware proper position with itself. |
 | 28 | `RealRooted.Interl.C_mul_left_of_nonneg` | `RealRooted.Basic.ProperPosition` | Multiplying the left polynomial in a zero-aware interlacing relation by a nonnegative scalar preserves the relation. |
@@ -60,15 +60,15 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 23 | `RealRooted.isInterlacingSeq0_iff_pairwise` | `RealRooted.InterlacingSequenceBasic` | `IsInterlacingSeq0` is exactly pairwise `Interl`. |
 | 20 | `RealRooted.interl_add_left_of_common_right_of_nonneg` | `RealRooted.PFPolynomial` | Fixed-right cone closure in the two-summand form used downstream: if two nonnegative-coefficient summands have a common right interleaver, their sum has that same right interleaver. |
 | 18 | `RealRooted.interlaces_derivative_of_pos_natDegree` | `RealRooted.Derivative.Interlacing` | The derivative of any nonconstant positive-leading real-rooted polynomial interlaces the original polynomial, including the degree-one boundary case. |
-| 13 | `RealRooted.interl_of_pf_coeff_tendsto_of_natDegree_le` | `RealRooted.PFPolynomial.Closure` | Uniformly bounded-degree coefficientwise limits preserve zero-aware interlacing for Pólya-frequency polynomial pairs. |
+| 12 | `RealRooted.interl_of_pf_coeff_tendsto_of_natDegree_le` | `RealRooted.PFPolynomial.Closure` | Uniformly bounded-degree coefficientwise limits preserve zero-aware interlacing for Pólya-frequency polynomial pairs. |
 | 11 | `RealRooted.Interl.finsetSum_right_of_nonneg` | `RealRooted.PosCombo` | Right cone for `Interl` over finite sums of nonnegative-coefficient polynomials. |
 | 11 | `RealRooted.Interl.mul_X_both` | `RealRooted.WagnerX.ListInterlacing` | Multiplying both polynomials by `X` preserves zero-aware interlacing. |
 | 10 | `RealRooted.Interl.finsetSum_left_of_nonneg` | `RealRooted.PosCombo` | Left cone for `Interl` over finite sums of nonnegative-coefficient polynomials. |
 | 10 | `RealRooted.Interl.sum_left_of_common_left_of_nonneg` | `RealRooted.PosCombo` | Borcea--Brändén left-cone lemma in the nonnegative-coefficients specialization, zero-aware form on lists: if `h ≪₀ f_i` for every summand and each `f_i` has nonnegative coefficients, then `h ≪₀ ∑ f_i` |
 | 10 | `RealRooted.PreservesRealRootedOrZero.interlaces` | `RealRooted.OperatorPreservesInterlacing` | A global real-rootedness preserver transports a directed pair when its nonzero images have successor degrees. |
-| 9 | `RealRooted.interlaces_of_natDegree_eq_zero_of_natDegree_eq_one` | `RealRooted.ThreeTermRecurrence.Interlacing` | A nonzero constant interlaces a linear polynomial. |
 | 8 | `RealRooted.IsPFPolynomial.derivative_interl_self` | `RealRooted.PFPolynomial` | The derivative of a PF polynomial precedes the polynomial, including constants. |
 | 8 | `RealRooted.interl_iff_interl_X_mul` | `RealRooted.OperatorMatrix.Directed` | Zero-aware `X`-duality for PF polynomials. |
+| 8 | `RealRooted.interlaces_of_natDegree_eq_zero_of_natDegree_eq_one` | `RealRooted.ThreeTermRecurrence.Interlacing` | A nonzero constant interlaces a linear polynomial. |
 | 7 | `RealRooted.interl_affine_mul_X_add_X_self` | `RealRooted.AffineProperPosition` |  |
 
 ## IsInterlacingSeq
@@ -139,7 +139,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 44 | `RealRooted.IsPFPolynomial.zero` | `RealRooted.PFPolynomial` | The zero polynomial is PF. |
 | 43 | `RealRooted.IsPFPolynomial.of_nonnegCoeffs_eq_zero_or_splits` | `RealRooted.PFPolynomial` | Construct a PF polynomial from nonnegative coefficients and a zero-or-splits certificate. |
 | 36 | `RealRooted.IsPFPolynomial.one` | `RealRooted.PFPolynomial` | The constant polynomial `1` is PF. |
-| 30 | `RealRooted.isPFPolynomial_X_add_C` | `RealRooted.PFPolynomial` | The polynomial `X + C a` is PF when `a` is nonnegative. |
+| 29 | `RealRooted.isPFPolynomial_X_add_C` | `RealRooted.PFPolynomial` | The polynomial `X + C a` is PF when `a` is nonnegative. |
 | 21 | `RealRooted.IsPFPolynomial.of_C_nonneg` | `RealRooted.PFPolynomial` | A nonnegative constant polynomial is PF. |
 | 15 | `RealRooted.IsPFPolynomial.of_coeff_tendsto` | `RealRooted.PFPolynomial.Closure` | Coefficientwise limits of Pólya-frequency polynomials are Pólya-frequency. |
 | 14 | `RealRooted.isPFPolynomial_X_pow` | `RealRooted.PFPolynomial` | Every natural power of `X` is PF. |
@@ -214,8 +214,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 17 | `RealRooted.IsPFPolynomial.eq_zero_or_splits` | `RealRooted.PFPolynomial` | A PF polynomial is zero or splits over the reals. |
 | 15 | `Polynomial.Splits.reflect` | `RealRooted.Mathlib.Algebra.Polynomial.Reverse` | Reflection at any degree bound preserves splitting. |
 | 15 | `RealRooted.IsUpperHalfPlaneStable.splits_complexify` | `RealRooted.HermiteBiehler.Basic` | Upper-half-plane stability of a real polynomial's complexification forces all its roots to be real. |
-| 15 | `RealRooted.isRealRooted_affine_factor` | `RealRooted.AffineFamily` |  |
 | 14 | `Polynomial.Splits.cayleyTransform` | `RealRooted.Mathlib.Algebra.Polynomial.CayleyTransform.Algebra` | The Cayley transform of a split polynomial splits in every degree box containing it. |
+| 14 | `RealRooted.isRealRooted_affine_factor` | `RealRooted.AffineFamily` |  |
 | 14 | `RealRooted.isRealRooted_of_degree_one` | `RealRooted.Linear` | Any nonzero degree-1 polynomial is real-rooted. |
 | 13 | `Polynomial.splits_of_all_roots_real` | `RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex` | A real polynomial splits if every root of its complexification is real. |
 | 13 | `RealRooted.isRealRooted_X_mul` | `RealRooted.Linear` |  |
@@ -236,7 +236,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | uses | theorem | module | doc |
 |---:|---|---|---|
 | 92 | `RealRooted.roots_nonpos_of_hasNonnegCoeffs` | `RealRooted.Basic.Coefficients` | A real polynomial with nonnegative coefficients has no positive real roots. |
-| 51 | `RealRooted.IsPFPolynomial.roots_nonpos` | `RealRooted.PFPolynomial` |  |
+| 52 | `RealRooted.IsPFPolynomial.roots_nonpos` | `RealRooted.PFPolynomial` |  |
 | 20 | `RealRooted.hasNonnegCoeffs_iff_pos_leadingCoeff_and_roots_nonpos` | `RealRooted.WagnerX.NonnegativeRoots` |  |
 | 20 | `RealRooted.roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne` | `RealRooted.Basic.Coefficients` | A nonnegative-coefficient polynomial with nonzero constant coefficient has strictly negative roots. |
 | 15 | `RealRooted.StrictInterl.roots_le_of_right` | `RealRooted.Basic.ProperPosition` | Every root of the left-hand polynomial is bounded by any common upper bound for the roots of the right-hand polynomial in a `StrictInterl` witness. |
@@ -266,9 +266,9 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | uses | theorem | module | doc |
 |---:|---|---|---|
 | 96 | `RealRooted.hasNonnegCoeffs_C_mul` | `RealRooted.Basic.Coefficients` |  |
-| 61 | `RealRooted.hasNonnegCoeffs_one` | `RealRooted.Basic.Coefficients` |  |
+| 63 | `RealRooted.hasNonnegCoeffs_one` | `RealRooted.Basic.Coefficients` |  |
 | 59 | `RealRooted.hasNonnegCoeffs_C` | `RealRooted.Basic.Coefficients` |  |
-| 55 | `RealRooted.hasNonnegCoeffs_X` | `RealRooted.Basic.Coefficients` |  |
+| 56 | `RealRooted.hasNonnegCoeffs_X` | `RealRooted.Basic.Coefficients` |  |
 | 53 | `RealRooted.HasNonnegCoeffs.basisTransform` | `RealRooted.BasisTransform` | A basis transform preserves coefficientwise nonnegativity when every basis element has nonnegative coefficients. |
 | 46 | `RealRooted.hasPosLeadingCoeff_C_mul` | `RealRooted.Basic.Coefficients` |  |
 | 40 | `RealRooted.HasNonnegCoeffs.weightedSum` | `RealRooted.GarloffWagner.SchurProductPF` |  |
@@ -278,8 +278,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 28 | `RealRooted.hasNonnegCoeffs_zero` | `RealRooted.Basic.Coefficients` |  |
 | 16 | `MvPolynomial.HasNonnegCoeffs.uniqueAlgEquiv` | `RealRooted.Basic.Coefficients.Multivariate` | The unique-variable equivalence preserves coefficientwise nonnegativity. |
 | 16 | `RealRooted.HasNonnegCoeffs.bidiagonalOperator` | `RealRooted.MultiplierSequence.Bidiagonal` | Nonnegative bidiagonal entries preserve coefficient nonnegativity. |
-| 15 | `RealRooted.hasPosLeadingCoeff_one` | `RealRooted.Basic.Coefficients` |  |
-| 12 | `RealRooted.HasNonnegCoeffs.homogenize` | `RealRooted.Basic.Coefficients.Multivariate` | Homogenization preserves coefficientwise nonnegativity. |
+| 14 | `RealRooted.hasPosLeadingCoeff_one` | `RealRooted.Basic.Coefficients` |  |
+| 13 | `RealRooted.HasNonnegCoeffs.homogenize` | `RealRooted.Basic.Coefficients.Multivariate` | Homogenization preserves coefficientwise nonnegativity. |
 | 12 | `RealRooted.hasPosLeadingCoeff_add_of_natDegree_lt_left` | `RealRooted.Linear` | If the left summand has strictly larger degree and positive leading coefficient, then the sum also has positive leading coefficient. |
 | 11 | `RealRooted.hasPosLeadingCoeff_add_of_natDegree_lt_right` | `RealRooted.Linear` | If the right summand has strictly larger degree and positive leading coefficient, then the sum also has positive leading coefficient. |
 | 11 | `RealRooted.hasPosLeadingCoeff_add_of_same_natDegree` | `RealRooted.Linear` | In the natural positive-leading-coefficient situation, same-degree sums also have positive leading coefficient. |
@@ -335,6 +335,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 3 | `Polynomial.leadingCoeff_add_C_mul_of_natDegree_lt` | `RealRooted.Mathlib.Algebra.Polynomial.Degree.Operations` | If `g` has strictly larger degree than `f`, then the leading coefficient of `f + C a * g` is the scaled leading coefficient of `g`. |
 | 3 | `RealRooted.LinRec.natDegree_eq_and_leadingCoeff_pos_of_cancel` | `RealRooted.DerivativeRecurrence.RowDegree` | Cancellation analogue of `natDegree_eq_and_leadingCoeff_pos_of_degreeLaw`. |
 | 3 | `RealRooted.TuranHurwitz.normalized_natDegree_and_leadingCoeff_pos` | `RealRooted.TuranHurwitz.NormalizedRecurrence` | The degree is the row index and the leading coefficient is positive. |
+| 3 | `RealRooted.derivRec₂_natDegree_eq_and_leadingCoeff_pos` | `RealRooted.DerivativeRecurrence.Degree` | `derivRec₂_natDegree` and `derivRec₂_leadingCoeff_pos` from one set of hypotheses. |
 | 3 | `RealRooted.leadingCoeff_divByMonic_X_sub_C` | `RealRooted.Interlacing.Residue` |  |
 | 3 | `RealRooted.threeTermPos_natDegree_eq_and_leadingCoeff_pos` | `RealRooted.ThreeTermRecurrence.Degree` |  |
 | 3 | `RealRooted.threeTermRatio_natDegree_eq_and_leadingCoeff_pos` | `RealRooted.ThreeTermRecurrence.Degree` |  |
@@ -349,7 +350,6 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 2 | `RealRooted.LinRec.natDegree_eq_and_leadingCoeff_pos_of_degreeLaw` | `RealRooted.DerivativeRecurrence.RowDegree` | Rows of `P (n + k) = ∑ₜ Aₜ n * D^[iₜ] (P (n + jₜ))` have degree `D n` and positive leading coefficients, for an arbitrary degree law `D`, when the summands have degree at most `D (n + k) - D (n + jₜ)  |
 | 2 | `RealRooted.LiuOppositeSigns.exists_linear_factor_of_splits_natDegree_one` | `RealRooted.LiuOppositeSigns.PositiveSplitPair` |  |
 | 2 | `RealRooted.TuranHurwitz.intervalRow_natDegree_and_leadingCoeff_pos` | `RealRooted.TuranHurwitz.IntervalOperator` | The kernel recurrence has degree `n` and a positive leading coefficient. |
-| 2 | `RealRooted.derivRec₂_natDegree_eq_and_leadingCoeff_pos` | `RealRooted.DerivativeRecurrence.Degree` | `derivRec₂_natDegree` and `derivRec₂_leadingCoeff_pos` from one set of hypotheses. |
 
 ## coeff
 
@@ -359,17 +359,16 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 25 | `Polynomial.coeff_sum_range_monomial` | `RealRooted.Mathlib.Algebra.Polynomial.Coeff` | The coefficient of a finite initial-segment monomial sum. |
 | 20 | `RealRooted.coeff_jensenPolynomial` | `RealRooted.MultiplierSequence` |  |
 | 17 | `Polynomial.coeff_comp_neg_X` | `RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas` | The coefficients of `p.comp (-X)` are those of `p` with alternating signs. |
-| 16 | `RealRooted.coeff_theta` | `RealRooted.EulerOperator` |  |
-| 14 | `RealRooted.coeff_narayanaPolynomial_of_le` | `RealRooted.NarayanaTransformation.Coefficients` |  |
+| 15 | `RealRooted.coeff_theta` | `RealRooted.EulerOperator` |  |
+| 13 | `RealRooted.coeff_narayanaPolynomial_of_le` | `RealRooted.NarayanaTransformation.Coefficients` |  |
 | 12 | `RealRooted.coeff_schurSzegoComp_of_le` | `RealRooted.Hadamard.Basic` |  |
 | 11 | `Polynomial.coeff_quadratic_derivative_add_linear_mul_succ` | `RealRooted.Mathlib.Algebra.Polynomial.Derivative` | The coefficient at `k + 1` after multiplying `p'` by a quadratic with no constant term and `p` by a linear polynomial. |
-| 10 | `Polynomial.continuous_coeff_comp_X_add_C` | `RealRooted.Mathlib.Topology.Algebra.Polynomial` | Every coefficient of a translated real polynomial varies continuously with the translation parameter. |
 | 10 | `RealRooted.coeff_oddEvenPolynomial_even` | `RealRooted.HermiteBiehler.OddEven` |  |
 | 10 | `RealRooted.coeff_thetaPlusOne` | `RealRooted.EulerOperator` |  |
+| 9 | `Polynomial.continuous_coeff_comp_X_add_C` | `RealRooted.Mathlib.Topology.Algebra.Polynomial` | Every coefficient of a translated real polynomial varies continuously with the translation parameter. |
 | 9 | `RealRooted.coeff_narayanaPolynomial_of_lt` | `RealRooted.NarayanaTransformation.Coefficients` |  |
 | 8 | `Polynomial.coeff_basisTransform` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
 | 8 | `Polynomial.coeff_shiftedJacobi` | `RealRooted.Mathlib.RingTheory.Polynomial.Jacobi` | The coefficient formula for the shifted Jacobi polynomial. |
-| 8 | `RealRooted.coeff_polarTheta` | `RealRooted.EulerOperator` |  |
 | 8 | `RealRooted.coeff_schurSzegoComp` | `RealRooted.Hadamard.Basic` |  |
 | 7 | `Polynomial.coeff_one_sub_X_pow` | `RealRooted.Mathlib.Algebra.Polynomial.Coeff` | The coefficient of `(1 - X) ^ n` is the signed binomial coefficient. |
 | 7 | `PowerSeries.coeff_mapDerivation` | `RealRooted.Mathlib.RingTheory.PowerSeries.MapDerivation` |  |
@@ -378,6 +377,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 7 | `RealRooted.coeff_hadamardProduct` | `RealRooted.Hadamard.Product` |  |
 | 7 | `RealRooted.coeff_mul_iterate_derivative_of_natDegree_le` | `RealRooted.DerivativeRecurrence.Degree` |  |
 | 7 | `RealRooted.coeff_oddEvenPolynomial_odd` | `RealRooted.HermiteBiehler.OddEven` |  |
+| 7 | `RealRooted.coeff_polarTheta` | `RealRooted.EulerOperator` |  |
 | 7 | `RealRooted.coeff_schurSzegoComp_eq_zero_of_lt` | `RealRooted.Hadamard.Basic` |  |
 | 7 | `RealRooted.routhCoefficient_mul_coeff_zero` | `RealRooted.ClassicalHurwitzMatrix.Routh` |  |
 
@@ -455,20 +455,20 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | uses | theorem | module | doc |
 |---:|---|---|---|
 | 23 | `RealRooted.add_ne_zero_of_hasNonnegCoeffs_of_right_ne_zero` | `RealRooted.Basic.Coefficients` | A finite sum of nonnegative-coefficient polynomials cannot vanish if one of the summands is already nonzero. |
-| 20 | `Nat.cast_choose_ne_zero` | `RealRooted.Mathlib.Data.Nat.Choose.Cast` | A binomial coefficient remains nonzero after casting to a characteristic-zero target. |
+| 19 | `Nat.cast_choose_ne_zero` | `RealRooted.Mathlib.Data.Nat.Choose.Cast` | A binomial coefficient remains nonzero after casting to a characteristic-zero target. |
 | 8 | `RealRooted.iterateTDeriv_ne_zero` | `RealRooted.IteratedDerivativeShift` | Iterating a derivative shift preserves nonzeroness. |
 | 8 | `RealRooted.tDeriv_ne_zero` | `RealRooted.IteratedDerivativeShift` | T_ε of a nonzero polynomial with degree ≥ 1 is nonzero. |
 | 7 | `RealRooted.LiuOppositeSigns.OppositeLeadingSigns.left_ne_zero` | `RealRooted.LiuOppositeSigns.RootCount` |  |
 | 6 | `RealRooted.Graph.weightedIndepPolyOn_ne_zero` | `RealRooted.Graph.IndependencePolynomial.Basic` | Weighted support-restricted independence polynomials are nonzero. |
 | 6 | `RealRooted.MvRealStable.realAffineLineRestriction_splits_ne_zero` | `RealRooted.AffineLineRestriction` | Every positive-direction real affine restriction of a real stable multivariate polynomial is nonzero and real-rooted. |
 | 6 | `RealRooted.derivProduct_ne_zero` | `RealRooted.DerivativeProduct.Basic` | A derivative product of nonzero polynomials is nonzero (quadratic weight, nonnegative data). |
-| 5 | `Nat.cast_ne_zero_of_pos` | `RealRooted.Mathlib.Data.Nat.Cast.Basic` | A positive natural number remains nonzero after casting to a characteristic-zero target. |
 | 5 | `RealRooted.DegreeDropReversal.reverse_ne_zero_of_coeff_zero_ne` | `RealRooted.DegreeDropReversal` | A polynomial with nonzero constant coefficient has nonzero reversal. |
 | 5 | `RealRooted.LiuOppositeSigns.OppositeLeadingSigns.right_ne_zero` | `RealRooted.LiuOppositeSigns.RootCount` |  |
 | 5 | `RealRooted.left_ne_zero_of_strictInterl` | `RealRooted.SequenceClosure` | Project left-argument nonvanishing from a `StrictInterl` certificate. |
 | 5 | `RealRooted.narayanaPolynomial_ne_zero` | `RealRooted.NarayanaTransformation.Recurrences.Identities` |  |
 | 5 | `RealRooted.right_ne_zero_of_strictInterl` | `RealRooted.SequenceClosure` | Project right-argument nonvanishing from a `StrictInterl` certificate. |
 | 5 | `RealRooted.rootPolynomial_ne_zero` | `RealRooted.RootPolynomial` | `rootPolynomial s` is nonzero. |
+| 4 | `Nat.cast_ne_zero_of_pos` | `RealRooted.Mathlib.Data.Nat.Cast.Basic` | A positive natural number remains nonzero after casting to a characteristic-zero target. |
 | 4 | `Pi.ne_zero_of_pos` | `RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.PrimitivityCriteria` | A strictly positive dependent function on a nonempty type is nonzero. |
 | 4 | `Polynomial.mobiusTransform_ne_zero` | `RealRooted.Mathlib.Algebra.Polynomial.MobiusTransform` | If `a d - b c` is a unit, the transform of a nonzero polynomial of degree at most `n` is nonzero. |
 | 4 | `RealRooted.GeneralizedSnakePosets.modifiedNarayanaPolynomial_ne_zero` | `RealRooted.GeneralizedSnakePosets.Narayana.Modified` | Modified Narayana polynomials are nonzero. |
@@ -486,8 +486,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 |---:|---|---|---|
 | 31 | `RealRooted.toeplitz_apply` | `RealRooted.AissenSchoenbergWhitneyBase` |  |
 | 22 | `RealRooted.IsRealRootedIn.comp_neg_X` | `RealRooted.RootLocation.Basic` | Substituting `-X` into a polynomial rooted in `S` gives a polynomial rooted in the preimage of `S` under negation. |
+| 16 | `RealRooted.isRoot_nonpos_of_hasNonnegCoeffs` | `RealRooted.Basic.Coefficients` | A real root of a nonzero polynomial with nonnegative coefficients is nonpositive. |
 | 15 | `MvPolynomial.mem_degreeOfLE_iff_degreeOf` | `RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox` |  |
-| 15 | `RealRooted.isRoot_nonpos_of_hasNonnegCoeffs` | `RealRooted.Basic.Coefficients` | A real root of a nonzero polynomial with nonnegative coefficients is nonpositive. |
 | 14 | `MvPolynomial.coe_basisDegreeOfLE` | `RealRooted.Mathlib.Algebra.MvPolynomial.Stability.DegreeBox` |  |
 | 14 | `RealRooted.StrictInterl.rootMultiplicity_bounds` | `RealRooted.Basic.ProperPosition` | In proper position, the multiplicities of every real root differ by at most one. |
 | 13 | `RealRooted.listInterlaces_all_ge` | `RealRooted.Basic.RootLists` | Every element of `ss` is at least the first element of the right-hand list in a `ListInterlaces` relation. |
@@ -521,11 +521,11 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 15 | `Polynomial.basisTransform_X_pow` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
 | 11 | `Polynomial.basisTransform_C` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` |  |
 | 11 | `Polynomial.linearMap_C_mul` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` | An `R`-linear map on `R[X]` commutes with multiplication by constants. |
+| 10 | `RealRooted.sequence_eq_of_same_lag_two_recurrence` | `RealRooted.Recurrence.Uniqueness` | Two sequences with the same first two values and lag-two recurrence agree. |
 | 9 | `Polynomial.basisTransform_C_mul_X_pow` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` | A scalar monomial is sent to the corresponding scalar basis element. |
 | 9 | `RealRooted.brandenE_X_pow` | `RealRooted.Transforms.BrandenE.Basic` |  |
 | 9 | `RealRooted.gammaTransform_add` | `RealRooted.GammaTransform.Basic` |  |
 | 9 | `RealRooted.schurSzegoComp_comm` | `RealRooted.Hadamard.Basic` |  |
-| 9 | `RealRooted.sequence_eq_of_same_lag_two_recurrence` | `RealRooted.Recurrence.Uniqueness` | Two sequences with the same first two values and lag-two recurrence agree. |
 | 8 | `MvPolynomial.diagonal_mul` | `RealRooted.Mathlib.Algebra.MvPolynomial.Diagonal` |  |
 | 8 | `Polynomial.X_sub_one_mul_chowS` | `RealRooted.Mathlib.Algebra.Polynomial.Chow` | The defining quotient for `chowS` is exact at every reflection bound at least the degree of the input. |
 | 8 | `RealRooted.BigDescents321.SmallCases.ofList_cons` | `RealRooted.CombinatorialExamples.BigDescents321.SmallCases.ListPoly` |  |
@@ -545,7 +545,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | uses | theorem | module | doc |
 |---:|---|---|---|
 | 51 | `RealRooted.StrictInterl.hasSimpleRoots_of_no_common_root` | `RealRooted.SimpleRoots` | A strictly interlacing pair with no common real root has simple real roots in both entries. |
-| 35 | `RealRooted.allComboRealRooted_of_strictInterl` | `RealRooted.ObreschkoffConverse.Forward` | Forward direction of Obreschkoff: if `f ≪ g` then all real combinations `αf + βg` are real-rooted (or zero). |
+| 36 | `RealRooted.allComboRealRooted_of_strictInterl` | `RealRooted.ObreschkoffConverse.Forward` | Forward direction of Obreschkoff: if `f ≪ g` then all real combinations `αf + βg` are real-rooted (or zero). |
 | 24 | `RealRooted.HasSimpleRoots.of_roots_nodup` | `RealRooted.SimpleRoots` | A nonzero polynomial with a duplicate-free root multiset has simple real roots. |
 | 22 | `MvPolynomial.IsRayleigh.specializeAt` | `RealRooted.Multiaffine.Rayleigh` | Real scalar specialization preserves the Rayleigh property. |
 | 16 | `RealRooted.IsRealRootedIn.mem_of_mem_roots` | `RealRooted.RootLocation.Basic` | Every multiset root of a polynomial rooted in `S` lies in `S`. |
