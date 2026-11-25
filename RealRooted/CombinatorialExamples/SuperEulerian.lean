@@ -2,6 +2,7 @@ module
 
 public import RealRooted.CombinatorialExamples.Eulerian
 import RealRooted.Derivative.Interlacing
+import RealRooted.DerivativeRecurrence.HalfStepLag
 public import RealRooted.EulerOperator
 public import RealRooted.EulerOperator.Darboux.NegativeRoots
 import RealRooted.EulerOperator.Pencil
@@ -9,6 +10,7 @@ import RealRooted.EulerOperator.Polar.Pencil
 import RealRooted.GammaTransform.Preservation
 import RealRooted.Hadamard.Consequences
 import RealRooted.Interlacing.OuterDifference
+import RealRooted.Interlacing.WindowInduction
 public import RealRooted.OrderedRoots
 import RealRooted.ReciprocalShift.ProperPosition
 public import RealRooted.SimpleRoots
@@ -203,17 +205,8 @@ theorem SimpleNegRooted.thetaPlusOne {g : ℝ[X]} {d : ℕ} (hg : SimpleNegRoote
       ∀ i : Fin d, orderedRoot g d i < orderedRoot (RealRooted.thetaPlusOne g) d i := by
   have hg0 : g ≠ 0 := hg.pos.ne_zero
   have hpf : IsPFPolynomial g := IsPFPolynomial.of_realRooted_nonneg hg.nonneg hg.splits
-  have hXg : IsPFPolynomial (X * g) := hpf.X_mul
-  have hXg0 : X * g ≠ 0 := mul_ne_zero X_ne_zero hg0
-  have hder : StrictInterl (RealRooted.thetaPlusOne g) (X * g) := by
-    rw [thetaPlusOne_eq_derivative_X_mul]
-    refine (interlaces_derivative_of_pos_natDegree hXg0 (hXg.ne_zero_and_splits hXg0).2
-      (hXg.hasNonnegCoeffs.pos_leadingCoeff hXg0) ?_).toStrictInterl
-    rw [natDegree_mul X_ne_zero hg0, hg.natDegree_eq]
-    simp
   have hpfΘ : IsPFPolynomial (RealRooted.thetaPlusOne g) := thetaPlusOne_preserves_pf hpf
-  have hint : StrictInterl g (RealRooted.thetaPlusOne g) :=
-    (strictInterl_iff_mul_X_of_roots_nonpos hpf.roots_nonpos hpfΘ.roots_nonpos).mpr hder
+  have hint := strictInterl_self_thetaPlusOne_of_nonneg hg0 hg.splits hg.nonneg
   have hno : ∀ r, g.IsRoot r → ¬ (RealRooted.thetaPlusOne g).IsRoot r := by
     intro r hr hΘ
     have hrneg : r < 0 := hg.isRoot_neg hr
@@ -221,11 +214,8 @@ theorem SimpleNegRooted.thetaPlusOne {g : ℝ[X]} {d : ℕ} (hg : SimpleNegRoote
       simp [RealRooted.thetaPlusOne, theta, hr.eq_zero]
     rw [IsRoot, heval] at hΘ
     exact hg.simple.eval_derivative_ne_zero hr ((mul_eq_zero.mp hΘ).resolve_left hrneg.ne)
-  have hdeg : (RealRooted.thetaPlusOne g).natDegree = d := by
-    apply natDegree_eq_of_le_of_coeff_ne_zero
-    · exact (natDegree_thetaPlusOne_le g).trans_eq hg.natDegree_eq
-    · rw [coeff_thetaPlusOne]
-      exact mul_ne_zero (by positivity) (hg.natDegree_eq ▸ leadingCoeff_ne_zero.mpr hg0)
+  have hdeg : (RealRooted.thetaPlusOne g).natDegree = d :=
+    (natDegree_thetaPlusOne_of_ne_zero hg0).trans hg.natDegree_eq
   have hΘ0 : (RealRooted.thetaPlusOne g).coeff 0 ≠ 0 := by
     simpa [coeff_thetaPlusOne] using hg.coeff_zero_pos.ne'
   refine ⟨⟨hdeg, hpfΘ.hasNonnegCoeffs.pos_leadingCoeff fun h => hΘ0 (by simp [h]),
@@ -526,10 +516,10 @@ private lemma interl_hadPow {F G : ℝ[X]} (hF : IsPFPolynomial F) (hG : IsPFPol
 /-- The binomial row `(X+1)^m` precedes its `(θ+1)`-image. -/
 private lemma interl_X_add_one_pow_thetaPlusOne (m : ℕ) :
     Interl ((X + 1 : ℝ[X]) ^ m) (thetaPlusOne ((X + 1) ^ m)) := by
-  have hpf : IsPFPolynomial ((X + 1 : ℝ[X]) ^ m) := isPFPolynomial_X_add_one.pow m
-  cases m with
-  | zero => simpa [thetaPlusOne, theta] using IsPFPolynomial.one.interl_self
-  | succ m => exact (strictInterl_self_thetaPlusOne hpf (by simp [natDegree_pow])).toInterl
+  have hpf := isPFPolynomial_X_add_one.pow m
+  exact (strictInterl_self_thetaPlusOne_of_nonneg
+    (pow_ne_zero m (by simpa using X_add_C_ne_zero (1 : ℝ)))
+    hpf.splits hpf.hasNonnegCoeffs).toInterl
 
 /-- The binomial row `(X+1)^m` has the polar `(m+1-θ)`-image to the left of its
 `(θ+1)`-image. -/
@@ -599,38 +589,23 @@ private lemma normRow_step_real (l m j : ℕ) (hj : j < m) (a b : ℝ) :
         ((((j : ℝ) + 1 + 1) * ((m : ℝ) + 1 - (j + 1))) ^ l *
             (a / (m.choose (j + 1) : ℝ) ^ l) +
           (((j : ℝ) + 1) * ((m : ℝ) + 1 - j)) ^ l * (b / (m.choose j : ℝ) ^ l)) := by
-  have hjm : j + 1 ≤ m := hj
-  have hc1 : (0 : ℝ) < ((m + 1).choose (j + 1) : ℕ) := by
-    exact_mod_cast Nat.choose_pos (by lia)
-  have hmj : (0 : ℝ) < (m : ℝ) - j := by
-    have : (j : ℝ) < m := by exact_mod_cast hj
-    linarith
   have hm1 : (0 : ℝ) < (m : ℝ) + 1 := by positivity
+  have hc1 : (0 : ℝ) < ((m + 1).choose (j + 1) : ℝ) := by
+    exact_mod_cast Nat.choose_pos (by lia)
+  have hj1 : (0 : ℝ) < (j : ℝ) + 1 := by positivity
+  have hmj : (0 : ℝ) < (m : ℝ) - j := sub_pos.mpr (by exact_mod_cast hj)
   have e1 : (m.choose (j + 1) : ℝ) * ((m : ℝ) + 1) =
       ((m + 1).choose (j + 1) : ℝ) * ((m : ℝ) - j) := by
-    have := Nat.choose_mul_succ_eq m (j + 1)
-    have h2 : ((m + 1 - (j + 1) : ℕ) : ℝ) = (m : ℝ) - j := by
-      rw [Nat.add_sub_add_right, Nat.cast_sub hj.le]
-    rw [← h2]
-    exact_mod_cast this
+    have h := congrArg (fun k : ℕ => (k : ℝ)) (Nat.choose_mul_succ_eq m (j + 1))
+    simpa only [Nat.cast_mul, Nat.cast_add, Nat.cast_one, Nat.add_sub_add_right,
+      Nat.cast_sub hj.le] using h
   have e0 : (m.choose j : ℝ) * ((m : ℝ) + 1) =
       ((m + 1).choose (j + 1) : ℝ) * ((j : ℝ) + 1) := by
-    have h1 := Nat.choose_mul_succ_eq m j
-    have h2 := Nat.choose_succ_right_eq (m + 1) j
-    have h4 : ((m.choose j * (m + 1) : ℕ) : ℝ) =
-        (((m + 1).choose (j + 1) * (j + 1) : ℕ) : ℝ) := by
-      rw [h1, ← h2]
-    push_cast at h4
-    linarith
-  have ch1 : (m.choose (j + 1) : ℝ) =
-      ((m + 1).choose (j + 1) : ℝ) * ((m : ℝ) - j) / ((m : ℝ) + 1) :=
-    eq_div_of_mul_eq hm1.ne' e1
-  have ch0 : (m.choose j : ℝ) =
-      ((m + 1).choose (j + 1) : ℝ) * ((j : ℝ) + 1) / ((m : ℝ) + 1) :=
-    eq_div_of_mul_eq hm1.ne' e0
+    have h := congrArg (fun k : ℕ => (k : ℝ)) (Nat.add_one_mul_choose_eq m j)
+    simpa only [Nat.cast_mul, Nat.cast_add, Nat.cast_one, mul_comm] using h
+  have ch1 := eq_div_of_mul_eq hm1.ne' e1
+  have ch0 := eq_div_of_mul_eq hm1.ne' e0
   have hsub : (m : ℝ) + 1 - (j + 1) = (m : ℝ) - j := by ring
-  have hj1 : (0 : ℝ) < (j : ℝ) + 1 := by positivity
-  have hmj1 : (0 : ℝ) < (m : ℝ) + 1 - j := by linarith
   have T1 : (((j : ℝ) + 1 + 1) * ((m : ℝ) - j)) ^ l * (a / (m.choose (j + 1) : ℝ) ^ l) /
       ((m : ℝ) + 1) ^ l = (j + 2 : ℝ) ^ l * a / ((m + 1).choose (j + 1) : ℝ) ^ l := by
     rw [ch1, div_pow, mul_pow, mul_pow, show (j : ℝ) + 1 + 1 = j + 2 by ring]

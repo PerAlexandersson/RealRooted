@@ -3,6 +3,9 @@ module
 import Mathlib.Tactic.LinearCombination
 import Mathlib.Tactic.Ring
 import Mathlib.Analysis.Complex.Basic
+import Mathlib.Analysis.Complex.Convex
+import Mathlib.Analysis.Convex.Topology
+import Mathlib.Topology.Instances.Sign
 import Mathlib.Topology.Algebra.MvPolynomial
 import Mathlib.Topology.Instances.RealVectorSpace
 public import RealRooted.BorceaBranden.MultivariateHKO
@@ -66,71 +69,23 @@ private theorem ratio_im_has_constant_sign
         (MvPolynomial.eval z (complexifyMv G))).im ↔
       0 < ((MvPolynomial.eval w (complexifyMv F)) /
         (MvPolynomial.eval w (complexifyMv G))).im := by
+  let domain : Set (σ → ℂ) := Set.univ.pi fun _ => {u : ℂ | 0 < u.im}
+  let ratioIm : (σ → ℂ) → ℝ := fun u =>
+    ((MvPolynomial.eval u (complexifyMv F)) /
+      (MvPolynomial.eval u (complexifyMv G))).im
+  have hconnected : IsPreconnected domain :=
+    isPreconnected_univ_pi fun _ => (convex_halfSpace_im_gt 0).isPreconnected
   have hGstable : MvRealStable G := hall.right.resolve_left hGzero
-  let path : ℝ → σ → ℂ := fun t i => ((1 - t : ℝ) : ℂ) * z i + (t : ℂ) * w i
-  let ratioIm : ℝ → ℝ := fun t =>
-    ((MvPolynomial.eval (path t) (complexifyMv F)) /
-      (MvPolynomial.eval (path t) (complexifyMv G))).im
-  have hpath : ∀ t ∈ Icc (0 : ℝ) 1, ∀ i, 0 < (path t i).im := by
-    intro t ht i
-    rcases ht with ⟨ht0, ht1⟩
-    simp only [path, Complex.add_im, Complex.mul_im, Complex.ofReal_re,
-      Complex.ofReal_im, zero_mul, add_zero]
-    have hleft : 0 ≤ (1 - t) * (z i).im :=
-      mul_nonneg (sub_nonneg.mpr ht1) (hz i).le
-    by_cases htzero : t = 0
-    · simp [htzero, hz i]
-    · have hright : 0 < t * (w i).im :=
-        mul_pos (lt_of_le_of_ne ht0 (Ne.symm htzero)) (hw i)
-      linarith
-  have hden : ∀ t ∈ Icc (0 : ℝ) 1,
-      MvPolynomial.eval (path t) (complexifyMv G) ≠ 0 := by
-    intro t ht
-    exact hGstable (path t) (hpath t ht)
-  have hcontinuous : ContinuousOn ratioIm (Icc (0 : ℝ) 1) := by
-    have hpathContinuous : Continuous path := by fun_prop
-    have hnumContinuous : Continuous fun t =>
-        MvPolynomial.eval (path t) (complexifyMv F) :=
-      (MvPolynomial.continuous_eval (complexifyMv F)).comp hpathContinuous
-    have hdenContinuous : Continuous fun t =>
-        MvPolynomial.eval (path t) (complexifyMv G) :=
-      (MvPolynomial.continuous_eval (complexifyMv G)).comp hpathContinuous
-    exact Complex.continuous_im.comp_continuousOn
-      (hnumContinuous.continuousOn.div hdenContinuous.continuousOn hden)
-  have hnonzero : ∀ t ∈ Icc (0 : ℝ) 1, ratioIm t ≠ 0 := by
-    intro t ht
-    exact complexifyMv_eval_ratio_im_ne_zero hall hGzero hindep (hpath t ht)
-  have hzero_of_neg_pos (h0 : ratioIm 0 < 0) (h1 : 0 < ratioIm 1) : False := by
-    have himage := intermediate_value_Icc (show (0 : ℝ) ≤ 1 by norm_num) hcontinuous
-      (show 0 ∈ Icc (ratioIm 0) (ratioIm 1) from ⟨h0.le, h1.le⟩)
-    obtain ⟨t, ht, htzero⟩ := himage
-    exact hnonzero t ht htzero
-  have hzero_of_pos_neg (h0 : 0 < ratioIm 0) (h1 : ratioIm 1 < 0) : False := by
-    have himage := intermediate_value_Icc' (show (0 : ℝ) ≤ 1 by norm_num) hcontinuous
-      (show 0 ∈ Icc (ratioIm 1) (ratioIm 0) from ⟨h1.le, h0.le⟩)
-    obtain ⟨t, ht, htzero⟩ := himage
-    exact hnonzero t ht htzero
-  have hpath0 : path 0 = z := by funext i; simp [path]
-  have hpath1 : path 1 = w := by funext i; simp [path]
-  have hratio0 : ratioIm 0 =
-      ((MvPolynomial.eval z (complexifyMv F)) /
-        (MvPolynomial.eval z (complexifyMv G))).im := by simp [ratioIm, hpath0]
-  have hratio1 : ratioIm 1 =
-      ((MvPolynomial.eval w (complexifyMv F)) /
-        (MvPolynomial.eval w (complexifyMv G))).im := by simp [ratioIm, hpath1]
-  constructor
-  · intro hpos
-    have hnz := complexifyMv_eval_ratio_im_ne_zero hall hGzero hindep hw
-    rcases lt_or_gt_of_ne hnz with hneg | hposw
-    · apply (hzero_of_pos_neg (by simpa [hratio0] using hpos)
-        (by simpa [hratio1] using hneg)).elim
-    · exact hposw
-  · intro hpos
-    have hnz := complexifyMv_eval_ratio_im_ne_zero hall hGzero hindep hz
-    rcases lt_or_gt_of_ne hnz with hneg | hposz
-    · apply (hzero_of_neg_pos (by simpa [hratio0] using hneg)
-        (by simpa [hratio1] using hpos)).elim
-    · exact hposz
+  have hcontinuous : ContinuousOn ratioIm domain :=
+    Complex.continuous_im.comp_continuousOn
+      ((MvPolynomial.continuous_eval _).continuousOn.div
+        (MvPolynomial.continuous_eval _).continuousOn
+        (fun u hu => hGstable u fun i => hu i (Set.mem_univ i)))
+  have hsign := hconnected.sign_eq_of_continuousOn hcontinuous
+    (fun u hu => complexifyMv_eval_ratio_im_ne_zero hall hGzero hindep
+      (fun i => hu i (Set.mem_univ i)))
+    (fun i _ => hz i) (fun i _ => hw i)
+  rw [← sign_eq_one_iff, ← sign_eq_one_iff, hsign]
 
 /-- The converse orientation dichotomy in the multivariate
 Hermite--Kakeya--Obreschkoff theorem: a real stable two-dimensional span has

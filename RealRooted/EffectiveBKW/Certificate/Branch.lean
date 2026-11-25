@@ -231,6 +231,38 @@ def BranchCell.compatible (c d : BranchCell) (f : IntPoly2) (neg : Bool) : Bool 
   else (f.signed neg).derivativeY.posOnBox (c.tlo.max d.tlo) (c.thi.min d.thi)
     (c.lo.min d.lo) (c.hi.max d.hi)
 
+/-- A checked cell already contains its self-overlap derivative certificate. -/
+theorem BranchCell.compatible_self_of_check {c : BranchCell} {f : IntPoly2} {neg : Bool}
+    (h : c.check f neg = true) : c.compatible c f neg = true := by
+  simp only [BranchCell.check, Bool.and_eq_true] at h
+  unfold BranchCell.compatible
+  split
+  · rfl
+  · simpa only [QNum.max, QNum.min, ite_self] using h.1.1.2
+
+/-- Swapping cells preserves compatibility when the four selected endpoints agree. -/
+theorem BranchCell.compatible_of_endpoints_eq {c d : BranchCell} {f : IntPoly2} {neg : Bool}
+    (he : (c.tlo.max d.tlo, c.thi.min d.thi, c.lo.min d.lo, c.hi.max d.hi) =
+      (d.tlo.max c.tlo, d.thi.min c.thi, d.lo.min c.lo, d.hi.max c.hi))
+    (h : d.compatible c f neg = true) : c.compatible d f neg = true := by
+  simp only [Prod.mk.injEq] at he
+  obtain ⟨h₁, h₂, h₃, h₄⟩ := he
+  simpa only [BranchCell.compatible, h₁, h₂, h₃, h₄, Bool.or_comm] using h
+
+/-- Reuse the self-overlap and one neighbor before checking the remaining row. -/
+theorem BranchCell.compatible_all_of_check {cs : List BranchCell} {c d : BranchCell}
+    {f : IntPoly2} {neg : Bool}
+    (hc : c.check f neg = true) (hd : c.compatible d f neg = true)
+    (h : cs.all (fun e ↦ if e = c ∨ e = d then true else c.compatible e f neg) = true) :
+    cs.all (fun e ↦ c.compatible e f neg) = true := by
+  apply List.all_eq_true.mpr
+  intro e he
+  by_cases hec : e = c
+  · simpa only [hec] using compatible_self_of_check hc
+  · by_cases hed : e = d
+    · simpa only [hed] using hd
+    · simpa only [ite_eq_right (not_or_intro hec hed)] using (List.all_eq_true.mp h e he)
+
 /-- Overlap checks identify the two locally certified roots. -/
 theorem BranchCell.compatible_sound {c d : BranchCell} {f : IntPoly2} {neg : Bool}
     (hc : c.check f neg = true) (hd : d.check f neg = true)

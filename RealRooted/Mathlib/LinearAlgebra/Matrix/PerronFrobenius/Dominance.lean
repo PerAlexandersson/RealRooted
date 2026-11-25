@@ -12,6 +12,7 @@ import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.Primitive
 public import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.CollatzWielandt
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.NonnegativeVectors
 import RealRooted.Mathlib.LinearAlgebra.Matrix.PerronFrobenius.PrimitivityCriteria
+import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
 
 /-!
 # Dominance of the Perron root
@@ -362,33 +363,12 @@ eigenvalue. It is the spectral radius. -/
 theorem perron_root_is_spectral_radius (hA_irred : A.IsIrreducible) (hA_nonneg : ∀ i j, 0 ≤ A i j) :
     let r := perronRoot A
     r ∈ spectrum ℝ A ∧ ∀ μ ∈ spectrum ℝ A, |μ| ≤ r := by
-  constructor
-  · exact perron_root_is_eigenvalue hA_irred hA_nonneg
-  · intro μ hμ
-    have hμ_complex : (μ : ℂ) ∈ spectrum ℂ (A.map (algebraMap ℝ ℂ)) := by
-      have hμ_lin : μ ∈ spectrum ℝ (toLin' A) := by
-        simpa only [Matrix.spectrum_toLin'] using hμ
-      obtain ⟨v, hv_eig, hv_ne_zero⟩ :=
-        (Module.End.hasEigenvalue_iff_mem_spectrum.mpr hμ_lin).exists_hasEigenvector
-      let v_complex : n → ℂ := fun i => (v i : ℂ)
-      have hvc_ne_zero : v_complex ≠ 0 := by
-        intro h
-        have : v = 0 := by
-          ext i
-          have : (v i : ℂ) = 0 := congr_fun h i
-          exact_mod_cast this
-        exact hv_ne_zero this
-      have hv_eig_vec : A *ᵥ v = μ • v := by
-        simpa only [toLin'_apply] using Module.End.mem_eigenspace_iff.mp hv_eig
-      have hvc_eig : (A.map (algebraMap ℝ ℂ)) *ᵥ v_complex = (μ : ℂ) • v_complex := by
-        ext i
-        have h_eq : (A *ᵥ v) i = μ * v i := by
-          simpa using congr_fun hv_eig_vec i
-        simpa [v_complex, smul_eq_mul, mulVec, dotProduct, map_apply] using
-          congrArg (fun x : ℝ => (x : ℂ)) h_eq
-      exact mem_spectrum_of_eigenvalue hvc_ne_zero hvc_eig
-    have h_bound := eigenvalue_abs_le_perron_root hA_irred hA_nonneg hμ_complex
-    simpa using h_bound
+  refine ⟨perron_root_is_eigenvalue hA_irred hA_nonneg, fun μ hμ => ?_⟩
+  have hμ_complex : (μ : ℂ) ∈ spectrum ℂ (A.map (algebraMap ℝ ℂ)) := by
+    rw [Matrix.mem_spectrum_iff_isRoot_charpoly, Matrix.charpoly_map]
+    exact (Matrix.mem_spectrum_iff_isRoot_charpoly.mp hμ).map (algebraMap ℝ ℂ)
+  simpa only [Complex.norm_real, Real.norm_eq_abs] using
+    eigenvalue_abs_le_perron_root hA_irred hA_nonneg hμ_complex
 
 /- The two `spectralRadius` bridge theorems from the original file are omitted:
 they were `sorry`d upstream and are not needed by the Gantmacher-Krein route,

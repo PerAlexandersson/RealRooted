@@ -3,6 +3,8 @@ module
 public import RealRooted.HermiteBiehler.Basic
 public import Mathlib.Algebra.Polynomial.Eval.Degree
 public import RealRooted.NewtonAux
+import RealRooted.IteratedDerivativeShift
+import RealRooted.GraceHalfPlane
 import RealRooted.Hadamard.SchurSzegoMultiplicity
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 public import RealRooted.Hadamard.Basic
@@ -60,100 +62,20 @@ private theorem coeff_polarDeriv (N : ℕ) (ζ : ℂ) (P : ℂ[X]) (k : ℕ) :
 private theorem natDegree_polarDeriv_le {n : ℕ} (ζ : ℂ) {P : ℂ[X]}
     (hP : P.natDegree ≤ n + 1) :
     (polarDeriv (n + 1) ζ P).natDegree ≤ n := by
-  rw [natDegree_le_iff_coeff_eq_zero]
-  intro k hk
-  have hk' : n + 1 ≤ k := by exact_mod_cast hk
-  rw [coeff_polarDeriv, coeff_eq_zero_of_natDegree_lt (show P.natDegree < k + 1 by lia)]
-  rcases Nat.eq_or_lt_of_le hk' with h | h
-  · subst h; push_cast; ring
-  · rw [coeff_eq_zero_of_natDegree_lt (show P.natDegree < k by lia)]; ring
-
-/-- The basic inequality for a single root in the closed lower half-plane. -/
-private theorem term_ineq {z τ : ℂ} (hτ : τ.im ≤ 0) :
-    z.im * Complex.normSq (1 / (z - τ)) ≤ -(1 / (z - τ)).im := by
-  set u := z - τ with hu
-  by_cases h0 : u = 0
-  · simp [h0]
-  have hpos : 0 < Complex.normSq u := Complex.normSq_pos.mpr h0
-  have him : u.im = z.im - τ.im := by simp [hu]
-  rw [one_div, Complex.normSq_inv, Complex.inv_im, neg_div, neg_neg, ← div_eq_mul_inv]
-  exact div_le_div_of_nonneg_right (by linarith) hpos.le
-
-/-- The key inequality for the logarithmic derivative. -/
-private theorem logDeriv_ineq (s : Multiset ℂ) {z : ℂ} (hz : 0 < z.im)
-    (hs : ∀ τ ∈ s, τ.im ≤ 0) :
-    z.im * Complex.normSq (s.map fun τ => 1 / (z - τ)).sum ≤
-      -(Multiset.card s : ℝ) * ((s.map fun τ => 1 / (z - τ)).sum).im := by
-  induction s using Multiset.induction_on with
-  | empty => simp
-  | cons τ s ih =>
-    have ih' := ih fun t ht => hs t (Multiset.mem_cons_of_mem ht)
-    have hτ := term_ineq (z := z) (hs τ (Multiset.mem_cons_self τ s))
-    simp only [Multiset.map_cons, Multiset.sum_cons, Multiset.card_cons]
-    set w := 1 / (z - τ)
-    set S := (s.map fun τ => 1 / (z - τ)).sum
-    set d : ℝ := (Multiset.card s : ℝ)
-    have hd : 0 ≤ d := Nat.cast_nonneg _
-    rw [Complex.normSq_apply] at hτ ih' ⊢
-    simp only [Complex.add_re, Complex.add_im] at ⊢
-    push_cast
-    have key : 0 ≤ (d * w.re - S.re) ^ 2 + (d * w.im - S.im) ^ 2 := by positivity
-    rcases hd.lt_or_eq with hd | hd
-    · have : d * (z.im * ((w.re + S.re) * (w.re + S.re) + (w.im + S.im) * (w.im + S.im))) ≤
-          d * (-(d + 1) * (w.im + S.im)) := by
-        nlinarith [hz.le, mul_le_mul_of_nonneg_left hτ (by linarith : (0:ℝ) ≤ d + 1),
-          mul_le_mul_of_nonneg_left hτ hd.le]
-      exact le_of_mul_le_mul_left this hd
-    · have hc : ((Multiset.card s : ℕ) : ℝ) = 0 := hd.symm
-      rw [← hd] at ih'
-      rw [hc]
-      have hS : S.re * S.re + S.im * S.im = 0 := by
-        nlinarith [mul_self_nonneg S.re, mul_self_nonneg S.im,
-          mul_nonneg hz.le (add_nonneg (mul_self_nonneg S.re) (mul_self_nonneg S.im))]
-      have hre : S.re = 0 := by nlinarith [sq_nonneg S.re, sq_nonneg S.im]
-      have him : S.im = 0 := by nlinarith [sq_nonneg S.re, sq_nonneg S.im]
-      rw [hre, him]; linarith
+  exact RealRooted.polarDeriv_natDegree_le (by lia) hP
 
 /-- Laguerre's theorem on polar derivatives for the upper half-plane. -/
 private theorem polarDeriv_ne_zero {N : ℕ} (hN : 1 ≤ N) {P : ℂ[X]} (hPdeg : P.natDegree ≤ N)
     (hP : ∀ z : ℂ, 0 < z.im → P.eval z ≠ 0) {ζ : ℂ} (hζ : 0 < ζ.im) {z : ℂ}
     (hz : 0 < z.im) :
     (polarDeriv N ζ P).eval z ≠ 0 := by
-  have hP0 : P ≠ 0 := by
-    rintro rfl; exact hP Complex.I (by simp) (by simp)
-  have hs : P.Splits := IsAlgClosed.splits P
-  have hroots : ∀ τ ∈ P.roots, τ.im ≤ 0 := by
-    intro τ hτ; by_contra h; push Not at h; exact hP τ h ((mem_roots hP0).mp hτ)
-  have hPz : P.eval z ≠ 0 := hP z hz
-  set S := (P.roots.map fun τ => 1 / (z - τ)).sum with hSdef
-  have hS : P.derivative.eval z = P.eval z * S := hs.eval_derivative_eq_eval_mul_sum hPz
-  have hineq := logDeriv_ineq P.roots hz hroots
-  rw [← hSdef] at hineq
-  have hcard : (Multiset.card P.roots : ℝ) ≤ N := by
-    have := card_roots' P; exact_mod_cast this.trans hPdeg
-  have hN' : (1 : ℝ) ≤ N := by exact_mod_cast hN
-  intro h
-  rw [polarDeriv, eval_add, eval_mul, eval_C, eval_mul, eval_sub, eval_C, eval_X, hS] at h
-  have h2 : (N : ℂ) + (ζ - z) * S = 0 := by
-    have : P.eval z * ((N : ℂ) + (ζ - z) * S) = 0 := by rw [← h]; ring
-    exact (mul_eq_zero.mp this).resolve_left hPz
-  have hre := congrArg Complex.re h2
-  have him := congrArg Complex.im h2
-  simp only [Complex.add_re, Complex.natCast_re, Complex.mul_re, Complex.sub_re,
-    Complex.sub_im, Complex.zero_re, Complex.add_im, Complex.natCast_im, Complex.mul_im,
-    Complex.zero_im, zero_add] at hre him
-  rw [Complex.normSq_apply] at hineq
-  have key : (ζ.im - z.im) * (S.re * S.re + S.im * S.im) = N * S.im := by
-    linear_combination S.re * him - S.im * hre
-  have hSne : S ≠ 0 := fun hS => by simp [hS] at hre; linarith
-  have hS0 : 0 < S.re * S.re + S.im * S.im := by
-    simpa [Complex.normSq_apply] using Complex.normSq_pos.mpr hSne
-  have hcard0 : (0 : ℝ) ≤ Multiset.card P.roots := Nat.cast_nonneg _
-  have hSim : S.im ≤ 0 := by
-    by_contra h4; push Not at h4; nlinarith [mul_pos hz hS0]
-  have h5 : (N : ℝ) * S.im ≤ (Multiset.card P.roots : ℝ) * S.im :=
-    mul_le_mul_of_nonpos_right hcard hSim
-  nlinarith [mul_pos hζ hS0]
+  intro hzero
+  have hroots : P.RootsIn (RealRooted.lowerHalf 0) := by
+    intro w hw
+    exact le_of_not_gt (fun h => hP w h hw)
+  have hpres := RealRooted.polarDeriv_rootsIn_lowerHalf_of_natDegree_le
+    hN hPdeg hroots (not_le.mpr hζ)
+  exact (not_le.mpr hz) (hpres z hzero)
 
 /-- The pointwise recursion for the composition. -/
 private theorem compC_recursion (n : ℕ) (P : ℂ[X]) (Q1 : ℝ[X])
@@ -341,59 +263,14 @@ open Polynomial
 
 namespace SchurSzegoAristotle
 
-/-- Laguerre's inequality for products of linear factors. -/
-private theorem laguerre_prod (s : Multiset ℝ) (x : ℝ) :
-    0 ≤ ((s.map fun a => X - C a).prod.derivative.eval x) ^ 2 -
-        (s.map fun a => X - C a).prod.eval x *
-          (s.map fun a => X - C a).prod.derivative.derivative.eval x ∧
-    (s ≠ 0 → (s.map fun a => X - C a).prod.eval x ≠ 0 →
-      0 < ((s.map fun a => X - C a).prod.derivative.eval x) ^ 2 -
-        (s.map fun a => X - C a).prod.eval x *
-          (s.map fun a => X - C a).prod.derivative.derivative.eval x) := by
-  induction s using Multiset.induction_on with
-  | empty => simp
-  | cons a s ih =>
-    obtain ⟨ih1, -⟩ := ih
-    set G := (s.map fun a => X - C a).prod with hG
-    simp only [Multiset.map_cons, Multiset.prod_cons]
-    rw [← hG]
-    have key : ((((X - C a) * G).derivative.eval x) ^ 2 -
-        ((X - C a) * G).eval x * ((X - C a) * G).derivative.derivative.eval x) =
-        (G.eval x) ^ 2 + (x - a) ^ 2 * ((G.derivative.eval x) ^ 2 -
-          G.eval x * G.derivative.derivative.eval x) := by
-      simp only [derivative_mul, derivative_add, derivative_sub, derivative_X, derivative_C,
-        sub_zero, one_mul, eval_add, eval_mul, eval_sub, eval_X, eval_C]
-      ring
-    rw [key]
-    refine ⟨by positivity, fun _ hx => ?_⟩
-    have hGx : G.eval x ≠ 0 := fun h => hx (by simp [h])
-    nlinarith [sq_pos_of_ne_zero hGx, sq_nonneg (x - a)]
-
 /-- If a split real polynomial of positive degree has `p'(x) = p''(x) = 0`, then `p(x) = 0`. -/
 private theorem eval_eq_zero_of_derivs {p : ℝ[X]} (hp : p.Splits)
     (hdeg : 0 < p.natDegree) {x : ℝ}
     (h1 : p.derivative.eval x = 0) (h2 : p.derivative.derivative.eval x = 0) :
     p.eval x = 0 := by
   by_contra hx
-  have hroots : p.roots ≠ 0 := by
-    intro h
-    have := hp.natDegree_eq_card_roots
-    rw [h] at this; simp at this; lia
-  obtain ⟨c, F, hpF, hFdef⟩ :
-      ∃ c F, p = C c * F ∧ F = (p.roots.map fun a => X - C a).prod :=
-    ⟨_, _, hp.eq_prod_roots, rfl⟩
-  have hFx : F.eval x ≠ 0 := fun h => hx (by rw [hpF]; simp [h])
-  have hstrict := (laguerre_prod p.roots x).2 hroots (hFdef ▸ hFx)
-  rw [← hFdef] at hstrict
-  have hc : c ≠ 0 := by rintro rfl; apply hx; rw [hpF]; simp
-  have e : (p.derivative.eval x) ^ 2 - p.eval x * p.derivative.derivative.eval x =
-      c ^ 2 * ((F.derivative.eval x) ^ 2 - F.eval x *
-        F.derivative.derivative.eval x) := by
-    rw [hpF]
-    simp only [derivative_mul, derivative_C, zero_mul, zero_add, eval_mul, eval_C]
-    ring
-  rw [h1, h2] at e
-  nlinarith [mul_pos (sq_pos_of_ne_zero hc) hstrict]
+  have hstrict := RealRooted.deriv2_mul_lt_deriv_sq_at_non_root hp hdeg hx
+  simp only [h1, h2, zero_mul, zero_pow (by decide : 2 ≠ 0), lt_self_iff_false] at hstrict
 
 /-- Coefficients of iterated derivatives. -/
 private theorem coeff_iterate_derivative_real (p : ℝ[X]) (k m : ℕ) :

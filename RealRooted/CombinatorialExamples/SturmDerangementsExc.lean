@@ -13,6 +13,7 @@ import RealRooted.SequenceClosure
 import RealRooted.WagnerRightSum
 import RealRooted.WagnerX.NonnegativeRoots
 import RealRooted.Derivative.Algebra
+import RealRooted.DerivativeRecurrence.Interlacing
 public import RealRooted.Basic.Coefficients
 public import RealRooted.Basic.ProperPosition
 
@@ -265,35 +266,29 @@ lemma X_add_one_dvd_sturmDerangementsExc_of_odd {n : Nat} (hn : Odd n) :
   by simpa [sub_eq_add_neg, add_comm] using
     (dvd_iff_isRoot).2 (sturmDerangementsExc_isRoot_neg_one_of_odd hn)
 
+/-- The affine derivative block is a generic nonnegative differential step. -/
+private lemma hasNonnegCoeffs_affineDerivative {f : ℝ[X]} {n : ℕ}
+    (hf : HasNonnegCoeffs f) (hd : f.natDegree ≤ n) :
+    HasNonnegCoeffs (C (n : ℝ) * f + (1 - X) * f.derivative) := by
+  apply hasNonnegCoeffs_mul_add_mul_derivative hd (by simp) ?_ hf
+  intro i j hj
+  simp only [coeff_sub, coeff_one, coeff_X, coeff_C]
+  rcases i with _ | i
+  · norm_num
+    exact_mod_cast hj
+  · simp
+
 lemma sturmDerangementsExc_nonnegCoeffs : ∀ n : Nat, HasNonnegCoeffs (sturmDerangementsExc n)
   | 0 => hasNonnegCoeffs_zero
   | 1 => hasNonnegCoeffs_zero
   | 2 => by simpa [sturmDerangementsExc_two] using hasNonnegCoeffs_X
-  | 3 => by
-      rw [sturmDerangementsExc_three]
-      exact (hasNonnegCoeffs_X.pow 2).add hasNonnegCoeffs_X
-  | n + 4 => by
-      rintro (_ | m)
-      · rw [sturmDerangementsExc_recurrence (n + 1)]
-        simp
-      · rw [coeff_sturmDerangementsExc_succ (n + 1) m]
-        by_cases hm : m ≤ n + 2
-        · have hm' : (m : ℝ) ≤ ((n + 2 : Nat) : ℝ) := Nat.cast_le.mpr hm
-          push_cast at hm'
-          have h₁ := sturmDerangementsExc_nonnegCoeffs (n + 2) m
-          have h₂ := sturmDerangementsExc_nonnegCoeffs (n + 3) m
-          have h₃ := sturmDerangementsExc_nonnegCoeffs (n + 3) (m + 1)
-          have hscale : 0 ≤ ((n + 1 : Nat) : ℝ) + 2 - m := by
-            push_cast
-            linarith
-          exact add_nonneg
-            (add_nonneg (mul_nonneg (by positivity) h₁) (mul_nonneg hscale h₂))
-            (mul_nonneg (by positivity) h₃)
-        · have hm' : n + 2 < m := lt_of_not_ge hm
-          rcases coeff_sturmDerangementsExc_top_and_above (n + 2) (by lia) with ⟨_, hsmall_hi⟩
-          rcases coeff_sturmDerangementsExc_top_and_above (n + 3) (by lia) with ⟨_, hbig_hi⟩
-          rw [hsmall_hi m (by lia), hbig_hi m (by lia), hbig_hi (m + 1) (by lia)]
-          norm_num
+  | n + 3 => by
+    rw [sturmDerangementsExc_recurrence, add_assoc]
+    have h := ((hasNonnegCoeffs_C (by positivity : (0 : ℝ) ≤ n + 2)).mul
+      (sturmDerangementsExc_nonnegCoeffs (n + 1))).add
+      (hasNonnegCoeffs_affineDerivative (sturmDerangementsExc_nonnegCoeffs (n + 2))
+        (natDegree_le_sturmDerangementsExc (n + 2)))
+    simpa only [map_add, map_natCast, map_ofNat, Nat.cast_add, Nat.cast_ofNat] using h.X_mul
 
 lemma roots_nonpos_sturmDerangementsExc_of_isRealRooted {n : Nat} :
     ∀ r ∈ (sturmDerangementsExc n).roots, r ≤ 0 :=
@@ -328,55 +323,20 @@ lemma natDegree_affine_sturmDerangementsExc {n : Nat} (hn : 2 ≤ n) :
 
 lemma affine_sturmDerangementsExc_nonnegCoeffs {n : Nat} (hn : 2 ≤ n) :
     HasNonnegCoeffs (affineSturmDerangementsExc n) := by
-  intro m
-  rw [affineSturmDerangementsExc, coeff_add, coeff_C_mul]
-  rw [coeff_one_sub_X_mul_derivative]
-  by_cases hm : m ≤ n
-  · have hcoeff_m : 0 ≤ (sturmDerangementsExc n).coeff m :=
-      sturmDerangementsExc_nonnegCoeffs n m
-    have hcoeff_succ : 0 ≤ (sturmDerangementsExc n).coeff (m + 1) :=
-      sturmDerangementsExc_nonnegCoeffs n (m + 1)
-    have hnm : 0 ≤ (n : ℝ) - m := by simp_all
-    nlinarith
-  · have hm' : n < m := lt_of_not_ge hm
-    rcases coeff_sturmDerangementsExc_top_and_above n hn with ⟨_, habove⟩
-    have hcoeff_m : (sturmDerangementsExc n).coeff m = 0 := habove m (by lia)
-    have hcoeff_succ : (sturmDerangementsExc n).coeff (m + 1) = 0 :=
-      habove (m + 1) (by lia)
-    simp [hcoeff_m, hcoeff_succ]
+  apply hasNonnegCoeffs_affineDerivative (sturmDerangementsExc_nonnegCoeffs n)
+  rw [natDegree_sturmDerangementsExc hn]
+  lia
 
 lemma affine_sturmDerangementsExc_isRoot_neg_one_of_even {n : Nat}
     (hn : Even n) (h2 : 2 ≤ n) :
     (affineSturmDerangementsExc n).IsRoot (-1) := by
-  rw [Polynomial.IsRoot.def]
-  rcases hn with ⟨k, rfl⟩
-  have hk : 1 ≤ k := by lia
-  set A : ℝ[X] := affineSturmDerangementsExc (k + k)
-  change A.eval (-1) = 0
-  have hprev_odd : Odd ((k + k) - 1) := ⟨k - 1, by lia⟩
-  have hnext_odd : Odd (k + k + 1) := ⟨k, by lia⟩
-  have hprev0 : (sturmDerangementsExc (k + k - 1)).eval (-1) = 0 :=
-    Polynomial.IsRoot.def.mp (sturmDerangementsExc_isRoot_neg_one_of_odd hprev_odd)
-  have hnext0 : (sturmDerangementsExc (k + k + 1)).eval (-1) = 0 :=
-    Polynomial.IsRoot.def.mp (sturmDerangementsExc_isRoot_neg_one_of_odd hnext_odd)
-  have hk1 : k + k - 2 + 1 = k + k - 1 := by lia
-  have hk2 : k + k - 2 + 2 = k + k := by lia
-  have hk3 : k + k - 2 + 3 = k + k + 1 := by lia
-  have hrec_eval :
-      0 =
-        -(((↑(k + k - 2) : ℝ) + 2) * (sturmDerangementsExc (k + k)).eval (-1) +
-          (1 + 1 : ℝ) * (sturmDerangementsExc (k + k)).derivative.eval (-1)) := by
-    simpa [hk1, hk2, hk3, Polynomial.eval_add, Polynomial.eval_mul, hprev0, hnext0]
-      using congrArg (fun p : ℝ[X] => p.eval (-1))
-        (sturmDerangementsExc_recurrence (k + k - 2))
-  have hcoef : ((↑(k + k - 2) : ℝ) + 2) = (k + k : ℝ) := by simp_all
-  rw [hcoef] at hrec_eval
-  have hA_eval :
-      A.eval (-1) =
-        (k + k : ℝ) * (sturmDerangementsExc (k + k)).eval (-1) +
-          (1 + 1 : ℝ) * (sturmDerangementsExc (k + k)).derivative.eval (-1) := by
-    simp [A, affineSturmDerangementsExc]
-  grind
+  rw [IsRoot.def]
+  have hprev : (sturmDerangementsExc (n - 1)).eval (-1) = 0 :=
+    (sturmDerangementsExc_isRoot_neg_one_of_odd (Nat.Even.sub_odd (by lia) hn odd_one)).eq_zero
+  have hnext := (sturmDerangementsExc_isRoot_neg_one_of_odd (hn.add_odd odd_one)).eq_zero
+  rw [sturmDerangementsExc_succ_eq_X_mul_recurrenceCore n h2] at hnext
+  simpa only [recurrenceCoreSturmDerangementsExc, eval_mul, eval_X, eval_add, eval_C,
+    hprev, mul_zero, zero_add, neg_mul, one_mul, neg_eq_zero] using hnext
 
 lemma X_add_one_dvd_affine_sturmDerangementsExc_of_even {n : Nat}
     (hn : Even n) (h2 : 2 ≤ n) :

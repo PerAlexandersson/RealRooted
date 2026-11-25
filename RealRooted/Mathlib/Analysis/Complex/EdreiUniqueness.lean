@@ -74,17 +74,11 @@ private lemma encard_eq_cnt {u : ℕ → ℝ} (su : Summable u) {t : ℝ} (ht : 
 /-- Fiberwise regrouping of a sum. -/
 private lemma hasSum_cnt {u : ℕ → ℝ} (g : ℝ → ℝ) (hs : Summable (fun i => g (u i))) :
     HasSum (fun t => (cnt u t : ℝ) * g t) (∑' i, g (u i)) := by
-  set e := Equiv.sigmaFiberEquiv u
-  have hF : Summable (fun x : (Σ t, {i // u i = t}) => g (u (e x))) :=
-    (e.summable_iff (f := fun i => g (u i))).mpr hs
-  have hF' : HasSum (fun x : (Σ t, {i // u i = t}) => g (u (e x))) (∑' i, g (u i)) := by
-    rw [← e.tsum_eq (fun i => g (u i))]; exact hF.hasSum
-  refine hF'.sigma (fun t => ?_)
-  have h1 := (hF.sigma_factor t).hasSum
-  convert h1 using 1
-  have : ∀ c : {i // u i = t}, g (u (e ⟨t, c⟩)) = g t := by
-    intro c; simp [e, Equiv.sigmaFiberEquiv, c.2]
-  simp only [this, tsum_const, nsmul_eq_mul, cnt]
+  convert hs.hasSum.tsum_fiberwise u using 1
+  funext t
+  have hconst : (fun i : u ⁻¹' {t} => g (u i)) = fun _ => g t :=
+    funext fun i => congrArg g i.property
+  rw [hconst, tsum_const, nsmul_eq_mul]
   rfl
 
 /-- Equal power sums make the signed fiber-count moment sum vanish. -/

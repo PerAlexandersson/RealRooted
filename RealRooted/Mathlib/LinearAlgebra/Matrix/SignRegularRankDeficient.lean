@@ -72,46 +72,19 @@ theorem Matrix.exists_ordered_minor_ne_zero_of_rank_eq
     rw [hp j], Matrix.det_permute', hzero, mul_zero]
 
 /-- Karlin's signed row-cofactor vector of a singular square matrix lies in
-its kernel. The retained-row equations come from the rectangular alternating
-minor identity; Laplace expansion supplies the omitted-row equation. -/
+its kernel: it is a column of the adjugate, and multiplication by the matrix
+gives the zero matrix when its determinant vanishes. -/
 theorem Matrix.mulVec_signedRowCofactor_eq_zero_of_det_eq_zero
     {R : Type*} [CommRing R] {k : ℕ}
     (B : Matrix (Fin (k + 1)) (Fin (k + 1)) R)
     (i0 : Fin (k + 1)) (hdet : B.det = 0) :
     B.mulVec (fun j => (-1 : R) ^ (i0 + j : ℕ) *
       (B.submatrix i0.succAbove j.succAbove).det) = 0 := by
-  let C : Matrix (Fin k) (Fin (k + 1)) R :=
-    B.submatrix i0.succAbove id
-  have hminor (j : Fin (k + 1)) :
-      ((C.transpose).submatrix j.succAbove id).det =
-        (B.submatrix i0.succAbove j.succAbove).det := by
-    rw [← Matrix.det_transpose]
-    rfl
-  let z0 : Fin (k + 1) → R := fun j =>
-    (-1 : R) ^ (j : ℕ) * (B.submatrix i0.succAbove j.succAbove).det
-  let z : Fin (k + 1) → R := fun j =>
-    (-1 : R) ^ (i0 + j : ℕ) * (B.submatrix i0.succAbove j.succAbove).det
-  have hremoved0 : C.mulVec z0 = 0 := by
-    have hkernel :=
-      Matrix.transpose_mulVec_alternating_det_submatrix_succAbove C.transpose
-    rw [Matrix.transpose_transpose] at hkernel
-    simp_rw [hminor] at hkernel
-    simpa only [z0] using hkernel
-  have hz : z = (-1 : R) ^ (i0 : ℕ) • z0 := by
-    funext j
-    simp only [z, z0, Pi.smul_apply, smul_eq_mul, pow_add, mul_assoc]
-  have hremoved : C.mulVec z = 0 := by rw [hz, Matrix.mulVec_smul, hremoved0, smul_zero]
-  change B.mulVec z = 0
-  apply funext
-  refine Fin.succAboveCases i0 ?_ (fun i => ?_)
-  · simp only [Matrix.mulVec, dotProduct, z, Pi.zero_apply]
-    convert (Matrix.det_succ_row B i0).symm.trans hdet using 1
-    apply Finset.sum_congr rfl
-    intro j _
-    ring
-  · have hi := congrFun hremoved i
-    simpa only [C, Matrix.mulVec, dotProduct, Matrix.submatrix_apply, id_eq,
-      Pi.zero_apply] using hi
+  ext i
+  simp only [Matrix.mulVec, dotProduct, Pi.zero_apply]
+  simpa only [Matrix.mul_apply, Matrix.adjugate_fin_succ_eq_det_submatrix,
+    hdet, zero_smul, Matrix.zero_apply] using
+    congrArg (fun M : Matrix (Fin (k + 1)) (Fin (k + 1)) R => M i i0) B.mul_adjugate
 
 /-- Deleting a column preserves the rank when a maximal nonzero minor avoids
 that column. This is the common rank step in Karlin's two deficient-rank

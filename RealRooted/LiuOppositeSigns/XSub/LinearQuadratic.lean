@@ -1,5 +1,6 @@
 module
 
+import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RightSuccessor
 import RealRooted.LiuOppositeSigns.XSub.SameDegree
 import RealRooted.LiuOppositeSigns.PositiveSplitPair
 public import RealRooted.LiuOppositeSigns.PositiveSplitRootCount
@@ -152,51 +153,7 @@ lemma splits_X_mul_sub_C_mul_of_positiveSplit_natDegree_one_two
     (hpdeg : p.natDegree = 1) (hqdeg : q.natDegree = 2)
     {μ : ℝ} (hμ : 0 < μ) :
     (X * p - C μ * q).Splits := by
-  obtain ⟨c, hproots, hpfac⟩ :=
-    exists_linear_factor_of_splits_natDegree_one hpair.left_splits hpdeg
-  obtain ⟨a, b, hab, hqroots, hqfac⟩ :=
-    exists_roots_pair_of_splits_natDegree_two hpair.right_splits hqdeg
-  have hac : a ≤ c :=
-    lower_quadratic_root_le_singleton_root_of_positiveSplitRootCountPair_one_two
-      hpair hab hproots hqroots
-  have hb0 : b ≤ 0 := by
-    have hb_mem : b ∈ q.roots := by
-      rw [hqroots]
-      simp only [Multiset.insert_eq_cons]
-      simp
-    exact roots_nonpos_of_hasNonnegCoeffs hqnn b hb_mem
-  have hc0 : c ≤ 0 := by
-    have hc_mem : c ∈ p.roots := by
-      rw [hproots]
-      simp
-    exact roots_nonpos_of_hasNonnegCoeffs hpnn c hc_mem
-  let A : ℝ := p.leadingCoeff
-  let B : ℝ := q.leadingCoeff
-  have hA_pos : 0 < A := by
-    dsimp [A]
-    exact hpair.left_pos
-  have hB_pos : 0 < B := by
-    dsimp [B]
-    exact hpair.right_pos
-  let ν : ℝ := μ * B / A
-  have hν_pos : 0 < ν := by
-    dsimp [ν]
-    exact div_pos (mul_pos hμ hB_pos) hA_pos
-  let inner : ℝ[X] := X * (X - C c) - C ν * ((X - C a) * (X - C b))
-  have hinner_splits : inner.Splits := by
-    dsimp [inner]
-    exact xSubLinearQuadraticSplits hab hac hb0 hc0 hν_pos
-  have hpfacA : p = C A * (X - C c) := by simpa [A] using hpfac
-  have hqfacB : q = C B * ((X - C a) * (X - C b)) := by simpa [B] using hqfac
-  have hpoly : X * p - C μ * q = C A * inner := by
-    rw [hpfacA, hqfacB]
-    dsimp [inner, ν]
-    apply Polynomial.funext
-    intro x
-    simp only [eval_sub, eval_mul, eval_C, eval_X]
-    field_simp [hA_pos.ne']
-  rw [hpoly]
-  exact hinner_splits.C_mul A
+  exact hpair.xSub_splits_of_right_successor_nonneg hpnn hqnn (by lia) hμ
 
 /-- Degree-two right endpoint case for the right-successor sign-normalized
 x-subtraction leaf. -/

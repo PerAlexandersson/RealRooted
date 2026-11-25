@@ -2,14 +2,15 @@ module
 
 public import RealRooted.DerivativeRecurrence.MultiLagCancel
 import RealRooted.Recurrence.RowModel
-import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
+import RealRooted.Recurrence.Uniqueness
 
 /-!
 # Remaining periodic-top-coefficient rows
 
 This file closes the A177040 degree problem; the A114580 and A390883 degrees are proved in
-the downstream oeis-proofs repository.  The A177040 proof uses its exact parity-split
-coefficient vectors as the two states of the multi-lag top-window law.
+the downstream oeis-proofs repository. We identify A177040 with a coupled pair of monic rows
+by finite-recurrence uniqueness.
+The coupled update makes the degree growth explicit, so no coefficient formula is needed.
 -/
 
 @[expose] public section
@@ -37,722 +38,6 @@ def A177040 : ℕ → ℝ[X]
         + (C (2 / 5 + 1 / 5 * r) + C (-7 / 5 - 1 / 5 * r) * X) * A177040 (n + 1)
         + (C (-13 / 5 - 2 / 5 * r) + C (8 / 5 + 2 / 5 * r) * X) * A177040 n
 
-private lemma A177040_coeff_succ (n k : ℕ) :
-    (A177040 (n + 4)).coeff (k + 2) =
-      ((2 / 5) * ((k : ℝ) +2) * (A177040 (n + 3)).coeff (k + 2)
-        + (-2 / 5) * ((k : ℝ) +1) * (A177040 (n + 3)).coeff (k + 1))
-      + ((-4 / 5) * ((k : ℝ) +2) * (A177040 (n + 2)).coeff (k + 2)
-        + (4 / 5) * ((k : ℝ) +1) * (A177040 (n + 2)).coeff (k + 1))
-      + ((2 / 5) * ((k : ℝ) +2) * (A177040 (n + 1)).coeff (k + 2)
-        + (-2 / 5) * ((k : ℝ) +1) * (A177040 (n + 1)).coeff (k + 1))
-      + ((-4 / 5) * ((k : ℝ) +2) * (A177040 n).coeff (k + 2)
-        + (4 / 5) * ((k : ℝ) +1) * (A177040 n).coeff (k + 1))
-      + (((2 / 5) + (-1 / 5) * (n : ℝ)) * (A177040 (n + 3)).coeff (k + 2)
-        + ((3 / 5) + (1 / 5) * (n : ℝ)) * (A177040 (n + 3)).coeff (k + 1))
-      + ((2 + (2 / 5) * (n : ℝ)) * (A177040 (n + 2)).coeff (k + 2)
-        + ((-2 / 5) * (n : ℝ)) * (A177040 (n + 2)).coeff (k + 1))
-      + (((2 / 5) + (1 / 5) * (n : ℝ)) * (A177040 (n + 1)).coeff (k + 2)
-        + ((-7 / 5) + (-1 / 5) * (n : ℝ)) * (A177040 (n + 1)).coeff (k + 1))
-      + (((-13 / 5) + (-2 / 5) * (n : ℝ)) * (A177040 n).coeff (k + 2)
-        + ((8 / 5) + (2 / 5) * (n : ℝ)) * (A177040 n).coeff (k + 1)) := by
-  conv_lhs => rw [A177040]
-  rw [show ((C ((2 / 5)) * X + C ((-2 / 5)) * X ^ 2)) * (A177040 (n + 3)).derivative
-    + ((C ((-4 / 5)) * X + C ((4 / 5)) * X ^ 2)) * (A177040 (n + 2)).derivative
-    + ((C ((2 / 5)) * X + C ((-2 / 5)) * X ^ 2)) * (A177040 (n + 1)).derivative
-    + ((C ((-4 / 5)) * X + C ((4 / 5)) * X ^ 2)) * (A177040 n).derivative
-    + ((C (((2 / 5) - ((1 / 5) * (n : ℝ)))) + C (((3 / 5) + ((1 / 5) * (n : ℝ)))) * X))
-    * A177040 (n + 3) + ((C ((2 + ((2 / 5) * (n : ℝ)))) + C (((-2 / 5) * (n : ℝ))) * X))
-    * A177040 (n + 2) + ((C (((2 / 5) + ((1 / 5) * (n : ℝ)))) + C (((-7 / 5) - ((1 / 5)
-    * (n : ℝ)))) * X)) * A177040 (n + 1) + ((C (((-13 / 5) - ((2 / 5) * (n : ℝ))))
-    + C (((8 / 5) + ((2 / 5) * (n : ℝ)))) * X))
-    * A177040 n
-      = C (2 / 5) * (X * (A177040 (n + 3)).derivative) + C (-2 / 5) * (X ^ 2 * (A177040 (n
-        + 3)).derivative)
-      + C (-4 / 5) * (X * (A177040 (n + 2)).derivative) + C (4 / 5) * (X ^ 2 * (A177040 (n
-        + 2)).derivative)
-      + C (2 / 5) * (X * (A177040 (n + 1)).derivative) + C (-2 / 5) * (X ^ 2 * (A177040 (n
-        + 1)).derivative)
-      + C (-4 / 5) * (X * (A177040 n).derivative) + C (4 / 5) * (X ^ 2 * (A177040 n).derivative)
-      + C ((2 / 5) + (-1 / 5) * (n : ℝ)) * A177040 (n + 3) + C ((3 / 5) + (1 / 5) * (n : ℝ))
-        * (X * A177040 (n
-        + 3))
-      + C (2 + (2 / 5) * (n : ℝ)) * A177040 (n + 2) + C ((-2 / 5) * (n : ℝ)) * (X * A177040 (n
-        + 2))
-      + C ((2 / 5) + (1 / 5) * (n : ℝ)) * A177040 (n + 1) + C ((-7 / 5) + (-1 / 5) * (n : ℝ))
-        * (X * A177040 (n
-        + 1))
-      + C ((-13 / 5) + (-2 / 5) * (n : ℝ)) * A177040 n + C ((8 / 5) + (2 / 5) * (n : ℝ)) * (X
-        * A177040 n) by ring_nf]
-  simp only [coeff_add, coeff_C_mul, coeff_X_mul, coeff_X_pow_mul', coeff_derivative,
-    show (2 ≤ k + 2) = True by simp, ↓reduceIte, show k + 2 - 2 = k by lia]
-  grind
-
-private lemma A177040_rewrite (n : ℕ) :
-    A177040 (n + 4) =
-      C (2 / 5) * (X * (A177040 (n + 3)).derivative) + C (-2 / 5) * (X ^ 2 * (A177040 (n
-        + 3)).derivative)
-      + C (-4 / 5) * (X * (A177040 (n + 2)).derivative) + C (4 / 5) * (X ^ 2 * (A177040 (n
-        + 2)).derivative)
-      + C (2 / 5) * (X * (A177040 (n + 1)).derivative) + C (-2 / 5) * (X ^ 2 * (A177040 (n
-        + 1)).derivative)
-      + C (-4 / 5) * (X * (A177040 n).derivative) + C (4 / 5) * (X ^ 2 * (A177040 n).derivative)
-      + C ((2 / 5) + (-1 / 5) * (n : ℝ)) * A177040 (n + 3) + C ((3 / 5) + (1 / 5) * (n : ℝ))
-        * (X * A177040 (n
-        + 3))
-      + C (2 + (2 / 5) * (n : ℝ)) * A177040 (n + 2) + C ((-2 / 5) * (n : ℝ)) * (X * A177040 (n
-        + 2))
-      + C ((2 / 5) + (1 / 5) * (n : ℝ)) * A177040 (n + 1) + C ((-7 / 5) + (-1 / 5) * (n : ℝ))
-        * (X * A177040 (n
-        + 1))
-      + C ((-13 / 5) + (-2 / 5) * (n : ℝ)) * A177040 n + C ((8 / 5) + (2 / 5) * (n : ℝ)) * (X
-        * A177040 n)
-        := by
-  conv_lhs => rw [A177040]
-  ring_nf
-
--- i = 0
-private lemma A177040_coeff_zero (n : ℕ) :
-    (A177040 (n + 4)).coeff 0 =
-        ((2 / 5) + (-1 / 5) * (n : ℝ)) * (A177040 (n + 3)).coeff 0
-      + (2 + (2 / 5) * (n : ℝ)) * (A177040 (n + 2)).coeff 0
-      + ((2 / 5) + (1 / 5) * (n : ℝ)) * (A177040 (n + 1)).coeff 0
-      + ((-13 / 5) + (-2 / 5) * (n : ℝ)) * (A177040 n).coeff 0 := by
-  rw [A177040_rewrite]
-  simp
-
--- i = 1
-private lemma A177040_coeff_one (n : ℕ) :
-    (A177040 (n + 4)).coeff 1 =
-        ((2 / 5) * (A177040 (n + 3)).coeff 1)
-      + ((-4 / 5) * (A177040 (n + 2)).coeff 1)
-      + ((2 / 5) * (A177040 (n + 1)).coeff 1)
-      + ((-4 / 5) * (A177040 n).coeff 1)
-      + (((2 / 5) + (-1 / 5) * (n : ℝ)) * (A177040 (n + 3)).coeff 1 + ((3 / 5)
-        + (1 / 5) * (n : ℝ)) * (A177040 (n
-        + 3)).coeff 0)
-      + ((2 + (2 / 5) * (n : ℝ)) * (A177040 (n + 2)).coeff 1 + ((-2 / 5) * (n : ℝ))
-        * (A177040 (n
-        + 2)).coeff 0)
-      + (((2 / 5) + (1 / 5) * (n : ℝ)) * (A177040 (n + 1)).coeff 1 + ((-7 / 5)
-        + (-1 / 5) * (n : ℝ)) * (A177040 (n
-        + 1)).coeff 0)
-      + (((-13 / 5) + (-2 / 5) * (n : ℝ)) * (A177040 n).coeff 1 + ((8 / 5)
-        + (2 / 5) * (n : ℝ)) * (A177040 n).coeff 0)
-        := by
-  have hXd : ∀ p : ℝ[X], (X * derivative p).coeff 1 = p.coeff 1 := by
-    intro p; rw [show (1 : ℕ) = 0 + 1 from rfl, coeff_X_mul, coeff_derivative]; simp
-  have hX2d : ∀ p : ℝ[X], (X ^ 2 * derivative p).coeff 1 = 0 := by
-    intro p; rw [coeff_X_pow_mul']; simp
-  have hXp : ∀ p : ℝ[X], (X * p).coeff 1 = p.coeff 0 := by simp
-  rw [A177040_rewrite]
-  simp only [coeff_add, coeff_C_mul, hXd, hX2d, hXp]
-  ring_nf
-
-private lemma fac1 (n : ℕ) : ((n + 1).factorial : ℝ) = (n + 1) * n.factorial := by
-  simp [Nat.factorial_succ]
-private lemma fac2 (n : ℕ) : ((n + 2).factorial : ℝ) = (n + 2) * (n + 1) * n.factorial := by
-  simp [Nat.factorial_succ, add_assoc, mul_assoc]
-private lemma fac3 (n : ℕ) : ((n + 3).factorial : ℝ) = (n + 3) * (n + 2) * (n + 1) * n.factorial
-  := by
-  norm_num [Nat.factorial_succ]
-  ring
-private lemma fac4 (n : ℕ) : ((n + 4).factorial : ℝ) = (n + 4) * (n + 3) * (n + 2) * (n + 1)
-  * n.factorial
-  := by
-  norm_num [Nat.factorial_succ]
-  ring
-private lemma fac5 (n : ℕ) : ((n + 5).factorial : ℝ) = (n + 5) * (n + 4) * (n + 3) * (n + 2)
-  * (n + 1) * n.factorial
-  := by
-  norm_num [Nat.factorial_succ]
-  ring
-private lemma fac6 (n : ℕ) : ((n + 6).factorial : ℝ) = (n + 6) * (n + 5) * (n + 4) * (n + 3)
-  * (n + 2) * (n + 1) * n.factorial
-  := by
-  norm_num [Nat.factorial_succ]
-  ring
-private lemma choose_ratio (x y : ℕ) (h : y ≤ x) :
-    (x.choose y : ℝ) = x.factorial / (y.factorial * (x - y).factorial) := by
-  have hne : (y.factorial : ℝ) * (x - y).factorial ≠ 0 := by
-    have := Nat.factorial_pos y; have := Nat.factorial_pos (x - y); positivity
-  rw [eq_div_iff hne]
-  have h2 : (x.choose y : ℝ) * (y.factorial * (x - y).factorial) = x.factorial := by
-    rw [← Nat.choose_mul_factorial_mul_factorial h]
-    grind
-  assumption
-private def Bcoef (n i : ℕ) : ℝ := if i ≤ n / 2 then (Nat.choose (n - n / 2 + i
-  + 1) (n / 2 - i) : ℝ) else 0
-private lemma Bred (n i U Ln : ℕ) (hle : i ≤ n / 2) (hU : n - n / 2 + i + 1 = U) (hL : n / 2 - i
-  = Ln) :
-    Bcoef n i = (Nat.choose U Ln : ℝ) := by unfold Bcoef; simp_all
-private lemma Bred0 (n i : ℕ) (hle : ¬ i ≤ n / 2) : Bcoef n i = 0 := by unfold Bcoef; simp_all
-
-private lemma even_interior (a k : ℕ) :
-    (Nat.choose (2 * k + a + 7) (a + 2) : ℝ) =
-    (2 / 5) * ((k : ℝ) +2) * (Nat.choose (2 * k + a + 7) (a + 1) : ℝ) + (-2 / 5)
-      * ((k : ℝ) +1) * (Nat.choose (2 * k + a + 6) (a + 2) : ℝ) + (-4 / 5) * ((k : ℝ) +2)
-      * (Nat.choose (2 * k + a + 6) (a + 1) : ℝ) + (4 / 5) * ((k : ℝ) +1) * (Nat.choose (2 * k
-      + a + 5) (a + 2) : ℝ) + (2 / 5) * ((k : ℝ) +2) * (Nat.choose (2 * k + a + 6) a : ℝ)
-      + (-2 / 5) * ((k : ℝ) +1) * (Nat.choose (2 * k + a + 5) (a + 1) : ℝ) + (-4 / 5)
-      * ((k : ℝ) +2) * (Nat.choose (2 * k + a + 5) a : ℝ) + (4 / 5) * ((k : ℝ) +1)
-      * (Nat.choose (2 * k + a + 4) (a + 1) : ℝ) + ((2 / 5) +(-1 / 5) * (2 * ((k : ℝ) +2
-      + a))) * (Nat.choose (2 * k + a + 7) (a + 1) : ℝ) + ((3 / 5) +(1 / 5) * (2 * ((k : ℝ) +2
-      + a))) * (Nat.choose (2 * k + a + 6) (a + 2) : ℝ) + (2 + (2 / 5) * (2 * ((k : ℝ) +2
-      + a))) * (Nat.choose (2 * k + a + 6) (a + 1) : ℝ) + ((-2 / 5) * (2 * ((k : ℝ) +2 + a)))
-      * (Nat.choose (2 * k + a + 5) (a + 2) : ℝ) + ((2 / 5) +(1 / 5) * (2 * ((k : ℝ) +2 + a)))
-      * (Nat.choose (2 * k + a + 6) a : ℝ) + ((-7 / 5) +(-1 / 5) * (2 * ((k : ℝ) +2 + a)))
-      * (Nat.choose (2 * k + a + 5) (a + 1) : ℝ) + ((-13 / 5) +(-2 / 5) * (2 * ((k : ℝ) +2
-      + a))) * (Nat.choose (2 * k + a + 5) a : ℝ) + ((8 / 5) +(2 / 5) * (2 * ((k : ℝ) +2
-      + a))) * (Nat.choose (2 * k + a + 4) (a + 1) : ℝ)
-      := by
-  rw [choose_ratio (2 * k + a + 7) (a + 2) (by lia), choose_ratio (2 * k + a + 7) (a + 1) (by lia),
-      choose_ratio (2 * k + a + 6) (a + 2) (by lia), choose_ratio (2 * k + a + 6) (a + 1) (by lia),
-      choose_ratio (2 * k + a + 6) a (by lia), choose_ratio (2 * k + a + 5) (a + 2) (by lia),
-      choose_ratio (2 * k + a + 5) (a + 1) (by lia), choose_ratio (2 * k + a + 5) a (by lia),
-      choose_ratio (2 * k + a + 4) (a + 1) (by lia)]
-  rw [show 2 * k + a + 7 - (a + 2) = 2 * k + 5 by lia, show 2 * k + a + 7 - (a + 1) = 2 * k
-    + 6 by lia,
-      show 2 * k + a + 6 - (a + 2) = 2 * k + 4 by lia, show 2 * k + a + 6 - (a + 1) = 2 * k
-        + 5 by lia,
-      show 2 * k + a + 6 - a = 2 * k + 6 by lia, show 2 * k + a + 5 - (a + 2) = 2 * k + 3 by lia,
-      show 2 * k + a + 5 - (a + 1) = 2 * k + 4 by lia, show 2 * k + a + 5 - a = 2 * k + 5 by lia,
-      show 2 * k + a + 4 - (a + 1) = 2 * k + 3 by lia]
-  rw [show (2 * k + a + 7) = (2 * k + a + 4) +3 by lia, show (2 * k + a + 6) = (2 * k + a
-    + 4) +2 by lia,
-      show (2 * k + a + 5) = (2 * k + a + 4) +1 by lia,
-      show (2 * k + 6) = (2 * k + 3) +3 by lia, show (2 * k + 5) = (2 * k + 3) +2 by lia,
-      show (2 * k + 4) = (2 * k + 3) +1 by lia]
-  rw [fac3 (2 * k + a + 4), fac2 (2 * k + a + 4), fac1 (2 * k + a + 4),
-      fac3 (2 * k + 3), fac2 (2 * k + 3), fac1 (2 * k + 3), fac2 a, fac1 a]
-  push_cast
-  have hp1 : ((2 * k + a + 4).factorial : ℝ) ≠ 0 := by positivity
-  have hp2 : (a.factorial : ℝ) ≠ 0 := by positivity
-  have hp3 : ((2 * k + 3).factorial : ℝ) ≠ 0 := by positivity
-  field_simp
-  ring_nf
-
-private lemma odd_interior (a k : ℕ) :
-    (Nat.choose (2 * k + a + 8) (a + 2) : ℝ) =
-    (2 / 5) * ((k : ℝ) +2) * (Nat.choose (2 * k + a + 7) (a + 2) : ℝ) + (-2 / 5)
-      * ((k : ℝ) +1) * (Nat.choose (2 * k + a + 6) (a + 3) : ℝ) + (-4 / 5) * ((k : ℝ) +2)
-      * (Nat.choose (2 * k + a + 7) (a + 1) : ℝ) + (4 / 5) * ((k : ℝ) +1) * (Nat.choose (2 * k
-      + a + 6) (a + 2) : ℝ) + (2 / 5) * ((k : ℝ) +2) * (Nat.choose (2 * k + a + 6) (a
-      + 1) : ℝ) + (-2 / 5) * ((k : ℝ) +1) * (Nat.choose (2 * k + a + 5) (a + 2) : ℝ)
-      + (-4 / 5) * ((k : ℝ) +2) * (Nat.choose (2 * k + a + 6) a : ℝ) + (4 / 5) * ((k : ℝ) +1)
-      * (Nat.choose (2 * k + a + 5) (a + 1) : ℝ) + ((2 / 5) +(-1 / 5) * (2 * ((k : ℝ) +2
-      + a) +1)) * (Nat.choose (2 * k + a + 7) (a + 2) : ℝ) + ((3 / 5) +(1 / 5) * (2
-      * ((k : ℝ) +2 + a) +1)) * (Nat.choose (2 * k + a + 6) (a + 3) : ℝ) + (2 + (2 / 5) * (2
-      * ((k : ℝ) +2 + a) +1)) * (Nat.choose (2 * k + a + 7) (a + 1) : ℝ) + ((-2 / 5) * (2
-      * ((k : ℝ) +2 + a) +1)) * (Nat.choose (2 * k + a + 6) (a + 2) : ℝ) + ((2 / 5) +(1 / 5)
-      * (2 * ((k : ℝ) +2 + a) +1)) * (Nat.choose (2 * k + a + 6) (a + 1) : ℝ)
-      + ((-7 / 5) +(-1 / 5) * (2 * ((k : ℝ) +2 + a) +1)) * (Nat.choose (2 * k + a + 5) (a
-      + 2) : ℝ) + ((-13 / 5) +(-2 / 5) * (2 * ((k : ℝ) +2 + a) +1)) * (Nat.choose (2 * k + a
-      + 6) a : ℝ) + ((8 / 5) +(2 / 5) * (2 * ((k : ℝ) +2 + a) +1)) * (Nat.choose (2 * k + a
-      + 5) (a + 1) : ℝ)
-      := by
-  rw [choose_ratio (2 * k + a + 8) (a + 2) (by lia), choose_ratio (2 * k + a + 7) (a + 2) (by lia),
-      choose_ratio (2 * k + a + 6) (a + 3) (by lia), choose_ratio (2 * k + a + 7) (a + 1) (by lia),
-      choose_ratio (2 * k + a + 6) (a + 2) (by lia), choose_ratio (2 * k + a + 6) (a + 1) (by lia),
-      choose_ratio (2 * k + a + 5) (a + 2) (by lia), choose_ratio (2 * k + a + 6) a (by lia),
-      choose_ratio (2 * k + a + 5) (a + 1) (by lia)]
-  rw [show 2 * k + a + 8 - (a + 2) = 2 * k + 6 by lia, show 2 * k + a + 7 - (a + 2) = 2 * k
-    + 5 by lia,
-      show 2 * k + a + 6 - (a + 3) = 2 * k + 3 by lia, show 2 * k + a + 7 - (a + 1) = 2 * k
-        + 6 by lia,
-      show 2 * k + a + 6 - (a + 2) = 2 * k + 4 by lia, show 2 * k + a + 6 - (a + 1) = 2 * k
-        + 5 by lia,
-      show 2 * k + a + 5 - (a + 2) = 2 * k + 3 by lia, show 2 * k + a + 6 - a = 2 * k + 6 by lia,
-      show 2 * k + a + 5 - (a + 1) = 2 * k + 4 by lia]
-  rw [show (2 * k + a + 8) = (2 * k + a + 5) +3 by lia, show (2 * k + a + 7) = (2 * k + a
-    + 5) +2 by lia,
-      show (2 * k + a + 6) = (2 * k + a + 5) +1 by lia,
-      show (2 * k + 6) = (2 * k + 3) +3 by lia, show (2 * k + 5) = (2 * k + 3) +2 by lia,
-      show (2 * k + 4) = (2 * k + 3) +1 by lia]
-  rw [fac3 (2 * k + a + 5), fac2 (2 * k + a + 5), fac1 (2 * k + a + 5),
-      fac3 (2 * k + 3), fac2 (2 * k + 3), fac1 (2 * k + 3), fac3 a, fac2 a, fac1 a]
-  push_cast
-  have hp1 : ((2 * k + a + 5).factorial : ℝ) ≠ 0 := by positivity
-  have hp2 : (a.factorial : ℝ) ≠ 0 := by positivity
-  have hp3 : ((2 * k + 3).factorial : ℝ) ≠ 0 := by positivity
-  field_simp
-  ring_nf
-private lemma even_km1 (k : ℕ) :
-    (Nat.choose (2 * k + 6) 1 : ℝ) = ((4 / 5) + (2 / 5) * (k : ℝ)) * (Nat.choose (2 * k
-      + 6) 0 : ℝ) + ((-2 / 5) + (-2 / 5) * (k : ℝ)) * (Nat.choose (2 * k + 5) 1 : ℝ)
-      + ((-8 / 5) + (-4 / 5) * (k : ℝ)) * (Nat.choose (2 * k + 5) 0 : ℝ) + ((4 / 5) + (4 / 5)
-      * (k : ℝ)) * (Nat.choose (2 * k + 4) 1 : ℝ) + ((-2 / 5) + (-2 / 5) * (k : ℝ))
-      * (Nat.choose (2 * k + 4) 0 : ℝ) + ((4 / 5) + (4 / 5) * (k : ℝ)) * (Nat.choose (2 * k
-      + 3) 0 : ℝ) + ((0) + (-2 / 5) * (k : ℝ)) * (Nat.choose (2 * k + 6) 0 : ℝ) + ((1)
-      + (2 / 5) * (k : ℝ)) * (Nat.choose (2 * k + 5) 1 : ℝ) + ((14 / 5) + (4 / 5) * (k : ℝ))
-      * (Nat.choose (2 * k + 5) 0 : ℝ) + ((-4 / 5) + (-4 / 5) * (k : ℝ)) * (Nat.choose (2 * k
-      + 4) 1 : ℝ) + ((-9 / 5) + (-2 / 5) * (k : ℝ)) * (Nat.choose (2 * k + 4) 0 : ℝ)
-      + ((12 / 5) + (4 / 5) * (k : ℝ)) * (Nat.choose (2 * k + 3) 0 : ℝ)
-      := by
-  simp only [Nat.choose_zero_right, Nat.choose_one_right, Nat.cast_one]
-  grind
-
-private lemma even_keqj (k : ℕ) :
-    (Nat.choose (2 * k + 5) 0 : ℝ) = ((-2 / 5) + (-2 / 5) * (k : ℝ)) * (Nat.choose (2 * k
-      + 4) 0 : ℝ) + ((4 / 5) + (4 / 5) * (k : ℝ)) * (Nat.choose (2 * k + 3) 0 : ℝ) + ((3 / 5)
-      + (2 / 5) * (k : ℝ)) * (Nat.choose (2 * k + 4) 0 : ℝ) + ((0) + (-4 / 5) * (k : ℝ))
-      * (Nat.choose (2 * k + 3) 0 : ℝ)
-      := by
-  grind
-
-private lemma odd_keqj (k : ℕ) :
-    (Nat.choose (2 * k + 6) 0 : ℝ) = ((4 / 5) + (2 / 5) * (k : ℝ)) * (Nat.choose (2 * k
-      + 5) 0 : ℝ) + ((-2 / 5) + (-2 / 5) * (k : ℝ)) * (Nat.choose (2 * k + 4) 1 : ℝ)
-      + ((4 / 5) + (4 / 5) * (k : ℝ)) * (Nat.choose (2 * k + 4) 0 : ℝ) + ((-2 / 5) + (-2 / 5)
-      * (k : ℝ)) * (Nat.choose (2 * k + 3) 0 : ℝ) + ((1 / 5) + (-2 / 5) * (k : ℝ))
-      * (Nat.choose (2 * k + 5) 0 : ℝ) + ((4 / 5) + (2 / 5) * (k : ℝ)) * (Nat.choose (2 * k
-      + 4) 1 : ℝ) + ((-2 / 5) + (-4 / 5) * (k : ℝ)) * (Nat.choose (2 * k + 4) 0 : ℝ)
-      + ((-8 / 5) + (-2 / 5) * (k : ℝ)) * (Nat.choose (2 * k + 3) 0 : ℝ)
-      := by
-  simp only [Nat.choose_zero_right, Nat.choose_one_right, Nat.cast_one]
-  grind
-
-private lemma odd_km1 (k : ℕ) :
-    (Nat.choose (2 * k + 7) 1 : ℝ) = ((4 / 5) + (2 / 5) * (k : ℝ)) * (Nat.choose (2 * k
-      + 6) 1 : ℝ) + ((-2 / 5) + (-2 / 5) * (k : ℝ)) * (Nat.choose (2 * k + 5) 2 : ℝ)
-      + ((-8 / 5) + (-4 / 5) * (k : ℝ)) * (Nat.choose (2 * k + 6) 0 : ℝ) + ((4 / 5) + (4 / 5)
-      * (k : ℝ)) * (Nat.choose (2 * k + 5) 1 : ℝ) + ((4 / 5) + (2 / 5) * (k : ℝ))
-      * (Nat.choose (2 * k + 5) 0 : ℝ) + ((-2 / 5) + (-2 / 5) * (k : ℝ)) * (Nat.choose (2 * k
-      + 4) 1 : ℝ) + ((4 / 5) + (4 / 5) * (k : ℝ)) * (Nat.choose (2 * k + 4) 0 : ℝ) + ((-1 / 5)
-      + (-2 / 5) * (k : ℝ)) * (Nat.choose (2 * k + 6) 1 : ℝ) + ((6 / 5) + (2 / 5) * (k : ℝ))
-      * (Nat.choose (2 * k + 5) 2 : ℝ) + ((16 / 5) + (4 / 5) * (k : ℝ)) * (Nat.choose (2 * k
-      + 6) 0 : ℝ) + ((-6 / 5) + (-4 / 5) * (k : ℝ)) * (Nat.choose (2 * k + 5) 1 : ℝ) + ((1)
-      + (2 / 5) * (k : ℝ)) * (Nat.choose (2 * k + 5) 0 : ℝ) + ((-2) + (-2 / 5) * (k : ℝ))
-      * (Nat.choose (2 * k + 4) 1 : ℝ) + ((14 / 5) + (4 / 5) * (k : ℝ)) * (Nat.choose (2 * k
-      + 4) 0 : ℝ)
-      := by
-  rw [choose_ratio (2 * k + 5) 2 (by lia), choose_ratio (2 * k + 7) 1 (by lia),
-      choose_ratio (2 * k + 6) 1 (by lia), choose_ratio (2 * k + 5) 1 (by lia),
-      choose_ratio (2 * k + 4) 1 (by lia)]
-  simp only [Nat.choose_zero_right, Nat.cast_one]
-  rw [show 2 * k + 5 - 2 = 2 * k + 3 by lia, show 2 * k + 7 - 1 = 2 * k + 6 by lia,
-      show 2 * k + 6 - 1 = 2 * k + 5 by lia, show 2 * k + 5 - 1 = 2 * k + 4 by lia,
-      show 2 * k + 4 - 1 = 2 * k + 3 by lia]
-  rw [show (2 * k + 7) = (2 * k + 3) +4 by lia, show (2 * k + 6) = (2 * k + 3) +3 by lia,
-      show (2 * k + 5) = (2 * k + 3) +2 by lia, show (2 * k + 4) = (2 * k + 3) +1 by lia]
-  rw [fac4 (2 * k + 3), fac3 (2 * k + 3), fac2 (2 * k + 3), fac1 (2 * k + 3)]
-  simp only [Nat.factorial_one, Nat.factorial_two]
-  push_cast
-  have hp : ((2 * k + 3).factorial : ℝ) ≠ 0 := by positivity
-  field_simp
-  ring_nf
-
-private lemma i0_even (j : ℕ) :
-    (Nat.choose (j + 3) (j + 2) : ℝ) = ((2 / 5) + (-2 / 5) * (j : ℝ)) * (Nat.choose (j + 3) (j
-      + 1) : ℝ) + ((2) + (4 / 5) * (j : ℝ)) * (Nat.choose (j + 2) (j + 1) : ℝ) + ((2 / 5)
-      + (2 / 5) * (j : ℝ)) * (Nat.choose (j + 2) j : ℝ) + ((-13 / 5) + (-4 / 5) * (j : ℝ))
-      * (Nat.choose (j + 1) j : ℝ)
-      := by
-  rw [choose_ratio (j + 1) j (by lia), choose_ratio (j + 2) j (by lia), choose_ratio (j
-    + 2) (j + 1) (by lia), choose_ratio (j + 3) (j + 1) (by lia), choose_ratio (j + 3) (j
-    + 2) (by lia)]
-  rw [show (j + 1)-j = 1 by lia, show (j + 2)-j = 2 by lia, show (j + 2)-(j + 1) = 1 by lia,
-    show (j + 3)-(j + 1) = 2 by lia, show (j + 3)-(j + 2)
-    = 1 by lia]
-  rw [fac3 j, fac2 j, fac1 j]
-  simp only [Nat.factorial_one, Nat.factorial_two]
-  push_cast
-  have hp : (j.factorial : ℝ) ≠ 0 := by positivity
-  field_simp
-  ring_nf
-
-private lemma i0_odd (j : ℕ) :
-    (Nat.choose (j + 4) (j + 2) : ℝ) = ((1 / 5) + (-2 / 5) * (j : ℝ)) * (Nat.choose (j + 3) (j
-      + 2) : ℝ) + ((12 / 5) + (4 / 5) * (j : ℝ)) * (Nat.choose (j + 3) (j + 1) : ℝ) + ((3 / 5)
-      + (2 / 5) * (j : ℝ)) * (Nat.choose (j + 2) (j + 1) : ℝ) + ((-3) + (-4 / 5) * (j : ℝ))
-      * (Nat.choose (j + 2) j : ℝ)
-      := by
-  rw [choose_ratio (j + 2) j (by lia), choose_ratio (j + 2) (j + 1) (by lia), choose_ratio (j
-    + 3) (j + 1) (by lia), choose_ratio (j + 3) (j + 2) (by lia), choose_ratio (j + 4) (j
-    + 2) (by lia)]
-  rw [show (j + 2)-j = 2 by lia, show (j + 2)-(j + 1) = 1 by lia, show (j + 3)-(j + 1)
-    = 2 by lia, show (j + 3)-(j + 2) = 1 by lia, show (j + 4)-(j + 2)
-    = 2 by lia]
-  rw [fac4 j, fac3 j, fac2 j, fac1 j]
-  simp only [Nat.factorial_one, Nat.factorial_two]
-  push_cast
-  have hp : (j.factorial : ℝ) ≠ 0 := by positivity
-  field_simp
-  ring_nf
-
-private lemma i1_even (j : ℕ) (hj : 1 ≤ j) :
-    (Nat.choose (j + 4) (j + 1) : ℝ) = ((2 / 5) + (0) * (j : ℝ)) * (Nat.choose (j + 4) j : ℝ)
-      + ((-4 / 5) + (0) * (j : ℝ)) * (Nat.choose (j + 3) j : ℝ) + ((2 / 5) + (0) * (j : ℝ))
-      * (Nat.choose (j + 3) (j - 1) : ℝ) + ((-4 / 5) + (0) * (j : ℝ)) * (Nat.choose (j
-      + 2) (j - 1) : ℝ) + ((2 / 5) + (-2 / 5) * (j : ℝ)) * (Nat.choose (j + 4) j : ℝ)
-      + ((3 / 5) + (2 / 5) * (j : ℝ)) * (Nat.choose (j + 3) (j + 1) : ℝ) + ((2) + (4 / 5)
-      * (j : ℝ)) * (Nat.choose (j + 3) j : ℝ) + ((0) + (-4 / 5) * (j : ℝ)) * (Nat.choose (j
-      + 2) (j + 1) : ℝ) + ((2 / 5) + (2 / 5) * (j : ℝ)) * (Nat.choose (j + 3) (j - 1) : ℝ)
-      + ((-7 / 5) + (-2 / 5) * (j : ℝ)) * (Nat.choose (j + 2) j : ℝ) + ((-13 / 5) + (-4 / 5)
-      * (j : ℝ)) * (Nat.choose (j + 2) (j - 1) : ℝ) + ((8 / 5) + (4 / 5) * (j : ℝ))
-      * (Nat.choose (j + 1) j : ℝ)
-      := by
-  obtain ⟨b, rfl⟩ : ∃ b, j = b + 1 := ⟨j - 1, by lia⟩
-  rw [show Nat.choose (b + 1 + 1) (b + 1) = Nat.choose (b + 2) (b + 1) by simp,
-    show Nat.choose (b + 1 + 2) (b + 1 - 1) = Nat.choose (b + 3) b by simp, show Nat.choose (b
-    + 1 + 2) (b + 1) = Nat.choose (b + 3) (b + 1) by simp, show Nat.choose (b + 1 + 2) (b + 1
-    + 1) = Nat.choose (b + 3) (b + 2) by simp, show Nat.choose (b + 1 + 3) (b + 1 - 1)
-    = Nat.choose (b + 4) b by simp, show Nat.choose (b + 1 + 3) (b + 1) = Nat.choose (b
-    + 4) (b + 1) by simp, show Nat.choose (b + 1 + 3) (b + 1 + 1) = Nat.choose (b + 4) (b
-    + 2) by simp, show Nat.choose (b + 1 + 4) (b + 1) = Nat.choose (b + 5) (b + 1) by simp,
-    show Nat.choose (b + 1 + 4) (b + 1 + 1) = Nat.choose (b + 5) (b
-    + 2) by simp]
-  rw [choose_ratio (b + 2) (b + 1) (by lia), choose_ratio (b + 3) b (by lia), choose_ratio (b
-    + 3) (b + 1) (by lia), choose_ratio (b + 3) (b + 2) (by lia), choose_ratio (b
-    + 4) b (by lia), choose_ratio (b + 4) (b + 1) (by lia), choose_ratio (b + 4) (b
-    + 2) (by lia), choose_ratio (b + 5) (b + 1) (by lia), choose_ratio (b + 5) (b
-    + 2) (by lia)]
-  rw [show (b + 2)-(b + 1) = 1 by lia, show (b + 3)-b = 3 by lia, show (b + 3)-(b + 1)
-    = 2 by lia, show (b + 3)-(b + 2) = 1 by lia, show (b + 4)-b = 4 by lia, show (b + 4)-(b
-    + 1) = 3 by lia, show (b + 4)-(b + 2) = 2 by lia, show (b + 5)-(b + 1) = 4 by lia, show (b
-    + 5)-(b + 2)
-    = 3 by lia]
-  rw [fac5 b, fac4 b, fac3 b, fac2 b, fac1 b]
-  simp only [Nat.factorial_one, Nat.factorial_two]
-  push_cast
-  have hp : (b.factorial : ℝ) ≠ 0 := by positivity
-  field_simp
-  ring_nf
-
-private lemma i1_odd (j : ℕ) (hj : 1 ≤ j) :
-    (Nat.choose (j + 5) (j + 1) : ℝ) = ((2 / 5) + (0) * (j : ℝ)) * (Nat.choose (j + 4) (j
-      + 1) : ℝ) + ((-4 / 5) + (0) * (j : ℝ)) * (Nat.choose (j + 4) j : ℝ) + ((2 / 5) + (0)
-      * (j : ℝ)) * (Nat.choose (j + 3) j : ℝ) + ((-4 / 5) + (0) * (j : ℝ)) * (Nat.choose (j
-      + 3) (j - 1) : ℝ) + ((1 / 5) + (-2 / 5) * (j : ℝ)) * (Nat.choose (j + 4) (j + 1) : ℝ)
-      + ((4 / 5) + (2 / 5) * (j : ℝ)) * (Nat.choose (j + 3) (j + 2) : ℝ) + ((12 / 5) + (4 / 5)
-      * (j : ℝ)) * (Nat.choose (j + 4) j : ℝ) + ((-2 / 5) + (-4 / 5) * (j : ℝ))
-      * (Nat.choose (j + 3) (j + 1) : ℝ) + ((3 / 5) + (2 / 5) * (j : ℝ)) * (Nat.choose (j
-      + 3) j : ℝ) + ((-8 / 5) + (-2 / 5) * (j : ℝ)) * (Nat.choose (j + 2) (j + 1) : ℝ) + ((-3)
-      + (-4 / 5) * (j : ℝ)) * (Nat.choose (j + 3) (j - 1) : ℝ) + ((2) + (4 / 5) * (j : ℝ))
-      * (Nat.choose (j + 2) j : ℝ)
-      := by
-  obtain ⟨b, rfl⟩ : ∃ b, j = b + 1 := ⟨j - 1, by lia⟩
-  rw [show Nat.choose (b + 1 + 2) (b + 1) = Nat.choose (b + 3) (b + 1) by simp,
-    show Nat.choose (b + 1 + 2) (b + 1 + 1) = Nat.choose (b + 3) (b + 2) by simp,
-    show Nat.choose (b + 1 + 3) (b + 1 - 1) = Nat.choose (b + 4) b by simp, show Nat.choose (b
-    + 1 + 3) (b + 1) = Nat.choose (b + 4) (b + 1) by simp, show Nat.choose (b + 1 + 3) (b + 1
-    + 1) = Nat.choose (b + 4) (b + 2) by simp, show Nat.choose (b + 1 + 3) (b + 1 + 2)
-    = Nat.choose (b + 4) (b + 3) by simp, show Nat.choose (b + 1 + 4) (b + 1) = Nat.choose (b
-    + 5) (b + 1) by simp, show Nat.choose (b + 1 + 4) (b + 1 + 1) = Nat.choose (b + 5) (b
-    + 2) by simp, show Nat.choose (b + 1 + 5) (b + 1 + 1) = Nat.choose (b + 6) (b
-    + 2) by simp]
-  rw [choose_ratio (b + 3) (b + 1) (by lia), choose_ratio (b + 3) (b + 2) (by lia),
-    choose_ratio (b + 4) b (by lia), choose_ratio (b + 4) (b + 1) (by lia), choose_ratio (b
-    + 4) (b + 2) (by lia), choose_ratio (b + 4) (b + 3) (by lia), choose_ratio (b + 5) (b
-    + 1) (by lia), choose_ratio (b + 5) (b + 2) (by lia), choose_ratio (b + 6) (b
-    + 2) (by lia)]
-  rw [show (b + 3)-(b + 1) = 2 by lia, show (b + 3)-(b + 2) = 1 by lia, show (b + 4)-b
-    = 4 by lia, show (b + 4)-(b + 1) = 3 by lia, show (b + 4)-(b + 2) = 2 by lia, show (b
-    + 4)-(b + 3) = 1 by lia, show (b + 5)-(b + 1) = 4 by lia, show (b + 5)-(b + 2) = 3 by lia,
-    show (b + 6)-(b + 2)
-    = 4 by lia]
-  rw [fac6 b, fac5 b, fac4 b, fac3 b, fac2 b, fac1 b]
-  simp only [Nat.factorial_one, Nat.factorial_two]
-  push_cast
-  have hp : (b.factorial : ℝ) ≠ 0 := by positivity
-  field_simp
-  ring_nf
-
-private lemma even_step (j0 k : ℕ) :
-    Bcoef (2 * j0 + 4) (k + 2) = (2 / 5) * ((k : ℝ) +2) * Bcoef (2 * j0 + 3) (k + 2)
-      + (-2 / 5) * ((k : ℝ) +1) * Bcoef (2 * j0 + 3) (k + 1) + (-4 / 5) * ((k : ℝ) +2)
-      * Bcoef (2 * j0 + 2) (k + 2) + (4 / 5) * ((k : ℝ) +1) * Bcoef (2 * j0 + 2) (k + 1)
-      + (2 / 5) * ((k : ℝ) +2) * Bcoef (2 * j0 + 1) (k + 2) + (-2 / 5) * ((k : ℝ) +1)
-      * Bcoef (2 * j0 + 1) (k + 1) + (-4 / 5) * ((k : ℝ) +2) * Bcoef (2 * j0) (k + 2)
-      + (4 / 5) * ((k : ℝ) +1) * Bcoef (2 * j0) (k + 1) + ((2 / 5) + (-1 / 5) * ((2
-      * j0) : ℝ)) * Bcoef (2 * j0 + 3) (k + 2) + ((3 / 5) + (1 / 5) * ((2 * j0) : ℝ))
-      * Bcoef (2 * j0 + 3) (k + 1) + ((2 : ℝ) + (2 / 5) * ((2 * j0) : ℝ)) * Bcoef (2 * j0
-      + 2) (k + 2) + ((-2 / 5) * ((2 * j0) : ℝ)) * Bcoef (2 * j0 + 2) (k + 1) + ((2 / 5)
-      + (1 / 5) * ((2 * j0) : ℝ)) * Bcoef (2 * j0 + 1) (k + 2) + ((-7 / 5) + (-1 / 5) * ((2
-      * j0) : ℝ)) * Bcoef (2 * j0 + 1) (k + 1) + ((-13 / 5) + (-2 / 5) * ((2 * j0) : ℝ))
-      * Bcoef (2 * j0) (k + 2) + ((8 / 5) + (2 / 5) * ((2 * j0) : ℝ)) * Bcoef (2 * j0) (k + 1)
-      := by
-  rcases lt_or_ge (k + 1) j0 with hk | hk
-  · obtain ⟨a, rfl⟩ : ∃ a, j0 = k + 2 + a := ⟨j0 - (k + 2), by lia⟩
-    rw [Bred (2 * (k + 2 + a) +4) (k + 2) (2 * k + a + 7) (a + 2) (by lia) (by lia) (by lia)]
-    rw [Bred (2 * (k + 2 + a) +3) (k + 2) (2 * k + a + 7) (a + 1) (by lia) (by lia) (by lia)]
-    rw [Bred (2 * (k + 2 + a) +3) (k + 1) (2 * k + a + 6) (a + 2) (by lia) (by lia) (by lia)]
-    rw [Bred (2 * (k + 2 + a) +2) (k + 2) (2 * k + a + 6) (a + 1) (by lia) (by lia) (by lia)]
-    rw [Bred (2 * (k + 2 + a) +2) (k + 1) (2 * k + a + 5) (a + 2) (by lia) (by lia) (by lia)]
-    rw [Bred (2 * (k + 2 + a) +1) (k + 2) (2 * k + a + 6) a (by lia) (by lia) (by lia)]
-    rw [Bred (2 * (k + 2 + a) +1) (k + 1) (2 * k + a + 5) (a + 1) (by lia) (by lia) (by lia)]
-    rw [Bred (2 * (k + 2 + a)) (k + 2) (2 * k + a + 5) a (by lia) (by lia) (by lia)]
-    rw [Bred (2 * (k + 2 + a)) (k + 1) (2 * k + a + 4) (a + 1) (by lia) (by lia) (by lia)]
-    have H := even_interior a k
-    simp_all
-  · rcases lt_or_ge k j0 with hk2 | hk2
-    · have hj0 : j0 = k + 1 := by lia
-      subst j0
-      rw [Bred (2 * (k + 1) +4) (k + 2) (2 * k + 6) 1 (by lia) (by lia) (by lia)]
-      rw [Bred (2 * (k + 1) +3) (k + 2) (2 * k + 6) 0 (by lia) (by lia) (by lia)]
-      rw [Bred (2 * (k + 1) +3) (k + 1) (2 * k + 5) 1 (by lia) (by lia) (by lia)]
-      rw [Bred (2 * (k + 1) +2) (k + 2) (2 * k + 5) 0 (by lia) (by lia) (by lia)]
-      rw [Bred (2 * (k + 1) +2) (k + 1) (2 * k + 4) 1 (by lia) (by lia) (by lia)]
-      rw [Bred0 (2 * (k + 1) +1) (k + 2) (by lia)]
-      rw [Bred (2 * (k + 1) +1) (k + 1) (2 * k + 4) 0 (by lia) (by lia) (by lia)]
-      rw [Bred0 (2 * (k + 1)) (k + 2) (by lia)]
-      rw [Bred (2 * (k + 1)) (k + 1) (2 * k + 3) 0 (by lia) (by lia) (by lia)]
-      have H := even_km1 k
-      grind
-    · rcases lt_or_ge k (j0 + 1) with hk3 | hk3
-      · have hj0 : j0 = k := by lia
-        subst j0
-        rw [Bred (2 * k + 4) (k + 2) (2 * k + 5) 0 (by lia) (by lia) (by lia)]
-        rw [Bred0 (2 * k + 3) (k + 2) (by lia)]
-        rw [Bred (2 * k + 3) (k + 1) (2 * k + 4) 0 (by lia) (by lia) (by lia)]
-        rw [Bred0 (2 * k + 2) (k + 2) (by lia)]
-        rw [Bred (2 * k + 2) (k + 1) (2 * k + 3) 0 (by lia) (by lia) (by lia)]
-        rw [Bred0 (2 * k + 1) (k + 2) (by lia)]
-        rw [Bred0 (2 * k + 1) (k + 1) (by lia)]
-        rw [Bred0 (2 * k) (k + 2) (by lia)]
-        rw [Bred0 (2 * k) (k + 1) (by lia)]
-        grind
-      · -- k >= j0+1, everything vanishes
-        rw [Bred0 (2 * j0 + 4) (k + 2) (by lia)]
-        rw [Bred0 (2 * j0 + 3) (k + 2) (by lia)]
-        rw [Bred0 (2 * j0 + 3) (k + 1) (by lia)]
-        rw [Bred0 (2 * j0 + 2) (k + 2) (by lia)]
-        rw [Bred0 (2 * j0 + 2) (k + 1) (by lia)]
-        rw [Bred0 (2 * j0 + 1) (k + 2) (by lia)]
-        rw [Bred0 (2 * j0 + 1) (k + 1) (by lia)]
-        rw [Bred0 (2 * j0) (k + 2) (by lia)]
-        rw [Bred0 (2 * j0) (k + 1) (by lia)]
-        ring_nf
-
-private lemma odd_step (j0 k : ℕ) :
-    Bcoef (2 * j0 + 1 + 4) (k + 2) = (2 / 5) * ((k : ℝ) +2) * Bcoef (2 * j0 + 1 + 3) (k + 2)
-      + (-2 / 5) * ((k : ℝ) +1) * Bcoef (2 * j0 + 1 + 3) (k + 1) + (-4 / 5) * ((k : ℝ) +2)
-      * Bcoef (2 * j0 + 1 + 2) (k + 2) + (4 / 5) * ((k : ℝ) +1) * Bcoef (2 * j0 + 1 + 2) (k
-      + 1) + (2 / 5) * ((k : ℝ) +2) * Bcoef (2 * j0 + 1 + 1) (k + 2) + (-2 / 5) * ((k : ℝ) +1)
-      * Bcoef (2 * j0 + 1 + 1) (k + 1) + (-4 / 5) * ((k : ℝ) +2) * Bcoef (2 * j0 + 1) (k + 2)
-      + (4 / 5) * ((k : ℝ) +1) * Bcoef (2 * j0 + 1) (k + 1) + ((2 / 5) + (-1 / 5) * ((2 * j0
-      + 1) : ℝ)) * Bcoef (2 * j0 + 1 + 3) (k + 2) + ((3 / 5) + (1 / 5) * ((2 * j0 + 1) : ℝ))
-      * Bcoef (2 * j0 + 1 + 3) (k + 1) + ((2 : ℝ) + (2 / 5) * ((2 * j0 + 1) : ℝ)) * Bcoef (2
-      * j0 + 1 + 2) (k + 2) + ((-2 / 5) * ((2 * j0 + 1) : ℝ)) * Bcoef (2 * j0 + 1 + 2) (k + 1)
-      + ((2 / 5) + (1 / 5) * ((2 * j0 + 1) : ℝ)) * Bcoef (2 * j0 + 1 + 1) (k + 2) + ((-7 / 5)
-      + (-1 / 5) * ((2 * j0 + 1) : ℝ)) * Bcoef (2 * j0 + 1 + 1) (k + 1) + ((-13 / 5)
-      + (-2 / 5) * ((2 * j0 + 1) : ℝ)) * Bcoef (2 * j0 + 1) (k + 2) + ((8 / 5) + (2 / 5) * ((2
-      * j0 + 1) : ℝ)) * Bcoef (2 * j0 + 1) (k + 1)
-      := by
-  rcases lt_or_ge (k + 1) j0 with hk | hk
-  · obtain ⟨a, rfl⟩ : ∃ a, j0 = k + 2 + a := ⟨j0 - (k + 2), by lia⟩
-    rw [Bred (2 * (k + 2 + a) +1 + 4) (k + 2) (2 * k + a + 8) (a + 2) (by lia) (by lia) (by lia)]
-    rw [Bred (2 * (k + 2 + a) +1 + 3) (k + 2) (2 * k + a + 7) (a + 2) (by lia) (by lia) (by lia)]
-    rw [Bred (2 * (k + 2 + a) +1 + 3) (k + 1) (2 * k + a + 6) (a + 3) (by lia) (by lia) (by lia)]
-    rw [Bred (2 * (k + 2 + a) +1 + 2) (k + 2) (2 * k + a + 7) (a + 1) (by lia) (by lia) (by lia)]
-    rw [Bred (2 * (k + 2 + a) +1 + 2) (k + 1) (2 * k + a + 6) (a + 2) (by lia) (by lia) (by lia)]
-    rw [Bred (2 * (k + 2 + a) +1 + 1) (k + 2) (2 * k + a + 6) (a + 1) (by lia) (by lia) (by lia)]
-    rw [Bred (2 * (k + 2 + a) +1 + 1) (k + 1) (2 * k + a + 5) (a + 2) (by lia) (by lia) (by lia)]
-    rw [Bred (2 * (k + 2 + a) +1 + 0) (k + 2) (2 * k + a + 6) a (by lia) (by lia) (by lia)]
-    rw [Bred (2 * (k + 2 + a) +1 + 0) (k + 1) (2 * k + a + 5) (a + 1) (by lia) (by lia) (by lia)]
-    have H := odd_interior a k
-    simp_all
-  · rcases lt_or_ge k j0 with hk2 | hk2
-    · have hj0 : j0 = k + 1 := by lia
-      subst j0
-      rw [Bred (2 * (k + 1) +1 + 4) (k + 2) (2 * k + 7) 1 (by lia) (by lia) (by lia)]
-      rw [Bred (2 * (k + 1) +1 + 3) (k + 2) (2 * k + 6) 1 (by lia) (by lia) (by lia)]
-      rw [Bred (2 * (k + 1) +1 + 3) (k + 1) (2 * k + 5) 2 (by lia) (by lia) (by lia)]
-      rw [Bred (2 * (k + 1) +1 + 2) (k + 2) (2 * k + 6) 0 (by lia) (by lia) (by lia)]
-      rw [Bred (2 * (k + 1) +1 + 2) (k + 1) (2 * k + 5) 1 (by lia) (by lia) (by lia)]
-      rw [Bred (2 * (k + 1) +1 + 1) (k + 2) (2 * k + 5) 0 (by lia) (by lia) (by lia)]
-      rw [Bred (2 * (k + 1) +1 + 1) (k + 1) (2 * k + 4) 1 (by lia) (by lia) (by lia)]
-      rw [Bred0 (2 * (k + 1) +1 + 0) (k + 2) (by lia)]
-      rw [Bred (2 * (k + 1) +1 + 0) (k + 1) (2 * k + 4) 0 (by lia) (by lia) (by lia)]
-      have H := odd_km1 k
-      grind
-    · rcases lt_or_ge k (j0 + 1) with hk3 | hk3
-      · have hj0 : j0 = k := by lia
-        subst j0
-        rw [Bred (2 * k + 1 + 4) (k + 2) (2 * k + 6) 0 (by lia) (by lia) (by lia)]
-        rw [Bred (2 * k + 1 + 3) (k + 2) (2 * k + 5) 0 (by lia) (by lia) (by lia)]
-        rw [Bred (2 * k + 1 + 3) (k + 1) (2 * k + 4) 1 (by lia) (by lia) (by lia)]
-        rw [Bred0 (2 * k + 1 + 2) (k + 2) (by lia)]
-        rw [Bred (2 * k + 1 + 2) (k + 1) (2 * k + 4) 0 (by lia) (by lia) (by lia)]
-        rw [Bred0 (2 * k + 1 + 1) (k + 2) (by lia)]
-        rw [Bred (2 * k + 1 + 1) (k + 1) (2 * k + 3) 0 (by lia) (by lia) (by lia)]
-        rw [Bred0 (2 * k + 1) (k + 2) (by lia)]
-        rw [Bred0 (2 * k + 1) (k + 1) (by lia)]
-        have H := odd_keqj k
-        grind
-      · rcases lt_or_ge k (j0 + 2) with hk4 | hk4
-        · have hj0 : j0 = k - 1 := by lia
-          subst j0
-          rw [Bred0 (2 * (k - 1) +1 + 4) (k + 2) (by lia)]
-          rw [Bred0 (2 * (k - 1) +1 + 3) (k + 2) (by lia)]
-          rw [Bred0 (2 * (k - 1) +1 + 2) (k + 2) (by lia)]
-          rw [Bred0 (2 * (k - 1) +1 + 2) (k + 1) (by lia)]
-          rw [Bred0 (2 * (k - 1) +1 + 1) (k + 2) (by lia)]
-          rw [Bred0 (2 * (k - 1) +1 + 1) (k + 1) (by lia)]
-          rw [Bred0 (2 * (k - 1) +1) (k + 2) (by lia)]
-          rw [Bred0 (2 * (k - 1) +1) (k + 1) (by lia)]
-          rw [Bred (2 * (k - 1) +1 + 3) (k + 1) (2 * k + 3) 0 (by lia) (by lia) (by lia)]
-          simp only [Nat.choose_zero_right, Nat.cast_one]
-          have hk1 : 1 ≤ k := by lia
-          rw [Nat.cast_sub hk1]
-          grind
-        · rw [Bred0 (2 * j0 + 1 + 4) (k + 2) (by lia)]
-          rw [Bred0 (2 * j0 + 1 + 3) (k + 2) (by lia)]
-          rw [Bred0 (2 * j0 + 1 + 3) (k + 1) (by lia)]
-          rw [Bred0 (2 * j0 + 1 + 2) (k + 2) (by lia)]
-          rw [Bred0 (2 * j0 + 1 + 2) (k + 1) (by lia)]
-          rw [Bred0 (2 * j0 + 1 + 1) (k + 2) (by lia)]
-          rw [Bred0 (2 * j0 + 1 + 1) (k + 1) (by lia)]
-          rw [Bred0 (2 * j0 + 1) (k + 2) (by lia)]
-          rw [Bred0 (2 * j0 + 1) (k + 1) (by lia)]
-          ring_nf
-
-private lemma i0_step (m : ℕ) :
-    Bcoef (m + 4) 0 = ((2 / 5) + (-1 / 5) * (m : ℝ)) * Bcoef (m + 3) 0 + ((2 : ℝ) + (2 / 5)
-      * (m : ℝ)) * Bcoef (m + 2) 0 + ((2 / 5) + (1 / 5) * (m : ℝ)) * Bcoef (m + 1) 0
-      + ((-13 / 5) + (-2 / 5) * (m : ℝ)) * Bcoef m 0
-      := by
-  rcases Nat.even_or_odd m with ⟨j0, hj0⟩ | ⟨j0, hj0⟩
-  · obtain rfl : m = 2 * j0 := by lia
-    rw [Bred (2 * j0 + 4) 0 (j0 + 3) (j0 + 2) (by lia) (by lia) (by lia)]
-    rw [Bred (2 * j0 + 3) 0 (j0 + 3) (j0 + 1) (by lia) (by lia) (by lia)]
-    rw [Bred (2 * j0 + 2) 0 (j0 + 2) (j0 + 1) (by lia) (by lia) (by lia)]
-    rw [Bred (2 * j0 + 1) 0 (j0 + 2) j0 (by lia) (by lia) (by lia)]
-    rw [Bred (2 * j0) 0 (j0 + 1) j0 (by lia) (by lia) (by lia)]
-    have H := i0_even j0
-    grind
-  · obtain rfl : m = 2 * j0 + 1 := by assumption
-    rw [Bred (2 * j0 + 1 + 4) 0 (j0 + 4) (j0 + 2) (by lia) (by lia) (by lia)]
-    rw [Bred (2 * j0 + 1 + 3) 0 (j0 + 3) (j0 + 2) (by lia) (by lia) (by lia)]
-    rw [Bred (2 * j0 + 1 + 2) 0 (j0 + 3) (j0 + 1) (by lia) (by lia) (by lia)]
-    rw [Bred (2 * j0 + 1 + 1) 0 (j0 + 2) (j0 + 1) (by lia) (by lia) (by lia)]
-    rw [Bred (2 * j0 + 1) 0 (j0 + 2) j0 (by lia) (by lia) (by lia)]
-    have H := i0_odd j0
-    grind
-
-private lemma i1_step (m : ℕ) :
-    Bcoef (m + 4) 1 = (2 / 5) * Bcoef (m + 3) 1 + (-4 / 5) * Bcoef (m + 2) 1 + (2 / 5)
-      * Bcoef (m + 1) 1 + (-4 / 5) * Bcoef m 1 + ((2 / 5) + (-1 / 5) * (m : ℝ)) * Bcoef (m
-      + 3) 1 + ((3 / 5) + (1 / 5) * (m : ℝ)) * Bcoef (m + 3) 0 + ((2 : ℝ) + (2 / 5) * (m : ℝ))
-      * Bcoef (m + 2) 1 + ((-2 / 5) * (m : ℝ)) * Bcoef (m + 2) 0 + ((2 / 5) + (1 / 5)
-      * (m : ℝ)) * Bcoef (m + 1) 1 + ((-7 / 5) + (-1 / 5) * (m : ℝ)) * Bcoef (m + 1) 0
-      + ((-13 / 5) + (-2 / 5) * (m : ℝ)) * Bcoef m 1 + ((8 / 5) + (2 / 5) * (m : ℝ)) * Bcoef m 0
-      := by
-  rcases Nat.even_or_odd m with ⟨j0, hj0⟩ | ⟨j0, hj0⟩
-  · obtain rfl : m = 2 * j0 := by lia
-    rcases Nat.eq_zero_or_pos j0 with hj | hj
-    · subst hj
-      simp only [Bcoef]; norm_num
-    · rw [Bred (2 * j0 + 4) 1 (j0 + 4) (j0 + 1) (by lia) (by lia) (by lia)]
-      rw [Bred (2 * j0 + 3) 1 (j0 + 4) j0 (by lia) (by lia) (by lia)]
-      rw [Bred (2 * j0 + 2) 1 (j0 + 3) j0 (by lia) (by lia) (by lia)]
-      rw [Bred (2 * j0 + 1) 1 (j0 + 3) (j0 - 1) (by lia) (by lia) (by lia)]
-      rw [Bred (2 * j0) 1 (j0 + 2) (j0 - 1) (by lia) (by lia) (by lia)]
-      rw [Bred (2 * j0 + 3) 0 (j0 + 3) (j0 + 1) (by lia) (by lia) (by lia)]
-      rw [Bred (2 * j0 + 2) 0 (j0 + 2) (j0 + 1) (by lia) (by lia) (by lia)]
-      rw [Bred (2 * j0 + 1) 0 (j0 + 2) j0 (by lia) (by lia) (by lia)]
-      rw [Bred (2 * j0) 0 (j0 + 1) j0 (by lia) (by lia) (by lia)]
-      have H := i1_even j0 (by lia)
-      grind
-  · obtain rfl : m = 2 * j0 + 1 := by assumption
-    rcases Nat.eq_zero_or_pos j0 with hj | hj
-    · subst hj
-      simp only [Bcoef]; norm_num
-    · rw [Bred (2 * j0 + 1 + 4) 1 (j0 + 5) (j0 + 1) (by lia) (by lia) (by lia)]
-      rw [Bred (2 * j0 + 1 + 3) 1 (j0 + 4) (j0 + 1) (by lia) (by lia) (by lia)]
-      rw [Bred (2 * j0 + 1 + 2) 1 (j0 + 4) j0 (by lia) (by lia) (by lia)]
-      rw [Bred (2 * j0 + 1 + 1) 1 (j0 + 3) j0 (by lia) (by lia) (by lia)]
-      rw [Bred (2 * j0 + 1) 1 (j0 + 3) (j0 - 1) (by lia) (by lia) (by lia)]
-      rw [Bred (2 * j0 + 1 + 3) 0 (j0 + 3) (j0 + 2) (by lia) (by lia) (by lia)]
-      rw [Bred (2 * j0 + 1 + 2) 0 (j0 + 3) (j0 + 1) (by lia) (by lia) (by lia)]
-      rw [Bred (2 * j0 + 1 + 1) 0 (j0 + 2) (j0 + 1) (by lia) (by lia) (by lia)]
-      rw [Bred (2 * j0 + 1) 0 (j0 + 2) j0 (by lia) (by lia) (by lia)]
-      have H := i1_odd j0 (by lia)
-      grind
-
-private lemma A177040_coeff (n i : ℕ) :
-    (A177040 n).coeff i = if i ≤ n / 2 then (Nat.choose (n - n / 2 + i
-      + 1) (n / 2 - i) : ℝ) else 0
-      := by
-  induction n using Nat.strong_induction_on generalizing i with
-  | _ n ih =>
-    match n with
-    | 0 =>
-      rcases i with _ | i
-      · norm_num [A177040]
-      · simp [A177040, coeff_one]
-    | 1 =>
-      rcases i with _ | i
-      · norm_num [A177040]
-      · simp [A177040, coeff_one]
-    | 2 =>
-      rcases i with _ | i | i
-      · norm_num [A177040, coeff_add, coeff_X]
-      · norm_num [A177040, coeff_add, coeff_X]
-      · rw [ite_eq_right (by lia)]
-        simp [A177040, coeff_X]
-    | 3 =>
-      rcases i with _ | i | i
-      · norm_num [A177040, coeff_add, coeff_X]
-      · norm_num [A177040, coeff_add, coeff_X]
-      · rw [ite_eq_right (by lia)]
-        simp [A177040, coeff_X]
-    | (m + 4) =>
-      change (A177040 (m + 4)).coeff i = Bcoef (m + 4) i
-      have hprev (t : ℕ) (ht : t < m + 4) (j : ℕ) :
-          Bcoef t j = (A177040 t).coeff j := (ih t ht j).symm
-      rcases i with _ | _ | k
-      · rw [A177040_coeff_zero m, i0_step m]
-        simp only [hprev (m + 3) (by lia), hprev (m + 2) (by lia),
-          hprev (m + 1) (by lia), hprev m (by lia)]
-      · rw [A177040_coeff_one m, i1_step m]
-        simp only [hprev (m + 3) (by lia), hprev (m + 2) (by lia),
-          hprev (m + 1) (by lia), hprev m (by lia)]
-        ring_nf
-      · rcases Nat.even_or_odd m with ⟨j, hj⟩ | ⟨j, hj⟩
-        · obtain rfl : m = 2 * j := by lia
-          rw [A177040_coeff_succ (2 * j) k, even_step j k]
-          simp only [hprev (2 * j + 3) (by lia), hprev (2 * j + 2) (by lia),
-            hprev (2 * j + 1) (by lia), hprev (2 * j) (by lia)]
-          grind
-        · obtain rfl : m = 2 * j + 1 := by assumption
-          rw [A177040_coeff_succ (2 * j + 1) k, odd_step j k]
-          simp only [hprev (2 * j + 1 + 3) (by lia), hprev (2 * j + 1 + 2) (by lia),
-            hprev (2 * j + 1 + 1) (by lia), hprev (2 * j + 1) (by lia)]
-          grind
-
-private lemma A177040_natDegree_raw (n : ℕ) : (A177040 n).natDegree = n / 2 := by
-  apply natDegree_eq_of_le_of_coeff_ne_zero
-  · apply natDegree_le_iff_coeff_eq_zero.mpr
-    intro m hm
-    rw [A177040_coeff n m, ite_eq_right (by lia)]
-  · rw [A177040_coeff n (n / 2), ite_eq_left (le_refl _)]
-    simp
-
-/-- The A177040 row indexed by `n` has degree `n / 2` and positive leading
-coefficient.  The proof carries the exact even and odd coefficient vectors as two separate
-states of the parity top-window law. -/
-theorem A177040_natDegree_eq_and_leadingCoeff_pos (n : ℕ) :
-    (A177040 n).natDegree = n / 2 ∧ 0 < (A177040 n).leadingCoeff := by
-  refine ⟨A177040_natDegree_raw n, ?_⟩
-  rw [leadingCoeff, A177040_natDegree_raw, A177040_coeff,
-    ite_eq_left (le_refl (n / 2))]
-  simp
-
-/-- The natural degree of the A177040 row indexed by `n` is `n / 2`. -/
-theorem A177040_natDegree (n : ℕ) : (A177040 n).natDegree = n / 2 :=
-  (A177040_natDegree_eq_and_leadingCoeff_pos n).1
-
-/-- Every A177040 row has leading coefficient one. -/
-theorem A177040_leadingCoeff (n : ℕ) : (A177040 n).leadingCoeff = 1 := by
-  rw [leadingCoeff, A177040_natDegree n, A177040_coeff,
-    ite_eq_left (le_refl (n / 2))]
-  simp
-
-/-- The A177040 row indexed by `n` has positive leading coefficient. -/
-theorem A177040_leadingCoeff_pos (n : ℕ) : 0 < (A177040 n).leadingCoeff := by
-  rw [A177040_leadingCoeff]
-  norm_num
-
 /-- The order-four update of the A177040 rows. -/
 def A177040Next (n : ℕ) (p₃ p₂ p₁ p₀ : ℝ[X]) : ℝ[X] :=
   (C (2 / 5) * X + C (-2 / 5) * X ^ 2) * p₃.derivative
@@ -774,6 +59,159 @@ private theorem A177040_step (n : ℕ) :
   dsimp only [A177040Next]
   ring_nf
 
+/-- Coupled even and odd rows, with their degree growth explicit. -/
+private def modelPair : ℕ → ℝ[X] × ℝ[X]
+  | 0 => (1, 1)
+  | n + 1 =>
+    let e := (modelPair n).1 + X * (modelPair n).2 + 1
+    (e, e + (modelPair n).2)
+
+private def evenModel (n : ℕ) : ℝ[X] := (modelPair n).1
+private def oddModel (n : ℕ) : ℝ[X] := (modelPair n).2
+
+private lemma evenModel_succ (n : ℕ) :
+    evenModel (n + 1) = evenModel n + X * oddModel n + 1 := rfl
+
+private lemma oddModel_succ (n : ℕ) :
+    oddModel (n + 1) = evenModel (n + 1) + oddModel n := rfl
+
+/-- The two differential identities needed by the order-four presentation. -/
+private lemma model_differential (n : ℕ) :
+    X * (X + 4) * (evenModel n).derivative =
+        -(((n : ℝ[X]) + 2) * X + 2) * evenModel n +
+          2 * ((n : ℝ[X]) + 1) * X * oddModel n + 2 * ((n : ℝ[X]) + 1) ∧
+      X * (X + 4) * (oddModel n).derivative =
+        (2 * (n : ℝ[X]) + 3) * evenModel n + ((n : ℝ[X]) * X - 4) * oddModel n +
+          ((n : ℝ[X]) + 1) := by
+  induction n with
+  | zero => norm_num [evenModel, oddModel, modelPair]
+  | succ n ih =>
+    rw [oddModel_succ, evenModel_succ]
+    simp only [derivative_add, derivative_mul, derivative_X, derivative_one,
+      one_mul, add_zero, Nat.cast_add, Nat.cast_one]
+    constructor
+    · linear_combination ih.1 + X * ih.2
+    · linear_combination ih.1 + (X + 1) * ih.2
+
+private def model (n : ℕ) : ℝ[X] :=
+  if n % 2 = 0 then evenModel (n / 2) else oddModel (n / 2)
+
+private lemma model_even (n : ℕ) : model (2 * n) = evenModel n := by
+  simp [model]
+
+private lemma model_odd (n : ℕ) : model (2 * n + 1) = oddModel n := by
+  simp [model, Nat.add_div]
+
+/-- The coupled rows satisfy the original differential update. -/
+private lemma model_step (n : ℕ) :
+    model (n + 4) = A177040Next n (model (n + 3)) (model (n + 2))
+      (model (n + 1)) (model n) := by
+  simp only [A177040Next]
+  obtain ⟨m, rfl | rfl⟩ := Nat.even_or_odd' n
+  · simp only [show 2 * m + 4 = 2 * (m + 2) by lia,
+      show 2 * m + 3 = 2 * (m + 1) + 1 by lia,
+      show 2 * m + 2 = 2 * (m + 1) by lia, model_even, model_odd]
+    rw [oddModel_succ, evenModel_succ, oddModel_succ, evenModel_succ]
+    simp only [derivative_add, derivative_mul, derivative_X, derivative_one,
+      one_mul, add_zero]
+    apply mul_left_cancel₀ (mul_ne_zero X_ne_zero
+      (by simpa only [map_ofNat] using (monic_X_add_C (4 : ℝ)).ne_zero))
+    apply Polynomial.funext
+    intro x
+    have he := congrArg (fun p : ℝ[X] => p.eval x) (model_differential m).1
+    have ho := congrArg (fun p : ℝ[X] => p.eval x) (model_differential m).2
+    simp only [eval_add, eval_sub, eval_mul, eval_pow, eval_X, eval_C,
+      eval_one, eval_ofNat, eval_natCast, eval_neg] at he ho ⊢
+    push_cast
+    linear_combination
+      ((2 / 5 : ℝ) * (1 - x) * 3 * x) * he +
+        ((2 / 5 : ℝ) * (1 - x) * x * (x - 2)) * ho
+  · simp only [show 2 * m + 1 + 4 = 2 * (m + 2) + 1 by lia,
+      show 2 * m + 1 + 3 = 2 * (m + 2) by lia,
+      show 2 * m + 1 + 2 = 2 * (m + 1) + 1 by lia,
+      show 2 * m + 1 + 1 = 2 * (m + 1) by lia, model_even, model_odd]
+    rw [oddModel_succ, evenModel_succ, oddModel_succ, evenModel_succ]
+    simp only [derivative_add, derivative_mul, derivative_X, derivative_one,
+      one_mul, add_zero]
+    apply mul_left_cancel₀ (mul_ne_zero X_ne_zero
+      (by simpa only [map_ofNat] using (monic_X_add_C (4 : ℝ)).ne_zero))
+    apply Polynomial.funext
+    intro x
+    have he := congrArg (fun p : ℝ[X] => p.eval x) (model_differential m).1
+    have ho := congrArg (fun p : ℝ[X] => p.eval x) (model_differential m).2
+    simp only [eval_add, eval_sub, eval_mul, eval_pow, eval_X, eval_C,
+      eval_one, eval_ofNat, eval_natCast, eval_neg] at he ho ⊢
+    push_cast
+    linear_combination
+      ((-2 / 5 : ℝ) * x ^ 2 * (1 - x)) * he +
+        ((-2 / 5 : ℝ) * x * (1 - x) * (x ^ 2 + x - 4)) * ho
+
+/-- Each coupled row is bounded by its index and has top coefficient one. -/
+private lemma model_top (n : ℕ) :
+    ((evenModel n).natDegree ≤ n ∧ (evenModel n).coeff n = 1) ∧
+      ((oddModel n).natDegree ≤ n ∧ (oddModel n).coeff n = 1) := by
+  induction n with
+  | zero => simp [evenModel, oddModel, modelPair]
+  | succ n ih =>
+    have he : (evenModel (n + 1)).natDegree ≤ n + 1 := by
+      rw [evenModel_succ]
+      refine (natDegree_add_le _ _).trans (max_le ?_ (by simp))
+      refine (natDegree_add_le _ _).trans (max_le (by lia) ?_)
+      exact natDegree_mul_le.trans (by rw [natDegree_X]; lia)
+    have hec : (evenModel (n + 1)).coeff (n + 1) = 1 := by
+      rw [evenModel_succ, coeff_add, coeff_add, coeff_X_mul, ih.2.2,
+        coeff_eq_zero_of_natDegree_lt (ih.1.1.trans_lt (Nat.lt_succ_self n))]
+      simp [coeff_one]
+    have ho : (oddModel (n + 1)).natDegree ≤ n + 1 := by
+      rw [oddModel_succ]
+      exact (natDegree_add_le _ _).trans (max_le he (by lia))
+    have hoc : (oddModel (n + 1)).coeff (n + 1) = 1 := by
+      rw [oddModel_succ, coeff_add, hec,
+        coeff_eq_zero_of_natDegree_lt (ih.2.1.trans_lt (Nat.lt_succ_self n)), add_zero]
+    exact ⟨⟨he, hec⟩, ⟨ho, hoc⟩⟩
+
+private lemma model_top_row (n : ℕ) :
+    (model n).natDegree ≤ n / 2 ∧ (model n).coeff (n / 2) = 1 := by
+  unfold model
+  split_ifs
+  · exact (model_top (n / 2)).1
+  · exact (model_top (n / 2)).2
+
+private lemma A177040_eq_model (n : ℕ) : A177040 n = model n := by
+  exact sequence_eq_of_same_lag_four_recurrence A177040Next
+    (by norm_num [A177040, model, evenModel, oddModel, modelPair])
+    (by norm_num [A177040, model, evenModel, oddModel, modelPair])
+    (by norm_num [A177040, model, evenModel, oddModel, modelPair]; ring)
+    (by norm_num [A177040, model, evenModel, oddModel, modelPair]; ring)
+    A177040_step model_step n
+
+private lemma A177040_monic_natDegree (n : ℕ) :
+    (A177040 n).Monic ∧ (A177040 n).natDegree = n / 2 := by
+  rw [A177040_eq_model]
+  obtain ⟨hdeg, hcoeff⟩ := model_top_row n
+  exact ⟨monic_of_natDegree_le_of_coeff_eq_one _ hdeg hcoeff,
+    natDegree_eq_of_le_of_coeff_ne_zero hdeg (by rw [hcoeff]; norm_num)⟩
+
+/-- The A177040 row indexed by `n` has degree `n / 2` and positive leading
+coefficient.  The proof transfers the top coefficients of the coupled even and odd model. -/
+theorem A177040_natDegree_eq_and_leadingCoeff_pos (n : ℕ) :
+    (A177040 n).natDegree = n / 2 ∧ 0 < (A177040 n).leadingCoeff := by
+  obtain ⟨hm, hd⟩ := A177040_monic_natDegree n
+  exact ⟨hd, by rw [hm.leadingCoeff]; norm_num⟩
+
+/-- The natural degree of the A177040 row indexed by `n` is `n / 2`. -/
+theorem A177040_natDegree (n : ℕ) : (A177040 n).natDegree = n / 2 :=
+  (A177040_natDegree_eq_and_leadingCoeff_pos n).1
+
+/-- Every A177040 row has leading coefficient one. -/
+theorem A177040_leadingCoeff (n : ℕ) : (A177040 n).leadingCoeff = 1 := by
+  exact (A177040_monic_natDegree n).1.leadingCoeff
+
+/-- The A177040 row indexed by `n` has positive leading coefficient. -/
+theorem A177040_leadingCoeff_pos (n : ℕ) : 0 < (A177040 n).leadingCoeff := by
+  rw [A177040_leadingCoeff]
+  norm_num
+
 /-- The initial window and order-four update uniquely determine A177040. -/
 private theorem A177040_eq_of_recurrence
     {P : ℕ → ℝ[X]}
@@ -781,14 +219,9 @@ private theorem A177040_eq_of_recurrence
     (hrec : ∀ n, P (n + 4) =
       A177040Next n (P (n + 3)) (P (n + 2)) (P (n + 1)) (P n))
     : ∀ m, P m = A177040 m := by
-  intro m
-  induction m using Nat.strong_induction_on with
-  | ind m ih =>
-      by_cases hm : m < 4
-      · exact hinit m hm
-      · obtain ⟨q, rfl⟩ : ∃ q, m = q + 4 := ⟨m - 4, by lia⟩
-        rw [hrec, A177040_step, ih (q + 3) (by lia),
-          ih (q + 2) (by lia), ih (q + 1) (by lia), ih q (by lia)]
+  exact sequence_eq_of_same_finite_recurrence
+    (k := 4) (op := fun n w => A177040Next n (w 3) (w 2) (w 1) (w 0))
+    hinit hrec A177040_step
 
 /-- Any sequence satisfying the A177040 initial window and update has degree `n / 2`. -/
 @[rr_row_model]

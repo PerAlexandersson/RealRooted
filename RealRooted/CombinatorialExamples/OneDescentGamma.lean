@@ -75,33 +75,19 @@ private lemma isRealRooted_X_pow :
 lemma strictInterl_X_add_C_to_X_mul_X_add_C {a b : ℝ}
     (ha : 0 ≤ a) (hab : a ≤ b) :
     StrictInterl (X + C a) (X * (X + C b)) := by
-  have hdeg_a : (X + C a).natDegree = 1 :=
-    Polynomial.natDegree_X_add_C (x := a)
-  have hrr_a : ((X + C a) ≠ 0 ∧ (X + C a).Splits) :=
-    isRealRooted_of_degree_one hdeg_a
-  have hrr_b : ((X + C b) ≠ 0 ∧ (X + C b).Splits) :=
-    isRealRooted_of_degree_one (Polynomial.natDegree_X_add_C (x := b))
-  have hrr_q : ((X * (X + C b)) ≠ 0 ∧ (X * (X + C b)).Splits) :=
-    isRealRooted_X_mul hrr_b.1 hrr_b.2
-  have hdeg_q : (X * (X + C b)).natDegree = 2 := by simp_all
-  have hb_nonneg : 0 ≤ b := by linarith
-  have hrs_sorted : ([-b, (0 : ℝ)] : List ℝ).Pairwise (· ≤ ·) := by simp [hb_nonneg]
-  have hss_sorted : ([-a] : List ℝ).Pairwise (· ≤ ·) := by simp
-  have hrs_eq : (↑([-b, (0 : ℝ)] : List ℝ) : Multiset ℝ) = (X * (X + C b)).roots := by
-    rw [roots_mul (mul_ne_zero X_ne_zero hrr_b.1), roots_X]
-    have hlin_roots : (X + C b).roots = {(-b : ℝ)} := by simp
-    rw [hlin_roots]
-    rw [Multiset.add_comm]
-    rfl
-  have hss_eq : (↑([-a] : List ℝ) : Multiset ℝ) = (X + C a).roots := by simp
-  have hint : ListInterlaces ([-a] : List ℝ) [-b, (0 : ℝ)] := by
-    change -b ≤ -a ∧ -a ≤ (0 : ℝ) ∧ True
-    simp_all
-  exact
-    (show Interlaces (X + C a) (X * (X + C b)) by
-      refine ⟨hrr_q, hrr_a, ?_, ?_⟩
-      · lia
-      · grind).toStrictInterl
+  exact strictInterl_mul_X_of_strictInterl_of_nonneg
+    (StrictInterl.X_add_C_iff.mpr hab)
+    (hasNonnegCoeffs_X.add (hasNonnegCoeffs_C (ha.trans hab)))
+    (hasNonnegCoeffs_X.add (hasNonnegCoeffs_C ha))
+
+/-- A shared monomial and nonzero scalars transport the affine comparison. -/
+private lemma strictInterl_scaled_X_pow_affine {a b c e : ℝ}
+    (ha : 0 ≤ a) (hab : a ≤ b) (hc : c ≠ 0) (he : e ≠ 0) (n : ℕ) :
+    StrictInterl (C c * X ^ n * (X + C a))
+      (C e * X ^ (n + 1) * (X + C b)) := by
+  have h := ((strictInterl_X_add_C_to_X_mul_X_add_C ha hab).C_mul_left hc).C_mul_right he
+  simpa only [pow_succ, mul_assoc, mul_left_comm, mul_comm] using
+    h.mul_common_factor (pow_ne_zero n X_ne_zero) (by simp)
 
 lemma oneDescentGammaTerm_succ
     (d m j r : Nat) (hjr : j < r) :
@@ -246,58 +232,27 @@ lemma oneDescent_strictInterl_gamma_one_top (m : Nat) (hm : 0 < m) :
 lemma oneDescent_strictInterl_gamma_one_adjacent
     (m j : Nat) (hj : j + 1 < m) :
     StrictInterl (oneDescentGamma 1 m (j + 1)) (oneDescentGamma 1 m j) := by
-  have hjm : j < m := by lia
-  have hsub_left : m - (j + 1) - 1 = m - j - 2 := by lia
-  have hpow : (X : ℝ[X]) ^ (m - j - 1) = X ^ (m - j - 2) * X := by
-    rw [show m - j - 1 = Nat.succ (m - j - 2) by lia, pow_succ]
-  let a : ℝ := (((m - (j + 1) : Nat) : ℝ) / ((((j + 1) + 1 : Nat) : ℝ)))
-  let b : ℝ := (((m - j : Nat) : ℝ) / ((j + 1 : Nat) : ℝ))
-  have ha : 0 ≤ a := by
-    dsimp [a]
-    positivity
-  have hab : a ≤ b := by
-    dsimp [a, b]
-    simpa [Nat.add_assoc, Nat.add_left_comm, Nat.add_comm, Nat.cast_add, Nat.cast_one] using
-      oneDescentGamma_adjacent_linearShift_le m j hj
-  have hbase : StrictInterl (X + C a) (X * (X + C b)) :=
-    strictInterl_X_add_C_to_X_mul_X_add_C ha hab
-  have hleft_ne : (((Nat.choose m (j + 1) : Nat) : ℝ)) ≠ 0 :=
-    Nat.cast_choose_ne_zero (R := ℝ) (Nat.le_of_lt hj)
-  have hright_ne : (((Nat.choose m j : Nat) : ℝ)) ≠ 0 :=
-    Nat.cast_choose_ne_zero (R := ℝ) (Nat.le_of_lt hjm)
-  have hscaled :
-      StrictInterl
-        (C ((Nat.choose m (j + 1) : Nat) : ℝ) * (X + C a))
-        (C ((Nat.choose m j : Nat) : ℝ) * (X * (X + C b))) :=
-    StrictInterl.C_mul_right (StrictInterl.C_mul_left hbase hleft_ne) hright_ne
-  have hpow_rr : (((X : ℝ[X]) ^ (m - j - 2)) ≠ 0 ∧ ((X : ℝ[X]) ^ (m - j - 2)).Splits) :=
-    isRealRooted_X_pow (m - j - 2)
-  rw [oneDescentGamma_one m (j + 1) hj, oneDescentGamma_one m j hjm, hsub_left, hpow]
-  simpa [a, b, mul_assoc, mul_left_comm, mul_comm] using
-    (hscaled.mul_common_factor hpow_rr.1 hpow_rr.2)
+  rw [oneDescentGamma_one m (j + 1) hj, oneDescentGamma_one m j (by lia)]
+  have hleft : m - (j + 1) - 1 = m - j - 2 := by lia
+  have hright : m - j - 1 = m - j - 2 + 1 := by lia
+  rw [hleft, hright]
+  exact strictInterl_scaled_X_pow_affine
+    (oneDescentGamma_linearShift_nonneg m (j + 1))
+    (by simpa only [Nat.add_assoc] using oneDescentGamma_adjacent_linearShift_le m j hj)
+    (Nat.cast_choose_ne_zero (R := ℝ) (by lia))
+    (Nat.cast_choose_ne_zero (R := ℝ) (by lia)) _
 
 lemma oneDescent_strictInterl_gamma_one_terminal (m : Nat) (hm : 1 < m) :
     StrictInterl (oneDescentGamma 1 m 1) (oneDescentQ 1 m) := by
-  have hpow : (X : ℝ[X]) ^ (m - 1) = X ^ (m - 2) * X := by
-    rw [show m - 1 = Nat.succ (m - 2) by lia, pow_succ]
-  let a : ℝ := (((m - 1 : Nat) : ℝ) / (((1 + 1 : Nat) : ℝ)))
-  let b : ℝ := ((m - 1 : Nat) : ℝ)
-  have ha : 0 ≤ a := oneDescentGamma_linearShift_nonneg m 1
-  have hab : a ≤ b := by grind
-  have hbase : StrictInterl (X + C a) (X * (X + C b)) :=
-    strictInterl_X_add_C_to_X_mul_X_add_C ha hab
-  have hchoose_ne : (((Nat.choose m 1 : Nat) : ℝ)) ≠ 0 :=
-    Nat.cast_choose_ne_zero (R := ℝ) (show 1 ≤ m by lia)
-  have hscaled :
-      StrictInterl
-        (C ((Nat.choose m 1 : Nat) : ℝ) * (X + C a))
-        (X * (X + C b)) :=
-    StrictInterl.C_mul_left hbase hchoose_ne
-  have hpow_rr : (((X : ℝ[X]) ^ (m - 2)) ≠ 0 ∧ ((X : ℝ[X]) ^ (m - 2)).Splits) :=
-    isRealRooted_X_pow (m - 2)
-  rw [oneDescentGamma_one m 1 hm, oneDescentQ_one m (by lia), hpow]
-  simpa [a, b, Nat.choose_one_right, mul_assoc, mul_left_comm, mul_comm, tsub_tsub] using
-    (hscaled.mul_common_factor hpow_rr.1 hpow_rr.2)
+  rw [oneDescentGamma_one m 1 hm, oneDescentQ_one m (by lia)]
+  have hpow : (X : ℝ[X]) ^ (m - 1) = X ^ (m - 2 + 1) := by congr 1; lia
+  have hleft : m - 1 - 1 = m - 2 := by lia
+  rw [hpow, hleft]
+  simpa only [Nat.cast_one, C_1, one_mul] using
+    strictInterl_scaled_X_pow_affine (b := ((m - 1 : ℕ) : ℝ)) (e := 1)
+      (oneDescentGamma_linearShift_nonneg m 1)
+      (by norm_num)
+      (Nat.cast_choose_ne_zero (R := ℝ) (by lia : 1 ≤ m)) one_ne_zero (m - 2)
 
 /-- Uniform adjacent comparison in the base `d = 1` Gamma chain:
 `Γ_{1,j+1}^{(m)} ≪ Γ_{1,j}^{(m)}` for every admissible `j`. -/
@@ -331,28 +286,16 @@ theorem oneDescentGamma_one_isRealRooted
   · simp_all
   · have hjm : j < m := lt_of_le_of_ne hj htop
     rw [oneDescentGamma_one m j hjm]
-    let a : ℝ := (((m - j : Nat) : ℝ) / ((j + 1 : Nat) : ℝ))
-    have hlin_rr : ((X + C a) ≠ 0 ∧ (X + C a).Splits) :=
-      isRealRooted_of_degree_one (Polynomial.natDegree_X_add_C (x := a))
-    have hprod_rr :
-        ((X ^ (m - j - 1) * (X + C a)) ≠ 0 ∧
-          (X ^ (m - j - 1) * (X + C a)).Splits) :=
-      isRealRooted_mul (isRealRooted_X_pow (m - j - 1)).1 (isRealRooted_X_pow (m - j - 1)).2
-        hlin_rr.1 hlin_rr.2
-    have hchoose_ne : (((Nat.choose m j : Nat) : ℝ)) ≠ 0 :=
-      Nat.cast_choose_ne_zero (R := ℝ) hj
-    simpa [a, mul_assoc] using
-      isRealRooted_C_mul hprod_rr.1 hprod_rr.2 hchoose_ne
+    exact ⟨mul_ne_zero
+      (mul_ne_zero (C_ne_zero.mpr (Nat.cast_choose_ne_zero (R := ℝ) hj))
+        (pow_ne_zero _ X_ne_zero)) (X_add_C_ne_zero _),
+      ((Splits.C _).mul (Splits.X.pow _)).mul (Splits.of_natDegree_le_one (by simp))⟩
 
 /-- The base `d = 1` normalized one-descent polynomial is real-rooted. -/
 theorem oneDescentQ_one_isRealRooted
     (m : Nat) (hm : 0 < m) : ((oneDescentQ 1 m) ≠ 0 ∧ (oneDescentQ 1 m).Splits) := by
   rw [oneDescentQ_one m hm]
-  let a : ℝ := ((m - 1 : Nat) : ℝ)
-  have hlin_rr : ((X + C a) ≠ 0 ∧ (X + C a).Splits) :=
-    isRealRooted_of_degree_one (Polynomial.natDegree_X_add_C (x := a))
-  simpa [a] using
-    isRealRooted_mul (isRealRooted_X_pow (m - 1)).1 (isRealRooted_X_pow (m - 1)).2
-      hlin_rr.1 hlin_rr.2
+  exact ⟨mul_ne_zero (pow_ne_zero _ X_ne_zero) (X_add_C_ne_zero _),
+    (Splits.X.pow _).mul (Splits.of_natDegree_le_one (natDegree_X_add_C _).le)⟩
 
 end RealRooted

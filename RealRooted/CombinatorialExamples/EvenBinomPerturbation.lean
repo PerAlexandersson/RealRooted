@@ -141,27 +141,20 @@ theorem evenBinomPolyReal_add_grid_sign {h : ℝ[X]} {d : ℕ} {alpha M : ℝ}
         alpha * (-1 : ℝ) ^ k +
           h.eval (-(Real.tan theta) ^ 2) * Real.cos theta ^ (2 * d) := by
     rw [eval_add, eval_mul, eval_C, add_mul, mul_assoc, heven]
-  dsimp [theta] at *
-  rcases Nat.even_or_odd k with hevenK | hoddK
-  · rw [hevenK.neg_one_pow] at heq ⊢
-    have hscaled :
-        0 < (C alpha * BigDescents.evenBinomPolyReal (2 * d) + h).eval
-            (-(Real.tan (((k : ℝ) * Real.pi) / (2 * (d : ℝ)))) ^ 2) *
-              Real.cos (((k : ℝ) * Real.pi) / (2 * (d : ℝ))) ^ (2 * d) := by
-      nlinarith [abs_le.mp hperturb]
-    have hpos := pos_of_mul_pos_left hscaled hcosPow.le
-    simpa using hpos
-  · rw [hoddK.neg_one_pow] at heq ⊢
-    have hscaled :
-        0 < -((C alpha * BigDescents.evenBinomPolyReal (2 * d) + h).eval
-            (-(Real.tan (((k : ℝ) * Real.pi) / (2 * (d : ℝ)))) ^ 2) *
-              Real.cos (((k : ℝ) * Real.pi) / (2 * (d : ℝ))) ^ (2 * d)) := by
-      nlinarith [abs_le.mp hperturb]
-    have hneg :
-        (C alpha * BigDescents.evenBinomPolyReal (2 * d) + h).eval
-            (-(Real.tan (((k : ℝ) * Real.pi) / (2 * (d : ℝ)))) ^ 2) < 0 := by
-      nlinarith [hcosPow]
-    nlinarith
+  let e := h.eval (-(Real.tan theta) ^ 2) * Real.cos theta ^ (2 * d)
+  have herr : -M ≤ (-1 : ℝ) ^ k * e := by
+    have habs : |(-1 : ℝ) ^ k * e| ≤ M := by
+      simpa only [e, abs_mul, abs_pow, abs_neg, abs_one, one_pow, one_mul] using hperturb
+    exact (abs_le.mp habs).1
+  have hsquare : ((-1 : ℝ) ^ k) ^ 2 = 1 := by
+    rw [← pow_mul, Nat.mul_comm k 2, pow_mul]
+    norm_num
+  have hid : (-1 : ℝ) ^ k * (alpha * (-1 : ℝ) ^ k + e) =
+      alpha + (-1 : ℝ) ^ k * e := by
+    linear_combination alpha * hsquare
+  apply (mul_pos_iff_of_pos_right hcosPow).mp
+  rw [mul_assoc, heq, hid]
+  linarith
 
 /-- A strict binomial coefficient bound gives the perturbed polynomial exact degree and
 strictly positive coefficients throughout its support. -/
@@ -305,27 +298,10 @@ theorem evenBinomPolyReal_add_isNegativeSimple
   have hp0 : p ≠ 0 := leadingCoeff_ne_zero.mp hplead.ne'
   have hsplitsSimple := (isSimpleRealRooted_evenBinomPolyReal_add
     hd halpha hMalpha hdegree hcoeff).2
-  have hnonneg : HasNonnegCoeffs p := by
-    intro k
-    by_cases hk : k ≤ d
-    · exact (hpcoeff k hk).le
-    · rw [coeff_eq_zero_of_natDegree_lt]
-      rw [hpdegree]
-      exact lt_of_not_ge hk
-  have hroots : ∀ r ∈ p.roots, r < 0 := by
-    intro r hr
-    have hrle := roots_nonpos_of_hasNonnegCoeffs hnonneg r hr
-    have hrne : r ≠ 0 := by
-      intro hr0
-      subst r
-      have hroot := (mem_roots hp0).mp hr
-      rw [Polynomial.IsRoot.def] at hroot
-      have hpzero : 0 < p.eval 0 := by
-        rw [← coeff_zero_eq_eval_zero]
-        exact hpcoeff 0 (Nat.zero_le d)
-      linarith
-    exact lt_of_le_of_ne hrle hrne
-  exact ⟨hp0, hsplitsSimple.1, hsplitsSimple.2, hplead, hroots⟩
+  have hnonneg : HasNonnegCoeffs p :=
+    hasNonnegCoeffs_of_forall_coeff_pos (fun k hk => hpcoeff k (hk.trans hpdegree.le))
+  exact ⟨hp0, hsplitsSimple.1, hsplitsSimple.2, hplead,
+    roots_neg_of_hasNonnegCoeffs_of_coeff_zero_ne hnonneg (hpcoeff 0 (Nat.zero_le d)).ne'⟩
 
 /-- The roots of a strict perturbation are localized one per gap of the tangent grid,
 with the final root to the left of the last grid point. -/

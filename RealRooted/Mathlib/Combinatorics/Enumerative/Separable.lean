@@ -295,28 +295,10 @@ private theorem avoids_pattern2413_iff {n : ℕ} (σ : Perm (Fin n)) :
 
 private theorem avoids_pattern3142_iff {n : ℕ} (σ : Perm (Fin n)) :
     σ.Avoids pattern3142 ↔ Avoids3142Pos σ := by
-  unfold Avoids Avoids3142Pos
-  rw [containsPattern_iff_exists_orderEmbedding]
-  constructor
-  · intro hav i j k l hij hjk hkl hrel
-    apply hav
-    let f : Fin 4 → Fin n := ![i, j, k, l]
-    have hf : StrictMono f := by
-      rw [Fin.strictMono_iff_lt_succ]
-      intro a
-      fin_cases a <;> assumption
-    refine ⟨OrderEmbedding.ofStrictMono f hf, ?_⟩
-    obtain ⟨h1, h2, h3⟩ := hrel
-    intro a b
-    fin_cases a <;> fin_cases b <;>
-      simp only [Fin.isValue, OrderEmbedding.coe_ofStrictMono, Matrix.cons_val,
-      Matrix.cons_val_zero, Matrix.cons_val_one, Fin.zero_eta, Fin.mk_one, Fin.reduceFinMk,
-      pattern3142, coe_fn_mk, Fin.reduceLT, iff_true, iff_false, not_lt, not_lt_zero,
-      lt_self_iff_false, f] <;> grind
-  · rintro hav ⟨e, he⟩
-    exact hav (e 0) (e 1) (e 2) (e 3) (e.lt_iff_lt.mpr (by decide)) (e.lt_iff_lt.mpr (by decide))
-      (e.lt_iff_lt.mpr (by decide)) ⟨(he 1 3).mpr (by decide), (he 3 0).mpr (by decide),
-        (he 0 2).mpr (by decide)⟩
+  rw [← avoids_complement_iff σ pattern3142, complement_pattern3142,
+    avoids_pattern2413_iff]
+  simp only [Avoids2413Pos, Avoids3142Pos, complement, Equiv.trans_apply,
+    Fin.revPerm_apply, Fin.rev_lt_rev, and_comm, and_left_comm]
 
 
 /-- A split of the prefix `[0, N)` of a sequence `f`. -/
@@ -823,16 +805,10 @@ private theorem separableSkewIndecomposables_eq_biUnion {n : ℕ} (hn : 2 ≤ n)
 private theorem separableSumIndecomposables_eq_biUnion {n : ℕ} (hn : 2 ≤ n) :
     separableSumIndecomposables n = (Finset.Ico 1 n).biUnion (skewFirst n) := by
   ext σ
-  rw [Finset.mem_biUnion, mem_separableSumIndecomposables]
-  constructor
-  · rintro ⟨hsep, hsum⟩
-    obtain ⟨m, hm, hmn, hcut | hcut⟩ := exists_hasSumCut_of_isSeparable hn hsep
-    · exact (hsum m hmn hcut).elim
-    · obtain ⟨m0, hm0I, hm0⟩ := exists_isFirstSkewCut ⟨m, hcut⟩
-      exact ⟨m0, hm0I, mem_skewFirst.mpr ⟨hsep, hm0⟩⟩
-  · rintro ⟨m, -, hσ⟩
-    obtain ⟨hsep, hm⟩ := mem_skewFirst.mp hσ
-    exact ⟨hsep, fun c _ hc => not_hasSkewSumCut_of_hasDirectSumCut hc hm.1⟩
+  have hmem := Finset.ext_iff.mp (separableSkewIndecomposables_eq_biUnion hn) (complement σ)
+  simpa only [mem_separableSkewIndecomposables, Finset.mem_biUnion, mem_directFirst,
+    isSeparable_complement_iff, isSkewIndecomposable_complement_iff,
+    isFirstSumCut_complement_iff, mem_separableSumIndecomposables, mem_skewFirst] using hmem
 
 /-- **Companion recurrence for skew-indecomposables.**  For `n ≥ 2`, a separable permutation
 without a skew-sum cut has a direct-sum cut, so

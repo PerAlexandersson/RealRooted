@@ -203,23 +203,8 @@ def jensenPolynomial (n : ℕ) (gamma : ℕ → ℝ) : ℝ[X] :=
 @[simp] theorem coeff_jensenPolynomial (n : ℕ) (gamma : ℕ → ℝ) (k : ℕ) :
     (jensenPolynomial n gamma).coeff k =
       if k ≤ n then (Nat.choose n k : ℝ) * gamma k else 0 := by
-  classical
-  by_cases hk : k ≤ n
-  · have hmem : k ∈ Finset.range (n + 1) := by simp_all
-    rw [jensenPolynomial, Polynomial.finsetSum_coeff]
-    rw [Finset.sum_eq_single k]
-    · simp [hk]
-    · intro b hb hbk
-      simp [Polynomial.coeff_monomial, hbk]
-    · simp_all
-  · rw [jensenPolynomial, Polynomial.finsetSum_coeff]
-    rw [Finset.sum_eq_zero]
-    · simp [hk]
-    · intro b hb
-      have hb_le : b ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hb)
-      have hne : k ≠ b := by grind
-      have hbk : b ≠ k := Ne.symm hne
-      simp [Polynomial.coeff_monomial, hbk]
+  simp only [jensenPolynomial, Polynomial.finsetSum_coeff, Polynomial.coeff_monomial,
+    Finsupp.single_apply, Finset.sum_ite_eq', Finset.mem_range, Nat.lt_succ_iff]
 
 /-- A polynomial of degree at most `n` is recovered as the Jensen polynomial of
 its binomially normalized coefficient sequence. -/
@@ -560,91 +545,45 @@ theorem isFiniteMultiplierSequence_natDegree_one (gamma : ℕ → ℝ) :
     IsFiniteMultiplierSequence 1 gamma :=
   isFiniteMultiplierSequence_of_natDegree_le_one le_rfl gamma
 
-private lemma gamma_eq_zero_of_natDegree_jensen_lt {n : ℕ} {gamma : ℕ → ℝ}
-    {k : ℕ} (hk : k ≤ n) (hdeg : (jensenPolynomial n gamma).natDegree < k) :
-    gamma k = 0 := by
-  have hcoeff : (jensenPolynomial n gamma).coeff k = 0 :=
-    coeff_eq_zero_of_natDegree_lt hdeg
-  rw [coeff_jensenPolynomial] at hcoeff
-  have hchoose : (Nat.choose n k : ℝ) ≠ 0 :=
-    Nat.cast_choose_ne_zero (R := ℝ) hk
-  simp_all
-
 /-- A PF Jensen polynomial makes its underlying diagonal sequence log-concave
 through the Jensen order. -/
 theorem IsPFPolynomial.coeffLogConcaveUpTo_of_isPF_jensenPolynomial
     {n : ℕ} {gamma : ℕ → ℝ} (hj : IsPFPolynomial (jensenPolynomial n gamma)) :
     CoeffLogConcaveUpTo n gamma := by
   intro k hk0 hkn
-  let p := jensenPolynomial n gamma
-  let d := p.natDegree
-  have hdle : d ≤ n := by
-    exact natDegree_jensenPolynomial_le n gamma
-  by_cases hdeg : d < k + 1
-  · have hgamma : gamma (k + 1) = 0 := by
-      apply gamma_eq_zero_of_natDegree_jensen_lt (n := n) (gamma := gamma)
-      · lia
-      · simpa [p, d] using hdeg
-    rw [hgamma]
-    linarith [sq_nonneg (gamma k)]
-  have hkd : k < d := by lia
-  have hk_le_n : k ≤ n := by lia
-  have hksucc_le_n : k + 1 ≤ n := by lia
-  have hkp_le_n : k - 1 ≤ n := by lia
-  have hulc_all : HasUltraLogConcaveCoeffs p :=
-    hasUltraLogConcaveCoeffs_of_eq_zero_or_splits hj.eq_zero_or_splits
-  change CoeffUltraLogConcaveUpTo d (fun i => p.coeff i) at hulc_all
-  have hulc := hulc_all k hk0 hkd
-  simp only [p, coeff_jensenPolynomial, ite_eq_left hkp_le_n,
-    ite_eq_left hksucc_le_n, ite_eq_left hk_le_n] at hulc
+  have hulc := coeffUltraLogConcaveUpTo_of_natDegree_le
+    (natDegree_jensenPolynomial_le n gamma) hj.eq_zero_or_splits k hk0 hkn
+  simp only [coeff_jensenPolynomial, ite_eq_left (by lia : k - 1 ≤ n),
+    ite_eq_left (by lia : k + 1 ≤ n), ite_eq_left hkn.le] at hulc
   have hprev := Nat.cast_choose_succ_right_eq (R := ℝ) n (k - 1)
   have hnext := Nat.cast_choose_succ_right_eq (R := ℝ) n k
   have hkpred : k - 1 + 1 = k := by lia
   have hsub : n - (k - 1) = n - k + 1 := by lia
   have hkpred_cast : ((k - 1 : ℕ) : ℝ) + 1 = k := by exact_mod_cast hkpred
   rw [hkpred_cast, hkpred, hsub] at hprev
-  have hfactor :
-      ((n - k + 1 : ℕ) : ℝ) * ((d - k : ℕ) : ℝ) ≤
-        ((n - k : ℕ) : ℝ) * ((d - k + 1 : ℕ) : ℝ) := by
-    push_cast [Nat.cast_sub hk_le_n, Nat.cast_sub (by lia : k ≤ d)]
-    have hdle' : (d : ℝ) ≤ n := by exact_mod_cast hdle
-    linarith
-  have hscale_nonneg : 0 ≤ ((n - k + 1 : ℕ) : ℝ) := by positivity
-  have hscaled := mul_le_mul_of_nonneg_right hulc hscale_nonneg
+  have hscaled := mul_le_mul_of_nonneg_right hulc
+    (Nat.cast_nonneg (n - k + 1) : (0 : ℝ) ≤ ((n - k + 1 : ℕ) : ℝ))
   have hleft :
       (Nat.choose n (k - 1) : ℝ) * gamma (k - 1) *
           ((Nat.choose n (k + 1) : ℝ) * gamma (k + 1)) *
-          ((k + 1 : ℝ) * ((d - k + 1 : ℕ) : ℝ)) * ((n - k + 1 : ℕ) : ℝ) =
+          ((k + 1 : ℝ) * ((n - k + 1 : ℕ) : ℝ)) * ((n - k + 1 : ℕ) : ℝ) =
         gamma (k - 1) * gamma (k + 1) * (Nat.choose n k : ℝ) ^ 2 * (k : ℝ) *
-          ((n - k : ℕ) : ℝ) * ((d - k + 1 : ℕ) : ℝ) := by
+          ((n - k : ℕ) : ℝ) * ((n - k + 1 : ℕ) : ℝ) := by
     calc
       _ = gamma (k - 1) * gamma (k + 1) *
           ((Nat.choose n (k - 1) : ℝ) * ((n - k + 1 : ℕ) : ℝ)) *
           ((Nat.choose n (k + 1) : ℝ) * (k + 1 : ℝ)) *
-          ((d - k + 1 : ℕ) : ℝ) := by ring
-      _ = gamma (k - 1) * gamma (k + 1) *
-          ((Nat.choose n k : ℝ) * (k : ℝ)) *
-          ((Nat.choose n k : ℝ) * ((n - k : ℕ) : ℝ)) *
-          ((d - k + 1 : ℕ) : ℝ) := by rw [← hprev, hnext]
-      _ = _ := by ring
-  have hsquare :
-      ((Nat.choose n k : ℝ) * gamma k) ^ 2 =
-        (Nat.choose n k : ℝ) ^ 2 * gamma k ^ 2 := by ring
-  rw [hleft, hsquare] at hscaled
+          ((n - k + 1 : ℕ) : ℝ) := by ring
+      _ = _ := by rw [← hprev, hnext]; ring
+  rw [hleft] at hscaled
   have hcommon_pos : 0 < (Nat.choose n k : ℝ) ^ 2 * (k : ℝ) *
-      ((n - k : ℕ) : ℝ) * ((d - k + 1 : ℕ) : ℝ) := by
-    have hchoose : 0 < (Nat.choose n k : ℝ) := by
-      exact_mod_cast Nat.choose_pos hk_le_n
-    have hk : 0 < (k : ℝ) := by exact_mod_cast hk0
-    have hnk : 0 < ((n - k : ℕ) : ℝ) := by exact_mod_cast Nat.sub_pos_of_lt hkn
-    have hdk : 0 < ((d - k + 1 : ℕ) : ℝ) := by positivity
+      ((n - k : ℕ) : ℝ) * ((n - k + 1 : ℕ) : ℝ) := by
+    have hchoose : 0 < (Nat.choose n k : ℝ) := Nat.cast_pos.mpr (Nat.choose_pos hkn.le)
+    have hk : 0 < (k : ℝ) := Nat.cast_pos.mpr hk0
+    have hnk : 0 < ((n - k : ℕ) : ℝ) := Nat.cast_pos.mpr (Nat.sub_pos_of_lt hkn)
     positivity
-  have hfactor_scale_nonneg :
-      0 ≤ gamma k ^ 2 * (Nat.choose n k : ℝ) ^ 2 * (k : ℝ) := by
-    positivity
-  have hfactor_scaled := mul_le_mul_of_nonneg_left hfactor hfactor_scale_nonneg
   apply le_of_mul_le_mul_right _ hcommon_pos
-  nlinarith [hscaled, hfactor_scaled]
+  convert hscaled using 1 <;> ring
 
 /-- Adjacent log-concavity inequalities extracted from a degree-three PF
 Jensen polynomial. -/

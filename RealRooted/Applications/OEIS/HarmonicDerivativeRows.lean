@@ -15,6 +15,7 @@ import RealRooted.MaWang.Strong
 import RealRooted.WagnerRightSum.Sign
 import RealRooted.Derivative.Interlacing
 import RealRooted.Derivative.Algebra
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 public import RealRooted.Basic.Coefficients
 
 /-!
@@ -112,220 +113,93 @@ theorem harmonicFactorProduct_root_lt : ∀ {n : ℕ} {r : ℝ},
 theorem harmonicFactorProduct_hasSimpleRoots (n : ℕ) :
     HasSimpleRoots (harmonicFactorProduct n) := by
   induction n with
-  | zero =>
-      intro r hr
-      simp [harmonicFactorProduct, Polynomial.IsRoot] at hr
+  | zero => exact hasSimpleRoots_of_natDegree_le_one one_ne_zero (by simp [harmonicFactorProduct])
   | succ n ih =>
-      have hne := harmonicFactorProduct_ne_zero (n + 1)
-      intro r hr
-      apply le_antisymm
-      · by_contra hnot
-        have hmult : 1 < (harmonicFactorProduct (n + 1)).rootMultiplicity r := by
-          have hpos := (Polynomial.rootMultiplicity_pos hne).mpr hr
-          lia
-        have hderRoot :=
-          ((Polynomial.one_lt_rootMultiplicity_iff_isRoot hne).mp hmult).2
-        rw [harmonicFactorProduct_succ, derivative_mul, derivative_add,
-          derivative_one, derivative_mul, derivative_C, derivative_X] at hderRoot
-        simp only [zero_mul, zero_add] at hderRoot
-        rw [Polynomial.IsRoot.def] at hderRoot
-        simp only [eval_add, eval_mul, eval_C, eval_X, eval_one] at hderRoot
-        rw [harmonicFactorProduct_succ, Polynomial.IsRoot, eval_mul,
-          mul_eq_zero] at hr
-        rcases hr with hlinear | hold
-        · have hnotOld : ¬(harmonicFactorProduct n).IsRoot r := by
-            intro hold'
-            have hb := harmonicFactorProduct_root_lt hold'
-            rw [eval_add, eval_one, eval_mul, eval_C, eval_X] at hlinear
-            nlinarith
-          have holdEval : (harmonicFactorProduct n).eval r ≠ 0 := by
-            simpa [Polynomial.IsRoot.def] using hnotOld
-          simp only [eval_add, eval_one, eval_mul, eval_C, eval_X] at hlinear
-          have hn : (n : ℝ) ≠ 0 := by
-            intro hn
-            rw [hn, zero_mul, add_zero] at hlinear
-            norm_num at hlinear
-          rw [hlinear, zero_mul] at hderRoot
-          simp only [add_zero] at hderRoot
-          exact holdEval
-            (mul_eq_zero.mp hderRoot |>.resolve_left (mul_ne_zero hn one_ne_zero))
-        · have hlinear : (1 + C (n : ℝ) * X : ℝ[X]).eval r ≠ 0 := by
-            have hb := harmonicFactorProduct_root_lt hold
-            simp only [eval_add, eval_one, eval_mul, eval_C, eval_X]
-            nlinarith
-          simp only [eval_add, eval_one, eval_mul, eval_C, eval_X] at hlinear
-          have hderOld : (harmonicFactorProduct n).derivative.eval r ≠ 0 :=
-            ih.eval_derivative_ne_zero hold
-          rw [hold, mul_zero] at hderRoot
-          simp only [zero_add] at hderRoot
-          exact hderOld (mul_eq_zero.mp hderRoot |>.resolve_left hlinear)
-      · exact Polynomial.rootMultiplicity_pos hne |>.mpr hr
+    have hlin : HasSimpleRoots (1 + C (n : ℝ) * X : ℝ[X]) :=
+      hasSimpleRoots_of_natDegree_le_one
+        (by intro h; have hc := congrArg (fun p : ℝ[X] => p.coeff 0) h; simp at hc)
+        (by compute_degree)
+    intro r hr
+    rw [harmonicFactorProduct_succ,
+      rootMultiplicity_mul (harmonicFactorProduct_ne_zero (n + 1))]
+    by_cases hold : (harmonicFactorProduct n).IsRoot r
+    · have hbound := harmonicFactorProduct_root_lt hold
+      rw [rootMultiplicity_eq_zero (by simpa only [IsRoot.def, eval_add, eval_one, eval_mul,
+        eval_C, eval_X] using hbound.2.ne), ih r hold, zero_add]
+    · have heval : (harmonicFactorProduct n).eval r ≠ 0 := hold
+      rw [rootMultiplicity_eq_zero heval, add_zero]
+      apply hlin r
+      rw [harmonicFactorProduct_succ, IsRoot.def, eval_mul] at hr
+      exact (mul_eq_zero.mp hr).resolve_right heval
 
-private theorem harmonicDerivativeForm_coeff_top (n : ℕ) (p : ℝ[X])
-    (hdeg : p.natDegree = n + 1) :
-    ((C ((n : ℝ) + 1) + C (((n : ℝ) + 2) ^ 2) * X) * p -
-      X * (1 + C ((n : ℝ) + 2) * X) * p.derivative).coeff (n + 2) =
-        ((n : ℝ) + 2) * p.coeff (n + 1) := by
-  have habove : p.coeff (n + 2) = 0 := by
-    apply coeff_eq_zero_of_natDegree_lt
-    rw [hdeg]
+/-- The generic quadratic-derivative formula supplies both top-degree facts. -/
+private theorem harmonicDerivativeRow_degree_pos (n : ℕ) :
+    (harmonicDerivativeRow n).natDegree = n + 2 ∧
+      HasPosLeadingCoeff (harmonicDerivativeRow n) := by
+  let p := harmonicFactorProduct (n + 2)
+  have hdeg : p.natDegree = n + 1 := by
+    rw [harmonicFactorProduct_natDegree]
     lia
-  have heq :
-      (C ((n : ℝ) + 1) + C (((n : ℝ) + 2) ^ 2) * X) * p -
-          X * (1 + C ((n : ℝ) + 2) * X) * p.derivative =
-        C ((n : ℝ) + 1) * p + C (((n : ℝ) + 2) ^ 2) * (X * p) -
-          (X * p.derivative + C ((n : ℝ) + 2) * (X ^ 2 * p.derivative)) := by
+  have hlc : 0 < p.leadingCoeff :=
+    (harmonicFactorProduct_hasNonnegCoeffs (n + 2)).pos_leadingCoeff
+      (harmonicFactorProduct_ne_zero (n + 2))
+  have htop : 0 < (-((n : ℝ) + 2) * (p.natDegree : ℝ) + ((n : ℝ) + 2) ^ 2) *
+      p.leadingCoeff := by
+    rw [hdeg]
+    push_cast
+    nlinarith
+  have h := natDegree_and_leadingCoeff_quadratic_derivative_add_linear_mul_add
+    p 0 (-1) (-((n : ℝ) + 2)) ((n : ℝ) + 1) (((n : ℝ) + 2) ^ 2)
+    (by simp) htop.ne'
+  have heq : (C (-1) * X + C (-((n : ℝ) + 2)) * X ^ 2) * p.derivative +
+      (C ((n : ℝ) + 1) + C (((n : ℝ) + 2) ^ 2) * X) * p + 0 =
+        harmonicDerivativeRow n := by
+    rw [harmonicDerivativeRow_eq]
+    dsimp only [p]
+    simp only [map_neg, map_one]
     ring
-  rw [heq, coeff_sub, coeff_add, coeff_add, coeff_C_mul, coeff_C_mul,
-    coeff_C_mul, coeff_X_mul, coeff_X_mul, coeff_X_pow_mul, coeff_derivative,
-    coeff_derivative, habove]
-  push_cast
-  ring
-
-private theorem harmonicDerivativeForm_natDegree_le (n : ℕ) (p : ℝ[X])
-    (hdeg : p.natDegree = n + 1) :
-    ((C ((n : ℝ) + 1) + C (((n : ℝ) + 2) ^ 2) * X) * p -
-      X * (1 + C ((n : ℝ) + 2) * X) * p.derivative).natDegree ≤ n + 2 := by
-  have hleft :
-      (C ((n : ℝ) + 1) + C (((n : ℝ) + 2) ^ 2) * X).natDegree ≤ 1 := by
-    refine (natDegree_add_le _ _).trans (max_le (by simp) ?_)
-    exact (natDegree_C_mul_le _ X).trans natDegree_X_le
-  have hright :
-      (X * (1 + C ((n : ℝ) + 2) * X) : ℝ[X]).natDegree ≤ 2 := by
-    have hinner : (1 + C ((n : ℝ) + 2) * X : ℝ[X]).natDegree ≤ 1 := by
-      refine (natDegree_add_le _ _).trans (max_le (by simp) ?_)
-      exact (natDegree_C_mul_le _ X).trans natDegree_X_le
-    exact natDegree_mul_le.trans (by
-      have hX : (X : ℝ[X]).natDegree ≤ 1 := natDegree_X_le
-      lia)
-  refine (Polynomial.natDegree_sub_le _ _).trans (max_le ?_ ?_)
-  · calc
-      ((C ((n : ℝ) + 1) + C (((n : ℝ) + 2) ^ 2) * X) * p).natDegree ≤
-          (C ((n : ℝ) + 1) + C (((n : ℝ) + 2) ^ 2) * X).natDegree +
-            p.natDegree := Polynomial.natDegree_mul_le
-      _ ≤ n + 2 := by rw [hdeg]; lia
-  · calc
-      (X * (1 + C ((n : ℝ) + 2) * X) * p.derivative).natDegree ≤
-          (X * (1 + C ((n : ℝ) + 2) * X)).natDegree +
-            p.derivative.natDegree := Polynomial.natDegree_mul_le
-      _ ≤ n + 2 := by
-        have hder := Polynomial.natDegree_derivative_le p
-        rw [hdeg] at hder
-        lia
+  dsimp only at h
+  rw [heq] at h
+  exact ⟨by rw [h.1, hdeg], by rw [HasPosLeadingCoeff, h.2]; exact htop⟩
 
 /-- The derivative-image rows have the expected degree. -/
 theorem harmonicDerivativeRow_natDegree (n : ℕ) :
     (harmonicDerivativeRow n).natDegree = n + 2 := by
-  rw [harmonicDerivativeRow_eq]
-  have hGdeg : (harmonicFactorProduct (n + 2)).natDegree = n + 1 := by
-    rw [harmonicFactorProduct_natDegree]; lia
-  have hG0 : harmonicFactorProduct (n + 2) ≠ 0 :=
-    harmonicFactorProduct_ne_zero (n + 2)
-  have hGlc : 0 < (harmonicFactorProduct (n + 2)).leadingCoeff :=
-    (harmonicFactorProduct_hasNonnegCoeffs (n + 2)).pos_leadingCoeff hG0
-  rw [leadingCoeff, hGdeg] at hGlc
-  apply natDegree_eq_of_le_of_coeff_ne_zero
-  · exact harmonicDerivativeForm_natDegree_le n _ hGdeg
-  · rw [harmonicDerivativeForm_coeff_top n _ hGdeg]
-    positivity
+  exact (harmonicDerivativeRow_degree_pos n).1
 
 /-- The derivative-image rows have positive leading coefficient. -/
 theorem harmonicDerivativeRow_hasPosLeadingCoeff (n : ℕ) :
     HasPosLeadingCoeff (harmonicDerivativeRow n) := by
-  rw [HasPosLeadingCoeff, leadingCoeff, harmonicDerivativeRow_natDegree]
-  rw [harmonicDerivativeRow_eq]
-  have hGdeg : (harmonicFactorProduct (n + 2)).natDegree = n + 1 := by
-    rw [harmonicFactorProduct_natDegree]; lia
-  have hG0 : harmonicFactorProduct (n + 2) ≠ 0 :=
-    harmonicFactorProduct_ne_zero (n + 2)
-  have hGlc : 0 < (harmonicFactorProduct (n + 2)).leadingCoeff :=
-    (harmonicFactorProduct_hasNonnegCoeffs (n + 2)).pos_leadingCoeff hG0
-  rw [leadingCoeff, hGdeg] at hGlc
-  rw [harmonicDerivativeForm_coeff_top n _ hGdeg]
-  positivity
-
-private theorem harmonicDerivativeRow_expanded (n : ℕ) :
-    harmonicDerivativeRow n =
-      C ((n : ℝ) + 1) * harmonicFactorProduct (n + 2) +
-        C (((n : ℝ) + 2) ^ 2) * (X * harmonicFactorProduct (n + 2)) -
-        (X * (harmonicFactorProduct (n + 2)).derivative +
-          C ((n : ℝ) + 2) *
-            (X ^ 2 * (harmonicFactorProduct (n + 2)).derivative)) := by
-  rw [harmonicDerivativeRow_eq]
-  ring
+  exact (harmonicDerivativeRow_degree_pos n).2
 
 private theorem harmonicDerivativeRow_coeff_zero (n : ℕ) :
     (harmonicDerivativeRow n).coeff 0 =
       ((n : ℝ) + 1) * (harmonicFactorProduct (n + 2)).coeff 0 := by
-  simp [harmonicDerivativeRow_expanded]
-
-private theorem harmonicDerivativeRow_coeff_one (n : ℕ) :
-    (harmonicDerivativeRow n).coeff 1 =
-      (n : ℝ) * (harmonicFactorProduct (n + 2)).coeff 1 +
-        ((n : ℝ) + 2) ^ 2 *
-          (harmonicFactorProduct (n + 2)).coeff 0 := by
-  rw [harmonicDerivativeRow_expanded, coeff_sub, coeff_add, coeff_add,
-    coeff_C_mul, coeff_C_mul, coeff_C_mul, coeff_X_mul, coeff_X_mul]
-  have hx2 :
-      (X ^ 2 * (harmonicFactorProduct (n + 2)).derivative).coeff 1 = 0 := by
-    rw [coeff_X_pow_mul', ite_eq_right (by norm_num)]
-  rw [hx2, coeff_derivative]
-  norm_num
-  ring
-
-private theorem harmonicDerivativeRow_coeff_add_two (n k : ℕ) :
-    (harmonicDerivativeRow n).coeff (k + 2) =
-      ((n : ℝ) - k - 1) *
-          (harmonicFactorProduct (n + 2)).coeff (k + 2) +
-        ((n : ℝ) + 2) * ((n : ℝ) + 1 - k) *
-          (harmonicFactorProduct (n + 2)).coeff (k + 1) := by
-  rw [harmonicDerivativeRow_expanded, coeff_sub, coeff_add, coeff_add,
-    coeff_C_mul, coeff_C_mul, coeff_C_mul, coeff_X_mul, coeff_X_mul,
-    coeff_X_pow_mul, coeff_derivative, coeff_derivative]
-  push_cast
-  ring
+  simp [harmonicDerivativeRow_eq, coeff_zero_eq_eval_zero]
 
 /-- The derivative-image rows have nonnegative coefficients. -/
 theorem harmonicDerivativeRow_hasNonnegCoeffs (n : ℕ) :
     HasNonnegCoeffs (harmonicDerivativeRow n) := by
-  intro k
-  rcases k with _ | _ | k
-  · rw [harmonicDerivativeRow_coeff_zero]
-    exact mul_nonneg (by positivity) (harmonicFactorProduct_hasNonnegCoeffs (n + 2) 0)
-  · rw [harmonicDerivativeRow_coeff_one]
-    exact add_nonneg
-      (mul_nonneg (Nat.cast_nonneg n) (harmonicFactorProduct_hasNonnegCoeffs (n + 2) 1))
-      (mul_nonneg (sq_nonneg _) (harmonicFactorProduct_hasNonnegCoeffs (n + 2) 0))
-  rw [harmonicDerivativeRow_coeff_add_two]
-  rcases le_or_gt (k + 2) (n + 1) with hk | hk
-  · have hknNat : k + 1 ≤ n := by lia
-    have hkn : (k : ℝ) + 1 ≤ n := by exact_mod_cast hknNat
-    have hnn := harmonicFactorProduct_hasNonnegCoeffs (n + 2)
-    exact add_nonneg
-      (mul_nonneg (by linarith) (hnn (k + 2)))
-      (mul_nonneg (mul_nonneg (by positivity) (by linarith)) (hnn (k + 1)))
-  · have hzero2 : (harmonicFactorProduct (n + 2)).coeff (k + 2) = 0 := by
-      apply coeff_eq_zero_of_natDegree_lt
-      rw [harmonicFactorProduct_natDegree]
-      lia
-    by_cases hkn : k + 1 = n + 1
-    · have hkEq : k = n := by lia
-      subst k
-      rw [hzero2]
-      have hfactor :
-          ((n : ℝ) + 2) * ((n : ℝ) + 1 - (n : ℝ)) = (n : ℝ) + 2 := by
-        ring
-      rw [hfactor]
-      simp only [mul_zero, zero_add]
-      have hn2 : 0 ≤ (n : ℝ) + 2 := by positivity
-      exact mul_nonneg hn2
-        (harmonicFactorProduct_hasNonnegCoeffs (n + 2) (n + 1))
-    · have hzero1 : (harmonicFactorProduct (n + 2)).coeff (k + 1) = 0 := by
-        apply coeff_eq_zero_of_natDegree_lt
-        rw [harmonicFactorProduct_natDegree]
-        lia
-      rw [hzero2, hzero1]
-      norm_num
+  have heq : harmonicDerivativeRow n =
+      (C ((n : ℝ) + 1) + C (((n : ℝ) + 2) ^ 2) * X) * harmonicFactorProduct (n + 2) +
+        (C (-1) * X + C (-((n : ℝ) + 2)) * X ^ 2) *
+          (harmonicFactorProduct (n + 2)).derivative := by
+    rw [harmonicDerivativeRow_eq]
+    simp only [map_neg, map_one]
+    ring
+  rw [heq]
+  apply hasNonnegCoeffs_mul_add_mul_derivative (N := n + 1)
+    (by rw [harmonicFactorProduct_natDegree]; lia) (by simp) ?_
+    (harmonicFactorProduct_hasNonnegCoeffs (n + 2))
+  intro i j hj
+  have hj' : (j : ℝ) ≤ (n : ℝ) + 1 := by exact_mod_cast hj
+  simp only [coeff_add, coeff_C_mul, coeff_C, coeff_X, coeff_X_pow]
+  rcases i with _ | _ | i
+  · norm_num
+    linarith
+  · norm_num
+    nlinarith
+  · simp
 
 /-- A harmonic-factor product strictly interlaces its derivative image, which
 also has simple roots. -/

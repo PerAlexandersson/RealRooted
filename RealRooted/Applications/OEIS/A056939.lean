@@ -1,7 +1,5 @@
 module
 
-import RealRooted.MultiplierSequence.CoefficientRatio
-import RealRooted.Mathlib.RingTheory.Polynomial.Pochhammer
 import RealRooted.Mathlib.Algebra.Polynomial.Coeff
 import RealRooted.Recurrence.Uniqueness
 import RealRooted.Recurrence.RowModel
@@ -9,7 +7,6 @@ public import RealRooted.CombinatorialExamples.Narayana
 public import RealRooted.Hadamard
 public import RealRooted.Hadamard.GarloffWagner
 public import RealRooted.NarayanaTransformation
-import RealRooted.MultiplierSequence.PolyaSchur
 import RealRooted.Hadamard.Grace
 import RealRooted.NarayanaTransformation.Endpoints
 import RealRooted.NarayanaTransformation.Recurrences.Identities
@@ -454,102 +451,48 @@ theorem polynomial_eq_binomial_sum (n : ℕ) :
     ring
   · rw [coeff_schurModel_eq_zero_of_lt (by lia), ite_eq_right (by lia : ¬k < n + 1), mul_zero]
 
-private def jensenWeight (k : ℕ) : ℝ :=
-  2 / ((Nat.factorial (k + 1) : ℝ) * (Nat.factorial (k + 2) : ℝ))
-
-private lemma jensenWeight_eq (k : ℕ) :
-    jensenWeight k =
-      ((ascPochhammer ℝ k).eval 2)⁻¹ * ((ascPochhammer ℝ k).eval 3)⁻¹ := by
-  rw [jensenWeight, ascPochhammer_eval_two]
-  have hthree := two_mul_ascPochhammer_eval_three (R := ℝ) k
-  have hfac1 : ((k + 1).factorial : ℝ) ≠ 0 := by positivity
-  have hfac2 : ((k + 2).factorial : ℝ) ≠ 0 := by positivity
-  have hthreePos : 0 < (ascPochhammer ℝ k).eval 3 :=
-    ascPochhammer_pos k 3 (by norm_num)
-  field_simp
-  nlinarith
-
-private lemma jensenWeight_pos (k : ℕ) : 0 < jensenWeight k := by
-  rw [jensenWeight]
-  positivity
-
-private lemma jensenWeight_eq_product :
-    jensenWeight = invPochhammerProduct [2, 3] := by
-  funext k
-  simpa [invPochhammerProduct] using jensenWeight_eq k
-
-private lemma jensenWeight_multiplier : IsMultiplierSequence jensenWeight := by
-  rw [jensenWeight_eq_product]
-  exact (isPFMultiplierSequence_iff_multiplierSequence_and_nonneg.mp
-    (isPFMultiplierSequence_invPochhammerProduct (by norm_num))).1
-
-private def jensenScale (n : ℕ) : ℝ :=
-  ((Nat.factorial (n + 1) : ℝ) * (Nat.factorial (n + 2) : ℝ)) / 2
-
-private lemma schurModel_eq_jensenModel (n : ℕ) :
-    schurModel n = C (jensenScale n) *
-      twoSidedJensenPolynomial n jensenWeight jensenWeight := by
-  apply (AddMonoidAlgebra.ext ∘ Finsupp.ext)
-  intro k
-  rw [coeff_C_mul,
-    coeff_twoSidedJensenPolynomial jensenWeight_pos n jensenWeight k]
-  by_cases hk : k ≤ n
-  · rw [coeff_schurModel_eq_coeff hk, ite_eq_left hk, modelCoeff,
-      jensenScale, jensenWeight, jensenWeight, Nat.cast_choose ℝ hk]
-    simp only [show n - k + 1 = n + 1 - k by lia,
-      show n - k + 2 = n + 2 - k by lia]
-    have hfac : ∀ m : ℕ, (Nat.factorial m : ℝ) ≠ 0 :=
-      fun m => Nat.cast_ne_zero.mpr (Nat.factorial_pos m).ne'
-    field_simp [hfac]
-  · rw [coeff_schurModel_eq_zero_of_lt (Nat.lt_of_not_ge hk), ite_eq_right hk,
-      mul_zero]
+/-- The normalized `m = 3` Hoggatt polynomial agrees with the existing
+A056939 model, whose row `n` is indexed by Baxter permutations on `n+1` letters. -/
+theorem _root_.RealRooted.Hoggatt.normalized_three_eq_baxter (n : ℕ) :
+    Hoggatt.normalized (n + 1) 3 = polynomial n := by
+  rw [Hoggatt.normalized_three_eq_binomial_sum, polynomial_eq_binomial_sum]
 
 /-- The division-free coefficient ratio with two Pochhammer factors on each side. -/
 theorem polynomial_coeff_ratio {n k : ℕ} (hk : k < n) :
     ((k : ℝ) + 1) * (2 + k) * (3 + k) * (polynomial n).coeff (k + 1) =
       ((n : ℝ) - k) * (2 + n - k - 1) * (3 + n - k - 1) *
         (polynomial n).coeff k := by
-  have hratio := pochhammerJensenPolynomial_coeff_ratio
-    (lower := [2, 3]) (upper := [2, 3]) (by norm_num) (by norm_num) hk
-  simp only [List.map_cons, List.map_nil, List.prod_cons, List.prod_nil, mul_one] at hratio
-  rw [polynomial_eq_schur, schurModel_eq_jensenModel, jensenWeight_eq_product]
-  simp only [coeff_C_mul]
-  simp only [pochhammerJensenPolynomial] at hratio
-  linear_combination jensenScale n * hratio
+  rw [polynomial_eq_schur, coeff_schurModel_eq_coeff (by lia),
+    coeff_schurModel_eq_coeff hk.le]
+  obtain ⟨r, rfl⟩ : ∃ r, n = k + 1 + r := ⟨n - k - 1, by lia⟩
+  have hidx (i : ℕ) : k + 1 + r + i - (k + 1) = r + i := by lia
+  have hidx' (i : ℕ) : k + 1 + r + i - k = r + i + 1 := by lia
+  rw [modelCoeff, modelCoeff, show k + 1 + r - (k + 1) = r by lia,
+    show k + 1 + r - k = r + 1 by lia]
+  simp only [hidx, hidx', Nat.factorial_succ,
+    Nat.cast_mul, Nat.cast_add, Nat.cast_one, Nat.cast_ofNat]
+  have hfac (m : ℕ) : (m.factorial : ℝ) ≠ 0 := by positivity
+  field_simp [hfac]
+  ring
 
-/-- The parameter-list coefficient-ratio theorem certifies every row as PF. -/
+/-- The Schur--Szego composition of the two Narayana rows is PF. -/
 theorem polynomial_isPF (n : ℕ) : IsPFPolynomial (polynomial n) := by
-  apply isPFPolynomial_of_pochhammer_list_coeff_ratio
-    (lower := [2, 3]) (upper := [2, 3]) (d := n) (by norm_num) (by norm_num)
-  · rw [polynomial_eq_schur, schurModel_eq_jensenModel,
-      natDegree_C_mul (by rw [jensenScale]; positivity),
-      natDegree_twoSidedJensenPolynomial jensenWeight_pos jensenWeight_pos]
-  · rw [polynomial_eq_schur, coeff_zero_schurModel]
-    norm_num
-  · intro k hk
-    simpa only [List.map_cons, List.map_nil, List.prod_cons, List.prod_nil,
-      mul_one, mul_assoc] using polynomial_coeff_ratio hk
+  rw [polynomial_eq_schur, schurModel]
+  exact (narayanaPolynomialRootLocation 1 n).schurSzegoComp
+    (narayanaPolynomialRootLocation 2 n)
+    (natDegree_narayanaPolynomial 1 n).le (natDegree_narayanaPolynomial 2 n).le
 
 /-- Consecutive A056939 model rows are in directed proper position. -/
 theorem polynomial_strictInterl_succ (n : ℕ) :
     StrictInterl (polynomial n) (polynomial (n + 1)) := by
-  rw [polynomial_eq_schur, polynomial_eq_schur, schurModel_eq_jensenModel,
-    schurModel_eq_jensenModel]
-  have hinter := strictInterl_twoSidedJensenPolynomial_succ
-    jensenWeight_multiplier jensenWeight_multiplier jensenWeight_pos jensenWeight_pos n
-  exact (hinter.C_mul_left (by rw [jensenScale]; positivity)).C_mul_right
-    (by rw [jensenScale]; positivity)
+  simpa only [Hoggatt.normalized_three_eq_baxter] using
+    (Hoggatt.normalized_interlaces (m := 3) (Nat.succ_ne_zero n) (by norm_num)).toStrictInterl
 
 /-- Consecutive A056939 model rows interlace. -/
 theorem polynomial_interlaces (n : ℕ) :
-    Interlaces (polynomial n) (polynomial (n + 1)) :=
-  (polynomial_strictInterl_succ n).toInterlaces (by
-    rw [polynomial_eq_schur, polynomial_eq_schur]
-    rw [schurModel_eq_jensenModel, schurModel_eq_jensenModel,
-      natDegree_C_mul (by rw [jensenScale]; positivity),
-      natDegree_C_mul (by rw [jensenScale]; positivity),
-      natDegree_twoSidedJensenPolynomial jensenWeight_pos jensenWeight_pos,
-      natDegree_twoSidedJensenPolynomial jensenWeight_pos jensenWeight_pos])
+    Interlaces (polynomial n) (polynomial (n + 1)) := by
+  simpa only [Hoggatt.normalized_three_eq_baxter] using
+    Hoggatt.normalized_interlaces (m := 3) (Nat.succ_ne_zero n) (by norm_num)
 
 /-- Every A056939 model row splits over the reals. -/
 theorem polynomial_splits (n : ℕ) : (polynomial n).Splits :=
@@ -580,12 +523,6 @@ theorem splits_of_recurrence
     (n : ℕ) :
     (P n).Splits := by
   exact (interlaces_of_recurrence hzero hone hrec n).2.1.2
-
-/-- The normalized `m = 3` Hoggatt polynomial agrees with the existing
-A056939 model, whose row `n` is indexed by Baxter permutations on `n+1` letters. -/
-theorem _root_.RealRooted.Hoggatt.normalized_three_eq_baxter (n : ℕ) :
-    Hoggatt.normalized (n + 1) 3 = polynomial n := by
-  rw [Hoggatt.normalized_three_eq_binomial_sum, polynomial_eq_binomial_sum]
 
 /-- Strictness for the existing Baxter model: consecutive rows have no shared root. -/
 theorem polynomial_isCoprime_succ (n : ℕ) :

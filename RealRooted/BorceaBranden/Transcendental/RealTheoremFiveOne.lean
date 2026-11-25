@@ -107,31 +107,6 @@ theorem realGlue_stableOrZero_of_isRealStableLimit
   exact fallingFactorial_glue_stableOrZero_of_isComplexStableLimit
     (complexifyFamily P) hP.isComplexStableLimit β
 
-omit [Fintype τ] in
-private theorem stableOrZero_realGlue_jensen [Finite τ]
-    (P : (σ →₀ ℕ) → MvPolynomial τ ℂ)
-    (h : ∀ β : σ →₀ ℕ,
-      MvUpperHalfPlaneStableOrZero (glue P (fun α => fall α β) β))
-    (m : ℕ) :
-    MvUpperHalfPlaneStableOrZero
-      (glue P (fun α => MvPolynomial.jensen α (constExp σ (m + 1)))
-        (constExp σ (m + 1))) := by
-  rcases h (constExp σ (m + 1)) with hz | hs
-  · left
-    apply MvPolynomial.funext
-    intro x
-    rw [eval_glue_jensen, hz]
-    simp
-  · right
-    intro x hx
-    rw [eval_glue_jensen]
-    apply hs
-    rintro (t | j)
-    · simpa using hx (Sum.inl t)
-    · simp only [Sum.elim_inr, Set.mem_ofPred_eq]
-      rw [Complex.div_natCast_im]
-      exact div_pos (hx (Sum.inr j)) (by positivity)
-
 omit [DecidableEq σ] in
 private theorem isRealStableLimit_of_forall_eq_zero
     (P : (σ →₀ ℕ) → MvPolynomial τ ℝ) (hP : ∀ α, P α = 0) :
@@ -139,39 +114,11 @@ private theorem isRealStableLimit_of_forall_eq_zero
   classical
   let q : ℕ → MvPolynomial (τ ⊕ σ) ℝ := fun k =>
     MvPolynomial.C (((k + 1 : ℕ) : ℝ)⁻¹)
-  let qc : ℕ → MvPolynomial (τ ⊕ σ) ℂ := fun k => complexifyMv (q k)
-  have hqc : ∀ k, qc k = MvPolynomial.C
-      (((((k + 1 : ℕ) : ℝ)⁻¹ : ℝ) : ℂ)) := by
-    intro k
-    simp [qc, q, complexifyMv]
   have hq : ∀ k, MvRealStable (q k) := by
     intro k z _hz
     simp only [q, complexifyMv, MvPolynomial.map_C, MvPolynomial.eval_C]
     exact Complex.ofReal_ne_zero.mpr
       (inv_ne_zero (Nat.cast_ne_zero.mpr (Nat.succ_ne_zero k)))
-  have hbound : ∀ r : ℝ, 0 < r → ∃ K : ℝ, ∀ k z, (∀ i, ‖z i‖ ≤ r) →
-      ‖MvPolynomial.eval z (qc k)‖ ≤ K := by
-    intro r _hr
-    refine ⟨1, fun k z _hz => ?_⟩
-    rw [hqc, MvPolynomial.eval_C]
-    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity)]
-    exact (inv_le_one₀ (by positivity)).2 (by norm_num)
-  have hcoeff : ∀ e : τ ⊕ σ →₀ ℕ,
-      Tendsto (fun k => (qc k).coeff e) atTop (𝓝 0) := by
-    intro e
-    by_cases he : e = 0
-    · subst e
-      simp only [hqc, MvPolynomial.coeff_C, eq_self, ite_true]
-      have ht := Complex.continuous_ofReal.continuousAt.tendsto.comp
-        tendsto_one_div_add_atTop_nhds_zero_nat
-      simpa [Function.comp_def] using ht
-    · have hz : ∀ k, (qc k).coeff e = 0 := by
-        intro k
-        rw [hqc, MvPolynomial.coeff_C, ite_eq_right (Ne.symm he)]
-      simpa only [hz] using (tendsto_const_nhds (x := (0 : ℂ)))
-  obtain ⟨_hsum, hconv⟩ :=
-    MvPolynomial.tendstoLocallyUniformly_of_bounded_of_coeff_tendsto
-      qc (fun _ => 0) hbound hcoeff
   have hreal : ∀ e, realSeriesCoeff P e = 0 := by
     intro e
     simp [realSeriesCoeff, hP]
@@ -179,11 +126,14 @@ private theorem isRealStableLimit_of_forall_eq_zero
   · intro x
     simp only [hreal, Complex.ofReal_zero, zero_mul, norm_zero]
     exact summable_zero
-  · change TendstoLocallyUniformly
-      (fun k x => MvPolynomial.eval x (qc k))
-      (fun x => ∑' e : τ ⊕ σ →₀ ℕ,
-        (realSeriesCoeff P e : ℂ) * ∏ i, x i ^ e i) atTop
-    simpa only [hreal, Complex.ofReal_zero, zero_mul, tsum_zero] using hconv
+  · have ht := Complex.continuous_ofReal.continuousAt.tendsto.comp
+      tendsto_one_div_add_atTop_nhds_zero_nat
+    simpa only [q, complexifyMv, MvPolynomial.map_C, MvPolynomial.eval_C,
+      hreal, Complex.ofReal_zero, zero_mul, tsum_zero, Function.comp_def, one_div,
+      Complex.ofRealHom_eq_coe, map_inv₀, map_natCast, Nat.cast_add, Nat.cast_one,
+      Complex.ofReal_inv,
+      Complex.ofReal_add, Complex.ofReal_natCast, Complex.ofReal_one]
+      using (ht.tendstoUniformly_const (α := τ ⊕ σ → ℂ)).tendstoLocallyUniformly
 
 private theorem isRealStableLimit_of_cofinal_realGlue
     (P : (σ →₀ ℕ) → MvPolynomial τ ℝ) (b : ℕ → ℕ) (hb : Tendsto b atTop atTop)

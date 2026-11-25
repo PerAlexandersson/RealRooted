@@ -5,6 +5,7 @@ public import RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol
 public import RealRooted.Multiaffine.ReciprocalRight
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
 import Mathlib.Algebra.MvPolynomial.Funext
+import RealRooted.Mathlib.Algebra.MvPolynomial.Degrees
 
 /-!
 # The source-reciprocal finite-symbol identity
@@ -26,17 +27,6 @@ open MvPolynomial
 private def sumInrEmbedding (tau sigma : Type*) : sigma ↪ Sum tau sigma :=
   ⟨Sum.inr, Sum.inr_injective⟩
 
-private theorem boxChoose_one
-    {sigma : Type*} [Fintype sigma]
-    (m : {m : sigma →₀ ℕ // ∀ i, m i ≤ 1}) :
-    boxChoose (fun _ : sigma => 1) m.1 = 1 := by
-  unfold boxChoose
-  apply Finset.prod_eq_one
-  intro i hi
-  rcases Nat.le_one_iff_eq_zero_or_eq_one.mp (m.2 i) with hzero | hone
-  · simp [hzero]
-  · simp [hone]
-
 private theorem prod_X_eq_monomial_indicator_map
     {R sigma tau : Type*} [CommSemiring R]
     (e : sigma ↪ tau) (s : Finset sigma) :
@@ -57,49 +47,10 @@ private theorem rightComplementMonomial_one
           ((Finset.univ \ m.1.support).map
             (sumInrEmbedding tau sigma)) (fun _ _ => 1)) 1 := by
   classical
-  unfold rightComplementMonomial
-  have hone (i : sigma) (hi : i ∈ m.1.support) : m.1 i = 1 := by
-    have hne : m.1 i ≠ 0 := Finsupp.mem_support_iff.mp hi
-    have hle := m.2 i
-    cases hdi : m.1 i with
-    | zero => exact (hne hdi).elim
-    | succ n =>
-        cases n with
-        | zero => rfl
-        | succ n =>
-            rw [hdi] at hle
-            exact (Nat.not_succ_le_zero n
-              (Nat.le_of_succ_le_succ hle)).elim
-  calc
-    ∏ i, X (Sum.inr i) ^ (1 - m.1 i) =
-        ∏ i ∈ Finset.univ \ m.1.support,
-          (X (Sum.inr i) : MvPolynomial (tau ⊕ sigma) R) := by
-      calc
-        (∏ i, (X (Sum.inr i) : MvPolynomial (tau ⊕ sigma) R) ^
-            (1 - m.1 i)) =
-            ∏ i ∈ Finset.univ \ m.1.support,
-              (X (Sum.inr i) : MvPolynomial (tau ⊕ sigma) R) ^
-                (1 - m.1 i) := by
-          symm
-          apply Finset.prod_subset Finset.sdiff_subset
-          intro i hi_univ hi_diff
-          have hi_support : i ∈ m.1.support := by
-            by_contra hi
-            exact hi_diff (Finset.mem_sdiff.mpr ⟨hi_univ, hi⟩)
-          simp [hone i hi_support]
-        _ = ∏ i ∈ Finset.univ \ m.1.support,
-              (X (Sum.inr i) : MvPolynomial (tau ⊕ sigma) R) := by
-          apply Finset.prod_congr rfl
-          intro i hi
-          have hzero : m.1 i = 0 :=
-            Finsupp.notMem_support_iff.mp (Finset.mem_sdiff.mp hi).2
-          simp [hzero]
-    _ = monomial
-          (Finsupp.indicator
-            ((Finset.univ \ m.1.support).map
-              (sumInrEmbedding tau sigma)) (fun _ _ => 1)) 1 :=
-      prod_X_eq_monomial_indicator_map
-        (sumInrEmbedding tau sigma) (Finset.univ \ m.1.support)
+  rw [MvPolynomial.rightComplementMonomial_one_eq_support_compl m.1 m.2]
+  simp only [map_prod, rename_X, Finset.compl_eq_univ_sdiff]
+  exact prod_X_eq_monomial_indicator_map
+    (sumInrEmbedding tau sigma) (Finset.univ \ m.1.support)
 
 private theorem degreeOf_rightComplementMonomial_one_le
     {sigma tau : Type*} [Fintype sigma]
@@ -123,16 +74,7 @@ private theorem degreeOf_rightComplementMonomial_one_le
 private theorem degreeOf_rename_inl_le_zero
     {sigma tau : Type*} (A : MvPolynomial tau ℂ) (i : sigma) :
     (rename (Sum.inl : tau → Sum tau sigma) A).degreeOf (Sum.inr i) ≤ 0 := by
-  rw [degreeOf_le_iff]
-  intro d hd
-  apply Nat.le_zero.mpr
-  by_contra hdi
-  have hmem : Sum.inr i ∈
-      (rename (Sum.inl : tau → Sum tau sigma) A).vars := by
-    rw [mem_vars_iff_mem_support]
-    exact ⟨d, hd, Finsupp.mem_support_iff.mpr hdi⟩
-  obtain ⟨j, hj, hji⟩ := mem_vars_rename Sum.inl A hmem
-  exact Sum.inl_ne_inr hji
+  exact (MvPolynomial.degreeOf_rename_eq_zero_of_notMem_range _ _ (by simp)).le
 
 private theorem signedMultiaffineReciprocalRight_target_mul
     {sigma tau : Type*} [Fintype sigma]
@@ -251,7 +193,7 @@ theorem paperNormalized_signedMultiaffineReciprocalRight_algebraicSymbol_one
     Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro m hm
-  rw [boxChoose_one m, Nat.cast_one, map_one, one_mul]
+  rw [MvPolynomial.boxChoose_one_of_le_one m.1 m.2, Nat.cast_one, map_one, one_mul]
   rw [signedMultiaffineReciprocalRight_target_mul]
   · calc
       C ((-1 : ℂ) ^ Fintype.card sigma) *

@@ -8,21 +8,19 @@ public import Mathlib.Algebra.Polynomial.Derivative
 public import Mathlib.Algebra.Polynomial.Splits
 public import Mathlib.Basic.Real.Basic
 import RealRooted.Hermite.Poulain
-import RealRooted.Mathlib.Analysis.SpecialFunctions.Choose
-import RealRooted.Mathlib.Analysis.Complex.Polynomial.ClosedRoots.Real
+import RealRooted.Hermite.BesselOperatorFamily
 
 /-!
 # The Bessel differential transform
 
-We prove that the finite action of the Bessel symbol `J₀(2D)` preserves
-real-rootedness.  The proof approximates the symbol by Laguerre polynomials,
-uses Hermite--Poulain for every approximant, and passes to the limit through
-the closedness of real-rooted polynomials of bounded degree.
+We identify the finite action of the Bessel symbol `J₀(2D)` with the
+`lambda = 1`, `r = 0` instance of the finite Bessel operator family. The
+real-rootedness theorem follows from that general preservation result.
 -/
 
 @[expose] public section
 
-open Finset Polynomial Filter Topology
+open Finset Polynomial
 
 noncomputable section
 
@@ -41,137 +39,9 @@ private theorem splits_derivative_sub {p : ℝ[X]} (hp : p.Splits) (r : ℝ) :
     exact Splits.zero
   · simpa [sub_eq_add_neg] using hs
 
-private def laguerreApproximation (M : ℕ) : ℝ[X] :=
-  ∑ k ∈ range (M + 1),
-    C ((-1 : ℝ) ^ k * (M.choose k : ℝ) / (k.factorial : ℝ)) * X ^ k
-
-private theorem laguerreApproximation_coeff (M k : ℕ) :
-    (laguerreApproximation M).coeff k =
-      (-1 : ℝ) ^ k * (M.choose k : ℝ) / (k.factorial : ℝ) := by
-  simp only [laguerreApproximation, finsetSum_coeff, coeff_C_mul_X_pow]
-  rw [Finset.sum_eq_single k]
-  · simp
-  · intro b _ hb
-    simp [Ne.symm hb]
-  · intro hk
-    simp at hk
-    simp [Nat.choose_eq_zero_of_lt (by lia : M < k)]
-
-private theorem laguerreApproximation_eval_pos (M : ℕ) {t : ℝ} (ht : t ≤ 0) :
-    0 < (laguerreApproximation M).eval t := by
-  simp only [laguerreApproximation, eval_finsetSum, eval_mul, eval_C, eval_pow, eval_X]
-  rw [Finset.sum_range_succ']
-  apply add_pos_of_nonneg_of_pos
-  · refine Finset.sum_nonneg fun k _ => ?_
-    rw [show
-        (-1 : ℝ) ^ (k + 1) * (M.choose (k + 1) : ℝ) /
-            ((k + 1).factorial : ℝ) * t ^ (k + 1) =
-          (-t) ^ (k + 1) *
-            ((M.choose (k + 1) : ℝ) / ((k + 1).factorial : ℝ)) by
-      rw [neg_pow]
-      ring]
-    have : 0 ≤ -t := by linarith
-    positivity
-  · simp
-
-private theorem laguerreApproximation_eq_aeval (M : ℕ) :
-    C (M.factorial : ℝ) * laguerreApproximation M =
-      (aeval (derivative : Module.End ℝ ℝ[X]) ((X - C (1 : ℝ)) ^ M) :
-        Module.End ℝ ℝ[X]) (X ^ M) := by
-  have hdeg : ((X - C (1 : ℝ)) ^ M).natDegree < M + 1 := by
-    rw [natDegree_pow, natDegree_X_sub_C]
-    lia
-  rw [aeval_eq_sum_range' hdeg]
-  ext k
-  simp only [coeff_C_mul, laguerreApproximation_coeff, LinearMap.coe_sum,
-    Finset.sum_apply, LinearMap.smul_apply, pow_apply_eq_iterate,
-    iterate_derivative_X_pow_eq_smul, finsetSum_coeff, AddMonoidAlgebra.coeff_smul_apply,
-    smul_eq_mul,
-    sub_eq_add_neg, ← C_neg, coeff_X_add_C_pow, coeff_X_pow]
-  rcases le_or_gt k M with hk | hk
-  · rw [Finset.sum_eq_single (M - k)]
-    · have hfactorial := Nat.factorial_mul_descFactorial (Nat.sub_le M k)
-      rw [Nat.sub_sub_self hk] at hfactorial
-      rw [Nat.sub_sub_self hk, Nat.choose_symm hk, ite_eq_left rfl]
-      have hkf : (k.factorial : ℝ) ≠ 0 := by positivity
-      rw [← hfactorial]
-      push_cast
-      field_simp
-    · intro b hb hne
-      rw [Finset.mem_range] at hb
-      rw [ite_eq_right (by lia)]
-      simp
-    · intro h
-      simp at h
-  · rw [Nat.choose_eq_zero_of_lt hk]
-    simp only [Nat.cast_zero, mul_zero, zero_div]
-    symm
-    apply Finset.sum_eq_zero
-    intro x hx
-    rw [Finset.mem_range] at hx
-    rw [ite_eq_right (by lia)]
-    simp
-
-private theorem laguerreApproximation_splits (M : ℕ) :
-    (laguerreApproximation M).Splits := by
-  have hdeg : ((X - C (1 : ℝ)) ^ M).natDegree < M + 1 := by
-    rw [natDegree_pow, natDegree_X_sub_C]
-    lia
-  have hpres := applyAsDifferentialOperator_eq_zero_or_splits
-    ⟨((monic_X_sub_C 1).pow M).ne_zero, (Splits.X_sub_C 1).pow M⟩
-    ⟨by simp, Splits.X_pow M⟩
-  have haeval :
-      (aeval (derivative : Module.End ℝ ℝ[X]) ((X - C (1 : ℝ)) ^ M) :
-        Module.End ℝ ℝ[X]) (X ^ M) =
-        applyAsDifferentialOperator ((X - C 1) ^ M) (X ^ M) := by
-    rw [applyAsDifferentialOperator_eq_sum_range (N := M + 1) hdeg]
-    rw [aeval_eq_sum_range' (n := M + 1) hdeg]
-    simp only [LinearMap.coe_sum, Finset.sum_apply, LinearMap.smul_apply,
-      pow_apply_eq_iterate, smul_eq_C_mul]
-  rw [← haeval, ← laguerreApproximation_eq_aeval] at hpres
-  have hfactorial : (M.factorial : ℝ) ≠ 0 := by positivity
-  rcases hpres with hzero | hsplit
-  · have hzero' := (mul_eq_zero.mp hzero).resolve_left (C_ne_zero.mpr hfactorial)
-    simpa only [hzero'] using Splits.zero (R := ℝ)
-  · have h := hsplit.C_mul (1 / (M.factorial : ℝ))
-    rw [← mul_assoc, ← C_mul] at h
-    rwa [one_div_mul_cancel hfactorial, C_1, one_mul] at h
-
-private theorem laguerreApproximation_roots_nonneg (M : ℕ) :
-    ∀ r ∈ (laguerreApproximation M).roots, 0 ≤ r := by
-  intro r hr
-  by_contra h
-  have hroot := (mem_roots'.mp hr).2
-  have hpos := laguerreApproximation_eval_pos M (le_of_lt (not_le.mp h))
-  rw [hroot.eq_zero] at hpos
-  exact lt_irrefl _ hpos
-
 /-- The constant-coefficient operator `c D²`. -/
 def sqDifferentialOperator (c : ℝ) : Module.End ℝ ℝ[X] :=
   c • ((derivative : Module.End ℝ ℝ[X]) * derivative)
-
-private theorem sqDifferentialOperator_pow_apply (c : ℝ) (k : ℕ) (p : ℝ[X]) :
-    ((sqDifferentialOperator c) ^ k) p =
-      C (c ^ k) * derivative^[2 * k] p := by
-  rw [sqDifferentialOperator, _root_.smul_pow, LinearMap.smul_apply, ← sq, ← pow_mul,
-    pow_apply_eq_iterate, smul_eq_C_mul, mul_comm 2 k]
-
-private theorem aeval_sqDifferentialOperator_apply
-    (L : ℝ[X]) (c : ℝ) {p : ℝ[X]} {N : ℕ} (hN : p.natDegree < 2 * N) :
-    (aeval (sqDifferentialOperator c) L : Module.End ℝ ℝ[X]) p =
-      ∑ k ∈ range N, C (L.coeff k * c ^ k) * derivative^[2 * k] p := by
-  have hB : L.natDegree < L.natDegree + 1 + N := by lia
-  rw [aeval_eq_sum_range' hB, LinearMap.coe_sum, Finset.sum_apply]
-  simp only [LinearMap.smul_apply, sqDifferentialOperator_pow_apply, smul_eq_C_mul,
-    ← mul_assoc, ← C_mul]
-  symm
-  apply Finset.sum_subset
-  · intro k hk
-    simp at hk ⊢
-    lia
-  · intro k _ hk
-    simp at hk
-    rw [iterate_derivative_eq_zero (by lia), mul_zero]
 
 private theorem splits_sq_sub {q : ℝ[X]} (hq : q.Splits) {c a : ℝ}
     (hc : 0 < c) (ha : 0 ≤ a) :
@@ -216,16 +86,6 @@ theorem aeval_sqDifferentialOperator_splits {L : ℝ[X]} (hL : L.Splits)
     Module.algebraMap_end_apply, smul_eq_C_mul]
   exact (aeval_sqDifferentialOperator_prod_splits _ hr hc hp).C_mul _
 
-private theorem tendsto_choose_div_pow (k : ℕ) :
-    Tendsto (fun M : ℕ => (M.choose k : ℝ) / (M : ℝ) ^ k)
-      atTop (nhds (1 / k.factorial)) := by
-  have h := (Nat.tendsto_descFactorial_div_pow_atTop k).div_const (k.factorial : ℝ)
-  apply h.congr
-  intro M
-  rw [Nat.descFactorial_eq_factorial_mul_choose, Nat.cast_mul]
-  have hk : (k.factorial : ℝ) ≠ 0 := by positivity
-  field_simp
-
 /-- The finite action of the Bessel symbol
 `J₀(2D) = ∑ k, (-1)^k D^(2*k)/(k!)²` on a polynomial. -/
 def besselDifferentialTransform (p : ℝ[X]) : ℝ[X] :=
@@ -233,69 +93,21 @@ def besselDifferentialTransform (p : ℝ[X]) : ℝ[X] :=
     C ((-1 : ℝ) ^ k / (Nat.factorial k : ℝ) ^ 2) * derivative^[2 * k] p
 
 /-- The Bessel differential transform `J₀(2D)` sends every real-rooted
-real polynomial to a real-rooted polynomial, by Laguerre--Pólya approximation.
+real polynomial to a real-rooted polynomial, as a finite Bessel operator.
 
-The proof was found by Aristotle (Harmonic). -/
+The original approximation proof was found by Aristotle (Harmonic). -/
 theorem besselDifferentialTransform_splits {p : ℝ[X]} (hp : p.Splits) :
     (besselDifferentialTransform p).Splits := by
-  by_cases hp0 : p = 0
-  · subst hp0
-    simp [besselDifferentialTransform]
-  set n := p.natDegree with hn
-  set N := n / 2 + 1 with hNdef
-  have hN : n < 2 * N := by lia
-  set b : ℕ → ℝ := fun k => (-1 : ℝ) ^ k / (Nat.factorial k : ℝ) ^ 2 with hb
-  set a : ℕ → ℕ → ℝ := fun M k =>
-    (laguerreApproximation M).coeff k * (1 / (M : ℝ)) ^ k with ha
-  set G : (ℕ → ℝ) → ℝ[X] := fun f =>
-    ∑ k ∈ range N, C (f k) * derivative^[2 * k] p with hG
-  have hB : besselDifferentialTransform p = G b := rfl
-  have hA : ∀ M : ℕ,
-      (aeval (sqDifferentialOperator (1 / (M : ℝ))) (laguerreApproximation M) :
-        Module.End ℝ ℝ[X]) p = G (a M) :=
-    fun M => aeval_sqDifferentialOperator_apply _ _ hN
-  have hconv : ∀ k, Tendsto (fun M => a M k) atTop (nhds (b k)) := by
-    intro k
-    have h := (tendsto_choose_div_pow k).const_mul
-      ((-1 : ℝ) ^ k / k.factorial)
-    convert h using 1
-    · ext M
-      simp only [ha, laguerreApproximation_coeff, one_div_pow]
-      ring
-    · congr 1
-      change (-1 : ℝ) ^ k / (k.factorial : ℝ) ^ 2 = _
-      ring
-  have hGdeg : ∀ f, (G f).natDegree ≤ n := by
-    intro f
-    apply natDegree_sum_le_of_forall_le
-    intro k _
-    exact (natDegree_C_mul_le _ _).trans
-      ((natDegree_iterate_derivative _ _).trans (by lia))
-  have hGeval : ∀ f (z : ℂ), ((G f).map Complex.ofRealHom).eval z =
-      ∑ k ∈ range N,
-        (f k : ℂ) * ((derivative^[2 * k] p).map Complex.ofRealHom).eval z := by
-    intro f z
-    simp [hG, Polynomial.map_sum, eval_finsetSum]
-  rw [hB]
-  rcases Polynomial.eq_zero_or_splits_of_tendsto_eval_of_natDegree_le
-      (p := fun M => G (a M)) (p₀ := G b) (fun M => hGdeg (a M)) (by
-        intro M
-        by_cases hM : M = 0
-        · subst M
-          right
-          rw [← hA]
-          simpa [laguerreApproximation, sqDifferentialOperator] using hp
-        · right
-          rw [← hA]
-          exact aeval_sqDifferentialOperator_splits
-            (laguerreApproximation_splits M)
-            (laguerreApproximation_roots_nonneg M) (by positivity) hp) (by
-        intro z
-        simp only [hGeval]
-        refine tendsto_finsetSum _ fun k _ => ?_
-        exact ((Complex.continuous_ofReal.tendsto _).comp (hconv k)).mul_const _)
-      with hzero | hsplit
-  · simpa only [hzero] using Splits.zero (R := ℝ)
-  · exact hsplit
+  have heq : besselDifferentialTransform p = besselOperator 1 0 p := by
+    ext j
+    rw [besselDifferentialTransform, finsetSum_coeff, coeff_besselOperator]
+    simp only [coeff_C_mul, coeff_iterate_derivative, nsmul_eq_mul, add_zero,
+      pow_two, mul_assoc]
+    apply Finset.sum_subset (range_subset_range.mpr (by lia))
+    intro k _ hk
+    simp only [mem_range] at hk
+    rw [coeff_eq_zero_of_natDegree_lt (by lia), mul_zero, mul_zero]
+  rw [heq]
+  exact besselOperator_splits (by norm_num) 0 hp
 
 end RealRooted.HermitePoulain

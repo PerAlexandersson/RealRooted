@@ -209,6 +209,36 @@ private lemma sameOrderType_123 {n : ℕ} {a b c : Fin n} :
     intro i j
     fin_cases i <;> fin_cases j <;> simp_all <;> lia
 
+/-- Three entries form a sublist exactly when they occur at increasing finite indices. -/
+private theorem triple_sublist_ofFn {α : Type*} {n : ℕ} (f : Fin n → α) (a b c : α) :
+    [a, b, c] <+ List.ofFn f ↔
+      ∃ i j k : Fin n, i < j ∧ j < k ∧ f i = a ∧ f j = b ∧ f k = c := by
+  rw [List.sublist_iff_exists_fin_orderEmbedding_get_eq]
+  constructor
+  · rintro ⟨g, hg⟩
+    have h0 := hg ⟨0, by simp⟩
+    have h1 := hg ⟨1, by simp⟩
+    have h2 := hg ⟨2, by simp⟩
+    simp only [List.get_ofFn] at h0 h1 h2
+    refine ⟨Fin.cast (by simp) (g ⟨0, by simp⟩), Fin.cast (by simp) (g ⟨1, by simp⟩),
+      Fin.cast (by simp) (g ⟨2, by simp⟩), ?_, ?_, ?_, ?_, ?_⟩
+    · simp [Fin.lt_def]
+    · simp [Fin.lt_def]
+    · simpa using h0.symm
+    · simpa using h1.symm
+    · simpa using h2.symm
+  · rintro ⟨i, j, k, hij, hjk, rfl, rfl, rfl⟩
+    have hm : StrictMono (fun x : Fin 3 => Fin.cast (by simp) (![i, j, k] x) :
+        Fin 3 → Fin (List.ofFn f).length) := by
+      rw [Fin.strictMono_iff_lt_succ]
+      intro x
+      fin_cases x
+      · exact hij
+      · exact hjk
+    refine ⟨OrderEmbedding.ofStrictMono _ hm, ?_⟩
+    intro x
+    fin_cases x <;> simp
+
 private lemma contains_pattern_length_three_iff {n : ℕ} (σ : Equiv.Perm (Fin n))
     (τ : Equiv.Perm (Fin 3)) (R : Fin n → Fin n → Fin n → Prop)
     (hR : ∀ a b c, ([a, b, c] : List (Fin n)).SameOrderType (List.ofFn τ) ↔ R a b c) :
@@ -217,59 +247,14 @@ private lemma contains_pattern_length_three_iff {n : ℕ} (σ : Equiv.Perm (Fin 
   rw [Equiv.Perm.containsPattern_iff]
   constructor
   · rintro ⟨s, hs, hst⟩
-    have hlen : s.length = 3 := by
-      rw [List.sameOrderType_length hst, List.length_ofFn]
-    obtain ⟨a, b, c, rfl⟩ := List.length_eq_three.mp hlen
-    obtain ⟨e, he⟩ := List.sublist_iff_exists_fin_orderEmbedding_get_eq.mp hs
-    let i : Fin n := Fin.cast List.length_ofFn (e ⟨0, by simp⟩)
-    let j : Fin n := Fin.cast List.length_ofFn (e ⟨1, by simp⟩)
-    let k : Fin n := Fin.cast List.length_ofFn (e ⟨2, by simp⟩)
-    have hij : i < j := by
-      have h := e.lt_iff_lt.mpr (by decide : (0 : Fin 3) < 1)
-      exact_mod_cast h
-    have hjk : j < k := by
-      have h := e.lt_iff_lt.mpr (by decide : (1 : Fin 3) < 2)
-      exact_mod_cast h
-    have ha : a = σ i := by
-      calc
-        a = (List.ofFn σ).get (e ⟨0, by simp⟩) := he ⟨0, by simp⟩
-        _ = σ i := by
-          simp only [List.get_ofFn]
-          congr 1
-    have hb : b = σ j := by
-      calc
-        b = (List.ofFn σ).get (e ⟨1, by simp⟩) := he ⟨1, by simp⟩
-        _ = σ j := by
-          simp only [List.get_ofFn]
-          congr 1
-    have hc : c = σ k := by
-      calc
-        c = (List.ofFn σ).get (e ⟨2, by simp⟩) := he ⟨2, by simp⟩
-        _ = σ k := by
-          simp only [List.get_ofFn]
-          congr 1
-    have hst' := (hR a b c).mp hst
-    refine ⟨i, j, k, hij, hjk, ?_⟩
-    simpa [ha, hb, hc] using hst'
+    obtain ⟨a, b, c, rfl⟩ := List.length_eq_three.mp
+      (by simpa only [List.length_ofFn] using List.sameOrderType_length hst)
+    obtain ⟨i, j, k, hij, hjk, ha, hb, hc⟩ := (triple_sublist_ofFn σ a b c).mp hs
+    exact ⟨i, j, k, hij, hjk, (hR _ _ _).mp (by simpa only [ha, hb, hc] using hst)⟩
   · rintro ⟨i, j, k, hij, hjk, hRijk⟩
-    refine ⟨[σ i, σ j, σ k], ?_, ?_⟩
-    · let e₀ : Fin 3 → Fin (List.ofFn σ).length := fun x =>
-          Fin.cast List.length_ofFn.symm (![i, j, k] x)
-      let e₀' : Fin 3 ↪o Fin (List.ofFn σ).length :=
-        OrderEmbedding.ofStrictMono e₀ (by
-          rw [Fin.strictMono_iff_lt_succ]
-          intro x
-          fin_cases x
-          · exact hij
-          · exact hjk)
-      have hsub : List.Sublist ([σ i, σ j, σ k] : List (Fin n)) (List.ofFn σ) := by
-        apply List.sublist_iff_exists_fin_orderEmbedding_get_eq.mpr
-        refine ⟨e₀', by
-          intro x
-          simp only [List.length_cons, List.length_nil] at x ⊢
-          fin_cases x <;> simp [e₀, e₀']⟩
-      exact hsub
-    · exact (hR (σ i) (σ j) (σ k)).mpr hRijk
+    exact ⟨[σ i, σ j, σ k],
+      (triple_sublist_ofFn σ _ _ _).mpr ⟨i, j, k, hij, hjk, rfl, rfl, rfl⟩,
+      (hR _ _ _).mpr hRijk⟩
 
 private lemma contains_p132_iff {n : ℕ} (σ : Equiv.Perm (Fin n)) :
     σ.ContainsPattern p132 ↔
@@ -335,35 +320,6 @@ private lemma LAvoids.mono {R} {l₁ l₂ : List ℕ} (h : l₁ <+ l₂)
 /-- The one-line notation of a permutation, as a list of naturals. -/
 private def toL {n : ℕ} (σ : Equiv.Perm (Fin n)) : List ℕ := List.ofFn (fun i => (σ i : ℕ))
 
-private theorem triple_sublist_ofFn {n : ℕ} (f : Fin n → ℕ) (a b c : ℕ) :
-    [a, b, c] <+ List.ofFn f ↔
-      ∃ i j k : Fin n, i < j ∧ j < k ∧ f i = a ∧ f j = b ∧ f k = c := by
-  rw [List.sublist_iff_exists_fin_orderEmbedding_get_eq]
-  constructor
-  · rintro ⟨g, hg⟩
-    have h0 := hg ⟨0, by simp⟩
-    have h1 := hg ⟨1, by simp⟩
-    have h2 := hg ⟨2, by simp⟩
-    simp only [List.get_ofFn] at h0 h1 h2
-    refine ⟨Fin.cast (by simp) (g ⟨0, by simp⟩), Fin.cast (by simp) (g ⟨1, by simp⟩),
-      Fin.cast (by simp) (g ⟨2, by simp⟩), ?_, ?_, ?_, ?_, ?_⟩
-    · simp [Fin.lt_def]
-    · simp [Fin.lt_def]
-    · simpa using h0.symm
-    · simpa using h1.symm
-    · simpa using h2.symm
-  · rintro ⟨i, j, k, hij, hjk, rfl, rfl, rfl⟩
-    have hm : StrictMono (fun x : Fin 3 => Fin.cast (by simp) (![i, j, k] x) :
-        Fin 3 → Fin (List.ofFn f).length) := by
-      rw [Fin.strictMono_iff_lt_succ]
-      intro x
-      fin_cases x
-      · exact hij
-      · exact hjk
-    refine ⟨OrderEmbedding.ofStrictMono _ hm, ?_⟩
-    intro x
-    fin_cases x <;> simp
-
 /-- Shared core of `avoids132_iff` and `avoids123_iff`, for an arbitrary pattern `R`. -/
 private theorem avoids_pattern_iff {n : ℕ} (σ : Equiv.Perm (Fin n)) (R : ℕ → ℕ → ℕ → Prop) :
     (∀ i j k : Fin n, i < j → j < k → ¬ R (σ i) (σ j) (σ k)) ↔ LAvoids R (toL σ) := by
@@ -383,16 +339,11 @@ private theorem avoids123_iff {n : ℕ} (σ : Equiv.Perm (Fin n)) :
   avoids_pattern_iff σ R123
 
 private lemma toL_perm {n : ℕ} (σ : Equiv.Perm (Fin n)) : toL σ ~ List.range n := by
-  rw [List.perm_ext_iff_of_nodup]
-  · intro a
-    simp only [toL, List.mem_ofFn, List.mem_range]
-    constructor
-    · rintro ⟨i, rfl⟩; exact (σ i).isLt
-    · intro h; exact ⟨σ.symm ⟨a, h⟩, by simp⟩
-  · rw [toL, List.nodup_ofFn]
-    intro i j h
-    exact σ.injective (Fin.ext h)
-  · exact List.nodup_range
+  have hrange : List.ofFn (fun i : Fin n => (i : ℕ)) = List.range n := by
+    simpa only [List.length_range, List.get_eq_getElem, List.getElem_range, Fin.val_cast] using
+      List.ofFn_get (List.range n)
+  simpa only [toL, Function.comp_def, hrange] using
+    σ.ofFn_comp_perm (fun i : Fin n => (i : ℕ))
 
 open Classical in
 /-- The set of rearrangements of `L` satisfying `P`. -/

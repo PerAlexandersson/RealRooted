@@ -53,6 +53,42 @@ private theorem sorted_getElem_le_iff_lt_card_filter
   convert h_helper s hs x k hk using 1
   aesop (simp_config := { singlePass := true })
 
+/-- The ascending order statistic characterizes a lower-threshold count. -/
+private theorem sort_getElem_le_iff {M : Multiset ℝ} (x : ℝ) (i : ℕ) (hi : i < M.card) :
+    (M.sort (· ≤ ·))[i]! ≤ x ↔ i < (M.filter (· ≤ x)).card := by
+  exact sorted_getElem_le_iff_lt_card_filter _ (Multiset.pairwise_sort _ _)
+    M (Multiset.sort_eq _ _) x i (by simpa using hi)
+
+/-- A count bound with arbitrary slack is equivalent to shifted order-statistic bounds. -/
+private theorem count_le_iff_sorted_get {M N : Multiset ℝ} {k : ℕ}
+    (hcard : M.card ≤ N.card + k) :
+    (∀ x : ℝ, (M.filter (· ≤ x)).card ≤ (N.filter (· ≤ x)).card + k) ↔
+      ∀ i, k ≤ i → i < M.card →
+        (N.sort (· ≤ ·))[i - k]! ≤ (M.sort (· ≤ ·))[i]! := by
+  constructor
+  · intro hc i hki hi
+    have hiN : i - k < N.card := by lia
+    have hself := (sort_getElem_le_iff (M := M) _ i hi).mp le_rfl
+    have hbound := hc ((M.sort (· ≤ ·))[i]!)
+    exact (sort_getElem_le_iff _ (i - k) hiN).mpr (by lia)
+  · intro h x
+    by_contra hh
+    have hM := Multiset.card_le_card (Multiset.filter_le (fun y : ℝ ↦ y ≤ x) M)
+    let i := (N.filter (· ≤ x)).card + k
+    have hi : i < M.card := by dsimp [i]; lia
+    have hki : k ≤ i := by dsimp [i]; lia
+    have hiN : i - k < N.card := by lia
+    have hMx := (sort_getElem_le_iff (M := M) x i hi).mpr (by dsimp [i]; lia)
+    have hNx := (sort_getElem_le_iff (M := N) x (i - k) hiN).mp ((h i hki hi).trans hMx)
+    dsimp [i] at hNx
+    lia
+
+/-- Reverse lookup uses the complementary ascending index. -/
+private theorem reverse_sort_getD (M : Multiset ℝ) (i : ℕ) (hi : i < M.card) :
+    (M.sort (· ≤ ·)).reverse.getD i 0 = (M.sort (· ≤ ·))[M.card - 1 - i]! := by
+  have hlen : (M.sort (· ≤ ·)).length = M.card := Multiset.length_sort _
+  grind
+
 /-- For natural counts, oddness of the integer difference is the same as
 oddness of the natural sum. This is useful because root-count targets are
 stated with integer differences, while sign parity naturally sees sums. -/
@@ -86,34 +122,19 @@ theorem rootCrossing_of_count_diff_le_one
     (∀ j, 1 ≤ j → j < d →
         ((M.sort (· ≤ ·)).reverse).getD j 0 ≤
           ((N.sort (· ≤ ·)).reverse).getD (j - 1) 0) := by
-  set sM := M.sort (· ≤ ·)
-  set sN := N.sort (· ≤ ·)
-  have hM_sorted : sM.Pairwise (· ≤ ·) := Multiset.pairwise_sort _ _
-  have hN_sorted : sN.Pairwise (· ≤ ·) := Multiset.pairwise_sort _ _
-  have hsM : sM.length = d := by
-    subst hM
-    simp_all only [tsub_le_iff_right, Multiset.pairwise_sort, Multiset.length_sort, sM, sN]
-  have hsN : sN.length = d := by
-    subst hM
-    simp_all only [tsub_le_iff_right, Multiset.pairwise_sort, Multiset.length_sort, sM, sN]
-  have hsM_eq : Multiset.ofList sM = M := Multiset.sort_eq M (· ≤ ·)
-  have hsN_eq : Multiset.ofList sN = N := Multiset.sort_eq N (· ≤ ·)
-  have h_helper := sorted_getElem_le_iff_lt_card_filter
-  have h_reverse_getD (l : List ℝ) (hl : l.length = d) (i : ℕ) (hi : i < d) :
-      l.reverse.getD i 0 = l[d - 1 - i]! := by grind
-  constructor <;> intros j hj₁ hj₂ <;>
-    rw [h_reverse_getD _ hsN _ (by lia), h_reverse_getD _ hsM _ (by lia)]
-  · rw [h_helper _ hN_sorted _ hsN_eq _ _ (by lia)]
-    have := h_helper sM hM_sorted M hsM_eq (sM[d - 1 - (j - 1)]!)
-      (d - 1 - (j - 1)) ?_ <;> norm_num at *
-    · specialize hcount (sM[d - 1 - (j - 1)]?.getD default)
-      lia
-    · lia
-  · rw [h_helper _ hM_sorted _ hsM_eq _ _ (by lia)]
-    have := hcount (sN[d - 1 - (j - 1)]!)
-    have := h_helper sN hN_sorted N hsN_eq (sN[d - 1 - (j - 1)]!)
-      (d - 1 - (j - 1)) (by lia)
-    grind
+  have hleft := (count_le_iff_sorted_get (M := M) (N := N) (k := 1) (by lia)).mp
+    (fun x ↦ by have := (hcount x).1; lia)
+  have hright := (count_le_iff_sorted_get (M := N) (N := M) (k := 1) (by lia)).mp
+    (fun x ↦ by have := (hcount x).2; lia)
+  constructor <;> intro j hj₁ hj₂
+  · rw [reverse_sort_getD _ _ (by lia), reverse_sort_getD _ _ (by lia)]
+    have h₁ : d - 1 - j = d - j - 1 := by lia
+    have h₂ : d - 1 - (j - 1) = d - j := by lia
+    simpa only [hM, hN, h₁, h₂] using hleft (d - j) (by lia) (by lia)
+  · rw [reverse_sort_getD _ _ (by lia), reverse_sort_getD _ _ (by lia)]
+    have h₁ : d - 1 - j = d - j - 1 := by lia
+    have h₂ : d - 1 - (j - 1) = d - j := by lia
+    simpa only [hM, hN, h₁, h₂] using hright (d - j) (by lia) (by lia)
 
 /-- Converse of `rootCrossing_of_count_diff_le_one`.
 
@@ -133,51 +154,26 @@ theorem count_diff_le_one_of_rootCrossing
     ∀ x : ℝ,
       ((M.filter (· ≤ x)).card : ℤ) - (N.filter (· ≤ x)).card ≤ 1 ∧
       ((N.filter (· ≤ x)).card : ℤ) - (M.filter (· ≤ x)).card ≤ 1 := by
-  set sM := M.sort (· ≤ ·)
-  set sN := N.sort (· ≤ ·)
-  have hM_sorted : sM.Pairwise (· ≤ ·) := Multiset.pairwise_sort _ _
-  have hN_sorted : sN.Pairwise (· ≤ ·) := Multiset.pairwise_sort _ _
-  have hsM : sM.length = d := by
-    subst hM
-    simp_all only [
-      Multiset.pairwise_sort, List.getD_eq_getElem?_getD,
-      List.length_reverse, Multiset.length_sort,
-      getElem?_pos, List.getElem_reverse, Option.getD_some, sM, sN]
-  have hsN : sN.length = d := by
-    subst hM
-    simp_all only [
-      Multiset.pairwise_sort, List.getD_eq_getElem?_getD,
-      List.length_reverse, Multiset.length_sort,
-      getElem?_pos, List.getElem_reverse, Option.getD_some, sM, sN]
-  have hsM_eq : Multiset.ofList sM = M := Multiset.sort_eq M (· ≤ ·)
-  have hsN_eq : Multiset.ofList sN = N := Multiset.sort_eq N (· ≤ ·)
-  have h_helper := sorted_getElem_le_iff_lt_card_filter
-  have h_reverse_getD (l : List ℝ) (hl : l.length = d) (i : ℕ) (hi : i < d) :
-      l.reverse.getD i 0 = l[d - 1 - i]! := by grind
-  have hint1 : ∀ i, i + 1 < d → sN[i]! ≤ sM[i + 1]! := by grind
-  have hint2 : ∀ i, i + 1 < d → sM[i]! ≤ sN[i + 1]! := by grind
+  have hleft : ∀ x : ℝ, (M.filter (· ≤ x)).card ≤ (N.filter (· ≤ x)).card + 1 := by
+    apply (count_le_iff_sorted_get (by lia)).mpr
+    intro i hki hi
+    have h := hcross.1 (d - i) (by lia) (by lia)
+    rw [reverse_sort_getD _ _ (by lia), reverse_sort_getD _ _ (by lia)] at h
+    have h₁ : d - 1 - (d - i) = i - 1 := by lia
+    have h₂ : d - 1 - (d - i - 1) = i := by lia
+    simpa only [hM, hN, h₁, h₂] using h
+  have hright : ∀ x : ℝ, (N.filter (· ≤ x)).card ≤ (M.filter (· ≤ x)).card + 1 := by
+    apply (count_le_iff_sorted_get (by lia)).mpr
+    intro i hki hi
+    have h := hcross.2 (d - i) (by lia) (by lia)
+    rw [reverse_sort_getD _ _ (by lia), reverse_sort_getD _ _ (by lia)] at h
+    have h₁ : d - 1 - (d - i) = i - 1 := by lia
+    have h₂ : d - 1 - (d - i - 1) = i := by lia
+    simpa only [hM, hN, h₁, h₂] using h
   intro x
-  have ha_le_d : (M.filter (· ≤ x)).card ≤ d :=
-    hM ▸ Multiset.card_le_card (Multiset.filter_le _ _)
-  have hb_le_d : (N.filter (· ≤ x)).card ≤ d :=
-    hN ▸ Multiset.card_le_card (Multiset.filter_le _ _)
-  have hab1 : (M.filter (· ≤ x)).card ≤ (N.filter (· ≤ x)).card + 1 := by
-    by_contra hcon
-    push Not at hcon
-    have hb1_lt_d : (N.filter (· ≤ x)).card + 1 < d := by lia
-    have hbx : sM[(N.filter (· ≤ x)).card + 1]! ≤ x := by grind
-    have hNb : sN[(N.filter (· ≤ x)).card]! ≤ x :=
-      le_trans (hint1 _ hb1_lt_d) hbx
-    grind
-  have hba1 : (N.filter (· ≤ x)).card ≤ (M.filter (· ≤ x)).card + 1 := by
-    by_contra hcon
-    push Not at hcon
-    have ha1_lt_d : (M.filter (· ≤ x)).card + 1 < d := by lia
-    have hax : sN[(M.filter (· ≤ x)).card + 1]! ≤ x := by grind
-    have hMa : sM[(M.filter (· ≤ x)).card]! ≤ x :=
-      le_trans (hint2 _ ha1_lt_d) hax
-    grind
-  grind
+  have := hleft x
+  have := hright x
+  constructor <;> lia
 
 /-- Converse of `succRootCrossing_of_count_le_two`.
 
@@ -197,70 +193,27 @@ theorem count_le_two_of_succRootCrossing
     ∀ x : ℝ,
       ((M.filter (· ≤ x)).card : ℤ) - (N.filter (· ≤ x)).card ≤ 0 ∧
       ((N.filter (· ≤ x)).card : ℤ) - (M.filter (· ≤ x)).card ≤ 2 := by
-  set sM := M.sort (· ≤ ·)
-  set sN := N.sort (· ≤ ·)
-  have hM_sorted : sM.Pairwise (· ≤ ·) := Multiset.pairwise_sort _ _
-  have hN_sorted : sN.Pairwise (· ≤ ·) := Multiset.pairwise_sort _ _
-  have hsM : sM.length = d := by simpa [sM] using hM
-  have hsN : sN.length = d + 1 := by simpa [sN] using hN
-  have hsM_eq : Multiset.ofList sM = M := Multiset.sort_eq M (· ≤ ·)
-  have hsN_eq : Multiset.ofList sN = N := Multiset.sort_eq N (· ≤ ·)
-  have h_helper := sorted_getElem_le_iff_lt_card_filter
-  have h_reverse_getD (l : List ℝ) (hl : l.length = d) (i : ℕ) (hi : i < d) :
-      l.reverse.getD i 0 = l[d - 1 - i]! := by
-    grind
-  have h_reverse_getD_succ (l : List ℝ) (hl : l.length = d + 1)
-      (i : ℕ) (hi : i < d + 1) :
-      l.reverse.getD i 0 = l[d - i]! := by
-    simp only [List.getD_eq_getElem?_getD, List.length_reverse, hl,
-      getElem?_pos, hi, List.getElem_reverse, Option.getD_some]
-    have hidx : d + 1 - 1 - i = d - i := by lia
-    have hdi : d - i < l.length := by lia
-    simp only [hidx, getElem!_pos, hdi]
-  have hint1 : ∀ i, i < d → sN[i]! ≤ sM[i]! := by grind
-  have hint2 : ∀ i, i + 1 < d → sM[i]! ≤ sN[i + 2]! := by
-    intro i hi
-    let j := d - 1 - i
-    have hj_pos : 1 ≤ j := by
-      dsimp [j]
-      lia
-    have hj_lt : j < d := by
-      dsimp [j]
-      lia
-    have hjN : j - 1 < d + 1 := by lia
-    have h := hcross.2 j hj_pos hj_lt
-    rw [h_reverse_getD sM hsM j hj_lt,
-      h_reverse_getD_succ sN hsN (j - 1) hjN] at h
-    have hleft : d - 1 - j = i := by
-      dsimp [j]
-      lia
-    have hright : d - (j - 1) = i + 2 := by
-      dsimp [j]
-      lia
-    simpa only [hleft, hright] using h
+  have hleft : ∀ x : ℝ, (M.filter (· ≤ x)).card ≤ (N.filter (· ≤ x)).card := by
+    have h := (count_le_iff_sorted_get (M := M) (N := N) (k := 0) (by lia)).mpr
+      (fun i _ hi ↦ ?_)
+    · simpa only [Nat.add_zero] using h
+    · have h := hcross.1 (d - i) (by lia) (by lia)
+      rw [reverse_sort_getD _ _ (by lia), reverse_sort_getD _ _ (by lia)] at h
+      have h₁ : d + 1 - 1 - (d - i) = i := by lia
+      have h₂ : d - 1 - (d - i - 1) = i := by lia
+      simpa only [hM, hN, h₁, h₂, Nat.sub_zero] using h
+  have hright : ∀ x : ℝ, (N.filter (· ≤ x)).card ≤ (M.filter (· ≤ x)).card + 2 := by
+    apply (count_le_iff_sorted_get (by lia)).mpr
+    intro i hki hi
+    have h := hcross.2 (d + 1 - i) (by lia) (by lia)
+    rw [reverse_sort_getD _ _ (by lia), reverse_sort_getD _ _ (by lia)] at h
+    have h₁ : d - 1 - (d + 1 - i) = i - 2 := by lia
+    have h₂ : d + 1 - 1 - (d + 1 - i - 1) = i := by lia
+    simpa only [hM, hN, h₁, h₂] using h
   intro x
-  have ha_le_d : (M.filter (· ≤ x)).card ≤ d :=
-    hM ▸ Multiset.card_le_card (Multiset.filter_le _ _)
-  have hb_le_succ : (N.filter (· ≤ x)).card ≤ d + 1 :=
-    hN ▸ Multiset.card_le_card (Multiset.filter_le _ _)
-  have hab0 : (M.filter (· ≤ x)).card ≤ (N.filter (· ≤ x)).card := by
-    by_contra hcon
-    push Not at hcon
-    have hb_lt_d : (N.filter (· ≤ x)).card < d := by lia
-    have hMx : sM[(N.filter (· ≤ x)).card]! ≤ x := by grind
-    have hNb : sN[(N.filter (· ≤ x)).card]! ≤ x :=
-      le_trans (hint1 _ hb_lt_d) hMx
-    grind
-  have hba2 :
-      (N.filter (· ≤ x)).card ≤ (M.filter (· ≤ x)).card + 2 := by
-    by_contra hcon
-    push Not at hcon
-    have ha1_lt_d : (M.filter (· ≤ x)).card + 1 < d := by lia
-    have hNx : sN[(M.filter (· ≤ x)).card + 2]! ≤ x := by grind
-    have hMa : sM[(M.filter (· ≤ x)).card]! ≤ x :=
-      le_trans (hint2 _ ha1_lt_d) hNx
-    grind
-  grind
+  have := hleft x
+  have := hright x
+  constructor <;> lia
 
 /-- Succ-degree version of `rootCrossing_of_count_diff_le_one`.
 
@@ -280,48 +233,19 @@ theorem succRootCrossing_of_count_le_two
     (∀ j, 1 ≤ j → j < d →
         ((M.sort (· ≤ ·)).reverse).getD j 0 ≤
           ((N.sort (· ≤ ·)).reverse).getD (j - 1) 0) := by
-  set sM := M.sort (· ≤ ·)
-  set sN := N.sort (· ≤ ·)
-  have hM_sorted : sM.Pairwise (· ≤ ·) := Multiset.pairwise_sort _ _
-  have hN_sorted : sN.Pairwise (· ≤ ·) := Multiset.pairwise_sort _ _
-  have hsM : sM.length = d := by
-    subst hM
-    simp_all only [
-      tsub_le_iff_right, zero_add, Nat.cast_le,
-      Multiset.pairwise_sort, Multiset.length_sort, sM, sN]
-  have hsN : sN.length = d + 1 := by
-    subst hM
-    simp_all only [
-      tsub_le_iff_right, zero_add, Nat.cast_le,
-      Multiset.pairwise_sort, Multiset.length_sort, sM, sN]
-  have hsM_eq : Multiset.ofList sM = M := Multiset.sort_eq M (· ≤ ·)
-  have hsN_eq : Multiset.ofList sN = N := Multiset.sort_eq N (· ≤ ·)
-  have h_helper := sorted_getElem_le_iff_lt_card_filter
-  have h_reverse_getD (l : List ℝ) (hl : l.length = d) (i : ℕ) (hi : i < d) :
-      l.reverse.getD i 0 = l[d - 1 - i]! := by
-    grind
-  have h_reverse_getD_succ (l : List ℝ) (hl : l.length = d + 1)
-      (i : ℕ) (hi : i < d + 1) :
-      l.reverse.getD i 0 = l[d - i]! := by simp_all
-  constructor
-  · intro j hj₁ hj₂
-    rw [h_reverse_getD_succ _ hsN _ (by lia), h_reverse_getD _ hsM _ (by lia)]
-    have hidx : d - j = d - 1 - (j - 1) := by lia
-    rw [hidx]
-    rw [h_helper _ hN_sorted _ hsN_eq _ _ (by lia)]
-    have := h_helper sM hM_sorted M hsM_eq (sM[d - 1 - (j - 1)]!)
-      (d - 1 - (j - 1)) (by lia)
-    specialize hcount (sM[d - 1 - (j - 1)]!)
-    grind
-  · intro j hj₁ hj₂
-    rw [h_reverse_getD _ hsM _ (by lia), h_reverse_getD_succ _ hsN _ (by lia)]
-    set k := d - 1 - j with hk
-    have hidx : d - (j - 1) = k + 2 := by lia
-    rw [hidx]
-    rw [h_helper _ hM_sorted _ hsM_eq _ _ (by lia)]
-    have := h_helper sN hN_sorted N hsN_eq (sN[k + 2]!) (k + 2) (by lia)
-    specialize hcount (sN[k + 2]!)
-    grind
+  have hleft := (count_le_iff_sorted_get (M := M) (N := N) (k := 0) (by lia)).mp
+    (fun x ↦ by have := (hcount x).1; lia)
+  have hright := (count_le_iff_sorted_get (M := N) (N := M) (k := 2) (by lia)).mp
+    (fun x ↦ by have := (hcount x).2; lia)
+  constructor <;> intro j hj₁ hj₂
+  · rw [reverse_sort_getD _ _ (by lia), reverse_sort_getD _ _ (by lia)]
+    have h₁ : d + 1 - 1 - j = d - j := by lia
+    have h₂ : d - 1 - (j - 1) = d - j := by lia
+    simpa only [hM, hN, h₁, h₂, Nat.sub_zero] using hleft (d - j) (by lia) (by lia)
+  · rw [reverse_sort_getD _ _ (by lia), reverse_sort_getD _ _ (by lia)]
+    have h₁ : d + 1 - j - 2 = d - 1 - j := by lia
+    have h₂ : d + 1 - 1 - (j - 1) = d + 1 - j := by lia
+    simpa only [hM, hN, h₁, h₂] using hright (d + 1 - j) (by lia) (by lia)
 
 /-- Convert the upper-threshold same-cardinality count bound into the
 lower-threshold count bound. -/

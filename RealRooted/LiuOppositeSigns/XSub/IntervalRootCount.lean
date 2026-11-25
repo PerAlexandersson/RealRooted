@@ -1,5 +1,8 @@
 module
 
+public import RealRooted.LiuOppositeSigns.XSub.LeftSucc
+public import RealRooted.LiuOppositeSigns.XSub.QuadraticQuadratic
+public import RealRooted.LiuOppositeSigns.XSub.QuadraticCubic
 public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.GapCounts
 public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.LeftSuccessor
 public import RealRooted.LiuOppositeSigns.XSub.IntervalRootCount.RightSuccessor
