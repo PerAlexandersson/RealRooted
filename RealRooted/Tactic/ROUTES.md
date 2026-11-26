@@ -14,11 +14,40 @@ Set `rr.row.disable` to a comma-separated list of route names to skip, for examp
 Read each row as a goal shape and its main theorem(s). The route sections record
 side conditions, implementing modules, and regression examples.
 
+## `rr_row_interlaces`
+
+| # | route | proves | main theorem(s) |
+|---:|---|---|---|
+| 1 | `reuse` | Splits, StrictInterl, or Interlaces for rows of the same sequence | `Interlaces.toStrictInterl`, `StrictInterl.toInterlaces` |
+| 2 | `variableDelay` | StrictInterl, Interlaces, Splits, or HasNonnegCoeffs. | `strictInterl_of_fixedDelay_recurrence`, `strictInterl_of_scaled_fixedDelay_recurrence`, `hasNonnegCoeffs_of_scaled_fixedDelay_recurrence`, `strictInterl_of_constant_prefix_fixed_delay_recurrence`, `hasNonnegCoeffs_of_constant_prefix_fixed_delay_recurrence` |
+| 3 | `probe` (pseudo) | No conclusion; this is an exact-arithmetic rejection pass. | — |
+| 4 | `rowModel` (pseudo) | The conclusion advertised by a matching registered row-model theorem. | — |
+| 5 | `halfGrowth` | Interlaces, StrictInterl, or Splits for half-growth rows. | `derivLag_strictInterl_of_nonnegCoeffs`, `derivLag_strictInterl_of_nonnegCoeffs_half`, `threeTermHalf_ne_zero_and_splits` |
+| 6 | `pathPower` | Interlaces consecutive rows or Splits for a path-power model. | `strictInterl_pathPowerCliquePolynomial_add`, `strictInterl_reciprocalShift_pathPowerCliquePolynomial`, `splits_pathPowerCliquePolynomial`, `splits_reciprocalShift_pathPowerCliquePolynomial` |
+| 7 | `lowerOrder` | Interlaces consecutive rows, with a splitting projection. | `threeTerm_rec_of_remainder` |
+| 8 | `parityProduct` | Interlaces (P n) (P (n + 1)) or (P n).Splits. | `eq_parityProduct_of_thirdOrderRecurrence`, `interlaces_of_parityProduct`, `splits_of_parityProduct` |
+| 9 | `endpointWindow` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_endpoint_evaluations` |
+| 10 | `fTransform` | Interlaces (P n) (P (n + 1)) or (P n).Splits for f-polynomial images. | `Tactic.interlaces_fPolynomial_sequence`, `Tactic.interlaces_fPolynomial_sequence_floor`, `splits_of_eq_fPolynomial` |
+| 11 | `powerForm` | Interlaces (P n) (P (n + 1)) | `interlaces_of_forall_eq_C_mul_pow`, `interlaces_of_forall_eq_C_mul_pow_of_pos`, `forall_eq_C_mul_pow_of_rec2`, `forall_eq_C_mul_pow_of_rec3` |
+| 12 | `closedForm` | Interlaces (P n) (P (n + 1)) or (P n).Splits, according to the front end. | `Interlaces.pow_mul_of_linear_remainder`, `Interlaces.pow_mul_of_quadratic_remainder`, `splits_C_add_C_mul_X_add_C_mul_X_sq`, `splits_palindromic_quartic` |
+| 13 | `core` (pseudo) | Interlaces (P n) (P (n + 1)) | — |
+| 14 | `product` | Interlaces (P n) (P (n + 1)) | `productSequence_interlaces` |
+| 15 | `eulerStep` | Interlaces (P n) (P (n + 1)) | `EulerBidiagonal.interlaces_of_generalStep_rec`, `EulerBidiagonal.interlaces_of_generalStep_rec_zero` |
+| 16 | `twoStep` | Interlacing, splitting, degree, or positive leading coefficient for P (n + 2) = q * P n. | `twoStepProduct_interlaces`, `twoStepProduct_splits`, `twoStepProduct_natDegree`, `twoStepProduct_leadingCoeff_pos`, `twoStepProduct_leadingCoeff_pos_of_ne_zero` |
+| 17 | `sign` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_eval_nonpos`, `derivativeRecurrence_interlaces_of_nonnegCoeffs`, `derivativeRecurrence_interlaces_of_splits_of_eval_nonpos`, `derivativeRecurrence_interlaces_of_splits_of_nonnegCoeffs`, `threeTerm_interlaces_of_eval_nonpos`, `threeTerm_interlaces_of_nonnegCoeffs` |
+| 18 | `window` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_mem_Icc`, `derivativeRecurrence_interlaces_of_roots_le`, `derivativeRecurrence_interlaces_of_roots_mem_Icc_of_pos`, `threeTerm_interlaces_of_roots_mem_Icc`, `threeTerm_interlaces_of_roots_le` |
+| 19 | `degreeWindow` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_le_of_degree` |
+| 20 | `ratioWindow` | Interlaces (P n) (P (n + 1)) | `threeTerm_interlaces_of_roots_le_of_ratio` |
+| 21 | `barrierWindow` | Interlaces (P n) (P (n + 1)) | `threeTerm_interlaces_of_roots_mem_Icc_of_barrier` |
+| 22 | `movingWindow` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_mem_Icc_mono_div` |
+| 23 | `movingUpper` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_le_mono_div` |
+| 24 | `reversed` | Interlaces (P n) (P (n + 1)) or (P n).Splits after reflection. | `eq_reflect_of_secondOrderDerivativeRecurrence`, `eq_reflect_of_linearRecurrence`, `interlaces_of_eq_reflect`, `splits_of_eq_reflect` |
+
 ## `rr_row_splits`
 
 | # | route | proves | main theorem(s) |
 |---:|---|---|---|
-| 1 | `reuse` | (P n).Splits or StrictInterl (P n) (P (n + 1)) | `Interlaces.toStrictInterl` |
+| 1 | `reuse` | Splits, StrictInterl, or Interlaces for rows of the same sequence | `Interlaces.toStrictInterl`, `StrictInterl.toInterlaces` |
 | 2 | `variableDelay` | StrictInterl, Interlaces, Splits, or HasNonnegCoeffs. | `strictInterl_of_fixedDelay_recurrence`, `strictInterl_of_scaled_fixedDelay_recurrence`, `hasNonnegCoeffs_of_scaled_fixedDelay_recurrence`, `strictInterl_of_constant_prefix_fixed_delay_recurrence`, `hasNonnegCoeffs_of_constant_prefix_fixed_delay_recurrence` |
 | 3 | `derivativeXMul` | (P n).Splits | `splits_of_mul_derivative_X_mul_sequence` |
 | 4 | `factorPower` | (P n).Splits | `eq_pow_mul_of_factoredThreeTerm` |
@@ -45,39 +74,11 @@ side conditions, implementing modules, and regression examples.
 
 | # | route | proves | main theorem(s) |
 |---:|---|---|---|
-| 1 | `reuse` | (P n).Splits or StrictInterl (P n) (P (n + 1)) | `Interlaces.toStrictInterl` |
+| 1 | `reuse` | Splits, StrictInterl, or Interlaces for rows of the same sequence | `Interlaces.toStrictInterl`, `StrictInterl.toInterlaces` |
 | 2 | `variableDelay` | StrictInterl, Interlaces, Splits, or HasNonnegCoeffs. | `strictInterl_of_fixedDelay_recurrence`, `strictInterl_of_scaled_fixedDelay_recurrence`, `hasNonnegCoeffs_of_scaled_fixedDelay_recurrence`, `strictInterl_of_constant_prefix_fixed_delay_recurrence`, `hasNonnegCoeffs_of_constant_prefix_fixed_delay_recurrence` |
 | 3 | `halfGrowth` | Interlaces, StrictInterl, or Splits for half-growth rows. | `derivLag_strictInterl_of_nonnegCoeffs`, `derivLag_strictInterl_of_nonnegCoeffs_half`, `threeTermHalf_ne_zero_and_splits` |
 | 4 | `degreePattern` | (P n).Splits or StrictInterl (P n) (P (n + 1)). | `derivativeRecurrence_splits_of_degree_pattern_of_nonnegCoeffs`, `derivativeRecurrence_strictInterl_of_degree_pattern_of_nonnegCoeffs`, `derivativeRecurrence_strictInterl_of_half_degree`, `derivativeRecurrence_strictInterl_of_floor_half_degree` |
 | 5 | `interlaces` | StrictInterl (P n) (P (n + 1)) | `Interlaces.toStrictInterl` |
-
-## `rr_row_interlaces`
-
-| # | route | proves | main theorem(s) |
-|---:|---|---|---|
-| 1 | `variableDelay` | StrictInterl, Interlaces, Splits, or HasNonnegCoeffs. | `strictInterl_of_fixedDelay_recurrence`, `strictInterl_of_scaled_fixedDelay_recurrence`, `hasNonnegCoeffs_of_scaled_fixedDelay_recurrence`, `strictInterl_of_constant_prefix_fixed_delay_recurrence`, `hasNonnegCoeffs_of_constant_prefix_fixed_delay_recurrence` |
-| 2 | `probe` (pseudo) | No conclusion; this is an exact-arithmetic rejection pass. | — |
-| 3 | `rowModel` (pseudo) | The conclusion advertised by a matching registered row-model theorem. | — |
-| 4 | `halfGrowth` | Interlaces, StrictInterl, or Splits for half-growth rows. | `derivLag_strictInterl_of_nonnegCoeffs`, `derivLag_strictInterl_of_nonnegCoeffs_half`, `threeTermHalf_ne_zero_and_splits` |
-| 5 | `pathPower` | Interlaces consecutive rows or Splits for a path-power model. | `strictInterl_pathPowerCliquePolynomial_add`, `strictInterl_reciprocalShift_pathPowerCliquePolynomial`, `splits_pathPowerCliquePolynomial`, `splits_reciprocalShift_pathPowerCliquePolynomial` |
-| 6 | `lowerOrder` | Interlaces consecutive rows, with a splitting projection. | `threeTerm_rec_of_remainder` |
-| 7 | `parityProduct` | Interlaces (P n) (P (n + 1)) or (P n).Splits. | `eq_parityProduct_of_thirdOrderRecurrence`, `interlaces_of_parityProduct`, `splits_of_parityProduct` |
-| 8 | `endpointWindow` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_endpoint_evaluations` |
-| 9 | `fTransform` | Interlaces (P n) (P (n + 1)) or (P n).Splits for f-polynomial images. | `Tactic.interlaces_fPolynomial_sequence`, `Tactic.interlaces_fPolynomial_sequence_floor`, `splits_of_eq_fPolynomial` |
-| 10 | `powerForm` | Interlaces (P n) (P (n + 1)) | `interlaces_of_forall_eq_C_mul_pow`, `interlaces_of_forall_eq_C_mul_pow_of_pos`, `forall_eq_C_mul_pow_of_rec2`, `forall_eq_C_mul_pow_of_rec3` |
-| 11 | `closedForm` | Interlaces (P n) (P (n + 1)) or (P n).Splits, according to the front end. | `Interlaces.pow_mul_of_linear_remainder`, `Interlaces.pow_mul_of_quadratic_remainder`, `splits_C_add_C_mul_X_add_C_mul_X_sq`, `splits_palindromic_quartic` |
-| 12 | `core` (pseudo) | Interlaces (P n) (P (n + 1)) | — |
-| 13 | `product` | Interlaces (P n) (P (n + 1)) | `productSequence_interlaces` |
-| 14 | `eulerStep` | Interlaces (P n) (P (n + 1)) | `EulerBidiagonal.interlaces_of_generalStep_rec`, `EulerBidiagonal.interlaces_of_generalStep_rec_zero` |
-| 15 | `twoStep` | Interlacing, splitting, degree, or positive leading coefficient for P (n + 2) = q * P n. | `twoStepProduct_interlaces`, `twoStepProduct_splits`, `twoStepProduct_natDegree`, `twoStepProduct_leadingCoeff_pos`, `twoStepProduct_leadingCoeff_pos_of_ne_zero` |
-| 16 | `sign` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_eval_nonpos`, `derivativeRecurrence_interlaces_of_nonnegCoeffs`, `derivativeRecurrence_interlaces_of_splits_of_eval_nonpos`, `derivativeRecurrence_interlaces_of_splits_of_nonnegCoeffs`, `threeTerm_interlaces_of_eval_nonpos`, `threeTerm_interlaces_of_nonnegCoeffs` |
-| 17 | `window` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_mem_Icc`, `derivativeRecurrence_interlaces_of_roots_le`, `derivativeRecurrence_interlaces_of_roots_mem_Icc_of_pos`, `threeTerm_interlaces_of_roots_mem_Icc`, `threeTerm_interlaces_of_roots_le` |
-| 18 | `degreeWindow` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_le_of_degree` |
-| 19 | `ratioWindow` | Interlaces (P n) (P (n + 1)) | `threeTerm_interlaces_of_roots_le_of_ratio` |
-| 20 | `barrierWindow` | Interlaces (P n) (P (n + 1)) | `threeTerm_interlaces_of_roots_mem_Icc_of_barrier` |
-| 21 | `movingWindow` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_mem_Icc_mono_div` |
-| 22 | `movingUpper` | Interlaces (P n) (P (n + 1)) | `derivativeRecurrence_interlaces_of_roots_le_mono_div` |
-| 23 | `reversed` | Interlaces (P n) (P (n + 1)) or (P n).Splits after reflection. | `eq_reflect_of_secondOrderDerivativeRecurrence`, `eq_reflect_of_linearRecurrence`, `interlaces_of_eq_reflect`, `splits_of_eq_reflect` |
 
 ## `rr_row_natDegree`
 
@@ -155,12 +156,15 @@ side conditions, implementing modules, and regression examples.
 
 ## `reuse`
 
-- **Summary:** Project an interlacing statement of the same sequence that is already in scope.
+- **Summary:** Reuse an interlacing certificate already in scope, certifying a strict
+  certificate's degree gap from earlier equations when needed.
 - **Side conditions:** A hypothesis or earlier theorem of the current module concluding
-  Interlaces or StrictInterl for rows of the same sequence, with no further hypotheses; silent
-  when there is none.
+  Interlaces or StrictInterl for the same sequence, with no remaining hypotheses;
+  strict-to-interlacing conversion also needs checked degree equations. Silent when no
+  certificate is available.
 - **Module:** `RealRooted.Tactic.Row.Frontend`
-- **Regression examples:** `RealRooted.Tactic.Examples.RowViaRoutes`
+- **Regression examples:** `RealRooted.Tactic.Examples.RowViaRoutes`,
+  `RealRooted.Tactic.Examples.RowRegressions2366Certificates`
 
 ## `probe` (pseudo)
 
@@ -215,10 +219,13 @@ side conditions, implementing modules, and regression examples.
 
 ## `closedForm`
 
-- **Summary:** Name clash: interlacing and splitting use distinct closed forms.
+- **Summary:** Name clash: interlacing and splitting use distinct closed forms. For splitting
+  with an explicitly bounded index at most eight, certify every possible row before the
+  infinite-sequence probe.
 - **Side conditions:** An exact closed form, induction identity, and residual certificate.
 - **Module:** `RealRooted.Tactic.Row.Frontend`
-- **Regression examples:** `RealRooted.Tactic.Examples.RowGeneral`
+- **Regression examples:** `RealRooted.Tactic.Examples.RowGeneral`,
+  `RealRooted.Tactic.Examples.RowRegressions2366`
 
 ## `pathPower`
 
