@@ -8,6 +8,7 @@ import RealRooted.Hermite.PoulainSymbolDerivative
 import RealRooted.PFPolynomial.PreserverClosure
 import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 import RealRooted.PosCombo
+import RealRooted.WagnerRightSum.Sign
 import Mathlib.Tactic
 
 /-!
