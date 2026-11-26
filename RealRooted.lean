@@ -2551,3 +2551,15 @@ public import RealRooted.IntervalDifferential.EulerCoefficientTable
 public import RealRooted.IntervalDifferential.EulerNorm
 public import RealRooted.IntervalDifferential.EulerRecurrence
 public import RealRooted.Mathlib.Data.Array.GetD
+public import RealRooted.CombinatorialExamples.CycleTypeDescents.Alphabet
+public import RealRooted.CombinatorialExamples.CycleTypeDescents.Basic
+public import RealRooted.CombinatorialExamples.CycleTypeDescents.Content
+public import RealRooted.CombinatorialExamples.CycleTypeDescents.CycleShape
+public import RealRooted.CombinatorialExamples.CycleTypeDescents.DistinctParts
+public import RealRooted.CombinatorialExamples.CycleTypeDescents.NecklaceProduct
+public import RealRooted.CombinatorialExamples.CycleTypeDescents.PrimePowers
+public import RealRooted.CombinatorialExamples.CycleTypeDescents.RepeatedParts
+public import RealRooted.CombinatorialExamples.CycleTypeDescents.Results
+public import RealRooted.Transforms.BrandenE.Choose
+public import RealRooted.Transforms.BrandenE.Products
+public import RealRooted.Transforms.BrandenE.UnitDisk

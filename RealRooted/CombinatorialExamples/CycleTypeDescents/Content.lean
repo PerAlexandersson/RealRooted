@@ -97,7 +97,8 @@ def contentWithTypeToContent {n q : ℕ} {parts : Multiset ℕ} (hs : parts.sum 
       exact single_le_sum (f := fun M => a.val ⟨d, M⟩) (fun _ _ => Nat.zero_le _) (mem_univ N)
     exact hl d.val (Multiset.count_pos.mp (lt_of_lt_of_le hN hb))
 
-private theorem content_sum_length {n q : ℕ} (a : Types n q → ℕ) (d : Lengths n) :
+/-- Summing a content over the necklace types of one length counts that length. -/
+theorem content_sum_length {n q : ℕ} (a : Types n q → ℕ) (d : Lengths n) :
     (∑ N : Types n q, if N.1.val = d.val then a N else 0) =
       ∑ N : PrimitiveNecklace d.val q, a ⟨d, N⟩ := by
   classical

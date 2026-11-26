@@ -7,6 +7,7 @@ module
 
 public import RealRooted.CombinatorialExamples.CycleTypeDescents.Basic
 public import RealRooted.CombinatorialExamples.LongCycleDescents.Content
+import RealRooted.CombinatorialExamples.LongCycleDescents.Cycles
 import Mathlib.Tactic
 
 /-!
