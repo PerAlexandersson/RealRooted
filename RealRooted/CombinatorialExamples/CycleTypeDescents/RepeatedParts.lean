@@ -10,7 +10,7 @@ public import Mathlib.Basic.Complex.Basic
 import RealRooted.CombinatorialExamples.LongCycleDescents.Coefficients
 import RealRooted.CubicDiscriminant
 import RealRooted.Mathlib.Algebra.Polynomial.Splits.Complex
-import RealRooted.CombinatorialExamples.LongCycleDescents.Cycles
+import RealRooted.CombinatorialExamples.LongCycleDescents.Counting
 import Mathlib.Tactic
 
 /-!

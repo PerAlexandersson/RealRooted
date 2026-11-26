@@ -7,7 +7,7 @@ module
 
 public import RealRooted.CombinatorialExamples.CycleTypeDescents.NecklaceProduct
 import RealRooted.Transforms.BrandenE.UnitDisk
-import RealRooted.CombinatorialExamples.LongCycleDescents.Structural.Factorization
+import RealRooted.CombinatorialExamples.LongCycleDescents.Structural.AlphabetTransform
 import Mathlib.Tactic
 
 /-!
