@@ -26,13 +26,15 @@ structure RowRouteInfo where
 def rowRouteTable : List RowRouteInfo := [
   { name := `reuse
     frontEnds := [
+      "rr_row_interlaces",
       "rr_row_splits",
       "rr_row_strictInterl"
     ]
-    conclusion := "(P n).Splits or StrictInterl (P n) (P (n + 1))"
+    conclusion := "Splits, StrictInterl, or Interlaces for rows of the same sequence"
     theorems :=
       [
-        `RealRooted.Interlaces.toStrictInterl
+        `RealRooted.Interlaces.toStrictInterl,
+        `RealRooted.StrictInterl.toInterlaces
       ]
   },
   { name := `probe
@@ -582,6 +584,30 @@ def rowRouteTable : List RowRouteInfo := [
 /-- The selectable route names of a front end, in dispatch order. -/
 def rowRoutesOf (frontEnd : String) : List Name :=
   match frontEnd with
+  | "rr_row_interlaces" => [
+      `reuse,
+      `variableDelay,
+      `rowModel,
+      `halfGrowth,
+      `pathPower,
+      `lowerOrder,
+      `parityProduct,
+      `endpointWindow,
+      `fTransform,
+      `powerForm,
+      `closedForm,
+      `product,
+      `eulerStep,
+      `twoStep,
+      `sign,
+      `window,
+      `degreeWindow,
+      `ratioWindow,
+      `barrierWindow,
+      `movingWindow,
+      `movingUpper,
+      `reversed
+    ]
   | "rr_row_splits" => [
       `reuse,
       `variableDelay,
@@ -610,29 +636,6 @@ def rowRoutesOf (frontEnd : String) : List Name :=
       `halfGrowth,
       `degreePattern,
       `interlaces
-    ]
-  | "rr_row_interlaces" => [
-      `variableDelay,
-      `rowModel,
-      `halfGrowth,
-      `pathPower,
-      `lowerOrder,
-      `parityProduct,
-      `endpointWindow,
-      `fTransform,
-      `powerForm,
-      `closedForm,
-      `product,
-      `eulerStep,
-      `twoStep,
-      `sign,
-      `window,
-      `degreeWindow,
-      `ratioWindow,
-      `barrierWindow,
-      `movingWindow,
-      `movingUpper,
-      `reversed
     ]
   | "rr_row_natDegree" => [
       `cone,

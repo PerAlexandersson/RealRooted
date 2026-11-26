@@ -59,6 +59,8 @@ public import RealRooted.Tactic.Examples.RowReaderNormalization
 public import RealRooted.Tactic.Examples.RowRegression1689Degree
 public import RealRooted.Tactic.Examples.RowRegression1689Interlacing
 public import RealRooted.Tactic.Examples.RowRegressions2313
+public import RealRooted.Tactic.Examples.RowRegressions2366
+public import RealRooted.Tactic.Examples.RowRegressions2366Certificates
 public import RealRooted.Tactic.Examples.RowRoutes
 public import RealRooted.Tactic.Examples.RowStrictInterl
 public import RealRooted.Tactic.Examples.RowSubseqDegree
