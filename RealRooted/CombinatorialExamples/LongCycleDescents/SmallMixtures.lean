@@ -102,7 +102,7 @@ private theorem five_mixture (w : ℕ → ℝ) :
 
 /-- The sign of the leading term gives a root to the left of a point of opposite sign. -/
 private theorem root_left_of_leading_sign {p : ℝ[X]} {a : ℝ} (lead : 0 < p.leadingCoeff)
-    (sign : (-1:ℝ)^p.natDegree * p.eval a < 0) :
+    (sign : (-1 : ℝ) ^ p.natDegree * p.eval a < 0) :
     ∃ x, x < a ∧ p.eval x = 0 := by
   have eventuallyFlip : ∀ᶠ x in atBot, p.eval x * p.eval a < 0 := by
     rcases p.natDegree.even_or_odd with parity | parity
@@ -133,7 +133,7 @@ private theorem simple_nonpositive_from_windows {d : ℕ} {p : ℝ[X]} (hp : p �
     (sep : ∀ i j, i < j → b i ≤ a j) (leftNZ : ∀ i, p.eval (a i) ≠ 0)
     (flip : ∀ i, p.eval (a i) * p.eval (b i) ≤ 0)
     (degree : p.natDegree ≤ d ∨
-      (p.natDegree ≤ d+1 ∧ ∃ x, x ≤ 0 ∧ (∀ i, x ≤ a i) ∧ p.eval x = 0)) :
+      (p.natDegree ≤ d + 1 ∧ ∃ x, x ≤ 0 ∧ (∀ i, x ≤ a i) ∧ p.eval x = 0)) :
     p.Splits ∧ p.roots.Nodup ∧ ∀ x ∈ p.roots, x ≤ 0 := by
   classical
   have bracket (i : Fin d) : ∃ x, a i < x ∧ x ≤ b i ∧ p.eval x = 0 := by
@@ -172,8 +172,8 @@ private theorem simple_nonpositive_from_leading_window {d : ℕ} {p : ℝ[X]} (a
     (lt : ∀ i, a i < b i) (right : ∀ i, b i ≤ 0) (sep : ∀ i j, i < j → b i ≤ a j)
     (leftNZ : ∀ i, p.eval (a i) ≠ 0) (flip : ∀ i, p.eval (a i) * p.eval (b i) ≤ 0)
     (first : Fin d) (minLeft : ∀ i, a first ≤ a i)
-    (farSign : (-1:ℝ)^(d+1) * p.eval (a first) < 0)
-    (cap : p.natDegree ≤ d+1) (top : 0 ≤ p.coeff (d+1)) :
+    (farSign : (-1 : ℝ) ^ (d + 1) * p.eval (a first) < 0)
+    (cap : p.natDegree ≤ d + 1) (top : 0 ≤ p.coeff (d + 1)) :
     p.Splits ∧ p.roots.Nodup ∧ ∀ x ∈ p.roots, x ≤ 0 := by
   have hp : p ≠ 0 := by intro h; exact leftNZ first (by simp only [h, eval_zero])
   apply simple_nonpositive_from_windows hp a b lt right sep leftNZ flip
@@ -260,7 +260,7 @@ private theorem scaled_double {a t : ℝ} (ha : 0 < a) :
   rw [roots_C_mul _ ha.ne', roots_mul nz, roots_X, roots_pow, roots_X_sub_C]
 
 private theorem exceptional_properties {p : ℝ[X]} {t : ℝ} (ht : t < 0)
-    (hr : p.roots = ({0}:Multiset ℝ) + 2 • ({t}:Multiset ℝ)) :
+    (hr : p.roots = ({0} : Multiset ℝ) + 2 • ({t} : Multiset ℝ)) :
     ¬ p.roots.Nodup ∧ (∀ x ∈ p.roots, x ≤ 0) ∧ p.rootMultiplicity t = 2 := by
   have distinct := ht.ne
   rw [← count_roots, hr]
@@ -276,7 +276,7 @@ private theorem exceptional_properties {p : ℝ[X]} {t : ℝ} (ht : t < 0)
   · simp [two_nsmul, distinct, distinct.symm]
 
 private theorem four_exception (w : ℕ → ℝ) (hw : ∀ k ∈ Icc 1 4, 0 ≤ w k)
-    (pos : ∃ k ∈ Icc 1 4, 0 < w k) (support : w 1 + (w 3+w 4) = 0) :
+    (pos : ∃ k ∈ Icc 1 4, 0 < w k) (support : w 1 + (w 3 + w 4) = 0) :
     (mixture 4 w).Splits ∧ (mixture 4 w).roots = ({0}:Multiset ℝ) + 2 • ({-2}:Multiset ℝ) := by
   have a := hw 1 (by decide)
   have c := hw 3 (by decide)
@@ -292,7 +292,7 @@ private theorem four_exception (w : ℕ → ℝ) (hw : ∀ k ∈ Icc 1 4, 0 ≤ 
   simpa using scaled_double (t := -2) hb
 
 private theorem five_exception (w : ℕ → ℝ) (hw : ∀ k ∈ Icc 1 5, 0 ≤ w k)
-    (pos : ∃ k ∈ Icc 1 5, 0 < w k) (support : w 1+w 2 = 0) :
+    (pos : ∃ k ∈ Icc 1 5, 0 < w k) (support : w 1 + w 2 = 0) :
     (mixture 5 w).Splits ∧ (mixture 5 w).roots = ({0}:Multiset ℝ) + 2 • ({-1}:Multiset ℝ) := by
   have a := hw 1 (by decide)
   have b := hw 2 (by decide)

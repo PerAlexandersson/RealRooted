@@ -187,7 +187,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 1 | `RealRooted.JumpSystem.Stable.weightedHomogeneousComponent` | `RealRooted.MultivariateStability.JumpSystem` | The lowest weighted-homogeneous part (initial form) of a stable polynomial with respect to an integer weight vector is stable. |
 | 1 | `RealRooted.LiuZhang.MvRealStable.morrisBFlow` | `RealRooted.MultivariateStability.MorrisBFlow` | The Liu--Zhang `B_q` flow preserves real stability. |
 | 1 | `RealRooted.LiuZhang.MvRealStable.morrisDExp` | `RealRooted.MultivariateStability.MorrisDFlow` | Liu--Zhang Theorem 4.9 on the explicit finite-dimensional space of symmetric polynomials of total degree at most `N`. |
-| 1 | `RealRooted.LongCycleDescents.Necklace.card_stable` | `RealRooted.CombinatorialExamples.LongCycleDescents.LabelCount` | The number of weak labelings that rise at every ordinary descent. |
+| 1 | `RealRooted.LongCycleDescents.Necklace.card_stable` | `RealRooted.CombinatorialExamples.LongCycleDescents.Content` | The number of weak labelings that rise at every ordinary descent. |
 | 1 | `RealRooted.MvRealStable.C_mul` | `RealRooted.MultivariateStability` | Multiplication by a nonzero real constant preserves multivariate real stability. |
 | 1 | `RealRooted.MvRealStable.finset_sum_C_mul_X` | `RealRooted.MultivariateStability.LinearForm` | Real-coefficient form of stability for a finite nonnegative homogeneous linear form. |
 
@@ -385,8 +385,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 462 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
-| 302 | `RealRooted.EffectiveBKW.IntPoly2.eval_add` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate addition. |
+| 456 | `RealRooted.EffectiveBKW.IntPoly2.eval_mul` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate multiplication. |
+| 301 | `RealRooted.EffectiveBKW.IntPoly2.eval_add` | `RealRooted.EffectiveBKW.Certificate.ListPoly` | Evaluation commutes with bivariate addition. |
 | 20 | `RealRooted.bezoutEntry.wronskian` | `RealRooted.Bezoutian.RootEvaluation` |  |
 | 19 | `RealRooted.eval_pos_of_all_roots_lt` | `RealRooted.WagnerRightSum.Sign` |  |
 | 14 | `RealRooted.eval_pos_of_hasNonnegCoeffs` | `RealRooted.Basic.Coefficients` | A nonzero polynomial with nonnegative coefficients is strictly positive at every strictly positive real argument. |
@@ -433,10 +433,10 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 6 | `RealRooted.ExponentialRows.factorialCoeff_derivative` | `RealRooted.ExponentialRows.Insertion` | Differentiation shifts factorial coefficients by one index. |
 | 6 | `RealRooted.brandenE_mul_X_add_C` | `RealRooted.Transforms.BrandenE.Basic` | Affine-factor form of `brandenE_X_mul`. |
 | 5 | `RealRooted.EulerBidiagonal.generalStep_eq_second_derivative` | `RealRooted.EulerBidiagonal.QuadraticEulerStep` | Differential form of the general Euler step. |
-| 5 | `RealRooted.IntervalDifferential.zigzagOperator_apply` | `RealRooted.IntervalDifferential.Basic` |  |
 | 4 | `Polynomial.taylor_iterate_derivative` | `RealRooted.Mathlib.Algebra.Polynomial.Taylor` | The Taylor shift commutes with iterated derivatives. |
 | 4 | `RealRooted.ExponentialRows.insertionRow_affineBlockWeights_eq_exponential` | `RealRooted.ExponentialRows.SubstitutionRows` | The insertion definition is the literal factorial-scaled formal exponential. |
 | 4 | `RealRooted.GeneralizedSnakePosets.FiniteSkewBoard.rookPolynomial_eq_nonNestingPlacements_sum` | `RealRooted.GeneralizedSnakePosets.FiniteBoard` | The rook polynomial as a sum over the named finite set of non-nesting placements. |
+| 4 | `RealRooted.IntervalDifferential.zigzagOperator_apply` | `RealRooted.IntervalDifferential.Basic` |  |
 | 4 | `RealRooted.brandenE_X_mul` | `RealRooted.Transforms.BrandenE.Basic` | Multiplication by `X` before `brandenE` becomes the Euler differential operator afterwards. |
 | 4 | `RealRooted.complexify_iterate_derivative` | `RealRooted.HermiteBiehler.Basic` | Complexification commutes with iterated derivatives. |
 | 3 | `Polynomial.basisTransform_X_mul_of_succ_derivative` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` | A basis transform transports multiplication by `X` to a first-order differential operator when its basis satisfies the corresponding successor recurrence. |
@@ -495,8 +495,8 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 12 | `RealRooted.listInterlaces_all_ge` | `RealRooted.Basic.RootLists` | Every element of `ss` is at least the first element of the right-hand list in a `ListInterlaces` relation. |
 | 12 | `TendstoLocallyUniformly.iteratedDeriv` | `RealRooted.Mathlib.Analysis.Complex.PolynomialLimitCoeff` | Weierstrass: if entire functions converge locally uniformly on `ℂ`, then so do all their iterated derivatives. |
 | 11 | `RealRooted.List.Interleaves.ofFn_succ` | `RealRooted.Bezoutian.StrictInterleaving` |  |
-| 10 | `Polynomial.splits_nodup_roots_of_strict_sign_changes` | `RealRooted.Mathlib.Algebra.Polynomial.IntervalSignChanges` | A finite grid with strict sign changes accounts for every root of a nonzero polynomial of degree at most the number of gaps. |
 | 9 | `MvPolynomial.algebraicSymbol_eq_sum` | `RealRooted.Mathlib.Algebra.MvPolynomial.Stability.Symbol` | Expand the finite algebraic symbol in its bounded monomial basis. |
+| 9 | `Polynomial.splits_nodup_roots_of_strict_sign_changes` | `RealRooted.Mathlib.Algebra.Polynomial.IntervalSignChanges` | A finite grid with strict sign changes accounts for every root of a nonzero polynomial of degree at most the number of gaps. |
 | 9 | `RealRooted.TuranHurwitz.rising_pos` | `RealRooted.TuranHurwitz.RisingConvolution` | Rising factorials are strictly positive for positive starting value. |
 | 9 | `RealRooted.rootSeqDesc_pairwise` | `RealRooted.CommonInterleaver.RootDesc` |  |
 | 8 | `RealRooted.JacobiDeformation.risingFactorial_pos` | `RealRooted.JacobiDeformation.Pochhammer` |  |
@@ -563,9 +563,9 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 9 | `RealRooted.StrictInterl.hasSimpleRoots_of_isCoprime` | `RealRooted.SimpleRoots` | A coprime strictly interlacing pair has simple real roots in both entries. |
 | 8 | `Matrix.isTotallyNonneg_lowerBidiagonalFin` | `RealRooted.Mathlib.LinearAlgebra.Matrix.TotallyNonneg.Bidiagonal` | Leading finite truncations of variable lower-bidiagonal totally nonnegative matrices are totally nonnegative. |
 | 8 | `Polynomial.natDegree_and_leadingCoeff_C_mul_add_affine_mul_derivative` | `RealRooted.Mathlib.Algebra.Polynomial.Derivative` | A nonzero prospective top coefficient gives the exact degree and leading coefficient of an affine Euler derivative step. |
+| 8 | `Polynomial.natDegree_and_leadingCoeff_quadratic_derivative_add_linear_mul_add` | `RealRooted.Mathlib.Algebra.Polynomial.Derivative` | A nonzero prospective top coefficient gives both the exact degree and leading coefficient of a quadratic-derivative plus linear-multiple step. |
 | 8 | `RealRooted.IsRealRootedIn.mem_of_isRoot` | `RealRooted.RootLocation.Basic` | Every root of a polynomial rooted in `S` lies in `S`. |
 | 8 | `RealRooted.mvRealStableOrZero_iff_complexifyMv` | `RealRooted.MultivariateStability` | Weak real stability agrees with weak upper-half-plane stability after complexifying coefficients. |
 | 8 | `RealRooted.sequence_of_base_and_step` | `RealRooted.SequenceClosure` | Generic sequence induction from one base case and a successor step. |
 | 7 | `Matrix.IsTotallyNonneg.hurwitzLeadingPrincipal` | `RealRooted.ClassicalHurwitzMatrix.TotallyNonnegative` | Every finite leading principal section inherits total nonnegativity from the infinite classical Hurwitz matrix. |
 | 7 | `MvPolynomial.IsMultiaffine.esymm` | `RealRooted.Multiaffine` |  |
-| 7 | `ParkingFunction.mem_parkingFunctions_iff` | `RealRooted.Mathlib.Combinatorics.Enumerative.ParkingFunction` | Membership in `parkingFunctions` is the parking-function predicate. |
