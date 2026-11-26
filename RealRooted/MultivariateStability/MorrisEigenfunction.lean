@@ -335,14 +335,9 @@ private theorem repr_eq_zero_of_mem_lowerSpan {E ι : Type*}
     (hx : x ∈ LinearMap.lowerSpan (R := ℝ) b i) (hij : i ≤ j) :
     b.repr x j = 0 := by
   classical
-  induction hx using Submodule.span_induction with
-  | mem x hx =>
-      rcases hx with ⟨k, hki, rfl⟩
-      rw [Module.Basis.repr_self,
-        Finsupp.single_eq_of_ne (ne_of_gt (hki.trans_le hij))]
-  | zero => simp
-  | add x y _ _ hx hy => simpa using congrArg₂ (· + ·) hx hy
-  | smul r x _ hx => simpa using congrArg (r • ·) hx
+  apply Finsupp.notMem_support_iff.mp
+  intro hj
+  exact not_lt_of_ge hij ((b.mem_span_image.mp hx) hj)
 
 private theorem toMatrix_isUpperTriangular_of_isTriangularOn
     {ι E : Type*} [Fintype ι] [DecidableEq ι] [LinearOrder ι]
@@ -351,15 +346,9 @@ private theorem toMatrix_isUpperTriangular_of_isTriangularOn
     (LinearMap.toMatrix b b T).IsUpperTriangular := by
   intro i j hji
   change j < i at hji
-  rw [LinearMap.toMatrix_apply]
-  change b.repr (T (b j)) i = 0
-  let r := T (b j) - c j • b j
-  have hr : r ∈ LinearMap.lowerSpan (R := ℝ) b j := hT j
-  have hremCoord : b.repr r i = 0 :=
-    repr_eq_zero_of_mem_lowerSpan b hr hji.le
-  simpa [r, map_sub, map_smul, Module.Basis.repr_self,
-    Finsupp.single_eq_of_ne (ne_of_gt hji)] using hremCoord
-
+  have hzero := repr_eq_zero_of_mem_lowerSpan b (hT j) hji.le
+  simpa [LinearMap.toMatrix_apply, map_sub, map_smul, Module.Basis.repr_self,
+    Finsupp.single_eq_of_ne (ne_of_gt hji)] using hzero
 
 /-- The order isomorphism from `Fin (card - 1 + 1)` onto a linear extension of the dominance order
 on `MorrisDownsetIndex q lambda`. -/
@@ -585,12 +574,9 @@ private theorem toMatrix_diag_eq_of_isTriangularOn {n : ℕ} {E : Type*}
     (T : E →ₗ[ℝ] E) (c : Fin (n + 1) → ℝ)
     (hT : T.IsTriangularOn b c) (i : Fin (n + 1)) :
     LinearMap.toMatrix b b T i i = c i := by
-  rw [LinearMap.toMatrix_apply]
-  have hzero : b.repr (T (b i) - c i • b i) i = 0 :=
-    repr_eq_zero_of_mem_lowerSpan b (hT i) le_rfl
-  have hsub : b.repr (T (b i)) i - c i = 0 := by
-    simpa [map_sub, map_smul, Module.Basis.repr_self] using hzero
-  linarith
+  have hzero := repr_eq_zero_of_mem_lowerSpan b (hT i) le_rfl
+  simpa [LinearMap.toMatrix_apply, map_sub, map_smul, Module.Basis.repr_self,
+    sub_eq_zero] using hzero
 
 private theorem LinearMap.IsTriangularOn.conj_equiv {n : ℕ}
     {E F : Type*} [AddCommGroup E] [Module ℝ E]
@@ -599,18 +585,10 @@ private theorem LinearMap.IsTriangularOn.conj_equiv {n : ℕ}
     (hT : T.IsTriangularOn b c) :
     (e.conj T).IsTriangularOn (b.map e) c := by
   intro i
-  have hi := hT i
-  have hlift {x : E} (hx : x ∈ LinearMap.lowerSpan (R := ℝ) b i) :
-      e x ∈ LinearMap.lowerSpan (R := ℝ) (b.map e) i := by
-    induction hx using Submodule.span_induction with
-    | mem x hx =>
-        rcases hx with ⟨j, hji, rfl⟩
-        exact Submodule.subset_span ⟨j, hji, rfl⟩
-    | zero => simp
-    | add x y _ _ hx hy => simpa using Submodule.add_mem _ hx hy
-    | smul r x _ hx => simpa using Submodule.smul_mem _ r hx
-  convert hlift hi using 1
-  simp [LinearEquiv.conj_apply, LinearMap.comp_apply]
+  have hi := Submodule.image_span_subset_span e.toLinearMap (b '' Set.Iio i)
+    ⟨_, hT i, rfl⟩
+  simpa [LinearMap.lowerSpan, Set.image_image, Function.comp_def, Module.Basis.coe_map,
+    map_sub, map_smul, LinearEquiv.conj_apply] using hi
 
 private theorem ContinuousLinearMap.map_exp_apply_of_intertwines
     {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -628,29 +606,19 @@ private theorem ContinuousLinearMap.map_exp_apply_of_intertwines
           ih, hJ]
   rw [NormedSpace.exp_eq_tsum ℝ, NormedSpace.exp_eq_tsum ℝ]
   have hTsum := NormedSpace.expSeries_summable' (𝕂 := ℝ) T
-  have hTapply := hTsum.map (ContinuousLinearMap.apply ℝ E x)
-    (ContinuousLinearMap.apply ℝ E x).continuous
-  change J ((∑' n : ℕ, (n.factorial : ℝ)⁻¹ • T ^ n) x) =
-    (∑' n : ℕ, (n.factorial : ℝ)⁻¹ • S ^ n) (J x)
-  have hTeval : (∑' n : ℕ, (n.factorial : ℝ)⁻¹ • T ^ n) x =
-      ∑' n : ℕ, ((n.factorial : ℝ)⁻¹ • T ^ n) x := by
-    simpa only [Function.comp_apply, ContinuousLinearMap.apply_apply] using
-      (ContinuousLinearMap.apply ℝ E x).map_tsum hTsum
-  have hSeval : (∑' n : ℕ, (n.factorial : ℝ)⁻¹ • S ^ n) (J x) =
-      ∑' n : ℕ, ((n.factorial : ℝ)⁻¹ • S ^ n) (J x) := by
-    simpa only [Function.comp_apply, ContinuousLinearMap.apply_apply] using
-      (ContinuousLinearMap.apply ℝ F (J x)).map_tsum
-        (NormedSpace.expSeries_summable' (𝕂 := ℝ) S)
-  have hJsum : J (∑' n : ℕ, ((n.factorial : ℝ)⁻¹ • T ^ n) x) =
-      ∑' n : ℕ, J (((n.factorial : ℝ)⁻¹ • T ^ n) x) := by
-    simpa only [Function.comp_apply, ContinuousLinearMap.apply_apply] using
-      J.map_tsum hTapply
+  have hSsum := NormedSpace.expSeries_summable' (𝕂 := ℝ) S
+  have hTeval := (ContinuousLinearMap.apply ℝ E x).map_tsum hTsum
+  have hSeval := (ContinuousLinearMap.apply ℝ F (J x)).map_tsum hSsum
+  have hJsum := J.map_tsum
+    (hTsum.map (ContinuousLinearMap.apply ℝ E x)
+      (ContinuousLinearMap.apply ℝ E x).continuous)
+  simp only [Function.comp_apply, ContinuousLinearMap.apply_apply] at hTeval hSeval hJsum
   rw [hTeval, hJsum, hSeval]
-  apply tsum_congr
-  intro n
-  change J ((n.factorial : ℝ)⁻¹ • (T ^ n) x) =
-    (n.factorial : ℝ)⁻¹ • (S ^ n) (J x)
-  rw [map_smul, hpow]
+  exact tsum_congr fun n => by
+    change J ((n.factorial : ℝ)⁻¹ • (T ^ n) x) =
+      (n.factorial : ℝ)⁻¹ • (S ^ n) (J x)
+    rw [map_smul, hpow]
+
 
 private theorem morrisDownset_le_degree {N q : ℕ}
     (lambda : N.Partition) :

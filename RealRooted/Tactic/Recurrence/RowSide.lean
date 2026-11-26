@@ -40,21 +40,19 @@ def rowDegreeTac (P : Ident) : TacticM (TSyntax `tactic) :=
     | (norm_num [$P:ident]; first | done | (compute_degree!; done) | fail)
     | fail)
 
-/-- The degree of the row `P k`, if it is at most `8`.  When the rows can be computed exactly,
-only the computed degree is tried: no other degree can be proved, and each failed attempt
-costs an elaboration of the row. -/
+/-- A candidate degree below `9` for the row `P k`. When exact evaluation is available,
+return its degree without elaborating a preliminary proof: the caller's recurrence certificate
+still proves the base-degree hypothesis. Otherwise search the possible degrees by elaboration. -/
 def findRowDegree (P : Ident) (k : Nat) (params : Array Expr := #[]) :
     TacticM (Option Nat) := do
-  let tac ← rowDegreeTac P
-  let Q ← certTerm (mkAppN (← mkConstWithFreshMVarLevels P.getId) params)
   let computed? : Option Nat ← do
     let some L ← linRec? P.getId params | pure none
     let some rows ← linRecRows? L k | pure none
     pure (rows[k]?.map (·.natDegree))
-  let Ds := match computed? with
-    | some d => if d < 9 then [d] else []
-    | none => List.range 9
-  for D in Ds do
+  if let some d := computed? then return if d < 9 then some d else none
+  let tac ← rowDegreeTac P
+  let Q ← certTerm (mkAppN (← mkConstWithFreshMVarLevels P.getId) params)
+  for D in List.range 9 do
     let s ← saveState
     let ok ← rowSucceeds do
       evalTactic (← `(tactic|

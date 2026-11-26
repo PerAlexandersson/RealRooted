@@ -6,6 +6,7 @@ public import Mathlib.Algebra.Polynomial.Div
 public import Mathlib.Algebra.Polynomial.Eval.Defs
 public import Mathlib.Algebra.Polynomial.FieldDivision
 public import Mathlib.Analysis.Calculus.Deriv.Basic
+import Mathlib.RingTheory.EuclideanDomain
 import Mathlib.Analysis.Calculus.Deriv.Add
 import Mathlib.Analysis.Calculus.Deriv.Inv
 import Mathlib.Analysis.Calculus.Deriv.Mul
@@ -49,10 +50,7 @@ def polynomialRatioDerivative (F G : ℝ[X]) (t : ℝ) : ℝ :=
 /-- The quotient rule for the ratio of two real polynomials. -/
 theorem polynomialRatio_hasDerivAt (F G : ℝ[X]) {t : ℝ} (hF : F.eval t ≠ 0) :
     HasDerivAt (fun s => G.eval s / F.eval s) (polynomialRatioDerivative F G t) t := by
-  have h := (G.hasDerivAt t).mul ((F.hasDerivAt t).inv hF)
-  convert h using 1
-  · rfl
-  · dsimp [polynomialRatioDerivative]; field_simp; ring_nf
+  exact (G.hasDerivAt t).div (F.hasDerivAt t) hF
 
 /-- A continuous function whose imaginary part is nonpositive for `s > 0` has nonpositive
 imaginary part at `0`. -/
@@ -187,11 +185,7 @@ private lemma pf_identity (F G : ℝ[X]) (hF : F ≠ 0) (hs : F.Splits) (hnd : F
     · simp [h0]
     have hle : F.roots ≤ (G - S).roots :=
       (Multiset.le_iff_subset hnd).2 fun r hr => (mem_roots h0).2 (hroot r hr)
-    have h1 := (Multiset.prod_X_sub_C_dvd_iff_le_roots h0 F.roots).2 hle
-    have hFe := hs.eq_prod_roots
-    calc
-      F = _ := hFe
-      _ ∣ G - S := (C_mul_dvd (leadingCoeff_ne_zero.2 hF)).2 h1
+    exact hs.dvd_of_roots_le_roots hF hle
   obtain ⟨Q, hQ⟩ := hdvd
   exact ⟨Q, by rw [mul_comm, ← hQ]; ring⟩
 
@@ -402,53 +396,42 @@ theorem deriv_nonpos_and_second_deriv_nonneg (F G : ℝ[X]) (hF : F ≠ 0) (hs :
     (t : ℝ) (ht : ∀ r ∈ F.roots, r < t) :
     deriv (fun s => G.eval s / F.eval s) t ≤ 0 ∧
       deriv (deriv (fun s => G.eval s / F.eval s)) t ≥ 0 := by
-  induction h : F.natDegree using Nat.strong_induction_on generalizing F G with
-  | _ n ih =>
-    by_cases hcop : ∀ r ∈ F.roots, G.eval r ≠ 0
-    · exact coprime_case F G hF hs hcop hUHP t ht
-    · push Not at hcop
-      obtain ⟨r, hrF, hrG⟩ := hcop
-      have hrF' : F.IsRoot r := (mem_roots hF).1 hrF
-      set F' := F /ₘ (X - C r)
-      set G' := G /ₘ (X - C r)
-      have hFe : (X - C r) * F' = F := mul_divByMonic_eq_iff_isRoot.2 hrF'
-      have hGe : (X - C r) * G' = G := mul_divByMonic_eq_iff_isRoot.2 hrG
-      have hF' : F' ≠ 0 := by
-        rintro h0; rw [h0, mul_zero] at hFe; exact hF hFe.symm
-      have hdeg : F'.natDegree < n := by
-        rw [← h, ← hFe, natDegree_mul (X_sub_C_ne_zero r) hF', natDegree_X_sub_C]; lia
-      have hs' : F'.Splits := hs.of_dvd hF ⟨X - C r, by rw [← hFe, mul_comm]⟩
-      have hroots : ∀ x ∈ F'.roots, x ∈ F.roots := by
-        intro x hx
-        rw [← hFe, roots_mul (by rw [hFe]; exact hF)]
-        exact Multiset.mem_add.mpr (Or.inr hx)
-      have hUHP' : ∀ w : ℂ, 0 < w.im →
-          (F'.map (algebraMap ℝ ℂ)).eval w ≠ 0 ∧
-            ((G'.map (algebraMap ℝ ℂ)).eval w /
-              (F'.map (algebraMap ℝ ℂ)).eval w).im ≤ 0 := by
-        intro w hw
-        obtain ⟨h1, h2⟩ := hUHP w hw
-        have hwr : w - (r : ℂ) ≠ 0 := by
-          intro h0
-          have him := congrArg Complex.im h0
-          simp only [Complex.sub_im, Complex.ofReal_im, sub_zero, Complex.zero_im] at him
-          linarith
-        rw [← hFe] at h1 h2; rw [← hGe] at h2
-        simp only [Polynomial.map_mul, Polynomial.map_sub, map_X, map_C, eval_mul, eval_sub,
-          eval_X, eval_C, Complex.coe_algebraMap] at h1 h2
-        refine ⟨fun h0 => h1 (by rw [h0, mul_zero]), ?_⟩
-        rwa [mul_div_mul_left _ _ hwr] at h2
-      obtain ⟨hd1, hd2⟩ := ih _ hdeg F' G' hF' hs' hUHP'
-        (fun x hx => ht x (hroots x hx)) rfl
-      have hcongr := deriv_congr_open (fun s => G.eval s / F.eval s)
-        (fun s => G'.eval s / F'.eval s) {x | x ≠ r} isOpen_ne t (ne_of_gt (ht r hrF))
-        (by
-          intro x hx
-          simp only [Set.mem_ofPred_eq] at hx
-          have hxr : x - r ≠ 0 := sub_ne_zero.2 hx
-          rw [← hFe, ← hGe]; simp only [eval_mul, eval_sub, eval_X, eval_C]
-          rw [mul_div_mul_left _ _ hxr])
-      simpa only [hcongr.1, hcongr.2] using ⟨hd1, hd2⟩
+  classical
+  let := EuclideanDomain.gcdMonoid ℝ[X]
+  obtain ⟨G', F', hGe, hFe, hcop'⟩ := extract_gcd G F
+  let D := gcd G F
+  change G = D * G' at hGe
+  change F = D * F' at hFe
+  have hF' : F' ≠ 0 := right_ne_zero_of_mul (hFe ▸ hF)
+  have hdvd : F' ∣ F := ⟨gcd G F, by rw [mul_comm]; exact hFe⟩
+  have hcop : ∀ r ∈ F'.roots, G'.eval r ≠ 0 := by
+    intro r hr
+    exact (Polynomial.aeval_ne_zero_of_isCoprime
+      ((gcd_isUnit_iff G' F').mp hcop') r).resolve_right
+      (by simpa using (isRoot_of_mem_roots hr).eq_zero)
+  have hcancel {K : Type} [Field K] [Algebra ℝ K] (x : K) (hx : aeval x F ≠ 0) :
+      aeval x G / aeval x F = aeval x G' / aeval x F' := by
+    simp only [hFe, hGe, map_mul] at hx ⊢
+    exact mul_div_mul_left _ _ (left_ne_zero_of_mul hx)
+  have hUHP' : ∀ w : ℂ, 0 < w.im →
+      (F'.map (algebraMap ℝ ℂ)).eval w ≠ 0 ∧
+        ((G'.map (algebraMap ℝ ℂ)).eval w /
+          (F'.map (algebraMap ℝ ℂ)).eval w).im ≤ 0 := by
+    intro w hw
+    obtain ⟨h1, h2⟩ := hUHP w hw
+    simp only [eval_map_algebraMap] at h1 h2 ⊢
+    rw [hcancel w h1] at h2
+    rw [hFe, map_mul] at h1
+    exact ⟨right_ne_zero_of_mul h1, h2⟩
+  have hresult := coprime_case F' G' hF'
+    (hs.of_dvd hF hdvd) hcop hUHP' t
+    (fun r hr => ht r (Multiset.mem_of_le (roots.le_of_dvd hF hdvd) hr))
+  have hFt : F.eval t ≠ 0 := fun h => lt_irrefl t (ht t ((mem_roots hF).mpr h))
+  have heq : (fun s => G.eval s / F.eval s) =ᶠ[nhds t]
+      (fun s => G'.eval s / F'.eval s) := by
+    filter_upwards [F.continuous.continuousAt.eventually_ne hFt] with x hx
+    simpa using hcancel x (by simpa using hx)
+  simpa only [heq.deriv_eq, heq.deriv.deriv_eq] using hresult
 
 end PickRatio
 end

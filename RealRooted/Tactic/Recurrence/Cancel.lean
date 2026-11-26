@@ -415,17 +415,19 @@ private def cancelRatioStepOne (p : Nat) (grow : Array Bool) (A B Q Dfun : Term)
           if zeroRewrites ≥ 1 then evalTactic (← `(tactic| rw [rr_hz1]))
           if (← getGoals).isEmpty then return
           evalTactic (← `(tactic| push_cast))
-          evalTactic (← `(tactic|
-            nlinarith [rr_hpos, rr_hratio, rr_hsub, rr_hsub2]))
+          evalTactic (← `(tactic| first
+            | nlinarith only [rr_hpos, rr_hratio, rr_hsub, rr_hsub2]
+            | nlinarith [rr_hpos, rr_hratio, rr_hsub, rr_hsub2]))
       solveCoeff "general hstep (cancellation)" 1 (if isGrowth then 2 else 1) gzero
       solveCoeff "general hstep (positive coefficient)" 1 (if isGrowth then 1 else 0) gpos
       cancelRun "general hstep (nonnegative coefficients)" gnn do
         evalTactic (← `(tactic| simp only [RealRooted.LinRec.rhs, List.map_cons,
           List.map_nil, List.sum_cons, List.sum_nil, Function.iterate_zero,
           Function.iterate_one, id_eq, add_zero]))
-        evalTactic (← `(tactic| simpa only [add_comm] using
-          RealRooted.hasNonnegCoeffs_mul_add_mul_derivative rr_hle
-            (le_of_eq rr_hAzero.symm) rr_hmult_local rr_hnn))
+        evalTactic (← `(tactic| rw [add_comm]))
+        evalTactic (← `(tactic| exact
+          (RealRooted.hasNonnegCoeffs_mul_add_mul_derivative rr_hle
+            (le_of_eq rr_hAzero.symm) rr_hmult_local rr_hnn)))
       solveCoeff "general hstep (ratio)" 2 (if isGrowth then 1 else 0) gratio
   setGoals []
 

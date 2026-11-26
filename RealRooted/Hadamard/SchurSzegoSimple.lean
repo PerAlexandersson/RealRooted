@@ -4,7 +4,7 @@ public import RealRooted.HermiteBiehler.Basic
 public import Mathlib.Algebra.Polynomial.Eval.Degree
 public import RealRooted.NewtonAux
 import RealRooted.IteratedDerivativeShift
-import RealRooted.GraceHalfPlane
+import RealRooted.Hadamard.Grace
 import RealRooted.Hadamard.SchurSzegoMultiplicity
 import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 public import RealRooted.Hadamard.Basic
@@ -43,165 +43,75 @@ namespace SchurSzegoAristotle
 private noncomputable def compC (n : ℕ) (P : ℂ[X]) (Q : ℝ[X]) : ℂ[X] :=
   ∑ k ∈ range (n + 1), monomial k (P.coeff k * (Q.coeff k : ℂ) / (n.choose k : ℂ))
 
-private theorem eval_compC (n : ℕ) (P : ℂ[X]) (Q : ℝ[X]) (x : ℂ) :
-    (compC n P Q).eval x =
-      ∑ k ∈ range (n + 1), P.coeff k * (Q.coeff k : ℂ) / (n.choose k : ℂ) * x ^ k := by
-  simp [compC, eval_finsetSum, eval_monomial]
-
-/-- Polar derivative `N P + (ζ - X) P'`. -/
-private noncomputable def polarDeriv (N : ℕ) (ζ : ℂ) (P : ℂ[X]) : ℂ[X] :=
-  C (N : ℂ) * P + (C ζ - X) * derivative P
-
-private theorem coeff_polarDeriv (N : ℕ) (ζ : ℂ) (P : ℂ[X]) (k : ℕ) :
-    (polarDeriv N ζ P).coeff k =
-      ((N : ℂ) - k) * P.coeff k + ζ * ((k : ℂ) + 1) * P.coeff (k + 1) := by
-  simp only [polarDeriv, coeff_add, coeff_C_mul, sub_mul, coeff_sub,
-    coeff_X_mul_derivative, coeff_derivative]
-  ring
-
-private theorem natDegree_polarDeriv_le {n : ℕ} (ζ : ℂ) {P : ℂ[X]}
-    (hP : P.natDegree ≤ n + 1) :
-    (polarDeriv (n + 1) ζ P).natDegree ≤ n := by
-  exact RealRooted.polarDeriv_natDegree_le (by lia) hP
-
-/-- Laguerre's theorem on polar derivatives for the upper half-plane. -/
-private theorem polarDeriv_ne_zero {N : ℕ} (hN : 1 ≤ N) {P : ℂ[X]} (hPdeg : P.natDegree ≤ N)
-    (hP : ∀ z : ℂ, 0 < z.im → P.eval z ≠ 0) {ζ : ℂ} (hζ : 0 < ζ.im) {z : ℂ}
-    (hz : 0 < z.im) :
-    (polarDeriv N ζ P).eval z ≠ 0 := by
-  intro hzero
-  have hroots : P.RootsIn (RealRooted.lowerHalf 0) := by
-    intro w hw
-    exact le_of_not_gt (fun h => hP w h hw)
-  have hpres := RealRooted.polarDeriv_rootsIn_lowerHalf_of_natDegree_le
-    hN hPdeg hroots (not_le.mpr hζ)
-  exact (not_le.mpr hz) (hpres z hzero)
-
-/-- The pointwise recursion for the composition. -/
-private theorem compC_recursion (n : ℕ) (P : ℂ[X]) (Q1 : ℝ[X])
-    (hQ1 : Q1.natDegree ≤ n) {β : ℝ} (hβ : β ≠ 0) (x : ℂ) :
-    ((n : ℂ) + 1) * (compC (n + 1) P ((X + C β) * Q1)).eval x =
-      (β : ℂ) * (compC n (polarDeriv (n + 1) (x / β) P) Q1).eval x := by
-  have hβ' : (β : ℂ) ≠ 0 := by exact_mod_cast hβ
-  have hch : ∀ k ≤ n, ((n.choose k : ℕ) : ℂ) ≠ 0 := fun k hk => by
-    exact_mod_cast (Nat.choose_pos hk).ne'
-  have hch1 : ∀ k ≤ n + 1, (((n + 1).choose k : ℕ) : ℂ) ≠ 0 := fun k hk => by
-    exact_mod_cast (Nat.choose_pos hk).ne'
-  have hid1 : ∀ k ≤ n, ((n : ℂ) + 1) * ((n.choose k : ℕ) : ℂ) =
-      (((n : ℂ) + 1) - k) * (((n + 1).choose k : ℕ) : ℂ) := by
-    intro k hk
-    have h := Nat.choose_mul_succ_eq n k
-    have h' : ((n.choose k * (n + 1) : ℕ) : ℂ) =
-        (((n + 1).choose k * (n + 1 - k) : ℕ) : ℂ) := by
-      rw [h]
-    push_cast [Nat.cast_sub (show k ≤ n + 1 by lia)] at h'
-    linear_combination h'
-  have hid2 : ∀ k ≤ n, ((n : ℂ) + 1) * ((n.choose k : ℕ) : ℂ) =
-      ((k : ℂ) + 1) * (((n + 1).choose (k + 1) : ℕ) : ℂ) := by
-    intro k hk
-    have h := Nat.add_one_mul_choose_eq n k
-    have h' : (((n + 1) * n.choose k : ℕ) : ℂ) =
-        (((n + 1).choose (k + 1) * (k + 1) : ℕ) : ℂ) := by
-      rw [h]
-    push_cast at h'
-    linear_combination h'
-  rw [eval_compC, eval_compC]
-  have hQ : ∀ k, ((((X + C β) * Q1).coeff k : ℝ) : ℂ) =
-      (((X * Q1).coeff k : ℝ) : ℂ) + (β : ℂ) * ((Q1.coeff k : ℝ) : ℂ) := by
-    intro k; rw [add_mul, coeff_add, coeff_C_mul]; push_cast; ring
-  have hL : ∑ k ∈ range (n + 1 + 1), P.coeff k * ((((X + C β) * Q1).coeff k : ℝ) : ℂ) /
-      (((n + 1).choose k : ℕ) : ℂ) * x ^ k =
-      ∑ k ∈ range (n + 1 + 1), P.coeff k * (((X * Q1).coeff k : ℝ) : ℂ) /
-        (((n + 1).choose k : ℕ) : ℂ) * x ^ k +
-      ∑ k ∈ range (n + 1 + 1), (β : ℂ) * P.coeff k * ((Q1.coeff k : ℝ) : ℂ) /
-        (((n + 1).choose k : ℕ) : ℂ) * x ^ k := by
-    rw [← sum_add_distrib]; refine sum_congr rfl fun k _ => ?_; rw [hQ]; ring
-  have hR : (β : ℂ) * ∑ k ∈ range (n + 1), (polarDeriv (n + 1) (x / β) P).coeff k *
-      ((Q1.coeff k : ℝ) : ℂ) / ((n.choose k : ℕ) : ℂ) * x ^ k =
-      ∑ k ∈ range (n + 1),
-        (β : ℂ) * (((n : ℂ) + 1) - k) * P.coeff k * ((Q1.coeff k : ℝ) : ℂ) /
-        ((n.choose k : ℕ) : ℂ) * x ^ k +
-      ∑ k ∈ range (n + 1), x * ((k : ℂ) + 1) * P.coeff (k + 1) * ((Q1.coeff k : ℝ) : ℂ) /
-        ((n.choose k : ℕ) : ℂ) * x ^ k := by
-    rw [mul_sum, ← sum_add_distrib]; refine sum_congr rfl fun k _ => ?_
-    rw [coeff_polarDeriv]; push_cast; field_simp
-  rw [hL, hR, mul_add, add_comm]
-  congr 1
-  · -- the part with `β * Q1`
-    rw [mul_sum, sum_range_succ, coeff_eq_zero_of_natDegree_lt (show Q1.natDegree < n + 1 by lia)]
-    simp only [Complex.ofReal_zero, mul_zero, zero_div, zero_mul, add_zero]
-    refine sum_congr rfl fun k hk => ?_
-    have hk' : k ≤ n := by simp at hk; lia
-    have e : ((n : ℂ) + 1) / (((n + 1).choose k : ℕ) : ℂ) =
-        ((n : ℂ) + 1 - k) / ((n.choose k : ℕ) : ℂ) := by
-      rw [div_eq_div_iff (hch1 k (by lia)) (hch k hk')]; linear_combination hid1 k hk'
-    calc ((n : ℂ) + 1) * ((β : ℂ) * P.coeff k * ((Q1.coeff k : ℝ) : ℂ) /
-          (((n + 1).choose k : ℕ) : ℂ) * x ^ k)
-        = (β : ℂ) * P.coeff k * ((Q1.coeff k : ℝ) : ℂ) * x ^ k *
-          (((n : ℂ) + 1) / (((n + 1).choose k : ℕ) : ℂ)) := by ring
-      _ = _ := by rw [e]; ring
-  · -- the part with `X * Q1`
-    rw [mul_sum, sum_range_succ']
-    simp only [coeff_X_mul_zero, Complex.ofReal_zero, mul_zero, zero_div, zero_mul, add_zero]
-    refine sum_congr rfl fun k hk => ?_
-    have hk' : k ≤ n := by simp at hk; lia
-    rw [coeff_X_mul]
-    have e : ((n : ℂ) + 1) / (((n + 1).choose (k + 1) : ℕ) : ℂ) =
-        ((k : ℂ) + 1) / ((n.choose k : ℕ) : ℂ) := by
-      rw [div_eq_div_iff (hch1 (k + 1) (by lia)) (hch k hk')]; linear_combination hid2 k hk'
-    calc ((n : ℂ) + 1) * (P.coeff (k + 1) * ((Q1.coeff k : ℝ) : ℂ) /
-          (((n + 1).choose (k + 1) : ℕ) : ℂ) * x ^ (k + 1))
-        = x * P.coeff (k + 1) * ((Q1.coeff k : ℝ) : ℂ) * x ^ k *
-          (((n : ℂ) + 1) / (((n + 1).choose (k + 1) : ℕ) : ℂ)) := by ring
-      _ = _ := by rw [e]; ring
-
 /-- Stability of the Schur–Szegő composition. -/
 private theorem compC_ne_zero : ∀ (n : ℕ) (Q : ℝ[X]),
     Q ≠ 0 → Q.natDegree = n → Q.Splits →
     (∀ b ∈ Q.roots, b < 0) → ∀ P : ℂ[X], P.natDegree ≤ n →
     (∀ z : ℂ, 0 < z.im → P.eval z ≠ 0) → ∀ x : ℂ,
     0 < x.im → (compC n P Q).eval x ≠ 0 := by
-  intro n
-  induction n with
-  | zero =>
-    intro Q hQ0 hQn _ _ P hP hPH x hx
-    have hP0 : P.coeff 0 ≠ 0 := by
-      have := hPH Complex.I (by simp); rwa [eq_C_of_natDegree_le_zero hP, eval_C] at this
-    have hQc : Q.coeff 0 ≠ 0 := by
-      intro h; apply hQ0; rw [eq_C_of_natDegree_eq_zero hQn, h, C_0]
-    rw [eval_compC]; simp [hP0, hQc]
-  | succ n ih =>
-    intro Q hQ0 hQn hQs hneg P hP hPH x hx
-    have hcard : Q.roots.card = n + 1 := by rw [← hQn]; exact hQs.natDegree_eq_card_roots.symm
-    obtain ⟨b, hb⟩ : ∃ b, b ∈ Q.roots := Multiset.card_pos_iff_exists_mem.mp (by lia)
-    have hbneg := hneg b hb
-    set Q1 := Q /ₘ (X - C b) with hQ1def
-    have hQeq : (X - C b) * Q1 = Q := mul_divByMonic_eq_iff_isRoot.mpr (isRoot_of_mem_roots hb)
-    have hQ10 : Q1 ≠ 0 := fun h => by rw [h, mul_zero] at hQeq; exact hQ0 hQeq.symm
-    have hQ1n : Q1.natDegree = n := by
-      have := natDegree_mul (X_sub_C_ne_zero b) hQ10
-      rw [hQeq, natDegree_X_sub_C, hQn] at this; lia
-    have hQ1s : Q1.Splits := Splits.of_dvd hQs hQ0 ⟨X - C b, by rw [mul_comm]; exact hQeq.symm⟩
-    have hQ1neg : ∀ c ∈ Q1.roots, c < 0 := by
-      intro c hc; apply hneg
-      rw [← hQeq, roots_mul (by rw [hQeq]; exact hQ0)]
-      exact Multiset.mem_add.mpr (Or.inr hc)
-    have hβ : 0 < -b := by linarith
-    have hXb : X + C (-b) = X - C b := by rw [C_neg, ← sub_eq_add_neg]
-    have hrec := compC_recursion n P Q1 hQ1n.le hβ.ne' x
-    rw [hXb, hQeq] at hrec
-    have hζ : 0 < (x / ((-b : ℝ) : ℂ)).im := by rw [Complex.div_ofReal_im]; positivity
-    have hpd : ∀ z : ℂ,
-        0 < z.im → (polarDeriv (n + 1) (x / ((-b : ℝ) : ℂ)) P).eval z ≠ 0 :=
-      fun z hz => polarDeriv_ne_zero (N := n + 1) (by lia) hP hPH hζ hz
-    have hne := ih Q1 hQ10 hQ1n hQ1s hQ1neg (polarDeriv (n + 1) (x / ((-b : ℝ) : ℂ)) P)
-      (natDegree_polarDeriv_le _ hP) hpd x hx
-    intro h0
-    push_cast at hrec
-    rw [h0, mul_zero] at hrec
-    have hb' : (-(b : ℂ)) ≠ 0 := by rw [neg_ne_zero]; exact_mod_cast hbneg.ne
-    push_cast at hne
-    exact hne ((mul_eq_zero.mp hrec.symm).resolve_left hb')
+  intro n Q hQ0 hQn hQs hneg P hP hPH x hx
+  obtain ⟨F, hF⟩ := RealRooted.exists_binomialLift_eq P hP
+  obtain ⟨G, hG⟩ := RealRooted.exists_binomialLift_eq (Q.map Complex.ofRealHom)
+    (by rw [natDegree_map_eq_of_injective Complex.ofReal_injective, hQn])
+  have hQ00 : (Q.map Complex.ofRealHom).coeff 0 ≠ 0 := by
+    simp only [coeff_map, Complex.ofRealHom_eq_coe, Complex.ofReal_ne_zero]
+    rw [coeff_zero_eq_eval_zero]
+    intro hzero
+    exact (lt_irrefl 0) (hneg 0 ((mem_roots hQ0).mpr hzero))
+  have htw := RealRooted.natDegree_binomialLift_apolarTwist n x hG hQ00
+  intro hzero
+  have hsum : ∑ k ∈ range (n + 1),
+      (n.choose k : ℂ) * F.coeff k * G.coeff k * x ^ k = 0 := by
+    have heval : (compC n P Q).eval x = ∑ k ∈ range (n + 1),
+        P.coeff k * (Q.coeff k : ℂ) / (n.choose k : ℂ) * x ^ k := by
+      simp [compC, eval_finsetSum, eval_monomial]
+    rw [heval] at hzero
+    convert hzero using 1
+    apply Finset.sum_congr rfl
+    intro k hk
+    have hk' : k ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hk)
+    have hFk : (n.choose k : ℂ) * F.coeff k = P.coeff k := by
+      simpa only [RealRooted.coeff_binomialLift, ite_eq_left hk'] using
+        congrArg (fun p => p.coeff k) hF
+    have hGk : (n.choose k : ℂ) * G.coeff k = (Q.coeff k : ℂ) := by
+      simpa only [RealRooted.coeff_binomialLift, ite_eq_left hk', coeff_map,
+        Complex.ofRealHom_eq_coe]
+        using congrArg (fun p => p.coeff k) hG
+    rw [← hFk, ← hGk]
+    field_simp [Nat.cast_choose_ne_zero (R := ℂ) hk']
+  have hroots : (RealRooted.binomialLift n F).RootsIn (RealRooted.lowerHalf 0) := by
+    rw [hF]
+    intro z hz
+    exact le_of_not_gt (fun h => hPH z h hz)
+  obtain ⟨w, hwroot, hwmem⟩ := RealRooted.grace_apolarity_lowerHalf (hF ▸ hP) htw
+    ((RealRooted.areApolar_apolarTwist_iff n F G x).mpr hsum) hroots
+  have hGtop : G.coeff n = (Q.map Complex.ofRealHom).coeff n := by
+    simpa only [RealRooted.coeff_binomialLift, Nat.choose_self, Nat.cast_one, one_mul,
+      ite_eq_left le_rfl]
+      using congrArg (fun p => p.coeff n) hG
+  have hGnz : G.coeff n ≠ 0 := by
+    rw [hGtop, coeff_map, Complex.ofRealHom_eq_coe, ← hQn, coeff_natDegree]
+    exact Complex.ofReal_ne_zero.mpr (leadingCoeff_ne_zero.mpr hQ0)
+  have hwne : w ≠ 0 := by
+    rintro rfl
+    have hconst : (RealRooted.binomialLift n (RealRooted.apolarTwist n x G)).coeff 0 ≠ 0 := by
+      simp only [RealRooted.coeff_binomialLift, Nat.choose_zero_right, Nat.cast_one, one_mul,
+        RealRooted.coeff_apolarTwist, Nat.sub_zero]
+      exact mul_ne_zero (mul_ne_zero (neg_one_pow_ne_zero _) hGnz)
+        (pow_ne_zero _ (by intro h; simp [h] at hx))
+    exact hconst (by simpa only [coeff_zero_eq_eval_zero] using hwroot.eq_zero)
+  have hQr := (RealRooted.isRoot_binomialLift_apolarTwist_iff n x G hwne).mp hwroot
+  rw [hG] at hQr
+  obtain ⟨r, hr⟩ : ∃ r : ℝ, (r : ℂ) = -x / w := hQs.mem_range_of_isRoot hQ0 hQr
+  have hrroot : Q.IsRoot r := by
+    rw [← hr] at hQr
+    exact hQr.of_map Complex.ofReal_injective
+  have hrneg := hneg r ((mem_roots hQ0).mpr hrroot)
+  have him := congrArg Complex.im ((eq_div_iff hwne).mp hr)
+  simp only [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, zero_mul, add_zero,
+    Complex.neg_im] at him
+  change w.im ≤ 0 at hwmem
+  nlinarith
 
 private theorem hb_prod (s : Multiset ℂ) (hs : ∀ τ ∈ s, τ.im ≤ 0) (x : ℝ) :
     ((s.map fun τ => X - C τ).prod.derivative.eval (x : ℂ) *

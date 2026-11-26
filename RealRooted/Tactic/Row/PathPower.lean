@@ -299,16 +299,25 @@ private def modelCoeffs (kind : PathPowerKind) (raw : Array QPoly) : Array QPoly
         (Array.range raw.size).map fun i => qReflect (raw.size - i) raw[i]!
   | _ => #[]
 
-private def recurrenceMatches (L : LinRecData) (coeffs : Array QPoly) : MetaM Bool := do
-  if L.offset != coeffs.size || L.terms.any fun (_, i, _) => i != 0 then return false
-  for j in [0:coeffs.size] do
-    let some a₀ ← L.coeffAt? j 0 0 | return false
-    let some a₁ ← L.coeffAt? j 0 1 | return false
-    unless a₀.eqv coeffs[j]! && a₁.eqv coeffs[j]! do return false
-  return true
+/-- Evaluate each recurrence multiplier once, rejecting derivatives and nonconstant samples. -/
+private def pathPowerCoeffs? (L : LinRecData) : MetaM (Option (Array QPoly)) := do
+  if L.terms.any fun (_, i, _) => i != 0 then return none
+  let mut coeffs := #[]
+  for j in [0:L.offset] do
+    let some a₀ ← L.coeffAt? j 0 0 | return none
+    let some a₁ ← L.coeffAt? j 0 1 | return none
+    unless a₀.eqv a₁ do return none
+    coeffs := coeffs.push a₀
+  return some coeffs
+
+/-- Compare an exact multiplier array with a proposed model. -/
+private def pathPowerCoeffsMatch (actual proposed : Array QPoly) : Bool :=
+  actual.size == proposed.size && (actual.zip proposed).all fun (a, b) => a.eqv b
 
 private def genericPathPowerFit? (P : Name) : MetaM (Option PathPowerFit) := do
   let some L ← linRec? P | return none
+  unless 2 ≤ L.offset && L.offset ≤ 6 do return none
+  let some actual ← pathPowerCoeffs? L | return none
   let some rows ← linRecRows? L 8 | return none
   let kinds := #[PathPowerKind.direct, .reflected, .shifted, .padded]
   for k in [2:6] do
@@ -316,13 +325,15 @@ private def genericPathPowerFit? (P : Name) : MetaM (Option PathPowerFit) := do
     for p in [1:k + 1] do
       if k == 5 && p == 5 then continue
       let raw ← cachedPoweredCompanionCoeffs k p
+      let candidates := kinds.filterMap fun kind =>
+        let coeffs := modelCoeffs kind raw
+        if pathPowerCoeffsMatch actual coeffs then
+          some (⟨k, p, 0, coeffs.size, kind, coeffs⟩ : PathPowerFit)
+        else none
       for c in [0:p + 1] do
-        for kind in kinds do
-          let coeffs := modelCoeffs kind raw
-          let fit : PathPowerFit := ⟨k, p, c, coeffs.size, kind, coeffs⟩
-          if (List.range 9).all (fun n => rows[n]!.eqv (fit.row n)) then
-            let recMatch ← recurrenceMatches L coeffs
-            if recMatch then return some fit
+        for candidate in candidates do
+          let fit := { candidate with c }
+          if (List.range 9).all (fun n => rows[n]!.eqv (fit.row n)) then return some fit
   let cubicFits : Array PathPowerFit := #[
     ⟨0, 0, 0, 3, .cubicEven,
       #[QPoly.norm #[0, 0, 1], QPoly.norm #[0, 2, -1], QPoly.norm #[1, 2]]⟩,
@@ -332,7 +343,7 @@ private def genericPathPowerFit? (P : Name) : MetaM (Option PathPowerFit) := do
       #[QPoly.X, QPoly.norm #[-1, 2], QPoly.norm #[2, 1]]⟩]
   for fit in cubicFits do
     if (List.range 9).all (fun n => rows[n]!.eqv (fit.row n)) &&
-        (← recurrenceMatches L fit.coeffs) then
+        pathPowerCoeffsMatch actual fit.coeffs then
       return some fit
   return none
 
@@ -406,6 +417,44 @@ private def recurrenceTerm (fit : PathPowerFit) : TacticM Term := do
   let coeffs ← fit.coeffs.mapM qpolyRealTerm
   `(LinearRecurrence.mk $(rowNumLit fit.order) ![$coeffs,*])
 
+/-- Closed coefficient certificates, shared by models with the same companion matrix. -/
+private initialize pathPowerCoeffProofCache : IO.Ref (Array (Nat × Nat × Expr)) ←
+  IO.mkRef #[]
+
+/-- Reuse a closed powered-companion coefficient proof, checking its type and dependencies.
+Only the bounded model parameters enter the key; no local hypotheses are cached. -/
+private def assertPathPowerCoeffs (k p : Nat) (name : Ident) (type : Term) :
+    TacticM Unit := withMainContext do
+  let type ← instantiateMVars (← elabTerm type none)
+  let cache ← pathPowerCoeffProofCache.get
+  let cached? := cache.find? fun (k', p', _) => k == k' && p == p'
+  let proof ← match cached? with
+    | some (_, _, proof) =>
+        if proof.getUsedConstants.all (← getEnv).contains &&
+            (← isDefEq (← inferType proof) type) then
+          pure proof
+        else prove type
+    | none => prove type
+  let (_, goal) ← (← getMainGoal).note name.getId proof (some type)
+  replaceMainGoal [goal]
+where
+  /-- Construct the coefficient proof, retaining it only when no local hypotheses occur. -/
+  prove (type : Expr) : TacticM Expr := do
+    let proof ← elabTermEnsuringType (← `(by
+      norm_num [RealRooted.PathPowerGap.coefficientList,
+        RealRooted.PathPowerGap.companion, pow_succ, Matrix.mul_apply,
+        Matrix.charpoly, Matrix.charmatrix, Matrix.det_succ_row_zero,
+        Fin.sum_univ_succ, Fin.succAbove, List.range, List.range.loop, List.map] <;>
+        rr_ring)) (some type)
+    if proof.hasMVar || proof.hasLevelMVar then
+      throwError "path-power coefficient proof is incomplete"
+    let env ← getEnv
+    -- Imported constants survive route rollback; local auxiliary declarations need not.
+    if !proof.hasFVar && proof.getUsedConstants.all (fun n => (env.getModuleIdxFor? n).isSome) then
+      pathPowerCoeffProofCache.modify fun cache =>
+        (cache.filter fun (k', p', _) => k != k' || p != p').push (k, p, proof)
+    return proof
+
 private def assertComputedPathPowerLink (P : Name) (fit : PathPowerFit) : TacticM Ident := do
   let Pi := mkIdent P
   let link := mkIdent `hlink_pathPower
@@ -428,6 +477,14 @@ private def assertComputedPathPowerLink (P : Name) (fit : PathPowerFit) : Tactic
   let rawFit : PathPowerFit :=
     ⟨fit.k, fit.p, fit.c, fit.k, .direct, rawCoeffs⟩
   let rawE ← recurrenceTerm rawFit
+  -- Normalize a whole reflection before expanding separate coefficient goals.
+  let reflectNorm ← `(tactic| (
+    simp only [← Polynomial.C_ofNat] <;>
+    norm_num only [Polynomial.reflect_add, Polynomial.reflect_C_mul,
+      Polynomial.reflect_C, Polynomial.reflect_monomial, Polynomial.reflect_X,
+      Polynomial.reflect_one, Polynomial.revAt_eq_ite, Polynomial.C_0,
+      Polynomial.C_1, zero_mul, mul_zero, one_mul, mul_one, add_zero, zero_add] <;>
+    norm_num <;> rr_ring))
   let rawProof : Term ←
     `(RealRooted.PathPowerGap.companion_pow_isSolution_subsequence
       (k := $k) (y := (X : ℝ[X]))
@@ -446,12 +503,7 @@ private def assertComputedPathPowerLink (P : Name) (fit : PathPowerFit) : Tactic
     evalTactic (← `(tactic| have $hcoeff:ident : $coeffEq :=
       RealRooted.PathPowerGap.coefficientList_four_four))
   else
-    evalTactic (← `(tactic| have $hcoeff:ident : $coeffEq := by
-      norm_num [RealRooted.PathPowerGap.coefficientList,
-        RealRooted.PathPowerGap.companion, pow_succ, Matrix.mul_apply,
-        Matrix.charpoly, Matrix.charmatrix, Matrix.det_succ_row_zero,
-        Fin.sum_univ_succ, Fin.succAbove, List.range, List.range.loop, List.map] <;>
-        rr_ring))
+    assertPathPowerCoeffs fit.k fit.p hcoeff coeffEq
   evalTactic (← `(tactic|
     have hraw_evaluated : (evaluatedRecurrence $k $p).IsSolution
         (fun n : ℕ => RealRooted.pathPowerCliquePolynomial $k ($p * n + $c)) := by
@@ -483,6 +535,7 @@ private def assertComputedPathPowerLink (P : Name) (fit : PathPowerFit) : Tactic
         fin_cases i <;>
           first
           | rfl
+          | $reflectNorm:tactic
           | (symm
              apply reflect_eq_of_coeff_eq
              · intro n hn
@@ -591,29 +644,32 @@ private def assertComputedPathPowerLink (P : Name) (fit : PathPowerFit) : Tactic
       have hinit_pathPower :
           ∀ i : Fin $(rowNumLit fit.order), $Pi i = $model i := by
         intro i
-        fin_cases i <;>
-          norm_num [$Pi:ident, prepend, RealRooted.reciprocalShift] <;>
-          first
-          | rfl
-          | (symm
-             apply reflect_eq_of_coeff_eq
-             · intro j hj
-               have hj' : j < 7 := by lia
-               interval_cases j <;>
-                 norm_num [$Pi:ident, RealRooted.pathPowerCliquePolynomial,
-                   Finset.sum_range_succ, Polynomial.coeff_add,
-                   Polynomial.coeff_sub, Polynomial.coeff_neg,
-                   Polynomial.coeff_X_pow_mul, Polynomial.coeff_X_pow,
-                   Polynomial.coeff_X, Polynomial.coeff_C,
-                   Polynomial.coeff_one, Polynomial.coeff_ofNat_succ,
-                   Polynomial.coeff_natCast_ite,
-                   Polynomial.coeff_monomial] at hj ⊢ <;>
-                 first
-                 | rr_ring
-                 | norm_num [Nat.choose]
-             · norm_num [RealRooted.pathPowerCliquePolynomial,
-                 Finset.sum_range_succ] <;> compute_degree!
-             · norm_num [$Pi:ident] <;> compute_degree!)))
+        fin_cases i <;> first
+          | (norm_num [$Pi:ident, prepend, RealRooted.reciprocalShift,
+               RealRooted.pathPowerCliquePolynomial, Finset.sum_range_succ] <;>
+             $reflectNorm:tactic)
+          | (norm_num [$Pi:ident, prepend, RealRooted.reciprocalShift] <;>
+             first
+             | rfl
+             | (symm
+                apply reflect_eq_of_coeff_eq
+                · intro j hj
+                  have hj' : j < 7 := by lia
+                  interval_cases j <;>
+                    norm_num [$Pi:ident, RealRooted.pathPowerCliquePolynomial,
+                      Finset.sum_range_succ, Polynomial.coeff_add,
+                      Polynomial.coeff_sub, Polynomial.coeff_neg,
+                      Polynomial.coeff_X_pow_mul, Polynomial.coeff_X_pow,
+                      Polynomial.coeff_X, Polynomial.coeff_C,
+                      Polynomial.coeff_one, Polynomial.coeff_ofNat_succ,
+                      Polynomial.coeff_natCast_ite,
+                      Polynomial.coeff_monomial] at hj ⊢ <;>
+                    first
+                    | rr_ring
+                    | norm_num [Nat.choose]
+                · norm_num [RealRooted.pathPowerCliquePolynomial,
+                    Finset.sum_range_succ] <;> compute_degree!
+                · norm_num [$Pi:ident] <;> compute_degree!))))
   evalTactic (← `(tactic|
     have $link:ident : ∀ n : ℕ, $Pi n = $model n := by
       intro n

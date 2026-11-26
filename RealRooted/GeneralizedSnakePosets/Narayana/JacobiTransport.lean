@@ -294,31 +294,60 @@ theorem narayanaDifference_modified_hasNonnegCoeffs {n : ℕ} (hn : 1 ≤ n) :
   simpa [narayanaDifference] using
     modifiedNarayanaPolynomial_sub_prev_hasNonnegCoeffs (n := n) hn
 
+/-- One top-coefficient calculation gives the degree and leading sign for the shifted pencil,
+including the zero-slope boundary. -/
+private lemma shifted_affine_degree_pos {m : ℕ} {lam mu : ℝ}
+    (hm : 1 ≤ m) (hlam : 0 ≤ lam) :
+    let F := (C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
+      narayanaDifference modifiedNarayanaPolynomial m
+    F.natDegree = m ∧ HasPosLeadingCoeff F := by
+  let F := (C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
+    narayanaDifference modifiedNarayanaPolynomial m
+  have hF : F = (C lam * X + C (mu - 1)) * modifiedNarayanaPolynomial (m - 1) +
+      modifiedNarayanaPolynomial m := by
+    simp only [F, narayanaDifference, map_sub, map_one]
+    ring
+  have hprod : ((C lam * X + C (mu - 1)) *
+      modifiedNarayanaPolynomial (m - 1)).natDegree ≤ m := by
+    calc
+      _ ≤ 1 + (m - 1) := (natDegree_mul_le).trans
+        (Nat.add_le_add natDegree_linear_le
+          (by rw [modifiedNarayanaPolynomial_natDegree]))
+      _ = m := by lia
+  have hle : F.natDegree ≤ m := by
+    rw [hF]
+    exact (natDegree_add_le ..).trans
+      (max_le hprod (by rw [modifiedNarayanaPolynomial_natDegree]))
+  have htop (n : ℕ) : (modifiedNarayanaPolynomial n).coeff n = 1 := by
+    simpa only [modifiedNarayanaPolynomial_natDegree, modifiedNarayanaPolynomial_leadingCoeff]
+      using (coeff_natDegree (p := modifiedNarayanaPolynomial n))
+  have habove : (modifiedNarayanaPolynomial (m - 1)).coeff m = 0 :=
+    coeff_eq_zero_of_natDegree_lt (by rw [modifiedNarayanaPolynomial_natDegree]; lia)
+  have hXtop : (X * modifiedNarayanaPolynomial (m - 1)).coeff m = 1 := by
+    rw [show m = (m - 1) + 1 by lia, coeff_X_mul, Nat.add_sub_cancel, htop]
+  have hcoeff : F.coeff m = lam + 1 := by
+    rw [hF, add_mul, mul_assoc, coeff_add, coeff_add, coeff_C_mul, coeff_C_mul,
+      hXtop, habove, htop]
+    ring
+  have hpos : 0 < F.coeff m := by rw [hcoeff]; positivity
+  have hdegree := natDegree_eq_of_le_of_coeff_ne_zero hle hpos.ne'
+  refine ⟨hdegree, ?_⟩
+  change 0 < F.leadingCoeff
+  rwa [leadingCoeff, hdegree]
+
 /-- The named difference `Q_n = P_n - P_{n-1}` has degree `n` for the
 concrete modified Narayana family. -/
 theorem narayanaDifference_modified_natDegree {n : ℕ} (hn : 1 ≤ n) :
     (narayanaDifference modifiedNarayanaPolynomial n).natDegree = n := by
-  rw [narayanaDifference, sub_eq_add_neg]
-  have hdeg : (-modifiedNarayanaPolynomial (n - 1)).natDegree <
-      (modifiedNarayanaPolynomial n).natDegree := by
-    rw [Polynomial.natDegree_neg, modifiedNarayanaPolynomial_natDegree,
-      modifiedNarayanaPolynomial_natDegree]
-    lia
-  simpa [modifiedNarayanaPolynomial_natDegree] using
-    Polynomial.natDegree_add_eq_left_of_natDegree_lt hdeg
+  simpa only [map_zero, zero_mul, zero_add] using
+    (shifted_affine_degree_pos (lam := 0) (mu := 0) hn le_rfl).1
 
 /-- The named difference `Q_n = P_n - P_{n-1}` has positive leading
 coefficient for the concrete modified Narayana family. -/
 theorem narayanaDifference_modified_posLeadingCoeff {n : ℕ} (hn : 1 ≤ n) :
     HasPosLeadingCoeff (narayanaDifference modifiedNarayanaPolynomial n) := by
-  rw [narayanaDifference, sub_eq_add_neg]
-  have hdeg : (-modifiedNarayanaPolynomial (n - 1)).natDegree <
-      (modifiedNarayanaPolynomial n).natDegree := by
-    rw [Polynomial.natDegree_neg, modifiedNarayanaPolynomial_natDegree,
-      modifiedNarayanaPolynomial_natDegree]
-    lia
-  exact hasPosLeadingCoeff_add_of_natDegree_lt_left hdeg
-    (modifiedNarayanaPolynomial_posLeadingCoeff n)
+  simpa only [map_zero, zero_mul, zero_add] using
+    (shifted_affine_degree_pos (lam := 0) (mu := 0) hn le_rfl).2
 
 /-- The named difference `Q_n = P_n - P_{n-1}` is nonzero for the concrete
 modified Narayana family. -/
@@ -328,43 +357,18 @@ theorem narayanaDifference_modified_ne_zero {n : ℕ} (hn : 1 ≤ n) :
 
 private theorem affineLinear_natDegree_le {lam mu : ℝ} :
     (C lam * X + C mu : ℝ[X]).natDegree ≤ 1 := by
-  have hleft : (C lam * X : ℝ[X]).natDegree ≤ 1 := by
-    calc
-      (C lam * X : ℝ[X]).natDegree ≤
-          (C lam : ℝ[X]).natDegree + (X : ℝ[X]).natDegree :=
-        Polynomial.natDegree_mul_le
-      _ = 0 + 1 := by rw [Polynomial.natDegree_C, Polynomial.natDegree_X]
-      _ = 1 := by norm_num
-  have hright : (C mu : ℝ[X]).natDegree ≤ 1 := by
-    rw [Polynomial.natDegree_C]
-    norm_num
-  exact (Polynomial.natDegree_add_le (C lam * X : ℝ[X]) (C mu)).trans
-    (max_le hleft hright)
+  exact natDegree_linear_le
 
 private theorem affineLinear_natDegree_of_lam_pos
     {lam mu : ℝ} (hlam : 0 < lam) :
     (C lam * X + C mu : ℝ[X]).natDegree = 1 := by
-  have hX_pos : HasPosLeadingCoeff (X : ℝ[X]) := by simp [HasPosLeadingCoeff]
-  have hCX_pos : HasPosLeadingCoeff (C lam * X : ℝ[X]) :=
-    hasPosLeadingCoeff_C_mul hlam hX_pos
-  have hdeg : (C mu : ℝ[X]).natDegree < (C lam * X : ℝ[X]).natDegree := by
-    rw [Polynomial.natDegree_C, Polynomial.natDegree_C_mul hlam.ne',
-      Polynomial.natDegree_X]
-    norm_num
-  rw [Polynomial.natDegree_add_eq_left_of_natDegree_lt hdeg,
-    Polynomial.natDegree_C_mul hlam.ne', Polynomial.natDegree_X]
+  exact natDegree_linear hlam.ne'
 
 private theorem affineLinear_posLeadingCoeff_of_lam_pos
     {lam mu : ℝ} (hlam : 0 < lam) :
     HasPosLeadingCoeff (C lam * X + C mu : ℝ[X]) := by
-  have hX_pos : HasPosLeadingCoeff (X : ℝ[X]) := by simp [HasPosLeadingCoeff]
-  have hCX_pos : HasPosLeadingCoeff (C lam * X : ℝ[X]) :=
-    hasPosLeadingCoeff_C_mul hlam hX_pos
-  have hdeg : (C mu : ℝ[X]).natDegree < (C lam * X : ℝ[X]).natDegree := by
-    rw [Polynomial.natDegree_C, Polynomial.natDegree_C_mul hlam.ne',
-      Polynomial.natDegree_X]
-    norm_num
-  exact hasPosLeadingCoeff_add_of_natDegree_lt_left hdeg hCX_pos
+  change 0 < (C lam * X + C mu : ℝ[X]).leadingCoeff
+  rwa [leadingCoeff_linear hlam.ne']
 
 /-- The affine-linear modified Narayana product has degree at most `n + 1`. -/
 theorem modifiedNarayana_affine_natDegree_le
@@ -440,34 +444,7 @@ theorem affineModifiedNarayanaShifted_left_posLeadingCoeff
     HasPosLeadingCoeff
       ((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
         narayanaDifference modifiedNarayanaPolynomial m) := by
-  rcases lt_or_eq_of_le hlam with hlam_pos | hlam_zero
-  · have hA_pos := modifiedNarayana_affine_posLeadingCoeff_of_lam_pos
-      (n := m - 1) (mu := mu) hlam_pos
-    have hA_deg :
-        ((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1)).natDegree =
-          m := by
-      simpa [Nat.sub_add_cancel hm] using
-        modifiedNarayana_affine_natDegree_of_lam_pos
-          (n := m - 1) (mu := mu) hlam_pos
-    have hQ_pos := narayanaDifference_modified_posLeadingCoeff hm
-    have hQ_deg := narayanaDifference_modified_natDegree hm
-    exact hasPosLeadingCoeff_add_of_same_natDegree (by rw [hA_deg, hQ_deg])
-      hA_pos hQ_pos
-  · subst lam
-    have hA_le :
-        ((C (0 : ℝ) * X + C mu) *
-          modifiedNarayanaPolynomial (m - 1)).natDegree ≤ m - 1 := by
-      simpa using modifiedNarayana_const_mul_natDegree_le
-        (n := m - 1) (mu := mu)
-    have hQ_pos := narayanaDifference_modified_posLeadingCoeff hm
-    have hQ_deg := narayanaDifference_modified_natDegree hm
-    have hA_lt :
-        ((C (0 : ℝ) * X + C mu) *
-          modifiedNarayanaPolynomial (m - 1)).natDegree <
-            (narayanaDifference modifiedNarayanaPolynomial m).natDegree := by
-      rw [hQ_deg]
-      exact lt_of_le_of_lt hA_le (Nat.sub_one_lt (Nat.ne_of_gt hm))
-    exact hasPosLeadingCoeff_add_of_natDegree_lt_right hA_lt hQ_pos
+  exact (shifted_affine_degree_pos hm hlam).2
 
 /-- The left-hand polynomial in Braun--Jal's shifted affine Narayana interlacing lemma has degree
 `m`. -/
@@ -475,36 +452,7 @@ theorem affineModifiedNarayanaShifted_left_natDegree
     {m : ℕ} {lam mu : ℝ} (hm : 1 ≤ m) (hlam : 0 ≤ lam) :
     (((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1) +
         narayanaDifference modifiedNarayanaPolynomial m).natDegree = m) := by
-  rcases lt_or_eq_of_le hlam with hlam_pos | hlam_zero
-  · have hA_pos := modifiedNarayana_affine_posLeadingCoeff_of_lam_pos
-      (n := m - 1) (mu := mu) hlam_pos
-    have hA_deg :
-        ((C lam * X + C mu) * modifiedNarayanaPolynomial (m - 1)).natDegree =
-          m := by
-      simpa [Nat.sub_add_cancel hm] using
-        modifiedNarayana_affine_natDegree_of_lam_pos
-          (n := m - 1) (mu := mu) hlam_pos
-    have hQ_pos := narayanaDifference_modified_posLeadingCoeff hm
-    have hQ_deg := narayanaDifference_modified_natDegree hm
-    simpa [hA_deg] using
-      natDegree_add_eq_of_same_natDegree_of_posLeadingCoeff (by rw [hA_deg, hQ_deg])
-        hA_pos hQ_pos
-  · subst lam
-    have hA_le :
-        ((C (0 : ℝ) * X + C mu) *
-          modifiedNarayanaPolynomial (m - 1)).natDegree ≤ m - 1 := by
-      simpa using modifiedNarayana_const_mul_natDegree_le
-        (n := m - 1) (mu := mu)
-    have hQ_pos := narayanaDifference_modified_posLeadingCoeff hm
-    have hQ_deg := narayanaDifference_modified_natDegree hm
-    have hA_lt :
-        ((C (0 : ℝ) * X + C mu) *
-          modifiedNarayanaPolynomial (m - 1)).natDegree <
-            (narayanaDifference modifiedNarayanaPolynomial m).natDegree := by
-      rw [hQ_deg]
-      exact lt_of_le_of_lt hA_le (Nat.sub_one_lt (Nat.ne_of_gt hm))
-    simpa [hQ_deg] using
-      Polynomial.natDegree_add_eq_right_of_natDegree_lt hA_lt
+  exact (shifted_affine_degree_pos hm hlam).1
 
 /-- The left-hand polynomial in Braun--Jal's shifted affine Narayana interlacing lemma is nonzero.
 -/
@@ -691,15 +639,6 @@ private theorem affineModifiedNarayanaShifted_left_eq_paper
         modifiedNarayanaPolynomial m) := by
   rw [narayanaDifference]
   ring_nf
-
-private theorem affineModifiedNarayanaShifted_right_eq_paper
-    {m : ℕ} {lam nu : ℝ} :
-    ((C lam * X + (C nu + 1)) * modifiedNarayanaPolynomial m +
-        narayanaDifference modifiedNarayanaPolynomial (m + 1)) =
-      ((C lam * X + C nu) * modifiedNarayanaPolynomial m +
-        modifiedNarayanaPolynomial (m + 1)) := by
-  simpa using affineModifiedNarayanaShifted_left_eq_paper
-    (m := m + 1) (lam := lam) (nu := nu)
 
 /-- The paper-shaped left-hand polynomial in the affine Narayana interlacing lemma has
 nonnegative coefficients when `ν ≥ -1`. -/

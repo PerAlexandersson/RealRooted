@@ -525,6 +525,25 @@ theorem centeredEulerOrbit_critical_values {α : ℝ} (hα : 1 / 2 ≤ α) {n : 
 
 /-! ### Small degrees -/
 
+/-- A positive quartic discriminant margin controls every stationary value. -/
+private lemma quartic_stationary_gap (A B C c : ℝ) (hA : 0 < A) (hC : 0 < C)
+    (hgap : 0 < A * (B ^ 2 - 4 * A * C) - B ^ 2)
+    (hcrit : 2 * c * (2 * A * c ^ 2 - B) = 0) :
+    c ^ 4 < |A * c ^ 4 - B * c ^ 2 + C| := by
+  rcases mul_eq_zero.mp hcrit with hc | hc
+  · have hc : c = 0 := by linarith
+    subst c
+    simpa [abs_of_pos hC] using hC
+  · have hrel : 2 * A * c ^ 2 = B := sub_eq_zero.mp hc
+    have hproduct : 0 < 4 * A ^ 2 * ((A - 1) * c ^ 4 - C) := by
+      calc
+        0 < A * (B ^ 2 - 4 * A * C) - B ^ 2 := hgap
+        _ = 4 * A ^ 2 * ((A - 1) * c ^ 4 - C) := by rw [← hrel]; ring
+    have hmargin := (mul_pos_iff_of_pos_left (by positivity : 0 < 4 * A ^ 2)).mp hproduct
+    have hvalue : A * c ^ 4 - B * c ^ 2 + C = C - A * c ^ 4 := by rw [← hrel]; ring
+    rw [hvalue, abs_of_neg (by nlinarith [show 0 ≤ c ^ 4 by positivity])]
+    nlinarith
+
 /-- For the first four nonconstant centered Euler rows, the value at an interior critical
 point strictly dominates every perturbation `b * X ^ n` with `|b| ≤ 1`. -/
 theorem centeredEulerOrbit_small_critical {α b : ℝ} (hα : 1 / 2 ≤ α)
@@ -532,132 +551,70 @@ theorem centeredEulerOrbit_small_critical {α b : ℝ} (hα : 1 / 2 ≤ α)
     (hc : c ∈ Ioo (-1) 1) (hcrit : (centeredEulerOrbit α n).derivative.eval c = 0) :
     |b * c ^ n| < |(centeredEulerOrbit α n).eval c| := by
   have hαpos : 0 < α := by linarith
+  have hbound (k : ℕ) : |b * c ^ k| ≤ |c ^ k| := by
+    rw [abs_mul]
+    exact mul_le_of_le_one_left (abs_nonneg _) hb
   interval_cases n
   · rw [centeredEulerOrbit_one] at hcrit
     simp at hcrit
   · have hc0 : c = 0 := by
-      have hcritical : 1 + α = 0 ∨ c = 0 := by
-        rw [centeredEulerOrbit_two] at hcrit
-        simpa [derivative_sub, derivative_mul, derivative_pow, map_ofNat] using hcrit
-      rcases hcritical with hbad | hc0
-      · linarith
-      · exact hc0
+      rw [centeredEulerOrbit_two] at hcrit
+      simp only [derivative_sub, derivative_mul, derivative_pow, derivative_X,
+        derivative_C, eval_add, eval_mul, eval_C, eval_X, eval_zero,
+        Nat.cast_ofNat, Nat.add_one_sub_one, pow_one, mul_one, zero_mul,
+        sub_zero] at hcrit
+      nlinarith
     subst c
     rw [centeredEulerOrbit_two]
     simpa [abs_of_pos hαpos] using hαpos
   · let A := (1 + α) * (1 + 2 * α)
     let D := α * (3 + 2 * α)
-    have hApos : 0 < A := by
-      dsimp [A]
-      positivity
-    have hAge : 3 ≤ A := by
-      have hfactor : 0 ≤ (2 * α - 1) * (α + 2) :=
-        mul_nonneg (by linarith) (by linarith)
-      dsimp [A]
-      nlinarith
-    have hDpos : 0 < D := by
-      dsimp [D]
-      positivity
+    have hA : 1 < 2 * A := by dsimp [A]; nlinarith [sq_nonneg α]
+    have hD : 0 < D := by dsimp [D]; positivity
     have hcritical : 3 * A * c ^ 2 = D := by
       rw [centeredEulerOrbit_three] at hcrit
-      simp [derivative_sub, derivative_mul, derivative_pow, map_ofNat] at hcrit
+      simp only [derivative_sub, derivative_mul, derivative_pow, derivative_X,
+        derivative_C, eval_sub, eval_add, eval_mul, eval_pow, eval_C, eval_X, eval_zero,
+        Nat.cast_ofNat, Nat.add_one_sub_one, mul_one, zero_mul,
+        ] at hcrit
       dsimp [A, D]
       nlinarith
-    have hcne : c ≠ 0 := by
-      intro hc0
-      subst c
-      norm_num at hcritical
-      linarith
-    have hcritical_mul : D * c = 3 * A * c ^ 3 := by
-      rw [← hcritical]
-      ring
+    have hcne : c ≠ 0 := by intro h; subst c; norm_num at hcritical; linarith
     have hvalue : (centeredEulerOrbit α 3).eval c = -(2 * A) * c ^ 3 := by
       rw [centeredEulerOrbit_three]
-      simp [A]
-      nlinarith [hcritical_mul]
-    calc
-      |b * c ^ 3| ≤ |c ^ 3| := by
-        rw [abs_mul]
-        nlinarith [abs_nonneg (c ^ 3)]
-      _ < |(centeredEulerOrbit α 3).eval c| := by
-        rw [hvalue, abs_mul, abs_neg, abs_of_pos (by positivity : 0 < 2 * A)]
-        have hcabs : 0 < |c ^ 3| := abs_pos.mpr (pow_ne_zero 3 hcne)
-        nlinarith
+      simp only [eval_sub, eval_mul, eval_pow, eval_C, eval_X]
+      have hmul : D * c = 3 * A * c ^ 3 := by rw [← hcritical]; ring
+      dsimp [A, D] at *
+      nlinarith
+    apply lt_of_le_of_lt (hbound 3)
+    rw [hvalue, abs_mul, abs_neg, abs_of_pos (by linarith : 0 < 2 * A)]
+    nlinarith [abs_pos.mpr (pow_ne_zero 3 hcne)]
   · let A := (1 + α) * (1 + 2 * α) * (1 + 3 * α)
     let B := 2 * α * (1 + α) * (3 + 4 * α)
     let C₀ := α ^ 2 * (3 + 2 * α)
-    have hApos : 0 < A := by
-      dsimp [A]
-      positivity
-    have hBpos : 0 < B := by
-      dsimp [B]
-      positivity
-    have hCpos : 0 < C₀ := by
-      dsimp [C₀]
-      positivity
+    have hA : 0 < A := by dsimp [A]; positivity
+    have hC : 0 < C₀ := by dsimp [C₀]; positivity
     have hP : 0 < 24 * α ^ 5 + 92 * α ^ 4 + 160 * α ^ 3 + 112 * α ^ 2 +
         22 * α - 3 := by
       nlinarith [pow_nonneg hαpos.le 2, pow_nonneg hαpos.le 3,
         pow_nonneg hαpos.le 4, pow_nonneg hαpos.le 5]
     have hcertificate : 0 < A * (B ^ 2 - 4 * A * C₀) - B ^ 2 := by
-      have hfactor : 0 < 4 * α ^ 2 * (1 + α) ^ 2 *
-          (24 * α ^ 5 + 92 * α ^ 4 + 160 * α ^ 3 + 112 * α ^ 2 +
-            22 * α - 3) := by positivity
       calc
-        0 < 4 * α ^ 2 * (1 + α) ^ 2 *
+        _ = 4 * α ^ 2 * (1 + α) ^ 2 *
             (24 * α ^ 5 + 92 * α ^ 4 + 160 * α ^ 3 + 112 * α ^ 2 +
-              22 * α - 3) := hfactor
-        _ = A * (B ^ 2 - 4 * A * C₀) - B ^ 2 := by
-          dsimp [A, B, C₀]
-          ring
-    rw [centeredEulerOrbit_four] at hcrit
+              22 * α - 3) := by dsimp [A, B, C₀]; ring
+        _ > 0 := by positivity
     have hcritical : 2 * c * (2 * A * c ^ 2 - B) = 0 := by
-      simp [derivative_add, derivative_sub, derivative_mul, derivative_pow, map_ofNat]
-        at hcrit
+      rw [centeredEulerOrbit_four] at hcrit
+      simp only [derivative_add, derivative_sub, derivative_mul, derivative_pow,
+        derivative_X, derivative_C, eval_sub, eval_add, eval_mul, eval_pow, eval_C,
+        eval_X, eval_zero, Nat.cast_ofNat, Nat.add_one_sub_one, pow_one,
+        mul_one, zero_mul] at hcrit
       dsimp [A, B]
       nlinarith
-    rcases mul_eq_zero.mp hcritical with hc0 | hrelation
-    · have hc0 : c = 0 := by simpa using hc0
-      subst c
-      rw [centeredEulerOrbit_four]
-      norm_num [abs_of_pos (by positivity : 0 < α ^ 2 * (3 + 2 * α))]
-      positivity
-    · have hrelation : 2 * A * c ^ 2 = B := by nlinarith
-      have hcne : c ≠ 0 := by
-        intro hc0
-        subst c
-        norm_num at hrelation
-        linarith
-      have hBsq : B ^ 2 = 4 * A ^ 2 * c ^ 4 := by
-        rw [← hrelation]
-        ring
-      have hproduct : 0 < 4 * A ^ 2 * ((A - 1) * c ^ 4 - C₀) := by
-        calc
-          0 < A * (B ^ 2 - 4 * A * C₀) - B ^ 2 := hcertificate
-          _ = 4 * A ^ 2 * ((A - 1) * c ^ 4 - C₀) := by rw [hBsq]; ring
-      have hgap : C₀ < (A - 1) * c ^ 4 := by
-        rcases (mul_pos_iff.mp hproduct) with hpositive | hnegative
-        · linarith
-        · exact False.elim ((not_lt_of_ge (sq_nonneg A)) (by nlinarith [hnegative.1]))
-      have hrelation_mul : B * c ^ 2 = 2 * A * c ^ 4 := by
-        rw [← hrelation]
-        ring
-      have hvalue : (centeredEulerOrbit α 4).eval c = C₀ - A * c ^ 4 := by
-        rw [centeredEulerOrbit_four]
-        simp [A, C₀]
-        nlinarith
-      have hvalue_neg : C₀ - A * c ^ 4 < 0 := by
-        nlinarith [pow_pos (show 0 < c ^ 2 by positivity) 2]
-      calc
-        |b * c ^ 4| = |b| * c ^ 4 := by
-          have hc4 : 0 ≤ c ^ 4 := by positivity
-          rw [abs_mul, abs_of_nonneg hc4]
-        _ ≤ c ^ 4 := by
-          have hc4 : 0 ≤ c ^ 4 := by positivity
-          nlinarith
-        _ < A * c ^ 4 - C₀ := by nlinarith
-        _ = |(centeredEulerOrbit α 4).eval c| := by
-          rw [hvalue, abs_of_neg hvalue_neg]
-          ring
+    apply lt_of_le_of_lt (hbound 4)
+    rw [centeredEulerOrbit_four, abs_of_nonneg (by positivity : 0 ≤ c ^ 4)]
+    simpa only [eval_add, eval_sub, eval_mul, eval_C, eval_pow, eval_X, A, B, C₀] using
+      quartic_stationary_gap A B C₀ c hA hC hcertificate hcritical
 
 end RealRooted
