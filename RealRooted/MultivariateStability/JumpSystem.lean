@@ -2,9 +2,9 @@ module
 
 public import RealRooted.MultivariateStability
 import RealRooted.Gurvits
+import RealRooted.MultivariateStability.CoeffLimit
 import Mathlib.Analysis.Complex.Polynomial.GaussLucas
 public import Mathlib.RingTheory.MvPolynomial.WeightedHomogeneous
-import Mathlib.Analysis.Complex.AbsMax
 public import Mathlib.RingTheory.MvPolynomial.Homogeneous
 public import Mathlib.Combinatorics.Matroid.IndepAxioms
 import Mathlib.Analysis.Complex.UpperHalfPlane.Basic
@@ -123,6 +123,34 @@ lemma weight_eq_sum (w : Fin n → ℤ) (d : Fin n →₀ ℕ) :
     Finsupp.weight w d = ∑ j, (d j : ℤ) * w j := by
   rw [Finsupp.weight_apply, Finsupp.sum_fintype _ _ (fun _ => by simp)]; simp
 
+/-- Positive scaling of each variable rescales the weighted deformation. -/
+private lemma weighted_sum_rescale (p : MvPolynomial (Fin n) ℝ) (w : Fin n → ℤ)
+    (m : ℤ) (hmin : ∀ d ∈ p.support, m ≤ Finsupp.weight w d)
+    (t : ℝ) (ht : 0 < t) (z : Fin n → ℂ) :
+    (t : ℂ) ^ m * (∑ d ∈ p.support,
+      (p.coeff d : ℂ) * (t : ℂ) ^ (Finsupp.weight w d - m).toNat * ∏ j, z j ^ d j) =
+      eval (fun j => (t : ℂ) ^ w j * z j) (map (algebraMap ℝ ℂ) p) := by
+  classical
+  let e : (Fin n →₀ ℕ) → ℕ := fun d => (Finsupp.weight w d - m).toNat
+  have ht0 : (t : ℂ) ≠ 0 := by exact_mod_cast ht.ne'
+  rw [eval_map_eq_sum, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun d hd => ?_
+  have hmd := hmin d hd
+  have hpow : (t : ℂ) ^ m * (t : ℂ) ^ e d = ∏ j, ((t : ℂ) ^ w j) ^ d j := by
+    rw [← zpow_natCast, ← zpow_add₀ ht0]
+    simp_rw [← zpow_natCast, ← zpow_mul]
+    rw [prod_zpow_eq_zpow_sum ht0]
+    congr 1
+    rw [show ∑ j, w j * (d j : ℤ) = Finsupp.weight w d by
+      rw [weight_eq_sum]; simp only [mul_comm]]
+    dsimp [e]
+    rw [Int.toNat_of_nonneg (by lia)]
+    ring
+  rw [show ∏ j, ((t : ℂ) ^ w j * z j) ^ d j =
+      (∏ j, ((t : ℂ) ^ w j) ^ d j) * ∏ j, z j ^ d j by
+    rw [← Finset.prod_mul_distrib]; simp [mul_pow], ← hpow]
+  ring
+
 /-- The lowest weighted-homogeneous part (initial form) of a stable polynomial with respect to an
 integer weight vector is stable. -/
 theorem Stable.weightedHomogeneousComponent {p : MvPolynomial (Fin n) ℝ} (hp : Stable p)
@@ -130,130 +158,56 @@ theorem Stable.weightedHomogeneousComponent {p : MvPolynomial (Fin n) ℝ} (hp :
     (hex : ∃ d ∈ p.support, Finsupp.weight w d = m) :
     Stable (weightedHomogeneousComponent w m p) := by
   classical
-  intro z0 hz0 hzero
-  set F := MvPolynomial.weightedHomogeneousComponent w m p with hFdef
-  have hcoeffF : ∀ d, F.coeff d = if Finsupp.weight w d = m then p.coeff d else 0 := by
-    intro d; rw [hFdef, coeff_weightedHomogeneousComponent]
+  let F := MvPolynomial.weightedHomogeneousComponent w m p
+  have hcoeffF (d) : F.coeff d = if Finsupp.weight w d = m then p.coeff d else 0 :=
+    coeff_weightedHomogeneousComponent m p d
   have hsubF : F.support ⊆ p.support := by
-    intro d hd; rw [mem_support_iff, hcoeffF] at hd
-    split_ifs at hd <;> simp_all [mem_support_iff]
+    rw [support_weightedHomogeneousComponent]
+    exact Finset.filter_subset _ _
   obtain ⟨d0, hd0, hd0w⟩ := hex
   have hF0 : map (algebraMap ℝ ℂ) F ≠ 0 := by
-    intro h; have := congrArg (fun q => q.coeff d0) h
+    intro h
+    have := congrArg (fun q => q.coeff d0) h
     simp only [coeff_map, hcoeffF, ite_eq_left hd0w, AddMonoidAlgebra.coeff_zero,
       Finsupp.zero_apply] at this
     exact mem_support_iff.mp hd0 (by simpa using this)
-  obtain ⟨y, hy⟩ : ∃ y : Fin n → ℂ, eval y (map (algebraMap ℝ ℂ) F) ≠ 0 := by
-    by_contra h; push Not at h
-    exact hF0 (MvPolynomial.funext fun x => by simp [h x])
-  set v : Fin n → ℂ := y - z0 with hv
-  -- the deformation `H t u = t ^ (-m) * p (t ^ w * (z0 + u v))`
-  set e : (Fin n →₀ ℕ) → ℕ := fun d => (Finsupp.weight w d - m).toNat with he
-  set H : ℝ → ℂ → ℂ := fun t u => ∑ d ∈ p.support,
-    ((p.coeff d : ℝ) : ℂ) * (t : ℂ) ^ e d * ∏ j, (z0 j + u * v j) ^ d j with hH
-  set g : ℂ → ℂ := fun u =>
-    eval (fun j => z0 j + u * v j) (map (algebraMap ℝ ℂ) F) with hg
-  have hH0 : ∀ u, H 0 u = g u := by
-    intro u; simp only [hH, hg]; rw [eval_map_eq_sum_of_subset _ hsubF]
+  let e : (Fin n →₀ ℕ) → ℕ := fun d => (Finsupp.weight w d - m).toNat
+  let H (t : ℝ) : MvPolynomial (Fin n) ℂ :=
+    ∑ d ∈ p.support, monomial d ((p.coeff d : ℂ) * (t : ℂ) ^ e d)
+  have heval (t : ℝ) (z : Fin n → ℂ) : eval z (H t) =
+      ∑ d ∈ p.support, (p.coeff d : ℂ) * (t : ℂ) ^ e d * ∏ j, z j ^ d j := by
+    simp [H, MvPolynomial.eval_monomial, Finsupp.prod_fintype]
+  have hzero (z) : eval z (H 0) = eval z (map (algebraMap ℝ ℂ) F) := by
+    rw [heval, eval_map_eq_sum_of_subset _ hsubF]
     refine Finset.sum_congr rfl fun d hd => ?_
     rw [hcoeffF]
-    have hmd := hmin d hd; by_cases hdw : Finsupp.weight w d = m
-    · rw [ite_eq_left hdw, show e d = 0 by simp [he, hdw]]; simp
-    · have : e d ≠ 0 := by simp only [he]; lia
-      rw [ite_eq_right hdw]; simp [zero_pow this]
-  have hHpos : ∀ t : ℝ, 0 < t → ∀ u, ((t : ℂ) ^ m) * H t u =
-      eval (fun j => (t : ℂ) ^ w j * (z0 j + u * v j)) (map (algebraMap ℝ ℂ) p) := by
-    intro t ht u; have ht0 : (t : ℂ) ≠ 0 := by exact_mod_cast ht.ne'
-    simp only [hH]; rw [eval_map_eq_sum, Finset.mul_sum]
-    refine Finset.sum_congr rfl fun d hd => ?_
     have hmd := hmin d hd
-    have hpow : (t : ℂ) ^ m * (t : ℂ) ^ e d = ∏ j, ((t : ℂ) ^ w j) ^ d j := by
-      rw [← zpow_natCast, ← zpow_add₀ ht0]
-      simp_rw [← zpow_natCast, ← zpow_mul]
-      rw [prod_zpow_eq_zpow_sum ht0]
-      congr 1
-      rw [show ∑ j, w j * (d j : ℤ) = Finsupp.weight w d by
-        rw [weight_eq_sum]; simp only [mul_comm]]
-      simp only [he]; rw [Int.toNat_of_nonneg (by lia)]; ring
-    rw [show ∏ j, ((t : ℂ) ^ w j * (z0 j + u * v j)) ^ d j =
-        (∏ j, ((t : ℂ) ^ w j) ^ d j) * ∏ j, (z0 j + u * v j) ^ d j by
-      rw [← Finset.prod_mul_distrib]; simp [mul_pow], ← hpow]
-    ring
-  have hcont : Continuous fun q : ℝ × ℂ => H q.1 q.2 := by
-    simp only [hH]; fun_prop
-  have hdiff : ∀ t, Differentiable ℂ (H t) := by
-    intro t; simp only [hH]; fun_prop
-  -- isolated zeros of `g`
-  have hg0 : g 0 = 0 := by simpa [hg] using hzero
-  have hg1 : g 1 ≠ 0 := by
-    simpa only [hg, one_mul, hv, Pi.sub_apply, add_sub_cancel] using hy
-  have hgan : AnalyticAt ℂ g 0 := by
-    have : g = H 0 := by funext u; exact (hH0 u).symm
-    simpa only [this] using (hdiff 0).analyticAt 0
-  obtain ⟨r0, hr0, hr0g⟩ : ∃ r0 > 0, ∀ u : ℂ, u ≠ 0 → ‖u‖ < r0 → g u ≠ 0 := by
-    rcases hgan.eventually_eq_zero_or_eventually_ne_zero with h | h
-    · exfalso
-      have hgA : AnalyticOnNhd ℂ g Set.univ := by
-        have : g = H 0 := by funext u; exact (hH0 u).symm
-        rw [this]; exact fun u _ => (hdiff 0).analyticAt u
-      have := hgA.eqOn_zero_of_preconnected_of_eventuallyEq_zero isPreconnected_univ
-        (Set.mem_univ 0) h (Set.mem_univ 1)
-      exact hg1 this
-    · rw [eventually_nhdsWithin_iff, Metric.eventually_nhds_iff] at h
-      obtain ⟨ε, hε, hεg⟩ := h
-      exact ⟨ε, hε, fun u hu hu' => hεg (by simpa using hu') hu⟩
-  -- a neighbourhood of `0` where `z0 + u v` stays in the upper half-plane
-  obtain ⟨r1, hr1, hr1U⟩ :
-      ∃ r1 > 0, ∀ u : ℂ, ‖u‖ < r1 → ∀ j, 0 < (z0 j + u * v j).im := by
-    have hopen : IsOpen {u : ℂ | ∀ j, 0 < (z0 j + u * v j).im} := by
-      rw [Set.ofPred_forall]
-      exact isOpen_iInter_of_finite fun _ => isOpen_lt continuous_const (by fun_prop)
-    have hmem : (0 : ℂ) ∈ {u : ℂ | ∀ j, 0 < (z0 j + u * v j).im} := by simpa using hz0
-    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.mp hopen 0 hmem
-    exact ⟨ε, hε, fun u hu => hball (by simpa using hu)⟩
-  set r := min r0 r1 / 2 with hr
-  have hrpos : 0 < r := by positivity
-  have hrr0 : r < r0 := by rw [hr]; have := min_le_left r0 r1; linarith
-  have hrr1 : r < r1 := by rw [hr]; have := min_le_right r0 r1; linarith
-  -- uniform control on the sphere for small `t`
-  have htube : ∀ᶠ t in nhds (0 : ℝ), ∀ u ∈ Metric.sphere (0 : ℂ) r,
-      2 * ‖H t 0‖ < ‖H t u‖ := by
-    apply (isCompact_sphere (0 : ℂ) r).eventually_forall_of_forall_eventually
-    intro u0 hu0; have hu0' : ‖u0‖ = r := by simpa using hu0
-    have hlt : 2 * ‖H 0 0‖ < ‖H 0 u0‖ := by
-      rw [hH0, hH0, hg0, norm_zero, mul_zero, norm_pos_iff]
-      exact hr0g u0 (by intro h; rw [h, norm_zero] at hu0'; linarith) (by linarith)
-    have c1 : Continuous fun q : ℝ × ℂ => 2 * ‖H q.1 0‖ :=
-      continuous_const.mul (hcont.comp (continuous_fst.prodMk continuous_const)).norm
-    have c2 : Continuous fun q : ℝ × ℂ => ‖H q.1 q.2‖ := hcont.norm
-    exact c1.continuousAt.eventually_lt c2.continuousAt hlt
-  obtain ⟨δ, hδ, hδt⟩ := Metric.eventually_nhds_iff.mp htube
-  set t := δ / 2 with ht
-  have htpos : 0 < t := by positivity
-  have hts := hδt (show dist t 0 < δ by rw [Real.dist_eq, sub_zero, abs_of_pos htpos]; linarith)
-  -- `H t` has no zeros on the closed ball
-  have hHne : ∀ u ∈ Metric.closedBall (0 : ℂ) r, H t u ≠ 0 := by
-    intro u hu h
-    have hu' : ‖u‖ < r1 := lt_of_le_of_lt (by simpa using hu) hrr1
-    have := hHpos t htpos u
-    rw [h, mul_zero] at this
-    refine hp _ (fun j => ?_) this.symm
+    by_cases hdw : Finsupp.weight w d = m
+    · simp [e, hdw]
+    · have he : e d ≠ 0 := by dsimp [e]; lia
+      simp [hdw, zero_pow he]
+  have hstable (t : ℝ) (ht : 0 < t) : MvUpperHalfPlaneStable (H t) := by
+    intro z hz h
+    have heq := weighted_sum_rescale p w m hmin t ht z
+    rw [← heval] at heq
+    rw [h, mul_zero] at heq
+    refine hp _ (fun j => ?_) heq.symm
     rw [← Complex.ofReal_zpow, Complex.im_ofReal_mul]
-    exact mul_pos (zpow_pos htpos _) (hr1U u hu' j)
-  have hH0ne : H t 0 ≠ 0 := hHne 0 (Metric.mem_closedBall_self hrpos.le)
-  -- maximum modulus principle for `1 / H t`
-  have hdcc : DiffContOnCl ℂ (fun u => (H t u)⁻¹) (Metric.ball (0 : ℂ) r) := by
-    apply DifferentiableOn.diffContOnCl; rw [closure_ball _ hrpos.ne']
-    exact ((hdiff t).differentiableOn).inv hHne
-  have hmax := Complex.norm_le_of_forall_mem_frontier_norm_le Metric.isBounded_ball hdcc
-    (C := (2 * ‖H t 0‖)⁻¹) (fun u hu => by
-      rw [frontier_ball _ hrpos.ne'] at hu; rw [norm_inv]
-      have hpos : 0 < 2 * ‖H t 0‖ := by positivity
-      exact (inv_le_inv₀ (lt_trans hpos (hts u hu)) hpos).mpr (hts u hu).le)
-    (subset_closure (Metric.mem_ball_self hrpos))
-  rw [norm_inv] at hmax
-  have hpos : 0 < ‖H t 0‖ := norm_pos_iff.mpr hH0ne
-  rw [inv_le_inv₀ hpos (by positivity)] at hmax; linarith
+    exact mul_pos (zpow_pos ht _) (hz j)
+  have hdeg (t : ℝ) : (H t).totalDegree ≤ p.totalDegree := by
+    exact totalDegree_finsetSum_le fun d hd =>
+      (totalDegree_monomial_le ..).trans (le_totalDegree hd)
+  have hcont (z : Fin n → ℂ) : Continuous fun t : ℝ => eval z (H t) := by
+    simp only [heval]
+    fun_prop
+  have hlim := MvUpperHalfPlaneStableOrZero.of_tendsto_eval_of_totalDegree_le
+    (fun k => hstable (1 / ((k : ℝ) + 1)) (by positivity))
+    (fun k => hdeg (1 / ((k : ℝ) + 1)))
+    (fun z => by
+      rw [← hzero]
+      exact (hcont z).continuousAt.tendsto.comp
+        (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)))
+  exact hlim.resolve_left hF0
 
 end RealRooted.JumpSystem
 
