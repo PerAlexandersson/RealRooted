@@ -14,322 +14,322 @@ namespace RealRooted.EffectiveBKW.PathCube
 /-- Kernel replay of branch rectangle 48. -/
 theorem cell048_check :
     cell048.check curve false = true := by
-  decide +kernel
+  exact BranchCell.check_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G1 on rectangle 48. -/
 theorem conditionG1_048 :
     conditionG1.posOnBox cell048.tlo cell048.thi cell048.lo cell048.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G2 on rectangle 48. -/
 theorem conditionG2_048 :
     conditionG2.posOnBox cell048.tlo cell048.thi cell048.lo cell048.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of WIND on rectangle 48. -/
 theorem conditionWIND_048 :
     conditionWIND.posOnBox cell048.tlo cell048.thi cell048.lo cell048.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of branch rectangle 49. -/
 theorem cell049_check :
     cell049.check curve false = true := by
-  decide +kernel
+  exact BranchCell.check_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G1 on rectangle 49. -/
 theorem conditionG1_049 :
     conditionG1.posOnBox cell049.tlo cell049.thi cell049.lo cell049.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G2 on rectangle 49. -/
 theorem conditionG2_049 :
     conditionG2.posOnBox cell049.tlo cell049.thi cell049.lo cell049.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of WIND on rectangle 49. -/
 theorem conditionWIND_049 :
     conditionWIND.posOnBox cell049.tlo cell049.thi cell049.lo cell049.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of branch rectangle 50. -/
 theorem cell050_check :
     cell050.check curve false = true := by
-  decide +kernel
+  exact BranchCell.check_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G1 on rectangle 50. -/
 theorem conditionG1_050 :
     conditionG1.posOnBox cell050.tlo cell050.thi cell050.lo cell050.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G2 on rectangle 50. -/
 theorem conditionG2_050 :
     conditionG2.posOnBox cell050.tlo cell050.thi cell050.lo cell050.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of WIND on rectangle 50. -/
 theorem conditionWIND_050 :
     conditionWIND.posOnBox cell050.tlo cell050.thi cell050.lo cell050.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of branch rectangle 51. -/
 theorem cell051_check :
     cell051.check curve false = true := by
-  decide +kernel
+  exact BranchCell.check_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G1 on rectangle 51. -/
 theorem conditionG1_051 :
     conditionG1.posOnBox cell051.tlo cell051.thi cell051.lo cell051.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G2 on rectangle 51. -/
 theorem conditionG2_051 :
     conditionG2.posOnBox cell051.tlo cell051.thi cell051.lo cell051.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of WIND on rectangle 51. -/
 theorem conditionWIND_051 :
     conditionWIND.posOnBox cell051.tlo cell051.thi cell051.lo cell051.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of branch rectangle 52. -/
 theorem cell052_check :
     cell052.check curve false = true := by
-  decide +kernel
+  exact BranchCell.check_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G1 on rectangle 52. -/
 theorem conditionG1_052 :
     conditionG1.posOnBox cell052.tlo cell052.thi cell052.lo cell052.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G2 on rectangle 52. -/
 theorem conditionG2_052 :
     conditionG2.posOnBox cell052.tlo cell052.thi cell052.lo cell052.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of WIND on rectangle 52. -/
 theorem conditionWIND_052 :
     conditionWIND.posOnBox cell052.tlo cell052.thi cell052.lo cell052.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of branch rectangle 53. -/
 theorem cell053_check :
     cell053.check curve false = true := by
-  decide +kernel
+  exact BranchCell.check_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G1 on rectangle 53. -/
 theorem conditionG1_053 :
     conditionG1.posOnBox cell053.tlo cell053.thi cell053.lo cell053.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G2 on rectangle 53. -/
 theorem conditionG2_053 :
     conditionG2.posOnBox cell053.tlo cell053.thi cell053.lo cell053.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of WIND on rectangle 53. -/
 theorem conditionWIND_053 :
     conditionWIND.posOnBox cell053.tlo cell053.thi cell053.lo cell053.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of branch rectangle 54. -/
 theorem cell054_check :
     cell054.check curve false = true := by
-  decide +kernel
+  exact BranchCell.check_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G1 on rectangle 54. -/
 theorem conditionG1_054 :
     conditionG1.posOnBox cell054.tlo cell054.thi cell054.lo cell054.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G2 on rectangle 54. -/
 theorem conditionG2_054 :
     conditionG2.posOnBox cell054.tlo cell054.thi cell054.lo cell054.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of WIND on rectangle 54. -/
 theorem conditionWIND_054 :
     conditionWIND.posOnBox cell054.tlo cell054.thi cell054.lo cell054.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of branch rectangle 55. -/
 theorem cell055_check :
     cell055.check curve false = true := by
-  decide +kernel
+  exact BranchCell.check_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G1 on rectangle 55. -/
 theorem conditionG1_055 :
     conditionG1.posOnBox cell055.tlo cell055.thi cell055.lo cell055.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G2 on rectangle 55. -/
 theorem conditionG2_055 :
     conditionG2.posOnBox cell055.tlo cell055.thi cell055.lo cell055.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of WIND on rectangle 55. -/
 theorem conditionWIND_055 :
     conditionWIND.posOnBox cell055.tlo cell055.thi cell055.lo cell055.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of branch rectangle 56. -/
 theorem cell056_check :
     cell056.check curve false = true := by
-  decide +kernel
+  exact BranchCell.check_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G1 on rectangle 56. -/
 theorem conditionG1_056 :
     conditionG1.posOnBox cell056.tlo cell056.thi cell056.lo cell056.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G2 on rectangle 56. -/
 theorem conditionG2_056 :
     conditionG2.posOnBox cell056.tlo cell056.thi cell056.lo cell056.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of WIND on rectangle 56. -/
 theorem conditionWIND_056 :
     conditionWIND.posOnBox cell056.tlo cell056.thi cell056.lo cell056.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of branch rectangle 57. -/
 theorem cell057_check :
     cell057.check curve false = true := by
-  decide +kernel
+  exact BranchCell.check_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G1 on rectangle 57. -/
 theorem conditionG1_057 :
     conditionG1.posOnBox cell057.tlo cell057.thi cell057.lo cell057.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G2 on rectangle 57. -/
 theorem conditionG2_057 :
     conditionG2.posOnBox cell057.tlo cell057.thi cell057.lo cell057.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of WIND on rectangle 57. -/
 theorem conditionWIND_057 :
     conditionWIND.posOnBox cell057.tlo cell057.thi cell057.lo cell057.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of branch rectangle 58. -/
 theorem cell058_check :
     cell058.check curve false = true := by
-  decide +kernel
+  exact BranchCell.check_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G1 on rectangle 58. -/
 theorem conditionG1_058 :
     conditionG1.posOnBox cell058.tlo cell058.thi cell058.lo cell058.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G2 on rectangle 58. -/
 theorem conditionG2_058 :
     conditionG2.posOnBox cell058.tlo cell058.thi cell058.lo cell058.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of WIND on rectangle 58. -/
 theorem conditionWIND_058 :
     conditionWIND.posOnBox cell058.tlo cell058.thi cell058.lo cell058.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of branch rectangle 59. -/
 theorem cell059_check :
     cell059.check curve false = true := by
-  decide +kernel
+  exact BranchCell.check_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G1 on rectangle 59. -/
 theorem conditionG1_059 :
     conditionG1.posOnBox cell059.tlo cell059.thi cell059.lo cell059.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G2 on rectangle 59. -/
 theorem conditionG2_059 :
     conditionG2.posOnBox cell059.tlo cell059.thi cell059.lo cell059.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of WIND on rectangle 59. -/
 theorem conditionWIND_059 :
     conditionWIND.posOnBox cell059.tlo cell059.thi cell059.lo cell059.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of branch rectangle 60. -/
 theorem cell060_check :
     cell060.check curve false = true := by
-  decide +kernel
+  exact BranchCell.check_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G1 on rectangle 60. -/
 theorem conditionG1_060 :
     conditionG1.posOnBox cell060.tlo cell060.thi cell060.lo cell060.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G2 on rectangle 60. -/
 theorem conditionG2_060 :
     conditionG2.posOnBox cell060.tlo cell060.thi cell060.lo cell060.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of WIND on rectangle 60. -/
 theorem conditionWIND_060 :
     conditionWIND.posOnBox cell060.tlo cell060.thi cell060.lo cell060.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of branch rectangle 61. -/
 theorem cell061_check :
     cell061.check curve false = true := by
-  decide +kernel
+  exact BranchCell.check_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G1 on rectangle 61. -/
 theorem conditionG1_061 :
     conditionG1.posOnBox cell061.tlo cell061.thi cell061.lo cell061.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G2 on rectangle 61. -/
 theorem conditionG2_061 :
     conditionG2.posOnBox cell061.tlo cell061.thi cell061.lo cell061.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of WIND on rectangle 61. -/
 theorem conditionWIND_061 :
     conditionWIND.posOnBox cell061.tlo cell061.thi cell061.lo cell061.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of branch rectangle 62. -/
 theorem cell062_check :
     cell062.check curve false = true := by
-  decide +kernel
+  exact BranchCell.check_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G1 on rectangle 62. -/
 theorem conditionG1_062 :
     conditionG1.posOnBox cell062.tlo cell062.thi cell062.lo cell062.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G2 on rectangle 62. -/
 theorem conditionG2_062 :
     conditionG2.posOnBox cell062.tlo cell062.thi cell062.lo cell062.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of WIND on rectangle 62. -/
 theorem conditionWIND_062 :
     conditionWIND.posOnBox cell062.tlo cell062.thi cell062.lo cell062.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of branch rectangle 63. -/
 theorem cell063_check :
     cell063.check curve false = true := by
-  decide +kernel
+  exact BranchCell.check_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G1 on rectangle 63. -/
 theorem conditionG1_063 :
     conditionG1.posOnBox cell063.tlo cell063.thi cell063.lo cell063.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of G2 on rectangle 63. -/
 theorem conditionG2_063 :
     conditionG2.posOnBox cell063.tlo cell063.thi cell063.lo cell063.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 /-- Kernel replay of WIND on rectangle 63. -/
 theorem conditionWIND_063 :
     conditionWIND.posOnBox cell063.tlo cell063.thi cell063.lo cell063.hi = true := by
-  decide +kernel
+  exact IntPoly2.posOnBox_of_bernsteinCoeffs (by decide +kernel)
 
 
 end RealRooted.EffectiveBKW.PathCube

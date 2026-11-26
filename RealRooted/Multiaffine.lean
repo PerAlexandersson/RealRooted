@@ -3,6 +3,7 @@ module
 public import RealRooted.Mathlib.RingTheory.MvPolynomial.Symmetric
 public import Mathlib.Algebra.MvPolynomial.PDeriv
 import Mathlib.Algebra.MvPolynomial.CommRing
+import Mathlib.Algebra.MvPolynomial.Variables
 public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 
 /-!
@@ -262,6 +263,21 @@ noncomputable def specializeZero {S : Type*} [CommRing S]
   ∑ d ∈ p.support.filter fun d => d i = 0,
     MvPolynomial.monomial d (p.coeff d)
 
+/-- Zero specialization is the algebra map replacing the selected variable by zero. -/
+private theorem specializeZero_eq_aeval
+    {S σ : Type*} [CommRing S] [DecidableEq σ] (i : σ) (p : MvPolynomial σ S) :
+    specializeZero i p = aeval (Function.update X i (0 : MvPolynomial σ S)) p := by
+  classical
+  have hsupport (d : σ →₀ ℕ) : (↑d.support : Set σ) ⊆ {i}ᶜ ↔ d i = 0 := by
+    rw [Set.subset_compl_iff_disjoint_right, Set.disjoint_singleton_right,
+      Finset.mem_coe, Finsupp.mem_support_iff, not_ne_iff]
+  have hassign : Function.update (X : σ → MvPolynomial σ S) i 0 =
+      fun j => if j ∈ ({i} : Set σ)ᶜ then X j else 0 := by
+    funext j
+    by_cases hji : j = i <;> simp [hji]
+  rw [hassign, aeval_ite_mem_eq, specializeZero, Finset.sum_filter]
+  simp only [hsupport]
+
 @[simp] theorem coeff_specializeZero
     {S : Type*} [CommRing S]
     (i : σ) (p : MvPolynomial σ S) (d : σ →₀ ℕ) :
@@ -310,37 +326,20 @@ theorem specializeZero_X_of_ne
     (i : σ) (p : MvPolynomial σ S) (z : σ → S) :
     MvPolynomial.eval z (specializeZero i p) =
       MvPolynomial.eval (Function.update z i 0) p := by
-  rw [specializeZero]
-  simp only [map_sum, Finset.sum_filter]
-  conv_rhs => rw [MvPolynomial.as_sum p]
-  simp only [map_sum]
-  apply Finset.sum_congr rfl
-  intro d hd
-  by_cases hdi : d i = 0
-  · simp only [ite_eq_left hdi]
-    rw [MvPolynomial.eval_monomial, MvPolynomial.eval_monomial]
-    congr 1
-    apply Finsupp.prod_congr
-    intro j hj
-    have hji : j ≠ i := by
-      intro h
-      subst j
-      exact (Finsupp.mem_support_iff.mp hj) hdi
-    simp [hji]
-  · rw [ite_eq_right hdi, MvPolynomial.eval_monomial]
-    have hi : i ∈ d.support := by simpa [Finsupp.mem_support_iff]
-    rw [Finsupp.prod, Finset.prod_eq_zero hi]
-    · simp
-    · rw [Function.update_self]
-      exact zero_pow hdi
+  rw [specializeZero_eq_aeval, map_aeval]
+  apply eval₂Hom_congr
+  · ext r
+    simp
+  · funext j
+    by_cases hji : j = i <;> simp [hji]
+  · rfl
 
 theorem specializeZero_add
     {S : Type*} [CommRing S]
     (i : σ) (p q : MvPolynomial σ S) :
     specializeZero i (p + q) = specializeZero i p + specializeZero i q := by
-  ext d
-  simp only [coeff_specializeZero, AddMonoidAlgebra.coeff_add, Finsupp.add_apply]
-  split <;> simp
+  classical
+  simp only [specializeZero_eq_aeval, map_add]
 
 /-- Zero-specialization commutes with finite sums. -/
 theorem specializeZero_sum
@@ -349,9 +348,7 @@ theorem specializeZero_sum
     specializeZero i (∑ j ∈ s, p j) =
       ∑ j ∈ s, specializeZero i (p j) := by
   classical
-  induction s using Finset.induction_on with
-  | empty => simp
-  | @insert a s ha ih => simp [ha, specializeZero_add, ih]
+  simp only [specializeZero_eq_aeval, map_sum]
 
 /-- A multiaffine polynomial is its zero-specialization in one coordinate
 plus that coordinate times its partial derivative. -/
@@ -384,42 +381,13 @@ theorem specializeZero_mul
     (i : σ) (p q : MvPolynomial σ S) :
     specializeZero i (p * q) = specializeZero i p * specializeZero i q := by
   classical
-  ext d
-  rw [coeff_specializeZero, coeff_mul, coeff_mul]
-  simp only [coeff_specializeZero]
-  by_cases hd : d i = 0
-  · simp only [hd, ite_eq_left]
-    apply Finset.sum_congr rfl
-    intro x hx
-    have hxy : x.1 i + x.2 i = 0 := by
-      have hsum : x.1 + x.2 = d := Finset.mem_antidiagonal.mp hx
-      rw [← Finsupp.add_apply, hsum, hd]
-    have hx0 : x.1 i = 0 := (Nat.add_eq_zero_iff.mp hxy).1
-    have hy0 : x.2 i = 0 := (Nat.add_eq_zero_iff.mp hxy).2
-    simp [hx0, hy0]
-  · simp only [hd, ite_false]
-    symm
-    apply Finset.sum_eq_zero
-    intro x hx
-    by_cases hx0 : x.1 i = 0
-    · have hy0 : x.2 i ≠ 0 := by
-        intro hy0
-        apply hd
-        have hsum : x.1 + x.2 = d := Finset.mem_antidiagonal.mp hx
-        rw [← hsum, Finsupp.add_apply, hx0, hy0]
-      simp [hx0, hy0]
-    · simp [hx0]
+  simp only [specializeZero_eq_aeval, map_mul]
 
 @[simp] theorem specializeZero_C
     {S : Type*} [CommRing S] (i : σ) (c : S) :
     specializeZero i (C c : MvPolynomial σ S) = C c := by
   classical
-  ext d
-  rw [coeff_specializeZero]
-  by_cases hd0 : d = 0
-  · subst d
-    simp
-  · simp [Ne.symm hd0]
+  simp only [specializeZero_eq_aeval, aeval_C, algebraMap_eq]
 
 theorem specializeZero_rename
     {S τ : Type*} [CommRing S]
@@ -427,39 +395,26 @@ theorem specializeZero_rename
     (i : σ) (p : MvPolynomial σ S) :
     specializeZero (f i) (rename f p) = rename f (specializeZero i p) := by
   classical
-  induction p using MvPolynomial.induction_on with
-  | C c => simp
-  | add p q hp hq =>
-      simp only [map_add, specializeZero_add, hp, hq]
-  | mul_X p j hp =>
-      rw [map_mul, specializeZero_mul, hp, specializeZero_mul, map_mul]
-      simp only [MvPolynomial.X]
-      rw [MvPolynomial.rename_monomial, specializeZero_monomial,
-        specializeZero_monomial]
-      by_cases hji : j = i
-      · subst j
-        simp
-      · have hfji : f j ≠ f i := fun h => hji (hf h)
-        have hmap :
-            (Finsupp.mapDomain f (Finsupp.single j 1)) (f i) = 0 := by
-          simp [Finsupp.mapDomain_single, hfji]
-        have hsingle : (Finsupp.single j 1) i = 0 := by simp [hji]
-        rw [ite_eq_left hmap, ite_eq_left hsingle, MvPolynomial.rename_monomial,
-          Finsupp.mapDomain_single]
+  simp only [specializeZero_eq_aeval, aeval_rename, comp_aeval_apply]
+  apply congrArg (fun g : σ → MvPolynomial τ S => aeval g p)
+  funext j
+  by_cases hji : j = i <;> simp [hji, hf.eq_iff]
 
 theorem specializeZero_eq_self_of_notMem_vars
     {S : Type*} [CommRing S]
     (i : σ) (p : MvPolynomial σ S) (hi : i ∉ p.vars) :
     specializeZero i p = p := by
-  ext d
-  rw [coeff_specializeZero]
-  by_cases hdi : d i = 0
-  · simp [hdi]
-  · have hcoeff : p.coeff d = 0 := by
-      by_cases hd : d ∈ p.support
-      · exact (hdi (MvPolynomial.mem_support_notMem_vars_zero hd hi)).elim
-      · exact notMem_support_iff.mp hd
-    simp [hdi, hcoeff]
+  classical
+  rw [specializeZero_eq_aeval]
+  have hs : (↑p.vars : Set σ) ⊆ {i}ᶜ := by
+    simpa only [Set.subset_compl_iff_disjoint_right, Set.disjoint_singleton_right,
+      Finset.mem_coe] using hi
+  have hassign : Function.update (X : σ → MvPolynomial σ S) i 0 =
+      fun j => if j ∈ ({i} : Set σ)ᶜ then X j else 0 := by
+    funext j
+    by_cases hji : j = i <;> simp [hji]
+  rw [hassign]
+  exact aeval_ite_mem_eq_self p hs
 
 /-- Specializing a coordinate to zero does not increase the degree in any
 coordinate. -/

@@ -76,28 +76,54 @@ private theorem sum_kernelWeight_extend {n d m J' J : ℕ} (hm : m = n + d) (ρ 
     sum_eq_zero (s := range d) fun i hi ↦ by simp [hz i (mem_range.mp hi)], add_zero]
   exact sum_congr rfl fun k hk ↦ by rw [hW k (by have := mem_range.mp hk; lia)]
 
+/-- The coefficient ratio `L1` after moving to the common rank. -/
+private theorem kernelWeight_mul_bernL1 {t X k : ℕ} (ht : 5 ≤ t) (hk : k ≤ t + 1) :
+    kernelWeight (t + 1) k (X + 2) =
+      kernelWeight (t + 2) k X * bernL1 ((t : ℚ) + 2) X k := by
+  have hX0 : (0 : ℚ) ≤ X := X.cast_nonneg
+  have ht' : (5 : ℚ) ≤ t := by exact_mod_cast ht
+  have hk' : (k : ℚ) ≤ t + 1 := by exact_mod_cast hk
+  rw [kernelWeight_two (by lia) hk]
+  congr 1
+  unfold bernL1
+  push_cast
+  field_simp (disch := linarith)
+  ring
+
+/-- The coefficient ratio `L2` after moving to the common rank. -/
+private theorem kernelWeight_mul_bernL2 {t X k : ℕ} (ht : 5 ≤ t) (hk : k ≤ t) :
+    kernelWeight (t) k (X + 2) =
+      kernelWeight (t + 2) k X * bernL2 ((t : ℚ) + 2) X k := by
+  have hX0 : (0 : ℚ) ≤ X := X.cast_nonneg
+  have ht' : (5 : ℚ) ≤ t := by exact_mod_cast ht
+  have hk' : (k : ℚ) ≤ t := by exact_mod_cast hk
+  rw [kernelWeight_two (by lia) hk, kernelWeight_rank_succ (by lia) (by lia), mul_assoc]
+  congr 1
+  unfold bernL2
+  push_cast
+  field_simp (disch := linarith)
+  ring
+
+/-- The coefficient ratio `L3` after moving to the common rank. -/
+private theorem kernelWeight_mul_bernL3 {t X k : ℕ} (ht : 5 ≤ t) (hk : k ≤ t + 1) :
+    kernelWeight (t + 1) k X =
+      kernelWeight (t + 2) k X * bernL3 ((t : ℚ) + 2) X k := by
+  rw [kernelWeight_rank_succ (by lia) hk]
+  congr 1
+  unfold bernL3
+  push_cast
+  ring_nf
+
 /-- The four kernel sums, rewritten over the weights `W_(t+2,k)(X)`. -/
 private theorem kernelSum_neighbor_eq {t : ℕ} (ht : 5 ≤ t) (X : ℕ) :
     ((X + 2 : ℕ) + 1 : ℚ) * kernelCoord (t + 1 : ℕ) (X + 2) -
         (X + 2 : ℕ) * kernelCoord (t + 1 + 1 : ℕ) X =
       2 * (1 / 4) ^ (t + 2) * ∑ k ∈ range (t + 2 + 1),
         kernelWeight (t + 2) k X * bernP ((t : ℚ) + 2) X k := by
-  have hX0 : (0 : ℚ) ≤ X := X.cast_nonneg
-  have ht' : (5 : ℚ) ≤ t := by exact_mod_cast ht
   -- `L₁`: `W_(t+1,k)(X+2) = W_(t+2,k)(X) L₁`.
   have ha := sum_kernelWeight_extend (n := t + 1) (d := 1) (m := t + 2) (J' := X + 2) (J := X)
     rfl (fun k ↦ bernL1 ((t : ℚ) + 2) X k) (fun k ↦ kernelF (t + 1) (X + 2) k)
-    (fun k hk ↦ by
-      have hk' : (k : ℚ) ≤ t + 1 := by exact_mod_cast hk
-      rw [kernelWeight_two (by lia) hk]
-      congr 1
-      unfold bernL1
-      push_cast
-      have : (t : ℚ) + 1 + k - 1 ≠ 0 := by intro h; linarith
-      have : (X : ℚ) + k + (t + 1) + 3 ≠ 0 := by intro h; linarith
-      have : (t : ℚ) + 2 + k - 2 ≠ 0 := by intro h; linarith
-      field_simp
-      ring)
+    (fun _ hk ↦ kernelWeight_mul_bernL1 ht hk)
     (fun i hi ↦ by
       obtain rfl : i = 0 := by lia
       simp only [bernL1]
@@ -106,33 +132,14 @@ private theorem kernelSum_neighbor_eq {t : ℕ} (ht : 5 ≤ t) (X : ℕ) :
   -- `L₂`: `W_(t,k)(X+2) = W_(t+1,k)(X) (W_(t+1,k)(X) / W_(t+2,k)(X)) = W_(t+2,k)(X) L₂`.
   have hb := sum_kernelWeight_extend (n := t) (d := 2) (m := t + 2) (J' := X + 2) (J := X)
     rfl (fun k ↦ bernL2 ((t : ℚ) + 2) X k) (fun k ↦ kernelF t (X + 2) k)
-    (fun k hk ↦ by
-      have hk' : (k : ℚ) ≤ t := by exact_mod_cast hk
-      rw [kernelWeight_two (by lia) hk, kernelWeight_rank_succ (by lia) (by lia), mul_assoc]
-      congr 1
-      unfold bernL2
-      push_cast
-      have : (t : ℚ) + k - 1 ≠ 0 := by intro h; linarith
-      have : (t : ℚ) + 1 + k - 1 ≠ 0 := by intro h; linarith
-      have : (X : ℚ) + k + t + 3 ≠ 0 := by intro h; linarith
-      have : 2 * (X : ℚ) + (t + 1) + k + 2 ≠ 0 := by intro h; linarith
-      have : (t : ℚ) + 2 + k - 2 ≠ 0 := by intro h; linarith
-      have : (t : ℚ) + 2 + k - 3 ≠ 0 := by intro h; linarith
-      field_simp
-      ring)
+    (fun _ hk ↦ kernelWeight_mul_bernL2 ht hk)
     (fun i hi ↦ by
       simp only [bernL2]
       rcases (show i = 0 ∨ i = 1 by lia) with rfl | rfl <;> push_cast <;> ring)
   -- `L₃`: `W_(t+1,k)(X) = W_(t+2,k)(X) L₃`.
   have hd := sum_kernelWeight_extend (n := t + 1) (d := 1) (m := t + 2) (J' := X) (J := X)
     rfl (fun k ↦ bernL3 ((t : ℚ) + 2) X k) (fun k ↦ kernelF (t + 1) X k)
-    (fun k hk ↦ by
-      have hk' : (k : ℚ) ≤ t + 1 := by exact_mod_cast hk
-      rw [kernelWeight_rank_succ (by lia) hk]
-      congr 1
-      unfold bernL3
-      push_cast
-      ring_nf)
+    (fun _ hk ↦ kernelWeight_mul_bernL3 ht hk)
     (fun i hi ↦ by
       obtain rfl : i = 0 := by lia
       simp only [bernL3]

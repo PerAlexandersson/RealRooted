@@ -142,64 +142,12 @@ theorem secondOrderUpperResidualApprox_zero
   simp [secondOrderUpperResidualApprox, secondOrderUpperLimit]
   ring
 
-/-- Multiplication adds any available natural-degree bounds. -/
-private theorem natDegree_mul_le_of_bounds {p q : ℝ[X]} {r s : ℕ}
-    (hp : p.natDegree ≤ r) (hq : q.natDegree ≤ s) :
-    (p * q).natDegree ≤ r + s :=
-  natDegree_mul_le.trans (Nat.add_le_add hp hq)
-
-/-- Addition takes the maximum of any available natural-degree bounds. -/
-private theorem natDegree_add_le_of_bounds {p q : ℝ[X]} {r s : ℕ}
-    (hp : p.natDegree ≤ r) (hq : q.natDegree ≤ s) :
-    (p + q).natDegree ≤ max r s :=
-  (natDegree_add_le p q).trans (max_le_max hp hq)
-
 /-- The fixed-degree deformation has degree at most four. -/
 private theorem secondOrderUpperResidualApprox_natDegree_le
     (a b c d f t s : ℝ) (m : ℕ) :
     (secondOrderUpperResidualApprox a b c d f t m s).natDegree ≤ 4 := by
-  let h : ℝ[X] := 1 + C (t * s) * X
-  have hh : h.natDegree ≤ 1 := by dsimp [h]; compute_degree
-  have hh₂ : (h ^ 2).natDegree ≤ 2 := by
-    exact natDegree_pow_le.trans (by
-      simpa only [Nat.mul_one] using Nat.mul_le_mul_left 2 hh)
-  have haff : (C a + C b * X : ℝ[X]).natDegree ≤ 1 := by compute_degree
-  have hder : (C c + C d * X : ℝ[X]).natDegree ≤ 1 := by compute_degree
-  have hmh : (C (m : ℝ) * h).natDegree ≤ 1 := by
-    exact (natDegree_mul_le_of_bounds (by rw [natDegree_C]) hh).trans (by norm_num)
-  have htx : (C t * X).natDegree ≤ 1 := by compute_degree
-  have hinner : (C (m : ℝ) * h + C t * X).natDegree ≤ 1 := by
-    exact (natDegree_add_le_of_bounds hmh htx).trans (by norm_num)
-  have hterm₁ : ((C a + C b * X) * X * h ^ 2).natDegree ≤ 4 := by
-    exact natDegree_mul_le_of_bounds
-      (natDegree_mul_le_of_bounds haff (by rw [natDegree_X])) hh₂
-  have hterm₂ :
-      ((C c + C d * X) * h * (C (m : ℝ) * h + C t * X)).natDegree ≤ 3 := by
-    exact natDegree_mul_le_of_bounds
-      (natDegree_mul_le_of_bounds hder hh) hinner
-  have hquad :
-      (C ((m : ℝ) * (m - 1)) * h ^ 2 +
-        C (2 * m * t) * X * h + C (t ^ 2 * (1 - s)) * X ^ 2).natDegree ≤ 2 := by
-    apply (natDegree_add_le_of_bounds
-      (natDegree_add_le_of_bounds
-        (natDegree_mul_le_of_bounds (by rw [natDegree_C]) hh₂)
-        (natDegree_mul_le_of_bounds
-          (natDegree_mul_le_of_bounds
-            (by rw [natDegree_C]) (by rw [natDegree_X])) hh))
-      (natDegree_mul_le_of_bounds
-        (by rw [natDegree_C]) (by compute_degree))).trans
-    norm_num
-  have hterm₃ : (C f *
-      (C ((m : ℝ) * (m - 1)) * h ^ 2 +
-        C (2 * m * t) * X * h + C (t ^ 2 * (1 - s)) * X ^ 2)).natDegree ≤ 2 := by
-    exact (natDegree_mul_le_of_bounds (by rw [natDegree_C]) hquad).trans
-      (by norm_num)
-  change ((C a + C b * X) * X * h ^ 2 +
-    (C c + C d * X) * h * (C (m : ℝ) * h + C t * X) + C f *
-      (C ((m : ℝ) * (m - 1)) * h ^ 2 +
-        C (2 * m * t) * X * h + C (t ^ 2 * (1 - s)) * X ^ 2)).natDegree ≤ 4
-  exact (natDegree_add_le_of_bounds
-    (natDegree_add_le_of_bounds hterm₁ hterm₂) hterm₃).trans (by norm_num)
+  dsimp only [secondOrderUpperResidualApprox]
+  compute_degree
 
 /-- Every finite upper residual has degree at most four, uniformly in the
 test degree. -/

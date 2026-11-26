@@ -80,25 +80,13 @@ theorem secondOrderGapThreshold_pos
     (hdelta : 0 < delta) (hj : 1 ≤ j) :
     0 < secondOrderGapThreshold a b d f delta j := by
   have hjr : (0 : ℝ) < j := by positivity
-  by_cases hlower : a ^ 2 > (j : ℝ) ^ 2 * delta + 4 * b * f * j
-  · rw [secondOrderGapThreshold_eq_lower hlower]
-    have hapos : 0 < a := by
-      have : 0 < a ^ 2 := by
-        nlinarith [mul_pos hdelta (sq_pos_of_pos hjr), mul_pos hb hf]
-      nlinarith [sq_nonneg a]
+  unfold secondOrderGapThreshold
+  split_ifs with hlower
+  · have hright : 0 < (j : ℝ) ^ 2 * delta + 4 * b * f * j := by positivity
+    have hapos : 0 < a := by nlinarith
     positivity
-  · by_cases hmiddle :
-        |(j : ℝ) ^ 2 * delta - a ^ 2| ≤ 4 * b * f * j
-    · rw [secondOrderGapThreshold_eq_middle hlower hmiddle]
-      have had : 0 ≤ a * d / (2 * b) := by positivity
-      have hjdelta : 0 ≤ (j : ℝ) * delta / (4 * b) := by positivity
-      have hasq : 0 ≤ a ^ 2 / (4 * b * j) := by positivity
-      linarith
-    · rw [secondOrderGapThreshold_eq_upper hlower hmiddle]
-      have hL : 0 < a ^ 2 + 4 * b * f * (j : ℝ) := by positivity
-      have hsqrt : 0 < Real.sqrt (delta * (a ^ 2 + 4 * b * f * j)) :=
-        Real.sqrt_pos.2 (mul_pos hdelta hL)
-      positivity
+  · positivity
+  · positivity
 
 /-! ## Scalar optimization in one root gap -/
 
@@ -845,58 +833,32 @@ private theorem splits_of_ordered_negative_gap_signs
     (hgapSign : ∀ i : Fin n,
       0 < F.eval (x i) * (-1 : ℝ) ^ (n - i.1)) :
     F.Splits := by
-  by_cases hn : n = 0
-  · exact Polynomial.Splits.of_natDegree_le_one (by rw [hFdeg, hn])
-  have hnpos : 0 < n := Nat.pos_of_ne_zero hn
   let r : Fin (n + 1) → ℝ := Fin.lastCases 1 x
   have hrmono : StrictMono r :=
     strictMono_lastCases_of_lt hxmono fun i ↦ (hxneg i).trans zero_lt_one
   have hFone : 0 < F.eval 1 :=
     eval_pos_of_hasNonnegCoeffs hFnn hFpos.ne_zero one_pos
+  have hs : ∀ i : Fin (n + 1), 0 < F.eval (r i) * (-1 : ℝ) ^ (n - i.1) := by
+    intro i
+    refine Fin.lastCases ?_ (fun j => ?_) i
+    · simpa only [r, Fin.lastCases_last, Fin.val_last, Nat.sub_self, pow_zero, mul_one]
+        using hFone
+    · simpa only [r, Fin.lastCases_castSucc, Fin.val_castSucc] using hgapSign j
   apply splits_of_sign_changes_with_left_endpoint
-    (d := n + 1) (by lia) hFpos.ne_zero (by simpa using hFdeg)
-      hFpos r (fun i j hij ↦ hrmono hij)
-  · have hzero : (⟨0, by lia⟩ : Fin (n + 1)) = (⟨0, hnpos⟩ : Fin n).castSucc := by
-      ext
-      rfl
-    rw [hzero]
-    simp only [r, Fin.lastCases_castSucc]
-    have hs := hgapSign ⟨0, hnpos⟩
-    have hs' : 0 < F.eval (x ⟨0, hnpos⟩) * (-1 : ℝ) ^ n := by
-      simpa using hs
+    (d := n + 1) (by lia) hFpos.ne_zero hFdeg hFpos r hrmono
+  · have hzero := hs ⟨0, by lia⟩
+    simp only [Nat.sub_zero] at hzero
     rw [pow_succ]
-    calc
-      (-1 : ℝ) ^ n * -1 * F.eval (x ⟨0, hnpos⟩) =
-          -(F.eval (x ⟨0, hnpos⟩) * (-1 : ℝ) ^ n) := by ring
-      _ < 0 := neg_lt_zero.mpr hs'
+    nlinarith only [hzero]
   · intro k hk
-    by_cases hnext : k + 1 < n
-    · have hs₁ := hgapSign ⟨k, by lia⟩
-      have hs₂ := hgapSign ⟨k + 1, hnext⟩
-      have hidx₁ : (⟨k, by lia⟩ : Fin (n + 1)) =
-          (⟨k, by lia⟩ : Fin n).castSucc := by ext; rfl
-      have hidx₂ : (⟨k + 1, hk⟩ : Fin (n + 1)) =
-          (⟨k + 1, hnext⟩ : Fin n).castSucc := by ext; rfl
-      rw [hidx₁, hidx₂]
-      simp only [r, Fin.lastCases_castSucc]
-      have hpow : (-1 : ℝ) ^ (n - k) =
-          -((-1 : ℝ) ^ (n - (k + 1))) := by
-        rw [show n - k = (n - (k + 1)) + 1 by lia, pow_succ]
-        ring
-      rcases neg_one_pow_eq_or ℝ (n - (k + 1)) with he | he <;>
-        rw [he] at hpow hs₂ <;> rw [hpow] at hs₁ <;> nlinarith
-    · have hkn : k + 1 = n := by lia
-      have hs := hgapSign ⟨k, by lia⟩
-      have hidx₁ : (⟨k, by lia⟩ : Fin (n + 1)) =
-          (⟨k, by lia⟩ : Fin n).castSucc := by ext; rfl
-      have hidx₂ : (⟨k + 1, hk⟩ : Fin (n + 1)) = Fin.last n := by
-        ext
-        simp [hkn]
-      rw [hidx₁, hidx₂]
-      simp only [r, Fin.lastCases_castSucc, Fin.lastCases_last]
-      have hsub : n - k = 1 := by lia
-      rw [hsub, pow_one] at hs
-      nlinarith
+    have hs₁ := hs ⟨k, by lia⟩
+    have hs₂ := hs ⟨k + 1, hk⟩
+    have hpow : (-1 : ℝ) ^ (n - k) = -((-1 : ℝ) ^ (n - (k + 1))) := by
+      rw [show n - k = (n - (k + 1)) + 1 by lia, pow_succ]
+      ring
+    rw [hpow] at hs₁
+    rcases neg_one_pow_eq_or ℝ (n - (k + 1)) with he | he <;>
+      rw [he] at hs₁ hs₂ <;> nlinarith only [hs₁, hs₂]
 
 /-- A negative-simple input is preserved under strict inequalities at every
 indexed threshold. -/

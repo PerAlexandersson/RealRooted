@@ -41,12 +41,6 @@ def affineEulerRayleighRemainder
   ∑ j ∈ Finset.univ.erase i,
     (1 - X (e j)) * rayleighDifference P (e i) (e j)
 
-private theorem affineEulerCore_X_mul_identity
-    {S : Type*} [CommRing S] (c x b w d : S) :
-    b + x * ((c - 1) * b - w + d) =
-      c * (x * b) - (x * b + x * w) + (b + x * d) := by
-  ring
-
 /-- The affine Euler core is additive in its polynomial argument. -/
 theorem affineEulerCore_add
     {R σ ι : Type*} [CommRing R] [Fintype ι]
@@ -78,49 +72,15 @@ theorem affineEulerCore_X_mul
     affineEulerCore e c (X (e i) * B) =
       B + X (e i) * affineEulerCore e (c - 1) B := by
   classical
-  have hsum : (∑ x : ι, (if i = x then 1 else 0) * B) = B := by
-    simp
-  have hweighted :
-      (∑ x : ι, X (e x) *
-        ((if i = x then 1 else 0) * B +
-          X (e i) * pderiv (e x) B)) =
-        X (e i) * B +
-          X (e i) * (∑ x : ι, X (e x) * pderiv (e x) B) := by
-    have hfirst : (∑ x : ι,
-        X (e x) * (if i = x then 1 else 0) * B) =
-        X (e i) * B := by
-      simp
-    have hsecond : (∑ x : ι,
-        X (e x) * (X (e i) * pderiv (e x) B)) =
-        X (e i) * ∑ x : ι, X (e x) * pderiv (e x) B := by
-      rw [Finset.mul_sum]
-      apply Finset.sum_congr rfl
-      intro x hx
-      ring
-    calc
-      _ = ∑ x : ι, (X (e x) * (if i = x then 1 else 0) * B +
-          X (e x) * (X (e i) * pderiv (e x) B)) := by
-            apply Finset.sum_congr rfl
-            intro x hx
-            ring
-      _ = _ := by rw [Finset.sum_add_distrib, hfirst, hsecond]
-  have hderivs :
-      (∑ x : ι, ((if i = x then 1 else 0) * B +
-        X (e i) * pderiv (e x) B)) =
-        B + X (e i) * ∑ x : ι, pderiv (e x) B := by
-    rw [Finset.sum_add_distrib, hsum, Finset.mul_sum]
-  have hC : C (c - 1) = (C c - 1 : MvPolynomial σ R) := by
-    simp
-  have hpderiv (x : ι) :
-      pderiv (e x) (X (e i) * B) =
-        (if i = x then 1 else 0) * B +
-          X (e i) * pderiv (e x) B := by
-    simp [pderiv_X, Pi.single_apply, he.eq_iff, eq_comm]
-    ring
-  unfold affineEulerCore
-  simp_rw [hpderiv]
-  rw [hweighted, hderivs, hC]
-  exact (affineEulerCore_X_mul_identity _ _ _ _ _).symm
+  simp only [affineEulerCore, pderiv_mul, pderiv_X, Pi.single_apply,
+    he.eq_iff, mul_add, ite_mul, mul_ite, one_mul, zero_mul, mul_zero,
+    Finset.sum_add_distrib, Finset.sum_ite_eq,
+    Finset.mem_univ, ite_true, map_sub, map_one]
+  have hfactor : (∑ x : ι, X (e x) * (X (e i) * pderiv (e x) B)) =
+      X (e i) * ∑ x : ι, X (e x) * pderiv (e x) B := by
+    simp only [Finset.mul_sum, mul_left_comm]
+  rw [hfactor, ← Finset.mul_sum]
+  ring
 
 /-- The affine Euler core of an affine extension splits into its base core,
 its slope, and the lowered-coefficient slope core. -/
@@ -155,45 +115,14 @@ theorem affineEulerCore_rename_succ
       rename (fun j : Nat => j + 1)
         (affineEulerCore (Fin.valEmbedding : Fin m → Nat) c P) := by
   classical
-  have h0 : 0 ∉ (rename (fun j : Nat => j + 1) P).vars := by
-    intro h
-    obtain ⟨j, hj, hj0⟩ := mem_vars_rename
-      (fun k : Nat => k + 1) P h
-    lia
-  have hderivZero :
-      pderiv 0 (rename (fun j : Nat => j + 1) P) = 0 :=
-    pderiv_eq_zero_of_notMem_vars h0
-  have hderivSucc (j : Fin m) :
-      pderiv (j.succ : Nat) (rename (fun k : Nat => k + 1) P) =
-        rename (fun k : Nat => k + 1) (pderiv (j : Nat) P) := by
-    simpa only [Fin.val_succ] using
-      pderiv_rename (R := R) (f := fun k : Nat => k + 1)
-        (by intro a b h; lia) (j : Nat) P
-  have hweighted :
-      (∑ j : Fin (m + 1), X (j : Nat) *
-          pderiv (j : Nat) (rename (fun k : Nat => k + 1) P)) =
-        rename (fun k : Nat => k + 1)
-          (∑ j : Fin m, X (j : Nat) * pderiv (j : Nat) P) := by
-    rw [Fin.sum_univ_succ]
-    change X 0 * pderiv 0 (rename (fun k : Nat => k + 1) P) + _ = _
-    rw [hderivZero, mul_zero, zero_add]
-    simp_rw [hderivSucc]
-    rw [map_sum]
-    simp only [map_mul, rename_X, Fin.val_succ]
-  have hderivs :
-      (∑ j : Fin (m + 1),
-          pderiv (j : Nat) (rename (fun k : Nat => k + 1) P)) =
-        rename (fun k : Nat => k + 1)
-          (∑ j : Fin m, pderiv (j : Nat) P) := by
-    rw [Fin.sum_univ_succ]
-    change pderiv 0 (rename (fun k : Nat => k + 1) P) + _ = _
-    rw [hderivZero, zero_add]
-    simp_rw [hderivSucc]
-    rw [map_sum]
-  unfold affineEulerCore
-  simp only [Fin.valEmbedding_apply]
-  rw [hweighted, hderivs]
-  simp only [map_add, map_sub, map_mul, rename_C]
+  have hderivZero : pderiv 0 (rename (fun j : Nat => j + 1) P) = 0 :=
+    pderiv_eq_zero_of_notMem_vars (by
+      intro h
+      obtain ⟨j, _, hj⟩ := mem_vars_rename (fun k : Nat => k + 1) P h
+      lia)
+  rw [rename_affineEulerCore _ (by intro a b h; lia)]
+  simp only [affineEulerCore, Fin.valEmbedding_apply, Fin.sum_univ_succ,
+    Fin.val_zero, hderivZero, mul_zero, zero_add, Fin.val_succ, Function.comp_apply]
 
 /-- Affine Euler Rayleigh rows commute with injective variable renaming. -/
 theorem affineEulerRayleighRow_rename

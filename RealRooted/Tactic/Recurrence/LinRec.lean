@@ -444,27 +444,27 @@ private def linRecSidesCone (P : Ident) (rows : Array QPoly) (p k m : Nat)
       let hi := mkIdent (.mkSimple s!"rr_hcone{i}")
       evalTactic (← `(tactic| have $hi:ident := hx ($(rowNumLit i) : Fin $(rowNumLit k))))
       hs := hs.push hi
+    let hterms : Array Term ← hs.mapM fun h => `($h)
+    let mut hproducts : Array Ident := #[]
+    for h in hs do
+      let hn := mkIdent (.mkSimple s!"rr_hcone_n_{h.getId}")
+      let hn2 := mkIdent (.mkSimple s!"rr_hcone_n2_{h.getId}")
+      evalTactic (← `(tactic|
+        have $hn:ident := mul_nonneg (Nat.cast_nonneg $linRecN) (le_of_lt $h)))
+      evalTactic (← `(tactic|
+        have $hn2:ident := mul_nonneg (sq_nonneg ($linRecN : ℝ)) (le_of_lt $h)))
+      hproducts := hproducts.push hn |>.push hn2
+    let hproductTerms : Array Term ← hproducts.mapM fun h => `($h)
+    evalTactic (← `(tactic|
+      norm_num [RealRooted.ScalarRec.FormsPos,
+        RealRooted.ScalarRec.coordinate, RealRooted.ScalarRec.companionStep,
+        Finset.sum_fin_eq_sum_range, Finset.sum_range_succ]
+        at $hterms* $hproductTerms*))
     evalTactic (← `(tactic| fin_cases i))
     let branchGoals ← getGoals
     for hidx in [0:branchGoals.length] do
       let g := branchGoals[hidx]!
       setGoals [g]
-      let hterms : Array Term ← hs.mapM fun h => `($h)
-      let mut hproducts : Array Ident := #[]
-      for h in hs do
-        let hn := mkIdent (.mkSimple s!"rr_hcone_n_{h.getId}")
-        let hn2 := mkIdent (.mkSimple s!"rr_hcone_n2_{h.getId}")
-        evalTactic (← `(tactic|
-          have $hn:ident := mul_nonneg (Nat.cast_nonneg $linRecN) (le_of_lt $h)))
-        evalTactic (← `(tactic|
-          have $hn2:ident := mul_nonneg (sq_nonneg ($linRecN : ℝ)) (le_of_lt $h)))
-        hproducts := hproducts.push hn |>.push hn2
-      let hproductTerms : Array Term ← hproducts.mapM fun h => `($h)
-      evalTactic (← `(tactic|
-        norm_num [RealRooted.ScalarRec.FormsPos,
-          RealRooted.ScalarRec.coordinate, RealRooted.ScalarRec.companionStep,
-          Finset.sum_fin_eq_sum_range, Finset.sum_range_succ]
-          at $hterms* $hproductTerms*))
       let step ← coneStepTerm k forms[hidx]! Dfun terms
       evalTactic (← `(tactic| change 0 < $step))
       evalTactic (← `(tactic|

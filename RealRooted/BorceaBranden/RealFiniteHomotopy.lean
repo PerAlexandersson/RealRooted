@@ -2,6 +2,8 @@ module
 
 public import RealRooted.BorceaBranden.RealFiniteSymbolSufficiency
 public import Mathlib.Topology.Order.IntermediateValue
+import Mathlib.Analysis.Complex.Convex
+import Mathlib.Topology.Instances.Sign
 public import RealRooted.BorceaBranden.RealHKOConverse
 public import RealRooted.BorceaBranden.FiniteSymbolClassification
 
@@ -104,7 +106,9 @@ theorem shiftedBoxImagPart_conj {σ : Type*} [Fintype σ]
           ((MvPolynomial.boxChoose κ m.1 : ℂ) *
             ∏ i, W i ^ (κ i - m.1 i)) by
       simp only [map_mul, map_prod, map_pow, map_natCast], Complex.conj_im]
-  exact neg_smul _ _
+  exact neg_smul
+    (((MvPolynomial.boxChoose κ m.1 : ℂ) * ∏ i, W i ^ (κ i - m.1 i)).im)
+    (MvPolynomial.basisDegreeOfLE (R := ℝ) κ m)
 
 /-- The real output part of a shifted-box fiber. -/
 def shiftedBoxOutputReal {σ : Type*} [Fintype σ]
@@ -196,6 +200,19 @@ private def evalComplexifyRealLinear {σ : Type*} (z : σ → ℂ) :
   map_smul' c p := by
     simp [complexifyMv, MvPolynomial.smul_eq_C_mul]
 
+/-- The shifted-box orientation is continuous in all shifts. -/
+private theorem continuous_shiftedBoxOrientationValue
+    {σ : Type*} [Fintype σ] (κ : σ → ℕ)
+    (T : MvPolynomial.degreeOfLE σ ℝ κ →ₗ[ℝ] MvPolynomial σ ℝ) :
+    Continuous (shiftedBoxOrientationValue κ T) := by
+  classical
+  let e := (evalComplexifyRealLinear (upperBasePoint σ)).comp T
+  change Continuous fun W : σ → ℂ =>
+    (e (shiftedBoxRealPart κ W) * starRingEnd ℂ (e (shiftedBoxImagPart κ W))).im
+  unfold shiftedBoxRealPart shiftedBoxImagPart
+  simp only [map_sum, map_smul]
+  fun_prop
+
 /-- The shifted-box orientation varies continuously along every affine path
 of shifts.  This is the path-continuity input in the §4 homotopy argument. -/
 theorem continuous_shiftedBoxOrientationValue_line
@@ -204,17 +221,7 @@ theorem continuous_shiftedBoxOrientationValue_line
     (W V : σ → ℂ) :
     Continuous fun t : ℝ => shiftedBoxOrientationValue κ T
       (fun i => ((1 - t : ℝ) : ℂ) * W i + (t : ℂ) * V i) := by
-  classical
-  let e := (evalComplexifyRealLinear (upperBasePoint σ)).comp T
-  change Continuous fun t : ℝ =>
-    (e (shiftedBoxRealPart κ
-      (fun i => ((1 - t : ℝ) : ℂ) * W i + (t : ℂ) * V i)) *
-      starRingEnd ℂ
-        (e (shiftedBoxImagPart κ
-          (fun i => ((1 - t : ℝ) : ℂ) * W i + (t : ℂ) * V i)))).im
-  unfold shiftedBoxRealPart shiftedBoxImagPart
-  simp only [map_sum, map_smul]
-  fun_prop
+  exact (continuous_shiftedBoxOrientationValue κ T).comp (by fun_prop)
 
 /-- Borcea--Brändén Proposition 4.1 / Corollary 1.10 in the form needed by
 the homotopy: a zero orientation value in a stable real pencil gives a
@@ -395,26 +402,8 @@ theorem forall_realStableOrZero_of_shiftedBoxOrientationValue_eq_zero
     rwa [hTHvalue] at hTH
   exact mvRealStableOrZero_of_nonzero_smul hε.ne' hscaled
 
-private theorem continuousOn_pos_iff_of_ne_zero {f : ℝ → ℝ} {a b : ℝ}
-    (hab : a ≤ b) (hf : ContinuousOn f (Icc a b))
-    (hne : ∀ t ∈ Icc a b, f t ≠ 0) : 0 < f a ↔ 0 < f b := by
-  constructor
-  · intro ha
-    rcases lt_or_gt_of_ne (hne b ⟨hab, le_rfl⟩) with hb | hb
-    · obtain ⟨t, ht, hzero⟩ := intermediate_value_Icc' hab hf
-        (show 0 ∈ Icc (f b) (f a) from ⟨hb.le, ha.le⟩)
-      exact (hne t ht hzero).elim
-    · exact hb
-  · intro hb
-    rcases lt_or_gt_of_ne (hne a ⟨le_rfl, hab⟩) with ha | ha
-    · obtain ⟨t, ht, hzero⟩ := intermediate_value_Icc hab hf
-        (show 0 ∈ Icc (f a) (f b) from ⟨ha.le, hb.le⟩)
-      exact (hne t ht hzero).elim
-    · exact ha
-
 /-- On the preconnected open upper-half-plane shift set, a nowhere-zero
-shifted-box orientation has constant sign.  The proof is the literal affine
-path and intermediate-value argument omitted in Borcea--Brändén §4. -/
+shifted-box orientation has constant sign, by continuity and preconnectedness. -/
 theorem shiftedBoxOrientationValue_pos_iff_of_ne_zero
     {σ : Type*} [Fintype σ] {κ : σ → ℕ}
     (T : MvPolynomial.degreeOfLE σ ℝ κ →ₗ[ℝ] MvPolynomial σ ℝ)
@@ -424,28 +413,13 @@ theorem shiftedBoxOrientationValue_pos_iff_of_ne_zero
     (hV : ∀ i, 0 < (V i).im) :
     0 < shiftedBoxOrientationValue κ T W ↔
       0 < shiftedBoxOrientationValue κ T V := by
-  let path : ℝ → σ → ℂ := fun t i =>
-    ((1 - t : ℝ) : ℂ) * W i + (t : ℂ) * V i
-  let orient : ℝ → ℝ := fun t => shiftedBoxOrientationValue κ T (path t)
-  have hpath : ∀ t ∈ Icc (0 : ℝ) 1, ∀ i, 0 < (path t i).im := by
-    intro t ht i
-    rcases ht with ⟨ht0, ht1⟩
-    simp only [path, Complex.add_im, Complex.mul_im, Complex.ofReal_re,
-      Complex.ofReal_im, zero_mul, add_zero]
-    have hleft : 0 ≤ (1 - t) * (W i).im :=
-      mul_nonneg (sub_nonneg.mpr ht1) (hW i).le
-    by_cases htzero : t = 0
-    · simp [htzero, hW i]
-    · have hright : 0 < t * (V i).im :=
-        mul_pos (lt_of_le_of_ne ht0 (Ne.symm htzero)) (hV i)
-      linarith
-  have hcontinuous : ContinuousOn orient (Icc (0 : ℝ) 1) := by
-    exact (continuous_shiftedBoxOrientationValue_line κ T W V).continuousOn
-  have horientNe : ∀ t ∈ Icc (0 : ℝ) 1, orient t ≠ 0 := by
-    intro t ht
-    exact hne (path t) (hpath t ht)
-  simpa [orient, path] using continuousOn_pos_iff_of_ne_zero
-    (show (0 : ℝ) ≤ 1 by norm_num) hcontinuous horientNe
+  have hconnected := isPreconnected_univ_pi
+    (fun _ : σ => (convex_halfSpace_im_gt 0).isPreconnected)
+  have hsign := hconnected.sign_eq_of_continuousOn
+    (continuous_shiftedBoxOrientationValue κ T).continuousOn
+    (fun W hW => hne W fun i => hW i (Set.mem_univ i))
+    (fun i _ => hW i) (fun i _ => hV i)
+  rw [← sign_eq_one_iff, ← sign_eq_one_iff, hsign]
 
 private theorem stable_shiftedBox_output_of_orientation_pos
     {σ : Type*} [Fintype σ] {κ : σ → ℕ}

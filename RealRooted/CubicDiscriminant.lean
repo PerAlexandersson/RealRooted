@@ -194,6 +194,16 @@ theorem cubicDiscr_prod_three_X_sub_C (a b c : ℝ) :
   norm_num
   ring
 
+/-- Affine covariance is an identity in the four coefficients, without expanding root data. -/
+private theorem cubicDiscr_affine_coeffs (A B C₀ D k t : ℝ) (hk : k ≠ 0) :
+    cubicDiscr (C A * X ^ 3 + C B * X ^ 2 + C C₀ * X + C D) =
+      k ^ 6 * cubicDiscr (C A * X ^ 3 + C ((B + 3 * A * t) / k) * X ^ 2 +
+        C ((C₀ + 2 * B * t + 3 * A * t ^ 2) / k ^ 2) * X +
+        C ((D + C₀ * t + B * t ^ 2 + A * t ^ 3) / k ^ 3)) := by
+  rw [cubicDiscr_of_coeffs, cubicDiscr_of_coeffs]
+  field_simp
+  ring
+
 /-- #41-only cubic support, not #42.  Affine covariance of the cubic
 coefficient discriminant of a monic cubic root pencil.  Applying the affine
 change of variable `x ↦ (x - t) / k` to every root scales `cubicDiscr` by
@@ -217,9 +227,30 @@ theorem cubicDiscr_monicPencil_affine
     intro u v w x y z
     simp only [C_add, C_mul, C_neg, C_1]
     ring
-  rw [hcoeff, hcoeff, cubicDiscr_of_coeffs, cubicDiscr_of_coeffs]
-  field_simp
-  ring
+  let A := 1 + s
+  let B := -((a + b + c) + s * (p + q + r))
+  let C₀ := (a * b + b * c + c * a) + s * (p * q + q * r + r * p)
+  let D := -(a * b * c + s * (p * q * r))
+  have hB : -(((a - t) / k + (b - t) / k + (c - t) / k) +
+      s * ((p - t) / k + (q - t) / k + (r - t) / k)) = (B + 3 * A * t) / k := by
+    dsimp only [A, B]
+    field_simp
+    ring
+  have hC : (a - t) / k * ((b - t) / k) + (b - t) / k * ((c - t) / k) +
+      (c - t) / k * ((a - t) / k) + s * ((p - t) / k * ((q - t) / k) +
+        (q - t) / k * ((r - t) / k) + (r - t) / k * ((p - t) / k)) =
+      (C₀ + 2 * B * t + 3 * A * t ^ 2) / k ^ 2 := by
+    dsimp only [A, B, C₀]
+    field_simp
+    ring
+  have hD : -((a - t) / k * ((b - t) / k) * ((c - t) / k) +
+      s * ((p - t) / k * ((q - t) / k) * ((r - t) / k))) =
+      (D + C₀ * t + B * t ^ 2 + A * t ^ 3) / k ^ 3 := by
+    dsimp only [A, B, C₀, D]
+    field_simp
+    ring
+  rw [hcoeff, hcoeff, hB, hC, hD]
+  exact cubicDiscr_affine_coeffs A B C₀ D k t hk
 
 /-- Every real cubic has a real root: a degree-three real polynomial without a
 root would be irreducible, contradicting that irreducible real polynomials have

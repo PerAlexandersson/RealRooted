@@ -173,6 +173,53 @@ def signedRunLengthSummand {R : Type*} [CommSemiring R] {q p : ℕ}
     C (weight (skeleton.get i) ^ lengths i) *
       (1 + X) ^ (lengths i - 1)
 
+/-- Tuple-level form of an admissible signed run-length assignment. -/
+def IsSignedTupleRunLengthAssignment {q p k : ℕ}
+    (skeleton : Fin k → SignedLetter q p)
+    (lengths : Fin k →₀ ℕ) : Prop :=
+  ∀ i, 0 < lengths i ∧
+    ((skeleton i).IsPositive → lengths i = 1)
+
+theorem coeff_signedRunSeries_of_tupleAssignment
+    {R : Type*} [CommSemiring R] {q p k : ℕ}
+    (weight : SignedLetter q p → R)
+    {skeleton : Fin k → SignedLetter q p}
+    {lengths : Fin k →₀ ℕ}
+    (hlengths : IsSignedTupleRunLengthAssignment skeleton lengths)
+    (i : Fin k) :
+    PowerSeries.coeff (lengths i) (signedRunSeries weight (skeleton i)) =
+      C (weight (skeleton i) ^ lengths i) *
+        (1 + X) ^ (lengths i - 1) := by
+  rcases (skeleton i).isNegative_or_isPositive with
+    hnegative | hpositive
+  · obtain ⟨m, hm⟩ := Nat.exists_eq_add_of_le' (hlengths i).1
+    rw [hm]
+    exact coeff_signedRunSeries_of_isNegative weight hnegative m
+  · have hlength : lengths i = 1 := (hlengths i).2 hpositive
+    rw [hlength]
+    simpa using
+      (coeff_signedRunSeries_of_isPositive weight hpositive 1)
+
+theorem exists_coeff_signedRunSeries_eq_zero_of_not_tupleAssignment
+    {R : Type*} [CommSemiring R] {q p k : ℕ}
+    (weight : SignedLetter q p → R)
+    {skeleton : Fin k → SignedLetter q p}
+    {lengths : Fin k →₀ ℕ}
+    (hlengths : ¬IsSignedTupleRunLengthAssignment skeleton lengths) :
+    ∃ i : Fin k,
+      PowerSeries.coeff (lengths i)
+        (signedRunSeries weight (skeleton i)) = 0 := by
+  classical
+  simp only [IsSignedTupleRunLengthAssignment, not_forall,
+    not_and_or] at hlengths
+  obtain ⟨i, hnonpos | ⟨hpositive, hne⟩⟩ := hlengths
+  · refine ⟨i, ?_⟩
+    have hzero : lengths i = 0 := Nat.eq_zero_of_not_pos hnonpos
+    simp [hzero]
+  · refine ⟨i, ?_⟩
+    rw [coeff_signedRunSeries_of_isPositive weight hpositive]
+    simp [hne]
+
 /-- On an admissible assignment, a selected run factor has exactly the
 runwise weight and collision contribution. -/
 theorem coeff_signedRunSeries_of_assignment
@@ -186,15 +233,7 @@ theorem coeff_signedRunSeries_of_assignment
         (signedRunSeries weight (skeleton.get i)) =
       C (weight (skeleton.get i) ^ lengths i) *
         (1 + X) ^ (lengths i - 1) := by
-  rcases (skeleton.get i).isNegative_or_isPositive with
-    hnegative | hpositive
-  · obtain ⟨n, hn⟩ := Nat.exists_eq_add_of_le' (hlengths i).1
-    rw [hn]
-    exact coeff_signedRunSeries_of_isNegative weight hnegative n
-  · have hlength : lengths i = 1 := (hlengths i).2 hpositive
-    rw [hlength]
-    simpa using
-      (coeff_signedRunSeries_of_isPositive weight hpositive 1)
+  exact coeff_signedRunSeries_of_tupleAssignment weight hlengths i
 
 /-- If a length assignment is inadmissible, at least one selected run
 coefficient vanishes. -/
@@ -207,16 +246,7 @@ theorem exists_coeff_signedRunSeries_eq_zero_of_not_assignment
     ∃ i : Fin skeleton.length,
       PowerSeries.coeff (lengths i)
         (signedRunSeries weight (skeleton.get i)) = 0 := by
-  classical
-  simp only [IsSignedRunLengthAssignment, not_forall,
-    not_and_or] at hlengths
-  obtain ⟨i, hnonpos | ⟨hpositive, hne⟩⟩ := hlengths
-  · refine ⟨i, ?_⟩
-    have hzero : lengths i = 0 := Nat.eq_zero_of_not_pos hnonpos
-    simp [hzero]
-  · refine ⟨i, ?_⟩
-    rw [coeff_signedRunSeries_of_isPositive weight hpositive]
-    simp [hne]
+  exact exists_coeff_signedRunSeries_eq_zero_of_not_tupleAssignment weight hlengths
 
 private lemma coeff_prod_eq_sum_filter
     {R : Type*} [CommSemiring R] {I : Type*} [Fintype I] [DecidableEq I]
@@ -260,6 +290,51 @@ theorem coeff_signedSkeletonRunSeries
 
 /-! ## Realizing a fiber as canonical run data -/
 
+/-- Canonical run data built directly from a tuple skeleton and its admissible
+length assignment. -/
+def runLengthDataOfTupleAssignment {q p k : ℕ}
+    (skeleton : Fin k → SignedLetter q p)
+    (hskeleton : (List.ofFn skeleton).IsChain (· ≠ ·))
+    (lengths : Fin k →₀ ℕ)
+    (hlengths : IsSignedTupleRunLengthAssignment skeleton lengths) :
+    RunLengthData (SignedLetter q p) where
+  runs := List.ofFn fun i => (skeleton i, lengths i)
+  representatives_ne := by
+    rw [← List.ofFn_comp']
+    simpa using hskeleton
+  lengths_pos := by
+    intro run hrun
+    rw [List.mem_ofFn] at hrun
+    obtain ⟨i, hi⟩ := hrun
+    rw [← hi]
+    exact (hlengths i).1
+
+theorem runLengthDataOfTupleAssignment_isSigned {q p k : ℕ}
+    (skeleton : Fin k → SignedLetter q p)
+    (hskeleton : (List.ofFn skeleton).IsChain (· ≠ ·))
+    (lengths : Fin k →₀ ℕ)
+    (hlengths : IsSignedTupleRunLengthAssignment skeleton lengths) :
+    RunLengthData.IsSigned
+      (runLengthDataOfTupleAssignment skeleton hskeleton lengths hlengths) := by
+  intro run hrun hpositive
+  rw [runLengthDataOfTupleAssignment, List.mem_ofFn] at hrun
+  obtain ⟨i, hi⟩ := hrun
+  rw [← hi] at hpositive ⊢
+  exact (hlengths i).2 hpositive
+
+theorem length_expand_runLengthDataOfTupleAssignment {q p k : ℕ}
+    (skeleton : Fin k → SignedLetter q p)
+    (hskeleton : (List.ofFn skeleton).IsChain (· ≠ ·))
+    (lengths : Fin k →₀ ℕ)
+    (hlengths : IsSignedTupleRunLengthAssignment skeleton lengths) :
+    (RunLengthData.expand
+      (runLengthDataOfTupleAssignment skeleton hskeleton lengths hlengths)).length =
+      ∑ i : Fin k, lengths i := by
+  rw [RunLengthData.length_expand]
+  change ((List.ofFn fun i => (skeleton i, lengths i)).map
+    Prod.snd).sum = _
+  rw [← List.ofFn_comp', List.sum_ofFn]
+
 /-- Turn an admissible length assignment on a Smirnov skeleton into canonical
 run-length data. -/
 def runLengthDataOfAssignment {q p : ℕ}
@@ -300,11 +375,8 @@ theorem runLengthDataOfAssignment_isSigned {q p : ℕ}
     (hlengths : IsSignedRunLengthAssignment skeleton lengths) :
     RunLengthData.IsSigned
       (runLengthDataOfAssignment skeleton hskeleton lengths hlengths) := by
-  intro run hrun hpositive
-  rw [runLengthDataOfAssignment, List.mem_ofFn] at hrun
-  obtain ⟨i, hi⟩ := hrun
-  rw [← hi] at hpositive ⊢
-  exact (hlengths i).2 hpositive
+  exact runLengthDataOfTupleAssignment_isSigned (fun i => skeleton.get i)
+    (by simpa using hskeleton) lengths hlengths
 
 theorem length_expand_runLengthDataOfAssignment {q p : ℕ}
     (skeleton : List (SignedLetter q p))
@@ -314,10 +386,8 @@ theorem length_expand_runLengthDataOfAssignment {q p : ℕ}
     (RunLengthData.expand
       (runLengthDataOfAssignment skeleton hskeleton lengths hlengths)).length =
       ∑ i : Fin skeleton.length, lengths i := by
-  rw [RunLengthData.length_expand]
-  change ((List.ofFn (fun i => (skeleton.get i, lengths i))).map
-    Prod.snd).sum = _
-  rw [← List.ofFn_comp', List.sum_ofFn]
+  exact length_expand_runLengthDataOfTupleAssignment (fun i => skeleton.get i)
+    (by simpa using hskeleton) lengths hlengths
 
 theorem runWeight_runLengthDataOfAssignment
     {R : Type*} [CommSemiring R] {q p : ℕ}
@@ -383,13 +453,6 @@ theorem mem_signedSmirnovWords_iff {q p k : ℕ}
   classical
   simp [signedSmirnovWords]
 
-/-- Tuple-level form of an admissible signed run-length assignment. -/
-def IsSignedTupleRunLengthAssignment {q p k : ℕ}
-    (skeleton : Fin k → SignedLetter q p)
-    (lengths : Fin k →₀ ℕ) : Prop :=
-  ∀ i, 0 < lengths i ∧
-    ((skeleton i).IsPositive → lengths i = 1)
-
 /-- Finite tuple-level length fiber with prescribed total length. -/
 def signedTupleRunLengthFiber {q p k : ℕ}
     (skeleton : Fin k → SignedLetter q p) (n : ℕ) :
@@ -424,46 +487,6 @@ def signedTupleRunLengthSummand
   ∏ i : Fin k,
     C (weight (skeleton i) ^ lengths i) *
       (1 + X) ^ (lengths i - 1)
-
-theorem coeff_signedRunSeries_of_tupleAssignment
-    {R : Type*} [CommSemiring R] {q p k : ℕ}
-    (weight : SignedLetter q p → R)
-    {skeleton : Fin k → SignedLetter q p}
-    {lengths : Fin k →₀ ℕ}
-    (hlengths : IsSignedTupleRunLengthAssignment skeleton lengths)
-    (i : Fin k) :
-    PowerSeries.coeff (lengths i) (signedRunSeries weight (skeleton i)) =
-      C (weight (skeleton i) ^ lengths i) *
-        (1 + X) ^ (lengths i - 1) := by
-  rcases (skeleton i).isNegative_or_isPositive with
-    hnegative | hpositive
-  · obtain ⟨m, hm⟩ := Nat.exists_eq_add_of_le' (hlengths i).1
-    rw [hm]
-    exact coeff_signedRunSeries_of_isNegative weight hnegative m
-  · have hlength : lengths i = 1 := (hlengths i).2 hpositive
-    rw [hlength]
-    simpa using
-      (coeff_signedRunSeries_of_isPositive weight hpositive 1)
-
-theorem exists_coeff_signedRunSeries_eq_zero_of_not_tupleAssignment
-    {R : Type*} [CommSemiring R] {q p k : ℕ}
-    (weight : SignedLetter q p → R)
-    {skeleton : Fin k → SignedLetter q p}
-    {lengths : Fin k →₀ ℕ}
-    (hlengths : ¬IsSignedTupleRunLengthAssignment skeleton lengths) :
-    ∃ i : Fin k,
-      PowerSeries.coeff (lengths i)
-        (signedRunSeries weight (skeleton i)) = 0 := by
-  classical
-  simp only [IsSignedTupleRunLengthAssignment, not_forall,
-    not_and_or] at hlengths
-  obtain ⟨i, hnonpos | ⟨hpositive, hne⟩⟩ := hlengths
-  · refine ⟨i, ?_⟩
-    have hzero : lengths i = 0 := Nat.eq_zero_of_not_pos hnonpos
-    simp [hzero]
-  · refine ⟨i, ?_⟩
-    rw [coeff_signedRunSeries_of_isPositive weight hpositive]
-    simp [hne]
 
 /-- Tuple form of the finite fixed-skeleton fiber factorization. -/
 theorem coeff_signedTupleSkeletonRunSeries
@@ -579,26 +602,18 @@ theorem compressedRunIndex_injective {q p n : ℕ} :
             Σ _skeleton : Fin k → SignedLetter q p,
               Fin k →₀ ℕ) := by
   intro left right hindex
-  have hruns := congrArg runIndexRuns hindex
-  rw [runIndexRuns_compressedRunIndex,
-    runIndexRuns_compressedRunIndex] at hruns
-  have hdata :
-      compressRunLengthData (List.ofFn left) =
-        compressRunLengthData (List.ofFn right) :=
-    RunLengthData.ext hruns
   apply List.ofFn_injective
-  simpa only [expand_compressRunLengthData] using congrArg RunLengthData.expand hdata
+  apply (runLengthEquiv (SignedLetter q p)).injective
+  apply RunLengthData.ext
+  simpa only [runLengthEquiv, Equiv.coe_fn_mk, runIndexRuns_compressedRunIndex] using
+    congrArg runIndexRuns hindex
 
 theorem RunLengthData.sum_lengthTuple {q p : ℕ}
     (data : RunLengthData (SignedLetter q p)) :
     (∑ i : Fin data.runs.length, data.lengthTuple i) =
       (data.runs.map Prod.snd).sum := by
-  rw [← List.sum_ofFn]
-  change (List.ofFn fun i => (data.runs.get i).2).sum = _
-  calc
-    _ = ((List.ofFn data.runs.get).map Prod.snd).sum := by
-      rw [← List.ofFn_comp']
-    _ = _ := by rw [List.ofFn_get]
+  change (∑ i : Fin data.runs.length, (data.runs.get i).2) = _
+  rw [← List.sum_ofFn, List.ofFn_comp', List.ofFn_get]
 
 theorem RunLengthData.lengthTuple_isSignedAssignment {q p : ℕ}
     (data : RunLengthData (SignedLetter q p)) (hsigned : data.IsSigned) :
@@ -708,51 +723,6 @@ theorem signedExpansionIndexSummand_compressedRunIndex
   exact (RunLengthData.runSummand_eq_expansionIndexSummand weight
     (compressRunLengthData (List.ofFn word))).symm
 
-/-- Canonical run data built directly from a tuple skeleton and its admissible
-length assignment. -/
-def runLengthDataOfTupleAssignment {q p k : ℕ}
-    (skeleton : Fin k → SignedLetter q p)
-    (hskeleton : (List.ofFn skeleton).IsChain (· ≠ ·))
-    (lengths : Fin k →₀ ℕ)
-    (hlengths : IsSignedTupleRunLengthAssignment skeleton lengths) :
-    RunLengthData (SignedLetter q p) where
-  runs := List.ofFn fun i => (skeleton i, lengths i)
-  representatives_ne := by
-    rw [← List.ofFn_comp']
-    simpa using hskeleton
-  lengths_pos := by
-    intro run hrun
-    rw [List.mem_ofFn] at hrun
-    obtain ⟨i, hi⟩ := hrun
-    rw [← hi]
-    exact (hlengths i).1
-
-theorem runLengthDataOfTupleAssignment_isSigned {q p k : ℕ}
-    (skeleton : Fin k → SignedLetter q p)
-    (hskeleton : (List.ofFn skeleton).IsChain (· ≠ ·))
-    (lengths : Fin k →₀ ℕ)
-    (hlengths : IsSignedTupleRunLengthAssignment skeleton lengths) :
-    RunLengthData.IsSigned
-      (runLengthDataOfTupleAssignment skeleton hskeleton lengths hlengths) := by
-  intro run hrun hpositive
-  rw [runLengthDataOfTupleAssignment, List.mem_ofFn] at hrun
-  obtain ⟨i, hi⟩ := hrun
-  rw [← hi] at hpositive ⊢
-  exact (hlengths i).2 hpositive
-
-theorem length_expand_runLengthDataOfTupleAssignment {q p k : ℕ}
-    (skeleton : Fin k → SignedLetter q p)
-    (hskeleton : (List.ofFn skeleton).IsChain (· ≠ ·))
-    (lengths : Fin k →₀ ℕ)
-    (hlengths : IsSignedTupleRunLengthAssignment skeleton lengths) :
-    (RunLengthData.expand
-      (runLengthDataOfTupleAssignment skeleton hskeleton lengths hlengths)).length =
-      ∑ i : Fin k, lengths i := by
-  rw [RunLengthData.length_expand]
-  change ((List.ofFn fun i => (skeleton i, lengths i)).map
-    Prod.snd).sum = _
-  rw [← List.ofFn_comp', List.sum_ofFn]
-
 /-- Convert a list of known length to its corresponding finite tuple. -/
 def listAsTuple {A : Type*} {n : ℕ} (word : List A)
     (hlength : word.length = n) : Fin n → A :=
@@ -762,9 +732,7 @@ def listAsTuple {A : Type*} {n : ℕ} (word : List A)
 theorem ofFn_listAsTuple {A : Type*} {n : ℕ} (word : List A)
     (hlength : word.length = n) :
     List.ofFn (listAsTuple word hlength) = word := by
-  apply List.ext_get (by simp [hlength])
-  intro i hi hword
-  simp [listAsTuple]
+  exact (List.ofFn_congr hlength word.get).symm.trans (List.ofFn_get word)
 
 theorem compressedRunIndex_surjOn_signedSmirnovExpansionFiber
     {q p n : ℕ}

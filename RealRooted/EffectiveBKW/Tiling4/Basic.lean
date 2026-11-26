@@ -7,6 +7,7 @@ public import RealRooted.EffectiveBKW.PairExpansion
 import Mathlib.Algebra.Polynomial.Eval.Coeff
 import Mathlib.Analysis.Complex.Basic
 import RealRooted.EffectiveBKW.Domination
+import Mathlib.Tactic.ComputeDegree
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.FunProp
 import Mathlib.Tactic.Ring
@@ -66,22 +67,14 @@ theorem natDegree_polynomial_le (n : ℕ) : (polynomial n).natDegree ≤ n := by
     match n with
     | 0 => simp
     | 1 => simp
-    | 2 =>
-      apply natDegree_le_iff_coeff_eq_zero.mpr
-      intro k hk
-      simp [polynomial, coeff_one, coeff_X, coeff_X_pow, show k ≠ 0 by lia,
-        show 1 ≠ k by lia, show k ≠ 2 by lia]
+    | 2 => dsimp only [polynomial]; compute_degree
     | n + 3 =>
-      apply natDegree_le_iff_coeff_eq_zero.mpr
-      intro k hk
-      obtain ⟨j, rfl⟩ := Nat.exists_eq_add_of_le (show 3 ≤ k by lia)
-      rw [Nat.add_comm 3 j, polynomial_add_three, coeff_step]
-      have ha := natDegree_le_iff_coeff_eq_zero.mp (ih n (by lia))
-      have hb := natDegree_le_iff_coeff_eq_zero.mp (ih (n + 1) (by lia))
-      have hc := natDegree_le_iff_coeff_eq_zero.mp (ih (n + 2) (by lia))
-      rw [hc _ (by lia), hc _ (by lia), hb _ (by lia), hb _ (by lia),
-        ha _ (by lia), ha _ (by lia)]
-      ring
+      have h0 := ih n (by lia)
+      have h1 := ih (n + 1) (by lia)
+      have h2 := ih (n + 2) (by lia)
+      rw [polynomial_add_three]
+      compute_degree
+      lia
 
 /-- The constant coefficient of every row is one. -/
 @[simp] theorem coeff_polynomial_zero (n : ℕ) : (polynomial n).coeff 0 = 1 := by

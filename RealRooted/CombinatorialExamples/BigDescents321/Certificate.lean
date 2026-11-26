@@ -202,38 +202,12 @@ theorem bernP_eq {R X k : ℚ} (hR : 7 ≤ R) (hX : 0 ≤ X) (hk : 0 ≤ k) :
       certBq (R - 1) X k * bernG R X (k + 1) - bernG R X k := by
   have hd := (bernD_pos hR hX hk).ne'
   have hL := lden_pos.ne'
-  have h1 : R + k - 2 ≠ 0 := by linarith
-  have h2 : R + k - 3 ≠ 0 := by linarith
-  have h3 : 2 * X + 2 * k + 5 ≠ 0 := by linarith
-  have h4 : 2 * X + 2 * k + 7 ≠ 0 := by linarith
-  have h5 : R + X + k + 2 ≠ 0 := by linarith
-  have h6 : R + 2 * X + k + 1 ≠ 0 := by linarith
-  have h7 : R + k - 1 ≠ 0 := by linarith
-  have h8 : R + 2 * X + k + 2 ≠ 0 := by linarith
-  have h9 : k + 1 ≠ 0 := by linarith
-  have h10 : 2 * X + 2 * k + 4 ≠ 0 := by linarith
   have hP : bernP R X k = bernN R X k / bernD R X k := by
     rw [eq_div_iff hd, mul_comm]
     exact bernD_mul_bernP hR hX hk
-  have hg0 : bernG R X k = 2 * k * (2 * X + 2 * k + 7) * (R + X + k + 2) * bernP0 R X k /
-      (2 * lden * bernD R X k) := by
-    unfold bernG bernD
-    rw [div_eq_div_iff (by simp [*]) (by simp [*])]
-    ring
-  have hg1 : certBq (R - 1) X k * bernG R X (k + 1) = (R - k) * (R + k - 3) *
-      (R + 2 * X + k + 1) * bernP0 R X (k + 1) / (2 * lden * bernD R X k) := by
-    unfold certBq bernG bernD
-    have e1 : R + (k + 1) - 3 = R + k - 2 := by ring
-    have e2 : R + (k + 1) - 2 = R + k - 1 := by ring
-    have e3 : 2 * X + 2 * (k + 1) + 5 = 2 * X + 2 * k + 7 := by ring
-    have e4 : R + 2 * X + (k + 1) + 1 = R + 2 * X + k + 2 := by ring
-    have e5 : X + k + (R - 1) + 3 = R + X + k + 2 := by ring
-    rw [e1, e2, e3, e4, e5]
-    field_simp
-    ring
-  rw [hP, hg0, hg1]
-  unfold bernH
-  field_simp
+  rw [hP]
+  unfold bernH bernG bernD certBq
+  field_simp (disch := first | assumption | linarith)
   ring
 
 end RealRooted.BigDescents321

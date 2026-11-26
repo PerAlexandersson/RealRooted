@@ -1,5 +1,6 @@
 module
 
+import RealRooted.Mathlib.Algebra.QuadraticDiscriminant
 import Mathlib.Algebra.MvPolynomial.PDeriv
 import Mathlib.Algebra.Order.Star.Int
 import Mathlib.LinearAlgebra.Lagrange
@@ -465,8 +466,8 @@ private lemma large_lower (nn m u r d : ℝ) (hu0 : 0 < u) (hu1 : u < 1)
     exact add_pos_of_pos_of_nonneg (mul_pos (by linarith) (by linarith))
       (mul_nonneg (mul_nonneg (by linarith) (by linarith)) (by linarith))
   have hdj2 : dj ^ 2 < m * a * q * u := by
-    have hN : 0 < nn + 3 := by linarith
-    nlinarith
+    exact sub_pos.mp ((mul_pos_iff_of_pos_left (by linarith : 0 < nn + 3)).mp
+      (by rw [key]; exact hpos))
   -- the quadratic form
   set A := (nn + 1 - m) * lam with hA
   set B := (nn + 1) * dj with hB
@@ -480,10 +481,12 @@ private lemma large_lower (nn m u r d : ℝ) (hu0 : 0 < u) (hu1 : u < 1)
     have h1 : (nn + 1) * dj ^ 2 ≤ (nn + 1) * (m * a * q * u) :=
       mul_le_mul_of_nonneg_left hdj2.le hn1.le
     have h2 : (nn + 1) * a ≤ 4 * (nn + 1 - m) * (nn + 3) := by
-      rw [ha]; nlinarith
-    have h3 : (nn + 1) * (m * a * q * u) ≤ 4 * (nn + 1 - m) * (nn + 3) * (m * q * u) := by
-      have : 0 ≤ m * q * u := by positivity
-      nlinarith
+      rw [ha]
+      nlinarith only [mul_nonneg (sub_nonneg.mpr hmn)
+        (by linarith only [hm0, hmn] : 0 ≤ 3 * nn + 11), hm0, hmn]
+    have h3 : (nn + 1) * (m * a * q * u) ≤
+        4 * (nn + 1 - m) * (nn + 3) * (m * q * u) := by
+      convert mul_le_mul_of_nonneg_right h2 (by positivity : 0 ≤ m * q * u) using 1; ring
     have : ((nn + 1) * dj) ^ 2 = (nn + 1) * ((nn + 1) * dj ^ 2) := by ring
     rw [this]
     have : 4 * ((nn + 1 - m) * lam) * ((nn + 1) * m * u) =
@@ -491,12 +494,11 @@ private lemma large_lower (nn m u r d : ℝ) (hu0 : 0 < u) (hu1 : u < 1)
     rw [this]
     exact mul_le_mul_of_nonneg_left (h1.trans h3) hn1.le
   have hQ : 0 ≤ A * r ^ 2 + B * r * d + Cc * d ^ 2 := by
-    have h4 : 4 * A * (A * r ^ 2 + B * r * d + Cc * d ^ 2) =
-        (2 * A * r + B * d) ^ 2 + (4 * A * Cc - B ^ 2) * d ^ 2 := by ring
-    have : 0 ≤ (2 * A * r + B * d) ^ 2 + (4 * A * Cc - B ^ 2) * d ^ 2 :=
-      add_nonneg (sq_nonneg _) (mul_nonneg (by linarith) (sq_nonneg d))
-    rw [← h4] at this
-    exact (mul_nonneg_iff_of_pos_left (by positivity : (0:ℝ) < 4 * A)).1 this
+    have hd : discrim A (B * d) (Cc * d ^ 2) ≤ 0 := by
+      unfold discrim
+      nlinarith only [mul_nonneg (sub_nonneg.mpr hdisc) (sq_nonneg d)]
+    simpa only [pow_two, mul_assoc, mul_left_comm, mul_comm] using
+      Quadratic.nonneg_of_pos_of_discrim_nonpos hA0 hd r
   have hE : m * lam * (Ef nn m u r d - r ^ 2) = A * r ^ 2 + B * r * d + Cc * d ^ 2 := by
     unfold Ef
     rw [← hq_def, ← hlam_def, hA, hB, hC, hdj, ha]
@@ -2082,6 +2084,30 @@ private lemma one_add_pow_ge (t : ℝ) (ht : 0 ≤ t) (k : ℕ) :
     nlinarith [mul_nonneg h0 (pow_nonneg ht 3), mul_le_mul_of_nonneg_right ih
       (show (0:ℝ) ≤ 1 + t by linarith)]
 
+/-- The large-index coefficient estimate uses only the two scalar index bounds. -/
+private lemma gauss_index_bound {N K : ℝ} (hN : 36 ≤ N) (hK : 3 ≤ K) :
+    8 * (K + 2) ^ 2 ≤ (N + 1) * (K * (K - 1)) := by
+  have h₁ := mul_nonneg (sub_nonneg.mpr hK)
+    (by linarith only [hK] : 0 ≤ 28 * K + 16)
+  have h₂ := mul_nonneg (by linarith only [hN] : 0 ≤ N + 1 - 36)
+    (mul_nonneg (by linarith only [hK] : 0 ≤ K) (by linarith only [hK] : 0 ≤ K - 1))
+  nlinarith only [h₁, h₂]
+
+/-- The rational prefactor bound is independent of the Gaussian power estimate. -/
+private lemma gauss_prefactor_lt {a b N K : ℝ} (ha : 0 < a) (hb : 2 ≤ b)
+    (hN : 0 < N) (hK : 1 < K) (hkey : 8 * a ^ 2 ≤ N * (K * (K - 1))) :
+    (a + b) / N * (b * (b - 1) / (a + 2 * b - 1)) *
+      (2 * a ^ 2 / (K * (K - 1) * b ^ 2)) < 1 / 4 := by
+  have hk1 : 0 < K * (K - 1) := mul_pos (by linarith only [hK]) (sub_pos.mpr hK)
+  have hb0 : 0 < b := by linarith only [hb]
+  have hD : 0 < a + 2 * b - 1 := by linarith only [ha, hb]
+  rw [div_mul_div_comm, div_mul_div_comm, div_lt_div_iff₀ (by positivity) (by norm_num)]
+  have hab : (a + b) * (b - 1) < b * (a + 2 * b - 1) := by
+    nlinarith only [ha, sq_nonneg b]
+  nlinarith only [mul_lt_mul_of_pos_right hab (by positivity : 0 < 8 * a ^ 2 * b),
+    mul_le_mul_of_nonneg_right hkey
+      (by positivity : 0 ≤ (a + 2 * b - 1) * b ^ 2)]
+
 /-- The estimate used with the Gaussian bound when `k > (n+3)u - 2`. -/
 private lemma gauss_small (n k : ℕ) (hk3 : 3 ≤ k) (hkn : k < n) (hn : 36 ≤ n)
     (u : ℝ) (hu0 : 0 < u)
@@ -2123,9 +2149,8 @@ private lemma gauss_small (n k : ℕ) (hk3 : 3 ≤ k) (hkn : k < n) (hn : 36 ≤
   have hn1 : (0:ℝ) < (n:ℝ) + 1 := by positivity
   have hD : 0 < a + 2 * b - 1 := by linarith
   -- key inequality `8 a^2 ≤ (n+1) k (k-1)`
-  have hkey : 8 * a ^ 2 ≤ ((n:ℝ) + 1) * ((k:ℝ) * ((k:ℝ) - 1)) := by
-    rw [ha]
-    nlinarith
+  have hkey : 8 * a ^ 2 ≤ ((n : ℝ) + 1) * ((k : ℝ) * ((k : ℝ) - 1)) := by
+    simpa only [ha] using gauss_index_bound hn' hk3'
   have hub' : u ^ k ≤ 2 * a ^ 2 / ((k:ℝ) * ((k:ℝ) - 1) * b ^ 2) := by
     rw [le_div_iff₀ (by have : 0 < (k:ℝ) - 1 := by linarith
                         positivity)]
@@ -2138,15 +2163,7 @@ private lemma gauss_small (n k : ℕ) (hk3 : 3 ≤ k) (hkn : k < n) (hn : 36 ≤
         apply mul_le_mul_of_nonneg_left hub'
         have : 0 ≤ b - 1 := by linarith
         positivity
-    _ < 1 / 4 := by
-        have hk1 : 0 < (k:ℝ) * ((k:ℝ) - 1) := by
-          have : 0 < (k:ℝ) - 1 := by linarith
-          positivity
-        rw [div_mul_div_comm, div_mul_div_comm, div_lt_div_iff₀ (by positivity) (by norm_num)]
-        have hab : (a + b) * (b - 1) < b * (a + 2 * b - 1) := by nlinarith
-        have hb0 : 0 < b := by linarith
-        nlinarith [mul_lt_mul_of_pos_right hab (show 0 < 8 * a ^ 2 * b by positivity),
-          mul_le_mul_of_nonneg_right hkey (show 0 ≤ b * (a + 2 * b - 1) * b ^ 2 by positivity)]
+    _ < 1 / 4 := gauss_prefactor_lt ha0 hb2 hn1 (by linarith only [hk3']) hkey
 
 /-- Hypotheses on the set `U` of zeros of `J_n` used throughout. -/
 def ZeroSet (n : ℕ) (U : Finset ℝ) : Prop :=

@@ -73,46 +73,6 @@ private lemma norm_lpErr_le {n : ℕ} (hn : 0 < n) {w : ℂ} (hw : ‖w‖ ≤ n
     _ = ‖w‖ ^ 2 / n := by
         rw [norm_div, Complex.norm_natCast]; field_simp
 
-/-- Products of uniformly convergent sequences with bounded limits converge uniformly. -/
-private lemma tendstoUniformlyOn_mul_of_bdd {K : Set ℂ} {F G : ℕ → ℂ → ℂ} {f g : ℂ → ℂ}
-    (hF : TendstoUniformlyOn F f atTop K) (hG : TendstoUniformlyOn G g atTop K)
-    (hf : ∃ A, ∀ z ∈ K, ‖f z‖ ≤ A) (hg : ∃ B, ∀ z ∈ K, ‖g z‖ ≤ B) :
-    TendstoUniformlyOn (fun n z => F n z * G n z) (fun z => f z * g z) atTop K := by
-  obtain ⟨A, hA⟩ := hf
-  obtain ⟨B, hB⟩ := hg
-  rw [Metric.tendstoUniformlyOn_iff] at hF hG ⊢
-  intro ε hε
-  set A' := max A 0
-  set B' := max B 0
-  have hA' : 0 ≤ A' := le_max_right _ _
-  have hB' : 0 ≤ B' := le_max_right _ _
-  set δ := min 1 (ε / (2 * (1 + A' + B'))) with hδ
-  have hδpos : 0 < δ := lt_min one_pos (div_pos hε (by positivity))
-  have hδ1 : δ ≤ 1 := min_le_left _ _
-  have hδ2 : δ * (1 + A' + B') ≤ ε / 2 := by
-    have := min_le_right 1 (ε / (2 * (1 + A' + B')))
-    rw [← hδ, le_div_iff₀ (by positivity)] at this
-    linarith
-  filter_upwards [hF δ hδpos, hG δ hδpos] with n hn1 hn2 z hz
-  have h1 := hn1 z hz
-  have h2 := hn2 z hz
-  rw [dist_eq_norm] at h1 h2 ⊢
-  have hfz : ‖f z‖ ≤ A' := (hA z hz).trans (le_max_left _ _)
-  have hgz : ‖g z‖ ≤ B' := (hB z hz).trans (le_max_left _ _)
-  have key : f z * g z - F n z * G n z = (f z - F n z) * g z + f z * (g z - G n z)
-      - (f z - F n z) * (g z - G n z) := by ring
-  rw [key]
-  calc ‖(f z - F n z) * g z + f z * (g z - G n z) - (f z - F n z) * (g z - G n z)‖
-      ≤ ‖f z - F n z‖ * ‖g z‖ + ‖f z‖ * ‖g z - G n z‖ + ‖f z - F n z‖ * ‖g z - G n z‖ := by
-        refine (norm_sub_le _ _).trans ?_
-        rw [norm_mul]
-        gcongr
-        exact (norm_add_le _ _).trans (by rw [norm_mul, norm_mul])
-    _ ≤ δ * B' + A' * δ + δ * δ := by
-        gcongr
-    _ ≤ δ * (1 + A' + B') := by nlinarith
-    _ < ε := by linarith
-
 /-- The canonical product converges uniformly on compact sets. -/
 private lemma tendstoUniformlyOn_canonicalProduct (y : ℕ → ℝ) (hy : Summable fun k => y k ^ 2)
     {K : Set ℂ} (hK : IsCompact K) :
@@ -404,42 +364,32 @@ private theorem exists_tendstoLocallyUniformly_canonicalProduct
   classical
   refine ⟨LaguerrePolya.approx c m a b y,
     fun n => LaguerrePolya.realRootedOrZero_approx c m ha b y n, ?_⟩
-  rw [tendstoLocallyUniformly_iff_forall_isCompact]
-  intro K hK
-  obtain ⟨R, hR⟩ := hK.isBounded.subset_closedBall 0
-  refine TendstoUniformlyOn.mono ?_ hR
-  have hBc : IsCompact (Metric.closedBall (0 : ℂ) R) := isCompact_closedBall 0 R
-  set g : ℂ → ℂ := fun z => (c : ℂ) * z ^ m * Complex.exp (-(a : ℂ) * z ^ 2 + b * z) with hg
-  set P : ℂ → ℂ := fun z => ∏' k, (1 - (y k : ℂ) * z) * Complex.exp (y k * z) with hPdef
-  have hP := LaguerrePolya.tendstoUniformlyOn_canonicalProduct y hy hBc
-  have hPc : ContinuousOn P (Metric.closedBall 0 R) :=
-    hP.continuousOn (Filter.Eventually.frequently (Filter.Eventually.of_forall fun n => by
-      apply Continuous.continuousOn; fun_prop))
+  set g : ℂ → ℂ := fun z =>
+    (c : ℂ) * z ^ m * Complex.exp (-(a : ℂ) * z ^ 2 + b * z) with hg
+  have hP : TendstoLocallyUniformly
+      (fun n (z : ℂ) => ∏ k ∈ Finset.range n,
+        (1 - (y k : ℂ) * z) * Complex.exp (y k * z))
+      (fun z => ∏' k, (1 - (y k : ℂ) * z) * Complex.exp (y k * z)) Filter.atTop := by
+    rw [tendstoLocallyUniformly_iff_forall_isCompact]
+    exact fun K hK => LaguerrePolya.tendstoUniformlyOn_canonicalProduct y hy hK
+  have hPc := hP.continuous (Filter.Frequently.of_forall fun n => by fun_prop)
   have hgc : Continuous g := by fun_prop
-  obtain ⟨A, hA⟩ := hBc.exists_bound_of_continuousOn hgc.continuousOn
-  obtain ⟨A', hA'⟩ := hBc.exists_bound_of_continuousOn hPc
-  have h1 := LaguerrePolya.tendstoUniformlyOn_mul_of_bdd
-    (F := fun _ => g)
-    (Metric.tendstoUniformlyOn_iff.2 fun ε hε => Filter.Eventually.of_forall fun n z _ => by
-      simpa using hε) hP ⟨A, hA⟩ ⟨A', hA'⟩
-  have h2 := LaguerrePolya.tendstoUniformlyOn_mul_of_bdd h1
-    (LaguerrePolya.tendstoUniformlyOn_correction a b y hy R)
-    ⟨A * A', fun z hz => by
-      rw [norm_mul]
-      exact mul_le_mul (hA z hz) (hA' z hz) (norm_nonneg _) ((norm_nonneg _).trans (hA z hz))⟩
-    ⟨1, fun z _ => by simp⟩
-  refine (h2.congr ?_).congr_right ?_
-  · refine Filter.Eventually.of_forall fun n z _ => ?_
-    simp only
+  have hG : TendstoLocallyUniformly (fun _ : ℕ => g) g Filter.atTop := fun u hu x =>
+    ⟨Set.univ, Filter.univ_mem, Filter.Eventually.of_forall fun _ _ _ => refl_mem_uniformity hu⟩
+  have hcorrection := LaguerrePolya.tendstoLocallyUniformly_of_closedBall
+    (LaguerrePolya.tendstoUniformlyOn_correction a b y hy)
+  have hconv := (hG.mul₀ hP hgc hPc).mul₀ hcorrection (hgc.mul hPc) continuous_const
+  refine (hconv.congr ?_).congr_right ?_
+  · intro n z
     rw [LaguerrePolya.eval_approx, hg]
-    simp only [Finset.prod_mul_distrib]
+    simp only [Pi.mul_apply, Finset.prod_mul_distrib]
     have h1 : Complex.exp (-(a : ℂ) * z ^ 2 + b * z) ≠ 0 := Complex.exp_ne_zero _
     have h2 : ∏ k ∈ Finset.range n, Complex.exp ((y k : ℂ) * z) ≠ 0 :=
-      Finset.prod_ne_zero_iff.2 fun _ _ => Complex.exp_ne_zero _
+      Finset.prod_ne_zero_iff.mpr fun _ _ => Complex.exp_ne_zero _
     rw [← mul_div_assoc, div_eq_iff (mul_ne_zero h1 h2)]
     ring
-  · intro z _
-    simp [hg]
+  · intro z
+    simp only [Pi.mul_apply, mul_one, hg]
 
 /-- **Laguerre–Pólya class, product form.** Every function
 `c z ^ m e^(-a z² + b z) ∏ₖ (1 - yₖ z) e^(yₖ z)` with `a ≥ 0` and `∑ yₖ² < ∞` is a locally
