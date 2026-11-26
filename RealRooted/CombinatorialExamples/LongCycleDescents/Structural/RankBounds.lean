@@ -12,7 +12,7 @@ public meta import RealRooted.CombinatorialExamples.LongCycleDescents.Structural
 import RealRooted.IntervalDifferential.ConvolutionBounds
 public import RealRooted.IntervalDifferential.EulerRecurrence
 public meta import RealRooted.IntervalDifferential.EulerRecurrence
-import RealRooted.Mathlib.Data.Array.GetD
+public import RealRooted.Mathlib.Data.Array.GetD
 import Mathlib.Tactic
 
 /-!
