@@ -5,21 +5,21 @@ Authors: Per Alexandersson
 -/
 module
 
-public import Mathlib.Algebra.Polynomial.Basic
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
+public import Mathlib.Algebra.Polynomial.Basic
+import Mathlib.Algebra.Polynomial.Reverse
+public import Mathlib.Analysis.Complex.Polynomial.Basic
 import Mathlib.Tactic
 
 /-!
-# A weighted coefficient norm
+# Weighted coefficient norms and root disks
 
-The elementary weighted sum of absolute coefficients is submultiplicative.
-We keep its values in the coefficient field so rational certificates use exact
-arithmetic without a second definition.
+The weighted sum of absolute coefficients is submultiplicative over an ordered
+coefficient field. Constant dominance excludes roots in a disk; reflecting at
+a degree bound gives the reciprocal disk for the original polynomial.
 -/
 
-@[expose] public section
-
-noncomputable section
+@[expose] public noncomputable section
 
 open Finset
 
@@ -80,22 +80,13 @@ theorem coefficientNorm_mul_le {r : K} (hr : 0 ≤ r) (p q : K[X]) :
   classical
   rw [mul_eq_sum_sum]
   apply (coefficientNorm_sum_le hr _ _).trans
-  calc
-    _ ≤ ∑ i ∈ p.support, ∑ j ∈ q.support,
-        coefficientNorm r (monomial (i + j) (p.coeff i * q.coeff j)) := by
-      apply sum_le_sum
-      intro i _
-      exact coefficientNorm_sum_le hr _ _
-    _ = coefficientNorm r p * coefficientNorm r q := by
-      simp_rw [coefficientNorm_monomial, abs_mul, pow_add]
-      simp only [coefficientNorm, sum_def]
-      rw [sum_mul]
-      simp_rw [mul_sum]
-      apply sum_congr rfl
-      intro i _
-      apply sum_congr rfl
-      intro j _
-      ring
+  apply (sum_le_sum fun i _ => coefficientNorm_sum_le hr q.support _).trans
+  simp_rw [coefficientNorm_monomial, abs_mul, pow_add]
+  change (∑ i ∈ p.support, ∑ j ∈ q.support, _) ≤ _
+  simp only [coefficientNorm, sum_def]
+  rw [sum_mul]
+  simp_rw [mul_sum]
+  exact le_of_eq (sum_congr rfl fun i _ => sum_congr rfl fun j _ => by ring)
 
 /-- The weighted norm of a constant. -/
 @[simp] theorem coefficientNorm_C (r a : K) : coefficientNorm r (C a) = |a| := by
@@ -104,17 +95,9 @@ theorem coefficientNorm_mul_le {r : K} (hr : 0 ≤ r) (p q : K[X]) :
 /-- Scalar multiplication scales the norm by the absolute scalar. -/
 theorem coefficientNorm_C_mul (r a : K) (p : K[X]) :
     coefficientNorm r (C a * p) = |a| * coefficientNorm r p := by
-  classical
-  have hs : (C a * p).support ⊆ p.support := by
-    intro i hi
-    simp only [mem_support_iff] at hi ⊢
-    intro he
-    exact hi (by rw [coeff_C_mul, he, mul_zero])
-  rw [coefficientNorm_eq_sum hs, coefficientNorm, sum_def, mul_sum]
-  apply sum_congr rfl
-  intro i _
-  rw [coeff_C_mul, abs_mul]
-  ring
+  rw [← smul_eq_C_mul, coefficientNorm,
+    sum_smul_index p a (fun i b => |b| * r ^ i) (by simp)]
+  simp only [abs_mul, mul_assoc, coefficientNorm, sum_def, Finset.mul_sum]
 
 /-- Negation leaves the coefficient norm unchanged. -/
 @[simp] theorem coefficientNorm_neg (r : K) (p : K[X]) :
@@ -122,7 +105,7 @@ theorem coefficientNorm_C_mul (r a : K) (p : K[X]) :
   simpa using coefficientNorm_C_mul r (-1) p
 
 /-- Strict coefficient dominance is preserved by every nonzero nonnegative
-finite mixture. -/
+finite weighted sum. -/
 theorem coefficientNorm_sum_sub_constant_lt {ι : Type*} {r : K} (hr : 0 ≤ r)
     (s : Finset ι) (p : ι → K[X]) (w : ι → K)
     (hw : ∀ i ∈ s, 0 ≤ w i) (hp : ∃ i ∈ s, 0 < w i)
@@ -185,5 +168,59 @@ theorem coefficientNorm_add_sub_constant_lt {r : K} (hr : 0 ≤ r) (p q : K[X])
   have hz := neg_abs_le (q.coeff 0)
   rw [coeff_add]
   linarith
+
+end Polynomial
+
+open Finset
+
+namespace Polynomial
+
+/-- The weighted coefficient norm bounds evaluation throughout a complex disk. -/
+theorem norm_eval₂_le_coefficientNorm {r : ℝ} (p : ℝ[X])
+    {z : ℂ} (hz : ‖z‖ ≤ r) :
+    ‖p.eval₂ (algebraMap ℝ ℂ) z‖ ≤ coefficientNorm r p := by
+  classical
+  rw [eval₂_eq_sum, sum_def, coefficientNorm, sum_def]
+  apply (norm_sum_le _ _).trans
+  apply sum_le_sum
+  intro i _
+  simp only [norm_mul, norm_pow, Complex.coe_algebraMap, Complex.norm_real, Real.norm_eq_abs]
+  exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (norm_nonneg _) hz _) (by positivity)
+
+/-- A polynomial whose constant coefficient dominates the others has no zero in
+its closed coefficient disk. -/
+theorem eval₂_ne_zero_of_coefficientNorm_lt {r : ℝ} (p : ℝ[X])
+    (hp : coefficientNorm r (p - C (p.coeff 0)) < |p.coeff 0|)
+    {z : ℂ} (hz : ‖z‖ ≤ r) : p.eval₂ (algebraMap ℝ ℂ) z ≠ 0 := by
+  intro he
+  have hb := norm_eval₂_le_coefficientNorm (p - C (p.coeff 0)) hz
+  rw [eval₂_sub, eval₂_C, he, zero_sub, norm_neg, Complex.coe_algebraMap,
+    Complex.norm_real, Real.norm_eq_abs] at hb
+  exact hp.not_ge hb
+
+/-- Coefficient dominance after reflection puts every root strictly inside the
+reciprocal radius. The size parameter can exceed the actual degree. -/
+theorem norm_lt_inv_of_reflect_coefficientNorm_lt {r : ℝ} (hr : 0 < r)
+    {p : ℝ[X]} {n : ℕ} (hd : p.natDegree ≤ n)
+    (hp : coefficientNorm r (reflect n p - C (p.coeff n)) < |p.coeff n|)
+    {z : ℂ} (hz : p.eval₂ (algebraMap ℝ ℂ) z = 0) : ‖z‖ < r⁻¹ := by
+  by_contra hn
+  have hle : r⁻¹ ≤ ‖z‖ := le_of_not_gt hn
+  have hz0 : z ≠ 0 := by
+    intro he
+    have ht : 0 < r⁻¹ := inv_pos.mpr hr
+    simp only [he, norm_zero] at hle
+    linarith
+  have hi : ‖z⁻¹‖ ≤ r := by
+    rw [norm_inv]
+    exact (inv_le_comm₀ (norm_pos_iff.mpr hz0) hr).mpr hle
+  have hc : (reflect n p).eval₂ (algebraMap ℝ ℂ) z⁻¹ ≠ 0 := by
+    apply eval₂_ne_zero_of_coefficientNorm_lt
+    · simpa using hp
+    · exact hi
+  let _ : Invertible z := invertibleOfNonzero hz0
+  apply hc
+  simpa only [invOf_eq_inv] using
+    (eval₂_reflect_eq_zero_iff (algebraMap ℝ ℂ) z n p hd).mpr hz
 
 end Polynomial

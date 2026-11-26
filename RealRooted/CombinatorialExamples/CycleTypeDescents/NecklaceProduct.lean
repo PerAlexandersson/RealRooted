@@ -7,7 +7,7 @@ module
 
 public import RealRooted.CombinatorialExamples.CycleTypeDescents.Alphabet
 import RealRooted.CombinatorialExamples.CycleTypeDescents.Content
-public import RealRooted.CombinatorialExamples.LongCycleDescents.Structural.AlphabetProduct
+public import RealRooted.CombinatorialExamples.LongCycleDescents.Structural.AlphabetRecurrence
 import Mathlib.Tactic
 
 /-!

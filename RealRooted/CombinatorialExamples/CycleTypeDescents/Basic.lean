@@ -7,7 +7,7 @@ module
 
 public import RealRooted.CombinatorialExamples.LongCycleDescents.Boundary
 public import Mathlib.GroupTheory.Perm.Cycle.Type
-import RealRooted.CombinatorialExamples.LongCycleDescents.Cycles
+import RealRooted.CombinatorialExamples.LongCycleDescents.Counting
 import Mathlib.Tactic
 
 /-!

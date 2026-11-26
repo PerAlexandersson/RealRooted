@@ -9,7 +9,6 @@ public import RealRooted.CombinatorialExamples.LongCycleDescents.Boundary
 import RealRooted.CombinatorialExamples.LongCycleDescents.Finite
 import RealRooted.CombinatorialExamples.LongCycleDescents.Structural.RankBounds
 import RealRooted.CommonInterleaver.IsolatingIntervals
-import RealRooted.CombinatorialExamples.LongCycleDescents.Exceptions
 import Mathlib.Tactic
 
 /-!
