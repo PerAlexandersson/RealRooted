@@ -355,7 +355,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 
 | uses | theorem | module | doc |
 |---:|---|---|---|
-| 27 | `RealRooted.coeff_diagonalOperator` | `RealRooted.MultiplierSequence` |  |
+| 28 | `RealRooted.coeff_diagonalOperator` | `RealRooted.MultiplierSequence` |  |
 | 25 | `Polynomial.coeff_sum_range_monomial` | `RealRooted.Mathlib.Algebra.Polynomial.Coeff` | The coefficient of a finite initial-segment monomial sum. |
 | 20 | `RealRooted.coeff_jensenPolynomial` | `RealRooted.MultiplierSequence` |  |
 | 18 | `Polynomial.coeff_comp_neg_X` | `RealRooted.Mathlib.Algebra.Polynomial.Degree.Lemmas` | The coefficients of `p.comp (-X)` are those of `p` with alternating signs. |
@@ -434,6 +434,7 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 6 | `RealRooted.brandenE_mul_X_add_C` | `RealRooted.Transforms.BrandenE.Basic` | Affine-factor form of `brandenE_X_mul`. |
 | 5 | `RealRooted.EulerBidiagonal.generalStep_eq_second_derivative` | `RealRooted.EulerBidiagonal.QuadraticEulerStep` | Differential form of the general Euler step. |
 | 4 | `Polynomial.taylor_iterate_derivative` | `RealRooted.Mathlib.Algebra.Polynomial.Taylor` | The Taylor shift commutes with iterated derivatives. |
+| 4 | `RealRooted.ExponentialRows.insertionRow_affineBlockWeights_eq_exponential` | `RealRooted.ExponentialRows.SubstitutionRows` | The insertion definition is the literal factorial-scaled formal exponential. |
 | 4 | `RealRooted.GeneralizedSnakePosets.FiniteSkewBoard.rookPolynomial_eq_nonNestingPlacements_sum` | `RealRooted.GeneralizedSnakePosets.FiniteBoard` | The rook polynomial as a sum over the named finite set of non-nesting placements. |
 | 4 | `RealRooted.IntervalDifferential.zigzagOperator_apply` | `RealRooted.IntervalDifferential.Basic` |  |
 | 4 | `RealRooted.complexify_iterate_derivative` | `RealRooted.HermiteBiehler.Basic` | Complexification commutes with iterated derivatives. |
@@ -441,7 +442,6 @@ Counts are lexical estimates: distinctive leaves count unqualified references; g
 | 3 | `Polynomial.basisTransform_mul_X_add_C_of_succ_derivative` | `RealRooted.Mathlib.Algebra.Polynomial.BasisTransform` | The affine factor version of `basisTransform_X_mul_of_succ_derivative`. |
 | 3 | `PowerSeries.subst_binomialSeries_neg_ode` | `RealRooted.Mathlib.RingTheory.PowerSeries.BinomialDerivative` | Substituting `H-1` into the negative binomial series gives a solution of the formal negative-power differential equation. |
 | 3 | `PowerSeries.two_mul_mul_derivative_sqrt` | `RealRooted.Mathlib.RingTheory.PowerSeries.Sqrt` | The linear differential equation `2 f (sqrt f)' = f' sqrt f`. |
-| 3 | `RealRooted.ExponentialRows.insertionRow_affineBlockWeights_eq_exponential` | `RealRooted.ExponentialRows.SubstitutionRows` | The insertion definition is the literal factorial-scaled formal exponential. |
 | 3 | `RealRooted.HermitePoulain.applyAsDifferentialOperator_X_add_C` | `RealRooted.Hermite.Poulain` |  |
 | 3 | `RealRooted.Poisson.starC_X_right` | `RealRooted.BorceaBranden.Applications.UnivariatePoissonStar` | Applying `starC` to `X` gives the first-order Euler pencil `X * (f + c f')`. |
 | 3 | `RealRooted.Poisson.starC_linear_factor_left` | `RealRooted.BorceaBranden.Applications.UnivariatePoissonStar` | A linear left factor gives the Poisson differential recurrence. |
