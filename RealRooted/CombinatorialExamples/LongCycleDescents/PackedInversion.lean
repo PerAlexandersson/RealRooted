@@ -19,8 +19,6 @@ Adapted from Bowen Zuo, cycle-minimum-descent-real-roots v1.0.0 (Apache-2.0)
 namespace RealRooted.LongCycleDescents.Necklace
 
 open Polynomial Finset
-open scoped Classical
-
 /-- Place a finite list of natural coefficients into a single radix-coded integer. -/
 def placeCoefficients (n base : ℕ) (f : ℕ → ℕ) : ℕ :=
   ((List.range n).map fun a ↦ f a * base ^ a).sum

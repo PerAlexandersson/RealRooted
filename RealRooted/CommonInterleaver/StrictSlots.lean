@@ -5,7 +5,7 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.CommonInterleaver.PairBridge.Compatibility
+import RealRooted.CommonInterleaver.PairBridge.Compatibility
 public import RealRooted.CommonInterleaver.RootDesc
 import RealRooted.CommonInterleaver.SameDegreeRootCount
 import Mathlib.Tactic
@@ -123,7 +123,7 @@ private theorem quotient_at_simple_root {p : ℝ[X]} (hp : p.Splits)
       ¬ q.IsRoot c ∧ (q.roots.filter (c < ·)).card = (p.roots.filter (c < ·)).card := by
   obtain ⟨q, hq⟩ := dvd_iff_isRoot.mpr hc
   have hpn : p ≠ 0 := by intro hz; simp [hz] at hpos
-  have hqn : q ≠ 0 := by intro hz; simp [hz] at hq; exact hpn hq
+  have hqn : q ≠ 0 := by intro hz; simp only [hz, mul_zero] at hq; exact hpn hq
   have hr : p.roots = c ::ₘ q.roots := by
     rw [hq, roots_mul (mul_ne_zero (X_sub_C_ne_zero _) hqn), roots_X_sub_C]
     rfl

@@ -7,6 +7,7 @@ module
 
 public import RealRooted.CombinatorialExamples.LongCycleDescents.Structural.InventoryEquation
 import Mathlib.Algebra.Polynomial.Reverse
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 import Mathlib.Tactic
 
 /-!

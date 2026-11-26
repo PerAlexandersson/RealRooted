@@ -5,9 +5,10 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.CombinatorialExamples.LongCycleDescents.Structural.ShortTailCertificates
+import RealRooted.CombinatorialExamples.LongCycleDescents.Structural.ShortTailCertificates
 public import RealRooted.CombinatorialExamples.LongCycleDescents.Structural.ShortCutoffDominance
-public import RealRooted.CombinatorialExamples.LongCycleDescents.Structural.MixtureTransfer
+import RealRooted.CombinatorialExamples.LongCycleDescents.Structural.MixtureTransfer
+import RealRooted.CombinatorialExamples.LongCycleDescents.Structural.ShortTailSoundness
 import Mathlib.Tactic
 
 /-!

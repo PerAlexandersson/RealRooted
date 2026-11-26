@@ -17,8 +17,6 @@ Adapted from Bowen Zuo, cycle-minimum-descent-real-roots v1.0.0 (Apache-2.0)
 
 @[expose] public section
 
-open scoped Classical
-
 noncomputable section
 namespace RealRooted.LongCycleDescents
 
@@ -31,8 +29,6 @@ theorem ne_fixed_of_allowed {n k : ℕ} {σ : Equiv.Perm (Fin n)}
     (h : HasLongCycles k σ) (hk : 1 < k) (x : Fin n) : σ x ≠ x := by
   simpa only [pow_one] using h x 1 (by decide) hk
 open Finset Polynomial RealRooted.LongCycleDescents
-open scoped Classical
-
 /-- The original ordinary descent polynomial on permutations whose cycle lengths are at least k. -/
 def descentPolynomial (n k : ℕ) : Polynomial ℤ := by
   classical
@@ -53,6 +49,7 @@ theorem descents_eq_card {m : ℕ} (σ : Equiv.Perm (Fin (m + 1))) :
     obtain ⟨j, rfl, hj⟩ := Equiv.Perm.mem_descentSet.mp hi
     exact ⟨j, Finset.mem_filter.mpr ⟨Finset.mem_univ _, hj⟩, rfl⟩
 
+open Classical in
 /-- Coefficient of the descent polynomial as an integer count on the original permutations. -/
 theorem coeff_descentPolynomial (n k i : ℕ) :
     (descentPolynomial n k).coeff i =
@@ -68,7 +65,7 @@ theorem coeff_descentPolynomial (n k i : ℕ) :
 
 /-- The finite-alphabet binomial specialization of a descent coefficient list. -/
 def letters (n q : ℕ) (d : ℕ → ℤ) : ℤ :=
-  ∑ i ∈ range n, d i * ((q+n-1-i).choose n : ℤ)
+  ∑ i ∈ range n, d i * ((q + n - 1 - i).choose n : ℤ)
 
 end RealRooted.LongCycleDescents
 

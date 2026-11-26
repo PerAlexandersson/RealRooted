@@ -17,14 +17,10 @@ Adapted from Bowen Zuo, cycle-minimum-descent-real-roots v1.0.0 (Apache-2.0)
 
 @[expose] public section
 
-open scoped Classical
-
 noncomputable section
 
 namespace RealRooted.LongCycleDescents.Necklace
 open Finset RealRooted.LongCycleDescents
-open scoped Classical
-
 private abbrev strictChoices (n Q : ℕ) :=
   {f : Fin n → Fin Q // StrictMono f}
 
@@ -107,19 +103,19 @@ private theorem index_le_value {m Q : ℕ} {z : Fin (m + 1) → Fin Q} (hz : Str
     change i.val + 1 ≤ (z i.succ).val
     lia
 
-private def expandedAlphabet {m : ℕ} (σ : Equiv.Perm (Fin (m+1))) (q : ℕ) : ℕ :=
+private def expandedAlphabet {m : ℕ} (σ : Equiv.Perm (Fin (m + 1))) (q : ℕ) : ℕ :=
   q + m - σ.descentCount
 
-private def stableToStrict {m q : ℕ} (σ : Equiv.Perm (Fin (m+1)))
-    (x : {w : Fin (m+1) → Fin q // Stable σ w}) :
-    strictChoices (m+1) (expandedAlphabet σ q) := by
-  have bounds (i : Fin (m+1)) : (x.val i).val + slack σ i.val < expandedAlphabet σ q := by
+private def stableToStrict {m q : ℕ} (σ : Equiv.Perm (Fin (m + 1)))
+    (x : {w : Fin (m + 1) → Fin q // Stable σ w}) :
+    strictChoices (m + 1) (expandedAlphabet σ q) := by
+  have bounds (i : Fin (m + 1)) : (x.val i).val + slack σ i.val < expandedAlphabet σ q := by
     have a := (x.val i).isLt
     have b := slack_mono σ (show i.val ≤ m by lia)
     unfold expandedAlphabet
     have c := slack_total σ
     lia
-  let z (i : Fin (m+1)) : Fin (expandedAlphabet σ q) :=
+  let z (i : Fin (m + 1)) : Fin (expandedAlphabet σ q) :=
     ⟨(x.val i).val + slack σ i.val, bounds i⟩
   refine ⟨z, Fin.strictMono_iff_lt_succ.mpr fun i ↦ ?_⟩
   obtain ⟨mono, rise⟩ := (stable_iff_adjacent σ x.val).mp x.property
@@ -135,11 +131,11 @@ private def stableToStrict {m q : ℕ} (σ : Equiv.Perm (Fin (m+1)))
     lia
   · lia
 
-private def strictToStable {m q : ℕ} (σ : Equiv.Perm (Fin (m+1)))
-    (z : strictChoices (m+1) (expandedAlphabet σ q)) :
-    {w : Fin (m+1) → Fin q // Stable σ w} := by
-  let x (i : Fin (m+1)) := (z.val i).val - slack σ i.val
-  have covers (i : Fin (m+1)) : slack σ i.val ≤ (z.val i).val :=
+private def strictToStable {m q : ℕ} (σ : Equiv.Perm (Fin (m + 1)))
+    (z : strictChoices (m + 1) (expandedAlphabet σ q)) :
+    {w : Fin (m + 1) → Fin q // Stable σ w} := by
+  let x (i : Fin (m + 1)) := (z.val i).val - slack σ i.val
+  have covers (i : Fin (m + 1)) : slack σ i.val ≤ (z.val i).val :=
     (slack_le_index σ i.val).trans (index_le_value z.property i)
   have adjacent (i : Fin m) : x i.castSucc ≤ x i.succ := by
     have lt := Fin.strictMono_iff_lt_succ.mp z.property i
@@ -157,7 +153,7 @@ private def strictToStable {m q : ℕ} (σ : Equiv.Perm (Fin (m+1)))
     change (z.val (Fin.last m)).val - slack σ m < q
     change (z.val (Fin.last m)).val < q + m - σ.descentCount at h
     lia
-  let w (i : Fin (m+1)) : Fin q := ⟨x i, (mono (Fin.le_last i)).trans_lt final⟩
+  let w (i : Fin (m + 1)) : Fin q := ⟨x i, (mono (Fin.le_last i)).trans_lt final⟩
   refine ⟨w, (stable_iff_adjacent σ w).mpr ⟨fun a b ab ↦ mono ab, fun i desc ↦ ?_⟩⟩
   have lt := Fin.strictMono_iff_lt_succ.mp z.property i
   have low := covers i.castSucc
@@ -170,9 +166,9 @@ private def strictToStable {m q : ℕ} (σ : Equiv.Perm (Fin (m+1)))
   rw [fixed]
   lia
 
-private def stableEquivStrict {m q : ℕ} (σ : Equiv.Perm (Fin (m+1))) :
-    {w : Fin (m+1) → Fin q // Stable σ w} ≃
-      strictChoices (m+1) (expandedAlphabet σ q) where
+private def stableEquivStrict {m q : ℕ} (σ : Equiv.Perm (Fin (m + 1))) :
+    {w : Fin (m + 1) → Fin q // Stable σ w} ≃
+      strictChoices (m + 1) (expandedAlphabet σ q) where
   toFun := stableToStrict σ
   invFun := strictToStable σ
   left_inv w := by
@@ -186,7 +182,7 @@ private def stableEquivStrict {m q : ℕ} (σ : Equiv.Perm (Fin (m+1))) :
     change (z.val i).val - slack σ i.val + slack σ i.val = (z.val i).val
     exact Nat.sub_add_cancel ((slack_le_index σ i.val).trans (index_le_value z.property i))
 
- /-- The number of weak labelings that rise at every ordinary descent. -/
+/-- The number of weak labelings that rise at every ordinary descent. -/
 theorem card_stable {n : ℕ} (σ : Equiv.Perm (Fin n)) (q : ℕ) :
     Nat.card {x : Fin n → Fin q // Stable σ x} =
       (q + n - 1 - σ.descentCount).choose n := by
@@ -229,23 +225,24 @@ private def allowedCompatibleEquiv (n q k : ℕ) :
   left_inv _ := rfl
   right_inv _ := rfl
 
+open Classical in
 /-- Count compatible pairs by first choosing an admissible original permutation. -/
 theorem card_allowedCompatible_sum (n q k : ℕ) :
     (Nat.card (AllowedCompatible n q k) : ℤ) =
-      ∑ σ : Equiv.Perm (Fin n), if HasLongCycles k σ then ((q+n-1-σ.descentCount).choose n : ℤ)
-        else 0 := by
+      ∑ σ : Equiv.Perm (Fin n), if HasLongCycles k σ then
+        ((q + n - 1 - σ.descentCount).choose n : ℤ) else 0 := by
   classical
   rw [Nat.card_congr (allowedCompatibleEquiv n q k), Nat.card_eq_fintype_card,
     Fintype.card_sigma, Nat.cast_sum]
   calc
     _ = ∑ σ : {σ : Equiv.Perm (Fin n) // HasLongCycles k σ},
-        ((q+n-1-σ.val.descentCount).choose n : ℤ) := by
+        ((q + n - 1 - σ.val.descentCount).choose n : ℤ) := by
       apply sum_congr rfl
       intro σ _
       rw [← Nat.card_eq_fintype_card, card_stable]
     _ = _ := by
       rw [← sum_filter]
-      exact (sum_subtype _ (by simp) (fun σ ↦ ((q+n-1-Equiv.Perm.descentCount σ).choose n :
+      exact (sum_subtype _ (by simp) (fun σ ↦ ((q + n - 1 - Equiv.Perm.descentCount σ).choose n :
         ℤ))).symm
 
 /-- The existing coefficient functional is the count of all admissible compatible pairs. -/

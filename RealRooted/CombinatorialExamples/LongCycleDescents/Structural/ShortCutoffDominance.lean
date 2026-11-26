@@ -5,7 +5,8 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.CombinatorialExamples.LongCycleDescents.Structural.ShortTailSoundness
+public import RealRooted.CombinatorialExamples.LongCycleDescents.Structural.ShortTailCheck
+import RealRooted.CombinatorialExamples.LongCycleDescents.Structural.ShortTailSoundness
 import RealRooted.IntervalDifferential.ConvolutionTail
 import RealRooted.IntervalDifferential.EulerNorm
 import Mathlib.Tactic

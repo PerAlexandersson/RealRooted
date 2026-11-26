@@ -5,7 +5,8 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.CommonInterleaver.StrictSlots
+public import RealRooted.CommonInterleaver.RootDesc
+import RealRooted.CommonInterleaver.StrictSlots
 import Mathlib.Tactic
 
 /-!
@@ -23,7 +24,7 @@ open Polynomial Finset
 
 namespace RealRooted
 
-private theorem exists_descending_separator {ι : Type*} [Fintype ι] [Nonempty ι]
+private theorem exists_descending_separator {ι : Type*} [Finite ι] [Nonempty ι]
     (r : ι → ℕ → ℝ) {d : ℕ}
     (hnonpos : ∀ i j, j < d → r i j ≤ 0)
     (hcross : ∀ i i' j, 0 < j → j < d → r i j < r i' (j - 1))
@@ -31,6 +32,7 @@ private theorem exists_descending_separator {ι : Type*} [Fintype ι] [Nonempty 
     ∃ c : ℝ, c < 0 ∧ (∀ i, c < r i j.val) ∧
       ∀ i, j.val + 1 < d → r i (j.val + 1) < c := by
   classical
+  let := Fintype.ofFinite ι
   let lo n := univ.inf' univ_nonempty (fun i => r i n)
   let hi n := univ.sup' univ_nonempty (fun i => r i n)
   have hlo i n : lo n ≤ r i n := inf'_le (fun i => r i n) (mem_univ i)
@@ -57,7 +59,7 @@ private theorem exists_descending_separator {ι : Type*} [Fintype ι] [Nonempty 
 
 /-- Strict cross-slot separation supplies a common negative grid with the
 same upper root count for every family member at each grid point. -/
-theorem exists_negative_root_grid {ι : Type*} [Fintype ι] [Nonempty ι]
+theorem exists_negative_root_grid {ι : Type*} [Finite ι] [Nonempty ι]
     (f : ι → ℝ[X]) {m : ℕ}
     (hs : ∀ i, (f i).Splits) (hd : ∀ i, (f i).natDegree = m + 1)
     (hn : ∀ i, (f i).roots.Nodup)
@@ -68,6 +70,7 @@ theorem exists_negative_root_grid {ι : Type*} [Fintype ι] [Nonempty ι]
       ∀ i j, ¬ (f i).IsRoot (c j) ∧
         ((f i).roots.filter (c j < ·)).card = j.val + 1 := by
   classical
+  let := Fintype.ofFinite ι
   let r i j := (rootSeqDesc (f i)).getD j 0
   have hlen i : (rootSeqDesc (f i)).length = m + 1 := (rootSeqDesc_length (hs i)).trans (hd i)
   have hr i j (hj : j < m + 1) : r i j ∈ (f i).roots :=

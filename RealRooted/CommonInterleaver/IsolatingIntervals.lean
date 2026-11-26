@@ -5,7 +5,9 @@ Authors: Bowen Zuo, Per Alexandersson
 -/
 module
 
-public import RealRooted.CommonInterleaver.NegativeGrid
+public import RealRooted.CommonInterleaver.RootDesc
+import RealRooted.CommonInterleaver.NegativeGrid
+import RealRooted.CommonInterleaver.StrictSlots
 import RealRooted.Mathlib.Algebra.Polynomial.IntervalSignChanges
 import Mathlib.Tactic
 
@@ -109,7 +111,7 @@ private theorem simple_mixture_grid
     sum_ite_eq', mem_univ, ite_true] at hend
   have hpair (i j : ι) {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :=
     hall (fun l => (if l = i then a else 0) + if l = j then b else 0)
-      (by intro l; positivity) ⟨i, by simp; positivity⟩
+      (by intro l; positivity) ⟨i, by rw [ite_eq_left rfl]; positivity⟩
   simp only [map_add, apply_ite C, map_zero, add_mul, ite_mul, zero_mul,
     sum_add_distrib, sum_ite_eq', mem_univ, ite_true] at hpair
   have hpos i : HasPosLeadingCoeff (f i) :=

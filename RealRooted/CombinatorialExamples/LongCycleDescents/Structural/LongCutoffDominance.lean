@@ -84,7 +84,7 @@ private theorem error_row_bounds {k : ℕ} (hk : 13 ≤ k) (N : ℕ) :
   have h2 := index_mul_euler_bound u b hu hb h0
     (fun n hn => coefficientNorm_eulerCoeff_equation (by norm_num) (errorKernel k) hn)
     (by norm_num : (3 / 20 : ℚ) < 1) hm hU N
-  norm_num at h1 h2
+  norm_num only at h1 h2
   exact ⟨h1, h2⟩
 
 /-- The actual alphabet has strict coefficient dominance at radius `4/5` for

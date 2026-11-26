@@ -69,6 +69,7 @@ theorem hasLongCycles_finRotate {n k : ℕ} (hk : k ≤ n) :
 /-- Every coefficient counts a set of original permutations and is nonnegative. -/
 theorem realDescentPolynomial_hasNonnegCoeffs (n k : ℕ) :
     HasNonnegCoeffs (realDescentPolynomial n k) := by
+  classical
   intro i
   rw [realDescentPolynomial, coeff_map, coeff_descentPolynomial]
   change 0 ≤ (↑(∑ σ : Equiv.Perm (Fin n),
@@ -77,6 +78,7 @@ theorem realDescentPolynomial_hasNonnegCoeffs (n k : ℕ) :
     show (0 : ℤ) ≤ if HasLongCycles k σ ∧ σ.descentCount = i then 1 else 0 from by
       split <;> norm_num))
 
+open Classical in
 /-- Evaluation at one counts exactly the permutations satisfying the cycle cutoff. -/
 theorem realDescentPolynomial_eval_one (n k : ℕ) :
     (realDescentPolynomial n k).eval 1 =

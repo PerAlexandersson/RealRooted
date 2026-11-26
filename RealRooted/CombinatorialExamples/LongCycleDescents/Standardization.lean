@@ -17,8 +17,6 @@ Adapted from Bowen Zuo, cycle-minimum-descent-real-roots v1.0.0 (Apache-2.0)
 
 @[expose] public section
 
-open scoped Classical
-
 noncomputable section
 namespace RealRooted.LongCycleDescents.Necklace
 open RealRooted.LongCycleDescents RealRooted.LongCycleDescents
@@ -30,7 +28,7 @@ def Stable (σ : Equiv.Perm (Fin n)) (x : Fin n → Fin q) : Prop :=
   StrictMono fun i ↦ toLex (x i, σ i)
 
 /-- Stable labels are weakly increasing and rise strictly at every adjacent descent. -/
-theorem stable_iff_adjacent {m : ℕ} (σ : Equiv.Perm (Fin (m+1))) (x : Fin (m+1) → Fin q) :
+theorem stable_iff_adjacent {m : ℕ} (σ : Equiv.Perm (Fin (m + 1))) (x : Fin (m + 1) → Fin q) :
     Stable σ x ↔ Monotone x ∧
       ∀ i : Fin m, σ i.succ < σ i.castSucc → x i.castSucc < x i.succ := by
   constructor

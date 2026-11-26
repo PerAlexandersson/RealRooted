@@ -5,8 +5,10 @@ Authors: Bowen Zuo
 -/
 module
 
-public import RealRooted.CombinatorialExamples.LongCycleDescents.FiniteData
-public import RealRooted.CombinatorialExamples.LongCycleDescents.Exceptions
+public import RealRooted.CombinatorialExamples.LongCycleDescents.Mesh
+import RealRooted.CombinatorialExamples.LongCycleDescents.FiniteData
+public import RealRooted.CombinatorialExamples.LongCycleDescents.Boundary
+import RealRooted.CombinatorialExamples.LongCycleDescents.Exceptions
 import RealRooted.CombinatorialExamples.LongCycleDescents.Mixtures
 import Mathlib.Tactic
 

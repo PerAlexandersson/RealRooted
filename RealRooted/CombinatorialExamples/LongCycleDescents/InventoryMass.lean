@@ -17,8 +17,6 @@ Adapted from Bowen Zuo, cycle-minimum-descent-real-roots v1.0.0 (Apache-2.0)
 
 @[expose] public section
 
-open scoped Classical
-
 noncomputable section
 namespace RealRooted.LongCycleDescents.Necklace
 
@@ -54,13 +52,15 @@ theorem total_frequency (w : Fin n → K) : ∑ s, frequency w s = n := by
   rw [← expand_card,expand_frequency]
   simp
 
+omit [Fintype K] in
 /-- A weakly increasing finite word is determined by its letter multiplicities. -/
 theorem sorted_determined {w v : Fin n → K} (hw : Monotone w) (hv : Monotone v)
     (eq : frequency w = frequency v) : w = v := by
   apply List.ofFn_injective
   apply List.Perm.eq_of_sortedLE (List.sortedLE_ofFn_iff.mpr hw) (List.sortedLE_ofFn_iff.mpr hv)
   apply Multiset.coe_eq_coe.mp
-  rw [← expand_frequency w,← expand_frequency v,eq]
+  ext s
+  rw [← frequency_count, ← frequency_count, eq]
 
 /-- Read a multiplicity function as its weakly increasing word of the specified length. -/
 def enumerateMass (m : K → ℕ) (h : ∑ s, m s = n) : Fin n → K :=
@@ -89,8 +89,9 @@ end General
 variable {n q : ℕ}
 
 /-- An itinerary has positive multiplicity exactly when some position carries it. -/
-theorem frequency_pos_iff {K : Type*} [DecidableEq K] (w : Fin n → K) (s : K) :
+theorem frequency_pos_iff {K : Type*} (w : Fin n → K) (s : K) :
     0 < frequency w s ↔ ∃ i, w i = s := by
+  classical
   rw [frequency,Nat.card_eq_fintype_card,Fintype.card_pos_iff]
   exact ⟨fun ⟨i,h⟩ ↦ ⟨i,h⟩, fun ⟨i,h⟩ ↦ ⟨⟨i,h⟩⟩⟩
 

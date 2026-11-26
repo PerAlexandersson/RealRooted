@@ -6,8 +6,9 @@ Authors: Per Alexandersson
 module
 
 public import RealRooted.CombinatorialExamples.LongCycleDescents.Structural.AlphabetDisk
-public import RealRooted.CombinatorialExamples.LongCycleDescents.Structural.AlphabetMoment
-public import RealRooted.CombinatorialExamples.LongCycleDescents.Structural.RootTransfer
+import RealRooted.CombinatorialExamples.LongCycleDescents.Structural.AlphabetMoment
+import RealRooted.CombinatorialExamples.LongCycleDescents.Structural.RootTransfer
+import RealRooted.CombinatorialExamples.LongCycleDescents.Structural.Factorization
 import Mathlib.Tactic
 
 /-!
@@ -66,7 +67,7 @@ theorem mixture_roots_of_coefficientNorm_lt {m : ℕ} (hm : 15 ≤ m) {s : Finse
     intro hz
     have hh : 0 < f.coeff (m + 3) := hlead.2.1
     simp [hz] at hh
-  have hR : R ≠ 0 := by intro hz; simp [hz] at hf; exact hfn hf
+  have hR : R ≠ 0 := by intro hz; simp only [hz, mul_zero] at hf; exact hfn hf
   have hb : (X * (X ^ 2 - 1) : ℝ[X]).natDegree = 3 := by
     compute_degree <;> norm_num
   have hbn : (X * (X ^ 2 - 1) : ℝ[X]) ≠ 0 := by

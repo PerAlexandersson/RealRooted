@@ -21,8 +21,6 @@ noncomputable section
 namespace RealRooted.LongCycleDescents
 
 open Finset Polynomial
-open scoped Classical
-
 /-- Every genuine cycle length of an admissible permutation meets the
 cutoff. Mathlib's cycleType omits fixed points; support_univ_of_allowed
 below is needed before its sum may be identified with n. -/
@@ -80,14 +78,14 @@ private theorem allowed_iff_single_cycleType {n k : ℕ} (hk : 2 ≤ k) (kn : k 
     have single : σ.cycleType.toList = [n] := by
       generalize σ.cycleType.toList = l at sum lower ⊢
       cases l with
-      | nil => simp at sum; lia
+      | nil => simp only [List.sum_nil] at sum; lia
       | cons a rest =>
         cases rest with
         | nil => simpa using sum
         | cons b rest =>
           have ha := lower a (by simp)
           have hb := lower b (by simp)
-          simp at sum
+          simp only [List.sum_cons] at sum
           lia
     simpa using congrArg (fun words : List ℕ ↦ (words : Multiset ℕ)) single
   · intro single

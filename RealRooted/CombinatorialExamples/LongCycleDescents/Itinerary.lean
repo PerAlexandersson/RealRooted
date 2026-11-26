@@ -17,8 +17,6 @@ Adapted from Bowen Zuo, cycle-minimum-descent-real-roots v1.0.0 (Apache-2.0)
 
 public section
 
-open scoped Classical
-
 namespace RealRooted.LongCycleDescents
 
 /-- The original adjacent descent constraints force the successor permutation to preserve
@@ -40,12 +38,13 @@ theorem order_of_equal_color {n q : ℕ} (σ : Equiv.Perm (Fin (n + 1)))
 
 /-- Two rotations of a single orbit with identical infinite itineraries start at the same
 point. This is the primitive-necklace step of the Gessel--Reutenauer correspondence. -/
-theorem primitive_itinerary {α β : Type*} [Fintype α] [LinearOrder α]
+theorem primitive_itinerary {α β : Type*} [Finite α] [LinearOrder α]
     (σ : Equiv.Perm α) (c : α → β)
     (tie : ∀ a b, a < b → c a = c b → σ a < σ b)
     (a : α) (d : ℕ)
     (same : ∀ j : ℕ, c ((σ ^ j) a) = c ((σ ^ j) ((σ ^ d) a))) :
     (σ ^ d) a = a := by
+  let := Fintype.ofFinite α
   have propagate {x y : α} (xy : x < y)
       (colors : ∀ j : ℕ, c ((σ ^ j) x) = c ((σ ^ j) y)) (j : ℕ) :
       (σ ^ j) x < (σ ^ j) y := by

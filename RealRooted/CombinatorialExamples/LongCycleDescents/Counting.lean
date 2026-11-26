@@ -16,8 +16,6 @@ Adapted from Bowen Zuo, cycle-minimum-descent-real-roots v1.0.0 (Apache-2.0)
 
 @[expose] public section
 
-open scoped Classical
-
 noncomputable section
 namespace RealRooted.LongCycleDescents.Necklace
 

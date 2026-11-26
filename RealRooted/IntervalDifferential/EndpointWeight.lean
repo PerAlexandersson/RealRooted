@@ -5,7 +5,9 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.IntervalDifferential.LinearInsertion
+public import RealRooted.IntervalDifferential.Certificates
+public import Mathlib.Algebra.Polynomial.Splits
+import RealRooted.IntervalDifferential.LinearInsertion
 import RealRooted.IntervalDifferential.Degree
 import RealRooted.IntervalDifferential.RootSums
 import RealRooted.SimpleRoots
@@ -122,11 +124,11 @@ theorem intervalLinearFactor_roots (c a : ℝ) (F : ℝ[X]) (hc : 0 < c)
     nlinarith [sq_pos_of_ne_zero hd]
   · have he := (eval_endpoints_ne_zero_of_roots_mem_Ioo hF0 hi).1
     simp only [intervalLinearFactor_eval]
-    norm_num
+    norm_num only
     nlinarith [sq_pos_of_ne_zero he, ha.1]
   · have he := (eval_endpoints_ne_zero_of_roots_mem_Ioo hF0 hi).2
     simp only [intervalLinearFactor_eval]
-    norm_num
+    norm_num only
     nlinarith [sq_pos_of_ne_zero he, ha.2]
 
 /-- A linear insertion has no old root when the old roots are simple and interior. -/
@@ -246,7 +248,7 @@ theorem intervalQuadraticFactor_roots_of_eval_mul_neg (c a b u : ℝ) (F : ℝ[X
     have hh := mul_pos (mul_pos hp hpp) (sq_pos_of_ne_zero he)
     simp only [intervalQuadraticFactor, eval_add, eval_mul, eval_C,
       intervalLinearFactor_eval]
-    norm_num
+    norm_num only
     nlinarith [hh]
   · have he := (eval_endpoints_ne_zero_of_roots_mem_Ioo hF0 hi).2
     have hp : 0 < c - u := by linarith [hu.2]
@@ -254,7 +256,7 @@ theorem intervalQuadraticFactor_roots_of_eval_mul_neg (c a b u : ℝ) (F : ℝ[X
     have hh := mul_pos (mul_pos hp hpp) (sq_pos_of_ne_zero he)
     simp only [intervalQuadraticFactor, eval_add, eval_mul, eval_C,
       intervalLinearFactor_eval]
-    norm_num
+    norm_num only
     nlinarith [hh]
 
 /-- Conjugate pairs in the elliptic spectral region preserve simple interval roots. -/

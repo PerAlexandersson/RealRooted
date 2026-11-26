@@ -168,12 +168,12 @@ theorem exists_alphabet_quotient (m : ℕ) {k : ℕ} (hk : 3 ≤ k) :
   obtain ⟨S, hS⟩ := dvd_iff_isRoot.mpr hR1
   have hSm : S.IsRoot (-1) := by
     rw [hR, hS, eval_mul, eval_mul, eval_X, eval_sub, eval_X, eval_C] at hm
-    norm_num at hm
-    exact hm
+    change S.eval (-1) = 0
+    linarith
   obtain ⟨Q, hQ⟩ := dvd_iff_isRoot.mpr hSm
   have hf : f = X * (X ^ 2 - 1) * Q := by
     rw [hR, hS, hQ]
-    norm_num
+    simp only [map_neg, map_one]
     ring
   refine ⟨Q, hf, ?_⟩
   by_cases hz : Q = 0

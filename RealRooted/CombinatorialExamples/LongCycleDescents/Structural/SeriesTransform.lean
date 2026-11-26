@@ -93,7 +93,7 @@ private theorem alphabetFactorSeries_one : alphabetFactorSeries 1 = baseSeries :
     rw [mul_assoc, six_eq_C, PowerSeries.coeff_C_mul, PowerSeries.coeff_succ_X_mul,
       PowerSeries.invOneSubPow_val_succ_eq_mk_add_choose, PowerSeries.coeff_mk]
     have hc := Nat.ascFactorial_eq_factorial_mul_choose r 3
-    norm_num [Nat.ascFactorial_succ, Nat.factorial_succ] at hc
+    norm_num only [Nat.ascFactorial_succ, Nat.factorial_succ, Nat.ascFactorial_zero] at hc
     have hcr : (r + 1 : ℝ) * (r + 2) * (r + 3) = 6 * ((3 + r).choose 3 : ℝ) := by
       rw [show r + 3 = 3 + r by lia] at hc
       exact_mod_cast (by nlinarith [hc] : (r + 1) * (r + 2) * (r + 3) =

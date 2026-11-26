@@ -5,7 +5,8 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.CombinatorialExamples.LongCycleDescents.Structural.Factorization
+public import RealRooted.CombinatorialExamples.LongCycleDescents.Structural.AlphabetTransform
+import RealRooted.CombinatorialExamples.LongCycleDescents.Structural.Factorization
 import RealRooted.IntervalDifferential.MobiusRoots
 import Mathlib.Tactic
 

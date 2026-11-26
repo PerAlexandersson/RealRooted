@@ -81,7 +81,7 @@ theorem norm_root_descentAlphabetPolynomial_lt {n k : ℕ}
   have hh := norm_lt_inv_of_reflect_coefficientNorm_lt (by norm_num : (0 : ℝ) < 4 / 5)
     (natDegree_descentAlphabetPolynomial_le n k) (hd.trans_le (le_abs_self _))
     (by simpa only [eval_map] using hz)
-  norm_num at hh
+  norm_num only at hh
   exact hh
 
 /-- The same disk bound holds for the actual alphabet quotient. -/
@@ -121,7 +121,7 @@ theorem norm_root_sum_descentAlphabetPolynomial_lt_of_dominance {n : ℕ} {s : F
   simp only [coeff_reflect, revAt_zero] at hmarg
   have hh := norm_lt_inv_of_reflect_coefficientNorm_lt (by norm_num : (0 : ℝ) < 4 / 5)
     hd (hmarg.trans_le (le_abs_self _)) (by simpa only [eval_map] using hz)
-  norm_num at hh
+  norm_num only at hh
   exact hh
 
 /-- Every nonnegative mixture of cutoffs at least thirteen obeys the strict disk bound. -/

@@ -6,6 +6,7 @@ Authors: Per Alexandersson
 module
 
 public import Mathlib.RingTheory.PowerSeries.Derivative
+import RealRooted.Mathlib.RingTheory.PowerSeries.NegativePowerRecurrence
 import Mathlib.Tactic
 
 /-!
@@ -24,14 +25,6 @@ open Finset
 namespace PowerSeries
 
 variable {R : Type*} [CommRing R] [Algebra ℚ R]
-
-omit [Algebra ℚ R] in
-/-- The coefficient of the Euler derivative is its index times the coefficient. -/
-theorem coeff_X_mul_derivative (F : PowerSeries R) (n : ℕ) :
-    coeff n (X * derivative F) = (n : R) * coeff n F := by
-  cases n with
-  | zero => simp
-  | succ n => simp [coeff_succ_X_mul, coeff_derivative, mul_comm]
 
 /-- The normalized coefficient row determined by an Euler kernel. -/
 def eulerCoeff (K : ℕ → R) : ℕ → R

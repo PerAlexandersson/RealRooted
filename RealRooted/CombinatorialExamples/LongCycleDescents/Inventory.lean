@@ -17,8 +17,6 @@ Adapted from Bowen Zuo, cycle-minimum-descent-real-roots v1.0.0 (Apache-2.0)
 
 @[expose] public section
 
-open scoped Classical
-
 noncomputable section
 namespace RealRooted.LongCycleDescents.Necklace
 open RealRooted.LongCycleDescents.Words
@@ -51,7 +49,7 @@ theorem signature_step (σ : Equiv.Perm (Fin n)) (x : Fin n → Fin q) (i : Fin 
   apply ofLex.injective
   funext j
   change x ((σ ^ j.val) (σ i)) = x ((σ ^ ((j.val + 1) % n.factorial)) i)
-  have period := pow_mod_card σ (j.val+1)
+  have period := pow_mod_card σ (j.val + 1)
   rw [Fintype.card_perm, Fintype.card_fin] at period
   rw [period,pow_succ,Equiv.Perm.mul_apply]
 
@@ -85,19 +83,20 @@ theorem turn_lt_of_first_eq {a b : Key n q} (hab : a < b) (eq : first a = first 
     have hi : i = ⟨0,Nat.factorial_pos n⟩ := Fin.ext (by change i.val = 0; lia)
     subst i
     exact lt.ne eq
-  let j : Fin n.factorial := ⟨i.val-1,by have := i.isLt; lia⟩
+  let j : Fin n.factorial := ⟨i.val - 1,by have := i.isLt; lia⟩
   have ji : j.val + 1 = i.val := by dsimp [j]; lia
   refine ⟨j,?_,?_⟩
   · intro k hkj
     have hk : k.val + 1 < i.val := by change k.val < j.val at hkj; lia
     have hmod := Nat.mod_eq_of_lt (hk.trans i.isLt)
-    change ofLex a ⟨(k.val+1)%n.factorial,_⟩ = ofLex b ⟨(k.val+1)%n.factorial,_⟩
+    change ofLex a ⟨(k.val + 1)%n.factorial,_⟩ = ofLex b ⟨(k.val + 1)%n.factorial,_⟩
     apply prev
-    change (k.val+1)%n.factorial < i.val
+    change (k.val + 1)%n.factorial < i.val
     rwa [hmod]
-  · change ofLex a ⟨(j.val+1)%n.factorial,_⟩ < ofLex b ⟨(j.val+1)%n.factorial,_⟩
-    have hj : (⟨(j.val+1)%n.factorial, Nat.mod_lt _ (Nat.factorial_pos n)⟩ : Fin n.factorial) = i :=
-      Fin.ext (by change (j.val+1)%n.factorial = i.val; rw [ji,Nat.mod_eq_of_lt i.isLt])
+  · change ofLex a ⟨(j.val + 1)%n.factorial,_⟩ < ofLex b ⟨(j.val + 1)%n.factorial,_⟩
+    have hj :
+        (⟨(j.val + 1)%n.factorial, Nat.mod_lt _ (Nat.factorial_pos n)⟩ : Fin n.factorial) = i :=
+      Fin.ext (by change (j.val + 1)%n.factorial = i.val; rw [ji,Nat.mod_eq_of_lt i.isLt])
     rw [hj]
     exact lt
 
@@ -113,7 +112,7 @@ theorem shift_iterate (w : Fin n → Key n q) (σ : Equiv.Perm (Fin n))
   | zero => simp
   | succ r ih =>
     rw [pow_succ',Equiv.Perm.mul_apply,step]
-    change shift 1 (ofLex (w ((σ ^ r) i))) = shift (r+1) (ofLex (w i))
+    change shift 1 (ofLex (w ((σ ^ r) i))) = shift (r + 1) (ofLex (w i))
     rw [ih,shift_add,Nat.add_comm]
 
 /-- Reconstruction recovers the original sorted orbit itineraries. -/
@@ -125,7 +124,7 @@ theorem recover_signature (w : Fin n → Key n q) (σ : Equiv.Perm (Fin n))
   change ofLex (w ((σ ^ j.val) i)) ⟨0,Nat.factorial_pos n⟩ = ofLex (w i) j
   rw [shift_iterate w σ step]
   exact congrArg (ofLex (w i)) (Fin.ext (by
-    change (0+j.val)%n.factorial = j.val
+    change (0 + j.val)%n.factorial = j.val
     simp [Nat.mod_eq_of_lt j.isLt]))
 
 /-- Recover a compatible permutation and coloring from a sorted itinerary inventory. -/

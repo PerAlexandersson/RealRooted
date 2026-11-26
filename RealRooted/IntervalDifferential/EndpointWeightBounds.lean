@@ -134,7 +134,7 @@ theorem intervalInsertionThreshold_small {d : ℕ} (hd : d < 6) (a b : ℝ)
       nlinarith [sq_abs a]
     have hconvex := mul_nonneg (abs_nonneg a) (sub_nonneg.mpr hA)
     dsimp only [v] at hA hconvex hfail
-    interval_cases d <;> norm_num [v, intervalInsertionThreshold] at * <;>
+    interval_cases d <;> norm_num only [v, intervalInsertionThreshold] at * <;>
       nlinarith [sq_abs a]
   by_cases ha : 0 ≤ a
   · refine ⟨v, by simpa only [abs_of_pos hv] using hv4, ?_⟩

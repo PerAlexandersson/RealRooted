@@ -35,7 +35,7 @@ private def nodes3 : Array Necklace.Dyadic :=
 private theorem checked3_3 : descentMesh 3 3 nodes3 = true := by
   decide +kernel
 
-private theorem checked3 (k : Fin (3-2)) :
+private theorem checked3 (k : Fin (3 - 2)) :
     descentMesh 3 (k.val + 3) nodes3 = true := by
   fin_cases k
   · exact checked3_3
@@ -50,7 +50,7 @@ private def nodes4 : Array Necklace.Dyadic :=
 private theorem checked4_3 : descentMesh 4 3 nodes4 = true := by
   decide +kernel
 
-private theorem checked4 (k : Fin (3-2)) :
+private theorem checked4 (k : Fin (3 - 2)) :
     descentMesh 4 (k.val + 3) nodes4 = true := by
   fin_cases k
   · exact checked4_3
@@ -70,7 +70,7 @@ private theorem checked6_3 : descentMesh 6 3 nodes6 = true := by
 private theorem checked6_4 : descentMesh 6 4 nodes6 = true := by
   decide +kernel
 
-private theorem checked6 (k : Fin (4-2)) :
+private theorem checked6 (k : Fin (4 - 2)) :
     descentMesh 6 (k.val + 3) nodes6 = true := by
   fin_cases k
   · exact checked6_3
@@ -92,7 +92,7 @@ private theorem checked7_3 : descentMesh 7 3 nodes7 = true := by
 private theorem checked7_4 : descentMesh 7 4 nodes7 = true := by
   decide +kernel
 
-private theorem checked7 (k : Fin (4-2)) :
+private theorem checked7 (k : Fin (4 - 2)) :
     descentMesh 7 (k.val + 3) nodes7 = true := by
   fin_cases k
   · exact checked7_3
@@ -118,7 +118,7 @@ private theorem checked8_4 : descentMesh 8 4 nodes8 = true := by
 private theorem checked8_5 : descentMesh 8 5 nodes8 = true := by
   decide +kernel
 
-private theorem checked8 (k : Fin (5-2)) :
+private theorem checked8 (k : Fin (5 - 2)) :
     descentMesh 8 (k.val + 3) nodes8 = true := by
   fin_cases k
   · exact checked8_3
@@ -146,7 +146,7 @@ private theorem checked9_4 : descentMesh 9 4 nodes9 = true := by
 private theorem checked9_5 : descentMesh 9 5 nodes9 = true := by
   decide +kernel
 
-private theorem checked9 (k : Fin (5-2)) :
+private theorem checked9 (k : Fin (5 - 2)) :
     descentMesh 9 (k.val + 3) nodes9 = true := by
   fin_cases k
   · exact checked9_3
@@ -178,7 +178,7 @@ private theorem checked10_5 : descentMesh 10 5 nodes10 = true := by
 private theorem checked10_6 : descentMesh 10 6 nodes10 = true := by
   decide +kernel
 
-private theorem checked10 (k : Fin (6-2)) :
+private theorem checked10 (k : Fin (6 - 2)) :
     descentMesh 10 (k.val + 3) nodes10 = true := by
   fin_cases k
   · exact checked10_3
@@ -212,7 +212,7 @@ private theorem checked11_5 : descentMesh 11 5 nodes11 = true := by
 private theorem checked11_6 : descentMesh 11 6 nodes11 = true := by
   decide +kernel
 
-private theorem checked11 (k : Fin (6-2)) :
+private theorem checked11 (k : Fin (6 - 2)) :
     descentMesh 11 (k.val + 3) nodes11 = true := by
   fin_cases k
   · exact checked11_3
@@ -250,7 +250,7 @@ private theorem checked12_6 : descentMesh 12 6 nodes12 = true := by
 private theorem checked12_7 : descentMesh 12 7 nodes12 = true := by
   decide +kernel
 
-private theorem checked12 (k : Fin (7-2)) :
+private theorem checked12 (k : Fin (7 - 2)) :
     descentMesh 12 (k.val + 3) nodes12 = true := by
   fin_cases k
   · exact checked12_3
@@ -290,7 +290,7 @@ private theorem checked13_6 : descentMesh 13 6 nodes13 = true := by
 private theorem checked13_7 : descentMesh 13 7 nodes13 = true := by
   decide +kernel
 
-private theorem checked13 (k : Fin (7-2)) :
+private theorem checked13 (k : Fin (7 - 2)) :
     descentMesh 13 (k.val + 3) nodes13 = true := by
   fin_cases k
   · exact checked13_3
@@ -334,7 +334,7 @@ private theorem checked14_7 : descentMesh 14 7 nodes14 = true := by
 private theorem checked14_8 : descentMesh 14 8 nodes14 = true := by
   decide +kernel
 
-private theorem checked14 (k : Fin (8-2)) :
+private theorem checked14 (k : Fin (8 - 2)) :
     descentMesh 14 (k.val + 3) nodes14 = true := by
   fin_cases k
   · exact checked14_3
@@ -380,7 +380,7 @@ private theorem checked15_7 : descentMesh 15 7 nodes15 = true := by
 private theorem checked15_8 : descentMesh 15 8 nodes15 = true := by
   decide +kernel
 
-private theorem checked15 (k : Fin (8-2)) :
+private theorem checked15 (k : Fin (8 - 2)) :
     descentMesh 15 (k.val + 3) nodes15 = true := by
   fin_cases k
   · exact checked15_3
@@ -430,7 +430,7 @@ private theorem checked16_8 : descentMesh 16 8 nodes16 = true := by
 private theorem checked16_9 : descentMesh 16 9 nodes16 = true := by
   decide +kernel
 
-private theorem checked16 (k : Fin (9-2)) :
+private theorem checked16 (k : Fin (9 - 2)) :
     descentMesh 16 (k.val + 3) nodes16 = true := by
   fin_cases k
   · exact checked16_3
@@ -482,7 +482,7 @@ private theorem checked17_8 : descentMesh 17 8 nodes17 = true := by
 private theorem checked17_9 : descentMesh 17 9 nodes17 = true := by
   decide +kernel
 
-private theorem checked17 (k : Fin (9-2)) :
+private theorem checked17 (k : Fin (9 - 2)) :
     descentMesh 17 (k.val + 3) nodes17 = true := by
   fin_cases k
   · exact checked17_3

@@ -21,8 +21,6 @@ Adapted from Bowen Zuo, cycle-minimum-descent-real-roots v1.0.0 (Apache-2.0)
 namespace RealRooted.LongCycleDescents.Necklace
 
 open Polynomial Finset
-open scoped Classical
-
 private theorem countTable_cons_at (bound : ℕ) {w M d : ℕ}
     (hw : 0 < w) (fits : d ≤ bound) (l : List (ℕ × ℕ))
     (positive : ∀ pair ∈ l, 0 < pair.1) :

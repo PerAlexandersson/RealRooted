@@ -21,8 +21,6 @@ Adapted from Bowen Zuo, cycle-minimum-descent-real-roots v1.0.0 (Apache-2.0)
 namespace RealRooted.LongCycleDescents.Necklace
 
 open Polynomial Finset RealRooted.LongCycleDescents
-open scoped Classical
-
 /-- Cache all alphabet sizes needed by the degree-n numerator inversion. -/
 def descentAlphabetTable (n k : ℕ) : Array ℕ :=
   Array.ofFn fun r : Fin n ↦ positiveCountDP n (r.val + 1) k

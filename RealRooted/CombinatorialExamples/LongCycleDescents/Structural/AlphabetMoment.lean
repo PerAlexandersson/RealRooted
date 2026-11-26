@@ -49,7 +49,7 @@ private theorem second_powerSum_nonneg {p : ℝ[X]} {n : ℕ} (hn : 2 ≤ n)
   have hr := congrArg Complex.re he
   simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul,
     sub_zero, Complex.neg_re] at hr
-  norm_num at hr
+  simp only [Complex.natCast_re, mul_zero, sub_zero] at hr
   have hs : Complex.re ((f.roots.map fun z => z ^ 2).sum) =
       ((f.roots.map fun z => (z ^ 2).re).sum) := by
     exact (map_multiset_sum Complex.reAddGroupHom _).trans (by simp)
@@ -107,7 +107,7 @@ private theorem cubic_second_powerSum :
     (((((X * (X ^ 2 - 1) : ℝ[X]).map (algebraMap ℝ ℂ)).roots).map
       fun z => (z ^ 2).re).sum) = 2 := by
   have hf : (X * (X ^ 2 - 1) : ℂ[X]) = X * ((X - C 1) * (X - C (-1))) := by
-    norm_num
+    simp only [map_neg, map_one]
     ring
   simp only [Polynomial.map_mul, Polynomial.map_X, Polynomial.map_sub,
     Polynomial.map_pow, Polynomial.map_one]
@@ -122,7 +122,7 @@ theorem quotient_second_powerSum_ge_neg_two {f Q : ℝ[X]} (hf : f ≠ 0)
     (he : f = X * (X ^ 2 - 1) * Q)
     (hp : 0 ≤ (((f.map (algebraMap ℝ ℂ)).roots).map fun z => (z ^ 2).re).sum) :
     -2 ≤ (((Q.map (algebraMap ℝ ℂ)).roots).map fun z => (z ^ 2).re).sum := by
-  have hq : Q ≠ 0 := by intro hh; simp [hh] at he; exact hf he
+  have hq : Q ≠ 0 := by intro hh; simp only [hh, mul_zero] at he; exact hf he
   have hm : (X * (X ^ 2 - 1) : ℝ[X]).map (algebraMap ℝ ℂ) *
       Q.map (algebraMap ℝ ℂ) ≠ 0 := by
     rw [← Polynomial.map_mul, ← he]
