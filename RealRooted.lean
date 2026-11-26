@@ -622,7 +622,13 @@ public import RealRooted.EvenDerivative.Stability
 public import RealRooted.EvenDerivative.Symbol
 public import RealRooted.ExponentialRows.Substitution
 public import RealRooted.ExponentialRows.SubstitutionComposition
+public import RealRooted.ExponentialRows.SubstitutionDifferential
+public import RealRooted.ExponentialRows.SubstitutionFactor
 public import RealRooted.ExponentialRows.SubstitutionKernel
+public import RealRooted.ExponentialRows.SubstitutionPolynomial
+public import RealRooted.ExponentialRows.SubstitutionPolynomialChain
+public import RealRooted.ExponentialRows.SubstitutionPolynomialKernel
+public import RealRooted.ExponentialRows.SubstitutionPolynomialPreserver
 public import RealRooted.ExponentialRows.SubstitutionPowers
 public import RealRooted.ExponentialRows.SubstitutionPreserver
 public import RealRooted.ExponentialRows.SubstitutionRational
@@ -630,6 +636,8 @@ public import RealRooted.ExponentialRows.SubstitutionRationalExamples
 public import RealRooted.ExponentialRows.SubstitutionRationalKernel
 public import RealRooted.ExponentialRows.SubstitutionRationalPreserver
 public import RealRooted.ExponentialRows.SubstitutionRows
+public import RealRooted.ExponentialRows.TwoSizeExponential
+public import RealRooted.ExponentialRows.TwoSizePencil
 public import RealRooted.FactorialCompression.Basic
 public import RealRooted.FactorialCompression.CommonKernel
 public import RealRooted.FactorialCompression.Compression
