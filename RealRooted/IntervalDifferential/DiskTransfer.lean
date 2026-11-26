@@ -5,7 +5,7 @@ Authors: Per Alexandersson
 -/
 module
 
-public import RealRooted.IntervalDifferential.EndpointWeightBounds
+public import RealRooted.IntervalDifferential.EndpointWeight
 import RealRooted.Mathlib.Algebra.Polynomial.BasisTransform
 import Mathlib.Analysis.Polynomial.Factorization
 import Mathlib.Tactic
