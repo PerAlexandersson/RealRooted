@@ -30,6 +30,7 @@ public import RealRooted.Apolarity.Scaling
 public import RealRooted.Applications.BinderVecchi.UniformChow
 public import RealRooted.Applications.BinderVecchi.UniformMatroid
 public import RealRooted.Applications.BipartiteClustering
+public import RealRooted.Applications.BipartiteClusteringDiagonal
 public import RealRooted.Applications.EulerianVariations
 public import RealRooted.Applications.EulerianVariations.CyclicPathDescents
 public import RealRooted.Applications.EulerianVariations.TernaryRuns
