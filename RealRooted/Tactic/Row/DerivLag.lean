@@ -223,7 +223,7 @@ private def nonposLagSamples? (d : DerivLagRec) (s : Nat) : MetaM (Option Bool) 
     unless xs.all fun x => v.eval x ≤ 0 && w.eval x ≤ 0 do return some false
   return some true
 
-/-- Cheap necessary-condition probe for the strict derivative-lag routes.  The translated
+/-- Cheap necessary-condition probe for the derivative-lag routes.  The translated
 affine-lag theorem is allowed independently of the usual multiplier signs. -/
 private def derivLagStrictPlausible (d : DerivLagRec) (hints : RowHints) : MetaM Bool := do
   for s in (hints.drop.map ([·])).getD [0, 1, 2] do
@@ -709,7 +709,7 @@ def derivLagCore (wantSplits wantStrict : Bool) (hints : RowHints)
     | .ok d => pure d
     | .error e => throwError "rr_row_deriv_lag: the recurrence of {P} is not of the \
         derivative-lag form: {e}"
-  if wantStrict && !(← derivLagStrictPlausible d hints) then
+  if !(← derivLagStrictPlausible d hints) then
     rowVeto `halfGrowth m!"the exact lag-sign samples reject every permitted row shift" log?
     throwError "rr_row_deriv_lag: exact samples rule out the nonpositive lag-multiplier \
       conditions for every permitted row shift"
