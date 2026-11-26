@@ -3763,6 +3763,16 @@
       ],
       "note": "Bounded-disc Montel selection, adapted from Tau Ceti normal families and Montel (Apache-2.0); supports Sokal Theorem 1.5(b), #2158. No upstream PR yet.",
       "speculative": true
+    },
+    {
+      "sources": [
+        "RealRooted/Mathlib/Data/Array/GetD.lean"
+      ],
+      "modules": [
+        "Mathlib.Data.Array.Defs"
+      ],
+      "note": "Generated-array extensionality through defaulted entries; no upstream PR yet.",
+      "speculative": true
     }
   ]
 }
