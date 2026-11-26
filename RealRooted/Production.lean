@@ -635,6 +635,7 @@ public import RealRooted.ExponentialRows.SubstitutionRationalExamples
 public import RealRooted.ExponentialRows.SubstitutionRationalKernel
 public import RealRooted.ExponentialRows.SubstitutionRationalPreserver
 public import RealRooted.ExponentialRows.SubstitutionRows
+public import RealRooted.ExponentialRows.TwoSizeClassification
 public import RealRooted.ExponentialRows.TwoSizeExponential
 public import RealRooted.ExponentialRows.TwoSizePencil
 public import RealRooted.FactorialCompression.Basic
