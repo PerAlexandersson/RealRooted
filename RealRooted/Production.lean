@@ -30,6 +30,8 @@ public import RealRooted.Applications.BinderVecchi.UniformChow
 public import RealRooted.Applications.BinderVecchi.UniformMatroid
 public import RealRooted.Applications.BipartiteClustering
 public import RealRooted.Applications.BipartiteClusteringDiagonal
+public import RealRooted.Applications.BipartiteClusteringHeat
+public import RealRooted.Applications.BipartiteHeatSeed
 public import RealRooted.Applications.EulerianVariations
 public import RealRooted.Applications.EulerianVariations.CyclicPathDescents
 public import RealRooted.Applications.EulerianVariations.TernaryRuns
@@ -2341,6 +2343,7 @@ public import RealRooted.MultiplierSequence.FallingFactorial
 public import RealRooted.Hermite.PoulainSymbolInterlacing
 public import RealRooted.Hermite.Gaussian
 public import RealRooted.Hermite.Grace
+public import RealRooted.Hermite.Heat
 public import RealRooted.Hermite.Homogeneous
 public import RealRooted.Challenges.Combinatorial.Hoggatt
 public import RealRooted.CombinatorialExamples.Hoggatt
