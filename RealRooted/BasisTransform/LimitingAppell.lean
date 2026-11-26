@@ -49,28 +49,14 @@ private def scaledAppellCoefficient (q : ℝ[X]) (k : ℕ) (t : ℝ) : ℝ[X] :=
 private theorem coeff_affine_pow (t : ℝ) (l i : ℕ) :
     ((C (-1) + C t * X) ^ l : ℝ[X]).coeff i =
       if i ≤ l then (l.choose i : ℝ) * (-1 : ℝ) ^ (l - i) * t ^ i else 0 := by
-  rw [add_pow, finsetSum_coeff]
-  have hsummand (j : ℕ) :
-      (C (-1) ^ j * (C t * X) ^ (l - j) * (l.choose j : ℝ[X])) =
-        C ((l.choose j : ℝ) * (-1 : ℝ) ^ j * t ^ (l - j)) * X ^ (l - j) := by
-    simp [C_mul, C_pow]
+  rw [show (C (-1) + C t * X : ℝ[X]) = (X + C (-1) : ℝ[X]).comp (C t * X) by
+    simp only [add_comp, X_comp, C_comp]
+    ring, ← pow_comp, comp_C_mul_X_coeff, coeff_X_add_C_pow]
+  by_cases hi : i ≤ l
+  · rw [ite_eq_left hi]
     ring
-  by_cases hil : i ≤ l
-  · rw [Finset.sum_eq_single (l - i)]
-    · rw [hsummand, coeff_C_mul_X_pow]
-      simp [hil, Nat.choose_symm hil, Nat.sub_sub_self hil]
-    · intro j hj hjli
-      rw [hsummand, coeff_C_mul_X_pow, ite_eq_right]
-      have hjle : j ≤ l := Nat.lt_succ_iff.mp (Finset.mem_range.mp hj)
-      exact fun h => hjli (by lia)
-    · simp [hil]
-  · rw [ite_eq_right hil]
-    apply Finset.sum_eq_zero
-    intro j hj
-    rw [hsummand, coeff_C_mul_X_pow, ite_eq_right]
-    intro h
-    have := Finset.mem_range.mp hj
-    lia
+  · simp only [ite_eq_right hi, Nat.choose_eq_zero_of_lt (Nat.lt_of_not_ge hi),
+      Nat.cast_zero, mul_zero, zero_mul]
 
 private theorem coeff_scaledAppellCoefficient (q : ℝ[X]) (k i : ℕ) (t : ℝ) :
     (scaledAppellCoefficient q k t).coeff i =
@@ -465,118 +451,35 @@ theorem limitingAppellPolynomial_natDegree {d : ℕ → ℝ} (hd₀ : d 0 = 1) (
     rw [coeff_limitingAppellPolynomial_top, hd₀]
     norm_num
 
-private theorem derivative_limitingAppellPolynomial_succ_even
-    (d : ℕ → ℝ) (m : ℕ) :
-    (limitingAppellPolynomial d (m + m + 1)).derivative =
-      C (m + m + 1 : ℝ) * limitingAppellPolynomial d (m + m) := by
-  rw [limitingAppellPolynomial, limitingAppellPolynomial]
-  simp only [map_sum]
-  rw [show (m + m + 1) / 2 + 1 = m + 1 by lia,
-    show (m + m) / 2 + 1 = m + 1 by lia]
-  rw [Finset.mul_sum]
-  apply Finset.sum_congr rfl
-  intro j hj
-  rw [derivative_mul, derivative_C, zero_mul, zero_add, derivative_X_pow]
-  have hjle : 2 * j ≤ m + m := by
-    have := Finset.mem_range.mp hj
-    lia
-  have hdf :
-      (m + m + 1 - 2 * j) * (m + m + 1).descFactorial (2 * j) =
-        (m + m + 1) * (m + m).descFactorial (2 * j) := by
-    simpa only [show m + m + 1 = (m + m) + 1 by lia] using
-      Nat.succ_descFactorial (m + m) (2 * j)
-  have hdfR :
-      (m + m + 1 - 2 * j : ℕ) *
-          ((m + m + 1).descFactorial (2 * j) : ℝ) =
-        (m + m + 1 : ℕ) * ((m + m).descFactorial (2 * j) : ℝ) := by
-    exact_mod_cast hdf
-  have hscalar :
-      (-1 : ℝ) ^ j * ((m + m + 1).descFactorial (2 * j) : ℝ) * d j *
-          (m + m + 1 - 2 * j : ℕ) =
-        (m + m + 1 : ℕ) *
-          ((-1 : ℝ) ^ j * ((m + m).descFactorial (2 * j) : ℝ) * d j) := by
-    calc
-      _ = ((-1 : ℝ) ^ j * d j) *
-          ((m + m + 1 - 2 * j : ℕ) *
-            ((m + m + 1).descFactorial (2 * j) : ℝ)) := by ring
-      _ = ((-1 : ℝ) ^ j * d j) *
-          ((m + m + 1 : ℕ) * ((m + m).descFactorial (2 * j) : ℝ)) := by
-        rw [hdfR]
-      _ = _ := by ring
-  rw [show m + m + 1 - 2 * j - 1 = m + m - 2 * j by lia]
+/-- Differentiation of one summand uses the descending-factorial recurrence. -/
+private theorem derivative_limitingAppellSummand (d : ℕ → ℝ) (N j : ℕ) :
+    (C ((-1 : ℝ) ^ j * ((N + 1).descFactorial (2 * j) : ℝ) * d j) *
+      X ^ (N + 1 - 2 * j)).derivative =
+      C (N + 1 : ℝ) *
+        (C ((-1 : ℝ) ^ j * (N.descFactorial (2 * j) : ℝ) * d j) *
+          X ^ (N - 2 * j)) := by
+  rw [derivative_C_mul, derivative_X_pow]
+  have hdf : ((N + 1 - 2 * j : ℕ) : ℝ) *
+      ((N + 1).descFactorial (2 * j) : ℝ) =
+      (N + 1 : ℝ) * (N.descFactorial (2 * j) : ℝ) := by
+    exact_mod_cast Nat.succ_descFactorial N (2 * j)
+  rw [show N + 1 - 2 * j - 1 = N - 2 * j by lia]
   simp only [← mul_assoc, ← C_mul]
-  rw [hscalar]
-  push_cast
-  ring_nf
-
-private theorem derivative_limitingAppellPolynomial_succ_odd
-    (d : ℕ → ℝ) (m : ℕ) :
-    (limitingAppellPolynomial d (2 * m + 1 + 1)).derivative =
-      C (2 * m + 1 + 1 : ℝ) * limitingAppellPolynomial d (2 * m + 1) := by
-  rw [limitingAppellPolynomial, limitingAppellPolynomial]
-  simp only [map_sum]
-  rw [show (2 * m + 1 + 1) / 2 + 1 = m + 2 by lia,
-      show (2 * m + 1) / 2 + 1 = m + 1 by lia,
-      Finset.sum_range_succ]
-  have hlast :
-      (C ((-1 : ℝ) ^ (m + 1) *
-            ((2 * m + 1 + 1).descFactorial (2 * (m + 1)) : ℝ) * d (m + 1)) *
-          X ^ (2 * m + 1 + 1 - 2 * (m + 1))).derivative = 0 := by
-    rw [show 2 * m + 1 + 1 - 2 * (m + 1) = 0 by lia]
-    simp
-  rw [hlast, add_zero, Finset.mul_sum]
-  apply Finset.sum_congr rfl
-  intro j hj
-  rw [derivative_mul, derivative_C, zero_mul, zero_add, derivative_X_pow]
-  have hjle : 2 * j ≤ 2 * m + 1 := by
-    have := Finset.mem_range.mp hj
-    lia
-  have hdf :
-      (2 * m + 1 + 1 - 2 * j) *
-          (2 * m + 1 + 1).descFactorial (2 * j) =
-        (2 * m + 1 + 1) * (2 * m + 1).descFactorial (2 * j) := by
-    simpa only [show 2 * m + 1 + 1 = (2 * m + 1) + 1 by lia] using
-      Nat.succ_descFactorial (2 * m + 1) (2 * j)
-  have hdfR :
-      (2 * m + 1 + 1 - 2 * j : ℕ) *
-          ((2 * m + 1 + 1).descFactorial (2 * j) : ℝ) =
-        (2 * m + 1 + 1 : ℕ) *
-          ((2 * m + 1).descFactorial (2 * j) : ℝ) := by
-    exact_mod_cast hdf
-  have hscalar :
-      (-1 : ℝ) ^ j *
-            ((2 * m + 1 + 1).descFactorial (2 * j) : ℝ) * d j *
-          (2 * m + 1 + 1 - 2 * j : ℕ) =
-        (2 * m + 1 + 1 : ℕ) *
-          ((-1 : ℝ) ^ j *
-            ((2 * m + 1).descFactorial (2 * j) : ℝ) * d j) := by
-    calc
-      _ = ((-1 : ℝ) ^ j * d j) *
-          ((2 * m + 1 + 1 - 2 * j : ℕ) *
-            ((2 * m + 1 + 1).descFactorial (2 * j) : ℝ)) := by ring
-      _ = ((-1 : ℝ) ^ j * d j) *
-          ((2 * m + 1 + 1 : ℕ) *
-            ((2 * m + 1).descFactorial (2 * j) : ℝ)) := by
-        rw [hdfR]
-      _ = _ := by ring
-  rw [show 2 * m + 1 + 1 - 2 * j - 1 = 2 * m + 1 - 2 * j by lia]
-  simp only [← mul_assoc, ← C_mul]
-  rw [hscalar]
-  push_cast
-  ring_nf
+  congr 2
+  linear_combination (-1 : ℝ) ^ j * d j * hdf
 
 private theorem derivative_limitingAppellPolynomial_succ (d : ℕ → ℝ) (N : ℕ) :
     (limitingAppellPolynomial d (N + 1)).derivative =
       C (N + 1 : ℝ) * limitingAppellPolynomial d N := by
-  by_cases hN : Even N
-  · obtain ⟨m, rfl⟩ := hN
-    simpa only [Nat.cast_add, Nat.cast_one] using
-      derivative_limitingAppellPolynomial_succ_even d m
-  · have hNodd : Odd N := Nat.not_even_iff_odd.mp hN
-    obtain ⟨m, hm⟩ := hNodd
-    subst N
-    simpa only [Nat.cast_add, Nat.cast_mul, Nat.cast_one, Nat.cast_ofNat] using
-      derivative_limitingAppellPolynomial_succ_odd d m
+  rw [limitingAppellPolynomial, limitingAppellPolynomial]
+  simp only [map_sum, derivative_limitingAppellSummand, Finset.mul_sum]
+  by_cases hdiv : (N + 1) / 2 = N / 2
+  · rw [hdiv]
+  · have hdiv' : (N + 1) / 2 = N / 2 + 1 := by lia
+    rw [hdiv', Finset.sum_range_succ]
+    have hzero : N.descFactorial (2 * (N / 2 + 1)) = 0 :=
+      Nat.descFactorial_eq_zero_iff_lt.mpr (by lia)
+    simp only [hzero, Nat.cast_zero, mul_zero, zero_mul, C_0, add_zero]
 
 /-- The limiting family is Appell: differentiating row `N` gives `N` times
 the preceding row. -/

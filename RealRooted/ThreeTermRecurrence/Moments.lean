@@ -418,29 +418,6 @@ private theorem variance_from_modes
     hA hratio (by
       unfold meanSlope derivativeDominantCoeff
       field_simp [hA]) (by rfl) hquad hsigma
-  let N2 : ℕ → ℝ := fun n =>
-    ((secondDominantCoeff P a b lam nu * (n : ℝ) ^ 2 +
-        secondDominantLinear P a b lam nu * (n : ℝ) +
-        secondDominantConstant P a b lam nu) +
-      (secondCompanionCoeff P a b lam nu * (n : ℝ) ^ 2 +
-        secondCompanionLinear P a b lam nu * (n : ℝ) +
-        secondCompanionConstant P a b lam nu) * (nu / lam) ^ n) /
-      (dominantCoeff P lam nu + companionCoeff P lam nu * (nu / lam) ^ n)
-  let N1 : ℕ → ℝ := fun n =>
-    ((derivativeDominantCoeff P a b lam nu * (n : ℝ) +
-        derivativeDominantConstant P a b lam nu) +
-      (derivativeCompanionCoeff P a b lam nu * (n : ℝ) +
-        derivativeCompanionConstant P a b lam nu) * (nu / lam) ^ n) /
-      (dominantCoeff P lam nu + companionCoeff P lam nu * (nu / lam) ^ n)
-  have hnorm : Tendsto (fun n : ℕ =>
-      N2 n + N1 n - N1 n ^ 2 - varianceSlope a b lam * (n : ℝ)) atTop
-      (𝓝 (secondDominantConstant P a b lam nu /
-        dominantCoeff P lam nu +
-        derivativeDominantConstant P a b lam nu /
-          dominantCoeff P lam nu -
-        (derivativeDominantConstant P a b lam nu /
-          dominantCoeff P lam nu) ^ 2)) := by
-    simpa only [N1, N2] using hvar
   have hvar' : Tendsto (fun n : ℕ =>
       ((P n).derivative.derivative.eval 1 / (P n).eval 1 +
           (P n).derivative.eval 1 / (P n).eval 1 -
@@ -452,14 +429,12 @@ private theorem variance_from_modes
           dominantCoeff P lam nu -
         (derivativeDominantConstant P a b lam nu /
           dominantCoeff P lam nu) ^ 2)) := by
-    convert hnorm using 1
+    convert hvar using 1
     funext n
-    dsimp [N1, N2]
     rw [hSecond n, hDerivative n, hValue n, add_modes_eq_factor hlam,
       add_modes_eq_factor hlam, add_modes_eq_factor hlam]
     simp only [mul_div_mul_left _ _ (pow_ne_zero n hlam)]
-  have hdiv := LinearRecurrence.tendsto_div_nat_of_tendsto_sub_linear hvar'
-  exact hdiv
+  exact LinearRecurrence.tendsto_div_nat_of_tendsto_sub_linear hvar'
 
 /-- Two distinct roots of `t² = A t + B` sum to `A`, so the dominant root is simple. -/
 private theorem two_mul_sub_ne_zero_of_roots {A B lam nu : ℝ}

@@ -67,44 +67,6 @@ theorem meshDifference_C_mul (α lam c : ℝ) (p : ℝ[X]) :
   simp only [meshDifference, mul_comp, C_comp]
   ring
 
-private theorem IsUpperHalfPlaneStablePencil.add_real_base_to_direction
-    {f g : ℝ[X]} (h : IsUpperHalfPlaneStablePencil f g) (a : ℝ) :
-    IsUpperHalfPlaneStablePencil f (g + C a * f) := by
-  intro z w hz hw
-  let d : ℂ := 1 + (a : ℂ) * w
-  have hd : d ≠ 0 := by
-    intro hd0
-    have him := congrArg Complex.im hd0
-    have ha0 : a = 0 := by
-      have hmul : a * w.im = 0 := by simpa [d] using him
-      exact (mul_eq_zero.mp hmul).resolve_right (ne_of_gt hw)
-    simp [d, ha0] at hd0
-  let v : ℂ := w / d
-  have hvim : v.im = w.im / Complex.normSq d := by
-    dsimp [v]
-    rw [Complex.div_im]
-    simp [d, Complex.mul_re, Complex.mul_im]
-    ring
-  have hv : 0 < v.im := by
-    rw [hvim]
-    exact div_pos hw (Complex.normSq_pos.mpr hd)
-  have hne := h z v hz hv
-  let F := (complexify f).eval z
-  let G := (complexify g).eval z
-  change F + v * G ≠ 0 at hne
-  have hmap : complexify (g + C a * f) =
-      complexify g + C (a : ℂ) * complexify f := by
-    simp [complexify]
-  rw [hmap, eval_add, eval_mul, eval_C]
-  change F + w * (G + (a : ℂ) * F) ≠ 0
-  have heq : F + w * (G + (a : ℂ) * F) = d * (F + v * G) := by
-    dsimp only [v]
-    field_simp [hd]
-    dsimp [d]
-    ring
-  rw [heq]
-  exact mul_ne_zero hd hne
-
 private theorem IsUpperHalfPlaneStablePencil.positive_scale_direction
     {f g : ℝ[X]} (h : IsUpperHalfPlaneStablePencil f g)
     {a : ℝ} (ha : 0 < a) :
@@ -123,6 +85,13 @@ private theorem IsUpperHalfPlaneStablePencil.add_real_direction_to_base
   have hne := h z ((a : ℂ) + w) hz hw'
   simpa [complexify, add_mul, mul_add, add_assoc] using hne
 
+/-- Direction shears are base shears after swapping the pencil variables. -/
+private theorem IsUpperHalfPlaneStablePencil.add_real_base_to_direction
+    {f g : ℝ[X]} (h : IsUpperHalfPlaneStablePencil f g) (a : ℝ) :
+    IsUpperHalfPlaneStablePencil f (g + C a * f) := by
+  simpa only [map_neg, neg_mul, mul_neg, _root_.neg_neg] using
+    ((h.swap_neg.add_real_direction_to_base (-a)).swap_neg).neg_neg
+
 private theorem IsUpperHalfPlaneStablePencil.base_direction_shear
     {f g : ℝ[X]} (h : IsUpperHalfPlaneStablePencil f g)
     {a : ℝ} (ha : 0 < a) :
@@ -134,20 +103,8 @@ private theorem IsUpperHalfPlaneStablePencil.positive_scale_base
     {f g : ℝ[X]} (h : IsUpperHalfPlaneStablePencil f g)
     {a : ℝ} (ha : 0 < a) :
     IsUpperHalfPlaneStablePencil (C a * f) g := by
-  intro z w hz hw
-  have hw' : 0 < (w / (a : ℂ)).im := by
-    simpa using div_pos hw ha
-  have hne := h z (w / (a : ℂ)) hz hw'
-  have ha0 : (a : ℂ) ≠ 0 := by exact_mod_cast ne_of_gt ha
-  have hmap : complexify (C a * f) = C (a : ℂ) * complexify f := by
-    simp [complexify]
-  rw [hmap, eval_mul, eval_C]
-  have heq : (a : ℂ) * (complexify f).eval z + w * (complexify g).eval z =
-      (a : ℂ) * ((complexify f).eval z + w / (a : ℂ) *
-        (complexify g).eval z) := by
-    field_simp [ha0]
-  rw [heq]
-  exact mul_ne_zero ha0 hne
+  simpa only [mul_neg, _root_.neg_neg] using
+    ((h.swap_neg.positive_scale_direction ha).swap_neg).neg_neg
 
 private theorem stablePencil_im_ratio_nonneg
     {f g : ℝ[X]} (hf0 : f ≠ 0) (hfs : f.Splits)
@@ -221,18 +178,8 @@ private theorem stablePencil_X_sub_C_mul_self
 
 private theorem stablePencil_self {p : ℝ[X]} (hp0 : p ≠ 0) (hps : p.Splits) :
     IsUpperHalfPlaneStablePencil p p := by
-  intro z w hz hw
-  have hP : (complexify p).eval z ≠ 0 :=
-    eval_complexify_ne_zero_of_splits_of_im_pos hps hp0 hz
-  have hw1 : 1 + w ≠ 0 := by
-    intro hzero
-    have him := congrArg Complex.im hzero
-    simp only [Complex.add_im, Complex.one_im, zero_add, Complex.zero_im] at him
-    exact (ne_of_gt hw) him
-  have heq : (complexify p).eval z + w * (complexify p).eval z =
-      (1 + w) * (complexify p).eval z := by ring
-  rw [heq]
-  exact mul_ne_zero hw1 hP
+  simpa only [zero_add, C_1, one_mul] using
+    (isUpperHalfPlaneStablePencil_zero_right hp0 hps).add_real_base_to_direction 1
 
 /-- The local proper-position step behind BKS Theorem 2.  If the difference of
 `r` vanishes, the first disjunct uses the paper's zero convention.  Otherwise

@@ -1,5 +1,6 @@
 module
 
+import Mathlib.Analysis.Convex.Radon
 import RealRooted.CommonInterleaver.RootSlots
 public import RealRooted.CommonInterleaver.RootSlots.Basic
 public import RealRooted.CommonInterleaver.RootDesc
@@ -43,87 +44,33 @@ lemma listInter_nonempty_of_pairwise_ordConnected
     (hconn : ∀ s ∈ ss, Set.OrdConnected s)
     (hpair : ss.Pairwise fun s t => (s ∩ t).Nonempty) :
     (listInter ss).Nonempty := by
-  induction ss with
-  | nil =>
-      simp [listInter]
-  | cons s ss ih =>
-      cases ss with
-      | nil =>
-          simpa [listInter] using hne s (by simp)
-      | cons t ts =>
-          have hhead : ∀ u ∈ t :: ts, (s ∩ u).Nonempty := (List.pairwise_cons.mp hpair).1
-          have htail : (t :: ts).Pairwise fun s t => (s ∩ t).Nonempty :=
-            (List.pairwise_cons.mp hpair).2
-          have htail_ne : (listInter (t :: ts)).Nonempty := by simp_all
-          rcases htail_ne with ⟨x, hx⟩
-          by_cases hxs : x ∈ s
-          · exact ⟨x, by simpa [listInter, hxs] using hx⟩
-          · let ys : List ℝ := (List.attach (t :: ts)).map
-              (fun u => Classical.choose (hhead u.1 u.2))
-            have hys_pos : 0 < ys.length := by simp [ys]
-            have hy_mem_s : ∀ y ∈ ys, y ∈ s := by grind
-            have hx_mem : ∀ u ∈ t :: ts, x ∈ u :=
-              fun u hu => (mem_listInter.mp hx) u hu
-            let y0 : ℝ := Classical.choose (hhead t (by simp))
-            have hy0s : y0 ∈ s := (Classical.choose_spec (hhead t (by simp))).1
-            have hy0_side : y0 < x ∨ x < y0 := by grind
-            rcases hy0_side with hy0lt | hxy0
-            · let y : ℝ := ys.maximum_of_length_pos hys_pos
-              have hy_mem : y ∈ ys := List.maximum_of_length_pos_mem hys_pos
-              have hys : y ∈ s := hy_mem_s y hy_mem
-              have hall_lt : ∀ z ∈ ys, z < x := by
-                intro z hz
-                have hzs : z ∈ s := hy_mem_s z hz
-                by_cases hzx : z < x
-                · lia
-                · have hxz : x < z := by grind
-                  have hx_in_s : x ∈ s := (hconn s (by simp)).out hy0s hzs ⟨hy0lt.le, hxz.le⟩
-                  lia
-              refine ⟨y, ?_⟩
-              rw [mem_listInter]
-              intro u hu
-              have hu' : u = s ∨ u ∈ t :: ts := by simp_all
-              rcases hu' with rfl | hu
-              · lia
-              · let yu : ℝ := Classical.choose (hhead u hu)
-                have hyu_mem : yu ∈ ys := by
-                  have hmem_attach :
-                      (⟨u, hu⟩ : {v // v ∈ t :: ts}) ∈ (t :: ts).attach := by
-                    grind
-                  grind
-                have hyu_le : yu ≤ y := List.le_maximum_of_length_pos_of_mem hyu_mem hys_pos
-                have hy_lt : y < x := hall_lt y hy_mem
-                have hyu_u : yu ∈ u := (Classical.choose_spec (hhead u hu)).2
-                have hx_u : x ∈ u := hx_mem u hu
-                exact (hconn u (by lia)).out hyu_u hx_u ⟨hyu_le, hy_lt.le⟩
-            · let y : ℝ := ys.minimum_of_length_pos hys_pos
-              have hy_mem : y ∈ ys := List.minimum_of_length_pos_mem hys_pos
-              have hys : y ∈ s := hy_mem_s y hy_mem
-              have hall_gt : ∀ z ∈ ys, x < z := by
-                intro z hz
-                have hzs : z ∈ s := hy_mem_s z hz
-                by_cases hxz : x < z
-                · lia
-                · have hzx : z < x := by grind
-                  have hx_in_s : x ∈ s := (hconn s (by simp)).out hzs hy0s ⟨hzx.le, hxy0.le⟩
-                  lia
-              refine ⟨y, ?_⟩
-              rw [mem_listInter]
-              intro u hu
-              have hu' : u = s ∨ u ∈ t :: ts := by simp_all
-              rcases hu' with rfl | hu
-              · lia
-              · let yu : ℝ := Classical.choose (hhead u hu)
-                have hyu_mem : yu ∈ ys := by
-                  have hmem_attach :
-                      (⟨u, hu⟩ : {v // v ∈ t :: ts}) ∈ (t :: ts).attach := by
-                    grind
-                  grind
-                have hle_yu : y ≤ yu := List.minimum_of_length_pos_le_of_mem hyu_mem hys_pos
-                have hx_lt : x < y := hall_gt y hy_mem
-                have hyu_u : yu ∈ u := (Classical.choose_spec (hhead u hu)).2
-                have hx_u : x ∈ u := hx_mem u hu
-                exact (hconn u (by lia)).out hx_u hyu_u ⟨hx_lt.le, hle_yu⟩
+  classical
+  have htotal := Convex.helly_theorem_set' (𝕜 := ℝ) (F := ss.toFinset)
+    (fun s hs => (convex_iff_ordConnected).2 (hconn s (List.mem_toFinset.mp hs)))
+  have hsmall : ∀ G : Finset (Set ℝ), G ⊆ ss.toFinset → G.card ≤ 2 →
+      (⋂₀ (G : Set (Set ℝ))).Nonempty := by
+    intro G hG hc
+    rcases lt_or_eq_of_le hc with hc | hc
+    · obtain ⟨s, hs⟩ := Finset.card_le_one_iff_subset_singleton.mp (by lia : G.card ≤ 1)
+      rcases G.eq_empty_or_nonempty with rfl | ⟨t, ht⟩
+      · simp
+      · have heq : G = {t} := by
+          ext u
+          have hut : u ∈ G → u = t := fun hu =>
+            Finset.mem_singleton.mp (hs hu) |>.trans (Finset.mem_singleton.mp (hs ht)).symm
+          simp only [Finset.mem_singleton]
+          exact ⟨hut, fun h => h ▸ ht⟩
+        simpa only [heq, Finset.coe_singleton, Set.sInter_singleton] using
+          hne t (List.mem_toFinset.mp (hG ht))
+    · obtain ⟨s, t, hst, rfl⟩ := Finset.card_eq_two.mp hc
+      have hs := List.mem_toFinset.mp (hG (by simp : s ∈ ({s, t} : Finset _)))
+      have ht := List.mem_toFinset.mp (hG (by simp : t ∈ ({s, t} : Finset _)))
+      have hpair' := hpair.forall_of_forall_of_flip
+        (fun s hs => by simpa only [Set.inter_self] using hne s hs)
+        (hpair.imp (by intro a b h; simpa only [flip, Set.inter_comm] using h)) hs ht
+      simpa using hpair'
+  obtain ⟨x, hx⟩ := htotal (by simpa only [Module.finrank_self] using hsmall)
+  exact ⟨x, mem_listInter.mpr fun s hs => Set.mem_sInter.mp hx s (by simpa using hs)⟩
 
 /-- The target length `d` in the Chudnovsky--Seymour construction: the maximum
 degree occurring in the family. -/
@@ -139,23 +86,11 @@ lemma csDegree_eq_zero_of_nil : csDegree ([] : List ℝ[X]) = 0 := by simp [csDe
 
 lemma exists_mem_csDegree_of_ne_nil {fs : List ℝ[X]} (hfs : fs ≠ []) :
     ∃ f ∈ fs, f.natDegree = csDegree fs := by
-  induction fs with
-  | nil =>
-      lia
-  | cons f fs ih =>
-      cases fs with
-      | nil =>
-          refine ⟨f, by simp, by simp [csDegree]⟩
-      | cons g gs =>
-          by_cases htail : csDegree (g :: gs) ≤ f.natDegree
-          · refine ⟨f, by simp, ?_⟩
-            simpa [csDegree] using htail
-          · have hne_tail : g :: gs ≠ [] := by lia
-            obtain ⟨p, hp, hpdeg⟩ := ih hne_tail
-            refine ⟨p, by simp [hp], ?_⟩
-            have hltail : f.natDegree ≤ csDegree (g :: gs) := by lia
-            rw [hpdeg]
-            simpa [csDegree] using hltail
+  have hmap : fs.map Polynomial.natDegree ≠ [] := by simpa using hfs
+  have hm : csDegree fs ∈ fs.map Polynomial.natDegree :=
+    List.maximum_mem (List.foldr_max_of_ne_nil hmap).symm
+  obtain ⟨f, hf, heq⟩ := List.mem_map.mp hm
+  exact ⟨f, hf, heq⟩
 
 lemma natDegree_ge_csDegree_sub_one_of_pairwiseHasCommonInterleaver
     {fs : List ℝ[X]} {f g : ℝ[X]}
@@ -191,21 +126,10 @@ occurring in the family. -/
 def leftCsDegree (fs : List ℝ[X]) : ℕ :=
   (fs.map Polynomial.natDegree).foldr Nat.min (csDegree fs)
 
-private lemma foldr_min_le_of_mem {xs : List ℕ} {a seed : ℕ} (ha : a ∈ xs) :
-    xs.foldr Nat.min seed ≤ a := by
-  induction xs with
-  | nil =>
-      simp_all
-  | cons x xs ih =>
-      simp only [List.foldr_cons, List.mem_cons] at ha ⊢
-      rcases ha with rfl | ha
-      · exact Nat.min_le_left a (xs.foldr Nat.min seed)
-      · exact le_trans (Nat.min_le_right x (xs.foldr Nat.min seed)) (ih ha)
-
 lemma leftCsDegree_le_natDegree {fs : List ℝ[X]} {f : ℝ[X]} (hf : f ∈ fs) :
     leftCsDegree fs ≤ f.natDegree := by
   unfold leftCsDegree
-  exact foldr_min_le_of_mem (List.mem_map_of_mem (f := Polynomial.natDegree) hf)
+  exact List.min_le_of_le' _ (List.mem_map_of_mem (f := Polynomial.natDegree) hf) le_rfl
 
 private lemma exists_mem_eq_foldr_min_of_forall_le
     {xs : List ℕ} {seed : ℕ} (hxs : xs ≠ []) (hseed : ∀ a ∈ xs, a ≤ seed) :
@@ -333,7 +257,6 @@ theorem rootSlotInterval_inter_nonempty_of_commonInterleaver
           CommonInterleaver.RootSlots.rootSlotInterval_last_eq_reverse_get_zero
             (rs := rootSeqDesc g) (List.reverse_ne_nil_iff.mp hrevg_ne)
       simp_all
-
 
 end
 end RealRooted

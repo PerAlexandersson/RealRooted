@@ -60,52 +60,11 @@ theorem neg_one_pow_mul_eval_pos_of_roots_ge (hs : p.Splits) (hpos : 0 < p.leadi
   obtain ⟨t, ht, rfl⟩ := Multiset.mem_map.mp hz
   linarith [h t ht]
 
-theorem derivative_eval_nonneg_of_roots_le (hs : p.Splits) (hpos : 0 < p.leadingCoeff)
-    (h : ∀ t ∈ p.roots, t ≤ U) (hx : U < x) : 0 ≤ p.derivative.eval x := by
-  rcases Nat.lt_or_ge p.natDegree 2 with hd | hd
-  · -- `p'` is a nonnegative constant
-    rw [eq_C_of_natDegree_le_zero (p := p.derivative)
-      ((natDegree_derivative_le p).trans (by lia)), eval_C, coeff_derivative]
-    rcases Nat.lt_or_ge p.natDegree 1 with hd1 | hd1
-    · rw [coeff_eq_zero_of_natDegree_lt (by lia)]; simp
-    · rw [show p.coeff (0 + 1) = p.leadingCoeff by
-        rw [leadingCoeff, show p.natDegree = 1 by lia]]
-      positivity
-  · exact (eval_pos_of_roots_le hs.derivative
-      (HasPosLeadingCoeff.derivative hpos (by lia))
-      (roots_derivative_le_of_roots_le hs hd h) hx).le
-
-theorem derivative_neg_one_pow_mul_eval_nonneg_of_roots_ge (hs : p.Splits)
-    (hpos : 0 < p.leadingCoeff) (h : ∀ t ∈ p.roots, L ≤ t) (hx : x < L) :
-    0 ≤ (-1) ^ (p.natDegree + 1) * p.derivative.eval x := by
-  rcases Nat.lt_or_ge p.natDegree 2 with hd | hd
-  · rw [eq_C_of_natDegree_le_zero (p := p.derivative)
-      ((natDegree_derivative_le p).trans (by lia)), eval_C, coeff_derivative]
-    rcases Nat.lt_or_ge p.natDegree 1 with hd1 | hd1
-    · rw [coeff_eq_zero_of_natDegree_lt (by lia)]; simp
-    · rw [show p.coeff (0 + 1) = p.leadingCoeff by
-        rw [leadingCoeff, show p.natDegree = 1 by lia], show p.natDegree = 1 by lia]
-      norm_num
-      positivity
-  · have hpow : (-1 : ℝ) ^ (p.natDegree + 1) = (-1) ^ p.derivative.natDegree := by
-      rw [natDegree_derivative, show p.natDegree + 1 = (p.natDegree - 1) + 2 by lia, pow_add]
-      norm_num
-    rw [hpow]
-    exact (neg_one_pow_mul_eval_pos_of_roots_ge hs.derivative
-      (HasPosLeadingCoeff.derivative hpos (by lia))
-      (le_roots_derivative_of_le_roots hs hd h) hx).le
-
 theorem derivative_eval_pos_of_roots_le (hs : p.Splits) (hpos : 0 < p.leadingCoeff)
     (hd : p.natDegree ≠ 0) (h : ∀ t ∈ p.roots, t ≤ U) (hx : U < x) :
     0 < p.derivative.eval x := by
-  rcases Nat.lt_or_ge p.natDegree 2 with hd2 | hd2
-  · rw [eq_C_of_natDegree_le_zero (p := p.derivative)
-      ((natDegree_derivative_le p).trans (by lia)), eval_C, coeff_derivative,
-      show p.coeff (0 + 1) = p.leadingCoeff by rw [leadingCoeff, show p.natDegree = 1 by lia]]
-    norm_num
-    exact hpos
-  · exact eval_pos_of_roots_le hs.derivative
-      (HasPosLeadingCoeff.derivative hpos (by lia)) (roots_derivative_le_of_roots_le hs hd2 h) hx
+  exact eval_pos_of_roots_le hs.derivative (HasPosLeadingCoeff.derivative hpos hd)
+    ((derivative_interlaces_of_natDegree_ne_zero hs hd).toStrictInterl.roots_le_of_right h) hx
 
 theorem derivative_neg_one_pow_mul_eval_pos_of_roots_ge (hs : p.Splits)
     (hpos : 0 < p.leadingCoeff) (hd : p.natDegree ≠ 0) (h : ∀ t ∈ p.roots, L ≤ t)
@@ -123,6 +82,19 @@ theorem derivative_neg_one_pow_mul_eval_pos_of_roots_ge (hs : p.Splits)
     rw [hpow]
     exact neg_one_pow_mul_eval_pos_of_roots_ge hs.derivative
       (HasPosLeadingCoeff.derivative hpos (by lia)) (le_roots_derivative_of_le_roots hs hd2 h) hx
+
+theorem derivative_eval_nonneg_of_roots_le (hs : p.Splits) (hpos : 0 < p.leadingCoeff)
+    (h : ∀ t ∈ p.roots, t ≤ U) (hx : U < x) : 0 ≤ p.derivative.eval x := by
+  by_cases hd : p.natDegree = 0
+  · simp [derivative_eq_zero.mpr hd]
+  · exact (derivative_eval_pos_of_roots_le hs hpos hd h hx).le
+
+theorem derivative_neg_one_pow_mul_eval_nonneg_of_roots_ge (hs : p.Splits)
+    (hpos : 0 < p.leadingCoeff) (h : ∀ t ∈ p.roots, L ≤ t) (hx : x < L) :
+    0 ≤ (-1) ^ (p.natDegree + 1) * p.derivative.eval x := by
+  by_cases hd : p.natDegree = 0
+  · simp [derivative_eq_zero.mpr hd]
+  · exact (derivative_neg_one_pow_mul_eval_pos_of_roots_ge hs hpos hd h hx).le
 
 end Signs
 

@@ -30,18 +30,69 @@ noncomputable section
 
 namespace RealRooted
 
-private lemma exists_common_root_upper_bound (h : ℝ[X]) (l : List (ℝ × ℝ[X])) :
-    ∃ c, (∀ r ∈ h.roots, r ≤ c) ∧ ∀ ap ∈ l, ∀ r ∈ ap.2.roots, r ≤ c := by
+/-- Wagner's common-left addition theorem iterated over a nonempty list. -/
+private lemma sumCompatibleLeft_of_forall (h : ℝ[X]) :
+    ∀ (l : List ℝ[X]), (∀ p ∈ l, StrictInterl h p) →
+      (∀ p ∈ l, HasPosLeadingCoeff p) → l ≠ [] → SumCompatibleLeft h l
+  | [], _, _, hne => (hne rfl).elim
+  | p :: l, hinterl, hpos, _ => by
+      by_cases hl : l = []
+      · subst l
+        exact .singleton (hinterl p (by simp)) (hpos p (by simp))
+      · exact .cons (hinterl p (by simp)) (hpos p (by simp))
+          (sumCompatibleLeft_of_forall h l
+            (fun q hq => hinterl q (by simp [hq]))
+            (fun q hq => hpos q (by simp [hq])) hl)
+
+/-- Sign-normalized left-cone theorem: if all summands are interlaced on the
+left by the same nonzero real-rooted polynomial `h`, and the summands have
+positive leading coefficient, then their sum is interlaced on the left by `h`
+without needing to assume the sign of `h.leadingCoeff` in advance. -/
+theorem StrictInterl.sum_left_of_common_left_signed
+    (l : List ℝ[X]) (h : ℝ[X])
+    (hstrictInterl : ∀ p ∈ l, StrictInterl h p)
+    (hpoly_pos : ∀ p ∈ l, HasPosLeadingCoeff p)
+    (hne : l ≠ []) :
+    StrictInterl h l.sum := by
+  exact (sumCompatibleLeft_of_forall h l hstrictInterl hpoly_pos hne).toStrictInterl
+
+lemma sum_filter_ne_zero (l : List ℝ[X]) :
+    (l.filter (· ≠ 0)).sum = l.sum := by
   induction l with
-  | nil =>
-      obtain ⟨c, hc⟩ := exists_root_upper_bound h
-      exact ⟨c, hc, by simp⟩
-  | cons ap l ih =>
-      obtain ⟨c₁, hc₁, hl₁⟩ := ih
-      obtain ⟨c₂, hc₂⟩ := exists_root_upper_bound ap.2
-      refine ⟨max c₁ c₂, by simp_all, ?_⟩
-      intro ap' hap' r hr
-      grind
+  | nil => simp
+  | cons p l ih => grind
+
+/-- Sign-normalized weighted left cone: the common left polynomial need only
+be nonzero; its leading-coefficient sign is normalized internally. -/
+theorem StrictInterl.weightedSum_left_of_common_left_signed
+    (l : List (ℝ × ℝ[X])) (h : ℝ[X])
+    (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
+    (hstrictInterl : ∀ ap ∈ l, StrictInterl h ap.2)
+    (hpoly_pos : ∀ ap ∈ l, HasPosLeadingCoeff ap.2)
+    (hex : ∃ ap ∈ l, 0 < ap.1) :
+    StrictInterl h (weightedSum l) := by
+  classical
+  have hterm (ap : ℝ × ℝ[X]) (hap : ap ∈ l) (hne : C ap.1 * ap.2 ≠ 0) :
+      StrictInterl h (C ap.1 * ap.2) ∧ HasPosLeadingCoeff (C ap.1 * ap.2) := by
+    have ha : ap.1 ≠ 0 := fun ha => hne (by simp [ha])
+    exact ⟨(hstrictInterl ap hap).C_mul_right ha,
+      hasPosLeadingCoeff_C_mul (lt_of_le_of_ne (hnonneg ap hap) ha.symm)
+        (hpoly_pos ap hap)⟩
+  rw [weightedSum_eq_sum_map, ← sum_filter_ne_zero]
+  apply StrictInterl.sum_left_of_common_left_signed
+  · intro p hp
+    obtain ⟨hp, hne⟩ := List.mem_filter.mp hp
+    obtain ⟨ap, hap, rfl⟩ := List.mem_map.mp hp
+    exact (hterm ap hap (of_decide_eq_true hne)).1
+  · intro p hp
+    obtain ⟨hp, hne⟩ := List.mem_filter.mp hp
+    obtain ⟨ap, hap, rfl⟩ := List.mem_map.mp hp
+    exact (hterm ap hap (of_decide_eq_true hne)).2
+  · obtain ⟨ap, hap, ha⟩ := hex
+    have hne : C ap.1 * ap.2 ≠ 0 :=
+      mul_ne_zero (C_ne_zero.mpr ha.ne') (hstrictInterl ap hap).2.1.1
+    exact List.ne_nil_of_mem (List.mem_filter.mpr
+      ⟨List.mem_map.mpr ⟨ap, hap, rfl⟩, by simpa using hne⟩)
 
 /-- Borcea--Brändén left-cone lemma, weighted form:
 if every polynomial in the family is interlaced on the left by the same `h`,
@@ -56,69 +107,10 @@ theorem StrictInterl.weightedSum_left_of_common_left
     (hpoly_pos : ∀ ap ∈ l, HasPosLeadingCoeff ap.2)
     (hex : ∃ ap ∈ l, 0 < ap.1) :
     StrictInterl h (weightedSum l) := by
-  rcases hex with ⟨ap0, hap0, ha0_pos⟩
-  have hh : (h ≠ 0 ∧ h.Splits) := (hstrictInterl ap0 hap0).1
-  rcases exists_common_root_upper_bound h l with ⟨r, hh_le, hl_le⟩
-  let H := (X - C r) * h
-  have hstrictInterl_right : ∀ ap ∈ l, StrictInterl ap.2 H := by
-    intro ap hap
-    have hp := hstrictInterl ap hap
-    have hp_pos := hpoly_pos ap hap
-    have hp_le : ∀ s ∈ ap.2.roots, s ≤ r := hl_le ap hap
-    rcases hp.natDegree_eq_or_eq_succ with hdeg | hdeg
-    · exact hp.mul_X_sub_C_of_sameDegree_of_roots_le
-        r hdeg.symm hpos hp_pos hh_le hp_le
-    · exact (strictInterl_iff_strictInterl_mul_X_sub_C_of_roots_le r
-          hp.1.2 hp.2.1.2 hpos hp_pos hh_le hp_le hdeg.symm).mp hp
-  have hweighted_right : StrictInterl (weightedSum l) H :=
-    StrictInterl.weightedSum_right_of_nonneg
-      l H hnonneg hstrictInterl_right hpoly_pos ⟨ap0, hap0, ha0_pos⟩
-  have hweighted_pos : HasPosLeadingCoeff (weightedSum l) :=
-    hasPosLeadingCoeff_weightedSum l hnonneg hpoly_pos ⟨ap0, hap0, ha0_pos⟩
-  have hH_deg : H.natDegree = h.natDegree + 1 := by
-    rw [show H = (X - C r) * h by lia, natDegree_mul (X_sub_C_ne_zero r) hh.1, natDegree_X_sub_C]
-    lia
-  have hweighted_le : ∀ s ∈ (weightedSum l).roots, s ≤ r :=
-    hweighted_right.roots_le_of_right
-      (roots_le_X_sub_C_mul (hstrictInterl ap0 hap0).1.2 hh_le)
-  rcases hweighted_right.natDegree_eq_or_eq_succ with hcase | hcase
-  · have hdeg : h.natDegree + 1 = (weightedSum l).natDegree := by lia
-    exact
-      (strictInterl_iff_strictInterl_mul_X_sub_C_of_roots_le
-        r (hstrictInterl ap0 hap0).1.2 hweighted_right.1.2 hpos hweighted_pos
-        hh_le hweighted_le hdeg).mpr hweighted_right
-  · have hdeg : h.natDegree = (weightedSum l).natDegree := by lia
-    exact
-      hweighted_right.of_mul_X_sub_C_of_sameDegree_of_roots_le hdeg
-        hpos hweighted_pos hh_le hweighted_le
-
-/-- Sign-normalized weighted left cone: the common left polynomial need only
-be nonzero; its leading-coefficient sign is normalized internally. -/
-theorem StrictInterl.weightedSum_left_of_common_left_signed
-    (l : List (ℝ × ℝ[X])) (h : ℝ[X])
-    (hnonneg : ∀ ap ∈ l, 0 ≤ ap.1)
-    (hstrictInterl : ∀ ap ∈ l, StrictInterl h ap.2)
-    (hpoly_pos : ∀ ap ∈ l, HasPosLeadingCoeff ap.2)
-    (hex : ∃ ap ∈ l, 0 < ap.1) :
-    StrictInterl h (weightedSum l) := by
-  rcases hex with ⟨ap0, hap0, ha0_pos⟩
-  have hh : h ≠ 0 ∧ h.Splits := (hstrictInterl ap0 hap0).1
-  have hlc_ne : h.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hh.1
-  rcases lt_or_gt_of_ne hlc_ne with hneg | hpos
-  · let h' : ℝ[X] := C (-1 : ℝ) * h
-    have hstrictInterl' : ∀ ap ∈ l, StrictInterl h' ap.2 :=
-      fun ap hap => StrictInterl.C_mul_left (hstrictInterl ap hap) (by simp)
-    have h'_pos : HasPosLeadingCoeff h' := by
-      unfold h' HasPosLeadingCoeff
-      simp_all
-    have hsum' : StrictInterl h' (weightedSum l) :=
-      StrictInterl.weightedSum_left_of_common_left
-        l h' hnonneg hstrictInterl' h'_pos hpoly_pos ⟨ap0, hap0, ha0_pos⟩
-    have hback : StrictInterl (C (-1 : ℝ) * h') (weightedSum l) :=
-      StrictInterl.C_mul_left hsum' (by simp)
-    grind
-  · exact StrictInterl.weightedSum_left_of_common_left
-      l h hnonneg hstrictInterl hpos hpoly_pos ⟨ap0, hap0, ha0_pos⟩
+  -- Retain the stronger hypothesis in this compatibility wrapper.
+  have _ := hpos
+  exact StrictInterl.weightedSum_left_of_common_left_signed
+    l h hnonneg hstrictInterl hpoly_pos hex
 
 /-- Unweighted left-cone corollary. -/
 theorem StrictInterl.sum_left_of_common_left
@@ -136,30 +128,6 @@ theorem StrictInterl.sum_left_of_common_left
   · simp_all
   · obtain ⟨p, hp⟩ := List.exists_mem_of_ne_nil l hne
     exact ⟨(1, p), by simp [hp]⟩
-
-/-- Sign-normalized left-cone theorem: if all summands are interlaced on the
-left by the same nonzero real-rooted polynomial `h`, and the summands have
-positive leading coefficient, then their sum is interlaced on the left by `h`
-without needing to assume the sign of `h.leadingCoeff` in advance. -/
-theorem StrictInterl.sum_left_of_common_left_signed
-    (l : List ℝ[X]) (h : ℝ[X])
-    (hstrictInterl : ∀ p ∈ l, StrictInterl h p)
-    (hpoly_pos : ∀ p ∈ l, HasPosLeadingCoeff p)
-    (hne : l ≠ []) :
-    StrictInterl h l.sum := by
-  rw [← weightedSum_map_one l]
-  apply StrictInterl.weightedSum_left_of_common_left_signed
-  · simp
-  · simp_all
-  · simp_all
-  · obtain ⟨p, hp⟩ := List.exists_mem_of_ne_nil l hne
-    exact ⟨(1, p), by simp [hp]⟩
-
-lemma sum_filter_ne_zero (l : List ℝ[X]) :
-    (l.filter (· ≠ 0)).sum = l.sum := by
-  induction l with
-  | nil => simp
-  | cons p l ih => grind
 
 /-- Borcea--Brändén left-cone lemma in the nonnegative-coefficients
 specialization, zero-aware form on lists: if `h ≪₀ f_i` for every summand and

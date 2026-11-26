@@ -14,6 +14,7 @@ import RealRooted.WagnerX.AffineFactors
 import RealRooted.Derivative.Interlacing
 import RealRooted.Derivative.Algebra
 import RealRooted.Linear
+import RealRooted.SimpleRoots
 public import RealRooted.Basic.Coefficients
 public import RealRooted.Basic.ProperPosition
 import RealRooted.Basic.PolynomialFacts
@@ -479,36 +480,14 @@ theorem StrictInterl.sub_of_triple_of_posLeadingCoeff
     by_cases hgzero : g.natDegree = 0
     · exact StrictInterl.of_natDegree_eq_zero_left hg_pos.ne_zero hgzero
         hsub_pos.ne_zero (by lia)
-    · have hgdeg_pos : 0 < g.natDegree := Nat.pos_of_ne_zero hgzero
-      have hgder_pos : HasPosLeadingCoeff g.derivative :=
+    · have hgder_pos : HasPosLeadingCoeff g.derivative :=
         hg_pos.derivative hgzero
-      have hder_inter : Interlaces g.derivative g := by
-        rcases eq_or_lt_of_le (show 1 ≤ g.natDegree by lia) with hone | htwo
-        · have hbase := interlaces_one_linear (p := g) (by lia)
-          have hder_deg : g.derivative.natDegree = 0 := by
-            rw [g.natDegree_derivative]
-            lia
-          have hderC : g.derivative = C (g.derivative.coeff 0) :=
-            eq_C_of_natDegree_eq_zero hder_deg
-          have hc : g.derivative.coeff 0 ≠ 0 := by
-            intro hc
-            apply hgder_pos.ne_zero
-            rw [hderC, hc]
-            simp
-          rw [hderC]
-          exact interlaces_C_linear hc (by lia)
-        · exact derivative_interlaces_of_natDegree_ne_zero hfg.2.1.2 (by lia)
+      have hder_inter : Interlaces g.derivative g :=
+        derivative_interlaces_of_natDegree_ne_zero hfg.2.1.2 hgzero
       have hno : ∀ r, g.IsRoot r → ¬g.derivative.IsRoot r := by
         intro r hgr hgdr
-        have hmult : 2 ≤ g.rootMultiplicity r := by
-          have hpos := (rootMultiplicity_pos hfg.2.1.1).mpr hgr
-          by_contra hlt
-          have hone : g.rootMultiplicity r = 1 := by lia
-          exact (eval_derivative_ne_zero_of_rootMultiplicity_eq_one hgr hone)
-            (Polynomial.IsRoot.def.mp hgdr)
-        have hcount_le := Multiset.nodup_iff_count_le_one.mp hg_nodup r
-        rw [count_roots] at hcount_le
-        lia
+        exact (HasSimpleRoots.of_roots_nodup hfg.2.1.1 hg_nodup).eval_derivative_ne_zero
+          hgr (Polynomial.IsRoot.def.mp hgdr)
       have hroot_sign : ∀ r, g.IsRoot r →
           (h - f).eval r * g.derivative.eval r ≤ 0 := by
         intro r hgr

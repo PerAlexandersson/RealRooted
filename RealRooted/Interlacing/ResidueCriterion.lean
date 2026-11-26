@@ -1,6 +1,7 @@
 module
 
 import RealRooted.Interlacing.Residue
+import RealRooted.Mathlib.Algebra.Polynomial.Derivative
 public import RealRooted.Interlacing.OuterDifference
 public import RealRooted.MaWang.StrictSigns
 public import RealRooted.SimpleRoots
@@ -135,53 +136,26 @@ theorem residueAuxiliary_degree_lt
     {f g : ℝ[X]} (hfdeg : 1 ≤ f.natDegree)
     (hgdeg : g.degree < f.natDegree) (a m : ℝ) :
     (residueAuxiliary a m f g).degree < f.natDegree := by
-  rw [Polynomial.degree_lt_iff_coeff_zero]
-  intro j hj
-  rw [residueAuxiliary, coeff_sub, coeff_add, coeff_C_mul]
-  have hrewrite :
-      (C a - X) * f.derivative =
-        C a * f.derivative - X * f.derivative := by ring
-  rw [hrewrite, coeff_sub, coeff_C_mul]
-  rcases eq_or_lt_of_le hj with rfl | hj
-  · have hdertop : f.derivative.coeff f.natDegree = 0 := by
-      apply coeff_eq_zero_of_natDegree_lt
-      rw [f.natDegree_derivative]
-      lia
-    have hindex : f.natDegree - 1 + 1 = f.natDegree := by lia
-    have hcast : ((f.natDegree - 1 : ℕ) : ℝ) + 1 = f.natDegree := by
-      exact_mod_cast hindex
-    have hXder :
-        (X * f.derivative).coeff f.natDegree =
-          f.derivative.coeff (f.natDegree - 1) := by
-      conv_lhs => rw [← hindex]
-      rw [coeff_X_mul]
-    have hdercoeff :
-        f.derivative.coeff (f.natDegree - 1) =
-          (f.natDegree : ℝ) * f.leadingCoeff := by
-      rw [coeff_derivative, hindex, show f.coeff f.natDegree =
-        f.leadingCoeff by rfl, hcast]
+  have hpolar : (C (f.natDegree : ℝ) * f +
+      (C a - X) * f.derivative).natDegree ≤ f.natDegree - 1 := by
+    rw [natDegree_le_iff_coeff_eq_zero]
+    intro j hj
+    have heq : (C a - X : ℝ[X]) = C a + C (-1) * X := by simp [sub_eq_add_neg]
+    rw [heq, coeff_C_mul_add_affine_mul_derivative]
+    rcases eq_or_lt_of_le (show f.natDegree ≤ j by lia) with rfl | hj
+    · simp [coeff_eq_zero_of_natDegree_lt (Nat.lt_succ_self _)]
+    · rw [coeff_eq_zero_of_natDegree_lt hj,
+        coeff_eq_zero_of_natDegree_lt (hj.trans (Nat.lt_succ_self _))]
       ring
-    have hgzero : g.coeff f.natDegree = 0 :=
-      coeff_eq_zero_of_degree_lt hgdeg
-    rw [hdertop, hXder, hdercoeff, coeff_C_mul, hgzero]
-    change (f.natDegree : ℝ) * f.leadingCoeff +
-      (a * 0 - (f.natDegree : ℝ) * f.leadingCoeff) - m * 0 = 0
-    ring
-  · have hfzero : f.coeff j = 0 := coeff_eq_zero_of_natDegree_lt hj
-    have hderzero : f.derivative.coeff j = 0 := by
-      apply coeff_eq_zero_of_natDegree_lt
-      rw [f.natDegree_derivative]
-      lia
-    have hXderzero : (X * f.derivative).coeff j = 0 := by
-      obtain ⟨i, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (by lia : j ≠ 0)
-      rw [coeff_X_mul]
-      apply coeff_eq_zero_of_natDegree_lt
-      rw [f.natDegree_derivative]
-      lia
-    have hgzero : g.coeff j = 0 :=
-      coeff_eq_zero_of_degree_lt (hgdeg.trans_le (by exact_mod_cast hj.le))
-    rw [hfzero, hderzero, hXderzero, coeff_C_mul, hgzero]
-    ring
+  have hpolar_lt : ((f.natDegree - 1 : ℕ) : WithBot ℕ) < f.natDegree := by
+    exact_mod_cast Nat.sub_lt hfdeg (by decide : 0 < 1)
+  rw [residueAuxiliary, sub_eq_add_neg, ← neg_mul]
+  refine (degree_add_le _ _).trans_lt (max_lt ?_ ?_)
+  · exact (degree_le_natDegree.trans (by exact_mod_cast hpolar)).trans_lt hpolar_lt
+  · by_cases hm : m = 0
+    · simp [hm]
+    · rw [degree_mul, degree_neg, degree_C hm, zero_add]
+      exact hgdeg
 
 /-- A positive-point evaluation gap forces the residue auxiliary to have the
 same sign as `f'` at every root of `f`. -/
