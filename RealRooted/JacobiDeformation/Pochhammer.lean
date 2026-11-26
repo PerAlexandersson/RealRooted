@@ -2,6 +2,7 @@ module
 
 public import Mathlib.RingTheory.Polynomial.Pochhammer
 public import Mathlib.Tactic
+import Mathlib.RingTheory.Binomial
 
 /-!
 # Real rising and falling factorials
@@ -158,54 +159,6 @@ theorem risingFactorial_sub_mul_descPochhammer (δ : ℝ) {m j : ℕ} (hjm : j �
 
 /-! ## Chu--Vandermonde -/
 
-/-- Chu–Vandermonde convolution for risingFactorial factorials. -/
-theorem risingFactorial_add_eq_sum_range (x y : ℝ) (n : ℕ) :
-    risingFactorial (x + y) n = ∑ k ∈ Finset.range (n + 1),
-      (n.choose k : ℝ) * (risingFactorial x k * risingFactorial y (n - k)) := by
-  induction n with
-  | zero => simp
-  | succ n ih =>
-    rw [risingFactorial_succ, ih]
-    have step1 :
-        (∑ k ∈ Finset.range (n + 1),
-            (n.choose k : ℝ) * (risingFactorial x k * risingFactorial y (n - k))) *
-            (x + y + (n : ℝ)) =
-          (∑ k ∈ Finset.range (n + 1),
-            (n.choose k : ℝ) * (risingFactorial x (k + 1) * risingFactorial y (n - k))) +
-          ∑ k ∈ Finset.range (n + 1),
-            (n.choose k : ℝ) * (risingFactorial x k * risingFactorial y (n + 1 - k)) := by
-      rw [Finset.sum_mul, ← Finset.sum_add_distrib]
-      refine Finset.sum_congr rfl fun k hk => ?_
-      simp only [Finset.mem_range, Nat.lt_succ_iff] at hk
-      have hnk : n + 1 - k = (n - k) + 1 := by lia
-      have hcast : ((n - k : ℕ) : ℝ) = (n : ℝ) - (k : ℝ) := by
-        push_cast [Nat.cast_sub hk]; ring
-      rw [hnk, risingFactorial_succ, risingFactorial_succ, hcast]
-      ring
-    rw [step1]
-    have hA' :
-        ∑ k ∈ Finset.range (n + 1),
-          (n.choose (k + 1) : ℝ) * (risingFactorial x (k + 1) * risingFactorial y (n - k)) =
-        ∑ k ∈ Finset.range n,
-          (n.choose (k + 1) : ℝ) * (risingFactorial x (k + 1) * risingFactorial y (n - k)) := by
-      rw [Finset.sum_range_succ]
-      simp
-    have hB :
-        ∑ k ∈ Finset.range (n + 1),
-          (n.choose k : ℝ) * (risingFactorial x k * risingFactorial y (n + 1 - k)) =
-        (∑ k ∈ Finset.range n,
-          (n.choose (k + 1) : ℝ) * (risingFactorial x (k + 1) * risingFactorial y (n - k)))
-          + risingFactorial y (n + 1) := by
-      rw [Finset.sum_range_succ']
-      simp
-    rw [hB, ← hA', Finset.sum_range_succ'
-      (fun k => ((n + 1).choose k : ℝ) * (risingFactorial x k * risingFactorial y (n + 1 -
-          k))) (n + 1)]
-    simp only [Nat.choose_succ_succ, Nat.succ_sub_succ, Nat.cast_add, add_mul,
-      Finset.sum_add_distrib, Nat.choose_zero_right, Nat.cast_one, one_mul, risingFactorial_zero,
-      Nat.succ_eq_add_one, Nat.sub_zero]
-    ring
-
 /-- Vandermonde's identity for fallingFactorial factorials:
 `∑_{i=0}^{j} C(j,i) * fallingFactorial u i * fallingFactorial v (j-i) = fallingFactorial (u+v) j`.
 -/
@@ -213,23 +166,34 @@ theorem sum_range_choose_mul_fallingFactorial_mul_fallingFactorial (u v : ℝ) (
     ∑ i ∈ Finset.range (j + 1),
         (j.choose i : ℝ) * fallingFactorial u i * fallingFactorial v (j - i)
       = fallingFactorial (u + v) j := by
-  have htarget : fallingFactorial (u + v) j =
-      (-1 : ℝ) ^ j * risingFactorial (-(u + v)) j := by
-    simpa only [neg_neg] using (neg_one_pow_mul_risingFactorial (-(u + v)) j).symm
-  rw [htarget, show -(u + v) = -u + -v by ring,
-    risingFactorial_add_eq_sum_range, Finset.mul_sum]
-  refine Finset.sum_congr rfl fun i hi => ?_
-  have hij : i ≤ j := by simpa only [Finset.mem_range, Nat.lt_succ_iff] using hi
-  have hu : fallingFactorial u i = (-1 : ℝ) ^ i * risingFactorial (-u) i := by
-    simpa only [neg_neg] using (neg_one_pow_mul_risingFactorial (-u) i).symm
-  have hv : fallingFactorial v (j - i) =
-      (-1 : ℝ) ^ (j - i) * risingFactorial (-v) (j - i) := by
-    simpa only [neg_neg] using (neg_one_pow_mul_risingFactorial (-v) (j - i)).symm
-  rw [hu, hv]
-  have hpow : (-1 : ℝ) ^ i * (-1) ^ (j - i) = (-1) ^ j := by
-    rw [← pow_add, Nat.add_sub_of_le hij]
-  linear_combination
-    (j.choose i : ℝ) * risingFactorial (-u) i * risingFactorial (-v) (j - i) * hpow
+  have h := Ring.descPochhammer_smeval_add j (Commute.all u v)
+  simp only [descPochhammer_smeval_eq_ascPochhammer, ascPochhammer_smeval_eq_eval,
+    ← descPochhammer_eval_eq_ascPochhammer,
+    Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk] at h
+  simpa only [fallingFactorial, mul_assoc] using h.symm
+
+/-- Chu–Vandermonde convolution for risingFactorial factorials. -/
+theorem risingFactorial_add_eq_sum_range (x y : ℝ) (n : ℕ) :
+    risingFactorial (x + y) n = ∑ k ∈ Finset.range (n + 1),
+      (n.choose k : ℝ) * (risingFactorial x k * risingFactorial y (n - k)) := by
+  have h := sum_range_choose_mul_fallingFactorial_mul_fallingFactorial (-x) (-y) n
+  simp only [← neg_one_pow_mul_risingFactorial, ← neg_add] at h
+  have hsum :
+      (∑ k ∈ range (n + 1), (n.choose k : ℝ) *
+        ((-1 : ℝ) ^ k * risingFactorial x k) *
+          ((-1 : ℝ) ^ (n - k) * risingFactorial y (n - k))) =
+      (-1 : ℝ) ^ n * ∑ k ∈ range (n + 1),
+        (n.choose k : ℝ) * (risingFactorial x k * risingFactorial y (n - k)) := by
+    rw [Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro k hk
+    have hkn : k ≤ n := Finset.mem_range_succ_iff.mp hk
+    have hpow : (-1 : ℝ) ^ n = (-1) ^ k * (-1) ^ (n - k) := by
+      rw [← pow_add, Nat.add_sub_of_le hkn]
+    rw [hpow]
+    ring
+  rw [hsum] at h
+  exact (mul_left_cancel₀ (pow_ne_zero n (by norm_num)) h).symm
 
 /-- The general terminating Chu–Vandermonde sum, with denominators cleared:
 `∑_{i=0}^{j} (-1)^i C(j,i) risingFactorial a i * risingFactorial (b+i) (j-i) =

@@ -67,33 +67,6 @@ theorem cast_descFactorial_eq_prod (N i : ℕ) :
       · rw [Nat.cast_sub h]; ring
       · rw [Nat.descFactorial_eq_zero_iff_lt.mpr h]; simp
 
-/-- One step: if the rows `P (n + j)`, `j < k`, have degree at most `D₀ + d * (n + j)`,
-then so does the right side at `D₀ + d * (n + k)`, with top coefficient
-`∑ₜ topCoeff t * (P (n + jₜ)).coeff (D₀ + d * (n + jₜ))`. -/
-theorem rhs_step {k d D₀ : ℕ} {P : ℕ → ℝ[X]} (n : ℕ) :
-    ∀ terms : List (ℕ × ℕ × (ℕ → ℝ[X])), (∀ t ∈ terms, t.1 < k) →
-      (∀ t ∈ terms, (t.2.2 n).natDegree ≤ d * (k - t.1) + t.2.1) →
-      (∀ j < k, (P (n + j)).natDegree ≤ D₀ + d * (n + j)) →
-      (rhs terms P n).natDegree ≤ D₀ + d * (n + k) ∧
-        (rhs terms P n).coeff (D₀ + d * (n + k)) =
-          (terms.map fun t =>
-            topCoeff k d D₀ n t * (P (n + t.1)).coeff (D₀ + d * (n + t.1))).sum
-  | [], _, _, _ => by simp [rhs]
-  | t :: ts, hlag, hA, hP => by
-      have hj := hlag t (by simp)
-      have hN : D₀ + d * (n + t.1) + d * (k - t.1) = D₀ + d * (n + k) := by
-        rw [add_assoc, ← mul_add, show n + t.1 + (k - t.1) = n + k by lia]
-      have ih := rhs_step n ts (fun s hs => hlag s (by simp [hs]))
-        (fun s hs => hA s (by simp [hs])) hP
-      have h1 := natDegree_mul_iterate_derivative_le (d := d * (k - t.1)) (j := t.2.1)
-        (hA t (by simp)) (hP t.1 hj)
-      have h2 := coeff_mul_iterate_derivative_of_natDegree_le (d := d * (k - t.1)) (j := t.2.1)
-        (hA t (by simp)) (hP t.1 hj)
-      rw [hN] at h1 h2
-      simp only [rhs, List.map_cons, List.sum_cons] at ih ⊢
-      refine ⟨natDegree_add_le_of_degree_le h1 ih.1, ?_⟩
-      rw [coeff_add, h2, ih.2, topCoeff, cast_descFactorial_eq_prod]
-
 /-- Regroup a sum over the summands by their lags `j < k`. -/
 private theorem sum_map_eq_sum_lag {k : ℕ} (f : ℕ × ℕ × (ℕ → ℝ[X]) → ℝ)
     (g : ℕ → ℝ) :
@@ -111,86 +84,6 @@ private theorem sum_map_eq_sum_lag {k : ℕ} (f : ℕ × ℕ × (ℕ → ℝ[X])
       · simp [add_mul]
       · refine Finset.sum_congr rfl fun j hj' => ?_
         simp [Ne.symm (Finset.ne_of_mem_erase hj')]
-
-/-- Rows of `P (n + k) = ∑ₜ Aₜ n * D^[iₜ] (P (n + jₜ))` have degree `D₀ + d * n` and
-positive leading coefficients, when the summands have degree at most
-`D₀ + d * (n + k)`, the first `k` rows have positive coefficients at `D₀ + d * j`, and
-the lag multipliers `lagMult` are nonnegative with a positive sum. -/
-theorem natDegree_eq_and_leadingCoeff_pos {k d D₀ : ℕ} {P : ℕ → ℝ[X]}
-    {terms : List (ℕ × ℕ × (ℕ → ℝ[X]))}
-    (hrec : ∀ n, P (n + k) = rhs terms P n) (hlag : ∀ t ∈ terms, t.1 < k)
-    (hA : ∀ t ∈ terms, ∀ n, (t.2.2 n).natDegree ≤ d * (k - t.1) + t.2.1)
-    (hbase : ∀ j < k, (P j).natDegree ≤ D₀ + d * j ∧ 0 < (P j).coeff (D₀ + d * j))
-    (hmult : ∀ n, ∀ j < k, 0 ≤ lagMult k d D₀ terms n j)
-    (hpos : ∀ n, 0 < (terms.map (topCoeff k d D₀ n)).sum) (n : ℕ) :
-    (P n).natDegree = D₀ + d * n ∧ 0 < (P n).leadingCoeff := by
-  have key : ∀ m, (P m).natDegree ≤ D₀ + d * m ∧ 0 < (P m).coeff (D₀ + d * m) := by
-    intro m
-    induction m using Nat.strong_induction_on with
-    | _ m ih =>
-      rcases lt_or_ge m k with hm | hm
-      · exact hbase m hm
-      obtain ⟨n, rfl⟩ : ∃ n, m = n + k := ⟨m - k, by lia⟩
-      have hP : ∀ j < k, (P (n + j)).natDegree ≤ D₀ + d * (n + j) :=
-        fun j hj => (ih (n + j) (by lia)).1
-      have hstep := rhs_step (D₀ := D₀) n terms hlag (fun t ht => hA t ht n) hP
-      rw [hrec n]
-      refine ⟨hstep.1, ?_⟩
-      rw [hstep.2, sum_map_eq_sum_lag _ (fun j => (P (n + j)).coeff (D₀ + d * (n + j))) terms
-        hlag]
-      have htot : ∑ j ∈ Finset.range k, lagMult k d D₀ terms n j =
-          (terms.map (topCoeff k d D₀ n)).sum := by
-        have h := sum_map_eq_sum_lag (topCoeff k d D₀ n) (fun _ => 1) terms hlag
-        simp only [mul_one] at h
-        exact h.symm
-      have hc : ∀ j ∈ Finset.range k, 0 < (P (n + j)).coeff (D₀ + d * (n + j)) :=
-        fun j hj => (ih (n + j) (by have := Finset.mem_range.mp hj; lia)).2
-      have hsum : 0 < ∑ j ∈ Finset.range k, lagMult k d D₀ terms n j := by
-        simpa only [htot] using hpos n
-      obtain ⟨j, hj, hjpos⟩ := (Finset.sum_pos_iff_of_nonneg fun j hj =>
-        hmult n j (Finset.mem_range.mp hj)).mp hsum
-      exact Finset.sum_pos'
-        (fun j hj => mul_nonneg (hmult n j (Finset.mem_range.mp hj)) (hc j hj).le)
-        ⟨j, hj, mul_pos hjpos (hc j hj)⟩
-  have h := key n
-  have hdeg : (P n).natDegree = D₀ + d * n :=
-    natDegree_eq_of_le_of_coeff_ne_zero h.1 h.2.ne'
-  exact ⟨hdeg, by simpa only [leadingCoeff, hdeg] using h.2⟩
-
-/-- Rows of `P (n + k) = ∑ₜ Aₜ n * D^[iₜ] (P (n + jₜ))` have degree `D₀ + d * n` and
-leading coefficient `c n`, when the summands have degree at most `D₀ + d * (n + k)`, the
-first `k` rows have coefficient `c j` at `D₀ + d * j`, the sequence `c` never vanishes
-and solves the scalar recurrence of the top coefficients.  This covers multipliers of
-either sign, such as `c n = c₀ * ρ ^ n`. -/
-theorem natDegree_eq_and_leadingCoeff_eq {k d D₀ : ℕ} {P : ℕ → ℝ[X]}
-    {terms : List (ℕ × ℕ × (ℕ → ℝ[X]))} {c : ℕ → ℝ}
-    (hrec : ∀ n, P (n + k) = rhs terms P n) (hlag : ∀ t ∈ terms, t.1 < k)
-    (hA : ∀ t ∈ terms, ∀ n, (t.2.2 n).natDegree ≤ d * (k - t.1) + t.2.1)
-    (hbase : ∀ j < k, (P j).natDegree ≤ D₀ + d * j ∧ (P j).coeff (D₀ + d * j) = c j)
-    (hc : ∀ n, c (n + k) = ∑ j ∈ Finset.range k, lagMult k d D₀ terms n j * c (n + j))
-    (hc0 : ∀ n, c n ≠ 0) (n : ℕ) :
-    (P n).natDegree = D₀ + d * n ∧ (P n).leadingCoeff = c n := by
-  have key : ∀ m, (P m).natDegree ≤ D₀ + d * m ∧ (P m).coeff (D₀ + d * m) = c m := by
-    intro m
-    induction m using Nat.strong_induction_on with
-    | _ m ih =>
-      rcases lt_or_ge m k with hm | hm
-      · exact hbase m hm
-      obtain ⟨n, rfl⟩ : ∃ n, m = n + k := ⟨m - k, by lia⟩
-      have hP : ∀ j < k, (P (n + j)).natDegree ≤ D₀ + d * (n + j) :=
-        fun j hj => (ih (n + j) (by lia)).1
-      have hstep := rhs_step (D₀ := D₀) n terms hlag (fun t ht => hA t ht n) hP
-      rw [hrec n]
-      refine ⟨hstep.1, ?_⟩
-      rw [hstep.2, sum_map_eq_sum_lag _ (fun j => (P (n + j)).coeff (D₀ + d * (n + j))) terms
-        hlag, hc n]
-      refine Finset.sum_congr rfl fun j hj => ?_
-      rw [(ih (n + j) (by have := Finset.mem_range.mp hj; lia)).2]
-      rfl
-  have h := key n
-  have hdeg : (P n).natDegree = D₀ + d * n :=
-    natDegree_eq_of_le_of_coeff_ne_zero h.1 (h.2 ▸ hc0 n)
-  exact ⟨hdeg, by rw [leadingCoeff, hdeg, h.2]⟩
 
 end RealRooted.LinRec
 
@@ -331,22 +224,19 @@ example (c : ℕ → ℝ) (h : ∀ n, c (n + 2) = c (n + 1) + c n)
 end RealRooted.ScalarRec
 
 /-!
-## Degrees of general linear recurrences with an arbitrary degree law
+## General degree laws and their linear specializations
 
-`RealRooted.LinRec.natDegree_eq_and_leadingCoeff_pos` and
-`RealRooted.LinRec.natDegree_eq_and_leadingCoeff_eq` treat the linear degree law
-`D n = D₀ + d * n`.  Here the degree law is an arbitrary function `D : ℕ → ℕ` that is
-monotone along each window `D (n + j) ≤ D (n + k)`, `j < k`.  Periodic laws such as
-`D n = D₀ + d * ((n + e) / p)` are the main application; the arithmetic of
-`D (p * q + r + j)` is reduced to numerals by one residue decomposition.
+We first prove degree and leading-coefficient propagation for an arbitrary degree law
+`D : ℕ → ℕ` that is monotone along each window `D (n + j) ≤ D (n + k)`, `j < k`.
+The linear law `D n = D₀ + d * n` is then a specialization, using `lagMultD_linear`.
+Periodic laws such as `D n = D₀ + d * ((n + e) / p)` are another application; the
+arithmetic of `D (p * q + r + j)` is reduced to numerals by one residue decomposition.
 
 The summand `t = (j, i, A)` of the recurrence
 `P (n + k) = ∑ₜ Aₜ n * D^[iₜ] (P (n + jₜ))` contributes to the top coefficient at
 `D (n + k)` the coefficient of `A n` at `D (n + k) - D (n + j) + i`, times the falling
 factorial of the degree `D (n + j)` of the row it differentiates.
 -/
-
-open Polynomial
 
 namespace RealRooted.LinRec
 
@@ -364,32 +254,33 @@ noncomputable def lagMultD (k : ℕ) (D : ℕ → ℕ)
     (terms : List (ℕ × ℕ × (ℕ → ℝ[X]))) (n j : ℕ) : ℝ :=
   ((terms.filter fun t => t.1 = j).map (topCoeffD k D n)).sum
 
-/-- One step for a degree law: if the rows `P (n + j)`, `j < k`, have degree at most
-`D (n + j)`, then the right side has degree at most `D (n + k)`, with top coefficient
-`∑ₜ topCoeffD t * (P (n + jₜ)).coeff (D (n + jₜ))`. -/
-private theorem rhs_stepD {k : ℕ} {D : ℕ → ℕ} {P : ℕ → ℝ[X]} (n : ℕ)
-    (hD : ∀ j, j < k → D (n + j) ≤ D (n + k)) :
+/-- One step with an arbitrary output bound `N`: degree propagation and the
+coefficient at `N` follow from the bounds on the predecessor rows and summands. -/
+private theorem rhs_stepD {k : ℕ} {D : ℕ → ℕ} {P : ℕ → ℝ[X]} {N : ℕ} (n : ℕ)
+    (hD : ∀ j, j < k → D (n + j) ≤ N) :
     ∀ terms : List (ℕ × ℕ × (ℕ → ℝ[X])), (∀ t ∈ terms, t.1 < k) →
-      (∀ t ∈ terms, (t.2.2 n).natDegree ≤ D (n + k) - D (n + t.1) + t.2.1) →
+      (∀ t ∈ terms, (t.2.2 n).natDegree ≤ N - D (n + t.1) + t.2.1) →
       (∀ j < k, (P (n + j)).natDegree ≤ D (n + j)) →
-      (rhs terms P n).natDegree ≤ D (n + k) ∧
-        (rhs terms P n).coeff (D (n + k)) =
-          (terms.map fun t => topCoeffD k D n t * (P (n + t.1)).coeff (D (n + t.1))).sum
+      (rhs terms P n).natDegree ≤ N ∧
+        (rhs terms P n).coeff N =
+          (terms.map fun t => ((t.2.2 n).coeff (N - D (n + t.1) + t.2.1) *
+            ((D (n + t.1)).descFactorial t.2.1 : ℝ)) *
+              (P (n + t.1)).coeff (D (n + t.1))).sum
   | [], _, _, _ => by simp [rhs]
   | t :: ts, hlag, hA, hP => by
       have hj := hlag t (by simp)
-      have hN : D (n + t.1) + (D (n + k) - D (n + t.1)) = D (n + k) :=
+      have hN : D (n + t.1) + (N - D (n + t.1)) = N :=
         Nat.add_sub_cancel' (hD t.1 hj)
       have ih := rhs_stepD n hD ts (fun s hs => hlag s (by simp [hs]))
         (fun s hs => hA s (by simp [hs])) hP
-      have h1 := natDegree_mul_iterate_derivative_le (d := D (n + k) - D (n + t.1))
+      have h1 := natDegree_mul_iterate_derivative_le (d := N - D (n + t.1))
         (j := t.2.1) (hA t (by simp)) (hP t.1 hj)
       have h2 := coeff_mul_iterate_derivative_of_natDegree_le
-        (d := D (n + k) - D (n + t.1)) (j := t.2.1) (hA t (by simp)) (hP t.1 hj)
+        (d := N - D (n + t.1)) (j := t.2.1) (hA t (by simp)) (hP t.1 hj)
       rw [hN] at h1 h2
       simp only [rhs, List.map_cons, List.sum_cons] at ih ⊢
       refine ⟨natDegree_add_le_of_degree_le h1 ih.1, ?_⟩
-      rw [coeff_add, h2, ih.2, topCoeffD]
+      rw [coeff_add, h2, ih.2]
 
 /-- Degree bounds for every row and the scalar recurrence of the top coefficients, for an
 arbitrary degree law `D`. -/
@@ -445,21 +336,8 @@ theorem natDegree_eq_and_leadingCoeff_pos_of_degreeLaw {k : ℕ} {D : ℕ → �
     (hpos : ∀ n, 0 < ∑ j ∈ Finset.range k, lagMultD k D terms n j) (n : ℕ) :
     (P n).natDegree = D n ∧ 0 < (P n).leadingCoeff := by
   obtain ⟨hle, hcoef⟩ := natDegree_le_and_coeff_rec hrec hlag hD hA fun j hj => (hbase j hj).1
-  have key : ∀ m, 0 < (P m).coeff (D m) := by
-    intro m
-    induction m using Nat.strong_induction_on with
-    | _ m ih =>
-      rcases lt_or_ge m k with hm | hm
-      · exact (hbase m hm).2
-      obtain ⟨n, rfl⟩ : ∃ n, m = n + k := ⟨m - k, by lia⟩
-      rw [hcoef n]
-      have hc : ∀ j ∈ Finset.range k, 0 < (P (n + j)).coeff (D (n + j)) :=
-        fun j hj => ih (n + j) (by have := Finset.mem_range.mp hj; lia)
-      obtain ⟨j, hj, hjpos⟩ := (Finset.sum_pos_iff_of_nonneg fun j hj =>
-        hmult n j (Finset.mem_range.mp hj)).mp (hpos n)
-      exact Finset.sum_pos'
-        (fun j hj => mul_nonneg (hmult n j (Finset.mem_range.mp hj)) (hc j hj).le)
-        ⟨j, hj, mul_pos hjpos (hc j hj)⟩
+  have key : ∀ m, 0 < (P m).coeff (D m) :=
+    ScalarRec.pos_of_nonneg hcoef (fun j hj => (hbase j hj).2) hmult hpos
   have hdeg : (P n).natDegree = D n :=
     natDegree_eq_of_le_of_coeff_ne_zero (hle n) (key n).ne'
   exact ⟨hdeg, by simpa only [leadingCoeff, hdeg] using key n⟩
@@ -503,6 +381,71 @@ theorem lagMultD_linear (k d D₀ : ℕ) (terms : List (ℕ × ℕ × (ℕ → �
     rw [topCoeffD, topCoeff, hsub, cast_descFactorial_eq_prod]
   unfold lagMultD lagMult
   exact congrArg List.sum (List.map_congr_left fun t _ => h t)
+
+/-- One step: if the rows `P (n + j)`, `j < k`, have degree at most `D₀ + d * (n + j)`,
+then so does the right side at `D₀ + d * (n + k)`, with top coefficient
+`∑ₜ topCoeff t * (P (n + jₜ)).coeff (D₀ + d * (n + jₜ))`. -/
+theorem rhs_step {k d D₀ : ℕ} {P : ℕ → ℝ[X]} (n : ℕ) :
+    ∀ terms : List (ℕ × ℕ × (ℕ → ℝ[X])), (∀ t ∈ terms, t.1 < k) →
+      (∀ t ∈ terms, (t.2.2 n).natDegree ≤ d * (k - t.1) + t.2.1) →
+      (∀ j < k, (P (n + j)).natDegree ≤ D₀ + d * (n + j)) →
+      (rhs terms P n).natDegree ≤ D₀ + d * (n + k) ∧
+        (rhs terms P n).coeff (D₀ + d * (n + k)) =
+          (terms.map fun t =>
+            topCoeff k d D₀ n t * (P (n + t.1)).coeff (D₀ + d * (n + t.1))).sum := by
+  intro terms hlag hA hP
+  have hsub (j : ℕ) :
+      D₀ + d * (n + k) - (D₀ + d * (n + j)) = d * (k - j) := by
+    rw [Nat.add_sub_add_left, ← Nat.mul_sub, Nat.add_sub_add_left]
+  have hstep := rhs_stepD (N := D₀ + d * (n + k)) (D := fun n => D₀ + d * n) n
+    (fun j hj => Nat.add_le_add_left (Nat.mul_le_mul_left d (by lia)) D₀) terms hlag
+    (by simpa only [hsub] using hA) hP
+  simpa only [hsub, topCoeff, cast_descFactorial_eq_prod] using hstep
+
+/-- Rows of `P (n + k) = ∑ₜ Aₜ n * D^[iₜ] (P (n + jₜ))` have degree `D₀ + d * n` and
+positive leading coefficients, when the summands have degree at most
+`D₀ + d * (n + k)`, the first `k` rows have positive coefficients at `D₀ + d * j`, and
+the lag multipliers `lagMult` are nonnegative with a positive sum. -/
+theorem natDegree_eq_and_leadingCoeff_pos {k d D₀ : ℕ} {P : ℕ → ℝ[X]}
+    {terms : List (ℕ × ℕ × (ℕ → ℝ[X]))}
+    (hrec : ∀ n, P (n + k) = rhs terms P n) (hlag : ∀ t ∈ terms, t.1 < k)
+    (hA : ∀ t ∈ terms, ∀ n, (t.2.2 n).natDegree ≤ d * (k - t.1) + t.2.1)
+    (hbase : ∀ j < k, (P j).natDegree ≤ D₀ + d * j ∧ 0 < (P j).coeff (D₀ + d * j))
+    (hmult : ∀ n, ∀ j < k, 0 ≤ lagMult k d D₀ terms n j)
+    (hpos : ∀ n, 0 < (terms.map (topCoeff k d D₀ n)).sum) (n : ℕ) :
+    (P n).natDegree = D₀ + d * n ∧ 0 < (P n).leadingCoeff := by
+  have hsub (n j : ℕ) :
+      D₀ + d * (n + k) - (D₀ + d * (n + j)) = d * (k - j) := by
+    rw [Nat.add_sub_add_left, ← Nat.mul_sub, Nat.add_sub_add_left]
+  refine natDegree_eq_and_leadingCoeff_pos_of_degreeLaw (D := fun n => D₀ + d * n)
+    hrec hlag (fun n j hj => Nat.add_le_add_left (Nat.mul_le_mul_left d (by lia)) D₀)
+    (by simpa only [hsub] using hA) hbase ?_ ?_ n
+  · simpa only [lagMultD_linear] using hmult
+  · intro n
+    have h := sum_map_eq_sum_lag (topCoeff k d D₀ n) (fun _ => 1) terms hlag
+    simp only [mul_one] at h
+    simpa only [lagMultD_linear, lagMult, ← h] using hpos n
+
+/-- Rows of `P (n + k) = ∑ₜ Aₜ n * D^[iₜ] (P (n + jₜ))` have degree `D₀ + d * n` and
+leading coefficient `c n`, when the summands have degree at most `D₀ + d * (n + k)`, the
+first `k` rows have coefficient `c j` at `D₀ + d * j`, the sequence `c` never vanishes
+and solves the scalar recurrence of the top coefficients.  This covers multipliers of
+either sign, such as `c n = c₀ * ρ ^ n`. -/
+theorem natDegree_eq_and_leadingCoeff_eq {k d D₀ : ℕ} {P : ℕ → ℝ[X]}
+    {terms : List (ℕ × ℕ × (ℕ → ℝ[X]))} {c : ℕ → ℝ}
+    (hrec : ∀ n, P (n + k) = rhs terms P n) (hlag : ∀ t ∈ terms, t.1 < k)
+    (hA : ∀ t ∈ terms, ∀ n, (t.2.2 n).natDegree ≤ d * (k - t.1) + t.2.1)
+    (hbase : ∀ j < k, (P j).natDegree ≤ D₀ + d * j ∧ (P j).coeff (D₀ + d * j) = c j)
+    (hc : ∀ n, c (n + k) = ∑ j ∈ Finset.range k, lagMult k d D₀ terms n j * c (n + j))
+    (hc0 : ∀ n, c n ≠ 0) (n : ℕ) :
+    (P n).natDegree = D₀ + d * n ∧ (P n).leadingCoeff = c n := by
+  have hsub (n j : ℕ) :
+      D₀ + d * (n + k) - (D₀ + d * (n + j)) = d * (k - j) := by
+    rw [Nat.add_sub_add_left, ← Nat.mul_sub, Nat.add_sub_add_left]
+  exact natDegree_eq_and_leadingCoeff_eq_of_degreeLaw (D := fun n => D₀ + d * n)
+    hrec hlag (fun n j hj => Nat.add_le_add_left (Nat.mul_le_mul_left d (by lia)) D₀)
+    (by simpa only [hsub] using hA) hbase
+    (by simpa only [lagMultD_linear] using hc) hc0 n
 
 /-- Monotonicity of a periodic degree law `D n = D₀ + d * ((n + e) / p)` along a window,
 the first side condition `hD` of the degree-law theorems. -/
@@ -560,18 +503,8 @@ theorem rhs_natDegree_le_succ_of_degreeLaw {k : ℕ} {D : ℕ → ℕ} {P : ℕ 
       (t.2.2 n).natDegree ≤ D (n + k) + 1 - D (n + t.1) + t.2.1)
     (hP : ∀ j < k, (P (n + j)).natDegree ≤ D (n + j)) :
     (rhs terms P n).natDegree ≤ D (n + k) + 1 := by
-  induction terms with
-  | nil => simp [rhs]
-  | cons t ts ih =>
-      have ht : t.1 < k := hlag t (by simp)
-      have hDt : D (n + t.1) ≤ D (n + k) := hD t.1 ht
-      have hterm := natDegree_mul_iterate_derivative_le
-        (d := D (n + k) + 1 - D (n + t.1)) (j := t.2.1)
-        (hA t (by simp)) (hP t.1 ht)
-      have hsum := ih (fun s hs => hlag s (by simp [hs]))
-        (fun s hs => hA s (by simp [hs]))
-      simp only [rhs, List.map_cons, List.sum_cons]
-      exact (natDegree_add_le _ _).trans (max_le (hterm.trans (by lia)) hsum)
+  exact (rhs_stepD n (fun j hj => (hD j hj).trans (Nat.le_succ _))
+    terms hlag hA hP).1
 
 /-- A polynomial of degree at most `N + 1` whose coefficient at `N + 1` vanishes has
 degree at most `N`. -/

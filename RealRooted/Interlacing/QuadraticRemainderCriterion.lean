@@ -334,17 +334,21 @@ private theorem quadratic_remainder_signs_of_ordered_roots
       a * (A * x ^ 2 + B * x + d) - A * (a * x ^ 2 + b * x + c) = u * x + v := by
     dsimp [u, v]
     ring
-  have hur₁ : 0 < u * r₁ + v := by nlinarith [hrem r₁]
-  have hur₂ : u * r₂ + v < 0 := by nlinarith [hrem r₂]
-  have hu : u < 0 := by nlinarith
+  have hur₁ : 0 < u * r₁ + v := by
+    rw [← hrem r₁, hfr₁', mul_zero, sub_zero]
+    exact mul_pos ha hgr₁
+  have hur₂ : u * r₂ + v < 0 := by
+    rw [← hrem r₂, hfr₂', mul_zero, sub_zero]
+    exact mul_neg_of_pos_of_neg ha hgr₂
+  have hu : u < 0 := by nlinarith only [hur₁, hur₂, hr₁s₁, hs₁r₂]
   let z := -v / u
   have hu0 : u ≠ 0 := hu.ne
   have huz : u * z + v = 0 := by
     dsimp [z]
     field_simp
     ring
-  have hr₁z : r₁ < z := by nlinarith
-  have hzr₂ : z < r₂ := by nlinarith
+  have hr₁z : r₁ < z := by nlinarith only [hur₁, huz, hu]
+  have hzr₂ : z < r₂ := by nlinarith only [hur₂, huz, hu]
   have hffactor (x : ℝ) : a * x ^ 2 + b * x + c = a * (x - r₁) * (x - r₂) :=
     quadratic_factor_of_roots (hr₁s₁.trans hs₁r₂).ne hfr₁' hfr₂' x
   have hfz : a * z ^ 2 + b * z + c < 0 := by
@@ -371,7 +375,9 @@ private theorem quadratic_remainder_signs_of_ordered_roots
       (mul_eq_zero.mp hdiff).resolve_left
         (sub_ne_zero.mpr (hr₁s₁.trans hs₁r₂).ne)
     linarith
-  have hfL'alg : 2 * a * L + b < 0 := by nlinarith
+  have hfL'alg : 2 * a * L + b < 0 := by
+    nlinarith only [hsum, mul_pos ha (sub_pos.mpr hLr₁),
+      mul_pos ha (sub_pos.mpr (hLr₁.trans (hr₁s₁.trans hs₁r₂)))]
   refine ⟨by simpa [u] using hu, ?_, ?_, ?_⟩
   · simpa [u, v] using hN'
   · simpa [quadratic_eval] using hfLalg
@@ -421,14 +427,10 @@ theorem strictInterlSameDegree_quadratics_of_remainder_signs
   let g : ℝ[X] := C A * X ^ 2 + C B * X + C d
   have hfdeg : f.natDegree = 2 := natDegree_quadratic ha.ne'
   have hgdeg : g.natDegree = 2 := natDegree_quadratic hA.ne'
-  have hfr₁' : f.IsRoot r₁ := by simpa [f] using hfr₁
-  have hfr₂' : f.IsRoot r₂ := by simpa [f] using hfr₂
-  have hgs₁' : g.IsRoot s₁ := by simpa [g] using hgs₁
-  have hgs₂' : g.IsRoot s₂ := by simpa [g] using hgs₂
   obtain ⟨hfs, hfroots⟩ := roots_eq_of_two_distinct_roots hfdeg
-    (hr₁s₁.trans hs₁r₂) hfr₁' hfr₂'
+    (hr₁s₁.trans hs₁r₂) hfr₁ hfr₂
   obtain ⟨hgs, hgroots⟩ := roots_eq_of_two_distinct_roots hgdeg
-    (hs₁r₂.trans hr₂s₂) hgs₁' hgs₂'
+    (hs₁r₂.trans hr₂s₂) hgs₁ hgs₂
   have hf0 : f ≠ 0 := ne_zero_of_natDegree_gt (n := 0) (by rw [hfdeg]; norm_num)
   have hg0 : g ≠ 0 := ne_zero_of_natDegree_gt (n := 0) (by rw [hgdeg]; norm_num)
   have hinter : StrictInterl f g := by
@@ -467,14 +469,10 @@ theorem interlaces_quadratic_mul_X_sub_C_of_remainder_signs
   let g : ℝ[X] := C A * X ^ 2 + C B * X + C d
   have hfdeg : f.natDegree = 2 := natDegree_quadratic ha.ne'
   have hgdeg : g.natDegree = 2 := natDegree_quadratic hA.ne'
-  have hfr₁' : f.IsRoot r₁ := by simpa [f] using hfr₁
-  have hfr₂' : f.IsRoot r₂ := by simpa [f] using hfr₂
-  have hgs₁' : g.IsRoot s₁ := by simpa [g] using hgs₁
-  have hgs₂' : g.IsRoot s₂ := by simpa [g] using hgs₂
   obtain ⟨hfs, hfroots⟩ := roots_eq_of_two_distinct_roots hfdeg
-    (hr₁s₁.trans hs₁r₂) hfr₁' hfr₂'
+    (hr₁s₁.trans hs₁r₂) hfr₁ hfr₂
   obtain ⟨hgs, hgroots⟩ := roots_eq_of_two_distinct_roots hgdeg
-    (hs₁r₂.trans hr₂s₂) hgs₁' hgs₂'
+    (hs₁r₂.trans hr₂s₂) hgs₁ hgs₂
   have hf0 : f ≠ 0 := ne_zero_of_natDegree_gt (n := 0) (by rw [hfdeg]; norm_num)
   have hg0 : g ≠ 0 := ne_zero_of_natDegree_gt (n := 0) (by rw [hgdeg]; norm_num)
   have hprod0 : (X - C L) * g ≠ 0 := mul_ne_zero (X_sub_C_ne_zero L) hg0

@@ -70,64 +70,33 @@ private lemma intervalGraph_adj_of_neighbors_same_side
     (hab : a ≠ b)
     (hside : (a < v ∧ b < v) ∨ (v < a ∧ v < b)) :
     intervalGraph.Adj a b := by
-  rcases lt_or_gt_of_ne hab with hablt | hbalt
-  · apply intervalGraph_adj_of_lt_of_le_add_three hablt
-    rcases hside with ⟨hav, hbv⟩ | ⟨hva', hvb'⟩
-    · have hvBound :
-          v ≤ a + 3 ∨ (v = a + 4 ∧ a % 2 = 1) := by
-        rw [← intervalGraph_adj_of_lt hav, SimpleGraph.adj_comm]
-        grind
-      lia
-    · have hbBound :
-          b ≤ v + 3 ∨ (b = v + 4 ∧ v % 2 = 1) :=
-        (intervalGraph_adj_of_lt hvb').1 hvb
-      lia
-  · rw [SimpleGraph.adj_comm]
-    apply intervalGraph_adj_of_lt_of_le_add_three hbalt
-    rcases hside with ⟨hav, hbv⟩ | ⟨hva', hvb'⟩
-    · have hvBound :
-          v ≤ b + 3 ∨ (v = b + 4 ∧ b % 2 = 1) := by
-        rw [← intervalGraph_adj_of_lt hbv, SimpleGraph.adj_comm]
-        grind
-      lia
-    · have haBound :
-          a ≤ v + 3 ∨ (a = v + 4 ∧ v % 2 = 1) :=
-        (intervalGraph_adj_of_lt hva').1 hva
-      lia
+  wlog hablt : a < b generalizing a b
+  · exact (this hvb hva hab.symm (hside.imp And.symm And.symm) (by lia)).symm
+  apply intervalGraph_adj_of_lt_of_le_add_three hablt
+  rcases hside with ⟨hav, hbv⟩ | ⟨hva', hvb'⟩
+  · have hvBound := (intervalGraph_adj_of_lt hav).1 hva.symm
+    lia
+  · have hbBound := (intervalGraph_adj_of_lt hvb').1 hvb
+    lia
 
 private lemma intervalGraph_clawFree : Graph.ClawFree intervalGraph := by
   intro v s hneigh hind
-  obtain ⟨a, b, c, hab, hac, hbc, rfl⟩ :=
-    Finset.card_eq_three.mp hind.card_eq
+  obtain ⟨a, b, c, hab, hac, hbc, rfl⟩ := Finset.card_eq_three.mp hind.card_eq
   have hva := hneigh a (by simp)
   have hvb := hneigh b (by simp)
   have hvc := hneigh c (by simp)
-  have hav : a ≠ v := fun h ↦ by simp_all
-  have hbv : b ≠ v := fun h ↦ by simp_all
-  have hcv : c ≠ v := fun h ↦ by simp_all
-  rcases lt_or_gt_of_ne hav with hav | hva'
-  · rcases lt_or_gt_of_ne hbv with hbv | hvb'
-    · exact hind.isIndepSet (by simp) (by simp) hab
-        (intervalGraph_adj_of_neighbors_same_side hva hvb hab
-          (Or.inl ⟨hav, hbv⟩))
-    · rcases lt_or_gt_of_ne hcv with hcv | hvc'
-      · exact hind.isIndepSet (by simp) (by simp) hac
-          (intervalGraph_adj_of_neighbors_same_side hva hvc hac
-            (Or.inl ⟨hav, hcv⟩))
-      · exact hind.isIndepSet (by simp) (by simp) hbc
-          (intervalGraph_adj_of_neighbors_same_side hvb hvc hbc
-            (Or.inr ⟨hvb', hvc'⟩))
-  · rcases lt_or_gt_of_ne hbv with hbv | hvb'
-    · rcases lt_or_gt_of_ne hcv with hcv | hvc'
-      · exact hind.isIndepSet (by simp) (by simp) hbc
-          (intervalGraph_adj_of_neighbors_same_side hvb hvc hbc
-            (Or.inl ⟨hbv, hcv⟩))
-      · exact hind.isIndepSet (by simp) (by simp) hac
-          (intervalGraph_adj_of_neighbors_same_side hva hvc hac
-            (Or.inr ⟨hva', hvc'⟩))
-    · exact hind.isIndepSet (by simp) (by simp) hab
-        (intervalGraph_adj_of_neighbors_same_side hva hvb hab
-          (Or.inr ⟨hva', hvb'⟩))
+  have hnot (x y : ℕ) (hx : x ∈ ({a, b, c} : Finset ℕ))
+      (hy : y ∈ ({a, b, c} : Finset ℕ)) (hxy : x ≠ y) :
+      ¬ ((x < v ∧ y < v) ∨ (v < x ∧ v < y)) := fun hside =>
+    hind.isIndepSet hx hy hxy
+      (intervalGraph_adj_of_neighbors_same_side (hneigh x hx) (hneigh y hy) hxy hside)
+  have hab' := hnot a b (by simp) (by simp) hab
+  have hac' := hnot a c (by simp) (by simp) hac
+  have hbc' := hnot b c (by simp) (by simp) hbc
+  have ha := intervalGraph.ne_of_adj hva
+  have hb := intervalGraph.ne_of_adj hvb
+  have hc := intervalGraph.ne_of_adj hvc
+  lia
 
 /-- Shared core of the even and odd cases: the non-neighbours below `N` form `range m`. -/
 private lemma intervalGraph_filter_eq_range (N m : ℕ)
@@ -428,20 +397,12 @@ theorem reflect_eq_even_of_recurrence
     (hrec : ∀ n, P (n + 3) =
       (2 + X) * P (n + 2) + (-1 + 2 * X) * P (n + 1) + X * P n) :
     ∀ n, reflect n (P n) = polynomial (2 * n) := by
-  have hdeg := natDegree_le_of_reflected_recurrence P h0 (Or.inl h1) (Or.inl h2) hrec
-  intro n
-  induction n using Nat.strong_induction_on with
-  | ind n ih =>
-      rcases n with _ | _ | _ | n
-      · simp [h0]
-      · rw [h1, reflect_one_one_add_X, polynomial_two]
-      · rw [h2, reflect_two_one_add_five_X_add_X_sq, polynomial_four]
-      · rw [reflect_recurrence P hdeg hrec,
-          ih (n + 2) (by lia), ih (n + 1) (by lia), ih n (by lia)]
-        simpa only [show 2 * (n + 3) = 2 * n + 6 by lia,
-          show 2 * (n + 2) = 2 * n + 4 by lia,
-          show 2 * (n + 1) = 2 * n + 2 by lia] using
-            (polynomial_add_six (2 * n)).symm
+  apply eq_even_of_recurrence (fun n => reflect n (P n))
+  · simp [h0]
+  · rw [h1, reflect_one_one_add_X]
+  · rw [h2, reflect_two_one_add_five_X_add_X_sq]
+  · exact reflect_recurrence P
+      (natDegree_le_of_reflected_recurrence P h0 (Or.inl h1) (Or.inl h2) hrec) hrec
 
 /-- Reflecting a family with the odd reflected cubic-parent recurrence gives the
 sign-corrected odd cubic-parent subsequence. -/

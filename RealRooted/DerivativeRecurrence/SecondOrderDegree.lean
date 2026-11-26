@@ -94,36 +94,20 @@ theorem monic_of_second_order_derivative
         (C 1 + C (b n) * X) * P (n + 1) + (C c * X) * P n)
     (hcancel : ∀ n, b n - a * ((n : ℝ) + 1) = 1) (n : ℕ) :
     (P n).Monic := by
+  have hdegree := natDegree_of_second_order_derivative P a c b h0 h1 hrec hcancel
+  change (P n).coeff (P n).natDegree = 1
+  rw [hdegree n]
   induction n using Nat.twoStepInduction with
   | zero => simp [h0]
-  | one =>
-      rw [h1]
-      simpa [add_comm] using (Polynomial.monic_X_add_C (1 : ℝ))
-  | more n ih0 ih1 =>
-      have hdegree0 := natDegree_of_second_order_derivative P a c b h0 h1 hrec hcancel n
-      have hdegree1 :=
-        natDegree_of_second_order_derivative P a c b h0 h1 hrec hcancel (n + 1)
-      have hlag : ((C c * X) * P n).natDegree ≤ (P (n + 1)).natDegree := by
-        calc
-          ((C c * X) * P n).natDegree ≤
-              (C c * X).natDegree + (P n).natDegree := natDegree_mul_le
-          _ ≤ X.natDegree + n := Nat.add_le_add (natDegree_C_mul_le c X) hdegree0.le
-          _ = (P (n + 1)).natDegree := by rw [natDegree_X, hdegree1]; lia
-      have htop :
-          ((-a) * ((P (n + 1)).natDegree : ℝ) + b n) *
-              (P (n + 1)).leadingCoeff ≠ 0 := by
-        rw [hdegree1, ih1]
-        push_cast
-        linarith [hcancel n]
-      have hstep :=
-        Polynomial.natDegree_and_leadingCoeff_quadratic_derivative_add_linear_mul_add
-          (P (n + 1)) ((C c * X) * P n) a (-a) 1 (b n) hlag htop
-      rw [hrec n]
-      change ((C a * X + C (-a) * X ^ 2) * (P (n + 1)).derivative +
-        (C 1 + C (b n) * X) * P (n + 1) + (C c * X) * P n).leadingCoeff = 1
-      rw [hstep.2, hdegree1, ih1]
-      push_cast
-      linarith [hcancel n]
+  | one => simp [h1, coeff_one]
+  | more n _ ih =>
+      have habove₁ : (P (n + 1)).coeff (n + 1 + 1) = 0 :=
+        coeff_eq_zero_of_natDegree_lt (by rw [hdegree]; lia)
+      have habove₀ : (P n).coeff (n + 1) = 0 :=
+        coeff_eq_zero_of_natDegree_lt (by rw [hdegree]; lia)
+      rw [second_order_derivative_coeff_succ_succ P a c b hrec, habove₁, habove₀]
+      simpa only [Nat.cast_add, Nat.cast_one, hcancel n, mul_zero, zero_add, add_zero,
+        one_mul] using ih
 
 /-- Nonvanishing consequence of `second_order_derivative_top_and_above`. -/
 theorem ne_zero_of_second_order_derivative

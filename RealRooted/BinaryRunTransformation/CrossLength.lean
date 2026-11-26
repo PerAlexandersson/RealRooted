@@ -7,6 +7,7 @@ import RealRooted.DegreeDropReversal
 import RealRooted.EulerOperator.Polar.Pencil
 import RealRooted.Interlacing.OuterDifference
 import RealRooted.PosCombo
+import RealRooted.Wagner.LeftSum
 import RealRooted.WagnerX.NonnegativeRoots
 public import RealRooted.BinaryRunTransformation.Coefficients
 public import RealRooted.EulerOperator
@@ -67,30 +68,16 @@ theorem strictInterl_C_mul_sub_two_theta_self {N : ℕ} {g : ℝ[X]}
       lia)
   have hPnn : HasNonnegCoeffs (polarTheta d g) :=
     (polarTheta_preserves_pf hg le_rfl).hasNonnegCoeffs
-  have hP2 : StrictInterl (C 2 * polarTheta d g) g := hpd.C_mul_left two_ne_zero
-  have hP2nn : HasNonnegCoeffs (C 2 * polarTheta d g) := hasNonnegCoeffs_C_mul (by norm_num) hPnn
+  have hcoef : 0 ≤ (N : ℝ) - 2 * d := by
+    exact sub_nonneg.mpr (by exact_mod_cast hN)
   have heq : C (N : ℝ) * g - C 2 * theta g =
       C 2 * polarTheta d g + C ((N : ℝ) - 2 * d) * g := by
     simp only [polarTheta, C_sub, C_mul, map_natCast, map_ofNat]
     ring
-  rcases hN.eq_or_lt with hNd | hNd
-  · have h0 : ((N : ℝ) - 2 * d) = 0 := by
-      rw [← hNd]
-      push_cast
-      ring
-    rw [heq, h0, C_0, zero_mul, add_zero]
-    exact ⟨hP2, hP2nn⟩
-  · have hpos : (0 : ℝ) < (N : ℝ) - 2 * d := by
-      have : ((2 * d : ℕ) : ℝ) < N := by exact_mod_cast hNd
-      push_cast at this
-      linarith
-    have hgg : StrictInterl (C ((N : ℝ) - 2 * d) * g) g :=
-      (StrictInterl.refl hg_ne (hg.ne_zero_and_splits hg_ne).2).C_mul_left hpos.ne'
-    rw [heq]
-    refine ⟨StrictInterl.add_of_right_of_posLeadingCoeff hP2 hgg
-      (hP2nn.pos_leadingCoeff hP2.1.1)
-      (hasPosLeadingCoeff_C_mul hpos (hgnn.pos_leadingCoeff hg_ne)), ?_⟩
-    exact hP2nn.add (hasNonnegCoeffs_C_mul hpos.le hgnn)
+  rw [heq]
+  exact ⟨hpd.nonneg_combo_right (hPnn.pos_leadingCoeff hpd.1.1)
+    (hgnn.pos_leadingCoeff hg_ne) (by norm_num) hcoef (Or.inl (by norm_num)),
+    (hasNonnegCoeffs_C_mul (by norm_num) hPnn).add (hasNonnegCoeffs_C_mul hcoef hgnn)⟩
 
 /-- Cross-length transport for the binary-run transformation:
 `J_n((N - 2Θ) g) ≪ J_{n+1}(g)` for `N = n + 1`, a PF polynomial `g` with
@@ -170,19 +157,8 @@ theorem strictInterl_binaryRunTransform_succ
   have hFP : StrictInterl F P := by
     have hFA' : StrictInterl F (C ((n : ℝ) + 1) * A) := hFA.C_mul_right hn1.ne'
     have hApos := hasPosLeadingCoeff_C_mul hn1 (hAnn.pos_leadingCoeff hFA.2.1.1)
-    have h := StrictInterl.sum_left_of_common_left_signed [F, C ((n : ℝ) + 1) * A] F
-      (by
-        intro q hq
-        simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
-        rcases hq with rfl | rfl
-        exacts [StrictInterl.refl hF0 hFA.1.2, hFA'])
-      (by
-        intro q hq
-        simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
-        rcases hq with rfl | rfl
-        exacts [hFpos, hApos])
-      (List.cons_ne_nil _ _)
-    rw [List.sum_cons, List.sum_cons, List.sum_nil, add_zero, ← h2P] at h
+    have h := (StrictInterl.refl hF0 hFA.1.2).add_of_left hFA' hFpos hApos
+    rw [← h2P] at h
     have h2 := h.C_mul_right (a := (1 / 2 : ℝ)) (by norm_num)
     rwa [← mul_assoc, ← C_mul, show (1 / 2 : ℝ) * 2 = 1 by norm_num, C_1, one_mul] at h2
   -- `F ≪ P + X E`, hence `F ≪ J_{n+1}(g)`.
@@ -190,19 +166,8 @@ theorem strictInterl_binaryRunTransform_succ
     strictInterl_mul_X_of_strictInterl_of_nonneg hEF hEnn hFnn
   have hPpos := hPnn'.pos_leadingCoeff hFP.2.1.1
   have hXEpos := hEnn.X_mul.pos_leadingCoeff hFXE.2.1.1
-  have hsum := StrictInterl.sum_left_of_common_left_signed [P, X * E] F
-    (by
-      intro q hq
-      simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
-      rcases hq with rfl | rfl
-      exacts [hFP, hFXE])
-    (by
-      intro q hq
-      simp only [List.mem_cons, List.not_mem_nil, or_false] at hq
-      rcases hq with rfl | rfl
-      exacts [hPpos, hXEpos])
-    (List.cons_ne_nil _ _)
-  rw [List.sum_cons, List.sum_cons, List.sum_nil, add_zero, ← hG] at hsum
+  have hsum := hFP.add_of_left hFXE hPpos hXEpos
+  rw [← hG] at hsum
   have h := hsum.C_mul_right (a := ((n : ℝ) + 1)⁻¹) (inv_ne_zero hn1.ne')
   rwa [← mul_assoc, ← C_mul, inv_mul_cancel₀ hn1.ne', C_1, one_mul] at h
 

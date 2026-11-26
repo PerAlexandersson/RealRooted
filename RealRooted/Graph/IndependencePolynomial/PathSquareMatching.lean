@@ -13,6 +13,7 @@ import RealRooted.Graph.IndependencePolynomial.ClawFree
 import RealRooted.Graph.IndependencePolynomial.Recurrence
 import RealRooted.Mathlib.Probability.CoeffDistribution
 import RealRooted.Linear
+import RealRooted.Recurrence.Uniqueness
 
 /-!
 # Weighted matchings of the square of a path
@@ -142,76 +143,29 @@ private lemma conflictGraph_adj_iff {e f : PathSquareEdge} :
 
 private lemma conflictGraph_shift_adj (a : ℕ) (e f : PathSquareEdge) :
     conflictGraph.Adj (shift a e) (shift a f) ↔ conflictGraph.Adj e f := by
-  cases e with
-  | short i =>
-      cases f with
-      | short j =>
-          change conflictGraph.Adj (short (i + a)) (short (j + a)) ↔ _
-          rw [conflictGraph_adj_short_short, conflictGraph_adj_short_short]
-          lia
-      | long j =>
-          change conflictGraph.Adj (short (i + a)) (long (j + a)) ↔ _
-          rw [conflictGraph_adj_short_long, conflictGraph_adj_short_long]
-          lia
-  | long i =>
-      cases f with
-      | short j =>
-          change conflictGraph.Adj (long (i + a)) (short (j + a)) ↔ _
-          rw [conflictGraph_adj_long_short, conflictGraph_adj_long_short]
-          lia
-      | long j =>
-          change conflictGraph.Adj (long (i + a)) (long (j + a)) ↔ _
-          rw [conflictGraph_adj_long_long, conflictGraph_adj_long_long]
-          lia
+  cases e <;> cases f <;>
+    simp only [shift, Function.Embedding.coeFn_mk, conflictGraph_adj_short_short,
+      conflictGraph_adj_short_long, conflictGraph_adj_long_short, conflictGraph_adj_long_long] <;>
+    lia
 
 private lemma support_map_shift (a n : ℕ) :
     (support 0 n).map (shift a) = support a n := by
   ext e
-  cases e with
-  | short i =>
-      constructor
-      · intro hi
-        rcases mem_map.mp hi with ⟨e, he, hei⟩
-        cases e with
-        | short j =>
-            change short (j + a) = short i at hei
-            injection hei with hji
-            subst i
-            simp only [short_mem_support] at he ⊢
-            lia
-        | long j => simp [shift] at hei
-      · intro hi
-        have hai : a ≤ i := (short_mem_support.mp hi).1
-        have hiend : i + 1 < a + n := (short_mem_support.mp hi).2
-        refine mem_map.mpr ⟨short (i - a), ?_, ?_⟩
-        · rw [short_mem_support]
-          have hsub : i - a + a = i := Nat.sub_add_cancel hai
-          constructor
-          · exact Nat.zero_le _
-          · lia
-        · simp [shift, Nat.sub_add_cancel hai]
-  | long i =>
-      constructor
-      · intro hi
-        rcases mem_map.mp hi with ⟨e, he, hei⟩
-        cases e with
-        | short j => simp [shift] at hei
-        | long j =>
-            change long (j + a) = long i at hei
-            injection hei with hji
-            subst i
-            simp only [long_mem_support] at he ⊢
-            lia
-      · intro hi
-        have hai : a ≤ i := (long_mem_support.mp hi).1
-        have hiend : i + 2 < a + n := (long_mem_support.mp hi).2
-        refine mem_map.mpr ⟨long (i - a), ?_, ?_⟩
-        · rw [long_mem_support]
-          have hsub : i - a + a = i := Nat.sub_add_cancel hai
-          constructor
-          · exact Nat.zero_le _
-          · lia
-        · simp [shift, Nat.sub_add_cancel hai]
+  constructor
+  · intro he
+    obtain ⟨f, hf, rfl⟩ := mem_map.mp he
+    cases f <;>
+      simp only [shift, Function.Embedding.coeFn_mk, short_mem_support,
+        long_mem_support] at hf ⊢ <;> lia
+  · intro he
+    let unshift : PathSquareEdge → PathSquareEdge
+      | short i => short (i - a)
+      | long i => long (i - a)
+    refine mem_map.mpr ⟨unshift e, ?_, ?_⟩
+    · cases e <;> simp only [unshift, short_mem_support, long_mem_support] at he ⊢ <;> lia
+    · cases e <;>
+        simp only [short_mem_support, long_mem_support] at he <;>
+        simp only [unshift, shift, Function.Embedding.coeFn_mk, Nat.sub_add_cancel he.1]
 
 private theorem weightedIndepPolyOn_map_embedding
     {V W : Type*} {G : SimpleGraph V} {H : SimpleGraph W}
@@ -306,42 +260,17 @@ private lemma delete_short_zero_triple :
     Graph.deleteClosedNeighborSupport conflictGraph
         ({short 0, short 1, long 0} : Finset PathSquareEdge) (short 0) = ∅ := by
   ext e
-  constructor
-  · intro he
-    have he' := mem_filter.mp he
-    obtain ⟨hne, hmem⟩ := mem_erase.mp he'.1
-    have hcases : e = short 0 ∨ e = short 1 ∨ e = long 0 := by simpa using hmem
-    have hemem : e = short 1 ∨ e = long 0 := by
-      rcases hcases with h | h | h
-      · exact (hne h).elim
-      · exact Or.inl h
-      · exact Or.inr h
-    have hfalse : False := by
-      rcases hemem with rfl | rfl
-      · exact he'.2 (conflictGraph_adj_short_short.mpr (Or.inl rfl))
-      · exact he'.2 (conflictGraph_adj_short_long.mpr (Or.inl rfl))
-    exact hfalse.elim
-  · intro he
-    simp at he
+  simp only [Graph.deleteClosedNeighborSupport, mem_filter, mem_erase, mem_insert,
+    mem_singleton, notMem_empty, iff_false]
+  grind [conflictGraph_adj_short_short, conflictGraph_adj_short_long]
 
 private lemma delete_short_one_pair :
     Graph.deleteClosedNeighborSupport conflictGraph
         ({short 1, long 0} : Finset PathSquareEdge) (short 1) = ∅ := by
   ext e
-  constructor
-  · intro he
-    have he' := mem_filter.mp he
-    obtain ⟨hne, hmem⟩ := mem_erase.mp he'.1
-    have hcases : e = short 1 ∨ e = long 0 := by simpa using hmem
-    have hemem : e = long 0 := by
-      rcases hcases with h | h
-      · exact (hne h).elim
-      · exact h
-    subst e
-    exact False.elim
-      (he'.2 (conflictGraph_adj_short_long.mpr (Or.inr (Or.inr (Or.inr rfl)))))
-  · intro he
-    simp at he
+  simp only [Graph.deleteClosedNeighborSupport, mem_filter, mem_erase, mem_insert,
+    mem_singleton, notMem_empty, iff_false]
+  grind [conflictGraph_adj_short_short, conflictGraph_adj_short_long]
 
 private lemma delete_long_zero_singleton :
     Graph.deleteClosedNeighborSupport conflictGraph
@@ -398,16 +327,8 @@ private lemma initial_edges_clique (a : ℕ) :
     conflictGraph.IsClique (({short a, long a} : Finset PathSquareEdge) : Set _) := by
   rw [SimpleGraph.isClique_iff]
   intro e he f hf hef
-  have he' : e = short a ∨ e = long a := by simpa using he
-  have hf' : f = short a ∨ f = long a := by simpa using hf
-  rcases he' with rfl | rfl
-  · rcases hf' with rfl | rfl
-    · exact (hef rfl).elim
-    · exact conflictGraph_adj_short_long.mpr (Or.inl rfl)
-  · rcases hf' with rfl | rfl
-    · rw [SimpleGraph.adj_comm]
-      exact conflictGraph_adj_short_long.mpr (Or.inl rfl)
-    · exact (hef rfl).elim
+  simp only [Finset.mem_coe, mem_insert, mem_singleton] at he hf
+  rcases he with rfl | rfl <;> rcases hf with rfl | rfl <;> simp_all
 
 private lemma initial_edges_subset (a n : ℕ) :
     {short a, long a} ⊆ support a (n + 4) := by
@@ -771,23 +692,12 @@ theorem polynomial_satisfiesRecurrence (u v : ℝ) :
 weighted path-square matching polynomials. -/
 theorem eq_polynomial_of_satisfiesRecurrence {u v : ℝ} {P : ℕ → ℝ[X]}
     (hP : SatisfiesRecurrence u v P) : ∀ n, P n = polynomial u v n := by
-  intro m
-  induction m using Nat.strong_induction_on with
-  | ind m ih =>
-      rcases hP with ⟨h0, h1, h2, h3, hrec⟩
-      by_cases hsmall : m < 4
-      · have hm : m ≤ 3 := by lia
-        have hinit := polynomial_initial u v
-        interval_cases m
-        · exact h0.trans hinit.1.symm
-        · exact h1.trans hinit.2.1.symm
-        · exact h2.trans hinit.2.2.1.symm
-        · exact h3.trans hinit.2.2.2.symm
-      · obtain ⟨n, rfl⟩ : ∃ n, m = n + 4 := by
-          exact ⟨m - 4, by lia⟩
-        rw [hrec, polynomial_add_four]
-        rw [ih (n + 3) (by lia), ih (n + 2) (by lia), ih (n + 1) (by lia),
-          ih n (by lia)]
+  obtain ⟨h0, h1, h2, h3, hrec⟩ := hP
+  obtain ⟨h0', h1', h2', h3'⟩ := polynomial_initial u v
+  exact sequence_eq_of_same_lag_four_recurrence
+    (fun _ a b c d => a + C u * X * b + C v * X * c + C (v ^ 2) * X ^ 2 * d)
+    (h0.trans h0'.symm) (h1.trans h1'.symm) (h2.trans h2'.symm) (h3.trans h3'.symm)
+    hrec (polynomial_add_four u v)
 
 /-- Any sequence with the path-square seeds and recurrence splits over the
 reals for nonnegative edge weights. -/

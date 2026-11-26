@@ -2,9 +2,11 @@ module
 
 public import RealRooted.BasisTransform.PolynomialSemigroups
 import RealRooted.PFPolynomial.Closure
+import RealRooted.Mathlib.MeasureTheory.Integral.MomentMatrix
+import Mathlib.Algebra.QuadraticDiscriminant
 public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
 public import Mathlib.MeasureTheory.Integral.Bochner.Basic
-import Mathlib.RingTheory.PowerSeries.Exp
+import RealRooted.Mathlib.RingTheory.PowerSeries.ExponentialSubstitution
 public import Mathlib.RingTheory.PowerSeries.Substitution
 
 /-!
@@ -227,74 +229,6 @@ theorem translationLahLogSeries_cons (u a : ℝ) (atoms : List (ℝ × ℝ)) :
         PowerSeries.C a * translationLahSubstitutionSeries u :=
   translationLahLogSeries_cons_of_constantCoeff_eq_zero u a atoms (by simp)
 
-private theorem powerSeries_eq_of_derivative_eq_mul
-    {f g h : PowerSeries ℝ}
-    (hf : PowerSeries.derivative f = f * h)
-    (hg : PowerSeries.derivative g = g * h)
-    (hzero : PowerSeries.constantCoeff f = PowerSeries.constantCoeff g) :
-    f = g := by
-  apply PowerSeries.ext
-  intro n
-  induction n using Nat.strong_induction_on with
-  | ind n ih =>
-      cases n with
-      | zero =>
-          simpa [PowerSeries.coeff_zero_eq_constantCoeff_apply] using hzero
-      | succ n =>
-          have hfc := congrArg (PowerSeries.coeff n) hf
-          have hgc := congrArg (PowerSeries.coeff n) hg
-          rw [PowerSeries.coeff_derivative] at hfc hgc
-          rw [PowerSeries.coeff_mul] at hfc hgc
-          have hsum :
-              (∑ x ∈ Finset.HasAntidiagonal.antidiagonal n,
-                PowerSeries.coeff x.1 f * PowerSeries.coeff x.2 h) =
-              ∑ x ∈ Finset.HasAntidiagonal.antidiagonal n,
-                PowerSeries.coeff x.1 g * PowerSeries.coeff x.2 h := by
-            apply Finset.sum_congr rfl
-            intro x hx
-            rw [ih x.1 (Finset.Nat.antidiagonal.fst_lt hx)]
-          rw [hsum] at hfc
-          apply mul_right_cancel₀ (by positivity : (n + 1 : ℝ) ≠ 0)
-          exact hfc.trans hgc.symm
-
-private theorem subst_exp_add {f g : PowerSeries ℝ}
-    (hf : PowerSeries.constantCoeff f = 0)
-    (hg : PowerSeries.constantCoeff g = 0) :
-    (PowerSeries.exp ℝ).subst (f + g) =
-      (PowerSeries.exp ℝ).subst f * (PowerSeries.exp ℝ).subst g := by
-  have hfsubst : PowerSeries.HasSubst f :=
-    PowerSeries.HasSubst.of_constantCoeff_zero' hf
-  have hgsubst : PowerSeries.HasSubst g :=
-    PowerSeries.HasSubst.of_constantCoeff_zero' hg
-  have haddsubst : PowerSeries.HasSubst (f + g) := hfsubst.add hgsubst
-  apply powerSeries_eq_of_derivative_eq_mul
-    (h := PowerSeries.derivative f + PowerSeries.derivative g)
-  · rw [PowerSeries.derivative_subst haddsubst, PowerSeries.derivative_exp,
-      PowerSeries.derivative.map_add]
-  · rw [PowerSeries.derivative.leibniz,
-      PowerSeries.derivative_subst hfsubst, PowerSeries.derivative_exp,
-      PowerSeries.derivative_subst hgsubst, PowerSeries.derivative_exp]
-    simp only [smul_eq_mul]
-    ring
-  · have hfg : PowerSeries.constantCoeff (f + g) = 0 := by
-      simp [hf, hg]
-    have hleft : PowerSeries.constantCoeff
-        ((PowerSeries.exp ℝ).subst (f + g)) = 1 := by
-      rw [PowerSeries.constantCoeff_eq,
-        PowerSeries.constantCoeff_subst_of_constantCoeff_zero hfg]
-      simp
-    have hfirst : PowerSeries.constantCoeff
-        ((PowerSeries.exp ℝ).subst f) = 1 := by
-      rw [PowerSeries.constantCoeff_eq,
-        PowerSeries.constantCoeff_subst_of_constantCoeff_zero hf]
-      simp
-    have hsecond : PowerSeries.constantCoeff
-        ((PowerSeries.exp ℝ).subst g) = 1 := by
-      rw [PowerSeries.constantCoeff_eq,
-        PowerSeries.constantCoeff_subst_of_constantCoeff_zero hg]
-      simp
-    rw [map_mul, hleft, hfirst, hsecond, mul_one]
-
 private theorem translationLahSubstitutionSeries_mul_one_sub (β : ℝ) :
     translationLahSubstitutionSeries β *
         (1 - PowerSeries.C β * PowerSeries.X) =
@@ -380,7 +314,7 @@ theorem translationLahPrefactorSeries_cons
           (PowerSeries.C a * translationLahSubstitutionSeries u) := by
   rw [translationLahPrefactorSeries, translationLahPrefactorSeries,
     translationLahLogSeries_cons]
-  apply subst_exp_add
+  apply PowerSeries.subst_exp_add
   · exact constantCoeff_translationLahLogSeries atoms
   · simp
 
@@ -1214,68 +1148,19 @@ theorem sq_integral_pow_one_le_mul_zero_two
     (hsupport : ∀ᵐ u ∂ν, u ∈ Icc 0 β) :
     (∫ u : ℝ, u ^ 1 ∂ν) ^ 2 ≤
       (∫ u : ℝ, u ^ 0 ∂ν) * ∫ u : ℝ, u ^ 2 ∂ν := by
-  let m0 : ℝ := ∫ u : ℝ, u ^ 0 ∂ν
-  let m1 : ℝ := ∫ u : ℝ, u ^ 1 ∂ν
-  let m2 : ℝ := ∫ u : ℝ, u ^ 2 ∂ν
-  have hm0 : 0 ≤ m0 := integral_pow_nonneg_of_ae_mem_Icc hsupport 0
-  have hm1 : 0 ≤ m1 := integral_pow_nonneg_of_ae_mem_Icc hsupport 1
-  have hm1le : m1 ≤ β * m0 :=
-    integral_pow_succ_le_mul_of_ae_mem_Icc hsupport 0
-  by_cases hm0zero : m0 = 0
-  · have hm1zero : m1 = 0 := by
-      apply le_antisymm
-      · simpa [hm0zero] using hm1le
-      · exact hm1
-    change m1 ^ 2 ≤ m0 * m2
-    simp [hm0zero, hm1zero]
-  · have hm0pos : 0 < m0 := lt_of_le_of_ne hm0 (Ne.symm hm0zero)
-    have h0int := integrable_pow_of_ae_mem_Icc hsupport 0
-    have h1int := integrable_pow_of_ae_mem_Icc hsupport 1
-    have h2int := integrable_pow_of_ae_mem_Icc hsupport 2
-    have hquad : 0 ≤ ∫ u : ℝ, (m0 * u - m1) ^ 2 ∂ν :=
-      integral_nonneg_of_ae (Eventually.of_forall fun u => sq_nonneg _)
-    have hscaled2 :
-        Integrable (fun u : ℝ => m0 ^ 2 * u ^ 2) ν :=
-      h2int.const_mul _
-    have hscaled1 :
-        Integrable (fun u : ℝ => (2 * m0 * m1) * u ^ 1) ν :=
-      h1int.const_mul _
-    have hconst : Integrable (fun u : ℝ => m1 ^ 2 * u ^ 0) ν :=
-      h0int.const_mul _
-    have hquad_eq :
-        (∫ u : ℝ, (m0 * u - m1) ^ 2 ∂ν) =
-          m0 ^ 2 * m2 - (2 * m0 * m1) * m1 + m1 ^ 2 * m0 := by
-      rw [show (fun u : ℝ => (m0 * u - m1) ^ 2) =
-          fun u =>
-            m0 ^ 2 * u ^ 2 - (2 * m0 * m1) * u ^ 1 + m1 ^ 2 * u ^ 0 by
-        funext u
-        ring]
-      calc
-        (∫ u : ℝ,
-            m0 ^ 2 * u ^ 2 - (2 * m0 * m1) * u ^ 1 +
-              m1 ^ 2 * u ^ 0 ∂ν) =
-            (∫ u : ℝ, m0 ^ 2 * u ^ 2 ∂ν) -
-              (∫ u : ℝ, (2 * m0 * m1) * u ^ 1 ∂ν) +
-                ∫ u : ℝ, m1 ^ 2 * u ^ 0 ∂ν := by
-          have hadd := integral_add (hscaled2.sub hscaled1) hconst
-          have hsub := integral_sub hscaled2 hscaled1
-          simp only [Pi.sub_apply] at hadd
-          rw [hsub] at hadd
-          exact hadd
-        _ = m0 ^ 2 * m2 - (2 * m0 * m1) * m1 + m1 ^ 2 * m0 := by
-          simp only [integral_const_mul]
-          change m0 ^ 2 * m2 - (2 * m0 * m1) * m1 + m1 ^ 2 * m0 = _
-          rfl
-    have hproduct : 0 ≤ m0 * (m0 * m2 - m1 ^ 2) := by
-      rw [hquad_eq] at hquad
-      nlinarith
-    have hdet : 0 ≤ m0 * m2 - m1 ^ 2 := by
-      by_contra hdet
-      have hneg : m0 * m2 - m1 ^ 2 < 0 := lt_of_not_ge hdet
-      have := mul_neg_of_pos_of_neg hm0pos hneg
-      linarith
-    change m1 ^ 2 ≤ m0 * m2
-    linarith
+  have hpos : ∀ᵐ u ∂ν, 0 ≤ u := hsupport.mono fun _ hu => hu.1
+  have hmat := posSemidef_integral_pow_add
+    (integrable_pow_of_ae_mem_Icc hsupport) hpos 2 0
+  have hquad (t : ℝ) : 0 ≤ (∫ u : ℝ, u ^ 0 ∂ν) * (t * t) +
+      (2 * ∫ u : ℝ, u ^ 1 ∂ν) * t + ∫ u : ℝ, u ^ 2 ∂ν := by
+    have h := hmat.dotProduct_mulVec_nonneg ![t, 1]
+    simp only [dotProduct, Matrix.mulVec, Fin.sum_univ_two, Pi.star_apply,
+      star_trivial, Matrix.cons_val_zero, Matrix.cons_val_one, Fin.val_zero,
+      Fin.val_one, zero_add, add_zero, one_mul, mul_one] at h
+    nlinarith
+  have h := discrim_le_zero hquad
+  rw [discrim] at h
+  nlinarith
 
 /-- The alternating binomial combination of moments is the integral of
 `u^j (β-u)^k` for any finite measure supported in `[0, β]`. -/

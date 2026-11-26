@@ -36,77 +36,30 @@ private lemma norm_sq_sum_mul_pow_le (n : ℕ) (c : ℕ → ℂ) (z : ℂ)
     (hc : ∑ k ∈ Finset.range n, ‖c k‖ ^ 2 / (n.choose k : ℝ) ≤ 1) :
     ‖∑ k ∈ Finset.range n, c k * z ^ k‖ ^ 2 ≤
       (1 + ‖z‖ ^ 2) ^ n - ‖z‖ ^ (2 * n) := by
-  let f : ℕ → ℝ := fun k ↦ ‖c k‖ / √(n.choose k : ℝ)
-  let g : ℕ → ℝ := fun k ↦ √(n.choose k : ℝ) * ‖z‖ ^ k
   have hchoose (k : ℕ) (hk : k ∈ Finset.range n) : 0 < (n.choose k : ℝ) := by
     exact_mod_cast Nat.choose_pos (Nat.le_of_lt (Finset.mem_range.mp hk))
-  have hsqrt (k : ℕ) (hk : k ∈ Finset.range n) : 0 < √(n.choose k : ℝ) :=
-    Real.sqrt_pos.2 (hchoose k hk)
-  have hprod (k : ℕ) (hk : k ∈ Finset.range n) :
-      f k * g k = ‖c k‖ * ‖z‖ ^ k := by
-    dsimp [f, g]
-    field_simp [ne_of_gt (hsqrt k hk)]
-  have hf_sq (k : ℕ) (hk : k ∈ Finset.range n) :
-      f k ^ 2 = ‖c k‖ ^ 2 / (n.choose k : ℝ) := by
-    dsimp [f]
-    rw [div_pow, Real.sq_sqrt (hchoose k hk).le]
-  have hg_sq (k : ℕ) (hk : k ∈ Finset.range n) :
-      g k ^ 2 = (n.choose k : ℝ) * ‖z‖ ^ (2 * k) := by
-    dsimp [g]
-    rw [mul_pow, Real.sq_sqrt (hchoose k hk).le]
-    ring
-  have htriangle :
-      ‖∑ k ∈ Finset.range n, c k * z ^ k‖ ≤
-        ∑ k ∈ Finset.range n, f k * g k := by
-    calc
-      _ ≤ ∑ k ∈ Finset.range n, ‖c k * z ^ k‖ := norm_sum_le _ _
-      _ = ∑ k ∈ Finset.range n, f k * g k := by
-        apply Finset.sum_congr rfl
-        intro k hk
-        rw [hprod k hk, norm_mul, norm_pow]
-  have hsum_nonneg : 0 ≤ ∑ k ∈ Finset.range n, f k * g k := by
-    apply Finset.sum_nonneg
-    intro k hk
-    rw [hprod k hk]
-    positivity
-  have htriangle_sq :
-      ‖∑ k ∈ Finset.range n, c k * z ^ k‖ ^ 2 ≤
-        (∑ k ∈ Finset.range n, f k * g k) ^ 2 := by
-    nlinarith [norm_nonneg (∑ k ∈ Finset.range n, c k * z ^ k)]
-  have hcs := Finset.sum_mul_sq_le_sq_mul_sq (Finset.range n) f g
-  have hf_sum :
-      ∑ k ∈ Finset.range n, f k ^ 2 =
-        ∑ k ∈ Finset.range n, ‖c k‖ ^ 2 / (n.choose k : ℝ) := by
-    exact Finset.sum_congr rfl hf_sq
-  have hg_sum :
-      ∑ k ∈ Finset.range n, g k ^ 2 =
-        ∑ k ∈ Finset.range n, (n.choose k : ℝ) * ‖z‖ ^ (2 * k) := by
-    exact Finset.sum_congr rfl hg_sq
-  rw [hf_sum, hg_sum] at hcs
-  have hbinom :
-      ∑ k ∈ Finset.range n, (n.choose k : ℝ) * ‖z‖ ^ (2 * k) =
-        (1 + ‖z‖ ^ 2) ^ n - ‖z‖ ^ (2 * n) := by
+  have hcs := Finset.sum_sq_le_sum_mul_sum_of_sq_le_mul (Finset.range n)
+    (r := fun k => ‖c k‖ * ‖z‖ ^ k)
+    (f := fun k => ‖c k‖ ^ 2 / (n.choose k : ℝ))
+    (g := fun k => (n.choose k : ℝ) * (‖z‖ ^ 2) ^ k)
+    (fun k hk => by positivity) (fun k hk => by positivity) (fun k hk => by
+      rw [mul_pow, ← mul_assoc, div_mul_cancel₀ _ (hchoose k hk).ne']
+      exact le_of_eq (by ring))
+  have hbinom : ∑ k ∈ Finset.range n, (n.choose k : ℝ) * (‖z‖ ^ 2) ^ k =
+      (1 + ‖z‖ ^ 2) ^ n - ‖z‖ ^ (2 * n) := by
     have h := add_pow (‖z‖ ^ 2) 1 n
     rw [Finset.sum_range_succ] at h
     simp only [one_pow, mul_one, Nat.choose_self, Nat.cast_one] at h
-    rw [show (‖z‖ ^ 2) ^ n = ‖z‖ ^ (2 * n) by rw [pow_mul]] at h
-    have hsum :
-        ∑ k ∈ Finset.range n, ‖z‖ ^ (2 * k) * (n.choose k : ℝ) =
-          ∑ k ∈ Finset.range n, (n.choose k : ℝ) * ‖z‖ ^ (2 * k) := by
-      apply Finset.sum_congr rfl
-      intro k _
-      ring
-    rw [← hsum]
-    simpa [add_comm, pow_mul] using (sub_eq_iff_eq_add.mpr h).symm
+    simpa only [add_comm, mul_comm, ← pow_mul] using (sub_eq_iff_eq_add.mpr h).symm
   rw [hbinom] at hcs
+  have htriangle : ‖∑ k ∈ Finset.range n, c k * z ^ k‖ ≤
+      ∑ k ∈ Finset.range n, ‖c k‖ * ‖z‖ ^ k := by
+    simpa only [norm_mul, norm_pow] using norm_sum_le (Finset.range n) (fun k => c k * z ^ k)
   have hnonneg : 0 ≤ (1 + ‖z‖ ^ 2) ^ n - ‖z‖ ^ (2 * n) := by
     rw [← hbinom]
     positivity
-  calc
-    _ ≤ _ := htriangle_sq
-    _ ≤ (∑ k ∈ Finset.range n, ‖c k‖ ^ 2 / (n.choose k : ℝ)) *
-        ((1 + ‖z‖ ^ 2) ^ n - ‖z‖ ^ (2 * n)) := hcs
-    _ ≤ _ := by nlinarith
+  exact (pow_le_pow_left₀ (norm_nonneg _) htriangle 2).trans
+    (hcs.trans (by nlinarith))
 
 private lemma norm_one_add_sq (z : ℂ) :
     ‖1 + z‖ ^ 2 = 1 + ‖z‖ ^ 2 + 2 * z.re := by
@@ -538,6 +491,17 @@ private lemma isHurwitzStable_of_rhp_of_coeff_zero_pos {p : ℝ[X]}
     linarith
   · exact (isHurwitzStable_iff_isRightHalfPlaneStable hlc_pos).mpr hrhp
 
+/-- The odd/even lift of every admissible perturbation is weakly Hurwitz stable. -/
+private lemma binomialPerturbationFamily_stable
+    {n : ℕ} {a : ℕ → ℝ} (ha : BinomialPerturbationBound n a) :
+    IsHurwitzStable (oddEvenPolynomial
+      (oddBinomialSection n) (binomialPerturbationFamily n a)) := by
+  apply isHurwitzStable_of_rhp_of_coeff_zero_pos
+  · rw [show 0 = 2 * 0 by rfl, coeff_oddEvenPolynomial_even,
+      binomialPerturbationFamily_coeff_zero]
+    norm_num
+  · exact oddEvenPolynomial_binomialPerturbationFamily_rhp ha
+
 /-- Under the weighted ellipsoid bound, `binomialPerturbationFamily n a` has
 only negative real roots and is weakly interlaced by `oddBinomialSection n`. -/
 theorem binomialPerturbationFamily_negativeRoots_interlaced
@@ -552,13 +516,7 @@ theorem binomialPerturbationFamily_negativeRoots_interlaced
     have := congrArg (fun p : ℝ[X] ↦ p.coeff 0) h
     rw [binomialPerturbationFamily_coeff_zero] at this
     norm_num at this
-  have hstable : IsHurwitzStable (oddEvenPolynomial
-      (oddBinomialSection n) (binomialPerturbationFamily n a)) := by
-    apply isHurwitzStable_of_rhp_of_coeff_zero_pos
-    · rw [show 0 = 2 * 0 by norm_num, coeff_oddEvenPolynomial_even,
-        binomialPerturbationFamily_coeff_zero]
-      norm_num
-    · exact oddEvenPolynomial_binomialPerturbationFamily_rhp ha
+  have hstable := binomialPerturbationFamily_stable ha
   obtain ⟨hodd_nonneg, heven_nonneg, hinterl⟩ :=
     (isHurwitzStable_oddEvenPolynomial_iff hodd heven).mp hstable
   refine ⟨hinterl.2.1.2, ?_, hinterl⟩
@@ -744,13 +702,7 @@ theorem binomialPerturbationFamily_simpleRoots_noCommonRoot
       lia
     · rw [hsucc, hodd_degree]
       lia
-  have hstable : IsHurwitzStable (oddEvenPolynomial
-      (oddBinomialSection n) (binomialPerturbationFamily n a)) := by
-    apply isHurwitzStable_of_rhp_of_coeff_zero_pos
-    · rw [show 0 = 2 * 0 by norm_num, coeff_oddEvenPolynomial_even,
-        binomialPerturbationFamily_coeff_zero]
-      norm_num
-    · exact oddEvenPolynomial_binomialPerturbationFamily_rhp ha
+  have hstable := binomialPerturbationFamily_stable ha
   have hodd_nonneg := hasNonnegCoeffs_left_of_oddEvenPolynomial hstable.hasNonnegCoeffs
   have heven_nonneg := hasNonnegCoeffs_right_of_oddEvenPolynomial hstable.hasNonnegCoeffs
   have hodd_pos := hodd_nonneg.pos_leadingCoeff hinterl.1.1
@@ -775,24 +727,10 @@ theorem binomialPerturbationFamily_compatible
     Compatible (binomialPerturbationFamily n a) (binomialPerturbationFamily n b) := by
   have hia := (binomialPerturbationFamily_negativeRoots_interlaced hn ha).2.2
   have hib := (binomialPerturbationFamily_negativeRoots_interlaced hn hb).2.2
-  have hna : HasNonnegCoeffs (binomialPerturbationFamily n a) := by
-    have hstable := isHurwitzStable_of_rhp_of_coeff_zero_pos
-      (p := oddEvenPolynomial (oddBinomialSection n) (binomialPerturbationFamily n a))
-      (by
-        rw [show 0 = 2 * 0 by norm_num, coeff_oddEvenPolynomial_even,
-          binomialPerturbationFamily_coeff_zero]
-        norm_num)
-      (oddEvenPolynomial_binomialPerturbationFamily_rhp ha)
-    exact hasNonnegCoeffs_right_of_oddEvenPolynomial hstable.hasNonnegCoeffs
-  have hnb : HasNonnegCoeffs (binomialPerturbationFamily n b) := by
-    have hstable := isHurwitzStable_of_rhp_of_coeff_zero_pos
-      (p := oddEvenPolynomial (oddBinomialSection n) (binomialPerturbationFamily n b))
-      (by
-        rw [show 0 = 2 * 0 by norm_num, coeff_oddEvenPolynomial_even,
-          binomialPerturbationFamily_coeff_zero]
-        norm_num)
-      (oddEvenPolynomial_binomialPerturbationFamily_rhp hb)
-    exact hasNonnegCoeffs_right_of_oddEvenPolynomial hstable.hasNonnegCoeffs
+  have hna := hasNonnegCoeffs_right_of_oddEvenPolynomial
+    (binomialPerturbationFamily_stable ha).hasNonnegCoeffs
+  have hnb := hasNonnegCoeffs_right_of_oddEvenPolynomial
+    (binomialPerturbationFamily_stable hb).hasNonnegCoeffs
   exact Compatible.of_commonLeftInterleaver hia hib
     (hna.pos_leadingCoeff hia.2.1.1) (hnb.pos_leadingCoeff hib.2.1.1)
 

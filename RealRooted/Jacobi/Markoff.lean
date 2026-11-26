@@ -2,6 +2,7 @@ module
 
 public import RealRooted.JacobiOrthogonality
 import RealRooted.Jacobi
+import RealRooted.Jacobi.Orthogonality.Integral
 import RealRooted.Bezoutian.WronskianConverse
 import RealRooted.Mathlib.Analysis.SpecialFunctions.Integrals.RpowLog
 import Mathlib.Analysis.Calculus.ContDiff.Polynomial
@@ -196,51 +197,18 @@ theorem integral_rpow_mul_one_sub_zero_one {α : ℝ}
     (hα : -1 < α) (k : ℕ) :
     (∫ x : ℝ in 0..1, x ^ (α + k) * (1 - x)) =
       jacobiBetaOneMoment α k := by
-  have hk : 0 ≤ (k : ℝ) := by positivity
-  have h₀ : -1 < α + (k : ℝ) := by linarith
-  have h₁ : -1 < α + (k : ℝ) + 1 := by linarith
-  have hint₀ := intervalIntegral.intervalIntegrable_rpow'
-    (a := 0) (b := 1) h₀
-  have hint₁ := intervalIntegral.intervalIntegrable_rpow'
-    (a := 0) (b := 1) h₁
-  calc
-    (∫ x : ℝ in 0..1, x ^ (α + k) * (1 - x)) =
-        ∫ x : ℝ in 0..1,
-          (x ^ (α + k) - x ^ (α + k + 1)) := by
-      apply intervalIntegral.integral_congr_uIoo
-      intro x hx
-      dsimp only
-      have hxpos : 0 < x := by simpa using hx.1
-      rw [Real.rpow_add_one hxpos.ne']
-      ring
-    _ = (∫ x : ℝ in 0..1, x ^ (α + k)) -
-        ∫ x : ℝ in 0..1, x ^ (α + k + 1) := by
-      rw [intervalIntegral.integral_sub hint₀ hint₁]
-    _ = jacobiBetaOneMoment α k := by
-      have hu : α + (k : ℝ) + 1 ≠ 0 := by linarith
-      have hv : α + (k : ℝ) + 2 ≠ 0 := by linarith
-      have hmoment : (α + (k : ℝ) + 1)⁻¹ -
-          (α + k + 2)⁻¹ = jacobiBetaOneMoment α k := by
-        rw [inv_sub_inv hu hv]
-        rw [show α + (k : ℝ) + 2 - (α + k + 1) = 1 by ring]
-        simp only [one_div, jacobiBetaOneMoment]
-      rw [integral_rpow (Or.inl h₀), integral_rpow (Or.inl h₁)]
-      simp only [Real.one_rpow, Real.zero_rpow hu,
-        Real.zero_rpow (by linarith : α + k + 1 + 1 ≠ 0),
-        sub_zero, one_div]
-      convert hmoment using 1
-      ring
+  simpa only [jacobiBetaOneMoment_eq_shiftedJacobiMoment hα, Real.rpow_one] using
+    (shiftedJacobiMoment_eq_integral hα (by norm_num : (-1 : ℝ) < 1) k).symm
 
 theorem intervalIntegrable_jacobiBetaOneIntegrand {α : ℝ}
     (hα : -1 < α) (p : ℝ[X]) :
     IntervalIntegrable
       (fun x : ℝ => p.eval x * x ^ α * (1 - x))
       MeasureTheory.volume 0 1 := by
-  have hone : Continuous fun x : ℝ => 1 - x := by fun_prop
-  convert ((intervalIntegral.intervalIntegrable_rpow' (a := 0) (b := 1) hα).mul_continuousOn
-    hone.continuousOn).continuousOn_mul p.continuousOn using 1
-  ext x
-  ring
+  convert intervalIntegrable_shiftedJacobiIntegrand hα (by norm_num : (-1 : ℝ) < 1) p
+    using 1
+  funext x
+  simp only [shiftedJacobiIntegrand, shiftedJacobiWeight, Real.rpow_one, mul_assoc]
 
 /-- The beta-one moment functional is integration against
 `x ^ α * (1 - x)` on the unit interval. -/
@@ -248,27 +216,9 @@ theorem jacobiBetaOneFunctional_eq_integral {α : ℝ} (hα : -1 < α)
     (p : ℝ[X]) :
     jacobiBetaOneFunctional α p =
       ∫ x : ℝ in 0..1, p.eval x * x ^ α * (1 - x) := by
-  induction p using Polynomial.induction_on' with
-  | add p q hp hq =>
-      rw [jacobiBetaOneFunctional_add, hp, hq]
-      rw [← intervalIntegral.integral_add
-        (intervalIntegrable_jacobiBetaOneIntegrand hα p)
-        (intervalIntegrable_jacobiBetaOneIntegrand hα q)]
-      apply intervalIntegral.integral_congr
-      intro x hx
-      simp only [eval_add]
-      ring
-  | monomial n c =>
-      rw [jacobiBetaOneFunctional_monomial,
-        ← integral_rpow_mul_one_sub_zero_one hα n,
-        ← intervalIntegral.integral_const_mul]
-      apply intervalIntegral.integral_congr_uIoo
-      intro x hx
-      dsimp only
-      rw [eval_monomial]
-      have hxpos : 0 < x := by simpa using hx.1
-      rw [Real.rpow_add hxpos, Real.rpow_natCast]
-      ring
+  rw [jacobiBetaOneFunctional_eq_shiftedJacobiFunctional hα]
+  simpa only [shiftedJacobiIntegrand, shiftedJacobiWeight, Real.rpow_one, mul_assoc] using
+    shiftedJacobiFunctional_eq_integral hα (by norm_num : (-1 : ℝ) < 1) p
 
 private theorem sub_mul_log_sub_nonneg {r x : ℝ} (hr : 0 < r)
     (hx : 0 < x) :

@@ -196,32 +196,18 @@ theorem sum_sq_ge_card_and_sum_sq
           ((positive.map (fun x ↦ x ^ 2)).sum +
             (negative.map (fun x ↦ x ^ 2)).sum) := by
   have hneg_sum : negative.sum ≤ 0 := by
-    have aux : ∀ l : List ℝ, (∀ x ∈ l, x ≤ 0) → l.sum ≤ 0 := by
-      intro l hl
-      induction l with
-      | nil => simp
-      | cons x xs ih =>
-          simp only [List.sum_cons]
-          linarith [hl x (by simp), ih (fun y hy => hl y (by simp [hy]))]
-    exact aux negative hnegative
+    simpa only [nsmul_zero] using List.sum_le_length_nsmul negative 0 hnegative
   have hneg_sq : 0 ≤ (negative.map (fun x ↦ x ^ 2)).sum := by
     exact List.sum_nonneg fun x hx => by
       obtain ⟨y, -, rfl⟩ := List.mem_map.mp hx
       positivity
   have hpos_card : (positive.length : ℝ) ≤
       (positive.map (fun x ↦ x ^ 2)).sum := by
-    have aux : ∀ l : List ℝ, (∀ x ∈ l, 1 ≤ x) →
-        (l.length : ℝ) ≤ (l.map (fun x ↦ x ^ 2)).sum := by
-      intro l hl
-      induction l with
-      | nil => simp
-      | cons x xs ih =>
-          simp only [List.length_cons, Nat.cast_add, Nat.cast_one, List.map_cons,
-            List.sum_cons]
-          have hx := hl x (by simp)
-          have hxs : ∀ y ∈ xs, 1 ≤ y := fun y hy => hl y (by simp [hy])
-          nlinarith [ih hxs]
-    exact aux positive hpositive
+    simpa only [List.length_map, _root_.nsmul_eq_mul, mul_one] using
+      List.length_nsmul_le_sum (positive.map (fun x ↦ x ^ 2)) (1 : ℝ) (by
+        intro y hy
+        obtain ⟨x, hx, rfl⟩ := List.mem_map.mp hy
+        nlinarith [hpositive x hx])
   have hcs := RealRooted.Samuelson.sq_sum_le_card_mul_sum_sq
     (Multiset.ofList positive)
   have htotal_le : positive.sum + negative.sum ≤ positive.sum := by linarith
@@ -247,25 +233,13 @@ theorem sum_sq_ge_max_sum_one
   obtain ⟨hcard, hsquare⟩ :=
     sum_sq_ge_card_and_sum_sq positive negative hpositive hnegative hsum
   have hneg_sum : negative.sum ≤ 0 := by
-    have aux : ∀ l : List ℝ, (∀ x ∈ l, x ≤ 0) → l.sum ≤ 0 := by
-      intro l hl
-      induction l with
-      | nil => simp
-      | cons x xs ih =>
-          simp only [List.sum_cons]
-          linarith [hl x (by simp), ih (fun y hy => hl y (by simp [hy]))]
-    exact aux negative hnegative
-  have hpos_sum : 0 < positive.sum := by linarith
-  have hnonempty : positive ≠ [] := by
-    intro hnil
-    simp [hnil] at hpos_sum
+    simpa only [nsmul_zero] using List.sum_le_length_nsmul negative 0 hnegative
   have hcard_one : (1 : ℝ) ≤ positive.length := by
-    have : 0 < positive.length := by
-      apply Nat.pos_of_ne_zero
-      intro hzero
-      apply hnonempty
-      simpa using hzero
-    exact_mod_cast this
+    have hne : positive ≠ [] := by
+      rintro rfl
+      simp only [List.sum_nil, zero_add] at hsum
+      exact hsum.not_ge hneg_sum
+    exact_mod_cast List.length_pos_iff_ne_nil.mpr hne
   have hq_nonneg : 0 ≤
       (positive.map (fun x ↦ x ^ 2)).sum +
         (negative.map (fun x ↦ x ^ 2)).sum := by linarith
@@ -469,48 +443,24 @@ theorem leadingCoeffRatio_eq_sum_residues {p g : ℝ[X]}
     ∑ r ∈ g.roots.toFinset, p.eval r / g.derivative.eval r =
       p.leadingCoeff / g.leadingCoeff := by
   have hgpos : 1 ≤ g.natDegree := by lia
-  have hpdeg : p.degree < g.natDegree := by
-    by_cases hp0 : p = 0
-    · simp [hp0]
-    · rw [degree_eq_natDegree hp0]
-      exact_mod_cast (by lia : p.natDegree < g.natDegree)
-  have hlag := lagInterp_eq_g hgs hgnd hgpos hpdeg
-  have hcoeff0 := congrArg (fun q : ℝ[X] ↦ q.coeff p.natDegree) hlag
-  have hcoeff :
-      ∑ r ∈ g.roots.toFinset,
-          (p.eval r / g.derivative.eval r) *
-            (g /ₘ (X - C r)).coeff p.natDegree = p.coeff p.natDegree := by
-    simpa [lagInterp] using hcoeff0
-  have hterm : ∀ r ∈ g.roots.toFinset,
-      (p.eval r / g.derivative.eval r) *
-          (g /ₘ (X - C r)).coeff p.natDegree =
-        (p.eval r / g.derivative.eval r) * g.leadingCoeff := by
-    intro r hr
-    have hrroot : g.IsRoot r :=
-      isRoot_of_mem_roots (Multiset.mem_toFinset.mp hr)
-    congr 1
-    have hqdeg : (g /ₘ (X - C r)).natDegree = p.natDegree := by
-      rw [Polynomial.natDegree_divByMonic_X_sub_C, hdeg]
-      lia
-    rw [← hqdeg]
-    exact leadingCoeff_divByMonic_X_sub_C hrroot
-  have hcoeff' :
-      ∑ r ∈ g.roots.toFinset,
-          (p.eval r / g.derivative.eval r) * g.leadingCoeff =
-        p.coeff p.natDegree := by
-    calc
-      _ = ∑ r ∈ g.roots.toFinset,
-          (p.eval r / g.derivative.eval r) *
-            (g /ₘ (X - C r)).coeff p.natDegree := by
-              apply Finset.sum_congr rfl
-              intro r hr
-              exact (hterm r hr).symm
-      _ = p.coeff p.natDegree := hcoeff
-  rw [← Finset.sum_mul] at hcoeff'
-  have hglc : g.leadingCoeff ≠ 0 := by
-    exact leadingCoeff_ne_zero.mpr (ne_zero_of_natDegree_gt hgpos)
-  apply (eq_div_iff hglc).2
-  simpa using hcoeff'
+  have hpdeg : p.degree < g.natDegree :=
+    degree_le_natDegree.trans_lt (by exact_mod_cast (by lia : p.natDegree < g.natDegree))
+  apply (eq_div_iff (leadingCoeff_ne_zero.mpr (ne_zero_of_natDegree_gt hgpos))).2
+  rw [Finset.sum_mul]
+  have hcoeff : ∑ r ∈ g.roots.toFinset,
+      (p.eval r / g.derivative.eval r) * (g /ₘ (X - C r)).coeff p.natDegree =
+        p.leadingCoeff := by
+    simpa [lagInterp] using congrArg (fun q : ℝ[X] ↦ q.coeff p.natDegree)
+      (lagInterp_eq_g hgs hgnd hgpos hpdeg)
+  convert hcoeff using 1
+  apply Finset.sum_congr rfl
+  intro r hr
+  congr 1
+  have hrroot := isRoot_of_mem_roots (Multiset.mem_toFinset.mp hr)
+  have hqdeg : (g /ₘ (X - C r)).natDegree = p.natDegree := by
+    rw [Polynomial.natDegree_divByMonic_X_sub_C, hdeg]
+    lia
+  rw [← hqdeg, coeff_natDegree, leadingCoeff_divByMonic_X_sub_C hrroot]
 
 /-! ## Derivative-minus-interlacer decomposition -/
 
@@ -742,59 +692,27 @@ private theorem interlaces_of_fixed_leadingCoeff_of_coeff_tendsto
     (hPcoeff : ∀ i, Tendsto (fun M ↦ (P M).coeff i) atTop (nhds (p.coeff i)))
     (hGcoeff : ∀ i, Tendsto (fun M ↦ (G M).coeff i) atTop (nhds (g.coeff i))) :
     Interlaces p g := by
-  let PM : ℕ → ℝ[X] := fun M ↦ C a⁻¹ * P M
-  let GM : ℕ → ℝ[X] := fun M ↦ C b⁻¹ * G M
-  let p₀ : ℝ[X] := C a⁻¹ * p
-  let g₀ : ℝ[X] := C b⁻¹ * g
-  have hPMMonic (M : ℕ) : (PM M).Monic := by
-    apply monic_C_mul_of_mul_leadingCoeff_eq_one
-    rw [hPlc M]
-    exact inv_mul_cancel₀ ha.ne'
-  have hGMMonic (M : ℕ) : (GM M).Monic := by
-    apply monic_C_mul_of_mul_leadingCoeff_eq_one
-    rw [hGlc M]
-    exact inv_mul_cancel₀ hb.ne'
-  have hp₀Monic : p₀.Monic := by
-    apply monic_C_mul_of_mul_leadingCoeff_eq_one
-    rw [hplc]
-    exact inv_mul_cancel₀ ha.ne'
-  have hg₀Monic : g₀.Monic := by
-    apply monic_C_mul_of_mul_leadingCoeff_eq_one
-    rw [hglc]
-    exact inv_mul_cancel₀ hb.ne'
-  have hPMDegree (M : ℕ) : (PM M).natDegree = n := by
-    rw [natDegree_C_mul (inv_ne_zero ha.ne'), hPdeg]
-  have hGMDegree (M : ℕ) : (GM M).natDegree = n + 1 := by
-    rw [natDegree_C_mul (inv_ne_zero hb.ne'), hGdeg]
-  have hp₀Degree : p₀.natDegree = n := by
-    rw [natDegree_C_mul (inv_ne_zero ha.ne'), hpdeg]
-  have hg₀Degree : g₀.natDegree = n + 1 := by
-    rw [natDegree_C_mul (inv_ne_zero hb.ne'), hgdeg]
-  have hscaled (M : ℕ) : Interlaces (PM M) (GM M) := by
-    apply (StrictInterl.C_mul_right
-      (StrictInterl.C_mul_left (hinter M).toStrictInterl
-        (inv_ne_zero ha.ne')) (inv_ne_zero hb.ne')).toInterlaces
-    rw [hPMDegree, hGMDegree]
-  have hPMCoeff (i : ℕ) : Tendsto (fun M ↦ (PM M).coeff i) atTop
-      (nhds (p₀.coeff i)) := by
-    simpa [PM, p₀, coeff_C_mul] using tendsto_const_nhds.mul (hPcoeff i)
-  have hGMCoeff (i : ℕ) : Tendsto (fun M ↦ (GM M).coeff i) atTop
-      (nhds (g₀.coeff i)) := by
-    simpa [GM, g₀, coeff_C_mul] using tendsto_const_nhds.mul (hGcoeff i)
-  have hlimit : Interlaces p₀ g₀ :=
-    interlaces_of_monic_of_coeff_tendsto hPMMonic hGMMonic hp₀Monic
-      hg₀Monic hPMDegree hGMDegree hp₀Degree hg₀Degree
-      hscaled hPMCoeff hGMCoeff
-  have hunscaled := StrictInterl.C_mul_right
-    (StrictInterl.C_mul_left hlimit.toStrictInterl ha.ne') hb.ne'
-  have hp_norm : C a * p₀ = p := by
-    rw [show p₀ = C a⁻¹ * p by rfl, ← mul_assoc, ← C_mul,
-      mul_inv_cancel₀ ha.ne', C_1, one_mul]
-  have hg_norm : C b * g₀ = g := by
-    rw [show g₀ = C b⁻¹ * g by rfl, ← mul_assoc, ← C_mul,
-      mul_inv_cancel₀ hb.ne', C_1, one_mul]
-  rw [hp_norm, hg_norm] at hunscaled
-  exact hunscaled.toInterlaces (by rw [hpdeg, hgdeg])
+  have hscaled : Interlaces (C a⁻¹ * p) (C b⁻¹ * g) := by
+    refine interlaces_of_monic_of_coeff_tendsto
+      (fun M => monic_C_mul_of_mul_leadingCoeff_eq_one (by rw [hPlc]; exact inv_mul_cancel₀ ha.ne'))
+      (fun M => monic_C_mul_of_mul_leadingCoeff_eq_one (by rw [hGlc]; exact inv_mul_cancel₀ hb.ne'))
+      (monic_C_mul_of_mul_leadingCoeff_eq_one (by rw [hplc]; exact inv_mul_cancel₀ ha.ne'))
+      (monic_C_mul_of_mul_leadingCoeff_eq_one (by rw [hglc]; exact inv_mul_cancel₀ hb.ne'))
+      (fun M => by rw [natDegree_C_mul (inv_ne_zero ha.ne'), hPdeg])
+      (fun M => by rw [natDegree_C_mul (inv_ne_zero hb.ne'), hGdeg])
+      (by rw [natDegree_C_mul (inv_ne_zero ha.ne'), hpdeg])
+      (by rw [natDegree_C_mul (inv_ne_zero hb.ne'), hgdeg])
+      (fun M => ((hinter M).toStrictInterl.C_mul_left (inv_ne_zero ha.ne')
+        |>.C_mul_right (inv_ne_zero hb.ne')).toInterlaces (by
+          rw [natDegree_C_mul (inv_ne_zero ha.ne'), natDegree_C_mul (inv_ne_zero hb.ne'),
+            hPdeg, hGdeg]))
+      (fun i => by simpa only [coeff_C_mul] using tendsto_const_nhds.mul (hPcoeff i))
+      (fun i => by simpa only [coeff_C_mul] using tendsto_const_nhds.mul (hGcoeff i))
+  have hback := hscaled.toStrictInterl.C_mul_left ha.ne' |>.C_mul_right hb.ne'
+  have hback' : StrictInterl p g := by
+    simpa only [← mul_assoc, ← C_mul, mul_inv_cancel₀ ha.ne', mul_inv_cancel₀ hb.ne',
+      C_1, one_mul] using hback
+  exact hback'.toInterlaces (by rw [hpdeg, hgdeg])
 
 /-- The regularized derivative-minus-interlacer pair has simple right roots
 and hence interlaces before taking the limit. -/
@@ -855,30 +773,14 @@ private theorem derivative_sub_leadingCoeffRatio_eq_zero_of_natDegree_eq_zero
     have hpC' := eq_C_of_natDegree_eq_zero hpdeg
     simpa [leadingCoeff, hpdeg] using hpC'
   have hgder : g.derivative = C g.leadingCoeff := by
-    ext n
-    cases n with
-    | zero =>
-        simp only [coeff_derivative, coeff_C_zero]
-        rw [show g.coeff 1 = g.leadingCoeff by rw [leadingCoeff, hgdeg]]
-        norm_num
-    | succ n =>
-        rw [coeff_derivative, coeff_C]
-        have hzero : g.coeff (n + 1 + 1) = 0 :=
-          coeff_eq_zero_of_natDegree_lt (by rw [hgdeg]; lia)
-        rw [hzero]
-        simp
-  have hscaled : C (g.leadingCoeff / p.leadingCoeff) * p =
-      C g.leadingCoeff := by
-    calc
-      C (g.leadingCoeff / p.leadingCoeff) * p =
-          C (g.leadingCoeff / p.leadingCoeff) * C p.leadingCoeff := by
-            exact congrArg
-              (fun q : ℝ[X] ↦ C (g.leadingCoeff / p.leadingCoeff) * q) hpC
-      _ = C ((g.leadingCoeff / p.leadingCoeff) * p.leadingCoeff) := by rw [C_mul]
-      _ = C g.leadingCoeff := by
-        congr 1
-        field_simp [hp_pos.ne']
-  rw [hgder, hscaled, sub_self]
+    rw [eq_C_of_natDegree_eq_zero (p := g.derivative)
+      (by simp only [natDegree_derivative, hgdeg, Nat.sub_self]),
+      coeff_derivative]
+    simp only [Nat.cast_zero, zero_add, mul_one]
+    rw [← hgdeg, coeff_natDegree]
+  rw [hgder]
+  nth_rw 2 [hpC]
+  rw [← C_mul, div_mul_cancel₀ _ hp_pos.ne', sub_self]
 
 /-- The derivative-minus-interlacer conclusion for a nonconstant left
 polynomial, obtained by common regularization and coefficientwise closure. -/
@@ -954,7 +856,6 @@ theorem derivative_sub_leadingCoeffRatio_interl_of_strictInterl {p g : ℝ[X]}
     exact interl_zero_left g
   · exact derivative_sub_leadingCoeffRatio_interl_of_natDegree_ne_zero
       hpg hdeg hp_pos hg_pos hpdeg0
-
 
 /-- If a positive-leading polynomial is in weak proper position below a
 successor-degree positive-leading polynomial, subtracting the leading-
@@ -1039,43 +940,16 @@ theorem derivative_add_lag_interl_of_leadingCoeffRatio {p g : ℝ[X]}
     (hlambda : -(g.leadingCoeff / p.leadingCoeff) * q ≤ lambda) :
     Interl (q • g.derivative + lambda • p) g := by
   by_cases hpdeg0 : p.natDegree = 0
-  · have hgdeg : g.natDegree = 1 := by lia
-    have hpC : p = C p.leadingCoeff := by
-      have hpC' := eq_C_of_natDegree_eq_zero hpdeg0
-      simpa [leadingCoeff, hpdeg0] using hpC'
-    have hgder : g.derivative = C g.leadingCoeff := by
-      ext n
-      cases n with
-      | zero =>
-          simp only [coeff_derivative, coeff_C_zero]
-          rw [show g.coeff 1 = g.leadingCoeff by rw [leadingCoeff, hgdeg]]
-          norm_num
-      | succ n =>
-          rw [coeff_derivative, coeff_C]
-          have hzero : g.coeff (n + 1 + 1) = 0 :=
-            coeff_eq_zero_of_natDegree_lt (by rw [hgdeg]; lia)
-          rw [hzero]
-          simp
-    have hqder : q • g.derivative = C (q * g.leadingCoeff) := by
-      calc
-        q • g.derivative = q • C g.leadingCoeff := congrArg (q • ·) hgder
-        _ = C (q * g.leadingCoeff) := by
-          rw [Polynomial.smul_eq_C_mul, ← C_mul]
-    have hlp : lambda • p = C (lambda * p.leadingCoeff) := by
-      calc
-        lambda • p = lambda • C p.leadingCoeff := congrArg (lambda • ·) hpC
-        _ = C (lambda * p.leadingCoeff) := by
-          rw [Polynomial.smul_eq_C_mul, ← C_mul]
-    have hform : q • g.derivative + lambda • p =
-        C (q * g.leadingCoeff + lambda * p.leadingCoeff) := by
-      rw [hqder, hlp, ← C_add]
-    rw [hform]
-    by_cases hcoeff : q * g.leadingCoeff + lambda * p.leadingCoeff = 0
-    · left
-      simp [hcoeff]
-    · exact (interlaces_C_linear hcoeff hgdeg).toStrictInterl.toInterl
+  · have hder := sub_eq_zero.mp
+      (derivative_sub_leadingCoeffRatio_eq_zero_of_natDegree_eq_zero hdeg hp_pos hpdeg0)
+    have hmu : 0 ≤ q * (g.leadingCoeff / p.leadingCoeff) + lambda := by linarith
+    have heq : q • g.derivative + lambda • p =
+        C (q * (g.leadingCoeff / p.leadingCoeff) + lambda) * p := by
+      rw [hder, Polynomial.smul_eq_C_mul, Polynomial.smul_eq_C_mul, C_add, C_mul]
+      ring
+    rw [heq]
+    exact hpg.C_mul_left_of_nonneg hmu
   · exact derivative_add_lag_interl_of_leadingCoeffRatio_of_natDegree_ne_zero
       hpg hdeg hp_pos hg_pos hpdeg0 hq hlambda
-
 
 end RealRooted

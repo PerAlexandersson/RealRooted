@@ -98,106 +98,41 @@ theorem ordinaryJacobi_kernelWeight_sum_div_eval_top_pos
             shiftedJacobiMonicNorm l α β) /
         ((shiftedJacobiMonic m α β).eval r *
           (shiftedJacobiMonic m α β).eval z) := by
-  let K :=
-    (shiftedJacobiMonic (m - 1) α β).eval r /
-      (shiftedJacobiMonic m α β).eval r
-  let τ := K⁻¹
-  let L := ∑ l : Fin m,
-    kernelWeight m δ (α + β + 2) l *
-        (shiftedJacobiMonic l α β).eval r *
-          (shiftedJacobiMonic l α β).eval z /
-      shiftedJacobiMonicNorm l α β
-  have hKne : K ≠ 0 := by
-    simpa only [K] using hratio_ne
-  have hprev_r :
-      (shiftedJacobiMonic (m - 1) α β).eval r =
-        K * (shiftedJacobiMonic m α β).eval r := by
-    dsimp only [K]
-    field_simp [hpr]
-  have hprev_z :
-      (shiftedJacobiMonic (m - 1) α β).eval z =
-        K * (shiftedJacobiMonic m α β).eval z := by
-    change (shiftedJacobiMonic (m - 1) α β).eval z =
-      ((shiftedJacobiMonic (m - 1) α β).eval r /
-          (shiftedJacobiMonic m α β).eval r) *
-        (shiftedJacobiMonic m α β).eval z
-    rw [hratio]
-    field_simp [hpz]
-  have hroot_r : (quasiJacobiPolynomial m α β τ).IsRoot r := by
-    change (quasiJacobiPolynomial m α β τ).eval r = 0
-    rw [quasiJacobiPolynomial, eval_sub, eval_mul, eval_C, hprev_r]
-    dsimp only [τ]
-    field_simp [hKne]
+  let K := (shiftedJacobiMonic (m - 1) α β).eval r /
+    (shiftedJacobiMonic m α β).eval r
+  have hK : K ≠ 0 := hratio_ne
+  have hroot (x : ℝ) (hx : (shiftedJacobiMonic m α β).eval x ≠ 0)
+      (hratio_x : (shiftedJacobiMonic (m - 1) α β).eval x /
+        (shiftedJacobiMonic m α β).eval x = K) :
+      (quasiJacobiPolynomial m α β K⁻¹).IsRoot x := by
+    rw [div_eq_iff hx] at hratio_x
+    simp only [IsRoot.def, quasiJacobiPolynomial, eval_sub, eval_mul, eval_C, hratio_x]
+    field_simp [hK]
     ring
-  have hroot_z : (quasiJacobiPolynomial m α β τ).IsRoot z := by
-    change (quasiJacobiPolynomial m α β τ).eval z = 0
-    rw [quasiJacobiPolynomial, eval_sub, eval_mul, eval_C, hprev_z]
-    dsimp only [τ]
-    field_simp [hKne]
-    ring
-  have hlower :
-      0 < L /
-        ((shiftedJacobiMonic (m - 1) α β).eval r *
-          (shiftedJacobiMonic (m - 1) α β).eval z) := by
-    simpa only [L] using quasiJacobi_kernelWeight_sum_div_eval_prev_pos
-      (q := m) (m := m) hm (le_refl m) hα hβ hδ hδ1 hroot_r hroot_z
-  have hKsq : 0 < K * K := mul_self_pos.mpr hKne
+  have hlower := quasiJacobi_kernelWeight_sum_div_eval_prev_pos hm le_rfl
+    hα hβ hδ hδ1 (hroot r hpr rfl) (hroot z hpz hratio.symm)
   have hden :
       (shiftedJacobiMonic (m - 1) α β).eval r *
           (shiftedJacobiMonic (m - 1) α β).eval z =
-        (K * K) *
-          ((shiftedJacobiMonic m α β).eval r *
-            (shiftedJacobiMonic m α β).eval z) := by
-    rw [hprev_r, hprev_z]
-    ring
-  have hlower' :
-      0 < L /
-        ((shiftedJacobiMonic m α β).eval r *
+        K ^ 2 * ((shiftedJacobiMonic m α β).eval r *
           (shiftedJacobiMonic m α β).eval z) := by
-    rw [hden] at hlower
-    have hrewrite :
-        L /
-            ((shiftedJacobiMonic m α β).eval r *
-              (shiftedJacobiMonic m α β).eval z) =
-          (L /
-              ((K * K) *
-                ((shiftedJacobiMonic m α β).eval r *
-                  (shiftedJacobiMonic m α β).eval z))) *
-            (K * K) := by
-      field_simp [hKne, hpr, hpz]
-    rw [hrewrite]
-    exact mul_pos hlower hKsq
-  have hs : 0 < α + β + 2 := by linarith
-  have htop :
-      0 < kernelWeight m δ (α + β + 2) m /
-        shiftedJacobiMonicNorm m α β :=
-    div_pos (kernelWeight_pos (by simp) hδ hs)
+    have hr := (div_eq_iff hpr).mp (show
+      (shiftedJacobiMonic (m - 1) α β).eval r /
+        (shiftedJacobiMonic m α β).eval r = K from rfl)
+    have hz := (div_eq_iff hpz).mp hratio.symm
+    rw [hr, hz]
+    ring
+  rw [hden, mul_comm (K ^ 2), ← div_div] at hlower
+  have hbase := (div_pos_iff_of_pos_right (sq_pos_of_ne_zero hK)).mp hlower
+  have htop : 0 < kernelWeight m δ (α + β + 2) m /
+      shiftedJacobiMonicNorm m α β :=
+    div_pos (kernelWeight_pos (j := m) le_rfl hδ (by linarith))
       (shiftedJacobiMonicNorm_pos hα hβ m)
-  have htop_eq :
-      (kernelWeight m δ (α + β + 2) m *
-          (shiftedJacobiMonic m α β).eval r *
-            (shiftedJacobiMonic m α β).eval z /
-          shiftedJacobiMonicNorm m α β) /
-        ((shiftedJacobiMonic m α β).eval r *
-          (shiftedJacobiMonic m α β).eval z) =
-        kernelWeight m δ (α + β + 2) m /
-          shiftedJacobiMonicNorm m α β := by
-    field_simp [hpr, hpz, (shiftedJacobiMonicNorm_pos hα hβ m).ne']
-  have hsplit :
-      (∑ l : Fin (m + 1),
-          kernelWeight m δ (α + β + 2) l *
-              (shiftedJacobiMonic l α β).eval r *
-                (shiftedJacobiMonic l α β).eval z /
-            shiftedJacobiMonicNorm l α β) =
-        L +
-          kernelWeight m δ (α + β + 2) m *
-              (shiftedJacobiMonic m α β).eval r *
-                (shiftedJacobiMonic m α β).eval z /
-            shiftedJacobiMonicNorm m α β := by
-    rw [Fin.sum_univ_castSucc]
-    rfl
-  rw [hsplit, add_div, htop_eq]
-  exact add_pos hlower' htop
+  rw [Fin.sum_univ_castSucc, add_div]
+  simp only [Fin.val_castSucc, Fin.val_last]
+  refine add_pos hbase ?_
+  convert htop using 1
+  field_simp [hpr, hpz]
 
 /-! ## Root critical-kernel sign
 
@@ -222,52 +157,13 @@ theorem rootJacobi_kernelWeight_sum_div_eval_prev_pos
             shiftedJacobiMonicNorm l α β) /
         ((shiftedJacobiMonic (m - 1) α β).eval r *
           (shiftedJacobiMonic (m - 1) α β).eval z) := by
-  have hpmr : (shiftedJacobiMonic m α β).eval r = 0 := by
-    simpa only [Polynomial.IsRoot.def] using hr
-  have hpmz : (shiftedJacobiMonic m α β).eval z = 0 := by
-    simpa only [Polynomial.IsRoot.def] using hz
-  have hquasi_r : (quasiJacobiPolynomial m α β 0).IsRoot r := by
-    change (quasiJacobiPolynomial m α β 0).eval r = 0
-    simp [quasiJacobiPolynomial, hpmr]
-  have hquasi_z : (quasiJacobiPolynomial m α β 0).IsRoot z := by
-    change (quasiJacobiPolynomial m α β 0).eval z = 0
-    simp [quasiJacobiPolynomial, hpmz]
-  have hlower :
-      0 <
-        (∑ l : Fin m,
-            kernelWeight m δ (α + β + 2) l *
-                (shiftedJacobiMonic l α β).eval r *
-                  (shiftedJacobiMonic l α β).eval z /
-              shiftedJacobiMonicNorm l α β) /
-          ((shiftedJacobiMonic (m - 1) α β).eval r *
-            (shiftedJacobiMonic (m - 1) α β).eval z) :=
-    quasiJacobi_kernelWeight_sum_div_eval_prev_pos
-      (q := m) (m := m) hm (le_refl m) hα hβ hδ hδ1 hquasi_r hquasi_z
-  have htop_zero :
-      kernelWeight m δ (α + β + 2) m *
-          (shiftedJacobiMonic m α β).eval r *
-            (shiftedJacobiMonic m α β).eval z /
-          shiftedJacobiMonicNorm m α β = 0 := by
-    simp [hpmr]
-  have hsplit :
-      (∑ l : Fin (m + 1),
-          kernelWeight m δ (α + β + 2) l *
-              (shiftedJacobiMonic l α β).eval r *
-                (shiftedJacobiMonic l α β).eval z /
-            shiftedJacobiMonicNorm l α β) =
-        (∑ l : Fin m,
-            kernelWeight m δ (α + β + 2) l *
-                (shiftedJacobiMonic l α β).eval r *
-                  (shiftedJacobiMonic l α β).eval z /
-              shiftedJacobiMonicNorm l α β) +
-          kernelWeight m δ (α + β + 2) m *
-              (shiftedJacobiMonic m α β).eval r *
-                (shiftedJacobiMonic m α β).eval z /
-              shiftedJacobiMonicNorm m α β := by
-    rw [Fin.sum_univ_castSucc]
-    rfl
-  rw [hsplit, htop_zero, add_zero]
-  exact hlower
+  have h := quasiJacobi_kernelWeight_sum_div_eval_prev_pos hm le_rfl
+    hα hβ hδ hδ1 (τ := 0) (r := r) (z := z)
+    (by simpa only [quasiJacobiPolynomial, C_0, zero_mul, sub_zero] using hr)
+    (by simpa only [quasiJacobiPolynomial, C_0, zero_mul, sub_zero] using hz)
+  rw [Fin.sum_univ_castSucc]
+  simpa only [Fin.val_castSucc, Fin.val_last, hr.eq_zero, mul_zero, zero_mul,
+    zero_div, add_zero] using h
 
 /-! ## The exceptional previous-Jacobi-root kernel sign
 
@@ -399,20 +295,8 @@ theorem exceptional_prev_root_kernel_sign
       (∑ l : Fin (n + 2), term l.castSucc.castSucc) /
         ((shiftedJacobiMonic (n + 3) α β).eval r *
           (shiftedJacobiMonic (n + 3) α β).eval z) := by
-    rw [hprod]
-    have hsq : 0 < shiftedJacobiSubdiag (n + 2) α β ^ 2 := sq_pos_of_pos hsub
-    rw [show
-      (∑ l : Fin (n + 2), term l.castSucc.castSucc) /
-          (shiftedJacobiSubdiag (n + 2) α β ^ 2 *
-            ((shiftedJacobiMonic (n + 1) α β).eval r *
-              (shiftedJacobiMonic (n + 1) α β).eval z)) =
-        ((∑ l : Fin (n + 2), term l.castSucc.castSucc) /
-          ((shiftedJacobiMonic (n + 1) α β).eval r *
-            (shiftedJacobiMonic (n + 1) α β).eval z)) /
-          shiftedJacobiSubdiag (n + 2) α β ^ 2 by
-      field_simp [hprev_r, hprev_z, hsub.ne']
-      ]
-    exact div_pos hsmall' hsq
+    rw [hprod, mul_comm (shiftedJacobiSubdiag (n + 2) α β ^ 2), ← div_div]
+    exact div_pos hsmall' (sq_pos_of_pos hsub)
   have htopterm :
       term (Fin.last (n + 3)) /
           ((shiftedJacobiMonic (n + 3) α β).eval r *
@@ -421,21 +305,10 @@ theorem exceptional_prev_root_kernel_sign
           shiftedJacobiMonicNorm (n + 3) α β := by
     simp [term, Fin.val_last]
     field_simp [hnext_r_ne, hnext_z_ne]
-  have htotal :
-      (∑ l : Fin (n + 4), term l) /
-          ((shiftedJacobiMonic (n + 3) α β).eval r *
-            (shiftedJacobiMonic (n + 3) α β).eval z) =
-        (∑ l : Fin (n + 2), term l.castSucc.castSucc) /
-          ((shiftedJacobiMonic (n + 3) α β).eval r *
-            (shiftedJacobiMonic (n + 3) α β).eval z) +
-          kernelWeight (n + 3) δ (α + β + 2) (n + 3) /
-            shiftedJacobiMonicNorm (n + 3) α β := by
-    rw [hsplit, hmiddle]
-    rw [add_zero, add_div, htopterm]
   change 0 < (∑ l : Fin (n + 4), term l) /
     ((shiftedJacobiMonic (n + 3) α β).eval r *
       (shiftedJacobiMonic (n + 3) α β).eval z)
-  rw [htotal]
+  rw [hsplit, hmiddle, add_zero, add_div, htopterm]
   exact add_pos hbase htop
 
 end RealRooted.JacobiDeformation
