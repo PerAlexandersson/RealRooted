@@ -230,6 +230,7 @@ public import RealRooted.Challenges.Roots.HermiteBiehlerHurwitz
 public import RealRooted.Challenges.Roots.HermitePoulain
 public import RealRooted.Challenges.Interlacing.Interlacing
 public import RealRooted.Challenges.Combinatorial.JacobiStirlingDescent
+public import RealRooted.Challenges.Combinatorial.LongCycleDescents
 public import RealRooted.Challenges.Matrices.LGV
 public import RealRooted.Challenges.Stability.LeeYang
 public import RealRooted.Challenges.Interlacing.MaWangLiuWang
