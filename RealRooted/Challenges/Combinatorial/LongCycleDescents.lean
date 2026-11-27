@@ -59,7 +59,7 @@ label = "The rows $D_{n,k}$, $3≤k≤n$, share isolating intervals for $n≥3$,
 objects = ["Mixtures of long-cycle descent polynomials"]
 name = "RealRooted.LongCycleDescents.long_mixture_roots"
 module = "RealRooted.CombinatorialExamples.LongCycleDescents.AllSizes"
-label = "Nonnegative mixtures of the rows $D_{n,k}$, $k≥3$, split with nonpositive roots, simple for $n≠5$"
+label = "Nonnegative mixtures of the rows $D_{n,k}$, $k≥3$: nonpositive roots, simple for $n≠5$"
 
 [[theorems]]
 name = "RealRooted.LongCycleDescents.long_mixture_roots_nodup_iff"
@@ -84,7 +84,7 @@ label = "Mixtures of the five rows for $n=5$, with cutoffs 1 and 2, split"
 [[theorems]]
 name = "RealRooted.IntervalDifferential.intervalSpectralApply_one_roots"
 module = "RealRooted.IntervalDifferential.DiskTransfer"
-label = "Interval-differential operator: factors of $Q$ in a disk of radius $5/4$ with power sum $p_2≥-2$ keep simple zeros in $(-1,1)$"
+label = "Operator insertion: roots of $Q$ in radius $5/4$, $p_2≥-2$ ⇒ simple zeros in $(-1,1)$"
 
 [[theorems]]
 objects = ["Descent polynomials of conjugacy classes with distinct cycle lengths"]
