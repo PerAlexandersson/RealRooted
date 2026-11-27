@@ -237,7 +237,7 @@ private theorem row_pole_error_of_radical {R Ri : S}
   have hβa : β ^ n ≤ a ^ n :=
     pow_le_pow_left₀ (by norm_num) (by norm_num [a]) _
   constructor
-  · rw [← coeff_F_tau, F_tau_eq hR0 hR]
+  · rw [← coeff_fTau, fTau_eq hR0 hR]
     calc
       _ ≤ 15 * β ^ n := hFa
       _ ≤ 15 * (3 / 2 : ℝ) ^ n := mul_le_mul_of_nonneg_left
@@ -259,7 +259,7 @@ private theorem row_pole_error_of_radical {R Ri : S}
         _ ≤ ((k : ℝ) + 1) * a ^ k * (12 * a) :=
           mul_le_mul_of_nonneg_left (by norm_num [a]) (by positivity)
         _ = _ := by simp only [Nat.succ_eq_add_one, pow_succ]; ring
-    rw [← coeff_DtF_tau, DtF_tau_eq hR0 hR hRi]
+    rw [← coeff_dtFTau, dtFTau_eq hR0 hR hRi]
     simp only [map_add, map_sub, mul_assoc, ← map_ofNat c 4, ← map_ofNat c 3,
       PowerSeries.coeff_C_mul]
     change |((1 / 2 : ℝ) * cf n (x * geo a)) + 4 * cf n (B Ri * geo b) -

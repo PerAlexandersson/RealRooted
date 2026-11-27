@@ -77,18 +77,18 @@ private def K : S := 1 - c a * x^2
 private def J : S := 1 + c a * x^2
 
 /-- Evaluation of the formula-defined polynomial at the near-zero cutoff. -/
-def F_tau : S := PowerSeries.mk fun n => (polynomial n).eval tau
+def fTau : S := PowerSeries.mk fun n => (polynomial n).eval tau
 
 /-- Evaluation of the derivative in the strict-peak variable at the cutoff. -/
-def DtF_tau : S := PowerSeries.mk fun n => (Polynomial.derivative (polynomial n)).eval tau
+def dtFTau : S := PowerSeries.mk fun n => (Polynomial.derivative (polynomial n)).eval tau
 
 /-- Coefficients of the value series. -/
-@[simp] theorem coeff_F_tau (n : ℕ) :
-    PowerSeries.coeff n F_tau = (polynomial n).eval tau := PowerSeries.coeff_mk _ _
+@[simp] theorem coeff_fTau (n : ℕ) :
+    PowerSeries.coeff n fTau = (polynomial n).eval tau := PowerSeries.coeff_mk _ _
 
 /-- Coefficients of the parameter-derivative series. -/
-@[simp] theorem coeff_DtF_tau (n : ℕ) :
-    PowerSeries.coeff n DtF_tau = (Polynomial.derivative (polynomial n)).eval tau :=
+@[simp] theorem coeff_dtFTau (n : ℕ) :
+    PowerSeries.coeff n dtFTau = (Polynomial.derivative (polynomial n)).eval tau :=
   PowerSeries.coeff_mk _ _
 
 private def specialize : PS →+* S :=
@@ -110,12 +110,12 @@ private theorem coeff_specializeDerivative (n : ℕ) (f : PS) :
     (PowerSeries.coeff k f).derivative.eval tau) = _
   rw [PowerSeries.coeff_mk]
 
-private theorem specialize_G : specialize GeneratingFunction.series = F_tau := by
+private theorem specialize_G : specialize GeneratingFunction.series = fTau := by
   ext n
   simp [specialize, GeneratingFunction.series]
 
 private theorem specializeDerivative_G :
-    specializeDerivative GeneratingFunction.series = DtF_tau := by
+    specializeDerivative GeneratingFunction.series = dtFTau := by
   ext n
   simp [coeff_specializeDerivative, GeneratingFunction.series]
 
@@ -160,7 +160,7 @@ private theorem eval_X_sub_one : (X - 1 : P).eval tau = -a := by
   norm_num [tau, a]
 
 private theorem specialize_quadratic :
-    K * F_tau - x*poleA*F_tau^2 = 1 := by
+    K * fTau - x*poleA*fTau^2 = 1 := by
   have h := congrArg specialize GeneratingFunction.series_eq
   simp only [map_add, map_mul, map_pow, map_one, specialize_G, specialize_C,
     specialize_X, eval_one_sub_X, eval_X_sub_one, map_neg] at h
@@ -174,7 +174,7 @@ private theorem derivative_eval_X_sub_one : (X - 1 : P).derivative.eval tau = 1 
   simp
 
 private theorem derivative_quadratic :
-    (K - 2*x*poleA*F_tau)*DtF_tau = x^2*(F_tau^2-F_tau) := by
+    (K - 2*x*poleA*fTau)*dtFTau = x^2*(fTau^2-fTau) := by
   have h := congrArg specializeDerivative GeneratingFunction.series_eq
   simp only [map_add, specializeDerivative_one, specializeDerivative_mul,
     specializeDerivative_sq, specializeDerivative_X, specializeDerivative_C,
@@ -229,8 +229,8 @@ private theorem cancel_unitConstant {f g h : S}
 /-- Upper-branch discriminant factorization selected by the constant coefficient. -/
 private theorem branch_factor {R : S} (hR0 : PowerSeries.constantCoeff R = 1)
     (hR : R ^ 2 = Q) :
-    K - 2*x*poleA*F_tau = poleB*R := by
-  let E := K - 2*x*poleA*F_tau
+    K - 2*x*poleA*fTau = poleB*R := by
+  let E := K - 2*x*poleA*fTau
   have h₁ : E^2 = K^2 - 4*x*poleA := by
     dsimp [E]
     linear_combination (-4*x*poleA) * specialize_quadratic
@@ -307,21 +307,21 @@ theorem R_mul_B {R Ri : S} (hRi : R * Ri = 1) :
     _ = _ := by rw [hRi, mul_one]
 
 /-- The value series as a radical numerator and simple pole. -/
-theorem F_tau_eq {R : S} (hR0 : PowerSeries.constantCoeff R = 1)
-    (hR : R ^ 2 = Q) : F_tau = H R * geo a := by
+theorem fTau_eq {R : S} (hR0 : PowerSeries.constantCoeff R = 1)
+    (hR : R ^ 2 = Q) : fTau = H R * geo a := by
   have hE := branch_factor hR0 hR
-  have hX : x*(H R) = x*(poleA*F_tau) := by
+  have hX : x*(H R) = x*(poleA*fTau) := by
     have hh := X_mul_H hR0
     change x*H R = c (1/2)*(K-poleB*R) at hh
-    linear_combination hh + c (1/2)*hE + (x*poleA*F_tau)*half_mul_two
-  have hH : H R = poleA*F_tau := by
+    linear_combination hh + c (1/2)*hE + (x*poleA*fTau)*half_mul_two
+  have hH : H R = poleA*fTau := by
     apply PowerSeries.ext
     intro n
     simpa only [PowerSeries.coeff_succ_X_mul] using
       congrArg (PowerSeries.coeff (n+1)) hX
   have hA : poleA*geo a = 1 := pole_mul_geo a
   rw [hH]
-  linear_combination (-F_tau)*hA
+  linear_combination (-fTau)*hA
 
 private theorem pole_relation : 4*poleA - 3*poleB = 1 := by
   have hcoeff : 4 * c a = 3 * c b := by
@@ -331,32 +331,32 @@ private theorem pole_relation : 4*poleA - 3*poleB = 1 := by
   linear_combination (-x)*hcoeff
 
 /-- The derivative series as simple and double pole terms. -/
-theorem DtF_tau_eq {R Ri : S} (hR0 : PowerSeries.constantCoeff R = 1)
+theorem dtFTau_eq {R Ri : S} (hR0 : PowerSeries.constantCoeff R = 1)
     (hR : R ^ 2 = Q) (hRi : R * Ri = 1) :
-    DtF_tau = (c (1/2)*x)*geo a + 4*B Ri*geo b -
+    dtFTau = (c (1/2)*x)*geo a + 4*B Ri*geo b -
       3*B Ri*geo a - x*H R*(geo a)^2 := by
   let E := poleB*R
   let h := c (1/2)
-  have hE : E = K - 2*x*poleA*F_tau := (branch_factor hR0 hR).symm
-  have hEvt : E*DtF_tau = x^2*(F_tau^2-F_tau) := by
+  have hE : E = K - 2*x*poleA*fTau := (branch_factor hR0 hR).symm
+  have hEvt : E*dtFTau = x^2*(fTau^2-fTau) := by
     rw [hE]
     exact derivative_quadratic
   have hKJ : K + J = 2 := by unfold K J; ring
   have hhalf : 2*h = 1 := half_mul_two
   have hRB : R*B Ri = h*x*J := R_mul_B hRi
-  have hmain : E*poleA*DtF_tau = x*E*(h-F_tau) + R*B Ri := by
+  have hmain : E*poleA*dtFTau = x*E*(h-fTau) + R*B Ri := by
     rw [hRB]
-    linear_combination poleA*hEvt - x*(h-F_tau)*hE + x*specialize_quadratic -
-      h*x*hKJ + (x^2*poleA*F_tau - x)*hhalf
+    linear_combination poleA*hEvt - x*(h-fTau)*hE + x*specialize_quadratic -
+      h*x*hKJ + (x^2*poleA*fTau - x)*hhalf
   have hA : poleA*geo a = 1 := pole_mul_geo a
   have hB : poleB*geo b = 1 := pole_mul_geo b
-  have hF : F_tau = H R*geo a := F_tau_eq hR0 hR
+  have hF : fTau = H R*geo a := fTau_eq hR0 hR
   have hn : PowerSeries.constantCoeff (E*poleA) ≠ 0 := by
     simp [E, hR0]
   apply cancel_unitConstant hn
   have hlin : 4*poleA*R*B Ri - 3*poleB*R*B Ri = R*B Ri := by
     linear_combination (R*B Ri)*pole_relation
-  change E*poleA*DtF_tau =
+  change E*poleA*dtFTau =
     E*poleA*(h*x*geo a + 4*B Ri*geo b - 3*B Ri*geo a - x*H R*(geo a)^2)
   rw [hmain, hF]
   dsimp [E]
