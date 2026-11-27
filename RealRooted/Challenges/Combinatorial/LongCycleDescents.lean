@@ -56,6 +56,7 @@ module = "RealRooted.CombinatorialExamples.LongCycleDescents.AllSizes"
 label = "The rows $D_{n,k}$, $3≤k≤n$, share isolating intervals for $n≥3$, $n≠5$"
 
 [[theorems]]
+objects = ["Mixtures of long-cycle descent polynomials"]
 name = "RealRooted.LongCycleDescents.long_mixture_roots"
 module = "RealRooted.CombinatorialExamples.LongCycleDescents.AllSizes"
 label = "Nonnegative mixtures of the rows $D_{n,k}$, $k≥3$, split with nonpositive roots, simple for $n≠5$"
@@ -86,6 +87,7 @@ module = "RealRooted.IntervalDifferential.DiskTransfer"
 label = "Interval-differential operator: factors of $Q$ in a disk of radius $5/4$ with power sum $p_2≥-2$ keep simple zeros in $(-1,1)$"
 
 [[theorems]]
+objects = ["Descent polynomials of conjugacy classes with distinct cycle lengths"]
 name = "RealRooted.CycleTypeDescents.realDescentPolynomial_isRealRootedIn"
 module = "RealRooted.CombinatorialExamples.CycleTypeDescents.DistinctParts"
 label = "Distinct cycle lengths $≥3$ give a real-rooted class polynomial with nonpositive roots"
@@ -116,7 +118,8 @@ $n\ne5$, every nonzero nonnegative mixture of the rows $D_{n,k}$, $k\ge3$, has s
 nonpositive roots, and the rows share common isolating intervals. At $n=5$ a repeated root occurs.
 
 Zuo's proof [Zuo, v1.0.0](https://github.com/AlexZander-666/cycle-minimum-descent-real-roots/releases/tag/v1.0.0)
-combines sign evaluations on a mesh with finite certificates, and is Lean-verified in his archive.
+combines sign evaluations on a mesh with finite certificates; his archive includes a complete
+formalization.
 Mixtures that include the cutoff-1 and cutoff-2 rows are formalized here only for $n\le5$.
 
 **Cycle types.** For distinct cycle lengths $\ge3$ the class polynomial is real-rooted, by a
@@ -135,6 +138,11 @@ $Q$ lie in the disk of radius $5/4$ and their second power sum is at least $-2$.
 reusable interval-differential theorem. A coefficient bound gives these hypotheses for $n\ge18$,
 and a proved kernel checker covers $n\le17$.
 
-Adapted in part from Bowen Zuo's Lean formalization (Apache-2.0).
+Parts are adapted from Bowen Zuo's formalization (Apache-2.0).
+
+## References
+
+[@Alexandersson2026Eulerian, Thm. 2.1]; [@Branden2006, Thm. 3.13];
+[Zuo, Real zeros of descent polynomials for permutations with a minimum cycle length (2026)](https://github.com/AlexZander-666/cycle-minimum-descent-real-roots/releases/tag/v1.0.0).
 <!-- /realrooted-catalog-content -->
 -/

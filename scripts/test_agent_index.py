@@ -63,9 +63,9 @@ class AcceptanceTests(unittest.TestCase):
         finally:
             search.backend = original
 
-    def test_six_solved_conjectures(self) -> None:
+    def test_solved_conjectures(self) -> None:
         hits = self.nav.call("find_start", {"kind": "conjecture"})["hits"]
-        self.assertEqual(len(hits), 6)
+        self.assertEqual(len(hits), 7)
         self.assertTrue(all(h["type"] == "page" for h in hits))
         self.assertTrue({"boros-moll", "zigzag-eulerian"}.issubset(
             {h["page"]["slug"] for h in hits}))
@@ -358,7 +358,7 @@ class NoTomllib(importlib.abc.MetaPathFinder):
 sys.meta_path.insert(0, NoTomllib())
 import challenge_catalog as c
 from pathlib import Path
-assert len(c.load_catalog(Path(sys.argv[1]))) == 69
+assert len(c.load_catalog(Path(sys.argv[1]))) == 70
 '''
         result = subprocess.run([sys.executable, "-B", "-c", code, str(ROOT)],
                                 cwd=ROOT / "scripts", capture_output=True, text=True, timeout=30)
