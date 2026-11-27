@@ -2448,6 +2448,7 @@ public import RealRooted.CombinatorialExamples.CycleTypeDescents.Results
 public import RealRooted.Transforms.BrandenE.Choose
 public import RealRooted.Transforms.BrandenE.Products
 public import RealRooted.Transforms.BrandenE.UnitDisk
+public import RealRooted.Challenges.Combinatorial.LongCycleDescents
 
 /-!
 # RealRooted production umbrella
