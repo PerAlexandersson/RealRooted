@@ -22,6 +22,7 @@ formalized = "2026-11-26"
 references = [
   "Alexandersson2026Eulerian",
   "Branden2006",
+  "Zuo2026LongCycleDescents",
 ]
 authors = ["Bowen Zuo", "Alexandersson"]
 years = [2026]
@@ -117,7 +118,7 @@ derangement cases [@Alexandersson2026Eulerian].
 $n\ne5$, every nonzero nonnegative mixture of the rows $D_{n,k}$, $k\ge3$, has simple
 nonpositive roots, and the rows share common isolating intervals. At $n=5$ a repeated root occurs.
 
-Zuo's proof [Zuo, v1.0.0](https://github.com/AlexZander-666/cycle-minimum-descent-real-roots/releases/tag/v1.0.0)
+Zuo's proof [@Zuo2026LongCycleDescents]
 combines sign evaluations on a mesh with finite certificates; his archive includes a complete
 formalization.
 Mixtures that include the cutoff-1 and cutoff-2 rows are formalized here only for $n\le5$.
@@ -142,7 +143,6 @@ Parts are adapted from Bowen Zuo's formalization (Apache-2.0).
 
 ## References
 
-[@Alexandersson2026Eulerian, Thm. 2.1]; [@Branden2006, Thm. 3.13];
-[Zuo, Real zeros of descent polynomials for permutations with a minimum cycle length (2026)](https://github.com/AlexZander-666/cycle-minimum-descent-real-roots/releases/tag/v1.0.0).
+[@Alexandersson2026Eulerian, Thm. 2.1]; [@Branden2006, Thm. 3.13]; [@Zuo2026LongCycleDescents].
 <!-- /realrooted-catalog-content -->
 -/

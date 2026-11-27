@@ -455,23 +455,4 @@ theorem scaled_eq (c : ℝ) (hc : c ≠ 0) :
   rw [heq] at h
   linear_combination h + (PowerSeries.X ^ 2 * scaled c * (1 - scaled c)) * hcoeff
 
-/-- The formal square-root branch with constant term one. -/
-def discriminantBranch (c : ℝ) : PowerSeries ℝ :=
-  1 - PowerSeries.X ^ 2 -
-    2 * PowerSeries.X * (PowerSeries.C c - PowerSeries.X) * scaled c
-
-/-- The selected formal square-root branch starts at one. -/
-theorem discriminantBranch_constant (c : ℝ) :
-    PowerSeries.constantCoeff (discriminantBranch c) = 1 := by
-  simp [discriminantBranch]
-
-/-- The scaled generating function gives the exact quartic discriminant. -/
-theorem discriminantBranch_square (c : ℝ) (hc : c ≠ 0) :
-    discriminantBranch c ^ 2 =
-      (1 + PowerSeries.X ^ 2) ^ 2 - 4 * PowerSeries.C c * PowerSeries.X := by
-  have h := scaled_eq c hc
-  simp only [discriminantBranch]
-  linear_combination
-    -(4 * PowerSeries.X * (PowerSeries.C c - PowerSeries.X)) * h
-
 end RealRooted.CatalanWordPeaks.GeneratingFunction

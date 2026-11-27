@@ -398,6 +398,49 @@
       },
       "label": "BDLP96"
     },
+    "BarilHarrisHarryMcClintonRamirez2025": {
+      "bibtex": "@article{BarilHarrisHarryMcClintonRamirez2025,\n  author = {Baril, Jean-Luc and Harris, Pamela E. and Harry, Kimberly J. and McClinton, Matt and Ram{\\'i}rez, Jos{\\'e} L.},\n  title = {Enumerating runs, valleys, and peaks in {C}atalan words},\n  year = {2025},\n  journal = {The Art of Discrete and Applied Mathematics},\n  volume = {8},\n  number = {2},\n  pages = {P2.07},\n  publisher = {University of Primorska Press},\n  doi = {10.26493/2590-9770.1794.fc5},\n  eprint = {2404.05672},\n  issn = {2590-9770}\n}\n",
+      "csl": {
+        "DOI": "10.26493/2590-9770.1794.fc5",
+        "URL": "https://arxiv.org/abs/2404.05672",
+        "author": [
+          {
+            "family": "Baril",
+            "given": "Jean-Luc"
+          },
+          {
+            "family": "Harris",
+            "given": "Pamela E."
+          },
+          {
+            "family": "Harry",
+            "given": "Kimberly J."
+          },
+          {
+            "family": "McClinton",
+            "given": "Matt"
+          },
+          {
+            "family": "Ramírez",
+            "given": "José L."
+          }
+        ],
+        "container-title": "The Art of Discrete and Applied Mathematics",
+        "issue": "2",
+        "issued": {
+          "date-parts": [
+            [
+              2025
+            ]
+          ]
+        },
+        "page": "P2.07",
+        "title": "Enumerating runs, valleys, and peaks in Catalan words",
+        "type": "article-journal",
+        "volume": "8"
+      },
+      "label": "BHHM+25"
+    },
     "Bender1973": {
       "bibtex": "@article{Bender1973,\n  title = {Central and local limit theorems applied to asymptotic enumeration},\n  volume = {15},\n  ISSN = {0097-3165},\n  url = {http://dx.doi.org/10.1016/0097-3165(73)90038-1},\n  DOI = {10.1016/0097-3165(73)90038-1},\n  number = {1},\n  journal = {Journal of Combinatorial Theory,  Series A},\n  publisher = {Elsevier BV},\n  author = {Bender,  Edward A},\n  year = {1973},\n  month = jul,\n  pages = {91–-111}\n}\n",
       "csl": {
@@ -3467,6 +3510,30 @@
       },
       "label": "PZ24"
     },
+    "ProgramComputer2026CatalanPeaks": {
+      "bibtex": "@misc{ProgramComputer2026CatalanPeaks,\n  author = {{ProgramComputer}},\n  title = {Real zeros and strict interlacing for strict peaks in {C}atalan words},\n  year = {2026},\n  date = {2026-11-25},\n  howpublished = {Preprint, open-math-research repository},\n  doi = {10.5281/zenodo.24552076},\n  url = {https://github.com/ProgramComputer/open-math-research/blob/312293aa850010e9d9509d6850a482b9c7b7966f/topics/catalan-word-peaks/catalan-strict-peaks.pdf}\n}\n",
+      "csl": {
+        "DOI": "10.5281/zenodo.24552076",
+        "URL": "https://github.com/ProgramComputer/open-math-research/blob/312293aa850010e9d9509d6850a482b9c7b7966f/topics/catalan-word-peaks/catalan-strict-peaks.pdf",
+        "author": [
+          {
+            "literal": "ProgramComputer"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              11,
+              25
+            ]
+          ]
+        },
+        "title": "Real zeros and strict interlacing for strict peaks in Catalan words",
+        "type": ""
+      },
+      "label": "Pro26"
+    },
     "RahmanSchmeisser2002": {
       "bibtex": "@book{RahmanSchmeisser2002,\n  author    = {Rahman, Q. I. and Schmeisser, G.},\n  title     = {Analytic Theory of Polynomials},\n  publisher = {Oxford University Press},\n  series    = {London Mathematical Society Monographs},\n  year      = {2002}\n}\n",
       "csl": {
@@ -4007,6 +4074,30 @@
         "type": "article-journal"
       },
       "label": "ZZ26"
+    },
+    "Zuo2026LongCycleDescents": {
+      "bibtex": "@misc{Zuo2026LongCycleDescents,\n  author = {Bowen Zuo},\n  title = {Real zeros of descent polynomials for permutations with a minimum cycle length},\n  year = {2026},\n  date = {2026-11-26},\n  howpublished = {Preprint, with Lean formalization},\n  url = {https://github.com/AlexZander-666/cycle-minimum-descent-real-roots/releases/tag/v1.0.0}\n}\n",
+      "csl": {
+        "URL": "https://github.com/AlexZander-666/cycle-minimum-descent-real-roots/releases/tag/v1.0.0",
+        "author": [
+          {
+            "family": "Zuo",
+            "given": "Bowen"
+          }
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              11,
+              26
+            ]
+          ]
+        },
+        "title": "Real zeros of descent polynomials for permutations with a minimum cycle length",
+        "type": ""
+      },
+      "label": "Zuo26"
     }
   },
   "schema_version": 1

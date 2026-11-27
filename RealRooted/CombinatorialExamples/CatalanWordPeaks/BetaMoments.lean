@@ -250,17 +250,4 @@ theorem moment_two {n : ℕ} (hn : (5 / 2 : ℝ) < (n : ℝ)) :
   rw [mul_comm ((n : ℝ) - 5 / 2)]
   norm_num
 
-/-- The variance of radial displacement in the Catalan ray density. -/
-theorem variance_formula {n : ℕ} (hn : (5 / 2 : ℝ) < (n : ℝ)) :
-    moment n 2 - moment n 1 ^ 2 =
-      (3 / 2) * n / (((n : ℝ) - 3 / 2) ^ 2 * ((n : ℝ) - 5 / 2)) := by
-  rw [moment_one (by linarith), moment_two hn]
-  set a := (n : ℝ) - 3 / 2
-  set b := (n : ℝ) - 5 / 2
-  have h₁ : 0 < a := by dsimp [a]; linarith
-  have h₂ : 0 < b := by dsimp [b]; linarith
-  field_simp [h₁.ne', h₂.ne']
-  dsimp [a, b]
-  ring
-
 end RealRooted.CatalanWordPeaks.BetaMoments

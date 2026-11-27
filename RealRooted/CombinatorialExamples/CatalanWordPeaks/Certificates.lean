@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 module
 
 public import RealRooted.CombinatorialExamples.CatalanWordPeaks.Basic
-import RealRooted.CombinatorialExamples.CatalanWordPeaks.RootIntervals
 public import RealRooted.CombinatorialExamples.LongCycleDescents.Boundary
 import Mathlib.Algebra.Polynomial.Eval.Degree
 import Mathlib.Tactic

@@ -111,14 +111,6 @@ private theorem slit_ofReal {ζ : ℂ} (hζ : ζ.im ≠ 0) (x : ℝ) :
     simp [Complex.div_im, hx, hζ,
       show ζ ≠ 0 by intro h; apply hζ; simp [h]]
 
-/-- The real axis avoids all four radial cuts. -/
-theorem ofReal_mem_slitDomain {d : ℝ} (hd : 0 < d) (hD : d < 1) (x : ℝ) :
-    (x : ℂ) ∈ slitDomain d := by
-  have hz := (nearPoint_im_pos hd hD).ne'
-  have hw := (farPoint_im_pos hd hD).ne'
-  exact ⟨slit_ofReal hz x, slit_ofReal (by simpa [Complex.conj_im] using hz) x,
-    slit_ofReal hw x, slit_ofReal (by simpa [Complex.conj_im] using hw) x⟩
-
 /-- The four-cut domain contains the origin. -/
 theorem zero_mem_slitDomain (d : ℝ) : (0 : ℂ) ∈ slitDomain d := by simp [slitDomain]
 
@@ -179,34 +171,11 @@ theorem rationalized_denominator_ne_zero {d : ℝ} (hd : 0 < d) (hD : d < 1) (x 
     simp only [add_re, sub_re, one_re, zero_re, ← ofReal_pow, ofReal_re] at hr
     linarith
 
-/-- The value of the continued square root at the removable pole. -/
-theorem branch_at_scale {d : ℝ} (hd : 0 < d) (hD : d < 1) :
-    branch d (scale d) = 1 - (scale d : ℂ) ^ 2 := by
-  have h := rationalized_product hd hD (scale d : ℂ)
-  rw [sub_self, mul_zero] at h
-  have hden := rationalized_denominator_ne_zero hd hD (scale d : ℂ)
-  exact (sub_eq_zero.mp ((mul_eq_zero.mp h).resolve_right hden)).symm
-
 /-- The generating function is analytic throughout the slit domain. -/
 theorem analyticGenerating_analyticAt {d : ℝ} (hd : 0 < d) (hD : d < 1)
     {x : ℂ} (hx : x ∈ slitDomain d) : AnalyticAt ℂ (analyticGenerating d) x :=
   analyticAt_const.div ((analyticAt_const.sub (analyticAt_id.pow 2)).add (branch_analyticAt hx))
     (rationalized_denominator_ne_zero hd hD x)
-
-/-- The analytic generating function is normalized at zero. -/
-@[simp] theorem analyticGenerating_zero (d : ℝ) : analyticGenerating d 0 = 1 := by
-  norm_num [analyticGenerating]
-
-/-- The original quotient agrees with its rationalization off the removable poles. -/
-theorem analyticGenerating_eq_quotient {d : ℝ} (hd : 0 < d) (hD : d < 1)
-    {x : ℂ} (hx : x ≠ 0) (hxc : x ≠ (scale d : ℂ)) :
-    analyticGenerating d x = (1 - x ^ 2 - branch d x) / (2 * x * ((scale d : ℂ) - x)) := by
-  unfold analyticGenerating
-  have hden := rationalized_denominator_ne_zero hd hD x
-  have hsub : ((scale d : ℂ) - x) ≠ 0 := sub_ne_zero.mpr hxc.symm
-  apply (div_eq_div_iff hden (mul_ne_zero (mul_ne_zero (by norm_num) hx) hsub)).mpr
-  rw [rationalized_product hd hD]
-  ring
 
 /-- The analytic generating function satisfies the scaled quadratic equation. -/
 theorem analyticGenerating_quadratic {d : ℝ} (hd : 0 < d) (hD : d < 1) (x : ℂ) :
@@ -291,7 +260,7 @@ private theorem Expands.mul {p q : PowerSeries ℂ} {f g : ℂ → ℂ}
   rw [PowerSeries.coeff_mul, Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro k hk
-  rw [← Finset.mem_antidiagonal.mp hk, pow_add]
+  rw [← Finset.HasAntidiagonal.mem_antidiagonal.mp hk, pow_add]
   dsimp [u, v]
   ring
 

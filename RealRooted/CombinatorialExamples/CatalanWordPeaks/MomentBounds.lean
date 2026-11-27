@@ -121,15 +121,6 @@ theorem rayWeight_shift {N n : ℕ} (h : N ≤ n) (s : ℝ) :
   rw [rayWeight, rayWeight, inv_pow, ← div_eq_mul_inv, div_div, ← pow_add,
     show N + 1 + (n - N) = n + 1 by lia]
 
-/-- The expectation of the one-step tilt factor, as in (8). -/
-theorem tilt_mean {n : ℕ} (hn : 0 < n) :
-    (∫ s in Ioi (0 : ℝ), (1 + s)⁻¹ * rayWeight n s) / mass n =
-      ((n : ℝ) - 1 / 2) / ((n : ℝ) + 1) := by
-  have hd (s : ℝ) : (1 + s)⁻¹ * rayWeight n s = rayWeight (n + 1) s := by
-    rw [rayWeight_shift (Nat.le_succ n), show n.succ - n = 1 by lia, pow_one, mul_comm]
-  simp_rw [hd]
-  rw [← mass, mass_succ hn, mul_div_cancel_right₀ _ (mass_pos hn).ne']
-
 private theorem scaledMass_monotone :
     Monotone (fun n : ℕ => (n : ℝ) ^ 2 * mass n) := by
   apply monotone_nat_of_le_succ

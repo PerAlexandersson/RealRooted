@@ -199,15 +199,6 @@ theorem quartic_zero_iff {d : ℝ} (h₀ : 0 < d) (h₁ : d < 1) (x : ℂ) :
   simp only [mul_eq_zero, sub_eq_zero]
   tauto
 
-/-- In the radial regime the discriminant has no real branch point. -/
-theorem quartic_real_ne_zero {d : ℝ} (h₀ : 0 < d) (h₁ : d < 1) (x : ℝ) :
-    quartic (scale d) (x : ℂ) ≠ 0 := by
-  intro h
-  rcases (quartic_zero_iff h₀ h₁ _).mp h with hz | hz | hz | hz
-    <;> have him := congrArg Complex.im hz
-    <;> simp only [Complex.ofReal_im, Complex.conj_im] at him
-    <;> linarith [nearPoint_im_pos h₀ h₁, farPoint_im_pos h₀ h₁]
-
 /-- The reciprocal radius is a simple multiple of the radius. -/
 theorem radius_inverse_eq {d : ℝ} (h₀ : 0 < d) : (radius d)⁻¹ = radius d * (1 + 2 * d) := by
   rw [inv_eq_one_div, div_eq_iff (radius_pos h₀.le).ne']
@@ -436,15 +427,6 @@ theorem cosine_in_unit {θ : ℝ} (h : θ ∈ Ioo 0 (Real.pi / 2)) :
 
 /-- The positive modulus −t at the scaled value t = 1-c⁻². -/
 def modulus (θ : ℝ) : ℝ := ((scale (Real.cos θ)) ^ 2)⁻¹ - 1
-
-/-- The strict-peak parameter has positive negative-root modulus. -/
-theorem modulus_pos {θ : ℝ} (h : θ ∈ Ioo 0 (Real.pi / 2)) : 0 < modulus θ := by
-  obtain ⟨hd, hu⟩ := cosine_in_unit h
-  have hScale := scale_pos hd
-  have hg := scale_sq_lt_one hd hu
-  unfold modulus
-  rw [sub_pos, inv_eq_one_div, lt_div_iff₀ (pow_pos hScale 2), one_mul]
-  exact hg
 
 /-- The angular order matches increasing positive moduli of negative t. -/
 theorem strictMonoOn_modulus : StrictMonoOn modulus (Ioo 0 (Real.pi / 2)) := by

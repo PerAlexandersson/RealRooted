@@ -352,6 +352,34 @@ public import RealRooted.CombinatorialExamples.CaoFu.SineBound
 public import RealRooted.CombinatorialExamples.CaoFu.SmallRanks
 public import RealRooted.CombinatorialExamples.CaoFu.TraceComparison
 public import RealRooted.CombinatorialExamples.CaoFu.TracePolynomial
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.AnalyticBranch
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.Basic
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.BetaMoments
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.Certificates
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.CutGeometry
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.FarEdge
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.FarRays
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.Finite
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.FiniteData
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.FiniteDataTail
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.FourRays
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.GeneratingFunction
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.InteriorSigns
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.LogSectors
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.LogarithmicContour
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.Main
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.MomentBounds
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.NearAmplitude
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.NearCovariance
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.NearEdge
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.Phase
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.PhaseSigns
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.PoleEstimates
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.PoleRadical
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.PoleSeries
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.RadialBounds
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.RayMeans
+public import RealRooted.CombinatorialExamples.CatalanWordPeaks.RootSelection
 public import RealRooted.CombinatorialExamples.CentralFactorial
 public import RealRooted.CombinatorialExamples.ColoredSetPartitions
 public import RealRooted.CombinatorialExamples.CoefficientHelpers
@@ -2449,6 +2477,7 @@ public import RealRooted.Transforms.BrandenE.Choose
 public import RealRooted.Transforms.BrandenE.Products
 public import RealRooted.Transforms.BrandenE.UnitDisk
 public import RealRooted.Challenges.Combinatorial.LongCycleDescents
+public import RealRooted.Challenges.Combinatorial.CatalanWordPeaks
 
 /-!
 # RealRooted production umbrella
