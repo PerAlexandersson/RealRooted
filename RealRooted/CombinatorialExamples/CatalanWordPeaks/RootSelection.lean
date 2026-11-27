@@ -12,6 +12,7 @@ import RealRooted.CombinatorialExamples.CatalanWordPeaks.PoleEstimates
 import RealRooted.RootCounting.SignChanges
 import Mathlib.Order.Fin.Tuple
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
+import Mathlib.Analysis.Real.Pi.Bounds
 import Mathlib.Tactic
 
 /-!

@@ -162,7 +162,7 @@ theorem R_sq : R^2 = Q := by
   rw [mul_pow, pow_two Q, mul_assoc, Q_mul_Ri_sq, mul_one]
 
 private lemma recurrence_bound {u : ℕ → ℝ}
-    (c0 : u 0 = 1) (c1 : u 1 = -1/4)
+    (c0 : u 0 = 1) (c1 : u 1 = -1 / 4)
     (rec : ∀ n : ℕ, u (n+2) = -(((2*(n:ℝ)+3)/2)*u (n+1) +
       ((2*(n:ℝ)+2)*(9/16))*u n)/(2*((n:ℝ)+2))) :
     ∀ n : ℕ, |u (n+1)| ≤ (1/4 : ℝ)*(5/4)^n := by
@@ -185,14 +185,14 @@ private lemma recurrence_bound {u : ℕ → ℝ}
       _ ≤ (1/2 : ℝ)*|u (n+1+1)| + (9/16 : ℝ)*|u (n+1)| := step
       _ ≤ (1/2 : ℝ)*((1/4)*(5/4)^(n+1))+(9/16)*((1/4)*(5/4)^n) := by gcongr
       _ ≤ _ := by
-        rw [pow_succ (5/4:ℝ) (n+1), pow_succ (5/4:ℝ) n]
+        rw [pow_succ (5 / 4 : ℝ) (n+1), pow_succ (5 / 4 : ℝ) n]
         nlinarith [pow_pos (by norm_num : (0:ℝ)<5/4) n]
 
 /-- The convergent coefficient evaluation used at the two positive poles. -/
 private def poleValue (f : PowerSeries ℝ) (t : ℝ) : ℝ := ∑' n, coeff n f * t^n
 
 private lemma absolute_from_geometric {f : PowerSeries ℝ} {A t : ℝ}
-    (hf : ∀ n, |coeff n f| ≤ A*(5/4:ℝ)^n) (ht : 0 ≤ t) (hT : (5/4:ℝ)*t < 1) :
+    (hf : ∀ n, |coeff n f| ≤ A * (5 / 4 : ℝ) ^ n) (ht : 0 ≤ t) (hT : (5 / 4 : ℝ) * t < 1) :
     Summable (fun n => |coeff n f| *t^n) ∧
       ∑' n, |coeff n f| *t^n ≤ A/(1-(5/4)*t) := by
   have hnon : 0 ≤ (5/4 : ℝ)*t := by positivity
@@ -207,15 +207,15 @@ private lemma absolute_from_geometric {f : PowerSeries ℝ} {A t : ℝ}
 
 private lemma positive_value {f : PowerSeries ℝ} {t : ℝ}
     (h0 : coeff 0 f = 1)
-    (hsmall : ∀ n : ℕ, |coeff (n+1) f| ≤ (1/4:ℝ)*(5/4)^n)
-    (ht : 0 ≤ t) (hT : (5/4:ℝ)*t < 1) (hgap : (t/4)/(1-5/4*t) < 1) :
+    (hsmall : ∀ n : ℕ, |coeff (n+1) f| ≤ (1 / 4 : ℝ) * (5 / 4) ^ n)
+    (ht : 0 ≤ t) (hT : (5 / 4 : ℝ) * t < 1) (hgap : (t/4)/(1-5/4 * t) < 1) :
     0 < poleValue f t := by
-  have hnon : 0 ≤ (5/4:ℝ)*t := by positivity
+  have hnon : 0 ≤ (5 / 4 : ℝ)*t := by positivity
   have hg := (summable_geometric_of_lt_one hnon hT).mul_left (t/4)
   have bound (n : ℕ) : ‖coeff (n+1) f * t^(n+1)‖ ≤ (t/4)*((5/4)*t)^n := by
     rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (pow_nonneg ht _), pow_succ, mul_pow]
     calc
-      _ ≤ ((1/4:ℝ)*(5/4)^n)*(t^n*t) := by gcongr; exact hsmall n
+      _ ≤ ((1 / 4 : ℝ)*(5/4)^n)*(t^n*t) := by gcongr; exact hsmall n
       _ = _ := by ring
   have hnorm := Summable.of_nonneg_of_le (fun _ => norm_nonneg _) bound hg
   have htail := hnorm.of_norm
@@ -226,8 +226,8 @@ private lemma positive_value {f : PowerSeries ℝ} {t : ℝ}
   linarith [(abs_lt.mp (hbound.trans_lt hgap)).1]
 
 private lemma value_mul {f g : PowerSeries ℝ} {t : ℝ}
-    (hf : Summable (fun n => ‖coeff n f * t^n‖))
-    (hg : Summable (fun n => ‖coeff n g * t^n‖)) :
+    (hf : Summable (fun n => ‖coeff n f * t ^ n‖))
+    (hg : Summable (fun n => ‖coeff n g * t ^ n‖)) :
     poleValue (f*g) t = poleValue f t * poleValue g t := by
   unfold poleValue
   rw [tsum_mul_tsum_eq_tsum_sum_antidiagonal_of_summable_norm hf hg]
@@ -246,7 +246,7 @@ private lemma coeff_Ri_tail (n : ℕ) :
     recurrence_bound invRootCoeff_zero invRootCoeff_one invRootCoeff_succ_succ n
 
 private lemma coeff_Ri_unit (n : ℕ) :
-    |coeff n Ri| ≤ (5/4:ℝ)^n := by
+    |coeff n Ri| ≤ (5 / 4 : ℝ)^n := by
   cases n with
   | zero => norm_num
   | succ n =>
@@ -256,7 +256,7 @@ private lemma coeff_Ri_unit (n : ℕ) :
 
 /-- A geometric coefficient majorant for its reciprocal. -/
 lemma coeff_Ri_bound (n : ℕ) :
-    |coeff n Ri| ≤ 3*(5/4:ℝ)^n := by
+    |coeff n Ri| ≤ 3*(5 / 4 : ℝ)^n := by
   linarith [coeff_Ri_unit n, pow_pos (by norm_num : (0:ℝ)<5/4) n]
 
 private lemma coeff_R_expansion (n : ℕ) :
@@ -271,7 +271,7 @@ private lemma coeff_R_expansion (n : ℕ) :
 
 /-- A geometric coefficient majorant for the radical. -/
 lemma coeff_R_bound (n : ℕ) :
-    |coeff n R| ≤ 2*(5/4:ℝ)^n := by
+    |coeff n R| ≤ 2*(5 / 4 : ℝ)^n := by
   rw [coeff_R_expansion]
   obtain _ | _ | n := n
   · norm_num
@@ -283,29 +283,29 @@ lemma coeff_R_bound (n : ℕ) :
       _ ≤ |coeff (n+2) Ri| + |(1/2:ℝ)*coeff (n+1) Ri| +
         |(9/16:ℝ)*coeff n Ri| :=
           (abs_add_le _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
-      _ ≤ (5/4:ℝ)^(n+2) + (1/2)*(5/4)^(n+1) + (9/16)*(5/4)^n := by
+      _ ≤ (5 / 4 : ℝ)^(n+2) + (1/2)*(5/4)^(n+1) + (9/16)*(5/4)^n := by
         rw [abs_mul, abs_mul]
         rw [abs_of_pos (by norm_num : (0 : ℝ) < 1/2), abs_of_pos (by norm_num : (0 : ℝ) < 9/16)]
         gcongr <;> apply coeff_Ri_unit
       _ ≤ _ := by
-        change _ ≤ 2*(5/4:ℝ)^(n+2)
-        rw [pow_succ (5/4:ℝ) (n+1), pow_succ (5/4:ℝ) n]
+        change _ ≤ 2*(5 / 4 : ℝ)^(n+2)
+        rw [pow_succ (5 / 4 : ℝ) (n+1), pow_succ (5 / 4 : ℝ) n]
         nlinarith [pow_pos (by norm_num : (0:ℝ)<5/4) n]
 
 private lemma absSummable_at {f : PowerSeries ℝ} {A t : ℝ}
-    (hf : ∀ n, |coeff n f| ≤ A*(5/4:ℝ)^n) (ht : 0 ≤ t) (hT : (5/4:ℝ)*t < 1) :
+    (hf : ∀ n, |coeff n f| ≤ A * (5 / 4 : ℝ) ^ n) (ht : 0 ≤ t) (hT : (5 / 4 : ℝ) * t < 1) :
     Summable (fun n => ‖coeff n f * t^n‖) := by
   simpa only [Real.norm_eq_abs, abs_mul, abs_of_nonneg (pow_nonneg ht _)] using
     (absolute_from_geometric hf ht hT).1
 
-private lemma absSummable_R {t : ℝ} (ht : 0 ≤ t) (hT : (5/4:ℝ)*t < 1) :
+private lemma absSummable_R {t : ℝ} (ht : 0 ≤ t) (hT : (5 / 4 : ℝ) * t < 1) :
     Summable (fun n => ‖coeff n R * t^n‖) := absSummable_at coeff_R_bound ht hT
 
-private lemma absSummable_Ri {t : ℝ} (ht : 0 ≤ t) (hT : (5/4:ℝ)*t < 1) :
+private lemma absSummable_Ri {t : ℝ} (ht : 0 ≤ t) (hT : (5 / 4 : ℝ) * t < 1) :
     Summable (fun n => ‖coeff n Ri * t^n‖) := absSummable_at coeff_Ri_bound ht hT
 
-private lemma poleValue_Ri_pos {t : ℝ} (ht : 0 ≤ t) (hT : (5/4:ℝ)*t < 1)
-    (hgap : (t/4)/(1-5/4*t)<1) : 0 < poleValue Ri t :=
+private lemma poleValue_Ri_pos {t : ℝ} (ht : 0 ≤ t) (hT : (5 / 4 : ℝ) * t < 1)
+    (hgap : (t / 4) / (1 - 5 / 4 * t) < 1) : 0 < poleValue Ri t :=
   positive_value (by simp) coeff_Ri_tail ht hT hgap
 
 /-- Evaluating by a convergent Taylor series with explicitly specified sum. -/
@@ -348,7 +348,7 @@ private theorem eval_x_sq (t : ℝ) : PoleHasSum (x^2) t (t^2) := by
   simpa only [pow_two] using eval_X_mul (eval_x t)
 
 private theorem eval_X_cancel {P : S} {t y : ℝ} (ht : t ≠ 0)
-    (hp : PoleHasSum (x*P) t y) : PoleHasSum P t (y/t) := by
+    (hp : PoleHasSum (x * P) t y) : PoleHasSum P t (y/t) := by
   have h := (hasSum_nat_add_iff' 1).mpr hp
   simp only [Finset.sum_range_one, PowerSeries.coeff_zero_eq_constantCoeff, map_mul,
     PowerSeries.constantCoeff_X, zero_mul, pow_zero, mul_one, sub_zero] at h
@@ -365,26 +365,26 @@ private theorem value_Q (t : ℝ) : poleValue Q t = 1 + t/2 + (9/16)*t^2 := by
   simpa only [poleValue, Q, div_eq_mul_inv, mul_comm, one_mul] using h.tsum_eq
 
 private theorem poleValue_R_mul_Ri {t : ℝ}
-    (hR : Summable (fun n => ‖cf n R * t^n‖))
-    (hi : Summable (fun n => ‖cf n Ri * t^n‖)) :
+    (hR : Summable (fun n => ‖cf n R * t ^ n‖))
+    (hi : Summable (fun n => ‖cf n Ri * t ^ n‖)) :
     poleValue R t * poleValue Ri t = 1 := by
   rw [← value_mul hR hi, R_mul_Ri, value_one]
 
 private theorem poleValue_R_sq {t : ℝ}
-    (hR : Summable (fun n => ‖cf n R * t^n‖)) :
+    (hR : Summable (fun n => ‖cf n R * t ^ n‖)) :
     poleValue R t ^ 2 = 1 + t/2 + (9/16)*t^2 := by
   rw [pow_two, ← value_mul hR hR, ← pow_two, R_sq, value_Q]
 
 private theorem poleValue_R_pos {t : ℝ}
-    (hR : Summable (fun n => ‖cf n R * t^n‖))
-    (hi : Summable (fun n => ‖cf n Ri * t^n‖)) (hip : 0 < poleValue Ri t) :
+    (hR : Summable (fun n => ‖cf n R * t ^ n‖))
+    (hi : Summable (fun n => ‖cf n Ri * t ^ n‖)) (hip : 0 < poleValue Ri t) :
     0 < poleValue R t := by
   have h := (eq_div_iff hip.ne').mpr (poleValue_R_mul_Ri hR hi)
   rw [h]
   positivity
 
 private theorem eq_of_sq_eq_pos {u v : ℝ} (hu : 0 < u) (hv : 0 < v)
-    (h : u^2 = v^2) : u = v := by
+    (h : u ^ 2 = v ^ 2) : u = v := by
   nlinarith [sq_nonneg (u - v)]
 
 private theorem poleValue_R_at_a : poleValue R (16/27) = 11/9 := by

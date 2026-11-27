@@ -81,8 +81,8 @@ with the checkpoint separation, give the exact rightmost-root sign. -/
 private theorem rightmost_sign_of_logDerivative_growth {n : ℕ} (hn : 150 ≤ n)
     {old : Fin (rowDegree n) → ℝ} {new : Fin (rowDegree (n + 1)) → ℝ}
     (hOld : (↑(List.ofFn (fun i => -old i)) : Multiset ℝ) = (polynomial n).roots)
-    (hNew : (↑(List.ofFn (fun i => -new i)) : Multiset ℝ) = (polynomial (n+1)).roots)
-    (hsOld : (polynomial n).Splits) (hsNew : (polynomial (n+1)).Splits)
+    (hNew : (↑(List.ofFn (fun i => -new i)) : Multiset ℝ) = (polynomial (n + 1)).roots)
+    (hsOld : (polynomial n).Splits) (hsNew : (polynomial (n + 1)).Splits)
     (hAll : ∀ i, (11 / 16 : ℝ) < old i) (hAll' : ∀ i, (11 / 16 : ℝ) < new i)
     (hgap : ∀ i : Fin (rowDegree n), 0 < i.val → 11 / 16 + 1 / (n : ℝ) ^ 2 < old i)
     (hgap' : ∀ i : Fin (rowDegree (n + 1)), 0 < i.val →
@@ -157,14 +157,14 @@ private theorem rightmost_sign_of_logDerivative_growth {n : ℕ} (hn : 150 ≤ n
 
 /-- The next row is strictly negative at the old closest root. -/
 theorem rightmost_root_sign {n : ℕ} (hn : 150 ≤ n)
-    {old : Fin (rowDegree n) → ℝ} {new : Fin (rowDegree (n+1)) → ℝ}
+    {old : Fin (rowDegree n) → ℝ} {new : Fin (rowDegree (n + 1)) → ℝ}
     (hOld : (↑(List.ofFn (fun i => -old i)) : Multiset ℝ) = (polynomial n).roots)
-    (hNew : (↑(List.ofFn (fun i => -new i)) : Multiset ℝ) = (polynomial (n+1)).roots)
-    (hsOld : (polynomial n).Splits) (hsNew : (polynomial (n+1)).Splits)
+    (hNew : (↑(List.ofFn (fun i => -new i)) : Multiset ℝ) = (polynomial (n + 1)).roots)
+    (hsOld : (polynomial n).Splits) (hsNew : (polynomial (n + 1)).Splits)
     (hAll : ∀ i, (11 / 16 : ℝ) < old i) (hAll' : ∀ i, (11 / 16 : ℝ) < new i)
-    (hgap : ∀ i, 0 < i.val → (11 / 16 : ℝ) + 1 / (n : ℝ)^2 < old i)
-    (hgap' : ∀ i, 0 < i.val → (11 / 16 : ℝ) + 1 / ((n+1 : ℕ) : ℝ)^2 < new i)
-    (i : Fin (rowDegree n)) (hi : i.val = 0) : (polynomial (n+1)).eval (-old i) < 0 := by
+    (hgap : ∀ i, 0 < i.val → (11 / 16 : ℝ) + 1 / (n : ℝ) ^ 2 < old i)
+    (hgap' : ∀ i, 0 < i.val → (11 / 16 : ℝ) + 1 / ((n + 1 : ℕ) : ℝ) ^ 2 < new i)
+    (i : Fin (rowDegree n)) (hi : i.val = 0) : (polynomial (n + 1)).eval (-old i) < 0 := by
   obtain ⟨hv, hlog, hstep⟩ := transition_bounds hn
   exact rightmost_sign_of_logDerivative_growth hn hOld hNew hsOld hsNew hAll hAll'
     hgap hgap' hv (transition_bounds (by lia : 150 ≤ n+1)).1 hlog hstep i hi

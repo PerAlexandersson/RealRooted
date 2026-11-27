@@ -7,6 +7,7 @@ public import RealRooted.CombinatorialExamples.CatalanWordPeaks.Basic
 public import Mathlib.RingTheory.PowerSeries.WellKnown
 import RealRooted.CombinatorialExamples.CatalanWordPeaks.GeneratingFunction
 public import Mathlib.Algebra.Polynomial.Derivative
+import Mathlib.RingTheory.PowerSeries.NoZeroDivisors
 import Mathlib.Tactic
 
 /-!
@@ -218,16 +219,16 @@ private theorem discriminant :
   simpa only [ev, Polynomial.coe_eval₂RingHom, Polynomial.eval₂_C, Polynomial.eval₂_X] using he
 
 private theorem cancel_unitConstant_zero {f g : S}
-    (hf : PowerSeries.constantCoeff f ≠ 0) (hz : f*g = 0) : g = 0 :=
+    (hf : PowerSeries.constantCoeff f ≠ 0) (hz : f * g = 0) : g = 0 :=
   (mul_eq_zero.mp hz).resolve_left (fun h => hf (by rw [h, map_zero]))
 
 private theorem cancel_unitConstant {f g h : S}
-    (hf : PowerSeries.constantCoeff f ≠ 0) (hfg : f*g = f*h) : g = h :=
+    (hf : PowerSeries.constantCoeff f ≠ 0) (hfg : f * g = f * h) : g = h :=
   mul_left_cancel₀ (fun h => hf (by rw [h, map_zero])) hfg
 
 /-- Upper-branch discriminant factorization selected by the constant coefficient. -/
 private theorem branch_factor {R : S} (hR0 : PowerSeries.constantCoeff R = 1)
-    (hR : R^2 = Q) :
+    (hR : R ^ 2 = Q) :
     K - 2*x*poleA*F_tau = poleB*R := by
   let E := K - 2*x*poleA*F_tau
   have h₁ : E^2 = K^2 - 4*x*poleA := by
@@ -298,7 +299,7 @@ theorem X_mul_H {R : S} (hR0 : PowerSeries.constantCoeff R = 1) :
   rw [mul_left_comm, ← hs]
 
 /-- The radical cancels its reciprocal in the derivative numerator. -/
-theorem R_mul_B {R Ri : S} (hRi : R*Ri = 1) :
+theorem R_mul_B {R Ri : S} (hRi : R * Ri = 1) :
     R * B Ri = c (1/2) * x * (1 + c a * x^2) := by
   unfold B
   calc
@@ -307,7 +308,7 @@ theorem R_mul_B {R Ri : S} (hRi : R*Ri = 1) :
 
 /-- The value series as a radical numerator and simple pole. -/
 theorem F_tau_eq {R : S} (hR0 : PowerSeries.constantCoeff R = 1)
-    (hR : R^2 = Q) : F_tau = H R * geo a := by
+    (hR : R ^ 2 = Q) : F_tau = H R * geo a := by
   have hE := branch_factor hR0 hR
   have hX : x*(H R) = x*(poleA*F_tau) := by
     have hh := X_mul_H hR0
@@ -331,7 +332,7 @@ private theorem pole_relation : 4*poleA - 3*poleB = 1 := by
 
 /-- The derivative series as simple and double pole terms. -/
 theorem DtF_tau_eq {R Ri : S} (hR0 : PowerSeries.constantCoeff R = 1)
-    (hR : R^2 = Q) (hRi : R*Ri = 1) :
+    (hR : R ^ 2 = Q) (hRi : R * Ri = 1) :
     DtF_tau = (c (1/2)*x)*geo a + 4*B Ri*geo b -
       3*B Ri*geo a - x*H R*(geo a)^2 := by
   let E := poleB*R

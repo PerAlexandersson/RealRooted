@@ -88,11 +88,11 @@ private theorem far_root_bounds {m : ℕ} {P : ℝ[X]} {r : Fin m → ℝ}
     (hroots : (↑(List.ofFn (fun i => -r i)) : Multiset ℝ) = P.roots)
     (hpos : ∀ i, 0 < r i) (hm : 2 ≤ m) (lead : 0 < P.leadingCoeff)
     {U c : ℝ} (hU : 0 < U)
-    (hu : (P.comp (X + 1)).coeff (m-1) = P.leadingCoeff * U)
-    (hc : 2*(P.comp (X + 1)).coeff (m-2) < P.leadingCoeff * (c*U^2))
+    (hu : (P.comp (X + 1)).coeff (m - 1) = P.leadingCoeff * U)
+    (hc : 2 * (P.comp (X + 1)).coeff (m - 2) < P.leadingCoeff * (c * U ^ 2))
     (l : Fin m) (last : ∀ i, r i ≤ r l) :
-    (1-c)*U < 1+r l ∧ 1+r l ≤ U ∧
-    ∀ i, i ≠ l → 1+r i < c*U := by
+    (1 - c) * U < 1 + r l ∧ 1 + r l ≤ U ∧
+    ∀ i, i ≠ l → 1 + r i < c * U := by
   classical
   obtain ⟨hs, hsq⟩ := shifted_top_two hdeg hroots hm
   let y := fun i : Fin m => 1+r i
@@ -126,7 +126,7 @@ private theorem far_root_bounds {m : ℕ} {P : ℝ[X]} {r : Fin m → ℝ}
 private theorem eval_at_neg_eq_product {m : ℕ} {P : ℝ[X]} {r : Fin m → ℝ}
     (hdeg : P.natDegree = m)
     (hroots : (↑(List.ofFn (fun i => -r i)) : Multiset ℝ) = P.roots) (x : ℝ) :
-    P.eval (-x) = P.leadingCoeff * ∏ i, (r i-x) := by
+    P.eval (-x) = P.leadingCoeff * ∏ i, (r i - x) := by
   have hv := congrArg (fun f : ℝ[X] => f.eval (-x-1)) (shifted_factorization hdeg hroots)
   simp only [eval_comp, eval_add, eval_X, eval_one, sub_add_cancel, eval_mul, eval_C,
     eval_prod] at hv
@@ -136,7 +136,7 @@ private theorem eval_at_neg_eq_product {m : ℕ} {P : ℝ[X]} {r : Fin m → ℝ
   ring
 
 private theorem reflection_product {m : ℕ} (r : Fin m → ℝ) (x : ℝ) :
-    (-1 : ℝ)^m * (∏ i, (r i-x)) = ∏ i, (x-r i) := by
+    (-1 : ℝ) ^ m * (∏ i, (r i - x)) = ∏ i, (x - r i) := by
   calc
     _ = (∏ _ : Fin m, (-1 : ℝ)) * (∏ i, (r i-x)) := by simp
     _ = ∏ i, ((-1 : ℝ) * (r i-x)) := Finset.prod_mul_distrib.symm
@@ -146,16 +146,16 @@ private theorem eval_outside_all {m : ℕ} {P : ℝ[X]} {r : Fin m → ℝ}
     (hdeg : P.natDegree = m)
     (hroots : (↑(List.ofFn (fun i => -r i)) : Multiset ℝ) = P.roots)
     (lead : 0 < P.leadingCoeff) {x : ℝ}
-    (hout : ∀ i, r i < x) : 0 < (-1 : ℝ)^m * P.eval (-x) := by
+    (hout : ∀ i, r i < x) : 0 < (-1 : ℝ) ^ m * P.eval (-x) := by
   rw [eval_at_neg_eq_product hdeg hroots, mul_left_comm, reflection_product]
   exact mul_pos lead (Finset.prod_pos fun i _ => sub_pos.mpr (hout i))
 
-private theorem eval_inside_last {m : ℕ} {P : ℝ[X]} {r : Fin (m+1) → ℝ}
+private theorem eval_inside_last {m : ℕ} {P : ℝ[X]} {r : Fin (m + 1) → ℝ}
     (hdeg : P.natDegree = m + 1)
     (hroots : (↑(List.ofFn (fun i => -r i)) : Multiset ℝ) = P.roots)
     (lead : 0 < P.leadingCoeff) {x : ℝ}
     (hlo : ∀ i : Fin m, r i.castSucc < x) (hhi : x < r (Fin.last m)) :
-    0 < (-1 : ℝ)^m * P.eval (-x) := by
+    0 < (-1 : ℝ) ^ m * P.eval (-x) := by
   rw [eval_at_neg_eq_product hdeg hroots, Fin.prod_univ_castSucc, mul_left_comm]
   rw [← mul_assoc ((-1 : ℝ)^m), reflection_product (fun i : Fin m => r i.castSucc) x]
   exact mul_pos lead (mul_pos (Finset.prod_pos fun i _ => sub_pos.mpr (hlo i)) (sub_pos.mpr hhi))
@@ -163,7 +163,7 @@ private theorem eval_inside_last {m : ℕ} {P : ℝ[X]} {r : Fin (m+1) → ℝ}
 private theorem shifted_leading {m : ℕ} {P : ℝ[X]} {r : Fin m → ℝ}
     (hdeg : P.natDegree = m)
     (hroots : (↑(List.ofFn (fun i => -r i)) : Multiset ℝ) = P.roots) :
-    (P.comp (X+1)).coeff m = P.leadingCoeff := by
+    (P.comp (X + 1)).coeff m = P.leadingCoeff := by
   classical
   rw [shifted_factorization hdeg hroots, coeff_C_mul, Finset.prod_X_add_C_coeff _ _
     (show m ≤ (Finset.univ : Finset (Fin m)).card by simp)]
@@ -179,7 +179,7 @@ private def evenSecond (x : ℝ) : ℝ :=
   (x-1)*x*(x+1)*(x+2)*(x+3)*(x+6)*(x+7)*(x+8)*(x+9)*(x+10)/86400
 
 private theorem odd_spread {x : ℝ} (hx : 74 ≤ x) :
-    50*oddSecond x < 3*(oddFirst x)^2 := by
+    50 * oddSecond x < 3 * (oddFirst x) ^ 2 := by
   obtain ⟨u, hu, rfl⟩ := exists_nonneg_add_of_le hx
   unfold oddSecond oddFirst
   apply sub_pos.mp
@@ -187,7 +187,7 @@ private theorem odd_spread {x : ℝ} (hx : 74 ≤ x) :
   positivity
 
 private theorem even_spread {x : ℝ} (hx : 74 ≤ x) :
-    50*evenSecond x*evenLead x < 7*(evenFirst x)^2 := by
+    50 * evenSecond x * evenLead x < 7 * (evenFirst x) ^ 2 := by
   obtain ⟨u, hu, rfl⟩ := exists_nonneg_add_of_le hx
   unfold evenSecond evenFirst evenLead
   apply sub_pos.mp
@@ -218,9 +218,9 @@ private theorem bounds_of_top {m : ℕ} {P : ℝ[X]} {r : Fin m → ℝ}
     (hroots : (↑(List.ofFn (fun i => -r i)) : Multiset ℝ) = P.roots)
     (hpos : ∀ i, 0 < r i) (hm : 2 ≤ m)
     {L A B c : ℝ} (top : ShiftedTop P m L A B) (hL : 0 < L) (hA : 0 < A)
-    (spread : 50*B*L < c*A^2) (l : Fin m) (last : ∀ i, r i ≤ r l) :
-    (1-c/25)*(A/L) < 1+r l ∧ 1+r l ≤ A/L ∧
-    ∀ i, i ≠ l → 1+r i < (c/25)*(A/L) := by
+    (spread : 50 * B * L < c * A ^ 2) (l : Fin m) (last : ∀ i, r i ≤ r l) :
+    (1 - c / 25) * (A / L) < 1 + r l ∧ 1 + r l ≤ A / L ∧
+    ∀ i, i ≠ l → 1 + r i < (c / 25) * (A / L) := by
   have lc := (shifted_leading hdeg hroots).symm.trans top.top
   apply far_root_bounds hdeg hroots hpos hm (by rwa [lc]) (div_pos hA hL) _ _ l last
   · rw [top.first, lc]
@@ -236,8 +236,8 @@ private theorem odd_bounds {m : ℕ} {P : ℝ[X]} {r : Fin m → ℝ}
     (hpos : ∀ i, 0 < r i) (hm : 74 ≤ m)
     (top : ShiftedTop P m 1 (oddFirst m) (oddSecond m))
     (l : Fin m) (last : ∀ i, r i ≤ r l) :
-    (22/25 : ℝ)*oddFirst m < 1+r l ∧ 1+r l ≤ oddFirst m ∧
-    ∀ i, i ≠ l → 1+r i < (3/25 : ℝ)*oddFirst m := by
+    (22 / 25 : ℝ) * oddFirst m < 1 + r l ∧ 1 + r l ≤ oddFirst m ∧
+    ∀ i, i ≠ l → 1 + r i < (3 / 25 : ℝ) * oddFirst m := by
   have hx : (74 : ℝ) ≤ m := by exact_mod_cast hm
   have hmpos : (0 : ℝ) < m := by linarith
   have hp : 0 < oddFirst m := by unfold oddFirst; positivity
@@ -252,9 +252,9 @@ private theorem even_bounds {m : ℕ} {P : ℝ[X]} {r : Fin m → ℝ}
     (hpos : ∀ i, 0 < r i) (hm : 74 ≤ m)
     (top : ShiftedTop P m (evenLead m) (evenFirst m) (evenSecond m))
     (l : Fin m) (last : ∀ i, r i ≤ r l) :
-    (18/25 : ℝ)*(evenFirst m / evenLead m) < 1+r l ∧
-    1+r l ≤ evenFirst m / evenLead m ∧
-    ∀ i, i ≠ l → 1+r i < (7/25 : ℝ)*(evenFirst m / evenLead m) := by
+    (18 / 25 : ℝ) * (evenFirst m / evenLead m) < 1 + r l ∧
+    1 + r l ≤ evenFirst m / evenLead m ∧
+    ∀ i, i ≠ l → 1 + r i < (7 / 25 : ℝ) * (evenFirst m / evenLead m) := by
   have hx : (74 : ℝ) ≤ m := by exact_mod_cast hm
   have hmpos : (0 : ℝ) < m := by linarith
   have hp : 0 < evenFirst m := by unfold evenFirst; positivity
@@ -269,7 +269,7 @@ private theorem odd_to_even_sign {m : ℕ} (hm : 74 ≤ m) {O E : ℝ[X]}
     (hop : ∀ i, 0 < o i) (hep : ∀ i, 0 < e i) (hom : StrictMono o) (hem : StrictMono e)
     (to' : ShiftedTop O m 1 (oddFirst m) (oddSecond m))
     (te : ShiftedTop E m (evenLead m) (evenFirst m) (evenSecond m))
-    (l : Fin m) (last : ∀ i, i ≤ l) : 0 < (-1 : ℝ)^m * E.eval (-o l) := by
+    (l : Fin m) (last : ∀ i, i ≤ l) : 0 < (-1 : ℝ) ^ m * E.eval (-o l) := by
   have topO := odd_bounds hdo ho hop hm to' l (fun i => hom.monotone (last i))
   have topE := even_bounds hde he hep hm te l (fun i => hem.monotone (last i))
   have scales := neighboring_scales (x := (m : ℝ)) (by exact_mod_cast hm)
@@ -280,13 +280,13 @@ private theorem odd_to_even_sign {m : ℕ} (hm : 74 ≤ m) {O E : ℝ[X]}
   linarith only [hroot, hep l, topO.1, topE.2.1, scales.1]
 
 private theorem even_to_odd_sign {m : ℕ} (hm : 74 ≤ m) {E O : ℝ[X]}
-    {e : Fin m → ℝ} {o : Fin (m+1) → ℝ} (hde : E.natDegree = m) (hdo : O.natDegree = m+1)
+    {e : Fin m → ℝ} {o : Fin (m + 1) → ℝ} (hde : E.natDegree = m) (hdo : O.natDegree = m + 1)
     (he : (↑(List.ofFn (fun i => -e i)) : Multiset ℝ) = E.roots)
     (ho : (↑(List.ofFn (fun i => -o i)) : Multiset ℝ) = O.roots)
     (hep : ∀ i, 0 < e i) (hop : ∀ i, 0 < o i) (hem : StrictMono e) (hom : StrictMono o)
     (te : ShiftedTop E m (evenLead m) (evenFirst m) (evenSecond m))
-    (to' : ShiftedTop O (m+1) 1 (oddFirst (m+1)) (oddSecond (m+1)))
-    (l : Fin m) (last : ∀ i, i ≤ l) : 0 < (-1 : ℝ)^m * O.eval (-e l) := by
+    (to' : ShiftedTop O (m + 1) 1 (oddFirst (m + 1)) (oddSecond (m + 1)))
+    (l : Fin m) (last : ∀ i, i ≤ l) : 0 < (-1 : ℝ) ^ m * O.eval (-e l) := by
   have topE := even_bounds hde he hep hm te l (fun i => hem.monotone (last i))
   have to2 : ShiftedTop O (m+1) 1 (oddFirst ((m+1 : ℕ) : ℝ))
       (oddSecond ((m+1 : ℕ) : ℝ)) := by simpa only [Nat.cast_add, Nat.cast_one] using to'
@@ -301,23 +301,23 @@ private theorem even_to_odd_sign {m : ℕ} (hm : 74 ≤ m) {E O : ℝ[X]}
   · linarith only [hep l, topO.1, topE.2.1, scales.2.2.1]
 
 private theorem odd_top (m : ℕ) (hm : 2 ≤ m) :
-    ShiftedTop (polynomial (2*m+1)) m 1 (oddFirst m) (oddSecond m) :=
+    ShiftedTop (polynomial (2 * m + 1)) m 1 (oddFirst m) (oddSecond m) :=
   ⟨TopCoefficients.coeff_odd_top m, TopCoefficients.coeff_odd_next m (by lia),
     TopCoefficients.coeff_odd_next_two m hm⟩
 
 private theorem even_top (m : ℕ) (hm : 2 ≤ m) :
-    ShiftedTop (polynomial (2*m+2)) m (evenLead m) (evenFirst m) (evenSecond m) :=
+    ShiftedTop (polynomial (2 * m + 2)) m (evenLead m) (evenFirst m) (evenSecond m) :=
   ⟨TopCoefficients.coeff_even_top m, TopCoefficients.coeff_even_next m (by lia),
     TopCoefficients.coeff_even_next_two m hm⟩
 
 /-- The next row has the strict opposite-derivative sign at the old farthest root. -/
 theorem farthest_root_sign (n : ℕ) (hn : 150 ≤ n) :
-    ∀ (old : Fin (rowDegree n) → ℝ) (new : Fin (rowDegree (n+1)) → ℝ),
+    ∀ (old : Fin (rowDegree n) → ℝ) (new : Fin (rowDegree (n + 1)) → ℝ),
     StrictMono old → StrictMono new → (∀ i, 0 < old i) → (∀ i, 0 < new i) →
     (↑(List.ofFn (fun i => -old i)) : Multiset ℝ) = (polynomial n).roots →
-    (↑(List.ofFn (fun i => -new i)) : Multiset ℝ) = (polynomial (n+1)).roots →
+    (↑(List.ofFn (fun i => -new i)) : Multiset ℝ) = (polynomial (n + 1)).roots →
     ∀ i : Fin (rowDegree n), i.val + 1 = rowDegree n →
-      0 < (-1 : ℝ)^(i.val+1) * (polynomial (n+1)).eval (-old i) := by
+      0 < (-1 : ℝ) ^ (i.val + 1) * (polynomial (n + 1)).eval (-old i) := by
   obtain ⟨m, hm, heq⟩ : ∃ m : ℕ, 74 ≤ m ∧ (n = 2*m+1 ∨ n = 2*m+2) := by
     by_cases hnodd : n % 2 = 1
     · exact ⟨(n-1)/2, by lia, Or.inl (by lia)⟩

@@ -85,7 +85,7 @@ private theorem derivative_sign_of_root_list {p : ℝ[X]} {m : ℕ} {r : Fin m �
 
 private theorem analytic_root_signs {n : ℕ} (hn : 150 ≤ n) :
     ∀ z, (polynomial n).IsRoot z →
-      (polynomial (n+1)).eval z * (polynomial n).derivative.eval z < 0 := by
+      (polynomial (n + 1)).eval z * (polynomial n).derivative.eval z < 0 := by
   obtain ⟨old, hom, hot, ho, hos, hphase, hogap⟩ := CutGeometry.roots_from_150 hn
   obtain ⟨new, hem, het, he, hes, _, hegap⟩ :=
     CutGeometry.roots_from_150 (by lia : 150 ≤ n+1)
@@ -135,11 +135,11 @@ private theorem polynomial_strictInterl_of_root_signs {n : ℕ}
 /-- Consecutive rows strictly interlace, have no common roots, and have the stated
 rightmost-root orientation whenever the old row is nonconstant. -/
 theorem polynomial_strictInterl (n : ℕ) :
-    StrictInterl (polynomial n) (polynomial (n+1)) ∧
-      (∀ r, ¬ ((polynomial n).IsRoot r ∧ (polynomial (n+1)).IsRoot r)) ∧
-      (rowDegree n ≠ 0 → ∃ y ∈ (polynomial (n+1)).roots,
+    StrictInterl (polynomial n) (polynomial (n + 1)) ∧
+      (∀ r, ¬ ((polynomial n).IsRoot r ∧ (polynomial (n + 1)).IsRoot r)) ∧
+      (rowDegree n ≠ 0 → ∃ y ∈ (polynomial (n + 1)).roots,
         (∀ r ∈ (polynomial n).roots, r < y) ∧
-        ∀ z ∈ (polynomial (n+1)).roots, z ≤ y) := by
+        ∀ z ∈ (polynomial (n + 1)).roots, z ≤ y) := by
   by_cases hn : n < 150
   · exact Finite.polynomial_strictInterl hn
   · obtain ⟨hi, hno⟩ := polynomial_strictInterl_of_root_signs (polynomial_roots n).1
@@ -160,11 +160,11 @@ strictly interlace with disjoint roots and rightmost-root orientation. -/
 theorem all_lengths :
     (∀ n, (polynomial n).Splits ∧ HasSimpleRoots (polynomial n) ∧
       (polynomial n).natDegree = rowDegree n ∧ ∀ r ∈ (polynomial n).roots, r < 0) ∧
-    ∀ n, StrictInterl (polynomial n) (polynomial (n+1)) ∧
-      (∀ r, ¬ ((polynomial n).IsRoot r ∧ (polynomial (n+1)).IsRoot r)) ∧
-      (rowDegree n ≠ 0 → ∃ y ∈ (polynomial (n+1)).roots,
+    ∀ n, StrictInterl (polynomial n) (polynomial (n + 1)) ∧
+      (∀ r, ¬ ((polynomial n).IsRoot r ∧ (polynomial (n + 1)).IsRoot r)) ∧
+      (rowDegree n ≠ 0 → ∃ y ∈ (polynomial (n + 1)).roots,
         (∀ r ∈ (polynomial n).roots, r < y) ∧
-        ∀ z ∈ (polynomial (n+1)).roots, z ≤ y) :=
+        ∀ z ∈ (polynomial (n + 1)).roots, z ≤ y) :=
   ⟨polynomial_roots, polynomial_strictInterl⟩
 
 end RealRooted.CatalanWordPeaks
