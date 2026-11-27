@@ -385,7 +385,7 @@ theorem radius_le_cutPoint {d : ℝ} (hd : 0 < d) (hD : d < 1) (i : Fin 4) :
 
 private theorem cutFactor_product (d : ℝ) (z : ℂ) :
     (∏ i : Fin 4, cutFactor (cutPoint d i) z) = branch d z := by
-  simp only [Fin.prod_univ_four, cutPoint, branch, Fin.val_zero, Fin.coe_ofNat_eq_mod,
+  simp only [Fin.prod_univ_four, cutPoint, branch, Fin.coe_ofNat_eq_mod,
     Nat.reduceMod]
   ring
 
