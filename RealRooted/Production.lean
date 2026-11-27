@@ -2460,6 +2460,7 @@ public import RealRooted.CommonInterleaver.NegativeGrid
 public import RealRooted.CommonInterleaver.StrictSlots
 public import RealRooted.IntervalDifferential.CoefficientNorm
 public import RealRooted.IntervalDifferential.ConvolutionBounds
+public import RealRooted.IntervalDifferential.DiagonalSteps
 public import RealRooted.IntervalDifferential.DiskTransfer
 public import RealRooted.IntervalDifferential.EndpointWeight
 public import RealRooted.IntervalDifferential.EulerRecurrence
